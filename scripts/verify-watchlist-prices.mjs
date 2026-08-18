@@ -58,5 +58,16 @@ let prevCards=[];
 try{ const prev=JSON.parse(await readFile(join(ROOT,"data/watchlist-price-verify.json"),"utf-8"));
   prevCards=prev.cards||prev.results||[]; }catch{}
 const byId=new Map(prevCards.map(r=>[r.id,r]));
-for(const r of out) byId.set(r.id,r);
+for(const r of out){
+  const prior=byId.get(r.id);
+  // Auto-quarantine (Tyler ruling 2026-08-18): a row flagged
+  // verified-at-next-refresh that fails the 20% gate AGAIN gets quarantined —
+  // two strikes means the divergence is structural, not noise.
+  if(prior?.reVerifyPolicy==="verified-at-next-refresh"&&(r.status==="divergent"||r.status==="unverified")){
+    byId.set(r.id,{...r,status:"quarantined",strikes:(prior.strikes||1)+1,
+      ruling:prior.ruling,note:(r.note||"")+" — quarantined on re-fail (strike "+((prior.strikes||1)+1)+")"});
+  } else if(prior?.reVerifyPolicy==="verified-at-next-refresh"&&r.status==="verified"){
+    byId.set(r.id,{...r,note:(r.note||"")+" — cleared verified-at-next-refresh"});
+  } else byId.set(r.id,{...(prior?.ruling?{ruling:prior.ruling}:{}),...r});
+}
 await writeFile(join(ROOT,"data/watchlist-price-verify.json"),JSON.stringify({verifiedAt:new Date().toISOString(),rule:"dual-source ≤20% = verified; else flagged, never shown as fact",cards:[...byId.values()]},null,2)+"\n");

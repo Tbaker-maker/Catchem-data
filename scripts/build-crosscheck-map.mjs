@@ -69,6 +69,17 @@ function score(product, candidate, ourMedian) {
 }
 
 async function main() {
+  // Pathogen guard (2026-08-18): this builder REGENERATES the whole map,
+  // destroying review states. Superseded by extend-crosscheck-map.mjs for
+  // day-to-day use; wholesale rebuild now requires explicit intent.
+  try {
+    await readFile(join(DATA, "crosscheck-id-map.json"), "utf-8");
+    if (process.env.FORCE_REBUILD !== "yes") {
+      console.error("map exists — use extend-crosscheck-map.mjs (incremental), or FORCE_REBUILD=yes to regenerate and LOSE review states");
+      process.exit(1);
+    }
+  } catch {}
+
   const productsFile = JSON.parse(await readFile(join(DATA, "sealed-products.json"), "utf-8"));
   let prices = { products: [] };
   try { prices = JSON.parse(await readFile(join(DATA, "sealed-prices.json"), "utf-8")); } catch {}

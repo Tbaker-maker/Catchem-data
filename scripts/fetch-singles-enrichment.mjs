@@ -125,15 +125,34 @@ async function main() {
     }
   }
 
+  // MERGE, never overwrite (pathogen sweep 2026-08-18: this bug class hit the
+  // resolver, this script's v1-v3 runs, AND the verify gate — an error/partial
+  // run must not destroy good rows). Prior rows persist; a fresh GOOD row wins
+  // its cardId; a no-match/error row only demotes an existing good row to
+  // stale rather than replacing it.
+  let prevCards = [];
+  try { prevCards = JSON.parse(await readFile(join(DATA, "singles-enrichment.json"), "utf-8")).cards || []; } catch {}
+  const byId = new Map(prevCards.map(r => [r.cardId, r]));
+  for (const r of out) {
+    const prior = byId.get(r.cardId);
+    if ((r.dataStatus === "no-match" || r.dataStatus === "error") && prior?.raw) {
+      byId.set(r.cardId, { ...prior,
+        raw: { ...prior.raw, dataStatus: prior.raw.dataStatus === "live" ? "stale" : prior.raw.dataStatus },
+        note: `refresh failed ${new Date().toISOString().split("T")[0]} (${r.dataStatus}) — carried from previous run` });
+    } else {
+      byId.set(r.cardId, r);
+    }
+  }
+  const mergedCards = [...byId.values()];
   await writeFile(join(DATA, "singles-enrichment.json"), JSON.stringify({
     updatedAt: new Date().toISOString(),
     source: "pokemonpricetracker.com v2 /cards (includeEbay + includeHistory)",
     citationRule: "INTERNAL INSTRUMENT ONLY — all PPT-derived numbers are licensing-gated (research/ppt-licensing-note.md). Raw-market and eBay-sold provenance are separate claims; never mix in one figure.",
     psaFloorUsd: PSA_FLOOR,
     creditsConsumed: credits,
-    cards: out,
+    cards: mergedCards,
   }, null, 2) + "\n");
-  console.log(`✓ data/singles-enrichment.json — ${out.length} cards, ~${credits} credits consumed`);
+  console.log(`✓ data/singles-enrichment.json — ${mergedCards.length} cards (merged), ~${credits} credits consumed`);
 }
 
 main().catch(e => { console.error("Fatal:", e); process.exit(1); });

@@ -111,6 +111,18 @@ Journey Together Booster Box reports ~$24 median. Real price: $150–200+. Corru
 
 ## Session-locked policies (Aug 18, 2026)
 
+**FLEET CONCURRENCY (Aug 18, the MF-tin collision).** Mobile, desk, and chat
+sessions are concurrent co-workers on shared state. Any session touching a
+shared file (crosscheck-id-map, data/*.json, KB) PULLS immediately before
+writing and PUSHES immediately after — no long-held dirty working trees.
+Case study: a mobile bulk-exclusion (16:38Z) swept mega-forces-tin while a
+desk ruling ("leave HOLD for Aug-28 re-score") was in flight; the desk
+session restored it, but only because the collision was noticed. Rebase
+discipline is not optional; a stale write can silently reverse a ruling.
+Corollary: accumulating datasets get merge-by-id writers, never wholesale
+rewrites (the overwrite pathogen hit the resolver, enrichment, AND the
+verify gate before being killed 2026-08-18).
+
 **ENGLISH-ONLY (Tyler directive).** Catch'em tracks English product only right
 now. `allowImports` stays false on every SKU. Do not enable, add JP/KR/CN
 SKUs, or loosen the non-English exclusions without Tyler's explicit say-so.
