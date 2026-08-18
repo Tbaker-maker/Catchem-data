@@ -27,6 +27,7 @@ for (const p of ebay.products || []) {
   }
   const spread = (p.priceMedian - t.tcgMarket) / t.tcgMarket;
   rows.push({ id: p.id, name: p.name, ebayAskMedian: p.priceMedian, tcgMarket: t.tcgMarket,
+    ebayListings: p.listingCount ?? null, tcgListings: t.tcgListings ?? null,
     spreadPct: Math.round(spread * 1000) / 10,
     signal: Math.abs(spread) >= SIGNAL_PCT,
     read: spread >= SIGNAL_PCT ? "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening"
@@ -38,7 +39,7 @@ for (const p of ebay.products || []) {
 rows.sort((a, b) => Math.abs(b.spreadPct) - Math.abs(a.spreadPct));
 await writeFile(join(DATA, "divergence-report.json"), JSON.stringify({
   generatedAt: new Date().toISOString(),
-  method: "Cross-market ASK divergence: eBay ask median vs TCG-side ask-derived market (PPT). Two markets disagreeing on price is the signal. |spread| >= 15% flags. Not sold data.",
+  method: "Cross-market ASK divergence: eBay ask median vs TCG-side ask-derived market (PPT). Two markets disagreeing on price is the signal. |spread| >= 15% flags. Not sold data. TCG-side listing counts: provider exposes none for sealed - field carried as null, lights up if they ship it.",
   counts: { compared: rows.length, signals: rows.filter(r => r.signal).length, skipped: skipped.length },
   rows, skipped }, null, 2) + "\n");
 console.log(`✓ The Spread: ${rows.length} compared, ${rows.filter(r=>r.signal).length} signals`);

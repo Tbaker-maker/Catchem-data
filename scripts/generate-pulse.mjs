@@ -30,7 +30,8 @@ let md = `# ☀️ Morning Pulse — ${today}\n*Written by the machine at ${new 
 md += `## The instrument panel\n- **${sp.products.length} SKUs tracked** · ${live.length} live · ${noMkt} no-active-market (honest) · run ${sp.updatedAt?.slice(0,16)}Z\n- **Heat reads:** calibrating — day ${heatDays} of 8 clean days (return ~Aug 26)\n- **The Spread:** ${div?.counts?.compared??0} SKUs cross-checked · **${sigs.length} signals** · ${div?.counts?.skipped??0} excluded with reasons\n\n`;
 if (sigs.length) {
   md += `## ⚡ Spread signals (eBay ask vs TCG-side ask)\n`;
-  for (const r of sigs.slice(0,6)) md += `- **${r.name}** — eBay $${r.ebayAskMedian} vs TCG $${r.tcgMarket} (**${r.spreadPct>0?"+":""}${r.spreadPct}%**) — ${r.read}\n`;
+  for (const r of sigs.slice(0,6)) md += `- **${r.name}** — eBay $${r.ebayAskMedian} (${r.ebayListings??"—"} listings) vs TCG $${r.tcgMarket} (supply ${r.tcgListings??"—"}) (**${r.spreadPct>0?"+":""}${r.spreadPct}%**) — ${r.read}\n`;
+  if (sigs.some(r=>r.tcgListings==null)) md += `\n*TCG-side supply: provider exposes no sealed listing counts — slot is wired, lights up the day they ship it.*\n`;
   md += `\n`;
 }
 md += `## Deepest markets today\n`;
@@ -48,7 +49,9 @@ await writeFile(join(ROOT,`research/pulse/${today}.md`), md);
 // ── HTML edition: the human-facing morning brief (same data, designed) ──
 const sigCards = sigs.slice(0,6).map(r=>`
   <div class="sig"><div class="sighead"><span class="pct">${r.spreadPct>0?"+":""}${r.spreadPct}%</span><span class="signame">${r.name}</span></div>
-  <div class="sigsub">eBay <b>$${r.ebayAskMedian}</b> vs TCG <b>$${r.tcgMarket}</b> — ${r.read}</div></div>`).join("");
+  <div class="sigsub">eBay <b>$${r.ebayAskMedian}</b> <span class="sup">· ${r.ebayListings??"—"} listings</span> &nbsp;vs&nbsp; TCG <b>$${r.tcgMarket}</b> <span class="sup">· supply ${r.tcgListings??"—"}</span></div>
+  <div class="sigread">${r.read}</div></div>`).join("");
+const supNote = sigs.some(r=>r.tcgListings==null) ? `<div class="foot">* TCG-side supply: provider exposes no sealed listing counts — slot is wired; lights up the day they ship it.</div>` : "";
 const deepRows = topListed.map(p=>`<div class="row"><span>${p.name}</span><span class="mono">$${p.priceMedian} · ${p.listingCount} listings</span></div>`).join("");
 const chaseRows = chases.map(c=>`<div class="row"><span>${c.name} <em>${c.setName}</em></span><span class="mono">$${c.priceMarket}</span></div>`).join("");
 const radarRows = upcoming.map(r=>`<div class="row"><span>${r.name||r.title}</span><span class="mono">${r.date||r.releaseDate}</span></div>`).join("");
@@ -66,7 +69,7 @@ h1{font-size:34px;letter-spacing:-.5px;margin:6px 0 2px}h1 span{color:var(--dim)
 h2{font-size:13px;font-family:'Courier New',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin:26px 0 10px}
 .sig{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:8px;padding:12px 14px;margin-bottom:8px}
 .sighead{display:flex;gap:12px;align-items:baseline}.pct{font:16px 'Courier New',monospace;color:var(--gold)}
-.signame{font-weight:600}.sigsub{font-size:13px;color:var(--dim);margin-top:3px}.sigsub b{color:var(--txt)}
+.signame{font-weight:600}.sigsub{font-size:13px;color:var(--dim);margin-top:3px}.sigsub b{color:var(--txt)}.sup{font:11px 'Courier New',monospace;color:var(--dim)}.sigread{font-size:12px;color:var(--dim);margin-top:4px;font-style:italic}.foot{font:11px 'Courier New',monospace;color:var(--dim);margin-top:8px}
 .row{display:flex;justify-content:space-between;gap:12px;padding:9px 2px;border-bottom:1px solid var(--line)}
 .row em{color:var(--dim);font-style:normal;font-size:12px}.mono{font:13px 'Courier New',monospace;color:var(--txt);white-space:nowrap}
 .calib{margin-top:26px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:11px 14px;font:12px 'Courier New',monospace;color:var(--dim)}
@@ -80,7 +83,7 @@ footer{margin-top:30px;font:12px 'Courier New',monospace;color:var(--dim)}
   <div class="stat"><b>${sigs.length}</b><i>SPREAD SIGNALS</i></div>
   <div class="stat"><b>${heatDays}/8</b><i>READS CALIBRATING</i></div>
 </div>
-${sigs.length?`<h2>⚡ Spread signals — eBay ask vs TCG-side</h2>${sigCards}`:""}
+${sigs.length?`<h2>⚡ Spread signals — price &amp; supply, both markets</h2>${sigCards}${supNote}`:""}
 <h2>Deepest markets</h2>${deepRows}
 <h2>Chase board · TCGplayer market</h2>${chaseRows}
 ${upcoming.length?`<h2>Radar</h2>${radarRows}`:""}
