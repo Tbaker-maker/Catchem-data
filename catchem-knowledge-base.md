@@ -4,8 +4,22 @@
 
 > **How to use:** When Claude starts a new session, first action should be `view /mnt/user-data/outputs/catchem-knowledge-base.md`. When Claude learns something new worth persisting, append it to the relevant section and bump `last_updated`.
 
-**last_updated:** 2026-08-18
-**version:** 1.0.2
+**last_updated:** 2026-08-18 (all-nighter)
+**version:** 1.1.0
+
+> **KB editing rule (born from 4 silent-patch failures tonight):** edits
+> insert AFTER this version block using it as the anchor; every edit is
+> verified by grep on the saved file before commit. Docs get the same
+> artifact-proof discipline as code.
+
+## SESSION LEDGER — Aug 17→18, 2026 (the marathon + all-nighter)
+**Shipped & LIVE:** bot fix validated in production (JT $24→$285, EvSkies $144→$2,899) · workflow v2 in CI, 8 steps, secret verified · research agent (caught Mega Forces run 1) · heat engine (calibrating, reads ~Aug 26) · **The Spread** live (ask-vs-ask, dual-supply fields; day-1: 56 compared/7 signals; 151 artifact self-healed +3.9%) · Supply Watch (TCG-side dormant: provider ships no sealed counts) · **The Board** + **Morning Pulse** (md+HTML, self-generating) · **Derived layer 1**: Pack Math ($80.53 EvSkies → $5.42 Perfect Order per pack) + Narrative-vs-Tape (7 quiet movers day 1) · singles layer (11 confirmed chases + Gengar me2pt5-284; Cardmarket stored-only, stale timestamps) · expansion **70→~150 SKUs** (Batches 1–4, all audited; tins in pre-Aug-28) · Trust Standard + Content Hub + draft generator + launch arc v2 with full 14-beat drafts + IP brief + sold-data architecture + cost ledger.
+**Locked (Tyler):** English-only · vocab v2 "Buy Pressure (est.)" + disclosure, "Active Listings" (zero user-facing "inferred") · PPT $9.99 tier (ledger; ~$15–20/mo total burn) · grail ceilings $2000/$3000 (dated corrections).
+**Errors ledger grew:** #5 Celebrations no loose boosters · #6 Mega BB rule (only AH products-only) · #7 pokemontcg.io free tier works · **#8 151 has NO English booster box**.
+**Gates open:** PPT licensing = publication-gated (email drafted, unsent) · heat reads Aug 26 · Grading Premium table (CC session in flight) · consolidated crosscheck HOLD list (CC) · v2.2 print (products into daily run).
+**Tyler queue (no deadlines):** send 001 (checklist in newsletter/) · arc start date · IP + PPT emails · candidate-sheet curation · Gengar-284 already confirmed ✓.
+**Horizon:** deploy The Board (Cloudflare Pages) · singles sold/graded enrichment cadence · Insights lottery filing · Wave C remainder.
+
 **maintained_by:** Claude (with Tyler's review)
 **canonical_location:** /mnt/user-data/outputs/catchem-knowledge-base.md
 

@@ -37,6 +37,15 @@ first crosscheck run AND PPT licensing cleared for publication (see
 research/ppt-licensing-note.md). If either is missing by send: CUT section entirely, tease in
 closer instead. Never fake it.]
 
+## 4b. 🧮 Pack Math sidebar (data exists today)
+[SLOT-7: from data/derived-insights.json — the $/pack ladder framing the
+tin drop ("six tins ≈ $5.50/pack while sealed EvSkies runs $80/pack").
+Arithmetic; refresh at send; cite Catchem-data.]
+
+## 4c. Quiet movers (optional, run if ≥2 strong)
+[SLOT-8: narrative.quietMovers — sets the tape flagged that nobody's
+covering. Hedged reads only; this is the edge section.]
+
 ## 5. Grader's Corner (120–150w)
 Follow the structure story: any motion on the class action / backlog /
 TAG re-open window (its "late August" estimate = check digests).
