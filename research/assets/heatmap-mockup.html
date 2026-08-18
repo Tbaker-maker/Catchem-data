@@ -1068,56 +1068,56 @@ const products = [
   {
     id: 1, name: "Phantasmal Flames", type: "Booster Box", typeCode: "bb", era: "mega",
     releaseDate: "Nov 14, 2025",
-    state: "squeeze", volume: 0, volumeDelta: 0, supply: 75, supplyDelta: 0, avgPrice: 430,
+    state: "squeeze", volume: 5400, volumeDelta: 12, supply: 75, supplyDelta: 0, avgPrice: 430,
     flavor: "Mega Charizard X ex SIR at $692 (TCGplayer mkt) doing the heavy lifting on a $430 box. Money in — the era's marquee product.",
     history: [369, 376, 381, 402, 396, 413, 428]
   },
   {
     id: 2, name: "Mega Evolution: Ascended Heroes", type: "Booster Bundle", typeCode: "bundle", era: "mega",
     releaseDate: "Jan 30, 2026",
-    state: "squeeze", volume: 0, volumeDelta: 0, supply: 112, supplyDelta: 0, avgPrice: 85,
+    state: "squeeze", volume: 1600, volumeDelta: 31, supply: 112, supplyDelta: 0, avgPrice: 85,
     flavor: "The products-only set. Six tins land Aug 28 — TPC venting the squeeze. Absorb-or-stall is the watch.",
     history: [72, 75, 77, 77, 79, 82, 83]
   },
   {
     id: 3, name: "Prismatic Evolutions", type: "ETB", typeCode: "etb", era: "sv",
     releaseDate: "Jan 17, 2025",
-    state: "squeeze", volume: 0, volumeDelta: 0, supply: 127, supplyDelta: 0, avgPrice: 165,
+    state: "squeeze", volume: 3500, volumeDelta: 24, supply: 127, supplyDelta: 0, avgPrice: 165,
     flavor: "Sunbreon mythology continues — Umbreon ex SIR $1,491. 130 active listings, $165 median holding.",
     history: [143, 143, 147, 149, 155, 161, 162]
   },
   {
     id: 4, name: "Mega Evolution Base Set", type: "Booster Box", typeCode: "bb", era: "mega",
     releaseDate: "Sep 26, 2025",
-    state: "distribution", volume: 0, volumeDelta: 0, supply: 25, supplyDelta: 0, avgPrice: 342,
+    state: "distribution", volume: 1400, volumeDelta: 9, supply: 25, supplyDelta: 0, avgPrice: 342,
     flavor: "Era-opener at $342. Oddity on tape: the Enhanced box-topper variant asks $10 UNDER regular. Market hasn't priced the topper.",
     history: [298, 300, 312, 310, 319, 331, 339]
   },
   {
     id: 5, name: "Pokémon 151", type: "ETB", typeCode: "etb", era: "sv",
     releaseDate: "Sep 22, 2023",
-    state: "distribution", volume: 0, volumeDelta: 0, supply: 132, supplyDelta: 0, avgPrice: 600,
+    state: "distribution", volume: 13200, volumeDelta: 14, supply: 132, supplyDelta: 0, avgPrice: 600,
     flavor: "151 in steady state at $600. Zard ex SIR $361 — the set that never cooled, just matured.",
     history: [514, 518, 534, 545, 559, 583, 581]
   },
   {
     id: 6, name: "Evolving Skies", type: "Booster Box", typeCode: "bb", era: "swsh",
     releaseDate: "Aug 27, 2021",
-    state: "accumulation", volume: 0, volumeDelta: 0, supply: 91, supplyDelta: 0, avgPrice: 2899,
+    state: "accumulation", volume: 44000, volumeDelta: 6, supply: 91, supplyDelta: 0, avgPrice: 2899,
     flavor: "The $2,899 monolith. Moonbreon at $2,244. Thin listings, deep holds — the definition of accumulation.",
     history: [2538, 2595, 2557, 2653, 2724, 2728, 2832]
   },
   {
     id: 7, name: "Journey Together", type: "Booster Box", typeCode: "bb", era: "sv",
     releaseDate: "Mar 28, 2025",
-    state: "distribution", volume: 0, volumeDelta: 0, supply: 62, supplyDelta: 0, avgPrice: 290,
+    state: "distribution", volume: 3000, volumeDelta: 18, supply: 62, supplyDelta: 0, avgPrice: 290,
     flavor: "$285 across 63 listings — the number our tracker got wrong for three months, now fixed and receipted.",
     history: [254, 251, 262, 262, 273, 283, 281]
   },
   {
     id: 8, name: "Surging Sparks", type: "Booster Box", typeCode: "bb", era: "sv",
     releaseDate: "Nov 8, 2024",
-    state: "distribution", volume: 0, volumeDelta: 0, supply: 90, supplyDelta: 0, avgPrice: 310,
+    state: "distribution", volume: 4600, volumeDelta: 11, supply: 90, supplyDelta: 0, avgPrice: 310,
     flavor: "Pikachu-ex-era juice at $305. Healthy two-market agreement on The Spread.",
     history: [260, 268, 279, 279, 286, 298, 309]
   }
@@ -1217,9 +1217,9 @@ function renderChart(productId, history, timeWindow) {
     labels[51] = 'Now';
   }
 
-  const width = 100; // SVG viewBox width
-  const height = 100;
-  const padding = { top: 8, right: 8, bottom: 16, left: 8 };
+  const width = 400; // SVG viewBox width (wide aspect — no stretch)
+  const height = 130;
+  const padding = { top: 12, right: 12, bottom: 24, left: 12 };
   const chartW = width - padding.left - padding.right;
   const chartH = height - padding.top - padding.bottom;
 
@@ -1289,7 +1289,7 @@ function renderChart(productId, history, timeWindow) {
   const periodLow = Math.min(...volData);
 
   return `
-    <svg class="chart-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none">
+    <svg class="chart-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet">
       <defs>
         <linearGradient id="volumeGradient-${productId}" x1="0%" y1="0%" x2="0%" y2="100%">
           <stop offset="0%" stop-color="#F5C842" stop-opacity="0.25" />
