@@ -40,6 +40,32 @@ Eval criteria: covers OUR vintage box SKUs · handles best-offers · cost ·
 compliance posture · update cadence. One small eval script per finalist,
 then commit to one.
 
+## Door 4 — TCGplayer-derived data (updated after research)
+- **Already ours:** singles Market Price via pokemontcg.io IS sold-derived
+  (TCGplayer computes it from completed sales). Our confirmed watchlist is
+  sold-anchored today. Cite as "TCGplayer market (sales-based) via
+  pokemontcg.io, <date>."
+- **Direct TCGplayer API: closed.** First-party notice: "no longer granting
+  new API access." eBay owns TCGplayer — both official doors, one landlord.
+- **Rebroker lane (fold into Tier-2 eval):** JustTCG, TCG API (tcgapi.dev,
+  sealed supported since Mar 2026), TCGAPIs (tcgapis.com — advertises
+  sales HISTORY + live listings, commercial plans), PriceCharting. All
+  carry the same vendor-diligence question as SoldComps: how they source =
+  counsel housekeeping item. One eval, pick one.
+- **Opportunity:** a TCGplayer-derived SEALED price per SKU would give a
+  second-market cross-check against our eBay ask medians — divergence
+  itself becomes signal.
+
+## eBay routes — final map
+- Browse API (ours): asks only, no sold. ✓ in production.
+- Legacy Finding API (findCompletedItems): decommissioned — door welded.
+- Marketplace Insights: restricted; file via developer.ebay.com
+  application-growth/business-use-case form; expect denial, note the
+  attempt.
+- **Terapeak (Seller Hub): eBay's own sold analytics, free with a seller
+  account — best manual tool if [TYLER: seller account?] = yes.**
+- Sold-filter browser checks + 130point: manual tier, live now.
+
 ## Decision now
 Tier 1 (manual) activates immediately. Tier 3 application filed. Tier 2
 evaluation opens after the 70-SKU production run stabilizes. No scraping,
