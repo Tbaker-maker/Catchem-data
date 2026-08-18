@@ -63,3 +63,57 @@ No authenticated raw responses exist yet (both finalists are key-gated; the
 two DQ'd candidates were not probed beyond docs per the cost gate).
 `research/eval-samples/` currently holds DOC-DERIVED response shapes, clearly
 labeled as such — the adapter must NOT be built from them.
+
+---
+
+# ADDENDUM — authenticated probe results (2026-08-18, paid tier, key via Tyler's shell)
+
+Cost gate history: Tyler upgraded to PPT $9.99 API tier (20k credits/day),
+ledger-logged (dcbef85) — economics gate lifted for THIS provider only.
+
+## Sealed probe: hit-rate 10/10 (after matcher correction)
+
+All 10 test SKUs exist in PPT's sealed catalog. First-pass probe matched
+variant products (Case/Display/Sam's Club bundles) because the naive all-words
+matcher took the first candidate; raw responses show exact products alongside
+variants — e.g. JT search returns BOTH "Journey Together Booster Box Case"
+($1,808.85) and "Journey Together Booster Box" ($300.14, updated 2026-08-17,
+vs our eBay median $289.89 — a plausible ask-vs-market spread on day one).
+The id-map builder therefore scores candidates and flags anything ambiguous.
+
+## Real sealed response shape (from ppt-sealed-RAW.json)
+
+- `tcgPlayerId`, `tcgPlayerUrl`, `name`, `setId` (TCGplayer numeric), `setName`
+- **`unopenedPrice`** — single TCGplayer-derived price (no market/low split)
+- **`updatedAt` / `lastScrapedAt`** — freshness per product (fresh: ≤1 day in probe)
+- `priceHistory` [{date, unopenedPrice}] with includeHistory=true
+- **NO listings/sellers counts on sealed** — those exist on /cards only.
+  Consequence: The Spread (divergence) is fully served; Supply Watch's
+  TCG side is NOT served by this provider for sealed. crosscheck-history
+  rows will carry tcgListings: null honestly.
+- Credit accounting: `apiCallsConsumed.costPerProduct = 1` — cost scales with
+  PRODUCTS RETURNED, so daily fetches must go by tcgPlayerId (1 credit/SKU/day
+  ≈ 70/day; map building ~350 credits one-time).
+
+## Sold data: exists for SINGLES only — sealed sold comps DO NOT open
+
+- /sold, /sales, /sold-listings, /psa all 404.
+- Sealed `priceHistory` is daily listing-price snapshots, not sold comps.
+  Evidence: base1 "Base Set Booster Box [Revised Unlimited Edition]" is flat
+  $499.99 for 35 straight days — stale listing data on a box with $2,283+
+  sold comps elsewhere. **PPT cannot price vintage sealed**; the vintage
+  no-active-market suspension stays. (PriceCharting remains the future
+  candidate — separate purchase decision, out of scope per fences.)
+- Singles get rich sold/supply data: prices.sellers, prices.listings,
+  recentSales, per-condition variants, priceHistory with daily sales volume,
+  and includeEbay → salesByGrade (eBay sold count/median/min/max per PSA
+  grade). Shapes documented in research/sold-comps-design-notes.md; pipeline
+  NOT built this session per Tyler's instruction.
+
+## Verdict vs decision gate
+
+≥8/10 hit-rate ✅ (10/10) · freshness field ✅ (updatedAt per product) ·
+supply counts ⚠ sealed-no / singles-yes — accepted with the tcgListings:null
+deviation noted, since The Spread is the primary consumer. **Adapter built;
+first run gated on Tyler's review of the 70-SKU id map (low-confidence rows
+especially).**
