@@ -53,7 +53,10 @@ async function main() {
   for (const c of confirmed) {
     await sleep(1100);
     try {
-      const d = await getJSON(`${BASE}/cards?search=${encodeURIComponent(c.name)}&limit=5&includeEbay=true&includeHistory=true&days=30`);
+      // limit 20, not 5 (2026-08-18 first run): search ranks base printings first,
+      // and every chase is a secret-rare number below the top-5 cutoff — all 12
+      // lookups no-matched at limit=5. ~20 credits/card is trivial on the paid tier.
+      const d = await getJSON(`${BASE}/cards?search=${encodeURIComponent(c.name)}&limit=20&includeEbay=true&includeHistory=true&days=30`);
       credits += d.metadata?.apiCallsConsumed?.total ?? (d.data || []).length;
       const setFrag = (c.setName || "").toLowerCase();
       const hit = (d.data || []).find(p =>
