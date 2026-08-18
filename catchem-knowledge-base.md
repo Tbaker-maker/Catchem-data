@@ -176,9 +176,15 @@ Special/mini-set expansions have **NO standalone Booster Boxes**. Sold only via 
 - Dragon Majesty, Shining Legends, Detective Pikachu, Generations
 - Celebrations, Crown Zenith
 - Paldean Fates, Shrouded Fable, Prismatic Evolutions
-- **ALL Mega Evolution special sets:** Phantasmal Flames, Ascended Heroes, Perfect Order, Chaos Rising, Pitch Black, 30th Anniversary Celebration
+- ~~**ALL Mega Evolution special sets:** Phantasmal Flames, Ascended Heroes, Perfect Order, Chaos Rising, Pitch Black, 30th Anniversary Celebration~~
+  **[CORRECTED 2026-08-18 — see known error #6.]** Web-verified against Pokemon Center + TCGplayer:
+  Phantasmal Flames (me2), Perfect Order (me3), Chaos Rising (me4), and Pitch Black (me5) are
+  MAIN-LINE numbered ME sets and DO sell 36-pack booster boxes (~$249.95 list for me4/me5).
+  Only **Ascended Heroes (me2pt5)** is products-only in ME01–ME05 (ETB, PC-ETB, Booster Bundle,
+  Mini Tins, Tech Sticker Collection, Premium Poster — no booster box). 30th Celebration remains
+  no-loose-boosters per pokemon.com (packs gated inside products; boxed pack products only).
 
-Main expansion sets DO have Booster Boxes: Scarlet & Violet, Paldea Evolved, Obsidian Flames, 151, Paradox Rift, Temporal Forces, Twilight Masquerade, Stellar Crown, Surging Sparks, Journey Together, Destined Rivals, Evolving Skies, etc.
+Main expansion sets DO have Booster Boxes: Scarlet & Violet, Paldea Evolved, Obsidian Flames, 151, Paradox Rift, Temporal Forces, Twilight Masquerade, Stellar Crown, Surging Sparks, Journey Together, Destined Rivals, Evolving Skies, and Mega-era main sets me1/me2/me3/me4/me5 (me1 additionally has the Enhanced Booster Box box-topper variant — the only modern boxes with that variant are me1 and Journey Together, per Tyler).
 
 ### Rotation context (as of 2026-04-21)
 - **April 10, 2026:** G-mark rotated OUT (11 days ago)
@@ -197,6 +203,7 @@ Historical pattern: rotation transitions competitive demand → collector demand
 3. **Cosmic Eclipse card count** — I said 272, actual is 271. Off by one.
 4. **Partial database coverage claim** — Session 1 was marked "complete" for WOTC-Black&White era but the 2014-2026 era follow-up was pending. Always check completion status before citing.
 5. **Celebrations "loose packs" claim (2026-08-18, caught by Tyler)** — Celebrations (2021) had NO loose/standalone boosters; packs existed only inside sealed products (ETBs, collections, UPCs) — same distribution format as 30th Celebration. Celebrations stayed cheap because of PRINT VOLUME (relentless reprints), not distribution format. Never contrast 30th vs Celebrations on pack availability.
+6. **"ALL Mega sets have no booster boxes" claim (2026-08-18, caught by web verification during SKU planning)** — WRONG for 4 of 5. Phantasmal Flames, Perfect Order, Chaos Rising, and Pitch Black are main-line ME sets with 36-pack booster boxes, each verified via 2+ independent retail sources incl. pokemoncenter.com product pages and TCGplayer product listings (me4/me5 boxes list ~$249.95). Only Ascended Heroes (me2pt5) is products-only. The error came from over-generalizing known-error #2 (AH has no box — true) to the whole era. Lesson: "pt5"-suffixed API ids mark special sets; integer ids mark main sets with boxes.
 
 ---
 

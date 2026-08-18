@@ -87,7 +87,18 @@ async function phase2_singles() {
       }
       if (!(d.data || []).length) out.push({ watchLabel: entry.label, dataStatus: "no-match", needsReview: true, note: "query returned nothing — verify set name/card name" });
     } catch (e) {
-      out.push({ watchLabel: entry.label, dataStatus: "error", note: e.message.slice(0, 120) });
+      // Carry previously-resolved rows forward instead of overwriting them with
+      // an error stub. Evidence (2026-08-18 first runs, keyless): pokemontcg.io
+      // 500s hit ~1/3 of queries per run at random, and each run rewrites the
+      // file wholesale — run 3 lost the Giratina/Umbreon/Espeon resolutions
+      // that run 1 had. Carried rows keep their old data but are marked stale
+      // so the citation gate (live-only) still excludes them until refreshed.
+      const carried = prev.cards.filter(c => c.watchLabel === entry.label && c.cardId);
+      if (carried.length) {
+        for (const c of carried) out.push({ ...c, dataStatus: c.dataStatus === "live" ? "stale" : c.dataStatus, note: `refresh failed ${today}: ${e.message.slice(0, 60)} — carried from previous run` });
+      } else {
+        out.push({ watchLabel: entry.label, dataStatus: "error", note: e.message.slice(0, 120) });
+      }
     }
   }
   const live = out.filter(c => c.dataStatus === "live").length;
