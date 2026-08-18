@@ -17,6 +17,7 @@ const spreadBy = new Map(div.rows.map(r=>[r.id, r]));
 const sgAll = await J("data/singles-prices.json").catch(()=>null) ?? { cards: [] };
 let enr = null; try { enr = await J("data/singles-enrichment.json"); } catch {}
 let hh = []; try { hh = await J("data/heat-history.json"); } catch {}
+let relDates = {}; try { relDates = (await J("data/set-release-dates.json")).dates ?? {}; } catch {}
 
 // ── (a) Pack Math ────────────────────────────────────────────────────────────
 function packsFor(p) {
@@ -136,7 +137,7 @@ const depthReads = [...liveList].sort((a,b)=>b.listingCount-a.listingCount).slic
 // ── (e) LIFECYCLE — print-phase EST + rotation context (Doctrine block) ──
 const NOW = new Date();
 function lifecycleFor(p){
-  const rel = p.releaseDate || (sp.products.find(x=>x.setId===p.setId&&x.releaseDate)||{}).releaseDate;
+  const rel = p.releaseDate || relDates[p.setId] || null;
   if (!rel) return null;
   const months = Math.floor((NOW - new Date(rel)) / (30.44*86400000));
   let phase, tag;
