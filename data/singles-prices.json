@@ -1,12 +1,12 @@
 {
   "updatedAt": "2026-08-18T06:50:55.315Z",
   "source": "pokemontcg.io v2 (TCGplayer market)",
-  "citationRule": "Newsletter/content may cite ONLY dataStatus:live entries with needsReview:false. Supply/demand claims remain sealed-only.",
+  "citationRule": "Newsletter/content may cite ONLY dataStatus:live entries with needsReview:false. Supply/demand claims remain sealed-only. Cardmarket cm* fields are STORED ONLY and NOT citable: EUR, different market semantics, and their updatedAt runs months stale via this API (observed 2025/11-2026/01 stamps on 2026-08-18).",
   "counts": {
     "printings": 38,
     "live": 23,
     "stale": 0,
-    "needsReview": 27
+    "needsReview": 26
   },
   "cards": [
     {
@@ -615,8 +615,9 @@
       "cmAvg7Eur": null,
       "cmAvg30Eur": null,
       "cmUpdatedAt": null,
-      "needsReview": true,
-      "priceHistory": []
+      "needsReview": false,
+      "priceHistory": [],
+      "reviewNote": "Confirmed intended chase printing (AH SIR) — Tyler, 2026-08-18. Chase re-aimed from Phantasmal to Ascended Heroes per his correction."
     },
     {
       "watchLabel": "Mega Dragonite ex (Ascended Heroes)",
