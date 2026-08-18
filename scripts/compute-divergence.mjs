@@ -1,6 +1,7 @@
 // scripts/compute-divergence.mjs — "The Spread"
-// Joins eBay ask medians (data/sealed-prices.json) with TCG sales-based
-// market (data/sealed-crosscheck.json) → data/divergence-report.json.
+// Joins eBay ask medians (data/sealed-prices.json) with the TCG-side market
+// price (data/sealed-crosscheck.json — PPT sealed prices are ASK-derived,
+// proven Aug 18: base1 flat 35 days = stale ask, not sales) → data/divergence-report.json.
 // Ask vs sales-market are DIFFERENT instruments (Trust Standard: separate
 // provenance, never mixed) — divergence between them is the signal.
 // Runs standalone; consumes whatever provider fills the crosscheck contract.
@@ -28,8 +29,8 @@ for (const p of ebay.products || []) {
   rows.push({ id: p.id, name: p.name, ebayAskMedian: p.priceMedian, tcgMarket: t.tcgMarket,
     spreadPct: Math.round(spread * 1000) / 10,
     signal: Math.abs(spread) >= SIGNAL_PCT,
-    read: spread >= SIGNAL_PCT ? "asks running hot vs sales — sellers reaching or supply tightening"
-        : spread <= -SIGNAL_PCT ? "asks under sales-market — motivated sellers or stale TCG side"
+    read: spread >= SIGNAL_PCT ? "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening"
+        : spread <= -SIGNAL_PCT ? "eBay asks under TCG-side — motivated eBay sellers or stale TCG-side price"
         : "markets agree",
     provenance: { ebay: `Catchem-data eBay active asks, ${ebay.updatedAt?.split("T")[0]}`,
                   tcg: `${tcg.source}, ${t.providerUpdatedAt || tcg.updatedAt?.split("T")[0]}` } });
@@ -37,7 +38,7 @@ for (const p of ebay.products || []) {
 rows.sort((a, b) => Math.abs(b.spreadPct) - Math.abs(a.spreadPct));
 await writeFile(join(DATA, "divergence-report.json"), JSON.stringify({
   generatedAt: new Date().toISOString(),
-  method: "eBay ask median vs TCG sales-based market. Different instruments; divergence is signal, not error. |spread| >= 15% flags.",
+  method: "Cross-market ASK divergence: eBay ask median vs TCG-side ask-derived market (PPT). Two markets disagreeing on price is the signal. |spread| >= 15% flags. Not sold data.",
   counts: { compared: rows.length, signals: rows.filter(r => r.signal).length, skipped: skipped.length },
   rows, skipped }, null, 2) + "\n");
 console.log(`✓ The Spread: ${rows.length} compared, ${rows.filter(r=>r.signal).length} signals`);

@@ -66,6 +66,14 @@ then commit to one.
   account — best manual tool if [TYLER: seller account?] = yes.**
 - Sold-filter browser checks + 130point: manual tier, live now.
 
+## PPT verdict (probe-evidenced, Aug 18)
+- SINGLES: real sold layer — recentSales, daily volume, salesByGrade
+  (PSA 8/9/10 from eBay completed). The singles/graded sold anchor EXISTS.
+- SEALED: asks only (base1 flat $499.99 × 35 days = stale ask, proven).
+  Sealed sold comps do NOT exist at PPT. Vintage stays suspended;
+  PriceCharting (paid) or the Insights lottery remain the sealed-sold paths.
+- The Spread is therefore ASK-vs-ASK cross-market divergence for sealed.
+
 ## Decision now
 Tier 1 (manual) activates immediately. Tier 3 application filed. Tier 2
 evaluation opens after the 70-SKU production run stabilizes. No scraping,

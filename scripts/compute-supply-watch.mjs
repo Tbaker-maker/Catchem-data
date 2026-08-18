@@ -45,7 +45,7 @@ const sev = {"confirmed-drain":0,"tcg-leading-drain":1,"ebay-leading-drain":2,"c
 rows.sort((a,b)=>sev[a.state]-sev[b.state]);
 await writeFile(join(DATA,"supply-watch.json"), JSON.stringify({
   generatedAt: new Date().toISOString(),
-  method: "7-day listing-count deltas, eBay vs TCG-side. Inferred supply, not measured sales. Lead-lag states are reads.",
+  method: "7-day listing-count deltas, eBay vs TCG-side. Inferred supply, not measured sales. Lead-lag states are reads. NOTE Aug 18: current provider exposes no sealed listing counts (tcgListings null) — TCG side dormant; eBay-side deltas remain valid via heat-history.",
   counts: { read: rows.length, maturing: maturing.length,
             signals: rows.filter(r=>r.state!=="balanced").length },
   rows, maturing }, null, 2)+"\n");
