@@ -227,7 +227,12 @@ Historical pattern: rotation transitions competitive demand → collector demand
 ### Locked decision update (Aug 18)
 - **Demand vocabulary v2:** "Buy Pressure (est.)" replaces "inferred sales/volume" in ALL user-facing copy; disclosure line standardized; "Active Listings" for supply. Principle (honesty about estimation) unchanged.
 
-### Known errors (to avoid repeating)
+### Known errors
+- **#9 (Aug 18, Claude chat error, caught in own QA):** claimed Darkness Ablaze
+  was missing its "Rainbow Charizard VMAX" — swsh3 has NO such card; the
+  Rainbow Zard VMAX is Champion's Path (swsh3pt5-074). The hole-CLASS concern
+  (price-null cards vanishing) was real and fixed; the example card was
+  fabricated. Verify set membership before citing chase cards. (to avoid repeating)
 7. **pokemontcg.io status (Apr 2026 note overclaimed):** KB said "now Scrydex, no longer free, $29/mo min." Verified Aug 18 2026: free keyless API works (with ~33% transient 500s + rate limits). Correction logged; PokemonPriceTracker ($9.99/mo) remains the paid fallback ONLY IF free-tier staleness/instability worsens — separate integration, not built.
 - **Rotation cadence (caught by Tyler, Aug 18 2026):** Rotation is ANNUAL (every April, oldest reg mark out). "~3 years" is per-CARD legality (three marks concurrent), not rotation frequency. Newsletter 001 draft said "every three years" — wrong. Error class: plausible-cadence-misremembered (same family as PC-ETB start era).
 8. **151 English booster box (claimed on the main-expansion BB list, 2026-08-18, ruling J1)** — does NOT exist. The 151 English line is Booster Bundle / ETB / PC-ETB / UPC only; the tracked sv3pt5-bb IS the bundle. Line 187 corrected (struck, dated); 151 added to the special-sets list. Root cause: 151 is a main-numbered set (sv3pt5) so it was swept into the BB generalization — set NUMBERING does not imply BB EXISTENCE.
