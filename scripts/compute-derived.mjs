@@ -175,10 +175,16 @@ const out = {
     const sealedPick = (div.rows||[]).filter(r=>r.signal).sort((a,b)=>Math.abs(b.spreadPct)-Math.abs(a.spreadPct))[0] || null;
     let gradedPick = null;
     {
-      const g = ((enr&&enr.cards)||[]).filter(c=>c.psa10&&c.raw).map(c=>({...c, premium: Math.round((c.psa10-c.raw-79.99)*100)/100}))
-                 .sort((a,b)=>b.premium-a.premium)[0];
+      const g = ((enr&&enr.cards)||[])
+        .map(c=>({ name: c.watchLabel || c.name,
+                   raw: c.raw?.market ?? null,
+                   psa10: c.gradingPremium?.psa10Median ?? c.ebaySold?.psa10?.median ?? null,
+                   premium: c.gradingPremium?.gp10 ?? null,
+                   n10: c.gradingPremium?.n10 ?? c.ebaySold?.psa10?.n ?? null }))
+        .filter(c=>c.premium!=null && c.raw!=null && (c.n10==null || c.n10>=10))
+        .sort((a,b)=>b.premium-a.premium)[0];
       if (g) gradedPick = { name:g.name, raw:g.raw, psa10:g.psa10, premium:g.premium, chip:"VERIFIED",
-        reason:`widest Grading Premium on the board (+$${g.premium} after $79.99 floor)` };
+        reason:`widest Grading Premium on the board (+$${Math.round(g.premium)} after the $79.99 floor)`, gated:true };
     }
     // RAW = singles only. v1 heuristic: a confirmed chase from a set the
     // tape flagged (quiet-mover first, then in-news); fallback = top chase.
