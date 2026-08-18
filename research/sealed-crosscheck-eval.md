@@ -21,6 +21,13 @@ history?) · their update timestamp · rate limits · cost · how they source
 (ToS posture — counsel housekeeping list). Disqualify: no sealed, no
 freshness signal, or scraping-us-directly posture.
 
+## Cost gate (Tyler directive, Aug 18 — overrides everything below)
+Pre-revenue rule: $0 or it doesn't ship. A candidate qualifies ONLY if its
+FREE tier sustainably covers ~70 SKUs/day (≈2,100 calls/mo) with headroom.
+Free trials of paid plans don't count — we won't build on a meter that
+starts running. A paid source can be revisited AFTER revenue exists, and
+only if decisively better than the free winner.
+
 ## Decision rule
 Highest hit-rate with a freshness field wins; ties → cheaper. Winner gets
 scripts/fetch-sealed-crosscheck.mjs written against its REAL response
