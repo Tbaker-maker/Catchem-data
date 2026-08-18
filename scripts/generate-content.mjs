@@ -1,0 +1,78 @@
+// scripts/generate-content.mjs
+// Catch'em Content Hub — generates a daily content pack (X posts, thread,
+// short-form scripts, YouTube concept) from the same data spine as the
+// newsletter: heat report + digests + radar, bound by the Trust Standard.
+// DRAFTS ONLY → research/content/. Human selects and posts. Never auto-publishes.
+//
+// Usage: node scripts/generate-content.mjs [--dry-run]
+
+import { readFile, writeFile, mkdir, readdir } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const ROOT = join(__dirname, "..");
+const DRY = process.argv.includes("--dry-run");
+const today = new Date().toISOString().split("T")[0];
+
+async function latestDigests(n = 2) {
+  try {
+    const dir = join(ROOT, "research", "digests");
+    const files = (await readdir(dir)).filter(f => f.endsWith(".md")).sort().slice(-n);
+    const out = [];
+    for (const f of files) out.push(`--- DIGEST ${f} ---\n` + await readFile(join(dir, f), "utf-8"));
+    return out.join("\n\n");
+  } catch { return "(no digests available)"; }
+}
+
+async function main() {
+  const [voice, trust, heat, radar, digests] = await Promise.all([
+    readFile(join(ROOT, "research", "CONTENT-VOICE.md"), "utf-8"),
+    readFile(join(ROOT, "TRUST-STANDARD.md"), "utf-8"),
+    readFile(join(ROOT, "data", "heat-report.json"), "utf-8"),
+    readFile(join(ROOT, "data", "release-radar.json"), "utf-8"),
+    latestDigests(),
+  ]);
+
+  const prompt = `${voice}
+
+=== TRUST STANDARD (binding) ===
+${trust}
+
+=== HEAT REPORT ===
+${heat}
+
+=== RELEASE RADAR ===
+${radar}
+
+=== RECENT RESEARCH DIGESTS ===
+${digests}
+
+Today's date: ${today}. Generate today's content pack now, per the format
+in the guide. If the heat report has zero publishable reads (rebuild
+period), lean on radar events, digest news, and cultural angles — say the
+momentum data is rebuilding rather than faking reads.`;
+
+  await mkdir(join(ROOT, "research", "content"), { recursive: true });
+  if (DRY) {
+    const p = join(ROOT, "research", "content", `${today}-pack.PROMPT.txt`);
+    await writeFile(p, prompt);
+    console.log(`✓ dry-run: prompt assembled (${prompt.length.toLocaleString()} chars) → ${p}`);
+    return;
+  }
+  const API_KEY = process.env.ANTHROPIC_API_KEY;
+  if (!API_KEY) { console.error("Missing ANTHROPIC_API_KEY"); process.exit(1); }
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "x-api-key": API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
+    body: JSON.stringify({ model: "claude-sonnet-4-6", max_tokens: 4000,
+      messages: [{ role: "user", content: prompt }] }),
+  });
+  if (!res.ok) { console.error(`API ${res.status}: ${(await res.text()).slice(0,300)}`); process.exit(1); }
+  const data = await res.json();
+  const text = (data.content || []).filter(b => b.type === "text").map(b => b.text).join("\n");
+  const out = join(ROOT, "research", "content", `${today}-pack.md`);
+  await writeFile(out, text + "\n");
+  console.log(`✓ CONTENT PACK: research/content/${today}-pack.md — human selects before anything posts`);
+}
+main().catch(e => { console.error("Fatal:", e); process.exit(1); });
