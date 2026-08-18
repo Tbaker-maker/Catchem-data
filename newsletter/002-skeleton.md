@@ -7,6 +7,10 @@ a slot that hasn't filled. Voice per NEWSLETTER-VOICE.md.*
 Six Tins Later" (pick post-data; no emoji).
 
 ## 1. The Read (80–120w)
+DRAFT-PROSE (numbers-only edit at send): "Two weeks ago we told you the
+supply valve would open on August 28. It did — six tins, two lines, one
+day. This issue is the verdict: [SLOT-1]. We said we'd watch with clean
+instruments; below is what they saw." 
 Thesis skeleton: TPC opened the supply valve on the year's tightest set.
 Did the market drink it or drown in it? Frame as the first verdict issue —
 "we said we'd watch with clean instruments; here's what they saw."
@@ -58,6 +62,9 @@ framing, sources inline]
 restock cadence starts" (ties to arc Day 8).
 
 ## Closer (40–60w)
+DRAFT-PROSE: "Next Tuesday: [warm-issue tease]. The instruments run every
+morning at 4am whether we're watching or not — that's the point. If this
+issue was forwarded to you: [link]. Catch'em. Catch Feels." 
 Tee Tuesday. If SLOT-5 was cut: one-line tease — "next week we start
 publishing the spread between what sellers ask and what buyers pay."
 Sign: Catch'em. Catch Feels.
