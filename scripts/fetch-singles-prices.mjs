@@ -26,10 +26,27 @@ const STALE_DAYS = 3;
 const today = new Date().toISOString().split("T")[0];
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
+// Retry transient failures (5xx/429) with backoff before giving up.
+// Evidence (2026-08-18, keyless): pokemontcg.io 500s hit ~1/3 of queries per
+// run at random; the same two watchlist queries failed 4 consecutive runs on
+// single-shot fetches. One 500 must not fail a whole query.
+const RETRIES = 3;
+const BACKOFF_MS = [2000, 8000, 20000];
+
 async function getJSON(url) {
-  const res = await fetch(url, { headers: HEADERS });
-  if (!res.ok) throw new Error(`${res.status} ${url.slice(0, 90)}`);
-  return res.json();
+  let lastErr;
+  for (let attempt = 0; attempt <= RETRIES; attempt++) {
+    if (attempt > 0) await sleep(BACKOFF_MS[attempt - 1]);
+    try {
+      const res = await fetch(url, { headers: HEADERS });
+      if (res.ok) return res.json();
+      lastErr = new Error(`${res.status} ${url.slice(0, 90)}`);
+      if (res.status < 500 && res.status !== 429) throw lastErr; // non-transient: don't retry
+    } catch (e) {
+      lastErr = e; // network errors also retry
+    }
+  }
+  throw lastErr;
 }
 
 async function phase1_sets() {
