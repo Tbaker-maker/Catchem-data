@@ -200,7 +200,6 @@ const out = {
         reason:"strongest cross-market divergence today" } : null,
       graded: gradedPick, // null until Premium table exists — the slot says so honestly
       raw: rawPick,
-      disclosure: "Daily watches, not calls. READ = our interpretation; you decide.",
     };
   })(),
 };

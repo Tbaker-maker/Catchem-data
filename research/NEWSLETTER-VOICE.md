@@ -60,3 +60,5 @@ TRUST-STANDARD.md. This guide is the editorial layer on top of it.
   days of snapshots) trend — never "supply is drying up" claims.
 
 - Vocabulary v3 (Aug 18, Tyler): user-facing count noun = "sealed products" / "sealed" — never "SKU" (warehouse-speak). Singles = "chases."
+
+- Voice v4 (Aug 18, Tyler): NO defensive disclaimers on product surfaces ("not calls," "you decide," "not advice"). Posture = chips + hedged verbs + the methodology drawer, once. Definitional lines stay (they inform); the Buy Pressure line stays (it punches). Less is more, done correctly.
