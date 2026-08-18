@@ -178,9 +178,9 @@ const out = {
       const g = ((enr&&enr.cards)||[])
         .map(c=>({ name: c.watchLabel || c.name,
                    raw: c.raw?.market ?? null,
-                   psa10: c.gradingPremium?.psa10Median ?? c.ebaySold?.psa10?.median ?? null,
-                   premium: c.gradingPremium?.gp10 ?? null,
-                   n10: c.gradingPremium?.n10 ?? c.ebaySold?.psa10?.n ?? null }))
+                   psa10: c.ebaySold?.psa10?.median ?? null,
+                   premium: c.gradingPremium?.psa10 ?? null,
+                   n10: c.ebaySold?.psa10?.count ?? null }))
         .filter(c=>c.premium!=null && c.raw!=null && (c.n10==null || c.n10>=10))
         .sort((a,b)=>b.premium-a.premium)[0];
       if (g) gradedPick = { name:g.name, raw:g.raw, psa10:g.psa10, premium:g.premium, chip:"VERIFIED",

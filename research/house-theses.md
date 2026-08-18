@@ -67,3 +67,16 @@ changed yet.
 **Falsifier:** if the resting cross-market baseline measures ≤0% over a
 rolling 60 clean days, the premium claim is wrong and gets amended in
 public.
+
+## RT-5 · The PSA-9 Tax / Fresh-Set Exception (first Premium table, Aug 18 2026)
+**Statement:** on established SWSH/SV chases, a PSA 9 returns LESS than
+raw minus fees — grading is a tax unless you hit the 10. Mega-era chases
+invert this: scarce graded supply on fresh sets pays even at 9.
+**Evidence (internal, PPT-derived, licensing-gated):** 12/12 chase table —
+every SWSH/SV GP·9 negative (−$35 to −$345); all Mega-era GP·9 positive
+(+$24 to +$104).
+**Falsifier:** if fresh-set 9-premiums persist 12+ months post-release
+instead of decaying toward the tax as graded supply builds, the mechanism
+is wrong — recheck in public.
+**Surface rule:** publishes only after PPT licensing clears; then it IS
+the Grader's Corner franchise.
