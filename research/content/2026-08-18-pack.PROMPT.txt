@@ -1,0 +1,747 @@
+# Catch'em Content Hub — Platform Voice Guide
+
+You generate a daily CONTENT PACK for Catch'em: X posts, thread outlines,
+short-form video scripts (Shorts/TikTok/Reels), and YouTube concepts.
+TRUST-STANDARD.md is binding. These are DRAFTS for human selection — Tyler
+picks, edits, posts. Nothing publishes itself.
+
+## Universal rules (all platforms)
+- Numbers ONLY from the provided inputs (heat report reads, digests, radar).
+  If an input doesn't contain it, you don't say it. No invented stats, ever.
+- Quarantined/excluded SKUs do not exist to you.
+- Every cited number carries lightweight provenance ("our tracker, <date>"
+  / "per PokeBeach"). Single-source claims say "reportedly."
+- Speculation is welcome, labeled, hedged: "possible," "the data suggests,"
+  "our read." NEVER: "buy," "sell," price targets, "guaranteed," "🚀".
+- Observational, collector-native, dry humor that punches WITH collectors.
+  SWSH/SV/ME shorthand. Slang where real (Moonbreon, Zard).
+- Unknowns become [EDITOR: verify ___] markers, not guesses.
+
+## X — single posts (5 per pack)
+- 1-3 sentences. One idea each. Specifics > vibes.
+- Mix per pack: 1-2 data observations, 1 radar/calendar beat, 1 cultural
+  riff, 1 question that invites collector replies.
+- No hashtag spam (0-1 max). No emoji walls (0-2 max, never in first line).
+
+## X — thread outline (1 per pack)
+- Hook post + 4-7 beats + closer with soft CTA (newsletter/site).
+- Thread = one thesis walked through with receipts, not a listicle.
+
+## Short-form scripts (2 per pack, 30-45s each)
+- Format: HOOK (first 2 seconds, spoken line) → 3-4 BEATS (spoken + 
+  [ON-SCREEN: text] suggestions) → CLOSER (one line + CTA).
+- Hook = tension or surprise from real data ("This box was listed at $144.
+  It's worth $2,900." — only if inputs support it).
+- Pace: one number per beat max. No walls of stats.
+
+## YouTube concept (1 per pack)
+- Title (under 60 chars, no clickbait lies) + 2-sentence hook + 5-beat
+  outline + which data/charts to show + honest thumbnail text suggestion.
+
+## Calendar nudges
+- End every pack with 2-3 "post THIS on DATE" suggestions tied to radar
+  events (e.g., tin drop day, 30th launch week, Delta Reign collision).
+
+## Output format
+Markdown, sections in this order: X POSTS / THREAD / SHORTS / YOUTUBE /
+CALENDAR NUDGES. Number everything for easy picking.
+
+
+=== TRUST STANDARD (binding) ===
+# The Catch'em Trust Standard
+
+Catch'em exists to be the source collectors rely on. In a hobby where the
+authentication layer itself is losing trust to silent changes and hype
+merchants, our edge is simple: **we never mislead, and we're loud about
+what we don't know.** Every pipeline — newsletter, site, social, agent
+digests — obeys this document. When another rule conflicts, this wins.
+
+## 1. The confidence ladder (label everything)
+
+Every factual claim we publish carries one of three levels:
+
+- **Verified** — confirmed by our own bot data, or by two independent
+  sources, or by primary source (pokemon.com, official press). Publishable
+  as fact.
+- **Reported** — single source, named inline ("per Beckett", "per
+  PokeBeach"). Publishable with attribution, never as bare fact.
+- **Read** — our interpretation or speculation. Always framed as ours,
+  always grounded in stated data, always falsifiable ("if sealed absorbs
+  the tin supply through September, the squeeze thesis holds; if listings
+  climb, it doesn't"). Never framed as prediction of certainty.
+
+If a claim fits none of these, it doesn't ship.
+
+## 2. Sourcing rules
+
+- Prices: only from Catchem-data bot (with as-of date), PokemonPriceTracker,
+  or Tyler-verified. Never from memory, never from a single eBay listing.
+- Dates, pull rates, card counts, populations: verify against primary or
+  two independents before citing. Dates move — recheck near publication.
+- Every number carries provenance: what measured it and when
+  ("Catchem-data, eBay active listings, Aug 18").
+- Inferred metrics say so: volume is "inferred, not measured" — always.
+
+## 3. Speculation is welcome, disguise is not
+
+Market reads ARE the product — Wyckoff phases are interpretation by
+design. The rules that keep them honest:
+
+- Reads use hedged language: "possible", "the data suggests", "watch for".
+  Never "guaranteed", never "buy now", never price targets.
+- State the evidence the read rests on, in the same breath.
+- State what would prove it wrong.
+- We publish reads, not calls. Catch'em never tells anyone to transact.
+
+## 4. Corrections: loud, dated, never silent
+
+We will get things wrong. The policy:
+
+- Corrections are visible: an explicit correction note in the next issue
+  and/or on the page, stating what we said, what's true, and when we fixed it.
+- We never silently edit published numbers or claims. (We cover an industry
+  bleeding trust from exactly that. We don't do it.)
+- Contaminated data gets flagged, not rewritten: history keeps a
+  `dataQualityNote`, dashboards show the flag.
+
+## 5. Machines watch, humans gate
+
+- Automated pipelines (bot, research agent, draft generator) produce
+  leads and drafts — never published fact without a verification step.
+- Nothing sends, posts, or publishes without a human approval pass.
+- A pipeline that can't meet the ladder outputs uncertainty
+  (`query_error`, "single-source", "unable to verify") instead of a guess.
+  **An honest gap beats a confident wrong answer, every time.**
+
+## 6. The test
+
+Before anything ships, one question: *if a collector spent money based on
+this and it was wrong, could we defend how we published it?* If the answer
+needs excuses, it doesn't ship.
+
+— Locked Aug 18, 2026. Referenced by: RESEARCH_PROMPT.md, newsletter
+pipeline, draft generator (when built), CLAUDE.md protocols.
+
+
+=== HEAT REPORT ===
+{
+  "generatedAt": "2026-08-18T03:33:49.940Z",
+  "method": "Wyckoff-state reads from Catchem-data bot (eBay active listings). States are interpretations, not facts. Volume/supply inferred, not measured.",
+  "mode": "price-only (supply history: day 1 of 8 needed)",
+  "counts": {
+    "markup": 0,
+    "markdown": 0,
+    "accumulation": 0,
+    "distribution": 0,
+    "excluded": 48
+  },
+  "reads": [],
+  "excluded": [
+    {
+      "id": "sv8pt5-etb",
+      "name": "Prismatic Evolutions Elite Trainer Box",
+      "set": "Prismatic Evolutions",
+      "subtype": "etb",
+      "priceMedian": 74.95,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "sv8pt5-bb",
+      "name": "Prismatic Evolutions Booster Bundle",
+      "set": "Prismatic Evolutions",
+      "subtype": "booster-bundle",
+      "priceMedian": 80,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "sv8pt5-sc",
+      "name": "Prismatic Evolutions Surprise Box",
+      "set": "Prismatic Evolutions",
+      "subtype": "special-collection",
+      "priceMedian": 74.99,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "sv10-etb",
+      "name": "Destined Rivals Elite Trainer Box",
+      "set": "Destined Rivals",
+      "subtype": "etb",
+      "priceMedian": 134.88,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "sv10-booster-box",
+      "name": "Destined Rivals Booster Box",
+      "set": "Destined Rivals",
+      "subtype": "booster-box",
+      "priceMedian": 29.95,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "sv9-etb",
+      "name": "Journey Together Elite Trainer Box",
+      "set": "Journey Together",
+      "subtype": "etb",
+      "priceMedian": 139.99,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "sv9-booster-box",
+      "name": "Journey Together Booster Box",
+      "set": "Journey Together",
+      "subtype": "booster-box",
+      "priceMedian": 23.99,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "sv8-etb",
+      "name": "Surging Sparks Elite Trainer Box",
+      "set": "Surging Sparks",
+      "subtype": "etb",
+      "priceMedian": 129.99,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "sv8-booster-box",
+      "name": "Surging Sparks Booster Box",
+      "set": "Surging Sparks",
+      "subtype": "booster-box",
+      "priceMedian": 29.99,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "sv7-etb",
+      "name": "Stellar Crown Elite Trainer Box",
+      "set": "Stellar Crown",
+      "subtype": "etb",
+      "priceMedian": 190,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "sv7-booster-box",
+      "name": "Stellar Crown Booster Box",
+      "set": "Stellar Crown",
+      "subtype": "booster-box",
+      "priceMedian": 99.99,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "sv6pt5-etb",
+      "name": "Shrouded Fable Elite Trainer Box",
+      "set": "Shrouded Fable",
+      "subtype": "etb",
+      "priceMedian": 129.99,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "sv6-etb",
+      "name": "Twilight Masquerade Elite Trainer Box",
+      "set": "Twilight Masquerade",
+      "subtype": "etb",
+      "priceMedian": 115,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "sv5-etb",
+      "name": "Temporal Forces Elite Trainer Box",
+      "set": "Temporal Forces",
+      "subtype": "etb",
+      "priceMedian": 145.57,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "sv4pt5-etb",
+      "name": "Paldean Fates Elite Trainer Box",
+      "set": "Paldean Fates",
+      "subtype": "etb",
+      "priceMedian": 479.99,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "sv3pt5-etb",
+      "name": "151 Elite Trainer Box",
+      "set": "151",
+      "subtype": "etb",
+      "priceMedian": 21.88,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "sv3pt5-upc",
+      "name": "151 Ultra Premium Collection",
+      "set": "151",
+      "subtype": "upc",
+      "priceMedian": 12.5,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "sv3pt5-booster-bundle-jp",
+      "name": "Pokemon 151 Japanese Booster Box",
+      "set": "151 (Japanese)",
+      "subtype": "booster-box",
+      "priceMedian": 232.98,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "swsh12pt5-etb",
+      "name": "Crown Zenith Elite Trainer Box",
+      "set": "Crown Zenith",
+      "subtype": "etb",
+      "priceMedian": 11.99,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "swsh12pt5-premium",
+      "name": "Crown Zenith Special Collection",
+      "set": "Crown Zenith",
+      "subtype": "special-collection",
+      "priceMedian": 199.95,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "swsh12-etb",
+      "name": "Silver Tempest Elite Trainer Box",
+      "set": "Silver Tempest",
+      "subtype": "etb",
+      "priceMedian": 19.95,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "swsh11-etb",
+      "name": "Lost Origin Elite Trainer Box",
+      "set": "Lost Origin",
+      "subtype": "etb",
+      "priceMedian": 225,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "swsh8-etb",
+      "name": "Fusion Strike Elite Trainer Box",
+      "set": "Fusion Strike",
+      "subtype": "etb",
+      "priceMedian": 350,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "swsh7-etb",
+      "name": "Evolving Skies Elite Trainer Box",
+      "set": "Evolving Skies",
+      "subtype": "etb",
+      "priceMedian": 15,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "swsh7-booster-box",
+      "name": "Evolving Skies Booster Box",
+      "set": "Evolving Skies",
+      "subtype": "booster-box",
+      "priceMedian": 144.14,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "cel25-etb",
+      "name": "Celebrations Elite Trainer Box",
+      "set": "Celebrations",
+      "subtype": "etb",
+      "priceMedian": 13.99,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "cel25-upc",
+      "name": "Celebrations Ultra Premium Collection",
+      "set": "Celebrations",
+      "subtype": "upc",
+      "priceMedian": 29.99,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "swsh1-etb",
+      "name": "Sword & Shield Base Elite Trainer Box",
+      "set": "Sword & Shield",
+      "subtype": "etb",
+      "priceMedian": 190,
+      "listingCount": 28,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "sm12-etb",
+      "name": "Hidden Fates Elite Trainer Box",
+      "set": "Hidden Fates",
+      "subtype": "etb",
+      "priceMedian": 223.12,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "bw1-booster-box",
+      "name": "Black & White Base Booster Box",
+      "set": "Black & White",
+      "subtype": "booster-box",
+      "listingCount": 0,
+      "reason": "dataStatus: unavailable"
+    },
+    {
+      "id": "hgss1-booster-box",
+      "name": "HeartGold SoulSilver Booster Box",
+      "set": "HeartGold & SoulSilver",
+      "subtype": "booster-box",
+      "listingCount": 0,
+      "reason": "dataStatus: unavailable"
+    },
+    {
+      "id": "base1-booster-box",
+      "name": "Base Set Unlimited Booster Box",
+      "set": "Base Set",
+      "subtype": "booster-box",
+      "priceMedian": 81.23,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "base2-booster-box",
+      "name": "Jungle Booster Box",
+      "set": "Jungle",
+      "subtype": "booster-box",
+      "priceMedian": 805.51,
+      "listingCount": 4,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "base3-booster-box",
+      "name": "Fossil Booster Box",
+      "set": "Fossil",
+      "subtype": "booster-box",
+      "priceMedian": 334.99,
+      "listingCount": 11,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "neo1-booster-box",
+      "name": "Neo Genesis Booster Box",
+      "set": "Neo Genesis",
+      "subtype": "booster-box",
+      "priceMedian": 2023.93,
+      "listingCount": 12,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "sv5-booster-box",
+      "name": "Temporal Forces Booster Box",
+      "set": "Temporal Forces",
+      "subtype": "booster-box",
+      "priceMedian": 212.51,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "sv6-booster-box",
+      "name": "Twilight Masquerade Booster Box",
+      "set": "Twilight Masquerade",
+      "subtype": "booster-box",
+      "priceMedian": 109.95,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "sv4-booster-box",
+      "name": "Paradox Rift Booster Box",
+      "set": "Paradox Rift",
+      "subtype": "booster-box",
+      "priceMedian": 134.99,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "sv3-booster-box",
+      "name": "Obsidian Flames Booster Box",
+      "set": "Obsidian Flames",
+      "subtype": "booster-box",
+      "priceMedian": 42.74,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "sv2-booster-box",
+      "name": "Paldea Evolved Booster Box",
+      "set": "Paldea Evolved",
+      "subtype": "booster-box",
+      "priceMedian": 269.95,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "sv1-booster-box",
+      "name": "Scarlet & Violet Base Booster Box",
+      "set": "Scarlet & Violet",
+      "subtype": "booster-box",
+      "priceMedian": 175,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "swsh12-booster-box",
+      "name": "Silver Tempest Booster Box",
+      "set": "Silver Tempest",
+      "subtype": "booster-box",
+      "priceMedian": 179.99,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "swsh11-booster-box",
+      "name": "Lost Origin Booster Box",
+      "set": "Lost Origin",
+      "subtype": "booster-box",
+      "priceMedian": 259,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "swsh9-booster-box",
+      "name": "Brilliant Stars Booster Box",
+      "set": "Brilliant Stars",
+      "subtype": "booster-box",
+      "priceMedian": 103.9,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "swsh10-booster-box",
+      "name": "Astral Radiance Booster Box",
+      "set": "Astral Radiance",
+      "subtype": "booster-box",
+      "priceMedian": 150,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "sv4pt5-bb",
+      "name": "Paldean Fates Booster Bundle",
+      "set": "Paldean Fates",
+      "subtype": "booster-bundle",
+      "priceMedian": 250,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "sv3pt5-bb",
+      "name": "151 Booster Bundle",
+      "set": "151",
+      "subtype": "booster-bundle",
+      "priceMedian": 180,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    },
+    {
+      "id": "sv6pt5-bb",
+      "name": "Shrouded Fable Booster Bundle",
+      "set": "Shrouded Fable",
+      "subtype": "booster-bundle",
+      "priceMedian": 80,
+      "listingCount": 50,
+      "reason": "insufficient history (0 days)"
+    }
+  ]
+}
+
+
+=== RELEASE RADAR ===
+{
+  "updated": "2026-08-18",
+  "notes": "Seeded from verified Aug 2026 research. Dates verified vs pokemon.com + 2 aggregators unless flagged. Mega Forces Tins added 2026-08-18 — confirmed pokemon.com + ICv2 + PokeBeach.",
+  "upcoming": [
+    {
+      "name": "Ascended Heroes Tins (Feraligatr/Meganium/Emboar)",
+      "type": "tins",
+      "date": "2026-08-28",
+      "confidence": "verified",
+      "note": "$21.99, 4 packs each, repeat Mega Box promos. Supply injection into AH. Shares release date with Mega Forces Tins — two distinct tin SKUs drop same day."
+    },
+    {
+      "name": "Mega Forces Tins (Dragonite/Darkrai/Zeraora)",
+      "type": "tins",
+      "date": "2026-08-28",
+      "confidence": "verified",
+      "note": "$21.99, 4 packs + new alt-art foil promo each. Three new Mega Evolution ex promos; Mega Darkrai ex already appeared in Traditional Chinese release. Separate SKU from Ascended Heroes Tins. Sources: pokemon.com, ICv2, PokeBeach."
+    },
+    {
+      "name": "30th Celebration — Wave 1 (ETB, PC-ETB, ex Boxes, Poster)",
+      "type": "special-set",
+      "date": "2026-09-16",
+      "confidence": "verified",
+      "note": "First simultaneous worldwide launch. All-foil. Futuristic Rare + Pikachu Rare (new rarities). 30 unique Pikachu per pack subset. No loose boosters. Ken Sugimori Pikachu (#01/30) revealed Aug 11."
+    },
+    {
+      "name": "30th Celebration — Wave 2 (Booster Bundle, Mini Tins, Binder)",
+      "type": "wave",
+      "date": "2026-10-02",
+      "confidence": "verified"
+    },
+    {
+      "name": "30th Celebration — Espeon ex & Umbreon ex Battle Decks",
+      "type": "decks",
+      "date": "2026-10-30",
+      "confidence": "verified"
+    },
+    {
+      "name": "Delta Reign (ME06, Mega Rayquaza ex — EN Storm Emeralda)",
+      "type": "main-set",
+      "date": "2026-11-06",
+      "confidence": "verified",
+      "note": "Same week as 30th premium wave — crowded window. JP (Storm Emeralda) launched July 31; EN preorders already ~24% over MSRP as of Aug 14. 113 cards confirmed from JP set (76 main + 37 secret)."
+    },
+    {
+      "name": "30th Celebration — Day & Night UPCs, Ditto Premium, Mewtwo & Mew Figure",
+      "type": "wave",
+      "date": "2026-11-06",
+      "confidence": "verified"
+    },
+    {
+      "name": "JP: next set (Mega Lucario Z)",
+      "type": "jp-set",
+      "date": "2026-11-27",
+      "confidence": "single-source",
+      "note": "Previews the ~Mar 2027 English set. Verify against second source."
+    },
+    {
+      "name": "30th Celebration — Sylveon & Greninja Tins",
+      "type": "tins",
+      "date": "2026-12-04",
+      "confidence": "verified",
+      "note": "HUMAN VERIFY: Sylveon ex and Greninja ex Boxes appear in Wave 1 (Sep 16) per official press release. Confirm whether Dec 4 entry is a separate tin SKU or a radar data error."
+    }
+  ]
+}
+
+
+=== RECENT RESEARCH DIGESTS ===
+--- DIGEST 2026-08-18.md ---
+---
+
+# Research Digest — 2026-08-18
+
+## 🚨 Flags
+
+**NEW_SET (Product — Mega Forces Tins)** — The radar currently lists only the *Ascended Heroes Tins* for August 28. A **second, distinct tin release** — the *Mega Forces Tins* (Mega Dragonite ex / Mega Darkrai ex / Mega Zeraora ex) — is confirmed for the **same date (August 28)**. Sources: [ICv2](https://icv2.com/articles/news/view/62607/pokemon-tcg-mega-forces-tins-incoming) + [PokeBeach](https://www.pokebeach.com/2026/06/mega-forces-tins-revealed-for-august-featuring-mega-dragonite-ex-mega-darkrai-ex-and-mega-zeraora-ex) + [pokemon.com](https://www.pokemon.com/us/pokemon-tcg/product-gallery/mega-forces-tin). **Matters for Catch'em:** Two separate $21.99 tin SKUs dropping simultaneously on Aug 28 doubles the supply injection — and doubles potential confusion for buyers. Sealed market impact needs its own entry.
+
+**GRADING_NEWS (PSA Value tiers — ongoing pause)** — 
+As of August 8, PSA's lowest currently orderable direct tier is Regular at $79.99 per card, with an estimated 40–50 business-day turnaround.
+ 
+PSA's Value services remain paused.
+ Sources: [CardGrade (PSA)](https://cardgrade.io/blog/psa-value-tiers-paused-2026) + [CardGrade (backlog)](https://cardgrade.io/blog/card-grading-backlog-2026). **Matters for Catch'em:** With 30th Celebration dropping Sept 16 and an all-foil set expected to flood grading queues, the PSA Value pause means collectors must budget $79.99+ minimum per card — a meaningful friction point for sealed-to-graded pipeline analysis.
+
+**GRADING_NEWS (TAG — limited drop expected late August)** — 
+TAG's July 29 public update reports a backlog load of ~189% of monthly processing capacity, which TAG says is 55% below its peak of ~420%.
+ 
+TAG anticipates a limited submission drop near 80% backlog recovery, with a current estimate of **late August**, and full catch-up by end of September.
+ Source: [CardGrade backlog guide](https://cardgrade.io/blog/card-grading-backlog-2026). **Matters for Catch'em:** A TAG re-open window landing the same week as Ascended Heroes / Mega Forces Tins (Aug 28) could drive grading interest in AH pulls.
+
+---
+
+## New Since Yesterday
+
+- **Mega Forces Tins confirmed for August 28** — 
+The Pokémon Company International will release Mega Forces Tins on August 28, 2026, featuring Mega Dragonite ex, Mega Darkrai ex, or Mega Zeraora ex on their exterior artwork.
+ 
+Each tin includes a brand-new foil promo card, 4 booster packs, and a Pokémon Live code card, retailing for $21.99.
+ [ICv2](https://icv2.com/articles/news/view/62607/pokemon-tcg-mega-forces-tins-incoming) | [PokeBeach](https://www.pokebeach.com/2026/06/mega-forces-tins-revealed-for-august-featuring-mega-dragonite-ex-mega-darkrai-ex-and-mega-zeraora-ex) | [pokemon.com](https://www.pokemon.com/us/pokemon-tcg/product-gallery/mega-forces-tin)
+
+- **Mega Forces Tins share date with Ascended Heroes Tins — two distinct SKUs** — 
+The Mega Forces Tins land the same day (Aug 28) as the Ascended Heroes Tins (Mega Feraligatr ex / Meganium ex / Emboar ex). Both share the $21.99 tin format but are genuinely separate products built around different Mega Evolution Pokémon.
+ [EVORETRO](https://evoretro.ca/blogs/news/pokemon-mega-forces-tins-guide)
+
+- **30th Celebration set card details expanding** — 
+On August 11, 2026, TPC revealed the first of 30 guaranteed Pikachu cards per booster pack: a new drawing by Ken Sugimori.
+ 
+The set features two new card rarities: Futuristic Rare and Pikachu Rare.
+ [TechTimes](https://www.techtimes.com/articles/324424/20260814/pokemon-tcg-30th-celebration-breaks-30-year-regional-wall-sugimori-draws-first-pikachu.htm) | [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/30th_Celebration_(TCG))
+
+- **Delta Reign preorders already running ~24% over MSRP** — 
+As of August 14, a 36-pack Delta Reign booster box is preordering at $199.90 with a three-box limit at TCGora — roughly 24% over the era's standard $161.64 list price — the level Pitch Black boxes reached only after selling out at launch.
+ [Polkastarter/Delta Reign hub](https://polkastarter.com/blog/pokemon-delta-reign)
+
+- **PSA Value tiers remain paused; lowest entry is $79.99 Regular** — 
+PSA Value tiers remain paused; the cheapest PSA option is $79.99 Regular.
+ This coincides with 30th Celebration launch approaching. [CardGrade](https://cardgrade.io/blog/psa-value-tiers-paused-2026) | [PreGradeCards](https://pregradecards.com/blog/pokemon-delta-reign-30th-celebration-grading-guide-fall-2026)
+
+---
+
+## Radar Check
+
+| Item | Status |
+|---|---|
+| **Ascended Heroes Tins (Feraligatr/Meganium/Emboar) — Aug 28** | ✅ On schedule — confirmed (pokemon.com, ICv2) |
+| **Mega Forces Tins (Dragonite/Darkrai/Zeraora) — Aug 28** | 🆕 **NOT ON RADAR** — same date, separate product; see flag above |
+| **30th Celebration Wave 1 — Sep 16** | ✅ On schedule — confirmed at [pokemon.com](https://www.pokemon.com/us/news/get-ready-for-pokemon-tcg-30th-celebration) + [press.pokemon.com](https://press.pokemon.com/en/MEDIA-ALERT-The-Pokemon-Company-International-Reveals-Product-Lineup-f) (two primary sources) |
+| **30th Celebration Wave 2 (Booster Bundle, Mini Tins, Binder) — Oct 2** | ✅ On schedule — 
+Confirmed later product waves on October 2.
+ [House of Carts](https://dashboard.houseofcarts.io/resources/pokemon-30th-celebration-release-guide) |
+| **30th Celebration Espeon ex & Umbreon ex Battle Decks — Oct 30** | ✅ On schedule — 
+Espeon ex and Umbreon ex Battle Decks release October 30.
+ [House of Carts](https://dashboard.houseofcarts.io/resources/pokemon-30th-celebration-release-guide) |
+| **Delta Reign (ME06) — Nov 6** | ✅ On schedule — 
+Delta Reign releases November 6, 2026, announced on Pokémon's official channels on June 18.
+ [Polkastarter](https://polkastarter.com/blog/pokemon-delta-reign) | [CardLines](https://cardlines.com/pokemon-mega-evolution-delta-reign/) |
+| **30th Celebration Day & Night UPCs, Ditto Premium, Mewtwo & Mew Figure — Nov 6** | ✅ On schedule — 
+November 6: Delta Reign and a separate 30th Celebration product wave reach the English market.
+ [House of Carts](https://dashboard.houseofcarts.io/resources/pokemon-delta-reign-release-guide) |
+| **JP: Mega Lucario Z — Nov 27** | ⚠️ Still single-source — 
+Release date listed as November 27, 2026 for the new Japanese set featuring Mega Lucario Z.
+ [PokeCottage](https://pokecottage.com/pokemon-set-release-calendar) — needs second verification |
+| **30th Celebration Sylveon & Greninja Tins — Dec 4** | ✅ On schedule — 
+Confirmed product waves on December 4, 2026.
+ Note: radar lists these as tins; [HOC](https://dashboard.houseofcarts.io/resources/pokemon-30th-celebration-release-guide) and [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/30th_Celebration_(TCG)) list Sylveon ex and Greninja ex as *Pokémon ex Boxes* in Wave 1 (Sep 16) — human verify whether Dec 4 tins are a distinct SKU |
+
+---
+
+## Notable but Not Urgent
+
+- **30th Celebration grading queue surge expected** — 
+The all-foil 30th Celebration set is expected to flood grading queues the way 2021's Celebrations did, but at a larger scale.
+ [PreGradeCards](https://pregradecards.com/blog/pokemon-delta-reign-30th-celebration-grading-guide-fall-2026). Catch'em angle: proactive content on PSA/CGC tier selection before Sept 16.
+
+- **CGC bulk turnaround currently 150 working days** — 
+CGC lists 150 working days for Bulk and 90 for Economy as of August 4, 2026.
+ [CardGrade/CGC guide](https://cardgrade.io/blog/cgc-grading-cost-turnaround-guide). A Bulk submission today on a 30th Celebration pull would not return until mid-2027.
+
+- **Collectors Holdings / PSA-SGC-Beckett consolidation watch** — 
+As of April 2026, Collectors Holdings owns PSA and SGC and has a pending agreement to acquire Beckett (BGS), which would give a single company control of roughly 80% of the trading card grading market by volume.
+ [OrbSportsCards](https://orbsportscards.com/psa-vs-bgs-vs-sgc-vs-cgc-grading-comparison-2026/). No new developments today — ongoing watch item.
+
+---
+
+**Part 2 — Radar Update**
+
+The radar needs one addition: **Mega Forces Tins** (Aug 28, confirmed, three independent sources including pokemon.com). Also adding a note to the Ascended Heroes entry clarifying the dual-tin date. The Sylveon & Greninja Dec 4 date is flagged for human verification but left unchanged pending confirmation of whether it's a separate tin SKU vs. the Sep 16 ex Boxes.
+
+
+Today's date: 2026-08-18. Generate today's content pack now, per the format
+in the guide. If the heat report has zero publishable reads (rebuild
+period), lean on radar events, digest news, and cultural angles — say the
+momentum data is rebuilding rather than faking reads.

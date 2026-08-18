@@ -196,6 +196,9 @@ Main expansion sets DO have Booster Boxes: Scarlet & Violet, Paldea Evolved, Obs
 
 Historical pattern: rotation transitions competitive demand → collector demand. For iconic sets with strong chase rosters, rotation is a price-positive inflection (Evolving Skies post-rotation pattern), not a negative event.
 
+### Locked decision update (Aug 18)
+- **Demand vocabulary v2:** "Buy Pressure (est.)" replaces "inferred sales/volume" in ALL user-facing copy; disclosure line standardized; "Active Listings" for supply. Principle (honesty about estimation) unchanged.
+
 ### Known errors (to avoid repeating)
 7. **pokemontcg.io status (Apr 2026 note overclaimed):** KB said "now Scrydex, no longer free, $29/mo min." Verified Aug 18 2026: free keyless API works (with ~33% transient 500s + rate limits). Correction logged; PokemonPriceTracker ($9.99/mo) remains the paid fallback ONLY IF free-tier staleness/instability worsens — separate integration, not built.
 - **Rotation cadence (caught by Tyler, Aug 18 2026):** Rotation is ANNUAL (every April, oldest reg mark out). "~3 years" is per-CARD legality (three marks concurrent), not rotation frequency. Newsletter 001 draft said "every three years" — wrong. Error class: plausible-cadence-misremembered (same family as PC-ETB start era).

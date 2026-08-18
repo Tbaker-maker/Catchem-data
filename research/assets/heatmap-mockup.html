@@ -914,7 +914,7 @@ body::before {
 </style>
 </head>
 <body>
-<div style="background:#1a1d29;border-bottom:1px solid #2e3345;color:#8a93a8;font:12px monospace;padding:8px 16px;text-align:center">DEMO BUILD · prices &amp; listing counts REAL (Catchem-data, eBay active, Aug 18 2026) · states &amp; volume illustrative — live Wyckoff reads return Aug 26 · inferred, not measured</div>
+<div style="background:#1a1d29;border-bottom:1px solid #2e3345;color:#8a93a8;font:12px monospace;padding:8px 16px;text-align:center">DEMO BUILD · prices &amp; listing counts REAL (Catchem-data, eBay active, Aug 18 2026) · states &amp; Buy Pressure illustrative — live reads return Aug 26 · Buy Pressure = estimated from listing activity, not reported sales</div>
 
 <div class="container">
 
@@ -1305,7 +1305,7 @@ function renderChart(productId, history, timeWindow) {
     </svg>
     <div class="chart-stats">
       <div class="chart-stat">
-        <span class="chart-stat-label">Vol Δ ${timeWindow}</span>
+        <span class="chart-stat-label">Pressure Δ ${timeWindow}</span>
         <span class="chart-stat-value ${volChange > 0 ? 'up' : 'down'}">${volChange > 0 ? '+' : ''}${volChange}%</span>
       </div>
       <div class="chart-stat">
@@ -1411,7 +1411,7 @@ function renderProducts() {
             <div class="metric-delta ${volDeltaCls}">${formatDelta(p.volumeDelta)}</div>
           </div>
           <div class="metric">
-            <div class="metric-label">Supply</div>
+            <div class="metric-label">Active Listings</div>
             <div class="metric-value">${p.supply}</div>
             <div class="metric-delta ${supDeltaCls}">${formatDelta(p.supplyDelta)}</div>
           </div>
@@ -1431,7 +1431,7 @@ function renderProducts() {
                 </div>
                 <div class="chart-legend-item">
                   <span class="chart-legend-swatch supply"></span>
-                  <span>Supply</span>
+                  <span>Active Listings</span>
                 </div>
               </div>
               <div class="time-toggles" data-product-id="${p.id}">

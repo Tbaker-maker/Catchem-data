@@ -30,7 +30,9 @@ If a claim fits none of these, it doesn't ship.
   two independents before citing. Dates move — recheck near publication.
 - Every number carries provenance: what measured it and when
   ("Catchem-data, eBay active listings, Aug 18").
-- Inferred metrics say so: volume is "inferred, not measured" — always.
+- Estimated metrics say so, in collector language: demand is published as
+  "Buy Pressure (est.)" with the standing disclosure: "Buy Pressure is estimated from listing activity — not reported sales. Nobody has real sales data; we don't pretend to."
+  Active Listings are measured; the contrast is the honesty.
 
 ## 3. Speculation is welcome, disguise is not
 
