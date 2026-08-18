@@ -113,6 +113,11 @@ const EXCLUDE_COMMON = [
   // mystery-box gambles and accessory sleeves sold under set names —
   // sv3pt5-etb kept ONLY junk: 3x "Mystery ETB ... 151 Or More", outer sleeves
   "mystery", "outer sleeve", "card sleeves",
+  // Batch 1 PC-ETB validation 2026-08-18: "(Set of 2)" pairs at \$394-399 in
+  // swsh6-pc-etb, "SEALED SET" BB+WF combo at \$540 in zsv10pt5-bb-pc-etb,
+  // and misprint-"Error" variant boxes at \$210-240 (distinct collectible
+  // product, different market)
+  "set of", "sealed set", "error",
 ];
 
 // Non-English printings. JP/KR/CN boxes are a DIFFERENT product at a different
