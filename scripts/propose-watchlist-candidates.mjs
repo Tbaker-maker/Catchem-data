@@ -1,3 +1,22 @@
+
+// ICON-IMMUNITY (Tyler directive, Aug 18: "no missing cards"): price-sorting
+// must NEVER drop a chase. Force-include every chase-rarity printing of the
+// tier-list species even when market price is null (nulls previously vanished
+// from a price-sorted list — the Rainbow Charizard VMAX hole class).
+const ICON_SPECIES = ["charizard","pikachu","umbreon","espeon","sylveon","vaporeon","jolteon","flareon","leafeon","glaceon","eevee","mewtwo","mew","lucario","rayquaza","gardevoir","gengar","dragonite","greninja","lugia","giratina"];
+const CHASE_RARITIES = ["rare rainbow","rare secret","special illustration rare","illustration rare","hyper rare","rare rainbow alt"];
+export function isForcedChase(card){
+  const n=(card.name||"").toLowerCase(), r=(card.rarity||"").toLowerCase();
+  return CHASE_RARITIES.some(x=>r.includes(x)) && ICON_SPECIES.some(sp=>n.includes(sp));
+}
+export function bestPrice(card){
+  const t=card.tcgplayer?.prices||{}; 
+  for (const v of Object.values(t)) if (v?.market!=null) return {p:v.market, src:"tcgplayer market"};
+  for (const v of Object.values(t)) if (v?.mid!=null) return {p:v.mid, src:"tcgplayer mid (no market)"};
+  const cm=card.cardmarket?.prices||{};
+  if (cm.trendPrice!=null) return {p:cm.trendPrice, src:"cardmarket trend EUR ⚠"};
+  return {p:null, src:"NO PRICE — verify manually ⚠"};
+}
 // scripts/propose-watchlist-candidates.mjs — Wave A candidate generator ($0)
 // Per research/expansion-waves.md: for each modern set (swsh1 → me5), pull
 // top-N cards by TCGplayer market via pokemontcg.io (keyless, retry/backoff
