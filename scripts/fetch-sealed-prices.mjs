@@ -103,6 +103,16 @@ const EXCLUDE_COMMON = [
   "resealed", "reseal",
   // weighed packs + accessory-only listings sold under product names
   "heavy", "3d printed", "case only", "no cards",
+  // 2026-08-18 first 70-SKU production audit:
+  // multi-lot tokens generalized from booster-box-only — "Bundle x2. 12 Packs"
+  // $142.99 kept in me2-bb, "2x Factory Sealed" $229.99 kept in me3-pc-etb
+  "2x", "3x", "4x", "6x", "x2", "x3", "x4", "x6",
+  // damage variants the singular terms missed — "Small rips or dents" (me5-etb),
+  // "Box Damage" (me4-pc-etb), "Box is Worn" (me2pt5-etb), "(Distressed Box)" (me5-bb)
+  "dents", "rips", "worn", "damage", "distressed",
+  // mystery-box gambles and accessory sleeves sold under set names —
+  // sv3pt5-etb kept ONLY junk: 3x "Mystery ETB ... 151 Or More", outer sleeves
+  "mystery", "outer sleeve", "card sleeves",
 ];
 
 // Non-English printings. JP/KR/CN boxes are a DIFFERENT product at a different
@@ -127,9 +137,9 @@ const EXCLUDE_BY_SUBTYPE = {
     // multi-box lots masquerading as one box ("6 Booster Boxes", "2 Box Lot").
     // NOT "case": legit singles ship "with plastic case".
     "booster boxes", "box lot", "2 box", "3 box", "4 box", "6 box",
-    // "2x ME01 ... Enhanced Booster Box" $680 and "18x Packs 1/2 Half Booster
-    // Box" $175 both passed 2026-08-18 Mega validation
-    "2x", "3x", "4x", "6x", "half booster", "1/2",
+    // "18x Packs 1/2 Half Booster Box" $175 passed 2026-08-18 Mega validation
+    // (2x/3x/4x/6x multi-lot tokens moved to EXCLUDE_COMMON same day)
+    "half booster", "1/2",
     // NOT excluded: "enhanced" — the Enhanced Booster Box is a variant of the
     // same JT booster box (box-topper promo; only ME-01 and JT have this in
     // modern — Tyler, 2026-08-17). Both variants price into the same SKU.
@@ -137,7 +147,11 @@ const EXCLUDE_BY_SUBTYPE = {
     // "build & battle"/"build and battle" exclusions
     "build battle", "pre-release", "pre release", "prerelease",
   ],
-  "etb":            ["booster box", "bundle", "blister", "36 pack", "mini tin"],
+  // "pokemon center": PC-exclusive listings kept polluting regular-ETB medians
+  // (2026-08-18 audit: $127.99 "ETB Pokemon Center Exclusive" kept in me5-etb,
+  // keyword-stuffed PC listing kept in sv3pt5-etb). The pc-etb subtype REQUIRES
+  // the phrase, so the two SKU families are now disjoint.
+  "etb":            ["booster box", "bundle", "blister", "36 pack", "mini tin", "pokemon center"],
   "pc-etb":         ["booster box", "bundle", "blister", "36 pack", "mini tin"],
   "booster-bundle": ["booster box", "etb", "elite trainer", "36 pack"],
   "premium-collection": ["booster box", "etb", "elite trainer"],
