@@ -15,7 +15,7 @@ TRUST-STANDARD.md. This guide is the editorial layer on top of it.
   Accumulation, always with plain-English translation.
 - Humor punches WITH the collector, never at them. Dry > wacky.
 - Every number carries provenance ("Catchem-data, eBay active listings,
-  <date>"). Volume/supply language: "inferred, not measured."
+  <date>"). Volume/supply language: "estimated from listing activity, not reported sales."
 
 ## Data rules (hard)
 - Cite ONLY SKUs present in heat-report.json `reads`. NEVER cite anything
