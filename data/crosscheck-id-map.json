@@ -58,7 +58,8 @@
       "eBayMedian": 137,
       "priceRatio": 4.97,
       "reviewed": false,
-      "holdReason": "low confidence"
+      "exclude": true,
+      "excludeReason": "Tyler ruling 2026-08-18: provider has case-only coverage for ME-era PC-ETBs (no single-product entries; me1 match was the regular ETB). eBay-side tracking unaffected."
     },
     {
       "id": "me4-booster-box",
@@ -110,7 +111,8 @@
       "eBayMedian": 153,
       "priceRatio": 4.74,
       "reviewed": false,
-      "holdReason": "low confidence"
+      "exclude": true,
+      "excludeReason": "Tyler ruling 2026-08-18: provider has case-only coverage for ME-era PC-ETBs (no single-product entries; me1 match was the regular ETB). eBay-side tracking unaffected."
     },
     {
       "id": "me3-booster-box",
@@ -162,7 +164,8 @@
       "eBayMedian": 139.97,
       "priceRatio": 4.72,
       "reviewed": false,
-      "holdReason": "low confidence"
+      "exclude": true,
+      "excludeReason": "Tyler ruling 2026-08-18: provider has case-only coverage for ME-era PC-ETBs (no single-product entries; me1 match was the regular ETB). eBay-side tracking unaffected."
     },
     {
       "id": "me2pt5-etb",
@@ -201,7 +204,8 @@
       "eBayMedian": 465,
       "priceRatio": 3.88,
       "reviewed": false,
-      "holdReason": "low confidence"
+      "exclude": true,
+      "excludeReason": "Tyler ruling 2026-08-18: provider has case-only coverage for ME-era PC-ETBs (no single-product entries; me1 match was the regular ETB). eBay-side tracking unaffected."
     },
     {
       "id": "me2-booster-box",
@@ -253,7 +257,8 @@
       "eBayMedian": 329,
       "priceRatio": 4.32,
       "reviewed": false,
-      "holdReason": "low confidence"
+      "exclude": true,
+      "excludeReason": "Tyler ruling 2026-08-18: provider has case-only coverage for ME-era PC-ETBs (no single-product entries; me1 match was the regular ETB). eBay-side tracking unaffected."
     },
     {
       "id": "me1-booster-box",
@@ -305,7 +310,8 @@
       "eBayMedian": 239.99,
       "priceRatio": 0.51,
       "reviewed": false,
-      "holdReason": "low confidence"
+      "exclude": true,
+      "excludeReason": "Tyler ruling 2026-08-18: provider has case-only coverage for ME-era PC-ETBs (no single-product entries; me1 match was the regular ETB). eBay-side tracking unaffected."
     },
     {
       "id": "sv8pt5-etb",
@@ -519,13 +525,16 @@
     {
       "id": "sv3pt5-upc",
       "ourName": "151 Ultra Premium Collection",
-      "tcgPlayerId": null,
-      "matchedName": null,
-      "unopenedPrice": null,
-      "matchConfidence": "low",
-      "note": "no viable candidate among 0 results",
-      "reviewed": false,
-      "holdReason": "NO MATCH"
+      "tcgPlayerId": "502005",
+      "matchedName": "151 Ultra-Premium Collection",
+      "unopenedPrice": 938.21,
+      "matchConfidence": "high",
+      "note": "Re-searched 2026-08-18; 1 clean variant(s), selected |ratio-1| minimum per Tyler rule.",
+      "reviewed": true,
+      "providerUpdatedAt": "2026-08-17T10:45:00.144Z",
+      "exclude": false,
+      "priceRatio": 0.99,
+      "autoApproved": "re-search pass (Tyler ruling b): conf-high + ratio 0.6-1.6 + clean name"
     },
     {
       "id": "swsh12pt5-etb",
@@ -595,16 +604,17 @@
     {
       "id": "swsh7-etb",
       "ourName": "Evolving Skies Elite Trainer Box",
-      "tcgPlayerId": "243721",
-      "matchedName": "Evolving Skies Elite Trainer Box [Set of 2]",
-      "unopenedPrice": 1039.25,
-      "providerUpdatedAt": "2026-08-17T10:44:58.749Z",
+      "tcgPlayerId": "242434",
+      "matchedName": "Evolving Skies Elite Trainer Box [Flareon/Jolteon/Umbreon/Leafeon]",
+      "unopenedPrice": 579.08,
+      "providerUpdatedAt": "2026-08-17T10:45:17.618Z",
       "matchConfidence": "high",
       "eBayMedian": 550,
-      "priceRatio": 1.89,
-      "reviewed": false,
-      "exclude": true,
-      "holdReason": "ratio 1.89"
+      "priceRatio": 1.05,
+      "reviewed": true,
+      "exclude": false,
+      "autoApproved": "re-search pass (Tyler ruling b): conf-high + ratio 0.6-1.6 + clean name",
+      "note": "Re-searched 2026-08-18; 2 clean variant(s), selected |ratio-1| minimum per Tyler rule."
     },
     {
       "id": "swsh7-booster-box",
@@ -635,13 +645,16 @@
     {
       "id": "cel25-upc",
       "ourName": "Celebrations Ultra Premium Collection",
-      "tcgPlayerId": null,
-      "matchedName": null,
-      "unopenedPrice": null,
-      "matchConfidence": "low",
-      "note": "no viable candidate among 0 results",
-      "reviewed": false,
-      "holdReason": "NO MATCH"
+      "tcgPlayerId": "245140",
+      "matchedName": "Celebrations Ultra-Premium Collection",
+      "unopenedPrice": 1274.27,
+      "matchConfidence": "high",
+      "note": "Re-searched 2026-08-18; 1 clean variant(s), selected |ratio-1| minimum per Tyler rule.",
+      "reviewed": true,
+      "providerUpdatedAt": "2026-08-17T10:44:48.129Z",
+      "exclude": false,
+      "priceRatio": 0.97,
+      "autoApproved": "re-search pass (Tyler ruling b): conf-high + ratio 0.6-1.6 + clean name"
     },
     {
       "id": "swsh1-etb",
@@ -652,7 +665,9 @@
       "matchConfidence": "low",
       "note": "no viable candidate among 0 results",
       "reviewed": false,
-      "holdReason": "NO MATCH"
+      "holdReason": "NO MATCH",
+      "exclude": true,
+      "excludeReason": "no clean single match at provider (re-search pass 2026-08-18: alternate names, limit 10, art-variant singles allowed)"
     },
     {
       "id": "sm12-etb",
@@ -676,7 +691,8 @@
       "matchConfidence": "low",
       "note": "no viable candidate among 0 results",
       "reviewed": false,
-      "holdReason": "NO MATCH"
+      "exclude": true,
+      "excludeReason": "Tyler ruling 2026-08-18: vintage suspended (no-active-market) and provider vintage prices proven stale-flat (base1 $499.99 x35 days). eBay-side status unaffected."
     },
     {
       "id": "hgss1-booster-box",
@@ -687,7 +703,8 @@
       "matchConfidence": "low",
       "note": "no viable candidate among 0 results",
       "reviewed": false,
-      "holdReason": "NO MATCH"
+      "exclude": true,
+      "excludeReason": "Tyler ruling 2026-08-18: vintage suspended (no-active-market) and provider vintage prices proven stale-flat (base1 $499.99 x35 days). eBay-side status unaffected."
     },
     {
       "id": "base1-booster-box",
@@ -698,7 +715,8 @@
       "providerUpdatedAt": "2026-08-17T10:45:25.672Z",
       "matchConfidence": "low",
       "reviewed": false,
-      "holdReason": "low confidence"
+      "exclude": true,
+      "excludeReason": "Tyler ruling 2026-08-18: vintage suspended (no-active-market) and provider vintage prices proven stale-flat (base1 $499.99 x35 days). eBay-side status unaffected."
     },
     {
       "id": "base2-booster-box",
@@ -709,7 +727,8 @@
       "matchConfidence": "low",
       "note": "no viable candidate among 0 results",
       "reviewed": false,
-      "holdReason": "NO MATCH"
+      "exclude": true,
+      "excludeReason": "Tyler ruling 2026-08-18: vintage suspended (no-active-market) and provider vintage prices proven stale-flat (base1 $499.99 x35 days). eBay-side status unaffected."
     },
     {
       "id": "base3-booster-box",
@@ -720,7 +739,8 @@
       "matchConfidence": "low",
       "note": "no viable candidate among 0 results",
       "reviewed": false,
-      "holdReason": "NO MATCH"
+      "exclude": true,
+      "excludeReason": "Tyler ruling 2026-08-18: vintage suspended (no-active-market) and provider vintage prices proven stale-flat (base1 $499.99 x35 days). eBay-side status unaffected."
     },
     {
       "id": "neo1-booster-box",
@@ -731,7 +751,8 @@
       "matchConfidence": "low",
       "note": "no viable candidate among 0 results",
       "reviewed": false,
-      "holdReason": "NO MATCH"
+      "exclude": true,
+      "excludeReason": "Tyler ruling 2026-08-18: vintage suspended (no-active-market) and provider vintage prices proven stale-flat (base1 $499.99 x35 days). eBay-side status unaffected."
     },
     {
       "id": "sv5-booster-box",
@@ -807,7 +828,9 @@
       "matchConfidence": "low",
       "note": "no viable candidate among 0 results",
       "reviewed": false,
-      "holdReason": "NO MATCH"
+      "holdReason": "NO MATCH",
+      "exclude": true,
+      "excludeReason": "no clean single match at provider (re-search pass 2026-08-18: alternate names, limit 10, art-variant singles allowed)"
     },
     {
       "id": "swsh12-booster-box",
@@ -903,8 +926,10 @@
   ],
   "classification": {
     "rule": "AUTO = high conf AND ratio 0.6-1.6 AND no case/display/lot/multiplier language",
-    "approved": 53,
+    "approved": 56,
     "held": 17,
-    "classifiedAt": "2026-08-18T08:09:33.214Z"
+    "classifiedAt": "2026-08-18T08:09:33.214Z",
+    "excluded": 14,
+    "rescuePassAt": "2026-08-18T08:37:56.828Z"
   }
 }
