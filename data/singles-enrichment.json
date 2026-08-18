@@ -1,81 +1,575 @@
 {
-  "updatedAt": "2026-08-18T15:37:44.510Z",
+  "updatedAt": "2026-08-18T22:11:19.693Z",
   "source": "pokemonpricetracker.com v2 /cards (includeEbay + includeHistory)",
   "citationRule": "INTERNAL INSTRUMENT ONLY — all PPT-derived numbers are licensing-gated (research/ppt-licensing-note.md). Raw-market and eBay-sold provenance are separate claims; never mix in one figure.",
   "psaFloorUsd": 79.99,
-  "creditsConsumed": 180,
+  "creditsConsumed": 720,
   "cards": [
     {
       "cardId": "swsh7-215",
       "watchLabel": "Moonbreon — Umbreon VMAX (Evolving Skies)",
-      "dataStatus": "no-match",
-      "note": "no PPT card with number 215 + set ~\"Evolving Skies\" in top 5"
+      "name": "Umbreon VMAX (Alternate Art Secret)",
+      "number": "215/203",
+      "pptSetName": "SWSH07: Evolving Skies",
+      "tcgPlayerId": "246723",
+      "raw": {
+        "market": 2244.47,
+        "low": 1748.47,
+        "sellers": 28,
+        "listings": 40,
+        "recentSales": 0,
+        "vol30": 10,
+        "lastUpdated": "2026-08-18T12:02:03.731Z",
+        "dataStatus": "live",
+        "provenance": "TCGplayer market via pokemonpricetracker, updated 2026-08-18T12:02:03.731Z"
+      },
+      "ebaySold": {
+        "psa8": {
+          "count": 19,
+          "median": 1754.61,
+          "min": 1125,
+          "max": 2200
+        },
+        "psa9": {
+          "count": 156,
+          "median": 2000,
+          "min": 1399.99,
+          "max": 2699.99
+        },
+        "psa10": {
+          "count": 384,
+          "median": 4250,
+          "min": 2000,
+          "max": 6050
+        },
+        "lastEbayCheck": "2026-08-18T08:15:24.070Z",
+        "dataStatus": "live",
+        "provenance": "eBay sold-by-grade via pokemonpricetracker, checked 2026-08-18T08:15:24.070Z"
+      },
+      "gradingPremium": {
+        "formula": "gradeMedian - rawMarket - 79.99 (PSA cheapest tier, Aug 2026)",
+        "psa10": 1925.54,
+        "psa9": -324.46,
+        "dataStatus": "live"
+      }
     },
     {
       "cardId": "swsh7-218",
       "watchLabel": "Rayquaza VMAX (Evolving Skies)",
-      "dataStatus": "no-match",
-      "note": "no PPT card with number 218 + set ~\"Evolving Skies\" in top 5"
+      "name": "Rayquaza VMAX (Alternate Art Secret)",
+      "number": "218/203",
+      "pptSetName": "SWSH07: Evolving Skies",
+      "tcgPlayerId": "246733",
+      "raw": {
+        "market": 1247.9,
+        "low": 599.88,
+        "sellers": 22,
+        "listings": 33,
+        "recentSales": 0,
+        "vol30": 4,
+        "lastUpdated": "2026-08-18T12:02:03.731Z",
+        "dataStatus": "live",
+        "provenance": "TCGplayer market via pokemonpricetracker, updated 2026-08-18T12:02:03.731Z"
+      },
+      "ebaySold": {
+        "psa8": {
+          "count": 15,
+          "median": 700,
+          "min": 525,
+          "max": 954.17
+        },
+        "psa9": {
+          "count": 161,
+          "median": 982.505,
+          "min": 12,
+          "max": 1549.99
+        },
+        "psa10": {
+          "count": 367,
+          "median": 2699.5,
+          "min": 2,
+          "max": 4600
+        },
+        "lastEbayCheck": "2026-08-18T07:01:39.430Z",
+        "dataStatus": "live",
+        "provenance": "eBay sold-by-grade via pokemonpricetracker, checked 2026-08-18T07:01:39.430Z"
+      },
+      "gradingPremium": {
+        "formula": "gradeMedian - rawMarket - 79.99 (PSA cheapest tier, Aug 2026)",
+        "psa10": 1371.61,
+        "psa9": -345.39,
+        "dataStatus": "live"
+      }
     },
     {
       "cardId": "swsh11-186",
       "watchLabel": "Giratina V (Lost Origin)",
-      "dataStatus": "no-match",
-      "note": "no PPT card with number 186 + set ~\"Lost Origin\" in top 5"
+      "name": "Giratina V (Alternate Full Art)",
+      "number": "186/196",
+      "pptSetName": "SWSH11: Lost Origin",
+      "tcgPlayerId": "284137",
+      "raw": {
+        "market": 822.39,
+        "low": 399.99,
+        "sellers": 40,
+        "listings": 55,
+        "recentSales": 0,
+        "vol30": 19,
+        "lastUpdated": "2026-08-18T12:01:46.562Z",
+        "dataStatus": "live",
+        "provenance": "TCGplayer market via pokemonpricetracker, updated 2026-08-18T12:01:46.562Z"
+      },
+      "ebaySold": {
+        "psa8": {
+          "count": 71,
+          "median": 700,
+          "min": 445.29,
+          "max": 990.96
+        },
+        "psa9": {
+          "count": 193,
+          "median": 810,
+          "min": 510,
+          "max": 1350
+        },
+        "psa10": {
+          "count": 249,
+          "median": 3150,
+          "min": 499,
+          "max": 4150
+        },
+        "lastEbayCheck": "2026-08-18T15:22:05.159Z",
+        "dataStatus": "live",
+        "provenance": "eBay sold-by-grade via pokemonpricetracker, checked 2026-08-18T15:22:05.159Z"
+      },
+      "gradingPremium": {
+        "formula": "gradeMedian - rawMarket - 79.99 (PSA cheapest tier, Aug 2026)",
+        "psa10": 2247.62,
+        "psa9": -92.38,
+        "dataStatus": "live"
+      }
     },
     {
       "cardId": "swsh12-186",
       "watchLabel": "Lugia V (Silver Tempest)",
-      "dataStatus": "no-match",
-      "note": "no PPT card with number 186 + set ~\"Silver Tempest\" in top 5"
+      "name": "Lugia V (Alternate Full Art)",
+      "number": "186/195",
+      "pptSetName": "SWSH12: Silver Tempest",
+      "tcgPlayerId": "451834",
+      "raw": {
+        "market": 520.39,
+        "low": 374.99,
+        "sellers": 47,
+        "listings": 57,
+        "recentSales": 0,
+        "vol30": 19,
+        "lastUpdated": "2026-08-18T12:01:43.334Z",
+        "dataStatus": "live",
+        "provenance": "TCGplayer market via pokemonpricetracker, updated 2026-08-18T12:01:43.334Z"
+      },
+      "ebaySold": {
+        "psa8": {
+          "count": 31,
+          "median": 410,
+          "min": 25,
+          "max": 574.99
+        },
+        "psa9": {
+          "count": 257,
+          "median": 510,
+          "min": 299.99,
+          "max": 749.95
+        },
+        "psa10": {
+          "count": 432,
+          "median": 1424.6950000000002,
+          "min": 499.99,
+          "max": 2199.99
+        },
+        "lastEbayCheck": "2026-08-18T07:02:40.219Z",
+        "dataStatus": "live",
+        "provenance": "eBay sold-by-grade via pokemonpricetracker, checked 2026-08-18T07:02:40.219Z"
+      },
+      "gradingPremium": {
+        "formula": "gradeMedian - rawMarket - 79.99 (PSA cheapest tier, Aug 2026)",
+        "psa10": 824.32,
+        "psa9": -90.38,
+        "dataStatus": "live"
+      }
     },
     {
       "cardId": "sv3pt5-199",
       "watchLabel": "Charizard ex (151)",
-      "dataStatus": "no-match",
-      "note": "no PPT card with number 199 + set ~\"151\" in top 5"
+      "name": "Charizard ex - 199/165",
+      "number": "199/165",
+      "pptSetName": "SV: Scarlet & Violet 151",
+      "tcgPlayerId": "517045",
+      "raw": {
+        "market": 360.64,
+        "low": 324,
+        "sellers": 145,
+        "listings": 168,
+        "recentSales": 0,
+        "vol30": 105,
+        "lastUpdated": "2026-08-18T12:01:27.792Z",
+        "dataStatus": "live",
+        "provenance": "TCGplayer market via pokemonpricetracker, updated 2026-08-18T12:01:27.792Z"
+      },
+      "ebaySold": {
+        "psa8": {
+          "count": 135,
+          "median": 350,
+          "min": 180,
+          "max": 475
+        },
+        "psa9": {
+          "count": 436,
+          "median": 405.5,
+          "min": 119,
+          "max": 608.58
+        },
+        "psa10": {
+          "count": 316,
+          "median": 1506.185,
+          "min": 13,
+          "max": 2397.6
+        },
+        "lastEbayCheck": "2026-08-18T07:38:24.723Z",
+        "dataStatus": "live",
+        "provenance": "eBay sold-by-grade via pokemonpricetracker, checked 2026-08-18T07:38:24.723Z"
+      },
+      "gradingPremium": {
+        "formula": "gradeMedian - rawMarket - 79.99 (PSA cheapest tier, Aug 2026)",
+        "psa10": 1065.56,
+        "psa9": -35.13,
+        "dataStatus": "live"
+      }
     },
     {
       "cardId": "sv8pt5-161",
       "watchLabel": "Umbreon ex (Prismatic Evolutions)",
-      "dataStatus": "no-match",
-      "note": "no PPT card with number 161 + set ~\"Prismatic Evolutions\" in top 5"
+      "name": "Umbreon ex - 161/131",
+      "number": "161/131",
+      "pptSetName": "SV: Prismatic Evolutions",
+      "tcgPlayerId": "610516",
+      "raw": {
+        "market": 1490.88,
+        "low": 1153.5,
+        "sellers": 35,
+        "listings": 54,
+        "recentSales": 0,
+        "vol30": 20,
+        "lastUpdated": "2026-08-18T12:01:17.771Z",
+        "dataStatus": "live",
+        "provenance": "TCGplayer market via pokemonpricetracker, updated 2026-08-18T12:01:17.771Z"
+      },
+      "ebaySold": {
+        "psa8": {
+          "count": 96,
+          "median": 1199.995,
+          "min": 750,
+          "max": 1600
+        },
+        "psa9": {
+          "count": 561,
+          "median": 1427,
+          "min": 780,
+          "max": 2199.99
+        },
+        "psa10": {
+          "count": 550,
+          "median": 5100,
+          "min": 1500,
+          "max": 7999.99
+        },
+        "lastEbayCheck": "2026-08-18T15:57:29.405Z",
+        "dataStatus": "live",
+        "provenance": "eBay sold-by-grade via pokemonpricetracker, checked 2026-08-18T15:57:29.405Z"
+      },
+      "gradingPremium": {
+        "formula": "gradeMedian - rawMarket - 79.99 (PSA cheapest tier, Aug 2026)",
+        "psa10": 3529.13,
+        "psa9": -143.87,
+        "dataStatus": "live"
+      }
     },
     {
       "cardId": "sv8pt5-155",
       "watchLabel": "Espeon ex (Prismatic Evolutions)",
-      "dataStatus": "no-match",
-      "note": "no PPT card with number 155 + set ~\"Prismatic Evolutions\" in top 5"
+      "name": "Espeon ex - 155/131",
+      "number": "155/131",
+      "pptSetName": "SV: Prismatic Evolutions",
+      "tcgPlayerId": "610510",
+      "raw": {
+        "market": 318.98,
+        "low": 218.68,
+        "sellers": 39,
+        "listings": 50,
+        "recentSales": 0,
+        "vol30": 27,
+        "lastUpdated": "2026-08-18T12:01:17.770Z",
+        "dataStatus": "live",
+        "provenance": "TCGplayer market via pokemonpricetracker, updated 2026-08-18T12:01:17.770Z"
+      },
+      "ebaySold": {
+        "psa8": {
+          "count": 51,
+          "median": 225,
+          "min": 119.99,
+          "max": 312
+        },
+        "psa9": {
+          "count": 346,
+          "median": 260.55,
+          "min": 170.5,
+          "max": 380
+        },
+        "psa10": {
+          "count": 268,
+          "median": 1001,
+          "min": 249.6,
+          "max": 1599
+        },
+        "lastEbayCheck": "2026-08-18T19:11:44.598Z",
+        "dataStatus": "live",
+        "provenance": "eBay sold-by-grade via pokemonpricetracker, checked 2026-08-18T19:11:44.598Z"
+      },
+      "gradingPremium": {
+        "formula": "gradeMedian - rawMarket - 79.99 (PSA cheapest tier, Aug 2026)",
+        "psa10": 602.03,
+        "psa9": -138.42,
+        "dataStatus": "live"
+      }
     },
     {
       "cardId": "me2-125",
       "watchLabel": "Mega Charizard X ex (Phantasmal Flames)",
-      "dataStatus": "no-match",
-      "note": "no PPT card with number 125 + set ~\"Phantasmal Flames\" in top 5"
+      "name": "Mega Charizard X ex - 125/094",
+      "number": "125/094",
+      "pptSetName": "ME02: Phantasmal Flames",
+      "tcgPlayerId": "662184",
+      "raw": {
+        "market": 703.65,
+        "low": 680.75,
+        "sellers": 80,
+        "listings": 98,
+        "recentSales": 0,
+        "vol30": 56,
+        "lastUpdated": "2026-08-18T12:01:09.418Z",
+        "dataStatus": "live",
+        "provenance": "TCGplayer market via pokemonpricetracker, updated 2026-08-18T12:01:09.418Z"
+      },
+      "ebaySold": {
+        "psa8": {
+          "count": 75,
+          "median": 755,
+          "min": 599,
+          "max": 900
+        },
+        "psa9": {
+          "count": 751,
+          "median": 849.99,
+          "min": 590,
+          "max": 1120.64
+        },
+        "psa10": {
+          "count": 1715,
+          "median": 2225,
+          "min": 1199,
+          "max": 3600
+        },
+        "lastEbayCheck": "2026-08-17T14:50:52.247Z",
+        "dataStatus": "live",
+        "provenance": "eBay sold-by-grade via pokemonpricetracker, checked 2026-08-17T14:50:52.247Z"
+      },
+      "gradingPremium": {
+        "formula": "gradeMedian - rawMarket - 79.99 (PSA cheapest tier, Aug 2026)",
+        "psa10": 1441.36,
+        "psa9": 66.35,
+        "dataStatus": "live"
+      }
     },
     {
       "cardId": "me2pt5-284",
       "watchLabel": "Mega Gengar ex (Ascended Heroes) — Tyler-corrected Aug 18: chase printing is in AH, not Phantasmal",
-      "dataStatus": "no-match",
-      "note": "no PPT card with number 284 + set ~\"Ascended Heroes\" in top 5"
+      "name": "Mega Gengar ex - 284/217",
+      "number": "284/217",
+      "pptSetName": "ME: Ascended Heroes",
+      "tcgPlayerId": "676096",
+      "raw": {
+        "market": 1066.24,
+        "low": 973.73,
+        "sellers": 73,
+        "listings": 82,
+        "recentSales": 0,
+        "vol30": 22,
+        "lastUpdated": "2026-08-18T12:01:09.778Z",
+        "dataStatus": "live",
+        "provenance": "TCGplayer market via pokemonpricetracker, updated 2026-08-18T12:01:09.778Z"
+      },
+      "ebaySold": {
+        "psa8": {
+          "count": 13,
+          "median": 1187.5,
+          "min": 803,
+          "max": 1400
+        },
+        "psa9": {
+          "count": 346,
+          "median": 1250,
+          "min": 886.72,
+          "max": 1825
+        },
+        "psa10": {
+          "count": 625,
+          "median": 2950,
+          "min": 1319,
+          "max": 4750
+        },
+        "lastEbayCheck": "2026-08-18T16:29:59.659Z",
+        "dataStatus": "live",
+        "provenance": "eBay sold-by-grade via pokemonpricetracker, checked 2026-08-18T16:29:59.659Z"
+      },
+      "gradingPremium": {
+        "formula": "gradeMedian - rawMarket - 79.99 (PSA cheapest tier, Aug 2026)",
+        "psa10": 1803.77,
+        "psa9": 103.77,
+        "dataStatus": "live"
+      }
     },
     {
       "cardId": "me2pt5-290",
       "watchLabel": "Mega Dragonite ex (Ascended Heroes)",
-      "dataStatus": "no-match",
-      "note": "no PPT card with number 290 + set ~\"Ascended Heroes\" in top 5"
+      "name": "Mega Dragonite ex - 290/217",
+      "number": "290/217",
+      "pptSetName": "ME: Ascended Heroes",
+      "tcgPlayerId": "676102",
+      "raw": {
+        "market": 695.71,
+        "low": 625,
+        "sellers": 81,
+        "listings": 89,
+        "recentSales": 0,
+        "vol30": 26,
+        "lastUpdated": "2026-08-18T12:01:09.778Z",
+        "dataStatus": "live",
+        "provenance": "TCGplayer market via pokemonpricetracker, updated 2026-08-18T12:01:09.778Z"
+      },
+      "ebaySold": {
+        "psa8": {
+          "count": 5,
+          "median": 709.99,
+          "min": 660,
+          "max": 750
+        },
+        "psa9": {
+          "count": 140,
+          "median": 799.99,
+          "min": 566.68,
+          "max": 1100
+        },
+        "psa10": {
+          "count": 311,
+          "median": 2038.62,
+          "min": 970,
+          "max": 3000
+        },
+        "lastEbayCheck": "2026-08-18T15:22:45.486Z",
+        "dataStatus": "live",
+        "provenance": "eBay sold-by-grade via pokemonpricetracker, checked 2026-08-18T15:22:45.486Z"
+      },
+      "gradingPremium": {
+        "formula": "gradeMedian - rawMarket - 79.99 (PSA cheapest tier, Aug 2026)",
+        "psa10": 1262.92,
+        "psa9": 24.29,
+        "dataStatus": "live"
+      }
     },
     {
       "cardId": "me4-116",
       "watchLabel": "Mega Greninja ex (Chaos Rising)",
-      "dataStatus": "no-match",
-      "note": "no PPT card with number 116 + set ~\"Chaos Rising\" in top 5"
+      "name": "Mega Greninja ex - 116/086",
+      "number": "116/086",
+      "pptSetName": "ME04: Chaos Rising",
+      "tcgPlayerId": "693517",
+      "raw": {
+        "market": 199.05,
+        "low": 192.99,
+        "sellers": 216,
+        "listings": 238,
+        "recentSales": 0,
+        "vol30": 234,
+        "lastUpdated": "2026-08-18T12:01:09.453Z",
+        "dataStatus": "live",
+        "provenance": "TCGplayer market via pokemonpricetracker, updated 2026-08-18T12:01:09.453Z"
+      },
+      "ebaySold": {
+        "psa8": {
+          "count": 6,
+          "median": 209.255,
+          "min": 191,
+          "max": 305
+        },
+        "psa9": {
+          "count": 71,
+          "median": 255,
+          "min": 203.5,
+          "max": 470
+        },
+        "psa10": {
+          "count": 321,
+          "median": 690,
+          "min": 310,
+          "max": 1255
+        },
+        "lastEbayCheck": "2026-08-18T16:35:23.967Z",
+        "dataStatus": "live",
+        "provenance": "eBay sold-by-grade via pokemonpricetracker, checked 2026-08-18T16:35:23.967Z"
+      },
+      "gradingPremium": {
+        "formula": "gradeMedian - rawMarket - 79.99 (PSA cheapest tier, Aug 2026)",
+        "psa10": 410.96,
+        "psa9": -24.04,
+        "dataStatus": "live"
+      }
     },
     {
       "cardId": "me5-116",
       "watchLabel": "Mega Darkrai ex (Pitch Black)",
-      "dataStatus": "no-match",
-      "note": "no PPT card with number 116 + set ~\"Pitch Black\" in top 5"
+      "name": "Mega Darkrai ex - 116/084",
+      "number": "116/084",
+      "pptSetName": "ME05: Pitch Black",
+      "tcgPlayerId": "704873",
+      "raw": {
+        "market": 215.34,
+        "low": 208,
+        "sellers": 107,
+        "listings": 119,
+        "recentSales": 0,
+        "vol30": 276,
+        "lastUpdated": "2026-08-18T12:01:09.411Z",
+        "dataStatus": "live",
+        "provenance": "TCGplayer market via pokemonpricetracker, updated 2026-08-18T12:01:09.411Z"
+      },
+      "ebaySold": {
+        "psa8": null,
+        "psa9": null,
+        "psa10": {
+          "count": 8,
+          "median": 2412.5,
+          "min": 514,
+          "max": 3250
+        },
+        "lastEbayCheck": "2026-08-18T20:21:01.300Z",
+        "dataStatus": "live",
+        "provenance": "eBay sold-by-grade via pokemonpricetracker, checked 2026-08-18T20:21:01.300Z"
+      },
+      "gradingPremium": {
+        "formula": "gradeMedian - rawMarket - 79.99 (PSA cheapest tier, Aug 2026)",
+        "psa10": 2117.17,
+        "psa9": null,
+        "dataStatus": "live"
+      }
     }
   ]
 }
