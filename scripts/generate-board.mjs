@@ -65,7 +65,7 @@ footer{max-width:1080px;margin:22px auto 0;padding:0 24px;font:12px 'JetBrains M
 <header><h1>The <em>Board</em></h1>
 <div class="tag">Every sealed product. Two markets. Honest instruments. — Catch'em</div></header>
 <div class="calib"><span class="lbl">HEAT READS CALIBRATING</span><div class="bar"><div class="fill"></div></div><span class="lbl">day ${heatDay} of 8 · live ~Aug 26</span></div>
-<div class="stats"><span><b>${sp.products.length}</b> SKUs tracked</span><span><b>${rows.length}</b> live</span><span><b>${(div.rows||[]).filter(r=>r.signal).length}</b> spread signals</span><span>run <b>${sp.updatedAt?.slice(0,16)}Z</b></span></div>
+<div class="stats"><span><b>${sp.products.length}</b> sealed products tracked</span><span><b>${rows.length}</b> live</span><span><b>${(div.rows||[]).filter(r=>r.signal).length}</b> spread signals</span><span>run <b>${sp.updatedAt?.slice(0,16)}Z</b></span></div>
 <main><table><thead><tr><th>Product</th><th>Type</th><th>Ask Median</th><th>Active Listings</th><th>Spread vs TCG</th><th>Status</th></tr></thead>
 <tbody>${rows.map(tr).join("")}</tbody></table></main>
 <footer>Prices: Catchem-data, eBay active listings (measured) · Spread: vs TCG-side ask (PPT), internal instrument · Buy Pressure &amp; heat states arrive with calibration · Generated ${new Date().toISOString().slice(0,16)}Z · Catch'em. Catch Feels.</footer>

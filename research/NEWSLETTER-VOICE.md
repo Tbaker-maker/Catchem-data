@@ -58,3 +58,5 @@ TRUST-STANDARD.md. This guide is the editorial layer on top of it.
 - Supply/demand/volume language is SEALED-ONLY (our bot measures sealed;
   the singles source has no supply data). Singles get price + (after ~8
   days of snapshots) trend — never "supply is drying up" claims.
+
+- Vocabulary v3 (Aug 18, Tyler): user-facing count noun = "sealed products" / "sealed" — never "SKU" (warehouse-speak). Singles = "chases."

@@ -28,7 +28,7 @@ const upcoming = (radar?.items||radar?.releases||[]).filter(r=>{
 }).slice(0,4);
 
 let md = `# ☀️ Morning Pulse — ${today}\n*Written by the machine at ${new Date().toISOString().slice(11,16)} UTC. Every number below is live production data.*\n\n`;
-md += `## The instrument panel\n- **${sp.products.length} SKUs tracked** · ${live.length} live · ${noMkt} no-active-market (honest) · run ${sp.updatedAt?.slice(0,16)}Z\n- **Heat reads:** calibrating — day ${heatDays} of 8 clean days (return ~Aug 26)\n- **The Spread:** ${div?.counts?.compared??0} SKUs cross-checked · **${sigs.length} signals** · ${div?.counts?.skipped??0} excluded with reasons\n\n`;
+md += `## The instrument panel\n- **${sp.products.length} sealed products tracked** · ${live.length} live · ${noMkt} no-active-market (honest) · run ${sp.updatedAt?.slice(0,16)}Z\n- **Heat reads:** calibrating — day ${heatDays} of 8 clean days (return ~Aug 26)\n- **The Spread:** ${div?.counts?.compared??0} sealed cross-checked · **${sigs.length} signals** · ${div?.counts?.skipped??0} excluded with reasons\n\n`;
 if (sigs.length) {
   md += `## ⚡ Spread signals (eBay ask vs TCG-side ask)\n`;
   for (const r of sigs.slice(0,6)) md += `- **${r.name}** — eBay $${r.ebayAskMedian} (${r.ebayListings??"—"} listings) vs TCG $${r.tcgMarket} (supply ${r.tcgListings??"—"}) (**${r.spreadPct>0?"+":""}${r.spreadPct}%**) — ${r.read}\n`;
