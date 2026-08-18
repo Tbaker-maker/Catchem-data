@@ -1,3 +1,5 @@
+# ARC LOCKED: starts Tue Aug 19 (default — veto anytime). Day 6 = Aug 24 = Newsletter 001 send. Day 10 = Aug 28 = tin day.
+
 # X Launch Arc — Full Draft Copy (v2.1)
 
 Companion to x-launch-arc.md. Every number below exists in repo data or a
@@ -5,7 +7,7 @@ sourced digest as of Aug 18. [EDITOR] = Tyler fills. Voice pass expected —
 these are 90% posts, not 100%. No post auto-publishes.
 
 ---
-## Day 1 — The $24 Lie (THREAD, pin after posting)
+## Day 1 · Wed Aug 19 — The $24 Lie (THREAD, pin after posting)
 
 **1/** Our price tracker told us Journey Together booster boxes were $23.99.
 
@@ -41,11 +43,13 @@ corrections in public — that's the whole point.
 We publish our own repair receipts. Get used to it.
 
 ---
-## Day 2 — Why I'm Here
+## Day 2 · Thu Aug 20 — Why I'm Here
 
 Spent years reading NFT markets. The skill that mattered was never the
 asset — it was seeing supply and demand desync before the price admitted
-it. [EDITOR: one line of your real NFT-era specifics.] Same signals exist
+it. [PICK ONE or edit:
+A) "I spent two years reading NFT floor charts at 2am — the JPEGs are gone; the pattern-reading stayed."
+B) "My old edge was spotting supply drying up in NFT collections hours before the floor moved. Same eyes, better cardboard."] Same signals exist
 in Pokémon sealed. Older market, real cardboard, thirty years of history
 to check your work against. So that's what I'm building now.
 
@@ -54,7 +58,7 @@ and capitulation in sealed wax look identical on a tape. One of them comes
 with Charizard.
 
 ---
-## Day 3 — The Trust Standard (manifesto)
+## Day 3 · Fri Aug 21 — The Trust Standard (manifesto)
 
 We wrote our rules down and made them public.
 
@@ -70,7 +74,7 @@ grader silently changed grades, that's not a slogan, it's the product.
 Newsletter: [link]. First issue this week.
 
 ---
-## Day 4 — Four States of Sealed
+## Day 4 · Sat Aug 22 — Four States of Sealed
 
 Every sealed product we track lives in one of four states:
 
@@ -87,7 +91,7 @@ when eight clean days exist. Nothing false in the meantime. That's the
 deal.
 
 ---
-## Day 5 — Anatomy of a $2,755 Error
+## Day 5 · Sun Aug 23 — Anatomy of a $2,755 Error
 
 How does a tracker publish $144 for a $2,899 box?
 
@@ -101,7 +105,7 @@ Vintage now carries its own floors. [EDITOR optional: screenshot of the
 flagged history chart.]
 
 ---
-## Day 6 — [NEWSLETTER SEND DAY — movable]
+## Day 6 · Mon Aug 24 — [NEWSLETTER SEND DAY — movable]
 
 Catch'Em News 001 is out.
 
@@ -114,7 +118,7 @@ In your inbox if you were on the waitlist. Link below if you weren't.
 [link] — free.
 
 ---
-## Day 7 — The Agent That Caught What I Missed
+## Day 7 · Tue Aug 25 — The Agent That Caught What I Missed
 
 Full transparency: part of this operation is AI. Here's why I'm telling
 you instead of hiding it.
@@ -128,7 +132,7 @@ The edge isn't automation. It's verification with more eyes than I have.
 Every claim still gets a human gate before it ships.
 
 ---
-## Day 8 — The 30th: Format Isn't the Variable
+## Day 8 · Wed Aug 26 — The 30th: Format Isn't the Variable
 
 Everyone's calling the 30th "Celebrations 2.0 — printed to oblivion,
 cheap forever." They're comparing the wrong variable.
@@ -143,7 +147,7 @@ one number nobody has yet. The tell: restock cadence in October. Watch the
 shelves, not the format.
 
 ---
-## Day 9 — Grading's Structure Problem (Reported)
+## Day 9 · Thu Aug 27 — Grading's Structure Problem (Reported)
 
 The week's numbers, per industry reporting: roughly 80% of US grading now
 sits under one parent company. Cheapest direct PSA tier: $79.99/card,
@@ -156,7 +160,7 @@ sealed→graded pipeline math changed, and slabs-in-hand carry a scarcity
 premium while the queue digests. Possible, not promised.
 
 ---
-## Day 10 — [TIN DAY — Aug 28]
+## Day 10 · Fri Aug 28 — [TIN DAY — Aug 28]
 
 Today: six $21.99 tins hit shelves at once. Three Ascended Heroes (Mega
 Feraligatr / Meganium / Emboar ex), three Mega Forces (Mega Dragonite /
@@ -170,7 +174,7 @@ pushes casual buyers to the secondary market. Absorb or stall — that's the
 watch through September, and we're watching with clean instruments.
 
 ---
-## Day 11 — Singles Receipts
+## Day 11 · Sat Aug 29 — Singles Receipts
 
 The chase watchlist is live. Real numbers, real provenance, no calls:
 
@@ -184,7 +188,7 @@ Mega Charizard X ex SIR (Phantasmal Flames): $692.
 We track. You decide. That's the division of labor.
 
 ---
-## Day 12 — Ask the Room
+## Day 12 · Sun Aug 30 — Ask the Room
 
 Collectors: what's the ONE number you wish somebody tracked honestly?
 
@@ -194,7 +198,7 @@ set? Actual sealed supply?
 Building the roadmap in public. Best answers get built first.
 
 ---
-## Day 13 — What's Being Built
+## Day 13 · Mon Aug 31 — What's Being Built
 
 [EDITOR: attach heat-map mockup screenshot]
 
@@ -204,7 +208,7 @@ cardboard, updated daily, quarantine rules for anything suspicious.
 In build. Newsletter readers see it first. [link]
 
 ---
-## Day 14 — Recap + Handoff
+## Day 14 · Tue Sep 1 — Recap + Handoff
 
 Fourteen days ago this account changed lanes. Since then:
 
