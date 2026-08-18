@@ -52,3 +52,18 @@ Three clocks, three meanings — never conflate in copy:
 Print phases (EST, date-derived until better data): 0-12mo "active print" ·
 12-30mo "late print — reprint waves typical" · 30mo+ "likely EOL — supply
 fixed (est.)". Always labeled est.; exact EOL dates are rarely announced.
+
+## RT-4 · The Photo Premium (Tyler, Aug 18 2026)
+**Statement:** eBay structurally carries a modest premium over TCGplayer
+on sealed because eBay listings show the actual item — seal condition,
+corners, authenticity cues — while TCG sealed listings rarely have photos.
+Buyers pay for certainty; they hesitate at high prices they cannot see.
+**Implications:** (1) the +5-15% baseline gap is STRUCTURAL, not signal —
+the mechanism behind the ≥15% flag threshold. (2) NEGATIVE gaps carry
+extra weight: pricing eBay under photo-less TCG fights the trust premium —
+reads as genuinely motivated selling. (3) Calibration note: with enough
+resolved cases, consider an asymmetric (lower) negative threshold. Not
+changed yet.
+**Falsifier:** if the resting cross-market baseline measures ≤0% over a
+rolling 60 clean days, the premium claim is wrong and gets amended in
+public.

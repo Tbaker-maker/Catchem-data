@@ -118,7 +118,7 @@ footer{margin-top:30px;font:12px 'JetBrains Mono',monospace;color:var(--dim)}
   <div class="stat"><b>${sigs.length}</b><i>SPREAD SIGNALS</i></div>
   <div class="stat"><b>${heatDays}/8</b><i>READS CALIBRATING</i></div>
 </div>
-${sigs.length?`<h2>⚡ Biggest price gaps between eBay and TCGplayer</h2>${sigCards}${supNote}`:""}
+${sigs.length?`<h2>⚡ Biggest price gaps between eBay and TCGplayer</h2><div class="foot" style="margin:-2px 0 10px">eBay usually runs a little higher on sealed — photos let buyers see exactly what they're getting. We flag the gaps beyond that.</div>${sigCards}${supNote}`:""}
 <h2>Deepest markets</h2>${deepRows}
 <h2>Chase board · TCGplayer market</h2>${chaseRows}
 ${(der?.dailyThree&&(der.dailyThree.sealed||der.dailyThree.raw))?`<h2>🎯 The Daily Three</h2>

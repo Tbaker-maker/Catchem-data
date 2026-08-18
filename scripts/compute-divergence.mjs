@@ -39,7 +39,7 @@ for (const p of ebay.products || []) {
 rows.sort((a, b) => Math.abs(b.spreadPct) - Math.abs(a.spreadPct));
 await writeFile(join(DATA, "divergence-report.json"), JSON.stringify({
   generatedAt: new Date().toISOString(),
-  method: "Cross-market ASK divergence: eBay ask median vs TCG-side ask-derived market (PPT). Two markets disagreeing on price is the signal. |spread| >= 15% flags. Not sold data. TCG-side listing counts: provider exposes none for sealed - field carried as null, lights up if they ship it.",
+  method: "Cross-market ASK divergence: eBay ask median vs TCG-side ask-derived market (PPT). Two markets disagreeing on price is the signal. Baseline +5-15% is STRUCTURAL (RT-4 photo premium: eBay shows the item, TCG sealed rarely does). |spread| >= 15% flags; negative gaps read stronger (fighting the trust premium). Not sold data. TCG-side listing counts: provider exposes none for sealed - field carried as null, lights up if they ship it.",
   counts: { compared: rows.length, signals: rows.filter(r => r.signal).length, skipped: skipped.length },
   rows, skipped }, null, 2) + "\n");
 console.log(`✓ The Spread: ${rows.length} compared, ${rows.filter(r=>r.signal).length} signals`);
