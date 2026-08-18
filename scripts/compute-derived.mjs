@@ -53,11 +53,16 @@ for (const [setName, prods] of bySet) {
   const flagship = prods.filter(p=>p.dataStatus==="live" && p.priceMedian)
                         .sort((a,b)=>b.priceMedian-a.priceMedian)[0];
   if (!flagship) continue;
-  const row = { set: setName, flagship: flagship.name, price: flagship.priceMedian,
-    listings: flagship.listingCount ?? null,
-    spreadPct: spreadBy.get(flagship.id)?.spreadPct ?? null, signal: !!flag };
-  if (mentioned) inNews.push(row);
-  else if (flag) quietMovers.push(row);
+  if (mentioned) {
+    inNews.push({ set: setName, flagship: flagship.name, price: flagship.priceMedian,
+      listings: flagship.listingCount ?? null,
+      spreadPct: spreadBy.get(flagship.id)?.spreadPct ?? null, signal: !!flag });
+  } else if (flag) {
+    // Surface the SIGNALING product itself, not the set's flagship
+    const sigProd = sp.products.find(p=>p.id===flag.id);
+    quietMovers.push({ set: setName, flagship: sigProd?.name || flag.name, price: flag.ebayAskMedian,
+      listings: flag.ebayListings ?? null, spreadPct: flag.spreadPct, signal: true });
+  }
 }
 
 const out = {
