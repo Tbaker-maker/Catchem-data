@@ -8,10 +8,17 @@ import { dirname, join } from "node:path";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const today = new Date().toISOString().split("T")[0];
 const cardImg = id => { const m=/^(.+)-(\w+)$/.exec(id||""); return m?`https://images.pokemontcg.io/${m[1]}/${m[2]}.png`:null; };
-const sealedImg = p => p.representativeImage || p.image || null; // rep-image when fetch v-next ships; set logo now
+let __tcgIds = {};
+const sealedImg = p => p.representativeImage
+  || (__tcgIds[p.id] ? `https://tcgplayer-cdn.tcgplayer.com/product/${__tcgIds[p.id]}_in_400x400.jpg` : null)
+  || p.image || null;
 const J = async p => { try { return JSON.parse(await readFile(join(ROOT,p),"utf-8")); } catch { return null; } };
 
 const sp = await J("data/sealed-prices.json");
+try { const cm = await J("data/crosscheck-id-map.json");
+  for (const e of (cm.entries||[])) if (e.reviewed && !e.exclude && e.tcgPlayerId) __tcgIds[e.id] = e.tcgPlayerId;
+} catch {}
+
 const div = await J("data/divergence-report.json");
 const heat = await J("data/heat-report.json");
 const sg = await J("data/singles-prices.json");
