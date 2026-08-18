@@ -14,6 +14,7 @@ const div = await J("data/divergence-report.json");
 const heat = await J("data/heat-report.json");
 const sg = await J("data/singles-prices.json");
 const radar = await J("data/release-radar.json");
+const der = await J("data/derived-insights.json");
 
 const live = sp.products.filter(p=>p.dataStatus==="live");
 const noMkt = sp.products.filter(p=>p.dataStatus==="no-active-market").length;
@@ -38,6 +39,17 @@ md += `## Deepest markets today\n`;
 for (const p of topListed) md += `- ${p.name}: **$${p.priceMedian}** across ${p.listingCount} active listings\n`;
 md += `\n## Chase board (confirmed, TCGplayer market)\n`;
 for (const c of chases) md += `- ${c.name} (${c.setName}): **$${c.priceMarket}**\n`;
+if (der?.packMath) {
+  md += `\n## 🧮 Pack Math — $ per sealed pack (arithmetic, no estimation)\n`;
+  for (const r of der.packMath.priciest.slice(0,3)) md += `- ${r.name}: **$${r.perPack}/pack** ($${r.price} ÷ ${r.packs})\n`;
+  md += `- …\n`;
+  for (const r of der.packMath.cheapest.slice(0,3)) md += `- ${r.name}: **$${r.perPack}/pack** ($${r.price} ÷ ${r.packs})\n`;
+}
+if (der?.narrative) {
+  md += `\n## 📰 Narrative vs the tape (digest: ${der.digestUsed})\n`;
+  for (const r of der.narrative.inNews.slice(0,4)) md += `- **In the news:** ${r.set} — flagship $${r.price}${r.spreadPct!=null?` · spread ${r.spreadPct>0?"+":""}${r.spreadPct}%`:""}\n`;
+  for (const r of der.narrative.quietMovers.slice(0,4)) md += `- **Tape moved, news quiet:** ${r.set} — flagship $${r.price} · spread ${r.spreadPct>0?"+":""}${r.spreadPct}% ⚡\n`;
+}
 if (upcoming.length) {
   md += `\n## Radar — next up\n`;
   for (const r of upcoming) md += `- **${r.date||r.releaseDate}** — ${r.name||r.title}\n`;
@@ -86,6 +98,13 @@ footer{margin-top:30px;font:12px 'Courier New',monospace;color:var(--dim)}
 ${sigs.length?`<h2>⚡ Spread signals — price &amp; supply, both markets</h2>${sigCards}${supNote}`:""}
 <h2>Deepest markets</h2>${deepRows}
 <h2>Chase board · TCGplayer market</h2>${chaseRows}
+${der?.packMath?`<h2>🧮 Pack math — $ per sealed pack</h2>
+${der.packMath.priciest.slice(0,3).map(r=>`<div class="row"><span>${r.name}</span><span class="mono">$${r.perPack}/pack</span></div>`).join("")}
+<div class="row" style="border-bottom:0"><span style="color:var(--dim)">···</span><span></span></div>
+${der.packMath.cheapest.slice(0,3).map(r=>`<div class="row"><span>${r.name}</span><span class="mono">$${r.perPack}/pack</span></div>`).join("")}`:""}
+${der?.narrative?`<h2>📰 Narrative vs the tape</h2>
+${der.narrative.inNews.slice(0,3).map(r=>`<div class="row"><span>📣 ${r.set} <em>in today's digest</em></span><span class="mono">$${r.price}${r.spreadPct!=null?` · ${r.spreadPct>0?"+":""}${r.spreadPct}%`:""}</span></div>`).join("")}
+${der.narrative.quietMovers.slice(0,3).map(r=>`<div class="row"><span>🤫 ${r.set} <em>tape moved, news quiet</em></span><span class="mono">$${r.price} · ${r.spreadPct>0?"+":""}${r.spreadPct}% ⚡</span></div>`).join("")}`:""}
 ${upcoming.length?`<h2>Radar</h2>${radarRows}`:""}
 <div class="calib">HEAT READS: day ${heatDays} of 8 clean days — Wyckoff states return ~Aug 26. We publish nothing false in the meantime.</div>
 <footer>Catch'em. Catch Feels. · prices: Catchem-data, eBay active listings (measured) · spread: internal instrument</footer>
