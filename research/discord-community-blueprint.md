@@ -24,13 +24,25 @@ Every reply carries the provenance footer. Trust Standard in chat form.
 Earned via the reward bot (April rules: thoughtful-message XP with
 cooldowns + min-length, peer tips weigh 2×, zero pure-count farming).
 
-## Bot roster
-1. THE ENGAGEMENT BOT (Tyler's, from the other chat) — XP/ranks/tips.
-   OPEN QUESTIONS on retrieval: stack? schema? WHERE DOES IT HOST?
-   (Railway/Fly free tier vs PC = the real decision.) Token: regenerate.
+## Bot roster (UPDATED Aug 18 — handoff doc reviewed, Drive: "Handoff: Catch'em Discord Bot")
+1. THE ENGAGEMENT BOT — REAL AND COMPLETE: Python 3.10+/discord.py 2.4+,
+   SQLite (aiosqlite), 38 cogs, ~500-800 test assertions. Economy (berries=
+   users.free_tickets legacy col), tiers, streaks, raffles, shop, PSA
+   tracking, trivia, gacha packs (60/25/12/3, pity@20, 10 berries, 30s cd),
+   Catch'em original collectibles w/ mint numbers, /setup wizard, health
+   endpoint :8080, backups. DEPLOY PATH: dev-portal app + token (3 intents,
+   perms 2416004176) → private GitHub repo → Railway + volume /data +
+   DB_PATH=/data/bot_data.db → UptimeRobot. ~2hrs, own session.
+   HONOR LIST (April commitments, still binding): feature freeze pre-alpha
+   (no new cogs); berries NEVER real-money purchasable (loot-box law);
+   physical prizes via raffle-sweepstakes only; zero Pokemon IP in bot
+   content; legacy column names intentional. Parked decisions for bot
+   session: 84-card rarity split · 250-mint Perfect Pull vs unlimited ·
+   dup dampening · 5th rarity tier (defer to v1.1).
+   ⚠ Bot zip = PRIVATE repo only, never Catchem-data.
 2. THE MACHINE (webhook — built, waiting on Mission 1) — pulse + alerts.
-3. Data commands: bolt /price+/pulse onto Tyler's bot (same process,
-   fetch+cache the JSON, 5-min TTL). NOT a separate bot.
+3. Data commands (/price /pulse /signals reading our public JSON):
+   v1.1 AFTER alpha ships — the freeze holds; deploy before decorate.
 
 ## Launch sequencing (ties to the arc)
 Server soft-opens BEFORE arc Day 3 (the Trust Standard post links it).

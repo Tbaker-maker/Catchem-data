@@ -12,6 +12,14 @@
 > verified by grep on the saved file before commit. Docs get the same
 > artifact-proof discipline as code.
 
+## DISCORD BOT TRUTH (Aug 18 — handoff doc reviewed)
+Bot = COMPLETE, undeployed: py/discord.py, 38 cogs, tested. Deploy=Railway
+(~2hr own session). Honor: pre-alpha feature freeze · berries never
+purchasable · raffles for physical prizes · no Pokemon IP · legacy cols
+sacred. Parked: rarity split, mint caps, dampening. Their lineage's
+pricing-burn (EvSkies ETB 10x blog error) independently produced our same
+verified-only law. Bot zip → PRIVATE repo only.
+
 ## SESSION LEDGER — Aug 17→18, 2026 (the marathon + all-nighter)
 **Shipped & LIVE:** bot fix validated in production (JT $24→$285, EvSkies $144→$2,899) · workflow v2 in CI, 8 steps, secret verified · research agent (caught Mega Forces run 1) · heat engine (calibrating, reads ~Aug 26) · **The Spread** live (ask-vs-ask, dual-supply fields; day-1: 56 compared/7 signals; 151 artifact self-healed +3.9%) · Supply Watch (TCG-side dormant: provider ships no sealed counts) · **The Board** + **Morning Pulse** (md+HTML, self-generating) · **Derived layer 1**: Pack Math ($80.53 EvSkies → $5.42 Perfect Order per pack) + Narrative-vs-Tape (7 quiet movers day 1) · singles layer (11 confirmed chases + Gengar me2pt5-284; Cardmarket stored-only, stale timestamps) · expansion **70→~150 SKUs** (Batches 1–4, all audited; tins in pre-Aug-28) · Trust Standard + Content Hub + draft generator + launch arc v2 with full 14-beat drafts + IP brief + sold-data architecture + cost ledger.
 **Locked (Tyler):** English-only · vocab v2 "Buy Pressure (est.)" + disclosure, "Active Listings" (zero user-facing "inferred") · PPT $9.99 tier (ledger; ~$15–20/mo total burn) · grail ceilings $2000/$3000 (dated corrections).
