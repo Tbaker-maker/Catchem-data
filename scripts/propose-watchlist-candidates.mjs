@@ -85,7 +85,7 @@ async function main() {
     const cards = [];
     try {
       for (let page = 1; page <= 2; page++) {
-        const d = await getJSON(`${API}/cards?q=${encodeURIComponent(`set.id:${s.id}`)}&select=id,name,number,rarity,tcgplayer&pageSize=250&page=${page}`);
+        const d = await getJSON(`${API}/cards?q=${encodeURIComponent(`set.id:${s.id}`)}&select=id,name,number,rarity,tcgplayer,cardmarket&pageSize=250&page=${page}`);
         cards.push(...(d.data || []));
         if ((d.data || []).length < 250) break;
         await sleep(400);
@@ -95,11 +95,18 @@ async function main() {
       console.log(`  ${s.id.padEnd(12)} ERROR ${e.message}`);
       continue;
     }
-    const ranked = cards
-      .map(c => ({ ...c, _market: bestMarket(c) }))
-      .filter(c => c._market != null)
-      .sort((a, b) => b._market - a._market)
-      .slice(0, N);
+    // Wired 2026-08-18 (Tyler directive "no missing cards, verify prices"):
+    // bestPrice() replaces bare tcgplayer-market ranking so price-less sets
+    // (AH/CR/PB had "no priced cards") still surface via mid/cardmarket
+    // fallbacks with source flags; isForcedChase() cards are icon-immune —
+    // appended even when outside top-N or entirely priceless.
+    const priced = cards
+      .map(c => ({ ...c, _bp: bestPrice(c) }))
+      .sort((a, b) => (b._bp.p ?? -1) - (a._bp.p ?? -1));
+    const ranked = priced.filter(c => c._bp.p != null).slice(0, N);
+    const rankedIds = new Set(ranked.map(c => c.id));
+    const forced = priced.filter(c => isForcedChase(c) && !rankedIds.has(c.id));
+    ranked.push(...forced.map(c => ({ ...c, _forced: true })));
     sections.push({ set: s, ranked });
     console.log(`  ${s.id.padEnd(12)} ${s.name.padEnd(28)} top: ${ranked[0] ? `$${ranked[0]._market} ${ranked[0].name}` : "no priced cards"}`);
   }
@@ -118,7 +125,9 @@ async function main() {
     if (sec.error) { lines.push(`- ERROR fetching: ${sec.error}`, ""); continue; }
     if (!sec.ranked.length) { lines.push("- no priced cards", ""); continue; }
     for (const c of sec.ranked) {
-      lines.push(`- ${watched.has(c.id) ? "✔ " : ""}$${c._market.toFixed(2).padStart(9)} — ${c.name} #${c.number} · ${c.rarity || "?"} · \`${c.id}\``);
+      const px = c._bp.p != null ? `$${c._bp.p.toFixed(2).padStart(9)}` : "  NO PRICE";
+      const srcFlag = c._bp.src === "tcgplayer market" ? "" : ` · ${c._bp.src}`;
+      lines.push(`- ${watched.has(c.id) ? "✔ " : ""}${c._forced ? "🔒FORCED " : ""}${px} — ${c.name} #${c.number} · ${c.rarity || "?"} · \`${c.id}\`${srcFlag}`);
     }
     lines.push("");
   }

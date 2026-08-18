@@ -11,8 +11,13 @@ import { dirname, join } from "node:path";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const KEY = process.env.POKEMONPRICETRACKER_API_KEY;
 if (!KEY) { console.log("verify gate needs PPT key — run from CC/CI"); process.exit(0); }
-const ids = process.argv.slice(2); // pass candidate cardIds, e.g. swsh3-20 swsh1-206
-if (!ids.length) { console.log("usage: node verify-watchlist-prices.mjs <cardId...>"); process.exit(0); }
+// @file support (2026-08-18): "@path" reads whitespace/newline-separated ids
+// from a file — 300+ candidate ids don't fit comfortably on a command line.
+let ids = process.argv.slice(2); // pass candidate cardIds, e.g. swsh3-20 swsh1-206
+if (ids.length === 1 && ids[0].startsWith("@")) {
+  ids = (await readFile(ids[0].slice(1), "utf-8")).split(/\s+/).filter(Boolean);
+}
+if (!ids.length) { console.log("usage: node verify-watchlist-prices.mjs <cardId...> | @ids.txt"); process.exit(0); }
 const sleep = ms=>new Promise(r=>setTimeout(r,ms));
 async function ptcg(id, tries=3){ for(let i=0;i<tries;i++){ try{
   const r=await fetch(`https://api.pokemontcg.io/v2/cards/${id}?select=id,name,set,number,tcgplayer`);

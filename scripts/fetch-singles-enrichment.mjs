@@ -53,19 +53,20 @@ async function main() {
   for (const c of confirmed) {
     await sleep(1100);
     try {
-      // limit 20, not 5 (2026-08-18 first run): search ranks base printings first,
-      // and every chase is a secret-rare number below the top-5 cutoff — all 12
-      // lookups no-matched at limit=5. ~20 credits/card is trivial on the paid tier.
-      const d = await getJSON(`${BASE}/cards?search=${encodeURIComponent(c.name)}&limit=20&includeEbay=true&includeHistory=true&days=30`);
-      credits += d.metadata?.apiCallsConsumed?.total ?? (d.data || []).length;
-      const setFrag = (c.setName || "").toLowerCase();
-      const hit = (d.data || []).find(p =>
-        String(p.cardNumber) === String(c.number) &&
-        (p.setName || "").toLowerCase().includes(setFrag));
+      // v3 lookup (2026-08-18): direct /prices?setId=&number= — name search
+      // NEVER surfaces secret-rare printings (0/12 at limit 5 AND at limit 20,
+      // 720 credits of evidence); the number-addressed endpoint is what the
+      // verify gate already uses. pokemontcg setId passed as-is (same
+      // assumption as verify-watchlist-prices.mjs — if PPT's setId space
+      // differs, both fail together and loudly).
+      const setId = c.cardId.split("-")[0];
+      const d = await getJSON(`${BASE}/prices?setId=${encodeURIComponent(setId)}&number=${encodeURIComponent(c.number)}&includeEbay=true&includeHistory=true&days=30`);
+      credits += d.metadata?.apiCallsConsumed?.total ?? 1;
+      const hit = Array.isArray(d?.data) ? d.data[0] : d?.data ?? null;
       if (!hit) {
         out.push({ cardId: c.cardId, watchLabel: c.watchLabel, dataStatus: "no-match",
-          note: `no PPT card with number ${c.number} + set ~"${c.setName}" in top 5` });
-        console.log(`  ${c.cardId.padEnd(12)} NO MATCH`);
+          note: `PPT /prices returned nothing for setId=${setId} number=${c.number}` });
+        console.log(`  ${c.cardId.padEnd(12)} NO MATCH (/prices)`);
         continue;
       }
       const px = hit.prices || {};
