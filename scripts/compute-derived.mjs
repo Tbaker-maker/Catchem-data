@@ -16,6 +16,7 @@ let div = { rows: [] }; try { div = await J("data/divergence-report.json"); } ca
 const spreadBy = new Map(div.rows.map(r=>[r.id, r]));
 const sgAll = await J("data/singles-prices.json").catch(()=>null) ?? { cards: [] };
 let enr = null; try { enr = await J("data/singles-enrichment.json"); } catch {}
+let hh = []; try { hh = await J("data/heat-history.json"); } catch {}
 
 // ── (a) Pack Math ────────────────────────────────────────────────────────────
 function packsFor(p) {
@@ -99,6 +100,38 @@ if (digestText) {
   }
 }
 
+
+// ── (d) DEPTH READS — RT-3 matrix on the deepest markets ─────────────────
+// Active Listings (measured) × listing-delta flow (Buy Pressure est.).
+// Reads unlock per-product at 3+ clean snapshot days; calibrating until.
+const CLEAN_CUT = "2026-08-18";
+const liveList = sp.products.filter(p=>p.dataStatus==="live" && p.listingCount);
+const counts = liveList.map(p=>p.listingCount).sort((a,b)=>a-b);
+const q3 = counts[Math.floor(counts.length*0.75)] ?? 0;
+function flowFor(id){
+  const rows = hh.filter(r=>r.id===id && r.date>=CLEAN_CUT).sort((a,b)=>a.date<b.date?-1:1);
+  if (rows.length < 3) return { state:"calibrating", days: rows.length };
+  const a = rows[0].listingCount, b = rows[rows.length-1].listingCount;
+  if (!a) return { state:"calibrating", days: rows.length };
+  const d = (b-a)/a;
+  return { state: d <= -0.05 ? "draining" : d >= 0.05 ? "building" : "flat", pct: Math.round(d*100), days: rows.length };
+}
+const depthReads = [...liveList].sort((a,b)=>b.listingCount-a.listingCount).slice(0,6).map(p=>{
+  const f = flowFor(p.id);
+  const hiS = p.listingCount >= q3;
+  let read, tag;
+  if (f.state==="calibrating") { read = `flow calibrating — day ${f.days}/3`; tag = "⏳"; }
+  else if (hiS && f.state==="building") { read = "pile-up — supply outpacing demand est. (RT-3)"; tag = "⚠"; }
+  else if (hiS && f.state==="draining") { read = "deep & moving — churn; historically reversal-prone (RT-3)"; tag = "🌊"; }
+  else if (hiS) { read = "holding pattern — deep, flow flat"; tag = "⏸"; }
+  else if (f.state==="draining") { read = "thinning fast — scarcity forming"; tag = "📉"; }
+  else if (f.state==="building") { read = "restocking or interest fading — context decides"; tag = "❓"; }
+  else { read = "quiet depth"; tag = "·"; }
+  return { id:p.id, name:p.name, listings:p.listingCount, price:p.priceMedian,
+    flow:f.state, flowPct:f.pct??null, flowDays:f.days??null, supplyTier: hiS?"high":"mid",
+    tag, read, chip:"READ" };
+});
+
 const out = {
   generatedAt: new Date().toISOString(),
   method: "Pack Math: ask median / era-aware pack count (arithmetic, no estimation; variable-count products excluded by name). Narrative: latest agent digest cross-referenced against tracked sets; 'quiet movers' = spread signal with zero digest mention.",
@@ -106,6 +139,7 @@ const out = {
   packMath: { priciest: packRows.slice(0,6), cheapest: [...packRows].reverse().slice(0,6) },
   narrative: { inNews: inNews.slice(0,6), quietMovers: quietMovers.slice(0,6) },
   catalysts,
+  depthReads,
   dailyThree: (() => {
     const sealedPick = (div.rows||[]).filter(r=>r.signal).sort((a,b)=>Math.abs(b.spreadPct)-Math.abs(a.spreadPct))[0] || null;
     let gradedPick = null;

@@ -26,3 +26,17 @@ Product injections (tins, bundles) into hot sets vent secondary-market
 pressure. Absorption within the window = demand confirmation; stall =
 distribution warning. Read per-event via listing deltas. Falsifier per
 event, stated in the event coverage.
+
+## RT-3 · Depth-Liquidity Matrix (Tyler, Aug 18 2026)
+**Statement:** deep markets read differently by flow. High supply with
+BUILDING listings = pile-up — supply outpacing estimated demand;
+historically precedes softness. High supply with DRAINING listings =
+churn — depth that's moving; historically reversal-prone / temporary.
+Low supply + draining = thinning fast (scarcity forming). Low + building
+= restock or interest fade — context decides.
+**Inputs:** Active Listings (measured) × Buy Pressure est. (listing
+deltas — not reported sales, per standing disclosure).
+**House posture:** published as state reads on Deepest Markets, never
+buy/sell imperatives. Per-product reads unlock at 3+ clean snapshot days.
+**Falsifier:** if pile-up states precede 14-day price softness in <55%
+of resolved cases (rolling log), thresholds get recalibrated in public.
