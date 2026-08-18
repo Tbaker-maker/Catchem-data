@@ -43,6 +43,17 @@ const ageDays = ts => ts ? (Date.now() - new Date(ts)) / 86400000 : Infinity;
 const grade = (g) => g ? { count: g.count ?? null, median: g.medianPrice ?? null, min: g.minPrice ?? null, max: g.maxPrice ?? null } : null;
 const round2 = n => n == null ? null : Math.round(n * 100) / 100;
 
+let PPT_SETS = null;
+async function pptSetIdFor(setName) {
+  // v4 (2026-08-18): PPT setIds are NUMERIC (e.g. 3020) and their numbers are
+  // N/M fractions — proven by saved raws + /prices 404s on pokemontcg ids.
+  // Map by name via their /sets, then query the PROVEN /cards machinery.
+  if (!PPT_SETS) PPT_SETS = (await getJSON(BASE + "/sets?limit=500")).data || [];
+  const want = setName.toLowerCase();
+  const hit = PPT_SETS.find(x => { const n = (x.name||"").toLowerCase(); return n === want || n.endsWith(": " + want) || n.includes(want); });
+  return hit ? hit.id : null;
+}
+
 async function main() {
   const sp = JSON.parse(await readFile(join(DATA, "singles-prices.json"), "utf-8"));
   const confirmed = sp.cards.filter(c => c.cardId && c.needsReview === false);
@@ -53,20 +64,24 @@ async function main() {
   for (const c of confirmed) {
     await sleep(1100);
     try {
-      // v3 lookup (2026-08-18): direct /prices?setId=&number= — name search
-      // NEVER surfaces secret-rare printings (0/12 at limit 5 AND at limit 20,
-      // 720 credits of evidence); the number-addressed endpoint is what the
-      // verify gate already uses. pokemontcg setId passed as-is (same
-      // assumption as verify-watchlist-prices.mjs — if PPT's setId space
-      // differs, both fail together and loudly).
-      const setId = c.cardId.split("-")[0];
-      const d = await getJSON(`${BASE}/prices?setId=${encodeURIComponent(setId)}&number=${encodeURIComponent(c.number)}&includeEbay=true&includeHistory=true&days=30`);
-      credits += d.metadata?.apiCallsConsumed?.total ?? 1;
-      const hit = Array.isArray(d?.data) ? d.data[0] : d?.data ?? null;
+      // v4 lookup (2026-08-18): numeric PPT setId (name-mapped via /sets) +
+      // the PROVEN /cards endpoint, matched on number PREFIX (their numbers
+      // are "215/203" fractions). v3's /prices?setId=swsh7 404'd — wrong id
+      // space, wrong number format, both now handled.
+      const pptSet = await pptSetIdFor(c.setName || "");
+      if (pptSet == null) {
+        out.push({ cardId: c.cardId, watchLabel: c.watchLabel, dataStatus: "no-match",
+          note: `no PPT set matched name "${c.setName}"` });
+        console.log(`  ${c.cardId.padEnd(12)} NO SET MATCH`);
+        continue;
+      }
+      const d = await getJSON(`${BASE}/cards?setId=${encodeURIComponent(pptSet)}&search=${encodeURIComponent(c.name)}&limit=20&includeEbay=true&includeHistory=true&days=30`);
+      credits += d.metadata?.apiCallsConsumed?.total ?? (d.data || []).length;
+      const hit = (d.data || []).find(p => String(p.cardNumber || "").split("/")[0].replace(/^0+/, "") === String(c.number).replace(/^0+/, ""));
       if (!hit) {
         out.push({ cardId: c.cardId, watchLabel: c.watchLabel, dataStatus: "no-match",
-          note: `PPT /prices returned nothing for setId=${setId} number=${c.number}` });
-        console.log(`  ${c.cardId.padEnd(12)} NO MATCH (/prices)`);
+          note: `PPT set ${pptSet}: no card number ${c.number} among ${(d.data || []).length} name matches` });
+        console.log(`  ${c.cardId.padEnd(12)} NO MATCH (set ${pptSet}, ${(d.data || []).length} candidates)`);
         continue;
       }
       const px = hit.prices || {};
