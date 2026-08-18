@@ -33,7 +33,8 @@ Verdict paragraph keyed to SLOT-1. Hedged: "the early tape says…"
 ## 4. The Spread (conditional section — only if provider approved + live)
 [SLOT-5: eBay-ask vs TCG-market divergence table — source:
 data/divergence-report.json — fills only after provider eval → adapter →
-first crosscheck run. If not live by send: CUT section entirely, tease in
+first crosscheck run AND PPT licensing cleared for publication (see
+research/ppt-licensing-note.md). If either is missing by send: CUT section entirely, tease in
 closer instead. Never fake it.]
 
 ## 5. Grader's Corner (120–150w)

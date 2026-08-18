@@ -27,6 +27,7 @@ explicit sign-off AND an entry here. Updated Aug 18, 2026.*
 4. Reduce SEARCH_PAGES 3→2 on stable SKUs: headroom, not savings ($0 either way).
 
 ## Decisions log
+- Aug 18: PPT licensing flag — FAQ restricts commercial use to Business ($99). $9.99 tier covers dev/validation NOW; PUBLICATION of PPT-derived numbers gated on written clarification (see research/ppt-licensing-note.md). If Business required: post-revenue trigger, not pre-revenue spend.
 - Aug 18: PPT $9.99/mo tier — the ledger rule's explicit-sign-off path used for the first time; free tier's 100/day judged too thin for 70 SKUs + retries + probes. First lever if money tightens: this line, cancel-anytime.
 - Aug 18: Cardmarket (EU) singles layer added — $0, rides the existing pokemontcg.io call; stored-only until reviewed.
 - Aug 18: provider eval hard-gated to free tiers only (pre-revenue rule).
