@@ -16,7 +16,7 @@ compute daily eBay-ask vs TCG-market divergence. Divergence >15% = signal.
 Test set (10 SKUs, mixed): sv9-booster-box, swsh7-booster-box, sv8pt5-etb,
 me2pt5 ETB + bundle, me1-booster-box, sv3pt5-etb, sv4pt5-etb, swsh45 ETB
 (Shining Fates) if tracked, base1-booster-box.
-Record: hit-rate on exact products · fields returned (market? low? sold
+Record: hit-rate on exact products · **LISTING/SELLER COUNTS exposed? (now a first-class criterion — supply lead-lag needs it; a provider with counts beats a cheaper one without)** · fields returned (market? low? sold
 history?) · their update timestamp · rate limits · cost · how they source
 (ToS posture — counsel housekeeping list). Disqualify: no sealed, no
 freshness signal, or scraping-us-directly posture.
@@ -24,7 +24,7 @@ freshness signal, or scraping-us-directly posture.
 ## Decision rule
 Highest hit-rate with a freshness field wins; ties → cheaper. Winner gets
 scripts/fetch-sealed-crosscheck.mjs written against its REAL response
-shape (do not pre-build adapters for unseen APIs). Output contract:
+shape (do not pre-build adapters for unseen APIs). Output contract (EXTENDED for supply):
 data/sealed-crosscheck.json → { updatedAt, source, products: [{ id,
-tcgMarket, providerUpdatedAt, dataStatus }] } — divergence engine already
+tcgMarket, tcgListings (if available), providerUpdatedAt, dataStatus }] } — fetch also appends {date,id,tcgListings} rows to data/crosscheck-history.json — divergence engine already
 consumes this contract.
