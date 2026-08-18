@@ -47,7 +47,8 @@
     "subtype": "booster-box",
     "searchQuery": "Pokemon Destined Rivals Booster Box",
     "image": "https://images.pokemontcg.io/sv10/logo.png",
-    "vintage": false
+    "vintage": false,
+    "priceFloor": 250
   },
   {
     "id": "sv9-etb",
@@ -67,7 +68,8 @@
     "subtype": "booster-box",
     "searchQuery": "Pokemon Journey Together Booster Box",
     "image": "https://images.pokemontcg.io/sv9/logo.png",
-    "vintage": false
+    "vintage": false,
+    "dataQualityNote": "priceHistory before 2026-08-18 is contaminated: sort-by-price + no title filter aggregated single-pack/bundle prices (~$24 median vs real ~$270). Do not chart or cite pre-fix rows."
   },
   {
     "id": "sv8-etb",
@@ -247,7 +249,10 @@
     "subtype": "booster-box",
     "searchQuery": "Pokemon Evolving Skies Booster Box sealed",
     "image": "https://images.pokemontcg.io/swsh7/logo.png",
-    "vintage": false
+    "vintage": false,
+    "priceFloor": 1000,
+    "priceCeiling": 8000,
+    "dataQualityNote": "priceHistory before 2026-08-18 is contaminated: the $80-800 subtype window sat entirely below the real ~$3000+ market, so aggregates were packs/ETBs, never boxes. Do not chart or cite pre-fix rows."
   },
   {
     "id": "cel25-etb",
@@ -467,7 +472,9 @@
     "subtype": "booster-bundle",
     "searchQuery": "Pokemon 151 Booster Bundle sealed",
     "image": "https://images.pokemontcg.io/sv3pt5/logo.png",
-    "vintage": false
+    "vintage": false,
+    "priceFloor": 60,
+    "priceCeiling": 500
   },
   {
     "id": "sv6pt5-bb",

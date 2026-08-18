@@ -35,6 +35,147 @@ const MIN_PRICE = 5;            // Filter out absurd lowballs / parts listings
 const MAX_PRICE = 10000;
 const TRIM_PCT = 0.10;          // Trim top/bottom 10% as outliers before median
 
+// ─── Per-subtype price bounds (Aug 2026 fix) ─────────────────────────────────
+// Replaces reliance on the global $5 floor, which let single packs poison
+// booster-box medians (the Journey Together bug). Per-SKU overrides in
+// sealed-products.json (priceFloor / priceCeiling fields) WIN over these.
+const SUBTYPE_PRICE_BOUNDS = {
+  "booster-box":        [80, 800],
+  "etb":                [30, 400],
+  "pc-etb":             [50, 800],
+  "booster-bundle":     [15, 100],
+  "premium-collection": [25, 300],
+  "upc":                [80, 1500],
+  "tin":                [15, 150],
+  "collection-box":     [20, 200],
+  "build-and-battle":   [15, 100],
+};
+
+function priceBoundsFor(product) {
+  // Vintage SKUs (WOTC/early-era boxes) trade far above modern subtype
+  // ceilings — an $800 booster-box cap excludes every genuine Base Set box
+  // before fetch. They get the global window unless per-SKU overrides say more.
+  const def = product.vintage
+    ? [MIN_PRICE, MAX_PRICE]
+    : SUBTYPE_PRICE_BOUNDS[product.subtype] || [MIN_PRICE, MAX_PRICE];
+  return [
+    product.priceFloor  != null ? product.priceFloor  : def[0],
+    product.priceCeiling != null ? product.priceCeiling : def[1],
+  ];
+}
+
+// ─── Post-fetch title filtering (Aug 2026 fix) ───────────────────────────────
+// eBay Browse API does not reliably support -keyword exclusions in `q`
+// (that syntax was only documented for the decommissioned Finding API), so
+// ALL disambiguation happens here, on item titles, after fetch.
+//
+// REQUIRE: title must contain the set name AND a product-type phrase.
+// REJECT:  title contains an exclusion term for the subtype.
+// SAFETY:  never apply an exclusion whose words appear in the set name itself
+//          (prevents the "Battle Styles" vs -battle self-contradiction).
+// Single-word terms use word-boundary matching so e.g. "tin" cannot match
+// the "tin" inside "Destined Rivals". Multi-word phrases use substring match.
+
+const REQUIRE_PHRASES = {
+  "booster-box":        ["booster box"],
+  "etb":                ["elite trainer box", "etb"],
+  "pc-etb":             ["elite trainer box", "etb"],
+  // "booster bundle" only — bare "bundle" let weighed-pack lots and multi-set
+  // pack bundles satisfy the type gate (151 spot check, 2026-08-18)
+  "booster-bundle":     ["booster bundle"],
+  "premium-collection": ["premium collection"],
+  "upc":                ["ultra premium", "ultra-premium"],
+  "tin":                ["tin"],
+  "collection-box":     ["collection"],
+  "build-and-battle":   ["build & battle", "build and battle"],
+};
+
+const EXCLUDE_COMMON = [
+  "single", "loose", "lot", "empty", "opened", "damaged", "custom",
+  "repack", "proxy", "no packs", "resale", "read description",
+  // damaged-but-listed-sealed (spot check 2026-08-18: "2 Tears", "Sealed
+  // Ripped", "SMALL PUNCTURE" all passed and dragged priceLow)
+  "ripped", "torn", "tear", "tears", "puncture", "punctured", "crushed",
+  "dented", "see description",
+  // weighed packs + accessory-only listings sold under product names
+  "heavy", "3d printed", "case only", "no cards",
+];
+
+// Non-English printings. JP/KR/CN boxes are a DIFFERENT product at a different
+// price point — e.g. Japanese "Battle Partners" is the SV9 counterpart to
+// English Journey Together and runs ~$100 vs ~$150-200 for the English box.
+// Set "allowImports": true on a SKU in sealed-products.json to track them anyway.
+// Subject to the same set-name safety rule as every other exclusion.
+const EXCLUDE_NON_ENGLISH = [
+  "japanese", "japan", "jpn", "korean", "korea", "chinese", "china",
+  "taiwanese", "traditional chinese", "simplified chinese",
+];
+
+const EXCLUDE_BY_SUBTYPE = {
+  "booster-box": [
+    "etb", "elite trainer", "bundle", "blister", "mini tin",
+    "build & battle", "build and battle", "1 pack", "single pack",
+    "2 pack", "3 pack", "collection box", "sleeved booster",
+    // multi-box lots masquerading as one box ("6 Booster Boxes", "2 Box Lot").
+    // NOT "case": legit singles ship "with plastic case".
+    "booster boxes", "box lot", "2 box", "3 box", "4 box", "6 box",
+    // NOT excluded: "enhanced" — the Enhanced Booster Box is a variant of the
+    // same JT booster box (box-topper promo; only ME-01 and JT have this in
+    // modern — Tyler, 2026-08-17). Both variants price into the same SKU.
+    // pre-release kits & connector-less "Build Battle" phrasing that slips the
+    // "build & battle"/"build and battle" exclusions
+    "build battle", "pre-release", "pre release", "prerelease",
+  ],
+  "etb":            ["booster box", "bundle", "blister", "36 pack", "mini tin"],
+  "pc-etb":         ["booster box", "bundle", "blister", "36 pack", "mini tin"],
+  "booster-bundle": ["booster box", "etb", "elite trainer", "36 pack"],
+  "premium-collection": ["booster box", "etb", "elite trainer"],
+  "upc":            ["booster box"],
+  "tin":            ["booster box", "etb", "elite trainer"],
+  "collection-box": ["booster box", "etb", "elite trainer"],
+  "build-and-battle": ["booster box", "etb", "elite trainer"],
+};
+
+function wordBoundaryTest(term, titleLower) {
+  if (term.includes(" ") || term.includes("&") || term.includes("-")) {
+    return titleLower.includes(term); // phrase → substring
+  }
+  return new RegExp(`\\b${term}\\b`, "i").test(titleLower); // word → boundary
+}
+
+function filterItemsForProduct(product, items) {
+  const titleLowerOf = i => (i.title || "").toLowerCase();
+  const setLower = (product.set || "").toLowerCase();
+  const setWords = new Set(setLower.split(/\s+/).filter(Boolean));
+  const requires = REQUIRE_PHRASES[product.subtype] || [];
+  // set-name safety: drop exclusions sharing a word with the set name
+  const setSafe = term =>
+    !term.split(/[\s&-]+/).some(w => w && setWords.has(w));
+  const excludes = [
+    ...EXCLUDE_COMMON,
+    ...(EXCLUDE_BY_SUBTYPE[product.subtype] || []),
+  ].filter(setSafe);
+  const langExcludes = (product.allowImports ? [] : EXCLUDE_NON_ENGLISH).filter(setSafe);
+
+  const report = { fetched: items.length, failSet: 0, failType: 0, failExclude: 0, failLang: 0, failPrice: 0, kept: 0 };
+  const [floor, ceiling] = priceBoundsFor(product);
+
+  const kept = items.filter(i => {
+    const t = titleLowerOf(i);
+    if (setLower && !t.includes(setLower)) { report.failSet++; return false; }
+    if (requires.length && !requires.some(r => t.includes(r))) { report.failType++; return false; }
+    if (product.subtype === "pc-etb" && !t.includes("pokemon center")) { report.failType++; return false; }
+    if (excludes.some(term => wordBoundaryTest(term, t))) { report.failExclude++; return false; }
+    if (langExcludes.some(term => wordBoundaryTest(term, t))) { report.failLang++; return false; }
+    const p = parseFloat(i.price?.value);
+    if (isNaN(p) || p < floor || p > ceiling) { report.failPrice++; return false; }
+    return true;
+  });
+  report.kept = kept.length;
+  return { kept, report, floor, ceiling };
+}
+
+
 // ─── eBay OAuth (client_credentials grant) ───────────────────────────────────
 async function getEbayToken() {
   const appId = process.env.EBAY_APP_ID;
@@ -60,33 +201,50 @@ async function getEbayToken() {
 }
 
 // ─── eBay search ─────────────────────────────────────────────────────────────
-async function searchEbay(token, query) {
-  const params = new URLSearchParams({
-    q: query,
-    category_ids: EBAY_TCG_CATEGORY,
-    filter: `conditionIds:{${CONDITION_NEW}},priceCurrency:USD,price:[${MIN_PRICE}..${MAX_PRICE}]`,
-    limit: "50",
-    sort: "price",
-  });
-  const res = await fetch(`${EBAY_SEARCH_URL}?${params}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "X-EBAY-C-MARKETPLACE-ID": MARKETPLACE,
-    },
-  });
-  if (!res.ok) {
-    console.warn(`  search failed (${res.status}) for: ${query}`);
-    return [];
+// Paginated: up to SEARCH_PAGES pages of 50. One page under-samples strict
+// SKUs — e.g. excluding the "Enhanced" JT variant left ~6 regular boxes in a
+// single page, tripping the low-result guard. ~3x call volume (≤144/day for
+// 48 SKUs) is well inside Browse API free-tier limits.
+const SEARCH_PAGES = 3;
+
+async function searchEbay(token, query, floor = MIN_PRICE, ceiling = MAX_PRICE) {
+  const all = [];
+  for (let page = 0; page < SEARCH_PAGES; page++) {
+    const params = new URLSearchParams({
+      q: query,
+      category_ids: EBAY_TCG_CATEGORY,
+      filter: `conditionIds:{${CONDITION_NEW}},priceCurrency:USD,price:[${floor}..${ceiling}]`,
+      limit: "50",
+      offset: String(page * 50),
+      // NOTE: deliberately NOT sorted by price. With sort=price the API returns
+      // the 50 CHEAPEST matches above the floor, so real English booster boxes
+      // ($150-200) fell outside the window entirely and only cheap imports were
+      // ever fetched. Default relevance ordering surfaces actual matches.
+    });
+    const res = await fetch(`${EBAY_SEARCH_URL}?${params}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "X-EBAY-C-MARKETPLACE-ID": MARKETPLACE,
+      },
+    });
+    if (!res.ok) {
+      console.warn(`  search failed (${res.status}) page ${page + 1} for: ${query}`);
+      break;
+    }
+    const data = await res.json();
+    const batch = data.itemSummaries || [];
+    all.push(...batch);
+    if (batch.length < 50) break; // last page
+    await new Promise(r => setTimeout(r, QUERY_DELAY_MS));
   }
-  const data = await res.json();
-  return data.itemSummaries || [];
+  return all;
 }
 
 // ─── Aggregate prices with outlier trimming ──────────────────────────────────
-function aggregatePrices(items) {
+function aggregatePrices(items, floor = MIN_PRICE, ceiling = MAX_PRICE) {
   const prices = items
     .map(i => parseFloat(i.price?.value))
-    .filter(p => !isNaN(p) && p >= MIN_PRICE && p <= MAX_PRICE)
+    .filter(p => !isNaN(p) && p >= floor && p <= ceiling)
     .sort((a, b) => a - b);
   if (prices.length < 3) return null; // Need a few listings for trust
   const trim = Math.floor(prices.length * TRIM_PCT);
@@ -144,9 +302,39 @@ async function main() {
 
   const updated = await mapConcurrent(products, async (product) => {
     try {
-      const items = await searchEbay(token, product.searchQuery);
-      const agg = aggregatePrices(items);
+      const [floor, ceiling] = priceBoundsFor(product);
+      const items = await searchEbay(token, product.searchQuery, floor, ceiling);
+      const { kept, report } = filterItemsForProduct(product, items);
+      console.log(
+        `   ${product.id}: fetched=${report.fetched} kept=${report.kept} ` +
+        `(set:${report.failSet} type:${report.failType} excl:${report.failExclude} lang:${report.failLang} price:${report.failPrice})`
+      );
+
+      // Zero/low-result safety: if this SKU previously had healthy listings
+      // but filtering now leaves almost nothing, treat it as a QUERY problem,
+      // not a market signal. Keep previous prices; do not write history.
       const prev = previous[product.id];
+      // Threshold 8, not 3: aggregatePrices publishes at exactly 3 kept, and a
+      // bad query can leave exactly 3 wrong-product survivors (observed Aug 17:
+      // 3 JP/CN import boxes would have published $110 as a clean "live" price).
+      // A healthy SKU dropping below 8 kept is a query problem until proven otherwise.
+      if ((prev?.listingCount ?? 0) >= 10 && kept.length < 8) {
+        console.warn(`   ⚠ ${product.id}: query_error (had ${prev.listingCount}, kept ${kept.length})`);
+        return {
+          ...product,
+          priceUsd: prev?.priceUsd,
+          priceMedian: prev?.priceMedian,
+          priceLow: prev?.priceLow,
+          priceHigh: prev?.priceHigh,
+          listingCount: prev?.listingCount ?? 0,
+          priceHistory: prev?.priceHistory || [],
+          dataStatus: "query_error",
+          lastSeen: prev?.lastSeen,
+          filterReport: report,
+        };
+      }
+
+      const agg = aggregatePrices(kept, floor, ceiling);
       const history = prev?.priceHistory ? [...prev.priceHistory] : [];
 
       if (agg) {
@@ -174,6 +362,7 @@ async function main() {
         priceHistory: history,
         dataStatus: agg ? "live" : prev?.priceUsd ? "stale" : "unavailable",
         lastSeen: agg ? today : prev?.lastSeen,
+        filterReport: report,
       };
     } catch (e) {
       console.error(`   ✗ ${product.name}: ${e.message}`);
@@ -188,12 +377,14 @@ async function main() {
   const live = updated.filter(p => p.dataStatus === "live").length;
   const stale = updated.filter(p => p.dataStatus === "stale").length;
   const missing = updated.filter(p => p.dataStatus === "unavailable" || p.dataStatus === "error").length;
+  const queryErr = updated.filter(p => p.dataStatus === "query_error").length;
   const elapsed = ((Date.now() - startTs) / 1000).toFixed(1);
 
   console.log(`\n✅ Done in ${elapsed}s`);
   console.log(`   live:   ${live}`);
   console.log(`   stale:  ${stale}`);
   console.log(`   miss:   ${missing}`);
+  if (queryErr) console.log(`   ⚠ query_error: ${queryErr} (filtering wiped a previously-healthy SKU — inspect filterReport)`);
 
   const output = {
     updatedAt: new Date().toISOString(),
