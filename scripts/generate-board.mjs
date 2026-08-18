@@ -7,6 +7,12 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => JSON.parse(await readFile(join(ROOT,p),"utf-8"));
+const cardImg = id => { const m=/^(.+)-(\w+)$/.exec(id||""); return m?`https://images.pokemontcg.io/${m[1]}/${m[2]}.png`:null; };
+let __tcgIds = {};
+const sealedImg = p => p.representativeImage
+  || (__tcgIds[p.id] ? `https://tcgplayer-cdn.tcgplayer.com/product/${__tcgIds[p.id]}_in_400x400.jpg` : null)
+  || p.image || null;
+
 const sp = await J("data/sealed-prices.json");
 try { const cm = await J("data/crosscheck-id-map.json");
   for (const e of (cm.entries||[])) if (e.reviewed && !e.exclude && e.tcgPlayerId) __tcgIds[e.id] = e.tcgPlayerId;
@@ -17,11 +23,6 @@ const heat = await J("data/heat-report.json");
 let der = {}; try { der = await J("data/derived-insights.json"); } catch {}
 const heatDay = (heat.mode||"").match(/day (\d+)/)?.[1] ?? "1";
 const spreadBy = new Map((div.rows||[]).map(r=>[r.id,r]));
-const cardImg = id => { const m=/^(.+)-(\w+)$/.exec(id||""); return m?`https://images.pokemontcg.io/${m[1]}/${m[2]}.png`:null; };
-let __tcgIds = {};
-const sealedImg = p => p.representativeImage
-  || (__tcgIds[p.id] ? `https://tcgplayer-cdn.tcgplayer.com/product/${__tcgIds[p.id]}_in_400x400.jpg` : null)
-  || p.image || null;
 const money = n => n==null ? "—" : "$"+Number(n).toLocaleString("en-US",{maximumFractionDigits:0});
 const eraPill = e => ({swsh:"SWSH",sv:"SV",mega:"ME",me:"ME"}[e]||String(e||"").toUpperCase().slice(0,4));
 
