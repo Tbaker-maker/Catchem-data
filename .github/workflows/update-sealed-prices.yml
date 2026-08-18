@@ -1,3 +1,14 @@
+# ═══ STAGED FILE — DO NOT PASTE YET ═══════════════════════════════════════
+# Workflow v2: adds PPT crosscheck + The Spread + Supply Watch to the daily run.
+# PASTE ONLY AFTER: (1) CC's id-map low-confidence rows are approved, and
+# (2) one manual crosscheck run validates output shape.
+# TWO WEB STEPS WHEN THAT DAY COMES:
+#   A) Repo → Settings → Secrets and variables → Actions → New repository
+#      secret → Name: POKEMONPRICETRACKER_API_KEY → paste key → Add secret
+#   B) Edit .github/workflows/update-sealed-prices.yml → select all → delete →
+#      paste EVERYTHING BELOW THIS HEADER (from 'name:' down) → commit
+# First line of real content must be:  name: Update sealed prices
+# ═══════════════════════════════════════════════════════════════════════════
 name: Update sealed prices
 
 on:
@@ -25,14 +36,23 @@ jobs:
           EBAY_APP_ID: ${{ secrets.EBAY_APP_ID }}
           EBAY_CERT_ID: ${{ secrets.EBAY_CERT_ID }}
         run: node scripts/fetch-sealed-prices.mjs
+      - name: Fetch TCG crosscheck (PPT)
+        continue-on-error: true # a PPT hiccup must never kill the sealed run
+        env:
+          POKEMONPRICETRACKER_API_KEY: ${{ secrets.POKEMONPRICETRACKER_API_KEY }}
+        run: node scripts/fetch-sealed-crosscheck.mjs
       - name: Compute heat states
         run: node scripts/compute-heat-states.mjs
+      - name: Compute The Spread
+        run: node scripts/compute-divergence.mjs
+      - name: Compute Supply Watch
+        run: node scripts/compute-supply-watch.mjs
 
       - name: Commit updated prices
         run: |
           git config user.name "catchem-bot"
           git config user.email "bot@catchem.app"
-          git add data/sealed-prices.json data/heat-report.json data/heat-history.json
+          git add data/sealed-prices.json data/heat-report.json data/heat-history.json data/sealed-crosscheck.json data/crosscheck-history.json data/divergence-report.json data/supply-watch.json
           if git diff --staged --quiet; then
             echo "No price changes to commit."
           else
