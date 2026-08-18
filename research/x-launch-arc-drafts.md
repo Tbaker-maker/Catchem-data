@@ -43,19 +43,23 @@ corrections in public — that's the whole point.
 We publish our own repair receipts. Get used to it.
 
 ---
-## Day 2 · Thu Aug 20 — Why I'm Here
+## Day 2 · Thu Aug 20 — Same Game, Different Wrapper
 
-Spent years reading NFT markets. The skill that mattered was never the
-asset — it was seeing supply and demand desync before the price admitted
-it. [PICK ONE or edit:
-A) "I spent two years reading NFT floor charts at 2am — the JPEGs are gone; the pattern-reading stayed."
-B) "My old edge was spotting supply drying up in NFT collections hours before the floor moved. Same eyes, better cardboard."] Same signals exist
-in Pokémon sealed. Older market, real cardboard, thirty years of history
-to check your work against. So that's what I'm building now.
+No pivot story. NFT people already love Pokémon; collectors already think
+in floors. One market brain, two dialects — translation table:
 
-*Support:* Same chart shapes, different substrate. Capitulation in JPEGs
-and capitulation in sealed wax look identical on a tape. One of them comes
-with Charizard.
+Floor price → ask median.
+Supply drying up → active listings draining.
+The mint → the print wave.
+Sweeping the floor → buying out the cheap asks.
+Diamond hands → the sealed box you swore you'd never rip.
+
+Same tape, better cardboard — and this one's been running for thirty
+years, so you can actually check your reads against history.
+
+*Support (reply to own post):* If you can smell a thin floor from across
+the room, you already know how to read sealed wax. Welcome home, degens.
+Collectors — they come in peace, and they bid aggressively.
 
 ---
 ## Day 3 · Fri Aug 21 — The Trust Standard (manifesto)
