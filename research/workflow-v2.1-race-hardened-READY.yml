@@ -1,0 +1,75 @@
+# ═══ STAGED v2.1 — race-hardened commit step ═══════════════════════════════
+# Change vs live v2: the final push now rebases-and-retries (3x) if main moved
+# mid-run — the exact failure from Aug 18's first v2 dispatch. Paste whenever
+# convenient; not urgent (04:00 runs face no traffic). Same paste ritual:
+# Raw → Ctrl+A/C → edit update-sealed-prices.yml → Ctrl+A, Del, Ctrl+V → Commit.
+# ═══════════════════════════════════════════════════════════════════════════
+# ═══ STAGED FILE — DO NOT PASTE YET ═══════════════════════════════════════
+# Workflow v2: adds PPT crosscheck + The Spread + Supply Watch to the daily run.
+# PASTE ONLY AFTER: (1) CC's id-map low-confidence rows are approved, and
+# (2) one manual crosscheck run validates output shape.
+# TWO WEB STEPS WHEN THAT DAY COMES:
+#   A) Repo → Settings → Secrets and variables → Actions → New repository
+#      secret → Name: POKEMONPRICETRACKER_API_KEY → paste key → Add secret
+#   B) Edit .github/workflows/update-sealed-prices.yml → select all → delete →
+#      paste EVERYTHING BELOW THIS HEADER (from 'name:' down) → commit
+# First line of real content must be:  name: Update sealed prices
+# ═══════════════════════════════════════════════════════════════════════════
+name: Update sealed prices
+
+on:
+  schedule:
+    # Daily at 4:00 AM UTC (midnight EST, 9 PM PST previous day)
+    - cron: "0 4 * * *"
+  workflow_dispatch: # Allows manual runs from the Actions tab
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Needs write access to commit updated prices back
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Fetch sealed prices from eBay
+        env:
+          EBAY_APP_ID: ${{ secrets.EBAY_APP_ID }}
+          EBAY_CERT_ID: ${{ secrets.EBAY_CERT_ID }}
+        run: node scripts/fetch-sealed-prices.mjs
+      - name: Fetch TCG crosscheck (PPT)
+        continue-on-error: true # a PPT hiccup must never kill the sealed run
+        env:
+          POKEMONPRICETRACKER_API_KEY: ${{ secrets.POKEMONPRICETRACKER_API_KEY }}
+        run: node scripts/fetch-sealed-crosscheck.mjs
+      - name: Compute heat states
+        run: node scripts/compute-heat-states.mjs
+      - name: Compute The Spread
+        run: node scripts/compute-divergence.mjs
+      - name: Compute Supply Watch
+        run: node scripts/compute-supply-watch.mjs
+
+      - name: Commit updated prices
+        run: |
+          git config user.name "catchem-bot"
+          git config user.email "bot@catchem.app"
+          git add data/sealed-prices.json data/heat-report.json data/heat-history.json data/sealed-crosscheck.json data/crosscheck-history.json data/divergence-report.json data/supply-watch.json
+          if git diff --staged --quiet; then
+            echo "No price changes to commit."
+          else
+            git commit -m "Update sealed prices ($(date -u +'%Y-%m-%d'))"
+            # Race-hardened push (v2.1): tonight's lesson — a mid-run push to main
+            # rejected our push. Rebase our one data commit onto the moved tip and
+            # retry, up to 3 times, before giving up.
+            for i in 1 2 3; do
+              git push && break
+              echo "push rejected (attempt $i) — rebasing onto moved main"
+              git pull --rebase origin main || exit 1
+              sleep 5
+            done
+          fi
