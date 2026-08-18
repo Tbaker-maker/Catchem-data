@@ -111,5 +111,24 @@ ${upcoming.length?`<h2>Radar</h2>${radarRows}`:""}
 </body></html>`;
 await writeFile(join(ROOT,`research/pulse/${today}.html`), html);
 await writeFile(join(ROOT,`research/assets/the-pulse.html`), html);
+
+// ── Machine-readable feed for the app's Ticker (no HTML scraping, ever) ──
+const feed = {
+  generatedAt: new Date().toISOString(), date: today,
+  panel: { skusTracked: sp.products.length, signals: sigs.length,
+           calibrationDay: Number(heatDays)||null, calibrationOf: 8, heatMode: heat?.mode||null },
+  signals: sigs.slice(0,8).map(r=>({ id:r.id, name:r.name, spreadPct:r.spreadPct,
+    ebay:{ ask:r.ebayAskMedian, listings:r.ebayListings??null },
+    tcg:{ market:r.tcgMarket, listings:r.tcgListings??null },
+    read:r.read, provenance:r.provenance, class:"VERIFIED" })),
+  quietMovers: (der?.narrative?.quietMovers??[]).slice(0,4).map(q=>({...q, class:"READ"})),
+  packMath: der?.packMath ? { priciest: der.packMath.priciest.slice(0,3), cheapest: der.packMath.cheapest.slice(0,3), class:"VERIFIED" } : null,
+  radar: upcoming.slice(0,4),
+  chases: chases.map(c=>({ cardId:c.cardId, name:c.name, set:c.setName, market:c.priceMarket,
+    provenance:c.provenance, class:"VERIFIED" })),
+  disclosure: "Buy Pressure is estimated from listing activity — not reported sales. Active Listings are measured.",
+};
+await writeFile(join(ROOT,"research/assets/pulse-feed.json"), JSON.stringify(feed,null,2)+"\n");
+console.log("✓ pulse-feed.json (app Ticker feed) written");
 console.log("✓ Pulse HTML edition written (dated + stable path)");
 console.log(`✓ Morning Pulse written: research/pulse/${today}.md`);
