@@ -30,6 +30,10 @@ Del, Ctrl+V → Commit. (Header in the file repeats this.)
 - eBay Insights application — text in research/insights-application-draft.md,
   file at developer.ebay.com (10 min, expect denial, free lottery)
 
+## 6.5 (optional, 10 min): First pop snapshot — psacard.com/pop + GemRate
+for the 12 chases → CC types entries into data/pop-snapshots.json per its
+_meta schema. Also: ask CC to check PPT card payloads for any pop fields.
+
 ## 7. Relay here: CC's report + the Premium table + regenerated sheet status.
 Then tomorrow's phone-curation runs on VERIFIED lines.
 
