@@ -12,6 +12,8 @@ const div = await J("data/divergence-report.json").catch?.() ?? await J("data/di
 const heat = await J("data/heat-report.json");
 const heatDay = (heat.mode||"").match(/day (\d+)/)?.[1] ?? "1";
 const spreadBy = new Map((div.rows||[]).map(r=>[r.id,r]));
+const cardImg = id => { const m=/^(.+)-(\w+)$/.exec(id||""); return m?`https://images.pokemontcg.io/${m[1]}/${m[2]}.png`:null; };
+const sealedImg = p => p.representativeImage || p.image || null; // rep-image when fetch v-next ships; set logo now
 const money = n => n==null ? "—" : "$"+Number(n).toLocaleString("en-US",{maximumFractionDigits:0});
 const eraPill = e => ({swsh:"SWSH",sv:"SV",mega:"ME",me:"ME"}[e]||String(e||"").toUpperCase().slice(0,4));
 
@@ -22,7 +24,7 @@ const rows = sp.products
 
 const tr = ({p,s}) => `
 <tr>
-  <td class="name">${p.name}<span class="sub">${p.set||""}</span></td>
+  <td class="name" style="display:flex;align-items:center;gap:10px">${sealedImg(p)?`<img src="${sealedImg(p)}" style="width:42px;background:#0b0d14;border-radius:5px;padding:3px;border:1px solid rgba(255,255,255,.07)" alt="">`:""}<span>${p.name}<span class="sub">${p.set||""}</span></span></td>
   <td><span class="pill">${p.subtype?.replace("-"," ").toUpperCase()||""}</span></td>
   <td class="num">${money(p.priceMedian)}</td>
   <td class="num">${p.listingCount??"—"}</td>

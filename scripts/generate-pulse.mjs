@@ -7,6 +7,8 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const today = new Date().toISOString().split("T")[0];
+const cardImg = id => { const m=/^(.+)-(\w+)$/.exec(id||""); return m?`https://images.pokemontcg.io/${m[1]}/${m[2]}.png`:null; };
+const sealedImg = p => p.representativeImage || p.image || null; // rep-image when fetch v-next ships; set logo now
 const J = async p => { try { return JSON.parse(await readFile(join(ROOT,p),"utf-8")); } catch { return null; } };
 
 const sp = await J("data/sealed-prices.json");
@@ -78,7 +80,7 @@ const sigCards = sigs.slice(0,6).map(r=>`
   <div class="sigread">${r.read}</div></div>`).join("");
 const supNote = sigs.some(r=>r.tcgListings==null) ? `<div class="foot">* TCG-side supply: provider exposes no sealed listing counts — slot is wired; lights up the day they ship it.</div>` : "";
 const deepRows = topListed.map(p=>`<div class="row"><span>${p.name}</span><span class="mono">$${p.priceMedian} · ${p.listingCount} listings</span></div>`).join("");
-const chaseRows = chases.map(c=>`<div class="row"><span>${c.name} <em>${c.setName}</em></span><span class="mono">$${c.priceMarket}</span></div>`).join("");
+const chaseRows = chases.map(c=>`<div class="row"><span style="display:flex;align-items:center;gap:10px">${cardImg(c.cardId)?`<img class="thumb" style="width:34px" src="${cardImg(c.cardId)}" alt="">`:""}<span>${c.name} <em>${c.setName}</em></span></span><span class="mono">$${c.priceMarket}</span></div>`).join("");
 const radarRows = upcoming.map(r=>`<div class="row"><span>${r.name||r.title}</span><span class="mono">${r.date||r.releaseDate}</span></div>`).join("");
 const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Sora:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <title>Morning Pulse — ${today} · Catch'em</title><style>
@@ -92,13 +94,14 @@ h1{font-size:34px;letter-spacing:-.5px;margin:6px 0 2px}h1 span{color:var(--dim)
 .stat b{display:block;font:22px 'JetBrains Mono',monospace;color:var(--txt)}
 .stat i{font-style:normal;font-size:11px;color:var(--dim)}
 h2{font-size:13px;font-family:'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin:26px 0 10px}
-.sig{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:8px;padding:12px 14px;margin-bottom:8px}
+.sig{display:flex;gap:12px;align-items:center;background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:8px;padding:12px 14px;margin-bottom:8px}
 .sighead{display:flex;gap:12px;align-items:baseline}.pct{font:16px 'JetBrains Mono',monospace;color:var(--gold)}
 .signame{font-weight:600}.sigsub{font-size:13px;color:var(--dim);margin-top:3px}.sigsub b{color:var(--txt)}.sup{font:11px 'JetBrains Mono',monospace;color:var(--dim)}.sigread{font-size:12px;color:var(--dim);margin-top:4px;font-style:italic}.foot{font:11px 'JetBrains Mono',monospace;color:var(--dim);margin-top:8px}
 .row{display:flex;justify-content:space-between;gap:12px;padding:9px 2px;border-bottom:1px solid var(--line)}
 .row em{color:var(--dim);font-style:normal;font-size:12px}.mono{font:13px 'JetBrains Mono',monospace;color:var(--txt);white-space:nowrap}
 .calib{margin-top:26px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:11px 14px;font:12px 'JetBrains Mono',monospace;color:var(--dim)}
 footer{margin-top:30px;font:12px 'JetBrains Mono',monospace;color:var(--dim)}
+.thumb{width:46px;height:auto;border-radius:6px;flex:none;border:1px solid rgba(255,255,255,.07)}.thumb.logo{width:56px;background:#0b0d14;padding:4px}.sigbody{flex:1}
 </style></head><body>
 <div class="kicker">CATCH'EM · MORNING PULSE</div>
 <h1>☀️ ${today} <span>#${today.replaceAll("-","")}</span></h1>
@@ -112,9 +115,9 @@ ${sigs.length?`<h2>⚡ Spread signals — price &amp; supply, both markets</h2>$
 <h2>Deepest markets</h2>${deepRows}
 <h2>Chase board · TCGplayer market</h2>${chaseRows}
 ${(der?.dailyThree&&(der.dailyThree.sealed||der.dailyThree.raw))?`<h2>🎯 The Daily Three — watches, not calls</h2>
-${der.dailyThree.sealed?`<div class="sig"><div class="sighead"><span class="pct">SEALED</span><span class="signame">${der.dailyThree.sealed.name}</span></div><div class="sigsub">eBay <b>$${der.dailyThree.sealed.ebay}</b> vs TCG <b>$${der.dailyThree.sealed.tcg}</b> · ${der.dailyThree.sealed.spreadPct>0?"+":""}${der.dailyThree.sealed.spreadPct}%</div><div class="sigread">${der.dailyThree.sealed.reason}</div></div>`:""}
+${der.dailyThree.sealed?`<div class="sig">${(()=>{const pr=sp.products.find(x=>x.name===der.dailyThree.sealed.name);const u=pr&&sealedImg(pr);return u?`<img class="thumb logo" src="${u}" alt="">`:"";})()}<div class="sigbody"><div class="sighead"><span class="pct">SEALED</span><span class="signame">${der.dailyThree.sealed.name}</span></div><div class="sigsub">eBay <b>$${der.dailyThree.sealed.ebay}</b> vs TCG <b>$${der.dailyThree.sealed.tcg}</b> · ${der.dailyThree.sealed.spreadPct>0?"+":""}${der.dailyThree.sealed.spreadPct}%</div><div class="sigread">${der.dailyThree.sealed.reason}</div></div></div>`:""}
 <div class="sig" style="border-left-color:${der.dailyThree.graded?"var(--gold)":"var(--line)"}"><div class="sighead"><span class="pct">GRADED</span><span class="signame">${der.dailyThree.graded?der.dailyThree.graded.name:"calibrating"}</span></div><div class="sigsub">${der.dailyThree.graded?`raw <b>$${der.dailyThree.graded.raw}</b> → PSA10 <b>$${der.dailyThree.graded.psa10}</b> · premium +$${der.dailyThree.graded.premium}`:"returns with the Grading Premium table"}</div></div>
-${der.dailyThree.raw?`<div class="sig"><div class="sighead"><span class="pct">RAW</span><span class="signame">${der.dailyThree.raw.name}</span></div><div class="sigsub"><b>$${der.dailyThree.raw.price}</b> · ${der.dailyThree.raw.set}</div><div class="sigread">${der.dailyThree.raw.reason}</div></div>`:""}
+${der.dailyThree.raw?`<div class="sig">${(()=>{const c=(sg?.cards||[]).find(x=>x.name===der.dailyThree.raw.name&&x.setName===der.dailyThree.raw.set);const u=c&&cardImg(c.cardId);return u?`<img class="thumb" src="${u}" alt="">`:"";})()}<div class="sigbody"><div class="sighead"><span class="pct">RAW</span><span class="signame">${der.dailyThree.raw.name}</span></div><div class="sigsub"><b>$${der.dailyThree.raw.price}</b> · ${der.dailyThree.raw.set}</div><div class="sigread">${der.dailyThree.raw.reason}</div></div></div>`:""}
 <div class="foot">${der.dailyThree.disclosure}</div>`:""}
 ${der?.catalysts?.length?`<h2>📡 Catalyst reads</h2>${der.catalysts.slice(0,4).map(c=>`<div class="row"><span>${c.note}</span><span class="mono">${c.class.toUpperCase()}·${c.horizon}</span></div>`).join("")}`:""}
 ${der?.packMath?`<h2>🧮 Pack math — $ per sealed pack</h2>
@@ -136,7 +139,7 @@ const feed = {
   generatedAt: new Date().toISOString(), date: today,
   panel: { skusTracked: sp.products.length, signals: sigs.length,
            calibrationDay: Number(heatDays)||null, calibrationOf: 8, heatMode: heat?.mode||null },
-  signals: sigs.slice(0,8).map(r=>({ id:r.id, name:r.name, spreadPct:r.spreadPct,
+  signals: sigs.slice(0,8).map(r=>({ id:r.id, name:r.name, imageUrl: sealedImg(sp.products.find(x=>x.id===r.id)||{}), spreadPct:r.spreadPct,
     ebay:{ ask:r.ebayAskMedian, listings:r.ebayListings??null },
     tcg:{ market:r.tcgMarket, listings:r.tcgListings??null },
     read:r.read, provenance:r.provenance, class:"VERIFIED" })),
@@ -145,7 +148,7 @@ const feed = {
   catalysts: (der?.catalysts??[]).slice(0,4),
   packMath: der?.packMath ? { priciest: der.packMath.priciest.slice(0,3), cheapest: der.packMath.cheapest.slice(0,3), class:"VERIFIED" } : null,
   radar: upcoming.slice(0,4),
-  chases: chases.map(c=>({ cardId:c.cardId, name:c.name, set:c.setName, market:c.priceMarket,
+  chases: chases.map(c=>({ cardId:c.cardId, name:c.name, set:c.setName, market:c.priceMarket, imageUrl: cardImg(c.cardId),
     provenance:c.provenance, class:"VERIFIED" })),
   disclosure: "Buy Pressure is estimated from listing activity — not reported sales. Active Listings are measured.",
 };
