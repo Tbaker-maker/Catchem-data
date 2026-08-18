@@ -1,12 +1,12 @@
 {
-  "updatedAt": "2026-08-18T06:50:55.315Z",
+  "updatedAt": "2026-08-18T10:02:08.208Z",
   "source": "pokemontcg.io v2 (TCGplayer market)",
-  "citationRule": "Newsletter/content may cite ONLY dataStatus:live entries with needsReview:false. Supply/demand claims remain sealed-only. Cardmarket cm* fields are STORED ONLY and NOT citable: EUR, different market semantics, and their updatedAt runs months stale via this API (observed 2025/11-2026/01 stamps on 2026-08-18).",
+  "citationRule": "Newsletter/content may cite ONLY dataStatus:live entries with needsReview:false. Supply/demand claims remain sealed-only.",
   "counts": {
-    "printings": 38,
-    "live": 23,
-    "stale": 0,
-    "needsReview": 26
+    "printings": 146,
+    "live": 115,
+    "stale": 7,
+    "needsReview": 125
   },
   "cards": [
     {
@@ -476,7 +476,7 @@
       "priceMarket": 4.72,
       "priceVariant": "holofoil",
       "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
-      "dataStatus": "live",
+      "dataStatus": "stale",
       "cmTrendEur": null,
       "cmAvg7Eur": null,
       "cmAvg30Eur": null,
@@ -487,7 +487,8 @@
           "date": "2026-08-18",
           "price": 4.72
         }
-      ]
+      ],
+      "note": "refresh failed 2026-08-18: 500 https://api.pokemontcg.io/v2/cards?q=name%3A%22Mega%20Ch — carried from previous run"
     },
     {
       "watchLabel": "Mega Charizard X ex (Phantasmal Flames)",
@@ -500,7 +501,7 @@
       "priceMarket": 28.68,
       "priceVariant": "holofoil",
       "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
-      "dataStatus": "live",
+      "dataStatus": "stale",
       "cmTrendEur": null,
       "cmAvg7Eur": null,
       "cmAvg30Eur": null,
@@ -511,7 +512,8 @@
           "date": "2026-08-18",
           "price": 28.68
         }
-      ]
+      ],
+      "note": "refresh failed 2026-08-18: 500 https://api.pokemontcg.io/v2/cards?q=name%3A%22Mega%20Ch — carried from previous run"
     },
     {
       "watchLabel": "Mega Charizard X ex (Phantasmal Flames)",
@@ -524,7 +526,7 @@
       "priceMarket": 703.65,
       "priceVariant": "holofoil",
       "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
-      "dataStatus": "live",
+      "dataStatus": "stale",
       "cmTrendEur": null,
       "cmAvg7Eur": null,
       "cmAvg30Eur": null,
@@ -535,7 +537,8 @@
           "date": "2026-08-18",
           "price": 703.65
         }
-      ]
+      ],
+      "note": "refresh failed 2026-08-18: 500 https://api.pokemontcg.io/v2/cards?q=name%3A%22Mega%20Ch — carried from previous run"
     },
     {
       "watchLabel": "Mega Charizard X ex (Phantasmal Flames)",
@@ -548,7 +551,7 @@
       "priceMarket": 298.62,
       "priceVariant": "holofoil",
       "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
-      "dataStatus": "live",
+      "dataStatus": "stale",
       "cmTrendEur": null,
       "cmAvg7Eur": null,
       "cmAvg30Eur": null,
@@ -559,7 +562,8 @@
           "date": "2026-08-18",
           "price": 298.62
         }
-      ]
+      ],
+      "note": "refresh failed 2026-08-18: 500 https://api.pokemontcg.io/v2/cards?q=name%3A%22Mega%20Ch — carried from previous run"
     },
     {
       "watchLabel": "Mega Gengar ex (Ascended Heroes) — Tyler-corrected Aug 18: chase printing is in AH, not Phantasmal",
@@ -616,8 +620,7 @@
       "cmAvg30Eur": null,
       "cmUpdatedAt": null,
       "needsReview": false,
-      "priceHistory": [],
-      "reviewNote": "Confirmed intended chase printing (AH SIR) — Tyler, 2026-08-18. Chase re-aimed from Phantasmal to Ascended Heroes per his correction."
+      "priceHistory": []
     },
     {
       "watchLabel": "Mega Dragonite ex (Ascended Heroes)",
@@ -846,6 +849,2412 @@
       "cmUpdatedAt": null,
       "needsReview": true,
       "priceHistory": []
+    },
+    {
+      "watchLabel": "AUTO-B: Snorlax VMAX #206 (Sword & Shield)",
+      "cardId": "swsh1-206",
+      "name": "Snorlax VMAX",
+      "number": "206",
+      "rarity": "Rare Rainbow",
+      "setId": "swsh1",
+      "setName": "Sword & Shield",
+      "priceMarket": 108.94,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 41.04,
+      "cmAvg7Eur": 41.83,
+      "cmAvg30Eur": 49.71,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 108.94
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Snorlax VMAX #142 (Sword & Shield)",
+      "cardId": "swsh1-142",
+      "name": "Snorlax VMAX",
+      "number": "142",
+      "rarity": "Rare Holo VMAX",
+      "setId": "swsh1",
+      "setName": "Sword & Shield",
+      "priceMarket": 55.88,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 27.82,
+      "cmAvg7Eur": 41.79,
+      "cmAvg30Eur": 51.44,
+      "cmUpdatedAt": "2025/11/21",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 55.88
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Marnie #200 (Sword & Shield)",
+      "cardId": "swsh1-200",
+      "name": "Marnie",
+      "number": "200",
+      "rarity": "Rare Ultra",
+      "setId": "swsh1",
+      "setName": "Sword & Shield",
+      "priceMarket": 36.96,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 34.04,
+      "cmAvg7Eur": 31.62,
+      "cmAvg30Eur": 35.99,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 36.96
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Boss's Orders #189 (Rebel Clash)",
+      "cardId": "swsh2-189",
+      "name": "Boss's Orders",
+      "number": "189",
+      "rarity": "Rare Ultra",
+      "setId": "swsh2",
+      "setName": "Rebel Clash",
+      "priceMarket": 61.68,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 50.33,
+      "cmAvg7Eur": 53.39,
+      "cmAvg30Eur": 47.82,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 61.68
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Boss's Orders #200 (Rebel Clash)",
+      "cardId": "swsh2-200",
+      "name": "Boss's Orders",
+      "number": "200",
+      "rarity": "Rare Rainbow",
+      "setId": "swsh2",
+      "setName": "Rebel Clash",
+      "priceMarket": 42.83,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 27.6,
+      "cmAvg7Eur": 25.65,
+      "cmAvg30Eur": 26.64,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 42.83
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Ninetales V #177 (Rebel Clash)",
+      "cardId": "swsh2-177",
+      "name": "Ninetales V",
+      "number": "177",
+      "rarity": "Rare Ultra",
+      "setId": "swsh2",
+      "setName": "Rebel Clash",
+      "priceMarket": 36.22,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 22.51,
+      "cmAvg7Eur": 22.25,
+      "cmAvg30Eur": 19.63,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 36.22
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Charizard VMAX #20 (Darkness Ablaze)",
+      "cardId": "swsh3-20",
+      "name": "Charizard VMAX",
+      "number": "20",
+      "rarity": "Rare Holo VMAX",
+      "setId": "swsh3",
+      "setName": "Darkness Ablaze",
+      "priceMarket": 50.51,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 44.68,
+      "cmAvg7Eur": 41.68,
+      "cmAvg30Eur": 43.5,
+      "cmUpdatedAt": "2026/06/27",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 50.51
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Butterfree VMAX #190 (Darkness Ablaze)",
+      "dataStatus": "error",
+      "note": "500 https://api.pokemontcg.io/v2/cards?q=id%3Aswsh3-190&pageSize=20&select=id,name,number,rari"
+    },
+    {
+      "watchLabel": "AUTO-B: Salamence VMAX #194 (Darkness Ablaze)",
+      "cardId": "swsh3-194",
+      "name": "Salamence VMAX",
+      "number": "194",
+      "rarity": "Rare Rainbow",
+      "setId": "swsh3",
+      "setName": "Darkness Ablaze",
+      "priceMarket": 15.36,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 18.26,
+      "cmAvg7Eur": 18.26,
+      "cmAvg30Eur": 13.25,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 15.36
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Pikachu on the Ball #1 (Pokémon Futsal Collection)",
+      "cardId": "fut20-1",
+      "name": "Pikachu on the Ball",
+      "number": "1",
+      "rarity": null,
+      "setId": "fut20",
+      "setName": "Pokémon Futsal Collection",
+      "priceMarket": 86.29,
+      "priceVariant": "normal",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2023/03/01",
+      "dataStatus": "stale",
+      "cmTrendEur": 187.59,
+      "cmAvg7Eur": 154.24,
+      "cmAvg30Eur": 173.92,
+      "cmUpdatedAt": "2026/07/01",
+      "needsReview": true,
+      "priceHistory": []
+    },
+    {
+      "watchLabel": "AUTO-B: Sobble on the Ball #5 (Pokémon Futsal Collection)",
+      "cardId": "fut20-5",
+      "name": "Sobble on the Ball",
+      "number": "5",
+      "rarity": null,
+      "setId": "fut20",
+      "setName": "Pokémon Futsal Collection",
+      "priceMarket": 55.31,
+      "priceVariant": "normal",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2023/03/01",
+      "dataStatus": "stale",
+      "cmTrendEur": 18.72,
+      "cmAvg7Eur": 26.67,
+      "cmAvg30Eur": 27.03,
+      "cmUpdatedAt": "2026/07/01",
+      "needsReview": true,
+      "priceHistory": []
+    },
+    {
+      "watchLabel": "AUTO-B: Eevee on the Ball #2 (Pokémon Futsal Collection)",
+      "cardId": "fut20-2",
+      "name": "Eevee on the Ball",
+      "number": "2",
+      "rarity": null,
+      "setId": "fut20",
+      "setName": "Pokémon Futsal Collection",
+      "priceMarket": 52.38,
+      "priceVariant": "normal",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2023/03/01",
+      "dataStatus": "stale",
+      "cmTrendEur": 94.94,
+      "cmAvg7Eur": 95.82,
+      "cmAvg30Eur": 97.91,
+      "cmUpdatedAt": "2026/07/01",
+      "needsReview": true,
+      "priceHistory": []
+    },
+    {
+      "watchLabel": "AUTO-B: Charizard V #79 (Champion's Path)",
+      "cardId": "swsh35-79",
+      "name": "Charizard V",
+      "number": "79",
+      "rarity": "Rare Secret",
+      "setId": "swsh35",
+      "setName": "Champion's Path",
+      "priceMarket": 271.26,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 246.11,
+      "cmAvg7Eur": 252.85,
+      "cmAvg30Eur": 225.91,
+      "cmUpdatedAt": "2026/01/21",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 271.26
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Charizard VMAX #74 (Champion's Path)",
+      "cardId": "swsh35-74",
+      "name": "Charizard VMAX",
+      "number": "74",
+      "rarity": "Rare Rainbow",
+      "setId": "swsh35",
+      "setName": "Champion's Path",
+      "priceMarket": 235.54,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 173.62,
+      "cmAvg7Eur": 202.7,
+      "cmAvg30Eur": 198.95,
+      "cmUpdatedAt": "2026/01/21",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 235.54
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Gardevoir VMAX #76 (Champion's Path)",
+      "cardId": "swsh35-76",
+      "name": "Gardevoir VMAX",
+      "number": "76",
+      "rarity": "Rare Rainbow",
+      "setId": "swsh35",
+      "setName": "Champion's Path",
+      "priceMarket": 18.12,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 12.96,
+      "cmAvg7Eur": 13.86,
+      "cmAvg30Eur": 14.26,
+      "cmUpdatedAt": "2026/01/21",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 18.12
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Pikachu VMAX #188 (Vivid Voltage)",
+      "cardId": "swsh4-188",
+      "name": "Pikachu VMAX",
+      "number": "188",
+      "rarity": "Rare Rainbow",
+      "setId": "swsh4",
+      "setName": "Vivid Voltage",
+      "priceMarket": 196.17,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 182.07,
+      "cmAvg7Eur": 155.88,
+      "cmAvg30Eur": 135.85,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 196.17
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Pikachu V #170 (Vivid Voltage)",
+      "cardId": "swsh4-170",
+      "name": "Pikachu V",
+      "number": "170",
+      "rarity": "Rare Ultra",
+      "setId": "swsh4",
+      "setName": "Vivid Voltage",
+      "priceMarket": 46.11,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 33.15,
+      "cmAvg7Eur": 24.03,
+      "cmAvg30Eur": 26.36,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 46.11
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Rayquaza #138 (Vivid Voltage)",
+      "cardId": "swsh4-138",
+      "name": "Rayquaza",
+      "number": "138",
+      "rarity": "Amazing Rare",
+      "setId": "swsh4",
+      "setName": "Vivid Voltage",
+      "priceMarket": 25.6,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 16.51,
+      "cmAvg7Eur": 19,
+      "cmAvg30Eur": 20.42,
+      "cmUpdatedAt": "2025/11/21",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 25.6
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Charizard VMAX #SV107 (Shining Fates Shiny Vault)",
+      "cardId": "swsh45sv-SV107",
+      "name": "Charizard VMAX",
+      "number": "SV107",
+      "rarity": "Rare Holo VMAX",
+      "setId": "swsh45sv",
+      "setName": "Shining Fates Shiny Vault",
+      "priceMarket": 137.77,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 121.12,
+      "cmAvg7Eur": 125.13,
+      "cmAvg30Eur": 133.87,
+      "cmUpdatedAt": "2025/12/13",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 137.77
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Morpeko #SV044 (Shining Fates Shiny Vault)",
+      "cardId": "swsh45sv-SV044",
+      "name": "Morpeko",
+      "number": "SV044",
+      "rarity": "Rare Shiny",
+      "setId": "swsh45sv",
+      "setName": "Shining Fates Shiny Vault",
+      "priceMarket": 19.51,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 5.13,
+      "cmAvg7Eur": 5.46,
+      "cmAvg30Eur": 5.09,
+      "cmUpdatedAt": "2026/02/19",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 19.51
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Yamper #SV039 (Shining Fates Shiny Vault)",
+      "cardId": "swsh45sv-SV039",
+      "name": "Yamper",
+      "number": "SV039",
+      "rarity": "Rare Shiny",
+      "setId": "swsh45sv",
+      "setName": "Shining Fates Shiny Vault",
+      "priceMarket": 18.75,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 4.91,
+      "cmAvg7Eur": 5.14,
+      "cmAvg30Eur": 4.54,
+      "cmUpdatedAt": "2026/02/22",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 18.75
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Skyla #72 (Shining Fates)",
+      "cardId": "swsh45-72",
+      "name": "Skyla",
+      "number": "72",
+      "rarity": "Rare Ultra",
+      "setId": "swsh45",
+      "setName": "Shining Fates",
+      "priceMarket": 10.71,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 10.33,
+      "cmAvg7Eur": 11.53,
+      "cmAvg30Eur": 10.13,
+      "cmUpdatedAt": "2026/01/21",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 10.71
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Poké Kid #70 (Shining Fates)",
+      "cardId": "swsh45-70",
+      "name": "Poké Kid",
+      "number": "70",
+      "rarity": "Rare Ultra",
+      "setId": "swsh45",
+      "setName": "Shining Fates",
+      "priceMarket": 9.91,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 6.74,
+      "cmAvg7Eur": 6.09,
+      "cmAvg30Eur": 7.16,
+      "cmUpdatedAt": "2026/02/01",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 9.91
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Alcremie V #64 (Shining Fates)",
+      "cardId": "swsh45-64",
+      "name": "Alcremie V",
+      "number": "64",
+      "rarity": "Rare Ultra",
+      "setId": "swsh45",
+      "setName": "Shining Fates",
+      "priceMarket": 6.65,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 2.6,
+      "cmAvg7Eur": 2.96,
+      "cmAvg30Eur": 2.74,
+      "cmUpdatedAt": "2026/02/01",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 6.65
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Blaziken VMAX #201 (Chilling Reign)",
+      "cardId": "swsh6-201",
+      "name": "Blaziken VMAX",
+      "number": "201",
+      "rarity": "Rare Rainbow",
+      "setId": "swsh6",
+      "setName": "Chilling Reign",
+      "priceMarket": 385.31,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 344.58,
+      "cmAvg7Eur": 356.71,
+      "cmAvg30Eur": 315.65,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 385.31
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Galarian Moltres V #177 (Chilling Reign)",
+      "cardId": "swsh6-177",
+      "name": "Galarian Moltres V",
+      "number": "177",
+      "rarity": "Rare Ultra",
+      "setId": "swsh6",
+      "setName": "Chilling Reign",
+      "priceMarket": 236.28,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 225.64,
+      "cmAvg7Eur": 205.49,
+      "cmAvg30Eur": 199.65,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 236.28
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Snorlax #224 (Chilling Reign)",
+      "cardId": "swsh6-224",
+      "name": "Snorlax",
+      "number": "224",
+      "rarity": "Rare Secret",
+      "setId": "swsh6",
+      "setName": "Chilling Reign",
+      "priceMarket": 139.66,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 109.59,
+      "cmAvg7Eur": 105.27,
+      "cmAvg30Eur": 84.48,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 139.66
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Dragonite V #192 (Evolving Skies)",
+      "cardId": "swsh7-192",
+      "name": "Dragonite V",
+      "number": "192",
+      "rarity": "Rare Ultra",
+      "setId": "swsh7",
+      "setName": "Evolving Skies",
+      "priceMarket": 551.19,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 184.31,
+      "cmAvg7Eur": 232.68,
+      "cmAvg30Eur": 293.54,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 551.19
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Charizard #4 (Celebrations: Classic Collection)",
+      "cardId": "cel25c-4_A",
+      "name": "Charizard",
+      "number": "4",
+      "rarity": "Classic Collection",
+      "setId": "cel25c",
+      "setName": "Celebrations: Classic Collection",
+      "priceMarket": 170.3,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": null,
+      "cmAvg7Eur": null,
+      "cmAvg30Eur": null,
+      "cmUpdatedAt": null,
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 170.3
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Umbreon ★ #17 (Celebrations: Classic Collection)",
+      "cardId": "cel25c-17_A",
+      "name": "Umbreon ★",
+      "number": "17",
+      "rarity": "Classic Collection",
+      "setId": "cel25c",
+      "setName": "Celebrations: Classic Collection",
+      "priceMarket": 97.82,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": null,
+      "cmAvg7Eur": null,
+      "cmAvg30Eur": null,
+      "cmUpdatedAt": null,
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 97.82
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: M Rayquaza-EX #76 (Celebrations: Classic Collection)",
+      "cardId": "cel25c-76_A",
+      "name": "M Rayquaza-EX",
+      "number": "76",
+      "rarity": "Classic Collection",
+      "setId": "cel25c",
+      "setName": "Celebrations: Classic Collection",
+      "priceMarket": 41.46,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": null,
+      "cmAvg7Eur": null,
+      "cmAvg30Eur": null,
+      "cmUpdatedAt": null,
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 41.46
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Mew #25 (Celebrations)",
+      "cardId": "cel25-25",
+      "name": "Mew",
+      "number": "25",
+      "rarity": "Rare Holo",
+      "setId": "cel25",
+      "setName": "Celebrations",
+      "priceMarket": 62.79,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 73.33,
+      "cmAvg7Eur": 70.84,
+      "cmAvg30Eur": 75.2,
+      "cmUpdatedAt": "2026/06/26",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 62.79
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Flying Pikachu VMAX #7 (Celebrations)",
+      "cardId": "cel25-7",
+      "name": "Flying Pikachu VMAX",
+      "number": "7",
+      "rarity": "Rare Holo VMAX",
+      "setId": "cel25",
+      "setName": "Celebrations",
+      "priceMarket": 8.78,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 6.95,
+      "cmAvg7Eur": 7.07,
+      "cmAvg30Eur": 7.15,
+      "cmUpdatedAt": "2026/07/01",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 8.78
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Surfing Pikachu VMAX #9 (Celebrations)",
+      "cardId": "cel25-9",
+      "name": "Surfing Pikachu VMAX",
+      "number": "9",
+      "rarity": "Rare Holo VMAX",
+      "setId": "cel25",
+      "setName": "Celebrations",
+      "priceMarket": 7.6,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 5.58,
+      "cmAvg7Eur": 6.01,
+      "cmAvg30Eur": 6.64,
+      "cmUpdatedAt": "2026/07/01",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 7.6
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Charizard V #154 (Brilliant Stars)",
+      "cardId": "swsh9-154",
+      "name": "Charizard V",
+      "number": "154",
+      "rarity": "Rare Ultra",
+      "setId": "swsh9",
+      "setName": "Brilliant Stars",
+      "priceMarket": 317.17,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 254.06,
+      "cmAvg7Eur": 279.62,
+      "cmAvg30Eur": 204.04,
+      "cmUpdatedAt": "2025/11/21",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 317.17
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Charizard VSTAR #174 (Brilliant Stars)",
+      "cardId": "swsh9-174",
+      "name": "Charizard VSTAR",
+      "number": "174",
+      "rarity": "Rare Rainbow",
+      "setId": "swsh9",
+      "setName": "Brilliant Stars",
+      "priceMarket": 79.8,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 44.62,
+      "cmAvg7Eur": 40.91,
+      "cmAvg30Eur": 40.07,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 79.8
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Arceus V #166 (Brilliant Stars)",
+      "cardId": "swsh9-166",
+      "name": "Arceus V",
+      "number": "166",
+      "rarity": "Rare Ultra",
+      "setId": "swsh9",
+      "setName": "Brilliant Stars",
+      "priceMarket": 63.61,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 56.58,
+      "cmAvg7Eur": 50.44,
+      "cmAvg30Eur": 49.12,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 63.61
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Umbreon VMAX #TG23 (Brilliant Stars Trainer Gallery)",
+      "dataStatus": "error",
+      "note": "502 https://api.pokemontcg.io/v2/cards?q=id%3Aswsh9tg-TG23&pageSize=20&select=id,name,number,r"
+    },
+    {
+      "watchLabel": "AUTO-B: Mimikyu V #TG16 (Brilliant Stars Trainer Gallery)",
+      "cardId": "swsh9tg-TG16",
+      "name": "Mimikyu V",
+      "number": "TG16",
+      "rarity": "Rare Holo V",
+      "setId": "swsh9tg",
+      "setName": "Brilliant Stars Trainer Gallery",
+      "priceMarket": 87.31,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 52.53,
+      "cmAvg7Eur": 62.56,
+      "cmAvg30Eur": 60.52,
+      "cmUpdatedAt": "2026/07/01",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 87.31
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Sylveon V #TG14 (Brilliant Stars Trainer Gallery)",
+      "cardId": "swsh9tg-TG14",
+      "name": "Sylveon V",
+      "number": "TG14",
+      "rarity": "Rare Holo V",
+      "setId": "swsh9tg",
+      "setName": "Brilliant Stars Trainer Gallery",
+      "priceMarket": 80.2,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 43.68,
+      "cmAvg7Eur": 39.71,
+      "cmAvg30Eur": 45.77,
+      "cmUpdatedAt": "2026/07/01",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 80.2
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Machamp V #172 (Astral Radiance)",
+      "cardId": "swsh10-172",
+      "name": "Machamp V",
+      "number": "172",
+      "rarity": "Rare Ultra",
+      "setId": "swsh10",
+      "setName": "Astral Radiance",
+      "priceMarket": 205.62,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 106.9,
+      "cmAvg7Eur": 107.78,
+      "cmAvg30Eur": 116.41,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 205.62
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Origin Forme Palkia V #167 (Astral Radiance)",
+      "cardId": "swsh10-167",
+      "name": "Origin Forme Palkia V",
+      "number": "167",
+      "rarity": "Rare Ultra",
+      "setId": "swsh10",
+      "setName": "Astral Radiance",
+      "priceMarket": 94.01,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 71.8,
+      "cmAvg7Eur": 63.92,
+      "cmAvg30Eur": 72.78,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 94.01
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Beedrill V #161 (Astral Radiance)",
+      "cardId": "swsh10-161",
+      "name": "Beedrill V",
+      "number": "161",
+      "rarity": "Rare Ultra",
+      "setId": "swsh10",
+      "setName": "Astral Radiance",
+      "priceMarket": 81.66,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 32.43,
+      "cmAvg7Eur": 35.22,
+      "cmAvg30Eur": 33.81,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 81.66
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Starmie V #TG13 (Astral Radiance Trainer Gallery)",
+      "cardId": "swsh10tg-TG13",
+      "name": "Starmie V",
+      "number": "TG13",
+      "rarity": "Rare Holo V",
+      "setId": "swsh10tg",
+      "setName": "Astral Radiance Trainer Gallery",
+      "priceMarket": 125.36,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 97.76,
+      "cmAvg7Eur": 98.63,
+      "cmAvg30Eur": 103.62,
+      "cmUpdatedAt": "2026/07/01",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 125.36
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Garchomp V #TG23 (Astral Radiance Trainer Gallery)",
+      "dataStatus": "error",
+      "note": "500 https://api.pokemontcg.io/v2/cards?q=id%3Aswsh10tg-TG23&pageSize=20&select=id,name,number,"
+    },
+    {
+      "watchLabel": "AUTO-B: Zacian V #TG21 (Astral Radiance Trainer Gallery)",
+      "cardId": "swsh10tg-TG21",
+      "name": "Zacian V",
+      "number": "TG21",
+      "rarity": "Rare Holo V",
+      "setId": "swsh10tg",
+      "setName": "Astral Radiance Trainer Gallery",
+      "priceMarket": 21.34,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 24.93,
+      "cmAvg7Eur": 20.86,
+      "cmAvg30Eur": 20.43,
+      "cmUpdatedAt": "2026/07/01",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 21.34
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Mewtwo V #72 (Pokémon GO)",
+      "cardId": "pgo-72",
+      "name": "Mewtwo V",
+      "number": "72",
+      "rarity": "Rare Ultra",
+      "setId": "pgo",
+      "setName": "Pokémon GO",
+      "priceMarket": 61.97,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 48.29,
+      "cmAvg7Eur": 47.45,
+      "cmAvg30Eur": 48.15,
+      "cmUpdatedAt": "2026/01/19",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 61.97
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Mewtwo VSTAR #79 (Pokémon GO)",
+      "cardId": "pgo-79",
+      "name": "Mewtwo VSTAR",
+      "number": "79",
+      "rarity": "Rare Rainbow",
+      "setId": "pgo",
+      "setName": "Pokémon GO",
+      "priceMarket": 53.9,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 35.64,
+      "cmAvg7Eur": 35.69,
+      "cmAvg30Eur": 34.61,
+      "cmUpdatedAt": "2026/01/16",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 53.9
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Dragonite VSTAR #81 (Pokémon GO)",
+      "cardId": "pgo-81",
+      "name": "Dragonite VSTAR",
+      "number": "81",
+      "rarity": "Rare Rainbow",
+      "setId": "pgo",
+      "setName": "Pokémon GO",
+      "priceMarket": 48.82,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 28.95,
+      "cmAvg7Eur": 29.21,
+      "cmAvg30Eur": 27.77,
+      "cmUpdatedAt": "2026/01/16",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 48.82
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Aerodactyl V #180 (Lost Origin)",
+      "cardId": "swsh11-180",
+      "name": "Aerodactyl V",
+      "number": "180",
+      "rarity": "Rare Ultra",
+      "setId": "swsh11",
+      "setName": "Lost Origin",
+      "priceMarket": 214.67,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 128.95,
+      "cmAvg7Eur": 131.69,
+      "cmAvg30Eur": 134.6,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 214.67
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Rotom V #177 (Lost Origin)",
+      "cardId": "swsh11-177",
+      "name": "Rotom V",
+      "number": "177",
+      "rarity": "Rare Ultra",
+      "setId": "swsh11",
+      "setName": "Lost Origin",
+      "priceMarket": 31.08,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 22.54,
+      "cmAvg7Eur": 24.19,
+      "cmAvg30Eur": 24.84,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 31.08
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Pikachu V #TG16 (Lost Origin Trainer Gallery)",
+      "cardId": "swsh11tg-TG16",
+      "name": "Pikachu V",
+      "number": "TG16",
+      "rarity": "Rare Holo V",
+      "setId": "swsh11tg",
+      "setName": "Lost Origin Trainer Gallery",
+      "priceMarket": 126.86,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 173.77,
+      "cmAvg7Eur": 164.7,
+      "cmAvg30Eur": 148.19,
+      "cmUpdatedAt": "2026/07/01",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 126.86
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Pikachu VMAX #TG17 (Lost Origin Trainer Gallery)",
+      "cardId": "swsh11tg-TG17",
+      "name": "Pikachu VMAX",
+      "number": "TG17",
+      "rarity": "Rare Holo VMAX",
+      "setId": "swsh11tg",
+      "setName": "Lost Origin Trainer Gallery",
+      "priceMarket": 110.59,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 137.25,
+      "cmAvg7Eur": 143.03,
+      "cmAvg30Eur": 94.31,
+      "cmUpdatedAt": "2026/07/01",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 110.59
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Gengar #TG06 (Lost Origin Trainer Gallery)",
+      "cardId": "swsh11tg-TG06",
+      "name": "Gengar",
+      "number": "TG06",
+      "rarity": "Trainer Gallery Rare Holo",
+      "setId": "swsh11tg",
+      "setName": "Lost Origin Trainer Gallery",
+      "priceMarket": 57.31,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 35.22,
+      "cmAvg7Eur": 37.71,
+      "cmAvg30Eur": 47.93,
+      "cmUpdatedAt": "2026/07/01",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 57.31
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Lugia VSTAR #202 (Silver Tempest)",
+      "cardId": "swsh12-202",
+      "name": "Lugia VSTAR",
+      "number": "202",
+      "rarity": "Rare Rainbow",
+      "setId": "swsh12",
+      "setName": "Silver Tempest",
+      "priceMarket": 41.82,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 26.33,
+      "cmAvg7Eur": 28.59,
+      "cmAvg30Eur": 29.16,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 41.82
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Unown V #177 (Silver Tempest)",
+      "cardId": "swsh12-177",
+      "name": "Unown V",
+      "number": "177",
+      "rarity": "Rare Ultra",
+      "setId": "swsh12",
+      "setName": "Silver Tempest",
+      "priceMarket": 31.05,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 20.91,
+      "cmAvg7Eur": 19.52,
+      "cmAvg30Eur": 25.51,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 31.05
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Rayquaza VMAX #TG20 (Silver Tempest Trainer Gallery)",
+      "cardId": "swsh12tg-TG20",
+      "name": "Rayquaza VMAX",
+      "number": "TG20",
+      "rarity": "Rare Holo VMAX",
+      "setId": "swsh12tg",
+      "setName": "Silver Tempest Trainer Gallery",
+      "priceMarket": 205.4,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 262.73,
+      "cmAvg7Eur": 198.45,
+      "cmAvg30Eur": 184.99,
+      "cmUpdatedAt": "2026/06/27",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 205.4
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Blaziken VMAX #TG15 (Silver Tempest Trainer Gallery)",
+      "cardId": "swsh12tg-TG15",
+      "name": "Blaziken VMAX",
+      "number": "TG15",
+      "rarity": "Rare Holo VMAX",
+      "setId": "swsh12tg",
+      "setName": "Silver Tempest Trainer Gallery",
+      "priceMarket": 39.45,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 20.99,
+      "cmAvg7Eur": 22.63,
+      "cmAvg30Eur": 24.89,
+      "cmUpdatedAt": "2026/07/01",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 39.45
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Rayquaza VMAX #TG29 (Silver Tempest Trainer Gallery)",
+      "cardId": "swsh12tg-TG29",
+      "name": "Rayquaza VMAX",
+      "number": "TG29",
+      "rarity": "Rare Secret",
+      "setId": "swsh12tg",
+      "setName": "Silver Tempest Trainer Gallery",
+      "priceMarket": 30.55,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 25.67,
+      "cmAvg7Eur": 38.85,
+      "cmAvg30Eur": 24.49,
+      "cmUpdatedAt": "2026/06/11",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 30.55
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Pikachu #160 (Crown Zenith)",
+      "cardId": "swsh12pt5-160",
+      "name": "Pikachu",
+      "number": "160",
+      "rarity": "Rare Secret",
+      "setId": "swsh12pt5",
+      "setName": "Crown Zenith",
+      "priceMarket": 46.72,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 37.74,
+      "cmAvg7Eur": 33.23,
+      "cmAvg30Eur": 34.84,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 46.72
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Elesa's Sparkle #147 (Crown Zenith)",
+      "cardId": "swsh12pt5-147",
+      "name": "Elesa's Sparkle",
+      "number": "147",
+      "rarity": "Rare Ultra",
+      "setId": "swsh12pt5",
+      "setName": "Crown Zenith",
+      "priceMarket": 15.42,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 18.09,
+      "cmAvg7Eur": 18.54,
+      "cmAvg30Eur": 18.19,
+      "cmUpdatedAt": "2025/11/21",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 15.42
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Rayquaza VMAX #102 (Crown Zenith)",
+      "cardId": "swsh12pt5-102",
+      "name": "Rayquaza VMAX",
+      "number": "102",
+      "rarity": "Rare Holo VMAX",
+      "setId": "swsh12pt5",
+      "setName": "Crown Zenith",
+      "priceMarket": 13.41,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 6.06,
+      "cmAvg7Eur": 6.16,
+      "cmAvg30Eur": 5.87,
+      "cmUpdatedAt": "2025/12/12",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 13.41
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Giratina VSTAR #GG69 (Crown Zenith Galarian Gallery)",
+      "cardId": "swsh12pt5gg-GG69",
+      "name": "Giratina VSTAR",
+      "number": "GG69",
+      "rarity": "Rare Secret",
+      "setId": "swsh12pt5gg",
+      "setName": "Crown Zenith Galarian Gallery",
+      "priceMarket": 328.85,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 182.91,
+      "cmAvg7Eur": 195.44,
+      "cmAvg30Eur": 191.24,
+      "cmUpdatedAt": "2026/01/21",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 328.85
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Mewtwo VSTAR #GG44 (Crown Zenith Galarian Gallery)",
+      "cardId": "swsh12pt5gg-GG44",
+      "name": "Mewtwo VSTAR",
+      "number": "GG44",
+      "rarity": "Rare Holo VSTAR",
+      "setId": "swsh12pt5gg",
+      "setName": "Crown Zenith Galarian Gallery",
+      "priceMarket": 279.21,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 144.1,
+      "cmAvg7Eur": 140.41,
+      "cmAvg30Eur": 153.86,
+      "cmUpdatedAt": "2026/02/24",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 279.21
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Arceus VSTAR #GG70 (Crown Zenith Galarian Gallery)",
+      "cardId": "swsh12pt5gg-GG70",
+      "name": "Arceus VSTAR",
+      "number": "GG70",
+      "rarity": "Rare Secret",
+      "setId": "swsh12pt5gg",
+      "setName": "Crown Zenith Galarian Gallery",
+      "priceMarket": 218.87,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 122.83,
+      "cmAvg7Eur": 126.2,
+      "cmAvg30Eur": 127.07,
+      "cmUpdatedAt": "2026/01/21",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 218.87
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Gardevoir ex #245 (Scarlet & Violet)",
+      "cardId": "sv1-245",
+      "name": "Gardevoir ex",
+      "number": "245",
+      "rarity": "Special Illustration Rare",
+      "setId": "sv1",
+      "setName": "Scarlet & Violet",
+      "priceMarket": 71.37,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 51.22,
+      "cmAvg7Eur": 49.2,
+      "cmAvg30Eur": 48.5,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 71.37
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Drowzee #210 (Scarlet & Violet)",
+      "cardId": "sv1-210",
+      "name": "Drowzee",
+      "number": "210",
+      "rarity": "Illustration Rare",
+      "setId": "sv1",
+      "setName": "Scarlet & Violet",
+      "priceMarket": 59.34,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 52.76,
+      "cmAvg7Eur": 49.43,
+      "cmAvg30Eur": 37.84,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 59.34
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Kirlia #212 (Scarlet & Violet)",
+      "cardId": "sv1-212",
+      "name": "Kirlia",
+      "number": "212",
+      "rarity": "Illustration Rare",
+      "setId": "sv1",
+      "setName": "Scarlet & Violet",
+      "priceMarket": 43.96,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 22.72,
+      "cmAvg7Eur": 22.02,
+      "cmAvg30Eur": 24.27,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 43.96
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Magikarp #203 (Paldea Evolved)",
+      "dataStatus": "error",
+      "note": "500 https://api.pokemontcg.io/v2/cards?q=id%3Asv2-203&pageSize=20&select=id,name,number,rarity"
+    },
+    {
+      "watchLabel": "AUTO-B: Raichu #211 (Paldea Evolved)",
+      "cardId": "sv2-211",
+      "name": "Raichu",
+      "number": "211",
+      "rarity": "Illustration Rare",
+      "setId": "sv2",
+      "setName": "Paldea Evolved",
+      "priceMarket": 99.05,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 34.98,
+      "cmAvg7Eur": 34.1,
+      "cmAvg30Eur": 36.99,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 99.05
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Maushold #226 (Paldea Evolved)",
+      "dataStatus": "error",
+      "note": "500 https://api.pokemontcg.io/v2/cards?q=id%3Asv2-226&pageSize=20&select=id,name,number,rarity"
+    },
+    {
+      "watchLabel": "AUTO-B: Charizard ex #223 (Obsidian Flames)",
+      "cardId": "sv3-223",
+      "name": "Charizard ex",
+      "number": "223",
+      "rarity": "Special Illustration Rare",
+      "setId": "sv3",
+      "setName": "Obsidian Flames",
+      "priceMarket": 109.55,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 78.53,
+      "cmAvg7Eur": 78.73,
+      "cmAvg30Eur": 80.19,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 109.55
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Ninetales #199 (Obsidian Flames)",
+      "cardId": "sv3-199",
+      "name": "Ninetales",
+      "number": "199",
+      "rarity": "Illustration Rare",
+      "setId": "sv3",
+      "setName": "Obsidian Flames",
+      "priceMarket": 40.58,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 20.72,
+      "cmAvg7Eur": 19.38,
+      "cmAvg30Eur": 19.69,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 40.58
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Cleffa #202 (Obsidian Flames)",
+      "cardId": "sv3-202",
+      "name": "Cleffa",
+      "number": "202",
+      "rarity": "Illustration Rare",
+      "setId": "sv3",
+      "setName": "Obsidian Flames",
+      "priceMarket": 38.35,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 15.66,
+      "cmAvg7Eur": 16.81,
+      "cmAvg30Eur": 17.83,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 38.35
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Blastoise ex #200 (151)",
+      "cardId": "sv3pt5-200",
+      "name": "Blastoise ex",
+      "number": "200",
+      "rarity": "Special Illustration Rare",
+      "setId": "sv3pt5",
+      "setName": "151",
+      "priceMarket": 139.82,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 79.37,
+      "cmAvg7Eur": 88.24,
+      "cmAvg30Eur": 88.38,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 139.82
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Venusaur ex #198 (151)",
+      "cardId": "sv3pt5-198",
+      "name": "Venusaur ex",
+      "number": "198",
+      "rarity": "Special Illustration Rare",
+      "setId": "sv3pt5",
+      "setName": "151",
+      "priceMarket": 115.65,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 79.88,
+      "cmAvg7Eur": 96.78,
+      "cmAvg30Eur": 92.7,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 115.65
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Gastly #177 (Temporal Forces)",
+      "cardId": "sv5-177",
+      "name": "Gastly",
+      "number": "177",
+      "rarity": "Illustration Rare",
+      "setId": "sv5",
+      "setName": "Temporal Forces",
+      "priceMarket": 97.89,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 33.89,
+      "cmAvg7Eur": 34.51,
+      "cmAvg30Eur": 38.51,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 97.89
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Morty's Conviction #211 (Temporal Forces)",
+      "cardId": "sv5-211",
+      "name": "Morty's Conviction",
+      "number": "211",
+      "rarity": "Special Illustration Rare",
+      "setId": "sv5",
+      "setName": "Temporal Forces",
+      "priceMarket": 69.96,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 41.81,
+      "cmAvg7Eur": 42.46,
+      "cmAvg30Eur": 41.26,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 69.96
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Raging Bolt ex #208 (Temporal Forces)",
+      "cardId": "sv5-208",
+      "name": "Raging Bolt ex",
+      "number": "208",
+      "rarity": "Special Illustration Rare",
+      "setId": "sv5",
+      "setName": "Temporal Forces",
+      "priceMarket": 65.09,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 61.92,
+      "cmAvg7Eur": 66.02,
+      "cmAvg30Eur": 67.59,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 65.09
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Greninja ex #214 (Twilight Masquerade)",
+      "cardId": "sv6-214",
+      "name": "Greninja ex",
+      "number": "214",
+      "rarity": "Special Illustration Rare",
+      "setId": "sv6",
+      "setName": "Twilight Masquerade",
+      "priceMarket": 372.78,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 223.93,
+      "cmAvg7Eur": 229.07,
+      "cmAvg30Eur": 239.33,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 372.78
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Perrin #220 (Twilight Masquerade)",
+      "dataStatus": "error",
+      "note": "500 https://api.pokemontcg.io/v2/cards?q=id%3Asv6-220&pageSize=20&select=id,name,number,rarity"
+    },
+    {
+      "watchLabel": "AUTO-B: Eevee #188 (Twilight Masquerade)",
+      "cardId": "sv6-188",
+      "name": "Eevee",
+      "number": "188",
+      "rarity": "Illustration Rare",
+      "setId": "sv6",
+      "setName": "Twilight Masquerade",
+      "priceMarket": 91.65,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 44.34,
+      "cmAvg7Eur": 55.45,
+      "cmAvg30Eur": 57.98,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 91.65
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Persian #78 (Shrouded Fable)",
+      "cardId": "sv6pt5-78",
+      "name": "Persian",
+      "number": "78",
+      "rarity": "Illustration Rare",
+      "setId": "sv6pt5",
+      "setName": "Shrouded Fable",
+      "priceMarket": 73.25,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 46.64,
+      "cmAvg7Eur": 48.72,
+      "cmAvg30Eur": 40.72,
+      "cmUpdatedAt": "2026/01/19",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 73.25
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Basic Darkness Energy #98 (Shrouded Fable)",
+      "cardId": "sv6pt5-98",
+      "name": "Basic Darkness Energy",
+      "number": "98",
+      "rarity": "Hyper Rare",
+      "setId": "sv6pt5",
+      "setName": "Shrouded Fable",
+      "priceMarket": 61.4,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 36.34,
+      "cmAvg7Eur": 38.59,
+      "cmAvg30Eur": 35.7,
+      "cmUpdatedAt": "2026/01/16",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 61.4
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Houndoom #66 (Shrouded Fable)",
+      "cardId": "sv6pt5-66",
+      "name": "Houndoom",
+      "number": "66",
+      "rarity": "Illustration Rare",
+      "setId": "sv6pt5",
+      "setName": "Shrouded Fable",
+      "priceMarket": 57.63,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 21.98,
+      "cmAvg7Eur": 22.17,
+      "cmAvg30Eur": 20.46,
+      "cmUpdatedAt": "2026/01/21",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 57.63
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Squirtle #148 (Stellar Crown)",
+      "cardId": "sv7-148",
+      "name": "Squirtle",
+      "number": "148",
+      "rarity": "Illustration Rare",
+      "setId": "sv7",
+      "setName": "Stellar Crown",
+      "priceMarket": 117.93,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 59.99,
+      "cmAvg7Eur": 58.63,
+      "cmAvg30Eur": 60.14,
+      "cmUpdatedAt": "2025/11/21",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 117.93
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Bulbasaur #143 (Stellar Crown)",
+      "cardId": "sv7-143",
+      "name": "Bulbasaur",
+      "number": "143",
+      "rarity": "Illustration Rare",
+      "setId": "sv7",
+      "setName": "Stellar Crown",
+      "priceMarket": 102.31,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 50.83,
+      "cmAvg7Eur": 55.21,
+      "cmAvg30Eur": 53.98,
+      "cmUpdatedAt": "2025/11/21",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 102.31
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Dachsbun ex #169 (Stellar Crown)",
+      "cardId": "sv7-169",
+      "name": "Dachsbun ex",
+      "number": "169",
+      "rarity": "Special Illustration Rare",
+      "setId": "sv7",
+      "setName": "Stellar Crown",
+      "priceMarket": 66.47,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 25.05,
+      "cmAvg7Eur": 25.12,
+      "cmAvg30Eur": 26.84,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 66.47
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Pikachu ex #238 (Surging Sparks)",
+      "cardId": "sv8-238",
+      "name": "Pikachu ex",
+      "number": "238",
+      "rarity": "Special Illustration Rare",
+      "setId": "sv8",
+      "setName": "Surging Sparks",
+      "priceMarket": 291.55,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 273.06,
+      "cmAvg7Eur": 273.32,
+      "cmAvg30Eur": 250.32,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 291.55
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Latias ex #239 (Surging Sparks)",
+      "cardId": "sv8-239",
+      "name": "Latias ex",
+      "number": "239",
+      "rarity": "Special Illustration Rare",
+      "setId": "sv8",
+      "setName": "Surging Sparks",
+      "priceMarket": 176.6,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 135.63,
+      "cmAvg7Eur": 140.02,
+      "cmAvg30Eur": 143.54,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 176.6
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Milotic ex #237 (Surging Sparks)",
+      "cardId": "sv8-237",
+      "name": "Milotic ex",
+      "number": "237",
+      "rarity": "Special Illustration Rare",
+      "setId": "sv8",
+      "setName": "Surging Sparks",
+      "priceMarket": 126.64,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 111.93,
+      "cmAvg7Eur": 112.48,
+      "cmAvg30Eur": 121.34,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 126.64
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Sylveon ex #156 (Prismatic Evolutions)",
+      "cardId": "sv8pt5-156",
+      "name": "Sylveon ex",
+      "number": "156",
+      "rarity": "Special Illustration Rare",
+      "setId": "sv8pt5",
+      "setName": "Prismatic Evolutions",
+      "priceMarket": 509.52,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": null,
+      "cmAvg7Eur": null,
+      "cmAvg30Eur": null,
+      "cmUpdatedAt": null,
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 509.52
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Leafeon ex #144 (Prismatic Evolutions)",
+      "cardId": "sv8pt5-144",
+      "name": "Leafeon ex",
+      "number": "144",
+      "rarity": "Special Illustration Rare",
+      "setId": "sv8pt5",
+      "setName": "Prismatic Evolutions",
+      "priceMarket": 335.13,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": null,
+      "cmAvg7Eur": null,
+      "cmAvg30Eur": null,
+      "cmUpdatedAt": null,
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 335.13
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Lillie's Clefairy ex #184 (Journey Together)",
+      "cardId": "sv9-184",
+      "name": "Lillie's Clefairy ex",
+      "number": "184",
+      "rarity": "Special Illustration Rare",
+      "setId": "sv9",
+      "setName": "Journey Together",
+      "priceMarket": 105.02,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 98.08,
+      "cmAvg7Eur": 109.26,
+      "cmAvg30Eur": 106.57,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 105.02
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Salamence ex #187 (Journey Together)",
+      "dataStatus": "error",
+      "note": "500 https://api.pokemontcg.io/v2/cards?q=id%3Asv9-187&pageSize=20&select=id,name,number,rarity"
+    },
+    {
+      "watchLabel": "AUTO-B: N's Zoroark ex #185 (Journey Together)",
+      "dataStatus": "error",
+      "note": "502 https://api.pokemontcg.io/v2/cards?q=id%3Asv9-185&pageSize=20&select=id,name,number,rarity"
+    },
+    {
+      "watchLabel": "AUTO-B: Team Rocket's Mewtwo ex #231 (Destined Rivals)",
+      "cardId": "sv10-231",
+      "name": "Team Rocket's Mewtwo ex",
+      "number": "231",
+      "rarity": "Special Illustration Rare",
+      "setId": "sv10",
+      "setName": "Destined Rivals",
+      "priceMarket": 503.06,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 570.89,
+      "cmAvg7Eur": 550.43,
+      "cmAvg30Eur": 635.74,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 503.06
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Cynthia's Garchomp ex #232 (Destined Rivals)",
+      "cardId": "sv10-232",
+      "name": "Cynthia's Garchomp ex",
+      "number": "232",
+      "rarity": "Special Illustration Rare",
+      "setId": "sv10",
+      "setName": "Destined Rivals",
+      "priceMarket": 245.1,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 253.68,
+      "cmAvg7Eur": 256.24,
+      "cmAvg30Eur": 248.62,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 245.1
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Ethan's Ho-Oh ex #230 (Destined Rivals)",
+      "cardId": "sv10-230",
+      "name": "Ethan's Ho-Oh ex",
+      "number": "230",
+      "rarity": "Special Illustration Rare",
+      "setId": "sv10",
+      "setName": "Destined Rivals",
+      "priceMarket": 158.08,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 284.34,
+      "cmAvg7Eur": 300.13,
+      "cmAvg30Eur": 271.42,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 158.08
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Victini #171 (Black Bolt)",
+      "cardId": "zsv10pt5-171",
+      "name": "Victini",
+      "number": "171",
+      "rarity": "Rare",
+      "setId": "zsv10pt5",
+      "setName": "Black Bolt",
+      "priceMarket": 609.87,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 377.36,
+      "cmAvg7Eur": 339.15,
+      "cmAvg30Eur": 337.46,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 609.87
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Zekrom ex #172 (Black Bolt)",
+      "cardId": "zsv10pt5-172",
+      "name": "Zekrom ex",
+      "number": "172",
+      "rarity": "Black White Rare",
+      "setId": "zsv10pt5",
+      "setName": "Black Bolt",
+      "priceMarket": 607.54,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 551.9,
+      "cmAvg7Eur": 525.33,
+      "cmAvg30Eur": 501.98,
+      "cmUpdatedAt": "2026/07/01",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 607.54
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Zekrom ex #166 (Black Bolt)",
+      "cardId": "zsv10pt5-166",
+      "name": "Zekrom ex",
+      "number": "166",
+      "rarity": "Special Illustration Rare",
+      "setId": "zsv10pt5",
+      "setName": "Black Bolt",
+      "priceMarket": 287.82,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 180.61,
+      "cmAvg7Eur": 168.57,
+      "cmAvg30Eur": 165.76,
+      "cmUpdatedAt": "2025/11/18",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 287.82
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Victini #172 (White Flare)",
+      "cardId": "rsv10pt5-172",
+      "name": "Victini",
+      "number": "172",
+      "rarity": "Rare",
+      "setId": "rsv10pt5",
+      "setName": "White Flare",
+      "priceMarket": 562.74,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": null,
+      "cmAvg7Eur": null,
+      "cmAvg30Eur": null,
+      "cmUpdatedAt": null,
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 562.74
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Reshiram ex #173 (White Flare)",
+      "dataStatus": "error",
+      "note": "500 https://api.pokemontcg.io/v2/cards?q=id%3Arsv10pt5-173&pageSize=20&select=id,name,number,r"
+    },
+    {
+      "watchLabel": "AUTO-B: Reshiram ex #166 (White Flare)",
+      "cardId": "rsv10pt5-166",
+      "name": "Reshiram ex",
+      "number": "166",
+      "rarity": "Special Illustration Rare",
+      "setId": "rsv10pt5",
+      "setName": "White Flare",
+      "priceMarket": 206.67,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": 146.18,
+      "cmAvg7Eur": 150.04,
+      "cmAvg30Eur": 150.78,
+      "cmUpdatedAt": "2025/11/21",
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 206.67
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Mega Lucario ex #188 (Mega Evolution)",
+      "cardId": "me1-188",
+      "name": "Mega Lucario ex",
+      "number": "188",
+      "rarity": "Mega Hyper Rare",
+      "setId": "me1",
+      "setName": "Mega Evolution",
+      "priceMarket": 271.69,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": null,
+      "cmAvg7Eur": null,
+      "cmAvg30Eur": null,
+      "cmUpdatedAt": null,
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 271.69
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Mega Gardevoir ex #187 (Mega Evolution)",
+      "cardId": "me1-187",
+      "name": "Mega Gardevoir ex",
+      "number": "187",
+      "rarity": "Mega Hyper Rare",
+      "setId": "me1",
+      "setName": "Mega Evolution",
+      "priceMarket": 208.12,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": null,
+      "cmAvg7Eur": null,
+      "cmAvg30Eur": null,
+      "cmUpdatedAt": null,
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 208.12
+        }
+      ]
+    },
+    {
+      "watchLabel": "AUTO-B: Mega Lucario ex #179 (Mega Evolution)",
+      "cardId": "me1-179",
+      "name": "Mega Lucario ex",
+      "number": "179",
+      "rarity": "Special Illustration Rare",
+      "setId": "me1",
+      "setName": "Mega Evolution",
+      "priceMarket": 204.55,
+      "priceVariant": "holofoil",
+      "provenance": "TCGplayer market via pokemontcg.io, updated 2026/08/18",
+      "dataStatus": "live",
+      "cmTrendEur": null,
+      "cmAvg7Eur": null,
+      "cmAvg30Eur": null,
+      "cmUpdatedAt": null,
+      "needsReview": true,
+      "priceHistory": [
+        {
+          "date": "2026-08-18",
+          "price": 204.55
+        }
+      ]
     }
   ]
 }
