@@ -197,6 +197,7 @@ Main expansion sets DO have Booster Boxes: Scarlet & Violet, Paldea Evolved, Obs
 Historical pattern: rotation transitions competitive demand → collector demand. For iconic sets with strong chase rosters, rotation is a price-positive inflection (Evolving Skies post-rotation pattern), not a negative event.
 
 ### Known errors (to avoid repeating)
+7. **pokemontcg.io status (Apr 2026 note overclaimed):** KB said "now Scrydex, no longer free, $29/mo min." Verified Aug 18 2026: free keyless API works (with ~33% transient 500s + rate limits). Correction logged; PokemonPriceTracker ($9.99/mo) remains the paid fallback ONLY IF free-tier staleness/instability worsens — separate integration, not built.
 - **Rotation cadence (caught by Tyler, Aug 18 2026):** Rotation is ANNUAL (every April, oldest reg mark out). "~3 years" is per-CARD legality (three marks concurrent), not rotation frequency. Newsletter 001 draft said "every three years" — wrong. Error class: plausible-cadence-misremembered (same family as PC-ETB start era).
 1. **Evolving Skies Booster Box $300** — wrong by 10x. Actual ~$3,000+. Never cite prices without verification.
 2. **Ascended Heroes Booster Box** — doesn't exist. Ascended Heroes is a special/mini-set (Mega Evolution series), sold via ETB/Booster Bundle only. Mega Evolution special sets have NO booster boxes.
@@ -251,7 +252,7 @@ Historical pattern: rotation transitions competitive demand → collector demand
 ### What CAN be used
 | Provider | Coverage | Free tier | Paid tier | Best for |
 |---|---|---|---|---|
-| **pokemontcg.io** (now Scrydex) | Singles, TCGplayer market prices | No longer free — $29/mo min | $29+/mo | Card metadata |
+| **pokemontcg.io** | Singles, TCGplayer market prices | **[CORRECTED Aug 18 2026 — known error #7]** Free keyless tier FUNCTIONAL (verified by live runs) but flaky: ~1/3 transient 500s, rate limits. Scrydex = commercial tier, status unverified. Freshness/citation gates govern use. | $0 (free tier) | Singles prices + set ids |
 | **PokéWallet.io** | Singles + sealed + graded, EN+JP | 10K req/mo | Paid tiers | Best free-tier alternative |
 | **pokemonpricetracker.com** | Singles + sealed + PSA/CGC/BGS/SGC, EN+JP | 100 credits/day | $9.99/mo Pro, $99/mo Business | Recommended for Catch'em launch |
 | **TCGdex** | 130K cards, 6 languages, FREE | ✅ No key needed | N/A | Card identity, NO prices |
