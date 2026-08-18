@@ -34,7 +34,7 @@ const rows = sp.products
 const tr = ({p,s}) => `
 <tr>
   <td class="name" style="display:flex;align-items:center;gap:10px">${sealedImg(p)?`<img src="${sealedImg(p)}" style="width:42px;background:#0b0d14;border-radius:5px;padding:3px;border:1px solid rgba(255,255,255,.07)" alt="">`:""}<span>${p.name}<span class="sub">${p.set||""}</span></span></td>
-  <td><span class="pill">${p.subtype?.replace("-"," ").toUpperCase()||""}</span>${(der.lifecycle&&der.lifecycle[p.setId])?`<span class="pill" title="${der.lifecycle[p.setId].phase} (est.)" style="margin-left:4px">${der.lifecycle[p.setId].tag} ${der.lifecycle[p.setId].ageMonths}mo</span>`:""}</td>
+  <td><span class="pill">${p.subtype?.replace("-"," ").toUpperCase()||""}</span>${(der.lifecycle&&der.lifecycle[p.setId])?`<span class="pill" title="${der.lifecycle[p.setId].phase} (est.) · ${der.lifecycle[p.setId].legalTag||""}" style="margin-left:4px">${der.lifecycle[p.setId].tag} ${der.lifecycle[p.setId].ageMonths}mo${der.lifecycle[p.setId].standardLegal?" ⚖":""}</span>`:""}</td>
   <td class="num">${money(p.priceMedian)}</td>
   <td class="num">${p.listingCount??"—"}</td>
   <td>${s ? (s.signal

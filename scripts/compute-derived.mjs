@@ -18,6 +18,8 @@ const sgAll = await J("data/singles-prices.json").catch(()=>null) ?? { cards: []
 let enr = null; try { enr = await J("data/singles-enrichment.json"); } catch {}
 let hh = []; try { hh = await J("data/heat-history.json"); } catch {}
 let relDates = {}; try { relDates = (await J("data/set-release-dates.json")).dates ?? {}; } catch {}
+let setMarks = {}; try { setMarks = (await J("data/set-marks.json")).marks ?? {}; } catch {}
+const LEGAL_MARKS = ["I","J"]; // per rotation state Aug 2026; review at next April rotation
 
 // ── (a) Pack Math ────────────────────────────────────────────────────────────
 function packsFor(p) {
@@ -154,7 +156,11 @@ function lifecycleFor(p){
   if (months <= 12) { phase = "active print"; tag = "🖨"; }
   else if (months <= 30) { phase = "late print — reprint waves typical"; tag = "🖨⏳"; }
   else { phase = "likely EOL — supply fixed (est.)"; tag = "📦🔒"; }
+  const mark = setMarks[p.setId] ?? null;
+  const legal = mark ? LEGAL_MARKS.includes(mark) : null;
   return { setId: p.setId, ageMonths: months, phase, tag, chip: "READ",
+    mark, standardLegal: legal,
+    legalTag: mark ? (legal ? `⚖ ${mark} · Standard-legal` : `${mark} · rotated`) : "pre-mark era",
     note: months > 30 ? "RT-1 cycle territory: supply now finite" : null };
 }
 const lifecycle = {};
