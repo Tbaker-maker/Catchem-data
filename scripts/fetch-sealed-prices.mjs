@@ -48,6 +48,9 @@ const SUBTYPE_PRICE_BOUNDS = {
   "upc":                [80, 1500],
   "tin":                [15, 150],
   "collection-box":     [20, 200],
+  // pricing v2 (2026-08-18, Tyler-caught): class had NO bounds — failPrice was
+  // structurally 0. Evidence: real BIN cluster $85-120 on sv8pt5-sc.
+  "special-collection": [50, 250],
   "build-and-battle":   [15, 100],
 };
 
@@ -175,6 +178,20 @@ function wordBoundaryTest(term, titleLower) {
   return new RegExp(`\\b${term}\\b`, "i").test(titleLower); // word → boundary
 }
 
+// Delivered price — pricing v2 (2026-08-18): item price + cheapest shipping
+// option, so free-ship and +ship listings are comparable (median = landed
+// cost). Missing shipping data → item price alone, counted in shipUnknownCount
+// (transparency, not silent).
+function deliveredPriceOf(item) {
+  const base = parseFloat(item.price?.value);
+  if (isNaN(base)) return { delivered: NaN, shipKnown: false };
+  const costs = (item.shippingOptions || [])
+    .map(o => parseFloat(o.shippingCost?.value))
+    .filter(v => !isNaN(v));
+  if (!costs.length) return { delivered: base, shipKnown: false };
+  return { delivered: base + Math.min(...costs), shipKnown: true };
+}
+
 function filterItemsForProduct(product, items) {
   const titleLowerOf = i => (i.title || "").toLowerCase();
   const setLower = (product.set || "").toLowerCase();
@@ -197,7 +214,7 @@ function filterItemsForProduct(product, items) {
   const requireExtra = product.requireExtra || [];
   const langExcludes = (product.allowImports ? [] : EXCLUDE_NON_ENGLISH).filter(setSafe);
 
-  const report = { fetched: items.length, failSet: 0, failType: 0, failExclude: 0, failLang: 0, failPrice: 0, kept: 0 };
+  const report = { fetched: items.length, failSet: 0, failType: 0, failExclude: 0, failLang: 0, failPrice: 0, shipUnknown: 0, kept: 0 };
   const [floor, ceiling] = priceBoundsFor(product);
 
   const kept = items.filter(i => {
@@ -208,8 +225,11 @@ function filterItemsForProduct(product, items) {
     if (product.subtype === "pc-etb" && !t.includes("pokemon center")) { report.failType++; return false; }
     if (excludes.some(term => wordBoundaryTest(term, t))) { report.failExclude++; return false; }
     if (langExcludes.some(term => wordBoundaryTest(term, t))) { report.failLang++; return false; }
-    const p = parseFloat(i.price?.value);
-    if (isNaN(p) || p < floor || p > ceiling) { report.failPrice++; return false; }
+    // pricing v2: gate + aggregate on DELIVERED price (landed cost)
+    const dp = deliveredPriceOf(i);
+    if (!dp.shipKnown) report.shipUnknown++;
+    if (isNaN(dp.delivered) || dp.delivered < floor || dp.delivered > ceiling) { report.failPrice++; return false; }
+    i._delivered = dp.delivered;
     return true;
   });
   report.kept = kept.length;
@@ -254,7 +274,9 @@ async function searchEbay(token, query, floor = MIN_PRICE, ceiling = MAX_PRICE) 
     const params = new URLSearchParams({
       q: query,
       category_ids: EBAY_TCG_CATEGORY,
-      filter: `conditionIds:{${CONDITION_NEW}},priceCurrency:USD,price:[${floor}..${ceiling}]`,
+      // buyingOptions:{FIXED_PRICE} — pricing v2 (2026-08-18): auctions were
+      // polluting an ASK median (sv8pt5-sc priceLow $7 was a live bid).
+      filter: `buyingOptions:{FIXED_PRICE},conditionIds:{${CONDITION_NEW}},priceCurrency:USD,price:[${floor}..${ceiling}]`,
       limit: "50",
       offset: String(page * 50),
       // NOTE: deliberately NOT sorted by price. With sort=price the API returns
@@ -283,8 +305,10 @@ async function searchEbay(token, query, floor = MIN_PRICE, ceiling = MAX_PRICE) 
 
 // ─── Aggregate prices with outlier trimming ──────────────────────────────────
 function aggregatePrices(items, floor = MIN_PRICE, ceiling = MAX_PRICE) {
+  // pricing v2: delivered BIN prices (stamped by the filter); fall back to
+  // item price only for direct calls that skipped filtering.
   const prices = items
-    .map(i => parseFloat(i.price?.value))
+    .map(i => i._delivered ?? parseFloat(i.price?.value))
     .filter(p => !isNaN(p) && p >= floor && p <= ceiling)
     .sort((a, b) => a - b);
   if (prices.length < 3) return null; // Need a few listings for trust
@@ -296,6 +320,9 @@ function aggregatePrices(items, floor = MIN_PRICE, ceiling = MAX_PRICE) {
     priceUsd: round(median),
     priceMedian: round(median),
     priceLow: round(prices[0]),
+    // v2 user-facing pair: "median $X · cheapest clean $Y" — explicit name so
+    // consumers never conflate median with floor (Tyler-caught gotcha)
+    priceFloorClean: round(prices[0]),
     priceHigh: round(prices[prices.length - 1]),
     listingCount: prices.length,
   };
