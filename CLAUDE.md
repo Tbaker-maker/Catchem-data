@@ -91,6 +91,16 @@ Journey Together Booster Box reports ~$24 median. Real price: $150–200+. Corru
 - If Tyler's stated domain knowledge conflicts with your research, his knowledge wins pending verification.
 - End every session with: what changed, what's validated, what's next. Never leave main broken.
 
+## Roadmap notes
+
+- **Vintage pricing needs a sold-comps methodology (future work).** Active-listing
+  medians cannot price vintage boxes: validated 2026-08-18, zero genuine Unlimited
+  boxes were live on eBay for Base Set/Fossil/Neo Genesis/HGSS — the price windows
+  held only $1-4k single packs, decks, and graded items. Vintage box SKUs carry
+  `activeMarketThin: true` and publish `dataStatus: "no-active-market"` with null
+  prices (Tyler ruling 2026-08-18) until a sold-comps source (eBay Marketplace
+  Insights partner API, auction archives, PriceCharting) is integrated.
+
 ## Current priority order
 
 1. Implement fix architecture in fetch-sealed-prices.mjs → validate JT → commit (this deploys via Actions).

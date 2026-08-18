@@ -330,10 +330,31 @@ async function main() {
         `(set:${report.failSet} type:${report.failType} excl:${report.failExclude} lang:${report.failLang} price:${report.failPrice})`
       );
 
+      const prev = previous[product.id];
+
+      // No-active-market (Tyler ruling 2026-08-18, option b): SKUs flagged
+      // activeMarketThin (vintage boxes) publish honest nulls when <3 genuine
+      // listings survive filtering — validated 2026-08-18: zero genuine
+      // Unlimited boxes were live; the window held only $1-4k single packs,
+      // decks, and graded items. Checked BEFORE the query_error guard, which
+      // would otherwise re-publish contaminated pre-fix prices forever.
+      // priceHistory is preserved untouched.
+      if (product.activeMarketThin && kept.length < 3) {
+        console.log(`   ○ ${product.id}: no-active-market (kept ${kept.length})`);
+        return {
+          ...product,
+          priceUsd: null, priceMedian: null, priceLow: null, priceHigh: null,
+          listingCount: kept.length,
+          priceHistory: prev?.priceHistory || [],
+          dataStatus: "no-active-market",
+          lastSeen: prev?.lastSeen,
+          filterReport: report,
+        };
+      }
+
       // Zero/low-result safety: if this SKU previously had healthy listings
       // but filtering now leaves almost nothing, treat it as a QUERY problem,
       // not a market signal. Keep previous prices; do not write history.
-      const prev = previous[product.id];
       // Threshold 8, not 3: aggregatePrices publishes at exactly 3 kept, and a
       // bad query can leave exactly 3 wrong-product survivors (observed Aug 17:
       // 3 JP/CN import boxes would have published $110 as a clean "live" price).
