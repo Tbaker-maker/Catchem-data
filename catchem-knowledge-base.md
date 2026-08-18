@@ -196,6 +196,7 @@ Historical pattern: rotation transitions competitive demand → collector demand
 2. **Ascended Heroes Booster Box** — doesn't exist. Ascended Heroes is a special/mini-set (Mega Evolution series), sold via ETB/Booster Bundle only. Mega Evolution special sets have NO booster boxes.
 3. **Cosmic Eclipse card count** — I said 272, actual is 271. Off by one.
 4. **Partial database coverage claim** — Session 1 was marked "complete" for WOTC-Black&White era but the 2014-2026 era follow-up was pending. Always check completion status before citing.
+5. **Celebrations "loose packs" claim (2026-08-18, caught by Tyler)** — Celebrations (2021) had NO loose/standalone boosters; packs existed only inside sealed products (ETBs, collections, UPCs) — same distribution format as 30th Celebration. Celebrations stayed cheap because of PRINT VOLUME (relentless reprints), not distribution format. Never contrast 30th vs Celebrations on pack availability.
 
 ---
 
