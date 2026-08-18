@@ -57,3 +57,5 @@ CALENDAR NUDGES. Number everything for easy picking.
 - Vocabulary v3 (Aug 18, Tyler): user-facing count noun = "sealed products" / "sealed" — never "SKU" (warehouse-speak). Singles = "chases."
 
 - Voice v4 (Aug 18, Tyler): NO defensive disclaimers on product surfaces ("not calls," "you decide," "not advice"). Posture = chips + hedged verbs + the methodology drawer, once. Definitional lines stay (they inform); the Buy Pressure line stays (it punches). Less is more, done correctly.
+
+- Voice v5 (Aug 18, Tyler): NEWCOMER-CLEAR, never dumbed down. Every percentage labeled with what it measures. No finance slang on surfaces ("tape","narrative","spread" as jargon). Emojis only where the group label explains them. Technical terms (Wyckoff states etc.) always ship with a plain-words gloss.

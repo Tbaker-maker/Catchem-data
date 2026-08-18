@@ -67,9 +67,10 @@ if (der?.packMath) {
   for (const r of der.packMath.cheapest.slice(0,3)) md += `- ${r.name}: **$${r.perPack}/pack**${r.sealedPremiumPct!=null?` · loose $${r.loosePack} → ${r.sealedPremiumPct>0?"+":""}${r.sealedPremiumPct}% sealed premium`:``}\n`;
 }
 if (der?.narrative) {
-  md += `\n## 📰 Narrative vs the tape (digest: ${der.digestUsed})\n`;
-  for (const r of der.narrative.inNews.slice(0,4)) md += `- **In the news:** ${r.set} — flagship $${r.price}${r.spreadPct!=null?` · spread ${r.spreadPct>0?"+":""}${r.spreadPct}%`:""}\n`;
-  for (const r of der.narrative.quietMovers.slice(0,4)) md += `- **Tape moved, news quiet:** ${r.set} — flagship $${r.price} · spread ${r.spreadPct>0?"+":""}${r.spreadPct}% ⚡\n`;
+  md += `\n## 📣 In today's Pokémon news\n`;
+  for (const r of der.narrative.inNews.slice(0,4)) md += `- **${r.set}** — top product sits at $${r.price}${r.spreadPct!=null?`, asking ${Math.abs(r.spreadPct)}% ${r.spreadPct>0?"more":"less"} on eBay than TCGplayer`:""}\n`;
+  md += `\n## 🤫 Moving without headlines\n`;
+  for (const r of der.narrative.quietMovers.slice(0,4)) md += `- **${r.flagship}** — $${r.price}, asking ${Math.abs(r.spreadPct)}% ${r.spreadPct>0?"more":"less"} on eBay than TCGplayer — and nobody's covering it\n`;
 }
 if (upcoming.length) {
   md += `\n## Radar — next up\n`;
@@ -81,7 +82,7 @@ await writeFile(join(ROOT,`research/pulse/${today}.md`), md);
 
 // ── HTML edition: the human-facing morning brief (same data, designed) ──
 const sigCards = sigs.slice(0,6).map(r=>`
-  <div class="sig"><div class="sighead"><span class="pct">${r.spreadPct>0?"+":""}${r.spreadPct}%</span><span class="signame">${r.name}</span></div>
+  <div class="sig"><div class="sighead"><span class="pct" title="eBay ask vs TCGplayer price">${r.spreadPct>0?"+":""}${r.spreadPct}% gap</span><span class="signame">${r.name}</span></div>
   <div class="sigsub">eBay <b>$${r.ebayAskMedian}</b> <span class="sup">· ${r.ebayListings??"—"} listings</span> &nbsp;vs&nbsp; TCG <b>$${r.tcgMarket}</b> <span class="sup">· supply ${r.tcgListings??"—"}</span></div>
   <div class="sigread">${r.read}</div></div>`).join("");
 const supNote = sigs.some(r=>r.tcgListings==null) ? `<div class="foot">* TCG-side supply: provider exposes no sealed listing counts — slot is wired; lights up the day they ship it.</div>` : "";
@@ -117,11 +118,11 @@ footer{margin-top:30px;font:12px 'JetBrains Mono',monospace;color:var(--dim)}
   <div class="stat"><b>${sigs.length}</b><i>SPREAD SIGNALS</i></div>
   <div class="stat"><b>${heatDays}/8</b><i>READS CALIBRATING</i></div>
 </div>
-${sigs.length?`<h2>⚡ Spread signals — price &amp; supply, both markets</h2>${sigCards}${supNote}`:""}
+${sigs.length?`<h2>⚡ Biggest price gaps between eBay and TCGplayer</h2>${sigCards}${supNote}`:""}
 <h2>Deepest markets</h2>${deepRows}
 <h2>Chase board · TCGplayer market</h2>${chaseRows}
 ${(der?.dailyThree&&(der.dailyThree.sealed||der.dailyThree.raw))?`<h2>🎯 The Daily Three</h2>
-${der.dailyThree.sealed?`<div class="sig">${(()=>{const pr=sp.products.find(x=>x.name===der.dailyThree.sealed.name);const u=pr&&sealedImg(pr);return u?`<img class="thumb logo" src="${u}" alt="">`:"";})()}<div class="sigbody"><div class="sighead"><span class="pct">SEALED</span><span class="signame">${der.dailyThree.sealed.name}</span></div><div class="sigsub">eBay <b>$${der.dailyThree.sealed.ebay}</b> vs TCG <b>$${der.dailyThree.sealed.tcg}</b> · ${der.dailyThree.sealed.spreadPct>0?"+":""}${der.dailyThree.sealed.spreadPct}%</div><div class="sigread">${der.dailyThree.sealed.reason}</div></div></div>`:""}
+${der.dailyThree.sealed?`<div class="sig">${(()=>{const pr=sp.products.find(x=>x.name===der.dailyThree.sealed.name);const u=pr&&sealedImg(pr);return u?`<img class="thumb logo" src="${u}" alt="">`:"";})()}<div class="sigbody"><div class="sighead"><span class="pct">SEALED</span><span class="signame">${der.dailyThree.sealed.name}</span></div><div class="sigsub">eBay <b>$${der.dailyThree.sealed.ebay}</b> vs TCG <b>$${der.dailyThree.sealed.tcg}</b> </div><div class="sigread">eBay asks ${Math.abs(der.dailyThree.sealed.spreadPct)}% ${der.dailyThree.sealed.spreadPct>0?"more":"less"} than TCGplayer</div><div class="sigread">${der.dailyThree.sealed.reason}</div></div></div>`:""}
 <div class="sig" style="border-left-color:${der.dailyThree.graded?"var(--gold)":"var(--line)"}"><div class="sighead"><span class="pct">GRADED</span><span class="signame">${der.dailyThree.graded?der.dailyThree.graded.name:"calibrating"}</span></div><div class="sigsub">${der.dailyThree.graded?`raw <b>$${der.dailyThree.graded.raw}</b> → PSA10 <b>$${der.dailyThree.graded.psa10}</b> · premium +$${der.dailyThree.graded.premium}`:"returns with the Grading Premium table"}</div></div>
 ${der.dailyThree.raw?`<div class="sig">${(()=>{const c=(sg?.cards||[]).find(x=>x.name===der.dailyThree.raw.name&&x.setName===der.dailyThree.raw.set);const u=c&&cardImg(c.cardId);return u?`<img class="thumb" src="${u}" alt="">`:"";})()}<div class="sigbody"><div class="sighead"><span class="pct">RAW</span><span class="signame">${der.dailyThree.raw.name}</span></div><div class="sigsub"><b>$${der.dailyThree.raw.price}</b> · ${der.dailyThree.raw.set}</div><div class="sigread">${der.dailyThree.raw.reason}</div></div></div>`:""}
 `:""}
@@ -130,9 +131,10 @@ ${der?.packMath?`<h2>🧮 Pack math — $ per sealed pack</h2>
 ${der.packMath.priciest.slice(0,3).map(r=>`<div class="row"><span>${r.name}${r.sealedPremiumPct!=null?` <em>vs loose $${r.loosePack}</em>`:""}</span><span class="mono">$${r.perPack}/pk${r.sealedPremiumPct!=null?` · ${r.sealedPremiumPct>0?"+":""}${r.sealedPremiumPct}%`:""}</span></div>`).join("")}
 <div class="row" style="border-bottom:0"><span style="color:var(--dim)">···</span><span></span></div>
 ${der.packMath.cheapest.slice(0,3).map(r=>`<div class="row"><span>${r.name}${r.sealedPremiumPct!=null?` <em>vs loose $${r.loosePack}</em>`:""}</span><span class="mono">$${r.perPack}/pk${r.sealedPremiumPct!=null?` · ${r.sealedPremiumPct>0?"+":""}${r.sealedPremiumPct}%`:""}</span></div>`).join("")}`:""}
-${der?.narrative?`<h2>📰 Narrative vs the tape</h2>
-${der.narrative.inNews.slice(0,3).map(r=>`<div class="row"><span>📣 ${r.set} <em>in today's digest</em></span><span class="mono">$${r.price}${r.spreadPct!=null?` · ${r.spreadPct>0?"+":""}${r.spreadPct}%`:""}</span></div>`).join("")}
-${der.narrative.quietMovers.slice(0,3).map(r=>`<div class="row"><span>🤫 ${r.set} <em>tape moved, news quiet</em></span><span class="mono">$${r.price} · ${r.spreadPct>0?"+":""}${r.spreadPct}% ⚡</span></div>`).join("")}`:""}
+${der?.narrative?`<h2>📣 In today's Pokémon news</h2>
+${der.narrative.inNews.slice(0,3).map(r=>`<div class="row"><span>${r.set}<em>${r.spreadPct!=null?` asking ${Math.abs(r.spreadPct)}% ${r.spreadPct>0?"more":"less"} on eBay than TCGplayer`:""}</em></span><span class="mono">$${r.price}</span></div>`).join("")}
+<h2>🤫 Moving without headlines</h2>
+${der.narrative.quietMovers.slice(0,3).map(r=>`<div class="row"><span>${r.flagship}<em> asking ${Math.abs(r.spreadPct)}% ${r.spreadPct>0?"more":"less"} on eBay — no coverage anywhere ⚡</em></span><span class="mono">$${r.price}</span></div>`).join("")}`:""}
 ${upcoming.length?`<h2>Radar</h2>${radarRows}`:""}
 <div class="calib">HEAT READS: day ${heatDays} of 8 clean days — Wyckoff states return ~Aug 26. We publish nothing false in the meantime.</div>
 <footer>Catch'em. Catch Feels. · prices: Catchem-data, eBay active listings (measured) · spread: internal instrument</footer>
