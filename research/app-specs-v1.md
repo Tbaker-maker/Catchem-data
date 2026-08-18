@@ -35,6 +35,10 @@ components; ship behind a flag.
 - **Trust rule:** header Δ hides until ≥2 history days exist per card.
 
 ## 3 · LIVE-PRICED FEELS (M — needs Supabase + pack engine)
+- **Structure is SPEC'D:** implements pack-system-spec v2 §4 (4 slots:
+  Signal/Utility/Bonus/Special, free daily, streak-gated quality). Signal
+  slot feeds from pulse-feed/post-ideas (machine socket). Value-chips
+  layer on top per below.
 - **Pull values:** intrinsic-value model (catchem.jsx) prices the pack's
   slots; any pull matching a CONFIRMED watchlist printing shows the real
   market chip instead. "Street value pulled" = Σ, mixed-provenance allowed
