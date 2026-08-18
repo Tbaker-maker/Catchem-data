@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catch'em Intelligence — Sealed Heat-Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0A0B0F;
+  --surface: #15171E;
+  --surface-2: #1E2129;
+  --surface-3: #282B34;
+  --border: #2A2D38;
+  --border-light: #34384A;
+  --text-1: #E8EAED;
+  --text-2: #A8ACBC;
+  --text-3: #6B6F80;
+  --text-4: #4A4D5A;
+
+  --brand: #F5C842;
+  --brand-glow: rgba(245, 200, 66, 0.15);
+
+  --squeeze: #FF8540;
+  --squeeze-bg: rgba(255, 133, 64, 0.12);
+  --squeeze-border: rgba(255, 133, 64, 0.3);
+
+  --distribution: #4ADE80;
+  --distribution-bg: rgba(74, 222, 128, 0.10);
+  --distribution-border: rgba(74, 222, 128, 0.25);
+
+  --capitulation: #60A5FA;
+  --capitulation-bg: rgba(96, 165, 250, 0.10);
+  --capitulation-border: rgba(96, 165, 250, 0.25);
+
+  --stagnation: #6B7280;
+  --stagnation-bg: rgba(107, 114, 128, 0.10);
+  --stagnation-border: rgba(107, 114, 128, 0.25);
+
+  --thin: #9CA3AF;
+  --thin-bg: rgba(156, 163, 175, 0.08);
+
+  --display: 'Bricolage Grotesque', sans-serif;
+  --body: 'Sora', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text-1);
+  font-family: var(--body);
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* Subtle grain texture */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.015) 1px, transparent 0);
+  background-size: 3px 3px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 16px;
+  position: relative;
+  z-index: 2;
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 24px 4px 20px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+
+.brand-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brand);
+}
+
+.brand-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--brand);
+  border-radius: 50%;
+  box-shadow: 0 0 12px var(--brand-glow), 0 0 4px var(--brand);
+}
+
+.page-title {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(28px, 6vw, 44px);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-top: 4px;
+}
+
+.page-subtitle {
+  font-size: 15px;
+  color: var(--text-2);
+  margin-top: 8px;
+  max-width: 640px;
+}
+
+.page-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-3);
+  letter-spacing: 0.03em;
+}
+
+.page-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.live-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--distribution);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* STATE LEGEND */
+.legend {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 768px) {
+  .legend { grid-template-columns: repeat(4, 1fr); }
+}
+
+.legend-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.legend-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.legend-formula {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-3);
+  letter-spacing: 0.04em;
+  margin-top: 2px;
+}
+
+.legend-desc {
+  font-family: var(--body);
+  font-size: 12px;
+  color: var(--text-2);
+  line-height: 1.45;
+  margin-top: 2px;
+}
+
+.dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dot-squeeze { background: var(--squeeze); box-shadow: 0 0 6px var(--squeeze); }
+.dot-distribution { background: var(--distribution); }
+.dot-capitulation { background: var(--capitulation); }
+.dot-stagnation { background: var(--stagnation); }
+
+/* FILTER BAR */
+.filter-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.search-row {
+  position: relative;
+}
+
+.search-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px 10px 38px;
+  color: var(--text-1);
+  font-family: var(--body);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.search-input:focus { border-color: var(--brand); }
+.search-input::placeholder { color: var(--text-4); }
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-3);
+  pointer-events: none;
+}
+
+.pill-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.pill {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 12px;
+  color: var(--text-2);
+  font-size: 12px;
+  font-family: var(--body);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.pill:hover { border-color: var(--border-light); color: var(--text-1); }
+.pill.active {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: var(--bg);
+  font-weight: 600;
+}
+
+.pill-label {
+  font-size: 10px;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-family: var(--mono);
+  margin-bottom: 6px;
+  display: block;
+  font-weight: 500;
+}
+
+/* RESULTS COUNT */
+.results-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  padding: 0 4px;
+}
+
+.results-count {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-3);
+  letter-spacing: 0.05em;
+}
+
+.sort-control {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.sort-select {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 8px;
+  color: var(--text-1);
+  font-family: var(--body);
+  font-size: 12px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* PRODUCT CARDS (MOBILE) */
+.products-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.product-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.product-card:hover {
+  border-color: var(--border-light);
+  transform: translateY(-1px);
+}
+
+.product-card.expanded {
+  border-color: var(--brand);
+}
+
+.product-header {
+  display: flex;
+  gap: 12px;
+  padding: 14px;
+  align-items: flex-start;
+  position: relative;
+}
+
+.expand-indicator {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--text-2);
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+}
+
+.expand-indicator svg {
+  width: 12px;
+  height: 12px;
+  transition: transform 0.25s ease;
+}
+
+.product-card:hover .expand-indicator {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.product-card.expanded .expand-indicator {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: var(--bg);
+}
+
+.product-card.expanded .expand-indicator svg {
+  transform: rotate(180deg);
+}
+
+.expand-hint {
+  position: absolute;
+  top: 50%;
+  right: 50px;
+  transform: translateY(-50%);
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-4);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.product-card:not(.expanded):hover .expand-hint {
+  opacity: 1;
+}
+
+.product-card.expanded .expand-hint { display: none; }
+
+.state-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.state-squeeze {
+  background: var(--squeeze-bg);
+  border: 1px solid var(--squeeze-border);
+  color: var(--squeeze);
+}
+
+.state-distribution {
+  background: var(--distribution-bg);
+  border: 1px solid var(--distribution-border);
+  color: var(--distribution);
+}
+
+.state-capitulation {
+  background: var(--capitulation-bg);
+  border: 1px solid var(--capitulation-border);
+  color: var(--capitulation);
+}
+
+.state-stagnation {
+  background: var(--stagnation-bg);
+  border: 1px solid var(--stagnation-border);
+  color: var(--stagnation);
+}
+
+.product-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.product-name {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text-1);
+  line-height: 1.3;
+  margin-bottom: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-type {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-3);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.product-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border-top: 1px solid var(--border);
+}
+
+.metric {
+  background: var(--surface);
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.metric-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+}
+
+.metric-value {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text-1);
+  line-height: 1.1;
+}
+
+.metric-delta {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  margin-top: 1px;
+}
+
+.delta-up { color: var(--distribution); }
+.delta-down { color: var(--capitulation); }
+.delta-neutral { color: var(--text-3); }
+
+.delta-up.is-squeeze-signal { color: var(--squeeze); }
+
+/* EXPANDED DETAIL */
+.product-detail {
+  display: none;
+  border-top: 1px solid var(--border);
+  padding: 16px 14px;
+  background: var(--surface-2);
+}
+
+.product-card.expanded .product-detail {
+  display: block;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 13px;
+}
+
+.detail-row:not(:last-child) {
+  border-bottom: 1px solid var(--border);
+}
+
+.detail-label {
+  color: var(--text-3);
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.detail-value {
+  color: var(--text-1);
+  font-family: var(--mono);
+  font-weight: 500;
+}
+
+.detail-flavor {
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--brand);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.detail-flavor strong {
+  color: var(--brand);
+  font-style: normal;
+}
+
+/* HELPER HINT */
+.helper-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px dashed var(--border-light);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-2);
+  letter-spacing: 0.02em;
+}
+
+.helper-hint svg {
+  color: var(--brand);
+  flex-shrink: 0;
+}
+
+/* CHART COMPONENT */
+.chart-container {
+  margin-top: 16px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 12px 10px;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.chart-legend {
+  display: flex;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-3);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.chart-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chart-legend-swatch {
+  width: 14px;
+  height: 2px;
+  border-radius: 1px;
+}
+
+.chart-legend-swatch.volume { background: var(--brand); height: 2px; }
+.chart-legend-swatch.supply {
+  background: linear-gradient(90deg, var(--capitulation) 50%, transparent 50%);
+  background-size: 4px 2px;
+  height: 2px;
+}
+
+.time-toggles {
+  display: flex;
+  gap: 3px;
+  background: var(--surface);
+  border-radius: 6px;
+  padding: 2px;
+}
+
+.time-toggle {
+  background: transparent;
+  border: none;
+  padding: 4px 9px;
+  border-radius: 4px;
+  color: var(--text-3);
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.time-toggle:hover {
+  color: var(--text-1);
+}
+
+.time-toggle.active {
+  background: var(--brand);
+  color: var(--bg);
+}
+
+.chart-svg {
+  width: 100%;
+  height: 180px;
+  display: block;
+  overflow: visible;
+}
+
+.chart-axis-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  fill: var(--text-4);
+  letter-spacing: 0.05em;
+}
+
+.chart-grid-line {
+  stroke: var(--border);
+  stroke-width: 1;
+  stroke-dasharray: 2 4;
+  opacity: 0.5;
+}
+
+.chart-volume-line {
+  fill: none;
+  stroke: var(--brand);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.chart-volume-area {
+  fill: url(#volumeGradient);
+}
+
+.chart-supply-line {
+  fill: none;
+  stroke: var(--capitulation);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 3;
+  stroke-linecap: round;
+  opacity: 0.75;
+}
+
+.chart-data-point {
+  fill: var(--brand);
+  stroke: var(--bg);
+  stroke-width: 2;
+}
+
+.chart-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.chart-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.chart-stat-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+}
+
+.chart-stat-value {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text-1);
+}
+
+.chart-stat-value.up { color: var(--distribution); }
+.chart-stat-value.down { color: var(--capitulation); }
+
+/* FOOTER */
+.footer {
+  margin-top: 40px;
+  padding: 24px 4px;
+  border-top: 1px solid var(--border);
+}
+
+.methodology {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  font-size: 12px;
+  color: var(--text-2);
+  line-height: 1.6;
+}
+
+.methodology-title {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text-1);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.info-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--text-3);
+  border-radius: 50%;
+  font-size: 10px;
+  color: var(--text-3);
+  font-style: italic;
+}
+
+.methodology p { margin-bottom: 8px; }
+.methodology p:last-child { margin-bottom: 0; }
+
+.methodology code {
+  background: var(--bg);
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--brand);
+}
+
+.footer-meta {
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-4);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* DESKTOP TABLE LAYOUT */
+@media (min-width: 900px) {
+  .container { padding: 24px 32px; }
+
+  .product-card {
+    display: grid;
+    grid-template-columns: 100px 1fr 130px 130px 100px 50px;
+    align-items: center;
+    gap: 16px;
+    padding: 0;
+  }
+
+  .product-header {
+    display: contents;
+    padding: 0;
+  }
+
+  .state-badge {
+    margin-left: 16px;
+    justify-self: start;
+  }
+
+  .product-info { padding: 14px 0; }
+
+  .product-metrics {
+    display: contents;
+    background: transparent;
+    border-top: 0;
+  }
+
+  .metric {
+    border-left: 1px solid var(--border);
+    padding: 14px 16px;
+    background: transparent;
+  }
+
+  .metric-label { display: none; }
+
+  .expand-indicator {
+    position: static;
+    margin-right: 12px;
+    justify-self: end;
+  }
+
+  .expand-hint { display: none; }
+
+  .product-detail {
+    grid-column: 1 / -1;
+  }
+
+  .table-header {
+    display: grid;
+    grid-template-columns: 100px 1fr 130px 130px 100px 50px;
+    gap: 16px;
+    align-items: center;
+    padding: 10px 0;
+    margin-bottom: 8px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+  }
+
+  .table-header-cell {
+    padding-left: 16px;
+  }
+
+  .table-header-cell.numeric {
+    text-align: left;
+    border-left: 1px solid transparent;
+  }
+}
+
+@media (max-width: 899px) {
+  .table-header { display: none; }
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border-light); }
+</style>
+</head>
+<body>
+<div style="background:#1a1d29;border-bottom:1px solid #2e3345;color:#8a93a8;font:12px monospace;padding:8px 16px;text-align:center">DEMO BUILD · prices &amp; listing counts REAL (Catchem-data, eBay active, Aug 18 2026) · states &amp; volume illustrative — live Wyckoff reads return Aug 26 · inferred, not measured</div>
+
+<div class="container">
+
+  <header class="header">
+    <div class="brand-line">
+      <span class="brand-dot"></span>
+      <span>Catch'em Intelligence</span>
+    </div>
+    <h1 class="page-title">Sealed Heat-Map</h1>
+    <p class="page-subtitle">Dollar volume × supply across every English Pokemon TCG sealed product. Updated daily.</p>
+    <div class="page-meta">
+      <span class="page-meta-item"><span class="live-dot"></span>LIVE — Week of May 11, 2026</span>
+      <span class="page-meta-item">Tracking 847 SKUs</span>
+      <span class="page-meta-item">Last snapshot: 6:02 AM UTC</span>
+    </div>
+  </header>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-label"><span class="dot dot-squeeze"></span>🔥 Squeeze</div>
+      <div class="legend-formula">$ ↑ · Supply ↓</div>
+      <div class="legend-desc">Markup phase. Supply shrinking, possible breakout imminent.</div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-label"><span class="dot dot-distribution"></span>📈 Distribution</div>
+      <div class="legend-formula">$ ↑ · Supply ↑</div>
+      <div class="legend-desc">Distribution phase. Heavy two-way trading at peak.</div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-label"><span class="dot dot-capitulation"></span>❄️ Capitulation</div>
+      <div class="legend-formula">$ ↓ · Supply ↑</div>
+      <div class="legend-desc">Markdown phase. Supply flooding, price falling.</div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-label"><span class="dot dot-stagnation"></span>😴 Stagnation</div>
+      <div class="legend-formula">$ ↓ · Supply ↓</div>
+      <div class="legend-desc">Accumulation phase. Few sellers, few buyers — deep collector hold.</div>
+    </div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filter-bar">
+    <div class="search-row">
+      <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.3-4.3"></path>
+      </svg>
+      <input type="text" class="search-input" id="search" placeholder="Search by set or product name...">
+    </div>
+
+    <div>
+      <span class="pill-label">State</span>
+      <div class="pill-group" id="state-filters">
+        <button class="pill active" data-filter="state" data-value="all">All</button>
+        <button class="pill" data-filter="state" data-value="squeeze">🔥 Squeeze</button>
+        <button class="pill" data-filter="state" data-value="distribution">📈 Distribution</button>
+        <button class="pill" data-filter="state" data-value="capitulation">❄️ Capitulation</button>
+        <button class="pill" data-filter="state" data-value="stagnation">😴 Stagnation</button>
+      </div>
+    </div>
+
+    <div>
+      <span class="pill-label">Era</span>
+      <div class="pill-group" id="era-filters">
+        <button class="pill active" data-filter="era" data-value="all">All</button>
+        <button class="pill" data-filter="era" data-value="mega">Mega</button>
+        <button class="pill" data-filter="era" data-value="sv">SV</button>
+        <button class="pill" data-filter="era" data-value="ss">SWSH</button>
+        <button class="pill" data-filter="era" data-value="sm">SM</button>
+      </div>
+    </div>
+
+    <div>
+      <span class="pill-label">Product</span>
+      <div class="pill-group" id="type-filters">
+        <button class="pill active" data-filter="type" data-value="all">All</button>
+        <button class="pill" data-filter="type" data-value="bb">Booster Box</button>
+        <button class="pill" data-filter="type" data-value="etb">ETB</button>
+        <button class="pill" data-filter="type" data-value="bundle">Bundle</button>
+        <button class="pill" data-filter="type" data-value="collection">Collection</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTS BAR -->
+  <div class="results-bar">
+    <span class="results-count" id="results-count">Showing 14 of 14 SKUs</span>
+    <div class="sort-control">
+      <label for="sort" style="color: var(--text-3); font-size: 11px; font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.05em;">Sort:</label>
+      <select class="sort-select" id="sort">
+        <option value="state">State priority</option>
+        <option value="volume-desc">$ Volume ↓</option>
+        <option value="volume-change-desc">$ Δ % ↓</option>
+        <option value="supply-change-asc">Supply Δ % ↑</option>
+        <option value="price-desc">Avg price ↓</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- TABLE HEADER (DESKTOP) -->
+  <div class="table-header">
+    <div class="table-header-cell">State</div>
+    <div class="table-header-cell">Product</div>
+    <div class="table-header-cell">$ Volume (WoW)</div>
+    <div class="table-header-cell">Supply (WoW)</div>
+    <div class="table-header-cell">Avg Price</div>
+    <div></div>
+  </div>
+
+  <!-- HELPER HINT -->
+  <div class="helper-hint">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="16" x2="12" y2="12"></line>
+      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+    </svg>
+    <span>Tap any row to see the 1W / 1M / 3M / 1Y / ALL chart</span>
+  </div>
+
+  <!-- PRODUCT GRID -->
+  <div class="products-grid" id="products-grid">
+    <!-- Generated by JS -->
+  </div>
+
+  <!-- FOOTER METHODOLOGY -->
+  <footer class="footer">
+    <div class="methodology">
+      <div class="methodology-title">
+        <span class="info-icon">i</span>
+        How heat is measured
+      </div>
+      <p><strong style="color: var(--text-1);">Volume is inferred</strong>, not directly measured. Catch'em tracks <code>active listings on eBay</code> with a daily snapshot. Listings that disappear between snapshots are scored as inferred sales — high confidence for Buy It Now at typical prices, lower confidence for auctions and outliers.</p>
+      <p>Heat states (🔥 / 📈 / ❄️ / 😴) measure week-over-week trends with a ±10% threshold. They tell you whether money and supply are moving — not exact dollar amounts.</p>
+      <p>Current sets with high listing turnover are most accurate. Vintage sealed (Hidden Fates, Burning Shadows tins, etc.) has sparse data and may show "thin data" labels instead of states.</p>
+      <p style="color: var(--text-3); font-size: 11px; margin-top: 12px;">Built on Catchem-data, our open eBay tracker. No paid data feeds. No partner sponsorships. The signal is yours.</p>
+      <div class="footer-meta">
+        <span>v0.4 — daily snapshot mode</span>
+        <span>•</span>
+        <span>Next refresh: 6:00 AM UTC</span>
+        <span>•</span>
+        <span>Catch'em. Catch Feels.</span>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const products = [
+  {
+    id: 1, name: "Phantasmal Flames", type: "Booster Box", typeCode: "bb", era: "mega",
+    releaseDate: "Nov 14, 2025",
+    state: "squeeze", volume: 0, volumeDelta: 0, supply: 75, supplyDelta: 0, avgPrice: 430,
+    flavor: "Mega Charizard X ex SIR at $692 (TCGplayer mkt) doing the heavy lifting on a $430 box. Money in — the era's marquee product.",
+    history: [369, 376, 381, 402, 396, 413, 428]
+  },
+  {
+    id: 2, name: "Mega Evolution: Ascended Heroes", type: "Booster Bundle", typeCode: "bundle", era: "mega",
+    releaseDate: "Jan 30, 2026",
+    state: "squeeze", volume: 0, volumeDelta: 0, supply: 112, supplyDelta: 0, avgPrice: 85,
+    flavor: "The products-only set. Six tins land Aug 28 — TPC venting the squeeze. Absorb-or-stall is the watch.",
+    history: [72, 75, 77, 77, 79, 82, 83]
+  },
+  {
+    id: 3, name: "Prismatic Evolutions", type: "ETB", typeCode: "etb", era: "sv",
+    releaseDate: "Jan 17, 2025",
+    state: "squeeze", volume: 0, volumeDelta: 0, supply: 127, supplyDelta: 0, avgPrice: 165,
+    flavor: "Sunbreon mythology continues — Umbreon ex SIR $1,491. 130 active listings, $165 median holding.",
+    history: [143, 143, 147, 149, 155, 161, 162]
+  },
+  {
+    id: 4, name: "Mega Evolution Base Set", type: "Booster Box", typeCode: "bb", era: "mega",
+    releaseDate: "Sep 26, 2025",
+    state: "distribution", volume: 0, volumeDelta: 0, supply: 25, supplyDelta: 0, avgPrice: 342,
+    flavor: "Era-opener at $342. Oddity on tape: the Enhanced box-topper variant asks $10 UNDER regular. Market hasn't priced the topper.",
+    history: [298, 300, 312, 310, 319, 331, 339]
+  },
+  {
+    id: 5, name: "Pokémon 151", type: "ETB", typeCode: "etb", era: "sv",
+    releaseDate: "Sep 22, 2023",
+    state: "distribution", volume: 0, volumeDelta: 0, supply: 132, supplyDelta: 0, avgPrice: 600,
+    flavor: "151 in steady state at $600. Zard ex SIR $361 — the set that never cooled, just matured.",
+    history: [514, 518, 534, 545, 559, 583, 581]
+  },
+  {
+    id: 6, name: "Evolving Skies", type: "Booster Box", typeCode: "bb", era: "swsh",
+    releaseDate: "Aug 27, 2021",
+    state: "accumulation", volume: 0, volumeDelta: 0, supply: 91, supplyDelta: 0, avgPrice: 2899,
+    flavor: "The $2,899 monolith. Moonbreon at $2,244. Thin listings, deep holds — the definition of accumulation.",
+    history: [2538, 2595, 2557, 2653, 2724, 2728, 2832]
+  },
+  {
+    id: 7, name: "Journey Together", type: "Booster Box", typeCode: "bb", era: "sv",
+    releaseDate: "Mar 28, 2025",
+    state: "distribution", volume: 0, volumeDelta: 0, supply: 62, supplyDelta: 0, avgPrice: 290,
+    flavor: "$285 across 63 listings — the number our tracker got wrong for three months, now fixed and receipted.",
+    history: [254, 251, 262, 262, 273, 283, 281]
+  },
+  {
+    id: 8, name: "Surging Sparks", type: "Booster Box", typeCode: "bb", era: "sv",
+    releaseDate: "Nov 8, 2024",
+    state: "distribution", volume: 0, volumeDelta: 0, supply: 90, supplyDelta: 0, avgPrice: 310,
+    flavor: "Pikachu-ex-era juice at $305. Healthy two-market agreement on The Spread.",
+    history: [260, 268, 279, 279, 286, 298, 309]
+  }
+];
+
+// Helper: generate 52 weeks of believable historical data based on SKU pattern
+function generateHistory(currentVolume, currentSupply, state, weeksBack = 52) {
+  const volumeHistory = [];
+  const supplyHistory = [];
+
+  // Different patterns per state — recent weeks reflect current state
+  for (let i = weeksBack - 1; i >= 0; i--) {
+    let volMultiplier, supMultiplier;
+    const weeksAgo = i;
+    const noise = () => 0.85 + Math.random() * 0.3;
+
+    if (state === 'squeeze') {
+      // Recent: vol rising sharply, supply falling. Older: stable
+      volMultiplier = weeksAgo < 4 ? (0.6 + (4 - weeksAgo) * 0.1) * noise() :
+                       weeksAgo < 12 ? (0.55 + Math.random() * 0.15) :
+                       (0.4 + Math.random() * 0.25);
+      supMultiplier = weeksAgo < 4 ? (1.0 + weeksAgo * 0.06) * noise() :
+                       weeksAgo < 12 ? (1.15 + Math.random() * 0.2) :
+                       (1.25 + Math.random() * 0.25);
+    } else if (state === 'distribution') {
+      // Steady upward trend on both
+      volMultiplier = (0.55 + (weeksBack - weeksAgo) * 0.008) * noise();
+      supMultiplier = (0.85 + (weeksBack - weeksAgo) * 0.003) * noise();
+    } else if (state === 'capitulation') {
+      // Recent: vol falling, supply rising. Older: was strong
+      volMultiplier = weeksAgo < 4 ? (1.4 - (4 - weeksAgo) * 0.1) * noise() :
+                       weeksAgo < 12 ? (0.95 + Math.random() * 0.15) :
+                       (1.0 + Math.random() * 0.15);
+      supMultiplier = weeksAgo < 4 ? (0.75 + (4 - weeksAgo) * 0.06) * noise() :
+                       weeksAgo < 12 ? (0.85 + Math.random() * 0.1) :
+                       (0.9 + Math.random() * 0.15);
+    } else { // stagnation
+      // Flat, low both
+      volMultiplier = (0.9 + Math.random() * 0.2) * noise();
+      supMultiplier = (0.9 + Math.random() * 0.2) * noise();
+    }
+
+    volumeHistory.push(Math.round(currentVolume * volMultiplier));
+    supplyHistory.push(Math.round(currentSupply * supMultiplier));
+  }
+
+  // Force the last value to match current
+  volumeHistory[volumeHistory.length - 1] = currentVolume;
+  supplyHistory[supplyHistory.length - 1] = currentSupply;
+
+  return { volume: volumeHistory, supply: supplyHistory };
+}
+
+// Build SVG line chart with dual data series
+function renderChart(productId, history, timeWindow) {
+  const windowMap = { '1W': 7, '1M': 30, '3M': 12, '1Y': 52, 'ALL': 52 };
+  // Note: 1W/1M shown as days, others as weeks. For simplicity in mockup we use weekly data scaled
+  const slice = windowMap[timeWindow];
+
+  // For 1W and 1M we simulate daily resolution by interpolating weekly data
+  let volData, supData, labels;
+
+  if (timeWindow === '1W') {
+    const lastWeek = history.volume.slice(-2);
+    const lastSupply = history.supply.slice(-2);
+    volData = [];
+    supData = [];
+    for (let i = 0; i < 7; i++) {
+      const t = i / 6;
+      volData.push(Math.round(lastWeek[0] * (1 - t) + lastWeek[1] * t));
+      supData.push(Math.round(lastSupply[0] * (1 - t) + lastSupply[1] * t));
+    }
+    labels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+  } else if (timeWindow === '1M') {
+    volData = history.volume.slice(-4);
+    supData = history.supply.slice(-4);
+    labels = ['4W ago', '3W ago', '2W ago', 'Now'];
+  } else if (timeWindow === '3M') {
+    volData = history.volume.slice(-12);
+    supData = history.supply.slice(-12);
+    labels = ['Feb', '', '', 'Mar', '', '', 'Apr', '', '', 'May', '', 'Now'];
+  } else if (timeWindow === '1Y') {
+    volData = history.volume.slice(-52);
+    supData = history.supply.slice(-52);
+    labels = Array(52).fill('');
+    labels[0] = "May '25";
+    labels[12] = "Aug '25";
+    labels[25] = "Nov '25";
+    labels[38] = "Feb '26";
+    labels[51] = "Now";
+  } else { // ALL
+    volData = history.volume;
+    supData = history.supply;
+    labels = Array(52).fill('');
+    labels[0] = 'Start';
+    labels[Math.floor(52/2)] = 'Mid';
+    labels[51] = 'Now';
+  }
+
+  const width = 100; // SVG viewBox width
+  const height = 100;
+  const padding = { top: 8, right: 8, bottom: 16, left: 8 };
+  const chartW = width - padding.left - padding.right;
+  const chartH = height - padding.top - padding.bottom;
+
+  const maxVol = Math.max(...volData);
+  const minVol = Math.min(...volData);
+  const volRange = maxVol - minVol || 1;
+
+  const maxSup = Math.max(...supData);
+  const minSup = Math.min(...supData);
+  const supRange = maxSup - minSup || 1;
+
+  // Generate path strings
+  const points = volData.length;
+  const xStep = chartW / (points - 1);
+
+  const volPoints = volData.map((v, i) => {
+    const x = padding.left + i * xStep;
+    const y = padding.top + chartH - ((v - minVol) / volRange) * chartH;
+    return [x, y];
+  });
+
+  const supPoints = supData.map((s, i) => {
+    const x = padding.left + i * xStep;
+    const y = padding.top + chartH - ((s - minSup) / supRange) * chartH;
+    return [x, y];
+  });
+
+  // Smooth volume line (catmull-rom-ish)
+  const volPath = `M ${volPoints[0][0]},${volPoints[0][1]} ` +
+    volPoints.slice(1).map(([x, y], i) => {
+      const prev = volPoints[i];
+      const cp1x = prev[0] + xStep * 0.3;
+      const cp1y = prev[1];
+      const cp2x = x - xStep * 0.3;
+      const cp2y = y;
+      return `C ${cp1x},${cp1y} ${cp2x},${cp2y} ${x},${y}`;
+    }).join(' ');
+
+  // Volume area fill (closes to bottom)
+  const volAreaPath = volPath + ` L ${volPoints[volPoints.length-1][0]},${padding.top + chartH} L ${volPoints[0][0]},${padding.top + chartH} Z`;
+
+  // Supply line (dashed)
+  const supPath = `M ${supPoints[0][0]},${supPoints[0][1]} ` +
+    supPoints.slice(1).map(([x, y]) => `L ${x},${y}`).join(' ');
+
+  // Gridlines (3 horizontal)
+  const gridLines = [0.25, 0.5, 0.75].map(t => {
+    const y = padding.top + chartH * t;
+    return `<line class="chart-grid-line" x1="${padding.left}" y1="${y}" x2="${width - padding.right}" y2="${y}" />`;
+  }).join('');
+
+  // X-axis labels (sparse)
+  const xLabels = labels.map((label, i) => {
+    if (!label) return '';
+    const x = padding.left + i * xStep;
+    return `<text class="chart-axis-label" x="${x}" y="${height - 3}" text-anchor="middle">${label}</text>`;
+  }).join('');
+
+  // Last point dot
+  const lastPoint = volPoints[volPoints.length - 1];
+  const dot = `<circle class="chart-data-point" cx="${lastPoint[0]}" cy="${lastPoint[1]}" r="2.5" />`;
+
+  // Stats
+  const volChange = ((volData[volData.length - 1] - volData[0]) / volData[0] * 100).toFixed(0);
+  const supChange = ((supData[supData.length - 1] - supData[0]) / supData[0] * 100).toFixed(0);
+  const periodHigh = Math.max(...volData);
+  const periodLow = Math.min(...volData);
+
+  return `
+    <svg class="chart-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="volumeGradient-${productId}" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#F5C842" stop-opacity="0.25" />
+          <stop offset="100%" stop-color="#F5C842" stop-opacity="0" />
+        </linearGradient>
+      </defs>
+      ${gridLines}
+      <path d="${volAreaPath}" fill="url(#volumeGradient-${productId})" />
+      <path class="chart-volume-line" d="${volPath}" />
+      <path class="chart-supply-line" d="${supPath}" />
+      ${dot}
+      ${xLabels}
+    </svg>
+    <div class="chart-stats">
+      <div class="chart-stat">
+        <span class="chart-stat-label">Vol Δ ${timeWindow}</span>
+        <span class="chart-stat-value ${volChange > 0 ? 'up' : 'down'}">${volChange > 0 ? '+' : ''}${volChange}%</span>
+      </div>
+      <div class="chart-stat">
+        <span class="chart-stat-label">Period High</span>
+        <span class="chart-stat-value">${formatMoney(periodHigh)}</span>
+      </div>
+      <div class="chart-stat">
+        <span class="chart-stat-label">Period Low</span>
+        <span class="chart-stat-value">${formatMoney(periodLow)}</span>
+      </div>
+    </div>
+  `;
+}
+
+const stateOrder = { squeeze: 0, distribution: 1, capitulation: 2, stagnation: 3 };
+
+// Pre-generate 52-week history for each product
+products.forEach(p => {
+  p.fullHistory = generateHistory(p.volume, p.supply, p.state, 52);
+});
+
+const filters = {
+  state: 'all',
+  era: 'all',
+  type: 'all',
+  search: '',
+  sort: 'state'
+};
+
+function formatMoney(n) {
+  if (n >= 1000) return '$' + (n / 1000).toFixed(1) + 'k';
+  return '$' + n;
+}
+
+function formatDelta(n) {
+  return (n > 0 ? '+' : '') + n + '%';
+}
+
+function deltaClass(n, type) {
+  if (Math.abs(n) < 1) return 'delta-neutral';
+  return n > 0 ? 'delta-up' : 'delta-down';
+}
+
+function renderProducts() {
+  const grid = document.getElementById('products-grid');
+  let filtered = products.filter(p => {
+    if (filters.state !== 'all' && p.state !== filters.state) return false;
+    if (filters.era !== 'all' && p.era !== filters.era) return false;
+    if (filters.type !== 'all' && p.typeCode !== filters.type) return false;
+    if (filters.search && !p.name.toLowerCase().includes(filters.search.toLowerCase()) &&
+        !p.type.toLowerCase().includes(filters.search.toLowerCase())) return false;
+    return true;
+  });
+
+  if (filters.sort === 'state') {
+    filtered.sort((a, b) => stateOrder[a.state] - stateOrder[b.state] || b.volume - a.volume);
+  } else if (filters.sort === 'volume-desc') {
+    filtered.sort((a, b) => b.volume - a.volume);
+  } else if (filters.sort === 'volume-change-desc') {
+    filtered.sort((a, b) => b.volumeDelta - a.volumeDelta);
+  } else if (filters.sort === 'supply-change-asc') {
+    filtered.sort((a, b) => a.supplyDelta - b.supplyDelta);
+  } else if (filters.sort === 'price-desc') {
+    filtered.sort((a, b) => b.avgPrice - a.avgPrice);
+  }
+
+  document.getElementById('results-count').textContent =
+    `Showing ${filtered.length} of ${products.length} SKUs`;
+
+  grid.innerHTML = filtered.map(p => {
+    const volDeltaCls = p.volumeDelta > 10 && p.state === 'squeeze' ? 'delta-up is-squeeze-signal' :
+                       deltaClass(p.volumeDelta);
+    const supDeltaCls = p.supplyDelta < -10 && p.state === 'squeeze' ? 'delta-down is-squeeze-signal' :
+                       p.supplyDelta < 0 ? 'delta-down' :
+                       p.supplyDelta > 10 ? 'delta-up' : 'delta-neutral';
+
+    const stateLabel = {
+      squeeze: '🔥 Squeeze',
+      distribution: '📈 Distrib',
+      capitulation: '❄️ Cooling',
+      stagnation: '😴 Quiet'
+    }[p.state];
+
+    return `
+      <article class="product-card" data-id="${p.id}">
+        <div class="product-header">
+          <div class="state-badge state-${p.state}">${stateLabel}</div>
+          <div class="product-info">
+            <h3 class="product-name">${p.name}</h3>
+            <div class="product-type">${p.type}</div>
+          </div>
+          <span class="expand-hint">Tap chart</span>
+          <button class="expand-indicator" aria-label="Toggle chart view">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+        </div>
+        <div class="product-metrics">
+          <div class="metric">
+            <div class="metric-label">$ Volume</div>
+            <div class="metric-value">${formatMoney(p.volume)}</div>
+            <div class="metric-delta ${volDeltaCls}">${formatDelta(p.volumeDelta)}</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Supply</div>
+            <div class="metric-value">${p.supply}</div>
+            <div class="metric-delta ${supDeltaCls}">${formatDelta(p.supplyDelta)}</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Avg Price</div>
+            <div class="metric-value">${formatMoney(p.avgPrice)}</div>
+            <div class="metric-delta delta-neutral">USD</div>
+          </div>
+        </div>
+        <div class="product-detail">
+          <div class="chart-container" data-product-id="${p.id}">
+            <div class="chart-header">
+              <div class="chart-legend">
+                <div class="chart-legend-item">
+                  <span class="chart-legend-swatch volume"></span>
+                  <span>$ Volume</span>
+                </div>
+                <div class="chart-legend-item">
+                  <span class="chart-legend-swatch supply"></span>
+                  <span>Supply</span>
+                </div>
+              </div>
+              <div class="time-toggles" data-product-id="${p.id}">
+                <button class="time-toggle" data-window="1W">1W</button>
+                <button class="time-toggle active" data-window="1M">1M</button>
+                <button class="time-toggle" data-window="3M">3M</button>
+                <button class="time-toggle" data-window="1Y">1Y</button>
+                <button class="time-toggle" data-window="ALL">ALL</button>
+              </div>
+            </div>
+            <div class="chart-body" id="chart-body-${p.id}">
+              ${renderChart(p.id, p.fullHistory, '1M')}
+            </div>
+          </div>
+          <div class="detail-row" style="margin-top: 16px;">
+            <span class="detail-label">Inferred sales (wk)</span>
+            <span class="detail-value">${Math.round(p.volume / p.avgPrice)}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Data confidence</span>
+            <span class="detail-value" style="color: var(--distribution);">High</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Released</span>
+            <span class="detail-value">${p.releaseDate}</span>
+          </div>
+          <div class="detail-flavor">${p.flavor}</div>
+        </div>
+      </article>
+    `;
+  }).join('');
+
+  // Card click → expand
+  document.querySelectorAll('.product-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+      // Don't toggle if clicking inside chart/toggles
+      if (e.target.closest('.chart-container') || e.target.closest('.time-toggle')) return;
+      card.classList.toggle('expanded');
+    });
+  });
+
+  // Time window toggle handlers
+  document.querySelectorAll('.time-toggles').forEach(toggleGroup => {
+    const productId = parseInt(toggleGroup.dataset.productId);
+    const product = products.find(p => p.id === productId);
+    toggleGroup.querySelectorAll('.time-toggle').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const window = btn.dataset.window;
+        toggleGroup.querySelectorAll('.time-toggle').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(`chart-body-${productId}`).innerHTML =
+          renderChart(productId, product.fullHistory, window);
+      });
+    });
+  });
+}
+
+document.querySelectorAll('.pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    const filterType = pill.dataset.filter;
+    const filterValue = pill.dataset.value;
+    filters[filterType] = filterValue;
+
+    document.querySelectorAll(`.pill[data-filter="${filterType}"]`).forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+
+    renderProducts();
+  });
+});
+
+document.getElementById('search').addEventListener('input', (e) => {
+  filters.search = e.target.value;
+  renderProducts();
+});
+
+document.getElementById('sort').addEventListener('change', (e) => {
+  filters.sort = e.target.value;
+  renderProducts();
+});
+
+renderProducts();
+</script>
+
+</body>
+</html>
