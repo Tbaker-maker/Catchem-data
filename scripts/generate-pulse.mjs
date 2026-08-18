@@ -39,6 +39,19 @@ md += `## Deepest markets today\n`;
 for (const p of topListed) md += `- ${p.name}: **$${p.priceMedian}** across ${p.listingCount} active listings\n`;
 md += `\n## Chase board (confirmed, TCGplayer market)\n`;
 for (const c of chases) md += `- ${c.name} (${c.setName}): **$${c.priceMarket}**\n`;
+const t3 = der?.dailyThree;
+if (t3 && (t3.sealed||t3.graded||t3.raw)) {
+  md += `\n## 🎯 The Daily Three — watches, not calls\n`;
+  if (t3.sealed) md += `- **SEALED:** ${t3.sealed.name} — eBay $${t3.sealed.ebay} vs TCG $${t3.sealed.tcg} (${t3.sealed.spreadPct>0?"+":""}${t3.sealed.spreadPct}%). ${t3.sealed.reason}.\n`;
+  md += t3.graded ? `- **GRADED:** ${t3.graded.name} — raw $${t3.graded.raw} → PSA10 $${t3.graded.psa10} (premium +$${t3.graded.premium}). ${t3.graded.reason}.\n`
+                  : `- **GRADED:** calibrating — returns with the Grading Premium table.\n`;
+  if (t3.raw) md += `- **RAW:** ${t3.raw.name} (${t3.raw.set}) — $${t3.raw.price}. ${t3.raw.reason}.\n`;
+  md += `*${t3.disclosure}*\n`;
+}
+if (der?.catalysts?.length) {
+  md += `\n## 📡 Catalyst reads (house theses: research/house-theses.md)\n`;
+  for (const c of der.catalysts.slice(0,4)) md += `- **${c.class.toUpperCase()}·${c.horizon}** — ${c.note}\n`;
+}
 if (der?.packMath) {
   md += `\n## 🧮 Pack Math — $ per sealed pack (arithmetic, no estimation)\n`;
   for (const r of der.packMath.priciest.slice(0,3)) md += `- ${r.name}: **$${r.perPack}/pack** ($${r.price} ÷ ${r.packs})\n`;
@@ -98,6 +111,12 @@ footer{margin-top:30px;font:12px 'JetBrains Mono',monospace;color:var(--dim)}
 ${sigs.length?`<h2>⚡ Spread signals — price &amp; supply, both markets</h2>${sigCards}${supNote}`:""}
 <h2>Deepest markets</h2>${deepRows}
 <h2>Chase board · TCGplayer market</h2>${chaseRows}
+${(der?.dailyThree&&(der.dailyThree.sealed||der.dailyThree.raw))?`<h2>🎯 The Daily Three — watches, not calls</h2>
+${der.dailyThree.sealed?`<div class="sig"><div class="sighead"><span class="pct">SEALED</span><span class="signame">${der.dailyThree.sealed.name}</span></div><div class="sigsub">eBay <b>$${der.dailyThree.sealed.ebay}</b> vs TCG <b>$${der.dailyThree.sealed.tcg}</b> · ${der.dailyThree.sealed.spreadPct>0?"+":""}${der.dailyThree.sealed.spreadPct}%</div><div class="sigread">${der.dailyThree.sealed.reason}</div></div>`:""}
+<div class="sig" style="border-left-color:${der.dailyThree.graded?"var(--gold)":"var(--line)"}"><div class="sighead"><span class="pct">GRADED</span><span class="signame">${der.dailyThree.graded?der.dailyThree.graded.name:"calibrating"}</span></div><div class="sigsub">${der.dailyThree.graded?`raw <b>$${der.dailyThree.graded.raw}</b> → PSA10 <b>$${der.dailyThree.graded.psa10}</b> · premium +$${der.dailyThree.graded.premium}`:"returns with the Grading Premium table"}</div></div>
+${der.dailyThree.raw?`<div class="sig"><div class="sighead"><span class="pct">RAW</span><span class="signame">${der.dailyThree.raw.name}</span></div><div class="sigsub"><b>$${der.dailyThree.raw.price}</b> · ${der.dailyThree.raw.set}</div><div class="sigread">${der.dailyThree.raw.reason}</div></div>`:""}
+<div class="foot">${der.dailyThree.disclosure}</div>`:""}
+${der?.catalysts?.length?`<h2>📡 Catalyst reads</h2>${der.catalysts.slice(0,4).map(c=>`<div class="row"><span>${c.note}</span><span class="mono">${c.class.toUpperCase()}·${c.horizon}</span></div>`).join("")}`:""}
 ${der?.packMath?`<h2>🧮 Pack math — $ per sealed pack</h2>
 ${der.packMath.priciest.slice(0,3).map(r=>`<div class="row"><span>${r.name}</span><span class="mono">$${r.perPack}/pack</span></div>`).join("")}
 <div class="row" style="border-bottom:0"><span style="color:var(--dim)">···</span><span></span></div>
@@ -122,6 +141,8 @@ const feed = {
     tcg:{ market:r.tcgMarket, listings:r.tcgListings??null },
     read:r.read, provenance:r.provenance, class:"VERIFIED" })),
   quietMovers: (der?.narrative?.quietMovers??[]).slice(0,4).map(q=>({...q, class:"READ"})),
+  dailyThree: der?.dailyThree ?? null,
+  catalysts: (der?.catalysts??[]).slice(0,4),
   packMath: der?.packMath ? { priciest: der.packMath.priciest.slice(0,3), cheapest: der.packMath.cheapest.slice(0,3), class:"VERIFIED" } : null,
   radar: upcoming.slice(0,4),
   chases: chases.map(c=>({ cardId:c.cardId, name:c.name, set:c.setName, market:c.priceMarket,

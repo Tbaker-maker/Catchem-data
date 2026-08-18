@@ -15,6 +15,7 @@ components; ship behind a flag.
 - **Feed:** `research/assets/pulse-feed.json` (now emitted every run; the
   app NEVER scrapes HTML). Refresh: fetch on open + pull-to-refresh; feed
   regenerates daily 04:00 via v2.2.
+- **THE RITUAL:** app opens INTO the day's Pulse (drops with the 04:00 UTC run — a fixed morning hour across NA). Lead cards = **The Daily Three** (sealed/graded/raw watches; chip + one-line reason; tap = receipts), then catalysts, then signals. Display law: ONE number per card, its chip, one line of why. Depth lives behind the tap.
 - **Components:** panel strip (skus/signals/calibration bar) · signal cards
   (both markets + both supplies + read line) · quiet-mover cards · pack-math
   mini · radar rows. Every number renders its `class` as a chip; chip tap →

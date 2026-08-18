@@ -14,6 +14,8 @@ const J = async p => JSON.parse(await readFile(join(ROOT,p),"utf-8"));
 const sp = await J("data/sealed-prices.json");
 let div = { rows: [] }; try { div = await J("data/divergence-report.json"); } catch {}
 const spreadBy = new Map(div.rows.map(r=>[r.id, r]));
+const sgAll = await J("data/singles-prices.json").catch(()=>null) ?? { cards: [] };
+let enr = null; try { enr = await J("data/singles-enrichment.json"); } catch {}
 
 // ── (a) Pack Math ────────────────────────────────────────────────────────────
 function packsFor(p) {
@@ -65,12 +67,77 @@ for (const [setName, prods] of bySet) {
   }
 }
 
+
+// ── (c) CATALYST CLASSIFIER v1 — bullish/bearish reads on the news layer ──
+// Keyword taxonomy over latest digest + radar. Emits READ-class tags with
+// horizon + house-thesis links (research/house-theses.md). Never advice.
+const TAXONOMY = [
+  { k:["reprint","reprinted","back in print","restock wave","second wave","print run"],
+    cls:"bullish", horizon:"long", thesis:"RT-1", note:"reprint = short-term supply, long-term demand (RT-1)" },
+  { k:["tin","bundle","collection box","injection"], cls:"mixed", horizon:"short", thesis:"RT-2",
+    note:"supply injection — absorb-or-stall watch (RT-2)" },
+  { k:["rotation","rotates","regulation mark"], cls:"bearish", horizon:"short", thesis:null,
+    note:"format rotation — competitive demand shifts off rotated sets" },
+  { k:["anniversary","30th","celebration","special set"], cls:"bullish", horizon:"long", thesis:null,
+    note:"franchise moment — demand catalyst" },
+  { k:["ban","errata","recall"], cls:"bearish", horizon:"short", thesis:null, note:"negative shock class" },
+  { k:["grading price","psa price","fee increase","turnaround"], cls:"mixed", horizon:"short", thesis:null,
+    note:"grading-economics shift — premium math moves" },
+];
+const catalysts = [];
+if (digestText) {
+  for (const t of TAXONOMY) {
+    for (const kw of t.k) {
+      const i = digestText.indexOf(kw);
+      if (i >= 0) {
+        const ctx = digestText.slice(Math.max(0,i-60), i+90).replace(/\s+/g," ").trim();
+        catalysts.push({ trigger: kw, class: t.cls, horizon: t.horizon,
+          thesis: t.thesis, note: t.note, context: "…"+ctx+"…", provenance: `digest ${digestName}`, chip:"READ" });
+        break;
+      }
+    }
+  }
+}
+
 const out = {
   generatedAt: new Date().toISOString(),
   method: "Pack Math: ask median / era-aware pack count (arithmetic, no estimation; variable-count products excluded by name). Narrative: latest agent digest cross-referenced against tracked sets; 'quiet movers' = spread signal with zero digest mention.",
   digestUsed: digestName,
   packMath: { priciest: packRows.slice(0,6), cheapest: [...packRows].reverse().slice(0,6) },
   narrative: { inNews: inNews.slice(0,6), quietMovers: quietMovers.slice(0,6) },
+  catalysts,
+  dailyThree: (() => {
+    const sealedPick = (div.rows||[]).filter(r=>r.signal).sort((a,b)=>Math.abs(b.spreadPct)-Math.abs(a.spreadPct))[0] || null;
+    let gradedPick = null;
+    {
+      const g = ((enr&&enr.cards)||[]).filter(c=>c.psa10&&c.raw).map(c=>({...c, premium: Math.round((c.psa10-c.raw-79.99)*100)/100}))
+                 .sort((a,b)=>b.premium-a.premium)[0];
+      if (g) gradedPick = { name:g.name, raw:g.raw, psa10:g.psa10, premium:g.premium, chip:"VERIFIED",
+        reason:`widest Grading Premium on the board (+$${g.premium} after $79.99 floor)` };
+    }
+    // RAW = singles only. v1 heuristic: a confirmed chase from a set the
+    // tape flagged (quiet-mover first, then in-news); fallback = top chase.
+    let rawPick = null;
+    {
+      const chases = (sgAll.cards||[]).filter(c=>!c.needsReview && c.dataStatus==="live" && c.priceMarket);
+      const flaggedSets = [...quietMovers.map(q=>q.set), ...inNews.map(n=>n.set)];
+      let pick = null, why = "";
+      for (const fs of flaggedSets) {
+        pick = chases.filter(c=>c.setName===fs).sort((a,b)=>b.priceMarket-a.priceMarket)[0];
+        if (pick) { why = `the chase inside ${fs} — a set the tape flagged today`; break; }
+      }
+      if (!pick && chases.length) { pick = [...chases].sort((a,b)=>b.priceMarket-a.priceMarket)[0]; why = "chase-board anchor — the raw single the market prices everything against"; }
+      if (pick) rawPick = { name: pick.name, set: pick.setName, price: pick.priceMarket, chip:"READ", reason: why };
+    }
+    return {
+      sealed: sealedPick ? { name: sealedPick.name, ebay: sealedPick.ebayAskMedian, tcg: sealedPick.tcgMarket,
+        spreadPct: sealedPick.spreadPct, listings: sealedPick.ebayListings, chip:"VERIFIED",
+        reason:"strongest cross-market divergence today" } : null,
+      graded: gradedPick, // null until Premium table exists — the slot says so honestly
+      raw: rawPick,
+      disclosure: "Daily watches, not calls. READ = our interpretation; you decide.",
+    };
+  })(),
 };
 await writeFile(join(ROOT,"data/derived-insights.json"), JSON.stringify(out,null,2)+"\n");
 console.log(`✓ derived: ${packRows.length} pack-math rows · news-mentioned sets: ${inNews.length} · quiet movers: ${quietMovers.length} (digest: ${digestName})`);
