@@ -1,6 +1,6 @@
 # Watchlist Candidates — Wave A (auto-generated, Tyler curates)
 
-Generated 2026-08-18T21:17:55.231Z by scripts/propose-watchlist-candidates.mjs.
+Generated 2026-08-18T23:01:44.015Z by scripts/propose-watchlist-candidates.mjs.
 Top 8 per modern set by TCGplayer market (via pokemontcg.io, keyless).
 PROPOSAL ONLY — nothing here is watched until Tyler picks it and it passes
 the standard needsReview flow. ✔ = a printing already on the watchlist.
@@ -36,10 +36,21 @@ the standard needsReview flow. ✔ = a printing already on the watchlist.
 - $     6.90 — Centiskorch VMAX #191 · Rare Rainbow · `swsh3-191`
 
 ## Pokémon Futsal Collection (fut20, 2020/09/11)
-- ERROR fetching: 500
+- ✔ $    86.29 — Pikachu on the Ball #1 · ? · `fut20-1`
+- ✔ $    55.31 — Sobble on the Ball #5 · ? · `fut20-5`
+- ✔ $    52.38 — Eevee on the Ball #2 · ? · `fut20-2`
+- $    37.08 — Scorbunny on the Ball #4 · ? · `fut20-4`
+- $    36.07 — Grookey on the Ball #3 · ? · `fut20-3`
 
 ## Champion's Path (swsh35, 2020/09/25)
-- ERROR fetching: 500
+- ✔ $   271.26 — Charizard V #79 · Rare Secret · `swsh35-79`
+- ✔ $   235.54 — Charizard VMAX #74 · Rare Rainbow · `swsh35-74`
+- ✔ $    18.12 — Gardevoir VMAX #76 · Rare Rainbow · `swsh35-76`
+- $     7.06 — Alcremie VMAX #23 · Rare Holo VMAX · `swsh35-23`
+- $     6.98 — Drednaw VMAX #75 · Rare Rainbow · `swsh35-75`
+- $     4.80 — Gardevoir V #70 · Rare Ultra · `swsh35-70`
+- $     4.14 — Lucario V #27 · Rare Holo V · `swsh35-27`
+- $     4.14 — Piers #78 · Rare Rainbow · `swsh35-78`
 
 ## Vivid Voltage (swsh4, 2020/11/13)
 - ✔ $   196.17 — Pikachu VMAX #188 · Rare Rainbow · `swsh4-188`
@@ -82,14 +93,7 @@ the standard needsReview flow. ✔ = a printing already on the watchlist.
 - $    18.32 — Single Strike Urshifu V #151 · Rare Ultra · `swsh5-151`
 
 ## Chilling Reign (swsh6, 2021/06/18)
-- ✔ $   385.31 — Blaziken VMAX #201 · Rare Rainbow · `swsh6-201`
-- ✔ $   236.28 — Galarian Moltres V #177 · Rare Ultra · `swsh6-177`
-- ✔ $   139.66 — Snorlax #224 · Rare Secret · `swsh6-224`
-- $   110.35 — Galarian Slowking V #179 · Rare Ultra · `swsh6-179`
-- $    91.71 — Zeraora V #166 · Rare Ultra · `swsh6-166`
-- $    89.56 — Galarian Rapidash V #168 · Rare Ultra · `swsh6-168`
-- $    80.89 — Galarian Articuno V #170 · Rare Ultra · `swsh6-170`
-- $    68.64 — Shadow Rider Calyrex VMAX #205 · Rare Rainbow · `swsh6-205`
+- ERROR fetching: 502
 
 ## Evolving Skies (swsh7, 2021/08/27)
 - ✔ $  2244.47 — Umbreon VMAX #215 · Rare Rainbow · `swsh7-215`
@@ -247,20 +251,20 @@ the standard needsReview flow. ✔ = a printing already on the watchlist.
 - $    70.76 — Glaceon VSTAR #GG40 · Rare Holo VSTAR · `swsh12pt5gg-GG40`
 
 ## Scarlet & Violet (sv1, 2023/03/31)
-- ✔ $    71.37 — Gardevoir ex #245 · Special Illustration Rare · `sv1-245`
-- ✔ $    59.34 — Drowzee #210 · Illustration Rare · `sv1-210`
-- ✔ $    43.96 — Kirlia #212 · Illustration Rare · `sv1-212`
-- $    43.74 — Ralts #211 · Illustration Rare · `sv1-211`
-- $    40.50 — Slowpoke #204 · Illustration Rare · `sv1-204`
-- $    34.06 — Riolu #215 · Illustration Rare · `sv1-215`
-- $    26.00 — Fidough #213 · Illustration Rare · `sv1-213`
-- $    24.12 — Miraidon ex #244 · Special Illustration Rare · `sv1-244`
+- ERROR fetching: 502
 
 ## Scarlet & Violet Energies (sve, 2023/03/31)
 - no priced cards
 
 ## Paldea Evolved (sv2, 2023/06/09)
-- ERROR fetching: 502
+- $   385.87 — Magikarp #203 · Illustration Rare · `sv2-203`
+- ✔ $    99.05 — Raichu #211 · Illustration Rare · `sv2-211`
+- $    95.13 — Maushold #226 · Illustration Rare · `sv2-226`
+- $    73.33 — Tyranitar #222 · Illustration Rare · `sv2-222`
+- $    60.86 — Sprigatito #196 · Illustration Rare · `sv2-196`
+- $    60.68 — Iono #269 · Special Illustration Rare · `sv2-269`
+- $    59.65 — Tinkaton ex #262 · Special Illustration Rare · `sv2-262`
+- $    58.11 — Fuecoco #201 · Illustration Rare · `sv2-201`
 
 ## Obsidian Flames (sv3, 2023/08/11)
 - ✔ $   109.55 — Charizard ex #223 · Special Illustration Rare · `sv3-223`
@@ -273,15 +277,7 @@ the standard needsReview flow. ✔ = a printing already on the watchlist.
 - $    15.56 — Pidgey #207 · Illustration Rare · `sv3-207`
 
 ## 151 (sv3pt5, 2023/09/22)
-- ✔ $   360.64 — Charizard ex #199 · Special Illustration Rare · `sv3pt5-199`
-- ✔ $   139.82 — Blastoise ex #200 · Special Illustration Rare · `sv3pt5-200`
-- ✔ $   115.65 — Venusaur ex #198 · Special Illustration Rare · `sv3pt5-198`
-- $    99.22 — Zapdos ex #202 · Special Illustration Rare · `sv3pt5-202`
-- $    92.09 — Squirtle #170 · Illustration Rare · `sv3pt5-170`
-- $    91.01 — Charmander #168 · Illustration Rare · `sv3pt5-168`
-- $    90.09 — Pikachu #173 · Illustration Rare · `sv3pt5-173`
-- $    80.39 — Bulbasaur #166 · Illustration Rare · `sv3pt5-166`
-- 🔒FORCED $    31.05 — Mew ex #205 · Hyper Rare · `sv3pt5-205`
+- ERROR fetching: 500
 
 ## Paradox Rift (sv4, 2023/11/03)
 - $   126.77 — Groudon #199 · Illustration Rare · `sv4-199`
@@ -416,14 +412,7 @@ the standard needsReview flow. ✔ = a printing already on the watchlist.
 - $    58.04 — Mega Kangaskhan ex #182 · Special Illustration Rare · `me1-182`
 
 ## Phantasmal Flames (me2, 2025/11/14)
-- ✔ $   703.65 — Mega Charizard X ex #125 · Special Illustration Rare · `me2-125`
-- ✔ $   298.62 — Mega Charizard X ex #130 · Mega Hyper Rare · `me2-130`
-- ✔ $    28.68 — Mega Charizard X ex #109 · Ultra Rare · `me2-109`
-- $    22.12 — Dawn #129 · Special Illustration Rare · `me2-129`
-- $    20.34 — Mega Sharpedo ex #127 · Special Illustration Rare · `me2-127`
-- $    20.14 — Meowth #106 · Illustration Rare · `me2-106`
-- $    17.61 — Rotom ex #126 · Special Illustration Rare · `me2-126`
-- $    14.50 — Mega Lopunny ex #128 · Special Illustration Rare · `me2-128`
+- ERROR fetching: 500
 
 ## Ascended Heroes (me2pt5, 2026/01/30)
 - 🔒FORCED   NO PRICE — Pikachu ex #276 · Special Illustration Rare · `me2pt5-276` · NO PRICE — verify manually ⚠
@@ -438,8 +427,7 @@ the standard needsReview flow. ✔ = a printing already on the watchlist.
 - no priced cards
 
 ## Chaos Rising (me4, 2026/05/22)
-- ✔ 🔒FORCED   NO PRICE — Mega Greninja ex #116 · Special Illustration Rare · `me4-116` · NO PRICE — verify manually ⚠
-- ✔ 🔒FORCED   NO PRICE — Mega Greninja ex #122 · Mega Hyper Rare · `me4-122` · NO PRICE — verify manually ⚠
+- ERROR fetching: 502
 
 ## Pitch Black (me5, 2026/07/17)
 - no priced cards

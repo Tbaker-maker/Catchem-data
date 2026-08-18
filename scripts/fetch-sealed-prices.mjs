@@ -52,6 +52,9 @@ const SUBTYPE_PRICE_BOUNDS = {
   // structurally 0. Evidence: real BIN cluster $85-120 on sv8pt5-sc.
   "special-collection": [50, 250],
   "build-and-battle":   [15, 100],
+  // loose-pack lane (research/loose-pack-skus-spec.md, 2026-08-18): powers
+  // sealedPremiumPct — productPerPack vs the street price of one loose pack
+  "booster-pack":       [2.5, 75],
 };
 
 function priceBoundsFor(product) {
@@ -91,6 +94,14 @@ const REQUIRE_PHRASES = {
   "tin":                ["tin"],
   "collection-box":     ["collection"],
   "build-and-battle":   ["build & battle", "build and battle"],
+  "booster-pack":       ["booster pack"],
+};
+
+// Per-subtype UN-exclusions (2026-08-18, loose-pack lane): terms that are
+// junk-markers everywhere else but legitimate here. "single" tags a lone
+// sealed pack honestly — the whole point of this subtype.
+const SUBTYPE_UNEXCLUDE = {
+  "booster-pack": ["single", "1 pack", "single pack"],
 };
 
 const EXCLUDE_COMMON = [
@@ -110,6 +121,8 @@ const EXCLUDE_COMMON = [
   // multi-lot tokens generalized from booster-box-only — "Bundle x2. 12 Packs"
   // $142.99 kept in me2-bb, "2x Factory Sealed" $229.99 kept in me3-pc-etb
   "2x", "3x", "4x", "6x", "x2", "x3", "x4", "x6",
+  // larger lot tokens (2026-08-18 loose-pack validation: "x20 Unsearched" $50 passed)
+  "x10", "x12", "x20", "x36", "10x", "12x", "20x", "36x",
   // damage variants the singular terms missed — "Small rips or dents" (me5-etb),
   // "Box Damage" (me4-pc-etb), "Box is Worn" (me2pt5-etb), "(Distressed Box)" (me5-bb)
   "dents", "rips", "worn", "damage", "distressed",
@@ -135,6 +148,8 @@ const EXCLUDE_NON_ENGLISH = [
   // $148 and a $49.99 Spanish bundle passed and dragged priceLow — English-only
   // policy covers ALL non-English printings, not just Asian ones)
   "spanish", "german", "french", "italian", "portuguese",
+  // bare "jp" (2026-08-18 loose-pack validation: "JP Sealed Random Pack x20" passed — jpn/japanese did not match)
+  "jp",
 ];
 
 const EXCLUDE_BY_SUBTYPE = {
@@ -160,6 +175,12 @@ const EXCLUDE_BY_SUBTYPE = {
   // keyword-stuffed PC listing kept in sv3pt5-etb). The pc-etb subtype REQUIRES
   // the phrase, so the two SKU families are now disjoint.
   "etb":            ["booster box", "bundle", "blister", "36 pack", "mini tin", "pokemon center"],
+  // loose-pack spec vocab (2026-08-18): weighed-pack scams + multi-pack and
+  // container terms; "packs" PLURAL is the load-bearing one (a single pack
+  // listing says "pack"); "art" excludes display/pack-art collectible sets
+  "booster-pack":   ["weighed", "packs", "bundle", "box", "art", "etb", "elite trainer", "blister", "sleeved",
+    // graded slabbed packs are a collectible market, not street price (2026-08-18: "PSA 8 NM-MINT ... SEALED Booster Pack" $49.99 passed)
+    "psa", "cgc", "bgs", "graded", "unsearched"],
   "pc-etb":         ["booster box", "bundle", "blister", "36 pack", "mini tin"],
   "booster-bundle": ["booster box", "etb", "elite trainer", "36 pack"],
   "premium-collection": ["booster box", "etb", "elite trainer"],
@@ -208,7 +229,8 @@ function filterItemsForProduct(product, items) {
     // sibling-set titles, Unlimited vintage SKUs must reject "1st edition",
     // and me1-booster-box must reject its Enhanced variant (own SKU per Tyler).
     ...(product.excludeExtra || []),
-  ].filter(setSafe);
+  ].filter(setSafe)
+   .filter(t => !(SUBTYPE_UNEXCLUDE[product.subtype] || []).includes(t));
   // requireExtra: ALL listed phrases must appear in the title (e.g. the
   // me1-enhanced-booster-box SKU requires "enhanced"). Counted as failType.
   const requireExtra = product.requireExtra || [];
@@ -424,6 +446,19 @@ async function main() {
       }
 
       const agg = aggregatePrices(kept, floor, ceiling);
+      // representativeImage (research/fetch-images-spec.md, 2026-08-18): the
+      // kept BIN closest to the median — a photo of what the median actually
+      // buys. Zero extra API calls; refreshed every run; omitted when absent
+      // (consumers already fall back to the set logo). s-lXXX → s-l1600 swap
+      // requests eBay's higher-res variant of the same asset.
+      let representativeImage;
+      if (agg && kept.length) {
+        const nearest = kept.reduce((best, i) =>
+          Math.abs((i._delivered ?? Infinity) - agg.priceMedian) <
+          Math.abs((best._delivered ?? Infinity) - agg.priceMedian) ? i : best);
+        const url = nearest.image?.imageUrl;
+        if (url) representativeImage = url.replace(/s-l\d+/, "s-l1600");
+      }
       const history = prev?.priceHistory ? [...prev.priceHistory] : [];
 
       if (agg) {
@@ -449,6 +484,7 @@ async function main() {
           listingCount: 0,
         }),
         priceHistory: history,
+        ...(representativeImage ? { representativeImage } : {}),
         dataStatus: agg ? "live" : prev?.priceUsd ? "stale" : "unavailable",
         lastSeen: agg ? today : prev?.lastSeen,
         filterReport: report,
