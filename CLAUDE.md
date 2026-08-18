@@ -92,3 +92,27 @@ Journey Together Booster Box reports ~$24 median. Real price: $150–200+. Corru
 3. Add per-SKU floor/ceiling override support + the known overrides.
 4. Import corrected PC-ETB SKUs; add Pitch Black; add 30th Celebration + Ascended Heroes Tins as they release.
 5. Mark contaminated history; then hand off to Tyler: newsletter can finally cite sealed prices.
+
+## Session-locked policies (Aug 18, 2026)
+
+**ENGLISH-ONLY (Tyler directive).** Catch'em tracks English product only right
+now. `allowImports` stays false on every SKU. Do not enable, add JP/KR/CN
+SKUs, or loosen the non-English exclusions without Tyler's explicit say-so.
+
+**Out-of-scope fixes protocol.** During validation you may fix bugs beyond
+your assigned files WHEN ALL THREE hold: (1) the fix is driven by real
+validation evidence, (2) an inline comment cites the evidence with date,
+(3) the commit body calls out the boundary crossing. Never out-of-scope:
+secrets, workflow files, Actions schedules, deleting or rewriting data.
+When in doubt, propose instead of apply.
+
+**Vintage price-bounds exception (canon).** Vintage SKUs bypass modern
+subtype ceilings (Base Set era boxes trade $3,000+; an $800 cap excludes
+every genuine listing — validated 2026-08-18). Per-SKU floors/ceilings on
+vintage entries are load-bearing; don't remove them.
+
+**Contamination scope (validated 2026-08-18).** Pre-fix history is untrusted
+for ALL SKUs, not just JT — spot checks proved damaged-sealed, weighed-lot,
+and JP-import pollution across the board (Evolving Skies BB published $144
+vs real ~$2,900). Heat reads restart from FIX_DEPLOY_DATE; dataQualityNote
+marks the worst offenders. Never chart or cite pre-2026-08-18 rows.
