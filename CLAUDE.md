@@ -132,3 +132,10 @@ for ALL SKUs, not just JT — spot checks proved damaged-sealed, weighed-lot,
 and JP-import pollution across the board (Evolving Skies BB published $144
 vs real ~$2,900). Heat reads restart from FIX_DEPLOY_DATE; dataQualityNote
 marks the worst offenders. Never chart or cite pre-2026-08-18 rows.
+
+**Sold-data provenance (Aug 18).** Sold comps and active-listing asks are
+separate provenance classes — never mix or interchange silently. Manual sold
+verification (eBay sold filter, 130point, Terapeak) is an approved evidence
+source for validation and Reported-class citations. Programmatic sold source:
+under evaluation, see research/sold-data-options.md. Scraping sold pages is
+prohibited.
