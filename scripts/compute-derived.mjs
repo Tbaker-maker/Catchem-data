@@ -23,6 +23,7 @@ let relDates = {}; try { relDates = (await J("data/set-release-dates.json")).dat
 function packsFor(p) {
   const era = /^me/.test(p.setId||"") ? "me" : /^sv/.test(p.setId||"") ? "sv" : /^swsh/.test(p.setId||"") ? "swsh" : null;
   if ((p.setId||"") === "cel25") return null;            // Celebrations: 4-card mini packs, not comparable (KB #5 adjacency)
+  if (p.subtype === "booster-pack") return 1;
   if (p.subtype === "booster-box") return 36;
   if (p.subtype === "booster-bundle") return 6;
   if (p.subtype === "etb" || p.subtype === "pc-etb") return era === "swsh" ? 8 : (era ? 9 : null);
@@ -32,10 +33,19 @@ const packRows = sp.products
   .filter(p=>p.dataStatus==="live" && p.priceMedian)
   .map(p=>({ p, packs: packsFor(p) }))
   .filter(x=>x.packs)
-  .map(({p,packs})=>({ id: p.id, name: p.name, subtype: p.subtype,
+  .map(({p,packs})=>({ id: p.id, name: p.name, subtype: p.subtype, setId: p.setId,
     price: p.priceMedian, packs, perPack: Math.round(p.priceMedian/packs*100)/100,
     listings: p.listingCount ?? null }))
   .sort((a,b)=>b.perPack-a.perPack);
+// Loose-pack anchor per set → signed sealed premium on every multi-pack row
+const loosePackBySet = {};
+for (const r of packRows) if (r.subtype === "booster-pack") loosePackBySet[r.setId] = r.perPack;
+for (const r of packRows) {
+  if (r.subtype === "booster-pack") { r.role = "loose-anchor"; continue; }
+  const lp = loosePackBySet[r.setId];
+  r.loosePack = lp ?? null;
+  r.sealedPremiumPct = lp ? Math.round((r.perPack/lp - 1) * 1000)/10 : null;
+}
 
 // ── (b) Narrative vs Tape ────────────────────────────────────────────────────
 let digestText = "", digestName = null;

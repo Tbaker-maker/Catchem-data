@@ -56,9 +56,9 @@ if (der?.catalysts?.length) {
 }
 if (der?.packMath) {
   md += `\n## 🧮 Pack Math — $ per sealed pack (arithmetic, no estimation)\n`;
-  for (const r of der.packMath.priciest.slice(0,3)) md += `- ${r.name}: **$${r.perPack}/pack** ($${r.price} ÷ ${r.packs})\n`;
+  for (const r of der.packMath.priciest.slice(0,3)) md += `- ${r.name}: **$${r.perPack}/pack**${r.sealedPremiumPct!=null?` · loose $${r.loosePack} → **${r.sealedPremiumPct>0?"+":""}${r.sealedPremiumPct}% sealed premium**`:` · loose — (feed landing)`}\n`;
   md += `- …\n`;
-  for (const r of der.packMath.cheapest.slice(0,3)) md += `- ${r.name}: **$${r.perPack}/pack** ($${r.price} ÷ ${r.packs})\n`;
+  for (const r of der.packMath.cheapest.slice(0,3)) md += `- ${r.name}: **$${r.perPack}/pack**${r.sealedPremiumPct!=null?` · loose $${r.loosePack} → ${r.sealedPremiumPct>0?"+":""}${r.sealedPremiumPct}% sealed premium`:``}\n`;
 }
 if (der?.narrative) {
   md += `\n## 📰 Narrative vs the tape (digest: ${der.digestUsed})\n`;
@@ -121,9 +121,9 @@ ${der.dailyThree.raw?`<div class="sig">${(()=>{const c=(sg?.cards||[]).find(x=>x
 <div class="foot">${der.dailyThree.disclosure}</div>`:""}
 ${der?.catalysts?.length?`<h2>📡 Catalyst reads</h2>${der.catalysts.slice(0,4).map(c=>`<div class="row"><span>${c.note}</span><span class="mono">${c.class.toUpperCase()}·${c.horizon}</span></div>`).join("")}`:""}
 ${der?.packMath?`<h2>🧮 Pack math — $ per sealed pack</h2>
-${der.packMath.priciest.slice(0,3).map(r=>`<div class="row"><span>${r.name}</span><span class="mono">$${r.perPack}/pack</span></div>`).join("")}
+${der.packMath.priciest.slice(0,3).map(r=>`<div class="row"><span>${r.name}${r.sealedPremiumPct!=null?` <em>vs loose $${r.loosePack}</em>`:""}</span><span class="mono">$${r.perPack}/pk${r.sealedPremiumPct!=null?` · ${r.sealedPremiumPct>0?"+":""}${r.sealedPremiumPct}%`:""}</span></div>`).join("")}
 <div class="row" style="border-bottom:0"><span style="color:var(--dim)">···</span><span></span></div>
-${der.packMath.cheapest.slice(0,3).map(r=>`<div class="row"><span>${r.name}</span><span class="mono">$${r.perPack}/pack</span></div>`).join("")}`:""}
+${der.packMath.cheapest.slice(0,3).map(r=>`<div class="row"><span>${r.name}${r.sealedPremiumPct!=null?` <em>vs loose $${r.loosePack}</em>`:""}</span><span class="mono">$${r.perPack}/pk${r.sealedPremiumPct!=null?` · ${r.sealedPremiumPct>0?"+":""}${r.sealedPremiumPct}%`:""}</span></div>`).join("")}`:""}
 ${der?.narrative?`<h2>📰 Narrative vs the tape</h2>
 ${der.narrative.inNews.slice(0,3).map(r=>`<div class="row"><span>📣 ${r.set} <em>in today's digest</em></span><span class="mono">$${r.price}${r.spreadPct!=null?` · ${r.spreadPct>0?"+":""}${r.spreadPct}%`:""}</span></div>`).join("")}
 ${der.narrative.quietMovers.slice(0,3).map(r=>`<div class="row"><span>🤫 ${r.set} <em>tape moved, news quiet</em></span><span class="mono">$${r.price} · ${r.spreadPct>0?"+":""}${r.spreadPct}% ⚡</span></div>`).join("")}`:""}
