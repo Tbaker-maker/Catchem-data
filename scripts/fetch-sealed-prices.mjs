@@ -96,7 +96,11 @@ const EXCLUDE_COMMON = [
   // damaged-but-listed-sealed (spot check 2026-08-18: "2 Tears", "Sealed
   // Ripped", "SMALL PUNCTURE" all passed and dragged priceLow)
   "ripped", "torn", "tear", "tears", "puncture", "punctured", "crushed",
-  "dented", "see description",
+  "dented", "dent", "see description",
+  // resealed-box fraud — endemic in vintage listings; "resale" (already
+  // excluded) does not word-boundary-match "resealed" (added 2026-08-18
+  // with vintage SKU bounds work)
+  "resealed", "reseal",
   // weighed packs + accessory-only listings sold under product names
   "heavy", "3d printed", "case only", "no cards",
 ];
@@ -109,6 +113,10 @@ const EXCLUDE_COMMON = [
 const EXCLUDE_NON_ENGLISH = [
   "japanese", "japan", "jpn", "korean", "korea", "chinese", "china",
   "taiwanese", "traditional chinese", "simplified chinese",
+  // European printings (2026-08-18 Mega-era validation: "(Spanish)" AH ETB at
+  // $148 and a $49.99 Spanish bundle passed and dragged priceLow — English-only
+  // policy covers ALL non-English printings, not just Asian ones)
+  "spanish", "german", "french", "italian", "portuguese",
 ];
 
 const EXCLUDE_BY_SUBTYPE = {
@@ -119,6 +127,9 @@ const EXCLUDE_BY_SUBTYPE = {
     // multi-box lots masquerading as one box ("6 Booster Boxes", "2 Box Lot").
     // NOT "case": legit singles ship "with plastic case".
     "booster boxes", "box lot", "2 box", "3 box", "4 box", "6 box",
+    // "2x ME01 ... Enhanced Booster Box" $680 and "18x Packs 1/2 Half Booster
+    // Box" $175 both passed 2026-08-18 Mega validation
+    "2x", "3x", "4x", "6x", "half booster", "1/2",
     // NOT excluded: "enhanced" — the Enhanced Booster Box is a variant of the
     // same JT booster box (box-topper promo; only ME-01 and JT have this in
     // modern — Tyler, 2026-08-17). Both variants price into the same SKU.
@@ -154,7 +165,15 @@ function filterItemsForProduct(product, items) {
   const excludes = [
     ...EXCLUDE_COMMON,
     ...(EXCLUDE_BY_SUBTYPE[product.subtype] || []),
+    // Per-SKU extras (2026-08-18, Mega-era import): excludeExtra disambiguates
+    // SKUs the subtype lists can't — me1's set name "Mega Evolution" appears in
+    // sibling-set titles, Unlimited vintage SKUs must reject "1st edition",
+    // and me1-booster-box must reject its Enhanced variant (own SKU per Tyler).
+    ...(product.excludeExtra || []),
   ].filter(setSafe);
+  // requireExtra: ALL listed phrases must appear in the title (e.g. the
+  // me1-enhanced-booster-box SKU requires "enhanced"). Counted as failType.
+  const requireExtra = product.requireExtra || [];
   const langExcludes = (product.allowImports ? [] : EXCLUDE_NON_ENGLISH).filter(setSafe);
 
   const report = { fetched: items.length, failSet: 0, failType: 0, failExclude: 0, failLang: 0, failPrice: 0, kept: 0 };
@@ -164,6 +183,7 @@ function filterItemsForProduct(product, items) {
     const t = titleLowerOf(i);
     if (setLower && !t.includes(setLower)) { report.failSet++; return false; }
     if (requires.length && !requires.some(r => t.includes(r))) { report.failType++; return false; }
+    if (requireExtra.length && !requireExtra.every(r => t.includes(r.toLowerCase()))) { report.failType++; return false; }
     if (product.subtype === "pc-etb" && !t.includes("pokemon center")) { report.failType++; return false; }
     if (excludes.some(term => wordBoundaryTest(term, t))) { report.failExclude++; return false; }
     if (langExcludes.some(term => wordBoundaryTest(term, t))) { report.failLang++; return false; }

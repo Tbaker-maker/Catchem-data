@@ -53,6 +53,12 @@ Journey Together Booster Box reports ~$24 median. Real price: $150–200+. Corru
    - booster-bundle additionally: booster box, etb, elite trainer, "36 pack"
    - Do NOT exclude "display" (Europeans call booster boxes displays) and do NOT exclude "pack"/"packs" bare (self-contradicts legitimate titles).
 5. **Low/zero-result safety.** If a SKU that previously had ≥10 listings suddenly returns <3 after filtering, write `dataStatus: "query_error"` for that SKU and KEEP its previous price instead of publishing a new one. Zero results must never look like a price collapse or a supply wipe-out.
+   **(Tightened to kept<8 in f80d876, 2026-08-18 — this is why sv4pt5-etb query_errored at kept=5.**
+   Rationale: `aggregatePrices` publishes at exactly 3 kept, and during JT validation a bad
+   query left exactly 3 wrong-product survivors — three JP-import boxes would have published
+   $110 as a clean "live" price. A previously-healthy SKU keeping <8 is a query problem until
+   proven otherwise; the price cost is a day of `query_error` on legitimately-thin SKUs, which
+   the triage process then fixes with per-SKU bounds. Triage 2026-08-18 anomaly item: resolved.)
 6. **Log a per-SKU filter report** during runs (fetched N, rejected M by title, K by price) so filtering quality is inspectable.
 
 ## Data corrections needed in sealed-products.json

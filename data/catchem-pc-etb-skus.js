@@ -329,10 +329,13 @@ const pcEtbSkus = [
 
   // ===========================================================================
   // MEGA ERA (PC variant + exclusive promo card inside)
-  // ⚠️ setIds use the me-prefix pattern (era numbering ME1/ME2/ME2.5/ME3/ME4/ME5
-  // verified via Cardrake + TCG Watchtower, Aug 2026). EXACT pokemontcg.io API
-  // strings unverified — confirm via GET api.pokemontcg.io/v2/sets before import.
-  // Image URLs will 404 until ids confirmed.
+  // ✅ setIds VERIFIED 2026-08-18 against pokemontcg.io /v2/sets (see
+  // data/set-ids-verified.json): me1, me2, me2pt5, me3, me4, me5 are the exact
+  // API strings. These 6 Mega entries were IMPORTED into sealed-products.json
+  // 2026-08-18 (with `set` normalized to short title-matchable names — the
+  // "Mega Evolution: X" form here never appears verbatim in listing titles and
+  // would fail the title REQUIRE gate). This file remains the source doc for
+  // the 24 not-yet-imported SWSH/SV entries.
   // ===========================================================================
   {
     "id": "me1-pc-etb",
