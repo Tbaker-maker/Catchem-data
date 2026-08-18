@@ -161,7 +161,9 @@ const EXCLUDE_BY_SUBTYPE = {
   "booster-bundle": ["booster box", "etb", "elite trainer", "36 pack"],
   "premium-collection": ["booster box", "etb", "elite trainer"],
   "upc":            ["booster box"],
-  "tin":            ["booster box", "etb", "elite trainer"],
+  // tin extras 2026-08-18 (Aug-28 tin validation): mini-tins are a distinct
+  // product; multi-tin lots ("5-Pack", "1 of each", "x 3") masqueraded as one
+  "tin":            ["booster box", "etb", "elite trainer", "mini tin", "mini tins", "1 of each", "of each", "all 3", "all three", "x 3", "5-pack", "5 pack"],
   "collection-box": ["booster box", "etb", "elite trainer"],
   "build-and-battle": ["booster box", "etb", "elite trainer"],
 };

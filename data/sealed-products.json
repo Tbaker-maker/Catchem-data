@@ -1,5 +1,172 @@
 [
   {
+    "id": "sm35-etb",
+    "name": "Shining Legends Elite Trainer Box",
+    "set": "Shining Legends",
+    "setId": "sm35",
+    "subtype": "etb",
+    "searchQuery": "Pokemon Shining Legends Elite Trainer Box",
+    "image": "https://images.pokemontcg.io/sm35/logo.png",
+    "vintage": false,
+    "priceFloor": 150,
+    "priceCeiling": 2500,
+    "boundsNote": "Ceiling 1500→2500, clipping evidence 2026-08-18: $1,381.71 median, high AT the $1500 cap."
+  },
+  {
+    "id": "sm75-etb",
+    "name": "Dragon Majesty Elite Trainer Box",
+    "set": "Dragon Majesty",
+    "setId": "sm75",
+    "subtype": "etb",
+    "searchQuery": "Pokemon Dragon Majesty Elite Trainer Box",
+    "image": "https://images.pokemontcg.io/sm75/logo.png",
+    "vintage": false,
+    "priceFloor": 150,
+    "priceCeiling": 2500,
+    "boundsNote": "Ceiling 1500→2500, clipping evidence 2026-08-18: median $1,499.99 AT the $1500 cap (n=5)."
+  },
+  {
+    "id": "det1-etb",
+    "name": "Detective Pikachu Elite Trainer Box",
+    "set": "Detective Pikachu",
+    "setId": "det1",
+    "subtype": "etb",
+    "searchQuery": "Pokemon Detective Pikachu Elite Trainer Box",
+    "image": "https://images.pokemontcg.io/det1/logo.png",
+    "vintage": false,
+    "priceFloor": 80,
+    "priceCeiling": 900,
+    "boundsNote": "Comps 2026-08-18: pittpokeresearch reports no market price (too few sales). LOW-CONF; J5 applies.",
+    "activeMarketThin": true,
+    "dataQualityNote": "J5 ruling 2026-08-18: 0 genuine active listings at validation — publishes no-active-market."
+  },
+  {
+    "id": "xy12-booster-box",
+    "name": "Evolutions Booster Box",
+    "set": "Evolutions",
+    "setId": "xy12",
+    "subtype": "booster-box",
+    "searchQuery": "Pokemon Evolutions Booster Box sealed",
+    "image": "https://images.pokemontcg.io/xy12/logo.png",
+    "vintage": false,
+    "priceFloor": 1500,
+    "priceCeiling": 10000,
+    "excludeExtra": [
+      "1st edition",
+      "first edition",
+      "xy mega"
+    ],
+    "boundsNote": "Comps 2026-08-18: no direct number; era reporting notes boxes far above MSRP. LOW-CONF; near-vintage — J5 applies, activeMarketThin candidate."
+  },
+  {
+    "id": "xy12-etb",
+    "name": "Evolutions Elite Trainer Box",
+    "set": "Evolutions",
+    "setId": "xy12",
+    "subtype": "etb",
+    "searchQuery": "Pokemon Evolutions Elite Trainer Box",
+    "image": "https://images.pokemontcg.io/xy12/logo.png",
+    "vintage": false,
+    "priceFloor": 200,
+    "priceCeiling": 2000,
+    "boundsNote": "Comps 2026-08-18: no liquid quote. LOW-CONF; J5 applies."
+  },
+  {
+    "id": "zsv10pt5-etb",
+    "name": "Black Bolt Elite Trainer Box",
+    "set": "Black Bolt",
+    "setId": "zsv10pt5",
+    "subtype": "etb",
+    "searchQuery": "Pokemon Black Bolt Elite Trainer Box",
+    "image": "https://images.pokemontcg.io/zsv10pt5/logo.png",
+    "vintage": false,
+    "excludeExtra": [
+      "white flare"
+    ],
+    "boundsNote": "Comps 2026-08-18: BB/WF ETB $172.67 (pittpokeresearch); default etb window fits. Cross-set combos excluded."
+  },
+  {
+    "id": "zsv10pt5-bundle",
+    "name": "Black Bolt Booster Bundle",
+    "set": "Black Bolt",
+    "setId": "zsv10pt5",
+    "subtype": "booster-bundle",
+    "searchQuery": "Pokemon Black Bolt Booster Bundle",
+    "image": "https://images.pokemontcg.io/zsv10pt5/logo.png",
+    "vintage": false,
+    "priceFloor": 30,
+    "priceCeiling": 250,
+    "excludeExtra": [
+      "white flare"
+    ],
+    "boundsNote": "Comps 2026-08-18: market $93.63 (pittpokeresearch), MSRP $26.94. Id -bundle (not -bb): bb is ambiguous with Black Bolt itself."
+  },
+  {
+    "id": "rsv10pt5-etb",
+    "name": "White Flare Elite Trainer Box",
+    "set": "White Flare",
+    "setId": "rsv10pt5",
+    "subtype": "etb",
+    "searchQuery": "Pokemon White Flare Elite Trainer Box",
+    "image": "https://images.pokemontcg.io/rsv10pt5/logo.png",
+    "vintage": false,
+    "excludeExtra": [
+      "black bolt"
+    ],
+    "boundsNote": "Comps 2026-08-18: BB/WF ETB $172.67; default window. Cross-set combos excluded."
+  },
+  {
+    "id": "rsv10pt5-bundle",
+    "name": "White Flare Booster Bundle",
+    "set": "White Flare",
+    "setId": "rsv10pt5",
+    "subtype": "booster-bundle",
+    "searchQuery": "Pokemon White Flare Booster Bundle",
+    "image": "https://images.pokemontcg.io/rsv10pt5/logo.png",
+    "vintage": false,
+    "priceFloor": 30,
+    "priceCeiling": 250,
+    "excludeExtra": [
+      "black bolt"
+    ],
+    "boundsNote": "Comps 2026-08-18: sibling bundle $93.63."
+  },
+  {
+    "id": "pgo-etb",
+    "name": "Pokemon GO Elite Trainer Box",
+    "set": "Pokemon GO",
+    "setId": "pgo",
+    "subtype": "etb",
+    "searchQuery": "Pokemon GO Elite Trainer Box",
+    "image": "https://images.pokemontcg.io/pgo/logo.png",
+    "vintage": false,
+    "priceFloor": 80,
+    "priceCeiling": 600,
+    "boundsNote": "Comps 2026-08-18: market $160.87 (pokemonwizard/PriceCharting). Set added to products-only list per ruling J2."
+  },
+  {
+    "id": "me2pt5-tin",
+    "name": "Ascended Heroes Tin",
+    "set": "Ascended Heroes",
+    "setId": "me2pt5",
+    "subtype": "tin",
+    "searchQuery": "Pokemon Ascended Heroes Tin",
+    "image": "https://images.pokemontcg.io/me2pt5/logo.png",
+    "vintage": false,
+    "boundsNote": "Releases 2026-08-28 ($21.99 retail, Feraligatr/Meganium/Emboar line tracked as one SKU). Added 2026-08-18 pre-release per Newsletter 002 constraint; presale asks are valid drop-day data. Default tin window [15,150]."
+  },
+  {
+    "id": "mega-forces-tin",
+    "name": "Mega Forces Tin",
+    "set": "Mega Forces",
+    "setId": "me2pt5",
+    "subtype": "tin",
+    "searchQuery": "Pokemon Mega Forces Tin",
+    "image": "https://images.pokemontcg.io/me2pt5/logo.png",
+    "vintage": false,
+    "boundsNote": "Releases 2026-08-28 ($21.99 retail, Dragonite/Darkrai/Zeraora line as one SKU). NOT set-bound — anchored to me2pt5 era for grouping only (radar: distinct SKU from AH tins, same drop day). Added 2026-08-18 pre-release per Newsletter 002 constraint."
+  },
+  {
     "id": "sm1-booster-box",
     "name": "Sun & Moon Booster Box",
     "set": "Sun & Moon",
