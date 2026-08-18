@@ -45,3 +45,11 @@ picks, edits, posts. Nothing publishes itself.
 ## Output format
 Markdown, sections in this order: X POSTS / THREAD / SHORTS / YOUTUBE /
 CALENDAR NUDGES. Number everything for easy picking.
+
+## Singles citation policy (added Aug 18)
+- Singles prices citable ONLY from data/singles-prices.json entries with
+  dataStatus:"live" AND needsReview:false. Provenance inline ("TCGplayer
+  market via pokemontcg.io, <date>").
+- Supply/demand/volume language is SEALED-ONLY (our bot measures sealed;
+  the singles source has no supply data). Singles get price + (after ~8
+  days of snapshots) trend — never "supply is drying up" claims.
