@@ -26,5 +26,6 @@ explicit sign-off AND an entry here. Updated Aug 18, 2026.*
 4. Reduce SEARCH_PAGES 3→2 on stable SKUs: headroom, not savings ($0 either way).
 
 ## Decisions log
+- Aug 18: Cardmarket (EU) singles layer added — $0, rides the existing pokemontcg.io call; stored-only until reviewed.
 - Aug 18: provider eval hard-gated to free tiers only (pre-revenue rule).
 - Aug 18: pokemontcg.io API key = unnecessary (keyless works); $0 stands.

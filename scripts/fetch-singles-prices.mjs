@@ -78,7 +78,7 @@ async function phase2_singles() {
   for (const entry of wl.cards) {
     await sleep(350);
     try {
-      const d = await getJSON(`${API}/cards?q=${encodeURIComponent(entry.q)}&pageSize=20&select=id,name,number,rarity,set,tcgplayer`);
+      const d = await getJSON(`${API}/cards?q=${encodeURIComponent(entry.q)}&pageSize=20&select=id,name,number,rarity,set,tcgplayer,cardmarket`);
       for (const c of d.data || []) {
         const variants = c.tcgplayer?.prices || {};
         const vKey = Object.keys(variants).find(k => variants[k]?.market != null);
@@ -98,6 +98,13 @@ async function phase2_singles() {
           priceMarket: market, priceVariant: vKey || null,
           provenance: `TCGplayer market via pokemontcg.io, updated ${tUpdated || "unknown"}`,
           dataStatus: market == null ? "unavailable" : fresh ? "live" : "stale",
+          // Cardmarket (EU) layer — added Aug 18, $0 (same API call). EUR prices,
+          // different market semantics. STORED ONLY: not citable until reviewed
+          // and FX/market-framing decided (Trust Standard: separate provenance).
+          cmTrendEur: c.cardmarket?.prices?.trendPrice ?? null,
+          cmAvg7Eur: c.cardmarket?.prices?.avg7 ?? null,
+          cmAvg30Eur: c.cardmarket?.prices?.avg30 ?? null,
+          cmUpdatedAt: c.cardmarket?.updatedAt || null,
           needsReview: prevC ? (prevC.needsReview ?? false) : true,
           priceHistory: hist,
         });
