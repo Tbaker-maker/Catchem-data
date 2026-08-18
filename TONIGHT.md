@@ -10,7 +10,7 @@ Pocket-CC forever. Then `/config` → "Enable Remote Control for all sessions" �
 > (b) wire isForcedChase + bestPrice into the candidate generator's ranking,
 > regenerate research/watchlist-candidates.md, then run
 > verify-watchlist-prices.mjs across every proposed row (batch the ids) and
-> commit sheet + verify file — curation is blocked on this; (c) relay your
+> commit sheet + verify file — curation is blocked on this; (c) implement research/fetch-pricing-v2-spec.md in fetch-sealed-prices.mjs — BIN-only filter, delivered price, special-collection bounds, priceFloorClean — unit-test on sv8pt5-sc + 4 others, note expected-effects vs actuals; (d) relay your
 > trapped campaign report + v2.2 print status. Fences standard.
 
 ## 3. Discord webhook (optional but 🔥): Server Settings → Integrations →
