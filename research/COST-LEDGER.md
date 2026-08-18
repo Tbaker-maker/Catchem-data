@@ -10,7 +10,8 @@ explicit sign-off AND an entry here. Updated Aug 18, 2026.*
 | GitHub Actions + hosting | $0 | Public repo = unlimited CI minutes; Pages/Cloudflare free |
 | Anthropic API (research agent, 1 call/day) | ~$3–9 | THE only real marginal cost; funded from Console credit |
 | Domain (catchemtcg.com) | ~$1 amortized | Annual Porkbun renewal |
-| **Total** | **≈$5–10/mo** | |
+| PokemonPriceTracker paid tier | $9.99 | Tyler-authorized Aug 18 (founder sign-off per ledger rule). 20k credits/day vs 100 free — powers The Spread + Supply Watch with full headroom, singles cross-check capacity, and possibly sold data (verify at signup). Cancel-anytime lever. |
+| **Total** | **≈$15–20/mo** | |
 
 ## Costs that arrive with usage (watch list)
 - **Buttondown**: free to 100 subscribers, paid (~$9/mo) beyond — check
@@ -26,6 +27,7 @@ explicit sign-off AND an entry here. Updated Aug 18, 2026.*
 4. Reduce SEARCH_PAGES 3→2 on stable SKUs: headroom, not savings ($0 either way).
 
 ## Decisions log
+- Aug 18: PPT $9.99/mo tier — the ledger rule's explicit-sign-off path used for the first time; free tier's 100/day judged too thin for 70 SKUs + retries + probes. First lever if money tightens: this line, cancel-anytime.
 - Aug 18: Cardmarket (EU) singles layer added — $0, rides the existing pokemontcg.io call; stored-only until reviewed.
 - Aug 18: provider eval hard-gated to free tiers only (pre-revenue rule).
 - Aug 18: pokemontcg.io API key = unnecessary (keyless works); $0 stands.
