@@ -91,7 +91,7 @@ footer{margin-top:30px;font:12px 'JetBrains Mono',monospace;color:var(--dim)}
 <h1>☀️ ${today} <span>#${today.replaceAll("-","")}</span></h1>
 <div class="byline">Written by the machine at ${new Date().toISOString().slice(11,16)} UTC · every number is live production data</div>
 <div class="panel">
-  <div class="stat"><b>${sp.products.length}</b><i>SKUs TRACKED</i></div>
+  <div class="stat"><b>${sp.products.length}</b><i>sealed products TRACKED</i></div>
   <div class="stat"><b>${sigs.length}</b><i>SPREAD SIGNALS</i></div>
   <div class="stat"><b>${heatDays}/8</b><i>READS CALIBRATING</i></div>
 </div>

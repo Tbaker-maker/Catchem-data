@@ -927,7 +927,7 @@ body::before {
     <p class="page-subtitle">Dollar volume × supply across every English Pokemon TCG sealed product. Updated daily.</p>
     <div class="page-meta">
       <span class="page-meta-item"><span class="live-dot"></span>LIVE — Week of May 11, 2026</span>
-      <span class="page-meta-item">Tracking 847 SKUs</span>
+      <span class="page-meta-item">Tracking 847 sealed products</span>
       <span class="page-meta-item">Last snapshot: 6:02 AM UTC</span>
     </div>
   </header>
@@ -1002,7 +1002,7 @@ body::before {
 
   <!-- RESULTS BAR -->
   <div class="results-bar">
-    <span class="results-count" id="results-count">Showing 14 of 14 SKUs</span>
+    <span class="results-count" id="results-count">Showing 14 of 14 sealed products</span>
     <div class="sort-control">
       <label for="sort" style="color: var(--text-3); font-size: 11px; font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.05em;">Sort:</label>
       <select class="sort-select" id="sort">
@@ -1123,7 +1123,7 @@ const products = [
   }
 ];
 
-// Helper: generate 52 weeks of believable historical data based on SKU pattern
+// Helper: generate 52 weeks of believable historical data based on sealed product pattern
 function generateHistory(currentVolume, currentSupply, state, weeksBack = 52) {
   const volumeHistory = [];
   const supplyHistory = [];
@@ -1373,7 +1373,7 @@ function renderProducts() {
   }
 
   document.getElementById('results-count').textContent =
-    `Showing ${filtered.length} of ${products.length} SKUs`;
+    `Showing ${filtered.length} of ${products.length} sealed products`;
 
   grid.innerHTML = filtered.map(p => {
     const volDeltaCls = p.volumeDelta > 10 && p.state === 'squeeze' ? 'delta-up is-squeeze-signal' :
