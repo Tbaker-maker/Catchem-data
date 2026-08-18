@@ -9,7 +9,7 @@ const s = await readFile(join(ROOT,"research/x-launch-arc-drafts.md"),"utf-8");
 const m = s.match(new RegExp(`## Day ${n} ·([^\\n]*)\\n([\\s\\S]*?)(?=\\n---\\n## Day|$)`));
 if(!m){console.error("day not found");process.exit(1);}
 let kit = `🗓 DAY ${n} —${m[1]}\npost LEAD, then each REPLY as replies · numbered blocks post top-to-bottom\n${"═".repeat(56)}\n\n`;
-const blocks = [...m[2].matchAll(/\*\*(LEAD|REPLY \d+|\d+\/)[^*]*\*\*:?\s*\n([\s\S]*?)(?=\n\*\*(?:LEAD|REPLY|\d+\/)|$)/g)];
+const blocks = [...m[2].matchAll(/\*\*(LEAD|REPLY \d+|\d+\/)[^*]*\*\*:?[ \t]*\n?([\s\S]*?)(?=\n\*\*(?:LEAD|REPLY|\d+\/)|$)/g)];
 for(const b of blocks){ const t=b[2].trim(); kit+=`─── ${b[1].replace("/"," of thread")} (${t.replace(/\n/g," ").length}c) ───\n${t}\n\n`; }
 await mkdir(join(ROOT,"research/arc-kits"),{recursive:true});
 await writeFile(join(ROOT,`research/arc-kits/day${n}.txt`), kit);

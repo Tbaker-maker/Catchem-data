@@ -45,150 +45,137 @@ We publish our own repair receipts. Get used to it.
 ---
 ## Day 2 · Thu Aug 20 — Same Game, Different Wrapper
 
-No pivot story. NFT people already love Pokémon; collectors already think
-in floors. One market brain, two dialects — translation table:
+**LEAD (144c):**
+No pivot story. NFT people already love Pokémon; collectors already think in floors. One market brain, two dialects — translation table below. 🧵
 
+**REPLY 1 (203c):**
 Floor price → ask median.
 Supply drying up → active listings draining.
 The mint → the print wave.
 Sweeping the floor → buying out the cheap asks.
 Diamond hands → the sealed box you swore you'd never rip.
 
-Same tape, better cardboard — and this one's been running for thirty
-years, so you can actually check your reads against history.
-
-*Support (reply to own post):* If you can smell a thin floor from across
-the room, you already know how to read sealed wax. Welcome home, degens.
-Collectors — they come in peace, and they bid aggressively.
+**REPLY 2 (248c):**
+Same tape, better cardboard — this market's run thirty years, so you can check your reads against history.
+If you can smell a thin floor, you already read sealed wax. Welcome home, degens. Collectors — they come in peace, and they bid aggressively.
 
 ---
 ## Day 3 · Fri Aug 21 — The Trust Standard (manifesto)
 
-We wrote our rules down and made them public.
+**LEAD (164c):**
+We wrote our rules down and made them public. Every claim we publish is one of three things — VERIFIED, REPORTED, or A READ. If it's none of those, it doesn't ship.
 
-Every claim we publish is one of three things:
+**REPLY 1 (173c):**
 VERIFIED — our tracker or two independent sources.
 REPORTED — one named source, attributed inline.
 A READ — our interpretation, labeled ours, with what would prove it wrong.
 
-If it's none of those, it doesn't ship. And when we're wrong, the
-correction runs louder than the mistake — in a hobby where the biggest
-grader silently changed grades, that's not a slogan, it's the product.
-
+**REPLY 2 (210c):**
+And when we're wrong, the correction runs louder than the mistake. In a hobby where the biggest grader silently changed grades, that's not a slogan — it's the product.
 Newsletter: [link]. First issue this week.
 
 ---
 ## Day 4 · Sat Aug 22 — Four States of Sealed
 
+**LEAD (204c):**
 Every sealed product we track lives in one of four states:
+🔥 Markup — money in, supply shrinking
+📈 Distribution — healthy tape
+❄️ Markdown — sellers outpacing buyers
+😴 Accumulation — quiet tape, deep hold
 
-🔥 Markup — money in, supply shrinking. Possible breakout.
-📈 Distribution — money and supply both flowing. Healthy tape.
-❄️ Markdown — sellers outpacing buyers.
-😴 Accumulation — quiet tape, deep hold.
-
+**REPLY 1 (61c):**
 Century-old market framework (Wyckoff), applied to cardboard.
 
-Honesty beat: our state reads are DARK right now — we restarted every
-product's history the day the fix shipped, and reads return around Aug 26
-when eight clean days exist. Nothing false in the meantime. That's the
-deal.
+**REPLY 2 (221c):**
+Honesty beat: our state reads are DARK right now — we restarted every product's history the day our bug fix shipped. Reads return around Aug 26, when eight clean days exist.
+Nothing false in the meantime. That's the deal.
 
 ---
 ## Day 5 · Sun Aug 23 — Anatomy of a $2,755 Error
 
+**LEAD (182c):**
 How does a tracker publish $144 for a $2,899 box?
+Simple: the price window said "booster boxes live between $80 and $800." True for modern. Catastrophically false for Evolving Skies.
 
-Simple: the price window said "booster boxes live between $80 and $800."
-True for modern. Catastrophically false for Evolving Skies. So every real
-box got filtered as an "outlier" — and the packs and bundles underneath
-became the market.
-
-Lesson we paid for: your assumptions are part of your data pipeline.
-Vintage now carries its own floors. [EDITOR optional: screenshot of the
-flagged history chart.]
+**REPLY 1 (209c):**
+So every real box got filtered as an "outlier" — and the packs and bundles underneath became the market.
+Lesson we paid for: your assumptions are part of your data pipeline. Vintage now carries its own floors.
 
 ---
 ## Day 6 · Mon Aug 24 — [NEWSLETTER SEND DAY — movable]
 
+**LEAD (192c):**
 Catch'Em News 001 is out.
+One month to the 30th Celebration — the first simultaneous worldwide TCG launch ever. All-foil. Two new rarities. Base Set Charizard back in print. No loose boosters.
 
-One month to the 30th Celebration — the first simultaneous worldwide TCG
-launch ever. All-foil. Two new rarities. Base Set Charizard back in print.
-No loose boosters. Plus: the tin double-drop, the grading structure
-problem, and our own bug story told straight.
-
-In your inbox if you were on the waitlist. Link below if you weren't.
-[link] — free.
+**REPLY 1 (186c):**
+Also inside: the tin double-drop, the grading structure problem, and our own bug story told straight.
+In your inbox if you were on the waitlist. Link below if you weren't. [link] — free.
 
 ---
 ## Day 7 · Tue Aug 25 — The Agent That Caught What I Missed
 
-Full transparency: part of this operation is AI. Here's why I'm telling
-you instead of hiding it.
+**LEAD (97c):**
+Full transparency: part of this operation is AI. Here's why I'm telling you instead of hiding it.
 
-My research agent's FIRST morning run flagged a product I'd completely
-missed — the Mega Forces tins, landing the same day as the Ascended Heroes
-tins (pokemon.com confirmed). Six tins, one day, two lines. My newsletter
-draft said three. The bot corrected the human before publish.
+**REPLY 1 (259c):**
+My research agent's FIRST morning run flagged a product I'd missed — the Mega Forces tins, landing the same day as the Ascended Heroes tins (pokemon.com confirmed). Six tins, one day, two lines. My draft said three.
+The bot corrected the human before publish.
 
-The edge isn't automation. It's verification with more eyes than I have.
-Every claim still gets a human gate before it ships.
+**REPLY 2 (125c):**
+The edge isn't automation. It's verification with more eyes than I have. Every claim still gets a human gate before it ships.
 
 ---
 ## Day 8 · Wed Aug 26 — The 30th: Format Isn't the Variable
 
-Everyone's calling the 30th "Celebrations 2.0 — printed to oblivion,
-cheap forever." They're comparing the wrong variable.
+**LEAD (122c):**
+Everyone's calling the 30th "Celebrations 2.0 — printed to oblivion, cheap forever."
+They're comparing the wrong variable.
 
-The format IS identical — Celebrations had no loose boosters either; every
-pack came gated inside products. Same structure this time. But Celebrations
-stayed cheap because of PRINT VOLUME — TPC restocked it relentlessly for a
-year.
+**REPLY 1 (231c):**
+The format IS identical — Celebrations had no loose boosters either; every pack came gated inside products. Same structure this time.
+But Celebrations stayed cheap because of PRINT VOLUME — TPC restocked it relentlessly for a year.
 
-Format matched. Volume decided the price. And volume for the 30th is the
-one number nobody has yet. The tell: restock cadence in October. Watch the
-shelves, not the format.
+**REPLY 2 (172c):**
+Format matched. Volume decided the price. And volume for the 30th is the one number nobody has yet.
+The tell: restock cadence in October. Watch the shelves, not the format.
 
 ---
 ## Day 9 · Thu Aug 27 — Grading's Structure Problem (Reported)
 
-The week's numbers, per industry reporting: roughly 80% of US grading now
-sits under one parent company. Cheapest direct PSA tier: $79.99/card,
-40–50 business days. Backlog reported at ~12 million cards.
+**LEAD (203c):**
+The week's numbers, per industry reporting: roughly 80% of US grading now sits under one parent company. Cheapest direct PSA tier: $79.99/card, 40–50 business days. Backlog reported at ~12 million cards.
 
+**REPLY 1 (216c):**
 Now aim an all-foil anniversary set at that queue in September.
-
-Not a prediction — a bottleneck you can see from here. Our read: the
-sealed→graded pipeline math changed, and slabs-in-hand carry a scarcity
-premium while the queue digests. Possible, not promised.
+Not a prediction — a bottleneck you can see from here. Our read: slabs-in-hand carry a scarcity premium while the queue digests. Possible, not promised.
 
 ---
 ## Day 10 · Fri Aug 28 — [TIN DAY — Aug 28]
 
-Today: six $21.99 tins hit shelves at once. Three Ascended Heroes (Mega
-Feraligatr / Meganium / Emboar ex), three Mega Forces (Mega Dragonite /
-Darkrai / Zeraora ex). Four packs each.
+**LEAD (183c):**
+Today: six $21.99 tins hit shelves at once. Three Ascended Heroes (Mega Feraligatr / Meganium / Emboar ex), three Mega Forces (Mega Dragonite / Darkrai / Zeraora ex). Four packs each.
 
-That's the publisher injecting supply into the most supply-constrained set
-of the year — the thing no whale seller could do.
+**REPLY 1 (124c):**
+That's the publisher injecting supply into the most supply-constrained set of the year — the thing no whale seller could do.
 
-Our read: AH has been in markup for months. Tins vent the pressure that
-pushes casual buyers to the secondary market. Absorb or stall — that's the
-watch through September, and we're watching with clean instruments.
+**REPLY 2 (214c):**
+Our read: AH has been in markup for months. Tins vent the pressure that pushes casual buyers to the secondary market.
+Absorb or stall — that's the watch through September, and we're watching with clean instruments.
 
 ---
 ## Day 11 · Sat Aug 29 — Singles Receipts
 
+**LEAD (178c):**
 The chase watchlist is live. Real numbers, real provenance, no calls:
-
-Moonbreon (Umbreon VMAX alt, Evolving Skies): $2,244 market.
-Umbreon ex SIR (Prismatic): $1,491.
-Mega Charizard X ex SIR (Phantasmal Flames): $692.
+Moonbreon: $2,244 market.
+Umbreon ex SIR: $1,491.
+Mega Charizard X ex SIR: $692.
 151 Charizard ex SIR: $361.
 
+**REPLY 1 (105c):**
 (TCGplayer market via pokemontcg.io, updated Aug 17.)
-
 We track. You decide. That's the division of labor.
 
 ---
@@ -214,15 +201,14 @@ In build. Newsletter readers see it first. [link]
 ---
 ## Day 14 · Tue Sep 1 — Recap + Handoff
 
+**LEAD (217c):**
 Fourteen days ago this account changed lanes. Since then:
-
 — A tracker that publishes its own corrections
 — A newsletter that shipped with receipts
 — A live chase watchlist
 — Four bugs caught and told to you on purpose
 
-Sept 16 is the first worldwide simultaneous TCG launch in history. We'll
-be covering it live, with instruments, the whole way. Subscribe and watch
-us work: [link]
-
+**REPLY 1 (185c):**
+Sept 16 is the first worldwide simultaneous TCG launch in history. We'll be covering it live, with instruments, the whole way.
+Subscribe and watch us work: [link]
 Catch'em. Catch Feels.
