@@ -51,4 +51,12 @@ for (const id of ids){ await sleep(350);
   else note=`ptcgio ${t??"—"} · PPT ${pv??"—"}`;
   out.push({id,name:c.name,number:c.number,setId:c.set?.id,tcgMarket:t,pptMarket:pv,status,note});
   console.log(`${status==="verified"?"✓":"⚠"} ${id} ${c.name} — ${note}`);}
-await writeFile(join(ROOT,"data/watchlist-price-verify.json"),JSON.stringify({verifiedAt:new Date().toISOString(),rule:"dual-source ≤20% = verified; else flagged, never shown as fact",cards:out},null,2)+"\n");
+// MERGE, never overwrite (2026-08-18: a targeted 8-id run wholesale-replaced
+// the 329-row dataset — same bug class as the singles resolver's carry-forward
+// fix). Prior rows persist; this run's ids win on collision.
+let prevCards=[];
+try{ const prev=JSON.parse(await readFile(join(ROOT,"data/watchlist-price-verify.json"),"utf-8"));
+  prevCards=prev.cards||prev.results||[]; }catch{}
+const byId=new Map(prevCards.map(r=>[r.id,r]));
+for(const r of out) byId.set(r.id,r);
+await writeFile(join(ROOT,"data/watchlist-price-verify.json"),JSON.stringify({verifiedAt:new Date().toISOString(),rule:"dual-source ≤20% = verified; else flagged, never shown as fact",cards:[...byId.values()]},null,2)+"\n");
