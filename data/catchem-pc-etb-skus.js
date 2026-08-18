@@ -18,11 +18,11 @@
  * Exclusive promo card singles are a separate (later) feature — see _notes field.
  *
  * Per-SKU price ceiling overrides:
- *   151 PC-ETB:                  $2,000 (Snorlax promo, ~$1,400 sealed)
+ *   151 PC-ETB:                  ~~$2,000~~ $3,000 [CORRECTED 2026-08-18: live validation high hit $1,999.99 exactly at the May cap (clipping); PriceCharting 8/15 listings $1,205-$3,000]
  *   Obsidian Flames PC-ETB:      $1,500 (Smushed Charmander halo)
  *   Paldea Evolved PC-ETB:       $1,500 (Pikachu promo)
  *   Prismatic Evolutions PC-ETB: $1,500 (Eeveelution demand)
- *   Evolving Skies PC-ETB:       $1,500 (Moonbreon halo)
+ *   Evolving Skies PC-ETB:       ~~$1,500~~ $2,000 [CORRECTED 2026-08-18: validation median $1,200, high $1,441 pressed the May cap; Moonbreon halo]
  *   All others: default $800
  *
  * Usage:

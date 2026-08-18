@@ -176,6 +176,7 @@ Special/mini-set expansions have **NO standalone Booster Boxes**. Sold only via 
 - Dragon Majesty, Shining Legends, Detective Pikachu, Generations
 - Celebrations, Crown Zenith
 - Paldean Fates, Shrouded Fable, Prismatic Evolutions
+- **151 (sv3pt5)** and **Pokémon GO (pgo)** [ADDED 2026-08-18, known error #8 / ruling J2 — bundle/ETB/PC-ETB/UPC (151) and products-only (GO); neither has an English booster box]
 - ~~**ALL Mega Evolution special sets:** Phantasmal Flames, Ascended Heroes, Perfect Order, Chaos Rising, Pitch Black, 30th Anniversary Celebration~~
   **[CORRECTED 2026-08-18 — see known error #6.]** Web-verified against Pokemon Center + TCGplayer:
   Phantasmal Flames (me2), Perfect Order (me3), Chaos Rising (me4), and Pitch Black (me5) are
@@ -184,7 +185,12 @@ Special/mini-set expansions have **NO standalone Booster Boxes**. Sold only via 
   Mini Tins, Tech Sticker Collection, Premium Poster — no booster box). 30th Celebration remains
   no-loose-boosters per pokemon.com (packs gated inside products; boxed pack products only).
 
-Main expansion sets DO have Booster Boxes: Scarlet & Violet, Paldea Evolved, Obsidian Flames, 151, Paradox Rift, Temporal Forces, Twilight Masquerade, Stellar Crown, Surging Sparks, Journey Together, Destined Rivals, Evolving Skies, and Mega-era main sets me1/me2/me3/me4/me5 (me1 additionally has the Enhanced Booster Box box-topper variant — the only modern boxes with that variant are me1 and Journey Together, per Tyler).
+Main expansion sets DO have Booster Boxes: Scarlet & Violet, Paldea Evolved, Obsidian Flames, ~~151,~~ Paradox Rift, Temporal Forces, Twilight Masquerade, Stellar Crown, Surging Sparks, Journey Together, Destined Rivals, Evolving Skies, and Mega-era main sets me1/me2/me3/me4/me5 (me1 additionally has the Enhanced Booster Box box-topper variant — the only modern boxes with that variant are me1 and Journey Together, per Tyler).
+**[CORRECTED 2026-08-18 — see known error #8.]** 151 (sv3pt5) has NO English booster box —
+its English line is Booster Bundle / ETB / PC-ETB / UPC only. It belongs on the special-sets
+list above (added there, dated). Additions to the no-booster-box list same date, per campaign
+rulings J1/J2: **151 (sv3pt5)** and **Pokémon GO (pgo)** — pgo was structurally products-only
+but absent from the list.
 
 ### Rotation context (as of 2026-04-21)
 - **April 10, 2026:** G-mark rotated OUT (11 days ago)
@@ -202,6 +208,7 @@ Historical pattern: rotation transitions competitive demand → collector demand
 ### Known errors (to avoid repeating)
 7. **pokemontcg.io status (Apr 2026 note overclaimed):** KB said "now Scrydex, no longer free, $29/mo min." Verified Aug 18 2026: free keyless API works (with ~33% transient 500s + rate limits). Correction logged; PokemonPriceTracker ($9.99/mo) remains the paid fallback ONLY IF free-tier staleness/instability worsens — separate integration, not built.
 - **Rotation cadence (caught by Tyler, Aug 18 2026):** Rotation is ANNUAL (every April, oldest reg mark out). "~3 years" is per-CARD legality (three marks concurrent), not rotation frequency. Newsletter 001 draft said "every three years" — wrong. Error class: plausible-cadence-misremembered (same family as PC-ETB start era).
+8. **151 English booster box (claimed on the main-expansion BB list, 2026-08-18, ruling J1)** — does NOT exist. The 151 English line is Booster Bundle / ETB / PC-ETB / UPC only; the tracked sv3pt5-bb IS the bundle. Line 187 corrected (struck, dated); 151 added to the special-sets list. Root cause: 151 is a main-numbered set (sv3pt5) so it was swept into the BB generalization — set NUMBERING does not imply BB EXISTENCE.
 1. **Evolving Skies Booster Box $300** — wrong by 10x. Actual ~$3,000+. Never cite prices without verification.
 2. **Ascended Heroes Booster Box** — doesn't exist. Ascended Heroes is a special/mini-set (Mega Evolution series), sold via ETB/Booster Bundle only. Mega Evolution special sets have NO booster boxes.
 3. **Cosmic Eclipse card count** — I said 272, actual is 271. Off by one.
