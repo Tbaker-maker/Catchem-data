@@ -22,10 +22,11 @@ Include the honesty line: which SKUs remain excluded/maturing and why.
 What happened Aug 28: six $21.99 tins, two lines, availability notes.
 [SLOT-3: AH sealed movement, pre-tin vs post-tin — source: sealed-prices
 priceHistory for AH SKUs, Aug 29+]
-[SLOT-3a: ⚠ VERIFY FIRST — AH trio mapping. CC's validation showed
-$172.95 / $85 / $469.99 across three AH SKUs; confirm which id is which
-(ETB / bundle / PC-ETB?) against data/sealed-products.json BEFORE citing.
-AH has NO booster box (error #6) — never phrase any of these as one.]
+[SLOT-3a: ✓ RESOLVED (audit 2026-08-18) — me2pt5-etb = ETB ($174.99) ·
+me2pt5-bb = Booster Bundle ($86) · me2pt5-pc-etb = Pokemon Center ETB
+($467.45). Cite with these exact labels; the $467 figure is the PC-ETB,
+never "the ETB." AH has NO booster box (error #6). Refresh prices from
+the send-day run before publishing.]
 [SLOT-4: listing-count deltas around the drop — heat-history.json, Aug 30+]
 Verdict paragraph keyed to SLOT-1. Hedged: "the early tape says…"
 
