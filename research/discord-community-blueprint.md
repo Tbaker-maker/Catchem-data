@@ -53,3 +53,19 @@ first, perfection never.
 ## Culture rules (April, still right)
 First 20 members set the tone for 2000. Reward substance. No gm-farming.
 Leaderboard soft-pedaled until population justifies it.
+
+## README CENSUS (Aug 18 — 4th handoff doc absorbed)
+Community-data engines the bot ships with: PSA tracker (/psa — real
+member gem-rates, turnarounds, auto-celebrated 10s = Grader-mode moat) ·
+Pull of the Week (vote-button, Monday crowning) · Retailer drop alerts
+(/drop-report — community-powered, NO scraping, anti-abuse built in;
+**app screen-7 "Drop Day check-ins" = THIS system — inherit, don't
+reinvent**) · News feed (6 sources/30min + 14:00 digest — community
+layer; our research agent stays the editorial layer) · rotation countdown
+(defaults match KB: Apr 2027) · governance (contribution+sqrt voting,
+decay, anti-alt verification) · monitoring+backups (production-grade).
+LAUNCH HOOK: waitlist-position cog → Newsletter 001 list becomes
+founding-number ceremony at server open (/waitlist-top medals).
+⚠ DOC-DRIFT LOGGED: README's /pack (5-berry minigame, fictional cards)
+is PRE-v2. Handoff appendix + pack-spec v2 (10 berries, catchem_card
+prizes, pity@20) WIN. Verify which pack.py is in the zip at bot-session.
