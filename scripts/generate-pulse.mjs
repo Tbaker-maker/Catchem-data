@@ -146,6 +146,8 @@ const feed = {
   quietMovers: (der?.narrative?.quietMovers??[]).slice(0,4).map(q=>({...q, class:"READ"})),
   dailyThree: der?.dailyThree ?? null,
   depthReads: der?.depthReads ?? [],
+  lifecycle: der?.lifecycle ?? {},
+  rotationContext: der?.rotationContext ?? null,
   catalysts: (der?.catalysts??[]).slice(0,4),
   packMath: der?.packMath ? { priciest: der.packMath.priciest.slice(0,3), cheapest: der.packMath.cheapest.slice(0,3), class:"VERIFIED" } : null,
   radar: upcoming.slice(0,4),

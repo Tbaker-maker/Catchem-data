@@ -10,6 +10,7 @@ const J = async p => JSON.parse(await readFile(join(ROOT,p),"utf-8"));
 const sp = await J("data/sealed-prices.json");
 const div = await J("data/divergence-report.json").catch?.() ?? await J("data/divergence-report.json");
 const heat = await J("data/heat-report.json");
+let der = {}; try { der = await J("data/derived-insights.json"); } catch {}
 const heatDay = (heat.mode||"").match(/day (\d+)/)?.[1] ?? "1";
 const spreadBy = new Map((div.rows||[]).map(r=>[r.id,r]));
 const cardImg = id => { const m=/^(.+)-(\w+)$/.exec(id||""); return m?`https://images.pokemontcg.io/${m[1]}/${m[2]}.png`:null; };
@@ -25,7 +26,7 @@ const rows = sp.products
 const tr = ({p,s}) => `
 <tr>
   <td class="name" style="display:flex;align-items:center;gap:10px">${sealedImg(p)?`<img src="${sealedImg(p)}" style="width:42px;background:#0b0d14;border-radius:5px;padding:3px;border:1px solid rgba(255,255,255,.07)" alt="">`:""}<span>${p.name}<span class="sub">${p.set||""}</span></span></td>
-  <td><span class="pill">${p.subtype?.replace("-"," ").toUpperCase()||""}</span></td>
+  <td><span class="pill">${p.subtype?.replace("-"," ").toUpperCase()||""}</span>${(der.lifecycle&&der.lifecycle[p.setId])?`<span class="pill" title="${der.lifecycle[p.setId].phase} (est.)" style="margin-left:4px">${der.lifecycle[p.setId].tag} ${der.lifecycle[p.setId].ageMonths}mo</span>`:""}</td>
   <td class="num">${money(p.priceMedian)}</td>
   <td class="num">${p.listingCount??"—"}</td>
   <td>${s ? (s.signal

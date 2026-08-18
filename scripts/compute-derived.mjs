@@ -132,6 +132,25 @@ const depthReads = [...liveList].sort((a,b)=>b.listingCount-a.listingCount).slic
     tag, read, chip:"READ" };
 });
 
+
+// ── (e) LIFECYCLE — print-phase EST + rotation context (Doctrine block) ──
+const NOW = new Date();
+function lifecycleFor(p){
+  const rel = p.releaseDate || (sp.products.find(x=>x.setId===p.setId&&x.releaseDate)||{}).releaseDate;
+  if (!rel) return null;
+  const months = Math.floor((NOW - new Date(rel)) / (30.44*86400000));
+  let phase, tag;
+  if (months <= 12) { phase = "active print"; tag = "🖨"; }
+  else if (months <= 30) { phase = "late print — reprint waves typical"; tag = "🖨⏳"; }
+  else { phase = "likely EOL — supply fixed (est.)"; tag = "📦🔒"; }
+  return { setId: p.setId, ageMonths: months, phase, tag, chip: "READ",
+    note: months > 30 ? "RT-1 cycle territory: supply now finite" : null };
+}
+const lifecycle = {};
+for (const p of liveList) if (!lifecycle[p.setId]) { const L = lifecycleFor(p); if (L) lifecycle[p.setId] = L; }
+const rotationContext = { nextInPerson: "2027-04 (est. — annual April cadence)",
+  note: "rotation = demand-side for competitive staples; legality mark map lands via enrichment pass" };
+
 const out = {
   generatedAt: new Date().toISOString(),
   method: "Pack Math: ask median / era-aware pack count (arithmetic, no estimation; variable-count products excluded by name). Narrative: latest agent digest cross-referenced against tracked sets; 'quiet movers' = spread signal with zero digest mention.",
@@ -140,6 +159,7 @@ const out = {
   narrative: { inNews: inNews.slice(0,6), quietMovers: quietMovers.slice(0,6) },
   catalysts,
   depthReads,
+  lifecycle, rotationContext,
   dailyThree: (() => {
     const sealedPick = (div.rows||[]).filter(r=>r.signal).sort((a,b)=>Math.abs(b.spreadPct)-Math.abs(a.spreadPct))[0] || null;
     let gradedPick = null;

@@ -40,3 +40,15 @@ deltas — not reported sales, per standing disclosure).
 buy/sell imperatives. Per-product reads unlock at 3+ clean snapshot days.
 **Falsifier:** if pile-up states precede 14-day price softness in <55%
 of resolved cases (rolling log), thresholds get recalibrated in public.
+
+## Lifecycle Doctrine (definitions, not a thesis — precision matters here)
+Three clocks, three meanings — never conflate in copy:
+- **Rotation** = ANNUAL, each April (next: in-person ~Apr 2027). Demand-side
+  event for competitive staples; collector chases largely unaffected.
+- **Legality window** = ~2-3 years per set via regulation mark. The "3-year"
+  figure people quote is THIS, not print or rotation frequency.
+- **Print window** = TPCi's active-production span (typically ~2-3yr, varies).
+  SUPPLY-side. EOL = supply fixed forever = RT-1's cycle formally begins.
+Print phases (EST, date-derived until better data): 0-12mo "active print" ·
+12-30mo "late print — reprint waves typical" · 30mo+ "likely EOL — supply
+fixed (est.)". Always labeled est.; exact EOL dates are rarely announced.
