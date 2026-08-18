@@ -660,15 +660,18 @@
     {
       "id": "swsh1-etb",
       "ourName": "Sword & Shield Base Elite Trainer Box",
-      "tcgPlayerId": null,
-      "matchedName": null,
-      "unopenedPrice": null,
-      "matchConfidence": "low",
+      "tcgPlayerId": "206038",
+      "matchedName": "Sword & Shield Elite Trainer Box [Zacian]",
+      "unopenedPrice": 164.58,
+      "matchConfidence": "high",
       "note": "no viable candidate among 0 results",
-      "reviewed": false,
-      "holdReason": "NO MATCH",
-      "exclude": true,
-      "excludeReason": "no clean single match at provider (re-search pass 2026-08-18: alternate names, limit 10, art-variant singles allowed)"
+      "reviewed": true,
+      "exclude": false,
+      "excludeReason": "no clean single match at provider (re-search pass 2026-08-18: alternate names, limit 10, art-variant singles allowed)",
+      "providerUpdatedAt": "2026-08-18T12:19:12.476Z",
+      "eBayMedian": 180,
+      "priceRatio": 0.91,
+      "autoApproved": "re-search v2 (Tyler ruling 2026-08-18b): alt names, limit 10"
     },
     {
       "id": "sm12-etb",
@@ -823,15 +826,18 @@
     {
       "id": "sv1-booster-box",
       "ourName": "Scarlet & Violet Base Booster Box",
-      "tcgPlayerId": null,
-      "matchedName": null,
-      "unopenedPrice": null,
-      "matchConfidence": "low",
+      "tcgPlayerId": "476452",
+      "matchedName": "Scarlet & Violet Booster Box",
+      "unopenedPrice": 304.45,
+      "matchConfidence": "high",
       "note": "no viable candidate among 0 results",
-      "reviewed": false,
-      "holdReason": "NO MATCH",
-      "exclude": true,
-      "excludeReason": "no clean single match at provider (re-search pass 2026-08-18: alternate names, limit 10, art-variant singles allowed)"
+      "reviewed": true,
+      "exclude": false,
+      "excludeReason": "no clean single match at provider (re-search pass 2026-08-18: alternate names, limit 10, art-variant singles allowed)",
+      "providerUpdatedAt": "2026-08-18T12:18:40.462Z",
+      "eBayMedian": 330,
+      "priceRatio": 0.92,
+      "autoApproved": "re-search v2 (Tyler ruling 2026-08-18b): alt names, limit 10"
     },
     {
       "id": "swsh12-booster-box",
@@ -1063,8 +1069,8 @@
       "providerUpdatedAt": "2026-08-18T12:20:07.812Z",
       "matchConfidence": "high",
       "reviewed": false,
-      "exclude": true,
-      "holdReason": "HOLD per Tyler: re-score after Aug 28 street date (presale ratio 0.55 is pre-release, not stale).",
+      "exclude": false,
+      "holdReason": "HOLD per Tyler 2026-08-18(b): re-score after Aug 28 street date (presale ratio 0.55 is pre-release, not stale). Restored after the mobile bulk-exclusion swept it.",
       "eBayMedian": 99,
       "priceRatio": 0.55
     },
@@ -1078,9 +1084,9 @@
       "matchConfidence": "high",
       "reviewed": false,
       "exclude": true,
-      "holdReason": "ratio 0.41 outside 0.6-1.6",
       "eBayMedian": 2302.48,
-      "priceRatio": 0.41
+      "priceRatio": 0.41,
+      "excludeReason": "provider price implausible vs live eBay (stale-class) — Tyler ruling 2026-08-18b"
     },
     {
       "id": "sm1-etb",
@@ -1235,9 +1241,9 @@
       "matchConfidence": "high",
       "reviewed": false,
       "exclude": true,
-      "holdReason": "ratio 0.59 outside 0.6-1.6",
       "eBayMedian": 2495,
-      "priceRatio": 0.59
+      "priceRatio": 0.59,
+      "excludeReason": "provider price implausible vs live eBay (stale-class) — Tyler ruling 2026-08-18b"
     },
     {
       "id": "sm10-booster-box",
@@ -1372,13 +1378,17 @@
     {
       "id": "swsh1-booster-box",
       "ourName": "Sword & Shield Base Booster Box",
-      "tcgPlayerId": null,
-      "matchedName": null,
-      "matchConfidence": "low",
+      "tcgPlayerId": "206027",
+      "matchedName": "Sword & Shield Booster Box",
+      "matchConfidence": "high",
       "reviewed": true,
-      "holdReason": "no viable candidate among 0",
-      "exclude": true,
-      "excludeReason": "no provider coverage — PPT carries no matching sealed product (SM-era/special/GO gap class). Ruled in mobile review 2026-08-18; remains fully tracked eBay-side."
+      "exclude": false,
+      "excludeReason": "no provider coverage — PPT carries no matching sealed product (SM-era/special/GO gap class). Ruled in mobile review 2026-08-18; remains fully tracked eBay-side.",
+      "unopenedPrice": 694.29,
+      "providerUpdatedAt": "2026-08-18T12:17:52.640Z",
+      "eBayMedian": 895,
+      "priceRatio": 0.78,
+      "autoApproved": "re-search v2 (Tyler ruling 2026-08-18b): alt names, limit 10"
     },
     {
       "id": "swsh2-booster-box",
@@ -1555,10 +1565,9 @@
       "tcgPlayerId": null,
       "matchedName": null,
       "matchConfidence": "low",
-      "reviewed": true,
-      "holdReason": "no viable candidate among 0",
+      "reviewed": false,
       "exclude": true,
-      "excludeReason": "no provider coverage — PPT carries no matching sealed product (SM-era/special/GO gap class). Ruled in mobile review 2026-08-18; remains fully tracked eBay-side."
+      "excludeReason": "no clean single match at provider (re-search v2 exhausted alt names)"
     },
     {
       "id": "swsh12pt5-bb",
@@ -1816,14 +1825,15 @@
   ],
   "classification": {
     "rule": "AUTO = high conf AND ratio 0.6-1.6 AND no case/display/lot/multiplier language",
-    "approved": 101,
+    "approved": 104,
     "held": 17,
     "classifiedAt": "2026-08-18T08:09:33.214Z",
-    "excluded": 43,
+    "excluded": 39,
     "rescuePassAt": "2026-08-18T08:37:56.828Z",
     "extendedAt": "2026-08-18T15:37:28.090Z",
     "rescoredAt": "2026-08-18T15:38:46.459Z",
     "mobileReviewAt": "2026-08-18T16:38:55.528646Z",
-    "mobileReviewRuling": "26 no-match HOLDs excluded (no provider coverage). Spread universe = 101 approved."
+    "mobileReviewRuling": "26 no-match HOLDs excluded (no provider coverage). Spread universe = 101 approved.",
+    "rescueV2At": "2026-08-18T23:03:10.252Z"
   }
 }
