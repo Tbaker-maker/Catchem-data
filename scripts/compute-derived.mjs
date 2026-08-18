@@ -168,6 +168,42 @@ for (const p of liveList) if (!lifecycle[p.setId]) { const L = lifecycleFor(p); 
 const rotationContext = { nextInPerson: "2027-04 (est. — annual April cadence)",
   note: "rotation = demand-side for competitive staples; legality mark map lands via enrichment pass" };
 
+
+// ── (f) PRINT & ROTATION WATCH — EOL countdown × supply × reprint signal ──
+// Countdown = 30-month print-window MODEL (est., doctrine block). Supply =
+// sum of active listings across a set's tracked products. Reprint = from
+// accumulated catalyst log (starts 2026-08-18; no fabricated history).
+let clog = { entries: [] }; try { clog = await J("data/catalyst-log.json"); } catch {}
+// accumulate today's catalysts (merge-by-date — pathogen-proof)
+{
+  const today = new Date().toISOString().slice(0,10);
+  clog.entries = (clog.entries||[]).filter(e=>e.date!==today);
+  for (const c of catalysts) clog.entries.push({ date: today, ...c });
+  await writeFile(new URL("../data/catalyst-log.json", import.meta.url), JSON.stringify(clog,null,1));
+}
+const supplyBySet = {};
+for (const p of liveList) supplyBySet[p.setId] = (supplyBySet[p.setId]||0) + (p.listingCount||0);
+const setNameBy = {}; for (const p of sp.products) if (p.setId && p.set) setNameBy[p.setId] = p.set;
+const reprintSets = new Set();
+for (const e of (clog.entries||[])) if (e.class==="bullish" && /reprint|print run|back in print|restock/.test(e.trigger||"")) {
+  for (const sid of Object.keys(setNameBy)) if ((e.context||"").includes(setNameBy[sid])) reprintSets.add(sid);
+}
+const EOL_MO = 30;
+const printWatch = Object.entries(lifecycle).map(([sid, L]) => {
+  const daysToEOL = Math.round((EOL_MO - L.ageMonths) * 30.44);
+  return { setId: sid, set: setNameBy[sid] || sid, ageMonths: L.ageMonths,
+    phase: L.phase, mark: L.mark, standardLegal: L.standardLegal, legalTag: L.legalTag,
+    supply: supplyBySet[sid] ?? 0,
+    eol: daysToEOL > 0 ? { status:"printing", daysLeftEst: daysToEOL } : { status:"outOfPrint", monthsOutEst: Math.round(-daysToEOL/30.44) },
+    reprintSignal: reprintSets.has(sid) ? "📣 reprint in news" : null, chip:"READ" };
+}).sort((a,b)=> (a.eol.daysLeftEst ?? -a.eol.monthsOutEst*30) - (b.eol.daysLeftEst ?? -b.eol.monthsOutEst*30));
+const pwSupplies = printWatch.map(r=>r.supply).sort((x,y)=>x-y);
+const loQ = pwSupplies[Math.floor(pwSupplies.length*0.25)]||0, hiQ = pwSupplies[Math.floor(pwSupplies.length*0.75)]||0;
+for (const r of printWatch) r.supplyTier = r.supply <= loQ ? "low" : r.supply >= hiQ ? "high" : "mid";
+const tightening = printWatch.filter(r=>r.supplyTier==="low" && !r.reprintSignal && (r.eol.status==="outOfPrint" || (r.eol.daysLeftEst??999) < 240)).slice(0,3);
+const rotationCohorts = {};
+for (const r of printWatch) { const k = r.mark ?? "pre-mark"; (rotationCohorts[k] ||= []).push(r.set); }
+
 const out = {
   generatedAt: new Date().toISOString(),
   method: "Pack Math: ask median / era-aware pack count (arithmetic, no estimation; variable-count products excluded by name). Narrative: latest agent digest cross-referenced against tracked sets; 'quiet movers' = spread signal with zero digest mention.",
@@ -177,6 +213,7 @@ const out = {
   catalysts,
   depthReads,
   lifecycle, rotationContext,
+  printWatch, tightening, rotationCohorts,
   dailyThree: (() => {
     const sealedPick = (div.rows||[]).filter(r=>r.signal).sort((a,b)=>Math.abs(b.spreadPct)-Math.abs(a.spreadPct))[0] || null;
     let gradedPick = null;

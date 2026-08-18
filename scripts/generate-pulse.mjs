@@ -67,7 +67,13 @@ if (der?.packMath) {
   for (const r of der.packMath.cheapest.slice(0,3)) md += `- ${r.name}: **$${r.perPack}/pack**${r.sealedPremiumPct!=null?` · loose $${r.loosePack} → ${r.sealedPremiumPct>0?"+":""}${r.sealedPremiumPct}% sealed premium`:``}\n`;
 }
 if (der?.narrative) {
-  md += `\n## 📣 In today's Pokémon news\n`;
+  if (der?.printWatch?.length) {
+  const near = der.printWatch.filter(r=>r.eol.status==="printing").slice(0,2);
+  md += `\n## ⏳ Print watch\n`;
+  for (const r of near) md += `- **${r.set}** — est. print window closes in ~${r.eol.daysLeftEst} days (30-month model) · ${r.supply} listings tracked\n`;
+  if (der.tightening?.length) md += `- 🔒 Tightening: ${der.tightening.map(t=>t.set).join(" · ")} — out of print, low supply, no reprint news\n`;
+}
+md += `\n## 📣 In today's Pokémon news\n`;
   for (const r of der.narrative.inNews.slice(0,4)) md += `- **${r.set}** — top product sits at $${r.price}${r.spreadPct!=null?`, asking ${Math.abs(r.spreadPct)}% ${r.spreadPct>0?"more":"less"} on eBay than TCGplayer`:""}\n`;
   md += `\n## 🤫 Moving without headlines\n`;
   for (const r of der.narrative.quietMovers.slice(0,4)) md += `- **${r.flagship}** — $${r.price}, asking ${Math.abs(r.spreadPct)}% ${r.spreadPct>0?"more":"less"} on eBay than TCGplayer — and nobody's covering it\n`;
@@ -131,7 +137,8 @@ ${der?.packMath?`<h2>🧮 Pack math — $ per sealed pack</h2>
 ${der.packMath.priciest.slice(0,3).map(r=>`<div class="row"><span>${r.name}${r.sealedPremiumPct!=null?` <em>vs loose $${r.loosePack}</em>`:""}</span><span class="mono">$${r.perPack}/pk${r.sealedPremiumPct!=null?` · ${r.sealedPremiumPct>0?"+":""}${r.sealedPremiumPct}%`:""}</span></div>`).join("")}
 <div class="row" style="border-bottom:0"><span style="color:var(--dim)">···</span><span></span></div>
 ${der.packMath.cheapest.slice(0,3).map(r=>`<div class="row"><span>${r.name}${r.sealedPremiumPct!=null?` <em>vs loose $${r.loosePack}</em>`:""}</span><span class="mono">$${r.perPack}/pk${r.sealedPremiumPct!=null?` · ${r.sealedPremiumPct>0?"+":""}${r.sealedPremiumPct}%`:""}</span></div>`).join("")}`:""}
-${der?.narrative?`<h2>📣 In today's Pokémon news</h2>
+${der?.narrative?`${der?.printWatch?.length?`<h2>⏳ Print watch</h2>${der.printWatch.filter(r=>r.eol.status==="printing").slice(0,2).map(r=>`<div class="row"><span>${r.set}<em> est. window closes ~${r.eol.daysLeftEst}d (30-mo model)</em></span><span class="mono">${r.supply} listings</span></div>`).join("")}${der.tightening?.length?`<div class="row"><span>🔒 Tightening<em> out of print · low supply · no reprint news</em></span><span class="mono">${der.tightening.map(t=>t.set.split(" ")[0]).join(" · ")}</span></div>`:""}`:""}
+<h2>📣 In today's Pokémon news</h2>
 ${der.narrative.inNews.slice(0,3).map(r=>`<div class="row"><span>${r.set}<em>${r.spreadPct!=null?` asking ${Math.abs(r.spreadPct)}% ${r.spreadPct>0?"more":"less"} on eBay than TCGplayer`:""}</em></span><span class="mono">$${r.price}</span></div>`).join("")}
 <h2>🤫 Moving without headlines</h2>
 ${der.narrative.quietMovers.slice(0,3).map(r=>`<div class="row"><span>${r.flagship}<em> asking ${Math.abs(r.spreadPct)}% ${r.spreadPct>0?"more":"less"} on eBay — no coverage anywhere ⚡</em></span><span class="mono">$${r.price}</span></div>`).join("")}`:""}
@@ -155,6 +162,9 @@ const feed = {
   dailyThree: der?.dailyThree ?? null,
   depthReads: der?.depthReads ?? [],
   lifecycle: der?.lifecycle ?? {},
+  printWatch: der?.printWatch ?? [],
+  tightening: der?.tightening ?? [],
+  rotationCohorts: der?.rotationCohorts ?? {},
   rotationContext: der?.rotationContext ?? null,
   catalysts: (der?.catalysts??[]).slice(0,4),
   packMath: der?.packMath ? { priciest: der.packMath.priciest.slice(0,3), cheapest: der.packMath.cheapest.slice(0,3), class:"VERIFIED" } : null,
@@ -164,6 +174,28 @@ const feed = {
   disclosure: "Buy Pressure is estimated from listing activity — not reported sales. Active Listings are measured.",
 };
 await writeFile(join(ROOT,"research/assets/pulse-feed.json"), JSON.stringify(feed,null,2)+"\n");
+
+// ── PRINT & ROTATION WATCH page (rides this step; no workflow change) ──
+if (der?.printWatch?.length) {
+  const rows = der.printWatch.map(r=>`<tr><td>${r.set}</td><td class="mono">${r.ageMonths}mo</td><td>${r.eol.status==="printing"?`<b class="ok">~${r.eol.daysLeftEst}d left</b> <i class="dim">est.</i>`:`<span class="dim">out ~${r.eol.monthsOutEst}mo</span>`}</td><td class="mono">${r.supply}</td><td><span class="pill ${r.supplyTier}">${r.supplyTier.toUpperCase()}</span></td><td>${r.reprintSignal??`<span class="dim">—</span>`}</td><td>${r.standardLegal?`<b class="ok">⚖ ${r.mark}</b>`:r.mark?`<span class="dim">${r.mark} rotated</span>`:`<span class="dim">pre-mark</span>`}</td></tr>`).join("");
+  const cohorts = Object.entries(der.rotationCohorts).sort().map(([m,sets])=>`<div class="co"><b>${m==="pre-mark"?"Pre-mark era":"Mark "+m}</b>${["I","J"].includes(m)?` <span class="ok">⚖ Standard-legal</span>`:m==="pre-mark"?``:` <span class="dim">rotated</span>`}<div class="dim" style="margin-top:4px">${sets.join(" · ")}</div></div>`).join("");
+  const pwHtml = `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Sora:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"><title>Catchem — Print &amp; Rotation Watch</title><style>
+:root{--bg:#0b0d14;--panel:#141824;--line:rgba(255,255,255,.07);--txt:#f4f5f8;--dim:#8a93a8;--green:#36d399;--gold:#ffb84d}
+body{background:var(--bg);color:var(--txt);font:15px/1.5 "Sora",system-ui,sans-serif;margin:0;padding:28px 16px;max-width:980px;margin-inline:auto}
+h1{font-family:"Syne",sans-serif;font-size:30px;margin:0 0 4px}.sub{color:var(--dim);margin:0 0 24px;font-size:13px}
+table{width:100%;border-collapse:collapse;background:var(--panel);border-radius:10px;overflow:hidden}
+th{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+td{padding:10px 12px;border-bottom:1px solid var(--line);font-size:13.5px}.mono{font-family:"JetBrains Mono",monospace}
+.ok{color:var(--green)}.dim{color:var(--dim)}.pill{font-size:10px;padding:2px 7px;border-radius:99px;border:1px solid var(--line)}.pill.low{color:var(--gold);border-color:var(--gold)}
+.co{background:var(--panel);border-radius:10px;padding:14px 16px;margin:10px 0;font-size:13.5px}
+h2{font-family:"Syne",sans-serif;font-size:20px;margin:30px 0 10px}.foot{color:var(--dim);font-size:12px;margin-top:18px}
+</style><h1>⏳ Print &amp; Rotation Watch</h1><p class="sub">${sp.generatedAt?.slice(0,10)} · print windows are a 30-month model (est.) — exact EOL dates are rarely announced · supply = active listings across a set&#39;s tracked sealed products</p>
+<table><tr><th>Set</th><th>Age</th><th>Print window</th><th>Supply</th><th>Tier</th><th>Reprint signal</th><th>Legality</th></tr>${rows}</table>
+<h2>Rotation cohorts</h2>${cohorts}
+<div class="foot">Rotation lands each April — next: April 2027. Reprint signals accumulate from the news layer starting Aug 18, 2026; sourced history backfills over time.</div>`;
+  await writeFile(new URL("../research/assets/print-watch.html", import.meta.url), pwHtml);
+}
+
 console.log("✓ pulse-feed.json (app Ticker feed) written");
 console.log("✓ Pulse HTML edition written (dated + stable path)");
 console.log(`✓ Morning Pulse written: research/pulse/${today}.md`);
