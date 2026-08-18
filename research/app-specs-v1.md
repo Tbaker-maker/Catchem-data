@@ -1,3 +1,5 @@
+**STATUS Aug 18: blessed-by-default (Tyler veto anytime).** V1 trio KEEP; screens 4–8 KEEP per sketches. CC kickoff prompt at bottom.
+
 # App Build Specs — V1 trio deep, rest sketched (from the 8-screen suite)
 
 **Sequencing truth:** Ticker needs NO auth/db → ships first as the app's
@@ -56,3 +58,16 @@ render feed's top signal to canvas→PNG; S-M; instant distribution.
 - Supabase project = the V1 gate for 2&3 (home decision, ~1hr setup).
 - Screen-7 check-ins: define abuse/verification rules BEFORE building.
 - All PPT-gated components ship dark behind `LICENSING_CLEAR` flag.
+
+
+## CC APP-KICKOFF PROMPT (paste when app-time begins — works via /rc from phone)
+> New target: catchem-app repo. Pull both repos. Build THE TICKER as the
+> app's opening screen per research/app-specs-v1.md §1: fetch
+> pulse-feed.json (raw.githubusercontent URL from Catchem-data main),
+> render panel strip + signal cards + quiet movers + pack-math mini +
+> radar, provenance chips on every number with tap-to-receipts drawer,
+> the three states (calibrating / stale-feed / markets-agree). Match the
+> mockup suite's visual language (research/assets/app-mockups.html) but
+> production-grade per the frontend-design skill. No auth, no db, no
+> writes. Ship to a preview branch, screenshot in your report, STOP
+> before any deploy. Fences standard.

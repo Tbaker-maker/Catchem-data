@@ -37,5 +37,9 @@ _meta schema. Also: ask CC to check PPT card payloads for any pop fields.
 ## 7. Relay here: CC's report + the Premium table + regenerated sheet status.
 Then tomorrow's phone-curation runs on VERIFIED lines.
 
-## 10-second answers whenever: eBay seller account y/n? · Day-2 line A or B?
+## 8. Seller check (5 sec): ebay.com → "Sell" → if Seller Hub opens,
+you're a seller → Terapeak is FREE for you (best manual sold tool) →
+tell CC "seller: yes" so the sold-verification tier upgrades.
+
+## 10-second answers whenever: · Day-2 line A or B?
 · SwarmFall one-liner (announcement's staged and waiting)
