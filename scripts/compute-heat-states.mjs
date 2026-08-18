@@ -19,8 +19,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA = join(__dirname, "..", "data");
 
 // ── Config ───────────────────────────────────────────────────────────────────
-const FIX_DEPLOY_DATE = null; // set to "YYYY-MM-DD" when the filtered fetch ships
-const KNOWN_CONTAMINATED = ["sv9-booster-box", "sv9-etb"]; // pre-fix poisoned history
+const FIX_DEPLOY_DATE = "2026-08-18"; // filtered fetch shipped f80d876; first clean daily run 2026-08-18 04:50 UTC
+const KNOWN_CONTAMINATED = ["sv9-booster-box", "sv9-etb", "swsh7-booster-box"]; // pre-fix poisoned history (swsh7: published $144 vs real ~$2900)
 const PRICE_UP_STRONG = 0.06;   // +6% WoW
 const PRICE_DOWN_STRONG = -0.06;
 const SUPPLY_DOWN = -0.12;      // -12% listings WoW
@@ -95,7 +95,11 @@ async function main() {
     if (p.dataStatus !== "live") {
       excluded.push({ ...base, reason: `dataStatus: ${p.dataStatus}` }); continue;
     }
-    const cutoff = KNOWN_CONTAMINATED.includes(p.id) ? FIX_DEPLOY_DATE : null;
+    // The fix changed fetch methodology for EVERY SKU (relevance ordering,
+    // title filtering, per-subtype bounds) — pre-fix medians measure a
+    // different thing. WoW reads restart from the fix date for all SKUs, or a
+    // methodology shift would masquerade as a market move.
+    const cutoff = FIX_DEPLOY_DATE;
     const pW = priceWoW(p.priceHistory || [], cutoff);
     const sW = supplyWoW(snapshots, p.id);
     if (pW.wow != null && Math.abs(pW.wow) > IMPLAUSIBLE_DELTA) {
