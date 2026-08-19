@@ -5,6 +5,7 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { HEAT_DEBUT, DEPTH_DEBUT, heatPlain, depthPlain } from "./lib/instruments.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => JSON.parse(await readFile(join(ROOT, p), "utf-8"));
 
@@ -83,6 +84,14 @@ Imagine a shelf with 153 Pokémon boxes. Every morning we check every price, the
 <h2>Raw &amp; Graded — same equation, different shelves</h2>
 <p>The Raw Chase Index and the Graded Index use the <b>exact same magic-number trick</b> as the Sealed Index — same starting line at <b class="mono">100</b>, same one-product-one-vote rule — just pointed at different shelves: confirmed chase singles, and graded copies. One explanation covers all three. The Graded Index switches on when a licensed daily graded-price feed exists.</p>
 <p class="dim">Grading Premium (a different instrument): graded sold price minus raw market minus the grading fee. On established sets a 9 usually runs negative — the grading tax; only the 10 pays. Fresh sets bend this until graded supply catches up. Exact figures publish on licensed surfaces.</p>
+${today >= HEAT_DEBUT ? `<h2>Heat reads — the weather report</h2>
+<div class="law" style="border-left-color:#36d399"><b>The four weathers of a Pokémon box 🍭 (plus a calm day)</b><br>
+${Object.values(heatPlain).map(w => `${w.emoji} <b>${w.label}:</b> ${w.plain}.`).join("<br>")}</div>
+<p>The grown-up version: Wyckoff-style states from two measured signals — weekly price change × listing-count flow (Buy Pressure est.). Dual-signal verdicts publish only after 8 clean history days per product; before that we publish nothing false.</p>` : ""}
+${today >= DEPTH_DEBUT ? `<h2>Depth reads — how full is the shelf?</h2>
+<div class="law" style="border-left-color:#36d399"><b>The five-year-old version 🍭</b><br>
+${Object.values(depthPlain).map(w => `${w.emoji} <b>${w.label}:</b> ${w.plain}.`).join("<br>")}</div>
+<p>The grown-up version: a 3-day listing-count flow per product — Active Listings are measured, the flow verdict is Buy Pressure (est.). Verdicts unlock at 3 clean days each; ⏳ until then.</p>` : ""}
 <h2>House reads &amp; falsifiers</h2><p>Interpretations (reprint cycles, depth reads, the PSA-9 tax) publish with the condition that would prove them wrong, and when a falsifier trips we amend in public. Being seen self-correcting is the point.</p>
 <p class="dim" style="margin-top:36px">⚡ Catch'em · questions → support@catchemtcg.com</p>`;
 await writeFile(join(ROOT, "research/assets/methodology.html"), M);

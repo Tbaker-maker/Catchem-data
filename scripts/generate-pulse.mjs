@@ -123,7 +123,20 @@ const sigCards = sigs.slice(0,6).map(r=>`
   <div class="sigsub">eBay <b>$${r.ebayAskMedian}</b> <span class="sup">· ${r.ebayListings??"—"} listings</span> &nbsp;vs&nbsp; TCG <b>$${r.tcgMarket}</b> <span class="sup">· supply ${r.tcgListings??"—"}</span></div>
   <div class="sigread">${r.read}</div></div>`).join("");
 const supNote = sigs.some(r=>r.tcgListings==null) ? `<div class="foot">* TCG-side supply: provider exposes no sealed listing counts — slot is wired; lights up the day they ship it.</div>` : "";
-const deepRows = (der?.depthReads??[]).map(r=>`<div class="row"><span>${r.tag} ${r.name} <em>${r.read}</em></span><span class="mono">$${r.price} · ${r.listings}L</span></div>`).join("") + `<div class="foot">Depth read = Active Listings (measured) × flow (Buy Pressure est.) · unlocks at 3 clean days per product.</div>`;
+// Sandbox rule: plain-words labels ride the display path DARK until each
+// instrument's debut date (lib gates) — launches arrive pre-translated.
+const { HEAT_DEBUT, DEPTH_DEBUT, heatPlain, depthPlain } = await import("./lib/instruments.mjs");
+const depthReadOf = r => (today >= DEPTH_DEBUT && depthPlain[r.flow])
+  ? `${depthPlain[r.flow].label} — ${depthPlain[r.flow].plain}`
+  : r.read;
+const deepRows = (der?.depthReads??[]).map(r=>`<div class="row"><span>${r.tag} ${r.name} <em>${depthReadOf(r)}</em></span><span class="mono">$${r.price} · ${r.listings}L</span></div>`).join("") + `<div class="foot">Depth read = Active Listings (measured) × flow (Buy Pressure est.) · unlocks at 3 clean days per product.</div>`;
+const heatReads = Array.isArray(heat?.reads) ? heat.reads : [];
+const heatSection = (today >= HEAT_DEBUT && heatReads.length)
+  ? `<h2>🌦 Heat reads — the weather on the shelf</h2>` + heatReads.slice(0, 8).map(r => {
+      const w = heatPlain[r.state] || { emoji: "", label: r.state, plain: r.read || "" };
+      return `<div class="row"><span>${w.emoji} <b>${r.name || r.id}</b><em> ${w.label} — ${w.plain}</em></span><span class="mono">${r.confidence || ""}</span></div>`;
+    }).join("")
+  : "";
 const chaseRows = chases.map(c=>`<div class="row"><span style="display:flex;align-items:center;gap:10px">${cardImg(c.cardId)?`<img class="thumb" style="width:34px" src="${cardImg(c.cardId)}" alt="">`:""}<span>${c.name} <em>${c.setName}</em></span></span><span class="mono">$${c.priceMarket}</span></div>`).join("");
 const radarRows = upcoming.map(r=>`<div class="row"><span>${r.name||r.title}</span><span class="mono">${r.date||r.releaseDate}</span></div>`).join("");
 const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Sora:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -178,8 +191,9 @@ ${der.narrative.inNews.slice(0,3).map(r=>`<div class="row"><span>${r.set}<em>${r
 <h2>🤫 Moving without headlines</h2>
 ${der.narrative.quietMovers.slice(0,3).map(r=>`<div class="row"><span>${r.flagship}<em> asking ${Math.abs(r.spreadPct)}% ${r.spreadPct>0?"more":"less"} on eBay — no coverage anywhere ⚡</em></span><span class="mono">$${r.price}</span></div>`).join("")}`:""}
 ${upcoming.length?`<h2>Radar</h2>${radarRows}`:""}
+${heatSection}
 ${captureBlock}
-<div class="calib">HEAT READS: day ${heatDays} of 8 clean days — Wyckoff states return ~Aug 26. We publish nothing false in the meantime.</div>
+${heatSection ? "" : `<div class="calib">HEAT READS: day ${heatDays} of 8 clean days — Wyckoff states return ~Aug 26. We publish nothing false in the meantime.</div>`}
 <footer>Catch'em. Catch Feels. · prices: Catchem-data, eBay active listings (measured) · spread: internal instrument</footer>
 </body></html>`;
 await writeFile(join(ROOT,`research/pulse/${today}.html`), html);

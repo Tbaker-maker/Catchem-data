@@ -25,3 +25,25 @@ export const sealedPremium = (perPack, loosePack, looseN) => {
 // never become the whole file.
 export const mergeByDate = (existing, todays, today, keyOf = (e) => e.date) =>
   [...(existing || []).filter((e) => keyOf(e) !== today), ...todays];
+
+// ── Sandbox rule (Voice v6): every instrument ships an ELI5, wired BEFORE
+// its debut so the launch arrives pre-translated. Dark until these dates.
+export const HEAT_DEBUT = "2026-08-26";   // 8 clean history days
+export const DEPTH_DEBUT = "2026-08-21";  // first 3-day flow verdicts
+
+// Heat states in plain words — the four weathers of a Pokémon box (plus a
+// calm day). Engine vocab: compute-heat-states.mjs Wyckoff states.
+export const heatPlain = {
+  markup:       { emoji: "🔥", label: "Heating up", plain: "more people want the box than there are boxes — price climbing while the shelf empties" },
+  markdown:     { emoji: "❄️", label: "Cooling off", plain: "fewer hands reaching — price sliding while boxes pile up" },
+  accumulation: { emoji: "😴", label: "Quiet gathering", plain: "nobody's shouting, but the shelf keeps emptying — the quiet before a move" },
+  distribution: { emoji: "📤", label: "Selling into strength", plain: "price looks strong but sellers keep restocking the shelf into it — strength being sold" },
+  ranging:      { emoji: "⏸", label: "A calm day", plain: "price wandering inside its usual room — no weather to report" },
+};
+
+// Depth-read flows in plain words (3-day listing-count lens).
+export const depthPlain = {
+  calibrating: { emoji: "⏳", label: "Still counting", plain: "we need three clean days before we say anything — honesty over speed" },
+  draining:    { emoji: "📉", label: "Shelf emptying", plain: "listings disappearing faster than they're replaced — scarcity forming" },
+  building:    { emoji: "📦", label: "Shelf filling", plain: "more copies arriving than selling — restocking, or interest fading; context decides" },
+};
