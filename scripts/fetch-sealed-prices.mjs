@@ -180,7 +180,16 @@ const EXCLUDE_BY_SUBTYPE = {
   // listing says "pack"); "art" excludes display/pack-art collectible sets
   "booster-pack":   ["weighed", "packs", "bundle", "box", "art", "etb", "elite trainer", "blister", "sleeved",
     // graded slabbed packs are a collectible market, not street price (2026-08-18: "PSA 8 NM-MINT ... SEALED Booster Pack" $49.99 passed)
-    "psa", "cgc", "bgs", "graded", "unsearched"],
+    "psa", "cgc", "bgs", "graded", "unsearched",
+    // promo-blister leakage (2026-08-19 swsh5 investigation): blister products
+    // titled without "blister" — "Charmander Promo English" $50, "3 Booster
+    // Pack Jolteon SWSH094 Black Star Promo" $49.99, "Arrokuda Promo Card &
+    // Coin" $19.97 all KEPT in swsh5-pack; swsh6's median item was a
+    // Moltres/Reshiram-promos+coin blister. Promo/coin/album mark a bundled
+    // collectible product, never a loose street pack. Digit multi-pack forms
+    // ("3 booster pack") slip the x2/2x lot tokens.
+    "promo", "promos", "coin", "coins", "album",
+    "2 booster", "3 booster", "4 booster", "6 booster", "10 booster"],
   "pc-etb":         ["booster box", "bundle", "blister", "36 pack", "mini tin"],
   "booster-bundle": ["booster box", "etb", "elite trainer", "36 pack"],
   "premium-collection": ["booster box", "etb", "elite trainer"],
