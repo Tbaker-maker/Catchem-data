@@ -1,13 +1,10 @@
-# ══════════════════════════════════════════════════════════════════
-# PASTE TARGET: .github/workflows/update-sealed-prices.yml  (currently
-# still the OLD 8-step pipeline)
-# ACTION: open that file → pencil ✏️ → Ctrl+A → Ctrl+V this WHOLE file
-# → Commit. This upgrades the price pipeline to v2.2 (11 steps:
-# derived + Pulse + Board + feed + alerts). Header comments are fine.
-# ══════════════════════════════════════════════════════════════════
+# ══════════════════════════════════════════════════════════════
+# PASTE TARGET: .github/workflows/update-sealed-prices.yml
+# pencil ✏️ → click code → Ctrl+A → Ctrl+V → Commit
+# After paste, Ctrl+F "Derived intelligence" must find a match.
+# ══════════════════════════════════════════════════════════════
 name: Update sealed prices
 # ═══════════════════════════════════════════════════════════════════════════
-name: Update sealed prices
 
 on:
   schedule:
