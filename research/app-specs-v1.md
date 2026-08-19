@@ -164,3 +164,33 @@ asset in a video WE didn't ask about.
 GUARDRAILS: watermark = brand law; assets carry date + provenance; no
 "calls" language in any export template (voice v4); licensing-gated data
 (graded slot) exports only after PPT clearance.
+
+## §14b · STUDIO DISCORD RAIL — tools for THEIR servers (Tyler, Aug 19)
+Creators run Discords; their communities live there. Give them tools for
+their OWN servers and every embed carries us into rooms our SEO can't reach.
+
+1. CREATOR WEBHOOK NETWORK (near-term — extends existing alert infra):
+   creator drops an incoming-webhook URL from their #market channel into
+   a simple form → our daily run posts them a branded Morning Pulse embed
+   (index, Daily Three, top signal; provenance chips as fields; footer
+   ⚡ catchemtcg.com + date). Optional: signal pings for products they
+   pick. Their channel gets free daily content; we get daily impressions
+   inside their community. Engine = send-discord-alerts.mjs generalized
+   to a webhook list. Per-webhook caps + kill-switch + failure auto-mute.
+   ⚠ SECURITY LAW: webhook URLs are SECRETS (spammable if leaked).
+   NEVER in the public repo — registry file holds creator IDs/prefs only;
+   URLs live in a single GitHub Actions secret (CREATOR_WEBHOOKS_JSON)
+   or private store. Same burn-protocol class as API keys.
+2. STORY-KIT PRIVATE FEED: same mechanism, different payload — the §14
+   daily creator briefing delivered to their private #ideas channel.
+   The "what do I make today" problem, solved where they plan.
+3. BOT-IN-THEIR-SERVER (post-alpha lane): once OUR bot ships alpha and
+   v1.1 adds /price /pulse /check cogs, the invite link becomes creator
+   distribution — data cogs exportable to any server; community cogs
+   (founding numbers, waitlist, economy) stay OUR-server-exclusive.
+   Honor-list freeze respected: deploy first, distribute after.
+SEQUENCE: webhook network + story-kit feed = launch-window (light,
+existing infra). Bot distribution = post-alpha, v1.1.
+FLYWHEEL MATH: N creator servers × 1 branded embed/day × their members
+= compounding daily impressions with zero ad spend, growing every time
+one creator tells another "just add the Catch'em feed."

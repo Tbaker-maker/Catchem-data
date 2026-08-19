@@ -51,6 +51,9 @@ designed-but-unshipped list clears. Tiers = sequencing, not urgency.
 6. CATCHEM STUDIO (creators bring users) — Card Maker PNG renderer +
    Story Kits + OBS overlay + chart export; one renderer feeds Deal
    Check, Daily Three shareables, AND Studio. Launch-window. Spec §14.
+   + Discord rail (§14b): creator webhook network — daily branded Pulse
+   embeds into THEIR servers; story-kit private feeds; bot cogs
+   post-alpha. Webhook URLs = secrets, never public repo.
 
 ## SEQUENCE (unchanged by all of the above)
 Ship queue: polish sprint → arc Days 1-14 → Newsletter 001 (Aug 24) →
