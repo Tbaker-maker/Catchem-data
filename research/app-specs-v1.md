@@ -76,3 +76,6 @@ render feed's top signal to canvas→PNG; S-M; instant distribution.
 > production-grade per the frontend-design skill. No auth, no db, no
 > writes. Ship to a preview branch, screenshot in your report, STOP
 > before any deploy. Fences standard.
+
+## 9 · COLLECTION GRADE (M — needs auth+DB; parked, spec locked Aug 18)
+Import: Collectr CSV export or paste (v1 — real today; NO third-party API assumed until verified). Engine grades vs our data: chase coverage %, set/era diversification, specialty-vs-mainline mix, intrinsic-model value, condition mix if provided. Output: letter grade + strengths/gaps + shareable grade-card image (brand tokens). Strategic: onboarding funnel FROM competitor apps; grade card = viral loop. Licensing-clean (user's own data).

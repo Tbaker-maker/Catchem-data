@@ -53,3 +53,10 @@ Emit the complete updated radar as a fenced ```json block matching the existing
 schema exactly (top-level object with "upcoming" array). Include ALL still-future
 items, not just changed ones. Remove items once their date has passed. If no
 changes: emit no json block at all.
+
+## STANDING WATCH (added Aug 18, 2026 — Tyler directive)
+- TPCi PRINT CAPACITY: any news on new/expanded printing facilities, allocation
+  changes, or print-run policy — verify before reporting; this reshapes the
+  specialty-vs-mainline cohort baseline.
+- SPECIALTY-SET CADENCE SENTIMENT: community/creator sentiment shifts on special
+  expansion frequency (fatigue vs appetite) — sourced takes only.

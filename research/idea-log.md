@@ -19,3 +19,11 @@
 6. OCT 30 EEVEELUTION BATTLE DECKS (Espeon/Umbreon-led, IR-style card): demand vector
    adjacent to Moonbreon/Umbreon ex — content hook noted for late Oct.
 (Each idea cites today's digest; speculation labeled at write-time.)
+7. COLLECTION GRADER (Tyler, parked→spec'd): import Collectr CSV/paste → grade
+   collection vs our chase/set data (strengths, gaps, era spread, shareable grade
+   card). Onboarding weapon: imports competitor-app users. Needs auth+DB — app-specs
+   §9; v1 import = CSV/paste only (no unverified third-party API claims).
+8. COHORT STUDY (SHIPPED same session): specialty-vs-mainline daily engine +
+   accumulating history. Day-1: specialty = deeper/product (80 vs 59), +44% pack
+   premium ($43 vs $30), tighter gaps (6.9 vs 14.3%). Print-facility question now
+   gets answered with our own longitudinal data.

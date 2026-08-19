@@ -204,6 +204,37 @@ const tightening = printWatch.filter(r=>r.supplyTier==="low" && !r.reprintSignal
 const rotationCohorts = {};
 for (const r of printWatch) { const k = r.mark ?? "pre-mark"; (rotationCohorts[k] ||= []).push(r.set); }
 
+
+// ── (g) SPECIALTY vs MAINLINE cohort study — cross-section daily, history accumulates ──
+// Taper/velocity curves only exist if we collect forward. cohort-history.json
+// appends one row per class per day (merge-by-date, pathogen-proof).
+let setClasses = {}; try { setClasses = (await J("data/set-classes.json")).classes ?? {}; } catch {}
+const cohortCompare = (() => {
+  const agg = { specialty: {sets:new Set(),products:0,supply:0,ageSum:0,spreadSum:0,spreadN:0,perPackSum:0,perPackN:0},
+                mainline:  {sets:new Set(),products:0,supply:0,ageSum:0,spreadSum:0,spreadN:0,perPackSum:0,perPackN:0} };
+  for (const p of liveList) {
+    const cls = setClasses[p.setId]; if (!cls) continue;
+    const a = agg[cls]; a.sets.add(p.setId); a.products++; a.supply += p.listingCount||0;
+    const L = lifecycle[p.setId]; if (L) a.ageSum += L.ageMonths;
+    const sr = spreadBy.get(p.id); if (sr?.spreadPct!=null) { a.spreadSum += sr.spreadPct; a.spreadN++; }
+    const pm = packRows.find(r=>r.id===p.id && r.subtype!=="booster-pack"); if (pm) { a.perPackSum += pm.perPack; a.perPackN++; }
+  }
+  const mk = a => ({ sets: a.sets.size, products: a.products, totalSupply: a.supply,
+    supplyPerProduct: a.products? Math.round(a.supply/a.products*10)/10 : null,
+    supplyPerSetMonth: a.ageSum? Math.round(a.supply/a.ageSum*10)/10 : null,
+    avgSpreadPct: a.spreadN? Math.round(a.spreadSum/a.spreadN*10)/10 : null,
+    avgPerPack: a.perPackN? Math.round(a.perPackSum/a.perPackN*100)/100 : null });
+  return { specialty: mk(agg.specialty), mainline: mk(agg.mainline),
+    note: "supplyPerSetMonth = listings per set-age month (taper proxy; falls as sets absorb). Velocity/taper curves build in cohort-history.json from 2026-08-18 forward." };
+})();
+{ // accumulate history (merge-by-date)
+  let ch = { entries: [] }; try { ch = await J("data/cohort-history.json"); } catch {}
+  const today = new Date().toISOString().slice(0,10);
+  ch.entries = (ch.entries||[]).filter(e=>e.date!==today);
+  for (const cls of ["specialty","mainline"]) ch.entries.push({ date: today, class: cls, ...cohortCompare[cls] });
+  await writeFile(new URL("../data/cohort-history.json", import.meta.url), JSON.stringify(ch,null,1));
+}
+
 const out = {
   generatedAt: new Date().toISOString(),
   method: "Pack Math: ask median / era-aware pack count (arithmetic, no estimation; variable-count products excluded by name). Narrative: latest agent digest cross-referenced against tracked sets; 'quiet movers' = spread signal with zero digest mention.",
@@ -214,6 +245,7 @@ const out = {
   depthReads,
   lifecycle, rotationContext,
   printWatch, tightening, rotationCohorts,
+  cohortCompare,
   dailyThree: (() => {
     const sealedPick = (div.rows||[]).filter(r=>r.signal).sort((a,b)=>Math.abs(b.spreadPct)-Math.abs(a.spreadPct))[0] || null;
     let gradedPick = null;

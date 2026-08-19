@@ -69,7 +69,9 @@ if (der?.packMath) {
 if (der?.narrative) {
   if (der?.printWatch?.length) {
   const near = der.printWatch.filter(r=>r.eol.status==="printing").slice(0,2);
-  md += `\n## ⏳ Print watch\n`;
+  if (der?.cohortCompare) { const c=der.cohortCompare;
+  md += `\n## 🧬 Specialty vs mainline (today's cross-section)\n- Specialty: ${c.specialty.sets} sets · ${c.specialty.supplyPerProduct} listings/product · $${c.specialty.avgPerPack}/pack avg\n- Mainline: ${c.mainline.sets} sets · ${c.mainline.supplyPerProduct} listings/product · $${c.mainline.avgPerPack}/pack avg\n- Taper curves accumulate daily from Aug 18 — the new-print-facility question gets answered with data.\n`; }
+md += `\n## ⏳ Print watch\n`;
   for (const r of near) md += `- **${r.set}** — est. print window closes in ~${r.eol.daysLeftEst} days (30-month model) · ${r.supply} listings tracked\n`;
   if (der.tightening?.length) md += `- 🔒 Tightening: ${der.tightening.map(t=>t.set).join(" · ")} — out of print, low supply, no reprint news\n`;
 }
@@ -163,6 +165,7 @@ const feed = {
   depthReads: der?.depthReads ?? [],
   lifecycle: der?.lifecycle ?? {},
   printWatch: der?.printWatch ?? [],
+  cohortCompare: der?.cohortCompare ?? null,
   tightening: der?.tightening ?? [],
   rotationCohorts: der?.rotationCohorts ?? {},
   rotationContext: der?.rotationContext ?? null,
@@ -191,6 +194,7 @@ td{padding:10px 12px;border-bottom:1px solid var(--line);font-size:13.5px}.mono{
 h2{font-family:"Syne",sans-serif;font-size:20px;margin:30px 0 10px}.foot{color:var(--dim);font-size:12px;margin-top:18px}
 </style><h1>⏳ Print &amp; Rotation Watch</h1><p class="sub">${sp.generatedAt?.slice(0,10)} · print windows are a 30-month model (est.) — exact EOL dates are rarely announced · supply = active listings across a set&#39;s tracked sealed products</p>
 <table><tr><th>Set</th><th>Age</th><th>Print window</th><th>Supply</th><th>Tier</th><th>Reprint signal</th><th>Legality</th></tr>${rows}</table>
+<h2>Specialty vs Mainline</h2><div class="co">${["specialty","mainline"].map(k=>{const c=der.cohortCompare?.[k];return c?`<div style="margin-bottom:8px"><b style="text-transform:capitalize">${k}</b> — ${c.sets} sets · ${c.products} products · <span class="mono">${c.supplyPerProduct}</span> listings/product · <span class="mono">$${c.avgPerPack??"—"}</span>/pack avg · <span class="mono">${c.avgSpreadPct??"—"}%</span> avg market gap</div>`:""}).join("")}<div class="dim">Taper &amp; sell-through curves accumulate in cohort-history from Aug 18, 2026 — built for the new-print-capacity era.</div></div>
 <h2>Rotation cohorts</h2>${cohorts}
 <div class="foot">Rotation lands each April — next: April 2027. Reprint signals accumulate from the news layer starting Aug 18, 2026; sourced history backfills over time.</div>`;
   await writeFile(new URL("../research/assets/print-watch.html", import.meta.url), pwHtml);
