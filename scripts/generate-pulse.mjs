@@ -144,6 +144,7 @@ ${der.packMath.priciest.slice(0,3).map(r=>`<div class="row"><span>${r.name}${r.s
 <div class="row" style="border-bottom:0"><span style="color:var(--dim)">···</span><span></span></div>
 ${der.packMath.cheapest.slice(0,3).map(r=>`<div class="row"><span>${r.name}${r.sealedPremiumPct!=null?` <em>vs loose $${r.loosePack}</em>`:""}</span><span class="mono">$${r.perPack}/pk${r.sealedPremiumPct!=null?` · ${r.sealedPremiumPct>0?"+":""}${r.sealedPremiumPct}%`:""}</span></div>`).join("")}`:""}
 ${der?.narrative?`${der?.topicHits?.length?`<h2>🔎 Watched topics</h2>${der.topicHits.map(t=>`<div class="row"><span>${t.topic}<em> ${t.hits.map(h=>h.where).join(" · ")}</em></span><span class="mono" style="max-width:55%;text-align:right">${t.hits[0].detail.slice(0,64)}${t.hits[0].detail.length>64?"…":""}</span></div>`).join("")}`:""}
+${der?.eraIndexes?.length?`<h2>\ud83c\udfdb Generation indexes</h2>${der.eraIndexes.map(e=>`<div class="row"><span><b>${e.era}</b><em> ${e.products} products \u00b7 asking ${Math.abs(e.avgGapPct)}% ${e.avgGapPct>=0?"more":"less"} than TCGplayer \u00b7 ${e.listingsPerProduct} listings each</em></span><span class="mono">$${e.level.toLocaleString("en-US")}</span></div>`).join("")}<div class="foot">Era level = median tracked product. Baseline 100 today \u2014 momentum lines grow from tomorrow.</div>`:""}
 ${der?.printWatch?.length?`<h2>⏳ Print watch</h2>${der.printWatch.filter(r=>r.eol.status==="printing").slice(0,2).map(r=>`<div class="row"><span>${r.set}<em> est. window closes ~${r.eol.daysLeftEst}d (30-mo model)</em></span><span class="mono">${r.supply} listings</span></div>`).join("")}${der.tightening?.length?`<div class="row"><span>🔒 Tightening<em> out of print · low supply · no reprint news</em></span><span class="mono">${der.tightening.map(t=>t.set.split(" ")[0]).join(" · ")}</span></div>`:""}`:""}
 <h2>📣 In today's Pokémon news</h2>
 ${der.narrative.inNews.slice(0,3).map(r=>`<div class="row"><span>${r.set}<em>${r.spreadPct!=null?` asking ${Math.abs(r.spreadPct)}% ${r.spreadPct>0?"more":"less"} on eBay than TCGplayer`:""}</em></span><span class="mono">$${r.price}</span></div>`).join("")}
@@ -170,6 +171,7 @@ const feed = {
   depthReads: der?.depthReads ?? [],
   lifecycle: der?.lifecycle ?? {},
   printWatch: der?.printWatch ?? [],
+  eraIndexes: der?.eraIndexes ?? [],
   cohortCompare: der?.cohortCompare ?? null,
   topicHits: der?.topicHits ?? [],
   tightening: der?.tightening ?? [],

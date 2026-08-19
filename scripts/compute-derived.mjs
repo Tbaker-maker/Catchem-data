@@ -253,6 +253,52 @@ for (const t of (topicCfg.topics||[])) {
   if (hits.length) topicHits.push({ topic: t.term, kind: t.kind, hits: hits.slice(0,3) });
 }
 
+
+// ── (g) GENERATION INDEXES — era-level benchmarks (Tyler, Aug 18) ────────
+// Level = equal-weight median of live product medians per era. Baseline
+// 100 = 2026-08-19 (first clean pricing-v2 day). History appends
+// merge-by-date. Pressure read = era avg eBay-vs-TCG gap (RT-4 baseline
+// applies era-wide) + supply saturation. Newcomer-clear labels, v4/v5.
+const ERA = id => id.startsWith("me") ? "Mega Evolution"
+  : id.startsWith("sv") ? "Scarlet & Violet"
+  : id.startsWith("swsh") || id.startsWith("cel25") ? "Sword & Shield"
+  : id.startsWith("sm") ? "Sun & Moon"
+  : id.startsWith("xy") ? "XY" : "Vintage & other";
+const spreadById = new Map((div.rows||[]).map(r=>[r.id, r.spreadPct]));
+const eraBuckets = {};
+for (const p of liveList) {
+  const e = ERA(p.setId || p.id);
+  (eraBuckets[e] ||= { prices: [], gaps: [], listings: 0, n: 0 });
+  eraBuckets[e].prices.push(p.priceMedian);
+  eraBuckets[e].listings += p.listingCount || 0;
+  eraBuckets[e].n += 1;
+  const g = spreadById.get(p.id);
+  if (g != null) eraBuckets[e].gaps.push(g);
+}
+const BASE_DATE = "2026-08-19";
+let eiHist = { note: "era index history; baseline 100 = " + BASE_DATE + " (first clean pricing-v2 day)", entries: [] };
+try { eiHist = await J("data/era-index-history.json"); } catch {}
+const today = new Date().toISOString().slice(0,10);
+const eraIndexes = Object.entries(eraBuckets).filter(([,b])=>b.n>=3).map(([era,b])=>{
+  const ps = [...b.prices].sort((x,y)=>x-y);
+  const level = ps[Math.floor(ps.length/2)];
+  const avgGap = b.gaps.length ? Math.round(b.gaps.reduce((a,c)=>a+c,0)/b.gaps.length*10)/10 : null;
+  const lpp = Math.round(b.listings / b.n);
+  const baseRow = eiHist.entries.find(e=>e.date===BASE_DATE && e.era===era);
+  const idx100 = baseRow ? Math.round(level / baseRow.level * 1000)/10 : 100.0;
+  let read;
+  if (avgGap == null) read = "cross-market read pending";
+  else if (avgGap >= 15) read = "asking prices running hot vs TCGplayer — demand-side pressure well past the photo baseline";
+  else if (avgGap >= 6) read = "modest ask-side pressure — inside the normal photo-trust range";
+  else if (avgGap >= 0) read = "markets aligned — little pressure either way";
+  else read = "eBay asking UNDER TCGplayer — unusual; sellers motivated across this era";
+  return { era, products: b.n, level, index: idx100, avgGapPct: avgGap, totalListings: b.listings, listingsPerProduct: lpp, read, chip: "READ" };
+}).sort((a,b)=>b.level-a.level);
+// persist today (merge-by-date+era — pathogen-proof)
+eiHist.entries = (eiHist.entries||[]).filter(e=>e.date!==today);
+for (const r of eraIndexes) eiHist.entries.push({ date: today, era: r.era, level: r.level, avgGapPct: r.avgGapPct, listings: r.totalListings });
+await writeFile(new URL("../data/era-index-history.json", import.meta.url), JSON.stringify(eiHist,null,1));
+
 const out = {
   generatedAt: new Date().toISOString(),
   method: "Pack Math: ask median / era-aware pack count (arithmetic, no estimation; variable-count products excluded by name). Narrative: latest agent digest cross-referenced against tracked sets; 'quiet movers' = spread signal with zero digest mention.",
@@ -263,6 +309,7 @@ const out = {
   depthReads,
   lifecycle, rotationContext,
   printWatch, tightening, rotationCohorts,
+  eraIndexes,
   cohortCompare,
   topicHits,
   dailyThree: (() => {
