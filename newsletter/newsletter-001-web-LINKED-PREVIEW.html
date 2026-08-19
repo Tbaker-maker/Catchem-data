@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Newsletter 001 — The Quiet Rotation · Catch'em</title>
+<meta name="description" content="Signals for Collectors, Flippers, and Graders. The rotation just happened. The 30th Anniversary revealed its flagship. Newsletter 001 from Catch'em." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#0b0d14;
+  --bg-deep:#070910;
+  --surface:#141824;
+  --surface-2:#1c2235;
+  --surface-3:#232a40;
+  --border:rgba(255,255,255,.07);
+  --border-strong:rgba(255,255,255,.14);
+  --text:#f4f5f8;
+  --text-sub:#8a93a8;
+  --text-muted:#5c637a;
+  --green:#36d399;
+  --purple:#c77dff;
+  --blue:#64a0ff;
+  --gold:#ffb84d;
+  --red:#ef5a5a;
+  --font-display:'Syne',sans-serif;
+  --font-body:'Sora',sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+  --font-editorial:'Fraunces',Georgia,serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-weight:400;line-height:1.65;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+body::before{content:"";position:fixed;inset:0;background-image:radial-gradient(ellipse 900px 700px at 80% 0%,rgba(54,211,153,.06),transparent),radial-gradient(ellipse 900px 800px at 20% 100%,rgba(199,125,255,.05),transparent),linear-gradient(transparent 0%,transparent calc(100% - 1px),rgba(255,255,255,.025) 100%),linear-gradient(90deg,transparent 0%,transparent calc(100% - 1px),rgba(255,255,255,.025) 100%);background-size:100% 100%,100% 100%,100% 64px,64px 100%;pointer-events:none;z-index:0;}
+a{color:inherit;text-decoration:none;}
+.container{max-width:760px;margin:0 auto;padding:0 24px;position:relative;z-index:1;}
+.nav{position:sticky;top:0;background:rgba(11,13,20,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border);z-index:50;}
+.nav-inner{max-width:1200px;margin:0 auto;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;}
+.logo{font-family:var(--font-display);font-weight:700;font-size:22px;letter-spacing:-.02em;display:flex;align-items:center;gap:10px;}
+.logo-mark{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--green),var(--blue));display:flex;align-items:center;justify-content:center;font-size:13px;color:#071b13;font-weight:800;}
+.back-link{font-family:var(--font-mono);font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--text-sub);transition:color .2s;}
+.back-link:hover{color:var(--text);}
+
+.masthead{padding:80px 0 40px;border-bottom:1px solid var(--border);position:relative;}
+.issue-meta{display:flex;align-items:center;gap:12px;margin-bottom:28px;font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.18em;color:var(--text-sub);flex-wrap:wrap;}
+.issue-num{color:var(--green);font-weight:700;}
+.issue-dot{width:3px;height:3px;background:var(--text-muted);border-radius:50%;}
+.masthead-title{font-family:var(--font-editorial);font-weight:500;font-size:clamp(42px,6vw,72px);line-height:1.05;letter-spacing:-.02em;margin-bottom:22px;font-variation-settings:"opsz" 144;}
+.masthead-title em{font-style:italic;color:var(--green);font-variation-settings:"opsz" 144;}
+.masthead-dek{font-family:var(--font-editorial);font-weight:400;font-style:italic;font-size:20px;line-height:1.5;color:var(--text-sub);max-width:580px;font-variation-settings:"opsz" 20;}
+
+.pillar-badges{display:flex;gap:8px;margin-top:28px;flex-wrap:wrap;}
+.pillar-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;}
+.pillar-badge .dot{width:6px;height:6px;border-radius:50%;}
+.pillar-badge.collector{background:rgba(54,211,153,.08);color:var(--green);border:1px solid rgba(54,211,153,.22);}
+.pillar-badge.collector .dot{background:var(--green);}
+.pillar-badge.flipper{background:rgba(255,184,77,.08);color:var(--gold);border:1px solid rgba(255,184,77,.22);}
+.pillar-badge.flipper .dot{background:var(--gold);}
+.pillar-badge.grader{background:rgba(199,125,255,.08);color:var(--purple);border:1px solid rgba(199,125,255,.22);}
+.pillar-badge.grader .dot{background:var(--purple);}
+
+.tldr{margin:48px 0;padding:28px 32px;background:linear-gradient(180deg,rgba(54,211,153,.04),rgba(54,211,153,0));border-left:2px solid var(--green);border-radius:0 8px 8px 0;}
+.tldr-label{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--green);margin-bottom:12px;font-weight:600;}
+.tldr-body{font-family:var(--font-editorial);font-size:16px;font-style:italic;line-height:1.7;color:var(--text);font-variation-settings:"opsz" 16;}
+
+.article{padding:40px 0 80px;}
+.article h2{font-family:var(--font-display);font-weight:700;font-size:28px;line-height:1.2;letter-spacing:-.015em;margin:56px 0 20px;color:var(--text);display:flex;align-items:baseline;gap:14px;}
+.article h2::before{content:"";display:inline-block;width:22px;height:2px;background:var(--green);flex-shrink:0;transform:translateY(-5px);}
+.article h2:first-of-type{margin-top:0;}
+.article h3{font-family:var(--font-display);font-weight:600;font-size:17px;line-height:1.3;letter-spacing:.01em;text-transform:uppercase;margin:32px 0 12px;color:var(--text);}
+.article p{font-size:17px;line-height:1.75;color:var(--text-sub);margin-bottom:18px;}
+.article p strong{color:var(--text);font-weight:600;}
+.article em{font-family:var(--font-editorial);font-style:italic;color:var(--text);font-variation-settings:"opsz" 17;}
+.article a{color:var(--green);border-bottom:1px solid rgba(54,211,153,.3);transition:border-color .2s;}
+.article a:hover{border-bottom-color:var(--green);}
+.article .lead::first-letter{font-family:var(--font-editorial);font-weight:600;float:left;font-size:64px;line-height:.9;padding:6px 10px 0 0;color:var(--green);font-variation-settings:"opsz" 144;}
+
+/* PILLAR BREAKOUT - new component */
+.pillar-breakout{margin:32px 0 40px;padding:0;border-radius:12px;overflow:hidden;border:1px solid var(--border);background:var(--surface);}
+.pillar-breakout-header{padding:14px 20px;background:var(--surface-2);font-family:var(--font-mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-sub);font-weight:600;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.pillar-breakout-header::before{content:"▼";font-size:9px;color:var(--green);}
+.pillar-row{display:grid;grid-template-columns:140px 1fr;gap:20px;padding:18px 22px;border-bottom:1px solid var(--border);align-items:start;}
+.pillar-row:last-child{border-bottom:none;}
+.pillar-label{display:flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding-top:2px;}
+.pillar-label .pindicator{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.pillar-row.collector .pillar-label{color:var(--green);}
+.pillar-row.collector .pindicator{background:var(--green);box-shadow:0 0 10px rgba(54,211,153,.4);}
+.pillar-row.flipper .pillar-label{color:var(--gold);}
+.pillar-row.flipper .pindicator{background:var(--gold);box-shadow:0 0 10px rgba(255,184,77,.4);}
+.pillar-row.grader .pillar-label{color:var(--purple);}
+.pillar-row.grader .pindicator{background:var(--purple);box-shadow:0 0 10px rgba(199,125,255,.4);}
+.pillar-body{font-size:15px;line-height:1.65;color:var(--text-sub);}
+.pillar-body strong{color:var(--text);font-weight:600;}
+
+.fact-box{margin:28px 0;padding:22px 24px;background:var(--surface);border:1px solid var(--border);border-radius:10px;position:relative;overflow:hidden;}
+.fact-box::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--color,var(--blue));}
+.fact-box.purple{--color:var(--purple);}
+.fact-box.gold{--color:var(--gold);}
+.fact-box.green{--color:var(--green);}
+.fact-label{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.18em;color:var(--color,var(--blue));font-weight:700;margin-bottom:10px;}
+.fact-title{font-family:var(--font-display);font-weight:600;font-size:18px;color:var(--text);margin-bottom:8px;letter-spacing:-.005em;}
+.fact-body{font-size:15px;line-height:1.65;color:var(--text-sub);}
+
+.rotation-grid{margin:24px 0;display:grid;gap:10px;}
+.rotation-row{display:grid;grid-template-columns:100px 1fr;gap:16px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:15px;align-items:center;}
+.rotation-row .mark{font-family:var(--font-mono);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.12em;}
+.rotation-row.out .mark{color:var(--red);}
+.rotation-row.legal .mark{color:var(--green);}
+.rotation-row.pending .mark{color:var(--gold);}
+.rotation-row .sets{color:var(--text-sub);font-size:14px;line-height:1.5;}
+
+.calendar{margin:24px 0;border-top:1px solid var(--border);}
+.cal-item{display:grid;grid-template-columns:120px 1fr;gap:20px;padding:18px 0;border-bottom:1px solid var(--border);align-items:baseline;}
+.cal-date{font-family:var(--font-mono);font-size:12px;font-weight:600;color:var(--green);letter-spacing:.02em;text-transform:uppercase;}
+.cal-content .cal-title{font-family:var(--font-display);font-weight:600;font-size:16px;color:var(--text);margin-bottom:4px;letter-spacing:-.005em;}
+.cal-content .cal-desc{font-size:14px;line-height:1.55;color:var(--text-sub);}
+
+.pull-quote{margin:48px 0;padding:32px 40px;text-align:center;position:relative;}
+.pull-quote::before{content:"\201C";position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-family:var(--font-editorial);font-size:120px;line-height:1;color:var(--green);opacity:.25;font-variation-settings:"opsz" 144;}
+.pull-quote p{font-family:var(--font-editorial);font-weight:500;font-size:24px;line-height:1.4;color:var(--text);font-style:italic;margin:0;font-variation-settings:"opsz" 24;}
+
+.pillar-debates{margin:24px 0 32px;display:flex;flex-direction:column;gap:14px;}
+.pdebate{padding:22px 24px;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--pcolor,var(--blue));border-radius:10px;transition:border-color .2s,transform .2s;}
+.pdebate:hover{border-top-color:var(--border-strong);border-right-color:var(--border-strong);border-bottom-color:var(--border-strong);transform:translateX(2px);}
+.pdebate.collector{--pcolor:var(--green);}
+.pdebate.flipper{--pcolor:var(--gold);}
+.pdebate.grader{--pcolor:var(--purple);}
+.pdebate-label{font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--pcolor);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.pdebate-label .dot{width:6px;height:6px;border-radius:50%;background:var(--pcolor);}
+.pdebate-title{font-family:var(--font-display);font-weight:600;font-size:16px;color:var(--text);margin-bottom:6px;letter-spacing:-.005em;}
+.pdebate-body{font-size:14px;line-height:1.6;color:var(--text-sub);}
+
+.signoff{margin:64px 0 32px;padding:36px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.signoff p{font-family:var(--font-editorial);font-style:italic;font-size:18px;color:var(--text-sub);font-variation-settings:"opsz" 18;}
+.signoff .name{font-family:var(--font-display);font-style:normal;font-weight:700;font-size:20px;color:var(--text);margin-top:14px;letter-spacing:-.01em;}
+.signoff .site{font-family:var(--font-mono);font-size:12px;color:var(--text-muted);margin-top:4px;letter-spacing:.06em;}
+
+.footer{padding:40px 0 60px;text-align:center;color:var(--text-muted);font-size:13px;font-family:var(--font-mono);letter-spacing:.04em;}
+.footer p{margin-bottom:8px;}
+.footer a{color:var(--text-sub);transition:color .2s;}
+.footer a:hover{color:var(--green);}
+
+.methodology{margin-top:32px;padding:16px 20px;background:rgba(255,255,255,.02);border:1px dashed var(--border);border-radius:8px;}
+.methodology p{font-size:13px;font-family:var(--font-mono);line-height:1.6;color:var(--text-muted);margin-bottom:0;}
+.methodology strong{color:var(--text-sub);font-weight:500;}
+
+@media (max-width: 640px){
+  .masthead{padding:56px 0 32px;}
+  .masthead-title{font-size:40px;}
+  .masthead-dek{font-size:17px;}
+  .tldr{padding:22px 24px;margin:36px 0;}
+  .tldr-body{font-size:15px;}
+  .article h2{font-size:24px;margin:40px 0 16px;}
+  .article p{font-size:16px;}
+  .article .lead::first-letter{font-size:52px;}
+  .pillar-row{grid-template-columns:1fr;gap:8px;padding:16px 18px;}
+  .pillar-label{padding-top:0;}
+  .rotation-row{grid-template-columns:80px 1fr;gap:12px;padding:12px 14px;}
+  .cal-item{grid-template-columns:1fr;gap:4px;padding:14px 0;}
+  .cal-date{font-size:11px;}
+  .pull-quote p{font-size:19px;}
+  .pull-quote{padding:24px 20px;margin:36px 0;}
+  .pillar-badges{gap:6px;}
+  .pillar-badge{font-size:10px;padding:5px 10px;}
+}
+</style>
+</head>
+<!-- LINKED PREVIEW — generated from newsletter-001-web.html + newsletter-001-link-proposal.md; canonical files untouched --><body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="https://catchemtcg.com" class="logo"><span class="logo-mark">C</span>Catch'em</a>
+    <a href="https://catchemtcg.com" class="back-link">← Back to site</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <header class="masthead">
+    <div class="issue-meta">
+      <span class="issue-num">Newsletter 001</span>
+      <span class="issue-dot"></span>
+      <span>August 2026</span>
+      <span class="issue-dot"></span>
+      <span>5 min read</span>
+    </div>
+    <h1 class="masthead-title">One month to the <em>30th</em>. The board is set.</h1>
+    <p class="masthead-dek">30th Celebration lands September 16 — the first simultaneous worldwide release in TCG history. All-foil packs, a new Futuristic Rare, and Base Set Charizard back in print. Plus: TPC just answered the Ascended Heroes squeeze with supply. What it means for Collectors, Flippers, and Graders.</p>
+    <div class="pillar-badges">
+      <span class="pillar-badge collector"><span class="dot"></span>Collector</span>
+      <span class="pillar-badge flipper"><span class="dot"></span>Flipper</span>
+      <span class="pillar-badge grader"><span class="dot"></span>Grader</span>
+    </div>
+  </header>
+
+  <aside class="tldr">
+    <div class="tldr-label">⚡ At a glance</div>
+    <p class="tldr-body">One month to the 30th Celebration (Sept 16) — all-foil, Futuristic Rare, Base Set Charizard reprinted, and no loose boosters. TPC answers the Ascended Heroes squeeze with six Aug 28 tins across two lines. Pitch Black (Mega Darkrai ex) landed in July. The April rotation passed without panic — and that calm was the year's most underrated signal.</p>
+  </aside>
+
+  <article class="article">
+
+    <!-- SECTION 1 -->
+    <div style="text-align:center;margin:26px 0"><a href="https://app.catchemtcg.com" style="display:inline-block;background:#36d399;color:#0b0d14;font-weight:700;border-radius:10px;padding:13px 26px;text-decoration:none">See today's tape live → app.catchemtcg.com</a><div style="font-size:12px;color:#8a93a8;margin-top:8px">Every number in this letter has a live page behind it.</div></div>
+<h2>The quiet rotation</h2>
+
+    <p class="lead">Every April, Pokémon rotates the oldest regulation mark out of Standard — each card gets roughly three years of legality before the axe — and every year, right on schedule, the community loses its mind. This year broke the pattern: the rotation happened. The panic didn't. On April 10, all cards with the G regulation mark officially rotated out of Standard: <strong>Scarlet &amp; Violet base, Paldea Evolved, Obsidian Flames, Paradox Rift, <a href="https://app.catchemtcg.com/sets/sv3pt5.html" style="color:#36d399;text-decoration:underline">151</a></strong>, and partial reprints from Paldean Fates.</p>
+
+    <p>The reaction? Near silence. No Reddit panic. No pre-rotation speculation spike. Most of the price action had already happened months earlier — the market had twelve months to absorb the announcement (dated January 9, 2026), and it did. A quiet rotation is what it looks like when a market has learned to price information instead of react to it.</p>
+
+    <div class="rotation-grid">
+      <div class="rotation-row out">
+        <div class="mark">↓ Rotated</div>
+        <div class="sets"><strong>G-mark</strong> — Scarlet &amp; Violet, Paldea Evolved, Obsidian Flames, Paradox Rift, 151, partial Paldean Fates</div>
+      </div>
+      <div class="rotation-row legal">
+        <div class="mark">✓ Legal</div>
+        <div class="sets"><strong>H-mark</strong> — Temporal Forces, Twilight Masquerade, Shrouded Fable, Paldean Fates (H prints)</div>
+      </div>
+      <div class="rotation-row legal">
+        <div class="mark">✓ Legal</div>
+        <div class="sets"><strong>I-mark</strong> — Stellar Crown, Surging Sparks, Prismatic Evolutions, Journey Together, Destined Rivals, Black Bolt &amp; White Flare</div>
+      </div>
+      <div class="rotation-row legal">
+        <div class="mark">✓ Legal</div>
+        <div class="sets"><strong>J-mark</strong> — Mega Evolution era (Ascended Heroes forward)</div>
+      </div>
+      <div class="rotation-row pending">
+        <div class="mark">⌛ Next</div>
+        <div class="sets"><strong>April 2027</strong> — H-mark rotation window opens. That's your 12-month watch.</div>
+      </div>
+    </div>
+
+    <div class="pillar-breakout">
+      <div class="pillar-breakout-header">What this means for you</div>
+      <div class="pillar-row collector">
+        <div class="pillar-label"><span class="pindicator"></span>Collector</div>
+        <div class="pillar-body">Sealed G-mark product (151, Paldea Evolved, Obsidian Flames) is officially "out of print" from a competitive standpoint. Historical pattern: sets that rotate without a confirmed reprint tend to enter a slow, steady appreciation phase — especially those with deep chase card rosters like 151. Watch for the <strong><a href="https://app.catchemtcg.com/sets/swsh12pt5.html" style="color:#36d399;text-decoration:underline">Crown Zenith</a> playbook</strong> to repeat here.</div>
+      </div>
+      <div class="pillar-row flipper">
+        <div class="pillar-label"><span class="pindicator"></span>Flipper</div>
+        <div class="pillar-body">The pre-rotation flip window is closed. Short-term opportunity has moved to <strong>post-rotation reprint reactions</strong> — if TPCi announces a 151 or Paldea Evolved reprint in the next 90 days, that's your next trigger. Also watch H-mark singles (Twilight Masquerade, Shrouded Fable) that are now benefiting from "last one standing" dynamics.</div>
+      </div>
+      <div class="pillar-row grader">
+        <div class="pillar-label"><span class="pindicator"></span>Grader</div>
+        <div class="pillar-body">Freshly-rotated chase cards historically see a <strong>grading submission wave</strong> as collectors convert raw to graded before supply thins. If you have clean 151 Charizard ex SIRs or PAF Mew ex raw copies, the window for low-pop PSA 10 submissions is opening. Centering standards haven't changed — but collector behavior is about to.</div>
+      </div>
+    </div>
+
+    <p>One mechanical reminder that trips up new collectors: legality is based on the <strong>regulation mark printed on the card</strong>, not the set it's from. A Rare Candy from Sun &amp; Moon is still playable because a J-mark reprint exists. Always check the mark at the bottom corner.</p>
+
+    <!-- SECTION 2 -->
+    <h2>The 30th Anniversary revealed its hand</h2>
+
+    <p>It's one month out. The <strong>30th Celebration</strong> lands <strong>September 16, 2026</strong> — the first simultaneous worldwide release in Pokémon TCG history — and the full picture is now confirmed, from pack format down to the reprint list.</p>
+
+    <div class="fact-box green">
+      <div class="fact-label">What's confirmed</div>
+      <div class="fact-title">30th Celebration · September 16, 2026</div>
+      <div class="fact-body">150+ cards, <strong>every card foil</strong> — including Basic Energy. Packs carry 5 foil cards, and every single pack contains one of <strong>30 unique Pikachu illustration rares</strong>. Two new rarities: <strong>Futuristic Rare</strong> (Mewtwo ex, Mew ex) and <strong>Pikachu Rare</strong> — the 30 pack-guaranteed Pikachu illustrations, the first revealed Aug 11 with art by Ken Sugimori himself. Classic Collection subset reprints 30 iconic cards — <strong>Base Set Charizard confirmed among them</strong> — with Classic packs exclusive to the Ultra-Premium Collections. ETB: 9 packs + Nidorina full-art promo (~$49.99). Product waves: Sept 16 (ETB, PC-ETB, ex Boxes, Poster Collection) · Oct 2 (Booster Bundle, Mini Tins, Binder) · Oct 30 (Espeon ex &amp; Umbreon ex Battle Decks) · Nov 6 (Day &amp; Night UPCs, Ditto Premium, Mewtwo &amp; Mew Figure) · Dec 4 (Sylveon &amp; Greninja Tins).</div>
+    </div>
+
+    <p>Two details matter more than they first appear. <strong>Booster packs will not be sold individually</strong> — the only route to 30th Celebration packs is through sealed products. That concentrates all demand onto a finite product list, which is structurally rare and exactly the kind of setup sealed trackers exist for. And the set introduces <strong>the first new rarity tiers of the modern era</strong> since Special Illustration Rare — Futuristic Rare and Pikachu Rare — anniversary sets that introduce rarities (Celebrations' Classic Collection, 2021) have historically held collector attention for years, not months.</p>
+
+    <div class="pillar-breakout">
+      <div class="pillar-breakout-header">What this means for you</div>
+      <div class="pillar-row collector">
+        <div class="pillar-label"><span class="pindicator"></span>Collector</div>
+        <div class="pillar-body">This is your <strong><a href="https://app.catchemtcg.com/product/cel25-upc" style="color:#36d399;text-decoration:underline">Celebrations 2.0 moment</a></strong>. The 25th anniversary UPC appreciated several times over in the years after release. The 30th flagship is positioned more ambitiously — worldwide simultaneous launch, all-foil packs, new rarity. Master set collectors: plan your budget now. Sealed ETBs at MSRP on Sep 18 historically become the best risk-adjusted anniversary holds.</div>
+      </div>
+      <div class="pillar-row flipper">
+        <div class="pillar-label"><span class="pindicator"></span>Flipper</div>
+        <div class="pillar-body">Simultaneous worldwide launch means <strong>no regional arbitrage window</strong> (a playbook that's worked on past releases). That removes one flip strategy but opens another: pre-order velocity will be intense, and allocation cuts through retailers create day-one scarcity. Watch Pokemon Center stock drops the week before Sep 18.</div>
+      </div>
+      <div class="pillar-row grader">
+        <div class="pillar-label"><span class="pindicator"></span>Grader</div>
+        <div class="pillar-body">All-foil packs mean <strong>every card is grade-eligible</strong>. That changes submission economics. Expect PSA/CGC pop reports to fill fast on the new rarity tier — the first three months post-launch will set the population baseline. Early submissions may mean low-pop premiums; later ones may mean better gem rates as collectors learn print quality.</div>
+      </div>
+    </div>
+
+    <p>What's still unconfirmed: the 30th UPC. Rumor is loud, official silence is louder. Don't position on unconfirmed products.</p>
+
+    <!-- SECTION 3 -->
+    <h2>Ascended Heroes is still writing its story</h2>
+
+    <p>Nearly seven months post-launch, Ascended Heroes is still the center of gravity of the Mega era. At <strong>290+ cards</strong>, it's the biggest English Pokémon TCG expansion ever released — built by combining three Japanese sets (Mega Brave, Mega Symphonia, Inferno X) into one colossal English drop.</p>
+
+    <p>Two things are genuinely new. First, the <em>Mega Attack Rare</em> rarity tier: full-art designs with retro katakana attack text overlaid on the illustration. Collectors hadn't seen this treatment before. Second, the <strong>staggered release</strong> — TPCi drip-fed product across five months, a deliberate scalping countermeasure. On April 13, Beckett flagged a specific Mega Dragonite ex variant with estimated pull rates of <strong>1 in every 70 to 90 packs</strong>. When pull-rate math becomes public for a chase card, the repricing that follows is durable.</p>
+
+     <p><strong>And now TPC has answered.</strong> On August 28, <a href="https://app.catchemtcg.com/product/me2pt5-tin" style="color:#36d399;text-decoration:underline">six $21.99 tins</a> hit shelves at once, across two lines: three Ascended Heroes Tins (Mega Feraligatr, Meganium, and Emboar ex promos) and three Mega Forces Tins (Mega Dragonite, Darkrai, and Zeraora ex) — four packs in every one of them. The Ascended Heroes promos are repeats from the January Mega Boxes — hardcore collectors are already calling that half of the drop redundant. But that misses what it is: a <em>deliberate supply injection</em> into the most supply-constrained set of the year. The publisher just did what no whale seller could — added pack supply at MSRP, at scale.</p>
+
+     <p>The read: Ascended Heroes has been in a markup phase for months — money in, supply out. Tins don't touch booster box supply directly, but they vent the pressure that drives casual buyers to the secondary market. Whether sealed absorbs this or stalls is <em>the</em> thing to watch through September — and it'll be watched with clean instruments. Full transparency: this week we caught and fixed a tracker bug that had several sealed sealed products badly mispriced (Journey Together booster boxes were publishing near $24 against a real market around $285). All pre-fix history is flagged, and current numbers are re-validated against live eBay. Mega-era sealed products enter the tracker this week; the absorb-or-stall verdict runs on real numbers next issue. For scale today: Prismatic Evolutions ETBs sit at a $165 median across 130 active listings (Catchem-data, eBay active listings, Aug 18).</p>
+
+    <div class="pillar-breakout">
+      <div class="pillar-breakout-header">What this means for you</div>
+      <div class="pillar-row collector">
+        <div class="pillar-label"><span class="pindicator"></span>Collector</div>
+        <div class="pillar-body">Ascended Heroes is <strong>massive</strong> — 290+ cards means master sets are expensive and slow to complete. But the Mega Attack Rare tier is genuinely new territory. Collectors who focus on rarity tiers as collecting themes (not just set completion) have a fresh chase: all 7 Mega Attack Rares. It's a smaller, achievable goal inside the bigger set.</div>
+      </div>
+      <div class="pillar-row flipper">
+        <div class="pillar-label"><span class="pindicator"></span>Flipper</div>
+        <div class="pillar-body">Staggered release means <strong>staggered opportunity windows</strong>. The August 28 tin drop is the next inflection point — publisher supply at MSRP, four packs a tin. Historically, late-wave product from large sets gets overlooked by scalpers who've moved to the next hot release, creating MSRP buying windows. That 1-in-70-to-90 Dragonite pull rate means sealed-to-singles math favors sealed for now.</div>
+      </div>
+      <div class="pillar-row grader">
+        <div class="pillar-label"><span class="pindicator"></span>Grader</div>
+        <div class="pillar-body">A new rarity tier means <strong>no population history yet</strong>. First-to-grade premiums are available for the next 60-90 days on Mega Attack Rares. But watch for print quality issues — large sets with new rarity treatments historically have centering and surface-print inconsistencies that affect gem rates. Wait for the first few hundred submissions to reveal the pattern before going heavy.</div>
+      </div>
+    </div>
+
+    <!-- SECTION 4 -->
+    <h2>The grading trust problem won't go quietly</h2>
+
+    <p>Eight months after it broke, the PSA regrade scandal is still shaping collector behavior — and the story has grown teeth. The short version: a Pokémon collector submitted roughly 30 identical modern cards in late 2025. Most came back PSA 9. He accepted buyback offers at PSA 9 values. Then — without notification — the same certification numbers were silently updated to PSA 10 on 11 of those cards.</p>
+
+    <div class="pull-quote">
+      <p>The quiet upgrade wasn't the problem. The silence was.</p>
+    </div>
+
+    <p>The ripples turned structural. In December — the same month the scandal broke — PSA's parent company Collectors Holdings closed its acquisition of Beckett, putting roughly <strong>80% of the U.S. grading market under one roof</strong>. An April class action wants those acquisitions unwound; in June the company moved to dismiss. And the machine itself is jammed: submission tiers under $80 are paused behind a backlog reported at <strong>twelve million cards</strong>. December's trust question has become a structure question — one grader, most of the market, more cards than it can process.</p>
+
+    <p>Layer in January 2025's CGC Prototype Scandal (fakes exposed by yellow-dot printer metadata), and January 2026's Anthony Curcio wire fraud conviction (~$2M in fake-label cards), and the pattern is unmistakable: <em>the authentication layer of the hobby is under real pressure</em>.</p>
+
+    <div class="pillar-breakout">
+      <div class="pillar-breakout-header">What this means for you</div>
+      <div class="pillar-row collector">
+        <div class="pillar-label"><span class="pindicator"></span>Collector</div>
+        <div class="pillar-body">Verify <strong>every cert number</strong> on any graded card before buying, through the grader's official lookup database. The label alone isn't proof — the record behind it is. For long-term holds, slab integrity matters as much as the card itself.</div>
+      </div>
+      <div class="pillar-row flipper">
+        <div class="pillar-label"><span class="pindicator"></span>Flipper</div>
+        <div class="pillar-body">The <strong>PSA premium is compressing</strong>. Flips that relied on cross-grading arbitrage (buy CGC, regrade PSA, sell at premium) have tighter margins now. Meanwhile buyers are more skeptical — expect more disputes, more "verify the slab" back-and-forth. Factor that friction cost into flip math.</div>
+      </div>
+      <div class="pillar-row grader">
+        <div class="pillar-label"><span class="pindicator"></span>Grader</div>
+        <div class="pillar-body">This one hits you hardest. Submission decisions now involve <strong>reputational risk on top of grading risk</strong>. If you grade heavy volume through PSA, diversification makes sense: Beckett's Black Label still commands premium, TAG's AI-grading is gaining credibility, SGC is picking up share for specific niches. The monoculture era is ending.</div>
+      </div>
+    </div>
+
+    <!-- SECTION 5 -->
+    <h2>What's next: the road to the 30th</h2>
+
+    <p>Two sets have landed since spring — <strong>Chaos Rising</strong> (May 22, Mega Greninja ex flagship, a tight 120-card set) and <strong>Pitch Black</strong> (July 17, Mega Darkrai ex). Both are now in the tracker. But every calendar conversation between now and November runs through one date.</p>
+
+    <div class="calendar">
+      <div class="cal-item">
+        <div class="cal-date">Aug 28</div>
+        <div class="cal-content">
+          <div class="cal-title">Tin double-drop: Ascended Heroes + Mega Forces</div>
+          <div class="cal-desc">Six $21.99 tins, 4 packs each, across two lines. The supply valve opens — wider than first announced.</div>
+        </div>
+      </div>
+      <div class="cal-item">
+        <div class="cal-date">Sep 16</div>
+        <div class="cal-content">
+          <div class="cal-title">30th Celebration · Worldwide</div>
+          <div class="cal-desc">First simultaneous global launch. Wave 1: ETB, Pokémon Center ETB, ex Boxes, Poster Collection. No loose boosters — sealed products only.</div>
+        </div>
+      </div>
+      <div class="cal-item">
+        <div class="cal-date">Oct 2</div>
+        <div class="cal-content">
+          <div class="cal-title">30th Celebration · Wave 2</div>
+          <div class="cal-desc">Booster Bundle, Day &amp; Night Mini Tins, Binder Collection.</div>
+        </div>
+      </div>
+      <div class="cal-item">
+        <div class="cal-date">Nov 6</div>
+        <div class="cal-content">
+          <div class="cal-title">Delta Reign + 30th premium wave</div>
+          <div class="cal-desc">Mega Rayquaza ex headlines Delta Reign (English Storm Emeralda) — the same week the Day &amp; Night Ultra-Premium Collections land. A crowded, expensive November.</div>
+        </div>
+      </div>
+    </div>
+
+    <p>Worth flagging: with 30th Celebration boosters unavailable loose, every pack chases through a product sealed product — which makes sealed the entire story of this release. And Delta Reign sharing a week with the anniversary UPCs splits wallets at the worst possible moment. Something gets underbought in November. The data will tell us what.</p>
+
+    <!-- SECTION 6 - PILLAR-SPECIFIC DEBATES -->
+    <h2>The community is arguing about</h2>
+
+    <p>Three conversations dominating collector spaces this summer — one per pillar.</p>
+
+    <div class="pillar-debates">
+      <div class="pdebate collector">
+        <div class="pdebate-label"><span class="dot"></span>Collector Debate</div>
+        <div class="pdebate-title">Is Prismatic going to get Crown Zenith'd?</div>
+        <div class="pdebate-body">Will Prismatic Evolutions eventually see its reprint wave slow, letting its Eeveelution SIRs finally break out? Chatter suggests TPCi is winding down Prismatic reprints to redirect capacity toward Ascended Heroes. Unconfirmed — but if true, it's the first real supply-side positive signal for Prismatic since launch. Collectors holding sealed ETBs are watching this closely.</div>
+      </div>
+      <div class="pdebate flipper">
+        <div class="pdebate-label"><span class="dot"></span>Flipper Debate</div>
+        <div class="pdebate-title">Is the Mega Evolution era burning itself out?</div>
+        <div class="pdebate-body">Ascended Heroes → Perfect Order → Chaos Rising in ninety days. Even Mega-core collectors are admitting "set exhaustion." For flippers, that's a real demand-side signal — pre-release hype velocity on Chaos Rising may be noticeably lower than Ascended Heroes. Less velocity means smaller flip margins, but also less competition from scalpers.</div>
+      </div>
+      <div class="pdebate grader">
+        <div class="pdebate-label"><span class="dot"></span>Grader Debate</div>
+        <div class="pdebate-title">Is PSA still worth the premium?</div>
+        <div class="pdebate-body">Post-December scandal, this question keeps surfacing. The PSA 10 to CGC 10 price gap is compressing on modern cards. For vintage, PSA still commands clear premium. For new-era modern (2024+), the math is getting closer. Graders running volume on modern submissions are the ones most affected — and most likely to diversify in 2026.</div>
+      </div>
+    </div>
+
+    <!-- SECTION 7 - CLOSING -->
+    <h2>One signal to sit with</h2>
+
+    <p>A theme keeps surfacing across every conversation in this issue, and it's worth naming directly: <em>the Pokémon TCG is professionalizing</em>. Rotation priced in ahead of time. Staggered releases to neuter scalping. New rarity tiers introduced deliberately. Simultaneous worldwide launches for the first time ever.</p>
+
+    <p>Markets that price information well reward patience and research, not speed and hype. That plays out differently depending on which lens you're looking through.</p>
+
+    <div class="pillar-breakout">
+      <div class="pillar-breakout-header">The through-line for each of you</div>
+      <div class="pillar-row collector">
+        <div class="pillar-label"><span class="pindicator"></span>Collector</div>
+        <div class="pillar-body"><strong>Long-hold strategy wins harder than it used to.</strong> Confirmed OOP sealed with deep chase rosters (<a href="https://app.catchemtcg.com/product/swsh7-booster-box" style="color:#36d399;text-decoration:underline">Evolving Skies</a>, Crown Zenith) is the playbook. Heavy-reprint sets (151, Prismatic) require patience or avoidance. Archetype awareness beats chase card hype.</div>
+      </div>
+      <div class="pillar-row flipper">
+        <div class="pillar-label"><span class="pindicator"></span>Flipper</div>
+        <div class="pillar-body"><strong>Flip windows are shorter and signal-driven now.</strong> Rotation flips are priced in 12 months early. Reprint reactions happen in days. The edge is speed and information — knowing when supply chain news breaks before the wider community. That's what this newsletter is for.</div>
+      </div>
+      <div class="pillar-row grader">
+        <div class="pillar-label"><span class="pindicator"></span>Grader</div>
+        <div class="pillar-body"><strong>Diversification beats loyalty.</strong> The monoculture grading era is ending. Picking the right grader for each specific card — based on population math, print quality, and resale liquidity — matters more than brand loyalty. Watch TAG's AI grading and Beckett's Black Label as real alternatives.</div>
+      </div>
+    </div>
+
+    <p>That's what Catch'em is building. Signals, not advice. Archetype awareness, not hot takes. Three modes, three lenses, one honest read on the market. The market is growing up — the tooling should too.</p>
+
+    <div class="methodology">
+      <p><strong>On this issue's data:</strong> This newsletter deliberately excludes specific price figures. Price data from general web sources has proven unreliable in testing, and Catch'em's own price pipeline will be the authoritative source going forward. Once our data covers enough history, the <em>Movers</em> section returns — pillar-specific, of course.</p>
+    </div>
+
+  </article>
+
+  <div class="signoff">
+    <p>Until next issue — stay curious, stay patient, and don't buy the hype.</p>
+    <div class="name">Tyler</div>
+    <div class="site">CATCHEMTCG.COM · EVERY 3 DAYS</div>
+  </div>
+
+</div>
+
+<div style="background:#141824;border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:16px;margin:26px 0;font-size:14px;color:#c7cbd6"><b style="color:#f4f5f8">P.S.</b> Taking cash to a show? <a href="https://app.catchemtcg.com" style="color:#36d399">Deal Check</a> works offline once loaded — search any tracked product, get the clean floor and today's median in ten seconds, right at the table.</div>
+<footer class="footer">
+  <p>Newsletter 001 · August 2026</p>
+  <p><a href="https://catchemtcg.com">catchemtcg.com</a> · <a href="mailto:support@catchemtcg.com">support@catchemtcg.com</a></p>
+</footer>
+
+</body>
+</html>
