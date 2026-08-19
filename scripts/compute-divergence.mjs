@@ -18,7 +18,8 @@ try { tcg = JSON.parse(await readFile(join(DATA, "sealed-crosscheck.json"), "utf
 catch { console.log("no sealed-crosscheck.json yet — provider eval pending; exiting clean"); process.exit(0); }
 
 const tcgById = new Map(tcg.products.map(p => [p.id, p]));
-const OFF_TCG = id => /^(sm|xy|base|neo|hgss|bw|det|dp)/.test(id);
+// RT-4a venue gate — canonical implementation in lib, unit-tested in CI.
+import { offTcgEra as OFF_TCG } from "./lib/instruments.mjs";
 const rows = [], skipped = [];
 for (const p of ebay.products || []) {
   const t = tcgById.get(p.id);

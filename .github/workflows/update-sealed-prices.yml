@@ -20,6 +20,12 @@ jobs:
         with:
           node-version: "20"
 
+      - name: Unit tests (fail-fast)
+        # Pure-math tests on scripts/lib + contract checks on yesterday's
+        # committed artifacts. A regressed engine kills the run HERE, before
+        # any eBay/PPT quota burns.
+        run: node scripts/tests/run-tests.mjs
+
       - name: Fetch sealed prices from eBay
         env:
           EBAY_APP_ID: ${{ secrets.EBAY_APP_ID }}

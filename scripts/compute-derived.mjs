@@ -6,6 +6,7 @@
 //     digest against tracker sets — what's talked-about vs what's moving.
 // Output: data/derived-insights.json. Trust: every number traceable to inputs.
 import { readFile, writeFile, readdir } from "node:fs/promises";
+import { indexLevel, sealedPremium } from "./lib/instruments.mjs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -47,9 +48,10 @@ for (const r of packRows) {
   if (r.subtype === "booster-pack") { r.role = "loose-anchor"; continue; }
   const lp = loosePackBySet[r.setId];
   r.loosePack = lp ?? null;
-  r.sealedPremiumPct = lp ? Math.round((r.perPack/lp - 1) * 1000)/10 : null;
   r.loosePackN = loosePackNBySet[r.setId] ?? null;
-  r.premiumThin = r.sealedPremiumPct != null && (r.loosePackN ?? 0) < 10;
+  const prem = sealedPremium(r.perPack, lp, r.loosePackN); // lib canon, CI-tested
+  r.sealedPremiumPct = prem.pct;
+  r.premiumThin = prem.thin;
 }
 
 // ── (b) Narrative vs Tape ────────────────────────────────────────────────────
@@ -329,7 +331,7 @@ for (const p of liveList) {
     if (d > 0.002) breadth.up++; else if (d < -0.002) breadth.down++; else breadth.flat++;
   }
 }
-const idxLevel = ratios.length ? Math.round(ratios.reduce((a,c)=>a+c,0)/ratios.length * 1000)/10 : 100.0;
+const idxLevel = indexLevel(ratios); // lib canon — one equation, CI-tested
 const prevIx = (ixh.entries||[]).slice(-1)[0];
 
 // ── RAW CHASE INDEX + graded slot — same equation, different shelves ────
@@ -343,7 +345,7 @@ await writeFile(new URL("../research/pulse/singles-history.json", import.meta.ur
 const rawFirst = {};
 for (const e of [...sgh.entries].sort((a,b)=>a.date<b.date?-1:1)) if (!rawFirst[e.cardId]) rawFirst[e.cardId] = e.price;
 const rawRatios = chasesLive.map(c=>c.priceMarket/(rawFirst[c.cardId]||c.priceMarket));
-const rawLevel = rawRatios.length ? Math.round(rawRatios.reduce((a,b)=>a+b,0)/rawRatios.length*1000)/10 : 100.0;
+const rawLevel = indexLevel(rawRatios); // same lib equation as the composite
 const rawIndex = { name:"Raw Chase Index", level: rawLevel, constituents: rawRatios.length,
   baselineDate: [...new Set(sgh.entries.map(e=>e.date))].sort()[0] ?? todayS,
   note:"same equation as the Sealed Index — confirmed chase singles, each vs its own first clean price", chip:"VERIFIED" };
