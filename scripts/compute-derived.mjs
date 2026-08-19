@@ -360,6 +360,15 @@ const sealedIndex = { name: "Catchem Sealed Index", level: idxLevel,
   await writeFile(new URL("../research/pulse/index-history.json", import.meta.url), JSON.stringify(ixh,null,1));
 }
 
+
+// ── NET PROCEEDS TRUTH (engine side) — what a sale actually pockets ─────
+// eBay trading-cards model: 13.25% final value + $0.30 fixed (published
+// schedule, labeled est.). Delivered-price basis.
+const FEE = { pct: 13.25, fixed: 0.30, venue: "eBay", source: "eBay trading-cards fee schedule, est." };
+const netProceeds = { model: FEE, byId: {} };
+for (const p of liveList) if (p.priceMedian)
+  netProceeds.byId[p.id] = Math.round((p.priceMedian * (1 - FEE.pct/100) - FEE.fixed) * 100) / 100;
+
 const out = {
   generatedAt: new Date().toISOString(),
   method: "Pack Math: ask median / era-aware pack count (arithmetic, no estimation; variable-count products excluded by name). Narrative: latest agent digest cross-referenced against tracked sets; 'quiet movers' = spread signal with zero digest mention.",
@@ -371,7 +380,7 @@ const out = {
   lifecycle, rotationContext,
   printWatch, tightening, rotationCohorts,
   eraIndexes,
-  sealedIndex, rawIndex, gradedIndex,
+  sealedIndex, rawIndex, gradedIndex, netProceeds,
   cohortCompare,
   topicHits,
   dailyThree: (() => {
