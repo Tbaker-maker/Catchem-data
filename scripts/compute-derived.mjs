@@ -284,7 +284,8 @@ const eraIndexes = Object.entries(eraBuckets).filter(([,b])=>b.n>=3).map(([era,b
   const level = ps[Math.floor(ps.length/2)];
   const avgGap = b.gaps.length ? Math.round(b.gaps.reduce((a,c)=>a+c,0)/b.gaps.length*10)/10 : null;
   const lpp = Math.round(b.listings / b.n);
-  const baseRow = eiHist.entries.find(e=>e.date===BASE_DATE && e.era===era);
+  const eraRows = (eiHist.entries||[]).filter(e=>e.era===era).sort((a,b)=>a.date<b.date?-1:1);
+  const baseRow = eraRows.find(e=>e.date===BASE_DATE) || eraRows[0] || null;
   const idx100 = baseRow ? Math.round(level / baseRow.level * 1000)/10 : 100.0;
   const offTcg = era === "Sun & Moon" || era === "XY" || era === "Vintage & other";
   let read;
