@@ -28,6 +28,8 @@ write, push after. Tyler adds items in plain English anywhere here.
 - Visual polish beyond shipped P0 + Lighthouse pass
 
 ## DONE (recent)
+- Suite pass Aug 19: subtype indexes · watch-outcomes logger · premium
+  history · TCGplayer net variant (tool-audit-aug19.md).
 - Sealed/Raw index family · daily card mint · methodology + 🍭 · Studio
   v0 (overlay + kits) · Lighthouse 95/100 · write-vs-commit law ·
   outputs rescue (57) · thin-n premium gate (me1 ⚠n=7) · full premium

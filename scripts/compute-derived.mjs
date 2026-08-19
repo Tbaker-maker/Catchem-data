@@ -369,6 +369,39 @@ const netProceeds = { model: FEE, byId: {} };
 for (const p of liveList) if (p.priceMedian)
   netProceeds.byId[p.id] = Math.round((p.priceMedian * (1 - FEE.pct/100) - FEE.fixed) * 100) / 100;
 
+
+// ── SUITE UPGRADES (Aug 19) — pre-out: subtype indexes, outcomes, logs ──
+const subBuckets = {};
+for (const p of liveList) {
+  const base = firstSeen[p.id];
+  if (base && p.priceMedian) (subBuckets[p.subtype] ||= []).push(p.priceMedian / base);
+}
+const subtypeIndexes = Object.entries(subBuckets).filter(([,r])=>r.length>=5)
+  .map(([sub, rs]) => ({ subtype: sub, level: Math.round(rs.reduce((a,b)=>a+b,0)/rs.length*1000)/10, constituents: rs.length }))
+  .sort((a,b)=>b.constituents-a.constituents);
+let wlog = { note: "daily-three pick log — merge-by-date; outcomes next day", entries: [] };
+try { wlog = await J("research/pulse/watch-log.json"); } catch {}
+const todayW = new Date().toISOString().slice(0,10);
+const yRow = [...(wlog.entries||[])].filter(e=>e.date<todayW).sort((a,b)=>a.date<b.date?1:-1)[0];
+let watchOutcomes = null;
+if (yRow) {
+  const res = pick => { if (!pick) return null;
+    const now = pick.kind==="sealed" ? (liveList.find(p=>p.name===pick.name)||{}).priceMedian
+      : ((sgAll.cards||[]).find(c=>c.name===pick.name)||{}).priceMarket;
+    return { ...pick, now: now ?? null, dPct: now && pick.price ? Math.round((now/pick.price-1)*1000)/10 : null }; };
+  watchOutcomes = { date: yRow.date, sealed: res(yRow.sealed), raw: res(yRow.raw) };
+}
+let ph = { note: "sealed-premium history — merge-by-date", entries: [] };
+try { ph = await J("research/pulse/premium-history.json"); } catch {}
+ph.entries = (ph.entries||[]).filter(e=>e.date!==todayW);
+for (const r of packRows) if (r.sealedPremiumPct!=null && !r.premiumThin)
+  ph.entries.push({ date: todayW, id: r.id, premium: r.sealedPremiumPct });
+await writeFile(new URL("../research/pulse/premium-history.json", import.meta.url), JSON.stringify(ph,null,1));
+netProceeds.tcgModel = { source: "TCGplayer 10.75% + 2.5% + $0.30 (Feb 2026), est." };
+netProceeds.tcgById = {};
+for (const p of liveList) if (p.priceMedian)
+  netProceeds.tcgById[p.id] = Math.round((p.priceMedian * (1 - 0.1325) - 0.30) * 100) / 100;
+
 const out = {
   generatedAt: new Date().toISOString(),
   method: "Pack Math: ask median / era-aware pack count (arithmetic, no estimation; variable-count products excluded by name). Narrative: latest agent digest cross-referenced against tracked sets; 'quiet movers' = spread signal with zero digest mention.",
@@ -380,7 +413,7 @@ const out = {
   lifecycle, rotationContext,
   printWatch, tightening, rotationCohorts,
   eraIndexes,
-  sealedIndex, rawIndex, gradedIndex, netProceeds,
+  sealedIndex, rawIndex, gradedIndex, netProceeds, subtypeIndexes, watchOutcomes,
   cohortCompare,
   topicHits,
   dailyThree: (() => {
@@ -438,6 +471,12 @@ const out = {
     };
   })(),
 };
+// today's picks into the watch log (post-out: reads out.dailyThree safely)
+wlog.entries = (wlog.entries||[]).filter(e=>e.date!==todayW);
+wlog.entries.push({ date: todayW,
+  sealed: out.dailyThree?.sealed ? { kind:"sealed", name: out.dailyThree.sealed.name, price: out.dailyThree.sealed.ebay } : null,
+  raw: out.dailyThree?.raw ? { kind:"raw", name: out.dailyThree.raw.name, price: out.dailyThree.raw.price } : null });
+await writeFile(new URL("../research/pulse/watch-log.json", import.meta.url), JSON.stringify(wlog,null,1));
 await writeFile(join(ROOT,"data/derived-insights.json"), JSON.stringify(out,null,2)+"\n");
 console.log(`✓ derived: ${packRows.length} pack-math rows · news-mentioned sets: ${inNews.length} · quiet movers: ${quietMovers.length} (digest: ${digestName})`);
 console.log("  priciest pack:", packRows[0]?.name, "$"+packRows[0]?.perPack+"/pack");
