@@ -19,7 +19,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA = join(__dirname, "..", "data");
 
 // ── Config ───────────────────────────────────────────────────────────────────
-const FIX_DEPLOY_DATE = "2026-08-18"; // filtered fetch shipped f80d876; first clean daily run 2026-08-18 04:50 UTC
+const FIX_DEPLOY_DATE = "2026-08-19"; // pricing v2 (BIN-only, delivered, bounds) shipped fab1702 — WoW reads are pure-v2 from here
 const KNOWN_CONTAMINATED = ["sv9-booster-box", "sv9-etb", "swsh7-booster-box"]; // pre-fix poisoned history (swsh7: published $144 vs real ~$2900)
 const PRICE_UP_STRONG = 0.06;   // +6% WoW
 const PRICE_DOWN_STRONG = -0.06;
@@ -48,23 +48,25 @@ function supplyWoW(snapshots, id) {
 }
 
 function assignState(pWow, sWow) {
-  // Dual-signal (preferred)
+  // Dual-signal (preferred) — honest Wyckoff quadrants, v5 plain-words reads
   if (pWow != null && sWow != null) {
     if (pWow >= PRICE_UP_STRONG && sWow <= SUPPLY_DOWN)
-      return { state: "markup", emoji: "🔥", read: "Markup phase. Money in, supply shrinking — possible breakout.", confidence: "dual-signal" };
+      return { state: "markup", emoji: "🔥", read: "Heating up — price climbing while listings shrink. Buyers outpacing sellers.", confidence: "dual-signal" };
     if (pWow <= PRICE_DOWN_STRONG && sWow >= SUPPLY_UP)
-      return { state: "markdown", emoji: "❄️", read: "Markdown phase. Sellers outpacing buyers.", confidence: "dual-signal" };
+      return { state: "markdown", emoji: "❄️", read: "Cooling off — price falling while listings pile up. Sellers outpacing buyers.", confidence: "dual-signal" };
     if (Math.abs(pWow) < PRICE_UP_STRONG && sWow <= SUPPLY_DOWN)
-      return { state: "accumulation", emoji: "😴", read: "Accumulation phase. Quiet tape, supply drifting down — deep hold.", confidence: "dual-signal" };
-    return { state: "distribution", emoji: "📈", read: "Distribution phase. Money and supply both flowing — healthy tape.", confidence: "dual-signal" };
+      return { state: "accumulation", emoji: "😴", read: "Quietly tightening — price steady while listings drain. Supply leaving without headlines.", confidence: "dual-signal" };
+    if (pWow >= PRICE_DOWN_STRONG && sWow >= SUPPLY_UP)
+      return { state: "distribution", emoji: "📤", read: "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.", confidence: "dual-signal" };
+    return { state: "ranging", emoji: "⏸", read: "No clear phase — price and listings both quiet this week.", confidence: "dual-signal" };
   }
   // Price-only fallback (supply history still accumulating)
   if (pWow == null) return null;
   if (pWow >= PRICE_UP_STRONG)
-    return { state: "markup", emoji: "🔥", read: "Price momentum up. Possible markup — supply signal pending.", confidence: "price-only" };
+    return { state: "markup", emoji: "🔥", read: "Price up strongly this week — listings signal still calibrating.", confidence: "price-only" };
   if (pWow <= PRICE_DOWN_STRONG)
-    return { state: "markdown", emoji: "❄️", read: "Price momentum down. Possible markdown — supply signal pending.", confidence: "price-only" };
-  return { state: "distribution", emoji: "📈", read: "Price stable. Healthy tape — supply signal pending.", confidence: "price-only" };
+    return { state: "markdown", emoji: "❄️", read: "Price down strongly this week — listings signal still calibrating.", confidence: "price-only" };
+  return { state: "ranging", emoji: "⏸", read: "Price steady this week — listings signal still calibrating.", confidence: "price-only" };
 }
 
 async function main() {
@@ -110,16 +112,16 @@ async function main() {
     reads.push({ ...base, ...st, priceWoW: round(pW.wow), supplyWoW: round(sW.wow) });
   }
 
-  const order = { markup: 0, markdown: 1, accumulation: 2, distribution: 3 };
+  const order = { markup: 0, markdown: 1, distribution: 2, accumulation: 3, ranging: 4 };
   reads.sort((a, b) => order[a.state] - order[b.state] || Math.abs(b.priceWoW ?? 0) - Math.abs(a.priceWoW ?? 0));
 
   const supplyDays = new Set(snapshots.map(s => s.date)).size;
   const report = {
     generatedAt: new Date().toISOString(),
-    method: "Wyckoff-state reads from Catchem-data bot (eBay active listings). States are interpretations, not facts. Demand = Buy Pressure (est. from listing activity, not reported sales). Active Listings measured.",
+    method: "Wyckoff-state reads, weekly lens (the 3-day depth read is the short lens; same history). Five states: heating/cooling/quiet-tightening/supply-into-strength/ranging. Demand = Buy Pressure (est. from listing activity, not reported sales). Active Listings measured.",
     mode: supplyDays >= 8 ? "dual-signal" : `price-only (supply history: day ${supplyDays} of 8 needed)`,
     counts: { markup: reads.filter(r=>r.state==="markup").length, markdown: reads.filter(r=>r.state==="markdown").length,
-              accumulation: reads.filter(r=>r.state==="accumulation").length, distribution: reads.filter(r=>r.state==="distribution").length,
+              accumulation: reads.filter(r=>r.state==="accumulation").length, distribution: reads.filter(r=>r.state==="distribution").length, ranging: reads.filter(r=>r.state==="ranging").length,
               excluded: excluded.length },
     reads, excluded,
   };
@@ -127,7 +129,7 @@ async function main() {
   await writeFile(join(DATA, "heat-history.json"), JSON.stringify(snapshots) + "\n");
   await writeFile(join(DATA, "heat-report.json"), JSON.stringify(report, null, 2) + "\n");
   console.log(`✓ heat-report.json — mode: ${report.mode}`);
-  console.log(`  🔥${report.counts.markup} ❄️${report.counts.markdown} 😴${report.counts.accumulation} 📈${report.counts.distribution} · excluded: ${report.counts.excluded}`);
+  console.log(`  🔥${report.counts.markup} ❄️${report.counts.markdown} 📤${report.counts.distribution} 😴${report.counts.accumulation} ⏸${report.counts.ranging} · excluded: ${report.counts.excluded}`);
 }
 
 main().catch(e => { console.error("Fatal:", e); process.exit(1); });

@@ -1,12 +1,13 @@
 {
-  "generatedAt": "2026-08-19T04:37:57.431Z",
-  "method": "Wyckoff-state reads from Catchem-data bot (eBay active listings). States are interpretations, not facts. Demand = Buy Pressure (est. from listing activity, not reported sales). Active Listings measured.",
+  "generatedAt": "2026-08-19T05:45:16.895Z",
+  "method": "Wyckoff-state reads, weekly lens (the 3-day depth read is the short lens; same history). Five states: heating/cooling/quiet-tightening/supply-into-strength/ranging. Demand = Buy Pressure (est. from listing activity, not reported sales). Active Listings measured.",
   "mode": "price-only (supply history: day 2 of 8 needed)",
   "counts": {
     "markup": 0,
     "markdown": 0,
     "accumulation": 0,
     "distribution": 0,
+    "ranging": 0,
     "excluded": 168
   },
   "reads": [],
@@ -899,7 +900,7 @@
       "subtype": "booster-box",
       "priceMedian": 195,
       "listingCount": 98,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "me5-etb",
@@ -908,7 +909,7 @@
       "subtype": "etb",
       "priceMedian": 79.78,
       "listingCount": 90,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "me5-bb",
@@ -917,7 +918,7 @@
       "subtype": "booster-bundle",
       "priceMedian": 41.99,
       "listingCount": 109,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "me5-pc-etb",
@@ -926,7 +927,7 @@
       "subtype": "pc-etb",
       "priceMedian": 135,
       "listingCount": 130,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "me4-booster-box",
@@ -935,7 +936,7 @@
       "subtype": "booster-box",
       "priceMedian": 200,
       "listingCount": 106,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "me4-etb",
@@ -944,7 +945,7 @@
       "subtype": "etb",
       "priceMedian": 74.99,
       "listingCount": 101,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "me4-bb",
@@ -953,7 +954,7 @@
       "subtype": "booster-bundle",
       "priceMedian": 44.88,
       "listingCount": 114,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "me4-pc-etb",
@@ -962,7 +963,7 @@
       "subtype": "pc-etb",
       "priceMedian": 156,
       "listingCount": 114,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "me3-booster-box",
@@ -971,7 +972,7 @@
       "subtype": "booster-box",
       "priceMedian": 199,
       "listingCount": 92,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "me3-etb",
@@ -980,7 +981,7 @@
       "subtype": "etb",
       "priceMedian": 74.99,
       "listingCount": 114,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "me3-bb",
@@ -989,7 +990,7 @@
       "subtype": "booster-bundle",
       "priceMedian": 44.99,
       "listingCount": 128,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "me3-pc-etb",
@@ -998,7 +999,7 @@
       "subtype": "pc-etb",
       "priceMedian": 139.97,
       "listingCount": 108,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "me2pt5-etb",
@@ -1007,7 +1008,7 @@
       "subtype": "etb",
       "priceMedian": 175,
       "listingCount": 123,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "me2pt5-bb",
@@ -1016,7 +1017,7 @@
       "subtype": "booster-bundle",
       "priceMedian": 87,
       "listingCount": 122,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "me2pt5-pc-etb",
@@ -1025,7 +1026,7 @@
       "subtype": "pc-etb",
       "priceMedian": 474.04,
       "listingCount": 115,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "me2-booster-box",
@@ -1034,7 +1035,7 @@
       "subtype": "booster-box",
       "priceMedian": 441.99,
       "listingCount": 76,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "me2-etb",
@@ -1043,7 +1044,7 @@
       "subtype": "etb",
       "priceMedian": 155,
       "listingCount": 100,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "me2-bb",
@@ -1052,7 +1053,7 @@
       "subtype": "booster-bundle",
       "priceMedian": 88.04,
       "listingCount": 99,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "me2-pc-etb",
@@ -1061,7 +1062,7 @@
       "subtype": "pc-etb",
       "priceMedian": 329.99,
       "listingCount": 118,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "me1-booster-box",
@@ -1070,7 +1071,7 @@
       "subtype": "booster-box",
       "priceMedian": 331.18,
       "listingCount": 23,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "me1-enhanced-booster-box",
@@ -1079,7 +1080,7 @@
       "subtype": "booster-box",
       "priceMedian": 345,
       "listingCount": 26,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "me1-etb",
@@ -1088,7 +1089,7 @@
       "subtype": "etb",
       "priceMedian": 120,
       "listingCount": 40,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "me1-pc-etb",
@@ -1097,7 +1098,7 @@
       "subtype": "pc-etb",
       "priceMedian": 229.99,
       "listingCount": 16,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "sv8pt5-etb",
@@ -1106,7 +1107,7 @@
       "subtype": "etb",
       "priceMedian": 169.99,
       "listingCount": 134,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "sv8pt5-bb",
@@ -1115,7 +1116,7 @@
       "subtype": "booster-bundle",
       "priceMedian": 85,
       "listingCount": 135,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "sv8pt5-sc",
@@ -1124,7 +1125,7 @@
       "subtype": "special-collection",
       "priceMedian": 99.99,
       "listingCount": 121,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "sv10-etb",
@@ -1133,7 +1134,7 @@
       "subtype": "etb",
       "priceMedian": 136.65,
       "listingCount": 139,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "sv10-booster-box",
@@ -1142,7 +1143,7 @@
       "subtype": "booster-box",
       "priceMedian": 499.99,
       "listingCount": 87,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "sv9-etb",
@@ -1151,7 +1152,7 @@
       "subtype": "etb",
       "priceMedian": 139.99,
       "listingCount": 114,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "sv9-booster-box",
@@ -1160,7 +1161,7 @@
       "subtype": "booster-box",
       "priceMedian": 290.67,
       "listingCount": 63,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "sv8-etb",
@@ -1169,7 +1170,7 @@
       "subtype": "etb",
       "priceMedian": 139.99,
       "listingCount": 104,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "sv8-booster-box",
@@ -1178,7 +1179,7 @@
       "subtype": "booster-box",
       "priceMedian": 311.98,
       "listingCount": 85,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "sv7-etb",
@@ -1187,7 +1188,7 @@
       "subtype": "etb",
       "priceMedian": 170.79,
       "listingCount": 74,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "sv7-booster-box",
@@ -1196,7 +1197,7 @@
       "subtype": "booster-box",
       "priceMedian": 370.43,
       "listingCount": 57,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "sv6pt5-etb",
@@ -1205,7 +1206,7 @@
       "subtype": "etb",
       "priceMedian": 139,
       "listingCount": 111,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "sv6-etb",
@@ -1214,7 +1215,7 @@
       "subtype": "etb",
       "priceMedian": 120,
       "listingCount": 129,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "sv5-etb",
@@ -1223,7 +1224,7 @@
       "subtype": "etb",
       "priceMedian": 142.35,
       "listingCount": 119,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "sv4pt5-etb",
@@ -1232,7 +1233,7 @@
       "subtype": "etb",
       "priceMedian": 490,
       "listingCount": 102,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "sv3pt5-etb",
@@ -1241,7 +1242,7 @@
       "subtype": "etb",
       "priceMedian": 600,
       "listingCount": 130,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "sv3pt5-upc",
@@ -1250,7 +1251,7 @@
       "subtype": "upc",
       "priceMedian": 954.95,
       "listingCount": 139,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "swsh12pt5-etb",
@@ -1259,7 +1260,7 @@
       "subtype": "etb",
       "priceMedian": 335.99,
       "listingCount": 97,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "swsh12pt5-premium",
@@ -1268,7 +1269,7 @@
       "subtype": "special-collection",
       "priceMedian": 189.99,
       "listingCount": 83,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "swsh12-etb",
@@ -1277,7 +1278,7 @@
       "subtype": "etb",
       "priceMedian": 179.99,
       "listingCount": 105,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "swsh11-etb",
@@ -1286,7 +1287,7 @@
       "subtype": "etb",
       "priceMedian": 249.99,
       "listingCount": 135,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "swsh8-etb",
@@ -1295,7 +1296,7 @@
       "subtype": "etb",
       "priceMedian": 349.97,
       "listingCount": 84,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "swsh7-etb",
@@ -1304,7 +1305,7 @@
       "subtype": "etb",
       "priceMedian": 550,
       "listingCount": 113,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "swsh7-booster-box",
@@ -1313,7 +1314,7 @@
       "subtype": "booster-box",
       "priceMedian": 2899.99,
       "listingCount": 91,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "cel25-etb",
@@ -1322,7 +1323,7 @@
       "subtype": "etb",
       "priceMedian": 374.99,
       "listingCount": 52,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "cel25-upc",
@@ -1331,7 +1332,7 @@
       "subtype": "upc",
       "priceMedian": 1318.93,
       "listingCount": 71,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "swsh1-etb",
@@ -1340,7 +1341,7 @@
       "subtype": "etb",
       "priceMedian": 180,
       "listingCount": 11,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "sm12-etb",
@@ -1349,7 +1350,7 @@
       "subtype": "etb",
       "priceMedian": 593,
       "listingCount": 77,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "bw1-booster-box",
@@ -1412,7 +1413,7 @@
       "subtype": "booster-box",
       "priceMedian": 350,
       "listingCount": 43,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "sv6-booster-box",
@@ -1421,7 +1422,7 @@
       "subtype": "booster-box",
       "priceMedian": 387.98,
       "listingCount": 52,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "sv4-booster-box",
@@ -1430,7 +1431,7 @@
       "subtype": "booster-box",
       "priceMedian": 324.99,
       "listingCount": 56,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "sv3-booster-box",
@@ -1439,7 +1440,7 @@
       "subtype": "booster-box",
       "priceMedian": 423.98,
       "listingCount": 42,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "sv2-booster-box",
@@ -1448,7 +1449,7 @@
       "subtype": "booster-box",
       "priceMedian": 547,
       "listingCount": 46,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "sv1-booster-box",
@@ -1457,7 +1458,7 @@
       "subtype": "booster-box",
       "priceMedian": 330,
       "listingCount": 34,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "swsh12-booster-box",
@@ -1466,7 +1467,7 @@
       "subtype": "booster-box",
       "priceMedian": 559.98,
       "listingCount": 56,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "swsh11-booster-box",
@@ -1475,7 +1476,7 @@
       "subtype": "booster-box",
       "priceMedian": 780,
       "listingCount": 22,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "swsh9-booster-box",
@@ -1484,7 +1485,7 @@
       "subtype": "booster-box",
       "priceMedian": 649.99,
       "listingCount": 60,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "swsh10-booster-box",
@@ -1493,7 +1494,7 @@
       "subtype": "booster-box",
       "priceMedian": 429.99,
       "listingCount": 66,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "sv4pt5-bb",
@@ -1502,7 +1503,7 @@
       "subtype": "booster-bundle",
       "priceMedian": 200,
       "listingCount": 44,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "sv3pt5-bb",
@@ -1511,7 +1512,7 @@
       "subtype": "booster-bundle",
       "priceMedian": 197.98,
       "listingCount": 140,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     },
     {
       "id": "sv6pt5-bb",
@@ -1520,7 +1521,7 @@
       "subtype": "booster-bundle",
       "priceMedian": 62,
       "listingCount": 80,
-      "reason": "insufficient history (2 days)"
+      "reason": "insufficient history (1 days)"
     }
   ]
 }
