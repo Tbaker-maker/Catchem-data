@@ -1,0 +1,1925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Catch'em — App Homepage Mockup v1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #0b0d14;
+    --bg-deep: #070910;
+    --surface: #141824;
+    --surface-2: #1c2235;
+    --surface-3: #232a40;
+    --border: rgba(255, 255, 255, 0.07);
+    --border-strong: rgba(255, 255, 255, 0.14);
+    --text: #f4f5f8;
+    --text-sub: #8a93a8;
+    --text-muted: #5c637a;
+    --green: #36d399;
+    --purple: #c77dff;
+    --blue: #64a0ff;
+    --gold: #ffb84d;
+    --red: #ef5a5a;
+    --font-display: 'Syne', sans-serif;
+    --font-body: 'Sora', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-weight: 400;
+    line-height: 1.55;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ============ DESKTOP FRAME (for reviewing all screens side by side) ============ */
+  .desktop-frame {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 32px;
+    padding: 32px;
+    max-width: 1800px;
+    margin: 0 auto;
+  }
+
+  .phone-mockup {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    background: var(--bg);
+    border: 1px solid var(--border-strong);
+    border-radius: 32px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    min-height: 800px;
+    position: relative;
+  }
+
+  .phone-label {
+    position: absolute;
+    top: -28px;
+    left: 16px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* On narrow screens (phones), drop the frame and fill */
+  @media (max-width: 600px) {
+    .desktop-frame {
+      display: block;
+      padding: 0;
+    }
+    .phone-mockup {
+      max-width: 100%;
+      border-radius: 0;
+      border: none;
+      box-shadow: none;
+      min-height: 100vh;
+    }
+    .phone-label { display: none; }
+  }
+
+  /* ============ SHARED APP COMPONENTS ============ */
+
+  .app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px 14px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .brand-mark {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, var(--green) 0%, var(--gold) 55%, var(--purple) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 14px;
+    color: var(--bg-deep);
+  }
+
+  .brand-name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: -0.01em;
+  }
+
+  .brand-name::after {
+    content: "'em";
+    color: var(--text-sub);
+    margin-left: -4px;
+  }
+
+  .mode-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 100px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    transition: all 0.15s ease;
+  }
+
+  .mode-pill:hover, .mode-pill:active {
+    border-color: var(--border-strong);
+  }
+
+  .mode-pill .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  .mode-pill.collector .dot { background: var(--green); }
+  .mode-pill.flipper .dot { background: var(--gold); }
+  .mode-pill.grader .dot { background: var(--purple); }
+
+  .mode-pill .swap {
+    color: var(--text-muted);
+    font-size: 9px;
+    margin-left: 2px;
+  }
+
+  /* ============ PRE-LAUNCH BANNER ============ */
+  .prelaunch-banner {
+    background: linear-gradient(90deg, rgba(54,211,153,0.08), rgba(255,184,77,0.06), rgba(199,125,255,0.08));
+    border-bottom: 1px solid var(--border);
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 12px;
+  }
+
+  .prelaunch-banner .left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-sub);
+  }
+
+  .prelaunch-banner .pulse {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(54,211,153,0.4); }
+    50% { opacity: 0.6; box-shadow: 0 0 0 6px rgba(54,211,153,0); }
+  }
+
+  .prelaunch-banner .cta {
+    background: var(--text);
+    color: var(--bg-deep);
+    padding: 5px 12px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  /* ============ SCREEN 1: MODE SELECTION ============ */
+
+  .mode-select {
+    min-height: calc(100vh - 60px);
+    padding: 28px 20px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 24px;
+  }
+
+  .mode-select-header {
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .mode-select-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-bottom: 12px;
+  }
+
+  .mode-select-title {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+
+  .mode-select-title .accent {
+    background: linear-gradient(135deg, var(--green), var(--gold), var(--purple));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .mode-select-sub {
+    font-size: 14px;
+    color: var(--text-sub);
+    line-height: 1.5;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  .mode-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .mode-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mode-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .mode-card:hover, .mode-card:active {
+    background: var(--surface-2);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+
+  .mode-card:hover::before, .mode-card:active::before {
+    opacity: 1;
+  }
+
+  .mode-card.collector { --accent: var(--green); }
+  .mode-card.flipper { --accent: var(--gold); }
+  .mode-card.grader { --accent: var(--purple); }
+
+  .mode-card-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .mode-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface-3);
+    border: 1px solid var(--border-strong);
+    flex-shrink: 0;
+  }
+
+  .mode-icon svg { width: 20px; height: 20px; }
+
+  .mode-card.collector .mode-icon { color: var(--green); }
+  .mode-card.flipper .mode-icon { color: var(--gold); }
+  .mode-card.grader .mode-icon { color: var(--purple); }
+
+  .mode-card-title-wrap {
+    flex: 1;
+  }
+
+  .mode-card-title {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+
+  .mode-card-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .mode-card-body {
+    font-size: 13px;
+    color: var(--text-sub);
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+
+  .mode-card-previews {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .mode-card-preview {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: var(--surface-3);
+    color: var(--text-sub);
+    border: 1px solid var(--border);
+  }
+
+  .mode-select-footer {
+    text-align: center;
+    padding-top: 4px;
+  }
+
+  .mode-select-footer-text {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* ============ SCREEN 2: COLLECTOR HOMEPAGE ============ */
+
+  .screen {
+    padding-bottom: 60px;
+  }
+
+  .section {
+    padding: 20px;
+  }
+
+  .section + .section {
+    padding-top: 4px;
+  }
+
+  .section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .section-head-left {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .section-title-sm {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .section-count {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .section-action {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-sub);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* ---- COLLECTOR: Pack Hero ---- */
+
+  .pack-hero {
+    margin: 0 20px 24px;
+    background: linear-gradient(160deg, var(--surface) 0%, var(--surface-2) 100%);
+    border: 1px solid var(--border-strong);
+    border-radius: 24px;
+    padding: 24px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pack-hero::before {
+    content: "";
+    position: absolute;
+    top: -40%;
+    right: -30%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(54,211,153,0.15) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .pack-hero-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .pack-hero-label::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  .pack-hero-title {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+
+  .pack-hero-sub {
+    font-size: 13px;
+    color: var(--text-sub);
+    margin-bottom: 20px;
+  }
+
+  .pack-visual {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    max-width: 180px;
+    margin: 0 auto 18px;
+    border-radius: 12px;
+    background:
+      linear-gradient(160deg, #1a2238 0%, #0f1628 100%);
+    border: 1px solid var(--border-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+  }
+
+  .pack-visual::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(45deg, transparent 0 10px, rgba(255,255,255,0.02) 10px 20px),
+      radial-gradient(circle at 50% 30%, rgba(54,211,153,0.2), transparent 50%);
+    pointer-events: none;
+  }
+
+  .pack-visual:hover {
+    transform: translateY(-2px) scale(1.02);
+  }
+
+  .pack-foil {
+    width: 80%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: conic-gradient(
+      from 0deg,
+      var(--green) 0deg,
+      var(--gold) 120deg,
+      var(--purple) 240deg,
+      var(--green) 360deg
+    );
+    filter: blur(24px);
+    opacity: 0.35;
+    position: absolute;
+    top: 15%;
+  }
+
+  .pack-label-top {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 2;
+  }
+
+  .pack-label-logo {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 11px;
+    color: var(--text);
+    background: var(--bg-deep);
+    padding: 3px 7px;
+    border-radius: 4px;
+    letter-spacing: -0.02em;
+  }
+
+  .pack-label-logo .accent {
+    background: linear-gradient(135deg, var(--green), var(--gold), var(--purple));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .pack-label-issue {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-sub);
+    letter-spacing: 0.1em;
+  }
+
+  .pack-center {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+  }
+
+  .pack-center-title {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 4px;
+    background: linear-gradient(135deg, var(--green), var(--gold) 50%, var(--purple));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .pack-center-sub {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-sub);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .pack-cta {
+    display: block;
+    width: 100%;
+    padding: 14px 16px;
+    background: var(--text);
+    color: var(--bg-deep);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 15px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .pack-cta:hover, .pack-cta:active {
+    transform: scale(0.98);
+  }
+
+  .pack-cta .arrow {
+    display: inline-block;
+    margin-left: 6px;
+    transform: translateY(-1px);
+  }
+
+  .pack-streak {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 14px;
+    padding: 10px 14px;
+    background: rgba(54,211,153,0.08);
+    border: 1px solid rgba(54,211,153,0.2);
+    border-radius: 100px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--green);
+  }
+
+  .pack-streak-num {
+    font-weight: 600;
+  }
+
+  .pack-streak-sub {
+    color: var(--text-sub);
+  }
+
+  /* ---- COLLECTOR: Bag Row ---- */
+
+  .bag-row {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 0 20px;
+    margin: 0 -20px;
+    scrollbar-width: none;
+  }
+
+  .bag-row::-webkit-scrollbar { display: none; }
+
+  .bag-card {
+    flex-shrink: 0;
+    width: 120px;
+    aspect-ratio: 3/4;
+    border-radius: 10px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+  }
+
+  .bag-card:active {
+    transform: scale(0.97);
+  }
+
+  .bag-card-rarity {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    background: var(--bg-deep);
+    color: var(--text-sub);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+
+  .bag-card.rare .bag-card-rarity { color: var(--blue); }
+  .bag-card.epic .bag-card-rarity { color: var(--purple); }
+  .bag-card.legendary .bag-card-rarity { color: var(--gold); }
+
+  .bag-card-art {
+    aspect-ratio: 1;
+    margin-top: 16px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 32px;
+    color: var(--text);
+  }
+
+  .bag-card.signal .bag-card-art {
+    background: linear-gradient(135deg, rgba(54,211,153,0.2), rgba(54,211,153,0.05));
+    color: var(--green);
+  }
+
+  .bag-card.panic .bag-card-art {
+    background: linear-gradient(135deg, rgba(239,90,90,0.2), rgba(239,90,90,0.05));
+    color: var(--red);
+  }
+
+  .bag-card.calm .bag-card-art {
+    background: linear-gradient(135deg, rgba(100,160,255,0.2), rgba(100,160,255,0.05));
+    color: var(--blue);
+  }
+
+  .bag-card.hype .bag-card-art {
+    background: linear-gradient(135deg, rgba(255,184,77,0.2), rgba(255,184,77,0.05));
+    color: var(--gold);
+  }
+
+  .bag-card.grail .bag-card-art {
+    background: linear-gradient(135deg, rgba(199,125,255,0.25), rgba(199,125,255,0.05));
+    color: var(--purple);
+  }
+
+  .bag-card-name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 11px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  .bag-card-count {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* ---- COLLECTOR: Signals tile (shared across modes but themed) ---- */
+
+  .signal-tile {
+    display: block;
+    padding: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    text-decoration: none;
+    color: var(--text);
+    transition: background 0.15s ease;
+  }
+
+  .signal-tile:hover, .signal-tile:active {
+    background: var(--surface-2);
+  }
+
+  .signal-tile + .signal-tile {
+    margin-top: 8px;
+  }
+
+  .signal-tile-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+
+  .signal-tile-pillar {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .signal-tile-pillar::before {
+    content: "";
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--pillar);
+  }
+
+  .signal-tile.collector { --pillar: var(--green); }
+  .signal-tile.flipper { --pillar: var(--gold); }
+  .signal-tile.grader { --pillar: var(--purple); }
+
+  .signal-tile-pillar {
+    color: var(--pillar);
+  }
+
+  .signal-tile-time {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+
+  .signal-tile-title {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+
+  .signal-tile-sub {
+    font-size: 12px;
+    color: var(--text-sub);
+    margin-top: 4px;
+  }
+
+  /* ---- FLIPPER: Movers table ---- */
+
+  .movers-table {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .movers-filter {
+    display: flex;
+    padding: 4px;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    gap: 2px;
+  }
+
+  .movers-filter button {
+    flex: 1;
+    padding: 8px 6px;
+    background: transparent;
+    border: none;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .movers-filter button.active {
+    background: var(--surface);
+    color: var(--text);
+  }
+
+  .mover-row {
+    display: grid;
+    grid-template-columns: 24px 1fr auto auto;
+    gap: 10px;
+    padding: 12px 14px;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .mover-row:last-child { border-bottom: none; }
+
+  .mover-rank {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .mover-name {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  .mover-set {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .mover-grade {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 14px;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface-3);
+    border: 1px solid var(--border-strong);
+  }
+
+  .mover-grade.A { color: var(--green); border-color: rgba(54,211,153,0.3); background: rgba(54,211,153,0.08); }
+  .mover-grade.B { color: var(--gold); border-color: rgba(255,184,77,0.3); background: rgba(255,184,77,0.08); }
+  .mover-grade.C { color: var(--blue); border-color: rgba(100,160,255,0.3); background: rgba(100,160,255,0.08); }
+
+  .mover-delta {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    text-align: right;
+  }
+
+  .mover-delta.up { color: var(--green); }
+  .mover-delta.down { color: var(--red); }
+
+  /* ---- FLIPPER: Metric tiles ---- */
+
+  .metric-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .metric-tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+  }
+
+  .metric-tile-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+
+  .metric-tile-value {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .metric-tile-delta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .metric-tile-delta.up { color: var(--green); }
+  .metric-tile-delta.down { color: var(--red); }
+  .metric-tile-delta.flat { color: var(--text-muted); }
+
+  /* ---- GRADER: Pop report cards ---- */
+
+  .pop-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+  }
+
+  .pop-card + .pop-card {
+    margin-top: 10px;
+  }
+
+  .pop-card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .pop-card-title-wrap {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .pop-card-title {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+
+  .pop-card-set {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .pop-card-badge {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border-strong);
+    background: var(--surface-2);
+    color: var(--purple);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .pop-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+  }
+
+  .pop-stat {
+    text-align: left;
+  }
+
+  .pop-stat-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+  }
+
+  .pop-stat-value {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .pop-stat-sub {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-sub);
+    margin-top: 2px;
+  }
+
+  .pop-roi {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .pop-roi-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-sub);
+  }
+
+  .pop-roi-value {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--purple);
+  }
+
+  /* ---- BOTTOM NAV (all modes share this) ---- */
+
+  .bottom-nav {
+    position: sticky;
+    bottom: 0;
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    padding: 8px 10px 14px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 2px;
+  }
+
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 4px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: color 0.15s ease;
+  }
+
+  .nav-item.active { color: var(--text); }
+  .nav-item.active.collector { color: var(--green); }
+  .nav-item.active.flipper { color: var(--gold); }
+  .nav-item.active.grader { color: var(--purple); }
+
+  .nav-item svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* ---- SHELL PLACEHOLDER STATE (optional markers in flipper/grader) ---- */
+
+  .shell-note {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    text-align: center;
+    padding: 12px;
+    background: var(--surface);
+    border: 1px dashed var(--border-strong);
+    border-radius: 10px;
+    margin: 0 20px;
+  }
+
+  /* ---- UTILITY ---- */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0 20px;
+  }
+
+  /* Hide desktop-only label on phone */
+  @media (min-width: 601px) {
+    .mobile-only { display: none; }
+  }
+
+  /* Show desktop frame title */
+  .frame-title {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 20px 20px 0;
+    font-family: var(--font-display);
+    color: var(--text);
+  }
+
+  .frame-title h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+
+  .frame-title p {
+    font-size: 14px;
+    color: var(--text-sub);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 600px) {
+    .frame-title { display: none; }
+  }
+
+  /* Mobile tab switcher (phone only) */
+  .screen-tabs {
+    display: none;
+  }
+
+  @media (max-width: 600px) {
+    .screen-tabs {
+      display: flex;
+      gap: 4px;
+      padding: 12px 16px;
+      background: var(--bg-deep);
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+      scrollbar-width: none;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+    .screen-tabs::-webkit-scrollbar { display: none; }
+
+    .screen-tab {
+      flex-shrink: 0;
+      padding: 6px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-sub);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+    }
+
+    .screen-tab.active {
+      background: var(--text);
+      color: var(--bg-deep);
+    }
+
+    .phone-mockup { display: none; }
+    .phone-mockup.active { display: block; }
+  }
+
+</style>
+</head>
+<body>
+
+<!-- Mobile tab switcher (phone only) -->
+<div class="screen-tabs" role="tablist">
+  <button class="screen-tab active" data-target="mode-select">Mode Select</button>
+  <button class="screen-tab" data-target="collector">Collector</button>
+  <button class="screen-tab" data-target="flipper">Flipper</button>
+  <button class="screen-tab" data-target="grader">Grader</button>
+</div>
+
+<div class="desktop-frame">
+
+  <div class="frame-title">
+    <h1>Catch'em — App Homepage Mockup v1</h1>
+    <p>Four screens: mode selection + three mode-specific homepages. Mobile-first (380px target). Tap through on phone; scroll side-by-side on desktop.</p>
+  </div>
+
+  <!-- ============ SCREEN 1: MODE SELECTION ============ -->
+  <div class="phone-mockup active" id="mode-select">
+    <div class="phone-label">1 · Mode Select</div>
+
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-mark">C</div>
+        <div class="brand-name">Catch</div>
+      </div>
+      <span style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.1em;">v0.1 · BETA</span>
+    </header>
+
+    <div class="prelaunch-banner">
+      <div class="left">
+        <span class="pulse"></span>
+        <span>Pre-launch · Waitlist open</span>
+      </div>
+      <a href="#" class="cta">Join →</a>
+    </div>
+
+    <div class="mode-select">
+      <div class="mode-select-header">
+        <div class="mode-select-eyebrow">Welcome</div>
+        <div class="mode-select-title">Which one<br><span class="accent">are you?</span></div>
+        <div class="mode-select-sub">Pick the way you use Pokemon cards. Catch'em tunes itself to you.</div>
+      </div>
+
+      <div class="mode-options">
+
+        <div class="mode-card collector">
+          <div class="mode-card-head">
+            <div class="mode-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="4" width="16" height="16" rx="2"/>
+                <path d="M9 9h6v6H9z"/>
+              </svg>
+            </div>
+            <div class="mode-card-title-wrap">
+              <div class="mode-card-title">Collector</div>
+              <div class="mode-card-tag">Hunt · Hold · Display</div>
+            </div>
+          </div>
+          <div class="mode-card-body">What to hunt. What to hold. What your collection really means.</div>
+          <div class="mode-card-previews">
+            <span class="mode-card-preview">Daily Pack</span>
+            <span class="mode-card-preview">Bag</span>
+            <span class="mode-card-preview">Grail Watch</span>
+          </div>
+        </div>
+
+        <div class="mode-card flipper">
+          <div class="mode-card-head">
+            <div class="mode-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 17 9 11 13 15 21 7"/>
+                <polyline points="14 7 21 7 21 14"/>
+              </svg>
+            </div>
+            <div class="mode-card-title-wrap">
+              <div class="mode-card-title">Flipper</div>
+              <div class="mode-card-tag">Velocity · Volume · Arb</div>
+            </div>
+          </div>
+          <div class="mode-card-body">Movers, margins, and the supply signals that move before price does.</div>
+          <div class="mode-card-previews">
+            <span class="mode-card-preview">Movers</span>
+            <span class="mode-card-preview">Flow Index</span>
+            <span class="mode-card-preview">Arb Alerts</span>
+          </div>
+        </div>
+
+        <div class="mode-card grader">
+          <div class="mode-card-head">
+            <div class="mode-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                <path d="M2 17l10 5 10-5"/>
+                <path d="M2 12l10 5 10-5"/>
+              </svg>
+            </div>
+            <div class="mode-card-title-wrap">
+              <div class="mode-card-title">Grader</div>
+              <div class="mode-card-tag">Pop · Premium · ROI</div>
+            </div>
+          </div>
+          <div class="mode-card-body">Pop report moves, PSA-10 premiums, and whether that sub is worth it.</div>
+          <div class="mode-card-previews">
+            <span class="mode-card-preview">Pop Reports</span>
+            <span class="mode-card-preview">Grade ROI</span>
+            <span class="mode-card-preview">Sub Calc</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="mode-select-footer">
+        <div class="mode-select-footer-text">You can switch modes anytime · Your data stays.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 2: COLLECTOR HOMEPAGE ============ -->
+  <div class="phone-mockup" id="collector">
+    <div class="phone-label">2 · Collector Home</div>
+
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-mark">C</div>
+        <div class="brand-name">Catch</div>
+      </div>
+      <button class="mode-pill collector">
+        <span class="dot"></span>
+        Collector
+        <span class="swap">⇄</span>
+      </button>
+    </header>
+
+    <div class="prelaunch-banner">
+      <div class="left">
+        <span class="pulse"></span>
+        <span>Preview mode · Real data comes at launch</span>
+      </div>
+      <a href="#" class="cta">Join →</a>
+    </div>
+
+    <div class="screen">
+
+      <!-- Pack Hero -->
+      <div class="pack-hero">
+        <div class="pack-hero-label">Today's Pack · Ready</div>
+        <div class="pack-hero-title">Tuesday's Catch</div>
+        <div class="pack-hero-sub">4 cards inside. Signals Issue 012 + one grail on the line.</div>
+
+        <div class="pack-visual">
+          <div class="pack-label-top">
+            <span class="pack-label-logo">Catch<span class="accent">'em</span></span>
+            <span class="pack-label-issue">#012</span>
+          </div>
+          <div class="pack-foil"></div>
+          <div class="pack-center">
+            <div class="pack-center-title">TUE<br>PACK</div>
+            <div class="pack-center-sub">Apr 22 · 2026</div>
+          </div>
+        </div>
+
+        <a href="#" class="pack-cta">Rip the pack <span class="arrow">→</span></a>
+
+        <div class="pack-streak">
+          <span class="pack-streak-num">🔥 12 day streak</span>
+          <span class="pack-streak-sub">· 18 to milestone</span>
+        </div>
+      </div>
+
+      <!-- Your Bag -->
+      <div class="section">
+        <div class="section-head">
+          <div class="section-head-left">
+            <div class="section-title">Your Bag</div>
+            <div class="section-count">47 cards</div>
+          </div>
+          <a href="#" class="section-action">See all →</a>
+        </div>
+
+        <div class="bag-row">
+          <div class="bag-card legendary grail">
+            <div class="bag-card-rarity">LEG</div>
+            <div class="bag-card-art">PP</div>
+            <div>
+              <div class="bag-card-name">Perfect Pull</div>
+              <div class="bag-card-count">×1</div>
+            </div>
+          </div>
+          <div class="bag-card epic signal">
+            <div class="bag-card-rarity">EPIC</div>
+            <div class="bag-card-art">S</div>
+            <div>
+              <div class="bag-card-name">The Signal</div>
+              <div class="bag-card-count">×2</div>
+            </div>
+          </div>
+          <div class="bag-card rare hype">
+            <div class="bag-card-rarity">RARE</div>
+            <div class="bag-card-art">H</div>
+            <div>
+              <div class="bag-card-name">Hype Train</div>
+              <div class="bag-card-count">×3</div>
+            </div>
+          </div>
+          <div class="bag-card rare calm">
+            <div class="bag-card-rarity">RARE</div>
+            <div class="bag-card-art">C</div>
+            <div>
+              <div class="bag-card-name">Calm Collector</div>
+              <div class="bag-card-count">×4</div>
+            </div>
+          </div>
+          <div class="bag-card panic">
+            <div class="bag-card-rarity">COM</div>
+            <div class="bag-card-art">P</div>
+            <div>
+              <div class="bag-card-name">Panicked Flipper</div>
+              <div class="bag-card-count">×2</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Collector Signals -->
+      <div class="section">
+        <div class="section-head">
+          <div class="section-head-left">
+            <div class="section-title">For you</div>
+            <div class="section-count">· Collector edit</div>
+          </div>
+          <a href="#" class="section-action">Archive →</a>
+        </div>
+
+        <a href="#" class="signal-tile collector">
+          <div class="signal-tile-head">
+            <div class="signal-tile-pillar">Collector</div>
+            <div class="signal-tile-time">2h ago</div>
+          </div>
+          <div class="signal-tile-title">Evolving Skies singles look undervalued vs peers</div>
+          <div class="signal-tile-sub">3 green months in 12. All peers at 6–8. Moonbreon still 30% below all-time high.</div>
+        </a>
+
+        <a href="#" class="signal-tile collector">
+          <div class="signal-tile-head">
+            <div class="signal-tile-pillar">Collector</div>
+            <div class="signal-tile-time">Yesterday</div>
+          </div>
+          <div class="signal-tile-title">Silver Tempest Lugia enters Grail Watch</div>
+          <div class="signal-tile-sub">Persistence signal: 11 of 19 months on demand dashboard. Quiet accumulator.</div>
+        </a>
+
+        <a href="#" class="signal-tile collector">
+          <div class="signal-tile-head">
+            <div class="signal-tile-pillar">Collector</div>
+            <div class="signal-tile-time">2 days</div>
+          </div>
+          <div class="signal-tile-title">Crown Zenith ETBs officially not a buying window anymore</div>
+          <div class="signal-tile-sub">Up 7x since late 2023. Holding mode only. Where the next Crown Zenith might be: inside.</div>
+        </a>
+      </div>
+    </div>
+
+    <nav class="bottom-nav">
+      <a href="#" class="nav-item active collector">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 3l9 9"/><path d="M5 10v10h14V10"/></svg>
+        Home
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h16"/></svg>
+        Bag
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        Discover
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v4H4z"/><path d="M4 12h16v8H4z"/></svg>
+        Signals
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg>
+        You
+      </a>
+    </nav>
+  </div>
+
+  <!-- ============ SCREEN 3: FLIPPER HOMEPAGE ============ -->
+  <div class="phone-mockup" id="flipper">
+    <div class="phone-label">3 · Flipper Home</div>
+
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-mark">C</div>
+        <div class="brand-name">Catch</div>
+      </div>
+      <button class="mode-pill flipper">
+        <span class="dot"></span>
+        Flipper
+        <span class="swap">⇄</span>
+      </button>
+    </header>
+
+    <div class="prelaunch-banner">
+      <div class="left">
+        <span class="pulse"></span>
+        <span>Preview · Live data at launch</span>
+      </div>
+      <a href="#" class="cta">Join →</a>
+    </div>
+
+    <div class="screen">
+
+      <!-- Metrics Row -->
+      <div class="section" style="padding-top: 22px;">
+        <div class="section-head">
+          <div class="section-head-left">
+            <div class="section-title">Flow, today</div>
+          </div>
+          <span class="section-count">Updated 4:12 PM</span>
+        </div>
+
+        <div class="metric-grid">
+          <div class="metric-tile">
+            <div class="metric-tile-label">Top-mover index</div>
+            <div class="metric-tile-value">+4.2%</div>
+            <div class="metric-tile-delta up">↑ 1.1 vs 7d</div>
+          </div>
+          <div class="metric-tile">
+            <div class="metric-tile-label">Absorption rate</div>
+            <div class="metric-tile-value">6.8%</div>
+            <div class="metric-tile-delta up">↑ elevated</div>
+          </div>
+          <div class="metric-tile">
+            <div class="metric-tile-label">New listings (7d)</div>
+            <div class="metric-tile-value">2,147</div>
+            <div class="metric-tile-delta down">↓ 12.3%</div>
+          </div>
+          <div class="metric-tile">
+            <div class="metric-tile-label">Flow index</div>
+            <div class="metric-tile-value">0.72</div>
+            <div class="metric-tile-delta up">tightening</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Movers -->
+      <div class="section">
+        <div class="section-head">
+          <div class="section-head-left">
+            <div class="section-title">Movers</div>
+            <div class="section-count">24h</div>
+          </div>
+          <a href="#" class="section-action">Leaderboard →</a>
+        </div>
+
+        <div class="movers-table">
+          <div class="movers-filter">
+            <button class="active">Tightening</button>
+            <button>Loosening</button>
+            <button>Volume</button>
+          </div>
+
+          <div class="mover-row">
+            <div class="mover-rank">01</div>
+            <div>
+              <div class="mover-name">Riolu · Shiny Ultra Rare</div>
+              <div class="mover-set">Surging Sparks · 241</div>
+            </div>
+            <div class="mover-grade A">A</div>
+            <div class="mover-delta up">+18.4%</div>
+          </div>
+          <div class="mover-row">
+            <div class="mover-rank">02</div>
+            <div>
+              <div class="mover-name">Charizard ex · Full Art</div>
+              <div class="mover-set">151 · 183</div>
+            </div>
+            <div class="mover-grade A">A</div>
+            <div class="mover-delta up">+12.1%</div>
+          </div>
+          <div class="mover-row">
+            <div class="mover-rank">03</div>
+            <div>
+              <div class="mover-name">Dachsbun · Illust. Rare</div>
+              <div class="mover-set">Scarlet & Violet · 208</div>
+            </div>
+            <div class="mover-grade B">B</div>
+            <div class="mover-delta up">+9.7%</div>
+          </div>
+          <div class="mover-row">
+            <div class="mover-rank">04</div>
+            <div>
+              <div class="mover-name">Umbreon VMAX · Alt Art</div>
+              <div class="mover-set">Evolving Skies · 215</div>
+            </div>
+            <div class="mover-grade A">A</div>
+            <div class="mover-delta up">+4.2%</div>
+          </div>
+          <div class="mover-row">
+            <div class="mover-rank">05</div>
+            <div>
+              <div class="mover-name">Gardevoir ex · SIR</div>
+              <div class="mover-set">SV Base · 245</div>
+            </div>
+            <div class="mover-grade B">B</div>
+            <div class="mover-delta down">−2.8%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Flipper Signals -->
+      <div class="section">
+        <div class="section-head">
+          <div class="section-head-left">
+            <div class="section-title-sm">Flipper Signals</div>
+          </div>
+          <a href="#" class="section-action">All →</a>
+        </div>
+
+        <a href="#" class="signal-tile flipper">
+          <div class="signal-tile-head">
+            <div class="signal-tile-pillar">Flipper</div>
+            <div class="signal-tile-time">45m ago</div>
+          </div>
+          <div class="signal-tile-title">Chilling Reign box on the buy-side: chase up 4, box flat 2</div>
+          <div class="signal-tile-sub">Divergence signal triggered. Chase-leads-box thesis holding.</div>
+        </a>
+
+        <a href="#" class="signal-tile flipper">
+          <div class="signal-tile-head">
+            <div class="signal-tile-pillar">Flipper</div>
+            <div class="signal-tile-time">3h ago</div>
+          </div>
+          <div class="signal-tile-title">Astral Radiance ETB: 5th red month</div>
+          <div class="signal-tile-sub">Sealed rarely goes down. When it does five straight, look.</div>
+        </a>
+      </div>
+    </div>
+
+    <nav class="bottom-nav">
+      <a href="#" class="nav-item active flipper">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 3l9 9"/><path d="M5 10v10h14V10"/></svg>
+        Home
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>
+        Movers
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        Discover
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v4H4z"/><path d="M4 12h16v8H4z"/></svg>
+        Signals
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg>
+        You
+      </a>
+    </nav>
+  </div>
+
+  <!-- ============ SCREEN 4: GRADER HOMEPAGE ============ -->
+  <div class="phone-mockup" id="grader">
+    <div class="phone-label">4 · Grader Home</div>
+
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-mark">C</div>
+        <div class="brand-name">Catch</div>
+      </div>
+      <button class="mode-pill grader">
+        <span class="dot"></span>
+        Grader
+        <span class="swap">⇄</span>
+      </button>
+    </header>
+
+    <div class="prelaunch-banner">
+      <div class="left">
+        <span class="pulse"></span>
+        <span>Preview · PSA feed at launch</span>
+      </div>
+      <a href="#" class="cta">Join →</a>
+    </div>
+
+    <div class="screen">
+
+      <!-- Metric strip -->
+      <div class="section" style="padding-top: 22px;">
+        <div class="section-head">
+          <div class="section-head-left">
+            <div class="section-title">Grading floor</div>
+          </div>
+          <span class="section-count">PSA · last 7d</span>
+        </div>
+
+        <div class="metric-grid">
+          <div class="metric-tile">
+            <div class="metric-tile-label">PSA-10 premium avg</div>
+            <div class="metric-tile-value">3.4×</div>
+            <div class="metric-tile-delta up">↑ 0.2 vs mo</div>
+          </div>
+          <div class="metric-tile">
+            <div class="metric-tile-label">Top pop gain (7d)</div>
+            <div class="metric-tile-value">+412</div>
+            <div class="metric-tile-delta flat">graded pops</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grade ROI Watch -->
+      <div class="section">
+        <div class="section-head">
+          <div class="section-head-left">
+            <div class="section-title">Grade ROI watch</div>
+          </div>
+          <a href="#" class="section-action">Full list →</a>
+        </div>
+
+        <div class="pop-card">
+          <div class="pop-card-head">
+            <div class="pop-card-title-wrap">
+              <div class="pop-card-title">Umbreon VMAX · Alt Art</div>
+              <div class="pop-card-set">Evolving Skies · 215/203</div>
+            </div>
+            <div class="pop-card-badge">Grail</div>
+          </div>
+          <div class="pop-stats">
+            <div class="pop-stat">
+              <div class="pop-stat-label">Raw</div>
+              <div class="pop-stat-value">$1,890</div>
+              <div class="pop-stat-sub">7d median</div>
+            </div>
+            <div class="pop-stat">
+              <div class="pop-stat-label">PSA 10</div>
+              <div class="pop-stat-value">$4,650</div>
+              <div class="pop-stat-sub">recent sold</div>
+            </div>
+            <div class="pop-stat">
+              <div class="pop-stat-label">Pop 10</div>
+              <div class="pop-stat-value">8,214</div>
+              <div class="pop-stat-sub">+28 / 7d</div>
+            </div>
+          </div>
+          <div class="pop-roi">
+            <span class="pop-roi-label">Est. grade ROI (PSA, net fees)</span>
+            <span class="pop-roi-value">+124%</span>
+          </div>
+        </div>
+
+        <div class="pop-card">
+          <div class="pop-card-head">
+            <div class="pop-card-title-wrap">
+              <div class="pop-card-title">Charizard ex · Full Art</div>
+              <div class="pop-card-set">151 · 183/165</div>
+            </div>
+            <div class="pop-card-badge">Watch</div>
+          </div>
+          <div class="pop-stats">
+            <div class="pop-stat">
+              <div class="pop-stat-label">Raw</div>
+              <div class="pop-stat-value">$412</div>
+              <div class="pop-stat-sub">7d median</div>
+            </div>
+            <div class="pop-stat">
+              <div class="pop-stat-label">PSA 10</div>
+              <div class="pop-stat-value">$1,220</div>
+              <div class="pop-stat-sub">recent sold</div>
+            </div>
+            <div class="pop-stat">
+              <div class="pop-stat-label">Pop 10</div>
+              <div class="pop-stat-value">3,871</div>
+              <div class="pop-stat-sub">+52 / 7d</div>
+            </div>
+          </div>
+          <div class="pop-roi">
+            <span class="pop-roi-label">Est. grade ROI (PSA, net fees)</span>
+            <span class="pop-roi-value">+146%</span>
+          </div>
+        </div>
+
+        <div class="pop-card">
+          <div class="pop-card-head">
+            <div class="pop-card-title-wrap">
+              <div class="pop-card-title">Mega Charizard X</div>
+              <div class="pop-card-set">Phantasmal Flames · 199/204</div>
+            </div>
+            <div class="pop-card-badge">Volatile</div>
+          </div>
+          <div class="pop-stats">
+            <div class="pop-stat">
+              <div class="pop-stat-label">Raw</div>
+              <div class="pop-stat-value">$812</div>
+              <div class="pop-stat-sub">wide spread</div>
+            </div>
+            <div class="pop-stat">
+              <div class="pop-stat-label">PSA 10</div>
+              <div class="pop-stat-value">$1,950</div>
+              <div class="pop-stat-sub">thin comps</div>
+            </div>
+            <div class="pop-stat">
+              <div class="pop-stat-label">Pop 10</div>
+              <div class="pop-stat-value">642</div>
+              <div class="pop-stat-sub">+24 / 7d</div>
+            </div>
+          </div>
+          <div class="pop-roi">
+            <span class="pop-roi-label">Est. grade ROI (PSA, net fees)</span>
+            <span class="pop-roi-value">+38%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grader Signals -->
+      <div class="section">
+        <div class="section-head">
+          <div class="section-head-left">
+            <div class="section-title-sm">Grader Signals</div>
+          </div>
+          <a href="#" class="section-action">All →</a>
+        </div>
+
+        <a href="#" class="signal-tile grader">
+          <div class="signal-tile-head">
+            <div class="signal-tile-pillar">Grader</div>
+            <div class="signal-tile-time">1h ago</div>
+          </div>
+          <div class="signal-tile-title">PSA turnaround times back under 30 days</div>
+          <div class="signal-tile-sub">Economy tier. Impacts the math on sub-$500 cards. Do the calc before you ship.</div>
+        </a>
+
+        <a href="#" class="signal-tile grader">
+          <div class="signal-tile-head">
+            <div class="signal-tile-pillar">Grader</div>
+            <div class="signal-tile-time">5h ago</div>
+          </div>
+          <div class="signal-tile-title">Moonbreon pop 10 crossing 8,200 this week</div>
+          <div class="signal-tile-sub">Premium holding at 2.5× despite pop growth. Rare resilience.</div>
+        </a>
+      </div>
+    </div>
+
+    <nav class="bottom-nav">
+      <a href="#" class="nav-item active grader">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 3l9 9"/><path d="M5 10v10h14V10"/></svg>
+        Home
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        Pops
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        Discover
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v4H4z"/><path d="M4 12h16v8H4z"/></svg>
+        Signals
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg>
+        You
+      </a>
+    </nav>
+  </div>
+
+</div>
+
+<script>
+  // Mobile tab switcher
+  const tabs = document.querySelectorAll('.screen-tab');
+  const mockups = document.querySelectorAll('.phone-mockup');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.target;
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      mockups.forEach(m => {
+        m.classList.toggle('active', m.id === target);
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+</script>
+
+</body>
+</html>

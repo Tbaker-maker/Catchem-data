@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daily Pack + Bag · Catch'em Mockup v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,500&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#0b0d14;--bg-deep:#070910;--surface:#141824;--surface-2:#1c2235;--surface-3:#232a40;
+  --border:rgba(255,255,255,.07);--border-strong:rgba(255,255,255,.14);
+  --text:#f4f5f8;--text-sub:#8a93a8;--text-muted:#5c637a;
+  --green:#36d399;--purple:#c77dff;--blue:#64a0ff;--gold:#ffb84d;--red:#ef5a5a;
+  --font-display:'Syne',sans-serif;--font-body:'Sora',sans-serif;
+  --font-mono:'JetBrains Mono',monospace;--font-editorial:'Fraunces',Georgia,serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);line-height:1.5;overflow-x:hidden;-webkit-font-smoothing:antialiased;min-height:100vh;}
+body::before{content:"";position:fixed;inset:0;background-image:radial-gradient(ellipse 900px 700px at 80% 0%,rgba(54,211,153,.06),transparent),radial-gradient(ellipse 900px 800px at 20% 100%,rgba(199,125,255,.05),transparent),linear-gradient(transparent 0%,transparent calc(100% - 1px),rgba(255,255,255,.025) 100%),linear-gradient(90deg,transparent 0%,transparent calc(100% - 1px),rgba(255,255,255,.025) 100%);background-size:100% 100%,100% 100%,100% 64px,64px 100%;pointer-events:none;z-index:0;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+
+.shell{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;}
+
+.nav{padding:20px 32px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:rgba(11,13,20,.82);backdrop-filter:blur(14px);position:sticky;top:0;z-index:50;}
+.nav-left{display:flex;align-items:center;gap:28px;}
+.logo{font-family:var(--font-display);font-weight:700;font-size:22px;letter-spacing:-.02em;display:flex;align-items:center;gap:10px;}
+.logo-mark{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,var(--green),var(--blue));display:flex;align-items:center;justify-content:center;font-size:14px;color:#071b13;font-weight:800;}
+.nav-tabs{display:flex;gap:4px;}
+.tab{font-family:var(--font-mono);font-size:11px;letter-spacing:.15em;text-transform:uppercase;padding:8px 14px;border-radius:8px;color:var(--text-sub);transition:background .2s,color .2s;}
+.tab:hover{background:var(--surface);color:var(--text);}
+.tab.active{background:var(--surface);color:var(--green);}
+.tab .count{display:inline-block;margin-left:6px;padding:1px 6px;background:rgba(54,211,153,.15);color:var(--green);border-radius:999px;font-size:9px;font-weight:700;}
+.mock-tag{font-family:var(--font-mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-muted);padding:5px 10px;border:1px dashed var(--border-strong);border-radius:999px;}
+
+.main{flex:1;max-width:1100px;width:100%;margin:0 auto;padding:32px 32px 80px;}
+
+.view{display:none;}
+.view.active{display:block;animation:viewIn .35s ease-out;}
+@keyframes viewIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* Hero */
+.hero{display:grid;grid-template-columns:1fr auto;gap:32px;margin-bottom:40px;align-items:center;}
+.hero-left{display:flex;flex-direction:column;gap:14px;}
+.kicker{font-family:var(--font-mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--green);font-weight:600;display:flex;align-items:center;gap:10px;}
+.kicker::before{content:"";width:24px;height:1px;background:var(--green);}
+.hero h1{font-family:var(--font-editorial);font-weight:500;font-size:clamp(32px,4.5vw,48px);line-height:1.08;letter-spacing:-.015em;font-variation-settings:"opsz" 144;}
+.hero h1 em{font-style:italic;color:var(--green);}
+.hero-sub{font-size:15px;color:var(--text-sub);max-width:520px;line-height:1.6;}
+.streak-display{text-align:right;font-family:var(--font-mono);}
+.streak-label{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;}
+.streak-number{font-family:var(--font-display);font-size:48px;font-weight:700;color:var(--text);line-height:1;letter-spacing:-.02em;}
+.streak-flame{font-size:32px;filter:drop-shadow(0 0 12px rgba(255,184,77,.5));animation:flicker 2s infinite;}
+@keyframes flicker{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.05);opacity:.9;}}
+
+/* Pack stage */
+.pack-stage{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:56px 40px;position:relative;overflow:hidden;min-height:620px;display:flex;align-items:center;justify-content:center;}
+.pack-stage::before{content:"";position:absolute;inset:-1px;background:linear-gradient(135deg,rgba(54,211,153,.15),transparent 40%,transparent 60%,rgba(100,160,255,.1));border-radius:24px;z-index:0;pointer-events:none;}
+
+.pack-wrap{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:28px;}
+.pack-meta{text-align:center;margin-bottom:4px;}
+.pack-date{font-family:var(--font-mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;}
+.pack-name{font-family:var(--font-display);font-weight:700;font-size:22px;letter-spacing:-.01em;}
+.pack-drop-label{display:inline-block;font-family:var(--font-mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);background:rgba(255,184,77,.1);border:1px solid rgba(255,184,77,.25);padding:4px 10px;border-radius:999px;margin-top:6px;}
+
+/* PACK - booster style */
+.pack{width:200px;height:320px;position:relative;cursor:pointer;transition:transform .3s;animation:packFloat 3s ease-in-out infinite;}
+@keyframes packFloat{0%,100%{transform:translateY(0) rotate(-1deg);}50%{transform:translateY(-8px) rotate(1deg);}}
+.pack:hover{animation-play-state:paused;transform:translateY(-4px) scale(1.03);}
+
+.pack-tab{position:absolute;top:-12px;left:50%;transform:translateX(-50%);width:28px;height:20px;background:var(--bg);border:1px solid rgba(54,211,153,.3);border-bottom:none;border-radius:14px 14px 0 0;z-index:3;}
+.pack-tab::after{content:"";position:absolute;top:6px;left:50%;transform:translateX(-50%);width:12px;height:8px;background:var(--bg);border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,.5);}
+
+.pack-top,.pack-bottom{position:absolute;left:0;right:0;background:linear-gradient(135deg,#0f2418 0%,#1a3d2a 40%,#0d1a12 100%);border:1px solid rgba(54,211,153,.35);box-shadow:0 0 0 1px rgba(54,211,153,.15),0 20px 60px rgba(0,0,0,.5),0 0 60px rgba(54,211,153,.15),inset 0 1px 0 rgba(255,255,255,.1);overflow:hidden;}
+.pack-top{top:0;height:60px;border-radius:14px 14px 0 0;z-index:2;transition:transform .6s cubic-bezier(.4,.1,.6,1);}
+.pack-bottom{top:60px;bottom:0;border-radius:0 0 14px 14px;border-top:1px dashed rgba(54,211,153,.35);z-index:1;}
+.pack-bottom::before{content:"";position:absolute;top:-1px;left:0;right:0;height:2px;background:repeating-linear-gradient(90deg,rgba(54,211,153,.4) 0 4px,transparent 4px 8px);}
+
+.pack-shine{position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.08) 45%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.08) 55%,transparent 70%);animation:shine 4s linear infinite;pointer-events:none;z-index:2;}
+@keyframes shine{0%{transform:translateX(-100%) translateY(-100%);}100%{transform:translateX(50%) translateY(50%);}}
+
+.pack-top-content{position:absolute;inset:0;padding:12px 14px 0;display:flex;align-items:flex-start;justify-content:space-between;}
+.pack-logo-top{font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--green);text-transform:uppercase;}
+.pack-foil{width:10px;height:10px;border-radius:50%;background:radial-gradient(circle,var(--green),transparent 70%);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:.6;}50%{opacity:1;}}
+
+.pack-bottom-content{position:absolute;inset:0;padding:30px 20px 20px;display:flex;flex-direction:column;justify-content:space-between;text-align:center;}
+.pack-emblem{flex:1;display:flex;align-items:center;justify-content:center;position:relative;}
+.pack-emblem::before,.pack-emblem::after{content:"";position:absolute;border-radius:50%;}
+.pack-emblem::before{width:140px;height:140px;background:radial-gradient(circle,rgba(54,211,153,.25),transparent 70%);animation:pulse 3s ease-in-out infinite;}
+.pack-emblem::after{width:80px;height:80px;background:radial-gradient(circle,rgba(54,211,153,.6),rgba(54,211,153,0) 70%);animation:pulse 2s ease-in-out infinite reverse;}
+.pack-emblem-c{position:relative;z-index:2;font-family:var(--font-display);font-size:72px;font-weight:800;color:var(--text);line-height:1;text-shadow:0 0 30px rgba(54,211,153,.6);}
+.pack-series{font-family:var(--font-mono);font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--text-sub);}
+.pack-corner-tr,.pack-corner-bl{position:absolute;width:32px;height:32px;border-color:rgba(54,211,153,.3);border-style:solid;}
+.pack-corner-tr{top:8px;right:8px;border-width:1px 1px 0 0;border-top-right-radius:6px;}
+.pack-corner-bl{bottom:8px;left:8px;border-width:0 0 1px 1px;border-bottom-left-radius:6px;}
+
+/* RIP animation */
+.pack.ripping .pack-top{animation:ripTop 1s cubic-bezier(.4,.1,.5,1.2) forwards;}
+@keyframes ripTop{0%{transform:translateY(0) rotate(0);}15%{transform:translateY(-2px) rotate(-2deg);}30%{transform:translateY(-4px) rotate(2deg);}60%{transform:translateY(-30px) rotate(-8deg);opacity:1;}100%{transform:translateY(-120px) rotate(-20deg);opacity:0;}}
+.pack.ripping .pack-bottom{animation:shakeBottom .6s cubic-bezier(.4,.1,.5,1) forwards;}
+@keyframes shakeBottom{0%,100%{transform:translateX(0);}20%{transform:translateX(-3px) rotate(-1deg);}40%{transform:translateX(3px) rotate(1deg);}60%{transform:translateX(-2px) rotate(-.5deg);}80%{transform:translateX(2px) rotate(.5deg);}}
+
+.pack-burst{position:absolute;top:40px;left:50%;transform:translateX(-50%) scale(0);width:300px;height:300px;pointer-events:none;background:radial-gradient(circle,rgba(255,255,255,.8) 0%,rgba(54,211,153,.6) 25%,transparent 60%);border-radius:50%;opacity:0;z-index:3;}
+.pack.ripping .pack-burst{animation:burst 1s cubic-bezier(.3,.8,.6,1) forwards;}
+@keyframes burst{0%{transform:translateX(-50%) scale(0);opacity:0;}40%{transform:translateX(-50%) scale(.6);opacity:0;}60%{transform:translateX(-50%) scale(1.3);opacity:1;}100%{transform:translateX(-50%) scale(2);opacity:0;}}
+
+.pack.ripping{animation:packShrink 1.6s cubic-bezier(.4,0,.3,1) .6s forwards;}
+@keyframes packShrink{to{transform:scale(0);opacity:0;filter:brightness(1.5);}}
+
+/* CTA */
+.cta-row{display:flex;flex-direction:column;align-items:center;gap:12px;}
+.open-btn{font-family:var(--font-display);font-weight:700;font-size:16px;letter-spacing:.04em;text-transform:uppercase;padding:18px 40px;border-radius:12px;background:linear-gradient(135deg,var(--green),#2fb783);color:#071b13;transition:transform .2s,box-shadow .2s;box-shadow:0 10px 30px rgba(54,211,153,.3),inset 0 1px 0 rgba(255,255,255,.3);}
+.open-btn:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(54,211,153,.4),inset 0 1px 0 rgba(255,255,255,.3);}
+.open-btn:active{transform:translateY(0);}
+.cta-hint{font-family:var(--font-mono);font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-muted);}
+
+/* REVEAL */
+.reveal{display:none;opacity:0;width:100%;max-width:900px;}
+.reveal.active{display:block;animation:revealIn .6s cubic-bezier(.2,.8,.3,1) 1.6s forwards;}
+@keyframes revealIn{to{opacity:1;}}
+.reveal-header{text-align:center;margin-bottom:28px;}
+.reveal-tag{display:inline-block;font-family:var(--font-mono);font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--green);background:rgba(54,211,153,.08);border:1px solid rgba(54,211,153,.22);padding:6px 14px;border-radius:999px;margin-bottom:14px;}
+.reveal-title{font-family:var(--font-editorial);font-weight:500;font-size:32px;line-height:1.1;letter-spacing:-.01em;font-variation-settings:"opsz" 144;}
+
+.reveal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px;}
+
+.reward-slot{background:var(--surface-2);border:1px solid var(--border);border-radius:14px;padding:18px 16px;position:relative;overflow:hidden;opacity:0;transform:translateY(30px) scale(.95);animation:cardIn .5s cubic-bezier(.2,.8,.3,1.2) forwards;}
+.reward-slot:nth-child(1){animation-delay:1.8s;}
+.reward-slot:nth-child(2){animation-delay:2.0s;}
+.reward-slot:nth-child(3){animation-delay:2.2s;}
+.reward-slot:nth-child(4){animation-delay:2.4s;}
+@keyframes cardIn{to{opacity:1;transform:translateY(0) scale(1);}}
+.reward-slot::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--c,var(--green));}
+.reward-slot.signal{--c:var(--blue);}
+.reward-slot.utility{--c:var(--green);}
+.reward-slot.bonus{--c:var(--gold);}
+.reward-slot.special{--c:var(--purple);padding:0;border:none;background:transparent;overflow:visible;}
+.reward-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.reward-type{font-family:var(--font-mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--c,var(--green));font-weight:700;display:flex;align-items:center;gap:6px;}
+.reward-type .dot{width:5px;height:5px;border-radius:50%;background:var(--c,var(--green));box-shadow:0 0 8px var(--c,var(--green));}
+.reward-rarity{font-family:var(--font-mono);font-size:8px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-muted);}
+.reward-icon{width:40px;height:40px;border-radius:9px;background:linear-gradient(135deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:10px;}
+.reward-title{font-family:var(--font-display);font-weight:600;font-size:14px;color:var(--text);margin-bottom:6px;line-height:1.3;}
+.reward-desc{font-size:12px;color:var(--text-sub);line-height:1.5;}
+
+.collectible-card-slot{width:100%;aspect-ratio:5/7;background:var(--surface-2);border:1px solid var(--border-strong);border-radius:14px;overflow:hidden;position:relative;transition:transform .3s;}
+.collectible-card-slot:hover{transform:translateY(-4px) scale(1.02);}
+.collectible-card-slot::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--purple);z-index:3;}
+
+/* CATCH'EM CARD */
+.ccard{width:100%;height:100%;position:relative;background:linear-gradient(135deg,#1c2235 0%,#232a40 40%,#141824 100%);padding:10px;display:flex;flex-direction:column;gap:8px;font-family:var(--font-body);}
+.ccard-head{display:flex;justify-content:space-between;align-items:center;font-family:var(--font-mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;}
+.ccard-type{color:var(--purple);font-weight:700;}
+.ccard-hp{color:var(--text-muted);}
+.ccard-art{flex:1;border-radius:8px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--art-a,#4a2a6b) 0%,var(--art-b,#2a1a3b) 100%);border:1px solid var(--border);}
+.ccard-art .emoji{font-size:56px;filter:drop-shadow(0 4px 12px rgba(0,0,0,.4));position:relative;z-index:2;animation:artFloat 4s ease-in-out infinite;}
+@keyframes artFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+.ccard-art::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.15),transparent 50%);z-index:1;}
+.ccard-art::after{content:"";position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.06) 50%,transparent 60%);animation:shine 6s linear infinite;z-index:1;}
+.ccard-name{font-family:var(--font-display);font-weight:700;font-size:12px;color:var(--text);letter-spacing:-.005em;line-height:1.2;}
+.ccard-flavor{font-family:var(--font-editorial);font-style:italic;font-size:9px;color:var(--text-sub);line-height:1.35;font-variation-settings:"opsz" 14;}
+.ccard-footer{display:flex;justify-content:space-between;align-items:center;font-family:var(--font-mono);font-size:7px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);border-top:1px solid var(--border);padding-top:5px;}
+.ccard-rarity{color:var(--purple);font-weight:700;}
+.ccard.rare{box-shadow:inset 0 0 20px rgba(255,184,77,.08);}
+.ccard.rare .ccard-art{box-shadow:inset 0 0 20px rgba(255,184,77,.15);}
+.ccard.rare .ccard-rarity{color:var(--gold);}
+.ccard.legendary{box-shadow:inset 0 0 30px rgba(199,125,255,.15);}
+.ccard.legendary .ccard-art{box-shadow:inset 0 0 30px rgba(199,125,255,.25);}
+.ccard.uncommon .ccard-rarity{color:var(--blue);}
+
+/* After CTA */
+.after-cta{display:flex;flex-direction:column;align-items:center;gap:14px;margin-top:12px;}
+.next-info{font-family:var(--font-mono);font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-muted);text-align:center;}
+.action-row{display:flex;gap:10px;}
+.reset-btn,.bag-cta{font-family:var(--font-mono);font-size:11px;letter-spacing:.15em;text-transform:uppercase;padding:10px 20px;border:1px solid var(--border);border-radius:8px;transition:all .2s;}
+.reset-btn{color:var(--text-sub);}
+.reset-btn:hover{border-color:var(--border-strong);color:var(--text);}
+.bag-cta{color:var(--green);border-color:rgba(54,211,153,.25);background:rgba(54,211,153,.04);}
+.bag-cta:hover{background:rgba(54,211,153,.08);border-color:var(--green);}
+
+/* Progress */
+.progress{margin-top:36px;display:grid;grid-template-columns:2fr 3fr;gap:32px;padding:24px 28px;background:var(--surface);border:1px solid var(--border);border-radius:16px;}
+.progress-xp{display:flex;flex-direction:column;gap:10px;}
+.xp-level{font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--text);letter-spacing:-.01em;}
+.xp-level-sub{font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);}
+.xp-bar{height:10px;background:var(--surface-3);border-radius:999px;overflow:hidden;}
+.xp-fill{height:100%;width:62%;background:linear-gradient(90deg,var(--green),#2fb783);border-radius:999px;box-shadow:0 0 14px rgba(54,211,153,.5);}
+.xp-label{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:11px;letter-spacing:.15em;text-transform:uppercase;}
+.xp-label-left{color:var(--text-sub);}
+.xp-label-right{color:var(--green);font-weight:700;}
+
+.milestones{display:flex;flex-direction:column;gap:8px;}
+.milestones-header{font-family:var(--font-mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);font-weight:600;margin-bottom:4px;}
+.milestone{display:grid;grid-template-columns:50px 1fr auto;gap:12px;align-items:center;padding:9px 13px;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;}
+.milestone.achieved{border-color:rgba(54,211,153,.3);background:rgba(54,211,153,.04);}
+.milestone-day{font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--text-sub);}
+.milestone.achieved .milestone-day{color:var(--green);}
+.milestone-reward{font-family:var(--font-display);font-weight:500;font-size:12px;color:var(--text);}
+.milestone-check{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-size:9px;color:transparent;}
+.milestone.achieved .milestone-check{background:var(--green);border-color:var(--green);color:#071b13;font-weight:700;}
+
+/* BAG VIEW */
+.bag-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.bag-title-wrap{display:flex;flex-direction:column;gap:8px;}
+.bag-kicker{font-family:var(--font-mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);}
+.bag-title{font-family:var(--font-editorial);font-weight:500;font-size:42px;line-height:1;letter-spacing:-.015em;font-variation-settings:"opsz" 144;}
+.bag-title em{font-style:italic;color:var(--gold);}
+.bag-stats{display:flex;gap:20px;font-family:var(--font-mono);}
+.bag-stat{text-align:right;}
+.bag-stat-num{font-family:var(--font-display);font-size:32px;font-weight:700;color:var(--text);line-height:1;}
+.bag-stat-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-muted);margin-top:4px;}
+
+.bag-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:20px;}
+.bag-card-wrap{position:relative;cursor:pointer;transition:transform .25s;}
+.bag-card-wrap:hover{transform:translateY(-6px) rotate(.5deg);}
+.bag-card-wrap.locked{opacity:.25;filter:grayscale(.8);}
+.bag-card-wrap.locked:hover{transform:none;}
+.bag-card-wrap .card-hover-hint{position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-muted);opacity:0;transition:opacity .2s;white-space:nowrap;}
+.bag-card-wrap:hover .card-hover-hint{opacity:1;}
+
+.bag-mini-card{width:100%;aspect-ratio:5/7;border-radius:12px;overflow:hidden;position:relative;box-shadow:0 10px 30px rgba(0,0,0,.3);}
+
+/* Newsletter card */
+.news-card{width:100%;height:100%;padding:14px;background:linear-gradient(180deg,#0f1a24 0%,#0b0d14 100%);display:flex;flex-direction:column;gap:10px;border:1px solid rgba(100,160,255,.25);border-radius:12px;position:relative;overflow:hidden;}
+.news-card::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 80% 0%,rgba(100,160,255,.2),transparent 60%);pointer-events:none;}
+.news-card-number{font-family:var(--font-display);font-weight:800;font-size:36px;line-height:1;color:var(--blue);letter-spacing:-.02em;text-shadow:0 0 20px rgba(100,160,255,.3);}
+.news-card-date{font-family:var(--font-mono);font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-muted);}
+.news-card-head{font-family:var(--font-editorial);font-weight:500;font-size:13px;line-height:1.25;color:var(--text);flex:1;margin-top:4px;}
+.news-card-foot{display:flex;justify-content:space-between;align-items:center;font-family:var(--font-mono);font-size:8px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-muted);padding-top:8px;border-top:1px solid var(--border);}
+.news-card-foot .tag{color:var(--blue);}
+
+.bag-section-title{font-family:var(--font-display);font-weight:600;font-size:16px;color:var(--text);margin:28px 0 16px;display:flex;align-items:center;gap:12px;}
+.bag-section-title::after{content:"";flex:1;height:1px;background:var(--border);}
+
+@media (max-width:780px){
+  .hero{grid-template-columns:1fr;}
+  .reveal-grid{grid-template-columns:1fr 1fr;}
+  .progress{grid-template-columns:1fr;gap:20px;padding:20px;}
+  .pack-stage{padding:40px 20px;min-height:500px;}
+  .main{padding:24px 20px 60px;}
+  .nav{padding:14px 20px;}
+  .tab{padding:6px 10px;font-size:10px;}
+  .bag-header{flex-direction:column;align-items:flex-start;gap:20px;}
+  .bag-title{font-size:32px;}
+  .bag-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:14px;}
+}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <nav class="nav">
+    <div class="nav-left">
+      <div class="logo"><span class="logo-mark">C</span>Catch'em</div>
+      <div class="nav-tabs">
+        <button class="tab active" id="tabPack" onclick="switchView('pack')">Pack</button>
+        <button class="tab" id="tabBag" onclick="switchView('bag')">Bag <span class="count" id="bagCount">4</span></button>
+      </div>
+    </div>
+    <span class="mock-tag">Mockup · v2 · Cards + Bag</span>
+  </nav>
+
+  <main class="main">
+
+    <!-- PACK VIEW -->
+    <div class="view active" id="viewPack">
+
+      <section class="hero">
+        <div class="hero-left">
+          <div class="kicker">Daily Signal Pack · Apr 21</div>
+          <h1>Your pack is <em>ready</em>.</h1>
+          <p class="hero-sub">Today's signal, a utility reward, a milestone bonus, and a pull from the Catch'em collection. Today is a newsletter drop day — Issue 001 is inside.</p>
+        </div>
+        <div class="streak-display">
+          <div class="streak-label">Day Streak</div>
+          <div class="streak-number"><span class="streak-flame">🔥</span><span>7</span></div>
+        </div>
+      </section>
+
+      <section class="pack-stage">
+
+        <div class="pack-wrap" id="packWrap">
+          <div class="pack-meta">
+            <div class="pack-date">WEEK 1 · DAY 7</div>
+            <div class="pack-name">The Signal Pack</div>
+            <div class="pack-drop-label">⚡ Newsletter Drop Day</div>
+          </div>
+          <div class="pack" id="pack" onclick="openPack()">
+            <div class="pack-tab"></div>
+            <div class="pack-shine"></div>
+            <div class="pack-burst"></div>
+            <div class="pack-top">
+              <div class="pack-top-content">
+                <span class="pack-logo-top">CATCH'EM</span>
+                <span class="pack-foil"></span>
+              </div>
+            </div>
+            <div class="pack-bottom">
+              <div class="pack-corner-tr"></div>
+              <div class="pack-corner-bl"></div>
+              <div class="pack-bottom-content">
+                <div class="pack-emblem"><div class="pack-emblem-c">C</div></div>
+                <div class="pack-series">SIGNAL · 001 · DAILY</div>
+              </div>
+            </div>
+          </div>
+          <div class="cta-row">
+            <button class="open-btn" onclick="openPack()">Rip Open</button>
+            <span class="cta-hint">Click the pack to tear it open</span>
+          </div>
+        </div>
+
+        <div class="reveal" id="reveal">
+          <div class="reveal-header">
+            <div class="reveal-tag">⚡ Pack Opened · 4 Items</div>
+            <h2 class="reveal-title">Here's what you pulled.</h2>
+          </div>
+          <div class="reveal-grid">
+            <div class="reward-slot signal">
+              <div class="reward-head">
+                <span class="reward-type"><span class="dot"></span>Signal</span>
+                <span class="reward-rarity">Daily</span>
+              </div>
+              <div class="reward-icon">📡</div>
+              <div class="reward-title" id="sigTitle">Rotation watch: April 2027</div>
+              <div class="reward-desc" id="sigDesc">H-mark rotation opens in 12 months. Your planning horizon.</div>
+            </div>
+            <div class="reward-slot utility">
+              <div class="reward-head">
+                <span class="reward-type"><span class="dot"></span>Utility</span>
+                <span class="reward-rarity">Guaranteed</span>
+              </div>
+              <div class="reward-icon">⚡</div>
+              <div class="reward-title" id="utilTitle">+1 Watchlist Slot</div>
+              <div class="reward-desc" id="utilDesc">Track one additional card or sealed product.</div>
+            </div>
+            <div class="reward-slot bonus">
+              <div class="reward-head">
+                <span class="reward-type"><span class="dot"></span>Bonus</span>
+                <span class="reward-rarity" id="bonRarity">Day 7 Milestone</span>
+              </div>
+              <div class="reward-icon" id="bonIcon">🏅</div>
+              <div class="reward-title" id="bonTitle">Week Warrior Badge</div>
+              <div class="reward-desc" id="bonDesc">Seven in a row. Discord role unlocked.</div>
+            </div>
+            <div class="reward-slot special">
+              <div class="collectible-card-slot" id="specialSlot"></div>
+            </div>
+          </div>
+          <div class="after-cta">
+            <div class="next-info">⏱ NEXT PACK IN 23:47:12</div>
+            <div class="action-row">
+              <button class="bag-cta" onclick="switchView('bag')">👝 Check your Bag</button>
+              <button class="reset-btn" onclick="resetPack()">↻ Re-roll (demo)</button>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <section class="progress">
+        <div class="progress-xp">
+          <div>
+            <div class="xp-level">Collector · Lv 4</div>
+            <div class="xp-level-sub">Rookie tier</div>
+          </div>
+          <div class="xp-bar"><div class="xp-fill"></div></div>
+          <div class="xp-label">
+            <span class="xp-label-left">310 / 500 XP</span>
+            <span class="xp-label-right">62%</span>
+          </div>
+        </div>
+        <div class="milestones">
+          <div class="milestones-header">Streak milestones</div>
+          <div class="milestone achieved">
+            <div class="milestone-day">DAY 7</div>
+            <div class="milestone-reward">Week Warrior · Discord role</div>
+            <div class="milestone-check">✓</div>
+          </div>
+          <div class="milestone">
+            <div class="milestone-day">DAY 30</div>
+            <div class="milestone-reward">Founding Member · Role upgrade</div>
+            <div class="milestone-check"></div>
+          </div>
+          <div class="milestone">
+            <div class="milestone-day">DAY 100</div>
+            <div class="milestone-reward">Sustained Signal · Exclusive content</div>
+            <div class="milestone-check"></div>
+          </div>
+          <div class="milestone">
+            <div class="milestone-day">DAY 365</div>
+            <div class="milestone-reward">Hall of Signal · Permanent perks</div>
+            <div class="milestone-check"></div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- BAG VIEW -->
+    <div class="view" id="viewBag">
+
+      <header class="bag-header">
+        <div class="bag-title-wrap">
+          <div class="bag-kicker">Tyler's Bag · 7-Day Streak</div>
+          <h1 class="bag-title">The <em>Bag</em>.</h1>
+        </div>
+        <div class="bag-stats">
+          <div class="bag-stat">
+            <div class="bag-stat-num" id="bagCards">3</div>
+            <div class="bag-stat-label">Cards</div>
+          </div>
+          <div class="bag-stat">
+            <div class="bag-stat-num" id="bagNews">1</div>
+            <div class="bag-stat-label">Newsletters</div>
+          </div>
+          <div class="bag-stat">
+            <div class="bag-stat-num">28%</div>
+            <div class="bag-stat-label">Collection</div>
+          </div>
+        </div>
+      </header>
+
+      <div class="bag-section-title">Newsletter Issues</div>
+      <div class="bag-grid" id="newsGrid"></div>
+
+      <div class="bag-section-title">Catch'em Card Collection</div>
+      <div class="bag-grid" id="cardsGrid"></div>
+
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ===== CATCH'EM ORIGINAL CARDS =====
+const catchemCards = [
+  {id:1,name:"The Panicked Flipper",type:"Trainer · Archetype",rarity:"Common",hp:"10 HP",flavor:"He's been refreshing TCGPlayer since 3am. He swears this is the top.",emoji:"😱",colorA:"#4a1f1f",colorB:"#2a1010",number:"001/100"},
+  {id:2,name:"The Calm Collector",type:"Trainer · Archetype",rarity:"Common",hp:"100 HP",flavor:"Bought in 2019. Still hasn't sold. Doesn't plan to.",emoji:"😌",colorA:"#1f3b2e",colorB:"#0f2418",number:"002/100"},
+  {id:3,name:"The Grader Skeptic",type:"Trainer · Archetype",rarity:"Uncommon",hp:"80 HP",flavor:"Checks every cert number. Trusts no slab.",emoji:"🧐",colorA:"#3a1f4a",colorB:"#1f0f2a",number:"003/100"},
+  {id:4,name:"The Hype Train",type:"Trainer · Archetype",rarity:"Common",hp:"30 HP",flavor:"Saw a TikTok. Already bought three cases.",emoji:"🚂",colorA:"#4a3a1f",colorB:"#2a1f0f",number:"004/100"},
+  {id:5,name:"The Pack Ripper",type:"Trainer · Archetype",rarity:"Common",hp:"40 HP",flavor:"One more box. Just one more. He promised his wife.",emoji:"🎁",colorA:"#3a1f3a",colorB:"#1f0f2a",number:"005/100"},
+  {id:6,name:"The Discord Lurker",type:"Trainer · Archetype",rarity:"Uncommon",hp:"999 HP",flavor:"Reads every message. Types nothing. Knows everything.",emoji:"👁️",colorA:"#1f2a3a",colorB:"#0f1a2a",number:"006/100"},
+  {id:7,name:"Rotation Panic",type:"Event · Chaos",rarity:"Uncommon",hp:"—",flavor:"Twelve months warning wasn't enough.",emoji:"💥",colorA:"#4a2a1f",colorB:"#2a1a0f",number:"007/100"},
+  {id:8,name:"The Reprint Bomb",type:"Event · Market",rarity:"Rare",hp:"—",flavor:"TPCi has entered the chat. Prices have left.",emoji:"💣",colorA:"#5a3a2a",colorB:"#2a1f1a",number:"008/100"},
+  {id:9,name:"Sealed Forever",type:"Trainer · Philosophy",rarity:"Uncommon",hp:"∞ HP",flavor:"He owns it. He will never open it. This is the way.",emoji:"🔒",colorA:"#1f2a3a",colorB:"#0f1a2a",number:"009/100"},
+  {id:10,name:"I Bought the Top",type:"Trainer · Regret",rarity:"Common",hp:"5 HP",flavor:"The chart only goes up from here. (It didn't.)",emoji:"📉",colorA:"#3a1f1f",colorB:"#1f0f0f",number:"010/100"},
+  {id:11,name:"The Bulbapedia Scholar",type:"Trainer · Sage",rarity:"Rare",hp:"∞ HP",flavor:"Can recite every set's release date. Date-night material.",emoji:"📚",colorA:"#1f3a3a",colorB:"#0f1f1f",number:"011/100"},
+  {id:12,name:"The Perfect Pull",type:"Event · Legendary",rarity:"Legendary",hp:"—",flavor:"The moment the universe rewards patience. You will remember where you were.",emoji:"✨",colorA:"#4a3a0f",colorB:"#2a1f0a",number:"012/100"},
+  {id:13,name:"The Signal",type:"Legendary · Catch'em",rarity:"Legendary",hp:"100 HP",flavor:"Not a rumor. Not a hype take. Real information, arriving on time.",emoji:"📡",colorA:"#0f3a2a",colorB:"#0a1f1a",number:"013/100"},
+  {id:14,name:"The Charizard Believer",type:"Trainer · Devotee",rarity:"Rare",hp:"151 HP",flavor:"Every set. Every era. He's always there. He's always Charizard.",emoji:"🔥",colorA:"#4a1f0f",colorB:"#2a0f0a",number:"014/100"},
+  {id:15,name:"The Tin Collector",type:"Trainer · Wholesome",rarity:"Common",hp:"60 HP",flavor:"Doesn't care about the cards. Just loves the tins.",emoji:"🥫",colorA:"#2a3a1f",colorB:"#1a2a0f",number:"015/100"}
+];
+
+const state = {
+  ownedCards:[2,7,10],
+  ownedNews:[1],
+  revealCount:0
+};
+
+const signalPool=[
+  {title:"Rotation watch: April 2027",desc:"H-mark rotation opens in 12 months. Your planning horizon."},
+  {title:"Ascended Heroes pull rate",desc:"Mega Dragonite ex at 1-in-70-to-90 packs. Rarity discovered is rarity forever."},
+  {title:"30th Celebration confirmed",desc:"Sep 18 worldwide launch. All-foil packs. New rarity tier."},
+  {title:"On this day, 2016",desc:"XY Evolutions released — the 20th anniversary set."},
+  {title:"PSA vs CGC gap narrowing",desc:"Alt graders up 15% post-scandal. Monoculture era is ending."}
+];
+const utilityPool=[
+  {title:"+1 Watchlist Slot",desc:"Track one additional card or sealed product."},
+  {title:"+1 Price Alert",desc:"One more movement alert, triggered on 5%+ moves."},
+  {title:"+50 XP Boost",desc:"Experience added to your Collector level."},
+  {title:"Early Newsletter Access",desc:"Next Signals arrives 12h before public."}
+];
+const bonusPool=[
+  {rarity:"Day 7 Milestone",title:"Week Warrior Badge",desc:"Seven in a row. Discord role unlocked.",icon:"🏅"},
+  {rarity:"Common",title:"Profile XP +25",desc:"Small XP bonus applied.",icon:"✨"},
+  {rarity:"Uncommon",title:"Teal Name Unlock",desc:"Username now displays in Catch'em teal.",icon:"🎨"},
+  {rarity:"Uncommon",title:"Signal Digest Access",desc:"This week's 5 most important moves, curated.",icon:"📊"}
+];
+const specialSlotSequence=[
+  {type:"newsletter",id:1},
+  {type:"card",id:12},
+  {type:"card",id:3},
+  {type:"card",id:13},
+  {type:"card",id:6},
+  {type:"newsletter",id:2}
+];
+const newsletters={
+  1:{num:"001",date:"Apr 21, 2026",head:"The rotation nobody panicked about."},
+  2:{num:"002",date:"Apr 24, 2026",head:"Chaos Rising approaches. Movers inside."}
+};
+
+function switchView(view){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  if(view==='pack'){
+    document.getElementById('viewPack').classList.add('active');
+    document.getElementById('tabPack').classList.add('active');
+  } else {
+    document.getElementById('viewBag').classList.add('active');
+    document.getElementById('tabBag').classList.add('active');
+    renderBag();
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function openPack(){
+  const pack=document.getElementById('pack');
+  const wrap=document.getElementById('packWrap');
+  const reveal=document.getElementById('reveal');
+  if(pack.classList.contains('ripping'))return;
+  pack.classList.add('ripping');
+  pickRewards();
+  renderSpecialSlot();
+  setTimeout(()=>{wrap.style.display='none';reveal.classList.add('active');},1400);
+}
+
+function resetPack(){
+  const pack=document.getElementById('pack');
+  const wrap=document.getElementById('packWrap');
+  const reveal=document.getElementById('reveal');
+  reveal.classList.remove('active');
+  wrap.style.display='flex';
+  pack.classList.remove('ripping');
+  state.revealCount++;
+  document.querySelectorAll('.reward-slot').forEach(c=>{c.style.animation='none';c.offsetHeight;c.style.animation='';});
+}
+
+function pickRewards(){
+  const s=signalPool[state.revealCount%signalPool.length];
+  const u=utilityPool[state.revealCount%utilityPool.length];
+  const b=bonusPool[state.revealCount%bonusPool.length];
+  document.getElementById('sigTitle').textContent=s.title;
+  document.getElementById('sigDesc').textContent=s.desc;
+  document.getElementById('utilTitle').textContent=u.title;
+  document.getElementById('utilDesc').textContent=u.desc;
+  document.getElementById('bonTitle').textContent=b.title;
+  document.getElementById('bonDesc').textContent=b.desc;
+  document.getElementById('bonRarity').textContent=b.rarity;
+  document.getElementById('bonIcon').textContent=b.icon;
+}
+
+function renderSpecialSlot(){
+  const slot=document.getElementById('specialSlot');
+  const item=specialSlotSequence[state.revealCount%specialSlotSequence.length];
+  if(item.type==='newsletter'){
+    slot.innerHTML=renderNewsCard(item.id);
+    if(!state.ownedNews.includes(item.id))state.ownedNews.push(item.id);
+  } else {
+    const card=catchemCards.find(c=>c.id===item.id);
+    slot.innerHTML=renderCatchemCard(card);
+    if(!state.ownedCards.includes(item.id))state.ownedCards.push(item.id);
+  }
+  updateBagCount();
+}
+
+function renderCatchemCard(c){
+  return `<div class="ccard ${c.rarity.toLowerCase()}" style="--art-a:${c.colorA};--art-b:${c.colorB};">
+    <div class="ccard-head"><span class="ccard-type">${c.type}</span><span class="ccard-hp">${c.hp}</span></div>
+    <div class="ccard-art"><span class="emoji">${c.emoji}</span></div>
+    <div class="ccard-name">${c.name}</div>
+    <div class="ccard-flavor">"${c.flavor}"</div>
+    <div class="ccard-footer"><span>${c.number}</span><span class="ccard-rarity">${c.rarity}</span></div>
+  </div>`;
+}
+
+function renderNewsCard(id){
+  const n=newsletters[id];
+  return `<div class="news-card">
+    <div class="news-card-date">Newsletter · ${n.date}</div>
+    <div class="news-card-number">${n.num}</div>
+    <div class="news-card-head">${n.head}</div>
+    <div class="news-card-foot"><span class="tag">Click to read</span><span>4 min</span></div>
+  </div>`;
+}
+
+function renderBag(){
+  const newsGrid=document.getElementById('newsGrid');
+  const cardsGrid=document.getElementById('cardsGrid');
+  newsGrid.innerHTML='';
+  state.ownedNews.forEach(id=>{
+    const wrap=document.createElement('div');
+    wrap.className='bag-card-wrap';
+    wrap.innerHTML=`<div class="bag-mini-card">${renderNewsCard(id)}</div><span class="card-hover-hint">Click to read</span>`;
+    newsGrid.appendChild(wrap);
+  });
+  cardsGrid.innerHTML='';
+  catchemCards.forEach(card=>{
+    const owned=state.ownedCards.includes(card.id);
+    const wrap=document.createElement('div');
+    wrap.className='bag-card-wrap'+(owned?'':' locked');
+    if(owned){
+      wrap.innerHTML=`<div class="bag-mini-card">${renderCatchemCard(card)}</div><span class="card-hover-hint">${card.name}</span>`;
+    } else {
+      wrap.innerHTML=`<div class="bag-mini-card"><div class="ccard common" style="--art-a:#1c2235;--art-b:#141824;"><div class="ccard-head"><span class="ccard-type">???</span><span class="ccard-hp">??</span></div><div class="ccard-art"><span class="emoji">🔒</span></div><div class="ccard-name">???</div><div class="ccard-flavor">"Pull this card to reveal."</div><div class="ccard-footer"><span>${card.number}</span><span class="ccard-rarity">???</span></div></div></div><span class="card-hover-hint">Not yet pulled</span>`;
+    }
+    cardsGrid.appendChild(wrap);
+  });
+  updateBagCount();
+}
+
+function updateBagCount(){
+  const total=state.ownedCards.length+state.ownedNews.length;
+  document.getElementById('bagCount').textContent=total;
+  const bc=document.getElementById('bagCards');
+  const bn=document.getElementById('bagNews');
+  if(bc)bc.textContent=state.ownedCards.length;
+  if(bn)bn.textContent=state.ownedNews.length;
+}
+
+updateBagCount();
+setTimeout(()=>renderBag(),100);
+</script>
+
+</body>
+</html>

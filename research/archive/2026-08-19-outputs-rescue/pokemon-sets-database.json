@@ -1,0 +1,3599 @@
+{
+  "meta": {
+    "title": "Catch'em Pokemon TCG English Sets Database",
+    "scope": "English-language main expansions and notable special sets only. Japanese-exclusive sets, McDonald's promos, and POP series promo sets excluded.",
+    "session_1_coverage": "Original Series through Black & White Series (1999-2013)",
+    "session_2_coverage": "XY Series through Mega Evolution Series (2014-2026) — COMPLETE",
+    "last_updated": "2026-04-22",
+    "sources": [
+      "Bulbapedia",
+      "Wikipedia (List of Pokémon Trading Card Game sets)",
+      "Beckett Pokemon TCG Expansion List",
+      "Wargamer complete set list",
+      "Bill's Archive historical schedule analysis",
+      "TCG Collector international sets database"
+    ],
+    "schema_notes": {
+      "id": "kebab-case slug, app-safe",
+      "release_date": "ISO 8601 YYYY-MM-DD, English release only",
+      "card_count": "main set count; secret rares and special rarities flagged in notes when relevant",
+      "archetype_tags": "Catch'em internal classification for app filtering",
+      "flag_review": "true = data partially uncertain, verify before public use",
+      "market_notes": "Optional field: contextual observations about the set's market behavior. Should be dated and sourced. Used for editorial/newsletter context, not displayed in app UI by default. May be added to any set as relevant data emerges."
+    },
+    "schema_enhancements_apr21_audit": {
+      "added_fields": [
+        "sold_as (array of SKU types)",
+        "has_booster_box (true/false/null)"
+      ],
+      "purpose": "Prevents citing SKUs that don't exist. Critical for app filtering and newsletter accuracy. Rule: special/mini-set expansions (Hidden Fates, Shining Fates, Champion's Path, Celebrations, Crown Zenith, Paldean Fates, Shrouded Fable, Prismatic Evolutions, Dragon Majesty, Shining Legends, Detective Pikachu, and ALL Mega Evolution special expansions) do NOT have standalone Booster Boxes. Sold only via ETBs, Bundles, Collections, Tins.",
+      "added_on": "2026-04-21"
+    }
+  },
+  "eras": [
+    {
+      "era_id": "wotc",
+      "era_name": "WOTC Era (Original Series + E-Card)",
+      "period": "1999-2003",
+      "publisher": "Wizards of the Coast",
+      "character": "Foundation era. Short print runs, iconic art, vintage-grade scarcity. Final sets (Skyridge especially) are among the rarest in the hobby.",
+      "sets": [
+        {
+          "id": "base-set",
+          "name": "Base Set",
+          "abbreviation": "BS",
+          "series": "Original Series",
+          "release_date": "1999-01-09",
+          "card_count": 102,
+          "archetype_tags": [
+            "vintage",
+            "iconic",
+            "grail"
+          ],
+          "notable_cards": [
+            "Charizard (4/102)",
+            "Blastoise (2/102)",
+            "Venusaur (15/102)",
+            "Chansey (3/102)"
+          ],
+          "key_mechanics": [
+            "original game format"
+          ],
+          "notes": "The first set. 1st Edition and Shadowless prints carry massive premiums. Charizard is the defining vintage grail.",
+          "flag_review": false
+        },
+        {
+          "id": "jungle",
+          "name": "Jungle",
+          "abbreviation": "JU",
+          "series": "Original Series",
+          "release_date": "1999-06-16",
+          "card_count": 64,
+          "archetype_tags": [
+            "vintage",
+            "iconic"
+          ],
+          "notable_cards": [
+            "Snorlax",
+            "Scyther",
+            "Mr. Mime",
+            "Flareon",
+            "Jolteon",
+            "Vaporeon"
+          ],
+          "key_mechanics": [],
+          "notes": "Second English set. Introduced the original Eeveelutions as holos. 1st Edition prints premium.",
+          "flag_review": false
+        },
+        {
+          "id": "fossil",
+          "name": "Fossil",
+          "abbreviation": "FO",
+          "series": "Original Series",
+          "release_date": "1999-10-10",
+          "card_count": 62,
+          "archetype_tags": [
+            "vintage",
+            "iconic"
+          ],
+          "notable_cards": [
+            "Dragonite",
+            "Gengar",
+            "Lapras",
+            "Aerodactyl",
+            "Zapdos",
+            "Articuno"
+          ],
+          "key_mechanics": [],
+          "notes": "Third English set. First appearance of Gen 1 fossils in TCG. 1st Edition prints premium.",
+          "flag_review": false
+        },
+        {
+          "id": "base-set-2",
+          "name": "Base Set 2",
+          "abbreviation": "B2",
+          "series": "Original Series",
+          "release_date": "2000-02-24",
+          "card_count": 130,
+          "archetype_tags": [
+            "vintage",
+            "reprint"
+          ],
+          "notable_cards": [
+            "Charizard",
+            "Blastoise",
+            "Venusaur (all reprints)"
+          ],
+          "key_mechanics": [],
+          "notes": "Reprint set combining highlights from Base Set and Jungle. Generally less desirable than originals, but clean holos still command value.",
+          "flag_review": false
+        },
+        {
+          "id": "team-rocket",
+          "name": "Team Rocket",
+          "abbreviation": "TR",
+          "series": "Original Series",
+          "release_date": "2000-04-24",
+          "card_count": 83,
+          "archetype_tags": [
+            "vintage",
+            "iconic",
+            "theme"
+          ],
+          "notable_cards": [
+            "Dark Charizard",
+            "Dark Blastoise",
+            "Dark Raichu (secret rare)",
+            "Rocket's Zapdos",
+            "Here Comes Team Rocket!"
+          ],
+          "key_mechanics": [
+            "Dark Pokemon debuted"
+          ],
+          "notes": "Introduced 'Dark' Pokemon type. First secret rare in English TCG (Dark Raichu, 83/82). Strong collector base.",
+          "flag_review": false
+        },
+        {
+          "id": "gym-heroes",
+          "name": "Gym Heroes",
+          "abbreviation": "G1",
+          "series": "Original Series (Gym)",
+          "release_date": "2000-08-14",
+          "card_count": 132,
+          "archetype_tags": [
+            "vintage",
+            "theme"
+          ],
+          "notable_cards": [
+            "Misty's Seadra",
+            "Erika's Dragonair",
+            "Sabrina's Gengar",
+            "Brock's Ninetales",
+            "Lt. Surge's Fearow",
+            "Misty's Tentacruel"
+          ],
+          "key_mechanics": [
+            "Gym Leader Pokemon"
+          ],
+          "notes": "First of the two-set Gym block. Themed around Kanto Gym Leaders. Holos widely available but specific cards (Misty's Tentacruel) valuable.",
+          "flag_review": false
+        },
+        {
+          "id": "gym-challenge",
+          "name": "Gym Challenge",
+          "abbreviation": "G2",
+          "series": "Original Series (Gym)",
+          "release_date": "2000-10-16",
+          "card_count": 132,
+          "archetype_tags": [
+            "vintage",
+            "theme",
+            "iconic"
+          ],
+          "notable_cards": [
+            "Blaine's Charizard",
+            "Giovanni's Gyarados",
+            "Rocket's Mewtwo",
+            "Rocket's Moltres",
+            "Rocket's Zapdos",
+            "Sabrina's Gengar"
+          ],
+          "key_mechanics": [],
+          "notes": "Second Gym set. Contains Blaine's Charizard — one of the strongest vintage chase cards outside Base Set.",
+          "flag_review": false
+        },
+        {
+          "id": "neo-genesis",
+          "name": "Neo Genesis",
+          "abbreviation": "N1",
+          "series": "Neo Series",
+          "release_date": "2000-12-16",
+          "card_count": 111,
+          "archetype_tags": [
+            "vintage",
+            "gen2",
+            "iconic"
+          ],
+          "notable_cards": [
+            "Lugia",
+            "Typhlosion",
+            "Feraligatr",
+            "Meganium",
+            "Steelix"
+          ],
+          "key_mechanics": [
+            "Gen 2 Pokemon introduced",
+            "Darkness & Metal energy types",
+            "Baby Pokemon"
+          ],
+          "notes": "First Gen 2 / Johto set. Neo Genesis Lugia is one of the most sought-after modern vintage chases. 1st Edition prints premium.",
+          "flag_review": false
+        },
+        {
+          "id": "neo-discovery",
+          "name": "Neo Discovery",
+          "abbreviation": "N2",
+          "series": "Neo Series",
+          "release_date": "2001-06-01",
+          "card_count": 75,
+          "archetype_tags": [
+            "vintage",
+            "gen2",
+            "sleeper"
+          ],
+          "notable_cards": [
+            "Espeon",
+            "Umbreon (first TCG appearance)",
+            "Heracross",
+            "Politoed"
+          ],
+          "key_mechanics": [],
+          "notes": "First English TCG appearance of Espeon and Umbreon. Historical significance for Eeveelution collectors.",
+          "flag_review": false
+        },
+        {
+          "id": "neo-revelation",
+          "name": "Neo Revelation",
+          "abbreviation": "N3",
+          "series": "Neo Series",
+          "release_date": "2001-09-24",
+          "card_count": 66,
+          "archetype_tags": [
+            "vintage",
+            "scarce",
+            "iconic"
+          ],
+          "notable_cards": [
+            "Shining Magikarp",
+            "Shining Gyarados",
+            "Ho-Oh",
+            "Crobat"
+          ],
+          "key_mechanics": [
+            "First Shining Pokemon"
+          ],
+          "notes": "First Shining Pokemon cards in English TCG. Shining Gyarados and Shining Magikarp are defining chase cards. Low print run.",
+          "flag_review": false
+        },
+        {
+          "id": "neo-destiny",
+          "name": "Neo Destiny",
+          "abbreviation": "N4",
+          "series": "Neo Series",
+          "release_date": "2002-02-28",
+          "card_count": 113,
+          "archetype_tags": [
+            "vintage",
+            "scarce",
+            "iconic"
+          ],
+          "notable_cards": [
+            "Shining Charizard",
+            "Shining Mewtwo",
+            "Shining Raichu",
+            "Shining Tyranitar",
+            "Light Dragonite"
+          ],
+          "key_mechanics": [
+            "Light Pokemon",
+            "more Shining Pokemon"
+          ],
+          "notes": "Contains Shining Charizard — one of the most iconic and valuable vintage chase cards. Extremely scarce in gem mint condition.",
+          "flag_review": false
+        },
+        {
+          "id": "legendary-collection",
+          "name": "Legendary Collection",
+          "abbreviation": "LC",
+          "series": "Legendary Collection",
+          "release_date": "2002-05-24",
+          "card_count": 110,
+          "archetype_tags": [
+            "vintage",
+            "reprint",
+            "special"
+          ],
+          "notable_cards": [
+            "Charizard (reverse holo)",
+            "Blastoise (reverse holo)",
+            "Venusaur (reverse holo)"
+          ],
+          "key_mechanics": [
+            "Reverse holo rarity introduced"
+          ],
+          "notes": "Reprint compilation of Base/Jungle/Fossil/Team Rocket highlights. Introduced reverse holo. Reverse holo Charizard is a hidden grail.",
+          "flag_review": false
+        },
+        {
+          "id": "expedition-base-set",
+          "name": "Expedition Base Set",
+          "abbreviation": "EX",
+          "series": "E-Card Series",
+          "release_date": "2002-09-15",
+          "card_count": 165,
+          "archetype_tags": [
+            "vintage",
+            "experimental",
+            "scarce"
+          ],
+          "notable_cards": [
+            "Charizard",
+            "Blastoise",
+            "Venusaur",
+            "Crystal Charizard (rare)"
+          ],
+          "key_mechanics": [
+            "e-Reader dot codes",
+            "Supporter card type",
+            "Stadium card type"
+          ],
+          "notes": "First e-Card set. Introduced Supporters and Stadiums as card types. New layout, slimmer borders. e-Reader compatibility required Japanese hardware in US.",
+          "flag_review": false
+        },
+        {
+          "id": "aquapolis",
+          "name": "Aquapolis",
+          "abbreviation": "AQ",
+          "series": "E-Card Series",
+          "release_date": "2003-01-15",
+          "card_count": 186,
+          "archetype_tags": [
+            "vintage",
+            "experimental",
+            "scarce",
+            "iconic"
+          ],
+          "notable_cards": [
+            "Crystal Charizard (holo)",
+            "Crystal Lugia (holo)",
+            "Crystal Nidoking",
+            "Crystal Kingdra",
+            "Crystal Ho-Oh"
+          ],
+          "key_mechanics": [
+            "Crystal Type Pokemon (first)",
+            "e-Reader games"
+          ],
+          "notes": "Introduced Crystal Type Pokemon — a collector-favorite rarity. Crystal Charizard from Aquapolis is a high-grade vintage chase. Scarce print.",
+          "flag_review": false
+        },
+        {
+          "id": "skyridge",
+          "name": "Skyridge",
+          "abbreviation": "SK",
+          "series": "E-Card Series",
+          "release_date": "2003-05-12",
+          "card_count": 144,
+          "archetype_tags": [
+            "vintage",
+            "grail",
+            "ultra-scarce",
+            "iconic"
+          ],
+          "notable_cards": [
+            "Crystal Charizard",
+            "Crystal Celebi",
+            "Crystal Ho-Oh",
+            "Crystal Crobat",
+            "Crystal Kabutops",
+            "Crystal Golem"
+          ],
+          "key_mechanics": [
+            "Crystal Type Pokemon (final)",
+            "last WOTC set"
+          ],
+          "notes": "Last WOTC-published set. Extraordinarily low print run made Skyridge one of the rarest and most valuable modern vintage sets. Crystal Charizard is the grail. Sealed boxes sell for high 5 figures.",
+          "flag_review": false
+        }
+      ]
+    },
+    {
+      "era_id": "ex",
+      "era_name": "EX Era",
+      "period": "2003-2007",
+      "publisher": "The Pokémon Company International (TPCi)",
+      "character": "TPCi takes over from WOTC. Powerful Pokemon-ex mechanic introduces prize-card risk/reward. Delta Species and Gold Star chase cards are defining rarities of the era. Gen 3 (Hoenn) Pokemon central, with Gen 1-2 reprints through Delta Species treatment.",
+      "sets": [
+        {
+          "id": "ex-ruby-sapphire",
+          "name": "EX Ruby & Sapphire",
+          "abbreviation": "RS",
+          "series": "EX Series",
+          "release_date": "2003-06-18",
+          "card_count": 109,
+          "archetype_tags": [
+            "vintage-modern",
+            "foundational"
+          ],
+          "notable_cards": [
+            "Blaziken ex",
+            "Sceptile ex",
+            "Swampert ex",
+            "Gardevoir ex"
+          ],
+          "key_mechanics": [
+            "Pokemon-ex debut",
+            "Gen 3 Pokemon"
+          ],
+          "notes": "First set by TPCi (Pokemon USA). Introduced the Pokemon-ex mechanic. Defines the era's start.",
+          "flag_review": false
+        },
+        {
+          "id": "ex-sandstorm",
+          "name": "EX Sandstorm",
+          "abbreviation": "SS",
+          "series": "EX Series",
+          "release_date": "2003-09-18",
+          "card_count": 100,
+          "archetype_tags": [
+            "vintage-modern"
+          ],
+          "notable_cards": [
+            "Crobat ex",
+            "Tyranitar ex",
+            "Dark Tyranitar",
+            "Crawdaunt ex"
+          ],
+          "key_mechanics": [],
+          "notes": "Second EX set. Themed around desert Pokemon.",
+          "flag_review": false
+        },
+        {
+          "id": "ex-dragon",
+          "name": "EX Dragon",
+          "abbreviation": "DR",
+          "series": "EX Series",
+          "release_date": "2003-11-24",
+          "card_count": 100,
+          "archetype_tags": [
+            "vintage-modern",
+            "iconic"
+          ],
+          "notable_cards": [
+            "Rayquaza ex",
+            "Latios ex",
+            "Latias ex",
+            "Salamence ex",
+            "Altaria ex"
+          ],
+          "key_mechanics": [],
+          "notes": "Dragon-themed EX set. First appearance of Rayquaza ex, a definitive chase card.",
+          "flag_review": false
+        },
+        {
+          "id": "ex-team-magma-vs-team-aqua",
+          "name": "EX Team Magma vs Team Aqua",
+          "abbreviation": "MA",
+          "series": "EX Series",
+          "release_date": "2004-03-15",
+          "card_count": 97,
+          "archetype_tags": [
+            "vintage-modern",
+            "theme"
+          ],
+          "notable_cards": [
+            "Team Aqua's Kyogre ex",
+            "Team Magma's Groudon ex",
+            "Team Aqua's Manectric ex",
+            "Team Magma's Rhydon ex"
+          ],
+          "key_mechanics": [
+            "Team-branded Pokemon"
+          ],
+          "notes": "Themed around the rival teams from Ruby/Sapphire games. Cards explicitly belong to one faction or the other.",
+          "flag_review": false
+        },
+        {
+          "id": "ex-hidden-legends",
+          "name": "EX Hidden Legends",
+          "abbreviation": "HL",
+          "series": "EX Series",
+          "release_date": "2004-06-14",
+          "card_count": 102,
+          "archetype_tags": [
+            "vintage-modern"
+          ],
+          "notable_cards": [
+            "Groudon ex",
+            "Kyogre ex",
+            "Regirock ex",
+            "Regice ex",
+            "Registeel ex"
+          ],
+          "key_mechanics": [],
+          "notes": "Features the Hoenn legendaries. Regi trio first TCG appearance.",
+          "flag_review": false
+        },
+        {
+          "id": "ex-firered-leafgreen",
+          "name": "EX FireRed & LeafGreen",
+          "abbreviation": "RG",
+          "series": "EX Series",
+          "release_date": "2004-08-30",
+          "card_count": 116,
+          "archetype_tags": [
+            "vintage-modern",
+            "nostalgia",
+            "iconic"
+          ],
+          "notable_cards": [
+            "Charizard ex",
+            "Blastoise ex",
+            "Venusaur ex",
+            "Articuno ex",
+            "Zapdos ex",
+            "Moltres ex"
+          ],
+          "key_mechanics": [
+            "Gen 1 returns"
+          ],
+          "notes": "First major Gen 1 callback set under TPCi. Kanto starters as ex. Strong collector nostalgia value.",
+          "flag_review": false
+        },
+        {
+          "id": "ex-team-rocket-returns",
+          "name": "EX Team Rocket Returns",
+          "abbreviation": "TRR",
+          "series": "EX Series",
+          "release_date": "2004-11-08",
+          "card_count": 111,
+          "archetype_tags": [
+            "vintage-modern",
+            "iconic",
+            "grail"
+          ],
+          "notable_cards": [
+            "Rocket's Charizard ex",
+            "Rocket's Mewtwo ex",
+            "Gold Star Entei",
+            "Gold Star Raikou",
+            "Gold Star Suicune"
+          ],
+          "key_mechanics": [
+            "Gold Star Pokemon (first)"
+          ],
+          "notes": "Introduced the Gold Star rarity — shiny-variant Pokemon with starred rarity symbol. Gold Stars are among the most valuable EX-era chase cards. Legendary beasts trio as Gold Stars.",
+          "flag_review": false
+        },
+        {
+          "id": "ex-deoxys",
+          "name": "EX Deoxys",
+          "abbreviation": "DX",
+          "series": "EX Series",
+          "release_date": "2005-02-14",
+          "card_count": 108,
+          "archetype_tags": [
+            "vintage-modern"
+          ],
+          "notable_cards": [
+            "Rayquaza Gold Star",
+            "Deoxys ex (Normal/Attack/Defense/Speed forms)"
+          ],
+          "key_mechanics": [],
+          "notes": "Rayquaza Gold Star from this set is a defining EX-era grail. Deoxys featured in all four forms.",
+          "flag_review": false
+        },
+        {
+          "id": "ex-emerald",
+          "name": "EX Emerald",
+          "abbreviation": "EM",
+          "series": "EX Series",
+          "release_date": "2005-05-09",
+          "card_count": 107,
+          "archetype_tags": [
+            "vintage-modern"
+          ],
+          "notable_cards": [
+            "Gyarados Gold Star",
+            "Magikarp Gold Star",
+            "Rayquaza ex",
+            "Flygon ex"
+          ],
+          "key_mechanics": [],
+          "notes": "Features Gold Star Magikarp and Gyarados — a paired collector's duo prized together.",
+          "flag_review": false
+        },
+        {
+          "id": "ex-unseen-forces",
+          "name": "EX Unseen Forces",
+          "abbreviation": "UF",
+          "series": "EX Series",
+          "release_date": "2005-08-22",
+          "card_count": 145,
+          "archetype_tags": [
+            "vintage-modern",
+            "iconic",
+            "grail"
+          ],
+          "notable_cards": [
+            "Ho-Oh Gold Star",
+            "Espeon Gold Star",
+            "Umbreon Gold Star",
+            "Tyranitar ex",
+            "Unown collection (A-Z + ! + ?)"
+          ],
+          "key_mechanics": [
+            "Unown alphabet collection"
+          ],
+          "notes": "Contains Espeon and Umbreon Gold Stars — among the most valuable and coveted cards of the EX era. Full Unown alphabet + punctuation. Large set.",
+          "flag_review": false
+        },
+        {
+          "id": "ex-delta-species",
+          "name": "EX Delta Species",
+          "abbreviation": "DS",
+          "series": "EX Series",
+          "release_date": "2005-10-31",
+          "card_count": 114,
+          "archetype_tags": [
+            "vintage-modern",
+            "experimental"
+          ],
+          "notable_cards": [
+            "Mewtwo Delta ex",
+            "Rayquaza Delta ex",
+            "Holon's Magnemite",
+            "Latios ex",
+            "Latias ex"
+          ],
+          "key_mechanics": [
+            "Delta Species Pokemon (first)",
+            "Holon Pokemon"
+          ],
+          "notes": "Introduced Delta Species mechanic — Pokemon with alternate typings (e.g., Fire-type Pikachu). Delta Species defines the next four EX sets.",
+          "flag_review": false
+        },
+        {
+          "id": "ex-legend-maker",
+          "name": "EX Legend Maker",
+          "abbreviation": "LM",
+          "series": "EX Series",
+          "release_date": "2006-02-13",
+          "card_count": 93,
+          "archetype_tags": [
+            "vintage-modern",
+            "sleeper"
+          ],
+          "notable_cards": [
+            "Mew ex",
+            "Aerodactyl ex",
+            "Gardevoir ex Delta"
+          ],
+          "key_mechanics": [
+            "continued Delta Species"
+          ],
+          "notes": "Smaller set. Continues Delta Species line. Mew ex is the notable chase.",
+          "flag_review": false
+        },
+        {
+          "id": "ex-holon-phantoms",
+          "name": "EX Holon Phantoms",
+          "abbreviation": "HP",
+          "series": "EX Series",
+          "release_date": "2006-05-03",
+          "card_count": 111,
+          "archetype_tags": [
+            "vintage-modern",
+            "grail"
+          ],
+          "notable_cards": [
+            "Mewtwo Gold Star",
+            "Gyarados Gold Star (shiny variant)",
+            "Pikachu Gold Star",
+            "Mew ex",
+            "Crawdaunt ex",
+            "Mightyena ex"
+          ],
+          "key_mechanics": [
+            "Delta Species continued"
+          ],
+          "notes": "Contains three Gold Stars including Pikachu Gold Star — one of the most sought-after Pikachu cards in the TCG.",
+          "flag_review": false
+        },
+        {
+          "id": "ex-crystal-guardians",
+          "name": "EX Crystal Guardians",
+          "abbreviation": "CG",
+          "series": "EX Series",
+          "release_date": "2006-08-30",
+          "card_count": 100,
+          "archetype_tags": [
+            "vintage-modern",
+            "nostalgia"
+          ],
+          "notable_cards": [
+            "Charizard ex Delta",
+            "Blastoise ex Delta",
+            "Venusaur ex Delta",
+            "Celebi ex",
+            "Jirachi ex"
+          ],
+          "key_mechanics": [
+            "Delta Species continued",
+            "Crystal-type references"
+          ],
+          "notes": "Second Kanto starter homage through Delta Species variants. Collector-favorite Delta cards.",
+          "flag_review": false
+        },
+        {
+          "id": "ex-dragon-frontiers",
+          "name": "EX Dragon Frontiers",
+          "abbreviation": "DF",
+          "series": "EX Series",
+          "release_date": "2006-11-08",
+          "card_count": 101,
+          "archetype_tags": [
+            "vintage-modern",
+            "grail"
+          ],
+          "notable_cards": [
+            "Rayquaza Gold Star Delta",
+            "Mew Gold Star Delta",
+            "Charizard Delta",
+            "Salamence ex"
+          ],
+          "key_mechanics": [
+            "Delta Species + Dragon theme"
+          ],
+          "notes": "Contains Rayquaza Gold Star (Delta Species variant) — a distinct and valuable chase separate from EX Deoxys Rayquaza Gold Star.",
+          "flag_review": false
+        },
+        {
+          "id": "ex-power-keepers",
+          "name": "EX Power Keepers",
+          "abbreviation": "PK",
+          "series": "EX Series",
+          "release_date": "2007-02-14",
+          "card_count": 108,
+          "archetype_tags": [
+            "vintage-modern",
+            "closing-chapter"
+          ],
+          "notable_cards": [
+            "Latios ex",
+            "Latias ex",
+            "Gardevoir ex",
+            "Charizard",
+            "Mew"
+          ],
+          "key_mechanics": [
+            "last EX set"
+          ],
+          "notes": "Final EX Series set and final Gen 3 set. Reprint-heavy. Loosely themed around Hoenn Elite Four.",
+          "flag_review": false
+        }
+      ]
+    },
+    {
+      "era_id": "dp-platinum",
+      "era_name": "Diamond & Pearl / Platinum Era",
+      "period": "2007-2009",
+      "publisher": "TPCi",
+      "character": "Gen 4 / Sinnoh era. Pokemon LV.X mechanic replaces ex. Lost Zone introduced in Platinum. Established the 4-sets-per-year quarterly cadence that still defines the modern schedule. Pokemon-SP subtype is the era's competitive hallmark.",
+      "sets": [
+        {
+          "id": "diamond-pearl",
+          "name": "Diamond & Pearl",
+          "abbreviation": "DP",
+          "series": "Diamond & Pearl Series",
+          "release_date": "2007-05-23",
+          "card_count": 130,
+          "archetype_tags": [
+            "modern-vintage",
+            "foundational"
+          ],
+          "notable_cards": [
+            "Dialga LV.X",
+            "Palkia LV.X",
+            "Empoleon LV.X",
+            "Torterra LV.X",
+            "Infernape LV.X"
+          ],
+          "key_mechanics": [
+            "Pokemon LV.X debut",
+            "Gen 4 Pokemon",
+            "Darkness/Metal as basic energy"
+          ],
+          "notes": "First Gen 4 / Sinnoh set. Introduced Pokemon LV.X mechanic. Release date varies by source (May 3 or May 23, 2007).",
+          "flag_review": false
+        },
+        {
+          "id": "mysterious-treasures",
+          "name": "Mysterious Treasures",
+          "abbreviation": "MT",
+          "series": "Diamond & Pearl Series",
+          "release_date": "2007-08-22",
+          "card_count": 124,
+          "archetype_tags": [
+            "modern-vintage"
+          ],
+          "notable_cards": [
+            "Honchkrow LV.X",
+            "Magmortar LV.X",
+            "Electivire LV.X",
+            "Luxray",
+            "Rhyperior"
+          ],
+          "key_mechanics": [
+            "Pokemon with Item cards"
+          ],
+          "notes": "Second D&P set. Introduces 'Pokemon with Item' mechanic — Pokemon with held items integrated.",
+          "flag_review": false
+        },
+        {
+          "id": "secret-wonders",
+          "name": "Secret Wonders",
+          "abbreviation": "SW",
+          "series": "Diamond & Pearl Series",
+          "release_date": "2007-11-07",
+          "card_count": 132,
+          "archetype_tags": [
+            "modern-vintage"
+          ],
+          "notable_cards": [
+            "Mewtwo LV.X",
+            "Darkrai",
+            "Blissey",
+            "Gardevoir"
+          ],
+          "key_mechanics": [],
+          "notes": "Third D&P set. Mewtwo LV.X is the featured chase. Strong competitive cards.",
+          "flag_review": false
+        },
+        {
+          "id": "great-encounters",
+          "name": "Great Encounters",
+          "abbreviation": "GE",
+          "series": "Diamond & Pearl Series",
+          "release_date": "2008-02-13",
+          "card_count": 106,
+          "archetype_tags": [
+            "modern-vintage",
+            "nostalgia"
+          ],
+          "notable_cards": [
+            "Leafeon LV.X",
+            "Glaceon LV.X",
+            "Magmortar",
+            "Empoleon"
+          ],
+          "key_mechanics": [],
+          "notes": "Introduces Leafeon and Glaceon — the two newest Eeveelutions — to the TCG as LV.X chases.",
+          "flag_review": false
+        },
+        {
+          "id": "majestic-dawn",
+          "name": "Majestic Dawn",
+          "abbreviation": "MD",
+          "series": "Diamond & Pearl Series",
+          "release_date": "2008-05-21",
+          "card_count": 100,
+          "archetype_tags": [
+            "modern-vintage"
+          ],
+          "notable_cards": [
+            "Dialga G LV.X (first Pokemon G)",
+            "Empoleon LV.X",
+            "Glaceon LV.X",
+            "Leafeon LV.X"
+          ],
+          "key_mechanics": [
+            "Pokemon G subtype"
+          ],
+          "notes": "Introduces Pokemon G subtype. Smaller set.",
+          "flag_review": false
+        },
+        {
+          "id": "legends-awakened",
+          "name": "Legends Awakened",
+          "abbreviation": "LA",
+          "series": "Diamond & Pearl Series",
+          "release_date": "2008-08-20",
+          "card_count": 146,
+          "archetype_tags": [
+            "modern-vintage",
+            "large-set"
+          ],
+          "notable_cards": [
+            "Shaymin LV.X",
+            "Regigigas LV.X",
+            "Heatran LV.X",
+            "Kabutops",
+            "Rampardos"
+          ],
+          "key_mechanics": [
+            "Technical Machines return"
+          ],
+          "notes": "Fourth-largest set in TCG history at the time. Seven Pokemon LV.X cards — more than any prior set.",
+          "flag_review": false
+        },
+        {
+          "id": "stormfront",
+          "name": "Stormfront",
+          "abbreviation": "SF",
+          "series": "Diamond & Pearl Series",
+          "release_date": "2008-11-05",
+          "card_count": 100,
+          "archetype_tags": [
+            "modern-vintage",
+            "iconic"
+          ],
+          "notable_cards": [
+            "Charizard",
+            "Dusknoir LV.X",
+            "Sableye (SF)",
+            "Machamp"
+          ],
+          "key_mechanics": [
+            "Shiny Pokemon return (alternate coloration)"
+          ],
+          "notes": "Final D&P-branded set. Stormfront Charizard is a fan-favorite chase. Sableye SF became a competitive staple (Turn 1 'Trick or Trap').",
+          "flag_review": false
+        },
+        {
+          "id": "platinum",
+          "name": "Platinum",
+          "abbreviation": "PL",
+          "series": "Platinum Series",
+          "release_date": "2009-02-11",
+          "card_count": 127,
+          "archetype_tags": [
+            "modern-vintage",
+            "mechanical-shift"
+          ],
+          "notable_cards": [
+            "Giratina LV.X",
+            "Porygon-Z LV.X",
+            "Regigigas LV.X",
+            "Dialga G",
+            "Palkia G"
+          ],
+          "key_mechanics": [
+            "Lost Zone introduced",
+            "Pokemon SP subtype"
+          ],
+          "notes": "Introduced Lost Zone (cards removed from play permanently) and Pokemon-SP mechanic. Major competitive shift.",
+          "flag_review": false
+        },
+        {
+          "id": "rising-rivals",
+          "name": "Rising Rivals",
+          "abbreviation": "RR",
+          "series": "Platinum Series",
+          "release_date": "2009-05-16",
+          "card_count": 111,
+          "archetype_tags": [
+            "modern-vintage"
+          ],
+          "notable_cards": [
+            "Flygon LV.X",
+            "Luxray GL LV.X",
+            "Gallade 4 LV.X",
+            "Shaymin"
+          ],
+          "key_mechanics": [
+            "Pokemon GL / 4 / E4 subtypes"
+          ],
+          "notes": "Expands Pokemon-SP subtypes. Luxray GL LV.X is competitive hallmark of the era.",
+          "flag_review": false
+        },
+        {
+          "id": "supreme-victors",
+          "name": "Supreme Victors",
+          "abbreviation": "SV",
+          "series": "Platinum Series",
+          "release_date": "2009-08-19",
+          "card_count": 147,
+          "archetype_tags": [
+            "modern-vintage",
+            "large-set",
+            "competitive-era"
+          ],
+          "notable_cards": [
+            "Garchomp C LV.X",
+            "Dialga G LV.X",
+            "Palmer's Contribution",
+            "Absol G LV.X"
+          ],
+          "key_mechanics": [],
+          "notes": "Garchomp C LV.X defines the late-SP meta. Largest D&P/Platinum set.",
+          "flag_review": false
+        },
+        {
+          "id": "arceus",
+          "name": "Arceus",
+          "abbreviation": "AR",
+          "series": "Platinum Series",
+          "release_date": "2009-11-04",
+          "card_count": 99,
+          "archetype_tags": [
+            "modern-vintage",
+            "closing-chapter"
+          ],
+          "notable_cards": [
+            "Arceus LV.X (three versions)",
+            "Spiritomb",
+            "Shiny versions"
+          ],
+          "key_mechanics": [
+            "Arceus forms"
+          ],
+          "notes": "Final Platinum set. Three Arceus LV.X variants (Fighting, Grass, Lightning). Spiritomb was the SP-killer of the meta.",
+          "flag_review": false
+        }
+      ]
+    },
+    {
+      "era_id": "hgss",
+      "era_name": "HeartGold & SoulSilver Era",
+      "period": "2010-2011",
+      "publisher": "TPCi",
+      "character": "Short era (5 sets). Returns to Johto / Gen 2 roots with remakes as the theme. Pokemon Prime and LEGEND cards are the defining rarities — Prime has holo backgrounds, LEGEND cards are two-card sets that form one full artwork. Call of Legends closes the era with Shiny Pokemon reprints.",
+      "sets": [
+        {
+          "id": "heartgold-soulsilver",
+          "name": "HeartGold & SoulSilver",
+          "abbreviation": "HS",
+          "series": "HeartGold & SoulSilver Series",
+          "release_date": "2010-02-10",
+          "card_count": 123,
+          "archetype_tags": [
+            "modern-vintage",
+            "gen2-revival",
+            "iconic"
+          ],
+          "notable_cards": [
+            "Lugia LEGEND",
+            "Ho-Oh LEGEND",
+            "Entei & Raikou LEGEND",
+            "Suicune & Entei LEGEND",
+            "Feraligatr Prime",
+            "Typhlosion Prime",
+            "Meganium Prime"
+          ],
+          "key_mechanics": [
+            "Pokemon Prime (first)",
+            "Pokemon LEGEND (first, two-card)"
+          ],
+          "notes": "Introduced Pokemon Prime and Pokemon LEGEND mechanics. LEGEND cards are split across two cards that form one artwork. Highly collectible era.",
+          "flag_review": false
+        },
+        {
+          "id": "hs-unleashed",
+          "name": "HS Unleashed",
+          "abbreviation": "UL",
+          "series": "HeartGold & SoulSilver Series",
+          "release_date": "2010-05-12",
+          "card_count": 95,
+          "archetype_tags": [
+            "modern-vintage",
+            "iconic"
+          ],
+          "notable_cards": [
+            "Tyranitar Prime",
+            "Steelix Prime",
+            "Ursaring Prime",
+            "Crobat Prime",
+            "Raikou & Suicune LEGEND"
+          ],
+          "key_mechanics": [],
+          "notes": "Tyranitar Prime is the defining chase of this set. Beloved by Johto collectors.",
+          "flag_review": false
+        },
+        {
+          "id": "hs-undaunted",
+          "name": "HS Undaunted",
+          "abbreviation": "UD",
+          "series": "HeartGold & SoulSilver Series",
+          "release_date": "2010-08-18",
+          "card_count": 90,
+          "archetype_tags": [
+            "modern-vintage",
+            "grail",
+            "eeveelution"
+          ],
+          "notable_cards": [
+            "Espeon Prime",
+            "Umbreon Prime",
+            "Tyrogue",
+            "Houndoom Prime",
+            "Slowking Prime",
+            "Entei & Raikou LEGEND"
+          ],
+          "key_mechanics": [],
+          "notes": "Contains Espeon Prime and Umbreon Prime — two of the most valuable and sought-after modern-vintage cards. Tyrogue also an iconic chase.",
+          "flag_review": false
+        },
+        {
+          "id": "hs-triumphant",
+          "name": "HS Triumphant",
+          "abbreviation": "TM",
+          "series": "HeartGold & SoulSilver Series",
+          "release_date": "2010-11-03",
+          "card_count": 102,
+          "archetype_tags": [
+            "modern-vintage"
+          ],
+          "notable_cards": [
+            "Mew Prime",
+            "Gengar Prime",
+            "Celebi Prime",
+            "Machamp Prime",
+            "Ho-Oh LEGEND (alt)"
+          ],
+          "key_mechanics": [],
+          "notes": "Mew Prime and Gengar Prime are the headliners. Final HGSS-branded main set.",
+          "flag_review": false
+        },
+        {
+          "id": "call-of-legends",
+          "name": "Call of Legends",
+          "abbreviation": "CL",
+          "series": "Call of Legends",
+          "release_date": "2011-02-09",
+          "card_count": 95,
+          "archetype_tags": [
+            "modern-vintage",
+            "transition",
+            "shiny"
+          ],
+          "notable_cards": [
+            "Shiny Suicune",
+            "Shiny Raikou",
+            "Shiny Entei",
+            "Shiny Lugia",
+            "Shiny Ho-Oh",
+            "Shiny Rayquaza",
+            "Shiny Mew"
+          ],
+          "key_mechanics": [
+            "Shiny Legendary collection"
+          ],
+          "notes": "Transition set bridging HGSS and Black & White eras. Features reprint Shiny Legendary Pokemon as secret rares. Treated as its own mini-series.",
+          "flag_review": false
+        }
+      ]
+    },
+    {
+      "era_id": "bw",
+      "era_name": "Black & White Era",
+      "period": "2011-2013",
+      "publisher": "TPCi",
+      "character": "Gen 5 / Unova era. Introduced full-art Pokemon and Supporters — the first era where full arts became standard chase targets. Pokemon-EX mechanic reintroduced (replacing LV.X) as the competitive and collector centerpiece. Team Plasma storyline carried through multiple sets. Pokemon TCG Online launched during this era.",
+      "sets": [
+        {
+          "id": "black-white",
+          "name": "Black & White",
+          "abbreviation": "BLW",
+          "series": "Black & White Series",
+          "release_date": "2011-04-25",
+          "card_count": 114,
+          "archetype_tags": [
+            "modern",
+            "foundational",
+            "iconic"
+          ],
+          "notable_cards": [
+            "Reshiram",
+            "Zekrom",
+            "Serperior",
+            "Emboar",
+            "Samurott",
+            "Pikachu (full art)"
+          ],
+          "key_mechanics": [
+            "Gen 5 Pokemon",
+            "full art cards (first)",
+            "Poke-Powers/Bodies unified to Abilities"
+          ],
+          "notes": "First Gen 5 set. Introduced full-art cards — a visual hallmark still used today. Reshiram and Zekrom debut.",
+          "flag_review": false
+        },
+        {
+          "id": "emerging-powers",
+          "name": "Emerging Powers",
+          "abbreviation": "EPO",
+          "series": "Black & White Series",
+          "release_date": "2011-08-31",
+          "card_count": 98,
+          "archetype_tags": [
+            "modern"
+          ],
+          "notable_cards": [
+            "Samurott",
+            "Zoroark",
+            "Musharna",
+            "Gothitelle"
+          ],
+          "key_mechanics": [],
+          "notes": "Second B&W set. No Pokemon-EX or special rarities yet. Competitive-focused.",
+          "flag_review": false
+        },
+        {
+          "id": "noble-victories",
+          "name": "Noble Victories",
+          "abbreviation": "NVI",
+          "series": "Black & White Series",
+          "release_date": "2011-11-16",
+          "card_count": 101,
+          "archetype_tags": [
+            "modern",
+            "iconic-trainer"
+          ],
+          "notable_cards": [
+            "N (Supporter)",
+            "Virizion",
+            "Terrakion",
+            "Cobalion",
+            "Victini",
+            "Kyurem"
+          ],
+          "key_mechanics": [],
+          "notes": "N Supporter card from this set became the most iconic Trainer card of the era. Swords of Justice trio featured.",
+          "flag_review": false
+        },
+        {
+          "id": "next-destinies",
+          "name": "Next Destinies",
+          "abbreviation": "NXD",
+          "series": "Black & White Series",
+          "release_date": "2012-02-08",
+          "card_count": 99,
+          "archetype_tags": [
+            "modern",
+            "mechanical-shift",
+            "iconic"
+          ],
+          "notable_cards": [
+            "Mewtwo EX",
+            "Reshiram EX",
+            "Zekrom EX",
+            "Regigigas EX",
+            "Shaymin EX"
+          ],
+          "key_mechanics": [
+            "Pokemon-EX reintroduced (modern)"
+          ],
+          "notes": "Reintroduced Pokemon-EX mechanic in the modern format. Mewtwo EX was the defining chase and competitive staple of the era.",
+          "flag_review": false
+        },
+        {
+          "id": "dark-explorers",
+          "name": "Dark Explorers",
+          "abbreviation": "DEX",
+          "series": "Black & White Series",
+          "release_date": "2012-05-09",
+          "card_count": 108,
+          "archetype_tags": [
+            "modern",
+            "competitive-iconic"
+          ],
+          "notable_cards": [
+            "Darkrai EX",
+            "Tornadus EX",
+            "Landorus EX",
+            "Hydreigon"
+          ],
+          "key_mechanics": [],
+          "notes": "Darkrai EX defined the post-2012 meta. Strong competitive set. Landorus EX equally impactful.",
+          "flag_review": false
+        },
+        {
+          "id": "dragons-exalted",
+          "name": "Dragons Exalted",
+          "abbreviation": "DRX",
+          "series": "Black & White Series",
+          "release_date": "2012-08-15",
+          "card_count": 124,
+          "archetype_tags": [
+            "modern",
+            "iconic",
+            "competitive"
+          ],
+          "notable_cards": [
+            "Rayquaza EX",
+            "Hydreigon",
+            "Garchomp",
+            "Altaria"
+          ],
+          "key_mechanics": [
+            "Dragon type introduced"
+          ],
+          "notes": "Introduced the Dragon type to the TCG. Rayquaza EX defined a major competitive archetype.",
+          "flag_review": false
+        },
+        {
+          "id": "dragon-vault",
+          "name": "Dragon Vault",
+          "abbreviation": "DRV",
+          "series": "Black & White Series",
+          "release_date": "2012-10-05",
+          "card_count": 20,
+          "archetype_tags": [
+            "modern",
+            "mini-set"
+          ],
+          "notable_cards": [
+            "Rayquaza",
+            "Giratina",
+            "Latias",
+            "Latios",
+            "Dialga"
+          ],
+          "key_mechanics": [],
+          "notes": "Mini-set with 20 Dragon-type reprints. Sold in small promotional packs, not as a standalone main release.",
+          "flag_review": false
+        },
+        {
+          "id": "boundaries-crossed",
+          "name": "Boundaries Crossed",
+          "abbreviation": "BCR",
+          "series": "Black & White Series",
+          "release_date": "2012-11-07",
+          "card_count": 149,
+          "archetype_tags": [
+            "modern",
+            "large-set",
+            "competitive"
+          ],
+          "notable_cards": [
+            "Keldeo EX",
+            "Kyurem EX",
+            "Black Kyurem",
+            "White Kyurem",
+            "Blastoise",
+            "Landorus"
+          ],
+          "key_mechanics": [
+            "ACE SPEC Trainers introduced"
+          ],
+          "notes": "Introduced ACE SPEC — powerful Trainer cards limited to one per deck. Keldeo EX was a competitive keystone paired with Black Kyurem.",
+          "flag_review": false
+        },
+        {
+          "id": "plasma-storm",
+          "name": "Plasma Storm",
+          "abbreviation": "PLS",
+          "series": "Black & White Series",
+          "release_date": "2013-02-06",
+          "card_count": 135,
+          "archetype_tags": [
+            "modern",
+            "team-plasma-arc"
+          ],
+          "notable_cards": [
+            "Genesect EX (Team Plasma)",
+            "Thundurus EX",
+            "Hydreigon",
+            "Team Plasma Basic Energy"
+          ],
+          "key_mechanics": [
+            "Team Plasma subtype"
+          ],
+          "notes": "Start of Team Plasma three-set arc. Team Plasma Pokemon have unique interactions with themed Trainers.",
+          "flag_review": false
+        },
+        {
+          "id": "plasma-freeze",
+          "name": "Plasma Freeze",
+          "abbreviation": "PLF",
+          "series": "Black & White Series",
+          "release_date": "2013-05-08",
+          "card_count": 116,
+          "archetype_tags": [
+            "modern",
+            "team-plasma-arc"
+          ],
+          "notable_cards": [
+            "Kyurem EX (Team Plasma)",
+            "Deoxys EX (Team Plasma)",
+            "Thundurus EX",
+            "Absol"
+          ],
+          "key_mechanics": [],
+          "notes": "Second Team Plasma set. Deoxys EX + Kyurem EX formed competitive archetype.",
+          "flag_review": false
+        },
+        {
+          "id": "plasma-blast",
+          "name": "Plasma Blast",
+          "abbreviation": "PLB",
+          "series": "Black & White Series",
+          "release_date": "2013-08-14",
+          "card_count": 101,
+          "archetype_tags": [
+            "modern",
+            "team-plasma-arc",
+            "closing-chapter"
+          ],
+          "notable_cards": [
+            "Ho-Oh EX",
+            "Lugia EX (Team Plasma)",
+            "Dialga EX",
+            "Palkia EX"
+          ],
+          "key_mechanics": [],
+          "notes": "Final Team Plasma set. Ho-Oh EX and Lugia EX closed the era with a Johto legendary callback.",
+          "flag_review": false
+        },
+        {
+          "id": "legendary-treasures",
+          "name": "Legendary Treasures",
+          "abbreviation": "LTR",
+          "series": "Black & White Series",
+          "release_date": "2013-11-06",
+          "card_count": 113,
+          "archetype_tags": [
+            "modern",
+            "compilation",
+            "shiny"
+          ],
+          "notable_cards": [
+            "Rayquaza EX",
+            "Charizard (reverse holo)",
+            "Meloetta",
+            "Radiant Collection sub-set (25 cards)"
+          ],
+          "key_mechanics": [
+            "Radiant Collection sub-set"
+          ],
+          "notes": "Compilation set closing the B&W era. Contains the Radiant Collection — 25 bonus cards with shiny/alternate treatments. Precursor concept to later 'trainer gallery' sub-sets.",
+          "flag_review": false
+        }
+      ]
+    },
+    {
+      "era_id": "xy",
+      "era_name": "XY Era",
+      "period": "2014-2016",
+      "publisher": "The Pokémon Company International",
+      "character": "Gen VI. Introduced Pokémon-EX with Mega Evolution mechanic (M-EX) and the Fairy type to TCG. 20th anniversary celebrated mid-era with Generations and Evolutions sets. Strong Charizard-chase era (Flashfire, Evolutions). BREAK cards introduced late-era.",
+      "sets": [
+        {
+          "id": "xy-kalos-starter",
+          "name": "Kalos Starter Set",
+          "abbreviation": "KSS",
+          "series": "XY Series",
+          "release_date": "2013-11-08",
+          "card_count": 39,
+          "archetype_tags": [
+            "modern",
+            "special",
+            "starter"
+          ],
+          "notable_cards": [
+            "Chespin",
+            "Fennekin",
+            "Froakie",
+            "Xerneas",
+            "Yveltal"
+          ],
+          "key_mechanics": [
+            "introduction of XY-era design"
+          ],
+          "notes": "Small preview set released ahead of XY base set. Contained 3 fixed starter decks. Not a standard expansion — primarily teaching/onboarding product.",
+          "flag_review": false
+        },
+        {
+          "id": "xy-base",
+          "name": "XY",
+          "abbreviation": "XY",
+          "series": "XY Series",
+          "release_date": "2014-02-05",
+          "card_count": 146,
+          "archetype_tags": [
+            "modern",
+            "base-set",
+            "mechanic-debut"
+          ],
+          "notable_cards": [
+            "Xerneas-EX",
+            "Yveltal-EX",
+            "M Kangaskhan-EX",
+            "M Blastoise-EX"
+          ],
+          "key_mechanics": [
+            "Pokémon-EX full art",
+            "Mega Evolution (M-EX)",
+            "Fairy type debut",
+            "Gen VI Pokémon debut"
+          ],
+          "notes": "Base set of the XY era. Introduced Fairy type, Mega Evolution cards, and Gen VI Pokémon to TCG. 146 cards in English release (larger than Japanese 126).",
+          "flag_review": false
+        },
+        {
+          "id": "xy-flashfire",
+          "name": "Flashfire",
+          "abbreviation": "FLF",
+          "series": "XY Series",
+          "release_date": "2014-05-07",
+          "card_count": 109,
+          "archetype_tags": [
+            "modern",
+            "charizard-chase"
+          ],
+          "notable_cards": [
+            "M Charizard-EX (two variants)",
+            "Charizard-EX",
+            "Yveltal-EX"
+          ],
+          "key_mechanics": [
+            "Mega Evolution expansion"
+          ],
+          "notes": "The Charizard set of the XY era. Features two Mega Charizard-EX cards (one Fire-type M-EX, one Dragon-type M-EX). Major chase set for Charizard collectors.",
+          "flag_review": false
+        },
+        {
+          "id": "xy-furious-fists",
+          "name": "Furious Fists",
+          "abbreviation": "FFI",
+          "series": "XY Series",
+          "release_date": "2014-08-13",
+          "card_count": 111,
+          "archetype_tags": [
+            "modern",
+            "themed"
+          ],
+          "notable_cards": [
+            "M Lucario-EX",
+            "M Heracross-EX",
+            "Lucario-EX",
+            "Seismitoad-EX"
+          ],
+          "key_mechanics": [
+            "Fighting-type focus"
+          ],
+          "notes": "Fighting-type themed set. Seismitoad-EX became a defining competitive card in standard format. Lucario holds strong nostalgia value.",
+          "flag_review": false
+        },
+        {
+          "id": "xy-phantom-forces",
+          "name": "Phantom Forces",
+          "abbreviation": "PHF",
+          "series": "XY Series",
+          "release_date": "2014-11-05",
+          "card_count": 119,
+          "archetype_tags": [
+            "modern",
+            "competitive-staple"
+          ],
+          "notable_cards": [
+            "M Manectric-EX",
+            "M Gengar-EX",
+            "Dialga-EX",
+            "VS Seeker"
+          ],
+          "key_mechanics": [
+            "Team Flare Trainer cards"
+          ],
+          "notes": "Introduced VS Seeker, one of the most impactful Trainer cards in TCG history. Team Flare sub-theme reflected Gen VI villain faction.",
+          "flag_review": false
+        },
+        {
+          "id": "xy-primal-clash",
+          "name": "Primal Clash",
+          "abbreviation": "PRC",
+          "series": "XY Series",
+          "release_date": "2015-02-04",
+          "card_count": 160,
+          "archetype_tags": [
+            "modern",
+            "legendary-focus",
+            "large-set"
+          ],
+          "notable_cards": [
+            "Primal Groudon-EX",
+            "Primal Kyogre-EX",
+            "M Rayquaza-EX (later Roaring Skies)"
+          ],
+          "key_mechanics": [
+            "Primal Reversion",
+            "Ancient Traits"
+          ],
+          "notes": "Massive 160-card set. Introduced Primal Reversion mechanic (distinct from Mega Evolution). Hoenn remake tie-in. Ancient Trait abilities debuted.",
+          "flag_review": false
+        },
+        {
+          "id": "xy-double-crisis",
+          "name": "Double Crisis",
+          "abbreviation": "DCR",
+          "series": "XY Series",
+          "release_date": "2015-03-25",
+          "card_count": 34,
+          "archetype_tags": [
+            "modern",
+            "mini-set",
+            "themed"
+          ],
+          "notable_cards": [
+            "Team Magma's Groudon-EX",
+            "Team Aqua's Kyogre-EX"
+          ],
+          "key_mechanics": [
+            "Team-specific Trainer cards",
+            "double-sided Stadium"
+          ],
+          "notes": "NO standalone Booster Box for this special/mini-set expansion. Small 34-card themed mini-set. Team Magma vs Team Aqua. Sold only in themed special blisters and collections, never standalone booster boxes.",
+          "flag_review": false,
+          "sold_as": [
+            "themed_blisters",
+            "team_magma_aqua_boxes"
+          ],
+          "has_booster_box": false
+        },
+        {
+          "id": "xy-roaring-skies",
+          "name": "Roaring Skies",
+          "abbreviation": "ROS",
+          "series": "XY Series",
+          "release_date": "2015-05-06",
+          "card_count": 108,
+          "archetype_tags": [
+            "modern",
+            "competitive-staple",
+            "dragon-focus"
+          ],
+          "notable_cards": [
+            "M Rayquaza-EX",
+            "Shaymin-EX",
+            "Hoopa-EX"
+          ],
+          "key_mechanics": [
+            "Dragon-type focus"
+          ],
+          "notes": "Shaymin-EX 'Set Up' became a defining engine card for years of competitive play. M Rayquaza-EX also saw heavy competitive use. Strong chase set.",
+          "flag_review": false
+        },
+        {
+          "id": "xy-ancient-origins",
+          "name": "Ancient Origins",
+          "abbreviation": "AOR",
+          "series": "XY Series",
+          "release_date": "2015-08-12",
+          "card_count": 98,
+          "archetype_tags": [
+            "modern",
+            "lore-heavy"
+          ],
+          "notable_cards": [
+            "M Tyranitar-EX",
+            "Giratina-EX",
+            "Rayquaza"
+          ],
+          "key_mechanics": [
+            "Mega Evolution expansion"
+          ],
+          "notes": "Notable for reviving Giratina-EX and featuring ancient Pokémon. Smaller set size (98 cards).",
+          "flag_review": false
+        },
+        {
+          "id": "xy-breakthrough",
+          "name": "BREAKthrough",
+          "abbreviation": "BKT",
+          "series": "XY Series",
+          "release_date": "2015-11-04",
+          "card_count": 164,
+          "archetype_tags": [
+            "modern",
+            "mechanic-debut",
+            "large-set"
+          ],
+          "notable_cards": [
+            "M Mewtwo-EX X",
+            "M Mewtwo-EX Y",
+            "Zoroark BREAK"
+          ],
+          "key_mechanics": [
+            "Pokémon BREAK (landscape-oriented evolution)"
+          ],
+          "notes": "Introduced Pokémon BREAK mechanic — golden landscape-oriented evolution cards. Two Mega Mewtwo-EX cards headlined the set. Large 164-card count.",
+          "flag_review": false
+        },
+        {
+          "id": "xy-breakpoint",
+          "name": "BREAKpoint",
+          "abbreviation": "BKP",
+          "series": "XY Series",
+          "release_date": "2016-02-03",
+          "card_count": 122,
+          "archetype_tags": [
+            "modern",
+            "competitive"
+          ],
+          "notable_cards": [
+            "Greninja BREAK",
+            "M Scizor-EX",
+            "Luxray BREAK"
+          ],
+          "key_mechanics": [
+            "BREAK cards continued"
+          ],
+          "notes": "Greninja BREAK became one of the defining competitive archetypes ('Greninja BREAK deck') in late XY format.",
+          "flag_review": false
+        },
+        {
+          "id": "xy-generations",
+          "name": "Generations",
+          "abbreviation": "GEN",
+          "series": "XY Series",
+          "release_date": "2016-02-22",
+          "card_count": 115,
+          "archetype_tags": [
+            "modern",
+            "anniversary",
+            "special",
+            "shiny"
+          ],
+          "notable_cards": [
+            "Radiant Collection sub-set (32 cards)",
+            "Shiny Mega Gardevoir-EX"
+          ],
+          "key_mechanics": [
+            "Radiant Collection sub-set with full-art variants"
+          ],
+          "notes": "NO standalone Booster Box for this special/mini-set expansion. 20th Anniversary special set. 83 main cards + 32-card Radiant Collection sub-set. Only available through 20th Anniversary promo collections initially. Not sold as standalone booster boxes.",
+          "flag_review": false,
+          "sold_as": [
+            "20th_anniversary_collections",
+            "pin_blisters",
+            "mythical_pokemon_collections"
+          ],
+          "has_booster_box": false
+        },
+        {
+          "id": "xy-fates-collide",
+          "name": "Fates Collide",
+          "abbreviation": "FCO",
+          "series": "XY Series",
+          "release_date": "2016-05-02",
+          "card_count": 124,
+          "archetype_tags": [
+            "modern"
+          ],
+          "notable_cards": [
+            "M Alakazam-EX",
+            "Zygarde-EX",
+            "Carbink BREAK"
+          ],
+          "key_mechanics": [
+            "BREAK cards continued"
+          ],
+          "notes": "Penultimate-year XY set. Alakazam and Zygarde themed. Moderate competitive impact.",
+          "flag_review": false
+        },
+        {
+          "id": "xy-steam-siege",
+          "name": "Steam Siege",
+          "abbreviation": "STS",
+          "series": "XY Series",
+          "release_date": "2016-08-03",
+          "card_count": 114,
+          "archetype_tags": [
+            "modern",
+            "volcanion"
+          ],
+          "notable_cards": [
+            "Volcanion-EX",
+            "M Gardevoir-EX",
+            "Magearna-EX"
+          ],
+          "key_mechanics": [
+            "BREAK cards continued"
+          ],
+          "notes": "Introduced Volcanion-EX (tied to Volcanion movie promotion). Magearna-EX also featured as Mythical Pokémon debut.",
+          "flag_review": false
+        },
+        {
+          "id": "xy-evolutions",
+          "name": "Evolutions",
+          "abbreviation": "EVO",
+          "series": "XY Series",
+          "release_date": "2016-11-02",
+          "card_count": 113,
+          "archetype_tags": [
+            "modern",
+            "anniversary",
+            "iconic",
+            "charizard-chase",
+            "base-set-tribute"
+          ],
+          "notable_cards": [
+            "M Charizard-EX Full Art (#13/108)",
+            "M Charizard-EX (#101/108)",
+            "Charizard (#11/108)",
+            "M Blastoise-EX",
+            "M Venusaur-EX",
+            "Mewtwo"
+          ],
+          "key_mechanics": [
+            "Base Set reimagining",
+            "classic artwork style"
+          ],
+          "notes": "20th anniversary capstone set. Reimagines the original 1999 Base Set with modern card stock, yellow borders, hand-drawn energy symbols. The M Charizard-EX Full Art is the defining chase. Three ETB variants (Charizard/Blastoise/Venusaur) now collectible sealed. Modern set with vintage aesthetic.",
+          "flag_review": false
+        }
+      ]
+    },
+    {
+      "era_id": "sun-moon",
+      "era_name": "Sun & Moon Era",
+      "period": "2017-2019",
+      "publisher": "The Pokémon Company International",
+      "character": "Gen VII. Introduced Pokémon-GX (similar to EX but with GX Attacks — once per game high-impact moves). Special 'Fates' sets revived Shiny Pokémon collecting. Cosmic Eclipse closed the era with TAG TEAM mechanic and largest set of the era.",
+      "sets": [
+        {
+          "id": "sm-base",
+          "name": "Sun & Moon",
+          "abbreviation": "SUM",
+          "series": "Sun & Moon Series",
+          "release_date": "2017-02-03",
+          "card_count": 149,
+          "archetype_tags": [
+            "modern",
+            "base-set",
+            "mechanic-debut"
+          ],
+          "notable_cards": [
+            "Solgaleo-GX",
+            "Lunala-GX",
+            "Decidueye-GX",
+            "Incineroar-GX",
+            "Primarina-GX"
+          ],
+          "key_mechanics": [
+            "Pokémon-GX debut",
+            "GX Attacks",
+            "Alola region Pokémon"
+          ],
+          "notes": "Base set introducing the GX mechanic. Alolan starter trio as GX cards. Marked a shift in card design and art direction.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "sm-guardians-rising",
+          "name": "Guardians Rising",
+          "abbreviation": "GRI",
+          "series": "Sun & Moon Series",
+          "release_date": "2017-05-05",
+          "card_count": 169,
+          "archetype_tags": [
+            "modern",
+            "competitive-staple"
+          ],
+          "notable_cards": [
+            "Tapu Lele-GX",
+            "Tapu Koko-GX",
+            "Lycanroc-GX",
+            "Metagross-GX"
+          ],
+          "key_mechanics": [
+            "Island Guardian tapu focus"
+          ],
+          "notes": "Tapu Lele-GX became one of the most-played competitive cards of the GX era (its ability to grab Supporter cards). Tapus themed set tied to Alola region.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "sm-burning-shadows",
+          "name": "Burning Shadows",
+          "abbreviation": "BUS",
+          "series": "Sun & Moon Series",
+          "release_date": "2017-08-04",
+          "card_count": 147,
+          "archetype_tags": [
+            "modern",
+            "charizard-chase",
+            "rainbow-rare"
+          ],
+          "notable_cards": [
+            "Charizard-GX (Rainbow Rare)",
+            "Gardevoir-GX",
+            "Golisopod-GX"
+          ],
+          "key_mechanics": [
+            "Rainbow Rare prominence"
+          ],
+          "notes": "Rainbow Rare Charizard-GX is one of the signature cards of the Sun & Moon era. Heavy chase value. Gardevoir-GX spawned a defining competitive archetype.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "sm-shining-legends",
+          "name": "Shining Legends",
+          "abbreviation": "SLG",
+          "series": "Sun & Moon Series",
+          "release_date": "2017-10-06",
+          "card_count": 73,
+          "archetype_tags": [
+            "modern",
+            "special",
+            "shiny"
+          ],
+          "notable_cards": [
+            "Shining Jirachi",
+            "Shining Celebi",
+            "Ho-Oh-GX",
+            "Mewtwo-GX"
+          ],
+          "key_mechanics": [
+            "Shining Pokémon (prism-style shiny)"
+          ],
+          "notes": "Small special set focusing on Shining variants of Legendary and Mythical Pokémon. Not sold in standard booster boxes — available through special collections and 3-pack blisters.",
+          "flag_review": false,
+          "sold_as": [
+            "elite_trainer_box",
+            "special_collections",
+            "pin_blisters"
+          ],
+          "has_booster_box": false
+        },
+        {
+          "id": "sm-crimson-invasion",
+          "name": "Crimson Invasion",
+          "abbreviation": "CIN",
+          "series": "Sun & Moon Series",
+          "release_date": "2017-11-03",
+          "card_count": 111,
+          "archetype_tags": [
+            "modern",
+            "ultra-beast"
+          ],
+          "notable_cards": [
+            "Buzzwole-GX",
+            "Guzzlord-GX",
+            "Silvally-GX",
+            "Necrozma-GX"
+          ],
+          "key_mechanics": [
+            "Ultra Beast focus"
+          ],
+          "notes": "Ultra Beast themed set from the Ultra Sun/Ultra Moon games. Silvally-GX as legendary ally. Smaller set size than surrounding releases.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "sm-ultra-prism",
+          "name": "Ultra Prism",
+          "abbreviation": "UPR",
+          "series": "Sun & Moon Series",
+          "release_date": "2018-02-02",
+          "card_count": 156,
+          "archetype_tags": [
+            "modern",
+            "mechanic-debut"
+          ],
+          "notable_cards": [
+            "Dusk Mane Necrozma-GX",
+            "Dawn Wings Necrozma-GX",
+            "Ultra Necrozma-GX (SL)",
+            "Solgaleo Prism Star",
+            "Lunala Prism Star"
+          ],
+          "key_mechanics": [
+            "Prism Star cards (one-of-one deck limit)"
+          ],
+          "notes": "Introduced Prism Star ♦ cards — unique powerful cards limited to one copy per deck. Full-art Gen IV Trainers (Cynthia, Cyrus) became staples.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "sm-forbidden-light",
+          "name": "Forbidden Light",
+          "abbreviation": "FLI",
+          "series": "Sun & Moon Series",
+          "release_date": "2018-05-04",
+          "card_count": 131,
+          "archetype_tags": [
+            "modern",
+            "competitive-staple"
+          ],
+          "notable_cards": [
+            "Ultra Necrozma-GX",
+            "Malamar",
+            "Zygarde-GX"
+          ],
+          "key_mechanics": [
+            "Alolan variant focus"
+          ],
+          "notes": "Malamar + Ultra Necrozma-GX combo became a dominant Psychic-type archetype. Zygarde-GX also featured.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "sm-celestial-storm",
+          "name": "Celestial Storm",
+          "abbreviation": "CES",
+          "series": "Sun & Moon Series",
+          "release_date": "2018-08-03",
+          "card_count": 168,
+          "archetype_tags": [
+            "modern",
+            "legendary-focus"
+          ],
+          "notable_cards": [
+            "Rayquaza-GX",
+            "Zoroark-GX (Shining)",
+            "Celebi Prism Star",
+            "Gible Full Art"
+          ],
+          "key_mechanics": [
+            "Full-art Trainer reprints"
+          ],
+          "notes": "Rayquaza-GX became a top-tier competitive deck. Stunning full-art Trainers (Lana, Mallow, Steven) were major collector targets.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "sm-dragon-majesty",
+          "name": "Dragon Majesty",
+          "abbreviation": "DRM",
+          "series": "Sun & Moon Series",
+          "release_date": "2018-09-07",
+          "card_count": 78,
+          "archetype_tags": [
+            "modern",
+            "special",
+            "themed",
+            "all-foil"
+          ],
+          "notable_cards": [
+            "Dragonite-GX",
+            "Salamence-GX",
+            "White Kyurem-GX",
+            "Reshiram-GX",
+            "Charizard (Holo)"
+          ],
+          "key_mechanics": [
+            "Dragon-type only, all-foil pack structure"
+          ],
+          "notes": "Dragon-type themed special set. Every card in the set has a foil treatment. Only sold through special collections and pin blisters — no booster boxes. 70 main cards + 8 secret rares.",
+          "flag_review": false,
+          "sold_as": [
+            "special_collections",
+            "three_pack_blisters",
+            "pin_blisters"
+          ],
+          "has_booster_box": false
+        },
+        {
+          "id": "sm-lost-thunder",
+          "name": "Lost Thunder",
+          "abbreviation": "LOT",
+          "series": "Sun & Moon Series",
+          "release_date": "2018-11-02",
+          "card_count": 214,
+          "archetype_tags": [
+            "modern",
+            "largest-set",
+            "competitive-staple"
+          ],
+          "notable_cards": [
+            "Zeraora-GX",
+            "Blacephalon-GX",
+            "Alolan Ninetales-GX",
+            "Lost March (combo)"
+          ],
+          "key_mechanics": [
+            "Lost Zone mechanic"
+          ],
+          "notes": "Largest Sun & Moon set at the time. Reintroduced the Lost Zone mechanic. Spawned multiple competitive archetypes including Lost March and Blacephalon-GX Beast Ring.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "sm-team-up",
+          "name": "Team Up",
+          "abbreviation": "TEU",
+          "series": "Sun & Moon Series",
+          "release_date": "2019-02-01",
+          "card_count": 181,
+          "archetype_tags": [
+            "modern",
+            "mechanic-debut"
+          ],
+          "notable_cards": [
+            "Pikachu & Zekrom-GX",
+            "Celebi & Venusaur-GX",
+            "Eevee & Snorlax-GX",
+            "Magikarp & Wailord-GX"
+          ],
+          "key_mechanics": [
+            "TAG TEAM Pokémon-GX debut"
+          ],
+          "notes": "Introduced TAG TEAM Pokémon-GX — paired Pokémon on single cards with high HP and GX attacks. Pikachu & Zekrom-GX defined Lightning-type decks for years.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "sm-detective-pikachu",
+          "name": "Detective Pikachu",
+          "abbreviation": "DET",
+          "series": "Sun & Moon Series",
+          "release_date": "2019-03-29",
+          "card_count": 18,
+          "archetype_tags": [
+            "modern",
+            "special",
+            "movie-tie-in"
+          ],
+          "notable_cards": [
+            "Detective Pikachu (full art)",
+            "Mewtwo-GX",
+            "Greninja-GX"
+          ],
+          "key_mechanics": [
+            "Movie promotional cards"
+          ],
+          "notes": "NO standalone Booster Box for this special/mini-set expansion. Tiny 18-card set tied to Detective Pikachu movie. Sold through special movie promotional blisters only. Niche collectible.",
+          "flag_review": false,
+          "sold_as": [
+            "movie_promotional_blisters",
+            "special_collections"
+          ],
+          "has_booster_box": false
+        },
+        {
+          "id": "sm-unbroken-bonds",
+          "name": "Unbroken Bonds",
+          "abbreviation": "UNB",
+          "series": "Sun & Moon Series",
+          "release_date": "2019-05-03",
+          "card_count": 234,
+          "archetype_tags": [
+            "modern",
+            "large-set",
+            "competitive-staple"
+          ],
+          "notable_cards": [
+            "Reshiram & Charizard-GX",
+            "Pidgeotto / Pidgeot",
+            "Green's Exploration"
+          ],
+          "key_mechanics": [
+            "TAG TEAM continued"
+          ],
+          "notes": "Reshiram & Charizard-GX became iconic chase card. One of the largest Sun & Moon sets. Green's Exploration became a competitive staple Supporter.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "sm-unified-minds",
+          "name": "Unified Minds",
+          "abbreviation": "UNM",
+          "series": "Sun & Moon Series",
+          "release_date": "2019-08-02",
+          "card_count": 236,
+          "archetype_tags": [
+            "modern",
+            "large-set"
+          ],
+          "notable_cards": [
+            "Mewtwo & Mew-GX",
+            "Espeon & Deoxys-GX",
+            "Cynthia & Caitlin full art"
+          ],
+          "key_mechanics": [
+            "TAG TEAM continued"
+          ],
+          "notes": "Mewtwo & Mew-GX was a flexible TAG TEAM (copying attacks from Psychic Pokémon in discard). Set also featured first TAG TEAM Trainer-style illustrations.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "sm-hidden-fates",
+          "name": "Hidden Fates",
+          "abbreviation": "HIF",
+          "series": "Sun & Moon Series",
+          "release_date": "2019-08-23",
+          "card_count": 163,
+          "archetype_tags": [
+            "modern",
+            "special",
+            "shiny",
+            "iconic",
+            "shiny-vault"
+          ],
+          "notable_cards": [
+            "Shiny Charizard-GX (Shiny Vault)",
+            "Shiny Umbreon-GX",
+            "Shiny Gyarados-GX"
+          ],
+          "key_mechanics": [
+            "Shiny Vault sub-set (94 cards)"
+          ],
+          "notes": "NO standalone Booster Box for this special/mini-set expansion. 68-card main set + 94-card Shiny Vault sub-set = 162 cards total (plus a secret rare). Shiny Charizard-GX (SV49/SV94) is one of the most iconic modern chase cards. Sealed products (especially tins) have appreciated significantly. Defining 'Fates' line set.",
+          "flag_review": false,
+          "sold_as": [
+            "elite_trainer_box",
+            "pin_blisters",
+            "tins",
+            "special_collections"
+          ],
+          "has_booster_box": false
+        },
+        {
+          "id": "sm-cosmic-eclipse",
+          "name": "Cosmic Eclipse",
+          "abbreviation": "CEC",
+          "series": "Sun & Moon Series",
+          "release_date": "2019-11-01",
+          "card_count": 271,
+          "archetype_tags": [
+            "modern",
+            "largest-set",
+            "era-closer"
+          ],
+          "notable_cards": [
+            "Arceus & Dialga & Palkia-GX",
+            "Pikachu & Zekrom full art",
+            "TAG TEAM Supporter cards"
+          ],
+          "key_mechanics": [
+            "TAG TEAM Supporter cards debut",
+            "three-Pokémon TAG TEAMs"
+          ],
+          "notes": "Largest Pokémon TCG set at release (272 cards). Era-closing capstone with three-Pokémon TAG TEAMs and TAG TEAM Supporter cards (paired Trainers on single card). Arceus & Dialga & Palkia-GX saw heavy competitive play.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        }
+      ]
+    },
+    {
+      "era_id": "sword-shield",
+      "era_name": "Sword & Shield Era",
+      "period": "2020-2023",
+      "publisher": "The Pokémon Company International",
+      "character": "Gen VIII. Introduced Pokémon V and VMAX (Dynamax/Gigantamax), then VSTAR. The era that coincided with COVID pandemic hobby boom. Evolving Skies produced Moonbreon — arguably the most iconic modern chase card. Alternate Art treatments became a defining collector format. Radiant Pokémon introduced late-era.",
+      "sets": [
+        {
+          "id": "swsh-base",
+          "name": "Sword & Shield",
+          "abbreviation": "SSH",
+          "series": "Sword & Shield Series",
+          "release_date": "2020-02-07",
+          "card_count": 216,
+          "archetype_tags": [
+            "modern",
+            "base-set",
+            "mechanic-debut"
+          ],
+          "notable_cards": [
+            "Zacian V",
+            "Zamazenta V",
+            "Snorlax V"
+          ],
+          "key_mechanics": [
+            "Pokémon V debut",
+            "Pokémon VMAX (Dynamax/Gigantamax)"
+          ],
+          "notes": "Base set of Sword & Shield era. Introduced V and VMAX mechanics. Galar region focus. Zacian V and Zamazenta V as legendary starters.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "swsh-rebel-clash",
+          "name": "Rebel Clash",
+          "abbreviation": "RCL",
+          "series": "Sword & Shield Series",
+          "release_date": "2020-05-01",
+          "card_count": 209,
+          "archetype_tags": [
+            "modern",
+            "competitive-staple"
+          ],
+          "notable_cards": [
+            "Eldegoss V",
+            "Boss's Orders (Giovanni)",
+            "Inteleon VMAX",
+            "Rillaboom VMAX"
+          ],
+          "key_mechanics": [
+            "VMAX continued"
+          ],
+          "notes": "Boss's Orders became a defining competitive Supporter of the SWSH era. Galarian starter VMAXes featured.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "swsh-darkness-ablaze",
+          "name": "Darkness Ablaze",
+          "abbreviation": "DAA",
+          "series": "Sword & Shield Series",
+          "release_date": "2020-08-14",
+          "card_count": 201,
+          "archetype_tags": [
+            "modern",
+            "charizard-chase",
+            "pandemic-era"
+          ],
+          "notable_cards": [
+            "Charizard VMAX (#020/189)",
+            "Charizard V",
+            "Eternatus VMAX"
+          ],
+          "key_mechanics": [
+            "VMAX continued"
+          ],
+          "notes": "Launched at peak pandemic TCG hype. Charizard VMAX (Rainbow Rare) became one of the chase cards of 2020. Sealed product from this era saw huge appreciation. Eternatus VMAX dominated competitive play.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "swsh-champions-path",
+          "name": "Champion's Path",
+          "abbreviation": "CPA",
+          "series": "Sword & Shield Series",
+          "release_date": "2020-09-25",
+          "card_count": 80,
+          "archetype_tags": [
+            "modern",
+            "special",
+            "charizard-chase",
+            "scarcity"
+          ],
+          "notable_cards": [
+            "Charizard VMAX (#074/073 Secret Rare)",
+            "Charizard V",
+            "Shiny Charizard VMAX"
+          ],
+          "key_mechanics": [
+            "Champion/Gym Leader focus"
+          ],
+          "notes": "Small 80-card set sold only through special collections (no standalone booster boxes). Charizard VMAX Rainbow Rare is the signature chase — historically one of the most expensive modern Charizard cards. Extreme sealed scarcity at launch.",
+          "flag_review": false,
+          "sold_as": [
+            "elite_trainer_box",
+            "pin_collections",
+            "tins"
+          ],
+          "has_booster_box": false
+        },
+        {
+          "id": "swsh-vivid-voltage",
+          "name": "Vivid Voltage",
+          "abbreviation": "VIV",
+          "series": "Sword & Shield Series",
+          "release_date": "2020-11-13",
+          "card_count": 203,
+          "archetype_tags": [
+            "modern",
+            "pikachu-chase"
+          ],
+          "notable_cards": [
+            "Pikachu VMAX (Rainbow Rare)",
+            "Orbeetle VMAX",
+            "Zacian V (Shiny)"
+          ],
+          "key_mechanics": [
+            "Amazing Rare"
+          ],
+          "notes": "Pikachu VMAX Rainbow Rare became a top chase card. Introduced Amazing Rare cards (unique etched foil style). Launched during peak pandemic hobby boom.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "swsh-shining-fates",
+          "name": "Shining Fates",
+          "abbreviation": "SHF",
+          "series": "Sword & Shield Series",
+          "release_date": "2021-02-19",
+          "card_count": 195,
+          "archetype_tags": [
+            "modern",
+            "special",
+            "shiny",
+            "shiny-vault"
+          ],
+          "notable_cards": [
+            "Shiny Charizard V",
+            "Shiny Charizard VMAX",
+            "Shiny Rayquaza V"
+          ],
+          "key_mechanics": [
+            "Shiny Vault sub-set (122 cards)"
+          ],
+          "notes": "NO standalone Booster Box for this special/mini-set expansion. 73 main cards + 122-card Shiny Vault sub-set. Spiritual successor to Hidden Fates. Shiny Charizard VMAX was the centerpiece. Sold in special products (tins, Elite Trainer Boxes), no standard booster boxes.",
+          "flag_review": false,
+          "sold_as": [
+            "elite_trainer_box",
+            "tins",
+            "pin_collections",
+            "special_collections"
+          ],
+          "has_booster_box": false
+        },
+        {
+          "id": "swsh-battle-styles",
+          "name": "Battle Styles",
+          "abbreviation": "BST",
+          "series": "Sword & Shield Series",
+          "release_date": "2021-03-19",
+          "card_count": 183,
+          "archetype_tags": [
+            "modern",
+            "mechanic-debut"
+          ],
+          "notable_cards": [
+            "Urshifu Single Strike VMAX",
+            "Urshifu Rapid Strike VMAX",
+            "Tyranitar V"
+          ],
+          "key_mechanics": [
+            "Single Strike / Rapid Strike mechanic"
+          ],
+          "notes": "Introduced Single Strike and Rapid Strike card subtypes. Urshifu VMAXes as signature cards. Mechanic would define the mid-SWSH competitive meta.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "swsh-chilling-reign",
+          "name": "Chilling Reign",
+          "abbreviation": "CRE",
+          "series": "Sword & Shield Series",
+          "release_date": "2021-06-18",
+          "card_count": 233,
+          "archetype_tags": [
+            "modern",
+            "competitive-staple",
+            "alternate-art"
+          ],
+          "notable_cards": [
+            "Shadow Rider Calyrex VMAX",
+            "Ice Rider Calyrex VMAX",
+            "Blaziken VMAX (Alt Art)"
+          ],
+          "key_mechanics": [
+            "VMAX continued",
+            "Alt Art full expansion"
+          ],
+          "notes": "Shadow Rider Calyrex VMAX and Ice Rider Calyrex VMAX dominated competitive play for months. First set with widespread alternate art full-body treatments. Crown Tundra DLC tie-in.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "swsh-evolving-skies",
+          "name": "Evolving Skies",
+          "abbreviation": "EVS",
+          "series": "Sword & Shield Series",
+          "release_date": "2021-08-27",
+          "card_count": 237,
+          "archetype_tags": [
+            "modern",
+            "iconic",
+            "chase-set",
+            "eeveelution",
+            "alternate-art"
+          ],
+          "notable_cards": [
+            "Umbreon VMAX Alt Art ('Moonbreon', #215/203)",
+            "Rayquaza VMAX Alt Art (#218/203)",
+            "Leafeon VMAX Alt Art",
+            "Glaceon VMAX Alt Art",
+            "Espeon VMAX Alt Art",
+            "Sylveon VMAX Alt Art"
+          ],
+          "key_mechanics": [
+            "VMAX Alt Art full treatment",
+            "Eeveelution focus"
+          ],
+          "notes": "The defining modern chase set. All 8 Eeveelutions got VMAX treatments with alternate art. Umbreon VMAX Alt Art ('Moonbreon') by illustrator Keiichiro Ito became arguably the most iconic modern Pokemon card. Sealed product from this set has had exceptional long-term appreciation. Historical benchmark for modern sealed investing. Approx 340+ card master set including reverse holos and secret rares.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ],
+          "market_notes": "Observed April 2026: despite being the most iconic Sword & Shield era set, Evolving Skies singles (top 20 by value) have underperformed peer SWSH sets in month-over-month growth over the trailing 12 months — only 3 green months vs 6-8 for most peer sets, and current streak of 1 positive month vs 3-4 for peers. Source: external analysis observed in Pika Pika Papa SWSH dashboard (Apr 2026 video). Implication: significant latent upside remains for chase singles despite sealed appreciation. Catch'em should verify pattern on own daily data once sufficient history accumulated."
+        },
+        {
+          "id": "swsh-celebrations",
+          "name": "Celebrations",
+          "abbreviation": "CEL",
+          "series": "Sword & Shield Series",
+          "release_date": "2021-10-08",
+          "card_count": 50,
+          "archetype_tags": [
+            "modern",
+            "special",
+            "anniversary",
+            "classic-collection"
+          ],
+          "notable_cards": [
+            "Charizard (Classic Collection)",
+            "Pikachu V-Union",
+            "Mew (Classic Collection)"
+          ],
+          "key_mechanics": [
+            "Classic Collection sub-set (25 cards)",
+            "V-Union mechanic"
+          ],
+          "notes": "NO standalone Booster Box for this special/mini-set expansion. 25th Anniversary set. 25 main modern cards + 25-card Classic Collection featuring reprints of iconic vintage cards with anniversary stamp. V-Union debuted (4-piece assembly cards). Sold only in special collections. Highly collectible as anniversary milestone.",
+          "flag_review": false,
+          "sold_as": [
+            "elite_trainer_box",
+            "premium_figure_collections",
+            "ultra_premium_collection",
+            "special_collections"
+          ],
+          "has_booster_box": false
+        },
+        {
+          "id": "swsh-fusion-strike",
+          "name": "Fusion Strike",
+          "abbreviation": "FST",
+          "series": "Sword & Shield Series",
+          "release_date": "2021-11-12",
+          "card_count": 264,
+          "archetype_tags": [
+            "modern",
+            "largest-set-era",
+            "mechanic-debut"
+          ],
+          "notable_cards": [
+            "Mew VMAX",
+            "Gengar VMAX Alt Art",
+            "Genesect V"
+          ],
+          "key_mechanics": [
+            "Fusion Strike mechanic"
+          ],
+          "notes": "Introduced Fusion Strike mechanic. One of the largest SWSH-era sets. Mew VMAX became a top competitive deck. Gengar VMAX Alt Art gained collector chase status.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "swsh-brilliant-stars",
+          "name": "Brilliant Stars",
+          "abbreviation": "BRS",
+          "series": "Sword & Shield Series",
+          "release_date": "2022-02-25",
+          "card_count": 217,
+          "archetype_tags": [
+            "modern",
+            "mechanic-debut",
+            "charizard-chase",
+            "trainer-gallery"
+          ],
+          "notable_cards": [
+            "Charizard VSTAR",
+            "Arceus VSTAR",
+            "Trainer Gallery sub-set debut"
+          ],
+          "key_mechanics": [
+            "Pokémon VSTAR debut",
+            "Trainer Gallery sub-set"
+          ],
+          "notes": "Introduced Pokémon VSTAR mechanic (star powers, once-per-game). Debuted Trainer Gallery sub-set — cards with unique illustrator artwork, numbered TG01/TG30. Charizard VSTAR became a chase card.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "swsh-astral-radiance",
+          "name": "Astral Radiance",
+          "abbreviation": "ASR",
+          "series": "Sword & Shield Series",
+          "release_date": "2022-05-27",
+          "card_count": 246,
+          "archetype_tags": [
+            "modern",
+            "hisui-region",
+            "mechanic-debut"
+          ],
+          "notable_cards": [
+            "Origin Forme Palkia VSTAR",
+            "Machamp V Alt Art",
+            "Hisuian Pokémon debut"
+          ],
+          "key_mechanics": [
+            "Radiant Pokémon debut",
+            "Hisui/Pokémon Legends Arceus tie-in"
+          ],
+          "notes": "Tied to Pokémon Legends Arceus. Introduced Radiant Pokémon (mirror-foil single-copy deck cards). Origin Forme Palkia VSTAR saw heavy competitive play.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "swsh-pokemon-go",
+          "name": "Pokémon GO",
+          "abbreviation": "PGO",
+          "series": "Sword & Shield Series",
+          "release_date": "2022-07-01",
+          "card_count": 88,
+          "archetype_tags": [
+            "modern",
+            "special",
+            "crossover"
+          ],
+          "notable_cards": [
+            "Mewtwo V Alt Art",
+            "Radiant Charizard",
+            "Ditto V"
+          ],
+          "key_mechanics": [
+            "Pokémon GO app crossover"
+          ],
+          "notes": "Pokémon GO mobile game crossover set. Radiant Charizard gained chase status. Small special set sold via special products (not standard booster boxes). Ditto V transformation gimmick.",
+          "flag_review": false
+        },
+        {
+          "id": "swsh-lost-origin",
+          "name": "Lost Origin",
+          "abbreviation": "LOR",
+          "series": "Sword & Shield Series",
+          "release_date": "2022-09-09",
+          "card_count": 247,
+          "archetype_tags": [
+            "modern",
+            "lost-zone",
+            "competitive-staple"
+          ],
+          "notable_cards": [
+            "Giratina VSTAR",
+            "Aerodactyl VSTAR",
+            "Colress's Experiment"
+          ],
+          "key_mechanics": [
+            "Lost Zone returns",
+            "VSTAR continued"
+          ],
+          "notes": "Lost Zone mechanic returned. Giratina VSTAR became a dominant Lost Zone archetype pillar that persisted for years. Large set (247 cards).",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "swsh-silver-tempest",
+          "name": "Silver Tempest",
+          "abbreviation": "SIT",
+          "series": "Sword & Shield Series",
+          "release_date": "2022-11-11",
+          "card_count": 246,
+          "archetype_tags": [
+            "modern",
+            "iconic-alt-arts",
+            "trainer-gallery"
+          ],
+          "notable_cards": [
+            "Alolan Vulpix VSTAR",
+            "Lugia VSTAR (Alt Art)",
+            "Regigigas VSTAR"
+          ],
+          "key_mechanics": [
+            "VSTAR continued"
+          ],
+          "notes": "Lugia VSTAR Alt Art is one of the signature Alt Art chase cards of the SWSH era. Alolan Vulpix VSTAR became a key competitive draw engine.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "swsh-crown-zenith",
+          "name": "Crown Zenith",
+          "abbreviation": "CRZ",
+          "series": "Sword & Shield Series",
+          "release_date": "2023-01-20",
+          "card_count": 230,
+          "archetype_tags": [
+            "modern",
+            "special",
+            "era-closer",
+            "galarian-gallery",
+            "iconic"
+          ],
+          "notable_cards": [
+            "Giratina VSTAR (Galarian Gallery)",
+            "Mewtwo VSTAR (GG)",
+            "Pikachu VMAX (GG)",
+            "Lucario VSTAR"
+          ],
+          "key_mechanics": [
+            "Galarian Gallery sub-set (70 cards)"
+          ],
+          "notes": "NO standalone Booster Box for this special/mini-set expansion. Final Sword & Shield era set. 160 main cards + 70-card Galarian Gallery sub-set. Galarian Gallery featured special illustration cards with unique art — predecessor to Scarlet & Violet Illustration Rares. Era-closing capstone. Sold only in special products (ETBs, collections) — no standard booster boxes.",
+          "flag_review": false,
+          "sold_as": [
+            "elite_trainer_box",
+            "premium_figure_collections",
+            "tins",
+            "pokemon_center_etb"
+          ],
+          "has_booster_box": false
+        }
+      ]
+    },
+    {
+      "era_id": "scarlet-violet",
+      "era_name": "Scarlet & Violet Era",
+      "period": "2023-2025",
+      "publisher": "The Pokémon Company International",
+      "character": "Gen IX. Paldea region. Returned to yellow borders and classic card back design. Pokémon ex (lowercase) replaced V/VSTAR. Illustration Rare and Special Illustration Rare became defining collector formats. Prismatic Evolutions and 151 created hobby-wide chase frenzies. Black Bolt / White Flare split-release format debuted.",
+      "sets": [
+        {
+          "id": "sv-base",
+          "name": "Scarlet & Violet",
+          "abbreviation": "SVI",
+          "series": "Scarlet & Violet Series",
+          "release_date": "2023-03-31",
+          "card_count": 198,
+          "archetype_tags": [
+            "modern",
+            "base-set",
+            "mechanic-debut"
+          ],
+          "notable_cards": [
+            "Koraidon ex",
+            "Miraidon ex",
+            "Sprigatito",
+            "Fuecoco",
+            "Quaxly"
+          ],
+          "key_mechanics": [
+            "Pokémon ex (lowercase) debut",
+            "Tera Pokémon mechanic",
+            "Illustration Rare debut",
+            "return to yellow card borders"
+          ],
+          "notes": "Base set of Scarlet & Violet era. Reset the card design back to classic yellow borders. Introduced the new Pokémon ex mechanic and Illustration Rare rarity tier. Paldea region starters featured.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "sv-paldea-evolved",
+          "name": "Paldea Evolved",
+          "abbreviation": "PAL",
+          "series": "Scarlet & Violet Series",
+          "release_date": "2023-06-09",
+          "card_count": 279,
+          "archetype_tags": [
+            "modern",
+            "large-set",
+            "competitive-staple"
+          ],
+          "notable_cards": [
+            "Meowscarada ex",
+            "Skeledirge ex",
+            "Quaquaval ex",
+            "Gardevoir ex",
+            "Chien-Pao ex"
+          ],
+          "key_mechanics": [
+            "Tera Pokémon ex continued"
+          ],
+          "notes": "Massive 279-card set. Paldean starter final evolutions as ex cards. Gardevoir ex and Chien-Pao ex became defining competitive cards. First-year Scarlet & Violet cornerstone.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "sv-obsidian-flames",
+          "name": "Obsidian Flames",
+          "abbreviation": "OBF",
+          "series": "Scarlet & Violet Series",
+          "release_date": "2023-08-11",
+          "card_count": 230,
+          "archetype_tags": [
+            "modern",
+            "charizard-chase",
+            "tera-type"
+          ],
+          "notable_cards": [
+            "Charizard ex (Dark-type Tera)",
+            "Tyranitar ex",
+            "Pidgeot ex"
+          ],
+          "key_mechanics": [
+            "Type-shifting Tera Pokémon prominence"
+          ],
+          "notes": "Tera Charizard ex (Dark-type, #125/197 with SIR at #215/197) became a major chase card. Showcased the type-shifting aspect of Terastallization. Charizard as a Darkness-type Tera was a major visual / thematic statement.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "sv-151",
+          "name": "151",
+          "abbreviation": "MEW",
+          "series": "Scarlet & Violet Series",
+          "release_date": "2023-09-22",
+          "card_count": 207,
+          "archetype_tags": [
+            "modern",
+            "special",
+            "iconic",
+            "nostalgia",
+            "kanto"
+          ],
+          "notable_cards": [
+            "Mew ex (SIR)",
+            "Charizard ex (SIR)",
+            "Blastoise ex (SIR)",
+            "Venusaur ex (SIR)",
+            "Zapdos ex"
+          ],
+          "key_mechanics": [
+            "Kanto/original 151 Pokémon only"
+          ],
+          "notes": "Nostalgia-driven special expansion covering only the original 151 Kanto Pokémon. Launched to massive demand and sustained scarcity. SIR Mew ex is the signature chase. Set sold out at retail for extended periods post-launch. Became a benchmark for how nostalgia + scarcity drives modern sealed demand.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "sv-paradox-rift",
+          "name": "Paradox Rift",
+          "abbreviation": "PAR",
+          "series": "Scarlet & Violet Series",
+          "release_date": "2023-11-03",
+          "card_count": 266,
+          "archetype_tags": [
+            "modern",
+            "mechanic-debut",
+            "competitive-staple"
+          ],
+          "notable_cards": [
+            "Roaring Moon ex (Ancient)",
+            "Iron Valiant ex (Future)",
+            "Charizard ex",
+            "Iron Hands ex"
+          ],
+          "key_mechanics": [
+            "Ancient and Future Pokémon (Paradox) mechanic"
+          ],
+          "notes": "Introduced Ancient and Future sub-types (Paradox Pokémon from Area Zero). Mechanics impacted competitive deck building. Roaring Moon ex saw extended tournament relevance.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "sv-paldean-fates",
+          "name": "Paldean Fates",
+          "abbreviation": "PAF",
+          "series": "Scarlet & Violet Series",
+          "release_date": "2024-01-26",
+          "card_count": 245,
+          "archetype_tags": [
+            "modern",
+            "special",
+            "shiny",
+            "fates-lineage"
+          ],
+          "notable_cards": [
+            "Shiny Tera Charizard ex",
+            "Shiny Tinkaton ex",
+            "Bubble Mew (SIR)"
+          ],
+          "key_mechanics": [
+            "130+ Shiny Pokémon reprints with new art"
+          ],
+          "notes": "NO standalone Booster Box for this special/mini-set expansion. 91 main card numbers but 245 cards total due to Shiny subset. Continuation of the Hidden Fates / Shining Fates lineage. Bubble Mew (Shiny illustration rare) became a signature chase. Shiny variants of existing Scarlet & Violet cards with unique art treatments.",
+          "flag_review": false,
+          "sold_as": [
+            "elite_trainer_box",
+            "tech_sticker_collection",
+            "tins",
+            "premium_collections",
+            "pokemon_center_etb"
+          ],
+          "has_booster_box": false
+        },
+        {
+          "id": "sv-temporal-forces",
+          "name": "Temporal Forces",
+          "abbreviation": "TEF",
+          "series": "Scarlet & Violet Series",
+          "release_date": "2024-03-22",
+          "card_count": 218,
+          "archetype_tags": [
+            "modern",
+            "paradox"
+          ],
+          "notable_cards": [
+            "Iron Crown ex (Future Paradox)",
+            "Raging Bolt ex (Ancient Paradox)",
+            "Gouging Fire ex"
+          ],
+          "key_mechanics": [
+            "Ancient/Future Paradox continued"
+          ],
+          "notes": "Continuation of Paradox Pokémon theme from Paradox Rift. Raging Bolt ex and Gouging Fire ex became key competitive cards.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "sv-twilight-masquerade",
+          "name": "Twilight Masquerade",
+          "abbreviation": "TWM",
+          "series": "Scarlet & Violet Series",
+          "release_date": "2024-05-24",
+          "card_count": 226,
+          "archetype_tags": [
+            "modern",
+            "dlc-tie-in",
+            "ogerpon"
+          ],
+          "notable_cards": [
+            "Ogerpon ex (four masks)",
+            "Greninja ex",
+            "Pecharunt ex"
+          ],
+          "key_mechanics": [
+            "Mask variants for Ogerpon"
+          ],
+          "notes": "Tied to Scarlet & Violet: The Teal Mask DLC. Four Ogerpon ex variants (Teal, Wellspring, Hearthflame, Cornerstone masks). Greninja ex was a major chase card.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "sv-shrouded-fable",
+          "name": "Shrouded Fable",
+          "abbreviation": "SFA",
+          "series": "Scarlet & Violet Series",
+          "release_date": "2024-08-02",
+          "card_count": 99,
+          "archetype_tags": [
+            "modern",
+            "special",
+            "small-set"
+          ],
+          "notable_cards": [
+            "Pecharunt ex",
+            "Kingambit",
+            "Fezandipiti ex"
+          ],
+          "key_mechanics": [
+            "Smaller curated special set"
+          ],
+          "notes": "NO standalone Booster Box for this special/mini-set expansion. Small 99-card special expansion tied to Indigo Disk DLC content. Curated format — sold through ETBs and collections, no standard booster boxes.",
+          "flag_review": false,
+          "sold_as": [
+            "elite_trainer_box",
+            "booster_bundle",
+            "tins",
+            "premium_collections"
+          ],
+          "has_booster_box": false
+        },
+        {
+          "id": "sv-stellar-crown",
+          "name": "Stellar Crown",
+          "abbreviation": "SCR",
+          "series": "Scarlet & Violet Series",
+          "release_date": "2024-09-13",
+          "card_count": 175,
+          "archetype_tags": [
+            "modern",
+            "stellar-tera"
+          ],
+          "notable_cards": [
+            "Terapagos ex",
+            "Hydrapple ex",
+            "Archaludon ex"
+          ],
+          "key_mechanics": [
+            "Stellar Tera Pokémon ex mechanic debut"
+          ],
+          "notes": "Introduced Stellar Tera Pokémon ex — a new variant of Tera with rainbow typing. Terapagos ex as legendary cover card. Bridge to Prismatic Evolutions Stellar Tera Eeveelution theme.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "sv-surging-sparks",
+          "name": "Surging Sparks",
+          "abbreviation": "SSP",
+          "series": "Scarlet & Violet Series",
+          "release_date": "2024-11-08",
+          "card_count": 252,
+          "archetype_tags": [
+            "modern",
+            "large-set",
+            "pikachu-chase"
+          ],
+          "notable_cards": [
+            "Pikachu ex",
+            "Latias ex (SIR)",
+            "Alolan Exeggutor ex"
+          ],
+          "key_mechanics": [
+            "Stellar Tera continued"
+          ],
+          "notes": "Pikachu ex (especially SIR) became a major chase card. Large 252-card set with strong Illustration Rare lineup. Served as direct lead-in to Prismatic Evolutions.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "sv-prismatic-evolutions",
+          "name": "Prismatic Evolutions",
+          "abbreviation": "PRE",
+          "series": "Scarlet & Violet Series",
+          "release_date": "2025-01-17",
+          "card_count": 180,
+          "archetype_tags": [
+            "modern",
+            "special",
+            "iconic",
+            "eeveelution",
+            "chase-set",
+            "parallel-foil"
+          ],
+          "notable_cards": [
+            "Umbreon ex SIR ('Sunbreon')",
+            "Espeon ex SIR",
+            "Glaceon ex SIR",
+            "Sylveon ex SIR",
+            "Pikachu ex"
+          ],
+          "key_mechanics": [
+            "Stellar Tera Eeveelutions",
+            "Poké Ball / Master Ball parallel foils debut"
+          ],
+          "notes": "NO standalone Booster Box for this special/mini-set expansion. Eeveelution-focused special expansion. Spiritual successor to Evolving Skies for the Paldea era. Introduced parallel foil patterns (Poké Ball foil on commons/uncommons, rarer Master Ball foil). Umbreon ex SIR ('Sunbreon') became the defining chase card of the set — echoing Moonbreon. Launched to extreme demand with retail shortages, restocks promised by TPCi. Among the most hyped modern sets ever.",
+          "flag_review": false,
+          "sold_as": [
+            "elite_trainer_box",
+            "premium_collections",
+            "super_premium_collection",
+            "tins",
+            "binder_collection"
+          ],
+          "has_booster_box": false
+        },
+        {
+          "id": "sv-journey-together",
+          "name": "Journey Together",
+          "abbreviation": "JTG",
+          "series": "Scarlet & Violet Series",
+          "release_date": "2025-03-28",
+          "card_count": 190,
+          "archetype_tags": [
+            "modern",
+            "trainer-focus"
+          ],
+          "notable_cards": [
+            "N's Zoroark ex",
+            "N's Zorua",
+            "Lillie's Clefairy ex"
+          ],
+          "key_mechanics": [
+            "Trainer-owned Pokémon (named-owner mechanic)"
+          ],
+          "notes": "First main set of 2025. Introduced Trainer-owned named Pokémon (N's, Lillie's, etc.) — mechanic echoed in later Destined Rivals. Emphasis on character + Pokémon bonds.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "sv-destined-rivals",
+          "name": "Destined Rivals",
+          "abbreviation": "DRI",
+          "series": "Scarlet & Violet Series",
+          "release_date": "2025-05-30",
+          "card_count": 244,
+          "archetype_tags": [
+            "modern",
+            "trainer-focus",
+            "team-rocket"
+          ],
+          "notable_cards": [
+            "Team Rocket's Mewtwo ex",
+            "N's Reshiram",
+            "Cynthia's Garchomp ex"
+          ],
+          "key_mechanics": [
+            "Trainer-owned Pokémon continued"
+          ],
+          "notes": "Continued Trainer-owned Pokémon theme. Team Rocket's Mewtwo ex as flagship. Featured a wide range of rival/Trainer-owned Pokémon mechanics. Strong collector appeal via character-driven illustrations.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "sv-black-bolt",
+          "name": "Black Bolt",
+          "abbreviation": "BLK",
+          "series": "Scarlet & Violet Series",
+          "release_date": "2025-07-18",
+          "card_count": 172,
+          "archetype_tags": [
+            "modern",
+            "special",
+            "split-release",
+            "unova",
+            "zekrom"
+          ],
+          "notable_cards": [
+            "Zekrom ex",
+            "N's Reshiram (black)",
+            "Hilbert"
+          ],
+          "key_mechanics": [
+            "Split-release format (paired with White Flare)",
+            "Unova region focus"
+          ],
+          "notes": "First half of the split-release duo. Zekrom-themed counterpart to White Flare. Paired simultaneous release format was a first for English TCG. Heavy Unova region reference. Released alongside White Flare on the same date.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "sv-white-flare",
+          "name": "White Flare",
+          "abbreviation": "WHT",
+          "series": "Scarlet & Violet Series",
+          "release_date": "2025-07-18",
+          "card_count": 173,
+          "archetype_tags": [
+            "modern",
+            "special",
+            "split-release",
+            "unova",
+            "reshiram"
+          ],
+          "notable_cards": [
+            "Reshiram ex",
+            "Hilda",
+            "N's Zoroark ex"
+          ],
+          "key_mechanics": [
+            "Split-release format (paired with Black Bolt)",
+            "Unova region focus"
+          ],
+          "notes": "Second half of the split-release duo. Reshiram-themed counterpart to Black Bolt. The two sets were sold as separate products with distinct but overlapping themes. Released alongside Black Bolt. Final Scarlet & Violet era set.",
+          "flag_review": false,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        }
+      ]
+    },
+    {
+      "era_id": "mega-evolution",
+      "era_name": "Mega Evolution Era",
+      "period": "2025-present",
+      "publisher": "The Pokémon Company International",
+      "character": "Gen IX continues with a mechanical reset. Mega Evolution Pokémon ex reintroduced as headline mechanic (tied to Pokémon Legends: Z-A game). Gold Hyper Rares debuted as new top rarity tier. First era to launch simultaneously worldwide for 30th anniversary. Active/ongoing era as of Apr 2026.",
+      "sets": [
+        {
+          "id": "me-base",
+          "name": "Mega Evolution",
+          "abbreviation": "MEG",
+          "series": "Mega Evolution Series",
+          "release_date": "2025-09-26",
+          "card_count": 175,
+          "archetype_tags": [
+            "modern",
+            "base-set",
+            "mechanic-debut",
+            "mega-evolution"
+          ],
+          "notable_cards": [
+            "Mega Lucario ex",
+            "Mega Gardevoir ex"
+          ],
+          "key_mechanics": [
+            "Mega Pokémon ex reintroduction",
+            "Gold Hyper Rare debut"
+          ],
+          "notes": "Era-launching base set. English combines Japan's Mega Brave + Mega Symphonia sets. Introduced Gold Hyper Rare as a new rarity above Special Illustration Rare. Tied to Pokémon Legends: Z-A game (launched Oct 2025). First era since XY to feature Mega Evolution as mechanic. FLAG: Card count approximate (~175) — verify against official card list.",
+          "flag_review": true,
+          "has_booster_box": true,
+          "sold_as": [
+            "booster_box",
+            "elite_trainer_box",
+            "booster_bundle",
+            "blisters"
+          ]
+        },
+        {
+          "id": "me-phantasmal-flames",
+          "name": "Phantasmal Flames",
+          "abbreviation": "PHF",
+          "series": "Mega Evolution Series",
+          "release_date": "2025-11-14",
+          "card_count": 94,
+          "archetype_tags": [
+            "modern",
+            "charizard-chase",
+            "mega-evolution"
+          ],
+          "notable_cards": [
+            "Mega Charizard X ex"
+          ],
+          "key_mechanics": [
+            "Mega Evolution continued"
+          ],
+          "notes": "NO standalone Booster Box for this special/mini-set expansion. English counterpart to Japan's Inferno X. Mega Charizard X ex as flagship card. Smaller ~94-card main set count. FLAG: Card count approximate — verify against final card list.",
+          "flag_review": true,
+          "sold_as": [
+            "elite_trainer_box",
+            "booster_bundle",
+            "collection_boxes",
+            "tins"
+          ],
+          "has_booster_box": false
+        },
+        {
+          "id": "me-ascended-heroes",
+          "name": "Ascended Heroes",
+          "abbreviation": "AH",
+          "series": "Mega Evolution Series",
+          "release_date": "2026-01-30",
+          "card_count": 290,
+          "archetype_tags": [
+            "modern",
+            "large-set",
+            "mega-evolution",
+            "team-rocket"
+          ],
+          "notable_cards": [
+            "Mega Dragonite ex",
+            "Mega Gengar ex",
+            "Mega Meganium ex",
+            "Mega Emboar ex",
+            "Mega Feraligatr ex"
+          ],
+          "key_mechanics": [
+            "Mega Evolution expansion",
+            "Team Rocket Pokémon",
+            "Stadium cards"
+          ],
+          "notes": "NO standalone Booster Box for this special/mini-set expansion. First 2026 set and largest English set of Mega Evolution era to date (~290 cards). English counterpart to Japan's Mega Dream. Split release: Tech Sticker Collection Jan 30 → ETB Feb 20 → Booster Bundles Apr 23. Mega Dragonite ex reported at ~1-in-70-90 pack pull rate by Beckett. FLAG: Pull rate data cited from Beckett reporting — verify if using in public content.",
+          "flag_review": true,
+          "sold_as": [
+            "elite_trainer_box",
+            "booster_bundle",
+            "tech_sticker_collection",
+            "mini_tins",
+            "premium_poster_collection",
+            "collection_erika_larry",
+            "mega_ex_boxes",
+            "pokemon_center_etb"
+          ],
+          "has_booster_box": false,
+          "release_schedule": "Split release: Tech Sticker Collection 2026-01-30, ETB 2026-02-20, Booster Bundle 2026-04-24, Mega ex Boxes 2026-04-23"
+        },
+        {
+          "id": "me-perfect-order",
+          "name": "Perfect Order",
+          "abbreviation": "PO",
+          "series": "Mega Evolution Series",
+          "release_date": "2026-03-27",
+          "card_count": 88,
+          "archetype_tags": [
+            "modern",
+            "mega-evolution",
+            "z-a-tie-in"
+          ],
+          "notable_cards": [
+            "Mega Zygarde ex",
+            "Mega Starmie ex",
+            "Mega Clefable ex",
+            "Mega Skarmory ex"
+          ],
+          "key_mechanics": [
+            "Mega Evolution continued",
+            "Mega Hyper Rare"
+          ],
+          "notes": "NO standalone Booster Box for this special/mini-set expansion. Third Mega Evolution main set. Smaller curated card count (~88 main + secret rares for 120+ total). Mega Zygarde ex as cover star. Tied to Pokémon Legends: Z-A and Lumiose City setting. Prereleases held Mar 14+.",
+          "flag_review": false,
+          "sold_as": [
+            "elite_trainer_box",
+            "booster_bundle",
+            "collections",
+            "mega_ex_boxes"
+          ],
+          "has_booster_box": false
+        },
+        {
+          "id": "me-chaos-rising",
+          "name": "Chaos Rising",
+          "abbreviation": "CR",
+          "series": "Mega Evolution Series",
+          "release_date": "2026-05-22",
+          "card_count": 86,
+          "archetype_tags": [
+            "modern",
+            "mega-evolution",
+            "upcoming"
+          ],
+          "notable_cards": [
+            "Mega Greninja ex",
+            "Mega Floette ex",
+            "Mega Pyroar ex",
+            "Mega Dragalge ex"
+          ],
+          "key_mechanics": [
+            "Mega Evolution continued"
+          ],
+          "notes": "NO standalone Booster Box for this special/mini-set expansion. Fourth Mega Evolution main set (upcoming as of Apr 2026). English counterpart to Japan's Ninja Spinner. Mega Greninja ex is the flagship. Smaller set (~86 main, 120+ with secret rares). Card list still being revealed at this database build date. FLAG: Pre-release data — verify card count once officially listed.",
+          "flag_review": true,
+          "sold_as": [
+            "elite_trainer_box",
+            "booster_bundle",
+            "collection_boxes",
+            "blisters"
+          ],
+          "has_booster_box": false
+        },
+        {
+          "id": "me-pitch-black",
+          "name": "Pitch Black",
+          "abbreviation": "PB",
+          "series": "Mega Evolution Series",
+          "release_date": "2026-07-17",
+          "card_count": null,
+          "archetype_tags": [
+            "modern",
+            "mega-evolution",
+            "upcoming",
+            "darkrai"
+          ],
+          "notable_cards": [
+            "Mega Darkrai (expected cover)"
+          ],
+          "key_mechanics": [
+            "Mega Evolution continued"
+          ],
+          "notes": "NO standalone Booster Box for this special/mini-set expansion. Upcoming set as of Apr 2026. English counterpart to Japan's Abyss Eye. Mega Darkrai focus. Card count not yet confirmed. FLAG: Pre-release — verify all data when announced.",
+          "flag_review": true,
+          "sold_as": [],
+          "has_booster_box": null
+        },
+        {
+          "id": "me-30th-anniversary",
+          "name": "30th Anniversary Celebration",
+          "abbreviation": "30A",
+          "series": "Mega Evolution Series",
+          "release_date": "2026-10-01",
+          "card_count": null,
+          "archetype_tags": [
+            "modern",
+            "special",
+            "anniversary",
+            "upcoming",
+            "simultaneous-worldwide"
+          ],
+          "notable_cards": [
+            "Mew (expected)",
+            "Mewtwo (expected)",
+            "Pikachu (expected)"
+          ],
+          "key_mechanics": [
+            "30th anniversary celebration content",
+            "first simultaneous worldwide release"
+          ],
+          "notes": "NO standalone Booster Box for this special/mini-set expansion. Expected Oct 2026 (date speculative based on 25th Celebration precedent). First major Pokémon TCG set expected to release simultaneously worldwide with no Japanese lead time. Confirmed by TPCi at Pokémon Day 2026 Presents (Feb 27, 2026). Expected to celebrate 30 years of Pokémon TCG with anniversary-stamped content. FLAG: Date speculative, all details pre-release — verify closer to launch.",
+          "flag_review": true,
+          "sold_as": [],
+          "has_booster_box": null
+        }
+      ]
+    }
+  ]
+}

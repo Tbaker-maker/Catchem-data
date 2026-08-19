@@ -1,0 +1,2728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Catch'em — Trading v1</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+:root {
+  --bg-0: #0a0b10;
+  --bg-1: #0f1119;
+  --bg-2: #141722;
+  --bg-3: #1a1e2c;
+  --surface: #1e2230;
+  --surface-2: #262b3c;
+  --surface-3: #2f3447;
+  --surface-hover: #272c3f;
+
+  --border: rgba(255, 255, 255, 0.06);
+  --border-2: rgba(255, 255, 255, 0.1);
+  --border-3: rgba(255, 255, 255, 0.16);
+
+  --text: #ecedf2;
+  --text-2: #b8bcc8;
+  --text-muted: #7a7f8d;
+  --text-faint: #4a4e5a;
+  --text-dim: #3a3e4a;
+
+  --green: #36d399;
+  --green-soft: rgba(54, 211, 153, 0.15);
+  --gold: #ffb84d;
+  --gold-soft: rgba(255, 184, 77, 0.15);
+  --purple: #c77dff;
+  --purple-soft: rgba(199, 125, 255, 0.15);
+  --blue: #64a0ff;
+  --blue-soft: rgba(100, 160, 255, 0.15);
+  --red: #ef5a5a;
+  --red-soft: rgba(239, 90, 90, 0.15);
+  --berry: #ff6b9d;
+  --berry-soft: rgba(255, 107, 157, 0.15);
+
+  --rarity-common: #9aa0ac;
+  --rarity-rare: #64a0ff;
+  --rarity-epic: #c77dff;
+  --rarity-legendary: #ffb84d;
+
+  --tier-gm: #ffb84d;
+  --tier-nm: #e8e8e8;
+  --tier-lp: #9ad8ff;
+  --tier-mp: #9aa0ac;
+  --tier-hp: #d89a6e;
+  --tier-dm: #ff6b9d;
+
+  --display: 'Syne', system-ui, sans-serif;
+  --body: 'Sora', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html {
+  background: var(--bg-0);
+  scroll-behavior: smooth;
+}
+body {
+  font-family: var(--body);
+  color: var(--text);
+  background: var(--bg-0);
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--bg-0); }
+::-webkit-scrollbar-thumb { background: var(--surface-2); border-radius: 5px; border: 2px solid var(--bg-0); }
+::-webkit-scrollbar-thumb:hover { background: var(--surface-3); }
+
+/* ================================
+   APP FRAME
+   ================================ */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(1600px 800px at 20% 0%, rgba(199, 125, 255, 0.04) 0%, transparent 50%),
+    radial-gradient(1200px 600px at 85% 10%, rgba(54, 211, 153, 0.03) 0%, transparent 55%),
+    linear-gradient(180deg, #0a0b10 0%, #0d0f17 100%);
+}
+
+/* Top nav */
+.app-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background: rgba(10, 11, 16, 0.85);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+.nav-brand {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--berry) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  cursor: pointer;
+}
+.nav-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.nav-tab {
+  font-family: var(--body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.nav-tab:hover { color: var(--text-2); background: rgba(255,255,255,0.03); }
+.nav-tab.is-active {
+  color: var(--text);
+  background: rgba(255,255,255,0.06);
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.berry-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255, 107, 157, 0.08);
+  border: 1px solid rgba(255, 107, 157, 0.2);
+  box-shadow: 0 0 20px rgba(255, 107, 157, 0.1);
+}
+.berry-pill-icon {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #ff9ec0, var(--berry));
+  box-shadow: 0 0 8px rgba(255, 107, 157, 0.6);
+}
+.berry-pill-value {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--berry);
+  letter-spacing: 0.02em;
+}
+.nav-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4a5268, #2a2f42);
+  border: 1px solid var(--border-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--display);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-2);
+  cursor: pointer;
+}
+
+/* Mode tabs (marketplace mode: browse / sell / history) */
+.mode-tabs {
+  display: flex;
+  gap: 0;
+  padding: 20px 32px 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-1);
+}
+.mode-tab {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 14px 20px;
+  margin-bottom: -1px;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.mode-tab:hover { color: var(--text-2); }
+.mode-tab.is-active {
+  color: var(--text);
+  border-bottom-color: var(--gold);
+}
+.mode-tab .count {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-faint);
+  margin-left: 6px;
+  letter-spacing: 0;
+}
+
+/* Hero strip (editorial context) */
+.hero-strip {
+  padding: 28px 32px 20px;
+  background: var(--bg-1);
+  border-bottom: 1px solid var(--border);
+}
+.hero-brand-row {
+  margin-bottom: 10px;
+}
+.hero-brand-small {
+  display: inline-block;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--berry) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero-title {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 40px;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+.hero-subtitle {
+  font-family: var(--body);
+  font-size: 14px;
+  color: var(--text-muted);
+  max-width: 600px;
+}
+.hero-stats {
+  display: flex;
+  gap: 32px;
+  margin-top: 20px;
+}
+.hero-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.hero-stat-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.hero-stat-value {
+  font-family: var(--display);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+}
+.hero-stat-value .trend {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  margin-left: 6px;
+}
+.hero-stat-value .trend.up { color: var(--green); }
+.hero-stat-value .trend.down { color: var(--red); }
+
+/* ================================
+   FILTER BAR (sticky, under hero)
+   ================================ */
+.filter-bar {
+  position: sticky;
+  top: 56px;
+  z-index: 50;
+  background: rgba(15, 17, 25, 0.95);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.search-box {
+  position: relative;
+  flex: 1;
+  min-width: 240px;
+}
+.search-box input {
+  width: 100%;
+  height: 38px;
+  padding: 0 14px 0 38px;
+  background: var(--surface);
+  border: 1px solid var(--border-2);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 13px;
+  outline: none;
+  transition: all 0.15s;
+}
+.search-box input::placeholder { color: var(--text-faint); }
+.search-box input:focus {
+  border-color: var(--border-3);
+  background: var(--surface-2);
+}
+.search-box::before {
+  content: '';
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237a7f8d' stroke-width='2.5'><circle cx='11' cy='11' r='7'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.filter-select {
+  height: 38px;
+  padding: 0 32px 0 14px;
+  background: var(--surface);
+  border: 1px solid var(--border-2);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237a7f8d' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+  outline: none;
+}
+.filter-select:hover { background-color: var(--surface-2); }
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 14px;
+  background: var(--surface);
+  border: 1px solid var(--border-2);
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.filter-chip:hover { background: var(--surface-2); color: var(--text); }
+.filter-chip.is-active {
+  background: rgba(255, 184, 77, 0.1);
+  border-color: rgba(255, 184, 77, 0.3);
+  color: var(--gold);
+}
+.filter-chip .chip-count {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-faint);
+}
+.filter-chip.is-active .chip-count { color: rgba(255, 184, 77, 0.8); }
+
+/* Float slider (THE centerpiece) */
+.float-slider-section {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 14px 16px;
+  background: linear-gradient(90deg, rgba(199, 125, 255, 0.05) 0%, rgba(255, 184, 77, 0.03) 100%);
+  border: 1px solid rgba(199, 125, 255, 0.12);
+  border-radius: 10px;
+}
+.float-slider-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 130px;
+}
+.float-slider-label-title {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: var(--text);
+}
+.float-slider-label-sub {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.float-slider-track-wrap {
+  flex: 1;
+  position: relative;
+  padding: 12px 0;
+}
+.float-slider-track {
+  position: relative;
+  height: 10px;
+  border-radius: 5px;
+  background: linear-gradient(90deg,
+    var(--tier-gm) 0%,
+    var(--tier-gm) 8%,
+    var(--tier-nm) 8%,
+    var(--tier-nm) 15%,
+    var(--tier-lp) 15%,
+    var(--tier-lp) 38%,
+    var(--tier-mp) 38%,
+    var(--tier-mp) 45%,
+    var(--tier-hp) 45%,
+    var(--tier-hp) 85%,
+    var(--tier-dm) 85%,
+    var(--tier-dm) 100%
+  );
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+}
+.float-slider-mask {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: grayscale(0.5);
+  z-index: 1;
+}
+.float-slider-mask.left { left: 0; }
+.float-slider-mask.right { right: 0; }
+
+.float-slider-range-highlight {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  border: 2px solid var(--gold);
+  border-radius: 7px;
+  pointer-events: none;
+  box-shadow: 0 0 16px rgba(255, 184, 77, 0.3);
+  z-index: 2;
+}
+.float-slider-handle {
+  position: absolute;
+  top: 50%;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #fff, #e0e0e0);
+  border: 2px solid var(--gold);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), 0 0 0 4px rgba(255, 184, 77, 0.1);
+  transform: translate(-50%, -50%);
+  cursor: grab;
+  z-index: 3;
+}
+.float-slider-handle:active { cursor: grabbing; }
+.float-slider-handle::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4px; height: 10px;
+  background: var(--bg-0);
+  border-radius: 2px;
+  opacity: 0.4;
+}
+.float-slider-tier-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding: 0 2px;
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 500;
+  color: var(--text-faint);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.float-slider-tier-labels span {
+  position: relative;
+  padding-top: 2px;
+}
+
+.float-slider-values {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 180px;
+}
+.float-value-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 6px 10px;
+  background: var(--bg-0);
+  border: 1px solid var(--border-2);
+  border-radius: 6px;
+}
+.float-value-box-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.float-value-box-value {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
+}
+
+.float-slider-reset {
+  font-family: var(--body);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.float-slider-reset:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+
+/* ================================
+   MAIN LAYOUT: Listings table + detail panel
+   ================================ */
+.main-layout {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  min-height: calc(100vh - 56px - 116px - 100px);
+}
+
+/* Listings table */
+.listings-area {
+  padding: 0 32px 80px;
+  min-width: 0;
+}
+.listings-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0 14px;
+}
+.listings-count {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  color: var(--text-2);
+}
+.listings-count strong {
+  color: var(--text);
+  font-weight: 800;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  margin-right: 4px;
+}
+.listings-sort {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.listings-sort-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.listings-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.listings-table thead tr {
+  background: var(--bg-2);
+}
+.listings-table th {
+  font-family: var(--body);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  text-align: left;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--bg-2);
+}
+.listings-table th.sortable { cursor: pointer; user-select: none; }
+.listings-table th.sortable:hover { color: var(--text-2); }
+.listings-table th.is-sorted { color: var(--gold); }
+.listings-table th.is-sorted::after {
+  content: ' ↓';
+  font-size: 10px;
+}
+.listings-table th.right { text-align: right; }
+
+.listings-table td {
+  padding: 14px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+  background: var(--bg-1);
+  transition: background 0.1s;
+}
+.listings-table tr.listing:hover td {
+  background: var(--bg-2);
+  cursor: pointer;
+}
+.listings-table tr.listing.is-active td {
+  background: rgba(255, 184, 77, 0.04);
+  border-color: rgba(255, 184, 77, 0.1);
+}
+.listings-table tr.listing:last-child td { border-bottom: none; }
+
+/* Listing row content */
+.listing-char {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.listing-thumb {
+  width: 44px;
+  height: 60px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  background: linear-gradient(180deg, var(--surface) 0%, var(--bg-2) 100%);
+  border: 1px solid var(--border-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 22px;
+  position: relative;
+}
+.listing-thumb.is-rare { border-color: rgba(100, 160, 255, 0.3); box-shadow: 0 0 12px rgba(100, 160, 255, 0.15); }
+.listing-thumb.is-epic { border-color: rgba(199, 125, 255, 0.4); box-shadow: 0 0 14px rgba(199, 125, 255, 0.18); }
+.listing-thumb.is-legendary {
+  border-color: rgba(255, 184, 77, 0.5);
+  box-shadow: 0 0 16px rgba(255, 184, 77, 0.25);
+}
+.listing-thumb.is-legendary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: conic-gradient(from 0deg, transparent, rgba(255, 184, 77, 0.12), transparent, rgba(199, 125, 255, 0.1), transparent);
+  animation: legendarySpin 4s linear infinite;
+}
+@keyframes legendarySpin {
+  to { transform: rotate(360deg); }
+}
+.listing-thumb.supporter::after {
+  content: 'SV';
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: var(--purple);
+  color: #000;
+  font-family: var(--mono);
+  font-size: 7px;
+  font-weight: 700;
+  padding: 1px 3px;
+  border-radius: 2px;
+  letter-spacing: 0.05em;
+}
+.listing-thumb .thumb-letter {
+  position: relative;
+  z-index: 1;
+  opacity: 0.9;
+}
+.listing-thumb.is-common .thumb-letter { color: var(--rarity-common); }
+.listing-thumb.is-rare .thumb-letter { color: var(--rarity-rare); }
+.listing-thumb.is-epic .thumb-letter { color: var(--rarity-epic); }
+.listing-thumb.is-legendary .thumb-letter { color: var(--rarity-legendary); }
+
+.listing-char-info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.listing-char-name {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text);
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+.listing-char-sub {
+  font-family: var(--body);
+  font-size: 11px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.listing-char-sub .dot {
+  width: 2px; height: 2px;
+  background: var(--text-faint);
+  border-radius: 50%;
+}
+
+/* Rarity badge */
+.rarity-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-2);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.rarity-badge.common { color: var(--rarity-common); border-color: rgba(154, 160, 172, 0.25); }
+.rarity-badge.rare { color: var(--rarity-rare); border-color: rgba(100, 160, 255, 0.3); background: rgba(100, 160, 255, 0.06); }
+.rarity-badge.epic { color: var(--rarity-epic); border-color: rgba(199, 125, 255, 0.3); background: rgba(199, 125, 255, 0.06); }
+.rarity-badge.legendary { color: var(--rarity-legendary); border-color: rgba(255, 184, 77, 0.35); background: rgba(255, 184, 77, 0.06); }
+
+/* Tier display */
+.tier-display {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.tier-name {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
+.tier-name.gm { color: var(--tier-gm); }
+.tier-name.nm { color: var(--tier-nm); }
+.tier-name.lp { color: var(--tier-lp); }
+.tier-name.mp { color: var(--text-2); }
+.tier-name.hp { color: var(--tier-hp); }
+.tier-name.dm { color: var(--tier-dm); }
+.tier-float {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Top float indicator */
+.top-float-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  margin-top: 3px;
+  background: linear-gradient(135deg, rgba(255, 184, 77, 0.15), rgba(199, 125, 255, 0.12));
+  border: 1px solid rgba(255, 184, 77, 0.3);
+  border-radius: 3px;
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+  width: fit-content;
+}
+
+/* Seller column */
+.seller-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.seller-name {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.seller-pro-badge {
+  display: inline-block;
+  padding: 1px 4px;
+  background: rgba(199, 125, 255, 0.15);
+  border: 1px solid rgba(199, 125, 255, 0.3);
+  border-radius: 3px;
+  font-family: var(--body);
+  font-size: 8px;
+  font-weight: 700;
+  color: var(--purple);
+  letter-spacing: 0.1em;
+}
+.seller-meta {
+  font-size: 10px;
+  color: var(--text-faint);
+  font-family: var(--mono);
+}
+
+/* Price */
+.listing-price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+.listing-price-value {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--berry);
+  font-variant-numeric: tabular-nums;
+}
+.listing-price-value .berry-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #ff9ec0, var(--berry));
+  box-shadow: 0 0 6px rgba(255, 107, 157, 0.5);
+}
+.listing-price-trend {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+}
+.listing-price-trend.up { color: var(--green); }
+.listing-price-trend.down { color: var(--red); }
+.listing-price-trend.flat { color: var(--text-faint); }
+
+/* Listed time */
+.listing-time {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+/* ================================
+   DETAIL PANEL
+   ================================ */
+.detail-panel {
+  position: sticky;
+  top: 172px;
+  align-self: flex-start;
+  background: var(--bg-1);
+  border-left: 1px solid var(--border);
+  height: calc(100vh - 172px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 32px;
+  text-align: center;
+  gap: 16px;
+}
+.detail-empty-icon {
+  width: 80px;
+  height: 100px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, var(--surface) 0%, var(--bg-2) 100%);
+  border: 2px dashed var(--border-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--display);
+  font-size: 28px;
+  color: var(--text-faint);
+}
+.detail-empty-title {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--text-2);
+}
+.detail-empty-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+  max-width: 240px;
+  line-height: 1.5;
+}
+
+.detail-content {
+  display: none;
+  flex-direction: column;
+  padding: 0;
+}
+.detail-content.is-visible { display: flex; }
+
+.detail-hero {
+  padding: 24px;
+  background: linear-gradient(180deg, rgba(255, 184, 77, 0.03) 0%, transparent 100%);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.detail-hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0.3;
+}
+
+.detail-card-visual {
+  width: 100%;
+  max-width: 240px;
+  aspect-ratio: 3/4;
+  margin: 0 auto 20px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, var(--surface) 0%, var(--bg-2) 100%);
+  border: 1px solid var(--border-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 108px;
+  color: var(--tier-gm);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+.detail-card-visual.is-legendary {
+  border-color: rgba(255, 184, 77, 0.5);
+  box-shadow: 0 20px 60px rgba(255, 184, 77, 0.25);
+}
+.detail-card-visual.is-legendary::before {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(255, 184, 77, 0.15) 90deg, transparent 180deg, rgba(199, 125, 255, 0.15) 270deg, transparent 360deg);
+  animation: legendarySpin 4s linear infinite;
+  mix-blend-mode: screen;
+}
+
+.detail-breadcrumb {
+  font-family: var(--body);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 8px;
+}
+.detail-name {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 26px;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  line-height: 1.05;
+  margin-bottom: 4px;
+}
+.detail-archetype {
+  font-family: var(--body);
+  font-size: 12px;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-bottom: 16px;
+}
+.detail-tier-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.detail-tier-name {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--tier-gm);
+  letter-spacing: 0.01em;
+}
+.detail-tier-float {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gold);
+  background: rgba(255, 184, 77, 0.1);
+  padding: 4px 10px;
+  border-radius: 5px;
+  letter-spacing: 0.05em;
+}
+.detail-rank-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: linear-gradient(135deg, rgba(255, 184, 77, 0.15), rgba(199, 125, 255, 0.1));
+  border: 1px solid rgba(255, 184, 77, 0.3);
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+}
+.detail-rank-badge::before {
+  content: '★';
+  font-size: 13px;
+}
+
+/* Price section */
+.detail-price-section {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+}
+.detail-price-block {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.detail-price-main {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 32px;
+  color: var(--berry);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.detail-price-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.detail-buy-btn {
+  width: 100%;
+  height: 48px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--berry) 100%);
+  color: #0a0b10;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(255, 184, 77, 0.25);
+  transition: transform 0.1s;
+}
+.detail-buy-btn:hover { transform: translateY(-1px); }
+.detail-buy-btn:active { transform: translateY(0); }
+
+.detail-fee-note {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-faint);
+  margin-top: 10px;
+  padding: 8px 10px;
+  background: var(--bg-0);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+.detail-fee-note span:last-child {
+  color: var(--text-muted);
+}
+
+/* Detail sections */
+.detail-section {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+}
+.detail-section-title {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+/* Market history mini-chart */
+.market-chart {
+  width: 100%;
+  height: 80px;
+  position: relative;
+  margin-bottom: 10px;
+}
+.market-chart svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.market-chart-stats {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 6px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+.market-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.market-stat-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.market-stat-value {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+.market-stat-value.up { color: var(--green); }
+.market-stat-value.down { color: var(--red); }
+
+/* Seller block */
+.seller-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.seller-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4a5268, #2a2f42);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text-2);
+  flex-shrink: 0;
+}
+.seller-block-info { flex: 1; min-width: 0; }
+.seller-block-name {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.seller-block-stats {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  font-family: var(--mono);
+}
+
+/* Flavor */
+.detail-flavor {
+  font-family: var(--body);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-2);
+  font-style: italic;
+  padding: 14px 16px;
+  background: rgba(199, 125, 255, 0.04);
+  border-left: 2px solid var(--purple);
+  border-radius: 0 8px 8px 0;
+}
+
+/* ================================
+   SELL TAB CONTENT
+   ================================ */
+.sell-mode { display: none; }
+.sell-mode.is-active { display: block; }
+
+.sell-hero {
+  padding: 28px 32px 24px;
+  background: var(--bg-1);
+  border-bottom: 1px solid var(--border);
+}
+.sell-hero h1 {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 32px;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.sell-hero p {
+  color: var(--text-muted);
+  font-size: 14px;
+  max-width: 600px;
+}
+
+.sell-layout {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+}
+.sell-collection {
+  padding: 24px 32px 80px;
+}
+.sell-collection-filter {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.sell-collection-count {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text-2);
+  margin-left: auto;
+}
+.sell-collection-count strong {
+  color: var(--text);
+  font-family: var(--mono);
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+.sell-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 14px;
+}
+.sell-card {
+  background: var(--bg-1);
+  border: 1px solid var(--border-2);
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  flex-direction: column;
+}
+.sell-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-3);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+}
+.sell-card.is-selected {
+  border-color: var(--gold);
+  box-shadow: 0 12px 32px rgba(255, 184, 77, 0.2);
+}
+.sell-card-art {
+  aspect-ratio: 3/4;
+  background: linear-gradient(180deg, var(--surface) 0%, var(--bg-2) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 56px;
+  position: relative;
+}
+.sell-card-art.is-rare { box-shadow: inset 0 0 20px rgba(100, 160, 255, 0.2); }
+.sell-card-art.is-epic { box-shadow: inset 0 0 24px rgba(199, 125, 255, 0.25); }
+.sell-card-art.is-legendary { box-shadow: inset 0 0 28px rgba(255, 184, 77, 0.3); }
+.sell-card-art.is-common .sell-letter { color: var(--rarity-common); opacity: 0.8; }
+.sell-card-art.is-rare .sell-letter { color: var(--rarity-rare); }
+.sell-card-art.is-epic .sell-letter { color: var(--rarity-epic); }
+.sell-card-art.is-legendary .sell-letter { color: var(--rarity-legendary); }
+.sell-card-info {
+  padding: 10px 12px 12px;
+  border-top: 1px solid var(--border);
+}
+.sell-card-name {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--text);
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sell-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-muted);
+}
+.sell-card-tier {
+  font-weight: 600;
+}
+.sell-card-tier.gm { color: var(--tier-gm); }
+.sell-card-tier.nm { color: var(--tier-nm); }
+.sell-card-tier.lp { color: var(--tier-lp); }
+.sell-card-tier.mp { color: var(--text-muted); }
+.sell-card-tier.hp { color: var(--tier-hp); }
+.sell-card-tier.dm { color: var(--tier-dm); }
+
+/* Sell form panel */
+.sell-form-panel {
+  position: sticky;
+  top: 172px;
+  align-self: flex-start;
+  background: var(--bg-1);
+  border-left: 1px solid var(--border);
+  min-height: calc(100vh - 172px);
+  padding: 24px;
+}
+.sell-form-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-muted);
+}
+.sell-form-empty-icon {
+  font-family: var(--display);
+  font-size: 40px;
+  color: var(--text-faint);
+  margin-bottom: 12px;
+}
+.sell-form-empty-title {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--text-2);
+  margin-bottom: 6px;
+}
+
+.sell-form-content { display: none; }
+.sell-form-content.is-visible { display: block; }
+
+.sell-form-header {
+  padding-bottom: 18px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+}
+.sell-form-preview {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.sell-form-preview-art {
+  width: 70px;
+  height: 94px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, var(--surface), var(--bg-2));
+  border: 1px solid var(--border-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 32px;
+  color: var(--tier-gm);
+  flex-shrink: 0;
+}
+.sell-form-preview-info {
+  flex: 1;
+  min-width: 0;
+}
+.sell-form-preview-name {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.sell-form-preview-tier {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.sell-form-preview-tier .tier-name {
+  font-size: 13px;
+}
+.sell-form-preview-tier .tier-float {
+  font-size: 11px;
+}
+
+.sell-form-field {
+  margin-bottom: 16px;
+}
+.sell-form-label {
+  display: block;
+  font-family: var(--body);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.sell-form-price-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--bg-0);
+  border: 1px solid var(--border-2);
+  border-radius: 10px;
+  transition: all 0.15s;
+}
+.sell-form-price-input:focus-within {
+  border-color: var(--gold);
+  background: var(--bg-1);
+}
+.sell-form-price-input .berry-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #ff9ec0, var(--berry));
+  box-shadow: 0 0 8px rgba(255, 107, 157, 0.5);
+  flex-shrink: 0;
+}
+.sell-form-price-input input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 18px;
+  font-weight: 700;
+  min-width: 0;
+  font-variant-numeric: tabular-nums;
+}
+.sell-form-price-input input::placeholder { color: var(--text-faint); }
+.sell-form-price-suffix {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.sell-form-suggestion {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: rgba(54, 211, 153, 0.06);
+  border: 1px solid rgba(54, 211, 153, 0.2);
+  border-radius: 8px;
+  font-size: 11px;
+  color: var(--green);
+  margin-top: 8px;
+}
+.sell-form-suggestion strong { color: var(--text); font-family: var(--mono); font-weight: 700; }
+
+.sell-form-breakdown {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 20px;
+}
+.sell-form-breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 0;
+}
+.sell-form-breakdown-row .label { color: var(--text-muted); }
+.sell-form-breakdown-row .val { color: var(--text-2); font-weight: 600; }
+.sell-form-breakdown-row.net {
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+  margin-top: 4px;
+}
+.sell-form-breakdown-row.net .label {
+  color: var(--text);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 10px;
+  font-family: var(--body);
+}
+.sell-form-breakdown-row.net .val {
+  color: var(--green);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.sell-form-duration {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.sell-form-duration-option {
+  padding: 10px;
+  background: var(--bg-0);
+  border: 1px solid var(--border-2);
+  border-radius: 8px;
+  font-family: var(--body);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+}
+.sell-form-duration-option:hover { background: var(--bg-2); }
+.sell-form-duration-option.is-selected {
+  background: rgba(255, 184, 77, 0.08);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.sell-form-action {
+  width: 100%;
+  height: 52px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, var(--green) 0%, #2eb888 100%);
+  color: #0a0b10;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(54, 211, 153, 0.25);
+  margin-top: 8px;
+}
+
+/* ================================
+   RESPONSIVE
+   ================================ */
+@media (max-width: 1100px) {
+  .main-layout { grid-template-columns: 1fr; }
+  .sell-layout { grid-template-columns: 1fr; }
+  .detail-panel { display: none; }
+  .sell-form-panel { display: none; }
+}
+
+@media (max-width: 700px) {
+  /* Nav: shrink and allow horizontal scroll for tabs */
+  .app-nav {
+    padding: 0 14px;
+    height: 52px;
+  }
+  .nav-left {
+    gap: 14px;
+    min-width: 0;
+    flex: 1;
+  }
+  .nav-brand {
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .nav-tabs {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    min-width: 0;
+  }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .nav-tab {
+    padding: 6px 10px;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+  .berry-pill {
+    padding: 6px 10px;
+  }
+  .berry-pill-value { font-size: 12px; }
+  .nav-avatar {
+    width: 28px;
+    height: 28px;
+    font-size: 11px;
+  }
+
+  /* Mode tabs: tighter, scrollable */
+  .mode-tabs {
+    padding: 14px 16px 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .mode-tabs::-webkit-scrollbar { display: none; }
+  .mode-tab {
+    padding: 12px 14px;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+  }
+  .mode-tab .count {
+    display: block;
+    margin-left: 0;
+    margin-top: 2px;
+    font-size: 9px;
+  }
+
+  /* Hero: compact */
+  .hero-strip {
+    padding: 18px 16px 14px;
+  }
+  .hero-brand-small {
+    font-size: 11px;
+  }
+  .hero-title {
+    font-size: 26px;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .hero-subtitle {
+    font-size: 12px;
+    line-height: 1.45;
+  }
+  .hero-stats {
+    gap: 0;
+    margin-top: 14px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 12px 14px;
+    background: var(--bg-2);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    gap: 12px 20px;
+  }
+  .hero-stat-label {
+    font-size: 9px;
+    letter-spacing: 0.16em;
+  }
+  .hero-stat-value {
+    font-size: 16px;
+  }
+  .hero-stat-value .trend {
+    font-size: 10px;
+  }
+
+  /* Filter bar: tighter */
+  .filter-bar {
+    padding: 10px 16px;
+    gap: 10px;
+    top: 52px;
+  }
+  .filter-row {
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+    flex-wrap: nowrap;
+  }
+  .filter-row::-webkit-scrollbar { display: none; }
+  .search-box {
+    flex: 0 0 100%;
+    min-width: 0;
+    order: -1;
+  }
+  .search-box input {
+    height: 36px;
+    font-size: 13px;
+  }
+  .filter-select {
+    height: 34px;
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+  .filter-chip {
+    height: 34px;
+    padding: 0 10px;
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+
+  /* Float slider: stack vertically on mobile */
+  .float-slider-section {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+    padding: 14px;
+  }
+  .float-slider-label { min-width: 0; }
+  .float-slider-track-wrap {
+    padding: 8px 6px;
+  }
+  .float-slider-values {
+    min-width: 0;
+  }
+  .float-slider-reset {
+    align-self: flex-end;
+    padding: 8px 12px;
+    background: var(--surface);
+    border-radius: 6px;
+  }
+
+  /* Listings area */
+  .listings-area {
+    padding: 0 16px 60px;
+  }
+  .listings-meta {
+    padding: 14px 0 10px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .listings-sort {
+    width: 100%;
+  }
+  .listings-sort .filter-select {
+    flex: 1;
+  }
+
+  /* Table becomes cards on mobile */
+  .listings-table thead { display: none; }
+  .listings-table,
+  .listings-table tbody,
+  .listings-table tr,
+  .listings-table td {
+    display: block;
+    width: 100%;
+  }
+  .listings-table {
+    border: none;
+    background: transparent;
+  }
+  .listings-table tr.listing {
+    background: var(--bg-1);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    padding: 14px;
+    position: relative;
+  }
+  .listings-table tr.listing td {
+    padding: 0;
+    border: none;
+    background: transparent;
+  }
+  .listings-table tr.listing td:nth-child(1) { margin-bottom: 12px; }
+  .listings-table tr.listing td:nth-child(2),
+  .listings-table tr.listing td:nth-child(3) {
+    display: inline-block;
+    width: auto;
+    margin-right: 8px;
+    margin-bottom: 8px;
+  }
+  .listings-table tr.listing td:nth-child(4) {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+  .listings-table tr.listing td:nth-child(5) {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+  }
+  .listings-table tr.listing td:nth-child(6) {
+    margin-top: 6px;
+    font-size: 10px;
+  }
+  .listing-price { align-items: flex-end; }
+  .listing-char-name { max-width: none; white-space: normal; }
+
+  /* Sell mode */
+  .sell-hero { padding: 18px 16px 14px; }
+  .sell-hero h1 { font-size: 26px; }
+  .sell-hero p { font-size: 12px; }
+  .sell-collection {
+    padding: 16px 16px 60px;
+  }
+  .sell-collection-filter {
+    flex-wrap: wrap;
+  }
+  .sell-grid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 10px;
+  }
+}
+
+/* Very small phones */
+@media (max-width: 400px) {
+  .hero-title { font-size: 22px; }
+  .hero-stats {
+    grid-template-columns: 1fr 1fr;
+    padding: 10px 12px;
+  }
+  .hero-stat-value { font-size: 15px; }
+  .mode-tab { padding: 10px 12px; font-size: 10px; }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Top nav -->
+  <nav class="app-nav">
+    <div class="nav-left">
+      <div class="nav-brand">Catch'em</div>
+      <div class="nav-tabs">
+        <div class="nav-tab">Home</div>
+        <div class="nav-tab">Backpack</div>
+        <div class="nav-tab is-active">Trading</div>
+        <div class="nav-tab">Newsletter</div>
+        <div class="nav-tab">Streak</div>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="berry-pill">
+        <div class="berry-pill-icon"></div>
+        <div class="berry-pill-value">12,847</div>
+      </div>
+      <div class="nav-avatar">TB</div>
+    </div>
+  </nav>
+
+  <!-- Mode tabs -->
+  <div class="mode-tabs">
+    <div class="mode-tab is-active" data-mode="browse">Browse<span class="count">2,481 listings</span></div>
+    <div class="mode-tab" data-mode="sell">Sell<span class="count">98 cards in your Backpack</span></div>
+    <div class="mode-tab" data-mode="history">History<span class="count">last 30 days</span></div>
+  </div>
+
+  <!-- ================================
+       BROWSE MODE
+       ================================ -->
+  <div class="browse-mode">
+
+    <!-- Hero -->
+    <div class="hero-strip">
+      <div class="hero-brand-row">
+        <div class="hero-brand-small">Catch'em</div>
+      </div>
+      <div class="hero-title">Buying, Selling, & Trading</div>
+      <div class="hero-subtitle">Every card has a score. Every score has a story. Filter by quality, creature, trainer, or object to find your grail.</div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-label">Listings</div>
+          <div class="hero-stat-value">2,481 <span class="trend up">+8.2%</span></div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-label">Median Price</div>
+          <div class="hero-stat-value">540 <span class="trend down">−2.1%</span></div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-label">Gem Mints Listed</div>
+          <div class="hero-stat-value">14 <span class="trend up">+3</span></div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-label">24h Volume</div>
+          <div class="hero-stat-value">892,450 B</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+      <div class="filter-row">
+        <div class="search-box">
+          <input type="text" placeholder="Search characters, seasons, seller names..." />
+        </div>
+        <select class="filter-select">
+          <option>All Seasons</option>
+          <option>Season 01</option>
+          <option>Season 02</option>
+          <option>Season 08 (Alt Art era)</option>
+          <option>Season 09 (151 era)</option>
+          <option>Season 10 (Mega era)</option>
+        </select>
+        <select class="filter-select">
+          <option>All Rarities</option>
+          <option>Common</option>
+          <option>Rare</option>
+          <option>Epic</option>
+          <option>Legendary</option>
+        </select>
+        <div class="filter-chip is-active">Gem Mint<span class="chip-count">14</span></div>
+        <div class="filter-chip">Near Mint<span class="chip-count">187</span></div>
+        <div class="filter-chip">LP / MP<span class="chip-count">1,420</span></div>
+        <div class="filter-chip">Heavily Played<span class="chip-count">612</span></div>
+        <div class="filter-chip">Damaged<span class="chip-count">248</span></div>
+      </div>
+
+      <!-- THE SCORE SLIDER -->
+      <div class="float-slider-section">
+        <div class="float-slider-label">
+          <div class="float-slider-label-title">Score Range</div>
+          <div class="float-slider-label-sub">0.0001 — 1.0000</div>
+        </div>
+        <div class="float-slider-track-wrap">
+          <div class="float-slider-track" id="floatTrack">
+            <div class="float-slider-mask left" id="floatMaskLeft" style="width: 0%;"></div>
+            <div class="float-slider-mask right" id="floatMaskRight" style="width: 92%;"></div>
+            <div class="float-slider-range-highlight" id="floatRangeHighlight" style="left: 0%; right: 92%;"></div>
+            <div class="float-slider-handle" id="floatHandleLeft" style="left: 0%;"></div>
+            <div class="float-slider-handle" id="floatHandleRight" style="left: 8%;"></div>
+          </div>
+          <div class="float-slider-tier-labels">
+            <span>GM</span>
+            <span>NM</span>
+            <span>LP</span>
+            <span>MP</span>
+            <span>HP</span>
+            <span>DM</span>
+          </div>
+        </div>
+        <div class="float-slider-values">
+          <div class="float-value-box">
+            <div class="float-value-box-label">MIN</div>
+            <div class="float-value-box-value" id="floatMinDisplay">0.0001</div>
+          </div>
+          <div class="float-value-box">
+            <div class="float-value-box-label">MAX</div>
+            <div class="float-value-box-value" id="floatMaxDisplay">0.0800</div>
+          </div>
+        </div>
+        <button class="float-slider-reset" id="floatResetBtn">Reset</button>
+      </div>
+    </div>
+
+    <!-- Main layout: listings + detail -->
+    <div class="main-layout">
+
+      <!-- Listings area -->
+      <div class="listings-area">
+        <div class="listings-meta">
+          <div class="listings-count"><strong>14</strong>listings match your filters</div>
+          <div class="listings-sort">
+            <div class="listings-sort-label">Sort</div>
+            <select class="filter-select">
+              <option>Score (best first)</option>
+              <option>Price (low to high)</option>
+              <option>Price (high to low)</option>
+              <option>Recently listed</option>
+              <option>Ending soon</option>
+              <option>Top score rank</option>
+            </select>
+          </div>
+        </div>
+
+        <table class="listings-table">
+          <thead>
+            <tr>
+              <th style="width: 28%;">Character</th>
+              <th style="width: 12%;">Rarity</th>
+              <th style="width: 18%;" class="sortable is-sorted">Tier / Score</th>
+              <th style="width: 18%;">Seller</th>
+              <th style="width: 16%;" class="sortable right">Price</th>
+              <th style="width: 8%;" class="right">Listed</th>
+            </tr>
+          </thead>
+          <tbody id="listingsBody">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Detail panel -->
+      <aside class="detail-panel" id="detailPanel">
+        <div class="detail-empty" id="detailEmpty">
+          <div class="detail-empty-icon">?</div>
+          <div class="detail-empty-title">Select a listing</div>
+          <div class="detail-empty-sub">Tap any card in the table to see specimen details, seller info, market history, and buy.</div>
+        </div>
+        <div class="detail-content" id="detailContent">
+          <!-- Populated by JS -->
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <!-- ================================
+       SELL MODE
+       ================================ -->
+  <div class="sell-mode" id="sellMode">
+    <div class="sell-hero">
+      <h1>List your Feels.</h1>
+      <p>Pick a card from your Backpack, set a Berry price, confirm. Marketplace takes a 10% tax on sale. Your Berries land instantly when someone buys.</p>
+    </div>
+
+    <div class="sell-layout">
+      <div class="sell-collection">
+        <div class="sell-collection-filter">
+          <select class="filter-select">
+            <option>All Binders</option>
+            <option>Starter Binder (47 cards)</option>
+            <option>Season 08 Binder (12 cards)</option>
+            <option>Supporter Binder (3 cards)</option>
+          </select>
+          <select class="filter-select">
+            <option>All Tiers</option>
+            <option>Gem Mint only</option>
+            <option>Near Mint only</option>
+            <option>LP / MP</option>
+            <option>Damaged only</option>
+          </select>
+          <div class="sell-collection-count"><strong>98</strong>cards in your Backpack</div>
+        </div>
+
+        <div class="sell-grid" id="sellGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <aside class="sell-form-panel">
+        <div class="sell-form-empty" id="sellFormEmpty">
+          <div class="sell-form-empty-icon">→</div>
+          <div class="sell-form-empty-title">Pick a card</div>
+          <div style="font-size: 12px;">Tap any card from your Backpack to start listing it.</div>
+        </div>
+        <div class="sell-form-content" id="sellFormContent">
+          <!-- Populated by JS -->
+        </div>
+      </aside>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ============================================
+// DATA: 14 realistic listings
+// ============================================
+const listings = [
+  {
+    id: 1,
+    name: 'The Moonbreon Believer',
+    archetype: 'small moonlit fox spirit · devoted',
+    season: 'Season 08', seasonNo: 8,
+    rarity: 'legendary',
+    tier: 'GM', tierLabel: 'Gem Mint',
+    float: '0.0089',
+    rank: '★ Rank #3 globally',
+    seller: '@thelurker', sellerPro: true, sellerSales: 247,
+    price: 18500,
+    priceTrend: 'up', priceTrendPct: '+12%',
+    listedTime: '2h',
+    letter: 'M',
+    flavor: '"it will be a thousand. then more. i\'m certain. i have to be."'
+  },
+  {
+    id: 2,
+    name: 'Sticky Boy',
+    archetype: 'small melted ice cream object-with-feelings',
+    season: 'Season 01', seasonNo: 1,
+    rarity: 'common',
+    tier: 'GM', tierLabel: 'Gem Mint',
+    float: '0.0124',
+    rank: null,
+    seller: '@pk_collector', sellerPro: false, sellerSales: 34,
+    price: 2400,
+    priceTrend: 'flat', priceTrendPct: '0%',
+    listedTime: '5h',
+    letter: 'S',
+    flavor: '"perfectly scooped. never dripped."'
+  },
+  {
+    id: 3,
+    name: 'The Attic Visitor',
+    archetype: 'small round friendly ghost',
+    season: 'Season 01', seasonNo: 1,
+    rarity: 'common',
+    tier: 'DM', tierLabel: 'Damaged',
+    float: '0.9847',
+    rank: '★ Rank #1 Damaged',
+    seller: '@ghostdad', sellerPro: true, sellerSales: 892,
+    price: 1850,
+    priceTrend: 'up', priceTrendPct: '+4%',
+    listedTime: '1d',
+    letter: 'A',
+    flavor: '"no one remembers me now. i am alone in the box."',
+    supporter: false
+  },
+  {
+    id: 4,
+    name: 'Sticky Boy · Winter Edition',
+    archetype: 'supporter variant',
+    season: 'Season 01 · SV', seasonNo: 1,
+    rarity: 'rare',
+    tier: 'NM', tierLabel: 'Near Mint',
+    float: '0.1024',
+    rank: null,
+    seller: '@fluxx', sellerPro: true, sellerSales: 112,
+    price: 4500,
+    priceTrend: 'up', priceTrendPct: '+8%',
+    listedTime: '3h',
+    letter: 'S',
+    flavor: '"a tiny scarf. it helps."',
+    supporter: true
+  },
+  {
+    id: 5,
+    name: 'Cardboard Dad',
+    archetype: 'cardboard box character · protective',
+    season: 'Season 01', seasonNo: 1,
+    rarity: 'rare',
+    tier: 'MP', tierLabel: 'Moderately Played',
+    float: '0.4102',
+    rank: null,
+    seller: '@basementfloor', sellerPro: false, sellerSales: 8,
+    price: 780,
+    priceTrend: 'down', priceTrendPct: '−3%',
+    listedTime: '12h',
+    letter: 'C',
+    flavor: '"i held them safe. they don\'t know."'
+  },
+  {
+    id: 6,
+    name: 'The Completionist Snail',
+    archetype: 'garden snail · patient',
+    season: 'Season 01', seasonNo: 1,
+    rarity: 'rare',
+    tier: 'LP', tierLabel: 'Lightly Played',
+    float: '0.2214',
+    rank: null,
+    seller: '@slowandsteady', sellerPro: false, sellerSales: 56,
+    price: 1200,
+    priceTrend: 'flat', priceTrendPct: '0%',
+    listedTime: '6h',
+    letter: 'S',
+    flavor: '"i\'ll get there. i\'m close. it\'s fine."'
+  },
+  {
+    id: 7,
+    name: 'The Dragon Believer',
+    archetype: 'small fire dragon · devoted',
+    season: 'Season 10', seasonNo: 10,
+    rarity: 'epic',
+    tier: 'LP', tierLabel: 'Lightly Played',
+    float: '0.1847',
+    rank: null,
+    seller: '@thelurker', sellerPro: true, sellerSales: 247,
+    price: 5200,
+    priceTrend: 'up', priceTrendPct: '+15%',
+    listedTime: '45m',
+    letter: 'D',
+    flavor: '"still waiting. the flame stays small."'
+  },
+  {
+    id: 8,
+    name: 'Hidden Fates Hope',
+    archetype: 'small shiny creature in a pack',
+    season: 'Season 07', seasonNo: 7,
+    rarity: 'epic',
+    tier: 'GM', tierLabel: 'Gem Mint',
+    float: '0.0421',
+    rank: null,
+    seller: '@rainbowpull', sellerPro: true, sellerSales: 421,
+    price: 12800,
+    priceTrend: 'up', priceTrendPct: '+6%',
+    listedTime: '4h',
+    letter: 'H',
+    flavor: '"finally. someone found me."'
+  },
+  {
+    id: 9,
+    name: 'V-Max Identity Crisis',
+    archetype: 'small creature half-transformed',
+    season: 'Season 08', seasonNo: 8,
+    rarity: 'rare',
+    tier: 'HP', tierLabel: 'Heavily Played',
+    float: '0.6782',
+    rank: null,
+    seller: '@ex_tired', sellerPro: false, sellerSales: 23,
+    price: 650,
+    priceTrend: 'down', priceTrendPct: '−8%',
+    listedTime: '2d',
+    letter: 'V',
+    flavor: '"every scuff earned. every edge remembered."'
+  },
+  {
+    id: 10,
+    name: 'The 151 Kid',
+    archetype: 'small human trainer · wonderstruck',
+    season: 'Season 09', seasonNo: 9,
+    rarity: 'common',
+    tier: 'MP', tierLabel: 'Moderately Played',
+    float: '0.4287',
+    rank: null,
+    seller: '@firstpull', sellerPro: false, sellerSales: 12,
+    price: 320,
+    priceTrend: 'up', priceTrendPct: '+2%',
+    listedTime: '8h',
+    letter: 'K',
+    flavor: '"i was here. i saw it."'
+  },
+  {
+    id: 11,
+    name: 'The FOMO Buyer',
+    archetype: 'human trainer · timing-challenged',
+    season: 'Season 08', seasonNo: 8,
+    rarity: 'legendary',
+    tier: 'HP', tierLabel: 'Heavily Played',
+    float: '0.7124',
+    rank: null,
+    seller: '@panicseller', sellerPro: false, sellerSales: 4,
+    price: 8900,
+    priceTrend: 'down', priceTrendPct: '−22%',
+    listedTime: '3d',
+    letter: 'F',
+    flavor: '"i had to. it was worth it."'
+  },
+  {
+    id: 12,
+    name: 'Prismatic Ghost',
+    archetype: 'translucent rainbow ghost',
+    season: 'Season 09', seasonNo: 9,
+    rarity: 'epic',
+    tier: 'NM', tierLabel: 'Near Mint',
+    float: '0.0982',
+    rank: null,
+    seller: '@thelurker', sellerPro: true, sellerSales: 247,
+    price: 6700,
+    priceTrend: 'up', priceTrendPct: '+5%',
+    listedTime: '1h',
+    letter: 'P',
+    flavor: '"did i really just happen?"'
+  },
+  {
+    id: 13,
+    name: 'Rainbow Rare',
+    archetype: 'small color-shifting creature',
+    season: 'Season 07', seasonNo: 7,
+    rarity: 'epic',
+    tier: 'LP', tierLabel: 'Lightly Played',
+    float: '0.3104',
+    rank: null,
+    seller: '@_colorbox', sellerPro: false, sellerSales: 78,
+    price: 3200,
+    priceTrend: 'flat', priceTrendPct: '+0.5%',
+    listedTime: '14h',
+    letter: 'R',
+    flavor: '"which one am i?"'
+  },
+  {
+    id: 14,
+    name: 'The Discord Moderator',
+    archetype: 'patient trainer · never pulls',
+    season: 'Season 13', seasonNo: 13,
+    rarity: 'rare',
+    tier: 'HP', tierLabel: 'Heavily Played',
+    float: '0.5892',
+    rank: '★ Loved',
+    seller: '@ghostdad', sellerPro: true, sellerSales: 892,
+    price: 1680,
+    priceTrend: 'up', priceTrendPct: '+7%',
+    listedTime: '2d',
+    letter: 'D',
+    flavor: '"keeping the peace. always. even now."'
+  }
+];
+
+// User's collection for sell mode (6 cards)
+const myCards = [
+  { id: 101, name: 'The Attic Visitor', rarity: 'common', tier: 'LP', float: '0.2104', letter: 'A', suggestedPrice: 680 },
+  { id: 102, name: 'Cardboard Dad', rarity: 'rare', tier: 'MP', float: '0.4287', letter: 'C', suggestedPrice: 920 },
+  { id: 103, name: 'Sticky Boy', rarity: 'common', tier: 'GM', float: '0.0342', letter: 'S', suggestedPrice: 1840 },
+  { id: 104, name: 'The Moonbreon Believer', rarity: 'legendary', tier: 'MP', float: '0.4012', letter: 'M', suggestedPrice: 4200 },
+  { id: 105, name: 'Rainbow Rare', rarity: 'epic', tier: 'NM', float: '0.1104', letter: 'R', suggestedPrice: 5600 },
+  { id: 106, name: 'The Completionist Snail', rarity: 'rare', tier: 'HP', float: '0.6214', letter: 'S', suggestedPrice: 420 },
+  { id: 107, name: 'The 151 Kid', rarity: 'common', tier: 'LP', float: '0.2847', letter: 'K', suggestedPrice: 290 },
+  { id: 108, name: 'The Forum Poster', rarity: 'common', tier: 'HP', float: '0.6012', letter: 'F', suggestedPrice: 180 }
+];
+
+// ============================================
+// RENDER LISTINGS TABLE
+// ============================================
+function renderListings() {
+  const body = document.getElementById('listingsBody');
+  body.innerHTML = listings.map(l => `
+    <tr class="listing" data-id="${l.id}">
+      <td>
+        <div class="listing-char">
+          <div class="listing-thumb is-${l.rarity} ${l.supporter ? 'supporter' : ''}">
+            <span class="thumb-letter">${l.letter}</span>
+          </div>
+          <div class="listing-char-info">
+            <div class="listing-char-name">${l.name}</div>
+            <div class="listing-char-sub">
+              <span>${l.season}</span>
+              <span class="dot"></span>
+              <span>${l.archetype.split(' · ')[0]}</span>
+            </div>
+          </div>
+        </div>
+      </td>
+      <td><span class="rarity-badge ${l.rarity}">${l.rarity}</span></td>
+      <td>
+        <div class="tier-display">
+          <span class="tier-name ${l.tier.toLowerCase()}">${l.tierLabel}</span>
+          <span class="tier-float">${l.float}</span>
+          ${l.rank ? `<span class="top-float-badge">${l.rank}</span>` : ''}
+        </div>
+      </td>
+      <td>
+        <div class="seller-info">
+          <div class="seller-name">
+            ${l.seller}
+            ${l.sellerPro ? '<span class="seller-pro-badge">PRO</span>' : ''}
+          </div>
+          <div class="seller-meta">${l.sellerSales} sales</div>
+        </div>
+      </td>
+      <td>
+        <div class="listing-price">
+          <div class="listing-price-value">
+            <span class="berry-dot"></span>
+            <span>${l.price.toLocaleString()}</span>
+          </div>
+          <div class="listing-price-trend ${l.priceTrend}">${l.priceTrendPct}</div>
+        </div>
+      </td>
+      <td>
+        <div class="listing-time" style="text-align:right;">${l.listedTime} ago</div>
+      </td>
+    </tr>
+  `).join('');
+
+  body.querySelectorAll('tr.listing').forEach(row => {
+    row.addEventListener('click', () => selectListing(parseInt(row.dataset.id)));
+  });
+}
+
+// ============================================
+// RENDER DETAIL PANEL
+// ============================================
+function selectListing(id) {
+  const listing = listings.find(l => l.id === id);
+  if (!listing) return;
+
+  document.querySelectorAll('tr.listing').forEach(r => r.classList.remove('is-active'));
+  document.querySelector(`tr.listing[data-id="${id}"]`).classList.add('is-active');
+
+  document.getElementById('detailEmpty').style.display = 'none';
+  const content = document.getElementById('detailContent');
+  content.classList.add('is-visible');
+
+  const tax = Math.round(listing.price * 0.10);
+  const sellerGets = listing.price - tax;
+
+  content.innerHTML = `
+    <div class="detail-hero">
+      <div class="detail-breadcrumb">${listing.season} · ${listing.rarity}</div>
+
+      <div class="detail-card-visual ${listing.rarity === 'legendary' ? 'is-legendary' : ''}"
+           style="color: ${getRarityColor(listing.rarity)};">
+        ${listing.letter}
+      </div>
+
+      <div class="detail-name">${listing.name}</div>
+      <div class="detail-archetype">${listing.archetype}</div>
+
+      <div class="detail-tier-row">
+        <span class="detail-tier-name" style="color: ${getTierColor(listing.tier)};">${listing.tierLabel}</span>
+        <span class="detail-tier-float">${listing.float}</span>
+      </div>
+      ${listing.rank ? `<div class="detail-rank-badge">${listing.rank}</div>` : ''}
+    </div>
+
+    <div class="detail-price-section">
+      <div class="detail-price-block">
+        <div class="detail-price-main">${listing.price.toLocaleString()}</div>
+        <div class="detail-price-label">Berries</div>
+      </div>
+      <button class="detail-buy-btn">Buy Now</button>
+      <div class="detail-fee-note">
+        <span>Marketplace tax (10%)</span>
+        <span>${tax.toLocaleString()} B</span>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-title">30-Day Market History</div>
+      ${renderMarketChart(listing)}
+      <div class="market-chart-stats">
+        <div class="market-stat">
+          <div class="market-stat-label">Last Sale</div>
+          <div class="market-stat-value">${Math.round(listing.price * 0.92).toLocaleString()}</div>
+        </div>
+        <div class="market-stat">
+          <div class="market-stat-label">30d Avg</div>
+          <div class="market-stat-value">${Math.round(listing.price * 0.88).toLocaleString()}</div>
+        </div>
+        <div class="market-stat">
+          <div class="market-stat-label">Trend</div>
+          <div class="market-stat-value ${listing.priceTrend}">${listing.priceTrendPct}</div>
+        </div>
+        <div class="market-stat">
+          <div class="market-stat-label">Volume</div>
+          <div class="market-stat-value">47</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-title">Seller</div>
+      <div class="seller-block">
+        <div class="seller-avatar">${listing.seller.slice(1, 3).toUpperCase()}</div>
+        <div class="seller-block-info">
+          <div class="seller-block-name">
+            ${listing.seller}
+            ${listing.sellerPro ? '<span class="seller-pro-badge">PRO</span>' : ''}
+          </div>
+          <div class="seller-block-stats">${listing.sellerSales} sales · 99% on-time · member since 2026</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-title">Character Voice</div>
+      <div class="detail-flavor">${listing.flavor}</div>
+    </div>
+  `;
+}
+
+function getRarityColor(rarity) {
+  return { common: '#9aa0ac', rare: '#64a0ff', epic: '#c77dff', legendary: '#ffb84d' }[rarity];
+}
+function getTierColor(tier) {
+  return { GM: '#ffb84d', NM: '#e8e8e8', LP: '#9ad8ff', MP: '#9aa0ac', HP: '#d89a6e', DM: '#ff6b9d' }[tier];
+}
+
+// Market history sparkline
+function renderMarketChart(listing) {
+  const basePrice = listing.price;
+  const points = [];
+  for (let i = 0; i < 30; i++) {
+    const variance = (Math.random() - 0.5) * 0.15;
+    const trend = listing.priceTrend === 'up' ? (i / 30) * 0.15 : listing.priceTrend === 'down' ? -(i / 30) * 0.12 : 0;
+    const val = basePrice * (0.85 + trend + variance);
+    points.push(val);
+  }
+  const min = Math.min(...points);
+  const max = Math.max(...points);
+  const range = max - min;
+
+  const pathData = points.map((p, i) => {
+    const x = (i / (points.length - 1)) * 100;
+    const y = 100 - ((p - min) / range) * 100;
+    return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
+  }).join(' ');
+
+  const areaPath = `${pathData} L 100 100 L 0 100 Z`;
+  const color = listing.priceTrend === 'up' ? '#36d399' : listing.priceTrend === 'down' ? '#ef5a5a' : '#64a0ff';
+
+  return `
+    <div class="market-chart">
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="grad${listing.id}" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="${color}" stop-opacity="0.25" />
+            <stop offset="100%" stop-color="${color}" stop-opacity="0" />
+          </linearGradient>
+        </defs>
+        <path d="${areaPath}" fill="url(#grad${listing.id})" />
+        <path d="${pathData}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </div>
+  `;
+}
+
+// ============================================
+// FLOAT SLIDER (dual handle)
+// ============================================
+const track = document.getElementById('floatTrack');
+const handleLeft = document.getElementById('floatHandleLeft');
+const handleRight = document.getElementById('floatHandleRight');
+const maskLeft = document.getElementById('floatMaskLeft');
+const maskRight = document.getElementById('floatMaskRight');
+const highlight = document.getElementById('floatRangeHighlight');
+const minDisplay = document.getElementById('floatMinDisplay');
+const maxDisplay = document.getElementById('floatMaxDisplay');
+const resetBtn = document.getElementById('floatResetBtn');
+
+let leftPct = 0;
+let rightPct = 8;
+let activeHandle = null;
+
+function updateSlider() {
+  handleLeft.style.left = leftPct + '%';
+  handleRight.style.left = rightPct + '%';
+  maskLeft.style.width = leftPct + '%';
+  maskRight.style.width = (100 - rightPct) + '%';
+  highlight.style.left = leftPct + '%';
+  highlight.style.right = (100 - rightPct) + '%';
+
+  const minFloat = (leftPct / 100).toFixed(4);
+  const maxFloat = (rightPct / 100).toFixed(4);
+  minDisplay.textContent = minFloat;
+  maxDisplay.textContent = maxFloat;
+}
+updateSlider();
+
+function startDrag(handle, e) {
+  e.preventDefault();
+  activeHandle = handle;
+}
+
+handleLeft.addEventListener('mousedown', e => startDrag('left', e));
+handleLeft.addEventListener('touchstart', e => startDrag('left', e), { passive: false });
+handleRight.addEventListener('mousedown', e => startDrag('right', e));
+handleRight.addEventListener('touchstart', e => startDrag('right', e), { passive: false });
+
+function handleMove(clientX) {
+  if (!activeHandle) return;
+  const rect = track.getBoundingClientRect();
+  let pct = ((clientX - rect.left) / rect.width) * 100;
+  pct = Math.max(0, Math.min(100, pct));
+  if (activeHandle === 'left') {
+    leftPct = Math.min(pct, rightPct - 2);
+  } else {
+    rightPct = Math.max(pct, leftPct + 2);
+  }
+  updateSlider();
+}
+
+document.addEventListener('mousemove', e => handleMove(e.clientX));
+document.addEventListener('touchmove', e => e.touches[0] && handleMove(e.touches[0].clientX), { passive: true });
+document.addEventListener('mouseup', () => activeHandle = null);
+document.addEventListener('touchend', () => activeHandle = null);
+
+resetBtn.addEventListener('click', () => {
+  leftPct = 0; rightPct = 100;
+  updateSlider();
+});
+
+// ============================================
+// MODE TABS (browse/sell/history)
+// ============================================
+document.querySelectorAll('.mode-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    const mode = tab.dataset.mode;
+    document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('is-active'));
+    tab.classList.add('is-active');
+
+    document.querySelector('.browse-mode').style.display = mode === 'browse' ? '' : 'none';
+    document.getElementById('sellMode').classList.toggle('is-active', mode === 'sell');
+  });
+});
+
+// ============================================
+// RENDER SELL GRID
+// ============================================
+function renderSellGrid() {
+  const grid = document.getElementById('sellGrid');
+  grid.innerHTML = myCards.map(c => `
+    <div class="sell-card" data-id="${c.id}">
+      <div class="sell-card-art is-${c.rarity}">
+        <span class="sell-letter">${c.letter}</span>
+      </div>
+      <div class="sell-card-info">
+        <div class="sell-card-name">${c.name}</div>
+        <div class="sell-card-meta">
+          <span class="sell-card-tier ${c.tier.toLowerCase()}">${c.tier}</span>
+          <span>${c.float}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  grid.querySelectorAll('.sell-card').forEach(card => {
+    card.addEventListener('click', () => selectCardToSell(parseInt(card.dataset.id)));
+  });
+}
+
+function selectCardToSell(id) {
+  const card = myCards.find(c => c.id === id);
+  if (!card) return;
+
+  document.querySelectorAll('.sell-card').forEach(c => c.classList.remove('is-selected'));
+  document.querySelector(`.sell-card[data-id="${id}"]`).classList.add('is-selected');
+
+  document.getElementById('sellFormEmpty').style.display = 'none';
+  const content = document.getElementById('sellFormContent');
+  content.classList.add('is-visible');
+
+  const tax = Math.round(card.suggestedPrice * 0.10);
+  const listFee = 25;
+  const net = card.suggestedPrice - tax - listFee;
+
+  content.innerHTML = `
+    <div class="sell-form-header">
+      <div class="sell-form-preview">
+        <div class="sell-form-preview-art" style="color: ${getRarityColor(card.rarity)};">${card.letter}</div>
+        <div class="sell-form-preview-info">
+          <div class="sell-form-preview-name">${card.name}</div>
+          <div class="sell-form-preview-tier">
+            <span class="tier-name ${card.tier.toLowerCase()}" style="color: ${getTierColor(card.tier)};">${card.tier}</span>
+            <span class="tier-float">${card.float}</span>
+          </div>
+          <span class="rarity-badge ${card.rarity}">${card.rarity}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sell-form-field">
+      <label class="sell-form-label">Your Price</label>
+      <div class="sell-form-price-input">
+        <div class="berry-dot"></div>
+        <input type="number" id="sellPriceInput" value="${card.suggestedPrice}" />
+        <span class="sell-form-price-suffix">Berries</span>
+      </div>
+      <div class="sell-form-suggestion">
+        <span>✓</span>
+        <span>Market suggests <strong>${card.suggestedPrice.toLocaleString()} B</strong> based on 30-day median for ${card.tier} ${card.name}.</span>
+      </div>
+    </div>
+
+    <div class="sell-form-breakdown">
+      <div class="sell-form-breakdown-row">
+        <span class="label">Sale price</span>
+        <span class="val" id="breakdownPrice">${card.suggestedPrice.toLocaleString()} B</span>
+      </div>
+      <div class="sell-form-breakdown-row">
+        <span class="label">Listing fee</span>
+        <span class="val">−25 B</span>
+      </div>
+      <div class="sell-form-breakdown-row">
+        <span class="label">Marketplace tax (10%)</span>
+        <span class="val" id="breakdownTax">−${tax.toLocaleString()} B</span>
+      </div>
+      <div class="sell-form-breakdown-row net">
+        <span class="label">You receive</span>
+        <span class="val" id="breakdownNet">${net.toLocaleString()} B</span>
+      </div>
+    </div>
+
+    <div class="sell-form-field">
+      <label class="sell-form-label">Listing Duration</label>
+      <div class="sell-form-duration">
+        <div class="sell-form-duration-option">3 days</div>
+        <div class="sell-form-duration-option is-selected">7 days</div>
+        <div class="sell-form-duration-option">14 days</div>
+      </div>
+    </div>
+
+    <button class="sell-form-action">List for sale</button>
+  `;
+
+  // Live price input
+  const input = document.getElementById('sellPriceInput');
+  input.addEventListener('input', () => {
+    const price = parseInt(input.value) || 0;
+    const tax = Math.round(price * 0.10);
+    const net = Math.max(0, price - tax - 25);
+    document.getElementById('breakdownPrice').textContent = price.toLocaleString() + ' B';
+    document.getElementById('breakdownTax').textContent = '−' + tax.toLocaleString() + ' B';
+    document.getElementById('breakdownNet').textContent = net.toLocaleString() + ' B';
+  });
+
+  document.querySelectorAll('.sell-form-duration-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      document.querySelectorAll('.sell-form-duration-option').forEach(o => o.classList.remove('is-selected'));
+      opt.classList.add('is-selected');
+    });
+  });
+}
+
+// INIT
+renderListings();
+renderSellGrid();
+selectListing(1); // Start with Moonbreon selected for demo
+</script>
+
+</body>
+</html>

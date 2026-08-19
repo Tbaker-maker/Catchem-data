@@ -1,0 +1,1169 @@
+{
+  "meta": {
+    "title": "Catch'em Cards Database",
+    "version": "0.1.0-seed",
+    "last_updated": "2026-04-21",
+    "scope": "English-language Pokémon TCG cards that meet Catch'em inclusion rules. Not a complete card database — see TCGdex/Scrydex/pokemontcg.io for that. This is the editorial + analytical layer that sits ON TOP of external card identity data.",
+    "inclusion_rules": {
+      "auto_include_rarities": [
+        "Secret Rare",
+        "Hyper Rare",
+        "Special Illustration Rare",
+        "Illustration Rare",
+        "Alternate Art (Alt Art)",
+        "Full Art Secret Rare",
+        "Gold Star",
+        "Crystal Type",
+        "Shiny Vault",
+        "Radiant Pokémon",
+        "Rainbow Rare",
+        "Gold Hyper Rare"
+      ],
+      "vintage_include_criteria": "Holo Rare cards from Base Set through Skyridge (WOTC era)",
+      "price_flag_include": "Cards above $2 NM per TCGplayer snapshot (price data via bot/API, NOT stored in this database as static)",
+      "editorial_override": "Specific cards flagged by Catch'em editorial regardless of other criteria — e.g., meta-defining Trainers, illustrator-notable works",
+      "default_exclude": "Common/Uncommon cards without narrative hooks, reverse holos of bulk, energy cards"
+    },
+    "chase_tier_definition": {
+      "grail": "Highest sustained buy pressure in the hobby. Universally recognized. The cards people talk about for years. Evolving Skies Moonbreon tier.",
+      "flagship": "The defining chase of their set. What people are hoping for when they open packs. High volume, high social attention.",
+      "key": "Significant chase within the set or character lineage. Not the absolute top, but cards that move the needle in openings.",
+      "notable": "Above-baseline market reaction. Worth tracking but not the primary draw of a pack."
+    },
+    "character_tier_system": {
+      "S": {
+        "description": "Universal hit producers — chase potential regardless of set",
+        "characters": [
+          "Charizard",
+          "Pikachu"
+        ]
+      },
+      "A": {
+        "description": "Strong sustained demand in English market",
+        "characters": [
+          "Umbreon",
+          "Espeon",
+          "Sylveon",
+          "Vaporeon",
+          "Jolteon",
+          "Flareon",
+          "Glaceon",
+          "Leafeon",
+          "Eevee",
+          "Mewtwo",
+          "Mew",
+          "Lucario"
+        ]
+      },
+      "B": {
+        "description": "Strong when set art and rarity align",
+        "characters": [
+          "Rayquaza",
+          "Gardevoir",
+          "Gengar",
+          "Dragonite",
+          "Greninja",
+          "Lugia",
+          "Ho-Oh",
+          "Absol"
+        ]
+      },
+      "C": {
+        "description": "Conditional — good execution required",
+        "characters": [
+          "Gyarados",
+          "Dragonair",
+          "Snorlax",
+          "Tyranitar",
+          "Blastoise",
+          "Venusaur",
+          "Zoroark",
+          "Decidueye",
+          "Meowscarada",
+          "Dialga",
+          "Palkia",
+          "Giratina"
+        ]
+      },
+      "D": {
+        "description": "English-market underperformers outside iconic art",
+        "characters": [
+          "most Gen V-VIII filler legendaries",
+          "most regional birds",
+          "most ungraded uncommons"
+        ]
+      }
+    },
+    "voice_guide": "Encyclopedic with editorial warmth. Third-person. Factual but context-rich. No hot takes. No price predictions. Historical framing when relevant. Tone lesson from set database: describe the pattern, let the reader decide the implication.",
+    "sources_consulted": [
+      "Bulbapedia",
+      "TCG Collector",
+      "PokéBeach",
+      "Beckett",
+      "TCGdex (identity reference)",
+      "Cardrake (chase card commentary)",
+      "Card Codex (set overviews)"
+    ]
+  },
+  "schema": {
+    "card_id": "Catch'em internal ID — format: `{set-abbrev}-{number}-{variant}` e.g. 'evs-215-altart'",
+    "external_ids": "object with keys: tcgdex, scrydex, pokemontcg_io — populated when card is matched to external APIs",
+    "set_id": "Foreign key to pokemon-sets-database.json",
+    "card_name": "Official English card name",
+    "card_number": "Printed number, e.g. '215/203' or '11/102'",
+    "rarity": "Canonical rarity string",
+    "supertype": "Pokémon | Trainer | Energy",
+    "subtypes": "Array, e.g. ['VMAX', 'Alt Art'] or ['ex', 'Tera', 'SIR']",
+    "pokemon_name": "Primary Pokémon featured (for non-Pokémon cards: null)",
+    "illustrator": "Card artist",
+    "inclusion_reason": "Why this card is in the database: auto_rarity | vintage_holo | price_flag | editorial_override",
+    "chase_tier": "grail | flagship | key | notable",
+    "character_tier": "S | A | B | C | D (from character_tier_system)",
+    "iconicity_score": "0-10 integer. Editorial judgment: how significant is this card in TCG history / collector consciousness?",
+    "catchem_tags": "Array of tags for filtering/grouping (e.g. 'moonbreon-class', 'eeveelution', 'charizard-chase', 'anniversary', 'meta-defining')",
+    "rotation_status": "current_standard | rotating_h_mark | out_of_format | pre_reg_mark | vintage",
+    "price_flags": "Populated by bot when available: array of active signals ('tightening', 'heating', 'buy_the_dip', etc.). Null if bot hasn't observed this card yet.",
+    "catchem_commentary": "Encyclopedic paragraph(s) — why this card matters, historical context, pattern recognition. 50-200 words typical.",
+    "historical_analogs": "Array of card_ids — 'if you track X, look at Y'",
+    "watch_criteria": "Array of specific signal patterns worth monitoring on this card",
+    "notes": "Any additional one-off context",
+    "last_audited": "ISO 8601 timestamp of last verification against external sources",
+    "audit_sources": "Array of source names consulted during last audit",
+    "flag_review": "Boolean — true if any field is partially verified or needs checking"
+  },
+  "cards": [
+    {
+      "card_id": "base-4-1stedition",
+      "external_ids": {
+        "tcgdex": "base1-4",
+        "pokemontcg_io": "base1-4"
+      },
+      "set_id": "base-set",
+      "card_name": "Charizard",
+      "card_number": "4/102",
+      "rarity": "Holo Rare",
+      "supertype": "Pokémon",
+      "subtypes": [
+        "1st Edition",
+        "Shadowless variant exists",
+        "Unlimited variant exists"
+      ],
+      "pokemon_name": "Charizard",
+      "illustrator": "Mitsuhiro Arita",
+      "inclusion_reason": "vintage_holo",
+      "chase_tier": "grail",
+      "character_tier": "S",
+      "iconicity_score": 10,
+      "catchem_tags": [
+        "vintage",
+        "grail",
+        "charizard-chase",
+        "base-set",
+        "arita-illustration",
+        "1st-edition"
+      ],
+      "rotation_status": "vintage",
+      "price_flags": null,
+      "catchem_commentary": "The defining grail of the Pokémon TCG. 1st Edition Shadowless Charizard is the card against which all Pokémon vintage collecting is measured. Released with the original Base Set in January 1999, the 1st Edition print had a short window before Shadowless Unlimited took over. The card's cultural significance extends beyond the hobby — it is a recognized artifact of 1990s childhood for an entire generation. Population-graded PSA 10 copies are among the most watched trading cards in any collectible category. Illustrator Mitsuhiro Arita's art is the canonical Charizard portrait; virtually every subsequent Charizard card sits in conversation with this one.",
+      "historical_analogs": [
+        "neo-genesis-lugia",
+        "skyridge-crystal-charizard"
+      ],
+      "watch_criteria": [
+        "PSA 10 population changes",
+        "auction record-setters",
+        "1st Edition vs Shadowless spread"
+      ],
+      "notes": "Three variants exist: 1st Edition Shadowless (rarest), Shadowless Unlimited, Unlimited. Values diverge sharply by variant and grade.",
+      "last_audited": "2026-04-21",
+      "audit_sources": [
+        "Bulbapedia",
+        "PSA Pop Report",
+        "PWCC auction history"
+      ],
+      "flag_review": false
+    },
+    {
+      "card_id": "neo-genesis-9",
+      "external_ids": {
+        "tcgdex": "neo1-9"
+      },
+      "set_id": "neo-genesis",
+      "card_name": "Lugia",
+      "card_number": "9/111",
+      "rarity": "Holo Rare",
+      "supertype": "Pokémon",
+      "subtypes": [
+        "1st Edition variant exists"
+      ],
+      "pokemon_name": "Lugia",
+      "illustrator": "Mitsuhiro Arita",
+      "inclusion_reason": "vintage_holo",
+      "chase_tier": "grail",
+      "character_tier": "B",
+      "iconicity_score": 9,
+      "catchem_tags": [
+        "vintage",
+        "grail",
+        "lugia",
+        "neo-genesis",
+        "arita-illustration",
+        "centering-sensitive"
+      ],
+      "rotation_status": "vintage",
+      "price_flags": null,
+      "catchem_commentary": "The signature chase of the Neo Genesis set and one of the most notoriously centering-sensitive vintage Pokémon cards. Released February 2000, Neo Genesis 1st Edition Lugia is the Gen 2 era's answer to Base Set Charizard — iconic art, short print run, high collector attention. PSA 10 copies are particularly scarce due to systematic centering issues with Neo-era print runs, which drives a significant premium over PSA 9 copies. Arita's second iconic holo rare, following Base Charizard.",
+      "historical_analogs": [
+        "base-4-1stedition",
+        "skyridge-crystal-charizard"
+      ],
+      "watch_criteria": [
+        "PSA 10 vs PSA 9 spread (centering premium)",
+        "1st Edition vs Unlimited spread"
+      ],
+      "notes": "Centering issues endemic to the print run create large condition premiums. Ex-Mt variants from later Neo sets also notable.",
+      "last_audited": "2026-04-21",
+      "audit_sources": [
+        "Bulbapedia",
+        "PSA Pop Report"
+      ],
+      "flag_review": false
+    },
+    {
+      "card_id": "skyridge-146",
+      "external_ids": {
+        "tcgdex": "ecard3-146"
+      },
+      "set_id": "skyridge",
+      "card_name": "Charizard",
+      "card_number": "146/144",
+      "rarity": "Crystal Type (Secret Rare)",
+      "supertype": "Pokémon",
+      "subtypes": [
+        "Crystal Type",
+        "Secret Rare"
+      ],
+      "pokemon_name": "Charizard",
+      "illustrator": "Hajime Kusajima",
+      "inclusion_reason": "vintage_holo",
+      "chase_tier": "grail",
+      "character_tier": "S",
+      "iconicity_score": 10,
+      "catchem_tags": [
+        "vintage",
+        "grail",
+        "charizard-chase",
+        "skyridge",
+        "crystal-type",
+        "secret-rare",
+        "wotc-final"
+      ],
+      "rotation_status": "vintage",
+      "price_flags": null,
+      "catchem_commentary": "The Crystal Type Charizard from Skyridge (May 2003) is frequently cited alongside Base Set Charizard as the most significant Charizard card in TCG history. Skyridge was the final Wizards of the Coast-era set, with an exceptionally short English print run — making its secret rares among the rarest cards in the hobby. The Crystal Type mechanic was a one-set experiment, giving the card additional novelty on top of scarcity. PSA 10 population is a fraction of even Base Set 1st Edition Charizard, and PSA 10 auctions regularly set attention-grabbing prices. The combination of (1) Charizard, (2) end-of-WOTC print scarcity, and (3) unique mechanic makes this one of the ultimate modern-vintage chase cards.",
+      "historical_analogs": [
+        "base-4-1stedition",
+        "neo-genesis-9"
+      ],
+      "watch_criteria": [
+        "PSA 10 population growth (rare)",
+        "auction record watches"
+      ],
+      "notes": "Skyridge had the shortest English print run of the WOTC era, reportedly only a few months before Nintendo took over TCG publishing.",
+      "last_audited": "2026-04-21",
+      "audit_sources": [
+        "Bulbapedia",
+        "PWCC auction history",
+        "Cardrake"
+      ],
+      "flag_review": false
+    },
+    {
+      "card_id": "evs-215-altart",
+      "external_ids": {
+        "tcgdex": "swsh7-215",
+        "pokemontcg_io": "swsh7-215"
+      },
+      "set_id": "swsh-evolving-skies",
+      "card_name": "Umbreon VMAX",
+      "card_number": "215/203",
+      "rarity": "Alternate Art Secret Rare",
+      "supertype": "Pokémon",
+      "subtypes": [
+        "VMAX",
+        "Alt Art",
+        "Secret Rare"
+      ],
+      "pokemon_name": "Umbreon",
+      "illustrator": "Keiichiro Ito",
+      "inclusion_reason": "auto_rarity",
+      "chase_tier": "grail",
+      "character_tier": "A",
+      "iconicity_score": 10,
+      "catchem_tags": [
+        "modern-grail",
+        "moonbreon-class",
+        "eeveelution",
+        "alt-art",
+        "evolving-skies",
+        "ito-illustration",
+        "out-of-print"
+      ],
+      "rotation_status": "out_of_format",
+      "price_flags": null,
+      "catchem_commentary": "Universally known as 'Moonbreon.' The card that defined modern Pokémon TCG collecting. Released in Sword & Shield: Evolving Skies (August 2021), Umbreon VMAX Alt Art depicts Umbreon on a rooftop under a full moon, illustrated by Keiichiro Ito. It was identified as the chase card of its set almost immediately and has held that status ever since. The card became the reference point for a new wave of collectors who entered the hobby during the pandemic era. Post-rotation from Standard format (September 2023), competitive demand converted entirely to collector demand, with pricing and attention continuing to climb rather than decline — the opposite of the typical post-rotation pattern and a signature case study in how iconic art + scarcity + character demand compound over time.",
+      "historical_analogs": [
+        "base-4-1stedition",
+        "pre-umbreon-sir-prismatic"
+      ],
+      "watch_criteria": [
+        "PSA 10 population growth",
+        "PSA 10 vs raw spread",
+        "sealed Evolving Skies Booster Box correlation"
+      ],
+      "notes": "The 'Moonbreon' nickname is community-sourced and now universally used. The alternate art vertical composition (Umbreon climbing/reaching) is distinct from the standard VMAX horizontal layout.",
+      "last_audited": "2026-04-21",
+      "audit_sources": [
+        "Bulbapedia",
+        "Cardrake",
+        "Bleeding Cool Value Watch"
+      ],
+      "flag_review": false
+    },
+    {
+      "card_id": "pre-umbreon-sir",
+      "external_ids": {
+        "tcgdex": "sv8pt5-161"
+      },
+      "set_id": "sv-prismatic-evolutions",
+      "card_name": "Umbreon ex",
+      "card_number": "161/131",
+      "rarity": "Special Illustration Rare",
+      "supertype": "Pokémon",
+      "subtypes": [
+        "ex",
+        "Stellar Tera",
+        "SIR"
+      ],
+      "pokemon_name": "Umbreon",
+      "illustrator": "Chika Matsumoto",
+      "inclusion_reason": "auto_rarity",
+      "chase_tier": "grail",
+      "character_tier": "A",
+      "iconicity_score": 9,
+      "catchem_tags": [
+        "modern-grail",
+        "sunbreon",
+        "eeveelution",
+        "special-illustration-rare",
+        "prismatic-evolutions",
+        "stellar-tera"
+      ],
+      "rotation_status": "current_standard",
+      "price_flags": null,
+      "catchem_commentary": "Community-nicknamed 'Sunbreon,' the Umbreon ex SIR is the flagship chase of Prismatic Evolutions (January 2025) — Scarlet & Violet era's answer to Evolving Skies. Part of the Stellar Tera Eeveelution focus that made Prismatic Evolutions one of the most in-demand modern sets at launch, with sustained retail shortages. The card serves as the direct successor to Moonbreon in collector consciousness, establishing Umbreon as a dominant character for modern chase design. Launch-year demand was intense enough that TPCi publicly committed to reprints to address supply shortages, making this one of the rare modern chase cards where the supply-side narrative is actively managed by the publisher.",
+      "historical_analogs": [
+        "evs-215-altart"
+      ],
+      "watch_criteria": [
+        "reprint wave impact on raw prices",
+        "PSA 10 population early growth",
+        "sealed Prismatic Evolutions ETB correlation"
+      ],
+      "notes": "The Sunbreon nickname mirrors the Moonbreon naming pattern, reinforcing the Umbreon-as-flagship pattern across Eeveelution-focused sets.",
+      "last_audited": "2026-04-21",
+      "audit_sources": [
+        "Bulbapedia",
+        "Cardrake",
+        "Bleeding Cool"
+      ],
+      "flag_review": false
+    },
+    {
+      "card_id": "hif-sv49",
+      "external_ids": {
+        "tcgdex": "sm115-SV49"
+      },
+      "set_id": "sm-hidden-fates",
+      "card_name": "Charizard-GX",
+      "card_number": "SV49/SV94",
+      "rarity": "Shiny Vault Secret Rare",
+      "supertype": "Pokémon",
+      "subtypes": [
+        "GX",
+        "Shiny",
+        "Full Art"
+      ],
+      "pokemon_name": "Charizard",
+      "illustrator": "5ban Graphics",
+      "inclusion_reason": "auto_rarity",
+      "chase_tier": "grail",
+      "character_tier": "S",
+      "iconicity_score": 10,
+      "catchem_tags": [
+        "modern-grail",
+        "charizard-chase",
+        "shiny",
+        "hidden-fates",
+        "shiny-vault",
+        "out-of-print",
+        "sealed-anchor"
+      ],
+      "rotation_status": "out_of_format",
+      "price_flags": null,
+      "catchem_commentary": "The Shiny Charizard-GX from Hidden Fates (August 2019) is the card most responsible for the 'Fates' line becoming synonymous with Charizard chase design. Hidden Fates' 94-card Shiny Vault sub-set reintroduced shiny Pokémon as a modern collecting theme, and this card was the clear centerpiece. Hidden Fates sealed product (particularly the tin lineup) has appreciated significantly since retirement, with the Shiny Charizard-GX serving as the primary motivator. The set's special-collection-only distribution (no standalone booster boxes) concentrated supply through ETBs and tins, making sealed products from this era a common entry point for collectors learning the 'buy sealed, hunt the chase' pattern.",
+      "historical_analogs": [
+        "base-4-1stedition",
+        "shf-shiny-charizard-vmax"
+      ],
+      "watch_criteria": [
+        "Hidden Fates sealed tin pricing",
+        "PSA 10 population growth",
+        "Shining Fates Shiny Charizard VMAX comparable"
+      ],
+      "notes": "The Shiny Vault numbering system (SV##/SV94) is distinct from the main Hidden Fates numbering. This card drives Hidden Fates ETB and Tin values more than any individual main-set card.",
+      "last_audited": "2026-04-21",
+      "audit_sources": [
+        "Bulbapedia",
+        "Cardrake",
+        "Beckett"
+      ],
+      "flag_review": false
+    },
+    {
+      "card_id": "ah-mega-dragonite-sir",
+      "external_ids": {},
+      "set_id": "me-ascended-heroes",
+      "card_name": "Mega Dragonite ex",
+      "card_number": "TBD/217",
+      "rarity": "Special Illustration Rare",
+      "supertype": "Pokémon",
+      "subtypes": [
+        "Mega Evolution",
+        "ex",
+        "SIR"
+      ],
+      "pokemon_name": "Dragonite",
+      "illustrator": "TBD — verify when card list fully revealed",
+      "inclusion_reason": "auto_rarity",
+      "chase_tier": "flagship",
+      "character_tier": "B",
+      "iconicity_score": 7,
+      "catchem_tags": [
+        "modern-chase",
+        "mega-evolution",
+        "ascended-heroes",
+        "dragonite",
+        "flagship-chase"
+      ],
+      "rotation_status": "current_standard",
+      "price_flags": null,
+      "catchem_commentary": "The flagship chase of Ascended Heroes (January 2026) and the card that has driven set attention since preview reveals. Part of the Mega Evolution series launched alongside Pokémon Legends: Z-A. Ascended Heroes is the largest English set to date at approximately 290 cards, with a tight reported pull rate for Mega Dragonite ex SIR (Beckett-reported averages in the 1-in-75-to-95-packs range based on early openings). Dragonite as a character has had moderate but consistent English-market pull across decades; the Mega Evolution treatment appears to be elevating it into stronger chase territory for this release cycle. Product distribution follows the Mega Evolution special-set pattern: no standalone booster boxes, sold via Elite Trainer Boxes, Booster Bundles (releasing April 24, 2026), Tech Sticker Collections, and themed ex boxes.",
+      "historical_analogs": [
+        "sm-burning-shadows-charizard-rainbow"
+      ],
+      "watch_criteria": [
+        "pull rate data stabilization with larger pack samples",
+        "sealed Booster Bundle performance post-Apr 24 release",
+        "Chaos Rising release impact (supply shock on prior set)"
+      ],
+      "notes": "Card number pending final card list confirmation. Pull rate data cited from Beckett reporting — recommend verifying against bot-collected data before public content references.",
+      "last_audited": "2026-04-21",
+      "audit_sources": [
+        "Pokemon.com Ascended Heroes product showcase",
+        "Beckett pull rate reports (early sample sizes)"
+      ],
+      "flag_review": true
+    },
+    {
+      "card_id": "phf-mega-charizard-x",
+      "external_ids": {},
+      "set_id": "me-phantasmal-flames",
+      "card_name": "Mega Charizard X ex",
+      "card_number": "TBD/094",
+      "rarity": "Special Illustration Rare",
+      "supertype": "Pokémon",
+      "subtypes": [
+        "Mega Evolution",
+        "ex",
+        "SIR"
+      ],
+      "pokemon_name": "Charizard",
+      "illustrator": "TBD",
+      "inclusion_reason": "auto_rarity",
+      "chase_tier": "flagship",
+      "character_tier": "S",
+      "iconicity_score": 8,
+      "catchem_tags": [
+        "modern-chase",
+        "mega-evolution",
+        "phantasmal-flames",
+        "charizard-chase",
+        "flagship-chase"
+      ],
+      "rotation_status": "current_standard",
+      "price_flags": null,
+      "catchem_commentary": "Mega Charizard X ex is the flagship of Phantasmal Flames (November 2025), the second Mega Evolution series release. Because Charizard occupies Tier S in English-market character demand, any set centered on a Mega Charizard variant enters the market with elevated expectations and sustained collector attention regardless of other factors. Mega Charizard X specifically (Fire/Dragon dual-type in the video games) provides a distinct visual identity from the more common Mega Charizard Y treatments, which is significant for collectors who track variant hierarchies. Small set size (approximately 94 cards) concentrates chase probability relative to main Mega Evolution expansions.",
+      "historical_analogs": [
+        "xy-flashfire-mega-charizard",
+        "swsh-darkness-ablaze-charizard-vmax"
+      ],
+      "watch_criteria": [
+        "Phantasmal Flames sealed ETB pricing",
+        "Mega Charizard X vs hypothetical Mega Charizard Y comparative demand"
+      ],
+      "notes": "Card count for Phantasmal Flames main set approximately 94 — verify against final TPCi card list.",
+      "last_audited": "2026-04-21",
+      "audit_sources": [
+        "Pokemon.com Mega Evolution announcements",
+        "Coded Yellow set tracking"
+      ],
+      "flag_review": true
+    },
+    {
+      "card_id": "phf-vs-seeker",
+      "external_ids": {
+        "tcgdex": "xy4-109"
+      },
+      "set_id": "xy-phantom-forces",
+      "card_name": "VS Seeker",
+      "card_number": "109/119",
+      "rarity": "Uncommon",
+      "supertype": "Trainer",
+      "subtypes": [
+        "Item"
+      ],
+      "pokemon_name": null,
+      "illustrator": "5ban Graphics",
+      "inclusion_reason": "editorial_override",
+      "chase_tier": "notable",
+      "character_tier": null,
+      "iconicity_score": 8,
+      "catchem_tags": [
+        "meta-defining",
+        "trainer-iconic",
+        "xy-era",
+        "competitive-history"
+      ],
+      "rotation_status": "out_of_format",
+      "price_flags": null,
+      "catchem_commentary": "VS Seeker is one of the most influential Trainer cards in Pokémon TCG competitive history. Released in XY: Phantom Forces (November 2014), its ability to retrieve any Supporter card from the discard pile fundamentally reshaped deckbuilding across the XY era and into Sun & Moon. Included here not for market value — it remained common and cheap through its run — but because no competitive retrospective of the 2014-2017 Standard format omits VS Seeker. Exemplifies the Catch'em editorial rule that meta-defining cards matter regardless of price. English collector demand for iconic Trainer cards is historically modest, but for reference collections covering competitive eras, VS Seeker is required.",
+      "historical_analogs": [
+        "rebel-clash-bosss-orders",
+        "ultra-prism-cynthia"
+      ],
+      "watch_criteria": [
+        "Full Art variant (Phantom Forces 116/119) values separately"
+      ],
+      "notes": "The Full Art / Secret Rare variant at 116/119 is a separate collector target from the base Uncommon. Base version included for meta-historical completeness.",
+      "last_audited": "2026-04-21",
+      "audit_sources": [
+        "Bulbapedia",
+        "Limitless TCG deck archives"
+      ],
+      "flag_review": false
+    },
+    {
+      "card_id": "gri-tapu-lele-gx",
+      "external_ids": {
+        "tcgdex": "sm2-60"
+      },
+      "set_id": "sm-guardians-rising",
+      "card_name": "Tapu Lele-GX",
+      "card_number": "60/145",
+      "rarity": "Ultra Rare",
+      "supertype": "Pokémon",
+      "subtypes": [
+        "GX"
+      ],
+      "pokemon_name": "Tapu Lele",
+      "illustrator": "5ban Graphics",
+      "inclusion_reason": "editorial_override",
+      "chase_tier": "key",
+      "character_tier": "C",
+      "iconicity_score": 8,
+      "catchem_tags": [
+        "meta-defining",
+        "sun-moon-era",
+        "competitive-staple",
+        "tapu",
+        "gx-era"
+      ],
+      "rotation_status": "out_of_format",
+      "price_flags": null,
+      "catchem_commentary": "Tapu Lele-GX from Guardians Rising (May 2017) is frequently cited as one of the most-played competitive cards of the entire Pokémon-GX era. Its 'Wonder Tag' ability, which searched for any Supporter card when played from hand to bench, made it a four-of staple in nearly every deck archetype throughout its Standard legality. While the character itself occupies Tier C in English collector demand, the card's market reaction was shaped by competitive ubiquity rather than character draw — an illustrative case of a card becoming notable through play demand rather than character chase. Similar pattern to VS Seeker but on a Pokémon card rather than a Trainer.",
+      "historical_analogs": [
+        "phf-vs-seeker",
+        "unified-minds-dedenne-gx"
+      ],
+      "watch_criteria": [
+        "Full Art / Rainbow Rare variants trade separately",
+        "vintage competitive retrospective interest"
+      ],
+      "notes": "Full Art (137/145) and Rainbow Rare (155/145) variants are separately tracked collector targets with different demand profiles.",
+      "last_audited": "2026-04-21",
+      "audit_sources": [
+        "Bulbapedia",
+        "Limitless TCG deck archives"
+      ],
+      "flag_review": false
+    },
+    {
+      "card_id": "mew-205",
+      "external_ids": {
+        "tcgdex": "sv3pt5-205"
+      },
+      "set_id": "sv-151",
+      "card_name": "Mew ex",
+      "card_number": "205/165",
+      "rarity": "Special Illustration Rare",
+      "supertype": "Pokémon",
+      "subtypes": [
+        "ex",
+        "SIR"
+      ],
+      "pokemon_name": "Mew",
+      "illustrator": "Nisota Niso",
+      "inclusion_reason": "auto_rarity",
+      "chase_tier": "grail",
+      "character_tier": "A",
+      "iconicity_score": 9,
+      "catchem_tags": [
+        "modern-grail",
+        "mew",
+        "151-set",
+        "special-illustration-rare",
+        "anniversary",
+        "kanto-nostalgia",
+        "bubble-mew-related"
+      ],
+      "rotation_status": "current_standard",
+      "price_flags": null,
+      "catchem_commentary": "The Special Illustration Rare Mew ex is the flagship chase of Scarlet & Violet: 151 (September 2023), the Kanto nostalgia special expansion covering only the original 151 Pokémon. Within the Fates-adjacent 'anniversary' collecting tradition, Mew occupies a particular role — the pseudo-final card, the unnumbered completion piece, the 'one more' of Kanto. The 151 set launched to sustained retail shortages that persisted for months, establishing the 'nostalgia + scarcity + single-generation curation' formula that later sets would echo. The companion 'Bubble Mew' Illustration Rare from Paldean Fates extends Mew's recent chase lineage across multiple adjacent sets, making Mew one of the most consistently featured Tier A characters of the Scarlet & Violet era.",
+      "historical_analogs": [
+        "evs-215-altart",
+        "paf-bubble-mew"
+      ],
+      "watch_criteria": [
+        "sealed 151 UPC correlation",
+        "Paldean Fates Bubble Mew comparative demand",
+        "reprint impact timing"
+      ],
+      "notes": "151 set is numbered 1-165 with secret rares extending into 166+. Mew ex SIR at 205 is past the main numbering, in the anniversary-secret tier.",
+      "last_audited": "2026-04-21",
+      "audit_sources": [
+        "Bulbapedia",
+        "Cardrake",
+        "Card Codex"
+      ],
+      "flag_review": false
+    },
+    {
+      "card_id": "paf-bubble-mew",
+      "external_ids": {
+        "tcgdex": "sv4pt5-232"
+      },
+      "set_id": "sv-paldean-fates",
+      "card_name": "Mew ex",
+      "card_number": "232/091",
+      "rarity": "Shiny Illustration Rare",
+      "supertype": "Pokémon",
+      "subtypes": [
+        "ex",
+        "Shiny",
+        "Illustration Rare"
+      ],
+      "pokemon_name": "Mew",
+      "illustrator": "Nisota Niso",
+      "inclusion_reason": "auto_rarity",
+      "chase_tier": "flagship",
+      "character_tier": "A",
+      "iconicity_score": 8,
+      "catchem_tags": [
+        "modern-chase",
+        "mew",
+        "paldean-fates",
+        "shiny",
+        "bubble-mew"
+      ],
+      "rotation_status": "current_standard",
+      "price_flags": null,
+      "catchem_commentary": "Community-nicknamed 'Bubble Mew' for the artwork's distinctive bubble-surrounded composition. Chase card of Paldean Fates (January 2024), a Shiny-focused special expansion in the Fates lineage. Continues Mew's strong run through the Scarlet & Violet era and pairs naturally with the 151 Mew ex SIR as a companion collector target. Paldean Fates was a Shiny-themed set following the Hidden Fates / Shining Fates tradition, with over 130 Shiny Pokémon variants. Bubble Mew represents the flagship of this Shiny Vault-style inclusion.",
+      "historical_analogs": [
+        "mew-205",
+        "hif-sv49"
+      ],
+      "watch_criteria": [
+        "Paldean Fates ETB sealed correlation",
+        "Mew cross-set lineage demand pattern"
+      ],
+      "notes": "The Bubble Mew nickname is universal in the collector community.",
+      "last_audited": "2026-04-21",
+      "audit_sources": [
+        "Bulbapedia",
+        "Cardrake"
+      ],
+      "flag_review": false
+    },
+    {
+      "card_id": "evs-208-altart",
+      "external_ids": {
+        "tcgdex": "swsh7-208"
+      },
+      "set_id": "swsh-evolving-skies",
+      "card_name": "Espeon VMAX",
+      "card_number": "208/203",
+      "rarity": "Alternate Art Secret Rare",
+      "supertype": "Pokémon",
+      "subtypes": [
+        "VMAX",
+        "Alt Art",
+        "Secret Rare"
+      ],
+      "pokemon_name": "Espeon",
+      "illustrator": "Keiichiro Ito",
+      "inclusion_reason": "auto_rarity",
+      "chase_tier": "key",
+      "character_tier": "A",
+      "iconicity_score": 8,
+      "catchem_tags": [
+        "modern-chase",
+        "eeveelution",
+        "alt-art",
+        "evolving-skies",
+        "ito-illustration",
+        "out-of-print"
+      ],
+      "rotation_status": "out_of_format",
+      "price_flags": null,
+      "catchem_commentary": "One of the eight Eeveelution VMAX Alt Arts from Evolving Skies (August 2021), the set that established Eeveelution-focused chase design as a modern hobby pillar. Keiichiro Ito's Espeon art depicts the Pokémon amid floral imagery, a visual motif that pairs thematically across the Eeveelution Alt Art subset. Demand sits below Moonbreon but clearly above the Eeveelution average, reflecting Espeon's consistent Tier A character performance. The Evolving Skies Eeveelution Alt Art set forms the most-tracked multi-card chase lineage of the modern era, with collectors commonly building complete sets of all eight.",
+      "historical_analogs": [
+        "evs-215-altart",
+        "pre-umbreon-sir"
+      ],
+      "watch_criteria": [
+        "Eeveelution Alt Art set-completion demand",
+        "raw vs PSA 10 spread"
+      ],
+      "notes": "All eight Eeveelution VMAX Alt Arts from Evolving Skies follow similar illustration conventions and are commonly collected as a set.",
+      "last_audited": "2026-04-21",
+      "audit_sources": [
+        "Bulbapedia",
+        "Cardrake"
+      ],
+      "flag_review": false
+    },
+    {
+      "card_id": "swsh-sit-giacomo-tg",
+      "external_ids": {
+        "tcgdex": "swsh12-TG29"
+      },
+      "set_id": "swsh-silver-tempest",
+      "card_name": "Lugia VSTAR",
+      "card_number": "TG29/TG30",
+      "rarity": "Trainer Gallery Alternate Art",
+      "supertype": "Pokémon",
+      "subtypes": [
+        "VSTAR",
+        "Trainer Gallery",
+        "Alt Art"
+      ],
+      "pokemon_name": "Lugia",
+      "illustrator": "TBD — verify",
+      "inclusion_reason": "auto_rarity",
+      "chase_tier": "flagship",
+      "character_tier": "B",
+      "iconicity_score": 8,
+      "catchem_tags": [
+        "modern-chase",
+        "lugia",
+        "silver-tempest",
+        "trainer-gallery",
+        "alt-art"
+      ],
+      "rotation_status": "out_of_format",
+      "price_flags": null,
+      "catchem_commentary": "The Lugia VSTAR Trainer Gallery Alt Art from Silver Tempest (November 2022) is the signature chase of its set and a defining example of the Trainer Gallery format that Brilliant Stars introduced and Silver Tempest refined. Lugia benefits from Tier B character demand and the Trainer Gallery composition (which showed Pokémon alongside trainers in unique illustrated scenes) produced consistently strong chase results across the late SWSH era. Demand held through rotation, following the post-rotation-inflection pattern established by Moonbreon.",
+      "historical_analogs": [
+        "evs-215-altart",
+        "neo-genesis-9"
+      ],
+      "watch_criteria": [
+        "Trainer Gallery format cross-set comparison",
+        "post-rotation price trajectory"
+      ],
+      "notes": "Illustrator verification needed — historical records vary by source.",
+      "last_audited": "2026-04-21",
+      "audit_sources": [
+        "Bulbapedia",
+        "PokéBeach"
+      ],
+      "flag_review": true
+    },
+    {
+      "card_id": "evs-218-altart",
+      "external_ids": {
+        "tcgdex": "swsh7-218"
+      },
+      "set_id": "swsh-evolving-skies",
+      "card_name": "Rayquaza VMAX",
+      "card_number": "218/203",
+      "rarity": "Alternate Art Secret Rare",
+      "supertype": "Pokémon",
+      "subtypes": [
+        "VMAX",
+        "Alt Art",
+        "Secret Rare"
+      ],
+      "pokemon_name": "Rayquaza",
+      "illustrator": "Saboteri",
+      "inclusion_reason": "auto_rarity",
+      "chase_tier": "flagship",
+      "character_tier": "B",
+      "iconicity_score": 9,
+      "catchem_tags": [
+        "modern-grail",
+        "rayquaza",
+        "alt-art",
+        "evolving-skies",
+        "out-of-print"
+      ],
+      "rotation_status": "out_of_format",
+      "price_flags": null,
+      "catchem_commentary": "The Rayquaza VMAX Alt Art is frequently cited as the second-most-chased card of Evolving Skies after Moonbreon, and in some collector circles the first on artistic merit alone. The artwork depicts Rayquaza in mid-flight against a dramatic sky backdrop. Rayquaza as a character occupies Tier B demand — consistently strong when given iconic art, which Evolving Skies delivered here. Monthly value watch tracking by third-party publications (Bleeding Cool, Cardrake) has frequently shown this card in the top 2-3 of Evolving Skies throughout 2024-2025-2026. Post-rotation behavior followed the same collector-inflection pattern as Moonbreon.",
+      "historical_analogs": [
+        "evs-215-altart",
+        "skyridge-146"
+      ],
+      "watch_criteria": [
+        "Moonbreon spread tracking (Rayquaza traditionally trades at 20-35% of Umbreon)",
+        "sealed Evolving Skies correlation"
+      ],
+      "notes": "Second-highest value card in Evolving Skies across most historical months.",
+      "last_audited": "2026-04-21",
+      "audit_sources": [
+        "Bulbapedia",
+        "Cardrake",
+        "Bleeding Cool"
+      ],
+      "flag_review": false
+    },
+    {
+      "card_id": "pgo-radiant-charizard",
+      "external_ids": {
+        "tcgdex": "swsh10-5"
+      },
+      "set_id": "swsh-pokemon-go",
+      "card_name": "Radiant Charizard",
+      "card_number": "11/78",
+      "rarity": "Radiant Rare",
+      "supertype": "Pokémon",
+      "subtypes": [
+        "Radiant"
+      ],
+      "pokemon_name": "Charizard",
+      "illustrator": "Toshinao Aoki",
+      "inclusion_reason": "auto_rarity",
+      "chase_tier": "key",
+      "character_tier": "S",
+      "iconicity_score": 7,
+      "catchem_tags": [
+        "modern-chase",
+        "charizard-chase",
+        "pokemon-go",
+        "radiant",
+        "shiny"
+      ],
+      "rotation_status": "out_of_format",
+      "price_flags": null,
+      "catchem_commentary": "Radiant Charizard from Pokémon GO (July 2022) brings together three demand drivers: the Tier S Charizard character tier, the novelty of the Radiant Pokémon mechanic (shiny variants with mirror-foil treatment, limited to one per deck), and the Pokémon GO crossover context that made the set particularly visible to casual and lapsed collectors. The Radiant mechanic was introduced in Astral Radiance and appeared through the rest of SWSH, making each Radiant a distinct subset collectible. Radiant Charizard specifically has performed as the strongest Radiant card across the entire mechanic's run.",
+      "historical_analogs": [
+        "base-4-1stedition",
+        "hif-sv49"
+      ],
+      "watch_criteria": [
+        "Radiant mechanic cross-set comparable performance",
+        "Pokémon GO sealed product correlation"
+      ],
+      "notes": "One of only one Radiant Pokémon per deck — a gameplay mechanic distinct from other shiny variants.",
+      "last_audited": "2026-04-21",
+      "audit_sources": [
+        "Bulbapedia",
+        "Cardrake"
+      ],
+      "flag_review": false
+    },
+    {
+      "card_id": "brs-arceus-vstar",
+      "external_ids": {
+        "tcgdex": "swsh9-TG20"
+      },
+      "set_id": "swsh-brilliant-stars",
+      "card_name": "Arceus VSTAR",
+      "card_number": "TG20/TG30",
+      "rarity": "Trainer Gallery Alternate Art",
+      "supertype": "Pokémon",
+      "subtypes": [
+        "VSTAR",
+        "Trainer Gallery",
+        "Alt Art"
+      ],
+      "pokemon_name": "Arceus",
+      "illustrator": "5ban Graphics",
+      "inclusion_reason": "auto_rarity",
+      "chase_tier": "key",
+      "character_tier": "C",
+      "iconicity_score": 7,
+      "catchem_tags": [
+        "modern-chase",
+        "arceus",
+        "brilliant-stars",
+        "trainer-gallery",
+        "alt-art",
+        "format-debut"
+      ],
+      "rotation_status": "out_of_format",
+      "price_flags": null,
+      "catchem_commentary": "The inaugural Trainer Gallery set (Brilliant Stars, February 2022) introduced the subset format that would define SWSH-era collector design. Arceus VSTAR TG20 is the flagship chase of that first Trainer Gallery sub-set. Arceus itself performs in Tier C for character demand, but the historical significance of being the format-inaugurating card places this entry at higher iconicity than character tier alone would suggest — an example of the Catch'em rule that mechanic-debut cards carry premium beyond simple chase math. Trainer Gallery as a design language went on to shape Lost Origin, Silver Tempest, and the Galarian Gallery of Crown Zenith, making the concept one of the most consequential collector innovations of the era.",
+      "historical_analogs": [
+        "swsh-sit-giacomo-tg",
+        "crz-galarian-gallery-pikachu"
+      ],
+      "watch_criteria": [
+        "cross-Trainer-Gallery set comparison",
+        "Brilliant Stars sealed correlation"
+      ],
+      "notes": "Trainer Gallery subset introduction. Inaugural sub-set entries often carry historical premium beyond their character tier.",
+      "last_audited": "2026-04-21",
+      "audit_sources": [
+        "Bulbapedia",
+        "Cardrake"
+      ],
+      "flag_review": false
+    },
+    {
+      "card_id": "cel-classic-4",
+      "external_ids": {
+        "tcgdex": "cel25c-4"
+      },
+      "set_id": "swsh-celebrations",
+      "card_name": "Charizard (Classic Collection)",
+      "card_number": "4/102",
+      "rarity": "Classic Collection Holo",
+      "supertype": "Pokémon",
+      "subtypes": [
+        "Classic Collection",
+        "Anniversary",
+        "Holo"
+      ],
+      "pokemon_name": "Charizard",
+      "illustrator": "Mitsuhiro Arita",
+      "inclusion_reason": "auto_rarity",
+      "chase_tier": "flagship",
+      "character_tier": "S",
+      "iconicity_score": 8,
+      "catchem_tags": [
+        "anniversary",
+        "charizard-chase",
+        "celebrations",
+        "classic-collection",
+        "base-set-reprint",
+        "25th-anniversary"
+      ],
+      "rotation_status": "out_of_format",
+      "price_flags": null,
+      "catchem_commentary": "The Classic Collection Charizard reprints the 1999 Base Set Charizard artwork on modern card stock as part of the Celebrations 25th Anniversary set (October 2021). The Classic Collection sub-set (25 cards) reprinted iconic historical cards with a 25th anniversary stamp, creating a parallel collector target for each original. For Charizard specifically, the Celebrations reprint provides a path for collectors who want the Arita artwork but cannot justify 1st Edition Base Set prices. Celebrations sealed product (particularly the Ultra Premium Collection) has seen meaningful appreciation, with Classic Collection Charizard serving as the primary motivator.",
+      "historical_analogs": [
+        "base-4-1stedition",
+        "xy-evolutions-charizard"
+      ],
+      "watch_criteria": [
+        "Celebrations UPC sealed pricing",
+        "25th anniversary stamp authentication"
+      ],
+      "notes": "Classic Collection cards carry the 25th anniversary stamp — a visual differentiator from the original Base Set print. The original card number (4/102) is preserved from Base Set.",
+      "last_audited": "2026-04-21",
+      "audit_sources": [
+        "Bulbapedia",
+        "Cardrake"
+      ],
+      "flag_review": false
+    },
+    {
+      "card_id": "ssp-pikachu-ex-sir",
+      "external_ids": {
+        "tcgdex": "sv8-238"
+      },
+      "set_id": "sv-surging-sparks",
+      "card_name": "Pikachu ex",
+      "card_number": "238/191",
+      "rarity": "Special Illustration Rare",
+      "supertype": "Pokémon",
+      "subtypes": [
+        "ex",
+        "Stellar Tera",
+        "SIR"
+      ],
+      "pokemon_name": "Pikachu",
+      "illustrator": "Nisota Niso",
+      "inclusion_reason": "auto_rarity",
+      "chase_tier": "grail",
+      "character_tier": "S",
+      "iconicity_score": 9,
+      "catchem_tags": [
+        "modern-grail",
+        "pikachu-chase",
+        "surging-sparks",
+        "special-illustration-rare",
+        "stellar-tera"
+      ],
+      "rotation_status": "current_standard",
+      "price_flags": null,
+      "catchem_commentary": "The Pikachu ex SIR from Surging Sparks (November 2024) is one of the signature modern Pikachu chase cards and the direct lead-in to the Prismatic Evolutions cycle. Surging Sparks was designed around Pikachu as the set's anchor character, mirroring the pattern of Evolving Skies (Eeveelutions), Obsidian Flames (Charizard), and Paldea Evolved (Paldean starters) — each set centered on a Tier S or Tier A character to drive pack demand. The Stellar Tera mechanic debuted in Stellar Crown and extends through Surging Sparks into Prismatic Evolutions, making this Pikachu ex part of a three-set mechanic continuity that collectors commonly track as a unit.",
+      "historical_analogs": [
+        "viv-pikachu-vmax",
+        "evs-215-altart"
+      ],
+      "watch_criteria": [
+        "sealed Surging Sparks ETB correlation",
+        "cross-set Stellar Tera tracking"
+      ],
+      "notes": "Pikachu ex in Surging Sparks sits at the top of the Pikachu chase lineage among modern cards, alongside vintage Illustrator promos and Celebrations anniversary pieces.",
+      "last_audited": "2026-04-21",
+      "audit_sources": [
+        "Bulbapedia",
+        "Cardrake",
+        "Bleeding Cool"
+      ],
+      "flag_review": false
+    },
+    {
+      "card_id": "obf-tera-charizard-sir",
+      "external_ids": {
+        "tcgdex": "sv3-215"
+      },
+      "set_id": "sv-obsidian-flames",
+      "card_name": "Charizard ex",
+      "card_number": "215/197",
+      "rarity": "Special Illustration Rare",
+      "supertype": "Pokémon",
+      "subtypes": [
+        "ex",
+        "Tera",
+        "SIR"
+      ],
+      "pokemon_name": "Charizard",
+      "illustrator": "Nisota Niso",
+      "inclusion_reason": "auto_rarity",
+      "chase_tier": "grail",
+      "character_tier": "S",
+      "iconicity_score": 9,
+      "catchem_tags": [
+        "modern-grail",
+        "charizard-chase",
+        "obsidian-flames",
+        "tera-type",
+        "special-illustration-rare"
+      ],
+      "rotation_status": "current_standard",
+      "price_flags": null,
+      "catchem_commentary": "The Dark-type Tera Charizard ex from Obsidian Flames (August 2023) is one of the signature chase cards of the early Scarlet & Violet era and a textbook case of how type-shifted Tera variants create distinct collector identity. The card's reimagining of Charizard as a Darkness-type rather than its canonical Fire typing was a major visual and thematic statement — mirrored in the Japanese set's name, 'Ruler of the Black Flame.' Across 2024-2026 value tracking, Tera Charizard ex has held position as one of the top cards of the Scarlet & Violet era outside of Prismatic Evolutions, benefiting from Tier S character demand plus the novelty of the type shift.",
+      "historical_analogs": [
+        "xy-flashfire-charizard",
+        "base-4-1stedition"
+      ],
+      "watch_criteria": [
+        "sealed Obsidian Flames booster box correlation",
+        "Tera variant cross-set demand pattern"
+      ],
+      "notes": "Regular Charizard ex from this set is distinct from the SIR variant. Both trade separately.",
+      "last_audited": "2026-04-21",
+      "audit_sources": [
+        "Bulbapedia",
+        "Cardrake",
+        "Bleeding Cool"
+      ],
+      "flag_review": false
+    }
+  ],
+  "audit_architecture": {
+    "purpose": "Continuous verification that Catch'em card data matches authoritative sources. Prevents data drift, catches misattributions, flags needed updates when sets re-release or get reprinted.",
+    "audit_layers": {
+      "layer_1_identity": {
+        "description": "Verify card identity fields against external card APIs and Bulbapedia",
+        "fields_checked": [
+          "card_name",
+          "card_number",
+          "rarity",
+          "illustrator",
+          "set_id",
+          "supertype",
+          "subtypes"
+        ],
+        "sources": [
+          "TCGdex",
+          "Scrydex (future)",
+          "Bulbapedia"
+        ],
+        "frequency": "Weekly for active-era cards. Monthly for vintage.",
+        "action_on_mismatch": "Flag card with flag_review: true. Log discrepancy. Alert human for manual review."
+      },
+      "layer_2_rotation_status": {
+        "description": "Recompute rotation_status based on current date and set regulation marks",
+        "fields_checked": [
+          "rotation_status"
+        ],
+        "sources": [
+          "pokemon-sets-database.json (internal)"
+        ],
+        "frequency": "Daily at midnight",
+        "action_on_change": "Auto-update. Log in audit log. Trigger newsletter-system hook if significant (e.g. card rotates from current_standard → rotating_h_mark)."
+      },
+      "layer_3_price_signals": {
+        "description": "Ingest price_flags from Catchem-data bot when bot observes the card",
+        "fields_checked": [
+          "price_flags"
+        ],
+        "sources": [
+          "Catchem-data bot output"
+        ],
+        "frequency": "Per bot run (currently un-scheduled)",
+        "action_on_change": "Auto-update price_flags array. Never overwrites editorial fields."
+      },
+      "layer_4_editorial_review": {
+        "description": "Human review of chase_tier, iconicity_score, commentary for staleness",
+        "fields_checked": [
+          "chase_tier",
+          "iconicity_score",
+          "catchem_commentary",
+          "character_tier"
+        ],
+        "sources": [
+          "Human editor (Tyler or designated reviewer)"
+        ],
+        "frequency": "Per-card review triggered by (a) significant market events, (b) 180 days since last_audited, (c) manual flag",
+        "action_on_review": "Update fields, bump last_audited timestamp, log change with reason"
+      },
+      "layer_5_completeness_check": {
+        "description": "Verify inclusion rules are being applied — flag sets where chase cards are missing from database",
+        "checks": [
+          "Every set in pokemon-sets-database has at least N chase entries (N varies by set size and era)",
+          "Every modern set (2020+) has its SIR, Alt Art, and Hyper Rare entries",
+          "Every vintage set has its Holo Rares entries (or documented reason for absence)"
+        ],
+        "frequency": "Weekly",
+        "action": "Generate 'missing coverage' report for editorial team"
+      }
+    },
+    "flag_review_triggers": [
+      "External source mismatch detected",
+      "Card missing from latest external API response (delisted?)",
+      "Significant price_flag change (entered or exited buy_the_dip status)",
+      "180+ days since last_audited",
+      "Pre-release / upcoming set cards approaching release date",
+      "User-reported error",
+      "Rotation status change"
+    ],
+    "implementation_notes": "Audit system is infrastructure to be built post-launch. Tonight's JSON captures the structure; the actual cron / GitHub Actions / Supabase Edge Function implementation happens on Tyler's PC."
+  }
+}

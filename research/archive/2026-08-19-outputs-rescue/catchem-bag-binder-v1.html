@@ -1,0 +1,1728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Catch'em — Backpack v1</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+:root {
+  --bg-0: #0a0b10;
+  --bg-1: #0f1119;
+  --bg-2: #141722;
+  --bg-3: #1a1e2c;
+  --surface: #1e2230;
+  --surface-2: #262b3c;
+  --surface-3: #2f3447;
+
+  --border: rgba(255, 255, 255, 0.06);
+  --border-2: rgba(255, 255, 255, 0.1);
+  --border-3: rgba(255, 255, 255, 0.16);
+
+  --text: #ecedf2;
+  --text-2: #b8bcc8;
+  --text-muted: #7a7f8d;
+  --text-faint: #4a4e5a;
+
+  --green: #36d399;
+  --gold: #ffb84d;
+  --purple: #c77dff;
+  --blue: #64a0ff;
+  --red: #ef5a5a;
+  --berry: #ff6b9d;
+
+  --rarity-common: #9aa0ac;
+  --rarity-rare: #64a0ff;
+  --rarity-epic: #c77dff;
+  --rarity-legendary: #ffb84d;
+
+  --tier-gm: #ffb84d;
+  --tier-nm: #e8e8e8;
+  --tier-lp: #9ad8ff;
+  --tier-mp: #9aa0ac;
+  --tier-hp: #d89a6e;
+  --tier-dm: #ff6b9d;
+
+  --display: 'Syne', system-ui, sans-serif;
+  --body: 'Sora', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--body);
+  color: var(--text);
+  background: var(--bg-0);
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-0); }
+::-webkit-scrollbar-thumb { background: var(--surface-2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--surface-3); }
+
+.app {
+  min-height: 100vh;
+  background:
+    radial-gradient(1400px 700px at 50% -10%, rgba(54, 211, 153, 0.04) 0%, transparent 55%),
+    radial-gradient(1200px 600px at 10% 70%, rgba(199, 125, 255, 0.03) 0%, transparent 55%),
+    linear-gradient(180deg, #0a0b10 0%, #0d0f17 100%);
+}
+
+/* ============ TOP NAV ============ */
+.app-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background: rgba(10, 11, 16, 0.85);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-left { display: flex; align-items: center; gap: 32px; }
+.nav-brand {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--berry) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.nav-tabs { display: flex; gap: 4px; }
+.nav-tab {
+  font-family: var(--body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.nav-tab:hover { color: var(--text-2); background: rgba(255,255,255,0.03); }
+.nav-tab.is-active { color: var(--text); background: rgba(255,255,255,0.06); }
+.nav-right { display: flex; align-items: center; gap: 10px; }
+.berry-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255, 107, 157, 0.08);
+  border: 1px solid rgba(255, 107, 157, 0.2);
+}
+.berry-pill-icon {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #ff9ec0, var(--berry));
+  box-shadow: 0 0 8px rgba(255, 107, 157, 0.6);
+}
+.berry-pill-value {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--berry);
+}
+.nav-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4a5268, #2a2f42);
+  border: 1px solid var(--border-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--display);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-2);
+}
+
+/* ============ HERO ============ */
+.hero-strip {
+  padding: 28px 32px 22px;
+  background: var(--bg-1);
+  border-bottom: 1px solid var(--border);
+}
+.hero-brand-small {
+  display: inline-block;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  background: linear-gradient(135deg, var(--gold), var(--berry));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 10px;
+}
+.hero-title {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 40px;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+.hero-sub {
+  font-size: 14px;
+  color: var(--text-muted);
+  max-width: 600px;
+}
+.hero-stats {
+  display: flex;
+  gap: 32px;
+  margin-top: 20px;
+}
+.hero-stat-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 2px;
+}
+.hero-stat-value {
+  font-family: var(--display);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+}
+.hero-stat-value .sub {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-left: 4px;
+  font-weight: 500;
+}
+
+/* ============ BINDER SHELF ============ */
+.binder-shelf-wrap {
+  padding: 24px 32px 8px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, var(--bg-1) 0%, transparent 100%);
+}
+.shelf-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.shelf-title {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.shelf-get-more {
+  font-family: var(--body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  padding: 6px 12px;
+  border: 1px solid rgba(255, 184, 77, 0.25);
+  border-radius: 6px;
+  background: rgba(255, 184, 77, 0.04);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.shelf-get-more:hover {
+  background: rgba(255, 184, 77, 0.1);
+}
+
+.binder-shelf {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 4px 0 20px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+}
+.binder-shelf::-webkit-scrollbar { height: 6px; }
+
+/* Binder visual (the object itself) */
+.binder {
+  flex-shrink: 0;
+  width: 160px;
+  height: 200px;
+  border-radius: 10px 14px 14px 10px;
+  position: relative;
+  cursor: pointer;
+  scroll-snap-align: start;
+  transition: transform 0.2s, box-shadow 0.2s;
+  padding: 14px 14px 14px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: var(--text);
+  overflow: hidden;
+}
+.binder::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(0, 0, 0, 0.3);
+  box-shadow: 1px 0 0 rgba(255, 255, 255, 0.06);
+}
+.binder::after {
+  content: '';
+  position: absolute;
+  top: 16px;
+  bottom: 16px;
+  left: 4px;
+  width: 3px;
+  background: repeating-linear-gradient(180deg, transparent 0, transparent 8px, rgba(255,255,255,0.15) 8px, rgba(255,255,255,0.15) 11px);
+  border-radius: 2px;
+}
+.binder:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+.binder.is-active {
+  transform: translateY(-8px);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 0 2px var(--gold);
+}
+
+/* Binder themes */
+.binder.starter {
+  background: linear-gradient(145deg, #2a5140 0%, #1a3a2d 60%, #143025 100%);
+  border: 1px solid rgba(54, 211, 153, 0.3);
+}
+.binder.berry {
+  background: linear-gradient(145deg, #5a1f36 0%, #3d1425 60%, #2a0d19 100%);
+  border: 1px solid rgba(255, 107, 157, 0.3);
+}
+.binder.purple {
+  background: linear-gradient(145deg, #3d2456 0%, #261640 60%, #1a1030 100%);
+  border: 1px solid rgba(199, 125, 255, 0.3);
+}
+.binder.gold {
+  background: linear-gradient(145deg, #5a4420 0%, #3d2d15 60%, #2a1f0d 100%);
+  border: 1px solid rgba(255, 184, 77, 0.4);
+  box-shadow: 0 0 20px rgba(255, 184, 77, 0.15);
+}
+.binder.charcoal {
+  background: linear-gradient(145deg, #2a2f42 0%, #1a1e2c 60%, #141722 100%);
+  border: 1px solid var(--border-3);
+}
+
+/* Promo binder glow */
+.binder.promo {
+  background:
+    conic-gradient(from 0deg at 50% 50%, #2d5a40 0%, #3d2456 25%, #5a4420 50%, #3d1425 75%, #2d5a40 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.binder.promo::before {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.binder-tag {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-family: var(--mono);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 6px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--text-2);
+}
+.binder-tag.promo {
+  background: rgba(255, 184, 77, 0.25);
+  color: var(--gold);
+}
+.binder-tag.rare {
+  background: rgba(100, 160, 255, 0.25);
+  color: var(--blue);
+}
+.binder-tag.new { background: rgba(54, 211, 153, 0.25); color: var(--green); }
+
+.binder-title-area {
+  margin-top: 30px;
+}
+.binder-name {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  line-height: 1.15;
+  margin-bottom: 4px;
+}
+.binder-theme {
+  font-family: var(--body);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.binder-foot {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.binder-fill {
+  height: 3px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.binder-fill-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--berry));
+  border-radius: 2px;
+  transition: width 0.3s;
+}
+.binder-count {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+.binder-count .total {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* ============ BINDER DETAIL ============ */
+.binder-detail {
+  padding: 28px 32px 80px;
+}
+
+.detail-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.detail-head-left { min-width: 0; flex: 1; }
+.detail-crumb {
+  font-family: var(--body);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 6px;
+}
+.detail-binder-name {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 32px;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.detail-binder-meta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.meta-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  background: var(--surface);
+  border: 1px solid var(--border-2);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-2);
+  font-weight: 500;
+}
+.meta-chip strong {
+  color: var(--text);
+  font-weight: 600;
+}
+.detail-head-right { display: flex; gap: 8px; align-items: center; }
+.detail-action-btn {
+  padding: 8px 14px;
+  font-family: var(--body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  background: var(--surface);
+  border: 1px solid var(--border-2);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.detail-action-btn:hover { background: var(--surface-2); color: var(--text); }
+.detail-action-btn.is-active {
+  background: rgba(255, 184, 77, 0.1);
+  border-color: rgba(255, 184, 77, 0.3);
+  color: var(--gold);
+}
+
+/* Filter bar for binder */
+.binder-filter {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 14px 0;
+  margin-top: 18px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.filter-input {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+}
+.filter-input input {
+  width: 100%;
+  height: 34px;
+  padding: 0 12px 0 32px;
+  background: var(--surface);
+  border: 1px solid var(--border-2);
+  border-radius: 7px;
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 12px;
+  outline: none;
+}
+.filter-input::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px; height: 12px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237a7f8d' stroke-width='2.5'><circle cx='11' cy='11' r='7'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.filter-select {
+  height: 34px;
+  padding: 0 28px 0 12px;
+  background: var(--surface);
+  border: 1px solid var(--border-2);
+  border-radius: 7px;
+  color: var(--text-2);
+  font-family: var(--body);
+  font-size: 12px;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237a7f8d' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 10px;
+  outline: none;
+}
+
+/* ============ PAGES VIEW (the 3x3 binder) ============ */
+.pages-viewport {
+  margin: 28px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.page-indicator {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.page-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--border-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-2);
+  font-size: 16px;
+  transition: all 0.15s;
+}
+.page-btn:hover { background: var(--surface-2); color: var(--text); }
+.page-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+.page-num {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  min-width: 100px;
+  text-align: center;
+}
+.page-num .total {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* The binder page (3x3 grid) */
+.binder-page {
+  width: 100%;
+  max-width: 560px;
+  aspect-ratio: 1 / 1.08;
+  background:
+    linear-gradient(145deg, #242837 0%, #1a1e2c 100%);
+  border: 1px solid var(--border-2);
+  border-radius: 14px;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 12px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  position: relative;
+}
+.binder-page::before {
+  content: '';
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  top: 50%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.03);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* Card slot */
+.slot {
+  aspect-ratio: 3/4;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px dashed rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.15s;
+  cursor: pointer;
+  overflow: hidden;
+}
+.slot.empty {
+  color: var(--text-faint);
+  font-size: 22px;
+  font-family: var(--display);
+  font-weight: 300;
+}
+.slot.empty:hover { border-color: rgba(255, 255, 255, 0.12); }
+
+/* Filled card slot */
+.slot.filled {
+  border: 1px solid var(--border-2);
+  background: linear-gradient(180deg, var(--surface) 0%, var(--bg-2) 100%);
+}
+.slot.filled:hover {
+  transform: scale(1.03);
+  z-index: 2;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+}
+.slot.filled.is-selected {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px rgba(255, 184, 77, 0.25), 0 10px 20px rgba(255, 184, 77, 0.15);
+}
+
+.slot-art {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 36px;
+  width: 100%;
+  position: relative;
+}
+.slot-art.is-common { color: var(--rarity-common); }
+.slot-art.is-rare { color: var(--rarity-rare); background: radial-gradient(circle at 50% 50%, rgba(100, 160, 255, 0.1), transparent 70%); }
+.slot-art.is-epic { color: var(--rarity-epic); background: radial-gradient(circle at 50% 50%, rgba(199, 125, 255, 0.12), transparent 70%); }
+.slot-art.is-legendary {
+  color: var(--rarity-legendary);
+  background: radial-gradient(circle at 50% 50%, rgba(255, 184, 77, 0.15), transparent 70%);
+}
+.slot-art.is-legendary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: conic-gradient(from 0deg, transparent, rgba(255, 184, 77, 0.08), transparent, rgba(199, 125, 255, 0.08), transparent);
+  animation: slotShine 6s linear infinite;
+}
+@keyframes slotShine { to { transform: rotate(360deg); } }
+
+.slot-foot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 4px 6px;
+  background: linear-gradient(0deg, rgba(0,0,0,0.75) 0%, transparent 100%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+}
+.slot-tier {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+.slot-tier.gm { color: var(--tier-gm); }
+.slot-tier.nm { color: var(--tier-nm); }
+.slot-tier.lp { color: var(--tier-lp); }
+.slot-tier.mp { color: var(--tier-mp); }
+.slot-tier.hp { color: var(--tier-hp); }
+.slot-tier.dm { color: var(--tier-dm); }
+
+.slot-score {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+
+/* Selection badge */
+.slot-select {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: #0a0b10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 11px;
+  box-shadow: 0 4px 12px rgba(255, 184, 77, 0.4);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all 0.15s;
+}
+.slot.is-selected .slot-select {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ============ SELECTION BAR (when cards selected) ============ */
+.selection-bar {
+  position: fixed;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%) translateY(150%);
+  background: var(--surface-2);
+  border: 1px solid var(--border-3);
+  border-radius: 14px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+  z-index: 60;
+  min-width: 320px;
+}
+.selection-bar.is-visible {
+  transform: translateX(-50%) translateY(0);
+}
+.selection-count {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 14px;
+}
+.selection-count .num {
+  color: var(--gold);
+  font-family: var(--mono);
+  font-weight: 800;
+  margin-right: 4px;
+}
+.selection-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+.sel-btn {
+  padding: 8px 14px;
+  font-family: var(--body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 7px;
+  border: 1px solid var(--border-2);
+  background: var(--surface);
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.sel-btn:hover { background: var(--surface-3); color: var(--text); }
+.sel-btn.primary {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--berry) 100%);
+  color: #0a0b10;
+  border-color: transparent;
+  box-shadow: 0 4px 14px rgba(255, 184, 77, 0.3);
+}
+.sel-cancel {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  font-size: 18px;
+}
+.sel-cancel:hover { color: var(--text); }
+
+/* ============ MOVE MODAL ============ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(6px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 20px;
+}
+.modal-overlay.is-visible { display: flex; }
+.modal {
+  background: var(--bg-1);
+  border: 1px solid var(--border-2);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 480px;
+  padding: 24px;
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+}
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+.modal-title {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+.modal-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.modal-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border-2);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+.modal-close:hover { color: var(--text); background: var(--surface); }
+
+.target-binders {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.target-binder {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border-2);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.target-binder:hover {
+  background: var(--surface-2);
+  border-color: var(--border-3);
+}
+.target-binder-mini {
+  width: 36px;
+  height: 46px;
+  border-radius: 4px 6px 6px 4px;
+  position: relative;
+  flex-shrink: 0;
+}
+.target-binder-mini::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(0,0,0,0.3);
+}
+.target-binder-mini.starter { background: linear-gradient(145deg, #2a5140, #143025); }
+.target-binder-mini.berry { background: linear-gradient(145deg, #5a1f36, #2a0d19); }
+.target-binder-mini.purple { background: linear-gradient(145deg, #3d2456, #1a1030); }
+.target-binder-mini.gold { background: linear-gradient(145deg, #5a4420, #2a1f0d); }
+.target-binder-mini.charcoal { background: linear-gradient(145deg, #2a2f42, #141722); }
+
+.target-binder-info {
+  flex: 1;
+  min-width: 0;
+}
+.target-binder-name {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+.target-binder-meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.target-binder-arrow {
+  color: var(--text-faint);
+  font-size: 16px;
+}
+
+/* ============ CARD DETAIL DRAWER ============ */
+.card-drawer {
+  position: fixed;
+  right: -500px;
+  top: 0;
+  bottom: 0;
+  width: 400px;
+  max-width: 100vw;
+  background: var(--bg-1);
+  border-left: 1px solid var(--border-2);
+  box-shadow: -20px 0 40px rgba(0, 0, 0, 0.3);
+  transition: right 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+  z-index: 150;
+  overflow-y: auto;
+}
+.card-drawer.is-open { right: 0; }
+.drawer-head {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  background: var(--bg-1);
+  z-index: 2;
+}
+.drawer-head-label {
+  font-family: var(--body);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.drawer-close {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--border-2);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 16px;
+}
+.drawer-close:hover { color: var(--text); background: var(--surface); }
+
+.drawer-body { padding: 24px 20px; }
+
+.drawer-card {
+  width: 100%;
+  max-width: 240px;
+  aspect-ratio: 3/4;
+  margin: 0 auto 20px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, var(--surface) 0%, var(--bg-2) 100%);
+  border: 1px solid var(--border-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 108px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+}
+.drawer-card.is-legendary {
+  border-color: rgba(255, 184, 77, 0.5);
+  box-shadow: 0 20px 60px rgba(255, 184, 77, 0.25);
+}
+.drawer-card.is-legendary::before {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(255, 184, 77, 0.15) 90deg, transparent 180deg, rgba(199, 125, 255, 0.15) 270deg, transparent 360deg);
+  animation: slotShine 5s linear infinite;
+}
+
+.drawer-name {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 24px;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  line-height: 1.1;
+  text-align: center;
+  margin-bottom: 4px;
+}
+.drawer-arch {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-style: italic;
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.drawer-meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.meta-cell {
+  padding: 10px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.meta-cell-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 4px;
+}
+.meta-cell-value {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+}
+.meta-cell-value.gm { color: var(--tier-gm); }
+.meta-cell-value.nm { color: var(--tier-nm); }
+.meta-cell-value.lp { color: var(--tier-lp); }
+.meta-cell-value.mp { color: var(--tier-mp); }
+.meta-cell-value.hp { color: var(--tier-hp); }
+.meta-cell-value.dm { color: var(--tier-dm); }
+.meta-cell-value.score {
+  font-family: var(--mono);
+  color: var(--gold);
+}
+
+.drawer-flavor {
+  padding: 12px 14px;
+  background: rgba(199, 125, 255, 0.04);
+  border-left: 2px solid var(--purple);
+  border-radius: 0 8px 8px 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-2);
+  font-style: italic;
+  margin-bottom: 18px;
+}
+
+.drawer-history {
+  padding: 14px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 18px;
+}
+.history-title {
+  font-family: var(--body);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 8px;
+}
+.history-item {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--text-2);
+  padding: 4px 0;
+}
+.history-item .date {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  min-width: 66px;
+}
+
+.drawer-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.drawer-btn {
+  width: 100%;
+  height: 42px;
+  border-radius: 8px;
+  border: 1px solid var(--border-2);
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.drawer-btn:hover { background: var(--surface-2); }
+.drawer-btn.primary {
+  background: linear-gradient(135deg, var(--green) 0%, #2eb888 100%);
+  color: #0a0b10;
+  border-color: transparent;
+  box-shadow: 0 6px 16px rgba(54, 211, 153, 0.2);
+}
+.drawer-btn.danger { color: var(--red); border-color: rgba(239, 90, 90, 0.2); }
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 700px) {
+  .app-nav { padding: 0 14px; height: 52px; }
+  .nav-tabs { overflow-x: auto; scrollbar-width: none; min-width: 0; }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .nav-tab { padding: 6px 10px; font-size: 11px; white-space: nowrap; }
+  .nav-brand { font-size: 16px; }
+  .berry-pill { padding: 6px 10px; }
+  .berry-pill-value { font-size: 12px; }
+  .nav-avatar { width: 28px; height: 28px; font-size: 11px; }
+
+  .hero-strip { padding: 18px 16px 14px; }
+  .hero-title { font-size: 26px; }
+  .hero-sub { font-size: 12px; }
+  .hero-stats { gap: 20px; margin-top: 14px; flex-wrap: wrap; }
+  .hero-stat-value { font-size: 16px; }
+
+  .binder-shelf-wrap { padding: 18px 16px 4px; }
+  .binder-shelf { gap: 12px; padding: 4px 0 16px; }
+  .binder {
+    width: 134px;
+    height: 168px;
+    padding: 12px 12px 12px 22px;
+  }
+  .binder-name { font-size: 13px; }
+
+  .binder-detail { padding: 20px 16px 120px; }
+  .detail-binder-name { font-size: 24px; }
+  .binder-filter { gap: 8px; padding: 12px 0; }
+  .filter-input { min-width: 140px; flex: 1; }
+  .filter-select { font-size: 11px; }
+
+  .binder-page {
+    padding: 12px;
+    gap: 8px;
+    border-radius: 10px;
+  }
+
+  .card-drawer { width: 100%; right: -100%; }
+
+  .selection-bar {
+    left: 10px;
+    right: 10px;
+    transform: translateY(150%);
+    min-width: 0;
+    padding: 10px 12px;
+  }
+  .selection-bar.is-visible { transform: translateY(0); }
+  .sel-btn { padding: 7px 10px; font-size: 10px; }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Top nav -->
+  <nav class="app-nav">
+    <div class="nav-left">
+      <div class="nav-brand">Catch'em</div>
+      <div class="nav-tabs">
+        <div class="nav-tab">Home</div>
+        <div class="nav-tab is-active">Backpack</div>
+        <div class="nav-tab">Trading</div>
+        <div class="nav-tab">Newsletter</div>
+        <div class="nav-tab">Streak</div>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="berry-pill">
+        <div class="berry-pill-icon"></div>
+        <div class="berry-pill-value">12,847</div>
+      </div>
+      <div class="nav-avatar">TB</div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <div class="hero-strip">
+    <div class="hero-brand-small">Catch'em</div>
+    <div class="hero-title">Your Backpack</div>
+    <div class="hero-sub">247 cards. 5 binders. Every page tells where you've been.</div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-label">Cards</div>
+        <div class="hero-stat-value">247 <span class="sub">of 480 slots</span></div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-label">Binders</div>
+        <div class="hero-stat-value">5 <span class="sub">1 promo</span></div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-label">Grails</div>
+        <div class="hero-stat-value">3 <span class="sub">Gem Mints</span></div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-label">Seasons Touched</div>
+        <div class="hero-stat-value">7 <span class="sub">of 13</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Binder shelf -->
+  <div class="binder-shelf-wrap">
+    <div class="shelf-head">
+      <div class="shelf-title">Your Binders</div>
+      <div class="shelf-get-more">+ Get More Binders</div>
+    </div>
+    <div class="binder-shelf" id="binderShelf">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+
+  <!-- Binder detail -->
+  <div class="binder-detail">
+    <div class="detail-head">
+      <div class="detail-head-left">
+        <div class="detail-crumb" id="detailCrumb">Backpack · Binder</div>
+        <div class="detail-binder-name" id="detailBinderName">Starter Binder</div>
+        <div class="detail-binder-meta" id="detailBinderMeta">
+          <!-- populated by JS -->
+        </div>
+      </div>
+      <div class="detail-head-right">
+        <button class="detail-action-btn is-active">Pages</button>
+        <button class="detail-action-btn">Grid</button>
+        <button class="detail-action-btn">List</button>
+      </div>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="binder-filter">
+      <div class="filter-input">
+        <input type="text" placeholder="Search this binder..." />
+      </div>
+      <select class="filter-select">
+        <option>All Seasons</option>
+        <option>Season 01</option>
+        <option>Season 08</option>
+        <option>Season 10</option>
+      </select>
+      <select class="filter-select">
+        <option>All Tiers</option>
+        <option>Gem Mint only</option>
+        <option>Damaged only</option>
+      </select>
+      <select class="filter-select">
+        <option>All Rarities</option>
+        <option>Legendary</option>
+        <option>Epic</option>
+        <option>Rare</option>
+        <option>Common</option>
+      </select>
+    </div>
+
+    <!-- Pages view -->
+    <div class="pages-viewport">
+      <!-- Binder page (3x3) -->
+      <div class="binder-page" id="binderPage">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Page navigation -->
+      <div class="page-indicator">
+        <button class="page-btn" id="prevPage">‹</button>
+        <div class="page-num"><span id="currentPage">1</span> <span class="total">/ <span id="totalPages">6</span></span></div>
+        <button class="page-btn" id="nextPage">›</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Selection bar (appears when cards selected) -->
+  <div class="selection-bar" id="selectionBar">
+    <div class="selection-count"><span class="num" id="selCount">0</span>cards selected</div>
+    <div class="selection-actions">
+      <button class="sel-btn" id="btnList">List for sale</button>
+      <button class="sel-btn primary" id="btnMove">Move</button>
+    </div>
+    <button class="sel-cancel" id="selCancel">×</button>
+  </div>
+
+  <!-- Move modal -->
+  <div class="modal-overlay" id="moveModal">
+    <div class="modal">
+      <div class="modal-head">
+        <div>
+          <div class="modal-title">Move <span id="moveModalCount">3</span> cards</div>
+          <div class="modal-sub">Pick the binder to send these to.</div>
+        </div>
+        <button class="modal-close" id="modalClose">×</button>
+      </div>
+      <div class="target-binders" id="targetBinders">
+        <!-- populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Card drawer (slide in from right) -->
+  <div class="card-drawer" id="cardDrawer">
+    <div class="drawer-head">
+      <div class="drawer-head-label">Card Detail</div>
+      <button class="drawer-close" id="drawerClose">×</button>
+    </div>
+    <div class="drawer-body" id="drawerBody">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ============================================
+// DATA
+// ============================================
+const binders = [
+  {
+    id: 'starter',
+    name: 'Starter Binder',
+    theme: 'Generic · 10 pages',
+    color: 'starter',
+    capacity: 90,
+    filled: 47,
+    tag: null,
+    isActive: true
+  },
+  {
+    id: 'big',
+    name: 'Big Pouch',
+    theme: 'Generic · 20 pages',
+    color: 'charcoal',
+    capacity: 180,
+    filled: 134,
+    tag: null
+  },
+  {
+    id: 'grails',
+    name: 'Grails',
+    theme: 'Gem Mint specials',
+    color: 'gold',
+    capacity: 45,
+    filled: 3,
+    tag: { type: 'rare', text: 'Rare' }
+  },
+  {
+    id: 'sv',
+    name: 'Supporter Vault',
+    theme: 'Pro variants only',
+    color: 'purple',
+    capacity: 36,
+    filled: 8,
+    tag: { type: 'promo', text: 'Pro' }
+  },
+  {
+    id: 'promo',
+    name: "Newsletter Issue #001",
+    theme: 'Promo · Limited',
+    color: 'promo',
+    capacity: 9,
+    filled: 9,
+    tag: { type: 'promo', text: 'Promo' }
+  }
+];
+
+// Generate cards for the Starter Binder (showing 2 full pages worth + partial)
+const cards = [
+  { id: 1, name: 'Fern', letter: 'F', rarity: 'common', tier: 'MP', score: '0.4183', archetype: 'small fern · anxious', season: 'Season 02', flavor: '"i\'ve noticed the light hits different when you\'re older."', pulled: '2026-04-22', pulledFrom: 'Tuesday Feels' },
+  { id: 2, name: 'Sticky Boy', letter: 'S', rarity: 'common', tier: 'LP', score: '0.2104', archetype: 'melted ice cream · cheerful', season: 'Season 01', flavor: '"hi. i\'m sticky boy. a little melted. it\'s fine."', pulled: '2026-04-19', pulledFrom: 'Saturday Feels' },
+  { id: 3, name: 'Cardboard Dad', letter: 'C', rarity: 'rare', tier: 'MP', score: '0.4287', archetype: 'cardboard box · protective', season: 'Season 01', flavor: '"i held them safe. they don\'t know."', pulled: '2026-04-18', pulledFrom: 'Friday Feels' },
+  { id: 4, name: 'Nickel', letter: 'N', rarity: 'common', tier: 'HP', score: '0.5892', archetype: 'silver coin · nostalgic', season: 'Season 01', flavor: '"i remember every trade."', pulled: '2026-04-16', pulledFrom: 'Wednesday Feels' },
+  { id: 5, name: 'The Attic Visitor', letter: 'A', rarity: 'common', tier: 'LP', score: '0.1847', archetype: 'small ghost · quiet', season: 'Season 01', flavor: '"these were my favorite once."', pulled: '2026-04-15', pulledFrom: 'Tuesday Feels' },
+  { id: 6, name: 'First Holo', letter: 'H', rarity: 'epic', tier: 'NM', score: '0.0982', archetype: 'tiny rainbow · wonderstruck', season: 'Season 01', flavor: '"there\'s something behind the light."', pulled: '2026-04-14', pulledFrom: 'Monday Feels' },
+  { id: 7, name: 'The Completionist Snail', letter: 'S', rarity: 'rare', tier: 'LP', score: '0.2214', archetype: 'garden snail · patient', season: 'Season 01', flavor: '"i\'ll get there. i\'m close. it\'s fine."', pulled: '2026-04-12', pulledFrom: 'Saturday Feels' },
+  { id: 8, name: 'Sticky Boy', letter: 'S', rarity: 'common', tier: 'GM', score: '0.0342', archetype: 'melted ice cream · pristine', season: 'Season 01', flavor: '"perfectly scooped. never dripped."', pulled: '2026-04-11', pulledFrom: 'Friday Feels' },
+  { id: 9, name: 'The Moonbreon Believer', letter: 'M', rarity: 'legendary', tier: 'MP', score: '0.4012', archetype: 'moonlit fox · devoted', season: 'Season 08', flavor: '"it will be a thousand. then more."', pulled: '2026-04-10', pulledFrom: 'Thursday Feels' },
+  // Page 2
+  { id: 10, name: 'Fern', letter: 'F', rarity: 'common', tier: 'HP', score: '0.6104', archetype: 'small fern · weathered', season: 'Season 02', flavor: '"been tall. been small. still fern."', pulled: '2026-04-09', pulledFrom: 'Wednesday Feels' },
+  { id: 11, name: 'Scanner, Broken', letter: 'S', rarity: 'common', tier: 'DM', score: '0.9204', archetype: 'obsolete scanner · earnest', season: 'Season 03', flavor: '"still trying. the code is in there somewhere."', pulled: '2026-04-08', pulledFrom: 'Tuesday Feels' },
+  { id: 12, name: 'The 151 Kid', letter: 'K', rarity: 'common', tier: 'LP', score: '0.2847', archetype: 'small trainer · wonderstruck', season: 'Season 09', flavor: '"i was here. i saw it."', pulled: '2026-04-07', pulledFrom: 'Monday Feels' },
+  { id: 13, name: 'Rainbow Rare', letter: 'R', rarity: 'epic', tier: 'NM', score: '0.1104', archetype: 'color-shifting · uncertain', season: 'Season 07', flavor: '"which one am i?"', pulled: '2026-04-06', pulledFrom: 'Sunday Feels' },
+  { id: 14, name: 'The Forum Poster', letter: 'F', rarity: 'common', tier: 'HP', score: '0.6012', archetype: 'adult trainer · opinionated', season: 'Season 04', flavor: '"i told them. i was right."', pulled: '2026-04-05', pulledFrom: 'Saturday Feels' },
+  { id: 15, name: 'The Discord Moderator', letter: 'D', rarity: 'rare', tier: 'HP', score: '0.5892', archetype: 'trainer · patient', season: 'Season 13', flavor: '"keeping the peace. always. even now."', pulled: '2026-04-04', pulledFrom: 'Friday Feels' },
+  { id: 16, name: 'Hidden Fates Hope', letter: 'H', rarity: 'epic', tier: 'LP', score: '0.2984', archetype: 'shiny creature · hopeful', season: 'Season 07', flavor: '"finally. someone found me."', pulled: '2026-04-03', pulledFrom: 'Thursday Feels' },
+  { id: 17, name: 'The FOMO Buyer', letter: 'F', rarity: 'legendary', tier: 'HP', score: '0.7124', archetype: 'trainer · timing-challenged', season: 'Season 08', flavor: '"i had to. it was worth it."', pulled: '2026-04-02', pulledFrom: 'Wednesday Feels' },
+  { id: 18, name: 'The Dragon Believer', letter: 'D', rarity: 'epic', tier: 'LP', score: '0.1847', archetype: 'small fire dragon · devoted', season: 'Season 10', flavor: '"still waiting. the flame stays small."', pulled: '2026-04-01', pulledFrom: 'Tuesday Feels' },
+  // Page 3 - partial (starts at id 19)
+  { id: 19, name: 'The Lurker Who Reads Everything', letter: 'L', rarity: 'rare', tier: 'LP', score: '0.2041', archetype: 'trainer · at peace', season: 'Season 13', flavor: '"you said what you meant. good."', pulled: '2026-03-30', pulledFrom: 'Sunday Feels' },
+  { id: 20, name: 'Sealed Forever', letter: 'S', rarity: 'rare', tier: 'NM', score: '0.0889', archetype: 'booster box · lonely', season: 'Season 08', flavor: '"am i an investment or a friend?"', pulled: '2026-03-29', pulledFrom: 'Saturday Feels' },
+  { id: 21, name: 'Prismatic Ghost', letter: 'P', rarity: 'epic', tier: 'GM', score: '0.0421', archetype: 'translucent rainbow ghost', season: 'Season 09', flavor: '"did i really just happen?"', pulled: '2026-03-28', pulledFrom: 'Friday Feels' }
+];
+
+// ============================================
+// STATE
+// ============================================
+let currentBinderId = 'starter';
+let currentPage = 1;
+let selectedCards = new Set();
+
+// Cards per page = 9
+const CARDS_PER_PAGE = 9;
+
+function getCurrentBinder() {
+  return binders.find(b => b.id === currentBinderId);
+}
+
+function getTotalPages() {
+  const binder = getCurrentBinder();
+  return Math.ceil(binder.capacity / CARDS_PER_PAGE);
+}
+
+function getPageCards(pageNum) {
+  // For demo: only Starter binder has cards; others are empty
+  if (currentBinderId !== 'starter') return [];
+  const start = (pageNum - 1) * CARDS_PER_PAGE;
+  const end = start + CARDS_PER_PAGE;
+  return cards.slice(start, end);
+}
+
+// ============================================
+// RENDER: Binder shelf
+// ============================================
+function renderShelf() {
+  const shelf = document.getElementById('binderShelf');
+  shelf.innerHTML = binders.map(b => {
+    const fillPct = Math.round((b.filled / b.capacity) * 100);
+    return `
+      <div class="binder ${b.color} ${b.id === currentBinderId ? 'is-active' : ''}" data-id="${b.id}">
+        ${b.tag ? `<div class="binder-tag ${b.tag.type}">${b.tag.text}</div>` : ''}
+        <div class="binder-title-area">
+          <div class="binder-name">${b.name}</div>
+          <div class="binder-theme">${b.theme}</div>
+        </div>
+        <div class="binder-foot">
+          <div class="binder-fill">
+            <div class="binder-fill-bar" style="width: ${fillPct}%"></div>
+          </div>
+          <div class="binder-count">
+            <span>${b.filled}</span>
+            <span class="total">of ${b.capacity}</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  shelf.querySelectorAll('.binder').forEach(el => {
+    el.addEventListener('click', () => openBinder(el.dataset.id));
+  });
+}
+
+// ============================================
+// RENDER: Binder detail
+// ============================================
+function renderDetail() {
+  const b = getCurrentBinder();
+  const fillPct = Math.round((b.filled / b.capacity) * 100);
+  document.getElementById('detailCrumb').textContent = `Backpack · ${b.theme}`;
+  document.getElementById('detailBinderName').textContent = b.name;
+  document.getElementById('detailBinderMeta').innerHTML = `
+    <div class="meta-chip"><strong>${b.filled}</strong> / ${b.capacity} cards</div>
+    <div class="meta-chip"><strong>${fillPct}%</strong> full</div>
+    <div class="meta-chip"><strong>${getTotalPages()}</strong> pages</div>
+    <div class="meta-chip">9 slots per page</div>
+  `;
+  renderPage();
+}
+
+// ============================================
+// RENDER: Binder page (3x3)
+// ============================================
+function renderPage() {
+  const page = document.getElementById('binderPage');
+  const pageCards = getPageCards(currentPage);
+  const slots = [];
+  for (let i = 0; i < CARDS_PER_PAGE; i++) {
+    const card = pageCards[i];
+    if (card) {
+      const selectPos = Array.from(selectedCards).indexOf(card.id) + 1;
+      slots.push(`
+        <div class="slot filled ${selectedCards.has(card.id) ? 'is-selected' : ''}" data-id="${card.id}">
+          <div class="slot-art is-${card.rarity}">${card.letter}</div>
+          <div class="slot-foot">
+            <span class="slot-tier ${card.tier.toLowerCase()}">${card.tier}</span>
+            <span class="slot-score">${card.score}</span>
+          </div>
+          <div class="slot-select">${selectPos || ''}</div>
+        </div>
+      `);
+    } else {
+      slots.push(`<div class="slot empty">+</div>`);
+    }
+  }
+  page.innerHTML = slots.join('');
+
+  page.querySelectorAll('.slot.filled').forEach(el => {
+    el.addEventListener('click', (e) => handleSlotClick(parseInt(el.dataset.id), e));
+  });
+
+  document.getElementById('currentPage').textContent = currentPage;
+  document.getElementById('totalPages').textContent = getTotalPages();
+  document.getElementById('prevPage').disabled = currentPage === 1;
+  document.getElementById('nextPage').disabled = currentPage === getTotalPages();
+}
+
+// ============================================
+// SLOT INTERACTION
+// ============================================
+function handleSlotClick(cardId, e) {
+  // If selection mode is active, toggle. Otherwise, open drawer.
+  if (selectedCards.size > 0 || e.shiftKey || e.metaKey || e.ctrlKey) {
+    toggleSelection(cardId);
+  } else {
+    openCardDrawer(cardId);
+  }
+}
+
+function toggleSelection(cardId) {
+  if (selectedCards.has(cardId)) {
+    selectedCards.delete(cardId);
+  } else {
+    selectedCards.add(cardId);
+  }
+  renderPage();
+  updateSelectionBar();
+}
+
+function updateSelectionBar() {
+  const bar = document.getElementById('selectionBar');
+  const count = selectedCards.size;
+  if (count > 0) {
+    bar.classList.add('is-visible');
+    document.getElementById('selCount').textContent = count;
+  } else {
+    bar.classList.remove('is-visible');
+  }
+}
+
+document.getElementById('selCancel').addEventListener('click', () => {
+  selectedCards.clear();
+  renderPage();
+  updateSelectionBar();
+});
+
+// ============================================
+// PAGE NAV
+// ============================================
+document.getElementById('prevPage').addEventListener('click', () => {
+  if (currentPage > 1) {
+    currentPage--;
+    renderPage();
+  }
+});
+document.getElementById('nextPage').addEventListener('click', () => {
+  if (currentPage < getTotalPages()) {
+    currentPage++;
+    renderPage();
+  }
+});
+
+// ============================================
+// OPEN BINDER
+// ============================================
+function openBinder(id) {
+  currentBinderId = id;
+  currentPage = 1;
+  selectedCards.clear();
+  updateSelectionBar();
+  renderShelf();
+  renderDetail();
+}
+
+// ============================================
+// CARD DRAWER
+// ============================================
+function openCardDrawer(cardId) {
+  const card = cards.find(c => c.id === cardId);
+  if (!card) return;
+
+  const body = document.getElementById('drawerBody');
+  body.innerHTML = `
+    <div class="drawer-card ${card.rarity === 'legendary' ? 'is-legendary' : ''}"
+         style="color: ${getRarityColor(card.rarity)};">
+      ${card.letter}
+    </div>
+    <div class="drawer-name">${card.name}</div>
+    <div class="drawer-arch">${card.archetype}</div>
+
+    <div class="drawer-meta-grid">
+      <div class="meta-cell">
+        <div class="meta-cell-label">Condition</div>
+        <div class="meta-cell-value ${card.tier.toLowerCase()}">${getTierLabel(card.tier)}</div>
+      </div>
+      <div class="meta-cell">
+        <div class="meta-cell-label">Score</div>
+        <div class="meta-cell-value score">${card.score}</div>
+      </div>
+      <div class="meta-cell">
+        <div class="meta-cell-label">Season</div>
+        <div class="meta-cell-value" style="font-size: 12px;">${card.season}</div>
+      </div>
+      <div class="meta-cell">
+        <div class="meta-cell-label">Rarity</div>
+        <div class="meta-cell-value" style="font-size: 12px; color: ${getRarityColor(card.rarity)};">${card.rarity}</div>
+      </div>
+    </div>
+
+    <div class="drawer-flavor">${card.flavor}</div>
+
+    <div class="drawer-history">
+      <div class="history-title">Pull History</div>
+      <div class="history-item">
+        <span class="date">${card.pulled}</span>
+        <span>Caught in ${card.pulledFrom}</span>
+      </div>
+    </div>
+
+    <div class="drawer-actions">
+      <button class="drawer-btn primary">List for sale</button>
+      <button class="drawer-btn">Move to another binder</button>
+      <button class="drawer-btn">Share</button>
+    </div>
+  `;
+
+  document.getElementById('cardDrawer').classList.add('is-open');
+}
+
+document.getElementById('drawerClose').addEventListener('click', () => {
+  document.getElementById('cardDrawer').classList.remove('is-open');
+});
+
+function getRarityColor(r) {
+  return { common: '#9aa0ac', rare: '#64a0ff', epic: '#c77dff', legendary: '#ffb84d' }[r];
+}
+function getTierLabel(t) {
+  return { GM: 'Gem Mint', NM: 'Near Mint', LP: 'Lightly Played', MP: 'Moderately Played', HP: 'Heavily Played', DM: 'Damaged' }[t];
+}
+
+// ============================================
+// MOVE MODAL
+// ============================================
+document.getElementById('btnMove').addEventListener('click', () => {
+  const modal = document.getElementById('moveModal');
+  document.getElementById('moveModalCount').textContent = selectedCards.size;
+  const targets = document.getElementById('targetBinders');
+  targets.innerHTML = binders
+    .filter(b => b.id !== currentBinderId)
+    .map(b => `
+      <div class="target-binder" data-id="${b.id}">
+        <div class="target-binder-mini ${b.color}"></div>
+        <div class="target-binder-info">
+          <div class="target-binder-name">${b.name}</div>
+          <div class="target-binder-meta">${b.filled} / ${b.capacity} · ${b.theme}</div>
+        </div>
+        <div class="target-binder-arrow">→</div>
+      </div>
+    `).join('');
+  modal.classList.add('is-visible');
+
+  targets.querySelectorAll('.target-binder').forEach(el => {
+    el.addEventListener('click', () => {
+      alert(`Moved ${selectedCards.size} cards to ${binders.find(b => b.id === el.dataset.id).name}. (Demo only.)`);
+      selectedCards.clear();
+      updateSelectionBar();
+      renderPage();
+      modal.classList.remove('is-visible');
+    });
+  });
+});
+document.getElementById('modalClose').addEventListener('click', () => {
+  document.getElementById('moveModal').classList.remove('is-visible');
+});
+document.getElementById('moveModal').addEventListener('click', (e) => {
+  if (e.target.id === 'moveModal') {
+    document.getElementById('moveModal').classList.remove('is-visible');
+  }
+});
+
+// ============================================
+// INIT
+// ============================================
+renderShelf();
+renderDetail();
+</script>
+
+</body>
+</html>

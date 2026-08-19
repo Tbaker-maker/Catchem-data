@@ -1,0 +1,13 @@
+{
+  "name": "catchem-data",
+  "version": "1.0.0",
+  "description": "Daily sealed-product price refresh for Catch'em",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "fetch": "node scripts/fetch-sealed-prices.mjs"
+  }
+}

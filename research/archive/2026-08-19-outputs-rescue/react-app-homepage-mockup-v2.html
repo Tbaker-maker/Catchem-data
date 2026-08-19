@@ -1,0 +1,1825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Catch'em — App Homepage Mockup v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #0b0d14;
+    --bg-deep: #070910;
+    --surface: #141824;
+    --surface-2: #1c2235;
+    --surface-3: #232a40;
+    --border: rgba(255, 255, 255, 0.07);
+    --border-strong: rgba(255, 255, 255, 0.14);
+    --text: #f4f5f8;
+    --text-sub: #8a93a8;
+    --text-muted: #5c637a;
+    --green: #36d399;
+    --purple: #c77dff;
+    --blue: #64a0ff;
+    --gold: #ffb84d;
+    --red: #ef5a5a;
+    --berry: #ff6b9d;
+    --font-display: 'Syne', sans-serif;
+    --font-body: 'Sora', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-weight: 400;
+    line-height: 1.55;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  .desktop-frame {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 32px;
+    padding: 32px;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+
+  .phone-mockup {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    background: var(--bg);
+    border: 1px solid var(--border-strong);
+    border-radius: 32px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    min-height: 800px;
+    position: relative;
+  }
+
+  .phone-label {
+    position: absolute;
+    top: -28px;
+    left: 16px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  @media (max-width: 600px) {
+    .desktop-frame {
+      display: block;
+      padding: 0;
+    }
+    .phone-mockup {
+      max-width: 100%;
+      border-radius: 0;
+      border: none;
+      box-shadow: none;
+      min-height: 100vh;
+    }
+    .phone-label { display: none; }
+  }
+
+  /* ============ HEADER ============ */
+
+  .app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px 12px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    gap: 10px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .brand-mark {
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, var(--green) 0%, var(--gold) 55%, var(--purple) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 13px;
+    color: var(--bg-deep);
+  }
+
+  .brand-name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 17px;
+    letter-spacing: -0.01em;
+  }
+
+  .brand-name::after {
+    content: "'em";
+    color: var(--text-sub);
+    margin-left: -3px;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Berries counter */
+  .berries {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px 5px 8px;
+    border-radius: 100px;
+    background: rgba(255, 107, 157, 0.1);
+    border: 1px solid rgba(255, 107, 157, 0.25);
+    color: var(--berry);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+
+  .berries:hover, .berries:active {
+    background: rgba(255, 107, 157, 0.18);
+  }
+
+  .berries-icon {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #ff9bc2, var(--berry) 70%, #d1447a);
+    box-shadow: 0 0 6px rgba(255, 107, 157, 0.4);
+  }
+
+  .mode-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 9px;
+    border-radius: 100px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    transition: all 0.15s ease;
+  }
+
+  .mode-pill:hover, .mode-pill:active {
+    border-color: var(--border-strong);
+  }
+
+  .mode-pill .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+  }
+
+  /* ============ PRE-LAUNCH BANNER ============ */
+  .prelaunch-banner {
+    background: linear-gradient(90deg, rgba(54,211,153,0.08), rgba(255,184,77,0.06), rgba(199,125,255,0.08));
+    border-bottom: 1px solid var(--border);
+    padding: 9px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 12px;
+  }
+
+  .prelaunch-banner .left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-sub);
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .prelaunch-banner .pulse {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(54,211,153,0.4); }
+    50% { opacity: 0.6; box-shadow: 0 0 0 6px rgba(54,211,153,0); }
+  }
+
+  .prelaunch-banner .cta {
+    background: var(--text);
+    color: var(--bg-deep);
+    padding: 5px 10px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* ============ FLOATING PACK NOTIFICATION ============ */
+
+  .pack-float-wrap {
+    padding: 14px 18px 8px;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .pack-float {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px 8px 8px;
+    background: linear-gradient(135deg, rgba(54,211,153,0.12) 0%, rgba(54,211,153,0.04) 100%);
+    border: 1px solid rgba(54,211,153,0.35);
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+
+  .pack-float::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: 100px;
+    background: linear-gradient(135deg, rgba(54,211,153,0.5), transparent);
+    opacity: 0.4;
+    filter: blur(6px);
+    z-index: -1;
+    animation: pulseGlow 3s ease-in-out infinite;
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 0.55; }
+  }
+
+  .pack-float:hover, .pack-float:active {
+    transform: translateY(-1px);
+    border-color: var(--green);
+  }
+
+  .pack-float-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background:
+      conic-gradient(from 45deg, var(--green), var(--gold), var(--purple), var(--green));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 10px;
+    color: var(--bg-deep);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pack-float-icon::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.2) 50%, transparent 60%);
+    animation: shine 3s ease-in-out infinite;
+  }
+
+  @keyframes shine {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  .pack-float-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .pack-float-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+  }
+
+  .pack-float-title {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  /* ============ SEASON HERO ============ */
+
+  .season-hero {
+    margin: 8px 18px 20px;
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--border-strong);
+    background: linear-gradient(160deg, var(--surface-2) 0%, var(--surface) 70%);
+    padding: 20px 18px 18px;
+  }
+
+  .season-hero::before {
+    content: "";
+    position: absolute;
+    top: -30%;
+    right: -20%;
+    width: 80%;
+    height: 180%;
+    background: radial-gradient(ellipse, rgba(100, 160, 255, 0.18), transparent 60%);
+    pointer-events: none;
+  }
+
+  .season-hero::after {
+    content: "";
+    position: absolute;
+    bottom: -50%;
+    left: -30%;
+    width: 80%;
+    height: 150%;
+    background: radial-gradient(ellipse, rgba(54, 211, 153, 0.1), transparent 60%);
+    pointer-events: none;
+  }
+
+  .season-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    position: relative;
+  }
+
+  .season-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-sub);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+  }
+
+  .season-countdown {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .season-countdown::before {
+    content: "⌛";
+    font-size: 11px;
+  }
+
+  .season-title {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+    position: relative;
+  }
+
+  .season-sub {
+    font-size: 12px;
+    color: var(--text-sub);
+    margin-bottom: 18px;
+    position: relative;
+  }
+
+  .season-progress-wrap {
+    position: relative;
+  }
+
+  .season-progress-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+
+  .season-progress-label {
+    font-size: 12px;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .season-progress-count {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-sub);
+  }
+
+  .season-progress-bar {
+    width: 100%;
+    height: 6px;
+    background: var(--surface-3);
+    border-radius: 100px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+
+  .season-progress-fill {
+    height: 100%;
+    width: 70%;
+    background: linear-gradient(90deg, var(--green), var(--gold));
+    border-radius: 100px;
+  }
+
+  .season-hero-action {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-sub);
+    text-decoration: none;
+    margin-top: 2px;
+  }
+
+  .season-hero-action:hover, .season-hero-action:active {
+    color: var(--text);
+  }
+
+  /* Era art cue in season hero */
+  .season-era-cue {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 70px;
+    height: 70px;
+    border-radius: 10px;
+    background:
+      linear-gradient(135deg, rgba(100, 160, 255, 0.2), rgba(199, 125, 255, 0.1));
+    border: 1px solid rgba(100, 160, 255, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--blue);
+    letter-spacing: -0.03em;
+    opacity: 0.85;
+  }
+
+  /* ============ SHARED SECTION ============ */
+
+  .section {
+    padding: 18px 0;
+  }
+
+  .section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    padding: 0 18px;
+  }
+
+  .section-head-left {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .section-count {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .section-action {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-sub);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .section-action:hover, .section-action:active { color: var(--text); }
+
+  /* ============ BERRIES EARN STRIP ============ */
+
+  .earn-strip {
+    margin: 0 18px;
+    padding: 14px;
+    background: linear-gradient(135deg, rgba(255, 107, 157, 0.08), rgba(199, 125, 255, 0.04));
+    border: 1px solid rgba(255, 107, 157, 0.18);
+    border-radius: 14px;
+  }
+
+  .earn-strip-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .earn-strip-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .earn-strip-title .berries-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .earn-strip-avail {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--berry);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .earn-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .earn-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    font-size: 12px;
+  }
+
+  .earn-item-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-sub);
+  }
+
+  .earn-item-check {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    border: 1px solid var(--border-strong);
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    color: transparent;
+  }
+
+  .earn-item.done .earn-item-check {
+    background: var(--green);
+    border-color: var(--green);
+    color: var(--bg-deep);
+  }
+
+  .earn-item.done .earn-item-label {
+    color: var(--text-muted);
+    text-decoration: line-through;
+  }
+
+  .earn-item-value {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--berry);
+    font-weight: 600;
+  }
+
+  .earn-item.done .earn-item-value {
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+
+  /* ============ BAG PREVIEW ============ */
+
+  .bag-row {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 0 18px;
+    scrollbar-width: none;
+  }
+
+  .bag-row::-webkit-scrollbar { display: none; }
+
+  .bag-card {
+    flex-shrink: 0;
+    width: 110px;
+    aspect-ratio: 3/4;
+    border-radius: 10px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+  }
+
+  .bag-card:active {
+    transform: scale(0.97);
+  }
+
+  .bag-card-rarity {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-family: var(--font-mono);
+    font-size: 8px;
+    padding: 2px 5px;
+    border-radius: 3px;
+    background: var(--bg-deep);
+    color: var(--text-sub);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+
+  .bag-card.rare .bag-card-rarity { color: var(--blue); }
+  .bag-card.epic .bag-card-rarity { color: var(--purple); }
+  .bag-card.legendary .bag-card-rarity { color: var(--gold); }
+  .bag-card.sealed .bag-card-rarity { color: var(--green); }
+
+  .bag-card-art {
+    aspect-ratio: 1;
+    margin-top: 14px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 28px;
+    color: var(--text);
+  }
+
+  .bag-card.signal .bag-card-art {
+    background: linear-gradient(135deg, rgba(54,211,153,0.2), rgba(54,211,153,0.05));
+    color: var(--green);
+  }
+
+  .bag-card.panic .bag-card-art {
+    background: linear-gradient(135deg, rgba(239,90,90,0.2), rgba(239,90,90,0.05));
+    color: var(--red);
+  }
+
+  .bag-card.calm .bag-card-art {
+    background: linear-gradient(135deg, rgba(100,160,255,0.2), rgba(100,160,255,0.05));
+    color: var(--blue);
+  }
+
+  .bag-card.hype .bag-card-art {
+    background: linear-gradient(135deg, rgba(255,184,77,0.2), rgba(255,184,77,0.05));
+    color: var(--gold);
+  }
+
+  .bag-card.grail .bag-card-art {
+    background: linear-gradient(135deg, rgba(199,125,255,0.25), rgba(199,125,255,0.05));
+    color: var(--purple);
+  }
+
+  .bag-card-pack .bag-card-art {
+    background: linear-gradient(135deg, rgba(54,211,153,0.2), rgba(100,160,255,0.15) 50%, rgba(199,125,255,0.2));
+    color: var(--text);
+    position: relative;
+  }
+
+  .bag-card-pack .bag-card-art::before {
+    content: "";
+    position: absolute;
+    inset: 6px;
+    border: 1px dashed rgba(255,255,255,0.2);
+    border-radius: 4px;
+  }
+
+  .bag-card-name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 10px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  .bag-card-meta {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    display: flex;
+    justify-content: space-between;
+    gap: 4px;
+  }
+
+  .bag-card-season {
+    color: var(--text-muted);
+    padding: 1px 4px;
+    background: var(--surface-3);
+    border-radius: 3px;
+    font-size: 7px;
+    letter-spacing: 0.05em;
+  }
+
+  /* ============ SIGNAL TILE ============ */
+
+  .signal-tile {
+    display: block;
+    padding: 14px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    text-decoration: none;
+    color: var(--text);
+    transition: background 0.15s ease;
+  }
+
+  .signal-tile:hover, .signal-tile:active { background: var(--surface-2); }
+  .signal-tile + .signal-tile { margin-top: 8px; }
+
+  .signal-tile-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+  }
+
+  .signal-tile-pillar {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--green);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .signal-tile-pillar::before {
+    content: "";
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--green);
+  }
+
+  .signal-tile-time {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+
+  .signal-tile-title {
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+
+  .signal-tile-sub {
+    font-size: 12px;
+    color: var(--text-sub);
+    margin-top: 4px;
+  }
+
+  .signal-list {
+    padding: 0 18px;
+  }
+
+  /* ============ BOTTOM NAV ============ */
+
+  .bottom-nav {
+    position: sticky;
+    bottom: 0;
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    padding: 8px 10px 14px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 2px;
+  }
+
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 4px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: color 0.15s ease;
+  }
+
+  .nav-item.active { color: var(--green); }
+
+  .nav-item svg { width: 20px; height: 20px; }
+
+  /* ============ RIP/CLAIM MODAL ============ */
+
+  .modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(7, 9, 16, 0.85);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 100;
+    display: flex;
+    align-items: flex-end;
+    padding: 20px;
+  }
+
+  .modal-sheet {
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 22px;
+    padding: 24px 20px 20px;
+    width: 100%;
+    position: relative;
+  }
+
+  .modal-sheet-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--surface-3);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-sub);
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .modal-pack-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-sub);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .modal-pack-title {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 18px;
+  }
+
+  .modal-pack-visual {
+    aspect-ratio: 3/4;
+    max-width: 160px;
+    margin: 0 auto 20px;
+    border-radius: 12px;
+    background: linear-gradient(160deg, #1a2238 0%, #0f1628 100%);
+    border: 1px solid var(--border-strong);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-pack-visual::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(45deg, transparent 0 10px, rgba(255,255,255,0.02) 10px 20px),
+      radial-gradient(circle at 50% 30%, rgba(54,211,153,0.18), transparent 50%);
+  }
+
+  .modal-pack-foil {
+    width: 80%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, var(--green), var(--gold), var(--purple), var(--green));
+    filter: blur(24px);
+    opacity: 0.35;
+    position: absolute;
+    top: 15%;
+  }
+
+  .modal-pack-center {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+  }
+
+  .modal-pack-center-title {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 3px;
+    background: linear-gradient(135deg, var(--green), var(--gold) 50%, var(--purple));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .modal-pack-center-sub {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    color: var(--text-sub);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .modal-pack-info {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-sub);
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  .modal-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .modal-btn {
+    padding: 14px 12px;
+    border-radius: 12px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    transition: transform 0.1s ease;
+    text-align: center;
+  }
+
+  .modal-btn:active {
+    transform: scale(0.98);
+  }
+
+  .modal-btn-secondary {
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+  }
+
+  .modal-btn-primary {
+    background: var(--text);
+    color: var(--bg-deep);
+  }
+
+  .modal-btn-label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+
+  .modal-btn-sub {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 400;
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .modal-btn-primary .modal-btn-sub {
+    color: var(--berry);
+  }
+
+  .modal-btn-primary .modal-btn-sub::before {
+    content: "+5 ";
+  }
+
+  /* ============ BAG BROWSE SCREEN ============ */
+
+  .bag-head {
+    padding: 20px 18px 14px;
+  }
+
+  .bag-head-title {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+
+  .bag-head-sub {
+    font-size: 13px;
+    color: var(--text-sub);
+  }
+
+  .bag-tabs {
+    display: flex;
+    gap: 6px;
+    padding: 0 18px 10px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .bag-tabs::-webkit-scrollbar { display: none; }
+
+  .bag-tab {
+    flex-shrink: 0;
+    padding: 7px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-sub);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-weight: 500;
+  }
+
+  .bag-tab.active {
+    background: var(--text);
+    color: var(--bg-deep);
+    border-color: var(--text);
+  }
+
+  .bag-tab-count {
+    margin-left: 4px;
+    font-weight: 400;
+    opacity: 0.7;
+  }
+
+  .bag-filters {
+    display: flex;
+    gap: 6px;
+    padding: 4px 18px 14px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .bag-filters::-webkit-scrollbar { display: none; }
+
+  .bag-filter-chip {
+    flex-shrink: 0;
+    padding: 5px 10px;
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    border-radius: 100px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-sub);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+  }
+
+  .bag-filter-chip.active {
+    border-color: var(--green);
+    color: var(--green);
+    background: rgba(54, 211, 153, 0.08);
+  }
+
+  .bag-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    padding: 0 18px 20px;
+  }
+
+  .bag-grid .bag-card {
+    width: 100%;
+  }
+
+  .bag-grid .bag-card-art {
+    font-size: 22px;
+  }
+
+  /* Pack vault item style */
+  .pack-vault-item {
+    position: relative;
+  }
+
+  .pack-vault-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(54, 211, 153, 0.15);
+    border: 1px solid var(--green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--green);
+    font-size: 10px;
+  }
+
+  /* ---- SCREEN TABS ON MOBILE ---- */
+
+  .screen-tabs {
+    display: none;
+  }
+
+  @media (max-width: 600px) {
+    .screen-tabs {
+      display: flex;
+      gap: 4px;
+      padding: 12px 16px;
+      background: var(--bg-deep);
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+      scrollbar-width: none;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+    .screen-tabs::-webkit-scrollbar { display: none; }
+
+    .screen-tab {
+      flex-shrink: 0;
+      padding: 6px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-sub);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+    }
+
+    .screen-tab.active {
+      background: var(--text);
+      color: var(--bg-deep);
+    }
+
+    .phone-mockup { display: none; }
+    .phone-mockup.active { display: block; }
+  }
+
+  .frame-title {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 20px 20px 0;
+    font-family: var(--font-display);
+    color: var(--text);
+  }
+
+  .frame-title h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+
+  .frame-title p {
+    font-size: 14px;
+    color: var(--text-sub);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 600px) {
+    .frame-title { display: none; }
+  }
+
+</style>
+</head>
+<body>
+
+<div class="screen-tabs" role="tablist">
+  <button class="screen-tab active" data-target="home">Collector Home</button>
+  <button class="screen-tab" data-target="modal">Rip / Claim Modal</button>
+  <button class="screen-tab" data-target="bag">Bag Browse</button>
+  <button class="screen-tab" data-target="vault">Pack Vault</button>
+</div>
+
+<div class="desktop-frame">
+
+  <div class="frame-title">
+    <h1>Catch'em v2 — Collector Mode Refined</h1>
+    <p>Season-forward home · floating pack · claim/rip modal · bag browse · pack vault. Berries economy visible.</p>
+  </div>
+
+  <!-- ============ SCREEN 1: COLLECTOR HOME v2 ============ -->
+  <div class="phone-mockup active" id="home">
+    <div class="phone-label">1 · Collector Home (v2)</div>
+
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-mark">C</div>
+        <div class="brand-name">Catch</div>
+      </div>
+      <div class="header-right">
+        <div class="berries" title="Berries">
+          <span class="berries-icon"></span>
+          <span>247</span>
+        </div>
+        <button class="mode-pill">
+          <span class="dot"></span>
+          <span>Collector</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="prelaunch-banner">
+      <div class="left">
+        <span class="pulse"></span>
+        <span>Season 1 · 14d left</span>
+      </div>
+      <a href="#" class="cta">Join →</a>
+    </div>
+
+    <!-- Pack floating notification -->
+    <div class="pack-float-wrap">
+      <div class="pack-float">
+        <div class="pack-float-icon">TUE</div>
+        <div class="pack-float-text">
+          <span class="pack-float-label">Pack ready</span>
+          <span class="pack-float-title">Tuesday's catch</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Season Hero -->
+    <div class="season-hero">
+      <div class="season-era-cue">S&amp;S</div>
+      <div class="season-meta">
+        <span class="season-eyebrow">Season 01</span>
+        <span class="season-countdown">14d left</span>
+      </div>
+      <div class="season-title">Sword &amp; Shield</div>
+      <div class="season-sub">The chase that made modern. 10 cards. Never reprinted.</div>
+
+      <div class="season-progress-wrap">
+        <div class="season-progress-head">
+          <span class="season-progress-label">Your progress</span>
+          <span class="season-progress-count">7 / 10</span>
+        </div>
+        <div class="season-progress-bar">
+          <div class="season-progress-fill"></div>
+        </div>
+        <a href="#" class="season-hero-action">See season details →</a>
+      </div>
+    </div>
+
+    <!-- Berries earn strip -->
+    <div class="section" style="padding-top: 4px;">
+      <div class="earn-strip">
+        <div class="earn-strip-head">
+          <div class="earn-strip-title">
+            <span class="berries-icon"></span>
+            Earn today
+          </div>
+          <span class="earn-strip-avail">+22 available</span>
+        </div>
+        <div class="earn-list">
+          <div class="earn-item done">
+            <span class="earn-item-label">
+              <span class="earn-item-check">✓</span>
+              Opened the newsletter
+            </span>
+            <span class="earn-item-value">+3</span>
+          </div>
+          <div class="earn-item">
+            <span class="earn-item-label">
+              <span class="earn-item-check"></span>
+              Rip today's pack
+            </span>
+            <span class="earn-item-value">+5</span>
+          </div>
+          <div class="earn-item">
+            <span class="earn-item-label">
+              <span class="earn-item-check"></span>
+              Check in on Discord
+            </span>
+            <span class="earn-item-value">+4</span>
+          </div>
+          <div class="earn-item">
+            <span class="earn-item-label">
+              <span class="earn-item-check"></span>
+              Call the market (1 prediction)
+            </span>
+            <span class="earn-item-value">+10</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Your Bag preview -->
+    <div class="section">
+      <div class="section-head">
+        <div class="section-head-left">
+          <div class="section-title">Your Bag</div>
+          <div class="section-count">47 cards · 3 sealed</div>
+        </div>
+        <a href="#" class="section-action">Browse →</a>
+      </div>
+      <div class="bag-row">
+        <div class="bag-card bag-card-pack sealed">
+          <div class="bag-card-rarity">PACK</div>
+          <div class="bag-card-art">S1</div>
+          <div>
+            <div class="bag-card-name">Sealed · Wed</div>
+            <div class="bag-card-meta">
+              <span class="bag-card-season">S01</span>
+              <span>×2</span>
+            </div>
+          </div>
+        </div>
+        <div class="bag-card legendary grail">
+          <div class="bag-card-rarity">LEG</div>
+          <div class="bag-card-art">PP</div>
+          <div>
+            <div class="bag-card-name">Perfect Pull</div>
+            <div class="bag-card-meta">
+              <span class="bag-card-season">S01</span>
+              <span>×1</span>
+            </div>
+          </div>
+        </div>
+        <div class="bag-card epic signal">
+          <div class="bag-card-rarity">EPIC</div>
+          <div class="bag-card-art">S</div>
+          <div>
+            <div class="bag-card-name">The Signal</div>
+            <div class="bag-card-meta">
+              <span class="bag-card-season">S01</span>
+              <span>×2</span>
+            </div>
+          </div>
+        </div>
+        <div class="bag-card rare hype">
+          <div class="bag-card-rarity">RARE</div>
+          <div class="bag-card-art">H</div>
+          <div>
+            <div class="bag-card-name">Hype Train</div>
+            <div class="bag-card-meta">
+              <span class="bag-card-season">S01</span>
+              <span>×3</span>
+            </div>
+          </div>
+        </div>
+        <div class="bag-card rare calm">
+          <div class="bag-card-rarity">RARE</div>
+          <div class="bag-card-art">C</div>
+          <div>
+            <div class="bag-card-name">Calm Collector</div>
+            <div class="bag-card-meta">
+              <span class="bag-card-season">S01</span>
+              <span>×4</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- For you Signals -->
+    <div class="section">
+      <div class="section-head">
+        <div class="section-head-left">
+          <div class="section-title">For you</div>
+          <div class="section-count">· Collector edit</div>
+        </div>
+        <a href="#" class="section-action">Archive →</a>
+      </div>
+
+      <div class="signal-list">
+        <a href="#" class="signal-tile">
+          <div class="signal-tile-head">
+            <div class="signal-tile-pillar">Collector</div>
+            <div class="signal-tile-time">2h ago</div>
+          </div>
+          <div class="signal-tile-title">Evolving Skies singles look undervalued vs peers</div>
+          <div class="signal-tile-sub">3 green months in 12. All peers at 6–8. Moonbreon still 30% below all-time high.</div>
+        </a>
+
+        <a href="#" class="signal-tile">
+          <div class="signal-tile-head">
+            <div class="signal-tile-pillar">Collector</div>
+            <div class="signal-tile-time">Yesterday</div>
+          </div>
+          <div class="signal-tile-title">Silver Tempest Lugia enters Grail Watch</div>
+          <div class="signal-tile-sub">Persistence signal: 11 of 19 months on demand dashboard. Quiet accumulator.</div>
+        </a>
+      </div>
+    </div>
+
+    <nav class="bottom-nav">
+      <a href="#" class="nav-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 3l9 9"/><path d="M5 10v10h14V10"/></svg>
+        Home
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h16"/></svg>
+        Bag
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16"/><path d="M4 6h16"/><path d="M4 18h16"/></svg>
+        Season
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v4H4z"/><path d="M4 12h16v8H4z"/></svg>
+        Signals
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg>
+        You
+      </a>
+    </nav>
+  </div>
+
+  <!-- ============ SCREEN 2: RIP/CLAIM MODAL ============ -->
+  <div class="phone-mockup" id="modal">
+    <div class="phone-label">2 · Rip or Claim</div>
+
+    <!-- Fake background to show modal over content -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-mark">C</div>
+        <div class="brand-name">Catch</div>
+      </div>
+      <div class="header-right">
+        <div class="berries"><span class="berries-icon"></span><span>247</span></div>
+        <button class="mode-pill"><span class="dot"></span><span>Collector</span></button>
+      </div>
+    </header>
+
+    <div class="prelaunch-banner">
+      <div class="left">
+        <span class="pulse"></span>
+        <span>Season 1 · 14d left</span>
+      </div>
+      <a href="#" class="cta">Join →</a>
+    </div>
+
+    <div style="padding: 20px; opacity: 0.3;">
+      <div class="season-hero" style="margin: 0;">
+        <div class="season-era-cue">S&amp;S</div>
+        <div class="season-meta">
+          <span class="season-eyebrow">Season 01</span>
+          <span class="season-countdown">14d left</span>
+        </div>
+        <div class="season-title">Sword &amp; Shield</div>
+        <div class="season-sub">The chase that made modern.</div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-backdrop">
+      <div class="modal-sheet">
+        <div class="modal-sheet-close">×</div>
+        <div class="modal-pack-label">
+          <span class="berries-icon" style="width: 8px; height: 8px;"></span>
+          Season 01 · Pack 012
+        </div>
+        <div class="modal-pack-title">Tuesday's Catch</div>
+
+        <div class="modal-pack-visual">
+          <div class="modal-pack-foil"></div>
+          <div class="modal-pack-center">
+            <div class="modal-pack-center-title">TUE<br>PACK</div>
+            <div class="modal-pack-center-sub">Apr 22 · 2026</div>
+          </div>
+        </div>
+
+        <div class="modal-pack-info">
+          4 cards inside · 1 guaranteed Season 1 drop<br>
+          <span style="color: var(--text-muted); font-size: 11px;">Sealed packs never expire. Rip anytime.</span>
+        </div>
+
+        <div class="modal-actions">
+          <button class="modal-btn modal-btn-secondary">
+            <span class="modal-btn-label">Claim</span>
+            <span class="modal-btn-sub">Keep sealed</span>
+          </button>
+          <button class="modal-btn modal-btn-primary">
+            <span class="modal-btn-label">Rip now</span>
+            <span class="modal-btn-sub">berries</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 3: BAG BROWSE ============ -->
+  <div class="phone-mockup" id="bag">
+    <div class="phone-label">3 · Bag Browse</div>
+
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-mark">C</div>
+        <div class="brand-name">Catch</div>
+      </div>
+      <div class="header-right">
+        <div class="berries"><span class="berries-icon"></span><span>247</span></div>
+        <button class="mode-pill"><span class="dot"></span><span>Collector</span></button>
+      </div>
+    </header>
+
+    <div class="bag-head">
+      <div class="bag-head-title">Your Bag</div>
+      <div class="bag-head-sub">47 cards · 3 sealed · Season 01 at 70%</div>
+    </div>
+
+    <div class="bag-tabs">
+      <button class="bag-tab active">Cards <span class="bag-tab-count">44</span></button>
+      <button class="bag-tab">Sealed <span class="bag-tab-count">3</span></button>
+      <button class="bag-tab">Newsletters <span class="bag-tab-count">12</span></button>
+    </div>
+
+    <div class="bag-filters">
+      <button class="bag-filter-chip active">All</button>
+      <button class="bag-filter-chip">Legendary</button>
+      <button class="bag-filter-chip">Epic</button>
+      <button class="bag-filter-chip">Rare</button>
+      <button class="bag-filter-chip">Common</button>
+      <button class="bag-filter-chip">S01</button>
+    </div>
+
+    <div class="bag-grid">
+      <div class="bag-card legendary grail">
+        <div class="bag-card-rarity">LEG</div>
+        <div class="bag-card-art">PP</div>
+        <div>
+          <div class="bag-card-name">Perfect Pull</div>
+          <div class="bag-card-meta"><span class="bag-card-season">S01</span><span>×1</span></div>
+        </div>
+      </div>
+      <div class="bag-card epic signal">
+        <div class="bag-card-rarity">EPIC</div>
+        <div class="bag-card-art">S</div>
+        <div>
+          <div class="bag-card-name">The Signal</div>
+          <div class="bag-card-meta"><span class="bag-card-season">S01</span><span>×2</span></div>
+        </div>
+      </div>
+      <div class="bag-card rare hype">
+        <div class="bag-card-rarity">RARE</div>
+        <div class="bag-card-art">H</div>
+        <div>
+          <div class="bag-card-name">Hype Train</div>
+          <div class="bag-card-meta"><span class="bag-card-season">S01</span><span>×3</span></div>
+        </div>
+      </div>
+      <div class="bag-card rare calm">
+        <div class="bag-card-rarity">RARE</div>
+        <div class="bag-card-art">C</div>
+        <div>
+          <div class="bag-card-name">Calm Collector</div>
+          <div class="bag-card-meta"><span class="bag-card-season">S01</span><span>×4</span></div>
+        </div>
+      </div>
+      <div class="bag-card panic">
+        <div class="bag-card-rarity">COM</div>
+        <div class="bag-card-art">P</div>
+        <div>
+          <div class="bag-card-name">Panicked Flipper</div>
+          <div class="bag-card-meta"><span class="bag-card-season">S01</span><span>×2</span></div>
+        </div>
+      </div>
+      <div class="bag-card rare calm">
+        <div class="bag-card-rarity">RARE</div>
+        <div class="bag-card-art">G</div>
+        <div>
+          <div class="bag-card-name">Grader Skeptic</div>
+          <div class="bag-card-meta"><span class="bag-card-season">S01</span><span>×1</span></div>
+        </div>
+      </div>
+      <div class="bag-card epic signal">
+        <div class="bag-card-rarity">EPIC</div>
+        <div class="bag-card-art">PR</div>
+        <div>
+          <div class="bag-card-name">Pack Ripper</div>
+          <div class="bag-card-meta"><span class="bag-card-season">S01</span><span>×1</span></div>
+        </div>
+      </div>
+      <div class="bag-card rare hype">
+        <div class="bag-card-rarity">RARE</div>
+        <div class="bag-card-art">DL</div>
+        <div>
+          <div class="bag-card-name">Discord Lurker</div>
+          <div class="bag-card-meta"><span class="bag-card-season">S01</span><span>×2</span></div>
+        </div>
+      </div>
+      <div class="bag-card panic">
+        <div class="bag-card-rarity">COM</div>
+        <div class="bag-card-art">RP</div>
+        <div>
+          <div class="bag-card-name">Rotation Panic</div>
+          <div class="bag-card-meta"><span class="bag-card-season">S01</span><span>×3</span></div>
+        </div>
+      </div>
+    </div>
+
+    <nav class="bottom-nav">
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 3l9 9"/><path d="M5 10v10h14V10"/></svg>
+        Home
+      </a>
+      <a href="#" class="nav-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h16"/></svg>
+        Bag
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16"/><path d="M4 6h16"/><path d="M4 18h16"/></svg>
+        Season
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v4H4z"/><path d="M4 12h16v8H4z"/></svg>
+        Signals
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg>
+        You
+      </a>
+    </nav>
+  </div>
+
+  <!-- ============ SCREEN 4: PACK VAULT ============ -->
+  <div class="phone-mockup" id="vault">
+    <div class="phone-label">4 · Pack Vault (Sealed tab)</div>
+
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-mark">C</div>
+        <div class="brand-name">Catch</div>
+      </div>
+      <div class="header-right">
+        <div class="berries"><span class="berries-icon"></span><span>247</span></div>
+        <button class="mode-pill"><span class="dot"></span><span>Collector</span></button>
+      </div>
+    </header>
+
+    <div class="bag-head">
+      <div class="bag-head-title">Pack Vault</div>
+      <div class="bag-head-sub">3 sealed · Rip anytime · They never expire.</div>
+    </div>
+
+    <div class="bag-tabs">
+      <button class="bag-tab">Cards <span class="bag-tab-count">44</span></button>
+      <button class="bag-tab active">Sealed <span class="bag-tab-count">3</span></button>
+      <button class="bag-tab">Newsletters <span class="bag-tab-count">12</span></button>
+    </div>
+
+    <div class="bag-filters">
+      <button class="bag-filter-chip active">All</button>
+      <button class="bag-filter-chip">S01</button>
+      <button class="bag-filter-chip">This week</button>
+    </div>
+
+    <div class="bag-grid">
+      <div class="bag-card bag-card-pack sealed pack-vault-item">
+        <div class="pack-vault-badge">★</div>
+        <div class="bag-card-rarity">PACK</div>
+        <div class="bag-card-art">MON</div>
+        <div>
+          <div class="bag-card-name">Monday #011</div>
+          <div class="bag-card-meta"><span class="bag-card-season">S01</span><span>Apr 21</span></div>
+        </div>
+      </div>
+      <div class="bag-card bag-card-pack sealed pack-vault-item">
+        <div class="pack-vault-badge">★</div>
+        <div class="bag-card-rarity">PACK</div>
+        <div class="bag-card-art">FRI</div>
+        <div>
+          <div class="bag-card-name">Friday #008</div>
+          <div class="bag-card-meta"><span class="bag-card-season">S01</span><span>Apr 18</span></div>
+        </div>
+      </div>
+      <div class="bag-card bag-card-pack sealed pack-vault-item">
+        <div class="pack-vault-badge">★</div>
+        <div class="bag-card-rarity">PACK</div>
+        <div class="bag-card-art">WED</div>
+        <div>
+          <div class="bag-card-name">Wednesday #006</div>
+          <div class="bag-card-meta"><span class="bag-card-season">S01</span><span>Apr 16</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding: 20px; text-align: center;">
+      <div style="font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px;">Stacked 3 packs in a row? Nice.</div>
+      <div style="font-size: 13px; color: var(--text-sub); line-height: 1.5;">Sealed packs carry value in your collection. Rip them on milestones. Or hoard them. Or trade them. Your call.</div>
+    </div>
+
+    <nav class="bottom-nav">
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 3l9 9"/><path d="M5 10v10h14V10"/></svg>
+        Home
+      </a>
+      <a href="#" class="nav-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h16"/></svg>
+        Bag
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16"/><path d="M4 6h16"/><path d="M4 18h16"/></svg>
+        Season
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v4H4z"/><path d="M4 12h16v8H4z"/></svg>
+        Signals
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg>
+        You
+      </a>
+    </nav>
+  </div>
+
+</div>
+
+<script>
+  const tabs = document.querySelectorAll('.screen-tab');
+  const mockups = document.querySelectorAll('.phone-mockup');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.target;
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      mockups.forEach(m => m.classList.toggle('active', m.id === target));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+</script>
+
+</body>
+</html>

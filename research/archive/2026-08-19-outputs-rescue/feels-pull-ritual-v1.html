@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Catch'em — Feels Pull Ritual v1</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+:root {
+  --bg-0: #0a0b10;
+  --bg-1: #12141c;
+  --bg-2: #1a1d28;
+  --surface: #1e2230;
+  --surface-2: #262b3c;
+  --border: rgba(255, 255, 255, 0.06);
+  --border-2: rgba(255, 255, 255, 0.12);
+
+  --text: #ecedf2;
+  --text-2: #b8bcc8;
+  --text-muted: #7a7f8d;
+  --text-faint: #4a4e5a;
+
+  --green: #36d399;
+  --green-soft: rgba(54, 211, 153, 0.15);
+  --gold: #ffb84d;
+  --gold-soft: rgba(255, 184, 77, 0.18);
+  --purple: #c77dff;
+  --purple-soft: rgba(199, 125, 255, 0.18);
+  --blue: #64a0ff;
+  --red: #ef5a5a;
+  --berry: #ff6b9d;
+  --berry-soft: rgba(255, 107, 157, 0.2);
+
+  /* Rarity palette */
+  --rarity-common: #9aa0ac;
+  --rarity-rare: #64a0ff;
+  --rarity-epic: #c77dff;
+  --rarity-legendary: #ffb84d;
+
+  --display: 'Syne', system-ui, sans-serif;
+  --body: 'Sora', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none;
+}
+body {
+  font-family: var(--body);
+  color: var(--text);
+  background: var(--bg-0);
+  font-size: 15px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ============================================
+   SCENE CONTAINER
+   ============================================ */
+.scene {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(1200px 800px at 30% 20%, rgba(199, 125, 255, 0.08) 0%, transparent 55%),
+    radial-gradient(900px 700px at 75% 80%, rgba(54, 211, 153, 0.06) 0%, transparent 60%),
+    linear-gradient(180deg, #0a0b10 0%, #13151f 100%);
+  overflow: hidden;
+}
+
+/* Background grain texture */
+.scene::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.02 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  opacity: 0.5;
+  z-index: 1;
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+.scene-head {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 10;
+}
+.scene-head .label {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.scene-head .label strong {
+  color: var(--text);
+  font-weight: 700;
+}
+.scene-head .skip {
+  font-size: 12px;
+  color: var(--text-faint);
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.scene-head .skip:active { background: rgba(255, 255, 255, 0.08); }
+
+/* ============================================
+   STATE: PRE-RIP (pack sitting there)
+   ============================================ */
+.stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+}
+
+.pack-hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  transition: all 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.pack-hero.is-gone {
+  opacity: 0;
+  transform: translateY(-20px) scale(0.95);
+  pointer-events: none;
+}
+
+.pack-visual {
+  position: relative;
+  width: 220px;
+  height: 300px;
+  border-radius: 20px;
+  background:
+    linear-gradient(145deg, #2a2f45 0%, #1a1d28 55%, #12141c 100%);
+  border: 1px solid var(--border-2);
+  box-shadow:
+    0 30px 60px rgba(0, 0, 0, 0.4),
+    0 0 40px rgba(199, 125, 255, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  animation: packFloat 3.2s ease-in-out infinite;
+}
+.pack-visual::before {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(255, 184, 77, 0.15) 0%, transparent 60%),
+    radial-gradient(circle at 30% 70%, rgba(199, 125, 255, 0.12) 0%, transparent 60%);
+  pointer-events: none;
+}
+.pack-visual::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  background: linear-gradient(135deg, transparent 30%, rgba(255, 255, 255, 0.04) 50%, transparent 70%);
+  background-size: 200% 200%;
+  animation: packShine 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes packFloat {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-6px) rotate(1deg); }
+}
+@keyframes packShine {
+  0% { background-position: 200% 200%; }
+  100% { background-position: -100% -100%; }
+}
+
+.pack-wordmark {
+  position: relative;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 56px;
+  letter-spacing: -0.04em;
+  line-height: 0.9;
+  background: linear-gradient(180deg, #ffe9bf 0%, #ffb84d 55%, #c77dff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 4px 12px rgba(199, 125, 255, 0.3));
+  z-index: 2;
+}
+.pack-wordmark-sub {
+  position: relative;
+  margin-top: 6px;
+  font-family: var(--body);
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  z-index: 2;
+}
+
+.pack-tab {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--purple));
+  z-index: 2;
+}
+
+.pack-cta {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.pack-cta .tap-chip {
+  padding: 12px 22px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--berry) 100%);
+  color: #0a0b10;
+  box-shadow: 0 8px 24px rgba(255, 184, 77, 0.3);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+}
+
+/* ============================================
+   STATE: POOF (smoke animation)
+   ============================================ */
+.poof-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  height: 400px;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 6;
+}
+.poof-container.is-active {
+  opacity: 1;
+}
+.smoke {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.5) 0%, rgba(199, 125, 255, 0.3) 30%, rgba(255, 184, 77, 0.15) 60%, transparent 80%);
+  filter: blur(15px);
+  opacity: 0;
+  mix-blend-mode: screen;
+}
+.poof-container.is-active .smoke {
+  animation: smokePoof 1s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+.smoke:nth-child(1) { top: 40%; left: 40%; animation-delay: 0s; }
+.smoke:nth-child(2) { top: 30%; left: 50%; animation-delay: 0.05s; width: 140px; height: 140px; }
+.smoke:nth-child(3) { top: 50%; left: 55%; animation-delay: 0.08s; }
+.smoke:nth-child(4) { top: 45%; left: 30%; animation-delay: 0.12s; width: 100px; height: 100px; }
+.smoke:nth-child(5) { top: 55%; left: 45%; animation-delay: 0.15s; }
+
+@keyframes smokePoof {
+  0% { transform: scale(0.3); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: scale(3) translate(var(--dx, 0), var(--dy, -40px)); opacity: 0; }
+}
+
+.sparkle-burst {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+.poof-container.is-active .sparkle-burst {
+  animation: sparkleBurst 0.8s ease-out forwards;
+  animation-delay: 0.1s;
+}
+.sparkle-burst span {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #fff;
+  top: 50%;
+  left: 50%;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+}
+.sparkle-burst span:nth-child(1) { --tx: -80px; --ty: -60px; }
+.sparkle-burst span:nth-child(2) { --tx: 90px; --ty: -40px; background: var(--gold); box-shadow: 0 0 8px var(--gold); }
+.sparkle-burst span:nth-child(3) { --tx: -50px; --ty: 70px; background: var(--purple); box-shadow: 0 0 8px var(--purple); }
+.sparkle-burst span:nth-child(4) { --tx: 70px; --ty: 80px; }
+.sparkle-burst span:nth-child(5) { --tx: -100px; --ty: 20px; background: var(--berry); box-shadow: 0 0 8px var(--berry); }
+.sparkle-burst span:nth-child(6) { --tx: 100px; --ty: -20px; background: var(--green); box-shadow: 0 0 8px var(--green); }
+.sparkle-burst span:nth-child(7) { --tx: 0; --ty: -100px; }
+.sparkle-burst span:nth-child(8) { --tx: 0; --ty: 100px; background: var(--gold); box-shadow: 0 0 8px var(--gold); }
+
+@keyframes sparkleBurst {
+  0% { opacity: 0; }
+  30% { opacity: 1; }
+  100% { opacity: 0; transform: none; }
+}
+.sparkle-burst span {
+  animation: inherit;
+}
+.poof-container.is-active .sparkle-burst span {
+  animation: sparkleMove 0.8s ease-out forwards;
+  animation-delay: 0.1s;
+}
+@keyframes sparkleMove {
+  0% { transform: translate(0, 0) scale(0); }
+  20% { transform: translate(calc(var(--tx) * 0.3), calc(var(--ty) * 0.3)) scale(1.5); }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0); }
+}
+
+/* Eeee voice bubble */
+.eee-bubble {
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 32px;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+  text-shadow: 0 0 20px rgba(255, 184, 77, 0.6);
+  opacity: 0;
+  z-index: 8;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.eee-bubble.is-active {
+  animation: eeePop 1.2s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+@keyframes eeePop {
+  0% { opacity: 0; transform: translate(-50%, -40%) scale(0.6) rotate(-5deg); }
+  20% { opacity: 1; transform: translate(-50%, -60%) scale(1.2) rotate(3deg); }
+  50% { opacity: 1; transform: translate(-50%, -65%) scale(1) rotate(-2deg); }
+  100% { opacity: 0; transform: translate(-50%, -80%) scale(0.9) rotate(0deg); }
+}
+
+/* ============================================
+   STATE: CARD REVEAL (3 cards)
+   ============================================ */
+.reveal-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px 120px;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+.reveal-stage.is-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.reveal-progress {
+  position: absolute;
+  top: 56px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.reveal-progress .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  transition: all 0.3s;
+}
+.reveal-progress .dot.is-done {
+  background: var(--text-muted);
+}
+.reveal-progress .dot.is-current {
+  background: var(--gold);
+  width: 22px;
+  border-radius: 4px;
+  box-shadow: 0 0 12px rgba(255, 184, 77, 0.5);
+}
+
+.reveal-meta {
+  position: absolute;
+  top: 86px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+/* The card */
+.card-viewport {
+  position: relative;
+  width: 280px;
+  height: 380px;
+  perspective: 1400px;
+}
+
+.card {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: rotateY(180deg);
+  transition: transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+  cursor: pointer;
+}
+.card.is-flipped {
+  transform: rotateY(0deg);
+}
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+}
+
+/* Card back */
+.card-back {
+  background:
+    linear-gradient(145deg, #2a2f45 0%, #1a1d28 60%, #12141c 100%);
+  border: 1px solid var(--border-2);
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.card-back::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: radial-gradient(circle at 50% 40%, rgba(199, 125, 255, 0.1) 0%, transparent 65%);
+}
+.card-back-mark {
+  position: relative;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 42px;
+  letter-spacing: -0.03em;
+  background: linear-gradient(180deg, #ffe9bf 0%, #ffb84d 60%, #c77dff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+  line-height: 0.95;
+}
+.card-back-mark small {
+  display: block;
+  font-family: var(--body);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.35em;
+  color: var(--text-faint);
+  -webkit-text-fill-color: var(--text-faint);
+  margin-top: 6px;
+}
+
+/* Card front */
+.card-front {
+  background: linear-gradient(180deg, #1e2230 0%, #151825 100%);
+  border: 1px solid var(--border-2);
+  transform: rotateY(180deg);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+}
+
+/* Card frame (rarity-themed) */
+.card.is-common .card-front { border-color: rgba(154, 160, 172, 0.3); }
+.card.is-rare .card-front {
+  border-color: rgba(100, 160, 255, 0.5);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(100, 160, 255, 0.25);
+}
+.card.is-epic .card-front {
+  border-color: rgba(199, 125, 255, 0.6);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 40px rgba(199, 125, 255, 0.35);
+}
+.card.is-legendary .card-front {
+  border-color: rgba(255, 184, 77, 0.7);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 60px rgba(255, 184, 77, 0.4);
+  animation: legendaryGlow 2s ease-in-out infinite;
+}
+@keyframes legendaryGlow {
+  0%, 100% { box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 40px rgba(255, 184, 77, 0.3); }
+  50% { box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 70px rgba(255, 184, 77, 0.6); }
+}
+
+.card-art {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.card-art::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 0.04) 0%, transparent 70%);
+}
+
+.card-placeholder {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 84px;
+  letter-spacing: -0.02em;
+  opacity: 0.9;
+  text-align: center;
+  line-height: 1;
+}
+.card.is-common .card-placeholder { color: var(--rarity-common); }
+.card.is-rare .card-placeholder { color: var(--rarity-rare); }
+.card.is-epic .card-placeholder { color: var(--rarity-epic); }
+.card.is-legendary .card-placeholder { color: var(--rarity-legendary); }
+
+/* Particles for epic+ */
+.card-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.card.is-epic .card-particles::before,
+.card.is-legendary .card-particles::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle, rgba(199, 125, 255, 0.5) 1px, transparent 1px),
+    radial-gradient(circle, rgba(255, 184, 77, 0.4) 1px, transparent 1px);
+  background-size: 40px 40px, 60px 60px;
+  background-position: 0 0, 20px 20px;
+  animation: particleFloat 6s linear infinite;
+  opacity: 0.7;
+}
+.card.is-legendary .card-particles::after {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  background:
+    conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(255, 184, 77, 0.15) 90deg, transparent 180deg, rgba(199, 125, 255, 0.15) 270deg, transparent 360deg);
+  animation: legendaryShine 4s linear infinite;
+  mix-blend-mode: screen;
+}
+@keyframes particleFloat {
+  0% { background-position: 0 0, 20px 20px; }
+  100% { background-position: 40px -40px, 60px -20px; }
+}
+@keyframes legendaryShine {
+  to { transform: rotate(360deg); }
+}
+
+/* Card info strip */
+.card-info {
+  padding: 12px 14px;
+  background: rgba(0, 0, 0, 0.35);
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.card-name {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+.card-tier-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.card-tier {
+  font-family: var(--body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+.card-tier.gm { color: var(--gold); }
+.card-tier.dm { color: var(--berry); }
+.card-rarity-badge {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-2);
+  color: var(--text-muted);
+}
+.card.is-common .card-rarity-badge { color: var(--rarity-common); }
+.card.is-rare .card-rarity-badge { color: var(--rarity-rare); border-color: rgba(100, 160, 255, 0.3); }
+.card.is-epic .card-rarity-badge { color: var(--rarity-epic); border-color: rgba(199, 125, 255, 0.3); }
+.card.is-legendary .card-rarity-badge { color: var(--rarity-legendary); border-color: rgba(255, 184, 77, 0.3); }
+
+/* Scratch-off float */
+.scratch-layer {
+  position: relative;
+  height: 32px;
+  margin-top: 6px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #0a0b10;
+}
+.scratch-revealed {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  color: var(--text);
+}
+.scratch-revealed .float-label {
+  font-size: 9px;
+  color: var(--text-faint);
+  margin-right: 8px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.scratch-revealed .float-value {
+  font-variant-numeric: tabular-nums;
+}
+.card.is-gm .float-value { color: var(--gold); }
+.card.is-dm .float-value { color: var(--berry); }
+
+.scratch-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(135deg, #3a3f52 0px, #3a3f52 3px, #2a2f45 3px, #2a2f45 6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--body);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  cursor: grab;
+  transition: opacity 0.4s;
+}
+.scratch-overlay.is-scratching { cursor: grabbing; }
+.scratch-overlay.is-revealed { opacity: 0; pointer-events: none; }
+.scratch-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.04), transparent);
+  background-size: 200% 100%;
+  animation: scratchShimmer 2s linear infinite;
+}
+@keyframes scratchShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Flavor */
+.card-flavor {
+  padding: 0 14px 12px;
+  font-family: var(--body);
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--text-muted);
+  font-style: italic;
+  min-height: 16px;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.card-flavor.is-visible { opacity: 1; }
+
+/* Swipe hint */
+.swipe-hint {
+  position: absolute;
+  bottom: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.swipe-hint.is-visible { opacity: 1; }
+.swipe-hint .arrows {
+  display: flex;
+  gap: 2px;
+  animation: swipeHint 1.6s ease-in-out infinite;
+}
+@keyframes swipeHint {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(6px); }
+}
+
+/* ============================================
+   STATE: BINDER PLACEMENT (final)
+   ============================================ */
+.binder-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 5;
+  gap: 20px;
+}
+.binder-stage.is-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.binder-title {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  text-align: center;
+}
+.binder-sub {
+  font-family: var(--body);
+  font-size: 13px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: -12px;
+}
+
+.binder-visual {
+  position: relative;
+  width: 240px;
+  height: 280px;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #2a5140 0%, #1a3a2d 100%);
+  border: 1px solid rgba(54, 211, 153, 0.4);
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.4),
+    0 0 40px rgba(54, 211, 153, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 40px 24px;
+}
+.binder-visual::before {
+  content: '';
+  position: absolute;
+  left: 16px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+.binder-spine {
+  position: absolute;
+  top: 20px;
+  bottom: 20px;
+  left: 16px;
+  width: 4px;
+  background: repeating-linear-gradient(180deg, transparent 0, transparent 10px, rgba(54, 211, 153, 0.3) 10px, rgba(54, 211, 153, 0.3) 12px);
+}
+
+.binder-name-plate {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  color: var(--text);
+  text-align: center;
+  padding: 8px 14px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.binder-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--body);
+}
+.binder-count {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 32px;
+  letter-spacing: -0.02em;
+  color: var(--green);
+  line-height: 1;
+}
+.binder-count-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.binder-cards-flying {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.flying-card {
+  position: absolute;
+  width: 60px;
+  height: 80px;
+  border-radius: 6px;
+  top: 20%;
+  left: 50%;
+  opacity: 0;
+}
+.binder-stage.is-active .flying-card {
+  animation: flyIntoBinder 1.2s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+.flying-card:nth-child(1) { animation-delay: 0.2s; background: linear-gradient(135deg, var(--rarity-common), #2a2f45); }
+.flying-card:nth-child(2) { animation-delay: 0.5s; background: linear-gradient(135deg, var(--rarity-rare), #2a2f45); }
+.flying-card:nth-child(3) { animation-delay: 0.8s; background: linear-gradient(135deg, var(--rarity-legendary), #2a2f45); }
+
+@keyframes flyIntoBinder {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -100px) rotate(-20deg) scale(1);
+  }
+  70% {
+    opacity: 1;
+    transform: translate(-50%, 80px) rotate(5deg) scale(0.8);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 140px) rotate(0) scale(0.3);
+  }
+}
+
+.binder-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.binder-btn {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 13px 26px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--green) 0%, #2eb888 100%);
+  color: #0a0b10;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(54, 211, 153, 0.3);
+  transition: transform 0.15s;
+}
+.binder-btn:active { transform: scale(0.96); }
+.binder-again {
+  font-size: 11px;
+  color: var(--text-faint);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 6px 12px;
+}
+
+/* ============================================
+   STATE NOTES STRIP (bottom, always visible for debug/designer)
+   ============================================ */
+.stage-notes {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--body);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  white-space: nowrap;
+  text-align: center;
+  z-index: 20;
+  pointer-events: none;
+  max-width: 90vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.stage-notes strong {
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-right: 6px;
+}
+
+/* Reset state */
+.reset-btn {
+  position: absolute;
+  bottom: 30px;
+  right: 18px;
+  font-size: 11px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 30;
+}
+
+/* ============================================
+   DESKTOP FRAME (for non-mobile viewing)
+   ============================================ */
+@media (min-width: 500px) {
+  body {
+    background: #0a0b10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .scene {
+    position: relative;
+    width: 400px;
+    height: 812px;
+    max-height: 95vh;
+    border-radius: 44px;
+    border: 10px solid #000;
+    overflow: hidden;
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="scene" id="scene">
+
+  <!-- Header -->
+  <div class="scene-head">
+    <div class="label"><strong>Feels</strong> ritual</div>
+    <div class="skip" id="skipBtn" style="display:none;">Skip</div>
+  </div>
+
+  <!-- STATE 1: PRE-RIP -->
+  <div class="stage" id="preRipStage">
+    <div class="pack-hero" id="packHero">
+      <div class="pack-visual" id="packVisual">
+        <div class="pack-wordmark">
+          Feels
+        </div>
+        <div class="pack-wordmark-sub">Tuesday · Day 47</div>
+        <div class="pack-tab"></div>
+      </div>
+      <div class="pack-cta">
+        <div class="tap-chip">Tap to rip</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATE 2: POOF (overlays) -->
+  <div class="poof-container" id="poofContainer">
+    <div class="smoke"></div>
+    <div class="smoke"></div>
+    <div class="smoke"></div>
+    <div class="smoke"></div>
+    <div class="smoke"></div>
+    <div class="sparkle-burst">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <div class="eee-bubble" id="eeeBubble">Eeeeeee!</div>
+  </div>
+
+  <!-- STATE 3: CARD REVEAL -->
+  <div class="reveal-stage" id="revealStage">
+    <div class="reveal-progress" id="progressDots">
+      <div class="dot is-current"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+    <div class="reveal-meta" id="revealMeta">Card 1 of 3 · The warmup</div>
+
+    <div class="card-viewport">
+      <div class="card" id="card">
+
+        <!-- Card back -->
+        <div class="card-face card-back">
+          <div class="card-back-mark">
+            Feels
+            <small>Catch'em</small>
+          </div>
+        </div>
+
+        <!-- Card front (populated dynamically) -->
+        <div class="card-face card-front">
+          <div class="card-art">
+            <div class="card-particles"></div>
+            <div class="card-placeholder" id="cardArt">?</div>
+          </div>
+          <div class="card-info">
+            <div class="card-name" id="cardName">—</div>
+            <div class="card-tier-row">
+              <div class="card-tier" id="cardTier">—</div>
+              <div class="card-rarity-badge" id="cardRarity">—</div>
+            </div>
+            <div class="scratch-layer">
+              <div class="scratch-revealed">
+                <span class="float-label">float</span>
+                <span class="float-value" id="floatValue">0.0000</span>
+              </div>
+              <div class="scratch-overlay" id="scratchOverlay">scratch to reveal</div>
+            </div>
+          </div>
+          <div class="card-flavor" id="cardFlavor">—</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="swipe-hint" id="swipeHint">
+      <span>Swipe</span>
+      <span class="arrows">→ → →</span>
+    </div>
+  </div>
+
+  <!-- STATE 4: BINDER PLACEMENT -->
+  <div class="binder-stage" id="binderStage">
+    <div class="binder-title">Your Feels are safe.</div>
+    <div class="binder-sub">All 3 cards landed in your Starter Binder.</div>
+
+    <div class="binder-visual">
+      <div class="binder-spine"></div>
+      <div class="binder-name-plate">Starter Binder</div>
+      <div class="binder-meta">
+        <div class="binder-count" id="binderCount">47</div>
+        <div class="binder-count-label">of 120 slots</div>
+      </div>
+
+      <div class="binder-cards-flying">
+        <div class="flying-card"></div>
+        <div class="flying-card"></div>
+        <div class="flying-card"></div>
+      </div>
+    </div>
+
+    <div class="binder-cta">
+      <button class="binder-btn" id="viewBagBtn">View Bag</button>
+      <div class="binder-again" id="ripAgainBtn">Or rip another</div>
+    </div>
+  </div>
+
+  <!-- State notes strip (designer/debug) -->
+  <div class="stage-notes" id="stageNotes">
+    <strong>State 1</strong>Tap pack to begin ritual
+  </div>
+
+  <button class="reset-btn" id="resetBtn">Reset</button>
+
+</div>
+
+<script>
+/* ============================================
+   FEELS RITUAL — STATE MACHINE
+   ============================================
+   States:
+     0 - PRE_RIP      (tap pack to begin)
+     1 - POOF         (smoke animation, ~1.2s, auto-advance)
+     2 - REVEAL       (3 cards sequence, user-paced)
+     3 - BINDER       (cards fly into binder, user chooses next)
+   ============================================ */
+
+const STATES = { PRE_RIP: 0, POOF: 1, REVEAL: 2, BINDER: 3 };
+let currentState = STATES.PRE_RIP;
+let currentCardIndex = 0;
+
+// The 3 cards in this Feels — pre-generated for demo
+// In production, this comes from the backend at rip time
+const feelsContents = [
+  {
+    // Card 1 — warmup (common-pool)
+    name: 'Fern',
+    rarity: 'common',
+    tier: 'MP',
+    tierLabel: 'Moderately Played',
+    float: '0.4183',
+    flavor: '"i\'ve noticed the light hits different when you\'re older."',
+    artLetter: 'F',
+    season: 'Season 02'
+  },
+  {
+    // Card 2 — middle (can be same or better)
+    name: 'Scanner, Broken',
+    rarity: 'rare',
+    tier: 'LP',
+    tierLabel: 'Lightly Played',
+    float: '0.2047',
+    flavor: '"still trying. the code is in there somewhere."',
+    artLetter: 'S',
+    season: 'Season 03'
+  },
+  {
+    // Card 3 — THE CHASE (always rare+, last position)
+    name: 'The Moonbreon Believer',
+    rarity: 'legendary',
+    tier: 'GM',
+    tierLabel: 'Gem Mint',
+    float: '0.0089',
+    flavor: '"it will be a thousand. then more. i\'m certain. i have to be."',
+    artLetter: 'M',
+    season: 'Season 08'
+  }
+];
+
+const progressLabels = [
+  'Card 1 of 3 · The warmup',
+  'Card 2 of 3 · The middle',
+  'Card 3 of 3 · The chase'
+];
+
+const stageNoteText = {
+  [STATES.PRE_RIP]: { label: 'State 1', text: 'Tap pack to begin ritual' },
+  [STATES.POOF]: { label: 'State 2', text: 'Poof animation · "Eeeee!" · 1.2s' },
+  [STATES.REVEAL]: { label: 'State 3', text: 'Flip card · scratch float · swipe/tap next' },
+  [STATES.BINDER]: { label: 'State 4', text: 'Cards placed in Starter Binder' }
+};
+
+// DOM elements
+const preRipStage = document.getElementById('preRipStage');
+const packHero = document.getElementById('packHero');
+const packVisual = document.getElementById('packVisual');
+const poofContainer = document.getElementById('poofContainer');
+const eeeBubble = document.getElementById('eeeBubble');
+const revealStage = document.getElementById('revealStage');
+const binderStage = document.getElementById('binderStage');
+const card = document.getElementById('card');
+const cardName = document.getElementById('cardName');
+const cardTier = document.getElementById('cardTier');
+const cardRarity = document.getElementById('cardRarity');
+const cardArt = document.getElementById('cardArt');
+const cardFlavor = document.getElementById('cardFlavor');
+const floatValue = document.getElementById('floatValue');
+const scratchOverlay = document.getElementById('scratchOverlay');
+const swipeHint = document.getElementById('swipeHint');
+const revealMeta = document.getElementById('revealMeta');
+const progressDots = document.getElementById('progressDots');
+const stageNotes = document.getElementById('stageNotes');
+const resetBtn = document.getElementById('resetBtn');
+const viewBagBtn = document.getElementById('viewBagBtn');
+const ripAgainBtn = document.getElementById('ripAgainBtn');
+const skipBtn = document.getElementById('skipBtn');
+
+// Update the designer notes strip
+function updateStageNotes() {
+  const note = stageNoteText[currentState];
+  stageNotes.innerHTML = `<strong>${note.label}</strong>${note.text}`;
+}
+updateStageNotes();
+
+// ============================================
+// STATE 1 → 2: User taps pack, poof animation
+// ============================================
+function beginRip() {
+  if (currentState !== STATES.PRE_RIP) return;
+  currentState = STATES.POOF;
+  updateStageNotes();
+
+  // Pack disappears
+  packHero.classList.add('is-gone');
+
+  // Poof animation + "Eeeee"
+  setTimeout(() => {
+    poofContainer.classList.add('is-active');
+    eeeBubble.classList.add('is-active');
+  }, 200);
+
+  // Auto-advance to reveal after 1.2s
+  setTimeout(() => {
+    poofContainer.classList.remove('is-active');
+    eeeBubble.classList.remove('is-active');
+    preRipStage.style.display = 'none';
+    showCard(0);
+  }, 1400);
+}
+
+packVisual.addEventListener('click', beginRip);
+
+// ============================================
+// STATE 2 → 3: Reveal cards in sequence
+// ============================================
+function showCard(index) {
+  currentState = STATES.REVEAL;
+  currentCardIndex = index;
+  const cardData = feelsContents[index];
+
+  // Update progress
+  document.querySelectorAll('.reveal-progress .dot').forEach((dot, i) => {
+    dot.classList.remove('is-current', 'is-done');
+    if (i < index) dot.classList.add('is-done');
+    else if (i === index) dot.classList.add('is-current');
+  });
+  revealMeta.textContent = progressLabels[index];
+
+  // Reset card to back-showing
+  card.classList.remove('is-flipped', 'is-common', 'is-rare', 'is-epic', 'is-legendary', 'is-gm', 'is-dm');
+  scratchOverlay.classList.remove('is-revealed');
+  cardFlavor.classList.remove('is-visible');
+  swipeHint.classList.remove('is-visible');
+
+  // Populate card data
+  cardName.textContent = cardData.name;
+  cardTier.textContent = cardData.tierLabel;
+  if (cardData.tier === 'GM') cardTier.classList.add('gm');
+  else cardTier.classList.remove('gm');
+  if (cardData.tier === 'DM') cardTier.classList.add('dm');
+  else cardTier.classList.remove('dm');
+  cardRarity.textContent = cardData.rarity;
+  cardArt.textContent = cardData.artLetter;
+  cardFlavor.textContent = cardData.flavor;
+  floatValue.textContent = cardData.float;
+
+  // Apply rarity class
+  card.classList.add('is-' + cardData.rarity);
+  if (cardData.tier === 'GM') card.classList.add('is-gm');
+  if (cardData.tier === 'DM') card.classList.add('is-dm');
+
+  // Show reveal stage
+  revealStage.classList.add('is-active');
+  updateStageNotes();
+
+  // Flip card after brief delay
+  setTimeout(() => {
+    card.classList.add('is-flipped');
+    // For legendary, play extended animation
+    if (cardData.rarity === 'legendary') {
+      // Could trigger dramatic sound cue here
+    }
+  }, 300);
+
+  // Show flavor and swipe hint after card flip completes
+  setTimeout(() => {
+    cardFlavor.classList.add('is-visible');
+    swipeHint.classList.add('is-visible');
+  }, 1100);
+}
+
+// Card tap = flip (if not flipped) or advance
+card.addEventListener('click', () => {
+  if (currentState !== STATES.REVEAL) return;
+  if (!card.classList.contains('is-flipped')) {
+    card.classList.add('is-flipped');
+    return;
+  }
+  advanceCard();
+});
+
+function advanceCard() {
+  if (currentState !== STATES.REVEAL) return;
+  if (currentCardIndex < feelsContents.length - 1) {
+    showCard(currentCardIndex + 1);
+  } else {
+    showBinder();
+  }
+}
+
+// Swipe detection
+let touchStartX = 0;
+let touchStartY = 0;
+revealStage.addEventListener('touchstart', (e) => {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+}, { passive: true });
+revealStage.addEventListener('touchend', (e) => {
+  if (currentState !== STATES.REVEAL) return;
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  const dy = e.changedTouches[0].clientY - touchStartY;
+  // Only swipe-left advances, and must be more horizontal than vertical
+  if (dx < -50 && Math.abs(dx) > Math.abs(dy)) {
+    advanceCard();
+  }
+}, { passive: true });
+
+// ============================================
+// SCRATCH-TO-REVEAL (float)
+// ============================================
+let scratchProgress = 0;
+let isScratching = false;
+
+function handleScratchStart(e) {
+  if (scratchOverlay.classList.contains('is-revealed')) return;
+  isScratching = true;
+  scratchOverlay.classList.add('is-scratching');
+  e.preventDefault();
+}
+
+function handleScratchMove(e) {
+  if (!isScratching) return;
+  scratchProgress += 4;
+  const opacity = Math.max(0, 1 - scratchProgress / 100);
+  scratchOverlay.style.opacity = opacity;
+  if (scratchProgress >= 100) {
+    scratchOverlay.classList.add('is-revealed');
+    isScratching = false;
+  }
+  e.preventDefault();
+}
+
+function handleScratchEnd() {
+  isScratching = false;
+  scratchOverlay.classList.remove('is-scratching');
+  scratchProgress = 0;
+}
+
+scratchOverlay.addEventListener('mousedown', handleScratchStart);
+scratchOverlay.addEventListener('mousemove', handleScratchMove);
+scratchOverlay.addEventListener('mouseup', handleScratchEnd);
+scratchOverlay.addEventListener('mouseleave', handleScratchEnd);
+scratchOverlay.addEventListener('touchstart', handleScratchStart, { passive: false });
+scratchOverlay.addEventListener('touchmove', (e) => {
+  if (!isScratching) return;
+  handleScratchMove(e);
+}, { passive: false });
+scratchOverlay.addEventListener('touchend', handleScratchEnd);
+
+// Also: tap-to-insta-reveal (for the "user can skip" preference)
+scratchOverlay.addEventListener('dblclick', () => {
+  scratchOverlay.classList.add('is-revealed');
+});
+
+// ============================================
+// STATE 3 → 4: Binder placement
+// ============================================
+function showBinder() {
+  currentState = STATES.BINDER;
+  revealStage.classList.remove('is-active');
+  binderStage.classList.add('is-active');
+  updateStageNotes();
+}
+
+// ============================================
+// RESET
+// ============================================
+function reset() {
+  currentState = STATES.PRE_RIP;
+  currentCardIndex = 0;
+  scratchProgress = 0;
+
+  packHero.classList.remove('is-gone');
+  preRipStage.style.display = '';
+  revealStage.classList.remove('is-active');
+  binderStage.classList.remove('is-active');
+  poofContainer.classList.remove('is-active');
+  eeeBubble.classList.remove('is-active');
+
+  card.classList.remove('is-flipped', 'is-common', 'is-rare', 'is-epic', 'is-legendary', 'is-gm', 'is-dm');
+  scratchOverlay.classList.remove('is-revealed');
+  scratchOverlay.style.opacity = '';
+  cardFlavor.classList.remove('is-visible');
+  swipeHint.classList.remove('is-visible');
+
+  updateStageNotes();
+}
+
+resetBtn.addEventListener('click', reset);
+ripAgainBtn.addEventListener('click', reset);
+viewBagBtn.addEventListener('click', () => {
+  alert('Bag view coming next in the mockup queue. For now: reset and rip again.');
+});
+
+</script>
+
+</body>
+</html>

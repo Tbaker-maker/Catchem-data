@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bot Dashboard · Catch'em Operator View</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,500&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#0b0d14;--bg-deep:#070910;
+  --surface:#141824;--surface-2:#1c2235;--surface-3:#232a40;--surface-4:#2b3351;
+  --border:rgba(255,255,255,.07);--border-strong:rgba(255,255,255,.14);--border-accent:rgba(54,211,153,.25);
+  --text:#f4f5f8;--text-sub:#8a93a8;--text-muted:#5c637a;--text-faint:#3f4660;
+  --green:#36d399;--green-deep:#1a9c6b;
+  --purple:#c77dff;--blue:#64a0ff;--gold:#ffb84d;--red:#ef5a5a;--teal:#4fd1c5;
+  --tighten:#ffb84d;--loosen:#64a0ff;--heating:#ef5a5a;--cooling:#c77dff;
+  --font-display:'Syne',sans-serif;--font-body:'Sora',sans-serif;
+  --font-mono:'JetBrains Mono',monospace;--font-editorial:'Fraunces',Georgia,serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);line-height:1.5;overflow-x:hidden;-webkit-font-smoothing:antialiased;min-height:100vh;}
+body::before{content:"";position:fixed;inset:0;background-image:radial-gradient(ellipse 800px 600px at 90% 0%,rgba(54,211,153,.04),transparent),radial-gradient(ellipse 700px 500px at 10% 100%,rgba(199,125,255,.035),transparent),linear-gradient(transparent 0%,transparent calc(100% - 1px),rgba(255,255,255,.02) 100%),linear-gradient(90deg,transparent 0%,transparent calc(100% - 1px),rgba(255,255,255,.02) 100%);background-size:100% 100%,100% 100%,100% 48px,48px 100%;pointer-events:none;z-index:0;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+
+.shell{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;}
+
+/* ========= NAV ========= */
+.nav{padding:16px 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:rgba(11,13,20,.85);backdrop-filter:blur(14px);position:sticky;top:0;z-index:50;}
+.nav-left{display:flex;align-items:center;gap:24px;}
+.logo{font-family:var(--font-display);font-weight:700;font-size:20px;letter-spacing:-.02em;display:flex;align-items:center;gap:10px;}
+.logo-mark{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--green),var(--blue));display:flex;align-items:center;justify-content:center;font-size:13px;color:#071b13;font-weight:800;}
+.logo-sub{font-family:var(--font-mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-muted);padding-left:12px;border-left:1px solid var(--border);margin-left:4px;}
+.nav-right{display:flex;gap:10px;align-items:center;}
+.status-pill{display:flex;align-items:center;gap:8px;padding:7px 13px;border-radius:999px;background:rgba(54,211,153,.08);border:1px solid rgba(54,211,153,.25);font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;color:var(--green);}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pulseGreen 2s infinite;}
+@keyframes pulseGreen{0%,100%{opacity:.6;transform:scale(1);}50%{opacity:1;transform:scale(1.3);}}
+.mock-tag{font-family:var(--font-mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-muted);padding:5px 10px;border:1px dashed var(--border-strong);border-radius:999px;}
+
+/* ========= MAIN ========= */
+.main{flex:1;max-width:1340px;width:100%;margin:0 auto;padding:28px 28px 80px;}
+
+/* ========= PAGE HEADER ========= */
+.page-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:28px;gap:20px;flex-wrap:wrap;}
+.page-title-group{display:flex;flex-direction:column;gap:8px;}
+.kicker{font-family:var(--font-mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--green);font-weight:600;display:flex;align-items:center;gap:10px;}
+.kicker::before{content:"";width:24px;height:1px;background:var(--green);}
+.page-title{font-family:var(--font-editorial);font-weight:500;font-size:36px;line-height:1;letter-spacing:-.015em;font-variation-settings:"opsz" 144;}
+.page-title em{font-style:italic;color:var(--green);}
+.page-sub{font-size:14px;color:var(--text-sub);max-width:580px;line-height:1.6;margin-top:6px;}
+
+.page-controls{display:flex;gap:8px;align-items:center;}
+.control-select{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:9px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text-sub);transition:all .15s;}
+.control-select:hover{border-color:var(--border-strong);color:var(--text);}
+.control-select.active{border-color:rgba(54,211,153,.4);color:var(--green);background:rgba(54,211,153,.05);}
+
+/* ========= STATUS STRIP ========= */
+.status-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:28px;}
+.stat-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;position:relative;overflow:hidden;}
+.stat-box::before{content:"";position:absolute;top:0;left:0;width:3px;height:100%;background:var(--c,var(--green));}
+.stat-box.ok{--c:var(--green);}
+.stat-box.info{--c:var(--blue);}
+.stat-box.warn{--c:var(--gold);}
+.stat-label{font-family:var(--font-mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);font-weight:600;margin-bottom:8px;}
+.stat-value{font-family:var(--font-display);font-size:24px;font-weight:700;letter-spacing:-.01em;line-height:1;margin-bottom:5px;}
+.stat-meta{font-family:var(--font-mono);font-size:10px;color:var(--text-sub);letter-spacing:.04em;}
+.stat-meta .up{color:var(--green);}
+.stat-meta .down{color:var(--red);}
+
+/* ========= MARKET PULSE — the four signal cards ========= */
+.section-header{display:flex;align-items:center;justify-content:space-between;margin:28px 0 16px;}
+.section-title{font-family:var(--font-display);font-weight:600;font-size:18px;letter-spacing:-.01em;display:flex;align-items:center;gap:10px;}
+.section-title::before{content:"";width:3px;height:16px;background:var(--green);border-radius:2px;}
+.section-sub{font-family:var(--font-mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-muted);}
+
+.pulse-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:32px;}
+.pulse-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 18px 16px;position:relative;overflow:hidden;transition:border-color .2s,transform .2s;cursor:pointer;}
+.pulse-card:hover{border-color:var(--c,var(--green));transform:translateY(-2px);}
+.pulse-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--c,var(--green));}
+.pulse-card.active{border-color:var(--c);box-shadow:0 0 0 1px var(--c),0 12px 32px rgba(0,0,0,.2);}
+.pulse-card.tightening{--c:var(--tighten);}
+.pulse-card.loosening{--c:var(--loosen);}
+.pulse-card.heating{--c:var(--heating);}
+.pulse-card.cooling{--c:var(--cooling);}
+
+.pulse-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
+.pulse-name{font-family:var(--font-mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--c,var(--green));font-weight:700;display:flex;align-items:center;gap:7px;}
+.pulse-name .arrow{font-size:14px;line-height:1;}
+.pulse-count-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:2px;}
+.pulse-count{font-family:var(--font-display);font-size:32px;font-weight:800;line-height:1;color:var(--text);letter-spacing:-.02em;}
+.pulse-count-label{font-family:var(--font-mono);font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-muted);}
+
+.pulse-spark{width:100%;height:34px;margin:6px 0 10px;}
+.pulse-body{font-size:12px;color:var(--text-sub);line-height:1.5;margin-bottom:10px;min-height:32px;}
+.pulse-top{display:flex;flex-direction:column;gap:4px;padding-top:10px;border-top:1px solid var(--border);}
+.pulse-top-head{font-family:var(--font-mono);font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:2px;}
+.pulse-top-item{display:flex;justify-content:space-between;font-size:11px;color:var(--text);font-family:var(--font-body);}
+.pulse-top-item .name{color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:170px;}
+.pulse-top-item .delta{font-family:var(--font-mono);color:var(--c,var(--green));font-size:10px;font-weight:600;margin-left:8px;flex-shrink:0;}
+
+/* ========= PRODUCT DETAIL PANEL ========= */
+.detail-panel{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:32px;}
+.detail-head{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;}
+.detail-product-wrap{display:flex;flex-direction:column;gap:4px;}
+.detail-product-kicker{font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);}
+.detail-product{font-family:var(--font-display);font-weight:700;font-size:22px;letter-spacing:-.01em;}
+.detail-badges{display:flex;gap:6px;margin-top:4px;}
+.badge{font-family:var(--font-mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border-radius:5px;background:var(--surface-3);color:var(--text-sub);border:1px solid var(--border);}
+.badge.tightening{background:rgba(255,184,77,.08);color:var(--tighten);border-color:rgba(255,184,77,.25);}
+.badge.heating{background:rgba(239,90,90,.08);color:var(--heating);border-color:rgba(239,90,90,.25);}
+.detail-controls{display:flex;gap:8px;}
+.chip{font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:7px 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:7px;color:var(--text-sub);transition:all .15s;}
+.chip:hover{border-color:var(--border-strong);color:var(--text);}
+.chip.active{background:rgba(54,211,153,.08);color:var(--green);border-color:rgba(54,211,153,.3);}
+
+.detail-body{padding:24px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.metric-card{background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:16px 18px;position:relative;overflow:hidden;}
+.metric-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.metric-name{font-family:var(--font-mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-sub);font-weight:600;}
+.metric-trend{font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.03em;padding:2px 7px;border-radius:4px;}
+.metric-trend.up-good{color:var(--green);background:rgba(54,211,153,.08);}
+.metric-trend.down-good{color:var(--green);background:rgba(54,211,153,.08);}
+.metric-trend.up-warn{color:var(--gold);background:rgba(255,184,77,.08);}
+.metric-trend.down-warn{color:var(--red);background:rgba(239,90,90,.08);}
+.metric-trend.neutral{color:var(--text-sub);background:var(--surface-3);}
+
+.metric-big{font-family:var(--font-display);font-size:28px;font-weight:700;line-height:1;letter-spacing:-.015em;color:var(--text);margin-bottom:4px;}
+.metric-unit{font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;}
+.metric-chart{width:100%;height:42px;}
+.metric-foot{font-size:11px;color:var(--text-sub);line-height:1.4;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
+
+/* HHI gauge — seller concentration */
+.hhi-wrap{margin-top:8px;}
+.hhi-bar{width:100%;height:7px;background:var(--surface-3);border-radius:4px;overflow:hidden;position:relative;margin:4px 0 6px;}
+.hhi-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--gold) 50%,var(--red));border-radius:4px;transition:width .4s;}
+.hhi-marker{position:absolute;top:-3px;width:2px;height:13px;background:var(--text);box-shadow:0 0 4px rgba(0,0,0,.5);}
+.hhi-labels{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);}
+
+/* ========= MOVER TABLES ========= */
+.movers-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:32px;}
+.mover-table{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.mover-head{padding:14px 18px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);}
+.mover-title{font-family:var(--font-display);font-weight:600;font-size:14px;letter-spacing:-.01em;display:flex;align-items:center;gap:8px;}
+.mover-title .icon{font-size:14px;}
+.mover-label{font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);}
+.mover-body{padding:4px 0;}
+.mover-row{display:grid;grid-template-columns:30px 1fr auto auto;gap:12px;align-items:center;padding:10px 18px;border-bottom:1px solid var(--border);transition:background .15s;cursor:pointer;}
+.mover-row:last-child{border-bottom:none;}
+.mover-row:hover{background:var(--surface-2);}
+.mover-rank{font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:.05em;}
+.mover-name-group{display:flex;flex-direction:column;min-width:0;}
+.mover-name{font-weight:500;font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mover-product-type{font-family:var(--font-mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-top:2px;}
+.mover-spark{width:56px;height:22px;}
+.mover-delta{font-family:var(--font-mono);font-size:12px;font-weight:700;letter-spacing:.01em;text-align:right;min-width:68px;}
+.mover-delta.positive{color:var(--green);}
+.mover-delta.negative{color:var(--red);}
+.mover-delta.tightening{color:var(--tighten);}
+
+/* ========= SIGNAL LOG ========= */
+.log-wrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:32px;}
+.log-head{padding:14px 18px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);}
+.log-filter{display:flex;gap:4px;}
+.log-filter-chip{font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:5px 10px;border-radius:6px;color:var(--text-sub);background:var(--surface-2);border:1px solid transparent;transition:all .15s;}
+.log-filter-chip:hover{color:var(--text);}
+.log-filter-chip.active{color:var(--green);background:rgba(54,211,153,.08);border-color:rgba(54,211,153,.2);}
+.log-body{max-height:360px;overflow-y:auto;}
+.log-body::-webkit-scrollbar{width:6px;}
+.log-body::-webkit-scrollbar-track{background:transparent;}
+.log-body::-webkit-scrollbar-thumb{background:var(--surface-3);border-radius:3px;}
+.log-row{display:grid;grid-template-columns:90px 14px 1fr auto;gap:14px;align-items:center;padding:10px 18px;border-bottom:1px solid var(--border);}
+.log-row:last-child{border-bottom:none;}
+.log-time{font-family:var(--font-mono);font-size:10px;color:var(--text-muted);letter-spacing:.04em;}
+.log-dot{width:7px;height:7px;border-radius:50%;background:var(--c,var(--green));box-shadow:0 0 5px var(--c,var(--green));justify-self:center;}
+.log-dot.tightening{--c:var(--tighten);}
+.log-dot.loosening{--c:var(--loosen);}
+.log-dot.heating{--c:var(--heating);}
+.log-dot.cooling{--c:var(--cooling);}
+.log-dot.info{--c:var(--blue);}
+.log-dot.error{--c:var(--red);}
+.log-msg{font-size:13px;line-height:1.5;color:var(--text);}
+.log-msg .product{font-weight:600;}
+.log-msg .delta{font-family:var(--font-mono);font-size:12px;margin-left:4px;}
+.log-msg .delta.tightening{color:var(--tighten);}
+.log-msg .delta.heating{color:var(--heating);}
+.log-msg .delta.loosening{color:var(--loosen);}
+.log-msg .delta.cooling{color:var(--cooling);}
+.log-tag{font-family:var(--font-mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:2px 7px;border-radius:4px;color:var(--text-muted);background:var(--surface-2);}
+
+/* ========= PRODUCT SELECTOR LIST ========= */
+.product-list-wrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:32px;}
+.product-list-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.product-list-controls{display:flex;gap:4px;}
+.list-chip{font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:5px 10px;border-radius:6px;color:var(--text-sub);background:transparent;border:1px solid var(--border);transition:all .15s;}
+.list-chip:hover{border-color:var(--border-strong);color:var(--text);}
+.list-chip.active{color:var(--green);background:rgba(54,211,153,.08);border-color:rgba(54,211,153,.25);}
+.product-list-body{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:0;}
+.product-row{padding:14px 18px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);cursor:pointer;transition:background .15s;display:flex;flex-direction:column;gap:8px;}
+.product-row:hover{background:var(--surface-2);}
+.product-row.selected{background:rgba(54,211,153,.04);border-left:2px solid var(--green);padding-left:16px;}
+.product-row-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+.product-row-name{font-weight:500;font-size:13px;line-height:1.35;color:var(--text);flex:1;}
+.product-row-badges{display:flex;gap:4px;flex-shrink:0;}
+.mini-badge{font-family:var(--font-mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:2px 5px;border-radius:3px;background:rgba(255,184,77,.1);color:var(--tighten);border:1px solid rgba(255,184,77,.25);}
+.mini-badge.heating{background:rgba(239,90,90,.1);color:var(--heating);border-color:rgba(239,90,90,.25);}
+.mini-badge.loosening{background:rgba(100,160,255,.1);color:var(--loosen);border-color:rgba(100,160,255,.25);}
+.mini-badge.cooling{background:rgba(199,125,255,.1);color:var(--cooling);border-color:rgba(199,125,255,.25);}
+
+.product-row-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;font-family:var(--font-mono);}
+.prm{display:flex;flex-direction:column;gap:2px;}
+.prm-label{font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);}
+.prm-val{font-size:12px;font-weight:600;color:var(--text);}
+.prm-val.up{color:var(--green);}
+.prm-val.down{color:var(--red);}
+.prm-val.warn{color:var(--gold);}
+
+/* ========= NOTE ========= */
+.bot-note{background:rgba(100,160,255,.04);border:1px dashed rgba(100,160,255,.25);border-radius:12px;padding:14px 18px;font-family:var(--font-mono);font-size:11px;line-height:1.6;color:var(--text-sub);letter-spacing:.02em;margin-top:24px;}
+.bot-note strong{color:var(--blue);}
+
+/* ========= UTILS ========= */
+.scroll-x{overflow-x:auto;}
+
+/* ========= ROTATION RADAR ========= */
+.radar-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:32px;}
+.radar-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.radar-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.radar-body{padding:18px;}
+
+/* Timeline visualization */
+.timeline{position:relative;padding:14px 0 0;}
+.timeline-bar{height:6px;background:var(--surface-3);border-radius:3px;position:relative;margin:24px 0 32px;}
+.timeline-marker{position:absolute;top:-20px;transform:translateX(-50%);text-align:center;}
+.timeline-marker-line{width:2px;height:30px;background:var(--text-sub);margin:0 auto;position:absolute;left:50%;transform:translateX(-50%);top:12px;}
+.timeline-marker.now{color:var(--green);}
+.timeline-marker.now .timeline-marker-line{background:var(--green);box-shadow:0 0 8px var(--green);}
+.timeline-marker.rotated{color:var(--text-muted);}
+.timeline-marker.rotated .timeline-marker-line{background:var(--text-muted);}
+.timeline-marker.upcoming{color:var(--gold);}
+.timeline-marker.upcoming .timeline-marker-line{background:var(--gold);box-shadow:0 0 6px rgba(255,184,77,.5);}
+.timeline-label{font-family:var(--font-mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:2px;white-space:nowrap;}
+.timeline-date{font-family:var(--font-mono);font-size:9px;color:var(--text-muted);white-space:nowrap;}
+.timeline-fill{position:absolute;top:0;bottom:0;left:0;border-radius:3px;background:linear-gradient(90deg,var(--text-muted),var(--green));}
+.timeline-future{position:absolute;top:0;bottom:0;border-radius:3px;background:linear-gradient(90deg,var(--green),var(--gold));opacity:.5;}
+
+.rotation-status-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px;}
+.rotation-stat{padding:12px 14px;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;}
+.rotation-stat-label{font-family:var(--font-mono);font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;}
+.rotation-stat-val{font-family:var(--font-display);font-size:20px;font-weight:700;letter-spacing:-.01em;}
+.rotation-stat-sub{font-family:var(--font-mono);font-size:10px;color:var(--text-sub);margin-top:3px;}
+.rotation-stat.legal{border-left:2px solid var(--green);}
+.rotation-stat.rotating{border-left:2px solid var(--gold);}
+.rotation-stat.collector{border-left:2px solid var(--purple);}
+
+/* ========= SUPPLY SHOCK TRACKER ========= */
+.shock-list{display:flex;flex-direction:column;gap:10px;}
+.shock-row{padding:12px 14px;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;transition:border-color .15s;}
+.shock-row.upcoming{border-left:3px solid var(--gold);}
+.shock-row.active{border-left:3px solid var(--heating);background:rgba(239,90,90,.03);}
+.shock-row.past{border-left:3px solid var(--text-muted);opacity:.7;}
+.shock-icon{width:36px;height:36px;border-radius:9px;background:var(--surface-3);display:flex;align-items:center;justify-content:center;font-size:16px;}
+.shock-body{display:flex;flex-direction:column;gap:2px;}
+.shock-event{font-weight:600;font-size:13px;color:var(--text);line-height:1.3;}
+.shock-detail{font-size:11px;color:var(--text-sub);line-height:1.4;}
+.shock-affects{font-family:var(--font-mono);font-size:9px;color:var(--text-muted);letter-spacing:.05em;margin-top:2px;}
+.shock-when{font-family:var(--font-mono);font-size:10px;letter-spacing:.05em;text-align:right;color:var(--text-sub);}
+.shock-when strong{display:block;font-size:11px;color:var(--text);font-weight:700;}
+
+/* ========= BUY THE DIP badge ========= */
+.btd-badge{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:3px 7px;border-radius:4px;background:linear-gradient(135deg,rgba(54,211,153,.15),rgba(54,211,153,.06));color:var(--green);border:1px solid rgba(54,211,153,.35);font-weight:700;}
+.btd-badge::before{content:"◆";font-size:7px;}
+
+/* Fundamentals score card on detail panel */
+.fundamentals-card{grid-column:span 3;background:linear-gradient(135deg,rgba(54,211,153,.04),rgba(100,160,255,.04));border:1px solid rgba(54,211,153,.22);}
+.fundamentals-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.fundamentals-title{font-family:var(--font-display);font-weight:600;font-size:15px;letter-spacing:-.005em;display:flex;align-items:center;gap:8px;}
+.fundamentals-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+.fund-item{text-align:center;padding:10px 8px;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border);}
+.fund-label{font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;line-height:1.3;}
+.fund-dots{display:flex;gap:2px;justify-content:center;margin-bottom:6px;}
+.fund-dot{width:8px;height:8px;border-radius:50%;background:var(--surface-3);}
+.fund-dot.filled{background:var(--green);box-shadow:0 0 6px rgba(54,211,153,.4);}
+.fund-value{font-family:var(--font-mono);font-size:10px;color:var(--text);font-weight:600;letter-spacing:.02em;}
+.fund-verdict{grid-column:span 5;text-align:center;padding-top:12px;border-top:1px solid var(--border);margin-top:12px;font-family:var(--font-editorial);font-style:italic;font-size:13px;color:var(--text);font-variation-settings:"opsz" 14;line-height:1.5;}
+.fund-verdict strong{color:var(--green);font-style:normal;font-family:var(--font-display);font-weight:700;letter-spacing:-.005em;}
+
+@media (max-width:1100px){
+  .radar-grid{grid-template-columns:1fr;}
+  .rotation-status-grid{grid-template-columns:repeat(3,1fr);}
+  .fundamentals-card{grid-column:span 2;}
+  .fundamentals-grid{grid-template-columns:repeat(3,1fr);}
+  .fund-verdict{grid-column:span 3;}
+}
+@media (max-width:720px){
+  .rotation-status-grid{grid-template-columns:1fr;}
+  .fundamentals-card{grid-column:span 1;}
+  .fundamentals-grid{grid-template-columns:repeat(2,1fr);}
+  .fund-verdict{grid-column:span 2;}
+}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <nav class="nav">
+    <div class="nav-left">
+      <div class="logo">
+        <span class="logo-mark">C</span>Catch'em
+        <span class="logo-sub">Bot Dashboard</span>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="status-pill">
+        <span class="status-dot"></span>
+        BOT ONLINE · LAST RUN 00:14 AGO
+      </div>
+      <span class="mock-tag">Mockup · v1</span>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <div class="page-title-group">
+        <div class="kicker">Operator Dashboard · Sealed Products</div>
+        <h1 class="page-title">Market <em>signals</em>.</h1>
+        <p class="page-sub">Supply and demand signals across 20 tracked sealed products. Metrics are operator-facing — percentages and relative movement, no dollar prices. Click signal cards to filter. Click a product to see the detail panel.</p>
+      </div>
+      <div class="page-controls">
+        <button class="control-select active">7D</button>
+        <button class="control-select">30D</button>
+        <button class="control-select">90D</button>
+      </div>
+    </div>
+
+    <!-- STATUS STRIP -->
+    <div class="status-strip">
+      <div class="stat-box ok">
+        <div class="stat-label">Last Run</div>
+        <div class="stat-value">00:14</div>
+        <div class="stat-meta">ago · 3,284 points collected</div>
+      </div>
+      <div class="stat-box ok">
+        <div class="stat-label">Products Tracked</div>
+        <div class="stat-value">20</div>
+        <div class="stat-meta"><span class="up">+2</span> vs last week</div>
+      </div>
+      <div class="stat-box ok">
+        <div class="stat-label">Data Freshness</div>
+        <div class="stat-value">19/20</div>
+        <div class="stat-meta">1 stale · last run 02:14 ago</div>
+      </div>
+      <div class="stat-box info">
+        <div class="stat-label">Run Streak</div>
+        <div class="stat-value">47</div>
+        <div class="stat-meta">consecutive successes</div>
+      </div>
+      <div class="stat-box info">
+        <div class="stat-label">Total Datapoints</div>
+        <div class="stat-value">142K</div>
+        <div class="stat-meta">since bot launch</div>
+      </div>
+      <div class="stat-box warn">
+        <div class="stat-label">Signals Today</div>
+        <div class="stat-value">7</div>
+        <div class="stat-meta">3 tightening · 2 heating · 2 other</div>
+      </div>
+    </div>
+
+    <!-- MARKET PULSE -->
+    <div class="section-header">
+      <div class="section-title">Market Pulse</div>
+      <div class="section-sub">7-day movement · click to filter</div>
+    </div>
+    <div class="pulse-grid">
+      <div class="pulse-card tightening active" data-filter="tightening" onclick="setFilter('tightening')">
+        <div class="pulse-head">
+          <div class="pulse-name"><span class="arrow">↓</span>SUPPLY TIGHTENING</div>
+          <div class="pulse-count-wrap">
+            <div class="pulse-count">6</div>
+            <div class="pulse-count-label">products</div>
+          </div>
+        </div>
+        <svg class="pulse-spark" viewBox="0 0 200 34" preserveAspectRatio="none">
+          <path d="M0,22 L20,24 L40,20 L60,18 L80,15 L100,14 L120,11 L140,9 L160,8 L180,6 L200,4" stroke="#ffb84d" stroke-width="1.5" fill="none"/>
+          <path d="M0,22 L20,24 L40,20 L60,18 L80,15 L100,14 L120,11 L140,9 L160,8 L180,6 L200,4 L200,34 L0,34 Z" fill="url(#gradTighten)"/>
+          <defs><linearGradient id="gradTighten" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffb84d" stop-opacity=".3"/><stop offset="100%" stop-color="#ffb84d" stop-opacity="0"/></linearGradient></defs>
+        </svg>
+        <div class="pulse-body">Listings dropping, floor holding. Supply is drying up across these products.</div>
+        <div class="pulse-top">
+          <div class="pulse-top-head">Top tighteners</div>
+          <div class="pulse-top-item"><span class="name">Evolving Skies Booster Box</span><span class="delta">−18%</span></div>
+          <div class="pulse-top-item"><span class="name">Hidden Fates ETB</span><span class="delta">−14%</span></div>
+          <div class="pulse-top-item"><span class="name">Crown Zenith ETB</span><span class="delta">−11%</span></div>
+        </div>
+      </div>
+
+      <div class="pulse-card loosening" data-filter="loosening" onclick="setFilter('loosening')">
+        <div class="pulse-head">
+          <div class="pulse-name"><span class="arrow">↑</span>SUPPLY LOOSENING</div>
+          <div class="pulse-count-wrap">
+            <div class="pulse-count">4</div>
+            <div class="pulse-count-label">products</div>
+          </div>
+        </div>
+        <svg class="pulse-spark" viewBox="0 0 200 34" preserveAspectRatio="none">
+          <path d="M0,10 L20,12 L40,14 L60,14 L80,17 L100,18 L120,21 L140,22 L160,25 L180,26 L200,28" stroke="#64a0ff" stroke-width="1.5" fill="none"/>
+          <path d="M0,10 L20,12 L40,14 L60,14 L80,17 L100,18 L120,21 L140,22 L160,25 L180,26 L200,28 L200,34 L0,34 Z" fill="url(#gradLoosen)"/>
+          <defs><linearGradient id="gradLoosen" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#64a0ff" stop-opacity=".3"/><stop offset="100%" stop-color="#64a0ff" stop-opacity="0"/></linearGradient></defs>
+        </svg>
+        <div class="pulse-body">Listings rising, floor softening. New supply entering or sellers liquidating.</div>
+        <div class="pulse-top">
+          <div class="pulse-top-head">Top looseners</div>
+          <div class="pulse-top-item"><span class="name">Ascended Heroes ETB</span><span class="delta">+34%</span></div>
+          <div class="pulse-top-item"><span class="name">Perfect Order Booster Bundle</span><span class="delta">+22%</span></div>
+          <div class="pulse-top-item"><span class="name">Journey Together ETB</span><span class="delta">+12%</span></div>
+        </div>
+      </div>
+
+      <div class="pulse-card heating" data-filter="heating" onclick="setFilter('heating')">
+        <div class="pulse-head">
+          <div class="pulse-name"><span class="arrow">↑</span>DEMAND HEATING</div>
+          <div class="pulse-count-wrap">
+            <div class="pulse-count">5</div>
+            <div class="pulse-count-label">products</div>
+          </div>
+        </div>
+        <svg class="pulse-spark" viewBox="0 0 200 34" preserveAspectRatio="none">
+          <path d="M0,26 L20,25 L40,22 L60,23 L80,19 L100,16 L120,14 L140,10 L160,8 L180,5 L200,3" stroke="#ef5a5a" stroke-width="1.5" fill="none"/>
+          <path d="M0,26 L20,25 L40,22 L60,23 L80,19 L100,16 L120,14 L140,10 L160,8 L180,5 L200,3 L200,34 L0,34 Z" fill="url(#gradHeat)"/>
+          <defs><linearGradient id="gradHeat" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ef5a5a" stop-opacity=".3"/><stop offset="100%" stop-color="#ef5a5a" stop-opacity="0"/></linearGradient></defs>
+        </svg>
+        <div class="pulse-body">Sell rate accelerating. Listings clearing faster than they're being posted.</div>
+        <div class="pulse-top">
+          <div class="pulse-top-head">Top heaters</div>
+          <div class="pulse-top-item"><span class="name">Prismatic Evolutions ETB</span><span class="delta">+41%</span></div>
+          <div class="pulse-top-item"><span class="name">151 UPC</span><span class="delta">+28%</span></div>
+          <div class="pulse-top-item"><span class="name">Evolving Skies Booster Box</span><span class="delta">+19%</span></div>
+        </div>
+      </div>
+
+      <div class="pulse-card cooling" data-filter="cooling" onclick="setFilter('cooling')">
+        <div class="pulse-head">
+          <div class="pulse-name"><span class="arrow">↓</span>DEMAND COOLING</div>
+          <div class="pulse-count-wrap">
+            <div class="pulse-count">3</div>
+            <div class="pulse-count-label">products</div>
+          </div>
+        </div>
+        <svg class="pulse-spark" viewBox="0 0 200 34" preserveAspectRatio="none">
+          <path d="M0,6 L20,8 L40,11 L60,13 L80,16 L100,18 L120,21 L140,23 L160,25 L180,27 L200,29" stroke="#c77dff" stroke-width="1.5" fill="none"/>
+          <path d="M0,6 L20,8 L40,11 L60,13 L80,16 L100,18 L120,21 L140,23 L160,25 L180,27 L200,29 L200,34 L0,34 Z" fill="url(#gradCool)"/>
+          <defs><linearGradient id="gradCool" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c77dff" stop-opacity=".3"/><stop offset="100%" stop-color="#c77dff" stop-opacity="0"/></linearGradient></defs>
+        </svg>
+        <div class="pulse-body">Sell rate decelerating. Listings accumulating, demand softening.</div>
+        <div class="pulse-top">
+          <div class="pulse-top-head">Top coolers</div>
+          <div class="pulse-top-item"><span class="name">Phantasmal Flames ETB</span><span class="delta">−24%</span></div>
+          <div class="pulse-top-item"><span class="name">Destined Rivals ETB</span><span class="delta">−16%</span></div>
+          <div class="pulse-top-item"><span class="name">Journey Together Booster Box</span><span class="delta">−9%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROTATION RADAR + SUPPLY SHOCK TRACKER -->
+    <div class="section-header">
+      <div class="section-title">Rotation & Supply Context</div>
+      <div class="section-sub">Why the dip? · fundamentals vs. supply shock</div>
+    </div>
+    <div class="radar-grid">
+
+      <!-- Rotation Radar -->
+      <div class="radar-card">
+        <div class="radar-head">
+          <div class="mover-title"><span class="icon">🔄</span>Rotation Radar</div>
+          <div class="mover-label">2026-27 standard format</div>
+        </div>
+        <div class="radar-body">
+
+          <!-- Timeline -->
+          <div class="timeline">
+            <div style="position:relative;height:56px;">
+              <div class="timeline-bar" style="position:absolute;top:20px;left:0;right:0;">
+                <div class="timeline-fill" style="width:35%;"></div>
+                <div class="timeline-future" style="left:35%;right:0;"></div>
+              </div>
+              <div class="timeline-marker rotated" style="left:6%;top:0;">
+                <div class="timeline-label">G-MARK OUT</div>
+                <div class="timeline-date">APR 10, 2026</div>
+                <div class="timeline-marker-line"></div>
+              </div>
+              <div class="timeline-marker now" style="left:11%;top:0;">
+                <div class="timeline-label">YOU ARE HERE</div>
+                <div class="timeline-date">APR 21, 2026</div>
+                <div class="timeline-marker-line"></div>
+              </div>
+              <div class="timeline-marker upcoming" style="left:92%;top:0;">
+                <div class="timeline-label">H-MARK ROTATES</div>
+                <div class="timeline-date">APR 10, 2027</div>
+                <div class="timeline-marker-line"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="rotation-status-grid">
+            <div class="rotation-stat collector">
+              <div class="rotation-stat-label">Out of Format</div>
+              <div class="rotation-stat-val">11</div>
+              <div class="rotation-stat-sub">SWSH + pre-G tracked · pure collector</div>
+            </div>
+            <div class="rotation-stat rotating">
+              <div class="rotation-stat-label">H-mark · rotates 2027</div>
+              <div class="rotation-stat-val">6</div>
+              <div class="rotation-stat-sub">~354 days planning window</div>
+            </div>
+            <div class="rotation-stat legal">
+              <div class="rotation-stat-label">Current standard</div>
+              <div class="rotation-stat-val">3</div>
+              <div class="rotation-stat-sub">I/J mark · full meta relevance</div>
+            </div>
+          </div>
+
+          <div class="metric-foot" style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);font-size:12px;color:var(--text-sub);line-height:1.5;">
+            <strong style="color:var(--text);">Fundamentals note:</strong> Rotation transitions competitive-play demand → pure collector demand. Historically this has <em>tripled</em> collector interest on iconic sets (Evolving Skies pattern). Rotation is NOT a price-negative event for sealed product with strong chase roster — it's often a price-positive inflection. Watch H-mark sets for 12-month setup.
+          </div>
+        </div>
+      </div>
+
+      <!-- Supply Shock Tracker -->
+      <div class="radar-card">
+        <div class="radar-head">
+          <div class="mover-title"><span class="icon">⚡</span>Supply Shock Tracker</div>
+          <div class="mover-label">restocks · reprints · releases</div>
+        </div>
+        <div class="radar-body">
+          <div class="shock-list">
+
+            <div class="shock-row upcoming">
+              <div class="shock-icon">📦</div>
+              <div class="shock-body">
+                <div class="shock-event">Ascended Heroes Booster Bundle release</div>
+                <div class="shock-detail">New retail supply hitting shelves. Expect listing count surge; fundamentals unchanged.</div>
+                <div class="shock-affects">AFFECTS · Ascended Heroes Booster Bundle · +41% listings tracked last 7d</div>
+              </div>
+              <div class="shock-when">
+                <strong>IN 3 DAYS</strong>
+                Apr 24
+              </div>
+            </div>
+
+            <div class="shock-row active">
+              <div class="shock-icon">🔁</div>
+              <div class="shock-body">
+                <div class="shock-event">Prismatic Evolutions reprint wave</div>
+                <div class="shock-detail">TPCi confirmed additional print runs for anniversary year. Monitor listing inflow.</div>
+                <div class="shock-affects">AFFECTS · Prismatic Evolutions ETB, Premium Collections · currently heating DESPITE supply</div>
+              </div>
+              <div class="shock-when">
+                <strong>ACTIVE</strong>
+                ongoing
+              </div>
+            </div>
+
+            <div class="shock-row upcoming">
+              <div class="shock-icon">🎯</div>
+              <div class="shock-body">
+                <div class="shock-event">Chaos Rising release</div>
+                <div class="shock-detail">Fresh supply wave. Historically pulls attention from prior set (Perfect Order) temporarily.</div>
+                <div class="shock-affects">AFFECTS · Perfect Order sealed · watch for temporary softness</div>
+              </div>
+              <div class="shock-when">
+                <strong>IN 31 DAYS</strong>
+                May 22
+              </div>
+            </div>
+
+            <div class="shock-row past">
+              <div class="shock-icon">🔄</div>
+              <div class="shock-body">
+                <div class="shock-event">G-mark rotation</div>
+                <div class="shock-detail">Competitive demand transitioned to collector demand. Pattern: initial dip, then steady climb.</div>
+                <div class="shock-affects">AFFECTED · 11 tracked products moved to collector-only status</div>
+              </div>
+              <div class="shock-when">
+                <strong>11 DAYS AGO</strong>
+                Apr 10
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="section-header">
+      <div class="section-title">Product Detail</div>
+      <div class="section-sub">Selected: Evolving Skies Booster Box</div>
+    </div>
+    <div class="detail-panel">
+      <div class="detail-head">
+        <div class="detail-product-wrap">
+          <div class="detail-product-kicker">Sword & Shield Series · Booster Box · Tracked since 2023-06-14</div>
+          <div class="detail-product">Evolving Skies Booster Box</div>
+          <div class="detail-badges">
+            <span class="badge tightening">Tightening</span>
+            <span class="badge heating">Heating</span>
+            <span class="badge">OOP</span>
+          </div>
+        </div>
+        <div class="detail-controls">
+          <button class="chip active">7D</button>
+          <button class="chip">30D</button>
+          <button class="chip">90D</button>
+          <button class="chip">All</button>
+        </div>
+      </div>
+      <div class="detail-body">
+
+        <!-- Active Listings -->
+        <div class="metric-card">
+          <div class="metric-head">
+            <div class="metric-name">Active Listings</div>
+            <div class="metric-trend down-good">↓ 18%</div>
+          </div>
+          <div class="metric-big">47</div>
+          <div class="metric-unit">listings · was 57 · 7d ago</div>
+          <svg class="metric-chart" viewBox="0 0 200 42" preserveAspectRatio="none">
+            <path d="M0,8 L20,10 L40,9 L60,13 L80,15 L100,18 L120,22 L140,24 L160,28 L180,32 L200,34" stroke="#ffb84d" stroke-width="1.5" fill="none"/>
+          </svg>
+          <div class="metric-foot">Tightening trend. Listings dropping ~1.5/day. Product is drying up.</div>
+        </div>
+
+        <!-- Unique Sellers -->
+        <div class="metric-card">
+          <div class="metric-head">
+            <div class="metric-name">Unique Sellers</div>
+            <div class="metric-trend down-warn">↓ 14%</div>
+          </div>
+          <div class="metric-big">31</div>
+          <div class="metric-unit">sellers · was 36 · 7d ago</div>
+          <svg class="metric-chart" viewBox="0 0 200 42" preserveAspectRatio="none">
+            <path d="M0,10 L20,11 L40,12 L60,15 L80,17 L100,19 L120,22 L140,25 L160,27 L180,29 L200,31" stroke="#ffb84d" stroke-width="1.5" fill="none"/>
+          </svg>
+          <div class="metric-foot">Seller count falling alongside listings. Healthy tightening pattern.</div>
+        </div>
+
+        <!-- Floor Price (no $ shown, just trajectory) -->
+        <div class="metric-card">
+          <div class="metric-head">
+            <div class="metric-name">Floor Price Trajectory</div>
+            <div class="metric-trend up-good">↑ 4%</div>
+          </div>
+          <div class="metric-big">holding</div>
+          <div class="metric-unit">floor stable · % index only</div>
+          <svg class="metric-chart" viewBox="0 0 200 42" preserveAspectRatio="none">
+            <path d="M0,30 L20,28 L40,29 L60,26 L80,24 L100,25 L120,22 L140,20 L160,18 L180,16 L200,15" stroke="#36d399" stroke-width="1.5" fill="none"/>
+          </svg>
+          <div class="metric-foot">Floor holding as listings drop → classic tightening signal. No prices displayed.</div>
+        </div>
+
+        <!-- Sell Velocity -->
+        <div class="metric-card">
+          <div class="metric-head">
+            <div class="metric-name">Sell Velocity</div>
+            <div class="metric-trend up-warn">↑ 19%</div>
+          </div>
+          <div class="metric-big">2.1</div>
+          <div class="metric-unit">listings clearing / day · 7d avg</div>
+          <svg class="metric-chart" viewBox="0 0 200 42" preserveAspectRatio="none">
+            <path d="M0,28 L20,26 L40,27 L60,22 L80,23 L100,19 L120,17 L140,14 L160,11 L180,9 L200,7" stroke="#ef5a5a" stroke-width="1.5" fill="none"/>
+          </svg>
+          <div class="metric-foot">Accelerating. Listings are being bought faster than they appear.</div>
+        </div>
+
+        <!-- Listing Lifetime -->
+        <div class="metric-card">
+          <div class="metric-head">
+            <div class="metric-name">Avg Listing Lifetime</div>
+            <div class="metric-trend down-good">↓ 32%</div>
+          </div>
+          <div class="metric-big">5.3</div>
+          <div class="metric-unit">days before sale/delist · 7d avg</div>
+          <svg class="metric-chart" viewBox="0 0 200 42" preserveAspectRatio="none">
+            <path d="M0,8 L20,12 L40,10 L60,15 L80,14 L100,18 L120,22 L140,24 L160,27 L180,30 L200,33" stroke="#36d399" stroke-width="1.5" fill="none"/>
+          </svg>
+          <div class="metric-foot">Listings disappearing fast. Confirms demand heating signal.</div>
+        </div>
+
+        <!-- Seller Concentration (HHI) -->
+        <div class="metric-card">
+          <div class="metric-head">
+            <div class="metric-name">Seller Concentration</div>
+            <div class="metric-trend neutral">MODERATE</div>
+          </div>
+          <div class="metric-big">0.18</div>
+          <div class="metric-unit">HHI · 0 = distributed · 1 = single seller</div>
+          <div class="hhi-wrap">
+            <div class="hhi-bar">
+              <div class="hhi-fill" style="width:100%"></div>
+              <div class="hhi-marker" style="left:18%;"></div>
+            </div>
+            <div class="hhi-labels">
+              <span>DISTRIBUTED</span>
+              <span>CONCENTRATED</span>
+            </div>
+          </div>
+          <div class="metric-foot">Top seller holds ~24% of listings. Some concentration risk, but not extreme.</div>
+        </div>
+
+        <!-- FUNDAMENTALS CARD — the "buy the dip" signal summarizer -->
+        <div class="metric-card fundamentals-card">
+          <div class="fundamentals-head">
+            <div class="fundamentals-title">
+              <span>💎</span>Fundamentals Check
+              <span class="btd-badge" style="margin-left:6px;">Buy-the-dip candidate</span>
+            </div>
+            <div class="metric-trend up-good">SIGNAL: STRONG</div>
+          </div>
+          <div class="fundamentals-grid">
+            <div class="fund-item">
+              <div class="fund-label">Chase card<br>iconicity</div>
+              <div class="fund-dots">
+                <span class="fund-dot filled"></span><span class="fund-dot filled"></span><span class="fund-dot filled"></span><span class="fund-dot filled"></span><span class="fund-dot filled"></span>
+              </div>
+              <div class="fund-value">Moonbreon tier</div>
+            </div>
+            <div class="fund-item">
+              <div class="fund-label">Format<br>status</div>
+              <div class="fund-dots">
+                <span class="fund-dot filled"></span><span class="fund-dot filled"></span><span class="fund-dot filled"></span><span class="fund-dot filled"></span><span class="fund-dot filled"></span>
+              </div>
+              <div class="fund-value">Pure collector</div>
+            </div>
+            <div class="fund-item">
+              <div class="fund-label">Reprint<br>risk</div>
+              <div class="fund-dots">
+                <span class="fund-dot filled"></span><span class="fund-dot filled"></span><span class="fund-dot filled"></span><span class="fund-dot filled"></span><span class="fund-dot"></span>
+              </div>
+              <div class="fund-value">OOP, low</div>
+            </div>
+            <div class="fund-item">
+              <div class="fund-label">Supply<br>shock now</div>
+              <div class="fund-dots">
+                <span class="fund-dot"></span><span class="fund-dot"></span><span class="fund-dot"></span><span class="fund-dot"></span><span class="fund-dot"></span>
+              </div>
+              <div class="fund-value">None active</div>
+            </div>
+            <div class="fund-item">
+              <div class="fund-label">Community<br>attention</div>
+              <div class="fund-dots">
+                <span class="fund-dot filled"></span><span class="fund-dot filled"></span><span class="fund-dot filled"></span><span class="fund-dot filled"></span><span class="fund-dot filled"></span>
+              </div>
+              <div class="fund-value">High, sustained</div>
+            </div>
+            <div class="fund-verdict">
+              <strong>Not a fundamental change.</strong> Tightening supply + accelerating velocity + zero active supply shock on an out-of-print set with iconic chase card roster. This is the inverse of a "buy the dip" — this is tightening without a dip. Historical pattern: Evolving Skies has been the modern sealed benchmark since rotation. Watch, don't wait.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MOVER TABLES -->
+    <div class="movers-grid">
+      <div class="mover-table">
+        <div class="mover-head">
+          <div class="mover-title"><span class="icon">↓</span>Biggest Supply Tighteners</div>
+          <div class="mover-label">7d · listings change</div>
+        </div>
+        <div class="mover-body">
+          <div class="mover-row">
+            <div class="mover-rank">01</div>
+            <div class="mover-name-group">
+              <div class="mover-name">Evolving Skies Booster Box</div>
+              <div class="mover-product-type">Booster Box · SWSH</div>
+            </div>
+            <svg class="mover-spark" viewBox="0 0 56 22" preserveAspectRatio="none"><path d="M0,4 L10,6 L20,8 L30,10 L40,14 L56,18" stroke="#ffb84d" stroke-width="1.5" fill="none"/></svg>
+            <div class="mover-delta tightening">−18%</div>
+          </div>
+          <div class="mover-row">
+            <div class="mover-rank">02</div>
+            <div class="mover-name-group">
+              <div class="mover-name">Hidden Fates Elite Trainer Box</div>
+              <div class="mover-product-type">ETB · Sun & Moon</div>
+            </div>
+            <svg class="mover-spark" viewBox="0 0 56 22" preserveAspectRatio="none"><path d="M0,5 L10,8 L20,9 L30,12 L40,15 L56,19" stroke="#ffb84d" stroke-width="1.5" fill="none"/></svg>
+            <div class="mover-delta tightening">−14%</div>
+          </div>
+          <div class="mover-row">
+            <div class="mover-rank">03</div>
+            <div class="mover-name-group">
+              <div class="mover-name">Crown Zenith Elite Trainer Box</div>
+              <div class="mover-product-type">ETB · SWSH</div>
+            </div>
+            <svg class="mover-spark" viewBox="0 0 56 22" preserveAspectRatio="none"><path d="M0,5 L10,7 L20,10 L30,13 L40,15 L56,17" stroke="#ffb84d" stroke-width="1.5" fill="none"/></svg>
+            <div class="mover-delta tightening">−11%</div>
+          </div>
+          <div class="mover-row">
+            <div class="mover-rank">04</div>
+            <div class="mover-name-group">
+              <div class="mover-name">151 Ultra Premium Collection</div>
+              <div class="mover-product-type">UPC · Scarlet & Violet</div>
+            </div>
+            <svg class="mover-spark" viewBox="0 0 56 22" preserveAspectRatio="none"><path d="M0,6 L10,8 L20,10 L30,13 L40,14 L56,16" stroke="#ffb84d" stroke-width="1.5" fill="none"/></svg>
+            <div class="mover-delta tightening">−9%</div>
+          </div>
+          <div class="mover-row">
+            <div class="mover-rank">05</div>
+            <div class="mover-name-group">
+              <div class="mover-name">Celebrations Ultra Premium Collection</div>
+              <div class="mover-product-type">UPC · SWSH</div>
+            </div>
+            <svg class="mover-spark" viewBox="0 0 56 22" preserveAspectRatio="none"><path d="M0,7 L10,8 L20,11 L30,12 L40,14 L56,15" stroke="#ffb84d" stroke-width="1.5" fill="none"/></svg>
+            <div class="mover-delta tightening">−7%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mover-table">
+        <div class="mover-head">
+          <div class="mover-title"><span class="icon">⚡</span>Highest Sell Velocity</div>
+          <div class="mover-label">listings cleared / day · 7d</div>
+        </div>
+        <div class="mover-body">
+          <div class="mover-row">
+            <div class="mover-rank">01</div>
+            <div class="mover-name-group">
+              <div class="mover-name">Prismatic Evolutions Elite Trainer Box</div>
+              <div class="mover-product-type">ETB · Scarlet & Violet</div>
+            </div>
+            <svg class="mover-spark" viewBox="0 0 56 22" preserveAspectRatio="none"><path d="M0,18 L10,16 L20,12 L30,10 L40,6 L56,3" stroke="#ef5a5a" stroke-width="1.5" fill="none"/></svg>
+            <div class="mover-delta positive">4.8/d</div>
+          </div>
+          <div class="mover-row">
+            <div class="mover-rank">02</div>
+            <div class="mover-name-group">
+              <div class="mover-name">151 Ultra Premium Collection</div>
+              <div class="mover-product-type">UPC · Scarlet & Violet</div>
+            </div>
+            <svg class="mover-spark" viewBox="0 0 56 22" preserveAspectRatio="none"><path d="M0,16 L10,14 L20,13 L30,9 L40,7 L56,5" stroke="#ef5a5a" stroke-width="1.5" fill="none"/></svg>
+            <div class="mover-delta positive">3.2/d</div>
+          </div>
+          <div class="mover-row">
+            <div class="mover-rank">03</div>
+            <div class="mover-name-group">
+              <div class="mover-name">Evolving Skies Booster Box</div>
+              <div class="mover-product-type">Booster Box · SWSH</div>
+            </div>
+            <svg class="mover-spark" viewBox="0 0 56 22" preserveAspectRatio="none"><path d="M0,14 L10,12 L20,11 L30,9 L40,7 L56,6" stroke="#ef5a5a" stroke-width="1.5" fill="none"/></svg>
+            <div class="mover-delta positive">2.1/d</div>
+          </div>
+          <div class="mover-row">
+            <div class="mover-rank">04</div>
+            <div class="mover-name-group">
+              <div class="mover-name">Hidden Fates Elite Trainer Box</div>
+              <div class="mover-product-type">ETB · Sun & Moon</div>
+            </div>
+            <svg class="mover-spark" viewBox="0 0 56 22" preserveAspectRatio="none"><path d="M0,13 L10,11 L20,10 L30,9 L40,8 L56,7" stroke="#ef5a5a" stroke-width="1.5" fill="none"/></svg>
+            <div class="mover-delta positive">1.7/d</div>
+          </div>
+          <div class="mover-row">
+            <div class="mover-rank">05</div>
+            <div class="mover-name-group">
+              <div class="mover-name">Crown Zenith Elite Trainer Box</div>
+              <div class="mover-product-type">ETB · SWSH</div>
+            </div>
+            <svg class="mover-spark" viewBox="0 0 56 22" preserveAspectRatio="none"><path d="M0,12 L10,11 L20,10 L30,9 L40,8 L56,8" stroke="#ef5a5a" stroke-width="1.5" fill="none"/></svg>
+            <div class="mover-delta positive">1.4/d</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCT LIST -->
+    <div class="product-list-wrap">
+      <div class="product-list-head">
+        <div class="mover-title"><span class="icon">📦</span>All Tracked Products · 20</div>
+        <div class="product-list-controls">
+          <button class="list-chip active">All</button>
+          <button class="list-chip">ETBs</button>
+          <button class="list-chip">Booster Boxes</button>
+          <button class="list-chip">UPCs</button>
+          <button class="list-chip">Booster Bundles</button>
+        </div>
+      </div>
+      <div class="product-list-body" id="productList"></div>
+    </div>
+
+    <!-- SIGNAL LOG -->
+    <div class="log-wrap">
+      <div class="log-head">
+        <div class="mover-title"><span class="icon">📡</span>Signal Log</div>
+        <div class="log-filter">
+          <button class="log-filter-chip active">All</button>
+          <button class="log-filter-chip">Signals</button>
+          <button class="log-filter-chip">Runs</button>
+          <button class="log-filter-chip">Errors</button>
+        </div>
+      </div>
+      <div class="log-body" id="signalLog"></div>
+    </div>
+
+    <div class="bot-note">
+      <strong>Reminder:</strong> Everything you see on this dashboard is mocked. The bot isn't yet running on a schedule — this mockup is designed to match what the real dashboard should look like once <code>fetch-sealed-prices.mjs</code> is deployed on GitHub Actions / Railway / cron and begins committing data. When we port this to code on your PC, the visual layer stays the same and we wire each metric card to the real data structure.
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ==========================================
+// PRODUCT DATA — 20 realistic products
+// No dollar values anywhere. Only percentages, counts, trajectory.
+// ==========================================
+const products = [
+  // Tightening + Heating (the classic "drying up + buyers pouncing" pattern)
+  {name:"Evolving Skies Booster Box",type:"Booster Box · SWSH",signals:["tightening","heating"],listings:{val:47,delta:-18,trend:"down"},sellers:{val:31,delta:-14,trend:"down"},velocity:{val:"2.1/d",delta:19,trend:"up"}},
+  {name:"Hidden Fates Elite Trainer Box",type:"ETB · Sun & Moon",signals:["tightening","heating"],listings:{val:54,delta:-14,trend:"down"},sellers:{val:38,delta:-11,trend:"down"},velocity:{val:"1.7/d",delta:14,trend:"up"}},
+  {name:"Crown Zenith Elite Trainer Box",type:"ETB · SWSH",signals:["tightening"],listings:{val:82,delta:-11,trend:"down"},sellers:{val:52,delta:-8,trend:"down"},velocity:{val:"1.4/d",delta:6,trend:"up"}},
+  {name:"151 Ultra Premium Collection",type:"UPC · Scarlet & Violet",signals:["tightening","heating"],listings:{val:63,delta:-9,trend:"down"},sellers:{val:41,delta:-5,trend:"down"},velocity:{val:"3.2/d",delta:28,trend:"up"}},
+  {name:"Celebrations Ultra Premium Collection",type:"UPC · SWSH",signals:["tightening"],listings:{val:78,delta:-7,trend:"down"},sellers:{val:49,delta:-3,trend:"down"},velocity:{val:"0.9/d",delta:-2,trend:"flat"}},
+  {name:"Prismatic Evolutions Elite Trainer Box",type:"ETB · Scarlet & Violet",signals:["tightening","heating","buythedip"],listings:{val:94,delta:-6,trend:"down"},sellers:{val:62,delta:-4,trend:"down"},velocity:{val:"4.8/d",delta:41,trend:"up"}},
+
+  // Heating only
+  {name:"Obsidian Flames Booster Box",type:"Booster Box · Scarlet & Violet",signals:["heating"],listings:{val:118,delta:2,trend:"flat"},sellers:{val:84,delta:1,trend:"flat"},velocity:{val:"2.6/d",delta:15,trend:"up"}},
+  {name:"Paldean Fates Elite Trainer Box",type:"ETB · Scarlet & Violet",signals:["heating"],listings:{val:102,delta:-3,trend:"flat"},sellers:{val:71,delta:-1,trend:"flat"},velocity:{val:"2.2/d",delta:11,trend:"up"}},
+
+  // Loosening (newer sets, supply still flowing in) — the "buy the dip" sweet spot
+  {name:"Ascended Heroes Elite Trainer Box",type:"ETB · Mega Evolution",signals:["loosening","cooling","buythedip"],listings:{val:247,delta:34,trend:"up"},sellers:{val:168,delta:22,trend:"up"},velocity:{val:"1.1/d",delta:-24,trend:"down"}},
+  {name:"Perfect Order Booster Bundle",type:"Booster Bundle · Mega Evolution",signals:["loosening","buythedip"],listings:{val:189,delta:22,trend:"up"},sellers:{val:128,delta:14,trend:"up"},velocity:{val:"1.8/d",delta:5,trend:"flat"}},
+  {name:"Journey Together Elite Trainer Box",type:"ETB · Scarlet & Violet",signals:["loosening"],listings:{val:156,delta:12,trend:"up"},sellers:{val:102,delta:9,trend:"up"},velocity:{val:"1.4/d",delta:-2,trend:"flat"}},
+  {name:"Ascended Heroes Booster Bundle",type:"Booster Bundle · Mega Evolution",signals:["loosening","buythedip"],listings:{val:212,delta:41,trend:"up"},sellers:{val:148,delta:28,trend:"up"},velocity:{val:"3.4/d",delta:18,trend:"up"}},
+  {name:"Journey Together Booster Box",type:"Booster Box · Scarlet & Violet",signals:["cooling"],listings:{val:145,delta:8,trend:"up"},sellers:{val:97,delta:6,trend:"up"},velocity:{val:"0.8/d",delta:-24,trend:"down"}},
+
+  // Cooling
+  {name:"Phantasmal Flames Elite Trainer Box",type:"ETB · Mega Evolution",signals:["cooling"],listings:{val:134,delta:3,trend:"flat"},sellers:{val:89,delta:2,trend:"flat"},velocity:{val:"0.7/d",delta:-16,trend:"down"}},
+  {name:"Destined Rivals Elite Trainer Box",type:"ETB · Scarlet & Violet",signals:["cooling"],listings:{val:121,delta:-2,trend:"flat"},sellers:{val:82,delta:-1,trend:"flat"},velocity:{val:"1.2/d",delta:-9,trend:"down"}},
+
+  // Neutral / stable
+  {name:"Surging Sparks Booster Box",type:"Booster Box · Scarlet & Violet",signals:[],listings:{val:98,delta:1,trend:"flat"},sellers:{val:67,delta:0,trend:"flat"},velocity:{val:"1.6/d",delta:3,trend:"flat"}},
+  {name:"Temporal Forces Elite Trainer Box",type:"ETB · Scarlet & Violet",signals:[],listings:{val:112,delta:-1,trend:"flat"},sellers:{val:76,delta:0,trend:"flat"},velocity:{val:"1.3/d",delta:2,trend:"flat"}},
+  {name:"Paradox Rift Booster Box",type:"Booster Box · Scarlet & Violet",signals:[],listings:{val:89,delta:-2,trend:"flat"},sellers:{val:61,delta:-1,trend:"flat"},velocity:{val:"1.5/d",delta:-1,trend:"flat"}},
+  {name:"Shrouded Fable Elite Trainer Box",type:"ETB · Scarlet & Violet",signals:[],listings:{val:87,delta:0,trend:"flat"},sellers:{val:58,delta:0,trend:"flat"},velocity:{val:"1.0/d",delta:-3,trend:"flat"}},
+  {name:"Twilight Masquerade Booster Box",type:"Booster Box · Scarlet & Violet",signals:[],listings:{val:104,delta:-1,trend:"flat"},sellers:{val:71,delta:-1,trend:"flat"},velocity:{val:"1.2/d",delta:1,trend:"flat"}}
+];
+
+// ==========================================
+// SIGNAL LOG ENTRIES
+// ==========================================
+const signalLog = [
+  {time:"00:14",type:"info",msg:'Bot run complete · <span class="product">20 products</span> updated · 164 new datapoints',tag:"RUN"},
+  {time:"00:08",type:"heating",msg:'<span class="product">Prismatic Evolutions ETB</span> crossed demand-heating threshold <span class="delta heating">velocity +41%</span>',tag:"SIGNAL"},
+  {time:"00:03",type:"info",msg:'<span class="product">Ascended Heroes Booster Bundle</span> flagged as buy-the-dip candidate · supply shock ahead of Apr 24 release, fundamentals intact',tag:"FUND"},
+  {time:"02:14",type:"tightening",msg:'<span class="product">Evolving Skies Booster Box</span> listings dropped below 50 <span class="delta tightening">−18% 7d</span>',tag:"SIGNAL"},
+  {time:"03:41",type:"info",msg:'New product added to tracking: <span class="product">Chaos Rising Booster Bundle</span>',tag:"CONFIG"},
+  {time:"06:22",type:"loosening",msg:'<span class="product">Ascended Heroes Booster Bundle</span> listing count jumped ahead of Apr 24 release <span class="delta loosening">+41%</span>',tag:"SIGNAL"},
+  {time:"08:12",type:"info",msg:'T-354 days to H-mark rotation · 6 tracked products entering 12-month setup window',tag:"ROTATION"},
+  {time:"10:44",type:"loosening",msg:'<span class="product">Ascended Heroes ETB</span> listing count jumped <span class="delta loosening">+34%</span>',tag:"SIGNAL"},
+  {time:"14:18",type:"info",msg:'Bot run complete · 20 products updated · 142 new datapoints',tag:"RUN"},
+  {time:"16:55",type:"tightening",msg:'<span class="product">Hidden Fates ETB</span> unique sellers below 40 <span class="delta tightening">−14% 7d</span>',tag:"SIGNAL"},
+  {time:"18:30",type:"info",msg:'Supply shock ongoing: <span class="product">Prismatic Evolutions</span> reprint wave confirmed by TPCi · heating despite supply = strong demand signal',tag:"SHOCK"},
+  {time:"21:02",type:"heating",msg:'<span class="product">151 UPC</span> listing lifetime dropped to 3.1 days <span class="delta heating">−32%</span>',tag:"SIGNAL"},
+  {time:"23:17",type:"info",msg:'Bot run complete · 20 products updated · 178 new datapoints',tag:"RUN"},
+];
+
+// ==========================================
+// RENDERING
+// ==========================================
+function signalBadges(signals){
+  if(!signals.length) return '';
+  const map = {tightening:'Tight',loosening:'Loose',heating:'Hot',cooling:'Cool'};
+  return signals.map(s => {
+    if(s === 'buythedip') return `<span class="btd-badge">Buy-dip</span>`;
+    return `<span class="mini-badge ${s}">${map[s]}</span>`;
+  }).join('');
+}
+
+function trendClass(trend){
+  if(trend === 'up') return 'up';
+  if(trend === 'down') return 'down';
+  return '';
+}
+
+function renderProductList(){
+  const el = document.getElementById('productList');
+  el.innerHTML = products.map(p => {
+    const listingDelta = p.listings.delta > 0 ? `+${p.listings.delta}%` : `${p.listings.delta}%`;
+    const sellerDelta = p.sellers.delta > 0 ? `+${p.sellers.delta}%` : `${p.sellers.delta}%`;
+    const velocityDelta = p.velocity.delta > 0 ? `+${p.velocity.delta}%` : `${p.velocity.delta}%`;
+    return `
+      <div class="product-row">
+        <div class="product-row-top">
+          <div class="product-row-name">${p.name}</div>
+          <div class="product-row-badges">${signalBadges(p.signals)}</div>
+        </div>
+        <div class="product-row-metrics">
+          <div class="prm">
+            <div class="prm-label">Listings</div>
+            <div class="prm-val ${trendClass(p.listings.trend)}">${p.listings.val} ${listingDelta}</div>
+          </div>
+          <div class="prm">
+            <div class="prm-label">Sellers</div>
+            <div class="prm-val ${trendClass(p.sellers.trend)}">${p.sellers.val} ${sellerDelta}</div>
+          </div>
+          <div class="prm">
+            <div class="prm-label">Velocity</div>
+            <div class="prm-val ${trendClass(p.velocity.trend)}">${p.velocity.val} ${velocityDelta}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderSignalLog(){
+  const el = document.getElementById('signalLog');
+  el.innerHTML = signalLog.map(s => `
+    <div class="log-row">
+      <div class="log-time">${s.time}</div>
+      <div class="log-dot ${s.type}"></div>
+      <div class="log-msg">${s.msg}</div>
+      <div class="log-tag">${s.tag}</div>
+    </div>
+  `).join('');
+}
+
+function setFilter(signal){
+  document.querySelectorAll('.pulse-card').forEach(c => c.classList.remove('active'));
+  document.querySelector(`.pulse-card[data-filter="${signal}"]`).classList.add('active');
+}
+
+renderProductList();
+renderSignalLog();
+</script>
+
+</body>
+</html>

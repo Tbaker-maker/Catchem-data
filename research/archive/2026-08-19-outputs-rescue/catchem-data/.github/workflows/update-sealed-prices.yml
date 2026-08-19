@@ -1,0 +1,39 @@
+name: Update sealed prices
+
+on:
+  schedule:
+    # Daily at 4:00 AM UTC (midnight EST, 9 PM PST previous day)
+    - cron: "0 4 * * *"
+  workflow_dispatch: # Allows manual runs from the Actions tab
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Needs write access to commit updated prices back
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Fetch sealed prices from eBay
+        env:
+          EBAY_APP_ID: ${{ secrets.EBAY_APP_ID }}
+          EBAY_CERT_ID: ${{ secrets.EBAY_CERT_ID }}
+        run: node scripts/fetch-sealed-prices.mjs
+
+      - name: Commit updated prices
+        run: |
+          git config user.name "catchem-bot"
+          git config user.email "bot@catchem.app"
+          git add data/sealed-prices.json
+          if git diff --staged --quiet; then
+            echo "No price changes to commit."
+          else
+            git commit -m "Update sealed prices ($(date -u +'%Y-%m-%d'))"
+            git push
+          fi

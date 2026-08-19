@@ -1,0 +1,34 @@
+# 🎯 Post Ideas — 2026-08-18
+*Angles + live numbers. Voice = yours. [FACT] verified · [READ] hedge it.*
+
+## ⚡ Two-market gaps (who's right?)
+- [FACT] **Prismatic Evolutions Surprise Box**: eBay $99 vs TCG $68.53 (+44.5%, 117 listings). Hook: "two markets, 44.5% apart — somebody's wrong."
+- [FACT] **Shrouded Fable Elite Trainer Box**: eBay $135 vs TCG $109.9 (+22.8%, 112 listings). Hook: "two markets, 22.8% apart — somebody's wrong."
+- [FACT] **Evolving Skies Booster Box**: eBay $2899 vs TCG $2444.9 (+18.6%, 91 listings). Hook: "two markets, 18.6% apart — somebody's wrong."
+- [FACT] **Lost Origin Elite Trainer Box**: eBay $249.5 vs TCG $215.2 (+15.9%, 138 listings). Hook: "two markets, 15.9% apart — somebody's wrong."
+
+## 🏜 Supply stories
+- [FACT] Deepest market: **Destined Rivals Elite Trainer Box** ($135, 141 listings). Hook: liquidity king / easiest entry-exit.
+- [READ] Aug 28: six $21.99 tins = TPC injecting supply into the tightest set of the year. Absorb or stall — the watch.
+
+## 🧮 Value angles (Pack Math)
+- [FACT] Sealed pack spectrum: **$80.53/pack** (Evolving Skies Booster Box) → **$5.42/pack** (Perfect Order Booster Box). Hook: "what a pack actually costs, ranked."
+- [READ] Perfect Order Booster Box at $5.42/pack = cheapest real wax on the board. Sleeper or trap? (invite the fight)
+
+## 👀 Monitor list (never "calls" — watching out loud)
+- [FACT] **Umbreon VMAX** $2244.47 (TCGplayer mkt). Hook: post the level, ask the room where it goes.
+- [FACT] **Umbreon ex** $1490.88 (TCGplayer mkt). Hook: post the level, ask the room where it goes.
+- [FACT] **Rayquaza VMAX** $1247.9 (TCGplayer mkt). Hook: post the level, ask the room where it goes.
+- [FACT] **Giratina V** $822.39 (TCGplayer mkt). Hook: post the level, ask the room where it goes.
+- [READ] Gap play: Umbreon VMAX $2244.47 vs Rayquaza VMAX $1247.9 — era-icon ratio talk.
+
+## 🤫 Nobody's talking about
+- [READ] **Prismatic Evolutions Surprise Box** moving (+44.5%) with zero coverage. Hook: "the tape noticed before the timeline did."
+- [READ] **Shrouded Fable Elite Trainer Box** moving (+22.8%) with zero coverage. Hook: "the tape noticed before the timeline did."
+- [READ] **Temporal Forces Booster Box** moving (+15.6%) with zero coverage. Hook: "the tape noticed before the timeline did."
+
+## 📅 Seasonal thesis (evergreen this month)
+- [READ] Summer lull → catalyst stack: Aug 28 tins → Sept 16 worldwide 30th launch → Q4 holidays. "The quiet window is closing" — falsifier: if listings balloon post-tins, thesis wrong.
+- [READ] Back-to-school = historical soft patch for wax; Q4 = strongest. Position language: "lock-in window," never guarantees.
+
+*Regenerates daily with the run. Mix 1 FACT + 1 READ per day; questions out-engage statements.*
