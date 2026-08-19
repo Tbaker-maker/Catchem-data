@@ -201,21 +201,15 @@ for (const r of histCut) {
 }
 for (const k in history) history[k].sort((a, b) => (a[0] < b[0] ? -1 : 1));
 
-// Era-index series: self-accumulating mirror at research/pulse/era-history.json.
-// That directory is in the daily run's git-add list; data/era-index-history.json
-// is NOT, so entries written in-run vanish when the job ends — the mirror is how
-// the series survives CI. Merge-by-(date,era); never wholesale (pathogen rule).
-let eraMirror = null;
-try { eraMirror = await J("research/pulse/era-history.json"); } catch {}
-eraMirror ??= { note: "era level series — merged from data/era-index-history.json each pulse run; committed daily via research/pulse/", entries: [] };
+// Era-index series straight from data/era-index-history.json — the workflow's
+// git-add list now commits it daily (write-vs-commit matrix, 2026-08-19), so
+// the mirror workaround that briefly lived at research/pulse/era-history.json
+// is retired.
 let eraSrc = null; try { eraSrc = await J("data/era-index-history.json"); } catch {}
-const eraKey = (e) => e.date + "·" + e.era;
-const eraSeen = new Set(eraMirror.entries.map(eraKey));
-for (const e of (eraSrc?.entries ?? [])) if (!eraSeen.has(eraKey(e))) { eraSeen.add(eraKey(e)); eraMirror.entries.push(e); }
-eraMirror.entries.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : a.era < b.era ? -1 : 1));
-await writeFile(join(ROOT, "research/pulse/era-history.json"), JSON.stringify(eraMirror, null, 1) + "\n");
+const eraEntries = [...(eraSrc?.entries ?? [])]
+  .sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : a.era < b.era ? -1 : 1));
 const eraHistory = {};
-for (const e of eraMirror.entries) (eraHistory[e.era] ??= []).push([e.date, e.level]);
+for (const e of eraEntries) (eraHistory[e.era] ??= []).push([e.date, e.level]);
 for (const k in eraHistory) eraHistory[k] = eraHistory[k].slice(-HIST_DEPTH);
 
 // Product catalog for the app (detail pages, Board depth, offline Deal Check
