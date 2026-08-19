@@ -14,9 +14,9 @@ Morning Pulse (fixed-hour drop) + My Watch (their stake) + Movers (the
 overnight question) + streak chip. Loop: machine publishes 04:00 →
 notification-free ritual (email/Discord first, push post-V1) → star →
 return. PLAN: Retention v0 ships the loop; Pulse quality = editorial
-job #1; Rip-or-Hold adds the one-tap social beat. METRIC: DAU/WAU ratio,
-watchlist adoption % of visitors, streak distribution. [VERIFY: category
-D1/D7/D30 benchmarks to set honest targets.]
+job #1; Rip-or-Hold adds the one-tap social beat. METRIC (benchmarked Aug 19): D1 25-30 · D7 12-17 · D30 8-12 · DAU/MAU
+15-25; D30>10 + stickiness>20 = top quartile. Watchlist adoption %,
+streak distribution. Streak lift precedent: +14% D7 (Duolingo A/B).
 
 ## PILLAR 2 · RETENTION — reasons to come back that are THEIRS
 Evidence: utility-first decision (Tyler): watchlist > gacha for now.
@@ -48,12 +48,12 @@ seen self-correcting IS the moat behavior. METRIC: citation rate
 (creators/posts quoting us), correction latency.
 
 ## PILLAR 5 · ACCESSIBILITY — easy to find, easy to afford
-AFFORD: landscape [as-of recon, VERIFY]: Collectr $4.99-7.99/mo,
+AFFORD (verified Aug 19 — see benchmark digest): Collectr $4.99-7.99/mo,
 Card Ladder ~$15/mo (raised after 4 yrs), PPT tiered/API, PriceCharting
 sub, Collectrics free-ethos-with-entitlements. POSITION: core truth
 FREE FOREVER (index, Pulse, Board, Deal Check, receipts) — the truth
 layer is never paywalled; Pro later = convenience+cosmetics (Supporter
-DNA), targeting the accessible end of the range. FIND: SEO landers
+DNA), targeting $5-7/mo (~$50/yr, annual-first); freemium converts 2-5% so the free base IS the business; paywall = history depth/alerts/exports, never current-price truth. FIND: SEO landers
 (168 product pages shaped like real queries), creator flywheel (§14
 assets + §14b embeds), share cards into FB/IG groups, newsletter, arc.
 LOW-END HARDWARE: static+client-side architecture = fast on old phones,
@@ -71,4 +71,4 @@ Collectrics velocity → out-history+out-sealed+out-trust (not out-sprint).
 Name/IP → gates running; no name-coupled spend. Data dependency (eBay/
 PPT terms) → licensing emails out, Insights application, multi-source
 roadmap. Founder bandwidth → fleet automation law; sustainability
-doctrine unchanged. Metric honesty → benchmarks [VERIFY] before targets.
+doctrine unchanged. Metric honesty → benchmarks LANDED (digest Aug 19); iOS-PWA push weak → email digest capture = mandatory hedge from day one.
