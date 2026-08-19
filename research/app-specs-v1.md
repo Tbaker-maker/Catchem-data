@@ -129,3 +129,38 @@ is that reference. Client-side off pulse-feed, zero backend.
    convention halls with dead signal. PWA install prompt.
 Acceptance: a stranger in a Facebook vintage group posts our share card
 unprompted. That's product-market fit for this feature.
+
+## §14 · CATCH'EM STUDIO — the creator toolkit (Tyler, Aug 19)
+Thesis: creators are the distribution layer of this hobby. Their daily
+jobs: credible NUMBERS for thumbnails/B-roll, ANGLES to cover, LIVE data
+on stream. We manufacture all three daily — Studio packages them. Every
+asset watermarked (⚡ + catchemtcg.com, tasteful) = every video a
+billboard. All client-side off pulse-feed.json; zero backend.
+
+1. THE CARD MAKER (the engine — build ONCE, feeds three features):
+   pick any product / chase / index / era → renders a branded stat card
+   or chart as PNG (canvas export). Layouts: price card, Δ card, premium
+   card, index card, heat tile, versus card (A vs B). Provenance chips
+   render ON the asset — creators spreading VERIFIED/READ chips spread
+   the Trust Standard itself. Same renderer powers Deal Check share
+   cards (§13) and shareable Daily Three (warbook C1). One build, three
+   features — this is why Studio is launch-window feasible, not post-V1.
+2. STORY KITS — daily creator briefing: 3 story angles with the numbers,
+   the receipts, and a suggested framing ("Temporal Forces has ~60 days
+   of print left — here's the supply math"). The post-ideas generator
+   already computes this; Studio formats it creator-facing. Voice laws
+   apply: no calls, labeled %, glossed terms.
+3. OBS OVERLAY — a static overlay route reading the live feed: current
+   index, a chosen product's price+Δ, or the Daily Three ticker.
+   Browser-source URL, transparent bg, brand fonts. Rip-and-ship and
+   market streamers get live Catch'em data ON SCREEN for free.
+4. CHART EXPORT — every chart in the app gets a ⬇ PNG button with
+   watermark. Screenshots become intentional assets.
+
+CREATOR MOTION (not a feature — a habit): seed list of ~10 (analytical
+fits first; NOT direct competitors), early Pulse access, custom first
+cards, zero exclusivity asks. Acceptance bar: a creator uses a Studio
+asset in a video WE didn't ask about.
+GUARDRAILS: watermark = brand law; assets carry date + provenance; no
+"calls" language in any export template (voice v4); licensing-gated data
+(graded slot) exports only after PPT clearance.

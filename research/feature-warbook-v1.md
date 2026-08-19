@@ -48,6 +48,10 @@ designed-but-unshipped list clears. Tiers = sequencing, not urgency.
    countdown anxiety is native collector fuel and links back to us.
    Effort S. Post-launch garnish.
 
+6. CATCHEM STUDIO (creators bring users) — Card Maker PNG renderer +
+   Story Kits + OBS overlay + chart export; one renderer feeds Deal
+   Check, Daily Three shareables, AND Studio. Launch-window. Spec §14.
+
 ## SEQUENCE (unchanged by all of the above)
 Ship queue: polish sprint → arc Days 1-14 → Newsletter 001 (Aug 24) →
 heat debut (Aug 26) → tins (Aug 28) → database/public launch → THEN
