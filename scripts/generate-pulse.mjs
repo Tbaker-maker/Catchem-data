@@ -284,6 +284,39 @@ if (der?.packMath?.priciest?.[0] && der?.packMath?.cheapest?.[0]) {
     receipts: `sealed ask median ÷ era-aware pack count · eBay BIN-only delivered · ${today} · catchemtcg.com`,
   });
 }
+// Catalyst kit: today's strongest read, hedged in voice ([READ] class — our
+// interpretation, never a call).
+const cat0 = (der?.catalysts ?? [])[0];
+if (cat0) storyKits.push({
+  id: "catalyst", angle: `Catalyst read — ${cat0.class}, ${cat0.horizon} horizon`,
+  headline: `${cat0.trigger}: ${cat0.note}`,
+  body: `${(cat0.context || "").trim() || "The read comes straight from today's research digest."} Possible, not promised — the falsifier is on the tape.`,
+  receipts: `machine read [READ] · ${cat0.provenance || "daily digest"} · ${today} · catchemtcg.com`,
+});
+// Print-watch kit: nearest EOL countdown + the tightening trio.
+{
+  const printing = (der?.printWatch ?? []).filter(r => r.eol?.status === "printing")
+    .sort((a, b) => (a.eol.daysLeftEst ?? 9e9) - (b.eol.daysLeftEst ?? 9e9))[0];
+  const tight = (der?.tightening ?? []).map(t => t.set);
+  if (printing) storyKits.push({
+    id: "printwatch", angle: "The print window is a clock",
+    headline: `${printing.set}: ~${printing.eol.daysLeftEst} days of printing left (est.)`,
+    body: `The 30-month model puts ${printing.set}'s print window closing in roughly ${printing.eol.daysLeftEst} days — ${printing.supply} listings on the tape today${tight.length ? `. Already out of print and thinning with no reprint news: ${tight.join(", ")}` : ""}. Estimates, not announcements — TPC can reprint anything.`,
+    receipts: `30-month print model (est.) × live listing depth · eBay active listings · ${today} · catchemtcg.com`,
+  });
+}
+
+// Kit archive (accumulating, merge-by-date, CI-committed via research/pulse/) —
+// powers /studio/archive without any directory-listing API.
+{
+  const { mergeByDate } = await import("./lib/instruments.mjs");
+  let arch = null;
+  try { arch = await J("research/pulse/kits-archive.json"); } catch {}
+  arch ??= { note: "story-kit archive — merge-by-date", entries: [] };
+  arch.entries = mergeByDate(arch.entries, [{ date: today, kits: storyKits }], today);
+  arch.entries.sort((a, b) => (a.date < b.date ? -1 : 1));
+  await writeFile(join(ROOT, "research/pulse/kits-archive.json"), JSON.stringify(arch, null, 1) + "\n");
+}
 
 // Composite index series for the overlay/header spark (CI-committed path).
 let ixHist = null; try { ixHist = await J("research/pulse/index-history.json"); } catch {}
