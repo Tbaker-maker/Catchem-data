@@ -75,6 +75,9 @@ if (der?.narrative) {
 }
 if (der?.cohortCompare) { const c=der.cohortCompare;
   md += `\n## 🧬 Specialty vs mainline (today's cross-section)\n- Specialty: ${c.specialty.sets} sets · ${c.specialty.supplyPerProduct} listings/product · $${c.specialty.avgPerPack}/pack avg\n- Mainline: ${c.mainline.sets} sets · ${c.mainline.supplyPerProduct} listings/product · $${c.mainline.avgPerPack}/pack avg\n- Taper curves accumulate daily from Aug 18 — the new-print-facility question gets answered with data.\n`; }
+md += `\n## 🏛 Generation indexes\n`;
+for (const e of (der?.eraIndexes??[])) md += `- **${e.era}** — median product $${e.level.toLocaleString("en-US")} · asking ${Math.abs(e.avgGapPct)}% ${e.avgGapPct>=0?"more":"less"} on eBay than TCGplayer across ${e.products} products · ${e.listingsPerProduct} listings each. ${e.read}.\n`;
+md += `*Baseline 100 set today — era momentum lines start tomorrow.*\n`;
 md += `\n## ⏳ Print watch\n`;
   for (const r of near) md += `- **${r.set}** — est. print window closes in ~${r.eol.daysLeftEst} days (30-month model) · ${r.supply} listings tracked\n`;
   if (der.tightening?.length) md += `- 🔒 Tightening: ${der.tightening.map(t=>t.set).join(" · ")} — out of print, low supply, no reprint news\n`;
