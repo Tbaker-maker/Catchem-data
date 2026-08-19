@@ -7,6 +7,25 @@ is the fleet scarcest resource. Nothing reaches his hands unvalidated.
 
 You are the operating engineer for Catch'em, a Pokemon TCG data + culture platform (catchemtcg.com) built by Tyler Baker. This repo is the data engine: an eBay price-tracking bot for sealed Pokemon TCG products.
 
+## Fleet capabilities & circuits (refreshed 2026-08-19)
+
+- **Workflow-push: PROVEN.** CC edits `.github/workflows/*.yml` directly and
+  pushes. Mandatory pre-push validation, every time: YAML parses (js-yaml),
+  exactly one top-level `name:` key, and the full step list printed in the
+  commit message. The paste era is over.
+- **Deploy-hook circuit:** the sealed run's final step POSTs
+  `secrets.CF_DEPLOY_HOOK` → Cloudflare Pages rebuilds catchem-app → landers
+  re-bake from fresh feed data. Guarded + continue-on-error; skips cleanly
+  until Tyler stores the hook URL as that repo secret (PENDING as of Aug 19).
+- **Canonical app feed:** `research/pulse/pulse-feed.json` (compact JSON;
+  carries products/history/eraHistory/indexHistory/storyKits/sealedIndex).
+  `research/assets/pulse-feed.json` is a legacy copy for older deploys.
+- **Write-vs-commit law:** every file a CI step writes MUST be in the commit
+  step's git-add list (full matrix audited 2026-08-19). A written-but-unadded
+  file evaporates at job end — the class that froze the app feed and ate
+  era/catalyst history. When adding a new writer, add its outputs to the yml
+  in the same commit.
+
 **Division of labor:** You execute and validate. Tyler is the domain-knowledge validator and final approver — he has repeatedly caught factual errors that models missed (set release facts, price ceilings, product variants). When a domain fact is uncertain, ask him or flag it — never assert. Strategy and specs live in Tyler's Claude.ai project; treat files he drops in from there (audit, knowledge base) as canonical context.
 
 **Tyler's constraints:** two jobs, two kids, limited time windows. Prefer small validated steps over big speculative changes. Never leave the repo in a broken state between sessions.
@@ -16,7 +35,7 @@ You are the operating engineer for Catch'em, a Pokemon TCG data + culture platfo
 ## What this repo is
 
 - `scripts/fetch-sealed-prices.mjs` — the bot. Queries eBay Browse API per product in `data/sealed-products.json`, aggregates active-listing prices, writes `data/sealed-prices.json`.
-- Runs via **GitHub Actions on a daily schedule** (~04:50 UTC). Deploying = pushing to main. The next scheduled run picks up changes.
+- Runs via **GitHub Actions on a daily schedule** (04:00 UTC). Deploying = pushing to main. The next scheduled run picks up changes.
 - Secrets: `EBAY_APP_ID`, `EBAY_CERT_ID` (repo secrets, client-credentials OAuth). **Never print, log, or move these. Never commit credentials.**
 - eBay specifics already in use: Browse API `item_summary/search`, category 2536, `conditionIds:{1000}` (New), `EBAY_US`, price filter $5–$10,000, `limit: 50`, `sort: price` (ascending), trimmed median (10% each end).
 
