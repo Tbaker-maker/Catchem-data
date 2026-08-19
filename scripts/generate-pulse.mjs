@@ -94,6 +94,9 @@ if (der?.narrative) {
 }
 if (der?.cohortCompare) { const c=der.cohortCompare;
   md += `\n## 🧬 Specialty vs mainline (today's cross-section)\n- Specialty: ${c.specialty.sets} sets · ${c.specialty.supplyPerProduct} listings/product · $${c.specialty.avgPerPack}/pack avg\n- Mainline: ${c.mainline.sets} sets · ${c.mainline.supplyPerProduct} listings/product · $${c.mainline.avgPerPack}/pack avg\n- Taper curves accumulate daily from Aug 18 — the new-print-facility question gets answered with data.\n`; }
+if (der?.sealedIndex) { const six = der.sealedIndex;
+  md += `\n## 📈 CATCH'EM SEALED INDEX: **${six.level}**${six.ddPct!=null?` (${six.ddPct>0?"▲":"▼"} ${Math.abs(six.ddPct)}% vs yesterday)`:" — baseline era, day 2"} · ${six.constituents} sealed products · breadth ▲${six.breadth.up} ▼${six.breadth.down}\n*One number for the whole sealed market. How it works: methodology page.*\n`;
+}
 md += `\n## 🏛 Generation indexes\n`;
 for (const e of (der?.eraIndexes??[])) md += `- **${e.era}** — median product $${e.level.toLocaleString("en-US")} · ${e.avgGapPct!=null?`asking ${Math.abs(e.avgGapPct)}% ${e.avgGapPct>=0?"more":"less"} on eBay than TCGplayer · `:""}${e.products} products · ${e.listingsPerProduct} listings each. ${e.read}.\n`;
 md += `*Baseline 100 set today — era momentum lines start tomorrow.*\n`;
@@ -143,6 +146,7 @@ h2{font-size:13px;font-family:'JetBrains Mono',monospace;letter-spacing:.12em;te
 .calib{margin-top:26px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:11px 14px;font:12px 'JetBrains Mono',monospace;color:var(--dim)}
 footer{margin-top:30px;font:12px 'JetBrains Mono',monospace;color:var(--dim)}
 .thumb{width:46px;height:auto;border-radius:6px;flex:none;border:1px solid rgba(255,255,255,.07)}.thumb.logo{width:56px;background:#0b0d14;padding:4px}.sigbody{flex:1}
+.idxhead{display:flex;justify-content:space-between;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin:0 0 16px}
 </style></head><body>
 <div class="kicker">CATCH'EM · MORNING PULSE</div>
 <h1>☀️ ${today} <span>#${today.replaceAll("-","")}</span></h1>
@@ -166,6 +170,7 @@ ${der.packMath.priciest.slice(0,3).map(r=>`<div class="row"><span>${r.name}${r.s
 <div class="row" style="border-bottom:0"><span style="color:var(--dim)">···</span><span></span></div>
 ${der.packMath.cheapest.slice(0,3).map(r=>`<div class="row"><span>${r.name}${r.sealedPremiumPct!=null?` <em>vs loose $${r.loosePack}</em>`:""}</span><span class="mono">$${r.perPack}/pk${r.sealedPremiumPct!=null?` · ${r.sealedPremiumPct>0?"+":""}${r.sealedPremiumPct}%`:""}</span></div>`).join("")}`:""}
 ${der?.narrative?`${der?.topicHits?.length?`<h2>🔎 Watched topics</h2>${der.topicHits.map(t=>`<div class="row"><span>${t.topic}<em> ${t.hits.map(h=>h.where).join(" · ")}</em></span><span class="mono" style="max-width:55%;text-align:right">${t.hits[0].detail.slice(0,64)}${t.hits[0].detail.length>64?"…":""}</span></div>`).join("")}`:""}
+${der?.sealedIndex?`<div class="idxhead"><div><div class="lbl" style="font-size:10px;letter-spacing:.09em;color:var(--dim)">CATCH'EM SEALED INDEX</div><div style="font-family:'JetBrains Mono';font-size:34px;font-weight:700">${der.sealedIndex.level}${der.sealedIndex.ddPct!=null?` <span style="font-size:16px;color:${der.sealedIndex.ddPct>=0?"var(--green)":"#ef5a5a"}">${der.sealedIndex.ddPct>0?"▲":"▼"} ${Math.abs(der.sealedIndex.ddPct)}%</span>`:""}</div></div><div class="mono" style="text-align:right;color:var(--dim);font-size:12px">${der.sealedIndex.constituents} sealed products<br>breadth ▲${der.sealedIndex.breadth.up} ▼${der.sealedIndex.breadth.down}<br><a href="/methodology.html" style="color:var(--green)">methodology →</a></div></div>`:""}
 ${der?.eraIndexes?.length?`<h2>\ud83c\udfdb Generation indexes</h2>${der.eraIndexes.map(e=>`<div class="row"><span><b>${e.era}</b><em> ${e.products} products \u00b7 ${e.avgGapPct!=null?`asking ${Math.abs(e.avgGapPct)}% ${e.avgGapPct>=0?"more":"less"} than TCGplayer \u00b7 `:"eBay-native era \u00b7 "}${e.listingsPerProduct} listings each</em></span><span class="mono">$${e.level.toLocaleString("en-US")}</span></div>`).join("")}<div class="foot">Era level = median tracked product. Baseline 100 today \u2014 momentum lines grow from tomorrow.</div>`:""}
 ${der?.printWatch?.length?`<h2>⏳ Print watch</h2>${der.printWatch.filter(r=>r.eol.status==="printing").slice(0,2).map(r=>`<div class="row"><span>${r.set}<em> est. window closes ~${r.eol.daysLeftEst}d (30-mo model)</em></span><span class="mono">${r.supply} listings</span></div>`).join("")}${der.tightening?.length?`<div class="row"><span>🔒 Tightening<em> out of print · low supply · no reprint news</em></span><span class="mono">${der.tightening.map(t=>t.set.split(" ")[0]).join(" · ")}</span></div>`:""}`:""}
 <h2>📣 In today's Pokémon news</h2>
@@ -262,6 +267,8 @@ const feed = {
   lifecycle: der?.lifecycle ?? {},
   printWatch: der?.printWatch ?? [],
   eraIndexes: der?.eraIndexes ?? [],
+  sealedIndex: der?.sealedIndex ?? null,
+  machine: { generatedAt: new Date().toISOString(), products: sp.products.length, live: sp.products.filter(x=>x.dataStatus==="live").length, historyDepthDays: (der?.sealedIndex?.constituents?1:0) && undefined },
   cohortCompare: der?.cohortCompare ?? null,
   topicHits: der?.topicHits ?? [],
   tightening: der?.tightening ?? [],
@@ -311,3 +318,5 @@ h2{font-family:"Syne",sans-serif;font-size:20px;margin:30px 0 10px}.foot{color:v
 console.log("✓ pulse-feed.json (app Ticker feed) written");
 console.log("✓ Pulse HTML edition written (dated + stable path)");
 console.log(`✓ Morning Pulse written: research/pulse/${today}.md`);
+
+await import("./mint-cards.mjs");

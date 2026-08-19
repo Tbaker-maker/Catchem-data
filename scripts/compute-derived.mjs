@@ -302,6 +302,43 @@ eiHist.entries = (eiHist.entries||[]).filter(e=>e.date!==today);
 for (const r of eraIndexes) eiHist.entries.push({ date: today, era: r.era, level: r.level, avgGapPct: r.avgGapPct, listings: r.totalListings });
 await writeFile(new URL("../data/era-index-history.json", import.meta.url), JSON.stringify(eiHist,null,1));
 
+
+// ── (h) THE CATCH'EM SEALED INDEX — composite, baseline-relative ─────────
+// Equal-weight mean of per-product ratios vs each product's own first
+// clean-history price (self-healing baselines). Breadth = advancers vs
+// decliners day-over-day. Methodology public: research/assets/methodology.html
+let ixh = { note: "Catchem Sealed Index history — merge-by-date", entries: [] };
+try { ixh = await J("research/pulse/index-history.json"); } catch {}
+const firstSeen = {}, lastTwo = {};
+for (const r of [...hh].sort((a,b)=>a.date<b.date?-1:1)) {
+  if (r.date < "2026-08-18" || !r.price) continue;
+  if (!firstSeen[r.id]) firstSeen[r.id] = r.price;
+  (lastTwo[r.id] ||= []).push(r.price);
+  if (lastTwo[r.id].length > 2) lastTwo[r.id].shift();
+}
+const ratios = [], breadth = { up: 0, down: 0, flat: 0 };
+for (const p of liveList) {
+  const base = firstSeen[p.id];
+  if (base && p.priceMedian) ratios.push(p.priceMedian / base);
+  const lt = lastTwo[p.id];
+  if (lt && lt.length === 2) {
+    const d = (lt[1]-lt[0])/lt[0];
+    if (d > 0.002) breadth.up++; else if (d < -0.002) breadth.down++; else breadth.flat++;
+  }
+}
+const idxLevel = ratios.length ? Math.round(ratios.reduce((a,c)=>a+c,0)/ratios.length * 1000)/10 : 100.0;
+const prevIx = (ixh.entries||[]).slice(-1)[0];
+const sealedIndex = { name: "Catchem Sealed Index", level: idxLevel,
+  ddPct: prevIx ? Math.round((idxLevel/prevIx.level - 1)*1000)/10 : null,
+  constituents: ratios.length, baseline: "each product vs its first clean-history price (2026-08-18 cut)",
+  breadth, chip: "VERIFIED", methodologyUrl: "/methodology.html" };
+{
+  const today = new Date().toISOString().slice(0,10);
+  ixh.entries = (ixh.entries||[]).filter(e=>e.date!==today);
+  ixh.entries.push({ date: today, level: idxLevel, constituents: ratios.length, up: breadth.up, down: breadth.down });
+  await writeFile(new URL("../research/pulse/index-history.json", import.meta.url), JSON.stringify(ixh,null,1));
+}
+
 const out = {
   generatedAt: new Date().toISOString(),
   method: "Pack Math: ask median / era-aware pack count (arithmetic, no estimation; variable-count products excluded by name). Narrative: latest agent digest cross-referenced against tracked sets; 'quiet movers' = spread signal with zero digest mention.",
@@ -313,6 +350,7 @@ const out = {
   lifecycle, rotationContext,
   printWatch, tightening, rotationCohorts,
   eraIndexes,
+  sealedIndex,
   cohortCompare,
   topicHits,
   dailyThree: (() => {
