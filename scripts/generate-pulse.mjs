@@ -69,7 +69,11 @@ if (der?.packMath) {
 if (der?.narrative) {
   if (der?.printWatch?.length) {
   const near = der.printWatch.filter(r=>r.eol.status==="printing").slice(0,2);
-  if (der?.cohortCompare) { const c=der.cohortCompare;
+  if (der?.topicHits?.length) {
+  md += `\n## 🔎 Watched topics\n`;
+  for (const t of der.topicHits) md += `- **${t.topic}** — ${t.hits.map(h=>`${h.where}: ${h.detail}`).join(" · ")}\n`;
+}
+if (der?.cohortCompare) { const c=der.cohortCompare;
   md += `\n## 🧬 Specialty vs mainline (today's cross-section)\n- Specialty: ${c.specialty.sets} sets · ${c.specialty.supplyPerProduct} listings/product · $${c.specialty.avgPerPack}/pack avg\n- Mainline: ${c.mainline.sets} sets · ${c.mainline.supplyPerProduct} listings/product · $${c.mainline.avgPerPack}/pack avg\n- Taper curves accumulate daily from Aug 18 — the new-print-facility question gets answered with data.\n`; }
 md += `\n## ⏳ Print watch\n`;
   for (const r of near) md += `- **${r.set}** — est. print window closes in ~${r.eol.daysLeftEst} days (30-month model) · ${r.supply} listings tracked\n`;
@@ -139,7 +143,8 @@ ${der?.packMath?`<h2>🧮 Pack math — $ per sealed pack</h2>
 ${der.packMath.priciest.slice(0,3).map(r=>`<div class="row"><span>${r.name}${r.sealedPremiumPct!=null?` <em>vs loose $${r.loosePack}</em>`:""}</span><span class="mono">$${r.perPack}/pk${r.sealedPremiumPct!=null?` · ${r.sealedPremiumPct>0?"+":""}${r.sealedPremiumPct}%`:""}</span></div>`).join("")}
 <div class="row" style="border-bottom:0"><span style="color:var(--dim)">···</span><span></span></div>
 ${der.packMath.cheapest.slice(0,3).map(r=>`<div class="row"><span>${r.name}${r.sealedPremiumPct!=null?` <em>vs loose $${r.loosePack}</em>`:""}</span><span class="mono">$${r.perPack}/pk${r.sealedPremiumPct!=null?` · ${r.sealedPremiumPct>0?"+":""}${r.sealedPremiumPct}%`:""}</span></div>`).join("")}`:""}
-${der?.narrative?`${der?.printWatch?.length?`<h2>⏳ Print watch</h2>${der.printWatch.filter(r=>r.eol.status==="printing").slice(0,2).map(r=>`<div class="row"><span>${r.set}<em> est. window closes ~${r.eol.daysLeftEst}d (30-mo model)</em></span><span class="mono">${r.supply} listings</span></div>`).join("")}${der.tightening?.length?`<div class="row"><span>🔒 Tightening<em> out of print · low supply · no reprint news</em></span><span class="mono">${der.tightening.map(t=>t.set.split(" ")[0]).join(" · ")}</span></div>`:""}`:""}
+${der?.narrative?`${der?.topicHits?.length?`<h2>🔎 Watched topics</h2>${der.topicHits.map(t=>`<div class="row"><span>${t.topic}<em> ${t.hits.map(h=>h.where).join(" · ")}</em></span><span class="mono" style="max-width:55%;text-align:right">${t.hits[0].detail.slice(0,64)}${t.hits[0].detail.length>64?"…":""}</span></div>`).join("")}`:""}
+${der?.printWatch?.length?`<h2>⏳ Print watch</h2>${der.printWatch.filter(r=>r.eol.status==="printing").slice(0,2).map(r=>`<div class="row"><span>${r.set}<em> est. window closes ~${r.eol.daysLeftEst}d (30-mo model)</em></span><span class="mono">${r.supply} listings</span></div>`).join("")}${der.tightening?.length?`<div class="row"><span>🔒 Tightening<em> out of print · low supply · no reprint news</em></span><span class="mono">${der.tightening.map(t=>t.set.split(" ")[0]).join(" · ")}</span></div>`:""}`:""}
 <h2>📣 In today's Pokémon news</h2>
 ${der.narrative.inNews.slice(0,3).map(r=>`<div class="row"><span>${r.set}<em>${r.spreadPct!=null?` asking ${Math.abs(r.spreadPct)}% ${r.spreadPct>0?"more":"less"} on eBay than TCGplayer`:""}</em></span><span class="mono">$${r.price}</span></div>`).join("")}
 <h2>🤫 Moving without headlines</h2>
@@ -166,6 +171,7 @@ const feed = {
   lifecycle: der?.lifecycle ?? {},
   printWatch: der?.printWatch ?? [],
   cohortCompare: der?.cohortCompare ?? null,
+  topicHits: der?.topicHits ?? [],
   tightening: der?.tightening ?? [],
   rotationCohorts: der?.rotationCohorts ?? {},
   rotationContext: der?.rotationContext ?? null,

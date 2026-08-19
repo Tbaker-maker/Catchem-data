@@ -235,6 +235,24 @@ const cohortCompare = (() => {
   await writeFile(new URL("../data/cohort-history.json", import.meta.url), JSON.stringify(ch,null,1));
 }
 
+
+// ── (h) TOPIC MONITOR — watched topics scanned across the whole machine ──
+let topicCfg = { topics: [] }; try { topicCfg = await J("data/topic-watch.json"); } catch {}
+const topicHits = [];
+for (const t of (topicCfg.topics||[])) {
+  const terms = [t.term, ...(t.aliases||[])].map(x=>x.toLowerCase());
+  const hits = [];
+  if (digestText) for (const term of terms) { const i = digestText.toLowerCase().indexOf(term);
+    if (i>=0) { hits.push({ where:"news", detail: "…"+digestText.slice(Math.max(0,i-50),i+110).replace(/\s+/g," ").trim()+"…" }); break; } }
+  for (const r of (div.rows||[])) if (r.signal && terms.some(x=>(r.name||"").toLowerCase().includes(x)||(r.set||"").toLowerCase().includes(x)))
+    { hits.push({ where:"price gap", detail:`${r.name} — ${r.spreadPct>0?"+":""}${r.spreadPct}% eBay vs TCGplayer` }); break; }
+  for (const c of ((sgAll&&sgAll.cards)||[])) if (!c.needsReview && terms.some(x=>(c.name||"").toLowerCase().includes(x)))
+    { hits.push({ where:"chase board", detail:`${c.name} — $${c.priceMarket}` }); break; }
+  for (const r of printWatch) if (terms.some(x=>r.set.toLowerCase().includes(x)) && (r.eol.status==="printing" ? r.eol.daysLeftEst<240 : true))
+    { hits.push({ where:"print watch", detail: r.eol.status==="printing" ? `${r.set} — window closes ~${r.eol.daysLeftEst}d (est.)` : `${r.set} — out of print ~${r.eol.monthsOutEst}mo` }); break; }
+  if (hits.length) topicHits.push({ topic: t.term, kind: t.kind, hits: hits.slice(0,3) });
+}
+
 const out = {
   generatedAt: new Date().toISOString(),
   method: "Pack Math: ask median / era-aware pack count (arithmetic, no estimation; variable-count products excluded by name). Narrative: latest agent digest cross-referenced against tracked sets; 'quiet movers' = spread signal with zero digest mention.",
@@ -246,6 +264,7 @@ const out = {
   lifecycle, rotationContext,
   printWatch, tightening, rotationCohorts,
   cohortCompare,
+  topicHits,
   dailyThree: (() => {
     const sealedPick = (div.rows||[]).filter(r=>r.signal).sort((a,b)=>Math.abs(b.spreadPct)-Math.abs(a.spreadPct))[0] || null;
     let gradedPick = null;

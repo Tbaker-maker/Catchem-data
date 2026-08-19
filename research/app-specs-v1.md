@@ -79,3 +79,9 @@ render feed's top signal to canvas→PNG; S-M; instant distribution.
 
 ## 9 · COLLECTION GRADE (M — needs auth+DB; parked, spec locked Aug 18)
 Import: Collectr CSV export or paste (v1 — real today; NO third-party API assumed until verified). Engine grades vs our data: chase coverage %, set/era diversification, specialty-vs-mainline mix, intrinsic-model value, condition mix if provided. Output: letter grade + strengths/gaps + shareable grade-card image (brand tokens). Strategic: onboarding funnel FROM competitor apps; grade card = viral loop. Licensing-clean (user's own data).
+
+## 10 · YOUR BRIEF — collection-personalized newsletter (ladder, Aug 18)
+v0 (editorial, NO infra — 002+): the three modes (Collector/Flipper/Grader) become newsletter TRACKS — sectioned content per mode. v1 (post-auth): in-app Your Brief screen = every engine filtered to YOUR imported collection (your holdings' moves, your sets' print windows, your chases' premiums, tightening on YOUR stuff). v2 (ESP-dependent): true per-user email — only if the send platform supports per-subscriber payloads; never fake it with segments pretending to be personal. Pro-tier candidate.
+
+## 11 · TOPIC MONITOR — per-user (engine SHIPPED Aug 18, Tyler = user zero)
+data/topic-watch.json + scanner in derived → topicHits across news, price gaps, chase board, print watch → Pulse block, feed, Discord alert pings. App version: user picks topics (cards/sets/themes), same engine per-user post-auth; free tier 3 topics, Pro more (monetization note).

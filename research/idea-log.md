@@ -27,3 +27,9 @@
    accumulating history. Day-1: specialty = deeper/product (80 vs 59), +44% pack
    premium ($43 vs $30), tighter gaps (6.9 vs 14.3%). Print-facility question now
    gets answered with our own longitudinal data.
+9. YOUR BRIEF — collection-personalized newsletter (Tyler): ladder spec'd (§10).
+   Near-term actionable: v0 = mode-tracks (Collector/Flipper/Grader sections) in 002+,
+   zero infra needed.
+10. TOPIC MONITOR (Tyler, SHIPPED same session): watched-topics engine scanning
+   news+gaps+chases+print-watch; all 5 seeds fired day one (EvSkies hit two
+   instruments at once). Per-user app version spec'd (§11, free=3 topics).
