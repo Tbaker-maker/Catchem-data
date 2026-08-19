@@ -85,3 +85,28 @@ v0 (editorial, NO infra — 002+): the three modes (Collector/Flipper/Grader) be
 
 ## 11 · TOPIC MONITOR — per-user (engine SHIPPED Aug 18, Tyler = user zero)
 data/topic-watch.json + scanner in derived → topicHits across news, price gaps, chase board, print watch → Pulse block, feed, Discord alert pings. App version: user picks topics (cards/sets/themes), same engine per-user post-auth; free tier 3 topics, Pro more (monetization note).
+
+
+## §12 · RETENTION v0 — useable daily-return features, ZERO backend (Tyler, Aug 18)
+Decision: meme-card collection (Feels/Backpack/archetypes) DEFERRED to
+later-road. Retention now = utility rituals. All of the below run
+client-side off pulse-feed.json — no auth, no DB, ships in the app today.
+
+1. WATCHLIST (the retention keystone) — ⭐ star on every product card,
+   row, and heat tile → localStorage `watch:[ids]`. "My Watch" section
+   pins to TOP of home, above the Daily Three, with each item's price,
+   Δ badge, spark. Empty state in voice: "Star anything — it lives here."
+   Why it returns people: checking YOUR list is the market-app habit loop.
+2. MOVERS TAB — ▲▼ lists from the Δ layer (truthful starting tomorrow).
+   The "what happened overnight" check. Already computed; just a view.
+3. COMPARE — pick any two products/chases → side-by-side across our
+   instruments (price, gap, listings, premium, lifecycle, legality).
+   Stateless, feed-powered. Card Ladder's most-used feature, our receipts.
+4. SEARCH + FILTER on the Board — name/set/subtype/tier filters,
+   client-side. Table stakes that make everything else useable.
+5. VISIT STREAK CHIP — localStorage day counter, "🔥 Day 4" by the
+   wordmark. Habit scaffolding without collectibles; cosmetic only.
+6. ALERTS v0 — 🔔 deep-links to the Discord #alerts channel (signal
+   pings already built server-side). Per-user alerts wait for auth.
+ACCEPTANCE: a person can star 5 products today and have a reason to
+open the app tomorrow that is THEIRS. That's the whole bar.

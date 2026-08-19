@@ -40,7 +40,8 @@ designed-but-unshipped list clears. Tiers = sequencing, not urgency.
    results next morning + running community track record. Becomes the
    "Community Read" instrument (crowd sentiment as data — nobody has it).
    Engagement + culture + eventual signal. Effort S-M. Launch-window.
-4. FEELS + STREAKS + FOUNDING NUMBERS — the retention trinity, fully
+4. [LATER-ROAD per Tyler Aug 18 — collectible layer deferred; utility-first]
+   FEELS + STREAKS + FOUNDING NUMBERS — the retention trinity, fully
    designed (pack spec v2, streak D7/30/100/365, waitlist ceremony).
    The reason someone opens the app at 6am daily. Post-V1 (auth+DB).
 5. PRINT-WATCH COUNTDOWNS — embeddable "X days left (est.)" widgets;
