@@ -246,6 +246,49 @@ const catalog = sp.products.map(p => {
   return row;
 });
 
+// ── Story Kits (Studio v0): three shaped stories a day from live instruments.
+// The post-ideas angles, machine-readable: angle + numbers + receipts line.
+// [FACT]-class numbers only; voice stays Tyler's. Kit 1 carries the same
+// TCG-side numbers feed.signals already publishes — no new exposure.
+const storyKits = [];
+const s0 = [...sigs].sort((a, b) => Math.abs(b.spreadPct) - Math.abs(a.spreadPct))[0];
+if (s0) storyKits.push({
+  id: "gap", angle: "Two markets, one product — who's right?",
+  headline: `${s0.name}: two markets, ${Math.abs(s0.spreadPct)}% apart`,
+  body: `eBay asks $${s0.ebayAskMedian} (${s0.ebayListings ?? "—"} active listings) while the TCG side sits at $${s0.tcgMarket}. ${s0.spreadPct > 0 ? "Sellers reaching, or eBay supply tightening" : "eBay discounting the TCG-side ask"} — somebody's wrong.`,
+  productId: s0.id,
+  receipts: `eBay active asks, BIN-only delivered · TCG-side provider market · ${today} · catchemtcg.com`,
+});
+{
+  const thin = live.filter(p => p.listingCount && p.listingCount < 8).sort((a, b) => a.listingCount - b.listingCount)[0];
+  const deep = [...live].sort((a, b) => (b.listingCount || 0) - (a.listingCount || 0))[0];
+  storyKits.push(thin
+    ? { id: "supply", angle: "Scarcity on tape",
+        headline: `${thin.name}: ${thin.listingCount} listings left`,
+        body: `Only ${thin.listingCount} active listing${thin.listingCount === 1 ? "" : "s"} on all of eBay, asking $${thin.priceMedian}. Try to buy one — that's the story.`,
+        productId: thin.id,
+        receipts: `eBay active listings, BIN-only delivered, title-filtered · ${today} · catchemtcg.com` }
+    : { id: "supply", angle: "Liquidity king",
+        headline: `${deep.name}: the deepest market on the board`,
+        body: `${deep.listingCount} active listings at a $${deep.priceMedian} median — the easiest entry and exit in the hobby today.`,
+        productId: deep.id,
+        receipts: `eBay active listings, BIN-only delivered, title-filtered · ${today} · catchemtcg.com` });
+}
+if (der?.packMath?.priciest?.[0] && der?.packMath?.cheapest?.[0]) {
+  const hi = der.packMath.priciest[0], lo = der.packMath.cheapest[0];
+  storyKits.push({
+    id: "packmath", angle: "What a pack actually costs",
+    headline: `$${hi.perPack} vs $${lo.perPack}: the sealed pack spectrum`,
+    body: `${hi.name} runs $${hi.perPack}/pack inside the box; ${lo.name} is the cheapest real wax on the board at $${lo.perPack}/pack. Same hobby, ${Math.round(hi.perPack / lo.perPack)}× apart.`,
+    productId: hi.id,
+    receipts: `sealed ask median ÷ era-aware pack count · eBay BIN-only delivered · ${today} · catchemtcg.com`,
+  });
+}
+
+// Composite index series for the overlay/header spark (CI-committed path).
+let ixHist = null; try { ixHist = await J("research/pulse/index-history.json"); } catch {}
+const indexHistory = (ixHist?.entries ?? []).slice(-HIST_DEPTH).map(e => [e.date, e.level]);
+
 // ── Machine-readable feed for the app's Ticker (no HTML scraping, ever) ──
 const feed = {
   generatedAt: new Date().toISOString(), date: today,
@@ -277,6 +320,8 @@ const feed = {
   products: catalog,
   history,
   eraHistory,
+  indexHistory,
+  storyKits,
 };
 // Two copies, both compact (machine feed; pretty-printing triples the bytes):
 //  - research/pulse/pulse-feed.json — the CANONICAL app URL. research/pulse/
