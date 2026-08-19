@@ -25,6 +25,25 @@ const sg = await J("data/singles-prices.json");
 const radar = await J("data/release-radar.json");
 const der = await J("data/derived-insights.json");
 
+// Email capture (retention hedge: iOS PWA push is unreliable, email is the
+// backstop). Posts to the LIVE Formspree waitlist — the same list newsletter
+// 001 imports from. TODO(Tyler): claim a buttondown.com username, set it here
+// AND in catchem-app/src/Ticker.jsx — the two capture points flip together.
+const BUTTONDOWN_USERNAME = "";
+const CAPTURE_URL = BUTTONDOWN_USERNAME
+  ? `https://buttondown.com/api/emails/embed-subscribe/${BUTTONDOWN_USERNAME}`
+  : "https://formspree.io/f/xgorlypa";
+const captureBlock = `<div style="margin-top:26px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px">
+<b style="font-size:15px">Get the Morning Pulse in your inbox</b>
+<div style="font-size:12px;color:var(--dim);margin:4px 0 10px">Same page, delivered every morning. No spam, unsubscribe anytime.</div>
+<form id="cap" style="display:flex;gap:8px">
+<input name="email" type="email" required placeholder="you@example.com" aria-label="email address" style="flex:1;min-width:0;background:var(--bg);border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:10px 12px;font:13px 'Sora',sans-serif">
+<button type="submit" style="background:var(--green);border:0;color:#0b0d14;font:700 13px 'Sora',sans-serif;border-radius:8px;padding:10px 16px;cursor:pointer">Send it</button>
+</form>
+<div id="capmsg" style="font-size:12px;color:var(--dim);margin-top:8px"></div>
+<script>document.getElementById("cap").addEventListener("submit",async e=>{e.preventDefault();const f=e.target,m=document.getElementById("capmsg");m.textContent="sending…";try{const r=await fetch("${CAPTURE_URL}",{method:"POST",body:new FormData(f),headers:{Accept:"application/json"}});if(!r.ok)throw 0;f.style.display="none";m.textContent="✓ You're on the list — the Pulse lands from the next send.";}catch{m.textContent="Couldn't reach the list — try again in a moment."}});</script>
+</div>`;
+
 const live = sp.products.filter(p=>p.dataStatus==="live");
 const noMkt = sp.products.filter(p=>p.dataStatus==="no-active-market").length;
 const heatDays = (heat?.mode||"").match(/day (\d+)/)?.[1] ?? "?";
@@ -154,6 +173,7 @@ ${der.narrative.inNews.slice(0,3).map(r=>`<div class="row"><span>${r.set}<em>${r
 <h2>🤫 Moving without headlines</h2>
 ${der.narrative.quietMovers.slice(0,3).map(r=>`<div class="row"><span>${r.flagship}<em> asking ${Math.abs(r.spreadPct)}% ${r.spreadPct>0?"more":"less"} on eBay — no coverage anywhere ⚡</em></span><span class="mono">$${r.price}</span></div>`).join("")}`:""}
 ${upcoming.length?`<h2>Radar</h2>${radarRows}`:""}
+${captureBlock}
 <div class="calib">HEAT READS: day ${heatDays} of 8 clean days — Wyckoff states return ~Aug 26. We publish nothing false in the meantime.</div>
 <footer>Catch'em. Catch Feels. · prices: Catchem-data, eBay active listings (measured) · spread: internal instrument</footer>
 </body></html>`;
