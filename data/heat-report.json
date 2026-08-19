@@ -1,42 +1,923 @@
 {
-  "generatedAt": "2026-08-18T09:04:42.535Z",
-  "method": "Wyckoff-state reads from Catchem-data bot (eBay active listings). States are interpretations, not facts. Volume/supply inferred, not measured.",
-  "mode": "price-only (supply history: day 1 of 8 needed)",
+  "generatedAt": "2026-08-19T04:37:57.431Z",
+  "method": "Wyckoff-state reads from Catchem-data bot (eBay active listings). States are interpretations, not facts. Demand = Buy Pressure (est. from listing activity, not reported sales). Active Listings measured.",
+  "mode": "price-only (supply history: day 2 of 8 needed)",
   "counts": {
     "markup": 0,
     "markdown": 0,
     "accumulation": 0,
     "distribution": 0,
-    "excluded": 70
+    "excluded": 168
   },
   "reads": [],
   "excluded": [
+    {
+      "id": "swsh5-pack",
+      "name": "Battle Styles Booster Pack",
+      "set": "Battle Styles",
+      "subtype": "booster-pack",
+      "priceMedian": 11.99,
+      "listingCount": 47,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "swsh6-pack",
+      "name": "Chilling Reign Booster Pack",
+      "set": "Chilling Reign",
+      "subtype": "booster-pack",
+      "priceMedian": 16,
+      "listingCount": 68,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "swsh7-pack",
+      "name": "Evolving Skies Booster Pack",
+      "set": "Evolving Skies",
+      "subtype": "booster-pack",
+      "priceMedian": 54.95,
+      "listingCount": 64,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "swsh8-pack",
+      "name": "Fusion Strike Booster Pack",
+      "set": "Fusion Strike",
+      "subtype": "booster-pack",
+      "priceMedian": 23.95,
+      "listingCount": 38,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sv1-pack",
+      "name": "Scarlet & Violet Booster Pack",
+      "set": "Scarlet & Violet",
+      "subtype": "booster-pack",
+      "priceMedian": 14.39,
+      "listingCount": 26,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sv3pt5-pack",
+      "name": "151 Booster Pack",
+      "set": "151",
+      "subtype": "booster-pack",
+      "priceMedian": 32,
+      "listingCount": 42,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sv4-pack",
+      "name": "Paradox Rift Booster Pack",
+      "set": "Paradox Rift",
+      "subtype": "booster-pack",
+      "priceMedian": 12.8,
+      "listingCount": 39,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sv8-pack",
+      "name": "Surging Sparks Booster Pack",
+      "set": "Surging Sparks",
+      "subtype": "booster-pack",
+      "priceMedian": 10,
+      "listingCount": 28,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sv8pt5-pack",
+      "name": "Prismatic Evolutions Booster Pack",
+      "set": "Prismatic Evolutions",
+      "subtype": "booster-pack",
+      "priceMedian": 16.5,
+      "listingCount": 26,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sv9-pack",
+      "name": "Journey Together Booster Pack",
+      "set": "Journey Together",
+      "subtype": "booster-pack",
+      "priceMedian": 8.99,
+      "listingCount": 22,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sv10-pack",
+      "name": "Destined Rivals Booster Pack",
+      "set": "Destined Rivals",
+      "subtype": "booster-pack",
+      "priceMedian": 10.49,
+      "listingCount": 26,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "me1-pack",
+      "name": "Mega Evolution Booster Pack",
+      "set": "Mega Evolution",
+      "subtype": "booster-pack",
+      "priceMedian": 9.39,
+      "listingCount": 7,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "me2-pack",
+      "name": "Phantasmal Flames Booster Pack",
+      "set": "Phantasmal Flames",
+      "subtype": "booster-pack",
+      "priceMedian": 15,
+      "listingCount": 25,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "me2pt5-pack",
+      "name": "Ascended Heroes Booster Pack",
+      "set": "Ascended Heroes",
+      "subtype": "booster-pack",
+      "priceMedian": 15.99,
+      "listingCount": 20,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "me3-pack",
+      "name": "Perfect Order Booster Pack",
+      "set": "Perfect Order",
+      "subtype": "booster-pack",
+      "priceMedian": 8.29,
+      "listingCount": 16,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sm35-etb",
+      "name": "Shining Legends Elite Trainer Box",
+      "set": "Shining Legends",
+      "subtype": "etb",
+      "priceMedian": 1499.69,
+      "listingCount": 16,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sm75-etb",
+      "name": "Dragon Majesty Elite Trainer Box",
+      "set": "Dragon Majesty",
+      "subtype": "etb",
+      "priceMedian": 1499.99,
+      "listingCount": 5,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "det1-etb",
+      "name": "Detective Pikachu Elite Trainer Box",
+      "set": "Detective Pikachu",
+      "subtype": "etb",
+      "priceMedian": null,
+      "listingCount": 0,
+      "reason": "dataStatus: no-active-market"
+    },
+    {
+      "id": "xy12-booster-box",
+      "name": "Evolutions Booster Box",
+      "set": "Evolutions",
+      "subtype": "booster-box",
+      "priceMedian": 2724.99,
+      "listingCount": 29,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "xy12-etb",
+      "name": "Evolutions Elite Trainer Box",
+      "set": "Evolutions",
+      "subtype": "etb",
+      "priceMedian": 720,
+      "listingCount": 44,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "zsv10pt5-etb",
+      "name": "Black Bolt Elite Trainer Box",
+      "set": "Black Bolt",
+      "subtype": "etb",
+      "priceMedian": 179.99,
+      "listingCount": 94,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "zsv10pt5-bundle",
+      "name": "Black Bolt Booster Bundle",
+      "set": "Black Bolt",
+      "subtype": "booster-bundle",
+      "priceMedian": 99.99,
+      "listingCount": 79,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "rsv10pt5-etb",
+      "name": "White Flare Elite Trainer Box",
+      "set": "White Flare",
+      "subtype": "etb",
+      "priceMedian": 160.58,
+      "listingCount": 92,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "rsv10pt5-bundle",
+      "name": "White Flare Booster Bundle",
+      "set": "White Flare",
+      "subtype": "booster-bundle",
+      "priceMedian": 90,
+      "listingCount": 86,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "pgo-etb",
+      "name": "Pokemon GO Elite Trainer Box",
+      "set": "Pokemon GO",
+      "subtype": "etb",
+      "priceMedian": 238.55,
+      "listingCount": 78,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "me2pt5-tin",
+      "name": "Ascended Heroes Tin",
+      "set": "Ascended Heroes",
+      "subtype": "tin",
+      "priceMedian": 60,
+      "listingCount": 28,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "mega-forces-tin",
+      "name": "Mega Forces Tin",
+      "set": "Mega Forces",
+      "subtype": "tin",
+      "listingCount": 0,
+      "reason": "dataStatus: unavailable"
+    },
+    {
+      "id": "sm1-booster-box",
+      "name": "Sun & Moon Booster Box",
+      "set": "Sun & Moon",
+      "subtype": "booster-box",
+      "priceMedian": 2499,
+      "listingCount": 78,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sm1-etb",
+      "name": "Sun & Moon Elite Trainer Box",
+      "set": "Sun & Moon",
+      "subtype": "etb",
+      "priceMedian": 379,
+      "listingCount": 90,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sm2-booster-box",
+      "name": "Guardians Rising Booster Box",
+      "set": "Guardians Rising",
+      "subtype": "booster-box",
+      "priceMedian": 1650,
+      "listingCount": 8,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sm2-etb",
+      "name": "Guardians Rising Elite Trainer Box",
+      "set": "Guardians Rising",
+      "subtype": "etb",
+      "priceMedian": 584.99,
+      "listingCount": 11,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sm3-booster-box",
+      "name": "Burning Shadows Booster Box",
+      "set": "Burning Shadows",
+      "subtype": "booster-box",
+      "priceMedian": 1520,
+      "listingCount": 25,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sm3-etb",
+      "name": "Burning Shadows Elite Trainer Box",
+      "set": "Burning Shadows",
+      "subtype": "etb",
+      "priceMedian": 372.64,
+      "listingCount": 27,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sm4-booster-box",
+      "name": "Crimson Invasion Booster Box",
+      "set": "Crimson Invasion",
+      "subtype": "booster-box",
+      "priceMedian": 1009.08,
+      "listingCount": 10,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sm4-etb",
+      "name": "Crimson Invasion Elite Trainer Box",
+      "set": "Crimson Invasion",
+      "subtype": "etb",
+      "priceMedian": 308.95,
+      "listingCount": 28,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sm5-booster-box",
+      "name": "Ultra Prism Booster Box",
+      "set": "Ultra Prism",
+      "subtype": "booster-box",
+      "priceMedian": 1995,
+      "listingCount": 17,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sm5-etb",
+      "name": "Ultra Prism Elite Trainer Box",
+      "set": "Ultra Prism",
+      "subtype": "etb",
+      "priceMedian": null,
+      "listingCount": 1,
+      "reason": "dataStatus: no-active-market"
+    },
+    {
+      "id": "sm6-booster-box",
+      "name": "Forbidden Light Booster Box",
+      "set": "Forbidden Light",
+      "subtype": "booster-box",
+      "priceMedian": 1899,
+      "listingCount": 14,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sm6-etb",
+      "name": "Forbidden Light Elite Trainer Box",
+      "set": "Forbidden Light",
+      "subtype": "etb",
+      "priceMedian": 715,
+      "listingCount": 6,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sm7-booster-box",
+      "name": "Celestial Storm Booster Box",
+      "set": "Celestial Storm",
+      "subtype": "booster-box",
+      "priceMedian": 3059.98,
+      "listingCount": 15,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sm7-etb",
+      "name": "Celestial Storm Elite Trainer Box",
+      "set": "Celestial Storm",
+      "subtype": "etb",
+      "priceMedian": null,
+      "listingCount": 0,
+      "reason": "dataStatus: no-active-market"
+    },
+    {
+      "id": "sm8-booster-box",
+      "name": "Lost Thunder Booster Box",
+      "set": "Lost Thunder",
+      "subtype": "booster-box",
+      "priceMedian": 2167.04,
+      "listingCount": 7,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sm8-etb",
+      "name": "Lost Thunder Elite Trainer Box",
+      "set": "Lost Thunder",
+      "subtype": "etb",
+      "priceMedian": 700,
+      "listingCount": 3,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sm9-booster-box",
+      "name": "Team Up Booster Box",
+      "set": "Team Up",
+      "subtype": "booster-box",
+      "priceMedian": null,
+      "listingCount": 2,
+      "reason": "dataStatus: no-active-market"
+    },
+    {
+      "id": "sm9-etb",
+      "name": "Team Up Elite Trainer Box",
+      "set": "Team Up",
+      "subtype": "etb",
+      "priceMedian": null,
+      "listingCount": 0,
+      "reason": "dataStatus: no-active-market"
+    },
+    {
+      "id": "sm10-booster-box",
+      "name": "Unbroken Bonds Booster Box",
+      "set": "Unbroken Bonds",
+      "subtype": "booster-box",
+      "priceMedian": 3249.9,
+      "listingCount": 17,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sm10-etb",
+      "name": "Unbroken Bonds Elite Trainer Box",
+      "set": "Unbroken Bonds",
+      "subtype": "etb",
+      "priceMedian": null,
+      "listingCount": 0,
+      "reason": "dataStatus: no-active-market"
+    },
+    {
+      "id": "sm11-booster-box",
+      "name": "Unified Minds Booster Box",
+      "set": "Unified Minds",
+      "subtype": "booster-box",
+      "priceMedian": 4000,
+      "listingCount": 21,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sm11-etb",
+      "name": "Unified Minds Elite Trainer Box",
+      "set": "Unified Minds",
+      "subtype": "etb",
+      "priceMedian": null,
+      "listingCount": 0,
+      "reason": "dataStatus: no-active-market"
+    },
+    {
+      "id": "sm12-booster-box",
+      "name": "Cosmic Eclipse Booster Box",
+      "set": "Cosmic Eclipse",
+      "subtype": "booster-box",
+      "priceMedian": 5196.69,
+      "listingCount": 16,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sm12-cosmic-etb",
+      "name": "Cosmic Eclipse Elite Trainer Box",
+      "set": "Cosmic Eclipse",
+      "subtype": "etb",
+      "priceMedian": null,
+      "listingCount": 0,
+      "reason": "dataStatus: no-active-market"
+    },
+    {
+      "id": "me1-bb",
+      "name": "Mega Evolution Booster Bundle",
+      "set": "Mega Evolution",
+      "subtype": "booster-bundle",
+      "priceMedian": 69.69,
+      "listingCount": 18,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sv10-bb",
+      "name": "Destined Rivals Booster Bundle",
+      "set": "Destined Rivals",
+      "subtype": "booster-bundle",
+      "priceMedian": 69.99,
+      "listingCount": 134,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sv9-bb",
+      "name": "Journey Together Booster Bundle",
+      "set": "Journey Together",
+      "subtype": "booster-bundle",
+      "priceMedian": 48.84,
+      "listingCount": 133,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sv8-bb",
+      "name": "Surging Sparks Booster Bundle",
+      "set": "Surging Sparks",
+      "subtype": "booster-bundle",
+      "priceMedian": 65.98,
+      "listingCount": 109,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sv7-bb",
+      "name": "Stellar Crown Booster Bundle",
+      "set": "Stellar Crown",
+      "subtype": "booster-bundle",
+      "priceMedian": 96.8,
+      "listingCount": 12,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sv6-bb",
+      "name": "Twilight Masquerade Booster Bundle",
+      "set": "Twilight Masquerade",
+      "subtype": "booster-bundle",
+      "priceMedian": 99.95,
+      "listingCount": 23,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sv5-bb",
+      "name": "Temporal Forces Booster Bundle",
+      "set": "Temporal Forces",
+      "subtype": "booster-bundle",
+      "priceMedian": 95,
+      "listingCount": 20,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "swsh1-booster-box",
+      "name": "Sword & Shield Base Booster Box",
+      "set": "Sword & Shield",
+      "subtype": "booster-box",
+      "priceMedian": 899.88,
+      "listingCount": 8,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "swsh2-booster-box",
+      "name": "Rebel Clash Booster Box",
+      "set": "Rebel Clash",
+      "subtype": "booster-box",
+      "priceMedian": 580,
+      "listingCount": 17,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "swsh2-etb",
+      "name": "Rebel Clash Elite Trainer Box",
+      "set": "Rebel Clash",
+      "subtype": "etb",
+      "priceMedian": 379.99,
+      "listingCount": 16,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "swsh3-booster-box",
+      "name": "Darkness Ablaze Booster Box",
+      "set": "Darkness Ablaze",
+      "subtype": "booster-box",
+      "priceMedian": 400,
+      "listingCount": 62,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "swsh3-etb",
+      "name": "Darkness Ablaze Elite Trainer Box",
+      "set": "Darkness Ablaze",
+      "subtype": "etb",
+      "priceMedian": 149.99,
+      "listingCount": 115,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "swsh4-booster-box",
+      "name": "Vivid Voltage Booster Box",
+      "set": "Vivid Voltage",
+      "subtype": "booster-box",
+      "priceMedian": 370,
+      "listingCount": 81,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "swsh4-etb",
+      "name": "Vivid Voltage Elite Trainer Box",
+      "set": "Vivid Voltage",
+      "subtype": "etb",
+      "priceMedian": 159.99,
+      "listingCount": 137,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "swsh5-booster-box",
+      "name": "Battle Styles Booster Box",
+      "set": "Battle Styles",
+      "subtype": "booster-box",
+      "priceMedian": 318.48,
+      "listingCount": 97,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "swsh5-etb",
+      "name": "Battle Styles Elite Trainer Box",
+      "set": "Battle Styles",
+      "subtype": "etb",
+      "priceMedian": 149.9,
+      "listingCount": 91,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "swsh6-booster-box",
+      "name": "Chilling Reign Booster Box",
+      "set": "Chilling Reign",
+      "subtype": "booster-box",
+      "priceMedian": 528,
+      "listingCount": 92,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "swsh6-etb",
+      "name": "Chilling Reign Elite Trainer Box",
+      "set": "Chilling Reign",
+      "subtype": "etb",
+      "priceMedian": 169,
+      "listingCount": 107,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "swsh8-booster-box",
+      "name": "Fusion Strike Booster Box",
+      "set": "Fusion Strike",
+      "subtype": "booster-box",
+      "priceMedian": 1174.59,
+      "listingCount": 99,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "swsh45-etb",
+      "name": "Shining Fates Elite Trainer Box",
+      "set": "Shining Fates",
+      "subtype": "etb",
+      "priceMedian": 150,
+      "listingCount": 140,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "swsh35-etb",
+      "name": "Champion's Path Elite Trainer Box",
+      "set": "Champion's Path",
+      "subtype": "etb",
+      "priceMedian": 230,
+      "listingCount": 63,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "cel25-bb",
+      "name": "Celebrations Booster Bundle",
+      "set": "Celebrations",
+      "subtype": "booster-bundle",
+      "priceMedian": 90,
+      "listingCount": 27,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "swsh12pt5-bb",
+      "name": "Crown Zenith Booster Bundle",
+      "set": "Crown Zenith",
+      "subtype": "booster-bundle",
+      "priceMedian": 224.99,
+      "listingCount": 28,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "swsh6-pc-etb",
+      "name": "Chilling Reign Pokemon Center Elite Trainer Box",
+      "set": "Chilling Reign",
+      "subtype": "pc-etb",
+      "priceMedian": 299,
+      "listingCount": 14,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "swsh7-pc-etb",
+      "name": "Evolving Skies Pokemon Center Elite Trainer Box",
+      "set": "Evolving Skies",
+      "subtype": "pc-etb",
+      "priceMedian": 1200,
+      "listingCount": 19,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "swsh8-pc-etb",
+      "name": "Fusion Strike Pokemon Center Elite Trainer Box",
+      "set": "Fusion Strike",
+      "subtype": "pc-etb",
+      "priceMedian": 549.99,
+      "listingCount": 30,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "swsh9-pc-etb",
+      "name": "Brilliant Stars Pokemon Center Elite Trainer Box",
+      "set": "Brilliant Stars",
+      "subtype": "pc-etb",
+      "priceMedian": 284.95,
+      "listingCount": 35,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "swsh10-pc-etb",
+      "name": "Astral Radiance Pokemon Center Elite Trainer Box",
+      "set": "Astral Radiance",
+      "subtype": "pc-etb",
+      "priceMedian": 248.67,
+      "listingCount": 50,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "swsh11-pc-etb",
+      "name": "Lost Origin Pokemon Center Elite Trainer Box",
+      "set": "Lost Origin",
+      "subtype": "pc-etb",
+      "priceMedian": 474.99,
+      "listingCount": 22,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "swsh12-pc-etb",
+      "name": "Silver Tempest Pokemon Center Elite Trainer Box",
+      "set": "Silver Tempest",
+      "subtype": "pc-etb",
+      "priceMedian": 449.99,
+      "listingCount": 26,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "swsh12pt5-pc-etb",
+      "name": "Crown Zenith Pokemon Center Elite Trainer Box",
+      "set": "Crown Zenith",
+      "subtype": "pc-etb",
+      "priceMedian": 623.02,
+      "listingCount": 42,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sv1-pc-etb",
+      "name": "Scarlet & Violet Base Pokemon Center Elite Trainer Box",
+      "set": "Scarlet & Violet",
+      "subtype": "pc-etb",
+      "priceMedian": 325,
+      "listingCount": 50,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sv2-pc-etb",
+      "name": "Paldea Evolved Pokemon Center Elite Trainer Box",
+      "set": "Paldea Evolved",
+      "subtype": "pc-etb",
+      "priceMedian": 700,
+      "listingCount": 20,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sv3-pc-etb",
+      "name": "Obsidian Flames Pokemon Center Elite Trainer Box",
+      "set": "Obsidian Flames",
+      "subtype": "pc-etb",
+      "priceMedian": 774.95,
+      "listingCount": 35,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sv3pt5-pc-etb",
+      "name": "Pokemon 151 Pokemon Center Elite Trainer Box",
+      "set": "Pokemon 151",
+      "subtype": "pc-etb",
+      "priceMedian": 1556.21,
+      "listingCount": 10,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sv4-pc-etb",
+      "name": "Paradox Rift Pokemon Center Elite Trainer Box",
+      "set": "Paradox Rift",
+      "subtype": "pc-etb",
+      "priceMedian": 288.31,
+      "listingCount": 27,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sv4pt5-pc-etb",
+      "name": "Paldean Fates Pokemon Center Elite Trainer Box",
+      "set": "Paldean Fates",
+      "subtype": "pc-etb",
+      "priceMedian": 630.68,
+      "listingCount": 41,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sv5-pc-etb",
+      "name": "Temporal Forces Pokemon Center Elite Trainer Box",
+      "set": "Temporal Forces",
+      "subtype": "pc-etb",
+      "priceMedian": 222.69,
+      "listingCount": 12,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sv6-pc-etb",
+      "name": "Twilight Masquerade Pokemon Center Elite Trainer Box",
+      "set": "Twilight Masquerade",
+      "subtype": "pc-etb",
+      "priceMedian": 215.48,
+      "listingCount": 28,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sv6pt5-pc-etb",
+      "name": "Shrouded Fable Pokemon Center Elite Trainer Box",
+      "set": "Shrouded Fable",
+      "subtype": "pc-etb",
+      "priceMedian": 194.42,
+      "listingCount": 40,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sv7-pc-etb",
+      "name": "Stellar Crown Pokemon Center Elite Trainer Box",
+      "set": "Stellar Crown",
+      "subtype": "pc-etb",
+      "priceMedian": 200,
+      "listingCount": 65,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sv8-pc-etb",
+      "name": "Surging Sparks Pokemon Center Elite Trainer Box",
+      "set": "Surging Sparks",
+      "subtype": "pc-etb",
+      "priceMedian": 322.82,
+      "listingCount": 52,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sv8pt5-pc-etb",
+      "name": "Prismatic Evolutions Pokemon Center Elite Trainer Box",
+      "set": "Prismatic Evolutions",
+      "subtype": "pc-etb",
+      "priceMedian": 550,
+      "listingCount": 106,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sv9-pc-etb",
+      "name": "Journey Together Pokemon Center Elite Trainer Box",
+      "set": "Journey Together",
+      "subtype": "pc-etb",
+      "priceMedian": 228.65,
+      "listingCount": 50,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "sv10-pc-etb",
+      "name": "Destined Rivals Pokemon Center Elite Trainer Box",
+      "set": "Destined Rivals",
+      "subtype": "pc-etb",
+      "priceMedian": 541.76,
+      "listingCount": 67,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "zsv10pt5-bb-pc-etb",
+      "name": "Black Bolt Pokemon Center Elite Trainer Box",
+      "set": "Black Bolt",
+      "subtype": "pc-etb",
+      "priceMedian": 320.02,
+      "listingCount": 46,
+      "reason": "insufficient history (1 days)"
+    },
+    {
+      "id": "rsv10pt5-wf-pc-etb",
+      "name": "White Flare Pokemon Center Elite Trainer Box",
+      "set": "White Flare",
+      "subtype": "pc-etb",
+      "priceMedian": 299.99,
+      "listingCount": 49,
+      "reason": "insufficient history (1 days)"
+    },
     {
       "id": "me5-booster-box",
       "name": "Pitch Black Booster Box",
       "set": "Pitch Black",
       "subtype": "booster-box",
-      "priceMedian": 199.99,
-      "listingCount": 104,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 195,
+      "listingCount": 98,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "me5-etb",
       "name": "Pitch Black Elite Trainer Box",
       "set": "Pitch Black",
       "subtype": "etb",
-      "priceMedian": 77.99,
-      "listingCount": 76,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 79.78,
+      "listingCount": 90,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "me5-bb",
       "name": "Pitch Black Booster Bundle",
       "set": "Pitch Black",
       "subtype": "booster-bundle",
-      "priceMedian": 40,
-      "listingCount": 106,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 41.99,
+      "listingCount": 109,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "me5-pc-etb",
@@ -44,8 +925,8 @@
       "set": "Pitch Black",
       "subtype": "pc-etb",
       "priceMedian": 135,
-      "listingCount": 125,
-      "reason": "insufficient history (1 days)"
+      "listingCount": 130,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "me4-booster-box",
@@ -53,179 +934,179 @@
       "set": "Chaos Rising",
       "subtype": "booster-box",
       "priceMedian": 200,
-      "listingCount": 108,
-      "reason": "insufficient history (1 days)"
+      "listingCount": 106,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "me4-etb",
       "name": "Chaos Rising Elite Trainer Box",
       "set": "Chaos Rising",
       "subtype": "etb",
-      "priceMedian": 74.45,
-      "listingCount": 95,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 74.99,
+      "listingCount": 101,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "me4-bb",
       "name": "Chaos Rising Booster Bundle",
       "set": "Chaos Rising",
       "subtype": "booster-bundle",
-      "priceMedian": 41.89,
-      "listingCount": 125,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 44.88,
+      "listingCount": 114,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "me4-pc-etb",
       "name": "Chaos Rising Pokemon Center Elite Trainer Box",
       "set": "Chaos Rising",
       "subtype": "pc-etb",
-      "priceMedian": 153,
-      "listingCount": 111,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 156,
+      "listingCount": 114,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "me3-booster-box",
       "name": "Perfect Order Booster Box",
       "set": "Perfect Order",
       "subtype": "booster-box",
-      "priceMedian": 195,
-      "listingCount": 94,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 199,
+      "listingCount": 92,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "me3-etb",
       "name": "Perfect Order Elite Trainer Box",
       "set": "Perfect Order",
       "subtype": "etb",
-      "priceMedian": 72,
-      "listingCount": 116,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 74.99,
+      "listingCount": 114,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "me3-bb",
       "name": "Perfect Order Booster Bundle",
       "set": "Perfect Order",
       "subtype": "booster-bundle",
-      "priceMedian": 41,
-      "listingCount": 131,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 44.99,
+      "listingCount": 128,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "me3-pc-etb",
       "name": "Perfect Order Pokemon Center Elite Trainer Box",
       "set": "Perfect Order",
       "subtype": "pc-etb",
-      "priceMedian": 135,
-      "listingCount": 103,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 139.97,
+      "listingCount": 108,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "me2pt5-etb",
       "name": "Ascended Heroes Elite Trainer Box",
       "set": "Ascended Heroes",
       "subtype": "etb",
-      "priceMedian": 174.99,
+      "priceMedian": 175,
       "listingCount": 123,
-      "reason": "insufficient history (1 days)"
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "me2pt5-bb",
       "name": "Ascended Heroes Booster Bundle",
       "set": "Ascended Heroes",
       "subtype": "booster-bundle",
-      "priceMedian": 85,
-      "listingCount": 112,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 87,
+      "listingCount": 122,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "me2pt5-pc-etb",
       "name": "Ascended Heroes Pokemon Center Elite Trainer Box",
       "set": "Ascended Heroes",
       "subtype": "pc-etb",
-      "priceMedian": 469.99,
-      "listingCount": 117,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 474.04,
+      "listingCount": 115,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "me2-booster-box",
       "name": "Phantasmal Flames Booster Box",
       "set": "Phantasmal Flames",
       "subtype": "booster-box",
-      "priceMedian": 429.99,
-      "listingCount": 75,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 441.99,
+      "listingCount": 76,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "me2-etb",
       "name": "Phantasmal Flames Elite Trainer Box",
       "set": "Phantasmal Flames",
       "subtype": "etb",
-      "priceMedian": 154.99,
-      "listingCount": 99,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 155,
+      "listingCount": 100,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "me2-bb",
       "name": "Phantasmal Flames Booster Bundle",
       "set": "Phantasmal Flames",
       "subtype": "booster-bundle",
-      "priceMedian": 85.99,
-      "listingCount": 102,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 88.04,
+      "listingCount": 99,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "me2-pc-etb",
       "name": "Phantasmal Flames Pokemon Center Elite Trainer Box",
       "set": "Phantasmal Flames",
       "subtype": "pc-etb",
-      "priceMedian": 325,
-      "listingCount": 119,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 329.99,
+      "listingCount": 118,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "me1-booster-box",
       "name": "Mega Evolution Booster Box",
       "set": "Mega Evolution",
       "subtype": "booster-box",
-      "priceMedian": 342.37,
-      "listingCount": 25,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 331.18,
+      "listingCount": 23,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "me1-enhanced-booster-box",
       "name": "Mega Evolution Enhanced Booster Box",
       "set": "Mega Evolution",
       "subtype": "booster-box",
-      "priceMedian": 332.4,
-      "listingCount": 27,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 345,
+      "listingCount": 26,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "me1-etb",
       "name": "Mega Evolution Elite Trainer Box",
       "set": "Mega Evolution",
       "subtype": "etb",
-      "priceMedian": 119.99,
-      "listingCount": 38,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 120,
+      "listingCount": 40,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "me1-pc-etb",
       "name": "Mega Evolution Pokemon Center Elite Trainer Box",
       "set": "Mega Evolution",
       "subtype": "pc-etb",
-      "priceMedian": 230,
-      "listingCount": 13,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 229.99,
+      "listingCount": 16,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "sv8pt5-etb",
       "name": "Prismatic Evolutions Elite Trainer Box",
       "set": "Prismatic Evolutions",
       "subtype": "etb",
-      "priceMedian": 165,
-      "listingCount": 127,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 169.99,
+      "listingCount": 134,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "sv8pt5-bb",
@@ -233,125 +1114,125 @@
       "set": "Prismatic Evolutions",
       "subtype": "booster-bundle",
       "priceMedian": 85,
-      "listingCount": 140,
-      "reason": "insufficient history (1 days)"
+      "listingCount": 135,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "sv8pt5-sc",
       "name": "Prismatic Evolutions Surprise Box",
       "set": "Prismatic Evolutions",
       "subtype": "special-collection",
-      "priceMedian": 99,
-      "listingCount": 117,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 99.99,
+      "listingCount": 121,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "sv10-etb",
       "name": "Destined Rivals Elite Trainer Box",
       "set": "Destined Rivals",
       "subtype": "etb",
-      "priceMedian": 135,
-      "listingCount": 141,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 136.65,
+      "listingCount": 139,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "sv10-booster-box",
       "name": "Destined Rivals Booster Box",
       "set": "Destined Rivals",
       "subtype": "booster-box",
-      "priceMedian": 490,
-      "listingCount": 89,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 499.99,
+      "listingCount": 87,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "sv9-etb",
       "name": "Journey Together Elite Trainer Box",
       "set": "Journey Together",
       "subtype": "etb",
-      "priceMedian": 138,
-      "listingCount": 116,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 139.99,
+      "listingCount": 114,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "sv9-booster-box",
       "name": "Journey Together Booster Box",
       "set": "Journey Together",
       "subtype": "booster-box",
-      "priceMedian": 289.89,
-      "listingCount": 62,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 290.67,
+      "listingCount": 63,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "sv8-etb",
       "name": "Surging Sparks Elite Trainer Box",
       "set": "Surging Sparks",
       "subtype": "etb",
-      "priceMedian": 135,
+      "priceMedian": 139.99,
       "listingCount": 104,
-      "reason": "insufficient history (1 days)"
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "sv8-booster-box",
       "name": "Surging Sparks Booster Box",
       "set": "Surging Sparks",
       "subtype": "booster-box",
-      "priceMedian": 309.99,
-      "listingCount": 90,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 311.98,
+      "listingCount": 85,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "sv7-etb",
       "name": "Stellar Crown Elite Trainer Box",
       "set": "Stellar Crown",
       "subtype": "etb",
-      "priceMedian": 170,
-      "listingCount": 73,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 170.79,
+      "listingCount": 74,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "sv7-booster-box",
       "name": "Stellar Crown Booster Box",
       "set": "Stellar Crown",
       "subtype": "booster-box",
-      "priceMedian": 365.95,
-      "listingCount": 55,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 370.43,
+      "listingCount": 57,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "sv6pt5-etb",
       "name": "Shrouded Fable Elite Trainer Box",
       "set": "Shrouded Fable",
       "subtype": "etb",
-      "priceMedian": 135,
-      "listingCount": 112,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 139,
+      "listingCount": 111,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "sv6-etb",
       "name": "Twilight Masquerade Elite Trainer Box",
       "set": "Twilight Masquerade",
       "subtype": "etb",
-      "priceMedian": 118.88,
-      "listingCount": 132,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 120,
+      "listingCount": 129,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "sv5-etb",
       "name": "Temporal Forces Elite Trainer Box",
       "set": "Temporal Forces",
       "subtype": "etb",
-      "priceMedian": 140,
-      "listingCount": 121,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 142.35,
+      "listingCount": 119,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "sv4pt5-etb",
       "name": "Paldean Fates Elite Trainer Box",
       "set": "Paldean Fates",
       "subtype": "etb",
-      "priceMedian": 480,
-      "listingCount": 101,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 490,
+      "listingCount": 102,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "sv3pt5-etb",
@@ -359,62 +1240,62 @@
       "set": "151",
       "subtype": "etb",
       "priceMedian": 600,
-      "listingCount": 132,
-      "reason": "insufficient history (1 days)"
+      "listingCount": 130,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "sv3pt5-upc",
       "name": "151 Ultra Premium Collection",
       "set": "151",
       "subtype": "upc",
-      "priceMedian": 950,
-      "listingCount": 135,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 954.95,
+      "listingCount": 139,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "swsh12pt5-etb",
       "name": "Crown Zenith Elite Trainer Box",
       "set": "Crown Zenith",
       "subtype": "etb",
-      "priceMedian": 335,
-      "listingCount": 107,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 335.99,
+      "listingCount": 97,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "swsh12pt5-premium",
       "name": "Crown Zenith Special Collection",
       "set": "Crown Zenith",
       "subtype": "special-collection",
-      "priceMedian": 200,
-      "listingCount": 123,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 189.99,
+      "listingCount": 83,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "swsh12-etb",
       "name": "Silver Tempest Elite Trainer Box",
       "set": "Silver Tempest",
       "subtype": "etb",
-      "priceMedian": 175,
-      "listingCount": 104,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 179.99,
+      "listingCount": 105,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "swsh11-etb",
       "name": "Lost Origin Elite Trainer Box",
       "set": "Lost Origin",
       "subtype": "etb",
-      "priceMedian": 249.5,
-      "listingCount": 138,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 249.99,
+      "listingCount": 135,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "swsh8-etb",
       "name": "Fusion Strike Elite Trainer Box",
       "set": "Fusion Strike",
       "subtype": "etb",
-      "priceMedian": 350,
-      "listingCount": 88,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 349.97,
+      "listingCount": 84,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "swsh7-etb",
@@ -422,35 +1303,35 @@
       "set": "Evolving Skies",
       "subtype": "etb",
       "priceMedian": 550,
-      "listingCount": 119,
-      "reason": "insufficient history (1 days)"
+      "listingCount": 113,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "swsh7-booster-box",
       "name": "Evolving Skies Booster Box",
       "set": "Evolving Skies",
       "subtype": "booster-box",
-      "priceMedian": 2899,
+      "priceMedian": 2899.99,
       "listingCount": 91,
-      "reason": "insufficient history (1 days)"
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "cel25-etb",
       "name": "Celebrations Elite Trainer Box",
       "set": "Celebrations",
       "subtype": "etb",
-      "priceMedian": 375,
-      "listingCount": 63,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 374.99,
+      "listingCount": 52,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "cel25-upc",
       "name": "Celebrations Ultra Premium Collection",
       "set": "Celebrations",
       "subtype": "upc",
-      "priceMedian": 1320,
-      "listingCount": 70,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 1318.93,
+      "listingCount": 71,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "swsh1-etb",
@@ -458,17 +1339,17 @@
       "set": "Sword & Shield",
       "subtype": "etb",
       "priceMedian": 180,
-      "listingCount": 12,
-      "reason": "insufficient history (1 days)"
+      "listingCount": 11,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "sm12-etb",
       "name": "Hidden Fates Elite Trainer Box",
       "set": "Hidden Fates",
       "subtype": "etb",
-      "priceMedian": 591.03,
-      "listingCount": 74,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 593,
+      "listingCount": 77,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "bw1-booster-box",
@@ -530,44 +1411,44 @@
       "set": "Temporal Forces",
       "subtype": "booster-box",
       "priceMedian": 350,
-      "listingCount": 46,
-      "reason": "insufficient history (1 days)"
+      "listingCount": 43,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "sv6-booster-box",
       "name": "Twilight Masquerade Booster Box",
       "set": "Twilight Masquerade",
       "subtype": "booster-box",
-      "priceMedian": 380,
+      "priceMedian": 387.98,
       "listingCount": 52,
-      "reason": "insufficient history (1 days)"
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "sv4-booster-box",
       "name": "Paradox Rift Booster Box",
       "set": "Paradox Rift",
       "subtype": "booster-box",
-      "priceMedian": 317.13,
-      "listingCount": 58,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 324.99,
+      "listingCount": 56,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "sv3-booster-box",
       "name": "Obsidian Flames Booster Box",
       "set": "Obsidian Flames",
       "subtype": "booster-box",
-      "priceMedian": 406.32,
-      "listingCount": 41,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 423.98,
+      "listingCount": 42,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "sv2-booster-box",
       "name": "Paldea Evolved Booster Box",
       "set": "Paldea Evolved",
       "subtype": "booster-box",
-      "priceMedian": 532.88,
-      "listingCount": 49,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 547,
+      "listingCount": 46,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "sv1-booster-box",
@@ -576,70 +1457,70 @@
       "subtype": "booster-box",
       "priceMedian": 330,
       "listingCount": 34,
-      "reason": "insufficient history (1 days)"
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "swsh12-booster-box",
       "name": "Silver Tempest Booster Box",
       "set": "Silver Tempest",
       "subtype": "booster-box",
-      "priceMedian": 555,
+      "priceMedian": 559.98,
       "listingCount": 56,
-      "reason": "insufficient history (1 days)"
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "swsh11-booster-box",
       "name": "Lost Origin Booster Box",
       "set": "Lost Origin",
       "subtype": "booster-box",
-      "priceMedian": 779,
-      "listingCount": 25,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 780,
+      "listingCount": 22,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "swsh9-booster-box",
       "name": "Brilliant Stars Booster Box",
       "set": "Brilliant Stars",
       "subtype": "booster-box",
-      "priceMedian": 640,
-      "listingCount": 64,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 649.99,
+      "listingCount": 60,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "swsh10-booster-box",
       "name": "Astral Radiance Booster Box",
       "set": "Astral Radiance",
       "subtype": "booster-box",
-      "priceMedian": 415,
-      "listingCount": 69,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 429.99,
+      "listingCount": 66,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "sv4pt5-bb",
       "name": "Paldean Fates Booster Bundle",
       "set": "Paldean Fates",
       "subtype": "booster-bundle",
-      "priceMedian": 198.94,
-      "listingCount": 45,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 200,
+      "listingCount": 44,
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "sv3pt5-bb",
       "name": "151 Booster Bundle",
       "set": "151",
       "subtype": "booster-bundle",
-      "priceMedian": 193.99,
+      "priceMedian": 197.98,
       "listingCount": 140,
-      "reason": "insufficient history (1 days)"
+      "reason": "insufficient history (2 days)"
     },
     {
       "id": "sv6pt5-bb",
       "name": "Shrouded Fable Booster Bundle",
       "set": "Shrouded Fable",
       "subtype": "booster-bundle",
-      "priceMedian": 60,
-      "listingCount": 76,
-      "reason": "insufficient history (1 days)"
+      "priceMedian": 62,
+      "listingCount": 80,
+      "reason": "insufficient history (2 days)"
     }
   ]
 }
