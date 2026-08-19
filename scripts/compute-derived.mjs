@@ -41,12 +41,15 @@ const packRows = sp.products
   .sort((a,b)=>b.perPack-a.perPack);
 // Loose-pack anchor per set → signed sealed premium on every multi-pack row
 const loosePackBySet = {};
-for (const r of packRows) if (r.subtype === "booster-pack") loosePackBySet[r.setId] = r.perPack;
+const loosePackNBySet = {};
+for (const r of packRows) if (r.subtype === "booster-pack") { loosePackBySet[r.setId] = r.perPack; loosePackNBySet[r.setId] = r.listings ?? null; }
 for (const r of packRows) {
   if (r.subtype === "booster-pack") { r.role = "loose-anchor"; continue; }
   const lp = loosePackBySet[r.setId];
   r.loosePack = lp ?? null;
   r.sealedPremiumPct = lp ? Math.round((r.perPack/lp - 1) * 1000)/10 : null;
+  r.loosePackN = loosePackNBySet[r.setId] ?? null;
+  r.premiumThin = r.sealedPremiumPct != null && (r.loosePackN ?? 0) < 10;
 }
 
 // ── (b) Narrative vs Tape ────────────────────────────────────────────────────
@@ -361,7 +364,7 @@ const out = {
   generatedAt: new Date().toISOString(),
   method: "Pack Math: ask median / era-aware pack count (arithmetic, no estimation; variable-count products excluded by name). Narrative: latest agent digest cross-referenced against tracked sets; 'quiet movers' = spread signal with zero digest mention.",
   digestUsed: digestName,
-  packMath: { priciest: packRows.slice(0,6), cheapest: [...packRows].reverse().slice(0,6) },
+  packMath: { all: packRows.map(r=>({id:r.id,setId:r.setId,perPack:r.perPack,premium:r.sealedPremiumPct,thin:r.premiumThin??false,loosePackN:r.loosePackN??null})), priciest: packRows.slice(0,6), cheapest: [...packRows].reverse().slice(0,6) },
   narrative: { inNews: inNews.slice(0,6), quietMovers: quietMovers.slice(0,6) },
   catalysts,
   depthReads,
