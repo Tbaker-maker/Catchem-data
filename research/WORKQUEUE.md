@@ -4,14 +4,7 @@ marks it CLAIMED(who,date), works it, marks DONE(commit). Pull before
 write, push after. Tyler adds items in plain English anywhere here.
 
 ## CLAIMED / IN FLIGHT
-- (CC desk, Aug 19) Marathon — per-block status:
-  - DONE(471e044) swsh5 lane QA: pollution confirmed SMALL (6/36 promo
-    blisters; 11.99→11.64 post-fix) — the −26% box discount is GENUINE.
-    Lane-wide promo/coin/album/digit-multipack excludes; 15/15 re-validated.
-  - IN-FLIGHT tests-in-CI (fail-fast step, validation ritual)
-  - QUEUED landers v2 · story-kit expansion · sandbox prep (heat/depth 🍭
-    dark) · weekly dry-run · newsletter linked preview · report.
-- (chat, Aug 19) Net Proceeds Truth — engine side.
+- (chat, Aug 19)  Net Proceeds Truth — engine side.
 
 ## READY (priority order — Tyler, Aug 19: TOOLS BEFORE UI)
 1. Net Proceeds app toggle (engine field shipping now; app renders
@@ -49,7 +42,16 @@ write, push after. Tyler adds items in plain English anywhere here.
 - Visual polish beyond shipped P0 + Lighthouse pass
 
 ## DONE (recent)
-- swsh5 lane investigation + promo-blister excludes (471e044).
+- MEGA-SESSION Aug 19 (CC desk), all 7 work blocks:
+  swsh5 lane QA (7bf4533 — pollution small, −26% GENUINE, lane-wide
+  promo/coin/album excludes, 15/15 re-validated) · tests-in-CI (575536b —
+  scripts/lib/instruments.mjs one-equation canon + 37-test fail-fast step,
+  GREEN run 32308355655) · landers v2 (app 7106e57 — 62 set hubs, link mesh,
+  methodology mirrored to app domain, sitemap 232) · story kits 5/day +
+  /studio/archive (8368b4b + app d0c3abd) · sandbox prep DARK (de1e2d8 —
+  heat/depth 🍭 + labels gated Aug 26 / Aug 21) · weekly SLOT-7/8 wired +
+  dry-run clean (7c2f9d6) · newsletter LINKED PREVIEW (b33712f, canonical
+  untouched — Tyler's one-look approval).
 - Suite pass Aug 19: subtype indexes · watch-outcomes logger · premium
   history · TCGplayer net variant (tool-audit-aug19.md).
 - Sealed/Raw index family · daily card mint · methodology + 🍭 · Studio
