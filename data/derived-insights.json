@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T07:34:08.050Z",
+  "generatedAt": "2026-08-19T07:58:41.437Z",
   "method": "Pack Math: ask median / era-aware pack count (arithmetic, no estimation; variable-count products excluded by name). Narrative: latest agent digest cross-referenced against tracked sets; 'quiet movers' = spread signal with zero digest mention.",
   "digestUsed": "2026-08-18.md",
   "packMath": {
@@ -9,12 +9,12 @@
         "name": "Pokemon 151 Pokemon Center Elite Trainer Box",
         "subtype": "pc-etb",
         "setId": "sv3pt5",
-        "price": 1556.21,
+        "price": 1554.83,
         "packs": 9,
-        "perPack": 172.91,
+        "perPack": 172.76,
         "listings": 10,
-        "loosePack": 32,
-        "sealedPremiumPct": 440.3
+        "loosePack": 31.99,
+        "sealedPremiumPct": 440
       },
       {
         "id": "swsh7-pc-etb",
@@ -86,7 +86,7 @@
         "price": 195,
         "packs": 36,
         "perPack": 5.42,
-        "listings": 98,
+        "listings": 99,
         "loosePack": null,
         "sealedPremiumPct": null
       },
@@ -107,10 +107,10 @@
         "name": "Chaos Rising Booster Box",
         "subtype": "booster-box",
         "setId": "me4",
-        "price": 200,
+        "price": 205,
         "packs": 36,
-        "perPack": 5.56,
-        "listings": 106,
+        "perPack": 5.69,
+        "listings": 113,
         "loosePack": null,
         "sealedPremiumPct": null
       },
@@ -119,10 +119,10 @@
         "name": "Pitch Black Booster Bundle",
         "subtype": "booster-bundle",
         "setId": "me5",
-        "price": 41.99,
+        "price": 41.78,
         "packs": 6,
-        "perPack": 7,
-        "listings": 109,
+        "perPack": 6.96,
+        "listings": 107,
         "loosePack": null,
         "sealedPremiumPct": null
       },
@@ -131,10 +131,10 @@
         "name": "Chaos Rising Booster Bundle",
         "subtype": "booster-bundle",
         "setId": "me4",
-        "price": 44.88,
+        "price": 43.99,
         "packs": 6,
-        "perPack": 7.48,
-        "listings": 114,
+        "perPack": 7.33,
+        "listings": 115,
         "loosePack": null,
         "sealedPremiumPct": null
       },
@@ -143,10 +143,10 @@
         "name": "Perfect Order Booster Bundle",
         "subtype": "booster-bundle",
         "setId": "me3",
-        "price": 44.99,
+        "price": 44.98,
         "packs": 6,
         "perPack": 7.5,
-        "listings": 128,
+        "listings": 125,
         "loosePack": 8.29,
         "sealedPremiumPct": -9.5
       }
@@ -165,24 +165,24 @@
       {
         "set": "Ascended Heroes",
         "flagship": "Ascended Heroes Pokemon Center Elite Trainer Box",
-        "price": 474.04,
-        "listings": 115,
+        "price": 469.99,
+        "listings": 117,
         "spreadPct": null,
-        "signal": true
+        "signal": false
       },
       {
         "set": "Celebrations",
         "flagship": "Celebrations Ultra Premium Collection",
-        "price": 1318.93,
-        "listings": 71,
-        "spreadPct": 3.5,
+        "price": 1320,
+        "listings": 67,
+        "spreadPct": 3.6,
         "signal": false
       },
       {
         "set": "Pitch Black",
         "flagship": "Pitch Black Booster Box",
         "price": 195,
-        "listings": 98,
+        "listings": 99,
         "spreadPct": 8.6,
         "signal": false
       }
@@ -191,9 +191,9 @@
       {
         "set": "Battle Styles",
         "flagship": "Battle Styles Elite Trainer Box",
-        "price": 149.9,
+        "price": 150,
         "listings": 91,
-        "spreadPct": 21.7,
+        "spreadPct": 21.8,
         "signal": true
       },
       {
@@ -207,32 +207,32 @@
       {
         "set": "Fusion Strike",
         "flagship": "Fusion Strike Booster Box",
-        "price": 1174.59,
-        "listings": 99,
-        "spreadPct": 21.1,
+        "price": 1199.99,
+        "listings": 98,
+        "spreadPct": 23.7,
         "signal": true
       },
       {
         "set": "Paradox Rift",
         "flagship": "Paradox Rift Booster Box",
         "price": 324.99,
-        "listings": 56,
+        "listings": 57,
         "spreadPct": 18.2,
         "signal": true
       },
       {
         "set": "Prismatic Evolutions",
         "flagship": "Prismatic Evolutions Surprise Box",
-        "price": 99.99,
-        "listings": 121,
-        "spreadPct": 46.1,
+        "price": 100,
+        "listings": 125,
+        "spreadPct": 46.2,
         "signal": true
       },
       {
         "set": "Phantasmal Flames",
         "flagship": "Phantasmal Flames Booster Box",
         "price": 441.99,
-        "listings": 76,
+        "listings": 75,
         "spreadPct": 15.6,
         "signal": true
       }
@@ -297,7 +297,7 @@
     {
       "id": "sv3pt5-bb",
       "name": "151 Booster Bundle",
-      "listings": 140,
+      "listings": 139,
       "price": 197.98,
       "flow": "calibrating",
       "flowPct": null,
@@ -310,21 +310,8 @@
     {
       "id": "sv10-etb",
       "name": "Destined Rivals Elite Trainer Box",
-      "listings": 139,
-      "price": 136.65,
-      "flow": "calibrating",
-      "flowPct": null,
-      "flowDays": 2,
-      "supplyTier": "high",
-      "tag": "⏳",
-      "read": "flow calibrating — day 2/3",
-      "chip": "READ"
-    },
-    {
-      "id": "sv3pt5-upc",
-      "name": "151 Ultra Premium Collection",
-      "listings": 139,
-      "price": 954.95,
+      "listings": 138,
+      "price": 135.68,
       "flow": "calibrating",
       "flowPct": null,
       "flowDays": 2,
@@ -347,10 +334,23 @@
       "chip": "READ"
     },
     {
-      "id": "sv8pt5-bb",
-      "name": "Prismatic Evolutions Booster Bundle",
+      "id": "sv3pt5-upc",
+      "name": "151 Ultra Premium Collection",
+      "listings": 137,
+      "price": 953.3,
+      "flow": "calibrating",
+      "flowPct": null,
+      "flowDays": 2,
+      "supplyTier": "high",
+      "tag": "⏳",
+      "read": "flow calibrating — day 2/3",
+      "chip": "READ"
+    },
+    {
+      "id": "swsh11-etb",
+      "name": "Lost Origin Elite Trainer Box",
       "listings": 135,
-      "price": 85,
+      "price": 249.69,
       "flow": "calibrating",
       "flowPct": null,
       "flowDays": 2,
@@ -804,7 +804,7 @@
       "mark": "D",
       "standardLegal": false,
       "legalTag": "D · rotated",
-      "supply": 19,
+      "supply": 18,
       "eol": {
         "status": "outOfPrint",
         "monthsOutEst": 48
@@ -821,7 +821,7 @@
       "mark": "D",
       "standardLegal": false,
       "legalTag": "D · rotated",
-      "supply": 33,
+      "supply": 30,
       "eol": {
         "status": "outOfPrint",
         "monthsOutEst": 45
@@ -889,7 +889,7 @@
       "mark": "E",
       "standardLegal": false,
       "legalTag": "E · rotated",
-      "supply": 235,
+      "supply": 237,
       "eol": {
         "status": "outOfPrint",
         "monthsOutEst": 35
@@ -923,7 +923,7 @@
       "mark": "E",
       "standardLegal": false,
       "legalTag": "E · rotated",
-      "supply": 281,
+      "supply": 279,
       "eol": {
         "status": "outOfPrint",
         "monthsOutEst": 32
@@ -940,7 +940,7 @@
       "mark": "E",
       "standardLegal": false,
       "legalTag": "E · rotated",
-      "supply": 287,
+      "supply": 292,
       "eol": {
         "status": "outOfPrint",
         "monthsOutEst": 29
@@ -957,7 +957,7 @@
       "mark": "E",
       "standardLegal": false,
       "legalTag": "E · rotated",
-      "supply": 150,
+      "supply": 151,
       "eol": {
         "status": "outOfPrint",
         "monthsOutEst": 28
@@ -974,7 +974,7 @@
       "mark": "E",
       "standardLegal": false,
       "legalTag": "E · rotated",
-      "supply": 251,
+      "supply": 248,
       "eol": {
         "status": "outOfPrint",
         "monthsOutEst": 27
@@ -991,7 +991,7 @@
       "mark": "F",
       "standardLegal": false,
       "legalTag": "F · rotated",
-      "supply": 95,
+      "supply": 94,
       "eol": {
         "status": "outOfPrint",
         "monthsOutEst": 23
@@ -1059,7 +1059,7 @@
       "mark": "F",
       "standardLegal": false,
       "legalTag": "F · rotated",
-      "supply": 187,
+      "supply": 186,
       "eol": {
         "status": "outOfPrint",
         "monthsOutEst": 15
@@ -1076,7 +1076,7 @@
       "mark": "F",
       "standardLegal": false,
       "legalTag": "F · rotated",
-      "supply": 250,
+      "supply": 249,
       "eol": {
         "status": "outOfPrint",
         "monthsOutEst": 12
@@ -1093,7 +1093,7 @@
       "mark": "G",
       "standardLegal": false,
       "legalTag": "G · rotated",
-      "supply": 110,
+      "supply": 106,
       "eol": {
         "status": "outOfPrint",
         "monthsOutEst": 10
@@ -1144,7 +1144,7 @@
       "mark": "G",
       "standardLegal": false,
       "legalTag": "G · rotated",
-      "supply": 461,
+      "supply": 459,
       "eol": {
         "status": "outOfPrint",
         "monthsOutEst": 4
@@ -1161,7 +1161,7 @@
       "mark": "G",
       "standardLegal": false,
       "legalTag": "G · rotated",
-      "supply": 122,
+      "supply": 123,
       "eol": {
         "status": "outOfPrint",
         "monthsOutEst": 3
@@ -1178,7 +1178,7 @@
       "mark": "G",
       "standardLegal": false,
       "legalTag": "G · rotated",
-      "supply": 187,
+      "supply": 189,
       "eol": {
         "status": "outOfPrint",
         "monthsOutEst": 0
@@ -1195,7 +1195,7 @@
       "mark": "H",
       "standardLegal": false,
       "legalTag": "H · rotated",
-      "supply": 194,
+      "supply": 195,
       "eol": {
         "status": "printing",
         "daysLeftEst": 61
@@ -1212,7 +1212,7 @@
       "mark": "H",
       "standardLegal": false,
       "legalTag": "H · rotated",
-      "supply": 232,
+      "supply": 230,
       "eol": {
         "status": "printing",
         "daysLeftEst": 122
@@ -1229,7 +1229,7 @@
       "mark": "H",
       "standardLegal": false,
       "legalTag": "H · rotated",
-      "supply": 231,
+      "supply": 229,
       "eol": {
         "status": "printing",
         "daysLeftEst": 183
@@ -1246,7 +1246,7 @@
       "mark": "G",
       "standardLegal": false,
       "legalTag": "G · rotated",
-      "supply": 208,
+      "supply": 206,
       "eol": {
         "status": "printing",
         "daysLeftEst": 213
@@ -1263,7 +1263,7 @@
       "mark": "H",
       "standardLegal": false,
       "legalTag": "H · rotated",
-      "supply": 378,
+      "supply": 386,
       "eol": {
         "status": "printing",
         "daysLeftEst": 274
@@ -1280,7 +1280,7 @@
       "mark": "H",
       "standardLegal": false,
       "legalTag": "H · rotated",
-      "supply": 522,
+      "supply": 518,
       "eol": {
         "status": "printing",
         "daysLeftEst": 335
@@ -1297,7 +1297,7 @@
       "mark": "I",
       "standardLegal": true,
       "legalTag": "⚖ I · Standard-legal",
-      "supply": 382,
+      "supply": 376,
       "eol": {
         "status": "printing",
         "daysLeftEst": 426
@@ -1314,7 +1314,7 @@
       "mark": "I",
       "standardLegal": true,
       "legalTag": "⚖ I · Standard-legal",
-      "supply": 453,
+      "supply": 448,
       "eol": {
         "status": "printing",
         "daysLeftEst": 487
@@ -1348,7 +1348,7 @@
       "mark": "I",
       "standardLegal": true,
       "legalTag": "⚖ I · Standard-legal",
-      "supply": 227,
+      "supply": 225,
       "eol": {
         "status": "printing",
         "daysLeftEst": 517
@@ -1365,7 +1365,7 @@
       "mark": "I",
       "standardLegal": true,
       "legalTag": "⚖ I · Standard-legal",
-      "supply": 130,
+      "supply": 132,
       "eol": {
         "status": "printing",
         "daysLeftEst": 609
@@ -1382,7 +1382,7 @@
       "mark": "I",
       "standardLegal": true,
       "legalTag": "⚖ I · Standard-legal",
-      "supply": 418,
+      "supply": 416,
       "eol": {
         "status": "printing",
         "daysLeftEst": 639
@@ -1399,7 +1399,7 @@
       "mark": "J",
       "standardLegal": true,
       "legalTag": "⚖ J · Standard-legal",
-      "supply": 408,
+      "supply": 412,
       "eol": {
         "status": "printing",
         "daysLeftEst": 731
@@ -1416,7 +1416,7 @@
       "mark": "J",
       "standardLegal": true,
       "legalTag": "⚖ J · Standard-legal",
-      "supply": 458,
+      "supply": 455,
       "eol": {
         "status": "printing",
         "daysLeftEst": 791
@@ -1433,7 +1433,7 @@
       "mark": "J",
       "standardLegal": true,
       "legalTag": "⚖ J · Standard-legal",
-      "supply": 435,
+      "supply": 439,
       "eol": {
         "status": "printing",
         "daysLeftEst": 852
@@ -1450,7 +1450,7 @@
       "mark": "J",
       "standardLegal": true,
       "legalTag": "⚖ J · Standard-legal",
-      "supply": 427,
+      "supply": 423,
       "eol": {
         "status": "printing",
         "daysLeftEst": 883
@@ -1469,7 +1469,7 @@
       "mark": "D",
       "standardLegal": false,
       "legalTag": "D · rotated",
-      "supply": 19,
+      "supply": 18,
       "eol": {
         "status": "outOfPrint",
         "monthsOutEst": 48
@@ -1486,7 +1486,7 @@
       "mark": "D",
       "standardLegal": false,
       "legalTag": "D · rotated",
-      "supply": 33,
+      "supply": 30,
       "eol": {
         "status": "outOfPrint",
         "monthsOutEst": 45
@@ -1578,19 +1578,19 @@
       "index": 100,
       "avgGapPct": null,
       "venueClass": "ebay-native",
-      "totalListings": 491,
-      "listingsPerProduct": 25,
+      "totalListings": 487,
+      "listingsPerProduct": 24,
       "read": "vintage-class era — trades on eBay, card shows, and collector groups; we read eBay-native stats only (TCG comparison gated off, RT-4a)",
       "chip": "READ"
     },
     {
       "era": "Sword & Shield",
       "products": 42,
-      "level": 349.97,
+      "level": 350,
       "index": 100,
-      "avgGapPct": 10.6,
+      "avgGapPct": 10.7,
       "venueClass": "cross-market",
-      "totalListings": 2681,
+      "totalListings": 2677,
       "listingsPerProduct": 64,
       "read": "modest ask-side pressure — inside the normal photo-trust range",
       "chip": "READ"
@@ -1602,7 +1602,7 @@
       "index": 100,
       "avgGapPct": 11.7,
       "venueClass": "cross-market",
-      "totalListings": 3623,
+      "totalListings": 3608,
       "listingsPerProduct": 68,
       "read": "modest ask-side pressure — inside the normal photo-trust range",
       "chip": "READ"
@@ -1614,7 +1614,7 @@
       "index": 100,
       "avgGapPct": null,
       "venueClass": "ebay-native",
-      "totalListings": 524,
+      "totalListings": 522,
       "listingsPerProduct": 75,
       "read": "vintage-class era — trades on eBay, card shows, and collector groups; we read eBay-native stats only (TCG comparison gated off, RT-4a)",
       "chip": "READ"
@@ -1624,10 +1624,10 @@
       "products": 29,
       "level": 120,
       "index": 100,
-      "avgGapPct": 7.1,
+      "avgGapPct": 7.5,
       "venueClass": "cross-market",
-      "totalListings": 2276,
-      "listingsPerProduct": 78,
+      "totalListings": 2277,
+      "listingsPerProduct": 79,
       "read": "modest ask-side pressure — inside the normal photo-trust range",
       "chip": "READ"
     }
@@ -1636,20 +1636,20 @@
     "specialty": {
       "sets": 9,
       "products": 30,
-      "totalSupply": 2412,
-      "supplyPerProduct": 80.4,
+      "totalSupply": 2410,
+      "supplyPerProduct": 80.3,
       "supplyPerSetMonth": 2.6,
-      "avgSpreadPct": 6.9,
-      "avgPerPack": 43.17
+      "avgSpreadPct": 7.4,
+      "avgPerPack": 43.2
     },
     "mainline": {
       "sets": 45,
       "products": 123,
-      "totalSupply": 7256,
-      "supplyPerProduct": 59,
+      "totalSupply": 7235,
+      "supplyPerProduct": 58.8,
       "supplyPerSetMonth": 2.3,
       "avgSpreadPct": 14.3,
-      "avgPerPack": 29.99
+      "avgPerPack": 29.97
     },
     "note": "supplyPerSetMonth = listings per set-age month (taper proxy; falls as sets absorb). Velocity/taper curves build in cohort-history.json from 2026-08-18 forward."
   },
@@ -1712,13 +1712,13 @@
   "dailyThree": {
     "sealed": {
       "name": "Prismatic Evolutions Surprise Box",
-      "ebay": 99.99,
+      "ebay": 100,
       "tcg": 68.42,
-      "spreadPct": 46.1,
-      "listings": 121,
+      "spreadPct": 46.2,
+      "listings": 125,
       "chip": "VERIFIED",
       "reason": "biggest price gap between the two markets today",
-      "explain": "eBay usually runs a little higher on sealed — this is asking 46.1% more, well past that baseline. 121 listings are live right now."
+      "explain": "eBay usually runs a little higher on sealed — this is asking 46.2% more, well past that baseline. 125 listings are live right now."
     },
     "graded": {
       "name": "Umbreon ex (Prismatic Evolutions)",
