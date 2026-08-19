@@ -331,7 +331,8 @@ const prevIx = (ixh.entries||[]).slice(-1)[0];
 const sealedIndex = { name: "Catchem Sealed Index", level: idxLevel,
   ddPct: prevIx ? Math.round((idxLevel/prevIx.level - 1)*1000)/10 : null,
   constituents: ratios.length, baseline: "each product vs its first clean-history price (2026-08-18 cut)",
-  breadth, chip: "VERIFIED", methodologyUrl: "/methodology.html" };
+  breadth, chip: "VERIFIED", methodologyUrl: "/methodology.html",
+  simple: `One number for all ${ratios.length} sealed products. 100 was the starting line; ${idxLevel} means the whole shelf is worth ${idxLevel>=100?"more":"less"} than when we started. Each product competes only against itself — one product, one vote.` };
 {
   const today = new Date().toISOString().slice(0,10);
   ixh.entries = (ixh.entries||[]).filter(e=>e.date!==today);

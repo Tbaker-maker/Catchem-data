@@ -95,7 +95,7 @@ if (der?.narrative) {
 if (der?.cohortCompare) { const c=der.cohortCompare;
   md += `\n## 🧬 Specialty vs mainline (today's cross-section)\n- Specialty: ${c.specialty.sets} sets · ${c.specialty.supplyPerProduct} listings/product · $${c.specialty.avgPerPack}/pack avg\n- Mainline: ${c.mainline.sets} sets · ${c.mainline.supplyPerProduct} listings/product · $${c.mainline.avgPerPack}/pack avg\n- Taper curves accumulate daily from Aug 18 — the new-print-facility question gets answered with data.\n`; }
 if (der?.sealedIndex) { const six = der.sealedIndex;
-  md += `\n## 📈 CATCH'EM SEALED INDEX: **${six.level}**${six.ddPct!=null?` (${six.ddPct>0?"▲":"▼"} ${Math.abs(six.ddPct)}% vs yesterday)`:" — baseline era, day 2"} · ${six.constituents} sealed products · breadth ▲${six.breadth.up} ▼${six.breadth.down}\n*One number for the whole sealed market. How it works: methodology page.*\n`;
+  md += `\n## 📈 CATCH'EM SEALED INDEX: **${six.level}**${six.ddPct!=null?` (${six.ddPct>0?"▲":"▼"} ${Math.abs(six.ddPct)}% vs yesterday)`:" — baseline era, day 2"} · ${six.constituents} sealed products · breadth ▲${six.breadth.up} ▼${six.breadth.down}\n*One number for the whole sealed market. New here? The five-year-old version lives on the methodology page — you will get it in thirty seconds.*\n`;
 }
 md += `\n## 🏛 Generation indexes\n`;
 for (const e of (der?.eraIndexes??[])) md += `- **${e.era}** — median product $${e.level.toLocaleString("en-US")} · ${e.avgGapPct!=null?`asking ${Math.abs(e.avgGapPct)}% ${e.avgGapPct>=0?"more":"less"} on eBay than TCGplayer · `:""}${e.products} products · ${e.listingsPerProduct} listings each. ${e.read}.\n`;
