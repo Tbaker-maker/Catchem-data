@@ -110,3 +110,22 @@ client-side off pulse-feed.json — no auth, no DB, ships in the app today.
    pings already built server-side). Per-user alerts wait for auth.
 ACCEPTANCE: a person can star 5 products today and have a reason to
 open the app tomorrow that is THEIRS. That's the whole bar.
+
+## §13 · DEAL CHECK — make vintage traders' lives easier (Tyler, Aug 18)
+The vintage market lives on eBay, card-show floors, and FB/IG groups —
+fragmented, negotiation-heavy, no trusted reference in-pocket. Deal Check
+is that reference. Client-side off pulse-feed, zero backend.
+1. THE CHECK — search any tracked product → instant card: today's eBay
+   median, clean floor, range bar, listings, Δ, spark. A "fair-range"
+   band (floorClean → median) framed in voice: "asks cluster here."
+   Use case: standing at a show table deciding on a $1,400 ask in 10 sec.
+2. SHARE CARD — one tap renders the check as a branded image (photo +
+   numbers + date + wordmark) sized for FB/IG group posts. Sellers use
+   it to legitimize asks; buyers to counter. Every share = distribution
+   into exactly the groups we can't reach any other way.
+3. VENUE HONESTY — vintage checks show eBay-native stats ONLY (RT-4a);
+   no TCG column, no gap. Modern checks show the full instrument set.
+4. SHOW MODE (garnish) — feed cached to localStorage so checks work in
+   convention halls with dead signal. PWA install prompt.
+Acceptance: a stranger in a Facebook vintage group posts our share card
+unprompted. That's product-market fit for this feature.

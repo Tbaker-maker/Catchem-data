@@ -18,6 +18,7 @@ try { tcg = JSON.parse(await readFile(join(DATA, "sealed-crosscheck.json"), "utf
 catch { console.log("no sealed-crosscheck.json yet — provider eval pending; exiting clean"); process.exit(0); }
 
 const tcgById = new Map(tcg.products.map(p => [p.id, p]));
+const OFF_TCG = id => /^(sm|xy|base|neo|hgss|bw|det|dp)/.test(id);
 const rows = [], skipped = [];
 for (const p of ebay.products || []) {
   const t = tcgById.get(p.id);
@@ -29,7 +30,9 @@ for (const p of ebay.products || []) {
   rows.push({ id: p.id, name: p.name, ebayAskMedian: p.priceMedian, tcgMarket: t.tcgMarket,
     ebayListings: p.listingCount ?? null, tcgListings: t.tcgListings ?? null,
     spreadPct: Math.round(spread * 1000) / 10,
-    signal: Math.abs(spread) >= SIGNAL_PCT,
+    signal: !OFF_TCG(p.id) && Math.abs(spread) >= SIGNAL_PCT,
+    offTcgEra: OFF_TCG(p.id) || undefined,
+    venueNote: OFF_TCG(p.id) ? "vintage-class — trades on eBay, shows, and collector groups; TCG comparison gated (RT-4a)" : undefined,
     read: spread >= SIGNAL_PCT ? "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening"
         : spread <= -SIGNAL_PCT ? "eBay asks under TCG-side — motivated eBay sellers or stale TCG-side price"
         : "markets agree",

@@ -286,13 +286,15 @@ const eraIndexes = Object.entries(eraBuckets).filter(([,b])=>b.n>=3).map(([era,b
   const lpp = Math.round(b.listings / b.n);
   const baseRow = eiHist.entries.find(e=>e.date===BASE_DATE && e.era===era);
   const idx100 = baseRow ? Math.round(level / baseRow.level * 1000)/10 : 100.0;
+  const offTcg = era === "Sun & Moon" || era === "XY" || era === "Vintage & other";
   let read;
-  if (avgGap == null) read = "cross-market read pending";
+  if (offTcg) read = "vintage-class era — trades on eBay, card shows, and collector groups; we read eBay-native stats only (TCG comparison gated off, RT-4a)";
+  else if (avgGap == null) read = "cross-market read pending";
   else if (avgGap >= 15) read = "asking prices running hot vs TCGplayer — demand-side pressure well past the photo baseline";
   else if (avgGap >= 6) read = "modest ask-side pressure — inside the normal photo-trust range";
   else if (avgGap >= 0) read = "markets aligned — little pressure either way";
   else read = "eBay asking UNDER TCGplayer — unusual; sellers motivated across this era";
-  return { era, products: b.n, level, index: idx100, avgGapPct: avgGap, totalListings: b.listings, listingsPerProduct: lpp, read, chip: "READ" };
+  return { era, products: b.n, level, index: idx100, avgGapPct: offTcg ? null : avgGap, venueClass: offTcg ? "ebay-native" : "cross-market", totalListings: b.listings, listingsPerProduct: lpp, read, chip: "READ" };
 }).sort((a,b)=>b.level-a.level);
 // persist today (merge-by-date+era — pathogen-proof)
 eiHist.entries = (eiHist.entries||[]).filter(e=>e.date!==today);

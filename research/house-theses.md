@@ -80,3 +80,14 @@ instead of decaying toward the tax as graded supply builds, the mechanism
 is wrong — recheck in public.
 **Surface rule:** publishes only after PPT licensing clears; then it IS
 the Grader's Corner franchise.
+
+## RT-4a · Venue Boundary (Tyler, Aug 18 2026 — amends RT-4)
+Cross-market gap reads are only valid where BOTH venues actually trade
+the class. Sun & Moon and older sealed rarely moves on TCGplayer — that
+market lives on eBay, card shows, and FB/IG groups. For those eras a
+TCG comparison measures venue death, not demand. RULE: gap signals are
+gated OFF for the off-TCG era class; vintage reads use eBay-native
+stats only (median, clean floor, range, listings, Δ). The +26.9% S&M
+"squeeze" of Aug 18 was the case study — half real scarcity, half
+artifact. Falsifier: if TCG vintage-sealed volume ever becomes material
+(sustained listings depth comparable to modern), re-open the gate.
