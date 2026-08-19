@@ -67,3 +67,18 @@ jobs:
               sleep 5
             done
           fi
+
+      - name: Trigger app rebuild (fresh landers)
+        # Landers bake feed data at build time, but Cloudflare Pages only
+        # rebuilds on app-repo pushes — prices would freeze. A CF Deploy Hook
+        # rebuilds the app off today's committed data. Skips cleanly until
+        # Tyler stores the hook URL as repo secret CF_DEPLOY_HOOK.
+        continue-on-error: true # a CF hiccup must never fail the data run
+        env:
+          CF_DEPLOY_HOOK: ${{ secrets.CF_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$CF_DEPLOY_HOOK" ]; then
+            echo "CF_DEPLOY_HOOK secret not set — skipping app rebuild trigger."
+            exit 0
+          fi
+          curl -s -X POST "$CF_DEPLOY_HOOK" && echo "" && echo "App rebuild triggered."
