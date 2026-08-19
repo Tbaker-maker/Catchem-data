@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T21:50:21.902Z",
+  "generatedAt": "2026-08-19T21:57:09.050Z",
   "method": "Pack Math: ask median / era-aware pack count (arithmetic, no estimation; variable-count products excluded by name). Narrative: latest agent digest cross-referenced against tracked sets; 'quiet movers' = spread signal with zero digest mention.",
   "digestUsed": "2026-08-19.md",
   "packMath": {
@@ -1654,6 +1654,18 @@
     "chip": "VERIFIED",
     "methodologyUrl": "/methodology.html",
     "simple": "One number for all 153 sealed products. 100 was the starting line; 100.6 means the whole shelf is worth more than when we started. Each product competes only against itself — one product, one vote."
+  },
+  "rawIndex": {
+    "name": "Raw Chase Index",
+    "level": 100,
+    "constituents": 7,
+    "baselineDate": "2026-08-19",
+    "note": "same equation as the Sealed Index — confirmed chase singles, each vs its own first clean price",
+    "chip": "VERIFIED"
+  },
+  "gradedIndex": {
+    "gated": true,
+    "note": "same equation, graded shelf — awaits a licensed daily graded-price feed"
   },
   "cohortCompare": {
     "specialty": {

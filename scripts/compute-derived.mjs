@@ -328,6 +328,23 @@ for (const p of liveList) {
 }
 const idxLevel = ratios.length ? Math.round(ratios.reduce((a,c)=>a+c,0)/ratios.length * 1000)/10 : 100.0;
 const prevIx = (ixh.entries||[]).slice(-1)[0];
+
+// ── RAW CHASE INDEX + graded slot — same equation, different shelves ────
+let sgh = { note: "singles history — merge-by-date", entries: [] };
+try { sgh = await J("research/pulse/singles-history.json"); } catch {}
+const todayS = new Date().toISOString().slice(0,10);
+const chasesLive = (sgAll.cards||[]).filter(c=>!c.needsReview && c.dataStatus==="live" && c.priceMarket);
+sgh.entries = (sgh.entries||[]).filter(e=>e.date!==todayS);
+for (const c of chasesLive) sgh.entries.push({ date: todayS, cardId: c.cardId, price: c.priceMarket });
+await writeFile(new URL("../research/pulse/singles-history.json", import.meta.url), JSON.stringify(sgh,null,1));
+const rawFirst = {};
+for (const e of [...sgh.entries].sort((a,b)=>a.date<b.date?-1:1)) if (!rawFirst[e.cardId]) rawFirst[e.cardId] = e.price;
+const rawRatios = chasesLive.map(c=>c.priceMarket/(rawFirst[c.cardId]||c.priceMarket));
+const rawLevel = rawRatios.length ? Math.round(rawRatios.reduce((a,b)=>a+b,0)/rawRatios.length*1000)/10 : 100.0;
+const rawIndex = { name:"Raw Chase Index", level: rawLevel, constituents: rawRatios.length,
+  baselineDate: [...new Set(sgh.entries.map(e=>e.date))].sort()[0] ?? todayS,
+  note:"same equation as the Sealed Index — confirmed chase singles, each vs its own first clean price", chip:"VERIFIED" };
+const gradedIndex = { gated: true, note:"same equation, graded shelf — awaits a licensed daily graded-price feed" };
 const sealedIndex = { name: "Catchem Sealed Index", level: idxLevel,
   ddPct: prevIx ? Math.round((idxLevel/prevIx.level - 1)*1000)/10 : null,
   constituents: ratios.length, baseline: "each product vs its first clean-history price (2026-08-18 cut)",
@@ -351,7 +368,7 @@ const out = {
   lifecycle, rotationContext,
   printWatch, tightening, rotationCohorts,
   eraIndexes,
-  sealedIndex,
+  sealedIndex, rawIndex, gradedIndex,
   cohortCompare,
   topicHits,
   dailyThree: (() => {
