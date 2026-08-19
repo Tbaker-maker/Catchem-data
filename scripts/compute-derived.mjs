@@ -402,6 +402,16 @@ netProceeds.tcgById = {};
 for (const p of liveList) if (p.priceMedian)
   netProceeds.tcgById[p.id] = Math.round((p.priceMedian * (1 - 0.1325) - 0.30) * 100) / 100;
 
+
+// ── ENGAGEMENT: Rip-or-Hold daily question + notification payload ───────
+const rohPool = (div.rows||[]).filter(r=>r.signal).sort((a,b)=>Math.abs(b.spreadPct)-Math.abs(a.spreadPct));
+const rohPick = rohPool[new Date().getUTCDate() % Math.max(rohPool.length,1)] || null;
+const ripOrHold = rohPick ? { id: rohPick.id, name: rohPick.name, price: rohPick.ebayAskMedian,
+  question: `${rohPick.name} at $${rohPick.ebayAskMedian} — rip it or hold it sealed?`,
+  note: "one-tap daily vote; results revisited next morning" } : null;
+const notification = { title: `Catchem Sealed Index ${sealedIndex.level}${sealedIndex.ddPct!=null?` (${sealedIndex.ddPct>0?"+":""}${sealedIndex.ddPct}%)`:""}`,
+  body: rohPick ? `Today: ${rohPick.name} — eBay asks ${Math.abs(rohPick.spreadPct)}% ${rohPick.spreadPct>0?"more":"less"} than TCGplayer.` : "The Morning Pulse is out." };
+
 const out = {
   generatedAt: new Date().toISOString(),
   method: "Pack Math: ask median / era-aware pack count (arithmetic, no estimation; variable-count products excluded by name). Narrative: latest agent digest cross-referenced against tracked sets; 'quiet movers' = spread signal with zero digest mention.",
@@ -413,7 +423,7 @@ const out = {
   lifecycle, rotationContext,
   printWatch, tightening, rotationCohorts,
   eraIndexes,
-  sealedIndex, rawIndex, gradedIndex, netProceeds, subtypeIndexes, watchOutcomes,
+  sealedIndex, rawIndex, gradedIndex, netProceeds, subtypeIndexes, watchOutcomes, ripOrHold, notification,
   cohortCompare,
   topicHits,
   dailyThree: (() => {
