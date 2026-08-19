@@ -226,8 +226,9 @@ const out = {
                    n10: c.ebaySold?.psa10?.count ?? null }))
         .filter(c=>c.premium!=null && c.raw!=null && (c.n10==null || c.n10>=10))
         .sort((a,b)=>b.premium-a.premium)[0];
-      if (g) gradedPick = { name:g.name, raw:g.raw, psa10:g.psa10, premium:g.premium, chip:"VERIFIED",
-        reason:`widest Grading Premium on the board (+$${Math.round(g.premium)} after the $79.99 floor)`, gated:true };
+      if (g) gradedPick = { name:g.name, raw:g.raw, psa10:g.psa10, premium:g.premium, n10:g.n10, chip:"VERIFIED",
+        reason:`widest grading payoff on the board today`, gated:true,
+        explain:`Ungraded copies trade around $${Math.round(g.raw).toLocaleString("en-US")}. Perfect-graded (PSA 10) copies have been SELLING near $${Math.round(g.psa10).toLocaleString("en-US")} \u2014 about $${Math.round(g.premium).toLocaleString("en-US")} ahead even after the $79.99 grading fee.${g.n10?` Based on ${g.n10} recorded PSA 10 sales.`:""}` };
     }
     // RAW = singles only. v1 heuristic: a confirmed chase from a set the
     // tape flagged (quiet-mover first, then in-news); fallback = top chase.
@@ -238,15 +239,31 @@ const out = {
       let pick = null, why = "";
       for (const fs of flaggedSets) {
         pick = chases.filter(c=>c.setName===fs).sort((a,b)=>b.priceMarket-a.priceMarket)[0];
-        if (pick) { why = `the chase inside ${fs} — a set the tape flagged today`; break; }
+        if (pick) { why = `the top chase from ${fs} — a set moving in today\u2019s numbers`; break; }
       }
       if (!pick && chases.length) { pick = [...chases].sort((a,b)=>b.priceMarket-a.priceMarket)[0]; why = "chase-board anchor — the raw single the market prices everything against"; }
-      if (pick) rawPick = { name: pick.name, set: pick.setName, price: pick.priceMarket, chip:"READ", reason: why };
+      if (pick) {
+        const L2 = Object.values(lifecycle).find(l=>l.setId && sp.products.some(pp=>pp.setId===l.setId && pp.set===pick.setName));
+        const lifeBit = L2 ? ` Its set is ${L2.ageMonths} months old${L2.standardLegal?" and still Standard-legal":""}.` : "";
+        rawPick = { name: pick.name, set: pick.setName, price: pick.priceMarket, chip:"READ", reason: why,
+          explain: `This is the single collectors hunt hardest from ${pick.setName} \u2014 the card the whole set gets priced around. Market sits at $${Math.round(pick.priceMarket).toLocaleString("en-US")} today.${lifeBit}` };
+      }
     }
     return {
-      sealed: sealedPick ? { name: sealedPick.name, ebay: sealedPick.ebayAskMedian, tcg: sealedPick.tcgMarket,
-        spreadPct: sealedPick.spreadPct, listings: sealedPick.ebayListings, chip:"VERIFIED",
-        reason:"strongest cross-market divergence today" } : null,
+      sealed: (() => {
+        if (!sealedPick) return null;
+        const L = lifecycle[sealedPick.setId];
+        const dir = sealedPick.spreadPct > 0 ? "more" : "less";
+        const mag = Math.abs(sealedPick.spreadPct);
+        const base = sealedPick.spreadPct > 0
+          ? `eBay usually runs a little higher on sealed \u2014 this is asking ${mag}% more, well past that baseline.`
+          : `eBay sellers are asking ${mag}% LESS than TCGplayer \u2014 unusual, since photos normally earn eBay a premium.`;
+        const life = L ? ` The set is ${L.ageMonths} months old (${L.phase.split(" \u2014")[0]}).` : "";
+        return { name: sealedPick.name, ebay: sealedPick.ebayAskMedian, tcg: sealedPick.tcgMarket,
+          spreadPct: sealedPick.spreadPct, listings: sealedPick.ebayListings, chip:"VERIFIED",
+          reason:"biggest price gap between the two markets today",
+          explain: `${base} ${sealedPick.ebayListings} listings are live right now.${life}` };
+      })(),
       graded: gradedPick, // null until Premium table exists — the slot says so honestly
       raw: rawPick,
     };

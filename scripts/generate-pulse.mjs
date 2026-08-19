@@ -51,10 +51,10 @@ for (const c of chases) md += `- ${c.name} (${c.setName}): **$${c.priceMarket}**
 const t3 = der?.dailyThree;
 if (t3 && (t3.sealed||t3.graded||t3.raw)) {
   md += `\n## 🎯 The Daily Three\n`;
-  if (t3.sealed) md += `- **SEALED:** ${t3.sealed.name} — eBay $${t3.sealed.ebay} vs TCG $${t3.sealed.tcg} (${t3.sealed.spreadPct>0?"+":""}${t3.sealed.spreadPct}%). ${t3.sealed.reason}.\n`;
-  md += t3.graded ? `- **GRADED:** ${t3.graded.name} — raw $${t3.graded.raw} → PSA10 $${t3.graded.psa10} (premium +$${t3.graded.premium}). ${t3.graded.reason}.\n`
+  if (t3.sealed) md += `- **SEALED:** ${t3.sealed.name} — eBay $${t3.sealed.ebay} vs TCG $${t3.sealed.tcg}. ${t3.sealed.reason}.\n  ${t3.sealed.explain}\n`;
+  md += t3.graded ? `- **GRADED:** ${t3.graded.name} — ${t3.graded.reason}.\n  ${t3.graded.explain}\n`
                   : `- **GRADED:** calibrating — returns with the Grading Premium table.\n`;
-  if (t3.raw) md += `- **RAW:** ${t3.raw.name} (${t3.raw.set}) — $${t3.raw.price}. ${t3.raw.reason}.\n`;
+  if (t3.raw) md += `- **RAW:** ${t3.raw.name} — $${t3.raw.price}. ${t3.raw.reason}.\n  ${t3.raw.explain}\n`;
 }
 if (der?.catalysts?.length) {
   md += `\n## 📡 Catalyst reads (house theses: research/house-theses.md)\n`;
@@ -129,8 +129,8 @@ ${sigs.length?`<h2>⚡ Biggest price gaps between eBay and TCGplayer</h2><div cl
 <h2>Chase board · TCGplayer market</h2>${chaseRows}
 ${(der?.dailyThree&&(der.dailyThree.sealed||der.dailyThree.raw))?`<h2>🎯 The Daily Three</h2>
 ${der.dailyThree.sealed?`<div class="sig">${(()=>{const pr=sp.products.find(x=>x.name===der.dailyThree.sealed.name);const u=pr&&sealedImg(pr);return u?`<img class="thumb logo" src="${u}" alt="">`:"";})()}<div class="sigbody"><div class="sighead"><span class="pct">SEALED</span><span class="signame">${der.dailyThree.sealed.name}</span></div><div class="sigsub">eBay <b>$${der.dailyThree.sealed.ebay}</b> vs TCG <b>$${der.dailyThree.sealed.tcg}</b> </div><div class="sigread">eBay asks ${Math.abs(der.dailyThree.sealed.spreadPct)}% ${der.dailyThree.sealed.spreadPct>0?"more":"less"} than TCGplayer</div><div class="sigread">${der.dailyThree.sealed.reason}</div></div></div>`:""}
-<div class="sig" style="border-left-color:${der.dailyThree.graded?"var(--gold)":"var(--line)"}"><div class="sighead"><span class="pct">GRADED</span><span class="signame">${der.dailyThree.graded?der.dailyThree.graded.name:"calibrating"}</span></div><div class="sigsub">${der.dailyThree.graded?`raw <b>$${der.dailyThree.graded.raw}</b> → PSA10 <b>$${der.dailyThree.graded.psa10}</b> · premium +$${der.dailyThree.graded.premium}`:"returns with the Grading Premium table"}</div></div>
-${der.dailyThree.raw?`<div class="sig">${(()=>{const c=(sg?.cards||[]).find(x=>x.name===der.dailyThree.raw.name&&x.setName===der.dailyThree.raw.set);const u=c&&cardImg(c.cardId);return u?`<img class="thumb" src="${u}" alt="">`:"";})()}<div class="sigbody"><div class="sighead"><span class="pct">RAW</span><span class="signame">${der.dailyThree.raw.name}</span></div><div class="sigsub"><b>$${der.dailyThree.raw.price}</b> · ${der.dailyThree.raw.set}</div><div class="sigread">${der.dailyThree.raw.reason}</div></div></div>`:""}
+<div class="sig" style="border-left-color:${der.dailyThree.graded?"var(--gold)":"var(--line)"}"><div class="sighead"><span class="pct">GRADED</span><span class="signame">${der.dailyThree.graded?der.dailyThree.graded.name:"calibrating"}</span></div><div class="sigsub">${der.dailyThree.graded?`raw <b>$${der.dailyThree.graded.raw}</b> → PSA10 <b>$${der.dailyThree.graded.psa10}</b> · premium +$${der.dailyThree.graded.premium}`:"returns with the Grading Premium table"}</div>${der.dailyThree.graded?`<div class="sigread">${der.dailyThree.graded.explain}</div>`:""}</div>
+${der.dailyThree.raw?`<div class="sig">${(()=>{const c=(sg?.cards||[]).find(x=>x.name===der.dailyThree.raw.name&&x.setName===der.dailyThree.raw.set);const u=c&&cardImg(c.cardId);return u?`<img class="thumb" src="${u}" alt="">`:"";})()}<div class="sigbody"><div class="sighead"><span class="pct">RAW</span><span class="signame">${der.dailyThree.raw.name}</span></div><div class="sigsub"><b>$${der.dailyThree.raw.price}</b> · ${der.dailyThree.raw.set}</div><div class="sigread">${der.dailyThree.raw.explain}</div></div></div>`:""}
 `:""}
 ${der?.catalysts?.length?`<h2>📡 Catalyst reads</h2>${der.catalysts.slice(0,4).map(c=>`<div class="row"><span>${c.note}</span><span class="mono">${c.class.toUpperCase()}·${c.horizon}</span></div>`).join("")}`:""}
 ${der?.packMath?`<h2>🧮 Pack math — $ per sealed pack</h2>
