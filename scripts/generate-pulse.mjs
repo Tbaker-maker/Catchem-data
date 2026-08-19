@@ -180,6 +180,73 @@ ${captureBlock}
 await writeFile(join(ROOT,`research/pulse/${today}.html`), html);
 await writeFile(join(ROOT,`research/assets/the-pulse.html`), html);
 
+// ── Feed history: real sparklines for first-time visitors ──
+// Per-product daily {date, price, listings} from heat-history.json (committed
+// by the daily run). Post-2026-08-18 cut — pre-fix rows are contaminated and
+// are never charted. Depth-capped to hold the feed under budget.
+const HIST_DEPTH = 14;
+let heatHist = []; try { heatHist = (await J("data/heat-history.json")) ?? []; } catch {}
+const histCut = heatHist.filter(r => r.date >= "2026-08-18" && r.price != null);
+const histDates = [...new Set(histCut.map(r => r.date))].sort().slice(-HIST_DEPTH);
+const histSet = new Set(histDates);
+const history = {};
+for (const r of histCut) {
+  if (!histSet.has(r.date)) continue;
+  (history[r.id] ??= []).push([r.date, r.price, r.listingCount ?? null]);
+}
+for (const k in history) history[k].sort((a, b) => (a[0] < b[0] ? -1 : 1));
+
+// Era-index series: self-accumulating mirror at research/pulse/era-history.json.
+// That directory is in the daily run's git-add list; data/era-index-history.json
+// is NOT, so entries written in-run vanish when the job ends — the mirror is how
+// the series survives CI. Merge-by-(date,era); never wholesale (pathogen rule).
+let eraMirror = null;
+try { eraMirror = await J("research/pulse/era-history.json"); } catch {}
+eraMirror ??= { note: "era level series — merged from data/era-index-history.json each pulse run; committed daily via research/pulse/", entries: [] };
+let eraSrc = null; try { eraSrc = await J("data/era-index-history.json"); } catch {}
+const eraKey = (e) => e.date + "·" + e.era;
+const eraSeen = new Set(eraMirror.entries.map(eraKey));
+for (const e of (eraSrc?.entries ?? [])) if (!eraSeen.has(eraKey(e))) { eraSeen.add(eraKey(e)); eraMirror.entries.push(e); }
+eraMirror.entries.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : a.era < b.era ? -1 : 1));
+await writeFile(join(ROOT, "research/pulse/era-history.json"), JSON.stringify(eraMirror, null, 1) + "\n");
+const eraHistory = {};
+for (const e of eraMirror.entries) (eraHistory[e.era] ??= []).push([e.date, e.level]);
+for (const k in eraHistory) eraHistory[k] = eraHistory[k].slice(-HIST_DEPTH);
+
+// Product catalog for the app (detail pages, Board depth, offline Deal Check
+// without the full tape). eBay-native numbers only — PPT stays gated.
+// Pack counts mirror packsFor() in compute-derived.mjs exactly.
+const packsForFeed = (p) => {
+  const era = /^me/.test(p.setId || "") ? "me" : /^sv/.test(p.setId || "") ? "sv" : /^swsh/.test(p.setId || "") ? "swsh" : null;
+  if ((p.setId || "") === "cel25") return null;
+  if (p.subtype === "booster-pack") return 1;
+  if (p.subtype === "booster-box") return 36;
+  if (p.subtype === "booster-bundle") return 6;
+  if (p.subtype === "etb" || p.subtype === "pc-etb") return era === "swsh" ? 8 : (era ? 9 : null);
+  return null;
+};
+const looseLane = new Map(sp.products
+  .filter(p => p.subtype === "booster-pack" && p.dataStatus === "live" && p.priceMedian != null)
+  .map(p => [p.setId, p.priceMedian]));
+const catalog = sp.products.map(p => {
+  const packs = packsForFeed(p);
+  const live = p.dataStatus === "live";
+  const perPack = live && packs > 1 && p.priceMedian != null ? Math.round(p.priceMedian / packs * 100) / 100 : null;
+  const loose = perPack != null ? looseLane.get(p.setId) : null;
+  const row = { id: p.id, name: p.name, set: p.set, setId: p.setId, subtype: p.subtype, status: p.dataStatus };
+  if (p.vintage) row.vintage = true;
+  const img = sealedImg(p); if (img) row.img = img;
+  if (live) {
+    if (p.priceMedian != null) row.median = p.priceMedian;
+    if (p.priceFloorClean != null) row.floor = p.priceFloorClean;
+    if (p.priceHigh != null) row.high = p.priceHigh;
+    if (p.listingCount != null) row.listings = p.listingCount;
+    if (perPack != null) { row.packs = packs; row.perPack = perPack; }
+    if (loose) { row.loosePack = loose; row.vsLoosePct = Math.round(100 * (perPack - loose) / loose); }
+  }
+  return row;
+});
+
 // ── Machine-readable feed for the app's Ticker (no HTML scraping, ever) ──
 const feed = {
   generatedAt: new Date().toISOString(), date: today,
@@ -206,8 +273,18 @@ const feed = {
   chases: chases.map(c=>({ cardId:c.cardId, name:c.name, set:c.setName, market:c.priceMarket, imageUrl: cardImg(c.cardId),
     provenance:c.provenance, class:"VERIFIED" })),
   disclosure: "Buy Pressure is estimated from listing activity — not reported sales. Active Listings are measured.",
+  products: catalog,
+  history,
+  eraHistory,
 };
-await writeFile(join(ROOT,"research/assets/pulse-feed.json"), JSON.stringify(feed,null,2)+"\n");
+// Two copies, both compact (machine feed; pretty-printing triples the bytes):
+//  - research/pulse/pulse-feed.json — the CANONICAL app URL. research/pulse/
+//    is in the daily run's git-add list, so this copy updates every CI run.
+//  - research/assets/pulse-feed.json — legacy path for app builds deployed
+//    before the FEED_URL switch; committed only by human sessions.
+const feedJson = JSON.stringify(feed) + "\n";
+await writeFile(join(ROOT,"research/pulse/pulse-feed.json"), feedJson);
+await writeFile(join(ROOT,"research/assets/pulse-feed.json"), feedJson);
 
 // ── PRINT & ROTATION WATCH page (rides this step; no workflow change) ──
 if (der?.printWatch?.length) {
