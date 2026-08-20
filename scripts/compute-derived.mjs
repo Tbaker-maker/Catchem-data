@@ -388,9 +388,16 @@ const yRow = [...(wlog.entries||[])].filter(e=>e.date<todayW).sort((a,b)=>a.date
 let watchOutcomes = null;
 if (yRow) {
   const res = pick => { if (!pick) return null;
-    const now = pick.kind==="sealed" ? (liveList.find(p=>p.name===pick.name)||{}).priceMedian
-      : ((sgAll.cards||[]).find(c=>c.name===pick.name)||{}).priceMarket;
-    return { ...pick, now: now ?? null, dPct: now && pick.price ? Math.round((now/pick.price-1)*1000)/10 : null }; };
+    let now = null;
+    if (pick.kind === "sealed") now = (liveList.find(p => pick.id ? p.id===pick.id : p.name===pick.name) || {}).priceMedian;
+    else {
+      const byId = pick.id ? (sgAll.cards||[]).find(c => c.cardId === pick.id) : null;
+      const byName = (sgAll.cards||[]).find(c => c.name === pick.name || (c.watchLabel||"").includes(pick.name));
+      now = (byId || byName || {}).priceMarket;
+    }
+    let dPct = now && pick.price ? Math.round((now/pick.price-1)*1000)/10 : null;
+    if (dPct != null && Math.abs(dPct) > 60 && !pick.id) dPct = null; // name-collision quarantine: no id + implausible swing = wrong card, publish nothing
+    return { ...pick, now: now ?? null, dPct }; };
   watchOutcomes = { date: yRow.date, sealed: res(yRow.sealed), raw: res(yRow.raw) };
 }
 let ph = { note: "sealed-premium history — merge-by-date", entries: [] };
@@ -486,8 +493,9 @@ const out = {
 // today's picks into the watch log (post-out: reads out.dailyThree safely)
 wlog.entries = (wlog.entries||[]).filter(e=>e.date!==todayW);
 wlog.entries.push({ date: todayW,
-  sealed: out.dailyThree?.sealed ? { kind:"sealed", name: out.dailyThree.sealed.name, price: out.dailyThree.sealed.ebay } : null,
-  raw: out.dailyThree?.raw ? { kind:"raw", name: out.dailyThree.raw.name, price: out.dailyThree.raw.price } : null });
+  sealed: out.dailyThree?.sealed ? { kind:"sealed", name: out.dailyThree.sealed.name, price: out.dailyThree.sealed.ebay, id: (liveList.find(p=>p.name===out.dailyThree.sealed.name)||{}).id ?? null } : null,
+  raw: out.dailyThree?.raw ? { kind:"raw", name: out.dailyThree.raw.name, price: out.dailyThree.raw.price,
+    id: ((sgAll.cards||[]).find(c => c.name === out.dailyThree.raw.name && Math.abs((c.priceMarket??0) - out.dailyThree.raw.price) < 1) || {}).cardId ?? null } : null });
 await writeFile(new URL("../research/pulse/watch-log.json", import.meta.url), JSON.stringify(wlog,null,1));
 await writeFile(join(ROOT,"data/derived-insights.json"), JSON.stringify(out,null,2)+"\n");
 console.log(`✓ derived: ${packRows.length} pack-math rows · news-mentioned sets: ${inNews.length} · quiet movers: ${quietMovers.length} (digest: ${digestName})`);
