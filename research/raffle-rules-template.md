@@ -5,7 +5,7 @@ fields fill per-raffle; everything else is standing.]
 1. NO PURCHASE NECESSARY. Entry uses Fresh Berries, a community currency
    earned free through participation (chatting, community activity).
    Berries cannot be bought at any price. A free alternative method of
-   entry (AMOE) is available for any promotion: [AMOE form link] — AMOE
+   entry (AMOE) is available for any promotion: https://docs.google.com/forms/d/e/1FAIpQLSdwNuDcLS_5-fSVuQeT3kDDB6XQaNTZM1naRE1dGterjR_ycA/viewform — AMOE
    entries have equal odds to all other entries.
 2. ELIGIBILITY: members of the Catch'em Discord in good standing, age of
    majority in their jurisdiction; void where prohibited. Admins and
