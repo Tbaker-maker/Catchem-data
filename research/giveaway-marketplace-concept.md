@@ -38,9 +38,20 @@ the community's heartbeat becomes the giveaway economy's faucet.
 FLOW: Eden rains tickets → raffles cog consumes tickets → prizes via
 sweepstakes law → (Year-2) marketplace giveaways ride the same rail.
 Legacy users.free_tickets column = sacred, already the storage.
+CORE TRIGGER (Tyler, Aug 19): PER-MESSAGE ROLL — any message clearing
+X characters earns a small chance at a drop. Two tuning knobs: X (the
+effort gate, filters "lol"/emoji-only) and p (the roll probability).
+Economy math sets p from a target drop rate, e.g. ~10 eligible rolls/
+user/day at p=2% ≈ 0.2 tickets/day/active chatter — tune at alpha
+against real chat volume. Interval rains can layer on top for events.
 ANTI-FARM GUARDRAILS (design defaults, tune at alpha):
-- Rain triggers on random intervals WEIGHTED by distinct humans talking
-  (not message volume) — 5 people chatting > 1 person spamming.
+- CHAR-COUNT ABUSE GUARDS: similarity/dedupe check (repeat or
+  near-repeat text = no roll) · keyboard-mash entropy filter · per-user
+  cooldown between eligible rolls · daily roll cap · diminishing returns
+  past N rolls. Guards stay INVISIBLE to genuine chatters — no
+  "message too short" nagging, silent ineligibility only.
+- Event rains (layered mode) weighted by distinct humans talking —
+  5 people chatting > 1 person spamming.
 - Eligibility: active in the last N minutes; claim window ~60s
   (reaction or auto-grant); per-user daily rain cap.
 - No rains in command/bot channels; cooldown after each rain; new-account
