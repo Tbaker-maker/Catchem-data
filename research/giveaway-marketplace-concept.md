@@ -40,8 +40,21 @@ POP SOURCES (all inherit Eden's silent farm-guards): Eden daily spark ·
 bonus rolls · event rains · Pull-of-the-Week wins · streak milestones ·
 mod-granted community awards. POP SINKS: raffle entries · shop
 cosmetics · (Year-2) marketplace giveaways.
-LEDGER DESIGN (deploy requirement): track BOTH `balance` (spendable)
-and `lifetime_earned` (reputation, never decreases).
+LEDGER DESIGN — ✅ LOCKED (Tyler, Aug 19): **SOULBOUND + SPENDABLE**
+dual currency. Spendable = wallet (raffles, shop). Soulbound =
+reputation + voting power, never decreases, cannot be traded or spent.
+CURRENCY NAME — DECISION OPEN (Tyler invited alternatives to berries):
+  ★ RECOMMENDED: **Mint** (spendable) / **Gem Mint** (soulbound) —
+    mint = where money is made + the condition collectors chase; Gem
+    Mint = PSA-10 flawless-forever = soulbound's exact meaning. Self-
+    explaining (🍭: "your Gem Mint is sealed like a slab — spending
+    Mint never touches it"). Zero IP. Hobby-universal, survives any
+    company rename, welcomes sports-card crossover. Verb built in:
+    "Eden mints you."
+  · Incumbent: **berries** — warmer, Pokemon-evocative ("berry rain"),
+    minor IP-adjacency (berries are a Pokemon item category).
+  · Runner: **Shine** — shiny-hunting culture; weaker soulbound twin.
+  All engine/docs use CURRENCY placeholder until Tyler locks the name.
 GOVERNANCE — berries as voting power: community votes on featured
 giveaways (which vault prize runs next, etc.).
   RECOMMENDED WEIGHTING (open for Tyler's call): voting power =
