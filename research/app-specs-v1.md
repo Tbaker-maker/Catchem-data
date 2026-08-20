@@ -194,3 +194,24 @@ existing infra). Bot distribution = post-alpha, v1.1.
 FLYWHEEL MATH: N creator servers × 1 branded embed/day × their members
 = compounding daily impressions with zero ad spend, growing every time
 one creator tells another "just add the Catch'em feed."
+
+## §15 · UTILITY DISPLAY DOCTRINE (Tyler, Aug 20 — "hone in on utilities")
+LAW: a utility is displayed as ITS JOB — the question it answers — never
+as a feature name. One card per tool: icon · the question · one LIVE
+teaser stat · tap = the tool. The Tools hub becomes a first-class tab.
+THE JOBS (canonical phrasing, v5/v7 compliant):
+- Deal Check → "Is this ask fair?" (teaser: products tracked)
+- Compare → "Which of these two?" (teaser: last compared pair)
+- My Watch → "What did MY stuff do?" (own tab, elevated)
+- Movers → "What moved overnight?" (teaser: top ▲)
+- Net Proceeds → "What actually lands in my pocket?" (inline everywhere
+  + its own calculator card: type a price → both venues' nets)
+- Rip or Hold → "What does the crowd say?" (teaser: today's product)
+- Pack Math → "Rip it, or buy singles?" (NEW surface — engine exists,
+  app never showed it; teaser: today's best/worst $/pack)
+- Print Watch → "How long can I still buy it?" (NEW app surface —
+  page exists on site; teaser: nearest EOL countdown)
+IA v2: bottom nav → ⚡Today · 🧰 Tools · ⭐ Watch · ▦ Board · (Compare/
+Check/PackMath/PrintWatch live INSIDE Tools). Studio stays routed.
+GAPS THIS EXPOSED: pack-math and print-watch had engines but no app
+display — utilities the machine computes that humans never saw.
