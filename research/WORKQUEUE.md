@@ -49,6 +49,7 @@ write, push after. Tyler adds items in plain English anywhere here.
 - Visual polish beyond shipped P0 + Lighthouse pass
 
 ## DONE (recent)
+- Launch ammo (chat, Aug 20): Video 001 full shooting script + Raffle 001 rules FILLED + admin cheat-card.
 - §15 UTILITIES IA Aug 20 (CC desk): four-tab nav (Today/Tools/Watch/Board),
   Tools hub = 6 question-cards w/ live teasers (mock v4 matched line-for-
   line), Pack Math + Print Watch app surfaces born (engines were invisible),
