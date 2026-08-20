@@ -319,11 +319,13 @@ await writeFile(new URL("../data/era-index-history.json", import.meta.url), JSON
 // decliners day-over-day. Methodology public: research/assets/methodology.html
 let ixh = { note: "Catchem Sealed Index history — merge-by-date", entries: [] };
 try { ixh = await J("research/pulse/index-history.json"); } catch {}
-const firstSeen = {}, lastTwo = {};
+const firstSeen = {}, lastTwo = {}, lastTwoN = {};
 for (const r of [...hh].sort((a,b)=>a.date<b.date?-1:1)) {
   if (r.date < "2026-08-19" || !r.price) continue; // CLEAN CUT: first full pricing-v2 day — the index measures market, never our cleanup
   if (!firstSeen[r.id]) firstSeen[r.id] = r.price;
   (lastTwo[r.id] ||= []).push(r.price);
+  (lastTwoN[r.id] ||= []).push(r.listingCount ?? null);
+  if (lastTwoN[r.id].length > 2) lastTwoN[r.id].shift();
   if (lastTwo[r.id].length > 2) lastTwo[r.id].shift();
 }
 const ratios = [], breadth = { up: 0, down: 0, flat: 0 };
@@ -428,6 +430,31 @@ const ripOrHold = rohPick ? { id: rohPick.id, name: rohPick.name, price: rohPick
 const notification = { title: `Catchem Sealed Index ${sealedIndex.level}${sealedIndex.ddPct!=null?` (${sealedIndex.ddPct>0?"+":""}${sealedIndex.ddPct}%)`:""}`,
   body: rohPick ? `Today: ${rohPick.name} — eBay asks ${Math.abs(rohPick.spreadPct)}% ${rohPick.spreadPct>0?"more":"less"} than TCGplayer.` : "The Morning Pulse is out." };
 
+
+// ── 🌊 SUPPLY SHIFTS (Tyler, Aug 20) — % supply change + cause candidates ──
+// Gate: n>=20 listings and |Δ|>=15% (small shelves make noisy percents).
+let recentCatalysts = [];
+try { const cl = await J("data/catalyst-log.json"); const cutoff = Date.now() - 7*86400000;
+  recentCatalysts = (cl.entries||[]).filter(e => new Date(e.date).getTime() >= cutoff); } catch {}
+const supplyShifts = [];
+for (const p of liveList) {
+  const ln = lastTwoN[p.id]; if (!ln || ln.length < 2 || !ln[0] || !ln[1]) continue;
+  if (Math.max(ln[0], ln[1]) < 20) continue;
+  const dPct = Math.round((ln[1]/ln[0] - 1) * 1000) / 10;
+  if (Math.abs(dPct) < 15) continue;
+  const lp = lastTwo[p.id]; const priceD = lp && lp.length === 2 && lp[0] ? Math.round((lp[1]/lp[0]-1)*1000)/10 : null;
+  let read;
+  if (dPct > 0 && priceD != null && priceD < -0.5) read = "seller wave — consistent with a reprint hitting shelves, reprint rumors, or a large holder exiting";
+  else if (dPct > 0 && priceD != null && priceD > 0.5) read = "restock being absorbed — new copies arriving and getting bought";
+  else if (dPct > 0) read = "supply building — sellers stepping in ahead of demand";
+  else if (priceD != null && priceD > 0.5) read = "absorption — shelves draining while asks rise; demand-led, or a whale sweeping";
+  else read = "quiet drain — listings expiring or sellers stepping back";
+  const cat = recentCatalysts.find(c => (c.context||c.text||"").toLowerCase().includes((p.set||"").toLowerCase().slice(0,12)) && (p.set||"").length > 3);
+  supplyShifts.push({ id: p.id, name: p.name, listings: ln[1], prev: ln[0], dPct, priceDPct: priceD, read,
+    catalystMatch: cat ? `matches ${cat.kind||"catalyst"} logged ${cat.date}` : null, chip: "READ" });
+}
+supplyShifts.sort((a,b) => Math.abs(b.dPct) - Math.abs(a.dPct));
+
 const out = {
   generatedAt: new Date().toISOString(),
   method: "Pack Math: ask median / era-aware pack count (arithmetic, no estimation; variable-count products excluded by name). Narrative: latest agent digest cross-referenced against tracked sets; 'quiet movers' = spread signal with zero digest mention.",
@@ -439,7 +466,7 @@ const out = {
   lifecycle, rotationContext,
   printWatch, tightening, rotationCohorts,
   eraIndexes,
-  sealedIndex, rawIndex, gradedIndex, netProceeds, subtypeIndexes, watchOutcomes, ripOrHold, notification,
+  sealedIndex, rawIndex, gradedIndex, netProceeds, subtypeIndexes, watchOutcomes, supplyShifts: supplyShifts.slice(0,8), ripOrHold, notification,
   cohortCompare,
   topicHits,
   dailyThree: (() => {

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-20T14:41:14.126Z",
+  "generatedAt": "2026-08-20T14:43:12.419Z",
   "method": "Pack Math: ask median / era-aware pack count (arithmetic, no estimation; variable-count products excluded by name). Narrative: latest agent digest cross-referenced against tracked sets; 'quiet movers' = spread signal with zero digest mention.",
   "digestUsed": "2026-08-20.md",
   "packMath": {
@@ -2683,7 +2683,7 @@
   "sealedIndex": {
     "name": "Catchem Sealed Index",
     "level": 99.9,
-    "ddPct": -0.2,
+    "ddPct": 0,
     "constituents": 150,
     "seasoningBench": 4,
     "baseline": "each product vs its first clean-history price (2026-08-18 cut)",
@@ -3075,6 +3075,19 @@
       "dPct": null
     }
   },
+  "supplyShifts": [
+    {
+      "id": "me1-bb",
+      "name": "Mega Evolution Booster Bundle",
+      "listings": 20,
+      "prev": 16,
+      "dPct": 25,
+      "priceDPct": 0,
+      "read": "supply building — sellers stepping in ahead of demand",
+      "catalystMatch": null,
+      "chip": "READ"
+    }
+  ],
   "ripOrHold": {
     "id": "sv7-booster-box",
     "name": "Stellar Crown Booster Box",
@@ -3083,7 +3096,7 @@
     "note": "one-tap daily vote; results revisited next morning"
   },
   "notification": {
-    "title": "Catchem Sealed Index 99.9 (-0.2%)",
+    "title": "Catchem Sealed Index 99.9 (0%)",
     "body": "Today: Stellar Crown Booster Box — eBay asks 16% more than TCGplayer."
   },
   "cohortCompare": {
