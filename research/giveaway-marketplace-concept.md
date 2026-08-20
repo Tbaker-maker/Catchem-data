@@ -57,17 +57,22 @@ CURRENCY NAME — DECISION OPEN (Tyler invited alternatives to berries):
   All engine/docs use CURRENCY placeholder until Tyler locks the name.
 GOVERNANCE — berries as voting power: community votes on featured
 giveaways (which vault prize runs next, etc.).
-  RECOMMENDED WEIGHTING (open for Tyler's call): voting power =
-  **lifetime_earned**, not balance — "proof of participation" means
-  spending berries on raffles never silences you; your voice is your
-  history, your balance is your wallet. Alternative: balance-weighted
-  (creates spend-vs-voice tension — real scarcity but punishes raffle
-  players' voice). Anti-whale curve (soft cap/sqrt) tunable later.
+  WEIGHTING CONFIRMED: voting power = SOULBOUND (lifetime earned).
+  Anti-whale curve (soft cap/sqrt) tunable at alpha if needed.
 MIGRATION CHECKBOX (deploy): legacy users.free_tickets column is
 sacred — deploy session maps tickets↔berries (alias or 1:N conversion)
 without dropping the column.
 
-## EDEN — the berry rain (defined Aug 19)
+CURRENCY NAME (OPEN — Tyler's gut pending; trivially renameable until
+bot alpha): RECOMMENDED: **Sparks** (spendable) + **Charge** (soulbound)
+— the ⚡ wordmark made currency; Eden's "daily spark" pre-named it; a
+physically coherent pair (sparks fly and get spent, charge builds and
+stays). Runners: Berries (warm incumbent, soft for the brand; borrows
+Pokemon-games flavor), Energy (TCG-native, generic), Bolts (punchy).
+Avoid: Watts (actual SwSh currency), Chips (gambling adjacency next to
+raffles). If the company renames (gate 2), currency can re-theme free.
+
+## EDEN — the rain (defined Aug 19)
 MECHANIC: during organic conversation windows, Eden triggers rain
 events — tickets drop on active members. Rewards talking, not spending;
 the community's heartbeat becomes the giveaway economy's faucet.
