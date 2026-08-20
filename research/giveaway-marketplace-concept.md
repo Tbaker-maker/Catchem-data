@@ -31,7 +31,30 @@ Attorney consult item #1 alongside the trademark question.
   living in GENERAL chat: it RAINS TICKETS on members for organically
   talking. The engagement heartbeat of the whole giveaway economy.
 
-## EDEN — the ticket rain (defined Aug 19)
+## 🍓 THE POP PROTOCOL — Proof of Participation (Tyler, Aug 19)
+DOCTRINE: **every Discord tool runs through the berry system.** One
+earned currency, one ledger, one reputation. Berries are NEVER
+purchasable (standing law) — which makes POP self-enforcing: influence
+in this community cannot be bought at any price, only participated for.
+POP SOURCES (all inherit Eden's silent farm-guards): Eden daily spark ·
+bonus rolls · event rains · Pull-of-the-Week wins · streak milestones ·
+mod-granted community awards. POP SINKS: raffle entries · shop
+cosmetics · (Year-2) marketplace giveaways.
+LEDGER DESIGN (deploy requirement): track BOTH `balance` (spendable)
+and `lifetime_earned` (reputation, never decreases).
+GOVERNANCE — berries as voting power: community votes on featured
+giveaways (which vault prize runs next, etc.).
+  RECOMMENDED WEIGHTING (open for Tyler's call): voting power =
+  **lifetime_earned**, not balance — "proof of participation" means
+  spending berries on raffles never silences you; your voice is your
+  history, your balance is your wallet. Alternative: balance-weighted
+  (creates spend-vs-voice tension — real scarcity but punishes raffle
+  players' voice). Anti-whale curve (soft cap/sqrt) tunable later.
+MIGRATION CHECKBOX (deploy): legacy users.free_tickets column is
+sacred — deploy session maps tickets↔berries (alias or 1:N conversion)
+without dropping the column.
+
+## EDEN — the berry rain (defined Aug 19)
 MECHANIC: during organic conversation windows, Eden triggers rain
 events — tickets drop on active members. Rewards talking, not spending;
 the community's heartbeat becomes the giveaway economy's faucet.
