@@ -373,6 +373,7 @@ const feed = {
   tightening: (der?.tightening ?? []).map(t => ({ setId: t.setId, set: t.set, supply: t.supply })),
   eraIndexes: der?.eraIndexes ?? [],
   sealedIndex: der?.sealedIndex ?? null,
+  watchOutcomes: der?.watchOutcomes ?? null,
   rawIndex: der?.rawIndex ?? null,
   netProceeds: der?.netProceeds ? { ...der.netProceeds,
     tcgModel: { pct: 13.25, fixed: 0.30, venue: "TCGplayer", ...(der.netProceeds.tcgModel || {}) } } : null,
