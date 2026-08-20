@@ -19,6 +19,11 @@ const sgAll = await J("data/singles-prices.json").catch(()=>null) ?? { cards: []
 let enr = null; try { enr = await J("data/singles-enrichment.json"); } catch {}
 let hh = []; try { hh = await J("data/heat-history.json"); } catch {}
 let relDates = {}; try { relDates = (await J("data/set-release-dates.json")).dates ?? {}; } catch {}
+// SEASONING RULE (Tyler, Aug 20): new sets sit out their first 90 days —
+// release hype is not market weather. S&P-style eligibility window.
+const SEASONING_DAYS = 90;
+const seasoned = p => { const rd = relDates[p.setId]; if (!rd) return true;
+  return (Date.now() - new Date(rd).getTime()) / 86400000 >= SEASONING_DAYS; };
 let setMarks = {}; try { setMarks = (await J("data/set-marks.json")).marks ?? {}; } catch {}
 const LEGAL_MARKS = ["I","J"]; // per rotation state Aug 2026; review at next April rotation
 
@@ -323,6 +328,7 @@ for (const r of [...hh].sort((a,b)=>a.date<b.date?-1:1)) {
 }
 const ratios = [], breadth = { up: 0, down: 0, flat: 0 };
 for (const p of liveList) {
+  if (!seasoned(p)) continue;
   const base = firstSeen[p.id];
   if (base && p.priceMedian) ratios.push(p.priceMedian / base);
   const lt = lastTwo[p.id];
@@ -352,7 +358,7 @@ const rawIndex = { name:"Raw Chase Index", level: rawLevel, constituents: rawRat
 const gradedIndex = { gated: true, note:"same equation, graded shelf — awaits a licensed daily graded-price feed" };
 const sealedIndex = { name: "Catchem Sealed Index", level: idxLevel,
   ddPct: prevIx ? Math.round((idxLevel/prevIx.level - 1)*1000)/10 : null,
-  constituents: ratios.length, baseline: "each product vs its first clean-history price (2026-08-18 cut)",
+  constituents: ratios.length, seasoningBench: liveList.filter(p=>!seasoned(p)).length, baseline: "each product vs its first clean-history price (2026-08-18 cut)",
   breadth, chip: "VERIFIED", methodologyUrl: "/methodology.html",
   simple: `One number for all ${ratios.length} sealed products. 100 was the starting line; ${idxLevel} means the whole shelf is worth ${idxLevel>=100?"more":"less"} than when we started. Each product competes only against itself — one product, one vote.` };
 {
@@ -375,6 +381,7 @@ for (const p of liveList) if (p.priceMedian)
 // ── SUITE UPGRADES (Aug 19) — pre-out: subtype indexes, outcomes, logs ──
 const subBuckets = {};
 for (const p of liveList) {
+  if (!seasoned(p)) continue;
   const base = firstSeen[p.id];
   if (base && p.priceMedian) (subBuckets[p.subtype] ||= []).push(p.priceMedian / base);
 }
