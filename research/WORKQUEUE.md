@@ -46,6 +46,16 @@ write, push after. Tyler adds items in plain English anywhere here.
 - Visual polish beyond shipped P0 + Lighthouse pass
 
 ## DONE (recent)
+- BOT PACKAGE Aug 19 (CC desk, freeze lifted for this package): PRIVATE repo
+  Tbaker-maker/catchem-bot live (visibility verified pre-push). POP ledger
+  (Fresh🍓+Frozen🧊, free_tickets sacred = Fresh 1:1, Frozen backfilled from
+  rewards_log lifetime) · Eden cog (Daily Berry + 2% bonus rolls + /eden rain,
+  silent guards, all thresholds in config) · Raffle machine v2 (wizard modal,
+  pulse-feed VERIFIED-value oracle, provably-fair draws w/ published seed,
+  ship/cash-65% winner flow, prizes-ledger, redraw, templates, audit,
+  max-concurrent) · governance stub (/featured-vote weight=Frozen, softcap
+  OFF) · 81/81 tests + live-fire sim transcript. BLOCKED on Tyler: bot token
+  (masked, RUNBOOK-ALPHA.md) → live server demo + Railway go/no-go.
 - MEGA-SESSION Aug 19 (CC desk), all 7 work blocks:
   swsh5 lane QA (7bf4533 — pollution small, −26% GENUINE, lane-wide
   promo/coin/album excludes, 15/15 re-validated) · tests-in-CI (575536b —
