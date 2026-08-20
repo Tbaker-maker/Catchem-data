@@ -316,7 +316,7 @@ let ixh = { note: "Catchem Sealed Index history — merge-by-date", entries: [] 
 try { ixh = await J("research/pulse/index-history.json"); } catch {}
 const firstSeen = {}, lastTwo = {};
 for (const r of [...hh].sort((a,b)=>a.date<b.date?-1:1)) {
-  if (r.date < "2026-08-18" || !r.price) continue;
+  if (r.date < "2026-08-19" || !r.price) continue; // CLEAN CUT: first full pricing-v2 day — the index measures market, never our cleanup
   if (!firstSeen[r.id]) firstSeen[r.id] = r.price;
   (lastTwo[r.id] ||= []).push(r.price);
   if (lastTwo[r.id].length > 2) lastTwo[r.id].shift();
