@@ -38,12 +38,21 @@ the community's heartbeat becomes the giveaway economy's faucet.
 FLOW: Eden rains tickets → raffles cog consumes tickets → prizes via
 sweepstakes law → (Year-2) marketplace giveaways ride the same rail.
 Legacy users.free_tickets column = sacred, already the storage.
-CORE TRIGGER (Tyler, Aug 19): PER-MESSAGE ROLL — any message clearing
-X characters earns a small chance at a drop. Two tuning knobs: X (the
-effort gate, filters "lol"/emoji-only) and p (the roll probability).
-Economy math sets p from a target drop rate, e.g. ~10 eligible rolls/
-user/day at p=2% ≈ 0.2 tickets/day/active chatter — tune at alpha
-against real chat volume. Interval rains can layer on top for events.
+CORE TRIGGER (Tyler, Aug 19 — tuned same day): DAILY SPARK + BONUS ROLLS.
+- DAILY SPARK: the FIRST message of the day clearing X characters =
+  GUARANTEED ticket. Every active chatter gets the dopamine hit, fast,
+  every day. No roulette on the baseline — showing up and talking pays.
+- BONUS ROLLS: subsequent qualifying messages roll small p for extra
+  drops (the magic layer; rare by design, ~1 extra/week for heavy
+  chatters). Event rains layer on top for special moments.
+- WHY: Tyler's law — "give the dopamine hit quicker; we want them using
+  our economy." Guaranteed baseline drives daily return + circulation;
+  variance stays where it belongs, on top.
+ECONOMY SIZING (supply now ≈ 1 ticket/active/day): sinks must create
+choice — raffle entries priced in multiples (e.g. small weekly raffle
+3-5 tickets, big monthly 15-25), so a daily ticket feels valuable and
+saving vs spending is a real decision. Tune prize cadence to DAU at
+alpha; berries economy stays separate per standing law.
 ANTI-FARM GUARDRAILS (design defaults, tune at alpha):
 - CHAR-COUNT ABUSE GUARDS: similarity/dedupe check (repeat or
   near-repeat text = no roll) · keyboard-mash entropy filter · per-user
