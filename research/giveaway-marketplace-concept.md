@@ -48,6 +48,29 @@ CORE TRIGGER (Tyler, Aug 19 — tuned same day): DAILY SPARK + BONUS ROLLS.
 - WHY: Tyler's law — "give the dopamine hit quicker; we want them using
   our economy." Guaranteed baseline drives daily return + circulation;
   variance stays where it belongs, on top.
+GROWTH LADDER (Tyler, Aug 19): faucet 1+/day (tune UP not down —
+dopamine first) → 1-2 raffles/WEEK at launch → cadence and prize value
+scale with member count → paid members unlock more + pricier giveaways
+(Tyler shills bigger prizes as the count climbs). Flywheel: talking →
+tickets → raffles → winners → hype → members → bigger prizes → louder
+talking.
+THE HOUSE VAULT: prizes come from Tyler's own collection — zero prize
+procurement cost, instant tier range (weekly packs/singles → monthly
+heat → milestone grails). Requirements at deploy: a prizes-ledger
+(what's committed vs personal; condition noted per prize) + accountant
+flag (prizes as marketing expense).
+TWO SUSTAINABILITY GUARDS (non-negotiable):
+1. FULFILLMENT CAP — raffle cadence sized to Tyler's real shipping
+   bandwidth (two jobs, two kids): batch ship days, ≤N packages/week,
+   digital-reveal prizes (rip-on-stream) count double as CONTENT.
+2. PAID-TIER LEGAL SHAPE — "paid, more expensive giveaways" is exactly
+   where the lottery wall lives: member giveaways run with AMOE parity
+   (free entry route, equal odds) per the locked pattern. Attorney
+   blesses the exact mechanics before the first paid draw.
+CONTENT FLYWHEEL: every raffle = announcement embed → countdown →
+winner reveal → prize ripped LIVE on stream (winner's box opened
+on-air, Whatnot-style) → clip → next raffle hype. Prizes become
+programming; the vault becomes a content calendar.
 ECONOMY SIZING (supply now ≈ 1 ticket/active/day): sinks must create
 choice — raffle entries priced in multiples (e.g. small weekly raffle
 3-5 tickets, big monthly 15-25), so a daily ticket feels valuable and
