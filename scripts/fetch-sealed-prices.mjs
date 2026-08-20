@@ -50,7 +50,7 @@ const SUBTYPE_PRICE_BOUNDS = {
   "collection-box":     [20, 200],
   // pricing v2 (2026-08-18, Tyler-caught): class had NO bounds — failPrice was
   // structurally 0. Evidence: real BIN cluster $85-120 on sv8pt5-sc.
-  "special-collection": [50, 250],
+  "special-collection": [50, 600], // widened Aug-20: Eevee Evolutions Premium (~$275+ USD) joined the class
   "build-and-battle":   [15, 100],
   // loose-pack lane (research/loose-pack-skus-spec.md, 2026-08-18): powers
   // sealedPremiumPct — productPerPack vs the street price of one loose pack
