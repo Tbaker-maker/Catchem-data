@@ -47,13 +47,22 @@ const packRows = sp.products
   .sort((a,b)=>b.perPack-a.perPack);
 // Loose-pack anchor per set → signed sealed premium on every multi-pack row
 const loosePackBySet = {};
-const loosePackNBySet = {};
-for (const r of packRows) if (r.subtype === "booster-pack") { loosePackBySet[r.setId] = r.perPack; loosePackNBySet[r.setId] = r.listings ?? null; }
+const loosePackNBySet = {}, loosePackVenue = {};
+const tcgPack = new Map((div.rows||[]).filter(r=>r.id.endsWith("-pack") && r.tcgMarket).map(r=>[r.id.replace(/-pack$/,""), r.tcgMarket]));
+for (const r of packRows) if (r.subtype === "booster-pack") {
+  const tcg = tcgPack.get(r.setId);
+  // RT-4b: sealed packs are commodities — no photo premium justification;
+  // TCGplayer is the accurate per-pack venue. Prefer it when mapped.
+  loosePackBySet[r.setId] = tcg ?? r.perPack;
+  loosePackVenue[r.setId] = tcg ? "tcg" : "ebay";
+  loosePackNBySet[r.setId] = r.listings ?? null;
+}
 for (const r of packRows) {
   if (r.subtype === "booster-pack") { r.role = "loose-anchor"; continue; }
   const lp = loosePackBySet[r.setId];
   r.loosePack = lp ?? null;
   r.loosePackN = loosePackNBySet[r.setId] ?? null;
+  r.premiumBasis = loosePackVenue[r.setId] ?? null;
   const prem = sealedPremium(r.perPack, lp, r.loosePackN); // lib canon, CI-tested
   r.sealedPremiumPct = prem.pct;
   r.premiumThin = prem.thin;
@@ -276,8 +285,10 @@ const ERA = id => id.startsWith("me") ? "Mega Evolution"
   : id.startsWith("xy") ? "XY" : "Vintage & other";
 const spreadById = new Map((div.rows||[]).map(r=>[r.id, r.spreadPct]));
 const eraBuckets = {};
+const eraBoxes = {};
 for (const p of liveList) {
   const e = ERA(p.setId || p.id);
+  if (p.subtype === "booster-box" && p.priceMedian) (eraBoxes[e] ||= []).push(p.priceMedian);
   (eraBuckets[e] ||= { prices: [], gaps: [], listings: 0, n: 0 });
   eraBuckets[e].prices.push(p.priceMedian);
   eraBuckets[e].listings += p.listingCount || 0;
@@ -305,7 +316,9 @@ const eraIndexes = Object.entries(eraBuckets).filter(([,b])=>b.n>=3).map(([era,b
   else if (avgGap >= 6) read = "modest ask-side pressure — inside the normal photo-trust range";
   else if (avgGap >= 0) read = "markets aligned — little pressure either way";
   else read = "eBay asking UNDER TCGplayer — unusual; sellers motivated across this era";
-  return { era, products: b.n, level, index: idx100, avgGapPct: offTcg ? null : avgGap, venueClass: offTcg ? "ebay-native" : "cross-market", totalListings: b.listings, listingsPerProduct: lpp, read, chip: "READ" };
+  const bx = (eraBoxes[era]||[]).sort((x,y)=>x-y);
+  const boxMedian = bx.length ? bx[Math.floor(bx.length/2)] : null;
+  return { era, products: b.n, level, boxMedian, index: idx100, avgGapPct: offTcg ? null : avgGap, venueClass: offTcg ? "ebay-native" : "cross-market", totalListings: b.listings, listingsPerProduct: lpp, read, chip: "READ" };
 }).sort((a,b)=>b.level-a.level);
 // persist today (merge-by-date+era — pathogen-proof)
 eiHist.entries = (eiHist.entries||[]).filter(e=>e.date!==today);
@@ -358,9 +371,11 @@ const rawIndex = { name:"Raw Chase Index", level: rawLevel, constituents: rawRat
   baselineDate: [...new Set(sgh.entries.map(e=>e.date))].sort()[0] ?? todayS,
   note:"same equation as the Sealed Index — confirmed chase singles, each vs its own first clean price", chip:"VERIFIED" };
 const gradedIndex = { gated: true, note:"same equation, graded shelf — awaits a licensed daily graded-price feed" };
+const medAll = [...liveList.filter(p=>p.priceMedian).map(p=>p.priceMedian)].sort((a,b)=>a-b);
+const medianProductUsd = medAll.length ? medAll[Math.floor(medAll.length/2)] : null;
 const sealedIndex = { name: "Catchem Sealed Index", level: idxLevel,
   ddPct: prevIx ? Math.round((idxLevel/prevIx.level - 1)*1000)/10 : null,
-  constituents: ratios.length, seasoningBench: liveList.filter(p=>!seasoned(p)).length, baseline: "each product vs its first clean-history price (2026-08-18 cut)",
+  medianProductUsd, constituents: ratios.length, seasoningBench: liveList.filter(p=>!seasoned(p)).length, baseline: "each product vs its first clean-history price (2026-08-18 cut)",
   breadth, chip: "VERIFIED", methodologyUrl: "/methodology.html",
   simple: `One number for all ${ratios.length} sealed products. 100 was the starting line; ${idxLevel} means the whole shelf is worth ${idxLevel>=100?"more":"less"} than when we started. Each product competes only against itself — one product, one vote.` };
 {

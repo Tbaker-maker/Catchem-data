@@ -91,3 +91,14 @@ stats only (median, clean floor, range, listings, Δ). The +26.9% S&M
 "squeeze" of Aug 18 was the case study — half real scarcity, half
 artifact. Falsifier: if TCG vintage-sealed volume ever becomes material
 (sustained listings depth comparable to modern), re-open the gate.
+
+## RT-4b · Commodity-Pack Venue Rule (Tyler, Aug 20 — corollary to RT-4)
+The photo premium exists because photos show THE SPECIFIC ITEM. A sealed
+booster pack is a commodity — any copy equals any copy — so the premium
+has no justification in the pack class, and eBay pack asks carry
+scalp-spread noise instead. RULE: per-pack anchors (the sealed-premium
+basis) source from TCGplayer wherever mapped; eBay only as a flagged
+fallback. Case study: EvSkies loose at $54.95 eBay looked rich — the
+TCG basis will reset it and sealed premiums will read MORE honest (and
+likely higher). Falsifier: if mapped TCG pack prices persistently sit
+ABOVE eBay asks for the same SKU, the commodity assumption fails here.
