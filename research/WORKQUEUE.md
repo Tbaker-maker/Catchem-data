@@ -37,6 +37,10 @@ write, push after. Tyler adds items in plain English anywhere here.
 - swsh5 −26% read: investigation says genuine discount — confirm or annotate.
 - Name decision Gate 2 (attorney) — knockout evidence in repo.
 
+## YEAR-2 PILLARS (captured, not queued)
+- Giveaway marketplace (free+paid, compliance-walled — concept doc filed;
+  v0 = bot raffle cog at alpha; attorney gates the paid shape)
+
 ## PARKED (Tyler, Aug 19: tools before UI)
 - Claude Design session (brief: design-brief-claude-design.md, evergreen)
 - Visual polish beyond shipped P0 + Lighthouse pass
