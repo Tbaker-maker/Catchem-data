@@ -29,6 +29,10 @@ write, push after. Tyler adds items in plain English anywhere here.
 - me1-pack thinness (n≈7): thin-gate live; revisit if still thin past Aug 25.
 
 ## BLOCKED / WAITING ON TYLER
+- Railway deploy: GREENLIT 'very soon' (Aug 19) — ~/mo Hobby confirmed,
+  ledger it on deploy. Tyler's 10 min: railway.app → connect catchem-bot repo
+  → token in masked field → volume at /data. RUNBOOK-ALPHA.md has the rest.
+  Until then the bot only runs while his PC session is up.
 - CF_DEPLOY_HOOK secret (CF Pages → Deploy hooks → repo secret) — until then
   landers refresh only on app pushes.
 - Newsletter 001 send (checklist + linked-preview decision, before Aug 24).
