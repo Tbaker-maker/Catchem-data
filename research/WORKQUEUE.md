@@ -7,13 +7,13 @@ write, push after. Tyler adds items in plain English anywhere here.
 - (chat, Aug 19)  Net Proceeds Truth — engine side.
 
 ## READY (priority order — Tyler, Aug 19: TOOLS BEFORE UI)
-1. Net Proceeds app toggle (engine field shipping now; app renders
+1. [DONE chat Aug 19 — app 256b6d0] Net Proceeds on product detail (eBay+TCG in-pocket
    "if sold on eBay ≈ $X after fees" — CC after marathon).
 2. Deal Check deepening: fair-range math formalized (floorClean→median
    band + net-proceeds line = the show-floor seller's number).
 3. Compare tool depth pass: verify §12 shipped fully; add premium +
    lifecycle + legality rows to the side-by-side.
-4. [QUESTION ENGINE DONE] Rip-or-Hold: daily question in feed+embed; results loop = Discord poll reactions (Tyler posts or bot later).
+4. [DONE chat Aug 19 — home card live] Rip-or-Hold: results loop = Discord poll reactions (Tyler posts or bot later).
 5. [ENGINE DONE — chat Aug 19] Creator webhook network: sender+fanout+mute live; ARMS on first CREATOR_WEBHOOKS_JSON secret / house DISCORD_WEBHOOK_URL.
 6. Depth-reads 🍭 before first verdicts (~Aug 21).
 7. Heat-state debut (Aug 26): verify 8 clean days; labels wired dark.
