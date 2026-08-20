@@ -1,0 +1,9 @@
+{
+  "note": "POP/Eden defaults — CC copies into the private bot repo config; all tunable at alpha",
+  "eden": { "min_chars_daily_berry": 25, "bonus_roll_p": 0.02, "bonus_daily_cap": 3,
+    "per_user_roll_cooldown_sec": 90, "near_dupe_window": 20, "entropy_min": 2.5,
+    "account_age_days_min": 7, "no_drop_channels": ["raffles","draws","alerts","audit-log"] },
+  "raffles": { "anti_snipe_delay_min": 10, "max_concurrent": 3, "unclaimed_redraw_days": 7,
+    "cashout_pct": 65 },
+  "governance": { "weight": "frozen_berries", "soft_cap": null }
+}
