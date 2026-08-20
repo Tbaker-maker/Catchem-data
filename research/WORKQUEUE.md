@@ -32,10 +32,7 @@ write, push after. Tyler adds items in plain English anywhere here.
 - me1-pack thinness (n≈7): thin-gate live; revisit if still thin past Aug 25.
 
 ## BLOCKED / WAITING ON TYLER
-- ⚠ CF Pages project MISCONFIGURED: app.catchemtcg.com serves the ancient
-  prototype. Dashboard → Pages → the project → Settings → Builds: branch
-  main · build 'npm run build' · output 'dist' → Retry deployment. Until
-  then NOTHING we ship reaches the public app.
+- ✅ RESOLVED Aug 20: app.catchemtcg.com LIVE with the real Ticker — deployed via wrangler + CLOUDFLARE_API_TOKEN (masked, User env). Dashboard Workers-Builds path still broken (Git-disconnect + wrangler crash on Windows OAuth) — future: GitHub Action with the token for auto-deploy on push; .html URLs 307 to pretty URLs (regenerate sitemap/canonicals extensionless, small follow-up).
 - Buttondown test email: confirm receipt + phone render (draft em_1rx3…).
 - /pulse-now + /roh-now: two slash taps in Discord for today's first posts.
 - Railway deploy: GREENLIT 'very soon' (Aug 19) — ~/mo Hobby confirmed,
