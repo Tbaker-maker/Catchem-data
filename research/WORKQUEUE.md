@@ -9,10 +9,8 @@ write, push after. Tyler adds items in plain English anywhere here.
 ## READY (priority order — Tyler, Aug 19: TOOLS BEFORE UI)
 1. [DONE chat Aug 19 — app 256b6d0] Net Proceeds on product detail (eBay+TCG in-pocket
    "if sold on eBay ≈ $X after fees" — CC after marathon).
-2. Deal Check deepening: fair-range math formalized (floorClean→median
-   band + net-proceeds line = the show-floor seller's number).
-3. Compare tool depth pass: verify §12 shipped fully; add premium +
-   lifecycle + legality rows to the side-by-side.
+2. [DONE chat Aug 19 — app ca50587] Deal Check deepened (seller-nets line = show-floor settlement's number).
+3. [DONE chat Aug 19 — same commit] Compare deepened: premium(thin-aware) + in-pocket + Δ rows added; lifecycle/legality were already in.
 4. [DONE chat Aug 19 — home card live] Rip-or-Hold: results loop = Discord poll reactions (Tyler posts or bot later).
 5. [ENGINE DONE — chat Aug 19] Creator webhook network: sender+fanout+mute live; ARMS on first CREATOR_WEBHOOKS_JSON secret / house DISCORD_WEBHOOK_URL.
 6. Depth-reads 🍭 before first verdicts (~Aug 21).
