@@ -49,6 +49,11 @@ write, push after. Tyler adds items in plain English anywhere here.
 - Visual polish beyond shipped P0 + Lighthouse pass
 
 ## DONE (recent)
+- Aug 20 pair (CC desk): 001 SEND-READY (47224a8 — proof-pass, links all 200,
+  PE-ETB refreshed vs feed, 🌐 online drop dates on all 4 waves w/ 2-source
+  labels; Tyler's Aug-24 'send' gate holds) · Berry Rot 🍂 live in bot
+  (28 tests; 30d/7d/10%wk config, /hold audit-logged, Frozen eternal;
+  bot restarted w/ cog, 36 cogs).
 - SERVER PROVISIONED Aug 19 (priority insert): Catch'Em Collectables built
   per server-architecture-v1 — 6 categories/18 channels/6 roles, announcement
   types, overwrites, slowmode, rules pinned, reaction ping-roles live,
