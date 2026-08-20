@@ -30,6 +30,12 @@ write, push after. Tyler adds items in plain English anywhere here.
 - me1-pack thinness (n≈7): thin-gate live; revisit if still thin past Aug 25.
 
 ## BLOCKED / WAITING ON TYLER
+- ⚠ CF Pages project MISCONFIGURED: app.catchemtcg.com serves the ancient
+  prototype. Dashboard → Pages → the project → Settings → Builds: branch
+  main · build 'npm run build' · output 'dist' → Retry deployment. Until
+  then NOTHING we ship reaches the public app.
+- Buttondown test email: confirm receipt + phone render (draft em_1rx3…).
+- /pulse-now + /roh-now: two slash taps in Discord for today's first posts.
 - Railway deploy: GREENLIT 'very soon' (Aug 19) — ~/mo Hobby confirmed,
   ledger it on deploy. Tyler's 10 min: railway.app → connect catchem-bot repo
   → token in masked field → volume at /data. RUNBOOK-ALPHA.md has the rest.
@@ -49,6 +55,16 @@ write, push after. Tyler adds items in plain English anywhere here.
 - Visual polish beyond shipped P0 + Lighthouse pass
 
 ## DONE (recent)
+- CLOUD SESSION Aug 20 (CC desk): bot on Railway is now THE VOICE —
+  morning_pulse cog (6:00 PT, Mock 1, staleness law: >26h feed = silence) +
+  rip_loop cog (6:01 PT question w/ 💥🧊, next-day tally, crowd record owned
+  in roh_results) + /pulse-now + /roh-now staff triggers. Raffle 001
+  REHEARSED on hosted-DB copy: PASSED, caught cheat-card id bug
+  (sv3pt5-booster-bundle→sv3pt5-bb, fixed) — Sunday is a rerun. Hosted-DB
+  ledger verified (Tyler's real mints), provision tree matches Arch v1.
+  ⚠ AUDIT CATCH: app.catchemtcg.com serves an ANCIENT pre-Ticker build —
+  CF Pages project not building from main; needs Tyler in the CF dashboard
+  (build cmd npm run build, output dist, branch main, then retry deploy).
 - Launch ammo (chat, Aug 20): Video 001 full shooting script + Raffle 001 rules FILLED + admin cheat-card.
 - §15 UTILITIES IA Aug 20 (CC desk): four-tab nav (Today/Tools/Watch/Board),
   Tools hub = 6 question-cards w/ live teasers (mock v4 matched line-for-
