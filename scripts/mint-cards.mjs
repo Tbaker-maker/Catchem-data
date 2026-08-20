@@ -96,7 +96,7 @@ ${today >= DEPTH_DEBUT ? `<h2>Depth reads — how full is the shelf?</h2>
 <div class="law" style="border-left-color:#36d399"><b>The five-year-old version 🍭</b><br>
 ${Object.values(depthPlain).map(w => `${w.emoji} <b>${w.label}:</b> ${w.plain}.`).join("<br>")}</div>
 <p>The grown-up version: a 3-day listing-count flow per product — Active Listings are measured, the flow verdict is Buy Pressure (est.). Verdicts unlock at 3 clean days each; ⏳ until then.</p>` : ""}
-<h2>House reads &amp; falsifiers</h2><p>Interpretations (reprint cycles, depth reads, the PSA-9 tax) publish with the condition that would prove them wrong, and when a falsifier trips we amend in public. Being seen self-correcting is the point.</p>
+<h2>House reads &amp; falsifiers</h2><p>Interpretations (reprint cycles, depth reads, the <b>PSA-9 tax</b> — on established sets, a 9 usually returns less than the raw card plus the grading fee; only the 10 pays) publish with the condition that would prove them wrong, and when a falsifier trips we amend in public. Being seen self-correcting is the point.</p>
 <p class="dim" style="margin-top:36px">⚡ Catch'em · questions → support@catchemtcg.com</p>`;
 await writeFile(join(ROOT, "research/assets/methodology.html"), M);
 console.log(`✓ minted ${minted.length} cards (${minted.join(", ")}) + methodology.html`);
