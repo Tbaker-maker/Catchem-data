@@ -66,3 +66,5 @@ TRUST-STANDARD.md. This guide is the editorial layer on top of it.
 - Voice v5 (Aug 18, Tyler): NEWCOMER-CLEAR, never dumbed down. Every percentage labeled with what it measures. No finance slang on surfaces ("tape","narrative","spread" as jargon). Emojis only where the group label explains them. Technical terms (Wyckoff states etc.) always ship with a plain-words gloss.
 
 - Voice v6 — THE SANDBOX RULE (Aug 19, Tyler): every instrument ships with an explain-like-I'm-five version, one tap away. If the founder needed the write-up, so does everyone. Index has one; heat states, depth reads, premiums all get one before debut.
+
+- v7 — THE DIGEST LAW (Tyler, Aug 20): app surfaces are easily digested ALWAYS. Numbers over sentences; labels ≤2 words; one idea per card; every explanation collapses behind one tap (ⓘ → methodology anchors). Prose lives in the Pulse and methodology — the app is a glance, not a read.
