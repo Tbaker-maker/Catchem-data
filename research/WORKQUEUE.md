@@ -8,7 +8,8 @@ write, push after. Tyler adds items in plain English anywhere here.
 - (chat, Aug 19)  Net Proceeds Truth — engine side.
 
 ## READY (priority order
-0. THE PROFESSOR (post-Sunday): /ask navigator cog — grounded on house docs + live feed, simple-first, no-advice law, question-log flywheel; needs ANTHROPIC_API_KEY (Tyler). Spec: professor-spec-v1.md. — Tyler, Aug 19: TOOLS BEFORE UI)
+0. THE PROFESSOR + /wish (post-Sunday, one session): navigator cog + wishlist-demand v0 (Discord /wish, aggregate-only, MIN-N gate 25/50) — spec: professor-spec-v1.md + wishlist-demand-spec-v1.md.
+0b. WAS: /ask navigator cog — grounded on house docs + live feed, simple-first, no-advice law, question-log flywheel; needs ANTHROPIC_API_KEY (Tyler). Spec: professor-spec-v1.md. — Tyler, Aug 19: TOOLS BEFORE UI)
 1. [DONE chat Aug 19 — app 256b6d0] Net Proceeds on product detail (eBay+TCG in-pocket
    "if sold on eBay ≈ $X after fees" — CC after marathon).
 2. [DONE chat Aug 19 — app ca50587] Deal Check deepened (seller-nets line = show-floor settlement's number).
