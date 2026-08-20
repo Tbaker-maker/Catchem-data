@@ -63,14 +63,16 @@ MIGRATION CHECKBOX (deploy): legacy users.free_tickets column is
 sacred — deploy session maps tickets↔berries (alias or 1:N conversion)
 without dropping the column.
 
-CURRENCY NAME (OPEN — Tyler's gut pending; trivially renameable until
-bot alpha): RECOMMENDED: **Sparks** (spendable) + **Charge** (soulbound)
-— the ⚡ wordmark made currency; Eden's "daily spark" pre-named it; a
-physically coherent pair (sparks fly and get spent, charge builds and
-stays). Runners: Berries (warm incumbent, soft for the brand; borrows
-Pokemon-games flavor), Energy (TCG-native, generic), Bolts (punchy).
-Avoid: Watts (actual SwSh currency), Chips (gambling adjacency next to
-raffles). If the company renames (gate 2), currency can re-theme free.
+CURRENCY — 🔒 LOCKED (Tyler, Aug 19): **FRESH BERRIES** 🍓 (spendable)
++ **FROZEN BERRIES** 🧊 (soulbound). "Keeps it fun."
+SEMANTICS: every berry earned mints BOTH +1 Fresh (wallet) and +1
+Frozen (permanent record). Spending burns Fresh only; Frozen never
+decreases, never transfers — it IS your vote. Your soulbound ledger =
+**the Freezer**. The metaphor teaches itself: fresh gets used, frozen
+keeps forever — Sandbox Rule satisfied by the name alone.
+VOCAB: Eden's berry rain 🌧🍓 · the guaranteed first-message drop =
+**the Daily Berry** · "stacked Freezer" = high reputation. Name is
+company-rename-proof (generic words, no franchise collision).
 
 ## EDEN — the rain (defined Aug 19)
 MECHANIC: during organic conversation windows, Eden triggers rain
