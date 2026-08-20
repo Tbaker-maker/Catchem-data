@@ -49,6 +49,12 @@ write, push after. Tyler adds items in plain English anywhere here.
 - Visual polish beyond shipped P0 + Lighthouse pass
 
 ## DONE (recent)
+- §15 UTILITIES IA Aug 20 (CC desk): four-tab nav (Today/Tools/Watch/Board),
+  Tools hub = 6 question-cards w/ live teasers (mock v4 matched line-for-
+  line), Pack Math + Print Watch app surfaces born (engines were invisible),
+  Net Proceeds calculator, question grammar on Check/Compare, legacy routes
+  redirect. Feed: packMath.all + printWatch top-8 + tcgModel fees (108KB).
+  methodology#print-watch 🍭 anchor. Lighthouse 95/100 held, 61.4kB gzip.
 - Aug 20 pair (CC desk): 001 SEND-READY (47224a8 — proof-pass, links all 200,
   PE-ETB refreshed vs feed, 🌐 online drop dates on all 4 waves w/ 2-source
   labels; Tyler's Aug-24 'send' gate holds) · Berry Rot 🍂 live in bot

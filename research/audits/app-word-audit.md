@@ -56,3 +56,13 @@ Bundle **59.21 kB gzip** (<100). No tokens changed, no features added.
   with ⓘ to #buy-pressure.
 - renderShareCard/Overlay copy: outward-facing branded assets, not app
   chrome — grammar already tight, left alone.
+
+## §15 IA session addendum (2026-08-20, same instrument)
+New screens: Tools hub 76 · PackMath 75 · PrintWatch 19 · NetCalc 25 ·
+RipOrHold 21 · WatchTab 14 — Tools-family avg **43.2/screen**, under the
+post-digest 43.7 bar. Prior screens: Home 50→41 (Watch moved to its tab),
+DealCheck 60, Movers 13, Board 23, Detail 61, Studio 25 — no regression
+except Compare 28→30, which IS its mandated question header ('⇄ Which of
+these two?'). Conditional-copy caveat: verdict variants count in source but
+render one at a time (PackMath's 4 verdicts ≈ 25 counted, ~8 shown).
+Total on-glance 437→677 across 15 screens (5 brand-new surfaces).
