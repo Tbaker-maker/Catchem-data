@@ -15,6 +15,6 @@ entries. Void where prohibited. Admins ineligible.
 
 ## /raffle create CHEAT-CARD (type exactly)
 photos: [bundle pics 1-3] · title: "151 Booster Bundle — Raffle 001"
-prize ref: sv3pt5-booster-bundle · entry cost: 3 · per-person: 5 ·
+prize ref: sv3pt5-bb  ← CORRECTED 2026-08-20 rehearsal: the tape id is sv3pt5-bb, sv3pt5-booster-bundle resolves to NOTHING · entry cost: 3 · per-person: 5 ·
 cap: 150 · trigger: hybrid, Sunday 18:00 PT · rules link: [this doc's
 public URL once posted to #rules]
