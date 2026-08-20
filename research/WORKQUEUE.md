@@ -44,6 +44,14 @@ write, push after. Tyler adds items in plain English anywhere here.
 - Visual polish beyond shipped P0 + Lighthouse pass
 
 ## DONE (recent)
+- SERVER PROVISIONED Aug 19 (priority insert): Catch'Em Collectables built
+  per server-architecture-v1 — 6 categories/18 channels/6 roles, announcement
+  types, overwrites, slowmode, rules pinned, reaction ping-roles live,
+  Eden no-drop synced; provisioner idempotent (2 passes); tooling in
+  catchem-bot/tools/. Bot LIVE in-server, all cogs incl. eden/raffle_wizard/
+  reaction_roles. Tyler-verified 'looks great'. Residual: hidden #rules/
+  #moderator-only (Discord-designated, tucked in META); live demo (🍓 +
+  first raffle) whenever Tyler plays; Railway = RUNBOOK-ALPHA.md.
 - BOT PACKAGE Aug 19 (CC desk, freeze lifted for this package): PRIVATE repo
   Tbaker-maker/catchem-bot live (visibility verified pre-push). POP ledger
   (Fresh🍓+Frozen🧊, free_tickets sacred = Fresh 1:1, Frozen backfilled from
