@@ -151,3 +151,44 @@ defensible entry path in the whole structure. Attorney still reviews
 (effort-as-consideration edge cases; Canada skill-question overlay).
 OPEN AT DEPLOY SESSION: confirm whether Eden ships as a built cog in
 the bot zip or spec-stage — if spec, this section is the build brief.
+
+## 🎟 RAFFLE ADMIN SPEC (Tyler, Aug 19 — build brief for bot deploy)
+PRINCIPLE: creating a raffle must take an admin under 90 seconds.
+
+CREATE FLOW — `/raffle create` opens a modal wizard:
+- Photos (1-4 uploads, carousel in embed) · title · prize reference
+  (product/card id → auto-verified value, OR freeform + manual value)
+- Entry cost (Fresh Berries 🍓) · total entry cap · per-person limit
+- DRAW TRIGGER: timed (end datetime) OR threshold (fires at N entries)
+  OR hybrid (whichever first) — with anti-snipe delay on threshold
+  draws (announce "drawing in 10 min" so nobody games the last slot)
+- Auto-attached: official-rules link, results-channel routing
+ADMIN QUALITY-OF-LIFE (the "anything useful"): draft+preview before
+publish · edits lock at first entry · cancel = automatic Fresh refund ·
+recurring templates ("weekly small") · role-gated admin list (Tyler +
+appointed) · max-concurrent-raffles guard · audit-log channel entry
+for every create/edit/draw/cancel.
+
+VERIFIED VALUE (the oracle): prize id resolves against our own feed —
+sealed → eBay-native median (public-safe), singles → market layer
+(public-safe; PPT-derived numbers stay OFF public embeds per licensing).
+Embed shows "VERIFIED $X · Catch'em · [date]" with chip; value SNAPSHOTS
+at draw time into the raffle record — that snapshot is the cash-out
+settlement basis. Two halves of the company, one card.
+
+PROVABLY FAIR DRAW (receipts culture in the casino): at draw, bot
+publishes entrant-count, a logged seed, and the winner index — anyone
+can recompute the pick. Our methodology page ethos, applied to luck.
+
+WINNER FLOW: DM + announce → winner chooses via buttons:
+  📦 SHIP IT — winner pays shipping (disclosed in rules; quote sent)
+  💵 CASH OUT — 65% of the verified value snapshot (Tyler-approved
+  alternative when shipping doesn't make sense; % tunable)
+→ prizes-ledger status advances committed → drawn → shipped/cashed ·
+unclaimed after N days = redraw per rules · winner + choice posted to
+results channel (track record, always).
+
+RULES-TEMPLATE FLAGS (attorney's one skim covers): winner-pays-shipping
+disclosed · cash-alternative clause (65% of verified value, winner's
+option) · no-purchase-necessary + AMOE parity on any member-tier draw ·
+Canada skill-question overlay · redraw policy.
