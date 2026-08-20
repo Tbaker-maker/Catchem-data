@@ -29,7 +29,7 @@ const der = await J("data/derived-insights.json");
 // backstop). Posts to the LIVE Formspree waitlist — the same list newsletter
 // 001 imports from. TODO(Tyler): claim a buttondown.com username, set it here
 // AND in catchem-app/src/Ticker.jsx — the two capture points flip together.
-const BUTTONDOWN_USERNAME = "";
+const BUTTONDOWN_USERNAME = "catchemtcg";
 const CAPTURE_URL = BUTTONDOWN_USERNAME
   ? `https://buttondown.com/api/emails/embed-subscribe/${BUTTONDOWN_USERNAME}`
   : "https://formspree.io/f/xgorlypa";
