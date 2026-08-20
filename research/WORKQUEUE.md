@@ -38,7 +38,7 @@ write, push after. Tyler adds items in plain English anywhere here.
 - Name decision Gate 2 (attorney) — knockout evidence in repo.
 
 ## YEAR-2 PILLARS (captured, not queued)
-- Giveaway marketplace (free+paid, compliance-walled — concept doc filed;
+- Giveaway marketplace + EDEN ticket-rain (free+paid, compliance-walled; Eden = engagement faucet — concept doc filed;
   v0 = bot raffle cog at alpha; attorney gates the paid shape)
 
 ## PARKED (Tyler, Aug 19: tools before UI)

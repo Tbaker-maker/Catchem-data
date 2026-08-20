@@ -27,5 +27,26 @@ Attorney consult item #1 alongside the trademark question.
 - Marketplace (Year-2, in-house, Berries currency per locked model) =
   the venue; giveaways = its engagement layer, free + membership tiers.
 - Creator network (§14b) = giveaway distribution + co-hosted drops.
-- OPEN: "DSK Eden" interactive giveaway bot referenced by Tyler —
-  unidentified in current knowledge; awaiting doc/link to map in.
+- ✅ RESOLVED: **EDEN** (Tyler, Aug 19) — the interactive giveaway bot
+  living in GENERAL chat: it RAINS TICKETS on members for organically
+  talking. The engagement heartbeat of the whole giveaway economy.
+
+## EDEN — the ticket rain (defined Aug 19)
+MECHANIC: during organic conversation windows, Eden triggers rain
+events — tickets drop on active members. Rewards talking, not spending;
+the community's heartbeat becomes the giveaway economy's faucet.
+FLOW: Eden rains tickets → raffles cog consumes tickets → prizes via
+sweepstakes law → (Year-2) marketplace giveaways ride the same rail.
+Legacy users.free_tickets column = sacred, already the storage.
+ANTI-FARM GUARDRAILS (design defaults, tune at alpha):
+- Rain triggers on random intervals WEIGHTED by distinct humans talking
+  (not message volume) — 5 people chatting > 1 person spamming.
+- Eligibility: active in the last N minutes; claim window ~60s
+  (reaction or auto-grant); per-user daily rain cap.
+- No rains in command/bot channels; cooldown after each rain; new-account
+  age gate; obvious-spam messages don't count toward activity.
+COMPLIANCE: participation-earned tickets = no consideration — the most
+defensible entry path in the whole structure. Attorney still reviews
+(effort-as-consideration edge cases; Canada skill-question overlay).
+OPEN AT DEPLOY SESSION: confirm whether Eden ships as a built cog in
+the bot zip or spec-stage — if spec, this section is the build brief.
