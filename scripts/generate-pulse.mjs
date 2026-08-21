@@ -1,3 +1,4 @@
+await import("./qa-gate.mjs");
 // scripts/generate-pulse.mjs — The Morning Pulse
 // A one-page daily brief the machine writes about what it saw. Reads every
 // instrument, publishes research/pulse/YYYY-MM-DD.md. Trust Standard applies:

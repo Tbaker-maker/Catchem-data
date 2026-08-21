@@ -372,6 +372,11 @@ function aggregatePrices(items, floor = MIN_PRICE, ceiling = MAX_PRICE) {
     // consumers never conflate median with floor (Tyler-caught gotcha)
     priceFloorClean: round(prices[0]),
     priceHigh: round(prices[prices.length - 1]),
+    // DIAGNOSTIC TRAIL (slop defense): the three priciest kept listings are
+    // where pollution hides. Stored so any suspicious median can be audited
+    // in seconds instead of guessed at.
+    topPricedTitles: [...kept].sort((x, y) => (y._delivered ?? 0) - (x._delivered ?? 0)).slice(0, 3)
+      .map(i => ({ t: (i.title || "").slice(0, 90), p: round(i._delivered) })),
     listingCount: prices.length,
   };
 }

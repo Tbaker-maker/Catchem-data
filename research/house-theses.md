@@ -102,3 +102,25 @@ fallback. Case study: EvSkies loose at $54.95 eBay looked rich — the
 TCG basis will reset it and sealed premiums will read MORE honest (and
 likely higher). Falsifier: if mapped TCG pack prices persistently sit
 ABOVE eBay asks for the same SKU, the commodity assumption fails here.
+
+## SLOP DEFENSE (Tyler, Aug 21 — doctrine, not a thesis)
+"AI slop is an easy tag to get and a hard one to remove." A confidently
+published wrong number is the fastest route to that tag, and no amount of
+good writing survives it. THEREFORE: we publish slower than we compute.
+THREE LAYERS, all automatic:
+1. FILTERS (fetch) — scam vocabulary, damage words, language, bounds,
+   currency, and the multi-item guard (lots/cases/x2/bundles).
+2. THE GATE (scripts/qa-gate.mjs) — runs before ANY publishing step.
+   BLOCKS a product from Daily Three, social posts, cards, and the
+   newsletter when its number looks corrupted: >30% overnight median
+   move (filter drift, not market), >60% from TCGplayer on a
+   both-venues product, or fewer than 5 listings. WARNS (visible, not
+   blocking) on shape anomalies like a high 3× the median.
+3. THE TRAIL — every product stores its three priciest kept listings, so
+   any suspicious median is auditable in seconds rather than guessed at.
+BLOCKED ≠ HIDDEN: the number stays in the data and on the Board, labeled.
+It just doesn't get a megaphone until it passes. Transparency and
+restraint are the same policy here.
+FOUNDER-QA LAW: when Tyler flags a number from lived market experience,
+that flag outranks the pipeline. Quarantine first, investigate second,
+fix the CLASS of bug, then re-verify at the next run.

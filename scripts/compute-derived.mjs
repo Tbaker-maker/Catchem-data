@@ -137,6 +137,7 @@ if (digestText) {
 // Active Listings (measured) × listing-delta flow (Buy Pressure est.).
 // Reads unlock per-product at 3+ clean snapshot days; calibrating until.
 const CLEAN_CUT = "2026-08-18";
+const blockedIds = new Set((sp.products||[]).filter(p=>p.publishBlock).map(p=>p.id));
 const liveList = sp.products.filter(p=>p.dataStatus==="live" && p.listingCount);
 const counts = liveList.map(p=>p.listingCount).sort((a,b)=>a-b);
 const q3 = counts[Math.floor(counts.length*0.75)] ?? 0;
