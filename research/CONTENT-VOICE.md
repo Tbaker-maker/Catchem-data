@@ -67,3 +67,5 @@ CALENDAR NUDGES. Number everything for easy picking.
 - USD LAW (Tyler, Aug 21): every public-facing figure — social posts, share cards, newsletter, creator copy — is USD, always. The app's CAD toggle is a display convenience for Canadian visitors only and never touches published content. Assume a USD-default audience.
 
 - PNG-ONLY LAW (Tyler, Aug 21): images shipped to humans or platforms are PNG, always. SVG is internal-only — X and Instagram reject it, and rasterizing late hid a text-loss bug for two days.
+
+- SPECULATION LICENSE (Tyler, Aug 21): speculate freely — that is the product — but only from verified inputs, wearing a READ chip, with the falsifier stated. Never invent a figure; an empty field beats a fabricated one. A single social post is a lead, never a source; rumors are reportable as rumors and never as premises.

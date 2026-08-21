@@ -25,6 +25,42 @@ A claim may be published only when it carries all four:
 FAILING ANY OF THE FOUR = the claim does not ship. Hedged phrasing is
 not a workaround; if we can't source it, we say we don't know.
 
+## SPECULATION IS LICENSED — FABRICATION IS NOT (Tyler, Aug 21)
+Three different things get confused constantly. We separate them:
+
+**SPECULATION — welcome, and the point of the product.** Reasoning past
+the data: "supply is draining while asks rise, which usually precedes
+X." Requirements: it is OUR reasoning, it starts from VERIFIED inputs,
+it wears a READ chip, and it states what would prove it wrong. Every
+house thesis (RT-1…RT-5, RT-4a/b) is speculation done properly. A
+market intelligence product with no interpretation is a spreadsheet.
+
+**FABRICATION — never, under any circumstance.** Inventing a number, a
+date, a pull rate, a population, an SKU, or a quote. Includes softer
+forms: filling a gap with a plausible-sounding figure, rounding a
+half-remembered stat into confidence, or describing something we
+haven't checked as though we have. If we don't know, we publish that we
+don't know — an empty field beats an invented one, always.
+
+**LAUNDERING — never.** Taking one person's unverified post, tweet, or
+video claim and repeating it as fact. A single social post is not a
+source; at best it is a LEAD. Leads get verified before they become
+claims, or they get reported explicitly as unconfirmed chatter with
+attribution — never absorbed into a number, a thesis premise, or a
+headline.
+
+## SOURCE TIERS (what counts, and how much)
+1. **PRIMARY** — official Pokémon/TPCi announcements, PSA/CGC/GemRate
+   published data, marketplace data we fetch ourselves. Citable alone.
+2. **ESTABLISHED** — Bulbapedia, PokéBeach, TCG Collector, Beckett,
+   reputable trade press. Citable; prefer two for load-bearing claims.
+3. **COMMUNITY AGGREGATE** — repeated, corroborated community
+   knowledge across multiple independent voices. Usable WITH a hedge.
+4. **SINGLE SOCIAL POST / one-off claim** — NOT a source. A lead only.
+   May be reported as "unconfirmed, circulating" with attribution when
+   it is materially newsworthy, never as a premise for a number.
+Rumors are reportable AS rumors. They never silently become inputs.
+
 ## HIGH-RISK CLASSES (always double-verify, no exceptions)
 - SKU existence ("does this set have a booster box?") — the SKU LAW
   exists because special/mini sets don't, and we got it wrong twice.

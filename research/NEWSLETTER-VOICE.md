@@ -70,3 +70,5 @@ TRUST-STANDARD.md. This guide is the editorial layer on top of it.
 - v7 — THE DIGEST LAW (Tyler, Aug 20): app surfaces are easily digested ALWAYS. Numbers over sentences; labels ≤2 words; one idea per card; every explanation collapses behind one tap (ⓘ → methodology anchors). Prose lives in the Pulse and methodology — the app is a glance, not a read.
 
 - USD LAW (Tyler, Aug 21): every public-facing figure — social posts, share cards, newsletter, creator copy — is USD, always. The app's CAD toggle is a display convenience for Canadian visitors only and never touches published content. Assume a USD-default audience.
+
+- SPECULATION LICENSE (Tyler, Aug 21): speculate freely — that is the product — but only from verified inputs, wearing a READ chip, with the falsifier stated. Never invent a figure; an empty field beats a fabricated one. A single social post is a lead, never a source; rumors are reportable as rumors and never as premises.
