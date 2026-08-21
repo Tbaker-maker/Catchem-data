@@ -173,7 +173,7 @@ function lifecycleFor(p){
   if (!rel) return null;
   const months = Math.floor((NOW - new Date(rel)) / (30.44*86400000));
   let phase, tag;
-  if (months <= 12) { phase = "active print"; tag = "🖨"; }
+  if (months <= 12) { phase = "reads as active print — supply still arriving on the 30-month model"; tag = "🖨"; }
   else if (months <= 30) { phase = "late print — reprint waves typical"; tag = "🖨⏳"; }
   else { phase = "reads as likely EOL — supply looks fixed on the model (est.)"; tag = "📦🔒"; }
   const mark = setMarks[p.setId] ?? null;

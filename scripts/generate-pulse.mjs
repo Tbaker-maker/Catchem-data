@@ -14,6 +14,13 @@ const sealedImg = p => p.representativeImage
   || (__tcgIds[p.id] ? `https://tcgplayer-cdn.tcgplayer.com/product/${__tcgIds[p.id]}_in_400x400.jpg` : null)
   || p.image || null;
 const J = async p => { try { return JSON.parse(await readFile(join(ROOT,p),"utf-8")); } catch { return null; } };
+let dyk = null;
+try {
+  const bank = JSON.parse(await readFile(new URL("../data/did-you-know.json", import.meta.url), "utf-8"));
+  const facts = bank.facts || [];
+  if (facts.length) dyk = facts[new Date().getUTCDate() % facts.length];
+} catch {}
+
 
 const sp = await J("data/sealed-prices.json");
 try { const cm = await J("data/crosscheck-id-map.json");
@@ -107,7 +114,8 @@ if (der?.watchOutcomes?.sealed?.dPct != null || der?.watchOutcomes?.raw?.dPct !=
 }
 if (der?.subtypeIndexes?.length) md += `\n**Product-class indexes:** ${der.subtypeIndexes.map(s=>`${s.subtype} ${s.level}`).join(" · ")} *(same equation, shelves by class)*\n`;
 if (der?.supplyShifts?.length) {
-  md += `\n## 🌊 Supply shifts\n`;
+  if (dyk) md += `\n## 💡 Did you know?\n**${dyk.hook}** ${dyk.body}\n\n*${dyk.why_it_matters}* — ${dyk.sources.join("; ")}, checked ${dyk.verified}.\n`;
+md += `\n## 🌊 Supply shifts\n`;
   for (const x of der.supplyShifts.slice(0,5)) md += `- **${x.name}** — listings ${x.prev}→${x.listings} (**${x.dPct>0?"+":""}${x.dPct}%**)${x.priceDPct!=null?`, price ${x.priceDPct>0?"+":""}${x.priceDPct}%`:""}. ${x.read}${x.catalystMatch?` · ${x.catalystMatch}`:""}.\n`;
   md += `*Shelf math, plainly: how many are for sale vs yesterday — and what usually causes a swing that size.*\n`;
 }
@@ -355,6 +363,7 @@ const indexHistory = (ixHist?.entries ?? []).slice(-HIST_DEPTH).map(e => [e.date
 
 // ── Machine-readable feed for the app's Ticker (no HTML scraping, ever) ──
 const feed = {
+  didYouKnow: dyk,
   generatedAt: new Date().toISOString(), date: today,
   panel: { skusTracked: sp.products.length, signals: sigs.length,
            calibrationDay: Number(heatDays)||null, calibrationOf: 8, heatMode: heat?.mode||null },
