@@ -115,7 +115,7 @@ if (der?.watchOutcomes?.sealed?.dPct != null || der?.watchOutcomes?.raw?.dPct !=
 }
 if (der?.subtypeIndexes?.length) md += `\n**Product-class indexes:** ${der.subtypeIndexes.map(s=>`${s.subtype} ${s.level}`).join(" · ")} *(same equation, shelves by class)*\n`;
 if (der?.supplyShifts?.length) {
-  if (dyk) md += `\n## 💡 Did you know?\n**${dyk.hook}** ${dyk.body}\n\n*${dyk.why_it_matters}* — ${dyk.sources.join("; ")}, checked ${dyk.verified}.\n`;
+  if (dyk) md += `\n## 💡 Did you know?\n**${dyk.hook}**\n\n${dyk.body}\n\n${dyk.why_it_matters}\n\n*Source: ${dyk.sources.join("; ")}, checked ${dyk.verified}.*\n`;
 md += `\n## 🌊 Supply shifts\n`;
   for (const x of der.supplyShifts.slice(0,5)) md += `- **${x.name}** — listings ${x.prev}→${x.listings} (**${x.dPct>0?"+":""}${x.dPct}%**)${x.priceDPct!=null?`, price ${x.priceDPct>0?"+":""}${x.priceDPct}%`:""}. ${x.read}${x.catalystMatch?` · ${x.catalystMatch}`:""}.\n`;
   md += `*Shelf math, plainly: how many are for sale vs yesterday — and what usually causes a swing that size.*\n`;
