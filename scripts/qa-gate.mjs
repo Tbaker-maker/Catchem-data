@@ -25,11 +25,15 @@ const tcgBy = new Map((div.rows || []).map(r => [r.id, r.tcgMarket]));
 const prevBy = {};
 for (const r of [...hh].sort((a, b) => a.date < b.date ? -1 : 1)) if (r.date < today && r.price) prevBy[r.id] = r.price;
 
+const manualQ = await J("data/quarantine.json") ?? { entries: [] };
+const qIds = new Map((manualQ.entries || []).map(e => [e.id, e]));
 const flags = [];
 let blocked = 0;
 for (const p of sp.products || []) {
   if (p.dataStatus !== "live" || !p.priceMedian) continue;
   const reasons = [];
+  const mq = qIds.get(p.id);
+  if (mq) reasons.push(`manually quarantined ${mq.since} (${mq.by}): ${mq.reason}`);
   const med = p.priceMedian, hi = p.priceHigh, lo = p.priceFloorClean ?? p.priceLow;
 
   // 1 · SPREAD-SHAPE: a clean single-item market is tight. A high 3× the
