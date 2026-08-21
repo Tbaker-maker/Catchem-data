@@ -1,4 +1,185 @@
 {
-  "_meta": "Monthly pop-report snapshots, HUMAN-entered from free front doors (psacard.com/pop weekly-updated; GemRate universal search for cross-house). NO scraping, ever — a 10-min monthly ritual for the chase list. Two snapshots unlock pop-velocity. Fields: pop10/pop9/total per grader per cardId, sourced+dated.",
-  "snapshots": []
+  "note": "Monthly pop-report snapshots, HUMAN-entered from free front doors. NOTE 2026-08-20: psacard.com/pop now redirects to a Collectors sign-in — gemrate.com universal search (free, daily-updated, PSA row of the per-grader table) is the working front door; if Tyler signs into PSA himself, psacard.com numbers are preferred. NO scraping, no automation against PSA — a ~2-min monthly ritual: paste lines into scripts/ingest-pop.mjs (one line per card: cardId pop10 pop9 total). Merge key: (date, cardId, grader). Two distinct dates wake scripts/pop-velocity.mjs → data/pop-velocity.json (growth %, gem rate, pop pressure). Every downstream read is chip READ, sourced from each row's recorded front door + snapshot date.",
+  "snapshots": [
+    {
+      "date": "2026-08-20",
+      "cardId": "me2-125",
+      "grader": "psa",
+      "pop10": 29928,
+      "pop9": 17084,
+      "popTotal": 50085,
+      "source": "gemrate.com universal search (PSA row)"
+    },
+    {
+      "date": "2026-08-20",
+      "cardId": "me2pt5-284",
+      "grader": "psa",
+      "pop10": 8023,
+      "pop9": 4205,
+      "popTotal": 12607,
+      "source": "gemrate.com universal search (PSA row)"
+    },
+    {
+      "date": "2026-08-20",
+      "cardId": "me2pt5-290",
+      "grader": "psa",
+      "pop10": 5164,
+      "pop9": 2719,
+      "popTotal": 8235,
+      "source": "gemrate.com universal search (PSA row)"
+    },
+    {
+      "date": "2026-08-20",
+      "cardId": "me4-116",
+      "grader": "psa",
+      "pop10": 2095,
+      "pop9": 626,
+      "popTotal": 2810,
+      "source": "gemrate.com universal search (PSA row)"
+    },
+    {
+      "date": "2026-08-20",
+      "cardId": "me5-116",
+      "grader": "psa",
+      "pop10": 46,
+      "pop9": 15,
+      "popTotal": 64,
+      "source": "gemrate.com universal search (PSA row)"
+    },
+    {
+      "date": "2026-08-20",
+      "cardId": "sv3-223",
+      "grader": "psa",
+      "pop10": 12862,
+      "pop9": 28875,
+      "popTotal": 57027,
+      "source": "gemrate.com universal search (PSA row)"
+    },
+    {
+      "date": "2026-08-20",
+      "cardId": "sv3pt5-199",
+      "grader": "psa",
+      "pop10": 28415,
+      "pop9": 49854,
+      "popTotal": 103155,
+      "source": "gemrate.com universal search (PSA row)"
+    },
+    {
+      "date": "2026-08-20",
+      "cardId": "sv8pt5-155",
+      "grader": "psa",
+      "pop10": 3407,
+      "pop9": 6576,
+      "popTotal": 11878,
+      "source": "gemrate.com universal search (PSA row)"
+    },
+    {
+      "date": "2026-08-20",
+      "cardId": "sv8pt5-156",
+      "grader": "psa",
+      "pop10": 3860,
+      "pop9": 6833,
+      "popTotal": 13152,
+      "source": "gemrate.com universal search (PSA row)"
+    },
+    {
+      "date": "2026-08-20",
+      "cardId": "sv8pt5-161",
+      "grader": "psa",
+      "pop10": 6273,
+      "pop9": 10419,
+      "popTotal": 21110,
+      "source": "gemrate.com universal search (PSA row)"
+    },
+    {
+      "date": "2026-08-20",
+      "cardId": "swsh11-186",
+      "grader": "psa",
+      "pop10": 9677,
+      "pop9": 9898,
+      "popTotal": 23844,
+      "source": "gemrate.com universal search (PSA row)"
+    },
+    {
+      "date": "2026-08-20",
+      "cardId": "swsh12-186",
+      "grader": "psa",
+      "pop10": 25393,
+      "pop9": 16547,
+      "popTotal": 46345,
+      "source": "gemrate.com universal search (PSA row)"
+    },
+    {
+      "date": "2026-08-20",
+      "cardId": "swsh3-20",
+      "grader": "psa",
+      "pop10": 23833,
+      "pop9": 7091,
+      "popTotal": 33027,
+      "source": "gemrate.com universal search (PSA row)"
+    },
+    {
+      "date": "2026-08-20",
+      "cardId": "swsh35-74",
+      "grader": "psa",
+      "pop10": 20709,
+      "pop9": 7547,
+      "popTotal": 29773,
+      "source": "gemrate.com universal search (PSA row)"
+    },
+    {
+      "date": "2026-08-20",
+      "cardId": "swsh35-79",
+      "grader": "psa",
+      "pop10": 18310,
+      "pop9": 7903,
+      "popTotal": 28997,
+      "source": "gemrate.com universal search (PSA row)"
+    },
+    {
+      "date": "2026-08-20",
+      "cardId": "swsh4-188",
+      "grader": "psa",
+      "pop10": 11978,
+      "pop9": 5504,
+      "popTotal": 19729,
+      "source": "gemrate.com universal search (PSA row)"
+    },
+    {
+      "date": "2026-08-20",
+      "cardId": "swsh45sv-SV107",
+      "grader": "psa",
+      "pop10": 36262,
+      "pop9": 9405,
+      "popTotal": 48477,
+      "source": "gemrate.com universal search (PSA row)"
+    },
+    {
+      "date": "2026-08-20",
+      "cardId": "swsh7-215",
+      "grader": "psa",
+      "pop10": 21465,
+      "pop9": 6408,
+      "popTotal": 30927,
+      "source": "gemrate.com universal search (PSA row)"
+    },
+    {
+      "date": "2026-08-20",
+      "cardId": "swsh7-218",
+      "grader": "psa",
+      "pop10": 14964,
+      "pop9": 4918,
+      "popTotal": 21967,
+      "source": "gemrate.com universal search (PSA row)"
+    },
+    {
+      "date": "2026-08-20",
+      "cardId": "swsh9tg-TG23",
+      "grader": "psa",
+      "pop10": 13824,
+      "pop9": 4365,
+      "popTotal": 19576,
+      "source": "gemrate.com universal search (PSA row)"
+    }
+  ]
 }

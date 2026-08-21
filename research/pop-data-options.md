@@ -1,5 +1,11 @@
 # Pop Report Data — Options & Ruling (Aug 18)
 
+**CORRECTION 2026-08-20:** psacard.com/pop now redirects to a Collectors
+sign-in wall — the "no account" claim below is stale. GemRate universal
+search is the working free front door (per-grader table carries the PSA
+row); first real snapshot seeded from it 2026-08-20 via scripts/ingest-pop.mjs.
+Full send-ready partner email now at research/gemrate-email-draft.md.
+
 **Free front doors (Tier 1, live now):** PSA psacard.com/pop (weekly
 updates, no account) · CGC census (free) · **GemRate universal search**
 (PSA+BGS+SGC+CGC unified, daily, free browse — also grading-VOLUME trends).
