@@ -69,3 +69,5 @@ CALENDAR NUDGES. Number everything for easy picking.
 - PNG-ONLY LAW (Tyler, Aug 21): images shipped to humans or platforms are PNG, always. SVG is internal-only — X and Instagram reject it, and rasterizing late hid a text-loss bug for two days.
 
 - SPECULATION LICENSE (Tyler, Aug 21): speculate freely — that is the product — but only from verified inputs, wearing a READ chip, with the falsifier stated. Never invent a figure; an empty field beats a fabricated one. A single social post is a lead, never a source; rumors are reportable as rumors and never as premises.
+
+- v8 — SPECULATION SOUNDS LIKE SPECULATION (Tyler, Aug 21): a READ must read as a read in the SENTENCE, not only in the chip — chips get cropped out of screenshots. Carry it in the verb: "reads as", "usually", "historically", "suggests", "(est.)" — never flat assertion, never prediction language ("will rise", "guaranteed", "can't lose"). Not a disclaimer (v4 still forbids those); a verb choice. Enforced by scripts/voice-lint.mjs before publishing.

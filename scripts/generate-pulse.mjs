@@ -442,3 +442,4 @@ await import("./mint-social-card.mjs");
 await import("./rasterize-cards.mjs");
 await import("./social-posts.mjs");
 await import("./post-bank.mjs");
+await import("./voice-lint.mjs");

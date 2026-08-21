@@ -460,11 +460,11 @@ for (const p of liveList) {
   if (Math.abs(dPct) < 15) continue;
   const lp = lastTwo[p.id]; const priceD = lp && lp.length === 2 && lp[0] ? Math.round((lp[1]/lp[0]-1)*1000)/10 : null;
   let read;
-  if (dPct > 0 && priceD != null && priceD < -0.5) read = "seller wave — consistent with a reprint hitting shelves, reprint rumors, or a large holder exiting";
-  else if (dPct > 0 && priceD != null && priceD > 0.5) read = "restock being absorbed — new copies arriving and getting bought";
-  else if (dPct > 0) read = "supply building — sellers stepping in ahead of demand";
-  else if (priceD != null && priceD > 0.5) read = "absorption — shelves draining while asks rise; demand-led, or a whale sweeping";
-  else read = "quiet drain — listings expiring or sellers stepping back";
+  if (dPct > 0 && priceD != null && priceD < -0.5) read = "reads as a seller wave — usually a reprint hitting shelves, reprint chatter, or a large holder stepping out";
+  else if (dPct > 0 && priceD != null && priceD > 0.5) read = "reads as a restock being absorbed — new copies arriving and typically getting bought as fast";
+  else if (dPct > 0) read = "reads as supply building — sellers usually stepping in ahead of demand";
+  else if (priceD != null && priceD > 0.5) read = "reads as absorption — shelves draining while asks rise, which historically means demand-led buying or a single large buyer";
+  else read = "reads as a quiet drain — likely listings expiring or sellers stepping back";
   const cat = recentCatalysts.find(c => (c.context||c.text||"").toLowerCase().includes((p.set||"").toLowerCase().slice(0,12)) && (p.set||"").length > 3);
   supplyShifts.push({ id: p.id, name: p.name, listings: ln[1], prev: ln[0], dPct, priceDPct: priceD, read,
     catalystMatch: cat ? `matches ${cat.kind||"catalyst"} logged ${cat.date}` : null, chip: "READ" });
