@@ -6,6 +6,9 @@ import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { HEAT_DEBUT, DEPTH_DEBUT, heatPlain, depthPlain } from "./lib/instruments.mjs";
+const SITE = process.env.CATCHEM_SITE || "app.catchemtcg.com";
+const METHODOLOGY_URL = `${SITE}/methodology.html`;
+
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => JSON.parse(await readFile(join(ROOT, p), "utf-8"));
 
@@ -49,7 +52,7 @@ async function mint(name, svg) {
 if (six) await mint("index", card({ label: "CATCH'EM SEALED INDEX", title: `${six.constituents} sealed products, one number`,
   hero: String(six.level), heroColor: "#36d399",
   sub: six.ddPct != null ? `${six.ddPct > 0 ? "▲" : "▼"} ${Math.abs(six.ddPct)}% vs yesterday · breadth ▲${six.breadth.up} ▼${six.breadth.down}` : `baseline 100 · breadth ▲${six.breadth.up} ▼${six.breadth.down}`,
-  why: `${six.constituents} boxes, one honest number. 100 was the starting line. Today: ${six.breadth.up} boxes raised their hand and said "I went up" — ${six.breadth.down} said "I went down." Full story: catchemtcg.com/methodology`, chip: "VERIFIED", wide: true }));
+  why: `${six.constituents} boxes, one honest number. 100 was the starting line. Today: ${six.breadth.up} boxes raised their hand and said "I went up" — ${six.breadth.down} said "I went down." Full story: ${METHODOLOGY_URL}`, chip: "VERIFIED", wide: true }));
 if (t3.sealed) { const r = t3.sealed; const pid = (sp.products.find(p => p.name === r.name) || {}).id;
   await mint("sealed", card({ label: "SEALED · DAILY WATCH", title: r.name, hero: `$${Math.round(r.ebay).toLocaleString("en-US")}`,
     heroColor: "#f4f5f8", sub: `eBay asks ${Math.abs(r.spreadPct)}% ${r.spreadPct > 0 ? "more" : "less"} than TCGplayer · ${r.listings} listings`,

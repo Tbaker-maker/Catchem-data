@@ -9,6 +9,9 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+const SITE = process.env.CATCHEM_SITE || "app.catchemtcg.com";
+const METHODOLOGY_URL = `${SITE}/methodology.html`;
+
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "utf-8")); } catch { return null; } };
 
@@ -52,7 +55,7 @@ if (six) {
       `${six.constituents} sealed products, each measured against its own baseline.`,
       `${six.constituents ? "All figures USD." : ""}`, "",
       read, "",
-      `Method's public — no black box: catchemtcg.com/methodology`, "",
+      `Method's public — no black box: ${METHODOLOGY_URL}`, "",
       invite(["What sealed product are you watching right now? \ud83d\udc47", "Anyone else checking listings before coffee, or just me? \u2615", "Bookmark it \u2014 tomorrow we see if today\u2019s read held. \ud83d\udccc"]),
     ].join("\n") };
 }
