@@ -65,3 +65,5 @@ CALENDAR NUDGES. Number everything for easy picking.
 - v7 — THE DIGEST LAW (Tyler, Aug 20): app surfaces are easily digested ALWAYS. Numbers over sentences; labels ≤2 words; one idea per card; every explanation collapses behind one tap (ⓘ → methodology anchors). Prose lives in the Pulse and methodology — the app is a glance, not a read.
 
 - USD LAW (Tyler, Aug 21): every public-facing figure — social posts, share cards, newsletter, creator copy — is USD, always. The app's CAD toggle is a display convenience for Canadian visitors only and never touches published content. Assume a USD-default audience.
+
+- PNG-ONLY LAW (Tyler, Aug 21): images shipped to humans or platforms are PNG, always. SVG is internal-only — X and Instagram reject it, and rasterizing late hid a text-loss bug for two days.
