@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-08-21T04:43:18.625Z",
+  "generatedAt": "2026-08-21T23:27:30.113Z",
   "method": "Cross-market ASK divergence: eBay ask median vs TCG-side ask-derived market (PPT). Two markets disagreeing on price is the signal. Baseline +5-15% is STRUCTURAL (RT-4 photo premium: eBay shows the item, TCG sealed rarely does). |spread| >= 15% flags; negative gaps read stronger (fighting the trust premium). Not sold data. TCG-side listing counts: provider exposes none for sealed - field carried as null, lights up if they ship it.",
   "counts": {
     "compared": 104,
-    "signals": 23,
+    "signals": 21,
     "skipped": 103
   },
   "rows": [
@@ -77,13 +77,14 @@
     },
     {
       "id": "pgo-etb",
+      "publishBlocked": true,
       "name": "Pokemon GO Elite Trainer Box",
       "ebayAskMedian": 240,
       "tcgMarket": 166.64,
       "ebayListings": 74,
       "tcgListings": null,
       "spreadPct": 44,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-21",
@@ -173,13 +174,14 @@
     },
     {
       "id": "swsh1-booster-box",
+      "publishBlocked": true,
       "name": "Sword & Shield Base Booster Box",
       "ebayAskMedian": 899.88,
       "tcgMarket": 694.29,
       "ebayListings": 7,
       "tcgListings": null,
       "spreadPct": 29.6,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-21",

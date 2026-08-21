@@ -416,6 +416,10 @@ const feed = {
 //    is in the daily run's git-add list, so this copy updates every CI run.
 //  - research/assets/pulse-feed.json — legacy path for app builds deployed
 //    before the FEED_URL switch; committed only by human sessions.
+for (const p of feed.products || []) {
+  const src = (sp.products||[]).find(x=>x.id===p.id);
+  if (src?.publishBlock) { p.held = true; p.heldReason = (src.qaReasons||[])[0] || "held pending re-verification"; }
+}
 const feedJson = JSON.stringify(feed) + "\n";
 await writeFile(join(ROOT,"research/pulse/pulse-feed.json"), feedJson);
 await writeFile(join(ROOT,"research/assets/pulse-feed.json"), feedJson);
@@ -453,3 +457,4 @@ await import("./social-posts.mjs");
 await import("./post-bank.mjs");
 await import("./build-corrections.mjs");
 await import("./voice-lint.mjs");
+await import("./publish-assert.mjs");

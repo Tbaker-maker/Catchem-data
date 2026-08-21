@@ -423,7 +423,8 @@ if (yRow) {
     let dPct = now && pick.price ? Math.round((now/pick.price-1)*1000)/10 : null;
     if (dPct != null && Math.abs(dPct) > 60 && !pick.id) dPct = null; // name-collision quarantine: no id + implausible swing = wrong card, publish nothing
     return { ...pick, now: now ?? null, dPct }; };
-  watchOutcomes = { date: yRow.date, sealed: res(yRow.sealed), raw: res(yRow.raw) };
+  const notBlocked = pk => pk && !blockedIds.has(pk.id ?? "") && ![...blockedIds].some(id => (sp.products||[]).find(p=>p.id===id)?.name === pk.name);
+  watchOutcomes = { date: yRow.date, sealed: notBlocked(yRow.sealed) ? res(yRow.sealed) : null, raw: notBlocked(yRow.raw) ? res(yRow.raw) : null };
 }
 let ph = { note: "sealed-premium history — merge-by-date", entries: [] };
 try { ph = await J("research/pulse/premium-history.json"); } catch {}
@@ -490,7 +491,7 @@ const out = {
   cohortCompare,
   topicHits,
   dailyThree: (() => {
-    const sealedPick = (div.rows||[]).filter(r=>r.signal).sort((a,b)=>Math.abs(b.spreadPct)-Math.abs(a.spreadPct))[0] || null;
+    const sealedPick = (div.rows||[]).filter(r=>r.signal && !blockedIds.has(r.id)).sort((a,b)=>Math.abs(b.spreadPct)-Math.abs(a.spreadPct))[0] || null;
     let gradedPick = null;
     {
       const g = ((enr&&enr.cards)||[])
