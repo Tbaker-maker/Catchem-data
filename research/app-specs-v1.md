@@ -237,3 +237,25 @@ our honesty doctrine); Reply Radar (drafts-for-human) is the safe form.
 RULES: no hype adjectives · every % labeled · "not a call" where a
 number could read as advice · methodology linked · day counter never
 resets (SERIES_START constant, edit once).
+
+## §17 · POST STUDIO — the creator post generator (Tyler, Aug 21)
+THESIS: a creator's hardest daily question is "what do I post?" We wake
+up every morning with new TRUE material. Story Kits said what's
+happening; POST STUDIO hands them finished posts.
+ENGINE: scripts/post-bank.mjs → research/pulse/post-bank.json, six
+angles daily (index read · pack math · two-market gap · lifecycle ·
+shelf forensics · track record), each rendered for FOUR formats:
+X post · YouTube title · YouTube hook · short-form script. Every idea
+carries its chip (VERIFIED/READ), its card, and a "why this works" note
+— we teach the craft, not just hand over copy.
+APP SURFACE (/studio/posts): angle cards → tap → platform tabs → copy
+button per format → card download. Voice selector (Analyst/Casual/
+Energetic) changes phrasing, never numbers. "Regenerate tomorrow"
+implied — the bank refreshes with the 04:00 run.
+DISTRIBUTION DEAL: free for everyone; every card carries ⚡ Catch'em +
+catchemtcg.com. Creators get their day back; we get our mark in every
+thumbnail. Pro tier later (want-not-need): custom watermark/branding,
+scheduled queues, series day-counters — never the truth itself.
+LATER: YouTube expansion (full outline + chapter list + thumbnail text
+suggestions), per-creator series counters, "your audience asked X" from
+Discord questions. NEVER: automated replies to strangers (§16 law).
