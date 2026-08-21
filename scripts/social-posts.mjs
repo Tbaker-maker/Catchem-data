@@ -24,6 +24,9 @@ const pw = (der.printWatch ?? [])[0], ss = (der.supplyShifts ?? [])[0];
 const wo = der.watchOutcomes, roh = der.ripOrHold;
 const prod = id => (sp.products || []).find(p => p.id === id) || {};
 const money = n => "$" + Number(n).toLocaleString("en-US", { maximumFractionDigits: 2 });
+const MSRP_PACK = 4.49;
+const msrpX = pp => pp ? Math.round(pp / MSRP_PACK * 10) / 10 : null;
+const invite = arr => pick(arr, 3);
 
 // Rotating openers keep the skeleton fixed and the surface fresh.
 const pick = (arr, salt = 0) => arr[(dayNum + salt) % arr.length];
@@ -47,7 +50,8 @@ if (six) {
       `Catch'em Sealed Index: ${six.level} ${dir === "flat" ? "(flat)" : `${dir} ${Math.abs(six.ddPct)}%`}`,
       `${six.constituents} sealed products, each measured against its own baseline.`, "",
       read, "",
-      `Method's public — no black box: catchemtcg.com/methodology`,
+      `Method's public — no black box: catchemtcg.com/methodology`, "",
+      invite(["What sealed product are you watching right now? \ud83d\udc47", "Anyone else checking listings before coffee, or just me? \u2615", "Bookmark it \u2014 tomorrow we see if today\u2019s read held. \ud83d\udccc"]),
     ].join("\n") };
 }
 
@@ -58,12 +62,13 @@ let midday = null;
   const lens = dayNum % 4;
   if (lens === 0 && t3.sealed) {
     const p = prod((sp.products.find(x => x.name === t3.sealed.name) || {}).id);
-    midday = { lens: "spread", card: "research/pulse/cards/latest-sealed.svg", text: [
+    midday = { lens: "spread", card: "research/pulse/cards/latest-social.svg", text: [
       `Day ${dayNum} of showing one sealed product's real numbers.`, "",
       `${t3.sealed.name} — ${money(t3.sealed.ebay)}`, "",
       `eBay asks ${Math.abs(t3.sealed.spreadPct)}% ${t3.sealed.spreadPct > 0 ? "more" : "less"} than TCGplayer right now, across ${t3.sealed.listings} listings.`,
       p.priceFloorClean ? `Clean floor sits at ${money(p.priceFloorClean)}.` : "", "",
-      `Not a call. Just the shelf, counted this morning.`,
+      `Not a call. Just the shelf, counted this morning.`, "",
+      invite(["Fair price, or would you wait? \ud83e\udd14", "Buying, holding, or scrolling past? \ud83d\udc47", "If you own one \u2014 would you sell at this number?"]),
     ].filter(Boolean).join("\n") };
   } else if (lens === 1 && (pm.priciest || []).length) {
     const hi = pm.priciest[0], lo = (pm.cheapest || [])[0];
@@ -79,7 +84,8 @@ let midday = null;
       `Day ${dayNum} of watching the print window close.`, "",
       `${pw.name || pw.setId} — roughly ${pw.daysLeft ?? "?"} days of print left (estimated from a 30-month model, not an announcement).`, "",
       `When the presses stop, the shelf stops refilling. That's the whole mechanic.`, "",
-      `Countdowns for every set: catchemtcg.com`,
+      `Countdowns for every set: catchemtcg.com`, "",
+      invite(["Grabbing one before the window shuts, or letting it ride? \u23f3", "Which set do you wish you\u2019d bought more of before it dried up? \ud83d\udc47"]),
     ].join("\n") };
   } else if (ss) {
     midday = { lens: "supply", card: "research/pulse/cards/latest-index.svg", text: [

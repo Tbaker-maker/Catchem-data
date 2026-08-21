@@ -437,4 +437,5 @@ console.log("✓ Pulse HTML edition written (dated + stable path)");
 console.log(`✓ Morning Pulse written: research/pulse/${today}.md`);
 
 await import("./mint-cards.mjs");
+await import("./mint-social-card.mjs");
 await import("./social-posts.mjs");
