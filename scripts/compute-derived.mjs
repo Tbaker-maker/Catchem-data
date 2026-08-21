@@ -175,7 +175,7 @@ function lifecycleFor(p){
   let phase, tag;
   if (months <= 12) { phase = "active print"; tag = "🖨"; }
   else if (months <= 30) { phase = "late print — reprint waves typical"; tag = "🖨⏳"; }
-  else { phase = "likely EOL — supply fixed (est.)"; tag = "📦🔒"; }
+  else { phase = "reads as likely EOL — supply looks fixed on the model (est.)"; tag = "📦🔒"; }
   const mark = setMarks[p.setId] ?? null;
   const legal = mark ? LEGAL_MARKS.includes(mark) : null;
   return { setId: p.setId, ageMonths: months, phase, tag, chip: "READ",
@@ -311,12 +311,12 @@ const eraIndexes = Object.entries(eraBuckets).filter(([,b])=>b.n>=3).map(([era,b
   const idx100 = baseRow ? Math.round(level / baseRow.level * 1000)/10 : 100.0;
   const offTcg = era === "Sun & Moon" || era === "XY" || era === "Vintage & other";
   let read;
-  if (offTcg) read = "vintage-class era — trades on eBay, card shows, and collector groups; we read eBay-native stats only (TCG comparison gated off, RT-4a)";
-  else if (avgGap == null) read = "cross-market read pending";
-  else if (avgGap >= 15) read = "asking prices running hot vs TCGplayer — demand-side pressure well past the photo baseline";
-  else if (avgGap >= 6) read = "modest ask-side pressure — inside the normal photo-trust range";
-  else if (avgGap >= 0) read = "markets aligned — little pressure either way";
-  else read = "eBay asking UNDER TCGplayer — unusual; sellers motivated across this era";
+  if (offTcg) read = "vintage-class era — this market historically trades on eBay, card shows, and collector groups, so we read eBay-native stats only and gate the cross-venue comparison (RT-4a)";
+  else if (avgGap == null) read = "cross-market read still pending — not enough matched data yet to say anything";
+  else if (avgGap >= 15) read = "reads hot — asks sit well past the usual photo premium, which typically points to demand-side pressure rather than seller optimism";
+  else if (avgGap >= 6) read = "reads normal — the gap sits inside the range photos usually explain, so nothing here is signalling on its own";
+  else if (avgGap >= 0) read = "reads aligned — the two venues typically drift a little, and right now they barely do";
+  else read = "reads soft — eBay asks sitting under TCGplayer usually means motivated sellers across the era, which is worth watching rather than acting on";
   const bx = (eraBoxes[era]||[]).sort((x,y)=>x-y);
   const boxMedian = bx.length ? bx[Math.floor(bx.length/2)] : null;
   return { era, products: b.n, level, boxMedian, index: idx100, avgGapPct: offTcg ? null : avgGap, venueClass: offTcg ? "ebay-native" : "cross-market", totalListings: b.listings, listingsPerProduct: lpp, read, chip: "READ" };
@@ -521,7 +521,7 @@ const out = {
         const L2 = Object.values(lifecycle).find(l=>l.setId && sp.products.some(pp=>pp.setId===l.setId && pp.set===pick.setName));
         const lifeBit = L2 ? ` Its set is ${L2.ageMonths} months old${L2.standardLegal?" and still Standard-legal":""}.` : "";
         rawPick = { name: pick.name, set: pick.setName, price: pick.priceMarket, chip:"READ", reason: why,
-          explain: `This is the single collectors hunt hardest from ${pick.setName} \u2014 the card the whole set gets priced around. Market sits at $${Math.round(pick.priceMarket).toLocaleString("en-US")} today.${lifeBit}` };
+          explain: `Widely treated as the card collectors hunt hardest from ${pick.setName} \u2014 the card the whole set gets priced around. Market sits at $${Math.round(pick.priceMarket).toLocaleString("en-US")} today.${lifeBit}` };
       }
     }
     return {

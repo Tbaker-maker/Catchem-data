@@ -26,6 +26,9 @@ const HEDGES = [
   /\bsuggests?\b/i, /\bconsistent\s+with\b/i, /\bestimat(e|ed|ion)\b/i,
   /\bour\s+(read|take|view)\b/i, /\bappears?\b/i, /\blikely\b/i,
   /\bmay\b/i, /\bcould\b/i, /\bpattern\b/i, /\bcandidate/i, /\bwe\s+think\b/i,
+  /\btypical\b/i, /\busual(ly)?\b/i, /\btends?\s+to\b/i, /\bgenerally\b/i,
+  /\boften\b/i, /\bwidely\b/i, /\bpoints?\s+to\b/i, /\bworth\s+watching\b/i,
+  /\bhistorical(ly)?\b/i, /\bso\s+far\b/i, /\bmodel\b/i, /\bsuspected\b/i,
   /\(est\.?\)/i, /\bnot\s+a\s+call\b/i,
 ];
 
