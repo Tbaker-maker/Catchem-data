@@ -155,7 +155,7 @@ const chaseRows = chases.map(c=>`<div class="row"><span style="display:flex;alig
 const radarRows = upcoming.map(r=>`<div class="row"><span>${r.name||r.title}</span><span class="mono">${r.date||r.releaseDate}</span></div>`).join("");
 const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Sora:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <title>Morning Pulse — ${today} · Catch'em</title><style>
-:root{--bg:#0b0d14;--panel:#141824;--line:rgba(255,255,255,.07);--txt:#d8dde8;--dim:#8a93a8;--gold:#ffb84d;--green:#36d399}
+:root{--bg:#0b0d14;--panel:#141824;--line:rgba(255,255,255,.07);--txt:#f4f5f8;--dim:#8a93a8;--gold:#ffb84d;--green:#36d399}
 *{box-sizing:border-box;margin:0}body{background:var(--bg);color:var(--txt);font:15px/1.55 'Sora',system-ui,sans-serif;max-width:680px;margin:0 auto;padding:36px 20px 60px}
 .kicker{font:11px 'JetBrains Mono',monospace;letter-spacing:.14em;color:var(--gold)}
 h1{font-size:34px;letter-spacing:-.5px;margin:6px 0 2px}h1 span{color:var(--dim);font-weight:400}

@@ -72,8 +72,8 @@ const M = `<!doctype html><meta charset="utf-8"><meta name="viewport" content="w
 <title>Catch'em — Methodology</title><style>
 body{background:#0b0d14;color:#f4f5f8;font:16px/1.65 'Sora',system-ui,sans-serif;margin:0;padding:40px 18px;max-width:760px;margin-inline:auto}
 h1{font-family:'Syne';font-size:34px;margin:0 0 6px}h2{font-family:'Syne';font-size:21px;margin:34px 0 8px;color:#36d399}
-p{color:#c7cbd6;margin:8px 0}.dim{color:#8a93a8;font-size:14px}b.mono{font-family:'JetBrains Mono'}
-.law{background:#141824;border:1px solid rgba(255,255,255,.07);border-left:3px solid #ffb84d;border-radius:10px;padding:12px 16px;margin:14px 0;font-size:14.5px;color:#c7cbd6}
+p{color:#f4f5f8;margin:8px 0}.dim{color:#8a93a8;font-size:14px}b.mono{font-family:'JetBrains Mono'}
+.law{background:#141824;border:1px solid rgba(255,255,255,.07);border-left:3px solid #ffb84d;border-radius:10px;padding:12px 16px;margin:14px 0;font-size:14.5px;color:#f4f5f8}
 </style>
 <h1>How our numbers are made</h1><p class="dim">Every figure on Catch'em carries a chip — <b style="color:#36d399">VERIFIED</b> (measured from listings) or <b>READ</b> (our interpretation, always with a stated way to prove it wrong). This page is the receipts. Updated ${today}.</p>
 <h2 id="index">The Catch'em Sealed Index</h2>

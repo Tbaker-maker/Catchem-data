@@ -19,7 +19,7 @@ export function socialCard({ img, title, hero, heroLabel, stats = [], hook, chip
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" font-family="Sora,system-ui,sans-serif">
 <defs><clipPath id="ph"><rect x="60" y="60" width="440" height="555" rx="22"/></clipPath></defs>
 <rect width="${W}" height="${H}" fill="#070910"/>
-<rect x="24" y="24" width="${W - 48}" height="${H - 48}" rx="30" fill="#0f121b" stroke="rgba(255,255,255,0.06)"/>
+<rect x="24" y="24" width="${W - 48}" height="${H - 48}" rx="30" fill="#0b0d14" stroke="rgba(255,255,255,0.06)"/>
 <rect x="60" y="60" width="440" height="555" rx="22" fill="#141824"/>
 ${img ? `<image href="${esc(img)}" x="60" y="60" width="440" height="555" preserveAspectRatio="xMidYMid slice" clip-path="url(#ph)"/>` : ""}
 <rect x="60" y="60" width="440" height="555" rx="22" fill="none" stroke="${accent}" stroke-opacity="0.35" stroke-width="2"/>
