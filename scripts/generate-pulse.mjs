@@ -458,4 +458,5 @@ await import("./social-posts.mjs");
 await import("./post-bank.mjs");
 await import("./build-corrections.mjs");
 await import("./voice-lint.mjs");
+await import("./jargon-lint.mjs");
 await import("./publish-assert.mjs");

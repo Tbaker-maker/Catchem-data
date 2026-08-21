@@ -72,6 +72,7 @@ const MUST_RUN = [
   { script: "build-corrections.mjs", why: "keeps the public corrections page current" },
   { script: "voice-lint.mjs", why: "blocks prediction language" },
   { script: "rasterize-cards.mjs", why: "PNG-only law" },
+  { script: "jargon-lint.mjs", why: "blocks unexplained jargon and undefined named constructs" },
   { script: "publish-assert.mjs", why: "final artifact proof — must be LAST" },
 ];
 
