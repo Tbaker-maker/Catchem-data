@@ -213,6 +213,7 @@ function wordBoundaryTest(term, titleLower) {
 // cost). Missing shipping data → item price alone, counted in shipUnknownCount
 // (transparency, not silent).
 function deliveredPriceOf(item) {
+  if (item?.price?.currency && item.price.currency !== "USD") return null; // currency guard (RT: USD-native law)
   const base = parseFloat(item.price?.value);
   if (isNaN(base)) return { delivered: NaN, shipKnown: false };
   const costs = (item.shippingOptions || [])

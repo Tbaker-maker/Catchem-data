@@ -470,6 +470,10 @@ for (const p of liveList) {
 }
 supplyShifts.sort((a,b) => Math.abs(b.dPct) - Math.abs(a.dPct));
 
+let fx = null;
+try { const r = await fetch("https://api.frankfurter.app/latest?from=USD&to=CAD");
+  const j = await r.json(); fx = { usdcad: j.rates?.CAD ?? null, date: j.date ?? null, source: "frankfurter.app" };
+} catch { fx = null; }
 const out = {
   generatedAt: new Date().toISOString(),
   method: "Pack Math: ask median / era-aware pack count (arithmetic, no estimation; variable-count products excluded by name). Narrative: latest agent digest cross-referenced against tracked sets; 'quiet movers' = spread signal with zero digest mention.",
@@ -481,7 +485,7 @@ const out = {
   lifecycle, rotationContext,
   printWatch, tightening, rotationCohorts,
   eraIndexes,
-  sealedIndex, rawIndex, gradedIndex, netProceeds, subtypeIndexes, watchOutcomes, supplyShifts: supplyShifts.slice(0,8), ripOrHold, notification,
+  sealedIndex, rawIndex, gradedIndex, netProceeds, fx, subtypeIndexes, watchOutcomes, supplyShifts: supplyShifts.slice(0,8), ripOrHold, notification,
   cohortCompare,
   topicHits,
   dailyThree: (() => {

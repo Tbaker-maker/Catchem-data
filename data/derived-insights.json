@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-20T21:48:27.989Z",
+  "generatedAt": "2026-08-21T01:33:44.910Z",
   "method": "Pack Math: ask median / era-aware pack count (arithmetic, no estimation; variable-count products excluded by name). Narrative: latest agent digest cross-referenced against tracked sets; 'quiet movers' = spread signal with zero digest mention.",
   "digestUsed": "2026-08-20.md",
   "packMath": {
@@ -1709,7 +1709,7 @@
     },
     "swsh45": {
       "setId": "swsh45",
-      "ageMonths": 65,
+      "ageMonths": 66,
       "phase": "likely EOL — supply fixed (est.)",
       "tag": "📦🔒",
       "chip": "READ",
@@ -1742,7 +1742,7 @@
     },
     "swsh12pt5": {
       "setId": "swsh12pt5",
-      "ageMonths": 42,
+      "ageMonths": 43,
       "phase": "likely EOL — supply fixed (est.)",
       "tag": "📦🔒",
       "chip": "READ",
@@ -1942,6 +1942,23 @@
       "supplyTier": "mid"
     },
     {
+      "setId": "swsh45",
+      "set": "Shining Fates",
+      "ageMonths": 66,
+      "phase": "likely EOL — supply fixed (est.)",
+      "mark": null,
+      "standardLegal": null,
+      "legalTag": "pre-mark era",
+      "supply": 141,
+      "eol": {
+        "status": "outOfPrint",
+        "monthsOutEst": 36
+      },
+      "reprintSignal": null,
+      "chip": "READ",
+      "supplyTier": "mid"
+    },
+    {
       "setId": "swsh5",
       "set": "Battle Styles",
       "ageMonths": 65,
@@ -1950,23 +1967,6 @@
       "standardLegal": false,
       "legalTag": "E · rotated",
       "supply": 226,
-      "eol": {
-        "status": "outOfPrint",
-        "monthsOutEst": 35
-      },
-      "reprintSignal": null,
-      "chip": "READ",
-      "supplyTier": "mid"
-    },
-    {
-      "setId": "swsh45",
-      "set": "Shining Fates",
-      "ageMonths": 65,
-      "phase": "likely EOL — supply fixed (est.)",
-      "mark": null,
-      "standardLegal": null,
-      "legalTag": "pre-mark era",
-      "supply": 141,
       "eol": {
         "status": "outOfPrint",
         "monthsOutEst": 35
@@ -2131,7 +2131,7 @@
     {
       "setId": "swsh12pt5",
       "set": "Crown Zenith",
-      "ageMonths": 42,
+      "ageMonths": 43,
       "phase": "likely EOL — supply fixed (est.)",
       "mark": "F",
       "standardLegal": false,
@@ -2139,7 +2139,7 @@
       "supply": 253,
       "eol": {
         "status": "outOfPrint",
-        "monthsOutEst": 12
+        "monthsOutEst": 13
       },
       "reprintSignal": null,
       "chip": "READ",
@@ -2581,15 +2581,15 @@
       "Champion's Path",
       "Vivid Voltage"
     ],
+    "pre-mark": [
+      "Shining Fates"
+    ],
     "E": [
       "Battle Styles",
       "Chilling Reign",
       "Evolving Skies",
       "Celebrations",
       "Fusion Strike"
-    ],
-    "pre-mark": [
-      "Shining Fates"
     ],
     "F": [
       "Brilliant Stars",
@@ -3049,6 +3049,7 @@
       "sv6pt5-bb": 54.34
     }
   },
+  "fx": null,
   "subtypeIndexes": [
     {
       "subtype": "etb",
@@ -3077,20 +3078,22 @@
     }
   ],
   "watchOutcomes": {
-    "date": "2026-08-19",
+    "date": "2026-08-20",
     "sealed": {
       "kind": "sealed",
-      "name": "Prismatic Evolutions Surprise Box",
-      "price": 104.32,
-      "now": 90.66,
-      "dPct": -13.1
+      "name": "Pokemon GO Elite Trainer Box",
+      "price": 239.22,
+      "id": "pgo-etb",
+      "now": 239.22,
+      "dPct": 0
     },
     "raw": {
       "kind": "raw",
       "name": "Umbreon VMAX",
       "price": 2244.47,
-      "now": 24.48,
-      "dPct": null
+      "id": "swsh7-215",
+      "now": 2244.47,
+      "dPct": 0
     }
   },
   "supplyShifts": [
@@ -3107,15 +3110,15 @@
     }
   ],
   "ripOrHold": {
-    "id": "sv7-booster-box",
-    "name": "Stellar Crown Booster Box",
-    "price": 370.97,
-    "question": "Stellar Crown Booster Box at $370.97 — rip it or hold it sealed?",
+    "id": "sv3-booster-box",
+    "name": "Obsidian Flames Booster Box",
+    "price": 423.98,
+    "question": "Obsidian Flames Booster Box at $423.98 — rip it or hold it sealed?",
     "note": "one-tap daily vote; results revisited next morning"
   },
   "notification": {
     "title": "Catchem Sealed Index 99.9 (0%)",
-    "body": "Today: Stellar Crown Booster Box — eBay asks 16% more than TCGplayer."
+    "body": "Today: Obsidian Flames Booster Box — eBay asks 15.1% more than TCGplayer."
   },
   "cohortCompare": {
     "specialty": {
