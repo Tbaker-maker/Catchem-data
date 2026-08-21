@@ -215,3 +215,25 @@ IA v2: bottom nav → ⚡Today · 🧰 Tools · ⭐ Watch · ▦ Board · (Compa
 Check/PackMath/PrintWatch live INSIDE Tools). Studio stays routed.
 GAPS THIS EXPOSED: pack-math and print-watch had engines but no app
 display — utilities the machine computes that humans never saw.
+
+## §16 · THE STREAK SERIES — daily social posts (Tyler, Aug 21)
+MODEL: the "Day N of…" format — consistent skeleton, different content
+daily. Ours differs by DATA, not by randomness: the machine mints new
+true material every 04:00 run. scripts/social-posts.mjs writes
+research/pulse/social-queue.json each morning.
+SLOTS (start with ONE, grow to three):
+1. MORNING 07:00 — THE INDEX SERIES (flagship). "Day N of tracking every
+   sealed Pokémon product so you don't have to" + index level, breadth
+   read, methodology link, index share card. This is the habit play:
+   repeat until people check our account FOR the number.
+2. MIDDAY 12:30 — ONE PRODUCT, ONE HONEST NUMBER. Rotates lens on a
+   4-day cycle: spread → pack math → print watch → supply shift. Same
+   shape every day, never the same content.
+3. EVENING 18:00 — RIP OR HOLD + track record → funnels to Discord.
+POSTING: human posts from phone (10s) — X API Basic is ~$100/mo and not
+worth it until the habit proves out. Automation is a later upgrade, not
+a prerequisite. NEVER automate replies to strangers (X enforcement +
+our honesty doctrine); Reply Radar (drafts-for-human) is the safe form.
+RULES: no hype adjectives · every % labeled · "not a call" where a
+number could read as advice · methodology linked · day counter never
+resets (SERIES_START constant, edit once).
