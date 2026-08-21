@@ -48,7 +48,7 @@ if (six) {
     `Day ${dayNum} of posting the sealed market's temperature, every morning.`,
     `Day ${dayNum}. One number for the whole sealed market:`,
   ]);
-  morning = { slot: "morning", suggestedTime: "07:00 local", card: "research/pulse/cards/latest-index.svg",
+  morning = { slot: "morning", suggestedTime: "07:00 local", card: "research/pulse/cards/latest-index.png",
     text: [
       opener, "",
       `Catch'em Sealed Index: ${six.level} ${dir === "flat" ? "(flat)" : `${dir} ${Math.abs(six.ddPct)}%`}`,
@@ -67,7 +67,7 @@ let midday = null;
   const lens = dayNum % 4;
   if (lens === 0 && t3.sealed) {
     const p = prod((sp.products.find(x => x.name === t3.sealed.name) || {}).id);
-    midday = { lens: "spread", card: "research/pulse/cards/latest-social.svg", text: [
+    midday = { lens: "spread", card: "research/pulse/cards/latest-social.png", text: [
       `Day ${dayNum} of showing one sealed product's real numbers.`, "",
       `${t3.sealed.name} — ${money(t3.sealed.ebay)}`, "",
       `eBay asks ${Math.abs(t3.sealed.spreadPct)}% ${t3.sealed.spreadPct > 0 ? "more" : "less"} than TCGplayer right now, across ${t3.sealed.listings} listings.`,
@@ -77,7 +77,7 @@ let midday = null;
     ].filter(Boolean).join("\n") };
   } else if (lens === 1 && (pm.priciest || []).length) {
     const hi = pm.priciest[0], lo = (pm.cheapest || [])[0];
-    midday = { lens: "packmath", card: "research/pulse/cards/latest-index.svg", text: [
+    midday = { lens: "packmath", card: "research/pulse/cards/latest-index.png", text: [
       `Day ${dayNum} of pack math nobody shows you.`, "",
       `Most expensive rip today: ${prod(hi.id).name || hi.id} — ${money(hi.perPack)} per pack.`,
       lo ? `Cheapest: ${prod(lo.id).name || lo.id} — ${money(lo.perPack)} per pack.` : "", "",
@@ -85,7 +85,7 @@ let midday = null;
       `Every box we track, per-pack: catchemtcg.com`,
     ].filter(Boolean).join("\n") };
   } else if (lens === 2 && pw) {
-    midday = { lens: "printwatch", card: "research/pulse/cards/latest-index.svg", text: [
+    midday = { lens: "printwatch", card: "research/pulse/cards/latest-index.png", text: [
       `Day ${dayNum} of watching the print window close.`, "",
       `${pw.name || pw.setId} — roughly ${pw.daysLeft ?? "?"} days of print left (estimated from a 30-month model, not an announcement).`, "",
       `When the presses stop, the shelf stops refilling. That's the whole mechanic.`, "",
@@ -93,7 +93,7 @@ let midday = null;
       invite(["Grabbing one before the window shuts, or letting it ride? \u23f3", "Which set do you wish you\u2019d bought more of before it dried up? \ud83d\udc47"]),
     ].join("\n") };
   } else if (ss) {
-    midday = { lens: "supply", card: "research/pulse/cards/latest-index.svg", text: [
+    midday = { lens: "supply", card: "research/pulse/cards/latest-index.png", text: [
       `Day ${dayNum} of counting shelves.`, "",
       `${ss.name}: ${ss.prev} → ${ss.listings} listings (${ss.dPct > 0 ? "+" : ""}${ss.dPct}%)${ss.priceDPct != null ? `, price ${ss.priceDPct > 0 ? "+" : ""}${ss.priceDPct}%` : ""}.`, "",
       `${ss.read.charAt(0).toUpperCase() + ss.read.slice(1)}.`, "",

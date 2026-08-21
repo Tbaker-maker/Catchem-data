@@ -6,6 +6,27 @@ import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { HEAT_DEBUT, DEPTH_DEBUT, heatPlain, depthPlain } from "./lib/instruments.mjs";
+
+// wrapText — rasterizer-safe line breaking. foreignObject is NOT supported
+// by SVG rasterizers (resvg/librsvg silently drop it), which cost us a
+// card's title and hook on the first PNG export. Pure <text>/<tspan> only.
+function wrapText(str, { x, y, width, size, fill, weight = 400, lineHeight = 1.3, maxLines = 3 }) {
+  const words = String(str || "").split(/\s+/).filter(Boolean);
+  const charW = size * 0.54; // Sora average advance, empirically close enough
+  const perLine = Math.max(8, Math.floor(width / charW));
+  const lines = []; let cur = "";
+  for (const w of words) {
+    if ((cur + " " + w).trim().length <= perLine) cur = (cur + " " + w).trim();
+    else { if (cur) lines.push(cur); cur = w; }
+    if (lines.length === maxLines) break;
+  }
+  if (cur && lines.length < maxLines) lines.push(cur);
+  if (!lines.length) return "";
+  const esc2 = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  return `<text x="${x}" y="${y}" fill="${fill}" font-size="${size}" font-weight="${weight}">` +
+    lines.map((l, i) => `<tspan x="${x}" dy="${i === 0 ? 0 : size * lineHeight}">${esc2(l)}</tspan>`).join("") + `</text>`;
+}
+
 const SITE = process.env.CATCHEM_SITE || "app.catchemtcg.com";
 const METHODOLOGY_URL = `${SITE}/methodology.html`;
 
@@ -34,7 +55,7 @@ ${img ? `<image href="${esc(img)}" x="72" y="120" width="${wide ? 320 : 300}" he
 <text x="430" y="205" fill="#f4f5f8" font-size="44" font-weight="700">${esc(title)}</text>
 <text x="430" y="330" fill="${heroColor}" font-size="104" font-weight="800" font-family="JetBrains Mono,monospace">${esc(hero)}</text>
 <text x="430" y="392" fill="#8a93a8" font-size="30">${esc(sub)}</text>
-<foreignObject x="430" y="420" width="${W - 520}" height="150"><div xmlns="http://www.w3.org/1999/xhtml" style="color:#8a93a8;font-size:26px;line-height:1.5;font-family:Sora,system-ui,sans-serif">${esc(why)}</div></foreignObject>
+${wrapText(why, { x: 430, y: 452, width: W - 520, size: 25, fill: "#8a93a8", weight: 400, maxLines: 3 })}
 <text x="72" y="${H - 66}" fill="#36d399" font-size="30" font-weight="800">⚡ Catch'em</text>
 <text x="${W - 90}" y="${H - 66}" text-anchor="end" fill="#5c637a" font-size="24" font-family="JetBrains Mono,monospace">${today} · USD · catchemtcg.com</text>
 </svg>`;

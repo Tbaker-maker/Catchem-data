@@ -46,7 +46,7 @@ if (six) {
       youtube_title: `The Sealed Pokémon Market Right Now (${six.constituents} Products Tracked)`,
       youtube_hook: `One number tells you how the whole sealed market is doing — here's today's, and what moved underneath it.`,
       short_script: `Sealed index today: ${six.level}. That's ${six.constituents} products, each measured against its own baseline. ${b.up} went up, ${b.down} went down. Here's the one that surprised me…`,
-    }, card: "research/pulse/cards/latest-index.svg", chip: "VERIFIED" });
+    }, card: "research/pulse/cards/latest-index.png", chip: "VERIFIED" });
 }
 
 // 2 · THE PACK-MATH SHOCK (the most shareable lens)
@@ -61,7 +61,7 @@ if ((pm.priciest || []).length && (pm.cheapest || []).length) {
       youtube_title: `The Most Expensive Pokémon Pack You Can Buy Right Now (${$(hi.perPack)} EACH)`,
       youtube_hook: `Every sealed box has a hidden per-pack price. Some are ${mult}× retail. Let's do the math on all of them.`,
       short_script: `This box works out to ${$(hi.perPack)} per pack. Retail is $4.49. That's ${mult} times. Now compare it to ${loN} at ${$(lo.perPack)}…`,
-    }, card: "research/pulse/cards/latest-social.svg", chip: "VERIFIED" });
+    }, card: "research/pulse/cards/latest-social.png", chip: "VERIFIED" });
 }
 
 // 3 · THE TWO-MARKET GAP (built-in debate)
@@ -74,7 +74,7 @@ if (t3.sealed && t3.sealed.spreadPct != null) {
       youtube_title: `Why This Pokémon Box Costs ${Math.abs(s.spreadPct)}% More On eBay`,
       youtube_hook: `Same sealed product, two marketplaces, ${Math.abs(s.spreadPct)}% apart. There's a real reason — and it's not scalpers.`,
       short_script: `${s.name}. eBay wants ${$(s.ebay)}. TCGplayer says ${$(s.tcg)}. Same box. Here's why photos change the price…`,
-    }, card: "research/pulse/cards/latest-social.svg", chip: "VERIFIED" });
+    }, card: "research/pulse/cards/latest-social.png", chip: "VERIFIED" });
 }
 
 // 4 · LIFECYCLE (where a set sits in its life — urgency, honestly labeled)
@@ -88,7 +88,7 @@ if (t3.sealed && t3.sealed.spreadPct != null) {
       youtube_title: `${inPrint.set}: Where This Set Actually Sits Right Now`,
       youtube_hook: `Print windows close quietly — no announcement. Here's how to read a set's age, phase, and legality to see it coming.`,
       short_script: `${inPrint.set} is ${inPrint.ageMonths} months old and ${inPrint.phase}. Here's what that historically does to supply…`,
-    }, card: "research/pulse/cards/latest-index.svg", chip: "READ" });
+    }, card: "research/pulse/cards/latest-index.png", chip: "READ" });
 }
 
 // 5 · SHELF FORENSICS (the detective angle)
@@ -100,7 +100,7 @@ if (ss) {
       youtube_title: `Reading Pokémon Supply Like A Pro (Shelf Counts Explained)`,
       youtube_hook: `You can't see sold data — but you CAN count the shelf. Here's what listing swings actually tell you.`,
       short_script: `Listings on this jumped ${Math.abs(ss.dPct)}% overnight. That usually means one of three things…`,
-    }, card: "research/pulse/cards/latest-index.svg", chip: "READ" });
+    }, card: "research/pulse/cards/latest-index.png", chip: "READ" });
 }
 
 // 6 · THE TRACK RECORD (trust-building, unique to us)

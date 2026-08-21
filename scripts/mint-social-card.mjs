@@ -4,6 +4,27 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+
+// wrapText — rasterizer-safe line breaking. foreignObject is NOT supported
+// by SVG rasterizers (resvg/librsvg silently drop it), which cost us a
+// card's title and hook on the first PNG export. Pure <text>/<tspan> only.
+function wrapText(str, { x, y, width, size, fill, weight = 400, lineHeight = 1.3, maxLines = 3 }) {
+  const words = String(str || "").split(/\s+/).filter(Boolean);
+  const charW = size * 0.54; // Sora average advance, empirically close enough
+  const perLine = Math.max(8, Math.floor(width / charW));
+  const lines = []; let cur = "";
+  for (const w of words) {
+    if ((cur + " " + w).trim().length <= perLine) cur = (cur + " " + w).trim();
+    else { if (cur) lines.push(cur); cur = w; }
+    if (lines.length === maxLines) break;
+  }
+  if (cur && lines.length < maxLines) lines.push(cur);
+  if (!lines.length) return "";
+  const esc2 = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  return `<text x="${x}" y="${y}" fill="${fill}" font-size="${size}" font-weight="${weight}">` +
+    lines.map((l, i) => `<tspan x="${x}" dy="${i === 0 ? 0 : size * lineHeight}">${esc2(l)}</tspan>`).join("") + `</text>`;
+}
+
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "utf-8")); } catch { return null; } };
 const esc = s => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
@@ -24,9 +45,9 @@ export function socialCard({ img, title, hero, heroLabel, stats = [], hook, chip
 ${img ? `<image href="${esc(img)}" x="60" y="60" width="440" height="555" preserveAspectRatio="xMidYMid slice" clip-path="url(#ph)"/>` : ""}
 <rect x="60" y="60" width="440" height="555" rx="22" fill="none" stroke="${accent}" stroke-opacity="0.35" stroke-width="2"/>
 <text x="560" y="120" fill="#98a1b5" font-size="20" letter-spacing="5" font-weight="700">${esc(heroLabel)}</text>
-<foreignObject x="560" y="140" width="580" height="120"><div xmlns="http://www.w3.org/1999/xhtml" style="color:#f4f5f8;font:700 40px Sora,system-ui,sans-serif;line-height:1.15">${esc(title)}</div></foreignObject>
+${wrapText(title, { x: 560, y: 180, width: 580, size: 38, fill: "#f4f5f8", weight: 700, maxLines: 2 })}
 <text x="560" y="360" fill="${accent}" font-size="96" font-weight="800" font-family="JetBrains Mono,monospace">${esc(hero)}</text>
-${hook ? `<foreignObject x="560" y="385" width="580" height="80"><div xmlns="http://www.w3.org/1999/xhtml" style="color:#98a1b5;font:400 26px Sora,system-ui,sans-serif;line-height:1.35">${esc(hook)}</div></foreignObject>` : ""}
+${hook ? wrapText(hook, { x: 560, y: 410, width: 580, size: 25, fill: "#98a1b5", weight: 400, maxLines: 2 }) : ""}
 ${statCells}
 <text x="60" y="${H - 12}" fill="#36d399" font-size="26" font-weight="800">⚡ Catch'em</text>
 <text x="${W - 60}" y="${H - 12}" text-anchor="end" fill="#5c637a" font-size="20" font-family="JetBrains Mono,monospace">${esc(chip)} · ${esc(date)} · USD · catchemtcg.com</text>
