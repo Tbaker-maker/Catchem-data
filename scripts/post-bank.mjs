@@ -3,6 +3,9 @@
 // finished posts: every angle × every platform × their voice, ready to
 // paste. Writes research/pulse/post-bank.json for /studio to render.
 //
+// USD LAW (Tyler, Aug 21): every public-facing number is USD, always.
+// The app may offer a CAD display toggle; posts, cards, newsletters and
+// creator copy NEVER convert — the audience is USD-default.
 // LAWS: every post carries a true number sourced from our own feed ·
 // voice v4/v5 (no calls, labeled %, newcomer-clear) · cards carry the
 // ⚡ watermark (that's the distribution deal — free tool, our mark rides)

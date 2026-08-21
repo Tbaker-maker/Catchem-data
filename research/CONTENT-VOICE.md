@@ -63,3 +63,5 @@ CALENDAR NUDGES. Number everything for easy picking.
 - Voice v6 — THE SANDBOX RULE (Aug 19, Tyler): every instrument ships with an explain-like-I'm-five version, one tap away. If the founder needed the write-up, so does everyone. Index has one; heat states, depth reads, premiums all get one before debut.
 
 - v7 — THE DIGEST LAW (Tyler, Aug 20): app surfaces are easily digested ALWAYS. Numbers over sentences; labels ≤2 words; one idea per card; every explanation collapses behind one tap (ⓘ → methodology anchors). Prose lives in the Pulse and methodology — the app is a glance, not a read.
+
+- USD LAW (Tyler, Aug 21): every public-facing figure — social posts, share cards, newsletter, creator copy — is USD, always. The app's CAD toggle is a display convenience for Canadian visitors only and never touches published content. Assume a USD-default audience.

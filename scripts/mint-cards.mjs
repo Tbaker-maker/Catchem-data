@@ -33,7 +33,7 @@ ${img ? `<image href="${esc(img)}" x="72" y="120" width="${wide ? 320 : 300}" he
 <text x="430" y="392" fill="#8a93a8" font-size="30">${esc(sub)}</text>
 <foreignObject x="430" y="420" width="${W - 520}" height="150"><div xmlns="http://www.w3.org/1999/xhtml" style="color:#8a93a8;font-size:26px;line-height:1.5;font-family:Sora,system-ui,sans-serif">${esc(why)}</div></foreignObject>
 <text x="72" y="${H - 66}" fill="#36d399" font-size="30" font-weight="800">⚡ Catch'em</text>
-<text x="${W - 90}" y="${H - 66}" text-anchor="end" fill="#5c637a" font-size="24" font-family="JetBrains Mono,monospace">${today} · catchemtcg.com</text>
+<text x="${W - 90}" y="${H - 66}" text-anchor="end" fill="#5c637a" font-size="24" font-family="JetBrains Mono,monospace">${today} · USD · catchemtcg.com</text>
 </svg>`;
 }
 

@@ -29,7 +29,7 @@ ${img ? `<image href="${esc(img)}" x="60" y="60" width="440" height="555" preser
 ${hook ? `<foreignObject x="560" y="385" width="580" height="80"><div xmlns="http://www.w3.org/1999/xhtml" style="color:#98a1b5;font:400 26px Sora,system-ui,sans-serif;line-height:1.35">${esc(hook)}</div></foreignObject>` : ""}
 ${statCells}
 <text x="60" y="${H - 12}" fill="#36d399" font-size="26" font-weight="800">⚡ Catch'em</text>
-<text x="${W - 60}" y="${H - 12}" text-anchor="end" fill="#5c637a" font-size="20" font-family="JetBrains Mono,monospace">${esc(chip)} · ${esc(date)} · catchemtcg.com</text>
+<text x="${W - 60}" y="${H - 12}" text-anchor="end" fill="#5c637a" font-size="20" font-family="JetBrains Mono,monospace">${esc(chip)} · ${esc(date)} · USD · catchemtcg.com</text>
 </svg>`;
 }
 

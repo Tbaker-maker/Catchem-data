@@ -1,3 +1,4 @@
+// USD LAW (Tyler, Aug 21): public-facing numbers are USD, always.
 // social-posts.mjs — the daily streak-post generator.
 // Writes research/pulse/social-queue.json: ready-to-post text for up to
 // three slots, each paired with a minted share card. Human posts them
@@ -48,7 +49,8 @@ if (six) {
     text: [
       opener, "",
       `Catch'em Sealed Index: ${six.level} ${dir === "flat" ? "(flat)" : `${dir} ${Math.abs(six.ddPct)}%`}`,
-      `${six.constituents} sealed products, each measured against its own baseline.`, "",
+      `${six.constituents} sealed products, each measured against its own baseline.`,
+      `${six.constituents ? "All figures USD." : ""}`, "",
       read, "",
       `Method's public — no black box: catchemtcg.com/methodology`, "",
       invite(["What sealed product are you watching right now? \ud83d\udc47", "Anyone else checking listings before coffee, or just me? \u2615", "Bookmark it \u2014 tomorrow we see if today\u2019s read held. \ud83d\udccc"]),
