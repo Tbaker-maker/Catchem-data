@@ -3,6 +3,8 @@ Any session (chat, CC, desktop, mobile) pulls the TOP unclaimed item,
 marks it CLAIMED(who,date), works it, marks DONE(commit). Pull before
 write, push after. Tyler adds items in plain English anywhere here.
 
+## NEXT UP FOR CC → research/CC-PROMPT-QUEUE.md (ordered, paste one at a time)
+
 ## CLAIMED / IN FLIGHT
 - (CC, Aug 20) Utilities IA overhaul (APPROVED): Tools hub tab, Watch tab, Pack Math + Print Watch first surfaces, question-grammar tool screens. Spec section 15 + mockup v4.
 - (chat, Aug 19)  Net Proceeds Truth — engine side.
