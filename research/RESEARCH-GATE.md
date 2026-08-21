@@ -87,6 +87,8 @@ fixing the class is.
 | 12 | Cards minted as SVG — unpostable, and foreignObject text silently dropped | Tyler | Output format | PNG-ONLY law + rasterize step + pure-SVG-text renderers |
 | 13 | Published methodology URL that never existed | Tyler | Unverified claim about our own product | URLs centralized behind SITE constant; live URLs human-verified before publishing |
 
+| 14 | Described a rotation as passing "quietly" — implying a norm of loudness that does not exist | Tyler | Unsourced NORM claim about community behavior | voice-lint NORM_CLAIM class + RT-6 (scheduled-event anticlimax) |
+
 **PATTERN, stated plainly:** 8 of 9 were caught by Tyler, not by the
 machine. Every guard above was built AFTER a human caught something.
 That is the honest state — the machine is now catching prices, but

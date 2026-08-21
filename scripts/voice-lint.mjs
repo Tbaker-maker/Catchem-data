@@ -29,6 +29,19 @@ const HEDGES = [
   /\(est\.?\)/i, /\bnot\s+a\s+call\b/i,
 ];
 
+// Unsourced NORM claims — asserting how the community/market "usually"
+// behaves is a factual claim, not a hedge. It needs evidence or it is
+// narrative invention. (Error #14: calling a rotation "quiet" implied a
+// norm of loudness that does not exist — rotation is quiet every year.)
+const NORM_CLAIM = [
+  /\bunusually\s+(quiet|loud|slow|fast|strong|weak)\b/i,
+  /\brarely\s+(discussed|noticed|talked)\b/i,
+  /\bnobody\s+(talks|noticed|mentions)\b/i,
+  /\bwent\s+(largely\s+)?unnoticed\b/i,
+  /\bmore\s+than\s+usual\b/i, /\bless\s+than\s+usual\b/i,
+  /\bwithout\s+(the\s+)?(usual\s+)?fanfare\b/i,
+];
+
 const der = await J("data/derived-insights.json") ?? {};
 const findings = [];
 const check = (label, text, chip) => {
@@ -36,7 +49,9 @@ const check = (label, text, chip) => {
   const t = String(text);
   const hard = CERTAINTY.filter(rx => rx.test(t)).map(rx => rx.source.slice(0, 24));
   if (hard.length) findings.push({ severity: "BLOCK", label, chip, issue: `prediction language in a published statement: ${hard.join(", ")}`, text: t.slice(0, 120) });
-  else if (chip === "READ" && !HEDGES.some(rx => rx.test(t)))
+  const norms = NORM_CLAIM.filter(rx => rx.test(t)).map(rx => rx.source.slice(0, 22));
+  if (norms.length) findings.push({ severity: "WARN", label, chip, issue: `norm claim about community/market behavior — needs evidence or drop the comparison (${norms.join(", ")})`, text: t.slice(0, 120) });
+  if (chip === "READ" && !HEDGES.some(rx => rx.test(t)))
     findings.push({ severity: "WARN", label, chip, issue: "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip", text: t.slice(0, 120) });
 };
 

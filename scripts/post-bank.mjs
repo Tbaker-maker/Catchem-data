@@ -86,7 +86,7 @@ if (t3.sealed && t3.sealed.spreadPct != null) {
     platforms: {
       x: `${inPrint.set} — ${inPrint.ageMonths} months old.\n\nPhase: ${inPrint.phase}\nStandard: ${inPrint.legalTag}\nActive sealed listings tracked: ${inPrint.supply}\n\nWhen presses stop, shelves stop refilling. That's the whole mechanic.\n\nStill buying this one? ⏳`,
       youtube_title: `${inPrint.set}: Where This Set Actually Sits Right Now`,
-      youtube_hook: `Print windows close quietly — no announcement. Here's how to read a set's age, phase, and legality to see it coming.`,
+      youtube_hook: `Print windows close without an announcement — and rotation lands the same way every year. Here's how to read a set's age, phase, and legality instead of waiting for news.`,
       short_script: `${inPrint.set} is ${inPrint.ageMonths} months old and ${inPrint.phase}. Here's what that historically does to supply…`,
     }, card: "research/pulse/cards/latest-index.png", chip: "READ" });
 }

@@ -124,3 +124,26 @@ restraint are the same policy here.
 FOUNDER-QA LAW: when Tyler flags a number from lived market experience,
 that flag outranks the pipeline. Quarantine first, investigate second,
 fix the CLASS of bug, then re-verify at the next run.
+
+## RT-6 · Scheduled-Event Anticlimax (Tyler, Aug 21)
+CLAIM: scheduled, calendar-known events in this hobby — annual Standard
+rotation, print-window closes, announced reprints — generate their
+market and attention effects in ANTICIPATION, not on the day. The date
+itself typically passes as a non-event. Tyler's analogy: the Bitcoin
+halving — heavily discussed as it approaches, then the day arrives and
+almost nobody marks it, because nothing visibly happens.
+WHY IT MATTERS: it corrects a framing error we made — describing a
+rotation as having passed "quietly," which implies a norm of loudness
+that does not exist. Rotation is quiet EVERY year. The correct framing
+for countdown content is that the anticipation window is where behavior
+changes; the date is administrative.
+IMPLICATION FOR OUR CONTENT: countdowns should describe what typically
+happens in the RUN-UP, and explicitly note that the day itself usually
+passes without a visible move. Never frame a scheduled date as a shock.
+FALSIFIER: if a rotation date or print-window close produces a
+measurable, same-week move across the affected cohort in our own index
+(beyond normal breadth), the anticlimax framing is wrong for that class
+and we amend in public.
+STATUS: READ — based on Tyler's market experience plus the structural
+logic of pre-announced events; not yet measured in our own tape. First
+real test: the 2027-04 rotation, with cohort data by then.
