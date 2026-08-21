@@ -104,6 +104,21 @@ const SUBTYPE_UNEXCLUDE = {
   "booster-pack": ["single", "1 pack", "single pack"],
 };
 
+
+// ── MULTI-ITEM GUARD (Tyler QA, Aug 21) — "lot" alone missed the family.
+// Multi-quantity listings inflate a single-item median hard: PGO ETB read
+// $240 median against a real ~$205 market with a $488 high. Any title
+// implying more than one unit is rejected. Word-boundary safe; "case"
+// only when it reads as a shipping case of boxes, not "carrying case"
+// products we don't track anyway.
+const MULTI_ITEM_RX = [
+  /\blot\s*(of)?\s*\d+/i, /\b\d+\s*x\b/i, /\bx\s*\d+\b/i,
+  /\bcase\s*(of)?\s*\d+/i, /\bsealed\s+case\b/i, /\bfull\s+case\b/i,
+  /\b(two|three|four|five|six|ten|twelve)\s+(boxes|etbs?|bundles?|packs?|tins?)\b/i,
+  /\bpair\s+of\b/i, /\bset\s+of\s+\d+/i, /\bbundle\s+of\s+\d+/i,
+  /\((\d{1,2})\s*(pack|boxes|count|ct)\)/i, /\b\d+\s*(pack|box)\s+bundle\b/i,
+];
+const isMultiItem = t => MULTI_ITEM_RX.some(rx => rx.test(t));
 const EXCLUDE_COMMON = [
   "single", "loose", "lot", "empty", "opened", "damaged", "custom",
   "repack", "proxy", "no packs", "resale", "read description",
@@ -246,7 +261,7 @@ function filterItemsForProduct(product, items) {
   const requireExtra = product.requireExtra || [];
   const langExcludes = (product.allowImports ? [] : EXCLUDE_NON_ENGLISH).filter(setSafe);
 
-  const report = { fetched: items.length, failSet: 0, failType: 0, failExclude: 0, failLang: 0, failPrice: 0, shipUnknown: 0, kept: 0 };
+  const report = { fetched: items.length, failSet: 0, failType: 0, failExclude: 0, failLang: 0, failMulti: 0, failPrice: 0, shipUnknown: 0, kept: 0 };
   const [floor, ceiling] = priceBoundsFor(product);
 
   const kept = items.filter(i => {
@@ -256,6 +271,7 @@ function filterItemsForProduct(product, items) {
     if (requireExtra.length && !requireExtra.every(r => t.includes(r.toLowerCase()))) { report.failType++; return false; }
     if (product.subtype === "pc-etb" && !t.includes("pokemon center")) { report.failType++; return false; }
     if (excludes.some(term => wordBoundaryTest(term, t))) { report.failExclude++; return false; }
+    if (isMultiItem(t)) { report.failMulti = (report.failMulti || 0) + 1; return false; }
     if (langExcludes.some(term => wordBoundaryTest(term, t))) { report.failLang++; return false; }
     // pricing v2: gate + aggregate on DELIVERED price (landed cost)
     const dp = deliveredPriceOf(i);
