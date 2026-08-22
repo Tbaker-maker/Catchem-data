@@ -452,3 +452,41 @@ GUARDRAILS: raffles stay ours-only at v0 (sweepstakes law is not
 something to hand a stranger) · webhook URLs never in the repo · every
 exported figure keeps its chip and its est. labelling · creator copy
 obeys the Referee Doctrine like ours does.
+
+## §22 · NAVIGATION DOCTRINE — modes vs portals vs contexts (Aug 22)
+Tyler asked whether everything should be a portal. It should not, and the
+reason is worth writing down as a decision rule rather than a decision.
+
+**MODE = who you are.** A lens on the SAME data. Collector, Flipper
+(vendors included), Grader, Balanced. They share every screen and differ
+only in order and accent. Three separate portals for these would mean
+three surfaces with ~80% identical content: triple the maintenance, three
+places for a feature to drift, and the Mode Honesty Law becomes almost
+unenforceable across separate builds. It would also hide instruments from
+the people who need them ("I'm a collector, so I never saw Net Proceeds").
+
+**PORTAL = what you make.** A workshop with its own screens and almost no
+overlap with market reading. Today that is exactly one: the Creator
+Portal (§21). A second portal only earns its existence when a job appears
+that shares nearly nothing with the app's screens.
+
+**CONTEXT = where you are standing.** Show Mode (§19) is neither a lens
+nor a job — it is "I am at a table, in bad lighting, with cash." That is
+why it can carry a buying/selling toggle without becoming a persona.
+
+### THE RULE FOR EVERY FUTURE FEATURE
+Ask: is this a different way to READ the same data (mode), a different
+THING TO MAKE (portal), or a different PLACE I am standing (context)?
+- Read → it is a mode adjustment. Do not build a surface.
+- Make → it belongs in the portal.
+- Place → it is a context screen, and it should be ruthlessly reduced to
+  what that place needs (Show Mode is huge type and no chrome for exactly
+  this reason).
+If a proposal fits none of the three, it is probably a feature inside an
+existing screen and should be argued for there.
+
+### WHY THIS MATTERS COMMERCIALLY
+Every extra top-level surface is a place a first-time visitor can get
+lost and a place our own laws can drift. Four modes, one portal, one
+context is a product a person can hold in their head — and a codebase one
+founder can still afford to maintain.
