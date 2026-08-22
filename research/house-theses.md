@@ -826,3 +826,28 @@ describe a SINGLE unit. Fifty-four symptoms, two causes.
 ADVISORY, NOT BLOCKING. Fifty-four findings on day one would stop every build,
 and a guard that must be switched off to ship is a guard that gets switched
 off permanently.
+
+## DISCOVERY IS ONE-TIME, REFRESH IS FOREVER (Tyler, Aug 23 2026)
+"We got 20k a day. Let's get the most out of it without pointless cards
+nobody cares about."
+
+THE DISTINCTION THAT MAKES IT AFFORDABLE: pricing all 16,468 catalogue cards
+ONCE costs 16,468 calls and fits inside a single day's 20,000 allowance with
+3,500 to spare. Refreshing all of them every day forever does not fit, and
+does not need to — most cards are bulk nobody watches.
+
+So: spend one day MEASURING, then set the refresh floor from what the data
+says. Our 122 priced singles are all hand-picked chases, so every rarity in
+that sample looks expensive — a floor derived from it would be selection bias
+wearing a decimal point. **Guessing a number now would be choosing one in
+order to avoid measuring one.**
+
+THE DECIDING NUMBER is not how many cards a floor keeps, it is what share of
+total market VALUE sits above it. On a realistic distribution a floor around
+$2-5 holds 93-98% of the value while dropping two-thirds to five-sixths of
+the cards. The exact figure comes from the sweep, not from this paragraph.
+
+WHY IT MATTERS BEYOND COST: a bulk common in an index is not free even when
+the call is. It dilutes breadth, adds noise to every average, and makes the
+index answer a question nobody asked. Dropping it is a measurement decision
+before it is a budget one.
