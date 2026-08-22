@@ -403,11 +403,20 @@ const CASES = [
     // the app repo had nothing checking that it still compiles from here.
     fn: async () => {
       try {
-        await run("npx", ["esbuild", "--loader:.jsx=jsx", "--outfile=/dev/null", "../catchem-app/src/Ticker.jsx"], { cwd: ROOT });
+        // shell:true because npx is npx.cmd on Windows and execFile cannot
+        // resolve it otherwise — without this the spawn fails with ENOENT and
+        // the catch below called a perfectly healthy app broken.
+        await run("npx", ["esbuild", "--loader:.jsx=jsx", "--outfile=" + TMP("/tmp/nt-appbuild.js"), "../catchem-app/src/Ticker.jsx"],
+          { cwd: ROOT, shell: process.platform === "win32" });
         return { pass: true, why: "" };
       } catch (e) {
         const out = ((e.stdout || "") + (e.stderr || ""));
-        if (/not found|ENOENT|Cannot find/.test(out)) return { pass: null, why: "esbuild unavailable here — SKIPPED, not passed" };
+        // A MISSING TOOL is not a broken app. ENOENT arrives on e.code with
+        // empty stdout/stderr, so testing the output alone fell through to
+        // "does not compile: unknown" — turning "I could not check" into "your
+        // app is broken", which is the worse of the two lies a guard can tell.
+        if (e.code === "ENOENT" || /not found|ENOENT|Cannot find/.test(out))
+          return { pass: null, why: "esbuild/npx unavailable here — SKIPPED, not passed" };
         return { pass: false, why: `catchem-app does not compile: ${out.split("\n").find(l => /ERROR/.test(l)) ?? "unknown"}` };
       }
     } },
