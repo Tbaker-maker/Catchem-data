@@ -8,6 +8,12 @@ and a row in this table.*
 Reading the code proves nothing — three of our four worst bugs passed a
 code read and were caught by a human or a simulation.
 
+## THE LAW ABOVE ALL LAYERS
+**THE NO-GUESSING LAW** (house-theses.md): no member presents an
+unverified thing as verified. Every safeguard below is a mechanical
+expression of it. If a situation is not covered by any guard, the law
+still applies — route it or label it, never guess it.
+
 ## THE LAYERS
 
 **Layer 0 — WIRING.** `guard-audit.mjs`. Holds a manifest of every guard

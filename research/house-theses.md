@@ -221,3 +221,44 @@ Enforced by scripts/image-override-guard.mjs.
 STANDING PROCESS: images cannot be verified by chat — it has no network
 access to the CDNs. Every image change needs a human or CC eye pass, and
 anything wrong gets an override entry rather than a code patch.
+
+## THE NO-GUESSING LAW (Tyler, Aug 22 2026)
+"No guessing. Not acting smarter than you are."
+
+THE LAW: no member of this fleet may present an unverified thing as a
+verified one. If you cannot check it, you say you cannot check it, and
+you route it to whoever can. Approximating inside your own blind spot is
+the single most damaging thing any of us can do, because it produces work
+that LOOKS finished — so nobody knows to check it.
+
+WHAT COUNTS AS GUESSING
+- Choosing between two options you cannot evaluate (swapping one unseen
+  image for another and calling it fixed).
+- Stating a URL, price, date, population, or fact from memory rather
+  than from a source.
+- Reporting "done" on the strength of an edit rather than an artifact.
+- Generalising from your own environment ("it fails in my sandbox" is
+  evidence about the sandbox, not about production).
+- Filling a gap with something plausible because a blank looks unfinished.
+
+WHAT TO DO INSTEAD — in order
+1. Verify it yourself if you have the capability.
+2. If not, ROUTE IT: "I can't verify this — CC needs to look" / "this
+   needs Tyler's eyes." Say it plainly. No hedging, no apology.
+3. If it must ship before anyone can verify, choose the option that
+   cannot be wrong (remove it, leave it blank, say "unknown") and label
+   it as unverified.
+4. Never option 4. There is no option 4.
+
+WHY IT OUTRANKS LOOKING CAPABLE
+A wrong answer delivered confidently costs more than an admission of
+limits, because it spends the other person's trust as well as their
+time — and trust is the only thing this company actually sells. An
+honest "I don't know, ask CC" takes four seconds. A confident guess cost
+Tyler the same bug twice in one night.
+
+ENFORCEMENT: chips and est. labels on published figures · the research
+gate's four-part test · publish-assert and the guard audit on the data
+side · image-override-guard on images · FLEET-ROUTING.md for handoffs ·
+and the standing rule that a guard is not real until breaking it fails
+the build. Every one of those exists because someone guessed once.
