@@ -53,6 +53,14 @@ const MANIFEST = [
       { file: "scripts/compute-derived.mjs", pattern: /seasoned\(p\)/g, min: 2,
         note: "must gate BOTH the sealed composite and the subtype composites" },
     ] },
+  { guard: "Content sanity / silent-empty-run breaker",
+    definedIn: "scripts/publish-assert.mjs",
+    mustBeReferencedIn: [
+      { file: "scripts/publish-assert.mjs", pattern: /CONTENT SANITY/g, min: 1,
+        note: "an empty-but-valid file must never publish as a blank edition" },
+      { file: "scripts/fetch-sealed-prices.mjs", pattern: /WIPE GUARD/g, min: 1,
+        note: "fetch-level: a run that loses nearly every live price must refuse to overwrite" },
+    ] },
   { guard: "Staleness / stale-edition breaker",
     definedIn: "scripts/publish-assert.mjs",
     mustBeReferencedIn: [

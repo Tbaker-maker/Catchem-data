@@ -69,6 +69,16 @@ try {
   check("disconnected guard FAILS the audit", !broken.ok, broken.ok ? "DID NOT CATCH — critical" : "caught correctly");
 } finally { await copyFile(join(tmpdir(), "audit-cd.bak"), CD); }
 
+// 3d — silent empty run
+const FEED = join(ROOT, "research/pulse/pulse-feed.json");
+await copyFile(FEED, "/tmp/audit-feed.bak");
+try {
+  const f = JSON.parse(await readFile(FEED, "utf-8")); f.products = [];
+  await writeFile(FEED, JSON.stringify(f));
+  const empty = await sh("publish-assert.mjs");
+  check("empty edition BLOCKS publication", !empty.ok, empty.ok ? "DID NOT BLOCK — critical" : "blocked correctly");
+} finally { await copyFile("/tmp/audit-feed.bak", FEED); }
+
 console.log("\n═══ 4. DATA INTEGRITY ═══");
 const sp2 = await J("data/sealed-prices.json");
 const liveRows = (sp2?.products || []).filter(p => p.dataStatus === "live" && p.priceMedian);

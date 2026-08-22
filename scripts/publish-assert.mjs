@@ -69,6 +69,35 @@ SURFACES.push(`research/pulse/${today}.md`, `research/pulse/${today}.html`);
     console.log(`  freshness: ${pct}% of ${live.length} products at ${newest}${ageDays >= 1 ? ` (${ageDays}d old — next run refreshes)` : " (today)"}`);
   }
 }
+// CONTENT SANITY: the fetch has a wipe guard, but a downstream compute
+// step can also produce an empty-but-valid file — and an empty feed
+// publishes as a blank edition with no error anywhere. A run that loses
+// its content is a broken run, not a quiet market. (Class identified
+// 2026-08-22 after a ReferenceError zeroed every SKU while exiting 0.)
+{
+  const feed = await J("research/pulse/pulse-feed.json");
+  const der = await J("data/derived-insights.json");
+  const liveCount = (sp.products || []).filter(p => p.dataStatus === "live" && p.priceMedian).length;
+  const problems = [];
+  if (!feed) problems.push("pulse-feed.json missing or unreadable");
+  else {
+    const fp = (feed.products || []).length;
+    if (fp === 0) problems.push("feed carries zero products");
+    else if (liveCount >= 20 && fp < liveCount * 0.5) problems.push(`feed has ${fp} products against ${liveCount} live prices — content loss`);
+    for (const k of ["sealedIndex", "dailyThree", "disclosure"]) if (!feed[k]) problems.push(`feed missing required key: ${k}`);
+  }
+  if (!der) problems.push("derived-insights.json missing or unreadable");
+  else {
+    if (!der.sealedIndex?.level) problems.push("derived has no index level");
+    if (!der.dailyThree?.sealed?.name) problems.push("derived has no sealed pick — the edition would have no headline");
+  }
+  if (problems.length) {
+    console.error("\n✗ CONTENT SANITY FAILED — the edition is empty or incomplete:");
+    for (const p of problems) console.error(`   ${p}`);
+    console.error("   A run that loses its content is a broken run. Nothing ships.\n");
+    process.exit(1);
+  }
+}
 const violations = [];
 for (const f of SURFACES) {
   let txt;

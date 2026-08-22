@@ -59,7 +59,9 @@ failure simulations. Restores every file it touches.
 | 12 | Publication assert (artifact grep) | 5 | blocks edition | caught 4 real leaks on first run | 2026-08-22 |
 | 13 | Stale-edition breaker | 5 | blocks edition | 4-day outage simulation | 2026-08-22 |
 | 14 | Partial-fetch breaker | 5 | blocks edition | half-fetch simulation | 2026-08-22 |
-| 15 | Merge-by-date guards (all histories) | 1 | prevents overwrite | 8-vs-329 unit test | 2026-08-19 |
+| 15 | Run-level wipe guard (fetch) | 1 | refuses overwrite | CI run 32546016295 caught live | 2026-08-22 |
+| 16 | Content sanity (silent empty run) | 5 | blocks edition | empty-feed + no-headline simulations | 2026-08-22 |
+| 17 | Merge-by-date guards (all histories) | 1 | prevents overwrite | 8-vs-329 unit test | 2026-08-19 |
 
 ## AUDIT CADENCE
 - **Every run:** layers 0, 2, 4, 5 execute inside the pipeline.
