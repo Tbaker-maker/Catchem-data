@@ -310,3 +310,43 @@ comparison.
 TAX: never added, anywhere. Rates vary by state and by whether a seller
 collects, so a single figure would be wrong for almost everyone. We say
 "tax not included" and leave it to the buyer.
+
+## TCG SOURCE VERIFICATION — the routed API question, answered (CC, Aug 22 2026)
+The PRICING BASIS LAW routed one question to API investigation: is a
+shipping-inclusive TCGplayer figure retrievable at source? Answer: **not
+through our current source.** PokemonPriceTracker's sealed endpoint exposes
+a single `unopenedPrice` field and nothing else — no shipping-inclusive
+variant, no region/currency/filter parameters, no listing counts. Their EUR
+lane is a separate opt-in Cardmarket beta we never request. TCGplayer's own
+API is partner-gated. So "label rather than estimate" remains correct for
+displays, and the Spread's est. constants stay the only normalization lever.
+
+WHAT THE FIGURE IS, verified three ways:
+1. `unopenedPrice` matches tcgplayer.com's displayed **Market Price** to the
+   cent (swsh7-bb $2,460.46 exact, swsh5-pack $9.23 exact; swsh7-pack
+   42.04→42.15 one refresh apart). PPT scrapes the US site (`lastScrapedAt`,
+   `tcgPlayerUrl` → www.tcgplayer.com); docs denominate price filters in USD.
+2. TCGplayer's help center defines Market Price as an outlier-trimmed
+   average of **actual recent completed sales** — SOLD data, not asks.
+   This CORRECTS our Aug-18 note calling PPT sealed prices "ASK-derived":
+   base1 flat for 35 days meant NO recent sales freezing the average, not a
+   stale ask. Flat TCG lines = illiquidity, not staleness.
+3. TCGplayer's own CSV price-point taxonomy carries "TCG Low w/ Shipping" as
+   a separately labeled point — the "w/ Shipping" qualifier existing only
+   there confirms Market Price (and every unlabeled point) is ITEM-ONLY.
+
+CONSEQUENCE: the Spread's remaining structural asymmetry after the shipping
+model is ASK vs SOLD — our eBay side is what listings ask, the TCG side is
+what copies actually sold for. Asks resting above solds is definitional.
+This makes negative spreads STRONGER than we previously wrote (an ask under
+recent solds fights the definition) and it means the TCG side is closer to
+"real" prices than the eBay side, not a second ask lane.
+NOTE ON RULING TENSION, flagged not resolved: the comparability law
+(Aug 23 entry above) added est. shipping to the Spread's math; the pricing
+basis law says label-rather-than-estimate for surfaces. Current state:
+Spread instrument estimates (and says so), price displays label. If Tyler
+wants the Spread de-estimated too, that is a one-constant revert in
+compute-divergence.mjs.
+FALSIFIER: if PPT ships new fields (listings counts, shipping-inclusive
+prices, region parameters) the crosscheck contract should be re-evaluated —
+the fetch header documents where to look.

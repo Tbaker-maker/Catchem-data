@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-22T15:19:53.240Z",
-  "method": "Cross-market ASK divergence: eBay ask median vs TCG-side ask-derived market (PPT). Two markets disagreeing on price is the signal. Baseline +5-15% is STRUCTURAL (RT-4 photo premium: eBay shows the item, TCG sealed rarely does). |spread| >= 15% flags; negative gaps read stronger (fighting the trust premium). Not sold data. TCG-side listing counts: provider exposes none for sealed - field carried as null, lights up if they ship it.",
+  "generatedAt": "2026-08-22T15:31:38.286Z",
+  "method": "Cross-market divergence, delivered-vs-delivered: eBay delivered-ask median vs TCGplayer Market Price plus an estimated shipping cost (free over $40, est. $4.99 below — the source figure is item-only). TCGplayer Market Price is their average of recent COMPLETED SALES on the US marketplace, USD — source-verified 2026-08-22, no region/filter parameters exist on the provider endpoint to get wrong. Shipping is normalized by the model; the remaining structural asymmetry is ASK vs SOLD, so a resting positive gap is definitional plus the RT-4 photo premium. |spread| >= 15% flags; negative gaps read stronger (an ask sitting UNDER recent sold-plus-shipping is fighting the definition). A flat TCG line can mean no recent sales, not a frozen ask. Tax excluded both sides, always. TCG-side listing counts: provider exposes none for sealed - field carried as null, lights up if they ship it.",
   "counts": {
     "compared": 135,
     "signals": 29,
@@ -232,7 +232,7 @@
       "tcgListings": null,
       "spreadPct": -30,
       "signal": true,
-      "read": "eBay asks under TCG-side — motivated eBay sellers or stale TCG-side price",
+      "read": "eBay asks under TCG-side — motivated eBay sellers, or the TCG sales average trailing a falling market",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
         "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived unopenedPrice), 2026-08-21T12:24:11.382Z"
@@ -364,7 +364,7 @@
       "tcgListings": null,
       "spreadPct": -24.9,
       "signal": true,
-      "read": "eBay asks under TCG-side — motivated eBay sellers or stale TCG-side price",
+      "read": "eBay asks under TCG-side — motivated eBay sellers, or the TCG sales average trailing a falling market",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
         "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived unopenedPrice), 2026-08-21T12:24:12.943Z"
@@ -402,7 +402,7 @@
       "tcgListings": null,
       "spreadPct": -24,
       "signal": true,
-      "read": "eBay asks under TCG-side — motivated eBay sellers or stale TCG-side price",
+      "read": "eBay asks under TCG-side — motivated eBay sellers, or the TCG sales average trailing a falling market",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
         "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived unopenedPrice), 2026-08-21T12:24:15.190Z"
@@ -420,7 +420,7 @@
       "tcgListings": null,
       "spreadPct": -23.9,
       "signal": true,
-      "read": "eBay asks under TCG-side — motivated eBay sellers or stale TCG-side price",
+      "read": "eBay asks under TCG-side — motivated eBay sellers, or the TCG sales average trailing a falling market",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
         "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived unopenedPrice), 2026-08-21T12:24:14.778Z"
@@ -458,7 +458,7 @@
       "tcgListings": null,
       "spreadPct": -22,
       "signal": true,
-      "read": "eBay asks under TCG-side — motivated eBay sellers or stale TCG-side price",
+      "read": "eBay asks under TCG-side — motivated eBay sellers, or the TCG sales average trailing a falling market",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
         "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived unopenedPrice), 2026-08-21T12:24:13.015Z"
@@ -602,7 +602,7 @@
       "tcgListings": null,
       "spreadPct": -18.6,
       "signal": true,
-      "read": "eBay asks under TCG-side — motivated eBay sellers or stale TCG-side price",
+      "read": "eBay asks under TCG-side — motivated eBay sellers, or the TCG sales average trailing a falling market",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
         "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived unopenedPrice), 2026-08-21T12:24:03.935Z"
@@ -638,7 +638,7 @@
       "tcgListings": null,
       "spreadPct": -17.6,
       "signal": true,
-      "read": "eBay asks under TCG-side — motivated eBay sellers or stale TCG-side price",
+      "read": "eBay asks under TCG-side — motivated eBay sellers, or the TCG sales average trailing a falling market",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
         "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived unopenedPrice), 2026-08-21T12:24:14.626Z"
@@ -676,7 +676,7 @@
       "tcgListings": null,
       "spreadPct": -17.5,
       "signal": true,
-      "read": "eBay asks under TCG-side — motivated eBay sellers or stale TCG-side price",
+      "read": "eBay asks under TCG-side — motivated eBay sellers, or the TCG sales average trailing a falling market",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
         "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived unopenedPrice), 2026-08-21T12:24:08.460Z"
@@ -820,7 +820,7 @@
       "tcgListings": null,
       "spreadPct": -15.7,
       "signal": true,
-      "read": "eBay asks under TCG-side — motivated eBay sellers or stale TCG-side price",
+      "read": "eBay asks under TCG-side — motivated eBay sellers, or the TCG sales average trailing a falling market",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
         "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived unopenedPrice), 2026-08-21T12:24:11.648Z"

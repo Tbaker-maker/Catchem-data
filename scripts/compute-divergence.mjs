@@ -1,9 +1,21 @@
 // scripts/compute-divergence.mjs — "The Spread"
 // Joins eBay ask medians (data/sealed-prices.json) with the TCG-side market
-// price (data/sealed-crosscheck.json — PPT sealed prices are ASK-derived,
-// proven Aug 18: base1 flat 35 days = stale ask, not sales) → data/divergence-report.json.
-// Ask vs sales-market are DIFFERENT instruments (Trust Standard: separate
-// provenance, never mixed) — divergence between them is the signal.
+// price (data/sealed-crosscheck.json) → data/divergence-report.json.
+// SOURCE VERIFIED 2026-08-22 (region+shipping audit, CC): PPT's unopenedPrice
+// exactly matches tcgplayer.com's displayed MARKET PRICE (2460.46/9.23 to
+// the cent) — which TCGplayer documents as an outlier-trimmed average of
+// recent COMPLETED SALES, item price only (their own CSV taxonomy keeps
+// "w/ Shipping" as a separate labeled price point). US marketplace, USD;
+// PPT's EUR lane is a separate opt-in Cardmarket beta we never request.
+// No region/currency/filter parameters exist on the endpoint to get wrong.
+// (Corrects the Aug-18 "ASK-derived" note: base1 flat 35 days meant NO
+// RECENT SALES freezing the average, not a stale ask.)
+// Shipping is handled by the delivered-vs-delivered model below (Tyler
+// ruling: est. shipping ADDED to the item-only TCG figure). The remaining
+// structural asymmetry is ASK vs SOLD: our eBay side is what listings ask,
+// the TCG side is what recently SOLD — different instruments (Trust
+// Standard: separate provenance, never mixed); divergence is the signal,
+// and asks resting somewhat above solds is definitional, not a read.
 // Runs standalone; consumes whatever provider fills the crosscheck contract.
 
 import { readFile, writeFile } from "node:fs/promises";
@@ -56,7 +68,7 @@ rows.push({ id: p.id, spreadBasis, tcgDelivered: tcgDeliv, tcgShipEst: t.tcgMark
     offTcgEra: OFF_TCG(p.id) || undefined,
     venueNote: OFF_TCG(p.id) ? "vintage-class — this market trades on eBay, at shows, and in collector groups, so we read eBay-native stats only and skip the TCGplayer comparison (RT-4a)" : undefined,
     read: spread >= SIGNAL_PCT ? "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening"
-        : spread <= -SIGNAL_PCT ? "eBay asks under TCG-side — motivated eBay sellers or stale TCG-side price"
+        : spread <= -SIGNAL_PCT ? "eBay asks under TCG-side — motivated eBay sellers, or the TCG sales average trailing a falling market"
         : "markets agree",
     provenance: { ebay: `Catchem-data eBay active asks, ${ebay.updatedAt?.split("T")[0]}`,
                   tcg: `${tcg.source}, ${t.providerUpdatedAt || tcg.updatedAt?.split("T")[0]}` } });
@@ -64,7 +76,7 @@ rows.push({ id: p.id, spreadBasis, tcgDelivered: tcgDeliv, tcgShipEst: t.tcgMark
 rows.sort((a, b) => Math.abs(b.spreadPct) - Math.abs(a.spreadPct));
 await writeFile(join(DATA, "divergence-report.json"), JSON.stringify({
   generatedAt: new Date().toISOString(),
-  method: "Cross-market ASK divergence: eBay ask median vs TCG-side ask-derived market (PPT). Two markets disagreeing on price is the signal. Baseline +5-15% is STRUCTURAL (RT-4 photo premium: eBay shows the item, TCG sealed rarely does). |spread| >= 15% flags; negative gaps read stronger (fighting the trust premium). Not sold data. TCG-side listing counts: provider exposes none for sealed - field carried as null, lights up if they ship it.",
+  method: "Cross-market divergence, delivered-vs-delivered: eBay delivered-ask median vs TCGplayer Market Price plus an estimated shipping cost (free over $40, est. $4.99 below — the source figure is item-only). TCGplayer Market Price is their average of recent COMPLETED SALES on the US marketplace, USD — source-verified 2026-08-22, no region/filter parameters exist on the provider endpoint to get wrong. Shipping is normalized by the model; the remaining structural asymmetry is ASK vs SOLD, so a resting positive gap is definitional plus the RT-4 photo premium. |spread| >= 15% flags; negative gaps read stronger (an ask sitting UNDER recent sold-plus-shipping is fighting the definition). A flat TCG line can mean no recent sales, not a frozen ask. Tax excluded both sides, always. TCG-side listing counts: provider exposes none for sealed - field carried as null, lights up if they ship it.",
   counts: { compared: rows.length, signals: rows.filter(r => r.signal).length, skipped: skipped.length },
   rows, skipped }, null, 2) + "\n");
 console.log(`✓ The Spread: ${rows.length} compared, ${rows.filter(r=>r.signal).length} signals`);
