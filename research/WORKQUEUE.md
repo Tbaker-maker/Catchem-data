@@ -4,6 +4,16 @@ marks it CLAIMED(who,date), works it, marks DONE(commit). Pull before
 write, push after. Tyler adds items in plain English anywhere here.
 
 ## NEXT UP FOR CC → research/CC-PROMPT-QUEUE.md (ordered, paste one at a time)
+ALL SEVEN QUEUE BLOCKS DONE (CC desk, Aug 22 remote session) — CI guard
+green end-to-end · brand fonts + wordmark Syne · binder art PROVEN + 2×2 ·
+pack basis mapped (31 TCG rows live, premiums re-based) · tokens sync +
+public/gated split LIVE (catchemtcg.com serves methodology/corrections/
+pulse/board/landers; app unlisted+noindex) · /studio/posts live (+ fixed a
+pre-existing app-wide crash from the CAD commit) · GemRate email +
+PSA recon docs written. Details: session report + per-block commits.
+PENDING TYLER from this run: CF Access on app.* (dashboard, 5 min) ·
+send gemrate-partnership-email.md · swsh45-pack identity ruling ·
+lander CTA treatment (public copies point /product/ → landing for now).
 
 ## CLAIMED / IN FLIGHT
 - (CC, Aug 20) Utilities IA overhaul (APPROVED): Tools hub tab, Watch tab, Pack Math + Print Watch first surfaces, question-grammar tool screens. Spec section 15 + mockup v4.

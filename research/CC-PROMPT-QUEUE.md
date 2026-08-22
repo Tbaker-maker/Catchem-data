@@ -1,4 +1,9 @@
-# CC PROMPT QUEUE — paste in this order (updated Aug 21 2026, evening)
+# CC PROMPT QUEUE — ✅ ALL SEVEN DONE (CC desk remote session, Aug 22 2026)
+Every block below completed and pushed; see WORKQUEUE header + the session
+report for outcomes, surprises, and the four items pending Tyler.
+Kept for the record — add new blocks BELOW a fresh header when queueing.
+
+# (was) CC PROMPT QUEUE — paste in this order (updated Aug 21 2026, evening)
 One prompt at a time. Wait for CC's report and the `>` prompt before the
 next. Everything here is blocked on either workflow-scope permissions or
 a machine I can't reach — nothing is duplicated work.
