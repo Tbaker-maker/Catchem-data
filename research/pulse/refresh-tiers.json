@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-22T23:30:32.147Z",
+ "generatedAt": "2026-08-22T23:32:26.558Z",
  "basis": "NO SWEEP YET — every card is treated as bulk until discovery-sweep runs, which is the conservative direction",
  "catalogue": 16468,
  "tiers": [
@@ -47,6 +47,39 @@
  "callsPerDay": 183,
  "callsPerMonth": 5489,
  "dueToday": 194,
+ "sealed": {
+  "products": 207,
+  "tiers": [
+   {
+    "id": "daily",
+    "everyDays": 1,
+    "minPrice": 150,
+    "why": "boxes and premium collections — a percent here is real money",
+    "products": 108,
+    "callsPerDay": 108
+   },
+   {
+    "id": "fast",
+    "everyDays": 2,
+    "minPrice": 40,
+    "why": "ETBs, bundles, most in-print product",
+    "products": 38,
+    "callsPerDay": 19
+   },
+   {
+    "id": "weekly",
+    "everyDays": 7,
+    "minPrice": 0,
+    "why": "packs and tins — cheap, but still products people buy, so never worse than weekly",
+    "products": 61,
+    "callsPerDay": 9
+   }
+  ],
+  "callsPerDay": 136
+ },
+ "combinedCallsPerDay": 319,
+ "combinedCallsPerMonth": 9561,
+ "budgetUsedPct": 1.6,
  "versusDailyEverything": {
   "callsPerMonth": 494040,
   "saving": "99%"
