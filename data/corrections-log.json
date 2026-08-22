@@ -1,33 +1,39 @@
 {
- "note": "Public corrections log. material=true means it affected a number a reader could have acted on. Entries are permanent.",
- "entries": [
-  {
-   "date": "2026-08-23",
-   "material": true,
-   "what": "Our marketplace gap was not comparing like with like. The eBay figure included shipping; TCGplayer market prices do not. On cheap items \u2014 packs especially \u2014 this reversed the answer: we showed some packs asking far more on eBay when, once shipping was counted on both sides, they were actually cheaper there.",
-   "fix": "Both sides now include shipping and neither includes tax, which is stated wherever a price appears. Journey Together booster packs moved from +54.9% to -12.7%; Destined Rivals from +7.5% to -30%. Sealed boxes barely changed, because both marketplaces ship those free.",
-   "guard": "The comparison basis is recorded on every row, and the shipping estimate is labelled as an estimate with a stated condition for re-checking it."
-  },
-  {
-   "date": "2026-08-21",
-   "material": true,
-   "what": "Our Pokemon GO Elite Trainer Box figure read high. Multi-quantity listings (\"lot of 2\", \"2x\", sealed cases) were passing our filters and lifting medians on any product with an active lot market.",
-   "fix": "The product is held out of published reads until it re-verifies. The filter now rejects multi-item listings across all 207 products.",
-   "guard": "A multi-item pattern guard runs at fetch time, and a durable quarantine file keeps a held product held even through a full data rebuild."
-  },
-  {
-   "date": "2026-08-21",
-   "material": false,
-   "what": "Share cards were minted in a format social platforms reject, and long text inside them was being dropped when converted.",
-   "fix": "Cards now render as PNG with the text drawn natively.",
-   "guard": "Every card rasterizes as part of the daily run, so the format that ships is the format that was checked."
-  },
-  {
-   "date": "2026-08-20",
-   "material": false,
-   "what": "Our sealed index baseline included the day we changed pricing methods, so part of the first move measured our own cleanup rather than the market.",
-   "fix": "The baseline was moved to the first full day under the current method and the history rebuilt from source snapshots.",
-   "guard": "New sets also sit out their first 90 days, so launch-window noise never enters the index."
-  }
- ]
+  "note": "Public corrections log. material=true means it affected a number a reader could have acted on. Entries are permanent.",
+  "entries": [
+    {
+      "date": "2026-08-23",
+      "material": true,
+      "what": "Our marketplace gap was not comparing like with like. The eBay figure included shipping; TCGplayer market prices do not. On cheap items — packs especially — this reversed the answer: we showed some packs asking far more on eBay when, once shipping was counted on both sides, they were actually cheaper there.",
+      "fix": "Both sides now include shipping and neither includes tax, which is stated wherever a price appears. Journey Together booster packs moved from +54.9% to -12.7%; Destined Rivals from +7.5% to -30%. Sealed boxes barely changed, because both marketplaces ship those free.",
+      "guard": "The comparison basis is recorded on every row, and the shipping estimate is labelled as an estimate with a stated condition for re-checking it."
+    },
+    {
+      "date": "2026-08-21",
+      "material": true,
+      "what": "Our Pokemon GO Elite Trainer Box figure read high. Multi-quantity listings (\"lot of 2\", \"2x\", sealed cases) were passing our filters and lifting medians on any product with an active lot market.",
+      "fix": "The product is held out of published reads until it re-verifies. The filter now rejects multi-item listings across all 207 products.",
+      "guard": "A multi-item pattern guard runs at fetch time, and a durable quarantine file keeps a held product held even through a full data rebuild."
+    },
+    {
+      "date": "2026-08-21",
+      "material": false,
+      "what": "Share cards were minted in a format social platforms reject, and long text inside them was being dropped when converted.",
+      "fix": "Cards now render as PNG with the text drawn natively.",
+      "guard": "Every card rasterizes as part of the daily run, so the format that ships is the format that was checked."
+    },
+    {
+      "date": "2026-08-20",
+      "material": false,
+      "what": "Our sealed index baseline included the day we changed pricing methods, so part of the first move measured our own cleanup rather than the market.",
+      "fix": "The baseline was moved to the first full day under the current method and the history rebuilt from source snapshots.",
+      "guard": "New sets also sit out their first 90 days, so launch-window noise never enters the index."
+    },
+    {
+      "date": "2026-08-22",
+      "what": "The Spread has been retired from the front page",
+      "detail": "We compared our eBay prices against TCGplayer prices for the same product and used that gap to help choose what we put in front of you. The two figures are not measured the same way: ours includes delivery, theirs is an item price with shipping excluded, and no shipping-inclusive TCGplayer figure is available to us at any price. The gap therefore always read wider than the real difference, and worst on cheap products where postage is most of the cost. It no longer chooses the Daily Three and no longer raises signals. It stays on product pages as a labelled stat, because two marketplaces disagreeing is still worth seeing.",
+      "whatChanged": "Removed from the Daily Three selection and from the signal list. Kept as a labelled stat on product pages with a permanent note that the TCGplayer figure excludes shipping. Methodology page rewritten to explain the demotion."
+    }
+  ]
 }

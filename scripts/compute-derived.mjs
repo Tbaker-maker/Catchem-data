@@ -503,7 +503,18 @@ for (const p of liveList) if (p.priceMedian)
 
 
 // ── ENGAGEMENT: Rip-or-Hold daily question + notification payload ───────
-const rohPool = (div.rows||[]).filter(r=>r.signal).sort((a,b)=>Math.abs(b.spreadPct)-Math.abs(a.spreadPct));
+// Was ranked by spreadPct off signal rows. Retiring the Spread made
+// r.signal permanently false, which silently emptied this pool and killed
+// Rip-or-Hold entirely — a held instrument taking an unrelated feature down
+// with it. Rebuilt on our own eBay-side numbers: rippable sealed with real
+// listing depth, rotated daily so it is not the same product every morning.
+const rohPool = liveList
+  .filter(p => p.priceMedian && (p.listingCount ?? 0) >= 10
+    && ["booster-box", "etb", "pc-etb", "booster-bundle"].includes(p.subtype)
+    && !blockedIds.has(p.id))
+  .sort((a, b) => (b.listingCount ?? 0) - (a.listingCount ?? 0))
+  .slice(0, 25)
+  .map(p => ({ id: p.id, name: p.name, ebayAskMedian: p.priceMedian }));
 const rohPick = rohPool[new Date().getUTCDate() % Math.max(rohPool.length,1)] || null;
 const ripOrHold = rohPick ? { id: rohPick.id, name: rohPick.name, price: rohPick.ebayAskMedian,
   question: `${rohPick.name} at $${rohPick.ebayAskMedian} — rip it or hold it sealed?`,
@@ -633,7 +644,10 @@ const out = {
       ranked.forEach((p, i) => prominence.set(p.id, i / Math.max(1, ranked.length - 1))); // 0 = most famous
     }
     const noveltyScore = r => {
-      const strength = Math.abs(r.spreadPct);
+      // Was Math.abs(r.spreadPct) — ranking by the retired instrument. Depth
+      // is the honest stand-in: a product with more live listings is a better
+      // subject than a thin one, and it is measured, not inferred.
+      const strength = Math.min(20, (r.ebayListings ?? 0) / 5);
       const deepCut = (prominence.get(r.id) ?? 0.5) * 12;   // up to +12 for obscurity
       const cooldown = isRepeat(r.name) ? -1000 : 0;         // hard exclusion
       const unseen = featuredAgo.size && !isRepeat(r.name) ? 4 : 0;
@@ -674,9 +688,14 @@ const LENSES = [
         pick: () => eligibleAll.map(r => ({ r, z: dealZone.byId[r.id] })).filter(x => x.z?.zonePct)
                       .sort((a,b)=>b.z.zonePct-a.z.zonePct)[0]?.r,
         why: r => { const z = dealZone.byId[r.id]; return `A seller keeps about $${z.sellerFloor.toLocaleString("en-US")} online; a buyer pays about $${z.buyerCeiling.toLocaleString("en-US")}. Roughly $${z.zoneWidth.toLocaleString("en-US")} of room where a face-to-face trade beats the internet.`; } },
-      { id: "gap", label: "widest gap between the two markets",
-        pick: () => eligibleAll.filter(r => r.signal).sort((a,b)=>Math.abs(b.spreadPct)-Math.abs(a.spreadPct))[0],
-        why: r => `The two marketplaces are ${Math.abs(r.spreadPct)}% apart on the same product — eBay at $${r.ebayAskMedian.toLocaleString("en-US")}, TCGplayer at $${(r.tcgMarket||0).toLocaleString("en-US")}. The widest disagreement on the board today.` },
+      // The "gap" lens was REMOVED 2026-08-22 (Tyler: retire the Spread to a
+      // footnote). It selected on spreadPct, and the spread is biased in a
+      // known direction by an unmeasurable amount — our eBay side includes
+      // postage, the TCGplayer side excludes it and no shipping-inclusive TCG
+      // figure is purchasable at any tier. An instrument we cannot correct
+      // must not choose what we put in front of readers. It is still computed
+      // (compute-divergence runs untouched) and still shown as a labelled stat
+      // on product pages; it just no longer drives a pick.
     ];
     let lensUsed = null, lensPick = null;
     for (let i = 0; i < LENSES.length && !lensPick; i++) {
@@ -701,13 +720,13 @@ const LENSES = [
     // it is actually on the list, not the reason a different candidate was.
     let whyLine = (lensUsed && lensPick === sealedPick) ? lensUsed.why(sealedPick) : null;
     let lensId = (lensUsed && lensPick === sealedPick) ? lensUsed.id : null;
+    // The screaming-deal override is GONE with the gap lens (2026-08-22). It
+    // let a large spread bump whatever the lens had chosen, which is the same
+    // biased instrument steering the card in through a side door — and the
+    // bigger the spread, the more of it was likely the shipping asymmetry
+    // rather than a real disagreement. Nothing replaces it: if no lens finds a
+    // candidate the existing fallbacks already handle the day.
     let repeatReason = null;
-    if (topScream && sealedPick && Math.abs(topScream.spreadPct) > Math.abs(sealedPick.spreadPct) + 25) {
-      if (isRepeat(topScream.name)) repeatReason = `back on the board ${featuredAgo.get(topScream.name)} day(s) later — the gap widened past anything else we track`;
-      sealedPick = topScream;
-      whyLine = `The two marketplaces are ${Math.abs(topScream.spreadPct)}% apart on this one — far enough out of line to outrank everything else on the board today.`;
-      lensId = "screaming";
-    }
     let gradedPick = null;
     {
       const g = ((enr&&enr.cards)||[])
@@ -764,17 +783,18 @@ const LENSES = [
         if (!sealedPick) return null;
         const _rr = repeatReason;
         const L = lifecycle[sealedPick.setId];
-        const dir = sealedPick.spreadPct > 0 ? "more" : "less";
-        const mag = Math.abs(sealedPick.spreadPct);
-        const base = sealedPick.spreadPct > 0
-          ? `eBay usually runs a little higher on sealed \u2014 this is asking ${mag}% more, well past that baseline.`
-          : `eBay sellers are asking ${mag}% LESS than TCGplayer \u2014 unusual, since photos normally earn eBay a premium.`;
         const life = L ? ` The set is ${L.ageMonths} months old (${L.phase.split(" \u2014")[0]}).` : "";
+        // tcg and spreadPct are deliberately NOT emitted here (2026-08-22).
+        // The card used to lead on the gap and the app rendered a "Spread"
+        // stat straight off these fields, which is how a held instrument was
+        // still headlining the Today screen after the hold shipped. The lens
+        // now supplies whyChosen; explain carries the product's own measured
+        // context instead of a cross-market comparison we cannot correct.
         return {
-          whyChosen: whyLine, lens: lensId, name: sealedPick.name, ebay: sealedPick.ebayAskMedian, tcg: sealedPick.tcgMarket,
-          spreadPct: sealedPick.spreadPct, listings: sealedPick.ebayListings, chip:"VERIFIED",
-          reason: lensUsed && lensId === lensUsed.id ? lensUsed.label : "biggest price gap between the two markets today",
-          explain: `${base} ${sealedPick.ebayListings} listings are live right now.${life}` };
+          whyChosen: whyLine, lens: lensId, name: sealedPick.name, ebay: sealedPick.ebayAskMedian,
+          listings: sealedPick.ebayListings, chip:"VERIFIED",
+          reason: lensUsed && lensId === lensUsed.id ? lensUsed.label : "the day's clearest read on the sealed board",
+          explain: `Asking $${(sealedPick.ebayAskMedian||0).toLocaleString("en-US")} across ${sealedPick.ebayListings} live listings.${life}` };
       })(),
       graded: gradedPick, // null until Premium table exists — the slot says so honestly
       raw: rawPick,
