@@ -1,0 +1,50 @@
+# Watchdog — the only check that can see ABSENCE.
+#
+# Every other guard we own runs inside the daily job, which means they all
+# share one blind spot: a run that never starts fires none of them. A green
+# history and a dead cron look identical from the inside.
+#
+# This is deliberately a SEPARATE workflow on a DIFFERENT schedule. An alarm
+# wired into the thing it watches dies with it — if the daily job's trigger
+# breaks, a watchdog step inside that job never runs either. Eight hours after
+# the daily run is late enough that a slow morning is not a false alarm, and
+# early enough that a dead pipeline is caught the same day.
+#
+# It reports. It does not fix — heartbeat.mjs reads the proof-of-life stamps
+# each stage writes and fails if anything has gone quiet. Saying it "handles"
+# failures would be the kind of overclaim we do not make.
+name: Watchdog
+
+on:
+  schedule:
+    - cron: "0 12 * * *" # 12:00 UTC — eight hours after the 04:00 daily run
+  workflow_dispatch: # so a human can ask "is it alive?" without waiting
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Heartbeat (has anything gone quiet?)
+        run: node scripts/heartbeat.mjs
+
+      # If the heartbeat says something is silent, say so somewhere a human
+      # looks. Guarded on the secret so a fork or a fresh clone skips it
+      # cleanly rather than failing, and continue-on-error so a Discord outage
+      # cannot turn "the pipeline is fine" into a red run.
+      - name: Report silence to Discord
+        if: failure()
+        continue-on-error: true
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          if [ -z "$DISCORD_WEBHOOK_URL" ]; then
+            echo "No DISCORD_WEBHOOK_URL — skipping notification."
+            exit 0
+          fi
+          RUN="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          printf '{"content":"⚠️ **Watchdog: something has gone quiet.** The heartbeat check failed — a stage has not reported in. This usually means the daily run did not happen, not that it failed. %s"}' "$RUN" > payload.json
+          curl -s -H "Content-Type: application/json" -X POST -d @payload.json "$DISCORD_WEBHOOK_URL" > /dev/null && echo "Reported."

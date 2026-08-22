@@ -14,7 +14,7 @@
 // Absence is the hardest failure to see and the easiest to build for. It only
 // requires deciding, in advance, how long silence is allowed to last.
 import { readFile, writeFile } from "node:fs/promises";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { dirname, join } from "node:path";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const FILE = join(ROOT, "data/heartbeat.json");
@@ -27,8 +27,12 @@ const EXPECT_HOURS = {
   pulse: 30,
   cards: 30,
   discord: 30,
-  botAlive: 2,        // the bot should check in hourly once deployed
+  botAlive: 2,        // the bot should check in hourly ONCE DEPLOYED
 };
+
+// Stages that legitimately have not started yet. Listed explicitly so the
+// exemption is a decision somebody made, not a silence nobody noticed.
+const PENDING = new Set(["botAlive"]);
 
 export async function beat(stage, detail = {}) {
   let hb = {};
@@ -44,18 +48,30 @@ export async function watch() {
       silent: Object.entries(EXPECT_HOURS).map(([stage, allowed]) => ({ stage, ageHours: null, allowed, note: "has never reported in" })) };
   }
   const now = Date.now();
-  const silent = [], healthy = [];
+  const silent = [], healthy = [], pending = [];
   for (const [stage, hours] of Object.entries(EXPECT_HOURS)) {
     const rec = hb[stage];
+    // NOT-YET-DEPLOYED is not the same as GONE QUIET. botAlive is stamped by
+    // catchem-bot, which is not deployed, so demanding an hourly check-in from
+    // it made the watchdog red every single day — and a permanently red alarm
+    // gets muted, which costs us the alarm. A stage in PENDING stays silent
+    // until it reports ONCE; from then on the normal rule applies, because at
+    // that point silence really does mean something stopped.
+    if (!rec && PENDING.has(stage)) { pending.push(stage); continue; }
     if (!rec) { silent.push({ stage, ageHours: null, allowed: hours, note: "has never reported in" }); continue; }
     const age = (now - Date.parse(rec.at)) / 3600000;
     if (age > hours) silent.push({ stage, ageHours: Math.round(age), allowed: hours, lastSeen: rec.at });
     else healthy.push({ stage, ageHours: Math.round(age * 10) / 10 });
   }
-  return { ok: silent.length === 0, silent, healthy };
+  return { ok: silent.length === 0, silent, healthy, pending };
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+// pathToFileURL, not `file://${argv[1]}` — the template form never matches on
+// Windows (drive letters, backslashes), so this whole block silently did
+// nothing locally and the script exited 0 no matter how stale the stamps were.
+// It works in CI, which is worse: the watchdog's sensor could not be tested on
+// the machine where anyone would test it.
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   const mode = process.argv[2];
   if (mode === "beat") { await beat(process.argv[3] || "manual"); console.log(`✓ heartbeat: ${process.argv[3]}`); }
   else {
@@ -64,6 +80,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     // gets muted, and a muted watchdog is worse than none.
     if (r.ok) {
       console.log(`✓ heartbeat: everything has checked in — ${r.healthy.map(h => `${h.stage} ${h.ageHours}h ago`).join(", ")}`);
+      if (r.pending?.length) console.log(`  (not deployed yet, not counted: ${r.pending.join(", ")})`);
     } else {
       console.error(`\n✗ SOMETHING HAS GONE QUIET — ${r.silent.length} stage(s):`);
       for (const s of r.silent) console.error(`   ${s.stage}: ${s.ageHours == null ? s.note : `last seen ${s.ageHours}h ago, allowed ${s.allowed}h`}`);

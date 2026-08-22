@@ -122,3 +122,68 @@ jobs:
         # mode renders every figure — order and accent only. An echo-chamber
         # mode fails the run.
         run: node scripts/mode-diff-test.mjs
+
+      - name: Deliver the agent digest to Discord
+        # Fourteen agents write research/pulse/agent-digest.md every morning and
+        # nothing sent it, so the whole fleet depended on Tyler remembering to
+        # open the repo. Delivery is what turns an agent's output into work
+        # somebody reads. Guarded on the secret AND on the file existing;
+        # continue-on-error because a Discord hiccup must never turn a good
+        # morning into a red run.
+        if: success()
+        continue-on-error: true
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          if [ -z "$DISCORD_WEBHOOK_URL" ]; then
+            echo "No DISCORD_WEBHOOK_URL — skipping digest delivery."; exit 0
+          fi
+          if [ ! -f research/pulse/agent-digest.md ]; then
+            echo "No agent-digest.md this run — nothing to deliver."; exit 0
+          fi
+          node -e '
+            const fs = require("fs");
+            // Discord caps a message at 2000 characters. Truncate on a line
+            // break so the digest never ends mid-sentence, and say it was cut.
+            const raw = fs.readFileSync("research/pulse/agent-digest.md", "utf-8").trim();
+            const LIMIT = 1800;
+            let body = raw;
+            if (raw.length > LIMIT) {
+              const cut = raw.slice(0, LIMIT);
+              body = cut.slice(0, cut.lastIndexOf("\n")) + "\n\n…truncated — full digest in research/pulse/agent-digest.md";
+            }
+            fs.writeFileSync("digest-payload.json", JSON.stringify({ content: body }));
+          '
+          curl -s -H "Content-Type: application/json" -X POST -d @digest-payload.json "$DISCORD_WEBHOOK_URL" > /dev/null && echo "Digest delivered."
+
+      - name: Report the failed step to Discord
+        # A red run lived in the run log and an email nobody promised to read.
+        # GitHub does not expose "which step failed" as an expression, so this
+        # asks the API for this job's own steps and names the first failure —
+        # "the run failed" costs a click and a scroll before anyone knows where
+        # to look, and at 4am that click does not happen.
+        if: failure()
+        continue-on-error: true
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -z "$DISCORD_WEBHOOK_URL" ]; then
+            echo "No DISCORD_WEBHOOK_URL — skipping failure notice."; exit 0
+          fi
+          RUN="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          STEP=$(curl -s -H "Authorization: Bearer $GH_TOKEN" \
+            "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/jobs" \
+            | node -e '
+              let s = "";
+              process.stdin.on("data", d => s += d).on("end", () => {
+                try {
+                  const jobs = JSON.parse(s).jobs || [];
+                  const job = jobs.find(j => j.name === process.env.GITHUB_JOB) || jobs[0] || {};
+                  const bad = (job.steps || []).find(x => x.conclusion === "failure");
+                  process.stdout.write(bad ? bad.name : "unknown step");
+                } catch { process.stdout.write("unknown step"); }
+              });
+            ')
+          printf '{"content":"🔴 **Daily run failed at: %s**\\nEverything before it succeeded. %s"}' "$STEP" "$RUN" > fail-payload.json
+          curl -s -H "Content-Type: application/json" -X POST -d @fail-payload.json "$DISCORD_WEBHOOK_URL" > /dev/null && echo "Failure reported: $STEP"
