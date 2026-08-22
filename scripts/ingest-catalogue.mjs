@@ -24,6 +24,12 @@ const API = "https://api.pokemontcg.io/v2";
 const KEY = process.env.POKEMONTCG_API_KEY;
 const headers = KEY ? { "X-Api-Key": KEY } : {};
 const PAGE = 250;
+// PACING MUST MATCH THE KEY, verified against docs.pokemontcg.io 2026-08-22:
+// 20,000 requests/day WITH a key, but only 1,000/day and a hard 30 PER MINUTE
+// without one. The flat 150ms delay below is 400/min — six times over the
+// keyless ceiling, so a keyless run walks straight into 429s and reports the
+// catalogue as failed sets rather than as a throttle we chose to ignore.
+const DELAY_MS = KEY ? 150 : 2100;   // 2.1s ~= 28/min, just under the cap
 
 // Which sets to ingest. Default: every set we track a product or single from,
 // plus anything passed on the command line. Metadata is cheap; being selective
@@ -93,13 +99,13 @@ for (const setId of wanted) {
       }
       if (got >= total || !(d.data ?? []).length) break;
       page++;
-      await new Promise(r => setTimeout(r, 150));
+      await new Promise(r => setTimeout(r, DELAY_MS));
     }
     store.sets[setId] = { cardsIngested: got, expected: total, complete: total != null && got >= total, at: new Date().toISOString() };
     setsDone++;
     if (setsDone % 10 === 0) console.log(`  … ${setsDone}/${wanted.length} sets`);
   } catch (e) { failures.push({ setId, status: e.message }); }
-  await new Promise(r => setTimeout(r, 150));
+  await new Promise(r => setTimeout(r, DELAY_MS));
 }
 
 const withArtist = Object.values(store.cards).filter(c => c.artist).length;
