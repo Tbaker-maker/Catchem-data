@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-22T04:38:46.124Z",
+  "generatedAt": "2026-08-22T04:45:26.654Z",
   "method": "Pack Math: ask median / era-aware pack count (arithmetic, no estimation; variable-count products excluded by name). Narrative: latest agent digest cross-referenced against tracked sets; 'quiet movers' = spread signal with zero digest mention.",
   "digestUsed": "2026-08-21.md",
   "packMath": {
@@ -1490,7 +1490,7 @@
       "horizon": "long",
       "thesis": "RT-1",
       "note": "reprint = short-term supply, long-term demand (RT-1)",
-      "context": "…ration pre-release slabs. **supply_event — destined rivals reprint wave arriving imminently** the destined rivals reprint could be one of the most m…",
+      "context": "…tion pre-release slabs. **supply_event — destined rivals reprint wave arriving imminently** the destined rivals reprint could be one of the most…",
       "provenance": "digest 2026-08-21.md",
       "chip": "READ"
     },
@@ -1500,7 +1500,7 @@
       "horizon": "short",
       "thesis": "RT-2",
       "note": "supply injection — absorb-or-stall watch (RT-2)",
-      "context": "…or 30th celebration pre-release slabs. **supply_event — destined rivals reprint wave arriving imminently** the destined rivals reprint could be one…",
+      "context": "…30th celebration pre-release slabs. **supply_event — destined rivals reprint wave arriving imminently** the destined rivals reprint could be on…",
       "provenance": "digest 2026-08-21.md",
       "chip": "READ"
     },
@@ -1510,7 +1510,7 @@
       "horizon": "long",
       "thesis": null,
       "note": "franchise moment — demand catalyst",
-      "context": "…on card submission strategy and pop-report growth rates for 30th celebration pre-release slabs. **supply_event — destined rivals reprint wave arrivin…",
+      "context": "…on card submission strategy and pop-report growth rates for 30th celebration pre-release slabs. **supply_event — destined rivals reprint wave arriv…",
       "provenance": "digest 2026-08-21.md",
       "chip": "READ"
     }
@@ -2875,7 +2875,7 @@
   "sealedIndex": {
     "name": "Catchem Sealed Index",
     "level": 100.6,
-    "ddPct": 0.1,
+    "ddPct": 0,
     "medianProductUsd": 200,
     "constituents": 173,
     "seasoningBench": 5,
@@ -3276,7 +3276,39 @@
     "model": {
       "buyerSide": "delivered eBay total + sales tax (est. 7% — set your own in the app)",
       "sellerSide": "eBay ask minus 13.25% final value fee and $0.40 per order",
-      "note": "Both figures are estimates from published fee schedules. A show price between them beats the online route for buyer and seller alike."
+      "note": "Both figures are estimates from published fee schedules. A show price between them beats the online route for buyer and seller alike.",
+      "formula": "buyerCeiling = ask × (1 + taxPct/100) · sellerFloor = ask × (1 − feePct/100) − feeFixed",
+      "taxPctDefault": 7,
+      "feeTiers": [
+        {
+          "id": "ebay-standard",
+          "label": "eBay Standard",
+          "pct": 13.25,
+          "fixed": 0.4,
+          "default": true
+        },
+        {
+          "id": "ebay-trp",
+          "label": "eBay Top Rated Plus",
+          "pct": 11.93,
+          "fixed": 0.4,
+          "note": "≈10% FVF discount (est.)"
+        },
+        {
+          "id": "ebay-basic-store",
+          "label": "eBay Basic Store",
+          "pct": 14.9,
+          "fixed": 0.4,
+          "note": "est."
+        },
+        {
+          "id": "tcgplayer",
+          "label": "TCGplayer",
+          "pct": 13.25,
+          "fixed": 0,
+          "note": "10.75% + 2.5% processing"
+        }
+      ]
     },
     "byId": {
       "swsh5-pack": {
@@ -3319,14 +3351,6 @@
         "zonePct": 21.9,
         "midpoint": 22.92
       },
-      "sv1-pack": {
-        "ask": 16.94,
-        "buyerCeiling": 18.13,
-        "sellerFloor": 14.3,
-        "zoneWidth": 3.83,
-        "zonePct": 22.6,
-        "midpoint": 16.22
-      },
       "sv3pt5-pack": {
         "ask": 29.5,
         "buyerCeiling": 31.57,
@@ -3334,14 +3358,6 @@
         "zoneWidth": 6.38,
         "zonePct": 21.6,
         "midpoint": 28.38
-      },
-      "sv4-pack": {
-        "ask": 14.88,
-        "buyerCeiling": 15.92,
-        "sellerFloor": 12.51,
-        "zoneWidth": 3.41,
-        "zonePct": 22.9,
-        "midpoint": 14.22
       },
       "sv8-pack": {
         "ask": 10,
@@ -3471,14 +3487,6 @@
         "zonePct": 20.7,
         "midpoint": 86.99
       },
-      "pgo-etb": {
-        "ask": 238.85,
-        "buyerCeiling": 255.57,
-        "sellerFloor": 206.8,
-        "zoneWidth": 48.77,
-        "zonePct": 20.4,
-        "midpoint": 231.19
-      },
       "me2pt5-tin": {
         "ask": 60,
         "buyerCeiling": 64.2,
@@ -3590,14 +3598,6 @@
         "zoneWidth": 442.05,
         "zonePct": 20.3,
         "midpoint": 2112.61
-      },
-      "sm8-etb": {
-        "ask": 774.95,
-        "buyerCeiling": 829.2,
-        "sellerFloor": 671.87,
-        "zoneWidth": 157.33,
-        "zonePct": 20.3,
-        "midpoint": 750.54
       },
       "sm10-booster-box": {
         "ask": 3201.23,
@@ -4591,14 +4591,6 @@
         "zonePct": 23.9,
         "midpoint": 10.45
       },
-      "sv6-pack": {
-        "ask": 14.98,
-        "buyerCeiling": 16.03,
-        "sellerFloor": 12.6,
-        "zoneWidth": 3.43,
-        "zonePct": 22.9,
-        "midpoint": 14.32
-      },
       "sv6pt5-pack": {
         "ask": 21.5,
         "buyerCeiling": 23.01,
@@ -4606,22 +4598,6 @@
         "zoneWidth": 4.76,
         "zonePct": 22.1,
         "midpoint": 20.63
-      },
-      "sv7-pack": {
-        "ask": 19.7,
-        "buyerCeiling": 21.08,
-        "sellerFloor": 16.69,
-        "zoneWidth": 4.39,
-        "zonePct": 22.3,
-        "midpoint": 18.88
-      },
-      "swsh1-pack": {
-        "ask": 19.95,
-        "buyerCeiling": 21.35,
-        "sellerFloor": 16.91,
-        "zoneWidth": 4.44,
-        "zonePct": 22.3,
-        "midpoint": 19.13
       },
       "swsh1-bundle": {
         "ask": 144.98,
@@ -4854,7 +4830,7 @@
     "note": "one-tap daily vote; results revisited next morning"
   },
   "notification": {
-    "title": "Catchem Sealed Index 100.6 (+0.1%)",
+    "title": "Catchem Sealed Index 100.6 (0%)",
     "body": "Today: Evolving Skies Booster Pack — eBay asks 29.2% more than TCGplayer."
   },
   "cohortCompare": {
@@ -4909,7 +4885,7 @@
       "hits": [
         {
           "where": "news",
-          "detail": "…bmission strategy and pop-report growth rates for 30th celebration pre-release slabs. **supply_event — destined rivals reprint wave arriving imminently** the…"
+          "detail": "…bmission strategy and pop-report growth rates for 30th celebration pre-release slabs. **supply_event — destined rivals reprint wave arriving imminently**…"
         }
       ]
     },
@@ -4919,7 +4895,7 @@
       "hits": [
         {
           "where": "news",
-          "detail": "…-release slabs. **supply_event — destined rivals reprint wave arriving imminently** the destined rivals reprint could be one of the most meaningful pokemon su…"
+          "detail": "…elease slabs. **supply_event — destined rivals reprint wave arriving imminently** the destined rivals reprint could be one of the most meaningful pokemon…"
         }
       ]
     },
@@ -4929,21 +4905,21 @@
       "hits": [
         {
           "where": "news",
-          "detail": "…r beckett reopen date to shift. **grading_news — psa backlog declining but value tiers still paused; reopen timeline slipping** psa's active grading backlog c…"
+          "detail": "…beckett reopen date to shift. **grading_news — psa backlog declining but value tiers still paused; reopen timeline slipping** psa's active grading backlog…"
         }
       ]
     }
   ],
   "dailyThree": {
     "sealed": {
-      "name": "Stellar Crown Booster Pack",
-      "ebay": 19.7,
-      "tcg": 10.58,
-      "spreadPct": 86.2,
-      "listings": 23,
+      "name": "Journey Together Booster Pack",
+      "ebay": 9.99,
+      "tcg": 6.45,
+      "spreadPct": 54.9,
+      "listings": 20,
       "chip": "VERIFIED",
       "reason": "biggest price gap between the two markets today",
-      "explain": "eBay usually runs a little higher on sealed — this is asking 86.2% more, well past that baseline. 23 listings are live right now."
+      "explain": "eBay usually runs a little higher on sealed — this is asking 54.9% more, well past that baseline. 20 listings are live right now."
     },
     "graded": {
       "name": "Umbreon ex (Prismatic Evolutions)",
@@ -4957,12 +4933,12 @@
       "explain": "Ungraded copies trade around $1,491. Perfect-graded (PSA 10) copies have been SELLING near $5,100 — about $3,529 ahead even after the $79.99 grading fee. Based on 550 recorded PSA 10 sales."
     },
     "raw": {
-      "name": "Rayquaza VMAX",
-      "set": "Evolving Skies",
-      "price": 1247.9,
+      "name": "Umbreon ex",
+      "set": "Prismatic Evolutions",
+      "price": 1490.88,
       "chip": "READ",
       "reason": "a chase we have not put in front of you this week",
-      "explain": "Widely treated as the card collectors hunt hardest from Evolving Skies — the card the whole set gets priced around. Market sits at $1,248 today. Its set is 59 months old."
+      "explain": "Widely treated as the card collectors hunt hardest from Prismatic Evolutions — the card the whole set gets priced around. Market sits at $1,491 today. Its set is 19 months old."
     }
   }
 }
