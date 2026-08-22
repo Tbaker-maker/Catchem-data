@@ -12,17 +12,14 @@ import { dirname, join } from "node:path";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const today = new Date().toISOString().split("T")[0];
 const cardImg = id => { const m=/^(.+)-(\w+)$/.exec(id||""); return m?`https://images.pokemontcg.io/${m[1]}/${m[2]}.png`:null; };
-let __tcgIds = {}, __imgOv = {};
-// Catalogue shot FIRST (2026-08-22). Seller photos are phone snapshots and
-// they make every number beside them look casual.
-const sealedImg = p => {
-  const ov = __imgOv[p.id];
-  if (ov?.use === "none") return null;
-  if (ov?.url) return ov.url;
-  if (ov?.use === "seller") return p.representativeImage || p.image || null;
-  return (__tcgIds[p.id] ? `https://tcgplayer-cdn.tcgplayer.com/product/${__tcgIds[p.id]}_in_1000x1000.jpg` : null)
-    || p.representativeImage || p.image || null;
-};
+
+// ONE image decision, made in image-source.mjs (reviewed override →
+// catalogue shot → seller photo → nothing). An inline copy of the same
+// logic lived here for a few hours on 2026-08-22 — two copies of one
+// decision is how they drift apart; the module owns it. The CC eye audit
+// reviewed productImage's output, so what was approved is what ships.
+const { productImage } = await import("./image-source.mjs");
+const sealedImg = p => productImage(p, 1000) || null;
 const J = async p => { try { return JSON.parse(await readFile(join(ROOT,p),"utf-8")); } catch { return null; } };
 let dyk = null;
 try {
@@ -33,10 +30,7 @@ try {
 
 
 const sp = await J("data/sealed-prices.json");
-try { const ov = await J("data/image-overrides.json"); __imgOv = ov?.products || {}; } catch {}
-try { const cm = await J("data/crosscheck-id-map.json");
-  for (const e of (cm.entries||[])) if (e.reviewed && !e.exclude && e.tcgPlayerId) __tcgIds[e.id] = e.tcgPlayerId;
-} catch {}
+
 
 const div = await J("data/divergence-report.json");
 const heat = await J("data/heat-report.json");

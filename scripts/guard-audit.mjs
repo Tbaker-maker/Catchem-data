@@ -59,6 +59,8 @@ const MANIFEST = [
       { file: "scripts/image-override-guard.mjs", pattern: /humanVerified/g, min: 2 },
       { file: "scripts/generate-pulse.mjs", pattern: /image-override-guard\.mjs/g, min: 1,
         note: "must run in the pipeline, not just exist" },
+      { file: "scripts/generate-pulse.mjs", pattern: /image-source\.mjs/g, min: 1,
+        note: "overrides must actually FEED the imagery — for a day the guard validated a file nothing consumed (caught by the 2026-08-22 eye audit)" },
     ] },
   { guard: "Referee Doctrine (no adversarial framing)",
     definedIn: "scripts/voice-lint.mjs",
