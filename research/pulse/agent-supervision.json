@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-22T21:04:17.217Z",
+ "generatedAt": "2026-08-22T21:06:06.177Z",
  "date": "2026-08-22",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -56,6 +56,11 @@
    "agent": "correction-hunter",
    "finding": "runs daily and has returned the same count (2) four runs running.",
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
+  },
+  {
+   "agent": "experience",
+   "finding": "every finding from a week ago is still open (7).",
+   "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
    "agent": "improver",
