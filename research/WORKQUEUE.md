@@ -56,6 +56,9 @@ write, push after. Tyler adds items in plain English anywhere here.
 - Visual polish beyond shipped P0 + Lighthouse pass
 
 ## DONE (recent)
+- Safeguard registry + repeatable audit w/ failure simulations (Aug 22);
+  stale-edition + partial-fetch breakers added after a resilience test
+  showed a dead fetch would publish week-old numbers dated today.
 - CLOUD SESSION Aug 20 (CC desk): bot on Railway is now THE VOICE —
   morning_pulse cog (6:00 PT, Mock 1, staleness law: >26h feed = silence) +
   rip_loop cog (6:01 PT question w/ 💥🧊, next-day tally, crowd record owned
