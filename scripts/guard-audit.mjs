@@ -171,6 +171,7 @@ const MUST_RUN = [
   { script: "jargon-lint.mjs", why: "blocks unexplained jargon and undefined named constructs" },
   { script: "falsifier.mjs", why: "tests our own theses against their falsifiers daily" },
   { script: "correction-hunter.mjs", why: "re-checks previously published figures" },
+  { script: "content-sanity.mjs", why: "published prose must say something — the gap that let a card ship the word chase as its reason" },
   { script: "publish-assert.mjs", why: "final artifact proof — must be LAST" },
 ];
 

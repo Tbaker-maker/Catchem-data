@@ -371,6 +371,21 @@ const CASES = [
         why: bad.length ? `${bad.map(b => b.id).join(", ")} state a rule with no source` : hasDisclaimer ? "" : "the not-legal-advice disclaimer is missing" };
     } },
 
+  { guard: "Content is meaningful", detect: "content-sanity.mjs",
+    // The chase card published the single word "chase" as its explanation and
+    // EVERY guard passed it: the feed was valid, the product was not blocked,
+    // the voice was not hyped, the jargon was clean, the shape was right. It
+    // was simply meaningless, and meaninglessness was not on anybody's list.
+    break: async () => {
+      await copyFile(P("research/pulse/pulse-feed.json"), "/tmp/nt-cs.bak");
+      const f = JSON.parse(await readFile(P("research/pulse/pulse-feed.json"), "utf-8"));
+      if (!f.dailyThree?.raw) return false;
+      f.dailyThree.raw.explain = "chase";
+      await writeFile(P("research/pulse/pulse-feed.json"), JSON.stringify(f));
+      return true;
+    },
+    restore: async () => { await copyFile("/tmp/nt-cs.bak", P("research/pulse/pulse-feed.json")); } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");

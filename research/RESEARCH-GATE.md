@@ -93,6 +93,8 @@ fixing the class is.
 
 | 16 | Every rotation repeated itself across a 31-day month boundary (31 %% 5 == 1 %% 5), including the Daily Three lens rotation the freshness law depends on | The Breaker, by asking what breaks at a boundary | Untested assumption | scripts/rotate.mjs uses days-since-epoch, which is monotonic; negative-tested against four real month and leap-year edges |
 
+| 17 | The chase card published the word "chase" as its entire explanation — a category label rendered where prose belonged | Tyler, by eye | Meaningless-but-valid content | scripts/content-sanity.mjs: published prose must be a sentence, not a label; negative-tested against the exact string |
+
 **PATTERN, stated plainly:** 8 of 9 were caught by Tyler, not by the
 machine. Every guard above was built AFTER a human caught something.
 That is the honest state — the machine is now catching prices, but
