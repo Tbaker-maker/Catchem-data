@@ -1,0 +1,196 @@
+{
+ "generatedAt": "2026-08-22T17:55:10.897Z",
+ "date": "2026-08-22",
+ "note": "Two review passes that need judgment, not arithmetic. Run by a model with a key, or by CC, or by Tyler. Output is a DRAFT — nothing here publishes itself.",
+ "newcomer": {
+  "brief": "You have never bought a Pokémon card and know nothing about the hobby or about markets.\nRead each line below. For every line, answer only: would you understand it, and if not, WHICH WORD OR PHRASE stopped you?\nDo not be generous. If a term is technically explained elsewhere but not in the line itself, you did not understand it.\nReport only the lines that lost you, with the exact stopping point. Say nothing about lines that were clear.",
+  "lines": [
+   {
+    "where": "dailyThree.shelf",
+    "text": "Listings moved 24 to 8 overnight. Shelves draining while asks rise, which historically means demand-led buying or one large buyer., with asks up 21.2%."
+   },
+   {
+    "where": "dailyThree.sealed",
+    "text": "Cheapest believable listing $47.17, middle of the market $249.99. A floor that far below the median usually rewards patience."
+   },
+   {
+    "where": "dailyThree.graded",
+    "text": "Ungraded copies trade around $1,491. Perfect-graded (PSA 10) copies have been SELLING near $5,100 — about $3,529 ahead even after the $79.99 grading fee. Based on 550 recorded PSA 10 sales."
+   },
+   {
+    "where": "dailyThree.raw",
+    "text": "Widely treated as the card Prismatic Evolutions is priced around, at $1,491 ungraded. Its set is 19 months old."
+   },
+   {
+    "where": "era.Sun & Moon",
+    "text": "Vintage-class era. This market historically trades on eBay, at shows and in collector groups, so we read eBay figures only."
+   },
+   {
+    "where": "era.Sword & Shield",
+    "text": "eBay normally runs a little higher because photos show the exact item. Asks here sit well past that, which typically points to demand."
+   },
+   {
+    "where": "era.Vintage & other",
+    "text": "Vintage-class era. This market historically trades on eBay, at shows and in collector groups, so we read eBay figures only."
+   },
+   {
+    "where": "era.Scarlet & Violet",
+    "text": "The gap sits inside the range photos usually explain, so nothing here is signalling on its own."
+   },
+   {
+    "where": "era.Mega Evolution",
+    "text": "The gap sits inside the range photos usually explain, so nothing here is signalling on its own."
+   },
+   {
+    "where": "supply.sv8pt5-pack",
+    "text": "Shelves draining while asks rise, which historically means demand-led buying or one large buyer."
+   },
+   {
+    "where": "supply.sv4pt5-pc-etb",
+    "text": "Likely listings expiring or sellers stepping back."
+   },
+   {
+    "where": "supply.sv10-pack",
+    "text": "Likely listings expiring or sellers stepping back."
+   },
+   {
+    "where": "supply.sv9-pack",
+    "text": "Shelves draining while asks rise, which historically means demand-led buying or one large buyer."
+   },
+   {
+    "where": "supply.sv8pt5-etb",
+    "text": "Shelves draining while asks rise, which historically means demand-led buying or one large buyer."
+   },
+   {
+    "where": "supply.me2pt5-pack",
+    "text": "Likely listings expiring or sellers stepping back."
+   },
+   {
+    "where": "supply.swsh10-pack",
+    "text": "Shelves draining while asks rise, which historically means demand-led buying or one large buyer."
+   },
+   {
+    "where": "supply.sv8pt5-bb",
+    "text": "Likely listings expiring or sellers stepping back."
+   },
+   {
+    "where": "index.simple",
+    "text": "One number for the whole sealed market. It starts at 100 and moves by the average daily change of the products we track — only products we could price on both days count toward a move, so adding or removing products never shifts it."
+   },
+   {
+    "where": "index.twin",
+    "text": "Same shelf, but the expensive boxes get a bigger say. If this number and the main one disagree, the cheap end and the expensive end of the market are moving differently."
+   },
+   {
+    "where": "shipping",
+    "text": "Prices include shipping and exclude tax. eBay figures are delivered totals — item plus postage wherever a listing states it. TCGplayer figures come to us without shipping, so comparisons between the two are not yet like-for-like and we flag them rather than estimate the difference."
+   },
+   {
+    "where": "disclosure",
+    "text": "Buy Pressure is estimated from listing activity — not reported sales. Active Listings are measured."
+   },
+   {
+    "where": "dyk.body",
+    "text": "The figure repeated everywhere is 10,000 copies of each card. It has never been confirmed by Wizards of the Coast or The Pokémon Company. It circulates as community lore, not documented fact."
+   },
+   {
+    "where": "dyk.takeaway",
+    "text": "So the next time someone quotes a print-run number at you as though it settles an argument, remember that the most repeated figure in the hobby has no source behind it."
+   }
+  ]
+ },
+ "redTeam": {
+  "brief": "For each claim below, argue the STRONGEST honest case that it is wrong or misleading, using only the evidence given.\nDo not invent data. If the claim is well supported and no serious counter exists, say so plainly — a weak counter offered for the sake of balance is worse than none.\nWhere a genuine counter exists, state it in one or two sentences, in language a collector would use.",
+  "claims": [
+   {
+    "id": "dailyThree.shelf",
+    "claim": "Listings moved 24 to 8 overnight. Shelves draining while asks rise, which historically means demand-led buying or one large buyer., with asks up 21.2%.",
+    "evidence": {
+     "name": "Prismatic Evolutions Booster Pack",
+     "listings": 8,
+     "prev": 24,
+     "dPct": -66.7,
+     "priceDPct": 21.2,
+     "chip": "READ",
+     "reason": "shelf move",
+     "explain": "Listings moved 24 to 8 overnight. Shelves draining while asks rise, which historically means demand-led buying or one large buyer., with asks up 21.2%."
+    }
+   },
+   {
+    "id": "dailyThree.raw",
+    "claim": "Widely treated as the card Prismatic Evolutions is priced around, at $1,491 ungraded. Its set is 19 months old.",
+    "evidence": {
+     "name": "Umbreon ex",
+     "set": "Prismatic Evolutions",
+     "price": 1490.88,
+     "chip": "READ",
+     "reason": "chase",
+     "explain": "Widely treated as the card Prismatic Evolutions is priced around, at $1,491 ungraded. Its set is 19 months old."
+    }
+   },
+   {
+    "id": "supply.sv8pt5-pack",
+    "claim": "Shelves draining while asks rise, which historically means demand-led buying or one large buyer.",
+    "evidence": {
+     "listings": "24→8",
+     "dPct": -66.7,
+     "priceDPct": 21.2
+    }
+   },
+   {
+    "id": "supply.sv4pt5-pc-etb",
+    "claim": "Likely listings expiring or sellers stepping back.",
+    "evidence": {
+     "listings": "120→40",
+     "dPct": -66.7,
+     "priceDPct": 0
+    }
+   },
+   {
+    "id": "supply.sv10-pack",
+    "claim": "Likely listings expiring or sellers stepping back.",
+    "evidence": {
+     "listings": "27→13",
+     "dPct": -51.9,
+     "priceDPct": -16.7
+    }
+   },
+   {
+    "id": "supply.sv9-pack",
+    "claim": "Shelves draining while asks rise, which historically means demand-led buying or one large buyer.",
+    "evidence": {
+     "listings": "28→19",
+     "dPct": -32.1,
+     "priceDPct": 11.1
+    }
+   },
+   {
+    "id": "era.Sun & Moon",
+    "claim": "Vintage-class era. This market historically trades on eBay, at shows and in collector groups, so we read eBay figures only.",
+    "evidence": {
+     "products": 19,
+     "avgGapPct": null,
+     "boxMedian": 2183.04
+    }
+   },
+   {
+    "id": "era.Sword & Shield",
+    "claim": "eBay normally runs a little higher because photos show the exact item. Asks here sit well past that, which typically points to demand.",
+    "evidence": {
+     "products": 53,
+     "avgGapPct": 17.2,
+     "boxMedian": 600
+    }
+   },
+   {
+    "id": "era.Vintage & other",
+    "claim": "Vintage-class era. This market historically trades on eBay, at shows and in collector groups, so we read eBay figures only.",
+    "evidence": {
+     "products": 7,
+     "avgGapPct": null,
+     "boxMedian": null
+    }
+   }
+  ]
+ }
+}

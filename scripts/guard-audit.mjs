@@ -158,6 +158,8 @@ const MUST_RUN = [
   { script: "voice-lint.mjs", why: "blocks prediction language" },
   { script: "rasterize-cards.mjs", why: "PNG-only law" },
   { script: "jargon-lint.mjs", why: "blocks unexplained jargon and undefined named constructs" },
+  { script: "falsifier.mjs", why: "tests our own theses against their falsifiers daily" },
+  { script: "correction-hunter.mjs", why: "re-checks previously published figures" },
   { script: "publish-assert.mjs", why: "final artifact proof — must be LAST" },
 ];
 

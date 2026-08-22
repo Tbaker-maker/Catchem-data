@@ -1,0 +1,74 @@
+{
+ "generatedAt": "2026-08-22T17:53:45.867Z",
+ "date": "2026-08-22",
+ "note": "We test our own claims before anyone else gets the chance. INSUFFICIENT is an honest verdict and is reported as loudly as the others.",
+ "summary": {
+  "survived": 4,
+  "tripped": 0,
+  "insufficient": 4,
+  "pending": 0
+ },
+ "results": [
+  {
+   "id": "RT-1",
+   "name": "The Reprint Cycle",
+   "falsifier": "a reprint-era product class stays below its pre-reprint level long enough that reprints are not absorbed",
+   "verdict": "INSUFFICIENT",
+   "detail": "needs a multi-week price series to judge absorption; we hold 4 clean days",
+   "needs": "30+ days of tape across a reprint event"
+  },
+  {
+   "id": "RT-3",
+   "name": "Depth–Liquidity Matrix",
+   "falsifier": "pile-up states precede 14-day price softness in fewer than 55% of cases",
+   "verdict": "INSUFFICIENT",
+   "detail": "the test needs 14 days AFTER each pile-up state; we hold 4 days total",
+   "needs": "21+ days of tape"
+  },
+  {
+   "id": "RT-4",
+   "name": "The Photo Premium",
+   "falsifier": "the resting cross-market baseline measures at or below 0% — i.e. eBay stops carrying a premium at all",
+   "verdict": "SURVIVED",
+   "detail": "median gap 12.4% across 115 products, still positive"
+  },
+  {
+   "id": "RT-4b",
+   "name": "Commodity-Pack Venue Rule",
+   "falsifier": "mapped TCGplayer pack prices persistently sit ABOVE eBay asks for the same SKU",
+   "verdict": "SURVIVED",
+   "detail": "TCGplayer sits above eBay on only 0% of 31 mapped packs"
+  },
+  {
+   "id": "RT-4a",
+   "name": "Venue Boundary",
+   "falsifier": "TCGplayer vintage-sealed volume becomes material — listing depth comparable to modern",
+   "verdict": "SURVIVED",
+   "detail": "vintage depth 15 vs modern 51 — still a thinner, separate market"
+  },
+  {
+   "id": "RT-5",
+   "name": "PSA-9 Tax / Fresh-Set Exception",
+   "falsifier": "fresh-set 9-premiums persist 12+ months after release, i.e. the bend never fades",
+   "verdict": "INSUFFICIENT",
+   "detail": "graded premiums need a licensed daily graded feed we do not have",
+   "needs": "a licensed graded-price source"
+  },
+  {
+   "id": "RT-6",
+   "name": "Scheduled-Event Anticlimax",
+   "falsifier": "a rotation or print-close date produces a measurable same-week move across the affected cohort",
+   "verdict": "INSUFFICIENT",
+   "detail": "no scheduled event has fallen inside the clean window; first real test is the April 2027 rotation",
+   "needs": "a scheduled event inside the tape"
+  },
+  {
+   "id": "IDX",
+   "name": "Index moves only on the market",
+   "falsifier": "the index level changes on a day when composition or pricing basis changed",
+   "verdict": "SURVIVED",
+   "detail": "first day of a clean series — no prior day to move against"
+  }
+ ],
+ "amendmentsDrafted": []
+}

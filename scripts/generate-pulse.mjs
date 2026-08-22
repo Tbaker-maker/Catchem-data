@@ -561,4 +561,7 @@ await import("./build-corrections.mjs");
 await import("./send-discord-alerts.mjs");
 await import("./voice-lint.mjs");
 await import("./jargon-lint.mjs");
+await import("./falsifier.mjs");
+await import("./correction-hunter.mjs");
+await import("./review-agents.mjs");
 await import("./publish-assert.mjs");
