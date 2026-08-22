@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-22T20:53:31.209Z",
+ "generatedAt": "2026-08-22T21:03:21.233Z",
  "date": "2026-08-22",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -13,7 +13,10 @@
   "falsifier: clean run — nothing failed, which is the point of it",
   "review-agents: has never actually run (no key) — costing nothing, proving nothing, and honest about both"
  ],
- "problems": [],
+ "problems": [
+  "correction-hunter: FARMING — findings climbed 12 → 16 → 20 → 26 across four runs with nothing resolved. Volume is not work.",
+  "correction-hunter: BROKEN RECORD — 16 finding(s) repeated three runs running (e.g. \"f0\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself."
+ ],
  "workforce": [
   {
    "kind": "HIRE",
@@ -50,11 +53,6 @@
   {
    "agent": "falsifier",
    "finding": "runs daily and has returned the same count (0) four runs running.",
-   "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
-  },
-  {
-   "agent": "correction-hunter",
-   "finding": "runs daily and has returned the same count (2) four runs running.",
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
   },
   {
