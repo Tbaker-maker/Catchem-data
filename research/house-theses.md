@@ -626,3 +626,32 @@ watched, not to the clock.
 
 MEASURED, so nobody has to guess: 7 agents, ~1.1 seconds a day combined,
 zero external API calls. The paid one does not run.
+
+## THE SUPERVISOR IS A MANAGER, NOT A NIGHT WATCHMAN (Tyler, Aug 23 2026)
+"These are the things the supervisor should be picking up on. Exactly like a
+job. His goal is to make it as efficient and successful as possible, always
+with the utmost professionalism — what the best hire at the top of the class
+would be."
+
+A supervisor that only polices behaviour is a night watchman. The standard is
+higher: find the waste before being asked, and be able to say which of your
+people are earning their seat.
+
+WHAT IT NOW DOES WITHOUT BEING ASKED
+- **Cadence waste** — an agent returning the same count four runs running is
+  producing the same answer twice and calling it work. A human caught this by
+  hand on 2026-08-23; the supervisor should have seen it first, and now does.
+- **Yield** — findings nobody acts on are not findings, they are a list.
+  Either hand them to someone who can act, or the reporting bar is too low.
+- **Cost against yield** — the only paid agent on the team should be the
+  easiest to justify. If it cannot be, switch it off until it can.
+- **Redundancy** — two agents on one beat is a MANAGEMENT failure, not theirs.
+
+THE PROFESSIONALISM PART, and it is the hardest:
+**ZERO IS NOT ONE THING.** The falsifier finding nothing means no thesis
+failed — that is the outcome we want. review-agents finding nothing means it
+never ran. Same number, opposite meanings. A supervisor that flags both as
+problems is a bad manager: it treats success as a warning, and then nobody
+reads it. Every agent now declares what its empty result MEANS, and the
+supervisor says "clean run — nothing failed, which is the point of it"
+rather than raising an alarm about good news.

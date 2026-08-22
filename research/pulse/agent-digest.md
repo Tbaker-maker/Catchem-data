@@ -36,9 +36,6 @@ Gaps in what we watch:
 - **an agent for competitor** — Nothing tracks what other tools ship. We would learn a competitor solved something we are still guessing at only by accident. (web research, no new dependency)
 - **an agent for pricing-drift** — Nothing spot-checks our published prices against the live marketplace by eye. Every guard we have compares us to ourselves. (needs a browser — CC's lane)
 
-- *REVIEW* — falsifier has found nothing in 7 runs: Either the thing it watches is genuinely healthy — in which case say so once and run it weekly — or it has stopped working. Silence should be a decision, not a habit.
-- *REVIEW* — review-agents has found nothing in 7 runs: Either the thing it watches is genuinely healthy — in which case say so once and run it weekly — or it has stopped working. Silence should be a decision, not a habit.
-
 > Right now every agent watches US. A workforce that builds the best community, app, tools and database in this hobby needs agents that watch the MARKET (what changed that we did not notice), the COMMUNITY (what people are asking), and the FIELD (what everyone else shipped). Two of those three need the bot; one needs only research. That is the order to hire in.
 
 ---
