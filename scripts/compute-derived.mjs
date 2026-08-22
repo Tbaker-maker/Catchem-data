@@ -658,7 +658,17 @@ const out = {
           explain: `Widely treated as the card collectors hunt hardest from ${pick.setName} \u2014 the card the whole set gets priced around. Market sits at $${Math.round(pick.priceMarket).toLocaleString("en-US")} today.${lifeBit}` };
       }
     }
+    // THIRD SLOT (2026-08-22): graded needs a licensed feed. Rather than render
+    // a padlock — which advertises absence and is the worst card on the page —
+    // promote an instrument we fully own. A shelf move is a genuinely different
+    // lens from a price gap and a chase.
+    const shelfPick = (!gradedPick || gradedPick.gated)
+      ? (supplyShifts || []).find(x => !blockedIds.has(x.id) && !isRepeat(x.name)) || null
+      : null;
     return {
+      shelf: shelfPick ? { name: shelfPick.name, listings: shelfPick.listings, prev: shelfPick.prev,
+        dPct: shelfPick.dPct, priceDPct: shelfPick.priceDPct, chip: "READ",
+        explain: shelfPick.read, reason: "shelf move worth a look" } : null,
       sealed: (() => {
         if (!sealedPick) return null;
         const _rr = repeatReason;
