@@ -206,6 +206,19 @@ const CASES = [
     },
     restore: async () => { await copyFile("/tmp/nt-garbage.bak", P("data/sealed-prices.json")); } },
 
+  { guard: "Thesis coverage (every claim has a live test)", detect: null,
+    // A thesis written into doctrine and tested by nothing is exactly the
+    // failure the Falsifier exists to prevent. RT-2 and RT-7 were both in that
+    // state when this was written — published claims nobody was checking.
+    fn: async () => {
+      const doc = await readFile(P("research/house-theses.md"), "utf-8");
+      const src = await readFile(P("scripts/falsifier.mjs"), "utf-8");
+      const theses = [...doc.matchAll(/^## (RT-[0-9a-z]+)/gm)].map(m => m[1]);
+      const missing = theses.filter(t => !src.includes(`id: "${t}"`));
+      return { pass: missing.length === 0,
+        why: missing.length ? `${missing.join(", ")} written into doctrine with no falsifier test — write one or retire the thesis` : "" };
+    } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");

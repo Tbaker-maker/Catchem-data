@@ -119,6 +119,24 @@ const tests = [
     falsifier: "a rotation or print-close date produces a measurable same-week move across the affected cohort",
     run: () => ({ verdict: "INSUFFICIENT", detail: "no scheduled event has fallen inside the clean window; first real test is the April 2027 rotation", needs: "a scheduled event inside the tape" }) },
 
+  { id: "RT-2", name: "Supply Injection Absorb-or-Stall",
+    falsifier: "a supply injection is followed by neither absorption nor a stall — listings rise and prices are unaffected either way",
+    run: () => {
+      const shifts = (der.supplyShifts || []).filter(s => s.dPct != null && s.priceDPct != null);
+      if (shifts.length < 5) return { verdict: "INSUFFICIENT", detail: `${shifts.length} shifts with both listing and price deltas`, needs: "5+ shift events" };
+      const injections = shifts.filter(s => s.dPct > 15);
+      if (!injections.length) return { verdict: "INSUFFICIENT", detail: "no supply injections in today's data to test against", needs: "a shift with listings up 15%+" };
+      const unaffected = injections.filter(s => Math.abs(s.priceDPct) < 1).length;
+      const pct = Math.round(unaffected / injections.length * 100);
+      return pct >= 80
+        ? { verdict: "TRIPPED", detail: `${pct}% of ${injections.length} supply injections moved prices less than 1% — injections are not being absorbed OR stalling, which is the stated kill condition` }
+        : { verdict: "SURVIVED", detail: `${injections.length} injections today; ${100 - pct}% moved prices measurably` };
+    } },
+
+  { id: "RT-7", name: "Artist Cohort Attribution",
+    falsifier: "cards by the same illustrator move together no more often than random cards of similar rarity and era",
+    run: () => ({ verdict: "INSUFFICIENT", detail: "needs the full catalogue ingested plus 30+ days of singles history to compare cohort coherence against a random baseline", needs: "catalogue + 30 days of singles tape" }) },
+
   // Not a thesis, but the same discipline: the index must never move on a
   // methodology change. This has been violated twice and is worth a daily check.
   { id: "IDX", name: "Index moves only on the market",
@@ -132,13 +150,21 @@ const tests = [
     } },
 ];
 
+// COVERAGE: a thesis written and never tested is exactly the failure this
+// agent exists to prevent, so it checks itself. RT-2 and RT-7 were both
+// missing when this was added — written into doctrine, tested by nothing.
+const theses = [...(await readFile(join(ROOT, "research/house-theses.md"), "utf-8")).matchAll(/^## (RT-[0-9a-z]+)/gm)].map(m => m[1]);
+const untested = theses.filter(t => !tests.some(x => x.id === t));
+
 const results = tests.map(t => { try { return { ...t, ...t.run() }; } catch (e) { return { ...t, verdict: "ERROR", detail: e.message }; } });
 const tripped = results.filter(r => r.verdict === "TRIPPED");
 const mood = tripped.length ? pickLine(VOICE.someTripped)
   : results.filter(r => r.verdict === "INSUFFICIENT").length >= results.length / 2 ? pickLine(VOICE.mostlyInsufficient)
   : pickLine(VOICE.allSurvived);
+if (untested.length) console.warn(`  ⚠ ${untested.length} thesis/theses in doctrine with NO falsifier test: ${untested.join(", ")} — write one or retire the thesis`);
 const report = { generatedAt: new Date().toISOString(), date: today, mood,
   note: "We test our own claims before anyone else gets the chance. INSUFFICIENT is an honest verdict and is reported as loudly as the others.",
+  coverage: { thesesInDoctrine: theses.length, tested: theses.length - untested.length, untested },
   summary: { survived: results.filter(r => r.verdict === "SURVIVED").length,
              tripped: tripped.length,
              insufficient: results.filter(r => r.verdict === "INSUFFICIENT").length,
