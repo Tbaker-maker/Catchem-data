@@ -88,3 +88,23 @@ cap can only be read from the dashboard behind Tyler's login. The API returns
 `X-RateLimit-Daily-Remaining` and `metadata.apiCallsConsumed` on every call, so
 one authenticated request would confirm the real balance — the key is
 Read-Host only and never persisted, so that check needs Tyler.
+
+## CORRECTION, 2026-08-23 — the limit is 20,000/day, not 200,000
+Re-verified against the docs' rate-limit table: **200,000 is the Business plan
+($99/mo). We are on the API plan ($9.99/mo) at 20,000 credits/day, 60
+calls/minute.** The daily allowance resets at 00:00 UTC; the per-minute limit
+clears within 60 seconds; there is ONE shared credit pool, not a per-endpoint
+budget. Paid plans can hold prepaid credits, which do not expire and are drawn
+on instead of returning 429.
+
+Consequence for any full-catalogue plan: the full NM/LP/MP/HP/DMG ladder for
+16,468 cards costs 32,936 credits — a two-day backfill, and **not something
+that can run daily on this tier**. Sized against an imagined 200k it looks like
+a daily job; against the real 20k it 429s partway through every morning.
+
+Batching, verified the same day: a `setId` query with NO limit/offset returns
+the ENTIRE set in one response, billed once at set size x per-card cost, with
+the per-request caps (200 basic / 100 with history / 25 with both) not applying.
+Minute cost is min(30, ceil(cards/10)). Our 130 sets therefore cost 130 calls
+and about 29 minutes of wall clock either way — the constraint is credits, never
+calls. Full arithmetic in research/reports/2026-08-23-api-audit.md.
