@@ -21,6 +21,7 @@ const cor = await J("research/pulse/correction-hunt.json");
 const brk = await J("research/pulse/breaker-report.json");
 const imp = await J("research/pulse/improver-report.json");
 const sup = await J("research/pulse/agent-supervision.json");
+const cre = await J("research/pulse/creator-report.json");
 const uni = await J("research/pulse/universe-advisor.json");
 const rev = await J("research/pulse/review-agents.json");
 const exp = await J("research/pulse/experience-report.json");
@@ -125,6 +126,24 @@ if (exp?.findings?.length) {
   say(`## How it feels to use`);
   say(`${exp.findings.length} measurable finding(s). The looking is not ours to do — ${exp.forHumanEyes.length} questions are queued for whoever has eyes.`);
   for (const f of exp.findings.slice(0, 3)) say(`- *${f.lane}* — ${f.observation} ${f.fix}`);
+  say();
+}
+
+// The dispatch is the part a person acts on, so it goes near the top of what
+// they read, split by who can actually do it. A finding delivered to the wrong
+// person is the same as a finding nobody made.
+const dsp = sup?.dispatch;
+if (dsp && (dsp.tyler?.length || dsp.cc?.length || dsp.chat?.length)) {
+  say(`## Who needs to do what`);
+  if (dsp.tyler?.length) { say(`**NEEDS A HUMAN — Tyler (${dsp.tyler.length}):**`); for (const i of dsp.tyler.slice(0, 4)) say(`- ${i.what} — *${i.do}*`); say(); }
+  if (dsp.cc?.length) { say(`**CC (${dsp.cc.length}):**`); for (const i of dsp.cc.slice(0, 4)) say(`- ${i.what} — *${i.do}*`); say(); }
+  if (dsp.chat?.length) { say(`**Chat (${dsp.chat.length}):** ${dsp.chat.length} item(s), top: ${dsp.chat[0].what}`); say(); }
+}
+
+if (cre?.findings?.length) {
+  say(`## The creator cheat code`);
+  say(`*${cre.test}*`);
+  for (const f of cre.findings.filter(x => /cheat code|spine|visual/.test(x.need)).slice(0, 3)) say(`- **${f.need}** — ${f.observation} *${f.fix}*`);
   say();
 }
 

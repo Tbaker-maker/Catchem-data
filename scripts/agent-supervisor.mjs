@@ -39,6 +39,7 @@ const AGENTS = [
   { id: "falsifier", zeroMeans: "good", output: "research/pulse/falsifier-report.json", findings: d => (d?.results ?? []).filter(r => r.verdict === "TRIPPED").map(r => r.id), maxFindings: 12, maxSilentDays: 2 },
   { id: "correction-hunter", zeroMeans: "good", output: "research/pulse/correction-hunt.json", findings: d => [...(d?.suspectFigures ?? []).map(f => `suspect::${f.id}`), ...(d?.featuredThenUnmeasurable ?? []).map(f => `gone::${f.name}`)], maxFindings: 30, maxSilentDays: 2 },
   { id: "review-agents", zeroMeans: "unknown", output: "research/pulse/review-agents.json", findings: d => [...(d?.newcomer?.lines ?? []).slice(0, 0)], maxFindings: 0, maxSilentDays: 2 },
+  { id: "creator", zeroMeans: "suspect", output: "research/pulse/creator-report.json", findings: d => (d?.findings ?? []).map(f => `${f.need}::${String(f.observation).slice(0, 40)}`), maxFindings: 10, maxSilentDays: 7, standing: true },
   { id: "experience", zeroMeans: "suspect", output: "research/pulse/experience-report.json", findings: d => (d?.findings ?? []).map(f => `${f.lane}::${String(f.observation).slice(0, 40)}`), maxFindings: 10, maxSilentDays: 7, standing: true },
   { id: "improver", zeroMeans: "suspect", output: "research/pulse/improver-report.json", findings: d => (d?.ideas ?? []).map(i => `${i.area}::${String(i.observation).slice(0, 40)}`), maxFindings: 12, maxSilentDays: 2, standing: true },
   { id: "universe-advisor", zeroMeans: "suspect", output: "research/pulse/universe-advisor.json", findings: d => (d?.recommended ?? []).slice(0, 5).map(r => r.cardId), maxFindings: 200, maxSilentDays: 7, standing: true },
@@ -236,9 +237,40 @@ P("AMBITION", "the shape this workforce is aiming at",
   "Right now every agent watches US. A workforce that builds the best community, app, tools and database in this hobby needs agents that watch the MARKET (what changed that we did not notice), the COMMUNITY (what people are asking), and the FIELD (what everyone else shipped). Two of those three need the bot; one needs only research. That is the order to hire in.");
 
 if (!DRY) await writeFile(join(ROOT, "data/agent-history.json"), JSON.stringify(hist, null, 1));
+// ═══ DISPATCH ════════════════════════════════════════════════════════════
+// A supervisor that reports to nobody is a diary. This reads every agent's
+// findings and sorts them by WHO CAN ACT — chat, CC, or Tyler — because a
+// finding delivered to the wrong person is the same as a finding nobody made.
+//
+// The routing rule is capability, per FLEET-ROUTING.md: anything needing eyes,
+// a browser or a deploy goes to CC; anything needing data, code or writing goes
+// to chat; anything needing judgment, money or a human account goes to Tyler.
+const dispatch = { chat: [], cc: [], tyler: [] };
+{
+  const ROUTE = {
+    // agent → how to read its findings, and where they go by default
+    creator: { file: "research/pulse/creator-report.json", pick: d => (d?.findings ?? []).map(f => ({ what: f.observation, do: f.fix, owner: f.owner })) },
+    experience: { file: "research/pulse/experience-report.json", pick: d => (d?.findings ?? []).map(f => ({ what: f.observation, do: f.fix, owner: /visual|looks|colour|emoji/i.test(f.lane) ? "cc" : "chat" })) },
+    improver: { file: "research/pulse/improver-report.json", pick: d => (d?.ideas ?? []).map(i => ({ what: i.observation, do: i.suggestion, owner: /tool idea|retention/.test(i.area) ? "tyler" : "chat" })) },
+    breaker: { file: "research/pulse/breaker-report.json", pick: d => (d?.hypotheses ?? []).filter(h => h.severity === "high").map(h => ({ what: h.target, do: h.attack, owner: /deploy|mode|app|smoke/i.test(h.target) ? "cc" : "chat" })) },
+    falsifier: { file: "research/pulse/falsifier-report.json", pick: d => (d?.results ?? []).filter(r => r.verdict === "TRIPPED").map(r => ({ what: `${r.id} failed its own kill condition`, do: "publish the amendment — we said in advance this would end the thesis", owner: "tyler" })) },
+    "correction-hunter": { file: "research/pulse/correction-hunt.json", pick: d => (d?.suspectFigures ?? []).map(f => ({ what: `${f.name} moved ${f.movePct}% in ${f.from}→${f.to}`, do: "verify against listings; file a correction if the earlier figure was ours", owner: "cc" })) },
+  };
+  for (const [agent, r] of Object.entries(ROUTE)) {
+    const d = await J(r.file);
+    if (!d) continue;
+    for (const item of r.pick(d).slice(0, 6)) {
+      const owner = ["chat", "cc", "tyler"].includes(item.owner) ? item.owner : "chat";
+      dispatch[owner].push({ from: agent, what: item.what, do: item.do });
+    }
+  }
+}
+
 const report = { generatedAt: new Date().toISOString(), date: today,
   principle: "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
-  agents: notes, problems, workforce: proposals, efficiency };
+  agents: notes, problems, workforce: proposals, efficiency, dispatch };
+console.log(`\n  dispatch — ${dispatch.chat.length} for chat, ${dispatch.cc.length} for CC, ${dispatch.tyler.length} for Tyler`);
+for (const [who, items] of Object.entries(dispatch)) for (const i of items.slice(0, 2)) console.log(`   → ${who.padEnd(5)} ${String(i.what).slice(0, 62)}`);
 await writeFile(join(ROOT, "research/pulse/agent-supervision.json"), JSON.stringify(report, null, 1));
 
 // ADVISORY MEANS ADVISORY. process.exit() cannot be caught by the try/catch

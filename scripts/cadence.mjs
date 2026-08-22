@@ -34,6 +34,7 @@ export const CADENCE = {
   "breaker":           { when: "on-change", watches: "scripts/", paths: ["scripts/"] },
   "improver":          { when: "on-change-or-weekly", watches: "scripts/ and product shape", paths: ["scripts/"], weeklyOn: 1 },
   "experience":        { when: "on-change-or-weekly", watches: "the app's structure", paths: ["../catchem-app/src/"], weeklyOn: 1 },
+  "creator":           { when: "on-change-or-weekly", watches: "creator assets and the portal", paths: ["scripts/post-bank.mjs", "scripts/social-posts.mjs", "../catchem-app/src/"], weeklyOn: 1 },
   "universe-advisor":  { when: "weekly", watches: "catalogue vs priced universe", weeklyOn: 1 },
   // costs money → only when its input actually changed
   "review-agents":     { when: "on-change", watches: "published copy", paths: ["scripts/compute-derived.mjs", "scripts/generate-pulse.mjs", "data/did-you-know.json"], costs: true },

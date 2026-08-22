@@ -44,5 +44,25 @@ Gaps in what we watch:
 - *retention* — 5 things visibly change day to day: the Daily Three, a fact, shelf moves, yesterday's picks revisited, Rip or Hold. Good coverage — the gap is that a returning reader cannot TELL at a glance what is new since yesterday.
 - *ease of use* — A number appears above the fold on Today. Holds — check on a 390px screen that it is still above the fold with the banner and nav present.
 
+## Who needs to do what
+**NEEDS A HUMAN — Tyler (3):**
+- Nothing tells a creator how a piece performed after they made it. — *Ask one question after publication — did this land — and keep the answers. Even a yes/no on twenty videos would tell us which angles are worth generating.*
+- We hold both deal-zone room and per-pack economics for the same products. — *A "rip or trade" tool could answer one question nobody else can: at today's prices, is this box worth more opened, sold sealed online, or traded at a table? Three numbers we already compute, one screen.*
+- Print windows and shelf movement are computed separately and never combined. — *A late-print set whose shelves are draining is a genuinely different situation from either signal alone. Crossing them is free and nobody publishes it.*
+
+**CC (5):**
+- 10 distinct angles are ready each morning. — *Hold it. The risk now is the opposite — too many choices is its own paralysis, so lead with three and let the rest be a list.*
+- 27 card images minted today. — *The gap is that they are files in a repo. A creator needs them one tap from the angle they picked, not from a folder.*
+- The pieces exist and are reachable, but a creator still assembles them: pick an angle here, find the card there, open the overlay separately. — *ONE screen per angle: the subject, the spoken open, the numbers as a lower-third, the card ready to download, the source line, and a record checklist. Pick an angle, hit record.*
+- 4 accent colours appear on the same surface. — *Reserve green for positive, red for negative, and let mode accent everything else. Gold stays a highlight, never a third voice.*
+
+**Chat (11):** 11 item(s), top: Artist angles all carry their sources.
+
+## The creator cheat code
+*Could somebody open this, hit record within two minutes, and sound like the most informed voice in the hobby without pausing to look anything up? Every pause is a cut.*
+- **a visual that runs itself** — 27 card images minted today. *The gap is that they are files in a repo. A creator needs them one tap from the angle they picked, not from a folder.*
+- **the cheat code** — The pieces exist and are reachable, but a creator still assembles them: pick an angle here, find the card there, open the overlay separately. *ONE screen per angle: the subject, the spoken open, the numbers as a lower-third, the card ready to download, the source line, and a record checklist. Pick an angle, hit record.*
+- **the cheat code** — Nothing tells a creator how a piece performed after they made it. *Ask one question after publication — did this land — and keep the answers. Even a yes/no on twenty videos would tell us which angles are worth generating.*
+
 ---
 *Written by the agents, for a person. If a section here never leads to an action, that section should be deleted rather than tolerated.*
