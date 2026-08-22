@@ -9,9 +9,17 @@ import { dirname, join } from "node:path";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const CARDS = join(ROOT, "research/pulse/cards");
 
-let Resvg;
+// NEVER process.exit() here. generate-pulse imports this module as one link
+// in a chain that ends with voice-lint, jargon-lint and publish-assert, and
+// an exit(0) from an imported module ends the WHOLE run with a success code —
+// silently skipping the publication assert, the last line of defence, while
+// CI reports green. Only the vendored resvg binary is linux-x64, so every
+// local run took that path: found 2026-08-22 when the assert stopped printing
+// and the pipeline still exited 0. A skipped step must skip its own work and
+// hand control back, not take the process with it.
+let Resvg = null;
 try { ({ Resvg } = await import("@resvg/resvg-js")); }
-catch { console.log("· rasterize: @resvg/resvg-js not installed — skipping (npm i @resvg/resvg-js)"); process.exit(0); }
+catch { console.log("· rasterize: @resvg/resvg-js not available here — skipping PNGs, pipeline continues"); }
 
 // Brand fonts, if vendored (research/brand/fonts/*.ttf). Without them the
 // rasterizer falls back to a system face and the cards go off-brand.
@@ -50,7 +58,11 @@ async function inlineImages(svg) {
 }
 
 let files = [];
-try { files = (await readdir(CARDS)).filter(f => f.endsWith(".svg")); } catch { process.exit(0); }
+// Same rule: an unreadable cards directory skips the PNGs, it does not end
+// the run (this catch used to exit(0) and would have taken CI down with it).
+if (Resvg) {
+  try { files = (await readdir(CARDS)).filter(f => f.endsWith(".svg")); } catch { files = []; }
+}
 let made = 0;
 for (const f of files) {
   try {
