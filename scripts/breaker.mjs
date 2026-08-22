@@ -25,6 +25,7 @@ for (const f of files) sources[f] = await R(`scripts/${f}`) ?? "";
 const registry = await R("research/SAFEGUARD-REGISTRY.md") ?? "";
 const auditSrc = (sources["audit.mjs"] ?? "") + (sources["negative-tests.mjs"] ?? "");
 
+const schemaTargets = new Set(Object.keys((await J("data/schemas.json"))?.files ?? {}));
 const hypotheses = [];
 const H = (target, attack, why, severity) => hypotheses.push({ target, attack, why, severity });
 
@@ -51,7 +52,12 @@ const H = (target, attack, why, severity) => hypotheses.push({ target, attack, w
   const dataFiles = (await readdir(join(ROOT, "data"))).filter(f => f.endsWith(".json"));
   for (const df of dataFiles) {
     const readers = files.filter(f => sources[f].includes(`data/${df}`));
-    const validated = files.some(f => /guard|assert|audit|lint/.test(f) && sources[f].includes(`data/${df}`));
+    // A file can be validated by NAME in a guard, or by REGISTRY — schema-guard
+    // reads its targets from data/schemas.json rather than mentioning each path.
+    // A detector that keeps reporting solved problems trains people to ignore it,
+    // which is worse than not having one.
+    const inSchemas = schemaTargets.has(`data/${df}`);
+    const validated = inSchemas || files.some(f => /guard|assert|audit|lint/.test(f) && sources[f].includes(`data/${df}`));
     if (readers.length >= 2 && !validated)
       H(`data/${df}`, `Corrupt it — empty object, missing top-level key, wrong types — and see which of its ${readers.length} readers notices. Then decide which of them SHOULD have.`,
         `Read by ${readers.length} scripts and validated by none. A silent shape change here propagates everywhere before anything complains.`, "high");

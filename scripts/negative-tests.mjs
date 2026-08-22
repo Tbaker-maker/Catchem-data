@@ -136,6 +136,39 @@ const CASES = [
     },
     restore: async () => { await copyFile("/tmp/nt-sp.bak", P("data/sealed-prices.json")); } },
 
+  { guard: "Data file shapes", detect: "schema-guard.mjs",
+    break: async () => {
+      await copyFile(P("data/divergence-report.json"), "/tmp/nt-dv.bak");
+      const d = JSON.parse(await readFile(P("data/divergence-report.json"), "utf-8"));
+      d.rows = (d.rows || []).slice(0, 2);   // the shape of a run that lost its data
+      await writeFile(P("data/divergence-report.json"), JSON.stringify(d));
+      return true;
+    },
+    restore: async () => { await copyFile("/tmp/nt-dv.bak", P("data/divergence-report.json")); } },
+
+  { guard: "Thin-sample premium gate", detect: null,
+    fn: async () => {
+      const src = await readFile(P("scripts/compute-derived.mjs"), "utf-8");
+      const uses = (src.match(/premiumThin/g) || []).length;
+      return { pass: uses >= 2, why: `premiumThin appears ${uses}× — it must be SET when a sample is thin and READ where the premium is published` };
+    } },
+
+  { guard: "Run-level wipe guard (fetch)", detect: null,
+    fn: async () => {
+      const src = await readFile(P("scripts/fetch-sealed-prices.mjs"), "utf-8");
+      const declared = /WIPE GUARD/.test(src);
+      const refuses = /Refusing to overwrite/i.test(src) && /prevLive/.test(src);
+      return { pass: declared && refuses, why: declared ? "the wipe guard is described but does not refuse the write" : "no wipe guard found — a run that loses its prices could overwrite the file" };
+    } },
+
+  { guard: "Deal Zone model contract", detect: null,
+    fn: async () => {
+      const der = JSON.parse(await readFile(P("data/derived-insights.json"), "utf-8"));
+      const m = der.dealZone?.model;
+      const ok = m && typeof m.buyerSide === "string" && typeof m.sellerSide === "string";
+      return { pass: !!ok, why: ok ? "" : "dealZone.model is missing its rate description — the app reads its rates from here, so a missing contract means the app silently uses stale defaults" };
+    } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");

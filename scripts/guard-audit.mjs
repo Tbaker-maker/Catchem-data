@@ -161,6 +161,7 @@ const MANIFEST = [
 const PIPELINE_FILE = "scripts/generate-pulse.mjs";
 const MUST_RUN = [
   { script: "flag-guard.mjs", why: "one condition, one gate — stops two authors stacking gates invisibly" },
+  { script: "schema-guard.mjs", why: "data files read by many scripts and validated by none" },
   { script: "knowledge-guard.mjs", why: "every stored fact carries its source, date and falsifier" },
   { script: "qa-gate.mjs", why: "blocks corrupted numbers before anything publishes" },
   { script: "build-corrections.mjs", why: "keeps the public corrections page current" },
