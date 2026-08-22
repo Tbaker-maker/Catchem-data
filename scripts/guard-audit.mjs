@@ -105,6 +105,15 @@ const MANIFEST = [
       { file: "scripts/compute-derived.mjs", pattern: /taxPctDefault:/g, min: 1,
         note: "the default tax rate is a model field, not an app constant" },
     ] },
+  { guard: "Deploy smoke test (blank-page class — rendered DOM is proof, status codes are not)",
+    definedIn: "scripts/smoke-test.mjs",
+    mustBeReferencedIn: [
+      { file: "scripts/smoke-test.mjs", pattern: /pageerror/g, min: 1,
+        note: "a page error in the mounted app must fail the test — the 2026-08-22 blank app raised exactly one and shipped anyway" },
+      { file: "scripts/smoke-test.mjs", pattern: /SMOKE TEST FAILED/g, min: 1 },
+      { file: ".github/workflows/update-sealed-prices.yml", pattern: /smoke-test\.mjs/g, min: 1,
+        note: "must actually run in CI — a smoke test nobody runs is decoration" },
+    ] },
   { guard: "Durable quarantine at compute time (fetch rebuilds wipe publishBlock; qa-gate runs later)",
     definedIn: "scripts/lib/publish-guard.mjs",
     mustBeReferencedIn: [

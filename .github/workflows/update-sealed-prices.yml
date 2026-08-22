@@ -103,3 +103,11 @@ jobs:
             exit 0
           fi
           curl -s -X POST "$CF_DEPLOY_HOOK" && echo "" && echo "App rebuild triggered."
+
+      - name: Smoke test (live site + feed + rendered app)
+        # The blank-page guard: asserts the PUBLIC pages carry real content,
+        # the feed parses fresh, and the APP MOUNTS in headless Chrome with
+        # zero page errors. Status codes are not proof (2026-08-22: HTTP 200,
+        # blank screen). Runs after the data commit so a broken morning is
+        # loud within minutes, not when Tyler opens his phone.
+        run: node scripts/smoke-test.mjs
