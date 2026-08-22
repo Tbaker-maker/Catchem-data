@@ -70,7 +70,7 @@ for (const f of SURFACES) {
   const raw = await read(f);
   if (!raw) continue;
   // strip markup/keys so we lint prose, not field names
-  const text = raw.replace(/<[^>]+>/g, " ").replace(/"[a-zA-Z_]+":/g, " ");
+  const text = raw.replace(/<style[\s\S]*?<\/style>/gi, " ").replace(/<script[\s\S]*?<\/script>/gi, " ").replace(/<[^>]+>/g, " ").replace(/"[a-zA-Z_]+":/g, " ");
   const linked = /methodology/.test(raw);
 
   for (const term of TERMS) {
