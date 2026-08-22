@@ -280,3 +280,33 @@ packs read +54.9%; corrected they read -12.7%. Destined Rivals +7.5% to
 publishing the wrong SIGN on an entire product class.
 FALSIFIER: if TCGplayer changes its free-shipping threshold or typical
 rate, the estimate is wrong and the constants must be re-verified.
+
+## PRICING BASIS LAW (Tyler, Aug 23 2026)
+"Always add in shipping on both sides. Never add in tax, but indicate tax
+is not included and shipping is."
+
+THE STANDARD: every published price is what it costs to get the item to
+your door, excluding sales tax. Shipping IN, tax OUT, and both stated so
+nobody has to guess which.
+
+WHERE WE STAND TODAY, honestly:
+- **eBay**: delivered — item plus shipping wherever a listing states a
+  cost. Where a listing states none (about half, usually free-shipping
+  listings) the item price stands alone. Compliant.
+- **TCGplayer**: ITEM ONLY. Our TCG figures come through
+  PokemonPriceTracker as market price, which excludes shipping.
+  TCGplayer sellers set shipping by product size — roughly $0.99-$4.99
+  for small items and up to $24.99 for the largest — so a sealed box
+  carries real postage we currently cannot see. NOT YET COMPLIANT.
+CONSEQUENCE, stated rather than hidden: any eBay-vs-TCG comparison is
+not like-for-like until we can add TCG shipping. Every surface showing
+that comparison must say the TCG figure excludes shipping.
+THE FIX (routed, not guessed): TCGplayer sorts its own listings by price
+plus shipping, so the number exists at source. Someone with API access
+needs to find whether a shipping-inclusive figure is retrievable. Until
+then we label rather than estimate — inventing a postage number would
+be guessing, and the No-Guessing Law outranks the wish for a clean
+comparison.
+TAX: never added, anywhere. Rates vary by state and by whether a seller
+collects, so a single figure would be wrong for almost everyone. We say
+"tax not included" and leave it to the buyer.

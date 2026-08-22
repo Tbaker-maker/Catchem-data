@@ -456,7 +456,7 @@ const feed = {
   chases: chases.map(c=>({ cardId:c.cardId, name:c.name, set:c.setName, market:c.priceMarket, imageUrl: cardImg(c.cardId),
     provenance:c.provenance, class:"VERIFIED" })),
   disclosure: "Buy Pressure is estimated from listing activity — not reported sales. Active Listings are measured.",
-  shippingNote: "eBay figures are the delivered total — item plus shipping — wherever a listing states a shipping cost. Some sellers price an item low and recover it in postage, so a sticker price alone is not what you would pay.",
+  shippingNote: "Prices include shipping and exclude tax. eBay figures are delivered totals — item plus postage wherever a listing states it. TCGplayer figures come to us without shipping, so comparisons between the two are not yet like-for-like and we flag them rather than estimate the difference.",
   products: catalog,
   history,
   eraHistory,
