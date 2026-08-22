@@ -321,7 +321,7 @@ const eraIndexes = Object.entries(eraBuckets).filter(([,b])=>b.n>=3).map(([era,b
   let read;
   if (offTcg) read = "Vintage-class era. This market historically trades on eBay, at shows and in collector groups, so we read eBay figures only.";
   else if (avgGap == null) read = "cross-market read still pending — not enough matched data yet to say anything";
-  else if (avgGap >= 15) read = "Asks sit well past the usual photo premium, which typically points to demand rather than seller optimism.";
+  else if (avgGap >= 15) read = "eBay normally runs a little higher because photos show the exact item. Asks here sit well past that, which typically points to demand.";
   else if (avgGap >= 6) read = "The gap sits inside the range photos usually explain, so nothing here is signalling on its own.";
   else if (avgGap >= 0) read = "The two venues typically drift a little, and right now they barely do.";
   else read = "eBay asks under TCGplayer usually means motivated sellers across the era. Worth watching, not acting on.";
