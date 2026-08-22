@@ -20,12 +20,15 @@ We put something in front of readers and can no longer price it. That is the kin
 - **data/agent-history.json** — Corrupt it — empty object, missing top-level key, wrong types — and see which of its 2 readers notices. Then decide which of them SHOULD have.
 
 12 thing(s) that work and could work better — the top three:
-- *unused output* — review-agents.json is written every run and read by nothing — not another script, not the feed. Either surface it (the app, the Pulse, a creator tool) or stop generating it. Work that runs daily and reaches nobody is the most expensive kind.
-- *unused output* — artist-instruments.json is written every run and read by nothing — not another script, not the feed. Either surface it (the app, the Pulse, a creator tool) or stop generating it. Work that runs daily and reaches nobody is the most expensive kind.
-- *unused output* — era-history.json is written every run and read by nothing — not another script, not the feed. Either surface it (the app, the Pulse, a creator tool) or stop generating it. Work that runs daily and reaches nobody is the most expensive kind.
+- *tool idea (hypothesis)* — We hold both deal-zone room and per-pack economics for the same products. A "rip or trade" tool could answer one question nobody else can: at today's prices, is this box worth more opened, sold sealed online, or traded at a table? Three numbers we already compute, one screen.
+- *tool idea (hypothesis)* — Print windows and shelf movement are computed separately and never combined. A late-print set whose shelves are draining is a genuinely different situation from either signal alone. Crossing them is free and nobody publishes it.
+- *product* — The index has no matched sample today, so it cannot move. Expected on a fresh series — worth a line on the page saying so, rather than a number that looks stuck.
 
 ## If we expanded
 Pricing 50 more cards would unlock 17 artist cohorts and make 2018 catalogue cards analysable. That is Tyler's call, not the machine's.
+
+## The reading passes
+Did not run — no key present. 23 published lines and 9 claims are queued in review-agents.json. An unrun review is not a passed review.
 
 ---
 *Written by the agents, for a person. If a section here never leads to an action, that section should be deleted rather than tolerated.*

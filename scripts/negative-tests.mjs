@@ -272,7 +272,9 @@ const CASES = [
     // has not done work, it has made a file.
     fn: async () => {
       const digest = await readFile(P("scripts/agent-digest.mjs"), "utf-8").catch(() => "");
-      const REPORTS = ["falsifier-report.json", "correction-hunt.json", "breaker-report.json", "improver-report.json", "agent-supervision.json"];
+      const sup = await readFile(P("scripts/agent-supervisor.mjs"), "utf-8").catch(() => "");
+      const REPORTS = [...sup.matchAll(/output: "research\/pulse\/([a-z0-9\-]+\.json)"/g)].map(m => m[1]);
+      if (!REPORTS.length) return { pass: false, why: "could not read the agent registry — the check would silently pass" };
       const orphaned = REPORTS.filter(r => !digest.includes(r));
       return { pass: orphaned.length === 0,
         why: orphaned.length ? `${orphaned.join(", ")} produced daily and surfaced to nobody — either put it in the digest or stop generating it` : "" };

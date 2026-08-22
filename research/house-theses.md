@@ -534,3 +534,30 @@ THE LAWS
    never leads to an action, delete the section rather than tolerate it.
 Enforced by scripts/agent-supervisor.mjs, which is itself advisory —
 a watchdog that can halt the run is a hazard, not a safeguard.
+
+## THE IMPROVER — asking what could be better (Tyler, Aug 23 2026)
+"Focus on retention, app design, information, likability, new tool ideas —
+anything that could make us better we should at least be exploring. Not
+everything will work but we should verify, not trust."
+
+Every other agent asks WHAT IS BROKEN. Broken things announce themselves
+eventually; mediocre things never do. This one asks what could be better,
+measured against OUR OWN doctrine rather than generic best practice —
+"add more tests" is not insight.
+
+WHAT IT LOOKS FOR
+- **Unsurfaced data** — the cheapest features in existence are the ones
+  where we already hold the data and never showed it.
+- **Retention** — is there a reason to come back tomorrow? A market page
+  that looks the same twice is a page nobody opens twice.
+- **Likability** — numbers earn trust, voice earns affection. The ELI5
+  lines and the facts are the parts people quote.
+- **Tool ideas** — combinations of data we already compute, labelled
+  HYPOTHESIS every time, because dressing a guess as a finding is the
+  thing we least want to do.
+- **Doctrine gaps** — laws written and never enforced.
+
+RANKED BY VALUE, NOT DISCOVERY ORDER. Five housekeeping notices crowding
+out one tool idea is a list optimising for the wrong thing, and a reader
+who meets housekeeping first stops before the useful part. Repeated areas
+collapse to two so no single class can fill the page.

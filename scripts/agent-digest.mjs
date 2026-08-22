@@ -22,6 +22,7 @@ const brk = await J("research/pulse/breaker-report.json");
 const imp = await J("research/pulse/improver-report.json");
 const sup = await J("research/pulse/agent-supervision.json");
 const uni = await J("research/pulse/universe-advisor.json");
+const rev = await J("research/pulse/review-agents.json");
 
 const L = [];
 const say = (s = "") => L.push(s);
@@ -90,6 +91,20 @@ if (uni?.tranches) {
     say(`Pricing 50 more cards would unlock ${t.artistCohortsUnlocked} artist cohorts and make ${t.catalogueCardsMadeAnalysable} catalogue cards analysable. That is Tyler's call, not the machine's.`);
     say();
   }
+}
+
+// The two review passes need judgment, so they report whether they RAN.
+// An unrun review reported as silence would be the quiet failure this whole
+// digest exists to prevent.
+if (rev) {
+  say(`## The reading passes`);
+  if (rev.newcomer?.result || rev.redTeam?.result) {
+    if (rev.newcomer?.result) say(`**Newcomer:** ${String(rev.newcomer.result).slice(0, 400)}`);
+    if (rev.redTeam?.result) say(`**Red team:** ${String(rev.redTeam.result).slice(0, 400)}`);
+  } else {
+    say(`Did not run — no key present. ${(rev.newcomer?.lines ?? []).length} published lines and ${(rev.redTeam?.claims ?? []).length} claims are queued in review-agents.json. An unrun review is not a passed review.`);
+  }
+  say();
 }
 
 say(`---`);

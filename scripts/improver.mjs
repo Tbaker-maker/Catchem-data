@@ -126,14 +126,101 @@ const I = (area, observation, suggestion, effort) => ideas.push({ area, observat
     I("maintainability", `${h.f} is ${h.kb}KB.`, `Large files are where two people edit the same function on the same day. Splitting by concern would make collisions rarer and reviews honest.`, "medium");
 }
 
+
+// ═══ PRODUCT LANE ═══════════════════════════════════════════════════════
+// Everything above is hygiene. This asks the harder question: what would make
+// this BETTER to use? Retention, clarity, likability, tools that could exist.
+// Some of it is measurable and some is a hypothesis — each is labelled, because
+// dressing a guess as a finding is the thing we least want to do.
+
+// 7 — DATA WE HOLD AND NEVER SHOW. The cheapest product ideas in existence:
+// we already paid for the data, we simply never surfaced it.
+{
+  const held = {
+    "artist credits": (await J("data/card-catalogue.json"))?.cards,
+    "per-pack economics": der.packMath,
+    "deal zone": der.dealZone?.byId,
+    "era indexes": der.eraIndexes,
+    "print windows": der.printWatch,
+    "supply shifts": der.supplyShifts,
+    "verified facts": (await J("data/knowledge.json"))?.facts,
+  };
+  const shown = JSON.stringify(feed);
+  for (const [name, data] of Object.entries(held)) {
+    const n = Array.isArray(data) ? data.length : data ? Object.keys(data).length : 0;
+    if (!n) continue;
+    const key = name.split(" ")[0].toLowerCase();
+    if (!shown.toLowerCase().includes(key))
+      I("unsurfaced data", `We hold ${n} ${name} and the app never shows them.`,
+        `The cheapest feature in existence is data already paid for. Surface it or drop the collection.`, "small");
+  }
+}
+
+// 8 — RETENTION: is there a reason to come back TOMORROW?
+{
+  const daily = [];
+  if (der.dailyThree) daily.push("Daily Three");
+  if (feed.didYouKnow) daily.push("a fact");
+  if ((der.supplyShifts ?? []).length) daily.push("shelf moves");
+  if (der.watchOutcomes) daily.push("yesterday's calls revisited");
+  if (daily.length < 4)
+    I("retention", `Only ${daily.length} thing(s) change day to day (${daily.join(", ")}).`,
+      `A market page that looks the same twice is a page nobody opens twice. Anything that visibly changes overnight is a reason to return.`, "medium");
+  if (!der.watchOutcomes)
+    I("retention", "Yesterday's picks are not revisited today.",
+      `Scorekeeping is the strongest return-hook we have: people come back to see whether we were right. It also costs us nothing but honesty.`, "small");
+  const streak = JSON.stringify(feed).includes("streak") || JSON.stringify(feed).includes("Day ");
+  if (!streak) I("retention", "Nothing tells a reader how long they have been following, or how long we have been publishing.",
+    `A visible run — "day 6 of publishing this" — turns a page into a habit for both sides.`, "small");
+}
+
+// 9 — LIKABILITY: does anything here have a personality?
+{
+  const warm = ["mood", "simple", "why_it_matters", "didYouKnow"].filter(k => JSON.stringify(feed).includes(k)).length;
+  if (warm < 3)
+    I("likability", `Only ${warm} warm element(s) in the feed — the rest is measurement.`,
+      `Numbers earn trust; voice earns affection. The ELI5 lines and the facts are the parts people quote — there should be more of them, not fewer.`, "medium");
+  const eli5 = (der.eraIndexes ?? []).filter(e => e.simple).length;
+  const total = (der.eraIndexes ?? []).length;
+  if (total && eli5 < total)
+    I("sandbox rule", `${total - eli5} of ${total} era indexes ship without a plain-words version.`,
+      `Our own Sandbox Rule says every instrument gets an ELI5 one tap away. Partial compliance is the same as none for whoever lands on the one without it.`, "small");
+}
+
+// 10 — TOOL IDEAS FROM DATA WE ALREADY HAVE. Hypotheses, clearly labelled.
+{
+  const has = (x) => x && (Array.isArray(x) ? x.length : Object.keys(x).length);
+  if (has(der.dealZone?.byId) && has(der.packMath))
+    I("tool idea (hypothesis)", "We hold both deal-zone room and per-pack economics for the same products.",
+      `A "rip or trade" tool could answer one question nobody else can: at today's prices, is this box worth more opened, sold sealed online, or traded at a table? Three numbers we already compute, one screen.`, "medium");
+  if (has(der.printWatch) && has(der.supplyShifts))
+    I("tool idea (hypothesis)", "Print windows and shelf movement are computed separately and never combined.",
+      `A late-print set whose shelves are draining is a genuinely different situation from either signal alone. Crossing them is free and nobody publishes it.`, "medium");
+  if (has((await J("data/knowledge.json"))?.facts))
+    I("tool idea (hypothesis)", "The knowledge base is only used for one fact a day.",
+      `The same sourced facts could power a "why is this card like this" explainer on every product page — set context, print quirks, what makes it odd. It compounds with every fact added.`, "medium");
+}
+
+// Value order: things that could make the product better outrank things that
+// would make the codebase tidier. Repeated areas are collapsed so one class of
+// housekeeping cannot fill the page.
+const PRIORITY = ["tool idea (hypothesis)", "retention", "likability", "unsurfaced data", "product", "sandbox rule", "unenforced law", "knowledge", "pipeline order", "unused output", "repetition", "pipeline size", "maintainability"];
+const rank = (list) => {
+  const seen = {};
+  return [...list].sort((a, b) => {
+    const ia = PRIORITY.indexOf(a.area), ib = PRIORITY.indexOf(b.area);
+    return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
+  }).filter(i => { seen[i.area] = (seen[i.area] || 0) + 1; return seen[i.area] <= 2; });
+};
+
 const VOICE = ["Nothing here is broken. This is the list of things that are merely fine.",
   "Went looking for what we could do better rather than what we got wrong.",
   "A short list of things that work and could work better."];
 const report = { generatedAt: new Date().toISOString(),
   measure: "Our own doctrine, not generic best practice. Generic advice is free and worthless.",
-  counts: { total: ideas.length }, ideas: ideas.slice(0, 12) };
+  counts: { total: ideas.length }, ideas: rank(ideas).slice(0, 12) };
 await (await import("node:fs/promises")).writeFile(join(ROOT, "research/pulse/improver-report.json"), JSON.stringify(report, null, 1));
 const { rotate } = await import("./rotate.mjs");
 console.log(`\n  ${rotate(VOICE)}\n`);
 console.log(`✓ improver: ${ideas.length} idea(s)`);
-for (const i of ideas.slice(0, 10)) console.log(`  ${String(i.effort).padEnd(8)} ${String(i.area).padEnd(16)} ${i.observation}`);
+for (const i of rank(ideas).slice(0, 10)) console.log(`  ${String(i.effort).padEnd(8)} ${String(i.area).padEnd(16)} ${i.observation}`);
