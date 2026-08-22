@@ -29,7 +29,14 @@ if (!cat || !Object.keys(cat.cards || {}).length) {
 const sg = await J("data/singles-prices.json") ?? { cards: [] };
 const hist = await J("research/pulse/singles-history.json") ?? { entries: [] };
 
-const priced = new Map((sg.cards || []).filter(c => c.cardId && c.priceMarket).map(c => [c.cardId, c.priceMarket]));
+// Two price sources, in priority order. Our own tracked feed is verified and
+// wins; the catalogue's bundled TCGplayer figures cover thousands more cards
+// and make cohorts real. Every card records WHICH source priced it, because a
+// mixed-provenance number that does not say so is the start of a bad habit.
+const priced = new Map();
+const provenance = new Map();
+for (const [id, c] of Object.entries(cat.cards)) if (c.price != null) { priced.set(id, c.price); provenance.set(id, "catalogue"); }
+for (const c of sg.cards || []) if (c.cardId && c.priceMarket) { priced.set(c.cardId, c.priceMarket); provenance.set(c.cardId, "tracked"); }
 const series = {};
 for (const e of hist.entries || []) (series[e.cardId] ||= []).push({ date: e.date, price: e.price });
 for (const k of Object.keys(series)) series[k].sort((a, b) => a.date < b.date ? -1 : 1);
@@ -42,7 +49,7 @@ const artists = {};
 for (const [cardId, c] of Object.entries(cat.cards)) {
   if (!c.artist) continue;
   (artists[c.artist] ||= { cards: [], setIds: new Set() });
-  artists[c.artist].cards.push({ cardId, ...c, price: priced.get(cardId) ?? null, ret: ret(cardId) });
+  artists[c.artist].cards.push({ cardId, ...c, price: priced.get(cardId) ?? null, priceFrom: provenance.get(cardId) ?? null, ret: ret(cardId) });
   artists[c.artist].setIds.add(c.setId);
 }
 
@@ -109,7 +116,7 @@ for (const p of profiles) {
 
 const out = { generatedAt: new Date().toISOString(),
   method: "Cohort movement compares a card's latest move to the median move of everything else the same illustrator drew that we can price. Fewer than three priced cards is not a cohort and produces no verdict.",
-  coverage: { artists: profiles.length, catalogueCards: Object.keys(cat.cards).length,
+  coverage: { artists: profiles.length, catalogueCards: Object.keys(cat.cards).length, pricedCards: priced.size, pricedFromCatalogue: [...provenance.values()].filter(v => v === 'catalogue').length,
     artistsWithCohort: profiles.filter(p => p.pricedCards >= MIN_COHORT).length,
     note: "Catalogue counts are complete for the sets ingested; an 'ever' claim is valid only for artists whose sets are all present." },
   profiles: profiles.sort((a, b) => b.catalogueCards - a.catalogueCards).slice(0, 200),
