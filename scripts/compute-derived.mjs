@@ -660,23 +660,23 @@ const LENSES = [
       { id: "premium", label: "biggest sealed premium over loose packs",
         pick: () => eligibleAll.map(r => ({ r, p: pm.get(r.id) })).filter(x => x.p?.premium != null && !x.p.thin)
                       .sort((a,b)=>Math.abs(b.p.premium)-Math.abs(a.p.premium))[0]?.r,
-        why: r => { const p = pm.get(r.id); return `It is on the list because the sealed box is priced ${Math.abs(p.premium)}% ${p.premium>0?"above":"below"} what its packs cost loose — the widest gap of that kind on the board today.`; } },
+        why: r => { const p = pm.get(r.id); return `Sealed carries a ${Math.abs(p.premium)}% ${p.premium>0?"premium over":"discount to"} the cost of its packs bought loose — the widest gap of that kind we track today.`; } },
       { id: "perpack", label: "most expensive rip on the board",
         pick: () => eligibleAll.map(r => ({ r, p: pm.get(r.id) })).filter(x => x.p?.perPack)
                       .sort((a,b)=>b.p.perPack-a.p.perPack)[0]?.r,
-        why: r => `It is on the list because it works out to $${pm.get(r.id).perPack} a pack — the most expensive rip we track right now.` },
+        why: r => `Works out to $${pm.get(r.id).perPack} a pack, the most expensive rip we track. A pack at retail runs about $4.49.` },
       { id: "room", label: "widest distance between the cheapest listing and the middle",
         pick: () => eligibleAll.map(r => ({ r, p: prodById.get(r.id) }))
                       .filter(x => x.p?.priceFloorClean && x.p?.priceMedian && x.p.listingCount >= 10)
                       .sort((a,b)=>(b.p.priceMedian/b.p.priceFloorClean)-(a.p.priceMedian/a.p.priceFloorClean))[0]?.r,
-        why: r => { const p = prodById.get(r.id); return `It is on the list because its cheapest believable listing sits at $${p.priceFloorClean.toLocaleString("en-US")} while the middle of the market is $${p.priceMedian.toLocaleString("en-US")} — an unusually wide spread between the two, which usually means patience is worth something here.`; } },
+        why: r => { const p = prodById.get(r.id); return `Cheapest believable listing $${p.priceFloorClean.toLocaleString("en-US")}, middle of the market $${p.priceMedian.toLocaleString("en-US")}. A floor that far below the median usually rewards patience.`; } },
       { id: "zone", label: "most room in a face-to-face deal",
         pick: () => eligibleAll.map(r => ({ r, z: dealZone.byId[r.id] })).filter(x => x.z?.zonePct)
                       .sort((a,b)=>b.z.zonePct-a.z.zonePct)[0]?.r,
-        why: r => { const z = dealZone.byId[r.id]; return `It is on the list because it has the widest deal zone on the board — a seller keeps about $${z.sellerFloor.toLocaleString("en-US")} selling online while a buyer pays about $${z.buyerCeiling.toLocaleString("en-US")}, so there is roughly $${z.zoneWidth.toLocaleString("en-US")} of room where a face-to-face trade beats the internet for both people.`; } },
+        why: r => { const z = dealZone.byId[r.id]; return `A seller keeps about $${z.sellerFloor.toLocaleString("en-US")} online; a buyer pays about $${z.buyerCeiling.toLocaleString("en-US")}. Roughly $${z.zoneWidth.toLocaleString("en-US")} of room where a face-to-face trade beats the internet.`; } },
       { id: "gap", label: "widest gap between the two markets",
         pick: () => eligibleAll.filter(r => r.signal).sort((a,b)=>Math.abs(b.spreadPct)-Math.abs(a.spreadPct))[0],
-        why: r => `It is on the list because the two marketplaces disagree about it more than anything else we track today — eBay is asking ${Math.abs(r.spreadPct)}% ${r.spreadPct>0?"more":"less"} than TCGplayer.` },
+        why: r => `The two marketplaces are ${Math.abs(r.spreadPct)}% apart on the same product — eBay at $${r.ebayAskMedian.toLocaleString("en-US")}, TCGplayer at $${(r.tcgMarket||0).toLocaleString("en-US")}. The widest disagreement on the board today.` },
     ];
     let lensUsed = null, lensPick = null;
     for (let i = 0; i < LENSES.length && !lensPick; i++) {
@@ -705,7 +705,7 @@ const LENSES = [
     if (topScream && sealedPick && Math.abs(topScream.spreadPct) > Math.abs(sealedPick.spreadPct) + 25) {
       if (isRepeat(topScream.name)) repeatReason = `back on the board ${featuredAgo.get(topScream.name)} day(s) later — the gap widened past anything else we track`;
       sealedPick = topScream;
-      whyLine = `It is on the list because the gap opened up past everything else we track today — eBay is asking ${Math.abs(topScream.spreadPct)}% ${topScream.spreadPct > 0 ? "more" : "less"} than TCGplayer, which is far enough out of line to bump whatever else was in this slot.`;
+      whyLine = `The two marketplaces are ${Math.abs(topScream.spreadPct)}% apart on this one — far enough out of line to outrank everything else on the board today.`;
       lensId = "screaming";
     }
     let gradedPick = null;
@@ -741,26 +741,25 @@ const LENSES = [
         // Rotate through the value ladder rather than always the top card:
         // pick the priciest fresh chase from a set we have not featured.
         pick = [...pool].sort((a, b) => b.priceMarket - a.priceMarket)[0];
-        why = freshChases.length ? "a chase we have not put in front of you this week" : "chase-board anchor — the raw single the market prices everything against";
+        why = "chase";
       }
       if (pick) {
         const L2 = Object.values(lifecycle).find(l=>l.setId && sp.products.some(pp=>pp.setId===l.setId && pp.set===pick.setName));
         const lifeBit = L2 ? ` Its set is ${L2.ageMonths} months old${L2.standardLegal?" and still Standard-legal":""}.` : "";
-        rawPick = { name: pick.name, set: pick.setName, price: pick.priceMarket, chip:"READ", reason: why,
-          explain: `Widely treated as the card collectors hunt hardest from ${pick.setName} \u2014 the card the whole set gets priced around. Market sits at $${Math.round(pick.priceMarket).toLocaleString("en-US")} today.${lifeBit}` };
+        rawPick = { name: pick.name, set: pick.setName, price: pick.priceMarket, chip:"READ", reason: "chase",
+          explain: `The card ${pick.setName} gets priced around, at $${Math.round(pick.priceMarket).toLocaleString("en-US")} ungraded.${lifeBit}` };
       }
     }
-    // THIRD SLOT (2026-08-22): graded needs a licensed feed. Rather than render
-    // a padlock — which advertises absence and is the worst card on the page —
-    // promote an instrument we fully own. A shelf move is a genuinely different
-    // lens from a price gap and a chase.
+    // THIRD SLOT: graded needs a licensed feed. Rather than render a padlock —
+    // which advertises absence — promote an instrument we fully own. A shelf
+    // move is a different lens from a price gap and a chase.
     const shelfPick = (!gradedPick || gradedPick.gated)
       ? (supplyShifts || []).find(x => !blockedIds.has(x.id) && !isRepeat(x.name)) || null
       : null;
     return {
       shelf: shelfPick ? { name: shelfPick.name, listings: shelfPick.listings, prev: shelfPick.prev,
-        dPct: shelfPick.dPct, priceDPct: shelfPick.priceDPct, chip: "READ",
-        explain: shelfPick.read, reason: "shelf move worth a look" } : null,
+        dPct: shelfPick.dPct, priceDPct: shelfPick.priceDPct, chip: "READ", reason: "shelf move",
+        explain: `Listings moved ${shelfPick.prev} to ${shelfPick.listings} overnight. ${shelfPick.read.split(" — ")[0].charAt(0).toUpperCase() + shelfPick.read.split(" — ")[0].slice(1)}${shelfPick.priceDPct != null ? `, with asks ${shelfPick.priceDPct >= 0 ? "up" : "down"} ${Math.abs(shelfPick.priceDPct)}%` : ""}.` } : null,
       sealed: (() => {
         if (!sealedPick) return null;
         const _rr = repeatReason;

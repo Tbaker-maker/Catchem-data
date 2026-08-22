@@ -1,9 +1,16 @@
 {
- "generatedAt": "2026-08-22T15:56:29.945Z",
+ "generatedAt": "2026-08-22T15:58:48.414Z",
  "checked": "dailyThree, supplyShifts, eraIndexes, printWatch, depth, postBank, socialQueue",
  "blocks": 0,
- "warns": 7,
+ "warns": 8,
  "findings": [
+  {
+   "severity": "WARN",
+   "label": "dailyThree.raw",
+   "chip": "READ",
+   "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
+   "text": "The card Prismatic Evolutions gets priced around, at $1,491 ungraded. Its set is 19 months old."
+  },
   {
    "severity": "WARN",
    "label": "postBank.lifecycle.youtube_title",
