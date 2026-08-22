@@ -49,9 +49,11 @@ Gaps in what we watch:
 - *ease of use* — A number appears above the fold on Today. Holds — check on a 390px screen that it is still above the fold with the banner and nav present.
 
 ## Who needs to do what
-**NEEDS A HUMAN — Tyler (2):**
-- We hold both deal-zone room and per-pack economics for the same products. — *A "rip or trade" tool could answer one question nobody else can: at today's prices, is this box worth more opened, sold sealed online, or traded at a table? Three numbers we already compute, one screen.*
-- Print windows and shelf movement are computed separately and never combined. — *A late-print set whose shelves are draining is a genuinely different situation from either signal alone. Crossing them is free and nobody publishes it.*
+**NEEDS A HUMAN — Tyler (6):**
+- [X] "Paldean Fates listings moved -66.7% while its print window closes." — *X rewards a single surprising fact that makes somebody want to reply. The strongest shape we have is a number that moved with no headline attached — it implies a question and refuses to answer it, which is what makes people argue in the replies.*
+- [X] Keep it under ~25 words and do not put a link in the post. — *Recorded as COMMUNITY from Tyler, founder platform knowledge, 2026-08-23 — the watermark on the card does the attribution a link would.*
+- [YouTube] Pokemon GO Elite Trainer Box — "forced quarantined pick" — *YouTube rewards a question somebody is already typing into search. We can answer three of the recurring ones with data nobody else holds, which is the whole reason to be here rather than reacting to other people's news.*
+- [YouTube] the sealed market — "The whole sealed market in one number: 100." — *YouTube rewards a question somebody is already typing into search. We can answer three of the recurring ones with data nobody else holds, which is the whole reason to be here rather than reacting to other people's news.*
 
 **CC (4):**
 - 10 distinct angles are ready each morning. — *Hold it. The risk now is the opposite — too many choices is its own paralysis, so lead with three and let the rest be a list.*
@@ -59,7 +61,7 @@ Gaps in what we watch:
 - 4 accent colours appear on the same surface. — *Reserve green for positive, red for negative, and let mode accent everything else. Gold stays a highlight, never a third voice.*
 - 32 emoji in the interface. — *Keep them for section headers and the ELI5 lollipop; drop them from anything carrying a number.*
 
-**Chat (14):** 14 item(s), top: Artist angles all carry their sources.
+**Chat (16):** 16 item(s), top: [X] Nothing runs as a numbered series.
 
 ## The creator cheat code
 *Could somebody open this, hit record within two minutes, and sound like the most informed voice in the hobby without pausing to look anything up? Every pause is a cut.*
@@ -69,6 +71,13 @@ Gaps in what we watch:
 
 ## What the market did
 Nothing unusual, or not enough history to tell — 5 days of tape so far. Anomaly detection needs a distribution, and saying so is the honest answer.
+
+## Where today's story goes
+- **X** — "Paldean Fates listings moved -66.7% while its print window closes."
+- **YouTube** — Unified Minds Booster Box — "A seller keeps about $3,859.97 online; a buyer pays about $4,761.5. Roughly $901.53 of room where a face-to-face trade beats the internet."
+- **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 100."
+
+3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
 
 ---
 *Written by the agents, for a person. If a section here never leads to an action, that section should be deleted rather than tolerated.*

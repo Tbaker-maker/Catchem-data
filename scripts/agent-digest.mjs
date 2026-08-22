@@ -23,6 +23,7 @@ const imp = await J("research/pulse/improver-report.json");
 const sup = await J("research/pulse/agent-supervision.json");
 const cre = await J("research/pulse/creator-report.json");
 const ano = await J("research/pulse/anomaly-report.json");
+const plat = await J("research/pulse/platform-report.json");
 const uni = await J("research/pulse/universe-advisor.json");
 const rev = await J("research/pulse/review-agents.json");
 const exp = await J("research/pulse/experience-report.json");
@@ -156,6 +157,17 @@ if (ano?.findings?.length) {
   say(`## What the market did`);
   if (real.length) { for (const f of real.slice(0, 4)) say(`- **${f.kind}** — ${f.what} *${f.why}*`); }
   else say(`Nothing unusual, or not enough history to tell — ${ano.historyDays} days of tape so far. Anomaly detection needs a distribution, and saying so is the honest answer.`);
+  say();
+}
+
+if (plat?.findings?.length) {
+  say(`## Where today's story goes`);
+  for (const p of ["X", "YouTube", "TikTok"]) {
+    const pick = plat.findings.find(f => f.platform === p && /today|angle|clip/.test(f.kind));
+    if (pick) say(`- **${p}** — ${pick.what}`);
+  }
+  const gaps = plat.findings.filter(f => f.kind === "gap");
+  if (gaps.length) say(`\n${gaps.length} format gap(s): ${gaps.map(g => `${g.platform} — ${g.what}`).slice(0, 2).join("; ")}`);
   say();
 }
 

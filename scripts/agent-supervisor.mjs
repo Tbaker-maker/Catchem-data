@@ -39,6 +39,7 @@ const AGENTS = [
   { id: "falsifier", zeroMeans: "good", output: "research/pulse/falsifier-report.json", findings: d => (d?.results ?? []).filter(r => r.verdict === "TRIPPED").map(r => r.id), maxFindings: 12, maxSilentDays: 2 },
   { id: "correction-hunter", zeroMeans: "good", output: "research/pulse/correction-hunt.json", findings: d => [...(d?.suspectFigures ?? []).map(f => `suspect::${f.id}`), ...(d?.featuredThenUnmeasurable ?? []).map(f => `gone::${f.name}`)], maxFindings: 30, maxSilentDays: 2 },
   { id: "review-agents", zeroMeans: "unknown", output: "research/pulse/review-agents.json", findings: d => [...(d?.newcomer?.lines ?? []).slice(0, 0)], maxFindings: 0, maxSilentDays: 2 },
+  { id: "platform", zeroMeans: "suspect", output: "research/pulse/platform-report.json", findings: d => (d?.findings ?? []).map(f => `${f.platform}::${String(f.what).slice(0, 40)}`), maxFindings: 12, maxSilentDays: 7, standing: true },
   { id: "anomaly", zeroMeans: "good", output: "research/pulse/anomaly-report.json", findings: d => (d?.findings ?? []).filter(f => f.kind !== "not yet").map(f => `${f.kind}::${String(f.what).slice(0, 40)}`), maxFindings: 8, maxSilentDays: 2 },
   { id: "creator", zeroMeans: "suspect", output: "research/pulse/creator-report.json", findings: d => (d?.findings ?? []).map(f => `${f.need}::${String(f.observation).slice(0, 40)}`), maxFindings: 10, maxSilentDays: 7, standing: true },
   { id: "experience", zeroMeans: "suspect", output: "research/pulse/experience-report.json", findings: d => (d?.findings ?? []).map(f => `${f.lane}::${String(f.observation).slice(0, 40)}`), maxFindings: 10, maxSilentDays: 7, standing: true },
@@ -250,6 +251,7 @@ const dispatch = { chat: [], cc: [], tyler: [] };
 {
   const ROUTE = {
     // agent → how to read its findings, and where they go by default
+    platform: { file: "research/pulse/platform-report.json", pick: d => (d?.findings ?? []).map(f => ({ what: `[${f.platform}] ${f.what}`, do: f.why, owner: f.owner })) },
     anomaly: { file: "research/pulse/anomaly-report.json", pick: d => (d?.findings ?? []).filter(f => f.kind !== "not yet").map(f => ({ what: f.what, do: "worth a look — the market did something unusual, which is where stories start", owner: "tyler" })) },
     creator: { file: "research/pulse/creator-report.json", pick: d => (d?.findings ?? []).map(f => ({ what: f.observation, do: f.fix, owner: f.owner })) },
     experience: { file: "research/pulse/experience-report.json", pick: d => (d?.findings ?? []).map(f => ({ what: f.observation, do: f.fix, owner: /visual|looks|colour|emoji/i.test(f.lane) ? "cc" : "chat" })) },

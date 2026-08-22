@@ -597,6 +597,7 @@ try { const { shouldRun } = await import("./cadence.mjs");
   const __last = (__h.runs?.["breaker"] ?? []).slice(-1)[0]?.date ?? null;
   const __d = await shouldRun("breaker", __last);
   if (__d.run) await import("./breaker.mjs"); else console.log(`  · breaker.mjs skipped — ${__d.why}`); } catch (e) { console.warn(`  ⚠ agent breaker.mjs failed: ${e.message} — advisory only`); }
+try { await import("./platform-agents.mjs"); } catch (e) { console.warn(`  ⚠ agent platform-agents: ${e.message} — advisory only`); }
 try { await import("./anomaly-watcher.mjs"); } catch (e) { console.warn(`  ⚠ agent anomaly-watcher: ${e.message} — advisory only`); }
 try { await import("./falsifier.mjs"); } catch (e) { console.warn(`  ⚠ agent falsifier.mjs failed: ${e.message} — advisory only, the run continues`); }
 try { await import("./correction-hunter.mjs"); } catch (e) { console.warn(`  ⚠ agent correction-hunter.mjs failed: ${e.message} — advisory only, the run continues`); }
