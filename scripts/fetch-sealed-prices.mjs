@@ -119,6 +119,23 @@ const MULTI_ITEM_RX = [
   /\((\d{1,2})\s*(pack|boxes|count|ct)\)/i, /\b\d+\s*(pack|box)\s+bundle\b/i,
 ];
 const isMultiItem = t => MULTI_ITEM_RX.some(rx => rx.test(t));
+
+// ── MENU-LISTING GUARD (swsh45-pack validation, 2026-08-22) ──────────────
+// Variation listings that menu MANY sets in one title ("… Phantasmal
+// Flames Booster Pack | Shining Fates Battle Styles …") pass the set +
+// type filters and anchor the wrong set's price into the median. A title
+// naming 3+ distinct tracked sets is a menu, not a product. Threshold 3
+// (not 2) because era prefixes legitimately add one: "Pokemon Mega
+// Evolution Phantasmal Flames Booster Pack" names two sets and is real.
+// SET_NAME_LIST is built from the catalog in main(); names <6 chars are
+// skipped ("151" would substring-match card numbers).
+let SET_NAME_LIST = [];
+const isMultiSetMenu = (t) => {
+  const lc = t.toLowerCase();
+  let hits = 0;
+  for (const n of SET_NAME_LIST) if (lc.includes(n) && ++hits >= 3) return true;
+  return false;
+};
 const EXCLUDE_COMMON = [
   "single", "loose", "lot", "empty", "opened", "damaged", "custom",
   "repack", "proxy", "no packs", "resale", "read description",
@@ -149,6 +166,9 @@ const EXCLUDE_COMMON = [
   // and misprint-"Error" variant boxes at \$210-240 (distinct collectible
   // product, different market)
   "set of", "sealed set", "error",
+  // autographed novelties price as memorabilia, not product (swsh45-pack
+  // validation 2026-08-22: "Signed by Chumlee")
+  "signed", "autograph", "autographed",
 ];
 
 // Non-English printings. JP/KR/CN boxes are a DIFFERENT product at a different
@@ -193,7 +213,13 @@ const EXCLUDE_BY_SUBTYPE = {
   // loose-pack spec vocab (2026-08-18): weighed-pack scams + multi-pack and
   // container terms; "packs" PLURAL is the load-bearing one (a single pack
   // listing says "pack"); "art" excludes display/pack-art collectible sets
-  "booster-pack":   ["weighed", "packs", "bundle", "box", "art", "etb", "elite trainer", "blister", "sleeved",
+  // "sticker": swsh45-pack validation 2026-08-22 — a $4.99 "Booster Pack
+  // Sticker" (a sticker, not a pack) was the SKU's clean floor.
+  // code-card class (special-set sweep 2026-08-22): online-code listings
+  // titled "<set> Booster Pack Code Card" pass set+type and sit at $2-6 —
+  // they were the $4.49/$5.95 "floors" on sv8pt5/swsh12pt5 packs.
+  "booster-pack":   ["weighed", "packs", "bundle", "box", "art", "etb", "elite trainer", "blister", "sleeved", "sticker",
+    "code card", "code cards", "online code", "digital", "ptcgo", "tcg live",
     // graded slabbed packs are a collectible market, not street price (2026-08-18: "PSA 8 NM-MINT ... SEALED Booster Pack" $49.99 passed)
     "psa", "cgc", "bgs", "graded", "unsearched",
     // promo-blister leakage (2026-08-19 swsh5 investigation): blister products
@@ -272,6 +298,7 @@ function filterItemsForProduct(product, items) {
     if (product.subtype === "pc-etb" && !t.includes("pokemon center")) { report.failType++; return false; }
     if (excludes.some(term => wordBoundaryTest(term, t))) { report.failExclude++; return false; }
     if (isMultiItem(t)) { report.failMulti = (report.failMulti || 0) + 1; return false; }
+    if (isMultiSetMenu(t)) { report.failMenu = (report.failMenu || 0) + 1; return false; }
     if (langExcludes.some(term => wordBoundaryTest(term, t))) { report.failLang++; return false; }
     // pricing v2: gate + aggregate on DELIVERED price (landed cost)
     const dp = deliveredPriceOf(i);
@@ -402,8 +429,16 @@ async function mapConcurrent(items, fn, concurrency) {
 // ─── Main ────────────────────────────────────────────────────────────────────
 async function main() {
   console.log("📦 Loading product list...");
-  const products = JSON.parse(await readFile(PRODUCTS_FILE, "utf-8"));
-  console.log(`   → ${products.length} products to refresh.`);
+  const catalog = JSON.parse(await readFile(PRODUCTS_FILE, "utf-8"));
+  // menu-listing guard corpus: distinct catalog set names, ≥6 chars —
+  // built from the FULL catalog even when ONLY narrows the run.
+  SET_NAME_LIST = [...new Set(catalog.map(p => (p.set || "").toLowerCase()).filter(n => n.length >= 6))];
+  // ONLY=id[,id2] — single-SKU validation mode (the protocol's "test runs
+  // hit ONE SKU"). Full catalog still loads (guards need it); only the
+  // fetch set narrows. Pair with a scratchpad copy for a temp OUTPUT_FILE.
+  const only = process.env.ONLY ? new Set(process.env.ONLY.split(",")) : null;
+  const products = only ? catalog.filter(p => only.has(p.id)) : catalog;
+  console.log(`   → ${products.length} products to refresh${only ? ` (ONLY=${process.env.ONLY})` : ""}.`);
 
   console.log("📜 Loading previous prices (for history continuity)...");
   const previous = {};
