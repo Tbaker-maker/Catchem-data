@@ -28,8 +28,17 @@ async function inlineImages(svg) {
       const r = await fetch(u);
       if (!r.ok) throw new Error(String(r.status));
       const buf = Buffer.from(await r.arrayBuffer());
-      const mime = r.headers.get("content-type") || "image/jpeg";
-      svg = svg.replaceAll(`href="${u}"`, `href="data:${mime};base64,${buf.toString("base64")}"`);
+      // Repaint white catalogue backgrounds to the brand surface so product
+      // photos belong on a dark card instead of punching a white hole in it
+      // (Tyler, 2026-08-23). Flood-filled from the edges, so whites INSIDE the
+      // product survive. Skipped silently if it fails — a plain photo beats none.
+      let painted = buf;
+      try { const { darkenBackground } = await import("./image-darkroom.mjs");
+        const res = await darkenBackground(buf);
+        if (res.coverage > 5 && res.coverage < 85) painted = res.buffer;
+      } catch {}
+      const mime = "image/png";
+      svg = svg.replaceAll(`href="${u}"`, `href="data:${mime};base64,${painted.toString("base64")}"`);
     } catch (e) {
       // No photo beats a broken photo: drop the image element entirely.
       svg = svg.replace(new RegExp(`<image[^>]*href="${u.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"[^>]*/>`, "g"), "");
