@@ -18,7 +18,14 @@ const PPT_LICENSED = process.env.CATCHEM_PPT_LICENSED === "1";
 // that is settled in writing, this flag decides whether packs show TCGplayer
 // prices (accurate, licensing-exposed) or eBay asks (compliant, 8-51% high).
 // Set CATCHEM_PPT_PUBLIC=1 once licensing is confirmed.
-const PPT_PUBLIC_OK = process.env.CATCHEM_PPT_PUBLIC === "1";
+// TYLER'S RULING (2026-08-23): Catch'em is a free tool with no revenue, in
+// development. He accepts the current posture and will pay for the commercial
+// tier — and for grading population reports — when monetisation begins.
+// THE TRIGGER, so this is never forgotten at the moment it matters: licensing
+// must be resolved BEFORE the first dollar is charged, not after. Anything
+// that turns this into a commercial product (a Pro tier, ads, sponsorship,
+// paid placement) requires the upgrade first.
+const PPT_PUBLIC_OK = process.env.CATCHEM_PPT_PUBLIC !== "0";
 
 export function applyPackBasis(products, divRows) {
   if (!PPT_PUBLIC_OK) {

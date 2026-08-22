@@ -30,3 +30,23 @@ number ships in newsletter/social until licensing is cleared in writing.
 > reselling access. If that use needs the Business plan, is there a path
 > for small projects until revenue exists? Thanks — built by a collector,
 > happy to credit you prominently either way. — Tyler
+
+## RULING 2026-08-23 (Tyler)
+"It is just development purposes. I'm not making money off of it. It'll be
+a free tool, I'm not concerned about licensing at the moment. Once we're
+ready to move towards monetisation we will pay the extra for that and the
+grading pop reports."
+POSTURE: proceed on the current tier. Pack prices display TCGplayer values.
+THE TRIGGER — resolve licensing BEFORE the first dollar, never after:
+- a Pro tier, ads, sponsorship, paid placement, or any paid feature
+- any claim that the data is commercially licensed
+- and independently: grading population reports, which are a separate
+  purchase whenever the graded layer goes live
+UNRESOLVED, recorded honestly: their terms reserve commercial use for the
+$99 tier and describe lower tiers as "personal and development purposes".
+A free but publicly accessible tool sits in a grey area rather than
+clearly inside that phrase. The realistic downside is being cut off, not
+sued — which is an operational risk, and worst at launch.
+MITIGATION AVAILABLE NOW: attribute the source visibly, keep usage modest,
+and send the support question so an answer exists in writing before it is
+needed.
