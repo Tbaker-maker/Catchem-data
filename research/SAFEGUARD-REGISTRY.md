@@ -44,6 +44,12 @@ actual published output for anything blocked or quarantined, and breaks
 the edition entirely if the catalogue is stale or the fetch was partial.
 *Exists because flags are not proof.*
 
+**Layer 8 — RECOVERY.** `recover.mjs` + RECOVERY-RUNBOOK.md. Detection
+without recovery is knowing precisely how broken you are at 2am. Three
+modes: regenerate from source, roll back to the last passing commit, or
+neither — because a quiet stage is a scheduling fault no restore can fix.
+Tested by corrupting a real artifact and restoring it.
+
 **Layer 7 — ABSENCE.** `heartbeat.mjs`. Every other layer runs inside the
 pipeline and shares one blind spot: a run that never happens triggers none
 of them. Stages write proof of life; an independent watchdog on its own
