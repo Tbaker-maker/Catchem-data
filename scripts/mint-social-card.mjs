@@ -62,7 +62,7 @@ export async function mintSocialCard() {
   const sp = await J("data/sealed-prices.json") ?? { products: [] };
   const cm = await J("data/crosscheck-id-map.json") ?? { entries: [] };
   const tcg = {}; for (const e of cm.entries || []) if (e.reviewed && !e.exclude && e.tcgPlayerId) tcg[e.id] = e.tcgPlayerId;
-  const imgFor = p => tcg[p.id] ? `https://tcgplayer-cdn.tcgplayer.com/product/${tcg[p.id]}_in_400x400.jpg` : (p.image || "");
+  const imgFor = p => tcg[p.id] ? `https://tcgplayer-cdn.tcgplayer.com/product/${tcg[p.id]}_in_1000x1000.jpg` : (p.image || "");
   const today = new Date().toISOString().slice(0, 10);
   await mkdir(join(ROOT, "research/pulse/cards"), { recursive: true });
   const t3 = der.dailyThree?.sealed;

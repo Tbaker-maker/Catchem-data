@@ -13,7 +13,7 @@ const today = new Date().toISOString().split("T")[0];
 const cardImg = id => { const m=/^(.+)-(\w+)$/.exec(id||""); return m?`https://images.pokemontcg.io/${m[1]}/${m[2]}.png`:null; };
 let __tcgIds = {};
 const sealedImg = p => p.representativeImage
-  || (__tcgIds[p.id] ? `https://tcgplayer-cdn.tcgplayer.com/product/${__tcgIds[p.id]}_in_400x400.jpg` : null)
+  || (__tcgIds[p.id] ? `https://tcgplayer-cdn.tcgplayer.com/product/${__tcgIds[p.id]}_in_1000x1000.jpg` : null)
   || p.image || null;
 const J = async p => { try { return JSON.parse(await readFile(join(ROOT,p),"utf-8")); } catch { return null; } };
 let dyk = null;

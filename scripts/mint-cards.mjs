@@ -38,7 +38,7 @@ const sp = await J("data/sealed-prices.json");
 let cm = { entries: [] }; try { cm = await J("data/crosscheck-id-map.json"); } catch {}
 let sg = { cards: [] }; try { sg = await J("data/singles-prices.json"); } catch {}
 const tcgId = {}; for (const e of cm.entries || []) if (e.reviewed && !e.exclude && e.tcgPlayerId) tcgId[e.id] = e.tcgPlayerId;
-const prodImg = id => tcgId[id] ? `https://tcgplayer-cdn.tcgplayer.com/product/${tcgId[id]}_in_400x400.jpg`
+const prodImg = id => tcgId[id] ? `https://tcgplayer-cdn.tcgplayer.com/product/${tcgId[id]}_in_1000x1000.jpg`
   : (sp.products.find(p => p.id === id) || {}).image || "";
 const cardImg = cid => { const m = /^(.+)-(\w+)$/.exec(cid || ""); return m ? `https://images.pokemontcg.io/${m[1]}/${m[2]}.png` : ""; };
 const esc = s => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");

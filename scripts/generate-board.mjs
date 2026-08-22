@@ -10,9 +10,11 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => JSON.parse(await readFile(join(ROOT,p),"utf-8"));
 const cardImg = id => { const m=/^(.+)-(\w+)$/.exec(id||""); return m?`https://images.pokemontcg.io/${m[1]}/${m[2]}.png`:null; };
 let __tcgIds = {};
-const sealedImg = p => p.representativeImage
-  || (__tcgIds[p.id] ? `https://tcgplayer-cdn.tcgplayer.com/product/${__tcgIds[p.id]}_in_400x400.jpg` : null)
-  || p.image || null;
+// PRIORITY FIXED 2026-08-22: clean catalogue shot FIRST. Seller photos are
+// phone snapshots — glare, hands, kitchen tables — and they make every number
+// beside them look casual. 400px was also too small; 1000px is the reliable max.
+const sealedImg = p => (__tcgIds[p.id] ? `https://tcgplayer-cdn.tcgplayer.com/product/${__tcgIds[p.id]}_in_1000x1000.jpg` : null)
+  || p.representativeImage || p.image || null;
 
 const sp = await J("data/sealed-prices.json");
 try { const cm = await J("data/crosscheck-id-map.json");
