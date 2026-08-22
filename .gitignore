@@ -1,3 +1,11 @@
 # local backups / scratch
 *.bak
 .__*-shim.mjs
+
+# Credentials never enter this repo. The cheapest control that exists, and the
+# most common way a secret gets in is a file nobody meant to add.
+.env
+.env.*
+*.pem
+*.key
+node_modules/

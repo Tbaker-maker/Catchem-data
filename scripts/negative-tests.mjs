@@ -333,6 +333,16 @@ const CASES = [
       return { pass: bad.length === 0, why: bad.join("; ") };
     } },
 
+  { guard: "Secret detection", detect: "security-agent.mjs",
+    // The one guard where a miss is unrecoverable. Plant a fake credential and
+    // confirm the scanner fails the run; a scanner nobody has tested is a
+    // scanner that has never caught anything.
+    break: async () => {
+      await writeFile(P("scripts/_leaktest.mjs"), 'const k = "sk-ant-FAKEFAKEFAKEFAKEFAKEFAKE123456";\n');
+      return true;
+    },
+    restore: async () => { try { await (await import("node:fs/promises")).unlink(P("scripts/_leaktest.mjs")); } catch {} } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");

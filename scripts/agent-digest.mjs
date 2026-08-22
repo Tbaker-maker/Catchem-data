@@ -25,6 +25,7 @@ const cre = await J("research/pulse/creator-report.json");
 const ano = await J("research/pulse/anomaly-report.json");
 const plat = await J("research/pulse/platform-report.json");
 const stw = await J("research/pulse/steward-report.json");
+const sec = await J("research/pulse/security-report.json");
 const con = await J("research/pulse/agent-contract.json");
 const uni = await J("research/pulse/universe-advisor.json");
 const rev = await J("research/pulse/review-agents.json");
@@ -185,6 +186,16 @@ if (con && con.openClauses) {
   say(`## The workforce itself`);
   say(`${con.fullyCompliant}/${con.agents} agents meet all ten obligations · ${con.openClauses} open clause(s).`);
   for (const r of (con.report ?? []).filter(r => r.failing.length).slice(0, 3)) say(`- **${r.agent}** ${r.met}/${r.obligations} — ${r.failing.map(f => f.clause).join(", ")}`);
+  say();
+}
+
+if (sec?.critical?.length) {
+  say(`## SECURITY — NEEDS A HUMAN NOW`);
+  for (const c of sec.critical) say(`- **${c.what}** — *${c.fix}*`);
+  say();
+} else if (sec?.warnings?.length) {
+  say(`## Security`);
+  for (const w of sec.warnings.slice(0, 2)) say(`- ${w.what} — *${w.fix}*`);
   say();
 }
 

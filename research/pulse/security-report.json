@@ -1,0 +1,25 @@
+{
+ "generatedAt": "2026-08-22T22:02:12.842Z",
+ "role": "The one agent that blocks. Everything else here advises, because everything else is recoverable — there is no correction page for a leaked key.",
+ "critical": [
+  {
+   "what": "Anthropic key found in scripts/negative-tests.mjs",
+   "why": "A credential in the working tree is one commit from being permanent. There is no correction page for a leaked key.",
+   "fix": "Revoke it first, then remove it. Revoking comes first because removal does not un-share what was already shared."
+  }
+ ],
+ "warnings": [],
+ "checked": [
+  "working tree scanned for six credential shapes",
+  "30 days of history scanned",
+  "75 scripts checked for on-disk credential reads",
+  ".gitignore covers env files, keys and modules"
+ ],
+ "blindSpots": [
+  "Tyler's own machine — the DBIR finding that 46% of compromised corporate logins came from unmanaged personal devices applies here and nothing in this repo can check it.",
+  "Browser sessions and saved passwords for Cloudflare, Buttondown, GitHub, PPT and Discord.",
+  "Whether two-factor authentication is on for each of those accounts.",
+  "Anything in the private bot repo, which this agent does not read."
+ ],
+ "honesty": "This checks what is in the repo and its recent history. It does not and cannot tell you that you are secure — a security agent implying total coverage buys exactly the false confidence that makes founders stop looking."
+}
