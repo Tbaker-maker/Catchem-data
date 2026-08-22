@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-22T21:48:14.728Z",
+ "generatedAt": "2026-08-22T21:53:42.352Z",
  "date": "2026-08-22",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -73,6 +73,11 @@
    "agent": "platform",
    "finding": "runs daily and has returned the same count (10) four runs running.",
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
+  },
+  {
+   "agent": "platform",
+   "finding": "every finding from a week ago is still open (10).",
+   "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
    "agent": "anomaly",
@@ -362,6 +367,22 @@
    }
   },
   {
+   "from": "universe-advisor",
+   "owner": "tyler",
+   "what": "pricing 50 more cards would unlock 17 artist cohorts",
+   "do": "an expansion decision, not a machine's call",
+   "score": 40,
+   "band": "WATCH",
+   "selfScore": 40,
+   "demotions": [],
+   "components": {
+    "evidence": "DERIVED (20) — follows from things we measured, but is a step removed",
+    "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+    "actionable": "BLOCKED (6) — known dependency, cannot start",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
    "from": "platform",
    "owner": "chat",
    "what": "[X] Nothing runs as a numbered series.",
@@ -460,7 +481,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "6 hand-written file(s) changed and not committed.",
+   "what": "8 hand-written file(s) changed and not committed.",
    "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -783,6 +804,22 @@
      "actionable": "SOON (14) — clear what to do, needs a slot",
      "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
     }
+   },
+   {
+    "from": "universe-advisor",
+    "owner": "tyler",
+    "what": "pricing 50 more cards would unlock 17 artist cohorts",
+    "do": "an expansion decision, not a machine's call",
+    "score": 40,
+    "band": "WATCH",
+    "selfScore": 40,
+    "demotions": [],
+    "components": {
+     "evidence": "DERIVED (20) — follows from things we measured, but is a step removed",
+     "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+     "actionable": "BLOCKED (6) — known dependency, cannot start",
+     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+    }
    }
   ]
  },
@@ -790,7 +827,7 @@
   "confirmed": 4,
   "actNow": 0,
   "queue": 9,
-  "watch": 7,
+  "watch": 8,
   "noteOnly": 7
  }
 }

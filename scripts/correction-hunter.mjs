@@ -82,7 +82,7 @@ const vanished = featured.filter(f => f.id && !nowPrice[f.id] && f.date < today)
 const mood = findings.length ? pickLine(VOICE.suspect)
   : vanished.length ? pickLine(VOICE.vanished, 1)
   : pickLine(VOICE.clean);
-const report = { generatedAt: new Date().toISOString(), date: today, mood,
+const report = { generatedAt: new Date().toISOString(), date: today, mood, confidence: "MEASURED",   // computed from our own published history; SUSPECT never means proven
   note: "Re-checks numbers we already published. Flags are SUSPECT, not proven wrong — each needs a human or CC to verify against listings before a correction is filed.",
   window: `${IMPLAUSIBLE * 100}% inside ${WINDOW_DAYS} days`,
   suspectFigures: findings.sort((a, b) => Math.abs(b.movePct) - Math.abs(a.movePct)).slice(0, 20),

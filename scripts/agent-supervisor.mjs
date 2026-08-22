@@ -252,6 +252,8 @@ const dispatch = { chat: [], cc: [], tyler: [] };
 {
   const ROUTE = {
     // agent → how to read its findings, and where they go by default
+    "review-agents": { file: "research/pulse/review-agents.json", pick: d => (d?.newcomer?.result || d?.redTeam?.result) ? [{ what: "the reading passes produced notes", do: "read them in review-agents.json", owner: "chat" }] : [] },
+    "universe-advisor": { file: "research/pulse/universe-advisor.json", pick: d => (d?.tranches ? [{ what: `pricing 50 more cards would unlock ${d.tranches["+50"]?.artistCohortsUnlocked ?? 0} artist cohorts`, do: "an expansion decision, not a machine's call", owner: "tyler" }] : []) },
     steward: { file: "research/pulse/steward-report.json", pick: d => (d?.speak ?? []).map(x => ({ what: x.what, do: x.why, owner: x.owner })) },
     platform: { file: "research/pulse/platform-report.json", pick: d => (d?.findings ?? []).map(f => ({ what: `[${f.platform}] ${f.what}`, do: f.why, owner: f.owner })) },
     anomaly: { file: "research/pulse/anomaly-report.json", pick: d => (d?.findings ?? []).filter(f => f.kind !== "not yet").map(f => ({ what: f.what, do: "worth a look — the market did something unusual, which is where stories start", owner: "tyler" })) },

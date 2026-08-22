@@ -21,7 +21,7 @@ const feed = await J("research/pulse/pulse-feed.json") ?? {};
 const der = await J("data/derived-insights.json") ?? {};
 
 const findings = [];
-const F = (lane, observation, why, fix) => findings.push({ lane, observation, why, fix });
+const F = (lane, observation, why, fix) => findings.push({ lane, observation, why, fix, confidence: "MEASURED" });   // counted from source and feed; the LOOKING is routed to human eyes separately
 
 // ── 1 · DENSITY: how much is asked of the eye before anything is understood ──
 {

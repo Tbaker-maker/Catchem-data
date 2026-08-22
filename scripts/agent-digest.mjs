@@ -25,6 +25,7 @@ const cre = await J("research/pulse/creator-report.json");
 const ano = await J("research/pulse/anomaly-report.json");
 const plat = await J("research/pulse/platform-report.json");
 const stw = await J("research/pulse/steward-report.json");
+const con = await J("research/pulse/agent-contract.json");
 const uni = await J("research/pulse/universe-advisor.json");
 const rev = await J("research/pulse/review-agents.json");
 const exp = await J("research/pulse/experience-report.json");
@@ -177,6 +178,13 @@ if (plat?.findings?.length) {
 if (stw?.speak?.length) {
   say(`## Something is slipping`);
   for (const s of stw.speak.slice(0, 4)) say(`- **${s.kind}** — ${s.what} *${s.why}*`);
+  say();
+}
+
+if (con && con.openClauses) {
+  say(`## The workforce itself`);
+  say(`${con.fullyCompliant}/${con.agents} agents meet all ten obligations · ${con.openClauses} open clause(s).`);
+  for (const r of (con.report ?? []).filter(r => r.failing.length).slice(0, 3)) say(`- **${r.agent}** ${r.met}/${r.obligations} — ${r.failing.map(f => f.clause).join(", ")}`);
   say();
 }
 

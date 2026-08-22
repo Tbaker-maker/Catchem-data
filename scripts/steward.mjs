@@ -27,7 +27,7 @@ const git = async (...a) => { try { return (await run("git", a, { cwd: ROOT })).
 const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "utf-8")); } catch { return null; } };
 
 const speak = [];
-const S = (kind, what, why, owner) => speak.push({ kind, what, why, owner });
+const S = (kind, what, why, owner) => speak.push({ kind, what, why, owner, confidence: "OBSERVED" });   // everything here is read off the repo, never inferred
 const quiet = [];
 const days = (iso) => Math.round((Date.now() - Date.parse(iso)) / 86400000);
 

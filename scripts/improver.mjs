@@ -27,7 +27,7 @@ const der = await J("data/derived-insights.json") ?? {};
 const feed = await J("research/pulse/pulse-feed.json") ?? {};
 
 const ideas = [];
-const I = (area, observation, suggestion, effort) => ideas.push({ area, observation, suggestion, effort });
+const I = (area, observation, suggestion, effort) => ideas.push({ area, observation, suggestion, effort, confidence: String(area).includes("hypothesis") ? "HYPOTHESIS" : "OBSERVED" });
 
 // 1 — BUILT AND NEVER CONSUMED. The most expensive kind of work is work that
 // runs every day and nobody reads.

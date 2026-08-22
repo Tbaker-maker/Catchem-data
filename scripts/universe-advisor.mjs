@@ -27,10 +27,13 @@ const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "ut
 
 const cat = await J("data/card-catalogue.json");
 if (!cat || !Object.keys(cat.cards || {}).length) {
+  // NOT process.exit(0): an early exit ends the whole pipeline with a success
+  // code, so every guard downstream silently never runs. CC found this exact
+  // shape in another script this morning. An agent bows out; it does not close
+  // the building on its way past.
   console.log("· universe advisor: no catalogue yet — run scripts/ingest-catalogue.mjs first.");
-  process.exit(0);
 }
-const sg = await J("data/singles-prices.json") ?? { cards: [] };
+const sg = cat ? (await J("data/singles-prices.json") ?? { cards: [] }) : { cards: [] };
 const sp = await J("data/sealed-prices.json") ?? { products: [] };
 const pricedIds = new Set((sg.cards || []).map(c => c.cardId).filter(Boolean));
 const MIN_COHORT = 3;
@@ -61,6 +64,9 @@ const thinEras = new Set(Object.entries(eraCounts)
 // A card is worth pricing in proportion to what it unlocks.
 const RARE_CHASE = /(secret|special illustration|illustration rare|hyper|rainbow|gold|alt)/i;
 const scored = [];
+// DERIVED, never measured: this ranks what pricing a card would UNLOCK, which
+// follows from data we hold but is a step removed from anything observed.
+const CONFIDENCE = "DERIVED";
 for (const [artist, a] of Object.entries(byArtist)) {
   const needed = MIN_COHORT - a.priced;
   if (needed <= 0 || a.total < MIN_COHORT) continue;      // already viable, or can never be
@@ -93,6 +99,7 @@ const tranche = n => {
 };
 
 const out = { generatedAt: new Date().toISOString(),
+  confidence: CONFIDENCE,
   principle: "Metadata is free; prices are the constrained resource. This ranks cards by what pricing them UNLOCKS, not by what they are worth. It never recommends a purchase — only coverage.",
   today: { catalogueCards: Object.keys(cat.cards).length, pricedSingles: pricedIds.size,
     trackedProducts: (sp.products || []).length,

@@ -307,6 +307,28 @@ const CASES = [
         why: missing.length ? `${missing.join(", ")} registered with the supervisor but never imported by the pipeline — managed and doing nothing` : "" };
     } },
 
+  { guard: "Agent contract (steward, platform, anomaly, creator, experience)", detect: null,
+    // One case covering the five agents that had none. Each of the last four
+    // hires caught a failure in an earlier one — good outcome, bad method. This
+    // is the same coverage arrived at by design rather than by luck.
+    fn: async () => {
+      const AGENTS = ["steward.mjs", "platform-agents.mjs", "anomaly-watcher.mjs", "creator-agent.mjs", "experience.mjs", "universe-advisor.mjs"];
+      const bad = [];
+      for (const f of AGENTS) {
+        const src = await readFile(P(`scripts/${f}`), "utf-8").catch(() => "");
+        if (!src) { bad.push(`${f} missing`); continue; }
+        // The two failures that have actually bitten us: halting the pipeline,
+        // and writing a report nothing reads.
+        if (/process\.exit\(/.test(src) && !/STANDALONE/.test(src)) bad.push(`${f} can halt the run`);
+        const out = /writeFile\([^)]*research\/pulse\/([a-z0-9\-]+\.json)/.exec(src);
+        if (out) {
+          const digest = await readFile(P("scripts/agent-digest.mjs"), "utf-8").catch(() => "");
+          if (!digest.includes(out[1])) bad.push(`${f} output unsurfaced`);
+        }
+      }
+      return { pass: bad.length === 0, why: bad.join("; ") };
+    } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");
