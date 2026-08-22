@@ -59,7 +59,16 @@ const contested = Object.entries(byFile)
 }
 
 // With an argument: is this specific thing already being worked on?
-const targetBlocks = recent.split(/\n(?=[0-9a-f]{7,}\|)/).filter(b => b.includes(target));
+// git log --name-only prints REPO-RELATIVE paths, so an ABSOLUTE argument can
+// never match and reports a confident "nobody". Verified 2026-08-23: the same
+// Ticker.jsx returned "nobody" by absolute path and "chat and CC" by relative
+// one, minutes apart. Since the fence says to run this before editing, and an
+// absolute path is the natural way to name a file in the other repo, the
+// all-clear was reachable exactly when it mattered most.
+const relTarget = String(target).replace(/\\/g, "/").replace(/^.*?\/(catchem-app|Catchem-data)\//, "");
+const baseName = relTarget.split("/").pop();
+const targetBlocks = recent.split(/\n(?=[0-9a-f]{7,}\|)/)
+  .filter(b => b.includes(relTarget) || b.includes(baseName));
 const lanes = new Set(targetBlocks.map(laneOf));
 const touched = targetBlocks.length > 0;
 const otherLane = lanes.has("CC");
