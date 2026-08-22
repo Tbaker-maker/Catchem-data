@@ -179,6 +179,21 @@ const failures = [], notes = [];
     for (const s of new Set(strays))
       failures.push(`DUPLICATE-GATE RISK — scripts/${f} reads ${s} directly. Behaviour gates are declared in scripts/flags.mjs and read via flag(); reading the environment here is how two gates for one decision get created without either author knowing.`);
   }
+
+  // ONE CONDITION, ONE KEY (2026-08-22). The registry above stops a gate being
+  // re-implemented in code, but it did not stop the same CONDITION being
+  // registered twice: ppt.publicDisplay and pptLicensed both bound
+  // CATCHEM_PPT_LICENSED from different owner files, so flipping one key's
+  // value moved nothing and only the env var moved both. The duplicate-gate
+  // bug had reproduced inside the registry built to prevent it. Two keys
+  // sharing an env name are the same decision wearing two hats.
+  const reg = JSON.parse(await read("data/flags.json") || "{}").flags || {};
+  const byEnv = {};
+  for (const [k, v] of Object.entries(reg)) if (v.env) (byEnv[v.env] ||= []).push(k);
+  for (const [env, keys] of Object.entries(byEnv)) {
+    if (keys.length > 1)
+      failures.push(`DUPLICATE CONDITION — flags ${keys.join(" and ")} both bind ${env}. One condition gets one key: setting either key's value silently moves nothing, because only the environment variable moves both. Merge them and give the survivor a single owner.`);
+  }
 }
 
 for (const g of MANIFEST) {

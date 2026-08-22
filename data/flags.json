@@ -4,8 +4,8 @@
  "flags": {
   "ppt.publicDisplay": {
    "value": true,
-   "owner": "scripts/pack-basis.mjs",
-   "why": "Tyler ruled 2026-08-23: free tool, development phase, proceed on the current tier. Pack prices display TCGplayer values.",
+   "owner": "scripts/pack-basis.mjs + scripts/compute-divergence.mjs",
+   "why": "Tyler ruled 2026-08-23: free tool, development phase, proceed on the current tier. Governs BOTH the displayed pack basis and whether PPT-derived spread figures may publish — one condition, one key. (Was duplicated as pptLicensed until 2026-08-22; both keys bound CATCHEM_PPT_LICENSED, so setting one value moved nothing.)",
    "trigger": "Must be re-decided BEFORE the first dollar — a Pro tier, ads, sponsorship, or any paid feature.",
    "env": "CATCHEM_PPT_LICENSED"
   },
@@ -34,13 +34,6 @@
    "why": "The public host. The app domain is unlisted after the public/gated split, so every published link points here.",
    "trigger": "If the public host changes, or the app stops being unlisted.",
    "env": "CATCHEM_SITE"
-  },
-  "pptLicensed": {
-   "value": true,
-   "owner": "scripts/compute-divergence.mjs",
-   "why": "Tyler ruled 2026-08-23: free tool, development phase, proceed on the current tier.",
-   "trigger": "Must be re-decided BEFORE the first dollar — a Pro tier, ads, sponsorship, or any paid feature.",
-   "env": "CATCHEM_PPT_LICENSED"
   },
   "tcgDelivered": {
    "value": false,
