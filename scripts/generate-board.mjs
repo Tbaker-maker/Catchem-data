@@ -2,6 +2,7 @@
 // The real thing: catchemtcg.com's core page, generated from live production
 // data. No mockup numbers, no illustrative states — if an instrument is
 // calibrating, the page says so. Output: research/assets/the-board.html
+import { rootCss } from "./lib/brand.mjs";
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -47,7 +48,7 @@ const tr = ({p,s}) => `
 const html = `<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Sora:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <title>The Board — Catch'em</title><style>
-:root{--bg:#0b0d14;--panel:#141824;--line:rgba(255,255,255,.07);--txt:#d8dde8;--dim:#8a93a8;--gold:#ffb84d;--green:#36d399;--red:#ff6b7a}
+${rootCss()}
 *{box-sizing:border-box;margin:0}body{background:var(--bg);color:var(--txt);font:15px/1.5 'Sora',system-ui,sans-serif;padding:0 0 60px}
 header{padding:34px 24px 18px;max-width:1080px;margin:0 auto}
 h1{font-size:30px;letter-spacing:-.5px}h1 em{color:var(--gold);font-style:normal}

@@ -16,14 +16,22 @@ const state = await J("data/alerts-state.json") ?? { sentSignals: [], mutedHooks
 const six = der.sealedIndex, t3 = der.dailyThree ?? {}, wo = der.watchOutcomes, roh = der.ripOrHold;
 const today = new Date().toISOString().slice(0, 10);
 
+// publish-guard: derived picks predate qa-gate's flags; a held product must
+// not reach a Discord embed (or its committed preview) either.
+const { loadBlocked } = await import("./lib/publish-guard.mjs");
+const __blk = await loadBlocked();
+const clean = (v) => (v && !__blk.mentions(JSON.stringify(v)) ? v : null);
+
 const lines = [];
-if (t3.sealed) lines.push(`**SEALED** · ${t3.sealed.name} — $${t3.sealed.ebay} · asking ${Math.abs(t3.sealed.spreadPct)}% ${t3.sealed.spreadPct > 0 ? "more" : "less"} than TCGplayer`);
-if (t3.graded) lines.push(`**GRADED** · ${t3.graded.name} — raw $${Math.round(t3.graded.raw)} → PSA 10 $${Math.round(t3.graded.psa10)} (+$${Math.round(t3.graded.premium)})`);
-if (t3.raw) lines.push(`**RAW** · ${t3.raw.name} — $${Math.round(t3.raw.price)} (${t3.raw.set})`);
-const outcomeLine = wo && wo.sealed && wo.sealed.dPct != null
-  ? `Yesterday's sealed watch (${wo.sealed.name}): ${wo.sealed.dPct > 0 ? "▲" : wo.sealed.dPct < 0 ? "▼" : "·"} ${Math.abs(wo.sealed.dPct)}% since. We keep our own score.`
+const t3s = clean(t3.sealed), t3g = clean(t3.graded), t3r = clean(t3.raw);
+if (t3s) lines.push(`**SEALED** · ${t3s.name} — $${t3s.ebay} · asking ${Math.abs(t3s.spreadPct)}% ${t3s.spreadPct > 0 ? "more" : "less"} than TCGplayer`);
+if (t3g) lines.push(`**GRADED** · ${t3g.name} — raw $${Math.round(t3g.raw)} → PSA 10 $${Math.round(t3g.psa10)} (+$${Math.round(t3g.premium)})`);
+if (t3r) lines.push(`**RAW** · ${t3r.name} — $${Math.round(t3r.price)} (${t3r.set})`);
+const woS = clean(wo?.sealed);
+const outcomeLine = woS && woS.dPct != null
+  ? `Yesterday's sealed watch (${woS.name}): ${woS.dPct > 0 ? "▲" : woS.dPct < 0 ? "▼" : "·"} ${Math.abs(woS.dPct)}% since. We keep our own score.`
   : null;
-const newSignals = (div.rows || []).filter(r => r.signal && !(state.sentSignals || []).includes(r.id));
+const newSignals = (div.rows || []).filter(r => r.signal && !__blk.blocked(r.id) && !(state.sentSignals || []).includes(r.id));
 
 const embed = {
   username: "Catch'em Morning Pulse",

@@ -4,6 +4,7 @@ await import("./qa-gate.mjs");
 // A one-page daily brief the machine writes about what it saw. Reads every
 // instrument, publishes research/pulse/YYYY-MM-DD.md. Trust Standard applies:
 // only numbers that exist in the data, provenance inline, calibration honest.
+import { rootCss } from "./lib/brand.mjs";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -66,6 +67,28 @@ const pub = live.filter(p=>!p.publishBlock && !__blk.blocked(p.id));
 // derived, failed qa-gate's ±60% cross-source check, leaked via Pack Math).
 const byIdBlk = new Map(sp.products.map(p=>[p.id, !!p.publishBlock]));
 const editorial = (rows)=>(rows||[]).filter(r=>!__blk.blocked(r.id) && !byIdBlk.get(r.id));
+// Daily Three picks carry only a NAME (no id) and were chosen before
+// qa-gate stamped today's flags — CI 32548174725: an 86%-spread pack became
+// the SEALED pick, got blocked by the cross-source check, and leaked into
+// md/html/the-pulse through these renders. Null a pick that mentions any
+// blocked product; the renderer already handles missing slots honestly.
+if (der?.dailyThree) for (const k of ["sealed","graded","raw"]) {
+  const v = der.dailyThree[k];
+  if (v && __blk.mentions(JSON.stringify(v))) {
+    console.log(`  · pulse: dropped Daily Three ${k.toUpperCase()} pick — mentions blocked product`);
+    der.dailyThree[k] = null;
+  }
+}
+// Same class: "Yesterday's watches, revisited" revisits a product that may
+// have been blocked since it was flagged — a held number must not be
+// revisited in public either.
+if (der?.watchOutcomes) for (const k of Object.keys(der.watchOutcomes)) {
+  const v = der.watchOutcomes[k];
+  if (v && typeof v === "object" && __blk.mentions(JSON.stringify(v))) {
+    console.log(`  · pulse: dropped watch outcome ${k} — mentions blocked product`);
+    der.watchOutcomes[k] = null;
+  }
+}
 const noMkt = sp.products.filter(p=>p.dataStatus==="no-active-market").length;
 const heatDays = (heat?.mode||"").match(/day (\d+)/)?.[1] ?? "?";
 const sigs = (div?.rows||[]).filter(r=>r.signal && !__blk.blocked(r.id));
@@ -176,7 +199,7 @@ const chaseRows = chases.map(c=>`<div class="row"><span style="display:flex;alig
 const radarRows = upcoming.map(r=>`<div class="row"><span>${r.name||r.title}</span><span class="mono">${r.date||r.releaseDate}</span></div>`).join("");
 const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Sora:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <title>Morning Pulse — ${today} · Catch'em</title><style>
-:root{--bg:#0b0d14;--panel:#141824;--line:rgba(255,255,255,.07);--txt:#f4f5f8;--dim:#8a93a8;--gold:#ffb84d;--green:#36d399}
+${rootCss()}
 *{box-sizing:border-box;margin:0}body{background:var(--bg);color:var(--txt);font:15px/1.55 'Sora',system-ui,sans-serif;max-width:680px;margin:0 auto;padding:36px 20px 60px}
 .kicker{font:11px 'JetBrains Mono',monospace;letter-spacing:.14em;color:var(--gold)}
 h1{font-size:34px;letter-spacing:-.5px;margin:6px 0 2px}h1 span{color:var(--dim);font-weight:400}
@@ -442,7 +465,7 @@ if (der?.printWatch?.length) {
   const rows = der.printWatch.map(r=>`<tr><td>${r.set}</td><td class="mono">${r.ageMonths}mo</td><td>${r.eol.status==="printing"?`<b class="ok">~${r.eol.daysLeftEst}d left</b> <i class="dim">est.</i>`:`<span class="dim">out ~${r.eol.monthsOutEst}mo</span>`}</td><td class="mono">${r.supply}</td><td><span class="pill ${r.supplyTier}">${r.supplyTier.toUpperCase()}</span></td><td>${r.reprintSignal??`<span class="dim">—</span>`}</td><td>${r.standardLegal?`<b class="ok">⚖ ${r.mark}</b>`:r.mark?`<span class="dim">${r.mark} rotated</span>`:`<span class="dim">pre-mark</span>`}</td></tr>`).join("");
   const cohorts = Object.entries(der.rotationCohorts).sort().map(([m,sets])=>`<div class="co"><b>${m==="pre-mark"?"Pre-mark era":"Mark "+m}</b>${["I","J"].includes(m)?` <span class="ok">⚖ Standard-legal</span>`:m==="pre-mark"?``:` <span class="dim">rotated</span>`}<div class="dim" style="margin-top:4px">${sets.join(" · ")}</div></div>`).join("");
   const pwHtml = `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Sora:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"><title>Catchem — Print &amp; Rotation Watch</title><style>
-:root{--bg:#0b0d14;--panel:#141824;--line:rgba(255,255,255,.07);--txt:#f4f5f8;--dim:#8a93a8;--green:#36d399;--gold:#ffb84d}
+${rootCss()}
 body{background:var(--bg);color:var(--txt);font:15px/1.5 "Sora",system-ui,sans-serif;margin:0;padding:28px 16px;max-width:980px;margin-inline:auto}
 h1{font-family:"Syne",sans-serif;font-size:30px;margin:0 0 4px}.sub{color:var(--dim);margin:0 0 24px;font-size:13px}
 table{width:100%;border-collapse:collapse;background:var(--panel);border-radius:10px;overflow:hidden}
@@ -474,6 +497,12 @@ await import("./rasterize-cards.mjs");
 await import("./social-posts.mjs");
 await import("./post-bank.mjs");
 await import("./build-corrections.mjs");
+// Refresh the Discord embed PREVIEW before the assert (no webhook env in
+// this step → preview-only, posts 0). Without this, publish-assert grades
+// YESTERDAY'S committed preview and a product quarantined since then reds
+// the run once per quarantine (day-2 trap, found 2026-08-22). The later
+// workflow step re-runs this WITH env and actually posts.
+await import("./send-discord-alerts.mjs");
 await import("./voice-lint.mjs");
 await import("./jargon-lint.mjs");
 await import("./publish-assert.mjs");
