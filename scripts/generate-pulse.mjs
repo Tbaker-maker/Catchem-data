@@ -91,6 +91,13 @@ if (der?.watchOutcomes) for (const k of Object.keys(der.watchOutcomes)) {
 }
 const noMkt = sp.products.filter(p=>p.dataStatus==="no-active-market").length;
 const heatDays = (heat?.mode||"").match(/day (\d+)/)?.[1] ?? "?";
+// Debut-day copy: the panel line must flip WITH the engine mode — the old
+// hardcoded "calibrating" would have printed "day ? of 8" forever once the
+// engine went dual-signal (caught in the Aug-22 debut rehearsal).
+const heatLive = (heat?.mode||"").startsWith("dual-signal") && (heat?.reads||[]).length > 0;
+const heatLine = heatLive
+  ? `live — ${heat.reads.length} reads (dual-signal, 8-day tape)`
+  : `calibrating — day ${heatDays} of 8 clean days (return ~Aug 26)`;
 const sigs = (div?.rows||[]).filter(r=>r.signal && !__blk.blocked(r.id));
 const topListed = [...pub].sort((a,b)=>(b.listingCount||0)-(a.listingCount||0)).slice(0,3);
 const chases = (sg?.cards||[]).filter(c=>!c.needsReview && c.dataStatus==="live")
@@ -100,7 +107,7 @@ const upcoming = (radar?.items||radar?.releases||[]).filter(r=>{
 }).slice(0,4);
 
 let md = `# ☀️ Morning Pulse — ${today}\n*Written by the machine at ${new Date().toISOString().slice(11,16)} UTC. Every number below is live production data.*\n\n`;
-md += `## The instrument panel\n- **${sp.products.length} sealed products tracked** · ${live.length} live · ${noMkt} no-active-market (honest) · run ${sp.updatedAt?.slice(0,16)}Z\n- **Heat reads:** calibrating — day ${heatDays} of 8 clean days (return ~Aug 26)\n- **The Spread:** ${div?.counts?.compared??0} sealed cross-checked · **${sigs.length} signals** · ${div?.counts?.skipped??0} excluded with reasons\n\n`;
+md += `## The instrument panel\n- **${sp.products.length} sealed products tracked** · ${live.length} live · ${noMkt} no-active-market (honest) · run ${sp.updatedAt?.slice(0,16)}Z\n- **Heat reads:** ${heatLine}\n- **The Spread:** ${div?.counts?.compared??0} sealed cross-checked · **${sigs.length} signals** · ${div?.counts?.skipped??0} excluded with reasons\n\n`;
 if (sigs.length) {
   md += `## ⚡ Spread signals (eBay ask vs TCG-side ask)\n`;
   for (const r of sigs.slice(0,6)) md += `- **${r.name}** — eBay $${r.ebayAskMedian} (${r.ebayListings??"—"} listings) vs TCG $${r.tcgMarket} (supply ${r.tcgListings??"—"}) (**${r.spreadPct>0?"+":""}${r.spreadPct}%**) — ${r.read}\n`;
@@ -226,7 +233,7 @@ footer{margin-top:30px;font:12px 'JetBrains Mono',monospace;color:var(--dim)}
 <div class="panel">
   <div class="stat"><b>${sp.products.length}</b><i>sealed products TRACKED</i></div>
   <div class="stat"><b>${sigs.length}</b><i>SPREAD SIGNALS</i></div>
-  <div class="stat"><b>${heatDays}/8</b><i>READS CALIBRATING</i></div>
+  <div class="stat"><b>${heatLive ? heat.reads.length : `${heatDays}/8`}</b><i>${heatLive ? "HEAT READS LIVE" : "READS CALIBRATING"}</i></div>
 </div>
 ${sigs.length?`<h2>⚡ Biggest price gaps between eBay and TCGplayer</h2><div class="foot" style="margin:-2px 0 10px">eBay usually runs a little higher on sealed — photos let buyers see exactly what they're getting. We flag the gaps beyond that.</div>${sigCards}${supNote}`:""}
 <h2>Deepest markets</h2>${deepRows}
