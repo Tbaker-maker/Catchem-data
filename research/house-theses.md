@@ -408,3 +408,26 @@ ALSO BINDING
 - Prices in an artist post carry their chip and date like every other
   figure. An art post is not a holiday from the pricing laws.
 - Credit the source visibly. Illustrator data is somebody else's work too.
+
+## RT-7 · ARTIST COHORT ATTRIBUTION (Tyler, Aug 23 2026)
+When a card moves, the hobby asks why and everybody guesses. There is a
+prior question nobody has asked with data: did the illustrator's OTHER
+work move too?
+- The whole body of work moved together → something happened to the
+  ARTIST. A feature, a convention, a set announcement, a community
+  moment. The cohort reprices.
+- Only this card moved → something happened to the CARD. The Pokémon,
+  the set, its status as a chase, a tournament result.
+That distinction changes what a collector does next, and it cannot be
+answered by anyone holding only art data or only price data.
+MEASURED: a card's latest move against the median move of everything else
+the same illustrator drew that we can price. Dispersion across the cohort
+sets the tolerance — tight dispersion plus a real move is the signature
+of artist-wide repricing.
+FALSIFIER: if cards by the same illustrator move together no more often
+than random cards of similar rarity and era do, the cohort is not real
+and this instrument is measuring noise. Testable once we hold a full
+catalogue and 30+ days of singles history.
+CONSTRAINT, stated honestly: fewer than three priced cards is not a
+cohort and produces no verdict. Today most illustrators fail that bar,
+which is why the catalogue ingest matters more than the analysis.

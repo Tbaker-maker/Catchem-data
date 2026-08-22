@@ -1,0 +1,120 @@
+{
+ "generatedAt": "2026-08-22T18:53:09.379Z",
+ "method": "Cohort movement compares a card's latest move to the median move of everything else the same illustrator drew that we can price. Fewer than three priced cards is not a cohort and produces no verdict.",
+ "coverage": {
+  "artists": 1,
+  "catalogueCards": 4,
+  "artistsWithCohort": 1,
+  "note": "Catalogue counts are complete for the sets ingested; an 'ever' claim is valid only for artists whose sets are all present."
+ },
+ "profiles": [
+  {
+   "artist": "Test Artist",
+   "catalogueCards": 4,
+   "setsSpanned": 1,
+   "firstSeen": "2024-01-01",
+   "latestSeen": "2024-01-01",
+   "pricedCards": 4,
+   "medianValue": 120,
+   "topCard": {
+    "cardId": "t-4",
+    "name": "Card D",
+    "artist": "Test Artist",
+    "setId": "t",
+    "setName": "Test Set",
+    "number": "3",
+    "rarity": "Rare",
+    "releaseDate": "2024-01-01",
+    "price": 200,
+    "ret": 0.3999720005599887
+   },
+   "cohortReturnPct": 8.5,
+   "dispersionPct": 13.9,
+   "cards": [
+    {
+     "cardId": "t-1",
+     "name": "Card A",
+     "setName": "Test Set",
+     "rarity": "Rare",
+     "price": 100,
+     "retPct": 8
+    },
+    {
+     "cardId": "t-2",
+     "name": "Card B",
+     "setName": "Test Set",
+     "rarity": "Rare",
+     "price": 120,
+     "retPct": 7.5
+    },
+    {
+     "cardId": "t-3",
+     "name": "Card C",
+     "setName": "Test Set",
+     "rarity": "Rare",
+     "price": 90,
+     "retPct": 8.5
+    },
+    {
+     "cardId": "t-4",
+     "name": "Card D",
+     "setName": "Test Set",
+     "rarity": "Rare",
+     "price": 200,
+     "retPct": 40
+    }
+   ]
+  }
+ ],
+ "attributions": [
+  {
+   "cardId": "t-1",
+   "card": "Card A",
+   "set": "Test Set",
+   "artist": "Test Artist",
+   "cardMovePct": 8,
+   "artistCohortMovePct": 8.5,
+   "cohortSize": 4,
+   "verdict": "ARTIST-WIDE",
+   "chip": "READ",
+   "read": "Card A moved up 8%, and the rest of Test Artist's priced work moved up 8.5% with it. When a whole body of work reprices together it usually reflects something about the illustrator rather than this one card."
+  },
+  {
+   "cardId": "t-2",
+   "card": "Card B",
+   "set": "Test Set",
+   "artist": "Test Artist",
+   "cardMovePct": 7.5,
+   "artistCohortMovePct": 8.5,
+   "cohortSize": 4,
+   "verdict": "ARTIST-WIDE",
+   "chip": "READ",
+   "read": "Card B moved up 7.5%, and the rest of Test Artist's priced work moved up 8.5% with it. When a whole body of work reprices together it usually reflects something about the illustrator rather than this one card."
+  },
+  {
+   "cardId": "t-3",
+   "card": "Card C",
+   "set": "Test Set",
+   "artist": "Test Artist",
+   "cardMovePct": 8.5,
+   "artistCohortMovePct": 8.5,
+   "cohortSize": 4,
+   "verdict": "ARTIST-WIDE",
+   "chip": "READ",
+   "read": "Card C moved up 8.5%, and the rest of Test Artist's priced work moved up 8.5% with it. When a whole body of work reprices together it usually reflects something about the illustrator rather than this one card."
+  },
+  {
+   "cardId": "t-4",
+   "card": "Card D",
+   "set": "Test Set",
+   "artist": "Test Artist",
+   "cardMovePct": 40,
+   "artistCohortMovePct": 8.5,
+   "cohortSize": 4,
+   "verdict": "CARD-SPECIFIC",
+   "chip": "READ",
+   "read": "Card D moved up 40% while the rest of Test Artist's priced work sat at +8.5%. A card moving alone usually means something about that card — the Pokémon, the set, or its place as a chase — rather than the artist."
+  }
+ ],
+ "underrated": []
+}
