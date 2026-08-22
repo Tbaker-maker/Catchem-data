@@ -372,6 +372,12 @@ De-emphasised (never hidden): fee math, net proceeds, spread signals.
 Voice: warmest of the four. This is where the 🍭 explainers live loudest.
 
 ### FLIPPER (blue #64a0ff) — "what moved, and what would I actually clear?"
+VENDORS LIVE HERE (Tyler, Aug 22). A vendor is a flipper with a table —
+identical instruments, different context. Show Mode's "I'm selling"
+toggle IS the vendor face of this mode: booth floor first, fee tier
+applied, what-to-bring from supply shifts and print watch. No separate
+vendor persona; splitting them would double the surface for no new
+information and would quietly re-introduce a them-vs-them framing.
 Leads with: the Spread and its signals · movers and breadth · supply
 shifts with cause candidates · Net Proceeds and the Deal Zone · index
 momentum · velocity once history is deep enough.
@@ -397,3 +403,52 @@ feeds §10's newsletter tracks and (later) Discord role colours.
 ACCEPTANCE: switching modes changes what is at the TOP of the screen and
 what colour the accents are — and changes no number anywhere. A diff of
 the values shown before and after a mode switch must be empty.
+
+## §21 · THE CREATOR PORTAL (Tyler, Aug 22)
+Modes are how you READ the market. The portal is where you MAKE things.
+Creators are not a fifth persona — they are a different job, and they are
+our distribution layer. Everything below already has an engine; the
+portal is the home that makes them findable and usable in one place.
+
+### ALREADY BUILT, CURRENTLY SCATTERED
+Post Studio (§17) six daily angles × four formats · Story Kits (§14) ·
+binder pages (§18) · the OBS overlay · chart and card export · the
+Discord webhook rail (§14b). A creator today has to know each URL. The
+portal is one door.
+
+### THE PORTAL — /studio
+1. **TODAY** — the day's angles, kits, and freshly minted cards, newest
+   first. A creator opens this at 7am and has a content day.
+2. **MAKE** — Card Maker (any product/card/index → branded PNG), binder
+   page builder (pick nine, or take a data-driven theme), chart export,
+   Deal Zone card. Everything watermarked.
+3. **STREAM** — the OBS overlay routes with a copyable browser-source
+   URL, mode-accented, plus a live Rip-or-Hold vote widget.
+4. **SYNDICATE** — the Discord rail: one form, their webhook, a branded
+   Morning Pulse in their server every day. Plus embeddable widgets for
+   their site (index ticker, single-product card, Deal Zone band) as an
+   iframe/snippet — attribution baked into the embed itself.
+5. **LEARN** — the "why this works" coaching that already ships with
+   every angle, plus a short creator guide (what our chips mean, what
+   they can and cannot claim on our numbers, how to cite us).
+
+### WHAT THE PORTAL STILL NEEDS (not yet built)
+- **Creator identity**: a lightweight registry entry (handle, channel,
+  server) — ids and prefs in the repo, webhook URLs ONLY in the secret
+  store, per §14b security law.
+- **A public roster** — creators who use us, listed on the site. Costs
+  nothing, gives them a backlink, gives us social proof.
+- **Attribution mechanics** — every embed and asset carries the wordmark
+  slot + catchemtcg.com; embeds link back automatically.
+- **A "what's live" view** — which of their servers are receiving the
+  Pulse, which embeds are deployed, when the last send happened.
+
+### THE DEAL (unchanged doctrine)
+Free, forever, for everyone. No exclusivity asks, no gating creators by
+size. We give away the tools; the watermark rides along. Pro later sells
+convenience — custom branding, scheduled queues, series counters — never
+the truth or the assets themselves.
+GUARDRAILS: raffles stay ours-only at v0 (sweepstakes law is not
+something to hand a stranger) · webhook URLs never in the repo · every
+exported figure keeps its chip and its est. labelling · creator copy
+obeys the Referee Doctrine like ours does.
