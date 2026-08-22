@@ -601,3 +601,28 @@ THE RULE
    fails on the day it matters.
 4. It never blocks. The failure here is not malice or carelessness — it is
    two workers moving fast on the same thing with no cheap way to notice.
+
+## CADENCE LAW — how often an agent should run (Tyler, Aug 23 2026)
+"How often would you recommend they run if the cost basis is zero?"
+
+COST IS NOT THE CONSTRAINT. Six of seven agents are free and finish in under
+half a second; hourly would cost nothing measurable. ATTENTION is the
+constraint. An agent running hourly produces twenty-four times the output for
+a person who reads once a day, and by our own law that is farming.
+
+THE PRINCIPLE: match cadence to the RATE OF CHANGE of the thing being
+watched, not to the clock.
+- **Watching market data → daily.** The data lands once a day; more often
+  reproduces the same answer.
+- **Watching our own code → on change.** Running the Breaker on a day nobody
+  committed produces yesterday's list — which is precisely the BROKEN RECORD
+  failure the supervisor exists to catch. We would be manufacturing our own
+  false alarms, then investigating them.
+- **Anything that costs money → only when its input changed, never on a
+  timer.** A schedule spends money whether or not there is anything to look
+  at. review-agents is the only paid agent and it is on-change only.
+- **Weekly for slow-moving questions** (what to price next). A recommendation
+  nobody has acted on does not improve by being repeated tomorrow.
+
+MEASURED, so nobody has to guess: 7 agents, ~1.1 seconds a day combined,
+zero external API calls. The paid one does not run.

@@ -591,11 +591,23 @@ await import("./jargon-lint.mjs");
 // of failure that check exists to catch. Agents are wrapped; guards are not.
 try { await import("./rip-sell-trade.mjs"); } catch (e) { console.warn(`  ⚠ rip-sell-trade: ${e.message}`); }
 try { await import("./agent-supervisor.mjs"); } catch (e) { console.warn(`  ⚠ agent supervisor: ${e.message} — advisory only`); }
-try { await import("./breaker.mjs"); } catch (e) { console.warn(`  ⚠ agent breaker.mjs failed: ${e.message} — advisory only`); }
+try { const { shouldRun } = await import("./cadence.mjs");
+  const __h = await (async () => { try { return JSON.parse(await (await import("node:fs/promises")).readFile(new URL("../data/agent-history.json", import.meta.url), "utf-8")); } catch { return {}; } })();
+  const __last = (__h.runs?.["breaker"] ?? []).slice(-1)[0]?.date ?? null;
+  const __d = await shouldRun("breaker", __last);
+  if (__d.run) await import("./breaker.mjs"); else console.log(`  · breaker.mjs skipped — ${__d.why}`); } catch (e) { console.warn(`  ⚠ agent breaker.mjs failed: ${e.message} — advisory only`); }
 try { await import("./falsifier.mjs"); } catch (e) { console.warn(`  ⚠ agent falsifier.mjs failed: ${e.message} — advisory only, the run continues`); }
 try { await import("./correction-hunter.mjs"); } catch (e) { console.warn(`  ⚠ agent correction-hunter.mjs failed: ${e.message} — advisory only, the run continues`); }
-try { await import("./review-agents.mjs"); } catch (e) { console.warn(`  ⚠ agent review-agents.mjs failed: ${e.message} — advisory only, the run continues`); }
+try { const { shouldRun } = await import("./cadence.mjs");
+  const __h = await (async () => { try { return JSON.parse(await (await import("node:fs/promises")).readFile(new URL("../data/agent-history.json", import.meta.url), "utf-8")); } catch { return {}; } })();
+  const __last = (__h.runs?.["review-agents"] ?? []).slice(-1)[0]?.date ?? null;
+  const __d = await shouldRun("review-agents", __last);
+  if (__d.run) await import("./review-agents.mjs"); else console.log(`  · review-agents.mjs skipped — ${__d.why}`); } catch (e) { console.warn(`  ⚠ agent review-agents.mjs failed: ${e.message} — advisory only, the run continues`); }
 await (await import("./heartbeat.mjs")).beat("pulse");
-try { await import("./improver.mjs"); } catch (e) { console.warn(`  ⚠ agent improver.mjs: ${e.message} — advisory only`); }
+try { const { shouldRun } = await import("./cadence.mjs");
+  const __h = await (async () => { try { return JSON.parse(await (await import("node:fs/promises")).readFile(new URL("../data/agent-history.json", import.meta.url), "utf-8")); } catch { return {}; } })();
+  const __last = (__h.runs?.["improver"] ?? []).slice(-1)[0]?.date ?? null;
+  const __d = await shouldRun("improver", __last);
+  if (__d.run) await import("./improver.mjs"); else console.log(`  · improver.mjs skipped — ${__d.why}`); } catch (e) { console.warn(`  ⚠ agent improver.mjs: ${e.message} — advisory only`); }
 try { await import("./agent-digest.mjs"); } catch (e) { console.warn(`  ⚠ agent agent-digest.mjs: ${e.message} — advisory only`); }
 await import("./publish-assert.mjs");
