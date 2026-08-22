@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-22T21:34:15.707Z",
+ "generatedAt": "2026-08-22T21:41:21.505Z",
  "date": "2026-08-22",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -64,6 +64,16 @@
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
   },
   {
+   "agent": "platform",
+   "finding": "runs daily and has returned the same count (10) four runs running.",
+   "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
+  },
+  {
+   "agent": "platform",
+   "finding": "every finding from a week ago is still open (10).",
+   "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
+  },
+  {
    "agent": "anomaly",
    "finding": "runs daily and has returned the same count (0) four runs running.",
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
@@ -89,142 +99,681 @@
    "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   }
  ],
+ "reviewed": [
+  {
+   "from": "experience",
+   "owner": "chat",
+   "what": "The Today screen carries 17 sections: The Daily Three, 🗳 Rip or Hold?, Biggest movers, Set the app up for you, Movers, Release radar…",
+   "do": "Rank them by how often somebody would act on each, and move the bottom third behind a tap. Nothing is deleted — it stops competing.",
+   "score": 58,
+   "band": "QUEUE",
+   "selfScore": 58,
+   "demotions": [],
+   "components": {
+    "evidence": "OBSERVED (30) — seen in our own output or code, not inferred",
+    "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "improver",
+   "owner": "chat",
+   "what": "The index has no matched sample today, so it cannot move.",
+   "do": "Expected on a fresh series — worth a line on the page saying so, rather than a number that looks stuck.",
+   "score": 58,
+   "band": "QUEUE",
+   "selfScore": 58,
+   "demotions": [],
+   "components": {
+    "evidence": "OBSERVED (30) — seen in our own output or code, not inferred",
+    "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "improver",
+   "owner": "chat",
+   "what": "The knowledge base holds 8 verified facts.",
+   "do": "This is the asset that compounds — instruments can be rebuilt in a weekend, a decade of sourced facts cannot. A steady few per week beats a burst.",
+   "score": 58,
+   "band": "QUEUE",
+   "selfScore": 58,
+   "demotions": [],
+   "components": {
+    "evidence": "OBSERVED (30) — seen in our own output or code, not inferred",
+    "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "improver",
+   "owner": "chat",
+   "what": "artist-instruments.json is written every run and read by nothing — not another script, not the feed.",
+   "do": "Either surface it (the app, the Pulse, a creator tool) or stop generating it. Work that runs daily and reaches nobody is the most expensive kind.",
+   "score": 58,
+   "band": "QUEUE",
+   "selfScore": 58,
+   "demotions": [],
+   "components": {
+    "evidence": "OBSERVED (30) — seen in our own output or code, not inferred",
+    "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "improver",
+   "owner": "chat",
+   "what": "era-history.json is written every run and read by nothing — not another script, not the feed.",
+   "do": "Either surface it (the app, the Pulse, a creator tool) or stop generating it. Work that runs daily and reaches nobody is the most expensive kind.",
+   "score": 58,
+   "band": "QUEUE",
+   "selfScore": 58,
+   "demotions": [],
+   "components": {
+    "evidence": "OBSERVED (30) — seen in our own output or code, not inferred",
+    "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "experience",
+   "owner": "cc",
+   "what": "4 accent colours appear on the same surface.",
+   "do": "Reserve green for positive, red for negative, and let mode accent everything else. Gold stays a highlight, never a third voice.",
+   "score": 58,
+   "band": "QUEUE",
+   "selfScore": 58,
+   "demotions": [],
+   "components": {
+    "evidence": "OBSERVED (30) — seen in our own output or code, not inferred",
+    "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "experience",
+   "owner": "cc",
+   "what": "32 emoji in the interface.",
+   "do": "Keep them for section headers and the ELI5 lollipop; drop them from anything carrying a number.",
+   "score": 58,
+   "band": "QUEUE",
+   "selfScore": 58,
+   "demotions": [],
+   "components": {
+    "evidence": "OBSERVED (30) — seen in our own output or code, not inferred",
+    "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "improver",
+   "owner": "tyler",
+   "what": "We hold both deal-zone room and per-pack economics for the same products.",
+   "do": "A \"rip or trade\" tool could answer one question nobody else can: at today's prices, is this box worth more opened, sold sealed online, or traded at a table? Three numbers we already compute, one screen.",
+   "score": 58,
+   "band": "QUEUE",
+   "selfScore": 58,
+   "demotions": [],
+   "components": {
+    "evidence": "OBSERVED (30) — seen in our own output or code, not inferred",
+    "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "improver",
+   "owner": "tyler",
+   "what": "Print windows and shelf movement are computed separately and never combined.",
+   "do": "A late-print set whose shelves are draining is a genuinely different situation from either signal alone. Crossing them is free and nobody publishes it.",
+   "score": 58,
+   "band": "QUEUE",
+   "selfScore": 58,
+   "demotions": [],
+   "components": {
+    "evidence": "OBSERVED (30) — seen in our own output or code, not inferred",
+    "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "creator",
+   "owner": "chat",
+   "what": "Artist angles all carry their sources.",
+   "do": "Extend the same to every angle in the post bank, and put the source in the script so it can be said aloud.",
+   "score": 48,
+   "band": "WATCH",
+   "selfScore": 48,
+   "demotions": [],
+   "components": {
+    "evidence": "DERIVED (20) — follows from things we measured, but is a step removed",
+    "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "creator",
+   "owner": "chat",
+   "what": "\"TCG prices\" — we can answer this today with the index, per-product prices, and the deal zone.",
+   "do": "Make sure an angle exists for it in the daily bank. A lane we can win and do not generate content for is a wasted advantage.",
+   "score": 48,
+   "band": "WATCH",
+   "selfScore": 48,
+   "demotions": [],
+   "components": {
+    "evidence": "DERIVED (20) — follows from things we measured, but is a step removed",
+    "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "creator",
+   "owner": "chat",
+   "what": "\"track the market\" — we can answer this today with the sealed index, its value-weighted twin, breadth, and per-class indexes.",
+   "do": "Make sure an angle exists for it in the daily bank. A lane we can win and do not generate content for is a wasted advantage.",
+   "score": 48,
+   "band": "WATCH",
+   "selfScore": 48,
+   "demotions": [],
+   "components": {
+    "evidence": "DERIVED (20) — follows from things we measured, but is a step removed",
+    "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "creator",
+   "owner": "chat",
+   "what": "\"hidden gems\" — partly served by the floor-to-median lens and the artist underrated detector.",
+   "do": "Nothing surfaces hidden gems for SEALED — the artist version only covers singles. A sealed product priced far below its cohort is the same idea and we do not compute it.",
+   "score": 48,
+   "band": "WATCH",
+   "selfScore": 48,
+   "demotions": [],
+   "components": {
+    "evidence": "DERIVED (20) — follows from things we measured, but is a step removed",
+    "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "creator",
+   "owner": "cc",
+   "what": "27 card images minted today.",
+   "do": "The gap is that they are files in a repo. A creator needs them one tap from the angle they picked, not from a folder.",
+   "score": 48,
+   "band": "WATCH",
+   "selfScore": 48,
+   "demotions": [],
+   "components": {
+    "evidence": "DERIVED (20) — follows from things we measured, but is a step removed",
+    "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "breaker",
+   "owner": "chat",
+   "what": "data/agent-history.json",
+   "do": "Corrupt it — empty object, missing top-level key, wrong types — and see which of its 2 readers notices. Then decide which of them SHOULD have.",
+   "score": 46,
+   "band": "WATCH",
+   "selfScore": 66,
+   "demotions": [
+    "reported three runs running without being acted on — repetition is not urgency"
+   ],
+   "components": {
+    "evidence": "OBSERVED (30) — seen in our own output or code, not inferred",
+    "impact": "HIGH (22) — materially changes what a reader sees or believes",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "breaker",
+   "owner": "chat",
+   "what": "data/card-catalogue.json",
+   "do": "Corrupt it — empty object, missing top-level key, wrong types — and see which of its 4 readers notices. Then decide which of them SHOULD have.",
+   "score": 46,
+   "band": "WATCH",
+   "selfScore": 66,
+   "demotions": [
+    "reported three runs running without being acted on — repetition is not urgency"
+   ],
+   "components": {
+    "evidence": "OBSERVED (30) — seen in our own output or code, not inferred",
+    "impact": "HIGH (22) — materially changes what a reader sees or believes",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "platform",
+   "owner": "chat",
+   "what": "[X] Nothing runs as a numbered series.",
+   "do": "A recurring format people can recognise beats a better one-off, because the second time somebody sees it they already know what it is. 'Day N of posting the sealed market's temperature' costs one counter.",
+   "score": 33,
+   "band": "NOTE ONLY",
+   "selfScore": 33,
+   "demotions": [],
+   "components": {
+    "evidence": "HYPOTHESIS (5) — a guess worth testing, labelled as one",
+    "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "platform",
+   "owner": "chat",
+   "what": "[YouTube] No B-roll list ships with any angle.",
+   "do": "The hardest part of a data video is what to show while you talk. We mint cards and charts daily and never tell a creator which ones to cut to and when.",
+   "score": 33,
+   "band": "NOTE ONLY",
+   "selfScore": 33,
+   "demotions": [],
+   "components": {
+    "evidence": "HYPOTHESIS (5) — a guess worth testing, labelled as one",
+    "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "platform",
+   "owner": "tyler",
+   "what": "[X] \"Paldean Fates listings moved -66.7% while its print window closes.\"",
+   "do": "X rewards a single surprising fact that makes somebody want to reply. The strongest shape we have is a number that moved with no headline attached — it implies a question and refuses to answer it, which is what makes people argue in the replies.",
+   "score": 33,
+   "band": "NOTE ONLY",
+   "selfScore": 33,
+   "demotions": [],
+   "components": {
+    "evidence": "HYPOTHESIS (5) — a guess worth testing, labelled as one",
+    "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "platform",
+   "owner": "tyler",
+   "what": "[X] Keep it under ~25 words and do not put a link in the post.",
+   "do": "Recorded as COMMUNITY from Tyler, founder platform knowledge, 2026-08-23 — the watermark on the card does the attribution a link would.",
+   "score": 33,
+   "band": "NOTE ONLY",
+   "selfScore": 33,
+   "demotions": [],
+   "components": {
+    "evidence": "HYPOTHESIS (5) — a guess worth testing, labelled as one",
+    "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "platform",
+   "owner": "tyler",
+   "what": "[YouTube] Pokemon GO Elite Trainer Box — \"forced quarantined pick\"",
+   "do": "YouTube rewards a question somebody is already typing into search. We can answer three of the recurring ones with data nobody else holds, which is the whole reason to be here rather than reacting to other people's news.",
+   "score": 33,
+   "band": "NOTE ONLY",
+   "selfScore": 33,
+   "demotions": [],
+   "components": {
+    "evidence": "HYPOTHESIS (5) — a guess worth testing, labelled as one",
+    "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "platform",
+   "owner": "tyler",
+   "what": "[YouTube] the sealed market — \"The whole sealed market in one number: 100.\"",
+   "do": "YouTube rewards a question somebody is already typing into search. We can answer three of the recurring ones with data nobody else holds, which is the whole reason to be here rather than reacting to other people's news.",
+   "score": 33,
+   "band": "NOTE ONLY",
+   "selfScore": 33,
+   "demotions": [],
+   "components": {
+    "evidence": "HYPOTHESIS (5) — a guess worth testing, labelled as one",
+    "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "experience",
+   "owner": "chat",
+   "what": "5 things visibly change day to day: the Daily Three, a fact, shelf moves, yesterday's picks revisited, Rip or Hold.",
+   "do": "Good coverage — the gap is that a returning reader cannot TELL at a glance what is new since yesterday.",
+   "score": 0,
+   "band": "CONFIRMED",
+   "selfScore": 0,
+   "demotions": [],
+   "confirmation": true
+  },
+  {
+   "from": "experience",
+   "owner": "chat",
+   "what": "A number appears above the fold on Today.",
+   "do": "Holds — check on a 390px screen that it is still above the fold with the banner and nav present.",
+   "score": 0,
+   "band": "CONFIRMED",
+   "selfScore": 0,
+   "demotions": [],
+   "confirmation": true
+  },
+  {
+   "from": "experience",
+   "owner": "chat",
+   "what": "Nothing is gated — every instrument is readable immediately.",
+   "do": "Holds. Keep it that way as the Discord unlock arrives — unlock depth, never truth.",
+   "score": 0,
+   "band": "CONFIRMED",
+   "selfScore": 0,
+   "demotions": [],
+   "confirmation": true
+  },
+  {
+   "from": "creator",
+   "owner": "cc",
+   "what": "10 distinct angles are ready each morning.",
+   "do": "Hold it. The risk now is the opposite — too many choices is its own paralysis, so lead with three and let the rest be a list.",
+   "score": 0,
+   "band": "CONFIRMED",
+   "selfScore": 0,
+   "demotions": [],
+   "confirmation": true
+  }
+ ],
  "dispatch": {
   "chat": [
    {
-    "from": "platform",
-    "what": "[X] Nothing runs as a numbered series.",
-    "do": "A recurring format people can recognise beats a better one-off, because the second time somebody sees it they already know what it is. 'Day N of posting the sealed market's temperature' costs one counter."
-   },
-   {
-    "from": "platform",
-    "what": "[YouTube] No B-roll list ships with any angle.",
-    "do": "The hardest part of a data video is what to show while you talk. We mint cards and charts daily and never tell a creator which ones to cut to and when."
-   },
-   {
-    "from": "creator",
-    "what": "Artist angles all carry their sources.",
-    "do": "Extend the same to every angle in the post bank, and put the source in the script so it can be said aloud."
-   },
-   {
-    "from": "creator",
-    "what": "\"TCG prices\" — we can answer this today with the index, per-product prices, and the deal zone.",
-    "do": "Make sure an angle exists for it in the daily bank. A lane we can win and do not generate content for is a wasted advantage."
-   },
-   {
-    "from": "creator",
-    "what": "\"track the market\" — we can answer this today with the sealed index, its value-weighted twin, breadth, and per-class indexes.",
-    "do": "Make sure an angle exists for it in the daily bank. A lane we can win and do not generate content for is a wasted advantage."
-   },
-   {
-    "from": "creator",
-    "what": "\"hidden gems\" — partly served by the floor-to-median lens and the artist underrated detector.",
-    "do": "Nothing surfaces hidden gems for SEALED — the artist version only covers singles. A sealed product priced far below its cohort is the same idea and we do not compute it."
-   },
-   {
     "from": "experience",
+    "owner": "chat",
     "what": "The Today screen carries 17 sections: The Daily Three, 🗳 Rip or Hold?, Biggest movers, Set the app up for you, Movers, Release radar…",
-    "do": "Rank them by how often somebody would act on each, and move the bottom third behind a tap. Nothing is deleted — it stops competing."
-   },
-   {
-    "from": "experience",
-    "what": "5 things visibly change day to day: the Daily Three, a fact, shelf moves, yesterday's picks revisited, Rip or Hold.",
-    "do": "Good coverage — the gap is that a returning reader cannot TELL at a glance what is new since yesterday."
-   },
-   {
-    "from": "experience",
-    "what": "A number appears above the fold on Today.",
-    "do": "Holds — check on a 390px screen that it is still above the fold with the banner and nav present."
-   },
-   {
-    "from": "experience",
-    "what": "Nothing is gated — every instrument is readable immediately.",
-    "do": "Holds. Keep it that way as the Discord unlock arrives — unlock depth, never truth."
+    "do": "Rank them by how often somebody would act on each, and move the bottom third behind a tap. Nothing is deleted — it stops competing.",
+    "score": 58,
+    "band": "QUEUE",
+    "selfScore": 58,
+    "demotions": [],
+    "components": {
+     "evidence": "OBSERVED (30) — seen in our own output or code, not inferred",
+     "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+     "actionable": "SOON (14) — clear what to do, needs a slot",
+     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+    }
    },
    {
     "from": "improver",
+    "owner": "chat",
     "what": "The index has no matched sample today, so it cannot move.",
-    "do": "Expected on a fresh series — worth a line on the page saying so, rather than a number that looks stuck."
+    "do": "Expected on a fresh series — worth a line on the page saying so, rather than a number that looks stuck.",
+    "score": 58,
+    "band": "QUEUE",
+    "selfScore": 58,
+    "demotions": [],
+    "components": {
+     "evidence": "OBSERVED (30) — seen in our own output or code, not inferred",
+     "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+     "actionable": "SOON (14) — clear what to do, needs a slot",
+     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+    }
    },
    {
     "from": "improver",
+    "owner": "chat",
     "what": "The knowledge base holds 8 verified facts.",
-    "do": "This is the asset that compounds — instruments can be rebuilt in a weekend, a decade of sourced facts cannot. A steady few per week beats a burst."
+    "do": "This is the asset that compounds — instruments can be rebuilt in a weekend, a decade of sourced facts cannot. A steady few per week beats a burst.",
+    "score": 58,
+    "band": "QUEUE",
+    "selfScore": 58,
+    "demotions": [],
+    "components": {
+     "evidence": "OBSERVED (30) — seen in our own output or code, not inferred",
+     "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+     "actionable": "SOON (14) — clear what to do, needs a slot",
+     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+    }
    },
    {
     "from": "improver",
+    "owner": "chat",
     "what": "artist-instruments.json is written every run and read by nothing — not another script, not the feed.",
-    "do": "Either surface it (the app, the Pulse, a creator tool) or stop generating it. Work that runs daily and reaches nobody is the most expensive kind."
+    "do": "Either surface it (the app, the Pulse, a creator tool) or stop generating it. Work that runs daily and reaches nobody is the most expensive kind.",
+    "score": 58,
+    "band": "QUEUE",
+    "selfScore": 58,
+    "demotions": [],
+    "components": {
+     "evidence": "OBSERVED (30) — seen in our own output or code, not inferred",
+     "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+     "actionable": "SOON (14) — clear what to do, needs a slot",
+     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+    }
    },
    {
     "from": "improver",
+    "owner": "chat",
     "what": "era-history.json is written every run and read by nothing — not another script, not the feed.",
-    "do": "Either surface it (the app, the Pulse, a creator tool) or stop generating it. Work that runs daily and reaches nobody is the most expensive kind."
+    "do": "Either surface it (the app, the Pulse, a creator tool) or stop generating it. Work that runs daily and reaches nobody is the most expensive kind.",
+    "score": 58,
+    "band": "QUEUE",
+    "selfScore": 58,
+    "demotions": [],
+    "components": {
+     "evidence": "OBSERVED (30) — seen in our own output or code, not inferred",
+     "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+     "actionable": "SOON (14) — clear what to do, needs a slot",
+     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+    }
+   },
+   {
+    "from": "creator",
+    "owner": "chat",
+    "what": "Artist angles all carry their sources.",
+    "do": "Extend the same to every angle in the post bank, and put the source in the script so it can be said aloud.",
+    "score": 48,
+    "band": "WATCH",
+    "selfScore": 48,
+    "demotions": [],
+    "components": {
+     "evidence": "DERIVED (20) — follows from things we measured, but is a step removed",
+     "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+     "actionable": "SOON (14) — clear what to do, needs a slot",
+     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+    }
+   },
+   {
+    "from": "creator",
+    "owner": "chat",
+    "what": "\"TCG prices\" — we can answer this today with the index, per-product prices, and the deal zone.",
+    "do": "Make sure an angle exists for it in the daily bank. A lane we can win and do not generate content for is a wasted advantage.",
+    "score": 48,
+    "band": "WATCH",
+    "selfScore": 48,
+    "demotions": [],
+    "components": {
+     "evidence": "DERIVED (20) — follows from things we measured, but is a step removed",
+     "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+     "actionable": "SOON (14) — clear what to do, needs a slot",
+     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+    }
+   },
+   {
+    "from": "creator",
+    "owner": "chat",
+    "what": "\"track the market\" — we can answer this today with the sealed index, its value-weighted twin, breadth, and per-class indexes.",
+    "do": "Make sure an angle exists for it in the daily bank. A lane we can win and do not generate content for is a wasted advantage.",
+    "score": 48,
+    "band": "WATCH",
+    "selfScore": 48,
+    "demotions": [],
+    "components": {
+     "evidence": "DERIVED (20) — follows from things we measured, but is a step removed",
+     "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+     "actionable": "SOON (14) — clear what to do, needs a slot",
+     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+    }
+   },
+   {
+    "from": "creator",
+    "owner": "chat",
+    "what": "\"hidden gems\" — partly served by the floor-to-median lens and the artist underrated detector.",
+    "do": "Nothing surfaces hidden gems for SEALED — the artist version only covers singles. A sealed product priced far below its cohort is the same idea and we do not compute it.",
+    "score": 48,
+    "band": "WATCH",
+    "selfScore": 48,
+    "demotions": [],
+    "components": {
+     "evidence": "DERIVED (20) — follows from things we measured, but is a step removed",
+     "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+     "actionable": "SOON (14) — clear what to do, needs a slot",
+     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+    }
    },
    {
     "from": "breaker",
+    "owner": "chat",
     "what": "data/agent-history.json",
-    "do": "Corrupt it — empty object, missing top-level key, wrong types — and see which of its 2 readers notices. Then decide which of them SHOULD have."
+    "do": "Corrupt it — empty object, missing top-level key, wrong types — and see which of its 2 readers notices. Then decide which of them SHOULD have.",
+    "score": 46,
+    "band": "WATCH",
+    "selfScore": 66,
+    "demotions": [
+     "reported three runs running without being acted on — repetition is not urgency"
+    ],
+    "components": {
+     "evidence": "OBSERVED (30) — seen in our own output or code, not inferred",
+     "impact": "HIGH (22) — materially changes what a reader sees or believes",
+     "actionable": "SOON (14) — clear what to do, needs a slot",
+     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+    }
    },
    {
     "from": "breaker",
+    "owner": "chat",
     "what": "data/card-catalogue.json",
-    "do": "Corrupt it — empty object, missing top-level key, wrong types — and see which of its 4 readers notices. Then decide which of them SHOULD have."
+    "do": "Corrupt it — empty object, missing top-level key, wrong types — and see which of its 4 readers notices. Then decide which of them SHOULD have.",
+    "score": 46,
+    "band": "WATCH",
+    "selfScore": 66,
+    "demotions": [
+     "reported three runs running without being acted on — repetition is not urgency"
+    ],
+    "components": {
+     "evidence": "OBSERVED (30) — seen in our own output or code, not inferred",
+     "impact": "HIGH (22) — materially changes what a reader sees or believes",
+     "actionable": "SOON (14) — clear what to do, needs a slot",
+     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+    }
    }
   ],
   "cc": [
    {
-    "from": "creator",
-    "what": "10 distinct angles are ready each morning.",
-    "do": "Hold it. The risk now is the opposite — too many choices is its own paralysis, so lead with three and let the rest be a list."
-   },
-   {
-    "from": "creator",
-    "what": "27 card images minted today.",
-    "do": "The gap is that they are files in a repo. A creator needs them one tap from the angle they picked, not from a folder."
-   },
-   {
     "from": "experience",
+    "owner": "cc",
     "what": "4 accent colours appear on the same surface.",
-    "do": "Reserve green for positive, red for negative, and let mode accent everything else. Gold stays a highlight, never a third voice."
+    "do": "Reserve green for positive, red for negative, and let mode accent everything else. Gold stays a highlight, never a third voice.",
+    "score": 58,
+    "band": "QUEUE",
+    "selfScore": 58,
+    "demotions": [],
+    "components": {
+     "evidence": "OBSERVED (30) — seen in our own output or code, not inferred",
+     "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+     "actionable": "SOON (14) — clear what to do, needs a slot",
+     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+    }
    },
    {
     "from": "experience",
+    "owner": "cc",
     "what": "32 emoji in the interface.",
-    "do": "Keep them for section headers and the ELI5 lollipop; drop them from anything carrying a number."
+    "do": "Keep them for section headers and the ELI5 lollipop; drop them from anything carrying a number.",
+    "score": 58,
+    "band": "QUEUE",
+    "selfScore": 58,
+    "demotions": [],
+    "components": {
+     "evidence": "OBSERVED (30) — seen in our own output or code, not inferred",
+     "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+     "actionable": "SOON (14) — clear what to do, needs a slot",
+     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+    }
+   },
+   {
+    "from": "creator",
+    "owner": "cc",
+    "what": "27 card images minted today.",
+    "do": "The gap is that they are files in a repo. A creator needs them one tap from the angle they picked, not from a folder.",
+    "score": 48,
+    "band": "WATCH",
+    "selfScore": 48,
+    "demotions": [],
+    "components": {
+     "evidence": "DERIVED (20) — follows from things we measured, but is a step removed",
+     "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+     "actionable": "SOON (14) — clear what to do, needs a slot",
+     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+    }
    }
   ],
   "tyler": [
    {
-    "from": "platform",
-    "what": "[X] \"Paldean Fates listings moved -66.7% while its print window closes.\"",
-    "do": "X rewards a single surprising fact that makes somebody want to reply. The strongest shape we have is a number that moved with no headline attached — it implies a question and refuses to answer it, which is what makes people argue in the replies."
-   },
-   {
-    "from": "platform",
-    "what": "[X] Keep it under ~25 words and do not put a link in the post.",
-    "do": "Recorded as COMMUNITY from Tyler, founder platform knowledge, 2026-08-23 — the watermark on the card does the attribution a link would."
-   },
-   {
-    "from": "platform",
-    "what": "[YouTube] Pokemon GO Elite Trainer Box — \"forced quarantined pick\"",
-    "do": "YouTube rewards a question somebody is already typing into search. We can answer three of the recurring ones with data nobody else holds, which is the whole reason to be here rather than reacting to other people's news."
-   },
-   {
-    "from": "platform",
-    "what": "[YouTube] the sealed market — \"The whole sealed market in one number: 100.\"",
-    "do": "YouTube rewards a question somebody is already typing into search. We can answer three of the recurring ones with data nobody else holds, which is the whole reason to be here rather than reacting to other people's news."
-   },
-   {
     "from": "improver",
+    "owner": "tyler",
     "what": "We hold both deal-zone room and per-pack economics for the same products.",
-    "do": "A \"rip or trade\" tool could answer one question nobody else can: at today's prices, is this box worth more opened, sold sealed online, or traded at a table? Three numbers we already compute, one screen."
+    "do": "A \"rip or trade\" tool could answer one question nobody else can: at today's prices, is this box worth more opened, sold sealed online, or traded at a table? Three numbers we already compute, one screen.",
+    "score": 58,
+    "band": "QUEUE",
+    "selfScore": 58,
+    "demotions": [],
+    "components": {
+     "evidence": "OBSERVED (30) — seen in our own output or code, not inferred",
+     "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+     "actionable": "SOON (14) — clear what to do, needs a slot",
+     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+    }
    },
    {
     "from": "improver",
+    "owner": "tyler",
     "what": "Print windows and shelf movement are computed separately and never combined.",
-    "do": "A late-print set whose shelves are draining is a genuinely different situation from either signal alone. Crossing them is free and nobody publishes it."
+    "do": "A late-print set whose shelves are draining is a genuinely different situation from either signal alone. Crossing them is free and nobody publishes it.",
+    "score": 58,
+    "band": "QUEUE",
+    "selfScore": 58,
+    "demotions": [],
+    "components": {
+     "evidence": "OBSERVED (30) — seen in our own output or code, not inferred",
+     "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+     "actionable": "SOON (14) — clear what to do, needs a slot",
+     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+    }
    }
   ]
+ },
+ "ratings": {
+  "confirmed": 4,
+  "actNow": 0,
+  "queue": 9,
+  "watch": 7,
+  "noteOnly": 6
  }
 }

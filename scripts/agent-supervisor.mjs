@@ -270,9 +270,81 @@ const dispatch = { chat: [], cc: [], tyler: [] };
   }
 }
 
+// ═══ REVIEW CHAIN ════════════════════════════════════════════════════════
+// Nothing reaches a person unreviewed. Four layers, each answering a different
+// question, because a single gate is a single point of failure and a rating
+// nobody audits becomes a number people stop reading.
+//
+//   1. SELF     — the agent declares evidence, impact and actionability.
+//   2. SCORE    — finding-rating turns that into 0-100 and a band. Mechanical,
+//                 so an agent cannot flatter itself into ACT NOW.
+//   3. MANAGER  — the supervisor applies judgment the score cannot: is this a
+//                 repeat, is the agent noisy, is the band plausible.
+//   4. DISPATCH — only what survives goes to a named person.
+//
+// The manager can DEMOTE but never PROMOTE. An agent that under-rates its own
+// finding gets corrected by a human reading it; an agent that over-rates gets
+// caught here. Allowing promotion would let the supervisor manufacture urgency,
+// which is the failure mode of every alerting system ever built.
+const reviewed = [];
+{
+  const { rate } = await import("./finding-rating.mjs");
+  const outcomes = await J("data/finding-outcomes.json") ?? { outcomes: {} };
+
+  // Default posture per agent when it has not declared one — deliberately
+  // conservative, because an undeclared finding has not been thought about.
+  const DEFAULTS = {
+    "correction-hunter": { evidence: "MEASURED", impact: "CRITICAL", actionable: "NOW" },
+    anomaly:             { evidence: "MEASURED", impact: "HIGH",     actionable: "SOON" },
+    falsifier:           { evidence: "MEASURED", impact: "CRITICAL", actionable: "NOW" },
+    breaker:             { evidence: "OBSERVED", impact: "HIGH",     actionable: "SOON" },
+    improver:            { evidence: "OBSERVED", impact: "MEDIUM",   actionable: "SOON" },
+    experience:          { evidence: "OBSERVED", impact: "MEDIUM",   actionable: "SOON" },
+    creator:             { evidence: "DERIVED",  impact: "MEDIUM",   actionable: "SOON" },
+    platform:            { evidence: "HYPOTHESIS", impact: "MEDIUM", actionable: "SOON" },
+    "universe-advisor":  { evidence: "DERIVED",  impact: "MEDIUM",   actionable: "BLOCKED" },
+  };
+
+  for (const [owner, items] of Object.entries(dispatch)) {
+    for (const item of items) {
+      // NOT EVERY FINDING IS A PROBLEM. Agents report confirmations too — "a
+      // number appears above the fold", "nothing is gated" — and dispatching
+      // those as work is the same crying-wolf failure as flagging a clean run.
+      // A confirmation is worth recording and worth nobody's morning.
+      const isConfirmation = /^(holds|hold it|good coverage|this one is solved|keep it that way)/i.test(String(item.do ?? ""))
+        || /^(nothing is gated|a number appears|all carry|already)/i.test(String(item.what ?? ""));
+      if (isConfirmation) { reviewed.push({ from: item.from, owner, what: item.what, do: item.do, score: 0, band: "CONFIRMED", selfScore: 0, demotions: [], confirmation: true }); continue; }
+
+      const d = DEFAULTS[item.from] ?? { evidence: "REASONED", impact: "LOW", actionable: "SOON" };
+      const r = await rate({ agentId: item.from, ...d, note: item.what });
+
+      // LAYER 3 — the manager's judgment, applied as demotions only.
+      const demotions = [];
+      const o = outcomes.outcomes?.[item.from];
+      if (o && (o.confirmed + o.dismissed) >= 5 && o.confirmed / (o.confirmed + o.dismissed) < 0.4)
+        demotions.push("this agent has been wrong more often than right where somebody checked");
+      const repeated = (hist.runs[item.from] ?? []).slice(-3).filter(h => (h.sample ?? []).some(sm => String(item.what).startsWith(String(sm).split("::")[0]))).length;
+      if (repeated >= 3) demotions.push("reported three runs running without being acted on — repetition is not urgency");
+
+      let band = r.band, score = r.score;
+      if (demotions.length) {
+        score = Math.max(0, score - 20 * demotions.length);
+        band = (score >= 75 ? "ACT NOW" : score >= 55 ? "QUEUE" : score >= 35 ? "WATCH" : "NOTE ONLY");
+      }
+      reviewed.push({ from: item.from, owner, what: item.what, do: item.do,
+        score, band, selfScore: r.score, demotions, components: r.components });
+    }
+  }
+  reviewed.sort((a, b) => b.score - a.score);
+}
+
 const report = { generatedAt: new Date().toISOString(), date: today,
   principle: "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
-  agents: notes, problems, workforce: proposals, efficiency, dispatch };
+  agents: notes, problems, workforce: proposals, efficiency, reviewed,
+  // dispatch now carries only what passed review, banded — an unrated list is
+  // what we had before, and it taught the reader to skim.
+  dispatch: Object.fromEntries(["chat", "cc", "tyler"].map(o => [o, reviewed.filter(r => r.owner === o && r.band !== "CONFIRMED" && r.band !== "NOTE ONLY")])),
+  ratings: { confirmed: reviewed.filter(r => r.band === "CONFIRMED").length, actNow: reviewed.filter(r => r.band === "ACT NOW").length, queue: reviewed.filter(r => r.band === "QUEUE").length, watch: reviewed.filter(r => r.band === "WATCH").length, noteOnly: reviewed.filter(r => r.band === "NOTE ONLY").length } };
 console.log(`\n  dispatch — ${dispatch.chat.length} for chat, ${dispatch.cc.length} for CC, ${dispatch.tyler.length} for Tyler`);
 for (const [who, items] of Object.entries(dispatch)) for (const i of items.slice(0, 2)) console.log(`   → ${who.padEnd(5)} ${String(i.what).slice(0, 62)}`);
 await writeFile(join(ROOT, "research/pulse/agent-supervision.json"), JSON.stringify(report, null, 1));

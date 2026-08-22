@@ -677,3 +677,43 @@ adds nothing and this retires.
 WHY IT MATTERS BEYOND THE SIGNAL: it is the first instrument built to serve
 buyers, vendors and creators simultaneously — the Referee Doctrine expressed
 as a computation rather than a promise.
+
+## THE RATING LAW — nothing reaches a person unreviewed (Tyler, Aug 23 2026)
+Thirteen agents produce findings all day and every one used to arrive with
+equal weight. A guess about TikTok formats and a measured pricing error looked
+identical in a list, so a reader either treated everything as urgent or
+treated nothing as urgent — and the second one always wins.
+
+THE SCORE, 0-100, from four components:
+- **Evidence** (40 max) — MEASURED, OBSERVED, DERIVED, REASONED, HYPOTHESIS.
+- **Impact** (30 max) — CRITICAL, HIGH, MEDIUM, LOW.
+- **Actionable** (20 max) — NOW, SOON, BLOCKED, UNCLEAR.
+- **Track record** (10 max) — starts at UNPROVEN, worth nothing. An agent
+  earns credibility by being right where somebody checked, not by existing.
+
+THE VETO: anything nobody can act on is capped at NOTE ONLY however certain
+it is. Without that, a certain, critical, unactionable finding rates ACT NOW
+and sends somebody to do nothing — which loses the reader in a week.
+
+THE BANDS are named for what to DO, not for how the number feels:
+ACT NOW (75+) · QUEUE (55+) · WATCH (35+) · NOTE ONLY · CONFIRMED.
+
+THE FOUR LAYERS
+1. SELF — the agent declares evidence, impact, actionability.
+2. SCORE — computed mechanically, so an agent cannot flatter itself upward.
+3. MANAGER — the supervisor applies judgment a score cannot: is this a repeat,
+   is this agent noisy, is the band plausible. **It may DEMOTE, never
+   PROMOTE.** Allowing promotion would let the supervisor manufacture urgency,
+   which is the failure mode of every alerting system ever built.
+4. DISPATCH — only what survives reaches a named person, banded.
+
+NOT EVERY FINDING IS A PROBLEM. Agents report confirmations too, and
+dispatching those as work is the same crying-wolf failure as flagging a clean
+run. Confirmations are recorded and surfaced to nobody.
+
+THE HONEST PART: we have NO outcome history, so a success rate today would be
+invented. Track record reports UNPROVEN until five findings have been judged.
+data/finding-outcomes.json records CONFIRMED when acting on a finding changed
+something and DISMISSED when somebody looked and it was fine. Both are useful;
+only silence is useless. The rating gets better by being used, which is the
+only honest way for a rating to get better.

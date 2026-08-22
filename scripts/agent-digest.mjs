@@ -137,9 +137,11 @@ if (exp?.findings?.length) {
 const dsp = sup?.dispatch;
 if (dsp && (dsp.tyler?.length || dsp.cc?.length || dsp.chat?.length)) {
   say(`## Who needs to do what`);
-  if (dsp.tyler?.length) { say(`**NEEDS A HUMAN — Tyler (${dsp.tyler.length}):**`); for (const i of dsp.tyler.slice(0, 4)) say(`- ${i.what} — *${i.do}*`); say(); }
-  if (dsp.cc?.length) { say(`**CC (${dsp.cc.length}):**`); for (const i of dsp.cc.slice(0, 4)) say(`- ${i.what} — *${i.do}*`); say(); }
-  if (dsp.chat?.length) { say(`**Chat (${dsp.chat.length}):** ${dsp.chat.length} item(s), top: ${dsp.chat[0].what}`); say(); }
+  const line = (i) => `- **[${i.band} ${i.score}]** ${i.what} — *${i.do}*`;
+  if (dsp.tyler?.length) { say(`**NEEDS A HUMAN — Tyler (${dsp.tyler.length}):**`); for (const i of dsp.tyler.slice(0, 4)) say(line(i)); say(); }
+  if (dsp.cc?.length) { say(`**CC (${dsp.cc.length}):**`); for (const i of dsp.cc.slice(0, 4)) say(line(i)); say(); }
+  if (dsp.chat?.length) { say(`**Chat (${dsp.chat.length}):** top — ${dsp.chat[0].what} *[${dsp.chat[0].band}]*`); say(); }
+  if (sup?.ratings) say(`*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: ${sup.ratings.actNow} ACT NOW, ${sup.ratings.queue} QUEUE, ${sup.ratings.watch} WATCH, ${sup.ratings.noteOnly} filed without surfacing, ${sup.ratings.confirmed} confirmations.*`);
 }
 
 if (cre?.findings?.length) {
