@@ -24,3 +24,48 @@ DISCORD SIZES: icon 512² (⚡ only on #141824) · banner 960×540 · role
 icons 64² mode-colored. Aug 18 drift log: Board/Pulse born #F5C842+
 Trebuchet+gradients → FIXED same night; mockup suite + heatmap = batch
 cleanup later (review artifacts, not living outputs).
+
+## DESIGN SYSTEM — Deliverable 1 outcome (Claude Design, Aug 22; ruled by chat)
+Design produced a page-grammar system. The canvas does not reach the
+repo, so the decisions are recorded here — this text is the deliverable.
+
+### THE PRINCIPLE (keep this sentence)
+"The site and the app share the column, the section header, and the card.
+The only thing that changes between surfaces is what fills the column —
+prose on the site, card grids in the app. Nothing is restyled, only
+re-packed."
+
+### THE DESKTOP FIX (solves 'the app looks like a stretched phone')
+Column-lock the app. Cards stay 300–400px and MULTIPLY inside the shared
+820/1040 column; section headers span the column exactly as they do on
+the site. Cards never grow to fill width. Mobile is unaffected — it is
+the same card at one-per-row.
+
+### SECTION HEADER (one treatment everywhere)
+hairline rule → mono kicker (small, letterspaced) → Syne 28+.
+Right slot flexes (a stat, a link, or nothing).
+
+### CARD ANATOMY (six parts, fixed order)
+photo · captioned hero number · Δ badge · ≤4 micro-stats · one plain
+line · provenance chip.
+FIXED: part order, card surface, padding, radius, header rule, kicker
+register. FLEX: header right slot, stat count (2–4), photo presence.
+
+### SPACING
+Inside components: 6 / 10 / 14 / 16. Between sections: 32 / 40 / 56.
+(Existing tokens stop at 16 because they were component air; page air
+was missing and is now explicit.)
+
+### TOKEN ADDITIONS — APPROVED (chat ruling, Aug 22)
+- `section-space` 32/40/56 — page air, distinct from component gaps. ✅
+- `num-xl` 40px JetBrains Mono — the index and Show Mode need a numeric
+  register above card heroes, and Syne is display-only by law so it
+  cannot carry digits. ✅
+- `accent-dim` — accent colors at ~40% alpha for BORDERS only. ✅ WITH A
+  LEASH: informational color without fills is the intent; it must never
+  become decoration. "Color carries information, never decoration"
+  still governs, and no-fills/no-gradients/no-glows are unchanged.
+
+### TYPE
+Nine-step scale, all digits in JetBrains Mono, Syne reserved for display
+at 28px and above.
