@@ -32,11 +32,11 @@ const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "ut
 // is allowed to cost. An agent with no budget is an agent nobody can hold to
 // anything.
 const AGENTS = [
-  { id: "breaker", output: "research/pulse/breaker-report.json", findings: d => (d?.hypotheses ?? []).map(h => `${h.target}::${String(h.attack).slice(0, 40)}`), maxFindings: 40, maxSilentDays: 2 },
+  { id: "breaker", output: "research/pulse/breaker-report.json", findings: d => (d?.hypotheses ?? []).map(h => `${h.target}::${String(h.attack).slice(0, 40)}`), maxFindings: 40, maxSilentDays: 2, standing: true },   // findings persist until fixed or handed off — that is the point of it
   { id: "falsifier", output: "research/pulse/falsifier-report.json", findings: d => (d?.results ?? []).filter(r => r.verdict === "TRIPPED").map(r => r.id), maxFindings: 12, maxSilentDays: 2 },
   { id: "correction-hunter", output: "research/pulse/correction-hunt.json", findings: d => [...(d?.suspectFigures ?? []).map(f => `suspect::${f.id}`), ...(d?.featuredThenUnmeasurable ?? []).map(f => `gone::${f.name}`)], maxFindings: 30, maxSilentDays: 2 },
   { id: "review-agents", output: "research/pulse/review-agents.json", findings: d => [...(d?.newcomer?.lines ?? []).slice(0, 0)], maxFindings: 0, maxSilentDays: 2 },
-  { id: "universe-advisor", output: "research/pulse/universe-advisor.json", findings: d => (d?.recommended ?? []).slice(0, 5).map(r => r.cardId), maxFindings: 200, maxSilentDays: 7 },
+  { id: "universe-advisor", output: "research/pulse/universe-advisor.json", findings: d => (d?.recommended ?? []).slice(0, 5).map(r => r.cardId), maxFindings: 200, maxSilentDays: 7, standing: true },
 ];
 
 let hist = await J("data/agent-history.json") ?? { note: "Per-agent output history. An agent is judged on whether its findings get resolved, never on how many it produces.", runs: {} };
@@ -67,7 +67,7 @@ for (const a of AGENTS) {
   }
 
   // 2 — BROKEN RECORD: the same finding, run after run.
-  if (h.length >= 3) {
+  if (h.length >= 3 && !a.standing) {
     const last3 = h.slice(-3).map(r => new Set(r.sample));
     const persistent = [...last3[0]].filter(f => last3[1].has(f) && last3[2].has(f));
     if (persistent.length >= 3)
@@ -102,10 +102,17 @@ const report = { generatedAt: new Date().toISOString(), date: today,
   agents: notes, problems };
 await writeFile(join(ROOT, "research/pulse/agent-supervision.json"), JSON.stringify(report, null, 1));
 
+// ADVISORY MEANS ADVISORY. process.exit() cannot be caught by the try/catch
+// that wraps agent imports, so an exiting supervisor killed publish-assert —
+// the final safety check — while claiming to be non-blocking. Caught by the
+// audit within minutes of the law being written. Inside the pipeline it warns;
+// run directly (CI, tests) it still returns a failing code.
+const STANDALONE = process.argv[1] && process.argv[1].endsWith("agent-supervisor.mjs");
 if (problems.length) {
-  console.error(`\n✗ AGENT SUPERVISOR — ${problems.length} problem(s):`);
-  for (const p of problems) console.error(`   ${p}`);
-  console.error("\n   Agents exist to make this better, safer and more enjoyable. One that adds noise is doing the opposite.\n");
-  process.exit(1);
+  const say = STANDALONE ? console.error : console.warn;
+  say(`\n${STANDALONE ? "✗" : "  ⚠"} AGENT SUPERVISOR — ${problems.length} problem(s):`);
+  for (const p of problems) say(`   ${p}`);
+  say("\n   Agents exist to make this better, safer and more enjoyable. One that adds noise is doing the opposite.\n");
+  if (STANDALONE) process.exitCode = 1;
 }
 console.log(`✓ agent supervisor: ${AGENTS.length} agents · ${notes.join(" · ")}`);

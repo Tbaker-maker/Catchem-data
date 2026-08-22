@@ -503,6 +503,12 @@ on how much it produces.
 THE LAWS
 1. **Advisory, never blocking.** Guards block; agents advise. A crashing
    agent must never stop a run — proven by simulating one.
+   **process.exit() IS NOT ADVISORY.** It cannot be caught by the try/catch
+   that wraps agent imports, so an agent calling it halts every guard
+   downstream while still describing itself as advisory. Our own supervisor
+   did this within minutes of the law being written, and killed
+   publish-assert. Agents may set process.exitCode; only a standalone run
+   may exit.
 2. **Budgeted.** Every agent declares a findings ceiling. An unreadable
    list is an unread list.
 3. **No farming.** Findings climbing across runs with nothing resolved

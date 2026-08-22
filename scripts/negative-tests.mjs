@@ -246,6 +246,26 @@ const CASES = [
       } finally { await copyFile("/tmp/nt-ah.bak", P("data/agent-history.json")); }
     } },
 
+  { guard: "Agents cannot halt the run", detect: null,
+    // process.exit() is not catchable by the try/catch that wraps agent
+    // imports, so an agent calling it kills every guard downstream while
+    // still calling itself advisory. Our own supervisor did exactly this
+    // minutes after the law forbidding it was written.
+    fn: async () => {
+      const AGENTS = ["falsifier.mjs", "correction-hunter.mjs", "breaker.mjs", "agent-supervisor.mjs", "review-agents.mjs"];
+      const offenders = [];
+      for (const f of AGENTS) {
+        const src = await readFile(P(`scripts/${f}`), "utf-8").catch(() => "");
+        // exitCode is fine (sets a status without halting); exit() is not,
+        // unless it is guarded by a standalone check.
+        const halts = /process\.exit\(/.test(src);
+        const guarded = /STANDALONE/.test(src);
+        if (halts && !guarded) offenders.push(f);
+      }
+      return { pass: offenders.length === 0,
+        why: offenders.length ? `${offenders.join(", ")} call process.exit() — not catchable, so they halt every guard downstream while claiming to be advisory` : "" };
+    } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");
