@@ -61,6 +61,11 @@ const live = sp.products.filter(p=>p.dataStatus==="live");
 const { loadBlocked } = await import("./lib/publish-guard.mjs");
 const __blk = await loadBlocked();
 const pub = live.filter(p=>!p.publishBlock && !__blk.blocked(p.id));
+// derived-insights rows were computed BEFORE qa-gate stamped today's flags —
+// re-filter any derived list at render time (first caught: swsh1-pack passed
+// derived, failed qa-gate's ±60% cross-source check, leaked via Pack Math).
+const byIdBlk = new Map(sp.products.map(p=>[p.id, !!p.publishBlock]));
+const editorial = (rows)=>(rows||[]).filter(r=>!__blk.blocked(r.id) && !byIdBlk.get(r.id));
 const noMkt = sp.products.filter(p=>p.dataStatus==="no-active-market").length;
 const heatDays = (heat?.mode||"").match(/day (\d+)/)?.[1] ?? "?";
 const sigs = (div?.rows||[]).filter(r=>r.signal && !__blk.blocked(r.id));
@@ -97,9 +102,9 @@ if (der?.catalysts?.length) {
 }
 if (der?.packMath) {
   md += `\n## 🧮 Pack Math — $ per sealed pack (arithmetic, no estimation)\n`;
-  for (const r of der.packMath.priciest.slice(0,3)) md += `- ${r.name}: **$${r.perPack}/pack**${r.sealedPremiumPct!=null?` · loose $${r.loosePack} → **${r.sealedPremiumPct>0?"+":""}${r.sealedPremiumPct}% sealed premium**`:` · loose — (feed landing)`}\n`;
+  for (const r of editorial(der.packMath.priciest).slice(0,3)) md += `- ${r.name}: **$${r.perPack}/pack**${r.sealedPremiumPct!=null?` · loose $${r.loosePack} → **${r.sealedPremiumPct>0?"+":""}${r.sealedPremiumPct}% sealed premium**`:` · loose — (feed landing)`}\n`;
   md += `- …\n`;
-  for (const r of der.packMath.cheapest.slice(0,3)) md += `- ${r.name}: **$${r.perPack}/pack**${r.sealedPremiumPct!=null?` · loose $${r.loosePack} → ${r.sealedPremiumPct>0?"+":""}${r.sealedPremiumPct}% sealed premium`:``}\n`;
+  for (const r of editorial(der.packMath.cheapest).slice(0,3)) md += `- ${r.name}: **$${r.perPack}/pack**${r.sealedPremiumPct!=null?` · loose $${r.loosePack} → ${r.sealedPremiumPct>0?"+":""}${r.sealedPremiumPct}% sealed premium`:``}\n`;
 }
 if (der?.narrative) {
   if (der?.printWatch?.length) {
@@ -209,9 +214,9 @@ ${der.dailyThree.raw?`<div class="sig">${(()=>{const c=(sg?.cards||[]).find(x=>x
 `:""}
 ${der?.catalysts?.length?`<h2>📡 Catalyst reads</h2>${der.catalysts.slice(0,4).map(c=>`<div class="row"><span>${c.note}</span><span class="mono">${c.class.toUpperCase()}·${c.horizon}</span></div>`).join("")}`:""}
 ${der?.packMath?`<h2>🧮 Pack math — $ per sealed pack</h2>
-${der.packMath.priciest.slice(0,3).map(r=>`<div class="row"><span>${r.name}${r.sealedPremiumPct!=null?` <em>vs loose $${r.loosePack}</em>`:""}</span><span class="mono">$${r.perPack}/pk${r.sealedPremiumPct!=null?` · ${r.sealedPremiumPct>0?"+":""}${r.sealedPremiumPct}%`:""}</span></div>`).join("")}
+${editorial(der.packMath.priciest).slice(0,3).map(r=>`<div class="row"><span>${r.name}${r.sealedPremiumPct!=null?` <em>vs loose $${r.loosePack}</em>`:""}</span><span class="mono">$${r.perPack}/pk${r.sealedPremiumPct!=null?` · ${r.sealedPremiumPct>0?"+":""}${r.sealedPremiumPct}%`:""}</span></div>`).join("")}
 <div class="row" style="border-bottom:0"><span style="color:var(--dim)">···</span><span></span></div>
-${der.packMath.cheapest.slice(0,3).map(r=>`<div class="row"><span>${r.name}${r.sealedPremiumPct!=null?` <em>vs loose $${r.loosePack}</em>`:""}</span><span class="mono">$${r.perPack}/pk${r.sealedPremiumPct!=null?` · ${r.sealedPremiumPct>0?"+":""}${r.sealedPremiumPct}%`:""}</span></div>`).join("")}`:""}
+${editorial(der.packMath.cheapest).slice(0,3).map(r=>`<div class="row"><span>${r.name}${r.sealedPremiumPct!=null?` <em>vs loose $${r.loosePack}</em>`:""}</span><span class="mono">$${r.perPack}/pk${r.sealedPremiumPct!=null?` · ${r.sealedPremiumPct>0?"+":""}${r.sealedPremiumPct}%`:""}</span></div>`).join("")}`:""}
 ${der?.narrative?`${der?.topicHits?.length?`<h2>🔎 Watched topics</h2>${der.topicHits.map(t=>`<div class="row"><span>${t.topic}<em> ${t.hits.map(h=>h.where).join(" · ")}</em></span><span class="mono" style="max-width:55%;text-align:right">${t.hits[0].detail.slice(0,64)}${t.hits[0].detail.length>64?"…":""}</span></div>`).join("")}`:""}
 ${der?.sealedIndex?`<div class="idxhead"><div><div class="lbl" style="font-size:10px;letter-spacing:.09em;color:var(--dim)">CATCH'EM SEALED INDEX</div><div style="font-family:'JetBrains Mono';font-size:34px;font-weight:700">${der.sealedIndex.level}${der.sealedIndex.ddPct!=null?` <span style="font-size:16px;color:${der.sealedIndex.ddPct>=0?"var(--green)":"#ef5a5a"}">${der.sealedIndex.ddPct>0?"▲":"▼"} ${Math.abs(der.sealedIndex.ddPct)}%</span>`:""}</div></div><div class="mono" style="text-align:right;color:var(--dim);font-size:12px">${der.sealedIndex.constituents} sealed products<br>breadth ▲${der.sealedIndex.breadth.up} ▼${der.sealedIndex.breadth.down}<br><a href="/methodology.html" style="color:var(--green)">methodology →</a></div></div${der?.rawIndex?`<div class="foot" style="margin:-8px 0 14px">Raw Chase Index <b class="mono">${der.rawIndex.level}</b> (${der.rawIndex.constituents} chases, baseline ${der.rawIndex.baselineDate}) · Graded Index: same equation, awaits licensed daily feed</div>`:""}`:""}
 ${der?.eraIndexes?.length?`<h2>\ud83c\udfdb Generation indexes</h2>${der.eraIndexes.map(e=>`<div class="row"><span><b>${e.era}</b><em> ${e.products} products \u00b7 ${e.avgGapPct!=null?`asking ${Math.abs(e.avgGapPct)}% ${e.avgGapPct>=0?"more":"less"} than TCGplayer \u00b7 `:"eBay-native era \u00b7 "}${e.listingsPerProduct} listings each</em></span><span class="mono">${e.boxMedian?`$${e.boxMedian.toLocaleString("en-US")}`:`$${e.level.toLocaleString("en-US")}`}</span></div>`).join("")}${der?.supplyShifts?.length?`<h2>\ud83c\udf0a Supply shifts</h2>${der.supplyShifts.slice(0,5).map(x=>`<div class="row"><span><b>${x.name}</b><em> ${x.prev}\u2192${x.listings} listings${x.priceDPct!=null?` \u00b7 price ${x.priceDPct>0?"+":""}${x.priceDPct}%`:""} \u00b7 ${x.read}${x.catalystMatch?` \u00b7 ${x.catalystMatch}`:""}</em></span><span class="mono" style="color:${x.dPct>0?"var(--gold)":"var(--green)"}">${x.dPct>0?"+":""}${x.dPct}%</span></div>`).join("")}<div class="foot">Shelf count vs yesterday \u00b7 cause candidates, never verdicts \u00b7 gated at 20+ listings so small shelves can\u2019t fake big percents.</div>`:""}
