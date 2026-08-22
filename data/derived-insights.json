@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-22T15:48:13.154Z",
+  "generatedAt": "2026-08-22T15:47:33.862Z",
   "method": "Pack Math: ask median / era-aware pack count (arithmetic, no estimation; variable-count products excluded by name). Narrative: latest agent digest cross-referenced against tracked sets; 'quiet movers' = spread signal with zero digest mention.",
   "digestUsed": "2026-08-22.md",
   "packMath": {
@@ -1428,7 +1428,7 @@
         "price": 545.76,
         "listings": 68,
         "spreadPct": null,
-        "signal": true
+        "signal": false
       },
       {
         "set": "Mega Evolution",
@@ -1444,7 +1444,7 @@
         "price": 470.58,
         "listings": 110,
         "spreadPct": null,
-        "signal": false
+        "signal": true
       }
     ],
     "quietMovers": [
@@ -1453,7 +1453,15 @@
         "flagship": "Battle Styles Booster Pack",
         "price": 11.99,
         "listings": 29,
-        "spreadPct": -15.7,
+        "spreadPct": 29.9,
+        "signal": true
+      },
+      {
+        "set": "Chilling Reign",
+        "flagship": "Chilling Reign Booster Pack",
+        "price": 15.99,
+        "listings": 52,
+        "spreadPct": 36.8,
         "signal": true
       },
       {
@@ -1466,18 +1474,18 @@
       },
       {
         "set": "Fusion Strike",
-        "flagship": "Fusion Strike Booster Box",
-        "price": 1130.07,
-        "listings": 97,
-        "spreadPct": 16.6,
+        "flagship": "Fusion Strike Booster Pack",
+        "price": 22.99,
+        "listings": 30,
+        "spreadPct": 20.3,
         "signal": true
       },
       {
         "set": "Lost Origin",
-        "flagship": "Lost Origin Elite Trainer Box",
-        "price": 249.99,
-        "listings": 130,
-        "spreadPct": 19.7,
+        "flagship": "Lost Origin Booster Pack",
+        "price": 23.99,
+        "listings": 48,
+        "spreadPct": 39.9,
         "signal": true
       },
       {
@@ -1486,14 +1494,6 @@
         "price": 324.99,
         "listings": 57,
         "spreadPct": 18.3,
-        "signal": true
-      },
-      {
-        "set": "Surging Sparks",
-        "flagship": "Surging Sparks Booster Pack",
-        "price": 10,
-        "listings": 24,
-        "spreadPct": -22,
         "signal": true
       }
     ]
@@ -1525,7 +1525,7 @@
       "horizon": "long",
       "thesis": null,
       "note": "franchise moment — demand catalyst",
-      "context": "…mates of oct–nov 2026 appear optimistic. monitor closely; a 30th celebration submission surge in sept/oct could reset the clock. **supply_event — sta…",
+      "context": "…mates of oct–nov 2026 appear optimistic. monitor closely; a 30th celebration submission surge in sept/oct could reset the clock. **supply_event — s…",
       "provenance": "digest 2026-08-22.md",
       "chip": "READ"
     }
@@ -2840,11 +2840,11 @@
       "level": 229.99,
       "boxMedian": 586.69,
       "index": 65.7,
-      "avgGapPct": 7.6,
+      "avgGapPct": 18.5,
       "venueClass": "cross-market",
       "totalListings": 3073,
       "listingsPerProduct": 56,
-      "read": "reads normal — the gap sits inside the range photos usually explain, so nothing here is signalling on its own",
+      "read": "reads hot — asks sit well past the usual photo premium, which typically points to demand-side pressure rather than seller optimism",
       "chip": "READ"
     },
     {
@@ -2866,11 +2866,11 @@
       "level": 154.5,
       "boxMedian": 378.88,
       "index": 77.3,
-      "avgGapPct": 7.3,
+      "avgGapPct": 20.3,
       "venueClass": "cross-market",
       "totalListings": 3721,
       "listingsPerProduct": 58,
-      "read": "reads normal — the gap sits inside the range photos usually explain, so nothing here is signalling on its own",
+      "read": "reads hot — asks sit well past the usual photo premium, which typically points to demand-side pressure rather than seller optimism",
       "chip": "READ"
     },
     {
@@ -2879,39 +2879,39 @@
       "level": 88.69,
       "boxMedian": 333.62,
       "index": 73.9,
-      "avgGapPct": -0.1,
+      "avgGapPct": 14,
       "venueClass": "cross-market",
       "totalListings": 2266,
       "listingsPerProduct": 73,
-      "read": "reads soft — eBay asks sitting under TCGplayer usually means motivated sellers across the era, which is worth watching rather than acting on",
+      "read": "reads normal — the gap sits inside the range photos usually explain, so nothing here is signalling on its own",
       "chip": "READ"
     }
   ],
   "sealedIndex": {
     "name": "Catchem Sealed Index",
-    "level": 100.2,
-    "ddPct": 0.2,
+    "level": 96.1,
+    "ddPct": 0,
     "medianProductUsd": 198.48,
     "constituents": 174,
     "seasoningBench": 5,
     "baseline": "each product vs its first clean-history price (2026-08-18 cut)",
     "breadth": {
-      "up": 50,
-      "down": 33,
-      "flat": 60
+      "up": 63,
+      "down": 40,
+      "flat": 70
     },
     "chip": "VERIFIED",
     "methodologyUrl": "/methodology.html",
     "valueWeighted": {
       "name": "Catchem Sealed Index — value weighted",
-      "level": 100.8,
+      "level": 100.7,
       "constituents": 174,
-      "vsEqualWeight": 0.6,
+      "vsEqualWeight": 4.6,
       "simple": "Same shelf, but the expensive boxes get a bigger say. If this number and the main one disagree, the cheap end and the expensive end of the market are moving differently.",
       "method": "Each product's move is weighted by what it was worth at its baseline, so a $5,000 box counts for more than a $10 pack. The main index gives every product one equal vote.",
       "chip": "VERIFIED"
     },
-    "simple": "One number for all 174 sealed products. 100 was the starting line; 100.2 means the whole shelf is worth more than when we started. Each product competes only against itself — one product, one vote."
+    "simple": "One number for all 174 sealed products. 100 was the starting line; 96.1 means the whole shelf is worth less than when we started. Each product competes only against itself — one product, one vote."
   },
   "rawIndex": {
     "name": "Raw Chase Index",
@@ -3306,39 +3306,6 @@
       "sv4pt5-pack",
       "swsh12pt5-pack",
       "swsh45-pack"
-    ],
-    "rebased": [
-      "swsh5-pack",
-      "swsh6-pack",
-      "swsh7-pack",
-      "swsh8-pack",
-      "swsh11-pack",
-      "sv1-pack",
-      "sv3pt5-pack",
-      "sv4-pack",
-      "sv8-pack",
-      "sv8pt5-pack",
-      "sv9-pack",
-      "sv10-pack",
-      "me1-pack",
-      "me2-pack",
-      "me2pt5-pack",
-      "me3-pack",
-      "me4-pack",
-      "me5-pack",
-      "sv2-pack",
-      "sv3-pack",
-      "sv5-pack",
-      "sv6-pack",
-      "sv6pt5-pack",
-      "sv7-pack",
-      "swsh1-pack",
-      "swsh10-pack",
-      "swsh12-pack",
-      "swsh2-pack",
-      "swsh3-pack",
-      "swsh4-pack",
-      "swsh9-pack"
     ]
   },
   "dealZone": {
@@ -4758,7 +4725,11 @@
       }
     }
   },
-  "fx": null,
+  "fx": {
+    "usdcad": 1.374,
+    "date": "2026-08-21",
+    "source": "frankfurter.app"
+  },
   "subtypeIndexes": [
     {
       "subtype": "etb",
@@ -4772,7 +4743,7 @@
     },
     {
       "subtype": "booster-pack",
-      "level": 100.1,
+      "level": 78.6,
       "constituents": 33
     },
     {
@@ -4807,6 +4778,17 @@
   },
   "supplyShifts": [
     {
+      "id": "sv8pt5-pack",
+      "name": "Prismatic Evolutions Booster Pack",
+      "listings": 8,
+      "prev": 24,
+      "dPct": -66.7,
+      "priceDPct": 21.2,
+      "read": "reads as absorption — shelves draining while asks rise, which historically means demand-led buying or a single large buyer",
+      "catalystMatch": null,
+      "chip": "READ"
+    },
+    {
       "id": "sv4pt5-pc-etb",
       "name": "Paldean Fates Pokemon Center Elite Trainer Box",
       "listings": 40,
@@ -4814,6 +4796,28 @@
       "dPct": -66.7,
       "priceDPct": 0,
       "read": "reads as a quiet drain — likely listings expiring or sellers stepping back",
+      "catalystMatch": null,
+      "chip": "READ"
+    },
+    {
+      "id": "sv10-pack",
+      "name": "Destined Rivals Booster Pack",
+      "listings": 13,
+      "prev": 27,
+      "dPct": -51.9,
+      "priceDPct": -16.7,
+      "read": "reads as a quiet drain — likely listings expiring or sellers stepping back",
+      "catalystMatch": "matches catalyst logged 2026-08-21",
+      "chip": "READ"
+    },
+    {
+      "id": "sv9-pack",
+      "name": "Journey Together Booster Pack",
+      "listings": 19,
+      "prev": 28,
+      "dPct": -32.1,
+      "priceDPct": 11.1,
+      "read": "reads as absorption — shelves draining while asks rise, which historically means demand-led buying or a single large buyer",
       "catalystMatch": null,
       "chip": "READ"
     },
@@ -4829,6 +4833,28 @@
       "chip": "READ"
     },
     {
+      "id": "me2pt5-pack",
+      "name": "Ascended Heroes Booster Pack",
+      "listings": 18,
+      "prev": 26,
+      "dPct": -30.8,
+      "priceDPct": 0,
+      "read": "reads as a quiet drain — likely listings expiring or sellers stepping back",
+      "catalystMatch": null,
+      "chip": "READ"
+    },
+    {
+      "id": "swsh10-pack",
+      "name": "Astral Radiance Booster Pack",
+      "listings": 18,
+      "prev": 26,
+      "dPct": -30.8,
+      "priceDPct": 1.4,
+      "read": "reads as absorption — shelves draining while asks rise, which historically means demand-led buying or a single large buyer",
+      "catalystMatch": null,
+      "chip": "READ"
+    },
+    {
       "id": "sv8pt5-bb",
       "name": "Prismatic Evolutions Booster Bundle",
       "listings": 93,
@@ -4838,73 +4864,18 @@
       "read": "reads as a quiet drain — likely listings expiring or sellers stepping back",
       "catalystMatch": null,
       "chip": "READ"
-    },
-    {
-      "id": "swsh12pt5-pack",
-      "name": "Crown Zenith Booster Pack",
-      "listings": 31,
-      "prev": 44,
-      "dPct": -29.5,
-      "priceDPct": 3,
-      "read": "reads as absorption — shelves draining while asks rise, which historically means demand-led buying or a single large buyer",
-      "catalystMatch": null,
-      "chip": "READ"
-    },
-    {
-      "id": "xy12-booster-box",
-      "name": "Evolutions Booster Box",
-      "listings": 27,
-      "prev": 34,
-      "dPct": -20.6,
-      "priceDPct": 1.9,
-      "read": "reads as absorption — shelves draining while asks rise, which historically means demand-led buying or a single large buyer",
-      "catalystMatch": null,
-      "chip": "READ"
-    },
-    {
-      "id": "sm3-booster-box",
-      "name": "Burning Shadows Booster Box",
-      "listings": 20,
-      "prev": 25,
-      "dPct": -20,
-      "priceDPct": 0,
-      "read": "reads as a quiet drain — likely listings expiring or sellers stepping back",
-      "catalystMatch": null,
-      "chip": "READ"
-    },
-    {
-      "id": "sv8pt5-sc",
-      "name": "Prismatic Evolutions Surprise Box",
-      "listings": 92,
-      "prev": 114,
-      "dPct": -19.3,
-      "priceDPct": 9.6,
-      "read": "reads as absorption — shelves draining while asks rise, which historically means demand-led buying or a single large buyer",
-      "catalystMatch": null,
-      "chip": "READ"
-    },
-    {
-      "id": "sv1-bundle",
-      "name": "Scarlet & Violet Booster Bundle",
-      "listings": 93,
-      "prev": 115,
-      "dPct": -19.1,
-      "priceDPct": -10,
-      "read": "reads as a quiet drain — likely listings expiring or sellers stepping back",
-      "catalystMatch": null,
-      "chip": "READ"
     }
   ],
   "ripOrHold": {
-    "id": "sv6pt5-etb",
-    "name": "Shrouded Fable Elite Trainer Box",
-    "price": 136.43,
-    "question": "Shrouded Fable Elite Trainer Box at $136.43 — rip it or hold it sealed?",
+    "id": "swsh5-etb",
+    "name": "Battle Styles Elite Trainer Box",
+    "price": 149.9,
+    "question": "Battle Styles Elite Trainer Box at $149.9 — rip it or hold it sealed?",
     "note": "one-tap daily vote; results revisited next morning"
   },
   "notification": {
-    "title": "Catchem Sealed Index 100.2 (+0.2%)",
-    "body": "Today: Shrouded Fable Elite Trainer Box — eBay asks 17.3% more than TCGplayer."
+    "title": "Catchem Sealed Index 96.1 (0%)",
+    "body": "Today: Battle Styles Elite Trainer Box — eBay asks 20.4% more than TCGplayer."
   },
   "cohortCompare": {
     "specialty": {
@@ -4913,7 +4884,7 @@
       "totalSupply": 2360,
       "supplyPerProduct": 69.4,
       "supplyPerSetMonth": 2.1,
-      "avgSpreadPct": 5.1,
+      "avgSpreadPct": 9.9,
       "avgPerPack": 43.13
     },
     "mainline": {
@@ -4922,7 +4893,7 @@
       "totalSupply": 7756,
       "supplyPerProduct": 53.5,
       "supplyPerSetMonth": 1.9,
-      "avgSpreadPct": 9.5,
+      "avgSpreadPct": 20.9,
       "avgPerPack": 29.68
     },
     "note": "supplyPerSetMonth = listings per set-age month (taper proxy; falls as sets absorb). Velocity/taper curves build in cohort-history.json from 2026-08-18 forward."
@@ -4958,7 +4929,7 @@
       "hits": [
         {
           "where": "news",
-          "detail": "…ct–nov 2026 appear optimistic. monitor closely; a 30th celebration submission surge in sept/oct could reset the clock. **supply_event — standing watch: millenn…"
+          "detail": "…ct–nov 2026 appear optimistic. monitor closely; a 30th celebration submission surge in sept/oct could reset the clock. **supply_event — standing watch: mille…"
         }
       ]
     },
@@ -4978,33 +4949,33 @@
       "hits": [
         {
           "where": "news",
-          "detail": "…eker-japanese-tcg-set-to-release-in-november - **psa backlog now on a confirmed downward trend but value reopening still many months away.** the industry as a…"
+          "detail": "…er-japanese-tcg-set-to-release-in-november - **psa backlog now on a confirmed downward trend but value reopening still many months away.** the industry as…"
         }
       ]
     }
   ],
   "dailyThree": {
     "shelf": {
-      "name": "Paldean Fates Pokemon Center Elite Trainer Box",
-      "listings": 40,
-      "prev": 120,
+      "name": "Prismatic Evolutions Booster Pack",
+      "listings": 8,
+      "prev": 24,
       "dPct": -66.7,
-      "priceDPct": 0,
+      "priceDPct": 21.2,
       "chip": "READ",
-      "explain": "reads as a quiet drain — likely listings expiring or sellers stepping back",
+      "explain": "reads as absorption — shelves draining while asks rise, which historically means demand-led buying or a single large buyer",
       "reason": "shelf move worth a look"
     },
     "sealed": {
-      "whyChosen": "It is on the list because its cheapest believable listing sits at $175.13 while the middle of the market is $950 — an unusually wide spread between the two, which usually means patience is worth something here.",
+      "whyChosen": "It is on the list because its cheapest believable listing sits at $47.17 while the middle of the market is $249.99 — an unusually wide spread between the two, which usually means patience is worth something here.",
       "lens": "room",
-      "name": "151 Ultra Premium Collection",
-      "ebay": 950,
-      "tcg": 934.59,
-      "spreadPct": 1.6,
-      "listings": 140,
+      "name": "Lost Origin Elite Trainer Box",
+      "ebay": 249.99,
+      "tcg": 208.77,
+      "spreadPct": 19.7,
+      "listings": 130,
       "chip": "VERIFIED",
       "reason": "widest distance between the cheapest listing and the middle",
-      "explain": "eBay usually runs a little higher on sealed — this is asking 1.6% more, well past that baseline. 140 listings are live right now."
+      "explain": "eBay usually runs a little higher on sealed — this is asking 19.7% more, well past that baseline. 130 listings are live right now."
     },
     "graded": {
       "name": "Umbreon ex (Prismatic Evolutions)",
@@ -5018,12 +4989,12 @@
       "explain": "Ungraded copies trade around $1,491. Perfect-graded (PSA 10) copies have been SELLING near $5,100 — about $3,529 ahead even after the $79.99 grading fee. Based on 550 recorded PSA 10 sales."
     },
     "raw": {
-      "name": "Rayquaza VMAX",
-      "set": "Evolving Skies",
-      "price": 1247.9,
+      "name": "Umbreon ex",
+      "set": "Prismatic Evolutions",
+      "price": 1490.88,
       "chip": "READ",
       "reason": "a chase we have not put in front of you this week",
-      "explain": "Widely treated as the card collectors hunt hardest from Evolving Skies — the card the whole set gets priced around. Market sits at $1,248 today. Its set is 59 months old."
+      "explain": "Widely treated as the card collectors hunt hardest from Prismatic Evolutions — the card the whole set gets priced around. Market sits at $1,491 today. Its set is 19 months old."
     }
   }
 }

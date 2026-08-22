@@ -311,11 +311,14 @@ const packsForFeed = (p) => {
   if (p.subtype === "etb" || p.subtype === "pc-etb") return era === "swsh" ? 8 : (era ? 9 : null);
   return null;
 };
+// Same venue rule the derived engine uses — one module, one truth.
+// MUST run before looseLane is built (fixed 2026-08-22, CC): the loose-pack
+// street price feeding the sealed premium has to be the SAME number we display
+// as the pack price, or the premium reconciles against a price no longer shown.
+applyPackBasis(sp.products, (await J("data/divergence-report.json"))?.rows || []);
 const looseLane = new Map(sp.products
   .filter(p => p.subtype === "booster-pack" && p.dataStatus === "live" && p.priceMedian != null)
   .map(p => [p.setId, p.priceMedian]));
-// Same venue rule the derived engine uses — one module, one truth.
-applyPackBasis(sp.products, (await J("data/divergence-report.json"))?.rows || []);
 const catalog = sp.products.map(p => {
   const packs = packsForFeed(p);
   const live = p.dataStatus === "live";
@@ -326,8 +329,23 @@ const catalog = sp.products.map(p => {
   const img = sealedImg(p); if (img) row.img = img;
   if (live) {
     if (p.priceMedian != null) row.median = p.priceMedian;
-    if (p.priceFloorClean != null) row.floor = p.priceFloorClean;
-    if (p.priceHigh != null) row.high = p.priceHigh;
+    // LANE LABEL (2026-08-22, CC). applyPackBasis swaps the displayed median
+    // to TCGplayer for the pack class (RT-4b) but the label was never
+    // projected, so the app could not tell the user which market a price came
+    // from — and the methodology promises the eBay ask is "kept alongside,
+    // never hidden". Both now ship. The floor/high BAND is the one field pair
+    // that cannot survive a lane swap: a median must sit inside its own band,
+    // and sv8-pack shipped median 7.83 UNDER floor 7.95 once the median came
+    // from TCGplayer and the band from eBay. On switched rows the band moves
+    // to eBay-named fields rather than being faked from a lane we do not have.
+    // listingCount stays as-is: it is a standalone eBay count already labelled
+    // Active Listings, with no arithmetic relationship to the median, and Buy
+    // Pressure would go dark for the whole pack class without it.
+    if (p.priceBasis) row.basis = p.priceBasis;
+    const tcgBasis = p.priceBasis === "tcgplayer";
+    if (tcgBasis && p.ebayAskMedian != null) row.ebayAskMedian = p.ebayAskMedian;
+    if (p.priceFloorClean != null) row[tcgBasis ? "ebayFloor" : "floor"] = p.priceFloorClean;
+    if (p.priceHigh != null) row[tcgBasis ? "ebayHigh" : "high"] = p.priceHigh;
     if (p.listingCount != null) row.listings = p.listingCount;
     if (perPack != null) { row.packs = packs; row.perPack = perPack; }
     if (loose) { row.loosePack = loose; row.vsLoosePct = Math.round(100 * (perPack - loose) / loose); }

@@ -37,10 +37,29 @@ import { offTcgEra as OFF_TCG } from "./lib/instruments.mjs";
 // file too, or a manually-held product qualifies as a signal (2026-08-22 leak).
 import { loadBlocked } from "./lib/publish-guard.mjs";
 const q = await loadBlocked();
-const TCG_SHIP_EST = 4.99;        // typical small-parcel charge, est.
-const TCG_FREE_SHIP_OVER = 40;    // TCGplayer free-shipping threshold, est.
-const tcgDelivered = m => m == null ? null
-  : Math.round((m + (m >= TCG_FREE_SHIP_OVER ? 0 : TCG_SHIP_EST)) * 100) / 100;
+// NO-GUESS LAW (Tyler, 8739773 — supersedes the abb4123 estimate): never
+// invent a shipping cost. Where a source states no shipping, postage is
+// treated as baked into the stated price, so that price already IS the
+// delivered total. That applies to the TCGplayer side exactly as it does to
+// an eBay listing with no stated postage: PPT reports market price with no
+// shipping component, so we take it as delivered rather than adding $4.99.
+// Removed 2026-08-22 (CC): the estimate was still running here after the law
+// landed, so 32 of 135 rows published a spread computed off a guessed number
+// while the methodology said we never guess. See the audit report.
+// The removed constants were also factually wrong for our catalogue, verified
+// against TCGplayer's own help centre the same day: their free-shipping tiers
+// are $50 on TCGplayer Direct ($3.99 under) and seller-set elsewhere (commonly
+// $5) — not $40 — and free shipping "only applies to small items (normal-sized
+// singles)", which EXCLUDES sealed product entirely. So the old model zeroed
+// out postage on the 103 rows above $40 where it is in fact never zero.
+// STANDING BIAS, stated not modelled: every row here compares an eBay price
+// that includes postage against a TCG price that excludes it, and no source
+// exposes the missing figure (TCGplayer's API stopped granting new access;
+// PPT has no shipping field on any tier — investigated 2026-08-22). So the
+// spread OVERSTATES eBay's premium by an unmeasurable amount on every row,
+// worst where prices are smallest. Do not read a small positive gap as a
+// signal, and see the report's fork recommendation before promoting this
+// instrument back to a headline.
 const rows = [], skipped = [];
 for (const p of ebay.products || []) {
   const t = tcgById.get(p.id);
@@ -48,20 +67,14 @@ for (const p of ebay.products || []) {
     skipped.push({ id: p.id, reason: !t ? "no tcg row" : `status ebay:${p.dataStatus}/tcg:${t?.dataStatus}` });
     continue;
   }
-  const ebayDelivered = p.priceMedian;                       // already delivered
-  const tcgDeliv = tcgDelivered(t.tcgMarket);
-  const spreadBasis = "delivered-vs-delivered (shipping in, tax out)";
-  const spread = (ebayDelivered - tcgDeliv) / tcgDeliv;
-  // DELIVERED vs DELIVERED (Tyler ruling, 2026-08-23): "always add shipping on
-// both sides. Never add tax but indicate tax is not included. If a listing has
-// no shipping price, assume the cost is baked in already."
-// So the comparison is what a buyer actually pays on each side. eBay rows are
-// already delivered (item + shipping where stated; where no shipping is stated
-// the cost is treated as included, per the ruling). TCGplayer market price is
-// item-only, so an estimated shipping cost is ADDED to it. Tax is excluded on
-// both sides and said so plainly — it varies by state and by seller nexus.
-// The shipping estimate below is labelled est. and needs periodic verification.
-rows.push({ id: p.id, spreadBasis, tcgDelivered: tcgDeliv, tcgShipEst: t.tcgMarket >= TCG_FREE_SHIP_OVER ? 0 : TCG_SHIP_EST, publishBlocked: (p.publishBlock || q.blocked(p.id)) || undefined, name: p.name, ebayAskMedian: p.priceMedian, tcgMarket: t.tcgMarket,
+  // Both sides are taken as stated, neither is adjusted. eBay rows are already
+  // delivered (item + postage where a listing states it; where none is stated
+  // the cost is baked in, per the ruling). The TCG side states no postage, so
+  // it is taken as delivered too. Tax excluded both sides, always.
+  const ebayDelivered = p.priceMedian;
+  const spreadBasis = "as-stated both sides, no shipping estimated (shipping in where stated, tax out)";
+  const spread = (ebayDelivered - t.tcgMarket) / t.tcgMarket;
+rows.push({ id: p.id, spreadBasis, publishBlocked: (p.publishBlock || q.blocked(p.id)) || undefined, name: p.name, ebayAskMedian: p.priceMedian, tcgMarket: t.tcgMarket,
     ebayListings: p.listingCount ?? null, tcgListings: t.tcgListings ?? null,
     spreadPct: Math.round(spread * 1000) / 10,
     signal: !OFF_TCG(p.id) && !p.publishBlock && !q.blocked(p.id) && Math.abs(spread) >= SIGNAL_PCT,
@@ -76,7 +89,7 @@ rows.push({ id: p.id, spreadBasis, tcgDelivered: tcgDeliv, tcgShipEst: t.tcgMark
 rows.sort((a, b) => Math.abs(b.spreadPct) - Math.abs(a.spreadPct));
 await writeFile(join(DATA, "divergence-report.json"), JSON.stringify({
   generatedAt: new Date().toISOString(),
-  method: "Cross-market divergence, delivered-vs-delivered: eBay delivered-ask median vs TCGplayer Market Price plus an estimated shipping cost (free over $40, est. $4.99 below — the source figure is item-only). TCGplayer Market Price is their average of recent COMPLETED SALES on the US marketplace, USD — source-verified 2026-08-22, no region/filter parameters exist on the provider endpoint to get wrong. Shipping is normalized by the model; the remaining structural asymmetry is ASK vs SOLD, so a resting positive gap is definitional plus the RT-4 photo premium. |spread| >= 15% flags; negative gaps read stronger (an ask sitting UNDER recent sold-plus-shipping is fighting the definition). A flat TCG line can mean no recent sales, not a frozen ask. Tax excluded both sides, always. TCG-side listing counts: provider exposes none for sealed - field carried as null, lights up if they ship it.",
+  method: "Cross-market divergence, both sides taken AS STATED — no shipping cost is ever estimated (no-guess law). eBay ask medians are delivered totals where a listing states postage, and where none is stated the cost is baked in. TCGplayer Market Price states no postage, so it is taken as delivered too. Tax excluded both sides, always. The TCG figure is TCGplayer's average of recent COMPLETED SALES on the US marketplace, USD (source-verified 2026-08-22; no region/filter parameters exist on the provider endpoint to get wrong, and no shipping-inclusive field is retrievable at any tier). Two structural asymmetries remain and are NOT signals: ASK vs SOLD, and any real postage the TCG side charges that we cannot see. |spread| >= 15% flags. A flat TCG line can mean no recent sales, not a frozen ask. TCG-side listing counts: provider exposes none for sealed - field carried as null, lights up if they ship it.",
   counts: { compared: rows.length, signals: rows.filter(r => r.signal).length, skipped: skipped.length },
   rows, skipped }, null, 2) + "\n");
 console.log(`✓ The Spread: ${rows.length} compared, ${rows.filter(r=>r.signal).length} signals`);
