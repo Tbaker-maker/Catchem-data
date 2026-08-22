@@ -137,6 +137,28 @@ const isMultiSetMenu = (t) => {
   for (const n of SET_NAME_LIST) if (lc.includes(n) && ++hits >= 3) return true;
   return false;
 };
+// ERA-BASE SETS (2026-08-22). The first set of an era is named after the era
+// itself — "Scarlet & Violet", "Sword & Shield", "Sun & Moon", "Mega
+// Evolution" — and every later set in that era carries the era in its
+// branding ("Pokemon TCG Scarlet & Violet 151 Booster Bundle"). The set-name
+// gate is a substring test, so these SKUs match their ENTIRE era and price
+// the whole generation into one median. Found by eye: sv1-bundle displayed a
+// Destined Rivals box and published $72 against a real ~$25 product, its
+// three priciest "kept" listings being Paldean Fates and two 151 bundles;
+// swsh1-bundle displayed Lost Origin and published $190, kept Lost Origin and
+// Crown Zenith. me1-* was already hand-immunised with 6-10 excludeExtra
+// entries each — the same bug, solved one SKU at a time. This generalises it:
+// a listing for an era-base product may name its era and nothing else.
+// SHORT_SIBLINGS covers sets whose names are too short for SET_NAME_LIST's
+// 6-char floor (it skips "151" so card numbers don't match) but which still
+// appear as distinct products.
+const SHORT_SIBLINGS = ["151", "black bolt", "white flare"];
+const namesAnotherSet = (t, ownSet) => {
+  const lc = t.toLowerCase(), own = (ownSet || "").toLowerCase();
+  for (const n of SET_NAME_LIST) if (n !== own && lc.includes(n)) return n;
+  for (const n of SHORT_SIBLINGS) if (n !== own && wordBoundaryTest(n, lc)) return n;
+  return null;
+};
 const EXCLUDE_COMMON = [
   "single", "loose", "lot", "empty", "opened", "damaged", "custom",
   "repack", "proxy", "no packs", "resale", "read description",
@@ -309,7 +331,7 @@ function filterItemsForProduct(product, items) {
   // reprinted set, the report said 74 failed the exclude list and could not
   // say which word did it. Now every rejection reason keeps a few examples
   // and, where relevant, the exact term that triggered it.
-  const samples = { set: [], type: [], exclude: [], lang: [], multi: [], menu: [], price: [] };
+  const samples = { set: [], sibling: [], type: [], exclude: [], lang: [], multi: [], menu: [], price: [] };
   const sample = (bucket, title, term) => { if (samples[bucket].length < 5) samples[bucket].push(term ? `[${term}] ${String(title).slice(0, 80)}` : String(title).slice(0, 80)); };
   const [floor, ceiling] = priceBoundsFor(product);
 
@@ -323,6 +345,10 @@ function filterItemsForProduct(product, items) {
     // Sampling now covers every bucket — set/lang/price/menu recorded nothing,
     // which is how "74 died on the exclude list" stayed unexplained.
     if (setLower && !t.includes(setLower)) { report.failSet++; sample("set", i.title, setLower); return false; }
+    if (product.eraBaseSet) {
+      const other = namesAnotherSet(t, product.set);
+      if (other) { report.failSibling = (report.failSibling || 0) + 1; sample("sibling", i.title, other); return false; }
+    }
     if (requires.length && !requires.some(r => t.includes(r))) { report.failType++; sample("type", i.title, requires.join("|")); return false; }
     if (requireExtra.length && !requireExtra.every(r => t.includes(r.toLowerCase()))) { report.failType++; sample("type", i.title, requireExtra.join("&")); return false; }
     if (product.subtype === "pc-etb" && !t.includes("pokemon center")) { report.failType++; sample("type", i.title, "pokemon center"); return false; }
