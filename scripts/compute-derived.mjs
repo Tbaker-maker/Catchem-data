@@ -379,10 +379,37 @@ const rawIndex = { name:"Raw Chase Index", level: rawLevel, constituents: rawRat
 const gradedIndex = { gated: true, note:"same equation, graded shelf — awaits a licensed daily graded-price feed" };
 const medAll = [...liveList.filter(p=>p.priceMedian).map(p=>p.priceMedian)].sort((a,b)=>a-b);
 const medianProductUsd = medAll.length ? medAll[Math.floor(medAll.length/2)] : null;
+// ── VALUE-WEIGHTED TWIN (Tyler, Aug 22) ─────────────────────────────────
+// The equal-weight index gives a $8 pack the same vote as a $5,000 box,
+// and cheap items swing harder in percentage terms — measured 2026-08-22,
+// the cheapest quartile drove 54% of daily movement. That is not wrong,
+// it is a choice, and the honest response is to publish its twin rather
+// than hide the effect. Same baselines, weighted by each product's value
+// at baseline (so composition changes cannot distort it either).
+// Precedent: S&P 500 vs S&P 500 Equal Weight — both real, both published.
+let vwLevel = null, vwConstituents = 0;
+{
+  let wsum = 0, num = 0;
+  for (const p of liveList) {
+    if (!seasoned(p)) continue;
+    const base = firstSeen[p.id];
+    if (!base || !p.priceMedian) continue;
+    num += (p.priceMedian / base) * base;   // ratio weighted by baseline value
+    wsum += base;
+    vwConstituents++;
+  }
+  if (wsum) vwLevel = Math.round(num / wsum * 1000) / 10;
+}
+const valueWeighted = vwLevel == null ? null : {
+  name: "Catchem Sealed Index — value weighted", level: vwLevel, constituents: vwConstituents,
+  vsEqualWeight: Math.round((vwLevel - idxLevel) * 10) / 10,
+  simple: "Same shelf, but the expensive boxes get a bigger say. If this number and the main one disagree, the cheap end and the expensive end of the market are moving differently.",
+  method: "Each product's move is weighted by what it was worth at its baseline, so a $5,000 box counts for more than a $10 pack. The main index gives every product one equal vote.",
+  chip: "VERIFIED" };
 const sealedIndex = { name: "Catchem Sealed Index", level: idxLevel,
   ddPct: prevIx ? Math.round((idxLevel/prevIx.level - 1)*1000)/10 : null,
   medianProductUsd, constituents: ratios.length, seasoningBench: liveList.filter(p=>!seasoned(p)).length, baseline: "each product vs its first clean-history price (2026-08-18 cut)",
-  breadth, chip: "VERIFIED", methodologyUrl: "/methodology.html",
+  breadth, chip: "VERIFIED", methodologyUrl: "/methodology.html", valueWeighted,
   simple: `One number for all ${ratios.length} sealed products. 100 was the starting line; ${idxLevel} means the whole shelf is worth ${idxLevel>=100?"more":"less"} than when we started. Each product competes only against itself — one product, one vote.` };
 {
   const today = new Date().toISOString().slice(0,10);
