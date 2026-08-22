@@ -36,6 +36,7 @@ const AGENTS = [
   { id: "falsifier", output: "research/pulse/falsifier-report.json", findings: d => (d?.results ?? []).filter(r => r.verdict === "TRIPPED").map(r => r.id), maxFindings: 12, maxSilentDays: 2 },
   { id: "correction-hunter", output: "research/pulse/correction-hunt.json", findings: d => [...(d?.suspectFigures ?? []).map(f => `suspect::${f.id}`), ...(d?.featuredThenUnmeasurable ?? []).map(f => `gone::${f.name}`)], maxFindings: 30, maxSilentDays: 2 },
   { id: "review-agents", output: "research/pulse/review-agents.json", findings: d => [...(d?.newcomer?.lines ?? []).slice(0, 0)], maxFindings: 0, maxSilentDays: 2 },
+  { id: "improver", output: "research/pulse/improver-report.json", findings: d => (d?.ideas ?? []).map(i => `${i.area}::${String(i.observation).slice(0, 40)}`), maxFindings: 12, maxSilentDays: 2, standing: true },
   { id: "universe-advisor", output: "research/pulse/universe-advisor.json", findings: d => (d?.recommended ?? []).slice(0, 5).map(r => r.cardId), maxFindings: 200, maxSilentDays: 7, standing: true },
 ];
 

@@ -1,0 +1,102 @@
+// agent-digest.mjs — one page so the agents reach a person.
+//
+// The Improver's first finding was that every agent writes JSON nothing reads.
+// That is the farming law from the inside: eight files a day, produced
+// faithfully, consumed by nobody. An agent whose output reaches no human has
+// not done work — it has made a file.
+//
+// This is the fix: ONE artifact a person actually opens, written in the voice
+// the agents already use. Not eight dashboards — one page, short enough to
+// read with coffee, that says what the machines noticed overnight.
+import { readFile, writeFile } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+import { rotate } from "./rotate.mjs";
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "utf-8")); } catch { return null; } };
+const today = new Date().toISOString().slice(0, 10);
+
+const fal = await J("research/pulse/falsifier-report.json");
+const cor = await J("research/pulse/correction-hunt.json");
+const brk = await J("research/pulse/breaker-report.json");
+const imp = await J("research/pulse/improver-report.json");
+const sup = await J("research/pulse/agent-supervision.json");
+const uni = await J("research/pulse/universe-advisor.json");
+
+const L = [];
+const say = (s = "") => L.push(s);
+
+say(`# What the machines noticed — ${today}`);
+say();
+say(rotate([
+  "Nothing here needs you this morning unless something is marked NEEDS A HUMAN.",
+  "Read it with coffee. Anything urgent says so in capitals.",
+  "The overnight shift's notes. Short on purpose.",
+]));
+say();
+
+// ── Did any of our own claims fail? ─────────────────────────────────────
+if (fal) {
+  const tripped = (fal.results ?? []).filter(r => r.verdict === "TRIPPED");
+  say(`## Our own claims`);
+  say(fal.mood ?? "");
+  if (tripped.length) {
+    say();
+    say(`**NEEDS A HUMAN — ${tripped.length} thesis/theses failed its own kill condition.** We said in advance what would end them, and that happened, so they end. Drafts of the public amendment are in the falsifier report.`);
+    for (const t of tripped) say(`- **${t.id} (${t.name})** — ${t.detail}`);
+  } else {
+    const s = fal.summary ?? {};
+    say(`${s.survived ?? 0} survived their own kill conditions, ${s.insufficient ?? 0} could not be judged yet with the tape we hold.`);
+  }
+  if (fal.coverage?.untested?.length)
+    say(`\n**NEEDS A HUMAN:** ${fal.coverage.untested.join(", ")} written into doctrine with no test. Write one or retire the thesis.`);
+  say();
+}
+
+// ── Did we publish anything we should take back? ────────────────────────
+if (cor) {
+  say(`## Our own numbers`);
+  say(cor.mood ?? "");
+  const sus = cor.suspectFigures ?? [], gone = cor.featuredThenUnmeasurable ?? [];
+  if (sus.length) { say(); say(`**NEEDS A HUMAN — ${sus.length} figure(s) moved faster than a market can:`); for (const f of sus.slice(0, 4)) say(`- ${f.name}: $${f.was} → $${f.became} in ${f.from}→${f.to} (${f.movePct > 0 ? "+" : ""}${f.movePct}%)`); }
+  if (gone.length) { say(); say(`${gone.length} product(s) we featured and can no longer price:`); for (const g of gone.slice(0, 3)) say(`- ${g.name} (featured ${g.featuredOn})`); }
+  if (!sus.length && !gone.length) say(`Nothing to take back.`);
+  say();
+}
+
+// ── What have we not tested, and what could be better? ──────────────────
+const highs = (brk?.hypotheses ?? []).filter(h => h.severity === "high");
+if (highs.length || (imp?.ideas ?? []).length) {
+  say(`## Untested and improvable`);
+  if (highs.length) { say(`${highs.length} untested assumption(s) — the highest:`); for (const h of highs.slice(0, 3)) say(`- **${h.target}** — ${h.attack}`); say(); }
+  const ideas = imp?.ideas ?? [];
+  if (ideas.length) { say(`${ideas.length} thing(s) that work and could work better — the top three:`); for (const i of ideas.slice(0, 3)) say(`- *${i.area}* — ${i.observation} ${i.suggestion}`); }
+  say();
+}
+
+// ── Are the agents themselves behaving? ─────────────────────────────────
+if (sup?.problems?.length) {
+  say(`## The agents themselves`);
+  say(`**NEEDS A HUMAN — the supervisor flagged the watchers:**`);
+  for (const p of sup.problems.slice(0, 4)) say(`- ${p}`);
+  say();
+}
+
+// ── What would buy the most, if we spent anything ───────────────────────
+if (uni?.tranches) {
+  const t = uni.tranches["+50"];
+  if (t?.artistCohortsUnlocked) {
+    say(`## If we expanded`);
+    say(`Pricing 50 more cards would unlock ${t.artistCohortsUnlocked} artist cohorts and make ${t.catalogueCardsMadeAnalysable} catalogue cards analysable. That is Tyler's call, not the machine's.`);
+    say();
+  }
+}
+
+say(`---`);
+say(`*Written by the agents, for a person. If a section here never leads to an action, that section should be deleted rather than tolerated.*`);
+
+const md = L.join("\n");
+await writeFile(join(ROOT, `research/pulse/agent-digest.md`), md);
+await writeFile(join(ROOT, `research/pulse/agent-digest-${today}.md`), md);
+const needsHuman = (md.match(/NEEDS A HUMAN/g) || []).length;
+console.log(`✓ agent digest: ${md.split("\n").length} lines · ${needsHuman} item(s) marked NEEDS A HUMAN → research/pulse/agent-digest.md`);

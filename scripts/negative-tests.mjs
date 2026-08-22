@@ -266,6 +266,18 @@ const CASES = [
         why: offenders.length ? `${offenders.join(", ")} call process.exit() — not catchable, so they halt every guard downstream while claiming to be advisory` : "" };
     } },
 
+  { guard: "Agent output reaches a human", detect: null,
+    // The Improver's first finding was that every agent wrote JSON nothing read
+    // — the farming law from the inside. An agent whose output reaches no human
+    // has not done work, it has made a file.
+    fn: async () => {
+      const digest = await readFile(P("scripts/agent-digest.mjs"), "utf-8").catch(() => "");
+      const REPORTS = ["falsifier-report.json", "correction-hunt.json", "breaker-report.json", "improver-report.json", "agent-supervision.json"];
+      const orphaned = REPORTS.filter(r => !digest.includes(r));
+      return { pass: orphaned.length === 0,
+        why: orphaned.length ? `${orphaned.join(", ")} produced daily and surfaced to nobody — either put it in the digest or stop generating it` : "" };
+    } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");

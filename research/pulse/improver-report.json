@@ -1,0 +1,81 @@
+{
+ "generatedAt": "2026-08-22T20:10:58.907Z",
+ "measure": "Our own doctrine, not generic best practice. Generic advice is free and worthless.",
+ "counts": {
+  "total": 13
+ },
+ "ideas": [
+  {
+   "area": "unused output",
+   "observation": "review-agents.json is written every run and read by nothing — not another script, not the feed.",
+   "suggestion": "Either surface it (the app, the Pulse, a creator tool) or stop generating it. Work that runs daily and reaches nobody is the most expensive kind.",
+   "effort": "small"
+  },
+  {
+   "area": "unused output",
+   "observation": "artist-instruments.json is written every run and read by nothing — not another script, not the feed.",
+   "suggestion": "Either surface it (the app, the Pulse, a creator tool) or stop generating it. Work that runs daily and reaches nobody is the most expensive kind.",
+   "effort": "small"
+  },
+  {
+   "area": "unused output",
+   "observation": "era-history.json is written every run and read by nothing — not another script, not the feed.",
+   "suggestion": "Either surface it (the app, the Pulse, a creator tool) or stop generating it. Work that runs daily and reaches nobody is the most expensive kind.",
+   "effort": "small"
+  },
+  {
+   "area": "unused output",
+   "observation": "jargon-lint.json is written every run and read by nothing — not another script, not the feed.",
+   "suggestion": "Either surface it (the app, the Pulse, a creator tool) or stop generating it. Work that runs daily and reaches nobody is the most expensive kind.",
+   "effort": "small"
+  },
+  {
+   "area": "unused output",
+   "observation": "qa-report.json is written every run and read by nothing — not another script, not the feed.",
+   "suggestion": "Either surface it (the app, the Pulse, a creator tool) or stop generating it. Work that runs daily and reaches nobody is the most expensive kind.",
+   "effort": "small"
+  },
+  {
+   "area": "unused output",
+   "observation": "voice-lint.json is written every run and read by nothing — not another script, not the feed.",
+   "suggestion": "Either surface it (the app, the Pulse, a creator tool) or stop generating it. Work that runs daily and reaches nobody is the most expensive kind.",
+   "effort": "small"
+  },
+  {
+   "area": "repetition",
+   "observation": "date-to-day-key is implemented inline 29 times across the pipeline.",
+   "suggestion": "Centralise it — scripts/rotate.mjs already centralises day maths. Repeated maths is where two places drift and only one gets fixed.",
+   "effort": "small"
+  },
+  {
+   "area": "repetition",
+   "observation": "money rounding is implemented inline 7 times across the pipeline.",
+   "suggestion": "Centralise it — one helper would make cents behave identically everywhere. Repeated maths is where two places drift and only one gets fixed.",
+   "effort": "small"
+  },
+  {
+   "area": "pipeline size",
+   "observation": "The daily run imports 29 steps from one file.",
+   "suggestion": "Consider grouping them (intake → compute → publish → agents) so the order is legible at a glance. A long flat list is where an ordering mistake hides.",
+   "effort": "medium"
+  },
+  {
+   "area": "product",
+   "observation": "The index has no matched sample today, so it cannot move.",
+   "suggestion": "Expected on a fresh series — worth a line on the page saying so, rather than a number that looks stuck.",
+   "effort": "small"
+  },
+  {
+   "area": "knowledge",
+   "observation": "The knowledge base holds 8 verified facts.",
+   "suggestion": "This is the asset that compounds — instruments can be rebuilt in a weekend, a decade of sourced facts cannot. A steady few per week beats a burst.",
+   "effort": "ongoing"
+  },
+  {
+   "area": "maintainability",
+   "observation": "compute-derived.mjs is 54KB.",
+   "suggestion": "Large files are where two people edit the same function on the same day. Splitting by concern would make collisions rarer and reviews honest.",
+   "effort": "medium"
+  }
+ ]
+}

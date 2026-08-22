@@ -594,4 +594,6 @@ try { await import("./falsifier.mjs"); } catch (e) { console.warn(`  ⚠ agent f
 try { await import("./correction-hunter.mjs"); } catch (e) { console.warn(`  ⚠ agent correction-hunter.mjs failed: ${e.message} — advisory only, the run continues`); }
 try { await import("./review-agents.mjs"); } catch (e) { console.warn(`  ⚠ agent review-agents.mjs failed: ${e.message} — advisory only, the run continues`); }
 await (await import("./heartbeat.mjs")).beat("pulse");
+try { await import("./improver.mjs"); } catch (e) { console.warn(`  ⚠ agent improver.mjs: ${e.message} — advisory only`); }
+try { await import("./agent-digest.mjs"); } catch (e) { console.warn(`  ⚠ agent agent-digest.mjs: ${e.message} — advisory only`); }
 await import("./publish-assert.mjs");

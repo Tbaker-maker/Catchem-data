@@ -526,5 +526,11 @@ THE LAWS
    moved to a handoff file.
 8. **Silence is a failure.** An agent that stops producing is caught by
    the supervisor, not discovered months later.
+9. **AN AGENT THAT REACHES NOBODY HAS NOT DONE WORK.** It has made a file.
+   The Improver's first finding was that every agent we had written that day
+   produced JSON nothing read — eight files a day, generated faithfully,
+   consumed by no script, no surface and no person. The fix is one digest a
+   human actually opens, not eight dashboards. If a section of that digest
+   never leads to an action, delete the section rather than tolerate it.
 Enforced by scripts/agent-supervisor.mjs, which is itself advisory —
 a watchdog that can halt the run is a hazard, not a safeguard.
