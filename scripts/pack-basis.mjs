@@ -43,6 +43,15 @@ export function applyPackBasis(products, divRows) {
       p.ebayAskMedian = p.ebayAskMedian ?? p.priceMedian;
       p.priceMedian = t;
       p.priceBasis = "tcgplayer";
+      // VENUE MISMATCH (Tyler, 2026-08-23). The price now answers "what does
+      // this cost on TCGplayer" while listingCount still answers "how many are
+      // on eBay" — two markets presented as one fact about one product. We
+      // cannot fix the count (we have no TCGplayer listing depth), so we LABEL
+      // it. A reader who thinks 37 listings belongs to the price beside it has
+      // been misled by adjacency, which is the same fault as the grading strip.
+      p.listingVenue = "ebay";
+      p.priceVenue = "tcgplayer";
+      p.venueNote = "Price from TCGplayer, where packs actually trade. Listing count from eBay, which is the only depth we can see. Two different marketplaces — the count is not the depth behind the price.";
       // REBASE ON A BASIS CHANGE (2026-08-23): switching a product from eBay
       // asks to TCGplayer prices lowers its number without the market moving.
       // Left alone that lands in the index as a crash — the sealed index fell

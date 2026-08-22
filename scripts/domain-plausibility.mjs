@@ -56,6 +56,15 @@ for (const p of sp.products) {
       `largest bucket: ${Object.entries({ type: fr.failType ?? 0, exclude: fr.failExclude ?? 0, set: fr.failSet ?? 0, multi: fr.failMulti ?? 0 }).sort((a, b) => b[1] - a[1])[0].join(" = ")}. A single over-broad term can eat a market.`,
       "high");
 
+  // ── RULE 2b · A price and a count from different venues ─────────────────
+  // Not implausible, but misleading — and the plausibility agent is the right
+  // place to catch a figure that is correct and reads as something it is not.
+  if (p.priceVenue && p.listingVenue && p.priceVenue !== p.listingVenue && !p.venueNote)
+    F(p.id, p.name, `price from ${p.priceVenue}, listing count from ${p.listingVenue}`,
+      "a price and a depth shown together are read as one market",
+      "label the mismatch — the count is not the depth behind that price",
+      "medium");
+
   // ── RULE 3 · A pack cannot cost more than its own box ────────────────────
   if (p.subtype === "booster-pack" && p.priceMedian) {
     const box = sp.products.find(x => x.setId === p.setId && x.subtype === "booster-box" && x.priceMedian);
