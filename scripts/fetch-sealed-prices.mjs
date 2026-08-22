@@ -252,7 +252,8 @@ function wordBoundaryTest(term, titleLower) {
 
 // Delivered price — pricing v2 (2026-08-18): item price + cheapest shipping
 // option, so free-ship and +ship listings are comparable (median = landed
-// cost). Missing shipping data → item price alone, counted in shipUnknownCount
+// cost). No stated shipping → postage is baked into the price; the item
+// price is the delivered price. Never estimated, never guessed.
 // (transparency, not silent).
 function deliveredPriceOf(item) {
   if (item?.price?.currency && item.price.currency !== "USD") return null; // currency guard (RT: USD-native law)
@@ -261,7 +262,12 @@ function deliveredPriceOf(item) {
   const costs = (item.shippingOptions || [])
     .map(o => parseFloat(o.shippingCost?.value))
     .filter(v => !isNaN(v));
-  if (!costs.length) return { delivered: base, shipKnown: false };
+  // NO STATED SHIPPING = BAKED IN (Tyler, 2026-08-23). A listing that returns
+  // no shipping cost is a free-shipping listing: the seller has folded postage
+  // into the asking price. The item price IS the delivered price. This is not
+  // missing data and must never be treated as a gap to estimate — we never
+  // guess a shipping number. Counted separately only so the mix is visible.
+  if (!costs.length) return { delivered: base, shipKnown: false, shippingBakedIn: true };
   return { delivered: base + Math.min(...costs), shipKnown: true };
 }
 

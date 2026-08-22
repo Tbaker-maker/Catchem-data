@@ -290,9 +290,10 @@ your door, excluding sales tax. Shipping IN, tax OUT, and both stated so
 nobody has to guess which.
 
 WHERE WE STAND TODAY, honestly:
-- **eBay**: delivered — item plus shipping wherever a listing states a
-  cost. Where a listing states none (about half, usually free-shipping
-  listings) the item price stands alone. Compliant.
+- **eBay**: delivered, always. Item plus shipping where a cost is stated;
+  where none is stated the postage is baked into the asking price, which
+  is what a free-shipping listing means — so the item price already IS
+  the delivered price. Both cases are delivered totals. Compliant.
 - **TCGplayer**: ITEM ONLY. Our TCG figures come through
   PokemonPriceTracker as market price, which excludes shipping.
   TCGplayer sellers set shipping by product size — roughly $0.99-$4.99
@@ -301,6 +302,11 @@ WHERE WE STAND TODAY, honestly:
 CONSEQUENCE, stated rather than hidden: any eBay-vs-TCG comparison is
 not like-for-like until we can add TCG shipping. Every surface showing
 that comparison must say the TCG figure excludes shipping.
+NEVER GUESS A SHIPPING COST (Tyler, Aug 23). Absent shipping data is not
+a hole to fill — it usually means postage is baked into the price. We do
+not estimate postage on either side, ever, under any framing. Where a
+figure genuinely excludes shipping we say so; we do not add a number to
+make two sources look comparable.
 THE FIX (routed, not guessed): TCGplayer sorts its own listings by price
 plus shipping, so the number exists at source. Someone with API access
 needs to find whether a shipping-inclusive figure is retrievable. Until
