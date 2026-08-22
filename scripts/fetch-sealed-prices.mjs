@@ -112,11 +112,12 @@ const SUBTYPE_UNEXCLUDE = {
 // only when it reads as a shipping case of boxes, not "carrying case"
 // products we don't track anyway.
 const MULTI_ITEM_RX = [
-  /\blot\s*(of)?\s*\d+/i, /\b\d+\s*x\b/i, /\bx\s*\d+\b/i,
+  /\blot\s*(of)?\s*\d+/i,
+  /\b([2-9]|[1-9]\d+)\s*x\b/i, /\bx\s*([2-9]|[1-9]\d+)\b/i,   // x2+ only — x1 means ONE
   /\bcase\s*(of)?\s*\d+/i, /\bsealed\s+case\b/i, /\bfull\s+case\b/i,
   /\b(two|three|four|five|six|ten|twelve)\s+(boxes|etbs?|bundles?|packs?|tins?)\b/i,
   /\bpair\s+of\b/i, /\bset\s+of\s+\d+/i, /\bbundle\s+of\s+\d+/i,
-  /\((\d{1,2})\s*(pack|boxes|count|ct)\)/i, /\b\d+\s*(pack|box)\s+bundle\b/i,
+  /\(([2-9]|[1-9]\d+)\s*(pack|boxes|count|ct)\)/i, /\b\d+\s*(pack|box)\s+bundle\b/i,
 ];
 const isMultiItem = t => MULTI_ITEM_RX.some(rx => rx.test(t));
 
@@ -288,16 +289,24 @@ function filterItemsForProduct(product, items) {
   const langExcludes = (product.allowImports ? [] : EXCLUDE_NON_ENGLISH).filter(setSafe);
 
   const report = { fetched: items.length, failSet: 0, failType: 0, failExclude: 0, failLang: 0, failMulti: 0, failPrice: 0, shipUnknown: 0, kept: 0 };
+  // REJECTION SAMPLES (2026-08-23): counts alone are undiagnosable. When
+  // Destined Rivals packs showed 13 listings for an in-print, freshly
+  // reprinted set, the report said 74 failed the exclude list and could not
+  // say which word did it. Now every rejection reason keeps a few examples
+  // and, where relevant, the exact term that triggered it.
+  const samples = { set: [], type: [], exclude: [], lang: [], multi: [], price: [] };
+  const sample = (bucket, title, term) => { if (samples[bucket].length < 5) samples[bucket].push(term ? `[${term}] ${String(title).slice(0, 80)}` : String(title).slice(0, 80)); };
   const [floor, ceiling] = priceBoundsFor(product);
 
   const kept = items.filter(i => {
     const t = titleLowerOf(i);
     if (setLower && !t.includes(setLower)) { report.failSet++; return false; }
-    if (requires.length && !requires.some(r => t.includes(r))) { report.failType++; return false; }
-    if (requireExtra.length && !requireExtra.every(r => t.includes(r.toLowerCase()))) { report.failType++; return false; }
+    if (requires.length && !requires.some(r => t.includes(r))) { report.failType++; sample("type", it.title, requires.join("|")); return false; }
+    if (requireExtra.length && !requireExtra.every(r => t.includes(r.toLowerCase()))) { report.failType++; sample("type", it.title, requireExtra.join("&")); return false; }
     if (product.subtype === "pc-etb" && !t.includes("pokemon center")) { report.failType++; return false; }
-    if (excludes.some(term => wordBoundaryTest(term, t))) { report.failExclude++; return false; }
-    if (isMultiItem(t)) { report.failMulti = (report.failMulti || 0) + 1; return false; }
+    const hitTerm = excludes.find(term => wordBoundaryTest(term, t));
+    if (hitTerm) { report.failExclude++; sample("exclude", it.title, hitTerm); return false; }
+    if (isMultiItem(t)) { report.failMulti = (report.failMulti || 0) + 1; sample("multi", it.title); return false; }
     if (isMultiSetMenu(t)) { report.failMenu = (report.failMenu || 0) + 1; return false; }
     if (langExcludes.some(term => wordBoundaryTest(term, t))) { report.failLang++; return false; }
     // pricing v2: gate + aggregate on DELIVERED price (landed cost)
@@ -553,6 +562,7 @@ async function main() {
         }),
         priceHistory: history,
         ...(representativeImage ? { representativeImage } : {}),
+        rejectionSamples: samples,
         dataStatus: agg ? "live" : prev?.priceUsd ? "stale" : "unavailable",
         lastSeen: agg ? today : prev?.lastSeen,
         filterReport: report,

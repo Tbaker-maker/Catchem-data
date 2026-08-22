@@ -89,6 +89,8 @@ fixing the class is.
 
 | 14 | Described a rotation as passing "quietly" — implying a norm of loudness that does not exist | Tyler | Unsourced NORM claim about community behavior | voice-lint NORM_CLAIM class + RT-6 (scheduled-event anticlimax) |
 
+| 15 | Multi-item guard rejected x1 and (1x) — how sellers mark a SINGLE pack | Tyler (13 listings on an in-print reprinted set looked wrong) | Over-broad filter | Quantity patterns now match 2+ only; rejection SAMPLES stored per reason so over-rejection is diagnosable instead of invisible |
+
 **PATTERN, stated plainly:** 8 of 9 were caught by Tyler, not by the
 machine. Every guard above was built AFTER a human caught something.
 That is the honest state — the machine is now catching prices, but
