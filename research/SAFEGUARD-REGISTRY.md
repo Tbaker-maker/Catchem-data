@@ -44,6 +44,12 @@ actual published output for anything blocked or quarantined, and breaks
 the edition entirely if the catalogue is stale or the fetch was partial.
 *Exists because flags are not proof.*
 
+**Layer 7 — ABSENCE.** `heartbeat.mjs`. Every other layer runs inside the
+pipeline and shares one blind spot: a run that never happens triggers none
+of them. Stages write proof of life; an independent watchdog on its own
+schedule reports anything that has gone quiet. *Exists because an alarm
+inside the fire is not an alarm.*
+
 **Layer 6 — AUDIT.** `audit.mjs`. The repeatable checklist, including live
 failure simulations. Restores every file it touches.
 
