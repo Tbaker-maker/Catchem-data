@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-22T23:33:10.945Z",
+ "generatedAt": "2026-08-22T23:43:59.250Z",
  "date": "2026-08-22",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -75,6 +75,11 @@
   {
    "agent": "security",
    "finding": "runs daily and has returned the same count (1) four runs running.",
+   "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
+  },
+  {
+   "agent": "steward",
+   "finding": "runs daily and has returned the same count (2) four runs running.",
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
   },
   {

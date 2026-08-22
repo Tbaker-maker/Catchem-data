@@ -56,10 +56,21 @@ export const TIERS = [
 // staleness we do not have to accept is staleness we should not accept.
 // Only when the universe outgrows the budget does the value floor engage, and
 // even then the worst case is three days.
-export const tierFor = (price, universeSize = 0, budget = 20000) =>
-  universeSize && universeSize <= budget * 0.95
-    ? TIERS[0]                                        // it fits — everything daily
-    : (TIERS.find(t => (price ?? 0) >= t.minPrice) ?? TIERS[TIERS.length - 1]);
+export const tierFor = (price) => {
+  // BULK IS EVERY 3 DAYS, AS POLICY (Tyler, 2026-08-23) - not a fallback for a
+  // budget crunch. A sub-$1 common does not move meaningfully inside 72 hours;
+  // a $500 card does. Freshness is matched to how fast a stale number becomes
+  // a wrong one, and for bulk that is days rather than hours.
+  //
+  // THE TRAP THIS AVOIDS: until the discovery sweep runs we have not measured
+  // most prices, and an unmeasured card reads as zero. Treating that as bulk
+  // would silently drop the ENTIRE catalogue to a 3-day cadence on the strength
+  // of prices nobody ever took. Unknown means UNMEASURED, not cheap, and it
+  // defaults to daily - when in doubt the conservative direction is the fresher
+  // one, because staleness we chose by accident is the worst kind.
+  if (price == null) return TIERS[0];
+  return TIERS.find(t => price >= t.minPrice) ?? TIERS[TIERS.length - 1];
+};
 
 // Which cards are due today? Spread each tier across its own cycle so we do not
 // price 7,000 quarterly cards on the same morning — an even daily load is the
@@ -68,7 +79,7 @@ export function dueToday(cards, todayIso = new Date().toISOString().slice(0, 10)
   const dayNum = Math.floor(Date.parse(todayIso) / 86400000);
   const due = [];
   for (const [id, c] of Object.entries(cards)) {
-    const t = tierFor(c.price, universeSize, DAILY_BUDGET);
+    const t = tierFor(c.price);
     if (t.everyDays === 1) { due.push({ id, tier: t.id }); continue; }
     // stable per-card offset, so each card lands on its own day of the cycle
     let h = 0; for (let i = 0; i < id.length; i++) h = ((h << 5) - h + id.charCodeAt(i)) | 0;
@@ -86,8 +97,8 @@ if (process.argv[1] && import.meta.url === (await import("node:url")).pathToFile
     // conservative direction — an unpriced card gets asked rarely until we know
     // it deserves better, rather than eating the daily budget on a guess.
     const universeSize = Object.keys(cat.cards).length + (await J("data/sealed-prices.json") ?? { products: [] }).products.length;
-    const cards = Object.fromEntries(Object.keys(cat.cards).map(id => [id, { price: disc?.prices?.[id] ?? 0 }]));
-    const counts = {}; for (const id of Object.keys(cards)) { const t = tierFor(cards[id].price, universeSize, 20000); counts[t.id] = (counts[t.id] ?? 0) + 1; }
+    const cards = Object.fromEntries(Object.keys(cat.cards).map(id => [id, { price: disc?.prices?.[id] ?? null }]));
+    const counts = {}; for (const id of Object.keys(cards)) { const t = tierFor(cards[id].price); counts[t.id] = (counts[t.id] ?? 0) + 1; }
     const perDay = TIERS.reduce((s, t) => s + (counts[t.id] ?? 0) / t.everyDays, 0);
     const due = dueToday(cards, undefined, universeSize, 20000);
 
