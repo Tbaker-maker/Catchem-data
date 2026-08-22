@@ -33,6 +33,7 @@ async function inlineImages(svg) {
     } catch (e) {
       // No photo beats a broken photo: drop the image element entirely.
       svg = svg.replace(new RegExp(`<image[^>]*href="${u.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"[^>]*/>`, "g"), "");
+      globalThis.__imgFails = (globalThis.__imgFails || 0) + 1;
       console.log(`  · image unavailable, rendering without it (${e.message})`);
     }
   }
@@ -52,4 +53,8 @@ for (const f of files) {
     made++;
   } catch (e) { console.log(`  ✗ ${f}: ${e.message}`); }
 }
+// BINDER_ART_CHECK: a binder page with no art is a broken post. If any
+// card image failed to inline on a binder page, say so loudly.
+if (files.some(f => f.includes("binder")) && globalThis.__imgFails > 0)
+  console.warn(`  ⚠ ${globalThis.__imgFails} card image(s) failed on a binder page — DO NOT POST until re-run with network access`);
 console.log(`✓ rasterized ${made}/${files.length} cards to PNG${fontFiles.length ? ` (brand fonts: ${fontFiles.length})` : " (system fonts — vendor brand fonts for on-brand type)"}`);

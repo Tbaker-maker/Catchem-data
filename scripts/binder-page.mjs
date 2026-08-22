@@ -33,6 +33,8 @@ export function binderPage({ title, subtitle, cards, footer = "⚡ catchemtcg.co
     return `<g>
       <rect x="${x}" y="${y}" width="${CW}" height="${CH}" rx="16" fill="#141824" stroke="rgba(255,255,255,0.06)"/>
       ${img ? `<image href="${esc(img)}" x="${x + 6}" y="${y + 6}" width="${CW - 12}" height="${CH - 12}" preserveAspectRatio="xMidYMid meet"/>` : ""}
+      <text x="${x + CW / 2}" y="${y + CH / 2 - 6}" text-anchor="middle" fill="#5c637a" font-size="20" font-weight="700">${esc((c.name || "").slice(0, 22))}</text>
+      <text x="${x + CW / 2}" y="${y + CH / 2 + 20}" text-anchor="middle" fill="#3f4658" font-size="16" font-family="JetBrains Mono,monospace">${esc(c.cardId || "")}</text>
     </g>`;
   }).join("");
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" font-family="Sora,system-ui,sans-serif">
