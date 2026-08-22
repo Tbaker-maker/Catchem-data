@@ -1,4 +1,4 @@
-# CC PROMPT QUEUE — paste in this order (Aug 21 2026)
+# CC PROMPT QUEUE — paste in this order (updated Aug 21 2026, evening)
 One prompt at a time. Wait for CC's report and the `>` prompt before the
 next. Everything here is blocked on either workflow-scope permissions or
 a machine I can't reach — nothing is duplicated work.
@@ -61,7 +61,15 @@ $100/mo," so we learn the real numbers before spending anything.
 
 ---
 
-## AFTER ALL SIX
+## 7 — BINDER ART VERIFY + TUNE (visual, do right after #2 fonts)
+> Verify and tune the binder-page generator (scripts/binder-page.mjs, spec §18). Run it, rasterize, and confirm card art from images.pokemontcg.io actually renders inside the 3×3 grid — my sandbox is network-blocked from that host, so this is UNPROVEN. If images fail, diagnose (hotlink protection, CORS, or the rasterizer's data-URI inlining) and fix. Watch for the rasterizer's "DO NOT POST" warning — it fires when any card image fails. Then tune the layout: tighter gutters, a squarer canvas that performs better on X, optional per-card captions, and a 2×2 four-card variant. Produce one sample PNG per theme for Tyler to judge, and confirm the fallback text is fully covered when art loads.
+
+WHY: highest-engagement collector format on X; the frame is built and
+the fallback is honest, but nobody has seen it with real card art yet.
+
+---
+
+## AFTER ALL SEVEN
 Update research/WORKQUEUE.md, then report anything that surprised you.
 If a block turns out to be already done, say so and skip it rather than
 redoing it.
