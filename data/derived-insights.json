@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-22T15:33:23.634Z",
+  "generatedAt": "2026-08-22T15:48:13.154Z",
   "method": "Pack Math: ask median / era-aware pack count (arithmetic, no estimation; variable-count products excluded by name). Narrative: latest agent digest cross-referenced against tracked sets; 'quiet movers' = spread signal with zero digest mention.",
   "digestUsed": "2026-08-22.md",
   "packMath": {
@@ -2889,29 +2889,29 @@
   ],
   "sealedIndex": {
     "name": "Catchem Sealed Index",
-    "level": 96.1,
-    "ddPct": 0,
+    "level": 100.2,
+    "ddPct": 0.2,
     "medianProductUsd": 198.48,
     "constituents": 174,
     "seasoningBench": 5,
     "baseline": "each product vs its first clean-history price (2026-08-18 cut)",
     "breadth": {
-      "up": 63,
-      "down": 40,
-      "flat": 70
+      "up": 50,
+      "down": 33,
+      "flat": 60
     },
     "chip": "VERIFIED",
     "methodologyUrl": "/methodology.html",
     "valueWeighted": {
       "name": "Catchem Sealed Index — value weighted",
-      "level": 100.7,
+      "level": 100.8,
       "constituents": 174,
-      "vsEqualWeight": 4.6,
+      "vsEqualWeight": 0.6,
       "simple": "Same shelf, but the expensive boxes get a bigger say. If this number and the main one disagree, the cheap end and the expensive end of the market are moving differently.",
       "method": "Each product's move is weighted by what it was worth at its baseline, so a $5,000 box counts for more than a $10 pack. The main index gives every product one equal vote.",
       "chip": "VERIFIED"
     },
-    "simple": "One number for all 174 sealed products. 100 was the starting line; 96.1 means the whole shelf is worth less than when we started. Each product competes only against itself — one product, one vote."
+    "simple": "One number for all 174 sealed products. 100 was the starting line; 100.2 means the whole shelf is worth more than when we started. Each product competes only against itself — one product, one vote."
   },
   "rawIndex": {
     "name": "Raw Chase Index",
@@ -3306,6 +3306,39 @@
       "sv4pt5-pack",
       "swsh12pt5-pack",
       "swsh45-pack"
+    ],
+    "rebased": [
+      "swsh5-pack",
+      "swsh6-pack",
+      "swsh7-pack",
+      "swsh8-pack",
+      "swsh11-pack",
+      "sv1-pack",
+      "sv3pt5-pack",
+      "sv4-pack",
+      "sv8-pack",
+      "sv8pt5-pack",
+      "sv9-pack",
+      "sv10-pack",
+      "me1-pack",
+      "me2-pack",
+      "me2pt5-pack",
+      "me3-pack",
+      "me4-pack",
+      "me5-pack",
+      "sv2-pack",
+      "sv3-pack",
+      "sv5-pack",
+      "sv6-pack",
+      "sv6pt5-pack",
+      "sv7-pack",
+      "swsh1-pack",
+      "swsh10-pack",
+      "swsh12-pack",
+      "swsh2-pack",
+      "swsh3-pack",
+      "swsh4-pack",
+      "swsh9-pack"
     ]
   },
   "dealZone": {
@@ -4739,7 +4772,7 @@
     },
     {
       "subtype": "booster-pack",
-      "level": 78.6,
+      "level": 100.1,
       "constituents": 33
     },
     {
@@ -4774,17 +4807,6 @@
   },
   "supplyShifts": [
     {
-      "id": "sv8pt5-pack",
-      "name": "Prismatic Evolutions Booster Pack",
-      "listings": 8,
-      "prev": 24,
-      "dPct": -66.7,
-      "priceDPct": 21.2,
-      "read": "reads as absorption — shelves draining while asks rise, which historically means demand-led buying or a single large buyer",
-      "catalystMatch": null,
-      "chip": "READ"
-    },
-    {
       "id": "sv4pt5-pc-etb",
       "name": "Paldean Fates Pokemon Center Elite Trainer Box",
       "listings": 40,
@@ -4792,28 +4814,6 @@
       "dPct": -66.7,
       "priceDPct": 0,
       "read": "reads as a quiet drain — likely listings expiring or sellers stepping back",
-      "catalystMatch": null,
-      "chip": "READ"
-    },
-    {
-      "id": "sv10-pack",
-      "name": "Destined Rivals Booster Pack",
-      "listings": 13,
-      "prev": 27,
-      "dPct": -51.9,
-      "priceDPct": -16.7,
-      "read": "reads as a quiet drain — likely listings expiring or sellers stepping back",
-      "catalystMatch": "matches catalyst logged 2026-08-21",
-      "chip": "READ"
-    },
-    {
-      "id": "sv9-pack",
-      "name": "Journey Together Booster Pack",
-      "listings": 19,
-      "prev": 28,
-      "dPct": -32.1,
-      "priceDPct": 11.1,
-      "read": "reads as absorption — shelves draining while asks rise, which historically means demand-led buying or a single large buyer",
       "catalystMatch": null,
       "chip": "READ"
     },
@@ -4829,34 +4829,67 @@
       "chip": "READ"
     },
     {
-      "id": "me2pt5-pack",
-      "name": "Ascended Heroes Booster Pack",
-      "listings": 18,
-      "prev": 26,
-      "dPct": -30.8,
-      "priceDPct": 0,
-      "read": "reads as a quiet drain — likely listings expiring or sellers stepping back",
-      "catalystMatch": null,
-      "chip": "READ"
-    },
-    {
-      "id": "swsh10-pack",
-      "name": "Astral Radiance Booster Pack",
-      "listings": 18,
-      "prev": 26,
-      "dPct": -30.8,
-      "priceDPct": 1.4,
-      "read": "reads as absorption — shelves draining while asks rise, which historically means demand-led buying or a single large buyer",
-      "catalystMatch": null,
-      "chip": "READ"
-    },
-    {
       "id": "sv8pt5-bb",
       "name": "Prismatic Evolutions Booster Bundle",
       "listings": 93,
       "prev": 134,
       "dPct": -30.6,
       "priceDPct": 0,
+      "read": "reads as a quiet drain — likely listings expiring or sellers stepping back",
+      "catalystMatch": null,
+      "chip": "READ"
+    },
+    {
+      "id": "swsh12pt5-pack",
+      "name": "Crown Zenith Booster Pack",
+      "listings": 31,
+      "prev": 44,
+      "dPct": -29.5,
+      "priceDPct": 3,
+      "read": "reads as absorption — shelves draining while asks rise, which historically means demand-led buying or a single large buyer",
+      "catalystMatch": null,
+      "chip": "READ"
+    },
+    {
+      "id": "xy12-booster-box",
+      "name": "Evolutions Booster Box",
+      "listings": 27,
+      "prev": 34,
+      "dPct": -20.6,
+      "priceDPct": 1.9,
+      "read": "reads as absorption — shelves draining while asks rise, which historically means demand-led buying or a single large buyer",
+      "catalystMatch": null,
+      "chip": "READ"
+    },
+    {
+      "id": "sm3-booster-box",
+      "name": "Burning Shadows Booster Box",
+      "listings": 20,
+      "prev": 25,
+      "dPct": -20,
+      "priceDPct": 0,
+      "read": "reads as a quiet drain — likely listings expiring or sellers stepping back",
+      "catalystMatch": null,
+      "chip": "READ"
+    },
+    {
+      "id": "sv8pt5-sc",
+      "name": "Prismatic Evolutions Surprise Box",
+      "listings": 92,
+      "prev": 114,
+      "dPct": -19.3,
+      "priceDPct": 9.6,
+      "read": "reads as absorption — shelves draining while asks rise, which historically means demand-led buying or a single large buyer",
+      "catalystMatch": null,
+      "chip": "READ"
+    },
+    {
+      "id": "sv1-bundle",
+      "name": "Scarlet & Violet Booster Bundle",
+      "listings": 93,
+      "prev": 115,
+      "dPct": -19.1,
+      "priceDPct": -10,
       "read": "reads as a quiet drain — likely listings expiring or sellers stepping back",
       "catalystMatch": null,
       "chip": "READ"
@@ -4870,7 +4903,7 @@
     "note": "one-tap daily vote; results revisited next morning"
   },
   "notification": {
-    "title": "Catchem Sealed Index 96.1 (0%)",
+    "title": "Catchem Sealed Index 100.2 (+0.2%)",
     "body": "Today: Shrouded Fable Elite Trainer Box — eBay asks 17.3% more than TCGplayer."
   },
   "cohortCompare": {
@@ -4952,13 +4985,13 @@
   ],
   "dailyThree": {
     "shelf": {
-      "name": "Prismatic Evolutions Booster Pack",
-      "listings": 8,
-      "prev": 24,
+      "name": "Paldean Fates Pokemon Center Elite Trainer Box",
+      "listings": 40,
+      "prev": 120,
       "dPct": -66.7,
-      "priceDPct": 21.2,
+      "priceDPct": 0,
       "chip": "READ",
-      "explain": "reads as absorption — shelves draining while asks rise, which historically means demand-led buying or a single large buyer",
+      "explain": "reads as a quiet drain — likely listings expiring or sellers stepping back",
       "reason": "shelf move worth a look"
     },
     "sealed": {

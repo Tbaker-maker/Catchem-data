@@ -342,14 +342,19 @@ await writeFile(new URL("../data/era-index-history.json", import.meta.url), JSON
 let ixh = { note: "Catchem Sealed Index history — merge-by-date", entries: [] };
 try { ixh = await J("research/pulse/index-history.json"); } catch {}
 const firstSeen = {}, lastTwo = {}, lastTwoN = {};
+// A product whose PRICE BASIS changed today gets its baseline reset to the
+// new basis, so the switch cannot register as market movement (2026-08-23).
+const rebasedToday = new Set((sp.products || []).filter(p => p.basisChangedOn === new Date().toISOString().slice(0,10)).map(p => p.id));
 for (const r of [...hh].sort((a,b)=>a.date<b.date?-1:1)) {
   if (r.date < "2026-08-19" || !r.price) continue; // CLEAN CUT: first full pricing-v2 day — the index measures market, never our cleanup
+  if (rebasedToday.has(r.id)) continue;   // baseline comes from today's new basis, below
   if (!firstSeen[r.id]) firstSeen[r.id] = r.price;
   (lastTwo[r.id] ||= []).push(r.price);
   (lastTwoN[r.id] ||= []).push(r.listingCount ?? null);
   if (lastTwoN[r.id].length > 2) lastTwoN[r.id].shift();
   if (lastTwo[r.id].length > 2) lastTwo[r.id].shift();
 }
+for (const p of liveList) if (rebasedToday.has(p.id) && p.priceMedian) firstSeen[p.id] = p.priceMedian;
 const ratios = [], breadth = { up: 0, down: 0, flat: 0 };
 for (const p of liveList) {
   if (!seasoned(p)) continue;
