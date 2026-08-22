@@ -125,3 +125,47 @@ The Falsifier. It is cheap, it runs on data we already hold, it produces
 a daily artifact nobody else in this hobby can produce, and it is the
 purest expression of what this company already is: a thing that tries to
 prove itself wrong before anyone else gets the chance.
+
+---
+
+# BUILD STATUS (2026-08-23)
+
+## BUILT AND RUNNING IN THE DAILY PIPELINE
+- **The Falsifier** (`scripts/falsifier.mjs`) — walks RT-1, RT-3, RT-4,
+  RT-4a, RT-4b, RT-5, RT-6 plus an index-integrity check, tests each
+  against its own kill condition, writes `research/pulse/falsifier-report.json`
+  and drafts the public amendment for anything that trips. First run:
+  4 SURVIVED with real numbers, 4 INSUFFICIENT with the exact data each
+  would need. INSUFFICIENT is reported as loudly as the others.
+- **The Correction Hunter** (`scripts/correction-hunter.mjs`) — re-reads
+  figures we already published and flags any move too fast to be the
+  market (40% inside 3 days on sealed), plus anything we FEATURED and can
+  no longer price. First run found two: Umbreon VMAX was put in front of
+  readers twice and has no price today.
+- **The Newcomer + The Red Team** (`scripts/review-agents.mjs`) — 23
+  published lines and 9 READ-chipped claims queued each run. Runs the
+  passes when a key is present; otherwise writes the request out and
+  states plainly that it did not run. An unrun review is never reported
+  as a passed review.
+
+## NOT BUILT — needs the Discord bot, and honestly so
+The four community agents all require the bot to be live and reading
+messages. Chat cannot build them and will not pretend otherwise.
+- **Show Floor Network** — needs: image upload handling, OCR on a price
+  tag, a consent flow, and `data/show-floor-observations.json` with
+  {date, show, vendor?, productId, askedPrice, observerId, consent}.
+  The Deal Zone lookup it replies with already exists.
+- **Member Agent** — needs per-member watchlists in the bot's database
+  and a channel-post permission. Speaks in public, never DM.
+- **Question Listener** — needs message-history read access; output is a
+  weekly list of things members asked that our instruments cannot answer.
+- **Welcome** — needs the join event; two questions, sets their mode,
+  first berry, introduces them to two members by name.
+
+## THE WEAKEST POINT, NAMED
+The Falsifier's honest answer today is INSUFFICIENT on half the theses,
+because most falsifiers need weeks of tape we do not have yet. That is
+not a flaw in the agent — it is the agent doing its job. But it means the
+daily artifact is thin until roughly mid-September, and we should not
+dress it up in the meantime. Publishing "we tested ourselves and could
+not yet tell" is still more than anyone else in this hobby publishes.
