@@ -573,7 +573,7 @@ const out = {
     // the famous product: a reader who has never considered a product
     // learns more than one who already owns the story.
     const FEATURE_COOLDOWN_DAYS = 7;
-    const SCREAMING_SPREAD = 40;      // an outlier worth repeating for
+    const SCREAMING_SPREAD = 60;   // raised from 40 — a gap must be extraordinary to outrank a lens      // an outlier worth repeating for
     const featuredAgo = new Map();    // name -> days since featured
     {
       const nowMs = Date.parse(new Date().toISOString().slice(0, 10));
@@ -613,10 +613,13 @@ const out = {
     const pm = new Map((packRows || []).map(r => [r.id, { premium: r.sealedPremiumPct, thin: r.premiumThin, perPack: r.perPack }]));
     const prodById = new Map(liveList.map(p => [p.id, p]));
     const eligibleAll = (div.rows||[]).filter(r => !blockedIds.has(r.id) && !isRepeat(r.name));
-    const LENSES = [
-      { id: "gap", label: "widest gap between the two markets",
-        pick: () => eligibleAll.filter(r => r.signal).sort((a,b)=>Math.abs(b.spreadPct)-Math.abs(a.spreadPct))[0],
-        why: r => `It is on the list because the two marketplaces disagree about it more than anything else we track today — eBay is asking ${Math.abs(r.spreadPct)}% ${r.spreadPct>0?"more":"less"} than TCGplayer.` },
+    // GAP DE-EMPHASIS (Tyler, 2026-08-23): "we're giving WAY too much weight to
+// the gap between TCG and eBay — there is always a gap, and it is often closer
+// than it says." Both halves of that were right: the measurement was inflated
+// (delivered vs item-only) and the instrument was over-represented. The gap
+// lens now sits LAST in the rotation instead of first, and the screaming-deal
+// override needs a much higher bar before it can bump a lens pick.
+const LENSES = [
       { id: "premium", label: "biggest sealed premium over loose packs",
         pick: () => eligibleAll.map(r => ({ r, p: pm.get(r.id) })).filter(x => x.p?.premium != null && !x.p.thin)
                       .sort((a,b)=>Math.abs(b.p.premium)-Math.abs(a.p.premium))[0]?.r,
@@ -634,6 +637,9 @@ const out = {
         pick: () => eligibleAll.map(r => ({ r, z: dealZone.byId[r.id] })).filter(x => x.z?.zonePct)
                       .sort((a,b)=>b.z.zonePct-a.z.zonePct)[0]?.r,
         why: r => { const z = dealZone.byId[r.id]; return `It is on the list because it has the widest deal zone on the board — a seller keeps about $${z.sellerFloor.toLocaleString("en-US")} selling online while a buyer pays about $${z.buyerCeiling.toLocaleString("en-US")}, so there is roughly $${z.zoneWidth.toLocaleString("en-US")} of room where a face-to-face trade beats the internet for both people.`; } },
+      { id: "gap", label: "widest gap between the two markets",
+        pick: () => eligibleAll.filter(r => r.signal).sort((a,b)=>Math.abs(b.spreadPct)-Math.abs(a.spreadPct))[0],
+        why: r => `It is on the list because the two marketplaces disagree about it more than anything else we track today — eBay is asking ${Math.abs(r.spreadPct)}% ${r.spreadPct>0?"more":"less"} than TCGplayer.` },
     ];
     let lensUsed = null, lensPick = null;
     for (let i = 0; i < LENSES.length && !lensPick; i++) {
@@ -659,7 +665,7 @@ const out = {
     let whyLine = (lensUsed && lensPick === sealedPick) ? lensUsed.why(sealedPick) : null;
     let lensId = (lensUsed && lensPick === sealedPick) ? lensUsed.id : null;
     let repeatReason = null;
-    if (topScream && sealedPick && Math.abs(topScream.spreadPct) > Math.abs(sealedPick.spreadPct) + 12) {
+    if (topScream && sealedPick && Math.abs(topScream.spreadPct) > Math.abs(sealedPick.spreadPct) + 25) {
       if (isRepeat(topScream.name)) repeatReason = `back on the board ${featuredAgo.get(topScream.name)} day(s) later — the gap widened past anything else we track`;
       sealedPick = topScream;
       whyLine = `It is on the list because the gap opened up past everything else we track today — eBay is asking ${Math.abs(topScream.spreadPct)}% ${topScream.spreadPct > 0 ? "more" : "less"} than TCGplayer, which is far enough out of line to bump whatever else was in this slot.`;

@@ -408,6 +408,16 @@ function aggregatePrices(items, floor = MIN_PRICE, ceiling = MAX_PRICE) {
     // consumers never conflate median with floor (Tyler-caught gotcha)
     priceFloorClean: round(prices[0]),
     priceHigh: round(prices[prices.length - 1]),
+    // TWO MEDIANS (2026-08-23): our delivered figure mixes item+shipping with
+    // item-only rows, while TCGplayer market price is ALWAYS item-only. Comparing
+    // them inflates every spread, worst on cheap items where postage is a large
+    // share. priceItemMedian is the like-for-like number; priceMedian stays the
+    // delivered truth a buyer actually pays.
+    priceItemMedian: (() => {
+      const items = kept.map(i => parseFloat(i.price?.value)).filter(v => !isNaN(v)).sort((a, b) => a - b);
+      return items.length ? round(items[Math.floor(items.length / 2)]) : null;
+    })(),
+    shipKnownPct: prices.length ? Math.round((1 - (report.shipUnknown / prices.length)) * 100) : null,
     // DIAGNOSTIC TRAIL (slop defense): the three priciest kept listings are
     // where pollution hides. Stored so any suspicious median can be audited
     // in seconds instead of guessed at.

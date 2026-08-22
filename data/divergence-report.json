@@ -1,21 +1,23 @@
 {
-  "generatedAt": "2026-08-22T06:10:35.156Z",
+  "generatedAt": "2026-08-22T15:17:47.180Z",
   "method": "Cross-market ASK divergence: eBay ask median vs TCG-side ask-derived market (PPT). Two markets disagreeing on price is the signal. Baseline +5-15% is STRUCTURAL (RT-4 photo premium: eBay shows the item, TCG sealed rarely does). |spread| >= 15% flags; negative gaps read stronger (fighting the trust premium). Not sold data. TCG-side listing counts: provider exposes none for sealed - field carried as null, lights up if they ship it.",
   "counts": {
     "compared": 135,
-    "signals": 49,
+    "signals": 44,
     "skipped": 72
   },
   "rows": [
     {
       "id": "sv7-pack",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
+      "publishBlocked": true,
       "name": "Stellar Crown Booster Pack",
       "ebayAskMedian": 19.7,
       "tcgMarket": 10.58,
       "ebayListings": 24,
       "tcgListings": null,
       "spreadPct": 86.2,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -24,13 +26,15 @@
     },
     {
       "id": "swsh1-pack",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
+      "publishBlocked": true,
       "name": "Sword & Shield Booster Pack",
       "ebayAskMedian": 19.95,
       "tcgMarket": 10.97,
       "ebayListings": 31,
       "tcgListings": null,
       "spreadPct": 81.9,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -39,13 +43,15 @@
     },
     {
       "id": "sv4-pack",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
+      "publishBlocked": true,
       "name": "Paradox Rift Booster Pack",
       "ebayAskMedian": 14.88,
       "tcgMarket": 8.42,
       "ebayListings": 28,
       "tcgListings": null,
       "spreadPct": 76.7,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -54,13 +60,15 @@
     },
     {
       "id": "sv6-pack",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
+      "publishBlocked": true,
       "name": "Twilight Masquerade Booster Pack",
       "ebayAskMedian": 14.98,
       "tcgMarket": 8.84,
       "ebayListings": 32,
       "tcgListings": null,
       "spreadPct": 69.5,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -69,13 +77,15 @@
     },
     {
       "id": "sv1-pack",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
+      "publishBlocked": true,
       "name": "Scarlet & Violet Booster Pack",
       "ebayAskMedian": 14.95,
       "tcgMarket": 9.15,
       "ebayListings": 14,
       "tcgListings": null,
       "spreadPct": 63.4,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -84,6 +94,7 @@
     },
     {
       "id": "sm35-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Shining Legends Elite Trainer Box",
       "ebayAskMedian": 1499.99,
       "tcgMarket": 957.54,
@@ -92,7 +103,7 @@
       "spreadPct": 56.7,
       "signal": false,
       "offTcgEra": true,
-      "venueNote": "vintage-class — trades on eBay, shows, and collector groups; TCG comparison gated (RT-4a)",
+      "venueNote": "vintage-class — this market trades on eBay, at shows, and in collector groups, so we read eBay-native stats only and skip the TCGplayer comparison (RT-4a)",
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -101,6 +112,7 @@
     },
     {
       "id": "sv9-pack",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Journey Together Booster Pack",
       "ebayAskMedian": 9.99,
       "tcgMarket": 6.45,
@@ -116,6 +128,7 @@
     },
     {
       "id": "sm4-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Crimson Invasion Booster Box",
       "ebayAskMedian": 1017.44,
       "tcgMarket": 660.94,
@@ -124,7 +137,7 @@
       "spreadPct": 53.9,
       "signal": false,
       "offTcgEra": true,
-      "venueNote": "vintage-class — trades on eBay, shows, and collector groups; TCG comparison gated (RT-4a)",
+      "venueNote": "vintage-class — this market trades on eBay, at shows, and in collector groups, so we read eBay-native stats only and skip the TCGplayer comparison (RT-4a)",
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -133,6 +146,7 @@
     },
     {
       "id": "sm1-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Sun & Moon Elite Trainer Box",
       "ebayAskMedian": 375,
       "tcgMarket": 246.69,
@@ -141,7 +155,7 @@
       "spreadPct": 52,
       "signal": false,
       "offTcgEra": true,
-      "venueNote": "vintage-class — trades on eBay, shows, and collector groups; TCG comparison gated (RT-4a)",
+      "venueNote": "vintage-class — this market trades on eBay, at shows, and in collector groups, so we read eBay-native stats only and skip the TCGplayer comparison (RT-4a)",
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -150,6 +164,7 @@
     },
     {
       "id": "me5-pack",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Pitch Black Booster Pack",
       "ebayAskMedian": 8.99,
       "tcgMarket": 5.92,
@@ -165,6 +180,7 @@
     },
     {
       "id": "swsh3-pack",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Darkness Ablaze Booster Pack",
       "ebayAskMedian": 15.1,
       "tcgMarket": 10,
@@ -180,6 +196,7 @@
     },
     {
       "id": "sm11-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Unified Minds Booster Box",
       "ebayAskMedian": 4450,
       "tcgMarket": 3008.23,
@@ -188,7 +205,7 @@
       "spreadPct": 47.9,
       "signal": false,
       "offTcgEra": true,
-      "venueNote": "vintage-class — trades on eBay, shows, and collector groups; TCG comparison gated (RT-4a)",
+      "venueNote": "vintage-class — this market trades on eBay, at shows, and in collector groups, so we read eBay-native stats only and skip the TCGplayer comparison (RT-4a)",
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -197,6 +214,7 @@
     },
     {
       "id": "swsh4-pack",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Vivid Voltage Booster Pack",
       "ebayAskMedian": 14.23,
       "tcgMarket": 9.69,
@@ -212,6 +230,7 @@
     },
     {
       "id": "sv8pt5-sc",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Prismatic Evolutions Surprise Box",
       "ebayAskMedian": 100,
       "tcgMarket": 68.16,
@@ -227,6 +246,7 @@
     },
     {
       "id": "swsh2-pack",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Rebel Clash Booster Pack",
       "ebayAskMedian": 14.5,
       "tcgMarket": 9.93,
@@ -242,6 +262,7 @@
     },
     {
       "id": "sv6pt5-pack",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Shrouded Fable Booster Pack",
       "ebayAskMedian": 21.5,
       "tcgMarket": 14.79,
@@ -257,6 +278,7 @@
     },
     {
       "id": "me3-pack",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Perfect Order Booster Pack",
       "ebayAskMedian": 7.95,
       "tcgMarket": 5.47,
@@ -272,6 +294,7 @@
     },
     {
       "id": "me4-pack",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Chaos Rising Booster Pack",
       "ebayAskMedian": 8,
       "tcgMarket": 5.52,
@@ -287,6 +310,7 @@
     },
     {
       "id": "pgo-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "publishBlocked": true,
       "name": "Pokemon GO Elite Trainer Box",
       "ebayAskMedian": 240,
@@ -303,6 +327,7 @@
     },
     {
       "id": "swsh11-pack",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Lost Origin Booster Pack",
       "ebayAskMedian": 23.99,
       "tcgMarket": 17.15,
@@ -318,6 +343,7 @@
     },
     {
       "id": "sv3-pack",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Obsidian Flames Booster Pack",
       "ebayAskMedian": 18,
       "tcgMarket": 12.95,
@@ -333,6 +359,7 @@
     },
     {
       "id": "sm2-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Guardians Rising Elite Trainer Box",
       "ebayAskMedian": 584.99,
       "tcgMarket": 421.79,
@@ -341,7 +368,7 @@
       "spreadPct": 38.7,
       "signal": false,
       "offTcgEra": true,
-      "venueNote": "vintage-class — trades on eBay, shows, and collector groups; TCG comparison gated (RT-4a)",
+      "venueNote": "vintage-class — this market trades on eBay, at shows, and in collector groups, so we read eBay-native stats only and skip the TCGplayer comparison (RT-4a)",
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -350,6 +377,7 @@
     },
     {
       "id": "sm4-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Crimson Invasion Elite Trainer Box",
       "ebayAskMedian": 299.99,
       "tcgMarket": 218.27,
@@ -358,7 +386,7 @@
       "spreadPct": 37.4,
       "signal": false,
       "offTcgEra": true,
-      "venueNote": "vintage-class — trades on eBay, shows, and collector groups; TCG comparison gated (RT-4a)",
+      "venueNote": "vintage-class — this market trades on eBay, at shows, and in collector groups, so we read eBay-native stats only and skip the TCGplayer comparison (RT-4a)",
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -367,6 +395,7 @@
     },
     {
       "id": "swsh6-pack",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Chilling Reign Booster Pack",
       "ebayAskMedian": 15.99,
       "tcgMarket": 11.69,
@@ -382,6 +411,7 @@
     },
     {
       "id": "sm5-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Ultra Prism Booster Box",
       "ebayAskMedian": 1999.99,
       "tcgMarket": 1466.66,
@@ -390,7 +420,7 @@
       "spreadPct": 36.4,
       "signal": false,
       "offTcgEra": true,
-      "venueNote": "vintage-class — trades on eBay, shows, and collector groups; TCG comparison gated (RT-4a)",
+      "venueNote": "vintage-class — this market trades on eBay, at shows, and in collector groups, so we read eBay-native stats only and skip the TCGplayer comparison (RT-4a)",
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -399,6 +429,7 @@
     },
     {
       "id": "sv7-bb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Stellar Crown Booster Bundle",
       "ebayAskMedian": 99.95,
       "tcgMarket": 73.62,
@@ -414,6 +445,7 @@
     },
     {
       "id": "me2-pack",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Phantasmal Flames Booster Pack",
       "ebayAskMedian": 15.69,
       "tcgMarket": 11.74,
@@ -429,6 +461,7 @@
     },
     {
       "id": "swsh10-pack",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Astral Radiance Booster Pack",
       "ebayAskMedian": 13.5,
       "tcgMarket": 10.13,
@@ -444,6 +477,7 @@
     },
     {
       "id": "sv8pt5-pack",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Prismatic Evolutions Booster Pack",
       "ebayAskMedian": 19.99,
       "tcgMarket": 15.09,
@@ -459,6 +493,7 @@
     },
     {
       "id": "swsh1-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Sword & Shield Base Booster Box",
       "ebayAskMedian": 904.99,
       "tcgMarket": 694.29,
@@ -474,6 +509,7 @@
     },
     {
       "id": "swsh5-pack",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Battle Styles Booster Pack",
       "ebayAskMedian": 11.99,
       "tcgMarket": 9.23,
@@ -489,6 +525,7 @@
     },
     {
       "id": "swsh7-pack",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Evolving Skies Booster Pack",
       "ebayAskMedian": 54.49,
       "tcgMarket": 42.15,
@@ -504,6 +541,7 @@
     },
     {
       "id": "sv6-bb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Twilight Masquerade Booster Bundle",
       "ebayAskMedian": 99.99,
       "tcgMarket": 77.64,
@@ -519,6 +557,7 @@
     },
     {
       "id": "sv8-pack",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Surging Sparks Booster Pack",
       "ebayAskMedian": 10,
       "tcgMarket": 7.83,
@@ -534,6 +573,7 @@
     },
     {
       "id": "sm10-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Unbroken Bonds Booster Box",
       "ebayAskMedian": 3226.88,
       "tcgMarket": 2548.16,
@@ -542,7 +582,7 @@
       "spreadPct": 26.6,
       "signal": false,
       "offTcgEra": true,
-      "venueNote": "vintage-class — trades on eBay, shows, and collector groups; TCG comparison gated (RT-4a)",
+      "venueNote": "vintage-class — this market trades on eBay, at shows, and in collector groups, so we read eBay-native stats only and skip the TCGplayer comparison (RT-4a)",
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -551,6 +591,7 @@
     },
     {
       "id": "sm12-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Cosmic Eclipse Booster Box",
       "ebayAskMedian": 5196.69,
       "tcgMarket": 4148.34,
@@ -559,7 +600,7 @@
       "spreadPct": 25.3,
       "signal": false,
       "offTcgEra": true,
-      "venueNote": "vintage-class — trades on eBay, shows, and collector groups; TCG comparison gated (RT-4a)",
+      "venueNote": "vintage-class — this market trades on eBay, at shows, and in collector groups, so we read eBay-native stats only and skip the TCGplayer comparison (RT-4a)",
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -568,6 +609,7 @@
     },
     {
       "id": "sv2-pack",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Paldea Evolved Booster Pack",
       "ebayAskMedian": 19.99,
       "tcgMarket": 16.03,
@@ -583,6 +625,7 @@
     },
     {
       "id": "sm7-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Celestial Storm Booster Box",
       "ebayAskMedian": 3059.98,
       "tcgMarket": 2463.87,
@@ -591,7 +634,7 @@
       "spreadPct": 24.2,
       "signal": false,
       "offTcgEra": true,
-      "venueNote": "vintage-class — trades on eBay, shows, and collector groups; TCG comparison gated (RT-4a)",
+      "venueNote": "vintage-class — this market trades on eBay, at shows, and in collector groups, so we read eBay-native stats only and skip the TCGplayer comparison (RT-4a)",
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -600,6 +643,7 @@
     },
     {
       "id": "sm3-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Burning Shadows Booster Box",
       "ebayAskMedian": 1520,
       "tcgMarket": 1228.66,
@@ -608,7 +652,7 @@
       "spreadPct": 23.7,
       "signal": false,
       "offTcgEra": true,
-      "venueNote": "vintage-class — trades on eBay, shows, and collector groups; TCG comparison gated (RT-4a)",
+      "venueNote": "vintage-class — this market trades on eBay, at shows, and in collector groups, so we read eBay-native stats only and skip the TCGplayer comparison (RT-4a)",
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -617,6 +661,7 @@
     },
     {
       "id": "swsh5-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Battle Styles Elite Trainer Box",
       "ebayAskMedian": 149.9,
       "tcgMarket": 124.51,
@@ -632,6 +677,7 @@
     },
     {
       "id": "swsh8-pack",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Fusion Strike Booster Pack",
       "ebayAskMedian": 22.99,
       "tcgMarket": 19.11,
@@ -647,6 +693,7 @@
     },
     {
       "id": "me1-pack",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Mega Evolution Booster Pack",
       "ebayAskMedian": 9.99,
       "tcgMarket": 8.31,
@@ -662,6 +709,7 @@
     },
     {
       "id": "swsh2-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Rebel Clash Elite Trainer Box",
       "ebayAskMedian": 378.88,
       "tcgMarket": 315.14,
@@ -677,6 +725,7 @@
     },
     {
       "id": "swsh7-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Evolving Skies Booster Box",
       "ebayAskMedian": 2949.99,
       "tcgMarket": 2460.46,
@@ -692,6 +741,7 @@
     },
     {
       "id": "swsh11-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Lost Origin Elite Trainer Box",
       "ebayAskMedian": 249.99,
       "tcgMarket": 208.77,
@@ -707,6 +757,7 @@
     },
     {
       "id": "sv6pt5-bb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Shrouded Fable Booster Bundle",
       "ebayAskMedian": 61.99,
       "tcgMarket": 51.93,
@@ -722,6 +773,7 @@
     },
     {
       "id": "swsh2-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Rebel Clash Booster Box",
       "ebayAskMedian": 586.69,
       "tcgMarket": 493.07,
@@ -737,6 +789,7 @@
     },
     {
       "id": "sv7-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Stellar Crown Booster Box",
       "ebayAskMedian": 378.88,
       "tcgMarket": 318.48,
@@ -752,6 +805,7 @@
     },
     {
       "id": "sv5-pack",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Temporal Forces Booster Pack",
       "ebayAskMedian": 13.5,
       "tcgMarket": 11.37,
@@ -767,6 +821,7 @@
     },
     {
       "id": "me4-bb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Chaos Rising Booster Bundle",
       "ebayAskMedian": 42.99,
       "tcgMarket": 36.3,
@@ -782,6 +837,7 @@
     },
     {
       "id": "sv4-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Paradox Rift Booster Box",
       "ebayAskMedian": 324.99,
       "tcgMarket": 274.7,
@@ -797,6 +853,7 @@
     },
     {
       "id": "swsh9-pack",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Brilliant Stars Booster Pack",
       "ebayAskMedian": 19.99,
       "tcgMarket": 16.94,
@@ -812,6 +869,7 @@
     },
     {
       "id": "sm3-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Burning Shadows Elite Trainer Box",
       "ebayAskMedian": 379,
       "tcgMarket": 322.5,
@@ -820,7 +878,7 @@
       "spreadPct": 17.5,
       "signal": false,
       "offTcgEra": true,
-      "venueNote": "vintage-class — trades on eBay, shows, and collector groups; TCG comparison gated (RT-4a)",
+      "venueNote": "vintage-class — this market trades on eBay, at shows, and in collector groups, so we read eBay-native stats only and skip the TCGplayer comparison (RT-4a)",
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -829,6 +887,7 @@
     },
     {
       "id": "swsh4-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Vivid Voltage Booster Box",
       "ebayAskMedian": 370,
       "tcgMarket": 315.44,
@@ -844,6 +903,7 @@
     },
     {
       "id": "sv6pt5-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Shrouded Fable Elite Trainer Box",
       "ebayAskMedian": 136.43,
       "tcgMarket": 116.26,
@@ -859,6 +919,7 @@
     },
     {
       "id": "swsh12-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Silver Tempest Elite Trainer Box",
       "ebayAskMedian": 181.99,
       "tcgMarket": 155.59,
@@ -874,6 +935,7 @@
     },
     {
       "id": "swsh4-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Vivid Voltage Elite Trainer Box",
       "ebayAskMedian": 159.99,
       "tcgMarket": 137.25,
@@ -889,6 +951,7 @@
     },
     {
       "id": "swsh8-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Fusion Strike Booster Box",
       "ebayAskMedian": 1130.07,
       "tcgMarket": 969.25,
@@ -904,6 +967,7 @@
     },
     {
       "id": "me2pt5-pack",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Ascended Heroes Booster Pack",
       "ebayAskMedian": 15.99,
       "tcgMarket": 13.74,
@@ -919,6 +983,7 @@
     },
     {
       "id": "swsh3-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Darkness Ablaze Elite Trainer Box",
       "ebayAskMedian": 145,
       "tcgMarket": 124.59,
@@ -934,6 +999,7 @@
     },
     {
       "id": "me5-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Pitch Black Elite Trainer Box",
       "ebayAskMedian": 78,
       "tcgMarket": 67.11,
@@ -949,6 +1015,7 @@
     },
     {
       "id": "me5-bb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Pitch Black Booster Bundle",
       "ebayAskMedian": 41.99,
       "tcgMarket": 36.31,
@@ -964,6 +1031,7 @@
     },
     {
       "id": "me2pt5-tin",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Ascended Heroes Tin",
       "ebayAskMedian": 60.99,
       "tcgMarket": 71.67,
@@ -979,6 +1047,7 @@
     },
     {
       "id": "sv2-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Paldea Evolved Booster Box",
       "ebayAskMedian": 534.94,
       "tcgMarket": 465.74,
@@ -994,6 +1063,7 @@
     },
     {
       "id": "sv5-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Temporal Forces Booster Box",
       "ebayAskMedian": 350,
       "tcgMarket": 305.95,
@@ -1009,6 +1079,7 @@
     },
     {
       "id": "sv10-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Destined Rivals Booster Box",
       "ebayAskMedian": 490,
       "tcgMarket": 428.97,
@@ -1024,6 +1095,7 @@
     },
     {
       "id": "me4-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Chaos Rising Booster Box",
       "ebayAskMedian": 201.68,
       "tcgMarket": 176.78,
@@ -1039,6 +1111,7 @@
     },
     {
       "id": "swsh12pt5-premium",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Crown Zenith Special Collection",
       "ebayAskMedian": 200,
       "tcgMarket": 175.68,
@@ -1054,6 +1127,7 @@
     },
     {
       "id": "sv3-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Obsidian Flames Booster Box",
       "ebayAskMedian": 415.99,
       "tcgMarket": 365.41,
@@ -1069,6 +1143,7 @@
     },
     {
       "id": "sm6-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Forbidden Light Booster Box",
       "ebayAskMedian": 1865.98,
       "tcgMarket": 1647.98,
@@ -1077,7 +1152,7 @@
       "spreadPct": 13.2,
       "signal": false,
       "offTcgEra": true,
-      "venueNote": "vintage-class — trades on eBay, shows, and collector groups; TCG comparison gated (RT-4a)",
+      "venueNote": "vintage-class — this market trades on eBay, at shows, and in collector groups, so we read eBay-native stats only and skip the TCGplayer comparison (RT-4a)",
       "read": "markets agree",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -1086,6 +1161,7 @@
     },
     {
       "id": "me3-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Perfect Order Booster Box",
       "ebayAskMedian": 195.74,
       "tcgMarket": 173.23,
@@ -1101,6 +1177,7 @@
     },
     {
       "id": "swsh1-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Sword & Shield Base Elite Trainer Box",
       "ebayAskMedian": 182.5,
       "tcgMarket": 164.58,
@@ -1116,6 +1193,7 @@
     },
     {
       "id": "me2-bb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Phantasmal Flames Booster Bundle",
       "ebayAskMedian": 88.69,
       "tcgMarket": 80.06,
@@ -1131,6 +1209,7 @@
     },
     {
       "id": "me3-bb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Perfect Order Booster Bundle",
       "ebayAskMedian": 44.98,
       "tcgMarket": 40.67,
@@ -1146,6 +1225,7 @@
     },
     {
       "id": "sv5-bb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Temporal Forces Booster Bundle",
       "ebayAskMedian": 99,
       "tcgMarket": 89.68,
@@ -1161,6 +1241,7 @@
     },
     {
       "id": "sv6-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Twilight Masquerade Elite Trainer Box",
       "ebayAskMedian": 120,
       "tcgMarket": 108.83,
@@ -1176,6 +1257,7 @@
     },
     {
       "id": "me1-enhanced-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Mega Evolution Enhanced Booster Box",
       "ebayAskMedian": 339.99,
       "tcgMarket": 309.58,
@@ -1191,6 +1273,7 @@
     },
     {
       "id": "sv10-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Destined Rivals Elite Trainer Box",
       "ebayAskMedian": 135,
       "tcgMarket": 122.94,
@@ -1206,6 +1289,7 @@
     },
     {
       "id": "sv4pt5-bb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Paldean Fates Booster Bundle",
       "ebayAskMedian": 193.68,
       "tcgMarket": 176.52,
@@ -1221,6 +1305,7 @@
     },
     {
       "id": "sm75-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Dragon Majesty Elite Trainer Box",
       "ebayAskMedian": 1499.99,
       "tcgMarket": 1367.99,
@@ -1229,7 +1314,7 @@
       "spreadPct": 9.6,
       "signal": false,
       "offTcgEra": true,
-      "venueNote": "vintage-class — trades on eBay, shows, and collector groups; TCG comparison gated (RT-4a)",
+      "venueNote": "vintage-class — this market trades on eBay, at shows, and in collector groups, so we read eBay-native stats only and skip the TCGplayer comparison (RT-4a)",
       "read": "markets agree",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -1238,6 +1323,7 @@
     },
     {
       "id": "xy12-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Evolutions Booster Box",
       "ebayAskMedian": 2750,
       "tcgMarket": 2509.27,
@@ -1246,7 +1332,7 @@
       "spreadPct": 9.6,
       "signal": false,
       "offTcgEra": true,
-      "venueNote": "vintage-class — trades on eBay, shows, and collector groups; TCG comparison gated (RT-4a)",
+      "venueNote": "vintage-class — this market trades on eBay, at shows, and in collector groups, so we read eBay-native stats only and skip the TCGplayer comparison (RT-4a)",
       "read": "markets agree",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -1255,6 +1341,7 @@
     },
     {
       "id": "sm2-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Guardians Rising Booster Box",
       "ebayAskMedian": 1650,
       "tcgMarket": 1824.5,
@@ -1263,7 +1350,7 @@
       "spreadPct": -9.6,
       "signal": false,
       "offTcgEra": true,
-      "venueNote": "vintage-class — trades on eBay, shows, and collector groups; TCG comparison gated (RT-4a)",
+      "venueNote": "vintage-class — this market trades on eBay, at shows, and in collector groups, so we read eBay-native stats only and skip the TCGplayer comparison (RT-4a)",
       "read": "markets agree",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -1272,6 +1359,7 @@
     },
     {
       "id": "me2-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Phantasmal Flames Booster Box",
       "ebayAskMedian": 427,
       "tcgMarket": 389.55,
@@ -1287,6 +1375,7 @@
     },
     {
       "id": "swsh5-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Battle Styles Booster Box",
       "ebayAskMedian": 323.88,
       "tcgMarket": 295.65,
@@ -1302,6 +1391,7 @@
     },
     {
       "id": "me5-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Pitch Black Booster Box",
       "ebayAskMedian": 195,
       "tcgMarket": 178.05,
@@ -1317,6 +1407,7 @@
     },
     {
       "id": "swsh9-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Brilliant Stars Booster Box",
       "ebayAskMedian": 640,
       "tcgMarket": 584.79,
@@ -1332,6 +1423,7 @@
     },
     {
       "id": "sv1-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Scarlet & Violet Base Booster Box",
       "ebayAskMedian": 329.95,
       "tcgMarket": 301.98,
@@ -1347,6 +1439,7 @@
     },
     {
       "id": "swsh12-pack",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Silver Tempest Booster Pack",
       "ebayAskMedian": 15.95,
       "tcgMarket": 14.61,
@@ -1362,6 +1455,7 @@
     },
     {
       "id": "swsh12-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Silver Tempest Booster Box",
       "ebayAskMedian": 550,
       "tcgMarket": 504.8,
@@ -1377,6 +1471,7 @@
     },
     {
       "id": "sv8-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Surging Sparks Elite Trainer Box",
       "ebayAskMedian": 139,
       "tcgMarket": 127.64,
@@ -1392,6 +1487,7 @@
     },
     {
       "id": "sv7-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Stellar Crown Elite Trainer Box",
       "ebayAskMedian": 172.21,
       "tcgMarket": 158.14,
@@ -1407,6 +1503,7 @@
     },
     {
       "id": "sv3pt5-bb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "151 Booster Bundle",
       "ebayAskMedian": 195.94,
       "tcgMarket": 179.88,
@@ -1422,6 +1519,7 @@
     },
     {
       "id": "me1-bb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Mega Evolution Booster Bundle",
       "ebayAskMedian": 68.98,
       "tcgMarket": 63.41,
@@ -1437,6 +1535,7 @@
     },
     {
       "id": "me4-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Chaos Rising Elite Trainer Box",
       "ebayAskMedian": 75.94,
       "tcgMarket": 69.94,
@@ -1452,6 +1551,7 @@
     },
     {
       "id": "sv8-bb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Surging Sparks Booster Bundle",
       "ebayAskMedian": 65,
       "tcgMarket": 59.92,
@@ -1467,6 +1567,7 @@
     },
     {
       "id": "swsh6-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Chilling Reign Booster Box",
       "ebayAskMedian": 539.99,
       "tcgMarket": 499.58,
@@ -1482,6 +1583,7 @@
     },
     {
       "id": "sv6-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Twilight Masquerade Booster Box",
       "ebayAskMedian": 388.98,
       "tcgMarket": 360.92,
@@ -1497,6 +1599,7 @@
     },
     {
       "id": "swsh3-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Darkness Ablaze Booster Box",
       "ebayAskMedian": 400,
       "tcgMarket": 371.83,
@@ -1512,6 +1615,7 @@
     },
     {
       "id": "sv10-pack",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Destined Rivals Booster Pack",
       "ebayAskMedian": 10,
       "tcgMarket": 9.3,
@@ -1527,6 +1631,7 @@
     },
     {
       "id": "sm12-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Hidden Fates Elite Trainer Box",
       "ebayAskMedian": 599.99,
       "tcgMarket": 558.31,
@@ -1535,7 +1640,7 @@
       "spreadPct": 7.5,
       "signal": false,
       "offTcgEra": true,
-      "venueNote": "vintage-class — trades on eBay, shows, and collector groups; TCG comparison gated (RT-4a)",
+      "venueNote": "vintage-class — this market trades on eBay, at shows, and in collector groups, so we read eBay-native stats only and skip the TCGplayer comparison (RT-4a)",
       "read": "markets agree",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -1544,6 +1649,7 @@
     },
     {
       "id": "sv5-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Temporal Forces Elite Trainer Box",
       "ebayAskMedian": 142.98,
       "tcgMarket": 133.13,
@@ -1559,6 +1665,7 @@
     },
     {
       "id": "swsh6-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Chilling Reign Elite Trainer Box",
       "ebayAskMedian": 161.08,
       "tcgMarket": 150.24,
@@ -1574,6 +1681,7 @@
     },
     {
       "id": "swsh11-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Lost Origin Booster Box",
       "ebayAskMedian": 775,
       "tcgMarket": 726.04,
@@ -1589,6 +1697,7 @@
     },
     {
       "id": "sv9-bb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Journey Together Booster Bundle",
       "ebayAskMedian": 48.97,
       "tcgMarket": 46.06,
@@ -1604,6 +1713,7 @@
     },
     {
       "id": "zsv10pt5-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Black Bolt Elite Trainer Box",
       "ebayAskMedian": 175,
       "tcgMarket": 164.8,
@@ -1619,6 +1729,7 @@
     },
     {
       "id": "sv9-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Journey Together Elite Trainer Box",
       "ebayAskMedian": 139.99,
       "tcgMarket": 131.96,
@@ -1634,6 +1745,7 @@
     },
     {
       "id": "me2pt5-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Ascended Heroes Elite Trainer Box",
       "ebayAskMedian": 174.99,
       "tcgMarket": 165.36,
@@ -1649,6 +1761,7 @@
     },
     {
       "id": "rsv10pt5-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "White Flare Elite Trainer Box",
       "ebayAskMedian": 160.32,
       "tcgMarket": 152.12,
@@ -1664,6 +1777,7 @@
     },
     {
       "id": "sm6-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Forbidden Light Elite Trainer Box",
       "ebayAskMedian": 715,
       "tcgMarket": 678.49,
@@ -1672,7 +1786,7 @@
       "spreadPct": 5.4,
       "signal": false,
       "offTcgEra": true,
-      "venueNote": "vintage-class — trades on eBay, shows, and collector groups; TCG comparison gated (RT-4a)",
+      "venueNote": "vintage-class — this market trades on eBay, at shows, and in collector groups, so we read eBay-native stats only and skip the TCGplayer comparison (RT-4a)",
       "read": "markets agree",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -1681,6 +1795,7 @@
     },
     {
       "id": "sv4pt5-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Paldean Fates Elite Trainer Box",
       "ebayAskMedian": 480,
       "tcgMarket": 456.62,
@@ -1696,6 +1811,7 @@
     },
     {
       "id": "sv9-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Journey Together Booster Box",
       "ebayAskMedian": 283.98,
       "tcgMarket": 298.98,
@@ -1711,6 +1827,7 @@
     },
     {
       "id": "swsh35-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Champion's Path Elite Trainer Box",
       "ebayAskMedian": 229.99,
       "tcgMarket": 219.53,
@@ -1726,6 +1843,7 @@
     },
     {
       "id": "swsh7-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Evolving Skies Elite Trainer Box",
       "ebayAskMedian": 549.99,
       "tcgMarket": 575.85,
@@ -1741,6 +1859,7 @@
     },
     {
       "id": "cel25-upc",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Celebrations Ultra Premium Collection",
       "ebayAskMedian": 1329.94,
       "tcgMarket": 1274.27,
@@ -1756,6 +1875,7 @@
     },
     {
       "id": "rsv10pt5-bundle",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "White Flare Booster Bundle",
       "ebayAskMedian": 90,
       "tcgMarket": 86.32,
@@ -1771,6 +1891,7 @@
     },
     {
       "id": "sv3pt5-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "151 Elite Trainer Box",
       "ebayAskMedian": 600,
       "tcgMarket": 575.02,
@@ -1786,6 +1907,7 @@
     },
     {
       "id": "swsh45-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Shining Fates Elite Trainer Box",
       "ebayAskMedian": 150,
       "tcgMarket": 144.6,
@@ -1801,6 +1923,7 @@
     },
     {
       "id": "sv8pt5-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Prismatic Evolutions Elite Trainer Box",
       "ebayAskMedian": 169.99,
       "tcgMarket": 164.28,
@@ -1816,6 +1939,7 @@
     },
     {
       "id": "swsh12pt5-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Crown Zenith Elite Trainer Box",
       "ebayAskMedian": 339.99,
       "tcgMarket": 328.9,
@@ -1831,6 +1955,7 @@
     },
     {
       "id": "swsh10-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Astral Radiance Booster Box",
       "ebayAskMedian": 425.99,
       "tcgMarket": 414.78,
@@ -1846,6 +1971,7 @@
     },
     {
       "id": "sv3pt5-pack",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "151 Booster Pack",
       "ebayAskMedian": 29.5,
       "tcgMarket": 28.82,
@@ -1861,6 +1987,7 @@
     },
     {
       "id": "me1-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Mega Evolution Booster Box",
       "ebayAskMedian": 333.62,
       "tcgMarket": 326.07,
@@ -1876,6 +2003,7 @@
     },
     {
       "id": "cel25-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Celebrations Elite Trainer Box",
       "ebayAskMedian": 369.99,
       "tcgMarket": 361.54,
@@ -1891,6 +2019,7 @@
     },
     {
       "id": "zsv10pt5-bundle",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Black Bolt Booster Bundle",
       "ebayAskMedian": 99.99,
       "tcgMarket": 98.23,
@@ -1906,6 +2035,7 @@
     },
     {
       "id": "swsh12pt5-bb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Crown Zenith Booster Bundle",
       "ebayAskMedian": 223.99,
       "tcgMarket": 219.94,
@@ -1921,6 +2051,7 @@
     },
     {
       "id": "sv10-bb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Destined Rivals Booster Bundle",
       "ebayAskMedian": 69.99,
       "tcgMarket": 68.8,
@@ -1936,6 +2067,7 @@
     },
     {
       "id": "sv3pt5-upc",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "151 Ultra Premium Collection",
       "ebayAskMedian": 950,
       "tcgMarket": 934.59,
@@ -1951,6 +2083,7 @@
     },
     {
       "id": "sv8-booster-box",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Surging Sparks Booster Box",
       "ebayAskMedian": 311.98,
       "tcgMarket": 307.93,
@@ -1966,6 +2099,7 @@
     },
     {
       "id": "me3-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Perfect Order Elite Trainer Box",
       "ebayAskMedian": 73,
       "tcgMarket": 73.88,
@@ -1981,6 +2115,7 @@
     },
     {
       "id": "me2-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Phantasmal Flames Elite Trainer Box",
       "ebayAskMedian": 156.98,
       "tcgMarket": 155.13,
@@ -1996,6 +2131,7 @@
     },
     {
       "id": "sv8pt5-bb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Prismatic Evolutions Booster Bundle",
       "ebayAskMedian": 85,
       "tcgMarket": 85.49,
@@ -2011,6 +2147,7 @@
     },
     {
       "id": "swsh8-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Fusion Strike Elite Trainer Box",
       "ebayAskMedian": 350,
       "tcgMarket": 348.16,
@@ -2026,6 +2163,7 @@
     },
     {
       "id": "xy12-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Evolutions Elite Trainer Box",
       "ebayAskMedian": 810,
       "tcgMarket": 811.14,
@@ -2034,7 +2172,7 @@
       "spreadPct": -0.1,
       "signal": false,
       "offTcgEra": true,
-      "venueNote": "vintage-class — trades on eBay, shows, and collector groups; TCG comparison gated (RT-4a)",
+      "venueNote": "vintage-class — this market trades on eBay, at shows, and in collector groups, so we read eBay-native stats only and skip the TCGplayer comparison (RT-4a)",
       "read": "markets agree",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -2043,6 +2181,7 @@
     },
     {
       "id": "me1-etb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Mega Evolution Elite Trainer Box",
       "ebayAskMedian": 122.99,
       "tcgMarket": 123.1,
@@ -2058,6 +2197,7 @@
     },
     {
       "id": "me2pt5-bb",
+      "spreadBasis": "delivered-vs-item (inflated, pending refetch)",
       "name": "Ascended Heroes Booster Bundle",
       "ebayAskMedian": 85.99,
       "tcgMarket": 85.98,

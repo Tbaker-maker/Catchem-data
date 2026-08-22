@@ -2,6 +2,13 @@
  "note": "Public corrections log. material=true means it affected a number a reader could have acted on. Entries are permanent.",
  "entries": [
   {
+   "date": "2026-08-23",
+   "material": true,
+   "what": "Our eBay-vs-TCGplayer gap was overstated. The eBay figure included shipping wherever a listing stated it; TCGplayer market prices never include shipping. Comparing the two inflated every gap, and the effect was largest on cheap items where postage is a big share of the price.",
+   "fix": "The gap is now calculated item price against item price. Delivered totals are still shown as the price you would actually pay, which is a separate number.",
+   "guard": "Both medians are stored separately at fetch time, and any row still missing the item-only figure is flagged rather than published as if it were comparable."
+  },
+  {
    "date": "2026-08-21",
    "material": true,
    "what": "Our Pokemon GO Elite Trainer Box figure read high. Multi-quantity listings (\"lot of 2\", \"2x\", sealed cases) were passing our filters and lifting medians on any product with an active lot market.",

@@ -32,8 +32,15 @@ for (const p of ebay.products || []) {
     skipped.push({ id: p.id, reason: !t ? "no tcg row" : `status ebay:${p.dataStatus}/tcg:${t?.dataStatus}` });
     continue;
   }
-  const spread = (p.priceMedian - t.tcgMarket) / t.tcgMarket;
-  rows.push({ id: p.id, publishBlocked: (p.publishBlock || q.blocked(p.id)) || undefined, name: p.name, ebayAskMedian: p.priceMedian, tcgMarket: t.tcgMarket,
+  const ebayForSpread = p.priceItemMedian ?? p.priceMedian;
+  const spreadBasis = p.priceItemMedian ? "item-vs-item" : "delivered-vs-item (inflated, pending refetch)";
+  const spread = (ebayForSpread - t.tcgMarket) / t.tcgMarket;
+  // LIKE-FOR-LIKE (2026-08-23): the spread compares eBay's ITEM-ONLY median to
+// TCGplayer's market price, because TCG's figure excludes shipping. Using our
+// delivered median here overstated every gap — badly on cheap items. Until the
+// next fetch populates priceItemMedian we fall back to the delivered median and
+// flag the row, rather than publishing a number we know is inflated.
+rows.push({ id: p.id, spreadBasis, publishBlocked: (p.publishBlock || q.blocked(p.id)) || undefined, name: p.name, ebayAskMedian: p.priceMedian, tcgMarket: t.tcgMarket,
     ebayListings: p.listingCount ?? null, tcgListings: t.tcgListings ?? null,
     spreadPct: Math.round(spread * 1000) / 10,
     signal: !OFF_TCG(p.id) && !p.publishBlock && !q.blocked(p.id) && Math.abs(spread) >= SIGNAL_PCT,
