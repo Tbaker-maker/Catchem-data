@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-22T21:53:42.352Z",
+ "generatedAt": "2026-08-22T21:54:26.777Z",
  "date": "2026-08-22",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -62,11 +62,6 @@
   {
    "agent": "correction-hunter",
    "finding": "runs daily and has returned the same count (2) four runs running.",
-   "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
-  },
-  {
-   "agent": "steward",
-   "finding": "runs daily and has returned the same count (1) four runs running.",
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
   },
   {
@@ -481,7 +476,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "8 hand-written file(s) changed and not committed.",
+   "what": "1 hand-written file(s) changed and not committed.",
    "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
    "score": 30,
    "band": "NOTE ONLY",

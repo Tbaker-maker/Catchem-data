@@ -319,7 +319,11 @@ const CASES = [
         if (!src) { bad.push(`${f} missing`); continue; }
         // The two failures that have actually bitten us: halting the pipeline,
         // and writing a report nothing reads.
-        if (/process\.exit\(/.test(src) && !/STANDALONE/.test(src)) bad.push(`${f} can halt the run`);
+        // Strip comments first — this test read a comment EXPLAINING why we do not
+        // call process.exit as evidence that we do. Third time today a checker has
+        // audited prose instead of code.
+        const code = src.split("\n").filter(l => !l.trim().startsWith("//")).join("\n");
+        if (/process\.exit\(/.test(code) && !/STANDALONE/.test(code)) bad.push(`${f} can halt the run`);
         const out = /writeFile\([^)]*research\/pulse\/([a-z0-9\-]+\.json)/.exec(src);
         if (out) {
           const digest = await readFile(P("scripts/agent-digest.mjs"), "utf-8").catch(() => "");
