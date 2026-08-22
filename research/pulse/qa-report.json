@@ -1,36 +1,228 @@
 {
- "generatedAt": "2026-08-22T03:20:18.897Z",
+ "generatedAt": "2026-08-22T03:26:11.706Z",
  "date": "2026-08-22",
- "checked": 179,
- "warned": 55,
- "blocked": 2,
+ "checked": 178,
+ "warned": 51,
+ "blocked": 8,
  "note": "Blocked products stay in the data and on the Board (labeled); they are barred from Daily Three, social posts, cards, and the newsletter until they pass.",
  "flags": [
+  {
+   "id": "sv1-pack",
+   "name": "Scarlet & Violet Booster Pack",
+   "median": 16.94,
+   "high": 49,
+   "floor": 4.99,
+   "listings": 14,
+   "reasons": [
+    "85% from TCGplayer ($9.15) — beyond any photo-premium explanation"
+   ],
+   "warns": [
+    "floor $4.99 is 3.4× under the median"
+   ],
+   "topPricedTitles": [
+    {
+     "t": "Pokemon Scarlet & Violet Surging Sparks RARE FACTORY SEALED Booster Pack TCG",
+     "p": 49
+    },
+    {
+     "t": "Pokemon TCG Scarlet & Violet Paldean Fates Booster Pack Factory Sealed New",
+     "p": 29.88
+    },
+    {
+     "t": "Pokémon TCG Scarlet & Violet Booster Pack Foil Latios Zekrom Palkia ENG",
+     "p": 24.75
+    }
+   ]
+  },
+  {
+   "id": "sv4-pack",
+   "name": "Paradox Rift Booster Pack",
+   "median": 14.88,
+   "high": 55.03,
+   "floor": 7.5,
+   "listings": 29,
+   "reasons": [
+    "77% from TCGplayer ($8.42) — beyond any photo-premium explanation"
+   ],
+   "warns": [
+    "high $55.03 is 3.7× the median — watch for lot/case listings in the top half"
+   ],
+   "topPricedTitles": [
+    {
+     "t": "Pokémon TCG Paradox Rift Booster Pack 10 Cards English Iron Valiant 2023",
+     "p": 55.03
+    },
+    {
+     "t": "2 Pokemon Booster Pack Trading Cards [S&V Paradox Rift and S&S Lost Origin]",
+     "p": 29.13
+    },
+    {
+     "t": "Pokemon Scarlet & Violet Paradox Rift Booster Pack [10 Cards]",
+     "p": 28.93
+    }
+   ]
+  },
   {
    "id": "pgo-etb",
    "name": "Pokemon GO Elite Trainer Box",
    "median": 240,
-   "high": 488.81,
-   "floor": 130.35,
+   "high": 489.49,
+   "floor": 130.53,
    "listings": 74,
    "reasons": [
     "manually quarantined 2026-08-21 (Tyler (founder QA)): median read $240 against an observed ~$205 market; multi-item listings suspected in the top half"
    ],
    "warns": [],
-   "topPricedTitles": null
+   "topPricedTitles": [
+    {
+     "t": "Pokemon Center Pokemon GO PC Elite Trainer Box Plus SEALED NEW",
+     "p": 489.49
+    },
+    {
+     "t": "Pokemon Center Exclusive TCG Pokemon Go Elite Trainer Box PREORDER ETB Sealed!",
+     "p": 425
+    },
+    {
+     "t": "Pokemon GO Elite Trainer Box",
+     "p": 382.65
+    }
+   ]
   },
   {
    "id": "sm8-etb",
    "name": "Lost Thunder Elite Trainer Box",
-   "median": 700,
-   "high": 774.95,
-   "floor": 651.75,
-   "listings": 3,
+   "median": 774.95,
+   "high": 799.95,
+   "floor": 652.65,
+   "listings": 4,
    "reasons": [
-    "only 3 listings — too thin to headline"
+    "only 4 listings — too thin to headline"
    ],
    "warns": [],
-   "topPricedTitles": null
+   "topPricedTitles": [
+    {
+     "t": "Pokemon TCG Sun & Moon Lost Thunder Elite Trainer Box SEALED WITH ACRYLIC",
+     "p": 799.95
+    },
+    {
+     "t": "(403301) Pokemon 2018 Sun & Moon Lost Thunder Elite Trainer Box - Factory Sealed",
+     "p": 774.95
+    },
+    {
+     "t": "Pokémon TCG Sun & Moon Lost Thunder Elite Trainer Box Zeraora Sealed",
+     "p": 700
+    }
+   ]
+  },
+  {
+   "id": "sv6-pack",
+   "name": "Twilight Masquerade Booster Pack",
+   "median": 14.98,
+   "high": 74.39,
+   "floor": 7,
+   "listings": 33,
+   "reasons": [
+    "69% from TCGplayer ($8.84) — beyond any photo-premium explanation"
+   ],
+   "warns": [
+    "high $74.39 is 5.0× the median — watch for lot/case listings in the top half"
+   ],
+   "topPricedTitles": [
+    {
+     "t": "POKEMON Twilight Masquerade CHANSEY 187/167 Illustration Rare NM + Booster Pack",
+     "p": 74.39
+    },
+    {
+     "t": "Pokémon TCG Scarlet & Violet Twilight Masquerade Booster Pack 10 Cards English",
+     "p": 29.99
+    },
+    {
+     "t": "Twilight Masquerade Booster Pack Scarlet & Violet 151 Go Pokemon Cards TCG New",
+     "p": 23.16
+    }
+   ]
+  },
+  {
+   "id": "sv6pt5-pack",
+   "name": "Shrouded Fable Booster Pack",
+   "median": 22.9,
+   "high": 27.25,
+   "floor": 10.22,
+   "listings": 6,
+   "reasons": [
+    "median moved 35% overnight vs $17 — filter drift suspected"
+   ],
+   "warns": [],
+   "topPricedTitles": [
+    {
+     "t": "Shrouded Fable Scarlet & Violet Booster Pack 151 Go Pokemon Cards TCG New Sealed",
+     "p": 27.25
+    },
+    {
+     "t": "Pokemon Factory Sealed Booster Pack - Scarlet & Violet Shrouded Fable",
+     "p": 25.02
+    },
+    {
+     "t": "Pokemon: Scarlet & Violet Shrouded Fable Booster Pack",
+     "p": 22.9
+    }
+   ]
+  },
+  {
+   "id": "sv7-pack",
+   "name": "Stellar Crown Booster Pack",
+   "median": 18.94,
+   "high": 59.94,
+   "floor": 8.99,
+   "listings": 24,
+   "reasons": [
+    "79% from TCGplayer ($10.58) — beyond any photo-premium explanation"
+   ],
+   "warns": [
+    "high $59.94 is 3.2× the median — watch for lot/case listings in the top half"
+   ],
+   "topPricedTitles": [
+    {
+     "t": "Pokemon Stellar Crown Booster Pack - New & Sealed",
+     "p": 59.94
+    },
+    {
+     "t": "Pokémon TCG Scarlet & Violet Stellar Crown English Booster Pack 3ct",
+     "p": 33
+    },
+    {
+     "t": "POKEMON SCARLET &VIOLET STELLAR CROWN BOOSTER PACK FACTORY SEALED.",
+     "p": 30
+    }
+   ]
+  },
+  {
+   "id": "swsh1-pack",
+   "name": "Sword & Shield Booster Pack",
+   "median": 20.45,
+   "high": 65.99,
+   "floor": 7.49,
+   "listings": 32,
+   "reasons": [
+    "86% from TCGplayer ($10.97) — beyond any photo-premium explanation"
+   ],
+   "warns": [
+    "high $65.99 is 3.2× the median — watch for lot/case listings in the top half"
+   ],
+   "topPricedTitles": [
+    {
+     "t": "Pokemon TCG: Sword & Shield - Evolving Skies Booster Pack",
+     "p": 65.99
+    },
+    {
+     "t": "Pokémon TCG Sword & Shield: EVOLVING SKIES Mini Portfolio + Booster Pack • NEW",
+     "p": 64.99
+    },
+    {
+     "t": "Pokemon TCG: Sword & Shield Evolving Skies Booster Pack - 1 Random Pack",
+     "p": 61.99
+    }
+   ]
   }
  ]
 }
