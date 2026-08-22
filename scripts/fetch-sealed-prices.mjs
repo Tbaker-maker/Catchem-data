@@ -375,7 +375,9 @@ function aggregatePrices(items, floor = MIN_PRICE, ceiling = MAX_PRICE) {
     // DIAGNOSTIC TRAIL (slop defense): the three priciest kept listings are
     // where pollution hides. Stored so any suspicious median can be audited
     // in seconds instead of guessed at.
-    topPricedTitles: [...kept].sort((x, y) => (y._delivered ?? 0) - (x._delivered ?? 0)).slice(0, 3)
+    // (param is `items` — referencing call-site `kept` here threw for every
+    // SKU on 2026-08-22 CI: 192 misses, 0 live, and the run still exited 0)
+    topPricedTitles: [...items].sort((x, y) => (y._delivered ?? 0) - (x._delivered ?? 0)).slice(0, 3)
       .map(i => ({ t: (i.title || "").slice(0, 90), p: round(i._delivered) })),
     listingCount: prices.length,
   };
@@ -541,6 +543,17 @@ async function main() {
   console.log(`   stale:  ${stale}`);
   console.log(`   miss:   ${missing}`);
   if (queryErr) console.log(`   ⚠ query_error: ${queryErr} (filtering wiped a previously-healthy SKU — inspect filterReport)`);
+
+  // RUN-LEVEL WIPE GUARD (2026-08-22): the per-SKU safety nets all passed
+  // while a ReferenceError zeroed every SKU — 0 live written, exit 0, and
+  // only a downstream crash stopped the wiped file from committing. A run
+  // that loses (nearly) every live price is a broken run, not a market event:
+  // refuse to overwrite the good file and fail loudly instead.
+  const prevLive = Object.values(previous).filter(p => p?.dataStatus === "live").length;
+  if (prevLive >= 50 && live < prevLive * 0.2) {
+    console.error(`💥 WIPE GUARD: previous run had ${prevLive} live, this run has ${live}. Refusing to overwrite ${OUTPUT_FILE} — inspect the errors above.`);
+    process.exit(1);
+  }
 
   const output = {
     updatedAt: new Date().toISOString(),
