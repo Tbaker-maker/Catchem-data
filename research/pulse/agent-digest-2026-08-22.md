@@ -72,7 +72,7 @@ Nothing unusual, or not enough history to tell — 5 days of tape so far. Anomal
 
 ## Where today's story goes
 - **X** — "Paldean Fates listings moved -66.7% while its print window closes."
-- **YouTube** — Cosmic Eclipse Booster Box — "A seller keeps about $4,466.96 online; a buyer pays about $5,510.17. Roughly $1,043.21 of room where a face-to-face trade beats the internet."
+- **YouTube** — Unified Minds Booster Box — "A seller keeps about $3,859.97 online; a buyer pays about $4,761.5. Roughly $901.53 of room where a face-to-face trade beats the internet."
 - **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 100."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.

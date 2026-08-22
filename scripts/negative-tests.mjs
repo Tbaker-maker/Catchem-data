@@ -280,6 +280,18 @@ const CASES = [
         why: orphaned.length ? `${orphaned.join(", ")} produced daily and surfaced to nobody — either put it in the digest or stop generating it` : "" };
     } },
 
+  { guard: "Memory findability", detect: "memory-guard.mjs",
+    // The knowledge base said last_updated 2026-08-18 while carrying 74 laws
+    // written after it, 20,000 characters on one line. All preserved, all
+    // unreadable. Work that cannot be found again was not saved, only stored.
+    break: async () => {
+      await copyFile(P("catchem-knowledge-base.md"), "/tmp/nt-kb2.bak");
+      const kb = await readFile(P("catchem-knowledge-base.md"), "utf-8");
+      await writeFile(P("catchem-knowledge-base.md"), kb.replace(/\*\*last_updated:\*\*\s*\d{4}-\d{2}-\d{2}/, "**last_updated:** 2020-01-01"));
+      return true;
+    },
+    restore: async () => { await copyFile("/tmp/nt-kb2.bak", P("catchem-knowledge-base.md")); } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");

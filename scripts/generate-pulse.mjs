@@ -1,6 +1,7 @@
 await import("./guard-audit.mjs");
 await import("./flag-guard.mjs");
 await import("./knowledge-guard.mjs");
+await import("./memory-guard.mjs");
 await import("./schema-guard.mjs");
 await import("./qa-gate.mjs");
 await import("./image-override-guard.mjs");
