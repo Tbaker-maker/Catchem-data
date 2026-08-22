@@ -4,7 +4,20 @@
 // here. Measured 2026-08-23, eBay pack asks ran 8-51% above TCGplayer on the
 // same SKUs. TCGplayer is where this class actually trades, so it is the
 // displayed price. The eBay ask is preserved and labelled, never hidden.
+// LICENSING GATE (2026-08-23). Our TCGplayer figures are PPT-derived, and
+// PPT restricts commercial use to their $99 tier. Until that licence exists,
+// TCG prices may inform our internal reads but must NOT be the number we
+// publish. Flip CATCHEM_PPT_LICENSED=1 once the licence is in hand.
+// Publishing data we are not licensed to publish is not a risk we take to
+// win a more accurate pack price.
+const PPT_LICENSED = process.env.CATCHEM_PPT_LICENSED === "1";
+
 export function applyPackBasis(products, divRows) {
+  if (!PPT_LICENSED) {
+    for (const p of products) if (p.subtype === "booster-pack") p.priceBasis = "ebay";
+    return { basis: "eBay asks (TCGplayer basis held pending PPT commercial licence)",
+      subtype: "booster-pack", switched: 0, unavailable: [], rebased: [], licenceHeld: true };
+  }
   const tcg = new Map((divRows || []).map(r => [r.id, r.tcgMarket]));
   const report = { basis: "TCGplayer market", subtype: "booster-pack", switched: 0, unavailable: [], rebased: [] };
   for (const p of products) {
