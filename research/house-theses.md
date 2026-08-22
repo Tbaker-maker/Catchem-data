@@ -167,3 +167,22 @@ as the other's opponent. Rules:
 WHY IT HOLDS COMMERCIALLY, not just ethically: the referee is the only
 position that both sides link to. A partisan tool gets cited by half a
 market and blocked by the other half.
+
+## SKU LAW ADDENDUM — BREAK-OUT PACKS (ruling, Aug 22 2026)
+swsh45 is Shining Fates (verified: Bulbapedia, PokeCardex /series/SWSH45,
+and Pokemon.com's own checklist file swsh45_web_cardlist_en.pdf). The id
+was right; the product NAME was wrong and read "SWSH Promos". Corrected.
+THE LARGER FINDING: Pokemon.com states Shining Fates booster packs were
+never sold separately — they came only inside special collections. So
+loose Shining Fates packs are genuine but were broken out of tins, ETBs
+and pin collections. That is a BREAK-OUT market, not a retail one.
+RULE: a pack SKU for a set whose packs were never sold separately gets a
+sourceNote saying so, and its per-pack figures are read as break-out
+supply. Applies to the same family as the SKU LAW (special/mini sets):
+Hidden Fates, Shining Fates, Champion's Path, Celebrations, Crown Zenith,
+Paldean Fates, Shrouded Fable, Prismatic Evolutions and the Mega
+special sets — verify before treating any of their packs as retail.
+WHY IT MATTERS: break-out packs price differently from retail packs
+(the seller has already banked the collection's other contents), so
+using one as a per-pack basis without the label would quietly distort
+a sealed premium.
