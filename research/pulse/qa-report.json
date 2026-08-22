@@ -1,18 +1,44 @@
 {
- "generatedAt": "2026-08-22T18:25:26.432Z",
+ "generatedAt": "2026-08-22T18:27:14.428Z",
  "date": "2026-08-22",
- "checked": 175,
- "warned": 45,
- "blocked": 3,
+ "checked": 177,
+ "warned": 47,
+ "blocked": 7,
  "note": "Blocked products stay in the data and on the Board (labeled); they are barred from Daily Three, social posts, cards, and the newsletter until they pass.",
  "flags": [
+  {
+   "id": "sv1-pack",
+   "name": "Scarlet & Violet Booster Pack",
+   "median": 10.42,
+   "high": 24.75,
+   "floor": 4.99,
+   "listings": 11,
+   "reasons": [
+    "median moved -30% overnight vs $14.95 — filter drift suspected"
+   ],
+   "warns": [],
+   "topPricedTitles": [
+    {
+     "t": "Pokémon TCG Scarlet & Violet Booster Pack Foil Latios Zekrom Palkia ENG",
+     "p": 24.75
+    },
+    {
+     "t": "Pokemon Scarlet & Violet Booster Pack",
+     "p": 16.94
+    },
+    {
+     "t": "Scarlet & Violet Base Booster Pack - 1x NEW English Factory Sealed Pokemon 2023",
+     "p": 12.29
+    }
+   ]
+  },
   {
    "id": "pgo-etb",
    "name": "Pokemon GO Elite Trainer Box",
    "median": 240,
    "high": 490.55,
    "floor": 130.81,
-   "listings": 74,
+   "listings": 73,
    "reasons": [
     "manually quarantined 2026-08-21 (Tyler (founder QA)): median read $240 against an observed ~$205 market; multi-item listings suspected in the top half"
    ],
@@ -29,6 +55,33 @@
     {
      "t": "Pokemon GO Elite Trainer Box",
      "p": 382.65
+    }
+   ]
+  },
+  {
+   "id": "sm1-booster-box",
+   "name": "Sun & Moon Booster Box",
+   "median": 1200,
+   "high": 1518.95,
+   "floor": 844.99,
+   "listings": 9,
+   "reasons": [
+    "manually quarantined 2026-08-22 (CC (era-base contamination audit)): the price included boxes from later Sun & Moon sets. Most listings we fetched name a different set, so the $2,300 reading is not this product.",
+    "median moved -40% overnight vs $2014.95 — filter drift suspected"
+   ],
+   "warns": [],
+   "topPricedTitles": [
+    {
+     "t": "Pokemon Sun & Moon Guardian Rising Booster Box Sealed with Acrylic Case",
+     "p": 1518.95
+    },
+    {
+     "t": "Pokemon Sun & Moon Guardian Rising Booster Box Sealed",
+     "p": 1518.95
+    },
+    {
+     "t": "Pokemon TCG: 2017 Sun & Moon Base Set Booster Box 36 Packs New Factory Sealed",
+     "p": 1485.98
     }
    ]
   },
@@ -62,26 +115,77 @@
    "id": "swsh1-booster-box",
    "name": "Sword & Shield Base Booster Box",
    "median": 899.88,
-   "high": 1100,
+   "high": 1495.95,
    "floor": 566.51,
-   "listings": 4,
+   "listings": 7,
    "reasons": [
-    "manually quarantined 2026-08-22 (CC (era-base contamination audit)): only four listings survived once other Sword & Shield sets were removed — too few to publish a price we would stand behind.",
-    "only 4 listings — too thin to headline"
+    "manually quarantined 2026-08-22 (CC (era-base contamination audit)): only four listings survived once other Sword & Shield sets were removed — too few to publish a price we would stand behind."
    ],
    "warns": [],
    "topPricedTitles": [
+    {
+     "t": "Pokemon  SWSH01: Sword & Shield Base Set Booster Box Factory Sealed",
+     "p": 1495.95
+    },
     {
      "t": "Pokemon SWORD & SHIELD Base Booster Box 36 Packs- FACTORY SEALED",
      "p": 1100
     },
     {
-     "t": "Pokemon SWORD & SHIELD Base Booster Box 36 Packs- FACTORY SEALED",
-     "p": 899.88
+     "t": "Pokemon ⭐️ Sword & Shield Base Set Booster Box New Factory Sealed English Packs",
+     "p": 904.99
+    }
+   ]
+  },
+  {
+   "id": "sv8pt5-sc",
+   "name": "Prismatic Evolutions Surprise Box",
+   "median": 109.98,
+   "high": 220,
+   "floor": 60,
+   "listings": 90,
+   "reasons": [
+    "61% from TCGplayer ($68.16) — beyond any photo-premium explanation"
+   ],
+   "warns": [],
+   "topPricedTitles": [
+    {
+     "t": "Pokémon TCG Prismatic Evolutions Surprise Box Sealed 19 Cards Booster Promo",
+     "p": 220
     },
     {
-     "t": "Pokémon Sword & Shield Base Booster Box Sealed 2020 English Trading Card Game",
-     "p": 605
+     "t": "Pokemon Prismatic Evolutions Surprise Box Promo Set Sealed Mint All 9 Cards",
+     "p": 209.99
+    },
+    {
+     "t": "Pokemon TCG SV8.5 Prismatic Evolutions Surprise Box Factory Sealed",
+     "p": 200
+    }
+   ]
+  },
+  {
+   "id": "swsh1-etb",
+   "name": "Sword & Shield Base Elite Trainer Box",
+   "median": 182.5,
+   "high": 392.66,
+   "floor": 153,
+   "listings": 9,
+   "reasons": [
+    "manually quarantined 2026-08-22 (CC (era-base contamination audit)): the price included trainer boxes from later Sword & Shield sets, reading about $182."
+   ],
+   "warns": [],
+   "topPricedTitles": [
+    {
+     "t": "Pokemon Sword & Shield Base Elite Trainer Box 1st Print ETB Sealed",
+     "p": 392.66
+    },
+    {
+     "t": "Sword & Shield: Base Set - Elite Trainer Box - Factory Sealed- Pokémon TCG",
+     "p": 273.25
+    },
+    {
+     "t": "Pokemon: Sword & Shield Base Set Elite Trainer Box [Zamazenta]",
+     "p": 229.95
     }
    ]
   }
