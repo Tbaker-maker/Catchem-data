@@ -187,3 +187,35 @@ jobs:
             ')
           printf '{"content":"🔴 **Daily run failed at: %s**\\nEverything before it succeeded. %s"}' "$STEP" "$RUN" > fail-payload.json
           curl -s -H "Content-Type: application/json" -X POST -d @fail-payload.json "$DISCORD_WEBHOOK_URL" > /dev/null && echo "Failure reported: $STEP"
+
+      - name: Mirror to the backup remote
+        # One remote is not a backup. Everything — the error ledger, every
+        # ruling, every session report — lives behind a single login, and the
+        # most valuable part is not the code: code can be rewritten in a week,
+        # the record of what broke and what we built because of it cannot.
+        #
+        # continue-on-error is the whole point of the design: a backup that can
+        # break the thing it protects is worse than no backup. If the mirror is
+        # unreachable, the daily run must still be green.
+        #
+        # Dormant until MIRROR_REMOTE_URL exists as a secret, so this ships now
+        # and starts working the moment Tyler adds it — no second commit needed.
+        # The URL carries its own credentials, so it is a secret and never a
+        # committed remote.
+        if: always()
+        continue-on-error: true
+        env:
+          MIRROR_REMOTE_URL: ${{ secrets.MIRROR_REMOTE_URL }}
+        run: |
+          if [ -z "$MIRROR_REMOTE_URL" ]; then
+            echo "No MIRROR_REMOTE_URL secret — no mirror configured yet, skipping."
+            exit 0
+          fi
+          git remote remove mirror 2>/dev/null || true
+          git remote add mirror "$MIRROR_REMOTE_URL"
+          # --all so tags and every branch travel, not just today's main.
+          if git push mirror --all && git push mirror --tags; then
+            echo "Mirrored to the backup remote."
+          else
+            echo "Mirror push failed — the daily run is unaffected. Investigate the mirror, not this run."
+          fi

@@ -285,12 +285,12 @@ const CASES = [
     // written after it, 20,000 characters on one line. All preserved, all
     // unreadable. Work that cannot be found again was not saved, only stored.
     break: async () => {
-      await copyFile(P("catchem-knowledge-base.md"), "/tmp/nt-kb2.bak");
+      await copyFile(P("catchem-knowledge-base.md"), TMP("/tmp/nt-kb2.bak"));
       const kb = await readFile(P("catchem-knowledge-base.md"), "utf-8");
       await writeFile(P("catchem-knowledge-base.md"), kb.replace(/\*\*last_updated:\*\*\s*\d{4}-\d{2}-\d{2}/, "**last_updated:** 2020-01-01"));
       return true;
     },
-    restore: async () => { await copyFile("/tmp/nt-kb2.bak", P("catchem-knowledge-base.md")); } },
+    restore: async () => { await copyFile(TMP("/tmp/nt-kb2.bak"), P("catchem-knowledge-base.md")); } },
 
   { guard: "Registered agents actually run", detect: null,
     // Four agents were registered with the supervisor, given cadences and
@@ -377,26 +377,26 @@ const CASES = [
     // the voice was not hyped, the jargon was clean, the shape was right. It
     // was simply meaningless, and meaninglessness was not on anybody's list.
     break: async () => {
-      await copyFile(P("research/pulse/pulse-feed.json"), "/tmp/nt-cs.bak");
+      await copyFile(P("research/pulse/pulse-feed.json"), TMP("/tmp/nt-cs.bak"));
       const f = JSON.parse(await readFile(P("research/pulse/pulse-feed.json"), "utf-8"));
       if (!f.dailyThree?.raw) return false;
       f.dailyThree.raw.explain = "chase";
       await writeFile(P("research/pulse/pulse-feed.json"), JSON.stringify(f));
       return true;
     },
-    restore: async () => { await copyFile("/tmp/nt-cs.bak", P("research/pulse/pulse-feed.json")); } },
+    restore: async () => { await copyFile(TMP("/tmp/nt-cs.bak"), P("research/pulse/pulse-feed.json")); } },
 
   { guard: "Agent competence declared", detect: "competence-guard.mjs",
     // Strip an agent's blind spots and the build must fail. A specialist who
     // cannot name the edge of their own competence is the one that does damage.
     break: async () => {
-      await copyFile(P("data/agent-competence.json"), "/tmp/nt-ac.bak");
+      await copyFile(P("data/agent-competence.json"), TMP("/tmp/nt-ac.bak"));
       const c = JSON.parse(await readFile(P("data/agent-competence.json"), "utf-8"));
       c.domains.security.blindSpots = [];
       await writeFile(P("data/agent-competence.json"), JSON.stringify(c, null, 1));
       return true;
     },
-    restore: async () => { await copyFile("/tmp/nt-ac.bak", P("data/agent-competence.json")); } },
+    restore: async () => { await copyFile(TMP("/tmp/nt-ac.bak"), P("data/agent-competence.json")); } },
 
   { guard: "App builds before push", detect: null,
     // I pushed a JSX syntax error to main. The data repo has a dozen guards and

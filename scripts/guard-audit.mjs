@@ -210,13 +210,21 @@ const failures = [], notes = [];
     const src = await read(`scripts/${f}`);
     if (!src) continue;
     // negative-tests PLANTS these strings on purpose to prove the rule fires;
-    // guard-audit contains the pattern itself. Both match by design, exactly as
-    // the unbounded-fetch rule below already exempts them.
-    if (/guard-audit|negative-tests/.test(f)) continue;
+    // guard-audit contains the pattern itself, so it is exempt outright.
+    // negative-tests is NOT: exempting the whole file to spare its planted
+    // fixture created a blind spot in the one file most likely to acquire new
+    // /tmp paths — three arrived within a day (nt-kb2, nt-cs, nt-ac) and this
+    // rule, written precisely to stop the seventh occurrence, waved them
+    // through. Only the deliberate fixture string is spared now.
+    if (/guard-audit/.test(f)) continue;
     // TMP("/tmp/x") is the sanctioned wrapper; a BARE string literal is not.
     for (const m of src.matchAll(/(^|[^(\w])"(\/tmp\/[^"]*)"/g)) {
       const before = src.slice(Math.max(0, m.index - 4), m.index + 1);
       if (before.includes("TMP(")) continue;
+      // The one sanctioned fixture: negative-tests PLANTS this exact string to
+      // prove this very rule fires. Spared by NAME, not by file, so any other
+      // /tmp path in that file is still caught.
+      if (m[2] === "/tmp/deliberate.bak" && /negative-tests/.test(f)) continue;
       failures.push(`HARDCODED /tmp — scripts/${f} uses "${m[2]}". /tmp is Linux-only; on Windows this throws and the failure reads as a broken guard rather than a broken harness. Use os.tmpdir() (or the TMP() helper).`);
     }
   }
