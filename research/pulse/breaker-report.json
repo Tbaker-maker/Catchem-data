@@ -1,0 +1,228 @@
+{
+ "generatedAt": "2026-08-22T19:14:35.829Z",
+ "motto": "Build it. Break it. Repeat.",
+ "method": "Looks for the SHAPE of an untested assumption rather than re-running known tests. Proposes attacks; never executes them.",
+ "counts": {
+  "high": 25,
+  "medium": 11,
+  "low": 0
+ },
+ "hypotheses": [
+  {
+   "target": "Multi-item listings (lots/x2/cases)",
+   "attack": "Break it deliberately and confirm the build fails. The registry names a test but audit.mjs never runs it, so nothing checks that this guard still works.",
+   "why": "Our own law: a guard is not real until breaking it fails the build. An unexercised guard is a comfort, not a control.",
+   "severity": "high"
+  },
+  {
+   "target": "Currency guard (USD-native)",
+   "attack": "Break it deliberately and confirm the build fails. The registry names a test but audit.mjs never runs it, so nothing checks that this guard still works.",
+   "why": "Our own law: a guard is not real until breaking it fails the build. An unexercised guard is a comfort, not a control.",
+   "severity": "high"
+  },
+  {
+   "target": "Venue boundary (RT-4a)",
+   "attack": "Break it deliberately and confirm the build fails. The registry names a test but audit.mjs never runs it, so nothing checks that this guard still works.",
+   "why": "Our own law: a guard is not real until breaking it fails the build. An unexercised guard is a comfort, not a control.",
+   "severity": "high"
+  },
+  {
+   "target": "Seasoning (90-day)",
+   "attack": "Break it deliberately and confirm the build fails. The registry names a test but audit.mjs never runs it, so nothing checks that this guard still works.",
+   "why": "Our own law: a guard is not real until breaking it fails the build. An unexercised guard is a comfort, not a control.",
+   "severity": "high"
+  },
+  {
+   "target": "Thin-sample premium gate",
+   "attack": "Break it deliberately and confirm the build fails. The registry names a test but audit.mjs never runs it, so nothing checks that this guard still works.",
+   "why": "Our own law: a guard is not real until breaking it fails the build. An unexercised guard is a comfort, not a control.",
+   "severity": "high"
+  },
+  {
+   "target": "Manual quarantine durability",
+   "attack": "Break it deliberately and confirm the build fails. The registry names a test but audit.mjs never runs it, so nothing checks that this guard still works.",
+   "why": "Our own law: a guard is not real until breaking it fails the build. An unexercised guard is a comfort, not a control.",
+   "severity": "high"
+  },
+  {
+   "target": "Run-level wipe guard (fetch)",
+   "attack": "Break it deliberately and confirm the build fails. The registry names a test but audit.mjs never runs it, so nothing checks that this guard still works.",
+   "why": "Our own law: a guard is not real until breaking it fails the build. An unexercised guard is a comfort, not a control.",
+   "severity": "high"
+  },
+  {
+   "target": "Deal Zone model contract (§19 — app rates come from the feed)",
+   "attack": "Break it deliberately and confirm the build fails. The registry names a test but audit.mjs never runs it, so nothing checks that this guard still works.",
+   "why": "Our own law: a guard is not real until breaking it fails the build. An unexercised guard is a comfort, not a control.",
+   "severity": "high"
+  },
+  {
+   "target": "Referee Doctrine (adversarial framing)",
+   "attack": "Break it deliberately and confirm the build fails. The registry names a test but audit.mjs never runs it, so nothing checks that this guard still works.",
+   "why": "Our own law: a guard is not real until breaking it fails the build. An unexercised guard is a comfort, not a control.",
+   "severity": "high"
+  },
+  {
+   "target": "Deploy smoke test (blank-page class, rendered DOM)",
+   "attack": "Break it deliberately and confirm the build fails. The registry names a test but audit.mjs never runs it, so nothing checks that this guard still works.",
+   "why": "Our own law: a guard is not real until breaking it fails the build. An unexercised guard is a comfort, not a control.",
+   "severity": "high"
+  },
+  {
+   "target": "Mode Honesty Law (§20 — figure multiset identical across modes)",
+   "attack": "Break it deliberately and confirm the build fails. The registry names a test but audit.mjs never runs it, so nothing checks that this guard still works.",
+   "why": "Our own law: a guard is not real until breaking it fails the build. An unexercised guard is a comfort, not a control.",
+   "severity": "high"
+  },
+  {
+   "target": "data/artists.json",
+   "attack": "Corrupt it — empty object, missing top-level key, wrong types — and see which of its 2 readers notices. Then decide which of them SHOULD have.",
+   "why": "Read by 2 scripts and validated by none. A silent shape change here propagates everywhere before anything complains.",
+   "severity": "high"
+  },
+  {
+   "target": "data/crosscheck-history.json",
+   "attack": "Corrupt it — empty object, missing top-level key, wrong types — and see which of its 2 readers notices. Then decide which of them SHOULD have.",
+   "why": "Read by 2 scripts and validated by none. A silent shape change here propagates everywhere before anything complains.",
+   "severity": "high"
+  },
+  {
+   "target": "data/crosscheck-id-map.json",
+   "attack": "Corrupt it — empty object, missing top-level key, wrong types — and see which of its 7 readers notices. Then decide which of them SHOULD have.",
+   "why": "Read by 7 scripts and validated by none. A silent shape change here propagates everywhere before anything complains.",
+   "severity": "high"
+  },
+  {
+   "target": "data/divergence-report.json",
+   "attack": "Corrupt it — empty object, missing top-level key, wrong types — and see which of its 9 readers notices. Then decide which of them SHOULD have.",
+   "why": "Read by 9 scripts and validated by none. A silent shape change here propagates everywhere before anything complains.",
+   "severity": "high"
+  },
+  {
+   "target": "data/era-index-history.json",
+   "attack": "Corrupt it — empty object, missing top-level key, wrong types — and see which of its 2 readers notices. Then decide which of them SHOULD have.",
+   "why": "Read by 2 scripts and validated by none. A silent shape change here propagates everywhere before anything complains.",
+   "severity": "high"
+  },
+  {
+   "target": "data/heat-history.json",
+   "attack": "Corrupt it — empty object, missing top-level key, wrong types — and see which of its 8 readers notices. Then decide which of them SHOULD have.",
+   "why": "Read by 8 scripts and validated by none. A silent shape change here propagates everywhere before anything complains.",
+   "severity": "high"
+  },
+  {
+   "target": "data/heat-report.json",
+   "attack": "Corrupt it — empty object, missing top-level key, wrong types — and see which of its 4 readers notices. Then decide which of them SHOULD have.",
+   "why": "Read by 4 scripts and validated by none. A silent shape change here propagates everywhere before anything complains.",
+   "severity": "high"
+  },
+  {
+   "target": "data/pop-snapshots.json",
+   "attack": "Corrupt it — empty object, missing top-level key, wrong types — and see which of its 2 readers notices. Then decide which of them SHOULD have.",
+   "why": "Read by 2 scripts and validated by none. A silent shape change here propagates everywhere before anything complains.",
+   "severity": "high"
+  },
+  {
+   "target": "data/release-radar.json",
+   "attack": "Corrupt it — empty object, missing top-level key, wrong types — and see which of its 3 readers notices. Then decide which of them SHOULD have.",
+   "why": "Read by 3 scripts and validated by none. A silent shape change here propagates everywhere before anything complains.",
+   "severity": "high"
+  },
+  {
+   "target": "data/sealed-crosscheck.json",
+   "attack": "Corrupt it — empty object, missing top-level key, wrong types — and see which of its 2 readers notices. Then decide which of them SHOULD have.",
+   "why": "Read by 2 scripts and validated by none. A silent shape change here propagates everywhere before anything complains.",
+   "severity": "high"
+  },
+  {
+   "target": "data/set-release-dates.json",
+   "attack": "Corrupt it — empty object, missing top-level key, wrong types — and see which of its 2 readers notices. Then decide which of them SHOULD have.",
+   "why": "Read by 2 scripts and validated by none. A silent shape change here propagates everywhere before anything complains.",
+   "severity": "high"
+  },
+  {
+   "target": "data/singles-enrichment.json",
+   "attack": "Corrupt it — empty object, missing top-level key, wrong types — and see which of its 4 readers notices. Then decide which of them SHOULD have.",
+   "why": "Read by 4 scripts and validated by none. A silent shape change here propagates everywhere before anything complains.",
+   "severity": "high"
+  },
+  {
+   "target": "data/singles-prices.json",
+   "attack": "Corrupt it — empty object, missing top-level key, wrong types — and see which of its 11 readers notices. Then decide which of them SHOULD have.",
+   "why": "Read by 11 scripts and validated by none. A silent shape change here propagates everywhere before anything complains.",
+   "severity": "high"
+  },
+  {
+   "target": "data/singles-watchlist.json",
+   "attack": "Corrupt it — empty object, missing top-level key, wrong types — and see which of its 3 readers notices. Then decide which of them SHOULD have.",
+   "why": "Read by 3 scripts and validated by none. A silent shape change here propagates everywhere before anything complains.",
+   "severity": "high"
+  },
+  {
+   "target": "images.pokemontcg.io",
+   "attack": "Simulate this host being down, slow, and returning a 200 with garbage. The third case is the dangerous one — everything we own handles a failure better than it handles a plausible-looking wrong answer.",
+   "why": "5 script(s) depend on it. We have tested absence of DATA but not absence of THIS SOURCE specifically.",
+   "severity": "medium"
+  },
+  {
+   "target": "www.pokemonpricetracker.com",
+   "attack": "Simulate this host being down, slow, and returning a 200 with garbage. The third case is the dangerous one — everything we own handles a failure better than it handles a plausible-looking wrong answer.",
+   "why": "5 script(s) depend on it. We have tested absence of DATA but not absence of THIS SOURCE specifically.",
+   "severity": "medium"
+  },
+  {
+   "target": "api.anthropic.com",
+   "attack": "Simulate this host being down, slow, and returning a 200 with garbage. The third case is the dangerous one — everything we own handles a failure better than it handles a plausible-looking wrong answer.",
+   "why": "4 script(s) depend on it. We have tested absence of DATA but not absence of THIS SOURCE specifically.",
+   "severity": "medium"
+  },
+  {
+   "target": "api.pokemontcg.io",
+   "attack": "Simulate this host being down, slow, and returning a 200 with garbage. The third case is the dangerous one — everything we own handles a failure better than it handles a plausible-looking wrong answer.",
+   "why": "5 script(s) depend on it. We have tested absence of DATA but not absence of THIS SOURCE specifically.",
+   "severity": "medium"
+  },
+  {
+   "target": "tcgplayer-cdn.tcgplayer.com",
+   "attack": "Simulate this host being down, slow, and returning a 200 with garbage. The third case is the dangerous one — everything we own handles a failure better than it handles a plausible-looking wrong answer.",
+   "why": "4 script(s) depend on it. We have tested absence of DATA but not absence of THIS SOURCE specifically.",
+   "severity": "medium"
+  },
+  {
+   "target": "app.catchemtcg.com",
+   "attack": "Simulate this host being down, slow, and returning a 200 with garbage. The third case is the dangerous one — everything we own handles a failure better than it handles a plausible-looking wrong answer.",
+   "why": "2 script(s) depend on it. We have tested absence of DATA but not absence of THIS SOURCE specifically.",
+   "severity": "medium"
+  },
+  {
+   "target": "catchemtcg.com",
+   "attack": "Simulate this host being down, slow, and returning a 200 with garbage. The third case is the dangerous one — everything we own handles a failure better than it handles a plausible-looking wrong answer.",
+   "why": "11 script(s) depend on it. We have tested absence of DATA but not absence of THIS SOURCE specifically.",
+   "severity": "medium"
+  },
+  {
+   "target": "the sealed index (our own measurement only — nothing external corroborates the level)",
+   "attack": "Find one independent way to sanity-check this number, even a crude one. If none exists, say so on the methodology page rather than letting a reader assume corroboration we do not have.",
+   "why": "A figure only one source can confirm is a single point of failure wearing a VERIFIED chip.",
+   "severity": "medium"
+  },
+  {
+   "target": "pack prices (TCGplayer via one provider, no second source)",
+   "attack": "Find one independent way to sanity-check this number, even a crude one. If none exists, say so on the methodology page rather than letting a reader assume corroboration we do not have.",
+   "why": "A figure only one source can confirm is a single point of failure wearing a VERIFIED chip.",
+   "severity": "medium"
+  },
+  {
+   "target": "the deal zone (built on published fee schedules that change without notice)",
+   "attack": "Find one independent way to sanity-check this number, even a crude one. If none exists, say so on the methodology page rather than letting a reader assume corroboration we do not have.",
+   "why": "A figure only one source can confirm is a single point of failure wearing a VERIFIED chip.",
+   "severity": "medium"
+  },
+  {
+   "target": "date handling across the pipeline",
+   "attack": "Run the pipeline with the clock set to 23:59 UTC on the last day of a month, and again at 00:01 on the first. Confirm nothing double-counts, skips a day, or writes two entries for one date.",
+   "why": "18 scripts slice UTC dates into day keys. Month and year boundaries are where that quietly goes wrong, and no test covers it.",
+   "severity": "medium"
+  }
+ ]
+}

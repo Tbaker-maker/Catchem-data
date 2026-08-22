@@ -1,5 +1,6 @@
 await import("./guard-audit.mjs");
 await import("./flag-guard.mjs");
+await import("./knowledge-guard.mjs");
 await import("./qa-gate.mjs");
 await import("./image-override-guard.mjs");
 // scripts/generate-pulse.mjs — The Morning Pulse
@@ -585,6 +586,7 @@ await import("./jargon-lint.mjs");
 // stop the run — on the day this line was written a simulated agent crash
 // killed publish-assert, the final safety check, which is precisely the class
 // of failure that check exists to catch. Agents are wrapped; guards are not.
+try { await import("./breaker.mjs"); } catch (e) { console.warn(`  ⚠ agent breaker.mjs failed: ${e.message} — advisory only`); }
 try { await import("./falsifier.mjs"); } catch (e) { console.warn(`  ⚠ agent falsifier.mjs failed: ${e.message} — advisory only, the run continues`); }
 try { await import("./correction-hunter.mjs"); } catch (e) { console.warn(`  ⚠ agent correction-hunter.mjs failed: ${e.message} — advisory only, the run continues`); }
 try { await import("./review-agents.mjs"); } catch (e) { console.warn(`  ⚠ agent review-agents.mjs failed: ${e.message} — advisory only, the run continues`); }

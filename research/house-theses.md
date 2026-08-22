@@ -463,3 +463,26 @@ WHAT MAKES A CARD WORTH PRICING (scripts/universe-advisor.mjs):
 THE LINE IT WILL NOT CROSS: the advisor never says "buy this card". It
 says "pricing this card makes these instruments work". Those are
 different claims and only one of them is ours to make.
+
+## BUILD IT. BREAK IT. REPEAT. (Tyler, Aug 23 2026)
+"We are our own biggest critic."
+
+THE PRACTICE, in three parts:
+1. **Build it** — ship the instrument.
+2. **Break it** — deliberately, on purpose, before anyone else does. A guard
+   is not real until breaking it fails the build. A backup is not a backup
+   until a restore has been tested. A fact is not verified until we have
+   written down what would prove it wrong.
+3. **Repeat** — every incident becomes a guard, every guard gets a negative
+   test, and `scripts/breaker.mjs` hunts for the assumptions nobody has
+   tested yet, so we stop being permanently one incident behind.
+
+THE COMPOUNDING ASSET (data/knowledge.json)
+Instruments can be rebuilt in a weekend. A decade of verified, sourced,
+dated knowledge cannot. Every fact enters with its claim, its sources, the
+date, the verifier, a confidence tier, and its falsifier — and carries a
+recheck date, because facts rot. A knowledge base nobody rechecks is a
+museum. `knowledge-guard.mjs` enforces the entry law and, on its very first
+run, downgraded one of our own entries from VERIFIED to SINGLE-SOURCE.
+That is the system working on its authors, which is the only kind of
+system worth having.

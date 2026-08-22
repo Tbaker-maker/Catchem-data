@@ -1,0 +1,129 @@
+{
+ "note": "THE COMPOUNDING ASSET. Every fact we verify gets stored here with how we know it. Instruments can be copied in a weekend; a decade of verified, sourced, dated knowledge cannot. This file is the thing that is actually worth something in five years.",
+ "law": "A fact enters only with: the claim, at least one named source, the date verified, who verified it, and what would prove it wrong. No entry may be added from memory. An entry with no falsifier is an opinion and belongs in house-theses.md instead.",
+ "confidence": {
+  "VERIFIED": "multiple independent sources, or one primary source (official Pok\u00e9mon/TPCi, a grader's own published data, or our own measurement)",
+  "SINGLE-SOURCE": "one credible source, no corroboration found \u2014 publishable with attribution and a hedge",
+  "COMMUNITY": "repeated across independent community voices but not documented anywhere primary \u2014 publishable only as community lore, explicitly labelled",
+  "DISPUTED": "credible sources disagree \u2014 publish the disagreement, never a resolution we invented"
+ },
+ "facts": [
+  {
+   "id": "shadowless-is-a-print-window",
+   "claim": "Shadowless is not a rarity tier or a stamp. It is the earliest English Base Set printing, before Wizards of the Coast added a drop shadow to the right and bottom of the artwork window.",
+   "sources": [
+    "Bulbapedia: Base Set (TCG)",
+    "Bulbapedia: 1st Edition (TCG)"
+   ],
+   "verified": "2026-08-21",
+   "verifier": "chat",
+   "confidence": "VERIFIED",
+   "falsifier": "a primary Wizards of the Coast source showing the shadow change was a deliberate edition rather than a mid-run design change",
+   "usedBy": [
+    "did-you-know"
+   ],
+   "recheckAfter": "2027-08-21"
+  },
+  {
+   "id": "base-set-no-set-symbol",
+   "claim": "Base Set is the only main English expansion with no set symbol beside the artwork.",
+   "sources": [
+    "Bulbapedia: Base Set (TCG)",
+    "Big Orbit Cards: Base Set identification guide"
+   ],
+   "verified": "2026-08-21",
+   "verifier": "chat",
+   "confidence": "VERIFIED",
+   "falsifier": "any other main English expansion printed without a set symbol",
+   "usedBy": [
+    "did-you-know"
+   ],
+   "recheckAfter": "2028-08-21"
+  },
+  {
+   "id": "first-edition-print-run-unknown",
+   "claim": "The commonly repeated figure of 10,000 copies per 1st Edition Base Set card has never been confirmed by Wizards of the Coast or The Pok\u00e9mon Company.",
+   "sources": [
+    "Fanatics Collect auction description stating the figure has never been confirmed"
+   ],
+   "verified": "2026-08-22",
+   "verifier": "chat",
+   "confidence": "SINGLE-SOURCE",
+   "falsifier": "a primary source publishing an actual print-run figure",
+   "note": "Published as an unconfirmed-claim story, never as a print-run number. This entry exists partly to stop US repeating it.",
+   "usedBy": [
+    "did-you-know"
+   ],
+   "recheckAfter": "2027-08-22"
+  },
+  {
+   "id": "shining-fates-packs-not-sold-separately",
+   "claim": "Shining Fates booster packs were never sold separately at retail; they came only inside special collections.",
+   "sources": [
+    "Pokemon.com product information"
+   ],
+   "verified": "2026-08-22",
+   "verifier": "chat",
+   "confidence": "SINGLE-SOURCE",
+   "falsifier": "evidence of a retail single-pack SKU for Shining Fates",
+   "note": "Drives the break-out pack rule: loose Shining Fates packs are genuine but were opened out of collections, which prices differently.",
+   "usedBy": [
+    "sku-law",
+    "pack-basis"
+   ],
+   "recheckAfter": "2027-08-22"
+  },
+  {
+   "id": "ebay-fvf-trading-cards",
+   "claim": "eBay's final value fee on trading cards is 13.25% plus a per-order fee, calculated on item plus shipping plus tax.",
+   "sources": [
+    "eBay published seller fee schedule"
+   ],
+   "verified": "2026-08-22",
+   "verifier": "chat",
+   "confidence": "SINGLE-SOURCE",
+   "falsifier": "a fee schedule change; this is a moving number and must be rechecked",
+   "usedBy": [
+    "net-proceeds",
+    "deal-zone"
+   ],
+   "recheckAfter": "2026-11-22",
+   "note": "Downgraded by our own knowledge guard on first run: one source is not VERIFIED, even when the source is the company setting the fee. Corroborate with a second reference or an actual invoice before promoting."
+  },
+  {
+   "id": "tcgplayer-market-excludes-shipping",
+   "claim": "TCGplayer market price is an item price and does not include shipping; sellers set shipping separately by product size.",
+   "sources": [
+    "TCGplayer help: How is shipping applied to marketplace orders",
+    "TCGplayer help: What Should I Charge for Shipping"
+   ],
+   "verified": "2026-08-23",
+   "verifier": "chat",
+   "confidence": "VERIFIED",
+   "falsifier": "TCGplayer publishing a shipping-inclusive market figure",
+   "note": "This is why our eBay-vs-TCG comparison is not like-for-like, and why we label rather than estimate the difference.",
+   "usedBy": [
+    "pricing-basis-law",
+    "the-spread"
+   ],
+   "recheckAfter": "2027-02-23"
+  },
+  {
+   "id": "swsh45-is-shining-fates",
+   "claim": "The set identifier swsh45 refers to Shining Fates, not SWSH Promos.",
+   "sources": [
+    "Bulbapedia: Shining Fates (TCG)",
+    "Pokemon.com official checklist file swsh45_web_cardlist_en.pdf",
+    "PokeCardex /series/SWSH45"
+   ],
+   "verified": "2026-08-22",
+   "verifier": "chat",
+   "confidence": "VERIFIED",
+   "falsifier": "an official source mapping swsh45 to a different set",
+   "usedBy": [
+    "product-catalogue"
+   ],
+   "recheckAfter": "2029-08-22"
+  }
+ ]
+}
