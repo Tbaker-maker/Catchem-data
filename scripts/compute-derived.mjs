@@ -319,12 +319,12 @@ const eraIndexes = Object.entries(eraBuckets).filter(([,b])=>b.n>=3).map(([era,b
   const idx100 = baseRow ? Math.round(level / baseRow.level * 1000)/10 : 100.0;
   const offTcg = era === "Sun & Moon" || era === "XY" || era === "Vintage & other";
   let read;
-  if (offTcg) read = "vintage-class era — this market historically trades on eBay, card shows, and collector groups, so we read eBay-native stats only and skip the cross-venue comparison (RT-4a)";
+  if (offTcg) read = "Vintage-class era. This market historically trades on eBay, at shows and in collector groups, so we read eBay figures only.";
   else if (avgGap == null) read = "cross-market read still pending — not enough matched data yet to say anything";
-  else if (avgGap >= 15) read = "reads hot — asks sit well past the usual photo premium, which typically points to demand-side pressure rather than seller optimism";
-  else if (avgGap >= 6) read = "reads normal — the gap sits inside the range photos usually explain, so nothing here is signalling on its own";
-  else if (avgGap >= 0) read = "reads aligned — the two venues typically drift a little, and right now they barely do";
-  else read = "reads soft — eBay asks sitting under TCGplayer usually means motivated sellers across the era, which is worth watching rather than acting on";
+  else if (avgGap >= 15) read = "Asks sit well past the usual photo premium, which typically points to demand rather than seller optimism.";
+  else if (avgGap >= 6) read = "The gap sits inside the range photos usually explain, so nothing here is signalling on its own.";
+  else if (avgGap >= 0) read = "The two venues typically drift a little, and right now they barely do.";
+  else read = "eBay asks under TCGplayer usually means motivated sellers across the era. Worth watching, not acting on.";
   const bx = (eraBoxes[era]||[]).sort((x,y)=>x-y);
   const boxMedian = bx.length ? bx[Math.floor(bx.length/2)] : null;
   return { era, products: b.n, level, boxMedian, index: idx100, avgGapPct: offTcg ? null : avgGap, venueClass: offTcg ? "ebay-native" : "cross-market", totalListings: b.listings, listingsPerProduct: lpp, read, chip: "READ" };
@@ -533,11 +533,11 @@ for (const p of liveList) {
   if (Math.abs(dPct) < 15) continue;
   const lp = lastTwo[p.id]; const priceD = lp && lp.length === 2 && lp[0] ? Math.round((lp[1]/lp[0]-1)*1000)/10 : null;
   let read;
-  if (dPct > 0 && priceD != null && priceD < -0.5) read = "reads as a seller wave — usually a reprint hitting shelves, reprint chatter, or a large holder stepping out";
-  else if (dPct > 0 && priceD != null && priceD > 0.5) read = "reads as a restock being absorbed — new copies arriving and typically getting bought as fast";
-  else if (dPct > 0) read = "reads as supply building — sellers usually stepping in ahead of demand";
-  else if (priceD != null && priceD > 0.5) read = "reads as absorption — shelves draining while asks rise, which historically means demand-led buying or a single large buyer";
-  else read = "reads as a quiet drain — likely listings expiring or sellers stepping back";
+  if (dPct > 0 && priceD != null && priceD < -0.5) read = "Usually a reprint hitting shelves, reprint chatter, or a large holder stepping out.";
+  else if (dPct > 0 && priceD != null && priceD > 0.5) read = "New copies arriving and typically getting bought about as fast as they land.";
+  else if (dPct > 0) read = "Sellers usually stepping in ahead of demand.";
+  else if (priceD != null && priceD > 0.5) read = "Shelves draining while asks rise, which historically means demand-led buying or one large buyer.";
+  else read = "Likely listings expiring or sellers stepping back.";
   const cat = recentCatalysts.find(c => (c.context||c.text||"").toLowerCase().includes((p.set||"").toLowerCase().slice(0,12)) && (p.set||"").length > 3);
   supplyShifts.push({ id: p.id, name: p.name, listings: ln[1], prev: ln[0], dPct, priceDPct: priceD, read,
     catalystMatch: cat ? `matches ${cat.kind||"catalyst"} logged ${cat.date}` : null, chip: "READ" });
@@ -747,7 +747,7 @@ const LENSES = [
         const L2 = Object.values(lifecycle).find(l=>l.setId && sp.products.some(pp=>pp.setId===l.setId && pp.set===pick.setName));
         const lifeBit = L2 ? ` Its set is ${L2.ageMonths} months old${L2.standardLegal?" and still Standard-legal":""}.` : "";
         rawPick = { name: pick.name, set: pick.setName, price: pick.priceMarket, chip:"READ", reason: "chase",
-          explain: `The card ${pick.setName} gets priced around, at $${Math.round(pick.priceMarket).toLocaleString("en-US")} ungraded.${lifeBit}` };
+          explain: `Widely treated as the card ${pick.setName} is priced around, at $${Math.round(pick.priceMarket).toLocaleString("en-US")} ungraded.${lifeBit}` };
       }
     }
     // THIRD SLOT: graded needs a licensed feed. Rather than render a padlock —

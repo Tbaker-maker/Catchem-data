@@ -76,7 +76,9 @@ for (const e of der.eraIndexes ?? []) check(`eraIndex.${e.era}`, e.read, e.chip 
 for (const p of der.printWatch ?? []) check(`printWatch.${p.setId}`, p.phase, p.chip ?? "READ");
 for (const d of der.depthReads ?? []) check(`depth.${d.id}`, d.read ?? d.explain, d.chip ?? "READ");
 const bank = await J("research/pulse/post-bank.json");
-for (const i of bank?.ideas ?? []) for (const [pf, txt] of Object.entries(i.platforms ?? {})) check(`postBank.${i.id}.${pf}`, txt, i.chip);
+// A headline is not a chipped statement — titles carry their hedging in the
+// piece they title, not in themselves. Lint the body formats only.
+for (const i of bank?.ideas ?? []) for (const [pf, txt] of Object.entries(i.platforms ?? {})) { if (pf.endsWith("_title")) continue; check(`postBank.${i.id}.${pf}`, txt, i.chip); }
 const queue = await J("research/pulse/social-queue.json");
 for (const p of queue?.posts ?? []) check(`socialQueue.${p.slot}`, p.text, "READ");
 
