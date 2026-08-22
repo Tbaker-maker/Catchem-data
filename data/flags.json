@@ -1,0 +1,31 @@
+{
+ "note": "EVERY gate in one place. On 2026-08-23 chat and CC each added a PPT licensing gate to pack-basis.mjs independently; the second silently overrode the first and Tyler's ruling did not take effect. Gates written as code stack invisibly. Gates written as named keys collide in git, which is the point.",
+ "law": "One condition, one key, one owner file. Code reads from here and never re-implements a gate. Adding a gate means adding a key \u2014 if the key exists, you are duplicating something.",
+ "flags": {
+  "ppt.publicDisplay": {
+   "value": true,
+   "owner": "scripts/pack-basis.mjs",
+   "why": "Tyler ruled 2026-08-23: free tool, development phase, proceed on the current tier. Pack prices display TCGplayer values.",
+   "trigger": "Must be re-decided BEFORE the first dollar \u2014 a Pro tier, ads, sponsorship, or any paid feature.",
+   "env": "CATCHEM_PPT_LICENSED"
+  },
+  "spread.headline": {
+   "value": true,
+   "owner": "scripts/compute-derived.mjs",
+   "why": "Whether the eBay-vs-TCG gap may drive Daily Three selection. Pending Tyler's fork: retire to a footnote, or keep with a permanent shipping caveat.",
+   "trigger": "Tyler's ruling on the Spread fork."
+  },
+  "images.darkroom": {
+   "value": true,
+   "owner": "scripts/rasterize-cards.mjs",
+   "why": "Repaint white catalogue backgrounds to the brand surface on minted cards.",
+   "trigger": "Turn off if CC's visual verification shows it damages real product photos."
+  },
+  "graded.publish": {
+   "value": false,
+   "owner": "scripts/compute-derived.mjs",
+   "why": "Graded instruments need a licensed daily graded-price feed we do not have.",
+   "trigger": "A GemRate or equivalent licence."
+  }
+ }
+}
