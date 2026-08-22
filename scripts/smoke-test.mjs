@@ -30,9 +30,20 @@ let failures = 0;
 const ok = (name) => console.log(`  ✓ ${name}`);
 const bad = (name, detail) => { failures++; console.error(`  ✗ ${name}${detail ? " — " + detail : ""}`); };
 
+// TIMEOUT ON EVERY FETCH. Node's fetch has NO default timeout, so a host that
+// accepts the connection and then never answers hangs this script forever —
+// proven 2026-08-22 against a deliberately slow server: the smoke test sat for
+// the full 120s of an outer kill and never reached check two. In CI that is
+// worse than a failure, because a hung job is not a red X, it is a job that
+// burns its whole allowance and reports nothing. A guard that can hang is a
+// guard that can be silently skipped.
+const HTTP_TIMEOUT_MS = Number(process.env.SMOKE_TIMEOUT_MS || 15000);
+const fetchWithTimeout = (url, opts = {}) =>
+  fetch(url, { ...opts, signal: AbortSignal.timeout(HTTP_TIMEOUT_MS) });
+
 async function page(url, anchors, name) {
   try {
-    const r = await fetch(url, { headers: { "cache-control": "no-cache" } });
+    const r = await fetchWithTimeout(url, { headers: { "cache-control": "no-cache" } });
     if (r.status !== 200) return bad(name, `HTTP ${r.status}`);
     const html = await r.text();
     for (const a of anchors) if (!html.includes(a)) return bad(name, `missing anchor "${a}"`);
@@ -48,7 +59,7 @@ await page(SITE + "/board", ["The Board"], "board");
 
 console.log("── 2 · feed contract ──");
 try {
-  const r = await fetch(FEED, { headers: { "cache-control": "no-cache" } });
+  const r = await fetchWithTimeout(FEED, { headers: { "cache-control": "no-cache" } });
   if (r.status !== 200) throw new Error(`HTTP ${r.status}`);
   const f = await r.json();
   const need = ["products", "sealedIndex", "history", "dealZone", "generatedAt"];
@@ -60,6 +71,34 @@ try {
   const age = (Date.now() - Date.parse(f.generatedAt)) / 3600000;
   if (!(age < 48)) bad("feed freshness", `${Math.round(age)}h old`);
   else ok(`feed fresh (${age.toFixed(1)}h)`);
+
+  // VALUES, not just SHAPE. Everything above passes on a feed that parses, has
+  // every key and a fresh timestamp — which is exactly what a compromised or
+  // broken upstream serves. Proven 2026-08-22 against a deliberately poisoned
+  // feed: 207 products, correct keys, generatedAt now, and the smoke test said
+  // "all healthy" while carrying a Sealed Index of 8,123,456, prices of
+  // -$412.55, a floor of $5,000,000 above a high of $0.01, and -7 listings.
+  // Shape checks cannot see any of that. These are impossibility checks, not
+  // taste: every one asserts something that cannot be true of a real market.
+  const INDEX_MIN = 1, INDEX_MAX = 10000;      // chain-linked from 100
+  const PRICE_MAX = 100000;                    // above any sealed product we track
+  const lvl = f.sealedIndex?.level;
+  if (typeof lvl !== "number" || !(lvl > INDEX_MIN && lvl < INDEX_MAX))
+    bad("index level is plausible", `level ${lvl} outside ${INDEX_MIN}-${INDEX_MAX}`);
+  else ok(`index level plausible (${lvl})`);
+
+  const viol = [];
+  for (const p of f.products || []) {
+    const { id, median: m, floor: lo, high: hi, listings: n } = p;
+    if (m != null && !(m > 0 && m < PRICE_MAX)) viol.push(`${id}: median ${m}`);
+    if (n != null && !(Number.isFinite(n) && n >= 0)) viol.push(`${id}: listings ${n}`);
+    if (lo != null && hi != null && lo > hi) viol.push(`${id}: floor ${lo} > high ${hi}`);
+    if (m != null && lo != null && m < lo) viol.push(`${id}: median ${m} < floor ${lo}`);
+    if (m != null && hi != null && m > hi) viol.push(`${id}: median ${m} > high ${hi}`);
+    if (viol.length > 4) break;
+  }
+  if (viol.length) bad("product values are possible", viol.slice(0, 3).join(" · "));
+  else ok("product values pass impossibility checks");
 } catch (e) { bad("feed fetch/parse", e.message); }
 
 console.log("── 3 · app rendered DOM (headless Chrome) ──");

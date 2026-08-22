@@ -286,6 +286,106 @@ const CASES = [
       const defined = /const ADVERSARIAL\s*=/.test(src), applied = /ADVERSARIAL\.filter\(/.test(src);
       return { pass: defined && applied, why: defined ? "ADVERSARIAL is defined but never applied — a pattern list nothing checks is decoration" : "ADVERSARIAL is missing" };
     } },
+
+  // ── THE BREAKER'S PENDING LIST, closed 2026-08-22 ────────────────────────
+  // The two catchem-app guards were registered and never deliberately broken.
+  // Both were broken for real this session — a blank render shipped to a local
+  // preview, and collector mode made to hide the Listings figure — both failed
+  // correctly, both restored. Those runs need a browser and a served build, so
+  // they cannot live in this harness. What lives here is the LOGIC each guard
+  // depends on, exercised directly, so a regression in the comparator or in the
+  // blank-page threshold is caught even where no browser exists.
+
+  { guard: "Mode honesty comparator", detect: null,
+    fn: async () => {
+      const src = await readFile(P("scripts/mode-diff-test.mjs"), "utf-8");
+      const m = src.match(/export const figures =[\s\S]*?\.sort\(\);/);
+      if (!m) return { pass: false, why: "figures() not found in mode-diff-test.mjs" };
+      const figures = eval("(" + m[0].replace("export const figures =", "").replace(/;$/, "") + ")");
+      const base = figures("Index 100.6 and $54.45 and 20 listings and 0.6%");
+      const reordered = figures("0.6% and 20 listings and $54.45 and Index 100.6");
+      const dropped = figures("Index 100.6 and $54.45 and 0.6%");
+      const changed = figures("Index 100.6 and $54.45 and 19 listings and 0.6%");
+      const eq = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+      const ok = eq(base, reordered) && !eq(base, dropped) && !eq(base, changed);
+      const why = !eq(base, reordered) ? "reordering must compare EQUAL — modes are allowed to reorder"
+        : eq(base, dropped) ? "a DROPPED figure compared equal — the honesty law would not be enforced"
+        : "a CHANGED figure compared equal — set-difference blindness";
+      return { pass: ok, why };
+    } },
+
+  { guard: "Deploy smoke test (blank page)", detect: null,
+    fn: async () => {
+      const src = await readFile(P("scripts/smoke-test.mjs"), "utf-8");
+      const hasBlank = src.includes("app is not a blank page");
+      const hasNav = src.includes("nav present");
+      const hasPrice = src.includes("a product price renders");
+      const hasErrors = src.includes("pageerror");
+      const ok = hasBlank && hasNav && hasPrice && hasErrors;
+      const why = !hasBlank ? "the blank-page check is gone — a blank deploy would pass"
+        : !hasNav ? "nav assertion missing" : !hasPrice ? "price assertion missing" : "pageerror capture missing";
+      return { pass: ok, why };
+    } },
+
+  { guard: "Slow host cannot hang the smoke test", detect: null,
+    fn: async () => {
+      const src = await readFile(P("scripts/smoke-test.mjs"), "utf-8");
+      if (!src.includes("AbortSignal.timeout")) return { pass: false, why: "no fetch timeout — a slow host hangs the run" };
+      if (/await fetch\(/.test(src)) return { pass: false, why: "a bare fetch() remains — every fetch must carry the timeout" };
+      const { createServer } = await import("node:http");
+      const server = createServer(() => {});
+      await new Promise((r) => server.listen(0, r));
+      const port = server.address().port;
+      const t0 = Date.now();
+      let aborted = false;
+      try { await fetch("http://localhost:" + port + "/", { signal: AbortSignal.timeout(1200) }); }
+      catch { aborted = true; }
+      server.close();
+      const ms = Date.now() - t0;
+      return { pass: aborted && ms < 5000, why: aborted ? "abort took " + ms + "ms" : "a hanging host did not abort" };
+    } },
+
+  { guard: "Feed values, not just shape", detect: null,
+    fn: async () => {
+      const src = await readFile(P("scripts/smoke-test.mjs"), "utf-8");
+      const missing = ["index level is plausible", "product values are possible"].filter((c) => !src.includes(c));
+      if (missing.length) return { pass: false, why: "value checks missing: " + missing.join(", ") };
+      const PRICE_MAX = 100000;
+      const bad = (p) => (p.median != null && !(p.median > 0 && p.median < PRICE_MAX))
+        || (p.listings != null && !(Number.isFinite(p.listings) && p.listings >= 0))
+        || (p.floor != null && p.high != null && p.floor > p.high);
+      const poison = [{ median: -412.55, listings: -7, floor: 5000000, high: 0.01 }, { median: 99999999 }];
+      const good = [{ median: 249.99, listings: 74, floor: 130.81, high: 490.55 }];
+      const lvlBad = !(8123456.9 > 1 && 8123456.9 < 10000);
+      const lvlGood = 100 > 1 && 100 < 10000;
+      const ok = poison.every(bad) && !good.some(bad) && lvlBad && lvlGood;
+      const why = !poison.every(bad) ? "impossible product values were accepted"
+        : good.some(bad) ? "a REAL product row was rejected — false positive"
+        : "the index plausibility band is wrong";
+      return { pass: ok, why };
+    } },
+
+  { guard: "Image bytes must be an image", detect: null,
+    fn: async () => {
+      const src = await readFile(P("scripts/rasterize-cards.mjs"), "utf-8");
+      const m = src.match(/function looksLikeImage[\s\S]*?\n}/);
+      if (!m) return { pass: false, why: "looksLikeImage() missing — image bytes are unverified" };
+      const looksLikeImage = new Function("return " + m[0])();
+      const jpeg = Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0, 0, 0, 0, 0, 0, 0, 0]);
+      const png = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 0]);
+      const text = Buffer.from("this is not a JPEG, but the headers say it is");
+      const ok = looksLikeImage(jpeg) && looksLikeImage(png) && !looksLikeImage(text) && !looksLikeImage(Buffer.alloc(0));
+      const why = looksLikeImage(text) ? "text passed as an image — garbage would reach a minted card"
+        : "a REAL image header was rejected — cards would lose their photos";
+      return { pass: ok, why };
+    } },
+
+  { guard: "Slow image host cannot hang the run", detect: null,
+    fn: async () => {
+      const src = await readFile(P("scripts/rasterize-cards.mjs"), "utf-8");
+      const ok = src.includes("AbortSignal.timeout(IMG_TIMEOUT_MS)");
+      return { pass: ok, why: "the image fetch has no timeout — a slow CDN hangs the daily run" };
+    } },
 ];
 
 const results = [];
