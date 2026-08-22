@@ -97,10 +97,68 @@ for (const a of AGENTS) {
   }
 }
 
+// ═══ WORKFORCE PLANNING ═════════════════════════════════════════════════
+// Policing the agents is half the job. The other half is asking whether this
+// is the right set of agents at all — what is missing, what should merge, what
+// has finished its work and should be retired. A supervisor that only issues
+// warnings manages a fixed team forever; the point is a team that gets better.
+const proposals = [];
+const P = (kind, what, why) => proposals.push({ kind, what, why });
+
+// 1 — WHAT IS UNWATCHED? Compare the agents' coverage against the surfaces
+// and assets we actually have.
+{
+  const covered = new Set(AGENTS.map(a => a.id));
+  const GAPS = [
+    ["community", !covered.has("community-listener"),
+      "Nothing reads the Discord. Members ask questions our instruments cannot answer and we never see the pattern. The strongest roadmap input we have is unread.",
+      "needs the bot"],
+    ["engagement", !covered.has("engagement-analyst"),
+      "Nothing measures which of our own content lands. We generate six angles a day and learn nothing from which ones people use.",
+      "needs analytics or creator feedback"],
+    ["competitor", !covered.has("competitor-watcher"),
+      "Nothing tracks what other tools ship. We would learn a competitor solved something we are still guessing at only by accident.",
+      "web research, no new dependency"],
+    ["pricing-drift", !covered.has("source-auditor"),
+      "Nothing spot-checks our published prices against the live marketplace by eye. Every guard we have compares us to ourselves.",
+      "needs a browser — CC's lane"],
+    ["reader", !covered.has("newcomer") && !covered.has("review-agents"),
+      "Nothing reads our output as a stranger would.",
+      "exists as review-agents but has never run — no key"],
+  ];
+  for (const [id, missing, why, cost] of GAPS)
+    if (missing) P("HIRE", `an agent for ${id}`, `${why} (${cost})`);
+}
+
+// 2 — WHO IS NOT EARNING THEIR SEAT? An agent producing nothing for a week is
+// either broken or unnecessary, and both deserve a decision rather than drift.
+for (const a of AGENTS) {
+  const h = hist.runs[a.id] ?? [];
+  const recent = h.slice(-7);
+  if (recent.length >= 5 && recent.every(r => r.count === 0))
+    P("REVIEW", `${a.id} has found nothing in ${recent.length} runs`,
+      `Either the thing it watches is genuinely healthy — in which case say so once and run it weekly — or it has stopped working. Silence should be a decision, not a habit.`);
+}
+
+// 3 — WHO SHOULD MERGE? Two agents reading the same inputs and reporting to the
+// same page are one agent with extra overhead.
+{
+  const pairs = [["falsifier", "correction-hunter"], ["breaker", "improver"]];
+  for (const [a, b] of pairs) {
+    const ha = (hist.runs[a] ?? []).slice(-3), hb = (hist.runs[b] ?? []).slice(-3);
+    if (ha.length && hb.length && ha.every(r => r.count === 0) && hb.every(r => r.count === 0))
+      P("MERGE", `${a} and ${b}`, `Both silent across three runs and both report to the same digest. Two quiet agents are one agent and a habit.`);
+  }
+}
+
+// 4 — WHAT WOULD THE TEAM NEED TO BECOME? Stated as ambition, not instruction.
+P("AMBITION", "the shape this workforce is aiming at",
+  "Right now every agent watches US. A workforce that builds the best community, app, tools and database in this hobby needs agents that watch the MARKET (what changed that we did not notice), the COMMUNITY (what people are asking), and the FIELD (what everyone else shipped). Two of those three need the bot; one needs only research. That is the order to hire in.");
+
 if (!DRY) await writeFile(join(ROOT, "data/agent-history.json"), JSON.stringify(hist, null, 1));
 const report = { generatedAt: new Date().toISOString(), date: today,
   principle: "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
-  agents: notes, problems };
+  agents: notes, problems, workforce: proposals };
 await writeFile(join(ROOT, "research/pulse/agent-supervision.json"), JSON.stringify(report, null, 1));
 
 // ADVISORY MEANS ADVISORY. process.exit() cannot be caught by the try/catch
@@ -116,4 +174,5 @@ if (problems.length) {
   say("\n   Agents exist to make this better, safer and more enjoyable. One that adds noise is doing the opposite.\n");
   if (STANDALONE) process.exitCode = 1;
 }
+if (proposals.length) { console.log(`\n  workforce notes:`); for (const p of proposals.slice(0, 5)) console.log(`   ${p.kind.padEnd(9)} ${p.what}`); console.log(""); }
 console.log(`✓ agent supervisor: ${AGENTS.length} agents · ${notes.join(" · ")}`);

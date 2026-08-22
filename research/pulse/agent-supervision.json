@@ -1,14 +1,51 @@
 {
- "generatedAt": "2026-08-22T20:24:14.826Z",
+ "generatedAt": "2026-08-22T20:26:11.263Z",
  "date": "2026-08-22",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
-  "breaker: 8 finding(s)",
+  "breaker: 6 finding(s)",
   "falsifier: 0 finding(s)",
   "correction-hunter: 2 finding(s)",
   "review-agents: 0 finding(s)",
-  "improver: 12 finding(s)",
+  "improver: 11 finding(s)",
   "universe-advisor: 5 finding(s)"
  ],
- "problems": []
+ "problems": [],
+ "workforce": [
+  {
+   "kind": "HIRE",
+   "what": "an agent for community",
+   "why": "Nothing reads the Discord. Members ask questions our instruments cannot answer and we never see the pattern. The strongest roadmap input we have is unread. (needs the bot)"
+  },
+  {
+   "kind": "HIRE",
+   "what": "an agent for engagement",
+   "why": "Nothing measures which of our own content lands. We generate six angles a day and learn nothing from which ones people use. (needs analytics or creator feedback)"
+  },
+  {
+   "kind": "HIRE",
+   "what": "an agent for competitor",
+   "why": "Nothing tracks what other tools ship. We would learn a competitor solved something we are still guessing at only by accident. (web research, no new dependency)"
+  },
+  {
+   "kind": "HIRE",
+   "what": "an agent for pricing-drift",
+   "why": "Nothing spot-checks our published prices against the live marketplace by eye. Every guard we have compares us to ourselves. (needs a browser — CC's lane)"
+  },
+  {
+   "kind": "REVIEW",
+   "what": "falsifier has found nothing in 7 runs",
+   "why": "Either the thing it watches is genuinely healthy — in which case say so once and run it weekly — or it has stopped working. Silence should be a decision, not a habit."
+  },
+  {
+   "kind": "REVIEW",
+   "what": "review-agents has found nothing in 7 runs",
+   "why": "Either the thing it watches is genuinely healthy — in which case say so once and run it weekly — or it has stopped working. Silence should be a decision, not a habit."
+  },
+  {
+   "kind": "AMBITION",
+   "what": "the shape this workforce is aiming at",
+   "why": "Right now every agent watches US. A workforce that builds the best community, app, tools and database in this hobby needs agents that watch the MARKET (what changed that we did not notice), the COMMUNITY (what people are asking), and the FIELD (what everyone else shipped). Two of those three need the bot; one needs only research. That is the order to hire in."
+  }
+ ]
 }

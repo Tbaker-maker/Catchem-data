@@ -526,6 +526,17 @@ THE LAWS
    moved to a handoff file.
 8. **Silence is a failure.** An agent that stops producing is caught by
    the supervisor, not discovered months later.
+10. **THE SUPERVISOR PLANS THE WORKFORCE, NOT JUST POLICES IT** (Tyler,
+   Aug 23). Warning the existing agents manages a fixed team forever. The
+   supervisor also proposes HIREs (what nothing watches), REVIEWs (an agent
+   silent for a week is either broken or unnecessary, and both deserve a
+   decision rather than drift), and MERGEs (two quiet agents reading the same
+   inputs are one agent and a habit). Its standing ambition: today every agent
+   watches US. A workforce aimed at the best community, app, tools and database
+   in this hobby needs agents watching the MARKET, the COMMUNITY, and the
+   FIELD. Two of those three need the bot; one needs only research — that is
+   the order to hire in.
+
 9. **AN AGENT THAT REACHES NOBODY HAS NOT DONE WORK.** It has made a file.
    The Improver's first finding was that every agent we had written that day
    produced JSON nothing read — eight files a day, generated faithfully,

@@ -107,6 +107,19 @@ if (rev) {
   say();
 }
 
+// The supervisor's workforce notes belong in front of a person — an agent
+// proposing its own replacement is the most useful thing it can say.
+if (sup?.workforce?.length) {
+  say(`## The workforce`);
+  const hires = sup.workforce.filter(w => w.kind === "HIRE");
+  const other = sup.workforce.filter(w => w.kind !== "HIRE" && w.kind !== "AMBITION");
+  if (hires.length) { say(`Gaps in what we watch:`); for (const h of hires.slice(0, 4)) say(`- **${h.what}** — ${h.why}`); }
+  if (other.length) { say(); for (const o of other.slice(0, 3)) say(`- *${o.kind}* — ${o.what}: ${o.why}`); }
+  const amb = sup.workforce.find(w => w.kind === "AMBITION");
+  if (amb) { say(); say(`> ${amb.why}`); }
+  say();
+}
+
 say(`---`);
 say(`*Written by the agents, for a person. If a section here never leads to an action, that section should be deleted rather than tolerated.*`);
 
