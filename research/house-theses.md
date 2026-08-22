@@ -827,6 +827,37 @@ ADVISORY, NOT BLOCKING. Fifty-four findings on day one would stop every build,
 and a guard that must be switched off to ship is a guard that gets switched
 off permanently.
 
+## TIERED REFRESH — every card priced, cadence by value (Tyler, Aug 23 2026)
+"Fit in all of them. Make the lesser valued cards not every day price checks
+so we don't run out on monthly actions."
+
+Right shape, and the arithmetic is better than it sounds. Pricing all 16,468
+cards EVERY day costs about 494,000 calls a month. Tiering by value costs
+roughly 29,000 — **under 5% of the daily allowance** — while still holding a
+current price for every card in the catalogue. Nothing is dropped. Only the
+CADENCE changes, which is the Cadence Law applied to data instead of agents.
+
+THE BANDS: $100+ daily · $25+ every three days · $5+ weekly · $1+ monthly ·
+everything else quarterly.
+
+WHY VALUE DECIDES FREQUENCY: a $2,000 card moving 5% has moved $100 and
+somebody cares today. A $0.30 common moving 5% has moved a penny and nobody
+will notice this quarter. Refresh rate should track how fast a stale number
+becomes a WRONG number, and for bulk that takes months.
+
+LOAD IS SPREAD, NOT BATCHED. Each card gets a stable offset inside its own
+cycle, so we do not price 9,000 quarterly cards on one morning. Measured
+across a week: 1065, 1057, 1013, 1032, 993, 965, 939 — flat, which is the
+difference between a budget and a spike.
+
+WHAT THIS IS NOT: a claim that cheap cards do not matter. They stay in the
+catalogue, stay priced and stay queryable. They are simply not re-asked daily,
+because asking daily would not change the answer.
+
+UNTIL THE SWEEP RUNS every card is treated as bulk, which is the conservative
+direction — an unpriced card is asked rarely until we know it deserves better,
+rather than eating the budget on a guess.
+
 ## DISCOVERY IS ONE-TIME, REFRESH IS FOREVER (Tyler, Aug 23 2026)
 "We got 20k a day. Let's get the most out of it without pointless cards
 nobody cares about."

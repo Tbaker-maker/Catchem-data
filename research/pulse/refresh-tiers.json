@@ -1,0 +1,54 @@
+{
+ "generatedAt": "2026-08-22T23:30:32.147Z",
+ "basis": "NO SWEEP YET — every card is treated as bulk until discovery-sweep runs, which is the conservative direction",
+ "catalogue": 16468,
+ "tiers": [
+  {
+   "id": "daily",
+   "everyDays": 1,
+   "minPrice": 100,
+   "why": "a 5% move here is $5+ and somebody is watching it today",
+   "cards": 0,
+   "callsPerDay": 0
+  },
+  {
+   "id": "fast",
+   "everyDays": 3,
+   "minPrice": 25,
+   "why": "moves matter within the week, not within the hour",
+   "cards": 0,
+   "callsPerDay": 0
+  },
+  {
+   "id": "weekly",
+   "everyDays": 7,
+   "minPrice": 5,
+   "why": "real cards with real prices that do not swing daily",
+   "cards": 0,
+   "callsPerDay": 0
+  },
+  {
+   "id": "monthly",
+   "everyDays": 30,
+   "minPrice": 1,
+   "why": "a stale month-old price here is still roughly right",
+   "cards": 0,
+   "callsPerDay": 0
+  },
+  {
+   "id": "quarterly",
+   "everyDays": 90,
+   "minPrice": 0,
+   "why": "bulk. Asking daily would not change the answer, and a stale answer is not a wrong one",
+   "cards": 16468,
+   "callsPerDay": 183
+  }
+ ],
+ "callsPerDay": 183,
+ "callsPerMonth": 5489,
+ "dueToday": 194,
+ "versusDailyEverything": {
+  "callsPerMonth": 494040,
+  "saving": "99%"
+ }
+}

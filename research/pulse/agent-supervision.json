@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-22T23:14:59.390Z",
+ "generatedAt": "2026-08-22T23:31:26.247Z",
  "date": "2026-08-22",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -9,7 +9,7 @@
   "review-agents: 0 finding(s)",
   "compliance: 0 finding(s)",
   "security: 1 finding(s)",
-  "steward: 0 finding(s)",
+  "steward: 2 finding(s)",
   "platform: 10 finding(s)",
   "anomaly: 0 finding(s)",
   "creator: 15 finding(s)",
@@ -75,11 +75,6 @@
   {
    "agent": "security",
    "finding": "runs daily and has returned the same count (1) four runs running.",
-   "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
-  },
-  {
-   "agent": "steward",
-   "finding": "runs daily and has returned the same count (0) four runs running.",
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
   },
   {
@@ -492,6 +487,38 @@
    }
   },
   {
+   "from": "steward",
+   "owner": "chat",
+   "what": "3 hand-written file(s) changed and not committed.",
+   "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "steward",
+   "owner": "chat",
+   "what": "3 script(s) are not referenced anywhere: collision-guard.mjs, discovery-sweep.mjs, refresh-tiers.mjs.",
+   "do": "A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
    "from": "security",
    "owner": "tyler",
    "what": "Anthropic key found in scripts/negative-tests.mjs",
@@ -841,6 +868,6 @@
   "actNow": 0,
   "queue": 9,
   "watch": 8,
-  "noteOnly": 7
+  "noteOnly": 9
  }
 }
