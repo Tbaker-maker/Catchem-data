@@ -1,138 +1,94 @@
 {
- "generatedAt": "2026-08-22T22:21:08.702Z",
- "disclaimer": "Not legal advice. This watches trip-wires we set ourselves. When one trips the answer is always to talk to somebody who does this for a living — the point is that the conversation happens BEFORE the thing it was about.",
- "signals": {
-  "revenue": false,
-  "auth": false,
-  "personalData": false,
-  "liveDraw": false,
-  "nameSpend": false,
-  "pptPublic": true
- },
- "tripped": [],
- "watching": [
+ "note": "SUBSTANTIVE LEGAL KNOWLEDGE, not a reminder to call somebody. Tyler will still talk to a lawyer — this exists so he walks into that conversation already knowing the shape of the problem, and so we do not blunder before it happens. Every rule here is sourced and dated.",
+ "disclaimer": "Legal INFORMATION, not legal advice. No lawyer has reviewed this. Sweepstakes law varies by state and changes; nothing here is a compliance opinion anyone can rely on. Its job is to make the conversation with counsel shorter and better, and to stop us doing something obviously wrong in the meantime.",
+ "lastResearched": "2026-08-23",
+
+ "domains": [
   {
-   "id": "pokemon-ip-depiction",
-   "severity": "existential",
-   "trigger": "ANY of: the first dollar of revenue · a paid tier · sponsorship or ads · a cease-and-desist of any kind · media coverage large enough to be noticed.",
-   "status": "DEFERRED"
-  },
-  {
-   "id": "sweepstakes-structure",
-   "severity": "high",
-   "trigger": "ANY of: the first draw with a non-Tyler participant · any prize over $500 · any entry method that could be read as consideration · operating across a border.",
-   "status": "DEFERRED"
-  },
-  {
-   "id": "ppt-commercial-licence",
-   "severity": "medium",
-   "trigger": "The first dollar. Also: any claim on our surfaces that the data is commercially licensed.",
-   "status": "DEFERRED — Tyler ruled 2026-08-23"
-  },
-  {
-   "id": "name-clearance",
-   "severity": "high",
-   "trigger": "ANY of: spending money on the name (merch, print, paid ads) · incorporating under it · a trademark application · significant public traction under it.",
-   "status": "DEFERRED"
-  },
-  {
-   "id": "user-data-handling",
-   "severity": "medium",
-   "trigger": "ANY of: a login · a stored email beyond the newsletter · anything tied to a Discord identity · analytics that identifies an individual.",
-   "status": "NOT YET DUE"
-  }
- ],
- "registerAgeDays": 1,
- "stale": false,
- "legalAnalysis": [
-  {
-   "domain": "sweepstakes",
+   "id": "sweepstakes",
    "rule": "A promotion containing all three of PRIZE + CHANCE + CONSIDERATION is a lottery. Private parties generally cannot run lotteries in the US; they are reserved to state governments. Removing any ONE element makes it lawful: remove consideration and it is a sweepstakes, remove chance and it is a skill contest.",
+   "sources": ["Multiple 2026 US sweepstakes compliance guides", "FTC Act 15 U.S.C. § 45"],
+   "ourStructure": "Berries are EARNED through organic Discord participation and cannot be purchased at any price. Entry costs no money.",
    "ourPosition": "Consideration appears to be removed on the monetary axis, which is the axis that matters most.",
    "theRisk": "EFFORT-BASED CONSIDERATION. Several sources note that in some states, a significant expenditure of time or effort can itself constitute consideration even where no money changes hands. Our berry system requires sustained participation to accumulate entries — which is precisely 'effort'. This is the sharpest question in our whole structure and it is not obvious which way it falls.",
-   "proximity": "not yet live",
-   "mitigation": [
+   "whatMakesItSafer": [
     "A free entry path that requires NO berries at all — one entry, one form, no participation history required. That is a true AMOE and it moots the effort question entirely.",
     "AMOE entries must carry EQUAL DIGNITY: same odds, same prize eligibility, same draw pool, same deadline. Not a separate lesser pool, not an earlier cutoff.",
     "The free path must be disclosed as conspicuously as the berry path — 'wherever entry is offered', not buried in rules.",
     "Berries must remain unpurchasable, with no path by which money becomes entries."
    ],
-   "askCounsel": "Does an earned-participation entry system create effort-based consideration in any state we would draw from, and does a no-berry AMOE fully cure it?"
+   "askCounselThis": "Does an earned-participation entry system create effort-based consideration in any state we would draw from, and does a no-berry AMOE fully cure it?"
   },
   {
-   "domain": "registration-thresholds",
+   "id": "registration-thresholds",
    "rule": "Florida and New York require registration and bonding for sweepstakes where total prize value meets or exceeds $5,000. Rhode Island requires registration for certain retail promotions above $500.",
+   "sources": ["2026 state-by-state sweepstakes compliance guides"],
    "ourPosition": "lot-002 is a 151 Booster Bundle at roughly $199, and lot-001 around $71. All are far below the Florida and New York thresholds.",
    "theRisk": "Thresholds are usually stated as CUMULATIVE prize value across a promotion. A series of small draws that add up, or one large prize later, changes the answer.",
-   "proximity": "clear",
-   "mitigation": null,
-   "askCounsel": "Is our recurring draw one continuous promotion for threshold purposes, or a series of separate ones?"
+   "watchThis": "Total prize value across any single promotion approaching $500 (Rhode Island retail) or $5,000 (Florida, New York).",
+   "askCounselThis": "Is our recurring draw one continuous promotion for threshold purposes, or a series of separate ones?"
   },
   {
-   "domain": "prize-tax",
+   "id": "prize-tax",
    "rule": "Under IRC §74 the fair market value of a prize is taxable income to the winner whether or not any form is issued. For prizes awarded after 31 December 2025, sponsors must issue Form 1099-MISC above the applicable threshold — reported as $2,000 for the 2026 tax year.",
+   "sources": ["IRC §74", "2026 sweepstakes tax reporting guidance"],
    "ourPosition": "Current prizes sit well under $2,000, so no 1099 obligation appears to arise yet.",
    "theRisk": "This is a NEW threshold for 2026 and it is lower than people expect. A single high-value prize — a sealed vintage box, a graded card — crosses it easily.",
-   "proximity": "clear",
-   "mitigation": null,
-   "askCounsel": null
+   "watchThis": "Any single prize with a fair market value approaching $2,000.",
+   "note": "Our official rules should state that the winner is responsible for their own taxes. That is standard and costs nothing to include."
   },
   {
-   "domain": "official-rules",
+   "id": "official-rules",
    "rule": "Official rules function as a binding contract between sponsor and entrant. They must disclose: sponsor identity, eligibility, prize description and approximate retail value, odds, entry method, start and end dates, winner selection method, and how winners are notified.",
+   "sources": ["2026 promotions compliance guides", "FTC deceptive-practices enforcement"],
    "ourPosition": "Rules exist and were drafted to sweepstakes shape.",
    "theRisk": "The prize must be awarded AS ADVERTISED. Our 65% cash-out alternative needs to be in the rules explicitly, with how the cash value is computed — an undisclosed substitution is exactly the kind of thing the FTC treats as deceptive.",
-   "proximity": "clear",
-   "mitigation": null,
-   "askCounsel": null
+   "watchThis": "Any prize substitution, cash alternative, or change to a draw after entries have opened."
   },
   {
-   "domain": "canada",
+   "id": "canada",
    "rule": "Canadian provinces generally require a skill-testing question before a prize may be awarded to a Canadian resident, which converts a pure chance promotion into a mixed chance-and-skill one. Quebec has additional requirements administered separately and is commonly excluded for that reason.",
+   "sources": ["Canadian promotional contest practice, 2026"],
    "ourPosition": "Tyler is in British Columbia, so Canadian entrants are likely, and a skill-testing question is already in the design.",
    "theRisk": "The question must be genuinely answered before the prize is released, and the requirement must be in the rules. A skill-testing question that exists in the design but never actually gets asked provides nothing.",
-   "proximity": "clear",
-   "mitigation": null,
-   "askCounsel": "Does running from BC to a mixed Canada/US audience create obligations in either direction that a US-only structure would not?"
+   "askCounselThis": "Does running from BC to a mixed Canada/US audience create obligations in either direction that a US-only structure would not?"
   },
   {
-   "domain": "ftc-disclosure",
+   "id": "ftc-disclosure",
    "rule": "The FTC prohibits unfair or deceptive acts in commerce, and its endorsement guidelines require conspicuous disclosure of material connections. Social-platform promotions attract particular attention, and disclosures buried in hashtags or comment threads are treated as inadequate.",
+   "sources": ["FTC Act 15 U.S.C. § 45", "FTC Endorsement Guidelines"],
    "ourPosition": "We publish corrections, chip every figure, and disclose method — the habit is already right.",
    "theRisk": "If a creator promotes a draw we run, or we send a prize to a creator who covers us, that is a material connection requiring disclosure by BOTH sides.",
-   "proximity": "clear",
-   "mitigation": null,
-   "askCounsel": null
+   "watchThis": "Any prize, product, or berry given to somebody who talks about us publicly."
   },
   {
-   "domain": "can-spam",
+   "id": "can-spam",
    "rule": "CAN-SPAM applies to commercial email: accurate sender identification, a functioning unsubscribe honoured promptly, a physical postal address in the message, and no deceptive subject lines.",
+   "sources": ["15 U.S.C. §§ 7701-7713", "2026 sweepstakes compliance guidance on entry-collected email"],
    "ourPosition": "The newsletter list is one address — Tyler's own. Buttondown handles unsubscribe and address footer as a matter of course.",
    "theRisk": "A physical postal address is required in commercial email. For a solo founder working from home that is a real privacy decision, not a checkbox.",
-   "proximity": "one-address list — becomes live on the first external send",
-   "mitigation": null,
-   "askCounsel": "What address may we use in the newsletter footer without publishing a home address?"
+   "watchThis": "The first send to anybody other than Tyler.",
+   "askCounselThis": "What address may we use in the newsletter footer without publishing a home address?"
   },
   {
-   "domain": "ip-depiction",
+   "id": "ip-depiction",
    "rule": "Copyright protects the card artwork and text; trademark protects the names and logos. Nominative use of a trademark to refer to the actual product is generally permissible where the product is not otherwise identifiable, only as much of the mark is used as necessary, and nothing suggests sponsorship or endorsement. Factual price data is not copyrightable.",
+   "sources": ["US trademark nominative fair use doctrine", "Copyright Act"],
    "ourPosition": "We report prices — facts, uncopyrightable. We name products to identify them, which is the nominative purpose. We do not use Pokémon logos in our branding, and our own marks are distinct.",
    "theRisk": "Card ART is copyrighted and belongs to its holders. Our product images come through a community API, which is a practical convention rather than a licence. Nominative fair use is a DEFENCE, not a permission — it is something argued after a complaint, not a shield that prevents one.",
-   "proximity": "deferred until revenue",
-   "mitigation": [
+   "whatMakesItSafer": [
     "Never imply endorsement, sponsorship or affiliation. A disclaimer stating we are unaffiliated with Nintendo, The Pokémon Company or TPCi costs nothing.",
     "Keep our own branding visually distinct from Pokémon trade dress.",
     "Use images only to identify a product being priced, never decoratively or as our own creative work.",
     "Be ready to remove any specific image on request without argument."
    ],
-   "askCounsel": "Does our image sourcing and product depiction sit within nominative fair use for a commercial product, and what disclaimer wording would strengthen it?"
+   "askCounselThis": "Does our image sourcing and product depiction sit within nominative fair use for a commercial product, and what disclaimer wording would strengthen it?"
   }
  ],
- "highestRisk": {
+
+ "highestRiskRightNow": {
   "what": "Effort-based consideration in the berry system, combined with the first live draw.",
   "why": "It is the only item that is both imminent and genuinely uncertain. The IP question is larger but not triggered until revenue; registration and tax thresholds are comfortably clear at current prize values.",
   "cheapestMitigation": "A no-berry AMOE — one free entry, one form, no participation required, same pool, same odds, same deadline, disclosed wherever entry is offered. It costs a form and it moots the hardest question in the structure."
- },
- "legalDisclaimer": "Legal INFORMATION, not legal advice. No lawyer has reviewed this. Sweepstakes law varies by state and changes; nothing here is a compliance opinion anyone can rely on. Its job is to make the conversation with counsel shorter and better, and to stop us doing something obviously wrong in the meantime.",
- "chip": "READ"
+ }
 }

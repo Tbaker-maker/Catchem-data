@@ -359,6 +359,18 @@ const CASES = [
       }
     } },
 
+  { guard: "Legal knowledge sourced", detect: null,
+    // Every legal claim must carry a source and the disclaimer must survive.
+    // An unsourced legal assertion is the most dangerous sentence this system
+    // could produce, because it is the one a reader would most trust.
+    fn: async () => {
+      const kb = JSON.parse(await readFile(P("data/legal-knowledge.json"), "utf-8"));
+      const bad = (kb.domains ?? []).filter(d => !(d.sources ?? []).length || !d.rule);
+      const hasDisclaimer = /not legal advice/i.test(kb.disclaimer ?? "");
+      return { pass: bad.length === 0 && hasDisclaimer,
+        why: bad.length ? `${bad.map(b => b.id).join(", ")} state a rule with no source` : hasDisclaimer ? "" : "the not-legal-advice disclaimer is missing" };
+    } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");

@@ -205,6 +205,14 @@ if (cmp?.tripped?.length) {
   for (const t of cmp.tripped) say(`- **[${t.severity}]** ${t.obligation} — fired by ${t.firedBy.join("; ")}. *${t.note}*`);
   say(`\n*${cmp.disclaimer}*`);
   say();
+} else if (cmp?.highestRisk) {
+  say(`## Legal standing`);
+  say(`Nothing has tripped. Highest live risk: **${cmp.highestRisk.what}** — ${cmp.highestRisk.why}`);
+  say(`*Cheapest fix: ${cmp.highestRisk.cheapestMitigation}*`);
+  const near = (cmp.legalAnalysis ?? []).filter(a => /THRESHOLD|LIVE|approaching/.test(a.proximity));
+  for (const a of near) say(`- ${a.domain}: ${a.proximity}`);
+  say(`\n*${cmp.legalDisclaimer}*`);
+  say();
 } else if (cmp?.stale) {
   say(`## Compliance`);
   say(`The register has not been reviewed in ${cmp.registerAgeDays} days. Nothing has tripped, but a register nobody re-reads is the failure it exists to prevent.`);

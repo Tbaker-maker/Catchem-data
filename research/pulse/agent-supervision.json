@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-22T22:11:37.611Z",
+ "generatedAt": "2026-08-22T22:21:08.123Z",
  "date": "2026-08-22",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -7,7 +7,7 @@
   "falsifier: 0 finding(s)",
   "correction-hunter: 2 finding(s)",
   "review-agents: 0 finding(s)",
-  "compliance: 2 finding(s)",
+  "compliance: 0 finding(s)",
   "security: 1 finding(s)",
   "steward: 1 finding(s)",
   "platform: 10 finding(s)",
@@ -488,40 +488,8 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "6 hand-written file(s) changed and not committed.",
+   "what": "3 hand-written file(s) changed and not committed.",
    "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
-   "score": 30,
-   "band": "NOTE ONLY",
-   "selfScore": 30,
-   "demotions": [],
-   "components": {
-    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
-    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
-    "actionable": "SOON (14) — clear what to do, needs a slot",
-    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
-   }
-  },
-  {
-   "from": "compliance",
-   "owner": "tyler",
-   "what": "[existential] Confirm that depicting Pokémon card imagery, set names and product photography in a commercial product is defensible.",
-   "do": "fired by: revenue machinery appeared in the code — this was deferred deliberately and the condition we said would end it has happened",
-   "score": 30,
-   "band": "NOTE ONLY",
-   "selfScore": 30,
-   "demotions": [],
-   "components": {
-    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
-    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
-    "actionable": "SOON (14) — clear what to do, needs a slot",
-    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
-   }
-  },
-  {
-   "from": "compliance",
-   "owner": "tyler",
-   "what": "[medium] Resolve whether displaying PokemonPriceTracker-derived prices publicly is permitted on our tier.",
-   "do": "fired by: revenue machinery exists while PPT figures are published — this was deferred deliberately and the condition we said would end it has happened",
    "score": 30,
    "band": "NOTE ONLY",
    "selfScore": 30,
@@ -883,6 +851,6 @@
   "actNow": 0,
   "queue": 9,
   "watch": 8,
-  "noteOnly": 10
+  "noteOnly": 8
  }
 }

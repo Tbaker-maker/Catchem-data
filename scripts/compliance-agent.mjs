@@ -33,7 +33,7 @@ if (!reg) { console.log("· compliance: no register"); process.exitCode = 0; }
 // attorney he does not need, which teaches him to ignore the next one.
 const app = await R("../catchem-app/src/Ticker.jsx");
 const scripts = (await readdir(join(ROOT, "scripts"))).filter(f => f.endsWith(".mjs"));
-const allSrc = (await Promise.all(scripts.filter(f => f !== "compliance-agent.mjs").map(f => R(`scripts/${f}`)))).join("\n");
+const allSrc = (await Promise.all(scripts.filter(f => !/^(compliance-agent|negative-tests|agent-contract)\.mjs$/.test(f)).map(f => R(`scripts/${f}`)))).join("\n");
 const flags = (await J("data/flags.json"))?.flags ?? {};
 const prizes = await J("data/prizes-ledger.json");
 const recentCommits = await git("log", "--since=14 days ago", "--format=%s");
@@ -69,9 +69,42 @@ const lastTouched = (await git("log", "-1", "--format=%ad", "--date=short", "--"
 const ageDays = lastTouched ? Math.round((Date.now() - Date.parse(lastTouched)) / 86400000) : 0;
 const stale = ageDays >= 60;
 
+// ── SUBSTANTIVE LEGAL ANALYSIS ─────────────────────────────────────────────
+// Not a reminder to call somebody. The agent holds the actual rules, checks our
+// structure against each, and says where we are exposed and what the cheapest
+// mitigation is. Tyler still sees counsel — this is so he arrives already
+// knowing the shape of the problem.
+const legal = await J("data/legal-knowledge.json");
+const analysis = [];
+if (legal) {
+  for (const d of legal.domains ?? []) {
+    // Surface the domains where our own data suggests we are near a line.
+    let proximity = "clear";
+    if (d.id === "registration-thresholds" && prizes) {
+      const values = JSON.stringify(prizes).match(/\d+(\.\d+)?/g)?.map(Number) ?? [];
+      const top = Math.max(0, ...values.filter(v => v > 10 && v < 100000));
+      if (top >= 5000) proximity = "AT THRESHOLD — Florida and New York registration";
+      else if (top >= 500) proximity = "approaching — Rhode Island retail threshold is $500";
+      else proximity = `clear (highest prize value seen: $${top})`;
+    }
+    if (d.id === "prize-tax" && prizes) {
+      const values = JSON.stringify(prizes).match(/\d+(\.\d+)?/g)?.map(Number) ?? [];
+      const top = Math.max(0, ...values.filter(v => v > 10 && v < 100000));
+      proximity = top >= 2000 ? "AT THRESHOLD — 1099-MISC required for 2026 awards" : `clear (highest prize value seen: $${top})`;
+    }
+    if (d.id === "sweepstakes") proximity = signals.liveDraw ? "LIVE — a draw has run" : "not yet live";
+    if (d.id === "can-spam") proximity = "one-address list — becomes live on the first external send";
+    if (d.id === "ip-depiction") proximity = signals.revenue ? "TRIGGERED — revenue machinery present" : "deferred until revenue";
+    analysis.push({ domain: d.id, rule: d.rule, ourPosition: d.ourPosition, theRisk: d.theRisk,
+      proximity, mitigation: d.whatMakesItSafer ?? null, askCounsel: d.askCounselThis ?? null });
+  }
+}
+
 const out = { generatedAt: new Date().toISOString(),
   disclaimer: "Not legal advice. This watches trip-wires we set ourselves. When one trips the answer is always to talk to somebody who does this for a living — the point is that the conversation happens BEFORE the thing it was about.",
   signals, tripped, watching, registerAgeDays: ageDays, stale,
+  legalAnalysis: analysis, highestRisk: legal?.highestRiskRightNow ?? null,
+  legalDisclaimer: legal?.disclaimer ?? null,
   chip: "READ" };
 await (await import("node:fs/promises")).writeFile(join(ROOT, "research/pulse/compliance-report.json"), JSON.stringify(out, null, 1));
 
@@ -81,6 +114,9 @@ if (tripped.length) {
   console.error("   These were deferred deliberately. The condition we said would end the deferral has happened.\n");
 } else {
   console.log(`✓ compliance: ${watching.length} obligation(s) deferred, no trigger fired${stale ? ` · register unreviewed for ${ageDays} days` : ""}`);
+  if (legal?.highestRiskRightNow) console.log(`  highest risk now: ${legal.highestRiskRightNow.what}`);
+  for (const a of analysis.filter(a => /THRESHOLD|LIVE|TRIGGERED|approaching/.test(a.proximity)))
+    console.log(`  ⚖ ${a.domain}: ${a.proximity}`);
   for (const w of watching.filter(w => w.severity === "existential" || w.severity === "high"))
     console.log(`  watching [${w.severity}] ${w.id}`);
 }
