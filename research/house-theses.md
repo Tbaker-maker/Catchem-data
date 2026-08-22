@@ -262,3 +262,21 @@ gate's four-part test · publish-assert and the guard audit on the data
 side · image-override-guard on images · FLEET-ROUTING.md for handoffs ·
 and the standing rule that a guard is not real until breaking it fails
 the build. Every one of those exists because someone guessed once.
+
+## PRICE COMPARABILITY LAW (Tyler, Aug 23 2026)
+"Always add in shipping on both sides. Never add in tax but indicate tax
+is not included, shipping is. If it does not have a shipping price,
+assume the cost is baked in already."
+RULE: every price we compare is what a buyer actually pays on that venue.
+Shipping IN on both sides — eBay delivered totals, TCGplayer market plus
+an estimated shipping cost (free over $40, ~$4.99 below; labelled est.).
+No stated shipping means the cost is included, because that is what the
+seller is saying. Tax OUT on both sides, always, and disclosed — it
+varies by state and seller, so any figure would be wrong for most people.
+WHAT IT FIXED: comparing eBay delivered against TCGplayer item-only had
+inflated every gap, catastrophically on cheap items. Journey Together
+packs read +54.9%; corrected they read -12.7%. Destined Rivals +7.5% to
+-30%. Boxes barely moved, because both venues ship those free. We were
+publishing the wrong SIGN on an entire product class.
+FALSIFIER: if TCGplayer changes its free-shipping threshold or typical
+rate, the estimate is wrong and the constants must be re-verified.

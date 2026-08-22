@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-22T15:17:47.461Z",
+  "generatedAt": "2026-08-22T15:20:22.493Z",
   "method": "Pack Math: ask median / era-aware pack count (arithmetic, no estimation; variable-count products excluded by name). Narrative: latest agent digest cross-referenced against tracked sets; 'quiet movers' = spread signal with zero digest mention.",
   "digestUsed": "2026-08-22.md",
   "packMath": {
@@ -1428,7 +1428,7 @@
         "price": 545.76,
         "listings": 68,
         "spreadPct": null,
-        "signal": false
+        "signal": true
       },
       {
         "set": "Mega Evolution",
@@ -1444,7 +1444,7 @@
         "price": 470.58,
         "listings": 110,
         "spreadPct": null,
-        "signal": true
+        "signal": false
       }
     ],
     "quietMovers": [
@@ -1453,15 +1453,7 @@
         "flagship": "Battle Styles Booster Pack",
         "price": 11.99,
         "listings": 29,
-        "spreadPct": 29.9,
-        "signal": true
-      },
-      {
-        "set": "Chilling Reign",
-        "flagship": "Chilling Reign Booster Pack",
-        "price": 15.99,
-        "listings": 52,
-        "spreadPct": 36.8,
+        "spreadPct": -15.7,
         "signal": true
       },
       {
@@ -1474,18 +1466,18 @@
       },
       {
         "set": "Fusion Strike",
-        "flagship": "Fusion Strike Booster Pack",
-        "price": 22.99,
-        "listings": 30,
-        "spreadPct": 20.3,
+        "flagship": "Fusion Strike Booster Box",
+        "price": 1130.07,
+        "listings": 97,
+        "spreadPct": 16.6,
         "signal": true
       },
       {
         "set": "Lost Origin",
-        "flagship": "Lost Origin Booster Pack",
-        "price": 23.99,
-        "listings": 48,
-        "spreadPct": 39.9,
+        "flagship": "Lost Origin Elite Trainer Box",
+        "price": 249.99,
+        "listings": 130,
+        "spreadPct": 19.7,
         "signal": true
       },
       {
@@ -1494,6 +1486,14 @@
         "price": 324.99,
         "listings": 57,
         "spreadPct": 18.3,
+        "signal": true
+      },
+      {
+        "set": "Surging Sparks",
+        "flagship": "Surging Sparks Booster Pack",
+        "price": 10,
+        "listings": 24,
+        "spreadPct": -22,
         "signal": true
       }
     ]
@@ -2840,11 +2840,11 @@
       "level": 229.99,
       "boxMedian": 586.69,
       "index": 65.7,
-      "avgGapPct": 18.5,
+      "avgGapPct": 7.6,
       "venueClass": "cross-market",
       "totalListings": 3073,
       "listingsPerProduct": 56,
-      "read": "reads hot — asks sit well past the usual photo premium, which typically points to demand-side pressure rather than seller optimism",
+      "read": "reads normal — the gap sits inside the range photos usually explain, so nothing here is signalling on its own",
       "chip": "READ"
     },
     {
@@ -2866,11 +2866,11 @@
       "level": 154.5,
       "boxMedian": 378.88,
       "index": 77.3,
-      "avgGapPct": 20.3,
+      "avgGapPct": 7.3,
       "venueClass": "cross-market",
       "totalListings": 3721,
       "listingsPerProduct": 58,
-      "read": "reads hot — asks sit well past the usual photo premium, which typically points to demand-side pressure rather than seller optimism",
+      "read": "reads normal — the gap sits inside the range photos usually explain, so nothing here is signalling on its own",
       "chip": "READ"
     },
     {
@@ -2879,11 +2879,11 @@
       "level": 88.69,
       "boxMedian": 333.62,
       "index": 73.9,
-      "avgGapPct": 14,
+      "avgGapPct": -0.1,
       "venueClass": "cross-market",
       "totalListings": 2266,
       "listingsPerProduct": 73,
-      "read": "reads normal — the gap sits inside the range photos usually explain, so nothing here is signalling on its own",
+      "read": "reads soft — eBay asks sitting under TCGplayer usually means motivated sellers across the era, which is worth watching rather than acting on",
       "chip": "READ"
     }
   ],
@@ -4863,15 +4863,15 @@
     }
   ],
   "ripOrHold": {
-    "id": "swsh5-etb",
-    "name": "Battle Styles Elite Trainer Box",
-    "price": 149.9,
-    "question": "Battle Styles Elite Trainer Box at $149.9 — rip it or hold it sealed?",
+    "id": "sv6pt5-etb",
+    "name": "Shrouded Fable Elite Trainer Box",
+    "price": 136.43,
+    "question": "Shrouded Fable Elite Trainer Box at $136.43 — rip it or hold it sealed?",
     "note": "one-tap daily vote; results revisited next morning"
   },
   "notification": {
     "title": "Catchem Sealed Index 96.1 (0%)",
-    "body": "Today: Battle Styles Elite Trainer Box — eBay asks 20.4% more than TCGplayer."
+    "body": "Today: Shrouded Fable Elite Trainer Box — eBay asks 17.3% more than TCGplayer."
   },
   "cohortCompare": {
     "specialty": {
@@ -4880,7 +4880,7 @@
       "totalSupply": 2360,
       "supplyPerProduct": 69.4,
       "supplyPerSetMonth": 2.1,
-      "avgSpreadPct": 9.9,
+      "avgSpreadPct": 5.1,
       "avgPerPack": 43.13
     },
     "mainline": {
@@ -4889,7 +4889,7 @@
       "totalSupply": 7756,
       "supplyPerProduct": 53.5,
       "supplyPerSetMonth": 1.9,
-      "avgSpreadPct": 20.9,
+      "avgSpreadPct": 9.5,
       "avgPerPack": 29.68
     },
     "note": "supplyPerSetMonth = listings per set-age month (taper proxy; falls as sets absorb). Velocity/taper curves build in cohort-history.json from 2026-08-18 forward."
@@ -4962,16 +4962,16 @@
       "reason": "shelf move worth a look"
     },
     "sealed": {
-      "whyChosen": "It is on the list because its cheapest believable listing sits at $175.13 while the middle of the market is $950 — an unusually wide spread between the two, which usually means patience is worth something here.",
+      "whyChosen": "It is on the list because its cheapest believable listing sits at $47.17 while the middle of the market is $249.99 — an unusually wide spread between the two, which usually means patience is worth something here.",
       "lens": "room",
-      "name": "151 Ultra Premium Collection",
-      "ebay": 950,
-      "tcg": 934.59,
-      "spreadPct": 1.6,
-      "listings": 140,
+      "name": "Lost Origin Elite Trainer Box",
+      "ebay": 249.99,
+      "tcg": 208.77,
+      "spreadPct": 19.7,
+      "listings": 130,
       "chip": "VERIFIED",
       "reason": "widest distance between the cheapest listing and the middle",
-      "explain": "eBay usually runs a little higher on sealed — this is asking 1.6% more, well past that baseline. 140 listings are live right now."
+      "explain": "eBay usually runs a little higher on sealed — this is asking 19.7% more, well past that baseline. 130 listings are live right now."
     },
     "graded": {
       "name": "Umbreon ex (Prismatic Evolutions)",
@@ -4985,12 +4985,12 @@
       "explain": "Ungraded copies trade around $1,491. Perfect-graded (PSA 10) copies have been SELLING near $5,100 — about $3,529 ahead even after the $79.99 grading fee. Based on 550 recorded PSA 10 sales."
     },
     "raw": {
-      "name": "Rayquaza VMAX",
-      "set": "Evolving Skies",
-      "price": 1247.9,
+      "name": "Umbreon ex",
+      "set": "Prismatic Evolutions",
+      "price": 1490.88,
       "chip": "READ",
       "reason": "a chase we have not put in front of you this week",
-      "explain": "Widely treated as the card collectors hunt hardest from Evolving Skies — the card the whole set gets priced around. Market sits at $1,248 today. Its set is 59 months old."
+      "explain": "Widely treated as the card collectors hunt hardest from Prismatic Evolutions — the card the whole set gets priced around. Market sits at $1,491 today. Its set is 19 months old."
     }
   }
 }

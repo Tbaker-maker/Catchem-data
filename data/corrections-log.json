@@ -4,9 +4,9 @@
   {
    "date": "2026-08-23",
    "material": true,
-   "what": "Our eBay-vs-TCGplayer gap was overstated. The eBay figure included shipping wherever a listing stated it; TCGplayer market prices never include shipping. Comparing the two inflated every gap, and the effect was largest on cheap items where postage is a big share of the price.",
-   "fix": "The gap is now calculated item price against item price. Delivered totals are still shown as the price you would actually pay, which is a separate number.",
-   "guard": "Both medians are stored separately at fetch time, and any row still missing the item-only figure is flagged rather than published as if it were comparable."
+   "what": "Our marketplace gap was not comparing like with like. The eBay figure included shipping; TCGplayer market prices do not. On cheap items \u2014 packs especially \u2014 this reversed the answer: we showed some packs asking far more on eBay when, once shipping was counted on both sides, they were actually cheaper there.",
+   "fix": "Both sides now include shipping and neither includes tax, which is stated wherever a price appears. Journey Together booster packs moved from +54.9% to -12.7%; Destined Rivals from +7.5% to -30%. Sealed boxes barely changed, because both marketplaces ship those free.",
+   "guard": "The comparison basis is recorded on every row, and the shipping estimate is labelled as an estimate with a stated condition for re-checking it."
   },
   {
    "date": "2026-08-21",

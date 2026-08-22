@@ -25,6 +25,10 @@ import { offTcgEra as OFF_TCG } from "./lib/instruments.mjs";
 // file too, or a manually-held product qualifies as a signal (2026-08-22 leak).
 import { loadBlocked } from "./lib/publish-guard.mjs";
 const q = await loadBlocked();
+const TCG_SHIP_EST = 4.99;        // typical small-parcel charge, est.
+const TCG_FREE_SHIP_OVER = 40;    // TCGplayer free-shipping threshold, est.
+const tcgDelivered = m => m == null ? null
+  : Math.round((m + (m >= TCG_FREE_SHIP_OVER ? 0 : TCG_SHIP_EST)) * 100) / 100;
 const rows = [], skipped = [];
 for (const p of ebay.products || []) {
   const t = tcgById.get(p.id);
@@ -32,15 +36,20 @@ for (const p of ebay.products || []) {
     skipped.push({ id: p.id, reason: !t ? "no tcg row" : `status ebay:${p.dataStatus}/tcg:${t?.dataStatus}` });
     continue;
   }
-  const ebayForSpread = p.priceItemMedian ?? p.priceMedian;
-  const spreadBasis = p.priceItemMedian ? "item-vs-item" : "delivered-vs-item (inflated, pending refetch)";
-  const spread = (ebayForSpread - t.tcgMarket) / t.tcgMarket;
-  // LIKE-FOR-LIKE (2026-08-23): the spread compares eBay's ITEM-ONLY median to
-// TCGplayer's market price, because TCG's figure excludes shipping. Using our
-// delivered median here overstated every gap — badly on cheap items. Until the
-// next fetch populates priceItemMedian we fall back to the delivered median and
-// flag the row, rather than publishing a number we know is inflated.
-rows.push({ id: p.id, spreadBasis, publishBlocked: (p.publishBlock || q.blocked(p.id)) || undefined, name: p.name, ebayAskMedian: p.priceMedian, tcgMarket: t.tcgMarket,
+  const ebayDelivered = p.priceMedian;                       // already delivered
+  const tcgDeliv = tcgDelivered(t.tcgMarket);
+  const spreadBasis = "delivered-vs-delivered (shipping in, tax out)";
+  const spread = (ebayDelivered - tcgDeliv) / tcgDeliv;
+  // DELIVERED vs DELIVERED (Tyler ruling, 2026-08-23): "always add shipping on
+// both sides. Never add tax but indicate tax is not included. If a listing has
+// no shipping price, assume the cost is baked in already."
+// So the comparison is what a buyer actually pays on each side. eBay rows are
+// already delivered (item + shipping where stated; where no shipping is stated
+// the cost is treated as included, per the ruling). TCGplayer market price is
+// item-only, so an estimated shipping cost is ADDED to it. Tax is excluded on
+// both sides and said so plainly — it varies by state and by seller nexus.
+// The shipping estimate below is labelled est. and needs periodic verification.
+rows.push({ id: p.id, spreadBasis, tcgDelivered: tcgDeliv, tcgShipEst: t.tcgMarket >= TCG_FREE_SHIP_OVER ? 0 : TCG_SHIP_EST, publishBlocked: (p.publishBlock || q.blocked(p.id)) || undefined, name: p.name, ebayAskMedian: p.priceMedian, tcgMarket: t.tcgMarket,
     ebayListings: p.listingCount ?? null, tcgListings: t.tcgListings ?? null,
     spreadPct: Math.round(spread * 1000) / 10,
     signal: !OFF_TCG(p.id) && !p.publishBlock && !q.blocked(p.id) && Math.abs(spread) >= SIGNAL_PCT,
