@@ -54,8 +54,10 @@ ${statCells}
 </svg>`;
 }
 
-// CLI: mint today's social card from the queue's midday/morning subject
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Mint today's social card from the queue's midday/morning subject.
+// Exported: the old `file://argv[1]` CLI guard was false under the
+// pipeline import AND on Windows paths — no social card ever minted in CI.
+export async function mintSocialCard() {
   const der = await J("data/derived-insights.json") ?? {};
   const sp = await J("data/sealed-prices.json") ?? { products: [] };
   const cm = await J("data/crosscheck-id-map.json") ?? { entries: [] };
@@ -64,7 +66,15 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const today = new Date().toISOString().slice(0, 10);
   await mkdir(join(ROOT, "research/pulse/cards"), { recursive: true });
   const t3 = der.dailyThree?.sealed;
-  const prod = (sp.products || []).find(p => p.name === t3?.name);
+  let prod = (sp.products || []).find(p => p.name === t3?.name);
+  // publish-guard: derived's pick may predate qa-gate's flags. A blocked
+  // subject mints nothing (loudly) — never a card for a held number.
+  const { loadBlocked } = await import("./lib/publish-guard.mjs");
+  const __blk = await loadBlocked();
+  if (prod && (prod.publishBlock || __blk.blocked(prod.id))) {
+    console.log(`· social card NOT minted — subject ${prod.name} is blocked/quarantined`);
+    prod = null;
+  }
   if (prod) {
     const svg = socialCard({ img: imgFor(prod), title: prod.name, hero: "$" + Number(prod.priceMedian).toLocaleString("en-US"),
       heroLabel: "TODAY'S SEALED WATCH", hook: t3.spreadPct != null ? `eBay asks ${Math.abs(t3.spreadPct)}% ${t3.spreadPct > 0 ? "more" : "less"} than TCGplayer` : "",
@@ -75,4 +85,10 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     await writeFile(join(ROOT, "research/pulse/cards/latest-social.svg"), svg);
     console.log("✓ social card minted (photo-forward)");
   } else console.log("· no sealed subject for social card today");
+}
+
+// Windows-safe CLI guard (argv[1] is a filesystem path; compare as URL).
+import { pathToFileURL } from "node:url";
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  await mintSocialCard();
 }

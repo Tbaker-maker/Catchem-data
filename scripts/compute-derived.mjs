@@ -137,7 +137,12 @@ if (digestText) {
 // Active Listings (measured) × listing-delta flow (Buy Pressure est.).
 // Reads unlock per-product at 3+ clean snapshot days; calibrating until.
 const CLEAN_CUT = "2026-08-18";
-const blockedIds = new Set((sp.products||[]).filter(p=>p.publishBlock).map(p=>p.id));
+// Union with the durable quarantine file: the fetch rebuild wipes
+// publishBlock and qa-gate runs later (inside generate-pulse), so at this
+// point flags alone are empty — the 2026-08-22 PGO-ETB leak (publish-guard).
+const { loadBlocked } = await import("./lib/publish-guard.mjs");
+const __q = await loadBlocked();
+const blockedIds = new Set([...(sp.products||[]).filter(p=>p.publishBlock).map(p=>p.id), ...__q.ids]);
 const liveList = sp.products.filter(p=>p.dataStatus==="live" && p.listingCount);
 const counts = liveList.map(p=>p.listingCount).sort((a,b)=>a-b);
 const q3 = counts[Math.floor(counts.length*0.75)] ?? 0;

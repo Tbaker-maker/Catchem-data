@@ -73,6 +73,22 @@ const MANIFEST = [
     mustBeReferencedIn: [
       { file: "scripts/compute-derived.mjs", pattern: /premiumThin/g, min: 2 },
     ] },
+  { guard: "Durable quarantine at compute time (fetch rebuilds wipe publishBlock; qa-gate runs later)",
+    definedIn: "scripts/lib/publish-guard.mjs",
+    mustBeReferencedIn: [
+      { file: "scripts/compute-divergence.mjs", pattern: /publish-guard/g, min: 1,
+        note: "signal gate must read the durable quarantine — flags are empty at its runtime (2026-08-22 PGO leak)" },
+      { file: "scripts/compute-derived.mjs", pattern: /publish-guard/g, min: 1,
+        note: "blockedIds must union the durable file, not just publishBlock flags" },
+      { file: "scripts/generate-pulse.mjs", pattern: /publish-guard/g, min: 1,
+        note: "editorial pools (spread signals, deepest markets, story kits) must filter blocked ids" },
+      { file: "scripts/post-bank.mjs", pattern: /publish-guard/g, min: 1,
+        note: "assembled ideas must drop blocked-product mentions before writing post-bank.json" },
+      { file: "scripts/social-posts.mjs", pattern: /publish-guard/g, min: 1,
+        note: "queue slots must drop blocked-product mentions" },
+      { file: "scripts/mint-social-card.mjs", pattern: /publish-guard/g, min: 1,
+        note: "a blocked subject mints no card" },
+    ] },
 ];
 
 // Guard SCRIPTS that must run inside the daily pipeline, in order.

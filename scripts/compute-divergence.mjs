@@ -20,6 +20,11 @@ catch { console.log("no sealed-crosscheck.json yet — provider eval pending; ex
 const tcgById = new Map(tcg.products.map(p => [p.id, p]));
 // RT-4a venue gate — canonical implementation in lib, unit-tested in CI.
 import { offTcgEra as OFF_TCG } from "./lib/instruments.mjs";
+// Durable quarantine: publishBlock flags are wiped by each fetch rebuild and
+// qa-gate hasn't run yet at this point in the pipeline — read the durable
+// file too, or a manually-held product qualifies as a signal (2026-08-22 leak).
+import { loadBlocked } from "./lib/publish-guard.mjs";
+const q = await loadBlocked();
 const rows = [], skipped = [];
 for (const p of ebay.products || []) {
   const t = tcgById.get(p.id);
@@ -28,10 +33,10 @@ for (const p of ebay.products || []) {
     continue;
   }
   const spread = (p.priceMedian - t.tcgMarket) / t.tcgMarket;
-  rows.push({ id: p.id, publishBlocked: p.publishBlock || undefined, name: p.name, ebayAskMedian: p.priceMedian, tcgMarket: t.tcgMarket,
+  rows.push({ id: p.id, publishBlocked: (p.publishBlock || q.blocked(p.id)) || undefined, name: p.name, ebayAskMedian: p.priceMedian, tcgMarket: t.tcgMarket,
     ebayListings: p.listingCount ?? null, tcgListings: t.tcgListings ?? null,
     spreadPct: Math.round(spread * 1000) / 10,
-    signal: !OFF_TCG(p.id) && !p.publishBlock && Math.abs(spread) >= SIGNAL_PCT,
+    signal: !OFF_TCG(p.id) && !p.publishBlock && !q.blocked(p.id) && Math.abs(spread) >= SIGNAL_PCT,
     offTcgEra: OFF_TCG(p.id) || undefined,
     venueNote: OFF_TCG(p.id) ? "vintage-class — trades on eBay, shows, and collector groups; TCG comparison gated (RT-4a)" : undefined,
     read: spread >= SIGNAL_PCT ? "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening"

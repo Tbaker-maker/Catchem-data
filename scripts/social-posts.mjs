@@ -114,9 +114,18 @@ if (roh) {
   ].filter(Boolean).join("\n") };
 }
 
+// publish-guard: drop any slot whose copy mentions a blocked product —
+// upstream picks may predate qa-gate's flags (2026-08-22 leak class).
+const { loadBlocked } = await import("./lib/publish-guard.mjs");
+const __blk = await loadBlocked();
+const slots = [morning, midday, evening].filter(Boolean).filter(s => {
+  const hit = __blk.mentions(JSON.stringify(s));
+  if (hit) console.log(`  · social queue: dropped ${s.slot} slot — mentions blocked product (${hit})`);
+  return !hit;
+});
 const queue = { generatedAt: new Date().toISOString(), date: today, dayNumber: dayNum,
   note: "Ready-to-post copy. Post from phone (10s each) or wire the X API later. One slot a day is the floor; three is the ceiling.",
-  posts: [morning, midday, evening].filter(Boolean) };
+  posts: slots };
 await writeFile(join(ROOT, "research/pulse/social-queue.json"), JSON.stringify(queue, null, 1));
 console.log(`✓ social queue: day ${dayNum}, ${queue.posts.length} posts ready`);
 for (const p of queue.posts) console.log(`\n── ${p.slot} (${p.suggestedTime})${p.lens ? ` · lens: ${p.lens}` : ""}\n${p.text}\n`);

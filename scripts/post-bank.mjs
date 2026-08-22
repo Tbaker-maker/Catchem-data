@@ -115,10 +115,21 @@ if (wo?.sealed?.dPct != null) {
     }, card: null, chip: "VERIFIED" });
 }
 
+// publish-guard: derived picks upstream were computed before qa-gate ran —
+// drop any assembled idea that mentions a blocked product (by the same
+// name/id matching publish-assert greps for). 2026-08-22: PGO ETB reached
+// this file through a derived story kit.
+const { loadBlocked } = await import("./lib/publish-guard.mjs");
+const __blk = await loadBlocked();
+const publishable = ideas.filter(i => {
+  const hit = __blk.mentions(JSON.stringify(i));
+  if (hit) console.log(`  · post-bank: dropped angle "${i.id}" — mentions blocked product (${hit})`);
+  return !hit;
+});
 const bank = { generatedAt: new Date().toISOString(), date: today,
   note: "POST STUDIO bank — finished posts from today's real data. Pick an angle, pick a platform, paste. Numbers are sourced; voice is yours.",
   voices: Object.entries(VOICE).map(([k, v]) => ({ id: k, label: v.tag })),
-  ideas };
+  ideas: publishable };
 await writeFile(join(ROOT, "research/pulse/post-bank.json"), JSON.stringify(bank, null, 1));
 console.log(`✓ post bank: ${ideas.length} angles × ${Object.keys(ideas[0]?.platforms ?? {}).length} formats`);
 for (const i of ideas) console.log(`\n── ${i.angle} [${i.chip}]\n${i.platforms.x}\n   YT: ${i.platforms.youtube_title}`);

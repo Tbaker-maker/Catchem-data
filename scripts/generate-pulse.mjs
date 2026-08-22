@@ -54,10 +54,17 @@ const captureBlock = `<div style="margin-top:26px;background:var(--panel);border
 </div>`;
 
 const live = sp.products.filter(p=>p.dataStatus==="live");
+// EDITORIAL pool (publish-guard): blocked/quarantined products stay on the
+// Board with a held label but never get FEATURED — qa-gate has run by now,
+// and the durable file catches anything a rebuild un-flagged. The 2026-08-22
+// leak was this file rendering spread signals + deepest-markets from raw rows.
+const { loadBlocked } = await import("./lib/publish-guard.mjs");
+const __blk = await loadBlocked();
+const pub = live.filter(p=>!p.publishBlock && !__blk.blocked(p.id));
 const noMkt = sp.products.filter(p=>p.dataStatus==="no-active-market").length;
 const heatDays = (heat?.mode||"").match(/day (\d+)/)?.[1] ?? "?";
-const sigs = (div?.rows||[]).filter(r=>r.signal);
-const topListed = [...live].sort((a,b)=>(b.listingCount||0)-(a.listingCount||0)).slice(0,3);
+const sigs = (div?.rows||[]).filter(r=>r.signal && !__blk.blocked(r.id));
+const topListed = [...pub].sort((a,b)=>(b.listingCount||0)-(a.listingCount||0)).slice(0,3);
 const chases = (sg?.cards||[]).filter(c=>!c.needsReview && c.dataStatus==="live")
   .sort((a,b)=>(b.priceMarket||0)-(a.priceMarket||0)).slice(0,5);
 const upcoming = (radar?.items||radar?.releases||[]).filter(r=>{
@@ -300,9 +307,9 @@ if (s0) storyKits.push({
   receipts: `eBay active asks, BIN-only delivered · TCG-side provider market · ${today} · catchemtcg.com`,
 });
 {
-  const thin = live.filter(p => p.listingCount && p.listingCount < 8).sort((a, b) => a.listingCount - b.listingCount)[0];
-  const deep = [...live].sort((a, b) => (b.listingCount || 0) - (a.listingCount || 0))[0];
-  storyKits.push(thin
+  const thin = pub.filter(p => p.listingCount && p.listingCount < 8).sort((a, b) => a.listingCount - b.listingCount)[0];
+  const deep = [...pub].sort((a, b) => (b.listingCount || 0) - (a.listingCount || 0))[0];
+  if (thin || deep) storyKits.push(thin
     ? { id: "supply", angle: "Scarcity on tape",
         headline: `${thin.name}: ${thin.listingCount} listings left`,
         body: `Only ${thin.listingCount} active listing${thin.listingCount === 1 ? "" : "s"} on all of eBay, asking $${thin.priceMedian}. Try to buy one — that's the story.`,
@@ -452,7 +459,9 @@ console.log("✓ Pulse HTML edition written (dated + stable path)");
 console.log(`✓ Morning Pulse written: research/pulse/${today}.md`);
 
 await import("./mint-cards.mjs");
-await import("./mint-social-card.mjs");
+// mint-social-card's mint is a named export (same disconnected-CLI-guard
+// class as binder-page — a bare import minted nothing in CI).
+await (await import("./mint-social-card.mjs")).mintSocialCard();
 // binder-page's mint is a named export — a bare side-effect import minted
 // nothing (its old CLI guard was false under import; caught 2026-08-22).
 await (await import("./binder-page.mjs")).mintBinderPages();
