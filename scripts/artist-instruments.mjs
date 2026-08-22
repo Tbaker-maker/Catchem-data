@@ -79,7 +79,7 @@ for (const [name, a] of Object.entries(artists)) {
     topCard: pricedCards.slice().sort((x, y) => y.price - x.price)[0] ?? null,
     cohortReturnPct: cohortRet == null ? null : Math.round(cohortRet * 1000) / 10,
     dispersionPct: dispersion == null ? null : Math.round(dispersion * 1000) / 10,
-    cards: all.map(c => ({ cardId: c.cardId, name: c.name, setName: c.setName, rarity: c.rarity, price: c.price, retPct: c.ret == null ? null : Math.round(c.ret * 1000) / 10 })),
+    cards: all.map(c => ({ cardId: c.cardId, name: c.name, setName: c.setName, rarity: c.rarity, finish: c.priceFinish ?? null, releaseDate: c.releaseDate ?? null, price: c.price, retPct: c.ret == null ? null : Math.round(c.ret * 1000) / 10 })),
   });
 }
 
@@ -103,14 +103,51 @@ for (const p of profiles) {
 }
 
 // ── UNDERRATED: a card sitting well below its artist's own median ───────────
+// COMPARE LIKE WITH LIKE (fixed 2026-08-22). This measured a card against the
+// median of its artist's ENTIRE body of work, across every rarity. A card's
+// price is set overwhelmingly by rarity and by which Pokémon is on it, so every
+// bulk common by an illustrator who also drew one chase card came out
+// "underrated". Measured on the first real run: 23 of 25 finds compared across
+// mixed rarities and 7 were commons under $2 — the worst was Brute Bonnet, an
+// Uncommon at $0.24, held against a $287.82 median drawn from a 3-card cohort.
+// The old read even conceded the flaw in its own text ("it usually reflects the
+// Pokémon or the rarity rather than the art"), which is a caveat standing in
+// for a control. A number that needs a sentence explaining it probably means
+// something else is not a finding.
+// Now the median is per artist PER RARITY, and a rarity needs its own cohort of
+// three before it can be compared at all. Far fewer finds, each one defensible.
+// median() already exists above; reusing it rather than shadowing.
+// money(): a 24-cent card printed as "$0" in the old read — rounding a price
+// to nothing is its own small dishonesty.
+const money = n => n < 10 ? `$${n.toFixed(2)}` : `$${Math.round(n).toLocaleString("en-US")}`;
 const underrated = [];
 for (const p of profiles) {
-  if (p.pricedCards < MIN_COHORT || !p.medianValue) continue;
+  if (p.pricedCards < MIN_COHORT) continue;
+  const byRarity = {};
+  // Keyed by rarity AND FINISH. Rarity alone was still not like-for-like:
+  // Aya Kusube's "Rare Holo" cohort held a 2001 unlimitedHolofoil at $1,051
+  // beside a 2022 reverseHolofoil at $0.24, and the instrument duly reported
+  // the 24-cent card as underrated. A reverse holo and an unlimited holo are
+  // different products wearing the same rarity word.
+  for (const c of p.cards) if (c.price != null && c.rarity && c.finish && c.releaseDate) (byRarity[c.rarity + " / " + c.finish] ||= []).push(c);
   for (const c of p.cards) {
-    if (c.price == null || c.price >= p.medianValue * 0.5) continue;
+    if (c.price == null || !c.rarity || !c.finish || !c.releaseDate) continue;
+    // ...AND THE SAME ERA. Rarity plus finish was still not like-for-like:
+    // 5ban Graphics' "Rare / holofoil" cohort spans decades, so a 2007 Palkia
+    // at $0.26 was held against a $563 median carried by a vintage card and
+    // duly reported as the single most underrated card we track. A 20-year gap
+    // is a different market, not a mispricing — our own venue law says vintage
+    // trades somewhere else entirely. Peers must sit within five years.
+    const yr = d => Number(String(d).slice(0, 4));
+    const peers = (byRarity[c.rarity + " / " + c.finish] || [])
+      .filter(x => x.cardId !== c.cardId && Math.abs(yr(x.releaseDate) - yr(c.releaseDate)) <= 5);
+    if (peers.length < MIN_COHORT) continue;          // no like-for-like cohort, no claim
+    const rarityMedian = median(peers.map(x => x.price));
+    if (!rarityMedian || c.price >= rarityMedian * 0.5) continue;
     underrated.push({ cardId: c.cardId, card: c.name, set: c.setName, artist: p.artist,
-      price: c.price, artistMedian: p.medianValue, catalogueCards: p.catalogueCards, chip: "READ",
-      read: `${c.name} sits at $${Math.round(c.price).toLocaleString("en-US")} while the middle of ${p.artist}'s priced work is $${Math.round(p.medianValue).toLocaleString("en-US")}. That gap is not a recommendation — it usually reflects the Pokémon or the rarity rather than the art — but it is where an art-first collector would look first.` });
+      price: c.price, rarity: c.rarity, finish: c.finish, rarityMedian, rarityPeers: peers.length,
+      artistMedian: p.medianValue, catalogueCards: p.catalogueCards, chip: "READ",
+      read: `${c.name} sits at ${money(c.price)} while ${p.artist}'s other ${c.rarity} (${c.finish}) cards sit around ${money(rarityMedian)} (${peers.length} of them, within five years). Same illustrator, same rarity tier — so this compares like with like rather than holding a common against a chase card. Still not a recommendation: what a card is worth is mostly the Pokémon on it.` });
   }
 }
 
@@ -120,7 +157,34 @@ const out = { generatedAt: new Date().toISOString(),
     artistsWithCohort: profiles.filter(p => p.pricedCards >= MIN_COHORT).length,
     note: "Catalogue counts are complete for the sets ingested; an 'ever' claim is valid only for artists whose sets are all present." },
   profiles: profiles.sort((a, b) => b.catalogueCards - a.catalogueCards).slice(0, 200),
-  attributions, underrated: underrated.sort((a, b) => (b.artistMedian - b.price) - (a.artistMedian - a.price)).slice(0, 25) };
+  // Ranked by the gap against the SAME-RARITY median, not the whole-cohort one
+  // the comparison no longer uses. Sorting by artistMedian kept pushing bulk
+  // commons to the top — the widest absolute gap is always a cheap card
+  // measured against an expensive cohort, which is the confound this
+  // instrument was just fixed to avoid. Ranking on the metric you actually
+  // computed sounds obvious; it survived one round of fixing here anyway.
+  // NOT PUBLISHABLE (2026-08-22). This took three successive controls — same
+  // rarity, then same finish, then same era — and each one removed a class of
+  // nonsense only for the next to surface. The last example standing: 5ban
+  // Graphics' "Rare / holofoil" cards within five years of 2021 are two 2021
+  // Celebrations bulk cards at $0.26 and two 2025 Victini chase cards at $600,
+  // so a 26-cent card is measured against a $565 median and reported as the
+  // most underrated card we track.
+  //
+  // The defect is not the controls, it is the premise. Card price is driven by
+  // which Pokémon is on it, chase status and set-specific scarcity — none of
+  // which we model — and "Rare" means different things in different sets. A
+  // 3-4 card artist cohort cannot isolate an art effect from those. Tuning the
+  // thresholds until the visible examples stop being embarrassing would be the
+  // same mistake as scoping a count and not the sentence built on it.
+  //
+  // So it stays computed and stays advisory, and it carries a flag saying so.
+  // It becomes publishable when there is a model of what a card should cost,
+  // not before.
+  publishable: false,
+  publishableReason: "Underrated finds compare cards within an artist's cohort but do not model the things that actually set a card's price (which Pokémon, chase status, set scarcity). Cohorts of 3-4 make the median unstable, and 'Rare' is not a consistent tier across sets. Advisory only — do not put these on a public surface.",
+  attributions, underrated: underrated
+    .sort((a, b) => (b.rarityMedian - b.price) - (a.rarityMedian - a.price)).slice(0, 25) };
 
 await writeFile(join(ROOT, "research/pulse/artist-instruments.json"), JSON.stringify(out, null, 1));
 console.log(`✓ artist instruments: ${profiles.length} illustrators · ${out.coverage.artistsWithCohort} with a real cohort · ${attributions.length} attributions · ${underrated.length} sitting below their artist's median`);
