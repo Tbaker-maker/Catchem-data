@@ -153,10 +153,19 @@ const isMultiSetMenu = (t) => {
 // 6-char floor (it skips "151" so card numbers don't match) but which still
 // appear as distinct products.
 const SHORT_SIBLINGS = ["151", "black bolt", "white flare"];
+// "Base Set" is how sellers DISAMBIGUATE an era-base product — "Scarlet &
+// Violet Base Set Booster Bundle" is precisely the sv1 listing we want — but
+// it is also the name of a tracked vintage set, so the sibling rule threw the
+// only genuine listings away and made a live market look dead. Caught
+// 2026-08-22 during the retirement pass, one step before retiring sv1-bundle
+// as a product that no longer trades. This function is only ever called for
+// eraBaseSet products, so the phrase can never mean a different set here;
+// base1 itself is not era-base and never reaches this code.
+const NOT_A_SIBLING = new Set(["base set", "base"]);
 const namesAnotherSet = (t, ownSet) => {
   const lc = t.toLowerCase(), own = (ownSet || "").toLowerCase();
-  for (const n of SET_NAME_LIST) if (n !== own && lc.includes(n)) return n;
-  for (const n of SHORT_SIBLINGS) if (n !== own && wordBoundaryTest(n, lc)) return n;
+  for (const n of SET_NAME_LIST) if (n !== own && !NOT_A_SIBLING.has(n) && lc.includes(n)) return n;
+  for (const n of SHORT_SIBLINGS) if (n !== own && !NOT_A_SIBLING.has(n) && wordBoundaryTest(n, lc)) return n;
   return null;
 };
 const EXCLUDE_COMMON = [
@@ -590,6 +599,13 @@ async function main() {
           dataStatus: "query_error",
           lastSeen: prev?.lastSeen,
           filterReport: report,
+          // Carry the samples on this path too. query_error is exactly when a
+          // human needs to see WHICH titles were thrown away — a SKU that
+          // lands here is either a dead market or an over-tight filter, and
+          // the counts alone cannot tell those apart (2026-08-22 retirement
+          // pass: sv1-bundle and swsh1-bundle both arrived here with no
+          // evidence attached).
+          rejectionSamples: samples,
         };
       }
 
