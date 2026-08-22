@@ -36,5 +36,11 @@ export async function loadBlocked() {
     for (const i of ids) if (t.includes(`"${i}"`)) return i;
     return null;
   };
-  return { ids, names, blocked, mentions };
+  // The public "held" label should say WHY in the product's own terms; the
+  // durable file already carries a reason, so consumers need not invent one.
+  const reasonFor = (id) => {
+    const e = (mq.entries || []).find(x => x.id === id);
+    return e ? `manually quarantined ${e.since} (${e.by}): ${e.reason}` : null;
+  };
+  return { ids, names, blocked, mentions, reasonFor };
 }

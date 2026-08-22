@@ -1,12 +1,54 @@
 {
- "note": "MANUAL QUARANTINE — durable. Products listed here are barred from all public surfaces (Daily Three, social, cards, newsletter) regardless of what the pipeline computes. Founder-QA flags land here so a regeneration can never silently un-quarantine them. Remove an entry only after the number re-verifies.",
- "entries": [
-  {
-   "id": "pgo-etb",
-   "since": "2026-08-21",
-   "by": "Tyler (founder QA)",
-   "reason": "median read $240 against an observed ~$205 market; multi-item listings suspected in the top half",
-   "clears_when": "median re-verifies under the MULTI_ITEM_RX guard and lands within ~10% of observed market"
-  }
- ]
+  "note": "MANUAL QUARANTINE — durable. Products listed here are barred from all public surfaces (Daily Three, social, cards, newsletter) regardless of what the pipeline computes. Founder-QA flags land here so a regeneration can never silently un-quarantine them. Remove an entry only after the number re-verifies.",
+  "entries": [
+    {
+      "id": "pgo-etb",
+      "since": "2026-08-21",
+      "by": "Tyler (founder QA)",
+      "reason": "median read $240 against an observed ~$205 market; multi-item listings suspected in the top half",
+      "clears_when": "median re-verifies under the MULTI_ITEM_RX guard and lands within ~10% of observed market"
+    },
+    {
+      "id": "sv1-bundle",
+      "since": "2026-08-22",
+      "by": "CC (era-base contamination audit)",
+      "reason": "the price was built from other sets. Listings for later Scarlet & Violet sets carry the words Scarlet & Violet too, so bundles from 151 and Paldean Fates were being counted as this product and pushed it to about $72, against a real price nearer $25. Held until we confirm this bundle still trades.",
+      "clears_when": "Tyler rules on whether this product has a real active market, and the SKU re-verifies with >=8 genuine kept listings under the eraBaseSet gate"
+    },
+    {
+      "id": "swsh1-bundle",
+      "since": "2026-08-22",
+      "by": "CC (era-base contamination audit)",
+      "reason": "the price was built from other sets — Lost Origin and Crown Zenith bundles were counted as Sword & Shield base and pushed it to about $198. Held until we confirm this bundle still trades.",
+      "clears_when": "Tyler rules on whether this product has a real active market, and the SKU re-verifies with >=8 genuine kept listings under the eraBaseSet gate"
+    },
+    {
+      "id": "swsh1-pack",
+      "since": "2026-08-22",
+      "by": "CC (era-base contamination audit)",
+      "reason": "the price was built from other sets. Later Sword & Shield packs were counted as base-set packs, reading about $20 against a real price nearer $5.",
+      "clears_when": "Tyler rules on whether this product has a real active market, and the SKU re-verifies with >=8 genuine kept listings under the eraBaseSet gate"
+    },
+    {
+      "id": "swsh1-etb",
+      "since": "2026-08-22",
+      "by": "CC (era-base contamination audit)",
+      "reason": "the price included trainer boxes from later Sword & Shield sets, reading about $182.",
+      "clears_when": "Tyler rules on whether this product has a real active market, and the SKU re-verifies with >=8 genuine kept listings under the eraBaseSet gate"
+    },
+    {
+      "id": "sm1-booster-box",
+      "since": "2026-08-22",
+      "by": "CC (era-base contamination audit)",
+      "reason": "the price included boxes from later Sun & Moon sets. Most listings we fetched name a different set, so the $2,300 reading is not this product.",
+      "clears_when": "Tyler rules on whether this product has a real active market, and the SKU re-verifies with >=8 genuine kept listings under the eraBaseSet gate"
+    },
+    {
+      "id": "swsh1-booster-box",
+      "since": "2026-08-22",
+      "by": "CC (era-base contamination audit)",
+      "reason": "only four listings survived once other Sword & Shield sets were removed — too few to publish a price we would stand behind.",
+      "clears_when": "Tyler rules on whether this product has a real active market, and the SKU re-verifies with >=8 genuine kept listings under the eraBaseSet gate"
+    }
+  ]
 }

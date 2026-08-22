@@ -1,64 +1,85 @@
 {
- "note": "IMAGE OVERRIDES — reviewed by eye, since no automatic source is reliable for every product. TCGplayer catalogue shots are usually clean single-unit photos, but some are CASE or MULTIPACK images (a 4-box shot for a single ETB misrepresents what a buyer receives). Seller photos are single-unit but are phone snapshots. Rule: a MISSING photo beats a MISLEADING one.",
- "rules": {
-  "prefer": "TCGplayer catalogue shot at 1000px",
-  "fallbackOrder": [
-   "seller photo (eBay representative)",
-   "none"
-  ],
-  "neverShow": "any image depicting a different quantity than the product being priced",
-  "chatMayOnlySet": "\"none\", or a URL a human supplied. Chat has no network access to any image CDN and therefore CANNOT choose between two unverified sources. Swapping one unseen image for another is a guess wearing the clothes of a fix — it happened on 2026-08-22 and cost Tyler a second report of the same bug.",
-  "defaultOnDoubt": "none — a missing photo is always safe; a wrong one is never safe."
- },
- "products": {
-  "xy12-etb": {
-   "url": "https://i.ebayimg.com/images/g/EBwAAeSwWEBqcl0J/s-l1600.jpg",
-   "reason": "CC eye-verified: single sealed XY Evolutions ETB (Mega Charizard Y variant), front-on, white background, fully readable. Both TCGplayer catalogue variants are contents-exploded shots with a PokeBeach watermark — unusable. eBay image URLs are long-lived but not eternal; if it 404s, fall back to none.",
-   "reviewed": "2026-08-22",
-   "setBy": "cc",
-   "humanVerified": true
+  "note": "IMAGE OVERRIDES — reviewed by eye, since no automatic source is reliable for every product. TCGplayer catalogue shots are usually clean single-unit photos, but some are CASE or MULTIPACK images (a 4-box shot for a single ETB misrepresents what a buyer receives). Seller photos are single-unit but are phone snapshots. Rule: a MISSING photo beats a MISLEADING one.",
+  "rules": {
+    "prefer": "TCGplayer catalogue shot at 1000px",
+    "fallbackOrder": [
+      "seller photo (eBay representative)",
+      "none"
+    ],
+    "neverShow": "any image depicting a different quantity than the product being priced",
+    "chatMayOnlySet": "\"none\", or a URL a human supplied. Chat has no network access to any image CDN and therefore CANNOT choose between two unverified sources. Swapping one unseen image for another is a guess wearing the clothes of a fix — it happened on 2026-08-22 and cost Tyler a second report of the same bug.",
+    "defaultOnDoubt": "none — a missing photo is always safe; a wrong one is never safe."
   },
-  "sm1-booster-box": {
-   "url": "https://tcgplayer-cdn.tcgplayer.com/product/126048_in_1000x1000.jpg",
-   "reason": "CC eye-verified: previous image was a hand-held phone photo of a cased box against a curtain. TCGplayer 126048 is the clean single-display catalogue shot.",
-   "reviewed": "2026-08-22",
-   "setBy": "cc",
-   "humanVerified": true
-  },
-  "sm8-booster-box": {
-   "url": "https://tcgplayer-cdn.tcgplayer.com/product/175509_in_1000x1000.jpg",
-   "reason": "CC eye-verified: previous image was an acrylic-case phone photo with heavy glare. TCGplayer 175509 is the clean catalogue shot.",
-   "reviewed": "2026-08-22",
-   "setBy": "cc",
-   "humanVerified": true
-  },
-  "cel25-bb": {
-   "use": "none",
-   "reason": "CC eye-verified: the seller image was an ORDER-SUMMARY SCREENSHOT, not a product photo. No verifiable catalogue product exists for a 2021 Celebrations booster bundle. FLAG FOR TYLER: the kept listings include 30th-Celebration PRESALES ($321) polluting this 2021-set SKU — identity needs a ruling, same class as swsh45-pack.",
-   "reviewed": "2026-08-22",
-   "setBy": "cc",
-   "humanVerified": true
-  },
-  "swsh12pt5-pack": {
-   "use": "none",
-   "reason": "CC eye-verified: image showed a WALL of dozens of packs (lot photo) for a single-pack SKU. Crown Zenith has no TCGplayer single-pack product (verified in the RT-4b sweep) — missing beats misleading.",
-   "reviewed": "2026-08-22",
-   "setBy": "cc",
-   "humanVerified": true
-  },
-  "sv4pt5-pack": {
-   "use": "none",
-   "reason": "CC eye-verified: image showed a pack PLUS a promo card side by side — implies contents a loose pack does not have. Paldean Fates has no TCGplayer single-pack product — missing beats misleading.",
-   "reviewed": "2026-08-22",
-   "setBy": "cc",
-   "humanVerified": true
-  },
-  "sv8-pc-etb": {
-   "use": "none",
-   "reason": "CC eye-verified: the product sits in a display shelf with another ETB above and a dozen graded slabs below — a collection scene, not a product photo. Pokemon Center exclusive: no catalogue source exists.",
-   "reviewed": "2026-08-22",
-   "setBy": "cc",
-   "humanVerified": true
+  "products": {
+    "xy12-etb": {
+      "url": "https://i.ebayimg.com/images/g/EBwAAeSwWEBqcl0J/s-l1600.jpg",
+      "reason": "CC eye-verified: single sealed XY Evolutions ETB (Mega Charizard Y variant), front-on, white background, fully readable. Both TCGplayer catalogue variants are contents-exploded shots with a PokeBeach watermark — unusable. eBay image URLs are long-lived but not eternal; if it 404s, fall back to none.",
+      "reviewed": "2026-08-22",
+      "setBy": "cc",
+      "humanVerified": true
+    },
+    "sm1-booster-box": {
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/126048_in_1000x1000.jpg",
+      "reason": "CC eye-verified: previous image was a hand-held phone photo of a cased box against a curtain. TCGplayer 126048 is the clean single-display catalogue shot.",
+      "reviewed": "2026-08-22",
+      "setBy": "cc",
+      "humanVerified": true
+    },
+    "sm8-booster-box": {
+      "url": "https://tcgplayer-cdn.tcgplayer.com/product/175509_in_1000x1000.jpg",
+      "reason": "CC eye-verified: previous image was an acrylic-case phone photo with heavy glare. TCGplayer 175509 is the clean catalogue shot.",
+      "reviewed": "2026-08-22",
+      "setBy": "cc",
+      "humanVerified": true
+    },
+    "cel25-bb": {
+      "use": "none",
+      "reason": "CC eye-verified: the seller image was an ORDER-SUMMARY SCREENSHOT, not a product photo. No verifiable catalogue product exists for a 2021 Celebrations booster bundle. FLAG FOR TYLER: the kept listings include 30th-Celebration PRESALES ($321) polluting this 2021-set SKU — identity needs a ruling, same class as swsh45-pack.",
+      "reviewed": "2026-08-22",
+      "setBy": "cc",
+      "humanVerified": true
+    },
+    "swsh12pt5-pack": {
+      "use": "none",
+      "reason": "CC eye-verified: image showed a WALL of dozens of packs (lot photo) for a single-pack SKU. Crown Zenith has no TCGplayer single-pack product (verified in the RT-4b sweep) — missing beats misleading.",
+      "reviewed": "2026-08-22",
+      "setBy": "cc",
+      "humanVerified": true
+    },
+    "sv4pt5-pack": {
+      "use": "none",
+      "reason": "CC eye-verified: image showed a pack PLUS a promo card side by side — implies contents a loose pack does not have. Paldean Fates has no TCGplayer single-pack product — missing beats misleading.",
+      "reviewed": "2026-08-22",
+      "setBy": "cc",
+      "humanVerified": true
+    },
+    "sv8-pc-etb": {
+      "use": "none",
+      "reason": "CC eye-verified: the product sits in a display shelf with another ETB above and a dozen graded slabs below — a collection scene, not a product photo. Pokemon Center exclusive: no catalogue source exists.",
+      "reviewed": "2026-08-22",
+      "setBy": "cc",
+      "humanVerified": true
+    },
+    "sv1-bundle": {
+      "use": "none",
+      "reason": "CC eye-verified 2026-08-22: displayed photo was a DESTINED RIVALS booster bundle (Team Rocket art, 6 packs), not Scarlet & Violet base — wrong set, plus packing tape across the face. Symptom of the era-base filter bug fixed the same day; this SKU keeps 0 genuine listings, so no seller photo exists to promote.",
+      "reviewed": "2026-08-22",
+      "setBy": "cc",
+      "humanVerified": true
+    },
+    "swsh1-bundle": {
+      "use": "none",
+      "reason": "CC eye-verified 2026-08-22: displayed photo was a SWORD & SHIELD LOST ORIGIN bundle, not Sword & Shield base. Same era-base contamination; 0 genuine listings kept after the fix.",
+      "reviewed": "2026-08-22",
+      "setBy": "cc",
+      "humanVerified": true
+    },
+    "swsh12pt5-pc-etb": {
+      "use": "none",
+      "reason": "CC eye-verified 2026-08-22: photo is the Crown Zenith Pokemon Center ELITE TRAINER BOX PLUS — a different, higher-priced product than the plain PC-ETB this SKU prices. Correct set, wrong variant; missing beats misleading until a plain PC-ETB photo is confirmed.",
+      "reviewed": "2026-08-22",
+      "setBy": "cc",
+      "humanVerified": true
+    }
   }
- }
 }

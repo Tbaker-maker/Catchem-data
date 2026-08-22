@@ -498,9 +498,18 @@ const feed = {
 //    is in the daily run's git-add list, so this copy updates every CI run.
 //  - research/assets/pulse-feed.json — legacy path for app builds deployed
 //    before the FEED_URL switch; committed only by human sessions.
+// The held label has to read the DURABLE quarantine too, not just the live
+// publishBlock flag: every fetch rebuilds sealed-prices.json and wipes those
+// flags, so a manually quarantined product came back unlabeled on the next
+// run (caught 2026-08-22 by publish-assert when six era-contaminated SKUs
+// were quarantined and sv1-bundle walked straight back into the Board feed).
 for (const p of feed.products || []) {
   const src = (sp.products||[]).find(x=>x.id===p.id);
-  if (src?.publishBlock) { p.held = true; p.heldReason = (src.qaReasons||[])[0] || "held pending re-verification"; }
+  const q = __blk.blocked(p.id);
+  if (src?.publishBlock || q) {
+    p.held = true;
+    p.heldReason = (src?.qaReasons||[])[0] || __blk.reasonFor?.(p.id) || "held pending re-verification";
+  }
 }
 const feedJson = JSON.stringify(feed) + "\n";
 await writeFile(join(ROOT,"research/pulse/pulse-feed.json"), feedJson);
