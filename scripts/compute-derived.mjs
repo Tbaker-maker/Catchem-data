@@ -9,6 +9,7 @@ import { readFile, writeFile, readdir } from "node:fs/promises";
 import { indexLevel, sealedPremium } from "./lib/instruments.mjs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { applyPackBasis } from "./pack-basis.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => JSON.parse(await readFile(join(ROOT,p),"utf-8"));
 
@@ -144,6 +145,8 @@ const { loadBlocked } = await import("./lib/publish-guard.mjs");
 const __q = await loadBlocked();
 const blockedIds = new Set([...(sp.products||[]).filter(p=>p.publishBlock).map(p=>p.id), ...__q.ids]);
 const liveList = sp.products.filter(p=>p.dataStatus==="live" && p.listingCount);
+const packPricing = applyPackBasis(sp.products, div.rows);
+
 const counts = liveList.map(p=>p.listingCount).sort((a,b)=>a-b);
 const q3 = counts[Math.floor(counts.length*0.75)] ?? 0;
 function flowFor(id){
@@ -546,6 +549,7 @@ for (const p of liveList) {
     midpoint: Math.round(((ceiling + floor) / 2) * 100) / 100 };
 }
 
+
 const out = {
   generatedAt: new Date().toISOString(),
   method: "Pack Math: ask median / era-aware pack count (arithmetic, no estimation; variable-count products excluded by name). Narrative: latest agent digest cross-referenced against tracked sets; 'quiet movers' = spread signal with zero digest mention.",
@@ -557,7 +561,7 @@ const out = {
   lifecycle, rotationContext,
   printWatch, tightening, rotationCohorts,
   eraIndexes,
-  sealedIndex, rawIndex, gradedIndex, netProceeds, dealZone, fx, subtypeIndexes, watchOutcomes, supplyShifts: supplyShifts.slice(0,8), ripOrHold, notification,
+  sealedIndex, rawIndex, gradedIndex, netProceeds, packPricing, dealZone, fx, subtypeIndexes, watchOutcomes, supplyShifts: supplyShifts.slice(0,8), ripOrHold, notification,
   cohortCompare,
   topicHits,
   dailyThree: (() => {

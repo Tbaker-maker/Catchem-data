@@ -9,6 +9,7 @@ import { rootCss } from "./lib/brand.mjs";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { applyPackBasis } from "./pack-basis.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const today = new Date().toISOString().split("T")[0];
 const cardImg = id => { const m=/^(.+)-(\w+)$/.exec(id||""); return m?`https://images.pokemontcg.io/${m[1]}/${m[2]}.png`:null; };
@@ -313,6 +314,8 @@ const packsForFeed = (p) => {
 const looseLane = new Map(sp.products
   .filter(p => p.subtype === "booster-pack" && p.dataStatus === "live" && p.priceMedian != null)
   .map(p => [p.setId, p.priceMedian]));
+// Same venue rule the derived engine uses — one module, one truth.
+applyPackBasis(sp.products, (await J("data/divergence-report.json"))?.rows || []);
 const catalog = sp.products.map(p => {
   const packs = packsForFeed(p);
   const live = p.dataStatus === "live";
