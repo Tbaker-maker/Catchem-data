@@ -39,6 +39,7 @@ const AGENTS = [
   { id: "falsifier", zeroMeans: "good", output: "research/pulse/falsifier-report.json", findings: d => (d?.results ?? []).filter(r => r.verdict === "TRIPPED").map(r => r.id), maxFindings: 12, maxSilentDays: 2 },
   { id: "correction-hunter", zeroMeans: "good", output: "research/pulse/correction-hunt.json", findings: d => [...(d?.suspectFigures ?? []).map(f => `suspect::${f.id}`), ...(d?.featuredThenUnmeasurable ?? []).map(f => `gone::${f.name}`)], maxFindings: 30, maxSilentDays: 2 },
   { id: "review-agents", zeroMeans: "unknown", output: "research/pulse/review-agents.json", findings: d => [...(d?.newcomer?.lines ?? []).slice(0, 0)], maxFindings: 0, maxSilentDays: 2 },
+  { id: "api-strategist", zeroMeans: "suspect", output: "research/pulse/api-strategy.json", findings: d => (d?.findings ?? []).map(f => `${f.severity}::${String(f.what).slice(0,40)}`), maxFindings: 12, maxSilentDays: 7, standing: true },
   { id: "compliance", zeroMeans: "good", output: "research/pulse/compliance-report.json", findings: d => (d?.tripped ?? []).map(t => `tripped::${t.id}`), maxFindings: 6, maxSilentDays: 7 },
   { id: "security", zeroMeans: "good", output: "research/pulse/security-report.json", findings: d => [...(d?.critical ?? []).map(c => `critical::${c.what}`), ...(d?.warnings ?? []).map(w => `warn::${w.what}`)], maxFindings: 6, maxSilentDays: 2 },
   { id: "steward", zeroMeans: "good", output: "research/pulse/steward-report.json", findings: d => (d?.speak ?? []).map(x => `${x.kind}::${String(x.what).slice(0, 40)}`), maxFindings: 8, maxSilentDays: 2 },
@@ -256,6 +257,7 @@ const dispatch = { chat: [], cc: [], tyler: [] };
     // agent → how to read its findings, and where they go by default
     "review-agents": { file: "research/pulse/review-agents.json", pick: d => (d?.newcomer?.result || d?.redTeam?.result) ? [{ what: "the reading passes produced notes", do: "read them in review-agents.json", owner: "chat" }] : [] },
     "universe-advisor": { file: "research/pulse/universe-advisor.json", pick: d => (d?.tranches ? [{ what: `pricing 50 more cards would unlock ${d.tranches["+50"]?.artistCohortsUnlocked ?? 0} artist cohorts`, do: "an expansion decision, not a machine's call", owner: "tyler" }] : []) },
+    "api-strategist": { file: "research/pulse/api-strategy.json", pick: d => (d?.findings ?? []).map(f => ({ what: f.what, do: f.action, owner: f.owner })) },
     compliance: { file: "research/pulse/compliance-report.json", pick: d => (d?.tripped ?? []).map(t => ({ what: `[${t.severity}] ${t.obligation}`, do: `fired by: ${t.firedBy.join("; ")} — this was deferred deliberately and the condition we said would end it has happened`, owner: "tyler" })) },
     security: { file: "research/pulse/security-report.json", pick: d => [...(d?.critical ?? []).map(c => ({ what: c.what, do: c.fix, owner: "tyler" })), ...(d?.warnings ?? []).map(w => ({ what: w.what, do: w.fix, owner: "chat" }))] },
     steward: { file: "research/pulse/steward-report.json", pick: d => (d?.speak ?? []).map(x => ({ what: x.what, do: x.why, owner: x.owner })) },

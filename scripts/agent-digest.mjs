@@ -27,6 +27,7 @@ const plat = await J("research/pulse/platform-report.json");
 const stw = await J("research/pulse/steward-report.json");
 const sec = await J("research/pulse/security-report.json");
 const cmp = await J("research/pulse/compliance-report.json");
+const api = await J("research/pulse/api-strategy.json");
 const dpl = await J("research/pulse/domain-plausibility.json");
 const con = await J("research/pulse/agent-contract.json");
 const uni = await J("research/pulse/universe-advisor.json");
@@ -226,6 +227,12 @@ if (dpl?.counts?.high) {
   for (const s of (dpl.termSuspects ?? []).filter(s => s.suspicious))
     say(`- **"${s.term}"** killed ${s.kills} listings across the board — ${s.note}`);
   for (const f of (dpl.findings ?? []).slice(0, 2)) say(`- ${f.name}: ${f.what} — *${f.likelyCause}*`);
+  say();
+}
+
+if (api?.counts?.critical) {
+  say(`## Paid for and never used`);
+  for (const f of (api.findings ?? []).filter(f => f.severity === "critical")) say(`- **${f.what}** — ${f.why}`);
   say();
 }
 

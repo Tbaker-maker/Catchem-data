@@ -882,3 +882,21 @@ WHY IT MATTERS BEYOND COST: a bulk common in an index is not free even when
 the call is. It dilutes breadth, adds noise to every average, and makes the
 index answer a question nobody asked. Dropping it is a measurement decision
 before it is a budget one.
+
+## A CHECKER WHOSE SEARCH SPACE INCLUDES ITSELF (Aug 23 2026)
+Four times in one day a checker examined itself and reported a clean result:
+- three audited COMMENTS explaining why we avoid a thing as evidence we do it,
+- one audited a TEST FIXTURE planted to prove the check works,
+- and the API strategist audited its own vocabulary - its list of valuable
+  fields named every field it was looking for, so it found itself and declared
+  everything already in use. It reported ZERO critical findings while four
+  populated, valuable, entirely unread fields sat in our own data.
+
+THE PATTERN: any tool that searches a codebase is part of the codebase. A
+confident clean report from a checker that can see itself means nothing, and
+it is worse than a noisy one because nobody investigates a pass.
+
+THE RULE: every checker excludes its own source, strips comments before
+auditing, and ignores fixtures. Where that is not possible, the check must
+state what it could not see rather than reporting a number that looks like an
+answer.

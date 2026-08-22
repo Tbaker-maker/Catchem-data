@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-22T23:43:59.250Z",
+ "generatedAt": "2026-08-22T23:50:32.478Z",
  "date": "2026-08-22",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -7,6 +7,7 @@
   "falsifier: 0 finding(s)",
   "correction-hunter: 2 finding(s)",
   "review-agents: 0 finding(s)",
+  "api-strategist: 7 finding(s)",
   "compliance: 0 finding(s)",
   "security: 1 finding(s)",
   "steward: 2 finding(s)",
@@ -492,9 +493,73 @@
    }
   },
   {
+   "from": "api-strategist",
+   "owner": "chat",
+   "what": "raw.recentSales arrives on every card and is never read",
+   "do": "wire it through — the call is already being made and the data is already being paid for",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "api-strategist",
+   "owner": "chat",
+   "what": "raw.vol30 arrives on every card and is never read",
+   "do": "wire it through — the call is already being made and the data is already being paid for",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "api-strategist",
+   "owner": "chat",
+   "what": "ebaySold.psa9 arrives populated and is never read",
+   "do": "wire it through - the call is already made and the data already paid for",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "api-strategist",
+   "owner": "chat",
+   "what": "gradingPremium.psa9 arrives on every card and is never read",
+   "do": "wire it through — the call is already being made and the data is already being paid for",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
    "from": "steward",
    "owner": "chat",
-   "what": "1 hand-written file(s) changed and not committed.",
+   "what": "7 hand-written file(s) changed and not committed.",
    "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -512,6 +577,38 @@
    "owner": "chat",
    "what": "3 script(s) are not referenced anywhere: collision-guard.mjs, discovery-sweep.mjs, refresh-tiers.mjs.",
    "do": "A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "api-strategist",
+   "owner": "cc",
+   "what": "/sealed-products is only ever queried by name",
+   "do": "page through it once and count what is there — the answer changes what is possible, not just what is convenient",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "api-strategist",
+   "owner": "cc",
+   "what": "2 places fetch one item at a time inside a loop",
+   "do": "check whether each endpoint supports a set, page or id-list parameter before scaling the loop up",
    "score": 30,
    "band": "NOTE ONLY",
    "selfScore": 30,
@@ -873,6 +970,6 @@
   "actNow": 0,
   "queue": 9,
   "watch": 8,
-  "noteOnly": 9
+  "noteOnly": 15
  }
 }

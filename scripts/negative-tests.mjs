@@ -421,6 +421,22 @@ const CASES = [
       }
     } },
 
+  { guard: "API strategist does not read itself", detect: null,
+    // It reported 0 critical findings because its own WORTH map names every
+    // field it looks for, so it found itself and called everything used. Fourth
+    // self-read in one day: three checkers audited comments, one audited a test
+    // fixture, this one audited its own vocabulary. The pattern is a checker
+    // whose search space includes the checker.
+    fn: async () => {
+      const src = await readFile(P("scripts/api-strategist.mjs"), "utf-8");
+      const excludesSelf = /api-strategist\.mjs/.test(src);
+      const rep = await readFile(P("research/pulse/api-strategy.json"), "utf-8").catch(() => "{}");
+      const found = (JSON.parse(rep).counts?.critical ?? 0) > 0;
+      return { pass: excludesSelf && found,
+        why: !excludesSelf ? "it no longer excludes its own source, so it will find its own vocabulary and report everything as used"
+           : "it excludes itself but found nothing critical — either we finally use everything, or the walk broke" };
+    } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");

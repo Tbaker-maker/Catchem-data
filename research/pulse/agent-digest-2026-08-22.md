@@ -61,7 +61,7 @@ Gaps in what we watch:
 
 **Chat (11):** top — The Today screen carries 17 sections: The Daily Three, 🗳 Rip or Hold?, Biggest movers, Set the app up for you, Movers, Release radar… *[QUEUE]*
 
-*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 0 ACT NOW, 9 QUEUE, 8 WATCH, 9 filed without surfacing, 4 confirmations.*
+*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 0 ACT NOW, 9 QUEUE, 8 WATCH, 15 filed without surfacing, 4 confirmations.*
 ## The creator cheat code
 *Could somebody open this, hit record within two minutes, and sound like the most informed voice in the hobby without pausing to look anything up? Every pause is a cut.*
 - **a visual that runs itself** — 27 card images minted today. *The gap is that they are files in a repo. A creator needs them one tap from the angle they picked, not from a folder.*
@@ -73,13 +73,13 @@ Nothing unusual, or not enough history to tell — 5 days of tape so far. Anomal
 
 ## Where today's story goes
 - **X** — "Paldean Fates listings moved -66.7% while its print window closes."
-- **YouTube** — Unified Minds Booster Box — "A seller keeps about $3,859.97 online; a buyer pays about $4,761.5. Roughly $901.53 of room where a face-to-face trade beats the internet."
+- **YouTube** — Cosmic Eclipse Booster Box — "A seller keeps about $4,466.96 online; a buyer pays about $5,510.17. Roughly $1,043.21 of room where a face-to-face trade beats the internet."
 - **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 100."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
 
 ## Something is slipping
-- **unsaved** — 1 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
+- **unsaved** — 7 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
 - **drift** — 3 script(s) are not referenced anywhere: collision-guard.mjs, discovery-sweep.mjs, refresh-tiers.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
 
 ## SECURITY — NEEDS A HUMAN NOW
@@ -97,6 +97,12 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 - **"sleeved"** killed 318 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
 - Battle Styles Booster Pack: 75% rejection rate (37/150) — *largest bucket: exclude = 76. A single over-broad term can eat a market.*
 - Fusion Strike Booster Pack: 72% rejection rate (42/150) — *largest bucket: exclude = 49. A single over-broad term can eat a market.*
+
+## Paid for and never used
+- **raw.recentSales arrives on every card and is never read** — what things actually SOLD for. We currently compare asks to prices and label the mismatch; sales would let us report the transaction instead of the intention.
+- **raw.vol30 arrives on every card and is never read** — actual 30-day sales VOLUME. Every instrument we own reads listings — asks — and infers demand from them. This is demand measured directly, and no competitor publishes it.
+- **ebaySold.psa9 arrives populated and is never read** — the other half of the PSA-9 tax thesis (RT-5), which is currently INSUFFICIENT for want of exactly this.
+- **gradingPremium.psa9 arrives on every card and is never read** — the other half of the PSA-9 tax thesis (RT-5), which is currently INSUFFICIENT for want of exactly this.
 
 ---
 *Written by the agents, for a person. If a section here never leads to an action, that section should be deleted rather than tolerated.*
