@@ -77,6 +77,12 @@ let cssOut = `/* Catch'em brand tokens — GENERATED, do not hand-edit.
  * Synced: ${tokens._meta.syncedAt} */\n:root {\n`;
 for (const [k, v] of Object.entries(vars)) cssOut += `  --${k}: ${v};\n`;
 cssOut += `  /* a11y exception (Lighthouse contrast, 2026-08-19): app secondary text */\n  --text-sub-app: #98a1b5;\n`;
+cssOut += `  /* APPROVED ADDITIONS (chat ruling 2026-08-22, brand-tokens.md DESIGN SYSTEM):
+   * section-space = page air (component gaps stop at 16); num-xl = numeric
+   * register above card heroes (Syne is display-only, cannot carry digits);
+   * accent-dim = accent at 40% for BORDERS ONLY — never fills. */\n`;
+cssOut += `  --section-space-1: 32px;\n  --section-space-2: 40px;\n  --section-space-3: 56px;\n`;
+cssOut += `  --num-xl: 700 40px 'JetBrains Mono', monospace;\n`;
 cssOut += `  /* legacy aliases so existing app/generator CSS keeps resolving */\n`;
 cssOut += `  --panel: var(--surface);\n  --raised: var(--surface-2);\n  --line: var(--border);\n  --txt: var(--text);\n  --dim: var(--text-sub-app);\n  --sans: var(--font-body);\n  --disp: var(--font-display);\n  --mono: var(--font-mono);\n}\n`;
 
