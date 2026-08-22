@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-08-22T16:36:31.084Z",
+  "generatedAt": "2026-08-22T16:37:18.152Z",
   "method": "Cross-market divergence, both sides taken AS STATED — no shipping cost is ever estimated (no-guess law). eBay ask medians are delivered totals where a listing states postage, and where none is stated the cost is baked in. TCGplayer Market Price states no postage, so it is taken as delivered too. Tax excluded both sides, always. The TCG figure is TCGplayer's average of recent COMPLETED SALES on the US marketplace, USD (source-verified 2026-08-22; no region/filter parameters exist on the provider endpoint to get wrong, and no shipping-inclusive field is retrievable at any tier). Two structural asymmetries remain and are NOT signals: ASK vs SOLD, and any real postage the TCG side charges that we cannot see. |spread| >= 15% flags. A flat TCG line can mean no recent sales, not a frozen ask. TCG-side listing counts: provider exposes none for sealed - field carried as null, lights up if they ship it.",
   "counts": {
     "compared": 134,
-    "signals": 46,
+    "signals": 0,
     "skipped": 73
   },
   "rows": [
@@ -52,7 +52,7 @@
       "ebayListings": 58,
       "tcgListings": null,
       "spreadPct": 49.7,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -68,7 +68,7 @@
       "ebayListings": 12,
       "tcgListings": null,
       "spreadPct": 48.4,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -102,7 +102,7 @@
       "ebayListings": 52,
       "tcgListings": null,
       "spreadPct": 46.9,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -118,7 +118,7 @@
       "ebayListings": 92,
       "tcgListings": null,
       "spreadPct": 46.7,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -134,7 +134,7 @@
       "ebayListings": 35,
       "tcgListings": null,
       "spreadPct": 44.6,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -167,7 +167,7 @@
       "ebayListings": 52,
       "tcgListings": null,
       "spreadPct": 41.4,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -183,7 +183,7 @@
       "ebayListings": 45,
       "tcgListings": null,
       "spreadPct": 40.3,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -199,7 +199,7 @@
       "ebayListings": 57,
       "tcgListings": null,
       "spreadPct": 39.9,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -251,7 +251,7 @@
       "ebayListings": 34,
       "tcgListings": null,
       "spreadPct": 37.1,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -267,7 +267,7 @@
       "ebayListings": 57,
       "tcgListings": null,
       "spreadPct": 36.8,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -301,7 +301,7 @@
       "ebayListings": 45,
       "tcgListings": null,
       "spreadPct": 36.3,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -317,7 +317,7 @@
       "ebayListings": 14,
       "tcgListings": null,
       "spreadPct": 35.8,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -333,7 +333,7 @@
       "ebayListings": 40,
       "tcgListings": null,
       "spreadPct": 35.1,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -349,7 +349,7 @@
       "ebayListings": 84,
       "tcgListings": null,
       "spreadPct": 30.4,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -365,7 +365,7 @@
       "ebayListings": 38,
       "tcgListings": null,
       "spreadPct": 29.9,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -398,7 +398,7 @@
       "ebayListings": 22,
       "tcgListings": null,
       "spreadPct": 28.8,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -414,7 +414,7 @@
       "ebayListings": 22,
       "tcgListings": null,
       "spreadPct": 28,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -430,7 +430,7 @@
       "ebayListings": 37,
       "tcgListings": null,
       "spreadPct": 27.6,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -464,7 +464,7 @@
       "ebayListings": 36,
       "tcgListings": null,
       "spreadPct": 27,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -480,7 +480,7 @@
       "ebayListings": 41,
       "tcgListings": null,
       "spreadPct": 24.7,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -532,7 +532,7 @@
       "ebayListings": 10,
       "tcgListings": null,
       "spreadPct": 23.8,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -566,7 +566,7 @@
       "ebayListings": 38,
       "tcgListings": null,
       "spreadPct": 23.5,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -582,7 +582,7 @@
       "ebayListings": 98,
       "tcgListings": null,
       "spreadPct": 22.2,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -598,7 +598,7 @@
       "ebayListings": 14,
       "tcgListings": null,
       "spreadPct": 21.7,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -632,7 +632,7 @@
       "ebayListings": 93,
       "tcgListings": null,
       "spreadPct": 20.4,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -648,7 +648,7 @@
       "ebayListings": 44,
       "tcgListings": null,
       "spreadPct": 20.3,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -664,7 +664,7 @@
       "ebayListings": 16,
       "tcgListings": null,
       "spreadPct": 20.2,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -680,7 +680,7 @@
       "ebayListings": 18,
       "tcgListings": null,
       "spreadPct": 20.2,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -696,7 +696,7 @@
       "ebayListings": 90,
       "tcgListings": null,
       "spreadPct": 19.9,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -712,7 +712,7 @@
       "ebayListings": 129,
       "tcgListings": null,
       "spreadPct": 19.7,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -728,7 +728,7 @@
       "ebayListings": 83,
       "tcgListings": null,
       "spreadPct": 19.3,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -744,7 +744,7 @@
       "ebayListings": 34,
       "tcgListings": null,
       "spreadPct": 18.5,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -760,7 +760,7 @@
       "ebayListings": 105,
       "tcgListings": null,
       "spreadPct": 18.4,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -776,7 +776,7 @@
       "ebayListings": 56,
       "tcgListings": null,
       "spreadPct": 18.3,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -792,7 +792,7 @@
       "ebayListings": 24,
       "tcgListings": null,
       "spreadPct": 18.2,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -808,7 +808,7 @@
       "ebayListings": 47,
       "tcgListings": null,
       "spreadPct": 17.8,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -824,7 +824,7 @@
       "ebayListings": 82,
       "tcgListings": null,
       "spreadPct": 17.7,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -840,7 +840,7 @@
       "ebayListings": 51,
       "tcgListings": null,
       "spreadPct": 17.7,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -874,7 +874,7 @@
       "ebayListings": 79,
       "tcgListings": null,
       "spreadPct": 17.3,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -890,7 +890,7 @@
       "ebayListings": 113,
       "tcgListings": null,
       "spreadPct": 17.3,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -906,7 +906,7 @@
       "ebayListings": 141,
       "tcgListings": null,
       "spreadPct": 16.6,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -922,7 +922,7 @@
       "ebayListings": 120,
       "tcgListings": null,
       "spreadPct": 16.4,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -938,7 +938,7 @@
       "ebayListings": 86,
       "tcgListings": null,
       "spreadPct": 16.3,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -954,7 +954,7 @@
       "ebayListings": 115,
       "tcgListings": null,
       "spreadPct": 15.7,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -970,7 +970,7 @@
       "ebayListings": 102,
       "tcgListings": null,
       "spreadPct": 15.7,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",
@@ -986,7 +986,7 @@
       "ebayListings": 11,
       "tcgListings": null,
       "spreadPct": 15.7,
-      "signal": true,
+      "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-08-22",

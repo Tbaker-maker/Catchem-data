@@ -36,6 +36,22 @@ import { offTcgEra as OFF_TCG } from "./lib/instruments.mjs";
 // qa-gate hasn't run yet at this point in the pipeline — read the durable
 // file too, or a manually-held product qualifies as a signal (2026-08-22 leak).
 import { loadBlocked } from "./lib/publish-guard.mjs";
+
+// THE SPREAD IS HELD FROM PUBLICATION (2026-08-23). Two independent reasons,
+// either sufficient on its own:
+// (1) LICENSING — the TCGplayer side is PPT-derived, and PPT restricts
+//     commercial use to a tier we do not hold. We do not publish data we are
+//     not licensed to publish.
+// (2) MEASUREMENT — our eBay figures include shipping where stated; TCG
+//     figures never do; and no shipping-inclusive TCG price is obtainable at
+//     any price (PPT has no shipping field on any tier, TCGplayer is not
+//     granting new API access). Every row is biased in a known direction by
+//     an unknowable amount, worst on cheap items.
+// A number needing a caveat every time it appears does more explaining than
+// working. Still computed for internal reads; returns publicly only when both
+// gates clear.
+const SPREAD_PUBLISHABLE = process.env.CATCHEM_PPT_LICENSED === "1" && process.env.CATCHEM_TCG_DELIVERED === "1";
+
 const q = await loadBlocked();
 // NO-GUESS LAW (Tyler, 8739773 — supersedes the abb4123 estimate): never
 // invent a shipping cost. Where a source states no shipping, postage is
