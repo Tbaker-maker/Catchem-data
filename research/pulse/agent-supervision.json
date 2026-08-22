@@ -1,0 +1,16 @@
+{
+ "generatedAt": "2026-08-22T20:02:31.983Z",
+ "date": "2026-08-22",
+ "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
+ "agents": [
+  "breaker: 7 finding(s)",
+  "falsifier: 0 finding(s)",
+  "correction-hunter: 2 finding(s)",
+  "review-agents: 0 finding(s)",
+  "universe-advisor: 5 finding(s)"
+ ],
+ "problems": [
+  "breaker: BROKEN RECORD — 7 finding(s) repeated three runs running (e.g. \"Deploy smoke test (blank-page class, rendered DOM)\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
+  "universe-advisor: BROKEN RECORD — 5 finding(s) repeated three runs running (e.g. \"base5-83\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself."
+ ]
+}

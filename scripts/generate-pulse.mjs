@@ -588,6 +588,7 @@ await import("./jargon-lint.mjs");
 // stop the run — on the day this line was written a simulated agent crash
 // killed publish-assert, the final safety check, which is precisely the class
 // of failure that check exists to catch. Agents are wrapped; guards are not.
+try { await import("./agent-supervisor.mjs"); } catch (e) { console.warn(`  ⚠ agent supervisor: ${e.message} — advisory only`); }
 try { await import("./breaker.mjs"); } catch (e) { console.warn(`  ⚠ agent breaker.mjs failed: ${e.message} — advisory only`); }
 try { await import("./falsifier.mjs"); } catch (e) { console.warn(`  ⚠ agent falsifier.mjs failed: ${e.message} — advisory only, the run continues`); }
 try { await import("./correction-hunter.mjs"); } catch (e) { console.warn(`  ⚠ agent correction-hunter.mjs failed: ${e.message} — advisory only, the run continues`); }

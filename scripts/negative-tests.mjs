@@ -228,6 +228,24 @@ const CASES = [
         why: missing.length ? `${missing.join(", ")} written into doctrine with no falsifier test — write one or retire the thesis` : "" };
     } },
 
+  { guard: "Agent supervision (farming and broken records)", detect: null,
+    // Nothing watched the agents. Their natural failure is not crashing, it is
+    // producing volume that looks like work and changes nothing — which gets
+    // read for a week and skimmed forever, so the day one finds something real
+    // nobody is looking.
+    fn: async () => {
+      await copyFile(P("data/agent-history.json"), "/tmp/nt-ah.bak");
+      try {
+        const h = JSON.parse(await readFile(P("data/agent-history.json"), "utf-8"));
+        h.runs["correction-hunter"] = [12, 16, 20, 26].map((c, i) => ({ date: `2026-08-${15 + i}`, count: c, sample: Array.from({ length: c }, (_, n) => `f${n}`) }));
+        await writeFile(P("data/agent-history.json"), JSON.stringify(h, null, 1));
+        let caught = false;
+        try { await run("node", [P("scripts/agent-supervisor.mjs"), "--dry"], { cwd: ROOT }); }
+        catch { caught = true; }
+        return { pass: caught, why: caught ? "" : "a farming pattern (12→16→20→26 with nothing resolved) did not trip the supervisor" };
+      } finally { await copyFile("/tmp/nt-ah.bak", P("data/agent-history.json")); }
+    } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");

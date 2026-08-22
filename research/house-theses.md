@@ -486,3 +486,39 @@ museum. `knowledge-guard.mjs` enforces the entry law and, on its very first
 run, downgraded one of our own entries from VERIFIED to SINGLE-SOURCE.
 That is the system working on its authors, which is the only kind of
 system worth having.
+
+## AGENT SAFEGUARD LAWS (Tyler, Aug 23 2026)
+"Make sure they never cause problems or farm. It is about making the
+system better, safer, more enjoyable — not worse."
+
+We built agents to watch the system and nothing watched them. An agent's
+natural failure is not crashing — a crash announces itself. It is FARMING:
+producing volume that looks like work, costs attention, and changes
+nothing. That gets read for a week and skimmed forever after, and the day
+it finds something real, nobody is looking.
+
+THE MEASURE: an agent is judged on whether its output is ACTED ON, never
+on how much it produces.
+
+THE LAWS
+1. **Advisory, never blocking.** Guards block; agents advise. A crashing
+   agent must never stop a run — proven by simulating one.
+2. **Budgeted.** Every agent declares a findings ceiling. An unreadable
+   list is an unread list.
+3. **No farming.** Findings climbing across runs with nothing resolved
+   trips the supervisor. Volume is not work.
+4. **No broken records.** The same finding three runs running means it is
+   either unactionable or being ignored. The agent must say WHY instead
+   of repeating itself.
+5. **No crying wolf.** A false alarm costs more than silence, because it
+   teaches people to skim. We hit this twice building the negative tests
+   and both were our own fault.
+6. **No cascades without intent.** An agent reading another agent's output
+   turns one wrong finding into two. Allowed only when deliberate.
+7. **Scoped to the reader.** An agent must not report what its reader
+   cannot act on. The Breaker was listing hosts chat cannot reach; those
+   moved to a handoff file.
+8. **Silence is a failure.** An agent that stops producing is caught by
+   the supervisor, not discovered months later.
+Enforced by scripts/agent-supervisor.mjs, which is itself advisory —
+a watchdog that can halt the run is a hazard, not a safeguard.
