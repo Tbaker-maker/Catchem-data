@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-22T19:27:39.304Z",
+ "generatedAt": "2026-08-22T19:36:28.072Z",
  "motto": "Build it. Break it. Repeat.",
  "method": "Looks for the SHAPE of an untested assumption rather than re-running known tests. Proposes attacks; never executes them.",
  "counts": {
@@ -137,7 +137,7 @@
   {
    "target": "date handling across the pipeline",
    "attack": "Run the pipeline with the clock set to 23:59 UTC on the last day of a month, and again at 00:01 on the first. Confirm nothing double-counts, skips a day, or writes two entries for one date.",
-   "why": "19 scripts slice UTC dates into day keys. Month and year boundaries are where that quietly goes wrong, and no test covers it.",
+   "why": "20 scripts slice UTC dates into day keys. Month and year boundaries are where that quietly goes wrong, and no test covers it.",
    "severity": "medium"
   }
  ]

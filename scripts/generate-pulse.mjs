@@ -13,6 +13,7 @@ import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { applyPackBasis } from "./pack-basis.mjs";
+import { rotate } from "./rotate.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const today = new Date().toISOString().split("T")[0];
 const cardImg = id => { const m=/^(.+)-(\w+)$/.exec(id||""); return m?`https://images.pokemontcg.io/${m[1]}/${m[2]}.png`:null; };
@@ -29,7 +30,7 @@ let dyk = null;
 try {
   const bank = JSON.parse(await readFile(new URL("../data/did-you-know.json", import.meta.url), "utf-8"));
   const facts = bank.facts || [];
-  if (facts.length) dyk = facts[new Date().getUTCDate() % facts.length];
+  if (facts.length) dyk = rotate(facts);
 } catch {}
 
 

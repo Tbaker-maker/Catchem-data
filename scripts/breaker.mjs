@@ -15,6 +15,7 @@
 import { readFile, readdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { rotate } from "./rotate.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "utf-8")); } catch { return null; } };
 const R = async p => { try { return await readFile(join(ROOT, p), "utf-8"); } catch { return null; } };
@@ -110,7 +111,7 @@ await (await import("node:fs/promises")).writeFile(join(ROOT, "research/pulse/br
 const VOICE = ["Went looking for what we have not tested yet. Found a few doors nobody has tried.",
   "Here is what would break us today, in the order I would try it.",
   "We test the things we already got wrong. This is a list of the ones we have not."];
-console.log(`\n  ${VOICE[new Date().getUTCDate() % VOICE.length]}\n`);
+console.log(`\n  ${rotate(VOICE)}\n`);
 console.log(`✓ breaker: ${hypotheses.length} untested assumption(s) — ${bySeverity.high} high, ${bySeverity.medium} medium`);
 for (const h of hypotheses.filter(x => x.severity === "high").slice(0, 6)) console.log(`  HIGH   ${String(h.target).slice(0, 40).padEnd(40)} ${h.why.slice(0, 70)}`);
 for (const h of hypotheses.filter(x => x.severity === "medium").slice(0, 3)) console.log(`  MED    ${String(h.target).slice(0, 40).padEnd(40)} ${h.why.slice(0, 70)}`);

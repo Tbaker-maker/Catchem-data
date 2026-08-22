@@ -11,6 +11,7 @@ import { indexLevel, sealedPremium } from "./lib/instruments.mjs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { applyPackBasis } from "./pack-basis.mjs";
+import { rotate } from "./rotate.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => JSON.parse(await readFile(join(ROOT,p),"utf-8"));
 
@@ -516,7 +517,7 @@ const rohPool = liveList
   .sort((a, b) => (b.listingCount ?? 0) - (a.listingCount ?? 0))
   .slice(0, 25)
   .map(p => ({ id: p.id, name: p.name, ebayAskMedian: p.priceMedian }));
-const rohPick = rohPool[new Date().getUTCDate() % Math.max(rohPool.length,1)] || null;
+const rohPick = rotate(rohPool) || null;
 const ripOrHold = rohPick ? { id: rohPick.id, name: rohPick.name, price: rohPick.ebayAskMedian,
   question: `${rohPick.name} at $${rohPick.ebayAskMedian} — rip it or hold it sealed?`,
   note: "one-tap daily vote; results revisited next morning" } : null;
@@ -705,7 +706,7 @@ const LENSES = [
     ];
     let lensUsed = null, lensPick = null;
     for (let i = 0; i < LENSES.length && !lensPick; i++) {
-      const L = LENSES[(new Date().getUTCDate() + i) % LENSES.length];
+      const L = rotate(LENSES, i);
       const cand = L.pick();
       if (cand) { lensPick = cand; lensUsed = L; }
     }

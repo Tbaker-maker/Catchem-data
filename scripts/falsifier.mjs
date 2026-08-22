@@ -15,6 +15,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { rotate } from "./rotate.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "utf-8")); } catch { return null; } };
 
@@ -32,7 +33,7 @@ const today = new Date().toISOString().slice(0, 10);
 //   1. The jokes are always at OUR expense. Never a member's, never a vendor's.
 //   2. The numbers stay flat. Humour lives in the sentence around them.
 //   3. Rotate the phrasing, or a daily artifact becomes wallpaper by week two.
-const pickLine = (arr, salt = 0) => arr[(new Date().getUTCDate() + salt) % arr.length];
+const pickLine = (arr, salt = 0) => rotate(arr, salt);
 const VOICE = {
   allSurvived: [
     "Tried to prove ourselves wrong this morning. Failed again. Annoying, but reassuring.",

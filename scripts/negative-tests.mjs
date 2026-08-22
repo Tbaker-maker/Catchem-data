@@ -169,6 +169,28 @@ const CASES = [
       return { pass: !!ok, why: ok ? "" : "dealZone.model is missing its rate description — the app reads its rates from here, so a missing contract means the app silently uses stale defaults" };
     } },
 
+  { guard: "Rotation across boundaries", detect: null,
+    // The bug this exists for: day-of-month modulo repeats itself when a month
+    // ends on the 31st, because 31 % 5 === 1 % 5. Every rotation in the system
+    // had it, including the Daily Three lens rotation the freshness law depends on.
+    fn: async () => {
+      const { rotateIndex } = await import(P("scripts/rotate.mjs"));
+      const edges = [["2027-01-31", "2027-02-01"], ["2026-12-31", "2027-01-01"], ["2026-11-30", "2026-12-01"], ["2028-02-29", "2028-03-01"]];
+      const bad = [];
+      for (const n of [3, 5, 7, 9]) {
+        for (const [a, b] of edges) {
+          const ia = rotateIndex(n, 0, new Date(a + "T12:00:00Z"));
+          const ib = rotateIndex(n, 0, new Date(b + "T12:00:00Z"));
+          if (ia === ib) bad.push(`${a}→${b} repeats at length ${n}`);
+        }
+      }
+      // and the old approach must still be demonstrably broken, or this test
+      // is proving nothing
+      const oldRepeats = (31 % 5) === (1 % 5);
+      return { pass: bad.length === 0 && oldRepeats,
+        why: bad.length ? `rotation repeats across a boundary: ${bad[0]}` : "the old day-of-month approach no longer demonstrates the bug — test is stale" };
+    } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");

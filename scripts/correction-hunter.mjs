@@ -13,6 +13,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { rotate } from "./rotate.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "utf-8")); } catch { return null; } };
 
@@ -20,7 +21,7 @@ const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "ut
 // VOICE: this agent audits our past self, so its tone is a colleague checking
 // your work rather than an auditor writing you up. Kind, dry, and always
 // pointed at us — never at a reader who trusted the number.
-const pickLine = (a, salt = 0) => a[(new Date().getUTCDate() + salt) % a.length];
+const pickLine = (a, salt = 0) => rotate(a, salt);
 const VOICE = {
   clean: [
     "Went back through everything we published and found nothing to take back. Rare and pleasant.",
