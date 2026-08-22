@@ -8,6 +8,12 @@ import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
+// Node's fetch has NO default timeout: a host that accepts the connection
+// and never answers hangs this script until the CI runner kills the job.
+// A hung job is worse than a failed one — nothing goes red, the whole
+// allowance burns and no guard reports. Every call below is bounded.
+const FETCH_TIMEOUT_MS = 120000;
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 const RADAR_FILE = join(ROOT, "data", "release-radar.json");
@@ -34,7 +40,7 @@ ${radar}
 
 Run today's check now. Remember: digest first, then the fenced \`\`\`json radar block ONLY if the radar needs changes.`;
 
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
+  const res = await fetch("https://api.anthropic.com/v1/messages", { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
     method: "POST",
     headers: {
       "x-api-key": API_KEY,

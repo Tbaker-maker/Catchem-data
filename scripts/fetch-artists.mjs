@@ -14,6 +14,11 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+
+// Node's fetch has NO default timeout — a host that accepts and never
+// answers hangs the run until the runner kills the job, which reports
+// nothing and burns the whole allowance.
+const FETCH_TIMEOUT_MS = 20000;
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "utf-8")); } catch { return null; } };
 
@@ -43,6 +48,7 @@ async function getCard(id) {
     if (attempt) await sleep(400 * 2 ** (attempt - 1));   // 400ms, 800ms, 1.6s
     try {
       const r = await fetch(`${API}/${encodeURIComponent(id)}`, {
+        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
         headers: process.env.POKEMONTCG_API_KEY ? { "X-Api-Key": process.env.POKEMONTCG_API_KEY } : {} });
       if (r.ok) {
         // A 200 with an EMPTY body is this API's other flaky mode, and it is

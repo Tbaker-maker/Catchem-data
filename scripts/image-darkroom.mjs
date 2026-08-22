@@ -35,6 +35,11 @@
 // case it is by measurement rather than by hoping.
 import sharp from "sharp";
 
+// Node's fetch has NO default timeout — a host that accepts and never
+// answers hangs the run until the runner kills the job, which reports
+// nothing and burns the whole allowance.
+const FETCH_TIMEOUT_MS = 20000;
+
 const SURFACE = { r: 0x14, g: 0x18, b: 0x24 };   // --surface #141824
 const NEAR_WHITE = 236;                           // channel floor counted as background
 const MAX_SPREAD = 26;                            // tolerance while walking outward
@@ -98,7 +103,7 @@ if (import.meta.url === (await import("node:url")).pathToFileURL(process.argv[1]
   const { writeFile } = await import("node:fs/promises");
   const { join } = await import("node:path");
   const { tmpdir } = await import("node:os");
-  const r = await fetch(process.argv[2]);
+  const r = await fetch(process.argv[2], { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
   const buf = Buffer.from(await r.arrayBuffer());
   const { buffer, coverage, centrePct, skipped, reason } = await darkenBackground(buf);
   const dest = join(tmpdir(), "darkroom-test.png");

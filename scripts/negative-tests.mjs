@@ -386,6 +386,64 @@ const CASES = [
       const ok = src.includes("AbortSignal.timeout(IMG_TIMEOUT_MS)");
       return { pass: ok, why: "the image fetch has no timeout — a slow CDN hangs the daily run" };
     } },
+
+  { guard: "Plausibility (values, not just shape)", detect: null,
+    // schema-guard passed on files whose every key was present and every number
+    // impossible. Shape and possibility are two different guards; we had one.
+    fn: async () => {
+      const src = await readFile(P("scripts/schema-guard.mjs"), "utf-8");
+      for (const marker of ["cannot be negative", "above high", "recorded in the future", "beyond any real move"])
+        if (!src.includes(marker)) return { pass: false, why: `plausibility check missing: "${marker}"` };
+      const { readFile: rf, writeFile, copyFile } = await import("node:fs/promises");
+      const { tmpdir } = await import("node:os");
+      const target = P("data/sealed-prices.json");
+      const bak = join(tmpdir(), "nt-plaus.bak");
+      await copyFile(target, bak);
+      try {
+        const d = JSON.parse(await rf(target, "utf-8"));
+        d.products[0].priceMedian = -99.99;                 // impossible, shape untouched
+        await writeFile(target, JSON.stringify(d, null, 1));
+        const r = await sh("schema-guard.mjs");
+        return { pass: r.failed, why: r.failed ? "" : "a negative price passed the schema guard — shape is checked, values are not" };
+      } finally { await copyFile(bak, target); }
+    } },
+
+  { guard: "No unbounded fetch()", detect: null,
+    // Node's fetch never times out. One unguarded call hangs a CI job until the
+    // runner kills it: nothing goes red, the allowance burns, no guard reports.
+    fn: async () => {
+      const src = await readFile(P("scripts/guard-audit.mjs"), "utf-8");
+      if (!src.includes("UNBOUNDED fetch")) return { pass: false, why: "guard-audit no longer checks for unbounded fetch()" };
+      const { readFile: rf, writeFile, copyFile } = await import("node:fs/promises");
+      const { tmpdir } = await import("node:os");
+      const target = P("scripts/heartbeat.mjs");
+      const bak = join(tmpdir(), "nt-fetch.bak");
+      await copyFile(target, bak);
+      try {
+        const s2 = await rf(target, "utf-8");
+        await writeFile(target, 'const __p = async () => await fetch("https://example.com/x");\n' + s2);
+        const r = await sh("guard-audit.mjs");
+        return { pass: r.failed, why: r.failed ? "" : "an unbounded fetch() passed guard-audit" };
+      } finally { await copyFile(bak, target); }
+    } },
+
+  { guard: "No hardcoded /tmp", detect: null,
+    fn: async () => {
+      const src = await readFile(P("scripts/guard-audit.mjs"), "utf-8");
+      if (!src.includes("HARDCODED /tmp")) return { pass: false, why: "guard-audit no longer checks for hardcoded /tmp" };
+      const { readFile: rf, writeFile, copyFile } = await import("node:fs/promises");
+      const { tmpdir } = await import("node:os");
+      const target = P("scripts/heartbeat.mjs");
+      const bak = join(tmpdir(), "nt-tmp.bak");
+      await copyFile(target, bak);
+      try {
+        const s2 = await rf(target, "utf-8");
+        await writeFile(target, 'const __t = "/tmp/deliberate.bak";\n' + s2);
+        const r = await sh("guard-audit.mjs");
+        return { pass: r.failed, why: r.failed ? "" : "a hardcoded /tmp passed guard-audit" };
+      } finally { await copyFile(bak, target); }
+    } },
+
 ];
 
 const results = [];

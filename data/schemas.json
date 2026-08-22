@@ -1,5 +1,5 @@
 {
- "note": "Shapes derived from known-good files. A data file read by several scripts and validated by none is where a silent format change does the most damage \u2014 it propagates everywhere before anything complains. These are minimums, not straitjackets: extra keys are always fine.",
+ "note": "Shapes derived from known-good files. A data file read by several scripts and validated by none is where a silent format change does the most damage — it propagates everywhere before anything complains. These are minimums, not straitjackets: extra keys are always fine.",
  "files": {
   "data/sealed-prices.json": {
    "readers": 21,
@@ -542,6 +542,54 @@
      "type": "object",
      "keys": [
       "complete"
+     ]
+    }
+   }
+  },
+  "data/derived-insights.json": {
+   "readers": 12,
+   "root": "object",
+   "note": "The most consumer-facing derived file — Sealed Index, Daily Three, pack math — and it had NO schema until 2026-08-22, so neither shape nor plausibility covered the numbers the app actually renders.",
+   "requires": {
+    "sealedIndex": {
+     "type": "object",
+     "keys": [
+      "level",
+      "constituents",
+      "breadth"
+     ]
+    },
+    "dailyThree": {
+     "type": "object",
+     "keys": [
+      "sealed",
+      "raw"
+     ]
+    }
+   }
+  },
+  "data/card-catalogue.json": {
+   "readers": 3,
+   "root": "object",
+   "optional": true,
+   "note": "16k-card catalogue; optional because it is ingested separately and a fresh clone will not have it yet.",
+   "requires": {
+    "cards": {
+     "type": "object",
+     "keys": [
+      "base1-1",
+      "base1-2",
+      "base1-3",
+      "base1-4"
+     ]
+    },
+    "sets": {
+     "type": "object",
+     "keys": [
+      "base1",
+      "base2",
+      "basep",
+      "base3"
      ]
     }
    }

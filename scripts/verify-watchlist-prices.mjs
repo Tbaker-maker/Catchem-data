@@ -8,6 +8,11 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+
+// Node's fetch has NO default timeout: a host that accepts the connection
+// and never answers hangs this until the runner kills the job. A hung job
+// reports nothing and burns the whole allowance.
+const FETCH_TIMEOUT_MS = 20000;
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const KEY = process.env.POKEMONPRICETRACKER_API_KEY;
 if (!KEY) { console.log("verify gate needs PPT key — run from CC/CI"); process.exit(0); }
@@ -20,7 +25,7 @@ if (ids.length === 1 && ids[0].startsWith("@")) {
 if (!ids.length) { console.log("usage: node verify-watchlist-prices.mjs <cardId...> | @ids.txt"); process.exit(0); }
 const sleep = ms=>new Promise(r=>setTimeout(r,ms));
 async function ptcg(id, tries=3){ for(let i=0;i<tries;i++){ try{
-  const r=await fetch(`https://api.pokemontcg.io/v2/cards/${id}?select=id,name,set,number,tcgplayer`);
+  const r=await fetch(`https://api.pokemontcg.io/v2/cards/${id}?select=id,name,set,number,tcgplayer`, { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
   if(r.status>=500||r.status===429){await sleep(800*(i+1));continue;}
   if(!r.ok) return null; return (await r.json()).data;}catch{await sleep(800);}} return null;}
 // v2 (2026-08-18): PPT setIds are NUMERIC and card numbers are N/M fractions
@@ -28,15 +33,14 @@ async function ptcg(id, tries=3){ for(let i=0;i<tries;i++){ try{
 // then the proven /cards endpoint with number-prefix matching.
 let PPT_SETS=null;
 async function pptSets(){ if(PPT_SETS) return PPT_SETS;
-  const r=await fetch(`https://www.pokemonpricetracker.com/api/v2/sets?limit=500`,
-    {headers:{Authorization:`Bearer ${KEY}`}}); PPT_SETS=r.ok?(await r.json()).data||[]:[];
+  const r=await fetch(`https://www.pokemonpricetracker.com/api/v2/sets?limit=500`, { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),headers:{Authorization:`Bearer ${KEY}`}}); PPT_SETS=r.ok?(await r.json()).data||[]:[];
   return PPT_SETS; }
 async function ppt(setName, cardName, number){
   const sets=await pptSets(); const want=(setName||"").toLowerCase();
   const s=sets.find(x=>{const n=(x.name||"").toLowerCase();return n===want||n.endsWith(": "+want)||n.includes(want);});
   if(!s) return null;
   const r=await fetch(`https://www.pokemonpricetracker.com/api/v2/cards?setId=${encodeURIComponent(s.id)}&search=${encodeURIComponent(cardName)}&limit=10`,
-    {headers:{Authorization:`Bearer ${KEY}`}}); if(!r.ok) return null;
+    {headers:{Authorization:`Bearer ${KEY}`}, signal: AbortSignal.timeout(FETCH_TIMEOUT_MS)}); if(!r.ok) return null;
   const d=await r.json();
   return (d.data||[]).find(p=>String(p.cardNumber||"").split("/")[0].replace(/^0+/,"")===String(number).replace(/^0+/,""))??null; }
 const out=[];

@@ -17,6 +17,11 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+
+// Node's fetch has NO default timeout — a host that accepts and never
+// answers hangs the run until the runner kills the job, which reports
+// nothing and burns the whole allowance.
+const FETCH_TIMEOUT_MS = 30000;
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "utf-8")); } catch { return null; } };
 
@@ -45,7 +50,7 @@ const sg = await J("data/singles-prices.json") ?? { cards: [] };
 let wanted = args;
 if (!wanted.length) {
   try {
-    const r = await fetch(`${API}/sets?pageSize=250`, { headers });
+    const r = await fetch(`${API}/sets?pageSize=250`, { headers, signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
     const d = await r.json();
     wanted = (d.data ?? []).map(s => s.id);
     console.log(`  enumerating the full catalogue: ${wanted.length} sets`);
@@ -70,7 +75,7 @@ for (const setId of wanted) {
     let page = 1, total = null, got = 0;
     for (;;) {
       const url = `${API}/cards?q=set.id:${encodeURIComponent(setId)}&page=${page}&pageSize=${PAGE}`;
-      const r = await fetch(url, { headers });
+      const r = await fetch(url, { headers, signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
       if (!r.ok) { failures.push({ setId, status: r.status }); break; }
       const d = await r.json();
       total ??= d.totalCount ?? 0;

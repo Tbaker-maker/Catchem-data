@@ -12,6 +12,12 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { applyPackBasis } from "./pack-basis.mjs";
 import { rotate } from "./rotate.mjs";
+
+// Node's fetch has NO default timeout: a host that accepts the connection
+// and never answers hangs this script until the CI runner kills the job.
+// A hung job is worse than a failed one — nothing goes red, the whole
+// allowance burns and no guard reports. Every call below is bounded.
+const FETCH_TIMEOUT_MS = 8000;
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => JSON.parse(await readFile(join(ROOT,p),"utf-8"));
 
@@ -562,7 +568,7 @@ for (const p of liveList) {
 supplyShifts.sort((a,b) => Math.abs(b.dPct) - Math.abs(a.dPct));
 
 let fx = null;
-try { const r = await fetch("https://api.frankfurter.app/latest?from=USD&to=CAD");
+try { const r = await fetch("https://api.frankfurter.app/latest?from=USD&to=CAD", { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
   const j = await r.json(); fx = { usdcad: j.rates?.CAD ?? null, date: j.date ?? null, source: "frankfurter.app" };
 } catch { fx = null; }
 

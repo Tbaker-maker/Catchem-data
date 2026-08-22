@@ -16,10 +16,15 @@
 import { writeFile, mkdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+
+// Node's fetch has NO default timeout: a host that accepts the connection
+// and never answers hangs this until the runner kills the job. A hung job
+// reports nothing and burns the whole allowance.
+const FETCH_TIMEOUT_MS = 20000;
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "research/brand");
 
-const res = await fetch("https://catchemtcg.com");
+const res = await fetch("https://catchemtcg.com", { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
 if (!res.ok) { console.error(`site fetch failed: ${res.status} — tokens NOT regenerated`); process.exit(1); }
 const html = await res.text();
 const style = /<style[^>]*>([\s\S]*?)<\/style>/.exec(html)?.[1];

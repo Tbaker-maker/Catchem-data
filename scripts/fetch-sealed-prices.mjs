@@ -17,6 +17,12 @@ import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
+// Node's fetch has NO default timeout: a host that accepts the connection
+// and never answers hangs this script until the CI runner kills the job.
+// A hung job is worse than a failed one — nothing goes red, the whole
+// allowance burns and no guard reports. Every call below is bounded.
+const FETCH_TIMEOUT_MS = 30000;
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = join(__dirname, "..", "data");
 const PRODUCTS_FILE = join(DATA_DIR, "sealed-products.json");
@@ -392,7 +398,7 @@ async function getEbayToken() {
     throw new Error("Missing EBAY_APP_ID or EBAY_CERT_ID env vars");
   }
   const basic = Buffer.from(`${appId}:${certId}`).toString("base64");
-  const res = await fetch(EBAY_OAUTH_URL, {
+  const res = await fetch(EBAY_OAUTH_URL, { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
     method: "POST",
     headers: {
       Authorization: `Basic ${basic}`,
@@ -431,7 +437,7 @@ async function searchEbay(token, query, floor = MIN_PRICE, ceiling = MAX_PRICE) 
       // ($150-200) fell outside the window entirely and only cheap imports were
       // ever fetched. Default relevance ordering surfaces actual matches.
     });
-    const res = await fetch(`${EBAY_SEARCH_URL}?${params}`, {
+    const res = await fetch(`${EBAY_SEARCH_URL}?${params}`, { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
       headers: {
         Authorization: `Bearer ${token}`,
         "X-EBAY-C-MARKETPLACE-ID": MARKETPLACE,

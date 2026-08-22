@@ -7,6 +7,11 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+
+// Node's fetch has NO default timeout: a host that accepts the connection
+// and never answers hangs this until the runner kills the job. A hung job
+// reports nothing and burns the whole allowance.
+const FETCH_TIMEOUT_MS = 15000;
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "utf-8")); } catch { return null; } };
 
@@ -53,7 +58,7 @@ console.log("✓ embed preview written (research/pulse/discord-embed-preview.jso
 
 async function post(url, tag) {
   try {
-    const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(embed) });
+    const r = await fetch(url, { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS), method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(embed) });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     console.log(`✓ posted → ${tag}`);
     return true;

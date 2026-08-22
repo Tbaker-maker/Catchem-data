@@ -14,6 +14,12 @@ import { readFile, writeFile, mkdir, readdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
+// Node's fetch has NO default timeout: a host that accepts the connection
+// and never answers hangs this script until the CI runner kills the job.
+// A hung job is worse than a failed one — nothing goes red, the whole
+// allowance burns and no guard reports. Every call below is bounded.
+const FETCH_TIMEOUT_MS = 120000;
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 const args = process.argv.slice(2);
@@ -74,7 +80,7 @@ heat report's "reads" array; quarantined SKUs do not exist to you; unknown
 
   const API_KEY = process.env.ANTHROPIC_API_KEY;
   if (!API_KEY) { console.error("Missing ANTHROPIC_API_KEY"); process.exit(1); }
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
+  const res = await fetch("https://api.anthropic.com/v1/messages", { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
     method: "POST",
     headers: { "x-api-key": API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
     body: JSON.stringify({ model: "claude-sonnet-4-6", max_tokens: 4000,

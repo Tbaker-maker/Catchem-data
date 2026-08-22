@@ -214,6 +214,28 @@ const failures = [], notes = [];
     }
   }
 
+  // NO UNBOUNDED fetch() — same reasoning as the /tmp rule above, and the same
+  // sixth-time logic. Node's fetch has no default timeout, so a single
+  // unguarded call can hang a CI job until the runner kills it: nothing goes
+  // red, the allowance burns, and every guard downstream simply never runs.
+  // Proven 2026-08-22 — the smoke test sat for a full 120s against a host that
+  // accepted the connection and never answered. A call counts as bounded if it
+  // carries AbortSignal.timeout within its own call expression.
+  for (const f of files) {
+    const src = await read(`scripts/${f}`);
+    if (!src) continue;
+    if (/guard-audit|negative-tests/.test(f)) continue;   // these match the pattern by design
+    for (const m of src.matchAll(/(?<![.\w])fetch\(/g)) {
+      const window = src.slice(m.index, m.index + 400);
+      if (/AbortSignal\.timeout/.test(window)) continue;
+      const lineStart = src.lastIndexOf("\n", m.index) + 1;
+      if (src.slice(lineStart, m.index).trimStart().startsWith("//")) continue;      // commented out
+      if (/<script>/.test(src.slice(Math.max(0, m.index - 400), m.index))) continue; // browser-side template
+      const line = src.slice(0, m.index).split("\n").length;
+      failures.push(`UNBOUNDED fetch — scripts/${f}:${line} calls fetch() with no AbortSignal.timeout. Node's fetch never times out on its own; one slow host hangs the job until the runner kills it, and a hung job reports nothing at all.`);
+    }
+  }
+
   const reg = JSON.parse(await read("data/flags.json") || "{}").flags || {};
   const byEnv = {};
   for (const [k, v] of Object.entries(reg)) if (v.env) (byEnv[v.env] ||= []).push(k);

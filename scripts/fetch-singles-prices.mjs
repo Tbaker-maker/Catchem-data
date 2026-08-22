@@ -18,6 +18,12 @@ import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
+// Node's fetch has NO default timeout: a host that accepts the connection
+// and never answers hangs this script until the CI runner kills the job.
+// A hung job is worse than a failed one — nothing goes red, the whole
+// allowance burns and no guard reports. Every call below is bounded.
+const FETCH_TIMEOUT_MS = 20000;
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA = join(dirname(__dirname), "data");
 const API = "https://api.pokemontcg.io/v2";
@@ -38,7 +44,7 @@ async function getJSON(url) {
   for (let attempt = 0; attempt <= RETRIES; attempt++) {
     if (attempt > 0) await sleep(BACKOFF_MS[attempt - 1]);
     try {
-      const res = await fetch(url, { headers: HEADERS });
+      const res = await fetch(url, { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS), headers: HEADERS });
       if (res.ok) return res.json();
       lastErr = new Error(`${res.status} ${url.slice(0, 90)}`);
       if (res.status < 500 && res.status !== 429) throw lastErr; // non-transient: don't retry

@@ -18,6 +18,11 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+
+// Node's fetch has NO default timeout: a host that accepts the connection
+// and never answers hangs this until the runner kills the job. A hung job
+// reports nothing and burns the whole allowance.
+const FETCH_TIMEOUT_MS = 120000;
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "utf-8")); } catch { return null; } };
 
@@ -63,7 +68,7 @@ let ran = false;
 if (process.env.ANTHROPIC_API_KEY) {
   try {
     const call = async (brief, payload) => {
-      const r = await fetch("https://api.anthropic.com/v1/messages", {
+      const r = await fetch("https://api.anthropic.com/v1/messages", { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
         method: "POST",
         headers: { "content-type": "application/json", "x-api-key": process.env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01" },
         body: JSON.stringify({ model: "claude-sonnet-4-6", max_tokens: 1200,
