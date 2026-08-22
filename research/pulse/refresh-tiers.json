@@ -1,87 +1,56 @@
 {
- "generatedAt": "2026-08-22T23:32:26.558Z",
+ "generatedAt": "2026-08-22T23:37:25.218Z",
+ "mode": "EVERYTHING DAILY — 16,675 items fits inside the 20,000 daily budget, so nothing is stale",
  "basis": "NO SWEEP YET — every card is treated as bulk until discovery-sweep runs, which is the conservative direction",
  "catalogue": 16468,
  "tiers": [
   {
    "id": "daily",
    "everyDays": 1,
-   "minPrice": 100,
-   "why": "a 5% move here is $5+ and somebody is watching it today",
-   "cards": 0,
-   "callsPerDay": 0
-  },
-  {
-   "id": "fast",
-   "everyDays": 3,
-   "minPrice": 25,
-   "why": "moves matter within the week, not within the hour",
-   "cards": 0,
-   "callsPerDay": 0
-  },
-  {
-   "id": "weekly",
-   "everyDays": 7,
    "minPrice": 5,
-   "why": "real cards with real prices that do not swing daily",
-   "cards": 0,
-   "callsPerDay": 0
-  },
-  {
-   "id": "monthly",
-   "everyDays": 30,
-   "minPrice": 1,
-   "why": "a stale month-old price here is still roughly right",
-   "cards": 0,
-   "callsPerDay": 0
-  },
-  {
-   "id": "quarterly",
-   "everyDays": 90,
-   "minPrice": 0,
-   "why": "bulk. Asking daily would not change the answer, and a stale answer is not a wrong one",
+   "why": "anything with a real price. The default, and where everything sits while the budget allows it",
    "cards": 16468,
-   "callsPerDay": 183
+   "callsPerDay": 16468
+  },
+  {
+   "id": "2-day",
+   "everyDays": 2,
+   "minPrice": 1,
+   "why": "only if the universe outgrows the budget",
+   "cards": 0,
+   "callsPerDay": 0
+  },
+  {
+   "id": "3-day",
+   "everyDays": 3,
+   "minPrice": 0,
+   "why": "the floor. Bulk commons, and still never worse than three days old",
+   "cards": 0,
+   "callsPerDay": 0
   }
  ],
- "callsPerDay": 183,
- "callsPerMonth": 5489,
- "dueToday": 194,
+ "callsPerDay": 16468,
+ "callsPerMonth": 494040,
+ "dueToday": 16468,
  "sealed": {
   "products": 207,
   "tiers": [
    {
     "id": "daily",
     "everyDays": 1,
-    "minPrice": 150,
-    "why": "boxes and premium collections — a percent here is real money",
-    "products": 108,
-    "callsPerDay": 108
-   },
-   {
-    "id": "fast",
-    "everyDays": 2,
-    "minPrice": 40,
-    "why": "ETBs, bundles, most in-print product",
-    "products": 38,
-    "callsPerDay": 19
-   },
-   {
-    "id": "weekly",
-    "everyDays": 7,
     "minPrice": 0,
-    "why": "packs and tins — cheap, but still products people buy, so never worse than weekly",
-    "products": 61,
-    "callsPerDay": 9
+    "why": "all of it. 207 products is a rounding error against a 20,000 budget and there is no argument for stale sealed data",
+    "products": 207,
+    "callsPerDay": 207
    }
   ],
-  "callsPerDay": 136
+  "callsPerDay": 207
  },
- "combinedCallsPerDay": 319,
- "combinedCallsPerMonth": 9561,
- "budgetUsedPct": 1.6,
+ "combinedCallsPerDay": 16675,
+ "combinedCallsPerMonth": 500250,
+ "budgetUsedPct": 83.4,
  "versusDailyEverything": {
   "callsPerMonth": 494040,
-  "saving": "99%"
+  "saving": "0%"
  }
 }
