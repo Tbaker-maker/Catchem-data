@@ -27,8 +27,8 @@ const MANIFEST = [
     mustBeReferencedIn: [
       { file: "scripts/compute-derived.mjs", pattern: /blockedIds/g, min: 2,
         note: "must be COMPUTED and then USED in every editorial pick pool" },
-      { file: "scripts/compute-derived.mjs", pattern: /sealedPick\s*=\s*\(div\.rows\|\|\[\]\)\.filter\(r\s*=>\s*r\.signal\s*&&\s*!blockedIds\.has\(r\.id\)/g, min: 1,
-        note: "THE EXACT WIRE that was missing on 2026-08-21: the headline pick must filter blocked ids inline" },
+      { file: "scripts/compute-derived.mjs", pattern: /const eligible\s*=\s*\(div\.rows\|\|\[\]\)\.filter\(r\s*=>\s*r\.signal\s*&&\s*!blockedIds\.has\(r\.id\)\)/g, min: 1,
+        note: "THE WIRE that was missing on 2026-08-21: the headline pool must filter blocked ids inline. Re-pointed 2026-08-22 when the freshness rotation renamed the pool to `eligible` — the audit caught the rename, which is the point." },
       { file: "scripts/compute-derived.mjs", pattern: /notBlocked\(yRow\.sealed\)/g, min: 1,
         note: "watch outcomes must skip blocked products" },
       { file: "scripts/compute-divergence.mjs", pattern: /publishBlock/g, min: 1,
