@@ -21,7 +21,12 @@ const problems = [];
 for (const [path, spec] of Object.entries(schemas.files || {})) {
   let d;
   try { d = JSON.parse(await readFile(join(ROOT, path), "utf-8")); }
-  catch (e) { problems.push(`${path}: unreadable or not valid JSON (${e.message}) — ${spec.readers} scripts depend on it`); continue; }
+  catch (e) {
+    // A schema may be declared BEFORE the file exists, so a new data file is
+    // validated from its first run rather than after it has gone wrong once.
+    if (spec.optional) continue;
+    problems.push(`${path}: unreadable or not valid JSON (${e.message}) — ${spec.readers} scripts depend on it`); continue;
+  }
 
   const isArr = Array.isArray(d);
   if ((spec.root === "array") !== isArr) { problems.push(`${path}: root is ${isArr ? "array" : "object"}, expected ${spec.root}`); continue; }

@@ -124,6 +124,22 @@
     "product-catalogue"
    ],
    "recheckAfter": "2029-08-22"
+  },
+  {
+   "id": "index-is-self-measured",
+   "claim": "No external body publishes a sealed Pok\u00e9mon index, so our index level cannot be independently corroborated \u2014 it is internally consistent rather than externally verified.",
+   "sources": [
+    "absence of any published sealed index at time of writing"
+   ],
+   "verified": "2026-08-23",
+   "verifier": "chat",
+   "confidence": "SINGLE-SOURCE",
+   "falsifier": "any third party publishing a comparable sealed index we could check against",
+   "note": "Recorded so we never let VERIFIED on the index be read as externally corroborated.",
+   "usedBy": [
+    "methodology"
+   ],
+   "recheckAfter": "2027-02-23"
   }
  ]
 }

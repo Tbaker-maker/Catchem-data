@@ -346,6 +346,205 @@
      ]
     }
    }
+  },
+  "data/crosscheck-history.json": {
+   "readers": 2,
+   "root": "array",
+   "requires": {}
+  },
+  "data/era-index-history.json": {
+   "readers": 2,
+   "root": "object",
+   "requires": {
+    "entries": {
+     "type": "array",
+     "minLength": 10,
+     "rowRequires": [
+      "avgGapPct",
+      "date",
+      "era",
+      "level",
+      "listings"
+     ]
+    }
+   }
+  },
+  "data/heat-report.json": {
+   "readers": 4,
+   "root": "object",
+   "requires": {
+    "generatedAt": {
+     "type": "str"
+    },
+    "mode": {
+     "type": "str"
+    },
+    "counts": {
+     "type": "object",
+     "keys": [
+      "accumulation",
+      "distribution",
+      "excluded",
+      "markdown",
+      "markup",
+      "ranging"
+     ]
+    },
+    "reads": {
+     "type": "array",
+     "minLength": 0
+    },
+    "excluded": {
+     "type": "array",
+     "minLength": 103,
+     "rowRequires": [
+      "id",
+      "listingCount",
+      "name",
+      "reason",
+      "set",
+      "subtype"
+     ]
+    }
+   }
+  },
+  "data/pop-snapshots.json": {
+   "readers": 2,
+   "root": "object",
+   "requires": {
+    "snapshots": {
+     "type": "array",
+     "minLength": 10,
+     "rowRequires": [
+      "cardId",
+      "date",
+      "grader",
+      "pop10",
+      "pop9",
+      "popTotal",
+      "source"
+     ]
+    }
+   }
+  },
+  "data/release-radar.json": {
+   "readers": 3,
+   "root": "object",
+   "requires": {
+    "updated": {
+     "type": "str"
+    },
+    "notes": {
+     "type": "str"
+    },
+    "upcoming": {
+     "type": "array",
+     "minLength": 4,
+     "rowRequires": [
+      "confidence",
+      "date",
+      "name",
+      "type"
+     ]
+    }
+   }
+  },
+  "data/sealed-crosscheck.json": {
+   "readers": 2,
+   "root": "object",
+   "requires": {
+    "updatedAt": {
+     "type": "str"
+    },
+    "source": {
+     "type": "str"
+    },
+    "products": {
+     "type": "array",
+     "minLength": 68,
+     "rowRequires": [
+      "dataStatus",
+      "id",
+      "providerUpdatedAt",
+      "tcgListings",
+      "tcgMarket"
+     ]
+    }
+   }
+  },
+  "data/singles-enrichment.json": {
+   "readers": 4,
+   "root": "object",
+   "requires": {
+    "updatedAt": {
+     "type": "str"
+    },
+    "source": {
+     "type": "str"
+    },
+    "citationRule": {
+     "type": "str"
+    },
+    "psaFloorUsd": {
+     "type": "float"
+    },
+    "creditsConsumed": {
+     "type": "int"
+    },
+    "cards": {
+     "type": "array",
+     "minLength": 6,
+     "rowRequires": [
+      "cardId",
+      "ebaySold",
+      "gradingPremium",
+      "name",
+      "number",
+      "pptSetName",
+      "raw",
+      "tcgPlayerId",
+      "watchLabel"
+     ]
+    }
+   }
+  },
+  "data/singles-watchlist.json": {
+   "readers": 3,
+   "root": "object",
+   "requires": {
+    "_meta": {
+     "type": "str"
+    },
+    "cards": {
+     "type": "array",
+     "minLength": 60,
+     "rowRequires": [
+      "label",
+      "q"
+     ]
+    }
+   }
+  },
+  "data/artists.json": {
+   "readers": 2,
+   "root": "object",
+   "optional": true,
+   "requires": {
+    "byArtist": {
+     "type": "object",
+     "keys": []
+    },
+    "byCard": {
+     "type": "object",
+     "keys": []
+    },
+    "coverage": {
+     "type": "object",
+     "keys": [
+      "complete"
+     ]
+    }
+   }
   }
  }
 }

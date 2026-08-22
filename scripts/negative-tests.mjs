@@ -191,6 +191,21 @@ const CASES = [
         why: bad.length ? `rotation repeats across a boundary: ${bad[0]}` : "the old day-of-month approach no longer demonstrates the bug — test is stale" };
     } },
 
+  { guard: "Plausible garbage from a source", detect: "publish-assert.mjs",
+    // Everything we own handles a source being DOWN better than it handles a
+    // source returning 200 with a believable wrong answer. This is that case:
+    // valid JSON, right shape, prices an order of magnitude off. If nothing
+    // notices, our guards only protect against honest failures.
+    break: async () => {
+      await copyFile(P("data/sealed-prices.json"), "/tmp/nt-garbage.bak");
+      const sp = JSON.parse(await readFile(P("data/sealed-prices.json"), "utf-8"));
+      for (const p of sp.products) if (p.dataStatus === "live" && p.priceMedian) p.priceMedian = Math.round(p.priceMedian * 10 * 100) / 100;
+      await writeFile(P("data/sealed-prices.json"), JSON.stringify(sp, null, 2));
+      try { await run("node", [P("scripts/qa-gate.mjs")], { cwd: ROOT }); } catch {}
+      return true;
+    },
+    restore: async () => { await copyFile("/tmp/nt-garbage.bak", P("data/sealed-prices.json")); } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");
