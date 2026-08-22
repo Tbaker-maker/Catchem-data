@@ -725,3 +725,19 @@ data/finding-outcomes.json records CONFIRMED when acting on a finding changed
 something and DISMISSED when somebody looked and it was fine. Both are useful;
 only silence is useless. The rating gets better by being used, which is the
 only honest way for a rating to get better.
+
+## ADJACENCY IS A CLAIM (Tyler, Aug 23 2026)
+"Why is this random grading quote with the index? That has nothing to do
+with a sealed index. Looks sloppy."
+He was right, and every number on the page was correct. A grading-premium
+strip sat flush under the Sealed Index, and proximity is how a reader
+decides what belongs to what — so it read as a caption on an index that
+does not measure graded singles at all.
+THE RULE: two instruments measuring DIFFERENT markets may not sit adjacent
+without a line naming the boundary. Sealed products and graded singles are
+the obvious pair; there will be others.
+WHY IT IS EASY TO MISS FROM INSIDE: whoever placed it already knows they
+are different things, so the ambiguity is invisible to them and obvious to
+everyone else. This is the cheapest class of design bug to create and the
+hardest to catch without fresh eyes — which is why it is now a check in
+the experience agent rather than a thing we hope to notice.

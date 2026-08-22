@@ -1,48 +1,55 @@
 {
- "generatedAt": "2026-08-22T20:52:58.431Z",
+ "generatedAt": "2026-08-22T22:27:24.760Z",
  "scope": "Measures structure, density, retention hooks and countable visual choices. It does NOT judge how anything looks — chat cannot see the app, and guessing at aesthetics is the failure the No-Guessing Law exists to stop.",
  "findings": [
   {
    "lane": "simplicity",
    "observation": "The Today screen carries 17 sections: The Daily Three, 🗳 Rip or Hold?, Biggest movers, Set the app up for you, Movers, Release radar…",
    "why": "Every section is a decision the reader has to make about whether to keep reading. Past about six, a page stops being scanned and starts being skipped.",
-   "fix": "Rank them by how often somebody would act on each, and move the bottom third behind a tap. Nothing is deleted — it stops competing."
+   "fix": "Rank them by how often somebody would act on each, and move the bottom third behind a tap. Nothing is deleted — it stops competing.",
+   "confidence": "MEASURED"
   },
   {
    "lane": "retention",
    "observation": "5 things visibly change day to day: the Daily Three, a fact, shelf moves, yesterday's picks revisited, Rip or Hold.",
    "why": "A page that looks the same twice is a page nobody opens twice. This is the single strongest lever on daily return, and it costs nothing because the data already changes.",
-   "fix": "Good coverage — the gap is that a returning reader cannot TELL at a glance what is new since yesterday."
+   "fix": "Good coverage — the gap is that a returning reader cannot TELL at a glance what is new since yesterday.",
+   "confidence": "MEASURED"
   },
   {
    "lane": "ease of use",
    "observation": "A number appears above the fold on Today.",
    "why": "The bar is that a stranger sees something useful without acting. Every tap before value is a place they leave.",
-   "fix": "Holds — check on a 390px screen that it is still above the fold with the banner and nav present."
+   "fix": "Holds — check on a 390px screen that it is still above the fold with the banner and nav present.",
+   "confidence": "MEASURED"
   },
   {
    "lane": "ease of use",
    "observation": "Nothing is gated — every instrument is readable immediately.",
    "why": "Free-core is the doctrine and it is also the retention strategy: the app has to be useful before anyone owes us anything.",
-   "fix": "Holds. Keep it that way as the Discord unlock arrives — unlock depth, never truth."
+   "fix": "Holds. Keep it that way as the Discord unlock arrives — unlock depth, never truth.",
+   "confidence": "MEASURED"
   },
   {
    "lane": "visual calm",
-   "observation": "4 accent colours appear on the same surface.",
+   "observation": "5 accent colours appear on the same surface.",
    "why": "Our own rule is one accent per surface. Colour is supposed to carry information; past two or three it becomes decoration and the eye stops trusting it.",
-   "fix": "Reserve green for positive, red for negative, and let mode accent everything else. Gold stays a highlight, never a third voice."
+   "fix": "Reserve green for positive, red for negative, and let mode accent everything else. Gold stays a highlight, never a third voice.",
+   "confidence": "MEASURED"
   },
   {
    "lane": "visual calm",
    "observation": "32 emoji in the interface.",
    "why": "A few give warmth. Many make a data product read as a chat window, and they are the first thing that looks dated in a year.",
-   "fix": "Keep them for section headers and the ELI5 lollipop; drop them from anything carrying a number."
+   "fix": "Keep them for section headers and the ELI5 lollipop; drop them from anything carrying a number.",
+   "confidence": "MEASURED"
   },
   {
-   "lane": "visual calm",
-   "observation": "11 hard-coded colours bypass the token system.",
-   "why": "Every one is a place the app can drift away from the site, which is the seam a visitor feels without being able to name.",
-   "fix": "Route them through tokens.css so a change on the site reaches the app automatically."
+   "lane": "adjacency",
+   "observation": "idx sits directly after leadGraded, and they measure different markets.",
+   "why": "Proximity IS a claim. Two instruments touching are read as one, and a reader who thinks the sealed index measures graded singles has been misled by layout rather than by a number.",
+   "fix": "Label the boundary, or separate them. One line naming the market costs nothing and removes the ambiguity entirely.",
+   "confidence": "MEASURED"
   }
  ],
  "forHumanEyes": [

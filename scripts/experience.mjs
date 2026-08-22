@@ -104,6 +104,29 @@ const F = (lane, observation, why, fix) => findings.push({ lane, observation, wh
       "Route them through tokens.css so a change on the site reaches the app automatically.");
 }
 
+// ── 4b · ADJACENCY: things that touch are read as related ─────────────────
+// A grading-premium strip sat flush under the Sealed Index and read as a
+// caption on it, because that is what proximity means to a reader. Every
+// number on the page was correct and the page still looked sloppy. This is
+// the cheapest class of design bug to create and the hardest to notice from
+// inside, because whoever placed it already knows they are different things.
+{
+  // Instruments that measure DIFFERENT markets must not sit adjacent without a
+  // label saying so. Sealed products and graded singles are the clearest pair.
+  const MARKETS = { sealed: /sealedIndex|eraIndexes|Board/, singles: /Grading|graded|rawIndex|slab/i };
+  const seq = [...app.matchAll(/key="(idx|lead[A-Za-z]+)"/g)].map(m => m[1]);
+  const marketOf = (k) => /Graded|Raw/.test(k) ? "singles" : "sealed";
+  for (let i = 1; i < seq.length; i++) {
+    if (marketOf(seq[i]) !== marketOf(seq[i - 1])) {
+      const labelled = new RegExp(`key="${seq[i]}"[\\s\\S]{0,400}?(different market|SINGLE CARDS|not the same)`, "i").test(app);
+      if (!labelled)
+        F("adjacency", `${seq[i]} sits directly after ${seq[i - 1]}, and they measure different markets.`,
+          "Proximity IS a claim. Two instruments touching are read as one, and a reader who thinks the sealed index measures graded singles has been misled by layout rather than by a number.",
+          "Label the boundary, or separate them. One line naming the market costs nothing and removes the ambiguity entirely.", "cc");
+    }
+  }
+}
+
 // ── 5 · WHAT ONLY EYES CAN ANSWER — handed over, specifically ──────────────
 const forHumanEyes = [
   "On a 390px phone, how many times must you scroll before the first number you would act on?",
