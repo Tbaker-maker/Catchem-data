@@ -1,3 +1,4 @@
+import { flag } from "./flags.mjs";
 // pack-basis.mjs — RT-4b applied to displayed prices.
 // A sealed booster pack is a commodity: any copy is any copy, so the photo
 // premium that justifies eBay's higher asks on boxes has no justification
@@ -10,7 +11,7 @@
 // publish. Flip CATCHEM_PPT_LICENSED=1 once the licence is in hand.
 // Publishing data we are not licensed to publish is not a risk we take to
 // win a more accurate pack price.
-const PPT_LICENSED = process.env.CATCHEM_PPT_LICENSED !== "0";  // Tyler's ruling 2026-08-23: free tool, development phase — proceed. Set to "0" to hold pack prices on eBay.
+const PPT_LICENSED = flag("pptLicensed");   // declared in scripts/flags.mjs — never read process.env here  // Tyler's ruling 2026-08-23: free tool, development phase — proceed. Set to "0" to hold pack prices on eBay.
 
 // LICENSING FLAG (2026-08-23). PPT's terms reserve commercial use for the $99
 // Business tier; Free and API tiers are "personal and development purposes".

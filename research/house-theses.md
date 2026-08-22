@@ -356,3 +356,30 @@ compute-divergence.mjs.
 FALSIFIER: if PPT ships new fields (listings counts, shipping-inclusive
 prices, region parameters) the crosscheck contract should be re-evaluated —
 the fetch header documents where to look.
+
+## ONE DECLARATION, MANY USES (Aug 23 2026)
+THE FAILURE: chat and CC each added a PPT licensing gate to the same
+function. Chat's ran first, CC's ran second and silently overrode it, so
+Tyler's ruling appeared not to take effect and neither author knew the
+other's gate existed. Two guards for one decision, and the second won.
+
+WHY IT HAPPENED: guards were added inline, wherever they were needed.
+That is fine with one author. With two working in parallel it guarantees
+collisions, because neither has any reason to look where the other wrote.
+
+THE FIX, and it is structural rather than procedural: anything that
+changes what the product DOES or PUBLISHES is now DECLARED once in
+scripts/flags.mjs — with its owner, the date it was decided, why, and the
+trigger that would change it — and read everywhere else through flag().
+Adding a gate means opening that file, which means seeing the gate that
+already exists. A duplicate stops being a coordination problem and
+becomes impossible.
+ENFORCED: guard-audit fails the run if any script outside flags.mjs reads
+a CATCHEM_* environment variable. Negative-tested by reintroducing the
+exact pattern.
+NOT IN SCOPE: secrets stay in the environment and never appear in the
+registry; logging conveniences are not behaviour and do not belong.
+
+THE GENERAL LESSON, worth more than the fix: a rule that depends on two
+workers remembering each other is not a rule, it is a hope. Where
+coordination is required, remove the need for coordination instead.

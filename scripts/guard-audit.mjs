@@ -161,6 +161,23 @@ const MUST_RUN = [
 ];
 
 const failures = [], notes = [];
+// ── DUPLICATE GATE CHECK (2026-08-23) ──────────────────────────────────
+// Chat and CC each added a PPT licensing gate to the same function; the
+// second silently overrode the first. Gates are now DECLARED in flags.mjs
+// and read through it, so a duplicate would require two declarations in one
+// file — visible the moment anyone opens it. This enforces the rule.
+{
+  const { readdir } = await import("node:fs/promises");
+  const files = (await readdir(join(ROOT, "scripts"))).filter(f => f.endsWith(".mjs") && f !== "flags.mjs");
+  for (const f of files) {
+    const src = await read(`scripts/${f}`);
+    if (!src) continue;
+    const strays = [...src.matchAll(/process\.env\.(CATCHEM_[A-Z_]+)/g)].map(m => m[1]);
+    for (const s of new Set(strays))
+      failures.push(`DUPLICATE-GATE RISK — scripts/${f} reads ${s} directly. Behaviour gates are declared in scripts/flags.mjs and read via flag(); reading the environment here is how two gates for one decision get created without either author knowing.`);
+  }
+}
+
 for (const g of MANIFEST) {
   const def = await read(g.definedIn);
   if (!def) { failures.push(`${g.guard}: defining file missing (${g.definedIn})`); continue; }

@@ -6,10 +6,11 @@
 // DESIGN LAW: consistent skeleton, different content — variation comes
 // from the DATA and rotating phrasings, never from randomness alone.
 // Voice laws apply: labeled %, no calls, receipts, no hype adjectives.
+import { flag } from "./flags.mjs";
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-const SITE = process.env.CATCHEM_SITE || "catchemtcg.com"; // public host — the app domain is unlisted (split 2026-08-22)
+const SITE = flag("site"); // public host — the app domain is unlisted (split 2026-08-22)
 const METHODOLOGY_URL = `${SITE}/methodology.html`;
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");

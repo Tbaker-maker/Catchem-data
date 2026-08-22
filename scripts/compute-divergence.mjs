@@ -18,6 +18,7 @@
 // and asks resting somewhat above solds is definitional, not a read.
 // Runs standalone; consumes whatever provider fills the crosscheck contract.
 
+import { flag } from "./flags.mjs";
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -50,7 +51,7 @@ import { loadBlocked } from "./lib/publish-guard.mjs";
 // A number needing a caveat every time it appears does more explaining than
 // working. Still computed for internal reads; returns publicly only when both
 // gates clear.
-const SPREAD_PUBLISHABLE = process.env.CATCHEM_PPT_LICENSED === "1" && process.env.CATCHEM_TCG_DELIVERED === "1";
+const SPREAD_PUBLISHABLE = flag("pptLicensed") && flag("tcgDelivered");
 
 const q = await loadBlocked();
 // NO-GUESS LAW (Tyler, 8739773 — supersedes the abb4123 estimate): never

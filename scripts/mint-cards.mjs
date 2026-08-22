@@ -2,6 +2,7 @@
 // Invoked by generate-pulse.mjs after the feed is written. Cards land in
 // research/pulse/cards/ (CI-committed path). Watermark law: ⚡ Catch'em +
 // date + provenance chip on every asset. Voice v4/v5 apply.
+import { flag } from "./flags.mjs";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -27,7 +28,7 @@ function wrapText(str, { x, y, width, size, fill, weight = 400, lineHeight = 1.3
     lines.map((l, i) => `<tspan x="${x}" dy="${i === 0 ? 0 : size * lineHeight}">${esc2(l)}</tspan>`).join("") + `</text>`;
 }
 
-const SITE = process.env.CATCHEM_SITE || "catchemtcg.com"; // public host — the app domain is unlisted (split 2026-08-22)
+const SITE = flag("site"); // public host — the app domain is unlisted (split 2026-08-22)
 const METHODOLOGY_URL = `${SITE}/methodology.html`;
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
