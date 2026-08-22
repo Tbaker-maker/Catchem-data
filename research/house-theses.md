@@ -147,3 +147,23 @@ and we amend in public.
 STATUS: READ — based on Tyler's market experience plus the structural
 logic of pre-announced events; not yet measured in our own tape. First
 real test: the 2027-04 rotation, with cohort data by then.
+
+## THE REFEREE DOCTRINE (Tyler, Aug 22 2026)
+"Non-biased tools that help both of them — not a them-versus-them."
+We publish the SAME numbers to buyers and vendors, and we never frame one
+as the other's opponent. Rules:
+- No adversarial verbs. Nobody "outsmarts", "beats", "wins against", or
+  "gets one over on" anyone. The instruments show what each side's
+  alternative is worth; the humans negotiate.
+- No implication that a vendor is hiding something. Vendors price against
+  their own costs and risks, and most price honestly. A buyer being
+  uninformed is not evidence that anyone is being cheated.
+- Symmetry test before publishing any show-floor copy: would a vendor
+  reading this feel served, or feel targeted? If targeted, rewrite. The
+  same test runs in reverse.
+- Our credibility with vendors is a business asset. Vendors run the
+  Discords, the shows, the shops, and the streams. A buyer-flattering
+  headline buys one day of engagement and costs a permanent channel.
+WHY IT HOLDS COMMERCIALLY, not just ethically: the referee is the only
+position that both sides link to. A partisan tool gets cited by half a
+market and blocked by the other half.

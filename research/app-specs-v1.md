@@ -281,10 +281,13 @@ IP: card art from the standard community source with attribution on the
 page; on the attorney list with the other commercial-depiction items.
 
 ## §19 · THE SHOW FLOOR — tools for both sides of the table (Tyler, Aug 22)
-Card shows are the one venue where our data changes the outcome of a
-conversation in real time. We serve BOTH sides, which is the position
-nobody else can take: a buyer-only tool gets vendors' backs up, a
-vendor-only tool loses the community. We are the referee.
+Card shows are the one venue where our data changes a conversation in
+real time. We serve BOTH sides with the SAME numbers. This is not a
+buyer-versus-vendor product and must never read like one: a vendor at a
+table is a collector who turned their love into a living, and the person
+across from them is a collector with cash. Both deserve to negotiate
+knowing what their alternatives are actually worth. Nobody at that table
+is the mark.
 
 ### THE DEAL ZONE (the flagship instrument — engine live)
 A buyer's true online cost is the delivered total PLUS sales tax.
@@ -299,7 +302,7 @@ Any cash price in that band leaves both people better off than eBay.
 That single number is the honest referee for a table negotiation, and
 no competitor publishes it.
 
-### BUYER TOOLS — "what a vendor knows that you don't"
+### BUYER TOOLS — know what you are looking at
 1. Deal Check w/ delivered-total framing — a booth sticker with no
    shipping is NOT comparable to an eBay sticker; compare delivered.
 2. Your walk-away number — the buyer ceiling. Above it, buy online.
@@ -315,7 +318,7 @@ no competitor publishes it.
 7. What NOT to buy — products whose booth price sits above the online
    delivered total.
 
-### VENDOR TOOLS — "don't get outsmarted at your own table"
+### VENDOR TOOLS — price from your real numbers
 1. YOUR BOOTH FLOOR (the one that changes behaviour): your real floor is
    your eBay NET, not your eBay ask. Selling a $2,908 box at $2,600 cash
    nets you MORE than listing it — instantly, with no fees, no shipping,

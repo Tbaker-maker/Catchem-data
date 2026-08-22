@@ -45,12 +45,23 @@ const NORM_CLAIM = [
   /\bwithout\s+(the\s+)?(usual\s+)?fanfare\b/i,
 ];
 
+// ADVERSARIAL FRAMING (Referee Doctrine, 2026-08-22): we serve buyers and
+// vendors with the same numbers and never frame either as the other's mark.
+// Punchy copy drifts here first, so the linter holds the line.
+const ADVERSARIAL = [
+  /\bout ?smart(ing|ed)?\b/i, /\bbeat the (dealer|vendor|seller|shop)/i,
+  /\bdon'?t get (ripped|played|fooled|scammed)/i, /\brip[- ]off\b/i,
+  /\bdealer tricks?\b/i, /\bvendor tricks?\b/i, /\bwhat they don'?t want you to know\b/i,
+  /\bhow to win against\b/i, /\bstop overpaying\b/i, /\bthey'?re counting on you\b/i,
+];
 const der = await J("data/derived-insights.json") ?? {};
 const findings = [];
 const check = (label, text, chip) => {
   if (!text) return;
   const t = String(text);
   const hard = CERTAINTY.filter(rx => rx.test(t)).map(rx => rx.source.slice(0, 24));
+  const adv = ADVERSARIAL.filter(rx => rx.test(t)).map(rx => rx.source.slice(0, 26));
+  if (adv.length) findings.push({ severity: "BLOCK", label, chip, issue: `adversarial framing — the Referee Doctrine forbids casting either side of a trade as the other's opponent: ${adv.join(", ")}`, text: t.slice(0, 120) });
   if (hard.length) findings.push({ severity: "BLOCK", label, chip, issue: `prediction language in a published statement: ${hard.join(", ")}`, text: t.slice(0, 120) });
   const norms = NORM_CLAIM.filter(rx => rx.test(t)).map(rx => rx.source.slice(0, 22));
   if (norms.length) findings.push({ severity: "WARN", label, chip, issue: `norm claim about community/market behavior — needs evidence or drop the comparison (${norms.join(", ")})`, text: t.slice(0, 120) });

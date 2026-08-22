@@ -53,6 +53,13 @@ const MANIFEST = [
       { file: "scripts/compute-derived.mjs", pattern: /seasoned\(p\)/g, min: 2,
         note: "must gate BOTH the sealed composite and the subtype composites" },
     ] },
+  { guard: "Referee Doctrine (no adversarial framing)",
+    definedIn: "scripts/voice-lint.mjs",
+    mustBeReferencedIn: [
+      { file: "scripts/voice-lint.mjs", pattern: /const ADVERSARIAL\s*=/g, min: 1 },
+      { file: "scripts/voice-lint.mjs", pattern: /ADVERSARIAL\.filter\(/g, min: 1,
+        note: "defined AND applied — a pattern list nothing checks is decoration" },
+    ] },
   { guard: "Daily Three freshness rotation",
     definedIn: "scripts/compute-derived.mjs",
     mustBeReferencedIn: [
