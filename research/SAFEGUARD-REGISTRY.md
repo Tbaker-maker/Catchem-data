@@ -66,6 +66,7 @@ failure simulations. Restores every file it touches.
 | 19 | Deal Zone model contract (§19 — app rates come from the feed) | 0 | blocks run | rename feeTiers in compute-derived → audit fails | 2026-08-22 |
 | 20 | Referee Doctrine (adversarial framing) | 4 | blocks | "outsmart vendors" / "beat the dealer" fixtures block; neutral copy passes | 2026-08-22 |
 | 21 | Deploy smoke test (blank-page class, rendered DOM) | 5 | fails CI / deploy | SMOKE_APP→non-React page fails rendered asserts; robots.txt-as-feed fails parse (both exit 1, 2026-08-22) | 2026-08-22 |
+| 22 | Mode Honesty Law (§20 — figure multiset identical across modes) | 5 | fails CI | grader dropped one lead row on purpose → 48 vs 47, exit 1; multiset (not set) equality caught a duplicate-value drop | 2026-08-22 |
 
 ## AUDIT CADENCE
 - **Every run:** layers 0, 2, 4, 5 execute inside the pipeline.

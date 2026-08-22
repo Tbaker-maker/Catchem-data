@@ -105,6 +105,14 @@ const MANIFEST = [
       { file: "scripts/compute-derived.mjs", pattern: /taxPctDefault:/g, min: 1,
         note: "the default tax rate is a model field, not an app constant" },
     ] },
+  { guard: "Mode Honesty Law (§20 — modes reorder and tint, NEVER hide or change a number)",
+    definedIn: "scripts/mode-diff-test.mjs",
+    mustBeReferencedIn: [
+      { file: "scripts/mode-diff-test.mjs", pattern: /MODE HONESTY VIOLATED/g, min: 1,
+        note: "the rendered figure-multiset comparison must fail loudly — an echo-chamber mode is worse than no modes" },
+      { file: ".github/workflows/update-sealed-prices.yml", pattern: /mode-diff-test\.mjs/g, min: 1,
+        note: "must run in CI against the live app — a diff test nobody runs is decoration" },
+    ] },
   { guard: "Deploy smoke test (blank-page class — rendered DOM is proof, status codes are not)",
     definedIn: "scripts/smoke-test.mjs",
     mustBeReferencedIn: [

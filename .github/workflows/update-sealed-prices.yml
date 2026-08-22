@@ -111,3 +111,9 @@ jobs:
         # blank screen). Runs after the data commit so a broken morning is
         # loud within minutes, not when Tyler opens his phone.
         run: node scripts/smoke-test.mjs
+
+      - name: Mode honesty (figure multiset identical across modes)
+        # §20's one law, machine-enforced daily against the LIVE app: every
+        # mode renders every figure — order and accent only. An echo-chamber
+        # mode fails the run.
+        run: node scripts/mode-diff-test.mjs
