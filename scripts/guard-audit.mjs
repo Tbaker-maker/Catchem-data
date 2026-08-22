@@ -90,6 +90,14 @@ const MANIFEST = [
     mustBeReferencedIn: [
       { file: "scripts/compute-derived.mjs", pattern: /premiumThin/g, min: 2 },
     ] },
+  { guard: "Deal Zone model contract (§19 — Show Mode recomputes zones ONLY from the feed's numeric fields)",
+    definedIn: "scripts/compute-derived.mjs",
+    mustBeReferencedIn: [
+      { file: "scripts/compute-derived.mjs", pattern: /feeTiers:\s*\[/g, min: 1,
+        note: "numeric fee tiers must ship in dealZone.model — the app's settings sheet renders from them and hardcodes NO rate; losing the field silently reverts every custom zone and empties the sheet" },
+      { file: "scripts/compute-derived.mjs", pattern: /taxPctDefault:/g, min: 1,
+        note: "the default tax rate is a model field, not an app constant" },
+    ] },
   { guard: "Durable quarantine at compute time (fetch rebuilds wipe publishBlock; qa-gate runs later)",
     definedIn: "scripts/lib/publish-guard.mjs",
     mustBeReferencedIn: [

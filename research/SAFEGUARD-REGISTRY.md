@@ -63,6 +63,7 @@ failure simulations. Restores every file it touches.
 | 16 | Content sanity (silent empty run) | 5 | blocks edition | empty-feed + no-headline simulations | 2026-08-22 |
 | 18 | Daily Three freshness rotation | 2 | excludes repeats | 7-day simulation: 7/7 unique picks | 2026-08-22 |
 | 17 | Merge-by-date guards (all histories) | 1 | prevents overwrite | 8-vs-329 unit test | 2026-08-19 |
+| 19 | Deal Zone model contract (§19 — app rates come from the feed) | 0 | blocks run | rename feeTiers in compute-derived → audit fails | 2026-08-22 |
 
 ## AUDIT CADENCE
 - **Every run:** layers 0, 2, 4, 5 execute inside the pipeline.
