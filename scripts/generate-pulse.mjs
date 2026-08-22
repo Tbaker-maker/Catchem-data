@@ -453,7 +453,9 @@ console.log(`✓ Morning Pulse written: research/pulse/${today}.md`);
 
 await import("./mint-cards.mjs");
 await import("./mint-social-card.mjs");
-await import("./binder-page.mjs");
+// binder-page's mint is a named export — a bare side-effect import minted
+// nothing (its old CLI guard was false under import; caught 2026-08-22).
+await (await import("./binder-page.mjs")).mintBinderPages();
 await import("./rasterize-cards.mjs");
 await import("./social-posts.mjs");
 await import("./post-bank.mjs");
