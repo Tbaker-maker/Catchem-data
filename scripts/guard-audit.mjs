@@ -206,6 +206,10 @@ const failures = [], notes = [];
   for (const f of files) {
     const src = await read(`scripts/${f}`);
     if (!src) continue;
+    // negative-tests PLANTS these strings on purpose to prove the rule fires;
+    // guard-audit contains the pattern itself. Both match by design, exactly as
+    // the unbounded-fetch rule below already exempts them.
+    if (/guard-audit|negative-tests/.test(f)) continue;
     // TMP("/tmp/x") is the sanctioned wrapper; a BARE string literal is not.
     for (const m of src.matchAll(/(^|[^(\w])"(\/tmp\/[^"]*)"/g)) {
       const before = src.slice(Math.max(0, m.index - 4), m.index + 1);
