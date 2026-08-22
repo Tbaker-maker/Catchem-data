@@ -25,6 +25,33 @@ const hh = await J("data/heat-history.json") ?? [];
 const ixh = await J("research/pulse/index-history.json") ?? { entries: [] };
 const today = new Date().toISOString().slice(0, 10);
 
+
+// ── VOICE (Tyler, 2026-08-23: "don't let the agents feel like robots") ──
+// Warmth is not impersonation. This agent is obviously a machine and says so;
+// it just does not have to sound like a compliance form. Three rules:
+//   1. The jokes are always at OUR expense. Never a member's, never a vendor's.
+//   2. The numbers stay flat. Humour lives in the sentence around them.
+//   3. Rotate the phrasing, or a daily artifact becomes wallpaper by week two.
+const pickLine = (arr, salt = 0) => arr[(new Date().getUTCDate() + salt) % arr.length];
+const VOICE = {
+  allSurvived: [
+    "Tried to prove ourselves wrong this morning. Failed again. Annoying, but reassuring.",
+    "Went looking for a reason to retract something. Came back empty-handed.",
+    "Every claim we make survived its own kill condition today. We'll try harder tomorrow.",
+    "No theses died today. The scoreboard stays boring, which is the good outcome.",
+  ],
+  someTripped: [
+    "One of our own claims did not survive today. That is what the falsifiers are for, and it is going in public.",
+    "We said in advance what would end this thesis. That thing happened. So it ends.",
+    "A read we published has failed its own test. Better we find it than you do.",
+  ],
+  mostlyInsufficient: [
+    "Mostly \"we cannot tell yet\" today — half these tests need weeks of history we simply do not have. Saying so beats guessing.",
+    "A lot of honest shrugs on this run. The tape is young; the tests are patient.",
+    "Not much of a verdict today. Most of our claims need more time before they can be judged, and pretending otherwise would be the actual failure.",
+  ],
+};
+
 const live = (sp.products || []).filter(p => p.dataStatus === "live" && p.priceMedian);
 const daysOfTape = new Set(hh.filter(r => r.date >= "2026-08-19").map(r => r.date)).size;
 
@@ -106,7 +133,10 @@ const tests = [
 
 const results = tests.map(t => { try { return { ...t, ...t.run() }; } catch (e) { return { ...t, verdict: "ERROR", detail: e.message }; } });
 const tripped = results.filter(r => r.verdict === "TRIPPED");
-const report = { generatedAt: new Date().toISOString(), date: today,
+const mood = tripped.length ? pickLine(VOICE.someTripped)
+  : results.filter(r => r.verdict === "INSUFFICIENT").length >= results.length / 2 ? pickLine(VOICE.mostlyInsufficient)
+  : pickLine(VOICE.allSurvived);
+const report = { generatedAt: new Date().toISOString(), date: today, mood,
   note: "We test our own claims before anyone else gets the chance. INSUFFICIENT is an honest verdict and is reported as loudly as the others.",
   summary: { survived: results.filter(r => r.verdict === "SURVIVED").length,
              tripped: tripped.length,
@@ -117,6 +147,7 @@ const report = { generatedAt: new Date().toISOString(), date: today,
     draft: `${t.id} (${t.name}) tripped its own falsifier on ${today}: ${t.detail} We stated in advance that this would end the thesis, so it ends. A replacement read will not be published until it carries its own falsifier.` })) };
 
 await writeFile(join(ROOT, "research/pulse/falsifier-report.json"), JSON.stringify(report, null, 1));
+console.log(`\n  ${mood}\n`);
 console.log(`✓ falsifier: ${report.summary.survived} survived · ${report.summary.tripped} TRIPPED · ${report.summary.insufficient} insufficient · ${report.summary.pending} pending`);
 for (const r of results) console.log(`  ${r.verdict.padEnd(12)} ${r.id.padEnd(6)} ${r.detail}`);
 if (tripped.length) console.log(`\n  ⚠ ${tripped.length} thesis/theses tripped — amendment drafts are in the report. Publishing them is a human decision.`);

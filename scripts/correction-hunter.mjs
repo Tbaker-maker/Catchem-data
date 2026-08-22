@@ -16,6 +16,28 @@ import { dirname, join } from "node:path";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "utf-8")); } catch { return null; } };
 
+
+// VOICE: this agent audits our past self, so its tone is a colleague checking
+// your work rather than an auditor writing you up. Kind, dry, and always
+// pointed at us — never at a reader who trusted the number.
+const pickLine = (a, salt = 0) => a[(new Date().getUTCDate() + salt) % a.length];
+const VOICE = {
+  clean: [
+    "Went back through everything we published and found nothing to take back. Rare and pleasant.",
+    "Re-read our own numbers looking for a mistake. Came up empty this time.",
+    "Nothing to correct today. Enjoy it; the streak never lasts.",
+  ],
+  suspect: [
+    "Found a few of our own figures that moved faster than any market should. Checking which one of them was us.",
+    "Some numbers we published look more like our measuring than the market. Worth a second pair of eyes.",
+    "A handful of suspicious jumps in our own history. Probably ours, not the market's — that is the usual answer.",
+  ],
+  vanished: [
+    "We put something in front of readers and can no longer price it. That is the kind of thing worth noticing before somebody asks.",
+    "A product we featured has gone quiet on us. Either it stopped trading or we broke its query, and we should know which.",
+  ],
+};
+
 const hh = await J("data/heat-history.json") ?? [];
 const sp = await J("data/sealed-prices.json") ?? { products: [] };
 const wlog = await J("research/pulse/watch-log.json") ?? { entries: [] };
@@ -56,7 +78,10 @@ for (const [id, series] of Object.entries(byId)) {
 const featured = (wlog.entries || []).flatMap(e => [e.sealed, e.raw].filter(Boolean).map(p => ({ ...p, date: e.date })));
 const vanished = featured.filter(f => f.id && !nowPrice[f.id] && f.date < today);
 
-const report = { generatedAt: new Date().toISOString(), date: today,
+const mood = findings.length ? pickLine(VOICE.suspect)
+  : vanished.length ? pickLine(VOICE.vanished, 1)
+  : pickLine(VOICE.clean);
+const report = { generatedAt: new Date().toISOString(), date: today, mood,
   note: "Re-checks numbers we already published. Flags are SUSPECT, not proven wrong — each needs a human or CC to verify against listings before a correction is filed.",
   window: `${IMPLAUSIBLE * 100}% inside ${WINDOW_DAYS} days`,
   suspectFigures: findings.sort((a, b) => Math.abs(b.movePct) - Math.abs(a.movePct)).slice(0, 20),
@@ -66,6 +91,7 @@ const report = { generatedAt: new Date().toISOString(), date: today,
     draft: `We published ${f.name} at $${f.was} on ${f.from} and $${f.became} on ${f.to}. A ${Math.abs(f.movePct)}% move in that window is unlikely to be the market. One of those two figures was probably ours rather than the market's, and we are checking which.` })) };
 
 await writeFile(join(ROOT, "research/pulse/correction-hunt.json"), JSON.stringify(report, null, 1));
+console.log(`\n  ${mood}\n`);
 console.log(`✓ correction hunter: ${findings.length} suspect figure(s), ${vanished.length} featured-then-unmeasurable`);
 for (const f of report.suspectFigures.slice(0, 6)) console.log(`  ${f.movePct > 0 ? "+" : ""}${f.movePct}%  ${f.name.slice(0, 34).padEnd(34)} $${f.was} → $${f.became} (${f.from}→${f.to})`);
 if (vanished.length) for (const v of report.featuredThenUnmeasurable.slice(0, 3)) console.log(`  GONE   ${v.name} — featured ${v.featuredOn}, no price today`);
