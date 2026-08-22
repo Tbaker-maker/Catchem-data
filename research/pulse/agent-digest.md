@@ -14,10 +14,9 @@ We put something in front of readers and can no longer price it. That is the kin
 - Umbreon VMAX (featured 2026-08-21)
 
 ## Untested and improvable
-4 untested assumption(s) — the highest:
-- **Deploy smoke test (blank-page class, rendered DOM)** — Break it deliberately and confirm the build fails. The registry names a test but audit.mjs never runs it, so nothing checks that this guard still works.
-- **Mode Honesty Law (§20 — figure multiset identical across modes)** — Break it deliberately and confirm the build fails. The registry names a test but audit.mjs never runs it, so nothing checks that this guard still works.
+2 untested assumption(s) — the highest:
 - **data/agent-history.json** — Corrupt it — empty object, missing top-level key, wrong types — and see which of its 2 readers notices. Then decide which of them SHOULD have.
+- **data/card-catalogue.json** — Corrupt it — empty object, missing top-level key, wrong types — and see which of its 4 readers notices. Then decide which of them SHOULD have.
 
 12 thing(s) that work and could work better — the top three:
 - *tool idea (hypothesis)* — We hold both deal-zone room and per-pack economics for the same products. A "rip or trade" tool could answer one question nobody else can: at today's prices, is this box worth more opened, sold sealed online, or traded at a table? Three numbers we already compute, one screen.

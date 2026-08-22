@@ -1,25 +1,13 @@
 {
- "generatedAt": "2026-08-22T20:14:57.985Z",
+ "generatedAt": "2026-08-22T20:21:07.792Z",
  "motto": "Build it. Break it. Repeat.",
  "method": "Looks for the SHAPE of an untested assumption rather than re-running known tests. Proposes attacks; never executes them.",
  "counts": {
-  "high": 4,
+  "high": 2,
   "medium": 4,
   "low": 0
  },
  "hypotheses": [
-  {
-   "target": "Deploy smoke test (blank-page class, rendered DOM)",
-   "attack": "Break it deliberately and confirm the build fails. The registry names a test but audit.mjs never runs it, so nothing checks that this guard still works.",
-   "why": "Our own law: a guard is not real until breaking it fails the build. An unexercised guard is a comfort, not a control.",
-   "severity": "high"
-  },
-  {
-   "target": "Mode Honesty Law (§20 — figure multiset identical across modes)",
-   "attack": "Break it deliberately and confirm the build fails. The registry names a test but audit.mjs never runs it, so nothing checks that this guard still works.",
-   "why": "Our own law: a guard is not real until breaking it fails the build. An unexercised guard is a comfort, not a control.",
-   "severity": "high"
-  },
   {
    "target": "data/agent-history.json",
    "attack": "Corrupt it — empty object, missing top-level key, wrong types — and see which of its 2 readers notices. Then decide which of them SHOULD have.",
@@ -28,8 +16,8 @@
   },
   {
    "target": "data/card-catalogue.json",
-   "attack": "Corrupt it — empty object, missing top-level key, wrong types — and see which of its 3 readers notices. Then decide which of them SHOULD have.",
-   "why": "Read by 3 scripts and validated by none. A silent shape change here propagates everywhere before anything complains.",
+   "attack": "Corrupt it — empty object, missing top-level key, wrong types — and see which of its 4 readers notices. Then decide which of them SHOULD have.",
+   "why": "Read by 4 scripts and validated by none. A silent shape change here propagates everywhere before anything complains.",
    "severity": "high"
   },
   {

@@ -43,36 +43,11 @@
    },
    {
     "date": "2026-08-22",
-    "count": 7,
+    "count": 8,
     "sample": [
      "Deploy smoke test (blank-page class, rendered DOM)::Break it deliberately and confirm the bu",
      "Mode Honesty Law (§20 — figure multiset identical across modes)::Break it deliberately and confirm the bu",
-     "data/card-catalogue.json::Corrupt it — empty object, missing top-l",
-     "the sealed index (our own measurement only — nothing external corroborates the level)::Find one independent way to sanity-check",
-     "pack prices (TCGplayer via one provider, no second source)::Find one independent way to sanity-check",
-     "the deal zone (built on published fee schedules that change without notice)::Find one independent way to sanity-check",
-     "date handling across the pipeline::Run the pipeline with the clock set to 2"
-    ]
-   },
-   {
-    "date": "2026-08-22",
-    "count": 7,
-    "sample": [
-     "Deploy smoke test (blank-page class, rendered DOM)::Break it deliberately and confirm the bu",
-     "Mode Honesty Law (§20 — figure multiset identical across modes)::Break it deliberately and confirm the bu",
-     "data/card-catalogue.json::Corrupt it — empty object, missing top-l",
-     "the sealed index (our own measurement only — nothing external corroborates the level)::Find one independent way to sanity-check",
-     "pack prices (TCGplayer via one provider, no second source)::Find one independent way to sanity-check",
-     "the deal zone (built on published fee schedules that change without notice)::Find one independent way to sanity-check",
-     "date handling across the pipeline::Run the pipeline with the clock set to 2"
-    ]
-   },
-   {
-    "date": "2026-08-22",
-    "count": 7,
-    "sample": [
-     "Deploy smoke test (blank-page class, rendered DOM)::Break it deliberately and confirm the bu",
-     "Mode Honesty Law (§20 — figure multiset identical across modes)::Break it deliberately and confirm the bu",
+     "data/agent-history.json::Corrupt it — empty object, missing top-l",
      "data/card-catalogue.json::Corrupt it — empty object, missing top-l",
      "the sealed index (our own measurement only — nothing external corroborates the level)::Find one independent way to sanity-check",
      "pack prices (TCGplayer via one provider, no second source)::Find one independent way to sanity-check",
@@ -408,6 +383,30 @@
     "sample": [
      "Deploy smoke test (blank-page class, rendered DOM)::Break it deliberately and confirm the bu",
      "Mode Honesty Law (§20 — figure multiset identical across modes)::Break it deliberately and confirm the bu",
+     "data/agent-history.json::Corrupt it — empty object, missing top-l",
+     "data/card-catalogue.json::Corrupt it — empty object, missing top-l",
+     "the sealed index (our own measurement only — nothing external corroborates the level)::Find one independent way to sanity-check",
+     "pack prices (TCGplayer via one provider, no second source)::Find one independent way to sanity-check",
+     "the deal zone (built on published fee schedules that change without notice)::Find one independent way to sanity-check",
+     "date handling across the pipeline::Run the pipeline with the clock set to 2"
+    ]
+   },
+   {
+    "date": "2026-08-22",
+    "count": 6,
+    "sample": [
+     "data/agent-history.json::Corrupt it — empty object, missing top-l",
+     "data/card-catalogue.json::Corrupt it — empty object, missing top-l",
+     "the sealed index (our own measurement only — nothing external corroborates the level)::Find one independent way to sanity-check",
+     "pack prices (TCGplayer via one provider, no second source)::Find one independent way to sanity-check",
+     "the deal zone (built on published fee schedules that change without notice)::Find one independent way to sanity-check",
+     "date handling across the pipeline::Run the pipeline with the clock set to 2"
+    ]
+   },
+   {
+    "date": "2026-08-22",
+    "count": 6,
+    "sample": [
      "data/agent-history.json::Corrupt it — empty object, missing top-l",
      "data/card-catalogue.json::Corrupt it — empty object, missing top-l",
      "the sealed index (our own measurement only — nothing external corroborates the level)::Find one independent way to sanity-check",
@@ -1546,6 +1545,60 @@
      "knowledge::The knowledge base holds 8 verified fact",
      "maintainability::compute-derived.mjs is 54KB.",
      "maintainability::fetch-sealed-prices.mjs is 39KB."
+    ]
+   },
+   {
+    "date": "2026-08-22",
+    "count": 12,
+    "sample": [
+     "tool idea (hypothesis)::We hold both deal-zone room and per-pack",
+     "tool idea (hypothesis)::Print windows and shelf movement are com",
+     "product::The index has no matched sample today, s",
+     "sandbox rule::5 of 5 era indexes ship without a plain-",
+     "knowledge::The knowledge base holds 8 verified fact",
+     "unused output::artist-instruments.json is written every",
+     "unused output::era-history.json is written every run an",
+     "repetition::date-to-day-key is implemented inline 29",
+     "repetition::money rounding is implemented inline 7 t",
+     "pipeline size::The daily run imports 29 steps from one ",
+     "maintainability::compute-derived.mjs is 54KB.",
+     "maintainability::fetch-sealed-prices.mjs is 39KB."
+    ]
+   },
+   {
+    "date": "2026-08-22",
+    "count": 12,
+    "sample": [
+     "tool idea (hypothesis)::We hold both deal-zone room and per-pack",
+     "tool idea (hypothesis)::Print windows and shelf movement are com",
+     "product::The index has no matched sample today, s",
+     "sandbox rule::5 of 5 era indexes ship without a plain-",
+     "knowledge::The knowledge base holds 8 verified fact",
+     "unused output::artist-instruments.json is written every",
+     "unused output::era-history.json is written every run an",
+     "repetition::date-to-day-key is implemented inline 29",
+     "repetition::money rounding is implemented inline 7 t",
+     "pipeline size::The daily run imports 29 steps from one ",
+     "maintainability::compute-derived.mjs is 55KB.",
+     "maintainability::fetch-sealed-prices.mjs is 40KB."
+    ]
+   },
+   {
+    "date": "2026-08-22",
+    "count": 12,
+    "sample": [
+     "tool idea (hypothesis)::We hold both deal-zone room and per-pack",
+     "tool idea (hypothesis)::Print windows and shelf movement are com",
+     "product::The index has no matched sample today, s",
+     "sandbox rule::5 of 5 era indexes ship without a plain-",
+     "knowledge::The knowledge base holds 8 verified fact",
+     "unused output::artist-instruments.json is written every",
+     "unused output::era-history.json is written every run an",
+     "repetition::date-to-day-key is implemented inline 29",
+     "repetition::money rounding is implemented inline 7 t",
+     "pipeline size::The daily run imports 29 steps from one ",
+     "maintainability::compute-derived.mjs is 55KB.",
+     "maintainability::fetch-sealed-prices.mjs is 40KB."
     ]
    }
   ],
