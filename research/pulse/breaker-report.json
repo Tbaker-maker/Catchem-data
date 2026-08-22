@@ -1,45 +1,15 @@
 {
- "generatedAt": "2026-08-22T19:14:35.829Z",
+ "generatedAt": "2026-08-22T19:23:18.115Z",
  "motto": "Build it. Break it. Repeat.",
  "method": "Looks for the SHAPE of an untested assumption rather than re-running known tests. Proposes attacks; never executes them.",
  "counts": {
-  "high": 25,
+  "high": 19,
   "medium": 11,
   "low": 0
  },
  "hypotheses": [
   {
-   "target": "Multi-item listings (lots/x2/cases)",
-   "attack": "Break it deliberately and confirm the build fails. The registry names a test but audit.mjs never runs it, so nothing checks that this guard still works.",
-   "why": "Our own law: a guard is not real until breaking it fails the build. An unexercised guard is a comfort, not a control.",
-   "severity": "high"
-  },
-  {
-   "target": "Currency guard (USD-native)",
-   "attack": "Break it deliberately and confirm the build fails. The registry names a test but audit.mjs never runs it, so nothing checks that this guard still works.",
-   "why": "Our own law: a guard is not real until breaking it fails the build. An unexercised guard is a comfort, not a control.",
-   "severity": "high"
-  },
-  {
-   "target": "Venue boundary (RT-4a)",
-   "attack": "Break it deliberately and confirm the build fails. The registry names a test but audit.mjs never runs it, so nothing checks that this guard still works.",
-   "why": "Our own law: a guard is not real until breaking it fails the build. An unexercised guard is a comfort, not a control.",
-   "severity": "high"
-  },
-  {
-   "target": "Seasoning (90-day)",
-   "attack": "Break it deliberately and confirm the build fails. The registry names a test but audit.mjs never runs it, so nothing checks that this guard still works.",
-   "why": "Our own law: a guard is not real until breaking it fails the build. An unexercised guard is a comfort, not a control.",
-   "severity": "high"
-  },
-  {
    "target": "Thin-sample premium gate",
-   "attack": "Break it deliberately and confirm the build fails. The registry names a test but audit.mjs never runs it, so nothing checks that this guard still works.",
-   "why": "Our own law: a guard is not real until breaking it fails the build. An unexercised guard is a comfort, not a control.",
-   "severity": "high"
-  },
-  {
-   "target": "Manual quarantine durability",
    "attack": "Break it deliberately and confirm the build fails. The registry names a test but audit.mjs never runs it, so nothing checks that this guard still works.",
    "why": "Our own law: a guard is not real until breaking it fails the build. An unexercised guard is a comfort, not a control.",
    "severity": "high"
@@ -52,12 +22,6 @@
   },
   {
    "target": "Deal Zone model contract (§19 — app rates come from the feed)",
-   "attack": "Break it deliberately and confirm the build fails. The registry names a test but audit.mjs never runs it, so nothing checks that this guard still works.",
-   "why": "Our own law: a guard is not real until breaking it fails the build. An unexercised guard is a comfort, not a control.",
-   "severity": "high"
-  },
-  {
-   "target": "Referee Doctrine (adversarial framing)",
    "attack": "Break it deliberately and confirm the build fails. The registry names a test but audit.mjs never runs it, so nothing checks that this guard still works.",
    "why": "Our own law: a guard is not real until breaking it fails the build. An unexercised guard is a comfort, not a control.",
    "severity": "high"
@@ -221,7 +185,7 @@
   {
    "target": "date handling across the pipeline",
    "attack": "Run the pipeline with the clock set to 23:59 UTC on the last day of a month, and again at 00:01 on the first. Confirm nothing double-counts, skips a day, or writes two entries for one date.",
-   "why": "18 scripts slice UTC dates into day keys. Month and year boundaries are where that quietly goes wrong, and no test covers it.",
+   "why": "19 scripts slice UTC dates into day keys. Month and year boundaries are where that quietly goes wrong, and no test covers it.",
    "severity": "medium"
   }
  ]

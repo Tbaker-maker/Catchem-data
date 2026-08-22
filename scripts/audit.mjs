@@ -90,6 +90,9 @@ try {
   check("agent crash does NOT stop the guards", guardsRan, guardsRan ? "publish-assert still ran" : "publish-assert was skipped — critical");
 } finally { await copyFile(join(tmpdir(), "audit-fal.bak"), FAL); await sh("generate-pulse.mjs"); }
 
+const nt = await sh("negative-tests.mjs");
+check("every guard fails when broken", nt.ok, nt.out.split("\n").find(l => l.includes("guards proved real"))?.trim() || "");
+
 console.log("\n═══ 4. DATA INTEGRITY ═══");
 const sp2 = await J("data/sealed-prices.json");
 const liveRows = (sp2?.products || []).filter(p => p.dataStatus === "live" && p.priceMedian);

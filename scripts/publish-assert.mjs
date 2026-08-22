@@ -114,6 +114,22 @@ if (violations.length) {
   console.error("\n   Artifacts were written but must NOT be shipped. Fix the leak, re-run.\n");
   process.exit(1);
 }
+// EDITORIAL KEYS INSIDE THE FEED (2026-08-23). The feed was moved out of the
+// strict surface list because its `products` array is the Board, where a held
+// item may appear labelled. But the same file also carries dailyThree, movers
+// and the other EDITORIAL blocks — and those must be as strict as any page.
+// A negative test caught this: a quarantined product was forced into the
+// headline, reached the feed, and publish-assert reported all clear.
+{
+  const feed = await J("research/pulse/pulse-feed.json");
+  const EDITORIAL_KEYS = ["dailyThree", "supplyShifts", "eraIndexes", "ripOrHold", "watchOutcomes", "didYouKnow"];
+  const editorialText = JSON.stringify(EDITORIAL_KEYS.reduce((o, k) => (feed?.[k] !== undefined && (o[k] = feed[k]), o), {}));
+  for (const b of banned) {
+    if (b.name && editorialText.includes(b.name)) violations.push({ surface: `pulse-feed.json → editorial block`, product: b.name, why: b.why });
+    else if (editorialText.includes(`"${b.id}"`)) violations.push({ surface: `pulse-feed.json → editorial block`, product: b.id, why: b.why });
+  }
+}
+
 // DATA surface check: blocked products may appear in the feed's Board
 // array, but ONLY carrying their held label.
 const feed = await J("research/pulse/pulse-feed.json");

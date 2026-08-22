@@ -23,7 +23,7 @@ const files = (await readdir(join(ROOT, "scripts"))).filter(f => f.endsWith(".mj
 const sources = {};
 for (const f of files) sources[f] = await R(`scripts/${f}`) ?? "";
 const registry = await R("research/SAFEGUARD-REGISTRY.md") ?? "";
-const auditSrc = sources["audit.mjs"] ?? "";
+const auditSrc = (sources["audit.mjs"] ?? "") + (sources["negative-tests.mjs"] ?? "");
 
 const hypotheses = [];
 const H = (target, attack, why, severity) => hypotheses.push({ target, attack, why, severity });

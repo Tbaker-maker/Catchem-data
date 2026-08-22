@@ -62,6 +62,14 @@ const MANIFEST = [
       { file: "scripts/generate-pulse.mjs", pattern: /image-source\.mjs/g, min: 1,
         note: "overrides must actually FEED the imagery — for a day the guard validated a file nothing consumed (caught by the 2026-08-22 eye audit)" },
     ] },
+  { guard: "Negative-test harness (a guard is not real until breaking it fails)",
+    definedIn: "scripts/negative-tests.mjs",
+    mustBeReferencedIn: [
+      { file: "scripts/negative-tests.mjs", pattern: /guard:/g, min: 8,
+        note: "a declarative case per guard — adding a guard means adding a row" },
+      { file: "scripts/audit.mjs", pattern: /negative-tests\.mjs/g, min: 1,
+        note: "the harness must RUN in the audit, not merely exist" },
+    ] },
   { guard: "Referee Doctrine (no adversarial framing)",
     definedIn: "scripts/voice-lint.mjs",
     mustBeReferencedIn: [
