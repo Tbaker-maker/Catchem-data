@@ -53,6 +53,16 @@ const MANIFEST = [
       { file: "scripts/compute-derived.mjs", pattern: /seasoned\(p\)/g, min: 2,
         note: "must gate BOTH the sealed composite and the subtype composites" },
     ] },
+  { guard: "Staleness / stale-edition breaker",
+    definedIn: "scripts/publish-assert.mjs",
+    mustBeReferencedIn: [
+      { file: "scripts/qa-gate.mjs", pattern: /STALENESS/g, min: 1,
+        note: "per-product: a price older than 2 days must not headline" },
+      { file: "scripts/publish-assert.mjs", pattern: /STALE EDITION/g, min: 1,
+        note: "whole-edition: a failed fetch must block publication entirely" },
+      { file: "scripts/publish-assert.mjs", pattern: /PARTIAL FETCH/g, min: 1,
+        note: "partial fetch must also block" },
+    ] },
   { guard: "Currency guard (USD-native law)",
     definedIn: "scripts/fetch-sealed-prices.mjs",
     mustBeReferencedIn: [

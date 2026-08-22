@@ -41,6 +41,34 @@ const SURFACES = [
 const today = new Date().toISOString().slice(0, 10);
 SURFACES.push(`research/pulse/${today}.md`, `research/pulse/${today}.html`);
 
+// STALE EDITION BREAKER: individual stale products get held by the gate.
+// If the whole catalogue is stale, the fetch itself failed and the entire
+// edition is an old market wearing today's date — worse than publishing
+// nothing. Calibrated against the freshest row in the file rather than the
+// calendar, so a run between daily fetches is not a false alarm: one full
+// missed cycle (2+ days) blocks, a single day warns.
+{
+  const live = (sp.products || []).filter(p => p.dataStatus === "live" && p.priceMedian && p.lastSeen);
+  if (live.length >= 20) {
+    const stamps = live.map(p => String(p.lastSeen).slice(0, 10)).sort();
+    const newest = stamps[stamps.length - 1];
+    const ageDays = Math.round((Date.now() - Date.parse(newest)) / 86400000);
+    const atNewest = stamps.filter(d => d === newest).length;
+    const pct = Math.round(atNewest / live.length * 100);
+    if (ageDays >= 2) {
+      console.error(`\n✗ STALE EDITION — the freshest price in the catalogue is from ${newest}, ${ageDays} days ago.`);
+      console.error("   At least one full fetch cycle was missed. This edition would wear");
+      console.error("   today's date over an old market. Nothing ships. Re-run the fetch.\n");
+      process.exit(1);
+    }
+    if (pct < 80) {
+      console.error(`\n✗ PARTIAL FETCH — only ${pct}% of products carry the newest timestamp (${newest}).`);
+      console.error("   A fetch ran but most products did not update. Nothing ships.\n");
+      process.exit(1);
+    }
+    console.log(`  freshness: ${pct}% of ${live.length} products at ${newest}${ageDays >= 1 ? ` (${ageDays}d old — next run refreshes)` : " (today)"}`);
+  }
+}
 const violations = [];
 for (const f of SURFACES) {
   let txt;

@@ -32,6 +32,14 @@ let blocked = 0;
 for (const p of sp.products || []) {
   if (p.dataStatus !== "live" || !p.priceMedian) continue;
   const reasons = [];
+  // STALENESS: a price is only true for the day it was measured. If a fetch
+  // fails, the previous run's numbers survive in the file and will publish
+  // wearing today's date unless something checks. Nothing did (found in the
+  // 2026-08-22 resilience test). Two days stale = held; the Board still
+  // shows it, labelled, so nothing disappears.
+  const seen = p.lastSeen ? String(p.lastSeen).slice(0, 10) : null;
+  const ageDays = seen ? Math.round((Date.parse(today) - Date.parse(seen)) / 86400000) : null;
+  if (ageDays != null && ageDays >= 2) reasons.push(`price last measured ${seen} (${ageDays} days ago) — not today's market`);
   const mq = qIds.get(p.id);
   if (mq) reasons.push(`manually quarantined ${mq.since} (${mq.by}): ${mq.reason}`);
   const med = p.priceMedian, hi = p.priceHigh, lo = p.priceFloorClean ?? p.priceLow;
