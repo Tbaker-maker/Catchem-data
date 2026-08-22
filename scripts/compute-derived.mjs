@@ -687,8 +687,11 @@ const LENSES = [
                       .sort((a,b)=>(b.p.priceMedian/b.p.priceFloorClean)-(a.p.priceMedian/a.p.priceFloorClean))[0]?.r,
         why: r => { const p = prodById.get(r.id); return `Cheapest believable listing $${p.priceFloorClean.toLocaleString("en-US")}, middle of the market $${p.priceMedian.toLocaleString("en-US")}. A floor that far below the median usually rewards patience.`; } },
       { id: "zone", label: "most room in a face-to-face deal",
-        pick: () => eligibleAll.map(r => ({ r, z: dealZone.byId[r.id] })).filter(x => x.z?.zonePct)
-                      .sort((a,b)=>b.z.zonePct-a.z.zonePct)[0]?.r,
+        // A wide PERCENTAGE on a $5 pack is not a story — $1.50 of room is not a
+        // negotiation. Headlines need enough absolute room to matter.
+        pick: () => eligibleAll.map(r => ({ r, z: dealZone.byId[r.id] }))
+                      .filter(x => x.z?.zoneWidth >= 40)
+                      .sort((a,b)=>b.z.zoneWidth-a.z.zoneWidth)[0]?.r,
         why: r => { const z = dealZone.byId[r.id]; return `A seller keeps about $${z.sellerFloor.toLocaleString("en-US")} online; a buyer pays about $${z.buyerCeiling.toLocaleString("en-US")}. Roughly $${z.zoneWidth.toLocaleString("en-US")} of room where a face-to-face trade beats the internet.`; } },
       // The gap lens is gated by the flag registry rather than by being
       // deleted, so the condition lives in exactly one named place
