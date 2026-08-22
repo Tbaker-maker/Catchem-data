@@ -14,6 +14,28 @@ bearing premises.
     - Newsletter 001 has not sent yet.
     - No mode system exists in the app yet.
 
+## BEFORE DRAFTING — read the last report (added Aug 22, after chat got two of four premises wrong)
+Chat must read the newest file in `research/reports/` before writing any
+prompt. Twice in one day chat drafted from a stale snapshot: it asked for
+the Creator Portal that had shipped the session before (block text was
+word-for-word identical to the prior prompt), and it declared a guard
+"not running anywhere" because the guard failed in CHAT'S sandbox, which
+has no browser — it runs fine in CI. Both were avoidable by reading the
+report that already said so.
+RULE: latest report first, then `git log --oneline -10`, then draft.
+SECOND RULE: never generalise from chat's own environment. Chat's sandbox
+has no browser and a restricted network. "It fails here" is evidence
+about here, not about the machine that matters.
+
+## STOP vs SKIP (ruling, Aug 22)
+The two instructions are not in conflict:
+- A premise that makes the WORK WRONG → stop and report. Building on it
+  would produce something nobody wants.
+- A premise that is false because the work is ALREADY DONE → skip that
+  block, say so, and continue with the rest. Stopping would waste a
+  session over good news.
+CC's handling on 2026-08-22 was correct and is now the precedent.
+
 ## WHY IT EXISTS
 Chat cannot see the machine. Its worst failures are not bad code — CC
 catches those — they are **false premises**: assuming a page exists,
