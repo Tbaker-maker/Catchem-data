@@ -38,3 +38,37 @@ CC's reports should name any assumption chat got wrong, explicitly. That
 is how the error gets fixed at the source instead of being routed around
 every session. Tyler's audit is the third layer, not the only one:
 chat states → CC checks → Tyler judges.
+
+## THE RETURN LEG — session reports (Tyler, Aug 22)
+Reports should carry what the repo CANNOT say. Chat can read git log and
+the files; it cannot read a decision that was never made, or a test whose
+result was never committed.
+
+### WHERE IT GOES
+CC writes `research/reports/<date>-<session>.md` and pushes it. Chat pulls
+and reads it — no copy-paste burden on Tyler. CC also prints a SHORT
+version (≤10 lines) in the terminal so Tyler sees it live, because he
+catches product problems neither machine does.
+
+### WHAT BELONGS IN IT (the repo can't tell chat these)
+1. **Wrong assumptions** — which of the prompt's stated premises were
+   false, per the ASSUMPTIONS convention. This is the highest-value line
+   in the whole report; it fixes the error at the source.
+2. **Roads not taken** — what CC chose NOT to do, and why. A skipped
+   block with a reason is information; a silently skipped block is a gap.
+3. **Needs Tyler** — decisions CC deliberately did not make alone.
+4. **Surprises** — anything that behaved differently than expected,
+   including CC's own bugs. (The aggregatePrices ReferenceError and the
+   negative test that wrongly passed both came from this line.)
+5. **Uncommitted verification** — offline tests, live fetches, Lighthouse
+   runs, anything proven but not stored as a file.
+
+### WHAT DOESN'T BELONG
+A list of what was built. That is what commits are for, and a prose
+restatement of the diff is the least useful part of any report.
+
+### WHY BOTH DIRECTIONS MATTER
+chat states assumptions → CC checks them and reports what was wrong →
+chat corrects at the source. Without the return leg the same false
+premise gets re-stated every session, and the audit chain only runs one
+way.
