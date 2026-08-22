@@ -197,6 +197,23 @@ const failures = [], notes = [];
   // value moved nothing and only the env var moved both. The duplicate-gate
   // bug had reproduced inside the registry built to prevent it. Two keys
   // sharing an env name are the same decision wearing two hats.
+  // NO HARDCODED /tmp — SIXTH occurrence closed 2026-08-22, so it stops being
+  // a thing anyone has to remember. /tmp does not exist on Windows, and every
+  // instance failed the same way: the script errors on C:	mp, and because
+  // these are guards and harnesses, the error is reported as "the guard is
+  // broken" rather than "the harness cannot run". The last one made the audit
+  // read 19/18 guards proved real while every guard was fine. Use os.tmpdir().
+  for (const f of files) {
+    const src = await read(`scripts/${f}`);
+    if (!src) continue;
+    // TMP("/tmp/x") is the sanctioned wrapper; a BARE string literal is not.
+    for (const m of src.matchAll(/(^|[^(\w])"(\/tmp\/[^"]*)"/g)) {
+      const before = src.slice(Math.max(0, m.index - 4), m.index + 1);
+      if (before.includes("TMP(")) continue;
+      failures.push(`HARDCODED /tmp — scripts/${f} uses "${m[2]}". /tmp is Linux-only; on Windows this throws and the failure reads as a broken guard rather than a broken harness. Use os.tmpdir() (or the TMP() helper).`);
+    }
+  }
+
   const reg = JSON.parse(await read("data/flags.json") || "{}").flags || {};
   const byEnv = {};
   for (const [k, v] of Object.entries(reg)) if (v.env) (byEnv[v.env] ||= []).push(k);

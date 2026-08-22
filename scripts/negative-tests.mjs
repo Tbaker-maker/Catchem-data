@@ -234,7 +234,7 @@ const CASES = [
     // read for a week and skimmed forever, so the day one finds something real
     // nobody is looking.
     fn: async () => {
-      await copyFile(P("data/agent-history.json"), "/tmp/nt-ah.bak");
+      await copyFile(P("data/agent-history.json"), TMP("/tmp/nt-ah.bak"));
       try {
         const h = JSON.parse(await readFile(P("data/agent-history.json"), "utf-8"));
         h.runs["correction-hunter"] = [12, 16, 20, 26].map((c, i) => ({ date: `2026-08-${15 + i}`, count: c, sample: Array.from({ length: c }, (_, n) => `f${n}`) }));
@@ -243,7 +243,7 @@ const CASES = [
         try { await run("node", [P("scripts/agent-supervisor.mjs"), "--dry"], { cwd: ROOT }); }
         catch { caught = true; }
         return { pass: caught, why: caught ? "" : "a farming pattern (12→16→20→26 with nothing resolved) did not trip the supervisor" };
-      } finally { await copyFile("/tmp/nt-ah.bak", P("data/agent-history.json")); }
+      } finally { await copyFile(TMP("/tmp/nt-ah.bak"), P("data/agent-history.json")); }
     } },
 
   { guard: "Agents cannot halt the run", detect: null,
