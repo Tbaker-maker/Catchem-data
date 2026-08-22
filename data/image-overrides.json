@@ -1,0 +1,18 @@
+{
+ "note": "IMAGE OVERRIDES \u2014 reviewed by eye, since no automatic source is reliable for every product. TCGplayer catalogue shots are usually clean single-unit photos, but some are CASE or MULTIPACK images (a 4-box shot for a single ETB misrepresents what a buyer receives). Seller photos are single-unit but are phone snapshots. Rule: a MISSING photo beats a MISLEADING one.",
+ "rules": {
+  "prefer": "TCGplayer catalogue shot at 1000px",
+  "fallbackOrder": [
+   "seller photo (eBay representative)",
+   "none"
+  ],
+  "neverShow": "any image depicting a different quantity than the product being priced"
+ },
+ "products": {
+  "xy12-etb": {
+   "reason": "TCGplayer catalogue image shows FOUR elite trainer boxes; this SKU is one box (Tyler, 2026-08-22)",
+   "use": "seller",
+   "reviewed": "2026-08-22"
+  }
+ }
+}

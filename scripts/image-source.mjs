@@ -9,6 +9,8 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
+let OVERRIDES = {};
+try { OVERRIDES = (JSON.parse(await readFile(join(ROOT, "data/image-overrides.json"), "utf-8")).products) || {}; } catch {}
 let TCG = {};
 try {
   const cm = JSON.parse(await readFile(join(ROOT, "data/crosscheck-id-map.json"), "utf-8"));
@@ -18,6 +20,12 @@ try {
 // TCGplayer serves several sizes; 1000x1000 is the largest reliable one.
 // `size` lets callers ask for a thumb without downloading a full-size image.
 export const productImage = (p, size = 1000) => {
+  // A reviewed override always wins — some catalogue shots depict cases or
+  // multipacks, which misrepresent a single-unit SKU. Missing beats misleading.
+  const ov = OVERRIDES[p.id];
+  if (ov?.use === "none") return "";
+  if (ov?.url) return ov.url;
+  if (ov?.use === "seller") return p.representativeImage || p.image || "";
   const id = TCG[p.id];
   if (id) return `https://tcgplayer-cdn.tcgplayer.com/product/${id}_in_${size}x${size}.jpg`;
   return p.representativeImage || p.image || "";

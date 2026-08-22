@@ -197,3 +197,20 @@ must be empty. Only order and accent colour may change.
 WHY: the same reason the Referee Doctrine holds — one set of numbers,
 many readers. The moment the numbers bend to the audience, they stop
 being numbers.
+
+## IMAGE LAW (Tyler, Aug 22 2026)
+A MISSING photo beats a MISLEADING one. A bad photo makes every number
+beside it look casual, and a photo showing the wrong QUANTITY is worse
+than no photo at all — it misrepresents what a buyer receives.
+ORDER: reviewed override → TCGplayer catalogue shot (1000px) → seller
+photo → nothing.
+WHY AN OVERRIDE LAYER EXISTS: no automatic source is reliable for every
+product. TCGplayer catalogue shots are usually clean single-unit photos,
+but some are CASE or MULTIPACK images — the Evolutions elite trainer box
+showed FOUR boxes for a single-box SKU (Tyler caught it within minutes of
+the change). Seller photos are single-unit but are phone snapshots.
+Neither wins automatically, so data/image-overrides.json records the
+per-product ruling with its reason and review date.
+STANDING PROCESS: images cannot be verified by chat — it has no network
+access to the CDNs. Every image change needs a human or CC eye pass, and
+anything wrong gets an override entry rather than a code patch.

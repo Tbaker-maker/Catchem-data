@@ -9,14 +9,21 @@ import { dirname, join } from "node:path";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => JSON.parse(await readFile(join(ROOT,p),"utf-8"));
 const cardImg = id => { const m=/^(.+)-(\w+)$/.exec(id||""); return m?`https://images.pokemontcg.io/${m[1]}/${m[2]}.png`:null; };
-let __tcgIds = {};
+let __tcgIds = {}, __imgOv = {};
 // PRIORITY FIXED 2026-08-22: clean catalogue shot FIRST. Seller photos are
 // phone snapshots — glare, hands, kitchen tables — and they make every number
 // beside them look casual. 400px was also too small; 1000px is the reliable max.
-const sealedImg = p => (__tcgIds[p.id] ? `https://tcgplayer-cdn.tcgplayer.com/product/${__tcgIds[p.id]}_in_1000x1000.jpg` : null)
-  || p.representativeImage || p.image || null;
+const sealedImg = p => {
+  const ov = __imgOv[p.id];
+  if (ov?.use === "none") return null;
+  if (ov?.url) return ov.url;
+  if (ov?.use === "seller") return p.representativeImage || p.image || null;
+  return (__tcgIds[p.id] ? `https://tcgplayer-cdn.tcgplayer.com/product/${__tcgIds[p.id]}_in_1000x1000.jpg` : null)
+    || p.representativeImage || p.image || null;
+};
 
 const sp = await J("data/sealed-prices.json");
+try { const ov = await J("data/image-overrides.json"); __imgOv = ov?.products || {}; } catch {}
 try { const cm = await J("data/crosscheck-id-map.json");
   for (const e of (cm.entries||[])) if (e.reviewed && !e.exclude && e.tcgPlayerId) __tcgIds[e.id] = e.tcgPlayerId;
 } catch {}
