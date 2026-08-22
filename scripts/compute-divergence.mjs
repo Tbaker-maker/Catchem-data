@@ -38,7 +38,7 @@ for (const p of ebay.products || []) {
     spreadPct: Math.round(spread * 1000) / 10,
     signal: !OFF_TCG(p.id) && !p.publishBlock && !q.blocked(p.id) && Math.abs(spread) >= SIGNAL_PCT,
     offTcgEra: OFF_TCG(p.id) || undefined,
-    venueNote: OFF_TCG(p.id) ? "vintage-class — trades on eBay, shows, and collector groups; TCG comparison gated (RT-4a)" : undefined,
+    venueNote: OFF_TCG(p.id) ? "vintage-class — this market trades on eBay, at shows, and in collector groups, so we read eBay-native stats only and skip the TCGplayer comparison (RT-4a)" : undefined,
     read: spread >= SIGNAL_PCT ? "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening"
         : spread <= -SIGNAL_PCT ? "eBay asks under TCG-side — motivated eBay sellers or stale TCG-side price"
         : "markets agree",

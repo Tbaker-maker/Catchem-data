@@ -490,3 +490,30 @@ Every extra top-level surface is a place a first-time visitor can get
 lost and a place our own laws can drift. Four modes, one portal, one
 context is a product a person can hold in their head — and a codebase one
 founder can still afford to maintain.
+
+## §23 · ACCESS — free for everyone, POP unlocks later (Tyler, Aug 22)
+DECISION: nothing in the app is withheld. Every instrument, every tool,
+every surface is free to everyone, immediately. "Gated" language is
+removed from all reader-facing copy — it reads as withholding, and we are
+not withholding anything.
+
+### THE ONE FUTURE UNLOCK — AND IT IS NOT A PAYWALL
+Later, deeper features may unlock through the POP Protocol: Discord
+membership plus a Frozen Berry threshold. This is not money. Berries
+cannot be bought at any price (standing law), so a berry-unlocked feature
+is UNBUYABLE — it can only be earned by showing up and talking.
+WHY THIS IS THE RIGHT SHAPE:
+- It obeys want-not-need: nobody NEEDS the unlock to get the truth.
+  Prices, index, methodology, Deal Zone, Show Mode stay free forever.
+- It is the same engagement wall as the giveaways: the wall is the
+  community, never the wallet.
+- It converts the app into a reason to join the Discord, and the Discord
+  into a reason to use the app — each feeds the other.
+- Nobody else in this market can offer a premium tier that cannot be
+  purchased. It is a genuinely uncopyable position.
+RULE: the unlock may never cover the current-price truth, the methodology,
+the corrections page, or anything a person needs to avoid being misled.
+Unlockables are convenience, depth and cosmetics — never honesty.
+LANGUAGE: never "locked", "gated", "premium", or "upgrade". If we
+describe it at all, it is "unlocked in the Discord" — an invitation, not
+a toll booth.

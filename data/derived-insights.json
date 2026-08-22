@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-22T06:10:35.582Z",
+  "generatedAt": "2026-08-22T09:14:36.938Z",
   "method": "Pack Math: ask median / era-aware pack count (arithmetic, no estimation; variable-count products excluded by name). Narrative: latest agent digest cross-referenced against tracked sets; 'quiet movers' = spread signal with zero digest mention.",
   "digestUsed": "2026-08-21.md",
   "packMath": {
@@ -2823,7 +2823,7 @@
       "venueClass": "ebay-native",
       "totalListings": 465,
       "listingsPerProduct": 23,
-      "read": "vintage-class era — this market historically trades on eBay, card shows, and collector groups, so we read eBay-native stats only and gate the cross-venue comparison (RT-4a)",
+      "read": "vintage-class era — this market historically trades on eBay, card shows, and collector groups, so we read eBay-native stats only and skip the cross-venue comparison (RT-4a)",
       "chip": "READ"
     },
     {
@@ -2849,7 +2849,7 @@
       "venueClass": "ebay-native",
       "totalListings": 525,
       "listingsPerProduct": 75,
-      "read": "vintage-class era — this market historically trades on eBay, card shows, and collector groups, so we read eBay-native stats only and gate the cross-venue comparison (RT-4a)",
+      "read": "vintage-class era — this market historically trades on eBay, card shows, and collector groups, so we read eBay-native stats only and skip the cross-venue comparison (RT-4a)",
       "chip": "READ"
     },
     {
@@ -2882,7 +2882,7 @@
   "sealedIndex": {
     "name": "Catchem Sealed Index",
     "level": 100.8,
-    "ddPct": 0.2,
+    "ddPct": 0,
     "medianProductUsd": 198.48,
     "constituents": 174,
     "seasoningBench": 5,
@@ -2914,8 +2914,8 @@
     "chip": "VERIFIED"
   },
   "gradedIndex": {
-    "gated": true,
-    "note": "same equation, graded shelf — awaits a licensed daily graded-price feed"
+    "available": false,
+    "note": "same equation, graded shelf — waiting on a licensed daily graded-price feed"
   },
   "netProceeds": {
     "model": {
@@ -3369,14 +3369,6 @@
         "zonePct": 21.9,
         "midpoint": 23.04
       },
-      "sv1-pack": {
-        "ask": 14.95,
-        "buyerCeiling": 16,
-        "sellerFloor": 12.57,
-        "zoneWidth": 3.43,
-        "zonePct": 22.9,
-        "midpoint": 14.29
-      },
       "sv3pt5-pack": {
         "ask": 29.5,
         "buyerCeiling": 31.57,
@@ -3384,14 +3376,6 @@
         "zoneWidth": 6.38,
         "zonePct": 21.6,
         "midpoint": 28.38
-      },
-      "sv4-pack": {
-        "ask": 14.88,
-        "buyerCeiling": 15.92,
-        "sellerFloor": 12.51,
-        "zoneWidth": 3.41,
-        "zonePct": 22.9,
-        "midpoint": 14.22
       },
       "sv8-pack": {
         "ask": 10,
@@ -3521,14 +3505,6 @@
         "zonePct": 20.7,
         "midpoint": 86.99
       },
-      "pgo-etb": {
-        "ask": 240,
-        "buyerCeiling": 256.8,
-        "sellerFloor": 207.8,
-        "zoneWidth": 49,
-        "zonePct": 20.4,
-        "midpoint": 232.3
-      },
       "me2pt5-tin": {
         "ask": 60.99,
         "buyerCeiling": 65.26,
@@ -3640,14 +3616,6 @@
         "zoneWidth": 442.46,
         "zonePct": 20.3,
         "midpoint": 2114.62
-      },
-      "sm8-etb": {
-        "ask": 774.95,
-        "buyerCeiling": 829.2,
-        "sellerFloor": 671.87,
-        "zoneWidth": 157.33,
-        "zonePct": 20.3,
-        "midpoint": 750.54
       },
       "sm10-booster-box": {
         "ask": 3226.88,
@@ -4641,14 +4609,6 @@
         "zonePct": 23.3,
         "midpoint": 12.88
       },
-      "sv6-pack": {
-        "ask": 14.98,
-        "buyerCeiling": 16.03,
-        "sellerFloor": 12.6,
-        "zoneWidth": 3.43,
-        "zonePct": 22.9,
-        "midpoint": 14.32
-      },
       "sv6pt5-pack": {
         "ask": 21.5,
         "buyerCeiling": 23.01,
@@ -4656,22 +4616,6 @@
         "zoneWidth": 4.76,
         "zonePct": 22.1,
         "midpoint": 20.63
-      },
-      "sv7-pack": {
-        "ask": 19.7,
-        "buyerCeiling": 21.08,
-        "sellerFloor": 16.69,
-        "zoneWidth": 4.39,
-        "zonePct": 22.3,
-        "midpoint": 18.88
-      },
-      "swsh1-pack": {
-        "ask": 19.95,
-        "buyerCeiling": 21.35,
-        "sellerFloor": 16.91,
-        "zoneWidth": 4.44,
-        "zonePct": 22.3,
-        "midpoint": 19.13
       },
       "swsh1-bundle": {
         "ask": 198.48,
@@ -4763,11 +4707,7 @@
       }
     }
   },
-  "fx": {
-    "usdcad": 1.374,
-    "date": "2026-08-21",
-    "source": "frankfurter.app"
-  },
+  "fx": null,
   "subtypeIndexes": [
     {
       "subtype": "etb",
@@ -4912,7 +4852,7 @@
     "note": "one-tap daily vote; results revisited next morning"
   },
   "notification": {
-    "title": "Catchem Sealed Index 100.8 (+0.2%)",
+    "title": "Catchem Sealed Index 100.8 (0%)",
     "body": "Today: Battle Styles Booster Pack — eBay asks 29.9% more than TCGplayer."
   },
   "cohortCompare": {
@@ -4994,14 +4934,14 @@
   ],
   "dailyThree": {
     "sealed": {
-      "name": "Stellar Crown Booster Pack",
-      "ebay": 19.7,
-      "tcg": 10.58,
-      "spreadPct": 86.2,
-      "listings": 24,
+      "name": "Journey Together Booster Pack",
+      "ebay": 9.99,
+      "tcg": 6.45,
+      "spreadPct": 54.9,
+      "listings": 19,
       "chip": "VERIFIED",
       "reason": "biggest price gap between the two markets today",
-      "explain": "eBay usually runs a little higher on sealed — this is asking 86.2% more, well past that baseline. 24 listings are live right now."
+      "explain": "eBay usually runs a little higher on sealed — this is asking 54.9% more, well past that baseline. 19 listings are live right now."
     },
     "graded": {
       "name": "Umbreon ex (Prismatic Evolutions)",
@@ -5015,12 +4955,12 @@
       "explain": "Ungraded copies trade around $1,491. Perfect-graded (PSA 10) copies have been SELLING near $5,100 — about $3,529 ahead even after the $79.99 grading fee. Based on 550 recorded PSA 10 sales."
     },
     "raw": {
-      "name": "Umbreon ex",
-      "set": "Prismatic Evolutions",
-      "price": 1490.88,
+      "name": "Rayquaza VMAX",
+      "set": "Evolving Skies",
+      "price": 1247.9,
       "chip": "READ",
       "reason": "a chase we have not put in front of you this week",
-      "explain": "Widely treated as the card collectors hunt hardest from Prismatic Evolutions — the card the whole set gets priced around. Market sits at $1,491 today. Its set is 19 months old."
+      "explain": "Widely treated as the card collectors hunt hardest from Evolving Skies — the card the whole set gets priced around. Market sits at $1,248 today. Its set is 59 months old."
     }
   }
 }

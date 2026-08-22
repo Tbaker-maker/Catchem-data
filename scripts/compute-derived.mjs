@@ -316,7 +316,7 @@ const eraIndexes = Object.entries(eraBuckets).filter(([,b])=>b.n>=3).map(([era,b
   const idx100 = baseRow ? Math.round(level / baseRow.level * 1000)/10 : 100.0;
   const offTcg = era === "Sun & Moon" || era === "XY" || era === "Vintage & other";
   let read;
-  if (offTcg) read = "vintage-class era — this market historically trades on eBay, card shows, and collector groups, so we read eBay-native stats only and gate the cross-venue comparison (RT-4a)";
+  if (offTcg) read = "vintage-class era — this market historically trades on eBay, card shows, and collector groups, so we read eBay-native stats only and skip the cross-venue comparison (RT-4a)";
   else if (avgGap == null) read = "cross-market read still pending — not enough matched data yet to say anything";
   else if (avgGap >= 15) read = "reads hot — asks sit well past the usual photo premium, which typically points to demand-side pressure rather than seller optimism";
   else if (avgGap >= 6) read = "reads normal — the gap sits inside the range photos usually explain, so nothing here is signalling on its own";
@@ -376,7 +376,7 @@ const rawLevel = indexLevel(rawRatios); // same lib equation as the composite
 const rawIndex = { name:"Raw Chase Index", level: rawLevel, constituents: rawRatios.length,
   baselineDate: [...new Set(sgh.entries.map(e=>e.date))].sort()[0] ?? todayS,
   note:"same equation as the Sealed Index — confirmed chase singles, each vs its own first clean price", chip:"VERIFIED" };
-const gradedIndex = { gated: true, note:"same equation, graded shelf — awaits a licensed daily graded-price feed" };
+const gradedIndex = { available: false, note:"same equation, graded shelf — waiting on a licensed daily graded-price feed" };
 const medAll = [...liveList.filter(p=>p.priceMedian).map(p=>p.priceMedian)].sort((a,b)=>a-b);
 const medianProductUsd = medAll.length ? medAll[Math.floor(medAll.length/2)] : null;
 // ── VALUE-WEIGHTED TWIN (Tyler, Aug 22) ─────────────────────────────────
