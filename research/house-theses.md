@@ -383,3 +383,28 @@ registry; logging conveniences are not behaviour and do not belong.
 THE GENERAL LESSON, worth more than the fix: a rule that depends on two
 workers remembering each other is not a rule, it is a hope. Where
 coordination is required, remove the need for coordination instead.
+
+## ARTIST CLAIM LAW (Tyler, Aug 23 2026)
+Illustrator posts are one of the best-performing formats in this hobby and
+we are uniquely placed to make them, because we can join the artist to the
+market and nobody else does. Art accounts have the taste and none of the
+data; price accounts have the data and never look at who drew it.
+
+THE RULE THAT KEEPS THEM SAFE — SCOPE EVERY COUNT.
+"She has only ever illustrated three Pokémon cards" is a claim about every
+card ever printed, and a reader can disprove it in thirty seconds with one
+search. "Three cards in the sets we track" is true, still interesting, and
+survives contact with an expert.
+An unscoped "ever" claim may only be published when coverage is verifiably
+complete for that artist — which our data does not currently support and
+may never.
+
+ALSO BINDING
+- Artist names and card counts come from a source (pokemontcg.io), never
+  from memory. The generator refuses to run without the data file rather
+  than filling gaps.
+- The artist is a living person in most cases. Write about their work the
+  way you would if they were reading it, because they might be.
+- Prices in an artist post carry their chip and date like every other
+  figure. An art post is not a holiday from the pricing laws.
+- Credit the source visibly. Illustrator data is somebody else's work too.
