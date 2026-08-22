@@ -568,4 +568,5 @@ await import("./jargon-lint.mjs");
 try { await import("./falsifier.mjs"); } catch (e) { console.warn(`  ⚠ agent falsifier.mjs failed: ${e.message} — advisory only, the run continues`); }
 try { await import("./correction-hunter.mjs"); } catch (e) { console.warn(`  ⚠ agent correction-hunter.mjs failed: ${e.message} — advisory only, the run continues`); }
 try { await import("./review-agents.mjs"); } catch (e) { console.warn(`  ⚠ agent review-agents.mjs failed: ${e.message} — advisory only, the run continues`); }
+await (await import("./heartbeat.mjs")).beat("pulse");
 await import("./publish-assert.mjs");

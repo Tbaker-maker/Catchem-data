@@ -543,7 +543,8 @@ async function main() {
   const token = await getEbayToken();
   console.log("   → ✓ token acquired.");
 
-  console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
+  await (await import("./heartbeat.mjs")).beat("fetch");
+console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
   const today = new Date().toISOString().split("T")[0];
   const startTs = Date.now();
 

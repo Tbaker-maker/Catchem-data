@@ -78,4 +78,5 @@ if (creatorHooks.length) {
 
 state.sentSignals = [...new Set([...(state.sentSignals || []), ...newSignals.map(r => r.id)])].slice(-500);
 await writeFile(join(ROOT, "data/alerts-state.json"), JSON.stringify(state, null, 1));
+await (await import("./heartbeat.mjs")).beat("discord");
 console.log(`done · destinations posted: ${posted}`);

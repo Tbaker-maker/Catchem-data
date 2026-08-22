@@ -815,6 +815,7 @@ wlog.entries.push({ date: todayW,
     id: ((sgAll.cards||[]).find(c => c.name === out.dailyThree.raw.name && Math.abs((c.priceMarket??0) - out.dailyThree.raw.price) < 1) || {}).cardId ?? null } : null });
 await writeFile(new URL("../research/pulse/watch-log.json", import.meta.url), JSON.stringify(wlog,null,1));
 await writeFile(join(ROOT,"data/derived-insights.json"), JSON.stringify(out,null,2)+"\n");
+await (await import("./heartbeat.mjs")).beat("derived");
 console.log(`✓ derived: ${packRows.length} pack-math rows · news-mentioned sets: ${inNews.length} · quiet movers: ${quietMovers.length} (digest: ${digestName})`);
 console.log("  priciest pack:", packRows[0]?.name, "$"+packRows[0]?.perPack+"/pack");
 console.log("  cheapest pack:", packRows[packRows.length-1]?.name, "$"+packRows[packRows.length-1]?.perPack+"/pack");

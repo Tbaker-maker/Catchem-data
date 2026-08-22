@@ -83,4 +83,5 @@ for (const f of files) {
 // card image failed to inline on a binder page, say so loudly.
 if (files.some(f => f.includes("binder")) && globalThis.__imgFails > 0)
   console.warn(`  ⚠ ${globalThis.__imgFails} card image(s) failed on a binder page — DO NOT POST until re-run with network access`);
+await (await import("./heartbeat.mjs")).beat("cards");
 console.log(`✓ rasterized ${made}/${files.length} cards to PNG${fontFiles.length ? ` (brand fonts: ${fontFiles.length})` : " (system fonts — vendor brand fonts for on-brand type)"}`);
