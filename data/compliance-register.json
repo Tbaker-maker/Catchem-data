@@ -1,0 +1,62 @@
+{
+ "note": "OBLIGATIONS WE HAVE DEFERRED, and the condition that makes each one due. 18% of startups fail on legal challenges — almost never because somebody decided to ignore a rule, and almost always because a deferral was never revisited. A decision to wait is legitimate. A decision to wait that nobody re-examines is just forgetting with extra steps.",
+ "law": "Every deferral carries a TRIGGER — the specific, checkable condition that ends the deferral. A deferral with no trigger is not a decision, it is a hope. Deferring is fine; deferring without a trip-wire is not.",
+ "items": [
+  {
+   "id": "pokemon-ip-depiction",
+   "obligation": "Confirm that depicting Pokémon card imagery, set names and product photography in a commercial product is defensible.",
+   "status": "DEFERRED",
+   "why": "Universal community practice, card images sourced from the standard community API with attribution. No revenue yet.",
+   "trigger": "ANY of: the first dollar of revenue · a paid tier · sponsorship or ads · a cease-and-desist of any kind · media coverage large enough to be noticed.",
+   "severity": "existential",
+   "note": "This is the one that ends the company rather than costing it money. Everything else on this list is a bill.",
+   "owner": "Tyler",
+   "deferredOn": "2026-08-18"
+  },
+  {
+   "id": "sweepstakes-structure",
+   "obligation": "Have the giveaway structure reviewed: no-purchase-necessary, AMOE, official rules, the Canadian skill-testing question, and the 65% cash-out clause.",
+   "status": "DEFERRED",
+   "why": "Structure was built to sweepstakes shape from the start and documented. Berries are unpurchasable, which keeps it out of lottery territory.",
+   "trigger": "ANY of: the first draw with a non-Tyler participant · any prize over $500 · any entry method that could be read as consideration · operating across a border.",
+   "severity": "high",
+   "note": "Running a raffle wrong is a regulatory problem in every jurisdiction at once, and the first live draw is the moment it stops being theoretical.",
+   "owner": "Tyler",
+   "deferredOn": "2026-08-20"
+  },
+  {
+   "id": "ppt-commercial-licence",
+   "obligation": "Resolve whether displaying PokemonPriceTracker-derived prices publicly is permitted on our tier.",
+   "status": "DEFERRED — Tyler ruled 2026-08-23",
+   "why": "Free tool, no revenue, development phase. Their terms reserve commercial use for the $99 tier and describe lower tiers as personal and development use.",
+   "trigger": "The first dollar. Also: any claim on our surfaces that the data is commercially licensed.",
+   "severity": "medium",
+   "note": "The realistic downside is being cut off, not sued — which is an operational risk, and worst at launch.",
+   "owner": "Tyler",
+   "deferredOn": "2026-08-23",
+   "flag": "ppt.publicDisplay"
+  },
+  {
+   "id": "name-clearance",
+   "obligation": "Clear the name before any name-coupled spend.",
+   "status": "DEFERRED",
+   "why": "Nintendo holds a live registration for GOTTA CATCH 'EM ALL in the software class; eight candidate names researched.",
+   "trigger": "ANY of: spending money on the name (merch, print, paid ads) · incorporating under it · a trademark application · significant public traction under it.",
+   "severity": "high",
+   "note": "Cheap to change now, expensive later, and the cost curve is steep rather than gradual.",
+   "owner": "Tyler",
+   "deferredOn": "2026-08-19"
+  },
+  {
+   "id": "user-data-handling",
+   "obligation": "Decide what we collect, where it lives, and what we say about it — before we collect anything personal.",
+   "status": "NOT YET DUE",
+   "why": "We hold nothing personal. Watchlists and modes are localStorage and never leave the browser; the newsletter list is one address, Tyler's own.",
+   "trigger": "ANY of: a login · a stored email beyond the newsletter · anything tied to a Discord identity · analytics that identifies an individual.",
+   "severity": "medium",
+   "note": "Currently our strongest position — we cannot leak what we do not hold. It stops being true the moment auth ships.",
+   "owner": "Tyler",
+   "deferredOn": "2026-08-23"
+  }
+ ]
+}

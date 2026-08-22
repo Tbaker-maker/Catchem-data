@@ -343,6 +343,22 @@ const CASES = [
     },
     restore: async () => { try { await (await import("node:fs/promises")).unlink(P("scripts/_leaktest.mjs")); } catch {} } },
 
+  { guard: "Compliance trip-wires", detect: null,
+    // Plant real payment machinery and confirm the existential trigger fires.
+    // A trip-wire nobody has tested is a trip-wire that has never tripped.
+    fn: async () => {
+      await writeFile(P("scripts/_paytest.mjs"), 'import Stripe from "@stripe/stripe-js";\nconst s = await createCheckoutSession();\n');
+      try {
+        await run("node", [P("scripts/compliance-agent.mjs")], { cwd: ROOT });
+        const rep = JSON.parse(await readFile(P("research/pulse/compliance-report.json"), "utf-8"));
+        const fired = (rep.tripped ?? []).some(t => t.id === "pokemon-ip-depiction");
+        return { pass: fired, why: fired ? "" : "payment machinery did not trip the IP obligation — the trip-wire is not connected" };
+      } finally {
+        try { await (await import("node:fs/promises")).unlink(P("scripts/_paytest.mjs")); } catch {}
+        try { await run("node", [P("scripts/compliance-agent.mjs")], { cwd: ROOT }); } catch {}
+      }
+    } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");

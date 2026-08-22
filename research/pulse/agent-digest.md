@@ -61,7 +61,7 @@ Gaps in what we watch:
 
 **Chat (11):** top — The Today screen carries 17 sections: The Daily Three, 🗳 Rip or Hold?, Biggest movers, Set the app up for you, Movers, Release radar… *[QUEUE]*
 
-*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 0 ACT NOW, 9 QUEUE, 8 WATCH, 8 filed without surfacing, 4 confirmations.*
+*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 0 ACT NOW, 9 QUEUE, 8 WATCH, 10 filed without surfacing, 4 confirmations.*
 ## The creator cheat code
 *Could somebody open this, hit record within two minutes, and sound like the most informed voice in the hobby without pausing to look anything up? Every pause is a cut.*
 - **a visual that runs itself** — 27 card images minted today. *The gap is that they are files in a repo. A creator needs them one tap from the angle they picked, not from a folder.*
@@ -73,7 +73,7 @@ Nothing unusual, or not enough history to tell — 5 days of tape so far. Anomal
 
 ## Where today's story goes
 - **X** — "Paldean Fates listings moved -66.7% while its print window closes."
-- **YouTube** — Cosmic Eclipse Booster Box — "A seller keeps about $4,466.96 online; a buyer pays about $5,510.17. Roughly $1,043.21 of room where a face-to-face trade beats the internet."
+- **YouTube** — Unified Minds Booster Box — "A seller keeps about $3,859.97 online; a buyer pays about $4,761.5. Roughly $901.53 of room where a face-to-face trade beats the internet."
 - **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 100."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
@@ -83,6 +83,12 @@ Nothing unusual, or not enough history to tell — 5 days of tape so far. Anomal
 
 ## SECURITY — NEEDS A HUMAN NOW
 - **Anthropic key found in scripts/negative-tests.mjs** — *Revoke it first, then remove it. Revoking comes first because removal does not un-share what was already shared.*
+
+## A DEFERRAL JUST ENDED — NEEDS A HUMAN
+- **[existential]** Confirm that depicting Pokémon card imagery, set names and product photography in a commercial product is defensible. — fired by revenue machinery appeared in the code. *This is the one that ends the company rather than costing it money. Everything else on this list is a bill.*
+- **[medium]** Resolve whether displaying PokemonPriceTracker-derived prices publicly is permitted on our tier. — fired by revenue machinery exists while PPT figures are published. *The realistic downside is being cut off, not sued — which is an operational risk, and worst at launch.*
+
+*Not legal advice. This watches trip-wires we set ourselves. When one trips the answer is always to talk to somebody who does this for a living — the point is that the conversation happens BEFORE the thing it was about.*
 
 ---
 *Written by the agents, for a person. If a section here never leads to an action, that section should be deleted rather than tolerated.*

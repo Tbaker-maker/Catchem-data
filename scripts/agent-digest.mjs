@@ -26,6 +26,7 @@ const ano = await J("research/pulse/anomaly-report.json");
 const plat = await J("research/pulse/platform-report.json");
 const stw = await J("research/pulse/steward-report.json");
 const sec = await J("research/pulse/security-report.json");
+const cmp = await J("research/pulse/compliance-report.json");
 const con = await J("research/pulse/agent-contract.json");
 const uni = await J("research/pulse/universe-advisor.json");
 const rev = await J("research/pulse/review-agents.json");
@@ -196,6 +197,17 @@ if (sec?.critical?.length) {
 } else if (sec?.warnings?.length) {
   say(`## Security`);
   for (const w of sec.warnings.slice(0, 2)) say(`- ${w.what} — *${w.fix}*`);
+  say();
+}
+
+if (cmp?.tripped?.length) {
+  say(`## A DEFERRAL JUST ENDED — NEEDS A HUMAN`);
+  for (const t of cmp.tripped) say(`- **[${t.severity}]** ${t.obligation} — fired by ${t.firedBy.join("; ")}. *${t.note}*`);
+  say(`\n*${cmp.disclaimer}*`);
+  say();
+} else if (cmp?.stale) {
+  say(`## Compliance`);
+  say(`The register has not been reviewed in ${cmp.registerAgeDays} days. Nothing has tripped, but a register nobody re-reads is the failure it exists to prevent.`);
   say();
 }
 

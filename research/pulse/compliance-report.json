@@ -1,0 +1,66 @@
+{
+ "generatedAt": "2026-08-22T22:11:38.191Z",
+ "disclaimer": "Not legal advice. This watches trip-wires we set ourselves. When one trips the answer is always to talk to somebody who does this for a living — the point is that the conversation happens BEFORE the thing it was about.",
+ "signals": {
+  "revenue": true,
+  "auth": false,
+  "personalData": false,
+  "liveDraw": false,
+  "nameSpend": false,
+  "pptPublic": true
+ },
+ "tripped": [
+  {
+   "id": "pokemon-ip-depiction",
+   "obligation": "Confirm that depicting Pokémon card imagery, set names and product photography in a commercial product is defensible.",
+   "status": "DEFERRED",
+   "why": "Universal community practice, card images sourced from the standard community API with attribution. No revenue yet.",
+   "trigger": "ANY of: the first dollar of revenue · a paid tier · sponsorship or ads · a cease-and-desist of any kind · media coverage large enough to be noticed.",
+   "severity": "existential",
+   "note": "This is the one that ends the company rather than costing it money. Everything else on this list is a bill.",
+   "owner": "Tyler",
+   "deferredOn": "2026-08-18",
+   "firedBy": [
+    "revenue machinery appeared in the code"
+   ]
+  },
+  {
+   "id": "ppt-commercial-licence",
+   "obligation": "Resolve whether displaying PokemonPriceTracker-derived prices publicly is permitted on our tier.",
+   "status": "DEFERRED — Tyler ruled 2026-08-23",
+   "why": "Free tool, no revenue, development phase. Their terms reserve commercial use for the $99 tier and describe lower tiers as personal and development use.",
+   "trigger": "The first dollar. Also: any claim on our surfaces that the data is commercially licensed.",
+   "severity": "medium",
+   "note": "The realistic downside is being cut off, not sued — which is an operational risk, and worst at launch.",
+   "owner": "Tyler",
+   "deferredOn": "2026-08-23",
+   "flag": "ppt.publicDisplay",
+   "firedBy": [
+    "revenue machinery exists while PPT figures are published"
+   ]
+  }
+ ],
+ "watching": [
+  {
+   "id": "sweepstakes-structure",
+   "severity": "high",
+   "trigger": "ANY of: the first draw with a non-Tyler participant · any prize over $500 · any entry method that could be read as consideration · operating across a border.",
+   "status": "DEFERRED"
+  },
+  {
+   "id": "name-clearance",
+   "severity": "high",
+   "trigger": "ANY of: spending money on the name (merch, print, paid ads) · incorporating under it · a trademark application · significant public traction under it.",
+   "status": "DEFERRED"
+  },
+  {
+   "id": "user-data-handling",
+   "severity": "medium",
+   "trigger": "ANY of: a login · a stored email beyond the newsletter · anything tied to a Discord identity · analytics that identifies an individual.",
+   "status": "NOT YET DUE"
+  }
+ ],
+ "registerAgeDays": 0,
+ "stale": false,
+ "chip": "READ"
+}
