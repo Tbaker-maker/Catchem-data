@@ -561,7 +561,11 @@ await import("./build-corrections.mjs");
 await import("./send-discord-alerts.mjs");
 await import("./voice-lint.mjs");
 await import("./jargon-lint.mjs");
-await import("./falsifier.mjs");
-await import("./correction-hunter.mjs");
-await import("./review-agents.mjs");
+// AGENTS ADVISE, GUARDS BLOCK (2026-08-23). An agent that throws must never
+// stop the run — on the day this line was written a simulated agent crash
+// killed publish-assert, the final safety check, which is precisely the class
+// of failure that check exists to catch. Agents are wrapped; guards are not.
+try { await import("./falsifier.mjs"); } catch (e) { console.warn(`  ⚠ agent falsifier.mjs failed: ${e.message} — advisory only, the run continues`); }
+try { await import("./correction-hunter.mjs"); } catch (e) { console.warn(`  ⚠ agent correction-hunter.mjs failed: ${e.message} — advisory only, the run continues`); }
+try { await import("./review-agents.mjs"); } catch (e) { console.warn(`  ⚠ agent review-agents.mjs failed: ${e.message} — advisory only, the run continues`); }
 await import("./publish-assert.mjs");

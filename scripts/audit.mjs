@@ -79,6 +79,17 @@ try {
   check("empty edition BLOCKS publication", !empty.ok, empty.ok ? "DID NOT BLOCK — critical" : "blocked correctly");
 } finally { await copyFile(join(tmpdir(), "audit-feed.bak"), FEED); }
 
+// 3e — an agent crash must never stop the guards
+const FAL = join(ROOT, "scripts/falsifier.mjs");
+await copyFile(FAL, "/tmp/audit-fal.bak");
+try {
+  const src = await readFile(FAL, "utf-8");
+  await writeFile(FAL, src.replace("const today = new Date()", "throw new Error('audit: simulated agent crash');\nconst today = new Date()"));
+  const r = await sh("generate-pulse.mjs");
+  const guardsRan = r.out.includes("publication assert");
+  check("agent crash does NOT stop the guards", guardsRan, guardsRan ? "publish-assert still ran" : "publish-assert was skipped — critical");
+} finally { await copyFile("/tmp/audit-fal.bak", FAL); await sh("generate-pulse.mjs"); }
+
 console.log("\n═══ 4. DATA INTEGRITY ═══");
 const sp2 = await J("data/sealed-prices.json");
 const liveRows = (sp2?.products || []).filter(p => p.dataStatus === "live" && p.priceMedian);

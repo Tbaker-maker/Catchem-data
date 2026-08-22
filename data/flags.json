@@ -26,6 +26,27 @@
    "owner": "scripts/compute-derived.mjs",
    "why": "Graded instruments need a licensed daily graded-price feed we do not have.",
    "trigger": "A GemRate or equivalent licence."
+  },
+  "site": {
+   "value": "https://catchemtcg.com",
+   "type": "value",
+   "owner": "scripts/social-posts.mjs",
+   "why": "The public host. The app domain is unlisted after the public/gated split, so every published link points here.",
+   "trigger": "If the public host changes, or the app stops being unlisted.",
+   "env": "CATCHEM_SITE"
+  },
+  "pptLicensed": {
+   "value": true,
+   "owner": "scripts/compute-divergence.mjs",
+   "why": "Tyler ruled 2026-08-23: free tool, development phase, proceed on the current tier.",
+   "trigger": "Must be re-decided BEFORE the first dollar \u2014 a Pro tier, ads, sponsorship, or any paid feature.",
+   "env": "CATCHEM_PPT_LICENSED"
+  },
+  "tcgDelivered": {
+   "value": false,
+   "owner": "scripts/compute-divergence.mjs",
+   "why": "Whether our TCGplayer figures include shipping. They do not: PPT reports item-only market price and exposes no shipping field on any tier. Never estimate the difference \u2014 the Pricing Basis Law forbids it.",
+   "trigger": "A source that reports TCGplayer prices inclusive of shipping."
   }
  }
 }

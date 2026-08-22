@@ -41,6 +41,20 @@ for (const [name, f] of Object.entries(flags)) {
     problems.push(`${name}: owner is ${f.owner} but it is read in ${readers.join(", ")} — update the owner or move the gate`);
 }
 
+// 2b — a flag READ but never REGISTERED. This crashed social-posts.mjs every
+// run on 2026-08-23: SITE was migrated to the registry and the key was never
+// added, so flag() threw and took the rest of the pipeline with it.
+{
+  const READ_RX = /\bflag\(\s*["'`]([^"'`]+)["'`]\s*\)/g;
+  for (const file of files) {
+    if (file === "flags.mjs" || file === "flag-guard.mjs") continue;
+    const src = await readFile(join(ROOT, "scripts", file), "utf-8");
+    let m;
+    while ((m = READ_RX.exec(src)))
+      if (!flags[m[1]]) problems.push(`scripts/${file}: reads flag "${m[1]}" which is not in data/flags.json — flag() will throw and stop the run`);
+  }
+}
+
 // 3 — the shape that caused the incident: a condition gated by a bare env var
 // or a hand-rolled constant, outside the registry.
 const SUSPECT = /const\s+([A-Z_]{4,})\s*=\s*process\.env\.[A-Z_]+\s*[!=]==/g;

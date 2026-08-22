@@ -15,6 +15,13 @@ try { FLAGS = (JSON.parse(await readFile(join(ROOT, "data/flags.json"), "utf-8")
 export function flag(name) {
   const f = FLAGS[name];
   if (!f) throw new Error(`unknown flag "${name}" — add it to data/flags.json rather than gating in code`);
+  // A flag may be a SWITCH or a VALUE. Switches answer yes/no; values return
+  // as they are. Treating a value flag as a boolean silently yielded `true`
+  // for a URL, which is the kind of quiet wrong that takes an hour to find.
+  if (f.type === "value") {
+    if (f.env && process.env[f.env] != null) return process.env[f.env];
+    return f.value;
+  }
   if (f.env && process.env[f.env] != null) return process.env[f.env] === "1";
   return Boolean(f.value);
 }
