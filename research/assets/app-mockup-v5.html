@@ -1,0 +1,86 @@
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Sora:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<title>Mockup v5 — design system + real data</title><style>
+:root{--bg:#0b0d14;--deep:#070910;--s1:#141824;--s2:#1c2235;--line:rgba(255,255,255,.07);--line2:rgba(255,255,255,.14);
+--tx:#f4f5f8;--sub:#8a93a8;--sub2:#98a1b5;--mut:#5c637a;--green:#36d399;--blue:#64a0ff;--purple:#c77dff;--gold:#ffb84d;--red:#ef5a5a;
+--col:820px;--col-wide:1040px;--sp-s:32px;--sp-m:40px;--sp-l:56px}
+*{box-sizing:border-box}body{margin:0;background:var(--deep);color:var(--tx);font:16px/1.6 Sora,system-ui,sans-serif}
+.wrap{max-width:var(--col-wide);margin:0 auto;padding:40px 24px 80px}
+.kick{font:700 11px/1 'JetBrains Mono',monospace;letter-spacing:.18em;color:var(--sub);text-transform:uppercase}
+.shead{border-top:1px solid var(--line);padding-top:14px;margin:var(--sp-l) 0 var(--sp-s);display:flex;justify-content:space-between;align-items:baseline;gap:16px}
+.shead h2{font:800 28px/1.15 Syne,sans-serif;margin:6px 0 0}
+.shead .right{font:400 13px 'JetBrains Mono',monospace;color:var(--sub)}
+.idx{background:var(--s1);border:1px solid var(--line);border-radius:16px;padding:24px 26px;display:flex;flex-wrap:wrap;gap:16px 40px;align-items:flex-end}
+.idx .numxl{font:700 40px/1 'JetBrains Mono',monospace}
+.idx .twin{font:400 13px 'JetBrains Mono',monospace;color:var(--sub2)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,400px));gap:16px}
+.card{background:var(--s1);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.cimg{height:150px;border-radius:12px;background:var(--deep);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.cimg img{height:100%;object-fit:contain}
+.ckick{font:700 10px 'JetBrains Mono',monospace;letter-spacing:.14em;color:var(--mut)}
+.cname{font:600 16px/1.3 Sora,sans-serif;margin:0;overflow-wrap:anywhere}
+.chero{display:flex;align-items:baseline;gap:10px}
+.num{font:700 26px/1 'JetBrains Mono',monospace}
+.delta{font:700 12px 'JetBrains Mono',monospace}.up{color:var(--green)}
+.cstats{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+.st{background:var(--s2);border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+.st span{display:block;font:400 10px Sora;color:var(--sub)}
+.st b{font:700 13px 'JetBrains Mono',monospace}
+.cline{margin:0;font-size:13.5px;line-height:1.5;color:var(--sub2)}
+.cchip{align-self:flex-start;font:700 10px 'JetBrains Mono',monospace;letter-spacing:.08em;border:1px solid;border-radius:99px;padding:3px 10px}
+.phone{width:390px;border:1px solid var(--line2);border-radius:16px;padding:16px;background:var(--bg)}
+.phone .grid{grid-template-columns:1fr}
+.note{color:var(--mut);font-size:13px;margin-top:10px}
+.accents{display:flex;gap:10px;margin-top:12px}.acc{flex:1;border:1px solid;border-radius:10px;padding:10px;font:700 11px 'JetBrains Mono',monospace;text-align:center}
+</style>
+<div class="wrap">
+<div class="kick">D1 SYSTEM · REAL DATA · 173 PRODUCTS</div>
+<h1 style="font:800 40px/1.1 Syne,sans-serif;margin:8px 0 4px">The same grammar, filled in</h1>
+<p style="color:var(--sub2);margin:0 0 var(--sp-m);max-width:var(--col)">Design's column-lock and six-part card, rendered with this morning's actual numbers. Cards stay 300–400px and multiply; headers span the column.</p>
+
+<div class="shead"><div><div class="kick">01 · The index</div><h2>Where the shelf stands</h2></div><div class="right">breadth ▲50 ▼44</div></div>
+<div class="idx">
+  <div><div class="kick">Catch'em Sealed Index</div><div class="numxl">100.6</div></div>
+  <div><div class="kick">value-weighted twin</div><div class="numxl" style="color:var(--sub2)">100.5</div></div>
+  <div class="twin">173 sealed products · each measured against its own baseline<br>the two numbers agree today — the whole shelf is moving together</div>
+</div>
+
+<div class="shead"><div><div class="kick">02 · The daily three</div><h2>What we're watching</h2></div><div class="right">worst-case name first</div></div>
+<div class="grid"><article class="card">
+  <div class="cimg"></div>
+  <div class="ckick">SEALED · TODAY</div>
+  <h3 class="cname">Scarlet & Violet Base Pokemon Center Elite Trainer Box</h3>
+  <div class="chero"><span class="num">$319.99</span><span class="delta up">▲ 9.7%</span></div>
+  <div class="cstats"><div class="st"><span>listings</span><b>47</b></div><div class="st"><span>clean floor</span><b>$175</b></div><div class="st"><span>in pocket</span><b>$277</b></div><div class="st"><span>buyer pays</span><b>$342</b></div></div>
+  <p class="cline">eBay asks 46% more than TCGplayer across 47 listings. Sealed carries the box premium — ripping pays only on nostalgia.</p>
+  <div class="cchip" style="border-color:var(--green);color:var(--green)">VERIFIED</div>
+</article><article class="card">
+  <div class="cimg"><img src="https://tcgplayer-cdn.tcgplayer.com/product/242436_in_400x400.jpg" loading="lazy" alt=""></div>
+  <div class="ckick">SEALED · TODAY</div>
+  <h3 class="cname">Evolving Skies Booster Box</h3>
+  <div class="chero"><span class="num">$2,908.19</span><span class="delta up">▲ 9.7%</span></div>
+  <div class="cstats"><div class="st"><span>listings</span><b>90</b></div><div class="st"><span>clean floor</span><b>$1,159</b></div><div class="st"><span>in pocket</span><b>$2,522</b></div><div class="st"><span>buyer pays</span><b>$3,112</b></div></div>
+  <p class="cline">eBay asks 46% more than TCGplayer across 90 listings. Sealed carries the box premium — ripping pays only on nostalgia.</p>
+  <div class="cchip" style="border-color:var(--green);color:var(--green)">VERIFIED</div>
+</article></div>
+<p class="note">First card is the longest product name we actually track (54 characters) — it wraps inside the card rather than breaking the grid.</p>
+
+<div class="shead"><div><div class="kick">03 · Mode accents</div><h2>Same numbers, different lens</h2></div><div class="right">accent only</div></div>
+<div class="accents">
+  <div class="acc" style="border-color:var(--green);color:var(--green)">COLLECTOR</div>
+  <div class="acc" style="border-color:var(--blue);color:var(--blue)">FLIPPER</div>
+  <div class="acc" style="border-color:var(--purple);color:var(--purple)">GRADER</div>
+  <div class="acc" style="border-color:var(--line2);color:var(--sub2)">BALANCED</div>
+</div>
+
+<div class="shead"><div><div class="kick">04 · 390px</div><h2>The same card on a phone</h2></div><div class="right">one per row</div></div>
+<div class="phone"><div class="grid"><article class="card">
+  <div class="cimg"></div>
+  <div class="ckick">SEALED · TODAY</div>
+  <h3 class="cname">Scarlet & Violet Base Pokemon Center Elite Trainer Box</h3>
+  <div class="chero"><span class="num">$319.99</span><span class="delta up">▲ 9.7%</span></div>
+  <div class="cstats"><div class="st"><span>listings</span><b>47</b></div><div class="st"><span>clean floor</span><b>$175</b></div><div class="st"><span>in pocket</span><b>$277</b></div><div class="st"><span>buyer pays</span><b>$342</b></div></div>
+  <p class="cline">eBay asks 46% more than TCGplayer across 47 listings. Sealed carries the box premium — ripping pays only on nostalgia.</p>
+  <div class="cchip" style="border-color:var(--green);color:var(--green)">VERIFIED</div>
+</article></div></div>
+</div>
