@@ -41,9 +41,14 @@ async function inlineImages(svg) {
       // (Tyler, 2026-08-23). Flood-filled from the edges, so whites INSIDE the
       // product survive. Skipped silently if it fails — a plain photo beats none.
       let painted = buf;
+      // The darkroom refuses light packaging itself (it can't repaint a white
+      // box without eating it), so respect `skipped` rather than judging by
+      // coverage alone — the 151 ETB filled 59% and passed the old range check
+      // while arriving with its own box painted navy.
       try { const { darkenBackground } = await import("./image-darkroom.mjs");
         const res = await darkenBackground(buf);
-        if (res.coverage > 5 && res.coverage < 85) painted = res.buffer;
+        if (!res.skipped && res.coverage > 5 && res.coverage < 85) painted = res.buffer;
+        else if (res.skipped) console.log(`  · darkroom skipped a photo: ${res.reason}`);
       } catch {}
       const mime = "image/png";
       svg = svg.replaceAll(`href="${u}"`, `href="data:${mime};base64,${painted.toString("base64")}"`);
