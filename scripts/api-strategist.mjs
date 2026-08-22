@@ -108,6 +108,60 @@ const used = (field) => new RegExp(`\\b${field}\\b`).test(downstream);
   }
 }
 
+// ── 5 · HOW SHOULD THE BUDGET ACTUALLY BE SPENT? ───────────────────────────
+// Finding unused fields is half the job. The other half is saying what to do
+// with the room they free. This ranks candidate spends by what each buys that
+// we cannot currently do at all - capability first, coverage second, because a
+// wider version of something we already have is worth less than the first
+// version of something we have none of.
+const allocation = [];
+{
+  const cat = await J("data/card-catalogue.json") ?? { cards: {} };
+  const enrich = await J("data/singles-enrichment.json") ?? {};
+  const sp = await J("data/sealed-prices.json") ?? { products: [] };
+  const enriched = (enrich.cards ?? enrich.rows ?? []).length;
+  const catalogue = Object.keys(cat.cards).length;
+  const priced = Object.values(cat.cards).filter(c => typeof c.price === "number" && c.price >= 2).length;
+
+  const BUDGET = 20000;
+  const cardRefresh = Math.round(priced * 0.75 + (catalogue - priced) * 0.33);
+  const sealedRefresh = sp.products.length;
+  const spare = BUDGET - cardRefresh - sealedRefresh;
+
+  allocation.push({
+    rank: 1, spend: "ENRICHMENT on the top few thousand cards",
+    callsPerDay: Math.min(spare, 3000),
+    haveNow: `${enriched} cards (${(enriched / catalogue * 100).toFixed(2)}% of catalogue)`,
+    buys: "Sales VOLUME and graded sold prices. This is the only candidate that unlocks instruments we cannot build at all today - every number we publish currently reads asks and infers demand, and vol30 measures demand directly. It also unblocks the graded index and makes RT-5 testable for the first time.",
+    why: "Capability, not coverage. We already have prices on 16,468 cards and volume on twelve.",
+  });
+  allocation.push({
+    rank: 2, spend: "ENUMERATE and add sealed products",
+    callsPerDay: Math.min(Math.max(0, spare - 3000), 6000),
+    haveNow: `${sp.products.length} products, chosen by hand from eBay`,
+    buys: "Coverage of a market nobody else indexes, on a catalogue we have never even counted. The endpoint exists and has only ever been queried by name.",
+    why: "Second because it widens something we already do well rather than enabling something new - but it is the widest gap between what we track and what exists.",
+  });
+  allocation.push({
+    rank: 3, spend: "Twice-daily refresh on the top 500 cards and boxes",
+    callsPerDay: 700,
+    haveNow: "once a day, everything",
+    buys: "Intraday movement on the things people actually watch. A $2,000 card can move meaningfully between breakfast and dinner.",
+    why: "Cheap, and the only way to say anything about a market DURING a day rather than about yesterday.",
+  });
+  allocation.push({
+    rank: 4, spend: "Historical backfill where the provider has it",
+    callsPerDay: 1000,
+    haveNow: "5 days of our own tape",
+    buys: "Every thesis we hold reports INSUFFICIENT for want of history. Backfill would make RT-1, RT-3 and RT-7 testable years earlier than waiting.",
+    why: "Highest long-term value, entirely dependent on whether the provider exposes history at our tier - which nobody has checked.",
+  });
+
+  F("high", `budget allocation: ~${(cardRefresh + sealedRefresh).toLocaleString("en-US")} calls/day committed, ~${spare.toLocaleString("en-US")} spare`,
+    "Spare capacity is not saved for anything - unspent calls do not roll over, so every day at 39% of budget is a day of capability we simply did not take.",
+    "Spend it in the ranked order above: capability before coverage.", "tyler");
+}
+
 const out = { generatedAt: new Date().toISOString(),
   question: "Not what could we buy, but what is already arriving that we throw away. A field we ignore cost exactly as much as a field we use.",
   blindSpots: [
@@ -115,9 +169,12 @@ const out = { generatedAt: new Date().toISOString(),
     "It can say what ARRIVED. It cannot say what an endpoint would return if asked differently — that needs somebody with a key.",
     "It cannot see rate limits, quotas or tier boundaries; those are dashboard facts.",
   ],
+  allocation,
   counts: { critical: findings.filter(f => f.severity === "critical").length, high: findings.filter(f => f.severity === "high").length, medium: findings.filter(f => f.severity === "medium").length },
   findings };
 await writeFile(join(ROOT, "research/pulse/api-strategy.json"), JSON.stringify(out, null, 1));
 console.log(`✓ api strategist: ${out.counts.critical} critical · ${out.counts.high} high · ${out.counts.medium} medium`);
 for (const f of findings.filter(f => f.severity === "critical")) console.log(`  CRITICAL [${f.owner}] ${f.what}`);
 for (const f of findings.filter(f => f.severity === "high")) console.log(`  HIGH     [${f.owner}] ${f.what}`);
+console.log(`\n  HOW TO SPEND THE ROOM:`);
+for (const a of allocation) console.log(`   ${a.rank}. ${a.spend.padEnd(46)} ~${String(a.callsPerDay).padStart(5)} calls/day  (have now: ${a.haveNow})`);

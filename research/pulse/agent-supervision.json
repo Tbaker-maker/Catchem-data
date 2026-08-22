@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-22T23:50:32.478Z",
+ "generatedAt": "2026-08-22T23:55:41.624Z",
  "date": "2026-08-22",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -7,7 +7,7 @@
   "falsifier: 0 finding(s)",
   "correction-hunter: 2 finding(s)",
   "review-agents: 0 finding(s)",
-  "api-strategist: 7 finding(s)",
+  "api-strategist: 8 finding(s)",
   "compliance: 0 finding(s)",
   "security: 1 finding(s)",
   "steward: 2 finding(s)",
@@ -23,6 +23,7 @@
   "anomaly: clean run — nothing failed, which is the point of it"
  ],
  "problems": [
+  "api-strategist: FARMING — findings climbed 7 → 7 → 8 → 8 across four runs with nothing resolved. Volume is not work.",
   "creator: OVER-BUDGET — 15 findings against a ceiling of 10. An unreadable list is an unread list."
  ],
  "workforce": [
@@ -559,7 +560,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "7 hand-written file(s) changed and not committed.",
+   "what": "1 hand-written file(s) changed and not committed.",
    "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
    "score": 30,
    "band": "NOTE ONLY",

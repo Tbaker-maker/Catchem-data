@@ -25,6 +25,7 @@ We put something in front of readers and can no longer price it. That is the kin
 
 ## The agents themselves
 **NEEDS A HUMAN — the supervisor flagged the watchers:**
+- api-strategist: FARMING — findings climbed 7 → 7 → 8 → 8 across four runs with nothing resolved. Volume is not work.
 - creator: OVER-BUDGET — 15 findings against a ceiling of 10. An unreadable list is an unread list.
 
 ## If we expanded
@@ -73,13 +74,13 @@ Nothing unusual, or not enough history to tell — 5 days of tape so far. Anomal
 
 ## Where today's story goes
 - **X** — "Paldean Fates listings moved -66.7% while its print window closes."
-- **YouTube** — Cosmic Eclipse Booster Box — "A seller keeps about $4,466.96 online; a buyer pays about $5,510.17. Roughly $1,043.21 of room where a face-to-face trade beats the internet."
+- **YouTube** — Unified Minds Booster Box — "A seller keeps about $3,859.97 online; a buyer pays about $4,761.5. Roughly $901.53 of room where a face-to-face trade beats the internet."
 - **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 100."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
 
 ## Something is slipping
-- **unsaved** — 7 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
+- **unsaved** — 1 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
 - **drift** — 3 script(s) are not referenced anywhere: collision-guard.mjs, discovery-sweep.mjs, refresh-tiers.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
 
 ## SECURITY — NEEDS A HUMAN NOW
