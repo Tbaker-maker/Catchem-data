@@ -70,8 +70,14 @@ const H = (target, attack, why, severity) => hypotheses.push({ target, attack, w
   const hosts = new Set();
   for (const f of files) for (const m of sources[f].matchAll(/https:\/\/([a-z0-9.\-]+)/gi)) hosts.add(m[1]);
   const simulated = /outage|stale|partial|unavailable|simulat/i.test(auditSrc);
+  // Hosts chat cannot reach at all belong to CC — reporting them here forever
+  // just trains the reader to skim. They are listed once, in the handoff.
+  const CHAT_CANNOT_REACH = /catchemtcg\.com|tcgplayer-cdn|images\.pokemontcg/;
   for (const h of [...hosts].filter(h => !/github|githubusercontent|fonts\./.test(h))) {
+    if (CHAT_CANNOT_REACH.test(h)) continue;
     const users = files.filter(f => sources[f].includes(h));
+    const degrades = users.every(f => /catch\s*\{|\?\?|try\s*\{/.test(sources[f]));
+    if (degrades) continue;   // already fails soft
     if (!simulated || users.length > 1)
       H(h, `Simulate this host being down, slow, and returning a 200 with garbage. The third case is the dangerous one — everything we own handles a failure better than it handles a plausible-looking wrong answer.`,
         `${users.length} script(s) depend on it. We have tested absence of DATA but not absence of THIS SOURCE specifically.`, "medium");

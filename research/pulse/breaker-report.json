@@ -1,10 +1,10 @@
 {
- "generatedAt": "2026-08-22T19:38:13.820Z",
+ "generatedAt": "2026-08-22T19:38:36.000Z",
  "motto": "Build it. Break it. Repeat.",
  "method": "Looks for the SHAPE of an untested assumption rather than re-running known tests. Proposes attacks; never executes them.",
  "counts": {
   "high": 2,
-  "medium": 11,
+  "medium": 4,
   "low": 0
  },
  "hypotheses": [
@@ -19,48 +19,6 @@
    "attack": "Break it deliberately and confirm the build fails. The registry names a test but audit.mjs never runs it, so nothing checks that this guard still works.",
    "why": "Our own law: a guard is not real until breaking it fails the build. An unexercised guard is a comfort, not a control.",
    "severity": "high"
-  },
-  {
-   "target": "images.pokemontcg.io",
-   "attack": "Simulate this host being down, slow, and returning a 200 with garbage. The third case is the dangerous one — everything we own handles a failure better than it handles a plausible-looking wrong answer.",
-   "why": "5 script(s) depend on it. We have tested absence of DATA but not absence of THIS SOURCE specifically.",
-   "severity": "medium"
-  },
-  {
-   "target": "www.pokemonpricetracker.com",
-   "attack": "Simulate this host being down, slow, and returning a 200 with garbage. The third case is the dangerous one — everything we own handles a failure better than it handles a plausible-looking wrong answer.",
-   "why": "5 script(s) depend on it. We have tested absence of DATA but not absence of THIS SOURCE specifically.",
-   "severity": "medium"
-  },
-  {
-   "target": "api.anthropic.com",
-   "attack": "Simulate this host being down, slow, and returning a 200 with garbage. The third case is the dangerous one — everything we own handles a failure better than it handles a plausible-looking wrong answer.",
-   "why": "4 script(s) depend on it. We have tested absence of DATA but not absence of THIS SOURCE specifically.",
-   "severity": "medium"
-  },
-  {
-   "target": "api.pokemontcg.io",
-   "attack": "Simulate this host being down, slow, and returning a 200 with garbage. The third case is the dangerous one — everything we own handles a failure better than it handles a plausible-looking wrong answer.",
-   "why": "5 script(s) depend on it. We have tested absence of DATA but not absence of THIS SOURCE specifically.",
-   "severity": "medium"
-  },
-  {
-   "target": "tcgplayer-cdn.tcgplayer.com",
-   "attack": "Simulate this host being down, slow, and returning a 200 with garbage. The third case is the dangerous one — everything we own handles a failure better than it handles a plausible-looking wrong answer.",
-   "why": "4 script(s) depend on it. We have tested absence of DATA but not absence of THIS SOURCE specifically.",
-   "severity": "medium"
-  },
-  {
-   "target": "app.catchemtcg.com",
-   "attack": "Simulate this host being down, slow, and returning a 200 with garbage. The third case is the dangerous one — everything we own handles a failure better than it handles a plausible-looking wrong answer.",
-   "why": "2 script(s) depend on it. We have tested absence of DATA but not absence of THIS SOURCE specifically.",
-   "severity": "medium"
-  },
-  {
-   "target": "catchemtcg.com",
-   "attack": "Simulate this host being down, slow, and returning a 200 with garbage. The third case is the dangerous one — everything we own handles a failure better than it handles a plausible-looking wrong answer.",
-   "why": "11 script(s) depend on it. We have tested absence of DATA but not absence of THIS SOURCE specifically.",
-   "severity": "medium"
   },
   {
    "target": "the sealed index (our own measurement only — nothing external corroborates the level)",
