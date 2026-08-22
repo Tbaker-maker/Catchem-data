@@ -20,6 +20,14 @@ jobs:
         with:
           node-version: "20"
 
+      - name: Install dependencies (resvg — cards rasterize to PNG in CI)
+        # package.json declares @resvg/resvg-js; without this install the
+        # rasterizer skips gracefully and the daily cards stay SVG-only.
+        run: npm install --no-audit --no-fund
+
+      - name: Guard audit (fails the run if any safeguard is disconnected)
+        run: node scripts/guard-audit.mjs
+
       - name: Unit tests (fail-fast)
         # Pure-math tests on scripts/lib + contract checks on yesterday's
         # committed artifacts. A regressed engine kills the run HERE, before
