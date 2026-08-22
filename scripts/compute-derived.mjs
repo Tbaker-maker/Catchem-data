@@ -599,22 +599,67 @@ const out = {
       return strength + deepCut + unseen + cooldown;
     };
 
+    // ── SELECTION LENS (Tyler, 2026-08-22) ───────────────────────────
+    // The sealed pick was always chosen by the widest eBay-vs-TCG gap and
+    // then explained by that same gap — one instrument doing all the work,
+    // which makes every day read the same. The lens now rotates, so the
+    // reason a product earned its place changes with the day. Each lens
+    // writes its own whyChosen line: what got it here, distinct from what
+    // it means. If a lens has no candidate today, the next one is tried.
+    const pm = new Map((packRows || []).map(r => [r.id, { premium: r.sealedPremiumPct, thin: r.premiumThin, perPack: r.perPack }]));
+    const prodById = new Map(liveList.map(p => [p.id, p]));
+    const eligibleAll = (div.rows||[]).filter(r => !blockedIds.has(r.id) && !isRepeat(r.name));
+    const LENSES = [
+      { id: "gap", label: "widest gap between the two markets",
+        pick: () => eligibleAll.filter(r => r.signal).sort((a,b)=>Math.abs(b.spreadPct)-Math.abs(a.spreadPct))[0],
+        why: r => `It is on the list because the two marketplaces disagree about it more than anything else we track today — eBay is asking ${Math.abs(r.spreadPct)}% ${r.spreadPct>0?"more":"less"} than TCGplayer.` },
+      { id: "premium", label: "biggest sealed premium over loose packs",
+        pick: () => eligibleAll.map(r => ({ r, p: pm.get(r.id) })).filter(x => x.p?.premium != null && !x.p.thin)
+                      .sort((a,b)=>Math.abs(b.p.premium)-Math.abs(a.p.premium))[0]?.r,
+        why: r => { const p = pm.get(r.id); return `It is on the list because the sealed box is priced ${Math.abs(p.premium)}% ${p.premium>0?"above":"below"} what its packs cost loose — the widest gap of that kind on the board today.`; } },
+      { id: "perpack", label: "most expensive rip on the board",
+        pick: () => eligibleAll.map(r => ({ r, p: pm.get(r.id) })).filter(x => x.p?.perPack)
+                      .sort((a,b)=>b.p.perPack-a.p.perPack)[0]?.r,
+        why: r => `It is on the list because it works out to $${pm.get(r.id).perPack} a pack — the most expensive rip we track right now.` },
+      { id: "room", label: "widest distance between the cheapest listing and the middle",
+        pick: () => eligibleAll.map(r => ({ r, p: prodById.get(r.id) }))
+                      .filter(x => x.p?.priceFloorClean && x.p?.priceMedian && x.p.listingCount >= 10)
+                      .sort((a,b)=>(b.p.priceMedian/b.p.priceFloorClean)-(a.p.priceMedian/a.p.priceFloorClean))[0]?.r,
+        why: r => { const p = prodById.get(r.id); return `It is on the list because its cheapest believable listing sits at $${p.priceFloorClean.toLocaleString("en-US")} while the middle of the market is $${p.priceMedian.toLocaleString("en-US")} — an unusually wide spread between the two, which usually means patience is worth something here.`; } },
+      { id: "zone", label: "most room in a face-to-face deal",
+        pick: () => eligibleAll.map(r => ({ r, z: dealZone.byId[r.id] })).filter(x => x.z?.zonePct)
+                      .sort((a,b)=>b.z.zonePct-a.z.zonePct)[0]?.r,
+        why: r => { const z = dealZone.byId[r.id]; return `It is on the list because it has the widest deal zone on the board — a seller keeps about $${z.sellerFloor.toLocaleString("en-US")} selling online while a buyer pays about $${z.buyerCeiling.toLocaleString("en-US")}, so there is roughly $${z.zoneWidth.toLocaleString("en-US")} of room where a face-to-face trade beats the internet for both people.`; } },
+    ];
+    let lensUsed = null, lensPick = null;
+    for (let i = 0; i < LENSES.length && !lensPick; i++) {
+      const L = LENSES[(new Date().getUTCDate() + i) % LENSES.length];
+      const cand = L.pick();
+      if (cand) { lensPick = cand; lensUsed = L; }
+    }
     const eligible = (div.rows||[]).filter(r => r.signal && !blockedIds.has(r.id));
     const screaming = eligible.filter(r => Math.abs(r.spreadPct) >= SCREAMING_SPREAD && (featuredAgo.get(r.name) ?? 99) >= 3);
     const fresh = eligible.filter(r => !isRepeat(r.name));
     // Fresh first, ranked by novelty. If the cooldown empties the pool,
     // fall back to the least-recently-featured rather than publishing
     // nothing — a stale pick beats no edition, but only as a last resort.
-    let sealedPick = fresh.length ? [...fresh].sort((a, b) => noveltyScore(b) - noveltyScore(a))[0]
+    let sealedPick = lensPick || (fresh.length ? [...fresh].sort((a, b) => noveltyScore(b) - noveltyScore(a))[0]
       : (screaming.length ? [...screaming].sort((a, b) => Math.abs(b.spreadPct) - Math.abs(a.spreadPct))[0]
-        : [...eligible].sort((a, b) => (featuredAgo.get(b.name) ?? 99) - (featuredAgo.get(a.name) ?? 99))[0] || null);
+        : [...eligible].sort((a, b) => (featuredAgo.get(b.name) ?? 99) - (featuredAgo.get(a.name) ?? 99))[0] || null));
     // A screaming deal outranks freshness — that is the whole point of the
     // exception. Label it so the repeat reads as deliberate, not lazy.
     const topScream = screaming.sort((a, b) => Math.abs(b.spreadPct) - Math.abs(a.spreadPct))[0];
+    // The lens chose; record why. If the screaming-deal override replaces the
+    // pick below, it rewrites this line — a card must always explain the reason
+    // it is actually on the list, not the reason a different candidate was.
+    let whyLine = (lensUsed && lensPick === sealedPick) ? lensUsed.why(sealedPick) : null;
+    let lensId = (lensUsed && lensPick === sealedPick) ? lensUsed.id : null;
     let repeatReason = null;
     if (topScream && sealedPick && Math.abs(topScream.spreadPct) > Math.abs(sealedPick.spreadPct) + 12) {
       if (isRepeat(topScream.name)) repeatReason = `back on the board ${featuredAgo.get(topScream.name)} day(s) later — the gap widened past anything else we track`;
       sealedPick = topScream;
+      whyLine = `It is on the list because the gap opened up past everything else we track today — eBay is asking ${Math.abs(topScream.spreadPct)}% ${topScream.spreadPct > 0 ? "more" : "less"} than TCGplayer, which is far enough out of line to bump whatever else was in this slot.`;
+      lensId = "screaming";
     }
     let gradedPick = null;
     {
@@ -679,9 +724,10 @@ const out = {
           ? `eBay usually runs a little higher on sealed \u2014 this is asking ${mag}% more, well past that baseline.`
           : `eBay sellers are asking ${mag}% LESS than TCGplayer \u2014 unusual, since photos normally earn eBay a premium.`;
         const life = L ? ` The set is ${L.ageMonths} months old (${L.phase.split(" \u2014")[0]}).` : "";
-        return { name: sealedPick.name, ebay: sealedPick.ebayAskMedian, tcg: sealedPick.tcgMarket,
+        return {
+          whyChosen: whyLine, lens: lensId, name: sealedPick.name, ebay: sealedPick.ebayAskMedian, tcg: sealedPick.tcgMarket,
           spreadPct: sealedPick.spreadPct, listings: sealedPick.ebayListings, chip:"VERIFIED",
-          reason:"biggest price gap between the two markets today",
+          reason: lensUsed && lensId === lensUsed.id ? lensUsed.label : "biggest price gap between the two markets today",
           explain: `${base} ${sealedPick.ebayListings} listings are live right now.${life}` };
       })(),
       graded: gradedPick, // null until Premium table exists — the slot says so honestly
