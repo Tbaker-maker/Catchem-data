@@ -9,7 +9,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-const SITE = process.env.CATCHEM_SITE || "app.catchemtcg.com";
+const SITE = process.env.CATCHEM_SITE || "catchemtcg.com"; // public host — the app domain is unlisted (split 2026-08-22)
 const METHODOLOGY_URL = `${SITE}/methodology.html`;
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");

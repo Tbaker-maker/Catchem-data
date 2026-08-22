@@ -27,7 +27,7 @@ function wrapText(str, { x, y, width, size, fill, weight = 400, lineHeight = 1.3
     lines.map((l, i) => `<tspan x="${x}" dy="${i === 0 ? 0 : size * lineHeight}">${esc2(l)}</tspan>`).join("") + `</text>`;
 }
 
-const SITE = process.env.CATCHEM_SITE || "app.catchemtcg.com";
+const SITE = process.env.CATCHEM_SITE || "catchemtcg.com"; // public host — the app domain is unlisted (split 2026-08-22)
 const METHODOLOGY_URL = `${SITE}/methodology.html`;
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");

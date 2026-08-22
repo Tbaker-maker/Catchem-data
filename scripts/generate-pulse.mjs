@@ -447,6 +447,18 @@ const feed = {
   indexHistory,
   storyKits,
 };
+// §17 POST STUDIO passthrough: run the post/queue builders NOW (they need
+// only derived data + publish-guard, both ready) so today's bank rides
+// today's feed. ESM caches modules, so the later tail imports of these
+// files are no-ops — this is their one real run.
+{
+  await import("./social-posts.mjs");
+  await import("./post-bank.mjs");
+  const bank = await J("research/pulse/post-bank.json");
+  const queue = await J("research/pulse/social-queue.json");
+  if (bank) feed.postBank = { date: bank.date, voices: bank.voices, ideas: bank.ideas };
+  if (queue) feed.socialQueue = { date: queue.date, dayNumber: queue.dayNumber, posts: queue.posts };
+}
 // Two copies, both compact (machine feed; pretty-printing triples the bytes):
 //  - research/pulse/pulse-feed.json — the CANONICAL app URL. research/pulse/
 //    is in the daily run's git-add list, so this copy updates every CI run.
