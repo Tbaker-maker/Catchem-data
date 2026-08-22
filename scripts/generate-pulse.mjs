@@ -598,6 +598,27 @@ try { const { shouldRun } = await import("./cadence.mjs");
   const __last = (__h.runs?.["breaker"] ?? []).slice(-1)[0]?.date ?? null;
   const __d = await shouldRun("breaker", __last);
   if (__d.run) await import("./breaker.mjs"); else console.log(`  · breaker.mjs skipped — ${__d.why}`); } catch (e) { console.warn(`  ⚠ agent breaker.mjs failed: ${e.message} — advisory only`); }
+try { const { shouldRun } = await import("./cadence.mjs");
+  const __h = await (async () => { try { return JSON.parse(await (await import("node:fs/promises")).readFile(new URL("../data/agent-history.json", import.meta.url), "utf-8")); } catch { return {}; } })();
+  const __last = (__h.runs?.["artist-instruments"] ?? []).slice(-1)[0]?.date ?? null;
+  const __d = await shouldRun("artist-instruments", __last);
+  if (__d.run) await import("./artist-instruments.mjs"); else console.log(`  · artist-instruments.mjs skipped — ${__d.why}`); } catch (e) { console.warn(`  ⚠ agent artist-instruments.mjs: ${e.message} — advisory only`); }
+try { const { shouldRun } = await import("./cadence.mjs");
+  const __h = await (async () => { try { return JSON.parse(await (await import("node:fs/promises")).readFile(new URL("../data/agent-history.json", import.meta.url), "utf-8")); } catch { return {}; } })();
+  const __last = (__h.runs?.["creator"] ?? []).slice(-1)[0]?.date ?? null;
+  const __d = await shouldRun("creator", __last);
+  if (__d.run) await import("./creator-agent.mjs"); else console.log(`  · creator-agent.mjs skipped — ${__d.why}`); } catch (e) { console.warn(`  ⚠ agent creator-agent.mjs: ${e.message} — advisory only`); }
+try { const { shouldRun } = await import("./cadence.mjs");
+  const __h = await (async () => { try { return JSON.parse(await (await import("node:fs/promises")).readFile(new URL("../data/agent-history.json", import.meta.url), "utf-8")); } catch { return {}; } })();
+  const __last = (__h.runs?.["experience"] ?? []).slice(-1)[0]?.date ?? null;
+  const __d = await shouldRun("experience", __last);
+  if (__d.run) await import("./experience.mjs"); else console.log(`  · experience.mjs skipped — ${__d.why}`); } catch (e) { console.warn(`  ⚠ agent experience.mjs: ${e.message} — advisory only`); }
+try { const { shouldRun } = await import("./cadence.mjs");
+  const __h = await (async () => { try { return JSON.parse(await (await import("node:fs/promises")).readFile(new URL("../data/agent-history.json", import.meta.url), "utf-8")); } catch { return {}; } })();
+  const __last = (__h.runs?.["universe-advisor"] ?? []).slice(-1)[0]?.date ?? null;
+  const __d = await shouldRun("universe-advisor", __last);
+  if (__d.run) await import("./universe-advisor.mjs"); else console.log(`  · universe-advisor.mjs skipped — ${__d.why}`); } catch (e) { console.warn(`  ⚠ agent universe-advisor.mjs: ${e.message} — advisory only`); }
+try { await import("./steward.mjs"); } catch (e) { console.warn(`  ⚠ steward: ${e.message} — advisory only`); }
 try { await import("./platform-agents.mjs"); } catch (e) { console.warn(`  ⚠ agent platform-agents: ${e.message} — advisory only`); }
 try { await import("./anomaly-watcher.mjs"); } catch (e) { console.warn(`  ⚠ agent anomaly-watcher: ${e.message} — advisory only`); }
 try { await import("./falsifier.mjs"); } catch (e) { console.warn(`  ⚠ agent falsifier.mjs failed: ${e.message} — advisory only, the run continues`); }

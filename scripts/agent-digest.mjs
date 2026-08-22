@@ -24,6 +24,7 @@ const sup = await J("research/pulse/agent-supervision.json");
 const cre = await J("research/pulse/creator-report.json");
 const ano = await J("research/pulse/anomaly-report.json");
 const plat = await J("research/pulse/platform-report.json");
+const stw = await J("research/pulse/steward-report.json");
 const uni = await J("research/pulse/universe-advisor.json");
 const rev = await J("research/pulse/review-agents.json");
 const exp = await J("research/pulse/experience-report.json");
@@ -170,6 +171,12 @@ if (plat?.findings?.length) {
   }
   const gaps = plat.findings.filter(f => f.kind === "gap");
   if (gaps.length) say(`\n${gaps.length} format gap(s): ${gaps.map(g => `${g.platform} — ${g.what}`).slice(0, 2).join("; ")}`);
+  say();
+}
+
+if (stw?.speak?.length) {
+  say(`## Something is slipping`);
+  for (const s of stw.speak.slice(0, 4)) say(`- **${s.kind}** — ${s.what} *${s.why}*`);
   say();
 }
 

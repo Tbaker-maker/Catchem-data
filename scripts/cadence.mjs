@@ -32,6 +32,7 @@ export const CADENCE = {
   "agent-digest":      { when: "daily", watches: "all agent output" },
   // watches our own code → runs when the code moves
   "platform":          { when: "daily", watches: "today's stories against each platform's shape" },
+  "steward":           { when: "daily", watches: "whether the work is saved, organised and on track" },
   "anomaly":           { when: "daily", watches: "the market" },
   "breaker":           { when: "on-change", watches: "scripts/", paths: ["scripts/"] },
   "improver":          { when: "on-change-or-weekly", watches: "scripts/ and product shape", paths: ["scripts/"], weeklyOn: 1 },

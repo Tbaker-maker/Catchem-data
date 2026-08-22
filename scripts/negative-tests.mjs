@@ -292,6 +292,21 @@ const CASES = [
     },
     restore: async () => { await copyFile("/tmp/nt-kb2.bak", P("catchem-knowledge-base.md")); } },
 
+  { guard: "Registered agents actually run", detect: null,
+    // Four agents were registered with the supervisor, given cadences and
+    // surfaced in the digest — and never added to the pipeline. They existed,
+    // were managed, and did nothing. Being registered is not being employed.
+    fn: async () => {
+      const sup = await readFile(P("scripts/agent-supervisor.mjs"), "utf-8");
+      const pipe = await readFile(P("scripts/generate-pulse.mjs"), "utf-8");
+      const ids = [...sup.matchAll(/\{ id: "([a-z\-]+)"/g)].map(m => m[1]);
+      const MANUAL = ["review-agents"];   // deliberately not scheduled
+      const missing = ids.filter(id => !MANUAL.includes(id) &&
+        !pipe.includes(`${id}.mjs`) && !pipe.includes(`${id}-agent.mjs`) && !pipe.includes(`${id}-watcher.mjs`) && !pipe.includes(`${id}-agents.mjs`));
+      return { pass: missing.length === 0,
+        why: missing.length ? `${missing.join(", ")} registered with the supervisor but never imported by the pipeline — managed and doing nothing` : "" };
+    } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");

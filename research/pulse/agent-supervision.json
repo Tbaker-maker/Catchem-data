@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-22T21:43:16.652Z",
+ "generatedAt": "2026-08-22T21:48:14.728Z",
  "date": "2026-08-22",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -7,6 +7,7 @@
   "falsifier: 0 finding(s)",
   "correction-hunter: 2 finding(s)",
   "review-agents: 0 finding(s)",
+  "steward: 1 finding(s)",
   "platform: 10 finding(s)",
   "anomaly: 0 finding(s)",
   "creator: 15 finding(s)",
@@ -61,6 +62,11 @@
   {
    "agent": "correction-hunter",
    "finding": "runs daily and has returned the same count (2) four runs running.",
+   "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
+  },
+  {
+   "agent": "steward",
+   "finding": "runs daily and has returned the same count (1) four runs running.",
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
   },
   {
@@ -452,6 +458,22 @@
    }
   },
   {
+   "from": "steward",
+   "owner": "chat",
+   "what": "6 hand-written file(s) changed and not committed.",
+   "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
    "from": "experience",
    "owner": "chat",
    "what": "5 things visibly change day to day: the Daily Three, a fact, shelf moves, yesterday's picks revisited, Rip or Hold.",
@@ -769,6 +791,6 @@
   "actNow": 0,
   "queue": 9,
   "watch": 7,
-  "noteOnly": 6
+  "noteOnly": 7
  }
 }
