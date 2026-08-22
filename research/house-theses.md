@@ -186,3 +186,14 @@ WHY IT MATTERS: break-out packs price differently from retail packs
 (the seller has already banked the collection's other contents), so
 using one as a per-pack basis without the label would quietly distort
 a sealed premium.
+
+## MODE HONESTY LAW (Tyler, Aug 22 2026)
+Collector / Flipper / Grader / Balanced modes reorder EMPHASIS and never
+hide or alter a figure. A mode that filters out inconvenient numbers is
+an echo chamber, which is the exact opposite of what the VERIFIED/READ
+chips promise. Anything de-emphasised stays one tap away.
+TESTABLE: a diff of every value rendered before and after a mode switch
+must be empty. Only order and accent colour may change.
+WHY: the same reason the Referee Doctrine holds — one set of numbers,
+many readers. The moment the numbers bend to the audience, they stop
+being numbers.

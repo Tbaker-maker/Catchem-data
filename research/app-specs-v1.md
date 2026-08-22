@@ -341,3 +341,59 @@ no competitor publishes it.
 - Works offline once loaded — convention halls have no signal.
 - Never tell anyone what to pay. Show what each side's alternative is
   worth and let them negotiate with real numbers.
+
+## §20 · MODES — Collector · Flipper · Grader · Balanced (Tyler, Aug 22)
+Already half-locked: brand tokens assign green=Collector, blue=Flipper,
+purple=Grader, and §10 makes them newsletter tracks. This finishes the
+system.
+
+### THE ONE LAW THAT MAKES MODES SAFE
+**Modes reorder emphasis. They NEVER hide a number, and they never change
+one.** A Flipper does not get a version of the app where the PSA-9 tax
+disappears; a Collector does not get one where a widening gap is hidden.
+Same truth, different first screen. If a mode ever filters OUT an
+inconvenient figure it has become an echo chamber, and an echo chamber is
+the opposite of everything the provenance chips stand for. Anything a
+mode de-emphasises stays one tap away, never removed.
+(Same shape as the Referee Doctrine: one set of numbers, many readers.)
+
+### BALANCED — the default 🟢🔵🟣
+Nobody is asked to classify themselves before they get value. Balanced is
+what a first-time visitor sees: the index, the Daily Three (one sealed,
+one graded, one raw — which is itself one item per lane), movers, and the
+day's Did You Know. Mode selection is offered later, gently, once the app
+has already been useful. Switching is instant and reversible.
+
+### COLLECTOR (green #36d399) — "can I still get it, and what is it?"
+Leads with: print-window countdowns and lifecycle phase · set hubs and
+completion context · Did You Know · binder pages and card art · sealed
+premium framed as rip-or-buy-the-single · watchlist grouped by set.
+De-emphasised (never hidden): fee math, net proceeds, spread signals.
+Voice: warmest of the four. This is where the 🍭 explainers live loudest.
+
+### FLIPPER (blue #64a0ff) — "what moved, and what would I actually clear?"
+Leads with: the Spread and its signals · movers and breadth · supply
+shifts with cause candidates · Net Proceeds and the Deal Zone · index
+momentum · velocity once history is deep enough.
+De-emphasised (never hidden): art, lore, set completion.
+Voice: tightest and most numeric. Still no calls, still no predictions —
+a flipper is served by better inputs, not by bravado.
+
+### GRADER (purple #c77dff) — "is it worth slabbing?"
+Leads with: grading premium per card · the PSA-9 tax and its fresh-set
+exception · pop and gem rate (when licensed) · raw-versus-slab compare ·
+cert verification for buying slabs · turnaround and fee context.
+De-emphasised (never hidden): sealed instruments.
+Voice: the most cautionary of the four, because the downside here is a
+real cheque a person writes before they know the outcome.
+
+### IMPLEMENTATION (zero backend, ships client-side)
+One localStorage key; the feed already carries every instrument, so a
+mode is a reordering of sections plus an accent swap plus a different
+"lead" line — no new data, no auth. Mode also tints the accent used for
+chips and section headers, which is the fastest visual signal that the
+app is set up for YOU. Post-auth it becomes a profile preference and
+feeds §10's newsletter tracks and (later) Discord role colours.
+ACCEPTANCE: switching modes changes what is at the TOP of the screen and
+what colour the accents are — and changes no number anywhere. A diff of
+the values shown before and after a mode switch must be empty.
