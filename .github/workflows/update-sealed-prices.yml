@@ -44,6 +44,11 @@ jobs:
         env:
           POKEMONPRICETRACKER_API_KEY: ${{ secrets.POKEMONPRICETRACKER_API_KEY }}
         run: node scripts/fetch-sealed-crosscheck.mjs
+      - name: Fetch illustrator credits (pokemontcg.io)
+        continue-on-error: true # a flaky free API must never kill the sealed run
+        env:
+          POKEMONTCG_API_KEY: ${{ secrets.POKEMONTCG_API_KEY }}
+        run: node scripts/fetch-artists.mjs
       - name: Compute heat states
         run: node scripts/compute-heat-states.mjs
       - name: Compute The Spread
@@ -70,7 +75,7 @@ jobs:
           # step writes is listed here. A file written in CI but not added
           # evaporates at job end — the class that froze the app feed and ate
           # era/catalyst history daily.
-          git add data/sealed-prices.json data/heat-report.json data/heat-history.json data/sealed-crosscheck.json data/crosscheck-history.json data/divergence-report.json data/supply-watch.json data/derived-insights.json data/era-index-history.json data/catalyst-log.json data/cohort-history.json data/alerts-state.json research/pulse/ research/assets/the-board.html research/assets/the-pulse.html research/assets/pulse-feed.json research/assets/print-watch.html research/assets/methodology.html research/assets/corrections.html
+          git add data/sealed-prices.json data/heat-report.json data/heat-history.json data/sealed-crosscheck.json data/crosscheck-history.json data/divergence-report.json data/supply-watch.json data/derived-insights.json data/era-index-history.json data/catalyst-log.json data/cohort-history.json data/alerts-state.json data/artists.json research/pulse/ research/assets/the-board.html research/assets/the-pulse.html research/assets/pulse-feed.json research/assets/print-watch.html research/assets/methodology.html research/assets/corrections.html
           if git diff --staged --quiet; then
             echo "No price changes to commit."
           else

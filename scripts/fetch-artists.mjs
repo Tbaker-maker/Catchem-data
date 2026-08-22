@@ -29,19 +29,52 @@ let store = await J("data/artists.json") ?? {
 const API = "https://api.pokemontcg.io/v2/cards";
 let resolved = 0, failed = [];
 
+// RETRY, because without one this reads as missing data when it is not.
+// The keyless tier returns sporadic 500s under sustained request rates — the
+// first run resolved 51 of 137 and called 86 cards unresolved, yet every
+// sampled failure returned full card data on a plain retry seconds later.
+// Coverage completeness gates what the angles are allowed to claim, so a
+// harvesting gap that looks like absent data is not a cosmetic problem: it
+// silently holds every count in the weaker phrasing forever.
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+async function getCard(id) {
+  let lastStatus = null;
+  for (let attempt = 0; attempt < 4; attempt++) {
+    if (attempt) await sleep(400 * 2 ** (attempt - 1));   // 400ms, 800ms, 1.6s
+    try {
+      const r = await fetch(`${API}/${encodeURIComponent(id)}`, {
+        headers: process.env.POKEMONTCG_API_KEY ? { "X-Api-Key": process.env.POKEMONTCG_API_KEY } : {} });
+      if (r.ok) {
+        // A 200 with an EMPTY body is this API's other flaky mode, and it is
+        // the nastier one: r.ok is true, so a naive read yields undefined and
+        // the card gets filed as "no artist field" — missing data that is not
+        // missing at all. Same card returns in full on a retry.
+        const body = await r.text();
+        if (body.trim()) {
+          try { return { data: JSON.parse(body).data }; }
+          catch { lastStatus = "unparseable body"; continue; }
+        }
+        lastStatus = "200 with empty body";
+        continue;
+      }
+      lastStatus = r.status;
+      if (r.status === 404) break;      // genuinely absent; retrying cannot help
+    } catch (e) { lastStatus = e.message; }
+  }
+  return { error: lastStatus };
+}
+
 for (const id of ids) {
   if (store.byCard[id]?.artist) { resolved++; continue; }
-  try {
-    const r = await fetch(`${API}/${encodeURIComponent(id)}`, {
-      headers: process.env.POKEMONTCG_API_KEY ? { "X-Api-Key": process.env.POKEMONTCG_API_KEY } : {} });
-    if (!r.ok) { failed.push({ id, status: r.status }); continue; }
-    const d = (await r.json()).data;
-    if (!d?.artist) { failed.push({ id, status: "no artist field" }); continue; }
+  const { data: d, error } = await getCard(id);
+  if (error != null) { failed.push({ id, status: error }); }
+  else if (!d?.artist) { failed.push({ id, status: "no artist field" }); }
+  else {
     store.byCard[id] = { artist: d.artist, name: d.name, setId: d.set?.id, setName: d.set?.name,
       number: d.number, rarity: d.rarity, releaseDate: d.set?.releaseDate };
     resolved++;
-  } catch (e) { failed.push({ id, status: e.message }); }
-  await new Promise(r => setTimeout(r, 120));   // be a good guest on a free API
+  }
+  await sleep(120);   // be a good guest on a free API
 }
 
 // Rebuild the artist view from whatever we hold.
@@ -64,6 +97,12 @@ store.coverage = { cardsQueried: ids.length, cardsResolved: resolved, failed: fa
   // It does NOT mean we know every Pokémon card ever printed — no claim of that
   // kind may be built on this file.
   complete: failed.length === 0 && resolved === ids.length,
+  // WHY each card is missing, not just how many. The three causes need very
+  // different responses: a transient API failure should be retried, a 404 means
+  // the id is wrong on our side, and "no artist field" is a real gap in the
+  // upstream source that no amount of retrying will close. Without this split,
+  // 19 unresolved cards look like one problem and get one wrong fix.
+  unresolved: failed.map(f => ({ id: f.id, reason: String(f.status) })),
   scopeWarning: "This covers only the cards we track. Never phrase a count as 'ever' from this data." };
 
 await writeFile(join(ROOT, "data/artists.json"), JSON.stringify(store, null, 1));

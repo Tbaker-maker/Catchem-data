@@ -24,10 +24,16 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "utf-8")); } catch { return null; } };
 
 const art = await J("data/artists.json");
-if (!art || !Object.keys(art.byArtist || {}).length) {
+// NO process.exit() — this is imported by generate-pulse as one link in a
+// chain that ends with publish-assert, and an exit(0) from an imported module
+// ends the WHOLE run with a success code, silently skipping the last line of
+// defence. rasterize-cards did exactly that and CI reported green. A module
+// with nothing to do returns; it does not take the process with it.
+const haveArtists = !!art && Object.keys(art.byArtist || {}).length > 0;
+if (!haveArtists) {
   console.log("· artist angles: no data/artists.json yet — run scripts/fetch-artists.mjs first. Producing nothing rather than guessing.");
-  process.exit(0);
 }
+if (haveArtists) {
 const sg = await J("data/singles-prices.json") ?? { cards: [] };
 const price = Object.fromEntries((sg.cards || []).filter(c => c.priceMarket).map(c => [c.cardId, c.priceMarket]));
 const money = n => `$${Math.round(n).toLocaleString("en-US")}`;
@@ -38,9 +44,26 @@ const scope = complete ? "" : " in the sets we track";
 const angles = [];
 const A = Object.entries(art.byArtist).map(([artist, d]) => ({ artist, ...d }));
 
-// 1 — THE SHORT CATALOGUE. An illustrator with very few cards is inherently
-// interesting, and the scoping keeps it honest.
-for (const a of A.filter(x => x.cardCount <= 4).sort((x, y) => x.cardCount - y.cardCount).slice(0, 3)) {
+// 1 — THE SHORT CATALOGUE. HELD unless coverage is complete, and it is worth
+// saying exactly why, because the scoping phrase looked like enough and was not.
+//
+// The count was scoped correctly — "in the sets we track" is literally true —
+// but the SENTENCE BUILT ON IT was not scoped at all: "a small body of work is
+// easy to hold in your head" is a claim about an illustrator's career, and we
+// have no evidence for it. We track 119 chase singles across 54 illustrators,
+// so 91% of them show 4 or fewer cards and 32 show exactly one. The angle was
+// not finding illustrators with small catalogues; it was reading back the
+// arithmetic of our own sampling and calling it a fact about a person.
+//
+// Checked against pokemontcg.io on 2026-08-22: Anesaki Dynamic has 140 cards
+// and Shinji Kanda 22. The draft called Anesaki Dynamic's body of work small.
+// A reader who knows the hobby disproves that in seconds, which the header of
+// this file correctly names as the one thing we cannot afford.
+//
+// It returns automatically if coverage ever becomes complete, because then the
+// count would mean what the sentence says. Scope the number AND the claim you
+// hang on it — a true statistic can still carry a false sentence.
+for (const a of (complete ? A.filter(x => x.cardCount <= 4).sort((x, y) => x.cardCount - y.cardCount).slice(0, 3) : [])) {
   const valued = a.cards.filter(c => price[c.cardId]);
   angles.push({ id: `artist-short-${a.artist.replace(/\W+/g, "-").toLowerCase()}`, kind: "short catalogue",
     chip: "VERIFIED", artist: a.artist,
@@ -56,8 +79,13 @@ const chases = A.flatMap(a => a.cards.map(c => ({ ...c, artist: a.artist, artist
   .filter(c => c.price).sort((x, y) => y.price - x.price).slice(0, 3);
 for (const c of chases) {
   angles.push({ id: `artist-chase-${c.cardId}`, kind: "who drew the chase", chip: "VERIFIED", artist: c.artist,
+    // The count clause is deliberately absent. "…who has 1 card in the sets we
+    // track" is literally true and still invites the reader to conclude the
+    // illustrator has one card — Anesaki Dynamic has 140. A number that can
+    // only be read wrongly is worth less than the sentence it costs, and the
+    // payload of this angle is the join itself, not the tally.
     post: `${c.name} from ${c.setName} sits at ${money(c.price)} ungraded.\n\n` +
-      `It was illustrated by ${c.artist}, who has ${c.artistTotal} card${c.artistTotal === 1 ? "" : "s"}${scope}.\n\n` +
+      `It was illustrated by ${c.artist}.\n\n` +
       `Everyone can tell you what this card costs. Fewer can tell you who drew it.`,
     why: "Art accounts have the taste and none of the data. Price accounts have the data and never look at who drew it. This is the only lane that holds both.",
     sources: ["pokemontcg.io artist credits", "our own price feed"] });
@@ -85,3 +113,4 @@ const out = { generatedAt: new Date().toISOString(),
 await writeFile(join(ROOT, "research/pulse/artist-angles.json"), JSON.stringify(out, null, 1));
 console.log(`✓ artist angles: ${angles.length} drafted from ${A.length} illustrators (coverage ${complete ? "complete" : "partial — counts scoped"})`);
 for (const a of angles.slice(0, 3)) console.log(`  ${a.kind.padEnd(18)} ${a.artist}`);
+}   // haveArtists

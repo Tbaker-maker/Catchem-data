@@ -489,9 +489,29 @@ const feed = {
 {
   await import("./social-posts.mjs");
   await import("./post-bank.mjs");
+  // Runs HERE, not in the advisory block at the end: the feed is assembled a
+  // few lines below, so an artist-angles that ran after it would have shipped
+  // yesterday's angles every single day — fresh on disk, stale in the app.
+  // Still advisory: a failure costs the angles, never the pulse.
+  try { await import("./artist-angles.mjs"); } catch (e) { console.warn(`  ⚠ artist-angles.mjs failed: ${e.message} — advisory only, the run continues`); }
   const bank = await J("research/pulse/post-bank.json");
   const queue = await J("research/pulse/social-queue.json");
-  if (bank) feed.postBank = { date: bank.date, voices: bank.voices, ideas: bank.ideas };
+  // Artist angles ride the SAME ideas list as the other six, mapped into the
+  // shape Post Studio already renders, so the creator sees one set of angles
+  // rather than a second place to look. Mapped rather than app-side merged
+  // because the studio's copy tabs read `platforms`, and an angle the copy
+  // button cannot serve is not usable.
+  // They carry an explicit scope line: coverage is partial, and a creator
+  // reposting one of these needs to know the count behind it is scoped to the
+  // sets we track — the caveat has to travel with the copy, not sit in a file
+  // they will never open.
+  const artistAngles = await J("research/pulse/artist-angles.json");
+  const artistIdeas = (artistAngles?.angles || []).map(a => ({
+    id: a.id, angle: `${a.kind}: ${a.artist}`, chip: a.chip, why: a.why,
+    sources: a.sources, scope: artistAngles.scopingRule,
+    platforms: { x: a.post },
+  }));
+  if (bank) feed.postBank = { date: bank.date, voices: bank.voices, ideas: [...(bank.ideas || []), ...artistIdeas] };
   if (queue) feed.socialQueue = { date: queue.date, dayNumber: queue.dayNumber, posts: queue.posts };
 }
 // Two copies, both compact (machine feed; pretty-printing triples the bytes):

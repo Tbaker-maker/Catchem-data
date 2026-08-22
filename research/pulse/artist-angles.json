@@ -1,41 +1,94 @@
 {
- "generatedAt": "2026-08-22T18:43:44.956Z",
+ "generatedAt": "2026-08-22T19:06:46.829Z",
  "coverage": {
+  "cardsQueried": 137,
+  "cardsResolved": 119,
+  "failed": 18,
   "complete": false,
-  "scopeWarning": "partial"
+  "unresolved": [
+   {
+    "id": "sv8pt5-60",
+    "reason": "no artist field"
+   },
+   {
+    "id": "sv8pt5-161",
+    "reason": "no artist field"
+   },
+   {
+    "id": "sv8pt5-34",
+    "reason": "no artist field"
+   },
+   {
+    "id": "sv8pt5-155",
+    "reason": "no artist field"
+   },
+   {
+    "id": "sv6pt5-78",
+    "reason": "no artist field"
+   },
+   {
+    "id": "sv6pt5-98",
+    "reason": "500"
+   },
+   {
+    "id": "sv6pt5-66",
+    "reason": "no artist field"
+   },
+   {
+    "id": "sv7-148",
+    "reason": "no artist field"
+   },
+   {
+    "id": "sv7-143",
+    "reason": "no artist field"
+   },
+   {
+    "id": "sv7-169",
+    "reason": "no artist field"
+   },
+   {
+    "id": "sv8-238",
+    "reason": "no artist field"
+   },
+   {
+    "id": "sv8-239",
+    "reason": "no artist field"
+   },
+   {
+    "id": "sv8-237",
+    "reason": "no artist field"
+   },
+   {
+    "id": "sv8pt5-156",
+    "reason": "no artist field"
+   },
+   {
+    "id": "sv8pt5-144",
+    "reason": "no artist field"
+   },
+   {
+    "id": "me1-188",
+    "reason": "no artist field"
+   },
+   {
+    "id": "me1-187",
+    "reason": "no artist field"
+   },
+   {
+    "id": "me1-179",
+    "reason": "no artist field"
+   }
+  ],
+  "scopeWarning": "This covers only the cards we track. Never phrase a count as 'ever' from this data."
  },
  "scopingRule": "Coverage is PARTIAL. Every count is phrased 'in the sets we track'. An 'only N ever' claim is forbidden from this data.",
  "angles": [
   {
-   "id": "artist-short-test-illustrator-a",
-   "kind": "short catalogue",
-   "chip": "VERIFIED",
-   "artist": "Test Illustrator A",
-   "post": "Test Illustrator A has illustrated 3 Pokémon cards in the sets we track.\n\n• Umbreon VMAX — Evolving Skies ($2,244)\n• Rayquaza VMAX — Evolving Skies ($1,248)\n• Umbreon ex — Prismatic Evolutions ($1,491)\n\nA small body of work is easy to hold in your head, which is its own kind of collectable.",
-   "why": "A short catalogue is inherently interesting and easy to verify. The scoping phrase is what stops it becoming a claim a reader can disprove.",
-   "sources": [
-    "pokemontcg.io artist credits",
-    "our own price feed"
-   ]
-  },
-  {
    "id": "artist-chase-swsh7-215",
    "kind": "who drew the chase",
    "chip": "VERIFIED",
-   "artist": "Test Illustrator A",
-   "post": "Umbreon VMAX from Evolving Skies sits at $2,244 ungraded.\n\nIt was illustrated by Test Illustrator A, who has 3 cards in the sets we track.\n\nEveryone can tell you what this card costs. Fewer can tell you who drew it.",
-   "why": "Art accounts have the taste and none of the data. Price accounts have the data and never look at who drew it. This is the only lane that holds both.",
-   "sources": [
-    "pokemontcg.io artist credits",
-    "our own price feed"
-   ]
-  },
-  {
-   "id": "artist-chase-sv8pt5-161",
-   "kind": "who drew the chase",
-   "chip": "VERIFIED",
-   "artist": "Test Illustrator A",
-   "post": "Umbreon ex from Prismatic Evolutions sits at $1,491 ungraded.\n\nIt was illustrated by Test Illustrator A, who has 3 cards in the sets we track.\n\nEveryone can tell you what this card costs. Fewer can tell you who drew it.",
+   "artist": "KEIICHIRO ITO",
+   "post": "Umbreon VMAX from Evolving Skies sits at $2,244 ungraded.\n\nIt was illustrated by KEIICHIRO ITO.\n\nEveryone can tell you what this card costs. Fewer can tell you who drew it.",
    "why": "Art accounts have the taste and none of the data. Price accounts have the data and never look at who drew it. This is the only lane that holds both.",
    "sources": [
     "pokemontcg.io artist credits",
@@ -46,12 +99,46 @@
    "id": "artist-chase-swsh7-218",
    "kind": "who drew the chase",
    "chip": "VERIFIED",
-   "artist": "Test Illustrator A",
-   "post": "Rayquaza VMAX from Evolving Skies sits at $1,248 ungraded.\n\nIt was illustrated by Test Illustrator A, who has 3 cards in the sets we track.\n\nEveryone can tell you what this card costs. Fewer can tell you who drew it.",
+   "artist": "Anesaki Dynamic",
+   "post": "Rayquaza VMAX from Evolving Skies sits at $1,248 ungraded.\n\nIt was illustrated by Anesaki Dynamic.\n\nEveryone can tell you what this card costs. Fewer can tell you who drew it.",
    "why": "Art accounts have the taste and none of the data. Price accounts have the data and never look at who drew it. This is the only lane that holds both.",
    "sources": [
     "pokemontcg.io artist credits",
     "our own price feed"
+   ]
+  },
+  {
+   "id": "artist-chase-swsh11-186",
+   "kind": "who drew the chase",
+   "chip": "VERIFIED",
+   "artist": "Shinji Kanda",
+   "post": "Giratina V from Lost Origin sits at $822 ungraded.\n\nIt was illustrated by Shinji Kanda.\n\nEveryone can tell you what this card costs. Fewer can tell you who drew it.",
+   "why": "Art accounts have the taste and none of the data. Price accounts have the data and never look at who drew it. This is the only lane that holds both.",
+   "sources": [
+    "pokemontcg.io artist credits",
+    "our own price feed"
+   ]
+  },
+  {
+   "id": "artist-span-aky-cg-works",
+   "kind": "long career",
+   "chip": "VERIFIED",
+   "artist": "aky CG Works",
+   "post": "aky CG Works's work spans 6 years of Pokémon cards in the sets we track — Sword & Shield in 2020 through Ascended Heroes in 2026.\n\nSets rotate, prices move, and somebody has quietly been drawing this whole time.",
+   "why": "Longevity is a story the market never tells, because the market only looks at what changed today.",
+   "sources": [
+    "pokemontcg.io artist credits and set release dates"
+   ]
+  },
+  {
+   "id": "artist-span-5ban-graphics",
+   "kind": "long career",
+   "chip": "VERIFIED",
+   "artist": "5ban Graphics",
+   "post": "5ban Graphics's work spans 6 years of Pokémon cards in the sets we track — Darkness Ablaze in 2020 through Pitch Black in 2026.\n\nSets rotate, prices move, and somebody has quietly been drawing this whole time.",
+   "why": "Longevity is a story the market never tells, because the market only looks at what changed today.",
+   "sources": [
+    "pokemontcg.io artist credits and set release dates"
    ]
   }
  ]
