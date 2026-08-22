@@ -335,58 +335,91 @@ for (const r of eraIndexes) eiHist.entries.push({ date: today, era: r.era, level
 await writeFile(new URL("../data/era-index-history.json", import.meta.url), JSON.stringify(eiHist,null,1));
 
 
-// ── (h) THE CATCH'EM SEALED INDEX — composite, baseline-relative ─────────
-// Equal-weight mean of per-product ratios vs each product's own first
-// clean-history price (self-healing baselines). Breadth = advancers vs
-// decliners day-over-day. Methodology public: research/assets/methodology.html
-let ixh = { note: "Catchem Sealed Index history — merge-by-date", entries: [] };
+// ── (h) THE CATCH'EM SEALED INDEX — chain-linked ────────────────────────
+// REBUILT 2026-08-23. The old method averaged each product's ratio against
+// its own first price. That is stable against price changes but NOT against
+// COMPOSITION changes: on 2026-08-21 twenty-five products entered at ratio
+// 1.0 and dragged the mean toward 100, and seven blocked products silently
+// left the pool — neither of which is a market event. The pack-basis switch
+// was the same disease caught one instance at a time.
+//
+// The fix is what real indices do: measure the MATCHED-SAMPLE return day over
+// day, then chain it onto the previous level. Only products present on BOTH
+// days contribute to a day's move, so entries, exits, QA blocks and basis
+// changes cannot print as price movement. Ever.
+let ixh = { note: "Catchem Sealed Index — chain-linked daily returns on a matched sample; composition changes cannot move the level", entries: [] };
 try { ixh = await J("research/pulse/index-history.json"); } catch {}
-const firstSeen = {}, lastTwo = {}, lastTwoN = {};
-// A product whose PRICE BASIS changed today gets its baseline reset to the
-// new basis, so the switch cannot register as market movement (2026-08-23).
+const todayIx = new Date().toISOString().slice(0, 10);
+const priceToday = new Map(liveList.filter(p => p.priceMedian).map(p => [p.id, p.priceMedian]));
+// yesterday's prices, from the last committed day of history
+const byDay = {};
+for (const r of hh) if (r.price) (byDay[r.date] ||= {})[r.id] = r.price;
+const priorDays = Object.keys(byDay).filter(d => d < todayIx).sort();
+const prevDay = priorDays[priorDays.length - 1];
+const prevPrices = prevDay ? byDay[prevDay] : null;
+
+const prevEntry = (ixh.entries || []).filter(e => e.date < todayIx).sort((a, b) => a.date < b.date ? -1 : 1).slice(-1)[0];
+let idxLevel, dayReturn = null, matched = 0;
+const breadth = { up: 0, down: 0, flat: 0 };
+if (prevPrices && prevEntry) {
+  const rets = [];
+  for (const p of liveList) {
+    if (!seasoned(p) || !p.priceMedian) continue;
+    if (p.basisChangedOn === todayIx) continue;      // basis change is not a market move
+    const was = prevPrices[p.id];
+    if (!was) continue;                               // entered today — contributes from tomorrow
+    const r = p.priceMedian / was - 1;
+    rets.push(r); matched++;
+    if (r > 0.002) breadth.up++; else if (r < -0.002) breadth.down++; else breadth.flat++;
+  }
+  dayReturn = rets.length ? rets.reduce((a, b) => a + b, 0) / rets.length : 0;
+  idxLevel = Math.round(prevEntry.level * (1 + dayReturn) * 10) / 10;
+} else {
+  idxLevel = 100.0;                                   // first day of a clean series
+}
+const sealedIndex = { name: "Catchem Sealed Index", level: idxLevel,
+  ddPct: dayReturn == null ? null : Math.round(dayReturn * 1000) / 10,
+  constituents: liveList.filter(p => seasoned(p) && p.priceMedian).length,
+  matchedSample: matched,
+  seasoningBench: liveList.filter(p => !seasoned(p)).length,
+  medianProductUsd: (() => { const a = liveList.filter(p=>p.priceMedian).map(p=>p.priceMedian).sort((x,y)=>x-y); return a.length ? a[Math.floor(a.length/2)] : null; })(),
+  baseline: "chain-linked from 100.0; each day's move is the average return of products present on both days",
+  breadth, chip: "VERIFIED", methodologyUrl: "/methodology.html",
+  simple: `One number for the whole sealed market. It starts at 100 and moves by the average daily change of the products we track — only products we could price on both days count toward a move, so adding or removing products never shifts it.` };
+{
+  ixh.entries = (ixh.entries || []).filter(e => e.date !== todayIx);
+  ixh.entries.push({ date: todayIx, level: idxLevel, constituents: sealedIndex.constituents, matched, up: breadth.up, down: breadth.down });
+  await writeFile(new URL("../research/pulse/index-history.json", import.meta.url), JSON.stringify(ixh, null, 1));
+}
+
 const rebasedToday = new Set((sp.products || []).filter(p => p.basisChangedOn === new Date().toISOString().slice(0,10)).map(p => p.id));
-for (const r of [...hh].sort((a,b)=>a.date<b.date?-1:1)) {
-  if (r.date < "2026-08-19" || !r.price) continue; // CLEAN CUT: first full pricing-v2 day — the index measures market, never our cleanup
-  if (rebasedToday.has(r.id)) continue;   // baseline comes from today's new basis, below
+// Baselines for the twin and the subtype indexes, from the clean cut.
+const firstSeen = {};
+for (const r of [...hh].sort((a, b) => a.date < b.date ? -1 : 1)) {
+  if (r.date < "2026-08-19" || !r.price) continue;
+  if (rebasedToday.has(r.id)) continue;
   if (!firstSeen[r.id]) firstSeen[r.id] = r.price;
-  (lastTwo[r.id] ||= []).push(r.price);
-  (lastTwoN[r.id] ||= []).push(r.listingCount ?? null);
-  if (lastTwoN[r.id].length > 2) lastTwoN[r.id].shift();
-  if (lastTwo[r.id].length > 2) lastTwo[r.id].shift();
 }
 for (const p of liveList) if (rebasedToday.has(p.id) && p.priceMedian) firstSeen[p.id] = p.priceMedian;
-const ratios = [], breadth = { up: 0, down: 0, flat: 0 };
-for (const p of liveList) {
-  if (!seasoned(p)) continue;
-  const base = firstSeen[p.id];
-  if (base && p.priceMedian) ratios.push(p.priceMedian / base);
-  const lt = lastTwo[p.id];
-  if (lt && lt.length === 2) {
-    const d = (lt[1]-lt[0])/lt[0];
-    if (d > 0.002) breadth.up++; else if (d < -0.002) breadth.down++; else breadth.flat++;
-  }
-}
-const idxLevel = indexLevel(ratios); // lib canon — one equation, CI-tested
-const prevIx = (ixh.entries||[]).slice(-1)[0];
 
-// ── RAW CHASE INDEX + graded slot — same equation, different shelves ────
+// ── RAW CHASE INDEX — same equation, the singles shelf ──────────────────
 let sgh = { note: "singles history — merge-by-date", entries: [] };
 try { sgh = await J("research/pulse/singles-history.json"); } catch {}
-const todayS = new Date().toISOString().slice(0,10);
-const chasesLive = (sgAll.cards||[]).filter(c=>!c.needsReview && c.dataStatus==="live" && c.priceMarket);
-sgh.entries = (sgh.entries||[]).filter(e=>e.date!==todayS);
+const todayS = new Date().toISOString().slice(0, 10);
+const chasesLive = (sgAll.cards || []).filter(c => c.cardId && c.priceMarket && c.dataStatus !== "error");
+sgh.entries = (sgh.entries || []).filter(e => e.date !== todayS);
 for (const c of chasesLive) sgh.entries.push({ date: todayS, cardId: c.cardId, price: c.priceMarket });
-await writeFile(new URL("../research/pulse/singles-history.json", import.meta.url), JSON.stringify(sgh,null,1));
+await writeFile(new URL("../research/pulse/singles-history.json", import.meta.url), JSON.stringify(sgh, null, 1));
 const rawFirst = {};
-for (const e of [...sgh.entries].sort((a,b)=>a.date<b.date?-1:1)) if (!rawFirst[e.cardId]) rawFirst[e.cardId] = e.price;
-const rawRatios = chasesLive.map(c=>c.priceMarket/(rawFirst[c.cardId]||c.priceMarket));
-const rawLevel = indexLevel(rawRatios); // same lib equation as the composite
-const rawIndex = { name:"Raw Chase Index", level: rawLevel, constituents: rawRatios.length,
-  baselineDate: [...new Set(sgh.entries.map(e=>e.date))].sort()[0] ?? todayS,
-  note:"same equation as the Sealed Index — confirmed chase singles, each vs its own first clean price", chip:"VERIFIED" };
-const gradedIndex = { available: false, note:"same equation, graded shelf — waiting on a licensed daily graded-price feed" };
-const medAll = [...liveList.filter(p=>p.priceMedian).map(p=>p.priceMedian)].sort((a,b)=>a-b);
-const medianProductUsd = medAll.length ? medAll[Math.floor(medAll.length/2)] : null;
+for (const e of [...sgh.entries].sort((a, b) => a.date < b.date ? -1 : 1)) if (!rawFirst[e.cardId]) rawFirst[e.cardId] = e.price;
+const rawRatios = chasesLive.map(c => c.priceMarket / (rawFirst[c.cardId] || c.priceMarket));
+const rawIndex = { name: "Raw Chase Index",
+  level: rawRatios.length ? Math.round(rawRatios.reduce((a, b) => a + b, 0) / rawRatios.length * 1000) / 10 : 100.0,
+  constituents: rawRatios.length,
+  baselineDate: [...new Set(sgh.entries.map(e => e.date))].sort()[0] ?? todayS,
+  note: "same equation as the Sealed Index — confirmed chase singles, each against its own first clean price", chip: "VERIFIED" };
+const gradedIndex = { available: false, note: "same equation, graded shelf — waiting on a licensed daily graded-price feed" };
+
 // ── VALUE-WEIGHTED TWIN (Tyler, Aug 22) ─────────────────────────────────
 // The equal-weight index gives a $8 pack the same vote as a $5,000 box,
 // and cheap items swing harder in percentage terms — measured 2026-08-22,
@@ -414,17 +447,8 @@ const valueWeighted = vwLevel == null ? null : {
   simple: "Same shelf, but the expensive boxes get a bigger say. If this number and the main one disagree, the cheap end and the expensive end of the market are moving differently.",
   method: "Each product's move is weighted by what it was worth at its baseline, so a $5,000 box counts for more than a $10 pack. The main index gives every product one equal vote.",
   chip: "VERIFIED" };
-const sealedIndex = { name: "Catchem Sealed Index", level: idxLevel,
-  ddPct: prevIx ? Math.round((idxLevel/prevIx.level - 1)*1000)/10 : null,
-  medianProductUsd, constituents: ratios.length, seasoningBench: liveList.filter(p=>!seasoned(p)).length, baseline: "each product vs its first clean-history price (2026-08-18 cut)",
-  breadth, chip: "VERIFIED", methodologyUrl: "/methodology.html", valueWeighted,
-  simple: `One number for all ${ratios.length} sealed products. 100 was the starting line; ${idxLevel} means the whole shelf is worth ${idxLevel>=100?"more":"less"} than when we started. Each product competes only against itself — one product, one vote.` };
-{
-  const today = new Date().toISOString().slice(0,10);
-  ixh.entries = (ixh.entries||[]).filter(e=>e.date!==today);
-  ixh.entries.push({ date: today, level: idxLevel, constituents: ratios.length, up: breadth.up, down: breadth.down });
-  await writeFile(new URL("../research/pulse/index-history.json", import.meta.url), JSON.stringify(ixh,null,1));
-}
+
+
 
 
 // ── NET PROCEEDS TRUTH (engine side) — what a sale actually pockets ─────
@@ -487,6 +511,14 @@ const ripOrHold = rohPick ? { id: rohPick.id, name: rohPick.name, price: rohPick
 const notification = { title: `Catchem Sealed Index ${sealedIndex.level}${sealedIndex.ddPct!=null?` (${sealedIndex.ddPct>0?"+":""}${sealedIndex.ddPct}%)`:""}`,
   body: rohPick ? `Today: ${rohPick.name} — eBay asks ${Math.abs(rohPick.spreadPct)}% ${rohPick.spreadPct>0?"more":"less"} than TCGplayer.` : "The Morning Pulse is out." };
 
+
+// Listing/price pairs for the last two days, independent of the index.
+const lastTwo = {}, lastTwoN = {};
+for (const r of [...hh].sort((a, b) => a.date < b.date ? -1 : 1)) {
+  if (r.date < "2026-08-19") continue;
+  if (r.price) { (lastTwo[r.id] ||= []).push(r.price); if (lastTwo[r.id].length > 2) lastTwo[r.id].shift(); }
+  (lastTwoN[r.id] ||= []).push(r.listingCount ?? null); if (lastTwoN[r.id].length > 2) lastTwoN[r.id].shift();
+}
 
 // ── 🌊 SUPPLY SHIFTS (Tyler, Aug 20) — % supply change + cause candidates ──
 // Gate: n>=20 listings and |Δ|>=15% (small shelves make noisy percents).
@@ -566,7 +598,7 @@ const out = {
   lifecycle, rotationContext,
   printWatch, tightening, rotationCohorts,
   eraIndexes,
-  sealedIndex, rawIndex, gradedIndex, netProceeds, packPricing, dealZone, fx, subtypeIndexes, watchOutcomes, supplyShifts: supplyShifts.slice(0,8), ripOrHold, notification,
+  sealedIndex: { ...sealedIndex, valueWeighted }, rawIndex, gradedIndex, netProceeds, packPricing, dealZone, fx, subtypeIndexes, watchOutcomes, supplyShifts: supplyShifts.slice(0,8), ripOrHold, notification,
   cohortCompare,
   topicHits,
   dailyThree: (() => {
