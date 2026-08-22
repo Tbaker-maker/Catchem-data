@@ -1,0 +1,125 @@
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Sora:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<title>Mockup v6 — one card, two densities</title><style>
+:root{--deep:#070910;--bg:#0b0d14;--s1:#141824;--s2:#1c2235;--line:rgba(255,255,255,.07);--line2:rgba(255,255,255,.14);
+--tx:#f4f5f8;--sub:#8a93a8;--sub2:#98a1b5;--mut:#5c637a;--green:#36d399;--col-wide:1040px}
+*{box-sizing:border-box}body{margin:0;background:var(--deep);color:var(--tx);font:16px/1.6 Sora,system-ui,sans-serif}
+.wrap{max-width:var(--col-wide);margin:0 auto;padding:40px 24px 80px}
+.kick{font:700 11px/1 'JetBrains Mono',monospace;letter-spacing:.18em;color:var(--sub);text-transform:uppercase}
+.shead{border-top:1px solid var(--line);padding-top:14px;margin:56px 0 32px;display:flex;justify-content:space-between;align-items:baseline;gap:16px}
+.shead h2{font:800 28px/1.15 Syne,sans-serif;margin:6px 0 0}.shead .right{font:400 13px 'JetBrains Mono',monospace;color:var(--sub)}
+.rule{background:var(--s1);border:1px solid var(--line);border-left:3px solid var(--green);border-radius:12px;padding:14px 18px;margin:0 0 32px;font-size:14.5px;color:var(--sub2)}
+.rule b{color:var(--tx)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,400px));gap:16px}
+.stack{display:flex;flex-direction:column;gap:10px}
+.card{background:var(--s1);border:1px solid var(--line);border-radius:16px}
+.exp{padding:16px;display:flex;flex-direction:column;gap:10px}
+.cmp{padding:12px;display:flex;gap:12px;align-items:center}
+.cimg{height:150px;border-radius:12px;background:var(--deep);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.cimg.sm{height:64px;width:64px;flex:none;border-radius:10px}
+.cimg img{height:100%;object-fit:contain}
+.ckick{font:700 10px 'JetBrains Mono',monospace;letter-spacing:.14em;color:var(--mut)}
+.cname{font:600 15px/1.3 Sora,sans-serif;margin:0;overflow-wrap:anywhere}
+.cmid{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.chero{display:flex;align-items:baseline;gap:10px}
+.num{font:700 26px/1 'JetBrains Mono',monospace}.num.sm{font-size:19px}
+.delta{font:700 12px 'JetBrains Mono',monospace;color:var(--green)}
+.cstats{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+.cstats.four{grid-template-columns:repeat(4,1fr);gap:6px}
+.st{background:var(--s2);border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+.st span{display:block;font:400 10px Sora;color:var(--sub)}.st b{font:700 13px 'JetBrains Mono',monospace}
+.cline{margin:0;font-size:13.5px;line-height:1.5;color:var(--sub2)}
+.cchip{font:700 10px 'JetBrains Mono',monospace;letter-spacing:.08em;border:1px solid var(--green);color:var(--green);border-radius:99px;padding:3px 10px;align-self:flex-start}
+.cend{display:flex;flex-direction:column;align-items:flex-end;gap:8px}.info{color:var(--sub);font-size:15px}
+.phone{width:390px;border:1px solid var(--line2);border-radius:16px;padding:14px;background:var(--bg)}
+.phone .grid{grid-template-columns:1fr}
+.note{color:var(--mut);font-size:13px;margin-top:12px}
+</style>
+<div class="wrap">
+<div class="kick">D1 SYSTEM · ONE CARD · TWO DENSITIES</div>
+<h1 style="font:800 40px/1.1 Syne,sans-serif;margin:8px 0 6px">The rule is how many, not taste</h1>
+<div class="rule"><b>EXPANDED</b> when three or fewer items share a screen — the plain-English line earns its space because you've stopped to read one thing.<br><b>COMPACT</b> when four or more share it — same six parts, but the photo shrinks and the explanation collapses behind an ⓘ, because your eye is scanning, not reading.<br>Same parts, same order, same tokens. Only two of the six collapse.</div>
+
+<div class="shead"><div><div class="kick">Expanded · ≤3 items</div><h2>The Daily Three</h2></div><div class="right">longest name we track, first</div></div>
+<div class="grid"><article class="card exp">
+  <div class="cimg"></div>
+  <div class="ckick">SEALED · TODAY</div><h3 class="cname">Scarlet & Violet Base Pokemon Center Elite Trainer Box</h3>
+  <div class="chero"><span class="num">$315.00</span><span class="delta up">▲ 9.7%</span></div>
+  <div class="cstats"><div class="st"><span>listings</span><b>44</b></div><div class="st"><span>clean floor</span><b>$175</b></div><div class="st"><span>in pocket</span><b>$273</b></div><div class="st"><span>buyer pays</span><b>$337</b></div></div>
+  <p class="cline">eBay asks 46% more than TCGplayer across 44 listings. Sealed carries the box premium — ripping pays only on nostalgia.</p>
+  <div class="cchip">VERIFIED</div></article><article class="card exp">
+  <div class="cimg"><img src="https://tcgplayer-cdn.tcgplayer.com/product/242436_in_400x400.jpg" loading="lazy" alt=""></div>
+  <div class="ckick">SEALED · TODAY</div><h3 class="cname">Evolving Skies Booster Box</h3>
+  <div class="chero"><span class="num">$2,949.99</span><span class="delta up">▲ 9.7%</span></div>
+  <div class="cstats"><div class="st"><span>listings</span><b>90</b></div><div class="st"><span>clean floor</span><b>$1,160</b></div><div class="st"><span>in pocket</span><b>$2,559</b></div><div class="st"><span>buyer pays</span><b>$3,156</b></div></div>
+  <p class="cline">eBay asks 46% more than TCGplayer across 90 listings. Sealed carries the box premium — ripping pays only on nostalgia.</p>
+  <div class="cchip">VERIFIED</div></article></div>
+
+<div class="shead"><div><div class="kick">Compact · 4+ items</div><h2>The Board</h2></div><div class="right">same card, collapsed</div></div>
+<div class="stack"><article class="card cmp">
+  <div class="cimg sm"><img src="https://tcgplayer-cdn.tcgplayer.com/product/199261_in_400x400.jpg" loading="lazy" alt=""></div>
+  <div class="cmid"><h3 class="cname">Cosmic Eclipse Booster Box</h3>
+    <div class="chero"><span class="num sm">$5,196.69</span><span class="delta up">▲ 9.7%</span></div>
+    <div class="cstats four"><div class="st"><span>listings</span><b>14</b></div><div class="st"><span>clean floor</span><b>$4,549</b></div><div class="st"><span>in pocket</span><b>$4,508</b></div><div class="st"><span>buyer pays</span><b>$5,560</b></div></div></div>
+  <div class="cend"><span class="cchip">VERIFIED</span><span class="info">ⓘ</span></div></article><article class="card cmp">
+  <div class="cimg sm"><img src="https://tcgplayer-cdn.tcgplayer.com/product/191882_in_400x400.jpg" loading="lazy" alt=""></div>
+  <div class="cmid"><h3 class="cname">Unified Minds Booster Box</h3>
+    <div class="chero"><span class="num sm">$4,450.00</span><span class="delta up">▲ 9.7%</span></div>
+    <div class="cstats four"><div class="st"><span>listings</span><b>17</b></div><div class="st"><span>clean floor</span><b>$3,016</b></div><div class="st"><span>in pocket</span><b>$3,860</b></div><div class="st"><span>buyer pays</span><b>$4,762</b></div></div></div>
+  <div class="cend"><span class="cchip">VERIFIED</span><span class="info">ⓘ</span></div></article><article class="card cmp">
+  <div class="cimg sm"><img src="https://tcgplayer-cdn.tcgplayer.com/product/185717_in_400x400.jpg" loading="lazy" alt=""></div>
+  <div class="cmid"><h3 class="cname">Unbroken Bonds Booster Box</h3>
+    <div class="chero"><span class="num sm">$3,226.88</span><span class="delta up">▲ 9.7%</span></div>
+    <div class="cstats four"><div class="st"><span>listings</span><b>17</b></div><div class="st"><span>clean floor</span><b>$2,500</b></div><div class="st"><span>in pocket</span><b>$2,799</b></div><div class="st"><span>buyer pays</span><b>$3,453</b></div></div></div>
+  <div class="cend"><span class="cchip">VERIFIED</span><span class="info">ⓘ</span></div></article><article class="card cmp">
+  <div class="cimg sm"><img src="https://tcgplayer-cdn.tcgplayer.com/product/170273_in_400x400.jpg" loading="lazy" alt=""></div>
+  <div class="cmid"><h3 class="cname">Celestial Storm Booster Box</h3>
+    <div class="chero"><span class="num sm">$3,059.98</span><span class="delta up">▲ 9.7%</span></div>
+    <div class="cstats four"><div class="st"><span>listings</span><b>15</b></div><div class="st"><span>clean floor</span><b>$2,638</b></div><div class="st"><span>in pocket</span><b>$2,654</b></div><div class="st"><span>buyer pays</span><b>$3,274</b></div></div></div>
+  <div class="cend"><span class="cchip">VERIFIED</span><span class="info">ⓘ</span></div></article><article class="card cmp">
+  <div class="cimg sm"><img src="https://tcgplayer-cdn.tcgplayer.com/product/242436_in_400x400.jpg" loading="lazy" alt=""></div>
+  <div class="cmid"><h3 class="cname">Evolving Skies Booster Box</h3>
+    <div class="chero"><span class="num sm">$2,949.99</span><span class="delta up">▲ 9.7%</span></div>
+    <div class="cstats four"><div class="st"><span>listings</span><b>90</b></div><div class="st"><span>clean floor</span><b>$1,160</b></div><div class="st"><span>in pocket</span><b>$2,559</b></div><div class="st"><span>buyer pays</span><b>$3,156</b></div></div></div>
+  <div class="cend"><span class="cchip">VERIFIED</span><span class="info">ⓘ</span></div></article><article class="card cmp">
+  <div class="cimg sm"><img src="https://tcgplayer-cdn.tcgplayer.com/product/123446_in_400x400.jpg" loading="lazy" alt=""></div>
+  <div class="cmid"><h3 class="cname">Evolutions Booster Box</h3>
+    <div class="chero"><span class="num sm">$2,750.00</span><span class="delta up">▲ 9.7%</span></div>
+    <div class="cstats four"><div class="st"><span>listings</span><b>27</b></div><div class="st"><span>clean floor</span><b>$1,900</b></div><div class="st"><span>in pocket</span><b>$2,385</b></div><div class="st"><span>buyer pays</span><b>$2,942</b></div></div></div>
+  <div class="cend"><span class="cchip">VERIFIED</span><span class="info">ⓘ</span></div></article><article class="card cmp">
+  <div class="cimg sm"></div>
+  <div class="cmid"><h3 class="cname">Sun & Moon Booster Box</h3>
+    <div class="chero"><span class="num sm">$2,319.48</span><span class="delta up">▲ 9.7%</span></div>
+    <div class="cstats four"><div class="st"><span>listings</span><b>72</b></div><div class="st"><span>clean floor</span><b>$845</b></div><div class="st"><span>in pocket</span><b>$2,012</b></div><div class="st"><span>buyer pays</span><b>$2,482</b></div></div></div>
+  <div class="cend"><span class="cchip">VERIFIED</span><span class="info">ⓘ</span></div></article><article class="card cmp">
+  <div class="cimg sm"></div>
+  <div class="cmid"><h3 class="cname">Lost Thunder Booster Box</h3>
+    <div class="chero"><span class="num sm">$2,183.04</span><span class="delta up">▲ 9.7%</span></div>
+    <div class="cstats four"><div class="st"><span>listings</span><b>7</b></div><div class="st"><span>clean floor</span><b>$1,810</b></div><div class="st"><span>in pocket</span><b>$1,893</b></div><div class="st"><span>buyer pays</span><b>$2,336</b></div></div></div>
+  <div class="cend"><span class="cchip">VERIFIED</span><span class="info">ⓘ</span></div></article></div>
+<p class="note">Eight products in the space three expanded cards would take. The explanation is still there — one tap on the ⓘ.</p>
+
+<div class="shead"><div><div class="kick">390px</div><h2>Both densities on a phone</h2></div><div class="right">expanded above, compact below</div></div>
+<div class="phone"><div class="grid"><article class="card exp">
+  <div class="cimg"></div>
+  <div class="ckick">SEALED · TODAY</div><h3 class="cname">Scarlet & Violet Base Pokemon Center Elite Trainer Box</h3>
+  <div class="chero"><span class="num">$315.00</span><span class="delta up">▲ 9.7%</span></div>
+  <div class="cstats"><div class="st"><span>listings</span><b>44</b></div><div class="st"><span>clean floor</span><b>$175</b></div><div class="st"><span>in pocket</span><b>$273</b></div><div class="st"><span>buyer pays</span><b>$337</b></div></div>
+  <p class="cline">eBay asks 46% more than TCGplayer across 44 listings. Sealed carries the box premium — ripping pays only on nostalgia.</p>
+  <div class="cchip">VERIFIED</div></article></div><div class="stack" style="margin-top:10px"><article class="card cmp">
+  <div class="cimg sm"><img src="https://tcgplayer-cdn.tcgplayer.com/product/199261_in_400x400.jpg" loading="lazy" alt=""></div>
+  <div class="cmid"><h3 class="cname">Cosmic Eclipse Booster Box</h3>
+    <div class="chero"><span class="num sm">$5,196.69</span><span class="delta up">▲ 9.7%</span></div>
+    <div class="cstats four"><div class="st"><span>listings</span><b>14</b></div><div class="st"><span>clean floor</span><b>$4,549</b></div><div class="st"><span>in pocket</span><b>$4,508</b></div><div class="st"><span>buyer pays</span><b>$5,560</b></div></div></div>
+  <div class="cend"><span class="cchip">VERIFIED</span><span class="info">ⓘ</span></div></article><article class="card cmp">
+  <div class="cimg sm"><img src="https://tcgplayer-cdn.tcgplayer.com/product/191882_in_400x400.jpg" loading="lazy" alt=""></div>
+  <div class="cmid"><h3 class="cname">Unified Minds Booster Box</h3>
+    <div class="chero"><span class="num sm">$4,450.00</span><span class="delta up">▲ 9.7%</span></div>
+    <div class="cstats four"><div class="st"><span>listings</span><b>17</b></div><div class="st"><span>clean floor</span><b>$3,016</b></div><div class="st"><span>in pocket</span><b>$3,860</b></div><div class="st"><span>buyer pays</span><b>$4,762</b></div></div></div>
+  <div class="cend"><span class="cchip">VERIFIED</span><span class="info">ⓘ</span></div></article><article class="card cmp">
+  <div class="cimg sm"><img src="https://tcgplayer-cdn.tcgplayer.com/product/185717_in_400x400.jpg" loading="lazy" alt=""></div>
+  <div class="cmid"><h3 class="cname">Unbroken Bonds Booster Box</h3>
+    <div class="chero"><span class="num sm">$3,226.88</span><span class="delta up">▲ 9.7%</span></div>
+    <div class="cstats four"><div class="st"><span>listings</span><b>17</b></div><div class="st"><span>clean floor</span><b>$2,500</b></div><div class="st"><span>in pocket</span><b>$2,799</b></div><div class="st"><span>buyer pays</span><b>$3,453</b></div></div></div>
+  <div class="cend"><span class="cchip">VERIFIED</span><span class="info">ⓘ</span></div></article></div></div>
+</div>
