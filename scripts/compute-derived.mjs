@@ -481,6 +481,34 @@ let fx = null;
 try { const r = await fetch("https://api.frankfurter.app/latest?from=USD&to=CAD");
   const j = await r.json(); fx = { usdcad: j.rates?.CAD ?? null, date: j.date ?? null, source: "frankfurter.app" };
 } catch { fx = null; }
+
+// ── 🤝 THE DEAL ZONE (Tyler, Aug 22) — show-floor math for both sides ────
+// A buyer's true online cost is the DELIVERED total plus sales tax.
+// A seller's true online outcome is the ask MINUS marketplace fees.
+// Those two numbers are far apart, and every price between them beats the
+// online alternative FOR BOTH PARTIES. That gap is the deal zone, and it
+// is the honest referee number for a card-show negotiation.
+// Sources: eBay charges 13.25% final value on trading cards plus a per-order
+// fee, calculated on item + shipping + tax; eBay collects sales tax from
+// buyers by state. Tax rate is an assumption, labelled est. and tunable.
+const TAX_DEFAULT = 0.07;            // US average-ish; user-adjustable in app
+const EBAY_FVF = 0.1325, EBAY_PER_ORDER = 0.40;
+const dealZone = { model: {
+    buyerSide: "delivered eBay total + sales tax (est. " + Math.round(TAX_DEFAULT*100) + "% — set your own in the app)",
+    sellerSide: "eBay ask minus " + (EBAY_FVF*100) + "% final value fee and $" + EBAY_PER_ORDER.toFixed(2) + " per order",
+    note: "Both figures are estimates from published fee schedules. A show price between them beats the online route for buyer and seller alike." },
+  byId: {} };
+for (const p of liveList) {
+  if (!p.priceMedian || p.publishBlock) continue;
+  const ceiling = Math.round(p.priceMedian * (1 + TAX_DEFAULT) * 100) / 100;   // buyer pays this online
+  const floor = Math.round((p.priceMedian * (1 - EBAY_FVF) - EBAY_PER_ORDER) * 100) / 100; // seller keeps this online
+  if (floor <= 0 || ceiling <= floor) continue;
+  dealZone.byId[p.id] = { ask: p.priceMedian, buyerCeiling: ceiling, sellerFloor: floor,
+    zoneWidth: Math.round((ceiling - floor) * 100) / 100,
+    zonePct: Math.round((ceiling - floor) / p.priceMedian * 1000) / 10,
+    midpoint: Math.round(((ceiling + floor) / 2) * 100) / 100 };
+}
+
 const out = {
   generatedAt: new Date().toISOString(),
   method: "Pack Math: ask median / era-aware pack count (arithmetic, no estimation; variable-count products excluded by name). Narrative: latest agent digest cross-referenced against tracked sets; 'quiet movers' = spread signal with zero digest mention.",
@@ -492,7 +520,7 @@ const out = {
   lifecycle, rotationContext,
   printWatch, tightening, rotationCohorts,
   eraIndexes,
-  sealedIndex, rawIndex, gradedIndex, netProceeds, fx, subtypeIndexes, watchOutcomes, supplyShifts: supplyShifts.slice(0,8), ripOrHold, notification,
+  sealedIndex, rawIndex, gradedIndex, netProceeds, dealZone, fx, subtypeIndexes, watchOutcomes, supplyShifts: supplyShifts.slice(0,8), ripOrHold, notification,
   cohortCompare,
   topicHits,
   dailyThree: (() => {

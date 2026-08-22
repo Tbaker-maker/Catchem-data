@@ -422,6 +422,7 @@ const feed = {
   sealedIndex: der?.sealedIndex ?? null,
   watchOutcomes: der?.watchOutcomes ?? null,
   rawIndex: der?.rawIndex ?? null,
+  dealZone: der?.dealZone ?? null,
   netProceeds: der?.netProceeds ? { ...der.netProceeds,
     tcgModel: { pct: 13.25, fixed: 0.30, venue: "TCGplayer", ...(der.netProceeds.tcgModel || {}) } } : null,
   fx: der?.fx ?? null,

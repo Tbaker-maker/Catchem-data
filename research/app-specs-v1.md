@@ -279,3 +279,62 @@ TUNING (next pass): tighter gutters, a squarer canvas for X, optional
 per-card captions, and a 2×2 variant for a four-card spotlight.
 IP: card art from the standard community source with attribution on the
 page; on the attorney list with the other commercial-depiction items.
+
+## §19 · THE SHOW FLOOR — tools for both sides of the table (Tyler, Aug 22)
+Card shows are the one venue where our data changes the outcome of a
+conversation in real time. We serve BOTH sides, which is the position
+nobody else can take: a buyer-only tool gets vendors' backs up, a
+vendor-only tool loses the community. We are the referee.
+
+### THE DEAL ZONE (the flagship instrument — engine live)
+A buyer's true online cost is the delivered total PLUS sales tax.
+A seller's true online outcome is the ask MINUS ~13.25% fees.
+Everything between beats the online route for BOTH parties.
+Worked example (Evolving Skies Booster Box, today):
+  eBay ask ............ $2,908
+  Buyer pays online ... $3,112   (delivered + 7% tax, est.)
+  Seller keeps online .. $2,522   (after 13.25% + $0.40)
+  → DEAL ZONE ......... $589 wide (20.3% of the ask)
+Any cash price in that band leaves both people better off than eBay.
+That single number is the honest referee for a table negotiation, and
+no competitor publishes it.
+
+### BUYER TOOLS — "what a vendor knows that you don't"
+1. Deal Check w/ delivered-total framing — a booth sticker with no
+   shipping is NOT comparable to an eBay sticker; compare delivered.
+2. Your walk-away number — the buyer ceiling. Above it, buy online.
+3. The cash question — ask for the cash price BEFORE naming a number;
+   many vendors hold a cash tier they do not advertise.
+4. Bundle math — total the zone across several items; vendors discount
+   volume more readily than single pieces.
+5. Grading reality check — the PSA-9 tax: on established sets a 9
+   usually returns less than raw plus the fee. Do not pay a graded
+   premium for a card whose 9 population is deep.
+6. Sealed-vs-singles — per-pack math says whether ripping or buying the
+   chase outright is cheaper.
+7. What NOT to buy — products whose booth price sits above the online
+   delivered total.
+
+### VENDOR TOOLS — "don't get outsmarted at your own table"
+1. YOUR BOOTH FLOOR (the one that changes behaviour): your real floor is
+   your eBay NET, not your eBay ask. Selling a $2,908 box at $2,600 cash
+   nets you MORE than listing it — instantly, with no fees, no shipping,
+   no returns, no chargebacks. Most vendors price against the sticker and
+   refuse fair cash offers that would have beaten their online outcome.
+2. Fee-tier calculator — Top Rated Plus (~11.93%), Store tiers, and the
+   50%-off promo on singles $1,000+ all move the floor. Set yours once.
+3. What to bring — supply shifts, movers, and print-watch countdowns say
+   what is tightening before a show weekend.
+4. What to leave home — cooling products and saturated shelves.
+5. Trade fairness — sealed and singles both sides, at delivered values.
+6. Bulk/lot pricing — zone math across a lot, not per item.
+7. Restock and reprint alerts — do not stock into a reprint.
+
+### PRINCIPLES
+- Publish the SAME numbers to both sides. A referee with a favourite is
+  not a referee. Our credibility with vendors is worth more than a
+  buyer-flattering headline.
+- Every figure labelled est. where it depends on tax rate or fee tier.
+- Works offline once loaded — convention halls have no signal.
+- Never tell anyone what to pay. Show what each side's alternative is
+  worth and let them negotiate with real numbers.
