@@ -4,7 +4,7 @@ The overnight shift's notes. Short on purpose.
 
 ## Our own claims
 Not much of a verdict today. Most of our claims need more time before they can be judged, and pretending otherwise would be the actual failure.
-4 survived their own kill conditions, 6 could not be judged yet with the tape we hold.
+4 survived their own kill conditions, 7 could not be judged yet with the tape we hold.
 
 ## Our own numbers
 We put something in front of readers and can no longer price it. That is the kind of thing worth noticing before somebody asks.
@@ -25,7 +25,6 @@ We put something in front of readers and can no longer price it. That is the kin
 
 ## The agents themselves
 **NEEDS A HUMAN — the supervisor flagged the watchers:**
-- creator: FARMING — findings climbed 5 → 5 → 5 → 15 across four runs with nothing resolved. Volume is not work.
 - creator: OVER-BUDGET — 15 findings against a ceiling of 10. An unreadable list is an unread list.
 
 ## If we expanded
@@ -67,6 +66,9 @@ Gaps in what we watch:
 - **a visual that runs itself** — 27 card images minted today. *The gap is that they are files in a repo. A creator needs them one tap from the angle they picked, not from a folder.*
 - **the cheat code** — The pieces exist and are reachable, but a creator still assembles them: pick an angle here, find the card there, open the overlay separately. *ONE screen per angle: the subject, the spoken open, the numbers as a lower-third, the card ready to download, the source line, and a record checklist. Pick an angle, hit record.*
 - **the cheat code** — Nothing tells a creator how a piece performed after they made it. *Ask one question after publication — did this land — and keep the answers. Even a yes/no on twenty videos would tell us which angles are worth generating.*
+
+## What the market did
+Nothing unusual, or not enough history to tell — 5 days of tape so far. Anomaly detection needs a distribution, and saying so is the honest answer.
 
 ---
 *Written by the agents, for a person. If a section here never leads to an action, that section should be deleted rather than tolerated.*

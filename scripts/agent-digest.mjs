@@ -22,6 +22,7 @@ const brk = await J("research/pulse/breaker-report.json");
 const imp = await J("research/pulse/improver-report.json");
 const sup = await J("research/pulse/agent-supervision.json");
 const cre = await J("research/pulse/creator-report.json");
+const ano = await J("research/pulse/anomaly-report.json");
 const uni = await J("research/pulse/universe-advisor.json");
 const rev = await J("research/pulse/review-agents.json");
 const exp = await J("research/pulse/experience-report.json");
@@ -144,6 +145,17 @@ if (cre?.findings?.length) {
   say(`## The creator cheat code`);
   say(`*${cre.test}*`);
   for (const f of cre.findings.filter(x => /cheat code|spine|visual/.test(x.need)).slice(0, 3)) say(`- **${f.need}** — ${f.observation} *${f.fix}*`);
+  say();
+}
+
+// The only section about the world rather than about us. It goes near the top
+// once it has enough history to say anything, because "the market did something
+// odd" is the most actionable line in the whole digest.
+if (ano?.findings?.length) {
+  const real = ano.findings.filter(f => f.kind !== "not yet");
+  say(`## What the market did`);
+  if (real.length) { for (const f of real.slice(0, 4)) say(`- **${f.kind}** — ${f.what} *${f.why}*`); }
+  else say(`Nothing unusual, or not enough history to tell — ${ano.historyDays} days of tape so far. Anomaly detection needs a distribution, and saying so is the honest answer.`);
   say();
 }
 

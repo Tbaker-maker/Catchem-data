@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-22T21:17:15.891Z",
+ "generatedAt": "2026-08-22T21:23:48.203Z",
  "date": "2026-08-22",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -7,6 +7,7 @@
   "falsifier: 0 finding(s)",
   "correction-hunter: 2 finding(s)",
   "review-agents: 0 finding(s)",
+  "anomaly: 0 finding(s)",
   "creator: 15 finding(s)",
   "experience: 7 finding(s)",
   "improver: 11 finding(s)",
@@ -15,7 +16,6 @@
   "review-agents: has never actually run (no key) — costing nothing, proving nothing, and honest about both"
  ],
  "problems": [
-  "creator: FARMING — findings climbed 5 → 5 → 15 → 15 across four runs with nothing resolved. Volume is not work.",
   "creator: OVER-BUDGET — 15 findings against a ceiling of 10. An unreadable list is an unread list."
  ],
  "workforce": [
@@ -62,8 +62,13 @@
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
   },
   {
+   "agent": "anomaly",
+   "finding": "runs daily and has returned the same count (0) four runs running.",
+   "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
+  },
+  {
    "agent": "creator",
-   "finding": "every finding from a week ago is still open (5).",
+   "finding": "every finding from a week ago is still open (15).",
    "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
