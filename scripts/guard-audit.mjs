@@ -53,6 +53,15 @@ const MANIFEST = [
       { file: "scripts/compute-derived.mjs", pattern: /seasoned\(p\)/g, min: 2,
         note: "must gate BOTH the sealed composite and the subtype composites" },
     ] },
+  { guard: "Daily Three freshness rotation",
+    definedIn: "scripts/compute-derived.mjs",
+    mustBeReferencedIn: [
+      { file: "scripts/compute-derived.mjs", pattern: /FRESHNESS ROTATION/g, min: 1 },
+      { file: "scripts/compute-derived.mjs", pattern: /isRepeat\(/g, min: 3,
+        note: "cooldown must gate BOTH the sealed pool and the raw pool" },
+      { file: "scripts/compute-derived.mjs", pattern: /noveltyScore/g, min: 2,
+        note: "deep-cut preference must actually rank the pool" },
+    ] },
   { guard: "Content sanity / silent-empty-run breaker",
     definedIn: "scripts/publish-assert.mjs",
     mustBeReferencedIn: [

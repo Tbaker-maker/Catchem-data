@@ -496,7 +496,61 @@ const out = {
   cohortCompare,
   topicHits,
   dailyThree: (() => {
-    const sealedPick = (div.rows||[]).filter(r=>r.signal && !blockedIds.has(r.id)).sort((a,b)=>Math.abs(b.spreadPct)-Math.abs(a.spreadPct))[0] || null;
+    // ── FRESHNESS ROTATION (Tyler, 2026-08-22) ────────────────────────
+    // A repeat pick tells the reader nothing new, and the obvious pick
+    // tells them nothing they didn't know. Anything featured in the last
+    // 7 days is out — unless it is a screaming deal, which is the only
+    // thing worth repeating for. Novelty then favours the deep cut over
+    // the famous product: a reader who has never considered a product
+    // learns more than one who already owns the story.
+    const FEATURE_COOLDOWN_DAYS = 7;
+    const SCREAMING_SPREAD = 40;      // an outlier worth repeating for
+    const featuredAgo = new Map();    // name -> days since featured
+    {
+      const nowMs = Date.parse(new Date().toISOString().slice(0, 10));
+      for (const e of (wlog.entries || [])) {
+        const days = Math.round((nowMs - Date.parse(e.date)) / 86400000);
+        if (days < 0 || days > FEATURE_COOLDOWN_DAYS) continue;
+        for (const k of ["sealed", "raw"]) {
+          const n = e[k]?.name; if (!n) continue;
+          if (!featuredAgo.has(n) || featuredAgo.get(n) > days) featuredAgo.set(n, days);
+        }
+      }
+    }
+    const isRepeat = name => featuredAgo.has(name);
+    // Deep-cut bonus: rank each product by how prominent it is (price and
+    // listing depth). The most visible products are the ones every reader
+    // already watches; a surprising pick beats a loud one.
+    const prominence = new Map();
+    {
+      const ranked = [...liveList].filter(p => p.priceMedian).sort((a, b) => b.priceMedian - a.priceMedian);
+      ranked.forEach((p, i) => prominence.set(p.id, i / Math.max(1, ranked.length - 1))); // 0 = most famous
+    }
+    const noveltyScore = r => {
+      const strength = Math.abs(r.spreadPct);
+      const deepCut = (prominence.get(r.id) ?? 0.5) * 12;   // up to +12 for obscurity
+      const cooldown = isRepeat(r.name) ? -1000 : 0;         // hard exclusion
+      const unseen = featuredAgo.size && !isRepeat(r.name) ? 4 : 0;
+      return strength + deepCut + unseen + cooldown;
+    };
+
+    const eligible = (div.rows||[]).filter(r => r.signal && !blockedIds.has(r.id));
+    const screaming = eligible.filter(r => Math.abs(r.spreadPct) >= SCREAMING_SPREAD && (featuredAgo.get(r.name) ?? 99) >= 3);
+    const fresh = eligible.filter(r => !isRepeat(r.name));
+    // Fresh first, ranked by novelty. If the cooldown empties the pool,
+    // fall back to the least-recently-featured rather than publishing
+    // nothing — a stale pick beats no edition, but only as a last resort.
+    let sealedPick = fresh.length ? [...fresh].sort((a, b) => noveltyScore(b) - noveltyScore(a))[0]
+      : (screaming.length ? [...screaming].sort((a, b) => Math.abs(b.spreadPct) - Math.abs(a.spreadPct))[0]
+        : [...eligible].sort((a, b) => (featuredAgo.get(b.name) ?? 99) - (featuredAgo.get(a.name) ?? 99))[0] || null);
+    // A screaming deal outranks freshness — that is the whole point of the
+    // exception. Label it so the repeat reads as deliberate, not lazy.
+    const topScream = screaming.sort((a, b) => Math.abs(b.spreadPct) - Math.abs(a.spreadPct))[0];
+    let repeatReason = null;
+    if (topScream && sealedPick && Math.abs(topScream.spreadPct) > Math.abs(sealedPick.spreadPct) + 12) {
+      if (isRepeat(topScream.name)) repeatReason = `back on the board ${featuredAgo.get(topScream.name)} day(s) later — the gap widened past anything else we track`;
+      sealedPick = topScream;
+    }
     let gradedPick = null;
     {
       const g = ((enr&&enr.cards)||[])
@@ -522,7 +576,16 @@ const out = {
         pick = chases.filter(c=>c.setName===fs).sort((a,b)=>b.priceMarket-a.priceMarket)[0];
         if (pick) { why = `the top chase from ${fs} — a set moving in today\u2019s numbers`; break; }
       }
-      if (!pick && chases.length) { pick = [...chases].sort((a,b)=>b.priceMarket-a.priceMarket)[0]; why = "chase-board anchor — the raw single the market prices everything against"; }
+      // Same freshness law: a chase featured this week steps aside.
+      if (pick && isRepeat(pick.name)) pick = null;
+      if (!pick) {
+        const freshChases = chases.filter(c => !isRepeat(c.name));
+        const pool = freshChases.length ? freshChases : chases;
+        // Rotate through the value ladder rather than always the top card:
+        // pick the priciest fresh chase from a set we have not featured.
+        pick = [...pool].sort((a, b) => b.priceMarket - a.priceMarket)[0];
+        why = freshChases.length ? "a chase we have not put in front of you this week" : "chase-board anchor — the raw single the market prices everything against";
+      }
       if (pick) {
         const L2 = Object.values(lifecycle).find(l=>l.setId && sp.products.some(pp=>pp.setId===l.setId && pp.set===pick.setName));
         const lifeBit = L2 ? ` Its set is ${L2.ageMonths} months old${L2.standardLegal?" and still Standard-legal":""}.` : "";
@@ -533,6 +596,7 @@ const out = {
     return {
       sealed: (() => {
         if (!sealedPick) return null;
+        const _rr = repeatReason;
         const L = lifecycle[sealedPick.setId];
         const dir = sealedPick.spreadPct > 0 ? "more" : "less";
         const mag = Math.abs(sealedPick.spreadPct);
