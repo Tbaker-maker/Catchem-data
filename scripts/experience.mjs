@@ -116,6 +116,15 @@ const F = (lane, observation, why, fix) => findings.push({ lane, observation, wh
   const MARKETS = { sealed: /sealedIndex|eraIndexes|Board/, singles: /Grading|graded|rawIndex|slab/i };
   const seq = [...app.matchAll(/key="(idx|lead[A-Za-z]+)"/g)].map(m => m[1]);
   const marketOf = (k) => /Graded|Raw/.test(k) ? "singles" : "sealed";
+  // A label is not a fix — check for INTERRUPTION, not just adjacency. Anything
+  // rendering between two halves of one idea is worse than something merely
+  // beside it, because it splits a thought rather than sitting next to one.
+  const INDEX_BLOCK = /key="idx"[\s\S]{0,2000}?eraIndexes/;
+  const m = INDEX_BLOCK.exec(app);
+  if (m && /key="lead[A-Za-z]+"/.test(m[0]))
+    F("adjacency", "Something renders between the index and its era breakdown.",
+      "Those two are one thought — the whole market, then the same market broken down. Anything wedged between them splits a single idea in half, which is how a note about a different market ends up reading as a caption on the index.",
+      "Move it after the block. A label explaining the interruption is an apology for the layout, and labels scope downward, so one added to disown what is above silently adopts what is below.", "cc");
   for (let i = 1; i < seq.length; i++) {
     if (marketOf(seq[i]) !== marketOf(seq[i - 1])) {
       const labelled = new RegExp(`key="${seq[i]}"[\\s\\S]{0,400}?(different market|SINGLE CARDS|not the same)`, "i").test(app);

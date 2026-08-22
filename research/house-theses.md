@@ -726,6 +726,29 @@ something and DISMISSED when somebody looked and it was fine. Both are useful;
 only silence is useless. The rating gets better by being used, which is the
 only honest way for a rating to get better.
 
+## A LABEL IS NOT A FIX FOR BAD PLACEMENT (Tyler, Aug 23 2026)
+Amends ADJACENCY IS A CLAIM, below — learned by getting it wrong twice in
+one hour.
+
+First attempt at the adjacency problem added a heading: "SINGLE CARDS — a
+different market to the index above". It read as a heading for the ERA
+STRIPS underneath it, which are sealed data. One confusing thing became a
+confusing thing plus a mislabel, and Tyler's reaction was the correct one:
+"is that part of the graphs below it? I thought it was part of the index?"
+
+THE LESSON: when two things are adjacent and should not be, MOVE ONE.
+A label explaining why they are next to each other is an apology for the
+layout, and an apology occupies space while fixing nothing. Worse, a label
+scopes DOWNWARD by default — a reader assumes it introduces what follows,
+so a label added to disown the thing above it silently adopts everything
+below.
+
+THE STRUCTURAL RULE THAT CAME OUT OF IT: the index and its era breakdown
+are ONE THOUGHT — the whole sealed market, then the same market broken
+down. Nothing may render between them in any mode. A mode still leads
+through its header line and accent colour, which is emphasis without
+dismemberment.
+
 ## ADJACENCY IS A CLAIM (Tyler, Aug 23 2026)
 "Why is this random grading quote with the index? That has nothing to do
 with a sealed index. Looks sloppy."
