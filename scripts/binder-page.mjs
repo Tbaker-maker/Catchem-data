@@ -43,7 +43,7 @@ export function binderPage({ title, subtitle, cards, footer = "⚡ catchemtcg.co
 <text x="${W / 2}" y="${PAD + 44}" text-anchor="middle" fill="#f4f5f8" font-size="40" font-weight="800" letter-spacing="6">${esc(title.toUpperCase())}</text>
 ${subtitle ? `<text x="${W / 2}" y="${PAD + 76}" text-anchor="middle" fill="#98a1b5" font-size="21">${esc(subtitle)}</text>` : ""}
 ${slots}
-<text x="${PAD}" y="${H - 44}" fill="#36d399" font-size="26" font-weight="800">⚡ Catch'em</text>
+<text x="${PAD}" y="${H - 44}" fill="#36d399" font-size="26" font-weight="800">⚡</text><text x="${PAD + 36}" y="${H - 44}" fill="#36d399" font-size="26" font-weight="800" font-family="Syne,Sora,sans-serif">Catch'em</text>
 <text x="${W - PAD}" y="${H - 44}" text-anchor="end" fill="#5c637a" font-size="20" font-family="JetBrains Mono,monospace">${esc(footer)}</text>
 </svg>`;
 }

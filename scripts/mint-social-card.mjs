@@ -49,7 +49,7 @@ ${wrapText(title, { x: 560, y: 180, width: 580, size: 38, fill: "#f4f5f8", weigh
 <text x="560" y="360" fill="${accent}" font-size="96" font-weight="800" font-family="JetBrains Mono,monospace">${esc(hero)}</text>
 ${hook ? wrapText(hook, { x: 560, y: 410, width: 580, size: 25, fill: "#98a1b5", weight: 400, maxLines: 2 }) : ""}
 ${statCells}
-<text x="60" y="${H - 12}" fill="#36d399" font-size="26" font-weight="800">⚡ Catch'em</text>
+<text x="60" y="${H - 12}" fill="#36d399" font-size="26" font-weight="800">⚡</text><text x="96" y="${H - 12}" fill="#36d399" font-size="26" font-weight="800" font-family="Syne,Sora,sans-serif">Catch'em</text>
 <text x="${W - 60}" y="${H - 12}" text-anchor="end" fill="#5c637a" font-size="20" font-family="JetBrains Mono,monospace">${esc(chip)} · ${esc(date)} · USD · catchemtcg.com</text>
 </svg>`;
 }

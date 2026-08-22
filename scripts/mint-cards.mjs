@@ -56,7 +56,7 @@ ${img ? `<image href="${esc(img)}" x="72" y="120" width="${wide ? 320 : 300}" he
 <text x="430" y="330" fill="${heroColor}" font-size="104" font-weight="800" font-family="JetBrains Mono,monospace">${esc(hero)}</text>
 <text x="430" y="392" fill="#8a93a8" font-size="30">${esc(sub)}</text>
 ${wrapText(why, { x: 430, y: 452, width: W - 520, size: 25, fill: "#8a93a8", weight: 400, maxLines: 3 })}
-<text x="72" y="${H - 66}" fill="#36d399" font-size="30" font-weight="800">⚡ Catch'em</text>
+<text x="72" y="${H - 66}" fill="#36d399" font-size="30" font-weight="800">⚡</text><text x="112" y="${H - 66}" fill="#36d399" font-size="30" font-weight="800" font-family="Syne,Sora,sans-serif">Catch'em</text>
 <text x="${W - 90}" y="${H - 66}" text-anchor="end" fill="#5c637a" font-size="24" font-family="JetBrains Mono,monospace">${today} · USD · catchemtcg.com</text>
 </svg>`;
 }
