@@ -194,6 +194,14 @@ an echo chamber, which is the exact opposite of what the VERIFIED/READ
 chips promise. Anything de-emphasised stays one tap away.
 TESTABLE: a diff of every value rendered before and after a mode switch
 must be empty. Only order and accent colour may change.
+
+MODE ORDERING (Aug 23 2026) — the law is not a ban on relevance, it is a
+ban on hiding. Biggest movers is now ordered per mode: collector by dollars
+moved rather than percent, flipper weighted by liquidity, grader weighted to
+where grading fees could clear. The SET is identical in every mode because
+direction is split BEFORE the mode sort — only the order changes, and the
+ordering basis is stated on screen. A list that silently reshuffles costs
+more clarity than the relevance it buys.
 WHY: the same reason the Referee Doctrine holds — one set of numbers,
 many readers. The moment the numbers bend to the audience, they stop
 being numbers.
