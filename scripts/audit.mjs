@@ -11,6 +11,7 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { tmpdir } from "node:os"; // /tmp is Linux-only; audits must run on the Windows desk too (2026-08-22)
 const run = promisify(execFile);
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "utf-8")); } catch { return null; } };
@@ -36,7 +37,7 @@ check("no unexplained jargon", jl.ok, jl.out.split("\n")[0]);
 
 console.log("\n═══ 3. FAILURE SIMULATIONS (break it on purpose) ═══");
 const SP = join(ROOT, "data/sealed-prices.json");
-await copyFile(SP, "/tmp/audit-sp.bak");
+await copyFile(SP, join(tmpdir(), "audit-sp.bak"));
 try {
   // 3a — total fetch outage
   let sp = JSON.parse(await readFile(SP, "utf-8"));
@@ -46,7 +47,7 @@ try {
   check("stale edition BLOCKS publication", !outage.ok, outage.ok ? "DID NOT BLOCK — critical" : "blocked correctly");
 
   // 3b — partial fetch
-  await copyFile("/tmp/audit-sp.bak", SP);
+  await copyFile(join(tmpdir(), "audit-sp.bak"), SP);
   sp = JSON.parse(await readFile(SP, "utf-8"));
   const live = sp.products.filter(p => p.lastSeen);
   live.slice(0, Math.floor(live.length / 2)).forEach(p => { p.lastSeen = "2099-01-01"; });
@@ -54,19 +55,19 @@ try {
   const partial = await sh("publish-assert.mjs");
   check("partial fetch BLOCKS publication", !partial.ok, partial.ok ? "DID NOT BLOCK — critical" : "blocked correctly");
 } finally {
-  await copyFile("/tmp/audit-sp.bak", SP);
+  await copyFile(join(tmpdir(), "audit-sp.bak"), SP);
   await sh("qa-gate.mjs");
 }
 
 // 3c — disconnected guard (the 2026-08-21 bug)
 const CD = join(ROOT, "scripts/compute-derived.mjs");
-await copyFile(CD, "/tmp/audit-cd.bak");
+await copyFile(CD, join(tmpdir(), "audit-cd.bak"));
 try {
   const src = await readFile(CD, "utf-8");
   await writeFile(CD, src.replace("r.signal && !blockedIds.has(r.id)", "r.signal"));
   const broken = await sh("guard-audit.mjs");
   check("disconnected guard FAILS the audit", !broken.ok, broken.ok ? "DID NOT CATCH — critical" : "caught correctly");
-} finally { await copyFile("/tmp/audit-cd.bak", CD); }
+} finally { await copyFile(join(tmpdir(), "audit-cd.bak"), CD); }
 
 console.log("\n═══ 4. DATA INTEGRITY ═══");
 const sp2 = await J("data/sealed-prices.json");
