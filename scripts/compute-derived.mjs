@@ -496,7 +496,17 @@ const EBAY_FVF = 0.1325, EBAY_PER_ORDER = 0.40;
 const dealZone = { model: {
     buyerSide: "delivered eBay total + sales tax (est. " + Math.round(TAX_DEFAULT*100) + "% — set your own in the app)",
     sellerSide: "eBay ask minus " + (EBAY_FVF*100) + "% final value fee and $" + EBAY_PER_ORDER.toFixed(2) + " per order",
-    note: "Both figures are estimates from published fee schedules. A show price between them beats the online route for buyer and seller alike." },
+    note: "Both figures are estimates from published fee schedules. A show price between them beats the online route for buyer and seller alike.",
+    // NUMERIC fields — the ONE source for client-side recompute (§19 Show
+    // Mode settings). The app reads these; it never hardcodes a rate.
+    formula: "buyerCeiling = ask × (1 + taxPct/100) · sellerFloor = ask × (1 − feePct/100) − feeFixed",
+    taxPctDefault: Math.round(TAX_DEFAULT * 1000) / 10,
+    feeTiers: [
+      { id: "ebay-standard", label: "eBay Standard", pct: EBAY_FVF * 100, fixed: EBAY_PER_ORDER, default: true },
+      { id: "ebay-trp", label: "eBay Top Rated Plus", pct: 11.93, fixed: EBAY_PER_ORDER, note: "≈10% FVF discount (est.)" },
+      { id: "ebay-basic-store", label: "eBay Basic Store", pct: 14.9, fixed: EBAY_PER_ORDER, note: "est." },
+      { id: "tcgplayer", label: "TCGplayer", pct: 13.25, fixed: 0, note: "10.75% + 2.5% processing" },
+    ] },
   byId: {} };
 for (const p of liveList) {
   if (!p.priceMedian || p.publishBlock) continue;
