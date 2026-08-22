@@ -64,16 +64,20 @@ if (six) {
 // ── SLOT 2 · MIDDAY — one product, one honest number (the shotgun shape) ─
 let midday = null;
 {
-  // rotate the lens daily: spread → pack math → print watch → supply shift
+  // rotate the lens daily: floor → pack math → print watch → supply shift
   const lens = dayNum % 4;
   if (lens === 0 && t3.sealed) {
+    // Was the "spread" lens, leading on eBay-vs-TCGplayer. Retired with the
+    // instrument (Tyler 2026-08-22) — and with spreadPct no longer on the
+    // card it would have posted "eBay asks NaN% undefined than TCGplayer" to
+    // a public account. Same product, same honesty, our own numbers.
     const p = prod((sp.products.find(x => x.name === t3.sealed.name) || {}).id);
-    midday = { lens: "spread", card: "research/pulse/cards/latest-social.png", text: [
+    midday = { lens: "floor", card: "research/pulse/cards/latest-social.png", text: [
       `Day ${dayNum} of showing one sealed product's real numbers.`, "",
       `${t3.sealed.name} — ${money(t3.sealed.ebay)}`, "",
-      `eBay asks ${Math.abs(t3.sealed.spreadPct)}% ${t3.sealed.spreadPct > 0 ? "more" : "less"} than TCGplayer right now, across ${t3.sealed.listings} listings.`,
-      p.priceFloorClean ? `Clean floor sits at ${money(p.priceFloorClean)}.` : "", "",
-      `Not a call. Just the shelf, counted this morning.`, "",
+      `That's the middle of ${t3.sealed.listings} live listings, counted this morning.`,
+      p.priceFloorClean ? `The cheapest believable one sits at ${money(p.priceFloorClean)} — the distance between those two is where patience pays.` : "", "",
+      `Not a call. Just the shelf.`, "",
       invite(["Fair price, or would you wait? \ud83e\udd14", "Buying, holding, or scrolling past? \ud83d\udc47", "If you own one \u2014 would you sell at this number?"]),
     ].filter(Boolean).join("\n") };
   } else if (lens === 1 && (pm.priciest || []).length) {

@@ -77,7 +77,11 @@ if (six) await mint("index", card({ label: "CATCH'EM SEALED INDEX", title: `${si
   why: `${six.constituents} boxes, one honest number. 100 was the starting line. Today: ${six.breadth.up} boxes raised their hand and said "I went up" — ${six.breadth.down} said "I went down." Full story: ${METHODOLOGY_URL}`, chip: "VERIFIED", wide: true }));
 if (t3.sealed) { const r = t3.sealed; const pid = (sp.products.find(p => p.name === r.name) || {}).id;
   await mint("sealed", card({ label: "SEALED · DAILY WATCH", title: r.name, hero: `$${Math.round(r.ebay).toLocaleString("en-US")}`,
-    heroColor: "#f4f5f8", sub: `eBay asks ${Math.abs(r.spreadPct)}% ${r.spreadPct > 0 ? "more" : "less"} than TCGplayer · ${r.listings} listings`,
+    // The Spread is retired (Tyler 2026-08-22) and no longer travels on this
+    // card, so the subtitle can no longer be a cross-market comparison — with
+    // spreadPct gone it would have rendered "eBay asks NaN% undefined than
+    // TCGplayer". It now states the card's own measured context.
+    heroColor: "#f4f5f8", sub: `${r.listings} live listings · ${r.reason}`,
     why: r.explain || r.reason, img: prodImg(pid), chip: "VERIFIED", wide: true })); }
 if (t3.graded) { const g = t3.graded; const gc = (sg.cards || []).find(c => (c.watchLabel || c.name || "").includes((g.name || "").split(" (")[0]));
   await mint("graded", card({ label: "GRADED · DAILY WATCH", title: g.name, hero: `+$${Math.round(g.premium).toLocaleString("en-US")}`,

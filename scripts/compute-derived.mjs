@@ -6,6 +6,7 @@
 //     digest against tracker sets — what's talked-about vs what's moving.
 // Output: data/derived-insights.json. Trust: every number traceable to inputs.
 import { readFile, writeFile, readdir } from "node:fs/promises";
+import { flag } from "./flags.mjs";
 import { indexLevel, sealedPremium } from "./lib/instruments.mjs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -688,14 +689,19 @@ const LENSES = [
         pick: () => eligibleAll.map(r => ({ r, z: dealZone.byId[r.id] })).filter(x => x.z?.zonePct)
                       .sort((a,b)=>b.z.zonePct-a.z.zonePct)[0]?.r,
         why: r => { const z = dealZone.byId[r.id]; return `A seller keeps about $${z.sellerFloor.toLocaleString("en-US")} online; a buyer pays about $${z.buyerCeiling.toLocaleString("en-US")}. Roughly $${z.zoneWidth.toLocaleString("en-US")} of room where a face-to-face trade beats the internet.`; } },
-      // The "gap" lens was REMOVED 2026-08-22 (Tyler: retire the Spread to a
-      // footnote). It selected on spreadPct, and the spread is biased in a
-      // known direction by an unmeasurable amount — our eBay side includes
-      // postage, the TCGplayer side excludes it and no shipping-inclusive TCG
-      // figure is purchasable at any tier. An instrument we cannot correct
-      // must not choose what we put in front of readers. It is still computed
-      // (compute-divergence runs untouched) and still shown as a labelled stat
-      // on product pages; it just no longer drives a pick.
+      // The gap lens is gated by the flag registry rather than by being
+      // deleted, so the condition lives in exactly one named place
+      // (data/flags.json → spread.headline) and a second author cannot add a
+      // parallel gate without colliding on the key. Tyler ruled it false on
+      // 2026-08-22: the spread is biased in a known direction by an
+      // unmeasurable amount — our eBay side includes postage, the TCGplayer
+      // side excludes it, and no shipping-inclusive TCG figure is purchasable
+      // at any tier. An instrument we cannot correct must not choose what we
+      // put in front of readers. Still computed, still a labelled stat on
+      // product pages; it just no longer drives a pick.
+      ...(flag("spread.headline") ? [{ id: "gap", label: "widest gap between the two markets",
+        pick: () => eligibleAll.filter(r => r.signal).sort((a,b)=>Math.abs(b.spreadPct)-Math.abs(a.spreadPct))[0],
+        why: r => `The two marketplaces are ${Math.abs(r.spreadPct)}% apart on the same product — eBay at $${r.ebayAskMedian.toLocaleString("en-US")}, TCGplayer at $${(r.tcgMarket||0).toLocaleString("en-US")}. The widest disagreement on the board today.` }] : []),
     ];
     let lensUsed = null, lensPick = null;
     for (let i = 0; i < LENSES.length && !lensPick; i++) {
