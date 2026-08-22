@@ -386,6 +386,18 @@ const CASES = [
     },
     restore: async () => { await copyFile("/tmp/nt-cs.bak", P("research/pulse/pulse-feed.json")); } },
 
+  { guard: "Agent competence declared", detect: "competence-guard.mjs",
+    // Strip an agent's blind spots and the build must fail. A specialist who
+    // cannot name the edge of their own competence is the one that does damage.
+    break: async () => {
+      await copyFile(P("data/agent-competence.json"), "/tmp/nt-ac.bak");
+      const c = JSON.parse(await readFile(P("data/agent-competence.json"), "utf-8"));
+      c.domains.security.blindSpots = [];
+      await writeFile(P("data/agent-competence.json"), JSON.stringify(c, null, 1));
+      return true;
+    },
+    restore: async () => { await copyFile("/tmp/nt-ac.bak", P("data/agent-competence.json")); } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");

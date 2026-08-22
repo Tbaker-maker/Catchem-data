@@ -4,6 +4,7 @@ await import("./flag-guard.mjs");
 // other failure is recoverable. A leaked credential is not — there is no
 // correction page for it — so this one is allowed to stop the run.
 await import("./security-agent.mjs");
+await import("./competence-guard.mjs");
 await import("./knowledge-guard.mjs");
 await import("./memory-guard.mjs");
 await import("./schema-guard.mjs");

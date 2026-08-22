@@ -741,3 +741,36 @@ are different things, so the ambiguity is invisible to them and obvious to
 everyone else. This is the cheapest class of design bug to create and the
 hardest to catch without fresh eyes — which is why it is now a check in
 the experience agent rather than a thing we hope to notice.
+
+## DOMAIN COMPETENCE LAW (Tyler, Aug 23 2026)
+"They need to be the best they can be in their field. They must know the ins
+and outs of everything to do with what they work on."
+
+THE DANGER IT ADDRESSES: an agent reasoning from whatever happened to be in
+its code produces confident, well-written, plausible output that is nobody's
+considered opinion. That is worse than an agent that says it does not know,
+because fluency reads as competence and nothing in the output tells you which
+one you are getting.
+
+So expertise is made CHECKABLE rather than asserted. Every specialist agent
+declares four things in data/agent-competence.json:
+1. **PRINCIPLES** — what the field actually runs on, with sources. Unsourced
+   principles are assertion, not knowledge.
+2. **FAILURE MODES** — what the field is known to get wrong, so the agent can
+   recognise itself doing it.
+3. **BLIND SPOTS** — what it cannot see and must route onward. THIS IS THE
+   MOST IMPORTANT CLAUSE. A specialist who cannot name the edge of their own
+   competence is the one who does the damage.
+4. **RECHECK DATE** — every field moves. Knowledge with no expiry is a museum.
+
+EXEMPT, deliberately and on the record: agents whose entire job is auditing
+US — breaker, falsifier, correction-hunter, steward, improver,
+universe-advisor, review-agents. The repo is their domain and it is fully
+visible to them. The exemption is written down so it is a decision rather
+than a gap.
+
+THE SHAPE IS BORROWED, NOT INVENTED: explicit ownership so nothing is
+ambiguous, written reasoning so decisions survive the person who made them,
+feedback loops so being wrong is cheap and fast, and a single source of truth
+so two people cannot hold different pictures. That is how competent
+organisations actually run, and it is what we are copying.

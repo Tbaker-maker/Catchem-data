@@ -1,0 +1,130 @@
+{
+ "note": "WHAT EACH AGENT ACTUALLY KNOWS. An agent that reasons from whatever happened to be in its code is not an expert — it is pattern-matching with confidence, which is the most dangerous thing in this system because it is fluent and wrong at the same time. This file is what makes 'expert' checkable instead of asserted.",
+
+ "law": "DOMAIN COMPETENCE LAW. Every agent must declare: (1) the PRINCIPLES its field actually runs on, with sources; (2) the FAILURE MODES its field is known for; (3) its BLIND SPOTS — what it cannot see and must route to somebody who can; (4) a RECHECK date, because every field moves. An agent with no declared competence is a hunch with a schedule.",
+
+ "whyThisShape": "Copied from how competent organisations actually work rather than invented: explicit ownership so nothing is ambiguous, written reasoning so decisions survive the person who made them, feedback loops so being wrong is cheap and fast, and a single source of truth so two people cannot hold different pictures. The blind-spot clause matters most — a specialist who cannot name the edge of their competence is the one who does the damage.",
+
+ "domains": {
+  "security": {
+   "principles": [
+    "Small organisations are targeted MORE, not less. The 2025 Verizon DBIR found SMBs saw ransomware in 88% of their breaches against 39% for large organisations.",
+    "The device is the perimeter. 46% of compromised systems carrying corporate logins were unmanaged personal devices.",
+    "A credential in git history is compromised even after deletion — revocation is the fix, removal is cosmetic.",
+    "Secrets belong in the environment, never on disk. A file gets committed by accident; an env var cannot be."
+   ],
+   "failureModes": [
+    "Treating security as a later problem — the single most common founder error in the research.",
+    "False confidence from surface-level tools, which reduces scrutiny rather than raising safety.",
+    "Shadow IT: tools adopted without review, each with its own sharing model and admin surface."
+   ],
+   "blindSpots": [
+    "Tyler's own machine, browser sessions, saved passwords and 2FA status — outside the repo entirely.",
+    "The private bot repo, which this agent does not read.",
+    "Any credential that never touched this repository."
+   ],
+   "sources": ["Verizon DBIR 2025 via 2026 solopreneur security reporting", "2026 startup security guidance"],
+   "recheckAfter": "2027-02-23"
+  },
+
+  "compliance": {
+   "principles": [
+    "Prize + chance + consideration = lottery. Remove any one and it is lawful.",
+    "An AMOE must carry equal dignity: same odds, same prize eligibility, same pool, same deadline, conspicuous disclosure.",
+    "Consideration can be effort, not only money, in some states.",
+    "Registration thresholds: Florida and New York at $5,000, Rhode Island at $500 for certain retail promotions.",
+    "IRC §74 makes prize fair market value taxable regardless of forms; 1099-MISC threshold is $2,000 for 2026 awards.",
+    "Nominative fair use is a DEFENCE, not a permission — it is argued after a complaint, not a shield against one."
+   ],
+   "failureModes": [
+    "18% of startups fail on legal challenges, almost never by deciding to ignore a rule and almost always because a deferral was never revisited.",
+    "Governance treated as a legal afterthought until it becomes urgent, at which point fixing it is disruptive and value-destroying.",
+    "Ambiguous ownership of risk decisions — the most common reason governance fails as decision volume rises."
+   ],
+   "blindSpots": [
+    "It is not a lawyer and no lawyer has reviewed its knowledge base.",
+    "State-by-state variation beyond the headline thresholds.",
+    "Anything about Tyler's actual corporate structure, tax position, or residency obligations."
+   ],
+   "sources": ["2026 US sweepstakes compliance guides", "FTC Act 15 U.S.C. § 45", "IRC §74", "Risk Management Magazine on startup governance, May 2026"],
+   "recheckAfter": "2027-02-23"
+  },
+
+  "experience": {
+   "principles": [
+    "Retention predicts survival better than signups — low retention signals failure months before the end.",
+    "Proximity is a claim: two things placed together are read as related whether or not they are.",
+    "Every section is a decision the reader makes about whether to continue; past roughly six, a page is skipped rather than scanned.",
+    "A page that looks identical twice is a page nobody opens twice."
+   ],
+   "failureModes": [
+    "Measuring correctness and never measuring whether the thing is pleasant to use.",
+    "Adding sections instead of ranking them, because adding is easier than choosing.",
+    "Designers cannot see their own ambiguity — whoever placed two things knows they are different, so the confusion is invisible from inside."
+   ],
+   "blindSpots": [
+    "It cannot SEE the app. Everything visual routes to human eyes with specific questions.",
+    "It cannot measure real behaviour — no analytics exist yet, so every retention judgment is structural rather than observed."
+   ],
+   "sources": ["2026 startup failure research on retention as the leading indicator", "our own Digest Law and Cliff Rule"],
+   "recheckAfter": "2027-02-23"
+  },
+
+  "platform": {
+   "principles": [
+    "Each platform rewards a different shape; a post optimised for one is usually wrong for another.",
+    "A recurring recognisable format beats a better one-off, because the second sighting costs the reader no effort.",
+    "On X, brevity generally outperforms and external links typically reduce distribution (founder knowledge, unmeasured)."
+   ],
+   "failureModes": [
+    "Reciting growth folklore as fact — fluent, unfalsifiable, and the easiest way for this system to start lying.",
+    "Treating three platforms as one job, which is why most accounts sound identical everywhere and land nowhere.",
+    "Optimising for volume, which is free and worthless."
+   ],
+   "blindSpots": [
+    "No posting data exists. Every judgment is about SHAPE, not results, and should be read as a well-reasoned guess until roughly twenty posts have outcomes recorded.",
+    "No knowledge of any platform's actual ranking behaviour, which is not public."
+   ],
+   "sources": ["Tyler, founder platform knowledge, recorded as COMMUNITY confidence in data/knowledge.json"],
+   "recheckAfter": "2026-11-23"
+  },
+
+  "anomaly": {
+   "principles": [
+    "Unusual is not the same as meaningful. Thin markets produce outliers constantly.",
+    "A product must be judged against its OWN history, or volatile products are flagged for being volatile.",
+    "A class moving together is evidence; one product moving alone is noise.",
+    "Index movement without breadth means a few products carried the day, and the index should not be read as 'the market'."
+   ],
+   "failureModes": [
+    "Computing significance from too little history — a 2-sigma move against four days is arithmetic wearing a costume.",
+    "Reporting every outlier, which trains the reader to skim and hides the real one."
+   ],
+   "blindSpots": [
+    "It sees listings, not sales. Nothing here observes an actual transaction.",
+    "It cannot see news, announcements, or anything that would explain a move."
+   ],
+   "sources": ["our own index methodology and RESEARCH-GATE error ledger"],
+   "recheckAfter": "2027-02-23"
+  },
+
+  "creator": {
+   "principles": [
+    "Every pause is a cut. Friction between opening a tool and hitting record is the whole product problem.",
+    "Coaching beats scripting — a creator who understands why an angle works can write the next one alone.",
+    "A creator repeating our number inherits our credibility and our risk, so provenance must survive into their script."
+   ],
+   "failureModes": [
+    "Producing assets and calling it a workflow. Good pieces scattered across four files is assembly, not a cheat code.",
+    "Too many choices, which is its own paralysis.",
+    "Never closing the loop on what performed, which is the difference between a tool and a partner."
+   ],
+   "blindSpots": [
+    "No performance data on anything any creator has ever made with us.",
+    "It cannot watch a video or judge whether something was actually enjoyable."
+   ],
+   "sources": ["our own Creator Portal spec and voice laws"],
+   "recheckAfter": "2027-02-23"
+  }
+ }
+}

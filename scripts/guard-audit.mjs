@@ -163,6 +163,7 @@ const MUST_RUN = [
   { script: "flag-guard.mjs", why: "one condition, one gate — stops two authors stacking gates invisibly" },
   { script: "schema-guard.mjs", why: "data files read by many scripts and validated by none" },
   { script: "memory-guard.mjs", why: "the entry point must stay current and readable — work that cannot be found again was only stored" },
+  { script: "competence-guard.mjs", why: "every specialist agent declares principles, failure modes, blind spots and a recheck date" },
   { script: "knowledge-guard.mjs", why: "every stored fact carries its source, date and falsifier" },
   { script: "qa-gate.mjs", why: "blocks corrupted numbers before anything publishes" },
   { script: "build-corrections.mjs", why: "keeps the public corrections page current" },
