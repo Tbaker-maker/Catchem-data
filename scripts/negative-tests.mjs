@@ -398,6 +398,20 @@ const CASES = [
     },
     restore: async () => { await copyFile("/tmp/nt-ac.bak", P("data/agent-competence.json")); } },
 
+  { guard: "App builds before push", detect: null,
+    // I pushed a JSX syntax error to main. The data repo has a dozen guards and
+    // the app repo had nothing checking that it still compiles from here.
+    fn: async () => {
+      try {
+        await run("npx", ["esbuild", "--loader:.jsx=jsx", "--outfile=/dev/null", "../catchem-app/src/Ticker.jsx"], { cwd: ROOT });
+        return { pass: true, why: "" };
+      } catch (e) {
+        const out = ((e.stdout || "") + (e.stderr || ""));
+        if (/not found|ENOENT|Cannot find/.test(out)) return { pass: null, why: "esbuild unavailable here — SKIPPED, not passed" };
+        return { pass: false, why: `catchem-app does not compile: ${out.split("\n").find(l => /ERROR/.test(l)) ?? "unknown"}` };
+      }
+    } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");

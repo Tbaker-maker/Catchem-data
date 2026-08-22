@@ -43,7 +43,7 @@ Gaps in what we watch:
 > Right now every agent watches US. A workforce that builds the best community, app, tools and database in this hobby needs agents that watch the MARKET (what changed that we did not notice), the COMMUNITY (what people are asking), and the FIELD (what everyone else shipped). Two of those three need the bot; one needs only research. That is the order to hire in.
 
 ## How it feels to use
-7 measurable finding(s). The looking is not ours to do — 8 questions are queued for whoever has eyes.
+6 measurable finding(s). The looking is not ours to do — 8 questions are queued for whoever has eyes.
 - *simplicity* — The Today screen carries 17 sections: The Daily Three, 🗳 Rip or Hold?, Biggest movers, Set the app up for you, Movers, Release radar… Rank them by how often somebody would act on each, and move the bottom third behind a tap. Nothing is deleted — it stops competing.
 - *retention* — 5 things visibly change day to day: the Daily Three, a fact, shelf moves, yesterday's picks revisited, Rip or Hold. Good coverage — the gap is that a returning reader cannot TELL at a glance what is new since yesterday.
 - *ease of use* — A number appears above the fold on Today. Holds — check on a 390px screen that it is still above the fold with the banner and nav present.
@@ -56,7 +56,7 @@ Gaps in what we watch:
 
 **CC (3):**
 - **[QUEUE 58]** 5 accent colours appear on the same surface. — *Reserve green for positive, red for negative, and let mode accent everything else. Gold stays a highlight, never a third voice.*
-- **[QUEUE 58]** 32 emoji in the interface. — *Keep them for section headers and the ELI5 lollipop; drop them from anything carrying a number.*
+- **[QUEUE 58]** 31 emoji in the interface. — *Keep them for section headers and the ELI5 lollipop; drop them from anything carrying a number.*
 - **[WATCH 48]** 27 card images minted today. — *The gap is that they are files in a repo. A creator needs them one tap from the angle they picked, not from a folder.*
 
 **Chat (11):** top — The Today screen carries 17 sections: The Daily Three, 🗳 Rip or Hold?, Biggest movers, Set the app up for you, Movers, Release radar… *[QUEUE]*
@@ -79,7 +79,7 @@ Nothing unusual, or not enough history to tell — 5 days of tape so far. Anomal
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
 
 ## Something is slipping
-- **unsaved** — 6 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
+- **unsaved** — 1 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
 
 ## SECURITY — NEEDS A HUMAN NOW
 - **Anthropic key found in scripts/negative-tests.mjs** — *Revoke it first, then remove it. Revoking comes first because removal does not un-share what was already shared.*
@@ -89,6 +89,13 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 *Cheapest fix: A no-berry AMOE — one free entry, one form, no participation required, same pool, same odds, same deadline, disclosed wherever entry is offered. It costs a form and it moots the hardest question in the structure.*
 
 *Legal INFORMATION, not legal advice. No lawyer has reviewed this. Sweepstakes law varies by state and changes; nothing here is a compliance opinion anyone can rely on. Its job is to make the conversation with counsel shorter and better, and to stop us doing something obviously wrong in the meantime.*
+
+## Numbers that do not make sense for what they are
+54 value(s) are structurally fine and absurd in context.
+- **"packs"** killed 339 listings across the board — a single pack is often titled 'Booster Packs' — plural in the title, one in the box
+- **"sleeved"** killed 318 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
+- Battle Styles Booster Pack: 75% rejection rate (37/150) — *largest bucket: exclude = 76. A single over-broad term can eat a market.*
+- Fusion Strike Booster Pack: 72% rejection rate (42/150) — *largest bucket: exclude = 49. A single over-broad term can eat a market.*
 
 ---
 *Written by the agents, for a person. If a section here never leads to an action, that section should be deleted rather than tolerated.*
