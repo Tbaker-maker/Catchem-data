@@ -329,7 +329,11 @@ const eraIndexes = Object.entries(eraBuckets).filter(([,b])=>b.n>=3).map(([era,b
   else read = "eBay asks under TCGplayer usually means motivated sellers across the era. Worth watching, not acting on.";
   const bx = (eraBoxes[era]||[]).sort((x,y)=>x-y);
   const boxMedian = bx.length ? bx[Math.floor(bx.length/2)] : null;
-  return { era, products: b.n, level, boxMedian, index: idx100, avgGapPct: offTcg ? null : avgGap, venueClass: offTcg ? "ebay-native" : "cross-market", totalListings: b.listings, listingsPerProduct: lpp, read, chip: "READ" };
+  // Sandbox Rule: every instrument ships a plain-words version one tap away.
+  // The Improver caught all five era indexes shipping without one, and partial
+  // compliance is the same as none for whoever lands on the one that lacks it.
+  const simple = `Think of each era as its own shelf in the shop. This is what a typical box from the ${era} shelf costs right now, across the ${b.n} products we price from it. It is not what the whole era is worth — it is what one box from that shelf costs today.`;
+  return { era, products: b.n, level, boxMedian, simple, index: idx100, avgGapPct: offTcg ? null : avgGap, venueClass: offTcg ? "ebay-native" : "cross-market", totalListings: b.listings, listingsPerProduct: lpp, read, chip: "READ" };
 }).sort((a,b)=>b.level-a.level);
 // persist today (merge-by-date+era — pathogen-proof)
 eiHist.entries = (eiHist.entries||[]).filter(e=>e.date!==today);
@@ -600,6 +604,46 @@ for (const p of liveList) {
 }
 
 
+
+// ── 📦 RIP IT, SELL IT, OR TRADE IT (Tyler, 2026-08-23) ─────────────────
+// Three paths out of one sealed box, priced with numbers we already compute.
+// Nobody else can answer this because nobody else holds all three at once.
+//
+//   RIP IT   — what the packs inside are worth loose, right now.
+//   SELL IT  — what you keep selling it online, after fees.
+//   TRADE IT — what a face-to-face deal is worth, using the seller floor.
+//
+// THE HONEST LIMIT, stated on the instrument itself: ripping for the CARDS is
+// a gamble we do not model and will not pretend to. What we can price is the
+// packs, because packs have a market. Anyone telling you the expected value of
+// what you will pull is guessing with extra steps.
+const ripSellTrade = { note: "Three paths out of one sealed box, priced from what we already measure. Ripping is valued as PACKS, never as a guess at what you might pull.",
+  chip: "READ", byId: {} };
+for (const p of liveList) {
+  if (!p.priceMedian || p.publishBlock) continue;
+  const pm = packRows?.find?.(r => r.id === p.id) ?? null;
+  const packs = pm?.packs ?? null, loose = pm?.loosePack ?? null;
+  const np = netProceeds?.byId?.[p.id] ?? null;
+  const dz = dealZone?.byId?.[p.id] ?? null;
+  if (!packs || !loose || !np || !dz) continue;
+  const rip = Math.round(packs * loose * 100) / 100;      // packs at today's loose price
+  const sell = Math.round((np.ebayNet ?? np.net ?? 0) * 100) / 100;
+  const trade = dz.sellerFloor;
+  const paths = [{ path: "rip", value: rip }, { path: "sell", value: sell }, { path: "trade", value: trade }]
+    .filter(x => x.value > 0).sort((a, b) => b.value - a.value);
+  if (paths.length < 2) continue;
+  const best = paths[0], worst = paths[paths.length - 1];
+  const spreadPct = Math.round((best.value / worst.value - 1) * 1000) / 10;
+  const WORD = { rip: "ripping it for the packs", sell: "selling it online", trade: "trading it face to face" };
+  ripSellTrade.byId[p.id] = { name: p.name, sealed: p.priceMedian,
+    rip, sell, trade, packs, loosePack: loose,
+    best: best.path, bestValue: best.value, spreadPct,
+    read: spreadPct < 5
+      ? `All three paths land within ${spreadPct}% of each other, so this is a question of effort rather than money — sell it whichever way you find easiest.`
+      : `${WORD[best.path].replace(/^./, c => c.toUpperCase())} comes out ahead at $${best.value.toLocaleString("en-US")}, about ${spreadPct}% above the weakest option. That gap is the whole decision.`,
+    caveat: "Ripping is priced as the packs inside at today's loose price. What you might pull is a gamble we do not model." };
+}
+
 const out = {
   generatedAt: new Date().toISOString(),
   method: "Pack Math: ask median / era-aware pack count (arithmetic, no estimation; variable-count products excluded by name). Narrative: latest agent digest cross-referenced against tracked sets; 'quiet movers' = spread signal with zero digest mention.",
@@ -611,6 +655,7 @@ const out = {
   lifecycle, rotationContext,
   printWatch, tightening, rotationCohorts,
   eraIndexes,
+  ripSellTrade,
   sealedIndex: { ...sealedIndex, valueWeighted }, rawIndex, gradedIndex, netProceeds, packPricing, dealZone, fx, subtypeIndexes, watchOutcomes, supplyShifts: supplyShifts.slice(0,8), ripOrHold, notification,
   cohortCompare,
   topicHits,

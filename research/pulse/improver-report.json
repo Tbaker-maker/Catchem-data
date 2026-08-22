@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-08-22T20:23:39.229Z",
+ "generatedAt": "2026-08-22T20:24:42.630Z",
  "measure": "Our own doctrine, not generic best practice. Generic advice is free and worthless.",
  "counts": {
-  "total": 16
+  "total": 15
  },
  "ideas": [
   {
@@ -21,12 +21,6 @@
    "area": "product",
    "observation": "The index has no matched sample today, so it cannot move.",
    "suggestion": "Expected on a fresh series — worth a line on the page saying so, rather than a number that looks stuck.",
-   "effort": "small"
-  },
-  {
-   "area": "sandbox rule",
-   "observation": "5 of 5 era indexes ship without a plain-words version.",
-   "suggestion": "Our own Sandbox Rule says every instrument gets an ELI5 one tap away. Partial compliance is the same as none for whoever lands on the one without it.",
    "effort": "small"
   },
   {
@@ -55,25 +49,25 @@
   },
   {
    "area": "repetition",
-   "observation": "money rounding is implemented inline 7 times across the pipeline.",
+   "observation": "money rounding is implemented inline 9 times across the pipeline.",
    "suggestion": "Centralise it — one helper would make cents behave identically everywhere. Repeated maths is where two places drift and only one gets fixed.",
    "effort": "small"
   },
   {
    "area": "pipeline size",
-   "observation": "The daily run imports 29 steps from one file.",
+   "observation": "The daily run imports 30 steps from one file.",
    "suggestion": "Consider grouping them (intake → compute → publish → agents) so the order is legible at a glance. A long flat list is where an ordering mistake hides.",
    "effort": "medium"
   },
   {
    "area": "maintainability",
-   "observation": "compute-derived.mjs is 55KB.",
+   "observation": "compute-derived.mjs is 57KB.",
    "suggestion": "Large files are where two people edit the same function on the same day. Splitting by concern would make collisions rarer and reviews honest.",
    "effort": "medium"
   },
   {
    "area": "maintainability",
-   "observation": "fetch-sealed-prices.mjs is 40KB.",
+   "observation": "fetch-sealed-prices.mjs is 39KB.",
    "suggestion": "Large files are where two people edit the same function on the same day. Splitting by concern would make collisions rarer and reviews honest.",
    "effort": "medium"
   }

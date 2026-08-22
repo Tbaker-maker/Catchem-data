@@ -458,6 +458,7 @@ const feed = {
   watchOutcomes: der?.watchOutcomes ?? null,
   rawIndex: der?.rawIndex ?? null,
   dealZone: der?.dealZone ?? null,
+  ripSellTrade: (await J("research/pulse/rip-sell-trade.json"))?.rows?.slice(0, 40) ?? null,
   netProceeds: der?.netProceeds ? { ...der.netProceeds,
     tcgModel: { pct: 13.25, fixed: 0.30, venue: "TCGplayer", ...(der.netProceeds.tcgModel || {}) } } : null,
   fx: der?.fx ?? null,
@@ -588,6 +589,7 @@ await import("./jargon-lint.mjs");
 // stop the run — on the day this line was written a simulated agent crash
 // killed publish-assert, the final safety check, which is precisely the class
 // of failure that check exists to catch. Agents are wrapped; guards are not.
+try { await import("./rip-sell-trade.mjs"); } catch (e) { console.warn(`  ⚠ rip-sell-trade: ${e.message}`); }
 try { await import("./agent-supervisor.mjs"); } catch (e) { console.warn(`  ⚠ agent supervisor: ${e.message} — advisory only`); }
 try { await import("./breaker.mjs"); } catch (e) { console.warn(`  ⚠ agent breaker.mjs failed: ${e.message} — advisory only`); }
 try { await import("./falsifier.mjs"); } catch (e) { console.warn(`  ⚠ agent falsifier.mjs failed: ${e.message} — advisory only, the run continues`); }
