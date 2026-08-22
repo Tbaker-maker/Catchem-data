@@ -213,13 +213,22 @@ const EXCLUDE_BY_SUBTYPE = {
   "etb":            ["booster box", "bundle", "blister", "36 pack", "mini tin", "pokemon center"],
   // loose-pack spec vocab (2026-08-18): weighed-pack scams + multi-pack and
   // container terms; "packs" PLURAL is the load-bearing one (a single pack
-  // listing says "pack"); "art" excludes display/pack-art collectible sets
+  // listing says "pack").
+  // "art" was BARE until 2026-08-22 and was the biggest false-positive source
+  // in the class: booster packs ship with several wrapper artworks, so sellers
+  // write "Random Art" / "(1) Random Pack Art" on perfectly ordinary single
+  // packs. Measured on sv10-pack: 15 of 79 exclude-rejections (19%) were
+  // legitimate single packs killed by that one word, on a SKU already thin at
+  // 15 kept. Narrowed to the phrases it was actually meant to catch — art
+  // cards, art prints and display/collectible art sets, none of which collide
+  // with "random art". Anything genuinely multi-item is still caught by
+  // "packs"/"lot"/the multi-item guard.
   // "sticker": swsh45-pack validation 2026-08-22 — a $4.99 "Booster Pack
   // Sticker" (a sticker, not a pack) was the SKU's clean floor.
   // code-card class (special-set sweep 2026-08-22): online-code listings
   // titled "<set> Booster Pack Code Card" pass set+type and sit at $2-6 —
   // they were the $4.49/$5.95 "floors" on sv8pt5/swsh12pt5 packs.
-  "booster-pack":   ["weighed", "packs", "bundle", "box", "art", "etb", "elite trainer", "blister", "sleeved", "sticker",
+  "booster-pack":   ["weighed", "packs", "bundle", "box", "art card", "art cards", "art print", "art set", "art display", "etb", "elite trainer", "blister", "sleeved", "sticker",
     "code card", "code cards", "online code", "digital", "ptcgo", "tcg live",
     // graded slabbed packs are a collectible market, not street price (2026-08-18: "PSA 8 NM-MINT ... SEALED Booster Pack" $49.99 passed)
     "psa", "cgc", "bgs", "graded", "unsearched",
@@ -300,30 +309,43 @@ function filterItemsForProduct(product, items) {
   // reprinted set, the report said 74 failed the exclude list and could not
   // say which word did it. Now every rejection reason keeps a few examples
   // and, where relevant, the exact term that triggered it.
-  const samples = { set: [], type: [], exclude: [], lang: [], multi: [], price: [] };
+  const samples = { set: [], type: [], exclude: [], lang: [], multi: [], menu: [], price: [] };
   const sample = (bucket, title, term) => { if (samples[bucket].length < 5) samples[bucket].push(term ? `[${term}] ${String(title).slice(0, 80)}` : String(title).slice(0, 80)); };
   const [floor, ceiling] = priceBoundsFor(product);
 
   const kept = items.filter(i => {
     const t = titleLowerOf(i);
-    if (setLower && !t.includes(setLower)) { report.failSet++; return false; }
-    if (requires.length && !requires.some(r => t.includes(r))) { report.failType++; sample("type", it.title, requires.join("|")); return false; }
-    if (requireExtra.length && !requireExtra.every(r => t.includes(r.toLowerCase()))) { report.failType++; sample("type", it.title, requireExtra.join("&")); return false; }
-    if (product.subtype === "pc-etb" && !t.includes("pokemon center")) { report.failType++; return false; }
+    // The sample() calls below said `it.title` where the parameter is `i` —
+    // a ReferenceError that threw on the FIRST rejected listing of every SKU,
+    // so every product errored, 0 went live and the wipe guard stopped the
+    // run. Caught 2026-08-22 by a single-SKU validation fetch; the diagnostic
+    // feature added to explain thin results was itself breaking the fetch.
+    // Sampling now covers every bucket — set/lang/price/menu recorded nothing,
+    // which is how "74 died on the exclude list" stayed unexplained.
+    if (setLower && !t.includes(setLower)) { report.failSet++; sample("set", i.title, setLower); return false; }
+    if (requires.length && !requires.some(r => t.includes(r))) { report.failType++; sample("type", i.title, requires.join("|")); return false; }
+    if (requireExtra.length && !requireExtra.every(r => t.includes(r.toLowerCase()))) { report.failType++; sample("type", i.title, requireExtra.join("&")); return false; }
+    if (product.subtype === "pc-etb" && !t.includes("pokemon center")) { report.failType++; sample("type", i.title, "pokemon center"); return false; }
     const hitTerm = excludes.find(term => wordBoundaryTest(term, t));
-    if (hitTerm) { report.failExclude++; sample("exclude", it.title, hitTerm); return false; }
-    if (isMultiItem(t)) { report.failMulti = (report.failMulti || 0) + 1; sample("multi", it.title); return false; }
-    if (isMultiSetMenu(t)) { report.failMenu = (report.failMenu || 0) + 1; return false; }
-    if (langExcludes.some(term => wordBoundaryTest(term, t))) { report.failLang++; return false; }
+    // Per-term tally, not just a total: "74 died on the exclude list" is not a
+    // diagnosis, and five samples cannot prove which term is over-broad. The
+    // histogram names the culprit outright.
+    if (hitTerm) { report.failExclude++; (report.excludeTerms ||= {})[hitTerm] = (report.excludeTerms?.[hitTerm] || 0) + 1; sample("exclude", i.title, hitTerm); return false; }
+    if (isMultiItem(t)) { report.failMulti = (report.failMulti || 0) + 1; sample("multi", i.title); return false; }
+    if (isMultiSetMenu(t)) { report.failMenu = (report.failMenu || 0) + 1; sample("menu", i.title); return false; }
+    const langHit = langExcludes.find(term => wordBoundaryTest(term, t));
+    if (langHit) { report.failLang++; sample("lang", i.title, langHit); return false; }
     // pricing v2: gate + aggregate on DELIVERED price (landed cost)
     const dp = deliveredPriceOf(i);
     if (!dp.shipKnown) report.shipUnknown++;
-    if (isNaN(dp.delivered) || dp.delivered < floor || dp.delivered > ceiling) { report.failPrice++; return false; }
+    if (isNaN(dp.delivered) || dp.delivered < floor || dp.delivered > ceiling) { report.failPrice++; sample("price", i.title, `$${dp.delivered} vs $${floor}-$${ceiling}`); return false; }
     i._delivered = dp.delivered;
     return true;
   });
   report.kept = kept.length;
-  return { kept, report, floor, ceiling };
+  // samples travels with the report — the caller stores it as rejectionSamples
+  // and was reaching for this local by name, which threw for every SKU.
+  return { kept, report, samples, floor, ceiling };
 }
 
 
@@ -394,7 +416,10 @@ async function searchEbay(token, query, floor = MIN_PRICE, ceiling = MAX_PRICE) 
 }
 
 // ─── Aggregate prices with outlier trimming ──────────────────────────────────
-function aggregatePrices(items, floor = MIN_PRICE, ceiling = MAX_PRICE) {
+// `report` is threaded in rather than reached for: shipKnownPct needs the
+// filter tally, and referencing the call-site name from in here is the exact
+// ReferenceError class that broke this function twice (see notes below).
+function aggregatePrices(items, floor = MIN_PRICE, ceiling = MAX_PRICE, report = { shipUnknown: 0 }) {
   // pricing v2: delivered BIN prices (stamped by the filter); fall back to
   // item price only for direct calls that skipped filtering.
   const prices = items
@@ -419,9 +444,13 @@ function aggregatePrices(items, floor = MIN_PRICE, ceiling = MAX_PRICE) {
     // them inflates every spread, worst on cheap items where postage is a large
     // share. priceItemMedian is the like-for-like number; priceMedian stays the
     // delivered truth a buyer actually pays.
+    // (this block referenced the call-site name `kept` inside a function whose
+    // param is `items` — the same ReferenceError the note below already warns
+    // about, repeated verbatim. It threw for every SKU, so priceItemMedian has
+    // never actually been written. Local renamed to avoid shadowing `items`.)
     priceItemMedian: (() => {
-      const items = kept.map(i => parseFloat(i.price?.value)).filter(v => !isNaN(v)).sort((a, b) => a - b);
-      return items.length ? round(items[Math.floor(items.length / 2)]) : null;
+      const itemOnly = items.map(i => parseFloat(i.price?.value)).filter(v => !isNaN(v)).sort((a, b) => a - b);
+      return itemOnly.length ? round(itemOnly[Math.floor(itemOnly.length / 2)]) : null;
     })(),
     shipKnownPct: prices.length ? Math.round((1 - (report.shipUnknown / prices.length)) * 100) : null,
     // DIAGNOSTIC TRAIL (slop defense): the three priciest kept listings are
@@ -487,7 +516,7 @@ async function main() {
     try {
       const [floor, ceiling] = priceBoundsFor(product);
       const items = await searchEbay(token, product.searchQuery, floor, ceiling);
-      const { kept, report } = filterItemsForProduct(product, items);
+      const { kept, report, samples } = filterItemsForProduct(product, items);
       console.log(
         `   ${product.id}: fetched=${report.fetched} kept=${report.kept} ` +
         `(set:${report.failSet} type:${report.failType} excl:${report.failExclude} lang:${report.failLang} price:${report.failPrice})`
@@ -538,7 +567,7 @@ async function main() {
         };
       }
 
-      const agg = aggregatePrices(kept, floor, ceiling);
+      const agg = aggregatePrices(kept, floor, ceiling, report);
       // representativeImage (research/fetch-images-spec.md, 2026-08-18): the
       // kept BIN closest to the median — a photo of what the median actually
       // buys. Zero extra API calls; refreshed every run; omitted when absent
@@ -604,6 +633,18 @@ async function main() {
   console.log(`   stale:  ${stale}`);
   console.log(`   miss:   ${missing}`);
   if (queryErr) console.log(`   ⚠ query_error: ${queryErr} (filtering wiped a previously-healthy SKU — inspect filterReport)`);
+
+  // VALIDATION DUMP (2026-08-22). The validation protocol says to run one SKU
+  // to a temp file and inspect the filter report before trusting a change, but
+  // there was no way to get the per-SKU report out: rejectionSamples live on
+  // the returned object and an ONLY run trips the wipe guard below (correctly)
+  // before anything is written, so the diagnosis died with the process. Set
+  // DEBUG_DUMP=<path> to write the run's objects somewhere harmless. Never
+  // point it at data/ — this is the temp file the protocol asks for.
+  if (process.env.DEBUG_DUMP) {
+    await writeFile(process.env.DEBUG_DUMP, JSON.stringify(updated, null, 2) + "\n");
+    console.log(`   🔍 validation dump → ${process.env.DEBUG_DUMP}`);
+  }
 
   // RUN-LEVEL WIPE GUARD (2026-08-22): the per-SKU safety nets all passed
   // while a ReferenceError zeroed every SKU — 0 live written, exit 0, and
