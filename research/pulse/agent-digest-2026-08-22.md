@@ -23,6 +23,11 @@ We put something in front of readers and can no longer price it. That is the kin
 - *tool idea (hypothesis)* — Print windows and shelf movement are computed separately and never combined. A late-print set whose shelves are draining is a genuinely different situation from either signal alone. Crossing them is free and nobody publishes it.
 - *product* — The index has no matched sample today, so it cannot move. Expected on a fresh series — worth a line on the page saying so, rather than a number that looks stuck.
 
+## The agents themselves
+**NEEDS A HUMAN — the supervisor flagged the watchers:**
+- creator: FARMING — findings climbed 5 → 5 → 5 → 15 across four runs with nothing resolved. Volume is not work.
+- creator: OVER-BUDGET — 15 findings against a ceiling of 10. An unreadable list is an unread list.
+
 ## If we expanded
 Pricing 50 more cards would unlock 17 artist cohorts and make 2018 catalogue cards analysable. That is Tyler's call, not the machine's.
 
@@ -45,18 +50,17 @@ Gaps in what we watch:
 - *ease of use* — A number appears above the fold on Today. Holds — check on a 390px screen that it is still above the fold with the banner and nav present.
 
 ## Who needs to do what
-**NEEDS A HUMAN — Tyler (3):**
-- Nothing tells a creator how a piece performed after they made it. — *Ask one question after publication — did this land — and keep the answers. Even a yes/no on twenty videos would tell us which angles are worth generating.*
+**NEEDS A HUMAN — Tyler (2):**
 - We hold both deal-zone room and per-pack economics for the same products. — *A "rip or trade" tool could answer one question nobody else can: at today's prices, is this box worth more opened, sold sealed online, or traded at a table? Three numbers we already compute, one screen.*
 - Print windows and shelf movement are computed separately and never combined. — *A late-print set whose shelves are draining is a genuinely different situation from either signal alone. Crossing them is free and nobody publishes it.*
 
-**CC (5):**
+**CC (4):**
 - 10 distinct angles are ready each morning. — *Hold it. The risk now is the opposite — too many choices is its own paralysis, so lead with three and let the rest be a list.*
 - 27 card images minted today. — *The gap is that they are files in a repo. A creator needs them one tap from the angle they picked, not from a folder.*
-- The pieces exist and are reachable, but a creator still assembles them: pick an angle here, find the card there, open the overlay separately. — *ONE screen per angle: the subject, the spoken open, the numbers as a lower-third, the card ready to download, the source line, and a record checklist. Pick an angle, hit record.*
 - 4 accent colours appear on the same surface. — *Reserve green for positive, red for negative, and let mode accent everything else. Gold stays a highlight, never a third voice.*
+- 32 emoji in the interface. — *Keep them for section headers and the ELI5 lollipop; drop them from anything carrying a number.*
 
-**Chat (11):** 11 item(s), top: Artist angles all carry their sources.
+**Chat (14):** 14 item(s), top: Artist angles all carry their sources.
 
 ## The creator cheat code
 *Could somebody open this, hit record within two minutes, and sound like the most informed voice in the hobby without pausing to look anything up? Every pause is a cut.*

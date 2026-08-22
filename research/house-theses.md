@@ -655,3 +655,25 @@ problems is a bad manager: it treats success as a warning, and then nobody
 reads it. Every agent now declares what its empty result MEANS, and the
 supervisor says "clean run — nothing failed, which is the point of it"
 rather than raising an alarm about good news.
+
+## RT-8 · REPRINT PRESSURE (Aug 23 2026)
+Crossing a set PRINT WINDOW against what its shelves are doing answers three
+different people from one computation — which is why the creator agent found
+the same gap from three directions in one run.
+- late print + shelves FILLING → stock is arriving, often a reprint.
+  Buyer: wait. Vendor: leave it home. Creator: the reprint conversation,
+  before anyone announces anything.
+- late print + shelves DRAINING → the window is closing while stock leaves.
+  Buyer: this is what people mean by a hidden gem. Vendor: bring it, you
+  will be one of fewer tables carrying it. Creator: the nobody-is-talking-
+  about-this video.
+- early print → normal. Say nothing rather than invent a story.
+READ, never VERIFIED: a print window is an estimate off a 30-month model and
+shelf counts are listings, not sales. Two soft signals crossed are still soft,
+and the copy says so.
+FALSIFIER: if late-print sets with filling shelves are no more likely to see a
+reprint announced within 90 days than late-print sets generally, the crossing
+adds nothing and this retires.
+WHY IT MATTERS BEYOND THE SIGNAL: it is the first instrument built to serve
+buyers, vendors and creators simultaneously — the Referee Doctrine expressed
+as a computation rather than a promise.

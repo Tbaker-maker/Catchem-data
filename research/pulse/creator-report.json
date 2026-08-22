@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-22T21:09:38.642Z",
+ "generatedAt": "2026-08-22T21:17:15.820Z",
  "brief": "Make the creator portal a cheat code: if using us makes a video obviously better and obviously easier, creators market us for free.",
  "test": "Could somebody open this, hit record within two minutes, and sound like the most informed voice in the hobby without pausing to look anything up? Every pause is a cut.",
  "findings": [
@@ -25,6 +25,76 @@
    "owner": "chat"
   },
   {
+   "need": "topic fit",
+   "observation": "\"TCG prices\" — we can answer this today with the index, per-product prices, and the deal zone.",
+   "why": "We are the only ones who can say what a thing is worth to BUY, to SELL after fees, and to TRADE face to face. Everyone else quotes one number.",
+   "fix": "Make sure an angle exists for it in the daily bank. A lane we can win and do not generate content for is a wasted advantage.",
+   "owner": "chat"
+  },
+  {
+   "need": "topic fit",
+   "observation": "\"track the market\" — we can answer this today with the sealed index, its value-weighted twin, breadth, and per-class indexes.",
+   "why": "A single honest number with its own kill conditions published. Nobody else in the hobby publishes what would prove their index wrong.",
+   "fix": "Make sure an angle exists for it in the daily bank. A lane we can win and do not generate content for is a wasted advantage.",
+   "owner": "chat"
+  },
+  {
+   "need": "topic fit",
+   "observation": "\"hidden gems\" — partly served by the floor-to-median lens and the artist underrated detector.",
+   "why": "A card sitting far below its own illustrator's median is a genuinely new way to find one.",
+   "fix": "Nothing surfaces hidden gems for SEALED — the artist version only covers singles. A sealed product priced far below its cohort is the same idea and we do not compute it.",
+   "owner": "chat"
+  },
+  {
+   "need": "topic fit",
+   "observation": "\"plays nobody is talking about\" — partly served by quiet movers — things moving without headlines.",
+   "why": "This is the single best fit between what we measure and what creators want, and it is buried. A thing that moved while nobody looked IS the video.",
+   "fix": "Quiet movers is computed and never surfaced as an angle. It should be a standing weekly format, not a field in a JSON file.",
+   "owner": "chat"
+  },
+  {
+   "need": "topic fit",
+   "observation": "\"reprints\" — partly served by print windows, supply shifts with cause candidates, and RT-1.",
+   "why": "We can say a reprint is LIKELY landing (shelves filling while asks hold) before it is announced, and we publish the falsifier alongside.",
+   "fix": "Print watch and supply shifts are never crossed. A late-print set whose shelves are suddenly filling is the strongest reprint signal we could publish and it is two fields apart.",
+   "owner": "chat"
+  },
+  {
+   "need": "vending",
+   "observation": "A vendor's booth floor exists — the deal zone already shows what they would keep selling online.",
+   "why": "Most vendors price against their eBay STICKER and refuse cash offers that would have beaten their actual online outcome. This is the number that changes behaviour, and we already compute it.",
+   "fix": "It lives inside Show Mode's selling toggle. It should also be a standalone thing a vendor can check the night before a show, for their whole inventory at once, not one product at a time.",
+   "owner": "cc"
+  },
+  {
+   "need": "vending",
+   "observation": "Nothing answers 'what should I bring to this show'.",
+   "why": "It is the vendor's single biggest decision of the week and it is made from memory. We hold shelf movement, print windows and per-class indexes — everything needed to say what is tightening.",
+   "fix": "A weekly BRING LIST: products whose shelves are draining, whose print window is closing, or whose class is outperforming. Same data as the buyer instruments, pointed the other way.",
+   "owner": "chat"
+  },
+  {
+   "need": "vending",
+   "observation": "Nothing answers 'what should I leave home'.",
+   "why": "Dead stock costs table space and confidence. Telling a vendor what NOT to bring is more useful than another buy signal, and no tool anywhere does it.",
+   "fix": "The inverse list: shelves filling, asks softening, a reprint window opening. Deliberately unglamorous, and the thing a vendor would actually thank us for.",
+   "owner": "chat"
+  },
+  {
+   "need": "vending",
+   "observation": "Shelf movement and print windows are never crossed — for vendors this is the whole game.",
+   "why": "A late-print set whose shelves are filling is a vendor's warning; one whose shelves are draining is a vendor's opportunity. Both are two fields apart in our own data.",
+   "fix": "Cross them once and it serves creators ('reprints'), buyers ('hidden gems') and vendors ('what to bring') from a single computation.",
+   "owner": "chat"
+  },
+  {
+   "need": "vending",
+   "observation": "Nothing lets a vendor check their own pricing against the room.",
+   "why": "A vendor at a table is guessing whether they are the cheapest in the hall. Our numbers cannot see the hall — but they CAN say where a price sits against the online market, which is the next best thing and nobody offers it.",
+   "fix": "Show Mode already prices one product. A vendor needs a list view: paste or scan their inventory, see where each sits against the delivered online total. Referee framing throughout — the same numbers a buyer sees.",
+   "owner": "cc"
+  },
+  {
    "need": "the cheat code",
    "observation": "The pieces exist and are reachable, but a creator still assembles them: pick an angle here, find the card there, open the overlay separately.",
    "why": "The cheat code is not having good assets. It is not having to think. The moment somebody has to hunt for a matching image, they are editing instead of recording.",
@@ -40,8 +110,8 @@
   }
  ],
  "byOwner": {
-  "chat": 1,
-  "cc": 3,
+  "chat": 9,
+  "cc": 5,
   "tyler": 1
  }
 }

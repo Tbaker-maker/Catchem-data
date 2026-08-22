@@ -457,6 +457,7 @@ const feed = {
   sealedIndex: der?.sealedIndex ?? null,
   watchOutcomes: der?.watchOutcomes ?? null,
   rawIndex: der?.rawIndex ?? null,
+  reprintPressure: der?.reprintPressure ?? [],
   dealZone: der?.dealZone ?? null,
   ripSellTrade: (await J("research/pulse/rip-sell-trade.json"))?.rows?.slice(0, 40) ?? null,
   netProceeds: der?.netProceeds ? { ...der.netProceeds,

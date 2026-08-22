@@ -650,6 +650,54 @@ for (const p of liveList) {
     caveat: "Ripping is priced as the packs inside at today's loose price. What you might pull is a gamble we do not model." };
 }
 
+
+// ── 🔁 REPRINT PRESSURE — one computation, three audiences ─────────────────
+// The creator agent found the same missing crossing from three directions:
+// creators want "reprints", buyers want "hidden gems", vendors want "what do I
+// bring". All three are answered by crossing a set's PRINT WINDOW against what
+// its shelves are doing — and both halves have been sitting two fields apart.
+//
+//   late print + shelves FILLING  → a reprint is landing or already has.
+//                                   Vendor: leave it home. Buyer: wait.
+//   late print + shelves DRAINING → the window is closing while stock leaves.
+//                                   Vendor: bring it. Buyer: this is the gem.
+//   early print + either          → normal. Say nothing rather than invent a story.
+//
+// READ, never VERIFIED: a print window is an estimate off a 30-month model and
+// shelf counts are listings, not sales. Two soft signals crossed are still soft.
+const reprintPressure = (() => {
+  const shiftBySet = {};
+  for (const s of (supplyShifts ?? [])) {
+    const p = (sp.products || []).find(x => x.id === s.id);
+    if (p?.setId) (shiftBySet[p.setId] ||= []).push(s.dPct);
+  }
+  const rows = [];
+  for (const pw of (printWatch ?? [])) {
+    const deltas = shiftBySet[pw.setId];
+    if (!deltas?.length) continue;
+    const median = [...deltas].sort((a, b) => a - b)[Math.floor(deltas.length / 2)];
+    const late = /late print|likely EOL/i.test(pw.phase ?? "");
+    if (!late || Math.abs(median) < 10) continue;
+    const filling = median > 0;
+    rows.push({ setId: pw.setId, set: pw.set, phase: pw.phase,
+      shelfMovePct: Math.round(median * 10) / 10, products: deltas.length,
+      signal: filling ? "SUPPLY ARRIVING" : "WINDOW CLOSING",
+      chip: "READ",
+      forBuyers: filling
+        ? "Shelves filling this late usually means fresh stock arriving — often a reprint. Patience tends to be rewarded here."
+        : "Stock leaving a set whose print window is closing is the shape people mean by a hidden gem. It is also the shape of a set nobody is restocking, which is not the same thing.",
+      forVendors: filling
+        ? "Worth leaving at home. Table space costs more than the margin on something the room is about to be full of."
+        : "Worth bringing. Supply is thinning while the window closes, and you will be one of fewer tables carrying it.",
+      forCreators: filling
+        ? `${pw.set} shelves are up ${Math.abs(Math.round(median))}% while its print window is closing — that is the reprint conversation, before anyone announces anything.`
+        : `${pw.set} is losing stock as its print window closes. That is the "nobody is talking about this" video, and the numbers are already here.`,
+      simple: `${pw.set} is late in its printing life, and the number of copies for sale ${filling ? "went up" : "went down"} by about ${Math.abs(Math.round(median))}%. More copies appearing late usually means new stock arriving; fewer copies means the shelf is emptying while it can still be refilled — or that nobody is refilling it.`,
+    });
+  }
+  return rows.sort((a, b) => Math.abs(b.shelfMovePct) - Math.abs(a.shelfMovePct)).slice(0, 12);
+})();
+
 const out = {
   generatedAt: new Date().toISOString(),
   method: "Pack Math: ask median / era-aware pack count (arithmetic, no estimation; variable-count products excluded by name). Narrative: latest agent digest cross-referenced against tracked sets; 'quiet movers' = spread signal with zero digest mention.",
@@ -662,6 +710,7 @@ const out = {
   printWatch, tightening, rotationCohorts,
   eraIndexes,
   ripSellTrade,
+  reprintPressure,
   sealedIndex: { ...sealedIndex, valueWeighted }, rawIndex, gradedIndex, netProceeds, packPricing, dealZone, fx, subtypeIndexes, watchOutcomes, supplyShifts: supplyShifts.slice(0,8), ripOrHold, notification,
   cohortCompare,
   topicHits,

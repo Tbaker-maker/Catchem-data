@@ -1,17 +1,17 @@
 {
- "generatedAt": "2026-08-22T21:11:00.450Z",
+ "generatedAt": "2026-08-22T21:17:15.778Z",
  "date": "2026-08-22",
  "mood": "Not much of a verdict today. Most of our claims need more time before they can be judged, and pretending otherwise would be the actual failure.",
  "note": "We test our own claims before anyone else gets the chance. INSUFFICIENT is an honest verdict and is reported as loudly as the others.",
  "coverage": {
-  "thesesInDoctrine": 9,
-  "tested": 9,
+  "thesesInDoctrine": 10,
+  "tested": 10,
   "untested": []
  },
  "summary": {
   "survived": 4,
   "tripped": 0,
-  "insufficient": 6,
+  "insufficient": 7,
   "pending": 0
  },
  "results": [
@@ -83,6 +83,14 @@
    "verdict": "INSUFFICIENT",
    "detail": "needs the full catalogue ingested plus 30+ days of singles history to compare cohort coherence against a random baseline",
    "needs": "catalogue + 30 days of singles tape"
+  },
+  {
+   "id": "RT-8",
+   "name": "Reprint Pressure",
+   "falsifier": "late-print sets with filling shelves are no more likely to see a reprint announced within 90 days than late-print sets generally",
+   "verdict": "INSUFFICIENT",
+   "detail": "12 crossings today (0 arriving, 12 closing) — but the falsifier needs 90 days of reprint announcements to compare against, which we do not yet log",
+   "needs": "a log of reprint announcements, and 90 days of these crossings to test them against"
   },
   {
    "id": "IDX",

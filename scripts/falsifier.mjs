@@ -137,6 +137,17 @@ const tests = [
     falsifier: "cards by the same illustrator move together no more often than random cards of similar rarity and era",
     run: () => ({ verdict: "INSUFFICIENT", detail: "needs the full catalogue ingested plus 30+ days of singles history to compare cohort coherence against a random baseline", needs: "catalogue + 30 days of singles tape" }) },
 
+  { id: "RT-8", name: "Reprint Pressure",
+    falsifier: "late-print sets with filling shelves are no more likely to see a reprint announced within 90 days than late-print sets generally",
+    run: () => {
+      const rows = der.reprintPressure ?? [];
+      if (!rows.length) return { verdict: "INSUFFICIENT", detail: "no late-print set showed a shelf move over 10% today", needs: "a late-print set with a real shelf move" };
+      const filling = rows.filter(r => r.signal === "SUPPLY ARRIVING").length;
+      return { verdict: "INSUFFICIENT",
+        detail: `${rows.length} crossings today (${filling} arriving, ${rows.length - filling} closing) — but the falsifier needs 90 days of reprint announcements to compare against, which we do not yet log`,
+        needs: "a log of reprint announcements, and 90 days of these crossings to test them against" };
+    } },
+
   // Not a thesis, but the same discipline: the index must never move on a
   // methodology change. This has been violated twice and is worth a daily check.
   { id: "IDX", name: "Index moves only on the market",

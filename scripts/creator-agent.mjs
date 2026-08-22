@@ -94,6 +94,94 @@ const F = (need, observation, why, fix, owner) => findings.push({ need, observat
       "Extend the same to every angle in the post bank, and put the source in the script so it can be said aloud.", "chat");
 }
 
+// ── 4b · DEMAND vs SUPPLY: does what we hold match what creators make? ─────
+// The agent knew our supply side and nothing about demand, which made it an
+// inventory clerk rather than a professional. These are the recurring topics
+// in this space (Tyler, founder knowledge, recorded in data/knowledge.json as
+// COMMUNITY confidence — it is the best source we have and better than a guess).
+//
+// For each topic: can we answer it TODAY, with which instrument, and what is
+// missing? A topic we can answer better than anyone is a lane. A topic we
+// cannot answer at all is either a gap worth closing or one worth ignoring
+// deliberately — and knowing which is the whole job.
+{
+  const has = (x) => x && (Array.isArray(x) ? x.length : Object.keys(x).length);
+  const TOPICS = [
+    { topic: "TCG prices",
+      served: has(der.sealedIndex) && has(der.dealZone?.byId),
+      with: "the index, per-product prices, and the deal zone",
+      edge: "We are the only ones who can say what a thing is worth to BUY, to SELL after fees, and to TRADE face to face. Everyone else quotes one number.",
+      gap: null },
+    { topic: "track the market",
+      served: has(der.sealedIndex) && has(der.subtypeIndexes),
+      with: "the sealed index, its value-weighted twin, breadth, and per-class indexes",
+      edge: "A single honest number with its own kill conditions published. Nobody else in the hobby publishes what would prove their index wrong.",
+      gap: null },
+    { topic: "hidden gems",
+      served: has(der.dealZone?.byId),
+      with: "the floor-to-median lens and the artist underrated detector",
+      edge: "A card sitting far below its own illustrator's median is a genuinely new way to find one.",
+      gap: "Nothing surfaces hidden gems for SEALED — the artist version only covers singles. A sealed product priced far below its cohort is the same idea and we do not compute it." },
+    { topic: "plays nobody is talking about",
+      served: /quiet/i.test(JSON.stringify(der).slice(0, 200000)),
+      with: "quiet movers — things moving without headlines",
+      edge: "This is the single best fit between what we measure and what creators want, and it is buried. A thing that moved while nobody looked IS the video.",
+      gap: "Quiet movers is computed and never surfaced as an angle. It should be a standing weekly format, not a field in a JSON file." },
+    { topic: "reprints",
+      served: has(der.printWatch) && has(der.supplyShifts),
+      with: "print windows, supply shifts with cause candidates, and RT-1",
+      edge: "We can say a reprint is LIKELY landing (shelves filling while asks hold) before it is announced, and we publish the falsifier alongside.",
+      gap: "Print watch and supply shifts are never crossed. A late-print set whose shelves are suddenly filling is the strongest reprint signal we could publish and it is two fields apart." },
+  ];
+  for (const t of TOPICS) {
+    if (t.served && !t.gap)
+      F("topic fit", `"${t.topic}" — we can answer this today with ${t.with}.`,
+        t.edge, "Make sure an angle exists for it in the daily bank. A lane we can win and do not generate content for is a wasted advantage.", "chat");
+    else if (t.served && t.gap)
+      F("topic fit", `"${t.topic}" — partly served by ${t.with}.`, t.edge, t.gap, "chat");
+    else
+      F("topic fit", `"${t.topic}" — we cannot answer this today.`,
+        "A recurring topic we cannot serve is a reason a creator opens somebody else's tool.", "Decide deliberately: close the gap or ignore it on purpose. Drifting is the only wrong answer.", "tyler");
+  }
+}
+
+// ── 4c · VENDING: the half of the room nobody builds for ───────────────────
+// The Referee Doctrine says vendors get the same numbers as buyers. It should
+// also mean they get the same TOOLS — and right now they do not. Every
+// instrument we have answers "what is this worth to buy". A vendor's questions
+// are different and mostly unanswered:
+//   what do I bring · what do I leave home · what do I price it at ·
+//   what did I misjudge last time
+// This matters commercially as well as ethically: vendors run the shows, the
+// shops, the Discords and the streams. A tool they open on a Saturday morning
+// is a channel money cannot buy.
+{
+  const has = (x) => x && (Array.isArray(x) ? x.length : Object.keys(x).length);
+  const zone = has(der.dealZone?.byId), shifts = has(der.supplyShifts), print = has(der.printWatch);
+
+  if (zone)
+    F("vending", "A vendor's booth floor exists — the deal zone already shows what they would keep selling online.",
+      "Most vendors price against their eBay STICKER and refuse cash offers that would have beaten their actual online outcome. This is the number that changes behaviour, and we already compute it.",
+      "It lives inside Show Mode's selling toggle. It should also be a standalone thing a vendor can check the night before a show, for their whole inventory at once, not one product at a time.", "cc");
+
+  F("vending", "Nothing answers 'what should I bring to this show'.",
+    "It is the vendor's single biggest decision of the week and it is made from memory. We hold shelf movement, print windows and per-class indexes — everything needed to say what is tightening.",
+    "A weekly BRING LIST: products whose shelves are draining, whose print window is closing, or whose class is outperforming. Same data as the buyer instruments, pointed the other way.", "chat");
+
+  F("vending", "Nothing answers 'what should I leave home'.",
+    "Dead stock costs table space and confidence. Telling a vendor what NOT to bring is more useful than another buy signal, and no tool anywhere does it.",
+    "The inverse list: shelves filling, asks softening, a reprint window opening. Deliberately unglamorous, and the thing a vendor would actually thank us for.", "chat");
+
+  if (shifts && print)
+    F("vending", "Shelf movement and print windows are never crossed — for vendors this is the whole game.",
+      "A late-print set whose shelves are filling is a vendor's warning; one whose shelves are draining is a vendor's opportunity. Both are two fields apart in our own data.",
+      "Cross them once and it serves creators ('reprints'), buyers ('hidden gems') and vendors ('what to bring') from a single computation.", "chat");
+
+  F("vending", "Nothing lets a vendor check their own pricing against the room.",
+    "A vendor at a table is guessing whether they are the cheapest in the hall. Our numbers cannot see the hall — but they CAN say where a price sits against the online market, which is the next best thing and nobody offers it.",
+    "Show Mode already prices one product. A vendor needs a list view: paste or scan their inventory, see where each sits against the delivered online total. Referee framing throughout — the same numbers a buyer sees.", "cc");
+}
+
 // ── 5 · THE CHEAT CODE TEST ────────────────────────────────────────────────
 {
   // Could one screen carry everything a recording needs? Right now the pieces

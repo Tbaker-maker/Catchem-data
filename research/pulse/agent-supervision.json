@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-22T21:11:00.384Z",
+ "generatedAt": "2026-08-22T21:17:15.891Z",
  "date": "2026-08-22",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -7,14 +7,17 @@
   "falsifier: 0 finding(s)",
   "correction-hunter: 2 finding(s)",
   "review-agents: 0 finding(s)",
-  "creator: 5 finding(s)",
+  "creator: 15 finding(s)",
   "experience: 7 finding(s)",
   "improver: 11 finding(s)",
   "universe-advisor: 5 finding(s)",
   "falsifier: clean run — nothing failed, which is the point of it",
   "review-agents: has never actually run (no key) — costing nothing, proving nothing, and honest about both"
  ],
- "problems": [],
+ "problems": [
+  "creator: FARMING — findings climbed 5 → 5 → 15 → 15 across four runs with nothing resolved. Volume is not work.",
+  "creator: OVER-BUDGET — 15 findings against a ceiling of 10. An unreadable list is an unread list."
+ ],
  "workforce": [
   {
    "kind": "HIRE",
@@ -87,6 +90,21 @@
     "do": "Extend the same to every angle in the post bank, and put the source in the script so it can be said aloud."
    },
    {
+    "from": "creator",
+    "what": "\"TCG prices\" — we can answer this today with the index, per-product prices, and the deal zone.",
+    "do": "Make sure an angle exists for it in the daily bank. A lane we can win and do not generate content for is a wasted advantage."
+   },
+   {
+    "from": "creator",
+    "what": "\"track the market\" — we can answer this today with the sealed index, its value-weighted twin, breadth, and per-class indexes.",
+    "do": "Make sure an angle exists for it in the daily bank. A lane we can win and do not generate content for is a wasted advantage."
+   },
+   {
+    "from": "creator",
+    "what": "\"hidden gems\" — partly served by the floor-to-median lens and the artist underrated detector.",
+    "do": "Nothing surfaces hidden gems for SEALED — the artist version only covers singles. A sealed product priced far below its cohort is the same idea and we do not compute it."
+   },
+   {
     "from": "experience",
     "what": "The Today screen carries 17 sections: The Daily Three, 🗳 Rip or Hold?, Biggest movers, Set the app up for you, Movers, Release radar…",
     "do": "Rank them by how often somebody would act on each, and move the bottom third behind a tap. Nothing is deleted — it stops competing."
@@ -149,11 +167,6 @@
     "do": "The gap is that they are files in a repo. A creator needs them one tap from the angle they picked, not from a folder."
    },
    {
-    "from": "creator",
-    "what": "The pieces exist and are reachable, but a creator still assembles them: pick an angle here, find the card there, open the overlay separately.",
-    "do": "ONE screen per angle: the subject, the spoken open, the numbers as a lower-third, the card ready to download, the source line, and a record checklist. Pick an angle, hit record."
-   },
-   {
     "from": "experience",
     "what": "4 accent colours appear on the same surface.",
     "do": "Reserve green for positive, red for negative, and let mode accent everything else. Gold stays a highlight, never a third voice."
@@ -165,11 +178,6 @@
    }
   ],
   "tyler": [
-   {
-    "from": "creator",
-    "what": "Nothing tells a creator how a piece performed after they made it.",
-    "do": "Ask one question after publication — did this land — and keep the answers. Even a yes/no on twenty videos would tell us which angles are worth generating."
-   },
    {
     "from": "improver",
     "what": "We hold both deal-zone room and per-pack economics for the same products.",
