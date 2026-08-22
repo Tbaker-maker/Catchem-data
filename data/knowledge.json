@@ -171,6 +171,41 @@
     "platform-agents"
    ],
    "recheckAfter": "2027-02-23"
+  },
+  {
+   "id": "pack-types-loose-vs-sleeved",
+   "claim": "Loose booster packs and sleeved booster packs are both single packs, from different origins. A LOOSE pack comes from opening a sealed product \u2014 a box, ETB or bundle. A SLEEVED pack comes from a case, or is bought singly from a store.",
+   "sources": [
+    "Tyler, founder domain knowledge, 2026-08-23"
+   ],
+   "verified": "2026-08-23",
+   "verifier": "Tyler",
+   "confidence": "COMMUNITY",
+   "falsifier": "evidence that sleeved and loose packs are the same product or that either is not a single pack",
+   "note": "CONSEQUENCE FOR OUR FILTER: excluding the term \"sleeved\" removes an entire legitimate class of single pack. It killed 318 listings across the board. Origin also plausibly affects price \u2014 a loose pack came out of a box somebody had access to, a sleeved pack did not \u2014 so they may deserve separate tracking rather than a merged median.",
+   "usedBy": [
+    "fetch-sealed-prices",
+    "pack-basis"
+   ],
+   "recheckAfter": "2028-08-23"
+  },
+  {
+   "id": "pack-prices-from-tcgplayer",
+   "claim": "Single pack pricing should come from TCGplayer rather than eBay, because packs are a commodity class where TCGplayer is the deeper and more representative venue.",
+   "sources": [
+    "Tyler, founder domain knowledge",
+    "RT-4b Commodity-Pack Venue Rule"
+   ],
+   "verified": "2026-08-23",
+   "verifier": "Tyler",
+   "confidence": "COMMUNITY",
+   "falsifier": "mapped TCGplayer pack prices persistently sitting above eBay asks for the same SKU",
+   "note": "ALREADY IMPLEMENTED for price. NOT implemented for LISTING COUNT, which still comes from eBay \u2014 so a pack row currently shows a TCGplayer price beside an eBay listing count, which are two different markets in one line.",
+   "usedBy": [
+    "pack-basis",
+    "domain-plausibility"
+   ],
+   "recheckAfter": "2027-08-23"
   }
  ]
 }

@@ -229,7 +229,7 @@ const EXCLUDE_BY_SUBTYPE = {
   "booster-box": [
     "etb", "elite trainer", "bundle", "blister", "mini tin",
     "build & battle", "build and battle", "1 pack", "single pack",
-    "2 pack", "3 pack", "collection box", "sleeved booster",
+    "2 pack", "3 pack", "collection box",
     // multi-box lots masquerading as one box ("6 Booster Boxes", "2 Box Lot").
     // NOT "case": legit singles ship "with plastic case".
     "booster boxes", "box lot", "2 box", "3 box", "4 box", "6 box",
@@ -265,7 +265,7 @@ const EXCLUDE_BY_SUBTYPE = {
   // code-card class (special-set sweep 2026-08-22): online-code listings
   // titled "<set> Booster Pack Code Card" pass set+type and sit at $2-6 —
   // they were the $4.49/$5.95 "floors" on sv8pt5/swsh12pt5 packs.
-  "booster-pack":   ["weighed", "packs", "bundle", "box", "art card", "art cards", "art print", "art set", "art display", "etb", "elite trainer", "blister", "sleeved", "sticker",
+  "booster-pack":   ["weighed", "bundle", "box", "art card", "art cards", "art print", "art set", "art display", "etb", "elite trainer", "blister", "sleeved", "sticker",
     "code card", "code cards", "online code", "digital", "ptcgo", "tcg live",
     // graded slabbed packs are a collectible market, not street price (2026-08-18: "PSA 8 NM-MINT ... SEALED Booster Pack" $49.99 passed)
     "psa", "cgc", "bgs", "graded", "unsearched",
@@ -350,6 +350,9 @@ function filterItemsForProduct(product, items) {
   const sample = (bucket, title, term) => { if (samples[bucket].length < 5) samples[bucket].push(term ? `[${term}] ${String(title).slice(0, 80)}` : String(title).slice(0, 80)); };
   const [floor, ceiling] = priceBoundsFor(product);
 
+  // Tag which kind of single pack each listing is, so a future session can ask
+  // whether sleeved and loose price differently instead of guessing.
+  const packOrigin = (t) => /\bsleeved\b/i.test(t) ? "sleeved" : /\bloose\b/i.test(t) ? "loose" : "unstated";
   const kept = items.filter(i => {
     const t = titleLowerOf(i);
     // The sample() calls below said `it.title` where the parameter is `i` —
