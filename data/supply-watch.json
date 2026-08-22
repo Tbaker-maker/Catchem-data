@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-08-22T04:38:45.777Z",
+  "generatedAt": "2026-08-22T06:10:35.209Z",
   "method": "7-day listing-count deltas, eBay vs TCG-side. Active Listings measured; demand est. from listing activity, not reported sales. Lead-lag states are reads. NOTE Aug 18: current provider exposes no sealed listing counts (tcgListings null) — TCG side dormant; eBay-side deltas remain valid via heat-history.",
   "counts": {
     "read": 0,
-    "maturing": 179,
+    "maturing": 180,
     "signals": 0
   },
   "rows": [],
@@ -902,6 +902,11 @@
       "id": "swsh9-pack",
       "ebayDays": 2,
       "tcgDays": 1
+    },
+    {
+      "id": "swsh45-pack",
+      "ebayDays": 1,
+      "tcgDays": 0
     }
   ]
 }
