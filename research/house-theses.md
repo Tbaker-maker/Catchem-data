@@ -797,3 +797,32 @@ ambiguous, written reasoning so decisions survive the person who made them,
 feedback loops so being wrong is cheap and fast, and a single source of truth
 so two people cannot hold different pictures. That is how competent
 organisations actually run, and it is what we are copying.
+
+## PLAUSIBLE IN CONTEXT (Tyler, Aug 23 2026)
+"Where is there only 8 listings of packs? They should be plentiful in this
+part of their cycle. Our system needs to pick up on stuff like that."
+
+We had three layers of checking and none would have caught it. The shape was
+right, the value was possible, the sample cleared the thin-data floor. And 8
+listings for an in-print Prismatic Evolutions pack is obviously absurd to
+anyone who knows the hobby.
+
+**A number can be structurally valid, numerically possible, statistically
+unremarkable, and still wrong to anybody with domain knowledge.** That is a
+fourth category and it needed its own check.
+
+RULES, each one domain knowledge stated explicitly so it can be argued with:
+1. An in-print modern product cannot be scarce.
+2. Rejecting more than 70% of what you fetched is a filter fault, not a market.
+3. A pack cannot cost more than half its own box.
+4. Vintage sealed should be thinner than modern, never deeper.
+5. Sealed markets do not move 50% in a day without an event.
+
+EVERY FINDING NAMES OUR OWN FILTER AS THE FIRST SUSPECT, because it nearly
+always is. First run: 54 implausible values across the board, traced to TWO
+exclude terms — "packs" killed 339 listings and "sleeved" killed 318, and both
+describe a SINGLE unit. Fifty-four symptoms, two causes.
+
+ADVISORY, NOT BLOCKING. Fifty-four findings on day one would stop every build,
+and a guard that must be switched off to ship is a guard that gets switched
+off permanently.

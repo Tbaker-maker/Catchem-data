@@ -27,6 +27,7 @@ const plat = await J("research/pulse/platform-report.json");
 const stw = await J("research/pulse/steward-report.json");
 const sec = await J("research/pulse/security-report.json");
 const cmp = await J("research/pulse/compliance-report.json");
+const dpl = await J("research/pulse/domain-plausibility.json");
 const con = await J("research/pulse/agent-contract.json");
 const uni = await J("research/pulse/universe-advisor.json");
 const rev = await J("research/pulse/review-agents.json");
@@ -216,6 +217,15 @@ if (cmp?.tripped?.length) {
 } else if (cmp?.stale) {
   say(`## Compliance`);
   say(`The register has not been reviewed in ${cmp.registerAgeDays} days. Nothing has tripped, but a register nobody re-reads is the failure it exists to prevent.`);
+  say();
+}
+
+if (dpl?.counts?.high) {
+  say(`## Numbers that do not make sense for what they are`);
+  say(`${dpl.counts.high} value(s) are structurally fine and absurd in context.`);
+  for (const s of (dpl.termSuspects ?? []).filter(s => s.suspicious))
+    say(`- **"${s.term}"** killed ${s.kills} listings across the board — ${s.note}`);
+  for (const f of (dpl.findings ?? []).slice(0, 2)) say(`- ${f.name}: ${f.what} — *${f.likelyCause}*`);
   say();
 }
 

@@ -642,5 +642,6 @@ try { const { shouldRun } = await import("./cadence.mjs");
   const __d = await shouldRun("improver", __last);
   if (__d.run) await import("./improver.mjs"); else console.log(`  · improver.mjs skipped — ${__d.why}`); } catch (e) { console.warn(`  ⚠ agent improver.mjs: ${e.message} — advisory only`); }
 try { await import("./agent-digest.mjs"); } catch (e) { console.warn(`  ⚠ agent agent-digest.mjs: ${e.message} — advisory only`); }
+try { await import("./domain-plausibility.mjs"); } catch (e) { console.warn(`  ⚠ domain plausibility: ${e.message} — advisory only`); }
 await import("./content-sanity.mjs");
 await import("./publish-assert.mjs");
