@@ -69,3 +69,27 @@ was missing and is now explicit.)
 ### TYPE
 Nine-step scale, all digits in JetBrains Mono, Syne reserved for display
 at 28px and above.
+
+### CARD DENSITY — ONE CARD, TWO DENSITIES (Tyler approved, Aug 22)
+The v3-vs-v5 question was never two designs; it was one card at two
+densities, each right in a different place. Resolved as a RULE, not a
+preference, so it never gets re-argued:
+
+**EXPANDED — when three or fewer items share a screen.** All six parts,
+including the plain-English line. Used on the Daily Three, product
+pages, Deal Check. The reader has stopped to consider one thing, so the
+explanation earns its height.
+
+**COMPACT — when four or more items share a screen.** Same six parts,
+same order, same tokens — the photo shrinks to a ~64px thumb and the
+explanation collapses behind an ⓘ. Used on the Board, movers, watchlist,
+heat. The eye is scanning, not reading.
+
+WHY A COUNT AND NOT TASTE: every future screen answers itself without a
+debate. It also satisfies both standing laws at once — the Digest Law
+(glance, not read) via the compact form, and the Sandbox Rule (depth one
+tap away) via the ⓘ rather than deletion. Nothing is removed, only
+folded.
+IMPLEMENTATION: one component, a `density` prop, and a per-screen rule.
+Reference: research/assets/app-mockup-v6.html (real data, both densities,
+both at 390px).
