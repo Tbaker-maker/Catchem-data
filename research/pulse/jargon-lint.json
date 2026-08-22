@@ -1,7 +1,15 @@
 {
- "generatedAt": "2026-08-22T18:06:41.784Z",
+ "generatedAt": "2026-08-22T18:11:48.971Z",
  "surfaces": 5,
  "blocks": 0,
- "warns": 0,
- "findings": []
+ "warns": 1,
+ "findings": [
+  {
+   "surface": "research/pulse/post-bank.json",
+   "term": "per-pack",
+   "severity": "WARN",
+   "issue": "used without a plain-words explanation nearby",
+   "suggestedGloss": "the box price divided by how many packs are inside"
+  }
+ ]
 }
