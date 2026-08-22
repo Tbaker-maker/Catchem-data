@@ -61,7 +61,7 @@ Gaps in what we watch:
 
 **Chat (11):** top — The Today screen carries 17 sections: The Daily Three, 🗳 Rip or Hold?, Biggest movers, Set the app up for you, Movers, Release radar… *[QUEUE]*
 
-*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 0 ACT NOW, 9 QUEUE, 8 WATCH, 8 filed without surfacing, 4 confirmations.*
+*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 0 ACT NOW, 9 QUEUE, 8 WATCH, 7 filed without surfacing, 4 confirmations.*
 ## The creator cheat code
 *Could somebody open this, hit record within two minutes, and sound like the most informed voice in the hobby without pausing to look anything up? Every pause is a cut.*
 - **a visual that runs itself** — 27 card images minted today. *The gap is that they are files in a repo. A creator needs them one tap from the angle they picked, not from a folder.*
@@ -77,9 +77,6 @@ Nothing unusual, or not enough history to tell — 5 days of tape so far. Anomal
 - **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 100."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
-
-## Something is slipping
-- **unsaved** — 1 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
 
 ## SECURITY — NEEDS A HUMAN NOW
 - **Anthropic key found in scripts/negative-tests.mjs** — *Revoke it first, then remove it. Revoking comes first because removal does not un-share what was already shared.*
