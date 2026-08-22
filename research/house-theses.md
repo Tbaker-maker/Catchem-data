@@ -211,6 +211,13 @@ showed FOUR boxes for a single-box SKU (Tyler caught it within minutes of
 the change). Seller photos are single-unit but are phone snapshots.
 Neither wins automatically, so data/image-overrides.json records the
 per-product ruling with its reason and review date.
+NEVER SWAP ONE UNSEEN THING FOR ANOTHER (added 2026-08-22, after the
+mistake): when chat cannot see a result, the only safe move is the one
+that cannot be wrong — remove it. Chat swapped a bad catalogue image for
+an equally unseen seller photo and reported it fixed; Tyler had to report
+the same bug twice. A guess presented as a fix is worse than no fix,
+because it consumes the reporter's trust as well as their time.
+Enforced by scripts/image-override-guard.mjs.
 STANDING PROCESS: images cannot be verified by chat — it has no network
 access to the CDNs. Every image change needs a human or CC eye pass, and
 anything wrong gets an override entry rather than a code patch.

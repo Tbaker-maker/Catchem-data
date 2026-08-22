@@ -53,6 +53,13 @@ const MANIFEST = [
       { file: "scripts/compute-derived.mjs", pattern: /seasoned\(p\)/g, min: 2,
         note: "must gate BOTH the sealed composite and the subtype composites" },
     ] },
+  { guard: "Image override safety (chat cannot pick between unseen images)",
+    definedIn: "scripts/image-override-guard.mjs",
+    mustBeReferencedIn: [
+      { file: "scripts/image-override-guard.mjs", pattern: /humanVerified/g, min: 2 },
+      { file: "scripts/generate-pulse.mjs", pattern: /image-override-guard\.mjs/g, min: 1,
+        note: "must run in the pipeline, not just exist" },
+    ] },
   { guard: "Referee Doctrine (no adversarial framing)",
     definedIn: "scripts/voice-lint.mjs",
     mustBeReferencedIn: [

@@ -6,13 +6,17 @@
    "seller photo (eBay representative)",
    "none"
   ],
-  "neverShow": "any image depicting a different quantity than the product being priced"
+  "neverShow": "any image depicting a different quantity than the product being priced",
+  "chatMayOnlySet": "\"none\", or a URL a human supplied. Chat has no network access to any image CDN and therefore CANNOT choose between two unverified sources. Swapping one unseen image for another is a guess wearing the clothes of a fix \u2014 it happened on 2026-08-22 and cost Tyler a second report of the same bug.",
+  "defaultOnDoubt": "none \u2014 a missing photo is always safe; a wrong one is never safe."
  },
  "products": {
   "xy12-etb": {
-   "reason": "TCGplayer catalogue image shows FOUR elite trainer boxes; this SKU is one box (Tyler, 2026-08-22)",
-   "use": "seller",
-   "reviewed": "2026-08-22"
+   "use": "none",
+   "reason": "Catalogue shot showed FOUR boxes for a one-box SKU (Tyler, 2026-08-22). Chat then swapped it to the seller photo WITHOUT being able to see it \u2014 still wrong (Tyler, same night). No photo until a human supplies or approves one.",
+   "reviewed": "2026-08-22",
+   "setBy": "chat",
+   "humanVerified": false
   }
  }
 }
