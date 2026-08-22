@@ -14,6 +14,15 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { tmpdir } from "node:os";
+import { pathToFileURL } from "node:url";
+// /tmp is Linux-only. Every backup path here was hardcoded to it, so on
+// Windows all nine tests that snapshot a file errored on C:	mp and the audit
+// reported "9/18 guards proved real" — the guards were fine, the harness was
+// not. A negative-test harness that cannot run is worse than none: it reports
+// unproven guards as a guard failure and buries the real signal. (Fifth
+// instance of this gotcha in this repo.)
+const TMP = p => join(tmpdir(), p.replace(/^\/tmp\//, ""));
 const run = promisify(execFile);
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const P = p => join(ROOT, p);
@@ -50,8 +59,8 @@ const CASES = [
     // like a failure. What matters is that a quarantined product cannot reach
     // an editorial surface, whichever layer stops it.
     fn: async () => {
-      await copyFile(P("data/derived-insights.json"), "/tmp/nt-der.bak");
-      await copyFile(P("research/pulse/pulse-feed.json"), "/tmp/nt-feed2.bak");
+      await copyFile(P("data/derived-insights.json"), TMP("/tmp/nt-der.bak"));
+      await copyFile(P("research/pulse/pulse-feed.json"), TMP("/tmp/nt-feed2.bak"));
       try {
         const q = JSON.parse(await readFile(P("data/quarantine.json"), "utf-8"));
         const sp = JSON.parse(await readFile(P("data/sealed-prices.json"), "utf-8"));
@@ -68,8 +77,8 @@ const CASES = [
         const leaked = editorial.includes(prod.name);
         return { pass: !leaked, why: leaked ? `${prod.name} reached an editorial block while quarantined` : `stripped before publication (${prod.name} never reached an editorial block)` };
       } finally {
-        await copyFile("/tmp/nt-der.bak", P("data/derived-insights.json"));
-        try { await copyFile("/tmp/nt-feed2.bak", P("research/pulse/pulse-feed.json")); } catch {}
+        await copyFile(TMP("/tmp/nt-der.bak"), P("data/derived-insights.json"));
+        try { await copyFile(TMP("/tmp/nt-feed2.bak"), P("research/pulse/pulse-feed.json")); } catch {}
       }
     } },
 
@@ -89,62 +98,62 @@ const CASES = [
 
   { guard: "Knowledge entry law", detect: "knowledge-guard.mjs",
     break: async () => {
-      await copyFile(P("data/knowledge.json"), "/tmp/nt-kb.bak");
+      await copyFile(P("data/knowledge.json"), TMP("/tmp/nt-kb.bak"));
       const kb = JSON.parse(await readFile(P("data/knowledge.json"), "utf-8"));
       delete kb.facts[0].falsifier;
       await writeFile(P("data/knowledge.json"), JSON.stringify(kb, null, 1));
       return true;
     },
-    restore: async () => { await copyFile("/tmp/nt-kb.bak", P("data/knowledge.json")); } },
+    restore: async () => { await copyFile(TMP("/tmp/nt-kb.bak"), P("data/knowledge.json")); } },
 
   { guard: "Flag registry (one condition, one gate)", detect: "flag-guard.mjs",
     break: async () => {
-      await copyFile(P("data/flags.json"), "/tmp/nt-flags.bak");
+      await copyFile(P("data/flags.json"), TMP("/tmp/nt-flags.bak"));
       const f = JSON.parse(await readFile(P("data/flags.json"), "utf-8"));
       delete f.flags.site;
       await writeFile(P("data/flags.json"), JSON.stringify(f, null, 1));
       return true;
     },
-    restore: async () => { await copyFile("/tmp/nt-flags.bak", P("data/flags.json")); } },
+    restore: async () => { await copyFile(TMP("/tmp/nt-flags.bak"), P("data/flags.json")); } },
 
   { guard: "Publication block wiring", detect: "guard-audit.mjs",
     break: async () => {
-      await copyFile(P("scripts/compute-derived.mjs"), "/tmp/nt-cd.bak");
+      await copyFile(P("scripts/compute-derived.mjs"), TMP("/tmp/nt-cd.bak"));
       const s = await readFile(P("scripts/compute-derived.mjs"), "utf-8");
       await writeFile(P("scripts/compute-derived.mjs"), s.replace("r.signal && !blockedIds.has(r.id)", "r.signal"));
       return true;
     },
-    restore: async () => { await copyFile("/tmp/nt-cd.bak", P("scripts/compute-derived.mjs")); } },
+    restore: async () => { await copyFile(TMP("/tmp/nt-cd.bak"), P("scripts/compute-derived.mjs")); } },
 
   { guard: "Content sanity (empty edition)", detect: "publish-assert.mjs",
     break: async () => {
-      await copyFile(P("research/pulse/pulse-feed.json"), "/tmp/nt-feed.bak");
+      await copyFile(P("research/pulse/pulse-feed.json"), TMP("/tmp/nt-feed.bak"));
       const f = JSON.parse(await readFile(P("research/pulse/pulse-feed.json"), "utf-8"));
       f.products = [];
       await writeFile(P("research/pulse/pulse-feed.json"), JSON.stringify(f));
       return true;
     },
-    restore: async () => { await copyFile("/tmp/nt-feed.bak", P("research/pulse/pulse-feed.json")); } },
+    restore: async () => { await copyFile(TMP("/tmp/nt-feed.bak"), P("research/pulse/pulse-feed.json")); } },
 
   { guard: "Stale edition breaker", detect: "publish-assert.mjs",
     break: async () => {
-      await copyFile(P("data/sealed-prices.json"), "/tmp/nt-sp.bak");
+      await copyFile(P("data/sealed-prices.json"), TMP("/tmp/nt-sp.bak"));
       const sp = JSON.parse(await readFile(P("data/sealed-prices.json"), "utf-8"));
       for (const p of sp.products) if (p.lastSeen) p.lastSeen = "2020-01-01";
       await writeFile(P("data/sealed-prices.json"), JSON.stringify(sp, null, 2));
       return true;
     },
-    restore: async () => { await copyFile("/tmp/nt-sp.bak", P("data/sealed-prices.json")); } },
+    restore: async () => { await copyFile(TMP("/tmp/nt-sp.bak"), P("data/sealed-prices.json")); } },
 
   { guard: "Data file shapes", detect: "schema-guard.mjs",
     break: async () => {
-      await copyFile(P("data/divergence-report.json"), "/tmp/nt-dv.bak");
+      await copyFile(P("data/divergence-report.json"), TMP("/tmp/nt-dv.bak"));
       const d = JSON.parse(await readFile(P("data/divergence-report.json"), "utf-8"));
       d.rows = (d.rows || []).slice(0, 2);   // the shape of a run that lost its data
       await writeFile(P("data/divergence-report.json"), JSON.stringify(d));
       return true;
     },
-    restore: async () => { await copyFile("/tmp/nt-dv.bak", P("data/divergence-report.json")); } },
+    restore: async () => { await copyFile(TMP("/tmp/nt-dv.bak"), P("data/divergence-report.json")); } },
 
   { guard: "Thin-sample premium gate", detect: null,
     fn: async () => {
@@ -174,7 +183,7 @@ const CASES = [
     // ends on the 31st, because 31 % 5 === 1 % 5. Every rotation in the system
     // had it, including the Daily Three lens rotation the freshness law depends on.
     fn: async () => {
-      const { rotateIndex } = await import(P("scripts/rotate.mjs"));
+      const { rotateIndex } = await import(pathToFileURL(P("scripts/rotate.mjs")).href);
       const edges = [["2027-01-31", "2027-02-01"], ["2026-12-31", "2027-01-01"], ["2026-11-30", "2026-12-01"], ["2028-02-29", "2028-03-01"]];
       const bad = [];
       for (const n of [3, 5, 7, 9]) {
@@ -197,14 +206,14 @@ const CASES = [
     // valid JSON, right shape, prices an order of magnitude off. If nothing
     // notices, our guards only protect against honest failures.
     break: async () => {
-      await copyFile(P("data/sealed-prices.json"), "/tmp/nt-garbage.bak");
+      await copyFile(P("data/sealed-prices.json"), TMP("/tmp/nt-garbage.bak"));
       const sp = JSON.parse(await readFile(P("data/sealed-prices.json"), "utf-8"));
       for (const p of sp.products) if (p.dataStatus === "live" && p.priceMedian) p.priceMedian = Math.round(p.priceMedian * 10 * 100) / 100;
       await writeFile(P("data/sealed-prices.json"), JSON.stringify(sp, null, 2));
       try { await run("node", [P("scripts/qa-gate.mjs")], { cwd: ROOT }); } catch {}
       return true;
     },
-    restore: async () => { await copyFile("/tmp/nt-garbage.bak", P("data/sealed-prices.json")); } },
+    restore: async () => { await copyFile(TMP("/tmp/nt-garbage.bak"), P("data/sealed-prices.json")); } },
 
   { guard: "Thesis coverage (every claim has a live test)", detect: null,
     // A thesis written into doctrine and tested by nothing is exactly the
