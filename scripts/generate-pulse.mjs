@@ -453,6 +453,7 @@ console.log(`✓ Morning Pulse written: research/pulse/${today}.md`);
 
 await import("./mint-cards.mjs");
 await import("./mint-social-card.mjs");
+await import("./binder-page.mjs");
 await import("./rasterize-cards.mjs");
 await import("./social-posts.mjs");
 await import("./post-bank.mjs");

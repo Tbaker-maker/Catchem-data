@@ -259,3 +259,23 @@ scheduled queues, series day-counters — never the truth itself.
 LATER: YouTube expansion (full outline + chapter list + thumbnail text
 suggestions), per-creator series counters, "your audience asked X" from
 Discord questions. NEVER: automated replies to strangers (§16 law).
+
+## §18 · BINDER PAGES — the 3×3 themed grid (Tyler, Aug 21)
+FORMAT: nine cards, one theme, one dark frame, handles at the bottom.
+The most-engaged format collectors post — pure visual, no numbers
+required. scripts/binder-page.mjs composes it; rasterize-cards turns it
+into the PNG platforms accept.
+OUR EDGE: art accounts curate by taste. We can ALSO curate by data —
+"The Chase Wall" (nine most valuable singles we track), "One Set, Nine
+Ways", "This Week's Movers", "Nine Cards Under $10 That Moved". Nobody
+else can assemble those honestly, and the taste-based themes still work.
+LAW: never invent a card id. Cards come from verified ids in our own
+data or from a curated theme file whose ids were checked against
+pokemontcg.io. A page with a wrong card is worse than no page.
+STUDIO (§17 extension): creators pick a theme or hand-pick nine cards,
+hit generate, download the PNG. Their page, our watermark. This is the
+highest-shareability tool in the Studio.
+TUNING (next pass): tighter gutters, a squarer canvas for X, optional
+per-card captions, and a 2×2 variant for a four-card spotlight.
+IP: card art from the standard community source with attribution on the
+page; on the attorney list with the other commercial-depiction items.
