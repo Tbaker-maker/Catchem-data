@@ -31,10 +31,23 @@ const PAGE = 250;
 const args = process.argv.slice(2);
 const sp = await J("data/sealed-prices.json") ?? { products: [] };
 const sg = await J("data/singles-prices.json") ?? { cards: [] };
-const wanted = args.length ? args : [...new Set([
-  ...(sp.products || []).map(p => p.setId),
-  ...(sg.cards || []).map(c => c.cardId?.split("-")[0]),
-].filter(Boolean))];
+// EVERY SET, not just the ones we price. Metadata is free and unlimited;
+// prices are what cost money, and they are a separate decision. Ingesting the
+// whole catalogue is what turns "three cards in the sets we track" into
+// "three cards, total" — a sourced fact instead of a hedged claim.
+// ~150 sets, roughly 200-300 calls, one time. Free tier allows far more.
+let wanted = args;
+if (!wanted.length) {
+  try {
+    const r = await fetch(`${API}/sets?pageSize=250`, { headers });
+    const d = await r.json();
+    wanted = (d.data ?? []).map(s => s.id);
+    console.log(`  enumerating the full catalogue: ${wanted.length} sets`);
+  } catch (e) {
+    console.log(`  ⚠ could not enumerate sets (${e.message}) — falling back to the sets we track`);
+    wanted = [...new Set([...(sp.products || []).map(p => p.setId), ...(sg.cards || []).map(c => c.cardId?.split("-")[0])].filter(Boolean))];
+  }
+}
 
 let store = await J("data/card-catalogue.json") ?? {
   note: "Card metadata from pokemontcg.io. NOT prices — this is what exists, so artist counts can be complete and defensible. Prices live in singles-prices.json for the subset we track.",
@@ -44,6 +57,9 @@ let store = await J("data/card-catalogue.json") ?? {
 let added = 0, setsDone = 0, failures = [];
 for (const setId of wanted) {
   if (!setId) continue;
+  // Resume-safe: a set already ingested completely is skipped, so hitting a
+  // rate limit costs the remainder of a run rather than the whole thing.
+  if (store.sets[setId]?.complete && !process.env.FORCE_REINGEST) { setsDone++; continue; }
   try {
     let page = 1, total = null, got = 0;
     for (;;) {

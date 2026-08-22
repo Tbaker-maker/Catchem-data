@@ -431,3 +431,35 @@ catalogue and 30+ days of singles history.
 CONSTRAINT, stated honestly: fewer than three priced cards is not a
 cohort and produces no verdict. Today most illustrators fail that bar,
 which is why the catalogue ingest matters more than the analysis.
+
+## UNIVERSE EXPANSION LAW (Tyler, Aug 23 2026)
+"Our database needs to be as large as we can make it without costing a
+crazy amount."
+
+THE ECONOMICS, which decide everything else:
+- **Card metadata is FREE and unlimited.** pokemontcg.io gives every card
+  ever printed — artist, set, number, rarity, release date — at no cost.
+  The whole catalogue is roughly 3 MB. There is no reason to hold less
+  than all of it, and holding all of it is what turns "three cards in the
+  sets we track" into "three cards, total" — a sourced fact rather than a
+  hedge.
+- **Prices are the constrained resource.** Every tracked single costs an
+  API call every day, forever. Coverage there is a budget, not a wish.
+
+THEREFORE: ingest everything, price selectively, and choose what to price
+with arithmetic rather than instinct.
+
+WHAT MAKES A CARD WORTH PRICING (scripts/universe-advisor.mjs):
+1. **Cohort completion** — an illustrator with 30 catalogue cards and 2
+   priced is ONE card away from RT-7 working across their entire body of
+   work. That single card buys thirty cards' worth of analysis. Nobody
+   would find it by intuition; the advisor scored it 90 against 17 for a
+   card that unlocks three.
+2. **Era balance** — our index runs 88% modern. Cards from thin eras buy
+   coverage we do not have.
+3. **Chase status** — a cohort built from bulk commons is technically a
+   cohort and practically useless.
+
+THE LINE IT WILL NOT CROSS: the advisor never says "buy this card". It
+says "pricing this card makes these instruments work". Those are
+different claims and only one of them is ours to make.
