@@ -1,0 +1,59 @@
+{
+ "generatedAt": "2026-08-22T20:52:58.431Z",
+ "scope": "Measures structure, density, retention hooks and countable visual choices. It does NOT judge how anything looks — chat cannot see the app, and guessing at aesthetics is the failure the No-Guessing Law exists to stop.",
+ "findings": [
+  {
+   "lane": "simplicity",
+   "observation": "The Today screen carries 17 sections: The Daily Three, 🗳 Rip or Hold?, Biggest movers, Set the app up for you, Movers, Release radar…",
+   "why": "Every section is a decision the reader has to make about whether to keep reading. Past about six, a page stops being scanned and starts being skipped.",
+   "fix": "Rank them by how often somebody would act on each, and move the bottom third behind a tap. Nothing is deleted — it stops competing."
+  },
+  {
+   "lane": "retention",
+   "observation": "5 things visibly change day to day: the Daily Three, a fact, shelf moves, yesterday's picks revisited, Rip or Hold.",
+   "why": "A page that looks the same twice is a page nobody opens twice. This is the single strongest lever on daily return, and it costs nothing because the data already changes.",
+   "fix": "Good coverage — the gap is that a returning reader cannot TELL at a glance what is new since yesterday."
+  },
+  {
+   "lane": "ease of use",
+   "observation": "A number appears above the fold on Today.",
+   "why": "The bar is that a stranger sees something useful without acting. Every tap before value is a place they leave.",
+   "fix": "Holds — check on a 390px screen that it is still above the fold with the banner and nav present."
+  },
+  {
+   "lane": "ease of use",
+   "observation": "Nothing is gated — every instrument is readable immediately.",
+   "why": "Free-core is the doctrine and it is also the retention strategy: the app has to be useful before anyone owes us anything.",
+   "fix": "Holds. Keep it that way as the Discord unlock arrives — unlock depth, never truth."
+  },
+  {
+   "lane": "visual calm",
+   "observation": "4 accent colours appear on the same surface.",
+   "why": "Our own rule is one accent per surface. Colour is supposed to carry information; past two or three it becomes decoration and the eye stops trusting it.",
+   "fix": "Reserve green for positive, red for negative, and let mode accent everything else. Gold stays a highlight, never a third voice."
+  },
+  {
+   "lane": "visual calm",
+   "observation": "32 emoji in the interface.",
+   "why": "A few give warmth. Many make a data product read as a chat window, and they are the first thing that looks dated in a year.",
+   "fix": "Keep them for section headers and the ELI5 lollipop; drop them from anything carrying a number."
+  },
+  {
+   "lane": "visual calm",
+   "observation": "11 hard-coded colours bypass the token system.",
+   "why": "Every one is a place the app can drift away from the site, which is the seam a visitor feels without being able to name.",
+   "fix": "Route them through tokens.css so a change on the site reaches the app automatically."
+  }
+ ],
+ "forHumanEyes": [
+  "On a 390px phone, how many times must you scroll before the first number you would act on?",
+  "Cold cache, mobile data: how long until anything readable appears? Anything over three seconds reads as broken.",
+  "Do the three Daily Three cards look like siblings, or like three different designs sharing a row?",
+  "Is the index the first thing the eye lands on, or does something louder win?",
+  "Squint at Today. Which three things stand out? Are they the three that matter?",
+  "Does anything look like an advertisement, a warning, or an error when it is none of those?",
+  "Is there anywhere a first-time visitor would not know what to do next?",
+  "Does the app feel like the same company as the site, or a cousin of it?"
+ ],
+ "note": "The questions above are for whoever has eyes. They are deliberately specific: 'review the design' is a request nobody can act on."
+}

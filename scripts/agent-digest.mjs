@@ -23,6 +23,7 @@ const imp = await J("research/pulse/improver-report.json");
 const sup = await J("research/pulse/agent-supervision.json");
 const uni = await J("research/pulse/universe-advisor.json");
 const rev = await J("research/pulse/review-agents.json");
+const exp = await J("research/pulse/experience-report.json");
 
 const L = [];
 const say = (s = "") => L.push(s);
@@ -117,6 +118,13 @@ if (sup?.workforce?.length) {
   if (other.length) { say(); for (const o of other.slice(0, 3)) say(`- *${o.kind}* — ${o.what}: ${o.why}`); }
   const amb = sup.workforce.find(w => w.kind === "AMBITION");
   if (amb) { say(); say(`> ${amb.why}`); }
+  say();
+}
+
+if (exp?.findings?.length) {
+  say(`## How it feels to use`);
+  say(`${exp.findings.length} measurable finding(s). The looking is not ours to do — ${exp.forHumanEyes.length} questions are queued for whoever has eyes.`);
+  for (const f of exp.findings.slice(0, 3)) say(`- *${f.lane}* — ${f.observation} ${f.fix}`);
   say();
 }
 
