@@ -1,3 +1,30 @@
+# ⬇ START HERE TOMORROW (Aug 23) — everything else below is history
+
+## THE ONLY LAUNCH-CRITICAL THING LEFT
+The Formspree→Buttondown import is **NOT a blocker** — Tyler confirmed
+Aug 22 that the waitlist has exactly one subscriber (himself), because
+the form was never shared. No export, no upgrade, no import needed.
+Newsletter 001 sends Monday to an audience of one, which proves the
+pipeline and creates the archive link. The VIDEO is the growth engine,
+not the newsletter. Delete this blocker from all future reports.
+
+## TYLER'S RULINGS (answered Aug 22, chat)
+1. Mode picker stays at the Home foot — non-gating is correct.
+2. Syndicate hand-off → replace "DM @Tyler" with a simple form that
+   emails Tyler (handle + webhook). Keeps secrets out of the repo and
+   stops Tyler being a DM inbox.
+3. Creator roster + what's-live → deferred, post-auth. Agreed.
+
+## NEXT SESSION (whenever Tyler is fresh)
+- Swap the site waitlist form from Formspree to Buttondown's own embed
+  (the BUTTONDOWN_USERNAME flip constant already exists). Kills the
+  export problem permanently — new signups land directly in the list.
+- Deferred measurements from Aug 22: Lighthouse after the grid + density
+  changes, offline-cache retest, word-law audit (the density rule likely
+  already recovered the ~30 words Home gained).
+- Scope `--num-xl` (40px index hero) to ≥880px unless Tyler likes it
+  loud on mobile — his call after he sees it.
+
 # CC PROMPT QUEUE — ✅ ALL SEVEN DONE (CC desk remote session, Aug 22 2026)
 Every block below completed and pushed; see WORKQUEUE header + the session
 report for outcomes, surprises, and the four items pending Tyler.
