@@ -106,6 +106,30 @@ entries per SKU. Generalised rather than repeated: `eraBaseSet` SKUs reject any
 title naming a different tracked set, with `SHORT_SIBLINGS` covering sets under
 `SET_NAME_LIST`'s 6-char floor. 10 SKUs flagged; `me1-*` left alone.
 
+## Two guard failures found while cleaning up after the above
+
+**The publication assert was not running.** `rasterize-cards.mjs` called
+`process.exit(0)` when `@resvg/resvg-js` was unavailable. `generate-pulse`
+imports it as one link in a chain ending voice-lint → jargon-lint →
+publish-assert, so that exit ended the whole run **with a success code** and
+the last line of defence never executed. Only the linux-x64 resvg binary is
+vendored, so every local run took that path — CI was fine, but any human
+session could have committed artifacts the assert would have rejected. A
+skipped step now skips its own work instead of taking the process with it.
+
+Note for the registry: `guard-audit` asserts publish-assert is LAST in the
+chain. That was true and still gave false confidence, because nothing checked
+the chain actually *reaches* it.
+
+**The held label had the publishBlock timing hole.** The feed marked held
+products from the live flag only, which every fetch rebuilds and wipes, so a
+manually quarantined product walked back into the Board feed unlabeled. The
+assert caught it the moment I quarantined six SKUs. Now reads the durable file.
+
+Both of my own mistakes this session were caught by the house's own guards —
+the assert caught the unlabeled row, and the jargon linter caught me writing
+"the set-name gate" into text that ships publicly as `heldReason`.
+
 ## Needs Tyler
 
 1. **The Spread fork** — retire to footnote (my recommendation) or keep with a
@@ -162,3 +186,9 @@ title naming a different tracked set, with `SHORT_SIBLINGS` covering sets under
   needs sold data we do not have.
 - Real TCGplayer postage on sealed remains **unmeasured**, permanently, with
   current sources.
+- The six quarantined SKUs are held, **not fixed**. Their correct prices are
+  unknown until you rule on whether those products still trade.
+
+Final state: `node scripts/audit.mjs` → **18/18 passed**. Pipeline green end to
+end (15 guards wired, jargon 0 blocking, publication assert 8 blocked and none
+on any of 6 published surfaces, 10 image overrides all human-verified).
