@@ -572,3 +572,32 @@ RANKED BY VALUE, NOT DISCOVERY ORDER. Five housekeeping notices crowding
 out one tool idea is a list optimising for the wrong thing, and a reader
 who meets housekeeping first stops before the useful part. Repeated areas
 collapse to two so no single class can fill the page.
+
+## TWO LANES, ONE FILE (Tyler, Aug 23 2026)
+"Make sure we aren't doing that. Put safeguards so it doesn't break anything."
+
+WHAT HAPPENED: chat and CC independently built the same three things inside
+ten minutes — the rip/sell/trade tool, the era ELI5s, and a recruiter for the
+supervisor. Nothing broke, because each was read before being overwritten.
+Earlier the same day the identical pattern DID break something: two licensing
+gates added to one function, where the second silently overrode the first and
+a ruling from Tyler stopped taking effect.
+
+THE FINDING UNDERNEATH: both lanes commit under the same git identity, so we
+could not tell our own two workers apart. CC signs with a Co-Authored-By
+trailer; chat does not. That trailer is the only honest signal we have, and
+discovering we needed it was the real lesson — the collisions were invisible
+rather than rare.
+
+THE RULE
+1. Before building anything named in a recent Improver or Breaker finding,
+   run `node scripts/collision-guard.mjs <file>`. Both lanes read those
+   reports, so both lanes will reach for the same idea on the same morning.
+2. If a file already exists, EXTEND it. Never replace another lane's work
+   without reading it — twice today the other lane's version was better,
+   and both times the right move was to delete mine.
+3. Generated artifacts are touched by both lanes constantly and are excluded.
+   A warning that fires on normal behaviour stops being read, and then it
+   fails on the day it matters.
+4. It never blocks. The failure here is not malice or carelessness — it is
+   two workers moving fast on the same thing with no cheap way to notice.
