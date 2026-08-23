@@ -10,7 +10,7 @@
 // which files, and fails the run when a wire is missing. It also verifies
 // every guard script is actually imported by the pipeline. Add a guard →
 // add its manifest entry, or the audit will not know to protect it.
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -183,6 +183,34 @@ const MUST_RUN = [
 ];
 
 const failures = [], notes = [];
+
+// ── EVAPORATES AT JOB END ────────────────────────────────────────────────
+// Any file a pipeline script WRITES must appear in the workflow's git add list.
+// Written in CI and never added means gone when the job ends, and the script
+// rewrites it tomorrow to no effect - a job that appears to work and produces
+// nothing. This is the class that froze the app feed and ate era history daily,
+// and four creator-surface outputs nearly joined it today.
+try {
+  const yml = await readFile(join(ROOT, ".github/workflows/update-sealed-prices.yml"), "utf-8");
+  const addLine = (yml.match(/git add ([^\n]+)/) ?? [])[1] ?? "";
+  const written = new Set();
+  for (const f of (await readdir(join(ROOT, "scripts"))).filter(x => x.endsWith(".mjs"))) {
+    const src = await readFile(join(ROOT, "scripts", f), "utf-8").catch(() => "");
+    for (const m of src.matchAll(/writeFile\(join\(ROOT,\s*"([^"]+)"/g)) {
+      const p = m[1];
+      // Cards and per-day artifacts regenerate from source and need no commit.
+      if (/cards\/|\.png$|\.svg$|audits\/|\.txt$/.test(p)) continue;
+      written.add(p);
+    }
+  }
+  // Directory paths cover everything beneath them. Comparing as plain strings
+  // reported 40 false positives on the first run - research/pulse/ already
+  // covers every file in it.
+  const covered = addLine.split(/\s+/).filter(Boolean);
+  const orphaned = [...written].filter(p => !covered.some(c => p === c || (c.endsWith("/") && p.startsWith(c))));
+  if (orphaned.length)
+    notes.push(`EVAPORATES — ${orphaned.length} pipeline output(s) missing from the workflow git add list: ${orphaned.slice(0, 5).join(", ")}${orphaned.length > 5 ? " …" : ""}`);
+} catch {}
 // ── DUPLICATE GATE CHECK (2026-08-23) ──────────────────────────────────
 // Chat and CC each added a PPT licensing gate to the same function; the
 // second silently overrode the first. Gates are now DECLARED in flags.mjs

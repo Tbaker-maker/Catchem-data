@@ -652,6 +652,10 @@ await import("./windowless-price-guard.mjs");
 await import("./content-sanity.mjs");
 try { await import("./designer.mjs"); } catch (e) { console.warn("  designer: " + e.message); }
 try { await import("./theme-scout.mjs"); } catch (e) { console.warn("  theme scout: " + e.message); }
+try { await import("./formula-engine.mjs"); } catch (e) { console.warn("  formula-engine: " + e.message); }
+try { await import("./pairing-finder.mjs"); } catch (e) { console.warn("  pairing-finder: " + e.message); }
+try { await import("./build-creators-page.mjs"); } catch (e) { console.warn("  build-creators-page: " + e.message); }
+try { await import("./build-editor.mjs"); } catch (e) { console.warn("  build-editor: " + e.message); }
 await import("./layout-check.mjs");
 await import("./slop-guard.mjs");
 await import("./card-guard.mjs");

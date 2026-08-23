@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T07:03:11.432Z",
+ "generatedAt": "2026-08-23T07:08:35.735Z",
  "date": "2026-08-23",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -91,6 +91,11 @@
   {
    "agent": "teacher",
    "finding": "every finding from a week ago is still open (15).",
+   "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
+  },
+  {
+   "agent": "api-strategist",
+   "finding": "every finding from a week ago is still open (7).",
    "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
@@ -680,7 +685,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "3 hand-written file(s) changed and not committed.",
+   "what": "2 hand-written file(s) changed and not committed.",
    "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -712,7 +717,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "8 script(s) are not referenced anywhere: backfill-artists.mjs, build-creators-page.mjs, collision-guard.mjs, discovery-sweep.mjs.",
+   "what": "5 script(s) are not referenced anywhere: backfill-artists.mjs, collision-guard.mjs, discovery-sweep.mjs, refresh-tiers.mjs.",
    "do": "A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.",
    "score": 30,
    "band": "NOTE ONLY",

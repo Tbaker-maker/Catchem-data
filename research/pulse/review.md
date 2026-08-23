@@ -40,7 +40,7 @@ The app works and looks better than it did. It is also still not deployed where 
 - Two shipped pages have no generator and drift further from the site every day.
 - The editor exists as a file. Nobody outside this conversation can reach it.
 
-## Community — our surfaces — 0/10 `░░░░░░░░░░`
+## Community — our surfaces — 0/10 `░░░░░░░░░░`  *(unchanged)*
 
 Nothing we build has shipped. Every surface is a file.
 
@@ -49,7 +49,7 @@ Nothing we build has shipped. Every surface is a file.
 - Newsletter 001: written, unshipped, and it has been for weeks.
 - Catch'em Creators: built, not live.
 
-## Community — founder-led — 5/10 `█████░░░░░`
+## Community — founder-led — 5/10 `█████░░░░░`  *(unchanged)*
 
 Real and growing, on evidence too thin to score confidently. Early-stage community is mostly invisible to measurement, which is not the same as absent.
 
