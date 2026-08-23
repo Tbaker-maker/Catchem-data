@@ -1856,3 +1856,24 @@ the first line costs nothing and saves a rebuild.
 ONE DETAIL WORTH KEEPING: our label carries the card, the set, the year AND the
 illustrator. That is more than a real slab label holds, and the illustrator is
 the part we care about most.
+
+## THE CHECK OUTSIDE THE LIST (Aug 23 2026)
+The pre-mortem shipped this morning to make every guard declare what it cannot
+catch. Its own negative test then **passed while broken**, which is precisely
+the failure it was built to prevent.
+
+The cause: **heartbeat.mjs was not in the guard list.** It runs on the watchdog
+workflow rather than the daily pipeline, and the audit enumerates the pipeline —
+so the pre-mortem never asked it anything.
+
+**The one check whose blind spot cost us a morning was the one check nobody
+interrogated, because it lived outside the list of things we interrogate.**
+
+THE GENERAL SHAPE, and it is worth more than the fix: a list of things to check
+is itself a thing that needs checking. Anything running on a different schedule,
+a different workflow or a different lane is invisible to a checker that
+enumerates one of them — and being off the main path is exactly what makes a
+failure quiet.
+
+Guards now carry `offPipeline` so the audit can include them without demanding
+they appear in a pipeline they were never part of.

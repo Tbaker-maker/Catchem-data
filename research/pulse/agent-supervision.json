@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T16:06:13.966Z",
+ "generatedAt": "2026-08-23T16:08:35.501Z",
  "date": "2026-08-23",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -10,7 +10,7 @@
   "decision-audit: 0 finding(s)",
   "designer: 7 finding(s)",
   "theme-scout: 23 finding(s)",
-  "teacher: 15 finding(s)",
+  "teacher: 16 finding(s)",
   "api-strategist: 8 finding(s)",
   "compliance: 0 finding(s)",
   "security: 0 finding(s)",
@@ -29,11 +29,11 @@
   "anomaly: clean run — nothing failed, which is the point of it"
  ],
  "problems": [
-  "designer: BROKEN RECORD — 4 finding(s) repeated three runs running (e.g. \"medium::--faint on the background is 3.2:1\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
+  "designer: BROKEN RECORD — 6 finding(s) repeated three runs running (e.g. \"medium::32 distinct colours\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "theme-scout: BROKEN RECORD — 23 finding(s) repeated three runs running (e.g. \"the one-off::Ken Sugimori drew Ampharos exactly on\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
-  "teacher: BROKEN RECORD — 13 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
-  "teacher: OVER-BUDGET — 15 findings against a ceiling of 14. An unreadable list is an unread list.",
-  "steward: BROKEN RECORD — 3 finding(s) repeated three runs running (e.g. \"unsaved::3 hand-written file(s) changed and not c\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
+  "teacher: FARMING — findings climbed 14 → 14 → 16 → 16 across four runs with nothing resolved. Volume is not work.",
+  "teacher: BROKEN RECORD — 12 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
+  "teacher: OVER-BUDGET — 16 findings against a ceiling of 14. An unreadable list is an unread list.",
   "creator: OVER-BUDGET — 15 findings against a ceiling of 10. An unreadable list is an unread list."
  ],
  "workforce": [
@@ -92,6 +92,11 @@
   {
    "agent": "security",
    "finding": "runs daily and has returned the same count (0) four runs running.",
+   "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
+  },
+  {
+   "agent": "steward",
+   "finding": "runs daily and has returned the same count (4) four runs running.",
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
   },
   {
@@ -618,7 +623,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "3 hand-written file(s) changed and not committed.",
+   "what": "1 hand-written file(s) changed and not committed.",
    "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
    "score": 30,
    "band": "NOTE ONLY",
