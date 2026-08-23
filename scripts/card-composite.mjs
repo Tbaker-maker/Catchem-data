@@ -87,6 +87,35 @@ ${label ? `<text x="${W / 2}" y="${H - 44}" text-anchor="middle" fill="#f4f5f8" 
 <text x="${W - PAD}" y="${H - 18}" text-anchor="end" fill="#5c637a" font-family="JetBrains Mono" font-size="15">${caption.replace(/&/g, "&amp;")}</text>
 </svg>`;
 
+  // Chat gets 403 from the image host; a browser does not. So alongside the SVG
+  // we emit HTML referencing the images by URL - whoever opens it does the
+  // fetching, and the composite is real on their screen with no round trip.
+  const html = `<!doctype html><meta charset="utf-8">
+<title>${caption}</title>
+<style>
+  body{margin:0;background:#070910;display:flex;align-items:center;justify-content:center;min-height:100vh;
+       font-family:system-ui,-apple-system,"Segoe UI",sans-serif;padding:40px 20px}
+  .wrap{max-width:${W}px;width:100%}
+  .row{display:flex;gap:${GAP}px;justify-content:center;align-items:flex-start}
+  .card{flex:1 1 0;max-width:${CARD_W}px;text-align:center}
+  .card img{width:100%;aspect-ratio:745/1040;object-fit:contain;display:block;border-radius:12px}
+  .cap{color:#8a93a8;font-size:16px;margin-top:14px}
+  .label{color:#f4f5f8;font-weight:800;font-size:30px;text-align:center;margin:34px 0 0}
+  .foot{display:flex;justify-content:space-between;margin-top:28px;align-items:baseline}
+  .mark{color:#36d399;font-weight:800;font-size:22px}
+  .src{color:#5c637a;font-size:14px;font-family:ui-monospace,monospace}
+  @media(max-width:700px){.row{gap:14px}.cap{font-size:13px}.label{font-size:22px}}
+</style>
+<div class="wrap">
+  <div class="row">
+${cards.map(c => `    <div class="card"><img src="${imageUrl(c.id)}" alt="${(c.name ?? "").replace(/"/g, "")}" loading="eager">
+      <div class="cap">${(c.name ?? "")}${c.releaseDate ? ` · ${c.releaseDate.slice(0, 4)}` : ""}</div></div>`).join("\n")}
+  </div>
+  ${label ? `<div class="label">${label}</div>` : ""}
+  <div class="foot"><span class="mark">Catch'em</span><span class="src">${caption}</span></div>
+</div>`;
+  await writeFile(join(ROOT, "research/pulse/cards/composite.html"), html);
+
   await mkdir(join(ROOT, "research/pulse/cards"), { recursive: true }).catch(() => {});
   const out = join(ROOT, "research/pulse/cards/composite.svg");
   await writeFile(out, svg);
@@ -101,5 +130,5 @@ ${label ? `<text x="${W / 2}" y="${H - 44}" text-anchor="middle" fill="#f4f5f8" 
   console.log(`✓ composite: ${ids.length} card(s) at ${CARD_W}x${CARD_H}, ${W}x${H} total`);
   for (const c of cards) console.log(`   ${c.name} (${(c.releaseDate ?? "").slice(0, 4)}) — ${imageUrl(c.id)}`);
   console.log(`\n   caption: ${caption}`);
-  console.log(`   NOT EMBEDDED — chat gets 403 from the image host. Placeholders written; CC fetches and rasterises.`);
+  console.log(`   composite.html written — open it and the images load straight from the host.`);
 }
