@@ -58,3 +58,12 @@ Three mitigations that cost nothing and are better practice anyway:
 Do not serve the images and skip the attribution because the layout is tight.
 The attribution is the cheapest part of the defence and the only part that also
 makes the content better.
+
+## ALSO: the three transfer paths belong on the Creators page too
+`card-composite.mjs` now offers Download PNG, Copy image, and Share, each
+feature-detected. `build-creators-page.mjs` still only offers download — port
+the same three across so a creator on a phone gets the share sheet rather than
+a file that Safari opens instead of saving.
+
+PNG throughout, deliberately: it is lossless and universal, and JPEG would band
+the holo gradients, which is the one thing card art cannot afford.

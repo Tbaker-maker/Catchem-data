@@ -1,31 +1,38 @@
 <!doctype html><meta charset="utf-8">
-<title>Twenty-four years apart. Same illustrator.</title>
+<title>Four Eeveelutions. One set.</title>
 <style>
   body{margin:0;background:#070910;display:flex;align-items:center;justify-content:center;min-height:100vh;
        font-family:system-ui,-apple-system,"Segoe UI",sans-serif;padding:40px 20px}
-  .wrap{max-width:966px;width:100%}
-  .row{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;justify-content:center;align-items:start}
+  .wrap{max-width:1342px;width:100%}
+  .row{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;justify-content:center;align-items:start}
   .card{text-align:center}
   .card img{width:100%;aspect-ratio:745/1040;object-fit:contain;display:block;border-radius:12px}
   .cap{color:#8a93a8;font-size:16px;margin-top:14px}
   .label{color:#f4f5f8;font-weight:800;font-size:30px;text-align:center;margin:34px 0 0}
   .foot{display:flex;justify-content:space-between;margin-top:28px;align-items:baseline}
+  .pri{background:#36d399;color:#070910;border:0;border-radius:10px;padding:14px 26px;font-size:16px;font-weight:700;cursor:pointer}
+  .sec{background:transparent;color:#8a93a8;border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:14px 20px;font-size:15px;cursor:pointer;margin-left:8px}
+  .pri:active,.sec:active{transform:translateY(1px)}
+  @media(max-width:620px){.pri,.sec{width:100%;margin:6px 0 0}}
   .mark{color:#36d399;font-weight:800;font-size:22px}
   .src{color:#5c637a;font-size:14px;font-family:ui-monospace,monospace}
   @media(max-width:700px){.row{gap:14px}.cap{font-size:13px}.label{font-size:22px}}
 </style>
 <div class="wrap">
   <div class="row">
-    <div class="card"><img src="https://images.pokemontcg.io/base1/4_hires.png" alt="Charizard" loading="eager">
-      <div class="cap">Charizard · 1999</div></div>
-    <div class="card"><img src="https://images.pokemontcg.io/sv3pt5/200_hires.png" alt="Blastoise ex" loading="eager">
-      <div class="cap">Blastoise ex · 2023</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/sv8pt5/161_hires.png" alt="Umbreon ex" loading="eager">
+      <div class="cap">Umbreon ex · 2025</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/sv8pt5/156_hires.png" alt="Sylveon ex" loading="eager">
+      <div class="cap">Sylveon ex · 2025</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/sv8pt5/155_hires.png" alt="Espeon ex" loading="eager">
+      <div class="cap">Espeon ex · 2025</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/sv8pt5/144_hires.png" alt="Leafeon ex" loading="eager">
+      <div class="cap">Leafeon ex · 2025</div></div>
   </div>
-  <div class="label">Twenty-four years apart. Same illustrator.</div>
-  <div class="foot"><span class="mark">Catch'em</span><span class="src">Twenty-four years apart. Same illustrator.</span></div>
+  <div class="label">Four Eeveelutions. One set.</div>
+  <div class="foot"><span class="mark">Catch'em</span><span class="src">Four Eeveelutions. One set.</span></div>
   <div style="text-align:center;margin-top:26px">
-    <button id="dl" style="background:#36d399;color:#070910;border:0;border-radius:10px;padding:14px 28px;font-size:16px;font-weight:700;cursor:pointer">Download as one image</button>
-    <button id="dlsvg" style="background:transparent;color:#8a93a8;border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:14px 22px;font-size:15px;cursor:pointer;margin-left:8px">Or open the cards full-size</button>
+    <button id="dl" class="pri">Download PNG</button><button id="copy" class="sec" hidden>Copy image</button><button id="share" class="sec" hidden>Share</button><button id="dlsvg" class="sec">Open cards full-size</button>
     <div id="msg" style="color:#8a93a8;font-size:13px;margin-top:10px"></div>
   </div>
 </div>
@@ -33,9 +40,10 @@
 // The browser composites, because it can reach the image host and chat cannot.
 // Everything is drawn at native card resolution so the result is postable
 // rather than a screenshot of a screenshot.
-const CARDS = [{"url":"https://images.pokemontcg.io/base1/4_hires.png","name":"Charizard","year":"1999"},{"url":"https://images.pokemontcg.io/sv3pt5/200_hires.png","name":"Blastoise ex","year":"2023"}];
-const LABEL = "Twenty-four years apart. Same illustrator.";
-const CAPTION = "Twenty-four years apart. Same illustrator.";
+const CARDS = [{"url":"https://images.pokemontcg.io/sv8pt5/161_hires.png","name":"Umbreon ex","year":"2025"},{"url":"https://images.pokemontcg.io/sv8pt5/156_hires.png","name":"Sylveon ex","year":"2025"},{"url":"https://images.pokemontcg.io/sv8pt5/155_hires.png","name":"Espeon ex","year":"2025"},{"url":"https://images.pokemontcg.io/sv8pt5/144_hires.png","name":"Leafeon ex","year":"2025"}];
+const LABEL = "Four Eeveelutions. One set.";
+const CAPTION = "Four Eeveelutions. One set.";
+const ARTISTS = "";
 // A GUARANTEED ROUTE. If every canvas path fails, the reader can still get real
 // full-resolution files - one tab per card, right-click and save. A screenshot
 // is the one outcome worth engineering around, so there is always another way.
@@ -43,64 +51,107 @@ document.getElementById("dlsvg").onclick = () => {
   CARDS.forEach((c, i) => setTimeout(() => window.open(c.url, "_blank"), i * 250));
   document.getElementById("msg").textContent = CARDS.length + " card(s) opened full-size - right-click and save each";
 };
-document.getElementById("dl").onclick = async () => {
+// COMPOSE ONCE, THREE WAYS TO TAKE IT (Tyler, 2026-08-23). The paths genuinely
+// differ by device and guessing wrong leaves somebody screenshotting:
+//   COPY     - clipboard.write with a PNG blob. Needs a secure context and an
+//              untainted canvas, so it is feature-detected rather than assumed.
+//   DOWNLOAD - <a download> with a PNG blob. PNG because it is lossless and
+//              universal; JPEG would be smaller and would band the holo
+//              gradients, which is the one thing card art cannot afford.
+//   SHARE    - navigator.share with files, and this is THE mobile answer: on
+//              iOS Safari <a download> frequently just OPENS the image, and the
+//              share sheet is what actually gets it into Photos.
+// Every button is hidden unless its API exists. A button that does nothing is
+// worse than no button.
+let composedBlob = null;
+
+async function compose() {
+  if (composedBlob) return composedBlob;
   const msg = document.getElementById("msg");
   msg.textContent = "composing…";
   const CW = 745, CH = 1040, GAP = 60, PAD = 90, CAPH = 130, LABH = LABEL ? 110 : 0;
-  const W = PAD * 2 + CW * CARDS.length + GAP * (CARDS.length - 1);
-  const H = PAD + CH + CAPH + LABH + 90;
+  const COLS = CARDS.length > 4 ? 3 : CARDS.length, ROWS = Math.ceil(CARDS.length / COLS);
+  const W = PAD * 2 + CW * COLS + GAP * (COLS - 1);
+  const H = PAD + (CH + 70) * ROWS - 70 + CAPH + LABH + 90;
   const cv = document.createElement("canvas");
   cv.width = W; cv.height = H;
   const g = cv.getContext("2d");
   g.fillStyle = "#070910"; g.fillRect(0, 0, W, H);
-  try {
-    for (let i = 0; i < CARDS.length; i++) {
-      // THE REAL BUG (2026-08-23): crossOrigin="anonymous" against a host that
-      // sends no CORS headers does not degrade gracefully - it makes the image
-      // fail to LOAD at all. The old message blamed the host for a load we had
-      // broken ourselves by asking for permission it never offers.
-      //
-      // Three routes tried in order, because a screenshot is not an acceptable
-      // answer: direct-with-CORS, then a public image proxy that does send the
-      // header, then direct-without-CORS so at least the preview appears.
-      const routes = [
-        { url: CARDS[i].url, cors: true },
-        { url: "https://images.weserv.nl/?url=" + encodeURIComponent(CARDS[i].url.replace(/^https?:///, "")) + "&w=745&output=png", cors: true },
-        { url: CARDS[i].url, cors: false },
-      ];
-      let img = null;
-      for (const r of routes) {
-        try {
-          img = await new Promise((res, rej) => {
-            const im = new Image();
-            if (r.cors) im.crossOrigin = "anonymous";
-            im.onload = () => res(im);
-            im.onerror = () => rej(new Error("load failed"));
-            im.src = r.url;
-          });
-          break;
-        } catch { img = null; }
-      }
-      if (!img) throw new Error("no route to the image");
-      const x = PAD + i * (CW + GAP);
-      g.drawImage(img, x, PAD, CW, CH);
-      g.fillStyle = "#8a93a8"; g.font = "28px system-ui, sans-serif"; g.textAlign = "center";
-      g.fillText(CARDS[i].name + " · " + CARDS[i].year, x + CW / 2, PAD + CH + 52);
+
+  for (let i = 0; i < CARDS.length; i++) {
+    const routes = [
+      { url: CARDS[i].url, cors: true },
+      { url: "https://images.weserv.nl/?url=" + encodeURIComponent(CARDS[i].url.replace(/^https?:///, "")) + "&w=745&output=png", cors: true },
+    ];
+    let img = null;
+    for (const r of routes) {
+      try {
+        img = await new Promise((res, rej) => {
+          const im = new Image();
+          if (r.cors) im.crossOrigin = "anonymous";
+          im.onload = () => res(im); im.onerror = () => rej(new Error("load failed"));
+          im.src = r.url;
+        });
+        break;
+      } catch { img = null; }
     }
-    if (LABEL) { g.fillStyle = "#f4f5f8"; g.font = "800 52px system-ui, sans-serif"; g.textAlign = "center";
-      g.fillText(LABEL, W / 2, PAD + CH + CAPH + 40); }
-    g.fillStyle = "#36d399"; g.font = "800 38px system-ui, sans-serif"; g.textAlign = "left";
-    g.fillText("Catch'em", PAD, H - 34);
-    g.fillStyle = "#5c637a"; g.font = "24px ui-monospace, monospace"; g.textAlign = "right";
-    g.fillText(CAPTION, W - PAD, H - 34);
-    // Tainted canvas throws here rather than returning something broken.
-    const url = cv.toDataURL("image/png");
-    const a = document.createElement("a");
-    a.href = url; a.download = "catchem-" + CAPTION.replace(/[^a-z0-9]+/gi, "-").toLowerCase() + ".png";
-    a.click();
-    msg.textContent = "downloaded — one image, ready to post";
-  } catch (e) {
-    msg.textContent = "could not export: " + (e.message || "unknown") + ". Right-click each card and save instead.";
+    if (!img) throw new Error("no route to " + CARDS[i].an);
+    const x = PAD + (i % COLS) * (CW + GAP), yy = PAD + Math.floor(i / COLS) * (CH + 70);
+    g.drawImage(img, x, yy, CW, CH);
+    if (CARDS.length <= 4) {
+      g.fillStyle = "#8a93a8"; g.font = "28px system-ui,sans-serif"; g.textAlign = "center";
+      g.fillText(CARDS[i].name + " · " + CARDS[i].year, x + CW / 2, yy + CH + 46);
+    }
   }
+  if (LABEL) { g.fillStyle = "#f4f5f8"; g.font = "800 52px system-ui,sans-serif"; g.textAlign = "center";
+    g.fillText(LABEL, W / 2, PAD + (CH + 70) * ROWS - 70 + CAPH + 40); }
+  g.fillStyle = "#36d399"; g.font = "800 38px system-ui,sans-serif"; g.textAlign = "left";
+  g.fillText("Catch'em", PAD, H - 34);
+  g.fillStyle = "#5c637a"; g.font = "24px ui-monospace,monospace"; g.textAlign = "right";
+  g.fillText(ARTISTS || CAPTION, W - PAD, H - 34);
+
+  composedBlob = await new Promise(r => cv.toBlob(r, "image/png"));
+  msg.textContent = "";
+  return composedBlob;
+}
+
+const FILENAME = "catchem-" + (CAPTION || "cards").replace(/[^a-z0-9]+/gi, "-").toLowerCase().slice(0, 48) + ".png";
+const msgEl = () => document.getElementById("msg");
+
+document.getElementById("dl").onclick = async () => {
+  try {
+    const b = await compose();
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(b); a.download = FILENAME; a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    msgEl().textContent = "saved as " + FILENAME;
+  } catch (e) { msgEl().textContent = "could not compose: " + e.message + " — use Open cards full-size"; }
 };
+
+if (navigator.clipboard && window.ClipboardItem) {
+  const b = document.getElementById("copy"); b.hidden = false;
+  b.onclick = async () => {
+    try {
+      const blob = await compose();
+      await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+      msgEl().textContent = "copied — paste straight into the post";
+    } catch (e) { msgEl().textContent = "copy unavailable here: " + e.message; }
+  };
+}
+
+if (navigator.canShare && navigator.canShare({ files: [new File([""], "t.png", { type: "image/png" })] })) {
+  const b = document.getElementById("share"); b.hidden = false;
+  b.onclick = async () => {
+    try {
+      const blob = await compose();
+      await navigator.share({ files: [new File([blob], FILENAME, { type: "image/png" })] });
+    } catch (e) { if (e.name !== "AbortError") msgEl().textContent = "share unavailable: " + e.message; }
+  };
+}
+
+document.getElementById("dlsvg").onclick = () => {
+  CARDS.forEach((c, i) => setTimeout(() => window.open(c.url, "_blank"), i * 250));
+  msgEl().textContent = CARDS.length + " card(s) opened full-size — right-click and save each";
+};
+
 </script>
