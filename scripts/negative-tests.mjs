@@ -649,6 +649,21 @@ const CASES = [
            : "it no longer refuses when graded prices are absent - it is substituting a guess" };
     } },
 
+  { guard: "Heartbeat catches a missed run", detect: null,
+    // The alarm was installed, wired, running - and asking a question whose
+    // answer could not reveal the fault. It allowed 30 hours so a LATE run
+    // would not cry wolf, which let a SKIPPED run hide inside the same window.
+    fn: async () => {
+      const src = await readFile(P("scripts/heartbeat.mjs"), "utf-8");
+      const knowsSchedule = /SCHEDULED_UTC_HOUR/.test(src);
+      const checksMissed = /MISSED A SCHEDULED RUN/.test(src);
+      const printsNote = /s\.note \?\?/.test(src);
+      return { pass: knowsSchedule && checksMissed && printsNote,
+        why: !knowsSchedule ? "the heartbeat no longer knows the job's schedule, so it can only measure elapsed time"
+           : !checksMissed ? "it no longer checks whether a scheduled fire was missed"
+           : "it computes the reason and then prints elapsed hours instead, hiding the fault behind a number that looks fine" };
+    } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");

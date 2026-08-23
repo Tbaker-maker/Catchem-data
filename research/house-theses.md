@@ -1772,3 +1772,28 @@ me the perfect visual which then sparked natural creativity."** The tool did not
 write the post. It put the right thing in front of him and he wrote it. That is
 exactly what ANGLES NOT TWEETS was aiming at, and it is the first evidence the
 aim was right.
+
+## ELAPSED TIME IS THE WRONG QUESTION (Aug 23 2026)
+First morning after wiring the watchdog, and the overnight job had not fetched.
+**The heartbeat reported "everything has checked in."**
+
+It allowed 30 hours, deliberately, so a late run would not cry wolf. Sound
+reasoning, wrong measurement — because a window built to forgive a LATE run is
+exactly the right size to hide a SKIPPED one. Last fetch 22:56, scheduled fire
+04:00, elapsed 15.9h against an allowance of 30. Every number fine, the run
+never happened.
+
+**The alarm was installed, wired and running, and asking a question whose answer
+could not reveal the fault.** That is worse than no alarm, because a green
+heartbeat is read as evidence.
+
+THE FIX: the check now knows the job's SCHEDULE. A daily 04:00 stage whose last
+check-in predates the most recent 04:00 has missed a run — true at hour one, not
+at hour thirty. Three hours of grace so a job still running is not reported as
+missed.
+
+AND A SECOND FAULT UNDERNEATH IT: the finding carried a note explaining why, and
+the report printed elapsed hours instead — "last seen 16h ago, allowed 30h",
+which reads as a threshold that has not been breached. **It computed the right
+answer and displayed the wrong one.** A finding that carries a reason must print
+the reason.

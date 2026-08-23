@@ -21,6 +21,10 @@ const FILE = join(ROOT, "data/heartbeat.json");
 
 // How long each stage may stay silent before it counts as a failure. Generous
 // enough to survive one missed run, tight enough to catch a stopped cron.
+// The job's own schedule, so the check can ask whether a RUN happened rather
+// than only how long it has been.
+const SCHEDULED_UTC_HOUR = 4;
+
 const EXPECT_HOURS = {
   fetch: 30,          // daily 04:00 — 30h allows one late run without crying wolf
   derived: 30,
@@ -61,6 +65,21 @@ export async function watch() {
     if (!rec) { silent.push({ stage, ageHours: null, allowed: hours, note: "has never reported in" }); continue; }
     const age = (now - Date.parse(rec.at)) / 3600000;
     if (age > hours) silent.push({ stage, ageHours: Math.round(age), allowed: hours, lastSeen: rec.at });
+    // MISSED RUNS, not elapsed hours. A daily 04:00 job whose last check-in
+    // predates the most recent 04:00 has missed a scheduled run - true at hour
+    // one, not at hour thirty. Elapsed time was the wrong question: it let a
+    // skipped run hide inside a window designed to forgive a late one.
+    else if (SCHEDULED_UTC_HOUR != null && stage !== "botAlive") {
+      const now = new Date();
+      const lastFire = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), SCHEDULED_UTC_HOUR, 0, 0));
+      if (lastFire > now) lastFire.setUTCDate(lastFire.getUTCDate() - 1);
+      // Grace: a run takes time and can start late. Only flag once the fire is
+      // comfortably past, or a job still running would report as missed.
+      const graceMs = 3 * 3600000;
+      if (Date.parse(rec.at) < lastFire.getTime() && now - lastFire > graceMs)
+        silent.push({ stage, ageHours: Math.round(age), allowed: hours, lastSeen: rec.at,
+          note: `MISSED A SCHEDULED RUN — the ${SCHEDULED_UTC_HOUR}:00 UTC fire on ${lastFire.toISOString().slice(0, 10)} came and went without this stage checking in. Elapsed hours look fine; the run did not happen.` });
+    }
     else healthy.push({ stage, ageHours: Math.round(age * 10) / 10 });
   }
   return { ok: silent.length === 0, silent, healthy, pending };
@@ -83,7 +102,7 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
       if (r.pending?.length) console.log(`  (not deployed yet, not counted: ${r.pending.join(", ")})`);
     } else {
       console.error(`\n✗ SOMETHING HAS GONE QUIET — ${r.silent.length} stage(s):`);
-      for (const s of r.silent) console.error(`   ${s.stage}: ${s.ageHours == null ? s.note : `last seen ${s.ageHours}h ago, allowed ${s.allowed}h`}`);
+      for (const s of r.silent) console.error(`   ${s.stage}: ${s.note ?? `last seen ${s.ageHours}h ago, allowed ${s.allowed}h`}`);
       console.error("\n   Silence is the one failure no in-pipeline guard can catch, because none of them run.\n");
       process.exit(1);
     }

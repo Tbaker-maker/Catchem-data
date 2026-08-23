@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T08:58:34.826Z",
+ "generatedAt": "2026-08-23T14:54:35.584Z",
  "date": "2026-08-23",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -31,7 +31,6 @@
  "problems": [
   "designer: BROKEN RECORD — 4 finding(s) repeated three runs running (e.g. \"medium::16 distinct colours\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "theme-scout: BROKEN RECORD — 23 finding(s) repeated three runs running (e.g. \"the one-off::Ken Sugimori drew Ampharos exactly on\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
-  "teacher: FARMING — findings climbed 16 → 16 → 16 → 17 across four runs with nothing resolved. Volume is not work.",
   "teacher: BROKEN RECORD — 14 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "teacher: OVER-BUDGET — 17 findings against a ceiling of 14. An unreadable list is an unread list.",
   "creator: OVER-BUDGET — 15 findings against a ceiling of 10. An unreadable list is an unread list."
@@ -612,7 +611,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "2 hand-written file(s) changed and not committed.",
+   "what": "4 hand-written file(s) changed and not committed.",
    "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -628,7 +627,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "6 supervisor problem(s) are open.",
+   "what": "5 supervisor problem(s) are open.",
    "do": "Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.",
    "score": 30,
    "band": "NOTE ONLY",

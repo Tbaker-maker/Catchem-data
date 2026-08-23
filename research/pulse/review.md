@@ -13,7 +13,7 @@
 Every agent meets every obligation.
 
 **Working**
-- 18 agents, 20 guards wired, 58 negative tests
+- 18 agents, 20 guards wired, 59 negative tests
 - Every incident this month became a guard, and every guard has been deliberately broken to prove it works.
 
 
@@ -28,7 +28,7 @@ Wide and shallow. We track a lot and verify less of it than the numbers suggest.
 - Enrichment covers 12 cards. Volume and graded data exist on 0.07% of the catalogue.
 - 6 knowledge-base facts rest only on secondary sources and have never been checked against our own data.
 
-## The product — 8/10 `████████░░`  *(up from 4)*
+## The product — 8/10 `████████░░`  *(unchanged)*
 
 The app works and looks better than it did. It is also still not deployed where anyone can use it.
 
@@ -64,7 +64,7 @@ Real and growing, on evidence too thin to score confidently. Early-stage communi
 
 ## Engagement — 2/10 `██░░░░░░░░`  *(unchanged)*
 
-2 posts measured.
+3 posts measured.
 
 **Working**
 - Best: 791 views, 38 likes, and an unsolicited reply from a verified creator — at a bad hour from a small account
@@ -81,7 +81,7 @@ The habits are in place. Nothing has come due yet, so none of them have been tes
 - Corrections published publicly, dated and permanent
 - 21 errors logged, each with the guard it produced
 **Needs looking at**
-- 5 of 24 agent questions unanswered — a queue that only grows is a queue nobody reads
+- 12 of 31 agent questions unanswered — a queue that only grows is a queue nobody reads
 - 7 predictions still pending. The first grades land in October, and until then this score is a promise.
 
 ---
