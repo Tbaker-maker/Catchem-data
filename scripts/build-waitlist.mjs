@@ -124,7 +124,7 @@ button:active{opacity:.85}
 <div class="stats">
   <div class="stat"><b>${CARDS}</b><span>CARDS</span></div>
   <div class="stat"><b>${SETS}</b><span>SETS</span></div>
-  <div class="stat"><b>${ARTISTS}</b><span>ILLUSTRATORS</span></div>
+  <div class="stat"><b>${ARTISTS}</b><span>ARTISTS</span></div>
 </div>
 
 <h2>What's coming</h2>
@@ -134,7 +134,7 @@ button:active{opacity:.85}
   <p>Drop cards into a nine-pocket page and see it before you buy anything. It tells you what the page costs, what you already own, and what is still missing.</p></div>
 
 <div class="feat"><h3>Post images <span class="tag">SOON</span></h3>
-  <p>Seven measured layouts, from one card to a full page. Download, copy, or share straight to a post. Every image credits the illustrator by name.</p></div>
+  <p>Seven measured layouts, from one card to a full page. Download, copy, or share straight to a post. Every image credits the artist by name.</p></div>
 
 <div class="feat"><h3>Daily streaks <span class="tag">SOON</span></h3>
   <p>Pick a filter — $2 cards, Illustration Rares, one artist, or the whole history in order — and get cards a day from it that you have not used. Ten to choose from, and the filter is what keeps your run yours.</p></div>
@@ -166,7 +166,7 @@ button:active{opacity:.85}
 <div class="foot">
   Made by one person who collects. Card images and names are © Pokémon / Nintendo / Creatures / GAME FREAK —
   Catch'em is an independent fan project and is not affiliated with or endorsed by them.
-  Every card image credits its illustrator.<br><br>
+  Every card image credits its artist.<br><br>
   <a href="mailto:support@catchemtcg.com">support@catchemtcg.com</a>
 </div>
 

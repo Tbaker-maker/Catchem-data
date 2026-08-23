@@ -168,7 +168,7 @@ summary:before{content:"→ ";color:var(--faint)}
 <div class="wrap">
 <div class="top">
   <h1>Build a page<em>.</em></h1>
-  <p class="lede">Pick a direction and we'll find combinations worth posting. Every image credits the illustrator.
+  <p class="lede">Pick a direction and we'll find combinations worth posting. Every image credits the artist.
      &nbsp;·&nbsp; <a href="/creators" style="color:var(--live)">Or start from one we made &rsaquo;</a></p>
 </div>
 
@@ -201,7 +201,7 @@ summary:before{content:"→ ";color:var(--faint)}
 
 <details open><summary>Search all ${index.length.toLocaleString("en-US")} cards instead</summary>
 <div class="controls">
-  <input id="q" placeholder="Pokémon, illustrator, or set" autocomplete="off">
+  <input id="q" placeholder="Pokémon, artist, or set" autocomplete="off">
   <select id="rar"><option value="">Any rarity</option>
     <option>Special Illustration Rare</option><option>Illustration Rare</option>
     <option>Rare Holo</option><option>Rare Secret</option><option>Rare Ultra</option></select>
@@ -232,8 +232,8 @@ summary:before{content:"→ ";color:var(--faint)}
 </div>
 <canvas id="cv"></canvas>
 
-<div class="foot">Every image carries the Catch'em mark and the illustrator's name — the credit isn't ours to remove.
-Cards marked in amber have no illustrator recorded in the public dataset. That's a backfill gap on recent sets,
+<div class="foot">Every image carries the Catch'em mark and the artist's name — the credit isn't ours to remove.
+Cards marked in amber have no artist recorded in the public dataset. That's a backfill gap on recent sets,
 not a Pokémon decision, and you can still use them.</div>
 </div>
 <script>
@@ -452,7 +452,7 @@ const STREAK_FILTERS = {
   // another card" is a counter.
   "chronological": { label: "The whole history, in order", ordered: "date",
     test: c => HERO_RX.test(c.r || "") && c.a && c.y },
-  "one-artist":    { label: "One illustrator at a time", ordered: "artist",
+  "one-artist":    { label: "One artist at a time", ordered: "artist",
     test: c => HERO_RX.test(c.r || "") && c.a },
   "cheapest-up":   { label: "Cheapest first, working up", ordered: "price",
     test: c => HERO_RX.test(c.r || "") && c.p != null },
@@ -650,7 +650,7 @@ function render(){
   if (!tray.length) { setStatus("Pick an idea above, or search for a card."); return; }
   if (L) {
     const missing = tray.filter(c => !c.a).length;
-    setStatus(\`\${tray.length} cards · \${L.cols} across\` + (missing ? \` · \${missing} without a recorded illustrator\` : ""), false);
+    setStatus(\`\${tray.length} cards · \${L.cols} across\` + (missing ? \` · \${missing} without a recorded artist\` : ""), false);
   } else {
     const below = SUPPORTED.filter(n => n < tray.length).pop(), above = SUPPORTED.find(n => n > tray.length);
     setStatus(\`\${tray.length} cards has no frame. \${below ? "Remove " + (tray.length - below) : ""}\${below && above ? " or add " + (above - tray.length) : ""}.\`, true);
@@ -741,7 +741,7 @@ function buildIdeas(){
     for (const [mon, list] of Object.entries(byName)) {
       const seen = new Map();
       for (const c of list) if (c.a && !seen.has(c.a)) seen.set(c.a, c);
-      if (seen.size >= fCount) ideas.push({ title: mon + " by " + fCount + " illustrators",
+      if (seen.size >= fCount) ideas.push({ title: mon + " by " + fCount + " artists",
         sub: [...seen.keys()].slice(0, fCount).join(" · "), hook: fCount + " artists. One " + mon + ". Which is definitive?",
         cards: [...seen.values()].slice(0, fCount) });
       if (ideas.length >= 6) break;
@@ -759,7 +759,7 @@ function buildIdeas(){
         : sorted.filter((_,i,arr) => i % Math.max(1, Math.floor(arr.length/fCount)) === 0).slice(0, fCount);
       if (picked.length !== fCount) continue;
       ideas.push({ title: artist, sub: picked.map(c => c.n + " " + c.y).join("  →  "),
-        hook: span + " years apart. Same illustrator.", cards: picked });
+        hook: span + " years apart. Same artist.", cards: picked });
       if (ideas.length >= 6) break;
     }
   }
@@ -893,7 +893,7 @@ el("make").onclick = async () => {
     g.fillText("Catch'em", PAD, H-40);
     const artists = [...new Set(tray.map(c=>c.a).filter(Boolean))].slice(0,3).join(" · ");
     g.fillStyle="#5c637a"; g.font="26px ui-monospace,monospace"; g.textAlign="right";
-    g.fillText(artists || "illustrator not recorded", W-PAD, H-40);
+    g.fillText(artists || "artist not recorded", W-PAD, H-40);
 
     blob = await new Promise(r => cv.toBlob(r,"image/png"));
     cv.style.display="block";

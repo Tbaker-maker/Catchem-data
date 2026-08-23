@@ -70,7 +70,7 @@
    "name": "Ghost-type nightmares",
    "kind": "named list",
    "hook": "Which one actually scared you as a kid?",
-   "why": "Ghost art is where illustrators are given the most room, and it shows.",
+   "why": "Ghost art is where artists are given the most room, and it shows.",
    "members": [
     "Gengar",
     "Mimikyu",
@@ -128,7 +128,7 @@
    "name": "One artist, across the years",
    "kind": "derived",
    "basis": "artist field + earliest and latest hero card",
-   "hook": "{years} years apart. Same illustrator.",
+   "hook": "{years} years apart. Same artist.",
    "why": "The shape that landed first — Base Set Charizard beside the 151 Blastoise ex.",
    "bestAt": [
     2,
@@ -137,7 +137,7 @@
   },
   {
    "id": "many-hands",
-   "name": "One Pokémon, many illustrators",
+   "name": "One Pokémon, many artists",
    "kind": "derived",
    "basis": "name + distinct artist values",
    "hook": "{n} artists. One {mon}. Which is the definitive one?",
@@ -185,7 +185,7 @@
   },
   {
    "id": "first-and-last",
-   "name": "An illustrator's debut",
+   "name": "An artist's debut",
    "kind": "derived",
    "basis": "earliest releaseDate for that artist",
    "hook": "Everybody starts somewhere.",
@@ -198,7 +198,7 @@
    "id": "battle",
    "name": "Card battle",
    "kind": "derived",
-   "basis": "same Pokemon, comparable value, different illustrator or era",
+   "basis": "same Pokemon, comparable value, different artist or era",
    "hook": "{mon}. {setA} or {setB}? No wrong answer, but you have one.",
    "why": "A battle only works if it is CLOSE. A $2,000 card against a $12 one is not a debate, it is a price check with a question mark on it. Candidates are matched within 45% on value so nobody can settle it by pointing at a number - which forces an actual opinion, and an opinion is a reply.",
    "bestAt": [
