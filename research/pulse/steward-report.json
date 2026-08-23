@@ -1,19 +1,12 @@
 {
- "generatedAt": "2026-08-23T00:55:38.097Z",
+ "generatedAt": "2026-08-23T00:59:15.595Z",
  "role": "Keeps the work organised, saved and on track. Silent unless something is genuinely slipping — a day with nothing to say is a day it did its job.",
- "speaking": 3,
+ "speaking": 2,
  "speak": [
   {
    "kind": "unsaved",
-   "what": "4 hand-written file(s) changed and not committed.",
-   "why": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
-   "owner": "chat",
-   "confidence": "OBSERVED"
-  },
-  {
-   "kind": "ignored",
-   "what": "3 supervisor problem(s) are open.",
-   "why": "Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.",
+   "what": "1 commit(s) exist locally and are not pushed.",
+   "why": "A commit on one machine is not a backup. The repo is only the record once it is somewhere else.",
    "owner": "chat",
    "confidence": "OBSERVED"
   },
@@ -26,7 +19,8 @@
   }
  ],
  "quiet": [
+  "everything hand-written is committed",
   "7 open commitment(s), all recent",
-  "306 commits / 26 written records in the last few days"
+  "309 commits / 27 written records in the last few days"
  ]
 }
