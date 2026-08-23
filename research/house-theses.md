@@ -900,3 +900,27 @@ THE RULE: every checker excludes its own source, strips comments before
 auditing, and ignores fixtures. Where that is not possible, the check must
 state what it could not see rather than reporting a number that looks like an
 answer.
+
+## AN UNSPENT BUDGET IS NOT SAVED, IT IS DESTROYED (Tyler, Aug 23 2026)
+"Why save so many actions?"
+
+The first allocation held about 11,000 calls a day in reserve for no stated
+reason. Every candidate justification was tested and only one survived:
+
+- **Rate limiting?** Real risk, wrong mitigation. The answer is PACING, not
+  underspending - 20,000 calls at 60ms apart is twenty minutes inside a job
+  that may run for six hours.
+- **Runtime?** Not a constraint at any plausible volume.
+- **Retries and failures?** Real, and it needs 10%. Not 55%.
+- **Anything else?** No.
+
+THE RULE: allocate to 90% and hold 10% for retries. **Unspent calls do not
+roll over - they evaporate at midnight.** A budget held back is not saved, it
+is destroyed, and a day at half utilisation is half a day of capability nobody
+declined; they simply never allocated it.
+
+THE HABIT THIS CORRECTS, which is the part worth keeping: I reasoned about the
+budget as though restraint were inherently prudent. It is not, when the
+resource expires. **Prudence with a perishable resource is just waste with
+better manners** - the question is never "how little can we use" but "what is
+the most valuable thing this could be doing instead of nothing".

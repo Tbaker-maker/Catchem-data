@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-22T23:55:42.252Z",
+ "generatedAt": "2026-08-23T00:02:39.826Z",
  "question": "Not what could we buy, but what is already arriving that we throw away. A field we ignore cost exactly as much as a field we use.",
  "blindSpots": [
   "Chat cannot reach the provider's documentation or make a live call. Everything here is read from responses already stored.",
@@ -10,7 +10,7 @@
   {
    "rank": 1,
    "spend": "ENRICHMENT on the top few thousand cards",
-   "callsPerDay": 3000,
+   "callsPerDay": 6000,
    "haveNow": "12 cards (0.07% of catalogue)",
    "buys": "Sales VOLUME and graded sold prices. This is the only candidate that unlocks instruments we cannot build at all today - every number we publish currently reads asks and infers demand, and vol30 measures demand directly. It also unblocks the graded index and makes RT-5 testable for the first time.",
    "why": "Capability, not coverage. We already have prices on 16,468 cards and volume on twelve."
@@ -18,7 +18,7 @@
   {
    "rank": 2,
    "spend": "ENUMERATE and add sealed products",
-   "callsPerDay": 6000,
+   "callsPerDay": 858,
    "haveNow": "207 products, chosen by hand from eBay",
    "buys": "Coverage of a market nobody else indexes, on a catalogue we have never even counted. The endpoint exists and has only ever been queried by name.",
    "why": "Second because it widens something we already do well rather than enabling something new - but it is the widest gap between what we track and what exists."
@@ -34,7 +34,7 @@
   {
    "rank": 4,
    "spend": "Historical backfill where the provider has it",
-   "callsPerDay": 1000,
+   "callsPerDay": 1500,
    "haveNow": "5 days of our own tape",
    "buys": "Every thesis we hold reports INSUFFICIENT for want of history. Backfill would make RT-1, RT-3 and RT-7 testable years earlier than waiting.",
    "why": "Highest long-term value, entirely dependent on whether the provider exposes history at our tier - which nobody has checked."
@@ -42,8 +42,8 @@
  ],
  "counts": {
   "critical": 4,
-  "high": 2,
-  "medium": 2
+  "high": 1,
+  "medium": 3
  },
  "findings": [
   {
@@ -96,10 +96,10 @@
    "owner": "tyler"
   },
   {
-   "severity": "high",
-   "what": "budget allocation: ~8,942 calls/day committed, ~11,058 spare",
-   "why": "Spare capacity is not saved for anything - unspent calls do not roll over, so every day at 39% of budget is a day of capability we simply did not take.",
-   "action": "Spend it in the ranked order above: capability before coverage.",
+   "severity": "medium",
+   "what": "budget: 18,000 of 18,000 usable allocated (100%), 0 still unassigned",
+   "why": "Unspent calls do not roll over - they evaporate at midnight. A budget held back is not saved, it is destroyed. The only defensible reserve is 10% for retries; everything beyond that is capability nobody declined, they just never allocated it.",
+   "action": "fully allocated - the constraint is now real work rather than budget",
    "owner": "tyler"
   }
  ]

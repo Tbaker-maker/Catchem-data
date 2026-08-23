@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-22T23:55:36.834Z",
+  "generatedAt": "2026-08-23T00:02:33.538Z",
   "method": "Pack Math: ask median / era-aware pack count (arithmetic, no estimation; variable-count products excluded by name). Narrative: latest agent digest cross-referenced against tracked sets; 'quiet movers' = spread signal with zero digest mention.",
   "digestUsed": "2026-08-22.md",
   "packMath": {
@@ -4463,17 +4463,17 @@
   ],
   "sealedIndex": {
     "name": "Catchem Sealed Index",
-    "level": 100,
-    "ddPct": null,
+    "level": 99.4,
+    "ddPct": -0.6,
     "constituents": 172,
-    "matchedSample": 0,
+    "matchedSample": 142,
     "seasoningBench": 5,
     "medianProductUsd": 200,
     "baseline": "chain-linked from 100.0; each day's move is the average return of products present on both days",
     "breadth": {
-      "up": 0,
-      "down": 0,
-      "flat": 0
+      "up": 22,
+      "down": 31,
+      "flat": 89
     },
     "chip": "VERIFIED",
     "methodologyUrl": "/methodology.html",
@@ -4482,7 +4482,7 @@
       "name": "Catchem Sealed Index — value weighted",
       "level": 99.1,
       "constituents": 172,
-      "vsEqualWeight": -0.9,
+      "vsEqualWeight": -0.3,
       "simple": "Same shelf, but the expensive boxes get a bigger say. If this number and the main one disagree, the cheap end and the expensive end of the market are moving differently.",
       "method": "Each product's move is weighted by what it was worth at its baseline, so a $5,000 box counts for more than a $10 pack. The main index gives every product one equal vote.",
       "chip": "VERIFIED"
@@ -6207,14 +6207,6 @@
         "zonePct": 24.8,
         "midpoint": 8.37
       },
-      "sv6pt5-pack": {
-        "ask": 14.79,
-        "buyerCeiling": 15.83,
-        "sellerFloor": 12.43,
-        "zoneWidth": 3.4,
-        "zonePct": 23,
-        "midpoint": 14.13
-      },
       "sv7-pack": {
         "ask": 10.58,
         "buyerCeiling": 11.32,
@@ -6342,14 +6334,21 @@
     }
   ],
   "watchOutcomes": {
-    "date": "2026-08-21",
-    "sealed": null,
+    "date": "2026-08-22",
+    "sealed": {
+      "kind": "sealed",
+      "name": "Unified Minds Booster Box",
+      "price": 4450,
+      "id": "sm11-booster-box",
+      "now": 4450,
+      "dPct": 0
+    },
     "raw": {
       "kind": "raw",
-      "name": "Umbreon VMAX",
-      "price": 2244.47,
-      "id": "swsh7-215",
-      "now": 2244.47,
+      "name": "Charizard ex",
+      "price": 360.64,
+      "id": "sv3pt5-199",
+      "now": 360.64,
       "dPct": 0
     }
   },
@@ -6444,15 +6443,15 @@
     }
   ],
   "ripOrHold": {
-    "id": "me3-etb",
-    "name": "Perfect Order Elite Trainer Box",
-    "price": 71.98,
-    "question": "Perfect Order Elite Trainer Box at $71.98 — rip it or hold it sealed?",
+    "id": "me2pt5-etb",
+    "name": "Ascended Heroes Elite Trainer Box",
+    "price": 174.99,
+    "question": "Ascended Heroes Elite Trainer Box at $174.99 — rip it or hold it sealed?",
     "note": "one-tap daily vote; results revisited next morning"
   },
   "notification": {
-    "title": "Catchem Sealed Index 100",
-    "body": "Today: Perfect Order Elite Trainer Box — eBay asks NaN% less than TCGplayer."
+    "title": "Catchem Sealed Index 99.4 (-0.6%)",
+    "body": "Today: Ascended Heroes Elite Trainer Box — eBay asks NaN% less than TCGplayer."
   },
   "cohortCompare": {
     "specialty": {
@@ -6539,14 +6538,14 @@
       "explain": "Listings moved 24 to 8 overnight. Shelves draining while asks rise, which historically means demand-led buying or one large buyer., with asks up 21.2%."
     },
     "sealed": {
-      "whyChosen": "A seller keeps about $3,859.97 online; a buyer pays about $4,761.5. Roughly $901.53 of room where a face-to-face trade beats the internet.",
-      "lens": "zone",
-      "name": "Unified Minds Booster Box",
-      "ebay": 4450,
-      "listings": 18,
+      "whyChosen": "Sealed carries a 376.9% premium over the cost of its packs bought loose — the widest gap of that kind we track today.",
+      "lens": "premium",
+      "name": "Rebel Clash Elite Trainer Box",
+      "ebay": 378.88,
+      "listings": 17,
       "chip": "VERIFIED",
-      "reason": "most room in a face-to-face deal",
-      "explain": "Asking $4,450 across 18 live listings."
+      "reason": "biggest sealed premium over loose packs",
+      "explain": "Asking $378.88 across 17 live listings."
     },
     "graded": {
       "name": "Umbreon ex (Prismatic Evolutions)",
@@ -6560,12 +6559,12 @@
       "explain": "Ungraded copies trade around $1,491. Perfect-graded (PSA 10) copies have been SELLING near $5,100 — about $3,529 ahead even after the $79.99 grading fee. Based on 550 recorded PSA 10 sales."
     },
     "raw": {
-      "name": "Charizard ex",
-      "set": "151",
-      "price": 360.64,
+      "name": "Umbreon ex",
+      "set": "Prismatic Evolutions",
+      "price": 1490.88,
       "chip": "READ",
       "reason": "chase",
-      "explain": "Widely treated as the card 151 is priced around, at $361 ungraded. Its set is 35 months old."
+      "explain": "Widely treated as the card Prismatic Evolutions is priced around, at $1,491 ungraded. Its set is 19 months old."
     }
   }
 }

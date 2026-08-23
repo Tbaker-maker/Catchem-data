@@ -123,21 +123,35 @@ const allocation = [];
   const catalogue = Object.keys(cat.cards).length;
   const priced = Object.values(cat.cards).filter(c => typeof c.price === "number" && c.price >= 2).length;
 
+  // SPEND IT. An earlier version of this held ~11,000 calls a day in reserve
+  // for no stated reason, and Tyler asked the obvious question: why save so
+  // many? Every candidate reason was tested and only one survived - retries and
+  // failures, which needs 10%, not 55%.
+  //
+  // Rate limiting is a real risk but the mitigation is PACING, not
+  // underspending: 20,000 calls at 60ms apart is twenty minutes inside a job
+  // that may run for six hours. Runtime is not a constraint either.
+  //
+  // UNSPENT CALLS DO NOT ROLL OVER. They evaporate at midnight. A budget held
+  // back is not saved, it is destroyed - and every day at half utilisation is
+  // half a day of capability nobody chose to decline, they just never allocated.
   const BUDGET = 20000;
+  const RETRY_RESERVE = 0.10;
+  const USABLE = Math.round(BUDGET * (1 - RETRY_RESERVE));
   const cardRefresh = Math.round(priced * 0.75 + (catalogue - priced) * 0.33);
   const sealedRefresh = sp.products.length;
-  const spare = BUDGET - cardRefresh - sealedRefresh;
+  const spare = USABLE - cardRefresh - sealedRefresh;
 
   allocation.push({
     rank: 1, spend: "ENRICHMENT on the top few thousand cards",
-    callsPerDay: Math.min(spare, 3000),
+    callsPerDay: Math.min(spare, 6000),   // enrichment on ~6,000 cards, not 3,000 - it is the highest-capability spend we have
     haveNow: `${enriched} cards (${(enriched / catalogue * 100).toFixed(2)}% of catalogue)`,
     buys: "Sales VOLUME and graded sold prices. This is the only candidate that unlocks instruments we cannot build at all today - every number we publish currently reads asks and infers demand, and vol30 measures demand directly. It also unblocks the graded index and makes RT-5 testable for the first time.",
     why: "Capability, not coverage. We already have prices on 16,468 cards and volume on twelve.",
   });
   allocation.push({
     rank: 2, spend: "ENUMERATE and add sealed products",
-    callsPerDay: Math.min(Math.max(0, spare - 3000), 6000),
+    callsPerDay: Math.max(0, spare - 6000 - 700 - 1500),   // everything left after the higher-capability spends
     haveNow: `${sp.products.length} products, chosen by hand from eBay`,
     buys: "Coverage of a market nobody else indexes, on a catalogue we have never even counted. The endpoint exists and has only ever been queried by name.",
     why: "Second because it widens something we already do well rather than enabling something new - but it is the widest gap between what we track and what exists.",
@@ -151,15 +165,18 @@ const allocation = [];
   });
   allocation.push({
     rank: 4, spend: "Historical backfill where the provider has it",
-    callsPerDay: 1000,
+    callsPerDay: 1500,
     haveNow: "5 days of our own tape",
     buys: "Every thesis we hold reports INSUFFICIENT for want of history. Backfill would make RT-1, RT-3 and RT-7 testable years earlier than waiting.",
     why: "Highest long-term value, entirely dependent on whether the provider exposes history at our tier - which nobody has checked.",
   });
 
-  F("high", `budget allocation: ~${(cardRefresh + sealedRefresh).toLocaleString("en-US")} calls/day committed, ~${spare.toLocaleString("en-US")} spare`,
-    "Spare capacity is not saved for anything - unspent calls do not roll over, so every day at 39% of budget is a day of capability we simply did not take.",
-    "Spend it in the ranked order above: capability before coverage.", "tyler");
+  const allocated = allocation.reduce((n, a) => n + a.callsPerDay, 0);
+  const unallocated = USABLE - cardRefresh - sealedRefresh - allocated;
+  F(unallocated > USABLE * 0.15 ? "high" : "medium",
+    `budget: ${(cardRefresh + sealedRefresh + allocated).toLocaleString("en-US")} of ${USABLE.toLocaleString("en-US")} usable allocated (${Math.round((cardRefresh + sealedRefresh + allocated) / USABLE * 100)}%), ${Math.max(0, unallocated).toLocaleString("en-US")} still unassigned`,
+    "Unspent calls do not roll over - they evaporate at midnight. A budget held back is not saved, it is destroyed. The only defensible reserve is 10% for retries; everything beyond that is capability nobody declined, they just never allocated it.",
+    unallocated > 0 ? "assign the remainder to the highest-ranked spend that can absorb it" : "fully allocated - the constraint is now real work rather than budget", "tyler");
 }
 
 const out = { generatedAt: new Date().toISOString(),
