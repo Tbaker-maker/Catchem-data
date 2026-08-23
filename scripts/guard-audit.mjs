@@ -186,6 +186,30 @@ const MUST_RUN = [
 
 const failures = [], notes = [];
 
+// ── UNESCAPED BROWSER TEMPLATE ────────────────────────────────────────────
+// Four occurrences in one file in two days, by both lanes. A generator writes
+// browser JavaScript inside a Node template literal, so every backtick and
+// every ${} meant for the BROWSER must be escaped or Node evaluates it at build
+// time and emits something that will not parse.
+//
+// It is invisible in the generator, fatal in the output, and the page still
+// renders — it just does nothing. CC found the editor completely dead this way.
+// Four is not carelessness, it is a design that invites the mistake, so it gets
+// a check rather than a fifth fix.
+try {
+  const gens = (await readdir(join(ROOT, "scripts"))).filter(f => /^build-|^mint-|^generate-/.test(f) && f.endsWith(".mjs"));
+  for (const f of gens) {
+    const src = await readFile(join(ROOT, "scripts", f), "utf-8").catch(() => "");
+    const emitted = [...src.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m => m[1]).join("\n");
+    if (!emitted.trim()) continue;
+    // An unescaped backtick inside the emitted script is the tell: it would have
+    // closed the Node template, so its presence means the template survived and
+    // the browser code did not.
+    const bad = /(?<!\\)`/.test(emitted) || /(?<!\\)\$\{/.test(emitted);
+    if (bad) notes.push(`UNESCAPED BROWSER TEMPLATE — ${f} emits a <script> containing an unescaped backtick or \${}. Node will evaluate it at build time and the page will render but do nothing. Escape both for the browser.`);
+  }
+} catch {}
+
 // ── PROTOCOL C ────────────────────────────────────────────────────────────
 // import() takes a URL. A bare filesystem path works on Linux and fails on
 // Windows, where 'c:\\...' reads as protocol 'c:'. It has shipped three times

@@ -189,7 +189,7 @@ summary:before{content:"→ ";color:var(--faint)}
 <div id="refuse" class="refuse" hidden></div>
 <div id="ideas" class="ideas"></div>
 
-<details><summary>Search all ${index.length.toLocaleString("en-US")} cards instead</summary>
+<details open><summary>Search all ${index.length.toLocaleString("en-US")} cards instead</summary>
 <div class="controls">
   <input id="q" placeholder="Pokémon, illustrator, or set" autocomplete="off">
   <select id="rar"><option value="">Any rarity</option>
@@ -240,12 +240,23 @@ fetch("card-index.json", { signal: AbortSignal.timeout(20000) }).then(r => r.jso
 const el = id => document.getElementById(id);
 function search(){
   const q = el("q").value.trim().toLowerCase(), rar = el("rar").value, yr = el("yr").value.trim();
-  if (!q && !rar && !yr) { el("res").innerHTML = "<div class='empty'>start typing to search</div>"; return; }
+  // SHOW SOMETHING IMMEDIATELY. This used to read "start typing to search" over
+  // an empty panel, which is indistinguishable from broken. With no query we
+  // show the best-looking cards we have, so the tool proves itself on load
+  // rather than asking the user to prove it first.
+  if (!q && !rar && !yr) {
+    const showcase = INDEX.filter(c => /Special Illustration Rare/i.test(c.r || "") && c.a && c.p != null)
+      .sort((a, b) => (b.p || 0) - (a.p || 0)).slice(0, 24);
+    el("res").innerHTML = showcase.map(c =>
+      \`<div class="hit" onclick="add('\${c.i}')"><img src="\${imgUrl(c.i)}" alt="">
+        <b>\${c.n}</b><i>\${c.s} · \${c.y}</i><i>\${c.a}</i></div>\`).join("");
+    return;
+  }
   const hits = INDEX.filter(c =>
     (!q || (c.n + " " + (c.a || "") + " " + c.s).toLowerCase().includes(q)) &&
     (!rar || c.r === rar) && (!yr || c.y === yr)).slice(0, 60);
   el("res").innerHTML = hits.length ? hits.map(c =>
-    \`<div class="hit" onclick="add('\${c.i}')"><img loading="lazy" src="\${imgUrl(c.i)}" alt="">
+    \`<div class="hit" onclick="add('\${c.i}')"><img src="\${imgUrl(c.i)}" alt="">
       <b>\${c.n}</b><i>\${c.s} · \${c.y}</i><i class="\${c.a ? "" : "nocred"}">\${c.a || "no credit recorded"}</i></div>\`).join("")
     : "<div class='empty'>nothing matched</div>";
 }
