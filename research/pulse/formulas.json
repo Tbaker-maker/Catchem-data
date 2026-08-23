@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-23T08:30:03.486Z",
+  "generatedAt": "2026-08-23T08:42:39.561Z",
   "antiSlopRule": "A formula must be derivable from a field we hold: name, artist, setId, rarity, releaseDate, price. Where a theme needs judgment, that judgment is a NAMED LIST stored openly and arguable — never an adjective smuggled into a sentence. 'Cute' is not in the data; the nine Eeveelutions are.",
   "fieldsUsed": [
     "name",
@@ -65,10 +65,23 @@
       "Snorlax",
       "Komala",
       "Jigglypuff",
+      "Wigglytuff",
+      "Igglybuff",
       "Drowzee",
       "Hypno",
       "Musharna",
-      "Munna"
+      "Munna",
+      "Slowpoke",
+      "Slowbro",
+      "Slowking",
+      "Slakoth",
+      "Vigoroth",
+      "Slaking",
+      "Psyduck",
+      "Swablu",
+      "Litwick",
+      "Espurr",
+      "Rowlet"
     ],
     "The pseudo-legendaries": [
       "Dragonite",
@@ -719,6 +732,34 @@
     },
     {
       "kind": "one artist, one family",
+      "title": "Ken Sugimori drew 5 of Pokémon caught napping",
+      "basis": "artist field + a named list of 20 Pokémon",
+      "cards": [
+        "base2-11",
+        "base3-8",
+        "neo1-14",
+        "ex1-12"
+      ],
+      "count": 4,
+      "why": "5 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
+      "angle": "Ken Sugimori drew 5 of them. Late night check-in. Who's still awake?"
+    },
+    {
+      "kind": "one artist, one family",
+      "title": "Mitsuhiro Arita drew 5 of Pokémon caught napping",
+      "basis": "artist field + a named list of 20 Pokémon",
+      "cards": [
+        "base2-16",
+        "ecard2-H12",
+        "ex8-15",
+        "sm11-1"
+      ],
+      "count": 4,
+      "why": "5 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
+      "angle": "Mitsuhiro Arita drew 5 of them. Late night check-in. Who's still awake?"
+    },
+    {
+      "kind": "one artist, one family",
       "title": "Mitsuhiro Arita drew 4 of The pseudo-legendaries",
       "basis": "artist field + a named list of 10 Pokémon",
       "cards": [
@@ -730,48 +771,6 @@
       "count": 4,
       "why": "4 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
       "angle": "Mitsuhiro Arita drew 4 of them. Which one did you actually raise?"
-    },
-    {
-      "kind": "one artist, one family",
-      "title": "5ban Graphics drew 9 of The pseudo-legendaries",
-      "basis": "artist field + a named list of 10 Pokémon",
-      "cards": [
-        "bw4-103",
-        "bw6-90",
-        "xy4-77",
-        "sm2-157"
-      ],
-      "count": 4,
-      "why": "9 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
-      "angle": "5ban Graphics drew 9 of them. Which one did you actually raise?"
-    },
-    {
-      "kind": "one artist, one family",
-      "title": "Mitsuhiro Arita drew 6 of The mythicals",
-      "basis": "artist field + a named list of 20 Pokémon",
-      "cards": [
-        "ex8-97",
-        "sm35-78",
-        "xy11-115",
-        "sm9-1"
-      ],
-      "count": 4,
-      "why": "6 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
-      "angle": "Mitsuhiro Arita drew 6 of them. How many of these did you actually get legitimately?"
-    },
-    {
-      "kind": "one artist, one family",
-      "title": "Ryo Ueda drew 8 of The mythicals",
-      "basis": "artist field + a named list of 20 Pokémon",
-      "cards": [
-        "ex11-12",
-        "xy9-118",
-        "col1-2",
-        "bw7-47"
-      ],
-      "count": 4,
-      "why": "8 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
-      "angle": "Ryo Ueda drew 8 of them. How many of these did you actually get legitimately?"
     },
     {
       "kind": "one Pokémon, many hands",
@@ -998,6 +997,32 @@
     },
     {
       "kind": "one artist, one family",
+      "title": "Midori Harada drew 3 of Pokémon caught napping",
+      "basis": "artist field + a named list of 20 Pokémon",
+      "cards": [
+        "ex16-13",
+        "ex10-13",
+        "ex10-14"
+      ],
+      "count": 3,
+      "why": "3 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
+      "angle": "Midori Harada drew 3 of them. Late night check-in. Who's still awake?"
+    },
+    {
+      "kind": "one artist, one family",
+      "title": "Saki Hayashiro drew 3 of Pokémon caught napping",
+      "basis": "artist field + a named list of 20 Pokémon",
+      "cards": [
+        "sv3pt5-187",
+        "pgo-77",
+        "swsh6-224"
+      ],
+      "count": 3,
+      "why": "3 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
+      "angle": "Saki Hayashiro drew 3 of them. Late night check-in. Who's still awake?"
+    },
+    {
+      "kind": "one artist, one family",
       "title": "Ryo Ueda drew 3 of The pseudo-legendaries",
       "basis": "artist field + a named list of 10 Pokémon",
       "cards": [
@@ -1008,19 +1033,6 @@
       "count": 3,
       "why": "3 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
       "angle": "Ryo Ueda drew 3 of them. Which one did you actually raise?"
-    },
-    {
-      "kind": "one artist, one family",
-      "title": "hatachu drew 3 of The pseudo-legendaries",
-      "basis": "artist field + a named list of 10 Pokémon",
-      "cards": [
-        "sm12-163",
-        "swsh7-115",
-        "sm6-94"
-      ],
-      "count": 3,
-      "why": "3 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
-      "angle": "hatachu drew 3 of them. Which one did you actually raise?"
     },
     {
       "kind": "one set, one hand",
