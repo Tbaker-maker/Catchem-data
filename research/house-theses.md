@@ -1970,3 +1970,33 @@ anywhere on a shipped page. Its first version flagged five pages that were fine
 "Daily Berry" is a rule. **A check that cries wolf five times out of six gets
 muted, and a muted check is worse than none**, so it was narrowed to the exact
 pairing and re-tested against the real mistake.
+
+## A FAKE DEPENDENCY PROVES NOTHING (Aug 23 2026)
+I told Tyler the card editor was verified working. He opened it: **no images, no
+themes, no search results.**
+
+**One cause.** The editor did `fetch("card-index.json")`, and from a `file://`
+page Chrome blocks that as cross-origin. INDEX stayed empty, so the showcase had
+nothing to render, `canFill()` saw an empty pool and rejected every theme, and
+search had nothing to search. **Three symptoms, one line.**
+
+WHY I MISSED IT, and it is the part that matters: **my smoke test supplied a
+fake `fetch` that always succeeded.** I tested the code path that cannot fail
+and called the result verified. The harness also returned a stub element for
+every id, so a missing element looked identical to a present one.
+
+**A test that replaces the dependency most likely to fail is testing the
+absence of the bug.**
+
+THE FIXES:
+- The index is **embedded**, not fetched. One file, and a single file cannot
+  arrive half-configured.
+- `offline-smoke.mjs` runs the page with `fetch` **REJECTING**, which is the
+  real condition, and with elements returning **null** when absent, like a
+  browser. It caught a second bug immediately: removing the fetch removed an
+  async gap that had been accidentally sequencing the first render.
+
+AND THE HABIT TO KILL: I have now said "verified" about this file four times and
+been wrong three. **The word has to mean the thing was exercised the way it will
+actually be used** — opened from disk, no server, no network — or it means
+nothing at all.

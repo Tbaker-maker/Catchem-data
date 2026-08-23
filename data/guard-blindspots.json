@@ -169,6 +169,13 @@
    "coveredBy": "Tyler using it live, and the post-outcome log",
    "reviewed": "2026-08-23",
    "history": "Found two real bugs on its first run: BroadcastChannel does not replay, so the audience opened blank whenever it started after the presenter, which is the normal order; and the audience posted its hello BEFORE assigning onmessage, so it could not hear the answer."
+  },
+  "offline-smoke.mjs": {
+   "cannotCatch": "Whether the images actually RESOLVE. It proves the page renders its catalogue with no network at all and that the srcs are well-formed. A page rendering 36 broken-image icons would pass.",
+   "knownPatterns": [],
+   "coveredBy": "CC with a real browser, and Tyler opening it",
+   "reviewed": "2026-08-23",
+   "history": "Written after I certified the editor as working using a harness that supplied a FAKE FETCH which always succeeded. Opened from file://, Chrome blocks fetch of a sibling file, INDEX stayed empty, and no images, no themes and no search results all followed from that single cause."
   }
  }
 }

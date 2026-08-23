@@ -239,6 +239,7 @@ not a Pokémon decision, and you can still use them.</div>
 <script>
 const THEMES = ${JSON.stringify(themes?.themes ?? [])};
 const SETS = ${JSON.stringify(sets)};
+const CARD_INDEX = ${JSON.stringify(index)};
 const LAYOUTS = ${JSON.stringify(Object.fromEntries(Object.entries(LAYOUTS).map(([k, v]) => [k, { cols: v.cols, cardW: v.cardW, name: v.name }])))};
 const SUPPORTED = Object.keys(LAYOUTS).map(Number);
 let INDEX = [], tray = [], blob = null;
@@ -256,8 +257,16 @@ function imgTag(c, cls){
     "' onerror='this.onerror=null;this.src=&quot;" + alt + "&quot;'>";
 }
 
-fetch("card-index.json", { signal: AbortSignal.timeout(20000) }).then(r => r.json()).then(d => { INDEX = d; renderThemes(); search(); })
-  .catch(() => { document.getElementById("res").innerHTML = "<div class='empty'>could not load the card index</div>"; });
+// EMBEDDED, NOT FETCHED. fetch() of a sibling file from a file:// page is
+// blocked by Chrome as cross-origin, so INDEX stayed empty — and every symptom
+// followed from that one cause: no images, no themes, no search. A fetch also
+// means two files that must travel together, and a single file cannot arrive
+// half-configured.
+INDEX = CARD_INDEX;
+// Deferred one tick. The fetch used to provide this gap by accident, so
+// removing it exposed an ordering bug that had always been there — el() and
+// the render functions are declared further down the file.
+setTimeout(() => { renderThemes(); search(); }, 0);
 
 const el = id => document.getElementById(id);
 // PAGING STATE. Page size is deliberately modest: 36 images is a fast paint on
@@ -291,11 +300,61 @@ window.loadIdea = loadIdea;
 window.nextStreakDay = nextStreakDay;
 window.endStreak = endStreak;
 window.beginStreak = beginStreak;
+// BUILT WITH DOM CALLS, NOT A STRING. Three attempts at quoting this one line
+// failed, each in a different way. A string with quotes inside quotes inside a
+// template is a losing game; createElement has nothing to escape.
+function suggestHtml(q){
+  const guess = didYouMean(q);
+  const d = document.createElement("div");
+  d.className = "empty";
+  if (!guess) { d.textContent = "nothing matched"; return d.outerHTML; }
+  d.appendChild(document.createTextNode("Nothing for " + q + ". Did you mean "));
+  const b = document.createElement("b");
+  b.textContent = guess;
+  b.style.color = "var(--live)";
+  b.style.cursor = "pointer";
+  b.setAttribute("onclick", "tryName(" + JSON.stringify(guess) + ")");
+  d.appendChild(b);
+  d.appendChild(document.createTextNode("?"));
+  return d.outerHTML;
+}
+function tryName(n){ el("q").value = n; resetPage(); search(); }
+window.tryName = tryName;
 function goPage(n){ page = Math.max(0, n); search(); el("res").scrollTop = 0; }
 
 // Any change to the filters resets to page one — staying on page 400 of a new
 // search is a way of showing somebody nothing and calling it a result.
 function resetPage(){ page = 0; }
+
+// FORGIVING SEARCH. Pokemon names are hard to spell — Chandelure, Aegislash,
+// Volcarona, Gholdengo — and an exact match punishes a typo with an empty
+// screen, which reads as a broken tool rather than a misspelling. This runs
+// ONLY when the exact match finds nothing, so it costs nothing normally.
+let NAMES = null;
+function editDistance(a, b){
+  if (Math.abs(a.length - b.length) > 3) return 99;
+  const m = a.length, n = b.length;
+  let prev = Array.from({ length: n + 1 }, (_, j) => j);
+  for (let i = 1; i <= m; i++) {
+    const cur = [i];
+    for (let j = 1; j <= n; j++)
+      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    prev = cur;
+  }
+  return prev[n];
+}
+function didYouMean(q){
+  if (q.length < 3) return null;
+  NAMES = NAMES ?? [...new Set(INDEX.map(c => c.n.split(" ")[0]))];
+  let best = null, bestD = 99;
+  for (const nm of NAMES) {
+    const d = editDistance(q, nm.toLowerCase());
+    if (d < bestD) { bestD = d; best = nm; }
+  }
+  // Allow more slack on longer words: one slip in "chandalure" is the same
+  // mistake as one slip in "mew", and only one of them is ambiguous.
+  return bestD <= Math.max(1, Math.floor(q.length / 4)) ? best : null;
+}
 
 function search(){
   const q = el("q").value.trim().toLowerCase(), rar = el("rar").value, yr = el("yr").value.trim();
@@ -330,7 +389,7 @@ function search(){
   el("res").innerHTML = hits.length ? hits.map(c =>
     \`<div class="hit" onclick="add('\${c.i}')"><img src="\${imgUrl(c.i)}" alt="">
       <b>\${c.n}</b><i>\${c.s} · \${c.y}</i><i class="\${c.a ? "" : "nocred"}">\${c.a || "no credit recorded"}</i></div>\`).join("")
-    : "<div class='empty'>nothing matched</div>";
+    : suggestHtml(q);
 }
 ["q","rar","yr"].forEach(id => el(id).addEventListener("input", () => { resetPage(); search(); }));
 

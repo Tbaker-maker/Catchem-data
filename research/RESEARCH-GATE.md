@@ -115,6 +115,8 @@ fixing the class is.
 
 | 27 | Shipped "177 sealed products, repriced every single day" onto a public landing page while the heartbeat was reporting that day's 04:00 run as FAILED and the data was 25.6 hours old | Tyler | Perishable claim — verified the noun, skipped the verb | Claim widened to what survives a bad day; error-25 check added to verify-work, narrowed after five false positives |
 
+| 28 | Told Tyler the card editor was "verified working". Opened from file:// it showed no images, no themes and no search results — Chrome blocks fetch of a sibling file, so INDEX stayed empty and all three symptoms followed from one cause | Tyler | Tested the happy path with a fake dependency | Index EMBEDDED rather than fetched; offline-smoke.mjs runs the page with fetch REJECTING, which is the real condition |
+
 **PATTERN, stated plainly:** 8 of 9 were caught by Tyler, not by the
 machine. Every guard above was built AFTER a human caught something.
 That is the honest state — the machine is now catching prices, but
