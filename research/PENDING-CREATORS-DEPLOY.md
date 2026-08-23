@@ -67,3 +67,24 @@ a file that Safari opens instead of saving.
 
 PNG throughout, deliberately: it is lossless and universal, and JPEG would band
 the holo gradients, which is the one thing card art cannot afford.
+
+## THE EDITOR IS BUILT — deploy it (2026-08-23)
+`scripts/build-editor.mjs` produces two files:
+- `research/assets/build.html` (11 KB) — the editor
+- `research/assets/card-index.json` (1.55 MB) — slim index of all 16,468 cards
+
+It searches by Pokémon, illustrator or set, filters by rarity and year, holds a
+tray of up to nine, picks the frame from the count via the layout table, refuses
+unsupported counts with the fix, and offers Download / Copy / Share.
+
+**Both files must sit in the same directory** — the editor fetches
+`card-index.json` relative to itself. Target: `catchemtcg.com/build`.
+
+TWO THINGS THAT MUST STAY LOCKED, per Tyler's tier model:
+- **the watermark** — three points, footer plus two faint diagonals at 16%.
+  The watermark IS the free tier; removing it becomes the gated feature later,
+  which also means every free post markets us.
+- **the illustrator credit** — renders from card data, cannot be cleared.
+
+Add `build-editor.mjs` to the pipeline and both output files to the workflow's
+`git add` list. A file written in CI but not added evaporates at job end.
