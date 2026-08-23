@@ -31,6 +31,10 @@ const problems = [];
 const P = (card, what, why) => problems.push({ card, what, why });
 
 for (const f of files) {
+  // Composites are art posts by definition: images, a caption, no figures.
+  // The price checks below would be meaningless on them and the alias check
+  // would fire on any short artist name.
+  if (/^composite/.test(f)) continue;
   const svg = await readFile(join(dir, f), "utf-8").catch(() => "");
   if (!svg) continue;
   const texts = [...svg.matchAll(/>([^<>{}]{2,90})</g)].map(m => m[1].trim()).filter(Boolean);

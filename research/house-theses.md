@@ -1133,3 +1133,34 @@ THE PATTERN WORTH NAMING: both failures came from the same shortcut — making
 something outside the pipeline because it was faster. **The pipeline is not
 bureaucracy, it is the accumulated list of things we have already got wrong.**
 Going around it means going around all of them at once.
+
+## THE ARTWORK IS THE CONTENT (Tyler, Aug 23 2026)
+"You should be pulling the actual cards and putting them side by side, same
+size, awesome quality. I'll type the text."
+
+It took two bad cards for me to understand this. Art content is not a
+STATISTIC about art. The artwork is the content, the layout is the whole job,
+and the words are Tyler's. A price on an art post is a distraction from the
+thing the post is about — which is precisely why the USGMEN card failed: four
+values, three of them prices, on a card explicitly meant to be about art.
+
+THE RULE, split by kind:
+- **Art posts**: real card images, identical size, clean layout, a caption
+  naming what they are. **No prices, no stats, no premium math.** Tyler writes
+  the words.
+- **Data posts**: the number leads and the card carries it, which is what the
+  existing mint does well.
+- The two do not mix. A stat on an art post is noise; an artwork on a data post
+  is decoration.
+
+WHY IDENTICAL SIZING MATTERS more than it sounds: a row of cards at different
+scales reads as a collage, and a collage looks like something a fan made rather
+than something a company published. Same size, even gaps, one surface colour.
+
+THE STRONGEST SHAPE FOUND SO FAR: an illustrator's FIRST card beside their
+LATEST. Arita's Base Set Charizard from 1999 next to Keldeo from 2026 is a
+twenty-seven-year career in one image, and it needs no explanation at all.
+
+scripts/card-composite.mjs builds these. Chat cannot fetch the images (403
+from the host), so it writes placeholders and a manifest of URLs, and whoever
+has network access embeds and rasterises.
