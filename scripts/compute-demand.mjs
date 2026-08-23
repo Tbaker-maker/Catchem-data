@@ -23,14 +23,18 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "utf-8")); } catch { return null; } };
 
 const enrich = await J("data/singles-enrichment.json") ?? {};
-// Two enrichment sources, one shape. The watchlist file is the hand-picked
-// dozen; the distilled file is the catalogue-scale set fetch. Merge by cardId
-// with the watchlist winning, because it is the one that was verified by hand.
-const distilled = await J("data/enrichment-distilled.json") ?? {};
-const byId = new Map();
-for (const c of (distilled.cards ?? [])) if (c?.raw) byId.set(c.cardId, c);
-for (const c of (enrich.cards ?? enrich.rows ?? [])) if (c?.raw) byId.set(c.cardId, c);
-const rows = [...byId.values()];
+// ONLY THE CHOSEN SAMPLE FEEDS THIS. Earlier today I merged
+// data/enrichment-distilled.json in here, which took the row count from 12 to
+// 857 and looked like a large improvement. verify-work flagged it as a coverage
+// overclaim, and it was right: those 861 cards are a FOUND sample — whatever
+// the provider returned when our set ids were being ignored — not cards anyone
+// selected. Their median price is $0.49. Publishing liquidity across them reads
+// as a market-wide figure and is nothing of the kind.
+//
+// The distilled file goes back in the moment the enrichment run targets sets we
+// chose, at which point the sample is chosen coverage and the count means what
+// a reader would assume it means.
+const rows = (enrich.cards ?? enrich.rows ?? []).filter(c => c?.raw);
 const MIN_SAMPLE = 25;                     // below this, say so rather than compute
 
 const money = n => `$${Math.round(n).toLocaleString("en-US")}`;

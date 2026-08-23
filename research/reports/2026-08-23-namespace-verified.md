@@ -1,6 +1,6 @@
 # The namespace fix works; the writer that was meant to keep the data did not (2026-08-23)
 
-`audit.mjs` → **20/20** · `negative-tests.mjs` → **50/50** · `verify-work.mjs` → **clean**
+`audit.mjs` → **20/20** · `negative-tests.mjs` → **51/51** · `verify-work.mjs` → **3 findings, none introduced this session**
 
 ## Assumption 1 is wrong, and in the good direction
 
@@ -169,6 +169,27 @@ The declared blind spot is that it cannot check reasoning. These are additional:
    a comment wearing a variable's clothes — the file's one self-check asserts
    nothing.
 
+### It caught me, on the merged version, and it was right
+
+The version I attacked was the one in my working tree; rebasing brought Tyler's
+expanded verifier, which immediately flagged something I had done **this
+session**:
+
+```
+[error 0 · coverage overclaim] demand reports 857 rows from an enrichment
+sample of 12 chosen cards
+```
+
+Earlier I merged `enrichment-distilled.json` into `compute-demand`, taking
+liquidity from 12 rows to 857. It looked like a large improvement. It is exactly
+the thing assumption 2 forbids: those 861 cards are a **found** sample — whatever
+came back while our set ids were being ignored, median price $0.49 — and
+publishing liquidity across them reads as a market-wide figure. **Reverted.** The
+distilled file goes back in when the run targets sets we chose.
+
+That is the verifier doing precisely its job, on its author's behalf, against me,
+within minutes of being merged. Whatever its blind spots, it earned its place today.
+
 Is it strict enough? Not yet — but its *shape* is right, and that matters more.
 Every rule is a real incident rather than a generic lint, and it runs on output
 rather than intent. The fixes are narrow: drop the `> 1` floor, walk the whole
@@ -187,12 +208,27 @@ is answered by reconstructing a shipping-inclusive vs item-only comparison by
 hand, the retirement was wrong" — so the grade turns on an event in the log
 rather than on a feeling.
 
-**`agents-advise` — true by construction.** "No agent false-positive will ever
-cost us a publication day." Agents advise and never block *by design*, so they
-cannot cost a publication day; the prediction restates the architecture rather
-than risking anything. The one real exposure — security, the single blocking
-exception — is not mentioned. **Rewrite to name it:** "no security-agent finding
-will block a run that a human then judges a false positive." That can fail.
+**`agents-advise` — the design it relies on is not the behaviour we have.** The
+prediction reads as true by construction: agents advise and never block, so they
+cannot cost a publication day. Except they do. `generate-pulse.mjs` exits **1**
+right now, on a bias-agent finding:
+
+```js
+// generate-pulse.mjs:655
+try { await import("./bias-guard.mjs"); } catch (e) { console.warn(`  ⚠ bias guard: ${e.message} — advisory`); }
+```
+
+The intent is clear and the mechanism defeats it. `bias-guard.mjs:100` sets
+`process.exitCode = 1`, which is **not a thrown exception**, so the `catch` never
+runs and the exit code survives the "advisory" wrapper untouched. Verified:
+setting `process.exitCode` inside a `try` leaves it at 1 on the way out.
+
+So the decision's central claim — only guards block — is false in the code as
+it stands, and the prediction cannot be graded until that is settled. Either the
+wrapper must reset `process.exitCode = 0` after an advisory import, or the
+decision should record that agents do block. **Rewrite either way,** and the
+falsifier should name the real exposure: "no security-agent finding will block a
+run that a human then judges a false positive."
 
 **`graded-withdrawn` — weak, and now overtaken.** Its falsifier ("if we find a
 defensible way to publish without a window") depends on someone looking, and

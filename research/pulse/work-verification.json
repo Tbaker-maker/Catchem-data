@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T02:33:25.998Z",
+ "generatedAt": "2026-08-23T02:42:04.338Z",
  "purpose": "Checks output against the failure classes in our own error ledger — things that actually happened here, not generic quality rules.",
  "runsOn": "output, never intent. What I meant to do is not evidence.",
  "classesChecked": [
@@ -14,16 +14,16 @@
  ],
  "problems": [
   {
+   "errorClass": "ungated publication",
+   "what": "1 card generator(s) are not in the pipeline: card-composite.mjs",
+   "why": "Anything that produces a publishable artifact outside the run is a path around every guard. That is how a wrong price reached a card today.",
+   "ledgerRef": 18
+  },
+  {
    "errorClass": "multi-item pollution",
    "what": "1 single pack(s) priced above $40",
    "why": "A single pack at that price usually means a multi-pack listing survived the filter. This is error 11, and it is how a whole class of prices got inflated before.",
    "ledgerRef": 11
-  },
-  {
-   "errorClass": "coverage overclaim",
-   "what": "demand reports 857 rows from an enrichment sample of 12 chosen cards",
-   "why": "A found sample is not chosen coverage. Describing one as the other is how a number that means little gets read as a market-wide figure.",
-   "ledgerRef": 0
   },
   {
    "errorClass": "unviewed image",
