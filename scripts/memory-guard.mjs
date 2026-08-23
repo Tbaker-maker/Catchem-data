@@ -46,9 +46,16 @@ if (!kb) { console.log("· memory guard: no knowledge base"); process.exit(0); }
 {
   const theses = await readFile(join(ROOT, "research/house-theses.md"), "utf-8").catch(() => "");
   const titles = [...theses.matchAll(/^## ([A-Z][A-Z0-9 ,'’\-\.]{6,60})/gm)].map(m => m[1].trim());
+  // HEADING DRIFT: matching on the first long word passes a law whose heading
+  // was reworded - "BULK IS EVERY THREE DAYS" was checked against "REFRESH"
+  // from an older title and reported present while absent. Match on several
+  // distinctive words, not one.
   const missing = titles.filter(t => {
-    const key = t.split(/[ ,—]/).filter(w => w.length > 4)[0];
-    return key && !kb.toLowerCase().includes(key.toLowerCase());
+    const keys = t.split(/[ ,\u2014]/).filter(w => w.length > 4).slice(0, 3);
+    if (!keys.length) return false;
+    // present only if at least half its distinctive words appear
+    const hits = keys.filter(k => kb.toLowerCase().includes(k.toLowerCase())).length;
+    return hits < Math.ceil(keys.length / 2);
   });
   if (missing.length > 3)
     problems.push(`${missing.length} laws exist in house-theses and are not mentioned in the knowledge base (e.g. ${missing.slice(0, 3).join("; ")}) — the entry point does not know about them`);
