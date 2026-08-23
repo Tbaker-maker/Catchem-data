@@ -1,0 +1,120 @@
+{
+ "generatedAt": "2026-08-23T00:21:02.625Z",
+ "role": "Keeps agents current, breaks them out of ruts, and teaches from incidents that actually happened to us. It asks questions; it never rewrites another agent.",
+ "counts": {
+  "stale": 0,
+  "ruts": 7,
+  "postMortem": 4,
+  "shared": 1
+ },
+ "lessons": [
+  {
+   "agent": "breaker",
+   "kind": "in a rut",
+   "observation": "6 findings, identical across 5 runs",
+   "question": "You test what we built. What have we DELETED recently, and did anything depend on it?",
+   "why": "Identical output run after run means the agent has stopped searching and started reciting. The count being stable is not the problem; the SAMENESS is.",
+   "confidence": "OBSERVED",
+   "chip": "READ"
+  },
+  {
+   "agent": "correction-hunter",
+   "kind": "in a rut",
+   "observation": "3 findings, identical across 5 runs",
+   "question": "You re-check figures that moved. Ask about the ones that never move — a price frozen for a month is a claim too.",
+   "why": "Identical output run after run means the agent has stopped searching and started reciting. The count being stable is not the problem; the SAMENESS is.",
+   "confidence": "OBSERVED",
+   "chip": "READ"
+  },
+  {
+   "agent": "improver",
+   "kind": "in a rut",
+   "observation": "9 findings, identical across 5 runs",
+   "question": "You measure against our own doctrine. What would somebody who has never read our doctrine find embarrassing here?",
+   "why": "Identical output run after run means the agent has stopped searching and started reciting. The count being stable is not the problem; the SAMENESS is.",
+   "confidence": "OBSERVED",
+   "chip": "READ"
+  },
+  {
+   "agent": "experience",
+   "kind": "in a rut",
+   "observation": "6 findings, identical across 5 runs",
+   "question": "You count structure. What would a reader who came for ONE number and found none of it do next?",
+   "why": "Identical output run after run means the agent has stopped searching and started reciting. The count being stable is not the problem; the SAMENESS is.",
+   "confidence": "OBSERVED",
+   "chip": "READ"
+  },
+  {
+   "agent": "creator",
+   "kind": "in a rut",
+   "observation": "15 findings, identical across 5 runs",
+   "question": "You ask whether a creator could record. Ask instead why one who tried it once did not come back.",
+   "why": "Identical output run after run means the agent has stopped searching and started reciting. The count being stable is not the problem; the SAMENESS is.",
+   "confidence": "OBSERVED",
+   "chip": "READ"
+  },
+  {
+   "agent": "platform",
+   "kind": "in a rut",
+   "observation": "10 findings, identical across 5 runs",
+   "question": "You judge our material against each platform. Ask what we would post if we had no data at all — that is what most accounts do, and it is who we compete with.",
+   "why": "Identical output run after run means the agent has stopped searching and started reciting. The count being stable is not the problem; the SAMENESS is.",
+   "confidence": "OBSERVED",
+   "chip": "READ"
+  },
+  {
+   "agent": "api-strategist",
+   "kind": "in a rut",
+   "observation": "5 findings, identical across 5 runs",
+   "question": "You find unused fields. Ask what we would want that no provider offers, because that is the gap worth building around.",
+   "why": "Identical output run after run means the agent has stopped searching and started reciting. The count being stable is not the problem; the SAMENESS is.",
+   "confidence": "OBSERVED",
+   "chip": "READ"
+  },
+  {
+   "agent": "experience",
+   "kind": "post-mortem",
+   "observation": "an incident in your domain: \"Cards minted as SVG — unpostable, and foreignObject text silently dropped\"",
+   "question": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
+   "why": "meaningless published text is a reader-experience failure first",
+   "confidence": "MEASURED",
+   "chip": "READ"
+  },
+  {
+   "agent": "domain-plausibility",
+   "kind": "post-mortem",
+   "observation": "an incident in your domain: \"Multi-item guard rejected x1 and (1x) — how sellers mark a SINGLE pack\"",
+   "question": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
+   "why": "a filter eating a market is a plausibility question before it is a code question",
+   "confidence": "MEASURED",
+   "chip": "READ"
+  },
+  {
+   "agent": "breaker",
+   "kind": "post-mortem",
+   "observation": "an incident in your domain: \"Every rotation repeated itself across a 31-day month boundary (31 %% 5 == 1 %% 5), includi\"",
+   "question": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
+   "why": "a checker reading itself is an untested assumption, which is exactly what the breaker hunts",
+   "confidence": "MEASURED",
+   "chip": "READ"
+  },
+  {
+   "agent": "experience",
+   "kind": "post-mortem",
+   "observation": "an incident in your domain: \"The chase card published the word \"chase\" as its entire explanation — a category label ren\"",
+   "question": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
+   "why": "meaningless published text is a reader-experience failure first",
+   "confidence": "MEASURED",
+   "chip": "READ"
+  },
+  {
+   "agent": "ALL",
+   "kind": "shared lesson",
+   "observation": "19 scripts scan the scripts directory without excluding themselves",
+   "question": "Each of you found this alone. Which other lesson has one of you learned that the rest are still about to learn?",
+   "why": "A checker whose search space includes itself reports clean and means nothing. Five agents discovered this separately in one day and none told the others.",
+   "confidence": "OBSERVED",
+   "chip": "READ"
+  }
+ ]
+}

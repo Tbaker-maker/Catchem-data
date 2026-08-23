@@ -924,3 +924,36 @@ budget as though restraint were inherently prudent. It is not, when the
 resource expires. **Prudence with a perishable resource is just waste with
 better manners** - the question is never "how little can we use" but "what is
 the most valuable thing this could be doing instead of nothing".
+
+## THE TEACHER (Tyler, Aug 23 2026)
+"Make sure agents are up to date on their knowledge, skill, expertise. Make
+them think outside the box. Get them to dig deep when things haven't happened
+for a bit."
+
+The supervisor manages and the contract audits. Neither asks whether an agent
+is still LEARNING - and the run history showed every agent returning an
+identical count every single morning, which is what a search looks like when
+it has stopped searching and started reciting.
+
+FOUR MECHANISMS, all evidence rather than encouragement:
+1. **Currency** - is declared knowledge past its recheck date?
+2. **Ruts** - identical findings run after run earns a NEW QUESTION, specific
+   to that agent's subject. "Look harder" is nagging; a specific question is
+   teaching. The correction-hunter got: *you re-check figures that moved, now
+   ask about the ones that never move - a price frozen for a month is a claim
+   too.*
+3. **Post-mortem** - for every row in our incident ledger, WHICH AGENT SHOULD
+   HAVE CAUGHT IT? This is the sharpest material we own, because every row went
+   wrong to US rather than to somebody in a book.
+4. **Cross-pollination** - a lesson learned by one agent is free for the rest
+   and almost never travels alone. Five checkers read their own source in one
+   day, each discovered separately, none told the others.
+
+IT ASKS, IT NEVER ORDERS. An agent that rewrites other agents is a fleet with
+no supervision at all.
+
+AND IT MADE THE SAME MISTAKE ON ITS FIRST RUN as everything else built today:
+it told the falsifier it was in a rut for finding nothing, when finding nothing
+means no thesis failed - the win. Sixth crying-wolf in a day, in a new costume.
+**Telling somebody who is winning that they are stuck is how a teacher loses
+the room.**

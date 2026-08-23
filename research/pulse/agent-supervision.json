@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T00:14:32.386Z",
+ "generatedAt": "2026-08-23T00:21:02.151Z",
  "date": "2026-08-23",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -7,6 +7,7 @@
   "falsifier: 0 finding(s)",
   "correction-hunter: 3 finding(s)",
   "review-agents: 0 finding(s)",
+  "teacher: 12 finding(s)",
   "api-strategist: 5 finding(s)",
   "compliance: 0 finding(s)",
   "security: 0 finding(s)",
@@ -20,9 +21,11 @@
   "falsifier: clean run — nothing failed, which is the point of it",
   "review-agents: has never actually run (no key) — costing nothing, proving nothing, and honest about both",
   "compliance: clean run — nothing failed, which is the point of it",
+  "security: clean run — nothing failed, which is the point of it",
   "anomaly: clean run — nothing failed, which is the point of it"
  ],
  "problems": [
+  "teacher: BROKEN RECORD — 11 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "creator: OVER-BUDGET — 15 findings against a ceiling of 10. An unreadable list is an unread list."
  ],
  "workforce": [
@@ -69,11 +72,6 @@
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
   },
   {
-   "agent": "api-strategist",
-   "finding": "every finding from a week ago is still open (5).",
-   "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
-  },
-  {
    "agent": "compliance",
    "finding": "runs daily and has returned the same count (0) four runs running.",
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
@@ -84,19 +82,9 @@
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
   },
   {
-   "agent": "steward",
-   "finding": "runs daily and has returned the same count (2) four runs running.",
-   "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
-  },
-  {
    "agent": "platform",
    "finding": "runs daily and has returned the same count (10) four runs running.",
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
-  },
-  {
-   "agent": "platform",
-   "finding": "every finding from a week ago is still open (10).",
-   "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
    "agent": "anomaly",
@@ -498,6 +486,70 @@
    }
   },
   {
+   "from": "teacher",
+   "owner": "chat",
+   "what": "experience: an incident in your domain: \"Cards minted as SVG — unpostable, and foreignObject text silently dropped\"",
+   "do": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "teacher",
+   "owner": "chat",
+   "what": "domain-plausibility: an incident in your domain: \"Multi-item guard rejected x1 and (1x) — how sellers mark a SINGLE pack\"",
+   "do": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "teacher",
+   "owner": "chat",
+   "what": "breaker: an incident in your domain: \"Every rotation repeated itself across a 31-day month boundary (31 %% 5 == 1 %% 5), includi\"",
+   "do": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "teacher",
+   "owner": "chat",
+   "what": "experience: an incident in your domain: \"The chase card published the word \"chase\" as its entire explanation — a category label ren\"",
+   "do": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
    "from": "api-strategist",
    "owner": "chat",
    "what": "raw.recentSales arrives on every card and is never read",
@@ -516,7 +568,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "3 hand-written file(s) changed and not committed.",
+   "what": "8 hand-written file(s) changed and not committed.",
    "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -580,7 +632,7 @@
   {
    "from": "api-strategist",
    "owner": "tyler",
-   "what": "the paid provider is called from 84 places",
+   "what": "the paid provider is called from 85 places",
    "do": "list what ONLY the paid provider gives us; if that list is short, either use more of it or stop paying for it",
    "score": 30,
    "band": "NOTE ONLY",
@@ -943,6 +995,6 @@
   "actNow": 0,
   "queue": 9,
   "watch": 8,
-  "noteOnly": 13
+  "noteOnly": 17
  }
 }

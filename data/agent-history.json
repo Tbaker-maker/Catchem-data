@@ -3,7 +3,7 @@
  "runs": {
   "breaker": [
    {
-    "date": "2026-08-22",
+    "date": "2026-08-23",
     "count": 6,
     "sample": [
      "data/agent-history.json::Corrupt it — empty object, missing top-l",
@@ -15,7 +15,7 @@
     ]
    },
    {
-    "date": "2026-08-22",
+    "date": "2026-08-23",
     "count": 6,
     "sample": [
      "data/agent-history.json::Corrupt it — empty object, missing top-l",
@@ -27,7 +27,7 @@
     ]
    },
    {
-    "date": "2026-08-22",
+    "date": "2026-08-23",
     "count": 6,
     "sample": [
      "data/agent-history.json::Corrupt it — empty object, missing top-l",
@@ -39,7 +39,7 @@
     ]
    },
    {
-    "date": "2026-08-22",
+    "date": "2026-08-23",
     "count": 6,
     "sample": [
      "data/agent-history.json::Corrupt it — empty object, missing top-l",
@@ -365,22 +365,22 @@
   ],
   "falsifier": [
    {
-    "date": "2026-08-22",
+    "date": "2026-08-23",
     "count": 0,
     "sample": []
    },
    {
-    "date": "2026-08-22",
+    "date": "2026-08-23",
     "count": 0,
     "sample": []
    },
    {
-    "date": "2026-08-22",
+    "date": "2026-08-23",
     "count": 0,
     "sample": []
    },
    {
-    "date": "2026-08-22",
+    "date": "2026-08-23",
     "count": 0,
     "sample": []
    },
@@ -517,43 +517,48 @@
   ],
   "correction-hunter": [
    {
-    "date": "2026-08-22",
-    "count": 2,
+    "date": "2026-08-23",
+    "count": 3,
     "sample": [
      "gone::Umbreon VMAX",
-     "gone::Umbreon VMAX"
-    ]
-   },
-   {
-    "date": "2026-08-22",
-    "count": 2,
-    "sample": [
      "gone::Umbreon VMAX",
-     "gone::Umbreon VMAX"
-    ]
-   },
-   {
-    "date": "2026-08-22",
-    "count": 2,
-    "sample": [
-     "gone::Umbreon VMAX",
-     "gone::Umbreon VMAX"
-    ]
-   },
-   {
-    "date": "2026-08-22",
-    "count": 2,
-    "sample": [
-     "gone::Umbreon VMAX",
-     "gone::Umbreon VMAX"
+     "gone::Charizard ex"
     ]
    },
    {
     "date": "2026-08-23",
-    "count": 2,
+    "count": 3,
     "sample": [
      "gone::Umbreon VMAX",
-     "gone::Umbreon VMAX"
+     "gone::Umbreon VMAX",
+     "gone::Charizard ex"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 3,
+    "sample": [
+     "gone::Umbreon VMAX",
+     "gone::Umbreon VMAX",
+     "gone::Charizard ex"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 3,
+    "sample": [
+     "gone::Umbreon VMAX",
+     "gone::Umbreon VMAX",
+     "gone::Charizard ex"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 3,
+    "sample": [
+     "gone::Umbreon VMAX",
+     "gone::Umbreon VMAX",
+     "gone::Charizard ex"
     ]
    },
    {
@@ -784,22 +789,22 @@
   ],
   "review-agents": [
    {
-    "date": "2026-08-22",
+    "date": "2026-08-23",
     "count": 0,
     "sample": []
    },
    {
-    "date": "2026-08-22",
+    "date": "2026-08-23",
     "count": 0,
     "sample": []
    },
    {
-    "date": "2026-08-22",
+    "date": "2026-08-23",
     "count": 0,
     "sample": []
    },
    {
-    "date": "2026-08-22",
+    "date": "2026-08-23",
     "count": 0,
     "sample": []
    },
@@ -936,7 +941,7 @@
   ],
   "universe-advisor": [
    {
-    "date": "2026-08-22",
+    "date": "2026-08-23",
     "count": 5,
     "sample": [
      "base5-83",
@@ -947,7 +952,7 @@
     ]
    },
    {
-    "date": "2026-08-22",
+    "date": "2026-08-23",
     "count": 5,
     "sample": [
      "base5-83",
@@ -958,7 +963,7 @@
     ]
    },
    {
-    "date": "2026-08-22",
+    "date": "2026-08-23",
     "count": 5,
     "sample": [
      "base5-83",
@@ -969,7 +974,7 @@
     ]
    },
    {
-    "date": "2026-08-22",
+    "date": "2026-08-23",
     "count": 5,
     "sample": [
      "base5-83",
@@ -1268,156 +1273,6 @@
   ],
   "improver": [
    {
-    "date": "2026-08-22",
-    "count": 11,
-    "sample": [
-     "tool idea (hypothesis)::We hold both deal-zone room and per-pack",
-     "tool idea (hypothesis)::Print windows and shelf movement are com",
-     "product::The index has no matched sample today, s",
-     "knowledge::The knowledge base holds 8 verified fact",
-     "unused output::artist-instruments.json is written every",
-     "unused output::era-history.json is written every run an",
-     "repetition::date-to-day-key is implemented inline 29",
-     "repetition::money rounding is implemented inline 9 t",
-     "pipeline size::The daily run imports 30 steps from one ",
-     "maintainability::compute-derived.mjs is 57KB.",
-     "maintainability::fetch-sealed-prices.mjs is 39KB."
-    ]
-   },
-   {
-    "date": "2026-08-22",
-    "count": 11,
-    "sample": [
-     "tool idea (hypothesis)::We hold both deal-zone room and per-pack",
-     "tool idea (hypothesis)::Print windows and shelf movement are com",
-     "product::The index has no matched sample today, s",
-     "knowledge::The knowledge base holds 8 verified fact",
-     "unused output::artist-instruments.json is written every",
-     "unused output::era-history.json is written every run an",
-     "repetition::date-to-day-key is implemented inline 29",
-     "repetition::money rounding is implemented inline 9 t",
-     "pipeline size::The daily run imports 30 steps from one ",
-     "maintainability::compute-derived.mjs is 57KB.",
-     "maintainability::fetch-sealed-prices.mjs is 39KB."
-    ]
-   },
-   {
-    "date": "2026-08-22",
-    "count": 11,
-    "sample": [
-     "tool idea (hypothesis)::We hold both deal-zone room and per-pack",
-     "tool idea (hypothesis)::Print windows and shelf movement are com",
-     "product::The index has no matched sample today, s",
-     "knowledge::The knowledge base holds 8 verified fact",
-     "unused output::artist-instruments.json is written every",
-     "unused output::era-history.json is written every run an",
-     "repetition::date-to-day-key is implemented inline 29",
-     "repetition::money rounding is implemented inline 9 t",
-     "pipeline size::The daily run imports 30 steps from one ",
-     "maintainability::compute-derived.mjs is 57KB.",
-     "maintainability::fetch-sealed-prices.mjs is 39KB."
-    ]
-   },
-   {
-    "date": "2026-08-22",
-    "count": 11,
-    "sample": [
-     "tool idea (hypothesis)::We hold both deal-zone room and per-pack",
-     "tool idea (hypothesis)::Print windows and shelf movement are com",
-     "product::The index has no matched sample today, s",
-     "knowledge::The knowledge base holds 8 verified fact",
-     "unused output::artist-instruments.json is written every",
-     "unused output::era-history.json is written every run an",
-     "repetition::date-to-day-key is implemented inline 29",
-     "repetition::money rounding is implemented inline 9 t",
-     "pipeline size::The daily run imports 30 steps from one ",
-     "maintainability::compute-derived.mjs is 57KB.",
-     "maintainability::fetch-sealed-prices.mjs is 39KB."
-    ]
-   },
-   {
-    "date": "2026-08-23",
-    "count": 11,
-    "sample": [
-     "tool idea (hypothesis)::We hold both deal-zone room and per-pack",
-     "tool idea (hypothesis)::Print windows and shelf movement are com",
-     "product::The index has no matched sample today, s",
-     "knowledge::The knowledge base holds 8 verified fact",
-     "unused output::artist-instruments.json is written every",
-     "unused output::era-history.json is written every run an",
-     "repetition::date-to-day-key is implemented inline 29",
-     "repetition::money rounding is implemented inline 9 t",
-     "pipeline size::The daily run imports 30 steps from one ",
-     "maintainability::compute-derived.mjs is 57KB.",
-     "maintainability::fetch-sealed-prices.mjs is 39KB."
-    ]
-   },
-   {
-    "date": "2026-08-23",
-    "count": 11,
-    "sample": [
-     "tool idea (hypothesis)::We hold both deal-zone room and per-pack",
-     "tool idea (hypothesis)::Print windows and shelf movement are com",
-     "product::The index has no matched sample today, s",
-     "knowledge::The knowledge base holds 8 verified fact",
-     "unused output::artist-instruments.json is written every",
-     "unused output::era-history.json is written every run an",
-     "repetition::date-to-day-key is implemented inline 29",
-     "repetition::money rounding is implemented inline 9 t",
-     "pipeline size::The daily run imports 30 steps from one ",
-     "maintainability::compute-derived.mjs is 57KB.",
-     "maintainability::fetch-sealed-prices.mjs is 39KB."
-    ]
-   },
-   {
-    "date": "2026-08-23",
-    "count": 10,
-    "sample": [
-     "tool idea (hypothesis)::We hold both deal-zone room and per-pack",
-     "tool idea (hypothesis)::Print windows and shelf movement are com",
-     "knowledge::The knowledge base holds 12 verified fac",
-     "unused output::artist-instruments.json is written every",
-     "unused output::content-sanity.json is written every run",
-     "repetition::date-to-day-key is implemented inline 32",
-     "repetition::money rounding is implemented inline 11 ",
-     "pipeline size::The daily run imports 54 steps from one ",
-     "maintainability::compute-derived.mjs is 62KB.",
-     "maintainability::fetch-sealed-prices.mjs is 40KB."
-    ]
-   },
-   {
-    "date": "2026-08-23",
-    "count": 10,
-    "sample": [
-     "tool idea (hypothesis)::We hold both deal-zone room and per-pack",
-     "tool idea (hypothesis)::Print windows and shelf movement are com",
-     "knowledge::The knowledge base holds 12 verified fac",
-     "unused output::artist-instruments.json is written every",
-     "unused output::content-sanity.json is written every run",
-     "repetition::date-to-day-key is implemented inline 32",
-     "repetition::money rounding is implemented inline 11 ",
-     "pipeline size::The daily run imports 54 steps from one ",
-     "maintainability::compute-derived.mjs is 62KB.",
-     "maintainability::fetch-sealed-prices.mjs is 40KB."
-    ]
-   },
-   {
-    "date": "2026-08-23",
-    "count": 10,
-    "sample": [
-     "tool idea (hypothesis)::We hold both deal-zone room and per-pack",
-     "tool idea (hypothesis)::Print windows and shelf movement are com",
-     "knowledge::The knowledge base holds 12 verified fac",
-     "unused output::artist-instruments.json is written every",
-     "unused output::content-sanity.json is written every run",
-     "repetition::date-to-day-key is implemented inline 32",
-     "repetition::money rounding is implemented inline 11 ",
-     "pipeline size::The daily run imports 54 steps from one ",
-     "maintainability::compute-derived.mjs is 62KB.",
-     "maintainability::fetch-sealed-prices.mjs is 40KB."
-    ]
-   },
-   {
     "date": "2026-08-23",
     "count": 10,
     "sample": [
@@ -1550,6 +1405,141 @@
     "count": 10,
     "sample": [
      "tool idea (hypothesis)::Print windows and shelf movement are com",
+     "tool idea (hypothesis)::The knowledge base is only used for one ",
+     "knowledge::The knowledge base holds 12 verified fac",
+     "unused output::artist-instruments.json is written every",
+     "unused output::content-sanity.json is written every run",
+     "repetition::date-to-day-key is implemented inline 32",
+     "repetition::money rounding is implemented inline 11 ",
+     "pipeline size::The daily run imports 54 steps from one ",
+     "maintainability::compute-derived.mjs is 62KB.",
+     "maintainability::fetch-sealed-prices.mjs is 40KB."
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 9,
+    "sample": [
+     "tool idea (hypothesis)::The knowledge base is only used for one ",
+     "knowledge::The knowledge base holds 12 verified fac",
+     "unused output::artist-instruments.json is written every",
+     "unused output::content-sanity.json is written every run",
+     "repetition::date-to-day-key is implemented inline 32",
+     "repetition::money rounding is implemented inline 11 ",
+     "pipeline size::The daily run imports 54 steps from one ",
+     "maintainability::compute-derived.mjs is 62KB.",
+     "maintainability::fetch-sealed-prices.mjs is 40KB."
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 9,
+    "sample": [
+     "tool idea (hypothesis)::The knowledge base is only used for one ",
+     "knowledge::The knowledge base holds 12 verified fac",
+     "unused output::artist-instruments.json is written every",
+     "unused output::content-sanity.json is written every run",
+     "repetition::date-to-day-key is implemented inline 32",
+     "repetition::money rounding is implemented inline 11 ",
+     "pipeline size::The daily run imports 54 steps from one ",
+     "maintainability::compute-derived.mjs is 62KB.",
+     "maintainability::fetch-sealed-prices.mjs is 40KB."
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 9,
+    "sample": [
+     "tool idea (hypothesis)::The knowledge base is only used for one ",
+     "knowledge::The knowledge base holds 12 verified fac",
+     "unused output::artist-instruments.json is written every",
+     "unused output::content-sanity.json is written every run",
+     "repetition::date-to-day-key is implemented inline 32",
+     "repetition::money rounding is implemented inline 11 ",
+     "pipeline size::The daily run imports 54 steps from one ",
+     "maintainability::compute-derived.mjs is 62KB.",
+     "maintainability::fetch-sealed-prices.mjs is 40KB."
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 9,
+    "sample": [
+     "tool idea (hypothesis)::The knowledge base is only used for one ",
+     "knowledge::The knowledge base holds 12 verified fac",
+     "unused output::artist-instruments.json is written every",
+     "unused output::content-sanity.json is written every run",
+     "repetition::date-to-day-key is implemented inline 32",
+     "repetition::money rounding is implemented inline 11 ",
+     "pipeline size::The daily run imports 54 steps from one ",
+     "maintainability::compute-derived.mjs is 62KB.",
+     "maintainability::fetch-sealed-prices.mjs is 40KB."
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 9,
+    "sample": [
+     "tool idea (hypothesis)::The knowledge base is only used for one ",
+     "knowledge::The knowledge base holds 12 verified fac",
+     "unused output::artist-instruments.json is written every",
+     "unused output::content-sanity.json is written every run",
+     "repetition::date-to-day-key is implemented inline 32",
+     "repetition::money rounding is implemented inline 11 ",
+     "pipeline size::The daily run imports 54 steps from one ",
+     "maintainability::compute-derived.mjs is 62KB.",
+     "maintainability::fetch-sealed-prices.mjs is 40KB."
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 9,
+    "sample": [
+     "tool idea (hypothesis)::The knowledge base is only used for one ",
+     "knowledge::The knowledge base holds 12 verified fac",
+     "unused output::artist-instruments.json is written every",
+     "unused output::content-sanity.json is written every run",
+     "repetition::date-to-day-key is implemented inline 32",
+     "repetition::money rounding is implemented inline 11 ",
+     "pipeline size::The daily run imports 54 steps from one ",
+     "maintainability::compute-derived.mjs is 62KB.",
+     "maintainability::fetch-sealed-prices.mjs is 40KB."
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 9,
+    "sample": [
+     "tool idea (hypothesis)::The knowledge base is only used for one ",
+     "knowledge::The knowledge base holds 12 verified fac",
+     "unused output::artist-instruments.json is written every",
+     "unused output::content-sanity.json is written every run",
+     "repetition::date-to-day-key is implemented inline 32",
+     "repetition::money rounding is implemented inline 11 ",
+     "pipeline size::The daily run imports 54 steps from one ",
+     "maintainability::compute-derived.mjs is 62KB.",
+     "maintainability::fetch-sealed-prices.mjs is 40KB."
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 9,
+    "sample": [
+     "tool idea (hypothesis)::The knowledge base is only used for one ",
+     "knowledge::The knowledge base holds 12 verified fac",
+     "unused output::artist-instruments.json is written every",
+     "unused output::content-sanity.json is written every run",
+     "repetition::date-to-day-key is implemented inline 32",
+     "repetition::money rounding is implemented inline 11 ",
+     "pipeline size::The daily run imports 54 steps from one ",
+     "maintainability::compute-derived.mjs is 62KB.",
+     "maintainability::fetch-sealed-prices.mjs is 40KB."
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 9,
+    "sample": [
      "tool idea (hypothesis)::The knowledge base is only used for one ",
      "knowledge::The knowledge base holds 12 verified fac",
      "unused output::artist-instruments.json is written every",
@@ -1745,7 +1735,7 @@
   "newagent": [],
   "experience": [
    {
-    "date": "2026-08-22",
+    "date": "2026-08-23",
     "count": 6,
     "sample": [
      "simplicity::The Today screen carries 17 sections: Th",
@@ -1757,7 +1747,7 @@
     ]
    },
    {
-    "date": "2026-08-22",
+    "date": "2026-08-23",
     "count": 6,
     "sample": [
      "simplicity::The Today screen carries 17 sections: Th",
@@ -1769,7 +1759,7 @@
     ]
    },
    {
-    "date": "2026-08-22",
+    "date": "2026-08-23",
     "count": 6,
     "sample": [
      "simplicity::The Today screen carries 17 sections: Th",
@@ -1781,7 +1771,7 @@
     ]
    },
    {
-    "date": "2026-08-22",
+    "date": "2026-08-23",
     "count": 6,
     "sample": [
      "simplicity::The Today screen carries 17 sections: Th",
@@ -2107,74 +2097,11 @@
   ],
   "creator": [
    {
-    "date": "2026-08-22",
+    "date": "2026-08-23",
     "count": 15,
     "sample": [
-     "a subject::10 distinct angles are ready each mornin",
-     "a visual that runs itself::27 card images minted today.",
-     "not being wrong::Artist angles all carry their sources.",
-     "topic fit::\"TCG prices\" — we can answer this today ",
-     "topic fit::\"track the market\" — we can answer this ",
-     "topic fit::\"hidden gems\" — partly served by the flo",
-     "topic fit::\"plays nobody is talking about\" — partly",
-     "topic fit::\"reprints\" — partly served by print wind",
-     "vending::A vendor's booth floor exists — the deal",
-     "vending::Nothing answers 'what should I bring to ",
-     "vending::Nothing answers 'what should I leave hom",
-     "vending::Shelf movement and print windows are nev",
-     "vending::Nothing lets a vendor check their own pr",
-     "the cheat code::The pieces exist and are reachable, but ",
-     "the cheat code::Nothing tells a creator how a piece perf"
-    ]
-   },
-   {
-    "date": "2026-08-22",
-    "count": 15,
-    "sample": [
-     "a subject::10 distinct angles are ready each mornin",
-     "a visual that runs itself::27 card images minted today.",
-     "not being wrong::Artist angles all carry their sources.",
-     "topic fit::\"TCG prices\" — we can answer this today ",
-     "topic fit::\"track the market\" — we can answer this ",
-     "topic fit::\"hidden gems\" — partly served by the flo",
-     "topic fit::\"plays nobody is talking about\" — partly",
-     "topic fit::\"reprints\" — partly served by print wind",
-     "vending::A vendor's booth floor exists — the deal",
-     "vending::Nothing answers 'what should I bring to ",
-     "vending::Nothing answers 'what should I leave hom",
-     "vending::Shelf movement and print windows are nev",
-     "vending::Nothing lets a vendor check their own pr",
-     "the cheat code::The pieces exist and are reachable, but ",
-     "the cheat code::Nothing tells a creator how a piece perf"
-    ]
-   },
-   {
-    "date": "2026-08-22",
-    "count": 15,
-    "sample": [
-     "a subject::10 distinct angles are ready each mornin",
-     "a visual that runs itself::27 card images minted today.",
-     "not being wrong::Artist angles all carry their sources.",
-     "topic fit::\"TCG prices\" — we can answer this today ",
-     "topic fit::\"track the market\" — we can answer this ",
-     "topic fit::\"hidden gems\" — partly served by the flo",
-     "topic fit::\"plays nobody is talking about\" — partly",
-     "topic fit::\"reprints\" — partly served by print wind",
-     "vending::A vendor's booth floor exists — the deal",
-     "vending::Nothing answers 'what should I bring to ",
-     "vending::Nothing answers 'what should I leave hom",
-     "vending::Shelf movement and print windows are nev",
-     "vending::Nothing lets a vendor check their own pr",
-     "the cheat code::The pieces exist and are reachable, but ",
-     "the cheat code::Nothing tells a creator how a piece perf"
-    ]
-   },
-   {
-    "date": "2026-08-22",
-    "count": 15,
-    "sample": [
-     "a subject::10 distinct angles are ready each mornin",
-     "a visual that runs itself::27 card images minted today.",
+     "a subject::11 distinct angles are ready each mornin",
+     "a visual that runs itself::35 card images minted today.",
      "not being wrong::Artist angles all carry their sources.",
      "topic fit::\"TCG prices\" — we can answer this today ",
      "topic fit::\"track the market\" — we can answer this ",
@@ -2194,8 +2121,8 @@
     "date": "2026-08-23",
     "count": 15,
     "sample": [
-     "a subject::10 distinct angles are ready each mornin",
-     "a visual that runs itself::27 card images minted today.",
+     "a subject::11 distinct angles are ready each mornin",
+     "a visual that runs itself::35 card images minted today.",
      "not being wrong::Artist angles all carry their sources.",
      "topic fit::\"TCG prices\" — we can answer this today ",
      "topic fit::\"track the market\" — we can answer this ",
@@ -2215,8 +2142,71 @@
     "date": "2026-08-23",
     "count": 15,
     "sample": [
-     "a subject::10 distinct angles are ready each mornin",
-     "a visual that runs itself::27 card images minted today.",
+     "a subject::11 distinct angles are ready each mornin",
+     "a visual that runs itself::35 card images minted today.",
+     "not being wrong::Artist angles all carry their sources.",
+     "topic fit::\"TCG prices\" — we can answer this today ",
+     "topic fit::\"track the market\" — we can answer this ",
+     "topic fit::\"hidden gems\" — partly served by the flo",
+     "topic fit::\"plays nobody is talking about\" — partly",
+     "topic fit::\"reprints\" — partly served by print wind",
+     "vending::A vendor's booth floor exists — the deal",
+     "vending::Nothing answers 'what should I bring to ",
+     "vending::Nothing answers 'what should I leave hom",
+     "vending::Shelf movement and print windows are nev",
+     "vending::Nothing lets a vendor check their own pr",
+     "the cheat code::The pieces exist and are reachable, but ",
+     "the cheat code::Nothing tells a creator how a piece perf"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 15,
+    "sample": [
+     "a subject::11 distinct angles are ready each mornin",
+     "a visual that runs itself::35 card images minted today.",
+     "not being wrong::Artist angles all carry their sources.",
+     "topic fit::\"TCG prices\" — we can answer this today ",
+     "topic fit::\"track the market\" — we can answer this ",
+     "topic fit::\"hidden gems\" — partly served by the flo",
+     "topic fit::\"plays nobody is talking about\" — partly",
+     "topic fit::\"reprints\" — partly served by print wind",
+     "vending::A vendor's booth floor exists — the deal",
+     "vending::Nothing answers 'what should I bring to ",
+     "vending::Nothing answers 'what should I leave hom",
+     "vending::Shelf movement and print windows are nev",
+     "vending::Nothing lets a vendor check their own pr",
+     "the cheat code::The pieces exist and are reachable, but ",
+     "the cheat code::Nothing tells a creator how a piece perf"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 15,
+    "sample": [
+     "a subject::11 distinct angles are ready each mornin",
+     "a visual that runs itself::35 card images minted today.",
+     "not being wrong::Artist angles all carry their sources.",
+     "topic fit::\"TCG prices\" — we can answer this today ",
+     "topic fit::\"track the market\" — we can answer this ",
+     "topic fit::\"hidden gems\" — partly served by the flo",
+     "topic fit::\"plays nobody is talking about\" — partly",
+     "topic fit::\"reprints\" — partly served by print wind",
+     "vending::A vendor's booth floor exists — the deal",
+     "vending::Nothing answers 'what should I bring to ",
+     "vending::Nothing answers 'what should I leave hom",
+     "vending::Shelf movement and print windows are nev",
+     "vending::Nothing lets a vendor check their own pr",
+     "the cheat code::The pieces exist and are reachable, but ",
+     "the cheat code::Nothing tells a creator how a piece perf"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 15,
+    "sample": [
+     "a subject::11 distinct angles are ready each mornin",
+     "a visual that runs itself::35 card images minted today.",
      "not being wrong::Artist angles all carry their sources.",
      "topic fit::\"TCG prices\" — we can answer this today ",
      "topic fit::\"track the market\" — we can answer this ",
@@ -2739,22 +2729,22 @@
   ],
   "anomaly": [
    {
-    "date": "2026-08-22",
+    "date": "2026-08-23",
     "count": 0,
     "sample": []
    },
    {
-    "date": "2026-08-22",
+    "date": "2026-08-23",
     "count": 0,
     "sample": []
    },
    {
-    "date": "2026-08-22",
+    "date": "2026-08-23",
     "count": 0,
     "sample": []
    },
    {
-    "date": "2026-08-22",
+    "date": "2026-08-23",
     "count": 0,
     "sample": []
    },
@@ -2891,150 +2881,6 @@
   ],
   "platform": [
    {
-    "date": "2026-08-22",
-    "count": 10,
-    "sample": [
-     "X::\"Paldean Fates listings moved -66.7% whi",
-     "X::Keep it under ~25 words and do not put a",
-     "X::Nothing runs as a numbered series.",
-     "YouTube::Unified Minds Booster Box — \"A seller ke",
-     "YouTube::the sealed market — \"The whole sealed ma",
-     "YouTube::No B-roll list ships with any angle.",
-     "TikTok::Open on the number, not the setup: \"The ",
-     "TikTok::Every card we mint is 1200×675 — landsca",
-     "TikTok::Nothing we produce moves.",
-     "all::Nothing measures whether any of this wor"
-    ]
-   },
-   {
-    "date": "2026-08-22",
-    "count": 10,
-    "sample": [
-     "X::\"Paldean Fates listings moved -66.7% whi",
-     "X::Keep it under ~25 words and do not put a",
-     "X::Nothing runs as a numbered series.",
-     "YouTube::Pokemon GO Elite Trainer Box — \"forced q",
-     "YouTube::the sealed market — \"The whole sealed ma",
-     "YouTube::No B-roll list ships with any angle.",
-     "TikTok::Open on the number, not the setup: \"The ",
-     "TikTok::Every card we mint is 1200×675 — landsca",
-     "TikTok::Nothing we produce moves.",
-     "all::Nothing measures whether any of this wor"
-    ]
-   },
-   {
-    "date": "2026-08-22",
-    "count": 10,
-    "sample": [
-     "X::\"Paldean Fates listings moved -66.7% whi",
-     "X::Keep it under ~25 words and do not put a",
-     "X::Nothing runs as a numbered series.",
-     "YouTube::Cosmic Eclipse Booster Box — \"A seller k",
-     "YouTube::the sealed market — \"The whole sealed ma",
-     "YouTube::No B-roll list ships with any angle.",
-     "TikTok::Open on the number, not the setup: \"The ",
-     "TikTok::Every card we mint is 1200×675 — landsca",
-     "TikTok::Nothing we produce moves.",
-     "all::Nothing measures whether any of this wor"
-    ]
-   },
-   {
-    "date": "2026-08-22",
-    "count": 10,
-    "sample": [
-     "X::\"Paldean Fates listings moved -66.7% whi",
-     "X::Keep it under ~25 words and do not put a",
-     "X::Nothing runs as a numbered series.",
-     "YouTube::Pokemon GO Elite Trainer Box — \"forced q",
-     "YouTube::the sealed market — \"The whole sealed ma",
-     "YouTube::No B-roll list ships with any angle.",
-     "TikTok::Open on the number, not the setup: \"The ",
-     "TikTok::Every card we mint is 1200×675 — landsca",
-     "TikTok::Nothing we produce moves.",
-     "all::Nothing measures whether any of this wor"
-    ]
-   },
-   {
-    "date": "2026-08-23",
-    "count": 10,
-    "sample": [
-     "X::\"Paldean Fates listings moved -66.7% whi",
-     "X::Keep it under ~25 words and do not put a",
-     "X::Nothing runs as a numbered series.",
-     "YouTube::Unified Minds Booster Box — \"A seller ke",
-     "YouTube::the sealed market — \"The whole sealed ma",
-     "YouTube::No B-roll list ships with any angle.",
-     "TikTok::Open on the number, not the setup: \"The ",
-     "TikTok::Every card we mint is 1200×675 — landsca",
-     "TikTok::Nothing we produce moves.",
-     "all::Nothing measures whether any of this wor"
-    ]
-   },
-   {
-    "date": "2026-08-23",
-    "count": 10,
-    "sample": [
-     "X::\"Paldean Fates listings moved -66.7% whi",
-     "X::Keep it under ~25 words and do not put a",
-     "X::Nothing runs as a numbered series.",
-     "YouTube::Pokemon GO Elite Trainer Box — \"forced q",
-     "YouTube::the sealed market — \"The whole sealed ma",
-     "YouTube::No B-roll list ships with any angle.",
-     "TikTok::Open on the number, not the setup: \"The ",
-     "TikTok::Every card we mint is 1200×675 — landsca",
-     "TikTok::Nothing we produce moves.",
-     "all::Nothing measures whether any of this wor"
-    ]
-   },
-   {
-    "date": "2026-08-23",
-    "count": 10,
-    "sample": [
-     "X::\"Paldean Fates listings moved -66.7% whi",
-     "X::Keep it under ~25 words and do not put a",
-     "X::Nothing runs as a numbered series.",
-     "YouTube::Journey Together Elite Trainer Box — \"Se",
-     "YouTube::the sealed market — \"The whole sealed ma",
-     "YouTube::No B-roll list ships with any angle.",
-     "TikTok::Open on the number, not the setup: \"The ",
-     "TikTok::Every card we mint is 1200×675 — landsca",
-     "TikTok::Nothing we produce moves.",
-     "all::Nothing measures whether any of this wor"
-    ]
-   },
-   {
-    "date": "2026-08-23",
-    "count": 10,
-    "sample": [
-     "X::\"Paldean Fates listings moved -66.7% whi",
-     "X::Keep it under ~25 words and do not put a",
-     "X::Nothing runs as a numbered series.",
-     "YouTube::Journey Together Elite Trainer Box — \"Se",
-     "YouTube::the sealed market — \"The whole sealed ma",
-     "YouTube::No B-roll list ships with any angle.",
-     "TikTok::Open on the number, not the setup: \"The ",
-     "TikTok::Every card we mint is 1200×675 — landsca",
-     "TikTok::Nothing we produce moves.",
-     "all::Nothing measures whether any of this wor"
-    ]
-   },
-   {
-    "date": "2026-08-23",
-    "count": 10,
-    "sample": [
-     "X::\"Paldean Fates listings moved -66.7% whi",
-     "X::Keep it under ~25 words and do not put a",
-     "X::Nothing runs as a numbered series.",
-     "YouTube::Journey Together Elite Trainer Box — \"Se",
-     "YouTube::the sealed market — \"The whole sealed ma",
-     "YouTube::No B-roll list ships with any angle.",
-     "TikTok::Open on the number, not the setup: \"The ",
-     "TikTok::Every card we mint is 1200×675 — landsca",
-     "TikTok::Nothing we produce moves.",
-     "all::Nothing measures whether any of this wor"
-    ]
-   },
-   {
     "date": "2026-08-23",
     "count": 10,
     "sample": [
@@ -3346,6 +3192,150 @@
      "X::Keep it under ~25 words and do not put a",
      "X::Nothing runs as a numbered series.",
      "YouTube::Rebel Clash Elite Trainer Box — \"Sealed ",
+     "YouTube::the sealed market — \"The whole sealed ma",
+     "YouTube::No B-roll list ships with any angle.",
+     "TikTok::Open on the number, not the setup: \"The ",
+     "TikTok::Every card we mint is 1200×675 — landsca",
+     "TikTok::Nothing we produce moves.",
+     "all::Nothing measures whether any of this wor"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 10,
+    "sample": [
+     "X::\"Paldean Fates listings moved -66.7% whi",
+     "X::Keep it under ~25 words and do not put a",
+     "X::Nothing runs as a numbered series.",
+     "YouTube::Pokemon GO Elite Trainer Box — \"forced q",
+     "YouTube::the sealed market — \"The whole sealed ma",
+     "YouTube::No B-roll list ships with any angle.",
+     "TikTok::Open on the number, not the setup: \"The ",
+     "TikTok::Every card we mint is 1200×675 — landsca",
+     "TikTok::Nothing we produce moves.",
+     "all::Nothing measures whether any of this wor"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 10,
+    "sample": [
+     "X::\"Paldean Fates listings moved -66.7% whi",
+     "X::Keep it under ~25 words and do not put a",
+     "X::Nothing runs as a numbered series.",
+     "YouTube::Journey Together Elite Trainer Box — \"Se",
+     "YouTube::the sealed market — \"The whole sealed ma",
+     "YouTube::No B-roll list ships with any angle.",
+     "TikTok::Open on the number, not the setup: \"The ",
+     "TikTok::Every card we mint is 1200×675 — landsca",
+     "TikTok::Nothing we produce moves.",
+     "all::Nothing measures whether any of this wor"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 10,
+    "sample": [
+     "X::\"Paldean Fates listings moved -66.7% whi",
+     "X::Keep it under ~25 words and do not put a",
+     "X::Nothing runs as a numbered series.",
+     "YouTube::Pokemon GO Elite Trainer Box — \"forced q",
+     "YouTube::the sealed market — \"The whole sealed ma",
+     "YouTube::No B-roll list ships with any angle.",
+     "TikTok::Open on the number, not the setup: \"The ",
+     "TikTok::Every card we mint is 1200×675 — landsca",
+     "TikTok::Nothing we produce moves.",
+     "all::Nothing measures whether any of this wor"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 10,
+    "sample": [
+     "X::\"Paldean Fates listings moved -66.7% whi",
+     "X::Keep it under ~25 words and do not put a",
+     "X::Nothing runs as a numbered series.",
+     "YouTube::Rebel Clash Elite Trainer Box — \"Sealed ",
+     "YouTube::the sealed market — \"The whole sealed ma",
+     "YouTube::No B-roll list ships with any angle.",
+     "TikTok::Open on the number, not the setup: \"The ",
+     "TikTok::Every card we mint is 1200×675 — landsca",
+     "TikTok::Nothing we produce moves.",
+     "all::Nothing measures whether any of this wor"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 10,
+    "sample": [
+     "X::\"Paldean Fates listings moved -66.7% whi",
+     "X::Keep it under ~25 words and do not put a",
+     "X::Nothing runs as a numbered series.",
+     "YouTube::Pokemon GO Elite Trainer Box — \"forced q",
+     "YouTube::the sealed market — \"The whole sealed ma",
+     "YouTube::No B-roll list ships with any angle.",
+     "TikTok::Open on the number, not the setup: \"The ",
+     "TikTok::Every card we mint is 1200×675 — landsca",
+     "TikTok::Nothing we produce moves.",
+     "all::Nothing measures whether any of this wor"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 10,
+    "sample": [
+     "X::\"Paldean Fates listings moved -66.7% whi",
+     "X::Keep it under ~25 words and do not put a",
+     "X::Nothing runs as a numbered series.",
+     "YouTube::Journey Together Elite Trainer Box — \"Se",
+     "YouTube::the sealed market — \"The whole sealed ma",
+     "YouTube::No B-roll list ships with any angle.",
+     "TikTok::Open on the number, not the setup: \"The ",
+     "TikTok::Every card we mint is 1200×675 — landsca",
+     "TikTok::Nothing we produce moves.",
+     "all::Nothing measures whether any of this wor"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 10,
+    "sample": [
+     "X::\"Paldean Fates listings moved -66.7% whi",
+     "X::Keep it under ~25 words and do not put a",
+     "X::Nothing runs as a numbered series.",
+     "YouTube::Journey Together Elite Trainer Box — \"Se",
+     "YouTube::the sealed market — \"The whole sealed ma",
+     "YouTube::No B-roll list ships with any angle.",
+     "TikTok::Open on the number, not the setup: \"The ",
+     "TikTok::Every card we mint is 1200×675 — landsca",
+     "TikTok::Nothing we produce moves.",
+     "all::Nothing measures whether any of this wor"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 10,
+    "sample": [
+     "X::\"Paldean Fates listings moved -66.7% whi",
+     "X::Keep it under ~25 words and do not put a",
+     "X::Nothing runs as a numbered series.",
+     "YouTube::Journey Together Elite Trainer Box — \"Se",
+     "YouTube::the sealed market — \"The whole sealed ma",
+     "YouTube::No B-roll list ships with any angle.",
+     "TikTok::Open on the number, not the setup: \"The ",
+     "TikTok::Every card we mint is 1200×675 — landsca",
+     "TikTok::Nothing we produce moves.",
+     "all::Nothing measures whether any of this wor"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 10,
+    "sample": [
+     "X::\"Paldean Fates listings moved -66.7% whi",
+     "X::Keep it under ~25 words and do not put a",
+     "X::Nothing runs as a numbered series.",
+     "YouTube::Journey Together Elite Trainer Box — \"Se",
      "YouTube::the sealed market — \"The whole sealed ma",
      "YouTube::No B-roll list ships with any angle.",
      "TikTok::Open on the number, not the setup: \"The ",
@@ -3373,78 +3363,6 @@
   ],
   "steward": [
    {
-    "date": "2026-08-22",
-    "count": 2,
-    "sample": [
-     "unsaved::1 hand-written file(s) changed and not c",
-     "drift::3 script(s) are not referenced anywhere:"
-    ]
-   },
-   {
-    "date": "2026-08-22",
-    "count": 2,
-    "sample": [
-     "unsaved::7 hand-written file(s) changed and not c",
-     "drift::3 script(s) are not referenced anywhere:"
-    ]
-   },
-   {
-    "date": "2026-08-22",
-    "count": 2,
-    "sample": [
-     "unsaved::7 hand-written file(s) changed and not c",
-     "drift::3 script(s) are not referenced anywhere:"
-    ]
-   },
-   {
-    "date": "2026-08-22",
-    "count": 2,
-    "sample": [
-     "unsaved::1 hand-written file(s) changed and not c",
-     "drift::3 script(s) are not referenced anywhere:"
-    ]
-   },
-   {
-    "date": "2026-08-23",
-    "count": 2,
-    "sample": [
-     "unsaved::1 hand-written file(s) changed and not c",
-     "drift::3 script(s) are not referenced anywhere:"
-    ]
-   },
-   {
-    "date": "2026-08-23",
-    "count": 2,
-    "sample": [
-     "unsaved::3 hand-written file(s) changed and not c",
-     "drift::3 script(s) are not referenced anywhere:"
-    ]
-   },
-   {
-    "date": "2026-08-23",
-    "count": 2,
-    "sample": [
-     "unsaved::3 hand-written file(s) changed and not c",
-     "drift::3 script(s) are not referenced anywhere:"
-    ]
-   },
-   {
-    "date": "2026-08-23",
-    "count": 2,
-    "sample": [
-     "unsaved::3 hand-written file(s) changed and not c",
-     "drift::3 script(s) are not referenced anywhere:"
-    ]
-   },
-   {
-    "date": "2026-08-23",
-    "count": 2,
-    "sample": [
-     "unsaved::3 hand-written file(s) changed and not c",
-     "drift::3 script(s) are not referenced anywhere:"
-    ]
-   },
-   {
     "date": "2026-08-23",
     "count": 2,
     "sample": [
@@ -3609,75 +3527,85 @@
     "count": 2,
     "sample": [
      "unsaved::3 hand-written file(s) changed and not c",
+     "drift::3 script(s) are not referenced anywhere:"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 2,
+    "sample": [
+     "unsaved::3 hand-written file(s) changed and not c",
+     "drift::3 script(s) are not referenced anywhere:"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 2,
+    "sample": [
+     "unsaved::1 commit(s) exist locally and are not pu",
+     "drift::3 script(s) are not referenced anywhere:"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 2,
+    "sample": [
+     "unsaved::1 commit(s) exist locally and are not pu",
+     "drift::3 script(s) are not referenced anywhere:"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 2,
+    "sample": [
+     "unsaved::8 hand-written file(s) changed and not c",
+     "drift::3 script(s) are not referenced anywhere:"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 2,
+    "sample": [
+     "unsaved::8 hand-written file(s) changed and not c",
+     "drift::3 script(s) are not referenced anywhere:"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 2,
+    "sample": [
+     "unsaved::8 hand-written file(s) changed and not c",
+     "drift::3 script(s) are not referenced anywhere:"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 2,
+    "sample": [
+     "unsaved::9 hand-written file(s) changed and not c",
+     "drift::3 script(s) are not referenced anywhere:"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 3,
+    "sample": [
+     "unsaved::8 hand-written file(s) changed and not c",
+     "ignored::3 supervisor problem(s) are open.",
+     "drift::3 script(s) are not referenced anywhere:"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 2,
+    "sample": [
+     "unsaved::8 hand-written file(s) changed and not c",
      "drift::3 script(s) are not referenced anywhere:"
     ]
    }
   ],
   "security": [
    {
-    "date": "2026-08-22",
-    "count": 1,
-    "sample": [
-     "critical::Anthropic key found in scripts/negative-tests.mjs"
-    ]
-   },
-   {
-    "date": "2026-08-22",
-    "count": 1,
-    "sample": [
-     "critical::Anthropic key found in scripts/negative-tests.mjs"
-    ]
-   },
-   {
-    "date": "2026-08-22",
-    "count": 1,
-    "sample": [
-     "critical::Anthropic key found in scripts/negative-tests.mjs"
-    ]
-   },
-   {
-    "date": "2026-08-22",
-    "count": 1,
-    "sample": [
-     "critical::Anthropic key found in scripts/negative-tests.mjs"
-    ]
-   },
-   {
-    "date": "2026-08-23",
-    "count": 1,
-    "sample": [
-     "critical::Anthropic key found in scripts/negative-tests.mjs"
-    ]
-   },
-   {
-    "date": "2026-08-23",
-    "count": 1,
-    "sample": [
-     "critical::Anthropic key found in scripts/negative-tests.mjs"
-    ]
-   },
-   {
-    "date": "2026-08-23",
-    "count": 1,
-    "sample": [
-     "critical::Anthropic key found in scripts/negative-tests.mjs"
-    ]
-   },
-   {
-    "date": "2026-08-23",
-    "count": 1,
-    "sample": [
-     "critical::Anthropic key found in scripts/negative-tests.mjs"
-    ]
-   },
-   {
-    "date": "2026-08-23",
-    "count": 1,
-    "sample": [
-     "critical::Anthropic key found in scripts/negative-tests.mjs"
-    ]
-   },
-   {
     "date": "2026-08-23",
     "count": 1,
     "sample": [
@@ -3777,6 +3705,51 @@
     "sample": [
      "critical::Anthropic key found in scripts/negative-tests.mjs"
     ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 0,
+    "sample": []
+   },
+   {
+    "date": "2026-08-23",
+    "count": 0,
+    "sample": []
+   },
+   {
+    "date": "2026-08-23",
+    "count": 0,
+    "sample": []
+   },
+   {
+    "date": "2026-08-23",
+    "count": 0,
+    "sample": []
+   },
+   {
+    "date": "2026-08-23",
+    "count": 0,
+    "sample": []
+   },
+   {
+    "date": "2026-08-23",
+    "count": 0,
+    "sample": []
+   },
+   {
+    "date": "2026-08-23",
+    "count": 0,
+    "sample": []
+   },
+   {
+    "date": "2026-08-23",
+    "count": 0,
+    "sample": []
+   },
+   {
+    "date": "2026-08-23",
+    "count": 0,
+    "sample": []
    },
    {
     "date": "2026-08-23",
@@ -3811,22 +3784,22 @@
   ],
   "compliance": [
    {
-    "date": "2026-08-22",
+    "date": "2026-08-23",
     "count": 0,
     "sample": []
    },
    {
-    "date": "2026-08-22",
+    "date": "2026-08-23",
     "count": 0,
     "sample": []
    },
    {
-    "date": "2026-08-22",
+    "date": "2026-08-23",
     "count": 0,
     "sample": []
    },
    {
-    "date": "2026-08-22",
+    "date": "2026-08-23",
     "count": 0,
     "sample": []
    },
@@ -3963,84 +3936,13 @@
   ],
   "api-strategist": [
    {
-    "date": "2026-08-22",
-    "count": 7,
-    "sample": [
-     "critical::raw.recentSales arrives on every card an",
-     "critical::raw.vol30 arrives on every card and is n",
-     "critical::ebaySold.psa9 arrives populated and is n",
-     "critical::gradingPremium.psa9 arrives on every car",
-     "high::/sealed-products is only ever queried by",
-     "medium::2 places fetch one item at a time inside",
-     "medium::the paid provider is called from 83 plac"
-    ]
-   },
-   {
-    "date": "2026-08-22",
-    "count": 7,
-    "sample": [
-     "critical::raw.recentSales arrives on every card an",
-     "critical::raw.vol30 arrives on every card and is n",
-     "critical::ebaySold.psa9 arrives populated and is n",
-     "critical::gradingPremium.psa9 arrives on every car",
-     "high::/sealed-products is only ever queried by",
-     "medium::2 places fetch one item at a time inside",
-     "medium::the paid provider is called from 83 plac"
-    ]
-   },
-   {
-    "date": "2026-08-22",
-    "count": 8,
-    "sample": [
-     "critical::raw.recentSales arrives on every card an",
-     "critical::raw.vol30 arrives on every card and is n",
-     "critical::ebaySold.psa9 arrives populated and is n",
-     "critical::gradingPremium.psa9 arrives on every car",
-     "high::/sealed-products is only ever queried by",
-     "medium::2 places fetch one item at a time inside",
-     "medium::the paid provider is called from 83 plac",
-     "high::budget allocation: ~8,942 calls/day comm"
-    ]
-   },
-   {
-    "date": "2026-08-22",
-    "count": 8,
-    "sample": [
-     "critical::raw.recentSales arrives on every card an",
-     "critical::raw.vol30 arrives on every card and is n",
-     "critical::ebaySold.psa9 arrives populated and is n",
-     "critical::gradingPremium.psa9 arrives on every car",
-     "high::/sealed-products is only ever queried by",
-     "medium::2 places fetch one item at a time inside",
-     "medium::the paid provider is called from 83 plac",
-     "high::budget allocation: ~8,942 calls/day comm"
-    ]
-   },
-   {
     "date": "2026-08-23",
-    "count": 8,
+    "count": 5,
     "sample": [
      "critical::raw.recentSales arrives on every card an",
-     "critical::raw.vol30 arrives on every card and is n",
-     "critical::ebaySold.psa9 arrives populated and is n",
-     "critical::gradingPremium.psa9 arrives on every car",
      "high::/sealed-products is only ever queried by",
      "medium::2 places fetch one item at a time inside",
-     "medium::the paid provider is called from 83 plac",
-     "medium::budget: 18,000 of 18,000 usable allocate"
-    ]
-   },
-   {
-    "date": "2026-08-23",
-    "count": 8,
-    "sample": [
-     "critical::raw.recentSales arrives on every card an",
-     "critical::raw.vol30 arrives on every card and is n",
-     "critical::ebaySold.psa9 arrives populated and is n",
-     "critical::gradingPremium.psa9 arrives on every car",
-     "high::/sealed-products is only ever queried by",
-     "medium::2 places fetch one item at a time inside",
-     "medium::the paid provider is called from 83 plac",
+     "medium::the paid provider is called from 84 plac",
      "medium::budget: 18,000 of 18,000 usable allocate"
     ]
    },
@@ -4304,8 +4206,198 @@
      "critical::raw.recentSales arrives on every card an",
      "high::/sealed-products is only ever queried by",
      "medium::2 places fetch one item at a time inside",
-     "medium::the paid provider is called from 84 plac",
+     "medium::the paid provider is called from 85 plac",
      "medium::budget: 18,000 of 18,000 usable allocate"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 5,
+    "sample": [
+     "critical::raw.recentSales arrives on every card an",
+     "high::/sealed-products is only ever queried by",
+     "medium::2 places fetch one item at a time inside",
+     "medium::the paid provider is called from 85 plac",
+     "medium::budget: 18,000 of 18,000 usable allocate"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 5,
+    "sample": [
+     "critical::raw.recentSales arrives on every card an",
+     "high::/sealed-products is only ever queried by",
+     "medium::2 places fetch one item at a time inside",
+     "medium::the paid provider is called from 85 plac",
+     "medium::budget: 18,000 of 18,000 usable allocate"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 5,
+    "sample": [
+     "critical::raw.recentSales arrives on every card an",
+     "high::/sealed-products is only ever queried by",
+     "medium::2 places fetch one item at a time inside",
+     "medium::the paid provider is called from 85 plac",
+     "medium::budget: 18,000 of 18,000 usable allocate"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 5,
+    "sample": [
+     "critical::raw.recentSales arrives on every card an",
+     "high::/sealed-products is only ever queried by",
+     "medium::2 places fetch one item at a time inside",
+     "medium::the paid provider is called from 85 plac",
+     "medium::budget: 18,000 of 18,000 usable allocate"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 5,
+    "sample": [
+     "critical::raw.recentSales arrives on every card an",
+     "high::/sealed-products is only ever queried by",
+     "medium::2 places fetch one item at a time inside",
+     "medium::the paid provider is called from 85 plac",
+     "medium::budget: 18,000 of 18,000 usable allocate"
+    ]
+   }
+  ],
+  "teacher": [
+   {
+    "date": "2026-08-23",
+    "count": 13,
+    "sample": [
+     "in a rut::breaker",
+     "in a rut::correction-hunter",
+     "in a rut::improver",
+     "in a rut::experience",
+     "in a rut::creator",
+     "in a rut::platform",
+     "in a rut::steward",
+     "in a rut::api-strategist",
+     "post-mortem::experience",
+     "post-mortem::domain-plausibility",
+     "post-mortem::breaker",
+     "post-mortem::experience",
+     "shared lesson::ALL"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 13,
+    "sample": [
+     "in a rut::breaker",
+     "in a rut::correction-hunter",
+     "in a rut::improver",
+     "in a rut::experience",
+     "in a rut::creator",
+     "in a rut::platform",
+     "in a rut::steward",
+     "in a rut::api-strategist",
+     "post-mortem::experience",
+     "post-mortem::domain-plausibility",
+     "post-mortem::breaker",
+     "post-mortem::experience",
+     "shared lesson::ALL"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 13,
+    "sample": [
+     "in a rut::breaker",
+     "in a rut::correction-hunter",
+     "in a rut::improver",
+     "in a rut::experience",
+     "in a rut::creator",
+     "in a rut::platform",
+     "in a rut::steward",
+     "in a rut::api-strategist",
+     "post-mortem::experience",
+     "post-mortem::domain-plausibility",
+     "post-mortem::breaker",
+     "post-mortem::experience",
+     "shared lesson::ALL"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 13,
+    "sample": [
+     "in a rut::breaker",
+     "in a rut::correction-hunter",
+     "in a rut::improver",
+     "in a rut::experience",
+     "in a rut::creator",
+     "in a rut::platform",
+     "in a rut::steward",
+     "in a rut::api-strategist",
+     "post-mortem::experience",
+     "post-mortem::domain-plausibility",
+     "post-mortem::breaker",
+     "post-mortem::experience",
+     "shared lesson::ALL"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 14,
+    "sample": [
+     "in a rut::breaker",
+     "in a rut::correction-hunter",
+     "in a rut::improver",
+     "in a rut::experience",
+     "in a rut::creator",
+     "in a rut::platform",
+     "in a rut::steward",
+     "in a rut::api-strategist",
+     "in a rut::teacher",
+     "post-mortem::experience",
+     "post-mortem::domain-plausibility",
+     "post-mortem::breaker",
+     "post-mortem::experience",
+     "shared lesson::ALL"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 13,
+    "sample": [
+     "in a rut::breaker",
+     "in a rut::correction-hunter",
+     "in a rut::improver",
+     "in a rut::experience",
+     "in a rut::creator",
+     "in a rut::platform",
+     "in a rut::steward",
+     "in a rut::api-strategist",
+     "post-mortem::experience",
+     "post-mortem::domain-plausibility",
+     "post-mortem::breaker",
+     "post-mortem::experience",
+     "shared lesson::ALL"
+    ]
+   },
+   {
+    "date": "2026-08-23",
+    "count": 12,
+    "sample": [
+     "in a rut::breaker",
+     "in a rut::correction-hunter",
+     "in a rut::improver",
+     "in a rut::experience",
+     "in a rut::creator",
+     "in a rut::platform",
+     "in a rut::api-strategist",
+     "post-mortem::experience",
+     "post-mortem::domain-plausibility",
+     "post-mortem::breaker",
+     "post-mortem::experience",
+     "shared lesson::ALL"
     ]
    }
   ]

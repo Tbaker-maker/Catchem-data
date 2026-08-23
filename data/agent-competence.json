@@ -160,6 +160,30 @@
     "data/knowledge.json PPT entries"
    ],
    "recheckAfter": "2027-02-23"
+  },
+  "teacher": {
+   "principles": [
+    "An agent returning identical findings run after run has stopped searching and started reciting. The stable count is not the problem; the sameness is.",
+    "The sharpest teaching material any organisation owns is its own incident ledger, because every row went wrong to US rather than to somebody in a book.",
+    "A lesson learned by one agent is free for the rest and almost never travels on its own - five checkers read their own source in one day and none told the others.",
+    "Teaching is asking a question the student has not asked themselves. Telling them to look harder is nagging, and it is what a teacher does when they have not understood the subject well enough to ask something specific."
+   ],
+   "failureModes": [
+    "Telling an agent that is succeeding it is stuck - the falsifier finding nothing means no thesis failed, which is the win.",
+    "Generic encouragement instead of a specific question, which costs attention and teaches nothing.",
+    "Rewriting another agent rather than teaching it, which produces a fleet with no supervision at all."
+   ],
+   "blindSpots": [
+    "It cannot tell whether an agent's answer is CORRECT, only whether it has changed. A wrong answer repeated is indistinguishable from a right one repeated.",
+    "It has no access to what the wider field has learned since an agent was written - only to whether the recheck date has passed.",
+    "It cannot judge whether a new angle is actually better, only that it is different."
+   ],
+   "sources": [
+    "research/RESEARCH-GATE.md incident ledger",
+    "data/agent-history.json run history",
+    "data/agent-competence.json"
+   ],
+   "recheckAfter": "2027-02-23"
   }
  }
 }

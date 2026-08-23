@@ -437,6 +437,18 @@ const CASES = [
            : "it excludes itself but found nothing critical — either we finally use everything, or the walk broke" };
     } },
 
+  { guard: "Teacher does not scold a winner", detect: null,
+    // Its first run told the falsifier it was in a rut for finding nothing -
+    // but the falsifier finding nothing means no thesis failed, which is the
+    // whole point of it. Sixth crying-wolf in a day, in a new costume: telling
+    // somebody who is winning that they are stuck.
+    fn: async () => {
+      const rep = JSON.parse(await readFile(P("research/pulse/teacher.json"), "utf-8").catch(() => "{}"));
+      const scolded = (rep.lessons ?? []).filter(l => l.kind === "in a rut" && ["falsifier", "compliance", "anomaly", "security", "review-agents"].includes(l.agent));
+      return { pass: scolded.length === 0,
+        why: scolded.length ? `${scolded.map(s => s.agent).join(", ")} told they are in a rut for succeeding` : "" };
+    } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");
