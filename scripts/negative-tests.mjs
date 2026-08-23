@@ -693,6 +693,19 @@ const CASES = [
         why: `distilled output is ${Math.round(perCard / 1024)} KB per card — the raw series is leaking through` };
     } },
 
+  // The .env loader exists because the PPT key vanished from Windows env vars
+  // three sessions running. A local key file is only safe while git cannot see
+  // it, and "it's in .gitignore" is a claim until something checks.
+  { guard: "Local credentials cannot be committed", detect: null,
+    fn: async () => {
+      const tracked = await run("git", ["ls-files", ".env", ".env.local", "*.key", "*.pem"], { cwd: ROOT })
+        .then(r => r.stdout.trim(), () => "");
+      if (tracked) return { pass: false, why: `git is tracking credential files: ${tracked.split("\n").join(", ")}` };
+      // And prove the ignore rule actually bites, rather than trusting the file.
+      const r = await run("git", ["check-ignore", ".env"], { cwd: ROOT }).then(() => true, () => false);
+      return { pass: r, why: ".env is not ignored — a pasted key would be committable" };
+    } },
+
   // Pacing is priced in minute-UNITS, not calls: a set costs min(30, ceil(n/10))
   // of 60 per minute. The first run paced a flat 1,000ms per call, overran the
   // budget three times over, and took a 429 with 8,865 credits unspent.

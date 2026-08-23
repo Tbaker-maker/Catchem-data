@@ -28,7 +28,9 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { dirname, join } from "node:path";
+import { loadEnv, requireKey } from "./lib/load-env.mjs";
 
+loadEnv();
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => JSON.parse(await readFile(join(ROOT, p), "utf-8"));
 const BASE = "https://www.pokemonpricetracker.com/api/v2";
@@ -122,7 +124,7 @@ export async function planOnly() {
 }
 
 async function main() {
-  if (!KEY) { console.error("Missing POKEMONPRICETRACKER_API_KEY"); process.exit(1); }
+  if (!KEY) requireKey("POKEMONPRICETRACKER_API_KEY");
   const plan = await planOnly();
 
   // REFUSE TO SPEND WITHOUT THE MAP. This is the guard the first run lacked.

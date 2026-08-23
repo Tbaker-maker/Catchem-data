@@ -24,7 +24,9 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { dirname, join } from "node:path";
+import { loadEnv, requireKey } from "./lib/load-env.mjs";
 
+loadEnv();
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const BASE = "https://www.pokemonpricetracker.com/api/v2";
 const KEY = process.env.POKEMONPRICETRACKER_API_KEY;
@@ -93,7 +95,7 @@ export function joinToCatalogue(providerSets, catalogueSets) {
 }
 
 async function main() {
-  if (!KEY) { console.error("Missing POKEMONPRICETRACKER_API_KEY"); process.exit(1); }
+  if (!KEY) requireKey("POKEMONPRICETRACKER_API_KEY");
   const cat = JSON.parse(await readFile(join(ROOT, "data/card-catalogue.json"), "utf-8"));
   const catalogueSets = {};
   for (const c of Object.values(cat.cards)) if (c.setId) catalogueSets[c.setId] = c.setName || null;
