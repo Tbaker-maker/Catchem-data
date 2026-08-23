@@ -532,6 +532,18 @@ const CASES = [
     },
     restore: async () => { await copyFile(TMP("nt-vw.bak"), P("research/pulse/pulse-feed.json")); } },
 
+  { guard: "Decision log entries are gradable", detect: "decision-audit.mjs",
+    // A decision with no falsifiable prediction cannot ever be graded, which
+    // makes it an opinion with a timestamp. Strip one and the build must fail.
+    fn: async () => {
+      const src = await readFile(P("scripts/decision-audit.mjs"), "utf-8");
+      const log = JSON.parse(await readFile(P("data/decision-log.json"), "utf-8"));
+      const ungradable = (log.decisions ?? []).filter(d => !d.predicts || !d.rejected || !d.checkAfter);
+      const enforces = /no prediction/.test(src) && /no rejected alternative/.test(src);
+      return { pass: ungradable.length === 0 && enforces,
+        why: ungradable.length ? `${ungradable.map(d => d.id).join(", ")} cannot be graded` : "the auditor no longer enforces that every decision carries a prediction" };
+    } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");

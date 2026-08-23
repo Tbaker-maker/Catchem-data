@@ -29,6 +29,7 @@ const sec = await J("research/pulse/security-report.json");
 const cmp = await J("research/pulse/compliance-report.json");
 const api = await J("research/pulse/api-strategy.json");
 const tch = await J("research/pulse/teacher.json");
+const dec = await J("research/pulse/decision-audit.json");
 const dpl = await J("research/pulse/domain-plausibility.json");
 const con = await J("research/pulse/agent-contract.json");
 const uni = await J("research/pulse/universe-advisor.json");
@@ -242,6 +243,12 @@ if (tch?.lessons?.length) {
   const pm = tch.lessons.filter(l => l.kind === "post-mortem").slice(0, 2);
   const rut = tch.lessons.filter(l => l.kind === "in a rut").slice(0, 2);
   for (const l of [...pm, ...rut]) say(`- **${l.agent}** — ${l.question}`);
+  say();
+}
+
+if (dec?.dueForGrading) {
+  say(`## A decision has come due`);
+  for (const x of dec.due.slice(0, 3)) say(`- **${x.decision}** — predicted: *${x.predicted}* Did it hold?`);
   say();
 }
 

@@ -184,6 +184,58 @@
     "data/agent-competence.json"
    ],
    "recheckAfter": "2027-02-23"
+  },
+  "verify-work": {
+   "principles": [
+    "Check OUTPUT, never intent. What somebody meant to do is not evidence, and a reviewer who accepts an explanation instead of an artifact is being managed rather than reviewing.",
+    "Every published figure must answer two questions from the data itself: where did this come from, and when was it true. A number that cannot answer both is not defensible whatever chip it carries.",
+    "A fix that does not enumerate every code path ships the bug from somewhere else. Four paths led to the wrong price here and the first fix covered one.",
+    "An aggregate with no time window is context, never a price. Subtracting a windowed figure from an unwindowed one computes the gap between now and an unknown past.",
+    "Any tool that searches a codebase is part of that codebase - a checker whose search space includes itself reports clean and means nothing.",
+    "A guard nobody has deliberately broken is a claim that something works, made without checking.",
+    "Comparisons must be like-for-like at the level of BASIS, not just of units: a price from one venue beside a depth from another is two markets read as one.",
+    "Reasoning cannot be audited after the fact - the reasoner reconstructs a tidier version honestly. Grade the PREDICTION instead, made in advance and fixed."
+   ],
+   "failureModes": [
+    "Reviewing the diff rather than the published artifact, which misses everything produced outside the pipeline.",
+    "Accepting a comment as evidence of behaviour - three checkers here audited prose about code instead of code.",
+    "Treating a test fixture as production data, and a fake credential as a real one.",
+    "Being satisfied by a clean report from a check that could not see the thing it was checking.",
+    "Generic quality rules, which catch nothing specific and train the reader to skim."
+   ],
+   "blindSpots": [
+    "It cannot check whether a conclusion is SOUND, only whether the output carries what a defensible claim must carry. The pooled-cohort error that nearly retired a correct thesis would have passed it.",
+    "It cannot see anything a human does outside the repository - a post typed by hand, a number read aloud.",
+    "It has no view of whether a decision was WISE, only whether it was recorded with a prediction. That is what the decision log exists for and why the two are separate."
+   ],
+   "sources": [
+    "research/RESEARCH-GATE.md - 18 logged incidents, each with its class",
+    "research/house-theses.md"
+   ],
+   "recheckAfter": "2027-02-23"
+  },
+  "decision-audit": {
+   "principles": [
+    "Reasoning cannot be audited after the fact. Asked to explain a past decision, a reasoner reconstructs a tidier version than the one they had - honestly, and unavoidably.",
+    "A prediction made in ADVANCE is fixed and dated, and reality grades it without argument. That is the only handle on reasoning that survives contact with hindsight.",
+    "A decision recorded without a rejected alternative was not a decision, it was a description.",
+    "The useful output is a hit rate PER KIND of decision, which says where judgment is reliable and where it is not - a single overall number hides exactly the thing worth knowing.",
+    "Under about twenty graded predictions the record means nothing, and saying so is part of the job."
+   ],
+   "failureModes": [
+    "Vague predictions that cannot fail, which feel like foresight and grade as noise.",
+    "Grading generously in hindsight, which is why the prediction must be written before the outcome is known.",
+    "Recording only the decisions that turned out well."
+   ],
+   "blindSpots": [
+    "It cannot tell whether a decision was WISE, only whether its prediction held. A lucky call and a sound one grade identically.",
+    "It sees only decisions somebody bothered to log, and the ones nobody logs are likely the ones made fastest.",
+    "It has no view of the counterfactual - what the rejected alternative would actually have produced."
+   ],
+   "sources": [
+    "data/decision-log.json"
+   ],
+   "recheckAfter": "2027-02-23"
   }
  }
 }

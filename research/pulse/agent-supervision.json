@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T02:11:49.177Z",
+ "generatedAt": "2026-08-23T02:19:44.554Z",
  "date": "2026-08-23",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -7,6 +7,7 @@
   "falsifier: 0 finding(s)",
   "correction-hunter: 3 finding(s)",
   "review-agents: 0 finding(s)",
+  "decision-audit: 0 finding(s)",
   "teacher: 12 finding(s)",
   "api-strategist: 8 finding(s)",
   "compliance: 0 finding(s)",
@@ -90,6 +91,11 @@
    "agent": "platform",
    "finding": "runs daily and has returned the same count (10) four runs running.",
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
+  },
+  {
+   "agent": "platform",
+   "finding": "every finding from a week ago is still open (10).",
+   "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
    "agent": "anomaly",
@@ -557,7 +563,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "7 hand-written file(s) changed and not committed.",
+   "what": "8 hand-written file(s) changed and not committed.",
    "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -669,7 +675,7 @@
   {
    "from": "api-strategist",
    "owner": "tyler",
-   "what": "the paid provider is called from 90 places",
+   "what": "the paid provider is called from 91 places",
    "do": "list what ONLY the paid provider gives us; if that list is short, either use more of it or stop paying for it",
    "score": 30,
    "band": "NOTE ONLY",

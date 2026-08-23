@@ -1044,3 +1044,33 @@ in the data itself — where did this come from, and when was it true. All three
 Daily Three picks carry asOf and source. A reader who asks "is that current?"
 gets an answer in the payload rather than a promise on a methodology page they
 will never open.
+
+## LOG THE PREDICTION, NOT THE REASONING (Tyler, Aug 23 2026)
+"How can we work around it not being able to check your reasoning? Can we log
+that and build a bigger database? It doesn't take up space does it?"
+
+It does not - ten thousand decisions is about 1 MB in git against a 77 MB
+repo, and space should never be the reason to record less.
+
+BUT LOGGING THE REASONING ITSELF WOULD NOT WORK. Asked to explain a past
+decision, a reasoner reconstructs a tidier version than the one they actually
+had. Not dishonestly - unavoidably. An audit of a chain of thought audits the
+reconstruction.
+
+**A prediction made in advance is different.** It is fixed, it is dated, and
+reality grades it without argument. So every consequential decision records:
+what was chosen, what was REJECTED and why, and the falsifiable prediction it
+implies. A decision with no prediction cannot be graded, and one with no
+rejected alternative was not a decision, it was a description.
+
+WHAT IT PRODUCES that introspection never could: a hit rate PER KIND of
+decision. Not "is the judgment good" but "where is it reliable and where is it
+not" - and a single overall number would hide precisely that.
+
+HONEST LIMITS, both declared: it cannot tell whether a decision was WISE, only
+whether its prediction held, so a lucky call and a sound one grade identically.
+And it sees only what somebody logged, which is unlikely to include the
+decisions made fastest.
+
+Under twenty graded predictions the record means nothing, and the auditor says
+so rather than showing a percentage that looks like knowledge.

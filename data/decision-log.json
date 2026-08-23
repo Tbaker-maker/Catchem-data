@@ -1,0 +1,63 @@
+{
+ "note": "REASONING, MADE CHECKABLE. The work verifier checks output and cannot check reasoning — it can tell whether a figure carries a date, not whether a conclusion was sound. This closes that, not by inspecting the thinking but by recording what the thinking PREDICTED and checking later whether it held.",
+
+ "law": "Every consequential decision records: what was chosen, what was REJECTED and why, and the falsifiable prediction it implies. A decision with no prediction cannot be graded, and an ungradable decision teaches nothing — it is an opinion with a timestamp.",
+
+ "whyThisWorks": "You cannot audit a chain of thought after the fact; the reasoner will reconstruct a tidier version than the one they had. But a prediction made in advance is fixed, and reality grades it without argument. Over a hundred decisions this produces something no amount of introspection could: a measured hit rate per KIND of decision, which says where the judgment is reliable and where it is not.",
+
+ "costNote": "Roughly 500 bytes each. Ten thousand decisions is about 1 MB in git against a 77 MB repo. Space is not a consideration and should never be the reason to record less.",
+
+ "grades": {
+  "HELD": "the prediction came true",
+  "FAILED": "it did not, and the decision was wrong",
+  "UNTESTABLE": "the prediction turned out not to be checkable — a fault in how it was written, and worth recording as such",
+  "PENDING": "not yet due"
+ },
+
+ "decisions": [
+  {
+   "id": "2026-08-23-spread-retire",
+   "date": "2026-08-23",
+   "decision": "Retire the eBay-vs-TCGplayer Spread from headline selection, keeping it as a labelled stat.",
+   "rejected": "Keep it with a permanent caveat on every appearance.",
+   "reasoning": "The bias is permanent and unmeasurable — our eBay figure includes shipping, TCGplayer's never does, and no source at any tier closes it. A number needing a caveat every time it appears is doing more explaining than working.",
+   "predicts": "No instrument built on the Spread will be missed. If within 60 days we find ourselves wanting it back for a real question, the retirement was wrong.",
+   "checkAfter": "2026-10-22",
+   "grade": "PENDING",
+   "decidedBy": "Tyler, on chat's recommendation"
+  },
+  {
+   "id": "2026-08-23-everything-daily",
+   "date": "2026-08-23",
+   "decision": "Refresh the whole universe daily while it fits the budget; tier only as a fallback.",
+   "rejected": "Tier by value from the start, accepting up to 90-day staleness on bulk.",
+   "reasoning": "16,675 items against a 20,000 allowance is 83%. Staleness we do not have to accept is staleness we should not accept.",
+   "predicts": "Daily refresh of everything will stay inside budget until the universe exceeds ~18,000 items. If we breach the allowance before then, the arithmetic was wrong.",
+   "checkAfter": "2026-09-23",
+   "grade": "PENDING",
+   "decidedBy": "Tyler, correcting chat"
+  },
+  {
+   "id": "2026-08-23-graded-withdrawn",
+   "date": "2026-08-23",
+   "decision": "Withdraw every graded price until the provider exposes a date range on sold aggregates.",
+   "rejected": "Keep publishing them with a 'historical average' label.",
+   "reasoning": "A label does not make a windowless median comparable to a current raw price. The subtraction itself is invalid, not just the presentation — and this one nearly reached a reader.",
+   "predicts": "No graded claim will be publishable until a windowed source exists. If we find a defensible way to publish one WITHOUT a window, the withdrawal was over-cautious.",
+   "checkAfter": "2026-11-23",
+   "grade": "PENDING",
+   "decidedBy": "chat, after Tyler caught the error"
+  },
+  {
+   "id": "2026-08-23-agents-advise",
+   "date": "2026-08-23",
+   "decision": "Agents advise and never block; only guards block, plus security as the single exception.",
+   "rejected": "Let high-severity agent findings fail the run.",
+   "reasoning": "An agent that can halt the pipeline turns a false positive into an outage. Every failure an agent finds is recoverable; a leaked credential is not.",
+   "predicts": "No agent false-positive will ever cost us a publication day. If a run is lost to an agent's mistake, the exception list is wrong.",
+   "checkAfter": "2026-11-23",
+   "grade": "PENDING",
+   "decidedBy": "chat"
+  }
+ ]
+}
