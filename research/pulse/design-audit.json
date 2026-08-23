@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-23T08:14:41.896Z",
+  "generatedAt": "2026-08-23T08:29:25.955Z",
   "audited": "9 shipped surfaces, 35 minted cards",
   "principle": "A linter asks whether the CSS is valid. A design lead asks whether the page was DESIGNED. The tells of an undesigned page are countable: too many type sizes, too many near-identical greys, an accent used everywhere so it accents nothing.",
   "blindSpot": "It cannot SEE. It counts and measures. It cannot tell you a page is ugly, only that the choices behind it were not made deliberately.",
@@ -48,7 +48,7 @@
   "forEyes": [
     {
       "surface": "build.html",
-      "question": "build.html: 2 font sizes sit within 2px of a neighbour (13, 14). Are those distinct steps or the same intent typed twice?",
+      "question": "build.html: 2 font sizes sit within 12% of a neighbour (13, 14). Are those distinct steps or the same intent typed twice?",
       "measured": {
         "sizes": [
           12,
@@ -81,7 +81,7 @@
     },
     {
       "surface": "corrections.html",
-      "question": "corrections.html: 5 font sizes sit within 2px of a neighbour (13, 14, 14.5, 15, 15.5). Are those distinct steps or the same intent typed twice?",
+      "question": "corrections.html: 5 font sizes sit within 12% of a neighbour (13, 14, 14.5, 15, 15.5). Are those distinct steps or the same intent typed twice?",
       "measured": {
         "sizes": [
           12.5,
@@ -104,7 +104,7 @@
     },
     {
       "surface": "coverage.html",
-      "question": "coverage.html: 2 font sizes sit within 2px of a neighbour (14, 15). Are those distinct steps or the same intent typed twice?",
+      "question": "coverage.html: 1 font sizes sit within 12% of a neighbour (15). Are those distinct steps or the same intent typed twice?",
       "measured": {
         "sizes": [
           12.5,
@@ -114,7 +114,6 @@
           30
         ],
         "nearDupes": [
-          14,
           15
         ]
       },
@@ -123,7 +122,7 @@
     },
     {
       "surface": "creators.html",
-      "question": "creators.html: 4 font sizes sit within 2px of a neighbour (13, 13.5, 14, 14.5). Are those distinct steps or the same intent typed twice?",
+      "question": "creators.html: 4 font sizes sit within 12% of a neighbour (13, 13.5, 14, 14.5). Are those distinct steps or the same intent typed twice?",
       "measured": {
         "sizes": [
           12.5,
@@ -145,23 +144,8 @@
       "answer": null
     },
     {
-      "surface": "faq.html",
-      "question": "faq.html: 1 font sizes sit within 2px of a neighbour (16). Are those distinct steps or the same intent typed twice?",
-      "measured": {
-        "sizes": [
-          14,
-          16
-        ],
-        "nearDupes": [
-          16
-        ]
-      },
-      "answeredBy": null,
-      "answer": null
-    },
-    {
       "surface": "methodology.html",
-      "question": "methodology.html: 1 font sizes sit within 2px of a neighbour (14.5). Are those distinct steps or the same intent typed twice?",
+      "question": "methodology.html: 1 font sizes sit within 12% of a neighbour (14.5). Are those distinct steps or the same intent typed twice?",
       "measured": {
         "sizes": [
           14,
@@ -178,7 +162,7 @@
     },
     {
       "surface": "print-watch.html",
-      "question": "print-watch.html: 4 font sizes sit within 2px of a neighbour (10.5, 12, 13, 13.5). Are those distinct steps or the same intent typed twice?",
+      "question": "print-watch.html: 3 font sizes sit within 12% of a neighbour (10.5, 13, 13.5). Are those distinct steps or the same intent typed twice?",
       "measured": {
         "sizes": [
           10,
@@ -191,25 +175,8 @@
         ],
         "nearDupes": [
           10.5,
-          12,
           13,
           13.5
-        ]
-      },
-      "answeredBy": null,
-      "answer": null
-    },
-    {
-      "surface": "the-board.html",
-      "question": "the-board.html: 1 font sizes sit within 2px of a neighbour (13). Are those distinct steps or the same intent typed twice?",
-      "measured": {
-        "sizes": [
-          11,
-          13,
-          30
-        ],
-        "nearDupes": [
-          13
         ]
       },
       "answeredBy": null,
@@ -232,7 +199,7 @@
     },
     {
       "surface": "the-pulse.html",
-      "question": "the-pulse.html: 5 font sizes sit within 2px of a neighbour (11, 12, 13, 15, 16). Are those distinct steps or the same intent typed twice?",
+      "question": "the-pulse.html: 4 font sizes sit within 12% of a neighbour (11, 12, 13, 16). Are those distinct steps or the same intent typed twice?",
       "measured": {
         "sizes": [
           10,
@@ -247,7 +214,6 @@
           11,
           12,
           13,
-          15,
           16
         ]
       },

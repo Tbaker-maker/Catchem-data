@@ -184,6 +184,23 @@ const MUST_RUN = [
 
 const failures = [], notes = [];
 
+// ── PROTOCOL C ────────────────────────────────────────────────────────────
+// import() takes a URL. A bare filesystem path works on Linux and fails on
+// Windows, where 'c:\\...' reads as protocol 'c:'. It has shipped three times
+// because it is invisible on the machine that writes it and fatal on the one
+// that runs it, and the test then reports as a FAILED GUARD rather than a
+// broken harness - which sends somebody looking in the wrong place entirely.
+try {
+  const offenders = [];
+  for (const f of (await readdir(join(ROOT, "scripts"))).filter(x => x.endsWith(".mjs"))) {
+    const src = await readFile(join(ROOT, "scripts", f), "utf-8").catch(() => "");
+    // import(P(...)) or import(join(...)) without pathToFileURL
+    if (/await import\((?:P|join)\(/.test(src) && !/pathToFileURL/.test(src)) offenders.push(f);
+  }
+  if (offenders.length)
+    notes.push(`PROTOCOL C — ${offenders.length} file(s) call import() with a bare path: ${offenders.join(", ")}. Works on Linux, throws 'Received protocol c:' on Windows. Wrap in pathToFileURL().`);
+} catch {}
+
 // ── EVAPORATES AT JOB END ────────────────────────────────────────────────
 // Any file a pipeline script WRITES must appear in the workflow's git add list.
 // Written in CI and never added means gone when the job ends, and the script

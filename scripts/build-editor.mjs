@@ -487,12 +487,18 @@ el("make").onclick = async () => {
     if (fIntent === "want" || fIntent === "trade" || fIntent === "sell") {
       const priced = tray.filter(c => c.p != null);
       const total = priced.reduce((a, c) => a + c.p, 0);
-      g.fillStyle = "#8a93a8"; g.font = "26px system-ui,sans-serif"; g.textAlign = "center";
+      // THUMBNAIL LEGIBILITY. A want list is seen first as a 400px preview and
+      // decided on there. Text sized for the full canvas vanishes: 26px on a
+      // 2535px canvas is 4.1px in that preview. Scale to the canvas so the
+      // price survives the shrink, because the price IS the message.
+      const thumbScale = 400 / W;
+      const priceSize = Math.max(26, Math.round(11 / thumbScale));
+      g.fillStyle = "#8a93a8"; g.font = priceSize + "px system-ui,sans-serif"; g.textAlign = "center";
       tray.forEach((c, i) => {
         if (c.p == null) return;
         const x = PAD + (i % L.cols) * (CW + GAP), y = PAD + Math.floor(i / L.cols) * (CH + CAP + GAP);
         g.fillStyle = owned[c.i] ? "#36d399" : "#8a93a8";
-        g.fillText((owned[c.i] ? "HAVE  " : "") + "$" + Math.round(c.p).toLocaleString(), x + CW / 2, y + CH + (CAP ? 82 : 40));
+        g.fillText((owned[c.i] ? "HAVE  " : "") + "$" + Math.round(c.p).toLocaleString(), x + CW / 2, y + CH + (CAP ? 62 + priceSize : 14 + priceSize));
       });
       const label = fIntent === "want" ? "Looking for" : fIntent === "trade" ? "Trade list" : "For sale";
       g.fillStyle = "#f4f5f8"; g.font = "800 44px system-ui,sans-serif"; g.textAlign = "left";

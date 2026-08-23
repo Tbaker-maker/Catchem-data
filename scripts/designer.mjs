@@ -173,9 +173,15 @@ const E = (surface, question, measured) => forEyes.push({ surface, question, mea
       .map(m => Number(m.match(/[\d.]+/)[0])))].sort((a, b) => a - b);
     // Sizes within 2px of each other are almost certainly the same intent typed
     // twice. Almost - which is why it asks instead of collapsing them.
-    const nearDupes = sizes.filter((n, i) => i && n - sizes[i - 1] <= 2);
+    // PROPORTIONAL, not absolute (CC, 2026-08-23). The old rule used a flat 2px
+    // gap, but 2px is a large step at 12px and invisible at 30px. 14->16 is a
+    // 14.3% jump and reads as a step; 13->14 is 7.7% and does not. A type scale
+    // is proportional so the check must be - and the absolute version was
+    // flagging faq.html for being typographically CORRECT, which is the worst
+    // kind of false positive because acting on it would make the page worse.
+    const nearDupes = sizes.filter((n, i) => i && (n - sizes[i - 1]) / sizes[i - 1] < 0.12);
     if (nearDupes.length) {
-      const q = `${file}: ${nearDupes.length} font sizes sit within 2px of a neighbour (${nearDupes.join(", ")}). Are those distinct steps or the same intent typed twice?`;
+      const q = `${file}: ${nearDupes.length} font sizes sit within 12% of a neighbour (${nearDupes.join(", ")}). Are those distinct steps or the same intent typed twice?`;
       if (!settled.has(q)) E(file, q, { sizes, nearDupes });
     }
 

@@ -1,6 +1,6 @@
 # The review — 2026-08-23
 
-**5.4 / 10.** Real progress, and the gap between what is built and what is live is now the whole problem.
+**6 / 10.** Real progress, and the gap between what is built and what is live is now the whole problem.
 
 > Every rating is derived from a count we hold, never chosen. A score somebody picked is a mood with a number attached.
 >
@@ -13,7 +13,7 @@
 Every agent meets every obligation.
 
 **Working**
-- 18 agents, 20 guards wired, 57 negative tests
+- 18 agents, 20 guards wired, 58 negative tests
 - Every incident this month became a guard, and every guard has been deliberately broken to prove it works.
 
 
@@ -28,7 +28,7 @@ Wide and shallow. We track a lot and verify less of it than the numbers suggest.
 - Enrichment covers 12 cards. Volume and graded data exist on 0.07% of the catalogue.
 - 6 knowledge-base facts rest only on secondary sources and have never been checked against our own data.
 
-## The product — 4/10 `████░░░░░░`  *(unchanged)*
+## The product — 8/10 `████████░░`  *(up from 4)*
 
 The app works and looks better than it did. It is also still not deployed where anyone can use it.
 
@@ -36,7 +36,6 @@ The app works and looks better than it did. It is also still not deployed where 
 - Seven measured layout frames, a creator editor, a funnel, and 13 post shapes
 - Watermark and illustrator credit are locked and cannot be edited out
 **Needs looking at**
-- 4 high-severity design findings open
 - Two shipped pages have no generator and drift further from the site every day.
 - The editor exists as a file. Nobody outside this conversation can reach it.
 
@@ -82,7 +81,7 @@ The habits are in place. Nothing has come due yet, so none of them have been tes
 - Corrections published publicly, dated and permanent
 - 21 errors logged, each with the guard it produced
 **Needs looking at**
-- 5 of 21 agent questions unanswered — a queue that only grows is a queue nobody reads
+- 5 of 24 agent questions unanswered — a queue that only grows is a queue nobody reads
 - 7 predictions still pending. The first grades land in October, and until then this score is a promise.
 
 ---
