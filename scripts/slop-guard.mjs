@@ -31,7 +31,19 @@ const FIELDS = ["name", "artist", "setId", "setName", "number", "rarity", "relea
 // invited to disagree. A subjective claim DRESSED AS A FINDING closes the
 // conversation and is slop. A subjective pick OFFERED AS ONE opens it, and a
 // post that starts an argument beats one that ends it.
-const ASSERTIONS = /\b(cute|iconic|beautiful|stunning|underrated|hidden gem|must-have|best|greatest|perfect|amazing|incredible)\b/i;
+// ASSERTING vs INVITING (Tyler, 2026-08-23). My first version would have blocked
+// "which generation did you like most?" - one of the strongest shapes we have.
+// The line is not subjective versus objective. It is whether we STATE
+// significance the data cannot support, or ASK the reader for theirs.
+//
+//   "The most underrated card in the set"  -> slop. States a fact nothing backs.
+//   "Which of these do you like most?"     -> a question. States nothing.
+//   "9 cute cards for your binder"         -> openly a selection, not a ranking.
+//
+// A question invites disagreement, and disagreement is the conversation. The
+// check now fires only when an assertion word CLAIMS rather than asks or curates.
+const ASSERTIONS = /\b(the (cutest|best|greatest|most \w+)|objectively|undeniably|hands down|without question|definitive)\b/i;
+const INVITES = /\b(which|do you|your (binder|favourite|favorite|pick|top)|what do you|would you|for your|pick one|agree|thoughts)\b/i;
 
 // Signals that a subjective word is being offered rather than asserted: a
 // question, a first-person frame, or an explicit invitation to disagree.
@@ -50,7 +62,7 @@ if (f) {
       P(x.title, "basis names no real field", `"${x.basis}" — a grouping has to come from a column or from a list stored openly. Otherwise it is taste presented as a finding.`);
     // 2 — no adjective doing a field's job.
     for (const t of [x.title, x.why, x.angle]) {
-      const hit = ASSERTIONS.exec(t ?? "");
+      const hit = INVITES.test(t ?? "") ? null : ASSERTIONS.exec(t ?? "");
       // A subjective word inside an invitation is curation, not a claim.
       if (hit && !isCuration(t) && !isCuration(x.angle) && !isCuration(x.title))
         P(x.title, `asserts "${hit[0]}" as a finding`,
@@ -72,7 +84,7 @@ if (feed) {
     if (!n || typeof n !== "object") return;
     for (const [k, v] of Object.entries(n)) {
       if (typeof v === "string" && v.length > 25) {
-        const hit = ASSERTIONS.exec(v);
+        const hit = INVITES.test(v) ? null : ASSERTIONS.exec(v);
         if (hit && !isCuration(v)) P(`feed.${path}${k}`, `asserts "${hit[0]}" as a finding`,
           "In an instrument, a subjective word with no invitation attached is a claim we cannot defend. In a POST it would be fine, because a post can offer a pick; an instrument cannot.");
       }

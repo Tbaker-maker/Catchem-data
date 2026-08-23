@@ -114,6 +114,50 @@ else {
     }
   }
 
+  // ── 5 · THE BINDER PAGE — nine cards, three by three ──────────────────────
+  // A real binder page is 3x3, so a 3x3 grid is a shape every collector already
+  // recognises. Curation is honest as long as it is framed as a SELECTION and
+  // not as a ranking: "nine for your binder" invites you to disagree, "the nine
+  // best" tells you that you are wrong.
+  {
+    const byArtistIR = {};
+    for (const c of cards.filter(c => /Illustration Rare/i.test(c.rarity ?? ""))) (byArtistIR[c.artist] ||= []).push(c);
+    for (const [artist, list] of Object.entries(byArtistIR)) {
+      if (list.length < 9) continue;
+      const nine = list.sort((a, b) => (b.price ?? 0) - (a.price ?? 0)).slice(0, 9);
+      F("binder page", `Nine ${artist} illustration rares for your binder`,
+        "artist field + rarity field, nine of them",
+        nine.map(c => c.id),
+        "A binder page is three by three, so this is a shape a collector recognises before reading anything. Framed as a selection, not a ranking - you are invited to disagree.",
+        `Nine by one artist. Which one is going in the sleeve first?`);
+    }
+  }
+
+  // ── 6 · THREE ROWS OF THREE — a generational debate ────────────────────────
+  // Tyler's shape: three related Pokemon, three eras, nine cards. It asks a
+  // question instead of making a claim, and a question is what starts the
+  // conversation. Derived entirely from name + releaseDate + rarity.
+  for (const [lineName, members] of Object.entries(LINES)) {
+    if (members.length !== 3) continue;                 // trios only - the grid is 3x3
+    const byYear = {};
+    for (const c of cards.filter(c => members.some(m => c.name.startsWith(m)) && HERO.test(c.rarity ?? ""))) {
+      (byYear[year(c)] ||= {});
+      const mon = members.find(m => c.name.startsWith(m));
+      const cur = byYear[year(c)][mon];
+      if (!cur || (c.price ?? 0) > (cur.price ?? 0)) byYear[year(c)][mon] = c;
+    }
+    const complete = Object.entries(byYear).filter(([, set]) => Object.keys(set).length === 3)
+      .sort((a, b) => a[0] < b[0] ? -1 : 1);
+    if (complete.length < 3) continue;
+    const spread = [complete[0], complete[Math.floor(complete.length / 2)], complete[complete.length - 1]];
+    const ids = spread.flatMap(([, set]) => members.map(m => set[m].id));
+    F("three rows of three", `${lineName}: ${spread.map(([y]) => y).join(" vs ")}`,
+      "name + releaseDate + rarity, three complete sets",
+      ids,
+      `Three eras of the same trio, nine cards, one question. It asks rather than tells, which is what gets a reply instead of a scroll.`,
+      `Which row is the best ${lineName.replace(/^The /, "")}? ${spread.map(([y]) => y).join(", ")}.`);
+  }
+
   formulas.sort((a, b) => b.count - a.count);
   const byKind = {};
   for (const f of formulas) (byKind[f.kind] ||= []).push(f);

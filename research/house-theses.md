@@ -1362,6 +1362,37 @@ slop-guard now allows a subjective word inside an invitation — a question, a
 first-person frame, an explicit "which would you". It still blocks the same
 word stated flatly as a finding.
 
+## ASSERTING VERSUS INVITING (Tyler, Aug 23 2026)
+Amends the slop law below, because my first version of it was wrong in a way
+that would have cost us our best post shapes.
+
+I banned the word "cute". Tyler's correction: **"Cute cards aren't slop as long
+as it has a good thing. Nine cutest cards for your binder. Then shows nine in
+binder format."** And: **"Which generation of the legendary birds did you like
+most? Show three rows of three. Start a debate."**
+
+He is right, and the line I drew was in the wrong place. It is not subjective
+versus objective. It is whether we **STATE** significance the data cannot
+support, or **ASK** the reader for theirs:
+
+- *"The most underrated card in the set"* — slop. States a fact nothing backs.
+- *"Which of these do you like most?"* — a question. States nothing at all.
+- *"Nine cute cards for your binder"* — openly a selection, not a ranking.
+
+**A question invites disagreement, and disagreement IS the conversation.**
+Telling a reader what is best gives them nothing to do; asking gives them a
+reason to reply, and replies are the whole game.
+
+TWO SHAPES BUILT FROM THIS:
+- **The binder page.** Nine cards, three by three, because a real binder page is
+  three by three and a collector recognises the shape before reading a word.
+- **Three rows of three.** A trio across three eras — the legendary birds in
+  Fossil 1999, Next Destinies 2012 and 2022, nine cards, one question. Derived
+  entirely from name, releaseDate and rarity. Nothing asserted.
+
+THE GOAL, in Tyler's words: conversation, debate, healthy engagement,
+knowledge. Not a verdict handed down.
+
 ## SLOP IS A GROUPING THAT IS NOT IN THE DATA (Tyler, Aug 23 2026)
 "We need to be super creative and engaging, with ZERO AI SLOP. That's the
 quickest way to screw everything up."
