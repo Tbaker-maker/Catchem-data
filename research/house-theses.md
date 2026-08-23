@@ -1187,3 +1187,30 @@ THE GENERAL RULE: if a value can be looked up, never derive it. Derivation
 encodes an assumption - here, "one host for all sets" - and assumptions fail
 silently at exactly the moment the pattern changes, which is the moment nobody
 is watching for it.
+
+## MEASURE IT, DO NOT EYEBALL IT (Tyler, Aug 23 2026)
+"A lot of failures, no successes. Test test test. Don't stop until you figure
+it out cleanly."
+
+Five broken visuals in one day, every one a layout fault: an empty photo panel
+eating 40% of a card, a title clipping off the right edge TWICE, a wordmark
+sitting on top of a stat row, and a card back where a card front belonged. Each
+one shipped because I estimated instead of measuring — and estimating text
+width from character count is guessing in a way that feels like arithmetic.
+
+The fonts are vendored in the repo. scripts/layout-check.mjs reads the same TTFs
+the renderer uses, so the width it reports is the width that will render.
+
+WHAT IT CATCHES, each tested against the exact failure that produced it:
+- text running past the canvas, with the font size that WOULD have fitted
+- elements overlapping, using the font's real ascender and descender rather
+  than the 0.8/0.25 ratios I first guessed at, which missed a real collision
+  by under three pixels
+- large unfilled panels where content was expected
+- and it does not fire on a card that is fine, which took two attempts
+
+FIRST RUN: 50 problems across 35 cards that had been publishing daily.
+
+WHAT IT STILL CANNOT DO: say whether the result looks GOOD. Contrast, balance,
+whether a pairing is beautiful. Geometry is not taste, and nothing here
+replaces opening the file.

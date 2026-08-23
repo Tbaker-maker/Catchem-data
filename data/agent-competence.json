@@ -194,7 +194,8 @@
     "Any tool that searches a codebase is part of that codebase - a checker whose search space includes itself reports clean and means nothing.",
     "A guard nobody has deliberately broken is a claim that something works, made without checking.",
     "Comparisons must be like-for-like at the level of BASIS, not just of units: a price from one venue beside a depth from another is two markets read as one.",
-    "Reasoning cannot be audited after the fact - the reasoner reconstructs a tidier version honestly. Grade the PREDICTION instead, made in advance and fixed."
+    "Reasoning cannot be audited after the fact - the reasoner reconstructs a tidier version honestly. Grade the PREDICTION instead, made in advance and fixed.",
+    "Text width cannot be estimated from character count. Fonts are proportional, and an estimate that feels like arithmetic is still a guess - measure with the actual font file the renderer will use."
    ],
    "failureModes": [
     "Reviewing the diff rather than the published artifact, which misses everything produced outside the pipeline.",

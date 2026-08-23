@@ -650,6 +650,7 @@ try { await import("./domain-plausibility.mjs"); } catch (e) { console.warn(`  �
 try { await import("./build-coverage.mjs"); } catch (e) { console.warn(`  ⚠ coverage page: ${e.message}`); }
 await import("./windowless-price-guard.mjs");
 await import("./content-sanity.mjs");
+await import("./layout-check.mjs");
 await import("./card-guard.mjs");
 await import("./verify-work.mjs");
 try { await import("./bias-guard.mjs"); } catch (e) { console.warn(`  ⚠ bias guard: ${e.message} — advisory`); }

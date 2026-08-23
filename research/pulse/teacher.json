@@ -1,10 +1,10 @@
 {
- "generatedAt": "2026-08-23T02:40:56.803Z",
+ "generatedAt": "2026-08-23T04:02:35.106Z",
  "role": "Keeps agents current, breaks them out of ruts, and teaches from incidents that actually happened to us. It asks questions; it never rewrites another agent.",
  "counts": {
   "stale": 0,
   "ruts": 7,
-  "postMortem": 5,
+  "postMortem": 6,
   "shared": 1
  },
  "lessons": [
@@ -113,6 +113,15 @@
    "observation": "an incident in your domain: \"Sent an \"art post\" card that was a price table with an unexplained alias as its headline, \"",
    "question": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
    "why": "a number behaving impossibly is what the anomaly watcher exists for",
+   "confidence": "MEASURED",
+   "chip": "READ"
+  },
+  {
+   "agent": "steward",
+   "kind": "post-mortem",
+   "observation": "an incident in your domain: \"A composite showed a CARD BACK: image URLs were constructed from card IDs assuming one hos\"",
+   "question": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
+   "why": "staleness is work not being done, which is the steward's subject",
    "confidence": "MEASURED",
    "chip": "READ"
   },

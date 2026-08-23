@@ -561,6 +561,22 @@ const CASES = [
         why: unguarded.length ? `${unguarded.length} ledger class(es) no longer covered: ${unguarded.slice(0, 3).join("; ")} — the verifier has been weakened or the ledger has grown past it` : "" };
     } },
 
+  { guard: "Layout is measured, not estimated", detect: null,
+    // Five broken visuals in one day, all layout, all shipped because I
+    // estimated text width from character count. The fonts are vendored; the
+    // measurement uses the same glyphs the renderer does.
+    fn: async () => {
+      const { checkSvg } = await import(P("scripts/layout-check.mjs"));
+      const clip = `<svg viewBox="0 0 1200 675"><text x="70" y="188" font-family="Syne" font-weight="800" font-size="46">He drew Base Set Charizard in 1999.</text></svg>`;
+      const collide = `<svg viewBox="0 0 1200 675"><text x="70" y="592" font-family="JetBrainsMono" font-weight="700" font-size="27">-66.7%</text><text x="70" y="620" font-family="Syne" font-weight="800" font-size="30">Catch</text></svg>`;
+      const good = `<svg viewBox="0 0 1200 675"><text x="70" y="188" font-family="Syne" font-weight="800" font-size="40">He drew Base Set Charizard</text></svg>`;
+      const c1 = checkSvg(clip, { name: "t" }).some(i => /clip/.test(i.issue));
+      const c2 = checkSvg(collide, { name: "t" }).some(i => /overlaps/.test(i.issue));
+      const c3 = checkSvg(good, { name: "t" }).filter(i => i.severity === "critical").length === 0;
+      return { pass: c1 && c2 && c3,
+        why: !c1 ? "does not catch clipping" : !c2 ? "does not catch collisions" : "false-positives on a card that is fine" };
+    } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");
