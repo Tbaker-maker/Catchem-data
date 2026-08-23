@@ -8,12 +8,12 @@
 >
 > The trend matters more than the level. A 6 that was a 3 is a different story from a 6 that was a 9.
 
-## The machine — 10/10 `██████████`  *(up from 5)*
+## The machine — 10/10 `██████████`  *(unchanged)*
 
 Every agent meets every obligation.
 
 **Working**
-- 18 agents, 20 guards wired, 55 negative tests
+- 18 agents, 20 guards wired, 56 negative tests
 - Every incident this month became a guard, and every guard has been deliberately broken to prove it works.
 
 
