@@ -1,10 +1,10 @@
 <!doctype html><meta charset="utf-8">
-<title>Four Eeveelutions. One set.</title>
+<title>Twenty-four years apart. Same illustrator.</title>
 <style>
   body{margin:0;background:#070910;display:flex;align-items:center;justify-content:center;min-height:100vh;
        font-family:system-ui,-apple-system,"Segoe UI",sans-serif;padding:40px 20px}
-  .wrap{max-width:1342px;width:100%}
-  .row{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;justify-content:center;align-items:start}
+  .wrap{max-width:966px;width:100%}
+  .row{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;justify-content:center;align-items:start}
   .card{text-align:center}
   .card img{width:100%;aspect-ratio:745/1040;object-fit:contain;display:block;border-radius:12px}
   .cap{color:#8a93a8;font-size:16px;margin-top:14px}
@@ -16,17 +16,13 @@
 </style>
 <div class="wrap">
   <div class="row">
-    <div class="card"><img src="https://images.pokemontcg.io/sv8pt5/161_hires.png" alt="Umbreon ex" loading="eager">
-      <div class="cap">Umbreon ex · 2025</div></div>
-    <div class="card"><img src="https://images.pokemontcg.io/sv8pt5/156_hires.png" alt="Sylveon ex" loading="eager">
-      <div class="cap">Sylveon ex · 2025</div></div>
-    <div class="card"><img src="https://images.pokemontcg.io/sv8pt5/155_hires.png" alt="Espeon ex" loading="eager">
-      <div class="cap">Espeon ex · 2025</div></div>
-    <div class="card"><img src="https://images.pokemontcg.io/sv8pt5/144_hires.png" alt="Leafeon ex" loading="eager">
-      <div class="cap">Leafeon ex · 2025</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/base1/4_hires.png" alt="Charizard" loading="eager">
+      <div class="cap">Charizard · 1999</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/sv3pt5/200_hires.png" alt="Blastoise ex" loading="eager">
+      <div class="cap">Blastoise ex · 2023</div></div>
   </div>
-  <div class="label">Four Eeveelutions. One set.</div>
-  <div class="foot"><span class="mark">Catch'em</span><span class="src">Four Eeveelutions. One set.</span></div>
+  <div class="label">Twenty-four years apart. Same illustrator.</div>
+  <div class="foot"><span class="mark">Catch'em</span><span class="src">Twenty-four years apart. Same illustrator.</span></div>
   <div style="text-align:center;margin-top:26px">
     <button id="dl" style="background:#36d399;color:#070910;border:0;border-radius:10px;padding:14px 28px;font-size:16px;font-weight:700;cursor:pointer">Download as one image</button>
     <button id="dlsvg" style="background:transparent;color:#8a93a8;border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:14px 22px;font-size:15px;cursor:pointer;margin-left:8px">Or open the cards full-size</button>
@@ -37,9 +33,9 @@
 // The browser composites, because it can reach the image host and chat cannot.
 // Everything is drawn at native card resolution so the result is postable
 // rather than a screenshot of a screenshot.
-const CARDS = [{"url":"https://images.pokemontcg.io/sv8pt5/161_hires.png","name":"Umbreon ex","year":"2025"},{"url":"https://images.pokemontcg.io/sv8pt5/156_hires.png","name":"Sylveon ex","year":"2025"},{"url":"https://images.pokemontcg.io/sv8pt5/155_hires.png","name":"Espeon ex","year":"2025"},{"url":"https://images.pokemontcg.io/sv8pt5/144_hires.png","name":"Leafeon ex","year":"2025"}];
-const LABEL = "Four Eeveelutions. One set.";
-const CAPTION = "Four Eeveelutions. One set.";
+const CARDS = [{"url":"https://images.pokemontcg.io/base1/4_hires.png","name":"Charizard","year":"1999"},{"url":"https://images.pokemontcg.io/sv3pt5/200_hires.png","name":"Blastoise ex","year":"2023"}];
+const LABEL = "Twenty-four years apart. Same illustrator.";
+const CAPTION = "Twenty-four years apart. Same illustrator.";
 // A GUARANTEED ROUTE. If every canvas path fails, the reader can still get real
 // full-resolution files - one tab per card, right-click and save. A screenshot
 // is the one outcome worth engineering around, so there is always another way.

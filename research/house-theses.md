@@ -1507,3 +1507,30 @@ AND THE COPY LESSON, which is the real one: **"who's still awake?" is two words
 and it outperformed everything we have written.** Too much text goes over
 people's heads. The image earns the attention; the words only have to give
 somebody a reason to reply.
+
+## CREDIT THE ARTIST, OR DO NOT POST THE ART (Tyler, Aug 23 2026)
+"Yes credit the artist."
+
+Now enforced rather than intended. Every composite renders the illustrator's
+name on the image itself, and an art post with no credit **does not ship** - it
+fails loudly and names the cards.
+
+THE GAP THAT REVEALED: 1,227 of 16,468 catalogue cards carry no illustrator,
+and for some of them - Umbreon ex among them, which was in an option I sent
+Tyler - the SOURCE has no artist field either. So this is not a data-cleaning
+task with an end; it is a permanent condition, and the honest response is to
+pick a credited card rather than to quietly drop a line nobody would notice
+was missing.
+
+WHY IT IS THE RIGHT RULE INDEPENDENT OF ANY LEGAL QUESTION: posting somebody's
+illustration without their name is plainly discourteous. That is true whether
+or not anyone would ever object, and it is the reason to do it - the fact that
+it also strengthens our position is a bonus, not the argument.
+
+ON THE LEGAL FRAMING, recorded once and not relitigated: Tyler's position is
+that this is homebrewed content from public material and is fine. He is right
+about the practical reality - the hobby runs on fan content. The single
+distinction worth keeping straight is that publicly VIEWABLE is not public
+DOMAIN: card art is copyrighted, and fan use is tolerated rather than licensed.
+That costs nothing while we are free and unmonetised, and it is precisely what
+the IP consult exists to settle.

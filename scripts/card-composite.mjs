@@ -146,6 +146,21 @@ if (!ids.length) {
       process.exitCode = 1;
     }
   }
+  // CREDIT THE ARTIST, OR DO NOT POST THE ART (2026-08-23). 1,227 of 16,468
+  // cards carry no illustrator in our catalogue, and for some - Umbreon ex among
+  // them - the source has none either. Posting somebody's illustration without
+  // their name is the one thing here that is plainly discourteous whatever the
+  // legal position, so an uncredited art post does not ship. It fails loudly and
+  // names the cards rather than quietly dropping a line nobody would miss.
+  const uncredited = cards.filter(c => !c.artist);
+  if (uncredited.length) {
+    console.error(`\n  no illustrator credit for: ${uncredited.map(c => c.name).join(", ")}`);
+    console.error(`  The source has no artist field for these. An art post carries the artist's`);
+    console.error(`  name or it does not go out - a courtesy question before it is anything else.`);
+    console.error(`  Pick a credited card, or post it as a data card instead.\n`);
+    if (artMode) process.exitCode = 1;
+  }
+
   const { LAYOUTS, frameFor } = await import("./layouts.mjs");
   const LAY = frameFor(cards.length);
   if (!LAY) {
@@ -202,7 +217,7 @@ ${cards.map((c, i) => {
 }).join("\n")}
 ${label ? `<text x="${W / 2}" y="${H - 96}" text-anchor="middle" fill="#f4f5f8" font-family="Syne" font-weight="800" font-size="30">${label.replace(/&/g, "&amp;")}</text>` : ""}
 <text x="${PAD}" y="${H - 18}" fill="#36d399" font-family="Syne" font-weight="800" font-size="22">Catch'em</text>
-<text x="${W - PAD}" y="${H - 18}" text-anchor="end" fill="#5c637a" font-family="JetBrains Mono" font-size="15">${caption.replace(/&/g, "&amp;")}</text>
+<text x="${W - PAD}" y="${H - 18}" text-anchor="end" fill="#5c637a" font-family="JetBrains Mono" font-size="15">${[...new Set(cards.map(c => c.artist).filter(Boolean))].slice(0, 3).join(" · ") || caption.replace(/&/g, "&amp;")}</text>
 </svg>`;
 
   // Chat gets 403 from the image host; a browser does not. So alongside the SVG
