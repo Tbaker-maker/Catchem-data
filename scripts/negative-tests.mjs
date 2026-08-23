@@ -628,7 +628,11 @@ const CASES = [
     // else's submission fee. It reports the CEILING centering permits, which is
     // a different and defensible claim.
     fn: async () => {
-      const m = await import(P("scripts/centering-math.mjs"));
+      // pathToFileURL — dynamic import() on Windows rejects a bare "C:\..."
+      // with "Received protocol 'c:'", so the test ERRORS instead of running and
+      // reports as a failed guard. Third instance of this exact gotcha in this
+      // harness; a lint for import(P(...)) would end it permanently.
+      const m = await import(pathToFileURL(P("scripts/centering-math.mjs")).href);
       const c = m.ceiling(m.centering({ left: 2, right: 2, top: 2, bottom: 2 }));
       const d = m.worthSubmitting({ raw: 100, graded: { 10: 500 }, centering: c });
       const src = await readFile(P("scripts/centering-math.mjs"), "utf-8");

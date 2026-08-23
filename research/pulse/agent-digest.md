@@ -26,7 +26,7 @@ A product we featured has gone quiet on us. Either it stopped trading or we brok
 
 ## The agents themselves
 **NEEDS A HUMAN — the supervisor flagged the watchers:**
-- designer: BROKEN RECORD — 3 finding(s) repeated three runs running (e.g. "medium::--faint on the background is 3.2:1"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
+- designer: BROKEN RECORD — 4 finding(s) repeated three runs running (e.g. "medium::16 distinct colours"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 - theme-scout: BROKEN RECORD — 23 finding(s) repeated three runs running (e.g. "the one-off::Ken Sugimori drew Ampharos exactly on"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 - teacher: BROKEN RECORD — 14 finding(s) repeated three runs running (e.g. "in a rut::breaker"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 - teacher: OVER-BUDGET — 16 findings against a ceiling of 14. An unreadable list is an unread list.
@@ -64,7 +64,7 @@ Gaps in what we watch:
 
 **Chat (12):** top — The Today screen carries 17 sections: The Daily Three, 🗳 Rip or Hold?, Biggest movers, Set the app up for you, Movers, Release radar… *[QUEUE]*
 
-*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 0 ACT NOW, 9 QUEUE, 8 WATCH, 25 filed without surfacing, 4 confirmations.*
+*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 0 ACT NOW, 9 QUEUE, 8 WATCH, 26 filed without surfacing, 4 confirmations.*
 ## The creator cheat code
 *Could somebody open this, hit record within two minutes, and sound like the most informed voice in the hobby without pausing to look anything up? Every pause is a cut.*
 - **a visual that runs itself** — 35 card images minted today. *The gap is that they are files in a repo. A creator needs them one tap from the angle they picked, not from a folder.*
@@ -76,16 +76,16 @@ Nothing unusual, or not enough history to tell — 5 days of tape so far. Anomal
 
 ## Where today's story goes
 - **X** — "Paldean Fates listings moved -66.7% while its print window closes."
-- **YouTube** — Rebel Clash Elite Trainer Box — "Sealed carries a 376.9% premium over the cost of its packs bought loose — the widest gap of that kind we track today."
+- **YouTube** — Journey Together Elite Trainer Box — "Sealed carries a 139.4% premium over the cost of its packs bought loose — the widest gap of that kind we track today."
 - **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 99.4."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
 
 ## Something is slipping
-- **unsaved** — 1 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
+- **unsaved** — 2 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
+- **unsaved** — 1 commit(s) exist locally and are not pushed. *A commit on one machine is not a backup. The repo is only the record once it is somewhere else.*
 - **ignored** — 6 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
 - **drift** — 6 script(s) are not referenced anywhere: backfill-artists.mjs, build-faq.mjs, collision-guard.mjs, discovery-sweep.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
-- **drift** — 46 JSON files in research/pulse. *A directory nobody can scan is a directory where something goes missing without being noticed.*
 
 ## Legal standing
 Nothing has tripped. Highest live risk: **Effort-based consideration in the berry system, combined with the first live draw.** — It is the only item that is both imminent and genuinely uncertain. The IP question is larger but not triggered until revenue; registration and tax thresholds are comfortably clear at current prize values.
@@ -115,13 +115,10 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 - **Mitsuhiro Arita drew Houndoom exactly once** — Mitsuhiro Arita has 525 cards. Exactly one is a Houndoom.
 
 ## What the agents cannot answer themselves
-8 open — 3 need eyes on a rendered page, 5 need a decision.
+5 open — 0 need eyes on a rendered page, 5 need a decision.
 - **NEEDS A HUMAN** [theme-scout] 14 Pokémon share the "-eon" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 7 Pokémon share the "ite" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 10 Pokémon share the "-ish" ending — a theme, or a coincidence of naming?
-- [designer] faq.html: 1 font sizes sit within 2px of a neighbour (16). Are those distinct steps or the same intent typed twice?
-- [listing-images] Does a want-list image actually read well at Discord thumbnail size? Nine cards plus prices plus a total is a lot in a 400px preview, and that is where a trade list is usually seen first.
-- [designer] build.html: 5 corner radii in use (6, 9, 12, 13, 16). Does the page read as one family of shapes, or several?
 
 ## The review — 5.4/10
 Real progress, and the gap between what is built and what is live is now the whole problem.

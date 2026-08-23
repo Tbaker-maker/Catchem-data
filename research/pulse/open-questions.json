@@ -325,7 +325,7 @@
    "who": "tyler",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-23",
-   "asked": 32,
+   "asked": 38,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -338,7 +338,7 @@
    "who": "tyler",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-23",
-   "asked": 10,
+   "asked": 16,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -351,7 +351,7 @@
    "who": "tyler",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-23",
-   "asked": 10,
+   "asked": 16,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -436,9 +436,9 @@
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-23",
    "asked": 5,
-   "answeredBy": null,
-   "answer": null,
-   "answeredOn": null
+   "answeredBy": "cc",
+   "answer": "A FINDING ABOUT THE CHECK, not the page. faq.html now uses 14px supporting and 16px body — 2px apart, so this still flags, but 14 to 16 is a 14.3% step and that DOES read as a step. The pairs I called noise elsewhere (13 to 14, 14 to 14.5) are 3-8%. The threshold is absolute where it should be proportional: 2px is a large step at 12px and an invisible one at 30px. Suggest the check flags a gap under roughly 12% of the smaller size instead of under 2px. I set this page to 14/16 deliberately and am leaving it — it is correct typographically and will keep tripping an absolute rule until the rule is proportional.",
+   "answeredOn": "2026-08-23"
   },
   {
    "id": "listing-images-23",
@@ -449,9 +449,9 @@
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-23",
    "asked": 1,
-   "answeredBy": null,
-   "answer": null,
-   "answeredOn": null
+   "answeredBy": "cc",
+   "answer": "TESTED, and the answer is half. Rendered a nine-card image and downscaled it to 400px — the ARTWORK survives: every card is identifiable, the colours carry, and the caption line is legible. The fine text does not. The want-list price font is 26px on a 2535px canvas, which is 4.1px at 400px wide — illegible, as are the year labels and the illustrator credit. So a nine-card want list reads at thumbnail size as 'nine cards' and not as 'which ones I need and what they cost', which is the working half of a working document. Recommend want/trade/sell intent caps at 4-6 cards, or scales the price text with card count rather than holding it at 26px. Verified by eye at 400px, not inferred.",
+   "answeredOn": "2026-08-23"
   },
   {
    "id": "designer-24",
@@ -470,9 +470,9 @@
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-23",
    "asked": 3,
-   "answeredBy": null,
-   "answer": null,
-   "answeredOn": null
+   "answeredBy": "cc",
+   "answer": "SEVERAL, and the split is the same shape as the-board. 12 and 13 are one radius written twice — indistinguishable at any real viewing distance. 6 and 9 are close enough to read as one small radius. 16 is a genuine step and reads as deliberate. So: three intended families (small, medium, large) expressed as five values. Collapse 6/9 to one small and 12/13 to one medium, keep 16. Answered by reading every border-radius rule in the generated file.",
+   "answeredOn": "2026-08-23"
   }
  ]
 }
