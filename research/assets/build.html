@@ -414,10 +414,33 @@ const STREAK_FILTERS = {
     test: c => HERO_RX.test(c.r || "") && c.a },
   "cheapest-up":   { label: "Cheapest first, working up", ordered: "price",
     test: c => HERO_RX.test(c.r || "") && c.p != null },
+  // WHAT THE CARD SAYS. Tyler posted Slakoth at 2am after seventeen hours of
+  // coding and its attack is called Take It Easy — neither of us knew, because
+  // nothing we held could search it. attackNames now rides in the index, so a
+  // filter can find the joke by READING the cards rather than by anybody
+  // listing Pokemon they think look tired. The word list is here in the open
+  // where it can be argued with, which is the same standard a named list is
+  // held to; the difference is that membership is derived, not asserted.
+  "says-rest": { label: "Cards that tell you to rest",
+    words: ["take it easy","sleep","nap","rest","yawn","dream","slack","snooze","doze","drowsy","lazy"],
+    test: c => Array.isArray(c.k) && c.k.some(a => ["take it easy","sleep","nap","rest","yawn","dream","slack","snooze","doze","drowsy","lazy"].some(w => String(a).toLowerCase().includes(w))) },
+  "says-hit": { label: "Cards that just hit things",
+    words: ["punch","kick","slam","smash","tackle","headbutt","bite","slash","crush","pound"],
+    test: c => Array.isArray(c.k) && c.k.some(a => ["punch","kick","slam","smash","tackle","headbutt","bite","slash","crush","pound"].some(w => String(a).toLowerCase().includes(w))) },
 };
 
 function startStreak(filterId, perDay){
-  streak = { filter: filterId, perDay: perDay, day: 0, used: [], started: new Date().toISOString().slice(0,10) };
+  // A SALT PER STREAK, not just the start date. The seed used to be
+  // started + day, and the comment beside it claimed two creators on the same
+  // filter would 'diverge immediately'. They did not diverge at all: same
+  // filter and same start date meant the same seed, and two creators got
+  // byte-identical series. Verified by running two fresh streaks on the same
+  // day — five days, same three cards each day, both times.
+  //
+  // The salt is drawn once and stored, so the series stays stable across
+  // reloads for its owner while differing from everybody else's.
+  const salt = Math.floor(Math.random() * 1e9).toString(36);
+  streak = { filter: filterId, perDay: perDay, day: 0, used: [], salt: salt, started: new Date().toISOString().slice(0,10) };
   saveStreak(); nextStreakDay();
 }
 
@@ -447,7 +470,7 @@ function nextStreakDay(){
     render();
     return;
   }
-  const seed = (streak.started + streak.day).split("").reduce((a,ch)=>((a<<5)-a+ch.charCodeAt(0))|0, 0);
+  const seed = (streak.started + (streak.salt || "") + streak.day).split("").reduce((a,ch)=>((a<<5)-a+ch.charCodeAt(0))|0, 0);
   const picked = [];
   for (let k = 0; k < streak.perDay; k++) {
     const i = Math.abs(seed + k * 7919) % pool.length;
