@@ -915,6 +915,27 @@ const CASES = [
       return { pass: true, why: "" };
     } },
 
+  // The editor shipped DEAD and nothing noticed. A generator emitting an inline
+  // script had an escaped quote resolve to a bare one, which terminated a JS
+  // string mid-attribute; the whole script failed to parse, so INDEX, add() and
+  // search() were undefined and the page did nothing. Every check we own passed:
+  // the file existed, it was the right size, the HTML was well-formed. Nothing
+  // asked whether the JavaScript inside it could run.
+  { guard: "Generated pages emit JavaScript that actually parses", detect: null,
+    fn: async () => {
+      const pages = ["research/assets/build.html", "research/assets/creators.html", "research/assets/faq.html"];
+      for (const p of pages) {
+        const html = await readFile(P(p), "utf-8").catch(() => null);
+        if (!html) continue;                       // not built in this checkout
+        for (const [, body] of html.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/g)) {
+          if (!body.trim()) continue;
+          try { new Function(body); }
+          catch (e) { return { pass: false, why: `${p} emits a script that does not parse: ${e.message}` }; }
+        }
+      }
+      return { pass: true, why: "" };
+    } },
+
   { guard: "Enrichment paces by minute units, not a flat delay", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/enrich-by-set.mjs"), "utf-8");

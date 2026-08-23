@@ -261,12 +261,22 @@ function renderTally(){
   // A total built from partial data must say so. Nine cards where two have no
   // price is not a page total, it is seven cards plus a guess.
   var html = "";
-  html += "<div><span class=\"k\">PAGE COST</span><span class=\"v\">" + money(total);
-  if (missing) html += " <span style=\"font-size:12px;color:var(--warn)\">+ " + missing + " unpriced</span>";
+  // SINGLE-QUOTED ATTRIBUTES, DELIBERATELY. These lines are emitted INTO an
+  // inline script, and the generator writes them from a template literal, where
+  // a backslash-quote is an escape that resolves to a bare quote. So the
+  // escaped class attribute here arrived in the output as a plain quoted
+  // attribute, sitting inside a double-quoted JS string — which terminated that
+  // string and left a stray identifier behind. The whole editor script failed
+  // to parse: INDEX, add() and search() were all undefined and the page did
+  // nothing at all. Single quotes need no escaping and cannot repeat it.
+  // (This comment avoids backticks for the same reason: it lives inside the
+  // template literal it describes.)
+  html += "<div><span class='k'>PAGE COST</span><span class='v'>" + money(total);
+  if (missing) html += " <span style='font-size:12px;color:var(--warn)'>+ " + missing + " unpriced</span>";
   html += "</span></div>";
-  html += "<div><span class=\"k\">YOU HAVE</span><span class=\"v have\">" + have.length + " / " + tray.length + "</span></div>";
-  html += "<div><span class=\"k\">STILL TO FIND</span><span class=\"v\">" + money(total - haveVal) + "</span></div>";
-  if (priced.length) html += "<div><span class=\"k\">DEAREST</span><span class=\"v\">" + money(Math.max.apply(null, priced.map(c => c.p))) + "</span></div>";
+  html += "<div><span class='k'>YOU HAVE</span><span class='v have'>" + have.length + " / " + tray.length + "</span></div>";
+  html += "<div><span class='k'>STILL TO FIND</span><span class='v'>" + money(total - haveVal) + "</span></div>";
+  if (priced.length) html += "<div><span class='k'>DEAREST</span><span class='v'>" + money(Math.max.apply(null, priced.map(c => c.p))) + "</span></div>";
   box.innerHTML = html;
 }
 
@@ -417,7 +427,14 @@ el("make").onclick = async () => {
   const L = LAYOUTS[tray.length]; if (!L) return;
   setStatus("composing…");
   const CW = 745, CH = 1040, GAP = 60, PAD = 90, CAP = tray.length <= 4 ? 70 : 0;
-  const LABEL = el("label").value.trim(), LABH = LABEL ? 110 : 0;
+  const LABEL = el("label").value.trim();
+  // Reserve height for the WRAPPED label, not one line of it. measureText needs
+  // a context we do not have yet, so estimate from character count at 52px bold
+  // (~28px per glyph across the usable width) and cap at the three lines the
+  // renderer will draw. Over-reserving costs blank pixels; under-reserving costs
+  // a caption printed through the footer.
+  const LABLINES = LABEL ? Math.min(3, Math.max(1, Math.ceil(LABEL.length / Math.floor((2535 - 160) / 28)))) : 0;
+  const LABH = LABEL ? 110 + (LABLINES - 1) * 62 : 0;
   const ROWS = Math.ceil(tray.length / L.cols);
   const W = PAD*2 + CW*L.cols + GAP*(L.cols-1);
   const H = PAD + (CH+CAP)*ROWS + GAP*(ROWS-1) + LABH + (fIntent === "post" ? 110 : 190);
@@ -440,7 +457,29 @@ el("make").onclick = async () => {
         g.fillText(tray[i].n + " · " + tray[i].y, x+CW/2, y+CH+46); }
     }
     if (LABEL){ g.fillStyle="#f4f5f8"; g.font="800 52px system-ui,sans-serif"; g.textAlign="center";
-      g.fillText(LABEL, W/2, H-150); }
+      // WRAP, DO NOT OVERFLOW. A 182-character label was drawn as one line and
+      // ran off BOTH edges — it started mid-word and ended mid-word, because
+      // fillText neither wraps nor clips, it just draws past the canvas. The
+      // label is the one field a creator controls, so it is the one most
+      // certain to be longer than anyone designing the layout expected.
+      // DOUBLE BACKSLASH. This string is written from a template literal, where
+      // \\s is not a recognised escape and collapses to a bare s — so a regex
+      // written here as one backslash arrived in the browser as /s+/ and split
+      // the label on the LETTER s. Every s vanished: "absolutely" rendered as
+      // "ab olutely". Same root cause as the quote bug above, one line later.
+      var maxW = W - 160, words = LABEL.split(/\\s+/), lines = [], cur = "";
+      for (var wi = 0; wi < words.length; wi++){
+        var trial = cur ? cur + " " + words[wi] : words[wi];
+        if (g.measureText(trial).width > maxW && cur){ lines.push(cur); cur = words[wi]; }
+        else cur = trial;
+      }
+      if (cur) lines.push(cur);
+      // Three lines is already a paragraph on a card; past that the label is
+      // doing the job the post's own text should do.
+      if (lines.length > 3){ lines = lines.slice(0,3); lines[2] = lines[2].replace(/\\s+\\S*$/, "") + "…"; }
+      for (var li = 0; li < lines.length; li++)
+        g.fillText(lines[li], W/2, H - 150 - (lines.length - 1 - li) * 62);
+    }
     // WANT LIST FRAME. A post wants a clean image; a want list is a WORKING
     // document. It gets held up at a table or pasted into a trade thread, so
     // it needs the price under each card and a total at the bottom - the two
