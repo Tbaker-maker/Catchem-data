@@ -520,6 +520,18 @@ const CASES = [
     },
     restore: async () => { await copyFile(TMP("nt-wp.bak"), P("research/pulse/pulse-feed.json")); } },
 
+  { guard: "Work verification catches a windowless figure", detect: "verify-work.mjs",
+    // Strip the asOf from a chipped price and the build must fail — that is the
+    // exact shape of error 18, which nearly went out as a post.
+    break: async () => {
+      await copyFile(P("research/pulse/pulse-feed.json"), TMP("nt-vw.bak"));
+      const f = JSON.parse(await readFile(P("research/pulse/pulse-feed.json"), "utf-8"));
+      if (f.dailyThree?.raw) { delete f.dailyThree.raw.asOf; delete f.dailyThree.raw.source; }
+      await writeFile(P("research/pulse/pulse-feed.json"), JSON.stringify(f));
+      return true;
+    },
+    restore: async () => { await copyFile(TMP("nt-vw.bak"), P("research/pulse/pulse-feed.json")); } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");

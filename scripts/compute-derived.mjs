@@ -885,6 +885,7 @@ const LENSES = [
         const L2 = Object.values(lifecycle).find(l=>l.setId && sp.products.some(pp=>pp.setId===l.setId && pp.set===pick.setName));
         const lifeBit = L2 ? ` Its set is ${L2.ageMonths} months old${L2.standardLegal?" and still Standard-legal":""}.` : "";
         rawPick = { name: pick.name, set: pick.setName, price: pick.priceMarket, chip:"READ", reason: "chase",
+          asOf: today, source: "TCGplayer market via pokemontcg.io",
           explain: `Widely treated as the card ${pick.setName} is priced around, at $${Math.round(pick.priceMarket).toLocaleString("en-US")} ungraded.${lifeBit}` };
       }
     }
@@ -910,7 +911,7 @@ const LENSES = [
           chip: "VERIFIED", reason: "graded",
           explain: g.read, simple: g.simple, basis: g.basis };
       })(),
-      shelf: shelfPick ? { name: shelfPick.name, listings: shelfPick.listings, prev: shelfPick.prev,
+      shelf: shelfPick ? { name: shelfPick.name, asOf: today, source: "eBay live listings, delivered totals", listings: shelfPick.listings, prev: shelfPick.prev,
         dPct: shelfPick.dPct, priceDPct: shelfPick.priceDPct, chip: "READ", reason: "shelf move",
         explain: `Listings moved ${shelfPick.prev} to ${shelfPick.listings} overnight. ${shelfPick.read.split(" — ")[0].charAt(0).toUpperCase() + shelfPick.read.split(" — ")[0].slice(1)}${shelfPick.priceDPct != null ? `, with asks ${shelfPick.priceDPct >= 0 ? "up" : "down"} ${Math.abs(shelfPick.priceDPct)}%` : ""}.` } : null,
       sealed: (() => {
@@ -925,7 +926,7 @@ const LENSES = [
         // now supplies whyChosen; explain carries the product's own measured
         // context instead of a cross-market comparison we cannot correct.
         return {
-          whyChosen: whyLine, lens: lensId, name: sealedPick.name, ebay: sealedPick.ebayAskMedian,
+          whyChosen: whyLine, lens: lensId, asOf: today, source: "eBay live listings, delivered totals", name: sealedPick.name, ebay: sealedPick.ebayAskMedian,
           listings: sealedPick.ebayListings, chip:"VERIFIED",
           reason: lensUsed && lensId === lensUsed.id ? lensUsed.label : "the day's clearest read on the sealed board",
           explain: `Asking $${(sealedPick.ebayAskMedian||0).toLocaleString("en-US")} across ${sealedPick.ebayListings} live listings.${life}` };

@@ -649,4 +649,5 @@ try { await import("./domain-plausibility.mjs"); } catch (e) { console.warn(`  â
 try { await import("./build-coverage.mjs"); } catch (e) { console.warn(`  âš  coverage page: ${e.message}`); }
 await import("./windowless-price-guard.mjs");
 await import("./content-sanity.mjs");
+await import("./verify-work.mjs");
 await import("./publish-assert.mjs");

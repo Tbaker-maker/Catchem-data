@@ -1014,3 +1014,33 @@ enumerate every path is a fix that ships the bug from somewhere else.**
 
 THE RULE: nothing reaches a reader through a path the guards do not cover. If
 I mint something by hand, it goes through the same gates or it does not go.
+
+## VERIFY MY WORK, NOT MY INTENT (Tyler, Aug 23 2026)
+"I would like an agent that verifies your work every time and catches any
+mistakes you make, because you clearly are making them."
+
+Earned. In one day: a windowless historical average published as a current
+price; a falsifier that pooled two cohorts a thesis explicitly contrasts and
+nearly retired a correct claim; a layout bug fixed with a label instead of a
+move; four checkers that read their own source; a rationing system built for a
+budget that was not scarce.
+
+scripts/verify-work.mjs runs LAST, on OUTPUT, and every rule in it is a class
+from our own error ledger rather than a generic quality check:
+- **windowless figure** (18) — a chipped price with no date, window or as-of.
+- **ungated publication** (18) — an artifact produced outside the pipeline,
+  which is how a wrong price reached a card.
+- **unsourced claim** (14) — a statement about the world with no source.
+- **unverified product claim** (13) — a registered guard nobody breaks.
+- **mismatched basis** (15) — a price from one venue beside a depth from
+  another with no label.
+
+WHAT IT WILL NOT DO: check my reasoning. It cannot tell whether a conclusion
+is sound, only whether the output carries what a defensible claim must carry.
+**What I meant to do is not evidence.**
+
+AND THE AUDIT IT FORCED: every published figure must now answer two questions
+in the data itself — where did this come from, and when was it true. All three
+Daily Three picks carry asOf and source. A reader who asks "is that current?"
+gets an answer in the payload rather than a promise on a methodology page they
+will never open.
