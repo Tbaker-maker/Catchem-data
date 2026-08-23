@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-23T22:23:49.082Z",
+  "generatedAt": "2026-08-23T22:33:15.567Z",
   "audited": "14 shipped surfaces, 35 minted cards",
   "principle": "A linter asks whether the CSS is valid. A design lead asks whether the page was DESIGNED. The tells of an undesigned page are countable: too many type sizes, too many near-identical greys, an accent used everywhere so it accents nothing.",
   "blindSpot": "It cannot SEE. It counts and measures. It cannot tell you a page is ugly, only that the choices behind it were not made deliberately.",
@@ -33,7 +33,7 @@
     {
       "surface": "build.html",
       "severity": "low",
-      "what": "6 odd-numbered spacing values: 11, 13, 17, 9, 15, 3",
+      "what": "7 odd-numbered spacing values: 11, 13, 17, 7, 9, 15, 3",
       "why": "Odd values usually mean nudging until it looked right rather than working from a scale. It is invisible individually and reads as sloppy in aggregate.",
       "fix": "Snap to a 4px rhythm."
     },

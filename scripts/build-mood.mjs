@@ -93,7 +93,16 @@ for (const m of MOODS) {
     // override the actual match.
     if (HERO.test(card.r ?? "")) score += 2;
     if ((card.p ?? 0) > 20) score += 1;
-    hits.push({ id, score, matched, name: card.n, set: card.s, year: card.y,
+    // WHY IT MATCHED, IN PLAIN WORDS. A field value dumped on screen reads like
+    // a query result; a sentence reads like the tool noticed something. The
+    // wording changes with WHERE the match was found, because an attack name is
+    // a printed title and flavour text is a description.
+    const inAttack = t.a.find(x => m.words.some(w => norm(x).includes(w)));
+    const why = inAttack
+      ? "Its attack is called " + String.fromCharCode(8220) + inAttack + String.fromCharCode(8221) + "."
+      : t.f ? "The card says: " + t.f.replace(/\s+/g, " ").slice(0, 96).replace(/\s\S*$/, "") + "…"
+      : null;
+    hits.push({ id, score, matched, why, name: card.n, set: card.s, year: card.y,
       artist: card.a, price: card.p ?? null,
       says: t.a.join(" · "), flavour: t.f ? t.f.slice(0, 120) : null });
   }

@@ -90,6 +90,11 @@ select:focus,input:focus{outline:none;border-color:var(--soft)}
 .idea:hover{border-color:var(--faint);transform:translateY(-1px)}
 .idea b{display:block;font:600 16.5px/1.35 var(--body);margin-bottom:4px}
 .idea i{font-style:normal;color:var(--faint);font:400 12.5px var(--mono);display:block}
+.moodcard{padding:12px 0;border-top:1px solid var(--line)}
+.moodcard:first-of-type{border-top:0;padding-top:6px}
+.mc-name{display:block;font:600 16px var(--body);color:var(--text)}
+.mc-meta{display:block;font:400 11.5px var(--mono);color:var(--faint);margin-top:2px;letter-spacing:.02em}
+.mc-why{display:block;font:300 15px var(--body);color:var(--soft);margin-top:7px;line-height:1.5}
 .idea .hook{color:var(--soft);font-size:14px;margin-top:9px}
 
 /* THE SIGNATURE: the binder page. Empty pockets show what still fits. */
@@ -156,6 +161,12 @@ summary:before{content:"→ ";color:var(--faint)}
   border-radius:9px;padding:9px 15px;font:400 13.5px var(--body);cursor:pointer}
 .pager button:disabled{opacity:.3;cursor:not-allowed}
 .pager input{width:70px;text-align:center;padding:8px;font:500 12.5px var(--mono)}
+.imgstatus{background:rgba(217,164,65,.1);border:1px solid rgba(217,164,65,.3);
+  border-radius:9px;padding:11px 14px;margin-bottom:12px;color:var(--warn);font:400 13px var(--body)}
+.hit.failed img{display:none}
+.hit.failed{background:rgba(217,164,65,.08);border:1px dashed rgba(217,164,65,.35)}
+.hit .failmsg{display:none;font:500 9.5px var(--mono);color:var(--warn);padding:16px 4px;line-height:1.5}
+.hit.failed .failmsg{display:block}
 .results{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:9px;
   max-height:290px;overflow-y:auto;padding:3px}
 .hit{cursor:pointer;text-align:center;border-radius:9px;padding:6px;transition:background .16s var(--ease)}
@@ -217,6 +228,7 @@ summary:before{content:"→ ";color:var(--faint)}
     <option>Rare Holo</option><option>Rare Secret</option><option>Rare Ultra</option></select>
   <input id="yr" placeholder="Year" inputmode="numeric">
 </div>
+<div class="imgstatus" id="imgstatus" hidden></div>
 <div class="results" id="res"></div>
 <div class="pager" id="pager"></div>
 </details>
@@ -249,7 +261,7 @@ not a Pokémon decision, and you can still use them.</div>
 <script>
 const THEMES = ${JSON.stringify(themes?.themes ?? [])};
 const SETS = ${JSON.stringify(sets)};
-const MOODS = ${JSON.stringify(Object.values((await J('data/moods.json'))?.moods ?? {}).map(m => ({ id: m.id, label: m.label, emoji: m.emoji, say: m.say, cards: (m.cards ?? []).slice(0, 24).map(c => ({ id: c.id, matched: c.matched })) })))};
+const MOODS = ${JSON.stringify(Object.values((await J('data/moods.json'))?.moods ?? {}).map(m => ({ id: m.id, label: m.label, emoji: m.emoji, say: m.say, cards: (m.cards ?? []).slice(0, 24).map(c => ({ id: c.id, matched: c.matched, why: c.why })) })))};
 const CARD_INDEX = ${JSON.stringify(index)};
 // Sourced facts, so the 'story' shape has something true to build on. Only
 // VERIFIED ones ship — an unsourced claim on a card image is the one mistake
@@ -388,7 +400,7 @@ function search(){
     renderPager(ranked.length, pages);
     el("res").innerHTML = showcase.map(c =>
       \`<div class="hit" onclick="add('\${c.i}')"><img src="\${imgUrl(c.i)}" alt="">
-        <b>\${c.n}</b><i>\${c.s} · \${c.y}</i><i>\${c.a}</i></div>\`).join("");
+        <span class=\"failmsg\"></span><b>\${c.n}</b><i>\${c.s} · \${c.y}</i><i>\${c.a}</i></div>\`).join("");
     return;
   }
   // PAGING. The whole index stays in memory — 1.7MB is nothing — and only the
@@ -403,7 +415,7 @@ function search(){
   renderPager(all.length, pages);
   el("res").innerHTML = hits.length ? hits.map(c =>
     \`<div class="hit" onclick="add('\${c.i}')"><img src="\${imgUrl(c.i)}" alt="">
-      <b>\${c.n}</b><i>\${c.s} · \${c.y}</i><i class="\${c.a ? "" : "nocred"}">\${c.a || "no credit recorded"}</i></div>\`).join("")
+      <span class=\"failmsg\"></span><b>\${c.n}</b><i>\${c.s} · \${c.y}</i><i class="\${c.a ? "" : "nocred"}">\${c.a || "no credit recorded"}</i></div>\`).join("")
     : suggestHtml(q);
 }
 ["q","rar","yr"].forEach(id => el(id).addEventListener("input", () => { resetPage(); search(); }));
@@ -751,11 +763,25 @@ function loadMood(id){
     d.onclick = () => loadMood(id);
     const b = document.createElement("b");
     b.textContent = m.emoji + " " + m.label;
-    const sub = document.createElement("i");
-    sub.textContent = picked.map(c => {
+    // ONE LINE PER CARD, each with its own reason. A run-on separated by dots
+    // is a field dump; a line per card with the reason under it is something
+    // somebody actually reads.
+    for (const c of picked) {
       const h = m.cards.find(x => x.id === c.i);
-      return c.n + " — " + (h ? h.matched : "");
-    }).join("  ·  ");
+      const row = document.createElement("div");
+      row.className = "moodcard";
+      const nm = document.createElement("span");
+      nm.className = "mc-name";
+      nm.textContent = c.n;
+      const meta = document.createElement("span");
+      meta.className = "mc-meta";
+      meta.textContent = c.s + " · " + c.y + " · " + (c.a || "artist not recorded");
+      const rz = document.createElement("span");
+      rz.className = "mc-why";
+      rz.textContent = h && h.why ? h.why : "";
+      row.appendChild(nm); row.appendChild(meta); row.appendChild(rz);
+      d.appendChild(row);
+    }
     const hk = document.createElement("div");
     hk.className = "hook";
     hk.textContent = "Matched on the words printed on the card. Click again for a different set.";
@@ -765,6 +791,29 @@ function loadMood(id){
   render();
 }
 window.loadMood = loadMood;
+
+// IMAGE FAILURES, COUNTED AND NAMED. A broken-image icon tells nobody anything,
+// and I have now guessed twice at why images fail on Tyler's machine from a
+// sandbox that cannot reach the image host. This turns "images aren't working"
+// into "34 of 36 failed, first was ecard2-149" — a thing somebody can act on.
+let imgFail = 0, imgTotal = 0, firstFail = null;
+function imgOk(){ imgTotal++; reportImages(); }
+function imgBad(node, id){
+  imgFail++; imgTotal++;
+  firstFail = firstFail || id;
+  const hit = node.closest ? node.closest(".hit") : null;
+  if (hit) { hit.classList.add("failed"); const m = hit.querySelector(".failmsg"); if (m) m.textContent = id; }
+  reportImages();
+}
+function reportImages(){
+  const box = el("imgstatus");
+  if (!box) return;
+  if (!imgFail) { box.hidden = true; return; }
+  box.hidden = false;
+  box.textContent = imgFail + " of " + imgTotal + " card images failed to load. First: " + firstFail +
+    ". Card art is hosted by pokemontcg.io — if everything failed, the host is unreachable from your browser.";
+}
+window.imgOk = imgOk; window.imgBad = imgBad;
 
 function render(){
   const L = LAYOUTS[tray.length];
