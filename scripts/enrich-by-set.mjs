@@ -25,7 +25,8 @@
 // today, which is precisely WHY enrichment has to search by name. After one
 // pass, every later refresh is a precise 3-credit lookup instead of a 60-credit
 // search — the first pass is what makes all the later ones cheap.
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile, writeFile, appendFile } from "node:fs/promises";
+import { existsSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { dirname, join } from "node:path";
 import { loadEnv, requireKey } from "./lib/load-env.mjs";
@@ -123,17 +124,58 @@ export async function planOnly() {
     .sort((a, b) => (b.top / b.cost) - (a.top / a.cost));
 }
 
+// ── DURABILITY: WRITE AS WE GO ─────────────────────────────────────────────
+// A run spent 5,637 credits over 21 sets, hit a 429, and lost every card,
+// because nothing was written until the very end. Two separate faults made that
+// total rather than partial:
+//
+//   1. The whole payload was held in memory for one JSON.stringify at the end.
+//      Node's max string length is 512 MB and these cards measure 197 KB each,
+//      so ANY run past ~2,650 cards throws RangeError at the write — after
+//      spending the credits. The 5,981-card plan could never have written at all.
+//   2. Nothing was flushed between sets, so a 429, a crash or a Ctrl-C threw
+//      away everything already paid for.
+//
+// Appending one JSON object per line fixes both: no giant string ever exists,
+// and the file on disk is always as complete as the credits spent. NDJSON also
+// reads back a line at a time, so nothing downstream needs the whole thing in
+// memory either.
+const RAW_NDJSON = "data/enrichment-raw.ndjson";
+const STATE = "data/enrichment-state.json";
+
+async function appendCards(rows) {
+  if (!rows.length) return;
+  await appendFile(join(ROOT, RAW_NDJSON), rows.map(c => JSON.stringify(c)).join("\n") + "\n");
+}
+
+async function writeState(st) {
+  await writeFile(join(ROOT, STATE), JSON.stringify(st, null, 1) + "\n");
+}
+
+// The 861 cards from the first run live in the old 166 MB single-object file.
+// Move them into the append-only file once, so there is exactly one raw format
+// and the resume logic has a single source of truth.
+async function migrateLegacy(byCard, haveSets) {
+  if (!byCard || !Object.keys(byCard).length) return;
+  if (existsSync(join(ROOT, RAW_NDJSON))) return;
+  const rows = Object.values(byCard);
+  await appendCards(rows);
+  await writeState({ migratedFrom: "data/enrichment-by-set.json", cards: rows.length, fetchedSets: [...haveSets] });
+  console.log(`migrated ${rows.length} cards from the legacy file into ${RAW_NDJSON}`);
+}
+
 // Which provider sets are already on disk. The first run predates the
 // fetchedSets field, so its 861 cards would be re-bought at ~3,000 credits —
 // 17% of a day's ceiling for data we already hold. Recover the list from the
 // set NAMES the cards carry: those are stable, unlike the numeric setId in card
 // payloads, which is not the id /cards accepts.
-async function heldSets(prior) {
+async function heldSets(prior, legacy) {
   if (prior?.fetchedSets) return new Set(prior.fetchedSets.map(String));
-  if (!prior?.byCard) return new Set();
+  const byCard = legacy?.byCard ?? prior?.byCard;
+  if (!byCard) return new Set();
   const map = await J("data/ppt-set-map.json").catch(() => null);
   const idByName = new Map(Object.values(map?.bySlug ?? {}).map(m => [m.pptName, String(m.pptSetId)]));
-  const names = new Set(Object.values(prior.byCard).map(c => c.setName).filter(Boolean));
+  const names = new Set(Object.values(byCard).map(c => c.setName).filter(Boolean));
   return new Set([...names].map(n => idByName.get(n)).filter(Boolean));
 }
 
@@ -154,11 +196,18 @@ async function main() {
   // spends the ceiling twice for the same data. Key on the setId we REQUESTED,
   // not the one that comes back — the provider answers with its own internal id,
   // so keying on the response matched nothing and re-bought everything.
-  const prior = await J("data/enrichment-by-set.json").catch(() => null);
-  const out = prior?.byCard ?? {};
-  const haveSets = await heldSets(prior);
+  // State first, legacy file only as a fallback. The state file is small and
+  // authoritative; the legacy 166 MB blob exists only until it is migrated.
+  const state = await J(STATE).catch(() => null);
+  const legacy = state ? null : await J("data/enrichment-by-set.json").catch(() => null);
+  const prior = state ?? legacy;
+  const haveSets = await heldSets(prior, legacy);
   if (!prior?.fetchedSets && haveSets.size) console.log(`recovered ${haveSets.size} already-fetched sets from the existing file`);
-  let spent = 0, calls = 0, cards = Object.keys(out).length;
+  await migrateLegacy(legacy?.byCard, haveSets);
+  // Only card IDS are kept in memory, never the payloads. Holding the payloads
+  // is what put 1.15 GB on the heap for a string that could never be written.
+  const seen = new Set();
+  let spent = 0, calls = 0, cards = prior?.cards ?? 0;
   let stoppedBecause = "plan exhausted";
   const todo = plan.filter(s => s.pptSetId && !haveSets.has(String(s.pptSetId)));
   console.log(`plan: ${plan.length} sets · ${haveSets.size} already held · ${todo.length} to fetch`);
@@ -182,7 +231,17 @@ async function main() {
       // the previous run threw away 8,865 unspent credits by treating the two
       // limits as one. A daily 429 genuinely ends the run: it clears at 00:00
       // UTC and nothing we do here shortens that.
-      if (d.limitType === "daily") { stoppedBecause = `429 (daily) — pool exhausted, resets 00:00 UTC`; break; }
+      // TRUST THE CLOCK, NOT THE LABEL. A real 429 arrived with
+      // limitType "unknown" and Retry-After 79,704s — 22 hours, plainly the
+      // daily reset — and this branch cheerfully went to sleep for 22 hours
+      // because the label did not say "daily". Any wait beyond a few minutes is
+      // a daily cap whatever it calls itself, and sleeping through it is never
+      // what anyone wants.
+      const longWait = d.retryAfter > 600;
+      if (d.limitType === "daily" || longWait) {
+        stoppedBecause = `429 (${d.limitType}${longWait ? `, retry-after ${(d.retryAfter / 3600).toFixed(1)}h` : ""}) — daily pool exhausted, resets 00:00 UTC`;
+        break;
+      }
       if (++attempt > 5) { stoppedBecause = `429 (${d.limitType}) survived ${attempt} waits`; break; }
       console.log(`  ⏸ 429 (${d.limitType}) — waiting ${d.retryAfter}s, then resuming`);
       spentWindow.length = 0; // the provider's window is evidently ahead of ours
@@ -195,9 +254,18 @@ async function main() {
     // this is what was actually billed.
     const billed = d.metadata?.apiCallsConsumed?.total ?? s.cost;
     spent += billed; calls++;
-    let got = 0;
-    for (const c of d.data || []) { if (!out[c.id || c.tcgPlayerId]) cards++; out[c.id || c.tcgPlayerId] = c; got++; }
+    const fresh = [];
+    for (const c of d.data || []) {
+      const id = String(c.id || c.tcgPlayerId);
+      if (!seen.has(id)) { seen.add(id); cards++; fresh.push(c); }
+    }
+    const got = (d.data || []).length;
     fetchedSets.add(String(s.pptSetId));
+    // FLUSH BEFORE THE NEXT CALL. Whatever happens next — 429, crash, Ctrl-C —
+    // this set is already paid for and already on disk.
+    await appendCards(fresh);
+    await writeState({ updatedAt: new Date().toISOString(), creditsSpentThisRun: spent,
+      calls, cards, fetchedSets: [...fetchedSets], historyDays: HISTORY_DAYS, stoppedBecause: "in progress" });
     console.log(`  ${s.setId.padEnd(12)}→${String(s.pptSetId).padEnd(7)} ${String(got).padStart(4)} cards · ${String(unitsFor(s.cards)).padStart(2)}u · billed ${String(billed).padStart(5)} · running ${spent.toLocaleString("en-US")}`);
 
     // Billed and empty. The first run did this 26 times without noticing.
@@ -208,11 +276,12 @@ async function main() {
       }
     } else emptyStreak = 0;
   }
-  await writeFile(join(ROOT, "data/enrichment-by-set.json"),
-    JSON.stringify({ generatedAt: new Date().toISOString(), creditsSpent: spent,
-      creditsSpentCumulative: (prior?.creditsSpentCumulative ?? prior?.creditsSpent ?? 0) + spent,
-      calls, cards, ceiling: CREDIT_CEILING, historyDays: HISTORY_DAYS, stoppedBecause,
-      fetchedSets: [...fetchedSets], byCard: out }, null, 1) + "\n");
+  // The cards are already on disk, one line at a time. This only records how
+  // the run ended — it is small, and it cannot fail on a string-length limit.
+  await writeState({ updatedAt: new Date().toISOString(), creditsSpentThisRun: spent,
+    creditsSpentCumulative: (prior?.creditsSpentCumulative ?? 0) + spent,
+    calls, cards, ceiling: CREDIT_CEILING, historyDays: HISTORY_DAYS, stoppedBecause,
+    fetchedSets: [...fetchedSets] });
   console.log(`\n✓ ${cards.toLocaleString("en-US")} cards · ${calls} calls · ${spent.toLocaleString("en-US")} credits of ${CREDIT_CEILING.toLocaleString("en-US")} · ${stoppedBecause}`);
 
   // Distil immediately. The raw file is gitignored and ~200 KB per card-set;
@@ -238,7 +307,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
       run += s.cost; sets++; cards += s.cards; top += s.top; units += unitsFor(s.cards);
     }
     const prior = await J("data/enrichment-by-set.json").catch(() => null);
-    const held = await heldSets(prior);
+    const held = await heldSets(await J(STATE).catch(() => null), prior);
     console.log(`DRY RUN — no calls made, no credits spent`);
     console.log(`  whole plan     : ${plan.length} sets · ${total.toLocaleString("en-US")} credits`);
     console.log(`  provider ids   : ${mapped.length} of ${plan.length} mapped` +

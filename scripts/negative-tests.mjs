@@ -780,6 +780,30 @@ const CASES = [
       return { pass: r, why: ".env is not ignored — a pasted key would be committable" };
     } },
 
+  // A run spent 5,637 credits over 21 sets and lost every card: nothing was
+  // written until the end, and the end was a single JSON.stringify of the whole
+  // payload — which at 197 KB/card cannot exist above ~2,650 cards, because
+  // Node's max string length is 512 MB. The run was unwritable before it began.
+  { guard: "Enrichment flushes each set to disk before the next call", detect: null,
+    fn: async () => {
+      const src = await readFile(P("scripts/enrich-by-set.mjs"), "utf-8");
+      // The whole-payload write must be gone.
+      if (/JSON\.stringify\(\{[^}]*byCard/s.test(src) || /byCard:\s*out/.test(src))
+        return { pass: false, why: "the whole payload is stringified in one go — RangeError above ~2,650 cards, after the credits are spent" };
+      if (!/appendFile/.test(src)) return { pass: false, why: "no append path — a 429 or crash loses everything already paid for" };
+      // The append must happen INSIDE the per-set loop, not after it.
+      const loop = src.slice(src.indexOf("for (const s of todo)"));
+      const flush = loop.indexOf("appendCards(");
+      const loopEnd = loop.indexOf("\n  }\n");
+      if (flush < 0 || (loopEnd > 0 && flush > loopEnd))
+        return { pass: false, why: "cards are appended only after the loop — an interrupted run still loses paid-for sets" };
+      // And prove the format actually round-trips.
+      const { distil } = await import(pathToFileURL(P("scripts/distil-enrichment.mjs")).href + `?t=${Date.now()}`);
+      const out = await distil().catch(() => null);
+      return { pass: !!out && out.cardCount > 0,
+        why: "the distiller cannot read the append-only format back" };
+    } },
+
   // Pacing is priced in minute-UNITS, not calls: a set costs min(30, ceil(n/10))
   // of 60 per minute. The first run paced a flat 1,000ms per call, overran the
   // budget three times over, and took a 429 with 8,865 credits unspent.

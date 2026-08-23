@@ -14,6 +14,8 @@
 // day-by-day series away. If a thesis later needs the raw series, the raw file
 // regenerates in one run.
 import { readFile, writeFile } from "node:fs/promises";
+import { createReadStream, existsSync } from "node:fs";
+import { createInterface } from "node:readline";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { dirname, join } from "node:path";
 
@@ -42,10 +44,32 @@ function ret(series, days, tol = 0) {
   return { pct: Math.round(((last.market / then.market) - 1) * 1000) / 10, days: span };
 }
 
-export async function distil() {
+// Read the raw cards, whichever form they are in. The append-only NDJSON is the
+// current one; the single 166 MB object is the legacy that could not be written
+// past ~2,650 cards. Streaming line-by-line means the distiller never holds the
+// whole payload, which is the same limit that killed the writer.
+async function* rawCards() {
+  const nd = join(ROOT, "data/enrichment-raw.ndjson");
+  if (existsSync(nd)) {
+    const rl = createInterface({ input: createReadStream(nd, "utf-8"), crlfDelay: Infinity });
+    for await (const line of rl) {
+      if (!line.trim()) continue;
+      try { yield JSON.parse(line); } catch { /* a torn final line from a killed run */ }
+    }
+    return;
+  }
   const raw = JSON.parse(await readFile(RAW, "utf-8"));
+  for (const c of Object.values(raw.byCard || {})) yield c;
+}
+
+export async function distil() {
   const cards = [];
-  for (const [id, c] of Object.entries(raw.byCard || {})) {
+  const byId = new Set();
+  for await (const c of rawCards()) {
+    const id = String(c.id || c.tcgPlayerId);
+    if (byId.has(id)) continue;      // a resumed run can re-append a set
+    byId.add(id);
+    {
     const px = c.prices || {};
     const nm = c.priceHistory?.conditions?.["Near Mint"]?.history;
     const vol30 = Array.isArray(nm)
@@ -74,13 +98,17 @@ export async function distil() {
       })(),
       ebaySold: c.ebay?.salesByGrade ?? null,
     });
+    }
   }
+  const state = await readFile(join(ROOT, "data/enrichment-state.json"), "utf-8")
+    .then(JSON.parse).catch(() => null);
   return { generatedAt: new Date().toISOString(),
-    source: "distilled from data/enrichment-by-set.json (raw is gitignored, regenerable)",
-    creditsSpent: raw.creditsSpent ?? null, cardCount: cards.length, cards };
+    source: "distilled from the raw enrichment payload (gitignored, regenerable)",
+    creditsSpent: state?.creditsSpentCumulative ?? state?.creditsSpentThisRun ?? null,
+    cardCount: cards.length, cards };
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const out = await distil();
   const path = join(ROOT, "data/enrichment-distilled.json");
   await writeFile(path, JSON.stringify(out, null, 1) + "\n");
