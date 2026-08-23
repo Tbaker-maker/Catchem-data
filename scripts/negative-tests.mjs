@@ -678,6 +678,23 @@ const CASES = [
     },
     restore: async () => { await copyFile(TMP("nt-pm.bak"), P("data/guard-blindspots.json")); } },
 
+  { guard: "The tools stay free — no paywall language", detect: null,
+    // FREE FOREVER went out on a public page during a traffic spike. This fails
+    // if paywall language ever reaches a shipped surface, because the cheapest
+    // way to lose an early community is to charge them for the thing they were
+    // promised.
+    fn: async () => {
+      const { readdir } = await import("node:fs/promises");
+      const files = (await readdir(P("research/assets"))).filter(f => f.endsWith(".html"));
+      const bad = [];
+      for (const f of files) {
+        const src = await readFile(P("research/assets/" + f), "utf-8").catch(() => "");
+        if (/upgrade to pro|start your subscription|per month|paywall|premium plan/i.test(src)) bad.push(f);
+      }
+      return { pass: bad.length === 0,
+        why: bad.length ? "paywall language appeared in: " + bad.join(", ") + " — we promised FREE FOREVER in public on 2026-08-23" : "" };
+    } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");

@@ -117,8 +117,8 @@ button:active{opacity:.85}
   <h1>Catch'em<em>.</em></h1>
   <p class="kicker">Creation editor</p>
   <p class="lede"><b>Collectors. Content creators. Flippers.</b> Plan a binder before you buy it, turn cards into posts worth reading, and see what a page is actually worth — across every English card ever printed.<br><br>Free. <b>Built to make you better.</b></p>
-  <a class="cta" href="#join">Get on the closed trial
-    <span class="small">Free · early access before anyone else</span></a>
+  <a class="cta" href="#join">Get into the closed beta
+    <span class="small">Free forever · early access before anyone else</span></a>
   <p class="note">Not open to the public yet. Finishing it properly first.</p>
 </div>
 
@@ -153,14 +153,14 @@ button:active{opacity:.85}
   <p>177 sealed products, repriced every single day, with the workings shown. Where a number is soft we say so. Where we get one wrong we publish the correction — dated, permanent, on a page anyone can read.<br><br><b>Nobody else in this hobby shows you their mistakes.</b></p></div>
 
 <div class="form" id="join">
-  <h2>Get on the closed trial</h2>
-  <p class="sub">A small group gets in first. One email when it opens, and nothing else.</p>
+  <h2>Get into the closed beta</h2>
+  <p class="sub">A small group gets in first. One email when it opens, and nothing else. <b>The tools stay free.</b></p>
   <form id="wl" action="https://formspree.io/f/xgorlypa" method="POST">
     <input type="email" name="email" placeholder="you@email.com" required autocomplete="email" inputmode="email">
     <input type="hidden" name="source" value="landing-2026-08">
     <button type="submit">Request access</button>
   </form>
-  <div class="ok" id="ok">You're in. We'll email you when the trial opens.</div>
+  <div class="ok" id="ok">You're in. We'll email you when the beta opens.</div>
   <p class="priv">One address, nothing else. We will not sell it, and you can leave in one click.</p>
 </div>
 
