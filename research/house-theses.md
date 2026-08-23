@@ -1237,3 +1237,46 @@ WORTH KNOWING, from the same data: Arita has drawn Charizard SIX times —
 Base 1999, Base Set 2 2000, Stormfront 2008, Evolutions 2016, and twice in
 2019. Three of those side by side is the same illustrator on the same Pokémon
 across two decades, and it may be a stronger post than any pairing.
+
+## WHAT A GOOD POST LOOKS LIKE (Tyler, Aug 23 2026)
+One art post landed after five that did not. It is now the specification.
+
+**The image:** Base Set Charizard beside 151 Blastoise ex. Same illustrator,
+twenty-four years apart, both hero cards, both Pokémon nobody needs
+introduced. Identical size, plain captions, one label.
+
+**Tyler's copy, in full:**
+> "It's wild to think the original Charizard artist is still making cards to
+> this day"
+> "& the fact they let him draw Blastoise 24 years later"
+
+WHAT THAT COPY IS NOT, and every absence is deliberate: no numbers. No hedging.
+No chip. No jargon. Two short conversational lines with an ampersand in them.
+**He did not use the caption I wrote — his was warmer.**
+
+THE LESSON I KEEP RELEARNING: our DATA voice and our SOCIAL voice are different
+instruments. The data voice is precise, hedged and chipped because a number
+that misleads is a broken promise. The social voice is a person talking, and a
+hedge in it reads as a lack of conviction. Both are correct in their place, and
+using one where the other belongs is how a post ends up sounding like a
+prospectus.
+
+**THE IMAGE CARRIES THE CLAIM. THE TEXT CARRIES THE FEELING.** Two lines of
+copy did the whole job because the picture had already made the argument. That
+is why an art post with prices on it fails — the prices are the image trying
+to do the text's job.
+
+WHAT MADE THE PAIRING WORK, ranked by how much each mattered:
+1. **Both cards wanted.** A hero beside a common is the Keldeo mistake, which
+   makes a post underwhelming rather than wrong.
+2. **A gap long enough to surprise.** Twenty-four years is a story; two is a
+   coincidence.
+3. **A subject people already love.** Charizard and Blastoise need no
+   introduction; an obscure Pokémon needs a paragraph, and a paragraph is what
+   an image post exists to avoid.
+4. **One human behind both.** The hook is that a person did this twice, decades
+   apart, and somebody let them.
+
+scripts/pairing-finder.mjs scores candidates against exactly those four. Run
+against the catalogue it put the winning post FIRST at 103 points, unprompted,
+which is the closest thing to a validated model we have.

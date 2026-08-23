@@ -1,26 +1,21 @@
 {
- "note": "REASONING, MADE CHECKABLE. The work verifier checks output and cannot check reasoning — it can tell whether a figure carries a date, not whether a conclusion was sound. This closes that, not by inspecting the thinking but by recording what the thinking PREDICTED and checking later whether it held.",
-
- "law": "Every consequential decision records: what was chosen, what was REJECTED and why, and the falsifiable prediction it implies. A decision with no prediction cannot be graded, and an ungradable decision teaches nothing — it is an opinion with a timestamp.",
-
+ "note": "REASONING, MADE CHECKABLE. The work verifier checks output and cannot check reasoning \u2014 it can tell whether a figure carries a date, not whether a conclusion was sound. This closes that, not by inspecting the thinking but by recording what the thinking PREDICTED and checking later whether it held.",
+ "law": "Every consequential decision records: what was chosen, what was REJECTED and why, and the falsifiable prediction it implies. A decision with no prediction cannot be graded, and an ungradable decision teaches nothing \u2014 it is an opinion with a timestamp.",
  "whyThisWorks": "You cannot audit a chain of thought after the fact; the reasoner will reconstruct a tidier version than the one they had. But a prediction made in advance is fixed, and reality grades it without argument. Over a hundred decisions this produces something no amount of introspection could: a measured hit rate per KIND of decision, which says where the judgment is reliable and where it is not.",
-
  "costNote": "Roughly 500 bytes each. Ten thousand decisions is about 1 MB in git against a 77 MB repo. Space is not a consideration and should never be the reason to record less.",
-
  "grades": {
   "HELD": "the prediction came true",
   "FAILED": "it did not, and the decision was wrong",
-  "UNTESTABLE": "the prediction turned out not to be checkable — a fault in how it was written, and worth recording as such",
+  "UNTESTABLE": "the prediction turned out not to be checkable \u2014 a fault in how it was written, and worth recording as such",
   "PENDING": "not yet due"
  },
-
  "decisions": [
   {
    "id": "2026-08-23-spread-retire",
    "date": "2026-08-23",
    "decision": "Retire the eBay-vs-TCGplayer Spread from headline selection, keeping it as a labelled stat.",
    "rejected": "Keep it with a permanent caveat on every appearance.",
-   "reasoning": "The bias is permanent and unmeasurable — our eBay figure includes shipping, TCGplayer's never does, and no source at any tier closes it. A number needing a caveat every time it appears is doing more explaining than working.",
+   "reasoning": "The bias is permanent and unmeasurable \u2014 our eBay figure includes shipping, TCGplayer's never does, and no source at any tier closes it. A number needing a caveat every time it appears is doing more explaining than working.",
    "predicts": "No instrument built on the Spread will be missed. If within 60 days we find ourselves wanting it back for a real question, the retirement was wrong.",
    "checkAfter": "2026-10-22",
    "grade": "PENDING",
@@ -42,7 +37,7 @@
    "date": "2026-08-23",
    "decision": "Withdraw every graded price until the provider exposes a date range on sold aggregates.",
    "rejected": "Keep publishing them with a 'historical average' label.",
-   "reasoning": "A label does not make a windowless median comparable to a current raw price. The subtraction itself is invalid, not just the presentation — and this one nearly reached a reader.",
+   "reasoning": "A label does not make a windowless median comparable to a current raw price. The subtraction itself is invalid, not just the presentation \u2014 and this one nearly reached a reader.",
    "predicts": "No graded claim will be publishable until a windowed source exists. If we find a defensible way to publish one WITHOUT a window, the withdrawal was over-cautious.",
    "checkAfter": "2026-11-23",
    "grade": "PENDING",
@@ -58,6 +53,17 @@
    "checkAfter": "2026-11-23",
    "grade": "PENDING",
    "decidedBy": "chat"
+  },
+  {
+   "id": "2026-08-23-art-post-spec",
+   "date": "2026-08-23",
+   "decision": "Treat the Charizard/Blastoise post as the specification for art content: same artist, both hero cards, a gap long enough to surprise, household Pokemon.",
+   "rejected": "Keep generating art posts by recency or by whatever the data made easy.",
+   "reasoning": "One post landed after five failed. The difference was that both cards were wanted and the gap was long enough to be a story. Recency produced a common card and an underwhelming post.",
+   "predicts": "The next three art posts built to this spec will each get more engagement than the Keldeo-style recency pick would have. If a recency pick outperforms a spec pick, the model is wrong.",
+   "checkAfter": "2026-09-23",
+   "grade": "PENDING",
+   "decidedBy": "chat, from Tyler's post"
   }
  ]
 }
