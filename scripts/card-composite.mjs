@@ -205,7 +205,7 @@ if (!ids.length) {
     console.error(`  which reads as a mistake rather than a choice.\n`);
     process.exitCode = 1;
   } else {
-    console.log(`  layout: ${LAY.name} - ${LAY.w}x${LAY.h}, ${LAY.ratio}:1, ${LAY.timeline}`);
+    console.log();
   }
 
   const isGrid = LAY ? LAY.rows > 1 : (gridSpec && cards.length > 3);
@@ -232,7 +232,9 @@ if (!ids.length) {
   const GAP = L_GAP, PAD = L_PAD;
   const CARD_CAP = 0;
   const CAPTION = L_CAP;
-  const W = PAD * 2 + CARD_W * perRow + GAP * (perRow - 1);
+  // THE TABLE OWNS THE FRAME. Recomputing here dropped the widening that keeps
+  // a 2x2 from cropping — the table said 2056 and this drew 1730.
+  const W = LAY ? LAY.W : (PAD * 2 + CARD_W * perRow + GAP * (perRow - 1));
   const baseH = PAD * 2 + CARD_H * rowCount + GAP * (rowCount - 1) + CAPTION + CARD_CAP * rowCount;
 
   const sameArtist = new Set(cards.map(c => c.artist)).size === 1 ? cards[0].artist : null;

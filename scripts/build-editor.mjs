@@ -244,7 +244,7 @@ const CARD_INDEX = ${JSON.stringify(index)};
 // VERIFIED ones ship — an unsourced claim on a card image is the one mistake
 // this whole project exists to avoid.
 const FACTS = ${JSON.stringify((await (async () => { try { return (JSON.parse(await readFile(join(ROOT, 'data/knowledge.json'), 'utf-8')).facts ?? []).filter(f => f.confidence === 'VERIFIED').map(f => ({ id: f.id, claim: f.claim })); } catch { return []; } })()))};
-const LAYOUTS = ${JSON.stringify(Object.fromEntries(Object.entries(LAYOUTS).map(([k, v]) => [k, { cols: v.cols, cardW: v.cardW, name: v.name }])))};
+const LAYOUTS = ${JSON.stringify(LAYOUTS)};
 const SUPPORTED = Object.keys(LAYOUTS).map(Number);
 let INDEX = [], tray = [], blob = null;
 
@@ -948,9 +948,13 @@ el("make").onclick = async () => {
   const LABLINES = LABEL ? Math.min(3, Math.max(1, Math.ceil(LABEL.length / Math.floor((2535 - 160) / 28)))) : 0;
   const LABH = LABEL ? 110 + (LABLINES - 1) * 62 : 0;
   const ROWS = Math.ceil(tray.length / L.cols);
-  const W = PAD*2 + CW*L.cols + GAP*(L.cols-1);
+  // THE TABLE OWNS THE FRAME. This used to recompute the width from the column
+  // count, which threw away the WIDENING that keeps a 2x2 from cropping on X —
+  // the table said 2056 and the renderer drew 1730. A table is only a source of
+  // truth if the thing downstream reads it.
+  const W = L.W;
   const SLAB_EXTRA = fSlab ? CH * 0.17 + CW * 0.18 : 0;
-  const H = PAD + (CH+CAP+SLAB_EXTRA)*ROWS + GAP*(ROWS-1) + LABH + (fIntent === "post" ? 110 : 190);
+  const H = L.H + SLAB_EXTRA * ROWS + (LABEL ? LABH : 0);
   const cv = el("cv"); cv.width = W; cv.height = H;
   const g = cv.getContext("2d");
   g.fillStyle = "#070910"; g.fillRect(0,0,W,H);
@@ -964,7 +968,10 @@ el("make").onclick = async () => {
           im.onload=()=>res(im); im.onerror=()=>rej(); im.src=r; }); break; }catch{}
       }
       if (!img) throw new Error("could not load " + tray[i].n);
-      const x = PAD + (i % L.cols)*(CW+GAP), y = PAD + Math.floor(i/L.cols)*(CH+CAP+GAP);
+      // Centre the grid inside the widened frame, or a padded layout sits hard left.
+      const gridW = CW*L.cols + GAP*(L.cols-1);
+      const originX = Math.round((W - gridW) / 2);
+      const x = originX + (i % L.cols)*(CW+GAP), y = PAD + Math.floor(i/L.cols)*(CH+CAP+GAP);
       drawSlab(g, img, x, y, CW, CH, tray[i]);
       if (CAP){ g.fillStyle="#8a93a8"; g.font="28px system-ui,sans-serif"; g.textAlign="center";
         g.fillText(tray[i].n + " · " + tray[i].y, x+CW/2, y+CH+46); }
