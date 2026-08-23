@@ -35,13 +35,16 @@ else {
 
   // JUDGMENT, STORED OPENLY. These are lists a person can disagree with, which
   // is the point — an adjective in a sentence cannot be argued with, a list can.
-  const LINES = {
-    "The Eevee line": ["Eevee", "Vaporeon", "Jolteon", "Flareon", "Espeon", "Umbreon", "Leafeon", "Glaceon", "Sylveon"],
-    "The Kanto starters": ["Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon", "Charizard", "Squirtle", "Wartortle", "Blastoise"],
-    "The legendary birds": ["Articuno", "Zapdos", "Moltres"],
-    "The Lake guardians": ["Uxie", "Mesprit", "Azelf"],
-    "The weather trio": ["Kyogre", "Groudon", "Rayquaza"],
-  };
+  // ONE SOURCE OF TRUTH. This used to hold its own copy of the lists while
+  // data/themes.json held the registry - so a theme added to the registry
+  // generated nothing, and the registry looked full while doing no work. Same
+  // shape as the layout table that was computed and then ignored.
+  const themeReg = await J("data/themes.json");
+  const LINES = Object.fromEntries((themeReg?.themes ?? [])
+    .filter(x => x.kind === "named list" && (x.members ?? []).length)
+    .map(x => [x.name, x.members]));
+  const HOOKS = Object.fromEntries((themeReg?.themes ?? []).map(x => [x.name, x.hook]));
+
 
   const formulas = [];
   const F = (kind, title, basis, cardIds, why, angle) =>
@@ -61,7 +64,7 @@ else {
       F("one artist, one family", `${artist} drew ${distinct.size} of ${lineName}`,
         `artist field + a named list of ${members.length} Pokémon`, pick.map(c => c.id),
         `${distinct.size} members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.`,
-        `One artist. ${distinct.size} of ${lineName.toLowerCase()}.`);
+        (HOOKS[lineName] ? `${artist} drew ${distinct.size} of them. ${HOOKS[lineName]}` : `One artist. ${distinct.size} of ${lineName.toLowerCase()}.`));
     }
   }
 

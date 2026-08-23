@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-23T07:08:38.206Z",
+  "generatedAt": "2026-08-23T07:16:14.237Z",
   "antiSlopRule": "A formula must be derivable from a field we hold: name, artist, setId, rarity, releaseDate, price. Where a theme needs judgment, that judgment is a NAMED LIST stored openly and arguable — never an adjective smuggled into a sentence. 'Cute' is not in the data; the nine Eeveelutions are.",
   "fieldsUsed": [
     "name",
@@ -11,53 +11,267 @@
     "price"
   ],
   "judgmentLists": {
-    "The Eevee line": [
-      "Eevee",
-      "Vaporeon",
-      "Jolteon",
-      "Flareon",
-      "Espeon",
-      "Umbreon",
-      "Leafeon",
-      "Glaceon",
-      "Sylveon"
+    "Pokémon that are food": [
+      "Vanillite",
+      "Vanilluxe",
+      "Alcremie",
+      "Applin",
+      "Appletun",
+      "Slurpuff",
+      "Swirlix",
+      "Cherubi",
+      "Combee",
+      "Tropius",
+      "Milcery",
+      "Fidough",
+      "Dachsbun",
+      "Sinistea",
+      "Polteageist",
+      "Bounsweet",
+      "Steenee",
+      "Tsareena"
     ],
-    "The Kanto starters": [
+    "The baby Pokémon": [
+      "Pichu",
+      "Cleffa",
+      "Igglybuff",
+      "Togepi",
+      "Tyrogue",
+      "Smoochum",
+      "Elekid",
+      "Magby",
+      "Azurill",
+      "Wynaut",
+      "Budew",
+      "Chingling",
+      "Bonsly",
+      "Happiny",
+      "Munchlax",
+      "Riolu",
+      "Mantyke"
+    ],
+    "Ghost-type nightmares": [
+      "Gengar",
+      "Mimikyu",
+      "Dusknoir",
+      "Chandelure",
+      "Drifloon",
+      "Banette",
+      "Spiritomb",
+      "Froslass",
+      "Gholdengo"
+    ],
+    "Pokémon caught napping": [
+      "Snorlax",
+      "Komala",
+      "Jigglypuff",
+      "Drowzee",
+      "Hypno",
+      "Musharna",
+      "Munna"
+    ],
+    "The pseudo-legendaries": [
+      "Dragonite",
+      "Tyranitar",
+      "Salamence",
+      "Metagross",
+      "Garchomp",
+      "Hydreigon",
+      "Goodra",
+      "Kommo-o",
+      "Dragapult",
+      "Baxcalibur"
+    ],
+    "The mythicals": [
+      "Mew",
+      "Celebi",
+      "Jirachi",
+      "Deoxys",
+      "Manaphy",
+      "Darkrai",
+      "Shaymin",
+      "Arceus",
+      "Victini",
+      "Keldeo",
+      "Meloetta",
+      "Genesect",
+      "Diancie",
+      "Hoopa",
+      "Volcanion",
+      "Magearna",
+      "Marshadow",
+      "Zeraora",
+      "Melmetal",
+      "Zarude"
+    ],
+    "Revived from fossils": [
+      "Omanyte",
+      "Omastar",
+      "Kabuto",
+      "Kabutops",
+      "Aerodactyl",
+      "Lileep",
+      "Cradily",
+      "Anorith",
+      "Armaldo",
+      "Cranidos",
+      "Rampardos",
+      "Shieldon",
+      "Bastiodon",
+      "Tirtouga",
+      "Carracosta",
+      "Archen",
+      "Archeops",
+      "Tyrunt",
+      "Tyrantrum",
+      "Amaura",
+      "Aurorus"
+    ],
+    "Cat Pokémon": [
+      "Meowth",
+      "Persian",
+      "Espeon",
+      "Litten",
+      "Torracat",
+      "Incineroar",
+      "Skitty",
+      "Delcatty",
+      "Purrloin",
+      "Liepard",
+      "Litleo",
+      "Pyroar",
+      "Sprigatito",
+      "Floragato",
+      "Meowscarada"
+    ],
+    "Dog Pokémon": [
+      "Growlithe",
+      "Arcanine",
+      "Houndour",
+      "Houndoom",
+      "Poochyena",
+      "Mightyena",
+      "Electrike",
+      "Manectric",
+      "Lillipup",
+      "Herdier",
+      "Stoutland",
+      "Rockruff",
+      "Lycanroc",
+      "Fidough",
+      "Dachsbun"
+    ],
+    "The regional birds": [
+      "Pidgey",
+      "Pidgeot",
+      "Spearow",
+      "Fearow",
+      "Hoothoot",
+      "Noctowl",
+      "Taillow",
+      "Swellow",
+      "Starly",
+      "Staraptor",
+      "Pidove",
+      "Unfezant",
+      "Fletchling",
+      "Talonflame",
+      "Rookidee",
+      "Corviknight"
+    ],
+    "Ice types": [
+      "Articuno",
+      "Lapras",
+      "Glaceon",
+      "Froslass",
+      "Weavile",
+      "Mamoswine",
+      "Cryogonal",
+      "Beartic",
+      "Vanilluxe",
+      "Baxcalibur",
+      "Alolan"
+    ],
+    "The starters": [
       "Bulbasaur",
-      "Ivysaur",
-      "Venusaur",
       "Charmander",
-      "Charmeleon",
-      "Charizard",
+      "Squirtle",
+      "Chikorita",
+      "Cyndaquil",
+      "Totodile",
+      "Treecko",
+      "Torchic",
+      "Mudkip",
+      "Turtwig",
+      "Chimchar",
+      "Piplup",
+      "Snivy",
+      "Tepig",
+      "Oshawott",
+      "Chespin",
+      "Fennekin",
+      "Froakie",
+      "Rowlet",
+      "Litten",
+      "Popplio",
+      "Grookey",
+      "Scorbunny",
+      "Sobble",
+      "Sprigatito",
+      "Fuecoco",
+      "Quaxly"
+    ],
+    "Dragon types": [
+      "Dratini",
+      "Dragonair",
+      "Dragonite",
+      "Kingdra",
+      "Vibrava",
+      "Flygon",
+      "Altaria",
+      "Salamence",
+      "Latias",
+      "Latios",
+      "Rayquaza",
+      "Garchomp",
+      "Hydreigon",
+      "Haxorus",
+      "Goodra",
+      "Noivern",
+      "Dragapult",
+      "Duraludon",
+      "Regidrago",
+      "Baxcalibur"
+    ],
+    "Sun and water": [
+      "Lapras",
+      "Vaporeon",
+      "Blastoise",
+      "Wailord",
+      "Sharpedo",
+      "Corsola",
+      "Krabby",
+      "Kingler",
+      "Staryu",
+      "Starmie",
+      "Psyduck",
+      "Slowpoke",
       "Squirtle",
       "Wartortle",
-      "Blastoise"
+      "Dewgong",
+      "Seel"
     ],
-    "The legendary birds": [
-      "Articuno",
-      "Zapdos",
-      "Moltres"
-    ],
-    "The Lake guardians": [
-      "Uxie",
-      "Mesprit",
-      "Azelf"
-    ],
-    "The weather trio": [
-      "Kyogre",
-      "Groudon",
-      "Rayquaza"
+    "Mega Evolutions": [
+      "Mega"
     ]
   },
   "kinds": {
     "binder page": 8,
-    "three rows of three": 2,
     "the spread": 8,
     "the half page": 8,
     "one artist, one family": 8,
     "one Pokémon, many hands": 8,
     "one set, one hand": 8,
-    "the trio": 3,
     "the debut": 8,
     "the pair": 8,
     "the battle": 8,
@@ -216,44 +430,6 @@
       "count": 9,
       "why": "A binder page is three by three, so this is a shape a collector recognises before reading anything. Framed as a selection, not a ranking - you are invited to disagree.",
       "angle": "Nine by one artist. Which one is going in the sleeve first?"
-    },
-    {
-      "kind": "three rows of three",
-      "title": "The legendary birds: 1999 vs 2012 vs 2022",
-      "basis": "name + releaseDate + rarity, three complete sets",
-      "cards": [
-        "base3-2",
-        "base3-15",
-        "base3-12",
-        "bw4-27",
-        "bw4-41",
-        "bw4-14",
-        "swsh12-36",
-        "pgo-29",
-        "pgo-12"
-      ],
-      "count": 9,
-      "why": "Three eras of the same trio, nine cards, one question. It asks rather than tells, which is what gets a reply instead of a scroll.",
-      "angle": "Which row is the best legendary birds? 1999, 2012, 2022."
-    },
-    {
-      "kind": "three rows of three",
-      "title": "The weather trio: 2005 vs 2012 vs 2023",
-      "basis": "name + releaseDate + rarity, three complete sets",
-      "cards": [
-        "ex11-112",
-        "ex11-111",
-        "ex8-107",
-        "bw5-104",
-        "bw5-106",
-        "bw6-128",
-        "swsh12pt5-37",
-        "sv4-199",
-        "swsh12pt5-102"
-      ],
-      "count": 9,
-      "why": "Three eras of the same trio, nine cards, one question. It asks rather than tells, which is what gets a reply instead of a scroll.",
-      "angle": "Which row is the best weather trio? 2005, 2012, 2023."
     },
     {
       "kind": "the spread",
@@ -529,59 +705,73 @@
     },
     {
       "kind": "one artist, one family",
-      "title": "Kagemaru Himeno drew 4 of The Eevee line",
+      "title": "5ban Graphics drew 5 of Ghost-type nightmares",
       "basis": "artist field + a named list of 9 Pokémon",
       "cards": [
-        "base2-3",
-        "base2-4",
-        "base2-12",
-        "sm115-48"
+        "bw4-101",
+        "sm7-174",
+        "sm8-226",
+        "sm9-186"
       ],
       "count": 4,
-      "why": "4 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
-      "angle": "One artist. 4 of the eevee line."
+      "why": "5 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
+      "angle": "5ban Graphics drew 5 of them. Which one actually scared you as a kid?"
     },
     {
       "kind": "one artist, one family",
-      "title": "Mitsuhiro Arita drew 4 of The Eevee line",
-      "basis": "artist field + a named list of 9 Pokémon",
+      "title": "Mitsuhiro Arita drew 4 of The pseudo-legendaries",
+      "basis": "artist field + a named list of 10 Pokémon",
       "cards": [
-        "ecard2-H29",
-        "ex11-109",
-        "sm9-120",
-        "sm11-72"
+        "ex10-111",
+        "ex16-96",
+        "sm11-146",
+        "dp6-2"
       ],
       "count": 4,
       "why": "4 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
-      "angle": "One artist. 4 of the eevee line."
+      "angle": "Mitsuhiro Arita drew 4 of them. Which one did you actually raise?"
     },
     {
       "kind": "one artist, one family",
-      "title": "Ryo Ueda drew 4 of The Eevee line",
-      "basis": "artist field + a named list of 9 Pokémon",
+      "title": "5ban Graphics drew 9 of The pseudo-legendaries",
+      "basis": "artist field + a named list of 10 Pokémon",
       "cards": [
-        "ex10-102",
-        "ex11-17",
-        "ex11-108",
-        "g1-28a"
-      ],
-      "count": 4,
-      "why": "4 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
-      "angle": "One artist. 4 of the eevee line."
-    },
-    {
-      "kind": "one artist, one family",
-      "title": "5ban Graphics drew 9 of The Eevee line",
-      "basis": "artist field + a named list of 9 Pokémon",
-      "cards": [
-        "sm2-158",
-        "sm5-157",
-        "sm5-159",
-        "sm9-191"
+        "bw4-103",
+        "bw6-90",
+        "xy4-77",
+        "sm2-157"
       ],
       "count": 4,
       "why": "9 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
-      "angle": "One artist. 9 of the eevee line."
+      "angle": "5ban Graphics drew 9 of them. Which one did you actually raise?"
+    },
+    {
+      "kind": "one artist, one family",
+      "title": "Mitsuhiro Arita drew 6 of The mythicals",
+      "basis": "artist field + a named list of 20 Pokémon",
+      "cards": [
+        "ex8-97",
+        "sm35-78",
+        "xy11-115",
+        "sm9-1"
+      ],
+      "count": 4,
+      "why": "6 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
+      "angle": "Mitsuhiro Arita drew 6 of them. How many of these did you actually get legitimately?"
+    },
+    {
+      "kind": "one artist, one family",
+      "title": "Ryo Ueda drew 8 of The mythicals",
+      "basis": "artist field + a named list of 20 Pokémon",
+      "cards": [
+        "ex11-12",
+        "xy9-118",
+        "col1-2",
+        "bw7-47"
+      ],
+      "count": 4,
+      "why": "8 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
+      "angle": "Ryo Ueda drew 8 of them. How many of these did you actually get legitimately?"
     },
     {
       "kind": "one Pokémon, many hands",
@@ -795,55 +985,42 @@
     },
     {
       "kind": "one artist, one family",
-      "title": "Atsuko Nishida drew 3 of The Eevee line",
+      "title": "Eske Yoshinob drew 3 of Ghost-type nightmares",
       "basis": "artist field + a named list of 9 Pokémon",
       "cards": [
-        "ex2-6",
-        "g1-RC6",
-        "ex10-19"
+        "xy4-34",
+        "sm12-85",
+        "swsh5-148"
       ],
       "count": 3,
       "why": "3 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
-      "angle": "One artist. 3 of the eevee line."
+      "angle": "Eske Yoshinob drew 3 of them. Which one actually scared you as a kid?"
     },
     {
       "kind": "one artist, one family",
-      "title": "Kouki Saitou drew 3 of The Eevee line",
-      "basis": "artist field + a named list of 9 Pokémon",
+      "title": "Ryo Ueda drew 3 of The pseudo-legendaries",
+      "basis": "artist field + a named list of 10 Pokémon",
       "cards": [
-        "ex11-5",
-        "ex11-7",
-        "ex11-18"
+        "ex11-3",
+        "ex11-14",
+        "ex16-95"
       ],
       "count": 3,
       "why": "3 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
-      "angle": "One artist. 3 of the eevee line."
+      "angle": "Ryo Ueda drew 3 of them. Which one did you actually raise?"
     },
     {
       "kind": "one artist, one family",
-      "title": "Masakazu Fukuda drew 3 of The Eevee line",
-      "basis": "artist field + a named list of 9 Pokémon",
+      "title": "hatachu drew 3 of The pseudo-legendaries",
+      "basis": "artist field + a named list of 10 Pokémon",
       "cards": [
-        "ex16-100",
-        "ex16-101",
-        "ex16-102"
+        "sm12-163",
+        "swsh7-115",
+        "sm6-94"
       ],
       "count": 3,
       "why": "3 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
-      "angle": "One artist. 3 of the eevee line."
-    },
-    {
-      "kind": "one artist, one family",
-      "title": "Naoki Saito drew 3 of The Eevee line",
-      "basis": "artist field + a named list of 9 Pokémon",
-      "cards": [
-        "g1-10",
-        "g1-24",
-        "g1-28"
-      ],
-      "count": 3,
-      "why": "3 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
-      "angle": "One artist. 3 of the eevee line."
+      "angle": "hatachu drew 3 of them. Which one did you actually raise?"
     },
     {
       "kind": "one set, one hand",
@@ -857,45 +1034,6 @@
       "count": 3,
       "why": "A whole set seen through one person, which is a different thing from a set seen as a checklist.",
       "angle": "3 cards in Base. Same artist."
-    },
-    {
-      "kind": "the trio",
-      "title": "The legendary birds, the best of each",
-      "basis": "a named list of three + rarity + price",
-      "cards": [
-        "pl3-148",
-        "ex6-116",
-        "pl3-149"
-      ],
-      "count": 3,
-      "why": "Three that belong together, each at its strongest. The set is the argument.",
-      "angle": "The legendary birds. Which one do you actually want?"
-    },
-    {
-      "kind": "the trio",
-      "title": "The Lake guardians, the best of each",
-      "basis": "a named list of three + rarity + price",
-      "cards": [
-        "dp6-146",
-        "dp6-143",
-        "dp6-140"
-      ],
-      "count": 3,
-      "why": "Three that belong together, each at its strongest. The set is the argument.",
-      "angle": "The Lake guardians. Which one do you actually want?"
-    },
-    {
-      "kind": "the trio",
-      "title": "The weather trio, the best of each",
-      "basis": "a named list of three + rarity + price",
-      "cards": [
-        "bw5-104",
-        "ex11-111",
-        "ex8-107"
-      ],
-      "count": 3,
-      "why": "Three that belong together, each at its strongest. The set is the argument.",
-      "angle": "The weather trio. Which one do you actually want?"
     },
     {
       "kind": "the debut",
