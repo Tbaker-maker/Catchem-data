@@ -63,7 +63,8 @@ h1 em{font-style:normal;color:var(--live)}
 .lede{color:var(--soft);font-size:17px;max-width:46ch;margin:0}
 
 /* Steps — a real sequence, so numbering earns its place. */
-.steps{display:grid;grid-template-columns:1.3fr .9fr 1.5fr;gap:28px;margin-bottom:44px}
+.steps{display:grid;grid-template-columns:1.2fr .7fr 1fr 1.3fr;gap:22px;margin-bottom:44px}
+.refuse{background:#1a1410;border:1px solid #3d2f1a;border-radius:12px;padding:14px 17px;margin-bottom:18px;color:#d9a441;font-size:14px;line-height:1.55}
 .step{min-width:0}
 .step .n{font:500 11px/1 var(--mono);color:var(--faint);letter-spacing:.14em;display:block;margin-bottom:10px}
 .step .t{font:600 14.5px/1.3 var(--body);margin-bottom:12px;display:block}
@@ -157,10 +158,18 @@ summary:before{content:"→ ";color:var(--faint)}
     <select id="fset"><option value="">Every set</option>${sets.map(x => `<option>${x.replace(/&/g, "&amp;")}</option>`).join("")}</select></div>
   <div class="step"><span class="n">02 / COUNT</span><span class="t">How many cards</span>
     <div class="chips" id="fcount">${[1,2,3,4,6,8,9].map(n => `<button class="chip" data-n="${n}">${n}</button>`).join("")}</div></div>
-  <div class="step"><span class="n">03 / ANGLE</span><span class="t">What kind of post</span>
+  <div class="step"><span class="n">03 / WHY</span><span class="t">What is this for</span>
+    <div class="chips" id="fintent">
+      <button class="chip on" data-i="post">A post</button>
+      <button class="chip" data-i="want">Want list</button>
+      <button class="chip" data-i="trade">Trade list</button>
+      <button class="chip" data-i="sell">Selling</button>
+    </div></div>
+  <div class="step"><span class="n">04 / ANGLE</span><span class="t">What kind of post</span>
     <div class="chips" id="ftheme"></div></div>
 </div>
 
+<div id="refuse" class="refuse" hidden></div>
 <div id="ideas" class="ideas"></div>
 
 <details><summary>Search all ${index.length.toLocaleString("en-US")} cards instead</summary>
@@ -261,6 +270,33 @@ function renderTally(){
   box.innerHTML = html;
 }
 
+// INTENT drives the copy, the frame, and one refusal.
+let fIntent = "post";
+el("fintent").querySelectorAll(".chip").forEach(b => b.onclick = () => {
+  fIntent = b.dataset.i;
+  el("fintent").querySelectorAll(".chip").forEach(x => x.classList.toggle("on", x.dataset.i === fIntent));
+  render();
+});
+
+// SEALED stock imagery is standard - every sealed box looks identical and a
+// buyer is purchasing a SKU. SINGLES stock imagery is misrepresentation, because
+// the whole question on a single is condition and the buyer needs to see THAT
+// card. The refusal is the feature.
+function checkIntent(){
+  const box = el("refuse");
+  const singles = tray.filter(c => !/booster|elite trainer|bundle|collection|tin|box/i.test(c.n));
+  if (fIntent === "sell" && singles.length) {
+    box.hidden = false;
+    box.innerHTML = "<b>We will not make a sell image for singles.</b><br>" +
+      "The whole question on a single is condition, and a buyer needs to see the card you are actually sending. " +
+      "Stock art of a pristine copy is misrepresentation and marketplaces treat it that way. " +
+      "<br><br>Photograph the card and we will format your photo instead — or switch to <b>want</b>, <b>trade</b> or <b>a post</b>, where stock art is exactly right.";
+    return false;
+  }
+  box.hidden = true;
+  return true;
+}
+
 function render(){
   const L = LAYOUTS[tray.length];
   const box = el("tray");
@@ -274,10 +310,11 @@ function render(){
     \`<div class="pocket filled"><img src="\${imgUrl(c.i)}" alt="\${c.n}"><button class="x" onclick="remove(\${k})" aria-label="Remove \${c.n}">×</button><button class="own \${owned[c.i] ? 'yes' : ''}" onclick="toggleOwn('\${c.i}')">\${owned[c.i] ? 'OWNED' : 'want'}</button></div>\`).join("");
   for (let i = tray.length; i < slots; i++) html += '<div class="pocket"></div>';
   box.innerHTML = html || '<div class="pocket"></div><div class="pocket"></div><div class="pocket"></div>';
+  const allowed = checkIntent();
   renderTally();
   el("plabel").textContent = L ? ("YOUR PAGE — " + L.name.toUpperCase()) : "YOUR PAGE";
 
-  el("make").disabled = !L;
+  el("make").disabled = !L || !allowed;
   el("cv").style.display = "none";
   ["copy","share","dl"].forEach(i => el(i).hidden = true);
   if (!tray.length) { setStatus("Pick an idea above, or search for a card."); return; }
@@ -383,7 +420,7 @@ el("make").onclick = async () => {
   const LABEL = el("label").value.trim(), LABH = LABEL ? 110 : 0;
   const ROWS = Math.ceil(tray.length / L.cols);
   const W = PAD*2 + CW*L.cols + GAP*(L.cols-1);
-  const H = PAD + (CH+CAP)*ROWS + GAP*(ROWS-1) + LABH + 110;
+  const H = PAD + (CH+CAP)*ROWS + GAP*(ROWS-1) + LABH + (fIntent === "post" ? 110 : 190);
   const cv = el("cv"); cv.width = W; cv.height = H;
   const g = cv.getContext("2d");
   g.fillStyle = "#070910"; g.fillRect(0,0,W,H);
@@ -404,6 +441,28 @@ el("make").onclick = async () => {
     }
     if (LABEL){ g.fillStyle="#f4f5f8"; g.font="800 52px system-ui,sans-serif"; g.textAlign="center";
       g.fillText(LABEL, W/2, H-150); }
+    // WANT LIST FRAME. A post wants a clean image; a want list is a WORKING
+    // document. It gets held up at a table or pasted into a trade thread, so
+    // it needs the price under each card and a total at the bottom - the two
+    // things somebody deciding whether to help you actually needs.
+    if (fIntent === "want" || fIntent === "trade" || fIntent === "sell") {
+      const priced = tray.filter(c => c.p != null);
+      const total = priced.reduce((a, c) => a + c.p, 0);
+      g.fillStyle = "#8a93a8"; g.font = "26px system-ui,sans-serif"; g.textAlign = "center";
+      tray.forEach((c, i) => {
+        if (c.p == null) return;
+        const x = PAD + (i % L.cols) * (CW + GAP), y = PAD + Math.floor(i / L.cols) * (CH + CAP + GAP);
+        g.fillStyle = owned[c.i] ? "#36d399" : "#8a93a8";
+        g.fillText((owned[c.i] ? "HAVE  " : "") + "$" + Math.round(c.p).toLocaleString(), x + CW / 2, y + CH + (CAP ? 82 : 40));
+      });
+      const label = fIntent === "want" ? "Looking for" : fIntent === "trade" ? "Trade list" : "For sale";
+      g.fillStyle = "#f4f5f8"; g.font = "800 44px system-ui,sans-serif"; g.textAlign = "left";
+      g.fillText(label, PAD, H - 118);
+      g.font = "34px ui-monospace,monospace"; g.fillStyle = "#8a93a8"; g.textAlign = "right";
+      // A total built from partial data says so, here as everywhere.
+      const missing = tray.length - priced.length;
+      g.fillText("$" + Math.round(total).toLocaleString() + (missing ? "  +" + missing + " unpriced" : ""), W - PAD, H - 118);
+    }
     // THE WATERMARK IS NOT OPTIONAL. Three points so cropping one corner does not
     // remove it; faint, because a mark that ruins the image protects nothing.
     g.save(); g.globalAlpha=0.16; g.fillStyle="#fff"; g.font="800 40px system-ui,sans-serif"; g.textAlign="center";

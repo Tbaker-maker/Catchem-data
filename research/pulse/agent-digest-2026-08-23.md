@@ -26,10 +26,10 @@ A product we featured has gone quiet on us. Either it stopped trading or we brok
 
 ## The agents themselves
 **NEEDS A HUMAN — the supervisor flagged the watchers:**
-- designer: BROKEN RECORD — 4 finding(s) repeated three runs running (e.g. "medium::14 distinct colours"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
+- designer: BROKEN RECORD — 3 finding(s) repeated three runs running (e.g. "medium::--faint on the background is 3.2:1"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 - theme-scout: BROKEN RECORD — 23 finding(s) repeated three runs running (e.g. "the one-off::Ken Sugimori drew Ampharos exactly on"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
-- teacher: BROKEN RECORD — 15 finding(s) repeated three runs running (e.g. "in a rut::breaker"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
-- teacher: OVER-BUDGET — 17 findings against a ceiling of 14. An unreadable list is an unread list.
+- teacher: BROKEN RECORD — 14 finding(s) repeated three runs running (e.g. "in a rut::breaker"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
+- teacher: OVER-BUDGET — 16 findings against a ceiling of 14. An unreadable list is an unread list.
 
 ## If we expanded
 Pricing 50 more cards would unlock 17 artist cohorts and make 2018 catalogue cards analysable. That is Tyler's call, not the machine's.
@@ -76,14 +76,14 @@ Nothing unusual, or not enough history to tell — 5 days of tape so far. Anomal
 
 ## Where today's story goes
 - **X** — "Paldean Fates listings moved -66.7% while its print window closes."
-- **YouTube** — Journey Together Elite Trainer Box — "Sealed carries a 139.4% premium over the cost of its packs bought loose — the widest gap of that kind we track today."
+- **YouTube** — Rebel Clash Elite Trainer Box — "Sealed carries a 376.9% premium over the cost of its packs bought loose — the widest gap of that kind we track today."
 - **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 99.4."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
 
 ## Something is slipping
-- **unsaved** — 3 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
-- **ignored** — 5 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
+- **unsaved** — 1 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
+- **ignored** — 6 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
 - **drift** — 6 script(s) are not referenced anywhere: backfill-artists.mjs, build-faq.mjs, collision-guard.mjs, discovery-sweep.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
 - **drift** — 46 JSON files in research/pulse. *A directory nobody can scan is a directory where something goes missing without being noticed.*
 
@@ -115,11 +115,13 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 - **Mitsuhiro Arita drew Houndoom exactly once** — Mitsuhiro Arita has 525 cards. Exactly one is a Houndoom.
 
 ## What the agents cannot answer themselves
-6 open — 1 need eyes on a rendered page, 5 need a decision.
+8 open — 3 need eyes on a rendered page, 5 need a decision.
 - **NEEDS A HUMAN** [theme-scout] 14 Pokémon share the "-eon" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 7 Pokémon share the "ite" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 10 Pokémon share the "-ish" ending — a theme, or a coincidence of naming?
 - [designer] faq.html: 1 font sizes sit within 2px of a neighbour (16). Are those distinct steps or the same intent typed twice?
+- [listing-images] Does a want-list image actually read well at Discord thumbnail size? Nine cards plus prices plus a total is a lot in a 400px preview, and that is where a trade list is usually seen first.
+- [designer] build.html: 5 corner radii in use (6, 9, 12, 13, 16). Does the page read as one family of shapes, or several?
 
 ## The review — 5.4/10
 Real progress, and the gap between what is built and what is live is now the whole problem.
