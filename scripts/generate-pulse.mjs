@@ -657,4 +657,5 @@ await import("./slop-guard.mjs");
 await import("./card-guard.mjs");
 await import("./verify-work.mjs");
 try { await import("./bias-guard.mjs"); } catch (e) { console.warn(`  ⚠ bias guard: ${e.message} — advisory`); }
+try { if (new Date().getUTCDay() === 1) await import("./review.mjs"); } catch (e) { console.warn("  review: " + e.message); }
 await import("./publish-assert.mjs");

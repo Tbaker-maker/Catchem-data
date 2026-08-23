@@ -32,6 +32,7 @@ const tch = await J("research/pulse/teacher.json");
 const scout = await J("research/pulse/theme-scout.json");
 const des = await J("research/pulse/design-audit.json");
 const oq = await J("research/pulse/open-questions.json");
+const stateOfUnion = await J("research/pulse/review.json");
 const dec = await J("research/pulse/decision-audit.json");
 const bias = await J("research/pulse/bias-guard.json");
 const dpl = await J("research/pulse/domain-plausibility.json");
@@ -286,6 +287,14 @@ if (des?.counts?.high) {
     for (const q of forCC.slice(0, 3)) say(`- [${q.agent}] ${q.question}`);
     say();
   }
+}
+
+if (stateOfUnion) {
+  say(`## The review — ${stateOfUnion.overall}/10`);
+  say(stateOfUnion.headline);
+  const worst = (stateOfUnion.areas ?? []).filter(a => a.score != null).sort((a, b) => a.score - b.score).slice(0, 2);
+  for (const a of worst) say(`- **${a.area} ${a.score}/10** — ${a.verdict}`);
+  say();
 }
 
 say(`---`);

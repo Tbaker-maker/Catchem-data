@@ -28,8 +28,8 @@ A product we featured has gone quiet on us. Either it stopped trading or we brok
 **NEEDS A HUMAN — the supervisor flagged the watchers:**
 - designer: BROKEN RECORD — 7 finding(s) repeated three runs running (e.g. "medium::14 distinct colours"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 - theme-scout: BROKEN RECORD — 23 finding(s) repeated three runs running (e.g. "the one-off::Ken Sugimori drew Ampharos exactly on"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
-- teacher: FARMING — findings climbed 16 → 16 → 17 → 17 across four runs with nothing resolved. Volume is not work.
-- teacher: BROKEN RECORD — 14 finding(s) repeated three runs running (e.g. "in a rut::breaker"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
+- teacher: BROKEN RECORD — 15 finding(s) repeated three runs running (e.g. "in a rut::breaker"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
+- teacher: OVER-BUDGET — 17 findings against a ceiling of 14. An unreadable list is an unread list.
 
 ## If we expanded
 Pricing 50 more cards would unlock 17 artist cohorts and make 2018 catalogue cards analysable. That is Tyler's call, not the machine's.
@@ -76,16 +76,16 @@ Nothing unusual, or not enough history to tell — 5 days of tape so far. Anomal
 
 ## Where today's story goes
 - **X** — "Paldean Fates listings moved -66.7% while its print window closes."
-- **YouTube** — Rebel Clash Elite Trainer Box — "Sealed carries a 376.9% premium over the cost of its packs bought loose — the widest gap of that kind we track today."
+- **YouTube** — Journey Together Elite Trainer Box — "Sealed carries a 139.4% premium over the cost of its packs bought loose — the widest gap of that kind we track today."
 - **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 99.4."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
 
 ## Something is slipping
-- **unsaved** — 8 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
-- **ignored** — 6 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
+- **unsaved** — 6 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
+- **ignored** — 5 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
 - **drift** — 8 script(s) are not referenced anywhere: build-creators-page.mjs, build-editor.mjs, collision-guard.mjs, discovery-sweep.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
-- **drift** — 45 JSON files in research/pulse. *A directory nobody can scan is a directory where something goes missing without being noticed.*
+- **drift** — 46 JSON files in research/pulse. *A directory nobody can scan is a directory where something goes missing without being noticed.*
 
 ## Legal standing
 Nothing has tripped. Highest live risk: **Effort-based consideration in the berry system, combined with the first live draw.** — It is the only item that is both imminent and genuinely uncertain. The IP question is larger but not triggered until revenue; registration and tax thresholds are comfortably clear at current prize values.
@@ -128,6 +128,11 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 - [designer] build.html: 1 font sizes sit within 2px of a neighbour (14). Are those distinct steps or the same intent typed twice?
 - [designer] corrections.html: 5 font sizes sit within 2px of a neighbour (13, 14, 14.5, 15, 15.5). Are those distinct steps or the same intent typed twice?
 - [designer] coverage.html: 2 font sizes sit within 2px of a neighbour (14, 15). Are those distinct steps or the same intent typed twice?
+
+## The review — 4.7/10
+Real progress, and the gap between what is built and what is live is now the whole problem.
+- **Community 0/10** — Nothing has shipped. There is no community to review.
+- **Engagement 2/10** — One post with real numbers. That is an anecdote, not a signal.
 
 ---
 *Written by the agents, for a person. If a section here never leads to an action, that section should be deleted rather than tolerated.*

@@ -33,6 +33,7 @@ export const CADENCE = {
   // watches our own code → runs when the code moves
   "platform":          { when: "daily", watches: "today's stories against each platform's shape" },
   "decision-audit":    { when: "weekly", watches: "predictions coming due", weeklyOn: 1 },
+  "review":            { when: "weekly", watches: "how we are actually doing, across every area", weeklyOn: 1 },
   "designer":          { when: "on-change-or-weekly", watches: "every shipped visual surface", paths: ["research/assets/", "scripts/"], weeklyOn: 2 },
   "theme-scout":       { when: "weekly", watches: "the catalogue for post ideas nobody looked for", weeklyOn: 3 },
   "teacher":           { when: "weekly", watches: "whether the agents are still learning", weeklyOn: 1 },

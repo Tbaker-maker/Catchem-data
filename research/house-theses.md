@@ -1663,3 +1663,32 @@ for small controls, 13 for panels, 16 for the binder.
 
 That is the loop working on the person who built the loop, which is the only
 version worth having.
+
+## UNSHIPPED SCORES ZERO (Tyler, Aug 23 2026)
+"A review page from all the agents put into one. What's working, what needs
+looking at. Ratings of our tools, products, community, engagement. Make it keep
+us accountable."
+
+The daily digest is operational - what happened, what to do today. The review
+asks how we are ACTUALLY DOING, and the only version worth having is one that
+can say "badly".
+
+THREE RULES:
+1. **Every rating is derived from a count we hold, never chosen.** A score
+   somebody picked is a mood with a number attached.
+2. **Unshipped scores ZERO.** Not "in progress", not "on track". A review that
+   rewards work nobody can use is the most comfortable lie a solo founder can be
+   told.
+3. **The trend matters more than the level.** A 6 that was a 3 is a different
+   story from a 6 that was a 9, and the level alone hides which.
+
+FIRST REVIEW: **4.7/10.** The machine scores 10 and community scores 0, which is
+the whole picture in two numbers. Engagement is a 2 because one measured post is
+an anecdote, and the honest note underneath is that we have been acting on a
+five-times performance difference observed exactly once.
+
+AND IT BROKE ITS OWN FIRST RULE ON ITS FIRST RUN. Two areas read fields that do
+not exist and quietly fell back to 5 - a middling number where a measurement
+should be, which is precisely what rule one forbids. Now an unreadable count
+reports UNKNOWN. The trend column caught it immediately: "The machine, up from
+5", where the 5 had never been real.
