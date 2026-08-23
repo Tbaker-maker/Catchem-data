@@ -12,7 +12,7 @@ const mk = (id) => nodes[id] ||= { id, innerHTML: "", value: "", textContent: ""
   style: {}, dataset: {}, classList: { toggle(){}, add(){}, remove(){}, contains: () => false },
   querySelectorAll: () => [], addEventListener(){}, onclick: null, onchange: null,
   scrollIntoView(){}, appendChild(){} };
-for (const id of ["q","rar","yr","res","tray","st","label","make","copy","share","dl","cv","plabel",
+for (const id of ["pager","q","rar","yr","res","tray","st","label","make","copy","share","dl","cv","plabel",
   "fset","fcount","ftheme","ideas","refuse","tally","streakbar","streakstart","sfilter","sper","fintent","fslab"]) mk(id);
 
 globalThis.document = { getElementById: (id) => nodes[id] ?? null,
@@ -29,7 +29,22 @@ let err = null;
 try { new Function(js)(); } catch (e) { err = e; }
 await new Promise(r => setTimeout(r, 60));   // let the fetch .then run
 
+// PAGING must actually move. Confirming the pager renders is the same mistake
+// as confirming the script parses - it says the furniture is there, not that it
+// does anything.
+let pagingWorks = null;
+try {
+  const firstPage = nodes.res.innerHTML;
+  if (typeof globalThis.goPage === "function") {
+    globalThis.goPage(1);
+    pagingWorks = nodes.res.innerHTML !== firstPage && nodes.res.innerHTML.length > 200;
+  }
+} catch { pagingWorks = false; }
+
 const fails = [];
+if (pagingWorks === false) fails.push("goPage(1) did not change the results — paging renders but does not move");
+if (pagingWorks === null) fails.push("goPage is not reachable, so the catalogue beyond page one cannot be browsed");
+if (!nodes.pager || !/of\s/.test(nodes.pager.innerHTML)) fails.push("the pager shows no total — the user cannot tell how much catalogue exists");
 if (err) fails.push("the emitted script THREW: " + err.message.slice(0, 80));
 if (!fetched) fails.push("the card index was never fetched");
 if (nodes.res.innerHTML.length < 200) fails.push("the results panel is empty on load — the user sees nothing and cannot tell it from broken");
