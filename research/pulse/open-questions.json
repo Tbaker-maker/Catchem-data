@@ -325,7 +325,7 @@
    "who": "tyler",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-23",
-   "asked": 28,
+   "asked": 30,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -338,7 +338,7 @@
    "who": "tyler",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-23",
-   "asked": 6,
+   "asked": 8,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -351,7 +351,7 @@
    "who": "tyler",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-23",
-   "asked": 6,
+   "asked": 8,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -418,6 +418,27 @@
    "answeredBy": "cc",
    "answer": "PARTLY ANSWERED ALREADY, and the answer is more awkward than yes or no — see research/reports/2026-08-23-namespace-verified.md, Block 2. PPT does NOT document a window and accepts no period parameter, but the data carries dates: every graded card has ebay.dateRangeStart/dateRangeEnd, and 99% of per-grade rows carry lastSaleDate. THE TRAP: the block-level range does NOT describe the per-grade aggregates. Measured across 309 graded cards and 2,669 grade rows, 21% have a lastSaleDate OUTSIDE the block's stated range — one example shows a cgc9 median resting on sales whose most recent is eight months before the window printed above it. So labelling a graded price with dateRangeStart would mislabel one in five. A defensible per-grade window DOES exist in smartMarketPrice.daysUsed plus confidence, on the 582 rows (22%) at medium or high confidence. The baseline probe in data/graded-window-probe.json is still the right definitive test for rolling-vs-all-time and should be re-read on schedule.",
    "answeredOn": "2026-08-23"
+  },
+  {
+   "id": "designer-22",
+   "agent": "designer",
+   "question": "faq.html: 1 font sizes sit within 2px of a neighbour (16). Are those distinct steps or the same intent typed twice?",
+   "evidence": {
+    "sizes": [
+     15,
+     16
+    ],
+    "nearDupes": [
+     16
+    ]
+   },
+   "who": "cc",
+   "firstAsked": "2026-08-23",
+   "lastAsked": "2026-08-23",
+   "asked": 2,
+   "answeredBy": null,
+   "answer": null,
+   "answeredOn": null
   }
  ]
 }

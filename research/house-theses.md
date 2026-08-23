@@ -1721,3 +1721,31 @@ NOW SPLIT IN TWO, both honest:
 THE RISK WORTH NAMING, and it is in the file: the audience is being built on a
 personal account. That is the right way to start, and it means the community
 currently belongs to a person rather than to the product.
+
+## HONING QUALITY IS A LOGGING PROBLEM (Tyler, Aug 23 2026)
+"The editor is alive. If we can hone down great post quality it could be a game
+changer."
+
+He is right about the prize and the blocker is not where it looks. We can
+generate **84 formulas**. We have outcome data on **two posts**. The
+pairing-finder ranked the better one first unprompted, which is genuinely
+encouraging and is still a sample of one.
+
+**Nothing connected a post that went out to the formula that produced it**, so
+posting more taught the ranker nothing. A hundred posts and we would have known
+exactly as much as we did after the first.
+
+scripts/log-outcome.mjs is the cheapest possible fix: one line per post, the
+shape and the numbers. **Under twenty entries a difference between shapes is
+noise wearing a number**, and the tool says so on every run rather than
+flattering a small sample.
+
+WHAT THE FIRST TWO ENTRIES ALREADY SAY, and it is uncomfortable: the **art crop
+with a two-word hook did 791 views. The carefully constructed artist pairing did
+154.** Five times, same account, same week. We have spent the day building
+elaborate multi-card formulas and the best-performing thing we have made is one
+cropped card and four words.
+
+That is two data points and it may reverse entirely. **It is also the first
+evidence we have ever had, and it points away from the direction we were
+building.** Worth eighteen more posts to find out.

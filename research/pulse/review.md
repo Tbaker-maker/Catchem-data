@@ -1,6 +1,6 @@
 # The review — 2026-08-23
 
-**4.7 / 10.** Real progress, and the gap between what is built and what is live is now the whole problem.
+**5.4 / 10.** Real progress, and the gap between what is built and what is live is now the whole problem.
 
 > Every rating is derived from a count we hold, never chosen. A score somebody picked is a mood with a number attached.
 >
@@ -13,7 +13,7 @@
 Every agent meets every obligation.
 
 **Working**
-- 18 agents, 20 guards wired, 56 negative tests
+- 18 agents, 20 guards wired, 57 negative tests
 - Every incident this month became a guard, and every guard has been deliberately broken to prove it works.
 
 
@@ -40,14 +40,15 @@ The app works and looks better than it did. It is also still not deployed where 
 - Two shipped pages have no generator and drift further from the site every day.
 - The editor exists as a file. Nobody outside this conversation can reach it.
 
-## Community — our surfaces — 0/10 `░░░░░░░░░░`  *(unchanged)*
+## Community — our surfaces — 3/10 `███░░░░░░░`  *(unchanged)*
 
-Nothing we build has shipped. Every surface is a file.
+1 of 3 live.
 
+**Working**
+- 1 surface(s) live
 **Needs looking at**
 - Discord: not deployed.
 - Newsletter 001: written, unshipped, and it has been for weeks.
-- Catch'em Creators: built, not live.
 
 ## Community — founder-led — 5/10 `█████░░░░░`  *(unchanged)*
 
@@ -64,15 +65,15 @@ Real and growing, on evidence too thin to score confidently. Early-stage communi
 
 ## Engagement — 2/10 `██░░░░░░░░`  *(unchanged)*
 
-One post with real numbers. That is an anecdote, not a signal.
+2 posts measured.
 
 **Working**
-- Best: 154 views, 9 likes, and an unsolicited reply from a verified creator — at a bad hour from a small account
+- Best: 791 views, 38 likes, and an unsolicited reply from a verified creator — at a bad hour from a small account
 **Needs looking at**
 - The platform agents' judgments are still shape-based guesses until roughly twenty posts have outcomes.
 - We have a five-times performance difference between two post types and one observation of each. That is not enough to act on and we have been acting on it.
 
-## Accountability — 5/10 `█████░░░░░`  *(unchanged)*
+## Accountability — 7/10 `███████░░░`  *(unchanged)*
 
 The habits are in place. Nothing has come due yet, so none of them have been tested.
 
@@ -81,7 +82,7 @@ The habits are in place. Nothing has come due yet, so none of them have been tes
 - Corrections published publicly, dated and permanent
 - 21 errors logged, each with the guard it produced
 **Needs looking at**
-- 15 of 15 agent questions unanswered — a queue that only grows is a queue nobody reads
+- 5 of 21 agent questions unanswered — a queue that only grows is a queue nobody reads
 - 7 predictions still pending. The first grades land in October, and until then this score is a promise.
 
 ---

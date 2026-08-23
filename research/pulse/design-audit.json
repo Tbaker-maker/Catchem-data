@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-08-23T07:51:14.042Z",
-  "audited": "10 shipped surfaces, 35 minted cards",
+  "generatedAt": "2026-08-23T08:01:58.638Z",
+  "audited": "9 shipped surfaces, 35 minted cards",
   "principle": "A linter asks whether the CSS is valid. A design lead asks whether the page was DESIGNED. The tells of an undesigned page are countable: too many type sizes, too many near-identical greys, an accent used everywhere so it accents nothing.",
   "blindSpot": "It cannot SEE. It counts and measures. It cannot tell you a page is ugly, only that the choices behind it were not made deliberately.",
   "counts": {
-    "high": 4,
+    "high": 0,
     "medium": 5,
     "low": 0
   },
@@ -24,20 +24,6 @@
       "fix": "Lighten --faint until it clears 4.5, or reserve it for text at 18px and above."
     },
     {
-      "surface": "faq.html",
-      "severity": "high",
-      "what": "remote fonts with no local fallback",
-      "why": "On a slow connection the page renders in the browser default, which is Times. First impressions do not get a second attempt.",
-      "fix": "Add system-ui and a generic family to every font stack."
-    },
-    {
-      "surface": "image-contact-sheet.html",
-      "severity": "high",
-      "what": "the accent colour appears 134 times",
-      "why": "An accent used everywhere accents nothing, and it is the most common reason a dark page reads as cheap rather than considered.",
-      "fix": "Spend it in two places: the active state and the one primary action. Everything else greys."
-    },
-    {
       "surface": "the-board.html",
       "severity": "medium",
       "what": "13 distinct colours",
@@ -50,20 +36,6 @@
       "what": "13 distinct colours",
       "why": "Beyond a dozen, the palette stops being a palette. Most of the extras are near-duplicate greys nobody chose on purpose.",
       "fix": "Reduce to tokens. If two greys differ by less than 6% luminance, they are one grey."
-    },
-    {
-      "surface": "faq.html",
-      "severity": "high",
-      "what": "no generator writes this page",
-      "why": "It was created once and nothing regenerates it, so every fix applied at the source misses it and it drifts further from the site every day.",
-      "fix": "Either give it a generator or delete it. A page nothing owns cannot be maintained."
-    },
-    {
-      "surface": "image-contact-sheet.html",
-      "severity": "high",
-      "what": "no generator writes this page",
-      "why": "It was created once and nothing regenerates it, so every fix applied at the source misses it and it drifts further from the site every day.",
-      "fix": "Either give it a generator or delete it. A page nothing owns cannot be maintained."
     },
     {
       "surface": "cards",
@@ -159,32 +131,14 @@
     },
     {
       "surface": "faq.html",
-      "question": "faq.html: 1 font sizes sit within 2px of a neighbour (13.5). Are those distinct steps or the same intent typed twice?",
+      "question": "faq.html: 1 font sizes sit within 2px of a neighbour (16). Are those distinct steps or the same intent typed twice?",
       "measured": {
         "sizes": [
-          13,
-          13.5
+          15,
+          16
         ],
         "nearDupes": [
-          13.5
-        ]
-      },
-      "answeredBy": null,
-      "answer": null
-    },
-    {
-      "surface": "image-contact-sheet.html",
-      "question": "image-contact-sheet.html: 2 font sizes sit within 2px of a neighbour (12.5, 13). Are those distinct steps or the same intent typed twice?",
-      "measured": {
-        "sizes": [
-          12,
-          12.5,
-          13,
-          22
-        ],
-        "nearDupes": [
-          12.5,
-          13
+          16
         ]
       },
       "answeredBy": null,
