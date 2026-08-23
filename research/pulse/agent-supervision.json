@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T01:39:26.309Z",
+ "generatedAt": "2026-08-23T01:39:49.475Z",
  "date": "2026-08-23",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -95,6 +95,11 @@
    "agent": "platform",
    "finding": "runs daily and has returned the same count (10) four runs running.",
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
+  },
+  {
+   "agent": "platform",
+   "finding": "every finding from a week ago is still open (10).",
+   "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
    "agent": "anomaly",
@@ -562,8 +567,8 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "4 hand-written file(s) changed and not committed.",
-   "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
+   "what": "1 commit(s) exist locally and are not pushed.",
+   "do": "A commit on one machine is not a backup. The repo is only the record once it is somewhere else.",
    "score": 30,
    "band": "NOTE ONLY",
    "selfScore": 30,
