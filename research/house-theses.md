@@ -1692,3 +1692,32 @@ not exist and quietly fell back to 5 - a middling number where a measurement
 should be, which is precisely what rule one forbids. Now an unreadable count
 reports UNKNOWN. The trend column caught it immediately: "The machine, up from
 5", where the 5 had never been real.
+
+## MEASURE WHAT IS HAPPENING, NOT ONLY WHAT WE BUILT (Tyler, Aug 23 2026)
+"Community is low at the moment but very strong for early stages. I have been
+creating community around this - engagement keeps growing on @longedeth, and
+I am talking about it in my old community. Some are excited, getting others
+awoken again."
+
+The review scored Community 0 because Discord, the newsletter and the creators
+page have not shipped. All true, and all of it counted only the surfaces WE
+BUILD - while Tyler has been building the actual community by hand.
+
+**A founder posting consistently to a growing audience IS community formation.
+It simply does not appear in a repository**, and an agent that only measures the
+repository will report a real thing as absent.
+
+That is the blind spot the review exists to expose, and on its first run it
+reproduced it instead.
+
+NOW SPLIT IN TWO, both honest:
+- **Our surfaces: still 0.** Nothing we build has shipped and no amount of
+  founder effort changes that.
+- **Founder-led: 5, on thin evidence, and it says so.** One post with hard
+  numbers; the rest is Tyler's read of his own audience. Recorded as
+  FOUNDER-REPORTED, which is the best evidence available at this stage and
+  better than discarding a real signal for not being a metric.
+
+THE RISK WORTH NAMING, and it is in the file: the audience is being built on a
+personal account. That is the right way to start, and it means the community
+currently belongs to a person rather than to the product.

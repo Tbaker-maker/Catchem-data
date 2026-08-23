@@ -86,14 +86,28 @@ const A = (area, score, verdict, working, watch) =>
 }
 
 // ── COMMUNITY ─────────────────────────────────────────────────────────────
-// The uncomfortable one, and the reason this file exists.
+// Two different things, and the first version of this file counted only one.
+// SURFACES are what we build and ship. FOUNDER-LED is what Tyler builds by hand
+// on @longedeth and in the community he already has standing in. Scoring only
+// the first read as "there is no community", which was wrong and demoralising
+// in a way a derived number has no business being.
 {
-  A("Community", 0,
-    "Nothing has shipped. There is no community to review.",
-    [],
-    ["Discord: not deployed.", "Newsletter 001: written, unshipped, and it has been unshipped for weeks.",
-     "Catch'em Creators: built today, not live.",
-     "Every score above is for machinery that no member of the public has touched."]);
+  const comm = await J("data/community.json");
+  const surfaces = (comm?.surfaces ?? []).filter(x => x.live).length;
+  const surfaceTotal = (comm?.surfaces ?? []).length || 3;
+  A("Community — our surfaces", Math.round(surfaces / surfaceTotal * 10),
+    surfaces === 0 ? "Nothing we build has shipped. Every surface is a file." : `${surfaces} of ${surfaceTotal} live.`,
+    surfaces ? [`${surfaces} surface(s) live`] : [],
+    ["Discord: not deployed.", "Newsletter 001: written, unshipped, and it has been for weeks.",
+     "Catch'em Creators: built, not live."].slice(0, surfaceTotal - surfaces));
+
+  // Founder-led. Thin evidence and it says so - the alternative is scoring a
+  // real thing at zero because it happens outside our repo.
+  const signals = (comm?.founderLed?.signals ?? []).length;
+  A("Community — founder-led", signals >= 4 ? 5 : signals >= 2 ? 4 : 2,
+    "Real and growing, on evidence too thin to score confidently. Early-stage community is mostly invisible to measurement, which is not the same as absent.",
+    (comm?.founderLed?.working ?? []),
+    (comm?.founderLed?.watch ?? []));
 }
 
 // ── ENGAGEMENT ────────────────────────────────────────────────────────────

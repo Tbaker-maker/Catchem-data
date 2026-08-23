@@ -40,15 +40,27 @@ The app works and looks better than it did. It is also still not deployed where 
 - Two shipped pages have no generator and drift further from the site every day.
 - The editor exists as a file. Nobody outside this conversation can reach it.
 
-## Community — 0/10 `░░░░░░░░░░`  *(unchanged)*
+## Community — our surfaces — 0/10 `░░░░░░░░░░`
 
-Nothing has shipped. There is no community to review.
+Nothing we build has shipped. Every surface is a file.
 
 **Needs looking at**
 - Discord: not deployed.
-- Newsletter 001: written, unshipped, and it has been unshipped for weeks.
-- Catch'em Creators: built today, not live.
-- Every score above is for machinery that no member of the public has touched.
+- Newsletter 001: written, unshipped, and it has been for weeks.
+- Catch'em Creators: built, not live.
+
+## Community — founder-led — 5/10 `█████░░░░░`
+
+Real and growing, on evidence too thin to score confidently. Early-stage community is mostly invisible to measurement, which is not the same as absent.
+
+**Working**
+- Growing engagement on @longedeth with rising quality, founder-reported
+- Re-awakening lapsed collectors inside an existing community - the cheapest audience there is, because they already care
+- One measured post drew an unsolicited reply from a verified creator
+**Needs looking at**
+- One post with hard numbers. Everything else is a founder's read of his own audience, which is real evidence and thin evidence at the same time.
+- None of this is captured anywhere but here. If Tyler stops reporting it, it becomes invisible again.
+- The audience is being built on a personal account. That is the right way to start and it means the community currently belongs to a person rather than to the product.
 
 ## Engagement — 2/10 `██░░░░░░░░`  *(unchanged)*
 
