@@ -897,7 +897,17 @@ function buildIdeas(){
       : FACTS.filter(f => !CONTROVERSIAL.test(f.claim));
     // Cards our knowledge base has something sourced to say about.
     for (const f of source) {
-      const named = pool.filter(c => c.n.length >= 4 && f.claim.split(/[^A-Za-z0-9'-]+/).includes(c.n.split(" ")[0]));
+      // FULL NAME OR NOTHING. This used to match the FIRST WORD of a card name
+      // against the claim, so "The Rocket's Trap" appeared beside a fact about
+      // Koga's Ninja Trick — because the sentence contains "The". A wrong card
+      // beside a true claim is worse than no card: it reads as researched.
+      const norm = (x) => x.replace(/[\u2018\u2019]/g, "'").toLowerCase();
+      const claim = norm(f.claim);
+      // A story is about its CARD, whatever the rarity. Koga's Ninja Trick is an
+      // Uncommon, and filtering stories by hero rarity excluded the only card
+      // that could illustrate the fact.
+      const storyPool = INDEX.filter(c => !fSet || c.s === fSet);
+      const named = storyPool.filter(c => c.n.length >= 5 && claim.includes(norm(c.n)));
       if (named.length < need) continue;
       const picked = named.sort((a, b) => (a.y || "") < (b.y || "") ? -1 : 1).slice(0, need);
       ideas.push({ title: f.id.replace(/-/g, " "), sub: picked.map(c => c.n + " " + c.y).join("  →  "),
@@ -945,7 +955,22 @@ el("make").onclick = async () => {
   // (~28px per glyph across the usable width) and cap at the three lines the
   // renderer will draw. Over-reserving costs blank pixels; under-reserving costs
   // a caption printed through the footer.
-  const LABLINES = LABEL ? Math.min(3, Math.max(1, Math.ceil(LABEL.length / Math.floor((2535 - 160) / 28)))) : 0;
+  // MEASURE, DO NOT ESTIMATE. The height used to be guessed from character
+  // count at a hardcoded width while the wrapping was measured at the real one,
+  // so on a narrower frame the estimate said two lines and the draw produced
+  // four — and the last fell off the canvas. Both now come from the same
+  // measurement, taken once.
+  const LABLINES = LABEL ? (() => {
+    const probe = document.createElement("canvas").getContext("2d");
+    probe.font = "800 52px system-ui,sans-serif";
+    const maxW = L.W - 160;
+    let lines = 1, cur = "";
+    for (const w of LABEL.split(/\s+/)) {
+      const t = cur ? cur + " " + w : w;
+      if (probe.measureText(t).width > maxW && cur) { lines++; cur = w; } else cur = t;
+    }
+    return lines;
+  })() : 0;
   const LABH = LABEL ? 110 + (LABLINES - 1) * 62 : 0;
   const ROWS = Math.ceil(tray.length / L.cols);
   // THE TABLE OWNS THE FRAME. This used to recompute the width from the column

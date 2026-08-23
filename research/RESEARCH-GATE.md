@@ -119,6 +119,8 @@ fixing the class is.
 
 | 29 | Only the artist themes worked in the editor; two returned identical results and four produced nothing at all | Tyler, by clicking | Dispatch on ID rather than on a declared shape — a missing branch fails silently | Every theme declares a SHAPE in data; theme-smoke.mjs proves each produces and no two are identical |
 
+| 30 | A fact about Koga's Ninja Trick published beside "The Rocket's Trap" and "Koga" — the matcher compared the FIRST WORD of a card name to the claim, and the sentence contains "The" | Tyler | Token matching, fourth occurrence | Full-name matching with normalised apostrophes; a fact whose card is unavailable is SKIPPED rather than illustrated with a card that shares a word |
+
 **PATTERN, stated plainly:** 8 of 9 were caught by Tyler, not by the
 machine. Every guard above was built AFTER a human caught something.
 That is the honest state — the machine is now catching prices, but

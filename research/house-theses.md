@@ -2032,3 +2032,32 @@ WHAT THE NEW CHECK FOUND IMMEDIATELY, none of which anything else could see:
 
 THE RULE: **no two themes may return an identical set.** That is now a test, and
 it is the only thing that would ever have caught the duplicate.
+
+## A WRONG CARD BESIDE A TRUE CLAIM (Tyler, Aug 23 2026)
+He generated a story card and got a true fact about **Koga's Ninja Trick**
+sitting beside pictures of **The Rocket's Trap** and **Koga**.
+
+The matcher compared the FIRST WORD of each card name against the claim. The
+sentence contains the word "The". So "The Rocket's Trap" matched.
+
+**Fourth occurrence of token matching in two days** — "N" inside "ninja", "tin"
+inside Dratini, a substring in the sell refusal, now this. And the worst of the
+four, because the others failed QUIETLY and this one fails PLAUSIBLY: **a wrong
+card beside a true claim reads as researched.** That is the windowless-price
+class — an artifact that looks more credible than it is.
+
+THE FIX: full-name matching with normalised apostrophes, because our data uses a
+straight quote and the prose uses a curly one. A fact whose card is unavailable
+is now **skipped**, never illustrated with a card that merely shares a word.
+
+AND THE SECOND HALF: the story shape filtered by hero rarity, so Koga's Ninja
+Trick — an Uncommon — was excluded, and the only card that could illustrate the
+fact was the one the pool refused to consider. **A story is about its card,
+whatever the rarity.**
+
+THE LABEL BUG UNDERNEATH IT: the frame height was ESTIMATED from character count
+at a hardcoded 2535 width while the wrapping was MEASURED at the real width. On a
+2056 frame the estimate said two lines and the draw produced four, and the last
+fell off the canvas. **Two answers to one question is how text clips**, and the
+layout checker has caught this exact class before — five failures in one day from
+estimating character count. I wrote the estimator anyway.
