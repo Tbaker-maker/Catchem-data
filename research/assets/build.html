@@ -421,6 +421,23 @@ function drawSlab(g, img, x, y, cw, ch, card){
   g.fillText("CATCH'EM", lx, ly + labelH * 0.27);
   g.fillStyle = sk.ink; g.font = "700 " + Math.round(labelH * 0.30) + "px system-ui,sans-serif";
   g.fillText(String(card.n).slice(0, 26), lx, ly + labelH * 0.60);
+  // GRADE BADGE. The shelf feeling — "that is what mine would look like" —
+  // without borrowing anybody's trade dress. It reads GEM 10, not PSA 10:
+  // nobody mistakes it for a grading company's opinion and it still reads
+  // instantly as the good one.
+  {
+    const bw = labelH * 0.62, bx = sx + SW - pad * 1.1 - bw, by = ly + labelH * 0.19;
+    g.fillStyle = sk.accent; g.globalAlpha = 0.14;
+    roundRectSafe(g, bx, by, bw, bw, bw * 0.18); g.fill(); g.globalAlpha = 1;
+    g.strokeStyle = sk.accent; g.lineWidth = Math.max(1.5, bw * 0.035);
+    roundRectSafe(g, bx, by, bw, bw, bw * 0.18); g.stroke();
+    g.fillStyle = sk.accent; g.textAlign = "center";
+    g.font = "700 " + Math.round(bw * 0.20) + "px ui-monospace,monospace";
+    g.fillText("GEM", bx + bw / 2, by + bw * 0.36);
+    g.font = "800 " + Math.round(bw * 0.46) + "px system-ui,sans-serif";
+    g.fillText("10", bx + bw / 2, by + bw * 0.82);
+    g.textAlign = "left";
+  }
   g.fillStyle = sk.accent; g.font = Math.round(labelH * 0.17) + "px ui-monospace,monospace";
   g.fillText(String(card.s).slice(0, 22).toUpperCase() + "  ·  " + card.y + (card.a ? "  ·  " + String(card.a).slice(0, 18) : ""), lx, ly + labelH * 0.85);
   g.drawImage(img, x, y, cw, ch);
@@ -465,7 +482,32 @@ let fSet = "", fCount = 0, fTheme = null;
 
 function renderThemes(){
   const box = el("ftheme");
-  const fits = THEMES.filter(t => !fCount || (t.bestAt || []).includes(fCount));
+  // FLOW LIKE WATER. A theme only appears if it can actually FILL the chosen
+  // count from the chosen set. Pick 151 and ten of fifteen themes produce
+  // nothing — offering one of those is worse than offering fewer, because the
+  // creator picks it, gets nothing, and learns the tool does not know its own
+  // catalogue.
+  const pool = INDEX.filter(c => (!fSet || c.s === fSet) && /Illustration Rare|Rare Holo|Rare Secret|Rare Ultra/i.test(c.r || ""));
+  const canFill = (t) => {
+    const need = fCount || 1;
+    if (t.kind === "named list") {
+      const distinct = new Set(pool.filter(c => (t.members || []).some(m => c.n.startsWith(m)))
+        .map(c => (t.members || []).find(m => c.n.startsWith(m))));
+      return distinct.size >= need;
+    }
+    if (t.id === "many-hands" || t.id === "battle") {
+      const byMon = {};
+      for (const c of pool) if (c.a) (byMon[c.n.split(" ")[0]] ||= new Set()).add(c.a);
+      return Object.values(byMon).some(set => set.size >= need);
+    }
+    if (t.id === "artist-career" || t.id === "first-and-last") {
+      const byArtist = {};
+      for (const c of pool) if (c.a) (byArtist[c.a] ||= []).push(c);
+      return Object.values(byArtist).some(l => l.length >= need);
+    }
+    return pool.length >= need;
+  };
+  const fits = THEMES.filter(t => (!fCount || (t.bestAt || []).includes(fCount)) && canFill(t));
   box.innerHTML = fits.map(t => `<button class="chip${fTheme===t.id?" on":""}" data-t="${t.id}">${t.name}</button>`).join("")
     || "<span class='empty'>no theme suits that count — try another</span>";
   box.querySelectorAll(".chip").forEach(b => b.onclick = () => { fTheme = b.dataset.t; renderThemes(); buildIdeas(); });
@@ -476,7 +518,7 @@ el("fcount").querySelectorAll(".chip").forEach(b => b.onclick = () => {
   if (fTheme && !THEMES.find(t => t.id === fTheme && (t.bestAt||[]).includes(fCount))) fTheme = null;
   renderThemes(); buildIdeas();
 });
-el("fset").onchange = () => { fSet = el("fset").value; buildIdeas(); };
+el("fset").onchange = () => { fSet = el("fset").value; renderThemes(); buildIdeas(); };
 
 const HERO_RX = /(Special Illustration|Illustration Rare|Rare Holo|Rare Secret|Rare Ultra|Rare Rainbow|Ultra Rare)/i;
 
