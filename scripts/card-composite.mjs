@@ -158,7 +158,7 @@ if (!ids.length) {
     console.log(`  layout: ${LAY.name} - ${LAY.w}x${LAY.h}, ${LAY.ratio}:1, ${LAY.timeline}`);
   }
 
-  const isGrid = gridSpec && cards.length > 3;
+  const isGrid = LAY ? LAY.rows > 1 : (gridSpec && cards.length > 3);
   const perRow = LAY ? LAY.cols : (isGrid ? gCols : cards.length);
   const rowCount = LAY ? LAY.rows : (isGrid ? Math.ceil(cards.length / gCols) : 1);
   // Cards shrink as the grid grows so a 3x3 still fits a readable frame.
@@ -198,7 +198,7 @@ ${cards.map((c, i) => {
   const x = PAD + col * (CARD_W + GAP);
   const y = PAD + row * (CARD_H + GAP + (isGrid ? 30 : 0));
   return `<image x="${x}" y="${y}" width="${CARD_W}" height="${CARD_H}" preserveAspectRatio="xMidYMid meet" xlink:href="${c.imageUrl}"/>
-<text x="${x + CARD_W / 2}" y="${y + CARD_H + 26}" text-anchor="middle" fill="#8a93a8" font-family="Sora" font-size="${isGrid ? 16 : 20}">${((c.name ?? "").length > (isGrid ? 20 : 40) ? (c.name ?? "").slice(0, isGrid ? 18 : 38) + "…" : (c.name ?? "")).replace(/&/g, "&amp;").replace(/</g, "&lt;")}${c.releaseDate ? ` · ${c.releaseDate.slice(0, 4)}` : ""}</text>`;
+<text x="${x + CARD_W / 2}" y="${y + CARD_H + 26}" text-anchor="middle" fill="#8a93a8" font-family="Sora" font-size="${isGrid ? 16 : 20}">${isGrid ? "" : ((c.name ?? "").length > (isGrid ? 20 : 40) ? (c.name ?? "").slice(0, isGrid ? 18 : 38) + "…" : (c.name ?? "")).replace(/&/g, "&amp;").replace(/</g, "&lt;")}${c.releaseDate ? ` · ${c.releaseDate.slice(0, 4)}` : ""}</text>`;
 }).join("\n")}
 ${label ? `<text x="${W / 2}" y="${H - 96}" text-anchor="middle" fill="#f4f5f8" font-family="Syne" font-weight="800" font-size="30">${label.replace(/&/g, "&amp;")}</text>` : ""}
 <text x="${PAD}" y="${H - 18}" fill="#36d399" font-family="Syne" font-weight="800" font-size="22">Catch'em</text>
