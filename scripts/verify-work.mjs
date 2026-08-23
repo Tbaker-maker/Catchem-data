@@ -132,6 +132,18 @@ const scripts = (await readdir(join(ROOT, "scripts"))).filter(f => f.endsWith(".
     "A found sample is not chosen coverage. Describing one as the other is how a number that means little gets read as a market-wide figure.", 0);
 }
 
+// ── UNVIEWED IMAGE ────────────────────────────────────────────────────────
+// The rule I broke twice in one day: I minted two cards, viewed one, and sent
+// both. The unviewed one was nonsense. No automated check can see clipping,
+// overlap or collision — only eyes can — so the process rule is absolute and
+// the guard's job is to state it every run rather than to enforce it.
+{
+  const cardDir = await readdir(join(ROOT, "research/pulse/cards")).catch(() => []);
+  const pngs = cardDir.filter(f => f.endsWith(".png"));
+  if (pngs.length) P("unviewed image", `${pngs.length} rendered card(s) exist`,
+    "Nothing here can tell whether they LOOK right — clipping, overlap, a wordmark colliding with a stat row. Every card shown to a person must be opened and looked at first. That rule was broken twice today and both failures reached Tyler.", 18);
+}
+
 // ── THE META-CHECK · did I exclude myself? ────────────────────────────────
 // Five checkers read their own source in one day. This one names the risk out
 // loud rather than assuming it is immune.

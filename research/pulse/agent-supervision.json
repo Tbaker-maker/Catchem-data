@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T02:28:44.450Z",
+ "generatedAt": "2026-08-23T02:33:24.860Z",
  "date": "2026-08-23",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -8,7 +8,7 @@
   "correction-hunter: 3 finding(s)",
   "review-agents: 0 finding(s)",
   "decision-audit: 0 finding(s)",
-  "teacher: 12 finding(s)",
+  "teacher: 13 finding(s)",
   "api-strategist: 8 finding(s)",
   "compliance: 0 finding(s)",
   "security: 0 finding(s)",
@@ -562,9 +562,25 @@
    }
   },
   {
+   "from": "teacher",
+   "owner": "chat",
+   "what": "anomaly: an incident in your domain: \"Sent an \"art post\" card that was a price table with an unexplained alias as its headline, \"",
+   "do": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
    "from": "steward",
    "owner": "chat",
-   "what": "8 hand-written file(s) changed and not committed.",
+   "what": "7 hand-written file(s) changed and not committed.",
    "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -676,7 +692,7 @@
   {
    "from": "api-strategist",
    "owner": "tyler",
-   "what": "the paid provider is called from 92 places",
+   "what": "the paid provider is called from 93 places",
    "do": "list what ONLY the paid provider gives us; if that list is short, either use more of it or stop paying for it",
    "score": 30,
    "band": "NOTE ONLY",
@@ -1023,6 +1039,6 @@
   "actNow": 0,
   "queue": 9,
   "watch": 8,
-  "noteOnly": 18
+  "noteOnly": 19
  }
 }

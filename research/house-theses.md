@@ -1104,3 +1104,32 @@ failure wearing yet another costume.
 THE HONEST TARGET: the machine share should rise over time. If Tyler is still
 catching most of it in a month, the tooling is decorative regardless of how
 many guards are registered.
+
+## LOOK AT IT BEFORE YOU SEND IT (Tyler, Aug 23 2026)
+"Art post 2 is all gibberish. How are these things not being proof read or
+verified before given to me or ANYONE?"
+
+Twice in one day I minted something outside the pipeline and sent it without
+checking. The first was a wrong PRICE. The second was meaningless CONTENT — an
+"art post" that was a price table with a stranger's alias on top, four numbers,
+three of them prices, on a card explicitly meant to be about art. I viewed the
+first card of that pair, caught two layout bugs and fixed them. **I never
+opened the second one at all.**
+
+TWO RULES, and the second matters more:
+
+1. **A minted card goes through card-guard.** It catches an unexplained alias
+   as a headline, an art card made of prices, a blank rendered as a dash, a
+   span claim the numbers do not support, and a VERIFIED chip with no source.
+   Tested against the card that actually shipped: four hits.
+
+2. **NOTHING GOES TO A PERSON THAT I HAVE NOT LOOKED AT.** No automated check
+   can see clipping, overlap, contrast or a collision — the Arita card clipped
+   twice and only my eyes caught it. A guard cannot replace opening the file.
+   The verifier now reports every rendered card each run as a standing
+   reminder, but the rule is mine to keep, not the machine's to enforce.
+
+THE PATTERN WORTH NAMING: both failures came from the same shortcut — making
+something outside the pipeline because it was faster. **The pipeline is not
+bureaucracy, it is the accumulated list of things we have already got wrong.**
+Going around it means going around all of them at once.

@@ -175,6 +175,7 @@ const MUST_RUN = [
   { script: "windowless-price-guard.mjs", why: "a price with no time window is not a price and must never reach a surface" },
   { script: "content-sanity.mjs", why: "published prose must say something — the gap that let a card ship the word chase as its reason" },
   { script: "bias-guard.mjs", why: "measures whether the machines or the human are catching our errors" },
+  { script: "card-guard.mjs", why: "a minted card must say something before anyone sees it" },
   { script: "verify-work.mjs", why: "output checked against the failure classes in our own error ledger" },
   { script: "publish-assert.mjs", why: "final artifact proof — must be LAST" },
 ];

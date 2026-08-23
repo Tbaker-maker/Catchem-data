@@ -97,6 +97,8 @@ fixing the class is.
 
 | 18 | Published a PSA 10 median with NO time window as a current price, and compared it to a current raw price to compute a "grading premium". Nearly posted publicly | Tyler, verifying before posting | Windowless aggregate as current price + a publication path outside the guards | scripts/windowless-price-guard.mjs blocks any PSA sale figure reaching a surface; all four code paths disabled; hand-minted cards must go through the gates |
 
+| 19 | Sent an "art post" card that was a price table with an unexplained alias as its headline, a dash where a value should be, and no story. Never opened it before sending | Tyler | Ungated publication, second instance in one day | scripts/card-guard.mjs checks minted cards for alias headlines, art-cards-made-of-prices, blank dashes, unsupported claims and sourceless VERIFIED chips; plus the standing rule that nothing goes to a person unviewed |
+
 **PATTERN, stated plainly:** 8 of 9 were caught by Tyler, not by the
 machine. Every guard above was built AFTER a human caught something.
 That is the honest state — the machine is now catching prices, but
