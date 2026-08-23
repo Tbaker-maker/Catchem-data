@@ -39,6 +39,40 @@ formally recorded as unavailable with what we would need.
 
 ---
 
+## SESSION 1 — establish the window on the graded prices we already have
+**Everything else depends on this. Do not skip to the fun part.**
+
+**Tyler is right that PPT has graded prices — we are already receiving them.**
+Every enriched card carries `ebaySold.psa8/9/10` with count, median, min and
+max. They were withdrawn on 2026-08-23 for exactly one reason: **no date range**,
+so we cannot say what period a median covers.
+
+So this session is narrower than it first looked. It is not "find graded prices",
+it is **"establish the window on the ones we already hold"**. Two cheap tests,
+one of them definitive:
+
+1. **Ask the provider.** Does PPT document a window for `ebaySold`, or accept a
+   period parameter? Paste the answer.
+2. **Measure it.** `data/graded-window-probe.json` holds a baseline snapshot of
+   12 cards taken 2026-08-23. **An all-time aggregate can only GROW.** Re-snapshot
+   a week later: **if any count DROPS, the window is rolling**, the medians are
+   current rather than historical, and every graded figure we withdrew comes back.
+
+**The current read leans all-time, so it stays withdrawn.** 559 PSA 10 sales
+across 90 days is 6.2 a day for a single card, which is high; across the 19
+months since release it is 1.5 a day, which is very plausible for a chase.
+**That is a reasoned read from six cards, not proof** — which is why there is a
+probe rather than a decision.
+
+**A caution from making this exact mistake:** I nearly concluded the window WAS
+rolling by comparing two snapshots that turned out to be different cards.
+Compare by card id, never by position.
+
+**Done when:** the window is either stated with a source, or formally recorded
+as unavailable with the probe scheduled to settle it.
+
+---
+
 ## SESSION 2 — centering measurement, and nothing else
 Geometry only. No grade, no verdict, no machine learning.
 
