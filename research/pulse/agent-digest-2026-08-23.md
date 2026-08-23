@@ -28,8 +28,8 @@ A product we featured has gone quiet on us. Either it stopped trading or we brok
 **NEEDS A HUMAN — the supervisor flagged the watchers:**
 - designer: BROKEN RECORD — 4 finding(s) repeated three runs running (e.g. "medium::16 distinct colours"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 - theme-scout: BROKEN RECORD — 23 finding(s) repeated three runs running (e.g. "the one-off::Ken Sugimori drew Ampharos exactly on"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
-- teacher: BROKEN RECORD — 15 finding(s) repeated three runs running (e.g. "in a rut::breaker"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
-- teacher: OVER-BUDGET — 17 findings against a ceiling of 14. An unreadable list is an unread list.
+- teacher: BROKEN RECORD — 13 finding(s) repeated three runs running (e.g. "in a rut::breaker"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
+- teacher: OVER-BUDGET — 16 findings against a ceiling of 14. An unreadable list is an unread list.
 
 ## If we expanded
 Pricing 50 more cards would unlock 17 artist cohorts and make 2018 catalogue cards analysable. That is Tyler's call, not the machine's.
@@ -64,7 +64,7 @@ Gaps in what we watch:
 
 **Chat (12):** top — The Today screen carries 17 sections: The Daily Three, 🗳 Rip or Hold?, Biggest movers, Set the app up for you, Movers, Release radar… *[QUEUE]*
 
-*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 0 ACT NOW, 9 QUEUE, 8 WATCH, 25 filed without surfacing, 4 confirmations.*
+*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 0 ACT NOW, 9 QUEUE, 8 WATCH, 24 filed without surfacing, 4 confirmations.*
 ## The creator cheat code
 *Could somebody open this, hit record within two minutes, and sound like the most informed voice in the hobby without pausing to look anything up? Every pause is a cut.*
 - **a visual that runs itself** — 35 card images minted today. *The gap is that they are files in a repo. A creator needs them one tap from the angle they picked, not from a folder.*
@@ -82,9 +82,8 @@ Nothing unusual, or not enough history to tell — 5 days of tape so far. Anomal
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
 
 ## Something is slipping
-- **unsaved** — 2 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
 - **ignored** — 6 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
-- **drift** — 7 script(s) are not referenced anywhere: backfill-artists.mjs, build-faq.mjs, collision-guard.mjs, discovery-sweep.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
+- **drift** — 8 script(s) are not referenced anywhere: backfill-artists.mjs, build-faq.mjs, centering.mjs, collision-guard.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
 - **drift** — 46 JSON files in research/pulse. *A directory nobody can scan is a directory where something goes missing without being noticed.*
 
 ## Legal standing

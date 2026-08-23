@@ -418,9 +418,9 @@
    "id": "ebaysold-has-no-window",
    "claim": "PPT's ebaySold graded aggregates (psa8/9/10 count, median, min, max) carry NO time window and no parameter controls one. The days parameter drives priceHistory only. Therefore a graded median from this source is a historical average of unknown period, not a current price. A separate field, smartMarketPrice, DOES carry a window (daysUsed) and a confidence, and is the only defensible graded figure available.",
    "sources": [
-    "PPT /api/v2/cards 400 response listing allowedParameters — period, from, to and window all rejected (checked 2026-08-23)",
-    "Measured: across days=7/90/180 metadata.historyWindow changed while the graded aggregate stayed identical (White Kyurem EX, tcgPlayerId 90589, psa10 n=40 median $168.50)",
-    "Measured: dateRangeStart/End spans across 309 graded cards vary 0-513 days, earliest 2025-03-15"
+    "PRIMARY — the provider's own API: a 400 from /api/v2/cards listing allowedParameters, with period, from, to and window all rejected (checked 2026-08-23)",
+    "PRIMARY — our own measurement: across days=7/90/180 metadata.historyWindow changed while the graded aggregate stayed byte-identical (White Kyurem EX, tcgPlayerId 90589, psa10 n=40, median $168.50)",
+    "PRIMARY — our own catalogue: dateRangeStart/End spans across 309 graded cards in data/enrichment-raw.ndjson vary 0-513 days, earliest 2025-03-15"
    ],
    "verified": "2026-08-23",
    "verifier": "cc",

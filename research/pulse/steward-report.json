@@ -1,15 +1,8 @@
 {
- "generatedAt": "2026-08-23T08:43:59.368Z",
+ "generatedAt": "2026-08-23T08:52:01.166Z",
  "role": "Keeps the work organised, saved and on track. Silent unless something is genuinely slipping — a day with nothing to say is a day it did its job.",
- "speaking": 4,
+ "speaking": 3,
  "speak": [
-  {
-   "kind": "unsaved",
-   "what": "2 hand-written file(s) changed and not committed.",
-   "why": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
-   "owner": "chat",
-   "confidence": "OBSERVED"
-  },
   {
    "kind": "ignored",
    "what": "6 supervisor problem(s) are open.",
@@ -19,7 +12,7 @@
   },
   {
    "kind": "drift",
-   "what": "7 script(s) are not referenced anywhere: backfill-artists.mjs, build-faq.mjs, collision-guard.mjs, discovery-sweep.mjs.",
+   "what": "8 script(s) are not referenced anywhere: backfill-artists.mjs, build-faq.mjs, centering.mjs, collision-guard.mjs.",
    "why": "A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.",
    "owner": "chat",
    "confidence": "OBSERVED"
@@ -33,7 +26,8 @@
   }
  ],
  "quiet": [
+  "everything hand-written is committed",
   "13 open commitment(s), all recent",
-  "343 commits / 30 written records in the last few days"
+  "345 commits / 30 written records in the last few days"
  ]
 }
