@@ -271,7 +271,7 @@ else {
       const axis = a.artist !== b.artist ? "different illustrators"
                  : `${yr(a)} against ${yr(b)}`;
       F("the battle", `${m}: ${a.artist} or ${b.artist}`,
-        "same Pokemon, comparable standing, different hands or eras",
+        "name + price within 45% + differing artist field or releaseDate",
         [a.id, b.id],
         `Two versions of the same Pokemon within ${Math.round((1 - ratio) * 100)}% of each other on value, so nobody can settle it by pointing at a price. ${axis}.`,
         `${m}. ${a.setName} or ${b.setName}? No wrong answer, but you have one.`);
