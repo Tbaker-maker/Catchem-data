@@ -29,7 +29,7 @@ A product we featured has gone quiet on us. Either it stopped trading or we brok
 - designer: BROKEN RECORD — 6 finding(s) repeated three runs running (e.g. "medium::32 distinct colours"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 - theme-scout: BROKEN RECORD — 22 finding(s) repeated three runs running (e.g. "the one-off::Ken Sugimori drew Ampharos exactly on"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 - teacher: BROKEN RECORD — 12 finding(s) repeated three runs running (e.g. "in a rut::breaker"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
-- steward: BROKEN RECORD — 3 finding(s) repeated three runs running (e.g. "unsaved::2 hand-written file(s) changed and not c"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
+- creator: OVER-BUDGET — 15 findings against a ceiling of 10. An unreadable list is an unread list.
 
 ## If we expanded
 Pricing 50 more cards would unlock 17 artist cohorts and make 2018 catalogue cards analysable. That is Tyler's call, not the machine's.
@@ -76,15 +76,15 @@ Nothing unusual, or not enough history to tell — 5 days of tape so far. Anomal
 
 ## Where today's story goes
 - **X** — "Paldean Fates listings moved -66.7% while its print window closes."
-- **YouTube** — Journey Together Elite Trainer Box — "Sealed carries a 139.4% premium over the cost of its packs bought loose — the widest gap of that kind we track today."
+- **YouTube** — Rebel Clash Elite Trainer Box — "Sealed carries a 376.9% premium over the cost of its packs bought loose — the widest gap of that kind we track today."
 - **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 99.4."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
 
 ## Something is slipping
-- **unsaved** — 2 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
-- **ignored** — 5 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
-- **drift** — 12 script(s) are not referenced anywhere: backfill-artists.mjs, build-faq.mjs, build-mood.mjs, build-promo.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
+- **unsaved** — 4 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
+- **ignored** — 4 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
+- **drift** — 13 script(s) are not referenced anywhere: backfill-artists.mjs, build-faq.mjs, build-lines.mjs, build-mood.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
 - **drift** — 48 JSON files in research/pulse. *A directory nobody can scan is a directory where something goes missing without being noticed.*
 
 ## Legal standing
@@ -107,7 +107,7 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 - **correction-hunter** — You re-check figures that moved. Ask about the ones that never move — a price frozen for a month is a claim too.
 
 ## Who is catching our mistakes
-- **Tyler catches 17 of 24 incidents; the machines catch 7** — *Every guard here was written by the party being checked. If the human keeps finding what the tooling misses, the tooling is calibrated to what I already believed rather than to what actually goes wrong. That is what self-bias looks like from the outside — not a wrong rule, an absent one.*
+- **Tyler catches 18 of 25 incidents; the machines catch 7** — *Every guard here was written by the party being checked. If the human keeps finding what the tooling misses, the tooling is calibrated to what I already believed rather than to what actually goes wrong. That is what self-bias looks like from the outside — not a wrong rule, an absent one.*
 
 ## Post ideas nobody looked for
 - **Ken Sugimori drew Ampharos exactly once** — Ken Sugimori has 729 cards. Exactly one is a Ampharos.
@@ -116,10 +116,10 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 
 ## Design
 1 high, 9 medium across 14 shipped surfaces, 35 minted cards.
-- **build.html** — the accent colour appears 16 times. *Spend it in two places: the active state and the one primary action. Everything else greys.*
+- **build.html** — the accent colour appears 17 times. *Spend it in two places: the active state and the one primary action. Everything else greys.*
 
 ## What the agents cannot answer themselves
-23 open — 16 need eyes on a rendered page, 7 need a decision.
+24 open — 17 need eyes on a rendered page, 7 need a decision.
 - **NEEDS A HUMAN** [theme-scout] 14 Pokémon share the "-eon" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 7 Pokémon share the "ite" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 10 Pokémon share the "-ish" ending — a theme, or a coincidence of naming?

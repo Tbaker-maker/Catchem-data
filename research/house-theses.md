@@ -2092,3 +2092,39 @@ THE FIXES:
 THE RULE: **no control may require another control to have been used first.** If
 one genuinely must, it says so on screen at the moment of the click — never
 nothing.
+
+## ASKING INVITES DISAGREEMENT, ASSERTING INVITES CORRECTION (Tyler, Aug 23 2026)
+"I'd like us to help with the text ideas. I'm stumped myself and shouldn't be
+with our tools. Options, not just one. The option should ALWAYS spark
+conversation."
+
+THE EVIDENCE, from the only three posts with real numbers, and none of them
+asserts anything:
+- **18,800** — *"It's wild to think the original Charizard artist is still making
+  cards to this day"*: a shared observation with an implicit "right?"
+- **791** — *"Late night check-in. Who's still awake?"*: a question answerable
+  in one word
+- **93** — *"Only Good Vibes. Pass it along & see it grow"*: a call to
+  participate
+
+**Every one leaves room for a reply.** And that is our slop law arriving at the
+same place from a different direction: **asserting invites correction, asking
+invites disagreement, and only one of those is a thread.**
+
+THE RULE, absolute: no generated line may state that something is best, worst,
+most underrated or most anything. **A superlative closes a conversation by being
+either agreed with or wrong.**
+
+FOUR REGISTERS, so fifty creators do not sound alike: **Ask** (answerable in one
+word), **Notice** (the 18,800 shape), **Confess** (relatability outperforms
+authority), **Invite** (add to it rather than judge it).
+
+AND THEY ARE OPTIONS, NEVER A FINISHED POST. Fifty people posting an identical
+generated sentence is a bot farm. The panel says "tap one, then make it yours"
+because the last edit has to be theirs.
+
+MY OWN CHECK MISSED ONE: I generated *"This one doesn't get talked about
+enough"* and my assertion test passed it, because I had only looked for
+superlatives. **Claiming under-appreciation is an assertion too** — it is a
+claim about what other people have failed to notice. Now a question: *"Does this
+one get talked about enough?"*

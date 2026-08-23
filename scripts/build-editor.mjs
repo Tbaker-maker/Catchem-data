@@ -139,6 +139,14 @@ select:focus,input:focus{outline:none;border-color:var(--soft)}
 .pocket:hover .own{opacity:1}
 .pocket .own.yes{opacity:1;background:var(--soft);color:var(--ink)}
 .status.bad{color:var(--warn)}
+.lines{margin-bottom:14px}
+.lines .lhead{font:500 10.5px var(--mono);color:var(--faint);letter-spacing:.16em;margin-bottom:9px}
+.lineopt{display:block;width:100%;text-align:left;background:var(--panel);border:1px solid var(--line);
+  border-radius:11px;padding:12px 15px;margin-bottom:7px;cursor:pointer;transition:border-color .16s var(--ease)}
+.lineopt:hover{border-color:var(--live)}
+.lineopt .tag2{display:inline-block;font:500 9px var(--mono);color:var(--faint);letter-spacing:.14em;
+  border:1px solid var(--line);border-radius:5px;padding:2px 6px;margin-right:9px;vertical-align:1px}
+.lineopt .txt{font:300 16px var(--body);color:var(--text)}
 .acts{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
 button.pri{background:var(--live);color:var(--ink);border:0;border-radius:13px;padding:14px 26px;
   font:600 15px var(--body);cursor:pointer;transition:opacity .18s var(--ease)}
@@ -244,6 +252,7 @@ summary:before{content:"→ ";color:var(--faint)}
 <div class="binder" id="tray"></div>
 <div class="status" id="st"></div>
 <div class="tally" id="tally" hidden></div>
+<div class="lines" id="lines" hidden></div>
 <input id="label" placeholder="Your line — or leave it blank and let the cards talk" style="margin-bottom:18px">
 
 <div class="acts">
@@ -261,6 +270,7 @@ not a Pokémon decision, and you can still use them.</div>
 <script>
 const THEMES = ${JSON.stringify(themes?.themes ?? [])};
 const SETS = ${JSON.stringify(sets)};
+${await (async () => { const { readFile: rf } = await import('node:fs/promises'); const t = JSON.parse(await rf(join(ROOT,'data/card-text.json'),'utf-8')).cards; const slim = {}; for (const [k,v] of Object.entries(t)) if (v.a && v.a.length) slim[k] = { a: v.a.slice(0,1) }; const eng = await rf(join(ROOT,'scripts/line-engine.js'),'utf-8'); return eng.replace('__CARD_TEXT__', JSON.stringify(slim)); })()}
 const MOODS = ${JSON.stringify(Object.values((await J('data/moods.json'))?.moods ?? {}).map(m => ({ id: m.id, label: m.label, emoji: m.emoji, say: m.say, cards: (m.cards ?? []).slice(0, 24).map(c => ({ id: c.id, matched: c.matched, why: c.why })) })))};
 const CARD_INDEX = ${JSON.stringify(index)};
 // Sourced facts, so the 'story' shape has something true to build on. Only
@@ -821,6 +831,37 @@ function reportImages(){
 }
 window.imgOk = imgOk; window.imgBad = imgBad;
 
+// LINE SUGGESTIONS. Options, never a finished post — fifty creators posting an
+// identical generated sentence is a bot farm, and the whole point is that each
+// register sounds like a different person.
+function renderLines(){
+  const box = el("lines");
+  if (!box) return;
+  if (!tray.length) { box.hidden = true; return; }
+  const themeName = fTheme ? (THEMES.find(x => x.id === fTheme) || {}).name : null;
+  const opts = lineOptions(tray, themeName);
+  if (!opts.length) { box.hidden = true; return; }
+  box.hidden = false;
+  box.innerHTML = "";
+  const h = document.createElement("div");
+  h.className = "lhead";
+  h.textContent = "SOMETHING TO SAY — TAP ONE, THEN MAKE IT YOURS";
+  box.appendChild(h);
+  for (const o of opts) {
+    const b = document.createElement("button");
+    b.className = "lineopt";
+    const tg = document.createElement("span");
+    tg.className = "tag2";
+    tg.textContent = o.label.toUpperCase();
+    const tx = document.createElement("span");
+    tx.className = "txt";
+    tx.textContent = o.text;
+    b.appendChild(tg); b.appendChild(tx);
+    b.onclick = () => { el("label").value = o.text; blob = null; };
+    box.appendChild(b);
+  }
+}
+
 function render(){
   const L = LAYOUTS[tray.length];
   const box = el("tray");
@@ -835,6 +876,7 @@ function render(){
   for (let i = tray.length; i < slots; i++) html += '<div class="pocket"></div>';
   box.innerHTML = html || '<div class="pocket"></div><div class="pocket"></div><div class="pocket"></div>';
   const allowed = checkIntent();
+  renderLines();
   renderStreak();
   renderTally();
   el("plabel").textContent = L ? ("YOUR PAGE — " + L.name.toUpperCase()) : "YOUR PAGE";
