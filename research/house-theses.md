@@ -1635,3 +1635,31 @@ rewrites every morning is a fix that lasts until 04:00 UTC.
 ITS BLIND SPOT, declared and unfixable: **it cannot SEE.** It counts and
 measures. It cannot tell you a page is ugly, only that the choices behind it
 were not made deliberately. Taste still needs eyes.
+
+## NOBODY SEES MORE THAN HALF (Tyler, Aug 23 2026)
+"It'll need to work with CC and you, who can see more than you guys. Feed it
+code and vice versa so everyone sees everything in their own way."
+
+The designer counts and cannot see anything rendered. CC sees the rendered page
+and cannot reason about what produced it. Chat reads the code and cannot see a
+single pixel. Tyler has taste, which none of the three approximates.
+
+**So the handoff is structural rather than hoped for.** research/VISUAL-REVIEW-PROTOCOL.md:
+the designer writes two lists every run - what it SETTLED, and what it measured
+but cannot judge. CC answers the second from screenshots by writing back into
+the same file. Chat fixes at the generator. A question with an answer is never
+asked again.
+
+THE PHRASING RULE, which is most of the value: every question carries its
+number. An agent that says "the typography feels inconsistent" has handed over
+its uncertainty and none of its evidence. One that says "seven corner radii:
+6, 9, 10, 11, 13, 14, 16" has done the work and left exactly one judgment to a
+human - the only part it was never able to do.
+
+AND THE FIRST THING THE LOOP CAUGHT WAS MINE. Within a minute of existing it
+flagged seven corner radii on build.html - the page I had just redesigned while
+auditing everyone else for exactly that failure. Collapsed to three steps: 9
+for small controls, 13 for panels, 16 for the binder.
+
+That is the loop working on the person who built the loop, which is the only
+version worth having.

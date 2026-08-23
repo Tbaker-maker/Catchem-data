@@ -67,7 +67,7 @@ h1 em{font-style:normal;color:var(--live)}
 .step{min-width:0}
 .step .n{font:500 11px/1 var(--mono);color:var(--faint);letter-spacing:.14em;display:block;margin-bottom:10px}
 .step .t{font:600 14.5px/1.3 var(--body);margin-bottom:12px;display:block}
-select,input{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:10px;
+select,input{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:9px;
   color:var(--text);padding:13px 14px;font:400 14.5px var(--body);transition:border-color .18s var(--ease)}
 select:focus,input:focus{outline:none;border-color:var(--live)}
 .chips{display:flex;flex-wrap:wrap;gap:7px}
@@ -105,14 +105,14 @@ select:focus,input:focus{outline:none;border-color:var(--live)}
 .status{font:400 13px var(--mono);color:var(--faint);margin-bottom:20px;min-height:18px}
 .status.bad{color:var(--warn)}
 .acts{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
-button.pri{background:var(--live);color:var(--ink);border:0;border-radius:11px;padding:14px 26px;
+button.pri{background:var(--live);color:var(--ink);border:0;border-radius:13px;padding:14px 26px;
   font:600 15px var(--body);cursor:pointer;transition:opacity .18s var(--ease)}
 button.pri:hover{opacity:.9}
-button.sec{background:transparent;color:var(--soft);border:1px solid var(--line);border-radius:11px;
+button.sec{background:transparent;color:var(--soft);border:1px solid var(--line);border-radius:13px;
   padding:14px 20px;font:400 14.5px var(--body);cursor:pointer;transition:all .18s var(--ease)}
 button.sec:hover{border-color:var(--faint);color:var(--text)}
 button:disabled{opacity:.32;cursor:not-allowed}
-canvas{max-width:100%;border-radius:14px;margin-top:24px;display:none;border:1px solid var(--line)}
+canvas{max-width:100%;border-radius:13px;margin-top:24px;display:none;border:1px solid var(--line)}
 
 /* Search — the escape hatch, deliberately quiet. */
 details{margin-bottom:36px;border-top:1px solid var(--line);padding-top:18px}
@@ -124,7 +124,7 @@ summary:before{content:"→ ";color:var(--faint)}
   max-height:290px;overflow-y:auto;padding:3px}
 .hit{cursor:pointer;text-align:center;border-radius:9px;padding:6px;transition:background .16s var(--ease)}
 .hit:hover{background:var(--raise)}
-.hit img{width:100%;aspect-ratio:745/1040;object-fit:contain;border-radius:6px;background:var(--raise)}
+.hit img{width:100%;aspect-ratio:745/1040;object-fit:contain;border-radius:9px;background:var(--raise)}
 .hit b{display:block;font:600 11px/1.3 var(--body);margin-top:6px}
 .hit i{display:block;font-style:normal;font:400 9.5px var(--mono);color:var(--faint);margin-top:2px}
 .hit .nocred{color:var(--warn)}

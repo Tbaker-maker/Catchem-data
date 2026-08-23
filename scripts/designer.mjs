@@ -153,6 +153,47 @@ for (const file of SHIPPED) {
     "Raise the floor to 15px on anything meant to be read.");
 }
 
+// ── FOR EYES ──────────────────────────────────────────────────────────────
+// Measured but not judgeable from here. Each is a question with its number
+// attached - "check the spacing" is not a question; "these differ by 3px, is
+// that deliberate?" is one somebody can answer in five seconds.
+const forEyes = [];
+const E = (surface, question, measured) => forEyes.push({ surface, question, measured, answeredBy: null, answer: null });
+
+{
+  const prior = await readFile(join(ROOT, "research/pulse/design-audit.json"), "utf-8")
+    .then(t => JSON.parse(t).forEyes ?? []).catch(() => []);
+  const settled = new Set(prior.filter(q => q.answer).map(q => q.question));
+
+  for (const file of SHIPPED) {
+    const src = await readFile(join(ROOT, "research/assets", file), "utf-8").catch(() => "");
+    if (!src) continue;
+
+    const sizes = [...new Set((src.match(/font-size:\s*(\d+(?:\.\d+)?)px/g) ?? [])
+      .map(m => Number(m.match(/[\d.]+/)[0])))].sort((a, b) => a - b);
+    // Sizes within 2px of each other are almost certainly the same intent typed
+    // twice. Almost - which is why it asks instead of collapsing them.
+    const nearDupes = sizes.filter((n, i) => i && n - sizes[i - 1] <= 2);
+    if (nearDupes.length) {
+      const q = `${file}: ${nearDupes.length} font sizes sit within 2px of a neighbour (${nearDupes.join(", ")}). Are those distinct steps or the same intent typed twice?`;
+      if (!settled.has(q)) E(file, q, { sizes, nearDupes });
+    }
+
+    const radii = [...new Set((src.match(/border-radius:\s*(\d+)px/g) ?? []).map(m => Number(m.match(/\d+/)[0])))];
+    if (radii.length > 4) {
+      const q = `${file}: ${radii.length} corner radii in use (${radii.sort((a,b)=>a-b).join(", ")}). Does the page read as one family of shapes, or several?`;
+      if (!settled.has(q)) E(file, q, { radii });
+    }
+  }
+
+  // The one nobody can answer from source: does the composed image LOOK right.
+  const cards = (await readdir(join(ROOT, "research/pulse/cards")).catch(() => [])).filter(f => f.endsWith(".png"));
+  if (cards.length) {
+    const q = `${cards.length} rendered card(s) exist. Open the most recent: does the artwork breathe, or is it crowded by the frame? Nothing in source can answer that.`;
+    if (!settled.has(q)) E("cards", q, { count: cards.length });
+  }
+}
+
 const bySeverity = { high: 0, medium: 0, low: 0 };
 for (const f of findings) bySeverity[f.severity]++;
 
@@ -161,7 +202,15 @@ await (await import("node:fs/promises")).writeFile(join(ROOT, "research/pulse/de
   audited: `${SHIPPED.length} shipped surfaces, ${(await readdir(join(ROOT, "research/pulse/cards")).catch(() => [])).filter(f => f.endsWith(".svg")).length} minted cards`,
   principle: "A linter asks whether the CSS is valid. A design lead asks whether the page was DESIGNED. The tells of an undesigned page are countable: too many type sizes, too many near-identical greys, an accent used everywhere so it accents nothing.",
   blindSpot: "It cannot SEE. It counts and measures. It cannot tell you a page is ugly, only that the choices behind it were not made deliberately.",
-  counts: bySeverity, findings }, null, 2));
+  counts: bySeverity, findings,
+  forEyes,
+  handoff: {
+    designer: "counts and measures. Cannot see anything rendered.",
+    cc: "sees the rendered page and real browser behaviour. Cannot reason about what produced it.",
+    chat: "reads the code and knows what generated what. Cannot see a single pixel.",
+    tyler: "taste, which none of the three approximates.",
+    protocol: "The designer asks; CC answers from screenshots by writing answeredBy and answer back into forEyes; chat fixes at the generator. A question with an answer is never asked again."
+  } }, null, 2));
 
 if (bySeverity.high) {
   console.error(`\n✗ DESIGN — ${bySeverity.high} high · ${bySeverity.medium} medium · ${bySeverity.low} low\n`);
@@ -169,6 +218,7 @@ if (bySeverity.high) {
     console.error(`   ${f.surface}: ${f.what}\n     ${f.why}\n     → ${f.fix}`);
   console.error("");
 } else {
+  if (forEyes.length) { console.log(`\n  ${forEyes.length} question(s) only eyes can settle:`); for (const q of forEyes.slice(0, 4)) console.log(`   ${q.question}`); }
   console.log(`✓ design: ${findings.length} note(s) across ${SHIPPED.length} surfaces · ${bySeverity.medium} medium, ${bySeverity.low} low`);
   for (const f of findings.slice(0, 5)) console.log(`  [${f.severity}] ${f.surface}: ${f.what}`);
 }

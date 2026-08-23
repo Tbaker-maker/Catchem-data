@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-23T06:35:55.556Z",
+  "generatedAt": "2026-08-23T06:43:44.481Z",
   "audited": "10 shipped surfaces, 35 minted cards",
   "principle": "A linter asks whether the CSS is valid. A design lead asks whether the page was DESIGNED. The tells of an undesigned page are countable: too many type sizes, too many near-identical greys, an accent used everywhere so it accents nothing.",
   "blindSpot": "It cannot SEE. It counts and measures. It cannot tell you a page is ugly, only that the choices behind it were not made deliberately.",
@@ -79,5 +79,232 @@
       "why": "A card in the system default is a card that could have come from anywhere. The typeface is most of what makes it ours at a glance.",
       "fix": "Set Syne, Sora or JetBrains Mono on every text element."
     }
-  ]
+  ],
+  "forEyes": [
+    {
+      "surface": "build.html",
+      "question": "build.html: 1 font sizes sit within 2px of a neighbour (14). Are those distinct steps or the same intent typed twice?",
+      "measured": {
+        "sizes": [
+          13,
+          14,
+          17
+        ],
+        "nearDupes": [
+          14
+        ]
+      },
+      "answeredBy": null,
+      "answer": null
+    },
+    {
+      "surface": "corrections.html",
+      "question": "corrections.html: 5 font sizes sit within 2px of a neighbour (13, 14, 14.5, 15, 15.5). Are those distinct steps or the same intent typed twice?",
+      "measured": {
+        "sizes": [
+          12.5,
+          13,
+          14,
+          14.5,
+          15,
+          15.5
+        ],
+        "nearDupes": [
+          13,
+          14,
+          14.5,
+          15,
+          15.5
+        ]
+      },
+      "answeredBy": null,
+      "answer": null
+    },
+    {
+      "surface": "coverage.html",
+      "question": "coverage.html: 2 font sizes sit within 2px of a neighbour (14, 15). Are those distinct steps or the same intent typed twice?",
+      "measured": {
+        "sizes": [
+          12.5,
+          14,
+          15,
+          21,
+          30
+        ],
+        "nearDupes": [
+          14,
+          15
+        ]
+      },
+      "answeredBy": null,
+      "answer": null
+    },
+    {
+      "surface": "creators.html",
+      "question": "creators.html: 4 font sizes sit within 2px of a neighbour (13, 13.5, 14, 14.5). Are those distinct steps or the same intent typed twice?",
+      "measured": {
+        "sizes": [
+          12.5,
+          13,
+          13.5,
+          14,
+          14.5,
+          20,
+          32
+        ],
+        "nearDupes": [
+          13,
+          13.5,
+          14,
+          14.5
+        ]
+      },
+      "answeredBy": null,
+      "answer": null
+    },
+    {
+      "surface": "faq.html",
+      "question": "faq.html: 1 font sizes sit within 2px of a neighbour (13.5). Are those distinct steps or the same intent typed twice?",
+      "measured": {
+        "sizes": [
+          13,
+          13.5
+        ],
+        "nearDupes": [
+          13.5
+        ]
+      },
+      "answeredBy": null,
+      "answer": null
+    },
+    {
+      "surface": "image-contact-sheet.html",
+      "question": "image-contact-sheet.html: 2 font sizes sit within 2px of a neighbour (12.5, 13). Are those distinct steps or the same intent typed twice?",
+      "measured": {
+        "sizes": [
+          12,
+          12.5,
+          13,
+          22
+        ],
+        "nearDupes": [
+          12.5,
+          13
+        ]
+      },
+      "answeredBy": null,
+      "answer": null
+    },
+    {
+      "surface": "methodology.html",
+      "question": "methodology.html: 1 font sizes sit within 2px of a neighbour (14.5). Are those distinct steps or the same intent typed twice?",
+      "measured": {
+        "sizes": [
+          14,
+          14.5,
+          21,
+          34
+        ],
+        "nearDupes": [
+          14.5
+        ]
+      },
+      "answeredBy": null,
+      "answer": null
+    },
+    {
+      "surface": "print-watch.html",
+      "question": "print-watch.html: 4 font sizes sit within 2px of a neighbour (10.5, 12, 13, 13.5). Are those distinct steps or the same intent typed twice?",
+      "measured": {
+        "sizes": [
+          10,
+          10.5,
+          12,
+          13,
+          13.5,
+          20,
+          30
+        ],
+        "nearDupes": [
+          10.5,
+          12,
+          13,
+          13.5
+        ]
+      },
+      "answeredBy": null,
+      "answer": null
+    },
+    {
+      "surface": "the-board.html",
+      "question": "the-board.html: 1 font sizes sit within 2px of a neighbour (13). Are those distinct steps or the same intent typed twice?",
+      "measured": {
+        "sizes": [
+          11,
+          13,
+          30
+        ],
+        "nearDupes": [
+          13
+        ]
+      },
+      "answeredBy": null,
+      "answer": null
+    },
+    {
+      "surface": "the-board.html",
+      "question": "the-board.html: 5 corner radii in use (3, 5, 6, 10, 20). Does the page read as one family of shapes, or several?",
+      "measured": {
+        "radii": [
+          3,
+          5,
+          6,
+          10,
+          20
+        ]
+      },
+      "answeredBy": null,
+      "answer": null
+    },
+    {
+      "surface": "the-pulse.html",
+      "question": "the-pulse.html: 5 font sizes sit within 2px of a neighbour (11, 12, 13, 15, 16). Are those distinct steps or the same intent typed twice?",
+      "measured": {
+        "sizes": [
+          10,
+          11,
+          12,
+          13,
+          15,
+          16,
+          34
+        ],
+        "nearDupes": [
+          11,
+          12,
+          13,
+          15,
+          16
+        ]
+      },
+      "answeredBy": null,
+      "answer": null
+    },
+    {
+      "surface": "cards",
+      "question": "35 rendered card(s) exist. Open the most recent: does the artwork breathe, or is it crowded by the frame? Nothing in source can answer that.",
+      "measured": {
+        "count": 35
+      },
+      "answeredBy": null,
+      "answer": null
+    }
+  ],
+  "handoff": {
+    "designer": "counts and measures. Cannot see anything rendered.",
+    "cc": "sees the rendered page and real browser behaviour. Cannot reason about what produced it.",
+    "chat": "reads the code and knows what generated what. Cannot see a single pixel.",
+    "tyler": "taste, which none of the three approximates.",
+    "protocol": "The designer asks; CC answers from screenshots by writing answeredBy and answer back into forEyes; chat fixes at the generator. A question with an answer is never asked again."
+  }
 }
