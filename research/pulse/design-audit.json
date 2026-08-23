@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-23T21:37:57.215Z",
-  "audited": "12 shipped surfaces, 35 minted cards",
+  "generatedAt": "2026-08-23T21:46:58.604Z",
+  "audited": "14 shipped surfaces, 35 minted cards",
   "principle": "A linter asks whether the CSS is valid. A design lead asks whether the page was DESIGNED. The tells of an undesigned page are countable: too many type sizes, too many near-identical greys, an accent used everywhere so it accents nothing.",
   "blindSpot": "It cannot SEE. It counts and measures. It cannot tell you a page is ugly, only that the choices behind it were not made deliberately.",
   "counts": {
     "high": 0,
-    "medium": 7,
+    "medium": 9,
     "low": 1
   },
   "findings": [
@@ -29,6 +29,20 @@
       "what": "5 odd-numbered spacing values: 13, 17, 9, 15, 3",
       "why": "Odd values usually mean nudging until it looked right rather than working from a scale. It is invisible individually and reads as sloppy in aggregate.",
       "fix": "Snap to a 4px rhythm."
+    },
+    {
+      "surface": "live-audience.html",
+      "severity": "medium",
+      "what": "--faint on the background is 3.2:1",
+      "why": "WCAG AA wants 4.5:1 for body text and 3:1 for large text. Below 3 it is unreadable on a phone in daylight, which is where this is actually seen.",
+      "fix": "Lighten --faint until it clears 4.5, or reserve it for text at 18px and above."
+    },
+    {
+      "surface": "live-presenter.html",
+      "severity": "medium",
+      "what": "--faint on the background is 3.2:1",
+      "why": "WCAG AA wants 4.5:1 for body text and 3:1 for large text. Below 3 it is unreadable on a phone in daylight, which is where this is actually seen.",
+      "fix": "Lighten --faint until it clears 4.5, or reserve it for text at 18px and above."
     },
     {
       "surface": "rip.html",
@@ -164,6 +178,21 @@
           13.6,
           14.6,
           16
+        ]
+      },
+      "answeredBy": null,
+      "answer": null
+    },
+    {
+      "surface": "live-presenter.html",
+      "question": "live-presenter.html: 1 font sizes sit within 12% of a neighbour (21). Are those distinct steps or the same intent typed twice?",
+      "measured": {
+        "sizes": [
+          19,
+          21
+        ],
+        "nearDupes": [
+          21
         ]
       },
       "answeredBy": null,

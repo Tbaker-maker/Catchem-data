@@ -162,6 +162,13 @@
    "coveredBy": "the post-outcome log, and Tyler",
    "reviewed": "2026-08-23",
    "history": "Written after every button on the portal was found dead — grab, setup, pick and toX all declared, none on window, and a top-level await inside a non-async grab() meant the whole script never ran. It parsed perfectly the entire time."
+  },
+  "live-smoke.mjs": {
+   "cannotCatch": "Whether the slides are worth talking about. It proves the two views stay synced, that the presenter always sees a confidence tier, and that no unverified claim reaches the overlay as stated fact. It has no view on whether a prompt would actually start a good segment.",
+   "knownPatterns": [],
+   "coveredBy": "Tyler using it live, and the post-outcome log",
+   "reviewed": "2026-08-23",
+   "history": "Found two real bugs on its first run: BroadcastChannel does not replay, so the audience opened blank whenever it started after the presenter, which is the normal order; and the audience posted its hello BEFORE assigning onmessage, so it could not hear the answer."
   }
  }
 }

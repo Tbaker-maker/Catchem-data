@@ -1,0 +1,48 @@
+<!doctype html><meta charset="utf-8"><title>Going Live — audience</title>
+<meta name="robots" content="noindex,nofollow,noarchive">
+<style>@import url('https://fonts.googleapis.com/css2?family=Syne:wght@800&family=Sora:wght@300;400;600&family=JetBrains+Mono:wght@500&display=swap');
+:root{--ink:#0a0c12;--panel:#11141c;--line:#20252f;--text:#e8ebf2;--soft:#8a93a6;
+  --faint:#5a6273;--live:#36d399;--warn:#d9a441;--bad:#e0705a}
+*{box-sizing:border-box}body{margin:0;background:var(--ink);color:var(--text);
+  font:300 17px/1.55 'Sora',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body{background:transparent;height:100vh;display:flex;align-items:flex-end;padding:0}
+.lower{width:100%;background:linear-gradient(180deg,transparent,rgba(10,12,18,.92) 34%);
+  padding:70px 56px 46px;display:flex;gap:30px;align-items:flex-end}
+.lower img{width:186px;border-radius:11px;flex:none;box-shadow:0 18px 44px rgba(0,0,0,.6)}
+.txt{min-width:0;padding-bottom:8px}
+h1{font:800 clamp(30px,4vw,54px)/1.04 'Syne',system-ui,sans-serif;margin:0 0 10px;letter-spacing:-.025em}
+.sub{color:var(--soft);font:400 21px 'JetBrains Mono',monospace}
+.mark{position:fixed;top:34px;right:44px;font:600 22px 'Sora',sans-serif;color:var(--live);opacity:.9}
+.hide{display:none}
+</style>
+<div class="mark">Catch'em</div>
+<div class="lower" id="lower">
+  <img id="img" alt="" class="hide">
+  <div class="txt"><h1 id="title"></h1><div class="sub" id="sub"></div></div>
+</div>
+<script>
+// Follows the presenter. No controls at all — a stray click on an overlay
+// during a live show is a mistake nobody can undo.
+const chan = new BroadcastChannel("catchem-live");
+const imgUrl = id => "https://images.pokemontcg.io/" + id.slice(0, id.lastIndexOf("-")) + "/" + id.slice(id.lastIndexOf("-") + 1) + "_hires.png";
+// BROADCASTCHANNEL DOES NOT REPLAY, and the audience window normally opens
+// AFTER the presenter — you set up OBS, then open the dock. Without this the
+// overlay stays blank until the first advance, which is a blank lower-third at
+// the moment somebody starts talking. So: ask on load, and again on focus in
+// case OBS reloaded the source mid-show.
+chan.onmessage = (e) => {
+  if (e.data?.type !== "slide") return;
+  const s = e.data.slide, a = s.audience || {};
+  document.getElementById("title").textContent = a.headline || "";
+  document.getElementById("sub").textContent = a.sub || "";
+  const card = s.card || (s.cards || [])[0];
+  const img = document.getElementById("img");
+  if (card) { img.src = imgUrl(card); img.classList.remove("hide"); }
+  else img.classList.add("hide");
+};
+// LISTEN FIRST, THEN ASK. This used to post hello before assigning onmessage,
+// so it could not hear the answer — invisible until something drove both
+// windows at once.
+chan.postMessage({ type: "hello" });
+window.addEventListener("focus", () => chan.postMessage({ type: "hello" }));
+</script>

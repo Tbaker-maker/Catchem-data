@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T21:37:54.568Z",
+ "generatedAt": "2026-08-23T21:46:56.438Z",
  "date": "2026-08-23",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -8,7 +8,7 @@
   "correction-hunter: 3 finding(s)",
   "review-agents: 0 finding(s)",
   "decision-audit: 0 finding(s)",
-  "designer: 8 finding(s)",
+  "designer: 10 finding(s)",
   "theme-scout: 23 finding(s)",
   "teacher: 15 finding(s)",
   "api-strategist: 8 finding(s)",
@@ -584,7 +584,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "1 hand-written file(s) changed and not committed.",
+   "what": "4 hand-written file(s) changed and not committed.",
    "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -632,7 +632,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "47 JSON files in research/pulse.",
+   "what": "48 JSON files in research/pulse.",
    "do": "A directory nobody can scan is a directory where something goes missing without being noticed.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -776,7 +776,7 @@
   {
    "from": "api-strategist",
    "owner": "tyler",
-   "what": "the paid provider is called from 119 places",
+   "what": "the paid provider is called from 121 places",
    "do": "list what ONLY the paid provider gives us; if that list is short, either use more of it or stop paying for it",
    "score": 30,
    "band": "NOTE ONLY",

@@ -577,6 +577,44 @@
     "guards"
    ],
    "recheckAfter": "2027-02-23"
+  },
+  {
+   "id": "obs-two-surface-pattern",
+   "claim": "OBS captures specific SOURCES, not the whole screen, so a separate browser window is invisible to a stream by default. OBS also supports Custom Browser Docks (Docks > Custom Browser Docks) which are private panels visible only to the presenter, and Browser Sources inside a scene which ARE visible to the audience. Both take a plain URL.",
+   "sources": [
+    "sharespeak.co OBS teleprompter guide 2026",
+    "transparentprompter.com",
+    "obsproject.com forum thread on second outputs"
+   ],
+   "verified": "2026-08-23",
+   "verifier": "chat",
+   "confidence": "VERIFIED",
+   "falsifier": "OBS removing custom browser docks, or a version where docks appear in captures",
+   "note": "THIS IS THE WHOLE ARCHITECTURE, handed over for free: two URLs from one session. The presenter pastes one into a Custom Browser Dock and the other into a Browser Source, and OBS does the rest. No plugin, no install, no integration to maintain. It also means the private/public split is enforced by OBS rather than by us, which is far safer than us trying to hide things.",
+   "usedBy": [
+    "live"
+   ],
+   "recheckAfter": "2027-02-23"
+  },
+  {
+   "id": "teleprompters-supply-no-content",
+   "claim": "Every teleprompter tool surveyed scrolls text the creator has already written. Teleprompter.com, PromptSmart, FlowPrompter, Speakflow, StreamYard's built-in, Online Prompter, Transparent Teleprompter and the Elgato Prompter all take an existing script as input. None supplies subject matter.",
+   "sources": [
+    "teleprompter.com 2026 roundups",
+    "flowprompter.app top-10 2026",
+    "streamyard.com teleprompter guide",
+    "online-prompter.com",
+    "elgato Prompter product page"
+   ],
+   "verified": "2026-08-23",
+   "verifier": "chat",
+   "confidence": "VERIFIED",
+   "falsifier": "a prompter that generates or supplies topic material rather than displaying supplied text",
+   "note": "THE GAP, and it is larger than it first looked. Tyler's idea is not a teleprompter — it is a CONTENT FEED for live, and the entire category is solving the opposite problem. Their users arrive with a script and need help reading it; a card creator going live has plenty to say and needs something to say it ABOUT. Nobody is building that, and we hold 16,468 cards, 33 sourced facts and 287 catalogue findings.",
+   "usedBy": [
+    "live"
+   ],
+   "recheckAfter": "2027-02-23"
   }
  ]
 }
