@@ -1,10 +1,10 @@
 {
- "generatedAt": "2026-08-23T16:20:58.406Z",
+ "generatedAt": "2026-08-23T16:32:20.863Z",
  "role": "Keeps agents current, breaks them out of ruts, and teaches from incidents that actually happened to us. It asks questions; it never rewrites another agent.",
  "counts": {
   "stale": 0,
   "ruts": 9,
-  "postMortem": 6,
+  "postMortem": 4,
   "shared": 1
  },
  "lessons": [
@@ -90,54 +90,36 @@
    "chip": "READ"
   },
   {
-   "agent": "breaker",
-   "kind": "post-mortem",
-   "observation": "an incident in your domain: \"Every rotation repeated itself across a 31-day month boundary (31 %% 5 == 1 %% 5), includi\"",
-   "question": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
-   "why": "a checker reading itself is an untested assumption, which is exactly what the breaker hunts",
-   "confidence": "MEASURED",
-   "chip": "READ"
-  },
-  {
-   "agent": "experience",
-   "kind": "post-mortem",
-   "observation": "an incident in your domain: \"The chase card published the word \"chase\" as its entire explanation — a category label ren\"",
-   "question": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
-   "why": "meaningless published text is a reader-experience failure first",
-   "confidence": "MEASURED",
-   "chip": "READ"
-  },
-  {
-   "agent": "anomaly",
-   "kind": "post-mortem",
-   "observation": "an incident in your domain: \"Published a PSA 10 median with NO time window as a current price, and compared it to a cur\"",
-   "question": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
-   "why": "a number behaving impossibly is what the anomaly watcher exists for",
-   "confidence": "MEASURED",
-   "chip": "READ"
-  },
-  {
-   "agent": "anomaly",
-   "kind": "post-mortem",
-   "observation": "an incident in your domain: \"Sent an \"art post\" card that was a price table with an unexplained alias as its headline, \"",
-   "question": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
-   "why": "a number behaving impossibly is what the anomaly watcher exists for",
-   "confidence": "MEASURED",
-   "chip": "READ"
-  },
-  {
    "agent": "steward",
    "kind": "post-mortem",
-   "observation": "an incident in your domain: \"A composite showed a CARD BACK: image URLs were constructed from card IDs assuming one hos\"",
+   "observation": "an incident in your domain: \"Three secondary sources state Kadabra vanished from the TCG for 26 years (1997-2023). Our \"",
    "question": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
    "why": "staleness is work not being done, which is the steward's subject",
    "confidence": "MEASURED",
    "chip": "READ"
   },
   {
+   "agent": "anomaly",
+   "kind": "post-mortem",
+   "observation": "an incident in your domain: \"The singles-sell refusal matched card NAMES, and /tin/i matches Dra-tin-i, Vic-tin-i, Man-\"",
+   "question": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
+   "why": "a number behaving impossibly is what the anomaly watcher exists for",
+   "confidence": "MEASURED",
+   "chip": "READ"
+  },
+  {
+   "agent": "anomaly",
+   "kind": "post-mortem",
+   "observation": "an incident in your domain: \"Want-list price text was 26px on a 2535px canvas = 4.1px in a Discord preview. A nine-card\"",
+   "question": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
+   "why": "a number behaving impossibly is what the anomaly watcher exists for",
+   "confidence": "MEASURED",
+   "chip": "READ"
+  },
+  {
    "agent": "steward",
    "kind": "post-mortem",
-   "observation": "an incident in your domain: \"Three secondary sources state Kadabra vanished from the TCG for 26 years (1997-2023). Our \"",
+   "observation": "an incident in your domain: \"The 04:00 run FIRED AND FAILED. Withdrawing graded figures made dailyThree.graded falsy → \"",
    "question": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
    "why": "staleness is work not being done, which is the steward's subject",
    "confidence": "MEASURED",

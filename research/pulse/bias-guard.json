@@ -1,15 +1,20 @@
 {
- "generatedAt": "2026-08-23T16:21:04.304Z",
+ "generatedAt": "2026-08-23T16:32:26.335Z",
  "conflict": "The work verifier was written by the party it checks, which chose its rules and their strictness. That cannot be fixed by care — a lenient rule feels like a reasonable rule. It can only be measured.",
  "theScore": "Who catches our errors. If the human keeps finding what the machines miss, the machines are decorative however many there are.",
  "notes": [
-  "2 caught by machines, 13 by Tyler (13% machine)"
+  "7 caught by machines, 13 by Tyler (35% machine)"
  ],
  "problems": [
   {
    "severity": "high",
-   "what": "Tyler catches 13 of 15 incidents; the machines catch 2",
+   "what": "Tyler catches 13 of 20 incidents; the machines catch 7",
    "why": "Every guard here was written by the party being checked. If the human keeps finding what the tooling misses, the tooling is calibrated to what I already believed rather than to what actually goes wrong. That is what self-bias looks like from the outside — not a wrong rule, an absent one."
+  },
+  {
+   "severity": "medium",
+   "what": "1 error class(es) in the ledger have no matching check: sized for the canvas, seen at thumbnail",
+   "why": "I chose which classes the verifier covers, and I am the one it checks. Any class I skipped is a mistake I decided was not worth guarding — which is exactly the decision I should not be making alone."
   }
  ]
 }

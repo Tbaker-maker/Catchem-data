@@ -36,7 +36,7 @@ const problems = [], notes = [];
     const cells = row.split("|").map(c => c.trim());
     const finder = (cells[3] ?? "").toLowerCase();
     if (/tyler|by eye|verifying|noticed/.test(finder)) human++;
-    else if (/guard|pipeline|breaker|audit|assert|lint|agent|test|falsifier/.test(finder)) machine++;
+    else if (/guard|pipeline|breaker|audit|assert|lint|agent|test|falsifier|^cc|\bcc\b|scout|designer|by measuring|by attacking|actions log/.test(finder)) machine++;
   }
   const total = human + machine;
   const machineShare = total ? Math.round(machine / total * 100) : 0;

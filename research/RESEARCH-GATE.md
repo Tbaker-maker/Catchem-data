@@ -103,6 +103,16 @@ fixing the class is.
 
 | 21 | Three secondary sources state Kadabra vanished from the TCG for 26 years (1997-2023). Our own catalogue holds English Kadabra prints from 1999, 2000 and 2002 - the real gap is 21 years | chat, cross-checking a sourced claim against our own primary data before publishing | Secondary consensus contradicted by primary data | The knowledge base entry now cites our catalogue as a source alongside the articles, and the fact records that it was corrected on verification |
 
+| 22 | The editor was DEAD — the emitted inline script did not parse, so the page rendered and did nothing. Every check passed: the file existed, was the right size, the HTML was well-formed | CC, by attacking it | Generated code that never runs | New guard: generated pages must emit JavaScript that parses |
+
+| 23 | The singles-sell refusal matched card NAMES, and /tin/i matches Dra-tin-i, Vic-tin-i, Man-tin-e, Figh-tin-g Energy — 174 real singles read as sealed | CC | Substring where structure exists | Refusal made structural: the card index contains only singles, so nothing to parse |
+
+| 24 | Want-list price text was 26px on a 2535px canvas = 4.1px in a Discord preview. A nine-card want list read as 'nine cards', not 'which ones and what they cost' | CC, by measuring rather than reasoning | Sized for the canvas, seen at thumbnail | Price text now scales to the canvas: 11px at thumbnail regardless of count |
+
+| 25 | The designer's near-neighbour check used an ABSOLUTE 2px gap, flagging faq.html for being typographically CORRECT — 2px is a large step at 12px and invisible at 30px | CC | Absolute where the domain is proportional | Now 12% proportional |
+
+| 26 | The 04:00 run FIRED AND FAILED. Withdrawing graded figures made dailyThree.graded falsy → mint-cards stopped producing that card → the stale copy was deleted → run-tests asserted all four cards UNCONDITIONALLY → failed in the fail-fast gate before the fetch | CC, from the Actions log | A test asserting a FILE rather than a BEHAVIOUR | Cards required exactly when the dailyThree entry that drives them is present; mint-cards wired into the workflow it was never in |
+
 **PATTERN, stated plainly:** 8 of 9 were caught by Tyler, not by the
 machine. Every guard above was built AFTER a human caught something.
 That is the honest state — the machine is now catching prices, but
