@@ -121,6 +121,8 @@ fixing the class is.
 
 | 30 | A fact about Koga's Ninja Trick published beside "The Rocket's Trap" and "Koga" — the matcher compared the FIRST WORD of a card name to the claim, and the sentence contains "The" | Tyler | Token matching, fourth occurrence | Full-name matching with normalised apostrophes; a fact whose card is unavailable is SKIPPED rather than illustrated with a card that shares a word |
 
+| 31 | The angle column returned nothing and said nothing — fCount started at 0 and buildIdeas bailed on it, so clicking an angle before a count failed silently | Tyler | Hidden prerequisite, silent failure | Default count of 2; every control refines and none gates; 35 themes grouped rather than hidden |
+
 **PATTERN, stated plainly:** 8 of 9 were caught by Tyler, not by the
 machine. Every guard above was built AFTER a human caught something.
 That is the honest state — the machine is now catching prices, but

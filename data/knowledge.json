@@ -615,6 +615,26 @@
     "live"
    ],
    "recheckAfter": "2027-02-23"
+  },
+  {
+   "id": "progressive-disclosure-is-for-the-rare",
+   "claim": "Progressive disclosure is for rare controls, never necessary ones. Hiding a core action behind 'more options' is friction dressed as minimalism, and if users cannot find a hidden feature it was not disclosed progressively — it was hidden. For small option sets (3-5) disclosure adds a click without reducing load. ChatGPT converts 95%+ of first visits on one input with no gates.",
+   "sources": [
+    "aiuxdesign.guide progressive disclosure pattern",
+    "uxuiprinciples.com ChatGPT case study",
+    "GitLab Pajamas design system",
+    "Nielsen Norman Group, Progressive Disclosure"
+   ],
+   "verified": "2026-08-23",
+   "verifier": "chat",
+   "confidence": "VERIFIED",
+   "falsifier": "usage data showing a gated flow converting better than an ungated one",
+   "note": "IT NAMED EXACTLY WHAT I BUILT. The editor asked four questions before returning anything, and clicking an angle before a count returned SILENTLY because fCount started at 0. Tyler said the angle section was 'not even working' and he was right — a hidden prerequisite that fails without explanation is the worst possible failure, because the feature looks broken and says nothing. Fixed by defaulting the count and grouping the 35 themes rather than hiding them: at that size the answer is structure, not a more-options click.",
+   "usedBy": [
+    "build-editor",
+    "designer"
+   ],
+   "recheckAfter": "2027-02-23"
   }
  ]
 }

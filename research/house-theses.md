@@ -2061,3 +2061,34 @@ at a hardcoded 2535 width while the wrapping was MEASURED at the real width. On 
 fell off the canvas. **Two answers to one question is how text clips**, and the
 layout checker has caught this exact class before — five failures in one day from
 estimating character count. I wrote the estimator anyway.
+
+## NOTHING GATES, EVERY CONTROL REFINES (Tyler, Aug 23 2026)
+"The angle section is very bad. Not even working."
+
+Both true, and the second had a precise cause: `fCount` started at 0 and
+`buildIdeas` bailed on `!fCount`, so **clicking an angle before a count cleared
+the box and returned — silently, with no explanation.** The angle column is the
+last thing on screen and the count is three columns to its left. Anybody who
+clicks the interesting-looking control first gets nothing and concludes it is
+broken. He did.
+
+**A hidden prerequisite that fails silently is the worst possible failure**: the
+feature looks broken AND says nothing.
+
+THE RESEARCH NAMED IT EXACTLY: *"Progressive disclosure is for the rare, never
+the necessary. Putting a core action behind more-options is friction dressed as
+minimalism. If users cannot find the hidden feature, you did not disclose
+progressively — you hid it."* And ChatGPT converts 95%+ of first visits on **one
+input with no gates**, while my editor asked four questions before returning
+anything.
+
+THE FIXES:
+- **A default count of two** — the shape that did 18,800 views — so every
+  control REFINES and none of them GATES.
+- **The 35 themes are GROUPED, not hidden.** By subject, by artist, by story, by
+  era, by set, by argument. At that size the answer is structure; a "more
+  options" click would have been the same mistake one level down.
+
+THE RULE: **no control may require another control to have been used first.** If
+one genuinely must, it says so on screen at the moment of the click — never
+nothing.

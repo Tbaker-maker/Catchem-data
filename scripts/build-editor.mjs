@@ -293,7 +293,13 @@ INDEX = CARD_INDEX;
 // Deferred one tick. The fetch used to provide this gap by accident, so
 // removing it exposed an ordering bug that had always been there — el() and
 // the render functions are declared further down the file.
-setTimeout(() => { renderThemes(); search(); }, 0);
+setTimeout(() => {
+    // Show the default as chosen, so the state on screen matches the state in
+    // memory — an invisible default is the same trap one level down.
+    const cc = el("fcount");
+    if (cc) cc.querySelectorAll(".chip").forEach(x => x.classList.toggle("on", Number(x.dataset.n) === fCount));
+    renderThemes(); search();
+  }, 0);
 
 const el = id => document.getElementById(id);
 // PAGING STATE. Page size is deliberately modest: 36 images is a fast paint on
@@ -849,7 +855,10 @@ function render(){
 // THE FUNNEL. Three small questions, then real combinations - not a list of
 // themes but a list of POSTS, each already loadable into the tray. A creator
 // who arrives without an idea should leave with three.
-let fSet = "", fCount = 0, fTheme = null;
+// NOTHING GATES, EVERY CONTROL REFINES. fCount used to start at 0, so clicking
+// an angle before a count returned silently and the whole column read as broken.
+// Two is the default because it is the shape that did 18,800 views.
+let fSet = "", fCount = 2, fTheme = null;
 
 function renderThemes(){
   const box = el("ftheme");
@@ -879,8 +888,17 @@ function renderThemes(){
     return pool.length >= need;
   };
   const fits = THEMES.filter(t => (!fCount || (t.bestAt || []).includes(fCount)) && canFill(t));
-  box.innerHTML = fits.map(t => \`<button class="chip\${fTheme===t.id?" on":""}" data-t="\${t.id}">\${t.name}</button>\`).join("")
-    || "<span class='empty'>no theme suits that count — try another</span>";
+  // GROUPED, NOT HIDDEN. 35 chips in one row is a wall, and putting them
+  // behind "more options" would be worse — hiding a core control is friction
+  // dressed as minimalism. Structure beats disclosure at this size.
+  if (!fits.length) { box.innerHTML = "<span class='empty'>Nothing fits that count. Try another.</span>"; return; }
+  const groups = {};
+  for (const t of fits) (groups[t.group || "OTHER"] ||= []).push(t);
+  const order = ["BY SUBJECT", "BY ARTIST", "BY STORY", "BY ERA", "BY SET", "BY ARGUMENT", "OTHER"];
+  box.innerHTML = order.filter(g => groups[g]).map(g =>
+    "<div class='tgroup'><span class='tglabel'>" + g + "</span>" +
+    groups[g].map(t => "<button class='chip" + (fTheme === t.id ? " on" : "") + "' data-t='" + t.id + "'>" + t.name + "</button>").join("") +
+    "</div>").join("");
   box.querySelectorAll(".chip").forEach(b => b.onclick = () => { fTheme = b.dataset.t; renderThemes(); buildIdeas(); });
 }
 el("fcount").querySelectorAll(".chip").forEach(b => b.onclick = () => {
