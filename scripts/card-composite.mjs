@@ -234,6 +234,7 @@ ${cards.map(c => `    <div class="card"><img src="${c.imageUrl}" alt="${(c.name 
   <div class="foot"><span class="mark">Catch'em</span><span class="src">${caption}</span></div>
   <div style="text-align:center;margin-top:26px">
     <button id="dl" style="background:#36d399;color:#070910;border:0;border-radius:10px;padding:14px 28px;font-size:16px;font-weight:700;cursor:pointer">Download as one image</button>
+    <button id="dlsvg" style="background:transparent;color:#8a93a8;border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:14px 22px;font-size:15px;cursor:pointer;margin-left:8px">Or open the cards full-size</button>
     <div id="msg" style="color:#8a93a8;font-size:13px;margin-top:10px"></div>
   </div>
 </div>
@@ -244,6 +245,13 @@ ${cards.map(c => `    <div class="card"><img src="${c.imageUrl}" alt="${(c.name 
 const CARDS = ${JSON.stringify(cards.map(c => ({ url: c.imageUrl, name: c.name, year: (c.releaseDate ?? "").slice(0, 4) })))};
 const LABEL = ${JSON.stringify(label ?? "")};
 const CAPTION = ${JSON.stringify(caption)};
+// A GUARANTEED ROUTE. If every canvas path fails, the reader can still get real
+// full-resolution files - one tab per card, right-click and save. A screenshot
+// is the one outcome worth engineering around, so there is always another way.
+document.getElementById("dlsvg").onclick = () => {
+  CARDS.forEach((c, i) => setTimeout(() => window.open(c.url, "_blank"), i * 250));
+  document.getElementById("msg").textContent = CARDS.length + " card(s) opened full-size - right-click and save each";
+};
 document.getElementById("dl").onclick = async () => {
   const msg = document.getElementById("msg");
   msg.textContent = "composing…";
@@ -256,9 +264,33 @@ document.getElementById("dl").onclick = async () => {
   g.fillStyle = "#070910"; g.fillRect(0, 0, W, H);
   try {
     for (let i = 0; i < CARDS.length; i++) {
-      const img = new Image();
-      img.crossOrigin = "anonymous";
-      await new Promise((res, rej) => { img.onload = res; img.onerror = rej; img.src = CARDS[i].url; });
+      // THE REAL BUG (2026-08-23): crossOrigin="anonymous" against a host that
+      // sends no CORS headers does not degrade gracefully - it makes the image
+      // fail to LOAD at all. The old message blamed the host for a load we had
+      // broken ourselves by asking for permission it never offers.
+      //
+      // Three routes tried in order, because a screenshot is not an acceptable
+      // answer: direct-with-CORS, then a public image proxy that does send the
+      // header, then direct-without-CORS so at least the preview appears.
+      const routes = [
+        { url: CARDS[i].url, cors: true },
+        { url: "https://images.weserv.nl/?url=" + encodeURIComponent(CARDS[i].url.replace(/^https?:\/\//, "")) + "&w=745&output=png", cors: true },
+        { url: CARDS[i].url, cors: false },
+      ];
+      let img = null;
+      for (const r of routes) {
+        try {
+          img = await new Promise((res, rej) => {
+            const im = new Image();
+            if (r.cors) im.crossOrigin = "anonymous";
+            im.onload = () => res(im);
+            im.onerror = () => rej(new Error("load failed"));
+            im.src = r.url;
+          });
+          break;
+        } catch { img = null; }
+      }
+      if (!img) throw new Error("no route to the image");
       const x = PAD + i * (CW + GAP);
       g.drawImage(img, x, PAD, CW, CH);
       g.fillStyle = "#8a93a8"; g.font = "28px system-ui, sans-serif"; g.textAlign = "center";
@@ -277,7 +309,7 @@ document.getElementById("dl").onclick = async () => {
     a.click();
     msg.textContent = "downloaded — one image, ready to post";
   } catch (e) {
-    msg.textContent = "the image host will not allow a cross-origin copy, so the canvas cannot be exported. Screenshot the row above instead.";
+    msg.textContent = "could not export: " + (e.message || "unknown") + ". Right-click each card and save instead.";
   }
 };
 </script>`;
