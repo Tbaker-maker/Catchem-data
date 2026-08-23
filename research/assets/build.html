@@ -621,8 +621,15 @@ el("make").onclick = async () => {
       // Three lines is already a paragraph on a card; past that the label is
       // doing the job the post's own text should do.
       if (lines.length > 3){ lines = lines.slice(0,3); lines[2] = lines[2].replace(/\s+\S*$/, "") + "…"; }
+        const bandH = fIntent === "post" ? 110 : 190;
       for (var li = 0; li < lines.length; li++)
-        g.fillText(lines[li], W/2, H - 150 - (lines.length - 1 - li) * 62);
+        // CLEAR THE FOOTER BAND, WHICH IS NOT ALWAYS THE SAME HEIGHT. A post
+        // reserves 110px at the bottom; want, trade and sell reserve 190 for the
+        // intent label and the total. The caption was drawn at H-150 regardless,
+        // so on a want list it landed INSIDE that band and a two-line label printed
+        // straight through 'Looking for'. Found by attacking it: nine cards, three
+        // unpriced, and a 178-character label.
+        g.fillText(lines[li], W/2, H - bandH - 40 - (lines.length - 1 - li) * 62);
     }
     // WANT LIST FRAME. A post wants a clean image; a want list is a WORKING
     // document. It gets held up at a table or pasted into a trade thread, so
