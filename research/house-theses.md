@@ -1330,3 +1330,36 @@ the feeling, and the feeling has to be theirs.
 
 THE NAME: Catch'em Creators. It fits the tagline family and it names the
 people rather than the tool, which is the right way round.
+
+## SLOP IS A GROUPING THAT IS NOT IN THE DATA (Tyler, Aug 23 2026)
+"We need to be super creative and engaging, with ZERO AI SLOP. That's the
+quickest way to screw everything up."
+
+Right, and it needed a precise definition rather than a vague warning.
+
+**"Cute cards" is slop. "The nine Eeveelutions" is not.** One is an adjective I
+chose; the other is a list somebody can argue with. "Iconic" is slop. "Drawn by
+the same artist" is a field. The difference matters because the moment a reader
+checks one claim and finds nothing behind it, **every other claim we have made
+becomes suspect at once** — and we have spent weeks earning the ones that are
+true.
+
+THE RULE: every grouping derives from a field we hold — name, artist, setId,
+setName, rarity, releaseDate, price — or from a JUDGMENT LIST stored openly in
+the output where anybody can disagree with it. The Eevee line is nine named
+Pokémon in a file, not a vibe in a sentence.
+
+FOUR SHAPES BUILT, 743 formulas, all derived:
+- **one artist, one family** — artist field crossed with a stored list. Found
+  that Kagemaru Himeno drew the original three Eeveelutions in Jungle 1999 AND
+  Eevee again in Hidden Fates 2019.
+- **one Pokémon, many hands** — Blastoise has been drawn by eleven different
+  illustrators, and the difference needs no explanation.
+- **the debut** — an artist's earliest releaseDate beside their best-known card.
+  A debut is a date, not a feeling.
+- **one set, one hand** — a set seen through one person rather than as a
+  checklist.
+
+slop-guard blocks the run on any grouping with no field behind it, and on the
+specific words that assert significance the data cannot support: cute, iconic,
+stunning, underrated, best, greatest. Negative-tested by planting one.

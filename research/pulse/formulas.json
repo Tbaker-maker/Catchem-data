@@ -1,0 +1,620 @@
+{
+  "generatedAt": "2026-08-23T05:02:20.741Z",
+  "antiSlopRule": "A formula must be derivable from a field we hold: name, artist, setId, rarity, releaseDate, price. Where a theme needs judgment, that judgment is a NAMED LIST stored openly and arguable — never an adjective smuggled into a sentence. 'Cute' is not in the data; the nine Eeveelutions are.",
+  "fieldsUsed": [
+    "name",
+    "artist",
+    "setId",
+    "setName",
+    "rarity",
+    "releaseDate",
+    "price"
+  ],
+  "judgmentLists": {
+    "The Eevee line": [
+      "Eevee",
+      "Vaporeon",
+      "Jolteon",
+      "Flareon",
+      "Espeon",
+      "Umbreon",
+      "Leafeon",
+      "Glaceon",
+      "Sylveon"
+    ],
+    "The Kanto starters": [
+      "Bulbasaur",
+      "Ivysaur",
+      "Venusaur",
+      "Charmander",
+      "Charmeleon",
+      "Charizard",
+      "Squirtle",
+      "Wartortle",
+      "Blastoise"
+    ],
+    "The legendary birds": [
+      "Articuno",
+      "Zapdos",
+      "Moltres"
+    ],
+    "The Lake guardians": [
+      "Uxie",
+      "Mesprit",
+      "Azelf"
+    ],
+    "The weather trio": [
+      "Kyogre",
+      "Groudon",
+      "Rayquaza"
+    ]
+  },
+  "kinds": {
+    "one artist, one family": 24,
+    "one Pokémon, many hands": 236,
+    "one set, one hand": 332,
+    "the debut": 151
+  },
+  "formulas": [
+    {
+      "kind": "one artist, one family",
+      "title": "Kagemaru Himeno drew 4 of The Eevee line",
+      "basis": "artist field + a named list of 9 Pokémon",
+      "cards": [
+        "base2-3",
+        "base2-4",
+        "base2-12",
+        "sm115-48"
+      ],
+      "count": 4,
+      "why": "4 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
+      "angle": "One artist. 4 of the eevee line."
+    },
+    {
+      "kind": "one artist, one family",
+      "title": "Mitsuhiro Arita drew 4 of The Eevee line",
+      "basis": "artist field + a named list of 9 Pokémon",
+      "cards": [
+        "ecard2-H29",
+        "ex11-109",
+        "sm9-120",
+        "sm11-72"
+      ],
+      "count": 4,
+      "why": "4 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
+      "angle": "One artist. 4 of the eevee line."
+    },
+    {
+      "kind": "one artist, one family",
+      "title": "Ryo Ueda drew 4 of The Eevee line",
+      "basis": "artist field + a named list of 9 Pokémon",
+      "cards": [
+        "ex10-102",
+        "ex11-17",
+        "ex11-108",
+        "g1-28a"
+      ],
+      "count": 4,
+      "why": "4 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
+      "angle": "One artist. 4 of the eevee line."
+    },
+    {
+      "kind": "one artist, one family",
+      "title": "5ban Graphics drew 9 of The Eevee line",
+      "basis": "artist field + a named list of 9 Pokémon",
+      "cards": [
+        "sm2-158",
+        "sm5-157",
+        "sm5-159",
+        "sm9-191"
+      ],
+      "count": 4,
+      "why": "9 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
+      "angle": "One artist. 9 of the eevee line."
+    },
+    {
+      "kind": "one artist, one family",
+      "title": "Mitsuhiro Arita drew 7 of The Kanto starters",
+      "basis": "artist field + a named list of 9 Pokémon",
+      "cards": [
+        "base1-4",
+        "base1-15",
+        "dp7-101",
+        "dp7-102"
+      ],
+      "count": 4,
+      "why": "7 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
+      "angle": "One artist. 7 of the kanto starters."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Alakazam, drawn by 6 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base1-1",
+        "ecard1-1",
+        "pl2-103",
+        "swsh4-172"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "6 artists. One Alakazam."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Blastoise, drawn by 11 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base1-2",
+        "ecard1-4",
+        "ex6-104",
+        "dp3-2"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "11 artists. One Blastoise."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Charizard, drawn by 15 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base1-4",
+        "ecard1-6",
+        "ex16-6",
+        "dp3-3"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "15 artists. One Charizard."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Gyarados, drawn by 13 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base1-6",
+        "ex6-109",
+        "ex8-8",
+        "ex13-8"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "13 artists. One Gyarados."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Machamp, drawn by 10 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base1-8",
+        "ecard1-16",
+        "dp7-98",
+        "bw10-49"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "10 artists. One Machamp."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Magneton, drawn by 5 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base1-9",
+        "base3-11",
+        "neo3-10",
+        "ecard2-H16"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "5 artists. One Magneton."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Mewtwo, drawn by 13 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base1-10",
+        "ecard1-20",
+        "ex1-101",
+        "ex11-12"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "13 artists. One Mewtwo."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Nidoking, drawn by 5 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base1-11",
+        "ecard2-H18",
+        "ecard2-150",
+        "ex6-8"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "5 artists. One Nidoking."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Ninetales, drawn by 8 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base1-12",
+        "ecard1-21",
+        "ecard2-H19",
+        "hgss1-7"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "8 artists. One Ninetales."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Poliwrath, drawn by 4 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base1-13",
+        "ecard1-24",
+        "ex10-11",
+        "sm1-32"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "4 artists. One Poliwrath."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Raichu, drawn by 13 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base1-14",
+        "base3-14",
+        "ecard1-25",
+        "ex2-98"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "13 artists. One Raichu."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Venusaur, drawn by 10 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base1-15",
+        "ecard1-30",
+        "ex6-112",
+        "dp3-20"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "10 artists. One Venusaur."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Zapdos, drawn by 11 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base1-16",
+        "base3-15",
+        "ecard2-H32",
+        "ex6-116"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "11 artists. One Zapdos."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Clefable, drawn by 5 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base2-1",
+        "ecard1-7",
+        "hgss1-3",
+        "col1-1"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "5 artists. One Clefable."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Electrode, drawn by 5 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base2-2",
+        "ecard2-H7",
+        "ex6-107",
+        "sm9-39"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "5 artists. One Electrode."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Flareon, drawn by 8 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base2-3",
+        "ex2-5",
+        "ex10-5",
+        "ex11-5"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "8 artists. One Flareon."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Jolteon, drawn by 7 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base2-4",
+        "ex2-6",
+        "ex10-8",
+        "ex11-7"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "7 artists. One Jolteon."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Kangaskhan, drawn by 7 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base2-5",
+        "ex6-6",
+        "sm1-99",
+        "sm11-163"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "7 artists. One Kangaskhan."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Mr., drawn by 4 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base2-6",
+        "ex6-110",
+        "sm7-56",
+        "sv3pt5-179"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "4 artists. One Mr.."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Pidgeot, drawn by 7 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base2-8",
+        "ecard1-23",
+        "ex6-10",
+        "ex13-14"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "7 artists. One Pidgeot."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Snorlax, drawn by 11 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base2-11",
+        "ex6-15",
+        "pl2-111",
+        "sm10-158"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "11 artists. One Snorlax."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Vaporeon, drawn by 7 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base2-12",
+        "ex10-19",
+        "ex11-18",
+        "ex11-110"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "7 artists. One Vaporeon."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Vileplume, drawn by 8 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base2-15",
+        "ecard1-31",
+        "ecard2-H31",
+        "ex13-17"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "8 artists. One Vileplume."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Aerodactyl, drawn by 5 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base3-1",
+        "ex2-94",
+        "swsh11-92",
+        "swsh11-93"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "5 artists. One Aerodactyl."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Articuno, drawn by 7 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base3-2",
+        "ex6-114",
+        "pl3-148",
+        "sm9-32"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "7 artists. One Articuno."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Ditto, drawn by 7 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base3-3",
+        "ex6-4",
+        "bw7-108",
+        "swsh45sv-SV118"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "7 artists. One Ditto."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Dragonite, drawn by 11 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base3-4",
+        "ex11-3",
+        "dp6-2",
+        "sm1-96"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "11 artists. One Dragonite."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Gengar, drawn by 12 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base3-5",
+        "ecard1-13",
+        "ex6-108",
+        "xy8-60"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "12 artists. One Gengar."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Lapras, drawn by 7 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base3-10",
+        "ex1-99",
+        "xy1-35",
+        "swsh1-49"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "7 artists. One Lapras."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Moltres, drawn by 7 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base3-12",
+        "ex6-115",
+        "pl3-149",
+        "sm9-19"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "7 artists. One Moltres."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Muk, drawn by 4 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base3-13",
+        "ecard2-H17",
+        "sm10-196",
+        "sm10-197"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "4 artists. One Muk."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Dark, drawn by 9 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base5-1",
+        "base5-2",
+        "base5-6",
+        "base5-11"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "9 artists. One Dark."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Rocket's, drawn by 4 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "base5-16",
+        "gym2-14",
+        "ex8-108",
+        "ex10-116"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "4 artists. One Rocket's."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Ampharos, drawn by 12 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "neo1-1",
+        "neo3-1",
+        "ecard1-2",
+        "ecard2-H1"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "12 artists. One Ampharos."
+    },
+    {
+      "kind": "one Pokémon, many hands",
+      "title": "Azumarill, drawn by 4 different illustrators",
+      "basis": "name + distinct artist field",
+      "cards": [
+        "neo1-2",
+        "ecard2-H4",
+        "hgss1-2",
+        "xy5-104"
+      ],
+      "count": 4,
+      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
+      "angle": "4 artists. One Azumarill."
+    }
+  ]
+}

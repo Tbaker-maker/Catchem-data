@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T04:02:35.316Z",
+ "generatedAt": "2026-08-23T05:04:03.620Z",
  "question": "Not what could we buy, but what is already arriving that we throw away. A field we ignore cost exactly as much as a field we use.",
  "blindSpots": [
   "Chat cannot reach the provider's documentation or make a live call. Everything here is read from responses already stored.",
@@ -59,14 +59,14 @@
   },
   {
    "severity": "medium",
-   "what": "2 places fetch one item at a time inside a loop",
+   "what": "3 places fetch one item at a time inside a loop",
    "why": "If any of those endpoints accept a batch or a set filter, we are spending N calls where one would do — and call budget is the thing that decides how much of the market we can see.",
    "action": "check whether each endpoint supports a set, page or id-list parameter before scaling the loop up",
    "owner": "cc"
   },
   {
    "severity": "medium",
-   "what": "the paid provider is called from 95 places",
+   "what": "the paid provider is called from 99 places",
    "why": "A paid tier justifies itself by what it uniquely provides. If the only thing we take from it is a price we could get free elsewhere, we are paying for a duplicate.",
    "action": "list what ONLY the paid provider gives us; if that list is short, either use more of it or stop paying for it",
    "owner": "tyler"

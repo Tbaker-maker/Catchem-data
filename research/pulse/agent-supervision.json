@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T04:02:34.571Z",
+ "generatedAt": "2026-08-23T05:04:02.852Z",
  "date": "2026-08-23",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -12,7 +12,7 @@
   "api-strategist: 8 finding(s)",
   "compliance: 0 finding(s)",
   "security: 0 finding(s)",
-  "steward: 3 finding(s)",
+  "steward: 4 finding(s)",
   "platform: 10 finding(s)",
   "anomaly: 0 finding(s)",
   "creator: 15 finding(s)",
@@ -27,7 +27,6 @@
   "anomaly: clean run — nothing failed, which is the point of it"
  ],
  "problems": [
-  "teacher: FARMING — findings climbed 13 → 14 → 14 → 14 across four runs with nothing resolved. Volume is not work.",
   "teacher: BROKEN RECORD — 13 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "creator: OVER-BUDGET — 15 findings against a ceiling of 10. An unreadable list is an unread list."
  ],
@@ -75,6 +74,11 @@
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
   },
   {
+   "agent": "teacher",
+   "finding": "every finding from a week ago is still open (12).",
+   "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
+  },
+  {
    "agent": "compliance",
    "finding": "runs daily and has returned the same count (0) four runs running.",
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
@@ -88,11 +92,6 @@
    "agent": "platform",
    "finding": "runs daily and has returned the same count (10) four runs running.",
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
-  },
-  {
-   "agent": "platform",
-   "finding": "every finding from a week ago is still open (10).",
-   "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
    "agent": "anomaly",
@@ -592,7 +591,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "30 hand-written file(s) changed and not committed.",
+   "what": "7 hand-written file(s) changed and not committed.",
    "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -624,8 +623,24 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "3 script(s) are not referenced anywhere: collision-guard.mjs, discovery-sweep.mjs, refresh-tiers.mjs.",
+   "what": "6 script(s) are not referenced anywhere: build-creators-page.mjs, collision-guard.mjs, discovery-sweep.mjs, formula-engine.mjs.",
    "do": "A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "steward",
+   "owner": "chat",
+   "what": "42 JSON files in research/pulse.",
+   "do": "A directory nobody can scan is a directory where something goes missing without being noticed.",
    "score": 30,
    "band": "NOTE ONLY",
    "selfScore": 30,
@@ -656,7 +671,7 @@
   {
    "from": "api-strategist",
    "owner": "cc",
-   "what": "2 places fetch one item at a time inside a loop",
+   "what": "3 places fetch one item at a time inside a loop",
    "do": "check whether each endpoint supports a set, page or id-list parameter before scaling the loop up",
    "score": 30,
    "band": "NOTE ONLY",
@@ -720,7 +735,7 @@
   {
    "from": "api-strategist",
    "owner": "tyler",
-   "what": "the paid provider is called from 95 places",
+   "what": "the paid provider is called from 99 places",
    "do": "list what ONLY the paid provider gives us; if that list is short, either use more of it or stop paying for it",
    "score": 30,
    "band": "NOTE ONLY",
@@ -1067,6 +1082,6 @@
   "actNow": 0,
   "queue": 9,
   "watch": 8,
-  "noteOnly": 21
+  "noteOnly": 22
  }
 }

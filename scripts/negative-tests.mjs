@@ -577,6 +577,18 @@ const CASES = [
         why: !c1 ? "does not catch clipping" : !c2 ? "does not catch collisions" : "false-positives on a card that is fine" };
     } },
 
+  { guard: "Slop is caught", detect: "slop-guard.mjs",
+    // A grouping not in the data is the fastest way to lose trust in every
+    // grouping that IS. Plant one and the build must fail.
+    break: async () => {
+      await copyFile(P("research/pulse/formulas.json"), TMP("nt-slop.bak"));
+      const f = JSON.parse(await readFile(P("research/pulse/formulas.json"), "utf-8"));
+      f.formulas.push({ kind: "t", title: "The cutest cards", basis: "vibes", cards: ["a", "b"], count: 2, why: "iconic", angle: "the best" });
+      await writeFile(P("research/pulse/formulas.json"), JSON.stringify(f));
+      return true;
+    },
+    restore: async () => { await copyFile(TMP("nt-slop.bak"), P("research/pulse/formulas.json")); } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");
