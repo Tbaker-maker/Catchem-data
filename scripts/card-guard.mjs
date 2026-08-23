@@ -72,6 +72,21 @@ for (const f of files) {
       "The chip promises somebody could check this. A card needs at minimum a date, and ideally where the number came from — without either it is a promise with nothing behind it.");
 }
 
+// ── CONSTRUCTED IMAGE URL ─────────────────────────────────────────────────
+// A card back reached a post because I built an image path from a card ID and
+// assumed one host. Newer sets serve from a different host entirely, so the
+// URL 404'd and the host returned a placeholder - a perfectly valid image of
+// the wrong thing, which is the hardest kind of wrong to catch.
+{
+  const scripts = await readdir(join(ROOT, "scripts"));
+  for (const f of scripts.filter(x => x.endsWith(".mjs") && x !== "card-guard.mjs")) {
+    const src = await readFile(join(ROOT, "scripts", f), "utf-8").catch(() => "");
+    if (/`https:\/\/images\.[a-z]+\.[a-z]+\/\$\{/.test(src))
+      P(f, "builds an image URL from a template",
+        "Image hosts differ per set. A constructed path 404s silently and the host answers with a card back, which renders fine and checks fine. Read the URL from the source data instead.");
+  }
+}
+
 const out = { generatedAt: new Date().toISOString(),
   checked: files.length,
   cannotCheck: "Whether the card LOOKS right — clipping, overlap, contrast, collisions. That needs eyes on the rendered PNG, every time, without exception.",

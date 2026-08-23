@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T02:40:57.801Z",
+ "generatedAt": "2026-08-23T03:55:15.955Z",
  "checked": 35,
  "cannotCheck": "Whether the card LOOKS right — clipping, overlap, contrast, collisions. That needs eyes on the rendered PNG, every time, without exception.",
  "problems": [
@@ -22,6 +22,31 @@
    "card": "latest-social.svg",
    "what": "a value renders as a dash",
    "why": "An empty slot with a dash in it looks like a measurement and is not one. Either the value exists or the slot should not."
+  },
+  {
+   "card": "binder-page.mjs",
+   "what": "builds an image URL from a template",
+   "why": "Image hosts differ per set. A constructed path 404s silently and the host answers with a card back, which renders fine and checks fine. Read the URL from the source data instead."
+  },
+  {
+   "card": "generate-board.mjs",
+   "what": "builds an image URL from a template",
+   "why": "Image hosts differ per set. A constructed path 404s silently and the host answers with a card back, which renders fine and checks fine. Read the URL from the source data instead."
+  },
+  {
+   "card": "generate-pulse.mjs",
+   "what": "builds an image URL from a template",
+   "why": "Image hosts differ per set. A constructed path 404s silently and the host answers with a card back, which renders fine and checks fine. Read the URL from the source data instead."
+  },
+  {
+   "card": "image-source.mjs",
+   "what": "builds an image URL from a template",
+   "why": "Image hosts differ per set. A constructed path 404s silently and the host answers with a card back, which renders fine and checks fine. Read the URL from the source data instead."
+  },
+  {
+   "card": "mint-cards.mjs",
+   "what": "builds an image URL from a template",
+   "why": "Image hosts differ per set. A constructed path 404s silently and the host answers with a card back, which renders fine and checks fine. Read the URL from the source data instead."
   }
  ]
 }

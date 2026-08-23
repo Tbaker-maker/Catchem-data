@@ -26,10 +26,30 @@ const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "ut
 // pokemontcg.io serves hi-res art at a predictable path. _hires is roughly
 // 745x1040 — enough that a three-card row still looks sharp on a phone, which
 // is where these are actually seen.
-const imageUrl = (id) => {
-  const [set, num] = [id.slice(0, id.lastIndexOf("-")), id.slice(id.lastIndexOf("-") + 1)];
-  return `https://images.pokemontcg.io/${set}/${num}_hires.png`;
-};
+// NEVER CONSTRUCT AN IMAGE URL (2026-08-23). I built the path from the card ID
+// and assumed every set lives on images.pokemontcg.io. Newer sets do not — me4
+// serves from images.scrydex.com — so the constructed URL 404'd and the host
+// returned a CARD BACK placeholder. That rendered as a perfectly valid image
+// and looked fine to every check; Tyler saw a card back in a post about an
+// illustrator's work.
+//
+// The source publishes the real URL per card. Use it. A constructed URL is a
+// guess wearing the shape of a fact, and this one failed by returning a valid
+// image of the wrong thing, which is the hardest kind of wrong to notice.
+const setCache = {};
+async function realImageUrl(id) {
+  const set = id.slice(0, id.lastIndexOf("-"));
+  if (!setCache[set]) {
+    try {
+      const r = await fetch(`https://raw.githubusercontent.com/PokemonTCG/pokemon-tcg-data/master/cards/en/${set}.json`, { signal: AbortSignal.timeout(12000) });
+      setCache[set] = r.ok ? await r.json() : [];
+    } catch { setCache[set] = []; }
+  }
+  const card = setCache[set].find(c => c.id === id);
+  const url = card?.images?.large ?? card?.images?.small ?? null;
+  if (!url) console.warn(`   ⚠ ${id}: no image URL in the source data — omitted rather than guessed`);
+  return url;
+}
 
 const args = process.argv.slice(2);
 const labelIdx = args.indexOf("--label");
@@ -68,7 +88,12 @@ if (!ids.length) {
   const W = PAD * 2 + CARD_W * ids.length + GAP * (ids.length - 1);
   const H = PAD * 2 + CARD_H + CAPTION;
 
-  const cards = ids.map(id => ({ id, ...cat.cards[id] }));
+  const cards = [];
+  for (const id of ids) {
+    const url = await realImageUrl(id);
+    if (url) cards.push({ id, ...cat.cards[id], imageUrl: url });
+  }
+  if (!cards.length) { console.error("no usable images — nothing produced rather than a card back"); process.exitCode = 1; }
   const sameArtist = new Set(cards.map(c => c.artist)).size === 1 ? cards[0].artist : null;
   const years = cards.map(c => (c.releaseDate ?? "").slice(0, 4)).filter(Boolean);
   const caption = label ?? (sameArtist
@@ -79,7 +104,7 @@ if (!ids.length) {
 <rect width="${W}" height="${H}" fill="#070910"/>
 ${cards.map((c, i) => {
   const x = PAD + i * (CARD_W + GAP);
-  return `<image x="${x}" y="${PAD}" width="${CARD_W}" height="${CARD_H}" preserveAspectRatio="xMidYMid meet" xlink:href="__IMG_${i}__"/>
+  return `<image x="${x}" y="${PAD}" width="${CARD_W}" height="${CARD_H}" preserveAspectRatio="xMidYMid meet" xlink:href="${c.imageUrl}"/>
 <text x="${x + CARD_W / 2}" y="${PAD + CARD_H + 34}" text-anchor="middle" fill="#8a93a8" font-family="Sora" font-size="20">${(c.name ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;")}${c.releaseDate ? ` · ${c.releaseDate.slice(0, 4)}` : ""}</text>`;
 }).join("\n")}
 ${label ? `<text x="${W / 2}" y="${H - 44}" text-anchor="middle" fill="#f4f5f8" font-family="Syne" font-weight="800" font-size="30">${label.replace(/&/g, "&amp;")}</text>` : ""}
@@ -108,7 +133,7 @@ ${label ? `<text x="${W / 2}" y="${H - 44}" text-anchor="middle" fill="#f4f5f8" 
 </style>
 <div class="wrap">
   <div class="row">
-${cards.map(c => `    <div class="card"><img src="${imageUrl(c.id)}" alt="${(c.name ?? "").replace(/"/g, "")}" loading="eager">
+${cards.map(c => `    <div class="card"><img src="${c.imageUrl}" alt="${(c.name ?? "").replace(/"/g, "")}" loading="eager">
       <div class="cap">${(c.name ?? "")}${c.releaseDate ? ` · ${c.releaseDate.slice(0, 4)}` : ""}</div></div>`).join("\n")}
   </div>
   ${label ? `<div class="label">${label}</div>` : ""}
@@ -121,14 +146,14 @@ ${cards.map(c => `    <div class="card"><img src="${imageUrl(c.id)}" alt="${(c.n
   await writeFile(out, svg);
   await writeFile(join(ROOT, "research/pulse/cards/composite-manifest.json"), JSON.stringify({
     generatedAt: new Date().toISOString(),
-    cards: cards.map((c, i) => ({ slot: i, id: c.id, name: c.name, artist: c.artist, set: c.setName, year: (c.releaseDate ?? "").slice(0, 4), url: imageUrl(c.id) })),
+    cards: cards.map((c, i) => ({ slot: i, id: c.id, name: c.name, artist: c.artist, set: c.setName, year: (c.releaseDate ?? "").slice(0, 4), url: c.imageUrl })),
     caption, dimensions: `${W}x${H}`,
     note: "Art post: no prices, no stats. The artwork is the content and the words are Tyler's.",
     todo: "Fetch each url, base64 it, and replace the __IMG_n__ placeholders before rasterising. Chat cannot reach images.pokemontcg.io (403), so this step needs CC or a machine with access.",
   }, null, 1));
 
   console.log(`✓ composite: ${ids.length} card(s) at ${CARD_W}x${CARD_H}, ${W}x${H} total`);
-  for (const c of cards) console.log(`   ${c.name} (${(c.releaseDate ?? "").slice(0, 4)}) — ${imageUrl(c.id)}`);
+  for (const c of cards) console.log(`   ${c.name} (${(c.releaseDate ?? "").slice(0, 4)}) — ${c.imageUrl}`);
   console.log(`\n   caption: ${caption}`);
   console.log(`   composite.html written — open it and the images load straight from the host.`);
 }

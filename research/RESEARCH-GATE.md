@@ -99,6 +99,8 @@ fixing the class is.
 
 | 19 | Sent an "art post" card that was a price table with an unexplained alias as its headline, a dash where a value should be, and no story. Never opened it before sending | Tyler | Ungated publication, second instance in one day | scripts/card-guard.mjs checks minted cards for alias headlines, art-cards-made-of-prices, blank dashes, unsupported claims and sourceless VERIFIED chips; plus the standing rule that nothing goes to a person unviewed |
 
+| 20 | A composite showed a CARD BACK: image URLs were constructed from card IDs assuming one host, but newer sets serve from images.scrydex.com, so the URL 404d and the host returned a placeholder that was a valid 200 PNG at correct dimensions | Tyler, by eye | Constructed value that could have been looked up | card-composite reads the real URL from the source data per card; card-guard fails any script building an image URL from a template |
+
 **PATTERN, stated plainly:** 8 of 9 were caught by Tyler, not by the
 machine. Every guard above was built AFTER a human caught something.
 That is the honest state — the machine is now catching prices, but

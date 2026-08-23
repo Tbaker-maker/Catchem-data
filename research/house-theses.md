@@ -1164,3 +1164,26 @@ twenty-seven-year career in one image, and it needs no explanation at all.
 scripts/card-composite.mjs builds these. Chat cannot fetch the images (403
 from the host), so it writes placeholders and a manifest of URLs, and whoever
 has network access embeds and rasterises.
+
+## NEVER CONSTRUCT A URL YOU COULD LOOK UP (Tyler, Aug 23 2026)
+"The one you sent me has a back of a card. One is correct though."
+
+I built card image paths from the card ID, assuming every set is served by the
+same host. Newer sets are not - Mega Evolution serves from images.scrydex.com,
+not images.pokemontcg.io. The constructed URL 404'd, and the host answered with
+a CARD BACK placeholder.
+
+WHY IT GOT THROUGH EVERY CHECK: the response was 200. The bytes were a valid
+PNG. It rendered cleanly at the right dimensions. Nothing in any guard we own
+could tell that a technically perfect image was a picture of the wrong side of
+a card. Only a human looking at it could, and only if they knew what the card
+should look like.
+
+**A constructed URL is a guess wearing the shape of a fact.** The source
+publishes the real address for every card; reading it costs one request and
+removes the entire class.
+
+THE GENERAL RULE: if a value can be looked up, never derive it. Derivation
+encodes an assumption - here, "one host for all sets" - and assumptions fail
+silently at exactly the moment the pattern changes, which is the moment nobody
+is watching for it.
