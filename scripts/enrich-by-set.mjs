@@ -43,13 +43,39 @@ const FETCH_TIMEOUT_MS = 30000;
 // until 00:00 UTC. It stops BEFORE a call it cannot afford rather than after,
 // because the provider bills on the requested size, not on what we keep.
 const CREDIT_CEILING = Number(process.env.ENRICH_CREDIT_CEILING || 17979);
-// 60 calls/minute on our tier. Prepaid credits raise the daily quota and
-// explicitly NOT the burst limit, so this pace is not negotiable by spending.
-const PACE_MS = Number(process.env.ENRICH_PACE_MS || 1000);
 const HISTORY_DAYS = Number(process.env.ENRICH_HISTORY_DAYS || 180);
 const PER_CARD_COST = 3; // 1 basic + 1 includeHistory + 1 includeEbay
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+// ── THE MINUTE BUDGET IS IN UNITS, NOT CALLS ───────────────────────────────
+// The first run of this script paced one call per second and still took a 429
+// (per_minute) after 31 calls, stopping at 9,114 of its 17,979-credit ceiling.
+// The bug was mine: "60 calls/minute" is not the rule for THIS query. A
+// fetchAllInSet request costs min(30, ceil(cards/10)) units of the 60-unit
+// minute budget, because it returns a whole set. Our sets average ~28 cards,
+// so each call cost ~3 units — a real ceiling near 20 calls a minute, and one
+// call per second overruns it three times over.
+//
+// So the pace cannot be a constant. It has to be a rolling-window reservation
+// priced per set: a 500-card set costs 30 units (half the minute) and a
+// 12-card set costs 2, and sleeping a flat second between them is either
+// wasteful or a 429 depending on which one comes next.
+const MINUTE_UNITS = Number(process.env.ENRICH_MINUTE_UNITS || 60);
+const unitsFor = cards => Math.min(30, Math.ceil(cards / 10));
+const spentWindow = []; // { at, units } for the last 60s
+
+async function reserve(units) {
+  for (;;) {
+    const now = Date.now();
+    while (spentWindow.length && now - spentWindow[0].at >= 60000) spentWindow.shift();
+    const used = spentWindow.reduce((a, w) => a + w.units, 0);
+    if (used + units <= MINUTE_UNITS) { spentWindow.push({ at: now, units }); return; }
+    // Wait exactly until the oldest reservation ages out of the window, plus a
+    // small margin for clock skew between us and the provider.
+    await sleep(60000 - (now - spentWindow[0].at) + 250);
+  }
+}
 
 async function getJSON(url) {
   const r = await fetch(url, {
@@ -69,6 +95,10 @@ async function getJSON(url) {
 
 export async function planOnly() {
   const cat = await J("data/card-catalogue.json");
+  // The set map is not optional. Requesting a set by our own slug is silently
+  // ignored by the provider and billed anyway — that is exactly how the first
+  // run spent 9,114 credits and returned five sets it never asked for.
+  const map = await J("data/ppt-set-map.json").catch(() => null);
   const bySet = {};
   for (const c of Object.values(cat.cards)) if (c.setId) bySet[c.setId] = (bySet[c.setId] || 0) + 1;
   const priced = Object.entries(cat.cards).filter(([, c]) => c.price != null)
@@ -79,7 +109,14 @@ export async function planOnly() {
   // Rank by top-6000 cards bought per credit spent: the densest value first, so
   // a ceiling that stops early still stops on the best sets.
   return Object.entries(bySet)
-    .map(([setId, cards]) => ({ setId, cards, top: topPerSet[setId] || 0, cost: cards * PER_CARD_COST }))
+    .map(([setId, cards]) => {
+      const m = map?.bySlug?.[setId];
+      // Prefer the PROVIDER's card count for costing — ours is what made the
+      // first run's estimates wrong, and cost is billed on their set size.
+      const size = m?.cardCount ?? cards;
+      return { setId, pptSetId: m?.pptSetId ?? null, cards: size, ourCards: cards,
+        top: topPerSet[setId] || 0, cost: size * PER_CARD_COST };
+    })
     .filter(s => s.top > 0)
     .sort((a, b) => (b.top / b.cost) - (a.top / a.cost));
 }
@@ -87,39 +124,112 @@ export async function planOnly() {
 async function main() {
   if (!KEY) { console.error("Missing POKEMONPRICETRACKER_API_KEY"); process.exit(1); }
   const plan = await planOnly();
-  const out = {}; let spent = 0, calls = 0, cards = 0, stoppedBecause = "plan exhausted";
-  console.log(`plan: ${plan.length} sets · ceiling ${CREDIT_CEILING.toLocaleString("en-US")} credits · pace ${PACE_MS}ms`);
 
-  for (const s of plan) {
+  // REFUSE TO SPEND WITHOUT THE MAP. This is the guard the first run lacked.
+  const unmapped = plan.filter(s => !s.pptSetId);
+  if (plan.every(s => !s.pptSetId)) {
+    console.error("No data/ppt-set-map.json — every request would use our slug, which the");
+    console.error("provider ignores while still billing. Run: node scripts/resolve-set-ids.mjs");
+    process.exit(1);
+  }
+  if (unmapped.length) console.log(`skipping ${unmapped.length} sets with no provider id (they would bill and return nothing)`);
+
+  // RESUME, don't re-buy. A set already in the file was paid for; re-fetching it
+  // spends the ceiling twice for the same data. Key on the setId we REQUESTED,
+  // not the one that comes back — the provider answers with its own internal id,
+  // so keying on the response matched nothing and re-bought everything.
+  const prior = await J("data/enrichment-by-set.json").catch(() => null);
+  const out = prior?.byCard ?? {};
+  const haveSets = new Set(prior?.fetchedSets ?? []);
+  let spent = 0, calls = 0, cards = Object.keys(out).length;
+  let stoppedBecause = "plan exhausted";
+  const todo = plan.filter(s => s.pptSetId && !haveSets.has(String(s.pptSetId)));
+  console.log(`plan: ${plan.length} sets · ${haveSets.size} already held · ${todo.length} to fetch`);
+  console.log(`ceiling ${CREDIT_CEILING.toLocaleString("en-US")} credits · minute budget ${MINUTE_UNITS} units`);
+  const fetchedSets = new Set(haveSets);
+  // A call that bills and delivers nothing is the signature of the namespace
+  // bug. Two in a row means stop and look, not grind through the plan.
+  let emptyStreak = 0;
+
+  for (const s of todo) {
     if (spent + s.cost > CREDIT_CEILING) { stoppedBecause = `ceiling would be exceeded by ${s.setId} (${s.cost})`; break; }
-    const url = `${BASE}/cards?setId=${encodeURIComponent(s.setId)}&fetchAllInSet=true`
+    const url = `${BASE}/cards?setId=${encodeURIComponent(s.pptSetId)}&fetchAllInSet=true`
       + `&includeHistory=true&includeEbay=true&days=${HISTORY_DAYS}`;
-    let d;
-    try { d = await getJSON(url); } catch (e) { console.log(`  ${s.setId}: ${e.message}`); await sleep(PACE_MS); continue; }
-    if (d.rateLimited) { stoppedBecause = `429 (${d.limitType}), retry after ${d.retryAfter}s`; break; }
+
+    let d, attempt = 0;
+    for (;;) {
+      await reserve(unitsFor(s.cards));
+      try { d = await getJSON(url); } catch (e) { d = { error: e.message }; }
+      if (!d.rateLimited) break;
+      // A per-minute 429 is a PAUSE, not an ending — it clears in seconds, and
+      // the previous run threw away 8,865 unspent credits by treating the two
+      // limits as one. A daily 429 genuinely ends the run: it clears at 00:00
+      // UTC and nothing we do here shortens that.
+      if (d.limitType === "daily") { stoppedBecause = `429 (daily) — pool exhausted, resets 00:00 UTC`; break; }
+      if (++attempt > 5) { stoppedBecause = `429 (${d.limitType}) survived ${attempt} waits`; break; }
+      console.log(`  ⏸ 429 (${d.limitType}) — waiting ${d.retryAfter}s, then resuming`);
+      spentWindow.length = 0; // the provider's window is evidently ahead of ours
+      await sleep((d.retryAfter + 1) * 1000);
+    }
+    if (d?.rateLimited) break;
+    if (d?.error) { console.log(`  ${s.setId}: ${d.error}`); continue; }
+
     // Trust the REPORTED charge over the estimate — the estimate is arithmetic,
     // this is what was actually billed.
     const billed = d.metadata?.apiCallsConsumed?.total ?? s.cost;
     spent += billed; calls++;
-    for (const c of d.data || []) { out[c.id || c.tcgPlayerId] = c; cards++; }
-    console.log(`  ${s.setId.padEnd(12)} ${String((d.data || []).length).padStart(4)} cards · billed ${String(billed).padStart(5)} · running ${spent.toLocaleString("en-US")}`);
-    await sleep(PACE_MS);
+    let got = 0;
+    for (const c of d.data || []) { if (!out[c.id || c.tcgPlayerId]) cards++; out[c.id || c.tcgPlayerId] = c; got++; }
+    fetchedSets.add(String(s.pptSetId));
+    console.log(`  ${s.setId.padEnd(12)}→${String(s.pptSetId).padEnd(7)} ${String(got).padStart(4)} cards · ${String(unitsFor(s.cards)).padStart(2)}u · billed ${String(billed).padStart(5)} · running ${spent.toLocaleString("en-US")}`);
+
+    // Billed and empty. The first run did this 26 times without noticing.
+    if (got === 0) {
+      if (++emptyStreak >= 2) {
+        stoppedBecause = `two consecutive calls billed and returned no cards — stopping before this repeats 26 times`;
+        break;
+      }
+    } else emptyStreak = 0;
   }
   await writeFile(join(ROOT, "data/enrichment-by-set.json"),
-    JSON.stringify({ generatedAt: new Date().toISOString(), creditsSpent: spent, calls, cards,
-      ceiling: CREDIT_CEILING, historyDays: HISTORY_DAYS, stoppedBecause, cards_: undefined, byCard: out }, null, 1) + "\n");
+    JSON.stringify({ generatedAt: new Date().toISOString(), creditsSpent: spent,
+      creditsSpentCumulative: (prior?.creditsSpentCumulative ?? prior?.creditsSpent ?? 0) + spent,
+      calls, cards, ceiling: CREDIT_CEILING, historyDays: HISTORY_DAYS, stoppedBecause,
+      fetchedSets: [...fetchedSets], byCard: out }, null, 1) + "\n");
   console.log(`\n✓ ${cards.toLocaleString("en-US")} cards · ${calls} calls · ${spent.toLocaleString("en-US")} credits of ${CREDIT_CEILING.toLocaleString("en-US")} · ${stoppedBecause}`);
+
+  // Distil immediately. The raw file is gitignored and ~200 KB per card-set;
+  // nothing downstream should ever read it, so leaving the run without a fresh
+  // distilled file is leaving the instruments on stale data.
+  const { distil } = await import("./distil-enrichment.mjs");
+  const dist = await distil();
+  await writeFile(join(ROOT, "data/enrichment-distilled.json"), JSON.stringify(dist, null, 1) + "\n");
+  console.log(`✓ distilled → data/enrichment-distilled.json (${dist.cardCount.toLocaleString("en-US")} cards)`);
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+// argv[1] is undefined under `node -e`, and pathToFileURL(undefined) throws —
+// so this guard has to check before it converts, or importing planOnly from
+// another process crashes the import rather than skipping the CLI block.
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   if (process.argv[2] === "--plan") {
     const plan = await planOnly();
     const total = plan.reduce((a, s) => a + s.cost, 0);
-    let run = 0, sets = 0, cards = 0, top = 0;
-    for (const s of plan) { if (run + s.cost > CREDIT_CEILING) continue; run += s.cost; sets++; cards += s.cards; top += s.top; }
+    const mapped = plan.filter(s => s.pptSetId);
+    let run = 0, sets = 0, cards = 0, top = 0, units = 0;
+    for (const s of mapped) {
+      if (run + s.cost > CREDIT_CEILING) continue;
+      run += s.cost; sets++; cards += s.cards; top += s.top; units += unitsFor(s.cards);
+    }
+    const prior = await J("data/enrichment-by-set.json").catch(() => null);
+    const held = new Set(prior?.fetchedSets ?? []);
     console.log(`DRY RUN — no calls made, no credits spent`);
     console.log(`  whole plan     : ${plan.length} sets · ${total.toLocaleString("en-US")} credits`);
+    console.log(`  provider ids   : ${mapped.length} of ${plan.length} mapped` +
+      (mapped.length ? "" : "  ← RUN scripts/resolve-set-ids.mjs FIRST, or every call bills and returns nothing"));
     console.log(`  under ceiling  : ${sets} sets · ${cards.toLocaleString("en-US")} cards · ${top.toLocaleString("en-US")} of the top 6,000 · ${run.toLocaleString("en-US")} credits`);
-    console.log(`  calls          : ${sets} at ${PACE_MS}ms = ~${Math.ceil(sets * PACE_MS / 60000)} min (cap is 60/min)`);
+    // Wall clock is set by the MINUTE-UNIT budget, not by a per-call delay:
+    // each set costs min(30, ceil(cards/10)) of 60 units a minute.
+    console.log(`  minute units   : ${units.toLocaleString("en-US")} at ${MINUTE_UNITS}/min = ~${Math.ceil(units / MINUTE_UNITS)} min`);
+    console.log(`  already held   : ${held.size} sets — a resume skips these and re-buys nothing`);
   } else await main();
 }

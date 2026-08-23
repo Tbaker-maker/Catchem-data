@@ -427,14 +427,52 @@ const CASES = [
     // self-read in one day: three checkers audited comments, one audited a test
     // fixture, this one audited its own vocabulary. The pattern is a checker
     // whose search space includes the checker.
+    // REWRITTEN 2026-08-23. This asserted `critical > 0` as a proxy for "the
+    // walk still works", and it went red the day the walk started working
+    // BETTER: vol30 is now genuinely consumed by compute-demand, and the rest
+    // are read by the enrichment distiller, so the critical count legitimately
+    // fell to zero. A test that fails when the codebase improves trains people
+    // to ignore it. So prove the walk directly instead — plant a field that
+    // nothing anywhere reads, and require the strategist to find it.
     fn: async () => {
-      const src = await readFile(P("scripts/api-strategist.mjs"), "utf-8");
+      const target = P("scripts/api-strategist.mjs");
+      const src = await readFile(target, "utf-8");
       const excludesSelf = /api-strategist\.mjs/.test(src);
-      const rep = await readFile(P("research/pulse/api-strategy.json"), "utf-8").catch(() => "{}");
-      const found = (JSON.parse(rep).counts?.critical ?? 0) > 0;
-      return { pass: excludesSelf && found,
-        why: !excludesSelf ? "it no longer excludes its own source, so it will find its own vocabulary and report everything as used"
-           : "it excludes itself but found nothing critical — either we finally use everything, or the walk broke" };
+      if (!excludesSelf) return { pass: false, why: "it no longer excludes its own source, so it will find its own vocabulary and report everything as used" };
+      const bak = TMP("/tmp/nt-strategist.bak");
+      await copyFile(target, bak);
+      // ASSEMBLED AT RUNTIME, never written as a literal. The first version of
+      // this test spelled the canary out, and the strategist found it here, in
+      // the test file, and correctly called it "used" — the very self-read
+      // failure this guard exists to catch, reproduced by the guard's own test.
+      const CANARY = ["nt", "Canary", "Field"].join("");
+      try {
+        // A field name that appears in the WORTH map and nowhere else on disk.
+        // If the walk is alive, this is an unread field and it says so.
+        const planted = src.replace("const WORTH = {",
+          `const WORTH = {\n      ${CANARY}: { v: "critical", why: "planted by negative-tests; nothing reads this." },`);
+        if (planted === src) return { pass: false, why: "could not plant the canary — the WORTH map moved" };
+        await writeFile(target, planted);
+        // Plant the value too, or the walk never sees the key on the row.
+        const enrichPath = P("data/singles-enrichment.json");
+        const ebak = TMP("/tmp/nt-enrich.bak");
+        await copyFile(enrichPath, ebak);
+        try {
+          const e = JSON.parse(await readFile(enrichPath, "utf-8"));
+          const rows = e.cards ?? e.rows ?? [];
+          if (!rows.length) return { pass: true, why: "" }; // nothing to scan; not a failure of this guard
+          rows[0][CANARY] = 123;
+          await writeFile(enrichPath, JSON.stringify(e, null, 1));
+          await run("node", [target], { cwd: ROOT }).catch(() => {});
+          const rep = JSON.parse(await readFile(P("research/pulse/api-strategy.json"), "utf-8").catch(() => "{}"));
+          const found = JSON.stringify(rep.findings ?? []).includes(CANARY);
+          return { pass: found, why: "the strategist did not report a field that nothing in the repo reads — the unused-field walk is broken" };
+        } finally { await copyFile(ebak, enrichPath); }
+      } finally {
+        await copyFile(bak, target);
+        // Leave the real report behind, not the canary one.
+        await run("node", [target], { cwd: ROOT }).catch(() => {});
+      }
     } },
 
   { guard: "Teacher does not scold a winner", detect: null,
@@ -611,6 +649,62 @@ const CASES = [
         const r = await sh("guard-audit.mjs");
         return { pass: r.failed, why: r.failed ? "" : "a hardcoded /tmp passed guard-audit" };
       } finally { await copyFile(bak, target); }
+    } },
+
+  // The 2026-08-23 class: a request the provider IGNORES but still BILLS.
+  // Our catalogue keys sets by pokemontcg.io slug ("ex8"); the provider keys
+  // them by internal number (23821). Sending the slug returned five sets we
+  // never asked for and cost 9,114 credits. The guard is that enrichment
+  // refuses to spend at all when the id map is missing.
+  { guard: "Enrichment refuses to spend without a provider set map", detect: null,
+    fn: async () => {
+      const map = P("data/ppt-set-map.json");
+      const bak = TMP("/tmp/nt-setmap.bak");
+      let had = true;
+      try { await copyFile(map, bak); } catch { had = false; }
+      try {
+        if (had) await unlink(map);
+        // A key must be present or the script exits on the missing-key check
+        // instead, which would pass this test for entirely the wrong reason.
+        const r = await run("node", [P("scripts/enrich-by-set.mjs")], { cwd: ROOT,
+          env: { ...process.env, POKEMONPRICETRACKER_API_KEY: "nt-placeholder" } })
+          .then(() => ({ failed: false, out: "" }), e => ({ failed: true, out: (e.stdout || "") + (e.stderr || "") }));
+        const refused = r.failed && /resolve-set-ids/.test(r.out);
+        return { pass: refused,
+          why: r.failed ? "it exited, but not with the set-map instruction — check it is not just the missing-key path"
+                        : "enrichment was willing to spend credits with no provider set map" };
+      } finally { if (had) await copyFile(bak, map); }
+    } },
+
+  // The distiller is what keeps a 166 MB raw payload out of git. If it ever
+  // starts passing history straight through, the file it writes stops being
+  // committable and the repo takes it permanently.
+  { guard: "Distilled enrichment drops the raw daily series", detect: null,
+    fn: async () => {
+      const src = await readFile(P("scripts/distil-enrichment.mjs"), "utf-8");
+      if (/history:\s*nm\b/.test(src) || /\.\.\.c\.priceHistory/.test(src))
+        return { pass: false, why: "the distiller copies the raw history array through — output will be unbounded" };
+      const { distil } = await import(pathToFileURL(P("scripts/distil-enrichment.mjs")).href);
+      let out; try { out = await distil(); } catch { return { pass: true, why: "" }; } // no raw file present: nothing to prove
+      const bytes = Buffer.byteLength(JSON.stringify(out));
+      const perCard = bytes / Math.max(1, out.cardCount);
+      // The raw is ~200 KB/card. Anything near that means history leaked in.
+      return { pass: perCard < 20000,
+        why: `distilled output is ${Math.round(perCard / 1024)} KB per card — the raw series is leaking through` };
+    } },
+
+  // Pacing is priced in minute-UNITS, not calls: a set costs min(30, ceil(n/10))
+  // of 60 per minute. The first run paced a flat 1,000ms per call, overran the
+  // budget three times over, and took a 429 with 8,865 credits unspent.
+  { guard: "Enrichment paces by minute units, not a flat delay", detect: null,
+    fn: async () => {
+      const src = await readFile(P("scripts/enrich-by-set.mjs"), "utf-8");
+      if (/PACE_MS/.test(src)) return { pass: false, why: "the flat PACE_MS delay is back" };
+      if (!/unitsFor|MINUTE_UNITS/.test(src)) return { pass: false, why: "no minute-unit accounting found" };
+      const i = src.indexOf("const unitsFor");
+      const unitsFor = eval(`(() => { ${src.slice(i, src.indexOf("\n", i))}; return unitsFor; })()`);
+      const ok = unitsFor(12) === 2 && unitsFor(28) === 3 && unitsFor(500) === 30 && unitsFor(1000) === 30;
+      return { pass: ok, why: `unitsFor is mispriced: 12→${unitsFor(12)} (want 2), 500→${unitsFor(500)} (want 30)` };
     } },
 
 ];

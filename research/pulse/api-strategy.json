@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T00:28:42.365Z",
+ "generatedAt": "2026-08-23T00:55:37.417Z",
  "question": "Not what could we buy, but what is already arriving that we throw away. A field we ignore cost exactly as much as a field we use.",
  "blindSpots": [
   "Chat cannot reach the provider's documentation or make a live call. Everything here is read from responses already stored.",
@@ -45,18 +45,11 @@
   }
  ],
  "counts": {
-  "critical": 1,
+  "critical": 0,
   "high": 2,
   "medium": 6
  },
  "findings": [
-  {
-   "severity": "critical",
-   "what": "raw.recentSales arrives on every card and is never read",
-   "why": "what things actually SOLD for. We currently compare asks to prices and label the mismatch; sales would let us report the transaction instead of the intention.",
-   "action": "wire it through — the call is already being made and the data is already being paid for",
-   "owner": "chat"
-  },
   {
    "severity": "high",
    "what": "/sealed-products is only ever queried by name",
@@ -73,7 +66,7 @@
   },
   {
    "severity": "medium",
-   "what": "the paid provider is called from 85 places",
+   "what": "the paid provider is called from 88 places",
    "why": "A paid tier justifies itself by what it uniquely provides. If the only thing we take from it is a price we could get free elsewhere, we are paying for a duplicate.",
    "action": "list what ONLY the paid provider gives us; if that list is short, either use more of it or stop paying for it",
    "owner": "tyler"

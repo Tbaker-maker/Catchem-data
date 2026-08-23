@@ -9,3 +9,7 @@
 *.pem
 *.key
 node_modules/
+
+# Raw enrichment payloads: 166MB for 861 cards (~3GB at catalogue scale).
+# Regenerable from the API; the distilled file is what instruments read.
+data/enrichment-by-set.json

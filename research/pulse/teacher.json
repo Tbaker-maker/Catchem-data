@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T00:28:42.255Z",
+ "generatedAt": "2026-08-23T00:55:37.314Z",
  "role": "Keeps agents current, breaks them out of ruts, and teaches from incidents that actually happened to us. It asks questions; it never rewrites another agent.",
  "counts": {
   "stale": 0,
@@ -65,7 +65,7 @@
   {
    "agent": "api-strategist",
    "kind": "in a rut",
-   "observation": "9 findings, identical across 5 runs",
+   "observation": "8 findings, identical across 5 runs",
    "question": "You find unused fields. Ask what we would want that no provider offers, because that is the gap worth building around.",
    "why": "Identical output run after run means the agent has stopped searching and started reciting. The count being stable is not the problem; the SAMENESS is.",
    "confidence": "OBSERVED",

@@ -23,7 +23,14 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "utf-8")); } catch { return null; } };
 
 const enrich = await J("data/singles-enrichment.json") ?? {};
-const rows = (enrich.cards ?? enrich.rows ?? []).filter(c => c?.raw);
+// Two enrichment sources, one shape. The watchlist file is the hand-picked
+// dozen; the distilled file is the catalogue-scale set fetch. Merge by cardId
+// with the watchlist winning, because it is the one that was verified by hand.
+const distilled = await J("data/enrichment-distilled.json") ?? {};
+const byId = new Map();
+for (const c of (distilled.cards ?? [])) if (c?.raw) byId.set(c.cardId, c);
+for (const c of (enrich.cards ?? enrich.rows ?? [])) if (c?.raw) byId.set(c.cardId, c);
+const rows = [...byId.values()];
 const MIN_SAMPLE = 25;                     // below this, say so rather than compute
 
 const money = n => `$${Math.round(n).toLocaleString("en-US")}`;
