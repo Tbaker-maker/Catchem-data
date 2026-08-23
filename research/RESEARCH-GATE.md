@@ -101,6 +101,8 @@ fixing the class is.
 
 | 20 | A composite showed a CARD BACK: image URLs were constructed from card IDs assuming one host, but newer sets serve from images.scrydex.com, so the URL 404d and the host returned a placeholder that was a valid 200 PNG at correct dimensions | Tyler, by eye | Constructed value that could have been looked up | card-composite reads the real URL from the source data per card; card-guard fails any script building an image URL from a template |
 
+| 21 | Three secondary sources state Kadabra vanished from the TCG for 26 years (1997-2023). Our own catalogue holds English Kadabra prints from 1999, 2000 and 2002 - the real gap is 21 years | chat, cross-checking a sourced claim against our own primary data before publishing | Secondary consensus contradicted by primary data | The knowledge base entry now cites our catalogue as a source alongside the articles, and the fact records that it was corrected on verification |
+
 **PATTERN, stated plainly:** 8 of 9 were caught by Tyler, not by the
 machine. Every guard above was built AFTER a human caught something.
 That is the honest state — the machine is now catching prices, but

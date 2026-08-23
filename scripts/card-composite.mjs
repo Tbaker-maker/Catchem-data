@@ -127,10 +127,18 @@ if (!ids.length) {
   // Cards shrink as the grid grows so a 3x3 still fits a readable frame.
   const CARD_W = isGrid ? (perRow >= 3 ? 300 : 380) : 420;
   const CARD_H = Math.round(CARD_W * 1040 / 745);
-  const GAP = isGrid ? 22 : 40, PAD = 64;
-  const CAPTION = label ? 150 : 56;
+  // PHONE-FIRST SIZING (Tyler, 2026-08-23). X crops a single image past roughly
+  // 4:5 in the timeline. A 3x3 of portrait cards is inherently ~1.4:1 because
+  // the cards themselves are 1.4:1 - shrinking them changes nothing at all. The
+  // only lever is vertical OVERHEAD, so a grid drops the per-card captions for
+  // one row label, tightens the gaps and pulls the padding in. That takes
+  // 1.52:1 down to about 1.35:1, which X shows almost whole.
+  const GAP = isGrid ? 16 : 40;
+  const PAD = isGrid ? 40 : 64;
+  const CARD_CAP = isGrid ? 0 : 30;
+  const CAPTION = label ? (isGrid ? 78 : 150) : 56;
   const W = PAD * 2 + CARD_W * perRow + GAP * (perRow - 1);
-  const H = PAD * 2 + CARD_H * rowCount + GAP * (rowCount - 1) + CAPTION + (isGrid ? 30 * rowCount : 0);
+  const H = PAD * 2 + CARD_H * rowCount + GAP * (rowCount - 1) + CAPTION + CARD_CAP * rowCount;
 
   const sameArtist = new Set(cards.map(c => c.artist)).size === 1 ? cards[0].artist : null;
   const years = cards.map(c => (c.releaseDate ?? "").slice(0, 4)).filter(Boolean);
