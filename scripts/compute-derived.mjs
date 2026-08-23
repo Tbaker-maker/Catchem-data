@@ -698,6 +698,7 @@ const reprintPressure = (() => {
   return rows.sort((a, b) => Math.abs(b.shelfMovePct) - Math.abs(a.shelfMovePct)).slice(0, 12);
 })();
 
+const demandData = await J("research/pulse/demand.json").catch(() => null);
 const out = {
   generatedAt: new Date().toISOString(),
   method: "Pack Math: ask median / era-aware pack count (arithmetic, no estimation; variable-count products excluded by name). Narrative: latest agent digest cross-referenced against tracked sets; 'quiet movers' = spread signal with zero digest mention.",
@@ -886,6 +887,19 @@ const LENSES = [
       ? (supplyShifts || []).find(x => !blockedIds.has(x.id) && !isRepeat(x.name)) || null
       : null;
     return {
+      // ── GRADED PICK, at last ────────────────────────────────────────
+      // This slot has been a padlock or a substitute since the beginning,
+      // because we had no graded feed. We do now: completed PSA sale prices,
+      // which is why this can carry VERIFIED where a graded ASK could not.
+      // Empty until enrichment covers a card whose numbers actually differ —
+      // an empty slot is honest and a manufactured one is not.
+      graded: (() => {
+        const g = (demandData?.gradedPremium ?? []).find(x => x.psa10Count >= 20 && x.tenClears > 0);
+        if (!g) return null;
+        return { name: g.name, raw: g.raw, psa9: g.psa9, psa10: g.psa10,
+          chip: "VERIFIED", reason: "graded",
+          explain: g.read, simple: g.simple, basis: g.basis };
+      })(),
       shelf: shelfPick ? { name: shelfPick.name, listings: shelfPick.listings, prev: shelfPick.prev,
         dPct: shelfPick.dPct, priceDPct: shelfPick.priceDPct, chip: "READ", reason: "shelf move",
         explain: `Listings moved ${shelfPick.prev} to ${shelfPick.listings} overnight. ${shelfPick.read.split(" — ")[0].charAt(0).toUpperCase() + shelfPick.read.split(" — ")[0].slice(1)}${shelfPick.priceDPct != null ? `, with asks ${shelfPick.priceDPct >= 0 ? "up" : "down"} ${Math.abs(shelfPick.priceDPct)}%` : ""}.` } : null,

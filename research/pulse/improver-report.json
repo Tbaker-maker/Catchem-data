@@ -1,75 +1,79 @@
 {
- "generatedAt": "2026-08-22T20:33:08.025Z",
+ "generatedAt": "2026-08-23T00:06:46.141Z",
  "measure": "Our own doctrine, not generic best practice. Generic advice is free and worthless.",
  "counts": {
-  "total": 15
+  "total": 17
  },
  "ideas": [
   {
    "area": "tool idea (hypothesis)",
    "observation": "We hold both deal-zone room and per-pack economics for the same products.",
    "suggestion": "A \"rip or trade\" tool could answer one question nobody else can: at today's prices, is this box worth more opened, sold sealed online, or traded at a table? Three numbers we already compute, one screen.",
-   "effort": "medium"
+   "effort": "medium",
+   "confidence": "HYPOTHESIS"
   },
   {
    "area": "tool idea (hypothesis)",
    "observation": "Print windows and shelf movement are computed separately and never combined.",
    "suggestion": "A late-print set whose shelves are draining is a genuinely different situation from either signal alone. Crossing them is free and nobody publishes it.",
-   "effort": "medium"
-  },
-  {
-   "area": "product",
-   "observation": "The index has no matched sample today, so it cannot move.",
-   "suggestion": "Expected on a fresh series — worth a line on the page saying so, rather than a number that looks stuck.",
-   "effort": "small"
+   "effort": "medium",
+   "confidence": "HYPOTHESIS"
   },
   {
    "area": "knowledge",
-   "observation": "The knowledge base holds 8 verified facts.",
+   "observation": "The knowledge base holds 12 verified facts.",
    "suggestion": "This is the asset that compounds — instruments can be rebuilt in a weekend, a decade of sourced facts cannot. A steady few per week beats a burst.",
-   "effort": "ongoing"
+   "effort": "ongoing",
+   "confidence": "OBSERVED"
   },
   {
    "area": "unused output",
    "observation": "artist-instruments.json is written every run and read by nothing — not another script, not the feed.",
    "suggestion": "Either surface it (the app, the Pulse, a creator tool) or stop generating it. Work that runs daily and reaches nobody is the most expensive kind.",
-   "effort": "small"
+   "effort": "small",
+   "confidence": "OBSERVED"
   },
   {
    "area": "unused output",
-   "observation": "era-history.json is written every run and read by nothing — not another script, not the feed.",
+   "observation": "content-sanity.json is written every run and read by nothing — not another script, not the feed.",
    "suggestion": "Either surface it (the app, the Pulse, a creator tool) or stop generating it. Work that runs daily and reaches nobody is the most expensive kind.",
-   "effort": "small"
+   "effort": "small",
+   "confidence": "OBSERVED"
   },
   {
    "area": "repetition",
-   "observation": "date-to-day-key is implemented inline 29 times across the pipeline.",
+   "observation": "date-to-day-key is implemented inline 32 times across the pipeline.",
    "suggestion": "Centralise it — scripts/rotate.mjs already centralises day maths. Repeated maths is where two places drift and only one gets fixed.",
-   "effort": "small"
+   "effort": "small",
+   "confidence": "OBSERVED"
   },
   {
    "area": "repetition",
-   "observation": "money rounding is implemented inline 9 times across the pipeline.",
+   "observation": "money rounding is implemented inline 11 times across the pipeline.",
    "suggestion": "Centralise it — one helper would make cents behave identically everywhere. Repeated maths is where two places drift and only one gets fixed.",
-   "effort": "small"
+   "effort": "small",
+   "confidence": "OBSERVED"
   },
   {
    "area": "pipeline size",
-   "observation": "The daily run imports 30 steps from one file.",
+   "observation": "The daily run imports 54 steps from one file.",
    "suggestion": "Consider grouping them (intake → compute → publish → agents) so the order is legible at a glance. A long flat list is where an ordering mistake hides.",
-   "effort": "medium"
+   "effort": "medium",
+   "confidence": "OBSERVED"
   },
   {
    "area": "maintainability",
-   "observation": "compute-derived.mjs is 57KB.",
+   "observation": "compute-derived.mjs is 62KB.",
    "suggestion": "Large files are where two people edit the same function on the same day. Splitting by concern would make collisions rarer and reviews honest.",
-   "effort": "medium"
+   "effort": "medium",
+   "confidence": "OBSERVED"
   },
   {
    "area": "maintainability",
-   "observation": "fetch-sealed-prices.mjs is 39KB.",
+   "observation": "fetch-sealed-prices.mjs is 40KB.",
    "suggestion": "Large files are where two people edit the same function on the same day. Splitting by concern would make collisions rarer and reviews honest.",
-   "effort": "medium"
+   "effort": "medium",
+   "confidence": "OBSERVED"
   }
  ]
 }

@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T00:02:39.251Z",
+ "generatedAt": "2026-08-23T00:07:40.832Z",
  "date": "2026-08-23",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -7,7 +7,7 @@
   "falsifier: 0 finding(s)",
   "correction-hunter: 3 finding(s)",
   "review-agents: 0 finding(s)",
-  "api-strategist: 8 finding(s)",
+  "api-strategist: 5 finding(s)",
   "compliance: 0 finding(s)",
   "security: 1 finding(s)",
   "steward: 2 finding(s)",
@@ -15,7 +15,7 @@
   "anomaly: 0 finding(s)",
   "creator: 15 finding(s)",
   "experience: 6 finding(s)",
-  "improver: 11 finding(s)",
+  "improver: 10 finding(s)",
   "universe-advisor: 5 finding(s)",
   "falsifier: clean run — nothing failed, which is the point of it",
   "review-agents: has never actually run (no key) — costing nothing, proving nothing, and honest about both",
@@ -64,6 +64,16 @@
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
   },
   {
+   "agent": "correction-hunter",
+   "finding": "runs daily and has returned the same count (3) four runs running.",
+   "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
+  },
+  {
+   "agent": "api-strategist",
+   "finding": "every finding from a week ago is still open (5).",
+   "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
+  },
+  {
    "agent": "compliance",
    "finding": "runs daily and has returned the same count (0) four runs running.",
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
@@ -84,11 +94,6 @@
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
   },
   {
-   "agent": "platform",
-   "finding": "every finding from a week ago is still open (10).",
-   "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
-  },
-  {
    "agent": "anomaly",
    "finding": "runs daily and has returned the same count (0) four runs running.",
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
@@ -105,7 +110,7 @@
   },
   {
    "agent": "improver",
-   "finding": "every finding from a week ago is still open (11).",
+   "finding": "every finding from a week ago is still open (10).",
    "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
@@ -134,23 +139,7 @@
   {
    "from": "improver",
    "owner": "chat",
-   "what": "The index has no matched sample today, so it cannot move.",
-   "do": "Expected on a fresh series — worth a line on the page saying so, rather than a number that looks stuck.",
-   "score": 58,
-   "band": "QUEUE",
-   "selfScore": 58,
-   "demotions": [],
-   "components": {
-    "evidence": "OBSERVED (30) — seen in our own output or code, not inferred",
-    "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
-    "actionable": "SOON (14) — clear what to do, needs a slot",
-    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
-   }
-  },
-  {
-   "from": "improver",
-   "owner": "chat",
-   "what": "The knowledge base holds 8 verified facts.",
+   "what": "The knowledge base holds 12 verified facts.",
    "do": "This is the asset that compounds — instruments can be rebuilt in a weekend, a decade of sourced facts cannot. A steady few per week beats a burst.",
    "score": 58,
    "band": "QUEUE",
@@ -182,8 +171,24 @@
   {
    "from": "improver",
    "owner": "chat",
-   "what": "era-history.json is written every run and read by nothing — not another script, not the feed.",
+   "what": "content-sanity.json is written every run and read by nothing — not another script, not the feed.",
    "do": "Either surface it (the app, the Pulse, a creator tool) or stop generating it. Work that runs daily and reaches nobody is the most expensive kind.",
+   "score": 58,
+   "band": "QUEUE",
+   "selfScore": 58,
+   "demotions": [],
+   "components": {
+    "evidence": "OBSERVED (30) — seen in our own output or code, not inferred",
+    "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "improver",
+   "owner": "chat",
+   "what": "date-to-day-key is implemented inline 32 times across the pipeline.",
+   "do": "Centralise it — scripts/rotate.mjs already centralises day maths. Repeated maths is where two places drift and only one gets fixed.",
    "score": 58,
    "band": "QUEUE",
    "selfScore": 58,
@@ -326,7 +331,7 @@
   {
    "from": "creator",
    "owner": "cc",
-   "what": "27 card images minted today.",
+   "what": "35 card images minted today.",
    "do": "The gap is that they are files in a repo. A creator needs them one tap from the angle they picked, not from a folder.",
    "score": 48,
    "band": "WATCH",
@@ -474,7 +479,7 @@
   {
    "from": "platform",
    "owner": "tyler",
-   "what": "[YouTube] the sealed market — \"The whole sealed market in one number: 100.\"",
+   "what": "[YouTube] the sealed market — \"The whole sealed market in one number: 99.4.\"",
    "do": "YouTube rewards a question somebody is already typing into search. We can answer three of the recurring ones with data nobody else holds, which is the whole reason to be here rather than reacting to other people's news.",
    "score": 33,
    "band": "NOTE ONLY",
@@ -491,54 +496,6 @@
    "from": "api-strategist",
    "owner": "chat",
    "what": "raw.recentSales arrives on every card and is never read",
-   "do": "wire it through — the call is already being made and the data is already being paid for",
-   "score": 30,
-   "band": "NOTE ONLY",
-   "selfScore": 30,
-   "demotions": [],
-   "components": {
-    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
-    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
-    "actionable": "SOON (14) — clear what to do, needs a slot",
-    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
-   }
-  },
-  {
-   "from": "api-strategist",
-   "owner": "chat",
-   "what": "raw.vol30 arrives on every card and is never read",
-   "do": "wire it through — the call is already being made and the data is already being paid for",
-   "score": 30,
-   "band": "NOTE ONLY",
-   "selfScore": 30,
-   "demotions": [],
-   "components": {
-    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
-    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
-    "actionable": "SOON (14) — clear what to do, needs a slot",
-    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
-   }
-  },
-  {
-   "from": "api-strategist",
-   "owner": "chat",
-   "what": "ebaySold.psa9 arrives populated and is never read",
-   "do": "wire it through - the call is already made and the data already paid for",
-   "score": 30,
-   "band": "NOTE ONLY",
-   "selfScore": 30,
-   "demotions": [],
-   "components": {
-    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
-    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
-    "actionable": "SOON (14) — clear what to do, needs a slot",
-    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
-   }
-  },
-  {
-   "from": "api-strategist",
-   "owner": "chat",
-   "what": "gradingPremium.psa9 arrives on every card and is never read",
    "do": "wire it through — the call is already being made and the data is already being paid for",
    "score": 30,
    "band": "NOTE ONLY",
@@ -616,6 +573,38 @@
    }
   },
   {
+   "from": "api-strategist",
+   "owner": "tyler",
+   "what": "the paid provider is called from 84 places",
+   "do": "list what ONLY the paid provider gives us; if that list is short, either use more of it or stop paying for it",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "api-strategist",
+   "owner": "tyler",
+   "what": "budget: 18,000 of 18,000 usable allocated (100%), 0 still unassigned",
+   "do": "fully allocated - the constraint is now real work rather than budget",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
    "from": "security",
    "owner": "tyler",
    "what": "Anthropic key found in scripts/negative-tests.mjs",
@@ -667,7 +656,7 @@
   {
    "from": "creator",
    "owner": "cc",
-   "what": "10 distinct angles are ready each morning.",
+   "what": "11 distinct angles are ready each morning.",
    "do": "Hold it. The risk now is the opposite — too many choices is its own paralysis, so lead with three and let the rest be a list.",
    "score": 0,
    "band": "CONFIRMED",
@@ -697,23 +686,7 @@
    {
     "from": "improver",
     "owner": "chat",
-    "what": "The index has no matched sample today, so it cannot move.",
-    "do": "Expected on a fresh series — worth a line on the page saying so, rather than a number that looks stuck.",
-    "score": 58,
-    "band": "QUEUE",
-    "selfScore": 58,
-    "demotions": [],
-    "components": {
-     "evidence": "OBSERVED (30) — seen in our own output or code, not inferred",
-     "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
-     "actionable": "SOON (14) — clear what to do, needs a slot",
-     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
-    }
-   },
-   {
-    "from": "improver",
-    "owner": "chat",
-    "what": "The knowledge base holds 8 verified facts.",
+    "what": "The knowledge base holds 12 verified facts.",
     "do": "This is the asset that compounds — instruments can be rebuilt in a weekend, a decade of sourced facts cannot. A steady few per week beats a burst.",
     "score": 58,
     "band": "QUEUE",
@@ -745,8 +718,24 @@
    {
     "from": "improver",
     "owner": "chat",
-    "what": "era-history.json is written every run and read by nothing — not another script, not the feed.",
+    "what": "content-sanity.json is written every run and read by nothing — not another script, not the feed.",
     "do": "Either surface it (the app, the Pulse, a creator tool) or stop generating it. Work that runs daily and reaches nobody is the most expensive kind.",
+    "score": 58,
+    "band": "QUEUE",
+    "selfScore": 58,
+    "demotions": [],
+    "components": {
+     "evidence": "OBSERVED (30) — seen in our own output or code, not inferred",
+     "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+     "actionable": "SOON (14) — clear what to do, needs a slot",
+     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+    }
+   },
+   {
+    "from": "improver",
+    "owner": "chat",
+    "what": "date-to-day-key is implemented inline 32 times across the pipeline.",
+    "do": "Centralise it — scripts/rotate.mjs already centralises day maths. Repeated maths is where two places drift and only one gets fixed.",
     "score": 58,
     "band": "QUEUE",
     "selfScore": 58,
@@ -895,7 +884,7 @@
    {
     "from": "creator",
     "owner": "cc",
-    "what": "27 card images minted today.",
+    "what": "35 card images minted today.",
     "do": "The gap is that they are files in a repo. A creator needs them one tap from the angle they picked, not from a folder.",
     "score": 48,
     "band": "WATCH",
@@ -965,6 +954,6 @@
   "actNow": 0,
   "queue": 9,
   "watch": 8,
-  "noteOnly": 15
+  "noteOnly": 14
  }
 }

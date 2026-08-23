@@ -624,6 +624,7 @@ try { const { shouldRun } = await import("./cadence.mjs");
   const __d = await shouldRun("universe-advisor", __last);
   if (__d.run) await import("./universe-advisor.mjs"); else console.log(`  · universe-advisor.mjs skipped — ${__d.why}`); } catch (e) { console.warn(`  ⚠ agent universe-advisor.mjs: ${e.message} — advisory only`); }
 try { await import("./agent-contract.mjs"); } catch (e) { console.warn(`  ⚠ agent contract: ${e.message} — advisory only`); }
+try { await import("./compute-demand.mjs"); } catch (e) { console.warn(`  ⚠ demand: ${e.message}`); }
 try { await import("./api-strategist.mjs"); } catch (e) { console.warn(`  ⚠ api strategist: ${e.message} — advisory only`); }
 try { await import("./compliance-agent.mjs"); } catch (e) { console.warn(`  ⚠ compliance: ${e.message} — advisory only`); }
 try { await import("./steward.mjs"); } catch (e) { console.warn(`  ⚠ steward: ${e.message} — advisory only`); }
