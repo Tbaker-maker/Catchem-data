@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-23T05:12:57.399Z",
+  "generatedAt": "2026-08-23T06:09:50.297Z",
   "antiSlopRule": "A formula must be derivable from a field we hold: name, artist, setId, rarity, releaseDate, price. Where a theme needs judgment, that judgment is a NAMED LIST stored openly and arguable — never an adjective smuggled into a sentence. 'Cute' is not in the data; the nine Eeveelutions are.",
   "fieldsUsed": [
     "name",
@@ -52,10 +52,15 @@
   "kinds": {
     "binder page": 6,
     "three rows of three": 2,
+    "the spread": 73,
+    "the half page": 15,
     "one artist, one family": 24,
     "one Pokémon, many hands": 236,
     "one set, one hand": 332,
-    "the debut": 151
+    "the trio": 3,
+    "the debut": 151,
+    "the pair": 40,
+    "the single": 6
   },
   "formulas": [
     {
@@ -211,452 +216,580 @@
       "angle": "Which row is the best weather trio? 2005, 2012, 2023."
     },
     {
-      "kind": "one artist, one family",
-      "title": "Kagemaru Himeno drew 4 of The Eevee line",
-      "basis": "artist field + a named list of 9 Pokémon",
-      "cards": [
-        "base2-3",
-        "base2-4",
-        "base2-12",
-        "sm115-48"
-      ],
-      "count": 4,
-      "why": "4 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
-      "angle": "One artist. 4 of the eevee line."
-    },
-    {
-      "kind": "one artist, one family",
-      "title": "Mitsuhiro Arita drew 4 of The Eevee line",
-      "basis": "artist field + a named list of 9 Pokémon",
-      "cards": [
-        "ecard2-H29",
-        "ex11-109",
-        "sm9-120",
-        "sm11-72"
-      ],
-      "count": 4,
-      "why": "4 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
-      "angle": "One artist. 4 of the eevee line."
-    },
-    {
-      "kind": "one artist, one family",
-      "title": "Ryo Ueda drew 4 of The Eevee line",
-      "basis": "artist field + a named list of 9 Pokémon",
-      "cards": [
-        "ex10-102",
-        "ex11-17",
-        "ex11-108",
-        "g1-28a"
-      ],
-      "count": 4,
-      "why": "4 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
-      "angle": "One artist. 4 of the eevee line."
-    },
-    {
-      "kind": "one artist, one family",
-      "title": "5ban Graphics drew 9 of The Eevee line",
-      "basis": "artist field + a named list of 9 Pokémon",
-      "cards": [
-        "sm2-158",
-        "sm5-157",
-        "sm5-159",
-        "sm9-191"
-      ],
-      "count": 4,
-      "why": "9 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
-      "angle": "One artist. 9 of the eevee line."
-    },
-    {
-      "kind": "one artist, one family",
-      "title": "Mitsuhiro Arita drew 7 of The Kanto starters",
-      "basis": "artist field + a named list of 9 Pokémon",
-      "cards": [
-        "base1-4",
-        "base1-15",
-        "dp7-101",
-        "dp7-102"
-      ],
-      "count": 4,
-      "why": "7 members of the same family, one hand. Nothing here is asserted — the list is stored and arguable, the artist field is the source's.",
-      "angle": "One artist. 7 of the kanto starters."
-    },
-    {
-      "kind": "one Pokémon, many hands",
-      "title": "Alakazam, drawn by 6 different illustrators",
-      "basis": "name + distinct artist field",
-      "cards": [
-        "base1-1",
-        "ecard1-1",
-        "pl2-103",
-        "swsh4-172"
-      ],
-      "count": 4,
-      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "6 artists. One Alakazam."
-    },
-    {
-      "kind": "one Pokémon, many hands",
-      "title": "Blastoise, drawn by 11 different illustrators",
-      "basis": "name + distinct artist field",
+      "kind": "the spread",
+      "title": "Blastoise by eight different illustrators",
+      "basis": "name + eight distinct artist values",
       "cards": [
         "base1-2",
         "ecard1-4",
         "ex6-104",
-        "dp3-2"
+        "dp3-2",
+        "bw7-31",
+        "bw8-137",
+        "sm12-38",
+        "sm12-214"
       ],
-      "count": 4,
-      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "11 artists. One Blastoise."
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Blastoise. Which is the definitive one?"
     },
     {
-      "kind": "one Pokémon, many hands",
-      "title": "Charizard, drawn by 15 different illustrators",
-      "basis": "name + distinct artist field",
+      "kind": "the spread",
+      "title": "Charizard by eight different illustrators",
+      "basis": "name + eight distinct artist values",
       "cards": [
         "base1-4",
         "ecard1-6",
         "ex16-6",
-        "dp3-3"
+        "dp3-3",
+        "pl3-143",
+        "bw7-20",
+        "bw8-136",
+        "sm75-3"
       ],
-      "count": 4,
-      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "15 artists. One Charizard."
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Charizard. Which is the definitive one?"
     },
     {
-      "kind": "one Pokémon, many hands",
-      "title": "Gyarados, drawn by 13 different illustrators",
-      "basis": "name + distinct artist field",
+      "kind": "the spread",
+      "title": "Gyarados by eight different illustrators",
+      "basis": "name + eight distinct artist values",
       "cards": [
         "base1-6",
         "ex6-109",
         "ex8-8",
-        "ex13-8"
+        "ex13-8",
+        "ex13-102",
+        "hgss1-123",
+        "sm3-33",
+        "sm75-20"
       ],
-      "count": 4,
-      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "13 artists. One Gyarados."
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Gyarados. Which is the definitive one?"
     },
     {
-      "kind": "one Pokémon, many hands",
-      "title": "Machamp, drawn by 10 different illustrators",
-      "basis": "name + distinct artist field",
+      "kind": "the spread",
+      "title": "Machamp by eight different illustrators",
+      "basis": "name + eight distinct artist values",
       "cards": [
         "base1-8",
         "ecard1-16",
         "dp7-98",
-        "bw10-49"
+        "bw10-49",
+        "g1-42",
+        "sm2-65",
+        "swsh10-72",
+        "swsh10-73"
       ],
-      "count": 4,
-      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "10 artists. One Machamp."
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Machamp. Which is the definitive one?"
     },
     {
-      "kind": "one Pokémon, many hands",
-      "title": "Magneton, drawn by 5 different illustrators",
-      "basis": "name + distinct artist field",
-      "cards": [
-        "base1-9",
-        "base3-11",
-        "neo3-10",
-        "ecard2-H16"
-      ],
-      "count": 4,
-      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "5 artists. One Magneton."
-    },
-    {
-      "kind": "one Pokémon, many hands",
-      "title": "Mewtwo, drawn by 13 different illustrators",
-      "basis": "name + distinct artist field",
+      "kind": "the spread",
+      "title": "Mewtwo by eight different illustrators",
+      "basis": "name + eight distinct artist values",
       "cards": [
         "base1-10",
         "ecard1-20",
         "ex1-101",
-        "ex11-12"
+        "ex11-12",
+        "ex13-103",
+        "dp6-144",
+        "sm11-71",
+        "sm11-222"
       ],
-      "count": 4,
-      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "13 artists. One Mewtwo."
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Mewtwo. Which is the definitive one?"
     },
     {
-      "kind": "one Pokémon, many hands",
-      "title": "Nidoking, drawn by 5 different illustrators",
-      "basis": "name + distinct artist field",
-      "cards": [
-        "base1-11",
-        "ecard2-H18",
-        "ecard2-150",
-        "ex6-8"
-      ],
-      "count": 4,
-      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "5 artists. One Nidoking."
-    },
-    {
-      "kind": "one Pokémon, many hands",
-      "title": "Ninetales, drawn by 8 different illustrators",
-      "basis": "name + distinct artist field",
+      "kind": "the spread",
+      "title": "Ninetales by eight different illustrators",
+      "basis": "name + eight distinct artist values",
       "cards": [
         "base1-12",
         "ecard1-21",
         "ecard2-H19",
-        "hgss1-7"
+        "hgss1-7",
+        "bw6-19",
+        "swsh2-26",
+        "sv3-199",
+        "sv3pt5-186"
       ],
-      "count": 4,
-      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "8 artists. One Ninetales."
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Ninetales. Which is the definitive one?"
     },
     {
-      "kind": "one Pokémon, many hands",
-      "title": "Poliwrath, drawn by 4 different illustrators",
-      "basis": "name + distinct artist field",
-      "cards": [
-        "base1-13",
-        "ecard1-24",
-        "ex10-11",
-        "sm1-32"
-      ],
-      "count": 4,
-      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "4 artists. One Poliwrath."
-    },
-    {
-      "kind": "one Pokémon, many hands",
-      "title": "Raichu, drawn by 13 different illustrators",
-      "basis": "name + distinct artist field",
+      "kind": "the spread",
+      "title": "Raichu by eight different illustrators",
+      "basis": "name + eight distinct artist values",
       "cards": [
         "base1-14",
         "base3-14",
         "ecard1-25",
-        "ex2-98"
+        "ex2-98",
+        "ex6-12",
+        "ex13-15",
+        "ex16-12",
+        "dp7-8"
       ],
-      "count": 4,
-      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "13 artists. One Raichu."
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Raichu. Which is the definitive one?"
     },
     {
-      "kind": "one Pokémon, many hands",
-      "title": "Venusaur, drawn by 10 different illustrators",
-      "basis": "name + distinct artist field",
+      "kind": "the spread",
+      "title": "Venusaur by eight different illustrators",
+      "basis": "name + eight distinct artist values",
       "cards": [
         "base1-15",
         "ecard1-30",
         "ex6-112",
-        "dp3-20"
+        "dp3-20",
+        "pl3-13",
+        "bw5-3",
+        "sm12-210",
+        "pgo-3"
       ],
-      "count": 4,
-      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "10 artists. One Venusaur."
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Venusaur. Which is the definitive one?"
     },
     {
-      "kind": "one Pokémon, many hands",
-      "title": "Zapdos, drawn by 11 different illustrators",
-      "basis": "name + distinct artist field",
+      "kind": "the spread",
+      "title": "Zapdos by eight different illustrators",
+      "basis": "name + eight distinct artist values",
       "cards": [
         "base1-16",
         "base3-15",
         "ecard2-H32",
-        "ex6-116"
+        "ex6-116",
+        "pl3-150",
+        "sm9-40",
+        "sm115-24",
+        "swsh4-48"
       ],
-      "count": 4,
-      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "11 artists. One Zapdos."
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Zapdos. Which is the definitive one?"
     },
     {
-      "kind": "one Pokémon, many hands",
-      "title": "Clefable, drawn by 5 different illustrators",
-      "basis": "name + distinct artist field",
-      "cards": [
-        "base2-1",
-        "ecard1-7",
-        "hgss1-3",
-        "col1-1"
-      ],
-      "count": 4,
-      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "5 artists. One Clefable."
-    },
-    {
-      "kind": "one Pokémon, many hands",
-      "title": "Electrode, drawn by 5 different illustrators",
-      "basis": "name + distinct artist field",
-      "cards": [
-        "base2-2",
-        "ecard2-H7",
-        "ex6-107",
-        "sm9-39"
-      ],
-      "count": 4,
-      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "5 artists. One Electrode."
-    },
-    {
-      "kind": "one Pokémon, many hands",
-      "title": "Flareon, drawn by 8 different illustrators",
-      "basis": "name + distinct artist field",
+      "kind": "the spread",
+      "title": "Flareon by eight different illustrators",
+      "basis": "name + eight distinct artist values",
       "cards": [
         "base2-3",
         "ex2-5",
         "ex10-5",
-        "ex11-5"
+        "ex11-5",
+        "ex11-108",
+        "ex16-100",
+        "swsh7-18",
+        "swsh9tg-TG01"
       ],
-      "count": 4,
-      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "8 artists. One Flareon."
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Flareon. Which is the definitive one?"
     },
     {
-      "kind": "one Pokémon, many hands",
-      "title": "Jolteon, drawn by 7 different illustrators",
-      "basis": "name + distinct artist field",
-      "cards": [
-        "base2-4",
-        "ex2-6",
-        "ex10-8",
-        "ex11-7"
-      ],
-      "count": 4,
-      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "7 artists. One Jolteon."
-    },
-    {
-      "kind": "one Pokémon, many hands",
-      "title": "Kangaskhan, drawn by 7 different illustrators",
-      "basis": "name + distinct artist field",
-      "cards": [
-        "base2-5",
-        "ex6-6",
-        "sm1-99",
-        "sm11-163"
-      ],
-      "count": 4,
-      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "7 artists. One Kangaskhan."
-    },
-    {
-      "kind": "one Pokémon, many hands",
-      "title": "Mr., drawn by 4 different illustrators",
-      "basis": "name + distinct artist field",
-      "cards": [
-        "base2-6",
-        "ex6-110",
-        "sm7-56",
-        "sv3pt5-179"
-      ],
-      "count": 4,
-      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "4 artists. One Mr.."
-    },
-    {
-      "kind": "one Pokémon, many hands",
-      "title": "Pidgeot, drawn by 7 different illustrators",
-      "basis": "name + distinct artist field",
-      "cards": [
-        "base2-8",
-        "ecard1-23",
-        "ex6-10",
-        "ex13-14"
-      ],
-      "count": 4,
-      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "7 artists. One Pidgeot."
-    },
-    {
-      "kind": "one Pokémon, many hands",
-      "title": "Snorlax, drawn by 11 different illustrators",
-      "basis": "name + distinct artist field",
+      "kind": "the spread",
+      "title": "Snorlax by eight different illustrators",
+      "basis": "name + eight distinct artist values",
       "cards": [
         "base2-11",
         "ex6-15",
         "pl2-111",
-        "sm10-158"
+        "sm10-158",
+        "swsh1-141",
+        "swsh1-142",
+        "swsh4-131",
+        "swsh6-224"
       ],
-      "count": 4,
-      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "11 artists. One Snorlax."
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Snorlax. Which is the definitive one?"
     },
     {
-      "kind": "one Pokémon, many hands",
-      "title": "Vaporeon, drawn by 7 different illustrators",
-      "basis": "name + distinct artist field",
-      "cards": [
-        "base2-12",
-        "ex10-19",
-        "ex11-18",
-        "ex11-110"
-      ],
-      "count": 4,
-      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "7 artists. One Vaporeon."
-    },
-    {
-      "kind": "one Pokémon, many hands",
-      "title": "Vileplume, drawn by 8 different illustrators",
-      "basis": "name + distinct artist field",
+      "kind": "the spread",
+      "title": "Vileplume by eight different illustrators",
+      "basis": "name + eight distinct artist values",
       "cards": [
         "base2-15",
         "ecard1-31",
         "ecard2-H31",
-        "ex13-17"
+        "ex13-17",
+        "bw7-3",
+        "sm3-6",
+        "sm10-8",
+        "swsh11-3"
       ],
-      "count": 4,
-      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "8 artists. One Vileplume."
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Vileplume. Which is the definitive one?"
     },
     {
-      "kind": "one Pokémon, many hands",
-      "title": "Aerodactyl, drawn by 5 different illustrators",
-      "basis": "name + distinct artist field",
-      "cards": [
-        "base3-1",
-        "ex2-94",
-        "swsh11-92",
-        "swsh11-93"
-      ],
-      "count": 4,
-      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "5 artists. One Aerodactyl."
-    },
-    {
-      "kind": "one Pokémon, many hands",
-      "title": "Articuno, drawn by 7 different illustrators",
-      "basis": "name + distinct artist field",
-      "cards": [
-        "base3-2",
-        "ex6-114",
-        "pl3-148",
-        "sm9-32"
-      ],
-      "count": 4,
-      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "7 artists. One Articuno."
-    },
-    {
-      "kind": "one Pokémon, many hands",
-      "title": "Ditto, drawn by 7 different illustrators",
-      "basis": "name + distinct artist field",
-      "cards": [
-        "base3-3",
-        "ex6-4",
-        "bw7-108",
-        "swsh45sv-SV118"
-      ],
-      "count": 4,
-      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "7 artists. One Ditto."
-    },
-    {
-      "kind": "one Pokémon, many hands",
-      "title": "Dragonite, drawn by 11 different illustrators",
-      "basis": "name + distinct artist field",
+      "kind": "the spread",
+      "title": "Dragonite by eight different illustrators",
+      "basis": "name + eight distinct artist values",
       "cards": [
         "base3-4",
         "ex11-3",
         "dp6-2",
-        "sm1-96"
+        "sm1-96",
+        "sm9-119",
+        "swsh7-191",
+        "swsh7-192",
+        "pgo-49"
       ],
-      "count": 4,
-      "why": "Same subject, different people, and the difference is visible without a word of explanation.",
-      "angle": "11 artists. One Dragonite."
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Dragonite. Which is the definitive one?"
+    },
+    {
+      "kind": "the spread",
+      "title": "Gengar by eight different illustrators",
+      "basis": "name + eight distinct artist values",
+      "cards": [
+        "base3-5",
+        "ecard1-13",
+        "ex6-108",
+        "xy8-60",
+        "sm4-38",
+        "sm9-164",
+        "sm9-165",
+        "swsh1-85"
+      ],
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Gengar. Which is the definitive one?"
+    },
+    {
+      "kind": "the spread",
+      "title": "Dark by eight different illustrators",
+      "basis": "name + eight distinct artist values",
+      "cards": [
+        "base5-1",
+        "base5-2",
+        "base5-6",
+        "base5-11",
+        "base5-14",
+        "neo4-2",
+        "neo4-4",
+        "neo4-6"
+      ],
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Dark. Which is the definitive one?"
+    },
+    {
+      "kind": "the spread",
+      "title": "Ampharos by eight different illustrators",
+      "basis": "name + eight distinct artist values",
+      "cards": [
+        "neo1-1",
+        "neo3-1",
+        "ecard1-2",
+        "ecard2-H1",
+        "ex10-1",
+        "dp3-1",
+        "bw6-40",
+        "xy11-40"
+      ],
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Ampharos. Which is the definitive one?"
+    },
+    {
+      "kind": "the spread",
+      "title": "Kingdra by eight different illustrators",
+      "basis": "name + eight distinct artist values",
+      "cards": [
+        "neo1-8",
+        "ecard2-H14",
+        "ecard2-148",
+        "ex13-10",
+        "dp6-7",
+        "xy5-108",
+        "swsh5-33",
+        "swsh10tg-TG03"
+      ],
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Kingdra. Which is the definitive one?"
+    },
+    {
+      "kind": "the spread",
+      "title": "Lugia by eight different illustrators",
+      "basis": "name + eight distinct artist values",
+      "cards": [
+        "neo1-9",
+        "ecard2-149",
+        "ex10-105",
+        "dp3-14",
+        "col1-15",
+        "col1-SL7",
+        "sm9-131",
+        "swsh4-132"
+      ],
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Lugia. Which is the definitive one?"
+    },
+    {
+      "kind": "the spread",
+      "title": "Steelix by eight different illustrators",
+      "basis": "name + eight distinct artist values",
+      "cards": [
+        "neo1-15",
+        "ecard2-H23",
+        "ex10-109",
+        "sm12-139",
+        "sm12-247",
+        "swsh4-115",
+        "swsh5-99",
+        "sv4-208"
+      ],
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Steelix. Which is the definitive one?"
+    },
+    {
+      "kind": "the spread",
+      "title": "Typhlosion by eight different illustrators",
+      "basis": "name + eight distinct artist values",
+      "cards": [
+        "neo1-17",
+        "neo1-18",
+        "ecard1-28",
+        "ex2-99",
+        "ex10-17",
+        "ex10-110",
+        "xy8-20",
+        "sm8-42"
+      ],
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Typhlosion. Which is the definitive one?"
+    },
+    {
+      "kind": "the spread",
+      "title": "Blissey by eight different illustrators",
+      "basis": "name + eight distinct artist values",
+      "cards": [
+        "neo3-2",
+        "ecard2-H6",
+        "ex10-101",
+        "bw5-82",
+        "sm2-102",
+        "sm8-153",
+        "swsh6-119",
+        "swsh6-183"
+      ],
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Blissey. Which is the definitive one?"
+    },
+    {
+      "kind": "the spread",
+      "title": "Celebi by eight different illustrators",
+      "basis": "name + eight distinct artist values",
+      "cards": [
+        "neo3-3",
+        "ex10-117",
+        "sm9-1",
+        "sm9-159",
+        "sm11-4",
+        "swsh1-1",
+        "swsh6-7",
+        "swsh6-8"
+      ],
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Celebi. Which is the definitive one?"
+    },
+    {
+      "kind": "the spread",
+      "title": "Crobat by eight different illustrators",
+      "basis": "name + eight distinct artist values",
+      "cards": [
+        "neo3-4",
+        "ex8-96",
+        "bw8-55",
+        "sm1-56",
+        "sm10-66",
+        "swsh3-104",
+        "swsh5-91",
+        "swsh11tg-TG20"
+      ],
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Crobat. Which is the definitive one?"
+    },
+    {
+      "kind": "the spread",
+      "title": "Entei by eight different illustrators",
+      "basis": "name + eight distinct artist values",
+      "cards": [
+        "neo3-6",
+        "ecard2-H8",
+        "ex10-113",
+        "dp3-4",
+        "col1-SL3",
+        "swsh5-20",
+        "swsh7-19",
+        "swsh9-22"
+      ],
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Entei. Which is the definitive one?"
+    },
+    {
+      "kind": "the spread",
+      "title": "Houndoom by eight different illustrators",
+      "basis": "name + eight distinct artist values",
+      "cards": [
+        "neo3-8",
+        "ecard2-H11",
+        "ex10-7",
+        "hgss3-5",
+        "bw10-56",
+        "swsh3-21",
+        "swsh5-96",
+        "swsh5-179"
+      ],
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Houndoom. Which is the definitive one?"
+    },
+    {
+      "kind": "the spread",
+      "title": "Raikou by eight different illustrators",
+      "basis": "name + eight distinct artist values",
+      "cards": [
+        "neo3-13",
+        "ex10-114",
+        "dp3-16",
+        "col1-SL9",
+        "xy8-55",
+        "sm35-32",
+        "swsh9-48",
+        "swsh12pt5gg-GG41"
+      ],
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Raikou. Which is the definitive one?"
+    },
+    {
+      "kind": "the spread",
+      "title": "Suicune by eight different illustrators",
+      "basis": "name + eight distinct artist values",
+      "cards": [
+        "neo3-14",
+        "ecard2-H25",
+        "ex10-115",
+        "dp3-19",
+        "col1-SL11",
+        "xy9-30",
+        "sm8-59",
+        "swsh3-37"
+      ],
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Suicune. Which is the definitive one?"
+    },
+    {
+      "kind": "the spread",
+      "title": "Scizor by eight different illustrators",
+      "basis": "name + eight distinct artist values",
+      "cards": [
+        "ecard2-H21",
+        "ex10-108",
+        "hgss3-7",
+        "bw7-94",
+        "sm8-126",
+        "swsh3-118",
+        "swsh3-119",
+        "swsh3-183"
+      ],
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Scizor. Which is the definitive one?"
+    },
+    {
+      "kind": "the spread",
+      "title": "Tyranitar by eight different illustrators",
+      "basis": "name + eight distinct artist values",
+      "cards": [
+        "ecard1-29",
+        "ecard2-H28",
+        "ex10-111",
+        "sm7-87",
+        "sm9-85",
+        "swsh3-88",
+        "swsh5-97",
+        "swsh5-155"
+      ],
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Tyranitar. Which is the definitive one?"
+    },
+    {
+      "kind": "the spread",
+      "title": "Umbreon by eight different illustrators",
+      "basis": "name + eight distinct artist values",
+      "cards": [
+        "ecard2-H29",
+        "ex10-112",
+        "swsh7-94",
+        "swsh7-95",
+        "swsh7-189",
+        "swsh7-215",
+        "swsh9tg-TG22",
+        "swsh9tg-TG23"
+      ],
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Umbreon. Which is the definitive one?"
+    },
+    {
+      "kind": "the spread",
+      "title": "Aggron by eight different illustrators",
+      "basis": "name + eight distinct artist values",
+      "cards": [
+        "ex1-1",
+        "ex2-95",
+        "ex16-1",
+        "bw6-80",
+        "sm4-67",
+        "swsh3-123",
+        "swsh9-96",
+        "swsh9-97"
+      ],
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Aggron. Which is the definitive one?"
+    },
+    {
+      "kind": "the spread",
+      "title": "Gardevoir by eight different illustrators",
+      "basis": "name + eight distinct artist values",
+      "cards": [
+        "ex1-7",
+        "ex2-96",
+        "ex11-6",
+        "ex16-9",
+        "dp3-7",
+        "dp3-131",
+        "bw4-57",
+        "bw5-109"
+      ],
+      "count": 8,
+      "why": "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+      "angle": "Eight artists. One Gardevoir. Which is the definitive one?"
     }
   ]
 }

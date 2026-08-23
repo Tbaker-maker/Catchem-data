@@ -158,6 +158,86 @@ else {
       `Which row is the best ${lineName.replace(/^The /, "")}? ${spread.map(([y]) => y).join(", ")}.`);
   }
 
+  // SEVEN FRAMES, TWO THEMES (2026-08-23). The engine produced 751 formulas and
+  // every one landed at 4 or 9 cards, because I built shapes without checking
+  // they covered the frames. A format nothing fills is a format that does not
+  // exist, and I would not have noticed without counting.
+
+  // ── 7 · THE SINGLE — one card, one fact ───────────────────────────────────
+  // The knowledge post. No grouping at all: a card plus something true and
+  // surprising, drawn from the sourced knowledge base rather than invented.
+  {
+    const kb = await J("data/knowledge.json");
+    for (const fact of (kb?.facts ?? []).filter(f => /card|kadabra|artist|illustrat|print/i.test(f.claim))) {
+      const named = cards.find(c => fact.claim.includes(c.name) && HERO.test(c.rarity ?? ""))
+                 ?? cards.find(c => fact.claim.includes(c.name));
+      if (!named) continue;
+      F("the single", `${named.name}: ${fact.id.replace(/-/g, " ")}`,
+        "a sourced fact from data/knowledge.json plus the card it is about",
+        [named.id],
+        "One card, one thing most people do not know. Every claim carries a source and a falsifier, which is why we can say it plainly.",
+        fact.claim.split(".")[0] + ".");
+    }
+  }
+
+  // ── 8 · THE PAIR — one artist, two eras ───────────────────────────────────
+  {
+    const byArtistPair = {};
+    for (const c of cards.filter(c => HERO.test(c.rarity ?? ""))) (byArtistPair[c.artist] ||= []).push(c);
+    for (const [artist, list] of Object.entries(byArtistPair)) {
+      if (list.length < 2) continue;
+      const sorted = list.sort((a, b) => a.releaseDate < b.releaseDate ? -1 : 1);
+      const first = sorted[0], last = sorted[sorted.length - 1];
+      const years = Number(year(last)) - Number(year(first));
+      if (years < 10) continue;
+      F("the pair", `${artist}: ${first.name} ${year(first)} to ${last.name} ${year(last)}`,
+        "artist field + earliest and latest hero card", [first.id, last.id],
+        `${years} years, one hand. The gap is the story and the images make it without a caption.`,
+        `${years} years apart. Same illustrator.`);
+    }
+  }
+
+  // ── 9 · THE TRIO — three of a kind ────────────────────────────────────────
+  for (const [lineName, members] of Object.entries(LINES)) {
+    if (members.length !== 3) continue;
+    const best = members.map(m => cards.filter(c => c.name.startsWith(m) && HERO.test(c.rarity ?? ""))
+      .sort((a, b) => (b.price ?? 0) - (a.price ?? 0))[0]).filter(Boolean);
+    if (best.length !== 3) continue;
+    F("the trio", `${lineName}, the best of each`, "a named list of three + rarity + price",
+      best.map(c => c.id),
+      "Three that belong together, each at its strongest. The set is the argument.",
+      `${lineName}. Which one do you actually want?`);
+  }
+
+  // ── 10 · THE HALF PAGE — six from one set ─────────────────────────────────
+  {
+    const bySetIR = {};
+    for (const c of cards.filter(c => /Illustration Rare/i.test(c.rarity ?? ""))) (bySetIR[c.setId] ||= []).push(c);
+    for (const [, list] of Object.entries(bySetIR)) {
+      if (list.length < 6) continue;
+      const six = list.sort((a, b) => (b.price ?? 0) - (a.price ?? 0)).slice(0, 6);
+      F("the half page", `Six illustration rares from ${six[0].setName}`,
+        "setId + rarity, six of them", six.map(c => c.id),
+        "Half a binder page from one set. Sits almost square, which is the friendliest shape on a phone.",
+        `Six from ${six[0].setName}. Which page are you filling first?`);
+    }
+  }
+
+  // ── 11 · THE SPREAD — eight across two rows ───────────────────────────────
+  {
+    const byMon = {};
+    for (const c of cards.filter(c => HERO.test(c.rarity ?? ""))) (byMon[c.name.split(" ")[0]] ||= []).push(c);
+    for (const [mon, list] of Object.entries(byMon)) {
+      const seen = new Map();
+      for (const c of list.sort((a, b) => a.releaseDate < b.releaseDate ? -1 : 1)) if (!seen.has(c.artist)) seen.set(c.artist, c);
+      if (seen.size < 8) continue;
+      F("the spread", `${mon} by eight different illustrators`,
+        "name + eight distinct artist values", [...seen.values()].slice(0, 8).map(c => c.id),
+        "Eight people, one Pokémon. The differences argue for themselves and the post needs no words.",
+        `Eight artists. One ${mon}. Which is the definitive one?`);
+    }
+  }
+
   formulas.sort((a, b) => b.count - a.count);
   const byKind = {};
   for (const f of formulas) (byKind[f.kind] ||= []).push(f);
