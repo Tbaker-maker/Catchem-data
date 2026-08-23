@@ -169,8 +169,8 @@ else {
   {
     const kb = await J("data/knowledge.json");
     for (const fact of (kb?.facts ?? []).filter(f => /card|kadabra|artist|illustrat|print/i.test(f.claim))) {
-      const named = cards.find(c => fact.claim.includes(c.name) && HERO.test(c.rarity ?? ""))
-                 ?? cards.find(c => fact.claim.includes(c.name));
+      const namesIn = (c) => c.name.length >= 4 && fact.claim.split(/[^A-Za-z0-9'-]+/).includes(c.name.split(" ")[0]);
+      const named = cards.find(c => namesIn(c) && HERO.test(c.rarity ?? "")) ?? cards.find(namesIn);
       if (!named) continue;
       F("the single", `${named.name}: ${fact.id.replace(/-/g, " ")}`,
         "a sourced fact from data/knowledge.json plus the card it is about",

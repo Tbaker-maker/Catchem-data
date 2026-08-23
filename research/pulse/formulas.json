@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-23T06:11:24.358Z",
+  "generatedAt": "2026-08-23T06:12:57.021Z",
   "antiSlopRule": "A formula must be derivable from a field we hold: name, artist, setId, rarity, releaseDate, price. Where a theme needs judgment, that judgment is a NAMED LIST stored openly and arguable — never an adjective smuggled into a sentence. 'Cute' is not in the data; the nine Eeveelutions are.",
   "fieldsUsed": [
     "name",
@@ -60,7 +60,7 @@
     "the trio": 3,
     "the debut": 8,
     "the pair": 8,
-    "the single": 6
+    "the single": 7
   },
   "formulas": [
     {
@@ -1051,10 +1051,21 @@
     },
     {
       "kind": "the single",
-      "title": "Kadabra: kadabra 21 year absence",
+      "title": "The Rocket's Trap: first edition print run unknown",
       "basis": "a sourced fact from data/knowledge.json plus the card it is about",
       "cards": [
-        "base1-32"
+        "gym1-19"
+      ],
+      "count": 1,
+      "why": "One card, one thing most people do not know. Every claim carries a source and a falsifier, which is why we can say it plainly.",
+      "angle": "The commonly repeated figure of 10,000 copies per 1st Edition Base Set card has never been confirmed by Wizards of the Coast or The Pokémon Company."
+    },
+    {
+      "kind": "the single",
+      "title": "Dark Alakazam: kadabra 21 year absence",
+      "basis": "a sourced fact from data/knowledge.json plus the card it is about",
+      "cards": [
+        "base5-1"
       ],
       "count": 1,
       "why": "One card, one thing most people do not know. Every claim carries a source and a falsifier, which is why we can say it plainly.",
@@ -1062,10 +1073,10 @@
     },
     {
       "kind": "the single",
-      "title": "N: koga ninja trick manji",
+      "title": "The Rocket's Trap: koga ninja trick manji",
       "basis": "a sourced fact from data/knowledge.json plus the card it is about",
       "cards": [
-        "bw3-101"
+        "gym1-19"
       ],
       "count": 1,
       "why": "One card, one thing most people do not know. Every claim carries a source and a falsifier, which is why we can say it plainly.",
@@ -1084,10 +1095,10 @@
     },
     {
       "kind": "the single",
-      "title": "Super Energy Removal: first power ban 1999",
+      "title": "Super Rod: first power ban 1999",
       "basis": "a sourced fact from data/knowledge.json plus the card it is about",
       "cards": [
-        "base1-79"
+        "dv1-20"
       ],
       "count": 1,
       "why": "One card, one thing most people do not know. Every claim carries a source and a falsifier, which is why we can say it plainly.",
@@ -1095,10 +1106,10 @@
     },
     {
       "kind": "the single",
-      "title": "N: standard format no bans",
+      "title": "Archeops: standard format no bans",
       "basis": "a sourced fact from data/knowledge.json plus the card it is about",
       "cards": [
-        "bw3-101"
+        "bw5-110"
       ],
       "count": 1,
       "why": "One card, one thing most people do not know. Every claim carries a source and a falsifier, which is why we can say it plainly.",
@@ -1106,14 +1117,14 @@
     },
     {
       "kind": "the single",
-      "title": "N: cropped art weaker fair use",
+      "title": "Missing Clover: artist credit backfill gap",
       "basis": "a sourced fact from data/knowledge.json plus the card it is about",
       "cards": [
-        "bw3-101"
+        "sm5-168"
       ],
       "count": 1,
       "why": "One card, one thing most people do not know. Every claim carries a source and a falsifier, which is why we can say it plainly.",
-      "angle": "Posting a cropped card ILLUSTRATION without the card frame is a weaker nominative fair use position than posting the whole card, because nominative use rests on identifying a product and a bare crop presents the artwork as artwork."
+      "angle": "Missing illustrator credits in the community card dataset are a BACKFILL LAG, not a Pokemon decision."
     }
   ]
 }

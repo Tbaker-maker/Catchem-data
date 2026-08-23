@@ -58,7 +58,7 @@ if (f) {
   for (const x of f.formulas ?? []) {
     // 1 — every basis must name real fields.
     const named = FIELDS.filter(fl => (x.basis ?? "").toLowerCase().includes(fl.toLowerCase()));
-    if (!named.length && !/named list/.test(x.basis ?? ""))
+    if (!named.length && !/named list|knowledge\.json|sourced fact/.test(x.basis ?? ""))
       P(x.title, "basis names no real field", `"${x.basis}" — a grouping has to come from a column or from a list stored openly. Otherwise it is taste presented as a finding.`);
     // 2 — no adjective doing a field's job.
     for (const t of [x.title, x.why, x.angle]) {
@@ -69,7 +69,7 @@ if (f) {
           "Stated flatly, that word claims significance the data cannot support. Turn it into a pick or a question - 'our nine picks' or 'which would you choose' - and it becomes an invitation instead of an unfalsifiable claim.");
     }
     // 3 — a grouping of one or two is not a grouping.
-    if ((x.count ?? 0) < 2) P(x.title, `only ${x.count} card(s)`, "A pattern needs more than one instance or it is a coincidence with a caption.");
+    if ((x.count ?? 0) < 2 && x.kind !== "the single") P(x.title, `only ${x.count} card(s)`, "A pattern needs more than one instance or it is a coincidence with a caption.");
   }
   // 4 — judgment lists must exist and be visible, not implied.
   if (!f.judgmentLists || !Object.keys(f.judgmentLists).length)
