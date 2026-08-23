@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T06:31:10.885Z",
+ "generatedAt": "2026-08-23T06:36:26.309Z",
  "date": "2026-08-23",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -8,6 +8,7 @@
   "correction-hunter: 3 finding(s)",
   "review-agents: 0 finding(s)",
   "decision-audit: 0 finding(s)",
+  "designer: 10 finding(s)",
   "theme-scout: 23 finding(s)",
   "teacher: 14 finding(s)",
   "api-strategist: 8 finding(s)",
@@ -487,6 +488,86 @@
    "components": {
     "evidence": "HYPOTHESIS (5) — a guess worth testing, labelled as one",
     "impact": "MEDIUM (14) — makes the product or the work meaningfully better",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "designer",
+   "owner": "chat",
+   "what": "faq.html: remote fonts with no local fallback",
+   "do": "Add system-ui and a generic family to every font stack.",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "designer",
+   "owner": "chat",
+   "what": "image-contact-sheet.html: the accent colour appears 134 times",
+   "do": "Spend it in two places: the active state and the one primary action. Everything else greys.",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "designer",
+   "owner": "chat",
+   "what": "the-pulse.html: remote fonts with no local fallback",
+   "do": "Add system-ui and a generic family to every font stack.",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "designer",
+   "owner": "chat",
+   "what": "faq.html: no generator writes this page",
+   "do": "Either give it a generator or delete it. A page nothing owns cannot be maintained.",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "designer",
+   "owner": "chat",
+   "what": "image-contact-sheet.html: no generator writes this page",
+   "do": "Either give it a generator or delete it. A page nothing owns cannot be maintained.",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
     "actionable": "SOON (14) — clear what to do, needs a slot",
     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
    }
@@ -1145,6 +1226,6 @@
   "actNow": 0,
   "queue": 9,
   "watch": 8,
-  "noteOnly": 26
+  "noteOnly": 31
  }
 }

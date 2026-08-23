@@ -1600,3 +1600,38 @@ The Kadabra correction proved why: three secondary sources agreed on
 twenty-six years, our own catalogue said twenty-one, and the theme scout later
 showed the gap covers Abra too. Three passes, three corrections, on a story
 everyone thinks they know.
+
+## A LINTER ASKS IF THE CSS IS VALID (Tyler, Aug 23 2026)
+"Use the designer agent — if we don't have one, hire and make top of its class.
+Audit us and all of the photos, formats, everything."
+
+A design lead asks a different question: **was this page DESIGNED?** And the
+tells of an undesigned page are countable rather than a matter of taste — a
+type scale with fourteen sizes because each was chosen in the moment, nine
+greys that are all almost the same grey, an accent used everywhere so it
+accents nothing, spacing that was nudged until it looked right.
+
+None of that is invalid CSS. All of it is why a page reads as beta.
+
+WHAT IT FOUND ON THE FIRST RUN, all real:
+- Four public pages whose headings would render in **Times** on a slow
+  connection: `font:800 30px Syne` with no fallback while the body text had one,
+  which looks broken rather than unstyled.
+- An accent used **134 times** on one page.
+- **Two shipped pages no generator writes.** faq.html was created on 20 August
+  and nothing regenerates it, so every fix applied at the source misses it and
+  it drifts further from the site daily. **A page nothing owns is worse than a
+  page with a bug, because the bug at least has somewhere to be fixed.**
+
+AND FOUR FALSE POSITIVES IT PRODUCED ON ME, each now a declared failure mode:
+it read `font-family:` and missed the `font:` shorthand, flagging four healthy
+pages; it read CSS custom properties as "no font stack at all" when tokens with
+fallbacks baked in are the CORRECT pattern, so it punished better practice; and
+I burned three regex attempts on a fixed literal before using a plain replace.
+
+FIX AT THE GENERATOR, NEVER ON GENERATED OUTPUT. Patching a file a script
+rewrites every morning is a fix that lasts until 04:00 UTC.
+
+ITS BLIND SPOT, declared and unfixable: **it cannot SEE.** It counts and
+measures. It cannot tell you a page is ugly, only that the choices behind it
+were not made deliberately. Taste still needs eyes.

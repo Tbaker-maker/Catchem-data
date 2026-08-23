@@ -30,6 +30,7 @@ const cmp = await J("research/pulse/compliance-report.json");
 const api = await J("research/pulse/api-strategy.json");
 const tch = await J("research/pulse/teacher.json");
 const scout = await J("research/pulse/theme-scout.json");
+const des = await J("research/pulse/design-audit.json");
 const dec = await J("research/pulse/decision-audit.json");
 const bias = await J("research/pulse/bias-guard.json");
 const dpl = await J("research/pulse/domain-plausibility.json");
@@ -263,6 +264,13 @@ if (bias?.problems?.length) {
 if (scout?.finds?.length) {
   say(`## Post ideas nobody looked for`);
   for (const f of scout.finds.filter(f => !f.needsHuman).slice(0, 3)) say(`- **${f.headline}** — ${f.hook ?? f.why}`);
+  say();
+}
+
+if (des?.counts?.high) {
+  say(`## Design`);
+  say(`${des.counts.high} high, ${des.counts.medium} medium across ${des.audited}.`);
+  for (const f of (des.findings ?? []).filter(f => f.severity === "high").slice(0, 3)) say(`- **${f.surface}** — ${f.what}. *${f.fix}*`);
   say();
 }
 

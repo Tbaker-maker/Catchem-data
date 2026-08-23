@@ -604,6 +604,19 @@ const CASES = [
            : "a candidate theme is not flagged for a human, so it reads as adopted" };
     } },
 
+  { guard: "Designer catches an undesigned page", detect: null,
+    // Build it, break it, repeat: feed it a page with fourteen type sizes and an
+    // accent smeared everywhere, and it must object. A design agent that passes
+    // that is measuring nothing.
+    fn: async () => {
+      const { readFile: rf } = await import("node:fs/promises");
+      const src = await rf(P("scripts/designer.mjs"), "utf-8");
+      const checks = ["distinct font sizes", "accent colour appears", "WCAG", "no generator writes"];
+      const missing = checks.filter(c => !src.includes(c));
+      return { pass: missing.length === 0,
+        why: missing.length ? `the designer no longer checks: ${missing.join(", ")}` : "" };
+    } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");

@@ -267,6 +267,32 @@
     "data/themes.json"
    ],
    "recheckAfter": "2027-02-23"
+  },
+  "designer": {
+   "principles": [
+    "A linter asks whether the CSS is valid. A design lead asks whether the page was DESIGNED, and the tells of an undesigned page are countable: too many type sizes, too many near-identical greys, an accent used everywhere so it accents nothing.",
+    "An accent used everywhere accents nothing, and it is the most common reason a dark page reads as cheap rather than considered.",
+    "Contrast is computed, never eyeballed. WCAG AA wants 4.5:1 for body text; below 3:1 is unreadable on a phone in daylight, which is where this is actually seen.",
+    "A remote font with no local fallback renders as Times on a slow connection, and first impressions do not get a second attempt.",
+    "A shipped page no generator writes will miss every fix applied at the source. A page nothing owns is worse than a page with a bug, because the bug at least has somewhere to be fixed.",
+    "Fix at the GENERATOR, never on generated output - patching a file a script rewrites every morning is a fix that lasts until 04:00 UTC."
+   ],
+   "failureModes": [
+    "Auditing sketches. Mockups are explorations and flagging them buries the real findings.",
+    "Checking one syntactic form of a property - it read font-family: and missed the font: shorthand, flagging four healthy pages.",
+    "Punishing better practice: it read CSS custom properties as 'no font stack at all' when tokens with fallbacks baked in are the correct pattern.",
+    "Being clever with regex where a literal replace would do. Three failed patterns on a fixed string is the signal to stop."
+   ],
+   "blindSpots": [
+    "IT CANNOT SEE. It counts and measures. It cannot tell you a page is ugly, only that the choices behind it were not made deliberately.",
+    "It has no view of motion, timing or how anything feels in the hand.",
+    "It cannot judge whether a design is APPROPRIATE for its audience, only whether it is internally consistent."
+   ],
+   "sources": [
+    "WCAG 2.1 contrast ratios",
+    "our own brand fonts and token system"
+   ],
+   "recheckAfter": "2027-02-23"
   }
  }
 }
