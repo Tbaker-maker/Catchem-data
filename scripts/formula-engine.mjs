@@ -238,6 +238,19 @@ else {
     }
   }
 
+  // KEEP A SPREAD, NOT A TOP-40. Sorting by card count and slicing 40 meant the
+  // output held only 8s and 9s - every one-card and two-card theme was computed
+  // and then thrown away by the truncation. A list that silently drops whole
+  // categories is worse than a shorter list, because nothing says they are gone.
+  {
+    const byKind = {};
+    for (const f of formulas) (byKind[f.kind] ||= []).push(f);
+    const spread = [];
+    for (const [, list] of Object.entries(byKind)) spread.push(...list.slice(0, 8));
+    formulas.length = 0;
+    formulas.push(...spread);
+  }
+
   formulas.sort((a, b) => b.count - a.count);
   const byKind = {};
   for (const f of formulas) (byKind[f.kind] ||= []).push(f);
@@ -247,7 +260,7 @@ else {
     fieldsUsed: ["name", "artist", "setId", "setName", "rarity", "releaseDate", "price"],
     judgmentLists: LINES,
     kinds: Object.fromEntries(Object.entries(byKind).map(([k, v]) => [k, v.length])),
-    formulas: formulas.slice(0, 40) };
+    formulas };   // already bounded to 8 per kind by the spread above
   await writeFile(join(ROOT, "research/pulse/formulas.json"), JSON.stringify(out, null, 2));
 
   console.log(`✓ formulas: ${formulas.length} across ${Object.keys(byKind).length} shapes\n`);

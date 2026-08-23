@@ -1,18 +1,18 @@
 {
- "generatedAt": "2026-08-23T05:27:26.469Z",
+ "generatedAt": "2026-08-23T06:11:59.012Z",
  "role": "Keeps the work organised, saved and on track. Silent unless something is genuinely slipping — a day with nothing to say is a day it did its job.",
  "speaking": 3,
  "speak": [
   {
    "kind": "unsaved",
-   "what": "4 hand-written file(s) changed and not committed.",
+   "what": "1 hand-written file(s) changed and not committed.",
    "why": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
    "owner": "chat",
    "confidence": "OBSERVED"
   },
   {
    "kind": "drift",
-   "what": "6 script(s) are not referenced anywhere: build-creators-page.mjs, collision-guard.mjs, discovery-sweep.mjs, formula-engine.mjs.",
+   "what": "7 script(s) are not referenced anywhere: build-creators-page.mjs, build-editor.mjs, collision-guard.mjs, discovery-sweep.mjs.",
    "why": "A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.",
    "owner": "chat",
    "confidence": "OBSERVED"
@@ -26,7 +26,7 @@
   }
  ],
  "quiet": [
-  "7 open commitment(s), all recent",
-  "305 commits / 28 written records in the last few days"
+  "9 open commitment(s), all recent",
+  "311 commits / 28 written records in the last few days"
  ]
 }
