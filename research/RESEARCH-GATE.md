@@ -95,6 +95,8 @@ fixing the class is.
 
 | 17 | The chase card published the word "chase" as its entire explanation — a category label rendered where prose belonged | Tyler, by eye | Meaningless-but-valid content | scripts/content-sanity.mjs: published prose must be a sentence, not a label; negative-tested against the exact string |
 
+| 18 | Published a PSA 10 median with NO time window as a current price, and compared it to a current raw price to compute a "grading premium". Nearly posted publicly | Tyler, verifying before posting | Windowless aggregate as current price + a publication path outside the guards | scripts/windowless-price-guard.mjs blocks any PSA sale figure reaching a surface; all four code paths disabled; hand-minted cards must go through the gates |
+
 **PATTERN, stated plainly:** 8 of 9 were caught by Tyler, not by the
 machine. Every guard above was built AFTER a human caught something.
 That is the honest state — the machine is now catching prices, but

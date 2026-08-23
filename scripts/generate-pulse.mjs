@@ -647,5 +647,6 @@ try { const { shouldRun } = await import("./cadence.mjs");
 try { await import("./agent-digest.mjs"); } catch (e) { console.warn(`  ⚠ agent agent-digest.mjs: ${e.message} — advisory only`); }
 try { await import("./domain-plausibility.mjs"); } catch (e) { console.warn(`  ⚠ domain plausibility: ${e.message} — advisory only`); }
 try { await import("./build-coverage.mjs"); } catch (e) { console.warn(`  ⚠ coverage page: ${e.message}`); }
+await import("./windowless-price-guard.mjs");
 await import("./content-sanity.mjs");
 await import("./publish-assert.mjs");

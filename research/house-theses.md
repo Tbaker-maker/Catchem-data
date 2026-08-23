@@ -983,3 +983,34 @@ THE RULE: a falsifier must test the claim as STATED, including its exceptions.
 Any thesis containing an inversion, an exception or a contrast must be tested
 as separate cohorts. A guard now fails the build if a contrastive thesis is
 tested as one pooled group.
+
+## A PRICE WITH NO TIME WINDOW IS NOT A PRICE (Tyler, Aug 23 2026)
+"I was close to posting that. I verified the price and it was off majorly.
+THAT CANNOT HAPPEN. If you destroy a content creator's rep you destroy ours."
+
+WHAT HAPPENED. We published PSA 10 at $5,101 as what an Umbreon ex sells for.
+It is a median of 559 sales spanning $1,500 to $8,000 with **no date range at
+all** — a historical average across an unknown span, presented as today. Worse,
+it was subtracted from a CURRENT raw price and the difference called a grading
+premium, which measures the gap between today and an unknown past.
+
+Tyler checked before posting. Had he not, a creator repeating our number would
+have been wrong in public on our word — and a creator's reputation is not ours
+to spend.
+
+TWO FAILURES, BOTH NOW GUARDED:
+1. **The data.** A sold aggregate with no window is context, never a price. It
+   cannot be chipped VERIFIED, cannot lead a claim, and cannot be compared
+   against a current figure.
+2. **The process.** The post cards were minted by hand — inline SVG, rasterise,
+   present — and NO guard saw them. content-sanity, publish-assert, voice-lint,
+   jargon-lint and domain-plausibility all cover the pipeline, and I built a
+   publication path that went around every one of them.
+
+AND A THIRD, WHICH IS THE ONE TO REMEMBER: there were **four** code paths to
+that number and my first fix covered one. Disabling a field downstream does
+nothing to a consumer reading the raw block directly. **A fix that does not
+enumerate every path is a fix that ships the bug from somewhere else.**
+
+THE RULE: nothing reaches a reader through a path the guards do not cover. If
+I mint something by hand, it goes through the same gates or it does not go.

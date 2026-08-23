@@ -67,7 +67,25 @@ out.concentration = rows.filter(c => c.raw.sellers && c.raw.listings).map(c => {
 // ── 3 · THE GRADED QUESTION, answered with sold prices at last ─────────────
 // RT-5 has reported INSUFFICIENT for weeks for want of exactly this. These are
 // completed sales, not asks, which is why it can carry VERIFIED at all.
-out.gradedPremium = rows.filter(c => c?.ebaySold?.psa10?.median && c?.ebaySold?.psa9?.median && c.raw.market).map(c => {
+// NO TIME WINDOW = NOT A CURRENT PRICE (2026-08-23).
+// ebaySold gives median, count, min and max, and no date range whatsoever.
+// 559 PSA 10 sales spanning $1,500 to $7,999 is a historical average over an
+// unknown span. It was published as what the card sells for today, and Tyler
+// caught it before posting. Had he not, a creator repeating our number would
+// have been wrong in public on our word.
+//
+// A price with no window cannot carry VERIFIED, cannot lead a claim, and above
+// all cannot be subtracted from a CURRENT raw price — that computes the gap
+// between today and an average of the last two years and calls it a premium.
+const WINDOW_KNOWN = false;   // flip only when the provider exposes a date range
+out.gradedPremium = !WINDOW_KNOWN ? { available: false,
+  why: "The graded sale figures carry no time window — median, count, min and max, and no date range. A median across 559 sales from $1,500 to $8,000 is a historical average, not a current price, and comparing it to today's raw price would measure the gap between now and an unknown past.",
+  whatWeWouldNeed: "a from-date and to-date on the sold aggregates, or a 30/90-day window we can request explicitly",
+  rawSampleForReference: rows.filter(c => c?.ebaySold?.psa10?.median).map(c => ({ name: c.name,
+    psa10Median: c.ebaySold.psa10.median, psa10Count: c.ebaySold.psa10.count,
+    spread: `$${Math.round(c.ebaySold.psa10.min).toLocaleString("en-US")}–$${Math.round(c.ebaySold.psa10.max).toLocaleString("en-US")}`,
+    chip: "UNUSABLE — no window" })).slice(0, 12) }
+  : rows.filter(c => c?.ebaySold?.psa10?.median && c?.ebaySold?.psa9?.median && c.raw.market).map(c => {
   const raw = c.raw.market, p9 = c.ebaySold.psa9.median, p10 = c.ebaySold.psa10.median;
   const GRADING_COST = 25;                  // a defensible round number; the real figure varies by tier and turnaround
   return { cardId: c.cardId, name: c.name, raw, psa9: p9, psa10: p10,
@@ -90,6 +108,6 @@ out.marketDemand = rows.length >= MIN_SAMPLE
       why: `Enrichment covers ${rows.length} card${rows.length === 1 ? "" : "s"}. A market-wide demand figure from that would be a national claim built on a sample you could count on your hands, so there is not one.` };
 
 await writeFile(join(ROOT, "research/pulse/demand.json"), JSON.stringify(out, null, 1));
-console.log(`✓ demand: ${out.liquidity.length} liquidity · ${out.concentration.length} concentrated · ${out.gradedPremium.length} graded${out.marketDemand.available === false ? ` · market-wide withheld (${rows.length}/${MIN_SAMPLE})` : ""}`);
-for (const g of out.gradedPremium.slice(0, 2)) console.log(`  ${g.name}: raw ${money(g.raw)} · PSA9 ${money(g.psa9)} · PSA10 ${money(g.psa10)}`);
+console.log(`✓ demand: ${out.liquidity.length} liquidity · ${out.concentration.length} concentrated · ${out.gradedPremium?.available === false ? "graded WITHHELD" : out.gradedPremium.length + " graded"}${out.marketDemand.available === false ? ` · market-wide withheld (${rows.length}/${MIN_SAMPLE})` : ""}`);
+if (out.gradedPremium?.available === false) console.log(`  graded: WITHHELD — ${out.gradedPremium.why.slice(0, 90)}`);
 for (const l of out.liquidity.slice(0, 2)) console.log(`  ${l.name}: ${l.vol30} sold / ${l.listings} listed = ${l.turnover} turnover`);

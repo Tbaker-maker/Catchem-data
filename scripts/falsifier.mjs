@@ -118,7 +118,9 @@ const tests = [
     // arrived inside a response we were already receiving: completed PSA sale
     // prices, not asks, which is why this can be judged rather than guessed.
     run: () => {
-      const rows = demand?.gradedPremium ?? [];
+      const rows = Array.isArray(demand?.gradedPremium) ? demand.gradedPremium : [];
+      if (demand?.gradedPremium?.available === false)
+        return { verdict: "INSUFFICIENT", detail: "graded sale figures were withdrawn — they carry no time window, so they cannot be compared to a current raw price", needs: "sold aggregates with an explicit date range" };
       if (rows.length < 5)
         return { verdict: "INSUFFICIENT", detail: `${rows.length} card(s) with completed PSA 9 and 10 sales; the thesis is about a pattern, not a card`, needs: "5+ cards with graded sale data" };
       // RT-5 makes TWO claims and must be tested as two. Pooling the cohorts

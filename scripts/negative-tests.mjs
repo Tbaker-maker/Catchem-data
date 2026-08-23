@@ -506,6 +506,20 @@ const CASES = [
         why: untested.length ? `${untested.join(", ")} state a contrast and are tested as a single pooled claim - pooling a contrastive thesis produces its own failure by construction` : "" };
     } },
 
+  { guard: "Windowless price never publishes", detect: "windowless-price-guard.mjs",
+    // The worst failure of the project: a PSA 10 median with no date range was
+    // published as a current price and nearly went out as a post. Tyler caught
+    // it. Plant one back into the feed and the build must fail.
+    break: async () => {
+      await copyFile(P("research/pulse/pulse-feed.json"), TMP("nt-wp.bak"));
+      const f = JSON.parse(await readFile(P("research/pulse/pulse-feed.json"), "utf-8"));
+      f.dailyThree = f.dailyThree || {};
+      f.dailyThree.graded = { name: "test", raw: 1000, psa10: 5000, chip: "VERIFIED" };
+      await writeFile(P("research/pulse/pulse-feed.json"), JSON.stringify(f));
+      return true;
+    },
+    restore: async () => { await copyFile(TMP("nt-wp.bak"), P("research/pulse/pulse-feed.json")); } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");

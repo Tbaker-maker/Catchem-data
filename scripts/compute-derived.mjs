@@ -839,7 +839,15 @@ const LENSES = [
     // candidate the existing fallbacks already handle the day.
     let repeatReason = null;
     let gradedPick = null;
-    {
+    // WITHHELD 2026-08-23. This reads c.ebaySold.psa10.median directly, so
+    // disabling the aggregate downstream did nothing to it — two code paths to
+    // the same wrong number, and the fix only covered one. The sold medians
+    // carry NO TIME WINDOW: 559 sales from $1,500 to $8,000 is a historical
+    // average, and subtracting a current raw price from it computes the gap
+    // between today and an unknown past, then calls it a grading premium.
+    // Re-enable only when the provider exposes a date range on sold aggregates.
+    const GRADED_SALES_HAVE_WINDOW = false;
+    if (GRADED_SALES_HAVE_WINDOW) {
       const g = ((enr&&enr.cards)||[])
         .map(c=>({ name: c.watchLabel || c.name,
                    raw: c.raw?.market ?? null,
@@ -894,7 +902,9 @@ const LENSES = [
       // Empty until enrichment covers a card whose numbers actually differ —
       // an empty slot is honest and a manufactured one is not.
       graded: (() => {
-        const g = (demandData?.gradedPremium ?? []).find(x => x.psa10Count >= 20 && x.tenClears > 0);
+        const gp = demandData?.gradedPremium;
+        if (!Array.isArray(gp)) return null;   // withheld — no time window on the sale data
+        const g = gp.find(x => x.psa10Count >= 20 && x.tenClears > 0);
         if (!g) return null;
         return { name: g.name, raw: g.raw, psa9: g.psa9, psa10: g.psa10,
           chip: "VERIFIED", reason: "graded",

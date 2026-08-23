@@ -4,7 +4,7 @@ Nothing here needs you this morning unless something is marked NEEDS A HUMAN.
 
 ## Our own claims
 Mostly "we cannot tell yet" today — half these tests need weeks of history we simply do not have. Saying so beats guessing.
-5 survived their own kill conditions, 6 could not be judged yet with the tape we hold.
+4 survived their own kill conditions, 7 could not be judged yet with the tape we hold.
 
 ## Our own numbers
 A product we featured has gone quiet on us. Either it stopped trading or we broke its query, and we should know which.
@@ -26,7 +26,7 @@ A product we featured has gone quiet on us. Either it stopped trading or we brok
 
 ## The agents themselves
 **NEEDS A HUMAN — the supervisor flagged the watchers:**
-- teacher: BROKEN RECORD — 11 finding(s) repeated three runs running (e.g. "in a rut::breaker"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
+- teacher: BROKEN RECORD — 12 finding(s) repeated three runs running (e.g. "in a rut::breaker"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 - creator: OVER-BUDGET — 15 findings against a ceiling of 10. An unreadable list is an unread list.
 
 ## If we expanded
@@ -80,7 +80,7 @@ Nothing unusual, or not enough history to tell — 5 days of tape so far. Anomal
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
 
 ## Something is slipping
-- **unsaved** — 1 commit(s) exist locally and are not pushed. *A commit on one machine is not a backup. The repo is only the record once it is somewhere else.*
+- **unsaved** — 10 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
 - **drift** — 3 script(s) are not referenced anywhere: collision-guard.mjs, discovery-sweep.mjs, refresh-tiers.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
 
 ## Legal standing
@@ -97,8 +97,8 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 - Fusion Strike Booster Pack: 72% rejection rate (42/150) — *largest bucket: exclude = 49. A single over-broad term can eat a market.*
 
 ## What the agents should be asking themselves
-- **experience** — Would you catch this today? If yes, what specifically would fire. If no, what would you need?
 - **domain-plausibility** — Would you catch this today? If yes, what specifically would fire. If no, what would you need?
+- **breaker** — Would you catch this today? If yes, what specifically would fire. If no, what would you need?
 - **breaker** — You test what we built. What have we DELETED recently, and did anything depend on it?
 - **correction-hunter** — You re-check figures that moved. Ask about the ones that never move — a price frozen for a month is a claim too.
 
