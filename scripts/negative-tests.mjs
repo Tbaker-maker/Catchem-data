@@ -566,7 +566,12 @@ const CASES = [
     // estimated text width from character count. The fonts are vendored; the
     // measurement uses the same glyphs the renderer does.
     fn: async () => {
-      const { checkSvg } = await import(P("scripts/layout-check.mjs"));
+      // pathToFileURL, not the bare path. Dynamic import() on Windows rejects
+      // "C:\..." with "Received protocol 'c:'", so this test ERRORED rather
+      // than ran, and an errored test reports as a failed guard — the layout
+      // guard looked broken when only the harness was. (Verified 2026-08-23;
+      // this is the same gotcha the file's own header records, one more time.)
+      const { checkSvg } = await import(pathToFileURL(P("scripts/layout-check.mjs")).href);
       const clip = `<svg viewBox="0 0 1200 675"><text x="70" y="188" font-family="Syne" font-weight="800" font-size="46">He drew Base Set Charizard in 1999.</text></svg>`;
       const collide = `<svg viewBox="0 0 1200 675"><text x="70" y="592" font-family="JetBrainsMono" font-weight="700" font-size="27">-66.7%</text><text x="70" y="620" font-family="Syne" font-weight="800" font-size="30">Catch</text></svg>`;
       const good = `<svg viewBox="0 0 1200 675"><text x="70" y="188" font-family="Syne" font-weight="800" font-size="40">He drew Base Set Charizard</text></svg>`;
@@ -863,6 +868,30 @@ const CASES = [
   // Pacing is priced in minute-UNITS, not calls: a set costs min(30, ceil(n/10))
   // of 60 per minute. The first run paced a flat 1,000ms per call, overran the
   // budget three times over, and took a 429 with 8,865 credits unspent.
+  // The watermark IS the free tier, so an unmarked image is a hole in the model
+  // rather than a cosmetic slip. It was implemented three times over in the
+  // client-side canvas and ONCE in the server-side SVG — and the SVG path is
+  // what we serve from our own domain and expect to be reposted. Both paths
+  // must carry all three marks, and the credit must never be silently absent.
+  { guard: "Composites carry the three-point watermark on BOTH render paths", detect: null,
+    fn: async () => {
+      const src = await readFile(P("scripts/card-composite.mjs"), "utf-8");
+      const svgStart = src.indexOf("const svg = `<svg");
+      const svgEnd = src.indexOf("</svg>`", svgStart);
+      if (svgStart < 0 || svgEnd < 0) return { pass: false, why: "the SVG template moved — cannot verify the watermark" };
+      const tpl = src.slice(svgStart, svgEnd);
+      const diagonals = (tpl.match(/catchemtcg\.com/g) ?? []).length;
+      const footer = /Catch'em<\/text>/.test(tpl);
+      if (!footer) return { pass: false, why: "the SVG footer wordmark is gone" };
+      if (diagonals < 1) return { pass: false, why: "the SVG path draws no faint diagonal marks — server-rendered images would carry ONE watermark, and those are the ones we host" };
+      if (!/fill-opacity="0?\.16"/.test(tpl)) return { pass: false, why: "the diagonal marks are not at 16% — either invisible or loud enough that nobody posts them" };
+      // The credit must render something even when the dataset has no artist.
+      const editor = await readFile(P("scripts/build-editor.mjs"), "utf-8");
+      if (!/illustrator not recorded/i.test(editor))
+        return { pass: false, why: "the editor no longer states an absent illustrator — a blank credit line is an uncredited art post" };
+      return { pass: true, why: "" };
+    } },
+
   { guard: "Enrichment paces by minute units, not a flat delay", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/enrich-by-set.mjs"), "utf-8");
