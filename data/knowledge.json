@@ -344,6 +344,57 @@
     "universe-advisor"
    ],
    "recheckAfter": "2027-02-23"
+  },
+  {
+   "id": "psa-centering-tolerances",
+   "claim": "PSA publishes centering tolerances: Gem Mint 10 requires approximately 55/45 or better on the front and 75/25 on the reverse; Mint 9 approximately 60/40 front and 90/10 back; NM-MT 8 approximately 65/35 front. BOTH axes must pass independently - a card perfectly centred left-to-right but 60/40 top-to-bottom does not make PSA 10.",
+   "sources": [
+    "psacard.com/gradingstandards (primary)",
+    "multiple 2026 grading guides"
+   ],
+   "verified": "2026-08-23",
+   "verifier": "chat",
+   "confidence": "VERIFIED",
+   "falsifier": "PSA publishing different tolerances, which they have done before",
+   "note": "SOURCES DISAGREE on whether the front-10 threshold is 55/45 or 60/40, and at least one says PSA tightened it from 60/40 to 55/45 in early 2025. The primary source says 55/45. Any tool we build must cite the primary and show the ratio, never only a verdict - because the threshold itself has moved.",
+   "usedBy": [
+    "grading"
+   ],
+   "recheckAfter": "2027-02-23"
+  },
+  {
+   "id": "centering-is-the-common-failure",
+   "claim": "Centering is the single most common reason an otherwise flawless card drops from a 10 to a 9.",
+   "sources": [
+    "GradingMetric 2026",
+    "multiple 2026 grading guides"
+   ],
+   "verified": "2026-08-23",
+   "verifier": "chat",
+   "confidence": "COMMUNITY",
+   "falsifier": "grader-published data showing corners or surface cause more downgrades",
+   "note": "This is what makes centering worth measuring even though it is only one of four criteria - it is both the most measurable AND the most frequently decisive.",
+   "usedBy": [
+    "grading"
+   ],
+   "recheckAfter": "2027-02-23"
+  },
+  {
+   "id": "grading-photo-limits",
+   "claim": "Centering can be measured from a photograph by geometry: detect the outer card edge, detect the inner artwork frame, compute the four margins and express opposite pairs as ratios. Corners, edges and surface cannot be assessed reliably from a single phone photo - surface scratches and holo scuffs are visible only at particular light angles, and corner wear needs resolution and lighting a phone rarely provides unaided.",
+   "sources": [
+    "cardpregrading.com published pipeline, 2026",
+    "PSA grading standards on the four criteria"
+   ],
+   "verified": "2026-08-23",
+   "verifier": "chat",
+   "confidence": "REASONED",
+   "falsifier": "a demonstrated phone-only tool whose corner and surface calls match PSA outcomes at scale",
+   "note": "THE LINE THIS DRAWS: centering is arithmetic and auditable - every measurement traces to a detected edge. A predicted GRADE is a black box that costs somebody a submission fee when it is wrong. We can defend the first and cannot defend the second.",
+   "usedBy": [
+    "grading"
+   ],
+   "recheckAfter": "2027-02-23"
   }
  ]
 }
