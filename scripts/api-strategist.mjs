@@ -17,7 +17,7 @@
 // have already stored. It can tell you what arrived; it cannot tell you what
 // else the endpoint would return if asked differently. That question routes to
 // whoever has a key.
-import { readFile, writeFile, readdir } from "node:fs/promises";
+import { readFile, readdir, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -123,59 +123,129 @@ const allocation = [];
   const catalogue = Object.keys(cat.cards).length;
   const priced = Object.values(cat.cards).filter(c => typeof c.price === "number" && c.price >= 2).length;
 
-  // SPEND IT. An earlier version of this held ~11,000 calls a day in reserve
-  // for no stated reason, and Tyler asked the obvious question: why save so
-  // many? Every candidate reason was tested and only one survived - retries and
-  // failures, which needs 10%, not 55%.
+  // ── THE COST MODEL, IN CREDITS ────────────────────────────────────────────
+  // This file reasoned in CALLS and every recommendation it made was wrong by
+  // the size of the `limit` parameter. The budget is 20,000 CREDITS a day, and
+  // the provider's own formula is:
   //
-  // Rate limiting is a real risk but the mitigation is PACING, not
-  // underspending: 20,000 calls at 60ms apart is twenty minutes inside a job
-  // that may run for six hours. Runtime is not a constraint either.
+  //     credits = limit × (1 + includeHistory + includeEbay + includeCardmarket)
   //
-  // UNSPENT CALLS DO NOT ROLL OVER. They evaporate at midnight. A budget held
-  // back is not saved, it is destroyed - and every day at half utilisation is
-  // half a day of capability nobody chose to decline, they just never allocated.
-  const BUDGET = 20000;
+  // So one enrichment call at limit=20 with history and eBay costs SIXTY
+  // credits, not one. The old "6,000 calls of enrichment" was 360,000 credits —
+  // eighteen days of budget presented as a third of one day.
+  //
+  // Two more corrections to what this file used to say:
+  //   - "the mitigation is PACING, not underspending" is true of the PER-MINUTE
+  //     cap (60 calls/min on our tier) and false of the daily credit pool.
+  //     Credits are spent regardless of how slowly you spend them, and the docs
+  //     are explicit that prepaid credits "raise your daily quota only, not
+  //     your burst limit". Neither limit is the other's remedy.
+  //   - "20,000 calls at 60ms apart is twenty minutes" — 60ms is 1,000 calls a
+  //     minute, sixteen times the cap. The real pace is 1,000ms.
+  const BUDGET_CREDITS = 20000;
+  const PER_MINUTE_CALLS = 60;
   const RETRY_RESERVE = 0.10;
-  const USABLE = Math.round(BUDGET * (1 - RETRY_RESERVE));
+  const USABLE = Math.round(BUDGET_CREDITS * (1 - RETRY_RESERVE));
+  // credits for one request, from the provider's formula
+  const cost = ({ limit = 50, history = false, ebay = false, cardmarket = false }) =>
+    limit * (1 + (history ? 1 : 0) + (ebay ? 1 : 0) + (cardmarket ? 1 : 0));
+  // fetchAllInSet bills once for the whole set at set-size × per-card cost, and
+  // the per-request caps do not apply. It is the cheapest way to reach breadth:
+  // one call per set instead of one per card, and it returns tcgPlayerId for
+  // every card, which makes every LATER refresh a precise 1-credit lookup.
+  const setCost = (cards, opts = {}) => cost({ ...opts, limit: cards });
+
   const cardRefresh = Math.round(priced * 0.75 + (catalogue - priced) * 0.33);
   const sealedRefresh = sp.products.length;
   const spare = USABLE - cardRefresh - sealedRefresh;
 
   allocation.push({
     rank: 1, spend: "ENRICHMENT on the top few thousand cards",
-    callsPerDay: Math.min(spare, 6000),   // enrichment on ~6,000 cards, not 3,000 - it is the highest-capability spend we have
+    creditsPerDay: Math.min(spare, 17979),   // fetchAllInSet across the densest sets: 5,993 cards, 4,027 of the top 6,000, measured
+    callsPerDay: 130,                        // one call per set, not one per card
     haveNow: `${enriched} cards (${(enriched / catalogue * 100).toFixed(2)}% of catalogue)`,
     buys: "Sales VOLUME and graded sold prices. This is the only candidate that unlocks instruments we cannot build at all today - every number we publish currently reads asks and infers demand, and vol30 measures demand directly. It also unblocks the graded index and makes RT-5 testable for the first time.",
     why: "Capability, not coverage. We already have prices on 16,468 cards and volume on twelve.",
   });
   allocation.push({
     rank: 2, spend: "ENUMERATE and add sealed products",
-    callsPerDay: Math.max(0, spare - 6000 - 700 - 1500),   // everything left after the higher-capability spends
+    creditsPerDay: Math.max(0, spare - 17979),
+    callsPerDay: null,
     haveNow: `${sp.products.length} products, chosen by hand from eBay`,
     buys: "Coverage of a market nobody else indexes, on a catalogue we have never even counted. The endpoint exists and has only ever been queried by name.",
     why: "Second because it widens something we already do well rather than enabling something new - but it is the widest gap between what we track and what exists.",
   });
   allocation.push({
     rank: 3, spend: "Twice-daily refresh on the top 500 cards and boxes",
-    callsPerDay: 700,
+    creditsPerDay: 700 * 1, callsPerDay: 700,
     haveNow: "once a day, everything",
     buys: "Intraday movement on the things people actually watch. A $2,000 card can move meaningfully between breakfast and dinner.",
     why: "Cheap, and the only way to say anything about a market DURING a day rather than about yesterday.",
   });
   allocation.push({
     rank: 4, spend: "Historical backfill where the provider has it",
+    creditsPerDay: 1500 * 2,  // history is a +1/card surcharge
     callsPerDay: 1500,
     haveNow: "5 days of our own tape",
     buys: "Every thesis we hold reports INSUFFICIENT for want of history. Backfill would make RT-1, RT-3 and RT-7 testable years earlier than waiting.",
     why: "Highest long-term value, entirely dependent on whether the provider exposes history at our tier - which nobody has checked.",
   });
 
-  const allocated = allocation.reduce((n, a) => n + a.callsPerDay, 0);
+
+// ── LIMIT WASTE: are we paying for results we throw away? ──────────────────
+// Credits are billed on the REQUESTED limit, not on what comes back or on what
+// we keep. fetch-singles-enrichment asks for limit=20 with two surcharges — 60
+// credits — and then keeps exactly ONE card, selected by card number. Nothing
+// in the codebase noticed, because nothing was reading the requests as a cost.
+//
+// The nuance that matters, and the reason this REPORTS rather than prescribes:
+// those 20 slots are not pure waste. The endpoint is queried by NAME, and the
+// card number is what disambiguates variants, so the extra results are doing
+// selection work. Dropping to limit=1 would not save 57 credits, it would
+// return the wrong card. The fix is a cheaper QUERY (fetchAllInSet, or a
+// precise tcgPlayerId lookup once we hold the ids), not a smaller limit on the
+// same query — and a flag that said "reduce the limit" would have caused an
+// outage dressed as a saving.
+{
+  const files = (await readdir(join(ROOT, "scripts"))).filter(f => f.endsWith(".mjs"));
+  for (const f of files) {
+    let src = null;
+    try { src = await readFile(join(ROOT, "scripts", f), "utf-8"); } catch { continue; }
+    if (!/pokemonpricetracker/.test(src)) continue;
+    for (const m of src.matchAll(/limit=(\d+)([^`"'\s]*)/g)) {
+      // ONLY the priced endpoints. Every documented credit cost is per CARD or
+      // per PRODUCT; /sets is metadata and appears nowhere in the cost list, so
+      // flagging its limit=500 as a 500-credit waste sends somebody optimising
+      // a call that is probably free. Reported as unknown rather than as spend.
+      const urlHead = src.slice(Math.max(0, m.index - 160), m.index);
+      if (!/\/(cards|sealed-products)\?/.test(urlHead)) continue;
+      const limit = Number(m[1]);
+      const tail = m[2] || "";
+      const window = src.slice(Math.max(0, m.index - 200), m.index + 600);
+      const history = /includeHistory=true/.test(tail + window);
+      const ebay = /includeEbay=true/.test(tail + window);
+      const perCard = 1 + (history ? 1 : 0) + (ebay ? 1 : 0);
+      const credits = limit * perCard;
+      // does the code keep only one result from this response?
+      const keepsOne = /\.find\(|\[0\]|data\[0\]/.test(window);
+      if (limit > 1 && keepsOne) {
+        findings.push({
+          severity: credits >= 20 ? "high" : "medium",
+          what: `scripts/${f} requests limit=${limit} (${credits} credits: ${perCard}/card) and keeps ONE result`,
+          why: `Credits bill on the requested limit, so this costs ${credits} per lookup while ${limit - 1} of the ${limit} paid results are discarded. Over 6,000 cards that is ${(credits * 6000).toLocaleString("en-US")} credits against a 20,000/day ceiling.`,
+          action: `Do NOT simply lower the limit — the extra results are how the right variant is chosen by card number, so limit=1 returns the wrong card. Use fetchAllInSet (billed once per set, no name matching) or a precise tcgPlayerId lookup once ids are held.`,
+          owner: "cc",
+        });
+      }
+    }
+  }
+}
+
+  const allocated = allocation.reduce((n, a) => n + (a.creditsPerDay ?? 0), 0);
   const unallocated = USABLE - cardRefresh - sealedRefresh - allocated;
   F(unallocated > USABLE * 0.15 ? "high" : "medium",
     `budget: ${(cardRefresh + sealedRefresh + allocated).toLocaleString("en-US")} of ${USABLE.toLocaleString("en-US")} usable allocated (${Math.round((cardRefresh + sealedRefresh + allocated) / USABLE * 100)}%), ${Math.max(0, unallocated).toLocaleString("en-US")} still unassigned`,
-    "Unspent calls do not roll over - they evaporate at midnight. A budget held back is not saved, it is destroyed. The only defensible reserve is 10% for retries; everything beyond that is capability nobody declined, they just never allocated it.",
+    "Unspent credits do not roll over - they evaporate at midnight. A budget held back is not saved, it is destroyed. The only defensible reserve is 10% for retries; everything beyond that is capability nobody declined, they just never allocated it.",
     unallocated > 0 ? "assign the remainder to the highest-ranked spend that can absorb it" : "fully allocated - the constraint is now real work rather than budget", "tyler");
 }
 
@@ -194,4 +264,4 @@ console.log(`✓ api strategist: ${out.counts.critical} critical · ${out.counts
 for (const f of findings.filter(f => f.severity === "critical")) console.log(`  CRITICAL [${f.owner}] ${f.what}`);
 for (const f of findings.filter(f => f.severity === "high")) console.log(`  HIGH     [${f.owner}] ${f.what}`);
 console.log(`\n  HOW TO SPEND THE ROOM:`);
-for (const a of allocation) console.log(`   ${a.rank}. ${a.spend.padEnd(46)} ~${String(a.callsPerDay).padStart(5)} calls/day  (have now: ${a.haveNow})`);
+for (const a of allocation) console.log(`   ${a.rank}. ${a.spend.padEnd(46)} ~${String(a.creditsPerDay ?? 0).padStart(6)} credits/day  (have now: ${a.haveNow})`);
