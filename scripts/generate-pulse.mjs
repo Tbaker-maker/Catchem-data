@@ -502,7 +502,7 @@ const feed = {
   await import("./post-bank.mjs");
   // Runs HERE, not in the advisory block at the end: the feed is assembled a
   // few lines below, so an artist-angles that ran after it would have shipped
-  // yesterday's angles every single day — fresh on disk, stale in the app.
+  // yesterday's angles continuously — fresh on disk, stale in the app.
   // Still advisory: a failure costs the angles, never the pulse.
   try { await import("./artist-angles.mjs"); } catch (e) { console.warn(`  ⚠ artist-angles.mjs failed: ${e.message} — advisory only, the run continues`); }
   const bank = await J("research/pulse/post-bank.json");

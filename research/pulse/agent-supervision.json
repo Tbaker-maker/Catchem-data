@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T19:51:07.460Z",
+ "generatedAt": "2026-08-23T19:54:27.915Z",
  "date": "2026-08-23",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -520,22 +520,6 @@
   {
    "from": "teacher",
    "owner": "chat",
-   "what": "steward: an incident in your domain: \"Three secondary sources state Kadabra vanished from the TCG for 26 years (1997-2023). Our \"",
-   "do": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
-   "score": 30,
-   "band": "NOTE ONLY",
-   "selfScore": 30,
-   "demotions": [],
-   "components": {
-    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
-    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
-    "actionable": "SOON (14) — clear what to do, needs a slot",
-    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
-   }
-  },
-  {
-   "from": "teacher",
-   "owner": "chat",
    "what": "anomaly: an incident in your domain: \"The singles-sell refusal matched card NAMES, and /tin/i matches Dra-tin-i, Vic-tin-i, Man-\"",
    "do": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
    "score": 30,
@@ -582,9 +566,25 @@
    }
   },
   {
+   "from": "teacher",
+   "owner": "chat",
+   "what": "steward: an incident in your domain: \"Shipped \"177 sealed products, repriced every single day\" onto a public landing page while \"",
+   "do": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
    "from": "steward",
    "owner": "chat",
-   "what": "5 hand-written file(s) changed and not committed.",
+   "what": "6 hand-written file(s) changed and not committed.",
    "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -600,7 +600,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "6 supervisor problem(s) are open.",
+   "what": "5 supervisor problem(s) are open.",
    "do": "Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.",
    "score": 30,
    "band": "NOTE ONLY",

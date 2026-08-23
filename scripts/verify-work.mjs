@@ -177,6 +177,32 @@ const scripts = (await readdir(join(ROOT, "scripts"))).filter(f => f.endsWith(".
   }
 }
 
+// ── PERISHABLE CLAIM ON A PUBLIC PAGE (error 25) ─────────────────────────
+// I shipped "repriced every single day" onto a landing page while the heartbeat
+// was reporting that day's run as FAILED and the data was 25.6 hours old. I
+// verified the COUNT and never verified the FREQUENCY — I checked the noun and
+// skipped the verb.
+//
+// A frequency claim is perishable: it is true until a cron fails, and then it is
+// a lie on a page nobody is watching. A COUNT is perishable too, in the other
+// direction — it goes stale the moment coverage grows.
+{
+  const files = (await readdir(join(ROOT, "research/assets"))).filter(f => f.endsWith(".html") && !/mock/.test(f));
+  for (const f of files) {
+    const src = await readFile(join(ROOT, "research/assets", f), "utf-8").catch(() => "");
+    const visible = src.replace(/<style[\s\S]*?<\/style>/g, "").replace(/<script[\s\S]*?<\/script>/g, "");
+    // NARROWED after flagging five false positives on the first run: "post from
+    // it daily" is advice to a user, "The Daily Three" is a product name,
+    // "Daily Berry" is a rule. None promises the READER a cadence. The claim
+    // that perishes is OUR DATA plus a FREQUENCY, in that order, close together.
+    const freq = visible.match(/\b(priced|repriced|updated|refreshed|tracked|scanned)\b[^.<]{0,28}\b(every (single )?day|daily|every hour|hourly)\b/i)
+             ?? visible.match(/\b(every (single )?day|daily|hourly)\b[^.<]{0,28}\b(priced|repriced|updated|refreshed|tracked)\b/i);
+    if (freq)
+      P("perishable claim", f + ' claims a refresh frequency ("' + freq[0] + '")',
+        "A frequency claim is true until a cron fails, and then it is a lie on a public page nobody is watching. State what is TRACKED and how we behave when wrong — behaviour does not break when a job does.", 25);
+  }
+}
+
 // ── THE META-CHECK · did I exclude myself? ────────────────────────────────
 // Five checkers read their own source in one day. This one names the risk out
 // loud rather than assuming it is immune.
@@ -185,7 +211,7 @@ const selfAware = true;   // this file audits data and other scripts, never itse
 const out = { generatedAt: new Date().toISOString(),
   purpose: "Checks output against the failure classes in our own error ledger — things that actually happened here, not generic quality rules.",
   runsOn: "output, never intent. What I meant to do is not evidence.",
-  classesChecked: [11, 13, 14, 15, 16, 18, 21, 24, "sku existence", "coverage overclaim"],
+  classesChecked: [11, 13, 14, 15, 16, 18, 21, 24, 25, "sku existence", "coverage overclaim"],
   problems };
 await (await import("node:fs/promises")).writeFile(join(ROOT, "research/pulse/work-verification.json"), JSON.stringify(out, null, 1));
 

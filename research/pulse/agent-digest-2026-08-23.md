@@ -76,13 +76,13 @@ Nothing unusual, or not enough history to tell — 5 days of tape so far. Anomal
 
 ## Where today's story goes
 - **X** — "Paldean Fates listings moved -66.7% while its print window closes."
-- **YouTube** — Journey Together Elite Trainer Box — "Sealed carries a 139.4% premium over the cost of its packs bought loose — the widest gap of that kind we track today."
+- **YouTube** — Rebel Clash Elite Trainer Box — "Sealed carries a 376.9% premium over the cost of its packs bought loose — the widest gap of that kind we track today."
 - **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 99.4."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
 
 ## Something is slipping
-- **unsaved** — 5 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
+- **unsaved** — 6 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
 - **ignored** — 5 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
 - **drift** — 10 script(s) are not referenced anywhere: backfill-artists.mjs, build-faq.mjs, build-rip.mjs, build-waitlist.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
 - **drift** — 47 JSON files in research/pulse. *A directory nobody can scan is a directory where something goes missing without being noticed.*
@@ -101,13 +101,13 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 - Fusion Strike Booster Pack: 72% rejection rate (42/150) — *largest bucket: exclude = 49. A single over-broad term can eat a market.*
 
 ## What the agents should be asking themselves
-- **steward** — Would you catch this today? If yes, what specifically would fire. If no, what would you need?
+- **anomaly** — Would you catch this today? If yes, what specifically would fire. If no, what would you need?
 - **anomaly** — Would you catch this today? If yes, what specifically would fire. If no, what would you need?
 - **breaker** — You test what we built. What have we DELETED recently, and did anything depend on it?
 - **correction-hunter** — You re-check figures that moved. Ask about the ones that never move — a price frozen for a month is a claim too.
 
 ## Who is catching our mistakes
-- **Tyler catches 13 of 20 incidents; the machines catch 7** — *Every guard here was written by the party being checked. If the human keeps finding what the tooling misses, the tooling is calibrated to what I already believed rather than to what actually goes wrong. That is what self-bias looks like from the outside — not a wrong rule, an absent one.*
+- **Tyler catches 14 of 21 incidents; the machines catch 7** — *Every guard here was written by the party being checked. If the human keeps finding what the tooling misses, the tooling is calibrated to what I already believed rather than to what actually goes wrong. That is what self-bias looks like from the outside — not a wrong rule, an absent one.*
 
 ## Post ideas nobody looked for
 - **Ken Sugimori drew Ampharos exactly once** — Ken Sugimori has 729 cards. Exactly one is a Ampharos.

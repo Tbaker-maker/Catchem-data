@@ -1943,3 +1943,30 @@ The log now flags anything under 24 hours as still accumulating, and the shape
 table states in its own output that it **controls for nothing** — not hour, not
 age, not follower count on the day. **It is a record, not a finding**, and
 labelling it as such is cheaper than being corrected by it twice.
+
+## VERIFIED THE NOUN, SKIPPED THE VERB (Aug 23 2026)
+I put **"177 sealed products, repriced every single day"** on a landing page
+about to take viral traffic. I checked that 177 was correct. **I did not check
+"every single day"** — while the heartbeat was, at that exact moment, reporting
+the day's 04:00 run as failed and the data as 25.6 hours old.
+
+**I verified the noun and skipped the verb**, and the verb was the part that had
+just broken.
+
+TWO KINDS OF PERISHABLE CLAIM, and I shipped both in one sentence:
+- **A frequency** is true until a cron fails, and then it is a lie on a public
+  page nobody is watching.
+- **A count** goes stale in the other direction, the moment coverage grows —
+  which Tyler says it already had.
+
+THE FIX IN THE COPY: state what is TRACKED and how we BEHAVE when wrong.
+*"Sealed product prices across the whole market, tracked continuously… where we
+get one wrong we publish the correction."* **Behaviour does not break when a job
+does.**
+
+THE FIX IN THE MACHINE: verify-work now fails on our-data-plus-a-frequency
+anywhere on a shipped page. Its first version flagged five pages that were fine
+— "post from it daily" is advice to a user, "The Daily Three" is a product name,
+"Daily Berry" is a rule. **A check that cries wolf five times out of six gets
+muted, and a muted check is worse than none**, so it was narrowed to the exact
+pairing and re-tested against the real mistake.

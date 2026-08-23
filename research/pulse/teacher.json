@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T19:51:08.076Z",
+ "generatedAt": "2026-08-23T19:54:28.471Z",
  "role": "Keeps agents current, breaks them out of ruts, and teaches from incidents that actually happened to us. It asks questions; it never rewrites another agent.",
  "counts": {
   "stale": 0,
@@ -99,15 +99,6 @@
    "chip": "READ"
   },
   {
-   "agent": "steward",
-   "kind": "post-mortem",
-   "observation": "an incident in your domain: \"Three secondary sources state Kadabra vanished from the TCG for 26 years (1997-2023). Our \"",
-   "question": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
-   "why": "staleness is work not being done, which is the steward's subject",
-   "confidence": "MEASURED",
-   "chip": "READ"
-  },
-  {
    "agent": "anomaly",
    "kind": "post-mortem",
    "observation": "an incident in your domain: \"The singles-sell refusal matched card NAMES, and /tin/i matches Dra-tin-i, Vic-tin-i, Man-\"",
@@ -129,6 +120,15 @@
    "agent": "steward",
    "kind": "post-mortem",
    "observation": "an incident in your domain: \"The 04:00 run FIRED AND FAILED. Withdrawing graded figures made dailyThree.graded falsy → \"",
+   "question": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
+   "why": "staleness is work not being done, which is the steward's subject",
+   "confidence": "MEASURED",
+   "chip": "READ"
+  },
+  {
+   "agent": "steward",
+   "kind": "post-mortem",
+   "observation": "an incident in your domain: \"Shipped \"177 sealed products, repriced every single day\" onto a public landing page while \"",
    "question": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
    "why": "staleness is work not being done, which is the steward's subject",
    "confidence": "MEASURED",

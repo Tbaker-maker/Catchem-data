@@ -113,6 +113,8 @@ fixing the class is.
 
 | 26 | The 04:00 run FIRED AND FAILED. Withdrawing graded figures made dailyThree.graded falsy → mint-cards stopped producing that card → the stale copy was deleted → run-tests asserted all four cards UNCONDITIONALLY → failed in the fail-fast gate before the fetch | CC, from the Actions log | A test asserting a FILE rather than a BEHAVIOUR | Cards required exactly when the dailyThree entry that drives them is present; mint-cards wired into the workflow it was never in |
 
+| 27 | Shipped "177 sealed products, repriced every single day" onto a public landing page while the heartbeat was reporting that day's 04:00 run as FAILED and the data was 25.6 hours old | Tyler | Perishable claim — verified the noun, skipped the verb | Claim widened to what survives a bad day; error-25 check added to verify-work, narrowed after five false positives |
+
 **PATTERN, stated plainly:** 8 of 9 were caught by Tyler, not by the
 machine. Every guard above was built AFTER a human caught something.
 That is the honest state — the machine is now catching prices, but

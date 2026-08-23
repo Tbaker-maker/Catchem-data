@@ -150,7 +150,7 @@ button:active{opacity:.85}
   <p>It arrives in a box. You open it. <b>Not everyone gets the same one.</b><br><br>That is genuinely all we are saying for now — and everyone on the list finds out before anyone else does.</p></div>
 
 <div class="feat"><h3>Sealed market data <span class="tag">SOON</span></h3>
-  <p>177 sealed products, repriced every single day, with the workings shown. Where a number is soft we say so. Where we get one wrong we publish the correction — dated, permanent, on a page anyone can read.<br><br><b>Nobody else in this hobby shows you their mistakes.</b></p></div>
+  <p>Sealed product prices across the whole market, tracked continuously, with the workings shown. Where a number is soft we say so. Where we get one wrong we publish the correction — dated, permanent, on a page anyone can read.<br><br><b>Nobody else in this hobby shows you their mistakes.</b></p></div>
 
 <div class="form" id="join">
   <h2>Get into the closed beta</h2>
