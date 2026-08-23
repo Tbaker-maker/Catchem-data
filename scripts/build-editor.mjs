@@ -886,8 +886,11 @@ function render(){
   ["copy","share","dl"].forEach(i => el(i).hidden = true);
   if (!tray.length) { setStatus("Pick an idea above, or search for a card."); return; }
   if (L) {
+    // WARN AT COMPOSE TIME. 216 cards are addable with no recorded artist, and
+    // nothing said so before the image was made — card-composite refuses an
+    // uncredited art post and the editor let one through silently.
     const missing = tray.filter(c => !c.a).length;
-    setStatus(\`\${tray.length} cards · \${L.cols} across\` + (missing ? \` · \${missing} without a recorded artist\` : ""), false);
+    setStatus(\`\${tray.length} cards · \${L.cols} across\` + (missing ? \` · \${missing} will publish with NO artist credit\` : ""), missing > 0);
   } else {
     const below = SUPPORTED.filter(n => n < tray.length).pop(), above = SUPPORTED.find(n => n > tray.length);
     setStatus(\`\${tray.length} cards has no frame. \${below ? "Remove " + (tray.length - below) : ""}\${below && above ? " or add " + (above - tray.length) : ""}.\`, true);
@@ -957,6 +960,10 @@ function buildIdeas(){
   const box = el("ideas");
   if (!fCount || !fTheme) { box.innerHTML = ""; return; }
   const t = THEMES.find(x => x.id === fTheme);
+  // A STALE SELECTION IS THE REALISTIC PATH HERE, not a hostile user: pick a
+  // theme, then pick a set that excludes it, and fTheme points at something no
+  // longer in the list. It threw on .shape.
+  if (!t) { fTheme = null; box.innerHTML = ""; return; }
   const pool = INDEX.filter(c => (!fSet || c.s === fSet) && HERO_RX.test(c.r || ""));
   const need = fCount;
   const ideas = [];
@@ -1049,7 +1056,7 @@ function buildIdeas(){
     for (const [set, list] of Object.entries(bySet)) {
       if (list.length < need) continue;
       const picked = list.sort((a, b) => (b.p || 0) - (a.p || 0)).slice(0, need);
-      ideas.push({ title: "The best of " + set, sub: picked.map(c => c.n).join(" · "),
+      ideas.push({ title: set + ", by value", sub: picked.map(c => c.n).join(" · "),
         hook: need + " from " + set + ". Which page are you filling first?", cards: picked });
       if (ideas.length >= 6) break;
     }

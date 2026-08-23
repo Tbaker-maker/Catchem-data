@@ -183,6 +183,30 @@
    "coveredBy": "the post-outcome log, and Tyler clicking through",
    "reviewed": "2026-08-23",
    "history": "Written after Tyler found that only the artist themes worked, two returned identical results, and the rest produced nothing. Cause: buildIdeas switched on theme ID, so a theme without a branch failed silently, and artist-career and first-and-last shared one. It then found three more faults immediately, including a bestAt of 'late evening' where card counts belonged, and two themes that were the same theme written twice."
+  },
+  "editor-hostile.mjs": {
+   "cannotCatch": "Whether the abuse it survives is the abuse a real person commits. It tries what I could think of, which is not the same as what somebody will do.",
+   "knownPatterns": [],
+   "coveredBy": "Tyler using it, and CC with a browser",
+   "reviewed": "2026-08-23"
+  },
+  "editor-copy-rules.mjs": {
+   "cannotCatch": "Whether the copy is GOOD. It proves nothing asserts, names a grade or leaks a JS value. A dull line that breaks no rule passes.",
+   "knownPatterns": [],
+   "coveredBy": "Tyler using it, and CC with a browser",
+   "reviewed": "2026-08-23"
+  },
+  "editor-claim-match.mjs": {
+   "cannotCatch": "A claim that is wrong about something OUTSIDE the cards. It checks counts, duplicates, named artists and card existence — not whether the underlying fact is true.",
+   "knownPatterns": [],
+   "coveredBy": "Tyler using it, and CC with a browser",
+   "reviewed": "2026-08-23"
+  },
+  "editor-money-credit.mjs": {
+   "cannotCatch": "Whether the prices are ACCURATE. It checks for absurd values and for the unpriced count being shown, not for a price being right.",
+   "knownPatterns": [],
+   "coveredBy": "Tyler using it, and CC with a browser",
+   "reviewed": "2026-08-23"
   }
  }
 }

@@ -663,6 +663,10 @@ try { await import("./build-live.mjs"); } catch (e) { console.warn("  live: " + 
 try { await import("./live-smoke.mjs"); } catch (e) { console.warn("  live smoke: " + e.message); }
 try { await import("./creators-smoke.mjs"); } catch (e) { console.warn("  creators smoke: " + e.message); }
 try { await import("./theme-smoke.mjs"); } catch (e) { console.warn("  theme smoke: " + e.message); }
+try { await import("./editor-hostile.mjs"); } catch (e) { console.warn("  editor-hostile.mjs: " + e.message); }
+try { await import("./editor-copy-rules.mjs"); } catch (e) { console.warn("  editor-copy-rules.mjs: " + e.message); }
+try { await import("./editor-claim-match.mjs"); } catch (e) { console.warn("  editor-claim-match.mjs: " + e.message); }
+try { await import("./editor-money-credit.mjs"); } catch (e) { console.warn("  editor-money-credit.mjs: " + e.message); }
 try { await import("./offline-smoke.mjs"); } catch (e) { console.warn("  offline smoke: " + e.message); }
 try { await import("./editor-smoke.mjs"); } catch (e) { console.warn("  editor smoke: " + e.message); }
 try { await import("./tease-guard.mjs"); } catch (e) { console.warn("  tease: " + e.message); }
