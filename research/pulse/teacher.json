@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T05:14:14.917Z",
+ "generatedAt": "2026-08-23T05:27:25.948Z",
  "role": "Keeps agents current, breaks them out of ruts, and teaches from incidents that actually happened to us. It asks questions; it never rewrites another agent.",
  "counts": {
   "stale": 0,
@@ -72,15 +72,6 @@
    "chip": "READ"
   },
   {
-   "agent": "domain-plausibility",
-   "kind": "post-mortem",
-   "observation": "an incident in your domain: \"Multi-item guard rejected x1 and (1x) — how sellers mark a SINGLE pack\"",
-   "question": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
-   "why": "a filter eating a market is a plausibility question before it is a code question",
-   "confidence": "MEASURED",
-   "chip": "READ"
-  },
-  {
    "agent": "breaker",
    "kind": "post-mortem",
    "observation": "an incident in your domain: \"Every rotation repeated itself across a 31-day month boundary (31 %% 5 == 1 %% 5), includi\"",
@@ -120,6 +111,15 @@
    "agent": "steward",
    "kind": "post-mortem",
    "observation": "an incident in your domain: \"A composite showed a CARD BACK: image URLs were constructed from card IDs assuming one hos\"",
+   "question": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
+   "why": "staleness is work not being done, which is the steward's subject",
+   "confidence": "MEASURED",
+   "chip": "READ"
+  },
+  {
+   "agent": "steward",
+   "kind": "post-mortem",
+   "observation": "an incident in your domain: \"Three secondary sources state Kadabra vanished from the TCG for 26 years (1997-2023). Our \"",
    "question": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
    "why": "staleness is work not being done, which is the steward's subject",
    "confidence": "MEASURED",

@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T05:14:14.388Z",
+ "generatedAt": "2026-08-23T05:27:25.490Z",
  "date": "2026-08-23",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -12,7 +12,7 @@
   "api-strategist: 8 finding(s)",
   "compliance: 0 finding(s)",
   "security: 0 finding(s)",
-  "steward: 4 finding(s)",
+  "steward: 3 finding(s)",
   "platform: 10 finding(s)",
   "anomaly: 0 finding(s)",
   "creator: 15 finding(s)",
@@ -27,7 +27,7 @@
   "anomaly: clean run — nothing failed, which is the point of it"
  ],
  "problems": [
-  "teacher: BROKEN RECORD — 13 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
+  "teacher: BROKEN RECORD — 12 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "creator: OVER-BUDGET — 15 findings against a ceiling of 10. An unreadable list is an unread list."
  ],
  "workforce": [
@@ -72,11 +72,6 @@
    "agent": "correction-hunter",
    "finding": "runs daily and has returned the same count (3) four runs running.",
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
-  },
-  {
-   "agent": "teacher",
-   "finding": "every finding from a week ago is still open (13).",
-   "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
    "agent": "compliance",
@@ -500,22 +495,6 @@
   {
    "from": "teacher",
    "owner": "chat",
-   "what": "domain-plausibility: an incident in your domain: \"Multi-item guard rejected x1 and (1x) — how sellers mark a SINGLE pack\"",
-   "do": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
-   "score": 30,
-   "band": "NOTE ONLY",
-   "selfScore": 30,
-   "demotions": [],
-   "components": {
-    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
-    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
-    "actionable": "SOON (14) — clear what to do, needs a slot",
-    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
-   }
-  },
-  {
-   "from": "teacher",
-   "owner": "chat",
    "what": "breaker: an incident in your domain: \"Every rotation repeated itself across a 31-day month boundary (31 %% 5 == 1 %% 5), includi\"",
    "do": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
    "score": 30,
@@ -594,10 +573,10 @@
    }
   },
   {
-   "from": "steward",
+   "from": "teacher",
    "owner": "chat",
-   "what": "2 hand-written file(s) changed and not committed.",
-   "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
+   "what": "steward: an incident in your domain: \"Three secondary sources state Kadabra vanished from the TCG for 26 years (1997-2023). Our \"",
+   "do": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
    "score": 30,
    "band": "NOTE ONLY",
    "selfScore": 30,
@@ -612,8 +591,8 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "4 supervisor problem(s) are open.",
-   "do": "Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.",
+   "what": "4 hand-written file(s) changed and not committed.",
+   "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
    "score": 30,
    "band": "NOTE ONLY",
    "selfScore": 30,
@@ -740,7 +719,7 @@
   {
    "from": "api-strategist",
    "owner": "tyler",
-   "what": "the paid provider is called from 99 places",
+   "what": "the paid provider is called from 100 places",
    "do": "list what ONLY the paid provider gives us; if that list is short, either use more of it or stop paying for it",
    "score": 30,
    "band": "NOTE ONLY",
@@ -1087,6 +1066,6 @@
   "actNow": 0,
   "queue": 9,
   "watch": 8,
-  "noteOnly": 22
+  "noteOnly": 21
  }
 }

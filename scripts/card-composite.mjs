@@ -121,6 +121,21 @@ if (!ids.length) {
   }
   if (!cards.length) { console.error("no usable images — nothing produced rather than a card back"); process.exitCode = 1; }
 
+  // THE LAYOUT TABLE DECIDES (2026-08-23). Every supported count has a measured
+  // frame, so nobody makes a layout choice at post time - and every visual we got
+  // wrong today was a choice made in a hurry. Unsupported counts fail loudly.
+  const { LAYOUTS, frameFor } = await import("./layouts.mjs");
+  const LAY = frameFor(cards.length);
+  if (!LAY) {
+    const opts = Object.keys(LAYOUTS).join(", ");
+    console.error(`\n  ${cards.length} cards has no layout. Supported: ${opts}.`);
+    console.error(`  Five and seven are deliberately unsupported - they leave a ragged final row,`);
+    console.error(`  which reads as a mistake rather than a choice.\n`);
+    process.exitCode = 1;
+  } else {
+    console.log(`  layout: ${LAY.name} - ${LAY.w}x${LAY.h}, ${LAY.ratio}:1, ${LAY.timeline}`);
+  }
+
   const isGrid = gridSpec && cards.length > 3;
   const perRow = isGrid ? gCols : cards.length;
   const rowCount = isGrid ? Math.ceil(cards.length / gCols) : 1;

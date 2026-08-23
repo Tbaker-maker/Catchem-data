@@ -1425,3 +1425,51 @@ FOUR SHAPES BUILT, 743 formulas, all derived:
 slop-guard blocks the run on any grouping with no field behind it, and on the
 specific words that assert significance the data cannot support: cute, iconic,
 stunning, underrated, best, greatest. Negative-tested by planting one.
+
+## SEVEN FORMATS, DECIDED ONCE (Tyler, Aug 23 2026)
+"Make formats for 1, 2, 3, 4, 6, 8, 9 cards. All in one image frame, sized
+accordingly. Safeguard it so it's simple for users."
+
+Every supported count has a fixed, measured frame in scripts/layouts.mjs, so
+nobody - human or machine - makes a layout decision at post time. **Every
+visual we got wrong today was a decision made in a hurry**, and a table removes
+the hurry.
+
+| count | layout          | frame      | ratio | timeline |
+|-------|-----------------|------------|-------|----------|
+| 1     | the single      | 818x900    | 1.10  | shows whole |
+| 2     | the pairing     | 966x774    | 0.80  | shows whole |
+| 3     | the trio        | 1114x635   | 0.57  | shows whole |
+| 4     | the row         | 1342x593   | 0.44  | shows whole |
+| 6     | the half page   | 1024x1030  | 1.01  | shows whole |
+| 8     | the spread      | 1142x890   | 0.78  | shows whole |
+| 9     | the binder page | 934x1341   | 1.44  | slightly tall |
+
+WHY THE COLUMN COUNTS ARE WHAT THEY ARE: X crops a single image past roughly
+4:5 in the timeline, and a Pokémon card is 1.40:1 on its own. So columns are
+chosen for FIT rather than habit — **four cards go in ONE ROW, not a 2x2**,
+because a 2x2 of portrait cards lands at 1.45 and gets cut. The exception is
+nine: a binder page is three by three, it runs 1.44, and changing that to suit
+a timeline would be changing the thing itself.
+
+FIVE AND SEVEN ARE DELIBERATELY UNSUPPORTED. They leave a ragged final row,
+which reads as a mistake rather than a choice. An unsupported count fails
+loudly and names the nearest workable options — drop to four, or add one to
+reach six — rather than producing something lopsided.
+
+## BANK THE KNOWLEDGE, THEN BUILD THEMES FROM IT (Tyler, Aug 23 2026)
+"We need to book-bank these to our history and use them to create more themes."
+
+The banned-cards research produced five sourced facts, and one of them was
+CORRECTED against our own catalogue before publication: three secondary
+sources agree Kadabra vanished for twenty-six years, and our own data shows
+English prints in 1999, 2000 and 2002. The real gap is twenty-one years.
+
+That is the whole method in one example. **Research produces claims, our own
+data adjudicates them, and only what survives becomes a theme.** A theme built
+on a number three sources agree on and our primary data disproves would have
+been the most confident wrong thing we ever published.
+
+data/knowledge.json now holds seventeen facts, each with sources, a date, a
+verifier, a confidence tier and a falsifier. Every future theme draws from
+there rather than from a search.
