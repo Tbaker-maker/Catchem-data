@@ -135,6 +135,12 @@
    "knownPatterns": [
     "one syntactic form of two"
    ]
+  },
+  "pre-mortem.mjs": {
+   "guard": "pre-mortem.mjs",
+   "cannotCatch": "A shape it has never been bitten by. Every pattern here was added AFTER something shipped, so the table is a record of our history, not a model of risk — it is structurally blind to the next novel failure and will stay so until that one costs a morning too. It also matches on SOURCE TEXT, so a guard that carries a shape inside a string or a comment reads as carrying the shape, and one that expresses the same fault through a helper or a computed value reads as clean.",
+   "coveredBy": "Nothing automatic. New shapes arrive only from a real failure being written up — which is why the report matters more than the scan.",
+   "reviewed": "2026-08-23"
   }
  }
 }

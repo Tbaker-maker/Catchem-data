@@ -40,7 +40,19 @@ async function snapshot(slugs, key) {
     try {
       const u = `${BASE}/cards?setName=${encodeURIComponent(ours.setName)}`
         + `&search=${encodeURIComponent(ours.name)}&includeEbay=true&limit=10`;
-      const r = await fetch(u, { headers: { Authorization: `Bearer ${key}` }, signal: AbortSignal.timeout(25000) });
+      let r = await fetch(u, { headers: { Authorization: `Bearer ${key}` }, signal: AbortSignal.timeout(25000) });
+      // A 429 is the provider asking us to wait, not an answer. Back off and
+      // retry twice before giving up; a concurrent daily run is the usual cause.
+      if (r.status === 429) {
+        let ok = null;
+        for (const wait of [8000, 20000]) {
+          await new Promise(z => setTimeout(z, wait));
+          const again = await fetch(u, { headers: { Authorization: `Bearer ${key}` }, signal: AbortSignal.timeout(25000) });
+          if (again.ok) { ok = again; break; }
+        }
+        if (!ok) { rows.push({ id: slug, error: "HTTP 429 after 2 retries — provider busy, result VOID not negative" }); continue; }
+        r = ok;
+      }
       if (!r.ok) { rows.push({ id: slug, error: `HTTP ${r.status}` }); continue; }
       const body = (await r.json()).data;
       const list = Array.isArray(body) ? body : [body].filter(Boolean);
@@ -70,6 +82,13 @@ export function compare(baseline, now) {
       psa9: { was: b.psa9, now: n.psa9, delta: (n.psa9 ?? 0) - (b.psa9 ?? 0) } });
   }
   const dropped = moves.filter(m => m.psa10.delta < 0 || m.psa9.delta < 0);
+  // NO COMPARISONS IS NOT "NO DROP". On 2026-08-23 a concurrent daily run
+  // rate-limited this probe: 11 of 12 cards returned HTTP 429, nothing was
+  // compared, and it still printed "consistent with an all-time aggregate".
+  // That is a conclusion drawn from no data — the same shape as an alarm
+  // reporting silence as health. It must refuse instead.
+  if (!moves.length) return { compared: 0, moves, dropped: [],
+    verdict: "VOID — nothing resolved to a provider row, so nothing was compared. This is not evidence either way; re-run when no other job is calling the provider." };
   return { compared: moves.length, moves, dropped,
     verdict: dropped.length ? "ROLLING — a count fell, so sales age out of a window"
       : "NO DROP — consistent with an all-time aggregate (not proof; absence of growth is not absence of a window)" };

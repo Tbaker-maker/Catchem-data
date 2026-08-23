@@ -35,6 +35,14 @@ const declared = await readFile(join(ROOT, "data/guard-blindspots.json"), "utf-8
 const auditSrc = await readFile(join(ROOT, "scripts/guard-audit.mjs"), "utf-8").catch(() => "");
 const guards = [...auditSrc.matchAll(/\{ script: "([a-z-]+\.mjs)"/g)].map(m => m[1]);
 
+// EXCLUDE OUR OWN SOURCE. The shape table quotes the very patterns it hunts,
+// so scanning this file finds every shape in it and reports them all against
+// itself. Fourth instance of a checker whose search space includes the
+// checker: the api-strategist read its own vocabulary, a negative test read
+// its own canary name, the designer audited its own comments, and now this.
+// A scanner that quotes its patterns must never be in its own corpus.
+const SELF = "pre-mortem.mjs";
+
 const problems = [], notes = [];
 
 // ── 1 · EVERY GUARD DECLARES ITS BLIND SPOT ───────────────────────────────
@@ -66,13 +74,33 @@ const SHAPES = [
   { id: "elapsed time as a proxy for an event", rx: /age\s*>\s*hours|Date\.now\(\)\s*-[^;]*>\s*\d+\s*\*/,
     why: "The heartbeat allowed 30 hours so a LATE run would not cry wolf, and a window built to forgive a late run is exactly the size to hide a SKIPPED one. Green through a failure.",
     fix: "Ask whether the EVENT happened. Compare against the schedule, not against a duration." },
+  // ── ADDED 2026-08-23. All four are failures that shipped TODAY. ────────
+  { id: "assertion with no producer", rx: new RegExp("cards/latest-"),
+    why: "run-tests asserted latest-graded.svg while NO pipeline step minted it — mint-cards.mjs was in no workflow at all. Graded data was withdrawn, the card stopped being produced, the fossil was deleted, and the assertion failed inside the FAIL-FAST gate. A correct editorial decision took the whole daily run down before the eBay fetch ever ran.",
+    fix: "An assertion may name an artifact only if a pipeline step produces it. Assert the behaviour, or assert conditionally on the data that drives the artifact." },
+  { id: "verdict from an empty sample", rx: new RegExp("verdict:"),
+    unless: new RegExp("INSUFFICIENT|VOID|moves.length|rows.length <|length === 0"),
+    why: "The graded-window probe compared ZERO cards — 11 of 12 rate-limited by a concurrent run — and still printed NO DROP, consistent with an all-time aggregate. A conclusion drawn from no data reads exactly like one drawn from data.",
+    fix: "Refuse when the sample is empty. VOID is a result; a verdict is not." },
+  { id: "alarm on an unreachable condition", rx: new RegExp("continue-on-error"),
+    why: "Making the heartbeat continue-on-error so a retry could branch on it turns the JOB green, and the existing alarm was if: failure(), which then never fires. I nearly shipped it. An alarm wired to a condition that cannot occur reports silence as health.",
+    fix: "Branch the alarm on the STEP outcome wherever continue-on-error is used." },
+  { id: "enforcement only in the presentation", rx: new RegExp("[.]disabled ="),
+    why: "The singles-sell refusal lived entirely in button.disabled. A disabled attribute is an affordance, not a guard — re-enabling it in the console produced the very image the refusal exists to prevent.",
+    fix: "Re-check the rule at the point of action, not only where the control is drawn." },
 ];
 
 for (const g of guards) {
+  if (g === SELF) continue;   // our own pattern table is not evidence about us
   const src = await readFile(join(ROOT, "scripts", g), "utf-8").catch(() => "");
   if (!src) continue;
   for (const s of SHAPES) {
     if (!s.rx.test(src)) continue;
+    // A shape present ALONGSIDE its mitigation is not a finding. Without this,
+    // the empty-sample shape flagged falsifier.mjs — the one guard whose whole
+    // design is to answer INSUFFICIENT rather than guess. A scanner that
+    // reports the best-behaved file is worse than one that reports nothing.
+    if (s.unless && s.unless.test(src)) continue;
     const d = declared.guards?.[g];
     // Present AND acknowledged is fine - a known pattern with a stated reason is
     // a decision. Present and unacknowledged is the one that bites.
