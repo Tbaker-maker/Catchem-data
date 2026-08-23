@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T15:58:00.147Z",
+ "generatedAt": "2026-08-23T16:06:13.966Z",
  "date": "2026-08-23",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -10,8 +10,8 @@
   "decision-audit: 0 finding(s)",
   "designer: 7 finding(s)",
   "theme-scout: 23 finding(s)",
-  "teacher: 17 finding(s)",
-  "api-strategist: 9 finding(s)",
+  "teacher: 15 finding(s)",
+  "api-strategist: 8 finding(s)",
   "compliance: 0 finding(s)",
   "security: 0 finding(s)",
   "steward: 4 finding(s)",
@@ -29,12 +29,11 @@
   "anomaly: clean run — nothing failed, which is the point of it"
  ],
  "problems": [
-  "designer: BROKEN RECORD — 4 finding(s) repeated three runs running (e.g. \"medium::16 distinct colours\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
+  "designer: BROKEN RECORD — 4 finding(s) repeated three runs running (e.g. \"medium::--faint on the background is 3.2:1\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "theme-scout: BROKEN RECORD — 23 finding(s) repeated three runs running (e.g. \"the one-off::Ken Sugimori drew Ampharos exactly on\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
-  "teacher: FARMING — findings climbed 16 → 16 → 16 → 17 across four runs with nothing resolved. Volume is not work.",
-  "teacher: BROKEN RECORD — 14 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
-  "teacher: OVER-BUDGET — 17 findings against a ceiling of 14. An unreadable list is an unread list.",
-  "steward: BROKEN RECORD — 3 finding(s) repeated three runs running (e.g. \"ignored::5 supervisor problem(s) are open.\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
+  "teacher: BROKEN RECORD — 13 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
+  "teacher: OVER-BUDGET — 15 findings against a ceiling of 14. An unreadable list is an unread list.",
+  "steward: BROKEN RECORD — 3 finding(s) repeated three runs running (e.g. \"unsaved::3 hand-written file(s) changed and not c\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "creator: OVER-BUDGET — 15 findings against a ceiling of 10. An unreadable list is an unread list."
  ],
  "workforce": [
@@ -79,11 +78,6 @@
    "agent": "correction-hunter",
    "finding": "runs daily and has returned the same count (3) four runs running.",
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
-  },
-  {
-   "agent": "designer",
-   "finding": "every finding from a week ago is still open (4).",
-   "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
    "agent": "theme-scout",
@@ -512,7 +506,7 @@
   {
    "from": "designer",
    "owner": "chat",
-   "what": "build.html: the accent colour appears 15 times",
+   "what": "build.html: the accent colour appears 16 times",
    "do": "Spend it in two places: the active state and the one primary action. Everything else greys.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -704,7 +698,7 @@
   {
    "from": "api-strategist",
    "owner": "cc",
-   "what": "4 places fetch one item at a time inside a loop",
+   "what": "5 places fetch one item at a time inside a loop",
    "do": "check whether each endpoint supports a set, page or id-list parameter before scaling the loop up",
    "score": 30,
    "band": "NOTE ONLY",

@@ -21,7 +21,7 @@ h1 em{font-style:normal;color:var(--live)}
 .lede{color:var(--soft);font-size:17px;max-width:46ch;margin:0}
 
 /* Steps — a real sequence, so numbering earns its place. */
-.steps{display:grid;grid-template-columns:1.2fr .7fr 1fr 1.3fr;gap:22px;margin-bottom:44px}
+.steps{display:grid;grid-template-columns:1.1fr .6fr 1fr .9fr 1.2fr;gap:18px;margin-bottom:44px}
 .refuse{background:#1a1410;border:1px solid #3d2f1a;border-radius:12px;padding:14px 17px;margin-bottom:18px;color:#d9a441;font-size:14px;line-height:1.55}
 .step{min-width:0}
 .step .n{font:500 11px/1 var(--mono);color:var(--faint);letter-spacing:.14em;display:block;margin-bottom:10px}
@@ -125,14 +125,22 @@ summary:before{content:"→ ";color:var(--faint)}
     <select id="fset"><option value="">Every set</option><option>151</option><option>Aquapolis</option><option>Ascended Heroes</option><option>Astral Radiance</option><option>Astral Radiance Trainer Gallery</option><option>BREAKpoint</option><option>BREAKthrough</option><option>BW Black Star Promos</option><option>Base</option><option>Base Set 2</option><option>Battle Styles</option><option>Best of Game</option><option>Black Bolt</option><option>Boundaries Crossed</option><option>Brilliant Stars</option><option>Brilliant Stars Trainer Gallery</option><option>Burning Shadows</option><option>Call of Legends</option><option>Celebrations</option><option>Celestial Storm</option><option>Chaos Rising</option><option>Chilling Reign</option><option>Cosmic Eclipse</option><option>Crimson Invasion</option><option>Crown Zenith</option><option>Crown Zenith Galarian Gallery</option><option>DP Black Star Promos</option><option>Dark Explorers</option><option>Darkness Ablaze</option><option>Delta Species</option><option>Deoxys</option><option>Destined Rivals</option><option>Diamond &amp; Pearl</option><option>Dragon Majesty</option><option>Dragon Vault</option><option>Dragons Exalted</option><option>EX Trainer Kit Latias</option><option>EX Trainer Kit Latios</option><option>Evolutions</option><option>Evolving Skies</option><option>Expedition Base Set</option><option>FireRed &amp; LeafGreen</option><option>Flashfire</option><option>Forbidden Light</option><option>Fossil</option><option>Generations</option><option>Great Encounters</option><option>Guardians Rising</option><option>Gym Challenge</option><option>Gym Heroes</option><option>HS—Undaunted</option><option>HS—Unleashed</option><option>HeartGold &amp; SoulSilver</option><option>Hidden Fates</option><option>Hidden Fates Shiny Vault</option><option>Holon Phantoms</option><option>Journey Together</option><option>Jungle</option><option>Legends Awakened</option><option>Lost Origin</option><option>Lost Origin Trainer Gallery</option><option>Lost Thunder</option><option>McDonald's Collection 2012</option><option>McDonald's Collection 2014</option><option>McDonald's Collection 2015</option><option>McDonald's Collection 2016</option><option>McDonald's Collection 2018</option><option>McDonald's Collection 2019</option><option>McDonald's Collection 2021</option><option>Mega Evolution</option><option>Neo Destiny</option><option>Neo Genesis</option><option>Neo Revelation</option><option>Next Destinies</option><option>Noble Victories</option><option>Obsidian Flames</option><option>POP Series 1</option><option>POP Series 3</option><option>POP Series 4</option><option>POP Series 5</option><option>POP Series 6</option><option>POP Series 7</option><option>POP Series 8</option><option>POP Series 9</option><option>Paldea Evolved</option><option>Paldean Fates</option><option>Paradox Rift</option><option>Perfect Order</option><option>Phantasmal Flames</option><option>Phantom Forces</option><option>Plasma Blast</option><option>Plasma Storm</option><option>Pokémon Futsal Collection</option><option>Pokémon GO</option><option>Power Keepers</option><option>Primal Clash</option><option>Prismatic Evolutions</option><option>Rebel Clash</option><option>Rising Rivals</option><option>Ruby &amp; Sapphire</option><option>SM Black Star Promos</option><option>SWSH Black Star Promos</option><option>Sandstorm</option><option>Scarlet &amp; Violet</option><option>Scarlet &amp; Violet Energies</option><option>Secret Wonders</option><option>Shining Fates Shiny Vault</option><option>Shining Legends</option><option>Shrouded Fable</option><option>Silver Tempest</option><option>Silver Tempest Trainer Gallery</option><option>Steam Siege</option><option>Stellar Crown</option><option>Stormfront</option><option>Sun &amp; Moon</option><option>Supreme Victors</option><option>Surging Sparks</option><option>Sword &amp; Shield</option><option>Team Rocket</option><option>Team Up</option><option>Temporal Forces</option><option>Twilight Masquerade</option><option>Ultra Prism</option><option>Unbroken Bonds</option><option>Unified Minds</option><option>Unseen Forces</option><option>Vivid Voltage</option><option>White Flare</option><option>Wizards Black Star Promos</option><option>XY</option></select></div>
   <div class="step"><span class="n">02 / COUNT</span><span class="t">How many cards</span>
     <div class="chips" id="fcount"><button class="chip" data-n="1">1</button><button class="chip" data-n="2">2</button><button class="chip" data-n="3">3</button><button class="chip" data-n="4">4</button><button class="chip" data-n="6">6</button><button class="chip" data-n="8">8</button><button class="chip" data-n="9">9</button></div></div>
-  <div class="step"><span class="n">03 / WHY</span><span class="t">What is this for</span>
+  <div class="step"><span class="n">03 / SLAB</span><span class="t">Show them slabbed</span>
+    <div class="chips" id="fslab">
+      <button class="chip on" data-s="">Raw</button>
+      <button class="chip" data-s="green">Green</button>
+      <button class="chip" data-s="gold">Gold</button>
+      <button class="chip" data-s="black">Black</button>
+      <button class="chip" data-s="ice">Ice</button>
+    </div></div>
+  <div class="step"><span class="n">04 / WHY</span><span class="t">What is this for</span>
     <div class="chips" id="fintent">
       <button class="chip on" data-i="post">A post</button>
       <button class="chip" data-i="want">Want list</button>
       <button class="chip" data-i="trade">Trade list</button>
       <button class="chip" data-i="sell">Selling</button>
     </div></div>
-  <div class="step"><span class="n">04 / ANGLE</span><span class="t">What kind of post</span>
+  <div class="step"><span class="n">05 / ANGLE</span><span class="t">What kind of post</span>
     <div class="chips" id="ftheme"></div></div>
 </div>
 
@@ -369,6 +377,56 @@ function beginStreak(){
 }
 if (streak) { const st = el("streakstart"); if (st) st.hidden = true; renderStreak(); }
 
+// roundRect is Chrome 99+, Safari 16+, Firefox 112+. A card-show phone on
+// anything older throws mid-draw and the compose dies with no useful message,
+// which is the worst possible place to find out. Plain rect is an acceptable
+// slab; a broken image is not.
+function roundRectSafe(g, x, y, w, h, r){
+  if (typeof g.roundRect === "function") { g.beginPath(); g.roundRect(x, y, w, h, r); return; }
+  g.beginPath(); g.rect(x, y, w, h);
+}
+// SLAB COLOURS. Ours, not a replica of anybody's. The label carries the card,
+// the set, the year and the illustrator - which is more information than a real
+// slab label and is the thing we actually care about.
+const SLABS = {
+  green: { case: "#0d1512", edge: "#1c3a2c", label: "#132a20", ink: "#e9ecf3", accent: "#36d399", name: "Green" },
+  gold:  { case: "#161206", edge: "#3d3112", label: "#221b09", ink: "#f4efe2", accent: "#d9a441", name: "Gold" },
+  black: { case: "#0a0a0c", edge: "#232329", label: "#131316", ink: "#e9ecf3", accent: "#8a93a8", name: "Black" },
+  ice:   { case: "#0a1016", edge: "#1d3242", label: "#0f1d28", ink: "#e6f0f7", accent: "#6fb8e0", name: "Ice" },
+};
+let fSlab = "";
+el("fslab").querySelectorAll(".chip").forEach(b => b.onclick = () => {
+  fSlab = b.dataset.s;
+  el("fslab").querySelectorAll(".chip").forEach(x => x.classList.toggle("on", x.dataset.s === fSlab));
+  blob = null; render();
+});
+
+// Draw a card inside a slab. Proportions are a real slab roughly: the case is
+// about 1.3x the card width and 1.5x its height, with the label across the top.
+function drawSlab(g, img, x, y, cw, ch, card){
+  const sk = SLABS[fSlab]; if (!sk) { g.drawImage(img, x, y, cw, ch); return; }
+  const pad = cw * 0.09, labelH = ch * 0.17;
+  const SW = cw + pad * 2, SH = ch + labelH + pad * 2;
+  const sx = x - pad, sy = y - labelH - pad;
+  // case
+  g.fillStyle = sk.case; g.strokeStyle = sk.edge; g.lineWidth = Math.max(2, cw * 0.008);
+  roundRectSafe(g, sx, sy, SW, SH, cw * 0.035); g.fill(); g.stroke();
+  // label band
+  g.fillStyle = sk.label;
+  roundRectSafe(g, sx + pad * 0.5, sy + pad * 0.5, SW - pad, labelH, cw * 0.02); g.fill();
+  // label text - more useful than a real slab label, which is the point
+  const lx = sx + pad * 1.1, ly = sy + pad * 0.5;
+  g.textAlign = "left";
+  g.fillStyle = sk.accent; g.font = "600 " + Math.round(labelH * 0.19) + "px ui-monospace,monospace";
+  g.fillText("CATCH'EM", lx, ly + labelH * 0.27);
+  g.fillStyle = sk.ink; g.font = "700 " + Math.round(labelH * 0.30) + "px system-ui,sans-serif";
+  g.fillText(String(card.n).slice(0, 26), lx, ly + labelH * 0.60);
+  g.fillStyle = sk.accent; g.font = Math.round(labelH * 0.17) + "px ui-monospace,monospace";
+  g.fillText(String(card.s).slice(0, 22).toUpperCase() + "  ·  " + card.y + (card.a ? "  ·  " + String(card.a).slice(0, 18) : ""), lx, ly + labelH * 0.85);
+  g.drawImage(img, x, y, cw, ch);
+  g.textAlign = "center";
+}
+
 function render(){
   const L = LAYOUTS[tray.length];
   const box = el("tray");
@@ -522,7 +580,8 @@ el("make").onclick = async () => {
   const LABH = LABEL ? 110 + (LABLINES - 1) * 62 : 0;
   const ROWS = Math.ceil(tray.length / L.cols);
   const W = PAD*2 + CW*L.cols + GAP*(L.cols-1);
-  const H = PAD + (CH+CAP)*ROWS + GAP*(ROWS-1) + LABH + (fIntent === "post" ? 110 : 190);
+  const SLAB_EXTRA = fSlab ? CH * 0.17 + CW * 0.18 : 0;
+  const H = PAD + (CH+CAP+SLAB_EXTRA)*ROWS + GAP*(ROWS-1) + LABH + (fIntent === "post" ? 110 : 190);
   const cv = el("cv"); cv.width = W; cv.height = H;
   const g = cv.getContext("2d");
   g.fillStyle = "#070910"; g.fillRect(0,0,W,H);
@@ -537,7 +596,7 @@ el("make").onclick = async () => {
       }
       if (!img) throw new Error("could not load " + tray[i].n);
       const x = PAD + (i % L.cols)*(CW+GAP), y = PAD + Math.floor(i/L.cols)*(CH+CAP+GAP);
-      g.drawImage(img, x, y, CW, CH);
+      drawSlab(g, img, x, y, CW, CH, tray[i]);
       if (CAP){ g.fillStyle="#8a93a8"; g.font="28px system-ui,sans-serif"; g.textAlign="center";
         g.fillText(tray[i].n + " · " + tray[i].y, x+CW/2, y+CH+46); }
     }

@@ -1831,3 +1831,28 @@ inside a Node template collapses and terminates the string — CC hit it twice
 last night and documented the fix. I hit it again by not reading their commit
 closely enough. **Single-quoted HTML attributes need no escaping at any level**,
 and that is now three occurrences of one bug in one file.
+
+## BUILD OUR SLAB, NOT THEIRS (Tyler, Aug 23 2026)
+"It would be cool if we could layer in the guards to see what their slab would
+look like in certain colours. Could be powerful to then release our own guards
+and market it that way."
+
+Right, and the version that works is the one that was never a replica.
+
+TWO RISKS IN COPYING A NAMED GRADER'S SLAB, and the second is the serious one:
+1. Their label, logo and colour scheme are trade dress.
+2. **A convincing fake slab image is a fraud tool.** Somebody lists a raw card
+   with our lookalike render and a buyer pays graded money. That is not us being
+   sued — that is a fraud our tool enabled, and it would be entirely our fault.
+
+**So it is a Catch'em slab.** Our frame, our label, unmistakably nobody else's.
+Four colourways: green, gold, black, ice.
+
+THAT IS NOT A COMPROMISE, IT IS THE BETTER PRODUCT. A replica markets the
+grader. Ours markets us, in every screenshot, on somebody else's timeline. And
+it is precisely the thing Tyler wants to sell later, so building it as ours from
+the first line costs nothing and saves a rebuild.
+
+ONE DETAIL WORTH KEEPING: our label carries the card, the set, the year AND the
+illustrator. That is more than a real slab label holds, and the illustrator is
+the part we care about most.
