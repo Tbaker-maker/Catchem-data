@@ -1570,3 +1570,33 @@ scout ever writes to data/themes.json itself.
 ITS DECLARED BLIND SPOT, and the honest one: **it cannot tell whether a pattern
 is interesting, only that it is unusual.** It located the Abra gap. A human
 supplied Uri Geller.
+
+## A BATTLE ONLY WORKS IF IT IS CLOSE (Tyler, Aug 23 2026)
+"Card battle — comparing starts debates, which is good. We need to spark
+conversation."
+
+Right, and the mechanism has a precise requirement that is easy to miss: **a
+battle only works if it is close.** A $2,000 card against a $12 one is not a
+debate, it is a price check with a question mark on it. The reader glances,
+agrees, and scrolls.
+
+So candidates are matched: same Pokemon, **within 45% of each other on value**,
+different illustrator or different era. Nobody can settle it by pointing at a
+number, which forces an actual opinion - and an opinion is a reply.
+
+First run, and the matching holds: Chansey by Ken Sugimori against Ryo Ueda,
+3% apart. Blastoise ex, 13%. Charizard, 26%. Every one of them a real choice.
+
+## CONTROVERSY IS CITED OR IT IS NOT PUBLISHED (Aug 23 2026)
+The historic and controversial lane - banned art, the Geller lawsuit, the manji
+on Koga's Ninja Trick, the Jynx recolour - is the strongest knowledge material
+in the hobby and the most dangerous to get wrong.
+
+**Being wrong about a controversy is how you become one.**
+
+So every claim in that lane comes from data/knowledge.json carrying a source, a
+date, a verifier, a confidence tier and a falsifier. Nothing is remembered.
+The Kadabra correction proved why: three secondary sources agreed on
+twenty-six years, our own catalogue said twenty-one, and the theme scout later
+showed the gap covers Abra too. Three passes, three corrections, on a story
+everyone thinks they know.

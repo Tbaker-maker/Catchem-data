@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-23T06:12:57.021Z",
+  "generatedAt": "2026-08-23T06:27:10.602Z",
   "antiSlopRule": "A formula must be derivable from a field we hold: name, artist, setId, rarity, releaseDate, price. Where a theme needs judgment, that judgment is a NAMED LIST stored openly and arguable — never an adjective smuggled into a sentence. 'Cute' is not in the data; the nine Eeveelutions are.",
   "fieldsUsed": [
     "name",
@@ -60,6 +60,8 @@
     "the trio": 3,
     "the debut": 8,
     "the pair": 8,
+    "the battle": 8,
+    "the controversy": 4,
     "the single": 7
   },
   "formulas": [
@@ -1050,6 +1052,150 @@
       "angle": "10 years apart. Same illustrator."
     },
     {
+      "kind": "the battle",
+      "title": "Alakazam: Ryo Ueda or Hajime Kusajima",
+      "basis": "same Pokemon, comparable standing, different hands or eras",
+      "cards": [
+        "pl2-103",
+        "ecard1-1"
+      ],
+      "count": 2,
+      "why": "Two versions of the same Pokemon within 24% of each other on value, so nobody can settle it by pointing at a price. different illustrators.",
+      "angle": "Alakazam. Rising Rivals or Expedition Base Set? No wrong answer, but you have one."
+    },
+    {
+      "kind": "the battle",
+      "title": "Blastoise: Hikaru Koike or Kimiya Masago",
+      "basis": "same Pokemon, comparable standing, different hands or eras",
+      "cards": [
+        "ex6-104",
+        "ecard1-4"
+      ],
+      "count": 2,
+      "why": "Two versions of the same Pokemon within 13% of each other on value, so nobody can settle it by pointing at a price. different illustrators.",
+      "angle": "Blastoise. FireRed & LeafGreen or Expedition Base Set? No wrong answer, but you have one."
+    },
+    {
+      "kind": "the battle",
+      "title": "Chansey: Ken Sugimori or Ryo Ueda",
+      "basis": "same Pokemon, comparable standing, different hands or eras",
+      "cards": [
+        "base1-3",
+        "ex1-96"
+      ],
+      "count": 2,
+      "why": "Two versions of the same Pokemon within 3% of each other on value, so nobody can settle it by pointing at a price. different illustrators.",
+      "angle": "Chansey. Base or Ruby & Sapphire? No wrong answer, but you have one."
+    },
+    {
+      "kind": "the battle",
+      "title": "Charizard: Ayaka Yoshida or Mitsuhiro Arita",
+      "basis": "same Pokemon, comparable standing, different hands or eras",
+      "cards": [
+        "bw8-136",
+        "base1-4"
+      ],
+      "count": 2,
+      "why": "Two versions of the same Pokemon within 26% of each other on value, so nobody can settle it by pointing at a price. different illustrators.",
+      "angle": "Charizard. Plasma Storm or Base? No wrong answer, but you have one."
+    },
+    {
+      "kind": "the battle",
+      "title": "Clefairy: Ken Sugimori or Ken Sugimori",
+      "basis": "same Pokemon, comparable standing, different hands or eras",
+      "cards": [
+        "base1-5",
+        "base4-6"
+      ],
+      "count": 2,
+      "why": "Two versions of the same Pokemon within 40% of each other on value, so nobody can settle it by pointing at a price. 1999 against 2000.",
+      "angle": "Clefairy. Base or Base Set 2? No wrong answer, but you have one."
+    },
+    {
+      "kind": "the battle",
+      "title": "Machamp: Shinya Komatsu or Shin-ichi Yoshida",
+      "basis": "same Pokemon, comparable standing, different hands or eras",
+      "cards": [
+        "swsh10-172",
+        "ecard1-16"
+      ],
+      "count": 2,
+      "why": "Two versions of the same Pokemon within 34% of each other on value, so nobody can settle it by pointing at a price. different illustrators.",
+      "angle": "Machamp. Astral Radiance or Expedition Base Set? No wrong answer, but you have one."
+    },
+    {
+      "kind": "the battle",
+      "title": "Magneton: Hikaru Koike or \"Big Mama\" Tagawa, CR CG gangs",
+      "basis": "same Pokemon, comparable standing, different hands or eras",
+      "cards": [
+        "ecard2-H16",
+        "neo3-10"
+      ],
+      "count": 2,
+      "why": "Two versions of the same Pokemon within 30% of each other on value, so nobody can settle it by pointing at a price. different illustrators.",
+      "angle": "Magneton. Aquapolis or Neo Revelation? No wrong answer, but you have one."
+    },
+    {
+      "kind": "the battle",
+      "title": "Mewtwo: Ryo Ueda or Kimiya Masago",
+      "basis": "same Pokemon, comparable standing, different hands or eras",
+      "cards": [
+        "ex11-12",
+        "ecard1-20"
+      ],
+      "count": 2,
+      "why": "Two versions of the same Pokemon within 6% of each other on value, so nobody can settle it by pointing at a price. different illustrators.",
+      "angle": "Mewtwo. Delta Species or Expedition Base Set? No wrong answer, but you have one."
+    },
+    {
+      "kind": "the controversy",
+      "title": "kadabra 21 year absence",
+      "basis": "a sourced fact from data/knowledge.json with a falsifier attached",
+      "cards": [
+        "neo4-6",
+        "sv6-81"
+      ],
+      "count": 2,
+      "why": "English ABRA and KADABRA cards both stopped after Expedition Base Set in September 2002 and did not return until 2023 - a twenty-one year gap for BOTH. Sourced, dated, and carrying what would disprove it - which matters more here than anywhere, because being wrong about a controversy is how you become one.",
+      "angle": "Most people have no idea this happened."
+    },
+    {
+      "kind": "the controversy",
+      "title": "koga ninja trick manji",
+      "basis": "a sourced fact from data/knowledge.json with a falsifier attached",
+      "cards": [
+        "gym2-19",
+        "sm7-139"
+      ],
+      "count": 2,
+      "why": "Koga’s Ninja Trick had its artwork changed before international release because it featured a manji, a Buddhist symbol used on Japanese temples and maps, which resembles a swastika. Sourced, dated, and carrying what would disprove it - which matters more here than anywhere, because being wrong about a controversy is how you become one.",
+      "angle": "Most people have no idea this happened."
+    },
+    {
+      "kind": "the controversy",
+      "title": "first power ban 1999",
+      "basis": "a sourced fact from data/knowledge.json with a falsifier attached",
+      "cards": [
+        "ecard2-120",
+        "me4-108"
+      ],
+      "count": 2,
+      "why": "The first Pokemon card banned for being too powerful was Super Energy Removal from the original Expansion Pack, banned in 1999 and initially only in Japanese tournaments. Sourced, dated, and carrying what would disprove it - which matters more here than anywhere, because being wrong about a controversy is how you become one.",
+      "angle": "Most people have no idea this happened."
+    },
+    {
+      "kind": "the controversy",
+      "title": "standard format no bans",
+      "basis": "a sourced fact from data/knowledge.json with a falsifier attached",
+      "cards": [
+        "bw5-110",
+        "rsv10pt5-51"
+      ],
+      "count": 2,
+      "why": "No cards are currently banned in the Pokemon TCG Standard format. Sourced, dated, and carrying what would disprove it - which matters more here than anywhere, because being wrong about a controversy is how you become one.",
+      "angle": "Most people have no idea this happened."
+    },
+    {
       "kind": "the single",
       "title": "The Rocket's Trap: first edition print run unknown",
       "basis": "a sourced fact from data/knowledge.json plus the card it is about",
@@ -1062,14 +1208,14 @@
     },
     {
       "kind": "the single",
-      "title": "Dark Alakazam: kadabra 21 year absence",
+      "title": "Alakazam: kadabra 21 year absence",
       "basis": "a sourced fact from data/knowledge.json plus the card it is about",
       "cards": [
-        "base5-1"
+        "base1-1"
       ],
       "count": 1,
       "why": "One card, one thing most people do not know. Every claim carries a source and a falsifier, which is why we can say it plainly.",
-      "angle": "English Kadabra cards stopped after Expedition Base Set in September 2002 and did not return until 151 in September 2023 - a twenty-one year gap."
+      "angle": "English ABRA and KADABRA cards both stopped after Expedition Base Set in September 2002 and did not return until 2023 - a twenty-one year gap for BOTH."
     },
     {
       "kind": "the single",

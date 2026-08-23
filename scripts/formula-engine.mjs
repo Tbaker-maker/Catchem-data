@@ -243,7 +243,66 @@ else {
   // and then thrown away by the truncation. A list that silently drops whole
   // categories is worse than a shorter list, because nothing says they are gone.
   {
-    const byKind = {};
+    const mon = c => c.name.split(" ")[0];
+  const yr = c => Number((c.releaseDate ?? "").slice(0, 4));
+
+  // ── 6 · THE BATTLE — two cards, one question ──────────────────────────────
+  // Tyler, 2026-08-23: "Card battle. Comparing starts debates, which is good.
+  // We need to spark conversation."
+  //
+  // THE THING THAT MAKES A BATTLE WORK IS THAT IT IS CLOSE. A $2,000 card
+  // against a $12 one is not a debate, it is a price check with a question mark
+  // on it. So candidates must be matched: same Pokemon, comparable standing,
+  // different hands or different eras - and then the reader has to actually
+  // choose, which is the entire point.
+  {
+    const byMonB = {};
+    for (const c of cards.filter(c => HERO.test(c.rarity ?? "") && c.artist)) (byMonB[mon(c)] ||= []).push(c);
+    for (const [m, list] of Object.entries(byMonB)) {
+      if (list.length < 2) continue;
+      // Rank by value, then pair adjacent entries - adjacent means comparable,
+      // which is what makes the choice genuinely hard.
+      const ranked = list.filter(c => c.price).sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
+      if (ranked.length < 2) continue;
+      const [a, b] = ranked;
+      const ratio = (b.price ?? 1) / (a.price ?? 1);
+      if (ratio < 0.55) continue;                       // too lopsided to argue about
+      if (a.artist === b.artist && yr(a) === yr(b)) continue;
+      const axis = a.artist !== b.artist ? "different illustrators"
+                 : `${yr(a)} against ${yr(b)}`;
+      F("the battle", `${m}: ${a.artist} or ${b.artist}`,
+        "same Pokemon, comparable standing, different hands or eras",
+        [a.id, b.id],
+        `Two versions of the same Pokemon within ${Math.round((1 - ratio) * 100)}% of each other on value, so nobody can settle it by pointing at a price. ${axis}.`,
+        `${m}. ${a.setName} or ${b.setName}? No wrong answer, but you have one.`);
+      if ((formulas.filter(f => f.kind === "the battle").length) >= 12) break;
+    }
+  }
+
+  // ── 7 · THE CONTROVERSY — what actually happened ──────────────────────────
+  // Every claim comes from data/knowledge.json with a source, a date and a
+  // falsifier. Controversy is the one topic where being wrong costs the most,
+  // so nothing here is remembered - it is all cited or it is not published.
+  {
+    const kbC = await J("data/knowledge.json");
+    const CONTROVERSIAL = /banned|censor|lawsuit|sued|withdrawn|changed|manji|absence|stopped|removed/i;
+    for (const fact of (kbC?.facts ?? []).filter(f => CONTROVERSIAL.test(f.claim))) {
+      const named = cards.filter(c => c.name.length >= 4 &&
+        fact.claim.split(/[^A-Za-z0-9'-]+/).includes(c.name.split(" ")[0]));
+      if (!named.length) continue;
+      // Prefer the most recent print - the card that EXISTS today is the one a
+      // reader can go and look at, and the story is what happened to get here.
+      const pick = named.sort((a, b) => (b.releaseDate ?? "") < (a.releaseDate ?? "") ? -1 : 1)[0];
+      const before = named.filter(c => yr(c) < yr(pick) - 5).sort((a, b) => (b.price ?? 0) - (a.price ?? 0))[0];
+      F("the controversy", fact.id.replace(/-/g, " "),
+        "a sourced fact from data/knowledge.json with a falsifier attached",
+        before ? [before.id, pick.id] : [pick.id],
+        `${fact.claim.split(".")[0]}. Sourced, dated, and carrying what would disprove it - which matters more here than anywhere, because being wrong about a controversy is how you become one.`,
+        "Most people have no idea this happened.");
+    }
+  }
+
+  const byKind = {};
     for (const f of formulas) (byKind[f.kind] ||= []).push(f);
     const spread = [];
     for (const [, list] of Object.entries(byKind)) spread.push(...list.slice(0, 8));
