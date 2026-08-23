@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T19:38:59.110Z",
+ "generatedAt": "2026-08-23T19:42:21.856Z",
  "date": "2026-08-23",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -33,7 +33,6 @@
   "theme-scout: BROKEN RECORD — 23 finding(s) repeated three runs running (e.g. \"the one-off::Ken Sugimori drew Ampharos exactly on\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "teacher: BROKEN RECORD — 13 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "teacher: OVER-BUDGET — 15 findings against a ceiling of 14. An unreadable list is an unread list.",
-  "steward: BROKEN RECORD — 3 finding(s) repeated three runs running (e.g. \"unsaved::2 hand-written file(s) changed and not c\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "creator: OVER-BUDGET — 15 findings against a ceiling of 10. An unreadable list is an unread list."
  ],
  "workforce": [
@@ -91,7 +90,7 @@
   },
   {
    "agent": "teacher",
-   "finding": "every finding from a week ago is still open (12).",
+   "finding": "every finding from a week ago is still open (13).",
    "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
@@ -590,7 +589,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "2 hand-written file(s) changed and not committed.",
+   "what": "1 hand-written file(s) changed and not committed.",
    "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -606,7 +605,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "5 supervisor problem(s) are open.",
+   "what": "7 supervisor problem(s) are open.",
    "do": "Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.",
    "score": 30,
    "band": "NOTE ONLY",
