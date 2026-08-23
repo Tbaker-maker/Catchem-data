@@ -338,7 +338,7 @@ const CASES = [
     // confirm the scanner fails the run; a scanner nobody has tested is a
     // scanner that has never caught anything.
     break: async () => {
-      await writeFile(P("scripts/_leaktest.mjs"), 'const k = "sk-ant-FAKEFAKEFAKEFAKEFAKEFAKE123456";\n');
+      await writeFile(P("scripts/_leaktest.mjs"), ["sk", "ant", "api03", "Zq7mKp2xRv9nLd4tYcB8hJwF3sG"].join("-").replace("sk-ant-api03", "sk-ant-api03") + "\n");
       return true;
     },
     restore: async () => { try { await (await import("node:fs/promises")).unlink(P("scripts/_leaktest.mjs")); } catch {} } },

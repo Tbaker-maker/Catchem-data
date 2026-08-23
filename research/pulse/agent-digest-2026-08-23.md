@@ -19,10 +19,10 @@ A product we featured has gone quiet on us. Either it stopped trading or we brok
 - **data/agent-history.json** — Corrupt it — empty object, missing top-level key, wrong types — and see which of its 2 readers notices. Then decide which of them SHOULD have.
 - **data/card-catalogue.json** — Corrupt it — empty object, missing top-level key, wrong types — and see which of its 4 readers notices. Then decide which of them SHOULD have.
 
-10 thing(s) that work and could work better — the top three:
-- *tool idea (hypothesis)* — We hold both deal-zone room and per-pack economics for the same products. A "rip or trade" tool could answer one question nobody else can: at today's prices, is this box worth more opened, sold sealed online, or traded at a table? Three numbers we already compute, one screen.
-- *tool idea (hypothesis)* — Print windows and shelf movement are computed separately and never combined. A late-print set whose shelves are draining is a genuinely different situation from either signal alone. Crossing them is free and nobody publishes it.
+9 thing(s) that work and could work better — the top three:
+- *tool idea (hypothesis)* — The knowledge base is only used for one fact a day. The same sourced facts could power a "why is this card like this" explainer on every product page — set context, print quirks, what makes it odd. It compounds with every fact added.
 - *knowledge* — The knowledge base holds 12 verified facts. This is the asset that compounds — instruments can be rebuilt in a weekend, a decade of sourced facts cannot. A steady few per week beats a burst.
+- *unused output* — artist-instruments.json is written every run and read by nothing — not another script, not the feed. Either surface it (the app, the Pulse, a creator tool) or stop generating it. Work that runs daily and reaches nobody is the most expensive kind.
 
 ## The agents themselves
 **NEEDS A HUMAN — the supervisor flagged the watchers:**
@@ -50,9 +50,8 @@ Gaps in what we watch:
 - *ease of use* — A number appears above the fold on Today. Holds — check on a 390px screen that it is still above the fold with the banner and nav present.
 
 ## Who needs to do what
-**NEEDS A HUMAN — Tyler (3):**
-- **[QUEUE 58]** We hold both deal-zone room and per-pack economics for the same products. — *A "rip or trade" tool could answer one question nobody else can: at today's prices, is this box worth more opened, sold sealed online, or traded at a table? Three numbers we already compute, one screen.*
-- **[QUEUE 58]** Print windows and shelf movement are computed separately and never combined. — *A late-print set whose shelves are draining is a genuinely different situation from either signal alone. Crossing them is free and nobody publishes it.*
+**NEEDS A HUMAN — Tyler (2):**
+- **[QUEUE 58]** The knowledge base is only used for one fact a day. — *The same sourced facts could power a "why is this card like this" explainer on every product page — set context, print quirks, what makes it odd. It compounds with every fact added.*
 - **[WATCH 40]** pricing 50 more cards would unlock 17 artist cohorts — *an expansion decision, not a machine's call*
 
 **CC (3):**
@@ -60,9 +59,9 @@ Gaps in what we watch:
 - **[QUEUE 58]** 31 emoji in the interface. — *Keep them for section headers and the ELI5 lollipop; drop them from anything carrying a number.*
 - **[WATCH 48]** 35 card images minted today. — *The gap is that they are files in a repo. A creator needs them one tap from the angle they picked, not from a folder.*
 
-**Chat (11):** top — The Today screen carries 17 sections: The Daily Three, 🗳 Rip or Hold?, Biggest movers, Set the app up for you, Movers, Release radar… *[QUEUE]*
+**Chat (12):** top — The Today screen carries 17 sections: The Daily Three, 🗳 Rip or Hold?, Biggest movers, Set the app up for you, Movers, Release radar… *[QUEUE]*
 
-*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 0 ACT NOW, 9 QUEUE, 8 WATCH, 14 filed without surfacing, 4 confirmations.*
+*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 0 ACT NOW, 9 QUEUE, 8 WATCH, 13 filed without surfacing, 4 confirmations.*
 ## The creator cheat code
 *Could somebody open this, hit record within two minutes, and sound like the most informed voice in the hobby without pausing to look anything up? Every pause is a cut.*
 - **a visual that runs itself** — 35 card images minted today. *The gap is that they are files in a repo. A creator needs them one tap from the angle they picked, not from a folder.*
@@ -82,9 +81,6 @@ Nothing unusual, or not enough history to tell — 5 days of tape so far. Anomal
 ## Something is slipping
 - **unsaved** — 3 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
 - **drift** — 3 script(s) are not referenced anywhere: collision-guard.mjs, discovery-sweep.mjs, refresh-tiers.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
-
-## SECURITY — NEEDS A HUMAN NOW
-- **Anthropic key found in scripts/negative-tests.mjs** — *Revoke it first, then remove it. Revoking comes first because removal does not un-share what was already shared.*
 
 ## Legal standing
 Nothing has tripped. Highest live risk: **Effort-based consideration in the berry system, combined with the first live draw.** — It is the only item that is both imminent and genuinely uncertain. The IP question is larger but not triggered until revenue; registration and tax thresholds are comfortably clear at current prize values.

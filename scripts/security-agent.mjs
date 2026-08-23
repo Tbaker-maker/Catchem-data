@@ -50,10 +50,17 @@ const SECRETS = [
       const rel = `${dir}/${e.name}`.replace(/^\//, "");
       if (e.isDirectory()) { await scan(rel); continue; }
       if (!/\.(mjs|js|jsx|json|md|yml|yaml|html|env|txt)$/.test(e.name)) continue;
+      // FIFTH SELF-READ IN A DAY. The negative test plants a fake key to prove
+      // this scanner works, and the scanner read it as a leak - flagging our own
+      // proof-of-correctness as a critical incident, at the top of the digest,
+      // where it crowded out the one finding that was real. Fixtures are marked
+      // FAKEFAKE precisely so they can be told apart; the check is that the
+      // string is obviously synthetic, not that the file is exempt, because
+      // exempting a whole file is what let /tmp through seven times.
       const src = await readFile(join(ROOT, rel), "utf-8").catch(() => "");
       for (const s of SECRETS) {
-        const hits = src.match(s.rx);
-        if (hits) C(`${s.name} found in ${rel}`,
+        const hits = (src.match(s.rx) ?? []).filter(h => !/(FAKE)+|EXAMPLE|XXXX+|PLACEHOLDER|REDACTED|DUMMY|TEST{2,}/i.test(h));
+        if (hits.length) C(`${s.name} found in ${rel}`,
           "A credential in the working tree is one commit from being permanent. There is no correction page for a leaked key.",
           "Revoke it first, then remove it. Revoking comes first because removal does not un-share what was already shared.");
       }

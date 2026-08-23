@@ -1,13 +1,7 @@
 {
- "generatedAt": "2026-08-23T00:07:36.514Z",
+ "generatedAt": "2026-08-23T00:14:27.538Z",
  "role": "The one agent that blocks. Everything else here advises, because everything else is recoverable — there is no correction page for a leaked key.",
- "critical": [
-  {
-   "what": "Anthropic key found in scripts/negative-tests.mjs",
-   "why": "A credential in the working tree is one commit from being permanent. There is no correction page for a leaked key.",
-   "fix": "Revoke it first, then remove it. Revoking comes first because removal does not un-share what was already shared."
-  }
- ],
+ "critical": [],
  "warnings": [],
  "checked": [
   "working tree scanned for six credential shapes",

@@ -27,7 +27,19 @@ const der = await J("data/derived-insights.json") ?? {};
 const feed = await J("research/pulse/pulse-feed.json") ?? {};
 
 const ideas = [];
-const I = (area, observation, suggestion, effort) => ideas.push({ area, observation, suggestion, effort, confidence: String(area).includes("hypothesis") ? "HYPOTHESIS" : "OBSERVED" });
+// ALREADY BUILT? A tool idea for something that exists is worse than silence -
+// it teaches the reader that the list is unchecked, and today it took two of
+// the four NEEDS-A-HUMAN slots while the one real finding sat underneath.
+const BUILT = new Set(files.map(f => f.replace(".mjs", "")));
+const alreadyExists = (text, observation = "") => {
+  text = String(text) + " " + String(observation);
+  const t = text.toLowerCase();
+  if (/rip.{0,4}(or|,).{0,4}(sell|trade)/.test(t) && BUILT.has("rip-sell-trade")) return true;
+  if (/print window/.test(t) && /shelf/.test(t)) return true;   // RT-8 reprint pressure crosses them
+  return false;
+};
+
+const I = (area, observation, suggestion, effort) => alreadyExists(suggestion, observation) ? null : ideas.push({ area, observation, suggestion, effort, confidence: String(area).includes("hypothesis") ? "HYPOTHESIS" : "OBSERVED" });
 
 // 1 — BUILT AND NEVER CONSUMED. The most expensive kind of work is work that
 // runs every day and nobody reads.
