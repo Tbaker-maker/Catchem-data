@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-08-23T18:49:48.680Z",
-  "audited": "10 shipped surfaces, 35 minted cards",
+  "generatedAt": "2026-08-23T19:16:20.701Z",
+  "audited": "11 shipped surfaces, 35 minted cards",
   "principle": "A linter asks whether the CSS is valid. A design lead asks whether the page was DESIGNED. The tells of an undesigned page are countable: too many type sizes, too many near-identical greys, an accent used everywhere so it accents nothing.",
   "blindSpot": "It cannot SEE. It counts and measures. It cannot tell you a page is ugly, only that the choices behind it were not made deliberately.",
   "counts": {
     "high": 0,
     "medium": 7,
-    "low": 1
+    "low": 2
   },
   "findings": [
     {
@@ -27,6 +27,13 @@
       "surface": "build.html",
       "severity": "low",
       "what": "5 odd-numbered spacing values: 13, 17, 9, 15, 3",
+      "why": "Odd values usually mean nudging until it looked right rather than working from a scale. It is invisible individually and reads as sloppy in aggregate.",
+      "fix": "Snap to a 4px rhythm."
+    },
+    {
+      "surface": "index-landing.html",
+      "severity": "low",
+      "what": "5 odd-numbered spacing values: 19, 3, 5, 11, 17",
       "why": "Odd values usually mean nudging until it looked right rather than working from a scale. It is invisible individually and reads as sloppy in aggregate.",
       "fix": "Snap to a 4px rhythm."
     },
@@ -144,6 +151,26 @@
           13.5,
           14,
           14.5
+        ]
+      },
+      "answeredBy": null,
+      "answer": null
+    },
+    {
+      "surface": "index-landing.html",
+      "question": "index-landing.html: 3 font sizes sit within 12% of a neighbour (13.5, 14.5, 15). Are those distinct steps or the same intent typed twice?",
+      "measured": {
+        "sizes": [
+          12.5,
+          13.5,
+          14.5,
+          15,
+          19
+        ],
+        "nearDupes": [
+          13.5,
+          14.5,
+          15
         ]
       },
       "answeredBy": null,

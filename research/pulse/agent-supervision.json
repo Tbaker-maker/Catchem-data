@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T18:49:46.841Z",
+ "generatedAt": "2026-08-23T19:16:18.848Z",
  "date": "2026-08-23",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -8,9 +8,9 @@
   "correction-hunter: 3 finding(s)",
   "review-agents: 0 finding(s)",
   "decision-audit: 0 finding(s)",
-  "designer: 8 finding(s)",
+  "designer: 9 finding(s)",
   "theme-scout: 23 finding(s)",
-  "teacher: 14 finding(s)",
+  "teacher: 13 finding(s)",
   "api-strategist: 8 finding(s)",
   "compliance: 0 finding(s)",
   "security: 0 finding(s)",
@@ -29,9 +29,9 @@
   "anomaly: clean run — nothing failed, which is the point of it"
  ],
  "problems": [
-  "designer: BROKEN RECORD — 5 finding(s) repeated three runs running (e.g. \"medium::32 distinct colours\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
+  "designer: BROKEN RECORD — 6 finding(s) repeated three runs running (e.g. \"medium::32 distinct colours\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "theme-scout: BROKEN RECORD — 23 finding(s) repeated three runs running (e.g. \"the one-off::Ken Sugimori drew Ampharos exactly on\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
-  "teacher: BROKEN RECORD — 12 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
+  "teacher: BROKEN RECORD — 11 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "creator: OVER-BUDGET — 15 findings against a ceiling of 10. An unreadable list is an unread list."
  ],
  "workforce": [
@@ -88,11 +88,6 @@
    "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
-   "agent": "teacher",
-   "finding": "every finding from a week ago is still open (12).",
-   "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
-  },
-  {
    "agent": "compliance",
    "finding": "runs daily and has returned the same count (0) four runs running.",
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
@@ -106,11 +101,6 @@
    "agent": "platform",
    "finding": "runs daily and has returned the same count (10) four runs running.",
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
-  },
-  {
-   "agent": "platform",
-   "finding": "every finding from a week ago is still open (10).",
-   "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
    "agent": "anomaly",
@@ -578,8 +568,8 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "1 commit(s) exist locally and are not pushed.",
-   "do": "A commit on one machine is not a backup. The repo is only the record once it is somewhere else.",
+   "what": "2 hand-written file(s) changed and not committed.",
+   "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
    "score": 30,
    "band": "NOTE ONLY",
    "selfScore": 30,
@@ -610,7 +600,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "9 script(s) are not referenced anywhere: backfill-artists.mjs, build-faq.mjs, build-rip.mjs, centering.mjs.",
+   "what": "10 script(s) are not referenced anywhere: backfill-artists.mjs, build-faq.mjs, build-rip.mjs, build-waitlist.mjs.",
    "do": "A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -770,7 +760,7 @@
   {
    "from": "api-strategist",
    "owner": "tyler",
-   "what": "the paid provider is called from 115 places",
+   "what": "the paid provider is called from 116 places",
    "do": "list what ONLY the paid provider gives us; if that list is short, either use more of it or stop paying for it",
    "score": 30,
    "band": "NOTE ONLY",
