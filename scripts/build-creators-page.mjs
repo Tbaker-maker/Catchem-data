@@ -40,11 +40,39 @@ const urlFor = async (id) => {
   } catch { return null; }
 };
 
+
+// ANGLES, NOT TWEETS. "Never write their copy" was too rigid - Tyler's post used
+// facts I handed him. The real failure is fifty creators posting IDENTICAL text,
+// which makes them look like a bot farm and us like the operator running it.
+// So each pairing offers several DIRECTIONS and the facts behind them. The
+// creator picks a direction and writes it in their own voice, which is the part
+// that made the one successful post work.
+const anglesFor = (p) => {
+  const sameMon = p.first.name === p.last.name;
+  const out = [];
+  out.push({ name: "The disbelief angle",
+    seed: `It's wild that the person who drew ${p.first.name} in ${p.first.year} is still making cards today.`,
+    note: "What Tyler used. Works because it is a reaction, not a fact." });
+  out.push({ name: "The permission angle",
+    seed: `${p.years} years after ${p.first.name}, they let the same artist draw ${p.last.name}.`,
+    note: "The 'they let him' framing implies a decision somebody made, which invites a reply." });
+  if (sameMon) out.push({ name: "The same-subject angle",
+    seed: `Same artist. Same Pokémon. ${p.years} years apart. Look what changed.`,
+    note: "Strongest when the art style visibly shifted — let the images argue." });
+  out.push({ name: "The quiet-career angle",
+    seed: `${p.artist} has been drawing Pokémon cards since ${p.first.year}. Most people have never heard the name.`,
+    note: "Works on people who do not follow the market at all." });
+  out.push({ name: "The question angle",
+    seed: `Which one is better? ${p.first.name} ${p.first.year} or ${p.last.name} ${p.last.year}. Same artist.`,
+    note: "A question gets replies. Replies are the whole game." });
+  return out;
+};
+
 const rows = [];
 for (const p of (pairs.pairings ?? []).slice(0, 10)) {
   const [a, b] = await Promise.all([urlFor(p.first.id), urlFor(p.last.id)]);
   if (!a || !b) continue;                    // no image, no card — never a placeholder
-  rows.push({ ...p, urlA: a, urlB: b });
+  rows.push({ ...p, urlA: a, urlB: b, angles: anglesFor(p) });
 }
 
 const proven = outcomes.posts?.[0];
@@ -73,6 +101,16 @@ button{background:var(--green);color:#070910;border:0;border-radius:9px;padding:
 button.ghost{background:transparent;color:var(--dim);border:1px solid var(--line);font-weight:500}
 .msg{color:var(--dim);font-size:12.5px;min-height:16px}
 .note{color:var(--dim);font-size:13.5px;margin-top:34px;border-top:1px solid var(--line);padding-top:18px}
+.setup{margin-top:16px;border-top:1px solid var(--line);padding-top:16px}
+.facts{color:#c3cad8;font-size:14px;background:#0b0d14;border-radius:9px;padding:12px 14px;margin-bottom:12px}
+.angles{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.angle{background:transparent;border:1px solid var(--line);color:var(--dim);font-weight:500;font-size:13px;padding:8px 12px}
+.angle.on{border-color:var(--green);color:var(--green)}
+textarea{width:100%;background:#0b0d14;border:1px solid var(--line);border-radius:9px;color:var(--ink);
+  padding:12px 14px;font:15px/1.5 inherit;resize:vertical}
+.hint{color:var(--dim);font-size:12.5px;margin:6px 0 12px;min-height:16px}
+.row2{display:flex;gap:8px;flex-wrap:wrap}
+.warn{color:#8b93a7;font-size:12.5px;margin-top:10px}
 @media(max-width:620px){.pair img,.meta{width:104px}.act{margin:12px 0 0;align-items:stretch;width:100%}}
 </style>
 <div class="wrap">
@@ -90,17 +128,40 @@ ${rows.map((p, i) => `<div class="card">
     <div><img src="${p.urlB}" alt="${esc(p.last.name)}" loading="lazy"><div class="meta">${esc(p.last.set)}<br>${p.last.year}</div></div>
     <div class="act">
       <button onclick="grab(${i})">Download image</button>
-      <button class="ghost" onclick="copyIds(${i})">Copy card IDs</button>
+      <button class="ghost" onclick="setup(${i})">Set up the post</button>
       <div class="msg" id="m${i}"></div>
     </div>
+  </div>
+  <div class="setup" id="s${i}" style="display:none">
+    <div class="facts"><b>The facts, so you do not have to look them up:</b>
+      ${esc(p.artist)} illustrated <b>${esc(p.first.name)}</b> in ${esc(p.first.set)} (${p.first.year}, ${esc(p.first.rarity ?? "")})
+      and <b>${esc(p.last.name)}</b> in ${esc(p.last.set)} (${p.last.year}, ${esc(p.last.rarity ?? "")}). ${p.years} years apart.</div>
+    <div class="angles">${p.angles.map((a, k) => `<button class="angle" onclick="pick(${i},${k})">${esc(a.name)}</button>`).join("")}</div>
+    <textarea id="t${i}" rows="3" placeholder="Pick an angle above, then make it sound like you."></textarea>
+    <div class="hint" id="h${i}"></div>
+    <div class="row2"><button onclick="toX(${i})">Open X with this</button>
+      <button class="ghost" onclick="grab(${i})">Download the image first</button></div>
+    <div class="warn">Rewrite it. Fifty creators posting the same sentence helps nobody — the words are the part that has to be yours.</div>
   </div>
 </div>`).join("\n")}
 
 <div class="note"><b>We do not write your copy.</b> The post that worked did partly because the words were the creator's own — two conversational lines, no numbers in them. A hedge in a post reads as a lack of conviction, and borrowed copy reads as borrowed. The image carries the claim; the words carry the feeling, and the feeling has to be yours.</div>
 </div>
 <script>
-const PAIRS = ${JSON.stringify(rows.map(p => ({ a: p.urlA, b: p.urlB, an: p.first.name, ay: p.first.year, bn: p.last.name, by: p.last.year, artist: p.artist, years: p.years, ids: [p.first.id, p.last.id] })))};
-function copyIds(i){ navigator.clipboard.writeText(PAIRS[i].ids.join(" ")); document.getElementById("m"+i).textContent = "copied"; }
+const PAIRS = ${JSON.stringify(rows.map(p => ({ a: p.urlA, b: p.urlB, an: p.first.name, ay: p.first.year, bn: p.last.name, by: p.last.year, artist: p.artist, years: p.years, ids: [p.first.id, p.last.id], angles: p.angles })))};
+function setup(i){ const el=document.getElementById("s"+i); el.style.display = el.style.display==="none" ? "block" : "none"; }
+function pick(i,k){
+  const a = PAIRS[i].angles[k];
+  document.getElementById("t"+i).value = a.seed;
+  document.getElementById("h"+i).textContent = a.note;
+  document.querySelectorAll("#s"+i+" .angle").forEach((b,j)=>b.classList.toggle("on", j===k));
+}
+function toX(i){
+  const t = document.getElementById("t"+i).value.trim();
+  if(!t){ document.getElementById("m"+i).textContent="pick an angle and write it first"; return; }
+  window.open("https://twitter.com/intent/tweet?text="+encodeURIComponent(t), "_blank");
+  document.getElementById("m"+i).textContent="X opened — attach the image you downloaded";
+}
 async function grab(i){
   const p = PAIRS[i], msg = document.getElementById("m"+i);
   msg.textContent = "composing…";

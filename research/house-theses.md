@@ -1281,6 +1281,30 @@ scripts/pairing-finder.mjs scores candidates against exactly those four. Run
 against the catalogue it put the winning post FIRST at 103 points, unprompted,
 which is the closest thing to a validated model we have.
 
+## ANGLES, NOT TWEETS (Tyler, Aug 23 2026)
+"We need a portal that will set up a post for them."
+
+I first said the portal must never write a creator's copy. That was too rigid,
+and I was wrong: Tyler's own post used facts I handed him. The line is not
+"give them nothing" — it is **never give every creator the same sentence.**
+
+Fifty accounts posting identical text makes them look like a bot farm and us
+like the operator running it. It would destroy the one thing a creator brings
+that we cannot: their voice.
+
+SO THE PORTAL GIVES THREE THINGS AND WITHHOLDS ONE:
+- **The facts**, so nobody has to research. Artist, both sets, both rarities,
+  the gap in years.
+- **Four or five ANGLES**, each a different direction with a note on why it
+  works: disbelief, permission ("they LET him"), same-subject, quiet career,
+  and a question — because a question gets replies and replies are the game.
+- **A seed sentence per angle**, editable, in a box that says rewrite it.
+- **Not a finished tweet.** The seed is a starting point and the page says so
+  in plain words underneath: the words are the part that has to be theirs.
+
+Then: download the image, open X with the text prefilled, attach, post. Four
+actions from opening the page.
+
 ## CATCH'EM CREATORS (Tyler, Aug 23 2026)
 "It's performing as one of my best posts yet, coming back and at the worst
 time to post. We gotta perfect this model and it needs to be super easy for
