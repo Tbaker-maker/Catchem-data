@@ -106,6 +106,29 @@ for (const [p2, sp2] of Object.entries(schemas.files || {})) {
 }
 for (const i of impossible) problems.push(i);
 
+// ── SPECIALTY SETS HAVE NO BOOSTER BOX ──────────────────────────────────────
+// Tyler, 2026-08-23: getting this wrong in a public format tool "would be the
+// loudest possible version of the mistake." Special and mini sets — 151,
+// Prismatic Evolutions, Crown Zenith, Champion's Path, Shining Fates,
+// Celebrations, Paldean Fates, Shrouded Fable, Ascended Heroes — were never
+// sold as sealed booster boxes. They ship as ETBs, bundles, collections and
+// loose packs.
+//
+// Booster PACKS are fine and specialty sets genuinely have them; the claim that
+// would embarrass us is a BOX. Checked as an exact subtype so the two never get
+// conflated (I conflated them on the first pass and produced eight false
+// alarms). The rule is not vacuous: 47 mainline sets do carry boxes.
+try {
+  const classes = JSON.parse(await readFile(join(ROOT, "data/set-classes.json"), "utf-8")).classes ?? {};
+  const sealed = JSON.parse(await readFile(join(ROOT, "data/sealed-products.json"), "utf-8"));
+  const rows = sealed.products ?? sealed;
+  for (const p of rows) {
+    const set = p.setId ?? p.set;
+    if (classes[set] === "specialty" && p.subtype === "booster-box")
+      problems.push(`sealed-products: ${set} is a specialty set and cannot have a booster box — "${p.name}"`);
+  }
+} catch { /* either file absent: nothing to assert */ }
+
 if (problems.length) {
   console.error(`\n✗ SCHEMA GUARD — ${problems.length} problem(s):`);
   for (const p of problems) console.error(`   ${p}`);

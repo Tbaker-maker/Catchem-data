@@ -940,6 +940,25 @@ const CASES = [
       return { pass: true, why: "" };
     } },
 
+  // "The loudest possible version of the mistake" (Tyler, 2026-08-23): telling
+  // a reader a specialty set has a booster box. 151, Prismatic Evolutions,
+  // Crown Zenith, Champion's Path, Shining Fates, Celebrations, Paldean Fates,
+  // Shrouded Fable and Ascended Heroes were never sold as sealed booster boxes.
+  { guard: "A specialty set can never claim a booster box", detect: "schema-guard.mjs",
+    break: async () => {
+      await copyFile(P("data/sealed-products.json"), TMP("/tmp/nt-sealed-box.bak"));
+      const sp = JSON.parse(await readFile(P("data/sealed-products.json"), "utf-8"));
+      const classes = JSON.parse(await readFile(P("data/set-classes.json"), "utf-8")).classes ?? {};
+      const specialty = Object.entries(classes).find(([, v]) => v === "specialty")?.[0];
+      if (!specialty) return false;
+      const rows = sp.products ?? sp;
+      rows.push({ id: "nt-fake-box", setId: specialty, subtype: "booster-box",
+        name: "Deliberately impossible booster box" });
+      await writeFile(P("data/sealed-products.json"), JSON.stringify(sp, null, 1));
+      return true;
+    },
+    restore: async () => { await copyFile(TMP("/tmp/nt-sealed-box.bak"), P("data/sealed-products.json")); } },
+
   { guard: "Enrichment paces by minute units, not a flat delay", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/enrich-by-set.mjs"), "utf-8");

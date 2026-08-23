@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T08:30:00.720Z",
+ "generatedAt": "2026-08-23T08:43:57.327Z",
  "date": "2026-08-23",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -11,7 +11,7 @@
   "designer: 5 finding(s)",
   "theme-scout: 23 finding(s)",
   "teacher: 17 finding(s)",
-  "api-strategist: 8 finding(s)",
+  "api-strategist: 9 finding(s)",
   "compliance: 0 finding(s)",
   "security: 0 finding(s)",
   "steward: 4 finding(s)",
@@ -31,9 +31,9 @@
  "problems": [
   "designer: BROKEN RECORD — 4 finding(s) repeated three runs running (e.g. \"medium::16 distinct colours\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "theme-scout: BROKEN RECORD — 23 finding(s) repeated three runs running (e.g. \"the one-off::Ken Sugimori drew Ampharos exactly on\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
-  "teacher: FARMING — findings climbed 16 → 16 → 17 → 17 across four runs with nothing resolved. Volume is not work.",
-  "teacher: BROKEN RECORD — 14 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
+  "teacher: BROKEN RECORD — 15 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "teacher: OVER-BUDGET — 17 findings against a ceiling of 14. An unreadable list is an unread list.",
+  "api-strategist: FARMING — findings climbed 8 → 8 → 8 → 9 across four runs with nothing resolved. Volume is not work.",
   "creator: OVER-BUDGET — 15 findings against a ceiling of 10. An unreadable list is an unread list."
  ],
  "workforce": [
@@ -90,8 +90,8 @@
    "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
-   "agent": "api-strategist",
-   "finding": "every finding from a week ago is still open (7).",
+   "agent": "teacher",
+   "finding": "every finding from a week ago is still open (14).",
    "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
@@ -113,11 +113,6 @@
    "agent": "platform",
    "finding": "runs daily and has returned the same count (10) four runs running.",
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
-  },
-  {
-   "agent": "platform",
-   "finding": "every finding from a week ago is still open (10).",
-   "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
    "agent": "anomaly",
@@ -617,8 +612,8 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "1 commit(s) exist locally and are not pushed.",
-   "do": "A commit on one machine is not a backup. The repo is only the record once it is somewhere else.",
+   "what": "2 hand-written file(s) changed and not committed.",
+   "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
    "score": 30,
    "band": "NOTE ONLY",
    "selfScore": 30,
@@ -633,7 +628,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "7 supervisor problem(s) are open.",
+   "what": "6 supervisor problem(s) are open.",
    "do": "Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -649,7 +644,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "6 script(s) are not referenced anywhere: backfill-artists.mjs, build-faq.mjs, collision-guard.mjs, discovery-sweep.mjs.",
+   "what": "7 script(s) are not referenced anywhere: backfill-artists.mjs, build-faq.mjs, collision-guard.mjs, discovery-sweep.mjs.",
    "do": "A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -697,7 +692,7 @@
   {
    "from": "api-strategist",
    "owner": "cc",
-   "what": "3 places fetch one item at a time inside a loop",
+   "what": "4 places fetch one item at a time inside a loop",
    "do": "check whether each endpoint supports a set, page or id-list parameter before scaling the loop up",
    "score": 30,
    "band": "NOTE ONLY",
@@ -809,7 +804,7 @@
   {
    "from": "api-strategist",
    "owner": "tyler",
-   "what": "the paid provider is called from 110 places",
+   "what": "the paid provider is called from 111 places",
    "do": "list what ONLY the paid provider gives us; if that list is short, either use more of it or stop paying for it",
    "score": 30,
    "band": "NOTE ONLY",
