@@ -695,6 +695,18 @@ const CASES = [
         why: bad.length ? "paywall language appeared in: " + bad.join(", ") + " — we promised FREE FOREVER in public on 2026-08-23" : "" };
     } },
 
+  { guard: "Tease actually withholds", detect: "tease-guard.mjs",
+    // Verified by hand against the original copy: it caught both the product
+    // name and the negation pattern. This keeps it caught.
+    fn: async () => {
+      const src = await readFile(P("scripts/tease-guard.mjs"), "utf-8");
+      const catchesName = /guard\|guards\|toploader/.test(src);
+      const catchesDenial = /DENIAL/.test(src) && /not \(a\|an\|the/.test(src);
+      return { pass: catchesName && catchesDenial,
+        why: !catchesName ? "it no longer scans for product nouns"
+           : "it no longer catches the negation pattern — a denial that names the neighbourhood is a clue wearing a disclaimer" };
+    } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");

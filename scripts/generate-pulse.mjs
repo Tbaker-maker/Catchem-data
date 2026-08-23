@@ -660,6 +660,7 @@ await import("./layout-check.mjs");
 await import("./slop-guard.mjs");
 await import("./card-guard.mjs");
 try { await import("./editor-smoke.mjs"); } catch (e) { console.warn("  editor smoke: " + e.message); }
+try { await import("./tease-guard.mjs"); } catch (e) { console.warn("  tease: " + e.message); }
 await import("./pre-mortem.mjs");
 await import("./verify-work.mjs");
 try { await import("./bias-guard.mjs"); } catch (e) { console.warn(`  ⚠ bias guard: ${e.message} — advisory`); }

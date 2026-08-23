@@ -146,8 +146,8 @@ button:active{opacity:.85}
 <div class="feat"><h3>Want lists and trade lists <span class="tag">SOON</span></h3>
   <p>Make a priced list of what you are hunting. Hold it up at a show, paste it in a trade thread.</p></div>
 
-<div class="feat"><h3>Catch'em Guards <span class="tag">???</span></h3>
-  <p>Something physical. Something you open. Not a toploader, not a binder, and not what anyone else is making.<br><br><b>Everyone on the list finds out first.</b></p></div>
+<div class="feat"><h3>Project <span class="tag">???</span></h3>
+  <p>It arrives in a box. You open it. <b>Not everyone gets the same one.</b><br><br>That is genuinely all we are saying for now — and everyone on the list finds out before anyone else does.</p></div>
 
 <div class="feat"><h3>Sealed market data <span class="tag">SOON</span></h3>
   <p>177 sealed products, repriced every single day, with the workings shown. Where a number is soft we say so. Where we get one wrong we publish the correction — dated, permanent, on a page anyone can read.<br><br><b>Nobody else in this hobby shows you their mistakes.</b></p></div>

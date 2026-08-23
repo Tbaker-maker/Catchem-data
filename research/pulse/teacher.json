@@ -1,9 +1,9 @@
 {
- "generatedAt": "2026-08-23T19:48:44.847Z",
+ "generatedAt": "2026-08-23T19:51:08.076Z",
  "role": "Keeps agents current, breaks them out of ruts, and teaches from incidents that actually happened to us. It asks questions; it never rewrites another agent.",
  "counts": {
   "stale": 0,
-  "ruts": 11,
+  "ruts": 10,
   "postMortem": 4,
   "shared": 1
  },
@@ -81,15 +81,6 @@
    "chip": "READ"
   },
   {
-   "agent": "teacher",
-   "kind": "in a rut",
-   "observation": "15 findings, identical across 5 runs",
-   "question": "What question has teacher never asked about its own subject?",
-   "why": "Identical output run after run means the agent has stopped searching and started reciting. The count being stable is not the problem; the SAMENESS is.",
-   "confidence": "OBSERVED",
-   "chip": "READ"
-  },
-  {
    "agent": "designer",
    "kind": "in a rut",
    "observation": "8 findings, identical across 5 runs",
@@ -146,7 +137,7 @@
   {
    "agent": "ALL",
    "kind": "shared lesson",
-   "observation": "25 scripts scan the scripts directory without excluding themselves",
+   "observation": "26 scripts scan the scripts directory without excluding themselves",
    "question": "Each of you found this alone. Which other lesson has one of you learned that the rest are still about to learn?",
    "why": "A checker whose search space includes itself reports clean and means nothing. Five agents discovered this separately in one day and none told the others.",
    "confidence": "OBSERVED",
