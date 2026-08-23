@@ -1214,3 +1214,26 @@ FIRST RUN: 50 problems across 35 cards that had been publishing daily.
 WHAT IT STILL CANNOT DO: say whether the result looks GOOD. Contrast, balance,
 whether a pairing is beautiful. Geometry is not taste, and nothing here
 replaces opening the file.
+
+## STRONGEST, NOT LATEST (Tyler, Aug 23 2026)
+"Keldeo was like a common card. Underwhelming."
+
+I paired Base Set Charizard with Arita's most RECENT card, because "latest" is
+one line of sort and needs no judgment. It was a common. Tyler remembered the
+man had also drawn the Blastoise ex Special Illustration Rare in 151 — a hero
+card, twenty-four years after the Charizard — and he was right.
+
+**"Latest" is a data choice. "Best" is an editorial one.** Taking the data
+choice because it is easy to compute is how a post ends up technically correct
+and worth nobody's attention. The pairing was never about chronology; it was
+about two cards a person would stop scrolling for, which happen to share an
+illustrator.
+
+--best now ranks by value as a proxy for standing, which is imperfect and
+better than recency. The real test is the one Tyler applied by instinct: would
+somebody stop for this?
+
+WORTH KNOWING, from the same data: Arita has drawn Charizard SIX times —
+Base 1999, Base Set 2 2000, Stormfront 2008, Evolutions 2016, and twice in
+2019. Three of those side by side is the same illustrator on the same Pokémon
+across two decades, and it may be a stronger post than any pairing.

@@ -16,6 +16,7 @@
 //
 // usage:
 //   node scripts/card-composite.mjs <cardId> <cardId> ... [--label "text"]
+//   node scripts/card-composite.mjs --artist "Mitsuhiro Arita" --first --best
 //   node scripts/card-composite.mjs --artist "Mitsuhiro Arita" --first --latest
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
@@ -67,6 +68,18 @@ if (artistIdx >= 0) {
     .map(([id, c]) => ({ id, ...c })).filter(c => c.releaseDate)
     .sort((a, b) => a.releaseDate < b.releaseDate ? -1 : 1);
   if (!theirs.length) { console.error(`no cards found for "${artist}"`); process.exitCode = 1; }
+  // STRONGEST, NOT LATEST (Tyler, 2026-08-23). --latest first picked Keldeo, a
+  // common, because it was the most recent row in the data. Tyler's word for it
+  // was "underwhelming", and he was right — he remembered Arita had done the
+  // Blastoise ex SIR in 151, which is a hero card worth $139 against Keldeo's
+  // nothing. "Latest" is a DATA choice; "best" is an editorial one, and taking
+  // the data choice because it is easy to compute is how a post ends up
+  // technically correct and worth nobody's attention.
+  else if (args.includes("--first") && args.includes("--best")) {
+    const best = theirs.filter(c => c.price).sort((a, b) => (b.price ?? 0) - (a.price ?? 0))[0]
+      ?? theirs[theirs.length - 1];
+    ids = [theirs[0].id, best.id];
+  }
   else if (args.includes("--first") && args.includes("--latest")) ids = [theirs[0].id, theirs[theirs.length - 1].id];
   else if (args.includes("--all") && theirs.length <= 5) ids = theirs.map(c => c.id);
   else ids = theirs.slice(0, 3).map(c => c.id);
@@ -75,6 +88,7 @@ if (artistIdx >= 0) {
 if (!ids.length) {
   console.log(`usage:
   node scripts/card-composite.mjs sv8pt5-161 swsh7-215 base1-4
+  node scripts/card-composite.mjs --artist "Mitsuhiro Arita" --first --best
   node scripts/card-composite.mjs --artist "Mitsuhiro Arita" --first --latest
   node scripts/card-composite.mjs --artist "USGMEN" --all --label "Their entire body of work"`);
   process.exitCode = 0;
@@ -84,7 +98,7 @@ if (!ids.length) {
   // sizing is the whole point: a row of cards at different scales reads as a
   // collage, and a collage looks like something a fan made rather than
   // something a company published.
-  const CARD_W = 420, CARD_H = 586, GAP = 40, PAD = 64, CAPTION = label ? 92 : 56;
+  const CARD_W = 420, CARD_H = 586, GAP = 40, PAD = 64, CAPTION = label ? 150 : 56;
   const W = PAD * 2 + CARD_W * ids.length + GAP * (ids.length - 1);
   const H = PAD * 2 + CARD_H + CAPTION;
 
@@ -107,7 +121,7 @@ ${cards.map((c, i) => {
   return `<image x="${x}" y="${PAD}" width="${CARD_W}" height="${CARD_H}" preserveAspectRatio="xMidYMid meet" xlink:href="${c.imageUrl}"/>
 <text x="${x + CARD_W / 2}" y="${PAD + CARD_H + 34}" text-anchor="middle" fill="#8a93a8" font-family="Sora" font-size="20">${(c.name ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;")}${c.releaseDate ? ` · ${c.releaseDate.slice(0, 4)}` : ""}</text>`;
 }).join("\n")}
-${label ? `<text x="${W / 2}" y="${H - 44}" text-anchor="middle" fill="#f4f5f8" font-family="Syne" font-weight="800" font-size="30">${label.replace(/&/g, "&amp;")}</text>` : ""}
+${label ? `<text x="${W / 2}" y="${H - 96}" text-anchor="middle" fill="#f4f5f8" font-family="Syne" font-weight="800" font-size="30">${label.replace(/&/g, "&amp;")}</text>` : ""}
 <text x="${PAD}" y="${H - 18}" fill="#36d399" font-family="Syne" font-weight="800" font-size="22">Catch'em</text>
 <text x="${W - PAD}" y="${H - 18}" text-anchor="end" fill="#5c637a" font-family="JetBrains Mono" font-size="15">${caption.replace(/&/g, "&amp;")}</text>
 </svg>`;
