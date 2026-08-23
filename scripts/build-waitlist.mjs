@@ -12,11 +12,12 @@
 // 1. MOBILE FIRST, NOT MOBILE TOO. X traffic is overwhelmingly phones. Every
 //    measurement below assumes a 390px viewport and desktop is the adaptation.
 //
-// 2. LEAD WITH THE LIVE TOOL, NOT THE FORM. We have something that works right
-//    now with 16,468 cards in it. A tool somebody uses in five seconds converts
-//    better than a form, AND every image it makes carries our mark onto the same
-//    timeline the traffic came from. The waitlist is the second ask, not the
-//    first.
+// 2. NO WORKING PRODUCT ON THE PAGE. Tyler's call, and correct: the editor was
+//    completely dead twice in two days, and sending eleven thousand people to
+//    something that has failed twice this week risks the only first impression
+//    we get. A first impression of a broken tool is worse than no tool. The
+//    form is the single action; anticipation is a real asset and handing over a
+//    half-finished tool spends it.
 //
 // 3. NOTHING UNSHIPPED IS DESCRIBED AS AVAILABLE. Guards have no manufacturing
 //    quote. The newsletter has not sent. Discord is not deployed. Every one of
@@ -37,9 +38,9 @@ const CARDS = n(idx.length), PRICED = n(idx.filter(c => c.p != null).length),
 const html = `<!doctype html><html lang="en"><meta charset="utf-8">
 <title>Catch'em — Pokémon card tools for people who actually collect</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="Build binder pages, plan what to collect, and make post-ready card images from ${CARDS} Pokémon cards. Free, no account.">
+<meta name="description" content="Binder planning, post-ready card images and daily streaks across ${CARDS} Pokémon cards. Opening soon — join the waitlist.">
 <meta property="og:title" content="Catch'em — card tools for people who actually collect">
-<meta property="og:description" content="${CARDS} cards. Build a binder page, see what it would cost, make something worth posting. Free.">
+<meta property="og:description" content="${CARDS} cards. Binder planning, post images, daily streaks. Opening soon.">
 <meta name="twitter:card" content="summary_large_image">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Sora:wght@300;400;600&family=JetBrains+Mono:wght@400;500&display=swap');
@@ -48,7 +49,7 @@ const html = `<!doctype html><html lang="en"><meta charset="utf-8">
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--ink);color:var(--text);
-  font:300 17px/1.6 'Sora',system-ui,-apple-system,sans-serif;padding:0 0 60px;
+  font:300 16px/1.6 'Sora',system-ui,-apple-system,sans-serif;padding:0 0 60px;
   -webkit-font-smoothing:antialiased}
 .wrap{max-width:620px;margin:0 auto;padding:0 22px}
 
@@ -57,16 +58,16 @@ body{margin:0;background:var(--ink);color:var(--text);
 .hero{padding:56px 0 40px}
 h1{font:800 clamp(36px,10vw,54px)/.98 'Syne',system-ui,sans-serif;letter-spacing:-.035em;margin:0 0 16px}
 h1 em{font-style:normal;color:var(--live)}
-.lede{color:var(--soft);font-size:19px;margin:0 0 28px;line-height:1.5}
+.lede{color:var(--soft);font-size:20px;margin:0 0 28px;line-height:1.5}
 .lede b{color:var(--text);font-weight:600}
 
 /* The primary action is a tool that already works, not a form. */
 .cta{display:block;background:var(--live);color:var(--ink);text-decoration:none;
-  border-radius:14px;padding:19px 24px;font:600 18px 'Sora',system-ui,sans-serif;
+  border-radius:14px;padding:20px 24px;font:600 18px 'Sora',system-ui,sans-serif;
   text-align:center;transition:opacity .18s var(--ease)}
 .cta:active{opacity:.85}
-.cta .small{display:block;font-weight:400;font-size:13.5px;opacity:.72;margin-top:3px}
-.note{color:var(--faint);font-size:13.5px;text-align:center;margin-top:12px}
+.cta .small{display:block;font-weight:400;font-size:13.6px;opacity:.72;margin-top:4px}
+.note{color:var(--faint);font-size:13.6px;text-align:center;margin-top:12px}
 
 /* Numbers earn more trust than adjectives. */
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);
@@ -74,18 +75,18 @@ h1 em{font-style:normal;color:var(--live)}
 .stat{background:var(--panel);padding:18px 10px;text-align:center}
 .stat b{display:block;font:500 21px 'JetBrains Mono',monospace;color:var(--text)}
 .stat span{display:block;font:500 10px 'JetBrains Mono',monospace;color:var(--faint);
-  letter-spacing:.13em;margin-top:5px}
+  letter-spacing:.13em;margin-top:6px}
 
 h2{font:800 26px 'Syne',system-ui,sans-serif;letter-spacing:-.02em;margin:44px 0 6px}
-.sub{color:var(--faint);font-size:14.5px;margin:0 0 20px}
+.sub{color:var(--faint);font-size:14.6px;margin:0 0 20px}
 
 .feat{background:var(--panel);border:1px solid var(--line);border-radius:14px;
-  padding:20px;margin-bottom:11px}
-.feat h3{font:600 17px 'Sora',system-ui,sans-serif;margin:0 0 6px;display:flex;
+  padding:20px;margin-bottom:12px}
+.feat h3{font:600 16px 'Sora',system-ui,sans-serif;margin:0 0 6px;display:flex;
   align-items:baseline;gap:9px;flex-wrap:wrap}
-.feat p{margin:0;color:var(--soft);font-size:15px;line-height:1.55}
-.tag{font:500 9.5px 'JetBrains Mono',monospace;letter-spacing:.13em;padding:3px 7px;
-  border-radius:5px;border:1px solid var(--line);color:var(--faint)}
+.feat p{margin:0;color:var(--soft);font-size:16px;line-height:1.55}
+.tag{font:500 9.6px 'JetBrains Mono',monospace;letter-spacing:.13em;padding:4px 7px;
+  border-radius:6px;border:1px solid var(--line);color:var(--faint)}
 .tag.now{color:var(--live);border-color:rgba(54,211,153,.35)}
 
 /* The form is the SECOND ask, below the tool. */
@@ -93,15 +94,15 @@ h2{font:800 26px 'Syne',system-ui,sans-serif;letter-spacing:-.02em;margin:44px 0
   border:1px solid var(--line);border-radius:16px;padding:26px 22px;margin-top:20px}
 .form h2{margin:0 0 6px}
 input[type=email]{width:100%;background:var(--ink);border:1px solid var(--line);
-  border-radius:12px;color:var(--text);padding:17px 16px;font:400 16px 'Sora',sans-serif;
+  border-radius:12px;color:var(--text);padding:16px 16px;font:400 16px 'Sora',sans-serif;
   margin:16px 0 10px}
 input[type=email]:focus{outline:none;border-color:var(--live)}
 button{width:100%;background:var(--live);color:var(--ink);border:0;border-radius:12px;
-  padding:17px;font:600 16.5px 'Sora',sans-serif;cursor:pointer}
+  padding:16px;font:600 16.6px 'Sora',sans-serif;cursor:pointer}
 button:active{opacity:.85}
-.priv{color:var(--faint);font-size:12.5px;margin-top:12px;text-align:center;line-height:1.5}
-.ok{color:var(--live);font-size:15px;text-align:center;padding:14px 0;display:none}
-.foot{color:var(--faint);font-size:12.5px;margin-top:44px;border-top:1px solid var(--line);
+.priv{color:var(--faint);font-size:12.6px;margin-top:12px;text-align:center;line-height:1.5}
+.ok{color:var(--live);font-size:16px;text-align:center;padding:14px 0;display:none}
+.foot{color:var(--faint);font-size:12.6px;margin-top:44px;border-top:1px solid var(--line);
   padding-top:20px;line-height:1.7}
 .foot a{color:var(--soft)}
 @media(min-width:680px){.hero{padding:80px 0 48px}.cta{max-width:340px}}
@@ -111,10 +112,10 @@ button:active{opacity:.85}
 
 <div class="hero">
   <h1>Catch'em<em>.</em></h1>
-  <p class="lede">Card tools for people who <b>actually collect</b>. Build a binder page, see what it would cost to fill, and make something worth posting — from every English card ever printed.</p>
-  <a class="cta" href="/build">Open the builder
-    <span class="small">Free · no account · works on your phone</span></a>
-  <p class="note">Already live. The rest is below.</p>
+  <p class="lede">Card tools for people who <b>actually collect</b>. Build a binder page, see what it would cost to fill, and make something worth posting — from every English card ever printed. <b>Opening soon.</b></p>
+  <a class="cta" href="#join">Join the waitlist
+    <span class="small">First access when it opens</span></a>
+  <p class="note">Not open yet. Building it properly first.</p>
 </div>
 
 <div class="stats">
@@ -123,37 +124,37 @@ button:active{opacity:.85}
   <div class="stat"><b>${ARTISTS}</b><span>ILLUSTRATORS</span></div>
 </div>
 
-<h2>What it does</h2>
-<p class="sub">Everything marked LIVE works right now, for free.</p>
+<h2>What's coming</h2>
+<p class="sub">Built and being finished. Nothing here is guesswork — every number below is real.</p>
 
-<div class="feat"><h3>Binder pages <span class="tag now">LIVE</span></h3>
+<div class="feat"><h3>Binder pages <span class="tag">SOON</span></h3>
   <p>Drop cards into a nine-pocket page and see it before you buy anything. It tells you what the page costs, what you already own, and what is still missing.</p></div>
 
-<div class="feat"><h3>Post images <span class="tag now">LIVE</span></h3>
+<div class="feat"><h3>Post images <span class="tag">SOON</span></h3>
   <p>Seven measured layouts, from one card to a full page. Download, copy, or share straight to a post. Every image credits the illustrator by name.</p></div>
 
-<div class="feat"><h3>Daily streaks <span class="tag now">LIVE</span></h3>
+<div class="feat"><h3>Daily streaks <span class="tag">SOON</span></h3>
   <p>Pick a filter — $2 cards, Illustration Rares, one artist, or the whole history in order — and get cards a day from it that you have not used. Ten to choose from, and the filter is what keeps your run yours.</p></div>
 
-<div class="feat"><h3>Slab preview <span class="tag now">LIVE</span></h3>
+<div class="feat"><h3>Slab preview <span class="tag">SOON</span></h3>
   <p>See any card in a graded-style case in four colourways, before you send anything anywhere.</p></div>
 
-<div class="feat"><h3>Want lists and trade lists <span class="tag now">LIVE</span></h3>
+<div class="feat"><h3>Want lists and trade lists <span class="tag">SOON</span></h3>
   <p>Make a priced list of what you are hunting. Hold it up at a show, paste it in a trade thread.</p></div>
 
-<div class="feat"><h3>Catch'em Guards <span class="tag">IN DEVELOPMENT</span></h3>
+<div class="feat"><h3>Catch'em Guards <span class="tag">SOON</span></h3>
   <p>Our own card and slab guards, sold in packs with published odds and a guaranteed guard in every one. Not manufactured yet — the waitlist is how you hear first.</p></div>
 
-<div class="feat"><h3>Sealed market data <span class="tag">IN DEVELOPMENT</span></h3>
+<div class="feat"><h3>Sealed market data <span class="tag">SOON</span></h3>
   <p>Prices tracked daily across sealed product, with the workings shown. We publish our corrections publicly.</p></div>
 
-<div class="form">
-  <h2>Get told first</h2>
-  <p class="sub">Guards, the newsletter, and whatever comes next. No noise.</p>
+<div class="form" id="join">
+  <h2>Be first in</h2>
+  <p class="sub">Early access before it opens publicly. No noise, no daily emails.</p>
   <form id="wl" action="https://formspree.io/f/xgorlypa" method="POST">
     <input type="email" name="email" placeholder="you@email.com" required autocomplete="email" inputmode="email">
     <input type="hidden" name="source" value="landing-2026-08">
-    <button type="submit">Join the waitlist</button>
+    <button type="submit">Get early access</button>
   </form>
   <div class="ok" id="ok">You're on the list. Nothing else needed.</div>
   <p class="priv">One address, nothing else. We will not sell it, and you can leave in one click.</p>
@@ -163,7 +164,7 @@ button:active{opacity:.85}
   Made by one person who collects. Card images and names are © Pokémon / Nintendo / Creatures / GAME FREAK —
   Catch'em is an independent fan project and is not affiliated with or endorsed by them.
   Every card image credits its illustrator.<br><br>
-  <a href="/build">The builder</a> · <a href="mailto:support@catchemtcg.com">support@catchemtcg.com</a>
+  <a href="mailto:support@catchemtcg.com">support@catchemtcg.com</a>
 </div>
 
 </div>
