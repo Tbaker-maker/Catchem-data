@@ -1280,3 +1280,29 @@ WHAT MADE THE PAIRING WORK, ranked by how much each mattered:
 scripts/pairing-finder.mjs scores candidates against exactly those four. Run
 against the catalogue it put the winning post FIRST at 103 points, unprompted,
 which is the closest thing to a validated model we have.
+
+## CATCH'EM CREATORS (Tyler, Aug 23 2026)
+"It's performing as one of my best posts yet, coming back and at the worst
+time to post. We gotta perfect this model and it needs to be super easy for
+creators to use."
+
+FIRST REAL SIGNAL: 154 views, 9 likes, one unsolicited reply from a verified
+creator, posted at a poor hour from an account returning after a break. **One
+post is an anecdote, not a model** — it sets a baseline, and the platform
+agents' blind spot moves from "no data at all" to "one observation", which is
+a smaller claim than it sounds.
+
+THE HARD PART IS NOT THE POST, IT IS THE SECOND ONE MADE BY SOMEBODY ELSE.
+Tyler had the catalogue, the tooling and a conversation. A creator has none of
+that and about ninety seconds of patience. So the page does three things and
+stops: shows the ranked pairings, says in one line why each works, and hands
+over the image in a click.
+
+**IT DOES NOT WRITE THEIR COPY, DELIBERATELY.** The post that landed did so
+partly because the words were Tyler's own — two conversational lines, no
+numbers, no hedging. A hedge in a post reads as a lack of conviction, and
+borrowed copy reads as borrowed. The image carries the claim; the words carry
+the feeling, and the feeling has to be theirs.
+
+THE NAME: Catch'em Creators. It fits the tagline family and it names the
+people rather than the tool, which is the right way round.
