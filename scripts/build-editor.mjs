@@ -35,7 +35,7 @@ else {
   const sets = [...new Set(Object.values(cat.cards).map(c => c.setName).filter(Boolean))].sort();
   const index = Object.entries(cat.cards).map(([id, c]) => ({
     i: id, n: c.name, a: c.artist ?? null, s: c.setName,
-    y: (c.releaseDate ?? "").slice(0, 4), r: c.rarity ?? "", p: typeof c.price === "number" ? Math.round(c.price * 100) / 100 : null,
+    y: (c.releaseDate ?? "").slice(0, 4), r: c.rarity ?? "", k: c.attackNames ?? undefined, p: typeof c.price === "number" ? Math.round(c.price * 100) / 100 : null,
   }));
   await mkdir(join(ROOT, "research/assets"), { recursive: true }).catch(() => {});
   await writeFile(join(ROOT, "research/assets/card-index.json"), JSON.stringify(index));
@@ -479,6 +479,22 @@ function buildIdeas(){
     const picked = Object.values(byMon).slice(0, fCount);
     if (picked.length === fCount) ideas.push({ title: t.name, sub: picked.map(c=>c.n).join(" · "), hook: t.hook, cards: picked });
   }
+  // A theme whose membership is READ rather than declared. The word list is
+  // stored openly in themes.json so it can be argued with, exactly like a
+  // named list — the difference is that the match happens against a real
+  // field on the card instead of against a list of Pokemon somebody thought
+  // looked tired. Slakoth is in this because its attack is Take It Easy.
+  if (t.kind === "card text" && t.match) {
+    const words = (t.match.any || []).map(w => w.toLowerCase());
+    const hits = pool.filter(c => (c[t.match.field === "attackNames" ? "k" : t.match.field] || [])
+      .some(v => words.some(w => String(v).toLowerCase().includes(w))));
+    const seen = new Map();
+    for (const c of hits) if (!seen.has(c.n)) seen.set(c.n, c);
+    const picked = [...seen.values()].slice(0, fCount);
+    if (picked.length === fCount)
+      ideas.push({ title: t.name, sub: picked.map(c => c.n).join(" · "), hook: t.hook, cards: picked });
+  }
+
   if (t.id === "many-hands") {
     const byName = {};
     for (const c of pool) (byName[c.n.split(" ")[0]] ||= []).push(c);

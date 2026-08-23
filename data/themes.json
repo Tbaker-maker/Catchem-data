@@ -1,5 +1,5 @@
 {
- "note": "THEMES FOR CREATORS. Tyler, 2026-08-23: 'Set → how many cards → theme → narrow it down. We should be sparking their brain for them. Give them inspiration and they'll never leave.' A search box is a tool; a funnel is fuel.",
+ "note": "THEMES FOR CREATORS. Tyler, 2026-08-23: 'Set → how many cards → theme → narrow it down. We should be sparking their brain for them. Give them inspiration and they'll never leave.' A search box is a tool; a funnel is fuel. · card-text themes derive membership by reading attackNames, captured 2026-08-23.",
  "slopRule": "Every theme is EITHER derived from a field we hold (artist, setId, rarity, releaseDate) OR a NAMED LIST stored right here where anybody can argue with it. 'Cute' is not in the data — but eighteen specific baby Pokémon are, and a list can be disagreed with where an adjective cannot. That is the whole difference between curation and slop.",
  "framing": "Themes needing taste are framed as SELECTION, never as ranking. 'Nine cute cards for your binder' invites you to disagree; 'the nine cutest cards' tells you that you are wrong. A question gets replies and replies are the game.",
  "themes": [
@@ -561,6 +561,32 @@
    ],
    "kind": "named list",
    "verified": "1 of 1 present in the catalogue"
+  },
+  {
+   "id": "late-night",
+   "name": "Cards that want you to go to bed",
+   "kind": "card text",
+   "hook": "Which of these is the most 2am?",
+   "why": "Tyler posted Slakoth at 2am after seventeen hours of coding and its attack is called Take It Easy. Neither of us knew — the card wrote the joke. This finds that joke by READING the cards instead of by me listing Pokemon I think look tired, which is the difference between a grouping derived from the data and one asserted from a mood.",
+   "match": {
+    "field": "attackNames",
+    "any": [
+     "take it easy",
+     "sleep",
+     "nap",
+     "rest",
+     "yawn",
+     "dream",
+     "slack",
+     "snooze",
+     "lazy",
+     "doze",
+     "sluggish",
+     "drowsy"
+    ]
+   },
+   "members": [],
+   "bestAt": "late evening"
   }
  ],
  "openQuestions": [

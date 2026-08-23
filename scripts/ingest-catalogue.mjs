@@ -21,6 +21,30 @@ import { dirname, join } from "node:path";
 // Node's fetch has NO default timeout — a host that accepts and never
 // answers hangs the run until the runner kills the job, which reports
 // nothing and burns the whole allowance.
+// Pull the attack NAME out of the source's concatenated form. Entries read
+// like "[2] Gatling Peck (10x) Flip 5 coins…" — energy cost in brackets, the
+// name, damage in parentheses, then effect prose. Written with plain string
+// operations rather than a regex: this file is edited through tooling that
+// eats backslashes, and a half-escaped pattern fails silently rather than loudly.
+function attackNames(attacks) {
+  if (!Array.isArray(attacks) || !attacks.length) return undefined;
+  const names = [];
+  for (const a of attacks) {
+    if (a && typeof a === 'object' && a.name) { names.push(a.name); continue; }
+    if (typeof a !== 'string') continue;
+    let t = a.trim();
+    const ob = t.indexOf("[");
+    const cb = t.indexOf("]");
+    if (ob === 0 && cb > 0) t = t.slice(cb + 1).trim();   // drop the energy cost
+    const p = t.indexOf("(");
+    if (p > 0) t = t.slice(0, p).trim();                  // drop damage onward
+    // A real attack name is short. Anything longer is Trainer rules text that
+    // never had a name, and inventing one would be worse than dropping it.
+    if (t && t.length <= 40 && t.split(' ').filter(Boolean).length <= 5) names.push(t);
+  }
+  return names.length ? names : undefined;
+}
+
 const FETCH_TIMEOUT_MS = 30000;
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "utf-8")); } catch { return null; } };
@@ -99,7 +123,20 @@ for (const setId of wanted) {
           releaseDate: c.set?.releaseDate ?? null, supertype: c.supertype ?? null,
           price: head?.market ?? null, priceFinish: head?.finish ?? null,
           variants: variants.length > 1 ? variants : undefined,
-          priceUpdatedAt: c.tcgplayer?.updatedAt ?? null, priceSource: head ? "tcgplayer via pokemontcg.io" : null };
+          priceUpdatedAt: c.tcgplayer?.updatedAt ?? null, priceSource: head ? "tcgplayer via pokemontcg.io" : null,
+          // WHAT THE CARD SAYS. Free, in the source we already ingest, and captured
+          // by nothing until now. Tyler posted Slakoth at 2am after seventeen hours
+          // of coding, and Slakoth's attack is called Take It Easy — neither of us
+          // knew. The card wrote the joke; we simply could not search for it.
+          //
+          // attackNames is kept SEPARATELY from the full text because the source
+          // concatenates cost, name, damage and effect into one string and the name
+          // is the part carrying the joke. Trainer cards put rules text in the same
+          // field, so this is names-where-parsable, not a promise every entry is an
+          // attack. Measured on the 861 cards we hold: 75% have attacks, 24% flavour.
+          attacks: Array.isArray(c.attacks) && c.attacks.length ? c.attacks : undefined,
+          attackNames: attackNames(c.attacks),
+          flavorText: c.flavorText ?? undefined };
         got++;
       }
       if (got >= total || !(d.data ?? []).length) break;
