@@ -144,6 +144,21 @@ const scripts = (await readdir(join(ROOT, "scripts"))).filter(f => f.endsWith(".
     "Nothing here can tell whether they LOOK right — clipping, overlap, a wordmark colliding with a stat row. Every card shown to a person must be opened and looked at first. That rule was broken twice today and both failures reached Tyler.", 18);
 }
 
+// ── SECONDARY CONSENSUS CONTRADICTED BY PRIMARY DATA (error 21) ───────────
+// Three sources agreed Kadabra vanished for twenty-six years. Our own catalogue
+// said twenty-one. Agreement between secondary sources is not evidence - it is
+// frequently one source repeated - and the only cure is checking our own data
+// before publishing, which is free and which we nearly skipped.
+{
+  const kb = await J("data/knowledge.json");
+  const unchecked = (kb?.facts ?? []).filter(f =>
+    (f.sources ?? []).length >= 2 &&
+    !(f.sources ?? []).some(s => /our own|catalogue|catchem|primary/i.test(s)));
+  if (unchecked.length)
+    P("secondary consensus", unchecked.length + " fact(s) rest only on secondary sources",
+      "Sources agreeing with each other is often one source repeated. Anything we can check against our own data must be checked before it is published.", 21);
+}
+
 // ── THE META-CHECK · did I exclude myself? ────────────────────────────────
 // Five checkers read their own source in one day. This one names the risk out
 // loud rather than assuming it is immune.

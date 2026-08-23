@@ -1,9 +1,9 @@
 {
- "generatedAt": "2026-08-23T06:13:16.742Z",
+ "generatedAt": "2026-08-23T06:52:18.884Z",
  "role": "Keeps agents current, breaks them out of ruts, and teaches from incidents that actually happened to us. It asks questions; it never rewrites another agent.",
  "counts": {
   "stale": 0,
-  "ruts": 7,
+  "ruts": 10,
   "postMortem": 6,
   "shared": 1
  },
@@ -29,7 +29,7 @@
   {
    "agent": "improver",
    "kind": "in a rut",
-   "observation": "9 findings, identical across 5 runs",
+   "observation": "8 findings, identical across 5 runs",
    "question": "You measure against our own doctrine. What would somebody who has never read our doctrine find embarrassing here?",
    "why": "Identical output run after run means the agent has stopped searching and started reciting. The count being stable is not the problem; the SAMENESS is.",
    "confidence": "OBSERVED",
@@ -63,10 +63,37 @@
    "chip": "READ"
   },
   {
+   "agent": "steward",
+   "kind": "in a rut",
+   "observation": "4 findings, identical across 5 runs",
+   "question": "You check whether work is saved. Ask what we have saved that nobody will ever read again.",
+   "why": "Identical output run after run means the agent has stopped searching and started reciting. The count being stable is not the problem; the SAMENESS is.",
+   "confidence": "OBSERVED",
+   "chip": "READ"
+  },
+  {
    "agent": "api-strategist",
    "kind": "in a rut",
    "observation": "8 findings, identical across 5 runs",
    "question": "You find unused fields. Ask what we would want that no provider offers, because that is the gap worth building around.",
+   "why": "Identical output run after run means the agent has stopped searching and started reciting. The count being stable is not the problem; the SAMENESS is.",
+   "confidence": "OBSERVED",
+   "chip": "READ"
+  },
+  {
+   "agent": "designer",
+   "kind": "in a rut",
+   "observation": "9 findings, identical across 5 runs",
+   "question": "What question has designer never asked about its own subject?",
+   "why": "Identical output run after run means the agent has stopped searching and started reciting. The count being stable is not the problem; the SAMENESS is.",
+   "confidence": "OBSERVED",
+   "chip": "READ"
+  },
+  {
+   "agent": "theme-scout",
+   "kind": "in a rut",
+   "observation": "23 findings, identical across 5 runs",
+   "question": "What question has theme-scout never asked about its own subject?",
    "why": "Identical output run after run means the agent has stopped searching and started reciting. The count being stable is not the problem; the SAMENESS is.",
    "confidence": "OBSERVED",
    "chip": "READ"
@@ -128,7 +155,7 @@
   {
    "agent": "ALL",
    "kind": "shared lesson",
-   "observation": "22 scripts scan the scripts directory without excluding themselves",
+   "observation": "24 scripts scan the scripts directory without excluding themselves",
    "question": "Each of you found this alone. Which other lesson has one of you learned that the rest are still about to learn?",
    "why": "A checker whose search space includes itself reports clean and means nothing. Five agents discovered this separately in one day and none told the others.",
    "confidence": "OBSERVED",

@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T06:44:26.591Z",
+ "generatedAt": "2026-08-23T06:52:20.437Z",
  "purpose": "Checks output against the failure classes in our own error ledger — things that actually happened here, not generic quality rules.",
  "runsOn": "output, never intent. What I meant to do is not evidence.",
  "classesChecked": [
@@ -13,12 +13,6 @@
   "coverage overclaim"
  ],
  "problems": [
-  {
-   "errorClass": "windowless figure",
-   "what": "dailyThree.raw.price = 1247.9",
-   "why": "A chipped figure with no date, window or as-of field cannot be defended. This is the exact shape of error 18: a historical average published as a current price.",
-   "ledgerRef": 18
-  },
   {
    "errorClass": "ungated publication",
    "what": "1 card generator(s) are not in the pipeline: card-composite.mjs",
@@ -36,6 +30,12 @@
    "what": "35 rendered card(s) exist",
    "why": "Nothing here can tell whether they LOOK right — clipping, overlap, a wordmark colliding with a stat row. Every card shown to a person must be opened and looked at first. That rule was broken twice today and both failures reached Tyler.",
    "ledgerRef": 18
+  },
+  {
+   "errorClass": "secondary consensus",
+   "what": "6 fact(s) rest only on secondary sources",
+   "why": "Sources agreeing with each other is often one source repeated. Anything we can check against our own data must be checked before it is published.",
+   "ledgerRef": 21
   }
  ]
 }

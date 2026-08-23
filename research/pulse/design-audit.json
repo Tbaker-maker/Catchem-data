@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-08-23T06:44:22.668Z",
+  "generatedAt": "2026-08-23T06:52:19.846Z",
   "audited": "10 shipped surfaces, 35 minted cards",
   "principle": "A linter asks whether the CSS is valid. A design lead asks whether the page was DESIGNED. The tells of an undesigned page are countable: too many type sizes, too many near-identical greys, an accent used everywhere so it accents nothing.",
   "blindSpot": "It cannot SEE. It counts and measures. It cannot tell you a page is ugly, only that the choices behind it were not made deliberately.",
   "counts": {
-    "high": 5,
+    "high": 4,
     "medium": 5,
     "low": 0
   },
@@ -50,13 +50,6 @@
       "what": "13 distinct colours",
       "why": "Beyond a dozen, the palette stops being a palette. Most of the extras are near-duplicate greys nobody chose on purpose.",
       "fix": "Reduce to tokens. If two greys differ by less than 6% luminance, they are one grey."
-    },
-    {
-      "surface": "the-pulse.html",
-      "severity": "high",
-      "what": "remote fonts with no local fallback",
-      "why": "On a slow connection the page renders in the browser default, which is Times. First impressions do not get a second attempt.",
-      "fix": "Add system-ui and a generic family to every font stack."
     },
     {
       "surface": "faq.html",

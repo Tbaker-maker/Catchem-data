@@ -152,6 +152,15 @@ const out = { generatedAt: new Date().toISOString(),
   scope: "Measures structure, density, retention hooks and countable visual choices. It does NOT judge how anything looks — chat cannot see the app, and guessing at aesthetics is the failure the No-Guessing Law exists to stop.",
   findings, forHumanEyes,
   note: "The questions above are for whoever has eyes. They are deliberately specific: 'review the design' is a request nobody can act on." };
+  // Route the eyes-only questions into the shared queue so they reach somebody
+  // rather than sitting in this agent's own report.
+  try {
+    const { ask } = await import("./ask-eyes.mjs");
+    for (const q of (out.questionsForHumanEyes ?? []).slice(0, 6))
+      await ask("experience", { question: typeof q === "string" ? q : (q.question ?? String(q)), who: "cc" });
+  } catch {}
+
 await writeFile(join(ROOT, "research/pulse/experience-report.json"), JSON.stringify(out, null, 1));
 console.log(`✓ experience: ${findings.length} measurable finding(s) · ${forHumanEyes.length} questions routed to human eyes`);
 for (const f of findings) console.log(`  ${f.lane.padEnd(14)} ${f.observation}`);
+

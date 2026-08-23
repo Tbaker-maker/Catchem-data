@@ -194,6 +194,14 @@ const E = (surface, question, measured) => forEyes.push({ surface, question, mea
   }
 }
 
+
+// Route the for-eyes list into the shared queue so it reaches somebody rather
+// than sitting in this agent's own report.
+try {
+  const { ask } = await import("./ask-eyes.mjs");
+  for (const q of forEyes) await ask("designer", { question: q.question, evidence: q.measured, who: "cc" });
+} catch {}
+
 const bySeverity = { high: 0, medium: 0, low: 0 };
 for (const f of findings) bySeverity[f.severity]++;
 

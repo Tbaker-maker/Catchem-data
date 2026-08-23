@@ -137,7 +137,15 @@ else {
   for (const f of finds) (byKind[f.kind] ||= []).push(f);
   const spread = Object.values(byKind).flatMap(l => l.slice(0, 6));
 
-  await writeFile(join(ROOT, "research/pulse/theme-scout.json"), JSON.stringify({
+    // It can tell you a pattern is unusual. It can never tell you it is
+  // interesting, and that is the entire judgment.
+  try {
+    const { ask } = await import("./ask-eyes.mjs");
+    for (const f of spread.filter(f => f.needsHuman).slice(0, 4))
+      await ask("theme-scout", { question: f.headline + " — a theme, or a coincidence of naming?", evidence: f.why, who: "tyler" });
+  } catch {}
+
+await writeFile(join(ROOT, "research/pulse/theme-scout.json"), JSON.stringify({
     generatedAt: new Date().toISOString(),
     searched: `${cards.length} cards, ${new Set(cards.map(c => c.artist).filter(Boolean)).size} illustrators, ${new Set(cards.map(c => c.setId)).size} sets`,
     principle: "Searches the DATA rather than my memory of what a Pokémon fan knows. Memory finds the famous patterns and misses the odd ones.",
@@ -151,3 +159,4 @@ else {
     for (const f of list.slice(0, 2)) console.log(`     ${f.headline}`);
   }
 }
+

@@ -1,32 +1,32 @@
 {
- "generatedAt": "2026-08-23T06:13:17.330Z",
+ "generatedAt": "2026-08-23T06:52:19.520Z",
  "role": "Keeps the work organised, saved and on track. Silent unless something is genuinely slipping — a day with nothing to say is a day it did its job.",
  "speaking": 4,
  "speak": [
   {
    "kind": "unsaved",
-   "what": "2 hand-written file(s) changed and not committed.",
+   "what": "8 hand-written file(s) changed and not committed.",
    "why": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
    "owner": "chat",
    "confidence": "OBSERVED"
   },
   {
    "kind": "ignored",
-   "what": "4 supervisor problem(s) are open.",
+   "what": "6 supervisor problem(s) are open.",
    "why": "Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.",
    "owner": "chat",
    "confidence": "OBSERVED"
   },
   {
    "kind": "drift",
-   "what": "7 script(s) are not referenced anywhere: build-creators-page.mjs, build-editor.mjs, collision-guard.mjs, discovery-sweep.mjs.",
+   "what": "8 script(s) are not referenced anywhere: build-creators-page.mjs, build-editor.mjs, collision-guard.mjs, discovery-sweep.mjs.",
    "why": "A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.",
    "owner": "chat",
    "confidence": "OBSERVED"
   },
   {
    "kind": "drift",
-   "what": "42 JSON files in research/pulse.",
+   "what": "45 JSON files in research/pulse.",
    "why": "A directory nobody can scan is a directory where something goes missing without being noticed.",
    "owner": "chat",
    "confidence": "OBSERVED"
@@ -34,6 +34,6 @@
  ],
  "quiet": [
   "9 open commitment(s), all recent",
-  "311 commits / 28 written records in the last few days"
+  "318 commits / 28 written records in the last few days"
  ]
 }

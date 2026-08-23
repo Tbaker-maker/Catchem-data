@@ -31,6 +31,7 @@ const api = await J("research/pulse/api-strategy.json");
 const tch = await J("research/pulse/teacher.json");
 const scout = await J("research/pulse/theme-scout.json");
 const des = await J("research/pulse/design-audit.json");
+const oq = await J("research/pulse/open-questions.json");
 const dec = await J("research/pulse/decision-audit.json");
 const bias = await J("research/pulse/bias-guard.json");
 const dpl = await J("research/pulse/domain-plausibility.json");
@@ -272,6 +273,19 @@ if (des?.counts?.high) {
   say(`${des.counts.high} high, ${des.counts.medium} medium across ${des.audited}.`);
   for (const f of (des.findings ?? []).filter(f => f.severity === "high").slice(0, 3)) say(`- **${f.surface}** — ${f.what}. *${f.fix}*`);
   say();
+}
+
+{
+  const unanswered = (oq?.questions ?? []).filter(q => !q.answer);
+  if (unanswered.length) {
+    const forTyler = unanswered.filter(q => q.who === "tyler");
+    const forCC = unanswered.filter(q => q.who === "cc");
+    say(`## What the agents cannot answer themselves`);
+    say(`${unanswered.length} open — ${forCC.length} need eyes on a rendered page, ${forTyler.length} need a decision.`);
+    for (const q of forTyler.slice(0, 3)) say(`- **NEEDS A HUMAN** [${q.agent}] ${q.question}`);
+    for (const q of forCC.slice(0, 3)) say(`- [${q.agent}] ${q.question}`);
+    say();
+  }
 }
 
 say(`---`);

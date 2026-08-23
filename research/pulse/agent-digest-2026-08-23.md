@@ -19,17 +19,17 @@ A product we featured has gone quiet on us. Either it stopped trading or we brok
 - **data/agent-history.json** — Corrupt it — empty object, missing top-level key, wrong types — and see which of its 2 readers notices. Then decide which of them SHOULD have.
 - **data/card-catalogue.json** — Corrupt it — empty object, missing top-level key, wrong types — and see which of its 4 readers notices. Then decide which of them SHOULD have.
 
-9 thing(s) that work and could work better — the top three:
+8 thing(s) that work and could work better — the top three:
 - *tool idea (hypothesis)* — The knowledge base is only used for one fact a day. The same sourced facts could power a "why is this card like this" explainer on every product page — set context, print quirks, what makes it odd. It compounds with every fact added.
-- *knowledge* — The knowledge base holds 12 verified facts. This is the asset that compounds — instruments can be rebuilt in a weekend, a decade of sourced facts cannot. A steady few per week beats a burst.
 - *unused output* — artist-instruments.json is written every run and read by nothing — not another script, not the feed. Either surface it (the app, the Pulse, a creator tool) or stop generating it. Work that runs daily and reaches nobody is the most expensive kind.
+- *unused output* — card-guard.json is written every run and read by nothing — not another script, not the feed. Either surface it (the app, the Pulse, a creator tool) or stop generating it. Work that runs daily and reaches nobody is the most expensive kind.
 
 ## The agents themselves
 **NEEDS A HUMAN — the supervisor flagged the watchers:**
-- teacher: FARMING — findings climbed 14 → 14 → 15 → 15 across four runs with nothing resolved. Volume is not work.
-- teacher: BROKEN RECORD — 12 finding(s) repeated three runs running (e.g. "in a rut::breaker"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
-- teacher: OVER-BUDGET — 15 findings against a ceiling of 14. An unreadable list is an unread list.
-- creator: OVER-BUDGET — 15 findings against a ceiling of 10. An unreadable list is an unread list.
+- designer: BROKEN RECORD — 7 finding(s) repeated three runs running (e.g. "medium::14 distinct colours"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
+- theme-scout: BROKEN RECORD — 23 finding(s) repeated three runs running (e.g. "the one-off::Ken Sugimori drew Ampharos exactly on"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
+- teacher: FARMING — findings climbed 16 → 16 → 17 → 17 across four runs with nothing resolved. Volume is not work.
+- teacher: BROKEN RECORD — 14 finding(s) repeated three runs running (e.g. "in a rut::breaker"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 
 ## If we expanded
 Pricing 50 more cards would unlock 17 artist cohorts and make 2018 catalogue cards analysable. That is Tyler's call, not the machine's.
@@ -64,7 +64,7 @@ Gaps in what we watch:
 
 **Chat (12):** top — The Today screen carries 17 sections: The Daily Three, 🗳 Rip or Hold?, Biggest movers, Set the app up for you, Movers, Release radar… *[QUEUE]*
 
-*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 0 ACT NOW, 9 QUEUE, 8 WATCH, 22 filed without surfacing, 4 confirmations.*
+*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 0 ACT NOW, 9 QUEUE, 8 WATCH, 29 filed without surfacing, 4 confirmations.*
 ## The creator cheat code
 *Could somebody open this, hit record within two minutes, and sound like the most informed voice in the hobby without pausing to look anything up? Every pause is a cut.*
 - **a visual that runs itself** — 35 card images minted today. *The gap is that they are files in a repo. A creator needs them one tap from the angle they picked, not from a folder.*
@@ -76,16 +76,16 @@ Nothing unusual, or not enough history to tell — 5 days of tape so far. Anomal
 
 ## Where today's story goes
 - **X** — "Paldean Fates listings moved -66.7% while its print window closes."
-- **YouTube** — Journey Together Elite Trainer Box — "Sealed carries a 139.4% premium over the cost of its packs bought loose — the widest gap of that kind we track today."
+- **YouTube** — Rebel Clash Elite Trainer Box — "Sealed carries a 376.9% premium over the cost of its packs bought loose — the widest gap of that kind we track today."
 - **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 99.4."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
 
 ## Something is slipping
-- **unsaved** — 2 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
-- **ignored** — 4 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
-- **drift** — 7 script(s) are not referenced anywhere: build-creators-page.mjs, build-editor.mjs, collision-guard.mjs, discovery-sweep.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
-- **drift** — 42 JSON files in research/pulse. *A directory nobody can scan is a directory where something goes missing without being noticed.*
+- **unsaved** — 8 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
+- **ignored** — 6 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
+- **drift** — 8 script(s) are not referenced anywhere: build-creators-page.mjs, build-editor.mjs, collision-guard.mjs, discovery-sweep.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
+- **drift** — 45 JSON files in research/pulse. *A directory nobody can scan is a directory where something goes missing without being noticed.*
 
 ## Legal standing
 Nothing has tripped. Highest live risk: **Effort-based consideration in the berry system, combined with the first live draw.** — It is the only item that is both imminent and genuinely uncertain. The IP question is larger but not triggered until revenue; registration and tax thresholds are comfortably clear at current prize values.
@@ -108,7 +108,26 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 
 ## Who is catching our mistakes
 - **Tyler catches 13 of 15 incidents; the machines catch 2** — *Every guard here was written by the party being checked. If the human keeps finding what the tooling misses, the tooling is calibrated to what I already believed rather than to what actually goes wrong. That is what self-bias looks like from the outside — not a wrong rule, an absent one.*
-- **1 error class(es) in the ledger have no matching check: secondary consensus contradicted by primary da** — *I chose which classes the verifier covers, and I am the one it checks. Any class I skipped is a mistake I decided was not worth guarding — which is exactly the decision I should not be making alone.*
+
+## Post ideas nobody looked for
+- **Ken Sugimori drew Ampharos exactly once** — Ken Sugimori has 729 cards. Exactly one is a Ampharos.
+- **Ken Sugimori drew Azumarill exactly once** — Ken Sugimori has 729 cards. Exactly one is a Azumarill.
+- **Mitsuhiro Arita drew Houndoom exactly once** — Mitsuhiro Arita has 519 cards. Exactly one is a Houndoom.
+
+## Design
+4 high, 5 medium across 10 shipped surfaces, 35 minted cards.
+- **faq.html** — remote fonts with no local fallback. *Add system-ui and a generic family to every font stack.*
+- **image-contact-sheet.html** — the accent colour appears 134 times. *Spend it in two places: the active state and the one primary action. Everything else greys.*
+- **faq.html** — no generator writes this page. *Either give it a generator or delete it. A page nothing owns cannot be maintained.*
+
+## What the agents cannot answer themselves
+15 open — 12 need eyes on a rendered page, 3 need a decision.
+- **NEEDS A HUMAN** [theme-scout] 14 Pokémon share the "-eon" ending — a theme, or a coincidence of naming?
+- **NEEDS A HUMAN** [theme-scout] 7 Pokémon share the "ite" ending — a theme, or a coincidence of naming?
+- **NEEDS A HUMAN** [theme-scout] 10 Pokémon share the "-ish" ending — a theme, or a coincidence of naming?
+- [designer] build.html: 1 font sizes sit within 2px of a neighbour (14). Are those distinct steps or the same intent typed twice?
+- [designer] corrections.html: 5 font sizes sit within 2px of a neighbour (13, 14, 14.5, 15, 15.5). Are those distinct steps or the same intent typed twice?
+- [designer] coverage.html: 2 font sizes sit within 2px of a neighbour (14, 15). Are those distinct steps or the same intent typed twice?
 
 ---
 *Written by the agents, for a person. If a section here never leads to an action, that section should be deleted rather than tolerated.*

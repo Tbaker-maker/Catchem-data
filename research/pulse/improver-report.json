@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-08-23T00:12:28.161Z",
+ "generatedAt": "2026-08-23T06:47:38.636Z",
  "measure": "Our own doctrine, not generic best practice. Generic advice is free and worthless.",
  "counts": {
-  "total": 15
+  "total": 16
  },
  "ideas": [
   {
@@ -13,13 +13,6 @@
    "confidence": "HYPOTHESIS"
   },
   {
-   "area": "knowledge",
-   "observation": "The knowledge base holds 12 verified facts.",
-   "suggestion": "This is the asset that compounds — instruments can be rebuilt in a weekend, a decade of sourced facts cannot. A steady few per week beats a burst.",
-   "effort": "ongoing",
-   "confidence": "OBSERVED"
-  },
-  {
    "area": "unused output",
    "observation": "artist-instruments.json is written every run and read by nothing — not another script, not the feed.",
    "suggestion": "Either surface it (the app, the Pulse, a creator tool) or stop generating it. Work that runs daily and reaches nobody is the most expensive kind.",
@@ -28,35 +21,35 @@
   },
   {
    "area": "unused output",
-   "observation": "content-sanity.json is written every run and read by nothing — not another script, not the feed.",
+   "observation": "card-guard.json is written every run and read by nothing — not another script, not the feed.",
    "suggestion": "Either surface it (the app, the Pulse, a creator tool) or stop generating it. Work that runs daily and reaches nobody is the most expensive kind.",
    "effort": "small",
    "confidence": "OBSERVED"
   },
   {
    "area": "repetition",
-   "observation": "date-to-day-key is implemented inline 32 times across the pipeline.",
+   "observation": "date-to-day-key is implemented inline 38 times across the pipeline.",
    "suggestion": "Centralise it — scripts/rotate.mjs already centralises day maths. Repeated maths is where two places drift and only one gets fixed.",
    "effort": "small",
    "confidence": "OBSERVED"
   },
   {
    "area": "repetition",
-   "observation": "money rounding is implemented inline 11 times across the pipeline.",
+   "observation": "money rounding is implemented inline 12 times across the pipeline.",
    "suggestion": "Centralise it — one helper would make cents behave identically everywhere. Repeated maths is where two places drift and only one gets fixed.",
    "effort": "small",
    "confidence": "OBSERVED"
   },
   {
    "area": "pipeline size",
-   "observation": "The daily run imports 54 steps from one file.",
+   "observation": "The daily run imports 62 steps from one file.",
    "suggestion": "Consider grouping them (intake → compute → publish → agents) so the order is legible at a glance. A long flat list is where an ordering mistake hides.",
    "effort": "medium",
    "confidence": "OBSERVED"
   },
   {
    "area": "maintainability",
-   "observation": "compute-derived.mjs is 62KB.",
+   "observation": "compute-derived.mjs is 63KB.",
    "suggestion": "Large files are where two people edit the same function on the same day. Splitting by concern would make collisions rarer and reviews honest.",
    "effort": "medium",
    "confidence": "OBSERVED"

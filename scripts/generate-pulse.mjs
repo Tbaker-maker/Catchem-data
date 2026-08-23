@@ -650,6 +650,8 @@ try { await import("./domain-plausibility.mjs"); } catch (e) { console.warn(`  â
 try { await import("./build-coverage.mjs"); } catch (e) { console.warn(`  âš  coverage page: ${e.message}`); }
 await import("./windowless-price-guard.mjs");
 await import("./content-sanity.mjs");
+try { await import("./designer.mjs"); } catch (e) { console.warn("  designer: " + e.message); }
+try { await import("./theme-scout.mjs"); } catch (e) { console.warn("  theme scout: " + e.message); }
 await import("./layout-check.mjs");
 await import("./slop-guard.mjs");
 await import("./card-guard.mjs");
