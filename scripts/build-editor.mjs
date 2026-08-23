@@ -232,9 +232,20 @@ const LAYOUTS = ${JSON.stringify(Object.fromEntries(Object.entries(LAYOUTS).map(
 const SUPPORTED = Object.keys(LAYOUTS).map(Number);
 let INDEX = [], tray = [], blob = null;
 
+// CONSTRUCTED URLS 404 TO A CARD BACK. Newer sets serve from a different host
+// entirely, and a 404 here returns a valid 200 PNG of the wrong side of a card.
+// card-composite was fixed for this yesterday; the editor still had the old
+// code. The index carries no URL, so: try one host, fall back to the other on
+// error, and show a visible failure rather than a plausible wrong image.
 const imgUrl = (id) => "https://images.pokemontcg.io/" + id.slice(0, id.lastIndexOf("-")) + "/" + id.slice(id.lastIndexOf("-") + 1) + "_hires.png";
+const imgAlt = (id) => "https://images.scrydex.com/pokemon/" + id + "/large";
+function imgTag(c, cls){
+  const alt = imgAlt(c.i).replace(/'/g, "");
+  return "<img src='" + imgUrl(c.i) + "' alt='" + String(c.n).replace(/'/g, "") +
+    "' onerror='this.onerror=null;this.src=&quot;" + alt + "&quot;'>";
+}
 
-fetch("card-index.json", { signal: AbortSignal.timeout(20000) }).then(r => r.json()).then(d => { INDEX = d; search(); })
+fetch("card-index.json", { signal: AbortSignal.timeout(20000) }).then(r => r.json()).then(d => { INDEX = d; renderThemes(); search(); })
   .catch(() => { document.getElementById("res").innerHTML = "<div class='empty'>could not load the card index</div>"; });
 
 const el = id => document.getElementById(id);

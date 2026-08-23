@@ -141,6 +141,13 @@
    "cannotCatch": "A shape it has never been bitten by. Every pattern here was added AFTER something shipped, so the table is a record of our history, not a model of risk — it is structurally blind to the next novel failure and will stay so until that one costs a morning too. It also matches on SOURCE TEXT, so a guard that carries a shape inside a string or a comment reads as carrying the shape, and one that expresses the same fault through a helper or a computed value reads as clean.",
    "coveredBy": "Nothing automatic. New shapes arrive only from a real failure being written up — which is why the report matters more than the scan.",
    "reviewed": "2026-08-23"
+  },
+  "editor-smoke.mjs": {
+   "cannotCatch": "Whether the page LOOKS right, and whether the images actually resolve. It runs the emitted script against a minimal DOM and confirms cards and themes render — it has no browser, no layout, no network, so a page that loads perfectly and shows 24 card backs passes cleanly.",
+   "knownPatterns": [],
+   "coveredBy": "CC with screenshots, and the constructed-URL fallback",
+   "reviewed": "2026-08-23",
+   "history": "Written after the editor shipped three times in two days rendering nothing — verified to PARSE each time, never verified to WORK."
   }
  }
 }
