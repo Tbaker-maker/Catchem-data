@@ -28,8 +28,8 @@ A product we featured has gone quiet on us. Either it stopped trading or we brok
 **NEEDS A HUMAN — the supervisor flagged the watchers:**
 - designer: BROKEN RECORD — 6 finding(s) repeated three runs running (e.g. "medium::32 distinct colours"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 - theme-scout: BROKEN RECORD — 23 finding(s) repeated three runs running (e.g. "the one-off::Ken Sugimori drew Ampharos exactly on"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
-- teacher: FARMING — findings climbed 14 → 15 → 15 → 15 across four runs with nothing resolved. Volume is not work.
 - teacher: BROKEN RECORD — 13 finding(s) repeated three runs running (e.g. "in a rut::breaker"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
+- teacher: OVER-BUDGET — 15 findings against a ceiling of 14. An unreadable list is an unread list.
 
 ## If we expanded
 Pricing 50 more cards would unlock 17 artist cohorts and make 2018 catalogue cards analysable. That is Tyler's call, not the machine's.
@@ -76,7 +76,7 @@ Nothing unusual, or not enough history to tell — 5 days of tape so far. Anomal
 
 ## Where today's story goes
 - **X** — "Paldean Fates listings moved -66.7% while its print window closes."
-- **YouTube** — Rebel Clash Elite Trainer Box — "Sealed carries a 376.9% premium over the cost of its packs bought loose — the widest gap of that kind we track today."
+- **YouTube** — Journey Together Elite Trainer Box — "Sealed carries a 139.4% premium over the cost of its packs bought loose — the widest gap of that kind we track today."
 - **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 99.4."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
@@ -115,7 +115,7 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 - **Mitsuhiro Arita drew Houndoom exactly once** — Mitsuhiro Arita has 525 cards. Exactly one is a Houndoom.
 
 ## What the agents cannot answer themselves
-20 open — 14 need eyes on a rendered page, 6 need a decision.
+21 open — 14 need eyes on a rendered page, 7 need a decision.
 - **NEEDS A HUMAN** [theme-scout] 14 Pokémon share the "-eon" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 7 Pokémon share the "ite" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 10 Pokémon share the "-ish" ending — a theme, or a coincidence of naming?

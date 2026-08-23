@@ -1877,3 +1877,34 @@ failure quiet.
 
 Guards now carry `offPipeline` so the audit can include them without demanding
 they appear in a pipeline they were never part of.
+
+## TIMING CONFOUNDED FORMAT (Aug 23 2026)
+The Arita pairing — Base Charizard beside the 151 Blastoise ex, "Twenty-four
+years apart. Same illustrator." — did **154 views** on its first outing at a bad
+hour.
+
+Reposted at 9:18pm it did **18,800 views, 401 likes, 14 replies, 37 bookmarks.**
+
+**Same cards. Same caption. Same format. 122 times the reach.**
+
+WHAT I GOT WRONG: I logged 154 against the crop's 791 and concluded the crop
+shape beat the pairing shape five to one. I had **one data point per shape**,
+and I drew a conclusion about FORMAT from numbers that were mostly measuring
+HOUR. That is the commonest mistake in small-sample analysis, and I walked into
+it in the same session where I told Tyler the log needed twenty entries before
+it meant anything. **I said the number and then reasoned as though I had not.**
+
+WHAT IS ACTUALLY TRUE, on the evidence we now have: **the two-card pairing is
+the strongest shape we have produced.** It carries a real claim, the images make
+the argument without the caption, and the caption is one line that could be read
+aloud.
+
+THE RULE: **the hour is not optional metadata.** Any comparison between shapes
+that does not hold posting time roughly constant is measuring the time. Until
+several posts of the SAME shape exist at DIFFERENT hours, the outcome log ranks
+conditions rather than formats, and it now says so in its own file.
+
+AND THE THING WORTH REPEATING: Tyler's reply on the post was *"this visual was
+built by our in-house content creator portal."* The tool made the image, he
+chose the pairing, and he wrote the words. That division has now produced our
+best post twice.
