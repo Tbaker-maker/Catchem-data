@@ -33,7 +33,8 @@
     4,
     6,
     9
-   ]
+   ],
+   "shape": "list"
   },
   {
    "id": "babies",
@@ -63,7 +64,8 @@
    "bestAt": [
     6,
     9
-   ]
+   ],
+   "shape": "list"
   },
   {
    "id": "ghosts",
@@ -86,7 +88,8 @@
     3,
     6,
     9
-   ]
+   ],
+   "shape": "list"
   },
   {
    "id": "sleeping",
@@ -121,7 +124,9 @@
     3,
     4
    ],
-   "note": "Widened 2026-08-23. Seven strictly-sleeping Pokemon produced three art-safe credited cards, which is a coincidence rather than a theme. Tired is a MOOD - Slowpoke and Slakoth are not asleep, they just look the way 2am feels, and that is the post."
+   "note": "Widened 2026-08-23. Seven strictly-sleeping Pokemon produced three art-safe credited cards, which is a coincidence rather than a theme. Tired is a MOOD - Slowpoke and Slakoth are not asleep, they just look the way 2am feels, and that is the post. Merged with late-night 2026-08-23 — the two were the same theme written twice, found by the duplicate check rather than by reading.",
+   "shape": "list",
+   "postAt": "late evening"
   },
   {
    "id": "artist-career",
@@ -133,7 +138,8 @@
    "bestAt": [
     2,
     4
-   ]
+   ],
+   "shape": "artist-span"
   },
   {
    "id": "many-hands",
@@ -145,7 +151,8 @@
    "bestAt": [
     4,
     8
-   ]
+   ],
+   "shape": "many-hands"
   },
   {
    "id": "generations",
@@ -156,7 +163,8 @@
    "why": "Three eras stacked as rows. It asks rather than tells, which is what gets a reply instead of a scroll.",
    "bestAt": [
     9
-   ]
+   ],
+   "shape": "eras"
   },
   {
    "id": "historic",
@@ -168,7 +176,8 @@
    "bestAt": [
     1,
     2
-   ]
+   ],
+   "shape": "story"
   },
   {
    "id": "set-showcase",
@@ -181,7 +190,8 @@
     4,
     6,
     9
-   ]
+   ],
+   "shape": "one-set"
   },
   {
    "id": "first-and-last",
@@ -192,7 +202,8 @@
    "why": "A debut is a date in the data, not a judgment — and the contrast with their best-known work does the rest.",
    "bestAt": [
     2
-   ]
+   ],
+   "shape": "debut"
   },
   {
    "id": "battle",
@@ -203,7 +214,8 @@
    "why": "A battle only works if it is CLOSE. A $2,000 card against a $12 one is not a debate, it is a price check with a question mark on it. Candidates are matched within 45% on value so nobody can settle it by pointing at a number - which forces an actual opinion, and an opinion is a reply.",
    "bestAt": [
     2
-   ]
+   ],
+   "shape": "battle"
   },
   {
    "id": "controversy",
@@ -215,7 +227,8 @@
    "bestAt": [
     1,
     2
-   ]
+   ],
+   "shape": "story-controversial"
   },
   {
    "id": "pseudo-legendary",
@@ -241,7 +254,8 @@
     9
    ],
    "kind": "named list",
-   "verified": "10 of 10 present in the catalogue"
+   "verified": "10 of 10 present in the catalogue",
+   "shape": "list"
   },
   {
    "id": "mythicals",
@@ -277,7 +291,8 @@
     9
    ],
    "kind": "named list",
-   "verified": "20 of 20 present in the catalogue"
+   "verified": "20 of 20 present in the catalogue",
+   "shape": "list"
   },
   {
    "id": "fossils",
@@ -314,7 +329,8 @@
     9
    ],
    "kind": "named list",
-   "verified": "21 of 21 present in the catalogue"
+   "verified": "21 of 21 present in the catalogue",
+   "shape": "list"
   },
   {
    "id": "cats",
@@ -344,7 +360,8 @@
     9
    ],
    "kind": "named list",
-   "verified": "15 of 15 present in the catalogue"
+   "verified": "15 of 15 present in the catalogue",
+   "shape": "list"
   },
   {
    "id": "dogs",
@@ -374,7 +391,8 @@
     9
    ],
    "kind": "named list",
-   "verified": "15 of 15 present in the catalogue"
+   "verified": "15 of 15 present in the catalogue",
+   "shape": "list"
   },
   {
    "id": "birds",
@@ -406,7 +424,8 @@
     9
    ],
    "kind": "named list",
-   "verified": "16 of 16 present in the catalogue"
+   "verified": "16 of 16 present in the catalogue",
+   "shape": "list"
   },
   {
    "id": "ice",
@@ -433,7 +452,8 @@
     9
    ],
    "kind": "named list",
-   "verified": "11 of 11 present in the catalogue"
+   "verified": "11 of 11 present in the catalogue",
+   "shape": "list"
   },
   {
    "id": "starters",
@@ -475,7 +495,8 @@
     9
    ],
    "kind": "named list",
-   "verified": "27 of 27 present in the catalogue"
+   "verified": "27 of 27 present in the catalogue",
+   "shape": "list"
   },
   {
    "id": "dragons",
@@ -511,7 +532,8 @@
     9
    ],
    "kind": "named list",
-   "verified": "20 of 20 present in the catalogue"
+   "verified": "20 of 20 present in the catalogue",
+   "shape": "list"
   },
   {
    "id": "beach",
@@ -542,7 +564,8 @@
     9
    ],
    "kind": "named list",
-   "verified": "16 of 16 present in the catalogue"
+   "verified": "16 of 16 present in the catalogue",
+   "shape": "list"
   },
   {
    "id": "megas",
@@ -550,9 +573,33 @@
    "hook": "Which mega deserved to come back?",
    "why": "Gone for years, then back in 2025. Everybody has one they missed.",
    "members": [
-    "Mega"
+    "Mega Lopunny",
+    "Mega Absol",
+    "Mega Latias",
+    "Mega Venusaur",
+    "Mega Gardevoir",
+    "Mega Kangaskhan",
+    "Mega Lucario",
+    "Mega Charizard",
+    "Mega Sharpedo",
+    "Mega Starmie",
+    "Mega Clefable",
+    "Mega Zygarde",
+    "Mega Floette",
+    "Mega Dragalge",
+    "Mega Greninja",
+    "Mega Meganium",
+    "Mega Emboar",
+    "Mega Feraligatr",
+    "Mega Froslass",
+    "Mega Eelektross",
+    "Mega Diancie",
+    "Mega Hawlucha",
+    "Mega Gengar",
+    "Mega Scrafty",
+    "Mega Dragonite",
+    "Mega Sableye"
    ],
-   "matchMode": "startsWith",
    "bestAt": [
     4,
     6,
@@ -560,37 +607,13 @@
     9
    ],
    "kind": "named list",
-   "verified": "1 of 1 present in the catalogue"
-  },
-  {
-   "id": "late-night",
-   "name": "Cards that want you to go to bed",
-   "kind": "card text",
-   "hook": "Which of these is the most 2am?",
-   "why": "Tyler posted Slakoth at 2am after seventeen hours of coding and its attack is called Take It Easy. Neither of us knew — the card wrote the joke. This finds that joke by READING the cards instead of by me listing Pokemon I think look tired, which is the difference between a grouping derived from the data and one asserted from a mood.",
-   "match": {
-    "field": "attackNames",
-    "any": [
-     "take it easy",
-     "sleep",
-     "nap",
-     "rest",
-     "yawn",
-     "dream",
-     "slack",
-     "snooze",
-     "lazy",
-     "doze",
-     "sluggish",
-     "drowsy"
-    ]
-   },
-   "members": [],
-   "bestAt": "late evening"
+   "verified": "26 distinct Mega forms in the catalogue",
+   "shape": "list"
   }
  ],
  "openQuestions": [
   "Aesthetically pleasing has no honest basis yet. Rarity is a proxy for effort, not for beauty, and we should not pretend otherwise. It needs either a stored list somebody stands behind or a community vote — and a vote would be better content than our opinion anyway.",
   "Type-based themes (all Water, all Dragon) would be easy and are not in our data — the catalogue has no type field. Worth adding if a source has it."
- ]
+ ],
+ "shapeRule": "Every theme declares a SHAPE and the editor dispatches on it. Dispatching on id meant four themes produced silently nothing and two shared a branch and returned identical results. A theme without a shape now fails visibly instead of quietly."
 }

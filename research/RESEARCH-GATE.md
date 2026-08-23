@@ -117,6 +117,8 @@ fixing the class is.
 
 | 28 | Told Tyler the card editor was "verified working". Opened from file:// it showed no images, no themes and no search results — Chrome blocks fetch of a sibling file, so INDEX stayed empty and all three symptoms followed from one cause | Tyler | Tested the happy path with a fake dependency | Index EMBEDDED rather than fetched; offline-smoke.mjs runs the page with fetch REJECTING, which is the real condition |
 
+| 29 | Only the artist themes worked in the editor; two returned identical results and four produced nothing at all | Tyler, by clicking | Dispatch on ID rather than on a declared shape — a missing branch fails silently | Every theme declares a SHAPE in data; theme-smoke.mjs proves each produces and no two are identical |
+
 **PATTERN, stated plainly:** 8 of 9 were caught by Tyler, not by the
 machine. Every guard above was built AFTER a human caught something.
 That is the honest state — the machine is now catching prices, but

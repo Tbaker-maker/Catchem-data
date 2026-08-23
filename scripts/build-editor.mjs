@@ -240,6 +240,10 @@ not a Pokémon decision, and you can still use them.</div>
 const THEMES = ${JSON.stringify(themes?.themes ?? [])};
 const SETS = ${JSON.stringify(sets)};
 const CARD_INDEX = ${JSON.stringify(index)};
+// Sourced facts, so the 'story' shape has something true to build on. Only
+// VERIFIED ones ship — an unsourced claim on a card image is the one mistake
+// this whole project exists to avoid.
+const FACTS = ${JSON.stringify((await (async () => { try { return (JSON.parse(await readFile(join(ROOT, 'data/knowledge.json'), 'utf-8')).facts ?? []).filter(f => f.confidence === 'VERIFIED').map(f => ({ id: f.id, claim: f.claim })); } catch { return []; } })()))};
 const LAYOUTS = ${JSON.stringify(Object.fromEntries(Object.entries(LAYOUTS).map(([k, v]) => [k, { cols: v.cols, cardW: v.cardW, name: v.name }])))};
 const SUPPORTED = Object.keys(LAYOUTS).map(Number);
 let INDEX = [], tray = [], blob = null;
@@ -768,69 +772,151 @@ function buildIdeas(){
   if (!fCount || !fTheme) { box.innerHTML = ""; return; }
   const t = THEMES.find(x => x.id === fTheme);
   const pool = INDEX.filter(c => (!fSet || c.s === fSet) && HERO_RX.test(c.r || ""));
+  const need = fCount;
   const ideas = [];
 
-  if (t.kind === "named list") {
-    // A stored list, so the grouping is arguable rather than asserted.
-    const hits = pool.filter(c => t.members.some(m => c.n.startsWith(m)));
+  // BUILDERS BY SHAPE, not by id. buildIdeas used to switch on t.id, so four
+  // themes produced silently nothing and two shared a branch and returned
+  // identical results. Each theme now declares a SHAPE and dispatch is on that
+  // — a theme without a builder fails visibly instead of quietly.
+  const shape = t.shape || (t.kind === "named list" ? "list" : "unbuilt");
+
+  if (shape === "list") {
     const byMon = {};
-    for (const c of hits) { const m = t.members.find(x => c.n.startsWith(x)); if (!byMon[m]) byMon[m] = c; }
-    const picked = Object.values(byMon).slice(0, fCount);
-    if (picked.length === fCount) ideas.push({ title: t.name, sub: picked.map(c=>c.n).join(" · "), hook: t.hook, cards: picked });
-  }
-  // A theme whose membership is READ rather than declared. The word list is
-  // stored openly in themes.json so it can be argued with, exactly like a
-  // named list — the difference is that the match happens against a real
-  // field on the card instead of against a list of Pokemon somebody thought
-  // looked tired. Slakoth is in this because its attack is Take It Easy.
-  if (t.kind === "card text" && t.match) {
-    const words = (t.match.any || []).map(w => w.toLowerCase());
-    const hits = pool.filter(c => (c[t.match.field === "attackNames" ? "k" : t.match.field] || [])
-      .some(v => words.some(w => String(v).toLowerCase().includes(w))));
-    const seen = new Map();
-    for (const c of hits) if (!seen.has(c.n)) seen.set(c.n, c);
-    const picked = [...seen.values()].slice(0, fCount);
-    if (picked.length === fCount)
-      ideas.push({ title: t.name, sub: picked.map(c => c.n).join(" · "), hook: t.hook, cards: picked });
+    for (const c of pool) {
+      const m = (t.members || []).find(x => c.n.startsWith(x));
+      if (!m) continue;
+      if (!byMon[m] || (c.p || 0) > (byMon[m].p || 0)) byMon[m] = c;
+    }
+    const picked = Object.values(byMon).sort((a, b) => (b.p || 0) - (a.p || 0)).slice(0, need);
+    if (picked.length === need) ideas.push({ title: t.name, sub: picked.map(c => c.n).join(" · "), hook: t.hook, cards: picked });
   }
 
-  if (t.id === "many-hands") {
+  else if (shape === "many-hands") {
     const byName = {};
-    for (const c of pool) (byName[c.n.split(" ")[0]] ||= []).push(c);
+    for (const c of pool) if (c.a) (byName[c.n.split(" ")[0]] ||= []).push(c);
     for (const [mon, list] of Object.entries(byName)) {
       const seen = new Map();
-      for (const c of list) if (c.a && !seen.has(c.a)) seen.set(c.a, c);
-      if (seen.size >= fCount) ideas.push({ title: mon + " by " + fCount + " artists",
-        sub: [...seen.keys()].slice(0, fCount).join(" · "), hook: fCount + " artists. One " + mon + ". Which is definitive?",
-        cards: [...seen.values()].slice(0, fCount) });
+      for (const c of list) if (!seen.has(c.a)) seen.set(c.a, c);
+      if (seen.size >= need) ideas.push({ title: mon + " by " + need + " artists",
+        sub: [...seen.keys()].slice(0, need).join(" · "),
+        hook: need + " artists. One " + mon + ". Which is definitive?", cards: [...seen.values()].slice(0, need) });
       if (ideas.length >= 6) break;
     }
   }
-  if (t.id === "artist-career" || t.id === "first-and-last") {
+
+  else if (shape === "artist-span") {
+    // The FIRST and LAST card by one hand — the gap is the story.
     const byArtist = {};
-    for (const c of pool) if (c.a) (byArtist[c.a] ||= []).push(c);
+    for (const c of pool) if (c.a && c.y) (byArtist[c.a] ||= []).push(c);
     for (const [artist, list] of Object.entries(byArtist)) {
-      if (list.length < fCount) continue;
-      const sorted = list.sort((a,b) => (a.y||"") < (b.y||"") ? -1 : 1);
-      const span = Number(sorted[sorted.length-1].y) - Number(sorted[0].y);
-      if (span < 8) continue;
-      const picked = fCount === 2 ? [sorted[0], sorted[sorted.length-1]]
-        : sorted.filter((_,i,arr) => i % Math.max(1, Math.floor(arr.length/fCount)) === 0).slice(0, fCount);
-      if (picked.length !== fCount) continue;
+      const sorted = list.sort((a, b) => (a.y || "") < (b.y || "") ? -1 : 1);
+      const span = Number(sorted[sorted.length - 1].y) - Number(sorted[0].y);
+      if (span < 8 || sorted.length < need) continue;
+      const picked = need === 2 ? [sorted[0], sorted[sorted.length - 1]]
+        : sorted.filter((_, i, a) => i % Math.max(1, Math.floor(a.length / need)) === 0).slice(0, need);
+      if (picked.length !== need) continue;
       ideas.push({ title: artist, sub: picked.map(c => c.n + " " + c.y).join("  →  "),
         hook: span + " years apart. Same artist.", cards: picked });
       if (ideas.length >= 6) break;
     }
   }
-  if (t.id === "set-showcase" && fSet) {
-    const best = pool.slice(0, fCount);
-    if (best.length === fCount) ideas.push({ title: "The best of " + fSet, sub: best.map(c=>c.n).join(" · "),
-      hook: fCount + " from " + fSet + ". Which page are you filling first?", cards: best });
+
+  else if (shape === "debut") {
+    // Their EARLIEST card beside their best-known — a different claim entirely
+    // from the span, which is why sharing a branch was wrong.
+    const byArtist = {};
+    for (const c of pool) if (c.a && c.y) (byArtist[c.a] ||= []).push(c);
+    for (const [artist, list] of Object.entries(byArtist)) {
+      if (list.length < need) continue;
+      const first = list.slice().sort((a, b) => (a.y || "") < (b.y || "") ? -1 : 1)[0];
+      const best = list.slice().sort((a, b) => (b.p || 0) - (a.p || 0))[0];
+      if (first.i === best.i) continue;
+      const picked = [first, best].slice(0, need);
+      if (picked.length !== need) continue;
+      ideas.push({ title: artist + " started here", sub: first.n + " " + first.y + "  →  " + best.n + " " + best.y,
+        hook: "Everybody starts somewhere.", cards: picked });
+      if (ideas.length >= 6) break;
+    }
   }
 
-  box.innerHTML = ideas.length ? ideas.slice(0,6).map((idea,k) =>
-    \`<div class="idea" onclick="loadIdea(\${k})"><b>\${idea.title}</b><i>\${idea.sub}</i><div class="hook">\${idea.hook}</div></div>\`).join("")
-    : "<div class='empty'>nothing fits that combination — try a different count or set</div>";
+  else if (shape === "battle") {
+    // Two versions of one Pokemon, close on value — a battle nobody can settle
+    // by pointing at a price.
+    const byMon = {};
+    for (const c of pool) if (c.p && c.a) (byMon[c.n.split(" ")[0]] ||= []).push(c);
+    for (const [mon, list] of Object.entries(byMon)) {
+      const ranked = list.sort((a, b) => (b.p || 0) - (a.p || 0));
+      if (ranked.length < 2) continue;
+      const [a, b] = ranked;
+      if ((b.p / a.p) < 0.55) continue;
+      if (a.a === b.a && a.y === b.y) continue;
+      ideas.push({ title: mon + ": " + a.a + " or " + b.a, sub: a.s + "  vs  " + b.s,
+        hook: mon + ". " + a.s + " or " + b.s + "? No wrong answer, but you have one.", cards: [a, b].slice(0, need) });
+      if (ideas.length >= 6) break;
+    }
+  }
+
+  else if (shape === "one-set") {
+    const bySet = {};
+    for (const c of pool) (bySet[c.s] ||= []).push(c);
+    for (const [set, list] of Object.entries(bySet)) {
+      if (list.length < need) continue;
+      const picked = list.sort((a, b) => (b.p || 0) - (a.p || 0)).slice(0, need);
+      ideas.push({ title: "The best of " + set, sub: picked.map(c => c.n).join(" · "),
+        hook: need + " from " + set + ". Which page are you filling first?", cards: picked });
+      if (ideas.length >= 6) break;
+    }
+  }
+
+  else if (shape === "eras") {
+    // The same Pokemon across widely separated years.
+    const byMon = {};
+    for (const c of pool) if (c.y) (byMon[c.n.split(" ")[0]] ||= []).push(c);
+    for (const [mon, list] of Object.entries(byMon)) {
+      const years = [...new Set(list.map(c => c.y))].sort();
+      if (years.length < need) continue;
+      const step = Math.max(1, Math.floor(years.length / need));
+      const picked = years.filter((_, i) => i % step === 0).slice(0, need)
+        .map(y => list.filter(c => c.y === y).sort((a, b) => (b.p || 0) - (a.p || 0))[0]);
+      if (picked.length !== need || picked.some(c => !c)) continue;
+      const span = Number(picked[picked.length - 1].y) - Number(picked[0].y);
+      if (span < 8) continue;
+      ideas.push({ title: mon + " across " + span + " years", sub: picked.map(c => c.y).join(" → "),
+        hook: "Which era got " + mon + " right?", cards: picked });
+      if (ideas.length >= 6) break;
+    }
+  }
+
+  else if (shape === "story" || shape === "story-controversial") {
+    // Two questions, two slices. These shared one shape and walked the same
+    // list from the top, which is why two themes returned identical results.
+    const CONTROVERSIAL = /banned|censor|lawsuit|sued|withdrawn|absence|stopped|removed|pulled/i;
+    const source = shape === "story-controversial"
+      ? FACTS.filter(f => CONTROVERSIAL.test(f.claim))
+      : FACTS.filter(f => !CONTROVERSIAL.test(f.claim));
+    // Cards our knowledge base has something sourced to say about.
+    for (const f of source) {
+      const named = pool.filter(c => c.n.length >= 4 && f.claim.split(/[^A-Za-z0-9'-]+/).includes(c.n.split(" ")[0]));
+      if (named.length < need) continue;
+      const picked = named.sort((a, b) => (a.y || "") < (b.y || "") ? -1 : 1).slice(0, need);
+      ideas.push({ title: f.id.replace(/-/g, " "), sub: picked.map(c => c.n + " " + c.y).join("  →  "),
+        hook: f.claim.split(".")[0] + ".", cards: picked });
+      if (ideas.length >= 6) break;
+    }
+  }
+
+  else {
+    // A theme with no builder says so, rather than showing an empty box that
+    // looks like the tool is broken.
+    box.innerHTML = "<div class='empty'>" + t.name + " has no builder yet — pick another angle.</div>";
+    window.__ideas = [];
+    return;
+  }
+
+  box.innerHTML = ideas.length ? ideas.slice(0, 6).map((idea, k) =>
+    "<div class='idea' onclick='loadIdea(" + k + ")'><b>" + idea.title + "</b><i>" + idea.sub + "</i><div class='hook'>" + (idea.hook || "") + "</div></div>").join("")
+    : "<div class='empty'>Nothing fits " + (fSet || "that") + " at " + fCount + " cards. Widen the set or change the count.</div>";
   window.__ideas = ideas;
 }
 

@@ -2000,3 +2000,35 @@ AND THE HABIT TO KILL: I have now said "verified" about this file four times and
 been wrong three. **The word has to mean the thing was exercised the way it will
 actually be used** — opened from disk, no server, no network — or it means
 nothing at all.
+
+## A MISSING BRANCH FAILS SILENTLY (Tyler, Aug 23 2026)
+"The only thing that works in theme is artist, and the two themes give the same
+results. Nothing else works."
+
+Both exactly right. `buildIdeas` switched on theme **id**, so any theme whose id
+was not in the list produced **nothing at all** — and `artist-career` and
+`first-and-last` shared one branch, which is why two themes returned the same
+cards.
+
+**A switch on identity fails silently when a case is missing.** The theme
+appeared in the column, accepted a click, and returned an empty list that looked
+exactly like "nothing matched".
+
+THE STRUCTURAL FIX: every theme declares a **SHAPE** in `data/themes.json` and
+the builder dispatches on that. A theme without a shape now says so on screen
+rather than showing an empty box. Eight shapes: list, many-hands, artist-span,
+debut, battle, one-set, eras, story.
+
+WHAT THE NEW CHECK FOUND IMMEDIATELY, none of which anything else could see:
+- `megas` had one member — the literal string "Mega" — so it collapsed to a
+  single distinct match. Expanded to the 26 real forms.
+- `late-night` had `bestAt: "late evening"` where a list of CARD COUNTS
+  belonged, so every fit test compared characters to numbers and quietly failed.
+- `historic` and `controversy` both read the same fact list from the top and
+  returned the same cards. They are different questions and now read different
+  slices.
+- **Two themes were the same theme written twice.** I added "Cards that want you
+  to go to bed" without noticing "Pokémon caught napping" already existed.
+
+THE RULE: **no two themes may return an identical set.** That is now a test, and
+it is the only thing that would ever have caught the duplicate.
