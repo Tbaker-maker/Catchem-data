@@ -325,6 +325,24 @@
     "content"
    ],
    "recheckAfter": "2027-02-23"
+  },
+  {
+   "id": "artist-credit-backfill-gap",
+   "claim": "Missing illustrator credits in the community card dataset are a BACKFILL LAG, not a Pokemon decision. 1-4% of cards are missing artist data for every year from 2002 to 2023, but 43.7% of 2024 cards, 29.3% of 2025 and 23.8% of 2026. Every physical Pokemon card prints \"Illus. <name>\" on its face, so the credit exists and the dataset has not caught up.",
+   "sources": [
+    "our own card catalogue, 16,468 cards analysed by release year",
+    "pokemontcg.io community dataset"
+   ],
+   "verified": "2026-08-23",
+   "verifier": "chat",
+   "confidence": "VERIFIED",
+   "falsifier": "a recent card with no illustrator printed on the physical card, or a statement from the dataset maintainers that the omission is deliberate",
+   "note": "THE OPPORTUNITY: the gap is concentrated in exactly the sets people are opening right now - Surging Sparks 252, Mega Evolution 188, Prismatic 180, Stellar Crown 175. If we backfill illustrator credits for recent sets we would hold better artist data than the source everyone else uses, and artist-based content is the lane we have already proved works. It is also the kind of contribution worth giving back upstream.",
+   "usedBy": [
+    "content",
+    "universe-advisor"
+   ],
+   "recheckAfter": "2027-02-23"
   }
  ]
 }

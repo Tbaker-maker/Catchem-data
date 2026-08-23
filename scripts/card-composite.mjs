@@ -325,6 +325,23 @@ async function compose() {
   }
   if (LABEL) { g.fillStyle = "#f4f5f8"; g.font = "800 52px system-ui,sans-serif"; g.textAlign = "center";
     g.fillText(LABEL, W / 2, PAD + (CH + 70) * ROWS - 70 + CAPH + 40); }
+    // A WATERMARK THAT SURVIVES A CROP. A single corner mark is removed by cropping
+  // that corner, which is the first thing anyone reposting without credit does.
+  // So it appears three times: the footer at full strength, plus two faint marks
+  // set into the artwork itself. Cropping past those means cropping into the
+  // cards. Deliberately faint - a watermark that ruins the image protects
+  // nothing, because nobody posts it in the first place.
+  g.save();
+  g.globalAlpha = 0.16;
+  g.fillStyle = "#ffffff";
+  g.font = "800 34px system-ui,sans-serif";
+  g.textAlign = "center";
+  for (const [wx, wy] of [[W * 0.28, PAD + CH * 0.42], [W * 0.72, PAD + CH * 0.78]]) {
+    g.save(); g.translate(wx, wy); g.rotate(-Math.PI / 9);
+    g.fillText("catchemtcg.com", 0, 0); g.restore();
+  }
+  g.restore();
+
   g.fillStyle = "#36d399"; g.font = "800 38px system-ui,sans-serif"; g.textAlign = "left";
   g.fillText("Catch'em", PAD, H - 34);
   g.fillStyle = "#5c637a"; g.font = "24px ui-monospace,monospace"; g.textAlign = "right";
