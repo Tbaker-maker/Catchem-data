@@ -431,6 +431,25 @@
     "the submission decision in PENDING-GRADING-BUILD.md"
    ],
    "recheckAfter": "2026-08-30"
+  },
+  {
+   "id": "cards-write-their-own-jokes",
+   "claim": "Attack names and flavour text are available free from the same source we already ingest - 82% of cards carry an attack name and 40% carry flavour text in a three-set sample. Our catalogue captures neither.",
+   "sources": [
+    "pokemon-tcg-data, sampled sv8/sv3pt5/base1, 2026-08-23",
+    "our own card-catalogue.json field list"
+   ],
+   "verified": "2026-08-23",
+   "verifier": "chat",
+   "confidence": "VERIFIED",
+   "falsifier": "the source dropping those fields, or a sample showing far lower coverage",
+   "note": "FOUND BY A REAL POST. Tyler posted Slakoth at 2am after 17 hours of coding. Slakoth's attack is literally called TAKE IT EASY. The card wrote the joke and nothing we generate could have found it, because we hold name, artist, set, rarity, date and price - and not one word the card actually says. This is the single biggest content gap we have: the copy is already printed on the cards.",
+   "usedBy": [
+    "formula-engine",
+    "theme-scout",
+    "content"
+   ],
+   "recheckAfter": "2027-02-23"
   }
  ]
 }

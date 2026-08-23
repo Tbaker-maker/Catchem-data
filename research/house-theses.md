@@ -1749,3 +1749,26 @@ cropped card and four words.
 That is two data points and it may reverse entirely. **It is also the first
 evidence we have ever had, and it points away from the direction we were
 building.** Worth eighteen more posts to find out.
+
+## THE CARDS WRITE THEIR OWN JOKES (Tyler, Aug 23 2026)
+He posted Slakoth at 2am with "how I feel after coding for 17-18 hours
+straight." **Slakoth's attack is called TAKE IT EASY.**
+
+Neither of us knew that. The card wrote the punchline, and **nothing we generate
+could have found it** - our catalogue holds name, artist, set, rarity, date and
+price, and not one word the card actually says.
+
+**Attack names are on 82% of cards and flavour text on 40%, free, from the same
+source we already ingest.** That is the single biggest content gap we have: the
+copy is already printed on the cards and we throw it away at import.
+
+WHAT IT UNLOCKS, none of which is possible today: search by what a card SAYS.
+Cards whose attack name is a mood. Cards whose flavour text is accidentally
+profound. A "late night" theme that finds Take It Easy, Sleep Powder and Slack
+Off by reading them rather than by me listing Pokemon I think look tired.
+
+AND THE OTHER HALF OF WHY THE POST WORKED, in Tyler's own words: **"my bot found
+me the perfect visual which then sparked natural creativity."** The tool did not
+write the post. It put the right thing in front of him and he wrote it. That is
+exactly what ANGLES NOT TWEETS was aiming at, and it is the first evidence the
+aim was right.
