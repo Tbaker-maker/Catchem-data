@@ -1473,3 +1473,37 @@ been the most confident wrong thing we ever published.
 data/knowledge.json now holds seventeen facts, each with sources, a date, a
 verifier, a confidence tier and a falsifier. Every future theme draws from
 there rather than from a search.
+
+## ART MODE, AND WHEN NOT TO USE THE CARD (Tyler, Aug 23 2026)
+"We can make content like this as well and just use visuals if the post is
+better without card format. If it confuses the system and sets us up for AI
+slop, forget it and just use the full cards."
+
+THE SIGNAL: his Charmander post did 791 views and 38 likes. The Arita pairing
+did 154 and 9. Same account, same week - **five times the reach from cropped
+card art and a two-word hook.** No frame, no captions, no data.
+
+WHY IT IS NOT SLOP: the image is a real illustration from a real card,
+unmodified in content. The risk here is aesthetic, not factual - a bad crop
+looks amateur, it does not mislead. That is a different and lesser danger than
+a wrong number.
+
+THE SAFETY RULE THAT KEEPS IT CLEAN: crop ONLY where the art IS the card -
+Illustration Rare and Special Illustration Rare, 687 of them. On a classic card
+the art sits in a small window whose position moves by era and by rarity, and
+cropping those blind produces a mangled frame, half a text box or a border.
+That is the aesthetic equivalent of shipping a card back, and we did that once
+today already. --art refuses anything it cannot crop safely and says why.
+
+ONE THING TYLER SHOULD KNOW, recorded honestly: a bare crop is a WEAKER
+nominative fair use position than a whole card, because nominative use rests on
+identifying a product and a crop presents the artwork as artwork. Not a reason
+to avoid it - the whole hobby posts card art and the format works. A reason to
+CAPTION it: name the card, the set and the illustrator on every crop. That
+restores the identifying purpose, credits the person who drew it, and is better
+content regardless.
+
+AND THE COPY LESSON, which is the real one: **"who's still awake?" is two words
+and it outperformed everything we have written.** Too much text goes over
+people's heads. The image earns the attention; the words only have to give
+somebody a reason to reply.

@@ -65,6 +65,18 @@ const cat = await J("data/card-catalogue.json") ?? { cards: {} };
 //              captioned as a QUESTION so the reader is invited to disagree.
 // The question framing is the whole point. A post that starts an argument
 // beats one that ends it, and a question cannot be wrong.
+// ART MODE (Tyler, 2026-08-23). His Charmander post did 791 views and 38 likes
+// against the Arita pairing's 154 and 9 - five times over, same account, same
+// week. The difference was cropped card ART with a two-word hook: no frame, no
+// captions, no data at all.
+//
+// THE SAFETY RULE: crop ONLY cards where the art IS the whole card - Illustration
+// Rare and Special Illustration Rare, 687 of them. On a classic card the art sits
+// in a small window whose position moves by era and by rarity, and cropping those
+// blind produces a mangled frame, half a text box, or a border. That is the
+// aesthetic equivalent of shipping a card back, and we have done that once today.
+const ART_SAFE = /(Special Illustration Rare|Illustration Rare)/i;
+const artMode = args.includes("--art");
 const gridIdx = args.indexOf("--grid");
 const isBinder = args.includes("--binder");
 const gridSpec = gridIdx >= 0 ? (args[gridIdx + 1] ?? "3x3") : (isBinder ? "3x3" : null);
@@ -124,6 +136,16 @@ if (!ids.length) {
   // THE LAYOUT TABLE DECIDES (2026-08-23). Every supported count has a measured
   // frame, so nobody makes a layout choice at post time - and every visual we got
   // wrong today was a choice made in a hurry. Unsupported counts fail loudly.
+  if (artMode) {
+    const unsafe = cards.filter(c => !ART_SAFE.test(c.rarity ?? ""));
+    if (unsafe.length) {
+      console.error(`\n  --art refuses ${unsafe.length} card(s): ${unsafe.map(c => `${c.name} (${c.rarity})`).join(", ")}`);
+      console.error(`  Art mode crops to the illustration, which only works when the art IS the card.`);
+      console.error(`  On a classic card the art window moves by era and rarity - cropping blind would`);
+      console.error(`  produce a mangled frame or half a text box. Use the full card instead.\n`);
+      process.exitCode = 1;
+    }
+  }
   const { LAYOUTS, frameFor } = await import("./layouts.mjs");
   const LAY = frameFor(cards.length);
   if (!LAY) {

@@ -5,7 +5,8 @@
   "VERIFIED": "multiple independent sources, or one primary source (official Pok\u00e9mon/TPCi, a grader's own published data, or our own measurement)",
   "SINGLE-SOURCE": "one credible source, no corroboration found \u2014 publishable with attribution and a hedge",
   "COMMUNITY": "repeated across independent community voices but not documented anywhere primary \u2014 publishable only as community lore, explicitly labelled",
-  "DISPUTED": "credible sources disagree \u2014 publish the disagreement, never a resolution we invented"
+  "DISPUTED": "credible sources disagree \u2014 publish the disagreement, never a resolution we invented",
+  "REASONED": "an argument from principle rather than a sourced fact - defensible, not verified, and labelled so nobody treats it as settled"
  },
  "facts": [
   {
@@ -286,6 +287,24 @@
    "note": "A primary source. Worth citing whenever the topic comes up, because most articles about bans are about Expanded or about censorship and conflate the three.",
    "usedBy": [
     "content"
+   ],
+   "recheckAfter": "2027-02-23"
+  },
+  {
+   "id": "cropped-art-weaker-fair-use",
+   "claim": "Posting a cropped card ILLUSTRATION without the card frame is a weaker nominative fair use position than posting the whole card, because nominative use rests on identifying a product and a bare crop presents the artwork as artwork.",
+   "sources": [
+    "US trademark nominative fair use doctrine",
+    "our own ARTIST CLAIM LAW and IP-depiction register entry"
+   ],
+   "verified": "2026-08-23",
+   "verifier": "chat",
+   "confidence": "REASONED",
+   "falsifier": "counsel advising that a cropped illustration carries the same protection as a full card image",
+   "note": "Not a reason to avoid it - the format performs five times better and the whole hobby posts card art. It is a reason to CAPTION it: name the card, the set and the illustrator on every art crop, which restores the identifying purpose and credits the person who drew it. That is cheap, correct, and better content anyway.",
+   "usedBy": [
+    "content",
+    "compliance"
    ],
    "recheckAfter": "2027-02-23"
   }
