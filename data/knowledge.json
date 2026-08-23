@@ -6,7 +6,8 @@
   "SINGLE-SOURCE": "one credible source, no corroboration found — publishable with attribution and a hedge",
   "COMMUNITY": "repeated across independent community voices but not documented anywhere primary — publishable only as community lore, explicitly labelled",
   "DISPUTED": "credible sources disagree — publish the disagreement, never a resolution we invented",
-  "REASONED": "an argument from principle rather than a sourced fact - defensible, not verified, and labelled so nobody treats it as settled"
+  "REASONED": "an argument from principle rather than a sourced fact - defensible, not verified, and labelled so nobody treats it as settled",
+  "UNKNOWN": "we have looked and do not know. Recorded so the gap is visible rather than filled in with a plausible number."
  },
  "facts": [
   {
@@ -468,6 +469,59 @@
     "compliance"
    ],
    "recheckAfter": "2027-02-23"
+  },
+  {
+   "id": "slab-guard-market-crowded",
+   "claim": "The slab-protector market is established and competitive. GradedGuard sells TPU+PC cases in colourways with hobby-store exclusives and storage boxes for 12 and 36 slabs. Slabmags sells aluminium-alloy cases with UV-resistant tempered glass across PSA, BGS, SGC, TAG and CGC. Phantom Display sells the cast-acrylic Magneto at $55-60 as of July 2026. Amazon carries VALUN, X PRO, SlabX, RCPLAGA and Livresse in 4-12 packs, and Etsy carries 3D-printed custom bumpers.",
+   "sources": [
+    "gradedguard.com",
+    "slabmags.com",
+    "phantomdisplay.com blog, updated 2026-08-15",
+    "Amazon and Etsy listings, searched 2026-08-23"
+   ],
+   "verified": "2026-08-23",
+   "verifier": "chat",
+   "confidence": "VERIFIED",
+   "falsifier": "these brands exiting, or a price survey showing materially different points",
+   "note": "THE GAP: every one of them sells colourways you CHOOSE. Not one sells rarity, blind packs, or a pull. Tyler's structure is genuinely unoccupied in a category that is otherwise well served — and GradedGuard already runs hobby-store EXCLUSIVES, which proves scarcity works here before we test it ourselves.",
+   "usedBy": [
+    "guards"
+   ],
+   "recheckAfter": "2027-02-23"
+  },
+  {
+   "id": "slab-guard-materials",
+   "claim": "Three material tiers are in market: TPU with a polycarbonate front (GradedGuard, most Amazon brands), aluminium alloy with tempered glass (Slabmags, premium), and cast acrylic (Phantom, display-focused). 3D printing serves the low-volume custom end on Etsy.",
+   "sources": [
+    "gradedguard.com product pages",
+    "slabmags.com",
+    "phantomdisplay.com"
+   ],
+   "verified": "2026-08-23",
+   "verifier": "chat",
+   "confidence": "VERIFIED",
+   "falsifier": "a major entrant using a different material class",
+   "note": "3D PRINTING IS THE OPENING. Etsy sellers already run it profitably at low volume, which means a first run needs no injection-mould tooling and no minimum order — the two things that normally make a physical product impossible for a solo founder. Tooling comes later, once demand is proven.",
+   "usedBy": [
+    "guards"
+   ],
+   "recheckAfter": "2027-02-23"
+  },
+  {
+   "id": "slab-guard-costs-unknown",
+   "claim": "We do not know manufacturing costs, tooling costs, minimum order quantities or landed unit economics for any material tier.",
+   "sources": [
+    "absence of evidence — no quote has been obtained"
+   ],
+   "verified": "2026-08-23",
+   "verifier": "chat",
+   "confidence": "UNKNOWN",
+   "falsifier": "a real quote from a real manufacturer",
+   "note": "RECORDED DELIBERATELY. Retail prices are observable and cost is not, and the gap between them is where every made-up business model lives. Any margin figure before a quote exists is fiction, and a fiction in a business model is more dangerous than one in a post because somebody spends money on it.",
+   "usedBy": [
+    "guards"
+   ],
+   "recheckAfter": "2026-09-23"
   }
  ]
 }
