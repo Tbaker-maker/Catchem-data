@@ -1,5 +1,5 @@
 <!doctype html><meta charset="utf-8">
-<title>Shinya Komatsu</title>
+<title>Narumi Sato</title>
 <style>
   body{margin:0;background:#070910;display:flex;align-items:center;justify-content:center;min-height:100vh;
        font-family:system-ui,-apple-system,"Segoe UI",sans-serif;padding:40px 20px}
@@ -20,11 +20,11 @@
 </style>
 <div class="wrap">
   <div class="row">
-    <div class="card"><img src="https://images.pokemontcg.io/sv6/169_hires.png" alt="Sunflora" loading="eager">
-      <div class="cap">Sunflora · 2024</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/sv6/188_hires.png" alt="Eevee" loading="eager">
+      <div class="cap">Eevee · 2024</div></div>
   </div>
   
-  <div class="foot"><span class="mark">Catch'em</span><span class="src">Shinya Komatsu</span></div>
+  <div class="foot"><span class="mark">Catch'em</span><span class="src">Narumi Sato</span></div>
   <div style="text-align:center;margin-top:26px">
     <button id="dl" class="pri">Download PNG</button><button id="copy" class="sec" hidden>Copy image</button><button id="share" class="sec" hidden>Share</button><button id="dlsvg" class="sec">Open cards full-size</button>
     <div id="msg" style="color:#8a93a8;font-size:13px;margin-top:10px"></div>
@@ -34,10 +34,10 @@
 // The browser composites, because it can reach the image host and chat cannot.
 // Everything is drawn at native card resolution so the result is postable
 // rather than a screenshot of a screenshot.
-const CARDS = [{"url":"https://images.pokemontcg.io/sv6/169_hires.png","name":"Sunflora","year":"2024"}];
+const CARDS = [{"url":"https://images.pokemontcg.io/sv6/188_hires.png","name":"Eevee","year":"2024"}];
 const LABEL = "";
-const CAPTION = "Shinya Komatsu";
-const ARTISTS = "Shinya Komatsu";
+const CAPTION = "Narumi Sato";
+const ARTISTS = "Narumi Sato";
 // A GUARANTEED ROUTE. If every canvas path fails, the reader can still get real
 // full-resolution files - one tab per card, right-click and save. A screenshot
 // is the one outcome worth engineering around, so there is always another way.
@@ -69,6 +69,12 @@ async function compose() {
   const H = PAD + (CH + 70) * ROWS - 70 + CAPH + LABH + 90;
   const cv = document.createElement("canvas");
   cv.width = W; cv.height = H;
+  // THUMBNAIL LEGIBILITY. These are seen first as a ~400px feed preview and
+  // decided on there. Text sized for the full canvas vanishes: 26px on a 2535px
+  // canvas is 4.1px in that preview, which is how a want list came to read as
+  // "nine cards" instead of "which ones and what they cost".
+  const thumbScale = 400 / W;
+  const px = (n) => Math.max(n, Math.round(n / thumbScale / 2.2));
   const g = cv.getContext("2d");
   g.fillStyle = "#070910"; g.fillRect(0, 0, W, H);
 
