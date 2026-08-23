@@ -23,20 +23,90 @@ on:
 jobs:
   watch:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write # to re-dispatch the daily job exactly once
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
       - name: Heartbeat (has anything gone quiet?)
+        id: hb
+        continue-on-error: true
         run: node scripts/heartbeat.mjs
+
+      - name: Decide — retry once, or escalate
+        if: steps.hb.outcome == 'failure'
+        id: decide
+        run: |
+          PREV=""
+          if [ -f data/recovery-log.json ]; then
+            PREV=$(node -e '
+              try {
+                const l = require("./data/recovery-log.json");
+                const last = (l.attempts || []).slice(-1)[0];
+                if (!last) process.exit(0);
+                const age = (Date.now() - new Date(last.at).getTime()) / 3600000;
+                if (age < 20) process.stdout.write(last.at);
+              } catch {}
+            ')
+          fi
+          if [ -n "$PREV" ]; then
+            echo "already-retried=true" >> "$GITHUB_OUTPUT"
+            echo "A retry was already attempted at $PREV — escalating instead of looping."
+          else
+            echo "already-retried=false" >> "$GITHUB_OUTPUT"
+            echo "No recent retry on record — one retry is allowed."
+          fi
+
+      - name: Re-run the daily job once
+        if: steps.hb.outcome == 'failure' && steps.decide.outputs.already-retried == 'false'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner, repo: context.repo.repo,
+              workflow_id: 'update-sealed-prices.yml', ref: 'main'
+            });
+            core.info('Dispatched update-sealed-prices.yml — one retry only.');
+
+      - name: Record the retry
+        if: steps.hb.outcome == 'failure' && steps.decide.outputs.already-retried == 'false'
+        run: |
+          node -e '
+            const fs = require("fs");
+            let l = { attempts: [] };
+            try { l = JSON.parse(fs.readFileSync("data/recovery-log.json", "utf-8")); } catch {}
+            l.attempts = (l.attempts || []).concat([{ at: new Date().toISOString(), reason: "heartbeat red at watchdog", dispatched: "update-sealed-prices.yml" }]).slice(-50);
+            fs.writeFileSync("data/recovery-log.json", JSON.stringify(l, null, 1));
+          '
+          git config user.name "catchem-bot"
+          git config user.email "bot@catchem.app"
+          git add data/recovery-log.json
+          git diff --staged --quiet || { git commit -m "recovery: retry dispatched after a red heartbeat"; git push || true; }
 
       # If the heartbeat says something is silent, say so somewhere a human
       # looks. Guarded on the secret so a fork or a fresh clone skips it
       # cleanly rather than failing, and continue-on-error so a Discord outage
       # cannot turn "the pipeline is fine" into a red run.
+      # ── ONE RETRY, THEN ESCALATE — NEVER A LOOP ──────────────────────────
+      # A job that failed for a REASON will fail again, and a system that keeps
+      # rebooting it burns budget and buries the cause under its own noise.
+      # data/recovery-log.json records the attempt so the NEXT watchdog can see
+      # one was already tried and escalate instead of retrying again.
+      #
+      # Today proves the point: the 04:00 run fired and died in the fail-fast
+      # unit tests because a test asserted a card file whose data we had
+      # deliberately withdrawn. A retry would have failed identically. The retry
+      # is for transient causes; the log is what stops it papering over the rest.
+      # NOT `if: failure()`. The heartbeat is continue-on-error so the retry
+      # can branch on it, which means the JOB stays green and failure() never
+      # fires. Branching on the step's own outcome is what keeps the alarm
+      # connected — an alarm wired to a condition that cannot occur is worse
+      # than none, because it reports silence as health.
       - name: Report silence to Discord
-        if: failure()
+        if: steps.hb.outcome == 'failure'
         continue-on-error: true
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
@@ -46,5 +116,11 @@ jobs:
             exit 0
           fi
           RUN="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
-          printf '{"content":"⚠️ **Watchdog: something has gone quiet.** The heartbeat check failed — a stage has not reported in. This usually means the daily run did not happen, not that it failed. %s"}' "$RUN" > payload.json
+          STAGE=$(node scripts/heartbeat.mjs 2>&1 | grep -oE '^   [a-z-]+:' | tr -d ' :' | paste -sd, - || echo "unknown")
+          if [ "${{ steps.decide.outputs.already-retried }}" = "true" ]; then
+            MSG="🚨 **Watchdog: STILL down after a retry.** Stage(s): $STAGE. A retry was already dispatched and the heartbeat is still red, so this is NOT transient — no further retry will be attempted. Investigate the cause."
+          else
+            MSG="⚠️ **Watchdog: something has gone quiet.** Stage(s): $STAGE. One retry of the daily job has been dispatched. If the next watchdog is still red, it will escalate instead of retrying."
+          fi
+          printf '{"content":"%s %s"}' "$MSG" "$RUN" > payload.json
           curl -s -H "Content-Type: application/json" -X POST -d @payload.json "$DISCORD_WEBHOOK_URL" > /dev/null && echo "Reported."

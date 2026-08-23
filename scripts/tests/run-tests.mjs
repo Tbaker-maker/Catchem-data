@@ -76,11 +76,29 @@ try {
 } catch (e) { t("pulse-feed readable", false, e.message); }
 
 console.log("── share-card mint smoke ──");
+// A CARD IS ONLY REQUIRED IF ITS DATA EXISTS. This asserted all four cards
+// unconditionally, and on 2026-08-23 that killed the entire daily run: graded
+// figures were withdrawn (deliberately - the source carries no window), so
+// dailyThree.graded went falsy, so mint-cards stopped minting latest-graded.svg,
+// so the committed fossil was deleted, so this assertion failed - and it runs in
+// the FAIL-FAST gate, BEFORE the eBay fetch. A correct editorial decision took
+// the whole pipeline down through a test that asserted a FILE rather than a
+// BEHAVIOUR. The run fired at 04:38 UTC and died at step 6 of 23.
+//
+// Each card is now required exactly when mint-cards would mint it: when the
+// matching dailyThree entry is present. A card whose data is withdrawn is not
+// a missing card, it is an absent subject.
+let t3 = {};
+try { t3 = (await J("data/derived-insights.json")).dailyThree ?? {}; } catch {}
 for (const name of ["index", "sealed", "graded", "raw"]) {
+  const required = name === "index" ? true : !!t3[name];
   try {
     const s = await stat(join(ROOT, `research/pulse/cards/latest-${name}.svg`));
     t(`latest-${name}.svg exists nonzero`, s.size > 200, String(s.size));
-  } catch { t(`latest-${name}.svg exists nonzero`, false, "missing"); }
+  } catch {
+    if (required) t(`latest-${name}.svg exists nonzero`, false, "missing");
+    else console.log(`  - latest-${name}.svg absent, and dailyThree.${name} is absent too - not a failure`);
+  }
 }
 
 console.log(`\n${pass} passed · ${fail} failed`);

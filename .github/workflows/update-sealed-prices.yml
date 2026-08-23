@@ -66,6 +66,12 @@ jobs:
           node scripts/build-creators-page.mjs
           node scripts/build-editor.mjs
           node scripts/build-faq.mjs
+      # mint-cards.mjs was in NO workflow, while run-tests.mjs asserted the
+      # cards it produces. So the tests were checking committed fossils, and
+      # when one was deleted the fail-fast gate killed the whole daily run.
+      # A test may assert an artifact only if something in the pipeline makes it.
+      - name: Mint the share cards
+        run: node scripts/mint-cards.mjs
       # Cards are MINTED as SVG above and were never rasterised, because this
       # step existed in no workflow at all. The committed PNGs were therefore
       # stale, and the current one shipped with an empty box where the product
@@ -193,8 +199,15 @@ jobs:
                 try {
                   const jobs = JSON.parse(s).jobs || [];
                   const job = jobs.find(j => j.name === process.env.GITHUB_JOB) || jobs[0] || {};
-                  const bad = (job.steps || []).find(x => x.conclusion === "failure");
-                  process.stdout.write(bad ? bad.name : "unknown step");
+                  const steps = job.steps || [];
+                  const bad = steps.find(x => x.conclusion === "failure");
+                  // Mid-run the API has often not recorded conclusions yet, which is
+                  // why this printed "unknown step" on 2026-08-23 and the notice named
+                  // nothing. A failure skips every later step, so the LAST step to
+                  // actually complete is the one that failed.
+                  const done = steps.filter(x => x.completed_at && x.conclusion !== "skipped");
+                  const last = done[done.length - 1];
+                  process.stdout.write(bad ? bad.name : (last ? last.name + " (inferred)" : "unknown step"));
                 } catch { process.stdout.write("unknown step"); }
               });
             ')
