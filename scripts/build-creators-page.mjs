@@ -197,6 +197,12 @@ async function grab(i){
     msg.textContent="downloaded";
   }catch(e){ msg.textContent="the image host blocked the copy — right-click each card and save instead"; }
 }
+
+// INLINE HANDLERS MUST BE ON WINDOW. All four were declared and none exported,
+// so every button rendered, clicked and did nothing. Placed at the END so every
+// declaration above is already hoisted — an earlier attempt spliced this into
+// the middle of a function signature.
+window.grab=grab; window.setup=setup; window.pick=pick; window.toX=toX;
 </script>`;
 
 await writeFile(join(ROOT, "research/assets/creators.html"), html);

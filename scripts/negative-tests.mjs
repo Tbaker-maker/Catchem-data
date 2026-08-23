@@ -707,6 +707,27 @@ const CASES = [
            : "it no longer catches the negation pattern — a denial that names the neighbourhood is a clue wearing a disclaimer" };
     } },
 
+  { guard: "Inline handlers reachable on every page", detect: null,
+    // Third occurrence: the editor's pager, the streak controls, and every
+    // button on the creators portal. A function called from an inline onclick
+    // that is not on window renders, clicks, and does nothing — the failure
+    // that looks most like success.
+    fn: async () => {
+      const { readdir } = await import("node:fs/promises");
+      const files = (await readdir(P("research/assets"))).filter(f => f.endsWith(".html") && !/mock/.test(f));
+      const bad = [];
+      for (const f of files) {
+        const src = await readFile(P("research/assets/" + f), "utf-8").catch(() => "");
+        const js = (src.match(/<script>([\s\S]*?)<\/script>/) ?? [])[1] ?? "";
+        if (!js) continue;
+        const called = [...new Set([...src.matchAll(/onclick="([a-zA-Z_]+)\(/g)].map(m => m[1]))];
+        const unexported = called.filter(fn => !new RegExp("window\\." + fn + "\\s*=").test(js));
+        if (unexported.length) bad.push(f + ": " + unexported.join(", "));
+      }
+      return { pass: bad.length === 0,
+        why: bad.length ? "inline handlers not on window — " + bad.join(" · ") : "" };
+    } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");

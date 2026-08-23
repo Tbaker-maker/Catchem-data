@@ -179,6 +179,7 @@ const MUST_RUN = [
   { script: "slop-guard.mjs", why: "every grouping must derive from a real field or an openly stored list" },
   { script: "card-guard.mjs", why: "a minted card must say something before anyone sees it" },
   { script: "heartbeat.mjs", why: "detects a missed scheduled run — runs on the watchdog workflow, not the daily pipeline, which is why it was absent from this list until it failed", offPipeline: true },
+  { script: "creators-smoke.mjs", why: "the creators portal must LOAD and its buttons must be reachable — every one of them was dead and it parsed perfectly" },
   { script: "editor-smoke.mjs", why: "the editor must LOAD and render, not merely parse — every failure this week shipped verified-to-parse", offPipeline: false },
   { script: "tease-guard.mjs", why: "a block marked ??? must actually withhold — the name gave the product away while the tag pretended otherwise" },
   { script: "pre-mortem.mjs", why: "every guard declares what it CANNOT catch, so a check asking the wrong question is visible before it fails" },

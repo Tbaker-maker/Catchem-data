@@ -659,6 +659,7 @@ try { await import("./build-editor.mjs"); } catch (e) { console.warn("  build-ed
 await import("./layout-check.mjs");
 await import("./slop-guard.mjs");
 await import("./card-guard.mjs");
+try { await import("./creators-smoke.mjs"); } catch (e) { console.warn("  creators smoke: " + e.message); }
 try { await import("./editor-smoke.mjs"); } catch (e) { console.warn("  editor smoke: " + e.message); }
 try { await import("./tease-guard.mjs"); } catch (e) { console.warn("  tease: " + e.message); }
 await import("./pre-mortem.mjs");
