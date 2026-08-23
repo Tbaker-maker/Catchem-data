@@ -1,10 +1,10 @@
 <!doctype html><meta charset="utf-8">
-<title>Yoriyuki Ikegami</title>
+<title>Which row wins?</title>
 <style>
   body{margin:0;background:#070910;display:flex;align-items:center;justify-content:center;min-height:100vh;
        font-family:system-ui,-apple-system,"Segoe UI",sans-serif;padding:40px 20px}
-  .wrap{max-width:548px;width:100%}
-  .row{display:grid;grid-template-columns:repeat(1,1fr);gap:40px;justify-content:center;align-items:start}
+  .wrap{max-width:934px;width:100%}
+  .row{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;justify-content:center;align-items:start}
   .card{text-align:center}
   .card img{width:100%;aspect-ratio:745/1040;object-fit:contain;display:block;border-radius:12px}
   .cap{color:#8a93a8;font-size:16px;margin-top:14px}
@@ -16,11 +16,27 @@
 </style>
 <div class="wrap">
   <div class="row">
-    <div class="card"><img src="https://images.pokemontcg.io/sv3pt5/198_hires.png" alt="Venusaur ex" loading="eager">
-      <div class="cap">Venusaur ex · 2023</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/base3/2_hires.png" alt="Articuno" loading="eager">
+      <div class="cap">Articuno · 1999</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/base3/15_hires.png" alt="Zapdos" loading="eager">
+      <div class="cap">Zapdos · 1999</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/base3/12_hires.png" alt="Moltres" loading="eager">
+      <div class="cap">Moltres · 1999</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/bw4/27_hires.png" alt="Articuno" loading="eager">
+      <div class="cap">Articuno · 2012</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/bw4/41_hires.png" alt="Zapdos" loading="eager">
+      <div class="cap">Zapdos · 2012</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/bw4/14_hires.png" alt="Moltres" loading="eager">
+      <div class="cap">Moltres · 2012</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/swsh12/36_hires.png" alt="Articuno" loading="eager">
+      <div class="cap">Articuno · 2022</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/pgo/29_hires.png" alt="Zapdos" loading="eager">
+      <div class="cap">Zapdos · 2022</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/pgo/12_hires.png" alt="Moltres" loading="eager">
+      <div class="cap">Moltres · 2022</div></div>
   </div>
-  
-  <div class="foot"><span class="mark">Catch'em</span><span class="src">Yoriyuki Ikegami</span></div>
+  <div class="label">Which row wins?</div>
+  <div class="foot"><span class="mark">Catch'em</span><span class="src">Which row wins?</span></div>
   <div style="text-align:center;margin-top:26px">
     <button id="dl" style="background:#36d399;color:#070910;border:0;border-radius:10px;padding:14px 28px;font-size:16px;font-weight:700;cursor:pointer">Download as one image</button>
     <div id="msg" style="color:#8a93a8;font-size:13px;margin-top:10px"></div>
@@ -30,9 +46,9 @@
 // The browser composites, because it can reach the image host and chat cannot.
 // Everything is drawn at native card resolution so the result is postable
 // rather than a screenshot of a screenshot.
-const CARDS = [{"url":"https://images.pokemontcg.io/sv3pt5/198_hires.png","name":"Venusaur ex","year":"2023"}];
-const LABEL = "";
-const CAPTION = "Yoriyuki Ikegami";
+const CARDS = [{"url":"https://images.pokemontcg.io/base3/2_hires.png","name":"Articuno","year":"1999"},{"url":"https://images.pokemontcg.io/base3/15_hires.png","name":"Zapdos","year":"1999"},{"url":"https://images.pokemontcg.io/base3/12_hires.png","name":"Moltres","year":"1999"},{"url":"https://images.pokemontcg.io/bw4/27_hires.png","name":"Articuno","year":"2012"},{"url":"https://images.pokemontcg.io/bw4/41_hires.png","name":"Zapdos","year":"2012"},{"url":"https://images.pokemontcg.io/bw4/14_hires.png","name":"Moltres","year":"2012"},{"url":"https://images.pokemontcg.io/swsh12/36_hires.png","name":"Articuno","year":"2022"},{"url":"https://images.pokemontcg.io/pgo/29_hires.png","name":"Zapdos","year":"2022"},{"url":"https://images.pokemontcg.io/pgo/12_hires.png","name":"Moltres","year":"2022"}];
+const LABEL = "Which row wins?";
+const CAPTION = "Which row wins?";
 document.getElementById("dl").onclick = async () => {
   const msg = document.getElementById("msg");
   msg.textContent = "composing…";
