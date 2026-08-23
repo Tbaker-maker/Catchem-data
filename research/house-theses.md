@@ -957,3 +957,29 @@ it told the falsifier it was in a rut for finding nothing, when finding nothing
 means no thesis failed - the win. Sixth crying-wolf in a day, in a new costume.
 **Telling somebody who is winning that they are stuck is how a teacher loses
 the room.**
+
+## TEST THE CLAIM, NOT A SIMPLER VERSION OF IT (Aug 23 2026)
+RT-5 became testable the moment graded sale data arrived, and the first test
+reported TRIPPED: a PSA 9 cleared its costs on 6 of 12 cards, 50%, nothing
+like the tax we had claimed.
+
+**The thesis was right and the test was wrong.** RT-5 makes TWO claims:
+established SWSH/SV chases are taxed at 9, AND Mega-era chases INVERT because
+graded supply on fresh sets is scarce. Split properly: **6 of 7 established
+chases taxed, 5 of 5 Mega-era clearing.** Eleven of twelve, exactly as
+predicted - including the inversion, which is the harder half to get right.
+
+Pooling the two cohorts produces ~50% BY CONSTRUCTION, because the thesis
+expects one group to fail and the other to pass. The test measured the
+average of a contrast and called it a contradiction.
+
+WHAT IT NEARLY COST: a public amendment retracting a thesis that was
+performing well. We publish corrections and we take that seriously, which
+means a false correction is not a harmless excess of caution - it would have
+destroyed a true claim in front of readers and taught us to distrust a working
+instrument.
+
+THE RULE: a falsifier must test the claim as STATED, including its exceptions.
+Any thesis containing an inversion, an exception or a contrast must be tested
+as separate cohorts. A guard now fails the build if a contrastive thesis is
+tested as one pooled group.

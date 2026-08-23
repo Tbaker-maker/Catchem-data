@@ -487,6 +487,25 @@ const CASES = [
         why: scolded.length ? `${scolded.map(s => s.agent).join(", ")} told they are in a rut for succeeding` : "" };
     } },
 
+  { guard: "Falsifier tests the actual claim", detect: null,
+    // RT-5 makes TWO claims - a tax on established chases and an INVERSION on
+    // Mega-era ones. The first test pooled both cohorts, got 50%, and reported
+    // TRIPPED on a thesis that is 11 of 12 accurate. A falsifier that tests a
+    // simpler version of a claim will eventually retire a correct thesis.
+    fn: async () => {
+      const src = await readFile(P("scripts/falsifier.mjs"), "utf-8");
+      const doc = await readFile(P("research/house-theses.md"), "utf-8");
+      // Any thesis whose statement contains a contrast word must be tested as
+      // more than one cohort.
+      const contrastive = [...doc.matchAll(/^## (RT-[0-9a-z]+)[\s\S]{0,400}?(invert|unless|except|but not|whereas)/gmi)].map(m => m[1]);
+      const untested = contrastive.filter(id => {
+        const block = (src.split(`id: "${id}"`)[1] ?? "").slice(0, 1600);
+        return block && !/filter\(|cohort|split|both halves/i.test(block);
+      });
+      return { pass: untested.length === 0,
+        why: untested.length ? `${untested.join(", ")} state a contrast and are tested as a single pooled claim - pooling a contrastive thesis produces its own failure by construction` : "" };
+    } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");

@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T01:39:00.050Z",
+ "generatedAt": "2026-08-23T01:39:26.309Z",
  "date": "2026-08-23",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -72,6 +72,11 @@
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
   },
   {
+   "agent": "teacher",
+   "finding": "every finding from a week ago is still open (11).",
+   "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
+  },
+  {
    "agent": "api-strategist",
    "finding": "every finding from a week ago is still open (7).",
    "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
@@ -87,19 +92,9 @@
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
   },
   {
-   "agent": "steward",
-   "finding": "runs daily and has returned the same count (2) four runs running.",
-   "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
-  },
-  {
    "agent": "platform",
    "finding": "runs daily and has returned the same count (10) four runs running.",
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
-  },
-  {
-   "agent": "platform",
-   "finding": "every finding from a week ago is still open (10).",
-   "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
    "agent": "anomaly",
@@ -567,7 +562,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "3 hand-written file(s) changed and not committed.",
+   "what": "4 hand-written file(s) changed and not committed.",
    "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
    "score": 30,
    "band": "NOTE ONLY",

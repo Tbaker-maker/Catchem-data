@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T01:39:01.238Z",
+ "generatedAt": "2026-08-23T01:39:27.066Z",
  "date": "2026-08-23",
  "mood": "Mostly \"we cannot tell yet\" today — half these tests need weeks of history we simply do not have. Saying so beats guessing.",
  "note": "We test our own claims before anyone else gets the chance. INSUFFICIENT is an honest verdict and is reported as loudly as the others.",
@@ -9,9 +9,9 @@
   "untested": []
  },
  "summary": {
-  "survived": 4,
+  "survived": 5,
   "tripped": 0,
-  "insufficient": 7,
+  "insufficient": 6,
   "pending": 0
  },
  "results": [
@@ -55,10 +55,9 @@
   {
    "id": "RT-5",
    "name": "PSA-9 Tax / Fresh-Set Exception",
-   "falsifier": "fresh-set 9-premiums persist 12+ months after release, i.e. the bend never fades",
-   "verdict": "INSUFFICIENT",
-   "detail": "graded premiums need a licensed daily graded feed we do not have",
-   "needs": "a licensed graded-price source"
+   "falsifier": "PSA 9s on established SWSH/SV chases return MORE than raw minus fees — i.e. grading a 9 is not a tax after all",
+   "verdict": "SURVIVED",
+   "detail": "both halves hold: a PSA 9 is a tax on 6 of 7 established chases, and pays on 5 of 5 Mega-era chases — the inversion is exactly what the thesis predicted"
   },
   {
    "id": "RT-6",

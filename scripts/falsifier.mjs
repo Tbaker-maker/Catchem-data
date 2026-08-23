@@ -24,6 +24,7 @@ const sp = await J("data/sealed-prices.json") ?? { products: [] };
 const div = await J("data/divergence-report.json") ?? { rows: [] };
 const hh = await J("data/heat-history.json") ?? [];
 const ixh = await J("research/pulse/index-history.json") ?? { entries: [] };
+const demand = await J("research/pulse/demand.json");
 const today = new Date().toISOString().slice(0, 10);
 
 
@@ -112,8 +113,30 @@ const tests = [
     } },
 
   { id: "RT-5", name: "PSA-9 Tax / Fresh-Set Exception",
-    falsifier: "fresh-set 9-premiums persist 12+ months after release, i.e. the bend never fades",
-    run: () => ({ verdict: "INSUFFICIENT", detail: "graded premiums need a licensed daily graded feed we do not have", needs: "a licensed graded-price source" }) },
+    falsifier: "PSA 9s on established SWSH/SV chases return MORE than raw minus fees — i.e. grading a 9 is not a tax after all",
+    // Blocked as INSUFFICIENT for weeks for want of a graded feed. The feed
+    // arrived inside a response we were already receiving: completed PSA sale
+    // prices, not asks, which is why this can be judged rather than guessed.
+    run: () => {
+      const rows = demand?.gradedPremium ?? [];
+      if (rows.length < 5)
+        return { verdict: "INSUFFICIENT", detail: `${rows.length} card(s) with completed PSA 9 and 10 sales; the thesis is about a pattern, not a card`, needs: "5+ cards with graded sale data" };
+      // RT-5 makes TWO claims and must be tested as two. Pooling the cohorts
+      // produces ~50% by construction, because the thesis EXPECTS one group to
+      // clear and the other not to. A falsifier that tests a simpler version of
+      // a claim is not testing the claim.
+      const mega = rows.filter(r => /\bmega\b/i.test(r.name));
+      const established = rows.filter(r => !/\bmega\b/i.test(r.name));
+      if (mega.length < 3 || established.length < 3)
+        return { verdict: "INSUFFICIENT", detail: `${established.length} established and ${mega.length} Mega-era cards; the thesis is a contrast between two cohorts and needs 3+ in each`, needs: "3+ cards in each cohort" };
+      const taxed = established.filter(r => r.nineClears <= 0).length;
+      const inverted = mega.filter(r => r.nineClears > 0).length;
+      const taxHolds = taxed / established.length >= 0.6;
+      const inversionHolds = inverted / mega.length >= 0.6;
+      return taxHolds && inversionHolds
+        ? { verdict: "SURVIVED", detail: `both halves hold: a PSA 9 is a tax on ${taxed} of ${established.length} established chases, and pays on ${inverted} of ${mega.length} Mega-era chases — the inversion is exactly what the thesis predicted` }
+        : { verdict: "TRIPPED", detail: `${taxHolds ? "the tax holds" : `the tax FAILS — only ${taxed} of ${established.length} established chases are taxed`}, but ${inversionHolds ? "the inversion holds" : `the inversion FAILS — only ${inverted} of ${mega.length} Mega-era chases pay at 9`}` };
+    } },
 
   { id: "RT-6", name: "Scheduled-Event Anticlimax",
     falsifier: "a rotation or print-close date produces a measurable same-week move across the affected cohort",
