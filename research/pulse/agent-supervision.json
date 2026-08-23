@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T19:54:27.915Z",
+ "generatedAt": "2026-08-23T20:07:59.918Z",
  "date": "2026-08-23",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -91,6 +91,11 @@
   {
    "agent": "teacher",
    "finding": "every finding from a week ago is still open (13).",
+   "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
+  },
+  {
+   "agent": "api-strategist",
+   "finding": "every finding from a week ago is still open (7).",
    "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
@@ -584,7 +589,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "6 hand-written file(s) changed and not committed.",
+   "what": "2 hand-written file(s) changed and not committed.",
    "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -600,7 +605,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "5 supervisor problem(s) are open.",
+   "what": "6 supervisor problem(s) are open.",
    "do": "Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.",
    "score": 30,
    "band": "NOTE ONLY",
