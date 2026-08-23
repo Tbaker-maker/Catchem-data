@@ -395,6 +395,24 @@
     "grading"
    ],
    "recheckAfter": "2027-02-23"
+  },
+  {
+   "id": "graded-window-unknown",
+   "claim": "PPT supplies eBay sold-by-grade aggregates (count, median, min, max per PSA grade) on every enriched card. The block carries lastEbayCheck but NO date range for the sales themselves, so we cannot state what period a median covers.",
+   "sources": [
+    "data/singles-enrichment.json - the ebaySold block on 12 cards",
+    "our own withdrawal decision, 2026-08-23"
+   ],
+   "verified": "2026-08-23",
+   "verifier": "chat",
+   "confidence": "VERIFIED",
+   "falsifier": "a PPT parameter or field that returns or states the window",
+   "note": "TESTABLE HYPOTHESIS, not yet proven: eBay sold listings expire around 90 days, so if PPT scrapes eBay the aggregate may ALREADY be a rolling ~90-day window that is simply unlabelled. Sample sizes lean that way - 559 PSA 10 sales over 90 days is 6.2 a day for a single card, which is high; over the 19 months since release it is 1.5 a day, which is very plausible for a chase. That reads as ALL-TIME rather than rolling, which would make the median a historical average and the withdrawal correct. But it is a reasoned read from six cards, not proof. THE DEFINITIVE TESTS, both cheap: (1) check whether PPT documents the window or accepts a period parameter, (2) snapshot the same card twice a week apart - an all-time count can only grow, so a count that DROPS proves a rolling window.",
+   "usedBy": [
+    "grading",
+    "compute-demand"
+   ],
+   "recheckAfter": "2026-09-23"
   }
  ]
 }

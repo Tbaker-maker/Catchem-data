@@ -23,8 +23,7 @@ after.
 
 ---
 
-## SESSION 1 — can we get a defensible graded price?
-**Everything else depends on this. Do not skip to the fun part.**
+undefined
 
 - Check every endpoint and tier for sold aggregates carrying a **date range** —
   `from`, `to`, `days`, `period`, anything. **Paste a real response.**
