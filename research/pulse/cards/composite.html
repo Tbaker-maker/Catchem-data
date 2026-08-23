@@ -1,10 +1,10 @@
 <!doctype html><meta charset="utf-8">
-<title>Twenty-four years apart. Same illustrator.</title>
+<title>Nine nagimiso illustration rares for your binder</title>
 <style>
   body{margin:0;background:#070910;display:flex;align-items:center;justify-content:center;min-height:100vh;
        font-family:system-ui,-apple-system,"Segoe UI",sans-serif;padding:40px 20px}
-  .wrap{max-width:966px;width:100%}
-  .row{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;justify-content:center;align-items:start}
+  .wrap{max-width:934px;width:100%}
+  .row{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;justify-content:center;align-items:start}
   .card{text-align:center}
   .card img{width:100%;aspect-ratio:745/1040;object-fit:contain;display:block;border-radius:12px}
   .cap{color:#8a93a8;font-size:16px;margin-top:14px}
@@ -20,13 +20,27 @@
 </style>
 <div class="wrap">
   <div class="row">
-    <div class="card"><img src="https://images.pokemontcg.io/base1/4_hires.png" alt="Charizard" loading="eager">
-      <div class="cap">Charizard · 1999</div></div>
-    <div class="card"><img src="https://images.pokemontcg.io/sv3pt5/200_hires.png" alt="Blastoise ex" loading="eager">
-      <div class="cap">Blastoise ex · 2023</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/sv5/206_hires.png" alt="Iron Crown ex" loading="eager">
+      <div class="cap">Iron Crown ex · 2024</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/sv5/203_hires.png" alt="Iron Leaves ex" loading="eager">
+      <div class="cap">Iron Leaves ex · 2024</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/sv5/207_hires.png" alt="Iron Boulder ex" loading="eager">
+      <div class="cap">Iron Boulder ex · 2024</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/me2/127_hires.png" alt="Mega Sharpedo ex" loading="eager">
+      <div class="cap">Mega Sharpedo ex · 2025</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/sv1/203_hires.png" alt="Armarouge" loading="eager">
+      <div class="cap">Armarouge · 2023</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/rsv10pt5/130_hires.png" alt="Sawk" loading="eager">
+      <div class="cap">Sawk · 2025</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/sv10/191_hires.png" alt="Team Rocket's Houndoom" loading="eager">
+      <div class="cap">Team Rocket's Houndoom · 2025</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/sv2/215_hires.png" alt="Rabsca" loading="eager">
+      <div class="cap">Rabsca · 2023</div></div>
+    <div class="card"><img src="https://images.scrydex.com/pokemon/me2pt5-273/large" alt="Mega Emboar ex" loading="eager">
+      <div class="cap">Mega Emboar ex · 2026</div></div>
   </div>
-  <div class="label">Twenty-four years apart. Same illustrator.</div>
-  <div class="foot"><span class="mark">Catch'em</span><span class="src">Twenty-four years apart. Same illustrator.</span></div>
+  <div class="label">Nine nagimiso illustration rares for your binder</div>
+  <div class="foot"><span class="mark">Catch'em</span><span class="src">Nine nagimiso illustration rares for your binder</span></div>
   <div style="text-align:center;margin-top:26px">
     <button id="dl" class="pri">Download PNG</button><button id="copy" class="sec" hidden>Copy image</button><button id="share" class="sec" hidden>Share</button><button id="dlsvg" class="sec">Open cards full-size</button>
     <div id="msg" style="color:#8a93a8;font-size:13px;margin-top:10px"></div>
@@ -36,10 +50,10 @@
 // The browser composites, because it can reach the image host and chat cannot.
 // Everything is drawn at native card resolution so the result is postable
 // rather than a screenshot of a screenshot.
-const CARDS = [{"url":"https://images.pokemontcg.io/base1/4_hires.png","name":"Charizard","year":"1999"},{"url":"https://images.pokemontcg.io/sv3pt5/200_hires.png","name":"Blastoise ex","year":"2023"}];
-const LABEL = "Twenty-four years apart. Same illustrator.";
-const CAPTION = "Twenty-four years apart. Same illustrator.";
-const ARTISTS = "Mitsuhiro Arita";
+const CARDS = [{"url":"https://images.pokemontcg.io/sv5/206_hires.png","name":"Iron Crown ex","year":"2024"},{"url":"https://images.pokemontcg.io/sv5/203_hires.png","name":"Iron Leaves ex","year":"2024"},{"url":"https://images.pokemontcg.io/sv5/207_hires.png","name":"Iron Boulder ex","year":"2024"},{"url":"https://images.pokemontcg.io/me2/127_hires.png","name":"Mega Sharpedo ex","year":"2025"},{"url":"https://images.pokemontcg.io/sv1/203_hires.png","name":"Armarouge","year":"2023"},{"url":"https://images.pokemontcg.io/rsv10pt5/130_hires.png","name":"Sawk","year":"2025"},{"url":"https://images.pokemontcg.io/sv10/191_hires.png","name":"Team Rocket's Houndoom","year":"2025"},{"url":"https://images.pokemontcg.io/sv2/215_hires.png","name":"Rabsca","year":"2023"},{"url":"https://images.scrydex.com/pokemon/me2pt5-273/large","name":"Mega Emboar ex","year":"2026"}];
+const LABEL = "Nine nagimiso illustration rares for your binder";
+const CAPTION = "Nine nagimiso illustration rares for your binder";
+const ARTISTS = "nagimiso";
 // A GUARANTEED ROUTE. If every canvas path fails, the reader can still get real
 // full-resolution files - one tab per card, right-click and save. A screenshot
 // is the one outcome worth engineering around, so there is always another way.

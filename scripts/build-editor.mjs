@@ -137,7 +137,8 @@ summary:before{content:"→ ";color:var(--faint)}
 <div class="wrap">
 <div class="top">
   <h1>Build a post<em>.</em></h1>
-  <p class="lede">Pick a direction and we'll find combinations worth posting. Every image credits the illustrator.</p>
+  <p class="lede">Pick a direction and we'll find combinations worth posting. Every image credits the illustrator.
+     &nbsp;·&nbsp; <a href="/creators" style="color:var(--live)">Or start from one we made &rsaquo;</a></p>
 </div>
 
 <div class="steps">

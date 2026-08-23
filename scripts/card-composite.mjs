@@ -37,6 +37,41 @@ const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "ut
 // The source publishes the real URL per card. Use it. A constructed URL is a
 // guess wearing the shape of a fact, and this one failed by returning a valid
 // image of the wrong thing, which is the hardest kind of wrong to notice.
+// ── RASTERISER: Resvg where it exists, Chrome where it does not ────────────
+// CI installs @resvg/resvg-js and gets a native Linux binding, so Resvg is the
+// path that matters for the daily run. This Windows desk has no binding, which
+// meant no composite could be checked by eye before shipping — and "every card
+// shown to a person must be opened and looked at first" is a rule we already
+// broke twice. Chrome is present on both, and the workflow already depends on
+// it for smoke-test and mode-diff-test, so it adds no new dependency.
+export async function rasterise(svgText, W, H) {
+  try {
+    const { Resvg } = await import("@resvg/resvg-js");
+    return new Resvg(svgText, { fitTo: { mode: "width", value: W } }).render().asPng();
+  } catch { /* no binding on this platform — fall through */ }
+
+  const { existsSync } = await import("node:fs");
+  const { writeFile: wf, readFile: rf, mkdtemp, rm } = await import("node:fs/promises");
+  const { tmpdir } = await import("node:os");
+  const { execFile } = await import("node:child_process");
+  const { promisify } = await import("node:util");
+  const chrome = process.env.CHROME_PATH
+    || ["/usr/bin/google-chrome", "/usr/bin/chromium-browser",
+        "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+        "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"].find(p => existsSync(p));
+  if (!chrome) return null;
+  const dir = await mkdtemp(join(tmpdir(), "composite-"));
+  const svgPath = join(dir, "c.svg"), pngPath = join(dir, "c.png");
+  try {
+    await wf(svgPath, svgText);
+    await promisify(execFile)(chrome, ["--headless", "--disable-gpu", "--hide-scrollbars",
+      "--default-background-color=00000000", `--screenshot=${pngPath}`,
+      `--window-size=${Math.round(W)},${Math.round(H)}`, svgPath], { timeout: 90000 });
+    return await rf(pngPath);
+  } catch { return null; }
+  finally { await rm(dir, { recursive: true, force: true }).catch(() => {}); }
+}
+
 const setCache = {};
 async function realImageUrl(id) {
   const set = id.slice(0, id.lastIndexOf("-"));
@@ -198,13 +233,31 @@ if (!ids.length) {
   const CARD_CAP = 0;
   const CAPTION = L_CAP;
   const W = PAD * 2 + CARD_W * perRow + GAP * (perRow - 1);
-  const H = PAD * 2 + CARD_H * rowCount + GAP * (rowCount - 1) + CAPTION + CARD_CAP * rowCount;
+  const baseH = PAD * 2 + CARD_H * rowCount + GAP * (rowCount - 1) + CAPTION + CARD_CAP * rowCount;
 
   const sameArtist = new Set(cards.map(c => c.artist)).size === 1 ? cards[0].artist : null;
   const years = cards.map(c => (c.releaseDate ?? "").slice(0, 4)).filter(Boolean);
   const caption = label ?? (sameArtist
     ? `${sameArtist}${years.length > 1 && years[0] !== years[years.length - 1] ? ` · ${years[0]}–${years[years.length - 1]}` : ""}`
     : cards.map(c => c.name).join(" · "));
+
+  // CAPTION BELOW THE CARD LABELS, MEASURED — not a fixed offset from the
+  // bottom. `H - 96` put the caption baseline 20px under the per-card label
+  // baseline; at 30px bold against 20px labels the two occupy the same band,
+  // and a three-card render came out with "Teeziro trio" printed straight
+  // through "Gouging Fire ex · 2024". Both renderers use these coordinates, so
+  // it was not a font quirk — it was shipping.
+  // GROW THE CANVAS, DO NOT CLAMP THE CAPTION. The first fix clamped the
+  // caption to `H - 46` so it could not run off the bottom — which on a nine
+  // card grid pushed it straight back onto the last row's year labels, because
+  // a grid adds 30px of label space per row that the height formula does not
+  // reserve. A clamp turns "does not fit" into "overlaps", which is the same
+  // bug wearing a bound. If the caption needs another 30px, the image is 30px
+  // taller; nothing about that is a compromise.
+  const lastRowTop = PAD + (rowCount - 1) * (CARD_H + GAP + (isGrid ? 30 : 0));
+  const labelBaseline = lastRowTop + CARD_H + 26;
+  const captionY = labelBaseline + 40;
+  const H = Math.max(baseH, captionY + 46);
 
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ${W} ${H}">
 <rect width="${W}" height="${H}" fill="#070910"/>
@@ -213,9 +266,24 @@ ${cards.map((c, i) => {
   const x = PAD + col * (CARD_W + GAP);
   const y = PAD + row * (CARD_H + GAP + (isGrid ? 30 : 0));
   return `<image x="${x}" y="${y}" width="${CARD_W}" height="${CARD_H}" preserveAspectRatio="xMidYMid meet" xlink:href="${c.imageUrl}"/>
-<text x="${x + CARD_W / 2}" y="${y + CARD_H + 26}" text-anchor="middle" fill="#8a93a8" font-family="Sora" font-size="${isGrid ? 16 : 20}">${isGrid ? "" : ((c.name ?? "").length > (isGrid ? 20 : 40) ? (c.name ?? "").slice(0, isGrid ? 18 : 38) + "…" : (c.name ?? "")).replace(/&/g, "&amp;").replace(/</g, "&lt;")}${c.releaseDate ? ` · ${c.releaseDate.slice(0, 4)}` : ""}</text>`;
+<text x="${x + CARD_W / 2}" y="${y + CARD_H + 26}" text-anchor="middle" fill="#8a93a8" font-family="Sora" font-size="${isGrid ? 16 : 20}">${(() => {
+  // A grid drops the card NAME for room, which left the separator behind it:
+  // every label under a nine-card page read "· 2024" with nothing before the
+  // dot. The separator belongs to the name, so it goes when the name goes.
+  const nm = isGrid ? "" : ((c.name ?? "").length > 40 ? (c.name ?? "").slice(0, 38) + "…" : (c.name ?? ""))
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  const yr = c.releaseDate ? c.releaseDate.slice(0, 4) : "";
+  return nm && yr ? `${nm} · ${yr}` : (nm || yr);
+})()}</text>`;
 }).join("\n")}
-${label ? `<text x="${W / 2}" y="${H - 96}" text-anchor="middle" fill="#f4f5f8" font-family="Syne" font-weight="800" font-size="30">${label.replace(/&/g, "&amp;")}</text>` : ""}
+${label ? `<text x="${W / 2}" y="${captionY}" text-anchor="middle" fill="#f4f5f8" font-family="Syne" font-weight="800" font-size="30">${label.replace(/&/g, "&amp;")}</text>` : ""}
+${/* THE WATERMARK, ON THIS PATH TOO. It was implemented only in the client-side
+      canvas, so every server-rendered PNG carried ONE mark instead of three —
+      and the server-rendered ones are exactly the files we serve from our own
+      domain and expect to be reposted. Same geometry as the canvas: two faint
+      marks set into the artwork, so cropping past them crops into the cards. */""}
+${[[W * 0.28, PAD + CARD_H * 0.42], [W * 0.72, PAD + CARD_H * 0.78]].map(([wx, wy]) =>
+  `<text transform="translate(${wx.toFixed(1)} ${wy.toFixed(1)}) rotate(-20)" text-anchor="middle" fill="#ffffff" fill-opacity="0.16" font-family="Syne" font-weight="800" font-size="34">catchemtcg.com</text>`).join("\n")}
 <text x="${PAD}" y="${H - 18}" fill="#36d399" font-family="Syne" font-weight="800" font-size="22">Catch'em</text>
 <text x="${W - PAD}" y="${H - 18}" text-anchor="end" fill="#5c637a" font-family="JetBrains Mono" font-size="15">${[...new Set(cards.map(c => c.artist).filter(Boolean))].slice(0, 3).join(" · ") || caption.replace(/&/g, "&amp;")}</text>
 </svg>`;
@@ -413,23 +481,32 @@ document.getElementById("dlsvg").onclick = () => {
   // is a no-op here, but it runs anywhere with access and produces the file
   // Tyler actually wants.
   try {
-    const [{ Resvg }, { writeFile: wf }] = [await import("@resvg/resvg-js"), await import("node:fs/promises")];
+    // EMBED FIRST, RASTERISE SECOND. These used to be one step, with the Resvg
+    // import at the head of the same destructure — so on a machine without the
+    // native binding the whole block threw before a single image was fetched,
+    // and the message blamed the image host. It was reporting a missing module
+    // as a 403. The two questions are separate and are now asked separately.
+    const { writeFile: wf } = await import("node:fs/promises");
     let embedded = svg;
     let ok = true;
     for (const c of cards) {
       const r = await fetch(c.imageUrl, { signal: AbortSignal.timeout(15000) }).catch(() => null);
       if (!r || !r.ok) { ok = false; break; }
       const buf = Buffer.from(await r.arrayBuffer());
-      const mime = r.headers.get("content-type") ?? "image/png";
       // A content-type is a claim, not evidence — sniff the bytes.
       const isPng = buf[0] === 0x89 && buf[1] === 0x50, isJpg = buf[0] === 0xff && buf[1] === 0xd8;
       if (!isPng && !isJpg) { ok = false; break; }
       embedded = embedded.replace(c.imageUrl, `data:${isPng ? "image/png" : "image/jpeg"};base64,${buf.toString("base64")}`);
     }
     if (ok) {
-      const png = new Resvg(embedded, { fitTo: { mode: "width", value: W } }).render().asPng();
-      await wf(join(ROOT, "research/pulse/cards/composite.png"), png);
-      console.log(`   composite.png written — drop it straight into the post.`);
+      const outPath = process.env.COMPOSITE_OUT || join(ROOT, "research/pulse/cards/composite.png");
+      const png = await rasterise(embedded, W, H);
+      if (png) {
+        await wf(outPath, png);
+        console.log(`   ${outPath.split(/[\\/]/).pop()} written — drop it straight into the post.`);
+      } else {
+        console.log(`   PNG skipped: no rasteriser available (Resvg binding missing and no Chrome found).`);
+      }
     } else {
       console.log(`   PNG skipped: the image host is unreachable from here. composite.html loads them in a browser.`);
     }
