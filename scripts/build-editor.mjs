@@ -43,97 +43,141 @@ else {
   const html = `<!doctype html><meta charset="utf-8"><title>Catch'em Creators — build a post</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
-:root{--bg:#070910;--surf:#0f1219;--ink:#e9ecf3;--dim:#8b93a7;--green:#36d399;--line:rgba(255,255,255,.08)}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);
-  font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;padding:24px 18px 90px}
-.wrap{max-width:1080px;margin:0 auto}
-h1{font-size:28px;margin:0 0 2px}.sub{color:var(--dim);margin:0 0 20px;font-size:14.5px}
-input,select{background:#0b0d14;border:1px solid var(--line);border-radius:9px;color:var(--ink);
-  padding:11px 13px;font:15px inherit;width:100%}
-.funnel{display:grid;grid-template-columns:1.4fr 1fr 1.6fr;gap:14px;margin-bottom:16px;
-  background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:16px}
-.step label{display:block;font-size:12.5px;color:var(--dim);margin-bottom:7px;letter-spacing:.3px}
-.chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{background:#0b0d14;border:1px solid var(--line);color:var(--dim);border-radius:8px;
-  padding:9px 13px;font-size:13.5px;cursor:pointer}
-.chip.on{border-color:var(--green);color:var(--green);background:rgba(54,211,153,.08)}
-.ideas{display:grid;gap:10px;margin-bottom:18px}
-.idea{background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:14px 16px;cursor:pointer;transition:border-color .12s}
-.idea:hover{border-color:var(--green)}
-.idea b{display:block;font-size:16px;margin-bottom:3px}
-.idea i{font-style:normal;color:var(--dim);font-size:13.5px;display:block}
-.idea .hook{color:var(--green);font-size:13.5px;margin-top:6px}
-.adv{margin-bottom:14px}
-.adv summary{color:var(--dim);font-size:14px;cursor:pointer;padding:6px 0}
-@media(max-width:760px){.funnel{grid-template-columns:1fr}}
-.controls{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;margin-bottom:14px}
-.results{display:grid;grid-template-columns:repeat(auto-fill,minmax(122px,1fr));gap:10px;
-  max-height:320px;overflow-y:auto;padding:4px;background:var(--surf);border:1px solid var(--line);border-radius:12px}
-.hit{cursor:pointer;text-align:center;border-radius:8px;padding:6px;transition:background .12s}
-.hit:hover{background:rgba(54,211,153,.09)}
-.hit img{width:100%;aspect-ratio:745/1040;object-fit:contain;border-radius:5px;background:#0b0d14}
-.hit b{display:block;font-size:11.5px;font-weight:600;margin-top:5px;line-height:1.25}
-.hit i{display:block;font-style:normal;font-size:10.5px;color:var(--dim)}
-.hit .nocred{color:#d9a441}
-.tray{display:flex;gap:10px;flex-wrap:wrap;min-height:96px;background:var(--surf);
-  border:1px dashed var(--line);border-radius:12px;padding:12px;margin:16px 0 12px;align-items:flex-start}
-.tray .slot{position:relative;width:74px}
-.tray img{width:74px;aspect-ratio:745/1040;object-fit:contain;border-radius:5px}
-.tray button{position:absolute;top:-7px;right:-7px;width:21px;height:21px;border-radius:50%;
-  border:0;background:#ef5a5a;color:#fff;font-size:13px;cursor:pointer;line-height:1}
-.empty{color:var(--dim);font-size:14px;align-self:center}
-.status{font-size:13.5px;color:var(--dim);margin-bottom:12px;min-height:19px}
-.status.bad{color:#d9a441}
-.acts{display:flex;gap:8px;flex-wrap:wrap}
-button.pri{background:var(--green);color:#070910;border:0;border-radius:10px;padding:13px 24px;
-  font-size:15.5px;font-weight:700;cursor:pointer}
-button.sec{background:transparent;color:var(--dim);border:1px solid var(--line);border-radius:10px;
-  padding:13px 20px;font-size:15px;cursor:pointer}
-button:disabled{opacity:.4;cursor:not-allowed}
-canvas{max-width:100%;border-radius:12px;margin-top:16px;display:none}
-.note{color:var(--dim);font-size:13px;margin-top:22px;border-top:1px solid var(--line);padding-top:14px}
-@media(max-width:640px){.controls{grid-template-columns:1fr}.acts button{width:100%}}
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Sora:wght@300;400;600&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{
+  --ink:#0a0c12; --panel:#11141c; --raise:#171b25; --line:#20252f;
+  --text:#e8ebf2; --soft:#8a93a6; --faint:#5a6273;
+  --live:#36d399; --warn:#d9a441;
+  --display:'Syne',system-ui,sans-serif; --body:'Sora',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+*{box-sizing:border-box}
+html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+body{margin:0;background:var(--ink);color:var(--text);font:300 16px/1.6 var(--body);padding:0 0 120px}
+.wrap{max-width:1000px;margin:0 auto;padding:0 24px}
+
+/* Masthead — type does the work, no hero graphic, no gradient. */
+.top{padding:56px 0 40px;border-bottom:1px solid var(--line);margin-bottom:40px}
+h1{font:800 clamp(34px,6vw,52px)/1 var(--display);letter-spacing:-.028em;margin:0 0 12px}
+h1 em{font-style:normal;color:var(--live)}
+.lede{color:var(--soft);font-size:17px;max-width:46ch;margin:0}
+
+/* Steps — a real sequence, so numbering earns its place. */
+.steps{display:grid;grid-template-columns:1.3fr .9fr 1.5fr;gap:28px;margin-bottom:44px}
+.step{min-width:0}
+.step .n{font:500 11px/1 var(--mono);color:var(--faint);letter-spacing:.14em;display:block;margin-bottom:10px}
+.step .t{font:600 14.5px/1.3 var(--body);margin-bottom:12px;display:block}
+select,input{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  color:var(--text);padding:13px 14px;font:400 14.5px var(--body);transition:border-color .18s var(--ease)}
+select:focus,input:focus{outline:none;border-color:var(--live)}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{background:var(--panel);border:1px solid var(--line);color:var(--soft);border-radius:9px;
+  padding:10px 14px;font:400 13.5px var(--body);cursor:pointer;transition:all .18s var(--ease)}
+.chip:hover{border-color:var(--faint);color:var(--text)}
+.chip.on{border-color:var(--live);color:var(--live);background:rgba(54,211,153,.07)}
+.chip[data-n]{font-family:var(--mono);font-weight:500;min-width:44px;text-align:center}
+
+/* Ideas — a filmstrip, not a list. */
+.ideas{display:grid;gap:9px;margin-bottom:40px}
+.idea{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:17px 20px;
+  cursor:pointer;transition:all .2s var(--ease)}
+.idea:hover{border-color:var(--live);transform:translateY(-1px)}
+.idea b{display:block;font:600 16.5px/1.35 var(--body);margin-bottom:4px}
+.idea i{font-style:normal;color:var(--faint);font:400 12.5px var(--mono);display:block}
+.idea .hook{color:var(--soft);font-size:14px;margin-top:9px}
+
+/* THE SIGNATURE: the binder page. Empty pockets show what still fits. */
+.page-label{font:500 11px/1 var(--mono);color:var(--faint);letter-spacing:.14em;margin-bottom:14px}
+.binder{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;
+  display:grid;gap:12px;justify-content:center;margin-bottom:16px}
+.pocket{aspect-ratio:745/1040;border-radius:9px;background:var(--raise);
+  border:1px dashed var(--line);position:relative;overflow:hidden;
+  animation:settle .34s var(--ease) both}
+.pocket.filled{border-style:solid;border-color:transparent;background:transparent}
+.pocket img{width:100%;height:100%;object-fit:contain;display:block}
+.pocket .x{position:absolute;top:5px;right:5px;width:22px;height:22px;border-radius:50%;border:0;
+  background:rgba(10,12,18,.82);color:#fff;font-size:14px;line-height:1;cursor:pointer;opacity:0;
+  transition:opacity .16s var(--ease)}
+.pocket:hover .x{opacity:1}
+@keyframes settle{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.pocket{animation:none}.idea:hover{transform:none}}
+
+.status{font:400 13px var(--mono);color:var(--faint);margin-bottom:20px;min-height:18px}
+.status.bad{color:var(--warn)}
+.acts{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+button.pri{background:var(--live);color:var(--ink);border:0;border-radius:11px;padding:14px 26px;
+  font:600 15px var(--body);cursor:pointer;transition:opacity .18s var(--ease)}
+button.pri:hover{opacity:.9}
+button.sec{background:transparent;color:var(--soft);border:1px solid var(--line);border-radius:11px;
+  padding:14px 20px;font:400 14.5px var(--body);cursor:pointer;transition:all .18s var(--ease)}
+button.sec:hover{border-color:var(--faint);color:var(--text)}
+button:disabled{opacity:.32;cursor:not-allowed}
+canvas{max-width:100%;border-radius:14px;margin-top:24px;display:none;border:1px solid var(--line)}
+
+/* Search — the escape hatch, deliberately quiet. */
+details{margin-bottom:36px;border-top:1px solid var(--line);padding-top:18px}
+summary{color:var(--faint);font:400 13.5px var(--body);cursor:pointer;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary:before{content:"→ ";color:var(--faint)}
+.controls{display:grid;grid-template-columns:2fr 1fr .8fr;gap:9px;margin:16px 0 12px}
+.results{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:9px;
+  max-height:290px;overflow-y:auto;padding:3px}
+.hit{cursor:pointer;text-align:center;border-radius:9px;padding:6px;transition:background .16s var(--ease)}
+.hit:hover{background:var(--raise)}
+.hit img{width:100%;aspect-ratio:745/1040;object-fit:contain;border-radius:6px;background:var(--raise)}
+.hit b{display:block;font:600 11px/1.3 var(--body);margin-top:6px}
+.hit i{display:block;font-style:normal;font:400 9.5px var(--mono);color:var(--faint);margin-top:2px}
+.hit .nocred{color:var(--warn)}
+.empty{color:var(--faint);font-size:14px;grid-column:1/-1;padding:22px 0;text-align:center}
+.foot{color:var(--faint);font-size:13px;margin-top:46px;border-top:1px solid var(--line);padding-top:20px;line-height:1.7}
+:focus-visible{outline:2px solid var(--live);outline-offset:2px}
+@media(max-width:760px){.steps{grid-template-columns:1fr;gap:22px}.controls{grid-template-columns:1fr}
+  .acts button{width:100%}}
 </style>
 <div class="wrap">
-<h1>Build a post</h1>
-<p class="sub">Search ${index.length.toLocaleString("en-US")} cards. Add up to nine. The frame picks itself.</p>
+<div class="top">
+  <h1>Build a post<em>.</em></h1>
+  <p class="lede">Pick a direction and we'll find combinations worth posting. Every image credits the illustrator.</p>
+</div>
 
-<div class="funnel">
-  <div class="step"><label>1 · A set, or all of them</label>
+<div class="steps">
+  <div class="step"><span class="n">01 / SET</span><span class="t">Narrow it down, or don't</span>
     <select id="fset"><option value="">Every set</option>${sets.map(x => `<option>${x.replace(/&/g, "&amp;")}</option>`).join("")}</select></div>
-  <div class="step"><label>2 · How many cards</label>
+  <div class="step"><span class="n">02 / COUNT</span><span class="t">How many cards</span>
     <div class="chips" id="fcount">${[1,2,3,4,6,8,9].map(n => `<button class="chip" data-n="${n}">${n}</button>`).join("")}</div></div>
-  <div class="step"><label>3 · What kind of post</label>
+  <div class="step"><span class="n">03 / ANGLE</span><span class="t">What kind of post</span>
     <div class="chips" id="ftheme"></div></div>
 </div>
+
 <div id="ideas" class="ideas"></div>
-<details class="adv"><summary>Or search all ${index.length.toLocaleString("en-US")} cards yourself</summary>
+
+<details><summary>Search all ${index.length.toLocaleString("en-US")} cards instead</summary>
 <div class="controls">
-  <input id="q" placeholder="Pokémon, illustrator, or set…" autocomplete="off">
+  <input id="q" placeholder="Pokémon, illustrator, or set" autocomplete="off">
   <select id="rar"><option value="">Any rarity</option>
     <option>Special Illustration Rare</option><option>Illustration Rare</option>
     <option>Rare Holo</option><option>Rare Secret</option><option>Rare Ultra</option></select>
-  <input id="yr" placeholder="Year, e.g. 1999" inputmode="numeric">
+  <input id="yr" placeholder="Year" inputmode="numeric">
 </div>
 <div class="results" id="res"></div>
 </details>
 
-<div class="tray" id="tray"><span class="empty">Click cards above to add them here</span></div>
+<div class="page-label" id="plabel">YOUR PAGE</div>
+<div class="binder" id="tray"></div>
 <div class="status" id="st"></div>
-<input id="label" placeholder="Your line — leave it blank if the cards say it better" style="margin-bottom:12px">
+<input id="label" placeholder="Your line — or leave it blank and let the cards talk" style="margin-bottom:18px">
 
 <div class="acts">
   <button class="pri" id="make" disabled>Make the image</button>
   <button class="sec" id="copy" hidden>Copy</button>
   <button class="sec" id="share" hidden>Share</button>
-  <button class="sec" id="dl" hidden>Download PNG</button>
+  <button class="sec" id="dl" hidden>Download</button>
 </div>
 <canvas id="cv"></canvas>
 
-<div class="note"><b>Every image carries the Catch'em mark and the illustrator's name.</b>
-The credit is not ours to remove — it is the name of the person who drew it. Cards shown in amber
-have no illustrator recorded in the public dataset; that is a backfill gap on recent sets, not a
-Pokémon decision, and you can still use them.</div>
+<div class="foot">Every image carries the Catch'em mark and the illustrator's name — the credit isn't ours to remove.
+Cards marked in amber have no illustrator recorded in the public dataset. That's a backfill gap on recent sets,
+not a Pokémon decision, and you can still use them.</div>
 </div>
 <script>
 const THEMES = ${JSON.stringify(themes?.themes ?? [])};
@@ -171,26 +215,32 @@ function remove(k){ tray.splice(k,1); blob = null; render(); }
 function setStatus(t, bad){ const s = el("st"); s.textContent = t; s.className = "status" + (bad ? " bad" : ""); }
 
 function render(){
-  el("tray").innerHTML = tray.length ? tray.map((c,k) =>
-    \`<div class="slot"><img src="\${imgUrl(c.i)}" alt=""><button onclick="remove(\${k})">×</button></div>\`).join("")
-    : "<span class='empty'>Click cards above to add them here</span>";
   const L = LAYOUTS[tray.length];
+  const box = el("tray");
+  // THE BINDER PAGE. Empty pockets are drawn for the rest of the chosen layout,
+  // so a creator sees how many more fit without being told - the constraint
+  // teaches itself, the way a nine-pocket page does in your hands.
+  const cols = L ? L.cols : Math.min(Math.max(tray.length, 3), 3);
+  const slots = L ? L.cols * Math.ceil(tray.length / L.cols) : Math.max(tray.length, 3);
+  box.style.gridTemplateColumns = \`repeat(\${cols}, minmax(0, \${cols > 3 ? 120 : 148}px))\`;
+  let html = tray.map((c, k) =>
+    \`<div class="pocket filled"><img src="\${imgUrl(c.i)}" alt="\${c.n}"><button class="x" onclick="remove(\${k})" aria-label="Remove \${c.n}">×</button></div>\`).join("");
+  for (let i = tray.length; i < slots; i++) html += '<div class="pocket"></div>';
+  box.innerHTML = html || '<div class="pocket"></div><div class="pocket"></div><div class="pocket"></div>';
+  el("plabel").textContent = L ? ("YOUR PAGE — " + L.name.toUpperCase()) : "YOUR PAGE";
+
   el("make").disabled = !L;
   el("cv").style.display = "none";
   ["copy","share","dl"].forEach(i => el(i).hidden = true);
-  if (!tray.length) { setStatus(""); return; }
+  if (!tray.length) { setStatus("Pick an idea above, or search for a card."); return; }
   if (L) {
     const missing = tray.filter(c => !c.a).length;
-    setStatus(\`\${tray.length} cards — "\${L.name}", \${L.cols} across\` +
-      (missing ? \` · \${missing} without a recorded illustrator\` : ""), false);
+    setStatus(\`\${tray.length} cards · \${L.cols} across\` + (missing ? \` · \${missing} without a recorded illustrator\` : ""), false);
   } else {
-    // The layout table refuses unsupported counts and says what to do, rather
-    // than producing a ragged final row that reads as a mistake.
     const below = SUPPORTED.filter(n => n < tray.length).pop(), above = SUPPORTED.find(n => n > tray.length);
     setStatus(\`\${tray.length} cards has no frame. \${below ? "Remove " + (tray.length - below) : ""}\${below && above ? " or add " + (above - tray.length) : ""}.\`, true);
   }
 }
-
 
 // THE FUNNEL. Three small questions, then real combinations - not a list of
 // themes but a list of POSTS, each already loadable into the tray. A creator
