@@ -159,6 +159,24 @@ const scripts = (await readdir(join(ROOT, "scripts"))).filter(f => f.endsWith(".
       "Sources agreeing with each other is often one source repeated. Anything we can check against our own data must be checked before it is published.", 21);
 }
 
+// ── SIZED FOR THE CANVAS, SEEN AT THUMBNAIL (error 24) ────────────────────
+// CC measured what I had reasoned about: price text at 26px on a 2535px canvas
+// is 4.1px in a 400px Discord preview. A nine-card want list read as "nine
+// cards" rather than "which ones and what they cost" — it failed at the working
+// half of a working document, and every number in the source looked fine.
+{
+  const gens = (await readdir(join(ROOT, "scripts"))).filter(f => /^build-|card-composite/.test(f) && f.endsWith(".mjs"));
+  for (const f of gens) {
+    const src = await readFile(join(ROOT, "scripts", f), "utf-8").catch(() => "");
+    // A fixed font size drawn onto a canvas whose width is variable is the shape.
+    const fixedOnCanvas = /g\.font\s*=\s*"[^"]*\d+px/.test(src) && /canvas|createElement\("canvas"\)|cv\.width/.test(src);
+    const scales = /thumbScale|400 \/ W|\/ W\b/.test(src);
+    if (fixedOnCanvas && !scales)
+      P("thumbnail legibility", f + " draws fixed-size text onto a variable-width canvas",
+        "Text sized for the full canvas vanishes in a feed preview, where the image is actually seen and decided on. Scale to the canvas or the words are decoration.", 24);
+  }
+}
+
 // ── THE META-CHECK · did I exclude myself? ────────────────────────────────
 // Five checkers read their own source in one day. This one names the risk out
 // loud rather than assuming it is immune.
@@ -167,7 +185,7 @@ const selfAware = true;   // this file audits data and other scripts, never itse
 const out = { generatedAt: new Date().toISOString(),
   purpose: "Checks output against the failure classes in our own error ledger — things that actually happened here, not generic quality rules.",
   runsOn: "output, never intent. What I meant to do is not evidence.",
-  classesChecked: [11, 13, 14, 15, 16, 18, "sku existence", "coverage overclaim"],
+  classesChecked: [11, 13, 14, 15, 16, 18, 21, 24, "sku existence", "coverage overclaim"],
   problems };
 await (await import("node:fs/promises")).writeFile(join(ROOT, "research/pulse/work-verification.json"), JSON.stringify(out, null, 1));
 

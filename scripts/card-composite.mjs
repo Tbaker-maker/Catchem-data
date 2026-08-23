@@ -363,6 +363,12 @@ async function compose() {
   const H = PAD + (CH + 70) * ROWS - 70 + CAPH + LABH + 90;
   const cv = document.createElement("canvas");
   cv.width = W; cv.height = H;
+  // THUMBNAIL LEGIBILITY. These are seen first as a ~400px feed preview and
+  // decided on there. Text sized for the full canvas vanishes: 26px on a 2535px
+  // canvas is 4.1px in that preview, which is how a want list came to read as
+  // "nine cards" instead of "which ones and what they cost".
+  const thumbScale = 400 / W;
+  const px = (n) => Math.max(n, Math.round(n / thumbScale / 2.2));
   const g = cv.getContext("2d");
   g.fillStyle = "#070910"; g.fillRect(0, 0, W, H);
 
