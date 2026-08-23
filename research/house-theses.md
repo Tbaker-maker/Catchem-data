@@ -1797,3 +1797,37 @@ the report printed elapsed hours instead — "last seen 16h ago, allowed 30h",
 which reads as a threshold that has not been breached. **It computed the right
 answer and displayed the wrong one.** A finding that carries a reason must print
 the reason.
+
+## THE FILTER IS THE PRODUCT (Tyler, Aug 23 2026)
+He saw a creator posting *"Day 89 of posting one Pokémon card I love that costs
+under $10"* and wanted us to make that startable by anybody.
+
+**The streak is not the feature. The FILTER is.** A streak counter alone would
+have every creator posting from the same pool and looking like each other, which
+is the thing Tyler explicitly does not want: *"help keep us more diverse than
+the same content everywhere."*
+
+A filter makes the series THEIRS. Two people running "IRs under $10" and "SIRs
+from 2024" draw completely different cards from the same 687-card pool, and the
+pick is seeded by their start date so even identical filters diverge from day
+one.
+
+WHY IT RETAINS BETTER THAN ANYTHING ELSE WE HAVE BUILT: it is the only mechanic
+that gives somebody a reason to open the tool on a day they arrived with no
+idea. **Day 89 is a commitment nobody wants to break** — and we did not invent
+that, a creator did, and it is worth copying because it plainly works.
+
+TWO RULES IN THE ENGINE:
+- **No repeats, ever.** A streak that serves the same card twice is a streak
+  somebody stops trusting the day they notice.
+- **Deterministic per day.** Reloading must not reshuffle the pick, or the
+  series is not a series.
+
+Local only, same reasoning as own/want: a streak is a person's posting history,
+and on a server that is user data.
+
+AND THE FILE FOUGHT BACK A THIRD TIME. A backslash-quote inside a JS string
+inside a Node template collapses and terminates the string — CC hit it twice
+last night and documented the fix. I hit it again by not reading their commit
+closely enough. **Single-quoted HTML attributes need no escaping at any level**,
+and that is now three occurrences of one bug in one file.

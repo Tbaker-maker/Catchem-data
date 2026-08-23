@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-08-23T15:04:35.043Z",
+  "generatedAt": "2026-08-23T15:58:02.271Z",
   "audited": "9 shipped surfaces, 35 minted cards",
   "principle": "A linter asks whether the CSS is valid. A design lead asks whether the page was DESIGNED. The tells of an undesigned page are countable: too many type sizes, too many near-identical greys, an accent used everywhere so it accents nothing.",
   "blindSpot": "It cannot SEE. It counts and measures. It cannot tell you a page is ugly, only that the choices behind it were not made deliberately.",
   "counts": {
-    "high": 0,
+    "high": 1,
     "medium": 5,
-    "low": 0
+    "low": 1
   },
   "findings": [
     {
@@ -18,10 +18,24 @@
     },
     {
       "surface": "build.html",
+      "severity": "high",
+      "what": "the accent colour appears 15 times",
+      "why": "An accent used everywhere accents nothing, and it is the most common reason a dark page reads as cheap rather than considered.",
+      "fix": "Spend it in two places: the active state and the one primary action. Everything else greys."
+    },
+    {
+      "surface": "build.html",
       "severity": "medium",
       "what": "--faint on the background is 3.2:1",
       "why": "WCAG AA wants 4.5:1 for body text and 3:1 for large text. Below 3 it is unreadable on a phone in daylight, which is where this is actually seen.",
       "fix": "Lighten --faint until it clears 4.5, or reserve it for text at 18px and above."
+    },
+    {
+      "surface": "build.html",
+      "severity": "low",
+      "what": "5 odd-numbered spacing values: 13, 17, 9, 15, 3",
+      "why": "Odd values usually mean nudging until it looked right rather than working from a scale. It is invisible individually and reads as sloppy in aggregate.",
+      "fix": "Snap to a 4px rhythm."
     },
     {
       "surface": "the-board.html",

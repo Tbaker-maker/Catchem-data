@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-08-23T15:54:16.160Z",
+  "generatedAt": "2026-08-23T15:58:05.964Z",
   "principle": "Every bug today was a check that was RIGHT IN PRINCIPLE and asked a question whose answer could not reveal the fault. Not a broken guard — a guard aimed slightly beside the thing it guards. We declare blind spots for every agent and none for guards, so a guard asking the wrong question looks exactly like one that works.",
   "guardsChecked": 21,
-  "declared": 24,
+  "declared": 23,
   "shapes": [
     {
       "id": "substring where structure exists",
@@ -19,24 +19,14 @@
     {
       "id": "elapsed time as a proxy for an event",
       "why": "The heartbeat allowed 30 hours so a LATE run would not cry wolf, and a window built to forgive a late run is exactly the size to hide a SKIPPED one. Green through a failure."
-    },
-    {
-      "id": "assertion with no producer",
-      "why": "run-tests asserted latest-graded.svg while NO pipeline step minted it — mint-cards.mjs was in no workflow at all. Graded data was withdrawn, the card stopped being produced, the fossil was deleted, and the assertion failed inside the FAIL-FAST gate. A correct editorial decision took the whole daily run down before the eBay fetch ever ran."
-    },
-    {
-      "id": "verdict from an empty sample",
-      "why": "The graded-window probe compared ZERO cards — 11 of 12 rate-limited by a concurrent run — and still printed NO DROP, consistent with an all-time aggregate. A conclusion drawn from no data reads exactly like one drawn from data."
-    },
-    {
-      "id": "alarm on an unreachable condition",
-      "why": "Making the heartbeat continue-on-error so a retry could branch on it turns the JOB green, and the existing alarm was if: failure(), which then never fires. I nearly shipped it. An alarm wired to a condition that cannot occur reports silence as health."
-    },
-    {
-      "id": "enforcement only in the presentation",
-      "why": "The singles-sell refusal lived entirely in button.disabled. A disabled attribute is an affordance, not a guard — re-enabling it in the console produced the very image the refusal exists to prevent."
     }
   ],
-  "problems": [],
+  "problems": [
+    {
+      "guard": "pre-mortem.mjs",
+      "what": "no declared blind spot",
+      "why": "A guard that has never been asked what it would MISS looks identical to one that works. The heartbeat looked identical to one that worked, on the morning it reported green through a failed run."
+    }
+  ],
   "notes": []
 }

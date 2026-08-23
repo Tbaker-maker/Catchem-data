@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T15:04:33.402Z",
+ "generatedAt": "2026-08-23T15:58:00.147Z",
  "date": "2026-08-23",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -8,9 +8,9 @@
   "correction-hunter: 3 finding(s)",
   "review-agents: 0 finding(s)",
   "decision-audit: 0 finding(s)",
-  "designer: 5 finding(s)",
+  "designer: 7 finding(s)",
   "theme-scout: 23 finding(s)",
-  "teacher: 16 finding(s)",
+  "teacher: 17 finding(s)",
   "api-strategist: 9 finding(s)",
   "compliance: 0 finding(s)",
   "security: 0 finding(s)",
@@ -31,9 +31,10 @@
  "problems": [
   "designer: BROKEN RECORD — 4 finding(s) repeated three runs running (e.g. \"medium::16 distinct colours\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "theme-scout: BROKEN RECORD — 23 finding(s) repeated three runs running (e.g. \"the one-off::Ken Sugimori drew Ampharos exactly on\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
+  "teacher: FARMING — findings climbed 16 → 16 → 16 → 17 across four runs with nothing resolved. Volume is not work.",
   "teacher: BROKEN RECORD — 14 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
-  "teacher: OVER-BUDGET — 16 findings against a ceiling of 14. An unreadable list is an unread list.",
-  "steward: BROKEN RECORD — 3 finding(s) repeated three runs running (e.g. \"unsaved::4 hand-written file(s) changed and not c\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
+  "teacher: OVER-BUDGET — 17 findings against a ceiling of 14. An unreadable list is an unread list.",
+  "steward: BROKEN RECORD — 3 finding(s) repeated three runs running (e.g. \"ignored::5 supervisor problem(s) are open.\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "creator: OVER-BUDGET — 15 findings against a ceiling of 10. An unreadable list is an unread list."
  ],
  "workforce": [
@@ -87,11 +88,6 @@
   {
    "agent": "theme-scout",
    "finding": "every finding from a week ago is still open (23).",
-   "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
-  },
-  {
-   "agent": "teacher",
-   "finding": "every finding from a week ago is still open (14).",
    "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
@@ -514,6 +510,22 @@
    }
   },
   {
+   "from": "designer",
+   "owner": "chat",
+   "what": "build.html: the accent colour appears 15 times",
+   "do": "Spend it in two places: the active state and the one primary action. Everything else greys.",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
    "from": "teacher",
    "owner": "chat",
    "what": "breaker: an incident in your domain: \"Every rotation repeated itself across a 31-day month boundary (31 %% 5 == 1 %% 5), includi\"",
@@ -612,7 +624,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "4 hand-written file(s) changed and not committed.",
+   "what": "3 hand-written file(s) changed and not committed.",
    "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -1151,6 +1163,6 @@
   "actNow": 0,
   "queue": 9,
   "watch": 8,
-  "noteOnly": 25
+  "noteOnly": 26
  }
 }
