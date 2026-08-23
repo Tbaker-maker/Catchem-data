@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T07:16:11.765Z",
+ "generatedAt": "2026-08-23T07:21:10.214Z",
  "date": "2026-08-23",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -10,7 +10,7 @@
   "decision-audit: 0 finding(s)",
   "designer: 9 finding(s)",
   "theme-scout: 23 finding(s)",
-  "teacher: 17 finding(s)",
+  "teacher: 18 finding(s)",
   "api-strategist: 8 finding(s)",
   "compliance: 0 finding(s)",
   "security: 0 finding(s)",
@@ -30,9 +30,11 @@
  ],
  "problems": [
   "designer: BROKEN RECORD — 7 finding(s) repeated three runs running (e.g. \"medium::14 distinct colours\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
-  "theme-scout: BROKEN RECORD — 21 finding(s) repeated three runs running (e.g. \"the one-off::Ken Sugimori drew Ampharos exactly on\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
+  "theme-scout: BROKEN RECORD — 23 finding(s) repeated three runs running (e.g. \"the one-off::Ken Sugimori drew Ampharos exactly on\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
+  "teacher: FARMING — findings climbed 17 → 17 → 17 → 18 across four runs with nothing resolved. Volume is not work.",
   "teacher: BROKEN RECORD — 15 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
-  "teacher: OVER-BUDGET — 17 findings against a ceiling of 14. An unreadable list is an unread list.",
+  "teacher: OVER-BUDGET — 18 findings against a ceiling of 14. An unreadable list is an unread list.",
+  "steward: BROKEN RECORD — 3 finding(s) repeated three runs running (e.g. \"unsaved::1 hand-written file(s) changed and not c\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "creator: OVER-BUDGET — 15 findings against a ceiling of 10. An unreadable list is an unread list."
  ],
  "workforce": [
@@ -85,7 +87,7 @@
   },
   {
    "agent": "teacher",
-   "finding": "every finding from a week ago is still open (15).",
+   "finding": "every finding from a week ago is still open (16).",
    "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
@@ -112,11 +114,6 @@
    "agent": "platform",
    "finding": "runs daily and has returned the same count (10) four runs running.",
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
-  },
-  {
-   "agent": "platform",
-   "finding": "every finding from a week ago is still open (10).",
-   "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
    "agent": "anomaly",
@@ -696,7 +693,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "6 supervisor problem(s) are open.",
+   "what": "5 supervisor problem(s) are open.",
    "do": "Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.",
    "score": 30,
    "band": "NOTE ONLY",

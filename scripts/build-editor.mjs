@@ -35,7 +35,7 @@ else {
   const sets = [...new Set(Object.values(cat.cards).map(c => c.setName).filter(Boolean))].sort();
   const index = Object.entries(cat.cards).map(([id, c]) => ({
     i: id, n: c.name, a: c.artist ?? null, s: c.setName,
-    y: (c.releaseDate ?? "").slice(0, 4), r: c.rarity ?? "",
+    y: (c.releaseDate ?? "").slice(0, 4), r: c.rarity ?? "", p: typeof c.price === "number" ? Math.round(c.price * 100) / 100 : null,
   }));
   await mkdir(join(ROOT, "research/assets"), { recursive: true }).catch(() => {});
   await writeFile(join(ROOT, "research/assets/card-index.json"), JSON.stringify(index));
@@ -102,7 +102,18 @@ select:focus,input:focus{outline:none;border-color:var(--live)}
 @keyframes settle{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){.pocket{animation:none}.idea:hover{transform:none}}
 
-.status{font:400 13px var(--mono);color:var(--faint);margin-bottom:20px;min-height:18px}
+.status{font:400 13px var(--mono);color:var(--faint);margin-bottom:10px;min-height:18px}
+.tally{display:flex;gap:22px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);
+  border-radius:13px;padding:14px 18px;margin-bottom:20px}
+.tally div{min-width:0}
+.tally .k{font:500 10.5px var(--mono);color:var(--faint);letter-spacing:.13em;display:block;margin-bottom:3px}
+.tally .v{font:500 19px var(--mono);color:var(--text)}
+.tally .v.have{color:var(--live)}
+.pocket .own{position:absolute;bottom:5px;left:5px;border:0;border-radius:6px;padding:3px 7px;
+  font:500 9.5px var(--mono);cursor:pointer;background:rgba(10,12,18,.86);color:var(--faint);opacity:0;
+  transition:opacity .16s var(--ease)}
+.pocket:hover .own{opacity:1}
+.pocket .own.yes{opacity:1;background:var(--live);color:var(--ink)}
 .status.bad{color:var(--warn)}
 .acts{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
 button.pri{background:var(--live);color:var(--ink);border:0;border-radius:13px;padding:14px 26px;
@@ -136,7 +147,7 @@ summary:before{content:"→ ";color:var(--faint)}
 </style>
 <div class="wrap">
 <div class="top">
-  <h1>Build a post<em>.</em></h1>
+  <h1>Build a page<em>.</em></h1>
   <p class="lede">Pick a direction and we'll find combinations worth posting. Every image credits the illustrator.
      &nbsp;·&nbsp; <a href="/creators" style="color:var(--live)">Or start from one we made &rsaquo;</a></p>
 </div>
@@ -166,6 +177,7 @@ summary:before{content:"→ ";color:var(--faint)}
 <div class="page-label" id="plabel">YOUR PAGE</div>
 <div class="binder" id="tray"></div>
 <div class="status" id="st"></div>
+<div class="tally" id="tally" hidden></div>
 <input id="label" placeholder="Your line — or leave it blank and let the cards talk" style="margin-bottom:18px">
 
 <div class="acts">
@@ -215,6 +227,40 @@ function remove(k){ tray.splice(k,1); blob = null; render(); }
 
 function setStatus(t, bad){ const s = el("st"); s.textContent = t; s.className = "status" + (bad ? " bad" : ""); }
 
+// OWN / WANT is browser-only, on purpose. The moment we store what somebody owns
+// we are holding collection data, which trips user-data-handling in the
+// compliance register. In the browser it is a planning tool; on a server it is a
+// liability we have not prepared for.
+let owned = {};
+try { owned = JSON.parse(localStorage.getItem("catchem-owned") || "{}"); } catch {}
+function toggleOwn(id){
+  owned[id] = !owned[id];
+  try { localStorage.setItem("catchem-owned", JSON.stringify(owned)); } catch {}
+  render();
+}
+
+function renderTally(){
+  const box = el("tally");
+  if (!tray.length) { box.hidden = true; return; }
+  box.hidden = false;
+  const priced = tray.filter(c => c.p != null);
+  const total = priced.reduce((s, c) => s + c.p, 0);
+  const have = tray.filter(c => owned[c.i]);
+  const haveVal = have.filter(c => c.p != null).reduce((s, c) => s + c.p, 0);
+  const missing = tray.length - priced.length;
+  const money = n => "$" + Math.round(n).toLocaleString();
+  // A total built from partial data must say so. Nine cards where two have no
+  // price is not a page total, it is seven cards plus a guess.
+  var html = "";
+  html += "<div><span class=\"k\">PAGE COST</span><span class=\"v\">" + money(total);
+  if (missing) html += " <span style=\"font-size:12px;color:var(--warn)\">+ " + missing + " unpriced</span>";
+  html += "</span></div>";
+  html += "<div><span class=\"k\">YOU HAVE</span><span class=\"v have\">" + have.length + " / " + tray.length + "</span></div>";
+  html += "<div><span class=\"k\">STILL TO FIND</span><span class=\"v\">" + money(total - haveVal) + "</span></div>";
+  if (priced.length) html += "<div><span class=\"k\">DEAREST</span><span class=\"v\">" + money(Math.max.apply(null, priced.map(c => c.p))) + "</span></div>";
+  box.innerHTML = html;
+}
+
 function render(){
   const L = LAYOUTS[tray.length];
   const box = el("tray");
@@ -225,9 +271,10 @@ function render(){
   const slots = L ? L.cols * Math.ceil(tray.length / L.cols) : Math.max(tray.length, 3);
   box.style.gridTemplateColumns = \`repeat(\${cols}, minmax(0, \${cols > 3 ? 120 : 148}px))\`;
   let html = tray.map((c, k) =>
-    \`<div class="pocket filled"><img src="\${imgUrl(c.i)}" alt="\${c.n}"><button class="x" onclick="remove(\${k})" aria-label="Remove \${c.n}">×</button></div>\`).join("");
+    \`<div class="pocket filled"><img src="\${imgUrl(c.i)}" alt="\${c.n}"><button class="x" onclick="remove(\${k})" aria-label="Remove \${c.n}">×</button><button class="own \${owned[c.i] ? 'yes' : ''}" onclick="toggleOwn('\${c.i}')">\${owned[c.i] ? 'OWNED' : 'want'}</button></div>\`).join("");
   for (let i = tray.length; i < slots; i++) html += '<div class="pocket"></div>';
   box.innerHTML = html || '<div class="pocket"></div><div class="pocket"></div><div class="pocket"></div>';
+  renderTally();
   el("plabel").textContent = L ? ("YOUR PAGE — " + L.name.toUpperCase()) : "YOUR PAGE";
 
   el("make").disabled = !L;
