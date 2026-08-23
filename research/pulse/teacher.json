@@ -1,9 +1,9 @@
 {
- "generatedAt": "2026-08-23T22:14:12.112Z",
+ "generatedAt": "2026-08-23T22:23:47.557Z",
  "role": "Keeps agents current, breaks them out of ruts, and teaches from incidents that actually happened to us. It asks questions; it never rewrites another agent.",
  "counts": {
   "stale": 0,
-  "ruts": 10,
+  "ruts": 8,
   "postMortem": 4,
   "shared": 1
  },
@@ -81,33 +81,6 @@
    "chip": "READ"
   },
   {
-   "agent": "designer",
-   "kind": "in a rut",
-   "observation": "10 findings, identical across 5 runs",
-   "question": "What question has designer never asked about its own subject?",
-   "why": "Identical output run after run means the agent has stopped searching and started reciting. The count being stable is not the problem; the SAMENESS is.",
-   "confidence": "OBSERVED",
-   "chip": "READ"
-  },
-  {
-   "agent": "theme-scout",
-   "kind": "in a rut",
-   "observation": "23 findings, identical across 5 runs",
-   "question": "What question has theme-scout never asked about its own subject?",
-   "why": "Identical output run after run means the agent has stopped searching and started reciting. The count being stable is not the problem; the SAMENESS is.",
-   "confidence": "OBSERVED",
-   "chip": "READ"
-  },
-  {
-   "agent": "anomaly",
-   "kind": "post-mortem",
-   "observation": "an incident in your domain: \"Want-list price text was 26px on a 2535px canvas = 4.1px in a Discord preview. A nine-card\"",
-   "question": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
-   "why": "a number behaving impossibly is what the anomaly watcher exists for",
-   "confidence": "MEASURED",
-   "chip": "READ"
-  },
-  {
    "agent": "steward",
    "kind": "post-mortem",
    "observation": "an incident in your domain: \"The 04:00 run FIRED AND FAILED. Withdrawing graded figures made dailyThree.graded falsy → \"",
@@ -131,6 +104,15 @@
    "observation": "an incident in your domain: \"Told Tyler the card editor was \"verified working\". Opened from file:// it showed no images\"",
    "question": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
    "why": "a filter eating a market is a plausibility question before it is a code question",
+   "confidence": "MEASURED",
+   "chip": "READ"
+  },
+  {
+   "agent": "experience",
+   "kind": "post-mortem",
+   "observation": "an incident in your domain: \"A fact about Koga's Ninja Trick published beside \"The Rocket's Trap\" and \"Koga\" — the matc\"",
+   "question": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
+   "why": "meaningless published text is a reader-experience failure first",
    "confidence": "MEASURED",
    "chip": "READ"
   },

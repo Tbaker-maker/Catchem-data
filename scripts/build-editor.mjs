@@ -63,6 +63,11 @@ h1 em{font-style:normal;color:var(--live)}
 .lede{color:var(--soft);font-size:17px;max-width:46ch;margin:0}
 
 /* Steps — a real sequence, so numbering earns its place. */
+.moodrow{background:linear-gradient(180deg,rgba(54,211,153,.05),transparent),var(--panel);
+  border:1px solid var(--line);border-radius:13px;padding:16px 18px;margin-bottom:22px}
+.moodlabel{display:block;font:500 10.5px var(--mono);color:var(--faint);letter-spacing:.16em;margin-bottom:11px}
+.moodrow .chip{font-size:14.5px}
+.moodrow .chip.on{border-color:var(--live);color:var(--live);background:rgba(54,211,153,.08)}
 .steps{display:grid;grid-template-columns:1.1fr .6fr 1fr .9fr 1.2fr;gap:18px;margin-bottom:44px}
 .refuse{background:#1a1410;border:1px solid #3d2f1a;border-radius:13px;padding:14px 17px;margin-bottom:18px;color:#d9a441;font-size:14px;line-height:1.55}
 .step{min-width:0}
@@ -172,6 +177,11 @@ summary:before{content:"→ ";color:var(--faint)}
      &nbsp;·&nbsp; <a href="/creators" style="color:var(--live)">Or start from one we made &rsaquo;</a></p>
 </div>
 
+<div class="moodrow">
+  <span class="moodlabel">HOW ARE YOU FEELING?</span>
+  <div class="chips" id="fmood"></div>
+</div>
+
 <div class="steps">
   <div class="step"><span class="n">01 / SET</span><span class="t">Narrow it down, or don't</span>
     <select id="fset"><option value="">Every set</option>${sets.map(x => `<option>${x.replace(/&/g, "&amp;")}</option>`).join("")}</select></div>
@@ -239,6 +249,7 @@ not a Pokémon decision, and you can still use them.</div>
 <script>
 const THEMES = ${JSON.stringify(themes?.themes ?? [])};
 const SETS = ${JSON.stringify(sets)};
+const MOODS = ${JSON.stringify(Object.values((await J('data/moods.json'))?.moods ?? {}).map(m => ({ id: m.id, label: m.label, emoji: m.emoji, say: m.say, cards: (m.cards ?? []).slice(0, 24).map(c => ({ id: c.id, matched: c.matched })) })))};
 const CARD_INDEX = ${JSON.stringify(index)};
 // Sourced facts, so the 'story' shape has something true to build on. Only
 // VERIFIED ones ship — an unsourced claim on a card image is the one mistake
@@ -688,6 +699,72 @@ function drawSlab(g, img, x, y, cw, ch, card){
   g.drawImage(img, x, y, cw, ch);
   g.textAlign = "center";
 }
+
+// MOOD. The only feature built directly on evidence: all three posts that
+// worked started from how Tyler felt, and none used the 84 formulas we
+// generate. It matches the WORDS PRINTED ON THE CARD rather than an opinion
+// of how a card feels — Psyduck's attack is literally called Overthink — so
+// every match is checkable by looking at the card.
+let fMood = null;
+{
+  const box = el("fmood");
+  if (box) {
+    box.innerHTML = MOODS.map(m => "<button class='chip' data-m='" + m.id + "'>" + m.emoji + " " + m.label + "</button>").join("");
+    box.querySelectorAll(".chip").forEach(b => b.onclick = () => {
+      fMood = fMood === b.dataset.m ? null : b.dataset.m;
+      box.querySelectorAll(".chip").forEach(x => x.classList.toggle("on", x.dataset.m === fMood));
+      if (fMood) loadMood(fMood);
+      else { renderThemes(); buildIdeas(); }
+    });
+  }
+}
+
+function loadMood(id){
+  const m = MOODS.find(x => x.id === id);
+  if (!m) return;
+  const need = fCount || 2;
+  // Take from the top of the ranked list, but not the same cards every time —
+  // a mood you can only post once is a mood you use once.
+  const top = m.cards.slice(0, Math.min(24, m.cards.length));
+  const picked = [];
+  const used = new Set();
+  while (picked.length < need && used.size < top.length) {
+    const i = Math.floor(Math.random() * top.length);
+    if (used.has(i)) continue;
+    used.add(i);
+    const c = INDEX.find(x => x.i === top[i].id);
+    if (c) picked.push(c);
+  }
+  if (picked.length < need) return;
+  tray = picked; blob = null;
+  el("label").value = m.say;
+  // Show WHY each card matched, so nobody has to take our word for it.
+  const box = el("ideas");
+  // BUILT WITH DOM CALLS. Seven escaped-quote collapses in this file and every
+  // string attempt has failed; the DOM approach has held every time. Nothing to
+  // escape at any level.
+  const ideaBox = el("ideas");
+  if (ideaBox) {
+    ideaBox.innerHTML = "";
+    const d = document.createElement("div");
+    d.className = "idea";
+    d.onclick = () => loadMood(id);
+    const b = document.createElement("b");
+    b.textContent = m.emoji + " " + m.label;
+    const sub = document.createElement("i");
+    sub.textContent = picked.map(c => {
+      const h = m.cards.find(x => x.id === c.i);
+      return c.n + " — " + (h ? h.matched : "");
+    }).join("  ·  ");
+    const hk = document.createElement("div");
+    hk.className = "hook";
+    hk.textContent = "Matched on the words printed on the card. Click again for a different set.";
+    d.appendChild(b); d.appendChild(sub); d.appendChild(hk);
+    ideaBox.appendChild(d);
+  }
+  render();
+}
+window.loadMood = loadMood;
 
 function render(){
   const L = LAYOUTS[tray.length];

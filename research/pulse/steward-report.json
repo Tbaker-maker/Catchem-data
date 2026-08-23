@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T22:14:13.265Z",
+ "generatedAt": "2026-08-23T22:23:48.585Z",
  "role": "Keeps the work organised, saved and on track. Silent unless something is genuinely slipping — a day with nothing to say is a day it did its job.",
  "speaking": 4,
  "speak": [
@@ -12,14 +12,14 @@
   },
   {
    "kind": "ignored",
-   "what": "5 supervisor problem(s) are open.",
+   "what": "6 supervisor problem(s) are open.",
    "why": "Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.",
    "owner": "chat",
    "confidence": "OBSERVED"
   },
   {
    "kind": "drift",
-   "what": "11 script(s) are not referenced anywhere: backfill-artists.mjs, build-faq.mjs, build-promo.mjs, build-rip.mjs.",
+   "what": "12 script(s) are not referenced anywhere: backfill-artists.mjs, build-faq.mjs, build-mood.mjs, build-promo.mjs.",
    "why": "A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.",
    "owner": "chat",
    "confidence": "OBSERVED"
@@ -34,6 +34,6 @@
  ],
  "quiet": [
   "19 open commitment(s), all recent",
-  "365 commits / 33 written records in the last few days"
+  "367 commits / 33 written records in the last few days"
  ]
 }

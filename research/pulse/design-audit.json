@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-08-23T22:14:13.729Z",
+  "generatedAt": "2026-08-23T22:23:49.082Z",
   "audited": "14 shipped surfaces, 35 minted cards",
   "principle": "A linter asks whether the CSS is valid. A design lead asks whether the page was DESIGNED. The tells of an undesigned page are countable: too many type sizes, too many near-identical greys, an accent used everywhere so it accents nothing.",
   "blindSpot": "It cannot SEE. It counts and measures. It cannot tell you a page is ugly, only that the choices behind it were not made deliberately.",
   "counts": {
-    "high": 0,
+    "high": 1,
     "medium": 9,
     "low": 1
   },
@@ -18,6 +18,13 @@
     },
     {
       "surface": "build.html",
+      "severity": "high",
+      "what": "the accent colour appears 16 times",
+      "why": "An accent used everywhere accents nothing, and it is the most common reason a dark page reads as cheap rather than considered.",
+      "fix": "Spend it in two places: the active state and the one primary action. Everything else greys."
+    },
+    {
+      "surface": "build.html",
       "severity": "medium",
       "what": "--faint on the background is 3.2:1",
       "why": "WCAG AA wants 4.5:1 for body text and 3:1 for large text. Below 3 it is unreadable on a phone in daylight, which is where this is actually seen.",
@@ -26,7 +33,7 @@
     {
       "surface": "build.html",
       "severity": "low",
-      "what": "5 odd-numbered spacing values: 13, 17, 9, 15, 3",
+      "what": "6 odd-numbered spacing values: 11, 13, 17, 9, 15, 3",
       "why": "Odd values usually mean nudging until it looked right rather than working from a scale. It is invisible individually and reads as sloppy in aggregate.",
       "fix": "Snap to a 4px rhythm."
     },
@@ -83,17 +90,19 @@
   "forEyes": [
     {
       "surface": "build.html",
-      "question": "build.html: 2 font sizes sit within 12% of a neighbour (13, 14). Are those distinct steps or the same intent typed twice?",
+      "question": "build.html: 3 font sizes sit within 12% of a neighbour (13, 14, 14.5). Are those distinct steps or the same intent typed twice?",
       "measured": {
         "sizes": [
           12,
           13,
           14,
+          14.5,
           17
         ],
         "nearDupes": [
           13,
-          14
+          14,
+          14.5
         ]
       },
       "answeredBy": null,
