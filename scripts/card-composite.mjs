@@ -154,6 +154,9 @@ ${cards.map(c => `    <div class="card"><img src="${c.imageUrl}" alt="${(c.name 
   <div class="foot"><span class="mark">Catch'em</span><span class="src">${caption}</span></div>
 </div>`;
   await writeFile(join(ROOT, "research/pulse/cards/composite.html"), html);
+  await writeFile(join(ROOT, "research/pulse/cards/composite-urls.txt"),
+    cards.map(c => `${c.name} (${(c.releaseDate ?? "").slice(0, 4)})\n${c.imageUrl}`).join("\n\n") + "\n");
+
 
   await mkdir(join(ROOT, "research/pulse/cards"), { recursive: true }).catch(() => {});
   const out = join(ROOT, "research/pulse/cards/composite.svg");
@@ -165,6 +168,33 @@ ${cards.map(c => `    <div class="card"><img src="${c.imageUrl}" alt="${(c.name 
     note: "Art post: no prices, no stats. The artwork is the content and the words are Tyler's.",
     todo: "Fetch each url, base64 it, and replace the __IMG_n__ placeholders before rasterising. Chat cannot reach images.pokemontcg.io (403), so this step needs CC or a machine with access.",
   }, null, 1));
+
+  // RASTERISE WHEN POSSIBLE. An HTML file means open it, screenshot it, crop it.
+  // A PNG means drop it into the post. Chat gets 403 from the image host so this
+  // is a no-op here, but it runs anywhere with access and produces the file
+  // Tyler actually wants.
+  try {
+    const [{ Resvg }, { writeFile: wf }] = [await import("@resvg/resvg-js"), await import("node:fs/promises")];
+    let embedded = svg;
+    let ok = true;
+    for (const c of cards) {
+      const r = await fetch(c.imageUrl, { signal: AbortSignal.timeout(15000) }).catch(() => null);
+      if (!r || !r.ok) { ok = false; break; }
+      const buf = Buffer.from(await r.arrayBuffer());
+      const mime = r.headers.get("content-type") ?? "image/png";
+      // A content-type is a claim, not evidence — sniff the bytes.
+      const isPng = buf[0] === 0x89 && buf[1] === 0x50, isJpg = buf[0] === 0xff && buf[1] === 0xd8;
+      if (!isPng && !isJpg) { ok = false; break; }
+      embedded = embedded.replace(c.imageUrl, `data:${isPng ? "image/png" : "image/jpeg"};base64,${buf.toString("base64")}`);
+    }
+    if (ok) {
+      const png = new Resvg(embedded, { fitTo: { mode: "width", value: W } }).render().asPng();
+      await wf(join(ROOT, "research/pulse/cards/composite.png"), png);
+      console.log(`   composite.png written — drop it straight into the post.`);
+    } else {
+      console.log(`   PNG skipped: the image host is unreachable from here. composite.html loads them in a browser.`);
+    }
+  } catch (e) { console.log(`   PNG skipped: ${e.message.slice(0, 60)}`); }
 
   console.log(`✓ composite: ${ids.length} card(s) at ${CARD_W}x${CARD_H}, ${W}x${H} total`);
   for (const c of cards) console.log(`   ${c.name} (${(c.releaseDate ?? "").slice(0, 4)}) — ${c.imageUrl}`);
