@@ -129,6 +129,7 @@ ${label ? `<text x="${W / 2}" y="${H - 96}" text-anchor="middle" fill="#f4f5f8" 
   // Chat gets 403 from the image host; a browser does not. So alongside the SVG
   // we emit HTML referencing the images by URL - whoever opens it does the
   // fetching, and the composite is real on their screen with no round trip.
+  const CW = 745, CH = 1040;   // native card proportions, drawn at full size
   const html = `<!doctype html><meta charset="utf-8">
 <title>${caption}</title>
 <style>
@@ -152,7 +153,55 @@ ${cards.map(c => `    <div class="card"><img src="${c.imageUrl}" alt="${(c.name 
   </div>
   ${label ? `<div class="label">${label}</div>` : ""}
   <div class="foot"><span class="mark">Catch'em</span><span class="src">${caption}</span></div>
-</div>`;
+  <div style="text-align:center;margin-top:26px">
+    <button id="dl" style="background:#36d399;color:#070910;border:0;border-radius:10px;padding:14px 28px;font-size:16px;font-weight:700;cursor:pointer">Download as one image</button>
+    <div id="msg" style="color:#8a93a8;font-size:13px;margin-top:10px"></div>
+  </div>
+</div>
+<script>
+// The browser composites, because it can reach the image host and chat cannot.
+// Everything is drawn at native card resolution so the result is postable
+// rather than a screenshot of a screenshot.
+const CARDS = ${JSON.stringify(cards.map(c => ({ url: c.imageUrl, name: c.name, year: (c.releaseDate ?? "").slice(0, 4) })))};
+const LABEL = ${JSON.stringify(label ?? "")};
+const CAPTION = ${JSON.stringify(caption)};
+document.getElementById("dl").onclick = async () => {
+  const msg = document.getElementById("msg");
+  msg.textContent = "composing…";
+  const CW = 745, CH = 1040, GAP = 60, PAD = 90, CAPH = 130, LABH = LABEL ? 110 : 0;
+  const W = PAD * 2 + CW * CARDS.length + GAP * (CARDS.length - 1);
+  const H = PAD + CH + CAPH + LABH + 90;
+  const cv = document.createElement("canvas");
+  cv.width = W; cv.height = H;
+  const g = cv.getContext("2d");
+  g.fillStyle = "#070910"; g.fillRect(0, 0, W, H);
+  try {
+    for (let i = 0; i < CARDS.length; i++) {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      await new Promise((res, rej) => { img.onload = res; img.onerror = rej; img.src = CARDS[i].url; });
+      const x = PAD + i * (CW + GAP);
+      g.drawImage(img, x, PAD, CW, CH);
+      g.fillStyle = "#8a93a8"; g.font = "28px system-ui, sans-serif"; g.textAlign = "center";
+      g.fillText(CARDS[i].name + " · " + CARDS[i].year, x + CW / 2, PAD + CH + 52);
+    }
+    if (LABEL) { g.fillStyle = "#f4f5f8"; g.font = "800 52px system-ui, sans-serif"; g.textAlign = "center";
+      g.fillText(LABEL, W / 2, PAD + CH + CAPH + 40); }
+    g.fillStyle = "#36d399"; g.font = "800 38px system-ui, sans-serif"; g.textAlign = "left";
+    g.fillText("Catch'em", PAD, H - 34);
+    g.fillStyle = "#5c637a"; g.font = "24px ui-monospace, monospace"; g.textAlign = "right";
+    g.fillText(CAPTION, W - PAD, H - 34);
+    // Tainted canvas throws here rather than returning something broken.
+    const url = cv.toDataURL("image/png");
+    const a = document.createElement("a");
+    a.href = url; a.download = "catchem-" + CAPTION.replace(/[^a-z0-9]+/gi, "-").toLowerCase() + ".png";
+    a.click();
+    msg.textContent = "downloaded — one image, ready to post";
+  } catch (e) {
+    msg.textContent = "the image host will not allow a cross-origin copy, so the canvas cannot be exported. Screenshot the row above instead.";
+  }
+};
+</script>`;
   await writeFile(join(ROOT, "research/pulse/cards/composite.html"), html);
   await writeFile(join(ROOT, "research/pulse/cards/composite-urls.txt"),
     cards.map(c => `${c.name} (${(c.releaseDate ?? "").slice(0, 4)})\n${c.imageUrl}`).join("\n\n") + "\n");

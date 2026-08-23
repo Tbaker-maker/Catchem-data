@@ -23,4 +23,52 @@
   </div>
   <div class="label">Twenty-four years apart. Same illustrator.</div>
   <div class="foot"><span class="mark">Catch'em</span><span class="src">Twenty-four years apart. Same illustrator.</span></div>
+  <div style="text-align:center;margin-top:26px">
+    <button id="dl" style="background:#36d399;color:#070910;border:0;border-radius:10px;padding:14px 28px;font-size:16px;font-weight:700;cursor:pointer">Download as one image</button>
+    <div id="msg" style="color:#8a93a8;font-size:13px;margin-top:10px"></div>
+  </div>
 </div>
+<script>
+// The browser composites, because it can reach the image host and chat cannot.
+// Everything is drawn at native card resolution so the result is postable
+// rather than a screenshot of a screenshot.
+const CARDS = [{"url":"https://images.pokemontcg.io/base1/4_hires.png","name":"Charizard","year":"1999"},{"url":"https://images.pokemontcg.io/sv3pt5/200_hires.png","name":"Blastoise ex","year":"2023"}];
+const LABEL = "Twenty-four years apart. Same illustrator.";
+const CAPTION = "Twenty-four years apart. Same illustrator.";
+document.getElementById("dl").onclick = async () => {
+  const msg = document.getElementById("msg");
+  msg.textContent = "composing…";
+  const CW = 745, CH = 1040, GAP = 60, PAD = 90, CAPH = 130, LABH = LABEL ? 110 : 0;
+  const W = PAD * 2 + CW * CARDS.length + GAP * (CARDS.length - 1);
+  const H = PAD + CH + CAPH + LABH + 90;
+  const cv = document.createElement("canvas");
+  cv.width = W; cv.height = H;
+  const g = cv.getContext("2d");
+  g.fillStyle = "#070910"; g.fillRect(0, 0, W, H);
+  try {
+    for (let i = 0; i < CARDS.length; i++) {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      await new Promise((res, rej) => { img.onload = res; img.onerror = rej; img.src = CARDS[i].url; });
+      const x = PAD + i * (CW + GAP);
+      g.drawImage(img, x, PAD, CW, CH);
+      g.fillStyle = "#8a93a8"; g.font = "28px system-ui, sans-serif"; g.textAlign = "center";
+      g.fillText(CARDS[i].name + " · " + CARDS[i].year, x + CW / 2, PAD + CH + 52);
+    }
+    if (LABEL) { g.fillStyle = "#f4f5f8"; g.font = "800 52px system-ui, sans-serif"; g.textAlign = "center";
+      g.fillText(LABEL, W / 2, PAD + CH + CAPH + 40); }
+    g.fillStyle = "#36d399"; g.font = "800 38px system-ui, sans-serif"; g.textAlign = "left";
+    g.fillText("Catch'em", PAD, H - 34);
+    g.fillStyle = "#5c637a"; g.font = "24px ui-monospace, monospace"; g.textAlign = "right";
+    g.fillText(CAPTION, W - PAD, H - 34);
+    // Tainted canvas throws here rather than returning something broken.
+    const url = cv.toDataURL("image/png");
+    const a = document.createElement("a");
+    a.href = url; a.download = "catchem-" + CAPTION.replace(/[^a-z0-9]+/gi, "-").toLowerCase() + ".png";
+    a.click();
+    msg.textContent = "downloaded — one image, ready to post";
+  } catch (e) {
+    msg.textContent = "the image host will not allow a cross-origin copy, so the canvas cannot be exported. Screenshot the row above instead.";
+  }
+};
+</script>
