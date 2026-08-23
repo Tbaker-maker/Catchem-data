@@ -1098,6 +1098,95 @@
    ],
    "verified": "16 present",
    "group": "BY SUBJECT"
+  },
+  {
+   "id": "lore-self",
+   "name": "What the card says about itself",
+   "kind": "derived",
+   "shape": "lore",
+   "group": "BY STORY",
+   "hook": "The card says this about itself.",
+   "why": "Flavour text printed on the card. Sourced by definition, because quoting it is quoting the object.",
+   "bestAt": [
+    1,
+    2,
+    3,
+    4
+   ]
+  },
+  {
+   "id": "lore-grim",
+   "name": "The dark ones",
+   "kind": "named list",
+   "shape": "list",
+   "group": "BY STORY",
+   "hook": "Which of these did you not know was this grim?",
+   "why": "Cards whose own flavour text is genuinely unsettling — devouring, dragging away, feeding on dreams. Read and confirmed, not pattern-matched.",
+   "members": [
+    "Snorlax",
+    "Lunala",
+    "Trevenant",
+    "Hydreigon",
+    "Whiscash",
+    "Solgaleo",
+    "Drowzee"
+   ],
+   "bestAt": [
+    2,
+    3
+   ],
+   "verified": "7 cards, each read"
+  },
+  {
+   "id": "lore-cosmic",
+   "name": "Not from here",
+   "kind": "named list",
+   "shape": "list",
+   "group": "BY STORY",
+   "hook": "Which of these is actually an alien?",
+   "why": "Cards whose text places them outside this world — another dimension, light-years, fell from the sky.",
+   "members": [
+    "Gastly",
+    "Gothitelle",
+    "Haunter"
+   ],
+   "bestAt": [
+    2,
+    3
+   ],
+   "verified": "3 cards, each read"
+  },
+  {
+   "id": "lore-absurd",
+   "name": "Numbers that cannot be real",
+   "kind": "named list",
+   "shape": "list",
+   "group": "BY STORY",
+   "hook": "Pick the most ridiculous stat here.",
+   "why": "Flavour text making a specific, checkable, impossible claim. A 5000 IQ. Moving a mountain. It is the specificity that makes it funny.",
+   "members": [
+    "Flareon",
+    "Alakazam",
+    "Light",
+    "Rapidash",
+    "Rhydon",
+    "Galarian",
+    "Onix",
+    "Tornadus",
+    "Skarmory",
+    "Pupitar",
+    "Kakuna",
+    "Gastly",
+    "Talonflame",
+    "Clawitzer",
+    "Drakloak",
+    "Espathra"
+   ],
+   "bestAt": [
+    2,
+    3
+   ],
+   "verified": "19 cards, each read"
   }
  ],
  "openQuestions": [

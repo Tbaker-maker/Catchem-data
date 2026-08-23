@@ -272,6 +272,9 @@ const THEMES = ${JSON.stringify(themes?.themes ?? [])};
 const SETS = ${JSON.stringify(sets)};
 ${await (async () => { const { readFile: rf } = await import('node:fs/promises'); const t = JSON.parse(await rf(join(ROOT,'data/card-text.json'),'utf-8')).cards; const slim = {}; for (const [k,v] of Object.entries(t)) if (v.a && v.a.length) slim[k] = { a: v.a.slice(0,1) }; const eng = await rf(join(ROOT,'scripts/line-engine.js'),'utf-8'); return eng.replace('__CARD_TEXT__', JSON.stringify(slim)); })()}
 const MOODS = ${JSON.stringify(Object.values((await J('data/moods.json'))?.moods ?? {}).map(m => ({ id: m.id, label: m.label, emoji: m.emoji, say: m.say, cards: (m.cards ?? []).slice(0, 24).map(c => ({ id: c.id, matched: c.matched, why: c.why })) })))};
+// LORE. Flavour text printed on the cards — sourced by definition, because
+// quoting it is quoting the object. Story coverage goes from 146 cards to 4,464.
+const LORE = ${JSON.stringify((await J('data/lore.json'))?.lore ?? {})};
 const CARD_INDEX = ${JSON.stringify(index)};
 // Sourced facts, so the 'story' shape has something true to build on. Only
 // VERIFIED ones ship — an unsourced claim on a card image is the one mistake
@@ -1077,6 +1080,25 @@ function buildIdeas(){
       if (span < 8) continue;
       ideas.push({ title: mon + " across " + span + " years", sub: picked.map(c => c.y).join(" → "),
         hook: "Which era got " + mon + " right?", cards: picked });
+      if (ideas.length >= 6) break;
+    }
+  }
+
+  else if (shape === "lore") {
+    // THE CARD TELLS ITS OWN STORY. 4,464 cards carry printed flavour text, and
+    // it needs no research and no sourcing — it is on the object. This is the
+    // difference between a story shape that reaches 0.89% of the catalogue and
+    // one that reaches 27%.
+    const withLore = pool.filter(c => LORE[c.i]);
+    const seen = new Set();
+    for (const c of withLore) {
+      const key = c.n.split(" ")[0];
+      if (seen.has(key)) continue;
+      seen.add(key);
+      const group = withLore.filter(x => x.n.split(" ")[0] === key).slice(0, need);
+      if (group.length !== need) continue;
+      ideas.push({ title: c.n, sub: LORE[c.i].slice(0, 96) + (LORE[c.i].length > 96 ? "…" : ""),
+        hook: "The card says this about itself.", cards: group });
       if (ideas.length >= 6) break;
     }
   }
