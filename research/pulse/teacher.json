@@ -1,9 +1,9 @@
 {
- "generatedAt": "2026-08-23T19:22:16.116Z",
+ "generatedAt": "2026-08-23T19:31:20.692Z",
  "role": "Keeps agents current, breaks them out of ruts, and teaches from incidents that actually happened to us. It asks questions; it never rewrites another agent.",
  "counts": {
   "stale": 0,
-  "ruts": 9,
+  "ruts": 10,
   "postMortem": 4,
   "shared": 1
  },
@@ -76,6 +76,15 @@
    "kind": "in a rut",
    "observation": "8 findings, identical across 5 runs",
    "question": "You find unused fields. Ask what we would want that no provider offers, because that is the gap worth building around.",
+   "why": "Identical output run after run means the agent has stopped searching and started reciting. The count being stable is not the problem; the SAMENESS is.",
+   "confidence": "OBSERVED",
+   "chip": "READ"
+  },
+  {
+   "agent": "designer",
+   "kind": "in a rut",
+   "observation": "8 findings, identical across 5 runs",
+   "question": "What question has designer never asked about its own subject?",
    "why": "Identical output run after run means the agent has stopped searching and started reciting. The count being stable is not the problem; the SAMENESS is.",
    "confidence": "OBSERVED",
    "chip": "READ"

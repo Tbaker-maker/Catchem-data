@@ -27,7 +27,7 @@ const rows = (log.entries || []).slice().sort((a, b) => a.date < b.date ? 1 : -1
 const held = (q.entries || []).map(e => `
   <div class="row"><span><b>${esc(e.id)}</b><em>${esc(e.reason)}</em></span><span class="mono">held since ${esc(e.since)}</span></div>`).join("");
 
-const html = `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+const html = `<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Sora:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <title>Catch'em — Corrections</title><style>
 body{background:#0b0d14;color:#f4f5f8;font:16px/1.62 Sora,system-ui,sans-serif;margin:0;padding:40px 18px;max-width:720px;margin-inline:auto}

@@ -40,7 +40,7 @@ else {
   await mkdir(join(ROOT, "research/assets"), { recursive: true }).catch(() => {});
   await writeFile(join(ROOT, "research/assets/card-index.json"), JSON.stringify(index));
 
-  const html = `<!doctype html><meta charset="utf-8"><title>Catch'em Creators — build a post</title>
+  const html = `<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex,nofollow,noarchive"><title>Catch'em Creators — build a post</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Sora:wght@300;400;600&family=JetBrains+Mono:wght@400;500&display=swap');

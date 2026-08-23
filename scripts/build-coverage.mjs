@@ -42,7 +42,7 @@ const rows = Object.entries(groups).sort((a, b) => b[1].length - a[1].length).ma
 <table>${list}</table>`;
 }).join("\n");
 
-const html = `<!doctype html><meta charset="utf-8"><title>What Catch'em tracks</title>
+const html = `<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex,nofollow,noarchive"><title>What Catch'em tracks</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
 :root{--bg:#070910;--surf:#0f1219;--ink:#e9ecf3;--dim:#8b93a7;--green:#36d399;--line:rgba(255,255,255,.07)}

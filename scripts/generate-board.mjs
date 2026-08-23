@@ -54,7 +54,7 @@ const tr = ({p,s}) => `
   <td><span class="dot live"></span>live</td>
 </tr>`;
 
-const html = `<!doctype html><html lang="en"><head><meta charset="utf-8">
+const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow,noarchive">
 <meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Sora:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <title>The Board — Catch'em</title><style>
 ${rootCss()}

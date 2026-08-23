@@ -26,7 +26,7 @@ const faq = JSON.parse(await readFile(join(ROOT, "data/faq.json"), "utf-8"));
 // ONE TYPE SCALE, deliberately. The designer's standing question across nine
 // pages is whether near-identical sizes are steps or the same intent typed
 // twice; on this page there are three sizes and each is a real step.
-const html = `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+const html = `<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Catch'em — FAQ</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@800&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
