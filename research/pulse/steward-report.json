@@ -1,11 +1,18 @@
 {
- "generatedAt": "2026-08-23T16:14:34.707Z",
+ "generatedAt": "2026-08-23T16:20:59.565Z",
  "role": "Keeps the work organised, saved and on track. Silent unless something is genuinely slipping — a day with nothing to say is a day it did its job.",
- "speaking": 3,
+ "speaking": 4,
  "speak": [
   {
+   "kind": "unsaved",
+   "what": "1 commit(s) exist locally and are not pushed.",
+   "why": "A commit on one machine is not a backup. The repo is only the record once it is somewhere else.",
+   "owner": "chat",
+   "confidence": "OBSERVED"
+  },
+  {
    "kind": "ignored",
-   "what": "5 supervisor problem(s) are open.",
+   "what": "6 supervisor problem(s) are open.",
    "why": "Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.",
    "owner": "chat",
    "confidence": "OBSERVED"
@@ -27,7 +34,7 @@
  ],
  "quiet": [
   "everything hand-written is committed",
-  "14 open commitment(s), all recent",
-  "345 commits / 31 written records in the last few days"
+  "15 open commitment(s), all recent",
+  "347 commits / 32 written records in the last few days"
  ]
 }

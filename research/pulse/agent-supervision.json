@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T16:14:33.110Z",
+ "generatedAt": "2026-08-23T16:20:57.625Z",
  "date": "2026-08-23",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -14,7 +14,7 @@
   "api-strategist: 8 finding(s)",
   "compliance: 0 finding(s)",
   "security: 0 finding(s)",
-  "steward: 3 finding(s)",
+  "steward: 4 finding(s)",
   "platform: 10 finding(s)",
   "anomaly: 0 finding(s)",
   "creator: 15 finding(s)",
@@ -33,6 +33,7 @@
   "theme-scout: BROKEN RECORD — 23 finding(s) repeated three runs running (e.g. \"the one-off::Ken Sugimori drew Ampharos exactly on\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "teacher: BROKEN RECORD — 14 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "teacher: OVER-BUDGET — 16 findings against a ceiling of 14. An unreadable list is an unread list.",
+  "steward: BROKEN RECORD — 3 finding(s) repeated three runs running (e.g. \"ignored::5 supervisor problem(s) are open.\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "creator: OVER-BUDGET — 15 findings against a ceiling of 10. An unreadable list is an unread list."
  ],
  "workforce": [
@@ -107,6 +108,11 @@
    "agent": "security",
    "finding": "runs daily and has returned the same count (0) four runs running.",
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
+  },
+  {
+   "agent": "steward",
+   "finding": "every finding from a week ago is still open (3).",
+   "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
    "agent": "platform",
@@ -618,6 +624,22 @@
    "owner": "chat",
    "what": "steward: an incident in your domain: \"Three secondary sources state Kadabra vanished from the TCG for 26 years (1997-2023). Our \"",
    "do": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "steward",
+   "owner": "chat",
+   "what": "1 commit(s) exist locally and are not pushed.",
+   "do": "A commit on one machine is not a backup. The repo is only the record once it is somewhere else.",
    "score": 30,
    "band": "NOTE ONLY",
    "selfScore": 30,
@@ -1155,6 +1177,6 @@
   "actNow": 0,
   "queue": 9,
   "watch": 8,
-  "noteOnly": 25
+  "noteOnly": 26
  }
 }
