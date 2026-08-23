@@ -40,6 +40,14 @@ const HISTORY_DAYS = 120;
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const today = new Date().toISOString().split("T")[0];
 
+// A DAILY CAP IS NOT RETRYABLE. On 2026-08-23 the PPT daily pool was spent,
+// and this retried all 137 SKUs four times each at up to 30s of backoff — over
+// two hours of grinding to accomplish nothing, while the run held a runner and
+// the real answer ('come back after 00:00 UTC') arrived in the first response.
+// Per-minute limits are worth waiting out; a daily one is not, and treating
+// them the same is how one retry becomes a loop.
+let dailyCapped = false;
+
 async function getJSON(url) {
   let lastErr;
   for (let a = 0; a <= 3; a++) {
@@ -47,6 +55,13 @@ async function getJSON(url) {
     try {
       const res = await fetch(url, { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS), headers: H });
       if (res.ok) return res.json();
+      if (res.status === 429) {
+        const body = await res.clone().json().catch(() => ({}));
+        if (body.limitType === "daily") {
+          dailyCapped = true;
+          throw new Error("daily credit cap reached — resets " + (body.resetsAt || "00:00 UTC") + "; not retrying");
+        }
+      }
       lastErr = new Error(`${res.status}`);
       if (res.status < 500 && res.status !== 429) throw lastErr;
     } catch (e) { lastErr = e; }
@@ -81,6 +96,7 @@ async function main() {
 
   const products = [];
   for (const e of entries) {
+    if (dailyCapped) { console.log("  · daily cap reached — stopping early rather than retrying every remaining SKU"); break; }
     await sleep(1100); // 60/min limit
     try {
       const p = await fetchProduct(e);
