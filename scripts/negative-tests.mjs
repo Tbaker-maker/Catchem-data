@@ -622,6 +622,29 @@ const CASES = [
         why: missing.length ? `the designer no longer checks: ${missing.join(", ")}` : "" };
     } },
 
+  { guard: "Centering math never names a grade", detect: null,
+    // Three of PSA's four criteria are invisible in a photograph and the lowest
+    // anchors the result. A tool that names a grade is guessing with somebody
+    // else's submission fee. It reports the CEILING centering permits, which is
+    // a different and defensible claim.
+    fn: async () => {
+      const m = await import(P("scripts/centering-math.mjs"));
+      const c = m.ceiling(m.centering({ left: 2, right: 2, top: 2, bottom: 2 }));
+      const d = m.worthSubmitting({ raw: 100, graded: { 10: 500 }, centering: c });
+      const src = await readFile(P("scripts/centering-math.mjs"), "utf-8");
+      // PSA's own worked examples must reproduce exactly, and the worst axis
+      // must decide - perfect L/R with 70/30 T/B is not a 10.
+      const worked = m.ratio(2.2, 1.8) === 55 && m.ratio(2.4, 1.6) === 60;
+      const worstAxis = m.ceiling(m.centering({ left: 2, right: 2, top: 2.8, bottom: 1.2 })).ceiling < 10;
+      const disclaims = /neverSays/.test(src) && c.neverSays?.includes("what grade");
+      const refuses = m.worthSubmitting({ raw: 100, graded: null, centering: c }).verdict === "cannot say";
+      return { pass: worked && worstAxis && disclaims && refuses,
+        why: !worked ? "PSA's published worked examples no longer reproduce"
+           : !worstAxis ? "the worst axis no longer decides - perfect L/R with 70/30 T/B is passing as a 10"
+           : !disclaims ? "the output no longer disclaims naming a grade"
+           : "it no longer refuses when graded prices are absent - it is substituting a guess" };
+    } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");

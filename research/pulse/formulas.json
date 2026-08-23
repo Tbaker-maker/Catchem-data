@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-23T07:21:12.633Z",
+  "generatedAt": "2026-08-23T07:51:15.134Z",
   "antiSlopRule": "A formula must be derivable from a field we hold: name, artist, setId, rarity, releaseDate, price. Where a theme needs judgment, that judgment is a NAMED LIST stored openly and arguable — never an adjective smuggled into a sentence. 'Cute' is not in the data; the nine Eeveelutions are.",
   "fieldsUsed": [
     "name",
@@ -276,7 +276,7 @@
     "the pair": 8,
     "the battle": 8,
     "the controversy": 4,
-    "the single": 7
+    "the single": 8
   },
   "formulas": [
     {
@@ -1447,6 +1447,17 @@
       "count": 1,
       "why": "One card, one thing most people do not know. Every claim carries a source and a falsifier, which is why we can say it plainly.",
       "angle": "Missing illustrator credits in the community card dataset are a BACKFILL LAG, not a Pokemon decision."
+    },
+    {
+      "kind": "the single",
+      "title": "The Rocket's Trap: graded window unknown",
+      "basis": "a sourced fact from data/knowledge.json plus the card it is about",
+      "cards": [
+        "gym1-19"
+      ],
+      "count": 1,
+      "why": "One card, one thing most people do not know. Every claim carries a source and a falsifier, which is why we can say it plainly.",
+      "angle": "PPT supplies eBay sold-by-grade aggregates (count, median, min, max per PSA grade) on every enriched card."
     }
   ]
 }
