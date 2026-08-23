@@ -64,13 +64,13 @@ h1 em{font-style:normal;color:var(--live)}
 
 /* Steps — a real sequence, so numbering earns its place. */
 .steps{display:grid;grid-template-columns:1.1fr .6fr 1fr .9fr 1.2fr;gap:18px;margin-bottom:44px}
-.refuse{background:#1a1410;border:1px solid #3d2f1a;border-radius:12px;padding:14px 17px;margin-bottom:18px;color:#d9a441;font-size:14px;line-height:1.55}
+.refuse{background:#1a1410;border:1px solid #3d2f1a;border-radius:13px;padding:14px 17px;margin-bottom:18px;color:#d9a441;font-size:14px;line-height:1.55}
 .step{min-width:0}
 .step .n{font:500 11px/1 var(--mono);color:var(--faint);letter-spacing:.14em;display:block;margin-bottom:10px}
 .step .t{font:600 14.5px/1.3 var(--body);margin-bottom:12px;display:block}
 select,input{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:9px;
   color:var(--text);padding:13px 14px;font:400 14.5px var(--body);transition:border-color .18s var(--ease)}
-select:focus,input:focus{outline:none;border-color:var(--live)}
+select:focus,input:focus{outline:none;border-color:var(--soft)}
 .chips{display:flex;flex-wrap:wrap;gap:7px}
 .chip{background:var(--panel);border:1px solid var(--line);color:var(--soft);border-radius:9px;
   padding:10px 14px;font:400 13.5px var(--body);cursor:pointer;transition:all .18s var(--ease)}
@@ -82,15 +82,19 @@ select:focus,input:focus{outline:none;border-color:var(--live)}
 .ideas{display:grid;gap:9px;margin-bottom:40px}
 .idea{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:17px 20px;
   cursor:pointer;transition:all .2s var(--ease)}
-.idea:hover{border-color:var(--live);transform:translateY(-1px)}
+.idea:hover{border-color:var(--faint);transform:translateY(-1px)}
 .idea b{display:block;font:600 16.5px/1.35 var(--body);margin-bottom:4px}
 .idea i{font-style:normal;color:var(--faint);font:400 12.5px var(--mono);display:block}
 .idea .hook{color:var(--soft);font-size:14px;margin-top:9px}
 
 /* THE SIGNATURE: the binder page. Empty pockets show what still fits. */
-.streak{background:var(--panel);border:1px solid var(--line);border-radius:13px;
+/* SPEND THE ACCENT HERE. The designer flagged 16 uses across the page — an
+   accent used everywhere accents nothing. It now appears on the active state,
+   the primary action, and the streak day, because the streak is the one number
+   we actually want somebody to feel. */
+.streak{background:linear-gradient(180deg,rgba(54,211,153,.05),transparent),var(--panel);border:1px solid var(--line);border-radius:13px;
   padding:15px 18px;margin-bottom:16px;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
-.streak .day{font:800 30px var(--display);color:var(--live);line-height:1}
+.streak .day{font:800 38px var(--display);color:var(--live);line-height:.95;letter-spacing:-.02em}
 .streak .desc{font:400 14px var(--body);color:var(--soft);flex:1;min-width:180px}
 .streak .desc b{color:var(--text);font-weight:600}
 .streak .left{font:500 11px var(--mono);color:var(--faint);letter-spacing:.1em}
@@ -119,11 +123,11 @@ select:focus,input:focus{outline:none;border-color:var(--live)}
 .tally .k{font:500 10.5px var(--mono);color:var(--faint);letter-spacing:.13em;display:block;margin-bottom:3px}
 .tally .v{font:500 19px var(--mono);color:var(--text)}
 .tally .v.have{color:var(--live)}
-.pocket .own{position:absolute;bottom:5px;left:5px;border:0;border-radius:6px;padding:3px 7px;
+.pocket .own{position:absolute;bottom:5px;left:5px;border:0;border-radius:9px;padding:3px 7px;
   font:500 9.5px var(--mono);cursor:pointer;background:rgba(10,12,18,.86);color:var(--faint);opacity:0;
   transition:opacity .16s var(--ease)}
 .pocket:hover .own{opacity:1}
-.pocket .own.yes{opacity:1;background:var(--live);color:var(--ink)}
+.pocket .own.yes{opacity:1;background:var(--soft);color:var(--ink)}
 .status.bad{color:var(--warn)}
 .acts{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
 button.pri{background:var(--live);color:var(--ink);border:0;border-radius:13px;padding:14px 26px;
@@ -434,6 +438,24 @@ const STREAK_FILTERS = {
   "ir-mid":    { label: "IRs under $25",      test: c => /Illustration Rare/i.test(c.r || "") && c.p != null && c.p < 25 },
   "sir-only":  { label: "Special Illustration Rares", test: c => /Special Illustration Rare/i.test(c.r || "") },
   "ir-modern": { label: "IRs from 2024 on",   test: c => /Illustration Rare/i.test(c.r || "") && c.y >= "2024" },
+  // PRICE BANDS. Restricted to Illustration Rares these pools are 18 and 32
+  // cards — nine and sixteen days, which is not a streak, it is a fortnight.
+  // Open to every hero rarity they run 141 and 119 days, and nothing is lost:
+  // a Rare Holo at $2.50 is exactly as postable as an IR at $2.50, and the
+  // PRICE BAND is the theme. Restricting rarity too was my assumption, not the ask.
+  "two-dollar":  { label: "The $2–3 shelf", test: c => HERO_RX.test(c.r || "") && c.p != null && c.p >= 2 && c.p <= 3 },
+  "five-dollar": { label: "The $5 pickup",  test: c => HERO_RX.test(c.r || "") && c.p != null && c.p >= 4.50 && c.p <= 5.95 },
+  // THE SCOUT'S ANGLES — found by searching the data rather than my memory,
+  // which was thinking in categories while the data thinks in structure.
+  // Chronological is the strongest: a streak with a DIRECTION beats one with a
+  // filter, because "Day 40, we've reached Neo Destiny" is a story and "Day 40,
+  // another card" is a counter.
+  "chronological": { label: "The whole history, in order", ordered: "date",
+    test: c => HERO_RX.test(c.r || "") && c.a && c.y },
+  "one-artist":    { label: "One illustrator at a time", ordered: "artist",
+    test: c => HERO_RX.test(c.r || "") && c.a },
+  "cheapest-up":   { label: "Cheapest first, working up", ordered: "price",
+    test: c => HERO_RX.test(c.r || "") && c.p != null },
 };
 
 function startStreak(filterId, perDay){
@@ -451,6 +473,22 @@ function nextStreakDay(){
   if (pool.length < streak.perDay) { renderStreak(0); return; }
   // Deterministic per day so reloading does not reshuffle the pick, and seeded
   // by the start date so two creators on the same filter diverge immediately.
+  // An ORDERED streak walks the pool in sequence — that is the whole point of
+  // it. A seeded shuffle would turn a journey back into a lottery.
+  if (f.ordered) {
+    const key = f.ordered === "date" ? (c => (c.y || "") + c.s + c.n)
+              : f.ordered === "artist" ? (c => (c.a || "") + (c.y || ""))
+              : (c => String(Math.round((c.p || 0) * 100)).padStart(9, "0"));
+    pool.sort((a, b) => key(a) < key(b) ? -1 : 1);
+    const picked = pool.slice(0, streak.perDay);
+    streak.day += 1;
+    streak.used.push(...picked.map(c => c.i));
+    saveStreak();
+    tray = picked; blob = null;
+    el("label").value = "Day " + streak.day + " — " + f.label;
+    render();
+    return;
+  }
   const seed = (streak.started + streak.day).split("").reduce((a,ch)=>((a<<5)-a+ch.charCodeAt(0))|0, 0);
   const picked = [];
   for (let k = 0; k < streak.perDay; k++) {

@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T17:25:08.697Z",
+ "generatedAt": "2026-08-23T17:38:26.501Z",
  "role": "Keeps agents current, breaks them out of ruts, and teaches from incidents that actually happened to us. It asks questions; it never rewrites another agent.",
  "counts": {
   "stale": 0,
@@ -81,10 +81,10 @@
    "chip": "READ"
   },
   {
-   "agent": "designer",
+   "agent": "teacher",
    "kind": "in a rut",
-   "observation": "7 findings, identical across 5 runs",
-   "question": "What question has designer never asked about its own subject?",
+   "observation": "15 findings, identical across 5 runs",
+   "question": "What question has teacher never asked about its own subject?",
    "why": "Identical output run after run means the agent has stopped searching and started reciting. The count being stable is not the problem; the SAMENESS is.",
    "confidence": "OBSERVED",
    "chip": "READ"
