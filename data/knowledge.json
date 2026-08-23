@@ -508,20 +508,75 @@
    "recheckAfter": "2027-02-23"
   },
   {
-   "id": "slab-guard-costs-unknown",
-   "claim": "We do not know manufacturing costs, tooling costs, minimum order quantities or landed unit economics for any material tier.",
+   "id": "injection-tooling-china-2026",
+   "claim": "A simple single-cavity injection mould in China runs roughly $1,500-$5,000 in 2026. A real quoted example: a square PP box lid, 150x150x15mm, 718H steel, single cavity, quoted at $1,250. A single-cavity TPU phone-case mould starts around $3,500. Small toy parts on single-cavity aluminium run $2,000-$5,000.",
    "sources": [
-    "absence of evidence — no quote has been obtained"
+    "ulitemech.com 2026 pricing guide",
+    "boyanmfg.com published quote breakdown",
+    "cs-dv.com phone case mould guide 2026",
+    "abismould.com 2026"
    ],
    "verified": "2026-08-23",
    "verifier": "chat",
-   "confidence": "UNKNOWN",
-   "falsifier": "a real quote from a real manufacturer",
-   "note": "RECORDED DELIBERATELY. Retail prices are observable and cost is not, and the gap between them is where every made-up business model lives. Any margin figure before a quote exists is fiction, and a fiction in a business model is more dangerous than one in a post because somebody spends money on it.",
+   "confidence": "VERIFIED",
+   "falsifier": "quotes from three factories on OUR geometry landing outside this band",
+   "note": "The phone case is the closest comparable: thin shell, snap fit, TPU or TPU+PC, cosmetic finish. A slab guard is geometrically simpler - fewer undercuts, no port cutouts - so the low end of the band is plausible and the high end is safe to plan against.",
    "usedBy": [
     "guards"
    ],
-   "recheckAfter": "2026-09-23"
+   "recheckAfter": "2027-02-23"
+  },
+  {
+   "id": "injection-unit-cost-2026",
+   "claim": "Per-unit injection cost excluding tooling: roughly $1.50-$4.00 at 1,000 units and $0.80-$2.00 at 5,000 units for ABS-class parts. One published curve gives about $4 at 100 pieces, $2.60 at 5,000 and $1.70 at 100,000. Another gives $1.50 all-in at 2,000 units of which $1.00 is tooling amortisation.",
+   "sources": [
+    "abismould.com 2026",
+    "hingtungprecision.com 2026",
+    "haizol.com China Injection Molding Industry Report 2026"
+   ],
+   "verified": "2026-08-23",
+   "verifier": "chat",
+   "confidence": "VERIFIED",
+   "falsifier": "real quotes on our part landing outside the band",
+   "note": "TOOLING IS THE BARRIER, NOT THE PLASTIC. At 1,000 units a $3,000 mould adds $3.00 per unit; at 5,000 it adds $0.60. The whole economic question is order size, not material.",
+   "usedBy": [
+    "guards"
+   ],
+   "recheckAfter": "2027-02-23"
+  },
+  {
+   "id": "injection-moq-reality",
+   "claim": "Chinese factories routinely quote below the MOQs commonly assumed. One states a standard MOQ of 1,000 with small batches of 100-500 available, another advertises 500-unit pilot runs. Across 190 multi-quote RFQs, 35.5% fell below 100 units and attracted 3-7 competing factory quotes within 24 hours.",
+   "sources": [
+    "rayleap.com 2026",
+    "cs-dv.com 2026",
+    "haizol.com China Injection Molding Industry Report 2026"
+   ],
+   "verified": "2026-08-23",
+   "verifier": "chat",
+   "confidence": "VERIFIED",
+   "falsifier": "our own RFQ being refused below 1,000 units by three factories",
+   "note": "This is the finding that changes the plan. The received wisdom that Chinese factories will not touch small runs is contradicted by the quote data - the real constraint is that tooling is fixed, so small runs are EXPENSIVE rather than refused. 3D printing was never necessary; it was a workaround for a barrier that is not there.",
+   "usedBy": [
+    "guards"
+   ],
+   "recheckAfter": "2027-02-23"
+  },
+  {
+   "id": "quote-spread-is-huge",
+   "claim": "Across 190 multi-quote RFQs the most expensive quartile was 2.0x the cheapest at the median and 2.9x in higher-spread jobs; the cheapest quartile sat 30.8% below the median, widening to 46.3% in the top quartile of spreads.",
+   "sources": [
+    "haizol.com China Injection Molding Industry Report 2026"
+   ],
+   "verified": "2026-08-23",
+   "verifier": "chat",
+   "confidence": "SINGLE-SOURCE",
+   "falsifier": "a later report showing convergence",
+   "note": "SINGLE SOURCE, held anyway because the ACTION it implies is free: get three quotes rather than one. Even if the exact spread is wrong, nobody has ever been harmed by comparing three quotes on an identical spec. NEVER TAKE ONE QUOTE. A single quote on this part could be double what the same job costs elsewhere, and the spread usually reflects different ASSUMPTIONS about cavity count, steel grade, finish and trial shots rather than different quality. Three quotes minimum, on an identical written spec.",
+   "usedBy": [
+    "guards"
+   ],
+   "recheckAfter": "2027-02-23"
   }
  ]
 }

@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T18:39:55.555Z",
+ "generatedAt": "2026-08-23T18:49:46.841Z",
  "date": "2026-08-23",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -8,13 +8,13 @@
   "correction-hunter: 3 finding(s)",
   "review-agents: 0 finding(s)",
   "decision-audit: 0 finding(s)",
-  "designer: 6 finding(s)",
+  "designer: 8 finding(s)",
   "theme-scout: 23 finding(s)",
   "teacher: 14 finding(s)",
   "api-strategist: 8 finding(s)",
   "compliance: 0 finding(s)",
   "security: 0 finding(s)",
-  "steward: 3 finding(s)",
+  "steward: 4 finding(s)",
   "platform: 10 finding(s)",
   "anomaly: 0 finding(s)",
   "creator: 15 finding(s)",
@@ -90,11 +90,6 @@
   {
    "agent": "teacher",
    "finding": "every finding from a week ago is still open (12).",
-   "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
-  },
-  {
-   "agent": "api-strategist",
-   "finding": "every finding from a week ago is still open (7).",
    "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
@@ -583,6 +578,22 @@
   {
    "from": "steward",
    "owner": "chat",
+   "what": "1 commit(s) exist locally and are not pushed.",
+   "do": "A commit on one machine is not a backup. The repo is only the record once it is somewhere else.",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "steward",
+   "owner": "chat",
    "what": "4 supervisor problem(s) are open.",
    "do": "Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.",
    "score": 30,
@@ -599,7 +610,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "8 script(s) are not referenced anywhere: backfill-artists.mjs, build-faq.mjs, centering.mjs, collision-guard.mjs.",
+   "what": "9 script(s) are not referenced anywhere: backfill-artists.mjs, build-faq.mjs, build-rip.mjs, centering.mjs.",
    "do": "A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -759,7 +770,7 @@
   {
    "from": "api-strategist",
    "owner": "tyler",
-   "what": "the paid provider is called from 114 places",
+   "what": "the paid provider is called from 115 places",
    "do": "list what ONLY the paid provider gives us; if that list is short, either use more of it or stop paying for it",
    "score": 30,
    "band": "NOTE ONLY",
@@ -1106,6 +1117,6 @@
   "actNow": 0,
   "queue": 9,
   "watch": 8,
-  "noteOnly": 22
+  "noteOnly": 23
  }
 }

@@ -52,33 +52,59 @@ before one.
 
 ---
 
-## WHAT WE DO NOT KNOW — recorded, not estimated
+## THE COST SIDE — researched, not estimated
 
-`data/knowledge.json` → `slab-guard-costs-unknown`, confidence **UNKNOWN**:
+Yesterday this section read UNKNOWN. **It is not unknown; I had not looked hard
+enough.** Every figure below is sourced and dated 2026-08-23.
 
-**Manufacturing cost, tooling cost, minimum order quantity and landed unit
-economics are all unknown for every material tier.** Retail prices are
-observable; costs are not. **Any margin figure produced before a quote exists is
-fiction.**
+### TOOLING — the only real barrier
+| comparable | quoted |
+|---|---|
+| simple single-cavity mould, general | **$1,500–$5,000** |
+| **real published quote**: PP box lid, 150×150×15mm, 718H steel, single cavity | **$1,250** |
+| single-cavity **TPU phone case** mould | **from $3,500** |
+| small toy parts, single-cavity aluminium | $2,000–$5,000 |
 
-### THE THREE QUESTIONS THAT DECIDE EVERYTHING
-1. **What does a TPU guard cost at 500 units, and at 5,000?** Injection moulding
-   has tooling; the tool is the barrier, not the plastic.
-2. **What is the MOQ?** This decides whether a first run is $800 or $18,000, and
-   therefore whether it is a weekend or a loan.
-3. **Does 3D printing carry a first run?** Etsy sellers do it profitably at low
-   volume, which suggests **a pilot needs no tooling and no minimum** — the two
-   things that normally make a physical product impossible for a solo founder.
+**The phone case is the closest comparable** — thin shell, snap fit, TPU or
+TPU+PC, cosmetic finish. **A slab guard is geometrically simpler**: fewer
+undercuts, no port cutouts, no acoustic fit.
 
-## THE ROUTE THAT DOES NOT NEED A LOAN
-**Print the first run.** No tooling, no MOQ, no inventory risk. Sell fifty packs
-to the community that already exists. **The pilot's job is not profit — it is a
-real number for every unknown above**, and fifty packs buys that number for
-roughly the cost of a night out.
+**We need two moulds** — raw-card guard and slab guard — so **$4,000–$10,000
+tooling**, once.
 
-Injection moulding becomes a decision **after** demand is evidenced, not before.
+### PER UNIT — cheap, and not the question
+| volume | per part, excluding tooling |
+|---|---|
+| 1,000 units | **$1.50–$4.00** |
+| 5,000 units | **$0.80–$2.00** |
+| 100,000 units | ~$1.70 on one published curve |
 
----
+### A FIVE-GUARD PACK
+| | parts | + tooling amortised |
+|---|---|---|
+| **at 1,000 packs** | $7.50–$20.00 | $4.00–$10.00 per pack |
+| **at 5,000 packs** | **$4.00–$10.00** | **$0.80–$2.00 per pack** |
+
+**Against a market where Phantom sells ONE acrylic case at $55–60.**
+
+### THE MOQ MYTH IS A MYTH
+One factory states a standard MOQ of 1,000 **with small batches of 100–500
+available**; another advertises **500-unit pilot runs**. Across 190 multi-quote
+RFQs, **35.5% fell below 100 units and attracted 3–7 competing quotes within 24
+hours.**
+
+**Tooling is fixed, so small runs are EXPENSIVE rather than refused.** 3D
+printing was never necessary — it was a workaround for a barrier that is not
+there, and Tyler was right to reject it on quality alone.
+
+### THE ONE RULE THAT SAVES THE MOST MONEY
+Across those same 190 RFQs the **most expensive quartile was 2.0× the cheapest
+at the median, and 2.9× on higher-spread jobs.** The cheapest quartile sat 30.8%
+below median.
+
+**Never take one quote.** The spread usually reflects different assumptions
+about cavity count, steel grade, surface finish and trial shots — not different
+quality. **Three quotes minimum, on one identical written spec.**
 
 ## HOW IT CONNECTS TO WHAT ALREADY EXISTS
 - **The editor renders the slab.** Somebody can see their card in a guard before
@@ -97,19 +123,34 @@ Injection moulding becomes a decision **after** demand is evidenced, not before.
 |---|---|---|
 | **Market evidence** | **8/10** | five named competitors, real prices, verified today |
 | **Differentiation** | **8/10** | rarity and packs are absent from every player found |
-| **Cost knowledge** | **0/10** | **no quote exists.** Unshipped scores zero and unknown scores zero |
-| **Route to first run** | **7/10** | 3D printing removes tooling and MOQ; unproven by us |
+| **Cost knowledge** | **7/10** | tooling, per-unit and MOQ bands all sourced 2026-08-23. Not yet a quote on OUR geometry |
+| **Route to first run** | **8/10** | injection moulding is reachable at $4-10k tooling; small batches are quotable and 3D printing is unnecessary |
 | **Structural risk** | **9/10** | no buy-back removes the category of problem |
 | **Fit with what we have** | **9/10** | editor, rip, binder, streaks all feed it and exist |
 | **Demand evidence** | **1/10** | competitors' existence is evidence of a market, not of OUR demand. Zero customers |
 
-**Overall 6.0 / 10 — "a real gap in a proven market, with the entire cost side
-unknown."**
+**Overall 7.1 / 10 — "a real gap in a proven market, with reachable tooling and
+no customers yet."**
 
 The two zeros are the honest ones. **Everything above them is desk research, and
 desk research has never sold a guard.**
 
 ## WHAT WOULD MOVE IT MOST
-1. **One manufacturing quote.** 0/10 → 7/10 in a single email.
+1. **Three quotes on one written spec.** Cost knowledge 7 → 10, and the spread
+   data says the cheapest could be half the dearest for the same job.
 2. **Ten people saying they would buy a pack.** Demand 1 → 4, and it is free.
-3. **A printed prototype in hand.** Everything above becomes real at once.
+3. **A T0 trial shot in hand.** Every number above becomes real at once.
+
+## THE SPEC TO SEND
+Send the same words to every factory or the quotes are not comparable:
+> Two parts. **Part A**: a protective sleeve for a trading card in a rigid
+> holder, roughly 76 × 105 × 4mm. **Part B**: a protective shell for a graded
+> slab, roughly 90 × 145 × 12mm. TPU body with a clear polycarbonate face, or
+> propose an alternative. Cosmetic finish, snap fit, no undercuts if avoidable.
+> Quote single-cavity tooling and per-unit at **500 / 1,000 / 5,000**. Include
+> T0 trial shot and DFM review. State steel grade, cavity count, surface finish
+> spec and lead time.
+
+**Exact slab dimensions must be confirmed before sending** — every grader's
+holder differs, and a mould cut to a wrong dimension is the single most
+expensive mistake available here.
