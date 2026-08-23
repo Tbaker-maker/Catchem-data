@@ -33,12 +33,24 @@ if (process.argv.includes("--report") || process.argv.length <= 2) {
     (byShape[s] ||= []).push(p.measured?.views ?? 0);
   }
   console.log(`\n  ${posts.length} post(s) logged.\n`);
+  // AGE IS THE SECOND CONFOUND. A post accumulates views for days, so a
+  // 7-hour-old post beside a 22-hour-old one is a comparison of AGE. Timing was
+  // hour-of-day; this is hours-since-posting. Same class, different axis, found
+  // one hour after the first one caught me.
+  const ageH = (p) => (Date.now() - Date.parse(p.postedAt)) / 3600000;
+  const young = posts.filter(p => ageH(p) < 24);
+  if (young.length) {
+    console.log(`  ${young.length} post(s) under 24h old — still accumulating, not comparable to settled ones:`);
+    for (const p of young) console.log(`     ${String(p.measured.views).padStart(5)} views at ${ageH(p).toFixed(1)}h — ${p.shape.slice(0, 40)}`);
+    console.log();
+  }
   if (!posts.length) { console.log("  Nothing to compare yet."); }
   else {
     const rows = Object.entries(byShape).map(([s, v]) => ({ shape: s, n: v.length,
       median: v.sort((a, b) => a - b)[Math.floor(v.length / 2)] }))
       .sort((a, b) => b.median - a.median);
     for (const r of rows) console.log(`   ${String(r.median).padStart(5)} median views   ${String(r.n).padStart(2)} post(s)   ${r.shape}`);
+    console.log("\n  This table ranks by raw views and controls for NOTHING — not hour of day, not age, not follower count on the day. It is a record, not a finding.");
   }
   // The honest read of a small sample, stated rather than implied. Twenty is
   // where a median across shapes starts meaning something; below that we are

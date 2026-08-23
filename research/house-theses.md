@@ -1908,3 +1908,38 @@ AND THE THING WORTH REPEATING: Tyler's reply on the post was *"this visual was
 built by our in-house content creator portal."* The tool made the image, he
 chose the pairing, and he wrote the words. That division has now produced our
 best post twice.
+
+## THE CARD SUPPLIES THE IDEA, TYLER SUPPLIES THE SENTENCE (Aug 23 2026)
+Three posts that worked, three times the same division of labour:
+
+- **Slakoth**, attack literally *Take It Easy* → *"how i feel after coding
+  17-18 hours straight"*
+- **Sunflora**, flavour text *"always looking in the direction of the sun"*,
+  attack *Redirected Sunlight* → *"Only Good Vibes. Pass it along & see it
+  grow."* — a plant, that grows, and the ask is to make it grow
+- **Arita**, where the fact is the post: same hand, twenty-four years
+
+**Not one of these came from a formula we generated.** In every case the CARD
+supplied the idea and Tyler supplied the sentence, and the tool's job was to put
+the right card in front of him.
+
+WHY THAT MATTERS MORE THAN IT SOUNDS: we have 84 formulas that produce titles
+and angles, and the three posts that worked used none of them. The winning
+input is not a generated caption — it is **a card whose own printed words are a
+setup somebody can land**. That is a search problem, not a writing problem, and
+it is exactly what capturing attack names and flavour text unlocks: 82% of cards
+carry an attack name, 40% carry flavour text, and we hold neither.
+
+**A tool that hands over a finished caption is competing with Tyler. One that
+hands over the right card is arming him.** The second is both more useful and
+the only one of the two we are good at.
+
+## AGE IS THE SECOND CONFOUND (Aug 23 2026)
+One hour after timing caught me, age did. The Sunflora post was seven hours old
+and the Arita twenty-two, and the report lined them up as though the numbers
+meant the same thing. A post accumulates views for days.
+
+The log now flags anything under 24 hours as still accumulating, and the shape
+table states in its own output that it **controls for nothing** — not hour, not
+age, not follower count on the day. **It is a record, not a finding**, and
+labelling it as such is cheaper than being corrected by it twice.
