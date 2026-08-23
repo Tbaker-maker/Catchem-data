@@ -104,6 +104,29 @@ rows.push({ id: p.id, spreadBasis, publishBlocked: (p.publishBlock || q.blocked(
                   tcg: `${tcg.source}, ${t.providerUpdatedAt || tcg.updatedAt?.split("T")[0]}` } });
 }
 rows.sort((a, b) => Math.abs(b.spreadPct) - Math.abs(a.spreadPct));
+// ZERO-RESULT SAFETY, the same law sealed prices already live under.
+// On 2026-08-23 the PPT daily credit pool was exhausted, so the crosscheck
+// returned 0 live of 137 SKUs, so this compared NOTHING and wrote an empty
+// report over a healthy one — and the schema guard two steps later killed the
+// whole run naming DIVERGENCE, which was the victim rather than the cause.
+//
+// A provider outage must DEGRADE, not kill: keep yesterday's rows, mark them
+// stale, and say so. An empty report published over a good one is the supply
+// wipe-out shape the sealed bot was taught to refuse in August.
+let prior = null;
+try { prior = JSON.parse(await readFile(join(DATA, "divergence-report.json"), "utf-8")); } catch {}
+const priorRows = prior?.rows?.length ?? 0;
+if (!rows.length && priorRows > 0) {
+  await writeFile(join(DATA, "divergence-report.json"), JSON.stringify({
+    ...prior,
+    dataStatus: "stale-upstream",
+    staleSince: prior.generatedAt,
+    staleReason: "the TCG crosscheck returned no live rows this run, so there was nothing to compare. Yesterday's comparison is kept rather than overwritten with an empty one.",
+    checkedAt: new Date().toISOString(),
+  }, null, 2) + String.fromCharCode(10));
+  console.log(`· The Spread: 0 comparable rows this run — kept ${priorRows} prior rows and marked them stale-upstream`);
+  process.exit(0);
+}
 await writeFile(join(DATA, "divergence-report.json"), JSON.stringify({
   generatedAt: new Date().toISOString(),
   method: "Cross-market divergence, both sides taken AS STATED — no shipping cost is ever estimated (no-guess law). eBay ask medians are delivered totals where a listing states postage, and where none is stated the cost is baked in. TCGplayer Market Price states no postage, so it is taken as delivered too. Tax excluded both sides, always. The TCG figure is TCGplayer's average of recent COMPLETED SALES on the US marketplace, USD (source-verified 2026-08-22; no region/filter parameters exist on the provider endpoint to get wrong, and no shipping-inclusive field is retrievable at any tier). Two structural asymmetries remain and are NOT signals: ASK vs SOLD, and any real postage the TCG side charges that we cannot see. |spread| >= 15% flags. A flat TCG line can mean no recent sales, not a frozen ask. TCG-side listing counts: provider exposes none for sealed - field carried as null, lights up if they ship it.",

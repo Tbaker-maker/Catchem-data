@@ -901,6 +901,28 @@ const CASES = [
   // written until the end, and the end was a single JSON.stringify of the whole
   // payload — which at 197 KB/card cannot exist above ~2,650 cards, because
   // Node's max string length is 512 MB. The run was unwritable before it began.
+  // A provider outage must DEGRADE, not kill. The PPT daily pool ran dry on
+  // 2026-08-23, the crosscheck returned 0 live of 137, divergence wrote an EMPTY
+  // report over a healthy one, and the schema guard two steps later killed the
+  // run naming divergence — the victim, not the cause.
+  { guard: "An empty crosscheck cannot wipe The Spread", detect: null,
+    fn: async () => {
+      const bak = TMP("/tmp/nt-cc.bak"), dbak = TMP("/tmp/nt-div.bak");
+      await copyFile(P("data/sealed-crosscheck.json"), bak);
+      await copyFile(P("data/divergence-report.json"), dbak);
+      try {
+        const before = JSON.parse(await readFile(P("data/divergence-report.json"), "utf-8")).rows?.length ?? 0;
+        if (!before) return { pass: null, why: "no prior rows to protect" };
+        const c = JSON.parse(await readFile(P("data/sealed-crosscheck.json"), "utf-8"));
+        for (const k of Object.keys(c)) if (Array.isArray(c[k])) c[k] = [];
+        await writeFile(P("data/sealed-crosscheck.json"), JSON.stringify(c, null, 1));
+        await run("node", [P("scripts/compute-divergence.mjs")], { cwd: ROOT }).catch(() => {});
+        const after = JSON.parse(await readFile(P("data/divergence-report.json"), "utf-8"));
+        return { pass: (after.rows?.length ?? 0) === before && after.dataStatus === "stale-upstream",
+          why: "an empty crosscheck overwrote The Spread: " + before + " rows became " + (after.rows ? after.rows.length : 0) };
+      } finally { await copyFile(bak, P("data/sealed-crosscheck.json")); await copyFile(dbak, P("data/divergence-report.json")); }
+    } },
+
   { guard: "Enrichment flushes each set to disk before the next call", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/enrich-by-set.mjs"), "utf-8");
@@ -914,11 +936,29 @@ const CASES = [
       const loopEnd = loop.indexOf("\n  }\n");
       if (flush < 0 || (loopEnd > 0 && flush > loopEnd))
         return { pass: false, why: "cards are appended only after the loop — an interrupted run still loses paid-for sets" };
-      // And prove the format actually round-trips.
-      const { distil } = await import(pathToFileURL(P("scripts/distil-enrichment.mjs")).href + `?t=${Date.now()}`);
-      const out = await distil().catch(() => null);
-      return { pass: !!out && out.cardCount > 0,
-        why: "the distiller cannot read the append-only format back" };
+      // ROUND-TRIP A FIXTURE WE BUILD, not whatever happens to be on disk.
+      // This used to call distil() against the real raw file — which is GITIGNORED.
+      // So it passed on the machine that ran the enrichment and failed on every
+      // other one, and it read as permanently red to Tyler while showing green to
+      // me. A test whose result depends on which laptop runs it is not a test, and
+      // a permanently red one is a muted one, which is the lesson this morning
+      // charged us a full day's pipeline for.
+      const { mkdtemp, rm } = await import('node:fs/promises');
+      const { tmpdir } = await import('node:os');
+      const dir = await mkdtemp(join(tmpdir(), 'nt-distil-'));
+      try {
+        const card = { id: 'nt-1', name: 'Fixture', setName: 'Fixture Set', cardNumber: '1',
+          prices: { market: 1.23, low: 1, sellers: 2, listings: 3, recentSales: 0, lastUpdated: '2026-08-23', variants: {} },
+          priceHistory: { conditions: { 'Near Mint': { history: Array.from({ length: 40 }, (_, i) =>
+            ({ date: '2026-0' + (i < 9 ? 7 : 8) + '-01', market: 1 + i / 100, volume: 1 })) } } } };
+        await writeFile(join(dir, 'enrichment-raw.ndjson'), JSON.stringify(card));
+        const { distilFrom } = await import(pathToFileURL(P('scripts/distil-enrichment.mjs')).href + `?t=${Date.now()}`);
+        if (typeof distilFrom !== 'function')
+          return { pass: false, why: 'distil-enrichment exports no distilFrom(dir) — the round-trip cannot be tested without the gitignored raw file' };
+        const out = await distilFrom(dir).catch(e => ({ error: e.message }));
+        return { pass: !!out && out.cardCount === 1 && out.cards?.[0]?.raw?.market === 1.23,
+          why: `the distiller cannot read the append-only format back (${out?.error ?? JSON.stringify(out?.cardCount)})` };
+      } finally { await rm(dir, { recursive: true, force: true }).catch(() => {}); }
     } },
 
   // Pacing is priced in minute-UNITS, not calls: a set costs min(30, ceil(n/10))

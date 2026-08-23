@@ -28,7 +28,7 @@ A product we featured has gone quiet on us. Either it stopped trading or we brok
 **NEEDS A HUMAN — the supervisor flagged the watchers:**
 - designer: BROKEN RECORD — 5 finding(s) repeated three runs running (e.g. "medium::32 distinct colours"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 - theme-scout: BROKEN RECORD — 23 finding(s) repeated three runs running (e.g. "the one-off::Ken Sugimori drew Ampharos exactly on"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
-- teacher: FARMING — findings climbed 14 → 14 → 15 → 15 across four runs with nothing resolved. Volume is not work.
+- teacher: FARMING — findings climbed 14 → 14 → 14 → 15 across four runs with nothing resolved. Volume is not work.
 - teacher: BROKEN RECORD — 12 finding(s) repeated three runs running (e.g. "in a rut::breaker"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 
 ## If we expanded

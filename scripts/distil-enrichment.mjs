@@ -48,8 +48,8 @@ function ret(series, days, tol = 0) {
 // current one; the single 166 MB object is the legacy that could not be written
 // past ~2,650 cards. Streaming line-by-line means the distiller never holds the
 // whole payload, which is the same limit that killed the writer.
-async function* rawCards() {
-  const nd = join(ROOT, "data/enrichment-raw.ndjson");
+async function* rawCards(dataDir) {
+  const nd = dataDir ? join(dataDir, "enrichment-raw.ndjson") : join(ROOT, "data/enrichment-raw.ndjson");
   if (existsSync(nd)) {
     const rl = createInterface({ input: createReadStream(nd, "utf-8"), crlfDelay: Infinity });
     for await (const line of rl) {
@@ -62,10 +62,10 @@ async function* rawCards() {
   for (const c of Object.values(raw.byCard || {})) yield c;
 }
 
-export async function distil() {
+export async function distil(dataDir) {
   const cards = [];
   const byId = new Set();
-  for await (const c of rawCards()) {
+  for await (const c of rawCards(dataDir)) {
     const id = String(c.id || c.tcgPlayerId);
     if (byId.has(id)) continue;      // a resumed run can re-append a set
     byId.add(id);
@@ -119,3 +119,11 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   const withLadder = out.cards.filter(c => Object.keys(c.conditions).length > 1).length;
   console.log(`  30-day return: ${withRet} · vol30: ${withVol} · condition ladder: ${withLadder}`);
 }
+
+
+// distilFrom(dir) exists so the round-trip can be PROVEN without the real
+// raw payload, which is gitignored and therefore present on exactly one
+// machine. The guard that checks this format used to read whatever was on
+// disk, so it passed here and failed everywhere else — a test whose answer
+// depends on the laptop is not a test.
+export const distilFrom = (dir) => distil(dir);
