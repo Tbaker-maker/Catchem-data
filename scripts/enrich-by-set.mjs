@@ -123,6 +123,20 @@ export async function planOnly() {
     .sort((a, b) => (b.top / b.cost) - (a.top / a.cost));
 }
 
+// Which provider sets are already on disk. The first run predates the
+// fetchedSets field, so its 861 cards would be re-bought at ~3,000 credits —
+// 17% of a day's ceiling for data we already hold. Recover the list from the
+// set NAMES the cards carry: those are stable, unlike the numeric setId in card
+// payloads, which is not the id /cards accepts.
+async function heldSets(prior) {
+  if (prior?.fetchedSets) return new Set(prior.fetchedSets.map(String));
+  if (!prior?.byCard) return new Set();
+  const map = await J("data/ppt-set-map.json").catch(() => null);
+  const idByName = new Map(Object.values(map?.bySlug ?? {}).map(m => [m.pptName, String(m.pptSetId)]));
+  const names = new Set(Object.values(prior.byCard).map(c => c.setName).filter(Boolean));
+  return new Set([...names].map(n => idByName.get(n)).filter(Boolean));
+}
+
 async function main() {
   if (!KEY) requireKey("POKEMONPRICETRACKER_API_KEY");
   const plan = await planOnly();
@@ -142,7 +156,8 @@ async function main() {
   // so keying on the response matched nothing and re-bought everything.
   const prior = await J("data/enrichment-by-set.json").catch(() => null);
   const out = prior?.byCard ?? {};
-  const haveSets = new Set(prior?.fetchedSets ?? []);
+  const haveSets = await heldSets(prior);
+  if (!prior?.fetchedSets && haveSets.size) console.log(`recovered ${haveSets.size} already-fetched sets from the existing file`);
   let spent = 0, calls = 0, cards = Object.keys(out).length;
   let stoppedBecause = "plan exhausted";
   const todo = plan.filter(s => s.pptSetId && !haveSets.has(String(s.pptSetId)));
@@ -223,7 +238,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
       run += s.cost; sets++; cards += s.cards; top += s.top; units += unitsFor(s.cards);
     }
     const prior = await J("data/enrichment-by-set.json").catch(() => null);
-    const held = new Set(prior?.fetchedSets ?? []);
+    const held = await heldSets(prior);
     console.log(`DRY RUN — no calls made, no credits spent`);
     console.log(`  whole plan     : ${plan.length} sets · ${total.toLocaleString("en-US")} credits`);
     console.log(`  provider ids   : ${mapped.length} of ${plan.length} mapped` +

@@ -13,10 +13,16 @@ Freeze, Plasma Blast, Prismatic Evolutions and Phantasmal Flames**. Not a subset
 of what we asked for. A different list entirely.
 
 **Cause: a namespace collision nothing in the pipeline checked.** Our catalogue
-keys sets by the pokemontcg.io slug (`base1`, `sv8`, `ex8`). The provider keys
-them by an internal number (`1370`, `23821`). **Zero of our 130 slugs overlap
-their ids.** `setId=ex8` does not error — it is silently not honoured, and the
-response is billed anyway.
+keys sets by the pokemontcg.io slug (`base1`, `sv8`, `ex8`). The provider does
+not accept those at all. `setId=ex8` does not error — it is silently not
+honoured, and the response is billed anyway.
+
+**There are three set identifiers in play**, and I conflated two of them in the
+first version of this report. Ours is the slug. The provider's `/sets` returns an
+**ObjectId hex string** (`696e3c9cbb2a772e0d056815`) and that is what
+`/cards?setId=` accepts. Card payloads *also* carry a numeric `setId` (`1370`,
+`23821`) which is a different internal field and is **not** queryable. I
+originally called the numeric one "the provider's id". It is not.
 
 | | |
 |---|---|
@@ -112,24 +118,75 @@ strategist scanned it and called the field "used". **The guard's own test
 reproduced the self-read bug the guard exists to catch.** The name is now
 assembled at runtime so the literal exists nowhere on disk.
 
+## The map now exists — 118 of 130 sets, 5,959 of the top 6,000
+
+Tyler ran the resolver. It failed first on **HTTP 400**, because I invented a
+`page` parameter for `/sets` by analogy with `/cards`; the endpoint takes
+`limit=500` flat, as every other caller in this repo already knew. The error
+carried no body, so it said nothing about which parameter was wrong. It does now.
+
+The first successful join matched **78 of 130**. Four separate naming
+disagreements were hiding the rest, each found by reading the misses:
+
+| disagreement | example | cost |
+|---|---|---|
+| separator | `SM - Cosmic Eclipse`, `EX Unseen Forces`, `SWSH08: Fusion Strike` | 19 sets |
+| ampersand | `HeartGold SoulSilver` vs our `HeartGold & SoulSilver` | — |
+| the word "set" | `Expedition` vs our `Expedition Base Set` | 3 sets |
+| diacritics | `Pokemon GO` vs our `Pokémon GO` | 1 set |
+
+And a bug of mine underneath them: the era-stripped key **collides**. `Base Set`,
+`SM Base Set` and `XY Base Set` all reduce to `"base"`; `SM Promos`, `XY Promos`
+and `HGSS Promos` all reduce to `"promos"`. Keeping the first silently discarded
+four real sets — which is exactly why `sm1` and `xy1` looked unmatchable. Fixed
+by indexing the full name alongside the stripped one.
+
+**78 → 118 of 130 sets, and 3,201 → 5,959 of the top 6,000 by value.** The 12
+still unmatched are McDonald's collections, trainer kits and Best of Game — 41
+top-6000 cards between them. No two of our slugs point at one provider id.
+
+Re-running the join used to cost a call. It no longer does: `--rejoin` re-matches
+against the stored set list, so improving the normaliser is free.
+
+### Six aliases need your eye, Tyler
+
+The promo sets follow no rule — the provider uses four conventions across five
+sets — so they are mapped by hand. **These are my reading, not a verified fact**,
+and promo sets are exactly the class of thing you have caught models getting
+wrong. Card counts are shown so they can be checked:
+
+| ours | provider | cards |
+|---|---|---|
+| `smp` SM Black Star Promos | SM Promos | 333 |
+| `swshp` SWSH Black Star Promos | SWSH: Sword & Shield Promo Cards | 343 |
+| `bwp` BW Black Star Promos | Black and White Promos | 148 |
+| `basep` Wizards Black Star Promos | WoTC Promo | 70 |
+| `dpp` DP Black Star Promos | Diamond and Pearl Promos | 66 |
+| `sv3pt5` 151 | SV: Scarlet & Violet 151 | 215 |
+
+Plus `sm1` → SM Base Set and `xy1` → XY Base Set, which are era-naming rather
+than judgement calls. Every count runs a little above the canonical English
+figure, which I read as the provider counting variants — worth a glance.
+
 ## Needs Tyler — two commands, in this order
 
-The key still is not visible to my shell (not in process env, not User scope,
-not Machine scope), so these need your hands. **Do not skip the first:**
-
-```bash
-node scripts/resolve-set-ids.mjs
-```
+The map is built, so only one command remains:
 
 ```bash
 node scripts/enrich-by-set.mjs
 ```
 
-The first is cheap and buys the map. The second now refuses to run without it.
-Expect ~17,900 credits, ~11 minutes, and — this time — the sets we asked for.
+Expect **17,943 credits across 58 sets, ~11 minutes**, reaching 3,892 of the top
+6,000 in this pass — the ceiling stops it there, and the whole 120-set plan is
+50,826 credits, about two and a half days. The four sets already on disk are
+skipped rather than re-bought.
+
 Worth checking the dashboard for the real remaining balance first: our 9,114 is
 *our* accounting of a run where 26 of 31 calls returned nothing, and I do not
 know what the provider actually charged for those.
+
+The key now lives in a gitignored `.env` rather than a Windows environment
+variable, after that mechanism silently failed to persist across three sessions.
 
 ## Roads not taken
 - Did not re-run enrichment to spend the remaining ceiling. Spending more

@@ -1,0 +1,2482 @@
+{
+ "generatedAt": "2026-08-23T01:36:04.015Z",
+ "providerSetCount": 214,
+ "matched": 118,
+ "unmatchedCount": 12,
+ "providerOnlyCount": 98,
+ "note": "pptSetId is the provider's OWN set id from /sets (an ObjectId hex string) and is what /cards?setId= accepts. It is NOT the numeric setId that appears inside card payloads — those are a different internal field. Our catalogue's pokemontcg.io slugs are honoured by neither: a request using the slug is silently ignored and billed anyway. See the 2026-08-23 report.",
+ "providerSets": [
+  {
+   "id": "696e3c9cbb2a772e0d056815",
+   "name": "Base Set",
+   "cardCount": 102
+  },
+  {
+   "id": "696e3c9dbb2a772e0d05681a",
+   "name": "Jungle",
+   "cardCount": 64
+  },
+  {
+   "id": "696e3c9dbb2a772e0d056819",
+   "name": "Fossil",
+   "cardCount": 62
+  },
+  {
+   "id": "696e3c9cbb2a772e0d056816",
+   "name": "Base Set 2",
+   "cardCount": 130
+  },
+  {
+   "id": "696e3c9dbb2a772e0d056821",
+   "name": "Team Rocket",
+   "cardCount": 83
+  },
+  {
+   "id": "696e3c9ebb2a772e0d056837",
+   "name": "Neo Genesis",
+   "cardCount": 111
+  },
+  {
+   "id": "696e3c9ebb2a772e0d056830",
+   "name": "Neo Revelation",
+   "cardCount": 66
+  },
+  {
+   "id": "696e3ca1bb2a772e0d05685f",
+   "name": "Neo Destiny",
+   "cardCount": 113
+  },
+  {
+   "id": "696e3c9ebb2a772e0d056838",
+   "name": "Aquapolis",
+   "cardCount": 186
+  },
+  {
+   "id": "696e3ca0bb2a772e0d056850",
+   "name": "POP Series 1",
+   "cardCount": 19
+  },
+  {
+   "id": "696e3ca1bb2a772e0d05685e",
+   "name": "POP Series 3",
+   "cardCount": 18
+  },
+  {
+   "id": "696e3ca1bb2a772e0d056864",
+   "name": "POP Series 4",
+   "cardCount": 17
+  },
+  {
+   "id": "696e3ca0bb2a772e0d05685b",
+   "name": "POP Series 5",
+   "cardCount": 17
+  },
+  {
+   "id": "696e3c9dbb2a772e0d056828",
+   "name": "Secret Wonders",
+   "cardCount": 132
+  },
+  {
+   "id": "696e3c9fbb2a772e0d056840",
+   "name": "Great Encounters",
+   "cardCount": 106
+  },
+  {
+   "id": "696e3c9fbb2a772e0d056849",
+   "name": "POP Series 7",
+   "cardCount": 17
+  },
+  {
+   "id": "696e3c9dbb2a772e0d05681e",
+   "name": "Stormfront",
+   "cardCount": 106
+  },
+  {
+   "id": "696e3c9dbb2a772e0d05681c",
+   "name": "Rising Rivals",
+   "cardCount": 120
+  },
+  {
+   "id": "696e3c9ebb2a772e0d05682c",
+   "name": "Supreme Victors",
+   "cardCount": 153
+  },
+  {
+   "id": "696e3c9fbb2a772e0d05684a",
+   "name": "Call of Legends",
+   "cardCount": 106
+  },
+  {
+   "id": "696e3c9ebb2a772e0d05682d",
+   "name": "Noble Victories",
+   "cardCount": 102
+  },
+  {
+   "id": "696e3c9fbb2a772e0d056847",
+   "name": "Next Destinies",
+   "cardCount": 104
+  },
+  {
+   "id": "696e3c9ebb2a772e0d05682e",
+   "name": "Dark Explorers",
+   "cardCount": 112
+  },
+  {
+   "id": "696e3c9ebb2a772e0d056835",
+   "name": "Dragons Exalted",
+   "cardCount": 129
+  },
+  {
+   "id": "696e3ca0bb2a772e0d056853",
+   "name": "Dragon Vault",
+   "cardCount": 21
+  },
+  {
+   "id": "696e3c9fbb2a772e0d056843",
+   "name": "Boundaries Crossed",
+   "cardCount": 153
+  },
+  {
+   "id": "696e3c9dbb2a772e0d05681f",
+   "name": "Plasma Blast",
+   "cardCount": 106
+  },
+  {
+   "id": "696e3ca3bb2a772e0d05687f",
+   "name": "Generations",
+   "cardCount": 101
+  },
+  {
+   "id": "696e3ca6bb2a772e0d0568b1",
+   "name": "Shining Fates: Shiny Vault",
+   "cardCount": 122
+  },
+  {
+   "id": "696e3ca6bb2a772e0d0568af",
+   "name": "SWSH05: Battle Styles",
+   "cardCount": 195
+  },
+  {
+   "id": "696e3ca6bb2a772e0d0568b5",
+   "name": "Celebrations",
+   "cardCount": 38
+  },
+  {
+   "id": "696e3ca6bb2a772e0d0568b9",
+   "name": "SWSH09: Brilliant Stars Trainer Gallery",
+   "cardCount": 30
+  },
+  {
+   "id": "696e3ca6bb2a772e0d0568bd",
+   "name": "SWSH10: Astral Radiance Trainer Gallery",
+   "cardCount": 30
+  },
+  {
+   "id": "696e3ca7bb2a772e0d0568c1",
+   "name": "SWSH12: Silver Tempest",
+   "cardCount": 224
+  },
+  {
+   "id": "696e3ca7bb2a772e0d0568c5",
+   "name": "SWSH: Crown Zenith",
+   "cardCount": 179
+  },
+  {
+   "id": "696e3ca8bb2a772e0d0568d5",
+   "name": "SV06: Twilight Masquerade",
+   "cardCount": 234
+  },
+  {
+   "id": "696e3ca8bb2a772e0d0568d8",
+   "name": "SV07: Stellar Crown",
+   "cardCount": 187
+  },
+  {
+   "id": "696e3ca8bb2a772e0d0568db",
+   "name": "SV: Prismatic Evolutions",
+   "cardCount": 355
+  },
+  {
+   "id": "696e3ca8bb2a772e0d0568dc",
+   "name": "SV09: Journey Together",
+   "cardCount": 198
+  },
+  {
+   "id": "696e3ca8bb2a772e0d0568df",
+   "name": "SV: Black Bolt",
+   "cardCount": 332
+  },
+  {
+   "id": "696e3ca9bb2a772e0d0568e1",
+   "name": "ME01: Mega Evolution",
+   "cardCount": 194
+  },
+  {
+   "id": "696e3ca9bb2a772e0d0568e3",
+   "name": "ME02: Phantasmal Flames",
+   "cardCount": 134
+  },
+  {
+   "id": "696e3ca9bb2a772e0d0568ea",
+   "name": "ME03: Perfect Order",
+   "cardCount": 131
+  },
+  {
+   "id": "69b9b10516ba1587d25ef232",
+   "name": "ME04: Chaos Rising",
+   "cardCount": 127
+  },
+  {
+   "id": "696e3ca1bb2a772e0d05685d",
+   "name": "Gym Heroes",
+   "cardCount": 132
+  },
+  {
+   "id": "696e3ca1bb2a772e0d05685c",
+   "name": "Gym Challenge",
+   "cardCount": 132
+  },
+  {
+   "id": "696e3ca0bb2a772e0d056857",
+   "name": "Diamond and Pearl",
+   "cardCount": 130
+  },
+  {
+   "id": "696e3ca0bb2a772e0d056858",
+   "name": "POP Series 6",
+   "cardCount": 18
+  },
+  {
+   "id": "696e3c9fbb2a772e0d05684c",
+   "name": "Legends Awakened",
+   "cardCount": 146
+  },
+  {
+   "id": "696e3ca1bb2a772e0d056862",
+   "name": "POP Series 8",
+   "cardCount": 18
+  },
+  {
+   "id": "696e3ca1bb2a772e0d056860",
+   "name": "POP Series 9",
+   "cardCount": 18
+  },
+  {
+   "id": "696e3c9fbb2a772e0d056848",
+   "name": "Plasma Storm",
+   "cardCount": 138
+  },
+  {
+   "id": "696e3ca4bb2a772e0d05689a",
+   "name": "Dragon Majesty",
+   "cardCount": 80
+  },
+  {
+   "id": "696e3ca5bb2a772e0d0568a3",
+   "name": "Hidden Fates",
+   "cardCount": 77
+  },
+  {
+   "id": "696e3ca5bb2a772e0d0568a8",
+   "name": "Hidden Fates: Shiny Vault",
+   "cardCount": 94
+  },
+  {
+   "id": "696e3ca5bb2a772e0d0568a9",
+   "name": "SWSH02: Rebel Clash",
+   "cardCount": 213
+  },
+  {
+   "id": "696e3ca5bb2a772e0d0568aa",
+   "name": "SWSH03: Darkness Ablaze",
+   "cardCount": 206
+  },
+  {
+   "id": "696e3ca6bb2a772e0d0568b8",
+   "name": "SWSH09: Brilliant Stars",
+   "cardCount": 205
+  },
+  {
+   "id": "696e3ca6bb2a772e0d0568ba",
+   "name": "SWSH10: Astral Radiance",
+   "cardCount": 225
+  },
+  {
+   "id": "696e3ca7bb2a772e0d0568bf",
+   "name": "SWSH11: Lost Origin",
+   "cardCount": 228
+  },
+  {
+   "id": "696e3ca7bb2a772e0d0568c2",
+   "name": "SWSH11: Lost Origin Trainer Gallery",
+   "cardCount": 30
+  },
+  {
+   "id": "696e3ca7bb2a772e0d0568c4",
+   "name": "SWSH12: Silver Tempest Trainer Gallery",
+   "cardCount": 30
+  },
+  {
+   "id": "696e3ca7bb2a772e0d0568c6",
+   "name": "SWSH: Crown Zenith: Galarian Gallery",
+   "cardCount": 70
+  },
+  {
+   "id": "696e3ca9bb2a772e0d0568e2",
+   "name": "SVE: Scarlet & Violet Energies",
+   "cardCount": 40
+  },
+  {
+   "id": "696e3ca7bb2a772e0d0568cc",
+   "name": "SV03: Obsidian Flames",
+   "cardCount": 237
+  },
+  {
+   "id": "696e3ca8bb2a772e0d0568d3",
+   "name": "SV: Paldean Fates",
+   "cardCount": 256
+  },
+  {
+   "id": "696e3ca8bb2a772e0d0568d7",
+   "name": "SV: Shrouded Fable",
+   "cardCount": 114
+  },
+  {
+   "id": "696e3ca8bb2a772e0d0568da",
+   "name": "SV08: Surging Sparks",
+   "cardCount": 261
+  },
+  {
+   "id": "696e3ca8bb2a772e0d0568e0",
+   "name": "SV: White Flare",
+   "cardCount": 329
+  },
+  {
+   "id": "696e3ca9bb2a772e0d0568e8",
+   "name": "ME: Ascended Heroes",
+   "cardCount": 580
+  },
+  {
+   "id": "696e3ca6bb2a772e0d0568b4",
+   "name": "SWSH07: Evolving Skies",
+   "cardCount": 247
+  },
+  {
+   "id": "696e3ca8bb2a772e0d0568de",
+   "name": "SV10: Destined Rivals",
+   "cardCount": 255
+  },
+  {
+   "id": "696e3ca3bb2a772e0d05688c",
+   "name": "Shining Legends",
+   "cardCount": 84
+  },
+  {
+   "id": "696e3ca8bb2a772e0d0568d4",
+   "name": "SV05: Temporal Forces",
+   "cardCount": 228
+  },
+  {
+   "id": "696e3ca7bb2a772e0d0568cb",
+   "name": "SV02: Paldea Evolved",
+   "cardCount": 287
+  },
+  {
+   "id": "696e3ca6bb2a772e0d0568b3",
+   "name": "SWSH06: Chilling Reign",
+   "cardCount": 242
+  },
+  {
+   "id": "696e3ca7bb2a772e0d0568cf",
+   "name": "SV04: Paradox Rift",
+   "cardCount": 272
+  },
+  {
+   "id": "696e3ca5bb2a772e0d0568ad",
+   "name": "SWSH04: Vivid Voltage",
+   "cardCount": 213
+  },
+  {
+   "id": "6a883dd245dd2d15c8a710d0",
+   "name": "ME06: Delta Reign",
+   "cardCount": 0
+  },
+  {
+   "id": "6a23994ceef6d8fe7e225ca5",
+   "name": "ME: 30th Celebration",
+   "cardCount": 19
+  },
+  {
+   "id": "69f562ee6222edcca357f0fc",
+   "name": "ME05: Pitch Black",
+   "cardCount": 124
+  },
+  {
+   "id": "696e3ca9bb2a772e0d0568e9",
+   "name": "First Partner Collection 2026",
+   "cardCount": 3
+  },
+  {
+   "id": "696e3ca9bb2a772e0d0568e7",
+   "name": "Player Placement Trainer Promos",
+   "cardCount": 0
+  },
+  {
+   "id": "696e3ca9bb2a772e0d0568e4",
+   "name": "ME: Mega Evolution Promo",
+   "cardCount": 119
+  },
+  {
+   "id": "696e3ca9bb2a772e0d0568e5",
+   "name": "MEE: Mega Evolution Energies",
+   "cardCount": 8
+  },
+  {
+   "id": "696e3ca8bb2a772e0d0568dd",
+   "name": "McDonald's Promos 2024",
+   "cardCount": 15
+  },
+  {
+   "id": "696e3ca8bb2a772e0d0568d9",
+   "name": "Trick or Trade BOOster Bundle 2024",
+   "cardCount": 30
+  },
+  {
+   "id": "696e3ca8bb2a772e0d0568d6",
+   "name": "Battle Academy 2024",
+   "cardCount": 139
+  },
+  {
+   "id": "696e3ca8bb2a772e0d0568d1",
+   "name": "Trading Card Game Classic",
+   "cardCount": 102
+  },
+  {
+   "id": "696e3ca8bb2a772e0d0568d2",
+   "name": "My First Battle",
+   "cardCount": 48
+  },
+  {
+   "id": "696e3ca7bb2a772e0d0568cd",
+   "name": "SV: Scarlet & Violet 151",
+   "cardCount": 215
+  },
+  {
+   "id": "696e3ca8bb2a772e0d0568d0",
+   "name": "McDonald's Promos 2023",
+   "cardCount": 15
+  },
+  {
+   "id": "696e3ca7bb2a772e0d0568ce",
+   "name": "Trick or Trade BOOster Bundle 2023",
+   "cardCount": 30
+  },
+  {
+   "id": "696e3ca7bb2a772e0d0568c7",
+   "name": "SV: Scarlet & Violet Promo Cards",
+   "cardCount": 283
+  },
+  {
+   "id": "696e3ca7bb2a772e0d0568c8",
+   "name": "SV01: Scarlet & Violet Base Set",
+   "cardCount": 270
+  },
+  {
+   "id": "696e3ca7bb2a772e0d0568c9",
+   "name": "Prize Pack Series Cards",
+   "cardCount": 883
+  },
+  {
+   "id": "696e3ca7bb2a772e0d0568c3",
+   "name": "Trick or Trade BOOster Bundle",
+   "cardCount": 30
+  },
+  {
+   "id": "696e3ca7bb2a772e0d0568c0",
+   "name": "McDonald's Promos 2022",
+   "cardCount": 15
+  },
+  {
+   "id": "696e3ca6bb2a772e0d0568bc",
+   "name": "Pokemon GO",
+   "cardCount": 108
+  },
+  {
+   "id": "696e3ca6bb2a772e0d0568bb",
+   "name": "Battle Academy 2022",
+   "cardCount": 138
+  },
+  {
+   "id": "696e3ca6bb2a772e0d0568b6",
+   "name": "SWSH08: Fusion Strike",
+   "cardCount": 292
+  },
+  {
+   "id": "696e3ca6bb2a772e0d0568b7",
+   "name": "Celebrations: Classic Collection",
+   "cardCount": 25
+  },
+  {
+   "id": "696e3ca5bb2a772e0d0568ae",
+   "name": "Shining Fates",
+   "cardCount": 85
+  },
+  {
+   "id": "696e3ca6bb2a772e0d0568b2",
+   "name": "McDonald's 25th Anniversary Promos",
+   "cardCount": 25
+  },
+  {
+   "id": "696e3ca5bb2a772e0d0568ab",
+   "name": "Champion's Path",
+   "cardCount": 87
+  },
+  {
+   "id": "696e3ca5bb2a772e0d0568ac",
+   "name": "Battle Academy",
+   "cardCount": 139
+  },
+  {
+   "id": "696e3ca5bb2a772e0d0568a7",
+   "name": "SWSH01: Sword & Shield Base Set",
+   "cardCount": 232
+  },
+  {
+   "id": "696e3ca5bb2a772e0d0568a5",
+   "name": "SWSH: Sword & Shield Promo Cards",
+   "cardCount": 343
+  },
+  {
+   "id": "696e3ca5bb2a772e0d0568a4",
+   "name": "SM - Cosmic Eclipse",
+   "cardCount": 274
+  },
+  {
+   "id": "696e3ca5bb2a772e0d0568a6",
+   "name": "McDonald's Promos 2019",
+   "cardCount": 12
+  },
+  {
+   "id": "696e3ca5bb2a772e0d0568a2",
+   "name": "SM - Unified Minds",
+   "cardCount": 265
+  },
+  {
+   "id": "696e3ca5bb2a772e0d0568a1",
+   "name": "SM - Unbroken Bonds",
+   "cardCount": 240
+  },
+  {
+   "id": "696e3ca5bb2a772e0d0568a0",
+   "name": "Detective Pikachu",
+   "cardCount": 20
+  },
+  {
+   "id": "696e3ca5bb2a772e0d05689f",
+   "name": "SM - Team Up",
+   "cardCount": 210
+  },
+  {
+   "id": "696e3ca4bb2a772e0d05689b",
+   "name": "SM - Lost Thunder",
+   "cardCount": 239
+  },
+  {
+   "id": "696e3ca4bb2a772e0d05689d",
+   "name": "McDonald's Promos 2018",
+   "cardCount": 12
+  },
+  {
+   "id": "696e3ca4bb2a772e0d056897",
+   "name": "SM - Celestial Storm",
+   "cardCount": 185
+  },
+  {
+   "id": "696e3ca4bb2a772e0d056898",
+   "name": "World Championship Decks",
+   "cardCount": 1944
+  },
+  {
+   "id": "696e3ca4bb2a772e0d056895",
+   "name": "SM - Forbidden Light",
+   "cardCount": 149
+  },
+  {
+   "id": "696e3ca4bb2a772e0d056894",
+   "name": "SM Trainer Kit: Alolan Sandslash & Alolan Ninetales",
+   "cardCount": 60
+  },
+  {
+   "id": "696e3ca4bb2a772e0d056892",
+   "name": "SM - Ultra Prism",
+   "cardCount": 176
+  },
+  {
+   "id": "696e3ca4bb2a772e0d05688f",
+   "name": "McDonald's Promos 2017",
+   "cardCount": 12
+  },
+  {
+   "id": "696e3ca4bb2a772e0d05688e",
+   "name": "SM - Crimson Invasion",
+   "cardCount": 128
+  },
+  {
+   "id": "696e3ca3bb2a772e0d05688b",
+   "name": "SM - Burning Shadows",
+   "cardCount": 176
+  },
+  {
+   "id": "696e3ca3bb2a772e0d056889",
+   "name": "SM - Guardians Rising",
+   "cardCount": 177
+  },
+  {
+   "id": "696e3ca3bb2a772e0d05688d",
+   "name": "SM Trainer Kit: Lycanroc & Alolan Raichu",
+   "cardCount": 60
+  },
+  {
+   "id": "696e3ca7bb2a772e0d0568ca",
+   "name": "Ash vs Team Rocket Deck Kit (JP Exclusive)",
+   "cardCount": 2
+  },
+  {
+   "id": "696e3ca3bb2a772e0d056888",
+   "name": "SM Base Set",
+   "cardCount": 175
+  },
+  {
+   "id": "696e3ca3bb2a772e0d056887",
+   "name": "SM Promos",
+   "cardCount": 333
+  },
+  {
+   "id": "696e3ca3bb2a772e0d056885",
+   "name": "XY - Evolutions",
+   "cardCount": 127
+  },
+  {
+   "id": "696e3ca3bb2a772e0d056884",
+   "name": "Deck Exclusives",
+   "cardCount": 508
+  },
+  {
+   "id": "696e3ca6bb2a772e0d0568be",
+   "name": "McDonald's Promos 2016",
+   "cardCount": 12
+  },
+  {
+   "id": "696e3ca3bb2a772e0d056883",
+   "name": "XY - Steam Siege",
+   "cardCount": 118
+  },
+  {
+   "id": "696e3ca2bb2a772e0d056874",
+   "name": "League & Championship Cards",
+   "cardCount": 624
+  },
+  {
+   "id": "696e3ca3bb2a772e0d056881",
+   "name": "XY - Fates Collide",
+   "cardCount": 126
+  },
+  {
+   "id": "696e3ca3bb2a772e0d056882",
+   "name": "XY Trainer Kit: Pikachu Libre & Suicune",
+   "cardCount": 61
+  },
+  {
+   "id": "696e3ca3bb2a772e0d056880",
+   "name": "Generations: Radiant Collection",
+   "cardCount": 32
+  },
+  {
+   "id": "696e3ca3bb2a772e0d05687e",
+   "name": "XY - BREAKpoint",
+   "cardCount": 124
+  },
+  {
+   "id": "696e3ca3bb2a772e0d05687d",
+   "name": "McDonald's Promos 2015",
+   "cardCount": 12
+  },
+  {
+   "id": "696e3ca2bb2a772e0d05687a",
+   "name": "XY - BREAKthrough",
+   "cardCount": 167
+  },
+  {
+   "id": "696e3ca2bb2a772e0d056879",
+   "name": "XY - Ancient Origins",
+   "cardCount": 105
+  },
+  {
+   "id": "696e3ca2bb2a772e0d056871",
+   "name": "XY - Roaring Skies",
+   "cardCount": 112
+  },
+  {
+   "id": "696e3ca2bb2a772e0d056872",
+   "name": "XY Trainer Kit: Latias & Latios",
+   "cardCount": 61
+  },
+  {
+   "id": "696e3ca2bb2a772e0d05686e",
+   "name": "Jumbo Cards",
+   "cardCount": 342
+  },
+  {
+   "id": "696e3ca2bb2a772e0d05686d",
+   "name": "Double Crisis",
+   "cardCount": 34
+  },
+  {
+   "id": "696e3ca1bb2a772e0d05686b",
+   "name": "XY - Primal Clash",
+   "cardCount": 168
+  },
+  {
+   "id": "696e3ca2bb2a772e0d056870",
+   "name": "XY Trainer Kit: Bisharp & Wigglytuff",
+   "cardCount": 60
+  },
+  {
+   "id": "696e3ca1bb2a772e0d05686a",
+   "name": "XY - Phantom Forces",
+   "cardCount": 126
+  },
+  {
+   "id": "696e3ca1bb2a772e0d056869",
+   "name": "XY - Furious Fists",
+   "cardCount": 114
+  },
+  {
+   "id": "696e3ca2bb2a772e0d05687c",
+   "name": "McDonald's Promos 2014",
+   "cardCount": 12
+  },
+  {
+   "id": "696e3ca1bb2a772e0d056867",
+   "name": "XY - Flashfire",
+   "cardCount": 111
+  },
+  {
+   "id": "696e3ca2bb2a772e0d05686f",
+   "name": "XY Trainer Kit: Sylveon & Noivern",
+   "cardCount": 60
+  },
+  {
+   "id": "696e3c9ebb2a772e0d05682f",
+   "name": "XY Base Set",
+   "cardCount": 149
+  },
+  {
+   "id": "696e3ca1bb2a772e0d056863",
+   "name": "XY Promos",
+   "cardCount": 269
+  },
+  {
+   "id": "696e3ca1bb2a772e0d05686c",
+   "name": "Kalos Starter Set",
+   "cardCount": 44
+  },
+  {
+   "id": "696e3c9fbb2a772e0d056844",
+   "name": "Legendary Treasures",
+   "cardCount": 116
+  },
+  {
+   "id": "696e3ca1bb2a772e0d056868",
+   "name": "Legendary Treasures: Radiant Collection",
+   "cardCount": 25
+  },
+  {
+   "id": "696e3c9ebb2a772e0d05682a",
+   "name": "Plasma Freeze",
+   "cardCount": 123
+  },
+  {
+   "id": "696e3ca0bb2a772e0d056854",
+   "name": "McDonald's Promos 2012",
+   "cardCount": 12
+  },
+  {
+   "id": "696e3ca2bb2a772e0d056873",
+   "name": "BW Trainer Kit: Excadrill & Zoroark",
+   "cardCount": 60
+  },
+  {
+   "id": "696e3ca0bb2a772e0d056852",
+   "name": "Emerging Powers",
+   "cardCount": 99
+  },
+  {
+   "id": "696e3c9fbb2a772e0d05683c",
+   "name": "McDonald's Promos 2011",
+   "cardCount": 12
+  },
+  {
+   "id": "696e3c9ebb2a772e0d05683b",
+   "name": "Black and White",
+   "cardCount": 115
+  },
+  {
+   "id": "696e3c9fbb2a772e0d056842",
+   "name": "Black and White Promos",
+   "cardCount": 148
+  },
+  {
+   "id": "696e3c9ebb2a772e0d056829",
+   "name": "Triumphant",
+   "cardCount": 104
+  },
+  {
+   "id": "696e3c9fbb2a772e0d05683e",
+   "name": "Undaunted",
+   "cardCount": 91
+  },
+  {
+   "id": "696e3c9ebb2a772e0d05683a",
+   "name": "Unleashed",
+   "cardCount": 96
+  },
+  {
+   "id": "696e3ca2bb2a772e0d056875",
+   "name": "HGSS Trainer Kit: Gyarados & Raichu",
+   "cardCount": 60
+  },
+  {
+   "id": "696e3c9fbb2a772e0d05683d",
+   "name": "HeartGold SoulSilver",
+   "cardCount": 124
+  },
+  {
+   "id": "696e3ca1bb2a772e0d056865",
+   "name": "HGSS Promos",
+   "cardCount": 38
+  },
+  {
+   "id": "696e3ca0bb2a772e0d056859",
+   "name": "Rumble",
+   "cardCount": 16
+  },
+  {
+   "id": "696e3c9ebb2a772e0d056832",
+   "name": "Arceus",
+   "cardCount": 111
+  },
+  {
+   "id": "696e3c9fbb2a772e0d056841",
+   "name": "Platinum",
+   "cardCount": 133
+  },
+  {
+   "id": "696e3ca4bb2a772e0d056890",
+   "name": "Countdown Calendar Promos",
+   "cardCount": 24
+  },
+  {
+   "id": "696e3c9ebb2a772e0d056831",
+   "name": "Majestic Dawn",
+   "cardCount": 100
+  },
+  {
+   "id": "696e3c9dbb2a772e0d056817",
+   "name": "DP Training Kit 1 Blue",
+   "cardCount": 0
+  },
+  {
+   "id": "696e3c9dbb2a772e0d056818",
+   "name": "DP Training Kit 1 Gold",
+   "cardCount": 0
+  },
+  {
+   "id": "696e3ca2bb2a772e0d056876",
+   "name": "DP Trainer Kit: Manaphy & Lucario",
+   "cardCount": 23
+  },
+  {
+   "id": "696e3c9dbb2a772e0d05681d",
+   "name": "Mysterious Treasures",
+   "cardCount": 124
+  },
+  {
+   "id": "696e3ca0bb2a772e0d05684f",
+   "name": "Diamond and Pearl Promos",
+   "cardCount": 66
+  },
+  {
+   "id": "696e3c9ebb2a772e0d05682b",
+   "name": "EX Power Keepers",
+   "cardCount": 108
+  },
+  {
+   "id": "696e3c9fbb2a772e0d056846",
+   "name": "EX Dragon Frontiers",
+   "cardCount": 101
+  },
+  {
+   "id": "696e3c9ebb2a772e0d056836",
+   "name": "EX Crystal Guardians",
+   "cardCount": 101
+  },
+  {
+   "id": "696e3c9dbb2a772e0d056827",
+   "name": "EX Holon Phantoms",
+   "cardCount": 111
+  },
+  {
+   "id": "696e3c9dbb2a772e0d056826",
+   "name": "EX Legend Maker",
+   "cardCount": 93
+  },
+  {
+   "id": "696e3ca0bb2a772e0d056856",
+   "name": "EX Delta Species",
+   "cardCount": 114
+  },
+  {
+   "id": "696e3c9ebb2a772e0d056839",
+   "name": "EX Unseen Forces",
+   "cardCount": 145
+  },
+  {
+   "id": "696e3c9fbb2a772e0d056845",
+   "name": "EX Emerald",
+   "cardCount": 107
+  },
+  {
+   "id": "696e3c9fbb2a772e0d05683f",
+   "name": "EX Deoxys",
+   "cardCount": 108
+  },
+  {
+   "id": "696e3ca0bb2a772e0d056855",
+   "name": "EX Team Rocket Returns",
+   "cardCount": 111
+  },
+  {
+   "id": "696e3ca3bb2a772e0d056886",
+   "name": "EX Battle Stadium",
+   "cardCount": 49
+  },
+  {
+   "id": "696e3ca0bb2a772e0d05684e",
+   "name": "EX FireRed & LeafGreen",
+   "cardCount": 116
+  },
+  {
+   "id": "696e3ca4bb2a772e0d056896",
+   "name": "Kids WB Promos",
+   "cardCount": 5
+  },
+  {
+   "id": "696e3c9fbb2a772e0d05684b",
+   "name": "EX Hidden Legends",
+   "cardCount": 102
+  },
+  {
+   "id": "696e3c9dbb2a772e0d056825",
+   "name": "EX Team Magma vs Team Aqua",
+   "cardCount": 97
+  },
+  {
+   "id": "696e3c9dbb2a772e0d056824",
+   "name": "EX Dragon",
+   "cardCount": 100
+  },
+  {
+   "id": "696e3c9ebb2a772e0d056833",
+   "name": "EX Sandstorm",
+   "cardCount": 100
+  },
+  {
+   "id": "696e3c9ebb2a772e0d056834",
+   "name": "EX Ruby and Sapphire",
+   "cardCount": 109
+  },
+  {
+   "id": "696e3c9dbb2a772e0d056820",
+   "name": "Skyridge",
+   "cardCount": 183
+  },
+  {
+   "id": "696e3ca1bb2a772e0d056866",
+   "name": "Best of Promos",
+   "cardCount": 15
+  },
+  {
+   "id": "696e3c9dbb2a772e0d056823",
+   "name": "Expedition",
+   "cardCount": 165
+  },
+  {
+   "id": "696e3ca9bb2a772e0d0568e6",
+   "name": "e-Reader Sample Cards",
+   "cardCount": 1
+  },
+  {
+   "id": "696e3c9dbb2a772e0d056822",
+   "name": "Legendary Collection",
+   "cardCount": 110
+  },
+  {
+   "id": "696e3c9dbb2a772e0d05681b",
+   "name": "Southern Islands",
+   "cardCount": 18
+  },
+  {
+   "id": "696e3ca0bb2a772e0d05685a",
+   "name": "Neo Discovery",
+   "cardCount": 75
+  },
+  {
+   "id": "696e3c9fbb2a772e0d05684d",
+   "name": "WoTC Promo",
+   "cardCount": 70
+  },
+  {
+   "id": "696e3ca2bb2a772e0d05687b",
+   "name": "Base Set (Shadowless)",
+   "cardCount": 102
+  },
+  {
+   "id": "696e3ca0bb2a772e0d056851",
+   "name": "Nintendo Promos",
+   "cardCount": 95
+  },
+  {
+   "id": "696e3ca1bb2a772e0d056861",
+   "name": "POP Series 2",
+   "cardCount": 18
+  },
+  {
+   "id": "696e3ca2bb2a772e0d056877",
+   "name": "EX Trainer Kit 2: Plusle & Minun",
+   "cardCount": 24
+  },
+  {
+   "id": "696e3ca2bb2a772e0d056878",
+   "name": "EX Trainer Kit 1: Latias & Latios",
+   "cardCount": 20
+  },
+  {
+   "id": "696e3ca3bb2a772e0d05688a",
+   "name": "Alternate Art Promos",
+   "cardCount": 56
+  },
+  {
+   "id": "696e3ca4bb2a772e0d056891",
+   "name": "Burger King Promos",
+   "cardCount": 24
+  },
+  {
+   "id": "696e3ca4bb2a772e0d056893",
+   "name": "Pikachu World Collection Promos",
+   "cardCount": 19
+  },
+  {
+   "id": "696e3ca4bb2a772e0d056899",
+   "name": "Blister Exclusives",
+   "cardCount": 140
+  },
+  {
+   "id": "696e3ca4bb2a772e0d05689c",
+   "name": "Professor Program Promos",
+   "cardCount": 57
+  },
+  {
+   "id": "696e3ca5bb2a772e0d05689e",
+   "name": "Miscellaneous Cards & Products",
+   "cardCount": 790
+  },
+  {
+   "id": "696e3ca6bb2a772e0d0568b0",
+   "name": "First Partner Pack",
+   "cardCount": 24
+  }
+ ],
+ "bySlug": {
+  "base1": {
+   "pptSetId": "696e3c9cbb2a772e0d056815",
+   "pptName": "Base Set",
+   "ourName": "Base",
+   "cardCount": 102,
+   "matchedBy": "name"
+  },
+  "base2": {
+   "pptSetId": "696e3c9dbb2a772e0d05681a",
+   "pptName": "Jungle",
+   "ourName": "Jungle",
+   "cardCount": 64,
+   "matchedBy": "name"
+  },
+  "basep": {
+   "pptSetId": "696e3c9fbb2a772e0d05684d",
+   "pptName": "WoTC Promo",
+   "ourName": "Wizards Black Star Promos",
+   "cardCount": 70,
+   "matchedBy": "alias"
+  },
+  "base3": {
+   "pptSetId": "696e3c9dbb2a772e0d056819",
+   "pptName": "Fossil",
+   "ourName": "Fossil",
+   "cardCount": 62,
+   "matchedBy": "name"
+  },
+  "base4": {
+   "pptSetId": "696e3c9cbb2a772e0d056816",
+   "pptName": "Base Set 2",
+   "ourName": "Base Set 2",
+   "cardCount": 130,
+   "matchedBy": "name"
+  },
+  "base5": {
+   "pptSetId": "696e3c9dbb2a772e0d056821",
+   "pptName": "Team Rocket",
+   "ourName": "Team Rocket",
+   "cardCount": 83,
+   "matchedBy": "name"
+  },
+  "neo1": {
+   "pptSetId": "696e3c9ebb2a772e0d056837",
+   "pptName": "Neo Genesis",
+   "ourName": "Neo Genesis",
+   "cardCount": 111,
+   "matchedBy": "name"
+  },
+  "neo3": {
+   "pptSetId": "696e3c9ebb2a772e0d056830",
+   "pptName": "Neo Revelation",
+   "ourName": "Neo Revelation",
+   "cardCount": 66,
+   "matchedBy": "name"
+  },
+  "neo4": {
+   "pptSetId": "696e3ca1bb2a772e0d05685f",
+   "pptName": "Neo Destiny",
+   "ourName": "Neo Destiny",
+   "cardCount": 113,
+   "matchedBy": "name"
+  },
+  "ecard2": {
+   "pptSetId": "696e3c9ebb2a772e0d056838",
+   "pptName": "Aquapolis",
+   "ourName": "Aquapolis",
+   "cardCount": 186,
+   "matchedBy": "name"
+  },
+  "ex2": {
+   "pptSetId": "696e3c9ebb2a772e0d056833",
+   "pptName": "EX Sandstorm",
+   "ourName": "Sandstorm",
+   "cardCount": 100,
+   "matchedBy": "name"
+  },
+  "pop1": {
+   "pptSetId": "696e3ca0bb2a772e0d056850",
+   "pptName": "POP Series 1",
+   "ourName": "POP Series 1",
+   "cardCount": 19,
+   "matchedBy": "name"
+  },
+  "ex8": {
+   "pptSetId": "696e3c9fbb2a772e0d05683f",
+   "pptName": "EX Deoxys",
+   "ourName": "Deoxys",
+   "cardCount": 108,
+   "matchedBy": "name"
+  },
+  "ex11": {
+   "pptSetId": "696e3ca0bb2a772e0d056856",
+   "pptName": "EX Delta Species",
+   "ourName": "Delta Species",
+   "cardCount": 114,
+   "matchedBy": "name"
+  },
+  "pop3": {
+   "pptSetId": "696e3ca1bb2a772e0d05685e",
+   "pptName": "POP Series 3",
+   "ourName": "POP Series 3",
+   "cardCount": 18,
+   "matchedBy": "name"
+  },
+  "ex13": {
+   "pptSetId": "696e3c9dbb2a772e0d056827",
+   "pptName": "EX Holon Phantoms",
+   "ourName": "Holon Phantoms",
+   "cardCount": 111,
+   "matchedBy": "name"
+  },
+  "pop4": {
+   "pptSetId": "696e3ca1bb2a772e0d056864",
+   "pptName": "POP Series 4",
+   "ourName": "POP Series 4",
+   "cardCount": 17,
+   "matchedBy": "name"
+  },
+  "pop5": {
+   "pptSetId": "696e3ca0bb2a772e0d05685b",
+   "pptName": "POP Series 5",
+   "ourName": "POP Series 5",
+   "cardCount": 17,
+   "matchedBy": "name"
+  },
+  "ex16": {
+   "pptSetId": "696e3c9ebb2a772e0d05682b",
+   "pptName": "EX Power Keepers",
+   "ourName": "Power Keepers",
+   "cardCount": 108,
+   "matchedBy": "name"
+  },
+  "dp3": {
+   "pptSetId": "696e3c9dbb2a772e0d056828",
+   "pptName": "Secret Wonders",
+   "ourName": "Secret Wonders",
+   "cardCount": 132,
+   "matchedBy": "name"
+  },
+  "dp4": {
+   "pptSetId": "696e3c9fbb2a772e0d056840",
+   "pptName": "Great Encounters",
+   "ourName": "Great Encounters",
+   "cardCount": 106,
+   "matchedBy": "name"
+  },
+  "pop7": {
+   "pptSetId": "696e3c9fbb2a772e0d056849",
+   "pptName": "POP Series 7",
+   "ourName": "POP Series 7",
+   "cardCount": 17,
+   "matchedBy": "name"
+  },
+  "dp7": {
+   "pptSetId": "696e3c9dbb2a772e0d05681e",
+   "pptName": "Stormfront",
+   "ourName": "Stormfront",
+   "cardCount": 106,
+   "matchedBy": "name"
+  },
+  "pl2": {
+   "pptSetId": "696e3c9dbb2a772e0d05681c",
+   "pptName": "Rising Rivals",
+   "ourName": "Rising Rivals",
+   "cardCount": 120,
+   "matchedBy": "name"
+  },
+  "pl3": {
+   "pptSetId": "696e3c9ebb2a772e0d05682c",
+   "pptName": "Supreme Victors",
+   "ourName": "Supreme Victors",
+   "cardCount": 153,
+   "matchedBy": "name"
+  },
+  "hgss1": {
+   "pptSetId": "696e3c9fbb2a772e0d05683d",
+   "pptName": "HeartGold SoulSilver",
+   "ourName": "HeartGold & SoulSilver",
+   "cardCount": 124,
+   "matchedBy": "name"
+  },
+  "hgss2": {
+   "pptSetId": "696e3c9ebb2a772e0d05683a",
+   "pptName": "Unleashed",
+   "ourName": "HS—Unleashed",
+   "cardCount": 96,
+   "matchedBy": "name"
+  },
+  "hgss3": {
+   "pptSetId": "696e3c9fbb2a772e0d05683e",
+   "pptName": "Undaunted",
+   "ourName": "HS—Undaunted",
+   "cardCount": 91,
+   "matchedBy": "name"
+  },
+  "col1": {
+   "pptSetId": "696e3c9fbb2a772e0d05684a",
+   "pptName": "Call of Legends",
+   "ourName": "Call of Legends",
+   "cardCount": 106,
+   "matchedBy": "name"
+  },
+  "bw3": {
+   "pptSetId": "696e3c9ebb2a772e0d05682d",
+   "pptName": "Noble Victories",
+   "ourName": "Noble Victories",
+   "cardCount": 102,
+   "matchedBy": "name"
+  },
+  "bw4": {
+   "pptSetId": "696e3c9fbb2a772e0d056847",
+   "pptName": "Next Destinies",
+   "ourName": "Next Destinies",
+   "cardCount": 104,
+   "matchedBy": "name"
+  },
+  "bw5": {
+   "pptSetId": "696e3c9ebb2a772e0d05682e",
+   "pptName": "Dark Explorers",
+   "ourName": "Dark Explorers",
+   "cardCount": 112,
+   "matchedBy": "name"
+  },
+  "bw6": {
+   "pptSetId": "696e3c9ebb2a772e0d056835",
+   "pptName": "Dragons Exalted",
+   "ourName": "Dragons Exalted",
+   "cardCount": 129,
+   "matchedBy": "name"
+  },
+  "dv1": {
+   "pptSetId": "696e3ca0bb2a772e0d056853",
+   "pptName": "Dragon Vault",
+   "ourName": "Dragon Vault",
+   "cardCount": 21,
+   "matchedBy": "name"
+  },
+  "bw7": {
+   "pptSetId": "696e3c9fbb2a772e0d056843",
+   "pptName": "Boundaries Crossed",
+   "ourName": "Boundaries Crossed",
+   "cardCount": 153,
+   "matchedBy": "name"
+  },
+  "bw10": {
+   "pptSetId": "696e3c9dbb2a772e0d05681f",
+   "pptName": "Plasma Blast",
+   "ourName": "Plasma Blast",
+   "cardCount": 106,
+   "matchedBy": "name"
+  },
+  "xy1": {
+   "pptSetId": "696e3c9ebb2a772e0d05682f",
+   "pptName": "XY Base Set",
+   "ourName": "XY",
+   "cardCount": 149,
+   "matchedBy": "alias"
+  },
+  "xy2": {
+   "pptSetId": "696e3ca1bb2a772e0d056867",
+   "pptName": "XY - Flashfire",
+   "ourName": "Flashfire",
+   "cardCount": 111,
+   "matchedBy": "name"
+  },
+  "xy4": {
+   "pptSetId": "696e3ca1bb2a772e0d05686a",
+   "pptName": "XY - Phantom Forces",
+   "ourName": "Phantom Forces",
+   "cardCount": 126,
+   "matchedBy": "name"
+  },
+  "xy5": {
+   "pptSetId": "696e3ca1bb2a772e0d05686b",
+   "pptName": "XY - Primal Clash",
+   "ourName": "Primal Clash",
+   "cardCount": 168,
+   "matchedBy": "name"
+  },
+  "xy8": {
+   "pptSetId": "696e3ca2bb2a772e0d05687a",
+   "pptName": "XY - BREAKthrough",
+   "ourName": "BREAKthrough",
+   "cardCount": 167,
+   "matchedBy": "name"
+  },
+  "xy9": {
+   "pptSetId": "696e3ca3bb2a772e0d05687e",
+   "pptName": "XY - BREAKpoint",
+   "ourName": "BREAKpoint",
+   "cardCount": 124,
+   "matchedBy": "name"
+  },
+  "g1": {
+   "pptSetId": "696e3ca3bb2a772e0d05687f",
+   "pptName": "Generations",
+   "ourName": "Generations",
+   "cardCount": 101,
+   "matchedBy": "name"
+  },
+  "xy11": {
+   "pptSetId": "696e3ca3bb2a772e0d056883",
+   "pptName": "XY - Steam Siege",
+   "ourName": "Steam Siege",
+   "cardCount": 118,
+   "matchedBy": "name"
+  },
+  "sm2": {
+   "pptSetId": "696e3ca3bb2a772e0d056889",
+   "pptName": "SM - Guardians Rising",
+   "ourName": "Guardians Rising",
+   "cardCount": 177,
+   "matchedBy": "name"
+  },
+  "sm3": {
+   "pptSetId": "696e3ca3bb2a772e0d05688b",
+   "pptName": "SM - Burning Shadows",
+   "ourName": "Burning Shadows",
+   "cardCount": 176,
+   "matchedBy": "name"
+  },
+  "sm5": {
+   "pptSetId": "696e3ca4bb2a772e0d056892",
+   "pptName": "SM - Ultra Prism",
+   "ourName": "Ultra Prism",
+   "cardCount": 176,
+   "matchedBy": "name"
+  },
+  "sm7": {
+   "pptSetId": "696e3ca4bb2a772e0d056897",
+   "pptName": "SM - Celestial Storm",
+   "ourName": "Celestial Storm",
+   "cardCount": 185,
+   "matchedBy": "name"
+  },
+  "sm8": {
+   "pptSetId": "696e3ca4bb2a772e0d05689b",
+   "pptName": "SM - Lost Thunder",
+   "ourName": "Lost Thunder",
+   "cardCount": 239,
+   "matchedBy": "name"
+  },
+  "sm9": {
+   "pptSetId": "696e3ca5bb2a772e0d05689f",
+   "pptName": "SM - Team Up",
+   "ourName": "Team Up",
+   "cardCount": 210,
+   "matchedBy": "name"
+  },
+  "sm10": {
+   "pptSetId": "696e3ca5bb2a772e0d0568a1",
+   "pptName": "SM - Unbroken Bonds",
+   "ourName": "Unbroken Bonds",
+   "cardCount": 240,
+   "matchedBy": "name"
+  },
+  "sm12": {
+   "pptSetId": "696e3ca5bb2a772e0d0568a4",
+   "pptName": "SM - Cosmic Eclipse",
+   "ourName": "Cosmic Eclipse",
+   "cardCount": 274,
+   "matchedBy": "name"
+  },
+  "swsh1": {
+   "pptSetId": "696e3ca5bb2a772e0d0568a7",
+   "pptName": "SWSH01: Sword & Shield Base Set",
+   "ourName": "Sword & Shield",
+   "cardCount": 232,
+   "matchedBy": "name-loose"
+  },
+  "swsh45sv": {
+   "pptSetId": "696e3ca6bb2a772e0d0568b1",
+   "pptName": "Shining Fates: Shiny Vault",
+   "ourName": "Shining Fates Shiny Vault",
+   "cardCount": 122,
+   "matchedBy": "name"
+  },
+  "swsh5": {
+   "pptSetId": "696e3ca6bb2a772e0d0568af",
+   "pptName": "SWSH05: Battle Styles",
+   "ourName": "Battle Styles",
+   "cardCount": 195,
+   "matchedBy": "name"
+  },
+  "cel25": {
+   "pptSetId": "696e3ca6bb2a772e0d0568b5",
+   "pptName": "Celebrations",
+   "ourName": "Celebrations",
+   "cardCount": 38,
+   "matchedBy": "name"
+  },
+  "swsh9tg": {
+   "pptSetId": "696e3ca6bb2a772e0d0568b9",
+   "pptName": "SWSH09: Brilliant Stars Trainer Gallery",
+   "ourName": "Brilliant Stars Trainer Gallery",
+   "cardCount": 30,
+   "matchedBy": "name"
+  },
+  "swsh10tg": {
+   "pptSetId": "696e3ca6bb2a772e0d0568bd",
+   "pptName": "SWSH10: Astral Radiance Trainer Gallery",
+   "ourName": "Astral Radiance Trainer Gallery",
+   "cardCount": 30,
+   "matchedBy": "name"
+  },
+  "swsh12": {
+   "pptSetId": "696e3ca7bb2a772e0d0568c1",
+   "pptName": "SWSH12: Silver Tempest",
+   "ourName": "Silver Tempest",
+   "cardCount": 224,
+   "matchedBy": "name"
+  },
+  "swsh12pt5": {
+   "pptSetId": "696e3ca7bb2a772e0d0568c5",
+   "pptName": "SWSH: Crown Zenith",
+   "ourName": "Crown Zenith",
+   "cardCount": 179,
+   "matchedBy": "name"
+  },
+  "sv3pt5": {
+   "pptSetId": "696e3ca7bb2a772e0d0568cd",
+   "pptName": "SV: Scarlet & Violet 151",
+   "ourName": "151",
+   "cardCount": 215,
+   "matchedBy": "alias"
+  },
+  "sv6": {
+   "pptSetId": "696e3ca8bb2a772e0d0568d5",
+   "pptName": "SV06: Twilight Masquerade",
+   "ourName": "Twilight Masquerade",
+   "cardCount": 234,
+   "matchedBy": "name"
+  },
+  "sv7": {
+   "pptSetId": "696e3ca8bb2a772e0d0568d8",
+   "pptName": "SV07: Stellar Crown",
+   "ourName": "Stellar Crown",
+   "cardCount": 187,
+   "matchedBy": "name"
+  },
+  "sv8pt5": {
+   "pptSetId": "696e3ca8bb2a772e0d0568db",
+   "pptName": "SV: Prismatic Evolutions",
+   "ourName": "Prismatic Evolutions",
+   "cardCount": 355,
+   "matchedBy": "name"
+  },
+  "sv9": {
+   "pptSetId": "696e3ca8bb2a772e0d0568dc",
+   "pptName": "SV09: Journey Together",
+   "ourName": "Journey Together",
+   "cardCount": 198,
+   "matchedBy": "name"
+  },
+  "zsv10pt5": {
+   "pptSetId": "696e3ca8bb2a772e0d0568df",
+   "pptName": "SV: Black Bolt",
+   "ourName": "Black Bolt",
+   "cardCount": 332,
+   "matchedBy": "name"
+  },
+  "me1": {
+   "pptSetId": "696e3ca9bb2a772e0d0568e1",
+   "pptName": "ME01: Mega Evolution",
+   "ourName": "Mega Evolution",
+   "cardCount": 194,
+   "matchedBy": "name"
+  },
+  "me2": {
+   "pptSetId": "696e3ca9bb2a772e0d0568e3",
+   "pptName": "ME02: Phantasmal Flames",
+   "ourName": "Phantasmal Flames",
+   "cardCount": 134,
+   "matchedBy": "name"
+  },
+  "me3": {
+   "pptSetId": "696e3ca9bb2a772e0d0568ea",
+   "pptName": "ME03: Perfect Order",
+   "ourName": "Perfect Order",
+   "cardCount": 131,
+   "matchedBy": "name"
+  },
+  "me4": {
+   "pptSetId": "69b9b10516ba1587d25ef232",
+   "pptName": "ME04: Chaos Rising",
+   "ourName": "Chaos Rising",
+   "cardCount": 127,
+   "matchedBy": "name"
+  },
+  "gym1": {
+   "pptSetId": "696e3ca1bb2a772e0d05685d",
+   "pptName": "Gym Heroes",
+   "ourName": "Gym Heroes",
+   "cardCount": 132,
+   "matchedBy": "name"
+  },
+  "gym2": {
+   "pptSetId": "696e3ca1bb2a772e0d05685c",
+   "pptName": "Gym Challenge",
+   "ourName": "Gym Challenge",
+   "cardCount": 132,
+   "matchedBy": "name"
+  },
+  "ecard1": {
+   "pptSetId": "696e3c9dbb2a772e0d056823",
+   "pptName": "Expedition",
+   "ourName": "Expedition Base Set",
+   "cardCount": 165,
+   "matchedBy": "name-loose"
+  },
+  "ex1": {
+   "pptSetId": "696e3c9ebb2a772e0d056834",
+   "pptName": "EX Ruby and Sapphire",
+   "ourName": "Ruby & Sapphire",
+   "cardCount": 109,
+   "matchedBy": "name"
+  },
+  "ex6": {
+   "pptSetId": "696e3ca0bb2a772e0d05684e",
+   "pptName": "EX FireRed & LeafGreen",
+   "ourName": "FireRed & LeafGreen",
+   "cardCount": 116,
+   "matchedBy": "name"
+  },
+  "ex10": {
+   "pptSetId": "696e3c9ebb2a772e0d056839",
+   "pptName": "EX Unseen Forces",
+   "ourName": "Unseen Forces",
+   "cardCount": 145,
+   "matchedBy": "name"
+  },
+  "dp1": {
+   "pptSetId": "696e3ca0bb2a772e0d056857",
+   "pptName": "Diamond and Pearl",
+   "ourName": "Diamond & Pearl",
+   "cardCount": 130,
+   "matchedBy": "name"
+  },
+  "dpp": {
+   "pptSetId": "696e3ca0bb2a772e0d05684f",
+   "pptName": "Diamond and Pearl Promos",
+   "ourName": "DP Black Star Promos",
+   "cardCount": 66,
+   "matchedBy": "alias"
+  },
+  "pop6": {
+   "pptSetId": "696e3ca0bb2a772e0d056858",
+   "pptName": "POP Series 6",
+   "ourName": "POP Series 6",
+   "cardCount": 18,
+   "matchedBy": "name"
+  },
+  "dp6": {
+   "pptSetId": "696e3c9fbb2a772e0d05684c",
+   "pptName": "Legends Awakened",
+   "ourName": "Legends Awakened",
+   "cardCount": 146,
+   "matchedBy": "name"
+  },
+  "pop8": {
+   "pptSetId": "696e3ca1bb2a772e0d056862",
+   "pptName": "POP Series 8",
+   "ourName": "POP Series 8",
+   "cardCount": 18,
+   "matchedBy": "name"
+  },
+  "pop9": {
+   "pptSetId": "696e3ca1bb2a772e0d056860",
+   "pptName": "POP Series 9",
+   "ourName": "POP Series 9",
+   "cardCount": 18,
+   "matchedBy": "name"
+  },
+  "bwp": {
+   "pptSetId": "696e3c9fbb2a772e0d056842",
+   "pptName": "Black and White Promos",
+   "ourName": "BW Black Star Promos",
+   "cardCount": 148,
+   "matchedBy": "alias"
+  },
+  "bw8": {
+   "pptSetId": "696e3c9fbb2a772e0d056848",
+   "pptName": "Plasma Storm",
+   "ourName": "Plasma Storm",
+   "cardCount": 138,
+   "matchedBy": "name"
+  },
+  "xy12": {
+   "pptSetId": "696e3ca3bb2a772e0d056885",
+   "pptName": "XY - Evolutions",
+   "ourName": "Evolutions",
+   "cardCount": 127,
+   "matchedBy": "name"
+  },
+  "sm1": {
+   "pptSetId": "696e3ca3bb2a772e0d056888",
+   "pptName": "SM Base Set",
+   "ourName": "Sun & Moon",
+   "cardCount": 175,
+   "matchedBy": "alias"
+  },
+  "smp": {
+   "pptSetId": "696e3ca3bb2a772e0d056887",
+   "pptName": "SM Promos",
+   "ourName": "SM Black Star Promos",
+   "cardCount": 333,
+   "matchedBy": "alias"
+  },
+  "sm4": {
+   "pptSetId": "696e3ca4bb2a772e0d05688e",
+   "pptName": "SM - Crimson Invasion",
+   "ourName": "Crimson Invasion",
+   "cardCount": 128,
+   "matchedBy": "name"
+  },
+  "sm75": {
+   "pptSetId": "696e3ca4bb2a772e0d05689a",
+   "pptName": "Dragon Majesty",
+   "ourName": "Dragon Majesty",
+   "cardCount": 80,
+   "matchedBy": "name"
+  },
+  "sm115": {
+   "pptSetId": "696e3ca5bb2a772e0d0568a3",
+   "pptName": "Hidden Fates",
+   "ourName": "Hidden Fates",
+   "cardCount": 77,
+   "matchedBy": "name"
+  },
+  "sma": {
+   "pptSetId": "696e3ca5bb2a772e0d0568a8",
+   "pptName": "Hidden Fates: Shiny Vault",
+   "ourName": "Hidden Fates Shiny Vault",
+   "cardCount": 94,
+   "matchedBy": "name"
+  },
+  "swshp": {
+   "pptSetId": "696e3ca5bb2a772e0d0568a5",
+   "pptName": "SWSH: Sword & Shield Promo Cards",
+   "ourName": "SWSH Black Star Promos",
+   "cardCount": 343,
+   "matchedBy": "alias"
+  },
+  "swsh2": {
+   "pptSetId": "696e3ca5bb2a772e0d0568a9",
+   "pptName": "SWSH02: Rebel Clash",
+   "ourName": "Rebel Clash",
+   "cardCount": 213,
+   "matchedBy": "name"
+  },
+  "swsh3": {
+   "pptSetId": "696e3ca5bb2a772e0d0568aa",
+   "pptName": "SWSH03: Darkness Ablaze",
+   "ourName": "Darkness Ablaze",
+   "cardCount": 206,
+   "matchedBy": "name"
+  },
+  "swsh9": {
+   "pptSetId": "696e3ca6bb2a772e0d0568b8",
+   "pptName": "SWSH09: Brilliant Stars",
+   "ourName": "Brilliant Stars",
+   "cardCount": 205,
+   "matchedBy": "name"
+  },
+  "swsh10": {
+   "pptSetId": "696e3ca6bb2a772e0d0568ba",
+   "pptName": "SWSH10: Astral Radiance",
+   "ourName": "Astral Radiance",
+   "cardCount": 225,
+   "matchedBy": "name"
+  },
+  "swsh11": {
+   "pptSetId": "696e3ca7bb2a772e0d0568bf",
+   "pptName": "SWSH11: Lost Origin",
+   "ourName": "Lost Origin",
+   "cardCount": 228,
+   "matchedBy": "name"
+  },
+  "swsh11tg": {
+   "pptSetId": "696e3ca7bb2a772e0d0568c2",
+   "pptName": "SWSH11: Lost Origin Trainer Gallery",
+   "ourName": "Lost Origin Trainer Gallery",
+   "cardCount": 30,
+   "matchedBy": "name"
+  },
+  "swsh12tg": {
+   "pptSetId": "696e3ca7bb2a772e0d0568c4",
+   "pptName": "SWSH12: Silver Tempest Trainer Gallery",
+   "ourName": "Silver Tempest Trainer Gallery",
+   "cardCount": 30,
+   "matchedBy": "name"
+  },
+  "swsh12pt5gg": {
+   "pptSetId": "696e3ca7bb2a772e0d0568c6",
+   "pptName": "SWSH: Crown Zenith: Galarian Gallery",
+   "ourName": "Crown Zenith Galarian Gallery",
+   "cardCount": 70,
+   "matchedBy": "name"
+  },
+  "sv1": {
+   "pptSetId": "696e3ca7bb2a772e0d0568c8",
+   "pptName": "SV01: Scarlet & Violet Base Set",
+   "ourName": "Scarlet & Violet",
+   "cardCount": 270,
+   "matchedBy": "name-loose"
+  },
+  "sv3": {
+   "pptSetId": "696e3ca7bb2a772e0d0568cc",
+   "pptName": "SV03: Obsidian Flames",
+   "ourName": "Obsidian Flames",
+   "cardCount": 237,
+   "matchedBy": "name"
+  },
+  "sv4pt5": {
+   "pptSetId": "696e3ca8bb2a772e0d0568d3",
+   "pptName": "SV: Paldean Fates",
+   "ourName": "Paldean Fates",
+   "cardCount": 256,
+   "matchedBy": "name"
+  },
+  "sv6pt5": {
+   "pptSetId": "696e3ca8bb2a772e0d0568d7",
+   "pptName": "SV: Shrouded Fable",
+   "ourName": "Shrouded Fable",
+   "cardCount": 114,
+   "matchedBy": "name"
+  },
+  "sv8": {
+   "pptSetId": "696e3ca8bb2a772e0d0568da",
+   "pptName": "SV08: Surging Sparks",
+   "ourName": "Surging Sparks",
+   "cardCount": 261,
+   "matchedBy": "name"
+  },
+  "rsv10pt5": {
+   "pptSetId": "696e3ca8bb2a772e0d0568e0",
+   "pptName": "SV: White Flare",
+   "ourName": "White Flare",
+   "cardCount": 329,
+   "matchedBy": "name"
+  },
+  "me2pt5": {
+   "pptSetId": "696e3ca9bb2a772e0d0568e8",
+   "pptName": "ME: Ascended Heroes",
+   "ourName": "Ascended Heroes",
+   "cardCount": 580,
+   "matchedBy": "name"
+  },
+  "swsh7": {
+   "pptSetId": "696e3ca6bb2a772e0d0568b4",
+   "pptName": "SWSH07: Evolving Skies",
+   "ourName": "Evolving Skies",
+   "cardCount": 247,
+   "matchedBy": "name"
+  },
+  "sv10": {
+   "pptSetId": "696e3ca8bb2a772e0d0568de",
+   "pptName": "SV10: Destined Rivals",
+   "ourName": "Destined Rivals",
+   "cardCount": 255,
+   "matchedBy": "name"
+  },
+  "sm35": {
+   "pptSetId": "696e3ca3bb2a772e0d05688c",
+   "pptName": "Shining Legends",
+   "ourName": "Shining Legends",
+   "cardCount": 84,
+   "matchedBy": "name"
+  },
+  "pgo": {
+   "pptSetId": "696e3ca6bb2a772e0d0568bc",
+   "pptName": "Pokemon GO",
+   "ourName": "Pokémon GO",
+   "cardCount": 108,
+   "matchedBy": "name"
+  },
+  "sm11": {
+   "pptSetId": "696e3ca5bb2a772e0d0568a2",
+   "pptName": "SM - Unified Minds",
+   "ourName": "Unified Minds",
+   "cardCount": 265,
+   "matchedBy": "name"
+  },
+  "sv5": {
+   "pptSetId": "696e3ca8bb2a772e0d0568d4",
+   "pptName": "SV05: Temporal Forces",
+   "ourName": "Temporal Forces",
+   "cardCount": 228,
+   "matchedBy": "name"
+  },
+  "sv2": {
+   "pptSetId": "696e3ca7bb2a772e0d0568cb",
+   "pptName": "SV02: Paldea Evolved",
+   "ourName": "Paldea Evolved",
+   "cardCount": 287,
+   "matchedBy": "name"
+  },
+  "swsh6": {
+   "pptSetId": "696e3ca6bb2a772e0d0568b3",
+   "pptName": "SWSH06: Chilling Reign",
+   "ourName": "Chilling Reign",
+   "cardCount": 242,
+   "matchedBy": "name"
+  },
+  "sv4": {
+   "pptSetId": "696e3ca7bb2a772e0d0568cf",
+   "pptName": "SV04: Paradox Rift",
+   "ourName": "Paradox Rift",
+   "cardCount": 272,
+   "matchedBy": "name"
+  },
+  "sm6": {
+   "pptSetId": "696e3ca4bb2a772e0d056895",
+   "pptName": "SM - Forbidden Light",
+   "ourName": "Forbidden Light",
+   "cardCount": 149,
+   "matchedBy": "name"
+  },
+  "swsh4": {
+   "pptSetId": "696e3ca5bb2a772e0d0568ad",
+   "pptName": "SWSH04: Vivid Voltage",
+   "ourName": "Vivid Voltage",
+   "cardCount": 213,
+   "matchedBy": "name"
+  }
+ },
+ "unmatched": [
+  {
+   "slug": "mcd19",
+   "name": "McDonald's Collection 2019",
+   "normalised": "mcdonald s collection 2019"
+  },
+  {
+   "slug": "mcd14",
+   "name": "McDonald's Collection 2014",
+   "normalised": "mcdonald s collection 2014"
+  },
+  {
+   "slug": "mcd18",
+   "name": "McDonald's Collection 2018",
+   "normalised": "mcdonald s collection 2018"
+  },
+  {
+   "slug": "bp",
+   "name": "Best of Game",
+   "normalised": "best of game"
+  },
+  {
+   "slug": "tk1a",
+   "name": "EX Trainer Kit Latias",
+   "normalised": "trainer kit latias"
+  },
+  {
+   "slug": "tk1b",
+   "name": "EX Trainer Kit Latios",
+   "normalised": "trainer kit latios"
+  },
+  {
+   "slug": "mcd12",
+   "name": "McDonald's Collection 2012",
+   "normalised": "mcdonald s collection 2012"
+  },
+  {
+   "slug": "mcd16",
+   "name": "McDonald's Collection 2016",
+   "normalised": "mcdonald s collection 2016"
+  },
+  {
+   "slug": "mcd15",
+   "name": "McDonald's Collection 2015",
+   "normalised": "mcdonald s collection 2015"
+  },
+  {
+   "slug": "mcd21",
+   "name": "McDonald's Collection 2021",
+   "normalised": "mcdonald s collection 2021"
+  },
+  {
+   "slug": "sve",
+   "name": "Scarlet & Violet Energies",
+   "normalised": "scarlet violet energies"
+  },
+  {
+   "slug": "fut20",
+   "name": "Pokémon Futsal Collection",
+   "normalised": "pokemon futsal collection"
+  }
+ ],
+ "providerOnly": [
+  {
+   "pptSetId": "696e3ca9bb2a772e0d0568e2",
+   "name": "SVE: Scarlet & Violet Energies",
+   "cardCount": 40
+  },
+  {
+   "pptSetId": "6a883dd245dd2d15c8a710d0",
+   "name": "ME06: Delta Reign",
+   "cardCount": 0
+  },
+  {
+   "pptSetId": "6a23994ceef6d8fe7e225ca5",
+   "name": "ME: 30th Celebration",
+   "cardCount": 19
+  },
+  {
+   "pptSetId": "69f562ee6222edcca357f0fc",
+   "name": "ME05: Pitch Black",
+   "cardCount": 124
+  },
+  {
+   "pptSetId": "696e3ca9bb2a772e0d0568e9",
+   "name": "First Partner Collection 2026",
+   "cardCount": 3
+  },
+  {
+   "pptSetId": "696e3ca9bb2a772e0d0568e7",
+   "name": "Player Placement Trainer Promos",
+   "cardCount": 0
+  },
+  {
+   "pptSetId": "696e3ca9bb2a772e0d0568e4",
+   "name": "ME: Mega Evolution Promo",
+   "cardCount": 119
+  },
+  {
+   "pptSetId": "696e3ca9bb2a772e0d0568e5",
+   "name": "MEE: Mega Evolution Energies",
+   "cardCount": 8
+  },
+  {
+   "pptSetId": "696e3ca8bb2a772e0d0568dd",
+   "name": "McDonald's Promos 2024",
+   "cardCount": 15
+  },
+  {
+   "pptSetId": "696e3ca8bb2a772e0d0568d9",
+   "name": "Trick or Trade BOOster Bundle 2024",
+   "cardCount": 30
+  },
+  {
+   "pptSetId": "696e3ca8bb2a772e0d0568d6",
+   "name": "Battle Academy 2024",
+   "cardCount": 139
+  },
+  {
+   "pptSetId": "696e3ca8bb2a772e0d0568d1",
+   "name": "Trading Card Game Classic",
+   "cardCount": 102
+  },
+  {
+   "pptSetId": "696e3ca8bb2a772e0d0568d2",
+   "name": "My First Battle",
+   "cardCount": 48
+  },
+  {
+   "pptSetId": "696e3ca8bb2a772e0d0568d0",
+   "name": "McDonald's Promos 2023",
+   "cardCount": 15
+  },
+  {
+   "pptSetId": "696e3ca7bb2a772e0d0568ce",
+   "name": "Trick or Trade BOOster Bundle 2023",
+   "cardCount": 30
+  },
+  {
+   "pptSetId": "696e3ca7bb2a772e0d0568c7",
+   "name": "SV: Scarlet & Violet Promo Cards",
+   "cardCount": 283
+  },
+  {
+   "pptSetId": "696e3ca7bb2a772e0d0568c9",
+   "name": "Prize Pack Series Cards",
+   "cardCount": 883
+  },
+  {
+   "pptSetId": "696e3ca7bb2a772e0d0568c3",
+   "name": "Trick or Trade BOOster Bundle",
+   "cardCount": 30
+  },
+  {
+   "pptSetId": "696e3ca7bb2a772e0d0568c0",
+   "name": "McDonald's Promos 2022",
+   "cardCount": 15
+  },
+  {
+   "pptSetId": "696e3ca6bb2a772e0d0568bb",
+   "name": "Battle Academy 2022",
+   "cardCount": 138
+  },
+  {
+   "pptSetId": "696e3ca6bb2a772e0d0568b6",
+   "name": "SWSH08: Fusion Strike",
+   "cardCount": 292
+  },
+  {
+   "pptSetId": "696e3ca6bb2a772e0d0568b7",
+   "name": "Celebrations: Classic Collection",
+   "cardCount": 25
+  },
+  {
+   "pptSetId": "696e3ca5bb2a772e0d0568ae",
+   "name": "Shining Fates",
+   "cardCount": 85
+  },
+  {
+   "pptSetId": "696e3ca6bb2a772e0d0568b2",
+   "name": "McDonald's 25th Anniversary Promos",
+   "cardCount": 25
+  },
+  {
+   "pptSetId": "696e3ca5bb2a772e0d0568ab",
+   "name": "Champion's Path",
+   "cardCount": 87
+  },
+  {
+   "pptSetId": "696e3ca5bb2a772e0d0568ac",
+   "name": "Battle Academy",
+   "cardCount": 139
+  },
+  {
+   "pptSetId": "696e3ca5bb2a772e0d0568a6",
+   "name": "McDonald's Promos 2019",
+   "cardCount": 12
+  },
+  {
+   "pptSetId": "696e3ca5bb2a772e0d0568a0",
+   "name": "Detective Pikachu",
+   "cardCount": 20
+  },
+  {
+   "pptSetId": "696e3ca4bb2a772e0d05689d",
+   "name": "McDonald's Promos 2018",
+   "cardCount": 12
+  },
+  {
+   "pptSetId": "696e3ca4bb2a772e0d056898",
+   "name": "World Championship Decks",
+   "cardCount": 1944
+  },
+  {
+   "pptSetId": "696e3ca4bb2a772e0d056894",
+   "name": "SM Trainer Kit: Alolan Sandslash & Alolan Ninetales",
+   "cardCount": 60
+  },
+  {
+   "pptSetId": "696e3ca4bb2a772e0d05688f",
+   "name": "McDonald's Promos 2017",
+   "cardCount": 12
+  },
+  {
+   "pptSetId": "696e3ca3bb2a772e0d05688d",
+   "name": "SM Trainer Kit: Lycanroc & Alolan Raichu",
+   "cardCount": 60
+  },
+  {
+   "pptSetId": "696e3ca7bb2a772e0d0568ca",
+   "name": "Ash vs Team Rocket Deck Kit (JP Exclusive)",
+   "cardCount": 2
+  },
+  {
+   "pptSetId": "696e3ca3bb2a772e0d056884",
+   "name": "Deck Exclusives",
+   "cardCount": 508
+  },
+  {
+   "pptSetId": "696e3ca6bb2a772e0d0568be",
+   "name": "McDonald's Promos 2016",
+   "cardCount": 12
+  },
+  {
+   "pptSetId": "696e3ca2bb2a772e0d056874",
+   "name": "League & Championship Cards",
+   "cardCount": 624
+  },
+  {
+   "pptSetId": "696e3ca3bb2a772e0d056881",
+   "name": "XY - Fates Collide",
+   "cardCount": 126
+  },
+  {
+   "pptSetId": "696e3ca3bb2a772e0d056882",
+   "name": "XY Trainer Kit: Pikachu Libre & Suicune",
+   "cardCount": 61
+  },
+  {
+   "pptSetId": "696e3ca3bb2a772e0d056880",
+   "name": "Generations: Radiant Collection",
+   "cardCount": 32
+  },
+  {
+   "pptSetId": "696e3ca3bb2a772e0d05687d",
+   "name": "McDonald's Promos 2015",
+   "cardCount": 12
+  },
+  {
+   "pptSetId": "696e3ca2bb2a772e0d056879",
+   "name": "XY - Ancient Origins",
+   "cardCount": 105
+  },
+  {
+   "pptSetId": "696e3ca2bb2a772e0d056871",
+   "name": "XY - Roaring Skies",
+   "cardCount": 112
+  },
+  {
+   "pptSetId": "696e3ca2bb2a772e0d056872",
+   "name": "XY Trainer Kit: Latias & Latios",
+   "cardCount": 61
+  },
+  {
+   "pptSetId": "696e3ca2bb2a772e0d05686e",
+   "name": "Jumbo Cards",
+   "cardCount": 342
+  },
+  {
+   "pptSetId": "696e3ca2bb2a772e0d05686d",
+   "name": "Double Crisis",
+   "cardCount": 34
+  },
+  {
+   "pptSetId": "696e3ca2bb2a772e0d056870",
+   "name": "XY Trainer Kit: Bisharp & Wigglytuff",
+   "cardCount": 60
+  },
+  {
+   "pptSetId": "696e3ca1bb2a772e0d056869",
+   "name": "XY - Furious Fists",
+   "cardCount": 114
+  },
+  {
+   "pptSetId": "696e3ca2bb2a772e0d05687c",
+   "name": "McDonald's Promos 2014",
+   "cardCount": 12
+  },
+  {
+   "pptSetId": "696e3ca2bb2a772e0d05686f",
+   "name": "XY Trainer Kit: Sylveon & Noivern",
+   "cardCount": 60
+  },
+  {
+   "pptSetId": "696e3ca1bb2a772e0d05686c",
+   "name": "Kalos Starter Set",
+   "cardCount": 44
+  },
+  {
+   "pptSetId": "696e3c9fbb2a772e0d056844",
+   "name": "Legendary Treasures",
+   "cardCount": 116
+  },
+  {
+   "pptSetId": "696e3ca1bb2a772e0d056868",
+   "name": "Legendary Treasures: Radiant Collection",
+   "cardCount": 25
+  },
+  {
+   "pptSetId": "696e3c9ebb2a772e0d05682a",
+   "name": "Plasma Freeze",
+   "cardCount": 123
+  },
+  {
+   "pptSetId": "696e3ca0bb2a772e0d056854",
+   "name": "McDonald's Promos 2012",
+   "cardCount": 12
+  },
+  {
+   "pptSetId": "696e3ca2bb2a772e0d056873",
+   "name": "BW Trainer Kit: Excadrill & Zoroark",
+   "cardCount": 60
+  },
+  {
+   "pptSetId": "696e3ca0bb2a772e0d056852",
+   "name": "Emerging Powers",
+   "cardCount": 99
+  },
+  {
+   "pptSetId": "696e3c9fbb2a772e0d05683c",
+   "name": "McDonald's Promos 2011",
+   "cardCount": 12
+  },
+  {
+   "pptSetId": "696e3c9ebb2a772e0d05683b",
+   "name": "Black and White",
+   "cardCount": 115
+  },
+  {
+   "pptSetId": "696e3c9ebb2a772e0d056829",
+   "name": "Triumphant",
+   "cardCount": 104
+  },
+  {
+   "pptSetId": "696e3ca2bb2a772e0d056875",
+   "name": "HGSS Trainer Kit: Gyarados & Raichu",
+   "cardCount": 60
+  },
+  {
+   "pptSetId": "696e3ca0bb2a772e0d056859",
+   "name": "Rumble",
+   "cardCount": 16
+  },
+  {
+   "pptSetId": "696e3c9ebb2a772e0d056832",
+   "name": "Arceus",
+   "cardCount": 111
+  },
+  {
+   "pptSetId": "696e3c9fbb2a772e0d056841",
+   "name": "Platinum",
+   "cardCount": 133
+  },
+  {
+   "pptSetId": "696e3ca4bb2a772e0d056890",
+   "name": "Countdown Calendar Promos",
+   "cardCount": 24
+  },
+  {
+   "pptSetId": "696e3c9ebb2a772e0d056831",
+   "name": "Majestic Dawn",
+   "cardCount": 100
+  },
+  {
+   "pptSetId": "696e3c9dbb2a772e0d056817",
+   "name": "DP Training Kit 1 Blue",
+   "cardCount": 0
+  },
+  {
+   "pptSetId": "696e3c9dbb2a772e0d056818",
+   "name": "DP Training Kit 1 Gold",
+   "cardCount": 0
+  },
+  {
+   "pptSetId": "696e3ca2bb2a772e0d056876",
+   "name": "DP Trainer Kit: Manaphy & Lucario",
+   "cardCount": 23
+  },
+  {
+   "pptSetId": "696e3c9dbb2a772e0d05681d",
+   "name": "Mysterious Treasures",
+   "cardCount": 124
+  },
+  {
+   "pptSetId": "696e3c9fbb2a772e0d056846",
+   "name": "EX Dragon Frontiers",
+   "cardCount": 101
+  },
+  {
+   "pptSetId": "696e3c9ebb2a772e0d056836",
+   "name": "EX Crystal Guardians",
+   "cardCount": 101
+  },
+  {
+   "pptSetId": "696e3c9dbb2a772e0d056826",
+   "name": "EX Legend Maker",
+   "cardCount": 93
+  },
+  {
+   "pptSetId": "696e3c9fbb2a772e0d056845",
+   "name": "EX Emerald",
+   "cardCount": 107
+  },
+  {
+   "pptSetId": "696e3ca0bb2a772e0d056855",
+   "name": "EX Team Rocket Returns",
+   "cardCount": 111
+  },
+  {
+   "pptSetId": "696e3ca3bb2a772e0d056886",
+   "name": "EX Battle Stadium",
+   "cardCount": 49
+  },
+  {
+   "pptSetId": "696e3ca4bb2a772e0d056896",
+   "name": "Kids WB Promos",
+   "cardCount": 5
+  },
+  {
+   "pptSetId": "696e3c9fbb2a772e0d05684b",
+   "name": "EX Hidden Legends",
+   "cardCount": 102
+  },
+  {
+   "pptSetId": "696e3c9dbb2a772e0d056825",
+   "name": "EX Team Magma vs Team Aqua",
+   "cardCount": 97
+  },
+  {
+   "pptSetId": "696e3c9dbb2a772e0d056824",
+   "name": "EX Dragon",
+   "cardCount": 100
+  },
+  {
+   "pptSetId": "696e3c9dbb2a772e0d056820",
+   "name": "Skyridge",
+   "cardCount": 183
+  },
+  {
+   "pptSetId": "696e3ca1bb2a772e0d056866",
+   "name": "Best of Promos",
+   "cardCount": 15
+  },
+  {
+   "pptSetId": "696e3ca9bb2a772e0d0568e6",
+   "name": "e-Reader Sample Cards",
+   "cardCount": 1
+  },
+  {
+   "pptSetId": "696e3c9dbb2a772e0d056822",
+   "name": "Legendary Collection",
+   "cardCount": 110
+  },
+  {
+   "pptSetId": "696e3c9dbb2a772e0d05681b",
+   "name": "Southern Islands",
+   "cardCount": 18
+  },
+  {
+   "pptSetId": "696e3ca0bb2a772e0d05685a",
+   "name": "Neo Discovery",
+   "cardCount": 75
+  },
+  {
+   "pptSetId": "696e3ca2bb2a772e0d05687b",
+   "name": "Base Set (Shadowless)",
+   "cardCount": 102
+  },
+  {
+   "pptSetId": "696e3ca0bb2a772e0d056851",
+   "name": "Nintendo Promos",
+   "cardCount": 95
+  },
+  {
+   "pptSetId": "696e3ca1bb2a772e0d056861",
+   "name": "POP Series 2",
+   "cardCount": 18
+  },
+  {
+   "pptSetId": "696e3ca2bb2a772e0d056877",
+   "name": "EX Trainer Kit 2: Plusle & Minun",
+   "cardCount": 24
+  },
+  {
+   "pptSetId": "696e3ca2bb2a772e0d056878",
+   "name": "EX Trainer Kit 1: Latias & Latios",
+   "cardCount": 20
+  },
+  {
+   "pptSetId": "696e3ca3bb2a772e0d05688a",
+   "name": "Alternate Art Promos",
+   "cardCount": 56
+  },
+  {
+   "pptSetId": "696e3ca4bb2a772e0d056891",
+   "name": "Burger King Promos",
+   "cardCount": 24
+  },
+  {
+   "pptSetId": "696e3ca4bb2a772e0d056893",
+   "name": "Pikachu World Collection Promos",
+   "cardCount": 19
+  },
+  {
+   "pptSetId": "696e3ca4bb2a772e0d056899",
+   "name": "Blister Exclusives",
+   "cardCount": 140
+  },
+  {
+   "pptSetId": "696e3ca4bb2a772e0d05689c",
+   "name": "Professor Program Promos",
+   "cardCount": 57
+  },
+  {
+   "pptSetId": "696e3ca5bb2a772e0d05689e",
+   "name": "Miscellaneous Cards & Products",
+   "cardCount": 790
+  },
+  {
+   "pptSetId": "696e3ca6bb2a772e0d0568b0",
+   "name": "First Partner Pack",
+   "cardCount": 24
+  }
+ ]
+}
