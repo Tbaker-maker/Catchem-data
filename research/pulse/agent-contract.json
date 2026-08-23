@@ -1,9 +1,9 @@
 {
- "generatedAt": "2026-08-23T06:13:16.724Z",
+ "generatedAt": "2026-08-23T06:25:38.713Z",
  "principle": "Ten obligations every agent owes. Checked mechanically every run, because the alternative is finding these by luck when the next hire happens to look somewhere useful — and an agent nobody happens to build would hide its broken predecessor forever.",
- "agents": 16,
+ "agents": 17,
  "fullyCompliant": 16,
- "openClauses": 0,
+ "openClauses": 1,
  "report": [
   {
    "agent": "breaker",
@@ -34,6 +34,17 @@
    "obligations": 10,
    "met": 10,
    "failing": []
+  },
+  {
+   "agent": "theme-scout",
+   "obligations": 10,
+   "met": 9,
+   "failing": [
+    {
+     "clause": "wired",
+     "why": "registered and managed but never imported by the pipeline — employed on paper only"
+    }
+   ]
   },
   {
    "agent": "teacher",

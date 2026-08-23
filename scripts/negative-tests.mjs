@@ -589,6 +589,21 @@ const CASES = [
     },
     restore: async () => { await copyFile(TMP("nt-slop.bak"), P("research/pulse/formulas.json")); } },
 
+  { guard: "Theme scout proposes, never adopts", detect: null,
+    // Deciding a group of Pokemon belongs together is taste. An agent writing
+    // its own taste into data/themes.json would be asserting significance,
+    // which is the one thing the slop law exists to stop.
+    fn: async () => {
+      const src = await readFile(P("scripts/theme-scout.mjs"), "utf-8");
+      const writesThemes = /writeFile\([^)]*themes\.json/.test(src);
+      const rep = JSON.parse(await readFile(P("research/pulse/theme-scout.json"), "utf-8").catch(() => "{}"));
+      const candidates = (rep.finds ?? []).filter(f => f.kind === "candidate theme");
+      const allFlagged = candidates.every(f => f.needsHuman);
+      return { pass: !writesThemes && allFlagged,
+        why: writesThemes ? "the scout writes to themes.json — it is adopting its own judgment"
+           : "a candidate theme is not flagged for a human, so it reads as adopted" };
+    } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");

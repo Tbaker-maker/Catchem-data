@@ -2,10 +2,10 @@
  "note": "THE COMPOUNDING ASSET. Every fact we verify gets stored here with how we know it. Instruments can be copied in a weekend; a decade of verified, sourced, dated knowledge cannot. This file is the thing that is actually worth something in five years.",
  "law": "A fact enters only with: the claim, at least one named source, the date verified, who verified it, and what would prove it wrong. No entry may be added from memory. An entry with no falsifier is an opinion and belongs in house-theses.md instead.",
  "confidence": {
-  "VERIFIED": "multiple independent sources, or one primary source (official Pok\u00e9mon/TPCi, a grader's own published data, or our own measurement)",
-  "SINGLE-SOURCE": "one credible source, no corroboration found \u2014 publishable with attribution and a hedge",
-  "COMMUNITY": "repeated across independent community voices but not documented anywhere primary \u2014 publishable only as community lore, explicitly labelled",
-  "DISPUTED": "credible sources disagree \u2014 publish the disagreement, never a resolution we invented",
+  "VERIFIED": "multiple independent sources, or one primary source (official Pokémon/TPCi, a grader's own published data, or our own measurement)",
+  "SINGLE-SOURCE": "one credible source, no corroboration found — publishable with attribution and a hedge",
+  "COMMUNITY": "repeated across independent community voices but not documented anywhere primary — publishable only as community lore, explicitly labelled",
+  "DISPUTED": "credible sources disagree — publish the disagreement, never a resolution we invented",
   "REASONED": "an argument from principle rather than a sourced fact - defensible, not verified, and labelled so nobody treats it as settled"
  },
  "facts": [
@@ -43,7 +43,7 @@
   },
   {
    "id": "first-edition-print-run-unknown",
-   "claim": "The commonly repeated figure of 10,000 copies per 1st Edition Base Set card has never been confirmed by Wizards of the Coast or The Pok\u00e9mon Company.",
+   "claim": "The commonly repeated figure of 10,000 copies per 1st Edition Base Set card has never been confirmed by Wizards of the Coast or The Pokémon Company.",
    "sources": [
     "Fanatics Collect auction description stating the figure has never been confirmed"
    ],
@@ -128,7 +128,7 @@
   },
   {
    "id": "index-is-self-measured",
-   "claim": "No external body publishes a sealed Pok\u00e9mon index, so our index level cannot be independently corroborated \u2014 it is internally consistent rather than externally verified.",
+   "claim": "No external body publishes a sealed Pokémon index, so our index level cannot be independently corroborated — it is internally consistent rather than externally verified.",
    "sources": [
     "absence of any published sealed index at time of writing"
    ],
@@ -152,7 +152,7 @@
    "verifier": "Tyler",
    "confidence": "COMMUNITY",
    "falsifier": "search or platform data showing these topics are not among the recurring themes creators cover",
-   "note": "Recorded as founder knowledge rather than measured demand. If we ever get real search data, promote or correct it \u2014 but it is the best source we have and better than guessing.",
+   "note": "Recorded as founder knowledge rather than measured demand. If we ever get real search data, promote or correct it — but it is the best source we have and better than guessing.",
    "usedBy": [
     "creator-agent"
    ],
@@ -175,7 +175,7 @@
   },
   {
    "id": "pack-types-loose-vs-sleeved",
-   "claim": "Loose booster packs and sleeved booster packs are both single packs, from different origins. A LOOSE pack comes from opening a sealed product \u2014 a box, ETB or bundle. A SLEEVED pack comes from a case, or is bought singly from a store.",
+   "claim": "Loose booster packs and sleeved booster packs are both single packs, from different origins. A LOOSE pack comes from opening a sealed product — a box, ETB or bundle. A SLEEVED pack comes from a case, or is bought singly from a store.",
    "sources": [
     "Tyler, founder domain knowledge, 2026-08-23"
    ],
@@ -183,7 +183,7 @@
    "verifier": "Tyler",
    "confidence": "COMMUNITY",
    "falsifier": "evidence that sleeved and loose packs are the same product or that either is not a single pack",
-   "note": "CONSEQUENCE FOR OUR FILTER: excluding the term \"sleeved\" removes an entire legitimate class of single pack. It killed 318 listings across the board. Origin also plausibly affects price \u2014 a loose pack came out of a box somebody had access to, a sleeved pack did not \u2014 so they may deserve separate tracking rather than a merged median.",
+   "note": "CONSEQUENCE FOR OUR FILTER: excluding the term \"sleeved\" removes an entire legitimate class of single pack. It killed 318 listings across the board. Origin also plausibly affects price — a loose pack came out of a box somebody had access to, a sleeved pack did not — so they may deserve separate tracking rather than a merged median.",
    "usedBy": [
     "fetch-sealed-prices",
     "pack-basis"
@@ -201,7 +201,7 @@
    "verifier": "Tyler",
    "confidence": "COMMUNITY",
    "falsifier": "mapped TCGplayer pack prices persistently sitting above eBay asks for the same SKU",
-   "note": "ALREADY IMPLEMENTED for price. NOT implemented for LISTING COUNT, which still comes from eBay \u2014 so a pack row currently shows a TCGplayer price beside an eBay listing count, which are two different markets in one line.",
+   "note": "ALREADY IMPLEMENTED for price. NOT implemented for LISTING COUNT, which still comes from eBay — so a pack row currently shows a TCGplayer price beside an eBay listing count, which are two different markets in one line.",
    "usedBy": [
     "pack-basis",
     "domain-plausibility"
@@ -210,17 +210,18 @@
   },
   {
    "id": "kadabra-21-year-absence",
-   "claim": "English Kadabra cards stopped after Expedition Base Set in September 2002 and did not return until 151 in September 2023 - a twenty-one year gap. Uri Geller sued over the Pokemon\u2019s Japanese name Yungeraa, objecting particularly to Dark Kadabra portraying it as evil; The Pokemon Company stopped producing Kadabra cards. Geller publicly gave his blessing in 2023 and the Pokemon returned.",
+   "claim": "English ABRA and KADABRA cards both stopped after Expedition Base Set in September 2002 and did not return until 2023 - a twenty-one year gap for BOTH. Alakazam partially escaped, appearing in 2009, 2019 and 2020. Uri Geller sued over Kadabra's Japanese name Yungeraa, objecting to Dark Kadabra portraying it as evil; The Pokemon Company stopped producing the line. Geller gave his blessing in 2023.",
    "sources": [
     "woahpoke.com banned Pokemon cards, June 2026",
     "Nintendo Fandom: Pokemon controversies",
-    "our own card catalogue - every English Kadabra print, 1999 to 2025"
+    "our own card catalogue - every English Kadabra print, 1999 to 2025",
+    "our own catalogue: every English print year for Abra, Kadabra and Alakazam"
    ],
    "verified": "2026-08-23",
    "verifier": "chat",
    "confidence": "VERIFIED",
    "falsifier": "an English Kadabra card printed between September 2002 and September 2023",
-   "note": "CORRECTED ON VERIFICATION. Several sources state the gap ran from 1997, but our own catalogue holds English Kadabra cards from Base 1999, Base Set 2 2000 and Expedition 2002. The lawsuit-era gap is 2002 to 2023, twenty-one years - still the longest absence of a Pokemon from the TCG, and still an extraordinary story. Publishing the 26-year figure would have been repeating a number three secondary sources agree on and our own primary data disproves.",
+   "note": "CORRECTED ON VERIFICATION. Several sources state the gap ran from 1997, but our own catalogue holds English Kadabra cards from Base 1999, Base Set 2 2000 and Expedition 2002. The lawsuit-era gap is 2002 to 2023, twenty-one years - still the longest absence of a Pokemon from the TCG, and still an extraordinary story. Publishing the 26-year figure would have been repeating a number three secondary sources agree on and our own primary data disproves. FOUND BY THE THEME SCOUT, 2026-08-23: I recorded this as a Kadabra story. The agent searched every print year in the catalogue and showed the gap covers ABRA TOO - the pre-evolution, which is not named in any article about the lawsuit. And that ALAKAZAM kept being printed in 2009, 2019 and 2020, so the ban was not line-wide. That is a better and more precise story than the one I wrote, and I would not have found it by remembering harder. Tyler's point exactly: the agents see what I do not.",
    "usedBy": [
     "content"
    ],
@@ -228,7 +229,7 @@
   },
   {
    "id": "koga-ninja-trick-manji",
-   "claim": "Koga\u2019s Ninja Trick had its artwork changed before international release because it featured a manji, a Buddhist symbol used on Japanese temples and maps, which resembles a swastika. The two symbols are distinct - opposite orientation, dots in the corners, not rotated - but every print including later Japanese reprints used the updated artwork.",
+   "claim": "Koga’s Ninja Trick had its artwork changed before international release because it featured a manji, a Buddhist symbol used on Japanese temples and maps, which resembles a swastika. The two symbols are distinct - opposite orientation, dots in the corners, not rotated - but every print including later Japanese reprints used the updated artwork.",
    "sources": [
     "woahpoke.com banned Pokemon cards",
     "pokemastercenter.com banned card list"
@@ -245,7 +246,7 @@
   },
   {
    "id": "mistys-tears-new-art",
-   "claim": "Misty\u2019s Tears had its Japanese artwork replaced for international release. Rather than editing the original, The Pokemon Company commissioned an entirely new illustration from Ken Sugimori showing Misty crying while Squirtle tries to catch her tears.",
+   "claim": "Misty’s Tears had its Japanese artwork replaced for international release. Rather than editing the original, The Pokemon Company commissioned an entirely new illustration from Ken Sugimori showing Misty crying while Squirtle tries to catch her tears.",
    "sources": [
     "woahpoke.com banned Pokemon cards, June 2026"
    ],
@@ -310,7 +311,7 @@
   },
   {
    "id": "hosting-vs-hotlinking",
-   "claim": "Serving card artwork from our own domain is a materially different act from linking to the rights-holder\u2019s host. Hotlinking embeds an image the owner is already serving; hosting a copy means we are the one distributing it.",
+   "claim": "Serving card artwork from our own domain is a materially different act from linking to the rights-holder’s host. Hotlinking embeds an image the owner is already serving; hosting a copy means we are the one distributing it.",
    "sources": [
     "US copyright practice on reproduction and distribution",
     "our own compliance register, pokemon-ip-depiction entry"
@@ -319,7 +320,7 @@
    "verifier": "chat",
    "confidence": "REASONED",
    "falsifier": "counsel advising the two carry equivalent exposure",
-   "note": "This does NOT mean do not do it - the whole hobby hosts card images and it is the only way to make downloads work reliably. It means the IP consult moves up the queue: it was triggered by the first dollar, and hosting artwork is a second trigger that arrives sooner. Mitigations that cost nothing: credit the illustrator on every image, state we are unaffiliated with Nintendo/TPCi, and remove anything on request without argument. TYLER\u2019S POSITION (Aug 23): \"we aren\u2019t doing anything wrong, just making homebrewed content from public content which is fully legal.\" He is right about the practical reality - fan content is everywhere and the hobby runs on it. The one distinction worth keeping straight is that publicly VIEWABLE is not the same as public DOMAIN: card art is copyrighted and fan use is tolerated rather than licensed. That distinction costs nothing while we are free and unmonetised, and it is exactly what the IP consult is for. Recording it here so the position is written down rather than argued about later.",
+   "note": "This does NOT mean do not do it - the whole hobby hosts card images and it is the only way to make downloads work reliably. It means the IP consult moves up the queue: it was triggered by the first dollar, and hosting artwork is a second trigger that arrives sooner. Mitigations that cost nothing: credit the illustrator on every image, state we are unaffiliated with Nintendo/TPCi, and remove anything on request without argument. TYLER’S POSITION (Aug 23): \"we aren’t doing anything wrong, just making homebrewed content from public content which is fully legal.\" He is right about the practical reality - fan content is everywhere and the hobby runs on it. The one distinction worth keeping straight is that publicly VIEWABLE is not the same as public DOMAIN: card art is copyrighted and fan use is tolerated rather than licensed. That distinction costs nothing while we are free and unmonetised, and it is exactly what the IP consult is for. Recording it here so the position is written down rather than argued about later.",
    "usedBy": [
     "compliance",
     "content"

@@ -1534,3 +1534,39 @@ distinction worth keeping straight is that publicly VIEWABLE is not public
 DOMAIN: card art is copyrighted, and fan use is tolerated rather than licensed.
 That costs nothing while we are free and unmonetised, and it is precisely what
 the IP consult exists to settle.
+
+## THE AGENTS SEE WHAT I DO NOT (Tyler, Aug 23 2026)
+"Get agents working on this as well, don't do it all yourself — they will see
+stuff you won't."
+
+He was right within about four minutes of the scout existing.
+
+I had recorded the Uri Geller story as a KADABRA fact: twenty-one years without
+a print, ended when Geller relented in 2023. Every article says the same. The
+scout searched every print year in our own catalogue and found the gap covers
+**ABRA too** — the pre-evolution, which is named in no article about the
+lawsuit — and that **ALAKAZAM partially escaped**, appearing in 2009, 2019 and
+2020.
+
+So the ban was not line-wide, and the story is more precise than the one
+everybody tells. **I would not have found that by remembering harder**, because
+I was recalling what a Pokémon fan knows rather than looking at what our data
+says.
+
+THE PRINCIPLE: search the DATA, not your memory of the subject. Memory finds
+the famous patterns and misses the odd ones, which is exactly backwards —
+the famous ones are already posted by everybody else.
+
+WHAT THE SCOUT LOOKS FOR, none of it requiring taste: an illustrator who drew
+a Pokémon exactly once out of forty-plus cards · a Pokémon absent from print
+for seven years or more · an artist whose output is dominated by one creature ·
+a year one illustrator drew a sixth of the good cards.
+
+**IT PROPOSES AND NEVER ADOPTS.** Candidate themes — fifteen Pokémon ending in
+"-eon" — are flagged for a human, because deciding a group belongs together is
+taste, and taste goes in a file a person signs. A guard fails the build if the
+scout ever writes to data/themes.json itself.
+
+ITS DECLARED BLIND SPOT, and the honest one: **it cannot tell whether a pattern
+is interesting, only that it is unusual.** It located the Abra gap. A human
+supplied Uri Geller.
