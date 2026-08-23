@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T02:19:44.554Z",
+ "generatedAt": "2026-08-23T02:28:44.450Z",
  "date": "2026-08-23",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -21,6 +21,7 @@
   "universe-advisor: 5 finding(s)",
   "falsifier: clean run — nothing failed, which is the point of it",
   "review-agents: has never actually run (no key) — costing nothing, proving nothing, and honest about both",
+  "decision-audit: clean run — nothing failed, which is the point of it",
   "compliance: clean run — nothing failed, which is the point of it",
   "security: clean run — nothing failed, which is the point of it",
   "anomaly: clean run — nothing failed, which is the point of it"
@@ -675,7 +676,7 @@
   {
    "from": "api-strategist",
    "owner": "tyler",
-   "what": "the paid provider is called from 91 places",
+   "what": "the paid provider is called from 92 places",
    "do": "list what ONLY the paid provider gives us; if that list is short, either use more of it or stop paying for it",
    "score": 30,
    "band": "NOTE ONLY",

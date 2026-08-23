@@ -1074,3 +1074,33 @@ decisions made fastest.
 
 Under twenty graded predictions the record means nothing, and the auditor says
 so rather than showing a percentage that looks like knowledge.
+
+## I BUILT THE THING THAT CHECKS ME (Tyler, Aug 23 2026)
+"How do we make sure you're not biased to yourself?"
+
+The conflict is real and cannot be fixed by care. I wrote verify-work.mjs, I
+chose which failure classes it covers, and I set how strict each rule is —
+every one of those decisions made by the party the tool exists to catch. And
+bias would not FEEL like bias: a lenient rule feels like a reasonable rule.
+
+SO IT IS MEASURED RATHER THAN PROMISED, by three mechanisms:
+
+1. **WHO CAUGHT IT.** The ledger records the discoverer of every incident, and
+   that ratio is the score. Today: **Tyler 11, machines 2.** A guard suite that
+   the human keeps out-performing is calibrated to what I already believed
+   rather than to what actually goes wrong — which is what self-bias looks like
+   from outside: not a wrong rule, an ABSENT one.
+2. **NO CHERRY-PICKING.** Every class in the ledger must map to a check. The
+   bias guard immediately caught four I had skipped — multi-item pollution, SKU
+   existence, coverage overclaim, untested assumption. Adding them found two
+   live problems within a minute, which is the cost of having chosen.
+3. **IT CANNOT BE QUIETLY WEAKENED.** A negative test asserts the verifier
+   still covers every ledger class, so softening a rule fails the build.
+
+THE BIAS GUARD DOES NOT BLOCK. It reports a standing structural fact, and a
+permanently-red blocking guard gets muted — which would be the crying-wolf
+failure wearing yet another costume.
+
+THE HONEST TARGET: the machine share should rise over time. If Tyler is still
+catching most of it in a month, the tooling is decorative regardless of how
+many guards are registered.

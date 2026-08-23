@@ -651,4 +651,5 @@ try { await import("./build-coverage.mjs"); } catch (e) { console.warn(`  ⚠ co
 await import("./windowless-price-guard.mjs");
 await import("./content-sanity.mjs");
 await import("./verify-work.mjs");
+try { await import("./bias-guard.mjs"); } catch (e) { console.warn(`  ⚠ bias guard: ${e.message} — advisory`); }
 await import("./publish-assert.mjs");

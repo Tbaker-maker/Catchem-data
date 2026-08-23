@@ -98,6 +98,40 @@ const scripts = (await readdir(join(ROOT, "scripts"))).filter(f => f.endsWith(".
     "A price from one marketplace beside a depth from another reads as one market. Labelled it is honest; unlabelled it is a false comparison.", 15);
 }
 
+// ── ERROR 11 · MULTI-ITEM POLLUTION ───────────────────────────────────────
+{
+  const sp = await J("data/sealed-prices.json") ?? { products: [] };
+  const suspicious = sp.products.filter(p => p.dataStatus === "live" && p.subtype === "booster-pack" && p.priceMedian > 40);
+  if (suspicious.length) P("multi-item pollution", `${suspicious.length} single pack(s) priced above $40`,
+    "A single pack at that price usually means a multi-pack listing survived the filter. This is error 11, and it is how a whole class of prices got inflated before.", 11);
+}
+
+// ── ERROR 16 · UNTESTED ASSUMPTION ────────────────────────────────────────
+{
+  const brk = await J("research/pulse/breaker-report.json") ?? {};
+  const highs = (brk.hypotheses ?? []).filter(h => h.severity === "high").length;
+  if (highs >= 5) P("untested assumption", `${highs} high-severity untested assumptions are open`,
+    "The Breaker exists to find these, and a growing backlog means we are shipping faster than we are checking. That is error 16 accumulating.", 16);
+}
+
+// ── ERROR: SKU EXISTENCE ──────────────────────────────────────────────────
+{
+  const sp = await J("data/sealed-prices.json") ?? { products: [] };
+  const ghosts = sp.products.filter(p => p.dataStatus === "live" && (p.listingCount ?? 0) === 0);
+  if (ghosts.length) P("sku existence", `${ghosts.length} product(s) marked live with zero listings`,
+    "A tracked product that never has listings is a permanent source of wrong numbers, and marking it live claims we can price something we cannot.", 0);
+}
+
+// ── ERROR: COVERAGE OVERCLAIM ─────────────────────────────────────────────
+{
+  const dem = await J("research/pulse/demand.json") ?? {};
+  const rows = (dem.liquidity ?? []).length;
+  const enr = await J("data/singles-enrichment.json") ?? {};
+  const chosen = (enr.cards ?? enr.rows ?? []).length;
+  if (rows > chosen * 5 && rows > 100) P("coverage overclaim", `demand reports ${rows} rows from an enrichment sample of ${chosen} chosen cards`,
+    "A found sample is not chosen coverage. Describing one as the other is how a number that means little gets read as a market-wide figure.", 0);
+}
+
 // ── THE META-CHECK · did I exclude myself? ────────────────────────────────
 // Five checkers read their own source in one day. This one names the risk out
 // loud rather than assuming it is immune.
@@ -106,7 +140,7 @@ const selfAware = true;   // this file audits data and other scripts, never itse
 const out = { generatedAt: new Date().toISOString(),
   purpose: "Checks output against the failure classes in our own error ledger — things that actually happened here, not generic quality rules.",
   runsOn: "output, never intent. What I meant to do is not evidence.",
-  classesChecked: [13, 14, 15, 16, 18],
+  classesChecked: [11, 13, 14, 15, 16, 18, "sku existence", "coverage overclaim"],
   problems };
 await (await import("node:fs/promises")).writeFile(join(ROOT, "research/pulse/work-verification.json"), JSON.stringify(out, null, 1));
 

@@ -102,5 +102,8 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 - **breaker** — You test what we built. What have we DELETED recently, and did anything depend on it?
 - **correction-hunter** — You re-check figures that moved. Ask about the ones that never move — a price frozen for a month is a claim too.
 
+## Who is catching our mistakes
+- **Tyler catches 11 of 13 incidents; the machines catch 2** — *Every guard here was written by the party being checked. If the human keeps finding what the tooling misses, the tooling is calibrated to what I already believed rather than to what actually goes wrong. That is what self-bias looks like from the outside — not a wrong rule, an absent one.*
+
 ---
 *Written by the agents, for a person. If a section here never leads to an action, that section should be deleted rather than tolerated.*

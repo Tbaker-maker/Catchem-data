@@ -544,6 +544,23 @@ const CASES = [
         why: ungradable.length ? `${ungradable.map(d => d.id).join(", ")} cannot be graded` : "the auditor no longer enforces that every decision carries a prediction" };
     } },
 
+  { guard: "Verifier cannot be quietly weakened", detect: null,
+    // I wrote the thing that checks my work and can soften it at any time. This
+    // asserts it still covers every class in the ledger — so relaxing a rule
+    // fails the build rather than passing silently.
+    fn: async () => {
+      const v = await readFile(P("scripts/verify-work.mjs"), "utf-8");
+      const ledger = await readFile(P("research/RESEARCH-GATE.md"), "utf-8");
+      const classes = ledger.split("\n").filter(l => /^\| \d+ \|/.test(l))
+        .map(r => (r.split("|")[4] ?? "").trim().toLowerCase()).filter(Boolean);
+      const unguarded = [...new Set(classes)].filter(c => {
+        const words = c.split(/\W+/).filter(w => w.length > 4);
+        return words.length && !words.some(w => v.toLowerCase().includes(w));
+      });
+      return { pass: unguarded.length === 0,
+        why: unguarded.length ? `${unguarded.length} ledger class(es) no longer covered: ${unguarded.slice(0, 3).join("; ")} — the verifier has been weakened or the ledger has grown past it` : "" };
+    } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");
