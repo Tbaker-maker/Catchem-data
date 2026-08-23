@@ -1331,6 +1331,37 @@ the feeling, and the feeling has to be theirs.
 THE NAME: Catch'em Creators. It fits the tagline family and it names the
 people rather than the tool, which is the right way round.
 
+## CURATION IS NOT SLOP (Tyler, Aug 23 2026)
+"Cute cards aren't slop as long as it has a good theme. 9 cutest cards for
+your binder. Which generation of the legendary birds did you like the most?"
+
+I over-corrected and banned subjective words outright, which would have blocked
+the best content we could make. The amendment:
+
+**THE TEST IS NOT WHETHER THE WORD IS SUBJECTIVE. IT IS WHETHER THE READER IS
+INVITED TO DISAGREE.**
+- "These are the most iconic cards" — asserted, unfalsifiable, closes the
+  conversation. Slop.
+- "9 cutest cards for your binder — which would you pick?" — obviously
+  curation, invites disagreement. Not slop.
+- "Which generation did the birds best?" — a question, and a question cannot
+  be wrong.
+
+**A post that starts an argument beats one that ends it.** Debate, disagreement
+and people arguing about which Articuno is better ARE the engagement — and a
+guard that blocked all of it would have optimised us into being correct and
+unread.
+
+TWO LAYOUTS BUILT FOR IT:
+- **--binder**: a 3x3 page, the way a collector actually sees cards.
+- **--grid RxC**: rows that compare. Three legendary birds across three eras,
+  captioned as a question. Every card in it is real and sourced; only the
+  QUESTION is subjective, and a question is honest about being one.
+
+slop-guard now allows a subjective word inside an invitation — a question, a
+first-person frame, an explicit "which would you". It still blocks the same
+word stated flatly as a finding.
+
 ## SLOP IS A GROUPING THAT IS NOT IN THE DATA (Tyler, Aug 23 2026)
 "We need to be super creative and engaging, with ZERO AI SLOP. That's the
 quickest way to screw everything up."

@@ -58,6 +58,20 @@ const label = labelIdx >= 0 ? args[labelIdx + 1] : null;
 const artistIdx = args.indexOf("--artist");
 const cat = await J("data/card-catalogue.json") ?? { cards: {} };
 
+// GRID LAYOUTS (Tyler, 2026-08-23). Two shapes, both built to start a
+// conversation rather than end one:
+//   --binder   a 3x3 page, the way a collector actually sees cards
+//   --grid ROWSxCOLS  rows that compare — three birds across three eras —
+//              captioned as a QUESTION so the reader is invited to disagree.
+// The question framing is the whole point. A post that starts an argument
+// beats one that ends it, and a question cannot be wrong.
+const gridIdx = args.indexOf("--grid");
+const isBinder = args.includes("--binder");
+const gridSpec = gridIdx >= 0 ? (args[gridIdx + 1] ?? "3x3") : (isBinder ? "3x3" : null);
+const [gRows, gCols] = gridSpec ? gridSpec.split("x").map(Number) : [0, 0];
+
+
+
 let ids = args.filter(a => !a.startsWith("--") && a !== label && /-/.test(a) && cat.cards[a]);
 
 // --artist mode: the strongest art post shape we have found. First card beside
@@ -98,9 +112,7 @@ if (!ids.length) {
   // sizing is the whole point: a row of cards at different scales reads as a
   // collage, and a collage looks like something a fan made rather than
   // something a company published.
-  const CARD_W = 420, CARD_H = 586, GAP = 40, PAD = 64, CAPTION = label ? 150 : 56;
-  const W = PAD * 2 + CARD_W * ids.length + GAP * (ids.length - 1);
-  const H = PAD * 2 + CARD_H + CAPTION;
+
 
   const cards = [];
   for (const id of ids) {
@@ -108,6 +120,18 @@ if (!ids.length) {
     if (url) cards.push({ id, ...cat.cards[id], imageUrl: url });
   }
   if (!cards.length) { console.error("no usable images — nothing produced rather than a card back"); process.exitCode = 1; }
+
+  const isGrid = gridSpec && cards.length > 3;
+  const perRow = isGrid ? gCols : cards.length;
+  const rowCount = isGrid ? Math.ceil(cards.length / gCols) : 1;
+  // Cards shrink as the grid grows so a 3x3 still fits a readable frame.
+  const CARD_W = isGrid ? (perRow >= 3 ? 300 : 380) : 420;
+  const CARD_H = Math.round(CARD_W * 1040 / 745);
+  const GAP = isGrid ? 22 : 40, PAD = 64;
+  const CAPTION = label ? 150 : 56;
+  const W = PAD * 2 + CARD_W * perRow + GAP * (perRow - 1);
+  const H = PAD * 2 + CARD_H * rowCount + GAP * (rowCount - 1) + CAPTION + (isGrid ? 30 * rowCount : 0);
+
   const sameArtist = new Set(cards.map(c => c.artist)).size === 1 ? cards[0].artist : null;
   const years = cards.map(c => (c.releaseDate ?? "").slice(0, 4)).filter(Boolean);
   const caption = label ?? (sameArtist
@@ -117,9 +141,11 @@ if (!ids.length) {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ${W} ${H}">
 <rect width="${W}" height="${H}" fill="#070910"/>
 ${cards.map((c, i) => {
-  const x = PAD + i * (CARD_W + GAP);
-  return `<image x="${x}" y="${PAD}" width="${CARD_W}" height="${CARD_H}" preserveAspectRatio="xMidYMid meet" xlink:href="${c.imageUrl}"/>
-<text x="${x + CARD_W / 2}" y="${PAD + CARD_H + 34}" text-anchor="middle" fill="#8a93a8" font-family="Sora" font-size="20">${(c.name ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;")}${c.releaseDate ? ` · ${c.releaseDate.slice(0, 4)}` : ""}</text>`;
+  const col = isGrid ? i % perRow : i, row = isGrid ? Math.floor(i / perRow) : 0;
+  const x = PAD + col * (CARD_W + GAP);
+  const y = PAD + row * (CARD_H + GAP + (isGrid ? 30 : 0));
+  return `<image x="${x}" y="${y}" width="${CARD_W}" height="${CARD_H}" preserveAspectRatio="xMidYMid meet" xlink:href="${c.imageUrl}"/>
+<text x="${x + CARD_W / 2}" y="${y + CARD_H + 26}" text-anchor="middle" fill="#8a93a8" font-family="Sora" font-size="${isGrid ? 16 : 20}">${((c.name ?? "").length > (isGrid ? 20 : 40) ? (c.name ?? "").slice(0, isGrid ? 18 : 38) + "…" : (c.name ?? "")).replace(/&/g, "&amp;").replace(/</g, "&lt;")}${c.releaseDate ? ` · ${c.releaseDate.slice(0, 4)}` : ""}</text>`;
 }).join("\n")}
 ${label ? `<text x="${W / 2}" y="${H - 96}" text-anchor="middle" fill="#f4f5f8" font-family="Syne" font-weight="800" font-size="30">${label.replace(/&/g, "&amp;")}</text>` : ""}
 <text x="${PAD}" y="${H - 18}" fill="#36d399" font-family="Syne" font-weight="800" font-size="22">Catch'em</text>
@@ -136,8 +162,8 @@ ${label ? `<text x="${W / 2}" y="${H - 96}" text-anchor="middle" fill="#f4f5f8" 
   body{margin:0;background:#070910;display:flex;align-items:center;justify-content:center;min-height:100vh;
        font-family:system-ui,-apple-system,"Segoe UI",sans-serif;padding:40px 20px}
   .wrap{max-width:${W}px;width:100%}
-  .row{display:flex;gap:${GAP}px;justify-content:center;align-items:flex-start}
-  .card{flex:1 1 0;max-width:${CARD_W}px;text-align:center}
+  .row{display:grid;grid-template-columns:repeat(${perRow},1fr);gap:${GAP}px;justify-content:center;align-items:start}
+  .card{text-align:center}
   .card img{width:100%;aspect-ratio:745/1040;object-fit:contain;display:block;border-radius:12px}
   .cap{color:#8a93a8;font-size:16px;margin-top:14px}
   .label{color:#f4f5f8;font-weight:800;font-size:30px;text-align:center;margin:34px 0 0}

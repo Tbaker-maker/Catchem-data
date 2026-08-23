@@ -22,7 +22,21 @@ const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "ut
 const FIELDS = ["name", "artist", "setId", "setName", "number", "rarity", "releaseDate", "price", "supertype"];
 // Words that assert taste or significance without anything behind them. Each of
 // these has been used, by me, in a sentence that could not be checked.
-const ASSERTIONS = /\b(cute|iconic|beautiful|stunning|underrated|hidden gem|must-have|legendary art|best|greatest|most beautiful|perfect|amazing|incredible)\b/i;
+// CORRECTED (Tyler, 2026-08-23). Banning subjective words outright would have
+// blocked the best content we could make. "9 cutest cards for your binder" is
+// not slop - it is obviously curation and it invites disagreement. "Which
+// generation did you like most?" is a question, and a question cannot be wrong.
+//
+// THE TEST IS NOT WHETHER THE WORD IS SUBJECTIVE. It is whether the reader is
+// invited to disagree. A subjective claim DRESSED AS A FINDING closes the
+// conversation and is slop. A subjective pick OFFERED AS ONE opens it, and a
+// post that starts an argument beats one that ends it.
+const ASSERTIONS = /\b(cute|iconic|beautiful|stunning|underrated|hidden gem|must-have|best|greatest|perfect|amazing|incredible)\b/i;
+
+// Signals that a subjective word is being offered rather than asserted: a
+// question, a first-person frame, or an explicit invitation to disagree.
+const INVITES_DISAGREEMENT = /\?|\bwhich\b|\byour\b|\bour\b|\bwe \w+|\bpicks?\b|argue|debate|disagree|fight me|change my mind|you decide|would you/i;
+const isCuration = (text) => INVITES_DISAGREEMENT.test(String(text ?? ""));
 
 const problems = [];
 const P = (where, what, why) => problems.push({ where, what, why });
@@ -37,7 +51,10 @@ if (f) {
     // 2 — no adjective doing a field's job.
     for (const t of [x.title, x.why, x.angle]) {
       const hit = ASSERTIONS.exec(t ?? "");
-      if (hit) P(x.title, `asserts "${hit[0]}"`, "That word claims significance nothing in the data supports. Say what IS true and let the images argue.");
+      // A subjective word inside an invitation is curation, not a claim.
+      if (hit && !isCuration(t) && !isCuration(x.angle) && !isCuration(x.title))
+        P(x.title, `asserts "${hit[0]}" as a finding`,
+          "Stated flatly, that word claims significance the data cannot support. Turn it into a pick or a question - 'our nine picks' or 'which would you choose' - and it becomes an invitation instead of an unfalsifiable claim.");
     }
     // 3 — a grouping of one or two is not a grouping.
     if ((x.count ?? 0) < 2) P(x.title, `only ${x.count} card(s)`, "A pattern needs more than one instance or it is a coincidence with a caption.");
@@ -56,7 +73,8 @@ if (feed) {
     for (const [k, v] of Object.entries(n)) {
       if (typeof v === "string" && v.length > 25) {
         const hit = ASSERTIONS.exec(v);
-        if (hit) P(`feed.${path}${k}`, `asserts "${hit[0]}"`, "Published copy claiming significance the data does not carry.");
+        if (hit && !isCuration(v)) P(`feed.${path}${k}`, `asserts "${hit[0]}" as a finding`,
+          "In an instrument, a subjective word with no invitation attached is a claim we cannot defend. In a POST it would be fine, because a post can offer a pick; an instrument cannot.");
       }
       if (v && typeof v === "object") walk(v, `${path}${k}.`);
     }
