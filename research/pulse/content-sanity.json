@@ -1,6 +1,17 @@
 {
- "generatedAt": "2026-08-23T06:13:17.587Z",
+ "generatedAt": "2026-08-23T06:18:41.323Z",
  "checks": "placeholder text, unresolved templates, truncation, label-in-prose-slot, and copy too short to be an explanation",
  "why": "Every other guard checks whether the data is correct. This checks whether the WORDS say anything — the gap that let a card publish the single word 'chase' as its reason while every other check passed.",
- "problems": []
+ "problems": [
+  {
+   "where": "dailyThree.raw.explain",
+   "text": "chase",
+   "why": "5 characters — that is a label, not an explanation. A reader who taps for a reason and gets one word learns we had nothing to say."
+  },
+  {
+   "where": "dailyThree.raw.explain",
+   "text": "chase",
+   "why": "identical to another field on the same object — a label is being rendered where prose belongs"
+  }
+ ]
 }

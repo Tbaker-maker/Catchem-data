@@ -1,0 +1,105 @@
+{
+ "note": "THEMES FOR CREATORS. Tyler, 2026-08-23: 'Set → how many cards → theme → narrow it down. We should be sparking their brain for them. Give them inspiration and they'll never leave.' A search box is a tool; a funnel is fuel.",
+
+ "slopRule": "Every theme is EITHER derived from a field we hold (artist, setId, rarity, releaseDate) OR a NAMED LIST stored right here where anybody can argue with it. 'Cute' is not in the data — but eighteen specific baby Pokémon are, and a list can be disagreed with where an adjective cannot. That is the whole difference between curation and slop.",
+
+ "framing": "Themes needing taste are framed as SELECTION, never as ranking. 'Nine cute cards for your binder' invites you to disagree; 'the nine cutest cards' tells you that you are wrong. A question gets replies and replies are the game.",
+
+ "themes": [
+  {
+   "id": "food",
+   "name": "Pokémon that are food",
+   "kind": "named list",
+   "hook": "Which one would you actually eat?",
+   "why": "Nobody expects a themed page of edible Pokémon and everybody has an opinion about Vanilluxe.",
+   "members": ["Vanillite", "Vanilluxe", "Alcremie", "Applin", "Appletun", "Slurpuff", "Swirlix", "Cherubi", "Combee", "Tropius", "Milcery", "Fidough", "Dachsbun", "Sinistea", "Polteageist", "Bounsweet", "Steenee", "Tsareena"],
+   "bestAt": [4, 6, 9]
+  },
+  {
+   "id": "babies",
+   "name": "The baby Pokémon",
+   "kind": "named list",
+   "hook": "Which page is going in the front of the binder?",
+   "why": "A real category with a real boundary — these are the pre-evolutions introduced from Gen II onward, not a mood.",
+   "members": ["Pichu", "Cleffa", "Igglybuff", "Togepi", "Tyrogue", "Smoochum", "Elekid", "Magby", "Azurill", "Wynaut", "Budew", "Chingling", "Bonsly", "Happiny", "Munchlax", "Riolu", "Mantyke"],
+   "bestAt": [6, 9]
+  },
+  {
+   "id": "ghosts",
+   "name": "Ghost-type nightmares",
+   "kind": "named list",
+   "hook": "Which one actually scared you as a kid?",
+   "why": "Ghost art is where illustrators are given the most room, and it shows.",
+   "members": ["Gengar", "Mimikyu", "Dusknoir", "Chandelure", "Drifloon", "Banette", "Spiritomb", "Froslass", "Gholdengo"],
+   "bestAt": [3, 6, 9]
+  },
+  {
+   "id": "sleeping",
+   "name": "Pokémon caught napping",
+   "kind": "named list",
+   "hook": "Late night check-in. Who's still awake?",
+   "why": "Proved: the cropped Charmander post using this register did 791 views against a data post's 154, same account, same week.",
+   "members": ["Snorlax", "Komala", "Jigglypuff", "Drowzee", "Hypno", "Musharna", "Munna"],
+   "bestAt": [1, 3, 4]
+  },
+  {
+   "id": "artist-career",
+   "name": "One artist, across the years",
+   "kind": "derived",
+   "basis": "artist field + earliest and latest hero card",
+   "hook": "{years} years apart. Same illustrator.",
+   "why": "The shape that landed first — Base Set Charizard beside the 151 Blastoise ex.",
+   "bestAt": [2, 4]
+  },
+  {
+   "id": "many-hands",
+   "name": "One Pokémon, many illustrators",
+   "kind": "derived",
+   "basis": "name + distinct artist values",
+   "hook": "{n} artists. One {mon}. Which is the definitive one?",
+   "why": "The differences argue for themselves and the post needs no words.",
+   "bestAt": [4, 8]
+  },
+  {
+   "id": "generations",
+   "name": "The same trio, across eras",
+   "kind": "derived",
+   "basis": "a named trio + releaseDate + rarity, three complete sets",
+   "hook": "Which row wins?",
+   "why": "Three eras stacked as rows. It asks rather than tells, which is what gets a reply instead of a scroll.",
+   "bestAt": [9]
+  },
+  {
+   "id": "historic",
+   "name": "Cards with a story",
+   "kind": "derived",
+   "basis": "a sourced fact from data/knowledge.json plus the card it names",
+   "hook": "Most people have no idea this happened.",
+   "why": "Kadabra vanished from the card game for twenty-one years because a man who bends spoons sued. Every claim carries a source and a falsifier.",
+   "bestAt": [1, 2]
+  },
+  {
+   "id": "set-showcase",
+   "name": "The best of one set",
+   "kind": "derived",
+   "basis": "setId + rarity",
+   "hook": "Six from {set}. Which page are you filling first?",
+   "why": "Works for anybody currently opening that set, which is most people most of the time.",
+   "bestAt": [4, 6, 9]
+  },
+  {
+   "id": "first-and-last",
+   "name": "An illustrator's debut",
+   "kind": "derived",
+   "basis": "earliest releaseDate for that artist",
+   "hook": "Everybody starts somewhere.",
+   "why": "A debut is a date in the data, not a judgment — and the contrast with their best-known work does the rest.",
+   "bestAt": [2]
+  }
+ ],
+
+ "openQuestions": [
+  "Aesthetically pleasing has no honest basis yet. Rarity is a proxy for effort, not for beauty, and we should not pretend otherwise. It needs either a stored list somebody stands behind or a community vote — and a vote would be better content than our opinion anyway.",
+  "Type-based themes (all Water, all Dragon) would be easy and are not in our data — the catalogue has no type field. Worth adding if a source has it."
+ ]
+}

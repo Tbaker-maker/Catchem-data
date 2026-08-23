@@ -30,6 +30,9 @@ else {
   // Slim index. Cards with no illustrator are KEPT but flagged - Tyler asked to
   // be able to pick them, and the missing credit is a dataset backfill lag
   // rather than a Pokemon decision, so hiding them would hide 43% of 2024.
+
+  const themes = await J("data/themes.json");
+  const sets = [...new Set(Object.values(cat.cards).map(c => c.setName).filter(Boolean))].sort();
   const index = Object.entries(cat.cards).map(([id, c]) => ({
     i: id, n: c.name, a: c.artist ?? null, s: c.setName,
     y: (c.releaseDate ?? "").slice(0, 4), r: c.rarity ?? "",
@@ -47,6 +50,22 @@ else {
 h1{font-size:28px;margin:0 0 2px}.sub{color:var(--dim);margin:0 0 20px;font-size:14.5px}
 input,select{background:#0b0d14;border:1px solid var(--line);border-radius:9px;color:var(--ink);
   padding:11px 13px;font:15px inherit;width:100%}
+.funnel{display:grid;grid-template-columns:1.4fr 1fr 1.6fr;gap:14px;margin-bottom:16px;
+  background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:16px}
+.step label{display:block;font-size:12.5px;color:var(--dim);margin-bottom:7px;letter-spacing:.3px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:#0b0d14;border:1px solid var(--line);color:var(--dim);border-radius:8px;
+  padding:9px 13px;font-size:13.5px;cursor:pointer}
+.chip.on{border-color:var(--green);color:var(--green);background:rgba(54,211,153,.08)}
+.ideas{display:grid;gap:10px;margin-bottom:18px}
+.idea{background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:14px 16px;cursor:pointer;transition:border-color .12s}
+.idea:hover{border-color:var(--green)}
+.idea b{display:block;font-size:16px;margin-bottom:3px}
+.idea i{font-style:normal;color:var(--dim);font-size:13.5px;display:block}
+.idea .hook{color:var(--green);font-size:13.5px;margin-top:6px}
+.adv{margin-bottom:14px}
+.adv summary{color:var(--dim);font-size:14px;cursor:pointer;padding:6px 0}
+@media(max-width:760px){.funnel{grid-template-columns:1fr}}
 .controls{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;margin-bottom:14px}
 .results{display:grid;grid-template-columns:repeat(auto-fill,minmax(122px,1fr));gap:10px;
   max-height:320px;overflow-y:auto;padding:4px;background:var(--surf);border:1px solid var(--line);border-radius:12px}
@@ -79,6 +98,16 @@ canvas{max-width:100%;border-radius:12px;margin-top:16px;display:none}
 <h1>Build a post</h1>
 <p class="sub">Search ${index.length.toLocaleString("en-US")} cards. Add up to nine. The frame picks itself.</p>
 
+<div class="funnel">
+  <div class="step"><label>1 · A set, or all of them</label>
+    <select id="fset"><option value="">Every set</option>${sets.map(x => `<option>${x.replace(/&/g, "&amp;")}</option>`).join("")}</select></div>
+  <div class="step"><label>2 · How many cards</label>
+    <div class="chips" id="fcount">${[1,2,3,4,6,8,9].map(n => `<button class="chip" data-n="${n}">${n}</button>`).join("")}</div></div>
+  <div class="step"><label>3 · What kind of post</label>
+    <div class="chips" id="ftheme"></div></div>
+</div>
+<div id="ideas" class="ideas"></div>
+<details class="adv"><summary>Or search all ${index.length.toLocaleString("en-US")} cards yourself</summary>
 <div class="controls">
   <input id="q" placeholder="Pokémon, illustrator, or set…" autocomplete="off">
   <select id="rar"><option value="">Any rarity</option>
@@ -87,6 +116,7 @@ canvas{max-width:100%;border-radius:12px;margin-top:16px;display:none}
   <input id="yr" placeholder="Year, e.g. 1999" inputmode="numeric">
 </div>
 <div class="results" id="res"></div>
+</details>
 
 <div class="tray" id="tray"><span class="empty">Click cards above to add them here</span></div>
 <div class="status" id="st"></div>
@@ -106,6 +136,8 @@ have no illustrator recorded in the public dataset; that is a backfill gap on re
 Pokémon decision, and you can still use them.</div>
 </div>
 <script>
+const THEMES = ${JSON.stringify(themes?.themes ?? [])};
+const SETS = ${JSON.stringify(sets)};
 const LAYOUTS = ${JSON.stringify(Object.fromEntries(Object.entries(LAYOUTS).map(([k, v]) => [k, { cols: v.cols, cardW: v.cardW, name: v.name }])))};
 const SUPPORTED = Object.keys(LAYOUTS).map(Number);
 let INDEX = [], tray = [], blob = null;
@@ -158,6 +190,93 @@ function render(){
     setStatus(\`\${tray.length} cards has no frame. \${below ? "Remove " + (tray.length - below) : ""}\${below && above ? " or add " + (above - tray.length) : ""}.\`, true);
   }
 }
+
+
+// THE FUNNEL. Three small questions, then real combinations - not a list of
+// themes but a list of POSTS, each already loadable into the tray. A creator
+// who arrives without an idea should leave with three.
+let fSet = "", fCount = 0, fTheme = null;
+
+function renderThemes(){
+  const box = el("ftheme");
+  const fits = THEMES.filter(t => !fCount || (t.bestAt || []).includes(fCount));
+  box.innerHTML = fits.map(t => \`<button class="chip\${fTheme===t.id?" on":""}" data-t="\${t.id}">\${t.name}</button>\`).join("")
+    || "<span class='empty'>no theme suits that count — try another</span>";
+  box.querySelectorAll(".chip").forEach(b => b.onclick = () => { fTheme = b.dataset.t; renderThemes(); buildIdeas(); });
+}
+el("fcount").querySelectorAll(".chip").forEach(b => b.onclick = () => {
+  fCount = fCount === +b.dataset.n ? 0 : +b.dataset.n;
+  el("fcount").querySelectorAll(".chip").forEach(x => x.classList.toggle("on", +x.dataset.n === fCount));
+  if (fTheme && !THEMES.find(t => t.id === fTheme && (t.bestAt||[]).includes(fCount))) fTheme = null;
+  renderThemes(); buildIdeas();
+});
+el("fset").onchange = () => { fSet = el("fset").value; buildIdeas(); };
+
+const HERO_RX = /(Special Illustration|Illustration Rare|Rare Holo|Rare Secret|Rare Ultra|Rare Rainbow|Ultra Rare)/i;
+
+function buildIdeas(){
+  const box = el("ideas");
+  if (!fCount || !fTheme) { box.innerHTML = ""; return; }
+  const t = THEMES.find(x => x.id === fTheme);
+  const pool = INDEX.filter(c => (!fSet || c.s === fSet) && HERO_RX.test(c.r || ""));
+  const ideas = [];
+
+  if (t.kind === "named list") {
+    // A stored list, so the grouping is arguable rather than asserted.
+    const hits = pool.filter(c => t.members.some(m => c.n.startsWith(m)));
+    const byMon = {};
+    for (const c of hits) { const m = t.members.find(x => c.n.startsWith(x)); if (!byMon[m]) byMon[m] = c; }
+    const picked = Object.values(byMon).slice(0, fCount);
+    if (picked.length === fCount) ideas.push({ title: t.name, sub: picked.map(c=>c.n).join(" · "), hook: t.hook, cards: picked });
+  }
+  if (t.id === "many-hands") {
+    const byName = {};
+    for (const c of pool) (byName[c.n.split(" ")[0]] ||= []).push(c);
+    for (const [mon, list] of Object.entries(byName)) {
+      const seen = new Map();
+      for (const c of list) if (c.a && !seen.has(c.a)) seen.set(c.a, c);
+      if (seen.size >= fCount) ideas.push({ title: mon + " by " + fCount + " illustrators",
+        sub: [...seen.keys()].slice(0, fCount).join(" · "), hook: fCount + " artists. One " + mon + ". Which is definitive?",
+        cards: [...seen.values()].slice(0, fCount) });
+      if (ideas.length >= 6) break;
+    }
+  }
+  if (t.id === "artist-career" || t.id === "first-and-last") {
+    const byArtist = {};
+    for (const c of pool) if (c.a) (byArtist[c.a] ||= []).push(c);
+    for (const [artist, list] of Object.entries(byArtist)) {
+      if (list.length < fCount) continue;
+      const sorted = list.sort((a,b) => (a.y||"") < (b.y||"") ? -1 : 1);
+      const span = Number(sorted[sorted.length-1].y) - Number(sorted[0].y);
+      if (span < 8) continue;
+      const picked = fCount === 2 ? [sorted[0], sorted[sorted.length-1]]
+        : sorted.filter((_,i,arr) => i % Math.max(1, Math.floor(arr.length/fCount)) === 0).slice(0, fCount);
+      if (picked.length !== fCount) continue;
+      ideas.push({ title: artist, sub: picked.map(c => c.n + " " + c.y).join("  →  "),
+        hook: span + " years apart. Same illustrator.", cards: picked });
+      if (ideas.length >= 6) break;
+    }
+  }
+  if (t.id === "set-showcase" && fSet) {
+    const best = pool.slice(0, fCount);
+    if (best.length === fCount) ideas.push({ title: "The best of " + fSet, sub: best.map(c=>c.n).join(" · "),
+      hook: fCount + " from " + fSet + ". Which page are you filling first?", cards: best });
+  }
+
+  box.innerHTML = ideas.length ? ideas.slice(0,6).map((idea,k) =>
+    \`<div class="idea" onclick="loadIdea(\${k})"><b>\${idea.title}</b><i>\${idea.sub}</i><div class="hook">\${idea.hook}</div></div>\`).join("")
+    : "<div class='empty'>nothing fits that combination — try a different count or set</div>";
+  window.__ideas = ideas;
+}
+
+function loadIdea(k){
+  const idea = window.__ideas[k]; if (!idea) return;
+  tray = idea.cards.slice(); blob = null;
+  el("label").value = idea.hook;
+  render();
+  el("make").scrollIntoView({ behavior: "smooth", block: "center" });
+}
+renderThemes();
 
 el("make").onclick = async () => {
   const L = LAYOUTS[tray.length]; if (!L) return;
