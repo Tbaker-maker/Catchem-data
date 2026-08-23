@@ -659,6 +659,7 @@ try { await import("./build-editor.mjs"); } catch (e) { console.warn("  build-ed
 await import("./layout-check.mjs");
 await import("./slop-guard.mjs");
 await import("./card-guard.mjs");
+await import("./pre-mortem.mjs");
 await import("./verify-work.mjs");
 try { await import("./bias-guard.mjs"); } catch (e) { console.warn(`  ⚠ bias guard: ${e.message} — advisory`); }
 try { if (new Date().getUTCDay() === 1) await import("./review.mjs"); } catch (e) { console.warn("  review: " + e.message); }

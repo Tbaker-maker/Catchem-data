@@ -178,6 +178,7 @@ const MUST_RUN = [
   { script: "layout-check.mjs", why: "text measured against real font metrics — clipping and collisions caught before rendering" },
   { script: "slop-guard.mjs", why: "every grouping must derive from a real field or an openly stored list" },
   { script: "card-guard.mjs", why: "a minted card must say something before anyone sees it" },
+  { script: "pre-mortem.mjs", why: "every guard declares what it CANNOT catch, so a check asking the wrong question is visible before it fails" },
   { script: "verify-work.mjs", why: "output checked against the failure classes in our own error ledger" },
   { script: "publish-assert.mjs", why: "final artifact proof — must be LAST" },
 ];

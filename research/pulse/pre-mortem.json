@@ -1,0 +1,32 @@
+{
+  "generatedAt": "2026-08-23T15:04:37.727Z",
+  "principle": "Every bug today was a check that was RIGHT IN PRINCIPLE and asked a question whose answer could not reveal the fault. Not a broken guard — a guard aimed slightly beside the thing it guards. We declare blind spots for every agent and none for guards, so a guard asking the wrong question looks exactly like one that works.",
+  "guardsChecked": 21,
+  "declared": 23,
+  "shapes": [
+    {
+      "id": "substring where structure exists",
+      "why": "A name match that looks right is the most reliable way to be catastrophically wrong. /tin/i matched Dratini, Victini, Mantine and Fighting Energy — 174 real singles. 'N' matched inside 'ninja'. Twice in one day."
+    },
+    {
+      "id": "one syntactic form of two",
+      "why": "The designer checked font-family: and four healthy pages used the font: shorthand, which sets the family too. Checking one form of a thing that has two forms passes the other silently."
+    },
+    {
+      "id": "platform-dependent path",
+      "why": "import() needs a URL. A bare path works on Linux and throws on Windows, so it is invisible on the machine that writes it and fatal on the one that runs it — three occurrences."
+    },
+    {
+      "id": "elapsed time as a proxy for an event",
+      "why": "The heartbeat allowed 30 hours so a LATE run would not cry wolf, and a window built to forgive a late run is exactly the size to hide a SKIPPED one. Green through a failure."
+    }
+  ],
+  "problems": [
+    {
+      "guard": "pre-mortem.mjs",
+      "what": "no declared blind spot",
+      "why": "A guard that has never been asked what it would MISS looks identical to one that works. The heartbeat looked identical to one that worked, on the morning it reported green through a failed run."
+    }
+  ],
+  "notes": []
+}

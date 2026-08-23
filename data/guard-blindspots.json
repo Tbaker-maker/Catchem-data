@@ -1,0 +1,140 @@
+{
+ "note": "What each guard CANNOT catch. Every bug on 2026-08-23 was a check that was right in principle and asked a question whose answer could not reveal the fault — not a broken guard, a guard aimed slightly beside the thing it guards. We declare blind spots for every agent and declared none for guards, so a guard asking the wrong question looked identical to one that works.",
+ "law": "Writing the sentence IS the work. Anybody made to write 'measures elapsed time, not whether a scheduled run happened' would have seen the gap before it cost a morning. A blind spot too vague to reveal a gap is not a blind spot.",
+ "guards": {
+  "schema-guard.mjs": {
+   "cannotCatch": "Values. A file with every key present and an index of 8,123,456 passes every structural test ever written — shape checking cannot see whether a number is absurd.",
+   "coveredBy": "impossibility checks and domain-plausibility",
+   "reviewed": "2026-08-23"
+  },
+  "flag-guard.mjs": {
+   "cannotCatch": "A gate that is registered, owned, documented and simply wrong. It verifies each flag exists once with an owner and a trigger; it has no view on whether the trigger is the right trigger.",
+   "coveredBy": "the compliance agent, and Tyler",
+   "reviewed": "2026-08-23"
+  },
+  "memory-guard.mjs": {
+   "cannotCatch": "Whether a law is CORRECT. It checks the knowledge base is current, readable and cross-referenced. A wrong law, perfectly formatted and reachable from the entry point, passes cleanly.",
+   "coveredBy": "the falsifier, and being wrong in public",
+   "reviewed": "2026-08-23"
+  },
+  "competence-guard.mjs": {
+   "cannotCatch": "Whether a declared principle is TRUE. It enforces that every specialist declares sourced principles, failure modes, blind spots and a recheck date. A confidently wrong principle with a real citation passes.",
+   "coveredBy": "the teacher, and the recheck date",
+   "reviewed": "2026-08-23"
+  },
+  "knowledge-guard.mjs": {
+   "cannotCatch": "Whether a source is any good. It requires every fact to carry sources, a date and a falsifier. Three secondary sources agreeing with each other satisfied it — and our own catalogue disproved the number.",
+   "coveredBy": "verify-work's secondary-consensus check, added after exactly that",
+   "reviewed": "2026-08-23"
+  },
+  "content-sanity.mjs": {
+   "cannotCatch": "Whether prose is GOOD. It catches labels in prose slots, unresolved templates, truncation and copy too short to be an explanation. A fluent, well-formed, entirely wrong sentence passes.",
+   "coveredBy": "review-agents, and Tyler reading it",
+   "reviewed": "2026-08-23"
+  },
+  "layout-check.mjs": {
+   "cannotCatch": "Whether a design looks GOOD. It measures clipping, overlap and empty panels against real font metrics. Geometry is not taste and a balanced, ugly page passes.",
+   "coveredBy": "the designer, and eyes",
+   "reviewed": "2026-08-23"
+  },
+  "card-guard.mjs": {
+   "cannotCatch": "Whether the IMAGE is right. It reads the SVG source, so a card back served as a 200 PNG at correct dimensions passed everything — the bytes were valid and the picture was of the wrong thing.",
+   "knownPatterns": [
+    "substring where structure exists"
+   ],
+   "coveredBy": "reading image URLs from source data rather than constructing them, and eyes",
+   "reviewed": "2026-08-23"
+  },
+  "slop-guard.mjs": {
+   "cannotCatch": "A grouping that IS in the data and still means nothing. It enforces that every grouping derives from a held field or an openly stored list; a technically-derived and utterly boring grouping passes.",
+   "coveredBy": "the post-outcome log, eventually",
+   "reviewed": "2026-08-23"
+  },
+  "verify-work.mjs": {
+   "cannotCatch": "Reasoning. It checks whether output carries what a defensible claim must carry. The pooled-cohort error that nearly retired a correct thesis would have passed it cleanly.",
+   "coveredBy": "the decision log, which grades predictions rather than logic",
+   "reviewed": "2026-08-23"
+  },
+  "bias-guard.mjs": {
+   "cannotCatch": "Its own bias. It was written by the same party it audits, and its measure of whether the machines are calibrated is a count the machines produce.",
+   "coveredBy": "Tyler catching what the machines miss — the ratio IS the score",
+   "reviewed": "2026-08-23"
+  },
+  "publish-assert.mjs": {
+   "cannotCatch": "Anything published through a path it does not read. Hand-minted cards went straight to Tyler twice, once with a wrong price and once meaningless, and this never saw either.",
+   "coveredBy": "verify-work's ungated-publication check, added after exactly that",
+   "reviewed": "2026-08-23"
+  },
+  "windowless-price-guard.mjs": {
+   "cannotCatch": "A figure with a window that is WRONG. It requires a date range; it cannot tell whether the range is accurate or whether the provider is describing it honestly.",
+   "coveredBy": "the graded-window probe, which measures rather than asks",
+   "reviewed": "2026-08-23"
+  },
+  "domain-plausibility.mjs": {
+   "cannotCatch": "An implausible value that is nevertheless true. Its rules encode what we believe about the hobby, so a genuine market shock reads as a filter fault — it names our own filter as first suspect, which is right almost always and wrong sometimes.",
+   "coveredBy": "the anomaly watcher, and Tyler",
+   "reviewed": "2026-08-23",
+   "knownPatterns": [
+    "substring where structure exists"
+   ]
+  },
+  "guard-audit.mjs": {
+   "cannotCatch": "Whether a wired guard asks the right question. It verifies guards exist, are connected and run in order. The heartbeat was wired, ordered, running — and green through a failed run.",
+   "knownPatterns": [
+    "platform-dependent path"
+   ],
+   "coveredBy": "this file",
+   "reviewed": "2026-08-23"
+  },
+  "heartbeat.mjs": {
+   "cannotCatch": "A run that fires, succeeds, and produces wrong data. It now detects missed scheduled runs; it has no view on whether a completed run did anything useful.",
+   "knownPatterns": [
+    "elapsed time as a proxy for an event"
+   ],
+   "coveredBy": "domain-plausibility and the correction hunter",
+   "reviewed": "2026-08-23",
+   "history": "Allowed 30 hours so a LATE run would not cry wolf, which is exactly the window a SKIPPED run hides in. Reported green through a failed fetch on 2026-08-23."
+  },
+  "qa-gate.mjs": {
+   "cannotCatch": "A number that is fresh, thick and wrong. It checks sample size, staleness and coverage — 26 listings kept from 150 fetched cleared every threshold while our own filter had eaten the market.",
+   "coveredBy": "domain-plausibility, built after exactly that",
+   "reviewed": "2026-08-23"
+  },
+  "voice-lint.mjs": {
+   "cannotCatch": "Copy that is on-voice and says nothing. It catches hype, hedging and forbidden phrasing. The word 'chase' published as an entire explanation passed it — perfectly on-voice, perfectly meaningless.",
+   "coveredBy": "content-sanity, built after exactly that",
+   "reviewed": "2026-08-23"
+  },
+  "jargon-lint.mjs": {
+   "cannotCatch": "A term we have taught badly. It flags unexplained jargon; it cannot tell whether the explanation given is any good, and 'the 9 rarely pays — only the 10' had a tooltip nobody could parse.",
+   "coveredBy": "review-agents reading as a stranger",
+   "reviewed": "2026-08-23"
+  },
+  "falsifier.mjs": {
+   "cannotCatch": "A thesis it is testing WRONGLY. It reported RT-5 TRIPPED because it pooled two cohorts the thesis explicitly contrasts — the thesis was 11 of 12 accurate and the test was measuring the average of a contrast. It matches card names when splitting RT-5 cohorts, which is the substring shape — mitigated by word boundaries and a hand-checked twelve-card set, and worth revisiting the moment that set grows.",
+   "coveredBy": "the contrastive-thesis guard in negative-tests, added after exactly that",
+   "reviewed": "2026-08-23",
+   "knownPatterns": [
+    "substring where structure exists"
+   ]
+  },
+  "correction-hunter.mjs": {
+   "cannotCatch": "A figure that never moves. It re-checks published numbers that changed; a price frozen for a month is a claim too, and it is invisible here.",
+   "coveredBy": "the teacher raised exactly this question",
+   "reviewed": "2026-08-23"
+  },
+  "rasterize-cards.mjs": {
+   "cannotCatch": "Whether the rendered image is CORRECT. It confirms a PNG was produced at the right size. A card back renders identically to a card front.",
+   "coveredBy": "reading image URLs from source, and eyes",
+   "reviewed": "2026-08-23"
+  },
+  "build-corrections.mjs": {
+   "cannotCatch": "NOT A GUARD. It generates the public corrections page. Listed in the audit because the audit tracks pipeline steps as well as checks, and conflating the two is how a generator gets read as a safety net. It also writes font stacks in the shorthand form, which is the shape that let four pages render headings in Times — acknowledged and fixed, kept on the record because the shape recurs.",
+   "notAGuard": true,
+   "reviewed": "2026-08-23",
+   "knownPatterns": [
+    "one syntactic form of two"
+   ]
+  }
+ }
+}

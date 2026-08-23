@@ -664,6 +664,20 @@ const CASES = [
            : "it computes the reason and then prints elapsed hours instead, hiding the fault behind a number that looks fine" };
     } },
 
+  { guard: "Pre-mortem: every guard declares its blind spot", detect: "pre-mortem.mjs",
+    // Strip one declaration and the build must fail. A guard nobody has asked
+    // "what would you miss" looks identical to one that works - which is what
+    // the heartbeat looked like on the morning it reported green through a
+    // failed run.
+    break: async () => {
+      await copyFile(P("data/guard-blindspots.json"), TMP("nt-pm.bak"));
+      const d = JSON.parse(await readFile(P("data/guard-blindspots.json"), "utf-8"));
+      delete d.guards["heartbeat.mjs"];
+      await writeFile(P("data/guard-blindspots.json"), JSON.stringify(d, null, 1));
+      return true;
+    },
+    restore: async () => { await copyFile(TMP("nt-pm.bak"), P("data/guard-blindspots.json")); } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");
