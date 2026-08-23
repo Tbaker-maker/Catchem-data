@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T00:21:02.778Z",
+ "generatedAt": "2026-08-23T00:28:42.365Z",
  "question": "Not what could we buy, but what is already arriving that we throw away. A field we ignore cost exactly as much as a field we use.",
  "blindSpots": [
   "Chat cannot reach the provider's documentation or make a live call. Everything here is read from responses already stored.",
@@ -10,7 +10,8 @@
   {
    "rank": 1,
    "spend": "ENRICHMENT on the top few thousand cards",
-   "callsPerDay": 6000,
+   "creditsPerDay": 9058,
+   "callsPerDay": 130,
    "haveNow": "12 cards (0.07% of catalogue)",
    "buys": "Sales VOLUME and graded sold prices. This is the only candidate that unlocks instruments we cannot build at all today - every number we publish currently reads asks and infers demand, and vol30 measures demand directly. It also unblocks the graded index and makes RT-5 testable for the first time.",
    "why": "Capability, not coverage. We already have prices on 16,468 cards and volume on twelve."
@@ -18,7 +19,8 @@
   {
    "rank": 2,
    "spend": "ENUMERATE and add sealed products",
-   "callsPerDay": 858,
+   "creditsPerDay": 0,
+   "callsPerDay": null,
    "haveNow": "207 products, chosen by hand from eBay",
    "buys": "Coverage of a market nobody else indexes, on a catalogue we have never even counted. The endpoint exists and has only ever been queried by name.",
    "why": "Second because it widens something we already do well rather than enabling something new - but it is the widest gap between what we track and what exists."
@@ -26,6 +28,7 @@
   {
    "rank": 3,
    "spend": "Twice-daily refresh on the top 500 cards and boxes",
+   "creditsPerDay": 700,
    "callsPerDay": 700,
    "haveNow": "once a day, everything",
    "buys": "Intraday movement on the things people actually watch. A $2,000 card can move meaningfully between breakfast and dinner.",
@@ -34,6 +37,7 @@
   {
    "rank": 4,
    "spend": "Historical backfill where the provider has it",
+   "creditsPerDay": 3000,
    "callsPerDay": 1500,
    "haveNow": "5 days of our own tape",
    "buys": "Every thesis we hold reports INSUFFICIENT for want of history. Backfill would make RT-1, RT-3 and RT-7 testable years earlier than waiting.",
@@ -42,8 +46,8 @@
  ],
  "counts": {
   "critical": 1,
-  "high": 1,
-  "medium": 3
+  "high": 2,
+  "medium": 6
  },
  "findings": [
   {
@@ -76,8 +80,36 @@
   },
   {
    "severity": "medium",
-   "what": "budget: 18,000 of 18,000 usable allocated (100%), 0 still unassigned",
-   "why": "Unspent calls do not roll over - they evaporate at midnight. A budget held back is not saved, it is destroyed. The only defensible reserve is 10% for retries; everything beyond that is capability nobody declined, they just never allocated it.",
+   "what": "scripts/fetch-sealed-crosscheck.mjs requests limit=2 (2 credits: 1/card) and keeps ONE result",
+   "why": "Credits bill on the requested limit, so this costs 2 per lookup while 1 of the 2 paid results are discarded. Over 6,000 cards that is 12,000 credits against a 20,000/day ceiling.",
+   "action": "Do NOT simply lower the limit — the extra results are how the right variant is chosen by card number, so limit=1 returns the wrong card. Use fetchAllInSet (billed once per set, no name matching) or a precise tcgPlayerId lookup once ids are held.",
+   "owner": "cc"
+  },
+  {
+   "severity": "medium",
+   "what": "scripts/fetch-sealed-crosscheck.mjs requests limit=5 (5 credits: 1/card) and keeps ONE result",
+   "why": "Credits bill on the requested limit, so this costs 5 per lookup while 4 of the 5 paid results are discarded. Over 6,000 cards that is 30,000 credits against a 20,000/day ceiling.",
+   "action": "Do NOT simply lower the limit — the extra results are how the right variant is chosen by card number, so limit=1 returns the wrong card. Use fetchAllInSet (billed once per set, no name matching) or a precise tcgPlayerId lookup once ids are held.",
+   "owner": "cc"
+  },
+  {
+   "severity": "high",
+   "what": "scripts/fetch-singles-enrichment.mjs requests limit=20 (60 credits: 3/card) and keeps ONE result",
+   "why": "Credits bill on the requested limit, so this costs 60 per lookup while 19 of the 20 paid results are discarded. Over 6,000 cards that is 360,000 credits against a 20,000/day ceiling.",
+   "action": "Do NOT simply lower the limit — the extra results are how the right variant is chosen by card number, so limit=1 returns the wrong card. Use fetchAllInSet (billed once per set, no name matching) or a precise tcgPlayerId lookup once ids are held.",
+   "owner": "cc"
+  },
+  {
+   "severity": "medium",
+   "what": "scripts/verify-watchlist-prices.mjs requests limit=10 (10 credits: 1/card) and keeps ONE result",
+   "why": "Credits bill on the requested limit, so this costs 10 per lookup while 9 of the 10 paid results are discarded. Over 6,000 cards that is 60,000 credits against a 20,000/day ceiling.",
+   "action": "Do NOT simply lower the limit — the extra results are how the right variant is chosen by card number, so limit=1 returns the wrong card. Use fetchAllInSet (billed once per set, no name matching) or a precise tcgPlayerId lookup once ids are held.",
+   "owner": "cc"
+  },
+  {
+   "severity": "medium",
+   "what": "budget: 21,700 of 18,000 usable allocated (121%), 0 still unassigned",
+   "why": "Unspent credits do not roll over - they evaporate at midnight. A budget held back is not saved, it is destroyed. The only defensible reserve is 10% for retries; everything beyond that is capability nobody declined, they just never allocated it.",
    "action": "fully allocated - the constraint is now real work rather than budget",
    "owner": "tyler"
   }
