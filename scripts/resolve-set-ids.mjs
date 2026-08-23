@@ -50,19 +50,28 @@ async function getJSON(url) {
     signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
     headers: { Authorization: `Bearer ${KEY}` },
   });
-  if (!r.ok) throw new Error(`HTTP ${r.status} on ${url.replace(/\?.*/, "")}`);
+  if (!r.ok) {
+    // Carry the BODY, not just the status. The first run of this script died on
+    // a bare "HTTP 400" that said nothing about which parameter was wrong, and
+    // the answer was sitting in a response we threw away.
+    const body = await r.text().catch(() => "");
+    throw new Error(`HTTP ${r.status} on ${url.replace(/\?.*/, "")} — ${body.slice(0, 300) || "(empty body)"}`);
+  }
   return r.json();
 }
 
 export async function fetchProviderSets() {
-  const all = [];
-  for (let page = 1; page <= 20; page++) {
-    const d = await getJSON(`${BASE}/sets?limit=500&page=${page}`);
-    const rows = d.data || d.sets || [];
-    all.push(...rows);
-    if (rows.length < 500) break;
-  }
-  return all;
+  // NO `page` PARAMETER. Adding one returns 400. Every other caller in this
+  // repo — fetch-singles-enrichment, verify-watchlist-prices — asks for
+  // `/sets?limit=500` flat and gets the whole list, so that is the shape the
+  // endpoint actually supports. I invented the pagination by analogy with
+  // /cards and it cost a failed run.
+  const d = await getJSON(`${BASE}/sets?limit=500`);
+  const rows = d.data || d.sets || [];
+  // If this ever comes back full, the list is being truncated silently and the
+  // map would be missing sets we then never fetch.
+  if (rows.length >= 500) console.warn(`⚠ /sets returned ${rows.length} rows — at the limit, so the list may be truncated`);
+  return rows;
 }
 
 export function joinToCatalogue(providerSets, catalogueSets) {
