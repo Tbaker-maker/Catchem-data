@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T21:05:37.355Z",
+ "generatedAt": "2026-08-23T21:37:54.568Z",
  "date": "2026-08-23",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -584,7 +584,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "5 hand-written file(s) changed and not committed.",
+   "what": "1 hand-written file(s) changed and not committed.",
    "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -600,7 +600,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "5 supervisor problem(s) are open.",
+   "what": "6 supervisor problem(s) are open.",
    "do": "Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -616,7 +616,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "10 script(s) are not referenced anywhere: backfill-artists.mjs, build-faq.mjs, build-rip.mjs, build-waitlist.mjs.",
+   "what": "11 script(s) are not referenced anywhere: backfill-artists.mjs, build-faq.mjs, build-promo.mjs, build-rip.mjs.",
    "do": "A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -776,7 +776,7 @@
   {
    "from": "api-strategist",
    "owner": "tyler",
-   "what": "the paid provider is called from 118 places",
+   "what": "the paid provider is called from 119 places",
    "do": "list what ONLY the paid provider gives us; if that list is short, either use more of it or stop paying for it",
    "score": 30,
    "band": "NOTE ONLY",

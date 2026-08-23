@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T21:05:41.513Z",
+ "generatedAt": "2026-08-23T21:38:01.777Z",
  "purpose": "Checks output against the failure classes in our own error ledger — things that actually happened here, not generic quality rules.",
  "runsOn": "output, never intent. What I meant to do is not evidence.",
  "classesChecked": [
@@ -39,6 +39,12 @@
    "what": "13 fact(s) rest only on secondary sources",
    "why": "Sources agreeing with each other is often one source repeated. Anything we can check against our own data must be checked before it is published.",
    "ledgerRef": 21
+  },
+  {
+   "errorClass": "thumbnail legibility",
+   "what": "build-promo.mjs draws fixed-size text onto a variable-width canvas",
+   "why": "Text sized for the full canvas vanishes in a feed preview, where the image is actually seen and decided on. Scale to the canvas or the words are decoration.",
+   "ledgerRef": 24
   }
  ]
 }
