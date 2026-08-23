@@ -98,5 +98,109 @@
    "psa10Median": 1762.5,
    "checkedAt": "2026-08-22T06:43:50.656Z"
   }
- ]
+ ],
+ "snapshots": [
+  {
+   "takenAt": "2026-08-23T08:32:39.990Z",
+   "cards": [
+    {
+     "id": "swsh7-215",
+     "name": "Umbreon VMAX (Alternate Art Secret)",
+     "psa10": 399,
+     "psa9": 157,
+     "psa10Median": 4250,
+     "dateRangeStart": "2026-01-26T00:00:00.000Z",
+     "dateRangeEnd": "2026-08-21T00:00:00.000Z",
+     "totalSales": 815
+    },
+    {
+     "id": "swsh7-218",
+     "name": "Rayquaza VMAX (Alternate Art Secret)",
+     "psa10": 378,
+     "psa9": 162,
+     "psa10Median": 2700,
+     "dateRangeStart": "2026-01-02T00:00:00.000Z",
+     "dateRangeEnd": "2026-08-21T00:00:00.000Z",
+     "totalSales": 765
+    },
+    {
+     "id": "swsh11-186",
+     "name": "Giratina V (Alternate Full Art)",
+     "psa10": 254,
+     "psa9": 202,
+     "psa10Median": 3168.57,
+     "dateRangeStart": "2026-01-20T00:00:00.000Z",
+     "dateRangeEnd": "2026-08-21T00:00:00.000Z",
+     "totalSales": 682
+    },
+    {
+     "id": "swsh12-186",
+     "name": "Lugia V (Alternate Full Art)",
+     "psa10": 444,
+     "psa9": 261,
+     "psa10Median": 1421,
+     "dateRangeStart": "2026-01-19T00:00:00.000Z",
+     "dateRangeEnd": "2026-08-21T00:00:00.000Z",
+     "totalSales": 974
+    },
+    {
+     "id": "sv3pt5-199",
+     "name": "Charizard ex - 199/165",
+     "psa10": 320,
+     "psa9": 444,
+     "psa10Median": 1506.185,
+     "dateRangeStart": "2026-07-01T00:00:00.000Z",
+     "dateRangeEnd": "2026-08-21T00:00:00.000Z",
+     "totalSales": 1561
+    },
+    {
+     "id": "sv8pt5-161",
+     "error": "HTTP 429"
+    },
+    {
+     "id": "sv8pt5-155",
+     "error": "HTTP 429"
+    },
+    {
+     "id": "me2-125",
+     "error": "HTTP 429"
+    },
+    {
+     "id": "me2pt5-284",
+     "error": "HTTP 429"
+    },
+    {
+     "id": "me2pt5-290",
+     "error": "HTTP 429"
+    },
+    {
+     "id": "me4-116",
+     "error": "HTTP 429"
+    },
+    {
+     "id": "me5-116",
+     "error": "not in catalogue"
+    }
+   ]
+  }
+ ],
+ "lastComparison": {
+  "at": "2026-08-23T08:32:39.991Z",
+  "compared": 5,
+  "dropped": 0,
+  "verdict": "NO DROP — consistent with an all-time aggregate (not proof; absence of growth is not absence of a window)"
+ },
+ "finding": {
+  "at": "2026-08-23",
+  "verdict": "NO WINDOW. ebaySold is a fixed aggregate that no parameter controls.",
+  "evidence": [
+   "The API rejects period, from, to and window outright and returns allowedParameters; the only time params are days, limitDays and maxDataPoints.",
+   "days provably drives priceHistory ONLY: across days=7/90/180 the metadata.historyWindow changed to 7d/90d/180d while the graded aggregate stayed byte-identical (White Kyurem EX psa10 n=40, median $168.50, range 2026-05-27->2026-08-18, totalSales 64).",
+   "Per-card dateRangeStart/End spans vary 0-513 days across 309 graded cards, only 13% near 90d, earliest start 2025-03-15 — no fixed rolling window can contain a 513-day span.",
+   "Probe re-snapshot after ~4h: 5 of 12 resolved, zero drops. Too short to be decisive; scheduled to repeat."
+  ],
+  "consequence": "Raw ebaySold.medianPrice stays WITHDRAWN — it is a historical average with no statable period.",
+  "narrowUnblock": "smartMarketPrice DOES carry a window per grade (daysUsed, median 90) plus a confidence. 582 of 2669 grade rows (22%) are medium or high confidence. That is the only defensible graded figure available, and it is a different number from medianPrice.",
+  "nextTest": "Re-run scripts/graded-window-probe.mjs after 2026-08-30. A DROP in any psa9/psa10 count proves a rolling window and reverses this."
+ }
 }

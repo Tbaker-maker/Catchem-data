@@ -252,7 +252,17 @@ el("fintent").querySelectorAll(".chip").forEach(b => b.onclick = () => {
 // card. The refusal is the feature.
 function checkIntent(){
   const box = el("refuse");
-  const singles = tray.filter(c => !/booster|elite trainer|bundle|collection|tin|box/i.test(c.n));
+  // EVERY CARD IN THE TRAY IS A SINGLE. card-index.json is generated from
+  // card-catalogue.json, which is the singles catalogue — 16,468 singles and
+  // not one sealed product. So classifying by NAME was both unnecessary and
+  // wrong, and wrong in the way substring matching always is: /tin/ matched
+  // inside Dra-tin-i, Figh-tin-g Energy, Man-tin-e and Vic-tin-i. 174 real
+  // singles read as sealed, and a tray of three of them defeated the refusal
+  // completely — sell intent, no warning, a finished sell image of stock art.
+  //
+  // If sealed products ever enter the tray they must arrive with an explicit
+  // kind. Absence of a flag means single, which fails toward refusing.
+  const singles = tray.filter(c => c.kind !== "sealed");
   if (fIntent === "sell" && singles.length) {
     box.hidden = false;
     box.innerHTML = "<b>We will not make a sell image for singles.</b><br>" +
@@ -383,6 +393,12 @@ renderThemes();
 
 el("make").onclick = async () => {
   const L = LAYOUTS[tray.length]; if (!L) return;
+  // ENFORCE AT THE POINT OF ACTION, not only in the UI. The refusal used to
+  // live entirely in el("make").disabled, and a disabled attribute is an
+  // affordance rather than a guard — re-enabling it in the console, or calling
+  // this handler directly, produced the sell image the refusal exists to
+  // prevent. Re-checking here means the rule holds wherever the call comes from.
+  if (!checkIntent()) { setStatus("that combination is refused — see the note above", true); return; }
   setStatus("composing…");
   const CW = 745, CH = 1040, GAP = 60, PAD = 90, CAP = tray.length <= 4 ? 70 : 0;
   const LABEL = el("label").value.trim();
