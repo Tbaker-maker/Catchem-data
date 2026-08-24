@@ -223,6 +223,13 @@
    "coveredBy": "Tyler, who is the only person who can see a real timeline",
    "reviewed": "2026-08-24",
    "history": "Written after the 2x2 clipped at the top. I had targeted EXACTLY 1.25 — the crop line itself — so there was zero tolerance for rounding or device pixel ratio. Designing to a limit means failing at the limit."
+  },
+  "ask-smoke.mjs": {
+   "cannotCatch": "Whether the cards it returns are the RIGHT ones. It proves every prompt fills the tray; it has no view on whether \"something dark\" returned anything actually dark.",
+   "knownPatterns": [],
+   "coveredBy": "Tyler",
+   "reviewed": "2026-08-24",
+   "history": "Written after seven of eleven prompts left the tray empty. The box promised a post and handed back a filtered grid, and the cause was thirteen word-boundary escapes emitting as BACKSPACE characters so every match silently failed."
   }
  }
 }

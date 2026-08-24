@@ -504,11 +504,16 @@ function parseIntent(text, ctx) {
   const found = { count: null, mon: null, artist: null, set: null, type: null,
     rating: null, mood: null, shape: null, matched: [], missed: [] };
 
+  // NO WORD BOUNDARIES AT ALL. Every  in this parser emitted as a BACKSPACE
+  // character, so every shape and rating match silently failed — thirteenth
+  // escaping casualty, same root cause each time. These phrases are distinctive
+  // enough that a substring match is correct, and it removes the one construct
+  // that keeps breaking.
   // COUNT. People say "four cards" and "a pair" and "9" — all the same thing.
   const words = { one: 1, two: 2, three: 3, four: 4, six: 6, nine: 9, pair: 2, single: 1 };
   const num = q.match(/(d+)s*(cards?|of them)?/);
   if (num && [1, 2, 3, 4, 6, 8, 9].includes(Number(num[1]))) { found.count = Number(num[1]); found.matched.push(found.count + " cards"); }
-  else for (const [w, n] of Object.entries(words)) if (new RegExp("\b" + w + "\b").test(q)) { found.count = n; found.matched.push(n + " cards"); break; }
+  else for (const [w, n] of Object.entries(words)) if (q.indexOf(w) >= 0) { found.count = n; found.matched.push(n + " cards"); break; }
 
   // POKÉMON. Longest name first, so "mr. mime" beats "mime".
   // NOT CREATURE NAMES. "Dark", "Light", "Team" and "Mega" are form prefixes,
@@ -518,7 +523,7 @@ function parseIntent(text, ctx) {
   const mons = (ctx.monNames || []).filter(m => !NOT_MON.test(m)).slice().sort((a, b) => b.length - a.length);
   for (const m of mons) {
     if (m.length < 4) continue;
-    if (new RegExp("\b" + m.toLowerCase().replace(/[^a-z0-9']/g, ".") + "\b").test(q)) { found.mon = m; found.matched.push(m); break; }
+    if (new RegExp(String.fromCharCode(92) + "b" + m.toLowerCase().replace(/[^a-z0-9']/g, ".") + String.fromCharCode(92) + "b").test(q)) { found.mon = m; found.matched.push(m); break; }
   }
 
   // ARTIST. Surname alone is how people actually refer to them.
@@ -534,17 +539,17 @@ function parseIntent(text, ctx) {
 
   // TYPE — the printed card type, which differs from the game type.
   for (const t of ["fire", "water", "grass", "lightning", "psychic", "fighting", "darkness", "metal", "dragon", "fairy", "colorless"])
-    if (new RegExp("\b" + t + "\b").test(q)) { found.type = t[0].toUpperCase() + t.slice(1); found.matched.push(found.type + " type"); break; }
+    if (new RegExp(String.fromCharCode(92) + "b" + t + String.fromCharCode(92) + "b").test(q)) { found.type = t[0].toUpperCase() + t.slice(1); found.matched.push(found.type + " type"); break; }
 
   // RATINGS, in the words people use rather than our field names.
   const RATING = [
-    [/(cute|adorable|sweet|wholesome)/, "cute", "cute"],
-    [/(funny|silly|joke|stupid|ridiculous)/, "comedy", "funny"],
-    [/(dark|grim|creepy|scary|unsettling|sinister)/, "serious", "dark"],
-    [/(cheap|budget|under a|affordable|low.cost)/, "cheap", "cheap"],
-    [/(expensive|dear|grail|pricey|chase)/, "dear", "expensive"],
-    [/(rare|scarce|hard to find)/, "scarce", "scarce"],
-    [/(beautiful|gorgeous|art|artwork|stunning|pretty)/, "artprem", "art people pay for"],
+    [/(cute|adorable|sweet|wholesome)/, "cute", "cute"],
+    [/(funny|silly|joke|stupid|ridiculous)/, "comedy", "funny"],
+    [/(dark|grim|creepy|scary|unsettling|sinister)/, "serious", "dark"],
+    [/(cheap|budget|under a|affordable|low.cost)/, "cheap", "cheap"],
+    [/(expensive|dear|grail|pricey|chase)/, "dear", "expensive"],
+    [/(rare|scarce|hard to find)/, "scarce", "scarce"],
+    [/(beautiful|gorgeous|artwork|stunning|pretty)/, "artprem", "art people pay for"],
   ];
   for (const [rx, id, label] of RATING) if (rx.test(q)) { found.rating = id; found.matched.push(label); break; }
 
@@ -555,13 +560,13 @@ function parseIntent(text, ctx) {
 
   // SHAPE — the phrasing that names a format.
   const SHAPE = [
-    [/(nobody talks about|obscure|underrated|forgotten|no one mentions|unknown)/, "obscure", "cards nobody talks about"],
-    [/(evolution|whole line|evolves|line)/, "evo-line", "the evolution line"],
-    [/(years apart|over time|through the years|across eras|decades)/, "eras", "across the years"],
-    [/(same artist|one artist|by the same)/, "artist-span", "one artist, years apart"],
-    [/(power creep|hp over time|stronger)/, "power-creep", "power creep"],
-    [/(story|lore|says about itself|flavou?r text)/, "lore-self", "what the card says"],
-    [/(vs|versus|or |battle|which is better)/, "battle", "a battle"],
+    [/(nobody talks about|obscure|underrated|forgotten|no one mentions|unknown)/, "obscure", "cards nobody talks about"],
+    [/(evolution|whole line|evolves|line)/, "evo-line", "the evolution line"],
+    [/(years apart|over time|through the years|across eras|decades)/, "eras", "across the years"],
+    [/(same artist|one artist|by the same)/, "artist-span", "one artist, years apart"],
+    [/(power creep|hp over time|stronger)/, "power-creep", "power creep"],
+    [/(story|lore|says about itself|flavou?r text)/, "lore-self", "what the card says"],
+    [/(versus|battle|which is better)/, "battle", "a battle"],
   ];
   for (const [rx, id, label] of SHAPE) if (rx.test(q)) { found.shape = id; found.matched.push(label); break; }
 
@@ -1231,7 +1236,7 @@ function loadMood(id){
     const hk = document.createElement("div");
     hk.className = "hook";
     hk.textContent = "Matched on the words printed on the card. Click again for a different set.";
-    d.appendChild(b); d.appendChild(sub); d.appendChild(hk);
+    d.appendChild(b); d.appendChild(hk);
     ideaBox.appendChild(d);
   }
   render();
@@ -1583,7 +1588,7 @@ function runAsk(text){
     const counts = {};
     for (const c of INDEX) { const m = monName(c.n); counts[m] = (counts[m] || 0) + 1; }
     const FAMOUS = /Charizard|Pikachu|Eevee|Umbreon|Mewtwo|Rayquaza|Lugia|Gengar|Blastoise|Venusaur/i;
-    const pool = INDEX.filter(c => /Illustration Rare/i.test(c.r || "") && c.a && !FAMOUS.test(c.n) && counts[monName(c.n)] <= 6 && (c.p || 0) >= 8);
+    const pool = INDEX.filter(c => /Illustration Rare/i.test(c.r || "") && c.a && !FAMOUS.test(c.n) && counts[monName(c.n)] <= 8 && (c.p || 0) >= 2);
     const seen = new Set(); const picked = [];
     for (const c of pool.sort(function(a,b){ return counts[monName(a.n)] - counts[monName(b.n)]; })) {
       const k = monName(c.n);
@@ -1594,6 +1599,37 @@ function runAsk(text){
     if (picked.length) { tray = picked; blob = null; el("label").value = "Obscure is the point."; render(); return; }
   }
   resetPage(); search(); renderThemes(); buildIdeas();
+
+  // THE BOX PROMISES A POST, SO HAND BACK CARDS. Setting filters and calling
+  // search() only changes the browse grid — seven prompts out of eleven left the
+  // tray empty, so the user asked for a post and got a list to click through.
+  // If a theme produced ideas, load the first one. If not, take the best cards
+  // the filters allow.
+  const ideas = window.__ideas || [];
+  if (ideas.length && ideas[0].cards && ideas[0].cards.length) {
+    tray = ideas[0].cards.slice(0, fCount || 2);
+    blob = null;
+    if (ideas[0].hook && el("label") && !el("label").value.trim()) el("label").value = ideas[0].hook;
+    render();
+    return;
+  }
+  // NO THEME FITTED. Fall back to the filtered pool rather than nothing — one
+  // card per Pokémon, best first, because nine Charizards is a composition and
+  // not a set of nine.
+  const pool = INDEX.filter(function(c){
+    return monPass(c) && ratingPass(c) && HERO_RX.test(c.r || "") && c.a && (!fSet || c.s === fSet);
+  });
+  const byMon = {};
+  for (const c of pool) { const k = monName(c.n);
+    if (!byMon[k] || (c.p || 0) > (byMon[k].p || 0)) byMon[k] = c; }
+  const picked = Object.values(byMon).sort(function(a, b){ return (b.p || 0) - (a.p || 0); }).slice(0, fCount || 2);
+  if (picked.length) { tray = picked; blob = null; render(); }
+  else {
+    // SAY SO RATHER THAN LEAVING IT BLANK. An empty tray with no explanation is
+    // indistinguishable from broken, which is what this whole fix is about.
+    const box = el("askreply");
+    if (box) { box.textContent = "Nothing in the catalogue fits all of that. Try dropping one part of it."; box.className = "askreply bad"; }
+  }
 }
 {
   const eg = el("egs");

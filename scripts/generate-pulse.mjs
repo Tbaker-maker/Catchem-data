@@ -665,6 +665,7 @@ await import("./card-guard.mjs");
 try { await import("./build-live.mjs"); } catch (e) { console.warn("  live: " + e.message); }
 try { await import("./live-smoke.mjs"); } catch (e) { console.warn("  live smoke: " + e.message); }
 try { await import("./creators-smoke.mjs"); } catch (e) { console.warn("  creators smoke: " + e.message); }
+try { await import("./ask-smoke.mjs"); } catch (e) { console.warn("  ask smoke: " + e.message); }
 try { await import("./theme-smoke.mjs"); } catch (e) { console.warn("  theme smoke: " + e.message); }
 try { await import("./editor-hostile.mjs"); } catch (e) { console.warn("  editor-hostile.mjs: " + e.message); }
 try { await import("./editor-copy-rules.mjs"); } catch (e) { console.warn("  editor-copy-rules.mjs: " + e.message); }
