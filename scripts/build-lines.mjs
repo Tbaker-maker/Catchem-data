@@ -40,6 +40,7 @@ const REGISTERS = {
   observation: { label: "Notice", note: "A shared observation with an implicit 'right?'. This is the 18,800 shape." },
   confession:  { label: "Confess", note: "Say the thing everyone thinks. Relatability outperforms authority." },
   invite:      { label: "Invite", note: "Ask them to add to it rather than judge it." },
+  permission:  { label: "Permission", note: "A question plus a second sentence that removes the reason not to answer. tall_alan took ~900 replies at 16k followers on 'pick something quirky' — without it people think theirs is boring and scroll past." },
   divide:      { label: "Divide", note: "Ask something the community genuinely disagrees on, then say it is not your opinion. Crambo got a 93% reply-to-like ratio doing exactly this — the disclaimer makes replying safe, because nobody is contradicting the host." },
 };
 
@@ -50,6 +51,7 @@ const REGISTERS = ${JSON.stringify(REGISTERS)};
 const CARD_TEXT = __CARD_TEXT__;
 
 function lineOptions(cards, themeName){
+  const NL = String.fromCharCode(10);
   if (!cards || !cards.length) return [];
   const out = [];
   const add = (reg, text) => { if (text && !out.some(o => o.text === text)) out.push({ reg, label: REGISTERS[reg].label, text }); };
@@ -115,6 +117,13 @@ function lineOptions(cards, themeName){
   // alone reads as a position and the disclaimer is what makes it a question.
   add("divide", "Does chasing value make you less of a collector?" + String.fromCharCode(10) + String.fromCharCode(10) + "(not my opinion — I want to know what people actually think)");
   if (priced.length) add("divide", "Is a card worth what someone will pay, or what it means to you?" + String.fromCharCode(10) + String.fromCharCode(10) + "(genuinely asking)");
+
+  // ── PERMISSION. The question is not finished until it has said why
+  // answering is safe. This is the mechanic under every high-reply post we have
+  // studied, and the second sentence is doing all the work.
+  add("permission", "What's your favourite card nobody talks about?" + NL + NL + "Obscure is the point — no Charizards.");
+  if (cards.length >= 2) add("permission", "Which of these would you actually put in a binder?" + NL + NL + "No wrong answer, and cheap counts.");
+  add("permission", "Show me a card you love that cost under a fiver." + NL + NL + "Price is not the point today.");
 
   // ── ALWAYS AVAILABLE. Two lines that fit anything and ask for something.
   // A line that does not match what is on screen reads as generated. Singular

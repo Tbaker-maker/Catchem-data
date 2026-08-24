@@ -800,6 +800,43 @@
     "strategy"
    ],
    "recheckAfter": "2027-02-24"
+  },
+  {
+   "id": "permission-removes-the-reason-not-to-reply",
+   "claim": "@tall_alan took roughly 900 replies on one post at ~16k followers: 'What's your favourite Pokémon? Remember to pick something quirky.' The same mechanic appears in @JohnnyCrambo's 'Not my opinion, I want to know what people really think' (68 replies against 73 likes) and @shotguncaio's 'one card I love that costs under $10'. Each adds a second sentence that removes a reason not to answer.",
+   "sources": [
+    "Tyler-supplied cross-account analysis, 2026-08-24",
+    "x.com/tall_alan",
+    "x.com/JohnnyCrambo",
+    "x.com/shotguncaio"
+   ],
+   "verified": "2026-08-24",
+   "verifier": "chat",
+   "confidence": "COMMUNITY",
+   "falsifier": "the same questions without their second sentence producing equal reply counts",
+   "note": "THE PATTERN UNDER ALL OF THEM: a question is not finished until it has said why answering is SAFE. Without 'pick something quirky', people think theirs is boring and someone already said Charizard, and they scroll past. Without 'not my opinion', answering means contradicting the host. Without 'under $10', liking a cheap card feels like admitting something. Every one removes a reason NOT to reply, and that is buildable — it is now a register in the line engine.",
+   "usedBy": [
+    "content",
+    "build-lines"
+   ],
+   "recheckAfter": "2027-02-24"
+  },
+  {
+   "id": "relative-engagement-not-follower-count",
+   "claim": "The Pokémon TCG accounts worth studying are mostly small. @knoyhead ~3k, @xzuyyu ~4.9k, @CardGameNomad ~9.5k, @tall_alan ~16k, @JohnnyCrambo ~17.6k, @shotguncaio ~43k, @Touyarokii ~364k. Crambo's 37,100-view post came off 17.6k followers — 2.1x his follower count in reach. A @xzuyyu story post at 4.9k reportedly explodes far past her follower count.",
+   "sources": [
+    "Tyler-supplied cross-account analysis with follower counts, 2026-08-24"
+   ],
+   "verified": "2026-08-24",
+   "verifier": "chat",
+   "confidence": "COMMUNITY",
+   "falsifier": "these accounts turning out to be substantially larger than stated, which would make the ratios ordinary",
+   "note": "I HAD BEEN READING THESE AS BIG ACCOUNTS DOING BIG-ACCOUNT THINGS. They are not big. The metric is reach RELATIVE to size, and on that measure Tyler's 18,800-view post off a two-day-old posting habit is already in this company. It also means the ceiling is not follower count — it is whether a post gives people a reason to react.",
+   "usedBy": [
+    "strategy",
+    "review"
+   ],
+   "recheckAfter": "2027-02-24"
   }
  ]
 }

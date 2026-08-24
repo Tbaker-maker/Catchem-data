@@ -2318,3 +2318,40 @@ WHAT WE TOOK: the day counter now generates "Day N of posting one Illustration
 Rare under $3" from the streak filter, and it **only fills an empty label** —
 overwriting something Tyler wrote would be the tool competing with him, which is
 the one thing it must never do.
+
+## PERMISSION IS THE MECHANIC (Aug 24 2026)
+Nine accounts reviewed, and one pattern sits under every high-reply post in the
+set: **each adds a second sentence that removes a reason not to answer.**
+
+- **@tall_alan**, ~900 replies at 16k followers: *"What's your favourite
+  Pokémon? Remember to pick something quirky."*
+- **@JohnnyCrambo**, 68 replies against 73 likes: *"Not my opinion. I want to
+  know what people really think."*
+- **@shotguncaio**, day 90 and counting: *"one card I love that costs under
+  $10."*
+
+Without "pick something quirky", people think theirs is boring and someone
+already said Charizard. Without "not my opinion", answering means contradicting
+the host. Without "under $10", liking a cheap card feels like admitting
+something.
+
+**A question is not finished until it has said why answering is safe.** It is
+now a register in the line engine.
+
+## THE ACCOUNTS ARE SMALL (Aug 24 2026)
+I had been reading these as big accounts doing big-account things. **They are
+not big.** knoyhead 3k, xzuyyu 4.9k, CardGameNomad 9.5k, tall_alan 16k, Crambo
+17.6k, shotgun 43k.
+
+**Crambo's 37,100-view post came off 17.6k followers — 2.1x his follower count.**
+
+The metric is reach RELATIVE to size, and on that measure Tyler's 18,800 views
+off a two-day-old posting habit is **already in this company**. The ceiling is
+not follower count. It is whether a post gives somebody a reason to react.
+
+ONE CAVEAT ON THE SOURCE: the cross-account analysis asserts things about "2026
+X algorithm realities" — replies weighted over likes, dwell time, the first
+30-60 minutes — without citing them. Some match what we have observed directly
+(links suppressing reach, media outperforming text). The rest is **received
+wisdom held at COMMUNITY confidence**, not verified, and should be treated as a
+hypothesis to test rather than a rule to follow.
