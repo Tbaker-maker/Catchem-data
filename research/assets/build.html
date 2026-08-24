@@ -177,6 +177,12 @@ summary:before{content:"→ ";color:var(--faint)}
   padding:4px 9px;border-radius:6px;margin-left:9px}
 .streakstate.on{background:rgba(54,211,153,.15);color:var(--live)}
 .streakstate.off{background:rgba(138,147,166,.12);color:var(--faint)}
+.streakwrap summary{color:var(--soft);font:400 15px var(--body);cursor:pointer;
+  padding:10px 0;list-style:none}
+.streakwrap summary::-webkit-details-marker{display:none}
+.streakwrap summary:before{content:"▸ ";color:var(--faint)}
+.streakwrap[open] summary:before{content:"▾ "}
+.streakwrap summary:hover{color:var(--live)}
 .streakexplain{font:300 14px var(--body);color:var(--soft);margin:9px 0;line-height:1.55;max-width:62ch}
 .streakactions button:disabled{opacity:.45;cursor:default}
 .streakactions{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
@@ -1011,18 +1017,31 @@ function nextStreakDay(){
 function renderStreak(remaining){
   const box = el("streakbar");
   if (!box) return;
+  box.hidden = false;
+  box.innerHTML = "";
+
+  // COLLAPSED UNLESS IT MATTERS. A wall of explanation shown to everybody,
+  // including the majority not starting a streak today, is the same mistake the
+  // prompt bar fixed. But an ACTIVE streak with a day due is exactly what
+  // somebody needs to see, and hiding that is how they miss a day.
+  const st = streak ? streakState() : { day: 0, status: "not started" };
+  const wrap = document.createElement("details");
+  wrap.className = "streakwrap";
+  if (streak && st.status !== "done today") wrap.open = true;
+
+  const sum = document.createElement("summary");
+  sum.textContent = !streak ? "Start a daily series"
+    : st.status === "done today" ? "Day " + st.day + " — done today"
+    : st.status === "due" ? "Day " + (st.day + 1) + " is due"
+    : st.status === "broken" ? "Day " + st.day + " — gap of " + st.missed + " day" + (st.missed > 1 ? "s" : "")
+    : "Daily series";
+  wrap.appendChild(sum);
+
   if (!streak) {
-    // STARTING ONE MUST BE EXPLAINED, NOT ASSUMED. A bare "Begin" button on a
-    // control nobody has used is a button nobody presses.
-    box.hidden = false;
-    box.innerHTML = "";
-    const h = document.createElement("div");
-    h.className = "srhead";
-    h.textContent = "START A DAILY SERIES";
     const p = document.createElement("div");
     p.className = "streakexplain";
-    p.textContent = "Pick a rule — one Illustration Rare a day, one card under $3, the whole history in order. The rule is what makes it a series rather than a man posting cards, and the day number is what brings people back. We never repeat a card you have already used.";
-    box.appendChild(h); box.appendChild(p);
+    p.textContent = "Pick a rule — one Illustration Rare a day, one card under $3, the whole history in order. The rule is what makes it a series rather than a man posting cards, and the day number is what brings people back. We never repeat a card you have used.";
+    wrap.appendChild(p);
     const row = document.createElement("div");
     row.className = "streakactions";
     for (const k of Object.keys(STREAK_FILTERS)) {
@@ -1032,37 +1051,21 @@ function renderStreak(remaining){
       b.onclick = function(){ startStreak(k); };
       row.appendChild(b);
     }
-    box.appendChild(row);
+    wrap.appendChild(row);
+    box.appendChild(wrap);
     return;
   }
+
   const f = STREAK_FILTERS[streak.filter];
-  const st = streakState();
   const used = new Set(streak.used || []);
   const left = INDEX.filter(function(c){ return f.test(c) && !used.has(c.i) && c.a; }).length;
-  box.hidden = false;
-  box.innerHTML = "";
-
-  const h = document.createElement("div");
-  h.className = "srhead";
-  h.textContent = (f.series ? f.series.toUpperCase() : f.label.toUpperCase());
-  box.appendChild(h);
-
-  // THE STATE IN WORDS. A number alone cannot tell you it is wrong.
-  const state = document.createElement("div");
-  state.className = "streakstate " + (st.status === "broken" ? "off" : "on");
-  state.textContent =
-    st.status === "not started" ? "NOT STARTED" :
-    st.status === "done today" ? "DAY " + st.day + " — DONE TODAY" :
-    st.status === "due" ? "DAY " + st.day + " DONE — DAY " + (st.day + 1) + " IS DUE" :
-    "DAY " + st.day + " — GAP OF " + st.missed + " DAY" + (st.missed > 1 ? "S" : "");
-  box.appendChild(state);
 
   const note = document.createElement("div");
   note.className = "streakexplain";
   note.textContent = st.status === "broken"
     ? "You last counted a day on " + st.last + ". Nothing has been changed — you decide whether this continues the run or starts a new one."
     : left + " card" + (left === 1 ? "" : "s") + " left that you have not used. The count only moves when you tell us you posted.";
-  box.appendChild(note);
+  wrap.appendChild(note);
 
   const row = document.createElement("div");
   row.className = "streakactions";
@@ -1078,7 +1081,8 @@ function renderStreak(remaining){
   filt.textContent = streakFilterOn ? "Show all cards" : "Show only my streak pool";
   filt.onclick = function(){ toggleStreakFilter(); };
   row.appendChild(load); row.appendChild(conf); row.appendChild(filt);
-  box.appendChild(row);
+  wrap.appendChild(row);
+  box.appendChild(wrap);
 }
 
 function endStreak(){ streak = null; try { localStorage.removeItem("catchem-streak"); } catch {} el("streakbar").hidden = true; }
