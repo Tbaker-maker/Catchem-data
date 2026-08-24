@@ -253,7 +253,7 @@ summary:before{content:"→ ";color:var(--faint)}
   <div class="egs" id="egs"></div>
   <div class="askreply" id="askreply"></div>
 </div>
-<details class="advanced"><summary>All the controls</summary>
+<details class="advanced"><summary>Browse, filter and fine-tune</summary>
 <div class="ratingrow">
   <span class="moodlabel">NARROW BY RATING — every one derives from a printed field</span>
   <div class="chips" id="frating"></div>
@@ -264,7 +264,6 @@ summary:before{content:"→ ";color:var(--faint)}
   <div class="chips" id="fmood"></div>
 </div>
 
-</details>
 <div class="steps">
   <div class="step"><span class="n">01 / SET</span><span class="t">Narrow it down, or don't</span>
     <select id="fset"><option value="">Every set</option>${sets.map(x => `<option>${x.replace(/&/g, "&amp;")}</option>`).join("")}</select></div>
@@ -300,6 +299,7 @@ summary:before{content:"→ ";color:var(--faint)}
     <option>Rare Holo</option><option>Rare Secret</option><option>Rare Ultra</option></select>
   <input id="yr" placeholder="Year" inputmode="numeric">
 </div>
+<div class="reachrow"><label for="views">Typical views per post</label><input id="views" type="number" inputmode="numeric" placeholder="e.g. 900"><span class="reachnote" id="reachnote"></span></div>
 <div class="monbar">
   <input id="monq" placeholder="Filter by Pokémon — type a name" autocomplete="off">
   <div class="chips" id="monchips"></div>
@@ -311,6 +311,7 @@ summary:before{content:"→ ";color:var(--faint)}
     <button class="chip" data-sort="old">Oldest</button>
   </div>
 </div>
+</details>
 <div class="imgstatus" id="imgstatus" hidden></div>
 <div class="results" id="res"></div>
 <div class="pager" id="pager"></div>
@@ -327,7 +328,6 @@ summary:before{content:"→ ";color:var(--faint)}
 <div class="binder" id="tray"></div>
 <div class="status" id="st"></div>
 <div class="tally" id="tally" hidden></div>
-<div class="reachrow"><label for="views">Typical views per post</label><input id="views" type="number" inputmode="numeric" placeholder="e.g. 900"><span class="reachnote" id="reachnote"></span></div>
 <div class="lines" id="lines" hidden></div>
 <div class="selfreply" id="selfreply" hidden></div>
 <input id="label" placeholder="Your line — or leave it blank and let the cards talk" style="margin-bottom:18px">

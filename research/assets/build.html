@@ -211,7 +211,7 @@ summary:before{content:"→ ";color:var(--faint)}
   <div class="egs" id="egs"></div>
   <div class="askreply" id="askreply"></div>
 </div>
-<details class="advanced"><summary>All the controls</summary>
+<details class="advanced"><summary>Browse, filter and fine-tune</summary>
 <div class="ratingrow">
   <span class="moodlabel">NARROW BY RATING — every one derives from a printed field</span>
   <div class="chips" id="frating"></div>
@@ -222,7 +222,6 @@ summary:before{content:"→ ";color:var(--faint)}
   <div class="chips" id="fmood"></div>
 </div>
 
-</details>
 <div class="steps">
   <div class="step"><span class="n">01 / SET</span><span class="t">Narrow it down, or don't</span>
     <select id="fset"><option value="">Every set</option><option>151</option><option>Aquapolis</option><option>Ascended Heroes</option><option>Astral Radiance</option><option>Astral Radiance Trainer Gallery</option><option>BREAKpoint</option><option>BREAKthrough</option><option>BW Black Star Promos</option><option>Base</option><option>Base Set 2</option><option>Battle Styles</option><option>Best of Game</option><option>Black Bolt</option><option>Boundaries Crossed</option><option>Brilliant Stars</option><option>Brilliant Stars Trainer Gallery</option><option>Burning Shadows</option><option>Call of Legends</option><option>Celebrations</option><option>Celestial Storm</option><option>Chaos Rising</option><option>Chilling Reign</option><option>Cosmic Eclipse</option><option>Crimson Invasion</option><option>Crown Zenith</option><option>Crown Zenith Galarian Gallery</option><option>DP Black Star Promos</option><option>Dark Explorers</option><option>Darkness Ablaze</option><option>Delta Species</option><option>Deoxys</option><option>Destined Rivals</option><option>Diamond &amp; Pearl</option><option>Dragon Majesty</option><option>Dragon Vault</option><option>Dragons Exalted</option><option>EX Trainer Kit Latias</option><option>EX Trainer Kit Latios</option><option>Evolutions</option><option>Evolving Skies</option><option>Expedition Base Set</option><option>FireRed &amp; LeafGreen</option><option>Flashfire</option><option>Forbidden Light</option><option>Fossil</option><option>Generations</option><option>Great Encounters</option><option>Guardians Rising</option><option>Gym Challenge</option><option>Gym Heroes</option><option>HS—Undaunted</option><option>HS—Unleashed</option><option>HeartGold &amp; SoulSilver</option><option>Hidden Fates</option><option>Hidden Fates Shiny Vault</option><option>Holon Phantoms</option><option>Journey Together</option><option>Jungle</option><option>Legends Awakened</option><option>Lost Origin</option><option>Lost Origin Trainer Gallery</option><option>Lost Thunder</option><option>McDonald's Collection 2012</option><option>McDonald's Collection 2014</option><option>McDonald's Collection 2015</option><option>McDonald's Collection 2016</option><option>McDonald's Collection 2018</option><option>McDonald's Collection 2019</option><option>McDonald's Collection 2021</option><option>Mega Evolution</option><option>Neo Destiny</option><option>Neo Genesis</option><option>Neo Revelation</option><option>Next Destinies</option><option>Noble Victories</option><option>Obsidian Flames</option><option>POP Series 1</option><option>POP Series 3</option><option>POP Series 4</option><option>POP Series 5</option><option>POP Series 6</option><option>POP Series 7</option><option>POP Series 8</option><option>POP Series 9</option><option>Paldea Evolved</option><option>Paldean Fates</option><option>Paradox Rift</option><option>Perfect Order</option><option>Phantasmal Flames</option><option>Phantom Forces</option><option>Plasma Blast</option><option>Plasma Storm</option><option>Pokémon Futsal Collection</option><option>Pokémon GO</option><option>Power Keepers</option><option>Primal Clash</option><option>Prismatic Evolutions</option><option>Rebel Clash</option><option>Rising Rivals</option><option>Ruby &amp; Sapphire</option><option>SM Black Star Promos</option><option>SWSH Black Star Promos</option><option>Sandstorm</option><option>Scarlet &amp; Violet</option><option>Scarlet &amp; Violet Energies</option><option>Secret Wonders</option><option>Shining Fates Shiny Vault</option><option>Shining Legends</option><option>Shrouded Fable</option><option>Silver Tempest</option><option>Silver Tempest Trainer Gallery</option><option>Steam Siege</option><option>Stellar Crown</option><option>Stormfront</option><option>Sun &amp; Moon</option><option>Supreme Victors</option><option>Surging Sparks</option><option>Sword &amp; Shield</option><option>Team Rocket</option><option>Team Up</option><option>Temporal Forces</option><option>Twilight Masquerade</option><option>Ultra Prism</option><option>Unbroken Bonds</option><option>Unified Minds</option><option>Unseen Forces</option><option>Vivid Voltage</option><option>White Flare</option><option>Wizards Black Star Promos</option><option>XY</option></select></div>
@@ -258,6 +257,7 @@ summary:before{content:"→ ";color:var(--faint)}
     <option>Rare Holo</option><option>Rare Secret</option><option>Rare Ultra</option></select>
   <input id="yr" placeholder="Year" inputmode="numeric">
 </div>
+<div class="reachrow"><label for="views">Typical views per post</label><input id="views" type="number" inputmode="numeric" placeholder="e.g. 900"><span class="reachnote" id="reachnote"></span></div>
 <div class="monbar">
   <input id="monq" placeholder="Filter by Pokémon — type a name" autocomplete="off">
   <div class="chips" id="monchips"></div>
@@ -269,6 +269,7 @@ summary:before{content:"→ ";color:var(--faint)}
     <button class="chip" data-sort="old">Oldest</button>
   </div>
 </div>
+</details>
 <div class="imgstatus" id="imgstatus" hidden></div>
 <div class="results" id="res"></div>
 <div class="pager" id="pager"></div>
@@ -285,7 +286,6 @@ summary:before{content:"→ ";color:var(--faint)}
 <div class="binder" id="tray"></div>
 <div class="status" id="st"></div>
 <div class="tally" id="tally" hidden></div>
-<div class="reachrow"><label for="views">Typical views per post</label><input id="views" type="number" inputmode="numeric" placeholder="e.g. 900"><span class="reachnote" id="reachnote"></span></div>
 <div class="lines" id="lines" hidden></div>
 <div class="selfreply" id="selfreply" hidden></div>
 <input id="label" placeholder="Your line — or leave it blank and let the cards talk" style="margin-bottom:18px">
