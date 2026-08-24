@@ -31,6 +31,30 @@ const load = async () => { try { return JSON.parse(await readFile(QUEUE, "utf-8"
   catch { return { note: "Posts Tyler wrote, waiting for their hour. The machine presses send and nothing else — it does not write, and it does not post to any account but his own.", posts: [] }; } };
 const save = async (q) => writeFile(QUEUE, JSON.stringify(q, null, 1));
 
+// THE CAP IS THE HARD PART, NOT THE PRICE. 100 users at two link-free posts a
+// day costs us $90/month, which is fine. One account posting thirty link-posts
+// a day costs $180 on its own — thirty-six subscriptions at $5. A metered
+// feature with no ceiling is a feature one person can turn into a bill, and it
+// takes no malice, just a heavy campaign.
+const COST = { post: 0.015, linkPost: 0.20 };
+const CAPS = { postsPerDay: 8, spendPerMonth: 3.00 };
+function costOf(p){ return /https?:\/\//.test(p.text) ? COST.linkPost : COST.post; }
+function monthSpend(posts){
+  const since = Date.now() - 30 * 86400000;
+  return posts.filter(p => p.status === "sent" && Date.parse(p.postedAt ?? 0) > since)
+    .reduce((s, p) => s + costOf(p), 0);
+}
+function capCheck(q, incoming){
+  const today = new Date().toISOString().slice(0, 10);
+  const sentToday = q.posts.filter(p => p.status === "sent" && String(p.postedAt).slice(0, 10) === today).length;
+  const spend = monthSpend(q.posts);
+  if (sentToday >= CAPS.postsPerDay)
+    return `daily cap reached (${CAPS.postsPerDay} posts). This exists so one heavy day cannot become a bill.`;
+  if (spend + costOf(incoming) > CAPS.spendPerMonth)
+    return `monthly spend cap reached (${CAPS.spendPerMonth.toFixed(2)}). Spent ${spend.toFixed(2)} in the last 30 days.`;
+  return null;
+}
+
 const args = process.argv.slice(2);
 const cmd = args[0];
 const flag = (n) => { const i = args.indexOf("--" + n); return i >= 0 ? args[i + 1] : null; };
@@ -64,7 +88,9 @@ else if (cmd === "list") {
     if (p.reply) console.log(`          reply: ${p.reply.split("\n")[0].slice(0, 58)}`);
   }
   const cost = waiting.length * 0.015;
-  console.log(`\n  cost to send all of these: $${cost.toFixed(2)}`);
+  console.log(`\n  cost to send all of these: ${cost.toFixed(2)}`);
+  const spent = monthSpend(q.posts);
+  console.log(`  spent in the last 30 days: ${spent.toFixed(2)} of ${CAPS.spendPerMonth.toFixed(2)} cap`);
 }
 
 else if (cmd === "next") {
