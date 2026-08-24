@@ -409,6 +409,11 @@ let INDEX = [], tray = [], blob = null;
 // card-composite was fixed for this yesterday; the editor still had the old
 // code. The index carries no URL, so: try one host, fall back to the other on
 // error, and show a visible failure rather than a plausible wrong image.
+// SMALL FOR BROWSING, LARGE FOR THE COMPOSITE. We requested _hires.png for
+// every thumbnail — 1-2MB each, and thirty-six of them is ~54MB of transfer to
+// draw images 96 pixels wide. On a phone that never finishes, which is a grid of
+// blank squares.
+const imgSmall = (id) => "https://images.pokemontcg.io/" + id.slice(0, id.lastIndexOf("-")) + "/" + id.slice(id.lastIndexOf("-") + 1) + ".png";
 const imgUrl = (id) => "https://images.pokemontcg.io/" + id.slice(0, id.lastIndexOf("-")) + "/" + id.slice(id.lastIndexOf("-") + 1) + "_hires.png";
 const imgAlt = (id) => "https://images.scrydex.com/pokemon/" + id + "/large";
 function imgTag(c, cls){
@@ -547,7 +552,7 @@ function search(){
     const showcase = ranked.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
     renderPager(ranked.length, pages);
     el("res").innerHTML = showcase.map(c =>
-      \`<div class="hit" onclick="add('\${c.i}')"><img src="\${imgUrl(c.i)}" alt="">
+      \`<div class="hit" onclick="add('\${c.i}')"><img src="\${imgSmall(c.i)}" alt="" loading=\"lazy\" onerror=\"imgFallback(this,&#39;\${c.i}&#39;)\">
         <span class=\"failmsg\"></span><b>\${c.n}</b><i>\${c.s} · \${c.y}</i><i>\${c.a}</i></div>\`).join("");
     return;
   }
@@ -564,7 +569,7 @@ function search(){
   const hits = all.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
   renderPager(all.length, pages);
   el("res").innerHTML = hits.length ? hits.map(c =>
-    \`<div class="hit" onclick="add('\${c.i}')"><img src="\${imgUrl(c.i)}" alt="">
+    \`<div class="hit" onclick="add('\${c.i}')"><img src="\${imgSmall(c.i)}" alt="" loading=\"lazy\" onerror=\"imgFallback(this,&#39;\${c.i}&#39;)\">
       <span class=\"failmsg\"></span><b>\${c.n}</b><i>\${c.s} · \${c.y}</i><i class="\${c.a ? "" : "nocred"}">\${c.a || "no credit recorded"}</i></div>\`).join("")
     : suggestHtml(q);
 }
@@ -1224,6 +1229,29 @@ function dlImage(){
 }
 window.dlImage = dlImage;
 window.copyImage = copyImage; window.shareImage = shareImage; window.openImage = openImage;
+
+// A FAILED IMAGE MUST SAY SO. A broken icon explains nothing, and the user
+// cannot tell a slow connection from a dead host from a broken tool. This tries
+// the second host once, then reports — and counts the failures so the boot
+// panel can say how many.
+let imgFails = 0;
+function imgFallback(node, id){
+  if (node.dataset.tried) {
+    imgFails++;
+    node.style.display = "none";
+    const hit = node.parentElement;
+    if (hit) hit.style.opacity = "0.45";
+    const box = el("imgstatus");
+    if (box) {
+      box.hidden = false;
+      box.textContent = imgFails + " card image" + (imgFails > 1 ? "s" : "") + " failed to load. The art is hosted by pokemontcg.io — if every one failed, that host is unreachable from this browser or connection.";
+    }
+    return;
+  }
+  node.dataset.tried = "1";
+  node.src = "https://images.scrydex.com/pokemon/" + id + "/small";
+}
+window.imgFallback = imgFallback;
 
 function render(){
   const L = LAYOUTS[tray.length];
