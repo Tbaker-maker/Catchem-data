@@ -1,10 +1,10 @@
 <!doctype html><meta charset="utf-8">
-<title>Four across, or a square?</title>
+<title>Dream Calling.</title>
 <style>
   body{margin:0;background:#070910;display:flex;align-items:center;justify-content:center;min-height:100vh;
        font-family:system-ui,-apple-system,"Segoe UI",sans-serif;padding:40px 20px}
-  .wrap{max-width:2056px;width:100%}
-  .row{display:grid;grid-template-columns:repeat(2,1fr);gap:60px;justify-content:center;align-items:start}
+  .wrap{max-width:1120px;width:100%}
+  .row{display:grid;grid-template-columns:repeat(1,1fr);gap:60px;justify-content:center;align-items:start}
   .card{text-align:center}
   .card img{width:100%;aspect-ratio:745/1040;object-fit:contain;display:block;border-radius:12px}
   .cap{color:#8a93a8;font-size:16px;margin-top:14px}
@@ -20,17 +20,11 @@
 </style>
 <div class="wrap">
   <div class="row">
-    <div class="card"><img src="https://images.pokemontcg.io/sv8/192_hires.png" alt="Exeggcute" loading="eager">
-      <div class="cap">Exeggcute · 2024</div></div>
-    <div class="card"><img src="https://images.pokemontcg.io/sv2/226_hires.png" alt="Maushold" loading="eager">
-      <div class="cap">Maushold · 2023</div></div>
-    <div class="card"><img src="https://images.pokemontcg.io/sv6/188_hires.png" alt="Eevee" loading="eager">
-      <div class="cap">Eevee · 2024</div></div>
-    <div class="card"><img src="https://images.pokemontcg.io/sv3pt5/175_hires.png" alt="Psyduck" loading="eager">
-      <div class="cap">Psyduck · 2023</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/zsv10pt5/117_hires.png" alt="Musharna" loading="eager">
+      <div class="cap">Musharna · 2025</div></div>
   </div>
-  <div class="label">Four across, or a square?</div>
-  <div class="foot"><span class="mark">Catch'em</span><span class="src">Four across, or a square?</span></div>
+  <div class="label">Dream Calling.</div>
+  <div class="foot"><span class="mark">Catch'em</span><span class="src">Dream Calling.</span></div>
   <div style="text-align:center;margin-top:26px">
     <button id="dl" class="pri">Download PNG</button><button id="copy" class="sec" hidden>Copy image</button><button id="share" class="sec" hidden>Share</button><button id="dlsvg" class="sec">Open cards full-size</button>
     <div id="msg" style="color:#8a93a8;font-size:13px;margin-top:10px"></div>
@@ -40,10 +34,10 @@
 // The browser composites, because it can reach the image host and chat cannot.
 // Everything is drawn at native card resolution so the result is postable
 // rather than a screenshot of a screenshot.
-const CARDS = [{"url":"https://images.pokemontcg.io/sv8/192_hires.png","name":"Exeggcute","year":"2024"},{"url":"https://images.pokemontcg.io/sv2/226_hires.png","name":"Maushold","year":"2023"},{"url":"https://images.pokemontcg.io/sv6/188_hires.png","name":"Eevee","year":"2024"},{"url":"https://images.pokemontcg.io/sv3pt5/175_hires.png","name":"Psyduck","year":"2023"}];
-const LABEL = "Four across, or a square?";
-const CAPTION = "Four across, or a square?";
-const ARTISTS = "Yuriko Akase · Mizue · Narumi Sato";
+const CARDS = [{"url":"https://images.pokemontcg.io/zsv10pt5/117_hires.png","name":"Musharna","year":"2025"}];
+const LABEL = "Dream Calling.";
+const CAPTION = "Dream Calling.";
+const ARTISTS = "Mizue";
 // A GUARANTEED ROUTE. If every canvas path fails, the reader can still get real
 // full-resolution files - one tab per card, right-click and save. A screenshot
 // is the one outcome worth engineering around, so there is always another way.

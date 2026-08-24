@@ -115,7 +115,15 @@ async function draw(){
   g.fillText(line.trim(), L, y);
 
   g.fillStyle = "#8a93a6"; g.font = "300 27px system-ui,sans-serif";
-  g.fillText(SUB, L, y + 62);
+  // THE SUB WRAPS TOO. It was one fillText — fine for four words, and it runs
+  // under the card at sixty characters. Nothing would have reported that.
+  let sy = y + 62, sline = "";
+  for (const w of SUB.split(" ")) {
+    const t = sline ? sline + " " + w : w;
+    if (g.measureText(t).width > right - L && sline) { g.fillText(sline, L, sy); sy += 38; sline = w; }
+    else sline = t;
+  }
+  g.fillText(sline, L, sy);
 
   // Stats: the proof, in the monospace that reads as data without saying so.
   let sx = L;
