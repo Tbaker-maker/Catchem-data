@@ -325,13 +325,11 @@ summary:before{content:"→ ";color:var(--faint)}
 <div class="pager" id="pager"></div>
 </details>
 
-<div class="streak" id="streakstart">
-  <span class="desc"><b>Start a streak.</b> Pick a filter and post from it daily — the filter is what keeps your series yours.</span>
-  <select id="sfilter" style="width:auto;min-width:190px"></select>
-  <select id="sper" style="width:auto"><option value="1">1 a day</option><option value="2" selected>2 a day</option><option value="3">3 a day</option></select>
-  <button class='go' onclick='beginStreak()'>Begin</button>
-</div>
-<div class="streak" id="streakbar" hidden></div>
+<!-- The old streak block lived here: a paragraph, two dropdowns and a Begin
+     button, rendering above the collapsed one that replaced it. I built the
+     replacement and never removed what it replaced, so the page shouted about
+     streaks to everyone regardless. -->
+<div class="streak" id="streakbar"></div>
 <div class="page-label" id="plabel">YOUR PAGE</div>
 <div class="binder" id="tray"></div>
 <div class="status" id="st"></div>

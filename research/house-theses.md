@@ -2476,3 +2476,27 @@ they posted elsewhere.
 
 A day is a LOCAL CALENDAR DAY, because anything else is arbitrary and "posted at
 11pm then 1am" has to count as two.
+
+## SIMPLICITY IS NOT HIDING THINGS (Tyler, Aug 24 2026)
+"The streak section should be a button down. Too much info especially if you
+aren't starting a streak. Simplicity should always be our bread and butter just
+like Apple."
+
+Right, and it is the same law the prompt bar fixed one step earlier: a wall of
+explanation shown to everybody, including the majority who are not starting a
+streak today.
+
+**BUT THE NUANCE DECIDES THE DESIGN.** An ACTIVE streak with a day due is
+exactly what somebody needs to see, and hiding it is how they miss a day — the
+very failure we had just spent an hour guarding against. So it is **collapsed
+when there is no streak and OPEN when there is one**, and the summary line
+carries the state either way: "Day 12 is due", "Day 12 — done today", "Day 12 —
+gap of 3 days". **Even shut, it says what is true.**
+
+THE RULE: simplicity is not hiding things. It is showing the ONE thing that
+matters right now, and folding the rest where it can still be found.
+
+AND A REAL BUG UNDERNEATH IT: there were TWO streak interfaces. The old block —
+a paragraph, two dropdowns and a Begin button — was still rendering above the
+collapsed one that replaced it. **I built the replacement and never removed what
+it replaced.** First-load copy went from 123 words to 91 once it was gone.
