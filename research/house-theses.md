@@ -2449,3 +2449,30 @@ RUN AGAINST OUR OWN LOG TODAY it returns **154 median views**, which is honest
 and also shows the limit: the median is dragged down by early posts at bad
 hours, and five posts is not a distribution. That is an argument for closing the
 loop, not for ignoring the number.
+
+## THE COUNT NEVER ADVANCES ON ITS OWN (Tyler, Aug 24 2026)
+"We cannot be the reason they miss a day or say the wrong day."
+
+**A wrong day number is a public credibility hit for the CREATOR, not for us.**
+They are the one who typed "Day 47" under a picture, and somebody who has been
+following along can check it.
+
+FIVE WAYS A STREAK COUNTER LIES:
+1. **Advances on open** — the count rises without a post, and Day 47 becomes a
+   number we invented
+2. **Double counts** — two visits on a Tuesday jump two days
+3. **Misses a break** — they skip Thursday, we keep counting, the replies notice
+4. **Timezone** — 11pm Monday and 1am Wednesday; a day needs a definition or the
+   count is arbitrary
+5. **Repeats a card** — Day 60 shows Day 12s card and the premise collapses
+
+THE RULE THAT SOLVES MOST OF IT: **it advances only when they confirm they
+posted.** Anything else is a claim we cannot stand behind.
+
+AND BROKEN IS A STATE, NOT A RESET. Silently restarting at Day 1 hides something
+they would want to know; silently continuing is a lie. So it says "gap of 3
+days, nothing has been changed" and **lets them decide** — only they know whether
+they posted elsewhere.
+
+A day is a LOCAL CALENDAR DAY, because anything else is arbitrary and "posted at
+11pm then 1am" has to count as two.

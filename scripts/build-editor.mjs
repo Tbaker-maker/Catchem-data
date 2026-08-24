@@ -219,6 +219,8 @@ summary:before{content:"→ ";color:var(--faint)}
   padding:4px 9px;border-radius:6px;margin-left:9px}
 .streakstate.on{background:rgba(54,211,153,.15);color:var(--live)}
 .streakstate.off{background:rgba(138,147,166,.12);color:var(--faint)}
+.streakexplain{font:300 14px var(--body);color:var(--soft);margin:9px 0;line-height:1.55;max-width:62ch}
+.streakactions button:disabled{opacity:.45;cursor:default}
 .streakactions{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
 .streakactions button{background:transparent;border:1px solid var(--line);color:var(--soft);
   border-radius:8px;padding:8px 13px;font:400 13px var(--body);cursor:pointer}
@@ -958,23 +960,75 @@ function nextStreakDay(){
 
 function renderStreak(remaining){
   const box = el("streakbar");
-  if (!streak) { box.hidden = true; return; }
+  if (!box) return;
+  if (!streak) {
+    // STARTING ONE MUST BE EXPLAINED, NOT ASSUMED. A bare "Begin" button on a
+    // control nobody has used is a button nobody presses.
+    box.hidden = false;
+    box.innerHTML = "";
+    const h = document.createElement("div");
+    h.className = "srhead";
+    h.textContent = "START A DAILY SERIES";
+    const p = document.createElement("div");
+    p.className = "streakexplain";
+    p.textContent = "Pick a rule — one Illustration Rare a day, one card under $3, the whole history in order. The rule is what makes it a series rather than a man posting cards, and the day number is what brings people back. We never repeat a card you have already used.";
+    box.appendChild(h); box.appendChild(p);
+    const row = document.createElement("div");
+    row.className = "streakactions";
+    for (const k of Object.keys(STREAK_FILTERS)) {
+      const f = STREAK_FILTERS[k];
+      const b = document.createElement("button");
+      b.textContent = f.label;
+      b.onclick = function(){ startStreak(k); };
+      row.appendChild(b);
+    }
+    box.appendChild(row);
+    return;
+  }
   const f = STREAK_FILTERS[streak.filter];
-  const used = new Set(streak.used);
-  const left = remaining != null ? remaining : INDEX.filter(c => f.test(c) && !used.has(c.i) && c.a).length;
-  const days = Math.floor(left / streak.perDay);
+  const st = streakState();
+  const used = new Set(streak.used || []);
+  const left = INDEX.filter(function(c){ return f.test(c) && !used.has(c.i) && c.a; }).length;
   box.hidden = false;
-    // STATE AND ACTIONS, visible. On or off in words, and two buttons that
-  // actually do something to the cards on screen.
-  const stateHtml = "<span class='streakstate " + (streakFilterOn ? "on'>FILTERING THE GRID" : "off'>NOT FILTERING") + "</span>";
-  const actionsHtml = "<div class='streakactions'><button class='go' onclick='todaysCard()'>Load today’s card</button><button onclick='toggleStreakFilter()'>" + (streakFilterOn ? "Show all cards" : "Show only my streak pool") + "</button></div>";
-box.innerHTML =
-    "<span class='day'>Day " + streak.day + "</span>" +
-    "<span class='desc'><b>" + f.label + "</b>, " + streak.perDay + " a day. " +
-    (days > 0 ? left + " left — enough for " + days + " more days." : "Pool exhausted. Pick a wider filter.") + "</span>" +
-    "<span class='left'>SINCE " + streak.started.toUpperCase() + "</span>" +
-    (days > 0 ? "<button class='go' onclick='nextStreakDay()'>Next day</button>" : "") +
-    "<button onclick='endStreak()'>End</button>";
+  box.innerHTML = "";
+
+  const h = document.createElement("div");
+  h.className = "srhead";
+  h.textContent = (f.series ? f.series.toUpperCase() : f.label.toUpperCase());
+  box.appendChild(h);
+
+  // THE STATE IN WORDS. A number alone cannot tell you it is wrong.
+  const state = document.createElement("div");
+  state.className = "streakstate " + (st.status === "broken" ? "off" : "on");
+  state.textContent =
+    st.status === "not started" ? "NOT STARTED" :
+    st.status === "done today" ? "DAY " + st.day + " — DONE TODAY" :
+    st.status === "due" ? "DAY " + st.day + " DONE — DAY " + (st.day + 1) + " IS DUE" :
+    "DAY " + st.day + " — GAP OF " + st.missed + " DAY" + (st.missed > 1 ? "S" : "");
+  box.appendChild(state);
+
+  const note = document.createElement("div");
+  note.className = "streakexplain";
+  note.textContent = st.status === "broken"
+    ? "You last counted a day on " + st.last + ". Nothing has been changed — you decide whether this continues the run or starts a new one."
+    : left + " card" + (left === 1 ? "" : "s") + " left that you have not used. The count only moves when you tell us you posted.";
+  box.appendChild(note);
+
+  const row = document.createElement("div");
+  row.className = "streakactions";
+  const load = document.createElement("button");
+  load.className = "go";
+  load.textContent = "Load today's card";
+  load.onclick = function(){ todaysCard(); };
+  const conf = document.createElement("button");
+  conf.textContent = st.status === "done today" ? "Already counted today" : "I posted it — count day " + (st.day + 1);
+  conf.disabled = st.status === "done today";
+  conf.onclick = function(){ confirmPosted(); };
+  const filt = document.createElement("button");
+  filt.textContent = streakFilterOn ? "Show all cards" : "Show only my streak pool";
+  filt.onclick = function(){ toggleStreakFilter(); };
+  row.appendChild(load); row.appendChild(conf); row.appendChild(filt);
+  box.appendChild(row);
 }
 
 function endStreak(){ streak = null; try { localStorage.removeItem("catchem-streak"); } catch {} el("streakbar").hidden = true; }
@@ -1531,6 +1585,74 @@ function setReach(){
   show();
 }
 setReach();
+
+// THE COUNT NEVER ADVANCES ON ITS OWN (Tyler, 2026-08-24: "we can't be the
+// reason they miss a day or say the wrong day").
+//
+// A wrong day number is a PUBLIC credibility hit for the creator, not for us —
+// they are the one who typed "Day 47" under a picture. So every rule here is
+// about never letting the tool make a claim it cannot back.
+//
+// FIVE WAYS A STREAK COUNTER LIES, and what each costs:
+//   1. Advances on open — Day 47 becomes a number we invented
+//   2. Double counts — two visits on a Tuesday jump two days
+//   3. Misses a break — they skip Thursday and somebody in the replies notices
+//   4. Timezone — 11pm Monday and 1am Wednesday, is that a miss?
+//   5. Repeats a card — Day 60 shows Day 12's card and the premise collapses
+//
+// The rule that solves most of it: **it advances only when they confirm they
+// posted.** Everything else is a claim we cannot stand behind.
+const DAY_MS = 86400000;
+// A DAY IS A LOCAL CALENDAR DAY. Anything else is arbitrary, and "posted at
+// 11pm then 1am" has to be two days or the count argues with the timeline.
+function dayKey(d){
+  const x = d ? new Date(d) : new Date();
+  return x.getFullYear() + "-" + String(x.getMonth() + 1).padStart(2, "0") + "-" + String(x.getDate()).padStart(2, "0");
+}
+function daysBetween(a, b){
+  const A = new Date(a + "T12:00:00"), B = new Date(b + "T12:00:00");
+  return Math.round((B - A) / DAY_MS);
+}
+function streakState(){
+  if (!streak || !streak.days || !streak.days.length) return { day: 0, status: "not started" };
+  const days = streak.days.slice().sort();
+  const last = days[days.length - 1];
+  const gap = daysBetween(last, dayKey());
+  // BROKEN IS A STATE, NOT A RESET. Silently starting again at Day 1 hides
+  // something they would want to know, and quietly continuing the count is a
+  // lie somebody in their replies can check.
+  // MISSED DAYS = the gap minus today. Last posted four days ago means three
+  // days went by unposted. Getting this wrong by one puts a wrong number in
+  // front of an audience, which is the whole thing we are guarding against.
+  if (gap > 1) return { day: days.length, status: "broken", missed: gap - 1, last };
+  if (gap === 1) return { day: days.length, status: "due", last };
+  return { day: days.length, status: "done today", last };
+}
+function confirmPosted(){
+  if (!streak) return;
+  const k = dayKey();
+  streak.days = streak.days || [];
+  // DOUBLE-COUNT GUARD. Two confirmations on one calendar day is one day.
+  if (streak.days.indexOf(k) >= 0) { setStatus("Already counted today — the streak stays at day " + streak.days.length + ".", false); renderStreak(); return; }
+  const st = streakState();
+  if (st.status === "broken") {
+    // NEVER DECIDE THIS FOR THEM. Continuing or restarting is a claim about
+    // their own history, and only they know whether they posted elsewhere.
+    var NL2 = String.fromCharCode(10);
+    const keep = confirm("You last posted " + st.missed + " day" + (st.missed > 1 ? "s" : "") + " ago, so the run has a gap." + NL2 + NL2 + "OK = count this as day " + (st.day + 1) + " and keep the total." + NL2 + "Cancel = start again at day 1.");
+    if (!keep) streak.days = [];
+  }
+  streak.days.push(k);
+  // NEVER REPEAT A CARD. Day 60 showing Day 12's card ends the series.
+  if (tray.length) {
+    streak.used = streak.used || [];
+    for (const c of tray) if (streak.used.indexOf(c.i) < 0) streak.used.push(c.i);
+  }
+  saveStreak();
+  setStatus("Day " + streak.days.length + " counted. See you tomorrow.", false);
+  renderStreak();
+}
+window.confirmPosted = confirmPosted;
 
 function render(){
   const L = LAYOUTS[tray.length];
