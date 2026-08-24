@@ -2209,3 +2209,31 @@ ALSO TAKEN: a **numbered daily series** ("Day 23 of posting one Pokémon card I
 love under $10") gives people a reason to return, which is what our streak
 feature exists for. And Crambo's **named recurring segments** in his bio —
 FlashPack Friday, Sun Bleacher — turn an account into a schedule.
+
+## AN UNKNOWN ON THE DEVICE THE AUDIENCE USES IS NOT AN UNKNOWN, IT IS A BUG (Aug 24 2026)
+Tyler opened the editor on a phone: **no photos, no moods, no angles.**
+
+**Three symptoms, one cause.** A 4.6MB inline script is where mobile Safari and
+Chrome start failing, and when that script dies the moods, the angles AND the
+images all vanish together — because JS renders all three.
+
+**I had flagged 4.6MB as my top unknown and handed it over anyway.** That was
+the wrong call. Every other test I ran was on a simulated desktop DOM, and X
+traffic — the audience this entire tool exists to serve — is overwhelmingly
+phones. **An unknown on the one device that matters is a thing to fix before
+shipping, not a caveat to mention after.**
+
+TWO FIXES, both structural:
+- **ONE TABLE INSTEAD OF FIVE.** ATTRS, BIOS, LORE and CARD_TEXT were separate
+  objects keyed by the same card ids, so the ids alone repeated roughly 200KB
+  per table. They now live on the index row, with Proxy shims so two dozen call
+  sites stayed unchanged.
+- **POST-WORTHY CARDS ONLY.** The editor makes posts and nobody posts a Common.
+  6,658 cards — every hero rarity plus anything over $8 — carry the whole job
+  where 16,468 carried the weight.
+
+**4.6MB → 2.2MB.** Every guard still green.
+
+THE RULE: **test on the device the audience actually holds.** A simulated DOM
+proves the logic runs; it says nothing about whether the browser can parse the
+file at all.

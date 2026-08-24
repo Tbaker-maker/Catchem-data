@@ -1,10 +1,10 @@
 {
- "generatedAt": "2026-08-24T01:00:43.963Z",
+ "generatedAt": "2026-08-24T03:05:45.936Z",
  "role": "Keeps agents current, breaks them out of ruts, and teaches from incidents that actually happened to us. It asks questions; it never rewrites another agent.",
  "counts": {
   "stale": 0,
-  "ruts": 9,
-  "postMortem": 4,
+  "ruts": 10,
+  "postMortem": 3,
   "shared": 1
  },
  "lessons": [
@@ -81,21 +81,21 @@
    "chip": "READ"
   },
   {
+   "agent": "designer",
+   "kind": "in a rut",
+   "observation": "12 findings, identical across 5 runs",
+   "question": "What question has designer never asked about its own subject?",
+   "why": "Identical output run after run means the agent has stopped searching and started reciting. The count being stable is not the problem; the SAMENESS is.",
+   "confidence": "OBSERVED",
+   "chip": "READ"
+  },
+  {
    "agent": "theme-scout",
    "kind": "in a rut",
    "observation": "22 findings, identical across 5 runs",
    "question": "What question has theme-scout never asked about its own subject?",
    "why": "Identical output run after run means the agent has stopped searching and started reciting. The count being stable is not the problem; the SAMENESS is.",
    "confidence": "OBSERVED",
-   "chip": "READ"
-  },
-  {
-   "agent": "steward",
-   "kind": "post-mortem",
-   "observation": "an incident in your domain: \"The 04:00 run FIRED AND FAILED. Withdrawing graded figures made dailyThree.graded falsy → \"",
-   "question": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
-   "why": "staleness is work not being done, which is the steward's subject",
-   "confidence": "MEASURED",
    "chip": "READ"
   },
   {

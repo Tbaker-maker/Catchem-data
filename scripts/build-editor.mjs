@@ -289,26 +289,43 @@ not a Pokémon decision, and you can still use them.</div>
 const THEMES = ${JSON.stringify(themes?.themes ?? [])};
 const SETS = ${JSON.stringify(sets)};
 ${await (async () => { const { readFile: rf } = await import('node:fs/promises'); const t = JSON.parse(await rf(join(ROOT,'data/card-text.json'),'utf-8')).cards; const slim = {}; for (const [k,v] of Object.entries(t)) if (v.a && v.a.length) slim[k] = { a: v.a.slice(0,1) }; const eng = await rf(join(ROOT,'scripts/line-engine.js'),'utf-8'); return eng.replace('__CARD_TEXT__', JSON.stringify(slim)); })()}
-const MOODS = ${JSON.stringify(Object.values((await J('data/moods.json'))?.moods ?? {}).map(m => ({ id: m.id, label: m.label, emoji: m.emoji, say: m.say, cards: (m.cards ?? []).slice(0, 24).map(c => ({ id: c.id, matched: c.matched, why: c.why })) })))};
-// LORE. Flavour text printed on the cards — sourced by definition, because
-// quoting it is quoting the object. Story coverage goes from 146 cards to 4,464.
-const LORE = ${JSON.stringify((await J('data/lore.json'))?.lore ?? {})};
-// CLASSIFICATION. Type and national dex number, from the source. Every type
-// theme was a hand-written name list before this, built from VIDEO GAME typing
-// while the TCG types differently — Lugia is Colorless on the card, Scizor is
-// Metal. The lists missed up to 141 Pokemon each and got up to 12 wrong.
-const ATTRS = ${JSON.stringify((await (async () => { const a = (await J('data/card-attrs.json'))?.cards ?? {}; const slim = {}; for (const [k, v] of Object.entries(a)) if (v.t?.length || v.dex || v.ev || v.hp) slim[k] = { t: v.t ?? null, d: v.dex ?? null, e: v.ev ?? null, h: v.hp ?? null, s: v.st ?? null }; return slim; })()))};
-// BIOS. Every rating names the printed field it derives from, so a filter on
-// 'cute' is a filter on the Baby subtype and low-HP unevolved Basics — not on my
-// taste. A rating that could not name a field was refused rather than invented.
-const BIOS = ${JSON.stringify((await (async () => { const b = (await J('data/card-bios.json'))?.bios ?? {}; const slim = {}; for (const [k, v] of Object.entries(b)) if (Object.keys(v.ratings ?? {}).length) slim[k] = v.ratings; return slim; })()))};
-const CARD_INDEX = ${JSON.stringify(index)};
+// ONE TABLE, POST-WORTHY ONLY. Five tables keyed by the same ids repeated the
+// ids ~200KB each, and a Common nobody would ever post is dead weight on a
+// phone. 4.6MB became 1.6MB, which is the difference between the script running
+// and the script dying — and when it dies the moods, angles and images all
+// vanish together, because JS renders all three.
+const MOODS = ${JSON.stringify(Object.values((await J('data/moods.json'))?.moods ?? {}).map(m => ({ id: m.id, label: m.label, emoji: m.emoji, say: m.say, cards: (m.cards ?? []).slice(0, 18).map(c => ({ id: c.id, matched: c.matched, why: c.why })) })))};
+const CARD_INDEX = ${await (async () => {
+  const attrs = (await J('data/card-attrs.json'))?.cards ?? {};
+  const bios = (await J('data/card-bios.json'))?.bios ?? {};
+  const lore = (await J('data/lore.json'))?.lore ?? {};
+  const ctext = (await J('data/card-text.json'))?.cards ?? {};
+  const HERO_R = /Illustration Rare|Rare Holo|Rare Secret|Rare Ultra|Rare Rainbow|Rare Shiny|Special Illustration/i;
+  const rows = index.filter(c => HERO_R.test(c.r ?? '') || (c.p ?? 0) >= 8).map(c => {
+    const A = attrs[c.i] ?? {}, B = bios[c.i] ?? {}, T = ctext[c.i] ?? {};
+    const row = { ...c };
+    if (A.t?.length) row.T = A.t;
+    if (A.dex) row.D = A.dex;
+    if (A.ev) row.E = A.ev;
+    if (A.hp) row.H = A.hp;
+    if (A.st?.length) { const st = A.st.filter(x => /^(Basic|Stage 1|Stage 2|Baby|ex|EX|V|VMAX|VSTAR|GX|MEGA)$/.test(x)); if (st.length) row.S = st; }
+    if (Object.keys(B.ratings ?? {}).length) row.R = B.ratings;
+    if (lore[c.i]) row.L = lore[c.i];
+    if (T.a?.length) row.A = T.a.slice(0, 2);
+    return row;
+  });
+  return JSON.stringify(rows);
+})()};
 // Sourced facts, so the 'story' shape has something true to build on. Only
 // VERIFIED ones ship — an unsourced claim on a card image is the one mistake
 // this whole project exists to avoid.
 const FACTS = ${JSON.stringify((await (async () => { try { return (JSON.parse(await readFile(join(ROOT, 'data/knowledge.json'), 'utf-8')).facts ?? []).filter(f => f.confidence === 'VERIFIED').map(f => ({ id: f.id, claim: f.claim })); } catch { return []; } })()))};
 const LAYOUTS = ${JSON.stringify(LAYOUTS)};
 const SUPPORTED = Object.keys(LAYOUTS).map(Number);
+const byIdRow = {};
+const ATTRS = new Proxy({}, { get: (_, k) => { const r = byIdRow[k]; return r ? { t: r.T, dex: r.D, d: r.D, e: r.E, ev: r.E, h: r.H, hp: r.H, s: r.S, st: r.S } : undefined; } });
+const BIOS = new Proxy({}, { get: (_, k) => byIdRow[k]?.R });
+const LORE = new Proxy({}, { get: (_, k) => byIdRow[k]?.L });
 let INDEX = [], tray = [], blob = null;
 
 // CONSTRUCTED URLS 404 TO A CARD BACK. Newer sets serve from a different host
@@ -330,6 +347,7 @@ function imgTag(c, cls){
 // means two files that must travel together, and a single file cannot arrive
 // half-configured.
 INDEX = CARD_INDEX;
+  for (const r of INDEX) byIdRow[r.i] = r;
 // Deferred one tick. The fetch used to provide this gap by accident, so
 // removing it exposed an ordering bug that had always been there — el() and
 // the render functions are declared further down the file.

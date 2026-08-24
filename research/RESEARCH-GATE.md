@@ -123,6 +123,8 @@ fixing the class is.
 
 | 31 | The angle column returned nothing and said nothing — fCount started at 0 and buildIdeas bailed on it, so clicking an angle before a count failed silently | Tyler | Hidden prerequisite, silent failure | Default count of 2; every control refines and none gates; 35 themes grouped rather than hidden |
 
+| 32 | The editor showed no photos, no moods and no angles on mobile — a 4.6MB inline script that mobile browsers could not parse, killing everything JS renders at once | Tyler, on a phone | Shipped a known unknown on the one device the audience uses | Five tables merged into one, post-worthy cards only: 4.6MB to 2.2MB |
+
 **PATTERN, stated plainly:** 8 of 9 were caught by Tyler, not by the
 machine. Every guard above was built AFTER a human caught something.
 That is the honest state — the machine is now catching prices, but
