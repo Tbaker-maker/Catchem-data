@@ -658,6 +658,7 @@ try { await import("./build-creators-page.mjs"); } catch (e) { console.warn("  b
 try { await import("./build-editor.mjs"); } catch (e) { console.warn("  build-editor: " + e.message); }
 await import("./layout-check.mjs");
 try { await import("./build-bios.mjs"); } catch (e) { console.warn("  bios: " + e.message); }
+await import("./crop-guard.mjs");
 await import("./rating-guard.mjs");
 await import("./slop-guard.mjs");
 await import("./card-guard.mjs");

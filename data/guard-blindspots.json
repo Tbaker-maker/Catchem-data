@@ -214,6 +214,15 @@
    "coveredBy": "Tyler, and whether the filters find what people expect",
    "reviewed": "2026-08-24",
    "history": "Written alongside the bios. Tyler asked for cuteness, comedy and popularity ratings; the honest version derives each from a printed field and the dishonest version is me assigning scores that feel right. Popularity and likeness were REFUSED outright for having no signal, and this guard exists so they cannot quietly reappear."
+  },
+  "crop-guard.mjs": {
+   "cannotCatch": "Where X ACTUALLY crops. 1.25 is our best understanding of the timeline crop and it is not documented by X — if the real number is lower, every layout passes this guard and still clips. The margin is protection against rounding, not against a wrong constant.",
+   "knownPatterns": [
+    "designing-to-a-limit"
+   ],
+   "coveredBy": "Tyler, who is the only person who can see a real timeline",
+   "reviewed": "2026-08-24",
+   "history": "Written after the 2x2 clipped at the top. I had targeted EXACTLY 1.25 — the crop line itself — so there was zero tolerance for rounding or device pixel ratio. Designing to a limit means failing at the limit."
   }
  }
 }
