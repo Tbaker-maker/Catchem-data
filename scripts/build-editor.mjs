@@ -279,7 +279,7 @@ const LORE = ${JSON.stringify((await J('data/lore.json'))?.lore ?? {})};
 // theme was a hand-written name list before this, built from VIDEO GAME typing
 // while the TCG types differently — Lugia is Colorless on the card, Scizor is
 // Metal. The lists missed up to 141 Pokemon each and got up to 12 wrong.
-const ATTRS = ${JSON.stringify((await (async () => { const a = (await J('data/card-attrs.json'))?.cards ?? {}; const slim = {}; for (const [k, v] of Object.entries(a)) if (v.t?.length || v.dex) slim[k] = { t: v.t ?? null, d: v.dex ?? null }; return slim; })()))};
+const ATTRS = ${JSON.stringify((await (async () => { const a = (await J('data/card-attrs.json'))?.cards ?? {}; const slim = {}; for (const [k, v] of Object.entries(a)) if (v.t?.length || v.dex || v.ev || v.hp) slim[k] = { t: v.t ?? null, d: v.dex ?? null, e: v.ev ?? null, h: v.hp ?? null, s: v.st ?? null }; return slim; })()))};
 const CARD_INDEX = ${JSON.stringify(index)};
 // Sourced facts, so the 'story' shape has something true to build on. Only
 // VERIFIED ones ship — an unsourced claim on a card image is the one mistake
@@ -1085,6 +1085,75 @@ function buildIdeas(){
       if (span < 8) continue;
       ideas.push({ title: mon + " across " + span + " years", sub: picked.map(c => c.y).join(" → "),
         hook: "Which era got " + mon + " right?", cards: picked });
+      if (ideas.length >= 6) break;
+    }
+  }
+
+  else if (shape === "evo") {
+    // THE EVOLUTION LINE. A real relationship in the data, walked from the
+    // evolvesFrom field — Charmander to Charmeleon to Charizard, in order. No
+    // name list could produce this, because the relationship IS the content and
+    // a list only knows membership.
+    const byMon = {};
+    for (const c of pool) { const k = c.n.split(" ")[0];
+      if (!byMon[k] || (c.p || 0) > (byMon[k].p || 0)) byMon[k] = c; }
+    for (const [base, card] of Object.entries(byMon)) {
+      if (ATTRS[card.i]?.e) continue;                 // start at the bottom only
+      const line = [card];
+      let cur = base;
+      for (let i = 0; i < 3 && line.length < need; i++) {
+        const next = Object.values(byMon).find(x => ATTRS[x.i]?.e === cur);
+        if (!next) break;
+        line.push(next); cur = next.n.split(" ")[0];
+      }
+      if (line.length !== need) continue;
+      ideas.push({ title: line.map(c => c.n.split(" ")[0]).join(" → "),
+        sub: line.map(c => c.y).join("  ·  "),
+        hook: "The whole line. Which stage is the best card?", cards: line });
+      if (ideas.length >= 6) break;
+    }
+  }
+
+  else if (shape === "mechanic") {
+    // A MECHANIC ERA. V, GX, EX, VMAX — each is a period the game actually had,
+    // and collectors date their own history by them. Only possible now the
+    // subtype field exists.
+    const q = t.query || {};
+    const hits = pool.filter(c => (ATTRS[c.i]?.s || []).includes(q.value));
+    const byMon = {};
+    for (const c of hits) { const k = c.n.split(" ")[0];
+      if (!byMon[k] || (c.p || 0) > (byMon[k].p || 0)) byMon[k] = c; }
+    const picked = Object.values(byMon).sort((a, b) => (b.p || 0) - (a.p || 0)).slice(0, need);
+    if (picked.length === need)
+      ideas.push({ title: t.name, sub: picked.map(c => c.n).join(" · "), hook: t.hook, cards: picked });
+  }
+
+  else if (shape === "power-creep") {
+    // POWER CREEP, as a real number over real years. HP runs 30 to 380 and the
+    // climb is a story the cards tell on themselves — a fact with no source
+    // needed because both numbers are printed.
+    const withHp = pool.filter(c => ATTRS[c.i]?.h && c.y);
+    const byMon = {};
+    for (const c of withHp) (byMon[c.n.split(" ")[0]] ||= []).push(c);
+    for (const [mon, list] of Object.entries(byMon)) {
+      const sorted = list.sort((a, b) => (a.y || "") < (b.y || "") ? -1 : 1);
+      const oldest = sorted[0], newest = sorted[sorted.length - 1];
+      const gap = ATTRS[newest.i].h - ATTRS[oldest.i].h;
+      if (gap < 100 || Number(newest.y) - Number(oldest.y) < 8) continue;
+      // THE ENDS ARE THE CLAIM. Sampling by step never included the LAST card, so
+      // the title said "120 → 330 HP" while the final card shown had 280. Always
+      // anchor on oldest and newest and fill the middle between them.
+      let picked;
+      if (need === 2) picked = [oldest, newest];
+      else {
+        const middle = sorted.slice(1, -1);
+        const step = Math.max(1, Math.floor(middle.length / (need - 2)));
+        picked = [oldest, ...middle.filter((_, i) => i % step === 0).slice(0, need - 2), newest];
+      }
+      if (picked.length !== need) continue;
+      ideas.push({ title: mon + ": " + ATTRS[oldest.i].h + " HP → " + ATTRS[newest.i].h + " HP",
+        sub: oldest.y + "  →  " + newest.y,
+        hook: "Same Pokémon. " + gap + " more HP. Was the power creep worth it?", cards: picked });
       if (ideas.length >= 6) break;
     }
   }

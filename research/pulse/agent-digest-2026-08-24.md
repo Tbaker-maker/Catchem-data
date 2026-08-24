@@ -26,10 +26,10 @@ We put something in front of readers and can no longer price it. That is the kin
 
 ## The agents themselves
 **NEEDS A HUMAN — the supervisor flagged the watchers:**
-- designer: BROKEN RECORD — 6 finding(s) repeated three runs running (e.g. "medium::32 distinct colours"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
+- correction-hunter: BROKEN RECORD — 3 finding(s) repeated three runs running (e.g. "gone::Umbreon VMAX"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
+- designer: BROKEN RECORD — 7 finding(s) repeated three runs running (e.g. "medium::32 distinct colours"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 - theme-scout: BROKEN RECORD — 22 finding(s) repeated three runs running (e.g. "the one-off::Ken Sugimori drew Ampharos exactly on"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
-- teacher: FARMING — findings climbed 15 → 15 → 15 → 16 across four runs with nothing resolved. Volume is not work.
-- teacher: BROKEN RECORD — 14 finding(s) repeated three runs running (e.g. "in a rut::breaker"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
+- teacher: BROKEN RECORD — 13 finding(s) repeated three runs running (e.g. "in a rut::breaker"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 
 ## If we expanded
 Pricing 50 more cards would unlock 17 artist cohorts and make 2018 catalogue cards analysable. That is Tyler's call, not the machine's.
@@ -82,8 +82,8 @@ Nothing unusual, or not enough history to tell — 5 days of tape so far. Anomal
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
 
 ## Something is slipping
-- **unsaved** — 3 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
-- **ignored** — 6 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
+- **unsaved** — 4 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
+- **ignored** — 5 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
 - **drift** — 14 script(s) are not referenced anywhere: backfill-artists.mjs, build-faq.mjs, build-lines.mjs, build-lore.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
 - **drift** — 48 JSON files in research/pulse. *A directory nobody can scan is a directory where something goes missing without being noticed.*
 

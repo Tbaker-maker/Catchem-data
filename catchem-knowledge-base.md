@@ -4,7 +4,7 @@
 
 > **How to use:** When Claude starts a new session, first action should be `view /mnt/user-data/outputs/catchem-knowledge-base.md`. When Claude learns something new worth persisting, append it to the relevant section and bump `last_updated`.
 
-**last_updated:** 2026-08-23 (agent workforce, rating law, guard hardening)
+**last_updated:** 2026-08-24 (agent workforce, rating law, guard hardening)
 **version:** 1.2.0
 
 > **KB editing rule (born from 4 silent-patch failures tonight):** edits
@@ -112,6 +112,7 @@ verified-only law. Bot zip → PRIVATE repo only.
 - PNG-ONLY LAW (Aug 21): every image delivered to Tyler or published anywhere (X, IG, Discord, newsletter, share cards) is PNG — never SVG. SVG is an internal render format only; rasterize-cards.mjs converts after every mint. X/IG reject SVG outright
 
 ### HOW WE WORK
+- A GUARD THAT PUSHES NOTHING REPORTS SUCCESS (Aug 23): added an HP check, ran it, got green — a shell interpolation had eaten the message so the line was problems.push() with no argument. It detected every mismatch and pushed nothing. Caught only by trying to BREAK the check and failing. The moment it worked it found a real bug: power-creep sampled by step and never included the LAST card, so a title said 120→330 HP while the final card had 280. THE ENDS ARE THE CLAIM.
 - A LIST IS WRONG THE DAY A SET LANDS (Aug 23): we held no type, stage, dex number or subtype, so every type theme was a hand-written name list — each missing up to 141 Pokemon and containing up to 12 that do not belong. Cause: a Pokemon's TCG card type frequently differs from its GAME type (Lugia is Colorless on the card, Scizor is Metal), and I built the lists from what a fan knows. data/card-attrs.json now holds type, subtype, supertype, HP, evolution, dex, weakness and regulation mark for 16,531 cards, so themes are QUERIES and nine regions exist as a filter for the first time. Anything that can be a query must be one.
 - A FAKE DEPENDENCY PROVES NOTHING (Aug 23): told Tyler the editor was verified working; from file:// it showed no images, no themes, no search — Chrome blocks fetch of a sibling file, INDEX stayed empty, three symptoms from one line. My smoke test supplied a FAKE fetch that always succeeded and stub elements for every id, so I tested the path that cannot fail. Index now EMBEDDED; offline-smoke.mjs runs with fetch REJECTING and elements returning null when absent. "Verified" has to mean exercised the way it will actually be used, or it means nothing.
 - VERIFIED THE NOUN, SKIPPED THE VERB (Aug 23): shipped "177 sealed products, repriced every single day" onto a landing page about to take viral traffic, having checked that 177 was right and never checked "every single day" — while the heartbeat was reporting that day's run as failed and the data as 25.6h old. A FREQUENCY is true until a cron fails; a COUNT goes stale as coverage grows. State what is TRACKED and how we BEHAVE when wrong, because behaviour does not break when a job does. verify-work error 25 now catches it, narrowed after five false positives because a check that cries wolf gets muted.

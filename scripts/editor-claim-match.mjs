@@ -19,6 +19,7 @@ Object.defineProperty(globalThis,"navigator",{value:{},configurable:true});
 globalThis.Image = function(){}; globalThis.AbortSignal = { timeout:()=>null };
 globalThis.fetch = async () => { throw new TypeError("no network"); };
 const api = new Function(js + `
+;globalThis.__ATTRS = ATTRS;
 ;return { setTheme:(t)=>{fTheme=t}, setCount:(n)=>{fCount=n}, buildIdeas, ideas:()=>window.__ideas,
   THEMES:()=>THEMES, MOODS:()=>MOODS, INDEX:()=>INDEX, lineOptions };`)();
 await new Promise(r => setTimeout(r, 60));
@@ -49,7 +50,16 @@ for (const t of api.THEMES()) {
       const named = (t.shape === "artist-span" || t.shape === "debut") ? (idea.title || "").split(" started here")[0].trim() : null;
       if (named && cards.length && !cards.every(c => c.a === named))
         problems.push(`${t.id}@${n}: title names ${named} but not every card is theirs — ${cards.map(c=>c.a).join(", ")}`);
-      // 5 · Every card must actually exist in the index.
+      // 5 · An HP claim must match the cards shown. Power creep puts two real
+      // numbers on a public image and a wrong one is Koga with arithmetic.
+      const hp=/(\d+) HP → (\d+) HP/.exec(idea.title||"");
+      if (hp && cards.length>=2) {
+        const A=globalThis.__ATTRS||{};
+        const lo=A[cards[0].i]?.h, hi=A[cards[cards.length-1].i]?.h;
+        if (lo && hi && (Number(hp[1])!==lo || Number(hp[2])!==hi))
+          problems.push(t.id + ": title says " + hp[1] + "→" + hp[2] + " HP but the cards are " + lo + "→" + hi);
+      }
+      // 6 · Every card must actually exist in the index.
       for (const c of cards) if (!byId[c.i]) problems.push(`${t.id}@${n}: card ${c.i} is not in the index`);
     }
   }

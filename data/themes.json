@@ -1282,6 +1282,133 @@
     6,
     9
    ]
+  },
+  {
+   "id": "evo-line",
+   "name": "The whole evolution line",
+   "shape": "evo",
+   "group": "BY LINE",
+   "hook": "The whole line. Which stage is the best card?",
+   "why": "Walked from the evolvesFrom field — a real relationship, not a list. 51 three-stage lines resolve in hero rarity.",
+   "bestAt": [
+    2,
+    3
+   ],
+   "kind": "derived"
+  },
+  {
+   "id": "power-creep",
+   "name": "Power creep",
+   "shape": "power-creep",
+   "group": "BY ERA",
+   "hook": "Same Pokémon, decades apart. Was the power creep worth it?",
+   "why": "HP runs 30 to 380 across the catalogue. Both numbers are printed on the cards, so the claim needs no source.",
+   "bestAt": [
+    2,
+    3,
+    4
+   ],
+   "kind": "derived"
+  },
+  {
+   "id": "mech-v",
+   "name": "The V era",
+   "shape": "mechanic",
+   "group": "BY ERA",
+   "query": {
+    "field": "subtype",
+    "value": "V"
+   },
+   "hook": "The V era. Which one defined it?",
+   "why": "A mechanic era from the subtype field. Collectors date their own history by these.",
+   "bestAt": [
+    2,
+    3,
+    4,
+    6,
+    9
+   ],
+   "kind": "derived"
+  },
+  {
+   "id": "mech-gx",
+   "name": "The GX era",
+   "shape": "mechanic",
+   "group": "BY ERA",
+   "query": {
+    "field": "subtype",
+    "value": "GX"
+   },
+   "hook": "The GX era. Which one defined it?",
+   "why": "A mechanic era from the subtype field. Collectors date their own history by these.",
+   "bestAt": [
+    2,
+    3,
+    4,
+    6,
+    9
+   ],
+   "kind": "derived"
+  },
+  {
+   "id": "mech-ex",
+   "name": "The EX era",
+   "shape": "mechanic",
+   "group": "BY ERA",
+   "query": {
+    "field": "subtype",
+    "value": "EX"
+   },
+   "hook": "The EX era. Which one defined it?",
+   "why": "A mechanic era from the subtype field. Collectors date their own history by these.",
+   "bestAt": [
+    2,
+    3,
+    4,
+    6,
+    9
+   ],
+   "kind": "derived"
+  },
+  {
+   "id": "mech-vmax",
+   "name": "The VMAX era",
+   "shape": "mechanic",
+   "group": "BY ERA",
+   "query": {
+    "field": "subtype",
+    "value": "VMAX"
+   },
+   "hook": "The VMAX era. Which one defined it?",
+   "why": "A mechanic era from the subtype field. Collectors date their own history by these.",
+   "bestAt": [
+    2,
+    3,
+    4,
+    6,
+    9
+   ],
+   "kind": "derived"
+  },
+  {
+   "id": "mech-mega",
+   "name": "The Mega era",
+   "shape": "mechanic",
+   "group": "BY ERA",
+   "query": {
+    "field": "subtype",
+    "value": "MEGA"
+   },
+   "hook": "The Mega era. Which one defined it?",
+   "why": "A mechanic era from the subtype field. Collectors date their own history by these.",
+   "bestAt": [
+    2,
+    3,
+    4,
+    6,
+    9
+   ],
+   "kind": "derived"
   }
  ],
  "openQuestions": [

@@ -2158,3 +2158,23 @@ AND THE DUPLICATE GUARD CAUGHT THE CONSEQUENCE: with real types, "Colorless"
 sorted by value returns exactly the hand-written "box legendaries" list, because
 the dearest Colorless cards ARE the cover legendaries. **Two themes returning
 one result is one theme wearing two names.** The hand-written one was removed.
+
+## A GUARD THAT PUSHES NOTHING REPORTS SUCCESS (Aug 23 2026)
+I added an HP check to the claim-match guard, ran it, and it said clean. It was
+not clean — a shell interpolation had eaten the message string, so the line read
+`problems.push()` with **no argument**. The check correctly detected every
+mismatch and then pushed nothing.
+
+**A guard that finds the fault and reports success is the worst shape a check
+can take**, and it is the second one I have shipped today.
+
+I only caught it by trying to BREAK the check and finding I could not — the
+negative-test habit doing exactly what it exists for, one level up from where I
+normally apply it.
+
+AND THE MOMENT IT WORKED IT FOUND A REAL BUG: at counts above two the
+power-creep shape sampled by step and never included the LAST card, so a title
+said "120 → 330 HP" while the final card shown had **280**. Two real numbers on
+a public image that did not match the pictures beneath them — the Koga failure
+with arithmetic. **The ends ARE the claim**, so the shape now anchors on oldest
+and newest and fills the middle between them.

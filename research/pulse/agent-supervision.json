@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-24T00:18:08.477Z",
+ "generatedAt": "2026-08-24T00:32:06.669Z",
  "date": "2026-08-24",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -10,7 +10,7 @@
   "decision-audit: 0 finding(s)",
   "designer: 11 finding(s)",
   "theme-scout: 22 finding(s)",
-  "teacher: 16 finding(s)",
+  "teacher: 14 finding(s)",
   "api-strategist: 8 finding(s)",
   "compliance: 0 finding(s)",
   "security: 0 finding(s)",
@@ -29,11 +29,10 @@
   "anomaly: clean run — nothing failed, which is the point of it"
  ],
  "problems": [
-  "designer: BROKEN RECORD — 6 finding(s) repeated three runs running (e.g. \"medium::32 distinct colours\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
+  "correction-hunter: BROKEN RECORD — 3 finding(s) repeated three runs running (e.g. \"gone::Umbreon VMAX\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
+  "designer: BROKEN RECORD — 7 finding(s) repeated three runs running (e.g. \"medium::32 distinct colours\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "theme-scout: BROKEN RECORD — 22 finding(s) repeated three runs running (e.g. \"the one-off::Ken Sugimori drew Ampharos exactly on\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
-  "teacher: FARMING — findings climbed 15 → 15 → 15 → 16 across four runs with nothing resolved. Volume is not work.",
-  "teacher: BROKEN RECORD — 14 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
-  "teacher: OVER-BUDGET — 16 findings against a ceiling of 14. An unreadable list is an unread list.",
+  "teacher: BROKEN RECORD — 13 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "creator: OVER-BUDGET — 15 findings against a ceiling of 10. An unreadable list is an unread list."
  ],
  "workforce": [
@@ -77,11 +76,6 @@
   {
    "agent": "theme-scout",
    "finding": "every finding from a week ago is still open (22).",
-   "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
-  },
-  {
-   "agent": "teacher",
-   "finding": "every finding from a week ago is still open (12).",
    "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
@@ -495,7 +489,7 @@
   {
    "from": "platform",
    "owner": "tyler",
-   "what": "[YouTube] the sealed market — \"The whole sealed market in one number: 99.4.\"",
+   "what": "[YouTube] the sealed market — \"The whole sealed market in one number: 98.8.\"",
    "do": "YouTube rewards a question somebody is already typing into search. We can answer three of the recurring ones with data nobody else holds, which is the whole reason to be here rather than reacting to other people's news.",
    "score": 33,
    "band": "NOTE ONLY",
@@ -591,7 +585,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "3 hand-written file(s) changed and not committed.",
+   "what": "4 hand-written file(s) changed and not committed.",
    "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -607,7 +601,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "5 supervisor problem(s) are open.",
+   "what": "4 supervisor problem(s) are open.",
    "do": "Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.",
    "score": 30,
    "band": "NOTE ONLY",
