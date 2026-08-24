@@ -145,6 +145,23 @@ summary:before{content:"→ ";color:var(--faint)}
 .hit.failed{background:rgba(217,164,65,.08);border:1px dashed rgba(217,164,65,.35)}
 .hit .failmsg{display:none;font:500 9.5px var(--mono);color:var(--warn);padding:16px 4px;line-height:1.5}
 .hit.failed .failmsg{display:block}
+.monbar{margin-bottom:14px}
+#monq{width:100%;background:var(--ink);border:1px solid var(--line);border-radius:11px;
+  color:var(--text);padding:13px 15px;font:400 15px var(--body);margin-bottom:9px}
+#monq:focus{outline:none;border-color:var(--live)}
+#monchips{max-height:104px;overflow-y:auto;margin-bottom:9px}
+#monchips .chip.on{border-color:var(--live);color:var(--live);background:rgba(54,211,153,.08)}
+.streakstate{display:inline-block;font:500 10px var(--mono);letter-spacing:.14em;
+  padding:4px 9px;border-radius:6px;margin-left:9px}
+.streakstate.on{background:rgba(54,211,153,.15);color:var(--live)}
+.streakstate.off{background:rgba(138,147,166,.12);color:var(--faint)}
+.streakactions{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+.streakactions button{background:transparent;border:1px solid var(--line);color:var(--soft);
+  border-radius:8px;padding:8px 13px;font:400 13px var(--body);cursor:pointer}
+.streakactions button.go{background:var(--live);color:var(--ink);border:0;font-weight:600}
+.sortrow{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.sortlabel{font:500 9.5px var(--mono);color:var(--faint);letter-spacing:.16em;margin-right:4px}
+.sortrow .chip.on{border-color:var(--live);color:var(--live)}
 .results{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:9px;
   max-height:290px;overflow-y:auto;padding:3px}
 .hit{cursor:pointer;text-align:center;border-radius:9px;padding:6px;transition:background .16s var(--ease)}
@@ -211,6 +228,17 @@ summary:before{content:"→ ";color:var(--faint)}
     <option>Special Illustration Rare</option><option>Illustration Rare</option>
     <option>Rare Holo</option><option>Rare Secret</option><option>Rare Ultra</option></select>
   <input id="yr" placeholder="Year" inputmode="numeric">
+</div>
+<div class="monbar">
+  <input id="monq" placeholder="Filter by Pokémon — type a name" autocomplete="off">
+  <div class="chips" id="monchips"></div>
+  <div class="sortrow">
+    <span class="sortlabel">SORT</span>
+    <button class="chip on" data-sort="mon">By Pokémon</button>
+    <button class="chip" data-sort="price">Most valuable</button>
+    <button class="chip" data-sort="new">Newest</button>
+    <button class="chip" data-sort="old">Oldest</button>
+  </div>
 </div>
 <div class="imgstatus" id="imgstatus" hidden></div>
 <div class="results" id="res"></div>
@@ -377,6 +405,18 @@ window.onerror = function(m, src, line, col){
 };
 bootSay("Script parsed. Loading catalogue…");
 
+// THE POKEMON, NOT THE PREFIX. Splitting on the first space produced "Galarian"
+// with 72 cards and "Dark" with 69 — those are form and owner prefixes, not
+// creatures, and every grouping built on them was wrong. Strip the known
+// prefixes and the trailing mechanic suffix to get the actual name.
+const FORM_PREFIX = new RegExp("^(" + "Galarian|Alolan|Hisuian|Paldean|Dark|Light|Shining|Radiant|Team Aqua's|Team Magma's|Rocket's|Team Rocket's|Misty's|Brock's|Erika's|Sabrina's|Blaine's|Koga's|Giovanni's|Lillie's|N's|Marnie's|Ethan's|Cynthia's|Steven's|Iono's|Arven's|Hop's|Bea's|Crystal|Shadow|Mega" + ")" + String.fromCharCode(92) + "s+", "i");
+const MECH_SUFFIX = new RegExp(String.fromCharCode(92) + "s+(" + "ex|EX|GX|V|VMAX|VSTAR|BREAK|LEGEND|Prime|Star|LV.X|-EX|-GX" + ")$");
+function monName(full){
+  let n = String(full || "");
+  for (let i = 0; i < 2; i++) n = n.replace(FORM_PREFIX, "");
+  n = n.replace(MECH_SUFFIX, "").trim();
+  return n.split(" ")[0] || String(full);
+}
 const byIdRow = {};
 const ATTRS = new Proxy({}, { get: (_, k) => { const r = byIdRow[k]; return r ? { t: r.T, dex: r.D, d: r.D, e: r.E, ev: r.E, h: r.H, hp: r.H, s: r.S, st: r.S } : undefined; } });
 const BIOS = new Proxy({}, { get: (_, k) => byIdRow[k]?.R });
@@ -499,7 +539,7 @@ function editDistance(a, b){
 }
 function didYouMean(q){
   if (q.length < 3) return null;
-  NAMES = NAMES ?? [...new Set(INDEX.map(c => c.n.split(" ")[0]))];
+  NAMES = NAMES ?? [...new Set(INDEX.map(c => monName(c.n)))];
   let best = null, bestD = 99;
   for (const nm of NAMES) {
     const d = editDistance(q, nm.toLowerCase());
@@ -520,7 +560,7 @@ function search(){
     // The full catalogue, best first, paged. Not a curated 24 — Tyler asked for
     // everything to be available, and a showcase that stops at two dozen is the
     // same hard slice wearing a nicer name.
-    const ranked = INDEX.slice().sort((a, b) => (b.p || 0) - (a.p || 0));
+    const ranked = sortCards(INDEX.filter(c => monPass(c) && ratingPass(c) && streakPass(c)));
     const pages = Math.max(1, Math.ceil(ranked.length / PAGE_SIZE));
     if (page >= pages) page = 0;
     const showcase = ranked.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
@@ -533,9 +573,11 @@ function search(){
   // PAGING. The whole index stays in memory — 1.7MB is nothing — and only the
   // current PAGE renders. Holding data is cheap; painting sixteen thousand
   // images is not, and that distinction is the entire performance story.
-  const all = INDEX.filter(c =>
+  // The picker and the sort apply in BOTH paths. A filter that works only
+  // after you have typed something is worse than no filter.
+  const all = sortCards(INDEX.filter(c => monPass(c) && streakPass(c) &&
     (!q || (c.n + " " + (c.a || "") + " " + c.s).toLowerCase().includes(q)) &&
-    (!rar || c.r === rar) && (!yr || c.y === yr));
+    (!rar || c.r === rar) && (!yr || c.y === yr)));
   const pages = Math.max(1, Math.ceil(all.length / PAGE_SIZE));
   if (page >= pages) page = 0;
   const hits = all.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
@@ -748,7 +790,11 @@ function renderStreak(remaining){
   const left = remaining != null ? remaining : INDEX.filter(c => f.test(c) && !used.has(c.i) && c.a).length;
   const days = Math.floor(left / streak.perDay);
   box.hidden = false;
-  box.innerHTML =
+    // STATE AND ACTIONS, visible. On or off in words, and two buttons that
+  // actually do something to the cards on screen.
+  const stateHtml = "<span class='streakstate " + (streakFilterOn ? "on'>FILTERING THE GRID" : "off'>NOT FILTERING") + "</span>";
+  const actionsHtml = "<div class='streakactions'><button class='go' onclick='todaysCard()'>Load today’s card</button><button onclick='toggleStreakFilter()'>" + (streakFilterOn ? "Show all cards" : "Show only my streak pool") + "</button></div>";
+box.innerHTML =
     "<span class='day'>Day " + streak.day + "</span>" +
     "<span class='desc'><b>" + f.label + "</b>, " + streak.perDay + " a day. " +
     (days > 0 ? left + " left — enough for " + days + " more days." : "Pool exhausted. Pick a wider filter.") + "</span>" +
@@ -1038,6 +1084,82 @@ function ratingPass(c){
   return f && b ? f.test(b) : false;
 }
 
+// POKEMON PICKER. 1,547 distinct Pokemon in the shipped set, and 510 of them
+// have exactly one card — a flat list would be useless, so the picker shows the
+// ones with the most cards and narrows as you type.
+let fMon = null, fSort = "mon";
+function renderMonChips(q){
+  const box = el("monchips");
+  if (!box) return;
+  const counts = {};
+  for (const c of INDEX) { const m = monName(c.n); if (m) counts[m] = (counts[m] || 0) + 1; }
+  let names = Object.keys(counts);
+  if (q) { const lq = q.toLowerCase(); names = names.filter(n => n.toLowerCase().indexOf(lq) === 0); }
+  names.sort((a, b) => counts[b] - counts[a] || a.localeCompare(b));
+  box.innerHTML = names.slice(0, 40).map(n =>
+    "<button class='chip" + (fMon === n ? " on" : "") + "' data-m='" + n + "'>" + n + " " + counts[n] + "</button>").join("");
+  box.querySelectorAll(".chip").forEach(b => b.onclick = () => {
+    fMon = fMon === b.dataset.m ? null : b.dataset.m;
+    renderMonChips(el("monq") ? el("monq").value.trim() : "");
+    resetPage(); search();
+  });
+}
+function monPass(c){ return !fMon || monName(c.n) === fMon; }
+{
+  const q = el("monq");
+  if (q) q.addEventListener("input", () => renderMonChips(q.value.trim()));
+  const sr = document.querySelector(".sortrow");
+  if (sr) sr.querySelectorAll(".chip").forEach(b => b.onclick = () => {
+    fSort = b.dataset.sort;
+    sr.querySelectorAll(".chip").forEach(x => x.classList.toggle("on", x.dataset.sort === fSort));
+    resetPage(); search();
+  });
+}
+// SORTING. "Organised" means different things depending on the job — grouping
+// by Pokemon keeps every Charizard together, which is what browsing wants, and
+// price ordering is what shopping wants.
+function sortCards(list){
+  const a = list.slice();
+  if (fSort === "price") return a.sort(function(x, y){ return (y.p || 0) - (x.p || 0); });
+  if (fSort === "new") return a.sort(function(x, y){ return String(y.y).localeCompare(String(x.y)); });
+  if (fSort === "old") return a.sort(function(x, y){ return String(x.y).localeCompare(String(y.y)); });
+  return a.sort(function(x, y){
+    var mx = monName(x.n), my = monName(y.n);
+    if (mx !== my) return mx.localeCompare(my);
+    return (y.p || 0) - (x.p || 0);
+  });
+}
+
+// THE STREAK MUST SHOW ITS STATE AND CHANGE THE CARDS. It used to render a bar
+// and never touch the browse grid, so turning it on had no visible effect —
+// which is indistinguishable from broken, and Tyler read it exactly that way.
+let streakFilterOn = false;
+function streakPass(c){
+  if (!streakFilterOn || !streak) return true;
+  const f = STREAK_FILTERS[streak.filter];
+  if (!f) return true;
+  const used = new Set(streak.used || []);
+  return f.test(c) && !used.has(c.i);
+}
+function toggleStreakFilter(){
+  streakFilterOn = !streakFilterOn;
+  resetPage(); search(); renderStreak();
+}
+function todaysCard(){
+  if (!streak) return;
+  const f = STREAK_FILTERS[streak.filter];
+  const used = new Set(streak.used || []);
+  const pool = INDEX.filter(c => f.test(c) && !used.has(c.i) && c.a);
+  if (!pool.length) return;
+  // Ordered streaks walk the pool in sequence; the rest pick at random so two
+  // creators on the same filter do not get the same card.
+  const pick = f.ordered ? pool[0] : pool[Math.floor(Math.random() * pool.length)];
+  tray = [pick]; blob = null;
+  render();
+}
+window.toggleStreakFilter = toggleStreakFilter;
+window.todaysCard = todaysCard;
+
 function render(){
   const L = LAYOUTS[tray.length];
   const box = el("tray");
@@ -1099,7 +1221,7 @@ function renderThemes(){
     }
     if (t.id === "many-hands" || t.id === "battle") {
       const byMon = {};
-      for (const c of pool) if (c.a) (byMon[c.n.split(" ")[0]] ||= new Set()).add(c.a);
+      for (const c of pool) if (c.a) (byMon[monName(c.n)] ||= new Set()).add(c.a);
       return Object.values(byMon).some(set => set.size >= need);
     }
     if (t.id === "artist-career" || t.id === "first-and-last") {
@@ -1164,7 +1286,7 @@ function buildIdeas(){
 
   else if (shape === "many-hands") {
     const byName = {};
-    for (const c of pool) if (c.a) (byName[c.n.split(" ")[0]] ||= []).push(c);
+    for (const c of pool) if (c.a) (byName[monName(c.n)] ||= []).push(c);
     for (const [mon, list] of Object.entries(byName)) {
       const seen = new Map();
       for (const c of list) if (!seen.has(c.a)) seen.set(c.a, c);
@@ -1214,7 +1336,7 @@ function buildIdeas(){
     // Two versions of one Pokemon, close on value — a battle nobody can settle
     // by pointing at a price.
     const byMon = {};
-    for (const c of pool) if (c.p && c.a) (byMon[c.n.split(" ")[0]] ||= []).push(c);
+    for (const c of pool) if (c.p && c.a) (byMon[monName(c.n)] ||= []).push(c);
     for (const [mon, list] of Object.entries(byMon)) {
       const ranked = list.sort((a, b) => (b.p || 0) - (a.p || 0));
       if (ranked.length < 2) continue;
@@ -1242,7 +1364,7 @@ function buildIdeas(){
   else if (shape === "eras") {
     // The same Pokemon across widely separated years.
     const byMon = {};
-    for (const c of pool) if (c.y) (byMon[c.n.split(" ")[0]] ||= []).push(c);
+    for (const c of pool) if (c.y) (byMon[monName(c.n)] ||= []).push(c);
     for (const [mon, list] of Object.entries(byMon)) {
       const years = [...new Set(list.map(c => c.y))].sort();
       if (years.length < need) continue;
@@ -1264,7 +1386,7 @@ function buildIdeas(){
     // name list could produce this, because the relationship IS the content and
     // a list only knows membership.
     const byMon = {};
-    for (const c of pool) { const k = c.n.split(" ")[0];
+    for (const c of pool) { const k = monName(c.n);
       if (!byMon[k] || (c.p || 0) > (byMon[k].p || 0)) byMon[k] = c; }
     for (const [base, card] of Object.entries(byMon)) {
       if (ATTRS[card.i]?.e) continue;                 // start at the bottom only
@@ -1276,7 +1398,7 @@ function buildIdeas(){
         line.push(next); cur = next.n.split(" ")[0];
       }
       if (line.length !== need) continue;
-      ideas.push({ title: line.map(c => c.n.split(" ")[0]).join(" → "),
+      ideas.push({ title: line.map(c => monName(c.n)).join(" → "),
         sub: line.map(c => c.y).join("  ·  "),
         hook: "The whole line. Which stage is the best card?", cards: line });
       if (ideas.length >= 6) break;
@@ -1290,7 +1412,7 @@ function buildIdeas(){
     const q = t.query || {};
     const hits = pool.filter(c => (ATTRS[c.i]?.s || []).includes(q.value));
     const byMon = {};
-    for (const c of hits) { const k = c.n.split(" ")[0];
+    for (const c of hits) { const k = monName(c.n);
       if (!byMon[k] || (c.p || 0) > (byMon[k].p || 0)) byMon[k] = c; }
     const picked = Object.values(byMon).sort((a, b) => (b.p || 0) - (a.p || 0)).slice(0, need);
     if (picked.length === need)
@@ -1303,7 +1425,7 @@ function buildIdeas(){
     // needed because both numbers are printed.
     const withHp = pool.filter(c => ATTRS[c.i]?.h && c.y);
     const byMon = {};
-    for (const c of withHp) (byMon[c.n.split(" ")[0]] ||= []).push(c);
+    for (const c of withHp) (byMon[monName(c.n)] ||= []).push(c);
     for (const [mon, list] of Object.entries(byMon)) {
       const sorted = list.sort((a, b) => (a.y || "") < (b.y || "") ? -1 : 1);
       const oldest = sorted[0], newest = sorted[sorted.length - 1];
@@ -1339,7 +1461,7 @@ function buildIdeas(){
     // One card per Pokemon, best first — nine Charizards is a composition, not
     // a set of nine.
     const byMon = {};
-    for (const c of hits) { const k = c.n.split(" ")[0];
+    for (const c of hits) { const k = monName(c.n);
       if (!byMon[k] || (c.p || 0) > (byMon[k].p || 0)) byMon[k] = c; }
     const picked = Object.values(byMon).sort((a, b) => (b.p || 0) - (a.p || 0)).slice(0, need);
     if (picked.length === need)
@@ -1354,10 +1476,10 @@ function buildIdeas(){
     const withLore = pool.filter(c => LORE[c.i]);
     const seen = new Set();
     for (const c of withLore) {
-      const key = c.n.split(" ")[0];
+      const key = monName(c.n);
       if (seen.has(key)) continue;
       seen.add(key);
-      const group = withLore.filter(x => x.n.split(" ")[0] === key).slice(0, need);
+      const group = withLore.filter(x => monName(x.n) === key).slice(0, need);
       if (group.length !== need) continue;
       ideas.push({ title: c.n, sub: LORE[c.i].slice(0, 96) + (LORE[c.i].length > 96 ? "…" : ""),
         hook: "The card says this about itself.", cards: group });

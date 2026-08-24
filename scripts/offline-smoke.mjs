@@ -12,7 +12,7 @@ const mk = id => nodes[id] ||= { id, innerHTML: "", value: "", textContent: "", 
   querySelectorAll: () => [], querySelector: () => null, addEventListener(){}, onclick: null,
   scrollIntoView(){}, appendChild(){}, getContext: () => null };
 globalThis.document = { getElementById: id => present.has(id) ? mk(id) : null,
-  querySelectorAll: () => [], createElement: () => ({ style:{}, click(){}, getContext:()=>null }), addEventListener(){} };
+  querySelectorAll: () => [], querySelector: (sel) => ({ querySelectorAll: () => [], addEventListener(){}, onclick: null, classList:{toggle(){},add(){},remove(){},contains(){return false}} }), createElement: () => ({ style:{}, click(){}, getContext:()=>null }), addEventListener(){} };
 globalThis.window = globalThis;
 globalThis.addEventListener = () => {};
 globalThis.localStorage = { getItem: () => null, setItem(){}, removeItem(){} };

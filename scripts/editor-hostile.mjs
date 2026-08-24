@@ -6,9 +6,9 @@ const js = html.match(/<script>([\s\S]*?)<\/script>/)[1];
 const present = new Set([...html.matchAll(/id="([a-zA-Z0-9_-]+)"/g)].map(m => m[1]));
 const nodes = {};
 const mk = id => nodes[id] ||= { id, innerHTML:"", value:"", textContent:"", hidden:false, style:{}, dataset:{},
-  classList:{toggle(){},add(){},remove(){},contains(){return false}}, querySelectorAll:()=>[], querySelector:()=>null,
+  classList:{toggle(){},add(){},remove(){},contains(){return false}}, querySelectorAll:()=>[], querySelector:(sel)=>({querySelectorAll:()=>[],addEventListener(){},onclick:null,classList:{toggle(){},add(){},remove(){},contains(){return false}}}), querySelector:()=>null,
   addEventListener(){}, onclick:null, scrollIntoView(){}, appendChild(){}, getContext:()=>null };
-globalThis.document = { getElementById: id => present.has(id) ? mk(id) : null, querySelectorAll:()=>[],
+globalThis.document = { getElementById: id => present.has(id) ? mk(id) : null, querySelectorAll:()=>[], querySelector:(sel)=>({querySelectorAll:()=>[],addEventListener(){},onclick:null,classList:{toggle(){},add(){},remove(){},contains(){return false}}}),
   createElement:()=>({style:{},className:"",textContent:"",setAttribute(){},appendChild(){},click(){},getContext:()=>null,get outerHTML(){return""}}),
   createTextNode:()=>({}), addEventListener(){} };
 globalThis.window = globalThis; globalThis.addEventListener = () => {};
