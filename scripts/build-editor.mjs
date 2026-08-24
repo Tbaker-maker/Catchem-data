@@ -664,28 +664,28 @@ try { streak = JSON.parse(localStorage.getItem("catchem-streak") || "null"); } c
 function saveStreak(){ try { localStorage.setItem("catchem-streak", JSON.stringify(streak)); } catch {} }
 
 const STREAK_FILTERS = {
-  "ir-any":    { label: "Illustration Rares", test: c => /Illustration Rare/i.test(c.r || "") },
-  "ir-cheap":  { label: "IRs under $10",      test: c => /Illustration Rare/i.test(c.r || "") && c.p != null && c.p < 10 },
-  "ir-mid":    { label: "IRs under $25",      test: c => /Illustration Rare/i.test(c.r || "") && c.p != null && c.p < 25 },
-  "sir-only":  { label: "Special Illustration Rares", test: c => /Special Illustration Rare/i.test(c.r || "") },
-  "ir-modern": { label: "IRs from 2024 on",   test: c => /Illustration Rare/i.test(c.r || "") && c.y >= "2024" },
+  "ir-any":    { series: "posting one Illustration Rare a day", label: "Illustration Rares", test: c => /Illustration Rare/i.test(c.r || "") },
+  "ir-cheap":  { series: "posting one Illustration Rare under $3", label: "IRs under $10",      test: c => /Illustration Rare/i.test(c.r || "") && c.p != null && c.p < 10 },
+  "ir-mid":    { series: "posting one mid-priced Illustration Rare a day", label: "IRs under $25",      test: c => /Illustration Rare/i.test(c.r || "") && c.p != null && c.p < 25 },
+  "sir-only":  { series: "posting one Special Illustration Rare a day", label: "Special Illustration Rares", test: c => /Special Illustration Rare/i.test(c.r || "") },
+  "ir-modern": { series: "posting one modern Illustration Rare a day", label: "IRs from 2024 on",   test: c => /Illustration Rare/i.test(c.r || "") && c.y >= "2024" },
   // PRICE BANDS. Restricted to Illustration Rares these pools are 18 and 32
   // cards — nine and sixteen days, which is not a streak, it is a fortnight.
   // Open to every hero rarity they run 141 and 119 days, and nothing is lost:
   // a Rare Holo at $2.50 is exactly as postable as an IR at $2.50, and the
   // PRICE BAND is the theme. Restricting rarity too was my assumption, not the ask.
-  "two-dollar":  { label: "The $2–3 shelf", test: c => HERO_RX.test(c.r || "") && c.p != null && c.p >= 2 && c.p <= 3 },
-  "five-dollar": { label: "The $5 pickup",  test: c => HERO_RX.test(c.r || "") && c.p != null && c.p >= 4.50 && c.p <= 5.95 },
+  "two-dollar":  { series: "posting one card I love that costs under $3", label: "The $2–3 shelf", test: c => HERO_RX.test(c.r || "") && c.p != null && c.p >= 2 && c.p <= 3 },
+  "five-dollar": { series: "posting one card I love that costs under $6", label: "The $5 pickup",  test: c => HERO_RX.test(c.r || "") && c.p != null && c.p >= 4.50 && c.p <= 5.95 },
   // THE SCOUT'S ANGLES — found by searching the data rather than my memory,
   // which was thinking in categories while the data thinks in structure.
   // Chronological is the strongest: a streak with a DIRECTION beats one with a
   // filter, because "Day 40, we've reached Neo Destiny" is a story and "Day 40,
   // another card" is a counter.
-  "chronological": { label: "The whole history, in order", ordered: "date",
+  "chronological": { series: "walking the whole history of this game, one set a day", label: "The whole history, in order", ordered: "date",
     test: c => HERO_RX.test(c.r || "") && c.a && c.y },
-  "one-artist":    { label: "One artist at a time", ordered: "artist",
+  "one-artist":    { series: "posting one card by a single artist", label: "One artist at a time", ordered: "artist",
     test: c => HERO_RX.test(c.r || "") && c.a },
-  "cheapest-up":   { label: "Cheapest first, working up", ordered: "price",
+  "cheapest-up":   { series: "posting the cheapest card I have not shown yet", label: "Cheapest first, working up", ordered: "price",
     test: c => HERO_RX.test(c.r || "") && c.p != null },
   // WHAT THE CARD SAYS. Tyler posted Slakoth at 2am after seventeen hours of
   // coding and its attack is called Take It Easy — neither of us knew, because
@@ -999,6 +999,27 @@ function renderLines(){
 // every time, and those replies pull 1.7K-2K views on their own. It answers the
 // question every card post gets before anyone asks it — and the editor already
 // knows the answer, so nobody should type it by hand.
+// THE DAY NUMBER IS THE HOOK. shotguncaio is on Day 90 of "one Pokemon card I
+// love that costs under $10" at 43k followers, and the NUMBER is what makes it a
+// series — without it, it is a man posting cards. We built the streak and never
+// wrote the sentence.
+function streakLine(){
+  if (!streak) return null;
+  const f = STREAK_FILTERS[streak.filter];
+  if (!f) return null;
+  const day = (streak.used || []).length + 1;
+  const what = f.series || f.label.toLowerCase();
+  return "Day " + day + " of " + what + ".";
+}
+function renderStreakLine(){
+  if (!streak || !tray.length) return;
+  const line = streakLine();
+  const lab = el("label");
+  // Only fills an EMPTY label. Overwriting something Tyler wrote would be the
+  // tool competing with him, which is the one thing it must never do.
+  if (line && lab && !lab.value.trim()) lab.value = line;
+}
+
 function renderSelfReply(){
   const box = el("selfreply");
   if (!box) return;
@@ -1151,6 +1172,7 @@ function render(){
   box.innerHTML = html || '<div class="pocket"></div><div class="pocket"></div><div class="pocket"></div>';
   const allowed = checkIntent();
   renderLines();
+  renderStreakLine();
   renderSelfReply();
   renderStreak();
   renderTally();

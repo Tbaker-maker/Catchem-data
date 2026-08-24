@@ -2293,3 +2293,28 @@ disclaimer only works when a person means it.
 ALSO CHEAP AND WORTH TAKING: **a named obscure specialty.** "Mawile expert" in a
 bio costs nothing and makes an account memorable. It is a positioning move, not
 a claim to defend.
+
+## THE NUMBER IS THE HOOK, THE CONSTRAINT IS THE CONTENT (Aug 24 2026)
+@shotguncaio's signature format is a numbered daily series: **"Day 90 of
+posting one Pokémon card I love that costs under $10."** At 43-44k followers.
+
+**That is our streak feature, and he is on day 90 of it.** We built the
+mechanism and never generated the sentence — and **without the number it is a
+man posting cards; with it, people come back to see what day it is.**
+
+"Under $10" is what makes it a series. That is our own **FILTER IS THE PRODUCT**
+law, confirmed by somebody else's numbers rather than our own reasoning.
+
+WHY THE FOLLOWER COUNT MATTERS: 43-44k is a **reachable target**. Serebii's
+million was built over a decade and rests on an archive. This is a person on day
+90 of a habit, which is a thing Tyler could start tomorrow.
+
+THE NEGATIVE FINDING, and it is the rarest thing in any of these profiles:
+**motivational posts without a Pokémon hook underperform.** That is a direct
+instruction not to drift off-topic reaching for engagement — most account
+write-ups only report what worked.
+
+WHAT WE TOOK: the day counter now generates "Day N of posting one Illustration
+Rare under $3" from the streak filter, and it **only fills an empty label** —
+overwriting something Tyler wrote would be the tool competing with him, which is
+the one thing it must never do.
