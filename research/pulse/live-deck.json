@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T23:46:24.974Z",
+ "generatedAt": "2026-08-24T00:18:15.002Z",
  "slides": [
   {
    "id": "s0",
@@ -1438,6 +1438,30 @@
   },
   {
    "id": "s63",
+   "kind": "fact",
+   "card": "base1-101",
+   "confidence": "VERIFIED",
+   "title": "tcg type differs from game type",
+   "sub": "Psychic Energy · Base",
+   "facts": [
+    "A Pokemon's TCG card type frequently differs from its video-game type."
+   ],
+   "sources": [
+    "pokemon-tcg-data type field across 13,867 cards",
+    "our own comparison of hand-written lists against the field"
+   ],
+   "falsifier": "a card whose printed type matches the game type in every case we checked",
+   "prompts": [
+    "Say it in your own words — the claim is above",
+    "Sourced. You can state this plainly."
+   ],
+   "audience": {
+    "headline": "A Pokemon's TCG card type frequently differs from its video-game type.",
+    "sub": "pokemon-tcg-data type field across 13,867 cards"
+   }
+  },
+  {
+   "id": "s64",
    "kind": "finding",
    "card": "neo1-1",
    "confidence": "REASONED",
@@ -1456,7 +1480,7 @@
    }
   },
   {
-   "id": "s64",
+   "id": "s65",
    "kind": "finding",
    "card": "neo1-2",
    "confidence": "REASONED",
@@ -1475,7 +1499,7 @@
    }
   },
   {
-   "id": "s65",
+   "id": "s66",
    "kind": "finding",
    "card": "neo3-8",
    "confidence": "REASONED",
@@ -1494,7 +1518,7 @@
    }
   },
   {
-   "id": "s66",
+   "id": "s67",
    "kind": "finding",
    "card": "ex13-16",
    "confidence": "REASONED",
@@ -1513,7 +1537,7 @@
    }
   },
   {
-   "id": "s67",
+   "id": "s68",
    "kind": "finding",
    "card": "neo3-12",
    "confidence": "REASONED",
@@ -1532,7 +1556,7 @@
    }
   },
   {
-   "id": "s68",
+   "id": "s69",
    "kind": "finding",
    "card": "ex2-14",
    "confidence": "REASONED",
@@ -1551,7 +1575,7 @@
    }
   },
   {
-   "id": "s69",
+   "id": "s70",
    "kind": "finding",
    "card": "pl2-103",
    "confidence": "REASONED",
@@ -1570,7 +1594,7 @@
    }
   },
   {
-   "id": "s70",
+   "id": "s71",
    "kind": "finding",
    "card": "dp6-144",
    "confidence": "REASONED",
@@ -1589,7 +1613,7 @@
    }
   },
   {
-   "id": "s71",
+   "id": "s72",
    "kind": "finding",
    "card": "pl2-29",
    "confidence": "REASONED",
@@ -1608,7 +1632,7 @@
    }
   },
   {
-   "id": "s72",
+   "id": "s73",
    "kind": "finding",
    "card": "dp3-24",
    "confidence": "REASONED",
@@ -1627,7 +1651,7 @@
    }
   },
   {
-   "id": "s73",
+   "id": "s74",
    "kind": "finding",
    "card": "pl3-24",
    "confidence": "REASONED",
@@ -1646,7 +1670,7 @@
    }
   },
   {
-   "id": "s74",
+   "id": "s75",
    "kind": "finding",
    "card": "dp7-40",
    "confidence": "REASONED",
@@ -1665,7 +1689,7 @@
    }
   },
   {
-   "id": "s75",
+   "id": "s76",
    "kind": "finding",
    "card": "neo4-28",
    "confidence": "REASONED",
@@ -1684,7 +1708,7 @@
    }
   },
   {
-   "id": "s76",
+   "id": "s77",
    "kind": "finding",
    "card": "ex10-K",
    "confidence": "REASONED",
@@ -1703,7 +1727,7 @@
    }
   },
   {
-   "id": "s77",
+   "id": "s78",
    "kind": "finding",
    "card": "base2-11",
    "confidence": "REASONED",
@@ -1722,7 +1746,7 @@
    }
   },
   {
-   "id": "s78",
+   "id": "s79",
    "kind": "finding",
    "card": "neo1-18",
    "confidence": "REASONED",
@@ -1741,7 +1765,7 @@
    }
   },
   {
-   "id": "s79",
+   "id": "s80",
    "kind": "finding",
    "card": "neo4-14",
    "confidence": "REASONED",
@@ -1760,7 +1784,7 @@
    }
   },
   {
-   "id": "s80",
+   "id": "s81",
    "kind": "finding",
    "card": "ex6-112",
    "confidence": "REASONED",
@@ -1779,7 +1803,7 @@
    }
   },
   {
-   "id": "s81",
+   "id": "s82",
    "kind": "finding",
    "card": "ex11-12",
    "confidence": "REASONED",
@@ -1798,7 +1822,7 @@
    }
   },
   {
-   "id": "s82",
+   "id": "s83",
    "kind": "finding",
    "card": "ex16-92",
    "confidence": "REASONED",
@@ -1817,7 +1841,7 @@
    }
   },
   {
-   "id": "s83",
+   "id": "s84",
    "kind": "segment",
    "cards": [
     "bw4-33",
@@ -1846,7 +1870,7 @@
    }
   },
   {
-   "id": "s84",
+   "id": "s85",
    "kind": "segment",
    "cards": [
     "neo1-12",
@@ -1875,7 +1899,7 @@
    }
   },
   {
-   "id": "s85",
+   "id": "s86",
    "kind": "segment",
    "cards": [
     "base3-5",
@@ -1904,7 +1928,7 @@
    }
   },
   {
-   "id": "s86",
+   "id": "s87",
    "kind": "segment",
    "cards": [
     "base2-11",
@@ -1933,7 +1957,7 @@
    }
   },
   {
-   "id": "s87",
+   "id": "s88",
    "kind": "segment",
    "cards": [
     "base3-4",
@@ -1962,7 +1986,7 @@
    }
   },
   {
-   "id": "s88",
+   "id": "s89",
    "kind": "segment",
    "cards": [
     "base1-10",
@@ -1991,7 +2015,7 @@
    }
   },
   {
-   "id": "s89",
+   "id": "s90",
    "kind": "segment",
    "cards": [
     "base3-1",
@@ -2020,7 +2044,7 @@
    }
   },
   {
-   "id": "s90",
+   "id": "s91",
    "kind": "segment",
    "cards": [
     "ecard2-H9",
@@ -2049,7 +2073,7 @@
    }
   },
   {
-   "id": "s91",
+   "id": "s92",
    "kind": "segment",
    "cards": [
     "neo3-8",
@@ -2078,7 +2102,7 @@
    }
   },
   {
-   "id": "s92",
+   "id": "s93",
    "kind": "segment",
    "cards": [
     "base2-8",
@@ -2109,7 +2133,7 @@
  ],
  "counts": {
   "card": 40,
-  "fact": 23,
+  "fact": 24,
   "finding": 20,
   "segment": 10
  }

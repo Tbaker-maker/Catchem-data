@@ -1,6 +1,6 @@
-# The review — 2026-08-23
+# The review — 2026-08-24
 
-**6 / 10.** Real progress, and the gap between what is built and what is live is now the whole problem.
+**5.4 / 10.** Real progress, and the gap between what is built and what is live is now the whole problem.
 
 > Every rating is derived from a count we hold, never chosen. A score somebody picked is a mood with a number attached.
 >
@@ -13,7 +13,7 @@
 Every agent meets every obligation.
 
 **Working**
-- 18 agents, 20 guards wired, 59 negative tests
+- 18 agents, 32 guards wired, 65 negative tests
 - Every incident this month became a guard, and every guard has been deliberately broken to prove it works.
 
 
@@ -28,7 +28,7 @@ Wide and shallow. We track a lot and verify less of it than the numbers suggest.
 - Enrichment covers 12 cards. Volume and graded data exist on 0.07% of the catalogue.
 - 6 knowledge-base facts rest only on secondary sources and have never been checked against our own data.
 
-## The product — 8/10 `████████░░`  *(unchanged)*
+## The product — 6/10 `██████░░░░`  *(unchanged)*
 
 The app works and looks better than it did. It is also still not deployed where anyone can use it.
 
@@ -36,6 +36,7 @@ The app works and looks better than it did. It is also still not deployed where 
 - Seven measured layout frames, a creator editor, a funnel, and 13 post shapes
 - Watermark and illustrator credit are locked and cannot be edited out
 **Needs looking at**
+- 1 high-severity design findings open
 - Two shipped pages have no generator and drift further from the site every day.
 - The editor exists as a file. Nobody outside this conversation can reach it.
 
@@ -64,25 +65,25 @@ Real and growing, on evidence too thin to score confidently. Early-stage communi
 
 ## Engagement — 2/10 `██░░░░░░░░`  *(unchanged)*
 
-3 posts measured.
+5 posts measured.
 
 **Working**
-- Best: 791 views, 38 likes, and an unsolicited reply from a verified creator — at a bad hour from a small account
+- Best: 18800 views, 401 likes, and an unsolicited reply from a verified creator — at a bad hour from a small account
 **Needs looking at**
 - The platform agents' judgments are still shape-based guesses until roughly twenty posts have outcomes.
 - We have a five-times performance difference between two post types and one observation of each. That is not enough to act on and we have been acting on it.
 
-## Accountability — 7/10 `███████░░░`  *(unchanged)*
+## Accountability — 5/10 `█████░░░░░`  *(unchanged)*
 
 The habits are in place. Nothing has come due yet, so none of them have been tested.
 
 **Working**
-- 7 decisions logged with falsifiable predictions
+- 9 decisions logged with falsifiable predictions
 - Corrections published publicly, dated and permanent
 - 21 errors logged, each with the guard it produced
 **Needs looking at**
-- 12 of 31 agent questions unanswered — a queue that only grows is a queue nobody reads
-- 7 predictions still pending. The first grades land in October, and until then this score is a promise.
+- 25 of 44 agent questions unanswered — a queue that only grows is a queue nobody reads
+- 9 predictions still pending. The first grades land in October, and until then this score is a promise.
 
 ---
 

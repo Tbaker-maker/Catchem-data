@@ -275,6 +275,11 @@ const MOODS = ${JSON.stringify(Object.values((await J('data/moods.json'))?.moods
 // LORE. Flavour text printed on the cards — sourced by definition, because
 // quoting it is quoting the object. Story coverage goes from 146 cards to 4,464.
 const LORE = ${JSON.stringify((await J('data/lore.json'))?.lore ?? {})};
+// CLASSIFICATION. Type and national dex number, from the source. Every type
+// theme was a hand-written name list before this, built from VIDEO GAME typing
+// while the TCG types differently — Lugia is Colorless on the card, Scizor is
+// Metal. The lists missed up to 141 Pokemon each and got up to 12 wrong.
+const ATTRS = ${JSON.stringify((await (async () => { const a = (await J('data/card-attrs.json'))?.cards ?? {}; const slim = {}; for (const [k, v] of Object.entries(a)) if (v.t?.length || v.dex) slim[k] = { t: v.t ?? null, d: v.dex ?? null }; return slim; })()))};
 const CARD_INDEX = ${JSON.stringify(index)};
 // Sourced facts, so the 'story' shape has something true to build on. Only
 // VERIFIED ones ship — an unsourced claim on a card image is the one mistake
@@ -1082,6 +1087,25 @@ function buildIdeas(){
         hook: "Which era got " + mon + " right?", cards: picked });
       if (ideas.length >= 6) break;
     }
+  }
+
+  else if (shape === "type" || shape === "dex") {
+    // A QUERY, NOT A LIST. This is the whole difference: a theme built on a real
+    // field is never out of date, and a list I maintain is wrong the day a set
+    // lands.
+    const q = t.query || {};
+    const match = shape === "type"
+      ? (c) => (ATTRS[c.i]?.t || []).includes(q.value)
+      : (c) => { const d = ATTRS[c.i]?.d; return d && d >= q.from && d <= q.to; };
+    const hits = pool.filter(match);
+    // One card per Pokemon, best first — nine Charizards is a composition, not
+    // a set of nine.
+    const byMon = {};
+    for (const c of hits) { const k = c.n.split(" ")[0];
+      if (!byMon[k] || (c.p || 0) > (byMon[k].p || 0)) byMon[k] = c; }
+    const picked = Object.values(byMon).sort((a, b) => (b.p || 0) - (a.p || 0)).slice(0, need);
+    if (picked.length === need)
+      ideas.push({ title: t.name, sub: picked.map(c => c.n).join(" · "), hook: t.hook, cards: picked });
   }
 
   else if (shape === "lore") {

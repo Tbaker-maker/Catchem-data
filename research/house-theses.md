@@ -2128,3 +2128,33 @@ enough"* and my assertion test passed it, because I had only looked for
 superlatives. **Claiming under-appreciation is an assertion too** — it is a
 claim about what other people have failed to notice. Now a question: *"Does this
 one get talked about enough?"*
+
+## A LIST IS WRONG THE DAY A SET LANDS (Tyler, Aug 23 2026)
+"I feel like we need to fully organize our catalogue with different filters by
+art, history and price data. We need to connect each card to categories."
+
+The measurement that answered it: we held **id, name, artist, set, year, rarity,
+price** — and **no type, no stage, no dex number, no subtype.** So every type
+theme was a name list I typed out by hand.
+
+**Those lists missed up to 141 Pokemon each and contained up to 12 that do not
+belong.**
+
+WHY THEY WERE WRONG, and it is not carelessness: **a Pokemon's TCG card type
+frequently differs from its video-game type.** Lugia is Psychic/Flying in the
+games and **Colorless** on the card. Scizor is Bug/Steel and **Metal**.
+Dragonite is Dragon/Flying and **Colorless**. I built the lists from what a
+Pokemon fan knows, and the cards do not use it.
+
+THE FIX: 16,531 cards now carry type, subtype, supertype, HP, evolution, dex
+number, weakness and regulation mark. **Every type theme is now a QUERY against
+a real field**, and nine regions exist as a filter for the first time because a
+dex number makes generation derivable.
+
+THE RULE: **anything that can be a query must be a query.** A list is wrong the
+day a set lands — and mine was already wrong on the day I wrote it.
+
+AND THE DUPLICATE GUARD CAUGHT THE CONSEQUENCE: with real types, "Colorless"
+sorted by value returns exactly the hand-written "box legendaries" list, because
+the dearest Colorless cards ARE the cover legendaries. **Two themes returning
+one result is one theme wearing two names.** The hand-written one was removed.

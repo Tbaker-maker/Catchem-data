@@ -673,6 +673,24 @@
     "content"
    ],
    "recheckAfter": "2027-02-23"
+  },
+  {
+   "id": "tcg-type-differs-from-game-type",
+   "claim": "A Pokemon's TCG card type frequently differs from its video-game type. Lugia is Psychic/Flying in the games and Colorless on the card; Scizor is Bug/Steel and Metal; Dragonite is Dragon/Flying and Colorless. The TCG collapses the game's 18 types into 11 card types.",
+   "sources": [
+    "pokemon-tcg-data type field across 13,867 cards",
+    "our own comparison of hand-written lists against the field"
+   ],
+   "verified": "2026-08-23",
+   "verifier": "chat",
+   "confidence": "VERIFIED",
+   "falsifier": "a card whose printed type matches the game type in every case we checked",
+   "note": "THIS IS WHY EVERY HAND-WRITTEN TYPE LIST WAS WRONG. I built them from game knowledge, which is what a Pokemon fan knows, and the cards do not use it. Each list missed up to 141 Pokemon and contained up to 12 that do not belong. Any theme that can be a QUERY against a real field must be one — a list is wrong the day a set lands, and it was already wrong on the day I wrote it.",
+   "usedBy": [
+    "build-editor",
+    "themes"
+   ],
+   "recheckAfter": "2027-02-23"
   }
  ]
 }
