@@ -2268,3 +2268,28 @@ reliable.** The data is 50 hours old, four stages are quiet, and 24 products
 carry broken-era history. A news account runs on freshness — publishing a market
 update on two-day-old prices is the perishable-claim error on the one surface
 whose entire value is being current.
+
+## THREE ENGINES, NOT A RANKING (Aug 24 2026)
+Three reference accounts, three different mechanics — and they are not better and
+worse versions of one thing.
+
+- **@JohnnyCrambo** — 68 replies against 73 likes, on a divisive question plus
+  "not my opinion". **Wants you to ARGUE.**
+- **@shotguncaio** — long-form artist and lore posts at 15-18K, card list as a
+  self-reply. **Wants you to READ.**
+- **@Elite_4_J** — "more pokémon fusion", three words and an image: 402,100
+  views, 998 reposts, 72 replies. Reposts beat replies **fourteen to one**.
+  **Wants you to SEND IT TO SOMEONE.**
+
+THE ONE THAT ANSWERS THE AUTOMATION QUESTION: **the share engine is the one a
+machine can run.** Three words carry no voice, so the image does all the work —
+and the image is the half already automated. A share-driven post needs a picture
+worth forwarding and a caption that gets out of the way, which is a **generator
+problem rather than a writing problem**.
+
+The conversation engine is the one that cannot be automated, because the
+disclaimer only works when a person means it.
+
+ALSO CHEAP AND WORTH TAKING: **a named obscure specialty.** "Mawile expert" in a
+bio costs nothing and makes an account memorable. It is a positioning move, not
+a claim to defend.
