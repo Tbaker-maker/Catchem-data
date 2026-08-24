@@ -657,6 +657,8 @@ try { await import("./pairing-finder.mjs"); } catch (e) { console.warn("  pairin
 try { await import("./build-creators-page.mjs"); } catch (e) { console.warn("  build-creators-page: " + e.message); }
 try { await import("./build-editor.mjs"); } catch (e) { console.warn("  build-editor: " + e.message); }
 await import("./layout-check.mjs");
+try { await import("./build-bios.mjs"); } catch (e) { console.warn("  bios: " + e.message); }
+await import("./rating-guard.mjs");
 await import("./slop-guard.mjs");
 await import("./card-guard.mjs");
 try { await import("./build-live.mjs"); } catch (e) { console.warn("  live: " + e.message); }

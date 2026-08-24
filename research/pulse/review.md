@@ -13,7 +13,7 @@
 Every agent meets every obligation.
 
 **Working**
-- 18 agents, 32 guards wired, 65 negative tests
+- 18 agents, 33 guards wired, 65 negative tests
 - Every incident this month became a guard, and every guard has been deliberately broken to prove it works.
 
 

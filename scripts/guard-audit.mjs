@@ -176,6 +176,7 @@ const MUST_RUN = [
   { script: "content-sanity.mjs", why: "published prose must say something — the gap that let a card ship the word chase as its reason" },
   { script: "bias-guard.mjs", why: "measures whether the machines or the human are catching our errors" },
   { script: "layout-check.mjs", why: "text measured against real font metrics — clipping and collisions caught before rendering" },
+  { script: "rating-guard.mjs", why: "a rating that cannot name the printed field it derives from is taste wearing a number, which our own slop law refuses" },
   { script: "slop-guard.mjs", why: "every grouping must derive from a real field or an openly stored list" },
   { script: "card-guard.mjs", why: "a minted card must say something before anyone sees it" },
   { script: "heartbeat.mjs", why: "detects a missed scheduled run — runs on the watchdog workflow, not the daily pipeline, which is why it was absent from this list until it failed", offPipeline: true },

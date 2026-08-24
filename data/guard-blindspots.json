@@ -207,6 +207,13 @@
    "knownPatterns": [],
    "coveredBy": "Tyler using it, and CC with a browser",
    "reviewed": "2026-08-23"
+  },
+  "rating-guard.mjs": {
+   "cannotCatch": "Whether the derivation is a GOOD one. It proves every rating names a printed field and that refused ratings stay refused. It has no view on whether 'an unevolved Basic at 60 HP' is actually a fair proxy for cute — that is a judgement, and only Tyler and the outcome log can settle it.",
+   "knownPatterns": [],
+   "coveredBy": "Tyler, and whether the filters find what people expect",
+   "reviewed": "2026-08-24",
+   "history": "Written alongside the bios. Tyler asked for cuteness, comedy and popularity ratings; the honest version derives each from a printed field and the dishonest version is me assigning scores that feel right. Popularity and likeness were REFUSED outright for having no signal, and this guard exists so they cannot quietly reappear."
   }
  }
 }

@@ -63,6 +63,10 @@ h1 em{font-style:normal;color:var(--live)}
 .lede{color:var(--soft);font-size:17px;max-width:46ch;margin:0}
 
 /* Steps — a real sequence, so numbering earns its place. */
+.ratingrow{background:var(--panel);border:1px solid var(--line);border-radius:13px;
+  padding:16px 18px;margin-bottom:14px}
+.ratingrow .chip.on{border-color:var(--live);color:var(--live);background:rgba(54,211,153,.08)}
+.ratingwhy{font:400 12.5px var(--body);color:var(--faint);margin-top:10px;line-height:1.55}
 .moodrow{background:linear-gradient(180deg,rgba(54,211,153,.05),transparent),var(--panel);
   border:1px solid var(--line);border-radius:13px;padding:16px 18px;margin-bottom:22px}
 .moodlabel{display:block;font:500 10.5px var(--mono);color:var(--faint);letter-spacing:.16em;margin-bottom:11px}
@@ -204,6 +208,11 @@ summary:before{content:"→ ";color:var(--faint)}
      &nbsp;·&nbsp; <a href="/creators" style="color:var(--live)">Or start from one we made &rsaquo;</a></p>
 </div>
 
+<div class="ratingrow">
+  <span class="moodlabel">NARROW BY RATING — every one derives from a printed field</span>
+  <div class="chips" id="frating"></div>
+</div>
+
 <div class="moodrow">
   <span class="moodlabel">HOW ARE YOU FEELING?</span>
   <div class="chips" id="fmood"></div>
@@ -289,6 +298,10 @@ const LORE = ${JSON.stringify((await J('data/lore.json'))?.lore ?? {})};
 // while the TCG types differently — Lugia is Colorless on the card, Scizor is
 // Metal. The lists missed up to 141 Pokemon each and got up to 12 wrong.
 const ATTRS = ${JSON.stringify((await (async () => { const a = (await J('data/card-attrs.json'))?.cards ?? {}; const slim = {}; for (const [k, v] of Object.entries(a)) if (v.t?.length || v.dex || v.ev || v.hp) slim[k] = { t: v.t ?? null, d: v.dex ?? null, e: v.ev ?? null, h: v.hp ?? null, s: v.st ?? null }; return slim; })()))};
+// BIOS. Every rating names the printed field it derives from, so a filter on
+// 'cute' is a filter on the Baby subtype and low-HP unevolved Basics — not on my
+// taste. A rating that could not name a field was refused rather than invented.
+const BIOS = ${JSON.stringify((await (async () => { const b = (await J('data/card-bios.json'))?.bios ?? {}; const slim = {}; for (const [k, v] of Object.entries(b)) if (Object.keys(v.ratings ?? {}).length) slim[k] = v.ratings; return slim; })()))};
 const CARD_INDEX = ${JSON.stringify(index)};
 // Sourced facts, so the 'story' shape has something true to build on. Only
 // VERIFIED ones ship — an unsourced claim on a card image is the one mistake
@@ -908,6 +921,41 @@ function renderSelfReply(){
   box.appendChild(h); box.appendChild(pre); box.appendChild(b);
 }
 
+// RATING FILTERS. Each one is a real threshold on a derived number, and the
+// panel says which printed field the number came from — because a filter you
+// cannot explain is a filter nobody should trust.
+const RATING_FILTERS = [
+  { id: "cute", label: "Cute", test: (r) => (r.cute ?? 0) >= 7, note: "the Baby subtype, or an unevolved Basic at 60 HP or less" },
+  { id: "comedy", label: "Funny", test: (r) => (r.comedy ?? 0) >= 8, note: "the attack name is a genuinely absurd one" },
+  { id: "serious", label: "Dark", test: (r) => (r.serious ?? 0) >= 9, note: "the printed flavour text uses grim language" },
+  { id: "cheap", label: "Under a fiver", test: (r) => (r.price ?? 99) <= 4, note: "the bottom 40% of every priced card" },
+  { id: "dear", label: "Expensive", test: (r) => (r.price ?? 0) >= 9, note: "the top 10% of every priced card" },
+  { id: "strong", label: "High HP", test: (r) => (r.power ?? 0) >= 8, note: "300 HP or more, printed" },
+  { id: "scarce", label: "Scarce", test: (r) => (r.scarcity ?? 0) >= 8, note: "an Illustration Rare or better, printed" },
+];
+let fRating = null;
+{
+  const box = el("frating");
+  if (box) {
+    box.innerHTML = RATING_FILTERS.map(f => "<button class='chip' data-i='" + f.id + "'>" + f.label + "</button>").join("")
+      + "<div class='ratingwhy' id='ratingwhy'></div>";
+    box.querySelectorAll(".chip").forEach(b => b.onclick = () => {
+      fRating = fRating === b.dataset.i ? null : b.dataset.i;
+      box.querySelectorAll(".chip").forEach(x => x.classList.toggle("on", x.dataset.i === fRating));
+      const f = RATING_FILTERS.find(x => x.id === fRating);
+      const w = el("ratingwhy");
+      if (w) w.textContent = f ? "Showing cards where " + f.note + "." : "";
+      resetPage(); search(); renderThemes(); buildIdeas();
+    });
+  }
+}
+function ratingPass(c){
+  if (!fRating) return true;
+  const f = RATING_FILTERS.find(x => x.id === fRating);
+  const b = BIOS[c.i];
+  return f && b ? f.test(b) : false;
+}
+
 function render(){
   const L = LAYOUTS[tray.length];
   const box = el("tray");
@@ -1011,7 +1059,7 @@ function buildIdeas(){
   // theme, then pick a set that excludes it, and fTheme points at something no
   // longer in the list. It threw on .shape.
   if (!t) { fTheme = null; box.innerHTML = ""; return; }
-  const pool = INDEX.filter(c => (!fSet || c.s === fSet) && HERO_RX.test(c.r || ""));
+  const pool = INDEX.filter(c => (!fSet || c.s === fSet) && HERO_RX.test(c.r || "") && ratingPass(c));
   const need = fCount;
   const ideas = [];
 
