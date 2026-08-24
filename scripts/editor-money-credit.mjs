@@ -5,7 +5,10 @@ import { readFile } from "node:fs/promises";
 // checked end to end.
 const html = await readFile("research/assets/build.html", "utf8");
 const js = html.match(/<script>([\s\S]*?)<\/script>/)[1];
-const idx = JSON.parse(js.match(/const CARD_INDEX = (\[[\s\S]*?\]);\n/)[1]);
+// CARD_INDEX is computed from CARD_ROWS now, so read the rows and rehydrate
+// the two fields this guard actually needs.
+const rows = JSON.parse(js.match(/const CARD_ROWS = (\[[\s\S]*?\]);\n/)[1]);
+const idx = rows.map(r => ({ i: r[0], n: r[1], s: r[2], y: r[3], a: r[4] || null, r: r[5] || null, p: r[6] || null }));
 const problems = [];
 
 // 1 · PRICE SANITY. A want list totals these; a wrong one sends somebody to a

@@ -728,6 +728,22 @@ const CASES = [
         why: bad.length ? "inline handlers not on window — " + bad.join(" · ") : "" };
     } },
 
+  { guard: "Editor guards actually run", detect: null,
+    // One of the four crashed on a data-format change and printed a BLANK LINE
+    // rather than failing. A guard that crashes is a guard that is not running,
+    // and a blank line in a summary reads as fine.
+    fn: async () => {
+      const { execSync } = await import("node:child_process");
+      const bad = [];
+      for (const g of ["editor-hostile", "editor-copy-rules", "editor-claim-match", "editor-money-credit"]) {
+        let out = "";
+        try { out = execSync("node " + P("scripts/" + g + ".mjs") + " 2>&1", { encoding: "utf-8" }); }
+        catch (e) { out = String(e.stdout || "") + String(e.stderr || ""); }
+        if (!/✓|✗ /.test(out)) bad.push(g + " produced no verdict");
+      }
+      return { pass: bad.length === 0, why: bad.join(" · ") };
+    } },
+
   { guard: "Referee Doctrine (adversarial framing)", detect: null,
     fn: async () => {
       const src = await readFile(P("scripts/voice-lint.mjs"), "utf-8");

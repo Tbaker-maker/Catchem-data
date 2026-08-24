@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-24T03:05:47.276Z",
+  "generatedAt": "2026-08-24T03:14:37.746Z",
   "audited": "14 shipped surfaces, 40 minted cards",
   "principle": "A linter asks whether the CSS is valid. A design lead asks whether the page was DESIGNED. The tells of an undesigned page are countable: too many type sizes, too many near-identical greys, an accent used everywhere so it accents nothing.",
   "blindSpot": "It cannot SEE. It counts and measures. It cannot tell you a page is ugly, only that the choices behind it were not made deliberately.",
@@ -12,7 +12,7 @@
     {
       "surface": "build.html",
       "severity": "medium",
-      "what": "32 distinct colours",
+      "what": "35 distinct colours",
       "why": "Beyond a dozen, the palette stops being a palette. Most of the extras are near-duplicate greys nobody chose on purpose.",
       "fix": "Reduce to tokens. If two greys differ by less than 6% luminance, they are one grey."
     },
@@ -117,12 +117,13 @@
     },
     {
       "surface": "build.html",
-      "question": "build.html: 7 corner radii in use (5, 8, 9, 11, 12, 13, 16). Does the page read as one family of shapes, or several?",
+      "question": "build.html: 8 corner radii in use (5, 8, 9, 10, 11, 12, 13, 16). Does the page read as one family of shapes, or several?",
       "measured": {
         "radii": [
           5,
           8,
           9,
+          10,
           11,
           12,
           13,

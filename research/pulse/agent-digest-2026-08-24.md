@@ -27,7 +27,7 @@ We put something in front of readers and can no longer price it. That is the kin
 ## The agents themselves
 **NEEDS A HUMAN — the supervisor flagged the watchers:**
 - correction-hunter: BROKEN RECORD — 3 finding(s) repeated three runs running (e.g. "gone::Umbreon VMAX"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
-- designer: BROKEN RECORD — 8 finding(s) repeated three runs running (e.g. "medium::32 distinct colours"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
+- designer: BROKEN RECORD — 7 finding(s) repeated three runs running (e.g. "high::the accent colour appears 21 times"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 - theme-scout: BROKEN RECORD — 22 finding(s) repeated three runs running (e.g. "the one-off::Ken Sugimori drew Ampharos exactly on"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 - teacher: BROKEN RECORD — 13 finding(s) repeated three runs running (e.g. "in a rut::breaker"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 
@@ -82,8 +82,8 @@ Nothing unusual, or not enough history to tell — 5 days of tape so far. Anomal
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
 
 ## Something is slipping
-- **unsaved** — 4 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
-- **ignored** — 5 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
+- **unsaved** — 2 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
+- **ignored** — 6 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
 - **drift** — 14 script(s) are not referenced anywhere: backfill-artists.mjs, build-faq.mjs, build-lines.mjs, build-lore.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
 - **drift** — 48 JSON files in research/pulse. *A directory nobody can scan is a directory where something goes missing without being noticed.*
 
@@ -119,7 +119,7 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 - **build.html** — the accent colour appears 21 times. *Spend it in two places: the active state and the one primary action. Everything else greys.*
 
 ## What the agents cannot answer themselves
-26 open — 19 need eyes on a rendered page, 7 need a decision.
+27 open — 20 need eyes on a rendered page, 7 need a decision.
 - **NEEDS A HUMAN** [theme-scout] 14 Pokémon share the "-eon" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 7 Pokémon share the "ite" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 10 Pokémon share the "-ish" ending — a theme, or a coincidence of naming?
