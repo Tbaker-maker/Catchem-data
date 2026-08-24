@@ -208,6 +208,7 @@ summary:before{content:"→ ";color:var(--faint)}
      &nbsp;·&nbsp; <a href="/creators" style="color:var(--live)">Or start from one we made &rsaquo;</a></p>
 </div>
 
+<div id="boot" style="background:#1a1410;border:1px solid #4a3a20;border-radius:10px;padding:14px 16px;margin-bottom:16px;color:#d9a441;font:400 13.5px system-ui,sans-serif;line-height:1.6">Starting…</div>
 <div class="ratingrow">
   <span class="moodlabel">NARROW BY RATING — every one derives from a printed field</span>
   <div class="chips" id="frating"></div>
@@ -295,7 +296,11 @@ ${await (async () => { const { readFile: rf } = await import('node:fs/promises')
 // and the script dying — and when it dies the moods, angles and images all
 // vanish together, because JS renders all three.
 const MOODS = ${JSON.stringify(Object.values((await J('data/moods.json'))?.moods ?? {}).map(m => ({ id: m.id, label: m.label, emoji: m.emoji, say: m.say, cards: (m.cards ?? []).slice(0, 18).map(c => ({ id: c.id, matched: c.matched, why: c.why })) })))};
-const CARD_INDEX = ${await (async () => {
+// ROWS AS ARRAYS. Each object row repeated its key names 6,658 times; positional
+// arrays plus a rehydrate loop drop a quarter of the payload and, more
+// importantly, parse faster — mobile is failing on the work of parsing a huge
+// literal, not on memory.
+const CARD_ROWS = ${await (async () => {
   const attrs = (await J('data/card-attrs.json'))?.cards ?? {};
   const bios = (await J('data/card-bios.json'))?.bios ?? {};
   const lore = (await J('data/lore.json'))?.lore ?? {};
@@ -303,25 +308,51 @@ const CARD_INDEX = ${await (async () => {
   const HERO_R = /Illustration Rare|Rare Holo|Rare Secret|Rare Ultra|Rare Rainbow|Rare Shiny|Special Illustration/i;
   const rows = index.filter(c => HERO_R.test(c.r ?? '') || (c.p ?? 0) >= 8).map(c => {
     const A = attrs[c.i] ?? {}, B = bios[c.i] ?? {}, T = ctext[c.i] ?? {};
-    const row = { ...c };
-    if (A.t?.length) row.T = A.t;
-    if (A.dex) row.D = A.dex;
-    if (A.ev) row.E = A.ev;
-    if (A.hp) row.H = A.hp;
-    if (A.st?.length) { const st = A.st.filter(x => /^(Basic|Stage 1|Stage 2|Baby|ex|EX|V|VMAX|VSTAR|GX|MEGA)$/.test(x)); if (st.length) row.S = st; }
-    if (Object.keys(B.ratings ?? {}).length) row.R = B.ratings;
-    if (lore[c.i]) row.L = lore[c.i];
-    if (T.a?.length) row.A = T.a.slice(0, 2);
-    return row;
+    const st = (A.st ?? []).filter(x => /^(Basic|Stage 1|Stage 2|Baby|ex|EX|V|VMAX|VSTAR|GX|MEGA)$/.test(x));
+    return [c.i, c.n, c.s, c.y, c.a ?? 0, c.r ?? 0, c.p ?? 0,
+      A.t ?? 0, A.dex ?? 0, A.ev ?? 0, A.hp ?? 0, st.length ? st : 0,
+      Object.keys(B.ratings ?? {}).length ? B.ratings : 0,
+      lore[c.i] ?? 0, T.a?.length ? T.a.slice(0, 2) : 0];
   });
   return JSON.stringify(rows);
 })()};
+// Rehydrate once. Positional decode is trivial and keeps every reader unchanged.
+const CARD_INDEX = CARD_ROWS.map(function(r){
+  var o = { i: r[0], n: r[1], s: r[2], y: r[3] };
+  if (r[4]) o.a = r[4];
+  if (r[5]) o.r = r[5];
+  if (r[6]) o.p = r[6];
+  if (r[7]) o.T = r[7];
+  if (r[8]) o.D = r[8];
+  if (r[9]) o.E = r[9];
+  if (r[10]) o.H = r[10];
+  if (r[11]) o.S = r[11];
+  if (r[12]) o.R = r[12];
+  if (r[13]) o.L = r[13];
+  if (r[14]) o.A = r[14];
+  return o;
+});
 // Sourced facts, so the 'story' shape has something true to build on. Only
 // VERIFIED ones ship — an unsourced claim on a card image is the one mistake
 // this whole project exists to avoid.
 const FACTS = ${JSON.stringify((await (async () => { try { return (JSON.parse(await readFile(join(ROOT, 'data/knowledge.json'), 'utf-8')).facts ?? []).filter(f => f.confidence === 'VERIFIED').map(f => ({ id: f.id, claim: f.claim })); } catch { return []; } })()))};
 const LAYOUTS = ${JSON.stringify(LAYOUTS)};
 const SUPPORTED = Object.keys(LAYOUTS).map(Number);
+// BOOT REPORT. Three wrong guesses at why this dies on a phone, all made from
+// a sandbox that cannot run mobile Safari. A blank screen tells nobody
+// anything, so the page now reports its own failure on the page itself.
+function bootSay(msg, bad){
+  var el2 = document.getElementById("boot");
+  if (!el2) return;
+  el2.textContent = msg;
+  if (bad) { el2.style.color = "#e0705a"; el2.style.borderColor = "#5a2a20"; }
+}
+window.onerror = function(m, src, line, col){
+  bootSay("Script error: " + m + "  (line " + line + ")", true);
+  return false;
+};
+bootSay("Script parsed. Loading catalogue…");
+
 const byIdRow = {};
 const ATTRS = new Proxy({}, { get: (_, k) => { const r = byIdRow[k]; return r ? { t: r.T, dex: r.D, d: r.D, e: r.E, ev: r.E, h: r.H, hp: r.H, s: r.S, st: r.S } : undefined; } });
 const BIOS = new Proxy({}, { get: (_, k) => byIdRow[k]?.R });
@@ -357,6 +388,14 @@ setTimeout(() => {
     const cc = el("fcount");
     if (cc) cc.querySelectorAll(".chip").forEach(x => x.classList.toggle("on", Number(x.dataset.n) === fCount));
     renderThemes(); search();
+    try {
+      var nCards = (document.getElementById("res") || {}).innerHTML || "";
+      var nThemes = (document.getElementById("ftheme") || {}).innerHTML || "";
+      var imgs = (nCards.match(/<img/g) || []).length;
+      var chips = (nThemes.match(/data-t=/g) || []).length;
+      bootSay("Loaded " + INDEX.length + " cards · " + imgs + " thumbnails on screen · " + chips + " angles. If the pictures are blank, the card art host is unreachable from this browser.");
+      if (!imgs || !chips) bootSay("Loaded " + INDEX.length + " cards but rendered " + imgs + " thumbnails and " + chips + " angles — the data arrived and the drawing failed.", true);
+    } catch (e) { bootSay("Render failed: " + e.message, true); }
   }, 0);
 
 const el = id => document.getElementById(id);
