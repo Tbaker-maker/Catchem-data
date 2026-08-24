@@ -2418,3 +2418,34 @@ TWO OTHER BUGS FIXED IN THE SAME PAGE, both of which had made it unusable:
 - **The composed image only existed after a button press**, so the thing Tyler
   actually wants to post was never something he could press and hold. It now
   composes on load and shows the finished image at the top.
+
+## MEASURE THE SIGNAL, NOT THE ACCUMULATION (Tyler, Aug 24 2026)
+"Engagement based — follower count can be misleading sometimes."
+
+Right, and it is the sharper version of the tier point he made an hour earlier.
+**Followers are an accumulated number; views are a live signal.** Bought, bot,
+dormant and lapsed followers all count toward the first and none toward the
+second.
+
+Crambo has **17,600 followers and took 37,100 views** on one post — 2.1x. A
+fifty-thousand-follower account with dormant followers might see three thousand.
+
+And the tiers exist to answer exactly one question: **is there a crowd big
+enough to answer a question?** That is a views question, not a followers
+question.
+
+**I used followers because it is the number people know.** Convenience, not
+correctness — and the same mistake as using price as a proxy for what people
+love, which Tyler also caught, and structural shape as a proxy for cute, which
+he caught too. **Three times now he has spotted a proxy standing in for the
+thing itself.**
+
+THE BEST VERSION NEEDS NO INPUT AT ALL: once read-metrics fills the outcome log,
+the **median of the last several settled posts IS the answer** — measured rather
+than remembered. `typicalViewsFrom()` already computes it and requires at
+least three settled posts before it will say anything.
+
+RUN AGAINST OUR OWN LOG TODAY it returns **154 median views**, which is honest
+and also shows the limit: the median is dragged down by early posts at bad
+hours, and five posts is not a distribution. That is an argument for closing the
+loop, not for ignoring the number.

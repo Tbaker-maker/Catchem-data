@@ -327,7 +327,7 @@ summary:before{content:"→ ";color:var(--faint)}
 <div class="binder" id="tray"></div>
 <div class="status" id="st"></div>
 <div class="tally" id="tally" hidden></div>
-<div class="reachrow"><label for="followers">Your follower count</label><input id="followers" type="number" inputmode="numeric" placeholder="e.g. 1200"><span class="reachnote" id="reachnote"></span></div>
+<div class="reachrow"><label for="views">Typical views per post</label><input id="views" type="number" inputmode="numeric" placeholder="e.g. 900"><span class="reachnote" id="reachnote"></span></div>
 <div class="lines" id="lines" hidden></div>
 <div class="selfreply" id="selfreply" hidden></div>
 <input id="label" placeholder="Your line — or leave it blank and let the cards talk" style="margin-bottom:18px">
@@ -537,31 +537,54 @@ function intentReply(found, ctx) {
 }
 
 
+// VIEWS, NOT FOLLOWERS. Followers are an accumulated number and views are a live
+// signal — bought, bot, dormant and lapsed followers count toward the first and
+// none toward the second. Crambo has 17.6k followers and took 37.1k views on one
+// post; a 50k account with dormant followers might see 3k. The tiers answer one
+// question — is there a crowd big enough to answer a question — and that is a
+// views question.
 const REACH_TIERS = [
-  { id: "quiet", upTo: 1000, label: "Under 1k",
+  { id: "quiet", upTo: 800, label: "under 800 views a post",
     prefer: ["observation", "confession"],
     avoid: ["question", "permission", "divide"],
-    why: "A question with three replies looks worse than a post with none, because an unanswered request is visibly unanswered. Lead with something that stands alone — an image and a claim — and let the reply be optional.",
+    why: "A question with three replies looks worse than a post with none, because an unanswered request is visibly unanswered. Lead with something that stands alone and let the reply be optional",
     hypothesis: true },
-  { id: "building", upTo: 5000, label: "1k to 5k",
+  { id: "building", upTo: 4000, label: "800 to 4k views a post",
     prefer: ["observation", "confession", "invite"],
     avoid: ["divide"],
-    why: "Enough people that a low-effort ask lands. INVITE beats ASK here: 'add the one I missed' costs a reader nothing, where 'which is best' asks them to defend a choice.",
+    why: "Enough eyes that a low-effort ask lands. INVITE beats ASK here: 'add the one I missed' costs a reader nothing, where 'which is best' asks them to defend a choice",
     hypothesis: true },
-  { id: "crowd", upTo: 25000, label: "5k to 25k",
+  { id: "crowd", upTo: 20000, label: "4k to 20k views a post",
     prefer: ["question", "permission", "invite", "observation"],
     avoid: [],
-    why: "The band where the permission mechanic is documented working — tall_alan took roughly 900 replies at 16k. There is a crowd, and a question finds it.",
+    why: "The band where the permission mechanic is documented working — tall_alan took roughly 900 replies from an account this size. There is a crowd and a question finds it",
     hypothesis: true },
-  { id: "loud", upTo: Infinity, label: "25k+",
+  { id: "loud", upTo: Infinity, label: "20k+ views a post",
     prefer: ["divide", "permission", "question"],
     avoid: [],
-    why: "A divisive question is safe when there are enough answers to make a thread. Crambo took 68 replies against 73 likes at 17.6k, and that ratio needs volume behind it.",
+    why: "A divisive question is safe when there are enough answers to make a thread rather than a silence",
     hypothesis: true },
 ];
-function tierFor(followers){
-  const n = Number(followers) || 0;
+
+// FOLLOWERS ONLY AS A LAST RESORT, and openly derated. A rough rule of thumb is
+// that a healthy account sees views in the region of its follower count; a
+// neglected one sees a fraction. Using it means guessing at the very thing the
+// tier is trying to measure.
+function tierFor(typicalViews, followersFallback){
+  let n = Number(typicalViews) || 0;
+  if (!n && followersFallback) n = Number(followersFallback) * 0.5;
+  if (!n) return null;
   return REACH_TIERS.find(t => n <= t.upTo) || REACH_TIERS[REACH_TIERS.length - 1];
+}
+
+// THE BEST INPUT IS THE ONE WE ALREADY HOLD. Once read-metrics fills the
+// outcome log, nobody needs to type anything — the median of the last several
+// settled posts IS the answer, and it is measured rather than remembered.
+function typicalViewsFrom(posts){
+  const settled = (posts || []).filter(p => p.measured && p.measured.views);
+  if (settled.length < 3) return null;
+  const v = settled.slice(-8).map(p => p.measured.views).sort((a, b) => a - b);
+  return v[Math.floor(v.length / 2)];
 }
 const byIdRow = {};
 const ATTRS = new Proxy({}, { get: (_, k) => { const r = byIdRow[k]; return r ? { t: r.T, dex: r.D, d: r.D, e: r.E, ev: r.E, h: r.H, hp: r.H, s: r.S, st: r.S } : undefined; } });
@@ -1147,7 +1170,7 @@ function renderLines(){
   if (!box) return;
   if (!tray.length) { box.hidden = true; return; }
   const themeName = fTheme ? (THEMES.find(x => x.id === fTheme) || {}).name : null;
-  const opts = lineOptions(tray, themeName, Number(localStorage.getItem("followers")) || 0);
+  const opts = lineOptions(tray, themeName, Number(localStorage.getItem("typicalViews")) || 0);
   if (!opts.length) { box.hidden = true; return; }
   box.hidden = false;
   box.innerHTML = "";
@@ -1487,17 +1510,21 @@ window.runAsk = runAsk;
 // THE ONE INPUT THE TIERS NEED, asked once and remembered. And the note says
 // plainly that it is unproven — we hold five logged posts, so presenting a
 // threshold as a finding would be the slop law on a new surface.
+// VIEWS, NOT FOLLOWERS. Tyler: "follower count can be misleading sometimes."
+// Right — followers are an accumulated number and views are a live signal, and
+// the tier is only trying to answer whether there is a crowd big enough to
+// answer a question. That is a views question.
 function setReach(){
-  const f = el("followers"), note = el("reachnote");
+  const f = el("views"), note = el("reachnote");
   if (!f) return;
-  const saved = localStorage.getItem("followers");
+  const saved = localStorage.getItem("typicalViews");
   if (saved) f.value = saved;
-  const show = () => {
+  const show = function(){
     const n = Number(f.value) || 0;
-    if (!n) { if (note) note.textContent = "Optional — it orders the line suggestions."; return; }
-    localStorage.setItem("followers", String(n));
+    if (!n) { if (note) note.textContent = "Optional — it orders the line suggestions. Views beat followers here."; return; }
+    localStorage.setItem("typicalViews", String(n));
     const t = tierFor(n);
-    if (note) note.textContent = t.label + " — " + t.why.split(".")[0] + ". (Unproven: five logged posts.)";
+    if (note && t) note.textContent = t.label + " — " + t.why + ". (Unproven: five logged posts.)";
     renderLines();
   };
   f.addEventListener("input", show);

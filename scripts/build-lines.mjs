@@ -36,31 +36,54 @@ const text = (await J("data/card-text.json"))?.cards ?? {};
 
 // TIERS. A hypothesis, not a finding — we hold five logged posts. Written down
 // so it can be tested and corrected, and labelled as unproven wherever it shows.
+// VIEWS, NOT FOLLOWERS. Followers are an accumulated number and views are a live
+// signal — bought, bot, dormant and lapsed followers count toward the first and
+// none toward the second. Crambo has 17.6k followers and took 37.1k views on one
+// post; a 50k account with dormant followers might see 3k. The tiers answer one
+// question — is there a crowd big enough to answer a question — and that is a
+// views question.
 export const REACH_TIERS = [
-  { id: "quiet", upTo: 1000, label: "Under 1k",
+  { id: "quiet", upTo: 800, label: "under 800 views a post",
     prefer: ["observation", "confession"],
     avoid: ["question", "permission", "divide"],
-    why: "A question with three replies looks worse than a post with none, because an unanswered request is visibly unanswered. Lead with something that stands alone — an image and a claim — and let the reply be optional.",
+    why: "A question with three replies looks worse than a post with none, because an unanswered request is visibly unanswered. Lead with something that stands alone and let the reply be optional",
     hypothesis: true },
-  { id: "building", upTo: 5000, label: "1k to 5k",
+  { id: "building", upTo: 4000, label: "800 to 4k views a post",
     prefer: ["observation", "confession", "invite"],
     avoid: ["divide"],
-    why: "Enough people that a low-effort ask lands. INVITE beats ASK here: 'add the one I missed' costs a reader nothing, where 'which is best' asks them to defend a choice.",
+    why: "Enough eyes that a low-effort ask lands. INVITE beats ASK here: 'add the one I missed' costs a reader nothing, where 'which is best' asks them to defend a choice",
     hypothesis: true },
-  { id: "crowd", upTo: 25000, label: "5k to 25k",
+  { id: "crowd", upTo: 20000, label: "4k to 20k views a post",
     prefer: ["question", "permission", "invite", "observation"],
     avoid: [],
-    why: "The band where the permission mechanic is documented working — tall_alan took roughly 900 replies at 16k. There is a crowd, and a question finds it.",
+    why: "The band where the permission mechanic is documented working — tall_alan took roughly 900 replies from an account this size. There is a crowd and a question finds it",
     hypothesis: true },
-  { id: "loud", upTo: Infinity, label: "25k+",
+  { id: "loud", upTo: Infinity, label: "20k+ views a post",
     prefer: ["divide", "permission", "question"],
     avoid: [],
-    why: "A divisive question is safe when there are enough answers to make a thread. Crambo took 68 replies against 73 likes at 17.6k, and that ratio needs volume behind it.",
+    why: "A divisive question is safe when there are enough answers to make a thread rather than a silence",
     hypothesis: true },
 ];
-export function tierFor(followers){
-  const n = Number(followers) || 0;
+
+// FOLLOWERS ONLY AS A LAST RESORT, and openly derated. A rough rule of thumb is
+// that a healthy account sees views in the region of its follower count; a
+// neglected one sees a fraction. Using it means guessing at the very thing the
+// tier is trying to measure.
+export function tierFor(typicalViews, followersFallback){
+  let n = Number(typicalViews) || 0;
+  if (!n && followersFallback) n = Number(followersFallback) * 0.5;
+  if (!n) return null;
   return REACH_TIERS.find(t => n <= t.upTo) || REACH_TIERS[REACH_TIERS.length - 1];
+}
+
+// THE BEST INPUT IS THE ONE WE ALREADY HOLD. Once read-metrics fills the
+// outcome log, nobody needs to type anything — the median of the last several
+// settled posts IS the answer, and it is measured rather than remembered.
+export function typicalViewsFrom(posts){
+  const settled = (posts || []).filter(p => p.measured && p.measured.views);
+  if (settled.length < 3) return null;
+  const v = settled.slice(-8).map(p => p.measured.views).sort((a, b) => a - b);
+  return v[Math.floor(v.length / 2)];
 }
 
 // Registers, each doing a different job. A creator picks the one that sounds
