@@ -315,12 +315,16 @@ ${[[W * 0.28, PAD + CARD_H * 0.42], [W * 0.72, PAD + CARD_H * 0.78]].map(([wx, w
   @media(max-width:700px){.row{gap:14px}.cap{font-size:13px}.label{font-size:22px}}
 </style>
 <div class="wrap">
+<img id="outimg" alt="your post image — press and hold to save" hidden style="max-width:100%;border-radius:12px;display:block;margin:0 auto 8px">
+<p id="savehint" style="text-align:center;color:#36d399;font:400 14px system-ui,sans-serif;margin:0 0 14px"></p>
+<div id="sourcecards">
   <div class="row">
 ${cards.map(c => `    <div class="card"><img src="${c.imageUrl}" alt="${(c.name ?? "").replace(/"/g, "")}" loading="eager">
       <div class="cap">${(c.name ?? "")}${c.releaseDate ? ` · ${c.releaseDate.slice(0, 4)}` : ""}</div></div>`).join("\n")}
   </div>
   ${label ? `<div class="label">${label}</div>` : ""}
-  <div class="foot"><span class="mark">Catch'em</span><span class="src">${caption}</span></div>
+  </div>
+<div class="foot"><span class="mark">Catch'em</span><span class="src">${caption}</span></div>
   <div style="text-align:center;margin-top:26px">
     <button id="dl" class="pri">Download PNG</button><button id="copy" class="sec" hidden>Copy image</button><button id="share" class="sec" hidden>Share</button><button id="dlsvg" class="sec">Open cards full-size</button>
     <div id="msg" style="color:#8a93a8;font-size:13px;margin-top:10px"></div>
@@ -330,6 +334,7 @@ ${cards.map(c => `    <div class="card"><img src="${c.imageUrl}" alt="${(c.name 
 // The browser composites, because it can reach the image host and chat cannot.
 // Everything is drawn at native card resolution so the result is postable
 // rather than a screenshot of a screenshot.
+const LAYOUT_COLS = ${perRow};
 const CARDS = ${JSON.stringify(cards.map(c => ({ url: c.imageUrl, name: c.name, year: (c.releaseDate ?? "").slice(0, 4) })))};
 const LABEL = ${JSON.stringify(label ?? "")};
 const CAPTION = ${JSON.stringify(caption)};
@@ -360,7 +365,10 @@ async function compose() {
   const msg = document.getElementById("msg");
   msg.textContent = "composing…";
   const CW = 745, CH = 1040, GAP = 60, PAD = 90, CAPH = 130, LABH = LABEL ? 110 : 0;
-  const COLS = CARDS.length > 4 ? 3 : CARDS.length, ROWS = Math.ceil(CARDS.length / COLS);
+  // THE TABLE OWNS THE COLUMNS. This used to recompute them — "more than four?
+  // three across" — so four cards drew as a ROW while the table said 2x2, and
+  // every measurement I reported was of a layout the page never rendered.
+  const COLS = LAYOUT_COLS, ROWS = Math.ceil(CARDS.length / COLS);
   const W = PAD * 2 + CW * COLS + GAP * (COLS - 1);
   const H = PAD + (CH + 70) * ROWS - 70 + CAPH + LABH + 90;
   const cv = document.createElement("canvas");
@@ -377,7 +385,7 @@ async function compose() {
   for (let i = 0; i < CARDS.length; i++) {
     const routes = [
       { url: CARDS[i].url, cors: true },
-      { url: "https://images.weserv.nl/?url=" + encodeURIComponent(CARDS[i].url.replace(/^https?:\/\//, "")) + "&w=745&output=png", cors: true },
+      { url: "https://images.weserv.nl/?url=" + encodeURIComponent(CARDS[i].url.split("//").slice(1).join("//")) + "&w=745&output=png", cors: true },
     ];
     let img = null;
     for (const r of routes) {
@@ -424,12 +432,30 @@ async function compose() {
   g.fillText(ARTISTS || CAPTION, W - PAD, H - 34);
 
   composedBlob = await new Promise(r => cv.toBlob(r, "image/png"));
+  // SHOW THE COMPOSED IMAGE. The page rendered four separate card images and
+  // built the combined PNG only on a button press, so the thing you actually
+  // want to post never existed as something you could press and hold.
+  try {
+    var oi = document.getElementById("outimg");
+    if (oi) {
+      oi.src = cv.toDataURL("image/png");
+      oi.hidden = false;
+      var src = document.getElementById("sourcecards");
+      if (src) src.style.display = "none";
+      var sh = document.getElementById("savehint");
+      if (sh) sh.textContent = "Press and hold the image to save it.";
+    }
+  } catch (e) {}
   msg.textContent = "";
   return composedBlob;
 }
 
 const FILENAME = "catchem-" + (CAPTION || "cards").replace(/[^a-z0-9]+/gi, "-").toLowerCase().slice(0, 48) + ".png";
 const msgEl = () => document.getElementById("msg");
+// COMPOSE ON LOAD. Waiting for a button press means the saveable image does not
+// exist until somebody finds the button — and the whole problem was that people
+// could not find a way to save.
+window.addEventListener("load", () => { setTimeout(() => { compose().catch(() => {}); }, 400); });
 
 document.getElementById("dl").onclick = async () => {
   try {

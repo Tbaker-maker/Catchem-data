@@ -2389,3 +2389,32 @@ TWO BUGS SURFACED WHILE FIXING IT: `dl()` was never on window — ninth
 occurrence of a button that renders, clicks and does nothing — and my rebuilt
 action row dropped the ids the existing code binds to, which killed the script
 and took the **Make the image** button with it.
+
+## A TABLE IS ONLY A SOURCE OF TRUTH IF EVERY READER READS IT (Aug 24 2026)
+Tyler: "you broke the 4 across rule."
+
+Right, and it is the **fourth** time a downstream reader has ignored the layout
+table. In card-composite, line 212 reads the table correctly for the
+server-side measurement — and the BROWSER code eleven lines later computed its
+own: *"more than four? three across, otherwise one row."*
+
+So four cards drew as a ROW of four while the table said 2x2, and **every
+measurement I reported was of a layout the page never rendered.** The log said
+2056x2430 and the canvas drew something else.
+
+THE FOUR OCCURRENCES: the editor recomputed the frame width from the column
+count; card-composite read field names I had renamed and printed "undefined x
+undefined"; the theme table was computed and ignored; and now this.
+
+THE RULE: **when a value lives in a table, every reader must READ it — never
+recompute something that usually agrees.** A recomputation that agrees most of
+the time is worse than one that never does, because it only diverges in the
+cases nobody tested.
+
+TWO OTHER BUGS FIXED IN THE SAME PAGE, both of which had made it unusable:
+- **A regex literal survived into the emitted script** and broke the parse, so
+  every button on that page was dead. The markup still rendered, so it looked
+  completely fine.
+- **The composed image only existed after a button press**, so the thing Tyler
+  actually wants to post was never something he could press and hold. It now
+  composes on load and shows the finished image at the top.
