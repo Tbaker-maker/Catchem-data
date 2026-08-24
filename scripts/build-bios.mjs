@@ -56,6 +56,19 @@ const ERAS = [[1998, 2003, "vintage"], [2004, 2010, "e-card & EX"], [2011, 2016,
 const REGIONS = [[1,151,"Kanto"],[152,251,"Johto"],[252,386,"Hoenn"],[387,493,"Sinnoh"],
   [494,649,"Unova"],[650,721,"Kalos"],[722,809,"Alola"],[810,905,"Galar"],[906,1025,"Paldea"]];
 
+// ART PREMIUM. Price against the median Illustration Rare of the SAME set, so
+// set-wide inflation cancels out. An IR that trades far above its neighbours is
+// one where the artwork is carrying the value — the community voting with money
+// rather than me guessing at taste.
+const irBySet = {};
+for (const c of idx) if (/^Illustration Rare$/i.test(c.r ?? "") && c.p != null) (irBySet[c.s] ??= []).push(c.p);
+const irMedian = {};
+for (const [set, list] of Object.entries(irBySet)) {
+  if (list.length < 8) continue;                    // too few to have a median worth trusting
+  const sorted = list.slice().sort((a, b) => a - b);
+  irMedian[set] = sorted[Math.floor(sorted.length / 2)];
+}
+
 const bios = {};
 for (const c of idx) {
   const a = attrs[c.i] ?? {};
@@ -65,6 +78,7 @@ for (const c of idx) {
   const price = c.p ?? null;
   const p = pct(price);
   const year = Number(c.y) || null;
+  const r0 = c.r ?? "";
 
   // Every rating carries WHY. A number without its derivation is exactly the
   // thing we refuse to publish anywhere else.
@@ -80,10 +94,20 @@ for (const c of idx) {
   if (joke) { ratings.comedy = 8; why.comedy = `its attack is called "${joke}"`; }
   else if (/\b(dance|kiss|hug|sing|lick)\b/i.test(atk)) { ratings.comedy = 5; why.comedy = "an attack name with a soft or silly verb"; }
 
-  // CUTE — the Baby subtype is a real printed category; an unevolved Basic with
-  // low HP is the shape of a small creature.
-  if ((a.st ?? []).includes("Baby")) { ratings.cute = 10; why.cute = "the Baby subtype, printed on the card"; }
-  else if ((a.st ?? []).includes("Basic") && !a.ev && a.hp && a.hp <= 60) { ratings.cute = 7; why.cute = `an unevolved Basic at ${a.hp} HP`; }
+  // ART PREMIUM, measured. Honest on its own and the input to cute.
+  const med = irMedian[c.s];
+  const mult = (med && price && /^Illustration Rare$/i.test(r0)) ? price / med : null;
+  if (mult && mult >= 2.5) { ratings.artPremium = Math.min(10, Math.round(mult)); why.artPremium = `trades at ${mult.toFixed(1)}x the median Illustration Rare of ${c.s}`; }
+
+  // CUTE now needs BOTH: the structural shape of a small creature AND a market
+  // premium on the art. Structure alone said Groudon is not cute, correctly, but
+  // also said every unwanted 60 HP Basic is — and premium alone says Groudon IS,
+  // which it is not. Neither signal works by itself.
+  const small = (a.st ?? []).includes("Baby") || ((a.st ?? []).includes("Basic") && !a.ev && a.hp && a.hp <= 70);
+  if ((a.st ?? []).includes("Baby") && mult && mult >= 2) { ratings.cute = 10; why.cute = `the Baby subtype, and it trades at ${mult.toFixed(1)}x its set's median IR`; }
+  else if (small && mult && mult >= 2.5) { ratings.cute = 9; why.cute = `a small unevolved form trading at ${mult.toFixed(1)}x its set's median IR — the market paying for the art`; }
+  else if ((a.st ?? []).includes("Baby")) { ratings.cute = 7; why.cute = "the Baby subtype, printed on the card"; }
+  else if (small) { ratings.cute = 5; why.cute = `an unevolved Basic at ${a.hp} HP — the shape of a small creature, with no market signal either way`; }
   else if (a.ev && a.hp && a.hp >= 200) { ratings.cute = 2; why.cute = `a fully evolved ${a.hp} HP form`; }
 
   // SERIOUS — grim language in the printed flavour text, validated by reading.
@@ -91,7 +115,7 @@ for (const c of idx) {
   else if (flav && /\b(legend|ancient|said to|believed)\b/i.test(flav)) { ratings.serious = 6; why.serious = "flavour text framed as legend"; }
 
   // SCARCITY — the printed rarity.
-  const r = c.r ?? "";
+  const r = r0;
   if (/Secret|Hyper|Rainbow/i.test(r)) { ratings.scarcity = 10; why.scarcity = r; }
   else if (/Illustration Rare/i.test(r)) { ratings.scarcity = 8; why.scarcity = r; }
   else if (/Ultra|Holo/i.test(r)) { ratings.scarcity = 6; why.scarcity = r; }
@@ -122,7 +146,8 @@ await writeFile(join(ROOT, "data/card-bios.json"), JSON.stringify({
     price: "percentile across every priced card",
     power: "printed HP",
     comedy: "the attack NAME — a genuinely absurd one scores 8, a soft verb scores 5",
-    cute: "the Baby subtype scores 10; an unevolved Basic at 60 HP or less scores 7; a fully evolved 200+ HP form scores 2",
+    artPremium: "price against the MEDIAN Illustration Rare of the same set, so set-wide inflation cancels. An IR trading far above its neighbours is one where the artwork carries the value.",
+    cute: "requires BOTH the structural shape of a small creature AND a market premium on the art. Structure alone rates every unwanted 60 HP Basic as cute; premium alone rates Groudon as cute. Neither works by itself.",
     serious: "grim language in the printed flavour text scores 9; legend framing scores 6",
     scarcity: "the printed rarity",
     colour: "the TYPE, because the type determines the card's frame colour — not an aesthetic judgement",

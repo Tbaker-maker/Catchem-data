@@ -931,6 +931,7 @@ const RATING_FILTERS = [
   { id: "cheap", label: "Under a fiver", test: (r) => (r.price ?? 99) <= 4, note: "the bottom 40% of every priced card" },
   { id: "dear", label: "Expensive", test: (r) => (r.price ?? 0) >= 9, note: "the top 10% of every priced card" },
   { id: "strong", label: "High HP", test: (r) => (r.power ?? 0) >= 8, note: "300 HP or more, printed" },
+  { id: "artprem", label: "Art people pay for", test: (r) => (r.artPremium ?? 0) >= 3, note: "it trades at 2.5x or more the median Illustration Rare of its own set — the community paying extra for the artwork specifically" },
   { id: "scarce", label: "Scarce", test: (r) => (r.scarcity ?? 0) >= 8, note: "an Illustration Rare or better, printed" },
 ];
 let fRating = null;
