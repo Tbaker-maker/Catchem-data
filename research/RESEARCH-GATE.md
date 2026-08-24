@@ -125,6 +125,8 @@ fixing the class is.
 
 | 32 | The editor showed no photos, no moods and no angles on mobile — a 4.6MB inline script that mobile browsers could not parse, killing everything JS renders at once | Tyler, on a phone | Shipped a known unknown on the one device the audience uses | Five tables merged into one, post-worthy cards only: 4.6MB to 2.2MB |
 
+| 33 | The first Catch'em Update draft read "151 Ultra Premium Collection is up 7500% this week" — the price history still contains figures from the broken-bot era, when sort=price grabbed the fifty cheapest listings | chat, by questioning a clean-looking result | Structurally valid, contextually absurd | Sanity ceiling at 60%; the generator refuses and NAMES the affected products rather than filtering them silently |
+
 **PATTERN, stated plainly:** 8 of 9 were caught by Tyler, not by the
 machine. Every guard above was built AFTER a human caught something.
 That is the honest state — the machine is now catching prices, but

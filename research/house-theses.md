@@ -2237,3 +2237,34 @@ TWO FIXES, both structural:
 THE RULE: **test on the device the audience actually holds.** A simulated DOM
 proves the logic runs; it says nothing about whether the browser can parse the
 file at all.
+
+## A CHECK THAT PASSES WHILE DOING NOTHING (Aug 24 2026)
+Building the Catch'em Update generator surfaced two failures of the same family
+inside ten minutes.
+
+**First:** I wrote the movers logic against `price` and `prevPrice`. **Neither
+field exists** — the schema has `priceUsd` and a `priceHistory` array. The
+generator would have reported *"nothing moved"* every single day and **looked
+completely correct doing it.** I only caught it because I questioned a clean
+result instead of accepting one.
+
+**Second, once it worked:** the first draft read *"151 Ultra Premium Collection
+is up 7500% this week."* Sealed product does not move 7500% in a week; it barely
+moves 50%. The price history still contains figures from the era when the bot
+sorted by price and took the fifty cheapest listings, so a 151 UPC reads as $13
+a week ago.
+
+**Structurally valid, contextually absurd** — the exact error class in Tyler's
+own profile, the one he catches and machines miss. **It would have been the
+account's first post**, on an account whose entire premise is being the reliable
+source for this data.
+
+THE FIX: a sanity ceiling at 60%, and the generator **refuses and names the
+affected products** rather than filtering them out. A quietly filtered anomaly
+hides a broken history that still needs repairing.
+
+AND THE BLOCKER THIS EXPOSED: **the account cannot exist before the bot is
+reliable.** The data is 50 hours old, four stages are quiet, and 24 products
+carry broken-era history. A news account runs on freshness — publishing a market
+update on two-day-old prices is the perishable-claim error on the one surface
+whose entire value is being current.
