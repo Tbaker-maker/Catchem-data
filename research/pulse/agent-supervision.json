@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-24T03:59:49.763Z",
+ "generatedAt": "2026-08-24T19:03:22.244Z",
  "date": "2026-08-24",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -29,7 +29,8 @@
   "anomaly: clean run — nothing failed, which is the point of it"
  ],
  "problems": [
-  "correction-hunter: BROKEN RECORD — 3 finding(s) repeated three runs running (e.g. \"gone::Umbreon VMAX\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
+  "correction-hunter: FARMING — findings climbed 12 → 16 → 20 → 26 across four runs with nothing resolved. Volume is not work.",
+  "correction-hunter: BROKEN RECORD — 16 finding(s) repeated three runs running (e.g. \"f0\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "designer: BROKEN RECORD — 6 finding(s) repeated three runs running (e.g. \"medium::35 distinct colours\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "theme-scout: BROKEN RECORD — 22 finding(s) repeated three runs running (e.g. \"the one-off::Ken Sugimori drew Ampharos exactly on\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "teacher: BROKEN RECORD — 14 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
@@ -72,16 +73,6 @@
    "agent": "falsifier",
    "finding": "runs daily and has returned the same count (0) four runs running.",
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
-  },
-  {
-   "agent": "correction-hunter",
-   "finding": "runs daily and has returned the same count (4) four runs running.",
-   "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
-  },
-  {
-   "agent": "correction-hunter",
-   "finding": "every finding from a week ago is still open (3).",
-   "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
    "agent": "theme-scout",
@@ -488,7 +479,7 @@
   {
    "from": "platform",
    "owner": "tyler",
-   "what": "[YouTube] Pokemon GO Elite Trainer Box — \"forced quarantined pick\"",
+   "what": "[YouTube] the sealed market — \"The whole sealed market in one number: 98.8.\"",
    "do": "YouTube rewards a question somebody is already typing into search. We can answer three of the recurring ones with data nobody else holds, which is the whole reason to be here rather than reacting to other people's news.",
    "score": 33,
    "band": "NOTE ONLY",
@@ -504,7 +495,7 @@
   {
    "from": "platform",
    "owner": "tyler",
-   "what": "[YouTube] the sealed market — \"The whole sealed market in one number: 98.8.\"",
+   "what": "[YouTube] Paldean Fates — \"Paldean Fates listings moved -66.7% while its print window closes.\"",
    "do": "YouTube rewards a question somebody is already typing into search. We can answer three of the recurring ones with data nobody else holds, which is the whole reason to be here rather than reacting to other people's news.",
    "score": 33,
    "band": "NOTE ONLY",
@@ -600,7 +591,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "6 supervisor problem(s) are open.",
+   "what": "5 supervisor problem(s) are open.",
    "do": "Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.",
    "score": 30,
    "band": "NOTE ONLY",

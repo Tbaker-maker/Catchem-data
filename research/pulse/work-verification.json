@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-24T03:59:30.047Z",
+ "generatedAt": "2026-08-24T19:03:41.031Z",
  "purpose": "Checks output against the failure classes in our own error ledger — things that actually happened here, not generic quality rules.",
  "runsOn": "output, never intent. What I meant to do is not evidence.",
  "classesChecked": [
@@ -18,7 +18,7 @@
  "problems": [
   {
    "errorClass": "windowless figure",
-   "what": "dailyThree.raw.price = 822.39",
+   "what": "dailyThree.raw.price = 1247.9",
    "why": "A chipped figure with no date, window or as-of field cannot be defended. This is the exact shape of error 18: a historical average published as a current price.",
    "ledgerRef": 18
   },

@@ -1,12 +1,18 @@
 {
- "generatedAt": "2026-08-24T03:59:40.297Z",
+ "generatedAt": "2026-08-24T19:03:33.910Z",
  "role": "The one agent that blocks. Everything else here advises, because everything else is recoverable — there is no correction page for a leaked key.",
- "critical": [],
+ "critical": [
+  {
+   "what": "Anthropic key found in scripts/_leaktest.mjs",
+   "why": "A credential in the working tree is one commit from being permanent. There is no correction page for a leaked key.",
+   "fix": "Revoke it first, then remove it. Revoking comes first because removal does not un-share what was already shared."
+  }
+ ],
  "warnings": [],
  "checked": [
   "working tree scanned for six credential shapes",
   "30 days of history scanned",
-  "132 scripts checked for on-disk credential reads",
+  "134 scripts checked for on-disk credential reads",
   ".gitignore covers env files, keys and modules"
  ],
  "blindSpots": [

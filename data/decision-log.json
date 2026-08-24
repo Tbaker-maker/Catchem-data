@@ -108,6 +108,17 @@
    "checkAfter": "2026-11-23",
    "grade": "PENDING",
    "decidedBy": "Tyler"
+  },
+  {
+   "id": "2026-08-24-machine-sends-tyler-writes",
+   "date": "2026-08-24",
+   "decision": "A post QUEUE, not a posting agent. Tyler writes in batches, the machine sends at a set hour. It will not generate post text, will not post to anybody else's account, and will not send anything Tyler has not read.",
+   "rejected": "An agent that writes and posts autonomously; and posting on other people's accounts.",
+   "reasoning": "Our own outcome log: every post that worked was written by Tyler from his mood in the moment, and ZERO of them used any of the 84 formulas we generate. An agent that writes is automating the only part that works; an agent that presses send is automating the part that does not. Tyler named the bottleneck himself — being at the keyboard at 9pm, not thinking of something to say. Cost is not the constraint: pay-per-use is /bin/sh.015 a post, about ninety cents a month at two a day.",
+   "predicts": "Queued posts perform in the same range as live ones. If they underperform consistently, the thing that mattered was posting in the moment rather than the words, and the queue should be scrapped rather than improved.",
+   "checkAfter": "2026-11-24",
+   "grade": "PENDING",
+   "decidedBy": "chat, pushing back on Tyler"
   }
  ]
 }
