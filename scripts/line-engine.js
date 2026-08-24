@@ -4,7 +4,7 @@
 const REGISTERS = {"question":{"label":"Ask","note":"Answerable in one word. The lowest bar to a reply there is."},"observation":{"label":"Notice","note":"A shared observation with an implicit 'right?'. This is the 18,800 shape."},"confession":{"label":"Confess","note":"Say the thing everyone thinks. Relatability outperforms authority."},"invite":{"label":"Invite","note":"Ask them to add to it rather than judge it."},"permission":{"label":"Permission","note":"A question plus a second sentence that removes the reason not to answer. tall_alan took ~900 replies at 16k followers on 'pick something quirky' — without it people think theirs is boring and scroll past."},"divide":{"label":"Divide","note":"Ask something the community genuinely disagrees on, then say it is not your opinion. Crambo got a 93% reply-to-like ratio doing exactly this — the disclaimer makes replying safe, because nobody is contradicting the host."}};
 const CARD_TEXT = __CARD_TEXT__;
 
-function lineOptions(cards, themeName){
+function lineOptions(cards, themeName, followerCount){
   const NL = String.fromCharCode(10);
   if (!cards || !cards.length) return [];
   const out = [];
@@ -85,5 +85,18 @@ function lineOptions(cards, themeName){
   add("question", cards.length === 1 ? "Did you have this one as a kid?" : "Which of these did you have as a kid?");
   add("invite", cards.length === 1 ? "What would you pair this with?" : "Tell me the one you'd swap in.");
 
+  // ORDER BY TIER, DO NOT HIDE. Removing registers would be the tool deciding
+  // for somebody, and the account works because Tyler chooses the line. So the
+  // ones suited to the reach come first, the rest stay available, and the reason
+  // is stated. The ranking is advice, not a gate.
+  if (typeof followerCount === "number" && followerCount > 0) {
+    const t = tierFor(followerCount);
+    const rank = (o) => (t.prefer.indexOf(o.reg) >= 0 ? 0 : t.avoid.indexOf(o.reg) >= 0 ? 2 : 1);
+    out.sort((a, b) => rank(a) - rank(b));
+    for (const o of out) {
+      if (t.avoid.indexOf(o.reg) >= 0) o.note = "Lower for your reach: " + t.why;
+      else if (t.prefer.indexOf(o.reg) >= 0) o.note = "Suits your reach — unproven, we hold five logged posts.";
+    }
+  }
   return out.slice(0, 8);
 }

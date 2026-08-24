@@ -159,6 +159,10 @@ select:focus,input:focus{outline:none;border-color:var(--soft)}
 .pocket:hover .own{opacity:1}
 .pocket .own.yes{opacity:1;background:var(--soft);color:var(--ink)}
 .status.bad{color:var(--warn)}
+.reachrow{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.reachrow label{font:500 10.5px var(--mono);color:var(--faint);letter-spacing:.14em}
+#followers{width:110px;background:var(--ink);border:1px solid var(--line);border-radius:9px;color:var(--text);padding:9px 11px;font:400 14px var(--mono)}
+.reachnote{font:400 12.5px var(--body);color:var(--faint)}
 .lines{margin-bottom:14px}
 .selfreply{background:var(--panel);border:1px solid var(--line);border-radius:12px;
   padding:14px 16px;margin-bottom:14px}
@@ -323,6 +327,7 @@ summary:before{content:"→ ";color:var(--faint)}
 <div class="binder" id="tray"></div>
 <div class="status" id="st"></div>
 <div class="tally" id="tally" hidden></div>
+<div class="reachrow"><label for="followers">Your follower count</label><input id="followers" type="number" inputmode="numeric" placeholder="e.g. 1200"><span class="reachnote" id="reachnote"></span></div>
 <div class="lines" id="lines" hidden></div>
 <div class="selfreply" id="selfreply" hidden></div>
 <input id="label" placeholder="Your line — or leave it blank and let the cards talk" style="margin-bottom:18px">
@@ -532,6 +537,32 @@ function intentReply(found, ctx) {
 }
 
 
+const REACH_TIERS = [
+  { id: "quiet", upTo: 1000, label: "Under 1k",
+    prefer: ["observation", "confession"],
+    avoid: ["question", "permission", "divide"],
+    why: "A question with three replies looks worse than a post with none, because an unanswered request is visibly unanswered. Lead with something that stands alone — an image and a claim — and let the reply be optional.",
+    hypothesis: true },
+  { id: "building", upTo: 5000, label: "1k to 5k",
+    prefer: ["observation", "confession", "invite"],
+    avoid: ["divide"],
+    why: "Enough people that a low-effort ask lands. INVITE beats ASK here: 'add the one I missed' costs a reader nothing, where 'which is best' asks them to defend a choice.",
+    hypothesis: true },
+  { id: "crowd", upTo: 25000, label: "5k to 25k",
+    prefer: ["question", "permission", "invite", "observation"],
+    avoid: [],
+    why: "The band where the permission mechanic is documented working — tall_alan took roughly 900 replies at 16k. There is a crowd, and a question finds it.",
+    hypothesis: true },
+  { id: "loud", upTo: Infinity, label: "25k+",
+    prefer: ["divide", "permission", "question"],
+    avoid: [],
+    why: "A divisive question is safe when there are enough answers to make a thread. Crambo took 68 replies against 73 likes at 17.6k, and that ratio needs volume behind it.",
+    hypothesis: true },
+];
+function tierFor(followers){
+  const n = Number(followers) || 0;
+  return REACH_TIERS.find(t => n <= t.upTo) || REACH_TIERS[REACH_TIERS.length - 1];
+}
 const byIdRow = {};
 const ATTRS = new Proxy({}, { get: (_, k) => { const r = byIdRow[k]; return r ? { t: r.T, dex: r.D, d: r.D, e: r.E, ev: r.E, h: r.H, hp: r.H, s: r.S, st: r.S } : undefined; } });
 const BIOS = new Proxy({}, { get: (_, k) => byIdRow[k]?.R });
@@ -1116,7 +1147,7 @@ function renderLines(){
   if (!box) return;
   if (!tray.length) { box.hidden = true; return; }
   const themeName = fTheme ? (THEMES.find(x => x.id === fTheme) || {}).name : null;
-  const opts = lineOptions(tray, themeName);
+  const opts = lineOptions(tray, themeName, Number(localStorage.getItem("followers")) || 0);
   if (!opts.length) { box.hidden = true; return; }
   box.hidden = false;
   box.innerHTML = "";
@@ -1452,6 +1483,27 @@ function runAsk(text){
   if (ask) ask.addEventListener("keydown", function(e){ if (e.key === "Enter") runAsk(ask.value); });
 }
 window.runAsk = runAsk;
+
+// THE ONE INPUT THE TIERS NEED, asked once and remembered. And the note says
+// plainly that it is unproven — we hold five logged posts, so presenting a
+// threshold as a finding would be the slop law on a new surface.
+function setReach(){
+  const f = el("followers"), note = el("reachnote");
+  if (!f) return;
+  const saved = localStorage.getItem("followers");
+  if (saved) f.value = saved;
+  const show = () => {
+    const n = Number(f.value) || 0;
+    if (!n) { if (note) note.textContent = "Optional — it orders the line suggestions."; return; }
+    localStorage.setItem("followers", String(n));
+    const t = tierFor(n);
+    if (note) note.textContent = t.label + " — " + t.why.split(".")[0] + ". (Unproven: five logged posts.)";
+    renderLines();
+  };
+  f.addEventListener("input", show);
+  show();
+}
+setReach();
 
 function render(){
   const L = LAYOUTS[tray.length];

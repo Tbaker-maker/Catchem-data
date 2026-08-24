@@ -33,6 +33,36 @@ const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "ut
 
 const text = (await J("data/card-text.json"))?.cards ?? {};
 
+
+// TIERS. A hypothesis, not a finding — we hold five logged posts. Written down
+// so it can be tested and corrected, and labelled as unproven wherever it shows.
+export const REACH_TIERS = [
+  { id: "quiet", upTo: 1000, label: "Under 1k",
+    prefer: ["observation", "confession"],
+    avoid: ["question", "permission", "divide"],
+    why: "A question with three replies looks worse than a post with none, because an unanswered request is visibly unanswered. Lead with something that stands alone — an image and a claim — and let the reply be optional.",
+    hypothesis: true },
+  { id: "building", upTo: 5000, label: "1k to 5k",
+    prefer: ["observation", "confession", "invite"],
+    avoid: ["divide"],
+    why: "Enough people that a low-effort ask lands. INVITE beats ASK here: 'add the one I missed' costs a reader nothing, where 'which is best' asks them to defend a choice.",
+    hypothesis: true },
+  { id: "crowd", upTo: 25000, label: "5k to 25k",
+    prefer: ["question", "permission", "invite", "observation"],
+    avoid: [],
+    why: "The band where the permission mechanic is documented working — tall_alan took roughly 900 replies at 16k. There is a crowd, and a question finds it.",
+    hypothesis: true },
+  { id: "loud", upTo: Infinity, label: "25k+",
+    prefer: ["divide", "permission", "question"],
+    avoid: [],
+    why: "A divisive question is safe when there are enough answers to make a thread. Crambo took 68 replies against 73 likes at 17.6k, and that ratio needs volume behind it.",
+    hypothesis: true },
+];
+export function tierFor(followers){
+  const n = Number(followers) || 0;
+  return REACH_TIERS.find(t => n <= t.upTo) || REACH_TIERS[REACH_TIERS.length - 1];
+}
+
 // Registers, each doing a different job. A creator picks the one that sounds
 // like them — which is the only way fifty people using this do not sound alike.
 const REGISTERS = {
@@ -50,7 +80,7 @@ const src = `// LINE ENGINE, in the page. Options in four registers, built from 
 const REGISTERS = ${JSON.stringify(REGISTERS)};
 const CARD_TEXT = __CARD_TEXT__;
 
-function lineOptions(cards, themeName){
+function lineOptions(cards, themeName, followerCount){
   const NL = String.fromCharCode(10);
   if (!cards || !cards.length) return [];
   const out = [];
@@ -131,6 +161,19 @@ function lineOptions(cards, themeName){
   add("question", cards.length === 1 ? "Did you have this one as a kid?" : "Which of these did you have as a kid?");
   add("invite", cards.length === 1 ? "What would you pair this with?" : "Tell me the one you'd swap in.");
 
+  // ORDER BY TIER, DO NOT HIDE. Removing registers would be the tool deciding
+  // for somebody, and the account works because Tyler chooses the line. So the
+  // ones suited to the reach come first, the rest stay available, and the reason
+  // is stated. The ranking is advice, not a gate.
+  if (typeof followerCount === "number" && followerCount > 0) {
+    const t = tierFor(followerCount);
+    const rank = (o) => (t.prefer.indexOf(o.reg) >= 0 ? 0 : t.avoid.indexOf(o.reg) >= 0 ? 2 : 1);
+    out.sort((a, b) => rank(a) - rank(b));
+    for (const o of out) {
+      if (t.avoid.indexOf(o.reg) >= 0) o.note = "Lower for your reach: " + t.why;
+      else if (t.prefer.indexOf(o.reg) >= 0) o.note = "Suits your reach — unproven, we hold five logged posts.";
+    }
+  }
   return out.slice(0, 8);
 }
 `;
