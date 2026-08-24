@@ -1347,12 +1347,12 @@ function renderThemes(){
     }
     if (t.id === "many-hands" || t.id === "battle") {
       const byMon = {};
-      for (const c of pool) if (c.a) (byMon[monName(c.n)] ||= new Set()).add(c.a);
+      for (const c of pool) if (c.a) (byMon[monName(c.n)] = byMon[monName(c.n)] || new Set()).add(c.a);
       return Object.values(byMon).some(set => set.size >= need);
     }
     if (t.id === "artist-career" || t.id === "first-and-last") {
       const byArtist = {};
-      for (const c of pool) if (c.a) (byArtist[c.a] ||= []).push(c);
+      for (const c of pool) if (c.a) (byArtist[c.a] = byArtist[c.a] || []).push(c);
       return Object.values(byArtist).some(l => l.length >= need);
     }
     return pool.length >= need;
@@ -1363,7 +1363,7 @@ function renderThemes(){
   // dressed as minimalism. Structure beats disclosure at this size.
   if (!fits.length) { box.innerHTML = "<span class='empty'>Nothing fits that count. Try another.</span>"; return; }
   const groups = {};
-  for (const t of fits) (groups[t.group || "OTHER"] ||= []).push(t);
+  for (const t of fits) (groups[t.group || "OTHER"] = groups[t.group || "OTHER"] || []).push(t);
   const order = ["BY SUBJECT", "BY ARTIST", "BY STORY", "BY ERA", "BY SET", "BY ARGUMENT", "OTHER"];
   box.innerHTML = order.filter(g => groups[g]).map(g =>
     "<div class='tgroup'><span class='tglabel'>" + g + "</span>" +
@@ -1412,7 +1412,7 @@ function buildIdeas(){
 
   else if (shape === "many-hands") {
     const byName = {};
-    for (const c of pool) if (c.a) (byName[monName(c.n)] ||= []).push(c);
+    for (const c of pool) if (c.a) (byName[monName(c.n)] = byName[monName(c.n)] || []).push(c);
     for (const [mon, list] of Object.entries(byName)) {
       const seen = new Map();
       for (const c of list) if (!seen.has(c.a)) seen.set(c.a, c);
@@ -1426,7 +1426,7 @@ function buildIdeas(){
   else if (shape === "artist-span") {
     // The FIRST and LAST card by one hand — the gap is the story.
     const byArtist = {};
-    for (const c of pool) if (c.a && c.y) (byArtist[c.a] ||= []).push(c);
+    for (const c of pool) if (c.a && c.y) (byArtist[c.a] = byArtist[c.a] || []).push(c);
     for (const [artist, list] of Object.entries(byArtist)) {
       const sorted = list.sort((a, b) => (a.y || "") < (b.y || "") ? -1 : 1);
       const span = Number(sorted[sorted.length - 1].y) - Number(sorted[0].y);
@@ -1444,7 +1444,7 @@ function buildIdeas(){
     // Their EARLIEST card beside their best-known — a different claim entirely
     // from the span, which is why sharing a branch was wrong.
     const byArtist = {};
-    for (const c of pool) if (c.a && c.y) (byArtist[c.a] ||= []).push(c);
+    for (const c of pool) if (c.a && c.y) (byArtist[c.a] = byArtist[c.a] || []).push(c);
     for (const [artist, list] of Object.entries(byArtist)) {
       if (list.length < need) continue;
       const first = list.slice().sort((a, b) => (a.y || "") < (b.y || "") ? -1 : 1)[0];
@@ -1462,7 +1462,7 @@ function buildIdeas(){
     // Two versions of one Pokemon, close on value — a battle nobody can settle
     // by pointing at a price.
     const byMon = {};
-    for (const c of pool) if (c.p && c.a) (byMon[monName(c.n)] ||= []).push(c);
+    for (const c of pool) if (c.p && c.a) (byMon[monName(c.n)] = byMon[monName(c.n)] || []).push(c);
     for (const [mon, list] of Object.entries(byMon)) {
       const ranked = list.sort((a, b) => (b.p || 0) - (a.p || 0));
       if (ranked.length < 2) continue;
@@ -1477,7 +1477,7 @@ function buildIdeas(){
 
   else if (shape === "one-set") {
     const bySet = {};
-    for (const c of pool) (bySet[c.s] ||= []).push(c);
+    for (const c of pool) (bySet[c.s] = bySet[c.s] || []).push(c);
     for (const [set, list] of Object.entries(bySet)) {
       if (list.length < need) continue;
       const picked = list.sort((a, b) => (b.p || 0) - (a.p || 0)).slice(0, need);
@@ -1490,7 +1490,7 @@ function buildIdeas(){
   else if (shape === "eras") {
     // The same Pokemon across widely separated years.
     const byMon = {};
-    for (const c of pool) if (c.y) (byMon[monName(c.n)] ||= []).push(c);
+    for (const c of pool) if (c.y) (byMon[monName(c.n)] = byMon[monName(c.n)] || []).push(c);
     for (const [mon, list] of Object.entries(byMon)) {
       const years = [...new Set(list.map(c => c.y))].sort();
       if (years.length < need) continue;
@@ -1551,7 +1551,7 @@ function buildIdeas(){
     // needed because both numbers are printed.
     const withHp = pool.filter(c => ATTRS[c.i]?.h && c.y);
     const byMon = {};
-    for (const c of withHp) (byMon[monName(c.n)] ||= []).push(c);
+    for (const c of withHp) (byMon[monName(c.n)] = byMon[monName(c.n)] || []).push(c);
     for (const [mon, list] of Object.entries(byMon)) {
       const sorted = list.sort((a, b) => (a.y || "") < (b.y || "") ? -1 : 1);
       const oldest = sorted[0], newest = sorted[sorted.length - 1];
