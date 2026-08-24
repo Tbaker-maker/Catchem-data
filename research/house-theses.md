@@ -2178,3 +2178,34 @@ said "120 → 330 HP" while the final card shown had **280**. Two real numbers o
 a public image that did not match the pictures beneath them — the Koga failure
 with arithmetic. **The ends ARE the claim**, so the shape now anchors on oldest
 and newest and fills the middle between them.
+
+## REPLY-TO-LIKE IS THE CONVERSATION METRIC (Aug 24 2026)
+Tyler named two accounts to learn from. Both were researched rather than
+guessed at.
+
+**@JohnnyCrambo**, on a post at 37.1K views: **68 replies against 73 likes.** A
+reply-to-like ratio of **93%**, where a normal post runs nearer 10%. The post
+asked whether caring about value makes someone a fake fan — and he replied to
+himself: *"Not my opinion. I want to know what people really think."*
+
+**That disclaimer is the entire mechanism.** Ask something the community
+genuinely disagrees on, then remove yourself from the answer, and replying
+becomes safe because nobody is contradicting the host.
+
+**Views measure an audience watching. Reply-to-like measures a room talking.**
+
+**@shotguncaio**: long-form lore and artist posts at 15-18K views — an Atsuko
+Nishida appreciation, a Miki Kudo appreciation, Victini lore. **Paragraphs, not
+hooks**, which is the opposite of the short-form assumption. And a single line
+about a current release at **1.6M views**.
+
+THE MOVE WE COULD AUTOMATE, and did: **he replies to every post with the exact
+card list.** "Cards above: Victini EX Full Art (131/135 – Plasma Storm)…" Those
+self-replies pull 1.7K-2K views of their own. It answers the question every card
+post gets, before anyone asks — **and the editor already knows the answer**, so
+nobody should ever type it by hand.
+
+ALSO TAKEN: a **numbered daily series** ("Day 23 of posting one Pokémon card I
+love under $10") gives people a reason to return, which is what our streak
+feature exists for. And Crambo's **named recurring segments** in his bio —
+FlashPack Friday, Sun Bleacher — turn an account into a schedule.

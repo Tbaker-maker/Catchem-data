@@ -691,6 +691,41 @@
     "themes"
    ],
    "recheckAfter": "2027-02-23"
+  },
+  {
+   "id": "crambo-not-my-opinion",
+   "claim": "@JohnnyCrambo posted 'Do you think caring about Pokemon value makes someone a fake fan?' and got 37.1K views with 68 replies against 73 likes — a reply-to-like ratio of 93% where a normal post runs nearer 10%. He then replied to himself: 'Not my opinion. I want to know what people really think.' His bio names recurring segments (FlashPack Friday, Sun Bleacher) and he runs multi-year physical projects, including sun-bleaching a Moltres card for almost two years.",
+   "sources": [
+    "x.com/JohnnyCrambo/status/2091554795744112736 (screenshot, 2026-08-23)",
+    "x.com/johnnycrambo profile and posts"
+   ],
+   "verified": "2026-08-24",
+   "verifier": "chat",
+   "confidence": "VERIFIED",
+   "falsifier": "the same question posted without the disclaimer producing an equal reply rate",
+   "note": "THE MECHANISM: ask a question that DIVIDES the community, then explicitly remove yourself from the answer. 'Not my opinion' makes it safe to reply honestly, because nobody is disagreeing with the host. Reply-to-like ratio is the metric that measures conversation, and views do not — 37K views with 68 replies is a room talking, not an audience watching.",
+   "usedBy": [
+    "content"
+   ],
+   "recheckAfter": "2027-02-24"
+  },
+  {
+   "id": "shotgun-self-reply-card-list",
+   "claim": "@shotguncaio writes long-form lore and artist posts — an Atsuko Nishida appreciation at 15.7K views, a Miki Kudo one at 15.4K, a Victini lore post at 18.7K — and replies to EVERY one with the exact card list: 'Cards above: Victini EX Full Art (131/135 – Plasma Storm), Victini BW32 Promo…'. Those self-replies draw 1.7K-2K views of their own. He also runs a numbered daily series, 'Day 23 of posting one Pokemon card I love that costs under $10'. His largest post is a single line about a current release at 1.6M views, 120 replies and 15K likes.",
+   "sources": [
+    "x.com/shotguncaio posts June 2026",
+    "x.com/shotguncaio/status/2033639197756821730"
+   ],
+   "verified": "2026-08-24",
+   "verifier": "chat",
+   "confidence": "VERIFIED",
+   "falsifier": "the same posts performing equally without the card-list reply",
+   "note": "THREE TRANSFERABLE MOVES. First, the self-reply card list answers 'what cards are those?' before anyone asks, and it is the single most automatable thing here — our editor already knows exactly which cards are in the image. Second, LONG-FORM WORKS: paragraphs about an artist pull 15K+, which is the opposite of the short-hook assumption, and we now hold artist and lore data for exactly this. Third, a numbered daily series gives people a reason to come back, which is what our streak feature is for.",
+   "usedBy": [
+    "content",
+    "build-editor"
+   ],
+   "recheckAfter": "2027-02-24"
   }
  ]
 }

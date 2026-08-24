@@ -140,6 +140,14 @@ select:focus,input:focus{outline:none;border-color:var(--soft)}
 .pocket .own.yes{opacity:1;background:var(--soft);color:var(--ink)}
 .status.bad{color:var(--warn)}
 .lines{margin-bottom:14px}
+.selfreply{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:14px 16px;margin-bottom:14px}
+.selfreply .srhead{font:500 10.5px var(--mono);color:var(--faint);letter-spacing:.16em;margin-bottom:9px}
+.selfreply pre{margin:0 0 11px;font:400 13.5px var(--mono);color:var(--soft);
+  white-space:pre-wrap;line-height:1.65}
+.selfreply button{background:transparent;border:1px solid var(--line);color:var(--soft);
+  border-radius:8px;padding:8px 14px;font:400 13px var(--body);cursor:pointer}
+.selfreply button:hover{border-color:var(--live);color:var(--live)}
 .lines .lhead{font:500 10.5px var(--mono);color:var(--faint);letter-spacing:.16em;margin-bottom:9px}
 .lineopt{display:block;width:100%;text-align:left;background:var(--panel);border:1px solid var(--line);
   border-radius:11px;padding:12px 15px;margin-bottom:7px;cursor:pointer;transition:border-color .16s var(--ease)}
@@ -253,6 +261,7 @@ summary:before{content:"→ ";color:var(--faint)}
 <div class="status" id="st"></div>
 <div class="tally" id="tally" hidden></div>
 <div class="lines" id="lines" hidden></div>
+<div class="selfreply" id="selfreply" hidden></div>
 <input id="label" placeholder="Your line — or leave it blank and let the cards talk" style="margin-bottom:18px">
 
 <div class="acts">
@@ -870,6 +879,35 @@ function renderLines(){
   }
 }
 
+// THE SELF-REPLY. @shotguncaio posts the card list as a reply to his own post,
+// every time, and those replies pull 1.7K-2K views on their own. It answers the
+// question every card post gets before anyone asks it — and the editor already
+// knows the answer, so nobody should type it by hand.
+function renderSelfReply(){
+  const box = el("selfreply");
+  if (!box) return;
+  if (!tray.length) { box.hidden = true; return; }
+  box.hidden = false;
+  const NL = String.fromCharCode(10);
+  const text = "Cards above:" + NL + tray.map(c => {
+    const num = c.i.slice(c.i.lastIndexOf("-") + 1);
+    return "· " + c.n + " (" + num + " – " + c.s + ")" + (c.a ? " – " + c.a : "");
+  }).join(NL);
+  box.innerHTML = "";
+  const h = document.createElement("div");
+  h.className = "srhead";
+  h.textContent = "POST THIS AS A REPLY TO YOUR OWN POST";
+  const pre = document.createElement("pre");
+  pre.textContent = text;
+  const b = document.createElement("button");
+  b.textContent = "Copy the list";
+  b.onclick = async () => {
+    try { await navigator.clipboard.writeText(text); b.textContent = "Copied"; }
+    catch { b.textContent = "Select and copy above"; }
+  };
+  box.appendChild(h); box.appendChild(pre); box.appendChild(b);
+}
+
 function render(){
   const L = LAYOUTS[tray.length];
   const box = el("tray");
@@ -885,6 +923,7 @@ function render(){
   box.innerHTML = html || '<div class="pocket"></div><div class="pocket"></div><div class="pocket"></div>';
   const allowed = checkIntent();
   renderLines();
+  renderSelfReply();
   renderStreak();
   renderTally();
   el("plabel").textContent = L ? ("YOUR PAGE — " + L.name.toUpperCase()) : "YOUR PAGE";

@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-24T00:32:08.686Z",
+  "generatedAt": "2026-08-24T00:38:06.528Z",
   "audited": "14 shipped surfaces, 40 minted cards",
   "principle": "A linter asks whether the CSS is valid. A design lead asks whether the page was DESIGNED. The tells of an undesigned page are countable: too many type sizes, too many near-identical greys, an accent used everywhere so it accents nothing.",
   "blindSpot": "It cannot SEE. It counts and measures. It cannot tell you a page is ugly, only that the choices behind it were not made deliberately.",
   "counts": {
     "high": 1,
-    "medium": 9,
+    "medium": 10,
     "low": 1
   },
   "findings": [
@@ -19,7 +19,7 @@
     {
       "surface": "build.html",
       "severity": "high",
-      "what": "the accent colour appears 17 times",
+      "what": "the accent colour appears 19 times",
       "why": "An accent used everywhere accents nothing, and it is the most common reason a dark page reads as cheap rather than considered.",
       "fix": "Spend it in two places: the active state and the one primary action. Everything else greys."
     },
@@ -29,6 +29,13 @@
       "what": "--faint on the background is 3.2:1",
       "why": "WCAG AA wants 4.5:1 for body text and 3:1 for large text. Below 3 it is unreadable on a phone in daylight, which is where this is actually seen.",
       "fix": "Lighten --faint until it clears 4.5, or reserve it for text at 18px and above."
+    },
+    {
+      "surface": "build.html",
+      "severity": "medium",
+      "what": "3 controls with vertical padding under 10px",
+      "why": "A tap target under about 44px total height is missed on a phone, and this is a phone-first tool.",
+      "fix": "Raise vertical padding or set a min-height on interactive elements."
     },
     {
       "surface": "build.html",
@@ -110,12 +117,14 @@
     },
     {
       "surface": "build.html",
-      "question": "build.html: 5 corner radii in use (5, 9, 11, 13, 16). Does the page read as one family of shapes, or several?",
+      "question": "build.html: 7 corner radii in use (5, 8, 9, 11, 12, 13, 16). Does the page read as one family of shapes, or several?",
       "measured": {
         "radii": [
           5,
+          8,
           9,
           11,
+          12,
           13,
           16
         ]

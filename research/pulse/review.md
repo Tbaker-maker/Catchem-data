@@ -82,7 +82,7 @@ The habits are in place. Nothing has come due yet, so none of them have been tes
 - Corrections published publicly, dated and permanent
 - 21 errors logged, each with the guard it produced
 **Needs looking at**
-- 25 of 44 agent questions unanswered — a queue that only grows is a queue nobody reads
+- 26 of 45 agent questions unanswered — a queue that only grows is a queue nobody reads
 - 9 predictions still pending. The first grades land in October, and until then this score is a promise.
 
 ---

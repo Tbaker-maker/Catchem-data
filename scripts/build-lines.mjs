@@ -40,6 +40,7 @@ const REGISTERS = {
   observation: { label: "Notice", note: "A shared observation with an implicit 'right?'. This is the 18,800 shape." },
   confession:  { label: "Confess", note: "Say the thing everyone thinks. Relatability outperforms authority." },
   invite:      { label: "Invite", note: "Ask them to add to it rather than judge it." },
+  divide:      { label: "Divide", note: "Ask something the community genuinely disagrees on, then say it is not your opinion. Crambo got a 93% reply-to-like ratio doing exactly this — the disclaimer makes replying safe, because nobody is contradicting the host." },
 };
 
 const src = `// LINE ENGINE, in the page. Options in four registers, built from the cards
@@ -109,6 +110,11 @@ function lineOptions(cards, themeName){
     add("invite", themeName + ". What am I missing?");
     add("question", themeName + " — which one wins?");
   }
+
+  // ── THE DIVIDE. Only ever paired with the disclaimer, because the question
+  // alone reads as a position and the disclaimer is what makes it a question.
+  add("divide", "Does chasing value make you less of a collector?" + String.fromCharCode(10) + String.fromCharCode(10) + "(not my opinion — I want to know what people actually think)");
+  if (priced.length) add("divide", "Is a card worth what someone will pay, or what it means to you?" + String.fromCharCode(10) + String.fromCharCode(10) + "(genuinely asking)");
 
   // ── ALWAYS AVAILABLE. Two lines that fit anything and ask for something.
   // A line that does not match what is on screen reads as generated. Singular
