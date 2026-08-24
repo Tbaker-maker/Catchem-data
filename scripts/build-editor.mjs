@@ -167,6 +167,8 @@ button.sec{background:transparent;color:var(--soft);border:1px solid var(--line)
   padding:14px 20px;font:400 14.5px var(--body);cursor:pointer;transition:all .18s var(--ease)}
 button.sec:hover{border-color:var(--faint);color:var(--text)}
 button:disabled{opacity:.32;cursor:not-allowed}
+#outimg{max-width:100%;border-radius:13px;border:1px solid var(--line);display:block}
+.savehint{font:400 13.5px var(--body);color:var(--live);margin:10px 0 0;text-align:center}
 canvas{max-width:100%;border-radius:13px;margin-top:24px;display:none;border:1px solid var(--line)}
 
 /* Search — the escape hatch, deliberately quiet. */
@@ -302,12 +304,15 @@ summary:before{content:"→ ";color:var(--faint)}
 <div class="selfreply" id="selfreply" hidden></div>
 <input id="label" placeholder="Your line — or leave it blank and let the cards talk" style="margin-bottom:18px">
 
+<p class="savehint" id="savehint"></p>
 <div class="acts">
-  <button class="pri" id="make" disabled>Make the image</button>
-  <button class="sec" id="copy" hidden>Copy</button>
-  <button class="sec" id="share" hidden>Share</button>
-  <button class="sec" id="dl" hidden>Download</button>
+<button class="go" id="make">Make the image</button>
+<button id="copy" onclick="copyImage()">Copy image</button>
+<button id="share" onclick="shareImage()">Share</button>
+<button id="dl" onclick="dlImage()">Download</button>
+<button onclick="openImage()">Open in a tab</button>
 </div>
+<img id="outimg" alt="your image — press and hold to save" hidden>
 <canvas id="cv"></canvas>
 
 <div class="foot">Every image carries the Catch'em mark and the artist's name — the credit isn't ours to remove.
@@ -1157,6 +1162,69 @@ function todaysCard(){
 window.toggleStreakFilter = toggleStreakFilter;
 window.todaysCard = todaysCard;
 
+// SHOW A REAL IMAGE, NOT A CANVAS. The first thing anybody does with an image
+// on a phone is hold it and pick Save Image, and a <canvas> never offers that
+// menu — so the most natural action on the device silently did nothing and the
+// tool read as broken. Swapping in a real <img> after composing makes the
+// obvious gesture work.
+function showSaveable(dataUrl){
+  const img = el("outimg"), cv = el("cv");
+  if (!img || !cv) return;
+  img.src = dataUrl;
+  img.hidden = false;
+  cv.style.display = "none";
+  const hint = el("savehint");
+  if (hint) hint.textContent = "Press and hold the image to save it — or use the buttons below.";
+}
+window.showSaveable = showSaveable;
+
+// FIVE WAYS OUT, ONE OF WHICH CANNOT FAIL. Press-and-hold works on phones,
+// Copy is fastest on desktop, Share opens the native sheet, Download is the
+// desktop default, and OPEN IN A TAB is just a URL — nothing to block. Every
+// one reports what happened, because a silent success looks exactly like a
+// silent failure and that is what makes people give up.
+async function copyImage(){
+  const cv = el("cv");
+  try {
+    const b = await new Promise(r => cv.toBlob(r, "image/png"));
+    await navigator.clipboard.write([new ClipboardItem({ "image/png": b })]);
+    setStatus("Copied — paste it straight into your post.", false);
+  } catch (e) {
+    setStatus("Copy is blocked in this browser. Press and hold the image above, or use Open in a tab.", true);
+  }
+}
+async function shareImage(){
+  const cv = el("cv");
+  try {
+    const b = await new Promise(r => cv.toBlob(r, "image/png"));
+    const f = new File([b], "catchem.png", { type: "image/png" });
+    if (navigator.canShare && navigator.canShare({ files: [f] })) {
+      await navigator.share({ files: [f] });
+      setStatus("Shared.", false);
+    } else setStatus("Sharing is not available here. Press and hold the image above to save it.", true);
+  } catch (e) { setStatus("Share cancelled.", false); }
+}
+function openImage(){
+  // THE ONE THAT CANNOT FAIL. No download attribute, no clipboard permission,
+  // no share API — just an image at a URL, which every browser can show and
+  // every user can then save however their device does it.
+  const cv = el("cv");
+  const w = window.open();
+  if (w) { w.document.write('<img src="' + cv.toDataURL("image/png") + '" style="max-width:100%">'); w.document.close(); }
+  else setStatus("Your browser blocked the new tab. Press and hold the image above instead.", true);
+}
+function dlImage(){
+  const cv = el("cv");
+  const a = document.createElement("a");
+  a.href = cv.toDataURL("image/png");
+  a.download = "catchem.png";
+  a.click();
+  // iOS often OPENS this instead of saving, so say what to do when it does.
+  setStatus("If that opened the image instead of saving it, press and hold it.", false);
+}
+window.dlImage = dlImage;
+window.copyImage = copyImage; window.shareImage = shareImage; window.openImage = openImage;
+
 function render(){
   const L = LAYOUTS[tray.length];
   const box = el("tray");
@@ -1675,6 +1743,9 @@ el("make").onclick = async () => {
     if (navigator.clipboard && window.ClipboardItem) el("copy").hidden=false;
     if (navigator.canShare && navigator.canShare({files:[new File([""],"t.png",{type:"image/png"})]})) el("share").hidden=false;
     setStatus("ready — " + W + "×" + H);
+    // A CANVAS CANNOT BE LONG-PRESSED. Swap in a real <img> so the first
+    // gesture anybody tries on a phone actually works.
+    showSaveable(cv.toDataURL("image/png"));
   }catch(e){ setStatus("could not compose: " + (e.message||"unknown"), true); }
 };
 

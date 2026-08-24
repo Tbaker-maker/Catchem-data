@@ -2355,3 +2355,37 @@ X algorithm realities" — replies weighted over likes, dwell time, the first
 (links suppressing reach, media outperforming text). The rest is **received
 wisdom held at COMMUNITY confidence**, not verified, and should be treated as a
 hypothesis to test rather than a rule to follow.
+
+## A CANVAS CANNOT BE LONG-PRESSED (Tyler, Aug 24 2026)
+"It's not downloading easy. ALWAYS make it easy, always have a copy option. If
+the user can't find the image they will never use the app ever again and tell
+people bad things."
+
+**The cause was structural, not a broken button.** The output was a `<canvas>`,
+and the first thing every phone user does with an image is **hold it and pick
+Save Image** — a canvas never shows that menu. So the most natural action on the
+device **silently did nothing**, and the tool read as broken.
+
+Meanwhile `a.download` on iOS often OPENS the image rather than saving it,
+which looks like a second failure of the same button.
+
+THE FIX: after composing, swap in a **real `<img>`** carrying the same data
+URL, so press-and-hold works because it genuinely is an image. Then five ways
+out, in order of how people actually behave:
+
+1. **Press and hold** — the phone gesture, now functional
+2. **Copy image** — fastest on desktop, straight into the compose box
+3. **Share** — the native sheet
+4. **Download** — the desktop default, and it now says *"if that opened the
+   image instead of saving it, press and hold it"*
+5. **Open in a tab** — **the one that cannot fail**, because it is just an image
+   at a URL: no download attribute, no clipboard permission, no share API
+
+AND EVERY PATH REPORTS WHAT HAPPENED. **A silent success is indistinguishable
+from a silent failure**, and that is precisely what makes somebody abandon a
+tool and tell people about it.
+
+TWO BUGS SURFACED WHILE FIXING IT: `dl()` was never on window — ninth
+occurrence of a button that renders, clicks and does nothing — and my rebuilt
+action row dropped the ids the existing code binds to, which killed the script
+and took the **Make the image** button with it.
