@@ -987,7 +987,7 @@ function search(){
     const showcase = ranked.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
     renderPager(ranked.length, pages);
     el("res").innerHTML = showcase.map(c =>
-      `<div class="hit" onclick="add('${c.i}')"><img src="${imgSmall(c.i)}" alt="" loading="lazy" onerror="imgFallback(this,&#39;${c.i}&#39;)">
+      `<div class="hit" onclick="add('${c.i}')"><img src="${imgSmall(c.i)}" alt="" loading="lazy" data-cid="${c.i}" onerror="imgFallback(this,&#39;${c.i}&#39;)">
         <span class="failmsg"></span><b>${c.n}</b><i>${c.s} · ${c.y}</i><i>${c.a}</i></div>`).join("");
     return;
   }
@@ -1004,7 +1004,7 @@ function search(){
   const hits = all.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
   renderPager(all.length, pages);
   el("res").innerHTML = hits.length ? hits.map(c =>
-    `<div class="hit" onclick="add('${c.i}')"><img src="${imgSmall(c.i)}" alt="" loading="lazy" onerror="imgFallback(this,&#39;${c.i}&#39;)">
+    `<div class="hit" onclick="add('${c.i}')"><img src="${imgSmall(c.i)}" alt="" loading="lazy" data-cid="${c.i}" onerror="imgFallback(this,&#39;${c.i}&#39;)">
       <span class="failmsg"></span><b>${c.n}</b><i>${c.s} · ${c.y}</i><i class="${c.a ? "" : "nocred"}">${c.a || "no credit recorded"}</i></div>`).join("")
     : suggestHtml(q);
 }
@@ -2008,6 +2008,62 @@ function renderSuggest(q){
   });
 }
 
+// PROBE THE HOSTS ON BOOT. "74 images failed" is true and still leaves the user
+// running the experiment. This asks the question the message raises: which hosts
+// can this browser reach? If one works, every image switches to it — reporting a
+// problem we could have solved is worse than not reporting.
+const HOSTS = [
+  { id: "pokemontcg", url: function(id){ return "https://images.pokemontcg.io/" + id.slice(0, id.lastIndexOf("-")) + "/" + id.slice(id.lastIndexOf("-") + 1) + ".png"; } },
+  { id: "scrydex",    url: function(id){ return "https://images.scrydex.com/pokemon/" + id + "/small"; } },
+  { id: "weserv",     url: function(id){ return "https://images.weserv.nl/?url=" + encodeURIComponent("images.pokemontcg.io/" + id.slice(0, id.lastIndexOf("-")) + "/" + id.slice(id.lastIndexOf("-") + 1) + ".png") + "&w=400"; } },
+];
+let liveHost = null;
+function probeHosts(){
+  const sample = (INDEX[0] && INDEX[0].i) || "base1-1";
+  let settled = 0, found = false;
+  const reachable = [];
+  HOSTS.forEach(function(h){
+    const im = new Image();
+    const done = function(ok){
+      settled++;
+      if (ok) reachable.push(h.id);
+      if (ok && !found) {
+        found = true;
+        // SWITCH EVERYTHING TO WHAT WORKS. A host that answers is worth more
+        // than an accurate description of three that do not.
+        if (h.id !== "pokemontcg") { liveHost = h; retryAllImages(); }
+      }
+      if (settled === HOSTS.length) reportHosts(reachable);
+    };
+    im.onload = function(){ done(true); };
+    im.onerror = function(){ done(false); };
+    setTimeout(function(){ if (!im.complete) done(false); }, 6000);
+    im.src = h.url(sample);
+  });
+}
+function retryAllImages(){
+  if (!liveHost) return;
+  const imgs = document.querySelectorAll ? document.querySelectorAll("img[data-cid]") : [];
+  for (let i = 0; i < imgs.length; i++) {
+    const cid = imgs[i].getAttribute("data-cid");
+    if (cid) { imgs[i].dataset.tried = ""; imgs[i].style.display = ""; imgs[i].src = liveHost.url(cid); }
+  }
+  imgFails = 0;
+}
+function reportHosts(reachable){
+  if (reachable.length) return;   // something works; nothing to say
+  // NOTHING REACHED. That is a browser-level block, and saying so precisely is
+  // the difference between a bug report and a fix.
+  const msg = "No image host is reachable from this browser — pokemontcg.io, scrydex.com and weserv.nl were all tried and none answered. "
+    + "That is a browser-level block rather than a problem with any one host. In-app browsers (inside another app) commonly do this. "
+    + "Open this file in Safari or Chrome directly and the images will load.";
+  for (const w of ["imgstatus", "st", "askreply"]) {
+    const b = el(w);
+    if (b) { b.hidden = false; b.textContent = msg; b.className = (b.className || "").replace(/ bad$/, "") + " bad"; }
+  }
+}
+safeWire(function(){ setTimeout(probeHosts, 900); }, "host probe");
+
 function render(){
   const L = LAYOUTS[tray.length];
   const box = el("tray");
@@ -2018,7 +2074,7 @@ function render(){
   const slots = L ? L.cols * Math.ceil(tray.length / L.cols) : Math.max(tray.length, 3);
   box.style.gridTemplateColumns = `repeat(${cols}, minmax(0, ${cols > 3 ? 120 : 148}px))`;
   let html = tray.map((c, k) =>
-    `<div class="pocket filled"><img src="${imgSmall(c.i)}" alt="${c.n}" loading="lazy" onerror="imgFallback(this,&#39;${c.i}&#39;)"><button class="x" onclick="remove(${k})" aria-label="Remove ${c.n}">×</button><button class="own ${owned[c.i] ? 'yes' : ''}" onclick="toggleOwn('${c.i}')">${owned[c.i] ? 'OWNED' : 'want'}</button></div>`).join("");
+    `<div class="pocket filled"><img src="${imgSmall(c.i)}" alt="${c.n}" loading="lazy" data-cid="${c.i}" onerror="imgFallback(this,&#39;${c.i}&#39;)"><button class="x" onclick="remove(${k})" aria-label="Remove ${c.n}">×</button><button class="own ${owned[c.i] ? 'yes' : ''}" onclick="toggleOwn('${c.i}')">${owned[c.i] ? 'OWNED' : 'want'}</button></div>`).join("");
   for (let i = tray.length; i < slots; i++) html += '<div class="pocket"></div>';
   box.innerHTML = html || '<div class="pocket"></div><div class="pocket"></div><div class="pocket"></div>';
   const allowed = checkIntent();
