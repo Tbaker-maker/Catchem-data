@@ -657,6 +657,16 @@ function typicalViewsFrom(posts){
   const v = settled.slice(-8).map(p => p.measured.views).sort((a, b) => a - b);
   return v[Math.floor(v.length / 2)];
 }
+// THE TCG DOES NOT PRINT THE BABY LINK. A Pikachu card is a Basic and never
+// says "evolves from Pichu" — the game rule and the card rule differ, exactly
+// like the type field. Babies are a small closed list and a documented
+// relationship, so filling it in completes a real fact rather than inventing
+// one. All eighteen have both sides in our catalogue.
+const BABY_OF = { "Pikachu": "Pichu", "Clefairy": "Cleffa", "Jigglypuff": "Igglybuff",
+  "Togetic": "Togepi", "Jynx": "Smoochum", "Electabuzz": "Elekid", "Magmar": "Magby",
+  "Marill": "Azurill", "Wobbuffet": "Wynaut", "Roselia": "Budew", "Chimecho": "Chingling",
+  "Sudowoodo": "Bonsly", "Chansey": "Happiny", "Snorlax": "Munchlax", "Lucario": "Riolu",
+  "Mantine": "Mantyke", "Mr. Mime": "Mime Jr.", "Hitmonlee": "Tyrogue" };
 const byIdRow = {};
 const ATTRS = new Proxy({}, { get: (_, k) => { const r = byIdRow[k]; return r ? { t: r.T, dex: r.D, d: r.D, e: r.E, ev: r.E, h: r.H, hp: r.H, s: r.S, st: r.S, w: r.W } : undefined; } });
 const BIOS = new Proxy({}, { get: (_, k) => byIdRow[k]?.R });
@@ -2166,6 +2176,12 @@ function buildIdeas(){
         // "Machamp", so searching for a card naming the current stage found
         // Machamp again — and again. The next stage must be a DIFFERENT creature.
         if (next && monName(next.n) === cur) next = null;
+        // FALL BACK TO THE BABY LINK. The card will not name it, so the walk
+        // stops at Pichu unless we supply the relationship the game defines.
+        if (!next) {
+          const child = Object.keys(BABY_OF).find(function(k){ return BABY_OF[k] === cur; });
+          if (child && byMon[child]) next = byMon[child];
+        }
         if (!next) {
           const linking = evoPool.filter(function(x){ return ATTRS[x.i] && ATTRS[x.i].e === cur; });
           const linkingReal = linking.filter(function(x){ return monName(x.n) !== cur; });

@@ -4,7 +4,7 @@
 
 > **How to use:** When Claude starts a new session, first action should be `view /mnt/user-data/outputs/catchem-knowledge-base.md`. When Claude learns something new worth persisting, append it to the relevant section and bump `last_updated`.
 
-**last_updated:** 2026-08-24 (agent workforce, rating law, guard hardening)
+**last_updated:** 2026-08-25 (prompt bar, evolution lines, matchup, audit-honesty agent)
 **version:** 1.2.0
 
 > **KB editing rule (born from 4 silent-patch failures tonight):** edits

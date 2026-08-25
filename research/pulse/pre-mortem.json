@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-08-25T02:10:47.379Z",
+  "generatedAt": "2026-08-25T02:35:42.935Z",
   "principle": "Every bug today was a check that was RIGHT IN PRINCIPLE and asked a question whose answer could not reveal the fault. Not a broken guard — a guard aimed slightly beside the thing it guards. We declare blind spots for every agent and none for guards, so a guard asking the wrong question looks exactly like one that works.",
   "guardsChecked": 37,
-  "declared": 40,
+  "declared": 39,
   "shapes": [
     {
       "id": "substring where structure exists",
@@ -37,6 +37,18 @@
       "why": "The singles-sell refusal lived entirely in button.disabled. A disabled attribute is an affordance, not a guard — re-enabling it in the console produced the very image the refusal exists to prevent."
     }
   ],
-  "problems": [],
+  "problems": [
+    {
+      "guard": "heartbeat.mjs",
+      "what": "no declared blind spot",
+      "why": "A guard that has never been asked what it would MISS looks identical to one that works. The heartbeat looked identical to one that worked, on the morning it reported green through a failed run."
+    },
+    {
+      "guard": "heartbeat.mjs",
+      "what": "carries the \"elapsed time as a proxy for an event\" shape, unacknowledged",
+      "why": "The heartbeat allowed 30 hours so a LATE run would not cry wolf, and a window built to forgive a late run is exactly the size to hide a SKIPPED one. Green through a failure.",
+      "fix": "Ask whether the EVENT happened. Compare against the schedule, not against a duration."
+    }
+  ],
   "notes": []
 }

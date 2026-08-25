@@ -1,46 +1,51 @@
-# CC: verify the editor on a real device — I cannot, and I keep being wrong
+# CC: verify the editor on a real device
 
-Tyler, 2026-08-24: *"Used our Charizard prompt and it failed. I asked for an
-audit and you told me it would work… not acceptable to fail this many times."*
+**Everything below is what I can prove from a sandbox. What I cannot prove is
+whether any of it is true on a phone — and I have been wrong about that three
+times, so treat my green as unverified until you have seen it.**
 
-**He is right, and the audit was the failure rather than the bug.**
+## THE AUDIT, run just now
+All sixteen pass: audit-honesty · journey-smoke · offline-smoke · theme-smoke ·
+ask-smoke · evo-smoke · editor-hostile · editor-copy-rules · editor-claim-match ·
+editor-money-credit · rating-guard · crop-guard · tease-guard · slop-guard ·
+memory-guard · knowledge-guard.
 
-## THE PATTERN, THREE TIMES
-| I said | What the test actually did |
-|---|---|
-| "the editor is verified working" | supplied a **fetch that always succeeded** — from `file://` Chrome blocks it, and the page rendered nothing |
-| "mobile audited, every path verified" | every test ran a **simulated desktop DOM** |
-| "audited, all green" | **five tests, not one pressed Make the image**, and every one made images **succeed** |
+Guard audit 16 wired / 37 pipeline steps. Pre-mortem 37 with declared blind
+spots. Negative tests 64/66.
 
-**Every failure was a test that FAKED the thing that actually breaks.**
-
-## WHAT I FIXED THIS ROUND
+Fixed this round:
 - **One failed image killed the whole image.** The compose threw on the first
-  card that would not load, so a single blocked request produced NOTHING. It now
+  card that would not load, so one blocked request produced NOTHING. It now
   leaves a labelled gap and names the missing cards.
-- `journey-smoke.mjs` — the WHOLE journey, typed sentence to drawn image, run
-  twice: images working, and **every image failing**.
-- `audit-honesty.mjs` — a guard that fakes a dependency it EXERCISES must also
-  test that dependency FAILING. Its first run flagged twelve guards; most were
-  false positives and it had to be narrowed, because a check that cries wolf
-  gets muted.
+- **`pichu evolution` returned one card.** A Pikachu card is a Basic and never
+  prints "evolves from Pichu" — the game rule and the card rule differ, like the
+  type field. Eighteen baby links added from a closed, documented list.
+  **16 of 16 named evolution lines now resolve.**
 
-## WHAT ONLY YOU CAN DO — THIS IS THE ASK
-**Open `research/assets/build.html` in a real mobile browser** and report
-exactly what happens at each step. I have no device and my sandbox cannot reach
-the image host, so **everything I say about mobile is inference.**
+## WHAT I NEED FROM YOU — screenshots, not descriptions
+Open `research/assets/build.html` on a real phone. **I have burned four rounds
+on inference; a screenshot ends it.**
 
-1. Does the page load at all? What does the amber status panel at the top say?
-2. Type **`charizard evolution from 151`** and press Enter. How many cards?
-3. Press **Make the image**. Does an image appear? What does the status say?
-4. **Press and hold the image.** Does "Save Image" appear in the menu?
-5. If images are blank, open the console: is it `net::ERR_` on
-   `images.pokemontcg.io`, or something else?
+1. **Does it load?** Screenshot the amber status panel at the top. It reports
+   the real counts or the actual error and line number.
+2. **Type `charizard evolution from 151`.** How many cards appear?
+3. **Press "Make the image."** Screenshot whatever appears, including the status
+   line underneath.
+4. **Press and hold the image.** Does "Save Image" appear?
+5. **If images are blank**, open the console and screenshot it. I need to know
+   whether it is `net::ERR_` on `images.pokemontcg.io` or something else — those
+   are different problems with different fixes.
 
-**Screenshot each step.** A description of a failure is worth less than the
-screen, and I have burned four rounds on inference.
+## THEN FIX WHAT YOU FIND
+You have the device and the browser; I have neither. **If the fix is obvious,
+make it and push.** If it is not, send me the screenshot and I will.
 
-## AND ONE STANDING INSTRUCTION
-When I say a surface is audited, **check whether the test drove the failing
-path** before you believe it. `audit-honesty.mjs` now does this automatically,
-but it only knows the failure modes we have already hit.
+## THE STANDING INSTRUCTION
+When I report a surface as audited, **check whether the test drove the FAILING
+path** before believing it. Three times I reported green on a test that faked
+the thing that actually breaks: a fetch that always succeeded, a desktop DOM
+standing in for mobile, and images that always loaded.
+
+`audit-honesty.mjs` now fails the build when a guard fakes a dependency it
+exercises without testing that dependency failing — but **it only knows the
+failure modes we have already hit.** You are the check on the ones we have not.
