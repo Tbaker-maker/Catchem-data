@@ -60,6 +60,12 @@ const isMon = (c) => !!(attrs[c.i] && attrs[c.i].dex) && !NOT_MON.test(mon(c.n))
 // A PRICE FLOOR, because $0 means UNKNOWN not free. Every ratio in the first
 // draft was a division by a missing price.
 const PRICED = 2;
+// PREFER CARDS THE EDITOR SHIPS. The editor carries post-worthy cards only, so
+// a hook whose cheap half is a $2 Common is true and unloadable. Knowing which
+// ids ship lets the generator choose pairs that work.
+let SHIPPED = null;
+try { SHIPPED = new Set(JSON.parse(await readFile("/tmp/shipped-ids.json", "utf-8"))); } catch (e) {}
+const inEditor = (c) => !SHIPPED || SHIPPED.has(c.i);
 const priced = idx.filter(c => isMon(c) && (c.p || 0) >= PRICED && c.a);
 
 const hooks = [];
@@ -75,7 +81,10 @@ const n = (x) => "$" + Math.round(x).toLocaleString("en-US");
     const m = DEX_NAME[dex] || list[0].n;
     if (list.length < 6) continue;
     const s = list.slice().sort((a, b) => a.p - b.p);
-    const lo = s[0], hi = s[s.length - 1];
+    // The cheapest SHIPPED card, not the cheapest card — otherwise the hook is
+    // true and the editor cannot show it.
+    const lo = s.find(inEditor) || s[0];
+    const hi = s.slice().reverse().find(inEditor) || s[s.length - 1];
     const mult = hi.p / lo.p;
     if (mult < 40 || mult > 3000) continue;   // above 3000x, suspect the data
     hooks.push({
@@ -143,8 +152,8 @@ const n = (x) => "$" + Math.round(x).toLocaleString("en-US");
   for (const c of priced) (by[c.a] = by[c.a] || []).push(c);
   for (const [artist, list] of Object.entries(by)) {
     if (list.length < 4 || list.length > 25) continue;
-    const s = list.slice().sort((a, b) => b.p - a.p);
-    if (!s[1] || s[1].p < PRICED) continue;
+    const s = list.slice().sort((a, b) => b.p - a.p).filter(inEditor);
+    if (!s[0] || !s[1] || s[1].p < PRICED) continue;
     const ratio = s[0].p / s[1].p;
     if (ratio < 6 || ratio > 200) continue;
     hooks.push({

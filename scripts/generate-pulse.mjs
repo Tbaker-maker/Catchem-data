@@ -674,6 +674,7 @@ try { await import("./prompt-audit.mjs"); } catch (e) { console.warn("  prompt-a
 try { await import("./env-matrix.mjs"); } catch (e) { console.warn("  env-matrix.mjs: " + e.message); }
 try { await import("./save-paths.mjs"); } catch (e) { console.warn("  save-paths.mjs: " + e.message); }
 try { await import("./user-journeys.mjs"); } catch (e) { console.warn("  user-journeys.mjs: " + e.message); }
+try { await import("./hook-guard.mjs"); } catch (e) { console.warn("  hook guard: " + e.message); }
 try { await import("./prompt-correctness.mjs"); } catch (e) { console.warn("  prompt correctness: " + e.message); }
 try { await import("./ask-smoke.mjs"); } catch (e) { console.warn("  ask smoke: " + e.message); }
 try { await import("./theme-smoke.mjs"); } catch (e) { console.warn("  theme smoke: " + e.message); }

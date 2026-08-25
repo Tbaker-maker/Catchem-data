@@ -327,6 +327,15 @@
     "stale-state"
    ],
    "history": "Sessions rather than single actions, because every real failure came from state left by the previous step."
+  },
+  "hook-guard.mjs": {
+   "cannotCatch": "Whether the hook is INTERESTING, and whether the number is still true. It proves every hook loads the exact cards it names and that no price claim rests on a card without a price — it cannot tell you a 40x gap is boring, or that a price moved since the build.",
+   "knownPatterns": [
+    "claim-without-card"
+   ],
+   "coveredBy": "Tyler, and the daily rebuild",
+   "reviewed": "2026-08-25",
+   "history": "Written after 138 of 230 hooks named a card the editor does not ship — I checked against card-index.json (16,468) while the editor carries 6,725 post-worthy cards, and the cheap half of a price-gap hook is exactly the $2 card that filter removes."
   }
  }
 }

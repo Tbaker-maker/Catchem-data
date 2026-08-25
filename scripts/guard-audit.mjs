@@ -191,6 +191,7 @@ const MUST_RUN = [
   { script: "env-matrix.mjs", why: "nine real browser profiles including iOS private, in-app browsers and android-old" },
   { script: "save-paths.mjs", why: "four save buttons under five failure conditions — each must succeed or SAY WHY, because silence is indistinguishable from broken" },
   { script: "user-journeys.mjs", why: "seven whole sessions, not single actions — every real failure came from state left by the previous step" },
+  { script: "hook-guard.mjs", why: "a hook naming two cards and producing an empty tray looks broken at the exact moment somebody trusted it — 138 of 230 would have done that" },
   { script: "prompt-correctness.mjs", why: "ask-smoke only checks cards APPEAR — I wrote that gap into its own blind-spot file and then trusted the green tick while the output was wrong" },
   { script: "ask-smoke.mjs", why: "the box says What do you want to post and must hand back CARDS — seven of eleven prompts silently produced nothing and only Tyler trying one found it" },
   { script: "theme-smoke.mjs", why: "every theme must PRODUCE and no two may produce the same thing — four produced silently nothing and two returned identical results, and Tyler found both by clicking" },
