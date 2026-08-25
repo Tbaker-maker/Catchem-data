@@ -319,7 +319,10 @@ ${[[W * 0.28, PAD + CARD_H * 0.42], [W * 0.72, PAD + CARD_H * 0.78]].map(([wx, w
 <p id="savehint" style="text-align:center;color:#36d399;font:400 14px system-ui,sans-serif;margin:0 0 14px"></p>
 <div id="sourcecards">
   <div class="row">
-${cards.map(c => `    <div class="card"><img src="${c.imageUrl}" alt="${(c.name ?? "").replace(/"/g, "")}" loading="eager">
+    // SMALL FOR DISPLAY, HIRES FOR THE CANVAS. This served a 1-2MB file to
+    // render a card at 400px — the same thing that broke the editor on mobile,
+    // unfixed here because I fixed the file Tyler was holding.
+${cards.map(c => `    <div class="card"><img src="${c.imageUrl.replace("_hires","")}" alt="${(c.name ?? "").replace(/"/g, "")}" loading=\"lazy\" onerror=\"this.onerror=null;this.src=this.src.replace(&#39;_hires&#39;,&#39;&#39;)\">
       <div class="cap">${(c.name ?? "")}${c.releaseDate ? ` · ${c.releaseDate.slice(0, 4)}` : ""}</div></div>`).join("\n")}
   </div>
   ${label ? `<div class="label">${label}</div>` : ""}

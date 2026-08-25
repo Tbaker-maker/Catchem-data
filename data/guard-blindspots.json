@@ -262,6 +262,15 @@
    "coveredBy": "Tyler, who has found six things no test imagined",
    "reviewed": "2026-08-25",
    "history": "Written because every other test checks something I already imagined — ten prompts I chose, fourteen abuses I thought of. Its FIRST RUN found three crashes: startStreak with an unknown filter, and todaysCard or confirmPosted with no streak, all reading .test on undefined. Then it immediately caught my own fix using the wrong parameter name."
+  },
+  "surface-parity.mjs": {
+   "cannotCatch": "A mobile lesson we have not learned yet. It encodes four rules from four real failures; it knows nothing about the fifth.",
+   "knownPatterns": [
+    "fixed-the-file-in-hand"
+   ],
+   "coveredBy": "Tyler, on whichever surface he opens next",
+   "reviewed": "2026-08-25",
+   "history": "Written after the composite page failed on mobile with the EXACT combination I had already fixed in the editor — hires for display, eager loading, no fallback. The real bug was not the image size, it was that I fixed the file Tyler happened to be holding three separate times and never carried one fix across. Its first run found three MORE surfaces with the same problem."
   }
  }
 }

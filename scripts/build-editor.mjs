@@ -1840,7 +1840,7 @@ function render(){
   const slots = L ? L.cols * Math.ceil(tray.length / L.cols) : Math.max(tray.length, 3);
   box.style.gridTemplateColumns = \`repeat(\${cols}, minmax(0, \${cols > 3 ? 120 : 148}px))\`;
   let html = tray.map((c, k) =>
-    \`<div class="pocket filled"><img src="\${imgUrl(c.i)}" alt="\${c.n}"><button class="x" onclick="remove(\${k})" aria-label="Remove \${c.n}">×</button><button class="own \${owned[c.i] ? 'yes' : ''}" onclick="toggleOwn('\${c.i}')">\${owned[c.i] ? 'OWNED' : 'want'}</button></div>\`).join("");
+    \`<div class="pocket filled"><img src="\${imgUrl(c.i)}" alt="\${c.n}" loading=\"lazy\" onerror=\"this.onerror=null;this.src=this.src.replace(&#39;_hires&#39;,&#39;&#39;)\"><button class="x" onclick="remove(\${k})" aria-label="Remove \${c.n}">×</button><button class="own \${owned[c.i] ? 'yes' : ''}" onclick="toggleOwn('\${c.i}')">\${owned[c.i] ? 'OWNED' : 'want'}</button></div>\`).join("");
   for (let i = tray.length; i < slots; i++) html += '<div class="pocket"></div>';
   box.innerHTML = html || '<div class="pocket"></div><div class="pocket"></div><div class="pocket"></div>';
   const allowed = checkIntent();
