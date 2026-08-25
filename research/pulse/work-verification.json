@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-25T16:34:11.102Z",
+ "generatedAt": "2026-08-25T17:49:48.436Z",
  "purpose": "Checks output against the failure classes in our own error ledger — things that actually happened here, not generic quality rules.",
  "runsOn": "output, never intent. What I meant to do is not evidence.",
  "classesChecked": [
@@ -15,7 +15,8 @@
   "sku existence",
   "coverage overclaim",
   "monetization miscount",
-  "ungated publication (automation)"
+  "ungated publication (automation)",
+  "stale metric"
  ],
  "problems": [
   {
@@ -47,6 +48,18 @@
    "what": "build-promo.mjs draws fixed-size text onto a variable-width canvas",
    "why": "Text sized for the full canvas vanishes in a feed preview, where the image is actually seen and decided on. Scale to the canvas or the words are decoration.",
    "ledgerRef": 24
+  },
+  {
+   "errorClass": "ungated publication",
+   "what": "__nt-publish.mjs can publish to X without a human confirmation gate",
+   "why": "It reaches a posting endpoint but does not both check for an attached terminal and run the confirmation policy. Content posted by automated means is ineligible for the Original Content Rewards program — an unattended send does not save time, it disqualifies the account. See data/compliance-register.json, retrieved 2026-08-25.",
+   "ledgerRef": 18
+  },
+  {
+   "errorClass": "stale metric",
+   "what": "./scripts/__nt-stale.mjs:2 quotes 18,800 for 2026-08-22-arita-blastoise",
+   "why": "views settled at 127,200 at 48h; 18,800 was the reading at 15.33h and is a dead number. Quote the settled figure, or mark the line as a withdrawal.",
+   "ledgerRef": "stale-metric"
   }
  ]
 }

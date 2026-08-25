@@ -21,7 +21,7 @@ export const LAYOUTS = {
     why: "one card, one claim" },
   2: { name: "the pairing", cols: 2, rows: 1, cardW: 745, cardCaption: 70,
     W: 1730, H: 1400, ratio: 0.81, cardShare: 43, widened: false,
-    why: "the shape that did 18,800 views" },
+    why: "the shape that did 127,200 views" },
   3: { name: "the trio", cols: 3, rows: 1, cardW: 745, cardCaption: 70,
     W: 2535, H: 1400, ratio: 0.55, cardShare: 29, widened: false,
     why: "3 across — 2+1 leaves a ragged row and reads as a mistake" },

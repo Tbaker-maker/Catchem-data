@@ -2130,7 +2130,7 @@ function render(){
 // who arrives without an idea should leave with three.
 // NOTHING GATES, EVERY CONTROL REFINES. fCount used to start at 0, so clicking
 // an angle before a count returned silently and the whole column read as broken.
-// Two is the default because it is the shape that did 18,800 views.
+// Two is the default because it is the shape that settled at 127,200 views.
 let fSet = "", fCount = 2, fTheme = null;
 
 function renderThemes(){
@@ -2358,7 +2358,7 @@ function buildIdeas(){
 
   else if (shape === "twenty-years") {
     // TWENTY YEARS APART. 374 Pokémon have cards two decades apart, and the gap
-    // itself is the story — the Arita pairing at 18,800 views was exactly this
+    // itself is the story — the Arita pairing at 127,200 views was exactly this
     // shape found by hand.
     const byMon = {};
     for (const c of pool) { if (!c.y) continue; const k = monName(c.n); byMon[k] = byMon[k] || []; byMon[k].push(c); }

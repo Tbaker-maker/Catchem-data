@@ -5,10 +5,13 @@
 //
 // Agreed, and this exists because of what today already proved. I logged the
 // Arita pairing at 154 views, compared it to a crop at 791, and concluded the
-// crop shape won five to one. **Same post, better hour: 18,800.** I drew a
-// conclusion about FORMAT from numbers that were mostly measuring HOUR, with
-// n=1 per shape, in the same session where I said the log needed twenty entries
-// to mean anything. Then AGE turned out to be a second confound an hour later.
+// crop shape won five to one. Then I called the same post at 18,800 a BETTER
+// HOUR, and that was wrong too. **There was one post, read at three ages: 154
+// at 0.2h, 18,800 at 15.33h, and 127,200 settled at 59.8h.** Not two hours.
+// Not two posts. I drew a conclusion about FORMAT from numbers that were
+// measuring AGE, with n=1 per shape, in the same session where I said the log
+// needed twenty entries to mean anything — and then corrected it into a law
+// about hours, which was a second wrong answer stacked on the first.
 //
 // **Trial and error without a design produces confident wrong answers faster.**
 // That is not a reason to skip it. It is a reason to fix the design now, while
@@ -112,7 +115,8 @@ else {
 
 FOUR RULES, each from a mistake already made:
   · ONE variable at a time. I ranked two formats on numbers that were
-    measuring the hour — 154 views versus 18,800 for the SAME post.
+    measuring the AGE — 154 at 0.2h, 18,800 at 15.33h and 127,200 at 59.8h,
+    every one of them the SAME post.
   · The HOUR is held constant across both arms. It is the confound that
     caught me first.
   · Nothing under ${SETTLE_HOURS}h counts. Age was the second confound, found

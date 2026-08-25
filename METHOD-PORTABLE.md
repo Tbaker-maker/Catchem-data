@@ -147,8 +147,10 @@ The trap: you build a thing, it feels good, you conclude it works.
 **Log outcomes with the conditions attached.** Not just the result — the hour,
 the age, the format. Two confounds bit within an hour of each other:
 
-- **Timing.** The same post did 154 views at a bad hour and 18,800 at a good
-  one. I ranked two formats on numbers that were measuring the hour.
+- **Age, mistaken twice.** I ranked two formats on numbers that were measuring
+  the hour, then "corrected" that into a law about hours. Both wrong: it was ONE
+  post read three times — 154 at 0.2h, 18,800 at 15.33h, 127,200 settled at
+  59.8h. Readings are only comparable at equal age.
 - **Age.** Views climb for days. A 7-hour-old post beside a 22-hour-old one is a
   comparison of age.
 

@@ -1878,14 +1878,24 @@ failure quiet.
 Guards now carry `offPipeline` so the audit can include them without demanding
 they appear in a pipeline they were never part of.
 
-## TIMING CONFOUNDED FORMAT (Aug 23 2026)
-The Arita pairing — Base Charizard beside the 151 Blastoise ex, "Twenty-four
-years apart. Same illustrator." — did **154 views** on its first outing at a bad
-hour.
+## TIMING CONFOUNDED FORMAT (Aug 23 2026) — WITHDRAWN Aug 25 2026
+**THIS SECTION DESCRIBED A COMPARISON THAT DOES NOT EXIST.** It is kept rather
+than deleted because the reasoning error is the useful part. Withdrawal logged
+in data/corrections-log.json, 2026-08-25.
 
-Reposted at 9:18pm it did **18,800 views, 401 likes, 14 replies, 37 bookmarks.**
+WHAT IT CLAIMED: the Arita pairing — Base Charizard beside the 151 Blastoise
+ex, "Twenty-four years apart. Same illustrator." — did **154 views** at a bad
+hour, and **18,800** reposted at 9:18pm. Same cards, same caption, same format,
+122 times the reach.
 
-**Same cards. Same caption. Same format. 122 times the reach.**
+WHAT IS TRUE: there was one post, entered twice. Both entries carried the same
+postedAt of 21:18, and 9:18pm IS 21:18. The 154 was read twelve minutes after
+posting; the 18,800 was read fifteen hours and twenty minutes after. **Neither
+is a settled number, and there was never a second post.**
+
+**THE SETTLED READING, at 59.8h: 127,200 views, 2,500 likes, 34 replies, 86
+reposts, 170 bookmarks.** The 18,800 this document quoted in five places was a
+post still climbing — understated by 6.8x.
 
 WHAT I GOT WRONG: I logged 154 against the crop's 791 and concluded the crop
 shape beat the pairing shape five to one. I had **one data point per shape**,
@@ -1899,10 +1909,12 @@ the strongest shape we have produced.** It carries a real claim, the images make
 the argument without the caption, and the caption is one line that could be read
 aloud.
 
-THE RULE: **the hour is not optional metadata.** Any comparison between shapes
-that does not hold posting time roughly constant is measuring the time. Until
-several posts of the SAME shape exist at DIFFERENT hours, the outcome log ranks
-conditions rather than formats, and it now says so in its own file.
+THE RULE, REPLACED Aug 25 2026: **readings are only comparable at equal age.
+Compare 48h to 48h.** The rule that stood here said the hour is not optional
+metadata — which fixed a comparison across hours by writing a law about hours,
+when the actual defect was a comparison across AGES. The first correction
+introduced a worse confound than the one it removed. The hour still is not
+optional metadata, but it was never what this post proved.
 
 AND THE THING WORTH REPEATING: Tyler's reply on the post was *"this visual was
 built by our in-house content creator portal."* The tool made the image, he
@@ -2083,7 +2095,7 @@ input with no gates**, while my editor asked four questions before returning
 anything.
 
 THE FIXES:
-- **A default count of two** — the shape that did 18,800 views — so every
+- **A default count of two** — the shape that settled at 127,200 views — so every
   control REFINES and none of them GATES.
 - **The 35 themes are GROUPED, not hidden.** By subject, by artist, by story, by
   era, by set, by argument. At that size the answer is structure; a "more
@@ -2100,12 +2112,19 @@ conversation."
 
 THE EVIDENCE, from the only three posts with real numbers, and none of them
 asserts anything:
-- **18,800** — *"It's wild to think the original Charizard artist is still making
-  cards to this day"*: a shared observation with an implicit "right?"
-- **791** — *"Late night check-in. Who's still awake?"*: a question answerable
-  in one word
-- **93** — *"Only Good Vibes. Pass it along & see it grow"*: a call to
+- **127,200 at 59.8h** — *"It's wild to think the original Charizard artist
+  is still making cards to this day"*: a shared observation with an implicit "right?"
+- **791 at 25.02h** — *"Late night check-in. Who's still awake?"*: a question
+  answerable in one word
+- **93 at 0.03h** — *"Only Good Vibes. Pass it along & see it grow"*: a call to
   participate
+
+**THESE THREE NUMBERS ARE NOT COMPARABLE, AND THE AGES ARE PRINTED HERE SO THAT
+IS IMPOSSIBLE TO FORGET AGAIN.** 93 views was read 1.7 minutes after posting;
+127,200 was read two and a half days after. Only the Arita post has a settled
+48h reading at all. What this list supports is that all three shapes LEAVE ROOM
+FOR A REPLY — a claim about the copy, not about the reach. Any ranking read off
+these figures is measuring age.
 
 **Every one leaves room for a reply.** And that is our slop law arriving at the
 same place from a different direction: **asserting invites correction, asking
@@ -2116,7 +2135,7 @@ most underrated or most anything. **A superlative closes a conversation by being
 either agreed with or wrong.**
 
 FOUR REGISTERS, so fifty creators do not sound alike: **Ask** (answerable in one
-word), **Notice** (the 18,800 shape), **Confess** (relatability outperforms
+word), **Notice** (the 127,200 shape), **Confess** (relatability outperforms
 authority), **Invite** (add to it rather than judge it).
 
 AND THEY ARE OPTIONS, NEVER A FINISHED POST. Fifty people posting an identical
@@ -2345,9 +2364,26 @@ not big.** knoyhead 3k, xzuyyu 4.9k, CardGameNomad 9.5k, tall_alan 16k, Crambo
 
 **Crambo's 37,100-view post came off 17.6k followers — 2.1x his follower count.**
 
-The metric is reach RELATIVE to size, and on that measure Tyler's 18,800 views
-off a two-day-old posting habit is **already in this company**. The ceiling is
-not follower count. It is whether a post gives somebody a reason to react.
+The metric is reach RELATIVE to size. **CORRECTED Aug 25 2026: this passage
+cited Tyler's 18,800 views and asserted he was "already in this company"
+without ever doing the division. Both halves were wrong.**
+
+@LongedEth has **21,554 followers**, read from the X API on 2026-08-25. So:
+
+- 18,800 views  = **0.87x** follower count — NOT in Crambo's company. Below
+  it, at 41% of his ratio. The passage asserted the opposite of its own evidence.
+- 127,200 views = **5.90x** follower count — **2.8x Crambo's ratio.**
+
+**THE LAW SURVIVES. THE EVIDENCE CITED FOR IT DID NOT.** Reach relative to size
+is still the right metric, and Tyler now clears the bar by a distance — but
+this section reached that conclusion from a number that contradicted it, by
+comparing a raw view count against a ratio and never dividing. **A passage
+whose entire subject is a ratio contained no ratio.** The ceiling is not
+follower count. It is whether a post gives somebody a reason to react.
+
+ONE CAVEAT ON THE DENOMINATOR: 21,554 is today's count and the post itself
+likely won followers, so measured against the audience he had at posting time
+the ratio would be higher, not lower.
 
 ONE CAVEAT ON THE SOURCE: the cross-account analysis asserts things about "2026
 X algorithm realities" — replies weighted over likes, dwell time, the first

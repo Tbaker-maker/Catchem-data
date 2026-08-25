@@ -5,14 +5,22 @@
 // filter and Pokemon chosen — options, not just one. The option should ALWAYS
 // spark conversation."
 //
-// THE EVIDENCE, from the only three posts with real numbers:
-//   18,800  "It's wild to think the original Charizard artist is still making
-//           cards to this day"          — a SHARED OBSERVATION with an implicit
+// THE EVIDENCE, from the only three posts with real numbers. THE AGE OF EACH
+// READING IS PART OF THE NUMBER, and is printed here because leaving it off is
+// exactly what produced a withdrawn law (data/corrections-log.json 2026-08-25):
+//  127,200 at 59.8h   "It's wild to think the original Charizard artist is
+//                     still making cards to this day"
+//                                       — a SHARED OBSERVATION with an implicit
 //                                         "right?"
-//     791  "Late night check-in. Who's still awake?"
+//      791 at 25.02h  "Late night check-in. Who's still awake?"
 //                                       — a DIRECT QUESTION answerable in one word
-//      93  "Only Good Vibes. Pass it along & see it grow"
+//       93 at 0.03h   "Only Good Vibes. Pass it along & see it grow"
 //                                       — a CALL TO PARTICIPATE
+//
+// THESE ARE NOT RANKABLE AGAINST EACH OTHER. 93 was read 1.7 minutes after
+// posting and 127,200 two and a half days after; only the first post has a
+// settled 48h reading at all. What they support is that all three LEAVE ROOM
+// FOR A REPLY — a claim about the copy, not about the reach.
 //
 // **Not one of them asserts anything.** Every one leaves room for a reply, and
 // that is also our slop law: asserting invites correction, asking invites
@@ -90,7 +98,7 @@ export function typicalViewsFrom(posts){
 // like them — which is the only way fifty people using this do not sound alike.
 const REGISTERS = {
   question:    { label: "Ask", note: "Answerable in one word. The lowest bar to a reply there is." },
-  observation: { label: "Notice", note: "A shared observation with an implicit 'right?'. This is the 18,800 shape." },
+  observation: { label: "Notice", note: "A shared observation with an implicit 'right?'. This is the 127,200 shape." },
   confession:  { label: "Confess", note: "Say the thing everyone thinks. Relatability outperforms authority." },
   invite:      { label: "Invite", note: "Ask them to add to it rather than judge it." },
   permission:  { label: "Permission", note: "A question plus a second sentence that removes the reason not to answer. tall_alan took ~900 replies at 16k followers on 'pick something quirky' — without it people think theirs is boring and scroll past." },
@@ -116,9 +124,14 @@ function lineOptions(cards, themeName, followerCount){
   const t0 = CARD_TEXT[first.i];
   const atk = t0 && t0.a && t0.a.length ? t0.a[0] : null;
 
-  // ── ONE HAND, TWO ERAS. The 18,800 shape, and the only one with numbers
-  // behind it. It works because the FACT is surprising and the reader supplies
-  // the reaction.
+  // ── ONE HAND, TWO ERAS. The 127,200 shape, and still the only one with a
+  // settled number behind it. It works because the FACT is surprising and the
+  // reader supplies the reaction.
+  //
+  // THE REGISTER IS CHARACTERISED BY THE SENTENCE, NOT THE VIEW COUNT, so the
+  // 6.8x correction on 2026-08-25 left the characterisation untouched and the
+  // evidence for it stronger, not weaker: 127,200 is a settled 48h reading
+  // where 18,800 was a post still climbing. It is still n=1.
   if (artists.length === 1 && span >= 8) {
     add("observation", "Same artist. " + span + " years apart. Still going.");
     add("observation", "It's wild that " + artists[0] + " was drawing these " + span + " years ago and still is.");

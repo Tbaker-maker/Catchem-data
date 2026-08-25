@@ -1,5 +1,5 @@
 {
- "note": "One variable at a time, hour held constant, same settling age before comparing, and a falsifier written before the first post. Today's lesson: I ranked two formats on numbers that were measuring the hour.",
+ "note": "One variable at a time, hour held constant, same settling age before comparing, and a falsifier written before the first post. Today's lesson, corrected 2026-08-25: I ranked two formats on numbers that were measuring the AGE, not the hour - and then wrote a law about hours, which was a second wrong answer stacked on the first.",
  "experiments": [
   {
    "id": "xmt7mnut7",
@@ -10,21 +10,29 @@
    "hour": "21:15",
    "started": "2026-08-24T19:27:05.659Z",
    "status": "running",
+   "unreadable": "BOTH ARMS ARE UNSETTLED AND AT DIFFERENT AGES, so this experiment cannot be read yet. Arm a is a settled 48h reading; arm b was read at 25.02h and is still climbing. Comparing them measures age, which is the error this file's own note describes. Corrected 2026-08-25.",
    "posts": [
     {
      "arm": "a",
-     "views": 18800,
-     "replies": 14,
-     "likes": 401,
-     "postedAt": "2026-08-22T21:18:00Z",
+     "views": 127200,
+     "atHours": 59.8,
+     "settled": true,
+     "replies": 34,
+     "likes": 2500,
+     "reposts": 86,
+     "postedAt": "2026-08-23T04:18:00.000Z",
+     "correction": "was views 18800 / replies 14 / likes 401, the reading at 15.33h. postedAt was 2026-08-22T21:18:00Z, a Pacific wall clock wearing a Z; the true instant is 04:18Z the following day. Both corrected 2026-08-25 from data/post-outcomes.json.",
      "logged": "2026-08-24T19:27:05.715Z"
     },
     {
      "arm": "b",
      "views": 791,
+     "atHours": 25.02,
+     "settled": false,
      "replies": 3,
      "likes": 22,
      "postedAt": "2026-08-21T00:00:00Z",
+     "correction": "views unchanged, but this reading is NOT settled - taken at 25.02h against arm a's 59.8h. Flagged 2026-08-25.",
      "logged": "2026-08-24T19:27:05.752Z"
     }
    ]

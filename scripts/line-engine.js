@@ -1,7 +1,7 @@
 // LINE ENGINE, in the page. Options in four registers, built from the cards
 // actually chosen, and never asserting anything — a superlative closes a
 // conversation by being agreed with or wrong, and a question opens one.
-const REGISTERS = {"question":{"label":"Ask","note":"Answerable in one word. The lowest bar to a reply there is."},"observation":{"label":"Notice","note":"A shared observation with an implicit 'right?'. This is the 18,800 shape."},"confession":{"label":"Confess","note":"Say the thing everyone thinks. Relatability outperforms authority."},"invite":{"label":"Invite","note":"Ask them to add to it rather than judge it."},"permission":{"label":"Permission","note":"A question plus a second sentence that removes the reason not to answer. tall_alan took ~900 replies at 16k followers on 'pick something quirky' — without it people think theirs is boring and scroll past."},"divide":{"label":"Divide","note":"Ask something the community genuinely disagrees on, then say it is not your opinion. Crambo got a 93% reply-to-like ratio doing exactly this — the disclaimer makes replying safe, because nobody is contradicting the host."}};
+const REGISTERS = {"question":{"label":"Ask","note":"Answerable in one word. The lowest bar to a reply there is."},"observation":{"label":"Notice","note":"A shared observation with an implicit 'right?'. This is the 127,200 shape."},"confession":{"label":"Confess","note":"Say the thing everyone thinks. Relatability outperforms authority."},"invite":{"label":"Invite","note":"Ask them to add to it rather than judge it."},"permission":{"label":"Permission","note":"A question plus a second sentence that removes the reason not to answer. tall_alan took ~900 replies at 16k followers on 'pick something quirky' — without it people think theirs is boring and scroll past."},"divide":{"label":"Divide","note":"Ask something the community genuinely disagrees on, then say it is not your opinion. Crambo got a 93% reply-to-like ratio doing exactly this — the disclaimer makes replying safe, because nobody is contradicting the host."}};
 const CARD_TEXT = __CARD_TEXT__;
 
 function lineOptions(cards, themeName, followerCount){
@@ -17,9 +17,14 @@ function lineOptions(cards, themeName, followerCount){
   const t0 = CARD_TEXT[first.i];
   const atk = t0 && t0.a && t0.a.length ? t0.a[0] : null;
 
-  // ── ONE HAND, TWO ERAS. The 18,800 shape, and the only one with numbers
-  // behind it. It works because the FACT is surprising and the reader supplies
-  // the reaction.
+  // ── ONE HAND, TWO ERAS. The 127,200 shape, and still the only one with a
+  // settled number behind it. It works because the FACT is surprising and the
+  // reader supplies the reaction.
+  //
+  // THE REGISTER IS CHARACTERISED BY THE SENTENCE, NOT THE VIEW COUNT, so the
+  // 6.8x correction on 2026-08-25 left the characterisation untouched and the
+  // evidence for it stronger, not weaker: 127,200 is a settled 48h reading
+  // where 18,800 was a post still climbing. It is still n=1.
   if (artists.length === 1 && span >= 8) {
     add("observation", "Same artist. " + span + " years apart. Still going.");
     add("observation", "It's wild that " + artists[0] + " was drawing these " + span + " years ago and still is.");

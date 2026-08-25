@@ -219,9 +219,21 @@ const scripts = (await readdir(join(ROOT, "scripts"))).filter(f => f.endsWith(".
   // defect. A bypass is not a string in a file — it is argv being consulted for
   // one, so that is what this looks for.
   const BYPASS = /(?:args|argv)\s*\.\s*includes\s*\(\s*["']--(force|yes|no-?confirm|skip-?confirm|unattended|auto-?send)["']|\bflag\(\s*["'](force|yes|no-?confirm|skip-?confirm|unattended|auto-?send)["']/;
+  // A GET IS NOT A PUBLISH, AND THE URL CANNOT TELL YOU WHICH IT IS.
+  // GET /2/tweets/:id reads a post's metrics; POST /2/tweets creates one. They
+  // differ by method alone, so matching the endpoint flagged read-metrics.mjs
+  // the moment it gained a fetch command on 2026-08-25 — a read-only path that
+  // cannot publish anything, reported as an eligibility risk.
+  //
+  // THIS IS THE THIRD TIME THIS GUARD HAS MADE THE SAME MISTAKE. It flagged the
+  // comment explaining there is no --force flag, then the help text saying the
+  // same, and now a reader for looking like a writer. The class is: matching
+  // the SHAPE of a thing instead of the thing. The fix each time has been to
+  // ask what the code DOES, not what strings it contains.
+  const SENDS = /method:\s*["']POST["']|signedFetch\(\s*["']POST["']/i;
   for (const f of scripts) {
     const src = await R("scripts/" + f);
-    if (!PUBLISHES.test(src)) continue;
+    if (!PUBLISHES.test(src) || !SENDS.test(src)) continue;
     const gated = /isTTY/.test(src) && /evaluateConfirmation/.test(src);
     if (!gated)
       P("ungated publication", `${f} can publish to X without a human confirmation gate`,
@@ -283,6 +295,94 @@ const scripts = (await readdir(join(ROOT, "scripts"))).filter(f => f.endsWith(".
   }
 }
 
+// ── ERROR: A METRIC QUOTED IN PROSE OR CODE THAT IS NOT THE SETTLED READING ─
+// Added 2026-08-25, from the 18,800 defect. The Arita pairing was read at
+// 15h20m, mid-climb, and 18,800 was written into house-theses.md five times, a
+// register definition, a layout label, a theme string a user reads, and two
+// engine comments. It settled at 127,200 — the quoted figure understated the
+// post by 6.8x and had been reasoned ON TOP OF: a law about reach relative to
+// account size was calibrated against it, and that law asserted Tyler was "in
+// this company" when 18,800 was 0.87x his follower count and the comparison
+// account was at 2.11x. A wrong number does not sit still. It becomes evidence.
+//
+// THE RULE: once a post has a settled 48h reading, every EARLIER reading of the
+// same post is a dead number. Quoting one anywhere outside an explicit
+// withdrawal is a defect.
+//
+// WHY THE MARKER LIST EXISTS: the corrected passages necessarily still contain
+// the wrong figure — that is what a correction looks like. So an occurrence is
+// allowed when it sits within six lines of a withdrawal marker. That is a
+// deliberate hole: it means anyone can silence this guard by typing the word
+// "corrected" nearby. It is declared in data/guard-blindspots.json.
+{
+  const outcomes = await J("data/post-outcomes.json") ?? { posts: [] };
+  const MARKERS = /withdrawn|corrected|used to say|what it claimed|still climbing|unsettled|mid-climb|understated|superseded|not a settled|was read|dead number|no longer/i;
+  const stale = [];
+  for (const post of outcomes.posts ?? []) {
+    const ms = post.metrics ?? [];
+    const settled = ms.find(m => m.checkpoint === 48);
+    if (!settled) continue;   // nothing is stale until something has settled
+    for (const m of ms) {
+      if (m === settled) continue;
+      // Only figures big enough to be unambiguous. A superseded "14 replies"
+      // would match a page number, a set size and a year.
+      for (const [field, v] of Object.entries(m)) {
+        if (typeof v !== "number" || v < 1000) continue;
+        if (settled[field] === v) continue;   // unchanged between readings
+        stale.push({ post: post.id, field, value: v,
+          settledValue: settled[field], atHours: m.atHours });
+      }
+    }
+  }
+
+  if (stale.length) {
+    const files = [];
+    const walk = async (dir) => {
+      for (const e of await readdir(join(ROOT, dir), { withFileTypes: true })) {
+        const rel = `${dir}/${e.name}`;
+        if (/node_modules|\.git$/.test(rel)) continue;
+        // The outcome log is the SOURCE of the settled reading. Every earlier
+        // reading legitimately lives there as a time series; flagging it would
+        // be the guard reporting its own input as a defect.
+        if (rel.endsWith("data/post-outcomes.json")) continue;
+        // Dated session reports are a record of what was believed on a day.
+        // Rewriting them would destroy the audit trail this repo runs on.
+        if (rel.includes("research/reports")) continue;
+        if (e.isDirectory()) await walk(rel);
+        else if (/\.(md|mjs|js|html)$/.test(e.name)) files.push(rel);
+        // A json string is only interesting when it is prose about a post.
+        else if (e.name.endsWith(".json")) files.push(rel);
+      }
+    };
+    await walk(".");
+
+    for (const f of files) {
+      const src = await R(f.replace(/^\.\//, ""));
+      if (!src) continue;
+      const lines = src.split(/\r?\n/);
+      for (const s of stale) {
+        const forms = [s.value.toLocaleString("en-US"), String(s.value)];
+        const settledForms = [s.settledValue.toLocaleString("en-US"), String(s.settledValue)];
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i];
+          if (!forms.some(form => line.includes(form))) continue;
+          // A bare json file only counts when the line is talking about a post.
+          if (f.endsWith(".json") && !/view|impression|reach/i.test(line)) continue;
+          const ctx = lines.slice(Math.max(0, i - 6), i + 4).join("\n");
+          if (MARKERS.test(ctx)) continue;
+          // A better signal than any word list: if the SETTLED figure is
+          // standing next to the dead one, the passage already knows. This is
+          // what a corrected paragraph looks like, and it needs no vocabulary.
+          if (settledForms.some(form => ctx.includes(form))) continue;
+          P("stale metric", `${f}:${i + 1} quotes ${forms[0]} for ${s.post}`,
+            `${s.field} settled at ${s.settledValue.toLocaleString("en-US")} at 48h; ${forms[0]} was the reading at ${s.atHours}h and is a dead number. Quote the settled figure, or mark the line as a withdrawal.`,
+            "stale-metric");
+        }
+      }
+    }
+  }
+}
+
 // ── THE META-CHECK · did I exclude myself? ────────────────────────────────
 // Five checkers read their own source in one day. This one names the risk out
 // loud rather than assuming it is immune.
@@ -291,7 +391,7 @@ const selfAware = true;   // this file audits data and other scripts, never itse
 const out = { generatedAt: new Date().toISOString(),
   purpose: "Checks output against the failure classes in our own error ledger — things that actually happened here, not generic quality rules.",
   runsOn: "output, never intent. What I meant to do is not evidence.",
-  classesChecked: [11, 13, 14, 15, 16, 18, 21, 24, 25, "sku existence", "coverage overclaim", "monetization miscount", "ungated publication (automation)"],
+  classesChecked: [11, 13, 14, 15, 16, 18, 21, 24, 25, "sku existence", "coverage overclaim", "monetization miscount", "ungated publication (automation)", "stale metric"],
   problems };
 await (await import("node:fs/promises")).writeFile(join(ROOT, "research/pulse/work-verification.json"), JSON.stringify(out, null, 1));
 
