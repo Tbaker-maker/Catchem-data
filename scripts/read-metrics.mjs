@@ -66,17 +66,58 @@ function dueReadings(q, now = Date.now()) {
     // Filed under the CHECKPOINT, not the measured age — atHours is now the real
     // elapsed time, so matching on it would re-read every post forever.
     const done = (p.metrics ?? []).map(m => m.checkpoint ?? m.atHours);
+    // DUE AND RECORD MUST AGREE ON THE CHECKPOINT. record files a reading under
+    // the checkpoint NEAREST its real age, so asking for a 1h reading on an
+    // 85h-old post buys a reading that gets filed as 48h - leaving 1h forever
+    // unfilled and the post forever due. A missed checkpoint cannot be taken
+    // later; time only runs one way. Surfaced 2026-08-25 by the first real
+    // backfill, which offered three long-settled posts a 1h reading at $0.001
+    // each, every run, indefinitely.
+    const wouldFileAs = CHECKPOINTS.reduce((a, b) => Math.abs(b - ageH) < Math.abs(a - ageH) ? b : a);
     for (const cp of CHECKPOINTS) {
-      if (ageH >= cp && !done.includes(cp)) { due.push({ id: p.id, tweetId: p.tweetId, checkpoint: cp, ageH: Math.round(ageH) }); break; }
+      if (ageH >= cp && !done.includes(cp) && cp === wouldFileAs) {
+        due.push({ id: p.id, tweetId: p.tweetId, checkpoint: cp, ageH: Math.round(ageH) }); break;
+      }
     }
   }
   return due;
 }
 
+
+// ── WHY IS NOTHING DUE? ────────────────────────────────────────────────────
+// "nothing due for a reading" read identically whether every post was current
+// or the loop had no input at all, and the second was true for a week while the
+// line printed green. That is the same class as a success line reporting a
+// number it did not measure: the output is true and answers a different
+// question than the one the reader is asking.
+//
+// Three situations, three messages. The distinction that matters is between
+// "measured" and "unmeasurable".
+function nothingDueBecause(q) {
+  const posts = q.posts ?? [];
+  if (!posts.length) return "the queue is empty. Nothing has been written, so nothing can be read.";
+  const sent = posts.filter(p => p.status === "sent");
+  if (!sent.length) {
+    return `no post in the queue has ever been sent. ${posts.length} queued, 0 sent, so there is nothing to ` +
+      `measure. This is a GAP, not a clean bill of health - the loop has no input.`;
+  }
+  const withId = sent.filter(p => p.tweetId);
+  if (!withId.length) {
+    return `${sent.length} sent post(s) carry NO tweet id, so none can be read. The id is written by the send ` +
+      `path; posts published by hand never get one. This is a GAP, not a clean bill of health.`;
+  }
+  const missingId = sent.length - withId.length;
+  const settled = withId.filter(p => (p.metrics ?? []).some(m => m.checkpoint === SETTLED_AT)).length;
+  return `all ${withId.length} readable post(s) are current on their readings` +
+    (settled ? `, ${settled} settled at ${SETTLED_AT}h` : "") +
+    (missingId ? `. ${missingId} sent post(s) carry no tweet id and can never be read` : "") + ".";
+}
+
 if (cmd === "due") {
   // What needs reading right now. This is what a cron calls.
-  const due = dueReadings(await load());
-  if (!due.length) { console.log("  nothing due for a reading."); process.exit(0); }
+  const q = await load();
+  const due = dueReadings(q);
+  if (!due.length) { console.log("  nothing due — " + nothingDueBecause(q)); process.exit(0); }
   console.log(`${due.length} post(s) due a reading:\n`);
   for (const d of due) console.log(`  ${d.tweetId}  ${d.ageH}h old, checkpoint ${d.checkpoint}h`);
   console.log(`\n  cost: ${cost(due.length)}`);
@@ -93,8 +134,9 @@ else if (cmd === "fetch") {
   // radius: a fetch that dies on the fourth post cannot leave the fourth post
   // half-written, and the first three are already on disk.
   const dryRun = args.includes("--dry-run");
-  const due = dueReadings(await load());
-  if (!due.length) { console.log("  nothing due for a reading."); process.exit(0); }
+  const q = await load();
+  const due = dueReadings(q);
+  if (!due.length) { console.log("  nothing due — " + nothingDueBecause(q)); process.exit(0); }
   console.log(`${due.length} reading(s) due · ${cost(due.length)}` +
     (dryRun ? "   DRY RUN, nothing will be recorded" : "") + "\n");
 
@@ -261,7 +303,7 @@ else if (cmd === "record") {
     // postedAt from resolvePostedAt({ at: null, tz: "UTC" }) at send time, so it
     // is a machine clock in UTC and saying so is simply true.
     try {
-      execSync(`node ${JSON.stringify(join(ROOT, "scripts/log-outcome.mjs"))} --shape ${JSON.stringify(shape)} --views ${m.views} --likes ${m.likes} --replies ${m.replies} --reposts ${m.reposts} --at ${JSON.stringify(p.postedAt)} --tz UTC`, { stdio: "inherit" });
+      execSync(`node ${JSON.stringify(join(ROOT, "scripts/log-outcome.mjs"))} --shape ${JSON.stringify(shape)} --views ${m.views} --likes ${m.likes} --replies ${m.replies} --reposts ${m.reposts} --at ${JSON.stringify(p.postedAt)} --tz UTC --source ${JSON.stringify(m.source)} --tweet ${JSON.stringify(tweetId)}`, { stdio: "inherit" });
     } catch {
       // The reading itself is already on disk and is correct. Say precisely
       // that, instead of dying with a stack trace that reads as if it was lost.

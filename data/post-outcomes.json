@@ -3,7 +3,7 @@
  "posts": [
   {
    "id": "2026-08-22-arita-blastoise",
-   "postedAt": "2026-08-23T04:18:00.000Z",
+   "postedAt": "2026-08-23T04:18:42.000Z",
    "postedAtLocal": "2026-08-22 21:18",
    "hourLocal": 21,
    "tz": "America/Vancouver",
@@ -17,7 +17,7 @@
    "notable": "unsolicited reply from a verified creator (Drempts): \"Crazy. Cool post\"",
    "metrics": [
     {
-     "atHours": 0.2,
+     "atHours": 0.19,
      "checkpoint": 1,
      "readAt": "2026-08-23T04:30:00.000Z",
      "views": 154,
@@ -27,10 +27,11 @@
      "bookmarks": null,
      "qualifiedImpressions": null,
      "qualifiedImpressionsSource": null,
-     "source": "manual"
+     "source": "manual",
+     "atHoursCorrection": "was 0.2, recomputed against the API post time"
     },
     {
-     "atHours": 15.33,
+     "atHours": 15.31,
      "checkpoint": 24,
      "readAt": "2026-08-23T19:37:31.524Z",
      "views": 18800,
@@ -41,10 +42,11 @@
      "bookmarksNote": "37 recorded in commit 9551bde's message, not in the json",
      "qualifiedImpressions": null,
      "qualifiedImpressionsSource": null,
-     "source": "manual"
+     "source": "manual",
+     "atHoursCorrection": "was 15.33, recomputed against the API post time"
     },
     {
-     "atHours": 59.8,
+     "atHours": 59.78,
      "checkpoint": 48,
      "readAt": "2026-08-25T16:05:47.342Z",
      "views": 127200,
@@ -55,7 +57,8 @@
      "readAtPrecision": "session time; the screenshot was taken shortly before, so atHours is +/- 2h",
      "qualifiedImpressions": null,
      "qualifiedImpressionsSource": null,
-     "source": "manual-screenshot"
+     "source": "manual-screenshot",
+     "atHoursCorrection": "was 59.8, recomputed against the API post time"
     }
    ],
    "mergedFrom": [
@@ -66,18 +69,21 @@
    "confidence": "ONE POST, THREE READINGS - a time series of a single anecdote, not a sample",
    "measured": {
     "at": "2026-08-25T16:05:47.342Z",
-    "atHours": 59.8,
+    "atHours": 59.78,
     "views": 127200,
     "likes": 2500,
     "replies": 34,
     "reposts": 86
-   }
+   },
+   "status": "sent",
+   "postedAtSource": "X API created_at, read 2026-08-25. Authoritative true UTC.",
+   "postedAtCorrection": "was 2026-08-23T04:18:00.000Z, out by 1 minute(s). Corrected from the API."
   },
   {
    "id": "2026-08-23-charmander-late-night-check-in",
-   "postedAt": "2026-08-22T07:00:00.000Z",
-   "postedAtLocal": "2026-08-22 00:00",
-   "hourLocal": 0,
+   "postedAt": "2026-08-22T06:52:31.000Z",
+   "postedAtLocal": "2026-08-21 23:52",
+   "hourLocal": 23,
    "tz": "America/Vancouver",
    "platform": "X",
    "shape": "art crop — single card, two-word hook",
@@ -86,7 +92,7 @@
    "tzNote": "queued to ask-eyes: was this the night of Aug 21-22 or Aug 22-23?",
    "metrics": [
     {
-     "atHours": 25.02,
+     "atHours": 25.14,
      "checkpoint": 24,
      "readAt": "2026-08-23T08:01:09.973Z",
      "views": 791,
@@ -96,24 +102,40 @@
      "bookmarks": null,
      "qualifiedImpressions": null,
      "qualifiedImpressionsSource": null,
-     "source": "manual"
+     "source": "manual",
+     "atHoursCorrection": "was 25.02, recomputed against the API post time"
+    },
+    {
+     "atHours": 85,
+     "readAt": "2026-08-25T19:52:23.161Z",
+     "views": 867,
+     "likes": 35,
+     "replies": 14,
+     "reposts": 1,
+     "bookmarks": null,
+     "source": "api",
+     "checkpoint": 48
     }
    ],
    "measured": {
-    "at": "2026-08-23T08:01:09.973Z",
-    "atHours": 25.02,
-    "views": 791,
-    "likes": 38,
+    "at": "2026-08-25T19:52:23.161Z",
+    "atHours": 85,
+    "views": 867,
+    "likes": 35,
     "replies": 14,
-    "reposts": 0
+    "reposts": 1
    },
-   "confidence": "SAMPLE OF 2 - not yet enough to rank shapes against each other"
+   "confidence": "SAMPLE OF 2 - not yet enough to rank shapes against each other",
+   "tweetId": "2091055901944033770",
+   "status": "sent",
+   "postedAtSource": "X API created_at, read 2026-08-25. Authoritative true UTC.",
+   "postedAtCorrection": "was 2026-08-22T07:00:00.000Z (hourLocal 0), out by -7 minute(s). Corrected from the API."
   },
   {
    "id": "2026-08-23-slakoth-2am-coding",
-   "postedAt": "2026-08-23T09:00:00.000Z",
-   "postedAtLocal": "2026-08-23 02:00",
-   "hourLocal": 2,
+   "postedAt": "2026-08-23T08:52:33.000Z",
+   "postedAtLocal": "2026-08-23 01:52",
+   "hourLocal": 1,
    "tz": "America/Vancouver",
    "platform": "X",
    "shape": "art crop — single card, mood hook",
@@ -121,7 +143,7 @@
    "postedAtPrecision": "rounded to the nearest 5 minutes — the commit proves it went out at ~01:56 local, so its reading sits 3m before the recorded post time",
    "metrics": [
     {
-     "atHours": -0.06,
+     "atHours": 0.07,
      "checkpoint": 1,
      "readAt": "2026-08-23T08:56:36.542Z",
      "views": 124,
@@ -131,22 +153,38 @@
      "bookmarks": null,
      "qualifiedImpressions": null,
      "qualifiedImpressionsSource": null,
-     "source": "manual"
+     "source": "manual",
+     "atHoursCorrection": "was -0.06, recomputed against the API post time"
+    },
+    {
+     "atHours": 59,
+     "readAt": "2026-08-25T19:52:23.401Z",
+     "views": 941,
+     "likes": 47,
+     "replies": 10,
+     "reposts": 0,
+     "bookmarks": null,
+     "source": "api",
+     "checkpoint": 48
     }
    ],
    "measured": {
-    "at": "2026-08-23T08:56:36.542Z",
-    "atHours": -0.06,
-    "views": 124,
-    "likes": 1,
-    "replies": 0,
+    "at": "2026-08-25T19:52:23.401Z",
+    "atHours": 59,
+    "views": 941,
+    "likes": 47,
+    "replies": 10,
     "reposts": 0
    },
-   "confidence": "SAMPLE OF 3 - not yet enough to rank shapes against each other"
+   "confidence": "SAMPLE OF 3 - not yet enough to rank shapes against each other",
+   "tweetId": "2091448496461365660",
+   "status": "sent",
+   "postedAtSource": "X API created_at, read 2026-08-25. Authoritative true UTC.",
+   "postedAtCorrection": "was 2026-08-23T09:00:00.000Z (hourLocal 2), out by -7 minute(s). Corrected from the API."
   },
   {
    "id": "2026-08-23-sunflora-only-good-vibes-pass-it",
-   "postedAt": "2026-08-23T19:43:00.000Z",
+   "postedAt": "2026-08-23T19:43:01.000Z",
    "postedAtLocal": "2026-08-23 12:43",
    "hourLocal": 12,
    "tz": "America/Vancouver",
@@ -166,24 +204,38 @@
      "qualifiedImpressions": null,
      "qualifiedImpressionsSource": null,
      "source": "manual"
+    },
+    {
+     "atHours": 48.16,
+     "readAt": "2026-08-25T19:52:23.624Z",
+     "views": 926,
+     "likes": 42,
+     "replies": 9,
+     "reposts": 4,
+     "bookmarks": null,
+     "source": "api",
+     "checkpoint": 48
     }
    ],
    "measured": {
-    "at": "2026-08-23T19:44:39.201Z",
-    "atHours": 0.03,
-    "views": 93,
-    "likes": 3,
-    "replies": 0,
-    "reposts": 1
+    "at": "2026-08-25T19:52:23.624Z",
+    "atHours": 48.16,
+    "views": 926,
+    "likes": 42,
+    "replies": 9,
+    "reposts": 4
    },
-   "confidence": "SAMPLE OF 5 - not yet enough to rank shapes against each other"
+   "confidence": "SAMPLE OF 5 - not yet enough to rank shapes against each other",
+   "tweetId": "2091612192756171068",
+   "status": "sent",
+   "postedAtSource": "X API created_at, read 2026-08-25. Authoritative true UTC."
   },
   {
    "id": "pmt8ossvc",
-   "postedAt": "2026-08-25T11:12:00.000Z",
-   "postedAtLocal": "2026-08-25 04:12",
-   "hourLocal": 4,
-   "tz": "UTC",
+   "postedAt": "2026-08-25T13:12:26.000Z",
+   "postedAtLocal": "2026-08-25 06:12",
+   "hourLocal": 6,
+   "tz": "America/Vancouver",
    "platform": "X",
    "shape": "GM + art-driven pun — 'Time to get that bread' over Mabosstiff IR, caption written from the ARTWORK not the flavour text",
    "note": "Tyler rewrote my 31-word draft to five words after looking at the art: a dog staring at a picnic table of sandwiches. Logged unmeasured; the 48h reading fills it once the API is wired.",
@@ -196,7 +248,11 @@
     "likes": null,
     "replies": null
    },
-   "confidence": "UNMEASURED - logged, never read"
+   "confidence": "UNMEASURED - logged, never read",
+   "tweetId": "2092238673035329786",
+   "status": "sent",
+   "postedAtSource": "X API created_at, read 2026-08-25. Authoritative true UTC.",
+   "postedAtCorrection": "was 2026-08-25T11:12:00.000Z (hourLocal 4), out by 120 minute(s). Corrected from the API."
   }
  ],
  "schema": "postedAt is TRUE UTC. hourLocal and postedAtLocal carry the wall clock, because '9pm' is the thing being tested. metrics[] is the time series and is authoritative; measured mirrors the LATEST reading and exists only so older readers keep working. atHours is real elapsed hours, not a snapped checkpoint. views is RAW impression_count from the API and is NOT the monetization number; qualifiedImpressions comes only from Creator Studio and is null until a human reads it there.",

@@ -375,6 +375,33 @@ say("");
 say("  " + openOnes.length + " next-post designs written to data/hypothesis-queue.json");
 say("  (not the send queue, and not the generated price post bank - see the file note)");
 
+
+// ── IS ANYTHING ACTUALLY BEING MEASURED BY MACHINE? ───────────────────────
+// post-outcomes.json held six readings for a week and every one was typed in by
+// hand. The fetch command existed, was correct, and had never once had anything
+// to read - and nothing anywhere said so, because a log with rows in it looks
+// like a log that is working.
+say("");
+say("─ MEASUREMENT PROVENANCE ".padEnd(72, "─"));
+say("");
+{
+  const all = posts.flatMap(p => p.metrics ?? []);
+  const api = all.filter(m => m.source === "api").length;
+  const byHand = all.length - api;
+  if (!all.length) {
+    say("  NO READINGS AT ALL. Nothing in this log has ever been measured.");
+  } else if (!api) {
+    say("  WARNING: " + all.length + " reading(s), and NOT ONE came from the API.");
+    say("  Every number here was typed in by a human. The fetch path may be correct");
+    say("  and still have nothing to read - check that sent posts carry a tweet id.");
+    say("  Run: node scripts/read-metrics.mjs due");
+  } else {
+    say("  " + api + " of " + all.length + " reading(s) came from the API, " + byHand + " by hand.");
+    const noId = posts.filter(p => !p.tweetId).length;
+    if (noId) say("  " + noId + " post(s) carry no tweet id and can never be read automatically.");
+  }
+}
+
 say("");
 say("─ WHAT THIS REPORT CANNOT SEE ".padEnd(72, "─"));
 say("");

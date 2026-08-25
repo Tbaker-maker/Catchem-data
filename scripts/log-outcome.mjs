@@ -111,7 +111,31 @@ if (process.argv.includes("--report") || process.argv.length <= 2) {
       replies: Number(arg("replies", 0)), reposts: Number(arg("reposts", 0)),
       bookmarks: arg("bookmarks", null) === null ? null : Number(arg("bookmarks")),
       source: arg("source", "manual") };
+    // FILE IT UNDER A CHECKPOINT, THE WAY read-metrics DOES. Two writers reach
+    // this log and only one of them stamped a checkpoint, so every reading that
+    // arrived through the promotion path was invisible to anything asking "is
+    // this settled?" - outcome-report counted one settled post while three more
+    // sat there with 48h readings and no label. A shared file needs one shape.
+    const CHECKPOINTS = [1, 24, 48];
+    m.checkpoint = CHECKPOINTS.reduce((a, b) => Math.abs(b - m.atHours) < Math.abs(a - m.atHours) ? b : a);
+    // MERGE ON TWEET ID, DO NOT APPEND BLINDLY. This pushed a new post every
+    // time, so promoting a 48h reading for a post already in the log created a
+    // SECOND entry for the same tweet - two rows, one post, and every count in
+    // the repo off by one. The same overwrite-versus-merge law the resolver,
+    // the enrichment and the verify gate were all fixed under.
+    const tweetId = arg("tweet", null);
+    const existing = tweetId ? store.posts.find(p => p.tweetId === tweetId) : null;
+    if (existing) {
+      {
+        existing.metrics = [...(existing.metrics ?? []).filter(x => Math.abs((x.atHours ?? 0) - m.atHours) > 0.5), m];
+        existing.measured = { at: m.readAt, atHours: m.atHours, views: m.views,
+          likes: m.likes, replies: m.replies, reposts: m.reposts };
+        await writeFile(FILE, JSON.stringify(store, null, 1) + "\n");
+        console.log(`  merged into ${existing.id}: ${m.views} views at ${m.atHours}h (${m.source})`);
+      }
+    } else {
     store.posts.push({
+      tweetId,
       id: `${new Date().toISOString().slice(0, 10)}-${(arg("note", "post")).replace(/[^a-z0-9]+/gi, "-").toLowerCase().slice(0, 32)}`,
       postedAt: resolved.postedAt,
       postedAtLocal: arg("at", null) ? arg("at") : null,
@@ -129,6 +153,7 @@ if (process.argv.includes("--report") || process.argv.length <= 2) {
     });
     await writeFile(FILE, JSON.stringify(store, null, 1) + "\n");
     console.log(`  logged: ${shape} · ${arg("views", 0)} views · ${store.posts.length} total`);
+    }
     if (store.posts.length < 20) console.log(`  ${20 - store.posts.length} more before the ranking can stop guessing.`);
   }
 }
