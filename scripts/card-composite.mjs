@@ -338,7 +338,7 @@ ${cards.map(c => `    <div class="card"><img src="${c.imageUrl.replace("_hires",
 // Everything is drawn at native card resolution so the result is postable
 // rather than a screenshot of a screenshot.
 const LAYOUT_COLS = ${perRow};
-const CARDS = ${JSON.stringify(cards.map(c => ({ url: c.imageUrl, name: c.name, year: (c.releaseDate ?? "").slice(0, 4) })))};
+const CARDS = ${JSON.stringify(cards.map(c => ({ id: c.id, url: c.imageUrl, name: c.name, year: (c.releaseDate ?? "").slice(0, 4) })))};
 const LABEL = ${JSON.stringify(label ?? "")};
 const CAPTION = ${JSON.stringify(caption)};
 const ARTISTS = ${JSON.stringify([...new Set(cards.map(c => c.artist).filter(Boolean))].slice(0, 3).join(" · "))};
@@ -387,7 +387,12 @@ async function compose() {
 
   for (let i = 0; i < CARDS.length; i++) {
     const routes = [
+      // FOUR ROUTES, SMALLEST FIRST. It tried hires then one proxy. Hires is
+      // 1-2MB and the slowest thing to fail on a phone; the small file is a
+      // tenth the size and identical at composite scale.
+      { url: CARDS[i].url.replace("_hires", ""), cors: true },
       { url: CARDS[i].url, cors: true },
+      { url: "https://images.scrydex.com/pokemon/" + (CARDS[i].id || "") + "/small", cors: true },
       { url: "https://images.weserv.nl/?url=" + encodeURIComponent(CARDS[i].url.split("//").slice(1).join("//")) + "&w=745&output=png", cors: true },
     ];
     let img = null;
@@ -402,7 +407,12 @@ async function compose() {
         break;
       } catch { img = null; }
     }
-    if (!img) throw new Error("no route to " + CARDS[i].an);
+    if (!img) {
+      // NAME THE CARD AND THE CAUSE. This said "no route to undefined" — it
+      // used a field that does not exist — and it is the last thing somebody
+      // sees before they give up on the tool.
+      throw new Error(CARDS[i].name + ": every image route failed. The art is hosted by pokemontcg.io; if no card loads, that host is unreachable from this browser. An in-app browser inside another app is the usual cause — open this file in Safari or Chrome directly.");
+    }
     const x = PAD + (i % COLS) * (CW + GAP), yy = PAD + Math.floor(i / COLS) * (CH + 70);
     g.drawImage(img, x, yy, CW, CH);
     if (CARDS.length <= 4) {
