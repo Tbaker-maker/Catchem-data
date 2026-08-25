@@ -2604,3 +2604,26 @@ construction, and undefeatable by a name I have not seen.**
 
 The display name comes from the shortest name in the dex group, which is the
 base form.
+
+## I READ THE CARD, TYLER SEES IT (Aug 25 2026)
+I picked Mabosstiff from its **flavour text** — "loves playing with children,
+protective of its family" — and wrote a caption about loyalty.
+
+Tyler looked at the **artwork**: a dog staring up at a picnic table covered in
+sandwiches. He posted **"Time to get that bread"**, which means both the bread on
+the table and go earn. Five words.
+
+**THE GAP IS STRUCTURAL. I can read what is PRINTED on a card. I cannot see what
+is DRAWN on it.** Every caption I write is downstream of text — attack names,
+flavour text, type, price. His came from the picture, which is what people
+actually react to.
+
+WHAT THIS CHANGES IN PRACTICE: my job is to find the card and hand over what is
+printed on it. **The caption belongs to whoever can see the art.** Offering a
+finished line is offering something written blind, and when it lands it is luck.
+
+AND THE LENGTH, AGAIN: mine was 31 words with a quoted paragraph. His was five.
+**The image is the post; the words are a caption, and a caption that explains
+the picture is competing with it.**
+
+HIS FORMAT, worth keeping: `GM 🌻` — blank line — one short line.
