@@ -1076,6 +1076,49 @@ function didYouMean(q){
 // ── THE HAYSTACK ──────────────────────────────────────────────────────────
 // Every fact about a card that a person might type, in one lowercase string.
 // Built once per card, on demand, and cached on the row.
+// ── ONE NORMALISER, BOTH SIDES ─────────────────────────────────────────────
+// The haystack was lowercased and nothing more, so a query had to reproduce
+// punctuation the card carries but a keyboard does not offer:
+//
+//   "Farfetch'd" -> 19 hits      "Farfetchd" -> 0
+//   "Pokemon"    -> 0            "Pokemon" with the accent -> 238
+//   "Flabebe"    -> 0            with both accents -> 12
+//
+// The tolerant-looking cases were tolerant BY ACCIDENT. "Mr Mime" worked only
+// because splitting produced two short tokens that each substring-match inside
+// "mr. mime"; "Pokemon" is one token and had to appear as a contiguous run
+// inside "pokemon" spelled with an accent, which it never does. So the tool
+// rewarded typing the hard spelling and returned zero for the easy one - the
+// same failure mode as the substring bug this file already documents, one layer
+// down. Nobody reaches for the accent key to look up a card.
+//
+// Both sides now pass through fold(): decompose, drop the combining marks, drop
+// apostrophes entirely. "pokemon" and the accented spelling collapse to the same
+// string, as do "farfetchd" and "farfetch'd".
+//
+// NO BACKSLASHES IN HERE, DELIBERATELY - this is emitted from inside a template
+// literal and an escape written here is eaten before it reaches the browser. The
+// combining-mark range is built with String.fromCharCode for exactly that
+// reason. That is the house law, and it is why this reads oddly.
+// -- SPLIT ON WHITESPACE, WITHOUT WRITING AN ESCAPE -------------------------
+// Built from character codes: space, tab, newline, carriage return. This exists
+// because /\s+/ written inside the generator template literal is eaten before
+// it reaches the browser and ships as /s+/ - a split on the LETTER "s". That has
+// now happened THREE times in this file, and both earlier fixes worked by
+// remembering to double the backslash, which is a fix that depends on
+// remembering. This constant cannot be written wrongly, and escape-audit.mjs
+// fails the build if the eaten form reaches the artifact again.
+var WS = new RegExp("[" + String.fromCharCode(32) + String.fromCharCode(9) +
+                    String.fromCharCode(10) + String.fromCharCode(13) + "]+");
+
+var COMBINING = new RegExp("[" + String.fromCharCode(768) + "-" + String.fromCharCode(879) + "]", "g");
+var RSQUO = String.fromCharCode(8217);
+function fold(s){
+  s = String(s == null ? "" : s).toLowerCase();
+  if (s.normalize) s = s.normalize("NFD").replace(COMBINING, "");
+  return s.split("'").join("").split(RSQUO).join("");
+}
+
 function hay(c){
   if (c._h) return c._h;
   var parts = [c.n, c.a || "", c.s, c.y, c.r || ""];
@@ -1083,7 +1126,7 @@ function hay(c){
   if (c.S) parts = parts.concat(c.S);
   if (c.W) parts.push(c.W);
   if (c.E) parts.push(c.E);
-  c._h = parts.join(" ").toLowerCase();
+  c._h = fold(parts.join(" "));
   return c._h;
 }
 
@@ -1114,7 +1157,10 @@ function termsOf(q){
   //
   // A negated character class needs no escape and is better anyway: it splits on
   // punctuation too, so "magmar, kimura" behaves like "magmar kimura".
-  return String(q || "").toLowerCase().split(/[^a-z0-9']+/).filter(function(t){ return t.length > 0; });
+  // fold() has already removed apostrophes, so the class no longer needs to
+  // keep one. Splitting on everything that is not a letter or a digit also
+  // handles the gender symbols in the Nidoran names and the colon in Type: Null.
+  return fold(q).split(/[^a-z0-9]+/).filter(function(t){ return t.length > 0; });
 }
 function hits(c, terms){
   var h = hay(c);
@@ -2707,7 +2753,7 @@ function renderSuggest(q){
   if (!box) return;
   // Only suggest on the LAST word — "charizard evo" should still suggest for
   // "evo" being typed, not re-suggest Charizard.
-  const word = String(q).split(/\s+/).pop();
+  const word = String(q).split(WS).pop();
   const names = suggestNames(word);
   if (!names.length) { box.innerHTML = ""; box.hidden = true; return; }
   box.hidden = false;
@@ -2715,7 +2761,7 @@ function renderSuggest(q){
   box.querySelectorAll(".sg").forEach(function(b){
     b.onclick = function(){
       const ask = el("ask");
-      const parts = String(ask.value).split(/\s+/);
+      const parts = String(ask.value).split(WS);
       parts[parts.length - 1] = b.textContent;
       ask.value = parts.join(" ");
       box.innerHTML = ""; box.hidden = true;
@@ -3367,11 +3413,15 @@ async function composeImage(){
     probe.font = "800 52px system-ui,sans-serif";
     const maxW = L.W - 160;
     let lines = 1, cur = "";
-    for (const w of LABEL.split(/\s+/)) {
+    for (const w of LABEL.split(WS)) {
       const t = cur ? cur + " " + w : w;
       if (probe.measureText(t).width > maxW && cur) { lines++; cur = w; } else cur = t;
     }
-    return lines;
+    // THE RENDERER DRAWS AT MOST THREE LINES and ellipsises the rest. Reserving
+    // for the untruncated count adds hundreds of blank pixels under a long
+    // caption - the comment above already said "cap at the three lines the
+    // renderer will draw", and the code never did it.
+    return Math.min(3, lines);
   })() : 0;
   const LABH = LABEL ? 110 + (LABLINES - 1) * 62 : 0;
   const ROWS = Math.ceil(tray.length / L.cols);
@@ -3453,7 +3503,7 @@ async function composeImage(){
       // written here as one backslash arrived in the browser as /s+/ and split
       // the label on the LETTER s. Every s vanished: "absolutely" rendered as
       // "ab olutely". Same root cause as the quote bug above, one line later.
-      var maxW = W - 160, words = LABEL.split(/\\s+/), lines = [], cur = "";
+      var maxW = W - 160, words = LABEL.split(WS), lines = [], cur = "";
       for (var wi = 0; wi < words.length; wi++){
         var trial = cur ? cur + " " + words[wi] : words[wi];
         if (g.measureText(trial).width > maxW && cur){ lines.push(cur); cur = words[wi]; }

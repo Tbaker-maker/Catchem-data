@@ -61,9 +61,20 @@ function lift(names) {
     const j = html.indexOf("\n}", i);
     return html.slice(i, j + 2);
   }).join("\n");
-  return new Function(src + "; return {" + names.map(n => n + ":" + n).join(",") + "};")();
+  // THE FUNCTIONS DEPEND ON MODULE-LEVEL CONSTANTS, so those have to come too.
+  // fold() reads COMBINING and RSQUO; the whitespace splitter is WS. Lifting the
+  // function bodies alone gave "ReferenceError: fold is not defined" - which is
+  // the gauntlet working correctly: it reads the SHIPPED page, so it breaks
+  // honestly the moment the shipped page changes shape.
+  const vars = ["COMBINING", "RSQUO", "WS"].map((v) => {
+    const i = html.indexOf("var " + v + " = ");
+    if (i < 0) return "";
+    const j = html.indexOf(";", i);
+    return html.slice(i, j + 1);
+  }).filter(Boolean).join("\n");
+  return new Function(vars + "\n" + src + "; return {" + names.map(n => n + ":" + n).join(",") + "};")();
 }
-const { termsOf, hits } = lift(["hay", "termsOf", "hits"]);
+const { termsOf, hits } = lift(["fold", "hay", "termsOf", "hits"]);
 const find = (q) => { const t = termsOf(q); return INDEX.filter(c => hits(c, t)); };
 
 const { cards } = await loadCards();

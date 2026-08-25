@@ -39,6 +39,8 @@ const FLEET = [
     does: "Mines the catalogue for post ideas nobody asked for — one-offs, long silences, specialists, the year a Pokémon owned." },
   { id: "secret-scan", script: "secret-scan.mjs", blocking: true,
     does: "Scans every TRACKED file for the actual values in .env, rather than guessing what a secret looks like. BLOCKING because a published credential cannot be unpublished - there is no correction page for it. security-agent matches credential SHAPES and reported clean for months while a Formspree endpoint with no distinctive shape sat in ten files." },
+  { id: "escape-audit", script: "escape-audit.mjs", blocking: true,
+    does: "Reads the generated HTML for escapes the template literal ate before the browser saw them - a regex written /\s+/ ships as /s+/ and splits on the letter s. BLOCKING because node --check on the GENERATOR proves nothing about the STRING it prints: this shipped three times, twice with an exit code of 0, and the last one silently deleted every s from text the user had typed." },
   { id: "search-gauntlet", script: "search-gauntlet.mjs", blocking: true,
     does: "Runs real queries against the shipped 16,468-card index and re-derives every relation from the cards it names. BLOCKING because a relation that claims a connection the data does not support becomes a factual claim in a public post - a wrong illustrator credit is the one error this account cannot afford." },
   { id: "artifact-drift", script: "artifact-drift.mjs", blocking: false,
