@@ -1849,11 +1849,254 @@ function intentCtx(){
     examples: EXAMPLES,
   };
 }
+
+// ── ASK: PLAIN LANGUAGE TO A RELATION ──────────────────────────────────────
+// The box says "What do you want to post?" and until now it resolved to
+// FILTERS - a Pokemon, a set, a rating. Filters cannot express the shapes that
+// actually work, which are all relationships: the same creature across years,
+// one illustrator returning, a whole evolution line. So a person could ask for
+// the thing the tool is best at and get a flat list back.
+//
+// DETERMINISTIC, AND EXPLAINABLE ON PURPOSE. No model, no scoring, no ranking
+// that cannot be read back. Every resolution states WHICH relation it chose and
+// WHY, so a wrong interpretation is visible in one line instead of looking like
+// the tool simply not working. That is the whole difference between "it is
+// broken" and "it heard me wrong".
+//
+// NOT ONE BACKSLASH IN THIS BLOCK. Every pattern is a plain indexOf on a
+// lowercased string. Regex escapes written here are emitted through a template
+// literal and eaten before they reach the browser, which is how the tokeniser
+// shipped as split on the letter "s". Phrase matching needs no escapes, so it
+// gets none.
+var ASK_NAMES = null, ASK_ARTISTS = null;
+function askVocab(){
+  if (ASK_NAMES) return;
+  ASK_NAMES = {}; ASK_ARTISTS = {};
+  for (var i = 0; i < INDEX.length; i++) {
+    var c = INDEX[i];
+    ASK_NAMES[String(c.n).toLowerCase()] = c.n;
+    if (c.a) ASK_ARTISTS[String(c.a).toLowerCase()] = c.a;
+  }
+}
+
+// WHOLE TOKENS, NEVER A SUBSTRING OF A NAME. There is a card called "N" - the
+// Team Plasma character - so a raw indexOf found a Pokemon named N inside the
+// word "everything", and "everything kimura drew" resolved as a revisit of N.
+// This is the /tin/i class that once matched Dratini and Mantine across 174
+// singles, arriving in a new place. The text is pre-padded and space-normalised
+// so a token test is just an indexOf on " token ".
+// Longest match still wins, so "mr mime" is not resolved as "mime".
+function askFind(text, table){
+  var best = null;
+  for (var k in table) {
+    // "magmars over the years" is how a person says it. A whole-token test
+    // alone rejected the plural, which is worse than the substring bug it
+    // replaced because it fails on the phrasing people actually use.
+    if (text.indexOf(" " + k + " ") < 0 && text.indexOf(" " + k + "s ") < 0) continue;
+    if (!best || k.length > best.length) best = k;
+  }
+  return best ? table[best] : null;
+}
+// An artist can also be named by surname alone - "everything kimura drew".
+// A SURNAME THAT IS ALSO A POKEMON IS NOT A SURNAME HERE. One credit reads
+// "2017 Pikachu Project", so matching on its parts made "pikachu through the
+// years" resolve as that studio's body of work rather than the creature's. When
+// a token names a Pokemon, the Pokemon wins - it is what the person typed.
+function askArtistLoose(text, monName){
+  var hit = askFind(text, ASK_ARTISTS);
+  if (hit) return hit;
+  var best = null;
+  for (var k in ASK_ARTISTS) {
+    var parts = k.split(" ");
+    for (var j = 0; j < parts.length; j++) {
+      var p = parts[j];
+      if (p.length < 4) continue;
+      if (ASK_NAMES[p]) continue;                                  // it is a Pokemon
+      if (monName && p === String(monName).toLowerCase()) continue;
+      if (text.indexOf(" " + p + " ") < 0) continue;
+      if (!best || ASK_ARTISTS[k].length > best.length) best = ASK_ARTISTS[k];
+    }
+  }
+  return best;
+}
+
+function askResolve(text){
+  askVocab();
+  var t = " " + String(text || "").toLowerCase().replace(/[^a-z0-9]+/g, " ") + " ";
+  var has = function(list){ for (var i = 0; i < list.length; i++) if (t.indexOf(" " + list[i] + " ") >= 0 || t.indexOf(list[i]) >= 0) return true; return false; };
+  var mon = askFind(t, ASK_NAMES);
+  var artist = askArtistLoose(t, mon);
+  var TYPES = ["fire", "water", "grass", "lightning", "psychic", "fighting",
+    "darkness", "metal", "dragon", "fairy", "colorless"];
+  var type = null;
+  for (var ti = 0; ti < TYPES.length; ti++) if (t.indexOf(" " + TYPES[ti] + " ") >= 0) type = TYPES[ti];
+  var setHit = null;
+  for (var si = 0; si < INDEX.length; si++) {
+    var sn = String(INDEX[si].s).toLowerCase();
+    if (t.indexOf(" " + sn + " ") >= 0 && (!setHit || sn.length > setHit.length)) setHit = sn;
+  }
+  var setName = null;
+  if (setHit) for (var sj = 0; sj < INDEX.length; sj++) if (String(INDEX[sj].s).toLowerCase() === setHit) { setName = INDEX[sj].s; break; }
+
+  // ORDER IS THE POLICY. The most specific shape is tested first, so
+  // "everything kimura drew for magmar" resolves as a revisit rather than as
+  // that artist's whole catalogue.
+  if (has(["came back", "come back", "returned", "revisit", "went back", "again years"])) {
+    return { relation: "ARTIST_REVISITS", subject: artist || null,
+      why: artist
+        ? "you named " + artist + ", and asked about coming back to a subject"
+        : "you asked about illustrators returning to a subject, and named no one in particular" };
+  }
+  // A BODY-OF-WORK ASK BEATS A REVISIT ASK. "everything kimura drew" names one
+  // illustrator and wants all of it; testing the revisit rule first turned that
+  // into a two-card pairing, which is not what was asked for.
+  if (artist && has(["everything", "every card", "all of", "all the", "drew", "drawn", "illustrated", "body of work"])) {
+    return { relation: "SAME_ARTIST", subject: artist,
+      why: "you asked for a body of work and named " + artist };
+  }
+  if (setName && type) {
+    return { relation: "SAME_SET_AND_TYPE", subject: setName, type: type,
+      why: "you named a set (" + setName + ") and a type (" + type + ")" };
+  }
+  if (mon && artist) {
+    return { relation: "ARTIST_REVISITS", subject: mon, artist: artist,
+      why: "you named both an illustrator (" + artist + ") and a Pokemon (" + mon + ")" };
+  }
+  if (has(["line", "evolution", "evolves", "evolve", "family"]) && mon) {
+    return { relation: "EVOLUTION_LINE", subject: mon,
+      why: "you said line or evolution, and named " + mon };
+  }
+  if (mon && has(["over the years", "through the years", "across time", "through time", "history", "years", "era", "eras", "old and new", "then and now"])) {
+    return { relation: "SAME_POKEMON_ACROSS_TIME", subject: mon,
+      why: "you named " + mon + " and asked about time" };
+  }
+  if (artist) return { relation: "SAME_ARTIST", subject: artist, why: "you named " + artist + " and nothing narrower" };
+  if (mon) return { relation: "SAME_POKEMON_ACROSS_TIME", subject: mon, why: "you named " + mon + " and nothing narrower" };
+  return null;
+}
+
+// Turn a resolution into cards, plus the one-line REASON that a human edits
+// into a caption. The reason is a statement of fact and never a caption.
+function askCards(r){
+  var out = [], reason = "";
+  var byYear = function(a, b){ return String(a.y).localeCompare(String(b.y)); };
+  if (r.relation === "SAME_POKEMON_ACROSS_TIME") {
+    out = INDEX.filter(function(c){ return c.n === r.subject; }).sort(byYear);
+    if (out.length > 1) reason = r.subject + " has " + out.length + " cards, " + out[0].y + " to " + out[out.length - 1].y + ".";
+  } else if (r.relation === "SAME_ARTIST") {
+    out = INDEX.filter(function(c){ return c.a === r.subject; }).sort(byYear);
+    if (out.length > 1) reason = r.subject + " has " + out.length + " cards, " + out[0].y + " to " + out[out.length - 1].y + ".";
+  } else if (r.relation === "ARTIST_REVISITS") {
+    if (r.artist && r.subject) {
+      out = INDEX.filter(function(c){ return c.a === r.artist && c.n === r.subject; }).sort(byYear);
+    } else if (r.subject) {
+      out = INDEX.filter(function(c){ return c.a === r.subject; }).sort(byYear);
+    }
+    // widest gap available for that artist, across any one Pokemon
+    if (r.subject && !r.artist) {
+      var groups = {};
+      for (var i = 0; i < out.length; i++) { var g = out[i].n; (groups[g] = groups[g] || []).push(out[i]); }
+      var bestG = null, bestGap = -1;
+      for (var k in groups) {
+        var g2 = groups[k].sort(byYear);
+        if (g2.length < 2) continue;
+        var gap = Number(g2[g2.length - 1].y) - Number(g2[0].y);
+        if (gap > bestGap) { bestGap = gap; bestG = g2; }
+      }
+      if (bestG) out = [bestG[0], bestG[bestG.length - 1]];
+    }
+    if (out.length > 1) {
+      var gap2 = Number(out[out.length - 1].y) - Number(out[0].y);
+      out = [out[0], out[out.length - 1]];
+      reason = out[0].a + " illustrated both, " + gap2 + " years apart.";
+    }
+  } else if (r.relation === "SAME_SET_AND_TYPE") {
+    out = INDEX.filter(function(c){
+      return c.s === r.subject && c.T && c.T.some(function(x){ return String(x).toLowerCase() === r.type; });
+    }).sort(function(a, b){ return (b.p || 0) - (a.p || 0); });
+    if (out.length > 1) reason = out.length + " " + r.type + "-type cards in " + r.subject + ".";
+  } else if (r.relation === "EVOLUTION_LINE") {
+    // BOTH DIRECTIONS. evoLineFor only walks FORWARD, so asking for the
+    // "charizard line" found no children of Charizard, produced a one-card
+    // line, bailed out, and left the previous prompt's cards sitting in the
+    // tray - the panel then claimed Charmander/Charmeleon/Charizard while
+    // showing Magikarp and Squirtle. Caught by ask-smoke, which checks that a
+    // prompt SHOWS what it SAID rather than merely returning something.
+    //
+    // A person naming any member of a family means the family. Walk back to the
+    // root first, then forward from there.
+    var root = monName(r.subject);
+    for (var guard = 0; guard < 4; guard++) {
+      var parent = null;
+      for (var id0 in ATTRS) {
+        var a0 = ATTRS[id0];
+        if (!a0 || !a0.ev) continue;
+        var row0 = byIdRow[id0];
+        if (!row0) continue;
+        if (monName(row0.n !== undefined ? row0.n : row0[1]) === root) { parent = monName(a0.ev); break; }
+      }
+      if (!parent || parent === root) break;
+      root = parent;
+    }
+    var line = evoLineFor(root);
+    for (var j = 0; j < line.length; j++) {
+      var pick = INDEX.filter(function(c){ return monName(c.n) === line[j]; })
+        .sort(function(a, b){ return (b.p || 0) - (a.p || 0); })[0];
+      if (pick) out.push(pick);
+    }
+    if (out.length > 1) reason = out.map(function(c){ return c.n; }).join(" evolves into ") + ".";
+  }
+  return { cards: out, reason: reason };
+}
+
 function runAsk(text){
+  // THE RELATION LAYER FILLS GAPS, IT DOES NOT OVERRIDE A WORKING ANSWER.
+  //
+  // It ran FIRST at first, on the reasoning that a relationship is what the
+  // person wanted. That regressed two prompts ask-smoke already covered:
+  // "charizard evolution from 151" was answered by the older parser correctly
+  // and by the relation layer wrongly. The older parser is tested; this layer
+  // is new. New capability may not cost tested behaviour, so relations are
+  // tried only where the existing path produces nothing.
+  const askRel = askResolve(text);
+  const tryRelation = function(){
+    if (!askRel) return false;
+    const got = askCards(askRel);
+    const box0 = el("askreply");
+    if (got.cards.length > 1) {
+      // SAY WHICH RELATION AND WHY, ALWAYS. A wrong reading has to be visible.
+      if (box0) {
+        box0.textContent = askRel.relation.replace(/_/g, " ").toLowerCase() +
+          " — " + askRel.why + ". " + got.reason;
+        box0.className = "askreply";
+      }
+      // THE SAME THREE CALLS THE TESTED PATH MAKES. This set the tray variable and then
+      // called renderTray(), which does not exist - the guard around it was
+      // silently false, so the variable changed and the DOM did not. The panel
+      // then described a Charizard line while the tray still held the previous
+      // prompt's cards: a wrong answer that reads as a right one, which is
+      // exactly what ask-smoke exists to catch. It caught it.
+      tray = got.cards.slice(0, 9); blob = null;
+      render(); resetPage(); search();
+      return true;
+    }
+    // COULD NOT FINISH THE JOB - SAY SO AND SHOW THE NEAREST THING. A silent
+    // zero is the failure being fixed; reproducing it in a new place would be
+    // the same bug wearing the relation layer's clothes.
+    if (box0) {
+      box0.textContent = "I read that as " + askRel.relation.replace(/_/g, " ").toLowerCase() +
+        " (" + askRel.why + ") but there are not enough cards for it. Showing the closest match instead.";
+      box0.className = "askreply bad";
+    }
+    if (askRel.subject) { el("q").value = askRel.subject; resetPage(); search(); return true; }
+    return false;
+  };
   const ctx = intentCtx();
   const found = parseIntent(text, ctx);
   const reply = intentReply(found, ctx);
   const box = el("askreply");
+  // The old parser could not read it. A relationship still might.
+  if (!reply.ok && tryRelation()) return;
   if (box) { box.textContent = reply.say; box.className = "askreply" + (reply.ok ? "" : " bad"); }
   if (!reply.ok) return;
   // THE PROMPT RESOLVES ITS OWN CARDS. The old path set filters and then handed
@@ -1895,6 +2138,10 @@ function runAsk(text){
     },
   });
 
+  // It read the sentence but the filters found nothing. Before reporting an
+  // empty result - the failure this whole job is about - see whether the ask
+  // describes a relationship instead.
+  if (!res.cards.length && tryRelation()) return;
   if (res.cards.length) {
     tray = res.cards; blob = null;
     // SAY WHICH CONSTRAINTS WERE APPLIED. When the answer looks wrong, the user
