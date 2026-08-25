@@ -1718,13 +1718,21 @@ function imgFallback(node, id){
   if (node.dataset.tried) {
     imgFails++;
     node.style.display = "none";
-    const hit = node.parentElement;
-    if (hit) hit.style.opacity = "0.45";
-    const box = el("imgstatus");
-    if (box) {
-      box.hidden = false;
-      box.textContent = imgFails + " card image" + (imgFails > 1 ? "s" : "") + " failed to load. The art is hosted by pokemontcg.io — if every one failed, that host is unreachable from this browser or connection.";
+    // SAY IT WHERE THEY ARE LOOKING. This used to write only into #imgstatus,
+    // which sits up by the browse grid — somebody looking at the tray halfway
+    // down the page saw NOTHING, which is exactly what happened.
+    const msg = imgFails + " card image" + (imgFails > 1 ? "s" : "") + " could not load. "
+      + "The art is hosted by pokemontcg.io. If none of them load, that host is blocked or unreachable "
+      + "from this browser — an in-app browser inside another app is the usual cause. Opening the file in "
+      + "Safari or Chrome directly normally fixes it.";
+    for (const where of ["imgstatus", "st", "askreply"]) {
+      const box = el(where);
+      if (box) { box.hidden = false; box.textContent = msg; box.className = (box.className || "").replace(/ bad$/, "") + " bad"; }
     }
+    // And mark the slot itself, so the failure is visible AT the empty card
+    // rather than only in a status line.
+    const slot = node.parentElement;
+    if (slot) { slot.style.opacity = "0.5"; slot.setAttribute("title", "image failed to load"); }
     return;
   }
   node.dataset.tried = "1";
@@ -1989,7 +1997,7 @@ function render(){
   const slots = L ? L.cols * Math.ceil(tray.length / L.cols) : Math.max(tray.length, 3);
   box.style.gridTemplateColumns = \`repeat(\${cols}, minmax(0, \${cols > 3 ? 120 : 148}px))\`;
   let html = tray.map((c, k) =>
-    \`<div class="pocket filled"><img src="\${imgUrl(c.i)}" alt="\${c.n}" loading=\"lazy\" onerror=\"this.onerror=null;this.src=this.src.replace(&#39;_hires&#39;,&#39;&#39;)\"><button class="x" onclick="remove(\${k})" aria-label="Remove \${c.n}">×</button><button class="own \${owned[c.i] ? 'yes' : ''}" onclick="toggleOwn('\${c.i}')">\${owned[c.i] ? 'OWNED' : 'want'}</button></div>\`).join("");
+    \`<div class="pocket filled"><img src="\${imgSmall(c.i)}" alt="\${c.n}" loading=\"lazy\" onerror=\"imgFallback(this,&#39;\${c.i}&#39;)\"><button class="x" onclick="remove(\${k})" aria-label="Remove \${c.n}">×</button><button class="own \${owned[c.i] ? 'yes' : ''}" onclick="toggleOwn('\${c.i}')">\${owned[c.i] ? 'OWNED' : 'want'}</button></div>\`).join("");
   for (let i = tray.length; i < slots; i++) html += '<div class="pocket"></div>';
   box.innerHTML = html || '<div class="pocket"></div><div class="pocket"></div><div class="pocket"></div>';
   const allowed = checkIntent();
