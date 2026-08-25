@@ -67,6 +67,9 @@ h1 em{font-style:normal;color:var(--live)}
 #ask{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:14px;
   color:var(--text);padding:18px 20px;font:400 17px var(--body)}
 #ask:focus{outline:none;border-color:var(--live)}
+.suggest{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.sg{background:var(--panel);border:1px solid var(--live);color:var(--live);border-radius:8px;
+  padding:7px 13px;font:500 13.5px var(--body);cursor:pointer}
 .egs{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
 .eg{background:transparent;border:1px solid var(--line);color:var(--soft);border-radius:20px;
   padding:8px 15px;font:400 13.5px var(--body);cursor:pointer}
@@ -258,6 +261,7 @@ summary:before{content:"→ ";color:var(--faint)}
 <div id="boot" style="background:#1a1410;border:1px solid #4a3a20;border-radius:10px;padding:14px 16px;margin-bottom:16px;color:#d9a441;font:400 13.5px system-ui,sans-serif;line-height:1.6">Starting…</div>
 <div class="promptbar">
   <input id="ask" placeholder="What do you want to post?" autocomplete="off">
+  <div class="suggest" id="suggest" hidden></div>
   <div class="egs" id="egs"></div>
   <div class="askreply" id="askreply"></div>
 </div>
@@ -400,7 +404,10 @@ const CARD_ROWS = ${await (async () => {
     return [c.i, c.n, c.s, c.y, c.a ?? 0, c.r ?? 0, c.p ?? 0,
       A.t ?? 0, A.dex ?? 0, A.ev ?? 0, A.hp ?? 0, st.length ? st : 0,
       Object.keys(B.ratings ?? {}).length ? B.ratings : 0,
-      lore[c.i] ?? 0, T.a?.length ? T.a.slice(0, 2) : 0];
+      lore[c.i] ?? 0, T.a?.length ? T.a.slice(0, 2) : 0,
+      // WEAKNESS. Captured weeks ago and never shipped, so every matchup lookup
+      // read undefined. It is one short string per card.
+      A.w ?? 0];
   });
   return JSON.stringify(rows);
 })()};
@@ -418,6 +425,7 @@ const CARD_INDEX = CARD_ROWS.map(function(r){
   if (r[12]) o.R = r[12];
   if (r[13]) o.L = r[13];
   if (r[14]) o.A = r[14];
+  if (r[15]) o.W = r[15];
   return o;
 });
 // Sourced facts, so the 'story' shape has something true to build on. Only
@@ -450,6 +458,10 @@ const MECH_SUFFIX = new RegExp(String.fromCharCode(92) + "s+(" + "ex|EX|GX|V|VMA
 function monName(full){
   let n = String(full || "");
   for (let i = 0; i < 2; i++) n = n.replace(FORM_PREFIX, "");
+  // HYPHENATED MECHANICS TOO. "Charizard-GX" is the same creature as Charizard,
+  // and MECH_SUFFIX only strips a SPACE-separated suffix — so autocomplete
+  // offered the same Pokémon four times and wasted every slot.
+  n = n.replace(new RegExp("-(EX|GX|ex|V|VMAX|VSTAR)$"), "");
   n = n.replace(MECH_SUFFIX, "").trim();
   return n.split(" ")[0] || String(full);
 }
@@ -625,7 +637,7 @@ function typicalViewsFrom(posts){
   return v[Math.floor(v.length / 2)];
 }
 const byIdRow = {};
-const ATTRS = new Proxy({}, { get: (_, k) => { const r = byIdRow[k]; return r ? { t: r.T, dex: r.D, d: r.D, e: r.E, ev: r.E, h: r.H, hp: r.H, s: r.S, st: r.S } : undefined; } });
+const ATTRS = new Proxy({}, { get: (_, k) => { const r = byIdRow[k]; return r ? { t: r.T, dex: r.D, d: r.D, e: r.E, ev: r.E, h: r.H, hp: r.H, s: r.S, st: r.S, w: r.W } : undefined; } });
 const BIOS = new Proxy({}, { get: (_, k) => byIdRow[k]?.R });
 const LORE = new Proxy({}, { get: (_, k) => byIdRow[k]?.L });
 let INDEX = [], tray = [], blob = null;
@@ -1637,7 +1649,10 @@ function runAsk(text){
     eg.querySelectorAll(".eg").forEach(function(b){ b.onclick = function(){ el("ask").value = b.textContent; runAsk(b.textContent); }; });
   }
   const ask = el("ask");
-  if (ask) ask.addEventListener("keydown", function(e){ if (e.key === "Enter") runAsk(ask.value); });
+  if (ask) {
+    ask.addEventListener("keydown", function(e){ if (e.key === "Enter") { el("suggest").hidden = true; runAsk(ask.value); } });
+    ask.addEventListener("input", function(){ renderSuggest(ask.value); });
+  }
 }
 window.runAsk = runAsk;
 
@@ -1733,6 +1748,66 @@ function confirmPosted(){
   renderStreak();
 }
 window.confirmPosted = confirmPosted;
+
+// AUTOCOMPLETE. Chandelure, Volcarona, Gholdengo, Poltchageist — an exact-match
+// box punishes a typo with an empty screen, which reads as broken rather than
+// misspelled. Three passes in order of confidence: prefix, contains, then edit
+// distance so "chandalure" still finds Chandelure.
+let SUGGEST_NAMES = null;
+function suggestNames(q){
+  if (!q || q.length < 2) return [];
+  if (!SUGGEST_NAMES) {
+    const counts = {};
+    for (const c of INDEX) { const m = monName(c.n); if (m) counts[m] = (counts[m] || 0) + 1; }
+    // Ranked by how many cards exist, so the Pokémon somebody is likelier to
+    // mean comes first.
+    SUGGEST_NAMES = Object.keys(counts).sort(function(a, b){ return counts[b] - counts[a]; });
+  }
+  const lq = q.toLowerCase();
+  const pre = [], mid = [];
+  for (const n of SUGGEST_NAMES) {
+    const ln = n.toLowerCase();
+    if (ln.indexOf(lq) === 0) pre.push(n);
+    else if (ln.indexOf(lq) > 0) mid.push(n);
+    if (pre.length >= 6) break;
+  }
+  let out = pre.concat(mid).slice(0, 6);
+  // ONLY IF NOTHING MATCHED. Edit distance is expensive and imprecise, so it is
+  // the last resort rather than the first.
+  if (!out.length && lq.length >= 4) {
+    const scored = [];
+    for (const n of SUGGEST_NAMES) {
+      const d = editDistance(lq, n.toLowerCase());
+      // A LONGER WORD TOLERATES A BIGGER GAP. "chandal" to "chandelure" is three
+      // edits and unmistakably the same word; the old third-of-length rule
+      // rejected it at seven characters.
+      if (d <= Math.max(2, Math.ceil(lq.length / 2))) scored.push([d, n]);
+    }
+    out = scored.sort(function(a, b){ return a[0] - b[0]; }).slice(0, 4).map(function(x){ return x[1]; });
+  }
+  return out;
+}
+function renderSuggest(q){
+  const box = el("suggest");
+  if (!box) return;
+  // Only suggest on the LAST word — "charizard evo" should still suggest for
+  // "evo" being typed, not re-suggest Charizard.
+  const word = String(q).split(/\s+/).pop();
+  const names = suggestNames(word);
+  if (!names.length) { box.innerHTML = ""; box.hidden = true; return; }
+  box.hidden = false;
+  box.innerHTML = names.map(function(n){ return "<button class='sg'>" + n + "</button>"; }).join("");
+  box.querySelectorAll(".sg").forEach(function(b){
+    b.onclick = function(){
+      const ask = el("ask");
+      const parts = String(ask.value).split(/\s+/);
+      parts[parts.length - 1] = b.textContent;
+      ask.value = parts.join(" ");
+      box.innerHTML = ""; box.hidden = true;
+      runAsk(ask.value);
+    };
+  });
+}
 
 function render(){
   const L = LAYOUTS[tray.length];
@@ -1951,6 +2026,73 @@ function buildIdeas(){
       if (span < 8) continue;
       ideas.push({ title: mon + " across " + span + " years", sub: picked.map(c => c.y).join(" → "),
         hook: "Which era got " + mon + " right?", cards: picked });
+      if (ideas.length >= 6) break;
+    }
+  }
+
+  else if (shape === "matchup") {
+    // THE MATCHUP IS PRINTED ON THE CARD. Every Pokémon card prints a WEAKNESS —
+    // a type it takes double damage from — which is a rivalry the game itself
+    // declared, not one we invented. 605 cards have both sides available in the
+    // catalogue, and "Charmander fears Water → Magikarp" is a joke the data told.
+    // A MATCHUP IS ABOUT ITS CARDS, WHATEVER THE RARITY — third time this
+    // lesson has appeared. Weakness is printed on every card, and restricting to
+    // hero rarity threw away most of both sides.
+    const mPool = INDEX.filter(function(c){ return (!fSet || c.s === fSet) && c.a && ATTRS[c.i] && ATTRS[c.i].t; });
+    const byType = {};
+    for (const c of mPool) for (const t of (ATTRS[c.i]?.t || [])) { byType[t] = byType[t] || []; byType[t].push(c); }
+    for (const c of mPool) {
+      const w = ATTRS[c.i]?.w;
+      if (!w || !byType[w]) continue;
+      const enemy = byType[w].filter(function(x){ return monName(x.n) !== monName(c.n); })
+        .sort(function(a, b){ return (b.p || 0) - (a.p || 0); })[0];
+      if (!enemy) continue;
+      ideas.push({ title: monName(c.n) + " fears " + w,
+        sub: monName(c.n) + "  ×2 from  " + monName(enemy.n),
+        hook: "It says so on the card. Would it actually go that way?",
+        cards: [c, enemy].slice(0, need) });
+      if (ideas.length >= 6) break;
+    }
+  }
+
+  else if (shape === "same-attack") {
+    // SAME ATTACK, DIFFERENT CREATURES. Thirty-seven attack names are shared by
+    // three or more unrelated Pokémon — a connection nobody would notice by
+    // browsing, and one only a full catalogue can surface.
+    const byAtk = {};
+    for (const c of pool) for (const at of (CARD_TEXT[c.i]?.a || [])) {
+      if (String(at).length < 7) continue;
+      byAtk[at] = byAtk[at] || []; byAtk[at].push(c);
+    }
+    for (const [name, list] of Object.entries(byAtk)) {
+      const distinct = [];
+      const seen = {};
+      for (const c of list) { const k = monName(c.n); if (!seen[k]) { seen[k] = 1; distinct.push(c); } }
+      if (distinct.length < need) continue;
+      ideas.push({ title: "All called " + String.fromCharCode(8220) + name + String.fromCharCode(8221),
+        sub: distinct.slice(0, need).map(function(c){ return monName(c.n); }).join(" · "),
+        hook: "Same attack, different creatures. Which one earned the name?",
+        cards: distinct.slice(0, need) });
+      if (ideas.length >= 6) break;
+    }
+  }
+
+  else if (shape === "twenty-years") {
+    // TWENTY YEARS APART. 374 Pokémon have cards two decades apart, and the gap
+    // itself is the story — the Arita pairing at 18,800 views was exactly this
+    // shape found by hand.
+    const byMon = {};
+    for (const c of pool) { if (!c.y) continue; const k = monName(c.n); byMon[k] = byMon[k] || []; byMon[k].push(c); }
+    for (const [mon, list] of Object.entries(byMon)) {
+      const sorted = list.slice().sort(function(a, b){ return String(a.y).localeCompare(String(b.y)); });
+      const span = Number(sorted[sorted.length - 1].y) - Number(sorted[0].y);
+      if (span < 20) continue;
+      const picked = need === 2 ? [sorted[0], sorted[sorted.length - 1]]
+        : [sorted[0]].concat(sorted.slice(1, -1).filter(function(_, i){ return i % Math.max(1, Math.floor((sorted.length - 2) / (need - 2))) === 0; }).slice(0, need - 2)).concat([sorted[sorted.length - 1]]);
+      if (picked.length !== need) continue;
+      ideas.push({ title: mon + ", " + span + " years apart",
+        sub: picked.map(function(c){ return c.y; }).join("  →  "),
+        hook: span + " years. Which one is still the best?", cards: picked });
       if (ideas.length >= 6) break;
     }
   }
