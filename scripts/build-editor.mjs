@@ -18,6 +18,7 @@
 // Ships a 1.55MB slim index rather than the 6.1MB catalogue: id, name, artist,
 // set, year, rarity. Everything else is a lookup nobody needs in a browser.
 import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { artistRevisits } from "./card-relations.mjs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -58,6 +59,30 @@ else {
   const pdCount = {};
   for (const c of index) { const d = priceDateOf(c.i); if (d) pdCount[d] = (pdCount[d] ?? 0) + 1; }
   const COMMON_PRICE_DATE = Object.entries(pdCount).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "";
+
+  // ── THE TUTORIAL'S OPENING SENTENCE, DERIVED ─────────────────────────────
+  // It used to be typed, and it was wrong: "the widest gap by one illustrator
+  // in the whole catalogue" over a pair separated by 25 years, while six
+  // illustrators span 27 between their earliest and latest cards. The relation
+  // never measured career span - it measures the longest anyone has gone
+  // between drawing the SAME POKEMON twice, which is the narrower and better
+  // claim. Computing the sentence from the relation means the two cannot
+  // disagree again, and if the catalogue ever yields a wider pair the tutorial
+  // follows it without anybody remembering to.
+  const TUT = await (async () => {
+    const FALLBACK = { cards: ["neo1-40", "sv9-20"],
+      line: "Two cards are already in your tray. Press the button and the two become one picture." };
+    try {
+      const top = (await artistRevisits({ minGap: 18, limit: 1 }))[0];
+      if (!top) return FALLBACK;
+      const e = top.evidence;
+      return { cards: top.cards,
+        line: "Two cards are already in your tray. " + e.artist + " drew this " + e.name +
+              " in " + e.firstYear + ", then drew it again in " + e.latestYear + " — " + e.gap +
+              " years, the longest anyone in this catalogue has gone between drawing the same " +
+              "Pokémon twice. Press the button and the two become one picture." };
+    } catch { return FALLBACK; }
+  })();
 
   await mkdir(join(ROOT, "research/assets"), { recursive: true }).catch(() => {});
   await writeFile(join(ROOT, "research/assets/card-index.json"), JSON.stringify(index));
@@ -2316,12 +2341,20 @@ function askCards(r){
 // action. Four steps, each one thing, and a finished image before anyone has
 // read a paragraph.
 //
-// IT USES A REAL RELATION, NOT A DEMO. neo1-40 and sv9-20 are the Naoyo Kimura
-// Magmar pair: the widest artist revisit in the catalogue at twenty-five years,
-// verified card-by-card against the printed credit line. The tutorial IS the
-// product working. A fake demo would teach the tool and prove nothing.
+// IT USES A REAL RELATION, NOT A DEMO, AND NOW SAYS SO IN THE CATALOGUE'S OWN
+// WORDS. The pair, the years, the gap and the sentence are all computed from
+// artistRevisits() at build time, so the tutorial cannot drift away from the
+// data the way hardcoded copy does.
+//
+// THE OLD SENTENCE WAS FALSE. It read "the widest gap by one illustrator in the
+// whole catalogue", and six illustrators - Arita, Himeno, Aoki, Kizuki,
+// Nishida, Tanaka - span twenty-seven years between their earliest and latest
+// cards, against Kimura's twenty-five. What is actually true is narrower and
+// more interesting: the longest anyone has gone between drawing the SAME
+// POKEMON twice. The relation only ever measured that; the sentence claimed the
+// broader thing, and the broader thing is not ours to claim.
 var TUT_KEY = "catchem-tutorial";
-var TUT_CARDS = ["neo1-40", "sv9-20"];
+var TUT_CARDS = ${JSON.stringify(TUT.cards)};
 var tutStep = 0;
 
 function tutDone(how){
@@ -2344,7 +2377,7 @@ function tutStart(){
   render();
   tutStep = 1;
   tutShow(
-    "Two cards are already in your tray. Naoyo Kimura drew this Magmar in 2000, then drew it again in 2025 — the widest gap by one illustrator in the whole catalogue. Press the button and the two become one picture.",
+    ${JSON.stringify(TUT.line)},
     "Make the picture");
   el("tutgo").onclick = function(){ composeImage(); };
   el("tutskip").onclick = function(){ tray = []; blob = null; render(); tutDone("skipped"); };
@@ -2960,6 +2993,20 @@ el("fset").onchange = () => { fSet = el("fset").value; renderThemes(); buildIdea
 
 const HERO_RX = /(Special Illustration|Illustration Rare|Rare Holo|Rare Secret|Rare Ultra|Rare Rainbow|Ultra Rare)/i;
 
+// ── A HOOK WITH A HOLE IN IT MUST NEVER REACH THE CAPTION BOX ─────────────
+// Four themes carry a hook template - "Six from {set}. Which page are you
+// filling first?" - and every shape that uses one substitutes its own values,
+// so nothing leaks today: 579 idea cards across 61 themes and five counts,
+// zero placeholders. But three branches still push t.hook VERBATIM, and an
+// idea's hook is written straight into the caption the user posts. The gap
+// between "safe because of how it happens to be routed" and "safe" is one
+// refactor wide, and the failure lands in public.
+function safeHook(t){
+  const h = t && t.hook;
+  if (!h || h.indexOf("{") < 0) return h || "";
+  return "";                  // no hook is better than a hook with a hole in it
+}
+
 function buildIdeas(){
   const box = el("ideas");
   if (!fCount || !fTheme) { box.innerHTML = ""; return; }
@@ -2986,7 +3033,7 @@ function buildIdeas(){
       if (!byMon[m] || (c.p || 0) > (byMon[m].p || 0)) byMon[m] = c;
     }
     const picked = Object.values(byMon).sort((a, b) => (b.p || 0) - (a.p || 0)).slice(0, need);
-    if (picked.length === need) ideas.push({ title: t.name, sub: picked.map(c => c.n).join(" · "), hook: t.hook, cards: picked });
+    if (picked.length === need) ideas.push({ title: t.name, sub: picked.map(c => c.n).join(" · "), hook: safeHook(t), cards: picked });
   }
 
   else if (shape === "many-hands") {
@@ -3254,7 +3301,7 @@ function buildIdeas(){
       if (!byMon[k] || (c.p || 0) > (byMon[k].p || 0)) byMon[k] = c; }
     const picked = Object.values(byMon).sort((a, b) => (b.p || 0) - (a.p || 0)).slice(0, need);
     if (picked.length === need)
-      ideas.push({ title: t.name, sub: picked.map(c => c.n).join(" · "), hook: t.hook, cards: picked });
+      ideas.push({ title: t.name, sub: picked.map(c => c.n).join(" · "), hook: safeHook(t), cards: picked });
   }
 
   else if (shape === "power-creep") {
@@ -3303,7 +3350,7 @@ function buildIdeas(){
       if (!byMon[k] || (c.p || 0) > (byMon[k].p || 0)) byMon[k] = c; }
     const picked = Object.values(byMon).sort((a, b) => (b.p || 0) - (a.p || 0)).slice(0, need);
     if (picked.length === need)
-      ideas.push({ title: t.name, sub: picked.map(c => c.n).join(" · "), hook: t.hook, cards: picked });
+      ideas.push({ title: t.name, sub: picked.map(c => c.n).join(" · "), hook: safeHook(t), cards: picked });
   }
 
   else if (shape === "lore") {
