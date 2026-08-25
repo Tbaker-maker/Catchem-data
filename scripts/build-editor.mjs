@@ -23,6 +23,20 @@ import { dirname, join } from "node:path";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "utf-8")); } catch { return null; } };
 
+// THE FORM ID COMES FROM .env AND NEVER FROM THE REPO. Same treatment as the X
+// keys: read at build time, baked into the artifact, absent from source and
+// from git. This repo is public - a hardcoded endpoint invites spam and names
+// the destination inbox.
+//
+// ABSENT IS A VALID STATE, NOT AN ERROR. Tyler creates the form; until he pastes
+// the id into .env the editor builds fine and the feedback controls say plainly
+// that sending is not wired yet. A build that fails because a form is missing
+// would block every other thing this file makes.
+const { loadEnv: loadEnvForForm } = await import("./lib/load-env.mjs");
+loadEnvForForm();
+const FORM_ID = (process.env.FORMSPREE_FEEDBACK_ID || "").trim();
+const FORM_ENDPOINT = FORM_ID ? "https://formspree.io/f/" + FORM_ID : "";
+
 const cat = await J("data/card-catalogue.json");
 if (!cat) { console.log("· editor: no catalogue"); process.exitCode = 0; }
 else {
@@ -139,6 +153,14 @@ select:focus,input:focus{outline:none;border-color:var(--soft)}
 .streak button{background:transparent;border:1px solid var(--line);color:var(--soft);
   border-radius:9px;padding:9px 14px;font:400 13px var(--body);cursor:pointer}
 .streak button.go{background:var(--live);color:var(--ink);border:0;font-weight:600}
+.broke{background:none;border:1px solid var(--dim);color:var(--dim);border-radius:999px;padding:8px 14px;font-size:13px;cursor:pointer;margin:0 0 14px}
+.broke:hover{color:var(--live);border-color:var(--live)}
+.fb{border:1px solid var(--dim);border-radius:14px;padding:16px;margin:0 0 18px}
+.fbtitle{margin:0 0 10px;font-size:15px;font-weight:600}
+.fb textarea,.fb input{width:100%;box-sizing:border-box;margin:0 0 10px}
+.fb textarea{min-height:90px}
+.fbnote{margin:0 0 12px;font-size:12px;color:var(--dim);line-height:1.4}
+.fbstat{margin:10px 0 0;font-size:13px}
 .tut{border:1px solid var(--live);border-radius:14px;padding:14px 16px;margin:0 0 18px}
 .tutline{margin:0 0 12px;font-size:15px;line-height:1.45}
 .tutacts{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
@@ -345,6 +367,18 @@ summary:before{content:"→ ";color:var(--faint)}
      replacement and never removed what it replaced, so the page shouted about
      streaks to everyone regardless. -->
 <div class="streak" id="streakbar"></div>
+<button class="broke" id="brokebtn">Tell me what's broken</button>
+<div class="fb" id="fb" hidden>
+  <p class="fbtitle" id="fbtitle"></p>
+  <div id="fbqs"></div>
+  <input id="fbname" placeholder="Your name — optional">
+  <p class="fbnote">Leave the name blank to stay anonymous. Blank means we send nothing that identifies you: no id, no fingerprint, nothing derived from your address.</p>
+  <div class="tutacts">
+    <button class="go" id="fbsend">Send</button>
+    <button class="tutskip" id="fbclose">Close</button>
+  </div>
+  <p class="fbstat" id="fbstat"></p>
+</div>
 <div class="tut" id="tut" hidden>
   <p class="tutline" id="tutline"></p>
   <div class="tutacts">
@@ -2131,6 +2165,123 @@ function tutComposed(ok, why){
   };
 }
 
+
+// ── ONE PIPE, TWO KINDS ────────────────────────────────────────────────────
+// The honesty box and the questionnaire are different things and they share a
+// single submission path with a "kind" field, so there is one inbox to read and
+// it sorts. At fifty submissions a month on the free tier there is no room for
+// two forms competing for the same quota anyway.
+//
+// THE ENDPOINT IS BAKED IN AT BUILD TIME FROM .env. If it is absent the controls
+// still render and say plainly that sending is not wired, because a missing form
+// should not remove the button that tells you the tool is broken.
+var FB_ENDPOINT = "${FORM_ENDPOINT}";
+var FB_KIND = null;
+
+// CONTEXT TYLER CANNOT GET BY ASKING. Attached to every submission, and none of
+// it identifies anybody: what they were using, whether the tutorial helped, and
+// whether the last thing they tried actually worked.
+function fbContext(){
+  var lastCompose = "none attempted";
+  try { lastCompose = window.__lastComposeOk === true ? "succeeded"
+      : window.__lastComposeOk === false ? "FAILED" : "none attempted"; } catch (e) {}
+  var layout = "";
+  try { var L = LAYOUTS[tray.length]; layout = L ? (tray.length + " cards, " + L.name) : (tray.length + " cards"); } catch (e) {}
+  var relation = "";
+  try { relation = (typeof lastRelation === "string" && lastRelation) ? lastRelation : "none"; } catch (e) { relation = "none"; }
+  return {
+    layout: layout || "empty tray",
+    relation: relation,
+    tutorial: store.get(TUT_KEY) || "not finished",
+    lastCompose: lastCompose,
+    // NO SCREEN SIZE. It was here as useful context, and screen dimensions are
+    // a fingerprinting signal - weak alone, strong combined with anything else.
+    // The note beside the name field promises we send nothing identifying when
+    // it is blank, and shipping a viewport alongside that promise makes it a lie.
+    // If a layout bug needs a screen size, ask for it in words.
+  };
+}
+
+var FB_QS = {
+  broken: [["what", "What is broken, or annoying, or missing?"]],
+  questionnaire: [
+    ["made", "What did you make?"],
+    ["wanted", "What did you want to make that you could not?"],
+    ["wouldpost", "Would you post something made with this? Why or why not?"],
+    ["else", "Anything else"],
+  ],
+};
+
+function fbOpen(kind){
+  FB_KIND = kind;
+  el("fbtitle").textContent = kind === "broken"
+    ? "Tell me what's broken."
+    : "Four questions, all skippable.";
+  var box = el("fbqs");
+  box.innerHTML = "";
+  FB_QS[kind].forEach(function(q){
+    var lab = document.createElement("p");
+    lab.className = "fbnote";
+    lab.style.margin = "0 0 6px";
+    lab.textContent = q[1];
+    var ta = document.createElement("textarea");
+    ta.id = "fbq_" + q[0];
+    box.appendChild(lab); box.appendChild(ta);
+  });
+  el("fbstat").textContent = FB_ENDPOINT ? "" : "Sending is not wired up yet — no form is configured. Nothing will be sent.";
+  el("fb").hidden = false;
+  el("fbsend").disabled = !FB_ENDPOINT;
+}
+
+async function fbSend(){
+  var name = (el("fbname").value || "").trim();
+  var payload = { kind: FB_KIND, context: fbContext() };
+  var any = false;
+  FB_QS[FB_KIND].forEach(function(q){
+    var v = (el("fbq_" + q[0]).value || "").trim();
+    if (v) { payload[q[0]] = v; any = true; }
+  });
+  if (!any) { el("fbstat").textContent = "Nothing typed yet."; return; }
+  // ANONYMOUS MEANS ANONYMOUS. If the name is blank we attach nothing that could
+  // identify them - no generated id, no fingerprint, nothing derived from an
+  // address. Saying "anonymous" and shipping a tracking id would be a lie told
+  // to the first fifteen people who trusted us.
+  if (name) payload.name = name;
+  el("fbsend").disabled = true;
+  el("fbstat").textContent = "Sending…";
+  try {
+    var r = await fetch(FB_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (r.ok) {
+      el("fbstat").textContent = "Sent. Thank you — that is genuinely useful.";
+      if (FB_KIND === "questionnaire") store.set("catchem-questionnaire", "done");
+      setTimeout(function(){ el("fb").hidden = true; }, 1800);
+    } else {
+      el("fbstat").textContent = "Did not send (HTTP " + r.status + "). Nothing was lost — copy your text somewhere if you want to keep it.";
+      el("fbsend").disabled = false;
+    }
+  } catch (e) {
+    el("fbstat").textContent = "Did not send: " + (e.message || "no connection") + ". Nothing was lost.";
+    el("fbsend").disabled = false;
+  }
+}
+
+// OFFERED ONCE, AFTER SOMETHING WORKED - never on arrival. A questionnaire on
+// the doorstep asks people to describe a thing they have not used yet.
+function fbMaybeAskQuestionnaire(){
+  if (store.get("catchem-questionnaire")) return;
+  if (!el("fb").hidden) return;
+  store.set("catchem-questionnaire", "offered");
+  fbOpen("questionnaire");
+}
+
+safeWire(function(){ el("brokebtn").onclick = function(){ fbOpen("broken"); }; }, "brokebtn");
+safeWire(function(){ el("fbsend").onclick = function(){ fbSend(); }; }, "fbsend");
+safeWire(function(){ el("fbclose").onclick = function(){ el("fb").hidden = true; }; }, "fbclose");
+
 function runAsk(text){
   // THE RELATION LAYER FILLS GAPS, IT DOES NOT OVERRIDE A WORKING ANSWER.
   //
@@ -3233,9 +3384,13 @@ async function composeImage(){
     // a finished image is the worst of both.
     try { showSaveable(cv.toDataURL("image/png")); }
     catch (e) { setStatus("Image is ready. Press and hold it, or use Open in a tab.", false); }
+    try { window.__lastComposeOk = true; } catch (e) {}
     try { tutComposed(true); } catch (e) {}
+    // Offered only after something actually worked, and only once.
+    try { setTimeout(fbMaybeAskQuestionnaire, 2500); } catch (e) {}
   }catch(e){
     setStatus("could not compose: " + (e.message||"unknown"), true);
+    try { window.__lastComposeOk = false; } catch (e2) {}
     try { tutComposed(false, e.message); } catch (e2) {}
   }
 }

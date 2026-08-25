@@ -1,18 +1,18 @@
 {
- "generatedAt": "2026-08-25T02:35:39.194Z",
+ "generatedAt": "2026-08-25T21:32:52.988Z",
  "role": "The one agent that blocks. Everything else here advises, because everything else is recoverable — there is no correction page for a leaked key.",
- "critical": [
+ "critical": [],
+ "warnings": [
   {
-   "what": "Anthropic key found in scripts/_leaktest.mjs",
-   "why": "A credential in the working tree is one commit from being permanent. There is no correction page for a leaked key.",
-   "fix": "Revoke it first, then remove it. Revoking comes first because removal does not un-share what was already shared."
+   "what": "the waitlist Formspree id is public in this repo and in its git history",
+   "why": "It has been in the working tree and in six commits since 2026-08, so that inbox is effectively a public address and the form is open to spam from anyone reading the repo. Editing the files does not undo it.",
+   "fix": "Create a NEW form in Formspree, put its id in .env as the feedback form is, delete the old form, and treat the old address as burned. Only Tyler can do this."
   }
  ],
- "warnings": [],
  "checked": [
   "working tree scanned for six credential shapes",
   "30 days of history scanned",
-  "143 scripts checked for on-disk credential reads",
+  "161 scripts checked for on-disk credential reads",
   ".gitignore covers env files, keys and modules"
  ],
  "blindSpots": [

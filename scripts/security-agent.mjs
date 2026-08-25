@@ -37,6 +37,10 @@ const SECRETS = [
   { name: "GitHub token", rx: /gh[pousr]_[A-Za-z0-9]{30,}/g },
   { name: "generic long token assignment", rx: /(?:api[_-]?key|secret|token|password)\s*[:=]\s*["'][A-Za-z0-9_\-]{28,}["']/gi },
   { name: "AWS key", rx: /AKIA[0-9A-Z]{16}/g },
+  // A FORM ENDPOINT IS A SECRET IN A PUBLIC REPO. Not a credential - it reads
+  // nothing - but hardcoding it invites spam straight into the destination
+  // inbox and names where that inbox is.
+  { name: "Formspree form endpoint", rx: /formspree\.io\/f\/[a-zA-Z0-9]{6,}/g },
   { name: "private key block", rx: /-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----/g },
 ];
 
@@ -59,7 +63,14 @@ const SECRETS = [
       // exempting a whole file is what let /tmp through seven times.
       const src = await readFile(join(ROOT, rel), "utf-8").catch(() => "");
       for (const s of SECRETS) {
-        const hits = (src.match(s.rx) ?? []).filter(h => !/(FAKE)+|EXAMPLE|XXXX+|PLACEHOLDER|REDACTED|DUMMY|TEST{2,}/i.test(h));
+        const hits = (src.match(s.rx) ?? [])
+          .filter(h => !/(FAKE)+|EXAMPLE|XXXX+|PLACEHOLDER|REDACTED|DUMMY|TEST{2,}|abcd1234|abc123/i.test(h))
+          // ALREADY PUBLIC AND NOT FIXABLE BY EDITING FILES. The waitlist form id
+          // has been in this repo and in six commits of its history since August.
+          // Rewriting history would not unpublish it - anyone can already read
+          // it - so the remedy is ROTATION, which only Tyler can do. Reported
+          // once below rather than from each of the eight files that carry it.
+          .filter(h => !/formspree\.io\/f\/xgorlypa/.test(h));
         if (hits.length) C(`${s.name} found in ${rel}`,
           "A credential in the working tree is one commit from being permanent. There is no correction page for a leaked key.",
           "Revoke it first, then remove it. Revoking comes first because removal does not un-share what was already shared.");
@@ -67,6 +78,13 @@ const SECRETS = [
     }
   };
   await scan("scripts"); await scan("data"); await scan("research"); await scan(".github");
+  {
+    const gi = await readFile(join(ROOT, "scripts/build-waitlist.mjs"), "utf-8").catch(() => "");
+    if (/formspree\.io\/f\/xgorlypa/.test(gi))
+      W("the waitlist Formspree id is public in this repo and in its git history",
+        "It has been in the working tree and in six commits since 2026-08, so that inbox is effectively a public address and the form is open to spam from anyone reading the repo. Editing the files does not undo it.",
+        "Create a NEW form in Formspree, put its id in .env as the feedback form is, delete the old form, and treat the old address as burned. Only Tyler can do this.");
+  }
   checked.push("working tree scanned for six credential shapes");
 }
 
