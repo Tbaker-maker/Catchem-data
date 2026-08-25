@@ -37,6 +37,8 @@ const FLEET = [
     does: "Makes every queued post state what is ORIGINAL about it before it can ship. X's Original Content Rewards program excludes reuploads, watermarks and text overlays that merely describe the image — and our best post is third-party card art with an overlay and a watermark. It cannot judge whether the claim is true; it refuses to let there be no claim." },
   { id: "theme-scout", script: "theme-scout.mjs", blocking: false,
     does: "Mines the catalogue for post ideas nobody asked for — one-offs, long silences, specialists, the year a Pokémon owned." },
+  { id: "outcome-report", script: "outcome-report.mjs", blocking: false,
+    does: "Reports what the outcome log can and cannot conclude, leading with what is NOT comparable. ADVISORY BY CONSTRUCTION: it describes the state of the evidence and must never stop a build, because 'we cannot conclude anything yet' is a normal and correct state for a log with five posts in it." },
   { id: "ask-eyes", script: "ask-eyes.mjs", arg: "list", blocking: false,
     does: "The shared question queue. Anything an agent cannot see itself goes here, routed to CC or to Tyler." },
 ];

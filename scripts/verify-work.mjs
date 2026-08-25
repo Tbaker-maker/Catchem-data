@@ -315,6 +315,34 @@ const scripts = (await readdir(join(ROOT, "scripts"))).filter(f => f.endsWith(".
 // deliberate hole: it means anyone can silence this guard by typing the word
 // "corrected" nearby. It is declared in data/guard-blindspots.json.
 {
+  // A FIGURE IS NOT A SUBSTRING. Caught by pre-mortem 2026-08-25, which flagged
+  // this block the day it was written for carrying the "substring where
+  // structure exists" shape - the same class that once matched /tin/i against
+  // Dratini, Victini and Mantine across 174 real singles.
+  // Plain .includes() finds a figure inside a LARGER one: a five-digit value
+  // sits inside its own six-digit multiple, and a comma-grouped one sits inside
+  // any longer number ending the same way. A digit or comma on either side
+  // means this is a different number that merely contains ours.
+  //
+  // A TRAILING FULL STOP IS NOT A DECIMAL POINT. The first version of this
+  // treated any adjacent "." as number-internal, so a sentence ending "settled
+  // at 127,200." failed its own allow-check and the guard reported the
+  // CORRECTION PAGE as a defect. A period counts only when a digit follows it.
+  //
+  // The figures are described rather than quoted here on purpose: this file has
+  // now flagged its own notes three times, and its own lesson is that a guard
+  // which cannot tell an implementation from a note about it trains people to
+  // delete the notes.
+  const SCANNED_EXTS = new Set([".md", ".mjs", ".js", ".html"]);
+  const hasFigure = (line, form) => {
+    let i = -1;
+    while ((i = line.indexOf(form, i + 1)) !== -1) {
+      const before = line[i - 1] ?? "", after = line[i + form.length] ?? "";
+      const glued = (c, next) => /[\d,]/.test(c) || (c === "." && /\d/.test(next ?? ""));
+      if (!glued(before, line[i - 2]) && !glued(after, line[i + form.length + 1])) return true;
+    }
+    return false;
+  };
   const outcomes = await J("data/post-outcomes.json") ?? { posts: [] };
   const MARKERS = /withdrawn|corrected|used to say|what it claimed|still climbing|unsettled|mid-climb|understated|superseded|not a settled|was read|dead number|no longer/i;
   const stale = [];
@@ -349,7 +377,11 @@ const scripts = (await readdir(join(ROOT, "scripts"))).filter(f => f.endsWith(".
         // Rewriting them would destroy the audit trail this repo runs on.
         if (rel.includes("research/reports")) continue;
         if (e.isDirectory()) await walk(rel);
-        else if (/\.(md|mjs|js|html)$/.test(e.name)) files.push(rel);
+        // SET MEMBERSHIP, NOT A PATTERN ON A NAME. pre-mortem flagged the
+        // regex that stood here the day this block was written: matching a
+        // pattern against a filename is the shape that put /tin/i through 174
+        // real singles. An extension is a closed set, so it is checked as one.
+        else if (SCANNED_EXTS.has(e.name.slice(e.name.lastIndexOf(".")))) files.push(rel);
         // A json string is only interesting when it is prose about a post.
         else if (e.name.endsWith(".json")) files.push(rel);
       }
@@ -365,7 +397,7 @@ const scripts = (await readdir(join(ROOT, "scripts"))).filter(f => f.endsWith(".
         const settledForms = [s.settledValue.toLocaleString("en-US"), String(s.settledValue)];
         for (let i = 0; i < lines.length; i++) {
           const line = lines[i];
-          if (!forms.some(form => line.includes(form))) continue;
+          if (!forms.some(form => hasFigure(line, form))) continue;
           // A bare json file only counts when the line is talking about a post.
           if (f.endsWith(".json") && !/view|impression|reach/i.test(line)) continue;
           const ctx = lines.slice(Math.max(0, i - 6), i + 4).join("\n");
@@ -373,7 +405,7 @@ const scripts = (await readdir(join(ROOT, "scripts"))).filter(f => f.endsWith(".
           // A better signal than any word list: if the SETTLED figure is
           // standing next to the dead one, the passage already knows. This is
           // what a corrected paragraph looks like, and it needs no vocabulary.
-          if (settledForms.some(form => ctx.includes(form))) continue;
+          if (settledForms.some(form => hasFigure(ctx, form))) continue;
           P("stale metric", `${f}:${i + 1} quotes ${forms[0]} for ${s.post}`,
             `${s.field} settled at ${s.settledValue.toLocaleString("en-US")} at 48h; ${forms[0]} was the reading at ${s.atHours}h and is a dead number. Quote the settled figure, or mark the line as a withdrawal.`,
             "stale-metric");

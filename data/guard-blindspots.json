@@ -356,6 +356,12 @@
    "cannotCatch": "Whether X's reviewers agree with the originality claim we stored. It checks that a claim EXISTS and is specific, not that it is correct or that anyone else would accept it. A confident, well-written, wrong claim passes every check in the file. It also cannot see the image — it reads the caption and the stored claim, so a post whose art is a straight reupload with a good sentence attached passes. It also cannot distinguish a queue that passed from a queue that was empty except by saying so in words, which it now does: nothing checked is printed as NOTHING CHECKED, not as zero failures. And it never sees the image, so a straight reupload with a well-written claim attached passes every check in the file.",
    "coveredBy": "Tyler's judgement, and ultimately X's. Nothing in this repo.",
    "reviewed": "2026-08-25"
+  },
+  "outcome-report.mjs": {
+   "cannotCatch": "WHY anything performed as it did. It reads outcomes, never causes. A post that did well because a large account replied to it, because the art was trending, or because it went out during a set reveal looks identical here to one that did well because the shape was right - and the shape is the only thing this log is set up to credit, which is exactly the direction the reader is primed to read it in. IT ALSO CANNOT SEE: qualified impressions, which are the figure the Original Content Rewards threshold is counted in and which no API reports, so nothing this report prints speaks to monetization progress; and any post not sent through the queue, because it reads data/post-outcomes.json and a post typed by hand from a phone never gets a row. That last gap is SYSTEMATIC rather than random - the posts most likely to be written by hand are the spontaneous ones, which is the class the shape hypotheses make claims about.",
+   "coveredBy": "Causes: nothing automated, and nothing that could be. Qualified impressions: a human opening Creator Studio, queued to ask-eyes. Hand-posted coverage: nothing yet - it needs a backfill path that takes a tweet id and adds a sent row, which does not exist.",
+   "advisoryOnly": "Registered in fleet.mjs as blocking:false on purpose. Its most common correct output is that the data cannot answer the question, and a guard that halts a build for that would be halting it for the normal state of an honest log.",
+   "reviewed": "2026-08-25"
   }
  }
 }
