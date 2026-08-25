@@ -2477,7 +2477,12 @@ el("make").onclick = async () => {
     setStatus("ready — " + W + "×" + H);
     // A CANVAS CANNOT BE LONG-PRESSED. Swap in a real <img> so the first
     // gesture anybody tries on a phone actually works.
-    showSaveable(cv.toDataURL("image/png"));
+    // THE IMAGE IS DRAWN BEFORE THE SWAP. If toDataURL throws — a tainted
+    // canvas, an old browser — the compose must NOT report failure, because the
+    // drawing succeeded and the canvas is right there. Reporting a failure over
+    // a finished image is the worst of both.
+    try { showSaveable(cv.toDataURL("image/png")); }
+    catch (e) { setStatus("Image is ready. Press and hold it, or use Open in a tab.", false); }
   }catch(e){ setStatus("could not compose: " + (e.message||"unknown"), true); }
 };
 

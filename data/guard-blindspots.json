@@ -237,6 +237,13 @@
    "coveredBy": "Tyler",
    "reviewed": "2026-08-24",
    "history": "Written after \"charizard evolution from 151\" announced Charizard and returned Chansey and Blissey. Sixteen named lines are now checked on every build."
+  },
+  "compose-smoke.mjs": {
+   "cannotCatch": "Whether the images actually LOAD from the host. It proves the draw loop runs and every card reaches the canvas with a stubbed Image; it cannot reach pokemontcg.io from here and never will.",
+   "knownPatterns": [],
+   "coveredBy": "Tyler on a real phone",
+   "reviewed": "2026-08-24",
+   "history": "Written during the mobile audit. It immediately found that a toDataURL failure made the compose report failure even though the drawing had succeeded — a failure message over a finished image."
   }
  }
 }
