@@ -186,6 +186,7 @@ const MUST_RUN = [
   { script: "fuzz.mjs", why: "every other test checks something I already imagined — this one builds sentences and click-orders nobody chose, and found three crashes on its first run" },
   { script: "journey-smoke.mjs", why: "the WHOLE journey from a typed sentence to a drawn image, including the case where every image FAILS to load — five earlier tests all stopped at the tray" },
   { script: "evo-smoke.mjs", why: "asking for a Pokemon evolution must return that Pokemon line — it announced Charizard and returned Chansey" },
+  { script: "device-gauntlet.mjs", why: "every other smoke runs in ONE friendly environment — mine. Tyler's phone said script error while mine said green, so the difference WAS the environment" },
   { script: "ask-smoke.mjs", why: "the box says What do you want to post and must hand back CARDS — seven of eleven prompts silently produced nothing and only Tyler trying one found it" },
   { script: "theme-smoke.mjs", why: "every theme must PRODUCE and no two may produce the same thing — four produced silently nothing and two returned identical results, and Tyler found both by clicking" },
   { script: "editor-hostile.mjs", why: "the editor must survive a user who does not follow the happy path — a stale theme selection crashed it" },

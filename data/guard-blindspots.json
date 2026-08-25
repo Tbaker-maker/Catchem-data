@@ -271,6 +271,16 @@
    "coveredBy": "Tyler, on whichever surface he opens next",
    "reviewed": "2026-08-25",
    "history": "Written after the composite page failed on mobile with the EXACT combination I had already fixed in the editor — hires for display, eager loading, no fallback. The real bug was not the image size, it was that I fixed the file Tyler happened to be holding three separate times and never carried one fix across. Its first run found three MORE surfaces with the same problem."
+  },
+  "device-gauntlet.mjs": {
+   "cannotCatch": "Real rendering. It proves the script parses, boots and produces cards in six hostile profiles — it has no view on whether anything LOOKS right, whether images actually load from a real CDN, or whether a real Safari has a quirk none of these profiles model.",
+   "knownPatterns": [
+    "top-level-throw-halts-file",
+    "storage-throws-on-write"
+   ],
+   "coveredBy": "Tyler, on an actual phone",
+   "reviewed": "2026-08-24",
+   "history": "Written after three wrong guesses at a mobile 'script error'. It reproduced the failure on the FIRST run: one top-level throw stops initialization halfway, every let below stays uninitialized, the boot timer fires into a dead binding, and the page is blank."
   }
  }
 }

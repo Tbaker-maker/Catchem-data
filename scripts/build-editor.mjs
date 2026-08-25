@@ -697,6 +697,25 @@ setTimeout(() => {
   }, 0);
 
 const el = id => document.getElementById(id);
+
+// NO TOP-LEVEL LINE MAY HALT THE FILE. One throw during initial execution
+// stops everything below it: every let never initializes, the boot timer then
+// hits a dead binding, and the page is blank with "script error" — which is
+// exactly what a phone showed while every dev machine showed green.
+function safeWire(fn, what){
+  try { fn(); }
+  catch (e) {
+    try { const b = el("bootpanel") || el("status"); if (b) { b.hidden = false; b.textContent = "setup skipped (" + (what || "block") + "): " + e.message; } } catch (x) {}
+  }
+}
+// STORAGE THAT CANNOT THROW. iOS private browsing throws on setItem — the
+// classic works-on-every-dev-machine killer. Losing a preference is fine;
+// dying over one is not.
+const store = {
+  get(k){ try { return store.get(k); } catch (e) { return null; } },
+  set(k, v){ try { store.set(k, v); } catch (e) {} },
+  del(k){ try { store.del(k); } catch (e) {} },
+};
 // PAGING STATE. Page size is deliberately modest: 36 images is a fast paint on
 // a phone, and the point of paging is that the page never gets slower no matter
 // how big the catalogue grows.
@@ -821,7 +840,7 @@ function search(){
       <span class=\"failmsg\"></span><b>\${c.n}</b><i>\${c.s} · \${c.y}</i><i class="\${c.a ? "" : "nocred"}">\${c.a || "no credit recorded"}</i></div>\`).join("")
     : suggestHtml(q);
 }
-["q","rar","yr"].forEach(id => el(id).addEventListener("input", () => { resetPage(); search(); }));
+safeWire(function(){ ["q","rar","yr"].forEach(id => el(id).addEventListener("input", () => { resetPage(); search(); })); }, "wiring");
 
 function add(id){
   if (tray.length >= 9) { setStatus("Nine is the most a frame holds.", true); return; }
@@ -837,10 +856,10 @@ function setStatus(t, bad){ const s = el("st"); s.textContent = t; s.className =
 // compliance register. In the browser it is a planning tool; on a server it is a
 // liability we have not prepared for.
 let owned = {};
-try { owned = JSON.parse(localStorage.getItem("catchem-owned") || "{}"); } catch {}
+try { owned = JSON.parse(store.get("catchem-owned") || "{}"); } catch {}
 function toggleOwn(id){
   owned[id] = !owned[id];
-  try { localStorage.setItem("catchem-owned", JSON.stringify(owned)); } catch {}
+  try { store.set("catchem-owned", JSON.stringify(owned)); } catch {}
   render();
 }
 
@@ -878,11 +897,11 @@ function renderTally(){
 
 // INTENT drives the copy, the frame, and one refusal.
 let fIntent = "post";
-el("fintent").querySelectorAll(".chip").forEach(b => b.onclick = () => {
+safeWire(function(){ el("fintent").querySelectorAll(".chip").forEach(b => b.onclick = () => {
   fIntent = b.dataset.i;
   el("fintent").querySelectorAll(".chip").forEach(x => x.classList.toggle("on", x.dataset.i === fIntent));
   render();
-});
+}); }, "fintent");
 
 // SEALED stock imagery is standard - every sealed box looks identical and a
 // buyer is purchasing a SKU. SINGLES stock imagery is misrepresentation, because
@@ -917,9 +936,9 @@ function checkIntent(){
 // and have not been used. The filter is what keeps two creators from posting
 // the same series out of the same pool.
 let streak = null;
-try { streak = JSON.parse(localStorage.getItem("catchem-streak") || "null"); } catch {}
+try { streak = JSON.parse(store.get("catchem-streak") || "null"); } catch {}
 
-function saveStreak(){ try { localStorage.setItem("catchem-streak", JSON.stringify(streak)); } catch {} }
+function saveStreak(){ try { store.set("catchem-streak", JSON.stringify(streak)); } catch {} }
 
 const STREAK_FILTERS = {
   "ir-any":    { series: "posting one Illustration Rare a day", label: "Illustration Rares", test: c => /Illustration Rare/i.test(c.r || "") },
@@ -1091,7 +1110,7 @@ function renderStreak(remaining){
   box.appendChild(wrap);
 }
 
-function endStreak(){ streak = null; try { localStorage.removeItem("catchem-streak"); } catch {} el("streakbar").hidden = true; }
+function endStreak(){ streak = null; try { store.del("catchem-streak"); } catch {} el("streakbar").hidden = true; }
 
 // Populate the filter list from the same object the picker uses, so a filter
 // added in one place cannot go missing in the other.
@@ -1124,11 +1143,11 @@ const SLABS = {
   ice:   { case: "#0a1016", edge: "#1d3242", label: "#0f1d28", ink: "#e6f0f7", accent: "#6fb8e0", name: "Ice" },
 };
 let fSlab = "";
-el("fslab").querySelectorAll(".chip").forEach(b => b.onclick = () => {
+safeWire(function(){ el("fslab").querySelectorAll(".chip").forEach(b => b.onclick = () => {
   fSlab = b.dataset.s;
   el("fslab").querySelectorAll(".chip").forEach(x => x.classList.toggle("on", x.dataset.s === fSlab));
   blob = null; render();
-});
+}); }, "fslab");
 
 // Draw a card inside a slab. Proportions are a real slab roughly: the case is
 // about 1.3x the card width and 1.5x its height, with the label across the top.
@@ -1284,7 +1303,7 @@ function renderLines(){
   if (!box) return;
   if (!tray.length) { box.hidden = true; return; }
   const themeName = fTheme ? (THEMES.find(x => x.id === fTheme) || {}).name : null;
-  const opts = lineOptions(tray, themeName, Number(localStorage.getItem("typicalViews")) || 0);
+  const opts = lineOptions(tray, themeName, Number(store.get("typicalViews")) || 0);
   if (!opts.length) { box.hidden = true; return; }
   box.hidden = false;
   box.innerHTML = "";
@@ -1684,12 +1703,12 @@ window.runAsk = runAsk;
 function setReach(){
   const f = el("views"), note = el("reachnote");
   if (!f) return;
-  const saved = localStorage.getItem("typicalViews");
+  const saved = store.get("typicalViews");
   if (saved) f.value = saved;
   const show = function(){
     const n = Number(f.value) || 0;
     if (!n) { if (note) note.textContent = "Optional — it orders the line suggestions. Views beat followers here."; return; }
-    localStorage.setItem("typicalViews", String(n));
+    store.set("typicalViews", String(n));
     const t = tierFor(n);
     if (note && t) note.textContent = t.label + " — " + t.why + ". (Unproven: five logged posts.)";
     renderLines();
@@ -1916,12 +1935,12 @@ function renderThemes(){
     "</div>").join("");
   box.querySelectorAll(".chip").forEach(b => b.onclick = () => { fTheme = b.dataset.t; renderThemes(); buildIdeas(); });
 }
-el("fcount").querySelectorAll(".chip").forEach(b => b.onclick = () => {
+safeWire(function(){ el("fcount").querySelectorAll(".chip").forEach(b => b.onclick = () => {
   fCount = fCount === +b.dataset.n ? 0 : +b.dataset.n;
   el("fcount").querySelectorAll(".chip").forEach(x => x.classList.toggle("on", +x.dataset.n === fCount));
   if (fTheme && !THEMES.find(t => t.id === fTheme && (t.bestAt||[]).includes(fCount))) fTheme = null;
   renderThemes(); buildIdeas();
-});
+}); }, "fcount");
 el("fset").onchange = () => { fSet = el("fset").value; renderThemes(); buildIdeas(); };
 
 const HERO_RX = /(Special Illustration|Illustration Rare|Rare Holo|Rare Secret|Rare Ultra|Rare Rainbow|Ultra Rare)/i;
@@ -2342,7 +2361,7 @@ function loadIdea(k){
 }
 renderThemes();
 
-el("make").onclick = async () => {
+safeWire(function(){ el("make").onclick = async () => {
   const L = LAYOUTS[tray.length]; if (!L) return;
   // ENFORCE AT THE POINT OF ACTION, not only in the UI. The refusal used to
   // live entirely in el("make").disabled, and a disabled attribute is an
@@ -2499,13 +2518,13 @@ el("make").onclick = async () => {
     try { showSaveable(cv.toDataURL("image/png")); }
     catch (e) { setStatus("Image is ready. Press and hold it, or use Open in a tab.", false); }
   }catch(e){ setStatus("could not compose: " + (e.message||"unknown"), true); }
-};
+}; }, "make");
 
 const fname = () => "catchem-" + (el("label").value.trim() || tray.map(c=>c.n).join("-") || "cards")
   .replace(/[^a-z0-9]+/gi,"-").toLowerCase().slice(0,48) + ".png";
-el("dl").onclick = () => { const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=fname(); a.click(); };
-el("copy").onclick = async () => { try{ await navigator.clipboard.write([new ClipboardItem({"image/png":blob})]); setStatus("copied — paste into the post"); }catch(e){ setStatus("copy failed: "+e.message,true); } };
-el("share").onclick = async () => { try{ await navigator.share({files:[new File([blob],fname(),{type:"image/png"})]}); }catch(e){ if(e.name!=="AbortError") setStatus("share failed: "+e.message,true); } };
+safeWire(function(){ el("dl").onclick = () => { const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=fname(); a.click(); }; }, "dl");
+safeWire(function(){ el("copy").onclick = async () => { try{ await navigator.clipboard.write([new ClipboardItem({"image/png":blob})]); setStatus("copied — paste into the post"); }catch(e){ setStatus("copy failed: "+e.message,true); } }; }, "copy");
+safeWire(function(){ el("share").onclick = async () => { try{ await navigator.share({files:[new File([blob],fname(),{type:"image/png"})]}); }catch(e){ if(e.name!=="AbortError") setStatus("share failed: "+e.message,true); } }; }, "share");
 </script>`;
 
   await writeFile(join(ROOT, "research/assets/build.html"), html);

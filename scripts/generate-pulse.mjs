@@ -669,6 +669,7 @@ await import("./audit-honesty.mjs");
 try { process.argv.push("250"); await import("./fuzz.mjs"); } catch (e) { console.warn("  fuzz: " + e.message); }
 try { await import("./journey-smoke.mjs"); } catch (e) { console.warn("  journey: " + e.message); }
 try { await import("./evo-smoke.mjs"); } catch (e) { console.warn("  evo smoke: " + e.message); }
+try { await import("./device-gauntlet.mjs"); } catch (e) { console.warn("  device gauntlet: " + e.message); }
 try { await import("./ask-smoke.mjs"); } catch (e) { console.warn("  ask smoke: " + e.message); }
 try { await import("./theme-smoke.mjs"); } catch (e) { console.warn("  theme smoke: " + e.message); }
 try { await import("./editor-hostile.mjs"); } catch (e) { console.warn("  editor-hostile.mjs: " + e.message); }
