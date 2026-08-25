@@ -57,7 +57,8 @@ work out why the machines didn't and build that check.**
 - `scripts/post-queue.mjs` — Tyler writes, the machine sends at a set hour.
   Caps at 8 posts/day and $3/month. Needs `--send` wired.
 - `scripts/read-metrics.mjs` — three readings per post at 1h/24h/48h, files into
-  the outcome log automatically at 48h. Needs the fetch wired.
+  the outcome log automatically at 48h. FETCH IS WIRED as of 2026-08-25:
+  "node scripts/read-metrics.mjs fetch" reads every due post and files it.
 - `scripts/experiment.mjs` — A/B with a design. Refuses to start without a
   falsifier.
 
@@ -79,19 +80,23 @@ work out why the machines didn't and build that check.**
 
 ## The X API situation, exactly
 
-Tyler has **consumer key, consumer secret, and bearer token**. He does **not**
-have the access token pair.
+**UPDATED 2026-08-25. The paragraph that stood here said Tyler had only a
+bearer token and could not post. That is no longer true and was left in place
+long enough to mislead one session.**
 
-**That's enough to READ, not to POST.** A bearer token is app-only by design.
+All four OAuth 1.0a credentials are present in .env (gitignored): consumer
+key/secret plus an access token/secret with Read and Write, minted through
+scripts/x-authorize.mjs. Verified live on 2026-08-25 — a signed GET to
+/2/users/me returned 200 as @LongedEth.
 
-**This is fine, and reading is the more valuable half right now.** The outcome
-log holds 5 posts and needs 20 before it can rank anything. Wire
-`read-metrics.mjs` first; `--send` can follow when he generates the access
-token pair.
+**That is enough to READ and to POST.** A bearer token would have been
+app-only and read-only; this is user context, which is also why owned-post
+reads return impression_count and bookmark_count at all.
 
-**The ordering trap for when he does:** permissions must be set to Read and
-Write *before* generating access tokens, or the tokens keep read-only permission
-and every post returns a 403. Full steps in `research/PENDING-X-KEYS.md`.
+The ordering trap, still true for anyone regenerating tokens: permissions must
+be Read and Write *before* generating access tokens, or the tokens keep
+read-only permission and every post returns a 403. Steps in
+research/PENDING-X-KEYS.md.
 
 Keys go to CC as GitHub Actions secrets. **Never into a chat, never into a
 file.**
@@ -138,8 +143,10 @@ So what works depends on audience size — hence the reach tiers.
 
 ## Next things, in order
 
-1. **CC wires `read-metrics.mjs`** with the bearer token. Highest value —
-   it fills the outcome log by itself at $0.001 per read.
+1. ~~CC wires `read-metrics.mjs`~~ **DONE 2026-08-25.** The fetch command
+   exists and every branch is covered offline. NOT YET DONE: cron it, and
+   prove it against a real post — the queue has never sent one, so the
+   first live fetch is still a test.
 2. **CC fixes the bot.** Nothing about the news account can proceed until then.
 3. **Tyler generates the access token pair** when convenient, then `--send`.
 4. **The engagement/niche/algo guide** — Tyler asked for this and was about to
