@@ -39,7 +39,39 @@
    "at": "21:15",
    "status": "queued",
    "written": "2026-08-25T18:27:01.937Z",
-   "postedAt": null
+   "postedAt": null,
+   "shape": "art pairing — same illustrator, one Pokémon, 25 years apart",
+   "followersAtQueue": 21555,
+   "followersAtQueueAt": "2026-08-25T21:17:14Z",
+   "followersAtQueueSource": "GET /2/users/me, read at queue time. The 48h delta is the outcome variable the density-over-reach hypothesis has been missing.",
+   "readingsDue": {
+    "note": "Checkpoints owed once this is sent. postedAt is unknown until the send, so these are offsets, not clock times. read-metrics due reports a MISSED checkpoint that can no longer be taken.",
+    "checkpoints": [
+     1,
+     24,
+     48
+    ],
+    "settledAt": 48
+   },
+   "experiment": {
+    "hypothesis": "pairings-beat-crops",
+    "claim": "Art pairings outperform single-card crops on reach.",
+    "role": "This is the SECOND settled pairing the hypothesis needs. The first is the Arita post at 127,200 views; the three settled crops are 941, 926 and 867.",
+    "standing": "One pairing against three crops is currently about 135x in the pairing's favour - and note that the ORIGINAL claim in this repo said the opposite, five to one for crops, on readings taken before either post had settled.",
+    "refutedIf": [
+     "The 48h reading lands at or below 2,800 views. That is roughly 3x the settled crop mean of 911, and a pairing that cannot clear 3x a crop does not support a claim built on a 135x gap.",
+     "It lands inside the crop band at all - 867 to 941 - which would say the Arita result was about the Arita post and not about the shape."
+    ],
+    "wouldStrengthenIt": "A 48h reading above 10,000 views, which is an order of magnitude clear of the crop band and could not be a sampling accident at n=2.",
+    "confoundsNotControlled": [
+     "Hour is held at 21:15, the same slot as the Arita post - deliberate.",
+     "Follower count has moved from 21,554 to 21,555 since the Arita post, which is nothing.",
+     "Subject differs: Charizard and Blastoise are far more famous than Magmar. If this underperforms, subject fame is the first thing to suspect, not shape. This is the confound I cannot control and it is the reason a single result here settles nothing on its own.",
+     "n=2 either way. Two pairings is the minimum the hypothesis asks for, not a sample."
+    ],
+    "writtenAt": "2026-08-25T21:17:14Z",
+    "writtenBefore": "the post was sent - the falsifier is not to be edited afterwards"
+   }
   },
   {
    "id": "2026-08-22-arita-blastoise",

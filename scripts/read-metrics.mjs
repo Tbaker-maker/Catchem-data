@@ -83,6 +83,30 @@ function dueReadings(q, now = Date.now()) {
   return due;
 }
 
+// ── WHAT WAS MISSED ────────────────────────────────────────────────────────
+// Charmander's 48h reading was taken 37 hours late and nothing anywhere said
+// so. Worse, the fix that stopped `due` offering unreachable checkpoints made
+// the silence complete: a checkpoint whose window has passed is no longer
+// offered, so it simply vanishes.
+//
+// A missed reading cannot be recovered - time runs one way - but it can be
+// NAMED, so the gap in a post's history is visible instead of looking like a
+// post that was never worth reading.
+function missedReadings(q, now = Date.now()) {
+  const missed = [];
+  for (const p of q.posts.filter(x => x.status === "sent" && x.tweetId)) {
+    const ageH = (now - Date.parse(p.postedAt)) / 3600000;
+    const done = (p.metrics ?? []).map(m => m.checkpoint ?? m.atHours);
+    const wouldFileAs = CHECKPOINTS.reduce((a, b) => Math.abs(b - ageH) < Math.abs(a - ageH) ? b : a);
+    for (const cp of CHECKPOINTS) {
+      if (ageH > cp && !done.includes(cp) && cp !== wouldFileAs) {
+        missed.push({ id: p.id, tweetId: p.tweetId, checkpoint: cp, ageH: Math.round(ageH) });
+      }
+    }
+  }
+  return missed;
+}
+
 
 // ── WHY IS NOTHING DUE? ────────────────────────────────────────────────────
 // "nothing due for a reading" read identically whether every post was current
@@ -113,11 +137,27 @@ function nothingDueBecause(q) {
     (missingId ? `. ${missingId} sent post(s) carry no tweet id and can never be read` : "") + ".";
 }
 
+function reportMissed(missed) {
+  if (!missed.length) return;
+  console.log("");
+  console.log(`  ! ${missed.length} checkpoint(s) were MISSED and can no longer be taken:`);
+  for (const m of missed) {
+    console.log(`      ${m.tweetId}  ${m.checkpoint}h reading never taken · the post is now ${m.ageH}h old`);
+  }
+  console.log("  A missed checkpoint is a permanent hole in that post's history.");
+  console.log("  Nothing can fill it; only the next post can avoid it.");
+}
+
 if (cmd === "due") {
   // What needs reading right now. This is what a cron calls.
   const q = await load();
   const due = dueReadings(q);
-  if (!due.length) { console.log("  nothing due — " + nothingDueBecause(q)); process.exit(0); }
+  const missed = missedReadings(q);
+  if (!due.length) {
+    console.log("  nothing due — " + nothingDueBecause(q));
+    reportMissed(missed);
+    process.exit(0);
+  }
   console.log(`${due.length} post(s) due a reading:\n`);
   for (const d of due) console.log(`  ${d.tweetId}  ${d.ageH}h old, checkpoint ${d.checkpoint}h`);
   console.log(`\n  cost: ${cost(due.length)}`);
@@ -136,7 +176,11 @@ else if (cmd === "fetch") {
   const dryRun = args.includes("--dry-run");
   const q = await load();
   const due = dueReadings(q);
-  if (!due.length) { console.log("  nothing due — " + nothingDueBecause(q)); process.exit(0); }
+  if (!due.length) {
+    console.log("  nothing due — " + nothingDueBecause(q));
+    reportMissed(missedReadings(q));
+    process.exit(0);
+  }
   console.log(`${due.length} reading(s) due · ${cost(due.length)}` +
     (dryRun ? "   DRY RUN, nothing will be recorded" : "") + "\n");
 
