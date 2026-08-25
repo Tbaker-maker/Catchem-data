@@ -82,7 +82,7 @@ guessed three times before saying it once.
 
 **Working and verified:** the editor (1.9 MB, offline, prompt-driven), the
 composite builder, the mood matcher, the lore layer, the live presenter, the
-post queue, the experiment tool, 50 guards.
+post queue, the experiment tool, 52 guards.
 
 **Built but not connected:** `post-queue.mjs --send` and `read-metrics.mjs` both
 need X API credentials. Tyler is getting them. `research/PENDING-CLOSE-THE-LOOP.md`

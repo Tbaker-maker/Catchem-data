@@ -203,6 +203,44 @@ const scripts = (await readdir(join(ROOT, "scripts"))).filter(f => f.endsWith(".
   }
 }
 
+// ── ERROR: A PUBLISH PATH THAT CAN FIRE WITHOUT A HUMAN ───────────────────
+// X's Original Content Rewards program states that content created or posted by
+// AUTOMATED MEANS is ineligible. That turns the confirm gate from a convenience
+// into an eligibility control, and it means the dangerous change is not a bug —
+// it is a future maintainer removing friction on purpose, reasonably, because
+// nobody wrote down why it was there. This check is that note, in a form that
+// fails the build.
+{
+  const PUBLISHES = /api\.x\.com\/2\/tweets|upload\.twitter\.com|statuses\/update/;
+  const BYPASS = /--(force|yes|no-?confirm|skip-?confirm|unattended|auto-?send)\b/;
+  for (const f of scripts) {
+    const src = await R("scripts/" + f);
+    if (!PUBLISHES.test(src)) continue;
+    const gated = /isTTY/.test(src) && /evaluateConfirmation/.test(src);
+    if (!gated)
+      P("ungated publication", `${f} can publish to X without a human confirmation gate`,
+        "It reaches a posting endpoint but does not both check for an attached terminal and run the confirmation policy. Content posted by automated means is ineligible for the Original Content Rewards program — an unattended send does not save time, it disqualifies the account. See data/compliance-register.json, retrieved 2026-08-25.", 18);
+    // CODE LINES ONLY. The comment in post-queue.mjs explaining that there is
+    // deliberately no --force flag contains the string "--force", and the first
+    // version of this check flagged the file for saying why it was safe. A
+    // guard that cannot tell an implementation from a note about it will train
+    // people to delete the notes.
+    const by = src.split(/\r?\n/)
+      .filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l))
+      .map((l) => l.match(BYPASS)).find(Boolean);
+    if (by)
+      P("ungated publication", `${f} accepts ${by[0]}, which would skip the human confirmation`,
+        "There is deliberately no override on the send gate. A flag that bypasses it is the single change that makes every post ineligible, and it will look like a reasonable convenience to whoever adds it.", 18);
+  }
+  const wf = await readdir(join(ROOT, ".github/workflows")).catch(() => []);
+  for (const w of wf) {
+    const src = await R(".github/workflows/" + w);
+    if (/post-queue/.test(src) && /\bsend\b/.test(src))
+      P("ungated publication", `.github/workflows/${w} invokes the posting queue's send path`,
+        "A scheduled runner has no terminal and no human. Posting from CI is automated posting, which is what the programme excludes.", 18);
+  }
+}
+
 // ── ERROR: RAW VIEWS MEASURED AGAINST THE MONETIZATION THRESHOLD ──────────
 // X pays on QUALIFIED impressions: unique Home Timeline impressions from X
 // Premium subscribers with at least half the post visible. Replies excluded,
@@ -247,7 +285,7 @@ const selfAware = true;   // this file audits data and other scripts, never itse
 const out = { generatedAt: new Date().toISOString(),
   purpose: "Checks output against the failure classes in our own error ledger — things that actually happened here, not generic quality rules.",
   runsOn: "output, never intent. What I meant to do is not evidence.",
-  classesChecked: [11, 13, 14, 15, 16, 18, 21, 24, 25, "sku existence", "coverage overclaim", "monetization miscount"],
+  classesChecked: [11, 13, 14, 15, 16, 18, 21, 24, 25, "sku existence", "coverage overclaim", "monetization miscount", "ungated publication (automation)"],
   problems };
 await (await import("node:fs/promises")).writeFile(join(ROOT, "research/pulse/work-verification.json"), JSON.stringify(out, null, 1));
 

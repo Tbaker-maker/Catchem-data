@@ -33,7 +33,7 @@ Type what you want to post. It hands back cards.
 | **61 themes** | across 9 groups, every one verified to produce |
 | **207 sealed products** | tracked daily by the bot |
 | **50 sourced facts** | each with a falsifier and a recheck date |
-| **50 guards** | each with a declared blind spot |
+| **52 guards** | each with a declared blind spot |
 
 ---
 
@@ -58,6 +58,8 @@ node scripts/build-waitlist.mjs          the landing page
 ```
 node scripts/post-queue.mjs add --text "..." --at 21:15
 node scripts/post-queue.mjs list
+node scripts/post-queue.mjs send         needs a terminal and two answers
+node scripts/originality-guard.mjs       what is original about each queued post?
 node scripts/read-metrics.mjs due        what needs a reading
 node scripts/log-outcome.mjs --report    what has worked so far
 node scripts/experiment.mjs read         A/B with a design
@@ -133,6 +135,48 @@ $10."* A question isn't finished until it's said why answering is safe.
 
 **And they're all small.** Crambo is 17.6k and took 37,100 views — 2.1× his
 follower count. Reach relative to size is the metric.
+
+---
+
+## Why the send is manual
+
+`post-queue.mjs send` asks whether you have thirty minutes, then makes you type
+the word `send`. It refuses outright if there is no terminal attached. There is
+no `--force`, no `--yes`, no scheduled path, and no flag that skips any of it.
+
+**This is not friction anybody forgot to remove. It is a condition of getting
+paid.** X's Original Content Rewards programme — the one that replaced Creator
+Revenue Sharing on 2026-08-08 — states that content created or posted by
+**automated means is ineligible**. A cron job that posts on a schedule does not
+save Tyler ten seconds; it makes every post it touches ineligible, silently,
+with no error message and no way to tell from the outside that it happened.
+
+So the gate is built to make automation *structurally impossible* rather than
+merely discouraged. The terminal check is the load-bearing part: a cron job, a
+CI runner and a piped stdin all have no TTY, so none of them can reach the
+network call no matter what arguments they pass. `verify-work.mjs` fails the
+build if any script reaches a posting endpoint without both that check and the
+confirmation policy, and it fails the build if a bypass flag appears in any of
+them. Breaking either one has been tested and does fail.
+
+**Every send records `humanConfirmed: true` and `confirmedAt`** — the timestamp
+of the actual keystroke, in true UTC. That is the audit trail if eligibility is
+ever questioned.
+
+The thirty-minute question earns its place separately. A post that goes out when
+nobody is around to answer replies does worse than one that waits, and the only
+moment anyone answers *"do I have half an hour"* honestly is before pressing
+send. The answer is recorded as `windowHonored` after the window closes, so the
+claim can eventually be checked rather than believed.
+
+**Replies are never drafted here, and never will be.** Posts are assisted;
+replies are Tyler's own words, every time. That is a hard line, not a
+preference — and under a programme that pays for primary work and excludes
+automated content, it is also the safe reading.
+
+*Programme terms retrieved 2026-08-25 and recorded, dated, in
+`data/compliance-register.json`. They have changed before and will change again
+— re-read them before acting on money.*
 
 ---
 
