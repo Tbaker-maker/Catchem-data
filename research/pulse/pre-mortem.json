@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-08-25T11:48:04.762Z",
+  "generatedAt": "2026-08-25T12:10:29.817Z",
   "principle": "Every bug today was a check that was RIGHT IN PRINCIPLE and asked a question whose answer could not reveal the fault. Not a broken guard — a guard aimed slightly beside the thing it guards. We declare blind spots for every agent and none for guards, so a guard asking the wrong question looks exactly like one that works.",
-  "guardsChecked": 39,
-  "declared": 43,
+  "guardsChecked": 44,
+  "declared": 48,
   "shapes": [
     {
       "id": "substring where structure exists",
@@ -37,6 +37,13 @@
       "why": "The singles-sell refusal lived entirely in button.disabled. A disabled attribute is an affordance, not a guard — re-enabling it in the console produced the very image the refusal exists to prevent."
     }
   ],
-  "problems": [],
+  "problems": [
+    {
+      "guard": "prompt-correctness.mjs",
+      "what": "carries the \"substring where structure exists\" shape, unacknowledged",
+      "why": "A name match that looks right is the most reliable way to be catastrophically wrong. /tin/i matched Dratini, Victini, Mantine and Fighting Energy — 174 real singles. 'N' matched inside 'ninja'. Twice in one day.",
+      "fix": "Match on a field or a set membership, never on a substring of a name."
+    }
+  ],
   "notes": []
 }

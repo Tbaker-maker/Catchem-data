@@ -291,6 +291,42 @@
    "coveredBy": "Tyler",
    "reviewed": "2026-08-24",
    "history": "Written after Tyler said the prompts were still returning wrong cards for the third time. ask-smoke had been green throughout because it only checked cards APPEARED — a gap I documented in its own blind-spot file and then trusted the tick anyway."
+  },
+  "prompt-audit.mjs": {
+   "cannotCatch": "Whether the right cards are the BEST cards, and whether a prompt I did not think of works. 56 is broad but it is still my imagination.",
+   "coveredBy": "Tyler",
+   "reviewed": "2026-08-25",
+   "knownPatterns": [
+    "filter-silently-skipped"
+   ],
+   "history": "Found grass pokemon returning Pokemon Catcher and Pokemon Center Lady — Trainers literally named Pokemon."
+  },
+  "env-matrix.mjs": {
+   "cannotCatch": "A real browser quirk none of the nine profiles model, and anything about RENDERING. It proves the script runs, never that the page looks right.",
+   "coveredBy": "Tyler on a real device",
+   "reviewed": "2026-08-25",
+   "knownPatterns": [
+    "top-level-throw-halts-file"
+   ],
+   "history": "Nine profiles modelled on how browsers actually fail rather than on their names."
+  },
+  "save-paths.mjs": {
+   "cannotCatch": "Whether the file that lands is CORRECT. It proves each button succeeds or explains itself; it never opens the resulting image.",
+   "coveredBy": "Tyler",
+   "reviewed": "2026-08-25",
+   "knownPatterns": [
+    "silent-success"
+   ],
+   "history": "Found open-in-a-tab silent on success — the LAST RESORT path, reached by somebody for whom the other three already failed."
+  },
+  "user-journeys.mjs": {
+   "cannotCatch": "Whether the session felt good. It proves nothing throws across seven sequences in four browsers; it has no view on confusion.",
+   "coveredBy": "Tyler",
+   "reviewed": "2026-08-25",
+   "knownPatterns": [
+    "stale-state"
+   ],
+   "history": "Sessions rather than single actions, because every real failure came from state left by the previous step."
   }
  }
 }

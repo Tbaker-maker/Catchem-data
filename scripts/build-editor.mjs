@@ -514,7 +514,7 @@ function parseIntent(text, ctx) {
   // A TYPE IS NOT A POKEMON. "psychic types" parsed mon=Psychic and type=Psychic,
   // then narrowed to cards literally NAMED Psychic — Sabrina's Psychic Control,
   // a Trainer. Type words and form prefixes can never be creature names.
-  const NOT_MON = /^(dark|light|team|mega|shadow|crystal|shining|radiant|energy|great|iron|roaring|walking|raging|scream|brute|flutter|sandy|gouging|slither|fire|water|grass|lightning|psychic|fighting|darkness|metal|dragon|fairy|colorless|type|types)$/i;
+  const NOT_MON = /^(dark|light|team|mega|shadow|crystal|shining|radiant|energy|great|iron|roaring|walking|raging|scream|brute|flutter|sandy|gouging|slither|fire|water|grass|lightning|psychic|fighting|darkness|metal|dragon|fairy|colorless|type|types|pokemon|pokémon|trainer|professor|supporter|stadium)$/i;
   const mons = (ctx.monNames || []).filter(m => !NOT_MON.test(m)).slice().sort((a, b) => b.length - a.length);
   for (const m of mons) {
     if (m.length < 4) continue;
@@ -1687,7 +1687,14 @@ function openImage(){
   // every user can then save however their device does it.
   const cv = el("cv");
   const w = window.open();
-  if (w) { w.document.write('<img src="' + cv.toDataURL("image/png") + '" style="max-width:100%">'); w.document.close(); }
+  if (w) {
+    w.document.write('<img src="' + cv.toDataURL("image/png") + '" style="max-width:100%">');
+    w.document.close();
+    // SAY IT WORKED TOO. This is the last-resort path, reached by somebody for
+    // whom the other three already failed — silence here is the worst place for
+    // silence in the tool. On a phone the new tab may not even be visible.
+    setStatus("Opened in a new tab. Press and hold it there to save.", false);
+  }
   else setStatus("Your browser blocked the new tab. Press and hold the image above instead.", true);
 }
 function dlImage(){
