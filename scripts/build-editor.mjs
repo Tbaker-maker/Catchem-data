@@ -393,7 +393,22 @@ const CARD_ROWS = ${await (async () => {
   const FORM_P = new RegExp("^(Galarian|Alolan|Hisuian|Paldean|Dark|Mega|Shadow|Crystal|Light|Shining|Radiant)\\s+", "i");
   const MECH_P = new RegExp("\\s+(ex|EX|GX|V|VMAX|VSTAR|BREAK|LEGEND|Prime|Star|LV.X)$");
   const monP = (n) => { let x = String(n); for (let i = 0; i < 2; i++) x = x.replace(FORM_P, ""); return x.replace(MECH_P, "").trim().split(" ")[0]; };
-  const base = index.filter(c => HERO_R.test(c.r ?? '') || (c.p ?? 0) >= 8);
+  // EVERY CARD IS FINDABLE. This filter used to BE the index: hero rarity or
+  // price >= $8, which shipped 6,725 of 16,468 rows. Tyler could not find the
+  // card he wanted because it was never in the page - neo1-40 is an Uncommon at
+  // $4.60 and sv9-20 a Common at $0.25, and the Magmar pairing that shipped on
+  // 2026-08-25 could not have been built in this editor.
+  //
+  // A perfect matcher over an index that lacks the card still returns nothing,
+  // which is why this had to change before the query parser was worth touching.
+  //
+  // THE TAIL IS LEAN, NOT ABSENT. Flavour text, ratings and attack names stay on
+  // the cards that already carried them; the other 9,743 ship the fields search
+  // and relations need. Measured: +201KB gzip against +474KB for full richness.
+  // `hero` is kept as a FLAG so the no-query showcase still opens on the good
+  // cards rather than alphabetically on commons.
+  const isHero = (c) => HERO_R.test(c.r ?? '') || (c.p ?? 0) >= 8;
+  const base = index.filter(isHero);
   const have = new Set(base.map(c => monP(c.n)));
   const evoOf = {};
   for (const c of index) if (attrs[c.i]?.ev) evoOf[monP(c.n)] = monP(attrs[c.i].ev);
@@ -407,16 +422,18 @@ const CARD_ROWS = ${await (async () => {
     const best = index.filter(c => monP(c.n) === m && c.a).sort((x, y) => (y.p ?? 0) - (x.p ?? 0))[0];
     if (best) extra.push(best);
   }
-  const rows = base.concat(extra).map(c => {
+  const richIds = new Set(base.concat(extra).map(c => c.i));
+  const rows = index.map(c => {
     const A = attrs[c.i] ?? {}, B = bios[c.i] ?? {}, T = ctext[c.i] ?? {};
+    const rich = richIds.has(c.i);
     const st = (A.st ?? []).filter(x => /^(Basic|Stage 1|Stage 2|Baby|ex|EX|V|VMAX|VSTAR|GX|MEGA)$/.test(x));
     return [c.i, c.n, c.s, c.y, c.a ?? 0, c.r ?? 0, c.p ?? 0,
       A.t ?? 0, A.dex ?? 0, A.ev ?? 0, A.hp ?? 0, st.length ? st : 0,
-      Object.keys(B.ratings ?? {}).length ? B.ratings : 0,
-      lore[c.i] ?? 0, T.a?.length ? T.a.slice(0, 2) : 0,
+      rich && Object.keys(B.ratings ?? {}).length ? B.ratings : 0,
+      rich ? (lore[c.i] ?? 0) : 0, rich && T.a?.length ? T.a.slice(0, 2) : 0,
       // WEAKNESS. Captured weeks ago and never shipped, so every matchup lookup
       // read undefined. It is one short string per card.
-      A.w ?? 0];
+      A.w ?? 0, rich ? 1 : 0];
   });
   return JSON.stringify(rows);
 })()};
@@ -435,6 +452,7 @@ const CARD_INDEX = CARD_ROWS.map(function(r){
   if (r[13]) o.L = r[13];
   if (r[14]) o.A = r[14];
   if (r[15]) o.W = r[15];
+  if (r[16]) o.hero = 1;
   return o;
 });
 // Sourced facts, so the 'story' shape has something true to build on. Only
@@ -959,8 +977,58 @@ function didYouMean(q){
   return bestD <= Math.max(1, Math.floor(q.length / 4)) ? best : null;
 }
 
+// ── THE HAYSTACK ──────────────────────────────────────────────────────────
+// Every fact about a card that a person might type, in one lowercase string.
+// Built once per card, on demand, and cached on the row.
+function hay(c){
+  if (c._h) return c._h;
+  var parts = [c.n, c.a || "", c.s, c.y, c.r || ""];
+  if (c.T) parts = parts.concat(c.T);
+  if (c.S) parts = parts.concat(c.S);
+  if (c.W) parts.push(c.W);
+  if (c.E) parts.push(c.E);
+  c._h = parts.join(" ").toLowerCase();
+  return c._h;
+}
+
+// ── TOKENISE AND AND ──────────────────────────────────────────────────────
+// The old test was one contiguous substring across name + artist + set:
+//
+//   (c.n + " " + c.a + " " + c.s).toLowerCase().includes(q)
+//
+// So "magmar kimura" matched nothing, because the haystack reads
+// "Magmar Naoyo Kimura Neo Genesis" and the query is not a run of characters
+// inside it. A user who types TWO TRUE FACTS about one card got zero results and
+// concluded the tool was broken. Tyler did exactly that.
+//
+// Year was not in the haystack at all - it lived only as an exact match on a
+// separate field - so "magmar 2000" could not work either.
+//
+// Now: split on whitespace, require EVERY term to appear somewhere in the card's
+// facts. Order stops mattering, and the fields a person actually knows - name,
+// artist, set, year, rarity, type, stage, weakness, what it evolves from - are
+// all searchable in the one box.
+function termsOf(q){
+  // NO BACKSLASH IN THIS REGEX, DELIBERATELY. This line is emitted from inside
+  // a template literal, so an escape written here is consumed before it reaches
+  // the browser: /\s+/ shipped as /s+/ and split the query on the LETTER "s".
+  // "arita squirtle" appeared to work because it contains one, "magmar kimura"
+  // returned zero because it does not, and the two failures looked unrelated.
+  // That is the house law about escaping through a template arriving again.
+  //
+  // A negated character class needs no escape and is better anyway: it splits on
+  // punctuation too, so "magmar, kimura" behaves like "magmar kimura".
+  return String(q || "").toLowerCase().split(/[^a-z0-9']+/).filter(function(t){ return t.length > 0; });
+}
+function hits(c, terms){
+  var h = hay(c);
+  for (var i = 0; i < terms.length; i++) if (h.indexOf(terms[i]) < 0) return false;
+  return true;
+}
+
 function search(){
   const q = el("q").value.trim().toLowerCase(), rar = el("rar").value, yr = el("yr").value.trim();
+  const terms = termsOf(q);
   // SHOW SOMETHING IMMEDIATELY. This used to read "start typing to search" over
   // an empty panel, which is indistinguishable from broken. With no query we
   // show the best-looking cards we have, so the tool proves itself on load
@@ -969,7 +1037,10 @@ function search(){
     // The full catalogue, best first, paged. Not a curated 24 — Tyler asked for
     // everything to be available, and a showcase that stops at two dozen is the
     // same hard slice wearing a nicer name.
-    const ranked = sortCards(INDEX.filter(c => monPass(c) && ratingPass(c) && streakPass(c)));
+    // The no-query showcase opens on the cards worth looking at. Every card is
+    // now in INDEX, so without this the tool would load on alphabetical commons.
+    const pool = INDEX.filter(c => c.hero && monPass(c) && ratingPass(c) && streakPass(c));
+    const ranked = sortCards(pool.length ? pool : INDEX.filter(c => monPass(c) && ratingPass(c) && streakPass(c)));
     const pages = Math.max(1, Math.ceil(ranked.length / PAGE_SIZE));
     if (page >= pages) page = 0;
     const showcase = ranked.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
@@ -985,7 +1056,7 @@ function search(){
   // The picker and the sort apply in BOTH paths. A filter that works only
   // after you have typed something is worse than no filter.
   const all = sortCards(INDEX.filter(c => monPass(c) && streakPass(c) &&
-    (!q || (c.n + " " + (c.a || "") + " " + c.s).toLowerCase().includes(q)) &&
+    (!terms.length || hits(c, terms)) &&
     (!rar || c.r === rar) && (!yr || c.y === yr)));
   const pages = Math.max(1, Math.ceil(all.length / PAGE_SIZE));
   if (page >= pages) page = 0;
@@ -2873,5 +2944,10 @@ safeWire(function(){ el("share").onclick = async () => { try{ await navigator.sh
 </script>`;
 
   await writeFile(join(ROOT, "research/assets/build.html"), html);
-  console.log(`✓ editor: ${index.length.toLocaleString("en-US")} cards searchable · ${Object.keys(LAYOUTS).length} frames · watermark and credit locked`);
+  // REPORT THE ARTIFACT, NOT THE SOURCE. This printed index.length - the
+  // catalogue size - while the page shipped a filtered subset, so the log
+  // claimed 16,468 searchable cards over an index of 6,725 for as long as the
+  // filter existed. Count the rows that actually went into the file.
+  const shipped = JSON.parse(html.match(/const CARD_ROWS = (\[.*?\]);\n/s)?.[1] ?? "[]").length;
+  console.log(`✓ editor: ${shipped.toLocaleString("en-US")} cards searchable · ${Object.keys(LAYOUTS).length} frames · watermark and credit locked`);
 }
