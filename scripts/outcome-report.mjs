@@ -73,6 +73,19 @@ for (const p of posts) {
 const L = [];
 const say = (s = "") => L.push(s);
 
+// Wrap for the fixed-width report. Long explanations are the point of this
+// script, and a 300-character line is not read.
+function wrap(s, n) {
+  const out = []; let cur = "";
+  for (const w of String(s).split(/\s+/)) {
+    if ((cur + " " + w).trim().length > n && cur) { out.push(cur); cur = w; }
+    else cur = (cur ? cur + " " : "") + w;
+  }
+  if (cur) out.push(cur);
+  return out;
+}
+
+
 // ── THE HEADLINE ───────────────────────────────────────────────────────────
 // Stated first and without hedging. If the answer is that we cannot conclude
 // anything, that IS the finding, and burying it under a table would be the
@@ -216,6 +229,151 @@ if (!eligible.length) {
   say("  Means over n=2 or n=3 are descriptions of these posts, not estimates of");
   say("  the shape. Treat them as a direction to test, never as a result.");
 }
+
+
+// ── 5. THE OPEN HYPOTHESES ─────────────────────────────────────────────────
+// Claims written before anything could be measured properly. Each one is
+// evaluated against the data EVERY RUN rather than carrying a hardcoded
+// verdict, so these upgrade themselves as the log fills instead of needing a
+// human to remember they exist.
+//
+// "STILL OPEN" IS A RESULT, NOT A FAILURE TO PRODUCE ONE. At n=1 settled it is
+// the only honest answer available, and the entire reason this report exists is
+// that a confident answer was manufactured from less than this and had to be
+// withdrawn.
+const words = (s) => String(s ?? "").trim() ? String(s).trim().split(/\s+/).length : null;
+const famCount = (f) => settled.filter(s => family(s.p.shape) === f).length;
+const settledAtHour = (lo, hi) => settled.filter(s => s.p.hourLocal >= lo && s.p.hourLocal <= hi);
+
+const HYPOTHESES = [
+  {
+    id: "pairings-beat-crops",
+    claim: "art pairings outperform single-card crops",
+    check() {
+      const a = famCount("art pairing"), b = famCount("art crop");
+      if (a >= 2 && b >= 2) return null;
+      return "settled posts: art pairing " + a + ", art crop " + b +
+             ". Two settled of EACH shape are needed; comparing one shape's settled post " +
+             "against another's unsettled one is the withdrawn error.";
+    },
+    settledBy: "Two art pairings and two single-card crops, all read at 48h, posted at the same hour.",
+    next: { shape: "single-card crop", hour: "21:15 local", why: "matches the only settled post's hour, so hour is held constant",
+            refutedIf: "the crop's 48h views land within 2x of the pairing's 48h views, or above it" },
+  },
+  {
+    id: "density-over-reach",
+    claim: "conversation density matters more than raw reach",
+    check() {
+      if (settled.length < 2) {
+        return "NOT FALSIFIABLE AS WORDED, and n=" + settled.length + " settled would not settle it anyway. " +
+               "\"Matters more\" names no outcome. Replies per thousand views can be measured; " +
+               "whether it MATTERS more requires an outcome it is being measured against " +
+               "- followers gained, qualified impressions, or newsletter signups - and none " +
+               "of those is joined to a post in this log.";
+      }
+      return "the outcome variable is still undefined - see above.";
+    },
+    settledBy: "Define the outcome first (followers gained per post is the cheapest), record it beside each 48h reading, then compare density against reach across four settled posts.",
+    next: { shape: "any - this one is blocked on definition, not on data", hour: "n/a",
+            refutedIf: "high-density posts show no advantage on the chosen outcome once reach is held constant" },
+  },
+  {
+    id: "evening-beats-midday",
+    claim: "evening posting beats midday",
+    check() {
+      const eve = settledAtHour(17, 23).length, mid = settledAtHour(10, 15).length;
+      return "settled posts by hour: evening " + eve + ", midday " + mid +
+             ". THIS IS THE CLAIM THAT WAS ALREADY WITHDRAWN ONCE - the 122x finding " +
+             "compared one post against itself at two ages. It needs posts at both hours, " +
+             "each read at 48h, before it may be stated again.";
+    },
+    settledBy: "Two posts of the SAME shape at ~12:00 local and two at ~21:15 local, all read at 48h.",
+    next: { shape: "art pairing, the same shape as the settled post", hour: "12:00 local",
+            refutedIf: "the midday post's 48h views land within 2x of the evening post's, which would make the hour effect too small to act on" },
+  },
+  {
+    id: "gm-ban-correct",
+    claim: "the GM ban is correct",
+    check() {
+      return "THE PREMISE COULD NOT BE FOUND. There is no GM ban anywhere in this repo - " +
+             "not in the lints, not in the line engine's refusals, not in house-theses.md. " +
+             "The only GM guidance on record says the OPPOSITE: house-theses.md keeps " +
+             "\"GM [emoji], blank line, one short line\" as a format worth having. One GM post " +
+             "exists (pmt8ossvc, 2026-08-25) and has never been read. A rule cannot be " +
+             "evaluated until somebody writes down what it is.";
+    },
+    settledBy: "First state the ban and where it lives. Then two GM posts and two non-GM posts of the same shape and hour, all read at 48h.",
+    next: { shape: "GM + art-driven pun, the pmt8ossvc shape", hour: "07:00 local",
+            refutedIf: "the GM post's 48h views and reply density both land inside the range of the non-GM posts, which would mean the ban costs reach for nothing" },
+  },
+  {
+    id: "short-captions-win",
+    claim: "short captions beat long ones",
+    check() {
+      const known = settled.filter(s => words(s.p.copy) != null);
+      return "settled posts with their caption text recorded: " + known.length + " of " + settled.length +
+             ". Caption length is not stored for most posts, so this cannot be tested even " +
+             "when the readings arrive. The supporting anecdote - a 31-word draft rewritten " +
+             "to five - is one unmeasured post.";
+    },
+    settledBy: "Record caption word count on every logged post, then compare two settled short-caption posts against two settled long-caption ones at the same shape and hour.",
+    next: { shape: "art pairing with a deliberately long caption, 25+ words", hour: "21:15 local",
+            refutedIf: "the long-caption post's 48h views and reply density both land within 2x of the short-caption settled post" },
+  },
+];
+
+say("");
+say("─ THE OPEN HYPOTHESES ".padEnd(72, "─"));
+say("");
+const openOnes = [];
+for (const h of HYPOTHESES) {
+  const gap = h.check();
+  if (gap == null) {
+    say("  SETTLED?   " + h.claim);
+    say("             the data conditions are met - run the comparison above.");
+  } else {
+    openOnes.push(h);
+    say("  STILL OPEN  " + h.claim);
+    for (const line of wrap(gap, 62)) say("              " + line);
+    say("              WOULD SETTLE IT: " + wrap(h.settledBy, 46).join("\n                               "));
+  }
+  say("");
+}
+say("  " + openOnes.length + " of " + HYPOTHESES.length + " still open. At " + settled.length +
+    " settled reading" + (settled.length === 1 ? "" : "s") + " that is the correct answer,");
+say("  not a shortfall in the analysis.");
+
+
+// ── QUEUE THE NEXT POSTS ───────────────────────────────────────────────────
+// NOT research/pulse/post-bank.json. That file is REGENERATED from price data
+// by post-bank.mjs on every pulse run, so anything written into it by hand is
+// deleted on the next build - the same law that says approved brand tokens
+// live in the generator and not in tokens.css. And NOT data/post-queue.json,
+// which is the send queue: these are experiments to be written and posted
+// deliberately, not drafts waiting for an hour to fire.
+//
+// So they live in their own file, regenerated deterministically from the
+// hypothesis list above. Editing this file by hand will not survive either;
+// change the hypothesis and rerun.
+const queue = {
+  note: "The next post that would settle each open hypothesis. Generated by scripts/outcome-report.mjs - do not hand-edit, change the hypothesis and rerun. This is NOT the send queue (data/post-queue.json) and NOT the generated price post bank (research/pulse/post-bank.json).",
+  generatedAt: new Date().toISOString(),
+  settledReadings: settled.length,
+  posts: openOnes.map(h => ({
+    hypothesis: h.id,
+    claim: h.claim,
+    shape: h.next.shape,
+    hour: h.next.hour,
+    refutedIf: h.next.refutedIf,
+    settledBy: h.settledBy,
+    status: "not written - the caption is Tylers, this records only the design",
+  })),
+};
+await (await import("node:fs/promises")).writeFile(
+  join(ROOT, "data/hypothesis-queue.json"), JSON.stringify(queue, null, 1) + "\n");
+say("");
+say("  " + openOnes.length + " next-post designs written to data/hypothesis-queue.json");
+say("  (not the send queue, and not the generated price post bank - see the file note)");
 
 say("");
 say("─ WHAT THIS REPORT CANNOT SEE ".padEnd(72, "─"));
