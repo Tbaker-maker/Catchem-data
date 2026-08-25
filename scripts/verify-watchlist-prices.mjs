@@ -24,6 +24,10 @@ if (ids.length === 1 && ids[0].startsWith("@")) {
 }
 if (!ids.length) { console.log("usage: node verify-watchlist-prices.mjs <cardId...> | @ids.txt"); process.exit(0); }
 const sleep = ms=>new Promise(r=>setTimeout(r,ms));
+// RESPONSE-AUDIT-OK: /v2/cards/{id} fetches ONE card by its id. A single
+// resource has no totalCount and no page 2 - the pagination rule applies to
+// /v2/cards?q=, which this file does not call. Status IS checked below,
+// including a retry on 429 and 5xx.
 async function ptcg(id, tries=3){ for(let i=0;i<tries;i++){ try{
   const r=await fetch(`https://api.pokemontcg.io/v2/cards/${id}?select=id,name,set,number,tcgplayer`, { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
   if(r.status>=500||r.status===429){await sleep(800*(i+1));continue;}

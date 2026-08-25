@@ -18,6 +18,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { callClaude } from "./lib/claude.mjs";
 
 // Node's fetch has NO default timeout: a host that accepts the connection
 // and never answers hangs this until the runner kills the job. A hung job
@@ -67,14 +68,19 @@ const request = { generatedAt: new Date().toISOString(), date: today,
 let ran = false;
 if (process.env.ANTHROPIC_API_KEY) {
   try {
+    // THE WORST OF THE FOUR. No res.ok, no stop_reason, and 1200 tokens for a
+    // full review pass — then `ran = true` regardless of what came back. A 401
+    // returns valid JSON with no content array, so the text was "", the file
+    // recorded two empty review results, and the run reported a review that
+    // never happened. The same shape as the other three failures: success
+    // asserted, artifact absent.
     const call = async (brief, payload) => {
-      const r = await fetch("https://api.anthropic.com/v1/messages", { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
-        method: "POST",
-        headers: { "content-type": "application/json", "x-api-key": process.env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01" },
-        body: JSON.stringify({ model: "claude-sonnet-4-6", max_tokens: 1200,
-          messages: [{ role: "user", content: `${brief}\n\n${JSON.stringify(payload, null, 1)}` }] }) });
-      const d = await r.json();
-      return (d.content || []).filter(c => c.type === "text").map(c => c.text).join("\n");
+      const { text } = await callClaude({
+        apiKey: process.env.ANTHROPIC_API_KEY,
+        maxTokens: 4000,
+        messages: [{ role: "user", content: `${brief}\n\n${JSON.stringify(payload, null, 1)}` }],
+        label: "review-agents" });
+      return text;
     };
     request.newcomer.result = await call(NEWCOMER_BRIEF, publishedCopy);
     request.redTeam.result = await call(REDTEAM_BRIEF, claims);

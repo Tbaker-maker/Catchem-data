@@ -1,39 +1,46 @@
 {
- "generatedAt": "2026-08-24T03:59:51.746Z",
+ "generatedAt": "2026-08-25T23:49:43.998Z",
  "role": "Keeps the work organised, saved and on track. Silent unless something is genuinely slipping — a day with nothing to say is a day it did its job.",
- "speaking": 4,
+ "speaking": 5,
  "speak": [
   {
    "kind": "unsaved",
-   "what": "6 hand-written file(s) changed and not committed.",
+   "what": "15 hand-written file(s) changed and not committed.",
    "why": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
    "owner": "chat",
    "confidence": "OBSERVED"
   },
   {
    "kind": "ignored",
-   "what": "5 supervisor problem(s) are open.",
+   "what": "8 supervisor problem(s) are open.",
    "why": "Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.",
    "owner": "chat",
    "confidence": "OBSERVED"
   },
   {
+   "kind": "silent stage",
+   "what": "fetch last reported 3 days ago.",
+   "why": "A stage that stopped running is invisible to every guard, because none of them run either. Silence is the one failure nothing else catches.",
+   "owner": "cc",
+   "confidence": "OBSERVED"
+  },
+  {
    "kind": "drift",
-   "what": "14 script(s) are not referenced anywhere: backfill-artists.mjs, build-faq.mjs, build-lines.mjs, build-lore.mjs.",
+   "what": "20 script(s) are not referenced anywhere: artifact-freshness.mjs, backfill-artists.mjs, build-faq.mjs, build-hooks.mjs.",
    "why": "A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.",
    "owner": "chat",
    "confidence": "OBSERVED"
   },
   {
    "kind": "drift",
-   "what": "48 JSON files in research/pulse.",
+   "what": "49 JSON files in research/pulse.",
    "why": "A directory nobody can scan is a directory where something goes missing without being noticed.",
    "owner": "chat",
    "confidence": "OBSERVED"
   }
  ],
  "quiet": [
-  "19 open commitment(s), all recent",
-  "379 commits / 33 written records in the last few days"
+  "23 open commitment(s), all recent",
+  "249 commits / 37 written records in the last few days"
  ]
 }

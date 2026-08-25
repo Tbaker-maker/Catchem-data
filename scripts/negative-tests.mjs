@@ -802,7 +802,10 @@ const CASES = [
       const port = server.address().port;
       const t0 = Date.now();
       let aborted = false;
-      try { await fetch("http://localhost:" + port + "/", { signal: AbortSignal.timeout(1200) }); }
+      // RESPONSE-AUDIT-OK: a reachability probe. ANY answer - 200, 404, 500 -
+  // proves the port is listening, which is the only thing being asked. Reading
+  // the status would tell us nothing this test wants to know.
+  try { await fetch("http://localhost:" + port + "/", { signal: AbortSignal.timeout(1200) }); }
       catch { aborted = true; }
       server.close();
       const ms = Date.now() - t0;

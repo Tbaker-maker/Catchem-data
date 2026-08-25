@@ -35,7 +35,39 @@ const ctx = { fillStyle:"", font:"", textAlign:"", globalAlpha:1, lineWidth:1, s
   fillRect(){}, fillText(){ drawn.push("text"); }, drawImage(){ drawn.push("image"); },
   measureText(t){ return { width: String(t).length * 22 }; },
   save(){}, restore(){}, translate(){}, rotate(){}, beginPath(){}, rect(){}, roundRect(){},
+  // setTransform ARRIVED WITH THE MEMORY SCALE-DOWN (6518243) and this stub was
+  // never told. Every fuzz run since has died with "g.setTransform is not a
+  // function" — and fuzz runs inside generate-pulse, which sits 29 lines above
+  // "Commit updated prices" in the daily workflow. A stub that does not keep up
+  // with the code it imitates fails the real thing.
+  //
+  // The general fix is not this line. It is the check below it: the stub is now
+  // compared against every g.<method>() the artifact actually calls, so the next
+  // canvas call to arrive is named rather than thrown.
+  setTransform(){}, resetTransform(){}, scale(){},
   fill(){}, stroke(){}, clip(){}, createLinearGradient(){ return { addColorStop(){} }; } };
+
+// ── THE STUB MUST KEEP UP WITH THE ARTIFACT ────────────────────────────────
+// Checked before the fuzz runs, so a missing method is REPORTED BY NAME rather
+// than surfacing as a TypeError 3,000 lines into an evaluated page.
+export function stubGaps(html) {
+  const used = new Set([...html.matchAll(/\bg\.([a-zA-Z]+)\s*\(/g)].map(m => m[1]));
+  return [...used].filter(m => typeof ctx[m] !== "function");
+}
+// Named before it is thrown. A stub that has fallen behind the artifact
+// produces a TypeError deep inside an evaluated page, which reads as a bug in
+// the page rather than a gap in the test harness - and that misreading is what
+// let this sit unfixed while it took the daily commit down with it.
+{
+  const gaps = stubGaps(html);
+  if (gaps.length) {
+    console.error("✗ FUZZ STUB IS BEHIND THE ARTIFACT - the page calls canvas methods this harness does not implement:");
+    for (const g of gaps) console.error("   g." + g + "() is called by build.html and missing from the stub");
+    console.error("  Add them to ctx in scripts/fuzz.mjs. The fuzz cannot prove anything until it can run.");
+    process.exit(1);
+  }
+}
+
 const nodes = {};
 const mk = id => nodes[id] = nodes[id] || { id, innerHTML:"", value:"", textContent:"", hidden:false,
   style:{}, dataset:{}, width:0, height:0, disabled:false,

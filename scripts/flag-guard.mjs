@@ -44,11 +44,36 @@ for (const [name, f] of Object.entries(flags)) {
 // 2b — a flag READ but never REGISTERED. This crashed social-posts.mjs every
 // run on 2026-08-23: SITE was migrated to the registry and the key was never
 // added, so flag() threw and took the rest of the pipeline with it.
+//
+// ONLY IN FILES THAT ACTUALLY IMPORT THE REGISTRY HELPER. This check matched
+// any function called flag(), and "flag" is the obvious name for a five-line
+// CLI argument reader — card-relations, read-metrics, experiment, post-queue
+// and originality-guard each declare their own:
+//
+//     const flag = (n) => { const i = args.indexOf("--" + n); ... };
+//
+// Those are local helpers over process.argv. They cannot throw on an
+// unregistered key because there is no registry behind them, and --limit is
+// not a feature gate. The guard reported 36 problems, every one a false
+// positive, AND IT TOOK THE DAILY PRICE PIPELINE DOWN WITH IT: generate-pulse
+// runs this guard, exited 1, and the "Commit updated prices" step is 29 lines
+// further down the workflow and never ran. Six consecutive runs fetched
+// prices, computed heat states, built every page — and committed nothing,
+// because a guard was wrong about code it should not have been reading.
+//
+// A guard that fails on correct code is worse than no guard. It does not just
+// fail to catch things; it stops real work, and the noise trains people to
+// stop reading it.
 {
   const READ_RX = /\bflag\(\s*["'`]([^"'`]+)["'`]\s*\)/g;
+  const IMPORTS_REGISTRY = /from\s+["']\.\/flags\.mjs["']/;
   for (const file of files) {
     if (file === "flags.mjs" || file === "flag-guard.mjs") continue;
     const src = await readFile(join(ROOT, "scripts", file), "utf-8");
+    // A local `const flag = ...` shadows the import even where both exist, so
+    // a file that declares its own is not reading the registry here.
+    if (!IMPORTS_REGISTRY.test(src)) continue;
+    if (/\bconst\s+flag\s*=/.test(src)) continue;
     let m;
     while ((m = READ_RX.exec(src)))
       if (!flags[m[1]]) problems.push(`scripts/${file}: reads flag "${m[1]}" which is not in data/flags.json — flag() will throw and stop the run`);

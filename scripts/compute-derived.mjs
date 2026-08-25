@@ -569,6 +569,12 @@ supplyShifts.sort((a,b) => Math.abs(b.dPct) - Math.abs(a.dPct));
 
 let fx = null;
 try { const r = await fetch("https://api.frankfurter.app/latest?from=USD&to=CAD", { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
+  // WITHOUT THIS, A FAILED CALL STILL NAMED A SOURCE. fetch resolves on a 4xx,
+  // the error body has no rates, and fx became { usdcad: null, source:
+  // "frankfurter.app" } - a record asserting where a number came from when no
+  // number came at all. Null with no provenance is honest; null wearing a
+  // citation is not.
+  if (!r.ok) throw new Error("frankfurter " + r.status);
   const j = await r.json(); fx = { usdcad: j.rates?.CAD ?? null, date: j.date ?? null, source: "frankfurter.app" };
 } catch { fx = null; }
 

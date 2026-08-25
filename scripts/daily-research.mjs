@@ -7,6 +7,7 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { callClaude } from "./lib/claude.mjs";
 
 // Node's fetch has NO default timeout: a host that accepts the connection
 // and never answers hangs this script until the CI runner kills the job.
@@ -40,49 +41,42 @@ ${radar}
 
 Run today's check now. Remember: digest first, then the fenced \`\`\`json radar block ONLY if the radar needs changes.`;
 
-  const res = await fetch("https://api.anthropic.com/v1/messages", { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
-    method: "POST",
-    headers: {
-      "x-api-key": API_KEY,
-      "anthropic-version": "2023-06-01",
-      "content-type": "application/json",
-    },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-6",
-      // 4000 TRUNCATED EVERY SINGLE RUN. The digest alone is ~12KB and the
-      // radar JSON that follows it is another ~2.5K tokens, so the response was
-      // cut off INSIDE the fenced block on 2026-08-18 and every day after. See
-      // the stop_reason check below for why nobody noticed for six days.
-      max_tokens: 12000,
+  // ── A TRUNCATED ANSWER IS NOT AN ANSWER ──────────────────────────────────
+  // The API said so in stop_reason on eight consecutive runs and this script
+  // threw the field away. When a response is cut off at max_tokens the radar
+  // block loses its closing fence; the extractor below requires one, finds
+  // nothing, writes no radar — and the run still prints a tick and exits 0.
+  //
+  // Every digest from 2026-08-18 to 2026-08-25 opens a json fence and never
+  // closes it, all landing within 400 bytes of the same size, because 4000
+  // tokens could not hold a 12KB digest plus a 2.5K-token radar. Eight green
+  // runs, a radar frozen on 2026-08-19, and the only symptom was a date that
+  // read like a quiet week.
+  //
+  // The check now lives in lib/claude.mjs, which every Anthropic caller in this
+  // repo goes through — because three of the four had made the same omission
+  // independently, and a rule kept in four places is kept in one of them.
+  let text = "";
+  try {
+    ({ text } = await callClaude({
+      apiKey: API_KEY,
+      maxTokens: 12000,
       tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 8 }],
       messages: [{ role: "user", content: userMsg }],
-    }),
-  });
-  if (!res.ok) {
-    console.error(`API error ${res.status}: ${(await res.text()).slice(0, 300)}`);
+      label: "daily-research",
+    }));
+  } catch (e) {
+    // The digest is worth reading even when the radar block is cut, so the
+    // partial text is saved — clearly labelled — and the radar is left alone.
+    if (e.name === "TruncatedError") {
+      await saveDigest(e.partialText, "TRUNCATED — response hit max_tokens. The radar block is incomplete and was NOT applied.");
+      console.error("✗ " + e.message);
+      console.error("  Digest saved for reading. Radar NOT written.");
+      process.exit(1);
+    }
+    console.error("✗ " + e.message);
     process.exit(1);
   }
-  const data = await res.json();
-  const text = (data.content || []).filter(b => b.type === "text").map(b => b.text).join("\n");
-
-  // ── A TRUNCATED ANSWER IS NOT AN ANSWER ──────────────────────────────────
-  // The API says so in stop_reason, and this script threw it away. When a
-  // response is cut off at max_tokens the radar block loses its closing fence;
-  // the extractor below requires one, finds nothing, writes no radar — and the
-  // run still prints a tick and exits 0.
-  //
-  // That is exactly what happened. Every digest from 2026-08-18 to 2026-08-25
-  // opens a json fence and never closes it, all of them landing within 400
-  // bytes of the same size, because 4000 tokens could not hold a 12KB digest
-  // plus a 2.5K-token radar. Eight consecutive green runs, a radar frozen on
-  // 2026-08-19, and the only symptom was a date that read like a quiet week.
-  if (data.stop_reason === "max_tokens") {
-    await saveDigest(text, "TRUNCATED — response hit max_tokens. The radar block is incomplete and was NOT applied.");
-    console.error("✗ response hit max_tokens: the radar block is truncated and cannot be trusted.");
-    console.error("  Digest saved for reading. Radar NOT written. Raise max_tokens or shorten the brief.");
-    process.exit(1);
-  }
-  if (!text.trim()) { console.error("✗ empty response"); process.exit(1); }
 
   // AN OPENED FENCE THAT NEVER CLOSES is the same failure arriving by another
   // route — a stop_reason we do not know about yet, or a model that simply

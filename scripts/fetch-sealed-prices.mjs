@@ -426,6 +426,7 @@ const SEARCH_PAGES = 3;
 
 async function searchEbay(token, query, floor = MIN_PRICE, ceiling = MAX_PRICE) {
   const all = [];
+  let lastTotal = null;      // what eBay says the full result set is
   for (let page = 0; page < SEARCH_PAGES; page++) {
     const params = new URLSearchParams({
       q: query,
@@ -453,8 +454,22 @@ async function searchEbay(token, query, floor = MIN_PRICE, ceiling = MAX_PRICE) 
     const data = await res.json();
     const batch = data.itemSummaries || [];
     all.push(...batch);
+    // EBAY TELLS US HOW MANY THERE ARE AND WE WERE NOT LISTENING. SEARCH_PAGES
+    // is 3, so this reads at most 150 of a result set that regularly runs to
+    // hundreds - and the median was computed from that slice with nothing
+    // recorded about what was left behind. That is the same shape as the
+    // truncated radar: the provider stated the size of the thing, the code took
+    // a prefix, and the output claimed to describe the whole.
+    //
+    // Not raising the page count here: sampling 150 is a deliberate rate-limit
+    // choice. Making it VISIBLE is the fix, so a thin or skewed median can be
+    // traced to a cap rather than to the market.
+    if (typeof data.total === "number") lastTotal = data.total;
     if (batch.length < 50) break; // last page
     await new Promise(r => setTimeout(r, QUERY_DELAY_MS));
+  }
+  if (lastTotal != null && lastTotal > all.length) {
+    console.log(`    read ${all.length} of ${lastTotal} eBay results (capped at ${SEARCH_PAGES} pages)`);
   }
   return all;
 }

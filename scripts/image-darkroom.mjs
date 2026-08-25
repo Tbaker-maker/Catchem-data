@@ -104,6 +104,10 @@ if (import.meta.url === (await import("node:url")).pathToFileURL(process.argv[1]
   const { join } = await import("node:path");
   const { tmpdir } = await import("node:os");
   const r = await fetch(process.argv[2], { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
+  // An error page is bytes too. Without this the decoder receives HTML and
+  // fails with something about an unsupported image format, which sends the
+  // reader looking at the image instead of at the 404.
+  if (!r.ok) { console.error("fetch failed: HTTP " + r.status + " for " + process.argv[2]); process.exit(1); }
   const buf = Buffer.from(await r.arrayBuffer());
   const { buffer, coverage, centrePct, skipped, reason } = await darkenBackground(buf);
   const dest = join(tmpdir(), "darkroom-test.png");

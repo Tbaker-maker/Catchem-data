@@ -1,20 +1,20 @@
 {
- "generatedAt": "2026-08-25T02:35:36.939Z",
+ "generatedAt": "2026-08-25T23:49:41.129Z",
  "date": "2026-08-25",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
   "breaker: 6 finding(s)",
   "falsifier: 0 finding(s)",
-  "correction-hunter: 4 finding(s)",
+  "correction-hunter: 5 finding(s)",
   "review-agents: 0 finding(s)",
   "decision-audit: 0 finding(s)",
   "designer: 12 finding(s)",
   "theme-scout: 22 finding(s)",
-  "teacher: 14 finding(s)",
+  "teacher: 15 finding(s)",
   "api-strategist: 8 finding(s)",
   "compliance: 0 finding(s)",
-  "security: 1 finding(s)",
-  "steward: 4 finding(s)",
+  "security: 0 finding(s)",
+  "steward: 5 finding(s)",
   "platform: 10 finding(s)",
   "anomaly: 0 finding(s)",
   "creator: 15 finding(s)",
@@ -29,11 +29,13 @@
   "anomaly: clean run — nothing failed, which is the point of it"
  ],
  "problems": [
-  "correction-hunter: FARMING — findings climbed 12 → 16 → 20 → 26 across four runs with nothing resolved. Volume is not work.",
-  "correction-hunter: BROKEN RECORD — 16 finding(s) repeated three runs running (e.g. \"f0\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
-  "designer: BROKEN RECORD — 6 finding(s) repeated three runs running (e.g. \"medium::35 distinct colours\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
+  "correction-hunter: BROKEN RECORD — 3 finding(s) repeated three runs running (e.g. \"gone::Umbreon VMAX\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
+  "designer: BROKEN RECORD — 4 finding(s) repeated three runs running (e.g. \"medium::35 distinct colours\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "theme-scout: BROKEN RECORD — 22 finding(s) repeated three runs running (e.g. \"the one-off::Ken Sugimori drew Ampharos exactly on\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
-  "teacher: BROKEN RECORD — 14 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
+  "teacher: FARMING — findings climbed 14 → 14 → 14 → 15 across four runs with nothing resolved. Volume is not work.",
+  "teacher: BROKEN RECORD — 13 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
+  "teacher: OVER-BUDGET — 15 findings against a ceiling of 14. An unreadable list is an unread list.",
+  "steward: FARMING — findings climbed 4 → 4 → 4 → 5 across four runs with nothing resolved. Volume is not work.",
   "creator: OVER-BUDGET — 15 findings against a ceiling of 10. An unreadable list is an unread list."
  ],
  "workforce": [
@@ -75,13 +77,13 @@
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
   },
   {
-   "agent": "theme-scout",
-   "finding": "every finding from a week ago is still open (22).",
+   "agent": "correction-hunter",
+   "finding": "every finding from a week ago is still open (3).",
    "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
-   "agent": "api-strategist",
-   "finding": "every finding from a week ago is still open (7).",
+   "agent": "theme-scout",
+   "finding": "every finding from a week ago is still open (22).",
    "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
@@ -95,19 +97,9 @@
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
   },
   {
-   "agent": "steward",
-   "finding": "runs daily and has returned the same count (4) four runs running.",
-   "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
-  },
-  {
    "agent": "platform",
    "finding": "runs daily and has returned the same count (10) four runs running.",
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
-  },
-  {
-   "agent": "platform",
-   "finding": "every finding from a week ago is still open (10).",
-   "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
    "agent": "anomaly",
@@ -479,7 +471,7 @@
   {
    "from": "platform",
    "owner": "tyler",
-   "what": "[YouTube] the sealed market — \"The whole sealed market in one number: 98.8.\"",
+   "what": "[YouTube] the sealed market — \"The whole sealed market in one number: 98.2.\"",
    "do": "YouTube rewards a question somebody is already typing into search. We can answer three of the recurring ones with data nobody else holds, which is the whole reason to be here rather than reacting to other people's news.",
    "score": 33,
    "band": "NOTE ONLY",
@@ -511,24 +503,8 @@
   {
    "from": "designer",
    "owner": "chat",
-   "what": "build.html: the accent colour appears 28 times",
+   "what": "build.html: the accent colour appears 44 times",
    "do": "Spend it in two places: the active state and the one primary action. Everything else greys.",
-   "score": 30,
-   "band": "NOTE ONLY",
-   "selfScore": 30,
-   "demotions": [],
-   "components": {
-    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
-    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
-    "actionable": "SOON (14) — clear what to do, needs a slot",
-    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
-   }
-  },
-  {
-   "from": "teacher",
-   "owner": "chat",
-   "what": "steward: an incident in your domain: \"Shipped \"177 sealed products, repriced every single day\" onto a public landing page while \"",
-   "do": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
    "score": 30,
    "band": "NOTE ONLY",
    "selfScore": 30,
@@ -573,9 +549,25 @@
    }
   },
   {
+   "from": "teacher",
+   "owner": "chat",
+   "what": "domain-plausibility: an incident in your domain: \"The first Catch'em Update draft read \"151 Ultra Premium Collection is up 7500% this week\" \"",
+   "do": "Would you catch this today? If yes, what specifically would fire. If no, what would you need?",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
    "from": "steward",
    "owner": "chat",
-   "what": "6 hand-written file(s) changed and not committed.",
+   "what": "14 hand-written file(s) changed and not committed.",
    "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -607,7 +599,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "14 script(s) are not referenced anywhere: backfill-artists.mjs, build-faq.mjs, build-lines.mjs, build-lore.mjs.",
+   "what": "20 script(s) are not referenced anywhere: artifact-freshness.mjs, backfill-artists.mjs, build-faq.mjs, build-hooks.mjs.",
    "do": "A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -623,7 +615,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "48 JSON files in research/pulse.",
+   "what": "49 JSON files in research/pulse.",
    "do": "A directory nobody can scan is a directory where something goes missing without being noticed.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -655,7 +647,7 @@
   {
    "from": "api-strategist",
    "owner": "cc",
-   "what": "5 places fetch one item at a time inside a loop",
+   "what": "6 places fetch one item at a time inside a loop",
    "do": "check whether each endpoint supports a set, page or id-list parameter before scaling the loop up",
    "score": 30,
    "band": "NOTE ONLY",
@@ -717,6 +709,22 @@
    }
   },
   {
+   "from": "steward",
+   "owner": "cc",
+   "what": "fetch last reported 3 days ago.",
+   "do": "A stage that stopped running is invisible to every guard, because none of them run either. Silence is the one failure nothing else catches.",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
    "from": "theme-scout",
    "owner": "tyler",
    "what": "6 Pokémon share the \"ite\" ending",
@@ -751,24 +759,8 @@
   {
    "from": "api-strategist",
    "owner": "tyler",
-   "what": "the paid provider is called from 142 places",
+   "what": "the paid provider is called from 166 places",
    "do": "list what ONLY the paid provider gives us; if that list is short, either use more of it or stop paying for it",
-   "score": 30,
-   "band": "NOTE ONLY",
-   "selfScore": 30,
-   "demotions": [],
-   "components": {
-    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
-    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
-    "actionable": "SOON (14) — clear what to do, needs a slot",
-    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
-   }
-  },
-  {
-   "from": "security",
-   "owner": "tyler",
-   "what": "Anthropic key found in scripts/_leaktest.mjs",
-   "do": "Revoke it first, then remove it. Revoking comes first because removal does not un-share what was already shared.",
    "score": 30,
    "band": "NOTE ONLY",
    "selfScore": 30,

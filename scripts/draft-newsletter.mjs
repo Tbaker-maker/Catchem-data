@@ -13,6 +13,7 @@
 import { readFile, writeFile, mkdir, readdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { callClaude } from "./lib/claude.mjs";
 
 // Node's fetch has NO default timeout: a host that accepts the connection
 // and never answers hangs this script until the CI runner kills the job.
@@ -80,15 +81,20 @@ heat report's "reads" array; quarantined SKUs do not exist to you; unknown
 
   const API_KEY = process.env.ANTHROPIC_API_KEY;
   if (!API_KEY) { console.error("Missing ANTHROPIC_API_KEY"); process.exit(1); }
-  const res = await fetch("https://api.anthropic.com/v1/messages", { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
-    method: "POST",
-    headers: { "x-api-key": API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-    body: JSON.stringify({ model: "claude-sonnet-4-6", max_tokens: 4000,
-      messages: [{ role: "user", content: prompt }] }),
-  });
-  if (!res.ok) { console.error(`API ${res.status}: ${(await res.text()).slice(0,300)}`); process.exit(1); }
-  const data = await res.json();
-  const text = (data.content || []).filter(b => b.type === "text").map(b => b.text).join("\n");
+  // Through lib/claude.mjs, which refuses a truncated answer. This call used
+  // 4000 tokens with no stop_reason check — the same omission that left the
+  // release radar frozen for eight days while every run reported success. A
+  // newsletter cut off mid-sentence is worse than no newsletter: it looks
+  // finished.
+  let text;
+  try {
+    ({ text } = await callClaude({ apiKey: API_KEY, maxTokens: 12000,
+      messages: [{ role: "user", content: prompt }], label: "draft-newsletter" }));
+  } catch (e) {
+    console.error("✗ " + e.message);
+    if (e.name === "TruncatedError") console.error("  Nothing was written. The draft would have been incomplete.");
+    process.exit(1);
+  }
   const out = join(ROOT, "research", "drafts", `${today}-${TYPE}.md`);
   await writeFile(out, text + "\n");
   console.log(`✓ DRAFT written: research/drafts/${today}-${TYPE}.md — human review required before any send`);

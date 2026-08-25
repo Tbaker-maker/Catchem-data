@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-08-24T03:59:58.503Z",
- "checked": 40,
+ "generatedAt": "2026-08-25T23:49:47.368Z",
+ "checked": 44,
  "cannotCheck": "Whether the card LOOKS right — clipping, overlap, contrast, collisions. That needs eyes on the rendered PNG, every time, without exception.",
  "problems": [
   {
@@ -45,6 +45,11 @@
   },
   {
    "card": "mint-cards.mjs",
+   "what": "builds an image URL from a template",
+   "why": "Image hosts differ per set. A constructed path 404s silently and the host answers with a card back, which renders fine and checks fine. Read the URL from the source data instead."
+  },
+  {
+   "card": "seam-check.mjs",
    "what": "builds an image URL from a template",
    "why": "Image hosts differ per set. A constructed path 404s silently and the host answers with a card back, which renders fine and checks fine. Read the URL from the source data instead."
   }

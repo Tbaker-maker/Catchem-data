@@ -26,6 +26,11 @@ const TMP = join(ROOT, "data/.x-request-token.json");   // gitignored via data/?
 const key = (process.env.X_API_KEY || "").trim();
 const secret = (process.env.X_API_SECRET || "").trim();
 
+// RESPONSE-AUDIT-OK: this is the OAuth token endpoint, which answers in
+// form-encoded key/value pairs, not JSON. It has no errors[] array to read -
+// a failure arrives as a non-2xx status, which r.ok below does check. The
+// errors[] rule applies to the v2 JSON API, where a 200 can carry partial
+// failure.
 async function form(url, header, body) {
   const r = await fetch(url, {
     method: "POST",
