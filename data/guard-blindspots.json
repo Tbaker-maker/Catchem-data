@@ -362,6 +362,12 @@
    "coveredBy": "Causes: nothing automated, and nothing that could be. Qualified impressions: a human opening Creator Studio, queued to ask-eyes. Hand-posted coverage: nothing yet - it needs a backfill path that takes a tweet id and adds a sent row, which does not exist.",
    "advisoryOnly": "Registered in fleet.mjs as blocking:false on purpose. Its most common correct output is that the data cannot answer the question, and a guard that halts a build for that would be halting it for the normal state of an honest log.",
    "reviewed": "2026-08-25"
+  },
+  "search-gauntlet.mjs": {
+   "cannotCatch": "IT TESTS THAT RELATIONS ARE TRUE IN OUR CATALOGUE. IT NEVER TESTS THAT OUR CATALOGUE IS TRUE. Every check re-derives a claim from the same rows the claim was built from, so a wrong artist credit in card-catalogue.json passes every assertion here and ships as a confident, verified-looking sentence in a post. The data is upstream of this guard and this guard cannot see upstream. It also cannot see: whether a query returns the card a PERSON meant, only whether it returns the card the query describes; whether the relation chosen is the INTERESTING one, since it ranks nothing; and whether the editor renders any of this, because it reads the index out of build.html and never runs the page.",
+   "coveredBy": "Catalogue truth: the pokemontcg.io verification ritual in card-composite.mjs, a human reading the printed credit line on the rendered card, and nothing else. That ritual is per-post and manual, and it is the only thing standing between a bad row and a public claim.",
+   "performanceNote": "The mobile timing is a PROJECTION, not a measurement. Worst-case query is measured on the desk machine and multiplied by 4 for a mid-range phone. No phone has ever run it. If the multiplier is wrong the budget is wrong.",
+   "reviewed": "2026-08-25"
   }
  }
 }

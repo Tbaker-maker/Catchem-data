@@ -33,7 +33,7 @@ Type what you want to post. It hands back cards.
 | **61 themes** | across 9 groups, every one verified to produce |
 | **207 sealed products** | tracked daily by the bot |
 | **50 sourced facts** | each with a falsifier and a recheck date |
-| **53 guards** | each with a declared blind spot |
+| **54 guards** | each with a declared blind spot |
 
 ---
 

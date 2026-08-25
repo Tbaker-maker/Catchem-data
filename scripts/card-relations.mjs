@@ -222,7 +222,13 @@ const RELATION_FNS = {
 
   SAME_YEAR(c, ix) {
     if (!c.year) return [];
-    const ids = (ix.byYear.get(c.year) ?? []);
+    // STRING KEY, NUMBER LOOKUP. push() stringifies every key so the map holds
+    // "2000", and c.year is a Number, so Map.get(2000) never matched and
+    // SAME_YEAR silently returned nothing for all 16,468 cards. Found by
+    // search-gauntlet 2026-08-25, which asserts every relation type produces at
+    // least one instance - a relation that never fires looks exactly like one
+    // that has nothing to say.
+    const ids = (ix.byYear.get(String(c.year)) ?? []);
     if (ids.length < 2) return [];
     return [rel("SAME_YEAR", `${words(ids.length)} cards printed in ${c.year}.`, ids,
       { year: c.year, count: ids.length })];
