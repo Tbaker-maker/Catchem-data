@@ -1,6 +1,8 @@
 // build-creators-page.mjs — Catch'em Creators.
 //
-// The Arita post landed: 154 views, 9 likes and an unsolicited reply from a
+// The Arita post landed: 154 views AT 0.19h - twelve minutes after posting,
+// below the 1h floor. It settled at 127,200 at 59.8h. 9 likes and an
+// unsolicited reply from a
 // verified creator, posted at a bad hour from an account coming back after a
 // break. One post is an anecdote, not a model — but it is the first thing we
 // have made that somebody outside this project reacted to.

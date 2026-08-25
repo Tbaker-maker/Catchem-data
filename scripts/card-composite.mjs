@@ -100,10 +100,17 @@ const cat = await J("data/card-catalogue.json") ?? { cards: {} };
 //              captioned as a QUESTION so the reader is invited to disagree.
 // The question framing is the whole point. A post that starts an argument
 // beats one that ends it, and a question cannot be wrong.
-// ART MODE (Tyler, 2026-08-23). His Charmander post did 791 views and 38 likes
-// against the Arita pairing's 154 and 9 - five times over, same account, same
-// week. The difference was cropped card ART with a two-word hook: no frame, no
-// captions, no data at all.
+// ART MODE (Tyler, 2026-08-23). THE REACH ARGUMENT FOR THIS IS WITHDRAWN,
+// 2026-08-25. It read: the Charmander post did 791 views against the Arita
+// pairing's 154, five times over, same account, same week.
+//
+// Both were mid-climb readings - 791 at 25h, 154 at twelve minutes. Settled at
+// 48h the crop is 867 and the pairing 127,200, so the pairing wins by 147x and
+// the claim was backwards.
+//
+// ART MODE STILL EARNS ITS PLACE, on the reasons that were never about reach:
+// Tyler asked for it, the artwork is the content, and a cropped illustration is
+// what he wants to post. It is a preference and an aesthetic, not a result.
 //
 // THE SAFETY RULE: crop ONLY cards where the art IS the whole card - Illustration
 // Rare and Special Illustration Rare, 687 of them. On a classic card the art sits

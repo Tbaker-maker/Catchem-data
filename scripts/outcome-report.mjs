@@ -37,7 +37,8 @@ const now = Date.now();
 
 // ── THE DERIVED METRIC, COMPUTED AND NEVER STORED ──────────────────────────
 // Conversation density and reach are different axes. The Charmander crop took
-// 14 replies on 791 views; the Arita pairing took 34 on 127,200 — the same
+// 14 replies on 867 views at 85h; the Arita pairing took 34 on 127,200 at
+// 59.8h — the same
 // order of replies against 160x the audience. A log that surfaces only views
 // cannot see that, and the two numbers imply opposite content strategies: the
 // rewards threshold is counted in qualified impressions, and community trust
@@ -57,7 +58,10 @@ const pad = (s, n) => String(s).padEnd(n);
 // reason, and would keep being the right answer after the data improved.
 const family = (s) => String(s ?? "unlabelled").split("—")[0].trim().toLowerCase();
 
-const usable = (m) => m.atHours != null && m.atHours >= FLOOR_HOURS;
+// belowFloor is now written onto the reading itself, so the file says a
+// reading is unusable rather than leaving every reader to work it out from
+// the age. Both are checked: the flag is the record, the age is the rule.
+const usable = (m) => m.belowFloor !== true && m.atHours != null && m.atHours >= FLOOR_HOURS;
 const settledOf = (p) => (p.metrics ?? []).find(m => m.checkpoint === SETTLED_AT && usable(m));
 
 const settled = [], pending = [], unmeasured = [];

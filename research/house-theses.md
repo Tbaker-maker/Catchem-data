@@ -1310,7 +1310,9 @@ actions from opening the page.
 time to post. We gotta perfect this model and it needs to be super easy for
 creators to use."
 
-FIRST REAL SIGNAL: 154 views, 9 likes, one unsolicited reply from a verified
+FIRST REAL SIGNAL: 154 views at 0.19h — twelve minutes after posting, below
+the 1h floor and excluded from analysis; the post settled at 127,200 at 59.8h —
+9 likes, one unsolicited reply from a verified
 creator, posted at a poor hour from an account returning after a break. **One
 post is an anecdote, not a model** — it sets a baseline, and the platform
 agents' blind spot moves from "no data at all" to "one observation", which is
@@ -1479,9 +1481,23 @@ there rather than from a search.
 better without card format. If it confuses the system and sets us up for AI
 slop, forget it and just use the full cards."
 
-THE SIGNAL: his Charmander post did 791 views and 38 likes. The Arita pairing
-did 154 and 9. Same account, same week - **five times the reach from cropped
-card art and a two-word hook.** No frame, no captions, no data.
+THE SIGNAL, WITHDRAWN AND REVERSED 2026-08-25. It read: the Charmander post did
+791 views and 38 likes, the Arita pairing did 154 and 9, five times the reach
+from cropped card art and a two-word hook.
+
+**BOTH NUMBERS WERE READING AGES, NOT RESULTS.** The 154 was read twelve minutes
+after posting and the 791 at 25 hours. Settled at 48h and read from the API:
+
+  Charmander, cropped art + two-word hook     867 views at 85h
+  Arita, two-card pairing                 127,200 views at 59.8h
+
+**The pairing did not lose by five times. It won by a hundred and forty-seven.**
+The conclusion drawn here was the exact inverse of what the posts did, and it
+was drawn from numbers taken before either post had finished climbing.
+
+WHAT SURVIVES: nothing about reach. The argument below about cropped art not
+being slop is about ORIGINALITY and stands on its own reasoning, not on these
+figures.
 
 WHY IT IS NOT SLOP: the image is a real illustration from a real card,
 unmodified in content. The risk here is aesthetic, not factual - a bad crop
@@ -1740,11 +1756,19 @@ shape and the numbers. **Under twenty entries a difference between shapes is
 noise wearing a number**, and the tool says so on every run rather than
 flattering a small sample.
 
-WHAT THE FIRST TWO ENTRIES ALREADY SAY, and it is uncomfortable: the **art crop
-with a two-word hook did 791 views. The carefully constructed artist pairing did
-154.** Five times, same account, same week. We have spent the day building
-elaborate multi-card formulas and the best-performing thing we have made is one
-cropped card and four words.
+WHAT THE FIRST TWO ENTRIES SAID, and it was wrong: the art crop with a two-word
+hook did 791 views, the carefully constructed artist pairing did 154, five
+times, and the best-performing thing we had made was one cropped card and four
+words.
+
+**WITHDRAWN 2026-08-25. It was uncomfortable and it was also an artefact.** Both
+figures were mid-climb readings. At 48h the pairing is at 127,200 and the crop
+at 867. The elaborate multi-card format is not the thing that lost; it is the
+only thing in this log that has ever reached beyond the follower count.
+
+The lesson worth keeping is not about crops. It is that a number read before a
+post settles will happily argue for whichever conclusion you were already
+drifting toward.
 
 That is two data points and it may reverse entirely. **It is also the first
 evidence we have ever had, and it points away from the direction we were
@@ -1884,7 +1908,8 @@ than deleted because the reasoning error is the useful part. Withdrawal logged
 in data/corrections-log.json, 2026-08-25.
 
 WHAT IT CLAIMED: the Arita pairing — Base Charizard beside the 151 Blastoise
-ex, "Twenty-four years apart. Same illustrator." — did **154 views** at a bad
+ex, "Twenty-four years apart. Same illustrator." — did **154 views at 0.19h**, a
+reading taken twelve minutes after posting and below the 1h floor, at a bad
 hour, and **18,800** reposted at 9:18pm. Same cards, same caption, same format,
 122 times the reach.
 
@@ -2114,10 +2139,12 @@ THE EVIDENCE, from the only three posts with real numbers, and none of them
 asserts anything:
 - **127,200 at 59.8h** — *"It's wild to think the original Charizard artist
   is still making cards to this day"*: a shared observation with an implicit "right?"
-- **791 at 25.02h** — *"Late night check-in. Who's still awake?"*: a question
+- **867 at 85h** — *"Late night check-in. Who's still awake?"*: a question
   answerable in one word
-- **93 at 0.03h** — *"Only Good Vibes. Pass it along & see it grow"*: a call to
+- **926 at 48.2h** — *"Only Good Vibes. Pass it along & see it grow"*: a call to
   participate
+- **941 at 59h** — *"how i feel after coding for 17-18 hours straight"*: a mood
+  hook, and the one that was written off hardest
 
 **THESE THREE NUMBERS ARE NOT COMPARABLE, AND THE AGES ARE PRINTED HERE SO THAT
 IS IMPOSSIBLE TO FORGET AGAIN.** 93 views was read 1.7 minutes after posting;
@@ -2370,7 +2397,8 @@ without ever doing the division. Both halves were wrong.**
 
 @LongedEth has **21,554 followers**, read from the X API on 2026-08-25. So:
 
-- 18,800 views  = **0.87x** follower count — NOT in Crambo's company. Below
+- 18,800 views at 15.31h (unsettled) = **0.87x** follower count — NOT in
+  Crambo's company. Below
   it, at 41% of his ratio. The passage asserted the opposite of its own evidence.
 - 127,200 views = **5.90x** follower count — **2.8x Crambo's ratio.**
 
@@ -2481,7 +2509,9 @@ the **median of the last several settled posts IS the answer** — measured rath
 than remembered. `typicalViewsFrom()` already computes it and requires at
 least three settled posts before it will say anything.
 
-RUN AGAINST OUR OWN LOG TODAY it returns **154 median views**, which is honest
+RUN AGAINST OUR OWN LOG TODAY it returned **154 median views** from a 0.19h
+reading below the floor. Recomputed on settled 48h readings only it is nearer
+**930**, and the point below is unchanged: a median of four is honest
 and also shows the limit: the median is dragged down by early posts at bad
 hours, and five posts is not a distribution. That is an argument for closing the
 loop, not for ignoring the number.

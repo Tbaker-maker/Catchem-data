@@ -1,5 +1,5 @@
 {
- "law": "Readings are only comparable at equal age. Compare 48h to 48h. Any comparison across different measurement ages is measuring age.",
+ "law": "Readings are only comparable at equal age. Compare 48h to 48h. Any comparison across different measurement ages is measuring age. Readings under 1h carry belowFloor:true and are excluded from analysis - two of them were treated as failures for three days.",
  "posts": [
   {
    "id": "2026-08-22-arita-blastoise",
@@ -28,7 +28,9 @@
      "qualifiedImpressions": null,
      "qualifiedImpressionsSource": null,
      "source": "manual",
-     "atHoursCorrection": "was 0.2, recomputed against the API post time"
+     "atHoursCorrection": "was 0.2, recomputed against the API post time",
+     "belowFloor": true,
+     "belowFloorWhy": "Read 0.19h after posting, under the 1h floor. A reading this early measures how fast the page loaded, not how the post did. EXCLUDED FROM ANALYSIS."
     },
     {
      "atHours": 15.31,
@@ -43,7 +45,8 @@
      "qualifiedImpressions": null,
      "qualifiedImpressionsSource": null,
      "source": "manual",
-     "atHoursCorrection": "was 15.33, recomputed against the API post time"
+     "atHoursCorrection": "was 15.33, recomputed against the API post time",
+     "belowFloor": false
     },
     {
      "atHours": 59.78,
@@ -58,7 +61,8 @@
      "qualifiedImpressions": null,
      "qualifiedImpressionsSource": null,
      "source": "manual-screenshot",
-     "atHoursCorrection": "was 59.8, recomputed against the API post time"
+     "atHoursCorrection": "was 59.8, recomputed against the API post time",
+     "belowFloor": false
     }
    ],
    "mergedFrom": [
@@ -103,7 +107,8 @@
      "qualifiedImpressions": null,
      "qualifiedImpressionsSource": null,
      "source": "manual",
-     "atHoursCorrection": "was 25.02, recomputed against the API post time"
+     "atHoursCorrection": "was 25.02, recomputed against the API post time",
+     "belowFloor": false
     },
     {
      "atHours": 85,
@@ -114,7 +119,8 @@
      "reposts": 1,
      "bookmarks": null,
      "source": "api",
-     "checkpoint": 48
+     "checkpoint": 48,
+     "belowFloor": false
     }
    ],
    "measured": {
@@ -154,7 +160,9 @@
      "qualifiedImpressions": null,
      "qualifiedImpressionsSource": null,
      "source": "manual",
-     "atHoursCorrection": "was -0.06, recomputed against the API post time"
+     "atHoursCorrection": "was -0.06, recomputed against the API post time",
+     "belowFloor": true,
+     "belowFloorWhy": "Read 0.07h after posting, under the 1h floor. A reading this early measures how fast the page loaded, not how the post did. EXCLUDED FROM ANALYSIS."
     },
     {
      "atHours": 59,
@@ -165,7 +173,8 @@
      "reposts": 0,
      "bookmarks": null,
      "source": "api",
-     "checkpoint": 48
+     "checkpoint": 48,
+     "belowFloor": false
     }
    ],
    "measured": {
@@ -203,7 +212,9 @@
      "bookmarks": null,
      "qualifiedImpressions": null,
      "qualifiedImpressionsSource": null,
-     "source": "manual"
+     "source": "manual",
+     "belowFloor": true,
+     "belowFloorWhy": "Read 0.03h after posting, under the 1h floor. A reading this early measures how fast the page loaded, not how the post did. EXCLUDED FROM ANALYSIS."
     },
     {
      "atHours": 48.16,
@@ -214,7 +225,8 @@
      "reposts": 4,
      "bookmarks": null,
      "source": "api",
-     "checkpoint": 48
+     "checkpoint": 48,
+     "belowFloor": false
     }
    ],
    "measured": {

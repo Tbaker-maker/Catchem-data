@@ -13,7 +13,7 @@
 // This is the cheapest possible fix: log what shape went out, and its numbers.
 // After roughly twenty entries the ranking stops being a hypothesis.
 //
-//   node scripts/log-outcome.mjs --shape "the pair" --views 154 --likes 9 \
+//   node scripts/log-outcome.mjs --shape "the pair" --views 127200 --likes 2500 \
 //     --replies 1 --note "Arita Charizard/Blastoise"
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";

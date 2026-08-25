@@ -23,6 +23,21 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "utf-8")); } catch { return null; } };
 const R = async p => { try { return await readFile(join(ROOT, p), "utf-8"); } catch { return ""; } };
 
+// SHARED BY EVERY BLOCK BELOW. These were declared inside the stale-metric
+// block, so the next guard to use them threw ReferenceError - and this file
+// still wrote its report and still exited, so a guard that could not run at
+// all looked exactly like a guard that found nothing.
+const SCANNED_EXTS = new Set([".md", ".mjs", ".js", ".html"]);
+const hasFigure = (line, form) => {
+  let i = -1;
+  while ((i = line.indexOf(form, i + 1)) !== -1) {
+  const before = line[i - 1] ?? "", after = line[i + form.length] ?? "";
+  const glued = (c, next) => /[\d,]/.test(c) || (c === "." && /\d/.test(next ?? ""));
+    if (!glued(before, line[i - 2]) && !glued(after, line[i + form.length + 1])) return true;
+  }
+  return false;
+};
+
 const problems = [];
 const P = (cls, what, why, err) => problems.push({ errorClass: cls, what, why, ledgerRef: err });
 
@@ -333,16 +348,6 @@ const scripts = (await readdir(join(ROOT, "scripts"))).filter(f => f.endsWith(".
   // now flagged its own notes three times, and its own lesson is that a guard
   // which cannot tell an implementation from a note about it trains people to
   // delete the notes.
-  const SCANNED_EXTS = new Set([".md", ".mjs", ".js", ".html"]);
-  const hasFigure = (line, form) => {
-    let i = -1;
-    while ((i = line.indexOf(form, i + 1)) !== -1) {
-      const before = line[i - 1] ?? "", after = line[i + form.length] ?? "";
-      const glued = (c, next) => /[\d,]/.test(c) || (c === "." && /\d/.test(next ?? ""));
-      if (!glued(before, line[i - 2]) && !glued(after, line[i + form.length + 1])) return true;
-    }
-    return false;
-  };
   const outcomes = await J("data/post-outcomes.json") ?? { posts: [] };
   const MARKERS = /withdrawn|corrected|used to say|what it claimed|still climbing|unsettled|mid-climb|understated|superseded|not a settled|was read|dead number|no longer/i;
   const stale = [];
@@ -480,6 +485,81 @@ const scripts = (await readdir(join(ROOT, "scripts"))).filter(f => f.endsWith(".
   }
 }
 
+// ── ERROR: A VIEW COUNT CITED WITHOUT THE AGE IT WAS READ AT ───────────────
+// The second settled-value error in a week, and worse than the first. Slakoth
+// was read at four minutes and logged 124 views; Sunflora at under two minutes
+// and logged 93. Both were treated as failures for three days. Settled at 48h
+// they are 941 and 926 - the same band as the crop that was being called the
+// success. A claim was then built on top saying cropped art beat the pairing
+// five to one, and the settled numbers reverse it: the pairing wins by 147x.
+//
+// THE RULE: a view count is meaningless without the age it was read at. A
+// figure from a reading that has not settled may only appear beside that age,
+// or beside a withdrawal.
+//
+// WHY THIS IS NOT THE STALE-METRIC CLASS: that one only looks at values of
+// 1,000 or more, deliberately, because smaller numbers are everywhere in a card
+// catalogue. Every figure in this incident was under 1,000, which is exactly
+// why it slipped through. So this one is narrower instead of larger: it fires
+// only where the number sits on a line that is talking about VIEWS.
+{
+  const outcomes2 = await J("data/post-outcomes.json") ?? { posts: [] };
+  const AGE = /\b\d+(\.\d+)?\s*h\b|\bhours?\s+(after|old)|\bminutes?\s+(after|old)|at\s+\d+(\.\d+)?h|reading age|belowFloor/i;
+  const WITHDRAWN = /withdrawn|reversed|corrected|mid-climb|before .* settled|not settled|unsettled|artefact|artifact/i;
+  const unsettled = [];
+  for (const post of outcomes2.posts ?? []) {
+    for (const m of post.metrics ?? []) {
+      if (m.checkpoint === 48 && m.belowFloor !== true) continue;   // settled is citable
+      if (typeof m.views !== "number" || m.views <= 0) continue;
+      unsettled.push({ post: post.id, views: m.views, atHours: m.atHours, below: m.belowFloor === true });
+    }
+  }
+  if (unsettled.length) {
+    const files = [];
+    const walk = async (dir) => {
+      for (const e of await readdir(join(ROOT, dir), { withFileTypes: true })) {
+        const rel = `${dir}/${e.name}`;
+        if (/node_modules|\.git$/.test(rel)) continue;
+        if (rel.includes("research/reports")) continue;          // dated records
+        if (rel.endsWith("data/post-outcomes.json")) continue;   // the source itself
+        if (rel.endsWith("data/corrections-log.json")) continue; // the withdrawal record
+        // GENERATED ARTIFACTS ARE NOT SOURCES. build.html, corrections.html and
+        // the pulse json are rebuilt from files this guard already reads, so
+        // flagging both doubles every finding and points at the copy rather
+        // than the thing to edit.
+        if (rel.includes("research/assets") || rel.includes("research/pulse")) continue;
+        if (e.isDirectory()) await walk(rel);
+        else if (SCANNED_EXTS.has(e.name.slice(e.name.lastIndexOf(".")))) files.push(rel);
+        else if (e.name.endsWith(".json")) files.push(rel);
+      }
+    };
+    await walk(".");
+    for (const f of files) {
+      const src = await R(f.replace(/^\.\//, ""));
+      if (!src) continue;
+      const lines = src.split(/\r?\n/);
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (!/view/i.test(line)) continue;                       // must be about views
+        // A minified single-line file contains every word in the project, so
+        // "view" is always present and every number looks like a citation.
+        if (line.length > 400) continue;
+        for (const u of unsettled) {
+          if (!hasFigure(line, String(u.views)) && !hasFigure(line, u.views.toLocaleString("en-US"))) continue;
+          // LOOK FURTHER FORWARD THAN BACK. A withdrawal FOLLOWS the claim it
+          // withdraws - you quote the wrong thing, then say why it was wrong -
+          // so a symmetric window flags a correctly-withdrawn passage.
+          const ctx = lines.slice(Math.max(0, i - 5), i + 9).join("\n");
+          if (AGE.test(ctx) || WITHDRAWN.test(ctx)) continue;
+          P("unsettled view count", `${f}:${i + 1} cites ${u.views} views for ${u.post} with no reading age`,
+            `That reading was taken at ${u.atHours}h${u.below ? " - below the 1h floor and excluded from analysis" : " and has not settled"}. A view count without its age is a reading age wearing the clothes of a result. State the age, or state that the claim is withdrawn.`,
+            "unsettled-view-count");
+        }
+      }
+    }
+  }
+}
+
 // ── THE META-CHECK · did I exclude myself? ────────────────────────────────
 // Five checkers read their own source in one day. This one names the risk out
 // loud rather than assuming it is immune.
@@ -488,7 +568,7 @@ const selfAware = true;   // this file audits data and other scripts, never itse
 const out = { generatedAt: new Date().toISOString(),
   purpose: "Checks output against the failure classes in our own error ledger — things that actually happened here, not generic quality rules.",
   runsOn: "output, never intent. What I meant to do is not evidence.",
-  classesChecked: [11, 13, 14, 15, 16, 18, 21, 24, 25, "sku existence", "coverage overclaim", "monetization miscount", "ungated publication (automation)", "stale metric", "unverified success line"],
+  classesChecked: [11, 13, 14, 15, 16, 18, 21, 24, 25, "sku existence", "coverage overclaim", "monetization miscount", "ungated publication (automation)", "stale metric", "unverified success line", "unsettled view count"],
   problems };
 await (await import("node:fs/promises")).writeFile(join(ROOT, "research/pulse/work-verification.json"), JSON.stringify(out, null, 1));
 

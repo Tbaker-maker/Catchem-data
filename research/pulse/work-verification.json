@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-25T20:00:46.766Z",
+ "generatedAt": "2026-08-25T21:00:52.131Z",
  "purpose": "Checks output against the failure classes in our own error ledger — things that actually happened here, not generic quality rules.",
  "runsOn": "output, never intent. What I meant to do is not evidence.",
  "classesChecked": [
@@ -17,7 +17,8 @@
   "monetization miscount",
   "ungated publication (automation)",
   "stale metric",
-  "unverified success line"
+  "unverified success line",
+  "unsettled view count"
  ],
  "problems": [
   {
@@ -49,6 +50,12 @@
    "what": "build-promo.mjs draws fixed-size text onto a variable-width canvas",
    "why": "Text sized for the full canvas vanishes in a feed preview, where the image is actually seen and decided on. Scale to the canvas or the words are decoration.",
    "ledgerRef": 24
+  },
+  {
+   "errorClass": "unsettled view count",
+   "what": "./research/__nt3.md:1 cites 93 views for 2026-08-23-sunflora-only-good-vibes-pass-it with no reading age",
+   "why": "That reading was taken at 0.03h - below the 1h floor and excluded from analysis. A view count without its age is a reading age wearing the clothes of a result. State the age, or state that the claim is withdrawn.",
+   "ledgerRef": "unsettled-view-count"
   }
  ]
 }
