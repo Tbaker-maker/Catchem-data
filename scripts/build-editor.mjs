@@ -169,6 +169,13 @@ select:focus,input:focus{outline:none;border-color:var(--soft)}
 .fb textarea{min-height:90px}
 .fbnote{margin:0 0 12px;font-size:12px;color:var(--dim);line-height:1.4}
 .fbstat{margin:10px 0 0;font-size:13px}
+.lrow{display:flex;align-items:flex-start;gap:8px;margin:0 0 8px}
+.lrow .lineopt{flex:1;margin:0}
+/* 44px MINIMUM TAP TARGET even though it reads small. A control that looks
+   secondary still has to be hittable with a thumb on a moving train. */
+.another{flex:0 0 auto;min-height:44px;min-width:44px;padding:0 12px;background:none;
+  border:1px solid var(--line);border-radius:10px;color:var(--dim);font-size:12px;cursor:pointer}
+.another:hover{color:var(--live);border-color:var(--live)}
 .tut{border:1px solid var(--live);border-radius:14px;padding:14px 16px;margin:0 0 18px}
 .tutline{margin:0 0 12px;font-size:15px;line-height:1.45}
 .tutacts{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
@@ -1664,6 +1671,25 @@ window.imgOk = imgOk; window.imgBad = imgBad;
 // LINE SUGGESTIONS. Options, never a finished post — fifty creators posting an
 // identical generated sentence is a bot farm, and the whole point is that each
 // register sounds like a different person.
+// ── ONE ROW PER CATEGORY, EACH WITH ITS OWN "ANOTHER" ─────────────────────
+// A single global re-roll would take away the line somebody just decided they
+// liked in order to change a different one. So the cursor is per category:
+// change the DIVIDE, keep the ASK.
+//
+// "Another" and not "Refresh" (which promises the page will reload), not
+// "Shuffle" (which promises everything changes), not "New idea" (two words
+// doing one word's job). It is the word a person says out loud, and it still
+// reads correctly on the sixth tap.
+//
+// THE BUTTON HIDES WHEN THERE IS NOTHING TO CYCLE TO. A control that does
+// nothing when tapped is worse than no control, because the user concludes the
+// tool is broken rather than that the pool is one deep. And a category with no
+// valid line for these cards has no row at all - Part 2's rule is that a line
+// which cannot say something true about THESE cards does not appear, and an
+// empty row would smuggle the category back in.
+var lineCursor = {};       // register -> index into that register's options
+var lineCursorKey = "";    // the tray these cursors belong to
+
 function renderLines(){
   const box = el("lines");
   if (!box) return;
@@ -1671,13 +1697,35 @@ function renderLines(){
   const themeName = fTheme ? (THEMES.find(x => x.id === fTheme) || {}).name : null;
   const opts = lineOptions(tray, themeName, Number(store.get("typicalViews")) || 0);
   if (!opts.length) { box.hidden = true; return; }
+
+  // NEW CARDS, NEW POOLS. Keeping a cursor across a tray change would point at
+  // a line that belonged to cards no longer on screen.
+  const key = tray.map(function(c){ return c.i; }).join(",");
+  if (key !== lineCursorKey) { lineCursor = {}; lineCursorKey = key; }
+
+  // Group in the order the engine offered them, so the strongest shape stays
+  // at the top rather than being reordered by category name.
+  const order = [], byReg = {};
+  for (const o of opts) {
+    if (!byReg[o.reg]) { byReg[o.reg] = []; order.push(o.reg); }
+    byReg[o.reg].push(o);
+  }
+
   box.hidden = false;
   box.innerHTML = "";
   const h = document.createElement("div");
   h.className = "lhead";
   h.textContent = "SOMETHING TO SAY — TAP ONE, THEN MAKE IT YOURS";
   box.appendChild(h);
-  for (const o of opts) {
+
+  for (const reg of order) {
+    const pool = byReg[reg];
+    const idx = ((lineCursor[reg] || 0) % pool.length + pool.length) % pool.length;
+    const o = pool[idx];
+
+    const row = document.createElement("div");
+    row.className = "lrow";
+
     const b = document.createElement("button");
     b.className = "lineopt";
     const tg = document.createElement("span");
@@ -1687,8 +1735,28 @@ function renderLines(){
     tx.className = "txt";
     tx.textContent = o.text;
     b.appendChild(tg); b.appendChild(tx);
-    b.onclick = () => { el("label").value = o.text; blob = null; };
-    box.appendChild(b);
+    b.onclick = function(){ el("label").value = o.text; blob = null; };
+    row.appendChild(b);
+
+    // Only when there IS another one.
+    if (pool.length > 1) {
+      const a = document.createElement("button");
+      a.className = "another";
+      // A WORD, NOT A GLYPH. A circular arrow on its own is the thing people
+      // guess wrong about, and guessing wrong here costs them the line they
+      // had already chosen.
+      a.textContent = "Another";
+      a.setAttribute("aria-label", "Another " + o.label.toLowerCase() + " suggestion");
+      a.onclick = function(){
+        // Walks the pool one at a time and wraps silently at the end. Every
+        // line is seen before any is seen twice, which is the whole reason the
+        // cursor is stored rather than a random pick made on each tap.
+        lineCursor[reg] = idx + 1;
+        renderLines();
+      };
+      row.appendChild(a);
+    }
+    box.appendChild(row);
   }
 }
 
