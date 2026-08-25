@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-25T02:35:42.388Z",
+ "generatedAt": "2026-08-25T04:42:43.164Z",
  "purpose": "Checks output against the failure classes in our own error ledger — things that actually happened here, not generic quality rules.",
  "runsOn": "output, never intent. What I meant to do is not evidence.",
  "classesChecked": [
@@ -16,12 +16,6 @@
   "coverage overclaim"
  ],
  "problems": [
-  {
-   "errorClass": "windowless figure",
-   "what": "dailyThree.raw.price = 1247.9",
-   "why": "A chipped figure with no date, window or as-of field cannot be defended. This is the exact shape of error 18: a historical average published as a current price.",
-   "ledgerRef": 18
-  },
   {
    "errorClass": "ungated publication",
    "what": "1 card generator(s) are not in the pipeline: card-composite.mjs",

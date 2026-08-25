@@ -159,3 +159,31 @@ Automated posting is paid because it costs real money every time it fires.
 That line was drawn *before* anyone signed up, and it's on the landing page —
 because somebody who joins for FREE FOREVER and later finds the useful part is
 paid will call it bait and switch, and they'd be right to.
+
+---
+
+## The agent fleet
+
+Eight agents. **One command runs all of them.**
+
+```
+node scripts/fleet.mjs            run everyone, report what each found
+node scripts/fleet.mjs --list     who's on the team and what each does
+node scripts/fleet.mjs designer   just one
+node scripts/fleet.mjs --quiet    verdicts only, no detail
+```
+
+**Blocking** — `verify-work` (25 known error classes), `pre-mortem` (every guard
+declares what it can't catch), `competence-guard` (every specialist declares its
+blind spots).
+
+**Advisory** — `designer` (visual surfaces), `bias-guard` (who catches what),
+`decision-audit` (decisions whose check-date has arrived), `theme-scout` (post
+ideas mined from the data), `ask-eyes` (the shared question queue).
+
+**Why one command:** eight scripts meant remembering they exist, remembering
+which is relevant, and remembering to run it. **A tool you have to remember
+doesn't get used.**
+
+**A crash is reported as a crash.** One agent printed a blank line for days,
+which reads as fine in a summary. An empty verdict now fails loudly.

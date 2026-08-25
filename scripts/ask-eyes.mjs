@@ -83,3 +83,14 @@ if (process.argv[1] && import.meta.url === (await import("node:url")).pathToFile
     console.log(`    A question nobody answers is either badly phrased or addressed to the wrong person.`);
   }
 }
+
+
+// A VERDICT LINE, so a roll-up can read this agent. Without one it printed a
+// list and exited, which is indistinguishable from a crash in a summary — and
+// an agent nobody can summarise is an agent nobody runs.
+try {
+  const _q = JSON.parse(await readFile(FILE, "utf-8"));
+  const _open = (_q.questions || []).filter(x => !x.answer);
+  const _stale = _open.filter(x => (Date.now() - Date.parse(x.asked)) > 7 * 86400000);
+  console.log("\n" + (_stale.length ? "\u2717" : "\u2713") + " eyes: " + _open.length + " open, " + ((_q.questions||[]).length - _open.length) + " answered" + (_stale.length ? " \u00b7 " + _stale.length + " waiting over a week" : ""));
+} catch (e) { console.log("\n✗ eyes: could not read the queue — " + e.message); }
