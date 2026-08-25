@@ -3584,6 +3584,25 @@ async function composeImage(){
     }
 
     cv.style.display="block";
+    // ── NONE OF THEM LOADED IS NOT A PARTIAL SUCCESS ──────────────────────
+    // With the art host unreachable, every card failed and the tool still said
+    // "Made it, but 4 card images would not load" over a 50KB frame holding a
+    // watermark, a credit strip and nothing else. It offered the download. The
+    // blank-canvas floor did not catch it either, because 50KB of furniture
+    // clears a 10KB floor comfortably.
+    //
+    // "Made it, but" is the right sentence when SOME art is missing - the post
+    // is still postable and the gap is explained. When NONE of it arrived there
+    // is no post, and saying otherwise sends somebody to X with an empty frame.
+    const allArtMissing = missingArt.length > 0 && missingArt.length === tray.length;
+    if (allArtMissing) {
+      setStatus("None of the " + tray.length + " card images loaded, so there is nothing to post — the frame came out empty. The art host is unreachable from this connection. Your cards are still in the tray; try again when you have signal.", true);
+      el("dl").hidden = true; el("copy").hidden = true; el("share").hidden = true;
+      el("blankwarn").hidden = true; el("retryscale").hidden = true;
+      try { window.__lastComposeOk = false; } catch (e) {}
+      try { tutComposed(false, "no card art loaded"); } catch (e) {}
+      return;
+    }
     el("dl").hidden=false;
     if (navigator.clipboard && window.ClipboardItem) el("copy").hidden=false;
     if (navigator.canShare && navigator.canShare({files:[new File([""],"t.png",{type:"image/png"})]})) el("share").hidden=false;
@@ -3594,6 +3613,27 @@ async function composeImage(){
     else setStatus("ready — " + cv.width + "×" + cv.height);
     el("blankwarn").hidden = true;
     el("retryscale").hidden = true;
+    // ── THERE WAS A FLOOR AND NO CEILING ──────────────────────────────────
+    // The guard above catches the canvas coming back BLANK, which is the
+    // failure that produces nothing. It never caught the opposite: an eight
+    // card spread on a 2x device encodes to about 12.5MB, and the tool
+    // reported "ready" for a file the destination will not take. Both ends of
+    // the range are failures; only one of them was watched.
+    //
+    // ASSUMED CEILING, NOT A VERIFIED ONE. 5MB is the figure commonly cited
+    // for a PNG posted to X from the web, and this repo has never recorded it
+    // from source - so it is an assumption stated in the open, queued to
+    // ask-eyes for Tyler to confirm from his own posting, and deliberately
+    // written as a WARNING over a finished image rather than a refusal. The
+    // image is good. It may simply be too big for one destination, and the
+    // half-size control that already exists is the fix.
+    const CEIL_BYTES = 5 * 1024 * 1024;
+    if (blob.size > CEIL_BYTES) {
+      const mb = (blob.size / 1048576).toFixed(1);
+      setStatus("Made it — " + cv.width + "×" + cv.height + ", but it is " + mb +
+        "MB. X will likely refuse a PNG over 5MB. Try again at half size and it will still look right.", true);
+      el("retryscale").hidden = false;
+    }
     // A CANVAS CANNOT BE LONG-PRESSED. Swap in a real <img> so the first
     // gesture anybody tries on a phone actually works.
     // THE IMAGE IS DRAWN BEFORE THE SWAP. If toDataURL throws — a tainted

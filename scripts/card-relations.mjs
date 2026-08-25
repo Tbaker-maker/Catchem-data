@@ -390,8 +390,20 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   const { cards } = await loadCards();
 
   if (has("connecting-artists")) {
-    const list = await connectingArtists({ completeOnly: !has("include-partial") });
-    console.log(`\n  illustrators by connected-art groups we can fully assemble:\n`);
+    // THE HEADER MUST MATCH THE MODE IT IS PRINTING. "groups we can fully
+    // assemble" was printed over BOTH modes, so --include-partial claimed 12
+    // assemblable groups for Kouki Saitou when 3 are complete and the other 9
+    // hold no resolved cards at all. The row gave it away and the sentence
+    // denied it: "12 groups   9 cards", when a group needs at least two.
+    //
+    // All 140 PARTIAL groups have zero resolved ids, so they can never reach
+    // the editor - but they reach THIS output, and a number read off a screen
+    // ends up in a post.
+    const partial = has("include-partial");
+    const list = await connectingArtists({ completeOnly: !partial });
+    console.log(partial
+      ? `\n  illustrators by connected-art group, INCLUDING groups we cannot assemble:\n  (card counts are what we hold; a group with no cards is known to exist and unresolved)\n`
+      : `\n  illustrators by connected-art groups we can fully assemble:\n`);
     for (const e of list.slice(0, Number(flag("limit") ?? 12))) {
       console.log(`  ${String(e.groups).padStart(2)} groups  ${String(e.cards).padStart(3)} cards  ${e.artist}`);
       console.log(`     ${e.relations.join(", ")} · ${e.sets.slice(0, 6).join(", ")}${e.sets.length > 6 ? " +" + (e.sets.length - 6) : ""}`);

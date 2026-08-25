@@ -1161,6 +1161,19 @@
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
+  },
+  {
+   "id": "editor-60",
+   "agent": "editor",
+   "question": "Does X actually refuse a PNG over 5MB when you post from your phone?",
+   "evidence": "An 8-card spread on a 2x-DPR phone encodes to ~12.5MB. The editor now warns above 5MB and reveals the half-size retry, but 5MB is an assumed figure this repo has never recorded from source. If the real ceiling is different, CEIL_BYTES in scripts/build-editor.mjs should change to match what you actually hit.",
+   "who": "tyler",
+   "firstAsked": "2026-08-25",
+   "lastAsked": "2026-08-25",
+   "asked": 1,
+   "answeredBy": null,
+   "answer": null,
+   "answeredOn": null
   }
  ]
 }
