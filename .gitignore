@@ -17,3 +17,6 @@ data/enrichment-by-set.json
 # Append-only raw enrichment (one card per line). Same reason as above: it is
 # large and regenerable. The distilled file is what the repo carries.
 data/enrichment-raw.ndjson
+
+# Transient OAuth request token — never committed.
+data/.x-request-token.json
