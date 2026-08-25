@@ -125,7 +125,31 @@ export function assertReadingAfterPost(postedAt, readAt, label = "reading") {
 
 // The law, as code. Two readings are comparable when they are the same age, not
 // when they are of the same post.
+// THE AGE AT WHICH A POST HAS FINISHED MOVING. Declared here because two files
+// were each keeping their own copy of it, and a threshold that means one thing
+// to the reader and another to the comparator is the shape of the bug below.
+export const SETTLED_HOURS = 48;
+
+// ── AMENDED 2026-08-25, AND THIS WAS AN OVER-CORRECTION ───────────────────
+// The rule read "only comparable at equal age" with a 10% tolerance, and it was
+// written after comparing a TWELVE MINUTE reading against a TWENTY-TWO HOUR one
+// - two orders of magnitude apart on a curve that was still climbing steeply.
+// That lesson was right.
+//
+// Applied without a ceiling it then refused to compare a 48.2h reading against
+// an 85h one, while the same report called BOTH of them settled. Both cannot be
+// true. 48h was chosen precisely because views have largely flattened by then,
+// so the whole point of the threshold is that readings past it ARE comparable.
+// The guard was discarding valid data and calling it rigour.
+//
+// A GUARD THAT THROWS AWAY GOOD DATA IS A FAILURE TOO, just a quieter one than
+// a guard that lets bad data through: nobody files a bug about an answer they
+// never saw. Logged in data/corrections-log.json.
+//
+// What does NOT change: a settled reading may still never be compared against
+// an unsettled one. That was the actual defect and it is still refused.
 export function assertComparable(a, b, tolerance = 0.25) {
+  if (a >= SETTLED_HOURS && b >= SETTLED_HOURS) return;
   const ratio = Math.max(a, b) / Math.max(Math.min(a, b), 1 / 60);
   if (Math.abs(a - b) > Math.max(tolerance, 0.1 * Math.max(a, b))) {
     throw new TimestampError(

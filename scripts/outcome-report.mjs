@@ -213,9 +213,15 @@ if (cluster.length < 2) {
     }
     say("");
     const same = byReach[0].p.id === byDens[0].p.id;
-    say("  " + (same ? "YES" : "NO") + " — highest reach is " + byReach[0].p.id +
-        " (" + fmt(byReach[0].m.views) + " views, " + fmt(rp1k(byReach[0].m), 2) + " repl/1k);");
-    say("  highest density is " + byDens[0].p.id + " (" + fmt(rp1k(byDens[0].m), 2) + " repl/1k).");
+    // THE AGE SITS BESIDE EVERY FIGURE. Settled readings are comparable, but
+    // they are not identical, and a reader deserves to see the spread rather
+    // than trust that someone checked it.
+    say("  " + (same ? "YES" : "NO") + " — highest reach is " + byReach[0].p.id);
+    say("     " + fmt(byReach[0].m.views) + " views, " + fmt(rp1k(byReach[0].m), 2) +
+        " repl/1k, read at " + fmt(byReach[0].m.atHours, 1) + "h");
+    say("  highest density is " + byDens[0].p.id);
+    say("     " + fmt(byDens[0].m.views) + " views, " + fmt(rp1k(byDens[0].m), 2) +
+        " repl/1k, read at " + fmt(byDens[0].m.atHours, 1) + "h");
     if (!same) {
       say("");
       say("  THEY DIVERGE, AND THAT MATTERS. Reach and conversation density are");

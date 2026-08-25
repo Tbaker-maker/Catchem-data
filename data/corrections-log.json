@@ -74,6 +74,16 @@
    "caughtBy": "The API. The backfill made the settled numbers visible for the first time, and they contradicted the stated law. No human and no guard caught this in the three days it stood.",
    "guardAdded": "verify-work class 'unsettled view count': a view count from a reading that has not settled may only appear beside the age it was read at, or beside a withdrawal. It is deliberately NARROWER than the stale-metric class rather than larger - stale-metric ignores values under 1,000 to avoid noise from a card catalogue, and every figure in this incident was under 1,000, which is exactly how it slipped through. This one fires only on lines talking about views. Negative-proven both ways.",
    "alsoFound": "Two defects in the guard layer itself. verify-work's shared helpers were block-scoped, so the next guard to use them threw ReferenceError - and the file still wrote its report and still exited, so a guard that could not run at all looked exactly like a guard that found nothing. And the context window looked five lines back but only three forward, which flags a correctly-withdrawn passage, because a withdrawal always FOLLOWS the claim it withdraws."
+  },
+  {
+   "date": "2026-08-25",
+   "material": true,
+   "what": "The age-comparability guard was an over-correction and was discarding valid data. A guard that throws away good readings is a failure too, just a quieter one.",
+   "claim": "assertComparable refused any two readings more than 10% apart in age. The outcome report therefore declared four posts SETTLED and then answered its central question using only two of them, excluding Charmander at 85.0h and Sunflora at 48.2h for having ages incomparable to the 59h pair.",
+   "detail": "Both cannot be true. SETTLED_AT is 48h, and 48h was chosen precisely because views have largely flattened by then - so the entire point of the threshold is that readings past it are comparable. The rule was written after comparing a TWELVE MINUTE reading against a TWENTY-TWO HOUR one, two orders of magnitude apart on a curve still climbing steeply. That lesson was right and the rule generalised it too far: 48h against 85h is not that comparison. NOBODY FILES A BUG ABOUT AN ANSWER THEY NEVER SAW, which is what makes this failure mode quieter than the one it was guarding against.",
+   "whatChanged": "Two readings both at or past 48h are now comparable, and the age is printed beside every figure so a reader can judge the spread instead of trusting that someone checked. SETTLED_HOURS moved into lib/timestamp.mjs, which two files were each keeping their own copy of. What did NOT change: a settled reading may still never be compared against an unsettled one. That was the actual defect and it is still refused.",
+   "effect": "The reach-versus-density answer is unchanged - reach and density still diverge - but it now rests on FOUR settled posts instead of two, and the density leader moves from Slakoth at 10.63 per thousand to Charmander at 16.15. The shape comparison went from refusing outright to reporting the art crop family at n=3, mean 911 views and mean 12.16 replies per thousand. Both were available the whole time and were being withheld.",
+   "caughtBy": "Tyler, reading the report and noticing it called four posts settled and then used two."
   }
  ]
 }
