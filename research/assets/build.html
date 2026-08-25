@@ -2162,9 +2162,14 @@ function buildIdeas(){
         // broke the chain on the card being accurate. Look through EVERY card of
         // the next stage for one that names this stage.
         let next = Object.values(byMon).find(x => ATTRS[x.i]?.e === cur);
+        // A CARD CANNOT EVOLVE INTO ITSELF. A Machamp VMAX evolves from
+        // "Machamp", so searching for a card naming the current stage found
+        // Machamp again — and again. The next stage must be a DIFFERENT creature.
+        if (next && monName(next.n) === cur) next = null;
         if (!next) {
           const linking = evoPool.filter(function(x){ return ATTRS[x.i] && ATTRS[x.i].e === cur; });
-          if (linking.length) next = linking.sort(function(a, b){
+          const linkingReal = linking.filter(function(x){ return monName(x.n) !== cur; });
+          if (linkingReal.length) next = linkingReal.sort(function(a, b){
             return (HERO_RX.test(b.r || "") ? 1000000 : 0) + (b.p || 0) - ((HERO_RX.test(a.r || "") ? 1000000 : 0) + (a.p || 0));
           })[0];
         }
@@ -2181,10 +2186,17 @@ function buildIdeas(){
       // to be wrong.
       if (line.length < 2) continue;
       if (line.length > need) line.length = need;
+      // NEVER PROMISE A COUNT THE LINE CANNOT FILL. Padding a two-stage line to
+      // three said three and produced two.
+      // A SHORT LINE IS FINE IF IT IS THE WHOLE LINE. Magikarp → Gyarados is
+      // two stages, and blocking it confused "only two long" with "the walk
+      // stopped early". The idea now promises what it HAS rather than what was
+      // asked for.
+      if (line.length < 2) continue;
       // Any stage of the line satisfies the request — asking for Charizard, or
       // Charmander, should both find Charmander → Charmeleon → Charizard.
       if (wanted && !line.some(c => monName(c.n).toLowerCase() === wanted)) continue;
-      ideas.push({ title: line.map(c => monName(c.n)).join(" → "),
+      ideas.push({ count: line.length, title: line.map(c => monName(c.n)).join(" → "),
         sub: line.map(c => c.y).join("  ·  "),
         hook: "The whole line. Which stage is the best card?", cards: line });
       if (ideas.length >= 6) break;
