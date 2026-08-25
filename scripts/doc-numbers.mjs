@@ -11,7 +11,7 @@ const k = JSON.parse(await readFile("data/knowledge.json", "utf8"));
 const h = await readFile("research/house-theses.md", "utf8");
 const T = { guards: Object.keys(g.guards).length, posts: p.posts.length,
   facts: k.facts.length, laws: (h.match(/^## /gm) || []).length };
-const DOCS = ["PICK-UP-HERE.md", "SYSTEM-README.md", "HANDOVER.md", "METHOD-PORTABLE.md"];
+const DOCS = ["PICK-UP-HERE.md", "SYSTEM-README.md", "HANDOVER.md", "METHOD-PORTABLE.md", "AGENTS-AND-LOGIC.md"];
 const problems = [];
 for (const f of DOCS) {
   let s; try { s = await readFile(f, "utf8"); } catch { continue; }

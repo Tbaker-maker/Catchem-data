@@ -37,7 +37,7 @@ and structure the work so a human sees the second.
 
 ## 2. Guards
 
-A guard is a script that fails the build. 49 of them here. The pattern
+A guard is a script that fails the build. 50 of them here. The pattern
 that makes them worth having:
 
 **Every guard declares what it cannot catch.** In a file, next to the guard.
