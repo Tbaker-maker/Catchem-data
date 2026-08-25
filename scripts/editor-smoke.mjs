@@ -15,7 +15,18 @@ const mk = (id) => nodes[id] ||= { id, innerHTML: "", value: "", textContent: ""
 for (const id of ["pager","q","rar","yr","res","tray","st","label","make","copy","share","dl","cv","plabel",
   "fset","fcount","ftheme","ideas","refuse","tally","streakbar","streakstart","sfilter","sper","fintent","fslab"]) mk(id);
 
+// querySelector WAS MISSING AND THE GUARD WENT DARK. The page calls
+// document.querySelector(".sortrow") when wiring the sort chips. The stub had
+// getElementById and querySelectorAll but not querySelector, so evaluating the
+// script threw at that line, left every 'let' after it uninitialized, and the
+// only visible symptom was a TDZ crash from a later timer: "Cannot access
+// 'fSet' before initialization". editor-smoke has been exiting 1 for that
+// reason, which means it has been providing NO coverage at all while looking
+// like a guard that runs. Found 2026-08-25 while verifying the canvas fix.
+// The call site is null-safe (if (sr)), so returning null is what a page with
+// no .sortrow would see anyway.
 globalThis.document = { getElementById: (id) => nodes[id] ?? null,
+  querySelector: () => null,
   querySelectorAll: () => [], createElement: () => ({ style:{}, getContext: () => null, click(){} }) };
 globalThis.window = globalThis;
 globalThis.localStorage = { getItem: () => null, setItem(){}, removeItem(){} };

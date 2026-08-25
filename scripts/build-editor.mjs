@@ -356,7 +356,9 @@ summary:before{content:"→ ";color:var(--faint)}
 <button id="share" onclick="shareImage()">Share</button>
 <button id="dl" onclick="dlImage()">Download</button>
 <button onclick="openImage()">Open in a tab</button>
+<button id="retryscale" hidden onclick="retryAtHalf()">Try again at half size</button>
 </div>
+<div class="status bad" id="blankwarn" hidden></div>
 <img id="outimg" alt="your image — press and hold to save" hidden>
 <canvas id="cv"></canvas>
 
@@ -2600,7 +2602,13 @@ function loadIdea(k){
 }
 renderThemes();
 
-safeWire(function(){ el("make").onclick = async () => {
+// THE COMPOSE IS A NAMED FUNCTION so the retry control can call it again with
+// a smaller scale. It used to be an anonymous click handler, which meant the
+// only way to recompose was for the user to press Make — and if the failure
+// they were recovering from was a blank canvas, pressing Make just reproduced it.
+let composeScale = null;   // forced by the retry control; null means decide automatically
+let lastScale = 1;         // the linear scale actually used on the last attempt
+async function composeImage(){
   const L = LAYOUTS[tray.length]; if (!L) return;
   // ENFORCE AT THE POINT OF ACTION, not only in the UI. The refusal used to
   // live entirely in el("make").disabled, and a disabled attribute is an
@@ -2642,8 +2650,42 @@ safeWire(function(){ el("make").onclick = async () => {
   const W = L.W;
   const SLAB_EXTRA = fSlab ? CH * 0.17 + CW * 0.18 : 0;
   const H = L.H + SLAB_EXTRA * ROWS + (LABEL ? LABH : 0);
-  const cv = el("cv"); cv.width = W; cv.height = H;
+
+  // ── THE CANVAS MEMORY CEILING ────────────────────────────────────────────
+  // iOS Safari abandons a canvas above roughly 16.7M pixels, and starts failing
+  // well below that under memory pressure. It does not throw. toBlob returns
+  // null, or the canvas comes back blank, and every line after this point
+  // behaves as though the image was made — which is how a waitlist user gets a
+  // blank PNG and no error at all.
+  //
+  // THE REAL WORST CASE IS BIGGER THAN IT LOOKS. The frame table lists the
+  // binder page at 3070x3530, but H grows with the slab (310.9px per row) and
+  // the wrapped label (up to 234px), so nine slabbed cards under a three-line
+  // label composes 3070x4697 = 14.4M pixels, about 55MB of canvas. The spread
+  // reaches 11.0M the same way. Both are inside the range where a phone quietly
+  // gives up.
+  //
+  // SO SCALE, DO NOT FAIL. Above the cap the whole image is composed at a
+  // reduced linear scale through a single context transform, which means every
+  // drawing call below still works in the frame's own coordinates and none of
+  // them had to change. The user is told the real output size rather than
+  // being handed a smaller image without comment.
+  const MAX_PX = 8000000;
+  const REQ_PX = W * H;
+  const autoScale = REQ_PX > MAX_PX ? Math.sqrt(MAX_PX / REQ_PX) : 1;
+  const scale = composeScale != null ? composeScale : autoScale;
+  lastScale = scale;
+
+  const cv = el("cv");
+  cv.width = Math.max(1, Math.round(W * scale));
+  cv.height = Math.max(1, Math.round(H * scale));
   const g = cv.getContext("2d");
+  // A null context is the other way a phone refuses, and it IS detectable.
+  if (!g) {
+    reportBlank(L, W, H, cv, null, "the browser would not give this page a 2D canvas context at " + cv.width + "x" + cv.height + ".");
+    return;
+  }
+  if (scale !== 1) g.setTransform(scale, 0, 0, scale, 0, 0);
   g.fillStyle = "#070910"; g.fillRect(0,0,W,H);
   try{
     for (let i=0;i<tray.length;i++){
@@ -2740,6 +2782,25 @@ safeWire(function(){ el("make").onclick = async () => {
     g.fillText(artists || "artist not recorded", W-PAD, H-40);
 
     blob = await new Promise(r => cv.toBlob(r,"image/png"));
+
+    // ── NEVER LET A BLANK EXPORT REACH A USER ──────────────────────────────
+    // Two failures look identical from here and both are silent: toBlob hands
+    // back null, or it hands back a valid PNG of nothing. The second is the
+    // dangerous one, because every check that only asks "did I get a blob?"
+    // passes. A blank canvas is one flat colour, and PNG compresses one flat
+    // colour to almost nothing, so SIZE is the tell: a real composite at these
+    // dimensions carries card art, a watermark and two lines of text and runs
+    // to hundreds of kilobytes. Anything under 10KB did not draw.
+    const FLOOR_BYTES = 10240;
+    if (!blob) {
+      reportBlank(L, W, H, cv, null, "the browser returned nothing from toBlob, which is how iOS Safari reports running out of memory for a canvas this size.");
+      return;
+    }
+    if (blob.size < FLOOR_BYTES) {
+      reportBlank(L, W, H, cv, blob, "the image encoded to only " + Math.round(blob.size / 1024) + "KB. A composite this size cannot be that small unless the canvas came back blank.");
+      return;
+    }
+
     cv.style.display="block";
     el("dl").hidden=false;
     if (navigator.clipboard && window.ClipboardItem) el("copy").hidden=false;
@@ -2747,7 +2808,10 @@ safeWire(function(){ el("make").onclick = async () => {
     // SAY WHICH ONES ARE MISSING. A silent gap looks like a bug; a named one
     // looks like a card that would not load, which is the truth.
     if (missingArt.length) setStatus("Made it, but " + missingArt.length + " card image" + (missingArt.length > 1 ? "s" : "") + " would not load: " + missingArt.join(", ") + ". The art host may be blocked on this connection.", true);
-    else setStatus("ready — " + W + "×" + H);
+    else if (scale !== 1) setStatus("ready — " + cv.width + "×" + cv.height + ", reduced from " + W + "×" + H + " so this device could hold the canvas");
+    else setStatus("ready — " + cv.width + "×" + cv.height);
+    el("blankwarn").hidden = true;
+    el("retryscale").hidden = true;
     // A CANVAS CANNOT BE LONG-PRESSED. Swap in a real <img> so the first
     // gesture anybody tries on a phone actually works.
     // THE IMAGE IS DRAWN BEFORE THE SWAP. If toDataURL throws — a tainted
@@ -2757,7 +2821,49 @@ safeWire(function(){ el("make").onclick = async () => {
     try { showSaveable(cv.toDataURL("image/png")); }
     catch (e) { setStatus("Image is ready. Press and hold it, or use Open in a tab.", false); }
   }catch(e){ setStatus("could not compose: " + (e.message||"unknown"), true); }
-}; }, "make");
+}
+window.composeImage = composeImage;
+
+// SAY IT ON THE PAGE, WITH THE NUMBERS. A user who gets a blank image needs to
+// know it was blank, which frame did it, how big that frame was, and what to
+// press next. "Something went wrong" would leave them exactly where the silent
+// failure did.
+function reportBlank(L, W, H, cv, blob, why){
+  const box = el("blankwarn");
+  const req = W + "×" + H + " (" + (W * H / 1000000).toFixed(1) + "M pixels)";
+  const got = cv.width + "×" + cv.height;
+  box.textContent =
+    "The image came back blank, so nothing was saved. " + why +
+    "  Frame: " + L.name + ", " + L.cols + "×" + L.rows + " at " + req +
+    (got !== (W + "×" + H) ? ", composed at " + got : "") +
+    ".  This is a memory limit on the device, not a problem with your cards.";
+  box.hidden = false;
+  // Only offer a retry that would actually be smaller than what just failed.
+  const next = lastScale / 2;
+  const btn = el("retryscale");
+  if (Math.round(W * next) >= 400) {
+    btn.textContent = "Try again at " + Math.round(W * next) + "×" + Math.round(H * next);
+    btn.hidden = false;
+  } else {
+    btn.hidden = true;
+    box.textContent += "  Already at the smallest useful size — use fewer cards.";
+  }
+  cv.style.display = "none";
+  setStatus("blank image — see the note below", true);
+}
+window.reportBlank = reportBlank;
+
+function retryAtHalf(){
+  composeScale = lastScale / 2;
+  el("retryscale").hidden = true;
+  composeImage();
+}
+window.retryAtHalf = retryAtHalf;
+
+// A fresh press of Make always starts from the automatic scale again — the
+// forced one belongs to the failure it was recovering from, not to the next
+// image, which may be a different frame entirely.
+safeWire(function(){ el("make").onclick = () => { composeScale = null; composeImage(); }; }, "make");
 
 const fname = () => "catchem-" + (el("label").value.trim() || tray.map(c=>c.n).join("-") || "cards")
   .replace(/[^a-z0-9]+/gi,"-").toLowerCase().slice(0,48) + ".png";
