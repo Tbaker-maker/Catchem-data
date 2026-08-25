@@ -12,7 +12,43 @@
   "unresolvedSetAbsent": 318,
   "unresolvedNumberAbsent": 61,
   "nameMismatchRefused": 0,
-  "mechanicDerived": 13
+  "mechanicDerived": 13,
+  "byRelation": {
+   "NARRATIVE_SEQUENCE": {
+    "complete": 79,
+    "partial": 81,
+    "cardsKept": 252,
+    "cardsLost": 202
+   },
+   "COMBINED_ILLUSTRATION": {
+    "complete": 50,
+    "partial": 58,
+    "cardsKept": 159,
+    "cardsLost": 168
+   },
+   "SHARED_BACKGROUND_PATTERN": {
+    "complete": 0,
+    "partial": 1,
+    "cardsKept": 0,
+    "cardsLost": 9
+   }
+  },
+  "whyPartial": {
+   "note": "48% complete reads like a thin feature. Most of the gap is closable.",
+   "lostToNumberMapping": 61,
+   "lostToNumberMappingNote": "The set IS in our catalogue and the number did not match - promo numbering like SWSH215 against a source that writes 215, and Crown Zenith's Galarian Gallery subset. This is a bug in our resolver, not a gap in the data.",
+   "lostToAbsentEnglishSets": 216,
+   "lostToAbsentEnglishSetsNote": "English sets we have simply never ingested - Furious Fists 35, Skyridge 25, Southern Islands 18, Fusion Strike 13, Legendary Treasures 12, Fates Collide 11, Platinum: Arceus 11. All available from pokemontcg.io and all inside the English-only policy.",
+   "lostToJapaneseOnlyPrintings": 102,
+   "lostToJapaneseOnlyPrintingsNote": "Japanese promo printings - MEP Promo, T Promo, P Promo, SM-P Promo, PokePark Forest, Vending. ENGLISH-ONLY is a locked Tyler directive in CLAUDE.md, so these are a policy limit and not an engineering task. They change only if he rules otherwise.",
+   "projection": {
+    "completeToday": 129,
+    "afterFixingNumberMapping": 155,
+    "afterAlsoIngestingEnglishSets": 235,
+    "permanentlyBlockedByEnglishOnly": 34,
+    "ofGroups": 269
+   }
+  }
  },
  "groups": [
   {
