@@ -413,3 +413,17 @@ say("  Not WHY anything performed as it did. Reach is an outcome, not a reason."
 say("");
 
 console.log(L.join("\n"));
+
+// A VERDICT LINE, BECAUSE SILENCE READS AS A CRASH. The fleet decides an
+// agent's status from its ✓ or ✗ line, so a reporter that printed only a
+// report was listed as "CRASHED — produced no verdict, which reads as fine in
+// a summary". It was working perfectly and the roster said otherwise.
+//
+// The numbers here are COMPUTED IN THIS FILE, not read from the log: settled,
+// openOnes and apiReadings are all derived above. That is the rule the
+// unverified-success-line guard enforces, and this line is subject to it.
+const apiReadings = posts.flatMap(p => p.metrics ?? []).filter(m => m.source === "api").length;
+const allReadings = posts.flatMap(p => p.metrics ?? []).length;
+console.log(`\n  ✓ outcome report: ${settled.length} settled of ${posts.length} · ` +
+  `${apiReadings}/${allReadings} readings from the API · ${openOnes.length} hypotheses still open\n`);
+
