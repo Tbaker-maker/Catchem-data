@@ -538,7 +538,13 @@ function parseIntent(text, ctx) {
 
   // SET.
   for (const s of (ctx.sets || []).slice().sort((a, b) => b.length - a.length)) {
-    if (s.length >= 5 && q.includes(s.toLowerCase())) { found.set = s; found.matched.push(s); break; }
+    // "151" is a set name and three characters long. The old five-character
+    // floor excluded it entirely, so "from 151" matched nothing. Short names
+    // must match as whole words; long ones can match loosely.
+    const sl = s.toLowerCase();
+    const hit = sl.length >= 5 ? q.indexOf(sl) >= 0
+      : (" " + q + " ").indexOf(" " + sl + " ") >= 0;
+    if (hit) { found.set = s; found.matched.push(s); break; }
   }
 
   // TYPE — the printed card type, which differs from the game type.
@@ -1575,8 +1581,15 @@ function runAsk(text){
   if (box) { box.textContent = reply.say; box.className = "askreply" + (reply.ok ? "" : " bad"); }
   if (!reply.ok) return;
   // Reset before applying, or two sentences in a row compound into nonsense.
+  // CLEAR THE TRAY TOO. Resetting the filters but keeping the previous tray
+  // means a prompt that finds nothing inherits the LAST answer and reports it as
+  // this one — which is how "pikachu cards" returned Charmander.
   fMon = null; fRating = null; fSet = ""; fTheme = null;
+  tray = []; blob = null; window.__ideas = [];
   if (found.count) fCount = found.count;
+  // AN EVOLUTION IS THREE CARDS unless they said otherwise. Defaulting to two
+  // gives half a line and calls it the line.
+  else if (found.shape === "evo-line") fCount = 3;
   if (found.mon) fMon = found.mon;
   if (found.set) fSet = found.set;
   if (found.rating) fRating = found.rating;
@@ -1966,6 +1979,11 @@ function buildIdeas(){
     const byMon = {};
     for (const c of pool) { const k = monName(c.n);
       if (!byMon[k] || (c.p || 0) > (byMon[k].p || 0)) byMon[k] = c; }
+    // THE EVO SHAPE IGNORED THE POKEMON. It walked every entry and returned the
+    // first complete line, so asking for Charizard announced Charizard and handed
+    // back Chansey — saying one thing while showing another, which is the failure
+    // that reads as researched.
+    const wanted = fMon ? String(fMon).toLowerCase() : null;
     for (const [base, card] of Object.entries(byMon)) {
       if (ATTRS[card.i]?.e) continue;                 // start at the bottom only
       const line = [card];
@@ -1976,6 +1994,9 @@ function buildIdeas(){
         line.push(next); cur = next.n.split(" ")[0];
       }
       if (line.length !== need) continue;
+      // Any stage of the line satisfies the request — asking for Charizard, or
+      // Charmander, should both find Charmander → Charmeleon → Charizard.
+      if (wanted && !line.some(c => monName(c.n).toLowerCase() === wanted)) continue;
       ideas.push({ title: line.map(c => monName(c.n)).join(" → "),
         sub: line.map(c => c.y).join("  ·  "),
         hook: "The whole line. Which stage is the best card?", cards: line });

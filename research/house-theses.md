@@ -2500,3 +2500,30 @@ AND A REAL BUG UNDERNEATH IT: there were TWO streak interfaces. The old block �
 a paragraph, two dropdowns and a Begin button — was still rendering above the
 collapsed one that replaced it. **I built the replacement and never removed what
 it replaced.** First-load copy went from 123 words to 91 once it was gone.
+
+## FILLING THE TRAY IS NOT ENOUGH (Tyler, Aug 24 2026)
+"I tried to get it to give me the Charizard evolution from 151 and it was trying
+but unable."
+
+The data had it perfectly — miki kudo drew all three cards in that set. **Three
+bugs in my code, and one of them was serious.**
+
+1. **"151" was never matched as a set**, because the matcher required five
+   characters. Set names run from "151" to "Twilight Masquerade" and one length
+   rule cannot cover both.
+2. **The evo shape ignored the Pokémon entirely.** It walked every entry and
+   returned the first complete line it found — so it announced "Showing
+   Charizard · the evolution line" and handed back **Chansey and Blissey**.
+3. **An evolution defaulted to two cards**, which is half a line called a line.
+
+THE SERIOUS ONE IS THE SECOND. **A wrong answer that reads as a right one** is
+the Koga failure on a new surface: the reply was confident, specific and wrong,
+and nothing checked whether the CARDS matched the CLAIM.
+
+So ask-smoke now verifies both — every prompt fills the tray, AND the cards match
+what the reply said. It immediately caught a fourth bug: **state leaked between
+prompts**, because runAsk reset the filters but kept the previous tray, so
+"pikachu cards" inherited the last answer and reported it as this one.
+
+THE RULE: **a tool that answers must be checked on WHAT it answered, not merely
+that it answered.**

@@ -23,6 +23,15 @@ globalThis.confirm = () => true;
 const api = new Function(js + "\n;return { runAsk, tray:()=>tray, label:()=>document.getElementById('label')?.value };")();
 await new Promise(r => setTimeout(r, 60));
 
+// SAYS ONE THING, SHOWS ANOTHER. Filling the tray is not enough: the cards must
+// match what the reply claimed. "Showing Charizard" followed by Chansey is the
+// Koga failure on a new surface — a wrong answer that reads as a right one.
+const CLAIMS = [
+  ["charizard evolution from 151", ["Charmander", "Charmeleon", "Charizard"], "151"],
+  ["the charizard line from 151", ["Charmander", "Charmeleon", "Charizard"], "151"],
+  ["pikachu cards", ["Pikachu"], null],
+  ["cards from 151", null, "151"],
+];
 const TESTS = ["cards nobody talks about", "charizard through the years", "cute cards under a fiver",
   "two cards by the same artist", "something dark", "the whole charmander line",
   "psychic types", "wiped out", "arita", "151 set", "four cute cards"];
@@ -35,4 +44,20 @@ for (const t of TESTS) {
   if (!n) noCards++;
   console.log("  " + (n ? String(n) + " cards" : "NO CARDS").padEnd(9) + t + (err ? "   THREW: " + err : ""));
 }
+// Check every claim against the cards actually returned.
+let lied = 0;
+console.log("\nDOES IT SHOW WHAT IT SAID?\n");
+for (const [prompt, mustInclude, mustSet] of CLAIMS) {
+  try { api.runAsk(prompt); } catch {}
+  const t = api.tray();
+  const names = t.map(c => String(c.n));
+  let bad = null;
+  if (!t.length) bad = "no cards at all";
+  else if (mustInclude && !mustInclude.some(m => names.some(n => n.indexOf(m) === 0))) bad = "claimed " + mustInclude.join("/") + ", showed " + names.join(", ");
+  else if (mustSet && !t.every(c => c.s === mustSet)) bad = "claimed set " + mustSet + ", showed " + [...new Set(t.map(c => c.s))].join(", ");
+  if (bad) lied++;
+  console.log("  " + (bad ? "✗ " : "✓ ") + prompt + (bad ? "   " + bad : "   " + names.join(", ")));
+}
+if (lied) { console.error("\n✗ " + lied + " prompt(s) SAY one thing and SHOW another — a wrong answer that reads as a right one\n"); process.exitCode = 1; }
+
 console.log("\n" + (noCards ? "✗ " + noCards + " of " + TESTS.length + " prompts leave the tray EMPTY — the box promises a post and hands back a filtered grid" : "✓ every prompt produces cards"));
