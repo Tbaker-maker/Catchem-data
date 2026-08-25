@@ -97,6 +97,10 @@ select:focus,input:focus{outline:none;border-color:var(--soft)}
 .streak button{background:transparent;border:1px solid var(--line);color:var(--soft);
   border-radius:9px;padding:9px 14px;font:400 13px var(--body);cursor:pointer}
 .streak button.go{background:var(--live);color:var(--ink);border:0;font-weight:600}
+.tut{border:1px solid var(--live);border-radius:14px;padding:14px 16px;margin:0 0 18px}
+.tutline{margin:0 0 12px;font-size:15px;line-height:1.45}
+.tutacts{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.tutskip{background:none;border:none;color:var(--dim);text-decoration:underline;cursor:pointer;font-size:13px;padding:6px}
 .page-label{font:500 11px/1 var(--mono);color:var(--faint);letter-spacing:.14em;margin-bottom:14px}
 .binder{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;
   display:grid;gap:12px;justify-content:center;margin-bottom:16px}
@@ -299,6 +303,13 @@ summary:before{content:"→ ";color:var(--faint)}
      replacement and never removed what it replaced, so the page shouted about
      streaks to everyone regardless. -->
 <div class="streak" id="streakbar"></div>
+<div class="tut" id="tut" hidden>
+  <p class="tutline" id="tutline"></p>
+  <div class="tutacts">
+    <button class="go" id="tutgo"></button>
+    <button class="tutskip" id="tutskip">Skip this</button>
+  </div>
+</div>
 <div class="page-label" id="plabel">YOUR PAGE</div>
 <div class="binder" id="tray"></div>
 <div class="status" id="st"></div>
@@ -894,10 +905,18 @@ function safeWire(fn, what){
 // STORAGE THAT CANNOT THROW. iOS private browsing throws on setItem — the
 // classic works-on-every-dev-machine killer. Losing a preference is fine;
 // dying over one is not.
+// EVERY METHOD HERE CALLED ITSELF. get() returned store.get(k), set() called
+// store.set - infinite recursion, RangeError, swallowed by the very try/catch
+// that was meant to survive a blocked localStorage. So it never threw and it
+// never stored: owned cards, the streak and the typical-views preference have
+// all been silently doing nothing on every device since this was written.
+//
+// The comment above is still right about WHY the try/catch is there. The body
+// just never reached localStorage.
 const store = {
-  get(k){ try { return store.get(k); } catch (e) { return null; } },
-  set(k, v){ try { store.set(k, v); } catch (e) {} },
-  del(k){ try { store.del(k); } catch (e) {} },
+  get(k){ try { return localStorage.getItem(k); } catch (e) { return null; } },
+  set(k, v){ try { localStorage.setItem(k, v); } catch (e) {} },
+  del(k){ try { localStorage.removeItem(k); } catch (e) {} },
 };
 // PAGING STATE. Page size is deliberately modest: 36 images is a fast paint on
 // a phone, and the point of paging is that the page never gets slower no matter
@@ -2049,6 +2068,71 @@ function askCards(r){
   return { cards: out, reason: reason };
 }
 
+
+// ── THE GUIDED FIRST POST ──────────────────────────────────────────────────
+// A stranger arriving from a link has less context than Tyler had, and Tyler
+// built this and still could not find the card he wanted. So the tool does not
+// explain itself - it hands over something already half-made and asks for one
+// action. Four steps, each one thing, and a finished image before anyone has
+// read a paragraph.
+//
+// IT USES A REAL RELATION, NOT A DEMO. neo1-40 and sv9-20 are the Naoyo Kimura
+// Magmar pair: the widest artist revisit in the catalogue at twenty-five years,
+// verified card-by-card against the printed credit line. The tutorial IS the
+// product working. A fake demo would teach the tool and prove nothing.
+var TUT_KEY = "catchem-tutorial";
+var TUT_CARDS = ["neo1-40", "sv9-20"];
+var tutStep = 0;
+
+function tutDone(how){
+  store.set(TUT_KEY, how);
+  var t = el("tut"); if (t) t.hidden = true;
+}
+function tutShow(line, go){
+  var t = el("tut"), l = el("tutline"), b = el("tutgo");
+  if (!t || !l || !b) return;
+  l.textContent = line;
+  b.textContent = go;
+  t.hidden = false;
+}
+function tutStart(){
+  if (store.get(TUT_KEY)) return;              // done or skipped, never again
+  var missing = TUT_CARDS.filter(function(id){ return !byIdRow[id]; });
+  if (missing.length) return;                  // catalogue changed; say nothing
+  tray = TUT_CARDS.map(function(id){ return byIdRow[id]; });
+  blob = null;
+  render();
+  tutStep = 1;
+  tutShow(
+    "Two cards are already in your tray. Naoyo Kimura drew this Magmar in 2000, then drew it again in 2025 — the widest gap by one illustrator in the whole catalogue. Press the button and the two become one picture.",
+    "Make the picture");
+  el("tutgo").onclick = function(){ composeImage(); };
+  el("tutskip").onclick = function(){ tray = []; blob = null; render(); tutDone("skipped"); };
+}
+
+// Called by composeImage when an image actually exists. Advancing on the BLOB
+// rather than on the click means a failed compose does not congratulate anyone.
+function tutComposed(ok, why){
+  if (tutStep !== 1) return;
+  if (!ok) {
+    // A DEAD NETWORK MUST SAY SO. Sitting on a blank frame is how a first-time
+    // user decides the tool is broken and never comes back.
+    tutShow("The card images did not load" + (why ? " — " + why : "") +
+      ". That is the network or the image host, not your cards. Try again, or skip and browse.",
+      "Try again");
+    el("tutgo").onclick = function(){ composeImage(); };
+    return;
+  }
+  tutStep = 2;
+  tutShow("Press and hold the image to save it. That is the whole thing.", "Now try your own");
+  el("tutgo").onclick = function(){
+    tray = []; blob = null; render();
+    if (el("q")) el("q").value = "";
+    resetPage(); search();
+    tutDone("done");
+  };
+}
+
 function runAsk(text){
   // THE RELATION LAYER FILLS GAPS, IT DOES NOT OVERRIDE A WORKING ANSWER.
   //
@@ -2928,6 +3012,10 @@ function loadIdea(k){
   el("make").scrollIntoView({ behavior: "smooth", block: "center" });
 }
 renderThemes();
+// LAST, so a failure here cannot take the editor down with it. The tutorial is
+// the nicest thing on the page and the least important: if it throws, a
+// stranger should still get a working tool rather than a blank one.
+safeWire(function(){ tutStart(); }, "tutorial");
 
 // THE COMPOSE IS A NAMED FUNCTION so the retry control can call it again with
 // a smaller scale. It used to be an anonymous click handler, which meant the
@@ -3147,7 +3235,11 @@ async function composeImage(){
     // a finished image is the worst of both.
     try { showSaveable(cv.toDataURL("image/png")); }
     catch (e) { setStatus("Image is ready. Press and hold it, or use Open in a tab.", false); }
-  }catch(e){ setStatus("could not compose: " + (e.message||"unknown"), true); }
+    try { tutComposed(true); } catch (e) {}
+  }catch(e){
+    setStatus("could not compose: " + (e.message||"unknown"), true);
+    try { tutComposed(false, e.message); } catch (e2) {}
+  }
 }
 window.composeImage = composeImage;
 
