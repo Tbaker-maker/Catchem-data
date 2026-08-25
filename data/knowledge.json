@@ -869,6 +869,22 @@
     "strategy"
    ],
    "recheckAfter": "2027-02-24"
+  },
+  {
+   "id": "vertical-is-a-different-problem",
+   "claim": "Vertical video is 1080x1920. TikTok, Reels and Shorts cover roughly the top 12% with the caption row, the bottom 20% with description and sound, and the right 15% with the like/comment/share rail. Inside what remains, one card fills 85% of the usable width and two fill 41% each.",
+   "sources": [
+    "measured against the 1080x1920 standard and published safe-zone guidance, 2026-08-25"
+   ],
+   "verified": "2026-08-25",
+   "verifier": "chat",
+   "confidence": "COMMUNITY",
+   "falsifier": "a platform changing its overlay, or a real recording showing content readable inside a zone we marked as covered",
+   "note": "THE 2x2 DOES NOT TRANSFER. Four cards at 33% each works on X and is unreadable vertically — one card or two, never four. And the safe zones are the commonest mistake in vertical content, because a layout looks perfect in the editor and is covered in the app. Drawing them is most of the value.",
+   "usedBy": [
+    "build-shots"
+   ],
+   "recheckAfter": "2027-02-25"
   }
  ]
 }

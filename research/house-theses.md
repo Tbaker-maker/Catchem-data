@@ -2576,3 +2576,31 @@ THREE MECHANICAL FAILURES IN THE SAME FIX, all the same shape: a string replace
 that targeted text which had already changed, so it **matched nothing and
 reported success**. Third time today. When a replace runs, check the OUTPUT
 contains what you added — not that the command exited zero.
+
+## A WRONG HOOK COSTS THEM, NOT US (Aug 25 2026)
+The first draft of the video hook generator produced **"Tyranitar: $0 to $4,250,
+a 17,000x gap"** — a division by a MISSING price, not a fact. And **"Team: 40HP
+to 280HP"**, the prefix bug for the sixth time.
+
+A creator reading either on camera gets corrected in their own comments, and it
+costs **them** credibility with an audience they spent years building. **A wrong
+hook is worse than no hook.**
+
+So every hook carries a check field naming its counted basis, prices under $2
+are treated as UNKNOWN rather than free, and ratios above 3000x are discarded as
+suspect data rather than published as astonishing.
+
+## THE PREFIX BUG, FIXED PROPERLY AT LAST (Aug 25 2026)
+Seventh appearance: "White Kyurem" became "White", because White was not in the
+vocabulary list.
+
+**Seven occurrences means the APPROACH was wrong, not the list.** Every previous
+fix extended a vocabulary that can never be complete, and the next set adds a
+prefix nobody thought of.
+
+Grouping now uses the **dex number** — printed on the card, unambiguous, and
+shared by every form: White Kyurem and Black Kyurem are both 646. **Correct by
+construction, and undefeatable by a name I have not seen.**
+
+The display name comes from the shortest name in the dex group, which is the
+base form.
