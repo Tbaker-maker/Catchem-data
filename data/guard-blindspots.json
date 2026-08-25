@@ -336,6 +336,15 @@
    "coveredBy": "Tyler, and the daily rebuild",
    "reviewed": "2026-08-25",
    "history": "Written after 138 of 230 hooks named a card the editor does not ship — I checked against card-index.json (16,468) while the editor carries 6,725 post-worthy cards, and the cheap half of a price-gap hook is exactly the $2 card that filter removes."
+  },
+  "doc-numbers.mjs": {
+   "cannotCatch": "Whether the PROSE is accurate. It compares four counts against the data and has no view on whether a description of how something works is still true.",
+   "knownPatterns": [
+    "perishable-claim"
+   ],
+   "coveredBy": "Tyler reading it",
+   "reviewed": "2026-08-24",
+   "history": "Written after I produced four handover documents from cached figures and every one was wrong on all four counts, because a rebase pulled in work between reading and writing."
   }
  }
 }

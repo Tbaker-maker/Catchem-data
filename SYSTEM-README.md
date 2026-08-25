@@ -32,8 +32,8 @@ Type what you want to post. It hands back cards.
 | **4,464 cards with lore** | the flavour text printed on the card |
 | **61 themes** | across 9 groups, every one verified to produce |
 | **207 sealed products** | tracked daily by the bot |
-| **49 sourced facts** | each with a falsifier and a recheck date |
-| **42 guards** | each with a declared blind spot |
+| **50 sourced facts** | each with a falsifier and a recheck date |
+| **49 guards** | each with a declared blind spot |
 
 ---
 
@@ -80,7 +80,7 @@ node scripts/rating-guard.mjs            does every rating name its source?
 
 ## The laws
 
-`research/house-theses.md` holds 97. Each one is a mistake made once, written
+`research/house-theses.md` holds 101. Each one is a mistake made once, written
 down so it isn't made twice. The load-bearing ones:
 
 **On truth**
@@ -145,7 +145,7 @@ that needs a person. Detail in `research/PENDING-CLOSE-THE-LOOP.md`.
 fetch; fix the bot (50h stale, four stages quiet, 24 products carrying
 broken-era price history).
 
-**The number that decides everything** — the outcome log holds 5 posts. Twenty
+**The number that decides everything** — the outcome log holds 6 posts. Twenty
 is where it stops guessing. Until then every rule above is a hypothesis with a
 falsifier attached, and it says so on screen.
 

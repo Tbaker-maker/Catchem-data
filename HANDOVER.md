@@ -61,7 +61,7 @@ logged incidents.
 
 ## What to do
 
-**Read `research/house-theses.md`.** 97 laws, each a mistake made once.
+**Read `research/house-theses.md`.** 101 laws, each a mistake made once.
 
 **Break your own checks on purpose.** Twice a guard reported success while doing
 nothing. You only find that by attacking it.
@@ -82,7 +82,7 @@ guessed three times before saying it once.
 
 **Working and verified:** the editor (1.9 MB, offline, prompt-driven), the
 composite builder, the mood matcher, the lore layer, the live presenter, the
-post queue, the experiment tool, 42 guards.
+post queue, the experiment tool, 49 guards.
 
 **Built but not connected:** `post-queue.mjs --send` and `read-metrics.mjs` both
 need X API credentials. Tyler is getting them. `research/PENDING-CLOSE-THE-LOOP.md`
@@ -101,10 +101,10 @@ theorising.
 
 ## The number that governs everything
 
-**The outcome log holds 5 posts. Twenty is where it stops guessing.**
+**The outcome log holds 6 posts. Twenty is where it stops guessing.**
 
 Every rule about what works — the engines, the tiers, the registers — rests on
-those five plus five studied accounts. **They're labelled as hypotheses with
+those 6 plus five studied accounts. **They're labelled as hypotheses with
 falsifiers, and they should stay labelled that way until the log fills.**
 
 Once `read-metrics.mjs` is wired, it fills itself at $0.001 per read. That's the
@@ -116,9 +116,9 @@ highest-value unfinished thing in the project.
 
 ```
 catchem-knowledge-base.md          canonical state — read first, update last
-research/house-theses.md           97 laws
+research/house-theses.md           101 laws
 research/RESEARCH-GATE.md          33 logged errors, who caught each
-data/knowledge.json                49 facts with falsifiers
+data/knowledge.json                50 facts with falsifiers
 data/guard-blindspots.json         what each guard cannot catch
 data/decision-log.json             decisions with predictions and check dates
 data/post-outcomes.json            what has actually been posted
