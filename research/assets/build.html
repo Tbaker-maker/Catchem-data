@@ -570,7 +570,9 @@ function parseIntent(text, ctx) {
   const RATING = [
     [/(cute|adorable|sweet|wholesome)/, "cute", "cute"],
     [/(funny|silly|joke|stupid|ridiculous)/, "comedy", "funny"],
-    [/(dark|grim|creepy|scary|unsettling|sinister)/, "serious", "dark"],
+    // "dark" belongs to the villain SHAPE, not to a tonal score. Leaving it in
+    // both meant whichever table ran first won, and this one runs first.
+    [/(grim|creepy|scary|unsettling|sinister|haunting|macabre)/, "serious", "grim tone"],
     [/(cheap|budget|under a|affordable|low.cost)/, "cheap", "cheap"],
     [/(expensive|dear|grail|pricey|chase)/, "dear", "expensive"],
     [/(rare|scarce|hard to find)/, "scarce", "scarce"],
@@ -585,6 +587,11 @@ function parseIntent(text, ctx) {
 
   // SHAPE — the phrasing that names a format.
   const SHAPE = [
+    // DARK, IN THE COLLECTOR SENSE: the Dark-prefixed Team Rocket cards, the
+    // villain organisations, the Darkness type. Mapping this to a tonal
+    // "serious" score returned Feraligatr and Pinsir — serious in tone, and
+    // nothing anybody in this hobby means by the word.
+    [/(dark|villain|team rocket|rocket|evil|bad guy)/, "villain", "dark — Rocket and villains"],
     [/(nobody talks about|obscure|underrated|forgotten|no one mentions|unknown)/, "obscure", "cards nobody talks about"],
     [/(evolution|whole line|evolves|line)/, "evo-line", "the evolution line"],
     [/(years apart|over time|through the years|across eras|decades)/, "eras", "across the years"],
@@ -746,6 +753,21 @@ function resolvePrompt(found, INDEX, helpers) {
     const scored = pool.filter(c => (ratingOf(c.i, found.rating) || 0) > 0);
     if (scored.length >= 4) { pool = scored; rankBy = found.rating; why.push(found.rating); }
     else why.push(found.rating + " (few cards scored)");
+  }
+
+  // DARK, RESOLVED. Dark-prefixed Team Rocket cards first because those ARE the
+  // thing collectors mean, then villain organisations, then the Darkness type as
+  // the wide net. Mapping this to a "serious" score returned Feraligatr and
+  // Pinsir — tonally serious, and nothing anybody in this hobby means by "dark".
+  if (found.shape === "villain") {
+    const literal = pool.filter(function(c){ return /^Dark /.test(c.n); });
+    const villains = pool.filter(function(c){ return /Rocket|Team Aqua|Team Magma|Giovanni|Archie|Maxie|Cyrus|Ghetsis|Lysandre|Guzma/i.test(c.n) || /Rocket/i.test(c.s); });
+    const typed = pool.filter(function(c){ const a = attrs[c.i]; return a && (a.t || []).indexOf("Darkness") >= 0; });
+    const best = literal.length >= 2 ? literal : villains.length >= 2 ? villains : typed;
+    if (best.length) {
+      pool = best;
+      why.push(literal.length >= 2 ? "Dark-prefixed Team Rocket cards" : villains.length >= 2 ? "villain cards" : "Darkness type");
+    }
   }
 
   // OBSCURE IS A REAL QUERY, not a vibe: a Pokémon with few printings, an

@@ -2554,3 +2554,25 @@ found, fixed and forgotten cannot come back.
 
 THE RULE: **the value of a fuzz run is not the crash, it is the SHAPE of the
 crash, recorded so the same shape is never new twice.**
+
+## A WORD MEANS WHAT THE COMMUNITY MEANS BY IT (Tyler, Aug 24 2026)
+"Dark go darker imo. Like literal 'dark' pokemon and team rocket etc."
+
+I had mapped "dark" to the **serious** rating, which derives from grim flavour
+text — so it returned Feraligatr and Pinsir. Tonally serious. **Nothing anybody
+in this hobby means by the word.**
+
+In collector language "dark" is literal and specific: the **Dark-prefixed Team
+Rocket cards** (81, Dark Charizard being the famous one), the **Darkness type**
+(1,007), and the **villain organisations** (261 — Rocket, Aqua, Magma,
+Giovanni). Preference order matters too: the Dark-prefixed cards come first
+because those *are* the thing.
+
+**Cultural specificity is the moat, and this is what that means in practice.** A
+generic tonal score is exactly the slop we keep saying we won't ship — it looks
+like an answer and lands on the wrong cards.
+
+THREE MECHANICAL FAILURES IN THE SAME FIX, all the same shape: a string replace
+that targeted text which had already changed, so it **matched nothing and
+reported success**. Third time today. When a replace runs, check the OUTPUT
+contains what you added — not that the command exited zero.
