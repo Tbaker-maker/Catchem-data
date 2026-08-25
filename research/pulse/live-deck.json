@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-24T03:59:59.161Z",
+ "generatedAt": "2026-08-25T22:22:14.083Z",
  "slides": [
   {
    "id": "s0",
@@ -1534,6 +1534,148 @@
   },
   {
    "id": "s67",
+   "kind": "fact",
+   "card": "dp4-3",
+   "confidence": "VERIFIED",
+   "title": "shotgun day x series",
+   "sub": "Darkrai · Great Encounters",
+   "facts": [
+    "@shotguncaio has ~43-44k followers and runs numbered daily series as his signature format: 'Day 90 of posting one Pokémon card I love that costs under $10' and 'Day X of opening one Pitch Black pack every day until I pull the Mega Darkrai ex SIR'."
+   ],
+   "sources": [
+    "Tyler-supplied profile of @shotguncaio, 2026-08-24",
+    "x.com/shotguncaio posts"
+   ],
+   "falsifier": "the series posts underperforming his one-off posts, which would mean the numbering is decoration rather than the hook",
+   "prompts": [
+    "Say it in your own words — the claim is above",
+    "Sourced. You can state this plainly."
+   ],
+   "audience": {
+    "headline": "@shotguncaio has ~43-44k followers and runs numbered daily series as his signature format: 'Day 90 of posting one Pokémon card I love that costs under $10' and 'Day X of opening one Pitch Black pack every day until I pull the Mega Darkrai ex SIR'.",
+    "sub": "Tyler-supplied profile of @shotguncaio, 2026-08-24"
+   }
+  },
+  {
+   "id": "s68",
+   "kind": "fact",
+   "card": "base5-73",
+   "confidence": "COMMUNITY",
+   "title": "permission removes the reason not to reply",
+   "sub": "The Boss's Way · Team Rocket",
+   "facts": [
+    "@tall_alan took roughly 900 replies on one post at ~16k followers: 'What's your favourite Pokémon? Remember to pick something quirky."
+   ],
+   "sources": [
+    "Tyler-supplied cross-account analysis, 2026-08-24",
+    "x.com/tall_alan",
+    "x.com/JohnnyCrambo",
+    "x.com/shotguncaio"
+   ],
+   "falsifier": "the same questions without their second sentence producing equal reply counts",
+   "prompts": [
+    "Say it in your own words — the claim is above",
+    "NOT settled — say \"I've read that…\" or skip it"
+   ],
+   "audience": {
+    "headline": "The Boss's Way",
+    "sub": "Team Rocket · 2000"
+   }
+  },
+  {
+   "id": "s69",
+   "kind": "fact",
+   "card": "base5-73",
+   "confidence": "COMMUNITY",
+   "title": "relative engagement not follower count",
+   "sub": "The Boss's Way · Team Rocket",
+   "facts": [
+    "The Pokémon TCG accounts worth studying are mostly small."
+   ],
+   "sources": [
+    "Tyler-supplied cross-account analysis with follower counts, 2026-08-24"
+   ],
+   "falsifier": "these accounts turning out to be substantially larger than stated, which would make the ratios ordinary",
+   "prompts": [
+    "Say it in your own words — the claim is above",
+    "NOT settled — say \"I've read that…\" or skip it"
+   ],
+   "audience": {
+    "headline": "The Boss's Way",
+    "sub": "Team Rocket · 2000"
+   }
+  },
+  {
+   "id": "s70",
+   "kind": "fact",
+   "card": "base1-4",
+   "confidence": "VERIFIED",
+   "title": "catalogue counts nobody else has",
+   "sub": "Charizard · Base",
+   "facts": [
+    "Counted across our English catalogue of 16,468 cards: Charizard has 62, Pikachu 118, 52 Pokemon have exactly one card, 1,244 distinct Pokemon and forms carry a national dex number, and 377 individual people have illustrated a card with Ken Sugimori the most prolific at 938."
+   ],
+   "sources": [
+    "our own catalogue, counted 2026-08-24"
+   ],
+   "falsifier": "a recount giving materially different figures, or the catalogue turning out to have significant gaps in the English sets",
+   "prompts": [
+    "Say it in your own words — the claim is above",
+    "Sourced. You can state this plainly."
+   ],
+   "audience": {
+    "headline": "Counted across our English catalogue of 16,468 cards: Charizard has 62, Pikachu 118, 52 Pokemon have exactly one card, 1,244 distinct Pokemon and forms carry a national dex number, and 377 individual people have illustrated a card with Ken Sugimori the most prolific at 938.",
+    "sub": "our own catalogue, counted 2026-08-24"
+   }
+  },
+  {
+   "id": "s71",
+   "kind": "fact",
+   "card": null,
+   "confidence": "COMMUNITY",
+   "title": "no real card post tool exists",
+   "sub": "",
+   "facts": [
+    "Every Pokemon card image tool found in a 2026 search generates FAKE cards: Phot."
+   ],
+   "sources": [
+    "web search of Pokemon card generator tools, 2026-08-24"
+   ],
+   "falsifier": "a tool that lets a collector select real printed cards and produces a post-ready composite with prices and illustrator credits",
+   "prompts": [
+    "Say it in your own words — the claim is above",
+    "NOT settled — say \"I've read that…\" or skip it"
+   ],
+   "audience": {
+    "headline": "",
+    "sub": ""
+   }
+  },
+  {
+   "id": "s72",
+   "kind": "fact",
+   "card": null,
+   "confidence": "COMMUNITY",
+   "title": "vertical is a different problem",
+   "sub": "",
+   "facts": [
+    "Vertical video is 1080x1920."
+   ],
+   "sources": [
+    "measured against the 1080x1920 standard and published safe-zone guidance, 2026-08-25"
+   ],
+   "falsifier": "a platform changing its overlay, or a real recording showing content readable inside a zone we marked as covered",
+   "prompts": [
+    "Say it in your own words — the claim is above",
+    "NOT settled — say \"I've read that…\" or skip it"
+   ],
+   "audience": {
+    "headline": "",
+    "sub": ""
+   }
+  },
+  {
+   "id": "s73",
    "kind": "finding",
    "card": "neo1-1",
    "confidence": "REASONED",
@@ -1552,7 +1694,7 @@
    }
   },
   {
-   "id": "s68",
+   "id": "s74",
    "kind": "finding",
    "card": "neo1-2",
    "confidence": "REASONED",
@@ -1571,7 +1713,7 @@
    }
   },
   {
-   "id": "s69",
+   "id": "s75",
    "kind": "finding",
    "card": "neo3-8",
    "confidence": "REASONED",
@@ -1590,7 +1732,7 @@
    }
   },
   {
-   "id": "s70",
+   "id": "s76",
    "kind": "finding",
    "card": "ex13-16",
    "confidence": "REASONED",
@@ -1609,7 +1751,7 @@
    }
   },
   {
-   "id": "s71",
+   "id": "s77",
    "kind": "finding",
    "card": "neo3-12",
    "confidence": "REASONED",
@@ -1628,7 +1770,7 @@
    }
   },
   {
-   "id": "s72",
+   "id": "s78",
    "kind": "finding",
    "card": "ex2-14",
    "confidence": "REASONED",
@@ -1647,7 +1789,7 @@
    }
   },
   {
-   "id": "s73",
+   "id": "s79",
    "kind": "finding",
    "card": "pl2-103",
    "confidence": "REASONED",
@@ -1666,7 +1808,7 @@
    }
   },
   {
-   "id": "s74",
+   "id": "s80",
    "kind": "finding",
    "card": "dp6-144",
    "confidence": "REASONED",
@@ -1685,7 +1827,7 @@
    }
   },
   {
-   "id": "s75",
+   "id": "s81",
    "kind": "finding",
    "card": "pl2-29",
    "confidence": "REASONED",
@@ -1704,7 +1846,7 @@
    }
   },
   {
-   "id": "s76",
+   "id": "s82",
    "kind": "finding",
    "card": "dp3-24",
    "confidence": "REASONED",
@@ -1723,7 +1865,7 @@
    }
   },
   {
-   "id": "s77",
+   "id": "s83",
    "kind": "finding",
    "card": "pl3-24",
    "confidence": "REASONED",
@@ -1742,7 +1884,7 @@
    }
   },
   {
-   "id": "s78",
+   "id": "s84",
    "kind": "finding",
    "card": "dp7-40",
    "confidence": "REASONED",
@@ -1761,7 +1903,7 @@
    }
   },
   {
-   "id": "s79",
+   "id": "s85",
    "kind": "finding",
    "card": "neo4-28",
    "confidence": "REASONED",
@@ -1780,7 +1922,7 @@
    }
   },
   {
-   "id": "s80",
+   "id": "s86",
    "kind": "finding",
    "card": "ex10-K",
    "confidence": "REASONED",
@@ -1799,7 +1941,7 @@
    }
   },
   {
-   "id": "s81",
+   "id": "s87",
    "kind": "finding",
    "card": "base2-11",
    "confidence": "REASONED",
@@ -1818,7 +1960,7 @@
    }
   },
   {
-   "id": "s82",
+   "id": "s88",
    "kind": "finding",
    "card": "neo1-18",
    "confidence": "REASONED",
@@ -1837,7 +1979,7 @@
    }
   },
   {
-   "id": "s83",
+   "id": "s89",
    "kind": "finding",
    "card": "neo4-14",
    "confidence": "REASONED",
@@ -1856,7 +1998,7 @@
    }
   },
   {
-   "id": "s84",
+   "id": "s90",
    "kind": "finding",
    "card": "ex6-112",
    "confidence": "REASONED",
@@ -1875,7 +2017,7 @@
    }
   },
   {
-   "id": "s85",
+   "id": "s91",
    "kind": "finding",
    "card": "ex11-12",
    "confidence": "REASONED",
@@ -1894,7 +2036,7 @@
    }
   },
   {
-   "id": "s86",
+   "id": "s92",
    "kind": "finding",
    "card": "ex16-92",
    "confidence": "REASONED",
@@ -1913,7 +2055,7 @@
    }
   },
   {
-   "id": "s87",
+   "id": "s93",
    "kind": "segment",
    "cards": [
     "bw4-33",
@@ -1942,7 +2084,7 @@
    }
   },
   {
-   "id": "s88",
+   "id": "s94",
    "kind": "segment",
    "cards": [
     "neo1-12",
@@ -1971,7 +2113,7 @@
    }
   },
   {
-   "id": "s89",
+   "id": "s95",
    "kind": "segment",
    "cards": [
     "base3-5",
@@ -2000,7 +2142,7 @@
    }
   },
   {
-   "id": "s90",
+   "id": "s96",
    "kind": "segment",
    "cards": [
     "base2-11",
@@ -2017,7 +2159,7 @@
    "title": "Pokémon caught napping",
    "sub": "9 cards",
    "facts": [
-    "Proved: the cropped Charmander post using this register did 791 views against a data post's 154, same account, same week."
+    "WITHDRAWN 2026-08-25: this claimed the cropped Charmander post did 791 views against a data post's 154. Both were mid-climb readings, at 25h and at twelve minutes. Settled at 48h the crop is 867 and the pairing 127,200, so the comparison reverses. The register stands on its copy, not on reach."
    ],
    "prompts": [
     "Late night check-in. Who's still awake?",
@@ -2029,7 +2171,7 @@
    }
   },
   {
-   "id": "s91",
+   "id": "s97",
    "kind": "segment",
    "cards": [
     "base3-4",
@@ -2058,7 +2200,7 @@
    }
   },
   {
-   "id": "s92",
+   "id": "s98",
    "kind": "segment",
    "cards": [
     "base1-10",
@@ -2087,7 +2229,7 @@
    }
   },
   {
-   "id": "s93",
+   "id": "s99",
    "kind": "segment",
    "cards": [
     "base3-1",
@@ -2116,7 +2258,7 @@
    }
   },
   {
-   "id": "s94",
+   "id": "s100",
    "kind": "segment",
    "cards": [
     "ecard2-H9",
@@ -2145,7 +2287,7 @@
    }
   },
   {
-   "id": "s95",
+   "id": "s101",
    "kind": "segment",
    "cards": [
     "neo3-8",
@@ -2174,7 +2316,7 @@
    }
   },
   {
-   "id": "s96",
+   "id": "s102",
    "kind": "segment",
    "cards": [
     "base2-8",
@@ -2205,7 +2347,7 @@
  ],
  "counts": {
   "card": 40,
-  "fact": 27,
+  "fact": 33,
   "finding": 20,
   "segment": 10
  }

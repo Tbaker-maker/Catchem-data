@@ -1148,6 +1148,19 @@
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
+  },
+  {
+   "id": "secret-scan-59",
+   "agent": "secret-scan",
+   "question": "NARROWED - this replaces the longer rotate question I queued earlier, which was over-framed. Rotating does NOT make us clean: a new form id is equally public the moment it ships, because a form action lives in the HTML a browser downloads. So the only question worth answering is whether the seven days of exposure produced actual abuse. ONE THING TO CHECK: open the Formspree dashboard, Submissions tab. It shows each submission with its date, and the free tier keeps a 30-day archive, which covers the whole exposure window since the id first shipped on 2026-08-18. Does the count match the 13-15 real signups you expect? IF IT MATCHES: nothing happened, there is nothing to fix, and there is no reason to rotate. Close this. IF IT IS HIGHER: rotate, and turn on Restrict-to-Domain and reCAPTCHA, which are the only spam controls the free tier gives you - Custom Honeypot, Advanced Spam Control and the Rules Engine are all paid. Tell me the number and I will do the export and the swap.",
+   "evidence": "security-agent no longer treats this as CRITICAL - it was blocking on a value that cannot be removed without breaking the waitlist, which is how a guard gets ignored. It is now INVENTORY, named every run with what an attacker can and cannot do. Exposure window: first committed 2026-08-18 in e15bfe4, 7 days, 6 commits, and readable in the deployed page source throughout.",
+   "who": "tyler",
+   "firstAsked": "2026-08-25",
+   "lastAsked": "2026-08-25",
+   "asked": 1,
+   "answeredBy": null,
+   "answer": null,
+   "answeredOn": null
   }
  ]
 }

@@ -41,6 +41,8 @@ const FLEET = [
     does: "Scans every TRACKED file for the actual values in .env, rather than guessing what a secret looks like. BLOCKING because a published credential cannot be unpublished - there is no correction page for it. security-agent matches credential SHAPES and reported clean for months while a Formspree endpoint with no distinctive shape sat in ten files." },
   { id: "search-gauntlet", script: "search-gauntlet.mjs", blocking: true,
     does: "Runs real queries against the shipped 16,468-card index and re-derives every relation from the cards it names. BLOCKING because a relation that claims a connection the data does not support becomes a factual claim in a public post - a wrong illustrator credit is the one error this account cannot afford." },
+  { id: "artifact-drift", script: "artifact-drift.mjs", blocking: false,
+    does: "Rebuilds every generated page in research/assets and names any that disagrees with what is committed. ADVISORY: some drift is a legitimate refresh from data that changed an hour ago, and blocking on that would stop a build for a timestamp. The failure mode here is nobody LOOKING." },
   { id: "outcome-report", script: "outcome-report.mjs", blocking: false,
     does: "Reports what the outcome log can and cannot conclude, leading with what is NOT comparable. ADVISORY BY CONSTRUCTION: it describes the state of the evidence and must never stop a build, because 'we cannot conclude anything yet' is a normal and correct state for a log with five posts in it." },
   { id: "ask-eyes", script: "ask-eyes.mjs", arg: "list", blocking: false,

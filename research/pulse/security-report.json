@@ -1,13 +1,21 @@
 {
- "generatedAt": "2026-08-25T21:57:41.609Z",
+ "generatedAt": "2026-08-25T22:21:53.547Z",
  "role": "The one agent that blocks. Everything else here advises, because everything else is recoverable — there is no correction page for a leaked key.",
  "critical": [],
  "warnings": [],
  "checked": [
   "working tree scanned for six credential shapes",
   "30 days of history scanned",
-  "162 scripts checked for on-disk credential reads",
+  "163 scripts checked for on-disk credential reads",
   ".gitignore covers env files, keys and modules"
+ ],
+ "inventory": [
+  {
+   "what": "Formspree waitlist endpoint",
+   "where": "research/assets/index-landing.html",
+   "canDo": "submit to the form from anywhere, burn the 50-per-month free-tier cap, and bury real signups in junk",
+   "cannotDo": "read any existing submission, see or reach the inbox, or touch anything else in the account - it is write-only"
+  }
  ],
  "blindSpots": [
   "Tyler's own machine — the DBIR finding that 46% of compromised corporate logins came from unmanaged personal devices applies here and nothing in this repo can check it.",

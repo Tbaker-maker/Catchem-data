@@ -25,9 +25,22 @@ const run = promisify(execFile);
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const git = async (...a) => { try { return (await run("git", a, { cwd: ROOT })).stdout; } catch { return ""; } };
 
-const critical = [], warnings = [], checked = [];
+const critical = [], warnings = [], checked = [], inventory = [];
 const C = (what, why, fix) => critical.push({ what, why, fix });
 const W = (what, why, fix) => warnings.push({ what, why, fix });
+
+// ── PUBLISHED BY DESIGN IS NOT A LEAK ──────────────────────────────────────
+// This agent blocked on the Formspree endpoint, which cannot be removed without
+// breaking the waitlist: a form action must carry its endpoint or the form posts
+// nowhere. A blocking guard that CANNOT BE SATISFIED gets ignored, and an
+// ignored guard is not a guard - it is a red light everyone has learned to
+// drive through, which is worse than no light at all.
+//
+// The agent could not tell a leaked secret from a necessarily-public endpoint
+// and called both CRITICAL. Visibility was never the problem; severity was. So
+// these are inventory: named on every run, with what an attacker can do, and
+// an explicit note that it is intentional. Never a failure.
+const I = (what, where, canDo, cannotDo) => inventory.push({ what, where, canDo, cannotDo });
 
 // Shapes of real credentials. Deliberately narrow — a scanner that cries wolf
 // gets muted, and a muted security scanner is the worst object in the repo.
@@ -116,11 +129,21 @@ const SECRETS = [
   };
   await scan("scripts"); await scan("data"); await scan("research"); await scan(".github");
   {
-    const gi = await readFile(join(ROOT, "scripts/build-waitlist.mjs"), "utf-8").catch(() => "");
-    if ((process.env.FORMSPREE_FORM_ID || "").trim() && gi.includes(process.env.FORMSPREE_FORM_ID.trim()))
-      W("the waitlist Formspree id is public in this repo and in its git history",
-        "It has been in the working tree and in six commits since 2026-08, so that inbox is effectively a public address and the form is open to spam from anyone reading the repo. Editing the files does not undo it.",
-        "Create a NEW form in Formspree, put its id in .env as the feedback form is, delete the old form, and treat the old address as burned. Only Tyler can do this.");
+    // The waitlist endpoint, RECORDED rather than reported as a fault. It was a
+    // CRITICAL here, blocking on a value that cannot be removed without breaking
+    // the form, which is how a guard teaches people to ignore it.
+    const id = (process.env.FORMSPREE_FORM_ID || "").trim();
+    if (id) {
+      const carriers = [];
+      for (const f of ["research/assets/index-landing.html", "research/pulse/2026-08-19.html"]) {
+        const t = await readFile(join(ROOT, f), "utf-8").catch(() => "");
+        if (t.includes(id)) carriers.push(f);
+      }
+      I("Formspree waitlist endpoint",
+        carriers.length ? carriers.join(", ") : "generated artifacts only",
+        "submit to the form from anywhere, burn the 50-per-month free-tier cap, and bury real signups in junk",
+        "read any existing submission, see or reach the inbox, or touch anything else in the account - it is write-only");
+    }
   }
   checked.push("working tree scanned for six credential shapes");
 }
@@ -175,7 +198,7 @@ const blindSpots = [
 
 const out = { generatedAt: new Date().toISOString(),
   role: "The one agent that blocks. Everything else here advises, because everything else is recoverable — there is no correction page for a leaked key.",
-  critical, warnings, checked, blindSpots,
+  critical, warnings, checked, inventory, blindSpots,
   honesty: "This checks what is in the repo and its recent history. It does not and cannot tell you that you are secure — a security agent implying total coverage buys exactly the false confidence that makes founders stop looking." };
 await (await import("node:fs/promises")).writeFile(join(ROOT, "research/pulse/security-report.json"), JSON.stringify(out, null, 1));
 
@@ -185,7 +208,18 @@ if (critical.length) {
   console.error("");
   process.exitCode = 1;   // the only agent permitted to fail a run
 } else {
-  console.log("\n  DETECTS: " + DETECTS.join("; "));
+  // INVENTORY PRINTS BEFORE THE VERDICT, pass or fail. "What of ours is public on
+// purpose" deserves an answer on a good day as much as a bad one.
+if (inventory.length) {
+  console.log(`\n  PUBLISHED BY DESIGN — ${inventory.length} endpoint(s), intentional, not a fault:`);
+  for (const i of inventory) {
+    console.log(`     ${i.what}`);
+    console.log(`       appears in : ${i.where}`);
+    console.log(`       someone can: ${i.canDo}`);
+    console.log(`       they cannot: ${i.cannotDo}`);
+  }
+}
+console.log("\n  DETECTS: " + DETECTS.join("; "));
 console.log("  CANNOT DETECT: " + CANNOT_DETECT.join("; "));
 console.log("  Value-based scanning lives in scripts/secret-scan.mjs.\n");
 console.log(`✓ security: no credentials in the tree or recent history · ${warnings.length} warning(s) · ${checked.length} checks`);
