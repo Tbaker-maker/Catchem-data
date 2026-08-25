@@ -169,24 +169,49 @@ if (!settled.length) {
 say("");
 say("─ DOES THE HIGHEST REACH ALSO CARRY THE HIGHEST REPLY DENSITY? ".padEnd(72, "─"));
 say("");
-if (settled.length < 2) {
+// COMPARE INSIDE AN AGE CLUSTER, NOT ACROSS THE WHOLE TABLE.
+// The first version took the highest-reach post and the highest-density post
+// and asked whether they were the same one. If those two happened to sit at
+// different ages it refused - and refused even when a perfectly comparable
+// PAIR existed elsewhere in the table. Charmander at 85h poisoned a question
+// that Arita at 59.8h and Slakoth at 59.0h could already answer.
+//
+// So: find the largest group of settled posts whose ages are comparable to each
+// other, answer within it, and name who was left out and why. That is stricter
+// than comparing everything and less wasteful than comparing nothing.
+function ageClusters(list) {
+  const out = [];
+  for (const seed of list) {
+    const group = list.filter(x => {
+      try { assertComparable(seed.m.atHours, x.m.atHours); return true; }
+      catch (e) { if (e instanceof TimestampError) return false; throw e; }
+    });
+    out.push(group);
+  }
+  return out.sort((a, b) => b.length - a.length)[0] ?? [];
+}
+const cluster = ageClusters(settled);
+const excluded = settled.filter(s => !cluster.includes(s));
+
+if (cluster.length < 2) {
   say("  NOT ENOUGH SETTLED READINGS TO SAY. The question needs at least two");
-  say("  settled posts; there " + (settled.length === 1 ? "is 1" : "are 0") + ".");
+  say("  posts read at COMPARABLE ages. There are " + settled.length + " settled, but the");
+  say("  largest group whose ages can be compared holds " + cluster.length + ".");
   say("");
   say("  With one settled post it is trivially both the highest reach and the");
   say("  highest density, which is not an answer — it is the shape of an answer");
   say("  with nothing behind it.");
 } else {
-  const byReach = [...settled].sort((a, b) => b.m.views - a.m.views);
-  const byDens = [...settled].sort((a, b) => (rp1k(b.m) ?? 0) - (rp1k(a.m) ?? 0));
-  let comparable = true;
-  try { assertComparable(byReach[0].m.atHours, byDens[0].m.atHours); }
-  catch (e) { if (e instanceof TimestampError) comparable = false; else throw e; }
-  if (!comparable) {
-    say("  REFUSED. The two posts are at different measurement ages, so comparing");
-    say("  them would measure age. lib/timestamp.mjs said so and this script does");
-    say("  not print a softened version of a comparison its own guard rejected.");
-  } else {
+  const byReach = [...cluster].sort((a, b) => b.m.views - a.m.views);
+  const byDens = [...cluster].sort((a, b) => (rp1k(b.m) ?? 0) - (rp1k(a.m) ?? 0));
+  {
+    say("  Answered across " + cluster.length + " post(s) read at comparable ages (" +
+        cluster.map(c => fmt(c.m.atHours, 1) + "h").join(", ") + ").");
+    if (excluded.length) {
+      say("  EXCLUDED, because their readings are at incomparable ages: " +
+          excluded.map(c => c.p.id.slice(0, 28) + " at " + fmt(c.m.atHours, 1) + "h").join("; ") + ".");
+    }
+    say("");
     const same = byReach[0].p.id === byDens[0].p.id;
     say("  " + (same ? "YES" : "NO") + " — highest reach is " + byReach[0].p.id +
         " (" + fmt(byReach[0].m.views) + " views, " + fmt(rp1k(byReach[0].m), 2) + " repl/1k);");
@@ -256,9 +281,24 @@ const HYPOTHESES = [
     check() {
       const a = famCount("art pairing"), b = famCount("art crop");
       if (a >= 2 && b >= 2) return null;
+      // SHOW THE DIRECTION WITHOUT CLAIMING IT. The numbers moved a long way on
+      // 2026-08-25 and a reader deserves to see which way, labelled as an
+      // anecdote rather than buried until a second pairing exists.
+      const nums = (fam) => settled.filter(s => family(s.p.shape) === fam)
+        .map(s => s.m.views).sort((x, y) => y - x);
+      const P = nums("art pairing"), C = nums("art crop");
+      let dir = "";
+      if (P.length && C.length) {
+        const ratio = Math.round(P[0] / Math.max(1, C[0]));
+        dir = " WHERE IT STANDS: the settled pairing" + (P.length > 1 ? "s are " : " is at ") +
+          P.map(n => n.toLocaleString("en-US")).join(", ") + "; the settled crop" +
+          (C.length > 1 ? "s are " : " is at ") + C.map(n => n.toLocaleString("en-US")).join(", ") +
+          " - about " + ratio + "x, and in the OPPOSITE direction to the five-to-one claim " +
+          "withdrawn on 2026-08-25. One pairing is an anecdote. It needs a second.";
+      }
       return "settled posts: art pairing " + a + ", art crop " + b +
              ". Two settled of EACH shape are needed; comparing one shape's settled post " +
-             "against another's unsettled one is the withdrawn error.";
+             "against another's unsettled one is the withdrawn error." + dir;
     },
     settledBy: "Two art pairings and two single-card crops, all read at 48h, posted at the same hour.",
     next: { shape: "single-card crop", hour: "21:15 local", why: "matches the only settled post's hour, so hour is held constant",
