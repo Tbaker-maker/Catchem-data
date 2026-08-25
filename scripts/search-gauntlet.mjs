@@ -442,6 +442,33 @@ head("9. suggestion lines");
   }
 }
 
+// ── 10. PREFERENCES MUST ACTUALLY PERSIST ──────────────────────────────────
+// store.get called store.get. Infinite recursion, RangeError, swallowed by the
+// very try/catch written to survive a blocked localStorage - so it never threw
+// and never stored. Owned cards, the streak and the view preference silently
+// did nothing on every device, and the tutorial "never show again" flag would
+// have failed the same way: a stranger would meet the tutorial again on the
+// second screen they ever saw, which reads as broken software.
+//
+// A REAL RELOAD IS THE ONLY PROOF and this cannot do one; that was verified by
+// hand in a browser. What this asserts is the shape that failed: the store must
+// reach localStorage and must not call itself.
+head("10. preference persistence");
+{
+  const storeSrc = (html.match(/const store = \{[\s\S]*?\n\};/) ?? [""])[0];
+  check("store", "the shipped page defines a store", storeSrc.length > 0);
+  if (storeSrc) {
+    check("store", "store.get reads localStorage", /getItem\(/.test(storeSrc),
+      "it must reach the browser's storage, not a helper of its own");
+    check("store", "store.set writes localStorage", /setItem\(/.test(storeSrc));
+    check("store", "no method calls itself", !/return store\.get\(|store\.set\(k, v\);\s*\}/.test(storeSrc),
+      "store.get returning store.get(k) recursed until RangeError and stored nothing");
+    check("store", "the tutorial flag uses that store",
+      /store\.set\(TUT_KEY/.test(html) && /store\.get\(TUT_KEY\)/.test(html),
+      "if the tutorial used a different path it would reappear on every visit");
+  }
+}
+
 // ── REPORT ─────────────────────────────────────────────────────────────────
 console.log("");
 if (fail) {

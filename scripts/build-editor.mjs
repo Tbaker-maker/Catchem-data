@@ -51,6 +51,14 @@ else {
     i: id, n: c.name, a: c.artist ?? null, s: c.setName,
     y: (c.releaseDate ?? "").slice(0, 4), r: c.rarity ?? "", k: c.attackNames ?? undefined, p: typeof c.price === "number" ? Math.round(c.price * 100) / 100 : null,
   }));
+  // WHEN THESE PRICES WERE READ, computed once. Hoisted to this scope because
+  // two places need it: the row builder, which stores a date only where it
+  // DIFFERS, and the page constant PRICES_AS_OF that the tally prints.
+  const priceDateOf = (id) => (cat.cards[id] && cat.cards[id].priceUpdatedAt) || "";
+  const pdCount = {};
+  for (const c of index) { const d = priceDateOf(c.i); if (d) pdCount[d] = (pdCount[d] ?? 0) + 1; }
+  const COMMON_PRICE_DATE = Object.entries(pdCount).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "";
+
   await mkdir(join(ROOT, "research/assets"), { recursive: true }).catch(() => {});
   await writeFile(join(ROOT, "research/assets/card-index.json"), JSON.stringify(index));
 
@@ -468,6 +476,13 @@ const CARD_ROWS = ${await (async () => {
     if (best) extra.push(best);
   }
   const richIds = new Set(base.concat(extra).map(c => c.i));
+  // THE DATE MOST PRICES CARRY, computed once from the catalogue - the index
+  // does not carry it.
+  const priceDateOf = (id) => (cat.cards[id] && cat.cards[id].priceUpdatedAt) || "";
+  const pdCount = {};
+  for (const c of index) { const d = priceDateOf(c.i); if (d) pdCount[d] = (pdCount[d] ?? 0) + 1; }
+  const COMMON_PRICE_DATE = Object.entries(pdCount).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "";
+
   const rows = index.map(c => {
     const A = attrs[c.i] ?? {}, B = bios[c.i] ?? {}, T = ctext[c.i] ?? {};
     const rich = richIds.has(c.i);
@@ -485,11 +500,24 @@ const CARD_ROWS = ${await (async () => {
       rich ? (lore[c.i] ?? 0) : 0, rich && T.a?.length ? T.a.slice(0, 2) : 0,
       // WEAKNESS. Captured weeks ago and never shipped, so every matchup lookup
       // read undefined. It is one short string per card.
-      rich ? (A.w ?? 0) : 0, rich ? 1 : 0];
+      rich ? (A.w ?? 0) : 0, rich ? 1 : 0,
+      // PRICE DATE, AS AN EXCEPTION. 15,705 of 16,468 cards share one repricing
+      // date, so a per-row string would be sixteen thousand copies of the same
+      // eight characters. The common date ships once as PRICES_AS_OF; this
+      // column carries a date only where it differs - the handful whose price
+      // has not moved in years, which is exactly what a reader needs warning
+      // about.
+      priceDateOf(c.i) === COMMON_PRICE_DATE ? 0 : (priceDateOf(c.i) || 0)];
   });
   return JSON.stringify(rows);
 })()};
 // Rehydrate once. Positional decode is trivial and keeps every reader unchanged.
+// WHEN THESE PRICES WERE READ. A figure with no window is not publishable -
+// that is a logged incident in this repo, and the tally was showing PAGE COST
+// $8,667 as a bare number. The most confident text in the tool was the least
+// sourced.
+const PRICES_AS_OF = "${COMMON_PRICE_DATE}";
+
 const CARD_INDEX = CARD_ROWS.map(function(r){
   var o = { i: r[0], n: r[1], s: r[2], y: r[3] };
   if (r[4]) o.a = r[4];
@@ -505,12 +533,13 @@ const CARD_INDEX = CARD_ROWS.map(function(r){
   if (r[14]) o.A = r[14];
   if (r[15]) o.W = r[15];
   if (r[16]) o.hero = 1;
+  if (r[17]) o.pd = r[17];   // price date, only when it differs from PRICES_AS_OF
   return o;
 });
 // Sourced facts, so the 'story' shape has something true to build on. Only
 // VERIFIED ones ship — an unsourced claim on a card image is the one mistake
 // this whole project exists to avoid.
-const FACTS = ${JSON.stringify((await (async () => { try { return (JSON.parse(await readFile(join(ROOT, 'data/knowledge.json'), 'utf-8')).facts ?? []).filter(f => f.confidence === 'VERIFIED').map(f => ({ id: f.id, claim: f.claim })); } catch { return []; } })()))};
+const FACTS = ${JSON.stringify((await (async () => { try { return (JSON.parse(await readFile(join(ROOT, 'data/knowledge.json'), 'utf-8')).facts ?? []).filter(f => f.confidence === 'VERIFIED' && (f.usedBy ?? []).includes('build-editor')).map(f => ({ id: f.id, claim: f.claim })); } catch { return []; } })()))};
 const LAYOUTS = ${JSON.stringify(LAYOUTS)};
 const SUPPORTED = Object.keys(LAYOUTS).map(Number);
 // BOOT REPORT. Three wrong guesses at why this dies on a phone, all made from
@@ -1173,12 +1202,62 @@ function renderTally(){
   // nothing at all. Single quotes need no escaping and cannot repeat it.
   // (This comment avoids backticks for the same reason: it lives inside the
   // template literal it describes.)
+  // ── A PRICE WITH NO WINDOW IS NOT PUBLISHABLE ───────────────────────────
+  // That is a logged incident in this repo - a historical average shipped as a
+  // current price - and this panel was showing PAGE COST $8,667 and DEAREST
+  // $4,500 as bare numbers with no date anywhere near them. The most confident
+  // text in the tool was the least sourced, and the whole product thesis is
+  // that our numbers can be trusted.
+  //
+  // Two things are said now. WHEN the prices were read, always. And whether
+  // they are old enough that the number should not be leaned on: a card whose
+  // own price date differs from the common one is carried on the row, and a
+  // common date more than 14 days behind is called out rather than presented
+  // with confidence.
+  // esc() DOES NOT EXIST ON THIS PAGE. I reached for it out of habit; there is
+  // no such helper here, so calling it would have thrown inside renderTally and
+  // taken the whole tally down. These values are a date string and a list of
+  // date strings read from our own catalogue, but they are still interpolated
+  // into innerHTML, so they get escaped rather than trusted.
+  const esc = function(v){
+    return String(v == null ? "" : v)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/\"/g, "&quot;").replace(/'/g, "&#39;");
+  };
+  const ageDays = (function(){
+    if (!PRICES_AS_OF) return null;
+    // NO REGEX AND NO BACKSLASH. This was .replace(/'+BS+BS+'//g, "-") and the template
+    // literal ate the escape, emitting ///g - which JavaScript reads as a comment
+    // that swallowed the rest of the line and broke the whole editor script.
+    // split/join needs no escaping and cannot repeat it.
+    const t = Date.parse(PRICES_AS_OF.split("/").join("-"));
+    return isNaN(t) ? null : Math.floor((Date.now() - t) / 86400000);
+  })();
+  const olderCards = tray.filter(function(c){ return c.pd; });
+  var dateNote = "";
+  if (PRICES_AS_OF) {
+    dateNote = "priced " + PRICES_AS_OF;
+    if (ageDays !== null && ageDays > 14) dateNote += ", " + ageDays + " days ago";
+  } else {
+    dateNote = "price date unknown";
+  }
+
   html += "<div><span class='k'>PAGE COST</span><span class='v'>" + money(total);
   if (missing) html += " <span style='font-size:12px;color:var(--warn)'>+ " + missing + " unpriced</span>";
   html += "</span></div>";
   html += "<div><span class='k'>YOU HAVE</span><span class='v have'>" + have.length + " / " + tray.length + "</span></div>";
   html += "<div><span class='k'>STILL TO FIND</span><span class='v'>" + money(total - haveVal) + "</span></div>";
   if (priced.length) html += "<div><span class='k'>DEAREST</span><span class='v'>" + money(Math.max.apply(null, priced.map(c => c.p))) + "</span></div>";
+
+  // The window, beside the figures rather than buried in a methodology page.
+  html += "<div style='flex-basis:100%;margin-top:2px'><span class='k'>" +
+    (ageDays !== null && ageDays > 14 ? "PRICES MAY BE OUT OF DATE" : "WHEN") + "</span>" +
+    "<span style='font-size:12px;color:var(--dim)'>" + esc(dateNote);
+  if (olderCards.length) {
+    html += " · " + olderCards.length + " card" + (olderCards.length > 1 ? "s" : "") +
+      " last repriced earlier (" + esc(olderCards.map(function(c){ return c.pd; }).join(", ")) + ")";
+  }
+  html += "</span></div>";
   box.innerHTML = html;
 }
 
