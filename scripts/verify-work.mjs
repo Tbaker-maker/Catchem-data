@@ -212,7 +212,13 @@ const scripts = (await readdir(join(ROOT, "scripts"))).filter(f => f.endsWith(".
 // fails the build.
 {
   const PUBLISHES = /api\.x\.com\/2\/tweets|upload\.twitter\.com|statuses\/update/;
-  const BYPASS = /--(force|yes|no-?confirm|skip-?confirm|unattended|auto-?send)\b/;
+  // MATCH THE READING OF A FLAG, NOT A MENTION OF ONE. Two false positives in a
+  // row came from prose: first the comment explaining there is deliberately no
+  // --force, then the help text telling the user the same thing. Both were the
+  // documentation this guard exists to protect, and both got flagged as the
+  // defect. A bypass is not a string in a file — it is argv being consulted for
+  // one, so that is what this looks for.
+  const BYPASS = /(?:args|argv)\s*\.\s*includes\s*\(\s*["']--(force|yes|no-?confirm|skip-?confirm|unattended|auto-?send)["']|\bflag\(\s*["'](force|yes|no-?confirm|skip-?confirm|unattended|auto-?send)["']/;
   for (const f of scripts) {
     const src = await R("scripts/" + f);
     if (!PUBLISHES.test(src)) continue;
@@ -229,7 +235,7 @@ const scripts = (await readdir(join(ROOT, "scripts"))).filter(f => f.endsWith(".
       .filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l))
       .map((l) => l.match(BYPASS)).find(Boolean);
     if (by)
-      P("ungated publication", `${f} accepts ${by[0]}, which would skip the human confirmation`,
+      P("ungated publication", `${f} reads a --${by[1] ?? by[2]} flag, which would skip the human confirmation`,
         "There is deliberately no override on the send gate. A flag that bypasses it is the single change that makes every post ineligible, and it will look like a reasonable convenience to whoever adds it.", 18);
   }
   const wf = await readdir(join(ROOT, ".github/workflows")).catch(() => []);

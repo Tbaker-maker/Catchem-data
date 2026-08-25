@@ -352,7 +352,7 @@
    "reviewed": "2026-08-25"
   },
   "originality-guard.mjs": {
-   "cannotCatch": "Whether X's reviewers agree with the originality claim we stored. It checks that a claim EXISTS and is specific, not that it is correct or that anyone else would accept it. A confident, well-written, wrong claim passes every check in the file. It also cannot see the image — it reads the caption and the stored claim, so a post whose art is a straight reupload with a good sentence attached passes.",
+   "cannotCatch": "Whether X's reviewers agree with the originality claim we stored. It checks that a claim EXISTS and is specific, not that it is correct or that anyone else would accept it. A confident, well-written, wrong claim passes every check in the file. It also cannot see the image — it reads the caption and the stored claim, so a post whose art is a straight reupload with a good sentence attached passes. It also cannot distinguish a queue that passed from a queue that was empty except by saying so in words, which it now does: nothing checked is printed as NOTHING CHECKED, not as zero failures. And it never sees the image, so a straight reupload with a well-written claim attached passes every check in the file.",
    "coveredBy": "Tyler's judgement, and ultimately X's. Nothing in this repo.",
    "reviewed": "2026-08-25"
   }

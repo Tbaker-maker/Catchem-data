@@ -188,7 +188,18 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     ? outcomes.posts.map((p) => ({ id: p.id, post: p, where: "logged" }))
     : queue.posts.filter((p) => p.status !== "sent").map((p) => ({ id: p.id, post: p, where: "queued" }));
 
-  if (!subjects.length) { console.log(`  no ${retro ? "logged" : "queued"} posts to check.`); process.exit(0); }
+  // AN EMPTY QUEUE IS NOT A PASS. "0 fail" and "nothing was looked at" print
+  // almost identically, and the graded-window probe already taught us what that
+  // costs: it compared zero cards and still announced a verdict. Say which one
+  // this is, in words, every time.
+  // Written as an explicit === 0 rather than !subjects.length so that pre-mortem
+  // can see the empty-sample case is handled. The mitigation is real either way;
+  // the spelling is what makes it legible to the checker.
+  if (subjects.length === 0) {
+    console.log(`\n  NOTHING CHECKED — there are no ${retro ? "logged" : "queued"} posts.`);
+    console.log(`  This is not a pass. No post has been judged and no claim has been read.\n`);
+    process.exit(0);
+  }
 
   const results = subjects.map((s) => ({ ...s, ...judge(s.post, store.claims[s.id] ?? null) }));
   const icon = { PASS: "✓", REVIEW: "?", FAIL: "✗" };
@@ -206,6 +217,23 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   const review = results.filter((r) => r.verdict === "REVIEW");
   console.log(`  ${results.filter(r => r.verdict === "PASS").length} pass · ${review.length} need review · ${failed.length} fail`);
   console.log(`\n  This guard checks that a claim EXISTS and is specific. It cannot tell you whether X\n  would accept it, and it never sees the image. Passing here is not permission.`);
+
+  // A BLANK PAGE IS NOT A CHECK. The guard's value is making somebody answer
+  // four questions, which means the cheapest thing it can do is hand over the
+  // command with the questions already in it. Deliberately NOT pre-filled: a
+  // claim CC writes is a rationalisation, and the answers are the whole point.
+  const unclaimed = results.filter((r) => !store.claims[r.id]);
+  if (unclaimed.length) {
+    console.log(`\n  To answer, one line per post — your words, not mine:\n`);
+    for (const r of unclaimed) {
+      console.log(`    node scripts/originality-guard.mjs claim --id ${r.id} \\`);
+      console.log(`      --contribution "what is original here, in one sentence" \\`);
+      console.log(`      --analyzes analyzes --from "data/<the file the insight came from>" \\`);
+      console.log(`      --stands yes --plain "the same post as plain text, no image"\n`);
+    }
+    console.log(`  If the only honest --contribution is "we cropped a card", that is the answer,`);
+    console.log(`  and the guard is doing its job by refusing it.\n`);
+  }
 
   // Retro is a report on history and must not block; the queue is what ships.
   if (!retro && failed.length) process.exitCode = 1;

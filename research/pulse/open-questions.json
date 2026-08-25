@@ -325,7 +325,7 @@
    "who": "tyler",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-25",
-   "asked": 197,
+   "asked": 198,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -351,7 +351,7 @@
    "who": "tyler",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-25",
-   "asked": 175,
+   "asked": 176,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -522,7 +522,7 @@
    "who": "cc",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-25",
-   "asked": 169,
+   "asked": 170,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -546,7 +546,7 @@
    "who": "cc",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-25",
-   "asked": 169,
+   "asked": 170,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -575,7 +575,7 @@
    "who": "cc",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-25",
-   "asked": 169,
+   "asked": 170,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -598,7 +598,7 @@
    "who": "cc",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-25",
-   "asked": 169,
+   "asked": 170,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -626,7 +626,7 @@
    "who": "cc",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-25",
-   "asked": 169,
+   "asked": 170,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -655,7 +655,7 @@
    "who": "cc",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-25",
-   "asked": 169,
+   "asked": 170,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -759,7 +759,7 @@
    "who": "cc",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-25",
-   "asked": 75,
+   "asked": 76,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -819,7 +819,7 @@
    "who": "cc",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-25",
-   "asked": 41,
+   "asked": 42,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -845,7 +845,7 @@
    "who": "cc",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-25",
-   "asked": 35,
+   "asked": 36,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -881,7 +881,7 @@
    "who": "cc",
    "firstAsked": "2026-08-24",
    "lastAsked": "2026-08-25",
-   "asked": 24,
+   "asked": 25,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -980,7 +980,7 @@
    "who": "cc",
    "firstAsked": "2026-08-25",
    "lastAsked": "2026-08-25",
-   "asked": 9,
+   "asked": 10,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -990,6 +990,32 @@
    "agent": "read-metrics",
    "question": "The Charmander late-night post: was it the night of Aug 21-22 or Aug 22-23? Its postedAt was typed as round midnight so the date could be a day off, and that decides whether its 791 views were read at 25 hours old or at 1 hour old.",
    "evidence": "Logged as 2026-08-22T00:00:00Z, which converts to 2026-08-22T07:00:00Z Pacific. Its id says 2026-08-23 but that is the LOGGING date (log-outcome builds ids from the current date), not the posting date. Read as Aug 22, the 791 views were measured 25.02h after posting. Read as the night of Aug 22-23, they were measured 1.02h after posting. Those are two completely different results for the strongest non-Arita number we have, and nothing in the data distinguishes them.",
+   "who": "tyler",
+   "firstAsked": "2026-08-25",
+   "lastAsked": "2026-08-25",
+   "asked": 1,
+   "answeredBy": null,
+   "answer": null,
+   "answeredOn": null
+  },
+  {
+   "id": "originality-guard-50",
+   "agent": "originality-guard",
+   "question": "Open Creator Studio and check the Original Content Rewards panel: are we eligible, and what does it say for verified followers and qualified impressions over the trailing 90 days?",
+   "evidence": "None of these four numbers is visible from here. The X API reports public_metrics.impression_count, which is RAW views — every impression from anywhere, including replies, non-subscribers, the same account twice and promoted placement. A qualified impression is a unique Home Timeline impression from an X Premium subscriber with at least 50 percent of the post visible, and no endpoint reports it. Our best post shows 127,200 raw views; the qualifying figure behind it could be almost all of that or almost none, and nothing in this repo can narrow the range. Eligibility needs 500 verified followers and 500,000 qualified impressions in a trailing 90 days. Declared as a blind spot for read-metrics.mjs in data/guard-blindspots.json.",
+   "who": "tyler",
+   "firstAsked": "2026-08-25",
+   "lastAsked": "2026-08-25",
+   "asked": 1,
+   "answeredBy": null,
+   "answer": null,
+   "answeredOn": null
+  },
+  {
+   "id": "post-queue-51",
+   "agent": "post-queue",
+   "question": "The first real send is a live test. When you next post, run it through post-queue send rather than the X app, and tell me what happened — did it post, and did the reply-window countdown behave?",
+   "evidence": "postToX has never executed. Sending means publishing to your account and that is your keystroke, not mine, so the request shape, the endpoint and the media upload are all unverified. What IS proven: scripts/lib/x-auth.mjs matched X published signature vector, and the same signer completed the three-legged flow that minted your current tokens, so the signing is not the risk. The risk is the request body and the v1.1 media upload. If it fails, the queue is left unchanged and nothing is marked sent.",
    "who": "tyler",
    "firstAsked": "2026-08-25",
    "lastAsked": "2026-08-25",

@@ -33,7 +33,18 @@ const declared = await readFile(join(ROOT, "data/guard-blindspots.json"), "utf-8
 
 // Every guard the audit knows about.
 const auditSrc = await readFile(join(ROOT, "scripts/guard-audit.mjs"), "utf-8").catch(() => "");
-const guards = [...auditSrc.matchAll(/\{ script: "([a-z-]+\.mjs)"/g)].map(m => m[1]);
+const pipelineGuards = [...auditSrc.matchAll(/\{ script: "([a-z-]+\.mjs)"/g)].map(m => m[1]);
+
+// AND EVERY BLOCKING GUARD IN THE FLEET. 2026-08-25: originality-guard was
+// registered blocking in fleet.mjs, wired into the send path, and given a
+// declared blind spot — and this file never looked at it, because it only read
+// guard-audit's MUST_RUN list, which is the DAILY PUBLISH pipeline. A guard on
+// the posting queue is not a pipeline step and never will be, so the blind spot
+// declaration sat there being satisfied by nobody. Deleting it changed nothing,
+// which is the definition of a check that is not running.
+const fleetSrc = await readFile(join(ROOT, "scripts/fleet.mjs"), "utf-8").catch(() => "");
+const fleetGuards = [...fleetSrc.matchAll(/script:\s*"([a-z-]+\.mjs)",\s*blocking:\s*true/g)].map(m => m[1]);
+const guards = [...new Set([...pipelineGuards, ...fleetGuards])];
 
 // EXCLUDE OUR OWN SOURCE. The shape table quotes the very patterns it hunts,
 // so scanning this file finds every shape in it and reports them all against
