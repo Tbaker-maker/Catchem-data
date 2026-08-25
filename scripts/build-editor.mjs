@@ -373,7 +373,28 @@ const CARD_ROWS = ${await (async () => {
   const lore = (await J('data/lore.json'))?.lore ?? {};
   const ctext = (await J('data/card-text.json'))?.cards ?? {};
   const HERO_R = /Illustration Rare|Rare Holo|Rare Secret|Rare Ultra|Rare Rainbow|Rare Shiny|Special Illustration/i;
-  const rows = index.filter(c => HERO_R.test(c.r ?? '') || (c.p ?? 0) >= 8).map(c => {
+    // COMPLETE THE LINES. Sixty-eight Pokémon were needed to finish an evolution
+  // line and were excluded — Metapod, Kakuna, Roselia, the stages nobody
+  // chases. The post-worthy filter was right in general and wrong here: a cocoon
+  // is not post-worthy alone and is essential to the line that is. Five KB.
+  const FORM_P = new RegExp("^(Galarian|Alolan|Hisuian|Paldean|Dark|Mega|Shadow|Crystal|Light|Shining|Radiant)\\s+", "i");
+  const MECH_P = new RegExp("\\s+(ex|EX|GX|V|VMAX|VSTAR|BREAK|LEGEND|Prime|Star|LV.X)$");
+  const monP = (n) => { let x = String(n); for (let i = 0; i < 2; i++) x = x.replace(FORM_P, ""); return x.replace(MECH_P, "").trim().split(" ")[0]; };
+  const base = index.filter(c => HERO_R.test(c.r ?? '') || (c.p ?? 0) >= 8);
+  const have = new Set(base.map(c => monP(c.n)));
+  const evoOf = {};
+  for (const c of index) if (attrs[c.i]?.ev) evoOf[monP(c.n)] = monP(attrs[c.i].ev);
+  const need = new Set();
+  for (const [child, parent] of Object.entries(evoOf)) {
+    if (have.has(child) && !have.has(parent)) need.add(parent);
+    if (have.has(parent) && !have.has(child)) need.add(child);
+  }
+  const extra = [];
+  for (const m of need) {
+    const best = index.filter(c => monP(c.n) === m && c.a).sort((x, y) => (y.p ?? 0) - (x.p ?? 0))[0];
+    if (best) extra.push(best);
+  }
+  const rows = base.concat(extra).map(c => {
     const A = attrs[c.i] ?? {}, B = bios[c.i] ?? {}, T = ctext[c.i] ?? {};
     const st = (A.st ?? []).filter(x => /^(Basic|Stage 1|Stage 2|Baby|ex|EX|V|VMAX|VSTAR|GX|MEGA)$/.test(x));
     return [c.i, c.n, c.s, c.y, c.a ?? 0, c.r ?? 0, c.p ?? 0,
@@ -1549,7 +1570,15 @@ function runAsk(text){
   if (found.set) fSet = found.set;
   if (found.rating) fRating = found.rating;
   if (found.type) { const t = THEMES.find(x => x.id === "type-" + found.type.toLowerCase()); if (t) fTheme = t.id; }
-  if (found.shape) { const t = THEMES.find(x => x.id === found.shape || x.shape === found.shape); if (t) fTheme = t.id; }
+  if (found.shape) {
+    // EEVEE HAS NO LINE, IT HAS EIGHT BRANCHES. Asking for "the Eevee evolution"
+    // has no single answer, so it goes to the Eeveelutions rather than returning
+    // one card and calling it a line.
+    if (found.shape === "evo-line" && found.mon && /^eevee$/i.test(found.mon)) {
+      const ee = THEMES.find(x => x.id === "eeveelutions");
+      if (ee) { fTheme = ee.id; fMon = null; fCount = found.count || 6; }
+    } else { const t = THEMES.find(x => x.id === found.shape || x.shape === found.shape); if (t) fTheme = t.id; }
+  }
   if (found.artist) { fTheme = "artist-career"; el("q") && (el("q").value = found.artist); }
   if (found.mood) { loadMood(found.mood); return; }
   // THE OBSCURE SHAPE has no theme — it is a query, and it is the post that
@@ -1927,28 +1956,68 @@ function buildIdeas(){
   }
 
   else if (shape === "evo") {
+    // A LINE IS ABOUT ITS CARDS, WHATEVER THE RARITY. Only 34 three-stage lines
+    // resolved from hero rarity because the MIDDLE stage breaks them — Metapod
+    // has zero Illustration Rares, Kakuna none, Pichu two. Nobody makes a chase
+    // card of a cocoon. Same lesson as Koga: filtering by rarity excluded the
+    // only card that could complete the request.
+    const evoPool = INDEX.filter(function(c){ return (!fSet || c.s === fSet) && c.a && ratingPass(c); });
     // THE EVOLUTION LINE. A real relationship in the data, walked from the
     // evolvesFrom field — Charmander to Charmeleon to Charizard, in order. No
     // name list could produce this, because the relationship IS the content and
     // a list only knows membership.
     const byMon = {};
-    for (const c of pool) { const k = monName(c.n);
-      if (!byMon[k] || (c.p || 0) > (byMon[k].p || 0)) byMon[k] = c; }
+    for (const c of evoPool) { const k = monName(c.n);
+      // Prefer the best card at each stage — hero rarity first, then price —
+      // without REQUIRING it, or the cocoon stage kills the line.
+      const rank = function(x){ return (HERO_RX.test(x.r || "") ? 1000000 : 0) + (x.p || 0); };
+      if (!byMon[k] || rank(c) > rank(byMon[k])) byMon[k] = c; }
     // THE EVO SHAPE IGNORED THE POKEMON. It walked every entry and returned the
     // first complete line, so asking for Charizard announced Charizard and handed
     // back Chansey — saying one thing while showing another, which is the failure
     // that reads as researched.
     const wanted = fMon ? String(fMon).toLowerCase() : null;
     for (const [base, card] of Object.entries(byMon)) {
-      if (ATTRS[card.i]?.e) continue;                 // start at the bottom only
-      const line = [card];
+      if (ATTRS[card.i]?.e) continue;
+      // START FROM THE PLAIN CARD. The walk begins at the highest-ranked card for
+      // that Pokemon, and for Magikarp that is a Tag Team — "Magikarp & Wailord-GX"
+      // — which evolves from nothing and stops the chain on its first step.
+      // Choose a PLAIN card for the base rather than dropping the creature.
+      // Skipping meant Magikarp never entered the walk at all, when the fix was
+      // simply to start from a different Magikarp.
+      let startCard = card;
+      if (/[&]/.test(startCard.n)) {
+        const plain = evoPool.filter(function(x){ return monName(x.n) === base && !/[&]/.test(x.n) && !ATTRS[x.i]?.e; });
+        if (!plain.length) continue;
+        startCard = plain.sort(function(a,b){ return (HERO_RX.test(b.r||"")?1e6:0)+(b.p||0) - ((HERO_RX.test(a.r||"")?1e6:0)+(a.p||0)); })[0];
+      }                 // start at the bottom only
+      const line = [startCard];
       let cur = base;
       for (let i = 0; i < 3 && line.length < need; i++) {
-        const next = Object.values(byMon).find(x => ATTRS[x.i]?.e === cur);
+        // PICK THE CARD THAT LINKS. The best Gengar is a VMAX, and a Gengar
+        // VMAX evolves from Gengar V rather than Haunter — so choosing by value
+        // broke the chain on the card being accurate. Look through EVERY card of
+        // the next stage for one that names this stage.
+        let next = Object.values(byMon).find(x => ATTRS[x.i]?.e === cur);
+        if (!next) {
+          const linking = evoPool.filter(function(x){ return ATTRS[x.i] && ATTRS[x.i].e === cur; });
+          if (linking.length) next = linking.sort(function(a, b){
+            return (HERO_RX.test(b.r || "") ? 1000000 : 0) + (b.p || 0) - ((HERO_RX.test(a.r || "") ? 1000000 : 0) + (a.p || 0));
+          })[0];
+        }
         if (!next) break;
         line.push(next); cur = next.n.split(" ")[0];
       }
-      if (line.length !== need) continue;
+      // A LINE OF ONE IS NOT A LINE. Returning a single card whose name merely
+      // contains the word is worse than returning nothing, because it looks like
+      // an answer. Eevee has eight branches and no single line; it belongs in the
+      // Eeveelutions theme, not here.
+      // THE LINE IS AS LONG AS IT IS. Magikarp → Gyarados is two stages, and
+      // demanding three rejected the whole line and returned a Tag Team card
+      // instead. Requiring a count the creature does not have is asking the data
+      // to be wrong.
+      if (line.length < 2) continue;
+      if (line.length > need) line.length = need;
       // Any stage of the line satisfies the request — asking for Charizard, or
       // Charmander, should both find Charmander → Charmeleon → Charizard.
       if (wanted && !line.some(c => monName(c.n).toLowerCase() === wanted)) continue;
