@@ -2693,3 +2693,33 @@ AND THE LENGTH, AGAIN: mine was 31 words with a quoted paragraph. His was five.
 the picture is competing with it.**
 
 HIS FORMAT, worth keeping: `GM 🌻` — blank line — one short line.
+
+## A SENTENCE BUILT ON A RELATION MUST NOT CLAIM MORE THAN THE RELATION MEASURES (Aug 25 2026)
+The tutorial opened with **"Naoyo Kimura drew this Magmar in 2000, then drew it
+again in 2025 — the widest gap by one illustrator in the whole catalogue."**
+
+Every fact in that sentence is true except the last clause, and the last clause
+is the one doing the work. The relation behind the pair measures **the longest
+anyone has gone between drawing the same Pokemon twice**. The sentence quietly
+widened it to **career span** — and six illustrators span twenty-seven years
+against Kimura's twenty-five. Arita, Himeno, Aoki, Kizuki, Nishida, Tanaka.
+
+Nobody lied. Somebody wrote a natural English sentence about a narrow computed
+fact, and natural English generalises. **The pair was right, the number was
+right, the scope was invented.**
+
+This is the trap, and it has a shape worth recognising: a relation returns a
+value under a definition, the definition lives in the query and not in the
+value, and the sentence is written from the value. Every step is reasonable and
+the result is a false claim in the first thing a new user reads, sitting beside
+a credit strip whose whole promise is that our numbers are checked.
+
+**The test: name the relation's definition out loud, then read the sentence. If
+the sentence would still be true had the relation measured something slightly
+broader, the sentence is not built on the relation — it is built beside it.**
+
+The fix is not better proofreading. The tutorial sentence, the pair, the years
+and the gap are now all computed from `artistRevisits()` at build time, so the
+copy cannot drift from the data and cannot outrun it. Which is the general
+principle: **a data-derived string cannot claim more than the data holds. A
+typed one can widen a narrow fact and nothing will notice.**

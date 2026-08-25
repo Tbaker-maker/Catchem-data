@@ -66,15 +66,19 @@ function lift(names) {
   // function bodies alone gave "ReferenceError: fold is not defined" - which is
   // the gauntlet working correctly: it reads the SHIPPED page, so it breaks
   // honestly the moment the shipped page changes shape.
-  const vars = ["COMBINING", "RSQUO", "WS"].map((v) => {
-    const i = html.indexOf("var " + v + " = ");
+  // monName() strips form prefixes and mechanic suffixes using two module-level
+  // regexes, so the suggester cannot be lifted without them. They are declared
+  // const rather than var, hence the two spellings.
+  const vars = [["var", "COMBINING"], ["var", "RSQUO"], ["var", "WS"],
+                ["const", "FORM_PREFIX"], ["const", "MECH_SUFFIX"]].map(([kw, v]) => {
+    const i = html.indexOf(kw + " " + v + " = ");
     if (i < 0) return "";
     const j = html.indexOf(";", i);
     return html.slice(i, j + 1);
-  }).filter(Boolean).join("\n");
-  return new Function(vars + "\n" + src + "; return {" + names.map(n => n + ":" + n).join(",") + "};")();
+  }).filter(Boolean).join("\n") + "\nlet SUGGEST_NAMES = null;";
+  return new Function("INDEX", vars + "\n" + src + "; return {" + names.map(n => n + ":" + n).join(",") + "};")(INDEX);
 }
-const { termsOf, hits } = lift(["fold", "hay", "termsOf", "hits"]);
+const { fold, termsOf, hits, suggestNames, monName } = lift(["fold", "hay", "termsOf", "hits", "monName", "editDistance", "suggestNames"]);
 const find = (q) => { const t = termsOf(q); return INDEX.filter(c => hits(c, t)); };
 
 const { cards } = await loadCards();
@@ -477,6 +481,173 @@ head("10. preference persistence");
     check("store", "the tutorial flag uses that store",
       /store\.set\(TUT_KEY/.test(html) && /store\.get\(TUT_KEY\)/.test(html),
       "if the tutorial used a different path it would reappear on every visit");
+  }
+}
+
+// ── 11. WHAT A HUMAN ACTUALLY TYPES ────────────────────────────────────────
+// Sections 1-10 proved the search WORKS. They never proved it works for the
+// input a person produces, and those are different claims: "Farfetch'd" found
+// 19 cards while "Farfetchd" found none, and "Pokemon" found nothing at all
+// unless you reached for the accent key. Every guard passed for weeks.
+//
+// The cases that LOOKED tolerant were tolerant by accident. "Mr Mime" worked
+// only because it split into two short tokens that each substring-match inside
+// "mr. mime"; a single-token name with an accent in the middle had no such luck.
+// A test suite written by hand would have contained exactly the examples whose
+// spelling somebody already thought about.
+//
+// So the cases are DERIVED FROM THE CATALOGUE. Every card name carrying a
+// character a phone keyboard does not offer becomes a test automatically, which
+// means a new set cannot introduce an untested name — the set arrives, the
+// names enter the catalogue, and the assertions appear with them.
+head("11. what a human actually types");
+{
+  // What a US keyboard can produce without a long-press: ASCII printable.
+  // Anything outside it is a character the user cannot reasonably reach.
+  const KEYBOARD = /^[A-Za-z0-9 !-/:-@[-`{-~]*$/;
+  const names = new Set();
+  for (const c of cards.values()) if (c.name) names.add(c.name);
+
+  // The keyboard form of a name: what somebody types when they are looking at
+  // the card and typing on a phone. fold() already strips accents and
+  // apostrophes; the symbols and punctuation go too, because nobody types ♂.
+  // WRITTEN INDEPENDENTLY OF fold(), DELIBERATELY. The first version of this
+  // helper called fold() to build the expected query — the same function the
+  // assertions are testing. Crippling fold() then changed BOTH the query and
+  // the haystack, they degraded together, and all 702 checks passed against a
+  // search that could no longer find "Pokemon". A test that borrows the
+  // implementation it is testing proves only that the code agrees with itself.
+  //
+  // So this states what a THUMB produces, in its own terms: decompose, drop the
+  // combining marks, drop everything that is not a letter or a digit. If fold()
+  // stops doing the equivalent, these assertions fail — which is the point.
+  const COMBINING_MARKS = new RegExp("[" + String.fromCharCode(768) + "-" + String.fromCharCode(879) + "]", "g");
+  const keyboardForm = (s) => String(s)
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(COMBINING_MARKS, "")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+
+  const offKeyboard = [...names].filter(n => !KEYBOARD.test(n));
+  const apostrophe  = [...names].filter(n => /['’]/.test(n));
+  const period      = [...names].filter(n => /\./.test(n));
+  const needsTest   = [...new Set([...offKeyboard, ...apostrophe, ...period])];
+
+  console.log(`     ${names.size} distinct card names · ${needsTest.length} carry something a keyboard does not`);
+  console.log(`     ${offKeyboard.length} off-keyboard · ${apostrophe.length} apostrophe · ${period.length} period`);
+
+  // Every affected name must be findable by its keyboard form. This is the
+  // assertion that was missing: not "search works" but "search works for what
+  // the user can actually type".
+  let tested = 0, worst = [];
+  for (const n of needsTest) {
+    const typed = keyboardForm(n);
+    if (!typed) continue;                       // a name that folds to nothing
+    tested++;
+    const terms = termsOf(typed);
+    const found = INDEX.some(c => c.n === n && hits(c, terms));
+    if (!found && worst.length < 6) worst.push(`"${typed}" does not find "${n}"`);
+    check("keyboard", `"${typed}" finds ${n}`, found,
+      `a phone keyboard cannot produce "${n}" — typing "${typed}" must find it`);
+  }
+  console.log(`     ${tested} keyboard-form queries asserted`);
+
+  // Artists carry the same problem and nobody thinks to test them: two of them
+  // hold characters off the keyboard, and an illustrator credit is the single
+  // claim this account cannot afford to get wrong.
+  const artists = new Set();
+  for (const c of cards.values()) if (c.artist) artists.add(c.artist);
+  const artOff = [...artists].filter(a => !KEYBOARD.test(a));
+  for (const a of artOff) {
+    const typed = keyboardForm(a);
+    const terms = termsOf(typed);
+    check("keyboard", `"${typed}" finds cards by ${a}`,
+      INDEX.some(c => c.a === a && hits(c, terms)),
+      `typing "${typed}" must reach ${a}`);
+  }
+  console.log(`     ${artOff.length} illustrator names with an off-keyboard character`);
+
+  // LOWERCASE, ALWAYS. Phone keyboards autocapitalise inconsistently and nobody
+  // types "Ho-Oh" with both capitals on purpose.
+  const sample = [...names].filter((_, i) => i % 97 === 0).slice(0, 40);
+  for (const n of sample) {
+    const lower = keyboardForm(n).toLowerCase();
+    check("keyboard", `lowercase "${lower}" finds ${n}`,
+      INDEX.some(c => c.n === n && hits(c, termsOf(lower))),
+      `case must not decide whether a card is findable`);
+  }
+
+  // MISSPELLINGS, within the tolerance the suggester already promises:
+  // d <= max(2, ceil(len/2)). A dropped letter and a doubled letter are the two
+  // a thumb produces most, so they are generated rather than chosen.
+  const drop1 = (s) => s.slice(0, Math.floor(s.length / 2)) + s.slice(Math.floor(s.length / 2) + 1);
+  const double1 = (s) => { const i = Math.floor(s.length / 2); return s.slice(0, i) + s[i] + s.slice(i); };
+  // DERIVED FROM WHAT THE SUGGESTER ACTUALLY OFFERS. My first version took the
+  // first token of the card name and asserted "darkri-ex" should suggest
+  // "Darkrai-EX". The suggester answered "Darkrai" and was right: its list is
+  // built from monName(), which strips form prefixes and mechanic suffixes so
+  // it offers the POKEMON, not the card. Six failures, all mine. Deriving the
+  // cases from the same normalisation the suggester uses means the test cannot
+  // disagree with the feature about what the feature is for.
+  const monNames = [...new Set([...cards.values()].map(c => monName(c.name || "")).filter(n => n && n.length >= 6))];
+  const misspellSample = monNames.filter((_, i) => i % 31 === 0).slice(0, 30);
+  let suggestible = 0;
+  for (const n of misspellSample) {
+    for (const typo of [drop1(n), double1(n)]) {
+      const d = Math.abs(typo.length - n.length) + 1;   // one edit, by construction
+      if (d > Math.max(2, Math.ceil(typo.length / 2))) continue;
+      // The promise is that the SUGGESTER recovers it, not that search does.
+      const names6 = suggestNames(keyboardForm(typo));
+      const ok = names6.some(x => keyboardForm(x) === keyboardForm(n));
+      if (ok) suggestible++;
+      check("keyboard", `"${typo}" suggests ${n}`, ok,
+        `one edit from a real name must be recoverable — the suggester promises d <= max(2, len/2)`);
+    }
+  }
+  console.log(`     ${misspellSample.length * 2} one-edit misspellings asserted · ${suggestible} recovered`);
+  if (worst.length) for (const w of worst) console.log(`     ✗ ${w}`);
+}
+
+// ── 12. A TYPED SENTENCE ABOUT A COMPUTED RULE ─────────────────────────────
+// The rating filters each carry a note explaining what the threshold means,
+// under a comment promising that a filter you cannot explain is one nobody
+// should trust. One of those notes read "the Baby subtype, or an unevolved
+// Basic at 60 HP or less". The rule is hp <= 70, and a plain small Basic scores
+// 5 against a filter that requires 7 — so no card had ever qualified the way
+// the sentence described. It drifted from the rule and nothing failed.
+//
+// This is the general shape of the Kimura error one level down: a sentence
+// written beside a computed fact rather than from it. The check is narrow and
+// mechanical — a NUMBER cited in a note must be a number the passing cards
+// actually exhibit — because that is the part a machine can settle.
+head("12. filter notes match the cards they describe");
+{
+  const bios = JSON.parse(await readFile(join(ROOT, "data/card-bios.json"), "utf-8")).bios || {};
+  const notes = [...html.matchAll(/\{ id: "([a-z-]+)", label: "[^"]*", test: \(r\) => \(r\.([a-z]+) \?\? 0\) >= (\d+), note: "([^"]+)" \}/g)]
+    .map(m => ({ id: m[1], field: m[2], min: Number(m[3]), note: m[4] }));
+
+  check("notes", "the rating filters were found in the shipped page", notes.length > 0,
+    "the regex found no RATING_FILTERS — this check would pass vacuously, which is worse than failing");
+
+  for (const f of notes) {
+    // Every card that PASSES this filter, and the reason the generator recorded.
+    const passing = Object.values(bios)
+      .filter(b => ((b.ratings || {})[f.field] ?? -1) >= f.min)
+      .map(b => (b.why || {})[f.field] || "");
+
+    check("notes", `${f.id}: at least one card passes`, passing.length > 0,
+      `nothing in the catalogue passes ${f.field} >= ${f.min}, so its note describes an empty set`);
+    if (!passing.length) continue;
+
+    // Any number the note asserts must be a number the passing cards show.
+    const cited = [...f.note.matchAll(/\b(\d+)\b/g)].map(m => m[1]);
+    for (const n of cited) {
+      const seen = passing.some(w => w.includes(n));
+      check("notes", `${f.id}: the note cites ${n} and a passing card shows it`, seen,
+        `note says "${f.note}" but no card passing ${f.field} >= ${f.min} records ${n} in its reason`);
+    }
+    console.log(`     ${f.id.padEnd(9)} ${String(passing.length).padStart(5)} cards pass · ${cited.length} number(s) cited in its note`);
   }
 }
 

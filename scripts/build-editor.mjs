@@ -1155,6 +1155,37 @@ function hay(c){
   return c._h;
 }
 
+// ══ WHY SO MUCH OF THIS FILE INTERPOLATES INSTEAD OF WRITING THE SENTENCE ══
+// 1,247 strings over 45 characters reach a reader from this page. 1,177 come
+// from the emitted data constants and 53 were typed by a person. Both of the
+// false claims found in the audit came from the 53, and neither was a typo.
+//
+// A DERIVED STRING CANNOT CLAIM MORE THAN THE DATA HOLDS. It is assembled from
+// values, so its scope is exactly the scope of the query behind it. If the
+// query changes, the sentence changes with it or stops compiling.
+//
+// A TYPED SENTENCE CAN WIDEN A NARROW FACT AND NOTHING NOTICES. That is not a
+// hypothetical:
+//
+//   artistRevisits() measures the longest gap between drawing the SAME POKEMON
+//   twice. The tutorial said "the widest gap by one illustrator in the whole
+//   catalogue" — career span — and six illustrators beat it. The pair was
+//   right, the years were right, the SCOPE was invented by the English.
+//
+//   build-bios scores cute >= 7 for Baby cards and small unevolved forms with a
+//   market premium. The filter note said "an unevolved Basic at 60 HP or less".
+//   The threshold is 70, and that tier scores 5, so no card had ever qualified
+//   the way the note described.
+//
+// Both sentences were written by someone looking straight at the correct value.
+// Natural English generalises; that is what it is for. The defence is not
+// proofreading, it is not writing the sentence by hand — and where it must be
+// written by hand, a guard that reads the artifact and the data and refuses to
+// let them disagree (search-gauntlet sections 11 and 12).
+//
+// house-theses.md: "A SENTENCE BUILT ON A RELATION MUST NOT CLAIM MORE THAN THE
+// RELATION MEASURES."
+
 // ── TOKENISE AND AND ──────────────────────────────────────────────────────
 // The old test was one contiguous substring across name + artist + set:
 //
@@ -1899,8 +1930,21 @@ function renderSelfReply(){
 // RATING FILTERS. Each one is a real threshold on a derived number, and the
 // panel says which printed field the number came from — because a filter you
 // cannot explain is a filter nobody should trust.
+//
+// AND THE EXPLANATION HAS TO STAY TRUE. This note read "the Baby subtype, or an
+// unevolved Basic at 60 HP or less" and was wrong twice over: the rule in
+// build-bios.mjs is hp <= 70, and a plain small Basic scores 5 — below this
+// filter's own >= 7 threshold — so NO card has ever qualified on the HP shape
+// alone. Of the 39 cards that pass, 15 are Baby and 24 are small unevolved
+// forms trading at 2.5x their set's median IR. The sentence described a rule
+// nobody wrote, sitting directly under a comment promising it could be trusted.
+//
+// Typed prose about a computed rule drifts the moment the rule moves, and
+// nothing fails when it does. search-gauntlet section 12 now checks that a
+// number cited in one of these notes is a number the passing cards actually
+// exhibit.
 const RATING_FILTERS = [
-  { id: "cute", label: "Cute", test: (r) => (r.cute ?? 0) >= 7, note: "the Baby subtype, or an unevolved Basic at 60 HP or less" },
+  { id: "cute", label: "Cute", test: (r) => (r.cute ?? 0) >= 7, note: "the Baby subtype, or a small unevolved form the market pays a premium for" },
   { id: "comedy", label: "Funny", test: (r) => (r.comedy ?? 0) >= 8, note: "the attack name is a genuinely absurd one" },
   { id: "serious", label: "Dark", test: (r) => (r.serious ?? 0) >= 9, note: "the printed flavour text uses grim language" },
   { id: "cheap", label: "Under a fiver", test: (r) => (r.price ?? 99) <= 4, note: "the bottom 40% of every priced card" },
