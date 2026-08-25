@@ -378,7 +378,9 @@
   "secret-scan.mjs": {
    "cannotCatch": "A SECRET THAT IS NOT IN .env. It checks the values we hold against every tracked file, so a credential that was never written to .env is invisible to it. It also cannot check git history - a value already committed stays readable forever and no scan of the working tree will say so. Values shorter than six characters are skipped as too noisy to search for.",
    "cannotFix": "A CLIENT-SIDE FORM ENDPOINT IS PUBLIC BY DESIGN. It sits in the HTML a browser downloads, so it is readable the moment the form works. This guard reports generated artifacts that carry one on every run, and blocks only on SOURCE files. Secrecy is not the control there - Formspree's domain restriction and spam filtering are.",
-   "reviewed": "2026-08-25"
+   "reviewed": "2026-08-25",
+   "theReasoning": "REVOKING COMES FIRST, BECAUSE REMOVAL DOES NOT UN-SHARE WHAT WAS ALREADY SHARED. This is the whole doctrine of the guard and it lived only inside an error string, one refactor away from being lost. Deleting a credential from a file changes what happens NEXT; it does nothing about every copy already fetched, cached, forked or read. So the order is always: revoke or rotate at the provider first, then clean the files. A cleanup that feels like a fix and leaves a live credential in the world is worse than no cleanup, because it ends the sense of urgency without ending the exposure.",
+   "andItsLimit": "That doctrine has one exception this guard must state or it will mislead: a value that is public BY DESIGN cannot be revoked into privacy. A client-side form endpoint is in the HTML a browser downloads. Rotating it replaces one public string with another public string - worth doing if the current one is being abused, pointless as a secrecy measure. For those, the control is the provider's own domain restriction and spam filtering, never obscurity."
   }
  }
 }

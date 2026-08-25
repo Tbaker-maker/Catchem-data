@@ -1135,6 +1135,19 @@
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
+  },
+  {
+   "id": "secret-scan-58",
+   "agent": "secret-scan",
+   "question": "DECISION: rotate the waitlist Formspree form, or keep it? HOW LONG EXPOSED: first committed 2026-08-18 in e15bfe4, publicly readable for 7 days, across 6 commits. It is in the deployed HTML too, so it was readable by anyone who viewed source on the page regardless. WHAT AN ATTACKER CAN DO: submit to the form from anywhere, burn through the 50-submission free-tier monthly cap, and bury your real signups in junk. WHAT THEY CANNOT DO: read any existing submission, see or reach your inbox, or touch anything else in the account - it is write-only. CAN YOU CHECK FOR DAMAGE ALREADY DONE: yes. The Formspree dashboard shows your submissions and the free tier keeps a 30-day archive, so log in and look at the count and the entries - if the total is near your real signup count and the entries look human, nothing has happened. WHAT ROTATING COSTS YOU: the existing 13-15 signups stay attached to the OLD form. You would export them to CSV first (Submissions tab, export), create the new form, put its id in .env, rebuild, and keep the CSV as the source of truth for anyone who signed up before the switch. That is maybe fifteen minutes plus the risk of losing a name in the handoff. WHAT I WOULD WEIGH: the exposure is real but the blast radius is spam, not disclosure, and Restrict-to-Domain plus reCAPTCHA in the dashboard closes the spam path in two minutes without touching your list. I am not making this call - if you would rather rotate and start clean, that is entirely reasonable and I will do the export and the swap.",
+   "evidence": "Source is clean as of 2026-08-25 - secret-scan checks 10 .env values against 3,019 tracked files and blocks. research/assets/index-landing.html still contains the endpoint and always will: a form action must carry it or the form posts nowhere, so it is reported every run as PUBLISHED BY DESIGN rather than as a leak. security-agent now exits 0 and prints what it can and cannot detect.",
+   "who": "tyler",
+   "firstAsked": "2026-08-25",
+   "lastAsked": "2026-08-25",
+   "asked": 1,
+   "answeredBy": null,
+   "answer": null,
+   "answeredOn": null
   }
  ]
 }
