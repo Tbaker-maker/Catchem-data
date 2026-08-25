@@ -428,12 +428,19 @@ const CARD_ROWS = ${await (async () => {
     const rich = richIds.has(c.i);
     const st = (A.st ?? []).filter(x => /^(Basic|Stage 1|Stage 2|Baby|ex|EX|V|VMAX|VSTAR|GX|MEGA)$/.test(x));
     return [c.i, c.n, c.s, c.y, c.a ?? 0, c.r ?? 0, c.p ?? 0,
-      A.t ?? 0, A.dex ?? 0, A.ev ?? 0, A.hp ?? 0, st.length ? st : 0,
+      // THE TAIL CARRIES WHAT SEARCH AND DISPLAY NEED, AND NOTHING ELSE.
+      // dex, evolvesFrom, HP, stage and weakness are only read by the relation
+      // layer, which runs in Node against the full catalogue and never reads
+      // this array. Shipping them to the browser for 9,743 cards cost 350KB of
+      // inline script for data the page cannot use - and inline script size is
+      // exactly what killed mobile Safari at 4.49MB (c6ed73e, 2026-08-24).
+      A.t ?? 0, rich ? (A.dex ?? 0) : 0, rich ? (A.ev ?? 0) : 0,
+      rich ? (A.hp ?? 0) : 0, rich && st.length ? st : 0,
       rich && Object.keys(B.ratings ?? {}).length ? B.ratings : 0,
       rich ? (lore[c.i] ?? 0) : 0, rich && T.a?.length ? T.a.slice(0, 2) : 0,
       // WEAKNESS. Captured weeks ago and never shipped, so every matchup lookup
       // read undefined. It is one short string per card.
-      A.w ?? 0, rich ? 1 : 0];
+      rich ? (A.w ?? 0) : 0, rich ? 1 : 0];
   });
   return JSON.stringify(rows);
 })()};

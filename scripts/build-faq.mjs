@@ -55,4 +55,7 @@ ${faq.entries.map(e => `<details><summary>${esc(e.q)}</summary><p>${esc(e.a)}</p
 `;
 
 await writeFile(join(ROOT, "research/assets/faq.html"), html);
-console.log(`✓ faq: ${faq.entries.length} question(s) rendered from data/faq.json`);
+// COUNT WHAT WAS WRITTEN, NOT WHAT WAS READ. This reported an input's size
+// as though it described the output. build-editor.mjs did the same and its
+// two numbers were 16,468 and 6,725.
+console.log(`✓ faq: ${(html.match(/<details/g) || []).length} question(s) rendered from ${faq.entries.length} in data/faq.json`);

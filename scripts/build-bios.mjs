@@ -156,7 +156,10 @@ await writeFile(join(ROOT, "data/card-bios.json"), JSON.stringify({
   coverage: { total: idx.length, withAnyRating: rated.length },
   bios }, null, 1));
 
-console.log(`✓ bios: ${idx.length.toLocaleString()} cards, ${rated.length.toLocaleString()} with at least one derived rating`);
+// COUNT WHAT WAS WRITTEN, NOT WHAT WAS READ. This reported an input's size
+// as though it described the output. build-editor.mjs did the same and its
+// two numbers were 16,468 and 6,725.
+console.log(`✓ bios: ${Object.keys(bios).length.toLocaleString()} cards, ${rated.length.toLocaleString()} with at least one derived rating`);
 const counts = {};
 for (const b of Object.values(bios)) for (const k of Object.keys(b.ratings)) counts[k] = (counts[k] ?? 0) + 1;
 for (const [k, v] of Object.entries(counts).sort((a, b) => b[1] - a[1]))

@@ -415,6 +415,71 @@ const scripts = (await readdir(join(ROOT, "scripts"))).filter(f => f.endsWith(".
   }
 }
 
+// ── ERROR: A SUCCESS LINE WHOSE NUMBER IS NOT FROM THE ARTIFACT ────────────
+// build-editor.mjs printed "16,468 cards searchable" while shipping 6,725. The
+// number was real - it was the CATALOGUE size - and the page it described held
+// 41% of that. It sat in plain output through every run for weeks, and no guard
+// looked at it, because a green line with a big number reads as evidence.
+//
+// THE SHAPE: read an input, write something DERIVED from it, then report the
+// input's size as though it were the output's. The log is true of something,
+// just not of the thing it names. It cannot drift into being wrong later - it
+// is wrong the moment the writer starts filtering, and nothing fails.
+//
+// This is static and it checks PROVENANCE, not equality: where the number came
+// from, not whether it happens to match today. Three of the lines it finds are
+// numerically correct right now and would go wrong silently the day their
+// writer gained a filter. That is the point - build-editor's was correct once
+// too. Declared in data/guard-blindspots.json.
+//
+// TO SATISFY IT: derive the count from what you wrote, or say on the line that
+// it counts WORK rather than output - "207 products checked" is a true claim
+// about a run, not a claim about a file.
+{
+  const OK_MARK = /counts work, not artifact|work performed, not artifact/i;
+  for (const f of scripts) {
+    const src = await R("scripts/" + f);
+    if (!src) continue;
+    const writes = [...src.matchAll(/write(?:File)?(?:Sync)?\s*\(\s*(?:join\([^,]+,\s*)?["'`]([^"'`]+)["'`]/g)]
+      .map(m => m[1]).filter(w => /\.(json|html|svg|md|txt|js)$/.test(w));
+    if (!writes.length) continue;
+    const writeVars = [...src.matchAll(/write(?:File)?(?:Sync)?\s*\([^,]+,\s*([A-Za-z_$][\w$]*)/g)].map(m => m[1]);
+    const lines = src.split(/\r?\n/);
+    for (let i = 0; i < lines.length; i++) {
+      const ln = lines[i];
+      if (!/console\.log\(\s*[`"']\s*✓/.test(ln)) continue;
+      const ctx = lines.slice(Math.max(0, i - 4), i + 1).join("\n");
+      if (OK_MARK.test(ctx)) continue;
+      // REPORTING BOTH NUMBERS IS THE GOOD PATTERN, NOT THE BAD ONE.
+      // "207 rows rendered from 207 products" states the ratio, and a ratio is
+      // precisely what would have exposed build-editor: 6,725 shipped out of
+      // 16,468. The defect is reporting ONLY the input, so a line that already
+      // carries an artifact-derived count has answered the question.
+      const derivesFromArtifact = [...ln.matchAll(/\$\{([^}]+)\}/g)].some((mm) => {
+        const e = mm[1];
+        if (/\.match\(|html|output|\bout\b/.test(e)) return true;
+        const rt = (e.match(/^[A-Za-z_$][\w$]*/) || [""])[0];
+        return rt && writeVars.includes(rt);
+      });
+      if (derivesFromArtifact) continue;
+      for (const m of ln.matchAll(/\$\{([^}]+)\}/g)) {
+        const expr = m[1].trim();
+        if (!/\.length|\.size|Object\.keys|toLocaleString/.test(expr)) continue;
+        const root = (expr.match(/^[A-Za-z_$][\w$]*/) || [""])[0];
+        if (!root || writeVars.includes(root)) continue;
+        const a = src.match(new RegExp("(?:const|let|var)\\s+" + root + "\\s*=\\s*([^;\\n]+)"));
+        const from = a ? a[1] : "";
+        // Derived from the produced text is fine - that IS measuring the artifact.
+        if (/\.match\(|html|output|out\b/.test(from)) continue;
+        if (!/await J\(|readFile|require\(/.test(from)) continue;
+        P("unverified success line", `${f}:${i + 1} reports \${${expr}} from an input, not from ${writes[0]}`,
+          "The number describes the file it READ, not the file it WROTE. build-editor printed the catalogue size over an index holding 41% of it, in plain output, for weeks. Derive the count from what was written, or mark the line as counting work rather than artifact.",
+          "unverified-success-line");
+      }
+    }
+  }
+}
+
 // ── THE META-CHECK · did I exclude myself? ────────────────────────────────
 // Five checkers read their own source in one day. This one names the risk out
 // loud rather than assuming it is immune.
@@ -423,7 +488,7 @@ const selfAware = true;   // this file audits data and other scripts, never itse
 const out = { generatedAt: new Date().toISOString(),
   purpose: "Checks output against the failure classes in our own error ledger — things that actually happened here, not generic quality rules.",
   runsOn: "output, never intent. What I meant to do is not evidence.",
-  classesChecked: [11, 13, 14, 15, 16, 18, 21, 24, 25, "sku existence", "coverage overclaim", "monetization miscount", "ungated publication (automation)", "stale metric"],
+  classesChecked: [11, 13, 14, 15, 16, 18, 21, 24, 25, "sku existence", "coverage overclaim", "monetization miscount", "ungated publication (automation)", "stale metric", "unverified success line"],
   problems };
 await (await import("node:fs/promises")).writeFile(join(ROOT, "research/pulse/work-verification.json"), JSON.stringify(out, null, 1));
 

@@ -86,4 +86,7 @@ Tax is never included anywhere. Full method on the <a href="/methodology.html">m
 </div>`;
 
 await writeFile(join(ROOT, "research/assets/coverage.html"), html);
-console.log(`✓ coverage page: ${sp.products.length} sealed products, ${Object.keys(groups).length} classes, ${held.size} held → research/assets/coverage.html`);
+// COUNT WHAT WAS WRITTEN, NOT WHAT WAS READ. This reported an input's size
+// as though it described the output. build-editor.mjs did the same and its
+// two numbers were 16,468 and 6,725.
+console.log(`✓ coverage page: ${(html.match(/<tr/g) || []).length} rows rendered from ${sp.products.length} sealed products, ${Object.keys(groups).length} classes, ${held.size} held → research/assets/coverage.html`);

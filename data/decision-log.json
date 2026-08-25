@@ -152,6 +152,19 @@
    "checkAfter": "2026-10-24",
    "grade": null,
    "decidedBy": "tyler"
+  },
+  {
+   "id": "2026-08-25-full-index-vs-mobile-crash",
+   "date": "2026-08-25",
+   "decision": "Ship every catalogue card in the editor index (16,468 rows) rather than the post-worthy subset (6,725), with the tail carrying only the columns search and display need. Findability is the product: Tyler could not find the card he wanted because it was never in the page, and both Magmar cards from the 2026-08-25 post were absent.",
+   "rejected": "Keeping the hero-only filter. It made the editor work but made it unable to answer the question people actually bring to it, and no amount of query-parser work fixes an index that does not contain the card.",
+   "cost": "build.html goes from 2.00MB to 2.83MB of inline script. The filter it replaces was introduced in c6ed73e on 2026-08-24 as a MOBILE CRASH FIX, not a page-weight preference: at 4.49MB the inline script killed mobile Safari and Chrome, taking photos, moods and angles with it, and the fix brought the page to 2.14MB. This change spends roughly a third of the headroom that fix bought back.",
+   "mistakeToRecord": "I removed that filter on a page-weight argument, having measured only the GZIP transfer delta (+201KB). Gzip size is not what broke mobile Safari - parsed inline script size is, and I did not check why the filter existed before removing it. The measurement answered a question nobody was asking. The commit message that introduced the filter said plainly what it was for and I did not read it until asked.",
+   "risk": "UNVERIFIED ON DEVICE. No phone has run the current page. The failure this risks is the one already in the error ledger as error 32, on the device class where X traffic overwhelmingly is, and on the same device whose canvas memory limits produced the blank-export defect fixed earlier today. 2.83MB sits between the 2.14MB that is known to work and the 4.49MB that is known to fail, and nothing in this repo can tell us which side of the line it falls on.",
+   "whatWouldChangeIt": "A real phone loading research/assets/build.html and searching for a Common. If the editor renders, the moods and angles appear and a search for 'magmar kimura' returns cards, the decision holds. If any of those is missing, the tail must move out of the inline script and be fetched on demand instead, which keeps findability and returns the page to roughly 2.0MB.",
+   "checkBy": "2026-09-01",
+   "checkWith": "Tyler, on his own phone. This cannot be checked from here.",
+   "status": "PROVISIONAL - shipped, unverified on the device it risks"
   }
  ]
 }

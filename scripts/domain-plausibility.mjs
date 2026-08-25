@@ -122,5 +122,8 @@ if (out.counts.high) {
   if (bad.length) { console.error(`   SUSPECT TERMS — these describe a SINGLE unit and may be eating real listings:`);
     for (const b of bad) console.error(`     "${b.term}" killed ${b.kills} listings — ${b.note}`); console.error(""); }
 } else {
+  // COUNTS WORK, NOT ARTIFACT. This number is how many products were examined
+  // in this run, which is a true claim about the run. The artifact it writes is
+  // a findings report whose size is the number of PROBLEMS, not of inputs.
   console.log(`✓ domain plausibility: ${sp.products.length} products checked against 5 context rules${out.counts.medium ? ` · ${out.counts.medium} worth a look` : ""}`);
 }

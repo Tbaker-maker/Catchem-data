@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-25T18:52:12.624Z",
+ "generatedAt": "2026-08-25T19:36:51.088Z",
  "purpose": "Checks output against the failure classes in our own error ledger — things that actually happened here, not generic quality rules.",
  "runsOn": "output, never intent. What I meant to do is not evidence.",
  "classesChecked": [
@@ -16,7 +16,8 @@
   "coverage overclaim",
   "monetization miscount",
   "ungated publication (automation)",
-  "stale metric"
+  "stale metric",
+  "unverified success line"
  ],
  "problems": [
   {
@@ -33,7 +34,7 @@
   },
   {
    "errorClass": "unviewed image",
-   "what": "41 rendered card(s) exist",
+   "what": "44 rendered card(s) exist",
    "why": "Nothing here can tell whether they LOOK right — clipping, overlap, a wordmark colliding with a stat row. Every card shown to a person must be opened and looked at first. That rule was broken twice today and both failures reached Tyler.",
    "ledgerRef": 18
   },

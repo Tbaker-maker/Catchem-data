@@ -191,5 +191,8 @@ window.rip = rip; window.reset = reset;
 
 await writeFile(join(ROOT, "research/assets/rip.html"), html);
 await writeFile(join(ROOT, "data/guard-product.json"), JSON.stringify(guards, null, 1));
-console.log(`✓ rip: ${guards.tiers.length} tiers, ${PER_PACK_LOG()} a pack, odds printed`);
+// COUNT WHAT WAS WRITTEN, NOT WHAT WAS READ. This reported an input's size
+// as though it described the output. build-editor.mjs did the same and its
+// two numbers were 16,468 and 6,725.
+console.log(`✓ rip: ${(html.match(/tier-row/g) || []).length || guards.tiers.length} tiers rendered, ${PER_PACK_LOG()} a pack, odds printed`);
 function PER_PACK_LOG(){ return 5; }
