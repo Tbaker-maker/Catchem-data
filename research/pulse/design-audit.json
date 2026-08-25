@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-25T20:44:28.533Z",
+  "generatedAt": "2026-08-25T21:45:46.225Z",
   "audited": "14 shipped surfaces, 40 minted cards",
   "principle": "A linter asks whether the CSS is valid. A design lead asks whether the page was DESIGNED. The tells of an undesigned page are countable: too many type sizes, too many near-identical greys, an accent used everywhere so it accents nothing.",
   "blindSpot": "It cannot SEE. It counts and measures. It cannot tell you a page is ugly, only that the choices behind it were not made deliberately.",
@@ -19,7 +19,7 @@
     {
       "surface": "build.html",
       "severity": "high",
-      "what": "the accent colour appears 39 times",
+      "what": "the accent colour appears 42 times",
       "why": "An accent used everywhere accents nothing, and it is the most common reason a dark page reads as cheap rather than considered.",
       "fix": "Spend it in two places: the active state and the one primary action. Everything else greys."
     },
@@ -33,7 +33,7 @@
     {
       "surface": "build.html",
       "severity": "medium",
-      "what": "8 controls with vertical padding under 10px",
+      "what": "9 controls with vertical padding under 10px",
       "why": "A tap target under about 44px total height is missed on a phone, and this is a phone-first tool.",
       "fix": "Raise vertical padding or set a min-height on interactive elements."
     },
@@ -97,19 +97,21 @@
   "forEyes": [
     {
       "surface": "build.html",
-      "question": "build.html: 3 font sizes sit within 12% of a neighbour (13, 14, 14.5). Are those distinct steps or the same intent typed twice?",
+      "question": "build.html: 4 font sizes sit within 12% of a neighbour (13, 14, 14.5, 15). Are those distinct steps or the same intent typed twice?",
       "measured": {
         "sizes": [
           12,
           13,
           14,
           14.5,
+          15,
           17
         ],
         "nearDupes": [
           13,
           14,
-          14.5
+          14.5,
+          15
         ]
       },
       "answeredBy": null,
@@ -117,7 +119,7 @@
     },
     {
       "surface": "build.html",
-      "question": "build.html: 11 corner radii in use (5, 6, 8, 9, 10, 11, 12, 13, 14, 16, 20). Does the page read as one family of shapes, or several?",
+      "question": "build.html: 12 corner radii in use (5, 6, 8, 9, 10, 11, 12, 13, 14, 16, 20, 999). Does the page read as one family of shapes, or several?",
       "measured": {
         "radii": [
           5,
@@ -130,7 +132,8 @@
           13,
           14,
           16,
-          20
+          20,
+          999
         ]
       },
       "answeredBy": null,

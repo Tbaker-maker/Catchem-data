@@ -77,7 +77,7 @@ footer{margin-top:30px;font:12px 'JetBrains Mono',monospace;color:var(--dim)}
 <button type="submit" style="background:var(--green);border:0;color:#0b0d14;font:700 13px 'Sora',sans-serif;border-radius:8px;padding:10px 16px;cursor:pointer">Send it</button>
 </form>
 <div id="capmsg" style="font-size:12px;color:var(--dim);margin-top:8px"></div>
-<script>document.getElementById("cap").addEventListener("submit",async e=>{e.preventDefault();const f=e.target,m=document.getElementById("capmsg");m.textContent="sending…";try{const r=await fetch("https://formspree.io/f/xgorlypa",{method:"POST",body:new FormData(f),headers:{Accept:"application/json"}});if(!r.ok)throw 0;f.style.display="none";m.textContent="✓ You're on the list — the Pulse lands from the next send.";}catch{m.textContent="Couldn't reach the list — try again in a moment."}});</script>
+<script>document.getElementById("cap").addEventListener("submit",async e=>{e.preventDefault();const f=e.target,m=document.getElementById("capmsg");m.textContent="sending…";try{const r=await fetch("https://formspree.io/f/[REDACTED-FORM-ID]",{method:"POST",body:new FormData(f),headers:{Accept:"application/json"}});if(!r.ok)throw 0;f.style.display="none";m.textContent="✓ You're on the list — the Pulse lands from the next send.";}catch{m.textContent="Couldn't reach the list — try again in a moment."}});</script>
 </div>
 <div class="calib">HEAT READS: day 2 of 8 clean days — Wyckoff states return ~Aug 26. We publish nothing false in the meantime.</div>
 <footer>Catch'em. Catch Feels. · prices: Catchem-data, eBay active listings (measured) · spread: internal instrument</footer>

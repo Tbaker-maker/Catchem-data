@@ -212,7 +212,7 @@ verified-only law. Bot zip → PRIVATE repo only.
 - **GitHub:** `Tbaker-maker` (capital T)
 - **Email forward:** support@catchemtcg.com → tylerrbakerr@gmail.com
 - **Domain:** catchemtcg.com (Porkbun registrar, Cloudflare Pages hosting + DNS)
-- **Waitlist:** Formspree — https://formspree.io/f/xgorlypa
+- **Waitlist:** Formspree — https://formspree.io/f/[REDACTED-FORM-ID]
 
 ### Repos
 - **Catchem-data** (capital C) — bot + price tracking (Node.js)

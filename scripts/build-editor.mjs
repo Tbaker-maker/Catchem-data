@@ -2250,7 +2250,13 @@ async function fbSend(){
   el("fbsend").disabled = true;
   el("fbstat").textContent = "Sending…";
   try {
+    // A FETCH WITH NO TIMEOUT NEVER GIVES UP, and guard-audit caught this on the
+    // commit that introduced it. Without the signal a hung request leaves someone
+    // watching "Sending..." forever with their typed complaint still in the box.
+    // The signal sits FIRST because the guard reads the few lines after the call,
+    // and a comment between the two hid it from a check that was working fine.
     var r = await fetch(FB_ENDPOINT, {
+      signal: AbortSignal.timeout(15000),
       method: "POST",
       headers: { "Content-Type": "application/json", "Accept": "application/json" },
       body: JSON.stringify(payload),

@@ -24,6 +24,15 @@
 //    those is marked as coming, because the fastest way to waste fourteen times
 //    your normal traffic is to promise it something that is not there.
 import { readFile, writeFile } from "node:fs/promises";
+import { loadEnv } from "./lib/load-env.mjs";
+
+// THE FORM ID COMES FROM .env, NOT FROM HERE. It sat in this file in plain
+// text and was published every time the repo was pushed. Absent, the form
+// renders with no action and says so, rather than silently posting nowhere.
+loadEnv();
+const FORMSPREE_ID = (process.env.FORMSPREE_FORM_ID || "").trim();
+const FORMSPREE_ACTION = FORMSPREE_ID ? "https://formspree.io/f/" + FORMSPREE_ID : "";
+
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -162,7 +171,7 @@ button:active{opacity:.85}
 <div class="form" id="join">
   <h2>Get into the closed beta</h2>
   <p class="sub">A small group gets in first. One email when it opens, and nothing else. <b>The tools stay free.</b> Automated posting will be paid, because it costs real money every time it runs — everything else does not.</p>
-  <form id="wl" action="https://formspree.io/f/xgorlypa" method="POST">
+  <form id="wl" action="${FORMSPREE_ACTION}" method="POST">
     <input type="email" name="email" placeholder="you@email.com" required autocomplete="email" inputmode="email">
     <input type="hidden" name="source" value="landing-2026-08">
     <button type="submit">Request access</button>

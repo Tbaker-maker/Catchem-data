@@ -4,7 +4,7 @@ passed Aug 20: typos fixed, links all live-checked, online drop dates added).
 Canonical rule: fix in the repo file, re-paste — never hand-edit in Buttondown.
 
 ## 1 · Import the waitlist (5 min)
-1. formspree.io → log in → your form (`xgorlypa`) → **Submissions** tab →
+1. formspree.io → log in → your form (`[REDACTED-FORM-ID]`) → **Submissions** tab →
    **Export CSV** button (top right of the submissions table) → save the file.
 2. Note the row count. Over 100 subscribers = Buttondown paid tier (~$9/mo);
    ledger it knowingly (COST-LEDGER line exists).

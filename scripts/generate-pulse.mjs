@@ -56,7 +56,7 @@ const der = await J("data/derived-insights.json");
 const BUTTONDOWN_USERNAME = "catchemtcg";
 const CAPTURE_URL = BUTTONDOWN_USERNAME
   ? `https://buttondown.com/api/emails/embed-subscribe/${BUTTONDOWN_USERNAME}`
-  : "https://formspree.io/f/xgorlypa";
+  : ((process.env.FORMSPREE_FORM_ID || "").trim() ? "https://formspree.io/f/" + process.env.FORMSPREE_FORM_ID.trim() : "");
 const captureBlock = `<div style="margin-top:26px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px">
 <b style="font-size:15px">Get the Morning Pulse in your inbox</b>
 <div style="font-size:12px;color:var(--dim);margin:4px 0 10px">Same page, delivered every morning. No spam, unsubscribe anytime.</div>

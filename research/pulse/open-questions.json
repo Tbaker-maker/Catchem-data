@@ -325,7 +325,7 @@
    "who": "tyler",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-25",
-   "asked": 212,
+   "asked": 213,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -351,7 +351,7 @@
    "who": "tyler",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-25",
-   "asked": 190,
+   "asked": 191,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -522,7 +522,7 @@
    "who": "cc",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-25",
-   "asked": 184,
+   "asked": 185,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -546,7 +546,7 @@
    "who": "cc",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-25",
-   "asked": 184,
+   "asked": 185,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -575,7 +575,7 @@
    "who": "cc",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-25",
-   "asked": 184,
+   "asked": 185,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -598,7 +598,7 @@
    "who": "cc",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-25",
-   "asked": 184,
+   "asked": 185,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -626,7 +626,7 @@
    "who": "cc",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-25",
-   "asked": 184,
+   "asked": 185,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -655,7 +655,7 @@
    "who": "cc",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-25",
-   "asked": 184,
+   "asked": 185,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -759,7 +759,7 @@
    "who": "cc",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-25",
-   "asked": 90,
+   "asked": 91,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -819,7 +819,7 @@
    "who": "cc",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-25",
-   "asked": 56,
+   "asked": 57,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -1062,7 +1062,76 @@
    "who": "cc",
    "firstAsked": "2026-08-25",
    "lastAsked": "2026-08-25",
-   "asked": 8,
+   "asked": 9,
+   "answeredBy": null,
+   "answer": null,
+   "answeredOn": null
+  },
+  {
+   "id": "designer-55",
+   "agent": "designer",
+   "question": "build.html: 4 font sizes sit within 12% of a neighbour (13, 14, 14.5, 15). Are those distinct steps or the same intent typed twice?",
+   "evidence": {
+    "sizes": [
+     12,
+     13,
+     14,
+     14.5,
+     15,
+     17
+    ],
+    "nearDupes": [
+     13,
+     14,
+     14.5,
+     15
+    ]
+   },
+   "who": "cc",
+   "firstAsked": "2026-08-25",
+   "lastAsked": "2026-08-25",
+   "asked": 1,
+   "answeredBy": null,
+   "answer": null,
+   "answeredOn": null
+  },
+  {
+   "id": "designer-56",
+   "agent": "designer",
+   "question": "build.html: 12 corner radii in use (5, 6, 8, 9, 10, 11, 12, 13, 14, 16, 20, 999). Does the page read as one family of shapes, or several?",
+   "evidence": {
+    "radii": [
+     5,
+     6,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     16,
+     20,
+     999
+    ]
+   },
+   "who": "cc",
+   "firstAsked": "2026-08-25",
+   "lastAsked": "2026-08-25",
+   "asked": 1,
+   "answeredBy": null,
+   "answer": null,
+   "answeredOn": null
+  },
+  {
+   "id": "secret-scan-57",
+   "agent": "secret-scan",
+   "question": "The waitlist Formspree endpoint has been publicly readable in this repo since at least 2026-08-19 and is in six commits of history. Do you want to rotate to a new form, or keep this one? WHAT SOMEONE COULD DO WITH IT: submit to your form from anywhere, burn through the 50-submission free-tier monthly cap, and bury real signups in noise. WHAT THEY COULD NOT: read any existing submission, see your inbox, or reach anything else - it is write-only and grants no account access. MY RECOMMENDATION: DO NOT ROTATE YET. You have real waitlist signups attached to this form and rotating orphans that list mid-launch for a threat nobody has acted on. Instead turn on Restrict-to-Domain and reCAPTCHA in the Formspree dashboard, both free, which closes the actual risk in two minutes without touching your data. Rotate only if you start seeing junk submissions. ONE THING NO FIX CHANGES: the endpoint is inside the HTML a browser downloads, so it is public whenever the form works. Moving it to .env stops it entering source and future commits; it cannot make the live page private.",
+   "evidence": "Found by scripts/secret-scan.mjs, new and BLOCKING, which scans every tracked file for the actual values in .env. security-agent had run daily via generate-pulse and reported clean the whole time because it matches credential SHAPES and a form id is eight lowercase letters. Source is now clean; research/assets/index-landing.html still carries it and is reported every run as published-by-design.",
+   "who": "tyler",
+   "firstAsked": "2026-08-25",
+   "lastAsked": "2026-08-25",
+   "asked": 1,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null

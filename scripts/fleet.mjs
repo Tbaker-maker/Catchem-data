@@ -37,6 +37,8 @@ const FLEET = [
     does: "Makes every queued post state what is ORIGINAL about it before it can ship. X's Original Content Rewards program excludes reuploads, watermarks and text overlays that merely describe the image — and our best post is third-party card art with an overlay and a watermark. It cannot judge whether the claim is true; it refuses to let there be no claim." },
   { id: "theme-scout", script: "theme-scout.mjs", blocking: false,
     does: "Mines the catalogue for post ideas nobody asked for — one-offs, long silences, specialists, the year a Pokémon owned." },
+  { id: "secret-scan", script: "secret-scan.mjs", blocking: true,
+    does: "Scans every TRACKED file for the actual values in .env, rather than guessing what a secret looks like. BLOCKING because a published credential cannot be unpublished - there is no correction page for it. security-agent matches credential SHAPES and reported clean for months while a Formspree endpoint with no distinctive shape sat in ten files." },
   { id: "search-gauntlet", script: "search-gauntlet.mjs", blocking: true,
     does: "Runs real queries against the shipped 16,468-card index and re-derives every relation from the cards it names. BLOCKING because a relation that claims a connection the data does not support becomes a factual claim in a public post - a wrong illustrator credit is the one error this account cannot afford." },
   { id: "outcome-report", script: "outcome-report.mjs", blocking: false,

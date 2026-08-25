@@ -368,6 +368,17 @@
    "coveredBy": "Catalogue truth: the pokemontcg.io verification ritual in card-composite.mjs, a human reading the printed credit line on the rendered card, and nothing else. That ritual is per-post and manual, and it is the only thing standing between a bad row and a public claim.",
    "performanceNote": "The mobile timing is a PROJECTION, not a measurement. Worst-case query is measured on the desk machine and multiplied by 4 for a mid-range phone. No phone has ever run it. If the multiplier is wrong the budget is wrong.",
    "reviewed": "2026-08-25"
+  },
+  "security-agent.mjs": {
+   "cannotCatch": "ANY SECRET WITHOUT A DISTINCTIVE SHAPE. It matches prefixes and structures - sk-ant-, gh[pousr]_, AKIA, Discord webhook URLs, PEM headers, and long tokens assigned to a variable named key/secret/token/password. A Formspree form id is eight lowercase letters and is indistinguishable from a word, so it matched nothing, and one sat in TEN tracked files while this agent ran daily through generate-pulse and reported clean. It also cannot see git history, and cannot judge whether a value SHOULD be secret - it knows shapes, not intent.",
+   "coveredBy": "scripts/secret-scan.mjs, which scans every tracked file for the actual VALUES in .env rather than guessing what a secret looks like. Blocking.",
+   "declaredLate": "This agent's own header says an agent implying total coverage is worse than none, and it had no declared blind spot at all until 2026-08-25 - after the gap it was arguing against had already cost ten files. It now prints its detects/cannot-detect list on every run.",
+   "reviewed": "2026-08-25"
+  },
+  "secret-scan.mjs": {
+   "cannotCatch": "A SECRET THAT IS NOT IN .env. It checks the values we hold against every tracked file, so a credential that was never written to .env is invisible to it. It also cannot check git history - a value already committed stays readable forever and no scan of the working tree will say so. Values shorter than six characters are skipped as too noisy to search for.",
+   "cannotFix": "A CLIENT-SIDE FORM ENDPOINT IS PUBLIC BY DESIGN. It sits in the HTML a browser downloads, so it is readable the moment the form works. This guard reports generated artifacts that carry one on every run, and blocks only on SOURCE files. Secrecy is not the control there - Formspree's domain restriction and spam filtering are.",
+   "reviewed": "2026-08-25"
   }
  }
 }

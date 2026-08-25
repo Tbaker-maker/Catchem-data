@@ -207,7 +207,7 @@ Better to flag uncertainty than ship overclaim.
 
 ### Waitlist activation
 
-- Current waitlist: Formspree at `formspree.io/f/xgorlypa`
+- Current waitlist: Formspree at `formspree.io/f/[REDACTED-FORM-ID]`
 - Migration step: Export waitlist → import to Buttondown
 - Pre-launch email to waitlist: "Catch'Em News starts shipping [date]. You're in."
 

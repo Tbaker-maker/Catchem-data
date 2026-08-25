@@ -31,6 +31,42 @@ const W = (what, why, fix) => warnings.push({ what, why, fix });
 
 // Shapes of real credentials. Deliberately narrow — a scanner that cries wolf
 // gets muted, and a muted security scanner is the worst object in the repo.
+// WHAT THIS AGENT CAN AND CANNOT SEE. Printed on every run, because this file
+// argues in its own header that an agent implying total coverage is worse than
+// none - and then did exactly that for months.
+//
+// IT DETECTS SHAPES WITH A DISTINCTIVE PREFIX OR STRUCTURE: sk-ant-, gh[pousr]_,
+// AKIA, a Discord webhook URL, a PEM header, and an assignment of a 28+ char
+// token to a variable named key/secret/token/password.
+//
+// IT CANNOT DETECT AN OPAQUE ID WITH NO SHAPE. A Formspree form id is eight
+// lowercase letters. It is indistinguishable from a word, so no pattern can
+// find it, and one sat in ten tracked files while this agent reported clean
+// every day through generate-pulse. Nothing was broken - it was never looking.
+// scripts/secret-scan.mjs closes that by scanning for the actual VALUES in
+// .env rather than guessing what a secret looks like.
+const DETECTS = [
+  "sk-ant- prefixed Anthropic keys",
+  "gh[pousr]_ prefixed GitHub tokens",
+  "AKIA-prefixed AWS keys",
+  "Discord webhook URLs",
+  "PEM private key headers",
+  "28+ character tokens assigned to key/secret/token/password",
+  "Formspree form endpoints (added 2026-08-25, after one sat exposed)",
+];
+const CANNOT_DETECT = [
+  "any opaque id with no distinctive shape - a form id, a short slug, a bare account number",
+  "a secret that is only a URL, unless the host is one of the few named above",
+  "anything in git history - it reads the working tree and recent commits only",
+  "whether a value SHOULD be secret. It knows shapes, not intent.",
+];
+
+// IT HAD NO ACCESS TO .env, so the filter that was supposed to recognise the
+// already-public form id compared against undefined and matched nothing. The
+// agent then reported the generated artifact as a fresh CRITICAL leak.
+const { loadEnv: loadEnvSec } = await import("./lib/load-env.mjs");
+loadEnvSec();
+
 const SECRETS = [
   { name: "Discord webhook", rx: /https:\/\/discord(app)?\.com\/api\/webhooks\/\d+\/[\w-]{40,}/g },
   { name: "Anthropic key", rx: /sk-ant-[A-Za-z0-9_-]{20,}/g },
@@ -70,7 +106,8 @@ const SECRETS = [
           // Rewriting history would not unpublish it - anyone can already read
           // it - so the remedy is ROTATION, which only Tyler can do. Reported
           // once below rather than from each of the eight files that carry it.
-          .filter(h => !/formspree\.io\/f\/xgorlypa/.test(h));
+          .filter(h => { const known = (process.env.FORMSPREE_FORM_ID || "").trim();
+            return !(known && h.includes(known)); });
         if (hits.length) C(`${s.name} found in ${rel}`,
           "A credential in the working tree is one commit from being permanent. There is no correction page for a leaked key.",
           "Revoke it first, then remove it. Revoking comes first because removal does not un-share what was already shared.");
@@ -80,7 +117,7 @@ const SECRETS = [
   await scan("scripts"); await scan("data"); await scan("research"); await scan(".github");
   {
     const gi = await readFile(join(ROOT, "scripts/build-waitlist.mjs"), "utf-8").catch(() => "");
-    if (/formspree\.io\/f\/xgorlypa/.test(gi))
+    if ((process.env.FORMSPREE_FORM_ID || "").trim() && gi.includes(process.env.FORMSPREE_FORM_ID.trim()))
       W("the waitlist Formspree id is public in this repo and in its git history",
         "It has been in the working tree and in six commits since 2026-08, so that inbox is effectively a public address and the form is open to spam from anyone reading the repo. Editing the files does not undo it.",
         "Create a NEW form in Formspree, put its id in .env as the feedback form is, delete the old form, and treat the old address as burned. Only Tyler can do this.");
@@ -148,6 +185,9 @@ if (critical.length) {
   console.error("");
   process.exitCode = 1;   // the only agent permitted to fail a run
 } else {
-  console.log(`✓ security: no credentials in the tree or recent history · ${warnings.length} warning(s) · ${checked.length} checks`);
+  console.log("\n  DETECTS: " + DETECTS.join("; "));
+console.log("  CANNOT DETECT: " + CANNOT_DETECT.join("; "));
+console.log("  Value-based scanning lives in scripts/secret-scan.mjs.\n");
+console.log(`✓ security: no credentials in the tree or recent history · ${warnings.length} warning(s) · ${checked.length} checks`);
   for (const w of warnings.slice(0, 3)) console.log(`  ⚠ ${w.what}`);
 }

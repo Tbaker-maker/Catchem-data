@@ -57,7 +57,7 @@
 | 3-pillar structure (Collector/Flipper/Grader) | 🟢 | Locked, color-coded |
 | 2x/week cadence decision (Tue + Fri) | 🟢 | Locked. Pillars consolidated to Warm/Cold. |
 | "The Hobbiest" rebrand | 🟠 | Naming/spelling undecided |
-| Formspree waitlist | 🟢 | Live at `formspree.io/f/xgorlypa` |
+| Formspree waitlist | 🟢 | Live at `formspree.io/f/[REDACTED-FORM-ID]` |
 | Three Creators One Signal issue (Alex+PokeOz+Collectrics) | 🟠 | Research done, not drafted |
 | Auto-generated heat scoring (manual for V1) | 🟠 | Spec calls for ~30 min/issue manual computation |
 | Sealed price citations | 🔴 | **Blocked by bot bug** — can't cite prices until Journey Together-class bugs fixed |
