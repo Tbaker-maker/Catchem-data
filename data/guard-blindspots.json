@@ -281,6 +281,16 @@
    "coveredBy": "Tyler, on an actual phone",
    "reviewed": "2026-08-24",
    "history": "Written after three wrong guesses at a mobile 'script error'. It reproduced the failure on the FIRST run: one top-level throw stops initialization halfway, every let below stays uninitialized, the boot timer fires into a dead binding, and the page is blank."
+  },
+  "prompt-correctness.mjs": {
+   "cannotCatch": "Whether the right cards are the BEST cards. It proves a Charizard prompt returns Charizards and a Fire prompt returns Fire — it has no view on whether those particular Charizards are the ones worth posting.",
+   "knownPatterns": [
+    "filter-silently-skipped",
+    "theme-overrides-filter"
+   ],
+   "coveredBy": "Tyler",
+   "reviewed": "2026-08-24",
+   "history": "Written after Tyler said the prompts were still returning wrong cards for the third time. ask-smoke had been green throughout because it only checked cards APPEARED — a gap I documented in its own blind-spot file and then trusted the tick anyway."
   }
  }
 }

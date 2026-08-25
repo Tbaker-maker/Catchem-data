@@ -532,10 +532,16 @@ function parseIntent(text, ctx) {
   // NOT CREATURE NAMES. "Dark", "Light", "Team" and "Mega" are form prefixes,
   // and "dark" in a sentence means the mood, not Dark Charizard. Fifth time the
   // prefix problem has surfaced.
-  const NOT_MON = /^(dark|light|team|mega|shadow|crystal|shining|radiant|energy|great|iron|roaring|walking|raging|scream|brute|flutter|sandy|gouging|slither)$/i;
+  // A TYPE IS NOT A POKEMON. "psychic types" parsed mon=Psychic and type=Psychic,
+  // then narrowed to cards literally NAMED Psychic — Sabrina's Psychic Control,
+  // a Trainer. Type words and form prefixes can never be creature names.
+  const NOT_MON = /^(dark|light|team|mega|shadow|crystal|shining|radiant|energy|great|iron|roaring|walking|raging|scream|brute|flutter|sandy|gouging|slither|fire|water|grass|lightning|psychic|fighting|darkness|metal|dragon|fairy|colorless|type|types)$/i;
   const mons = (ctx.monNames || []).filter(m => !NOT_MON.test(m)).slice().sort((a, b) => b.length - a.length);
   for (const m of mons) {
     if (m.length < 4) continue;
+    // "Type: Null" reduces to "Type:", whose punctuation became a dot wildcard
+    // and matched "types". Strip punctuation before the blocklist test.
+    if (NOT_MON.test(m.replace(/[^A-Za-z]/g, ""))) continue;
     if (new RegExp(String.fromCharCode(92) + "b" + m.toLowerCase().replace(/[^a-z0-9']/g, ".") + String.fromCharCode(92) + "b").test(q)) { found.mon = m; found.matched.push(m); break; }
   }
 
@@ -667,6 +673,125 @@ const BABY_OF = { "Pikachu": "Pichu", "Clefairy": "Cleffa", "Jigglypuff": "Iggly
   "Marill": "Azurill", "Wobbuffet": "Wynaut", "Roselia": "Budew", "Chimecho": "Chingling",
   "Sudowoodo": "Bonsly", "Chansey": "Happiny", "Snorlax": "Munchlax", "Lucario": "Riolu",
   "Mantine": "Mantyke", "Mr. Mime": "Mime Jr.", "Hitmonlee": "Tyrogue" };
+// resolve.js — the prompt picks the cards. Nothing else gets to override it.
+//
+// Tyler, 2026-08-24: "It's still showing the wrong cards. How do we keep coming
+// into this problem?"
+//
+// THE ANSWER TO THAT QUESTION IS UNCOMFORTABLE AND WORTH WRITING DOWN. I put
+// this in ask-smoke's own blind-spot file and never closed it:
+//
+//   "Whether the cards it returns are the RIGHT ones. It proves every prompt
+//    fills the tray; it has no view on whether 'something dark' returned
+//    anything actually dark."
+//
+// So the test went green on every build while the output was wrong. **I
+// documented the exact gap and then trusted the test that declared it.**
+//
+// THE BUG ITSELF: a parsed prompt set filters AND selected a theme, then handed
+// off to the theme builder — which picks from its own pool and never consults
+// those filters. "charizard through the years" parsed Charizard correctly and
+// returned Alakazam. "fire types" returned Gyarados, which is Water.
+//
+// THE FIX: the prompt resolves its own cards. Every constraint is applied as a
+// filter, in order, and each one can only ever REMOVE cards. A theme may
+// suggest an ordering; it may never widen the pool past what was asked for.
+
+function resolvePrompt(found, INDEX, helpers) {
+  const { monName, attrs, ratingOf, HERO_RX } = helpers;
+  const why = [];
+
+  // START WIDE, NARROW ONLY. Every clause below removes cards and none adds
+  // any. That property is what makes the result explainable — and it is exactly
+  // what the theme handoff broke.
+  let pool = INDEX.slice();
+  const narrow = (fn, label) => {
+    const next = pool.filter(fn);
+    // NEVER NARROW TO NOTHING SILENTLY. Dropping a constraint is sometimes
+    // right, but doing it without saying so is how you get confident wrong
+    // output — which is the whole complaint.
+    if (!next.length) { why.push(label + " (skipped — nothing matched)"); return; }
+    pool = next; why.push(label);
+  };
+
+  // THE POKEMON IS THE HARDEST CONSTRAINT. If somebody names one, every card
+  // returned must be it. This is the clause the theme handoff ignored.
+  // AN EVO LINE IS THE CHAIN, NOT THREE PRINTINGS OF ONE CARD. Pinning to the
+  // named Pokémon and taking three of them returned Charmander, Charmander,
+  // Charmander.
+  if (found.mon && found.shape === "evo-line") {
+    const line = (helpers.evoLineFor && helpers.evoLineFor(found.mon)) || [found.mon];
+    narrow(c => line.indexOf(monName(c.n)) >= 0, line.join(" → "));
+  } else if (found.mon) narrow(c => monName(c.n) === found.mon, found.mon);
+
+  // POKEMON ONLY, unless a Trainer was explicitly asked for. "Cards nobody
+  // talks about" returned Erika's Invitation and Giovanni's Charisma — both
+  // Trainers, neither a card anybody means by that phrase.
+  if (!found.trainerOk) narrow(c => { const a = attrs[c.i]; return a && a.dex; }, "Pokémon only");
+
+  if (found.artist) narrow(c => c.a === found.artist, found.artist);
+  if (found.set) narrow(c => c.s === found.set, found.set);
+
+  // THE PRINTED TYPE, from the type field — not from the name, and not from
+  // what the video game says. "Fire types" returned Gyarados because the type
+  // was parsed and then never applied.
+  if (found.type) narrow(c => { const a = attrs[c.i]; return a && (a.t || []).indexOf(found.type) >= 0; }, found.type + " type");
+
+  // RANK BY THE RATING, DO NOT FILTER ON IT. A threshold of 6 matched almost
+  // nothing — most cards carry no score on a given axis — so the clause was
+  // skipped and "cute" and "dark" returned identical cards. Ranking always
+  // orders, even when few clear a bar.
+  let rankBy = null;
+  if (found.rating) {
+    const scored = pool.filter(c => (ratingOf(c.i, found.rating) || 0) > 0);
+    if (scored.length >= 4) { pool = scored; rankBy = found.rating; why.push(found.rating); }
+    else why.push(found.rating + " (few cards scored)");
+  }
+
+  // OBSCURE IS A REAL QUERY, not a vibe: a Pokémon with few printings, an
+  // illustrated card, and not one of the names everybody already says.
+  if (found.shape === "obscure") {
+    const counts = {};
+    for (const c of INDEX) { const m = monName(c.n); if (m) counts[m] = (counts[m] || 0) + 1; }
+    const FAMOUS = /Charizard|Pikachu|Eevee|Umbreon|Mewtwo|Rayquaza|Lugia|Gengar|Blastoise|Venusaur|Sylveon|Espeon|Snorlax/i;
+    narrow(c => counts[monName(c.n)] <= 8 && !FAMOUS.test(c.n) && HERO_RX.test(c.r || ""), "rarely printed");
+  }
+
+  // Everything shown must be worth showing, and must credit its artist.
+  narrow(c => c.a, "credited");
+  const withHero = pool.filter(c => HERO_RX.test(c.r || ""));
+  if (withHero.length >= (found.count || 2)) { pool = withHero; why.push("hero rarities"); }
+
+  const n = found.count || (found.shape === "evo-line" ? 3 : 2);
+
+  // ONE CARD PER POKEMON, unless the shape is about one Pokémon over time.
+  // Nine Charizards is a composition; nine different Pokémon is a set.
+  const acrossTime = found.shape === "eras" || found.shape === "power-creep" || found.mon;
+  let picked;
+  if (acrossTime && found.mon) {
+    // Oldest to newest, spread across the years rather than clustered.
+    const byYear = pool.slice().sort((a, b) => String(a.y).localeCompare(String(b.y)));
+    if (byYear.length <= n) picked = byYear;
+    else {
+      picked = [];
+      const step = (byYear.length - 1) / (n - 1);
+      for (let i = 0; i < n; i++) picked.push(byYear[Math.round(i * step)]);
+    }
+    why.push("spread across the years");
+  } else {
+    const best = {};
+    for (const c of pool) { const k = monName(c.n);
+      if (!best[k] || (c.p || 0) > (best[k].p || 0)) best[k] = c; }
+    picked = Object.values(best).sort(function(a, b){
+      if (rankBy) { const d = (ratingOf(b.i, rankBy) || 0) - (ratingOf(a.i, rankBy) || 0); if (d) return d; }
+      return (b.p || 0) - (a.p || 0);
+    }).slice(0, n);
+  }
+
+  return { cards: picked, why, poolSize: pool.length };
+}
+
+
 const byIdRow = {};
 const ATTRS = new Proxy({}, { get: (_, k) => { const r = byIdRow[k]; return r ? { t: r.T, dex: r.D, d: r.D, e: r.E, ev: r.E, h: r.H, hp: r.H, s: r.S, st: r.S, w: r.W } : undefined; } });
 const BIOS = new Proxy({}, { get: (_, k) => byIdRow[k]?.R });
@@ -1626,79 +1751,55 @@ function runAsk(text){
   const box = el("askreply");
   if (box) { box.textContent = reply.say; box.className = "askreply" + (reply.ok ? "" : " bad"); }
   if (!reply.ok) return;
-  // Reset before applying, or two sentences in a row compound into nonsense.
-  // CLEAR THE TRAY TOO. Resetting the filters but keeping the previous tray
-  // means a prompt that finds nothing inherits the LAST answer and reports it as
-  // this one — which is how "pikachu cards" returned Charmander.
+  // THE PROMPT RESOLVES ITS OWN CARDS. The old path set filters and then handed
+  // off to the theme builder, which picks from its own pool and never consults
+  // them — so "charizard through the years" parsed Charizard correctly and
+  // returned Alakazam, and "fire types" returned Gyarados. A theme may suggest
+  // an ordering; it may never widen the pool past what was asked for.
   fMon = null; fRating = null; fSet = ""; fTheme = null;
-  tray = []; blob = null; window.__ideas = [];
   if (found.count) fCount = found.count;
-  // AN EVOLUTION IS THREE CARDS unless they said otherwise. Defaulting to two
-  // gives half a line and calls it the line.
-  else if (found.shape === "evo-line") fCount = 3;
   if (found.mon) fMon = found.mon;
   if (found.set) fSet = found.set;
   if (found.rating) fRating = found.rating;
-  if (found.type) { const t = THEMES.find(x => x.id === "type-" + found.type.toLowerCase()); if (t) fTheme = t.id; }
-  if (found.shape) {
-    // EEVEE HAS NO LINE, IT HAS EIGHT BRANCHES. Asking for "the Eevee evolution"
-    // has no single answer, so it goes to the Eeveelutions rather than returning
-    // one card and calling it a line.
-    if (found.shape === "evo-line" && found.mon && /^eevee$/i.test(found.mon)) {
-      const ee = THEMES.find(x => x.id === "eeveelutions");
-      if (ee) { fTheme = ee.id; fMon = null; fCount = found.count || 6; }
-    } else { const t = THEMES.find(x => x.id === found.shape || x.shape === found.shape); if (t) fTheme = t.id; }
-  }
-  if (found.artist) { fTheme = "artist-career"; el("q") && (el("q").value = found.artist); }
   if (found.mood) { loadMood(found.mood); return; }
-  // THE OBSCURE SHAPE has no theme — it is a query, and it is the post that
-  // worked, so it gets a direct path rather than an approximation.
-  if (found.shape === "obscure") {
-    const counts = {};
-    for (const c of INDEX) { const m = monName(c.n); counts[m] = (counts[m] || 0) + 1; }
-    const FAMOUS = /Charizard|Pikachu|Eevee|Umbreon|Mewtwo|Rayquaza|Lugia|Gengar|Blastoise|Venusaur/i;
-    const pool = INDEX.filter(c => /Illustration Rare/i.test(c.r || "") && c.a && !FAMOUS.test(c.n) && counts[monName(c.n)] <= 8 && (c.p || 0) >= 2);
-    const seen = new Set(); const picked = [];
-    for (const c of pool.sort(function(a,b){ return counts[monName(a.n)] - counts[monName(b.n)]; })) {
-      const k = monName(c.n);
-      if (seen.has(k)) continue;
-      seen.add(k); picked.push(c);
-      if (picked.length >= (fCount || 4)) break;
-    }
-    if (picked.length) { tray = picked; blob = null; el("label").value = "Obscure is the point."; render(); return; }
-  }
-  resetPage(); search(); renderThemes(); buildIdeas();
 
-  // THE BOX PROMISES A POST, SO HAND BACK CARDS. Setting filters and calling
-  // search() only changes the browse grid — seven prompts out of eleven left the
-  // tray empty, so the user asked for a post and got a list to click through.
-  // If a theme produced ideas, load the first one. If not, take the best cards
-  // the filters allow.
-  const ideas = window.__ideas || [];
-  if (ideas.length && ideas[0].cards && ideas[0].cards.length) {
-    tray = ideas[0].cards.slice(0, fCount || 2);
-    blob = null;
-    if (ideas[0].hook && el("label") && !el("label").value.trim()) el("label").value = ideas[0].hook;
-    render();
+  const res = resolvePrompt(found, INDEX, {
+    monName: monName,
+    attrs: ATTRS,
+    // THE RATING LOOKUP WAS WRONG, so "cute" and "dark" returned identical cards —
+    // the clause matched nothing and was silently skipped. Ratings live on the
+    // row, not in a separate BIOS map.
+    ratingOf: function(id, k){
+      // Ratings are card.R — column 12 of the row becomes R on the object, and
+      // byIdRow holds OBJECTS not rows, so [12] was always undefined and every
+      // card silently scored zero.
+      const c = byIdRow[id];
+      return c && c.R && typeof c.R[k] === "number" ? c.R[k] : 0;
+    },
+    HERO_RX: HERO_RX,
+    // The chain, walked from evolvesFrom which is a printed field.
+    evoLineFor: function(name){
+      const line = [name]; let cur = name;
+      for (var i = 0; i < 3; i++) {
+        var next = null;
+        for (var id in ATTRS) { var a = ATTRS[id]; if (a && a.ev === cur) { var row = byIdRow[id]; if (row) { next = monName(row[1]); break; } } }
+        if (!next || line.indexOf(next) >= 0) break;
+        line.push(next); cur = next;
+      }
+      return line;
+    },
+  });
+
+  if (res.cards.length) {
+    tray = res.cards; blob = null;
+    // SAY WHICH CONSTRAINTS WERE APPLIED. When the answer looks wrong, the user
+    // can see whether the tool misread the sentence or the catalogue simply has
+    // nothing — and those need different responses from them.
+    if (box) { box.textContent = "Showing " + res.why.join(" · ") + "."; box.className = "askreply"; }
+    render(); resetPage(); search();
     return;
   }
-  // NO THEME FITTED. Fall back to the filtered pool rather than nothing — one
-  // card per Pokémon, best first, because nine Charizards is a composition and
-  // not a set of nine.
-  const pool = INDEX.filter(function(c){
-    return monPass(c) && ratingPass(c) && HERO_RX.test(c.r || "") && c.a && (!fSet || c.s === fSet);
-  });
-  const byMon = {};
-  for (const c of pool) { const k = monName(c.n);
-    if (!byMon[k] || (c.p || 0) > (byMon[k].p || 0)) byMon[k] = c; }
-  const picked = Object.values(byMon).sort(function(a, b){ return (b.p || 0) - (a.p || 0); }).slice(0, fCount || 2);
-  if (picked.length) { tray = picked; blob = null; render(); }
-  else {
-    // SAY SO RATHER THAN LEAVING IT BLANK. An empty tray with no explanation is
-    // indistinguishable from broken, which is what this whole fix is about.
-    const box = el("askreply");
-    if (box) { box.textContent = "Nothing in the catalogue fits all of that. Try dropping one part of it."; box.className = "askreply bad"; }
-  }
+  if (box) { box.textContent = "Nothing in the catalogue fits all of that. Try dropping one part of it."; box.className = "askreply bad"; }
 }
 {
   const eg = el("egs");
