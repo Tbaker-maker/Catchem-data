@@ -2324,6 +2324,7 @@ el("make").onclick = async () => {
   // prevent. Re-checking here means the rule holds wherever the call comes from.
   if (!checkIntent()) { setStatus("that combination is refused — see the note above", true); return; }
   setStatus("composing…");
+  const missingArt = [];
   const CW = 745, CH = 1040, GAP = 60, PAD = 90, CAP = tray.length <= 4 ? 70 : 0;
   const LABEL = el("label").value.trim();
   // Reserve height for the WRAPPED label, not one line of it. measureText needs
@@ -2368,7 +2369,12 @@ el("make").onclick = async () => {
         try{ img = await new Promise((res,rej)=>{ const im=new Image(); im.crossOrigin="anonymous";
           im.onload=()=>res(im); im.onerror=()=>rej(); im.src=r; }); break; }catch{}
       }
-      if (!img) throw new Error("could not load " + tray[i].n);
+      // ONE FAILED IMAGE MUST NOT KILL THE WHOLE IMAGE. This threw on the first
+      // card that would not load, so a single blocked request produced NOTHING —
+      // which is what Tyler saw, and what my harness hid by making every image
+      // succeed. A missing card leaves a labelled gap instead: three cards and
+      // one hole is a usable post, three cards and an error is not.
+      if (!img) { missingArt.push(tray[i].n); continue; }
       // Centre the grid inside the widened frame, or a padded layout sits hard left.
       const gridW = CW*L.cols + GAP*(L.cols-1);
       const originX = Math.round((W - gridW) / 2);
@@ -2453,7 +2459,10 @@ el("make").onclick = async () => {
     el("dl").hidden=false;
     if (navigator.clipboard && window.ClipboardItem) el("copy").hidden=false;
     if (navigator.canShare && navigator.canShare({files:[new File([""],"t.png",{type:"image/png"})]})) el("share").hidden=false;
-    setStatus("ready — " + W + "×" + H);
+    // SAY WHICH ONES ARE MISSING. A silent gap looks like a bug; a named one
+    // looks like a card that would not load, which is the truth.
+    if (missingArt.length) setStatus("Made it, but " + missingArt.length + " card image" + (missingArt.length > 1 ? "s" : "") + " would not load: " + missingArt.join(", ") + ". The art host may be blocked on this connection.", true);
+    else setStatus("ready — " + W + "×" + H);
     // A CANVAS CANNOT BE LONG-PRESSED. Swap in a real <img> so the first
     // gesture anybody tries on a phone actually works.
     // THE IMAGE IS DRAWN BEFORE THE SWAP. If toDataURL throws — a tainted

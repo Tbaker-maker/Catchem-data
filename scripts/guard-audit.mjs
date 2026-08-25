@@ -183,7 +183,7 @@ const MUST_RUN = [
   { script: "heartbeat.mjs", why: "detects a missed scheduled run — runs on the watchdog workflow, not the daily pipeline, which is why it was absent from this list until it failed", offPipeline: true },
   { script: "live-smoke.mjs", why: "the presenter and audience views must stay in sync, and no unverified claim may reach the overlay — on a live stream that is unrecoverable" },
   { script: "creators-smoke.mjs", why: "the creators portal must LOAD and its buttons must be reachable — every one of them was dead and it parsed perfectly" },
-  { script: "compose-smoke.mjs", why: "the compose must draw every card and must not report failure when the drawing succeeded — a failure message over a finished image is the worst of both" },
+  { script: "journey-smoke.mjs", why: "the WHOLE journey from a typed sentence to a drawn image, including the case where every image FAILS to load — five earlier tests all stopped at the tray" },
   { script: "evo-smoke.mjs", why: "asking for a Pokemon evolution must return that Pokemon line — it announced Charizard and returned Chansey" },
   { script: "ask-smoke.mjs", why: "the box says What do you want to post and must hand back CARDS — seven of eleven prompts silently produced nothing and only Tyler trying one found it" },
   { script: "theme-smoke.mjs", why: "every theme must PRODUCE and no two may produce the same thing — four produced silently nothing and two returned identical results, and Tyler found both by clicking" },

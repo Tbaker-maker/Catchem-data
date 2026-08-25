@@ -238,12 +238,21 @@
    "reviewed": "2026-08-24",
    "history": "Written after \"charizard evolution from 151\" announced Charizard and returned Chansey and Blissey. Sixteen named lines are now checked on every build."
   },
-  "compose-smoke.mjs": {
-   "cannotCatch": "Whether the images actually LOAD from the host. It proves the draw loop runs and every card reaches the canvas with a stubbed Image; it cannot reach pokemontcg.io from here and never will.",
+  "journey-smoke.mjs": {
+   "cannotCatch": "Whether the finished image LOOKS right. It proves a typed sentence reaches a drawn image, with images working and with every image failing. It has no view on whether the composition is any good.",
    "knownPatterns": [],
-   "coveredBy": "Tyler on a real phone",
+   "coveredBy": "Tyler on a real device",
    "reviewed": "2026-08-24",
-   "history": "Written during the mobile audit. It immediately found that a toDataURL failure made the compose report failure even though the drawing had succeeded — a failure message over a finished image."
+   "history": "Written after Tyler used the Charizard prompt and it failed on a build I had just audited as green. Five earlier tests all stopped at the tray and none pressed Make the image, and every one made images succeed — so the compose throwing on the first card that would not load was invisible."
+  },
+  "audit-honesty.mjs": {
+   "cannotCatch": "A guard that tests the failing case BADLY. It checks that a failing path is exercised at all, not that the assertion afterwards is meaningful.",
+   "knownPatterns": [
+    "happy-path-only"
+   ],
+   "coveredBy": "Tyler, who keeps finding what the audits miss",
+   "reviewed": "2026-08-24",
+   "history": "Written after three audits reported green and were wrong, each with the same shape: a test that FAKED the thing that actually breaks. Its first run flagged twelve guards, most of them false positives, and had to be narrowed to what each guard EXERCISES — a check that cries wolf gets muted, which is the lesson I logged that morning and then ignored writing this."
   }
  }
 }
