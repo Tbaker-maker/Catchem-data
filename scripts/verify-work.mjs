@@ -203,6 +203,42 @@ const scripts = (await readdir(join(ROOT, "scripts"))).filter(f => f.endsWith(".
   }
 }
 
+// ── ERROR: RAW VIEWS MEASURED AGAINST THE MONETIZATION THRESHOLD ──────────
+// X pays on QUALIFIED impressions: unique Home Timeline impressions from X
+// Premium subscribers with at least half the post visible. Replies excluded,
+// repeat viewers excluded, promoted excluded. public_metrics.impression_count
+// is none of those things — it is a strict SUPERSET, so measuring it against
+// 500,000 does not approximate progress, it overstates it by an unknown factor.
+// The failure this prevents is not arithmetic. It is applying to the program
+// believing we cleared a bar we have no instrument to measure.
+{
+  const THRESHOLD = /\b500[_,]?000\b|\b500\s?k\b/i;
+  const RAW = /\bviews\b|impression_count/;
+  const COMPARISON = /[<>]=?|\bMath\.(min|max)\b|>=|<=/;
+  for (const f of scripts) {
+    const src = await R("scripts/" + f);
+    if (!THRESHOLD.test(src)) continue;
+    src.split(/\r?\n/).forEach((line, i) => {
+      if (!THRESHOLD.test(line) || !RAW.test(line) || !COMPARISON.test(line)) return;
+      if (/qualifiedImpressions/.test(line)) return;        // the correct quantity
+      if (/^\s*(\/\/|\*|\/\*)/.test(line)) return;          // prose about the rule
+      P("monetization miscount", `${f}:${i + 1} compares raw views against the ${THRESHOLD.exec(line)[0]} threshold`,
+        "Raw impression_count is a strict superset of qualified impressions — it counts replies, non-subscribers, repeat viewers and promoted placement, none of which qualify. Only Creator Studio reports the qualifying figure. Comparing raw views to this threshold overstates eligibility by an unknown factor. See data/compliance-register.json, retrieved 2026-08-25.", "monetization");
+    });
+  }
+  // The same error in prose is the same error. A doc that tells a future
+  // maintainer we are "N views from monetization" teaches the bug.
+  for (const f of ["SYSTEM-README.md", "HANDOVER.md", "PICK-UP-HERE.md"]) {
+    const src = await R(f);
+    src.split(/\r?\n/).forEach((line, i) => {
+      if (!THRESHOLD.test(line) || !RAW.test(line)) return;
+      if (/qualified/i.test(line)) return;
+      P("monetization miscount", `${f}:${i + 1} states raw views against the monetization threshold`,
+        "Written down, this becomes the number somebody acts on. Qualified impressions are the only figure the program counts and they are not visible from here.", "monetization");
+    });
+  }
+}
+
 // ── THE META-CHECK · did I exclude myself? ────────────────────────────────
 // Five checkers read their own source in one day. This one names the risk out
 // loud rather than assuming it is immune.
@@ -211,7 +247,7 @@ const selfAware = true;   // this file audits data and other scripts, never itse
 const out = { generatedAt: new Date().toISOString(),
   purpose: "Checks output against the failure classes in our own error ledger — things that actually happened here, not generic quality rules.",
   runsOn: "output, never intent. What I meant to do is not evidence.",
-  classesChecked: [11, 13, 14, 15, 16, 18, 21, 24, 25, "sku existence", "coverage overclaim"],
+  classesChecked: [11, 13, 14, 15, 16, 18, 21, 24, 25, "sku existence", "coverage overclaim", "monetization miscount"],
   problems };
 await (await import("node:fs/promises")).writeFile(join(ROOT, "research/pulse/work-verification.json"), JSON.stringify(out, null, 1));
 

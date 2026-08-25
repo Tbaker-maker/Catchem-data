@@ -345,6 +345,16 @@
    "coveredBy": "Tyler reading it",
    "reviewed": "2026-08-24",
    "history": "Written after I produced four handover documents from cached figures and every one was wrong on all four counts, because a rebase pulled in work between reading and writing."
+  },
+  "read-metrics.mjs": {
+   "cannotCatch": "Measures raw views; cannot measure monetization-qualifying impressions. public_metrics.impression_count counts every impression from anywhere — replies, non-subscribers, the same account twice, promoted placement. A qualified impression is a unique Home Timeline impression from an X Premium subscriber with at least 50% of the post visible, and no API endpoint reports it. The gap between the two numbers is unknown and unknowable from here, so a post reading 127,200 views may be worth anywhere from zero to 127,200 against the 500,000 threshold.",
+   "coveredBy": "NOTHING AUTOMATED. Only a human opening Creator Studio. Queued to ask-eyes for Tyler.",
+   "reviewed": "2026-08-25"
+  },
+  "originality-guard.mjs": {
+   "cannotCatch": "Whether X's reviewers agree with the originality claim we stored. It checks that a claim EXISTS and is specific, not that it is correct or that anyone else would accept it. A confident, well-written, wrong claim passes every check in the file. It also cannot see the image — it reads the caption and the stored claim, so a post whose art is a straight reupload with a good sentence attached passes.",
+   "coveredBy": "Tyler's judgement, and ultimately X's. Nothing in this repo.",
+   "reviewed": "2026-08-25"
   }
  }
 }

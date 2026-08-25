@@ -25,6 +25,8 @@
      "replies": 1,
      "reposts": 0,
      "bookmarks": null,
+     "qualifiedImpressions": null,
+     "qualifiedImpressionsSource": null,
      "source": "manual"
     },
     {
@@ -36,8 +38,10 @@
      "replies": 14,
      "reposts": 8,
      "bookmarks": 37,
-     "source": "manual",
-     "bookmarksNote": "37 recorded in commit 9551bde's message, not in the json"
+     "bookmarksNote": "37 recorded in commit 9551bde's message, not in the json",
+     "qualifiedImpressions": null,
+     "qualifiedImpressionsSource": null,
+     "source": "manual"
     },
     {
      "atHours": 59.8,
@@ -48,8 +52,10 @@
      "replies": 34,
      "reposts": 86,
      "bookmarks": 170,
-     "source": "manual-screenshot",
-     "readAtPrecision": "session time; the screenshot was taken shortly before, so atHours is +/- 2h"
+     "readAtPrecision": "session time; the screenshot was taken shortly before, so atHours is +/- 2h",
+     "qualifiedImpressions": null,
+     "qualifiedImpressionsSource": null,
+     "source": "manual-screenshot"
     }
    ],
    "mergedFrom": [
@@ -88,6 +94,8 @@
      "replies": 14,
      "reposts": 0,
      "bookmarks": null,
+     "qualifiedImpressions": null,
+     "qualifiedImpressionsSource": null,
      "source": "manual"
     }
    ],
@@ -121,6 +129,8 @@
      "replies": 0,
      "reposts": 0,
      "bookmarks": null,
+     "qualifiedImpressions": null,
+     "qualifiedImpressionsSource": null,
      "source": "manual"
     }
    ],
@@ -153,6 +163,8 @@
      "replies": 0,
      "reposts": 1,
      "bookmarks": null,
+     "qualifiedImpressions": null,
+     "qualifiedImpressionsSource": null,
      "source": "manual"
     }
    ],
@@ -187,5 +199,6 @@
    "confidence": "UNMEASURED - logged, never read"
   }
  ],
- "schema": "postedAt is TRUE UTC. hourLocal and postedAtLocal carry the wall clock, because '9pm' is the thing being tested. metrics[] is the time series and is authoritative; measured mirrors the LATEST reading and exists only so older readers keep working. atHours is real elapsed hours, not a snapped checkpoint."
+ "schema": "postedAt is TRUE UTC. hourLocal and postedAtLocal carry the wall clock, because '9pm' is the thing being tested. metrics[] is the time series and is authoritative; measured mirrors the LATEST reading and exists only so older readers keep working. atHours is real elapsed hours, not a snapped checkpoint. views is RAW impression_count from the API and is NOT the monetization number; qualifiedImpressions comes only from Creator Studio and is null until a human reads it there.",
+ "monetization": "views and qualifiedImpressions are different quantities and must never be added, compared or substituted for one another. A qualified impression is a unique Home Timeline impression from an X Premium subscriber with 50% of the post visible — replies excluded, repeat viewers excluded, promoted excluded. Raw views are a strict SUPERSET, so raw views can only ever overstate progress toward the 500,000 threshold. See data/compliance-register.json, retrieved 2026-08-25."
 }

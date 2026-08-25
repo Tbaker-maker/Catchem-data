@@ -33,6 +33,8 @@ const FLEET = [
     does: "Reads back decisions whose check-date has arrived, with the prediction made at the time." },
   { id: "competence-guard", script: "competence-guard.mjs", blocking: true,
     does: "Every specialist must declare its knowledge AND its blind spots. A specialist with no stated blind spot is overconfident by construction." },
+  { id: "originality-guard", script: "originality-guard.mjs", blocking: true,
+    does: "Makes every queued post state what is ORIGINAL about it before it can ship. X's Original Content Rewards program excludes reuploads, watermarks and text overlays that merely describe the image — and our best post is third-party card art with an overlay and a watermark. It cannot judge whether the claim is true; it refuses to let there be no claim." },
   { id: "theme-scout", script: "theme-scout.mjs", blocking: false,
     does: "Mines the catalogue for post ideas nobody asked for — one-offs, long silences, specialists, the year a Pokémon owned." },
   { id: "ask-eyes", script: "ask-eyes.mjs", arg: "list", blocking: false,

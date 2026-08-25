@@ -1,0 +1,51 @@
+{
+ "note": "One answer per post to the four originality questions. Stored BEFORE the post goes out, because a rationale written afterwards is a rationalisation.",
+ "law": "A post with no stored originality claim does not ship. There is no auto-pass and no default answer.",
+ "claims": {
+  "2026-08-22-arita-blastoise": {
+   "contribution": "We identified that a single illustrator's work bookends twenty-four years of the game and paired the two cards that prove it, by joining the artist field across two sets nobody cross-references.",
+   "analyzes": "analyzes",
+   "derivedFrom": "data/artists.json — byArtist['Mitsuhiro Arita'] links the Celebrations Classic Collection Charizard to the 151 Blastoise ex. The artist field is also carried on every card in data/card-bios.json.",
+   "standsAsPlainText": true,
+   "plainTextVersion": "The artist who drew the 1999 Base Set Charizard also drew the Blastoise ex in 2023. Twenty-four years, same hand, and almost nobody notices.",
+   "claimedBy": "cc-retrospective",
+   "claimedAt": "2026-08-25T16:22:29.436Z"
+  },
+  "2026-08-23-charmander-late-night-check-in": {
+   "contribution": "We cropped the card art and wrote a two-word mood hook over it.",
+   "analyzes": "describes",
+   "derivedFrom": "nothing — the card was chosen for its art, not for anything in our data",
+   "standsAsPlainText": false,
+   "plainTextVersion": "",
+   "claimedBy": "cc-retrospective",
+   "claimedAt": "2026-08-25T16:22:29.436Z"
+  },
+  "2026-08-23-slakoth-2am-coding": {
+   "contribution": "We surfaced that this card's own printed attack name is Take It Easy, which turns the card itself into the joke about coding at 2am — the pun is in the catalogue, not in the caption.",
+   "analyzes": "analyzes",
+   "derivedFrom": "data/card-bios.json — attacks field on the Surging Sparks 2024 Slakoth reads ['Take It Easy']",
+   "standsAsPlainText": true,
+   "plainTextVersion": "Slakoth's attack is officially called Take It Easy. That is a real printed attack name on a real card.",
+   "claimedBy": "cc-retrospective",
+   "claimedAt": "2026-08-25T16:22:29.436Z"
+  },
+  "2026-08-23-sunflora-only-good-vibes-pass-it": {
+   "contribution": "We matched the card's printed lore — Sunflora is always looking in the direction of the sun — to a caption about passing good things along and watching them grow.",
+   "analyzes": "analyzes",
+   "derivedFrom": "data/card-bios.json — lore field on the Twilight Masquerade 2024 Sunflora reads 'Since it converts sunlight into energy, it is always looking in the direction of the sun'",
+   "standsAsPlainText": true,
+   "plainTextVersion": "Sunflora's card text says it spends its life turning to face the sun. Pass it along and see it grow.",
+   "claimedBy": "cc-retrospective",
+   "claimedAt": "2026-08-25T16:22:29.436Z"
+  },
+  "pmt8ossvc": {
+   "contribution": "Tyler read the artwork itself — a dog staring at a picnic table covered in sandwiches — and wrote a five-word pun that means both the bread on the table and go and earn.",
+   "analyzes": "analyzes",
+   "derivedFrom": "the artwork, not our data. No field in this repo describes what is drawn on a card; the catalogue holds printed text only.",
+   "standsAsPlainText": false,
+   "plainTextVersion": "",
+   "claimedBy": "cc-retrospective",
+   "claimedAt": "2026-08-25T16:22:29.436Z"
+  }
+ }
+}
