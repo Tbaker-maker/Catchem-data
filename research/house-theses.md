@@ -2527,3 +2527,30 @@ prompts**, because runAsk reset the filters but kept the previous tray, so
 
 THE RULE: **a tool that answers must be checked on WHAT it answered, not merely
 that it answered.**
+
+## EVERY TEST I WRITE CHECKS SOMETHING I ALREADY IMAGINED (Tyler, Aug 25 2026)
+"Make sure we are constantly scanning for bugs we have never seen. Always try
+and break it in a constructive way and always record and learn and implement."
+
+journey-smoke runs ten prompts I chose. ask-smoke runs eleven I chose.
+editor-hostile runs fourteen abuses I thought of. **Not one of them can find
+something I did not think of** — which is why Tyler has found six things none of
+them caught.
+
+A FUZZER NEEDS NO IMAGINATION. It builds sentences from real vocabulary plus
+the noise people actually produce, drives actions in an order nobody designed,
+and fails a quarter of its runs on a blocked image host.
+
+**Its first run found three crashes**: startStreak with an unknown filter, and
+todaysCard or confirmPosted with no streak, all reading .test on undefined. The
+realistic path is not abuse — a stale localStorage entry from an older build, or
+a filter renamed between versions, produces exactly that. **Then it immediately
+caught my own fix using the wrong parameter name.**
+
+AND IT LEARNS, or it is a random number generator. Every distinct failure
+SIGNATURE goes into data/fuzz-findings.json with the exact input, and
+journey-smoke replays every recorded input on every build — so a bug that is
+found, fixed and forgotten cannot come back.
+
+THE RULE: **the value of a fuzz run is not the crash, it is the SHAPE of the
+crash, recorded so the same shape is never new twice.**

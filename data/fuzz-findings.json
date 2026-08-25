@@ -1,0 +1,23 @@
+{
+ "note": "Failure signatures found by fuzzing, with the exact input that produced each. A fuzzer that forgets is a random number generator — every entry here is a case that must become a permanent test.",
+ "findings": [
+  {
+   "sig": "Cannot read properties of undefined (reading X)",
+   "kind": "action threw",
+   "firstInput": "Team Rocket ??? years apart Ninjask",
+   "count": 173,
+   "firstSeen": "2026-08-25T02:49:56.107Z",
+   "fixed": false
+  },
+  {
+   "sig": "k is not defined",
+   "kind": "action threw",
+   "firstInput": "Primal HeartGold & SoulSilver",
+   "count": 46,
+   "firstSeen": "2026-08-25T02:51:06.396Z",
+   "fixed": false
+  }
+ ],
+ "lastRun": "2026-08-25T02:55:34.484Z",
+ "runs": 2500
+}

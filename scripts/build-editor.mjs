@@ -961,6 +961,10 @@ const STREAK_FILTERS = {
 };
 
 function startStreak(filterId, perDay){
+  // REFUSE AN UNKNOWN FILTER rather than storing it and crashing later. Writing
+  // a bad name to localStorage turns one bad click into a permanently broken
+  // page.
+  if (!STREAK_FILTERS[filterId]) { setStatus("Unknown streak filter: " + filterId, true); return; }
   // A SALT PER STREAK, not just the start date. The seed used to be
   // started + day, and the comment beside it claimed two creators on the same
   // filter would 'diverge immediately'. They did not diverge at all: same
@@ -1451,8 +1455,12 @@ function toggleStreakFilter(){
   resetPage(); search(); renderStreak();
 }
 function todaysCard(){
+  // A MISSING FILTER MUST NOT CRASH. A stale localStorage entry from an older
+  // build, or a filter renamed between versions, lands here with a name that no
+  // longer exists — and reading .test on undefined took the whole page down.
   if (!streak) return;
   const f = STREAK_FILTERS[streak.filter];
+  if (!f) { setStatus("That streak used a filter this version no longer has. Start a new one.", true); return; }
   const used = new Set(streak.used || []);
   const pool = INDEX.filter(c => f.test(c) && !used.has(c.i) && c.a);
   if (!pool.length) return;
@@ -1734,7 +1742,10 @@ function streakState(){
   return { day: days.length, status: "done today", last };
 }
 function confirmPosted(){
-  if (!streak) return;
+  // Same guard. The fuzzer reached this with no streak and with an unknown
+  // filter, 173 times across 300 random journeys.
+  if (!streak) { setStatus("No streak running — start one first.", false); return; }
+  if (!STREAK_FILTERS[streak.filter]) { setStatus("That streak used a filter this version no longer has. Start a new one.", true); return; }
   const k = dayKey();
   streak.days = streak.days || [];
   // DOUBLE-COUNT GUARD. Two confirmations on one calendar day is one day.

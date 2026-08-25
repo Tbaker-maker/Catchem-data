@@ -112,6 +112,24 @@ for (const j of JOURNEYS.slice(0, 4)) {
 }
 globalThis.__setImagesFail(false);
 
+// REPLAY EVERY FUZZ FINDING. A fuzzer that finds a bug, watches it get fixed,
+// and forgets is a fuzzer that lets it come back. These are the exact inputs
+// that broke the editor, replayed forever.
+try {
+  const rec = JSON.parse(await readFile(join(ROOT, "data/fuzz-findings.json"), "utf-8"));
+  const cases = (rec.findings ?? []).filter(f => f.firstInput);
+  if (cases.length) {
+    console.log("\nREPLAYING " + cases.length + " INPUT(S) THAT BROKE IT BEFORE:\n");
+    for (const c of cases) {
+      let e2 = null;
+      try { api.runAsk(c.firstInput); if (api.tray().length) await api.make(); }
+      catch (e) { e2 = e.message.slice(0, 60); }
+      if (e2) fails.push("REGRESSION on a known fuzz input: " + JSON.stringify(c.firstInput.slice(0, 40)) + " — " + e2);
+      console.log("  " + (e2 ? "✗ " : "✓ ") + JSON.stringify(c.firstInput.slice(0, 46)) + (e2 ? "  " + e2 : ""));
+    }
+  }
+} catch {}
+
 if (fails.length) {
   console.error(`\n✗ JOURNEY — ${fails.length} of ${JOURNEYS.length} fail between the prompt and the image.\n`);
   console.error(`   Every other test stops at the tray. This is the step nobody tested,\n   and it is where it broke.\n`);

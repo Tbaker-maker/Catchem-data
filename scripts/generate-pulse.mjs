@@ -666,6 +666,7 @@ try { await import("./build-live.mjs"); } catch (e) { console.warn("  live: " + 
 try { await import("./live-smoke.mjs"); } catch (e) { console.warn("  live smoke: " + e.message); }
 try { await import("./creators-smoke.mjs"); } catch (e) { console.warn("  creators smoke: " + e.message); }
 await import("./audit-honesty.mjs");
+try { process.argv.push("250"); await import("./fuzz.mjs"); } catch (e) { console.warn("  fuzz: " + e.message); }
 try { await import("./journey-smoke.mjs"); } catch (e) { console.warn("  journey: " + e.message); }
 try { await import("./evo-smoke.mjs"); } catch (e) { console.warn("  evo smoke: " + e.message); }
 try { await import("./ask-smoke.mjs"); } catch (e) { console.warn("  ask smoke: " + e.message); }

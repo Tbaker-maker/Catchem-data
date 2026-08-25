@@ -253,6 +253,15 @@
    "coveredBy": "Tyler, who keeps finding what the audits miss",
    "reviewed": "2026-08-24",
    "history": "Written after three audits reported green and were wrong, each with the same shape: a test that FAKED the thing that actually breaks. Its first run flagged twelve guards, most of them false positives, and had to be narrowed to what each guard EXERCISES — a check that cries wolf gets muted, which is the lesson I logged that morning and then ignored writing this."
+  },
+  "fuzz.mjs": {
+   "cannotCatch": "A bug that needs a SPECIFIC realistic sequence rather than a random one. It generates from real vocabulary plus noise, so it explores widely and shallowly — it will not find something that takes six deliberate steps in one exact order.",
+   "knownPatterns": [
+    "happy-path-only"
+   ],
+   "coveredBy": "Tyler, who has found six things no test imagined",
+   "reviewed": "2026-08-25",
+   "history": "Written because every other test checks something I already imagined — ten prompts I chose, fourteen abuses I thought of. Its FIRST RUN found three crashes: startStreak with an unknown filter, and todaysCard or confirmPosted with no streak, all reading .test on undefined. Then it immediately caught my own fix using the wrong parameter name."
   }
  }
 }
