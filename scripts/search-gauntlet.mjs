@@ -33,6 +33,8 @@ function check(group, name, ok, detail = "") {
 const head = (s) => console.log("\n  " + s);
 
 // ── LOAD THE SHIPPED ARTIFACT ──────────────────────────────────────────────
+let art = null;
+try { art = JSON.parse(await readFile(join(ROOT, "data/connecting-art.json"), "utf-8")); } catch { art = null; }
 const html = await readFile(join(ROOT, "research/assets/build.html"), "utf-8");
 const rowsMatch = html.match(/const CARD_ROWS = (\[\[[\s\S]*?\]\]);/);
 if (!rowsMatch) { console.error("\n  ✗ GAUNTLET: CARD_ROWS not found in build.html — the editor has not been built.\n"); process.exit(1); }
@@ -159,6 +161,13 @@ const SAMPLE = [...cards.keys()];
 // a deterministic spread across the catalogue, plus the fixtures that matter
 const step = Math.max(1, Math.floor(SAMPLE.length / 400));
 const probe = ["neo1-40", "sv9-20", "base1-4", "base1-63"];
+// FIXTURES FOR EVERY RELATION, not just whatever the spread happens to hit. The
+// deterministic sample contained no connecting-art member, so CONNECTING_ART
+// produced nothing and the coverage assertion failed - correctly. A relation
+// that fires only on cards nobody sampled is untested, not absent.
+for (const g of ((art && art.groups) || []).filter(x => x.resolution === "COMPLETE").slice(0, 12)) {
+  if (g.cards && g.cards[0]) probe.push(g.cards[0]);
+}
 for (let i = 0; i < SAMPLE.length; i += step) probe.push(SAMPLE[i]);
 
 // ── 6. AND EVERY RELATION IS TRUE IN THE DATA ──────────────────────────────
@@ -217,6 +226,22 @@ function verify(r, subject) {
       return others.every(x => Math.abs((x.dex ?? -999) - subject.dex) === 1)
         ? null : "a neighbour is not adjacent in the dex";
     }
+    // The connecting-art relations are re-derived against the ingested groups:
+    // the group must exist, must be COMPLETE, must actually contain the subject,
+    // and its card list must match the relation's exactly. A relation that
+    // named a group it is not in would put a stranger's card in the picture.
+    case "COMBINED_ILLUSTRATION":
+    case "NARRATIVE_SEQUENCE":
+    case "SHARED_BACKGROUND_PATTERN": {
+      const g = ((art && art.groups) || []).find(x => x.id === e.groupId);
+      if (!g) return "names a connecting-art group that does not exist";
+      if (g.resolution !== "COMPLETE") return "offers a PARTIAL group as a connection";
+      if (!(g.cards || []).includes(subject.id)) return "the subject card is not in the group it claims";
+      if ((g.cards || []).join() !== r.cards.join()) return "card list does not match the group";
+      if (g.relation !== r.relation) return "relation does not match the group's own kind";
+      if (r.evidence.artist && !r.reason.includes(r.evidence.artist)) return "reason does not name the artist it claims";
+      return null;
+    }
     default:
       return "unknown relation type";
   }
@@ -238,9 +263,16 @@ for (const id of probe) {
 }
 head("6. relation truth");
 console.log(`     ${verified.toLocaleString("en-US")} relations re-derived from the cards they name`);
+// CONNECTING_ART is the one function whose output is named after the GROUP it
+// found, not after itself: it emits COMBINED_ILLUSTRATION, NARRATIVE_SEQUENCE or
+// SHARED_BACKGROUND_PATTERN. Checking for its own name would fail forever while
+// the relation worked perfectly, which is a guard reporting on its own naming.
+const EMITS = { CONNECTING_ART: ["COMBINED_ILLUSTRATION", "NARRATIVE_SEQUENCE", "SHARED_BACKGROUND_PATTERN"] };
 for (const t of RELATION_TYPES) {
-  check("relations", `${t} produced at least one valid instance`, (seen.get(t) ?? 0) > 0,
-    "no card in the probe produced this relation");
+  const names = EMITS[t] ?? [t];
+  const got = names.reduce((n, x) => n + (seen.get(x) ?? 0), 0);
+  check("relations", `${t} produced at least one valid instance`, got > 0,
+    `no card in the probe produced ${names.join(" or ")}`);
 }
 
 // The widest-gap query is the one that produced tonight's post. Verify the
@@ -280,6 +312,62 @@ check("performance", `worst-case query under ${budgetMs}ms at ${MOBILE_MULTIPLIE
   `${(worstMs * MOBILE_MULTIPLIER).toFixed(0)}ms projected on a ${MOBILE_MULTIPLIER}x-slower device`);
 console.log(`     projected on a ${MOBILE_MULTIPLIER}x-slower phone: ${(worstMs * MOBILE_MULTIPLIER).toFixed(0)}ms (budget ${budgetMs}ms)`);
 console.log(`     NOT A DEVICE MEASUREMENT. No phone has run this.`);
+
+
+// ── 8. CONNECTING ART ──────────────────────────────────────────────────────
+// Every group must be renderable: each card it names has to exist in the
+// catalogue and carry the fields a composite needs. A group that names a card
+// we do not hold renders as a gap or a card back, and a card back has already
+// reached a post once.
+//
+// COMPLETE means every card resolved. PARTIAL means some did not, and a PARTIAL
+// group must name what is missing - a group that quietly drops a card would
+// render as a smaller, wrong picture and still look fine.
+head("8. connecting art");
+if (!art) {
+  check("art", "data/connecting-art.json is readable", false, "missing or unparseable");
+} else {
+  const RELATIONS = new Set(["COMBINED_ILLUSTRATION", "NARRATIVE_SEQUENCE", "SHARED_BACKGROUND_PATTERN"]);
+  let complete = 0, partial = 0, cardsChecked = 0;
+  for (const g of art.groups ?? []) {
+    check("art", `${g.id} declares a known relation`, RELATIONS.has(g.relation), g.relation);
+    // every named card must be a real card
+    for (const id of g.cards ?? []) {
+      cardsChecked++;
+      const c = cards.get(id);
+      if (!c) { check("art", `${g.id} names a real card`, false, `${id} is not in the catalogue`); continue; }
+      // a composite needs these to draw and to credit
+      if (!c.name || !c.set || !c.year) {
+        check("art", `${g.id}/${id} has the fields a composite needs`, false, "name, set or year missing");
+      }
+    }
+    if (g.resolution === "COMPLETE") {
+      complete++;
+      check("art", `${g.id} COMPLETE resolves every card`,
+        g.resolvedCount === g.cardCount && (g.cards ?? []).length === g.cardCount,
+        `${g.resolvedCount}/${g.cardCount}, cards[] holds ${(g.cards ?? []).length}`);
+      check("art", `${g.id} COMPLETE has nothing missing`, (g.missing ?? []).length === 0,
+        (g.missing ?? []).join("; "));
+      check("art", `${g.id} COMPLETE has more than one card`, (g.cards ?? []).length > 1);
+    } else {
+      partial++;
+      // THE POINT OF PARTIAL. It must say what it could not resolve, by name.
+      check("art", `${g.id} PARTIAL names its missing cards`,
+        (g.missing ?? []).length > 0 || (g.cards ?? []).length === g.cardCount,
+        "a partial group with no missing list has dropped cards silently");
+    }
+    // order is the whole job, so the grid must account for every card
+    const gridCount = (g.grid ?? []).reduce((n, r) => n + r.length, 0);
+    check("art", `${g.id} grid accounts for every card`, gridCount === g.cardCount,
+      `grid holds ${gridCount}, cardCount is ${g.cardCount}`);
+    // provenance is not optional for ingested facts
+    check("art", `${g.id} cites a source`, !!g.sourceUrl && !!g.retrievedAt);
+  }
+  console.log(`     ${(art.groups ?? []).length} groups · ${complete} complete · ${partial} partial · ${cardsChecked} card references checked`);
+  check("art", "the Arceus wave pattern is NOT called a combined illustration",
+    (art.groups ?? []).some(g => g.relation === "SHARED_BACKGROUND_PATTERN"),
+    "only the background continues on those cards; calling it one image is a false claim");
+}
 
 // ── REPORT ─────────────────────────────────────────────────────────────────
 console.log("");

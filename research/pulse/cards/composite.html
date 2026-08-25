@@ -1,10 +1,10 @@
 <!doctype html><meta charset="utf-8">
-<title>Twenty-five years apart. Same illustrator.</title>
+<title>HYOGONOSUKE</title>
 <style>
   body{margin:0;background:#070910;display:flex;align-items:center;justify-content:center;min-height:100vh;
        font-family:system-ui,-apple-system,"Segoe UI",sans-serif;padding:40px 20px}
-  .wrap{max-width:1730px;width:100%}
-  .row{display:grid;grid-template-columns:repeat(2,1fr);gap:60px;justify-content:center;align-items:start}
+  .wrap{max-width:3070px;width:100%}
+  .row{display:grid;grid-template-columns:repeat(3,1fr);gap:60px;justify-content:center;align-items:start}
   .card{text-align:center}
   .card img{width:100%;aspect-ratio:745/1040;object-fit:contain;display:block;border-radius:12px}
   .cap{color:#8a93a8;font-size:16px;margin-top:14px}
@@ -26,14 +26,28 @@
     // SMALL FOR DISPLAY, HIRES FOR THE CANVAS. This served a 1-2MB file to
     // render a card at 400px — the same thing that broke the editor on mobile,
     // unfixed here because I fixed the file Tyler was holding.
-    <div class="card"><img src="https://images.pokemontcg.io/neo1/40.png" alt="Magmar" loading="lazy" onerror="this.onerror=null;this.src=this.src.replace(&#39;_hires&#39;,&#39;&#39;)">
-      <div class="cap">Magmar · 2000</div></div>
-    <div class="card"><img src="https://images.pokemontcg.io/sv9/20.png" alt="Magmar" loading="lazy" onerror="this.onerror=null;this.src=this.src.replace(&#39;_hires&#39;,&#39;&#39;)">
-      <div class="cap">Magmar · 2025</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/sv4pt5/31.png" alt="Mime Jr." loading="lazy" onerror="this.onerror=null;this.src=this.src.replace(&#39;_hires&#39;,&#39;&#39;)">
+      <div class="cap">Mime Jr. · 2024</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/sv3/8.png" alt="Combee" loading="lazy" onerror="this.onerror=null;this.src=this.src.replace(&#39;_hires&#39;,&#39;&#39;)">
+      <div class="cap">Combee · 2023</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/sv4/152.png" alt="Swablu" loading="lazy" onerror="this.onerror=null;this.src=this.src.replace(&#39;_hires&#39;,&#39;&#39;)">
+      <div class="cap">Swablu · 2023</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/sv2/42.png" alt="Magikarp" loading="lazy" onerror="this.onerror=null;this.src=this.src.replace(&#39;_hires&#39;,&#39;&#39;)">
+      <div class="cap">Magikarp · 2023</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/sv2/96.png" alt="Palossand" loading="lazy" onerror="this.onerror=null;this.src=this.src.replace(&#39;_hires&#39;,&#39;&#39;)">
+      <div class="cap">Palossand · 2023</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/sv4/91.png" alt="Gligar" loading="lazy" onerror="this.onerror=null;this.src=this.src.replace(&#39;_hires&#39;,&#39;&#39;)">
+      <div class="cap">Gligar · 2023</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/sv3/180.png" alt="Lechonk" loading="lazy" onerror="this.onerror=null;this.src=this.src.replace(&#39;_hires&#39;,&#39;&#39;)">
+      <div class="cap">Lechonk · 2023</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/sv1/151.png" alt="Skwovet" loading="lazy" onerror="this.onerror=null;this.src=this.src.replace(&#39;_hires&#39;,&#39;&#39;)">
+      <div class="cap">Skwovet · 2023</div></div>
+    <div class="card"><img src="https://images.pokemontcg.io/sv4/30.png" alt="Horsea" loading="lazy" onerror="this.onerror=null;this.src=this.src.replace(&#39;_hires&#39;,&#39;&#39;)">
+      <div class="cap">Horsea · 2023</div></div>
   </div>
-  <div class="label">Twenty-five years apart. Same illustrator.</div>
+  <div class="label">HYOGONOSUKE</div>
   </div>
-<div class="foot"><span class="mark">Catch'em</span><span class="src">Twenty-five years apart. Same illustrator.</span></div>
+<div class="foot"><span class="mark">Catch'em</span><span class="src">HYOGONOSUKE</span></div>
   <div style="text-align:center;margin-top:26px">
     <button id="dl" class="pri">Download PNG</button><button id="copy" class="sec" hidden>Copy image</button><button id="share" class="sec" hidden>Share</button><button id="dlsvg" class="sec">Open cards full-size</button>
     <div id="msg" style="color:#8a93a8;font-size:13px;margin-top:10px"></div>
@@ -43,11 +57,11 @@
 // The browser composites, because it can reach the image host and chat cannot.
 // Everything is drawn at native card resolution so the result is postable
 // rather than a screenshot of a screenshot.
-const LAYOUT_COLS = 2;
-const CARDS = [{"id":"neo1-40","url":"https://images.pokemontcg.io/neo1/40_hires.png","name":"Magmar","year":"2000"},{"id":"sv9-20","url":"https://images.pokemontcg.io/sv9/20_hires.png","name":"Magmar","year":"2025"}];
-const LABEL = "Twenty-five years apart. Same illustrator.";
-const CAPTION = "Twenty-five years apart. Same illustrator.";
-const ARTISTS = "Naoyo Kimura";
+const LAYOUT_COLS = 3;
+const CARDS = [{"id":"sv4pt5-31","url":"https://images.pokemontcg.io/sv4pt5/31_hires.png","name":"Mime Jr.","year":"2024"},{"id":"sv3-8","url":"https://images.pokemontcg.io/sv3/8_hires.png","name":"Combee","year":"2023"},{"id":"sv4-152","url":"https://images.pokemontcg.io/sv4/152_hires.png","name":"Swablu","year":"2023"},{"id":"sv2-42","url":"https://images.pokemontcg.io/sv2/42_hires.png","name":"Magikarp","year":"2023"},{"id":"sv2-96","url":"https://images.pokemontcg.io/sv2/96_hires.png","name":"Palossand","year":"2023"},{"id":"sv4-91","url":"https://images.pokemontcg.io/sv4/91_hires.png","name":"Gligar","year":"2023"},{"id":"sv3-180","url":"https://images.pokemontcg.io/sv3/180_hires.png","name":"Lechonk","year":"2023"},{"id":"sv1-151","url":"https://images.pokemontcg.io/sv1/151_hires.png","name":"Skwovet","year":"2023"},{"id":"sv4-30","url":"https://images.pokemontcg.io/sv4/30_hires.png","name":"Horsea","year":"2023"}];
+const LABEL = "HYOGONOSUKE";
+const CAPTION = "HYOGONOSUKE";
+const ARTISTS = "HYOGONOSUKE";
 // A GUARANTEED ROUTE. If every canvas path fails, the reader can still get real
 // full-resolution files - one tab per card, right-click and save. A screenshot
 // is the one outcome worth engineering around, so there is always another way.

@@ -40,6 +40,10 @@ export async function loadCards() {
   const [cat, attrs, text] = await Promise.all([
     J("data/card-catalogue.json"), J("data/card-attrs.json"), J("data/card-text.json"),
   ]);
+  // Groups of cards that form one picture. Ingested facts, not a hardcoded list,
+  // so adding a group to the data adds it to every query below.
+  let art = { groups: [] };
+  try { art = await J("data/connecting-art.json"); } catch { /* optional */ }
   const cards = new Map();
   for (const [id, c] of Object.entries(cat.cards)) {
     const A = attrs.cards[id] ?? {}, T = text.cards[id] ?? {};
@@ -67,7 +71,7 @@ export async function loadCards() {
       attacks: Array.isArray(T.a) && T.a.length ? T.a : null,
     });
   }
-  CACHE = { cards, index: buildIndex(cards) };
+  CACHE = { cards, index: buildIndex(cards), art };
   return CACHE;
 }
 
@@ -213,6 +217,34 @@ const RELATION_FNS = {
       { line: names, length: chain.length })];
   },
 
+  // THE CARDS LITERALLY FORM ONE PICTURE. The strongest connection there is,
+  // because it is not an inference from shared fields - it is a fact about the
+  // artwork. Only COMPLETE groups are offered: a partial group is missing a
+  // piece of its own image and would render as a smaller, wrong picture.
+  CONNECTING_ART(c, ix, cards, art) {
+    const out = [];
+    for (const g of (art && art.groups) || []) {
+      if (g.resolution !== "COMPLETE") continue;
+      if (!(g.cards || []).includes(c.id)) continue;
+      const kind = g.relation === "NARRATIVE_SEQUENCE"
+        ? "continue one story across"
+        : g.relation === "SHARED_BACKGROUND_PATTERN"
+          ? "share a background pattern across"
+          : "form a single illustration across";
+      const who = g.artist ? g.artist + " drew all " + words(g.cards.length) : words(g.cards.length) + " cards";
+      const where = g.sets && g.sets.length > 1
+        ? g.sets.length + " sets, " + g.sets.join(", ")
+        : (g.sets && g.sets[0]) || "one set";
+      out.push(rel(g.relation,
+        who + ", and they " + kind + " " + where + ".",
+        g.cards.slice(),
+        { groupId: g.id, artist: g.artist, arrangement: g.arrangement,
+          sets: g.sets, count: g.cards.length, sourceUrl: g.sourceUrl,
+          revisionId: g.revisionId, mechanic: g.mechanic || null }));
+    }
+    return out;
+  },
+
   SAME_SET(c, ix) {
     const ids = (ix.bySet.get(c.set) ?? []);
     if (ids.length < 2) return [];
@@ -299,7 +331,7 @@ export async function relationsFor(cardId, opts = {}) {
   for (const name of only) {
     const fn = RELATION_FNS[name];
     if (!fn) throw new Error(`no relation ${name}. Known: ${RELATION_TYPES.join(", ")}`);
-    for (const r of fn(c, index, cards)) out.push(r);
+    for (const r of fn(c, index, cards, CACHE.art)) out.push(r);
   }
   return out;
 }
@@ -327,6 +359,28 @@ export async function artistRevisits({ minGap = 1, limit = 50 } = {}) {
   return out.slice(0, limit);
 }
 
+// WHO CONNECTS THE MOST CARDS. The Naoyo Kimura finding is a QUERY, not a list:
+// three Southern Islands trios, the Neo Discovery eeveelutions, the legendary
+// beasts, the Sinnoh starters and the Wizards bird trio. Ranking the whole
+// population means the next such body of work surfaces on its own rather than
+// waiting for somebody to notice it.
+export async function connectingArtists({ completeOnly = true } = {}) {
+  const { art } = await loadCards();
+  const by = new Map();
+  for (const g of (art && art.groups) || []) {
+    if (completeOnly && g.resolution !== "COMPLETE") continue;
+    if (!g.artist) continue;
+    if (!by.has(g.artist)) by.set(g.artist, { artist: g.artist, groups: 0, cards: 0, sets: new Set(), relations: new Set() });
+    const e = by.get(g.artist);
+    e.groups++; e.cards += (g.cards || []).length;
+    for (const s of g.sets || []) e.sets.add(s);
+    e.relations.add(g.relation);
+  }
+  return [...by.values()]
+    .map(e => ({ ...e, sets: [...e.sets].sort(), relations: [...e.relations].sort() }))
+    .sort((a, b) => b.groups - a.groups || b.cards - a.cards);
+}
+
 // ── CLI ────────────────────────────────────────────────────────────────────
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const args = process.argv.slice(2);
@@ -334,6 +388,17 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   const has = (n) => args.includes("--" + n);
   const id = args.find(a => !a.startsWith("--") && args[args.indexOf(a) - 1] !== "--relation" && args[args.indexOf(a) - 1] !== "--limit");
   const { cards } = await loadCards();
+
+  if (has("connecting-artists")) {
+    const list = await connectingArtists({ completeOnly: !has("include-partial") });
+    console.log(`\n  illustrators by connected-art groups we can fully assemble:\n`);
+    for (const e of list.slice(0, Number(flag("limit") ?? 12))) {
+      console.log(`  ${String(e.groups).padStart(2)} groups  ${String(e.cards).padStart(3)} cards  ${e.artist}`);
+      console.log(`     ${e.relations.join(", ")} · ${e.sets.slice(0, 6).join(", ")}${e.sets.length > 6 ? " +" + (e.sets.length - 6) : ""}`);
+    }
+    console.log("");
+    process.exit(0);
+  }
 
   if (has("revisits")) {
     const list = await artistRevisits({ minGap: Number(flag("min-gap") ?? 18), limit: Number(flag("limit") ?? 20) });
