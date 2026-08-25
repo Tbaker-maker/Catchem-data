@@ -145,7 +145,7 @@ that needs a person. Detail in `research/PENDING-CLOSE-THE-LOOP.md`.
 fetch; fix the bot (50h stale, four stages quiet, 24 products carrying
 broken-era price history).
 
-**The number that decides everything** — the outcome log holds 6 posts. Twenty
+**The number that decides everything** — the outcome log holds 5 posts. Twenty
 is where it stops guessing. Until then every rule above is a hypothesis with a
 falsifier attached, and it says so on screen.
 

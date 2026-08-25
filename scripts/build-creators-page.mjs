@@ -118,7 +118,12 @@ textarea{width:100%;background:#0b0d14;border:1px solid var(--line);border-radiu
 <p class="sub">Pairings worth posting. Pick one, download the image, write your own words.
  &nbsp;·&nbsp; <a href="/build" style="color:#36d399">Or build your own &rsaquo;</a></p>
 
-${proven ? `<div class="proof"><b>The shape below is not a guess.</b> One post using it — Base Set Charizard beside the 151 Blastoise ex, same illustrator, ${proven.measured.views} views and ${proven.measured.likes} likes at a bad hour from a small account, plus an unsolicited reply from a verified creator. <b>One post is an anecdote, not a model</b>, and these are ranked on what made that one work rather than on what we can prove.</div>` : ""}
+${/* 2026-08-25: this said "at a bad hour" and printed 154 views. Both came from
+     a duplicated log entry that split one post into two and read them 15 hours
+     apart — withdrawn in data/corrections-log.json. The post did 127,200 views;
+     "a bad hour" was the artefact. It now states the age of the reading instead,
+     because a view count without one is not a claim about anything. */""}
+${proven ? `<div class="proof"><b>The shape below is not a guess.</b> One post using it — Base Set Charizard beside the 151 Blastoise ex, same illustrator, ${Number(proven.measured.views).toLocaleString("en-US")} views and ${Number(proven.measured.likes).toLocaleString("en-US")} likes ${Math.round(proven.measured.atHours)} hours after posting, from a small account returning after inactivity, plus an unsolicited reply from a verified creator. <b>One post is an anecdote, not a model</b>, and these are ranked on what made that one work rather than on what we can prove.</div>` : ""}
 
 ${rows.map((p, i) => `<div class="card">
   <div class="top"><span class="title">${esc(p.first.name)} ${p.first.year} &nbsp;→&nbsp; ${esc(p.last.name)} ${p.last.year}</span>

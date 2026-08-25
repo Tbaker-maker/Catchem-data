@@ -101,7 +101,7 @@ theorising.
 
 ## The number that governs everything
 
-**The outcome log holds 6 posts. Twenty is where it stops guessing.**
+**The outcome log holds 5 posts. Twenty is where it stops guessing.**
 
 Every rule about what works — the engines, the tiers, the registers — rests on
 those 6 plus five studied accounts. **They're labelled as hypotheses with

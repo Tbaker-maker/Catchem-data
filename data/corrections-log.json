@@ -1,39 +1,56 @@
 {
-  "note": "Public corrections log. material=true means it affected a number a reader could have acted on. Entries are permanent.",
-  "entries": [
-    {
-      "date": "2026-08-23",
-      "material": true,
-      "what": "Our marketplace gap was not comparing like with like. The eBay figure included shipping; TCGplayer market prices do not. On cheap items — packs especially — this reversed the answer: we showed some packs asking far more on eBay when, once shipping was counted on both sides, they were actually cheaper there.",
-      "fix": "Both sides now include shipping and neither includes tax, which is stated wherever a price appears. Journey Together booster packs moved from +54.9% to -12.7%; Destined Rivals from +7.5% to -30%. Sealed boxes barely changed, because both marketplaces ship those free.",
-      "guard": "The comparison basis is recorded on every row, and the shipping estimate is labelled as an estimate with a stated condition for re-checking it."
-    },
-    {
-      "date": "2026-08-21",
-      "material": true,
-      "what": "Our Pokemon GO Elite Trainer Box figure read high. Multi-quantity listings (\"lot of 2\", \"2x\", sealed cases) were passing our filters and lifting medians on any product with an active lot market.",
-      "fix": "The product is held out of published reads until it re-verifies. The filter now rejects multi-item listings across all 207 products.",
-      "guard": "A multi-item pattern guard runs at fetch time, and a durable quarantine file keeps a held product held even through a full data rebuild."
-    },
-    {
-      "date": "2026-08-21",
-      "material": false,
-      "what": "Share cards were minted in a format social platforms reject, and long text inside them was being dropped when converted.",
-      "fix": "Cards now render as PNG with the text drawn natively.",
-      "guard": "Every card rasterizes as part of the daily run, so the format that ships is the format that was checked."
-    },
-    {
-      "date": "2026-08-20",
-      "material": false,
-      "what": "Our sealed index baseline included the day we changed pricing methods, so part of the first move measured our own cleanup rather than the market.",
-      "fix": "The baseline was moved to the first full day under the current method and the history rebuilt from source snapshots.",
-      "guard": "New sets also sit out their first 90 days, so launch-window noise never enters the index."
-    },
-    {
-      "date": "2026-08-22",
-      "what": "The Spread has been retired from the front page",
-      "detail": "We compared our eBay prices against TCGplayer prices for the same product and used that gap to help choose what we put in front of you. The two figures are not measured the same way: ours includes delivery, theirs is an item price with shipping excluded, and no shipping-inclusive TCGplayer figure is available to us at any price. The gap therefore always read wider than the real difference, and worst on cheap products where postage is most of the cost. It no longer chooses the Daily Three and no longer raises signals. It stays on product pages as a labelled stat, because two marketplaces disagreeing is still worth seeing.",
-      "whatChanged": "Removed from the Daily Three selection and from the signal list. Kept as a labelled stat on product pages with a permanent note that the TCGplayer figure excludes shipping. Methodology page rewritten to explain the demotion."
-    }
-  ]
+ "note": "Public corrections log. material=true means it affected a number a reader could have acted on. Entries are permanent.",
+ "entries": [
+  {
+   "date": "2026-08-23",
+   "material": true,
+   "what": "Our marketplace gap was not comparing like with like. The eBay figure included shipping; TCGplayer market prices do not. On cheap items — packs especially — this reversed the answer: we showed some packs asking far more on eBay when, once shipping was counted on both sides, they were actually cheaper there.",
+   "fix": "Both sides now include shipping and neither includes tax, which is stated wherever a price appears. Journey Together booster packs moved from +54.9% to -12.7%; Destined Rivals from +7.5% to -30%. Sealed boxes barely changed, because both marketplaces ship those free.",
+   "guard": "The comparison basis is recorded on every row, and the shipping estimate is labelled as an estimate with a stated condition for re-checking it."
+  },
+  {
+   "date": "2026-08-21",
+   "material": true,
+   "what": "Our Pokemon GO Elite Trainer Box figure read high. Multi-quantity listings (\"lot of 2\", \"2x\", sealed cases) were passing our filters and lifting medians on any product with an active lot market.",
+   "fix": "The product is held out of published reads until it re-verifies. The filter now rejects multi-item listings across all 207 products.",
+   "guard": "A multi-item pattern guard runs at fetch time, and a durable quarantine file keeps a held product held even through a full data rebuild."
+  },
+  {
+   "date": "2026-08-21",
+   "material": false,
+   "what": "Share cards were minted in a format social platforms reject, and long text inside them was being dropped when converted.",
+   "fix": "Cards now render as PNG with the text drawn natively.",
+   "guard": "Every card rasterizes as part of the daily run, so the format that ships is the format that was checked."
+  },
+  {
+   "date": "2026-08-20",
+   "material": false,
+   "what": "Our sealed index baseline included the day we changed pricing methods, so part of the first move measured our own cleanup rather than the market.",
+   "fix": "The baseline was moved to the first full day under the current method and the history rebuilt from source snapshots.",
+   "guard": "New sets also sit out their first 90 days, so launch-window noise never enters the index."
+  },
+  {
+   "date": "2026-08-22",
+   "what": "The Spread has been retired from the front page",
+   "detail": "We compared our eBay prices against TCGplayer prices for the same product and used that gap to help choose what we put in front of you. The two figures are not measured the same way: ours includes delivery, theirs is an item price with shipping excluded, and no shipping-inclusive TCGplayer figure is available to us at any price. The gap therefore always read wider than the real difference, and worst on cheap products where postage is most of the cost. It no longer chooses the Daily Three and no longer raises signals. It stays on product pages as a labelled stat, because two marketplaces disagreeing is still worth seeing.",
+   "whatChanged": "Removed from the Daily Three selection and from the signal list. Kept as a labelled stat on product pages with a permanent note that the TCGplayer figure excludes shipping. Methodology page rewritten to explain the demotion."
+  },
+  {
+   "date": "2026-08-25",
+   "what": "The 122x posting-hour finding is withdrawn. It compared one post against itself at two different ages.",
+   "claim": "data/post-outcomes.json stated: 'on 2026-08-22 the identical pairing post did 154 views at a bad hour and 18,800 at 9:18pm — 122x, same cards, same caption, same format.' That number was repeated in commit 9551bde as a lesson learned about timing confounding format.",
+   "detail": "There were never two posts. There was one post, entered twice. Both entries carried the same postedAt of 21:18, and the second was labelled 'REPOST at 9:18pm' — but 9:18pm IS 21:18, so the entry describing the repost was describing the original. The 154 views were read twelve minutes after posting. The 18,800 were read fifteen hours and twenty minutes after posting. A post is not 122 times better at a different hour; it is 122 times bigger fifteen hours later, which is what every post does. The first correction claimed to have found a confound and introduced a worse one: it fixed a comparison across hours by writing a law about hours, when the actual defect was a comparison across ages.",
+   "whatChanged": "The two entries are merged into one post with a three-reading time series at 0.2h, 15.33h and 59.8h. The note claiming 122x is deleted. The law is replaced with: 'Readings are only comparable at equal age. Compare 48h to 48h. Any comparison across different measurement ages is measuring age.' Every reading now records its real atHours so the age is impossible to overlook.",
+   "caughtBy": "TYLER, FROM A SCREENSHOT. He opened the live post, saw one status where the log claimed two, and said so. The machines did not catch it — they had the same postedAt written twice in a file they both read, computed a 122x ratio from it, wrote a law on top of it, committed that law as a lesson about intellectual honesty in small samples, and then cited it in later sessions as settled. Three passes over the same six-line file, none of which compared two timestamps that were identical.",
+   "alsoFound": "The same defect runs through the whole file, and the Arita pair was only the visible instance. The remaining readings were taken at 25.02h (Charmander, 791 views), -0.06h (Slakoth, 124 views) and 0.03h (Sunflora, 93 views) — a reading taken 1.7 minutes after posting was ranked against one taken a day later. Every shape comparison this log has ever produced was across unequal ages."
+  },
+  {
+   "date": "2026-08-25",
+   "what": "Every hand-typed timestamp in post-outcomes.json was a Pacific wall clock with a Z on the end.",
+   "claim": "postedAt values such as '2026-08-22T21:18:00Z' were treated as UTC by everything that read them, including the posting-hour analysis whose entire subject is what time of day a post goes out.",
+   "detail": "21:18 in Vancouver is 04:18 UTC the following day, so the recorded instants were seven hours out and on the wrong calendar date for anything posted after 5pm local. The file mixed two conventions with no marker: values written by new Date().toISOString() were genuine UTC, values typed by a human were local, and the only tell was whether the string carried milliseconds. Proven rather than assumed, using git commit times, which are real UTC: the entry recording a reading at '2026-08-22T21:30:00Z' was committed at 04:30:16Z, sixteen seconds later once 21:30 is read as Pacific; the entry recording '2026-08-23T19:37:31.524Z' was committed at 19:39:04Z, ninety-three seconds later with no conversion. One entry resisted both readings and was settled a third way: pmt8ossvc's id encodes Date.now() in base36 and decodes to 2026-08-25T13:14:41.832Z, so reading its 11:12:00Z as local would place the post five hours after the entry that logged it and two hours in the future.",
+   "whatChanged": "All five posts converted to true UTC with an explicit tz, plus hourLocal and postedAtLocal so the wall clock survives — '9pm' is the thing being tested and nobody thinks in 04:18Z. scripts/lib/timestamp.mjs now owns every conversion, uses the zone database rather than a hardcoded -7 so it does not break in November, and refuses to record a timestamp without an explicit tz. It also rejects a post dated in the future and a reading dated before its own post, which are the two shapes this bug takes that are decidable from the data alone.",
+   "caughtBy": "Tyler: 'our timestamps are local time wearing a Z.' The guard exists because the string itself cannot tell you which convention it came from — that information was never written down, which is the whole defect. A guard that tried to infer it would be guessing."
+  }
+ ]
 }

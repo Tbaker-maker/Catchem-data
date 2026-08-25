@@ -1,33 +1,99 @@
 {
- "note": "Each entry records the SHAPE and the HOUR. The hour is not optional metadata: on 2026-08-22 the identical pairing post did 154 views at a bad hour and 18,800 at 9:18pm — 122x, same cards, same caption, same format. Any comparison between shapes that does not hold the hour roughly constant is measuring the hour.",
- "law": "n=1 per shape cannot separate format from timing. Until several posts of the SAME shape exist at DIFFERENT hours, this log ranks conditions, not formats.",
+ "law": "Readings are only comparable at equal age. Compare 48h to 48h. Any comparison across different measurement ages is measuring age.",
  "posts": [
   {
    "id": "2026-08-22-arita-blastoise",
-   "postedAt": "2026-08-22T21:18:00Z",
+   "postedAt": "2026-08-23T04:18:00.000Z",
+   "postedAtLocal": "2026-08-22 21:18",
+   "hourLocal": 21,
+   "tz": "America/Vancouver",
    "platform": "X",
+   "tweetId": "2091379580309528840",
+   "tweetIdConfidence": "from the url Tyler supplied; the first API read verifies it by matching created_at against postedAt",
    "shape": "art pairing — same illustrator, two hero cards, 24 years apart",
    "copy": "It's wild to think the original Charizard artist is still making cards to this day / & the fact they let him draw Blastoise 24 years later",
    "copyStyle": "conversational, no numbers, no hedging, two short lines",
-   "measured": {
-    "at": "2026-08-22T21:30:00Z",
-    "views": 154,
-    "likes": 9,
-    "replies": 1,
-    "reposts": 0
-   },
    "context": "posted at a poor time, from an account returning after inactivity, small follower base",
    "notable": "unsolicited reply from a verified creator (Drempts): \"Crazy. Cool post\"",
-   "confidence": "SINGLE OBSERVATION - one post is an anecdote. It sets a baseline, not a model."
+   "metrics": [
+    {
+     "atHours": 0.2,
+     "checkpoint": 1,
+     "readAt": "2026-08-23T04:30:00.000Z",
+     "views": 154,
+     "likes": 9,
+     "replies": 1,
+     "reposts": 0,
+     "bookmarks": null,
+     "source": "manual"
+    },
+    {
+     "atHours": 15.33,
+     "checkpoint": 24,
+     "readAt": "2026-08-23T19:37:31.524Z",
+     "views": 18800,
+     "likes": 401,
+     "replies": 14,
+     "reposts": 8,
+     "bookmarks": 37,
+     "source": "manual",
+     "bookmarksNote": "37 recorded in commit 9551bde's message, not in the json"
+    },
+    {
+     "atHours": 59.8,
+     "checkpoint": 48,
+     "readAt": "2026-08-25T16:05:47.342Z",
+     "views": 127200,
+     "likes": 2500,
+     "replies": 34,
+     "reposts": 86,
+     "bookmarks": 170,
+     "source": "manual-screenshot",
+     "readAtPrecision": "session time; the screenshot was taken shortly before, so atHours is +/- 2h"
+    }
+   ],
+   "mergedFrom": [
+    "2026-08-22-arita-blastoise",
+    "2026-08-23-arita-charizard-1999-blastoise-e"
+   ],
+   "mergedNote": "One post, three readings. The second entry called itself a REPOST at 9:18pm and was the same status read 15h later — merged 2026-08-25 after Tyler checked the live post against the log.",
+   "confidence": "ONE POST, THREE READINGS - a time series of a single anecdote, not a sample",
+   "measured": {
+    "at": "2026-08-25T16:05:47.342Z",
+    "atHours": 59.8,
+    "views": 127200,
+    "likes": 2500,
+    "replies": 34,
+    "reposts": 86
+   }
   },
   {
    "id": "2026-08-23-charmander-late-night-check-in",
-   "postedAt": "2026-08-22T00:00:00Z",
+   "postedAt": "2026-08-22T07:00:00.000Z",
+   "postedAtLocal": "2026-08-22 00:00",
+   "hourLocal": 0,
+   "tz": "America/Vancouver",
    "platform": "X",
    "shape": "art crop — single card, two-word hook",
    "note": "Charmander late night check-in",
+   "postedAtPrecision": "day — logged as round midnight; the date may be a day off and only Tyler can settle it",
+   "tzNote": "queued to ask-eyes: was this the night of Aug 21-22 or Aug 22-23?",
+   "metrics": [
+    {
+     "atHours": 25.02,
+     "checkpoint": 24,
+     "readAt": "2026-08-23T08:01:09.973Z",
+     "views": 791,
+     "likes": 38,
+     "replies": 14,
+     "reposts": 0,
+     "bookmarks": null,
+     "source": "manual"
+    }
+   ],
    "measured": {
     "at": "2026-08-23T08:01:09.973Z",
+    "atHours": 25.02,
     "views": 791,
     "likes": 38,
     "replies": 14,
@@ -37,12 +103,30 @@
   },
   {
    "id": "2026-08-23-slakoth-2am-coding",
-   "postedAt": "2026-08-23T02:00:00Z",
+   "postedAt": "2026-08-23T09:00:00.000Z",
+   "postedAtLocal": "2026-08-23 02:00",
+   "hourLocal": 2,
+   "tz": "America/Vancouver",
    "platform": "X",
    "shape": "art crop — single card, mood hook",
    "note": "Slakoth 2am coding",
+   "postedAtPrecision": "rounded to the nearest 5 minutes — the commit proves it went out at ~01:56 local, so its reading sits 3m before the recorded post time",
+   "metrics": [
+    {
+     "atHours": -0.06,
+     "checkpoint": 1,
+     "readAt": "2026-08-23T08:56:36.542Z",
+     "views": 124,
+     "likes": 1,
+     "replies": 0,
+     "reposts": 0,
+     "bookmarks": null,
+     "source": "manual"
+    }
+   ],
    "measured": {
     "at": "2026-08-23T08:56:36.542Z",
+    "atHours": -0.06,
     "views": 124,
     "likes": 1,
     "replies": 0,
@@ -51,28 +135,30 @@
    "confidence": "SAMPLE OF 3 - not yet enough to rank shapes against each other"
   },
   {
-   "id": "2026-08-23-arita-charizard-1999-blastoise-e",
-   "postedAt": "2026-08-22T21:18:00Z",
-   "platform": "X",
-   "shape": "art pairing — same artist, two hero cards, decades apart",
-   "note": "Arita Charizard 1999 / Blastoise ex 2023 REPOST at 9:18pm",
-   "measured": {
-    "at": "2026-08-23T19:37:31.524Z",
-    "views": 18800,
-    "likes": 401,
-    "replies": 14,
-    "reposts": 8
-   },
-   "confidence": "SAMPLE OF 4 - not yet enough to rank shapes against each other"
-  },
-  {
    "id": "2026-08-23-sunflora-only-good-vibes-pass-it",
-   "postedAt": "2026-08-23T12:43:00Z",
+   "postedAt": "2026-08-23T19:43:00.000Z",
+   "postedAtLocal": "2026-08-23 12:43",
+   "hourLocal": 12,
+   "tz": "America/Vancouver",
    "platform": "X",
    "shape": "art crop — single card, share prompt",
    "note": "Sunflora Only Good Vibes, pass it along and see it grow",
+   "metrics": [
+    {
+     "atHours": 0.03,
+     "checkpoint": 1,
+     "readAt": "2026-08-23T19:44:39.201Z",
+     "views": 93,
+     "likes": 3,
+     "replies": 0,
+     "reposts": 1,
+     "bookmarks": null,
+     "source": "manual"
+    }
+   ],
    "measured": {
     "at": "2026-08-23T19:44:39.201Z",
+    "atHours": 0.03,
     "views": 93,
     "likes": 3,
     "replies": 0,
@@ -82,14 +168,24 @@
   },
   {
    "id": "pmt8ossvc",
+   "postedAt": "2026-08-25T11:12:00.000Z",
+   "postedAtLocal": "2026-08-25 04:12",
+   "hourLocal": 4,
+   "tz": "UTC",
+   "platform": "X",
    "shape": "GM + art-driven pun — 'Time to get that bread' over Mabosstiff IR, caption written from the ARTWORK not the flavour text",
-   "postedAt": "2026-08-25T11:12:00Z",
+   "note": "Tyler rewrote my 31-word draft to five words after looking at the art: a dog staring at a picnic table of sandwiches. Logged unmeasured; the 48h reading fills it once the API is wired.",
+   "tzNote": "true UTC, proven by its own id: post-queue.mjs builds ids from Date.now() in base36 and pmt8ossvc decodes to 2026-08-25T13:14:41.832Z. Read as local it would post-date its own log entry by five hours.",
+   "metrics": [],
    "measured": {
+    "at": null,
+    "atHours": null,
     "views": null,
     "likes": null,
     "replies": null
    },
-   "note": "Tyler rewrote my 31-word draft to five words after looking at the art: a dog staring at a picnic table of sandwiches. Logged unmeasured; the 48h reading fills it once the API is wired."
+   "confidence": "UNMEASURED - logged, never read"
   }
- ]
+ ],
+ "schema": "postedAt is TRUE UTC. hourLocal and postedAtLocal carry the wall clock, because '9pm' is the thing being tested. metrics[] is the time series and is authoritative; measured mirrors the LATEST reading and exists only so older readers keep working. atHours is real elapsed hours, not a snapped checkpoint."
 }

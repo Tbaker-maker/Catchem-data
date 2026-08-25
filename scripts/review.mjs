@@ -117,9 +117,14 @@ const A = (area, score, verdict, working, watch) =>
   A("Engagement", n >= 20 ? 6 : n >= 1 ? 2 : 0,
     n === 1 ? "One post with real numbers. That is an anecdote, not a signal."
       : n ? `${n} posts measured.` : "Nothing measured.",
-    best ? [`Best: ${best.measured.views} views, ${best.measured.likes} likes, and an unsolicited reply from a verified creator — at a bad hour from a small account`] : [],
+    best ? [`Best: ${Number(best.measured.views).toLocaleString("en-US")} views and ${Number(best.measured.likes).toLocaleString("en-US")} likes read at ${Math.round(best.measured.atHours ?? 0)}h, from a small account returning after inactivity, plus an unsolicited reply from a verified creator`] : [],
     ["The platform agents' judgments are still shape-based guesses until roughly twenty posts have outcomes.",
-     "We have a five-times performance difference between two post types and one observation of each. That is not enough to act on and we have been acting on it."]);
+     // 2026-08-25: this used to claim a five-times difference between two post
+     // types. That was 791 views read at 25h against 154 read at 0.2h — the same
+     // post-and-age confusion withdrawn in data/corrections-log.json. There is no
+     // measured difference between shapes here, because no two readings in the
+     // log were ever taken at the same age.
+     "No shape has been compared to another at equal age yet, so the log ranks nothing. Until the 48h readings land, every shape preference in this system is a guess."]);
 }
 
 // ── ACCOUNTABILITY ────────────────────────────────────────────────────────

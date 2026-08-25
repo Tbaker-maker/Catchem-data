@@ -1,4 +1,4 @@
-# The review — 2026-08-24
+# The review — 2026-08-25
 
 **5.4 / 10.** Real progress, and the gap between what is built and what is live is now the whole problem.
 
@@ -13,7 +13,7 @@
 Every agent meets every obligation.
 
 **Working**
-- 18 agents, 33 guards wired, 66 negative tests
+- 18 agents, 46 guards wired, 66 negative tests
 - Every incident this month became a guard, and every guard has been deliberately broken to prove it works.
 
 
@@ -68,22 +68,22 @@ Real and growing, on evidence too thin to score confidently. Early-stage communi
 5 posts measured.
 
 **Working**
-- Best: 18800 views, 401 likes, and an unsolicited reply from a verified creator — at a bad hour from a small account
+- Best: 127,200 views and 2,500 likes read at 60h, from a small account returning after inactivity, plus an unsolicited reply from a verified creator
 **Needs looking at**
 - The platform agents' judgments are still shape-based guesses until roughly twenty posts have outcomes.
-- We have a five-times performance difference between two post types and one observation of each. That is not enough to act on and we have been acting on it.
+- No shape has been compared to another at equal age yet, so the log ranks nothing. Until the 48h readings land, every shape preference in this system is a guess.
 
 ## Accountability — 5/10 `█████░░░░░`  *(unchanged)*
 
 The habits are in place. Nothing has come due yet, so none of them have been tested.
 
 **Working**
-- 9 decisions logged with falsifiable predictions
+- 12 decisions logged with falsifiable predictions
 - Corrections published publicly, dated and permanent
 - 21 errors logged, each with the guard it produced
 **Needs looking at**
-- 27 of 46 agent questions unanswered — a queue that only grows is a queue nobody reads
-- 9 predictions still pending. The first grades land in October, and until then this score is a promise.
+- 29 of 48 agent questions unanswered — a queue that only grows is a queue nobody reads
+- 12 predictions still pending. The first grades land in October, and until then this score is a promise.
 
 ---
 

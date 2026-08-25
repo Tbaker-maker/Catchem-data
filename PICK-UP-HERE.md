@@ -85,7 +85,7 @@ have the access token pair.
 **That's enough to READ, not to POST.** A bearer token is app-only by design.
 
 **This is fine, and reading is the more valuable half right now.** The outcome
-log holds 6 posts and needs 20 before it can rank anything. Wire
+log holds 5 posts and needs 20 before it can rank anything. Wire
 `read-metrics.mjs` first; `--send` can follow when he generates the access
 token pair.
 
@@ -100,7 +100,7 @@ file.**
 
 ## The number that governs everything
 
-**The outcome log holds 6 posts. Twenty is where it stops guessing.**
+**The outcome log holds 5 posts. Twenty is where it stops guessing.**
 
 Every rule about what works — the three engines, the reach tiers, the permission
 mechanic — rests on those 6 plus five studied accounts. **They are labelled
