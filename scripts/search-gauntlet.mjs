@@ -369,6 +369,79 @@ if (!art) {
     "only the background continues on those cards; calling it one image is a false claim");
 }
 
+// ── 9. SUGGESTION LINES MUST BE ABOUT THE CARDS ON SCREEN ──────────────────
+// A panel offered "Does chasing value make you less of a collector?" over every
+// pairing in the catalogue. It was true, it was well written, and it was the
+// same sentence every time - and a user who sees one line twice over two
+// different pairs knows instantly the whole panel is a template. That costs
+// more than a missing feature does, because it makes everything else on the
+// screen look generated too.
+//
+// THE STANDARD IS THE CREDIT LIST under the panel: "Lugia - Aquapolis 149 -
+// Naoyo Kimura" cannot be generic, because it is read from the data. Every
+// suggested line is held to the same bar, and this asserts it across twenty
+// pairings rather than the three a human would check.
+head("9. suggestion lines");
+{
+  const engineSrc = await readFile(join(ROOT, "scripts/line-engine.js"), "utf-8").catch(() => "");
+  if (!engineSrc) {
+    check("lines", "scripts/line-engine.js exists", false, "the line engine has not been generated");
+  } else {
+    const textAll = JSON.parse(await readFile(join(ROOT, "data/card-text.json"), "utf-8")).cards;
+    const slim = {};
+    for (const [k, v] of Object.entries(textAll)) if (v.a && v.a.length) slim[k] = { a: v.a.slice(0, 1) };
+    let lineOptions = null;
+    try {
+      lineOptions = new Function(engineSrc.replace("__CARD_TEXT__", JSON.stringify(slim)) + "; return lineOptions;")();
+    } catch (e) {
+      check("lines", "the shipped line engine evaluates", false, e.message);
+    }
+
+    if (lineOptions) {
+      // Deterministic sample: a fixed stride through the catalogue, so a failure
+      // is reproducible rather than a lottery somebody re-runs until it passes.
+      const ids = [...cards.keys()];
+      const pairs = [];
+      // DISJOINT PAIRS. The first version stepped by one stride per pair, so each
+      // card appeared in TWO adjacent pairings - and a line about that card then
+      // showed up twice and was reported as a template. It was not: the same card
+      // was genuinely on screen both times. A repeat only means something when
+      // the two pairings share no cards.
+      const stride = Math.max(2, Math.floor(ids.length / 41));
+      for (let k = 0; pairs.length < 20 && (2 * k + 1) * stride < ids.length; k++) {
+        const a = cards.get(ids[2 * k * stride]), b = cards.get(ids[(2 * k + 1) * stride]);
+        if (a && b && a.year && b.year) pairs.push([a, b]);
+      }
+      const row = (c) => ({ i: c.id, n: c.name, s: c.set, y: String(c.year), a: c.artist || 0, r: c.rarity || 0, p: c.price || 0 });
+
+      const seenLine = new Map();
+      let produced = 0;
+      for (const [a, b] of pairs) {
+        let opts = [];
+        try { opts = lineOptions([row(a), row(b)], null, 0); }
+        catch (e) { check("lines", `lineOptions did not throw on ${a.id}+${b.id}`, false, e.message); continue; }
+        produced += opts.length;
+        for (const o of opts) {
+          const key = String(o.text);
+          if (!seenLine.has(key)) seenLine.set(key, []);
+          seenLine.get(key).push(`${a.id}+${b.id}`);
+          // Every line must carry something from the cards it was offered for.
+          const tokens = [a.name, b.name, a.artist, b.artist, a.set, b.set, String(a.year), String(b.year)]
+            .filter(Boolean).map(String);
+          const derived = tokens.some(t => key.includes(t));
+          check("lines", `line names something on screen (${a.id}+${b.id})`, derived,
+            `"${key.split("\n")[0].slice(0, 60)}" contains no name, artist, set or year from either card`);
+        }
+      }
+
+      const repeated = [...seenLine.entries()].filter(([, v]) => v.length > 1);
+      check("lines", "no suggestion line appears for more than one pairing", repeated.length === 0,
+        repeated.slice(0, 4).map(([t, v]) => `"${t.split("\n")[0].slice(0, 44)}" on ${v.length}`).join("; "));
+      console.log(`     ${pairs.length} pairings · ${produced} lines · ${seenLine.size} distinct`);
+    }
+  }
+}
+
 // ── REPORT ─────────────────────────────────────────────────────────────────
 console.log("");
 if (fail) {

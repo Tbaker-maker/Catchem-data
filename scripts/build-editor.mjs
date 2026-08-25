@@ -1638,6 +1638,21 @@ function renderStreakLine(){
   if (line && lab && !lab.value.trim()) lab.value = line;
 }
 
+// ── THIS IS THE STANDARD THE WHOLE PANEL IS HELD TO ────────────────────────
+// The credit list was the only part of the suggestion panel that was never
+// wrong, and it is worth saying why, because the fix for everything above it
+// was to make it work the same way.
+//
+// It states FACTS ABOUT WHAT IS LOADED AND NOTHING ELSE. Every character comes
+// from the tray - the name, the card number, the set, the illustrator - so it
+// CANNOT come out generic. There is no sentence here that would survive having
+// the cards swapped, because there is no sentence here that was not read from
+// the cards.
+//
+// The suggestion lines above used to fail exactly that test: "Does chasing
+// value make you less of a collector?" was offered over every pairing in the
+// catalogue. They are now derived the same way this is, and search-gauntlet
+// asserts that no line appears for two different pairings.
 function renderSelfReply(){
   const box = el("selfreply");
   if (!box) return;
