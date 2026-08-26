@@ -84,6 +84,10 @@ else {
     } catch { return FALLBACK; }
   })();
 
+  // Attrs are loaded before the template so the build-time exemplar can walk
+  // evolvesFrom against the same data the page ships.
+  const attrsAtBuild = (await J('data/card-attrs.json'))?.cards ?? {};
+
   await mkdir(join(ROOT, "research/assets"), { recursive: true }).catch(() => {});
   await writeFile(join(ROOT, "research/assets/card-index.json"), JSON.stringify(index));
 
@@ -464,6 +468,45 @@ not a Pokémon decision, and you can still use them.</div>
 //
 // PARTIAL groups are excluded: all 140 hold zero resolved ids, so shipping them
 // would add names with no cards behind them.
+// A THREE-STAGE LINE THAT ACTUALLY EXISTS IN THIS INDEX, picked once here so
+// the page never searches for one. Verified against attrs + the shipped index:
+// every stage resolves to at least one card.
+const EVO_EXEMPLAR = ${JSON.stringify((() => {
+  const attrs = attrsAtBuild;
+  const nameOf = (id) => (cat.cards[id] || {}).name || "";
+  // parent -> child, from the printed evolvesFrom field
+  // NORMALISE THE MECHANIC SUFFIX. Without this, "Ninetales BREAK" counts as a
+  // stage after Ninetales and every Pokemon with a BREAK or LV.X card looks
+  // like a three-stage line. The first pick was Machoke -> Machamp ->
+  // "Machamp BREAK", which is two real stages and a card variant.
+  const MECH = / (BREAK|LV[.]X|ex|EX|GX|V|VMAX|VSTAR|Prime|Star|LEGEND)$/;
+  const norm = (n) => String(n || "").replace(MECH, "").trim();
+  const childOf = new Map();
+  const isChild = new Set();
+  for (const [id, a] of Object.entries(attrs)) {
+    if (!a || !a.ev) continue;
+    const child = norm(nameOf(id));
+    const parent = norm(a.ev);
+    if (!child || !parent || child === parent) continue;
+    if (!childOf.has(parent)) childOf.set(parent, child);
+    isChild.add(child);
+  }
+  const inIndex = new Set(index.map(c => norm(c.n)));
+  // A ROOT IS A POKEMON NOTHING EVOLVES INTO. Machoke was picked as a "root"
+  // and it is a middle stage; starting there gives half a line.
+  for (const root of [...childOf.keys()].filter(k => !isChild.has(k))) {
+    const line = [root];
+    let cur = root;
+    for (let i = 0; i < 3; i++) {
+      const next = childOf.get(cur);
+      if (!next || line.includes(next)) break;
+      line.push(next); cur = next;
+    }
+    if (line.length >= 3 && line.every(n => inIndex.has(n))) return line[0];
+  }
+  return null;
+})())};
+
 const CONNECTING = ${JSON.stringify((await (async () => {
   try {
     const art = await J('data/connecting-art.json');
@@ -2474,25 +2517,16 @@ function askCards(r){
       if (best) { r = Object.assign({}, r, { subject: best });
         reason = "No illustrator named, so here is one: "; }
     } else if (r.relation === "EVOLUTION_LINE") {
-      // TEST THE LINE BEFORE OFFERING IT. The first version picked any Pokemon
-      // with a few cards, and picked one whose line resolves to a single stage —
-      // so "evolution line" answered with ONE card, which is not a line. An
-      // exemplar has to be an example OF THE THING.
-      var pickMon = null;
-      for (var mi = 0; mi < INDEX.length && !pickMon; mi++) {
-        var base = monName(INDEX[mi].n);
-        if (!base) continue;
-        var ln = evoLineFor(base);
-        if (ln.length < 3) continue;                       // want a full three-stage line
-        var haveAll = true;
-        for (var li = 0; li < ln.length; li++) {
-          var any = false;
-          for (var xi = 0; xi < INDEX.length; xi++) if (monName(INDEX[xi].n) === ln[li]) { any = true; break; }
-          if (!any) { haveAll = false; break; }
-        }
-        if (haveAll) pickMon = base;
-      }
-      if (pickMon) { r = Object.assign({}, r, { subject: pickMon });
+      // COMPUTED AT BUILD TIME, NOT HERE. My first attempt searched at request
+      // time: for every card, walk its line, then for every stage scan the whole
+      // index for a card. That is 16,468 x 16,468 in the worst case, and it
+      // found NOTHING — evoLineFor only yields three stages from a true basic,
+      // and evolvesFrom covers 5,929 of 16,468 cards. So a query that used to
+      // return one wrong card started returning zero, which is worse.
+      //
+      // EVO_EXEMPLAR is verified at build time against the same index the page
+      // ships, so it is correct by construction and costs one property read.
+      if (EVO_EXEMPLAR) { r = Object.assign({}, r, { subject: EVO_EXEMPLAR });
         reason = "No Pokémon named, so here is a full line: "; }
     } else if (r.relation === "SAME_POKEMON_ACROSS_TIME") {
       var seen = {};
