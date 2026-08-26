@@ -1252,9 +1252,20 @@ function search(){
     (!rar || c.r === rar) && (!yr || c.y === yr)));
   const pages = Math.max(1, Math.ceil(all.length / PAGE_SIZE));
   if (page >= pages) page = 0;
-  const hits = all.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+  // NOT "hits". A const named hits inside this function shadows the hits()
+  // predicate declared above it, and const is hoisted into a temporal dead
+  // zone covering the WHOLE function — so the filter three lines up, which
+  // calls hits(c, terms), threw "Cannot access 'hits' before initialization"
+  // on every query. The search box has been dead since 2026-08-23 (b7d0a6e).
+  //
+  // The no-query showcase returns BEFORE this line, so the page looked
+  // perfectly healthy on load and only broke when somebody typed. And the
+  // gauntlet lifts hits() out of the page and calls it directly, so 6,365
+  // checks passed over a search box that could not run at all. A test that
+  // calls the helper is not a test of the function that uses it.
+  const pageCards = all.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
   renderPager(all.length, pages);
-  el("res").innerHTML = hits.length ? hits.map(c =>
+  el("res").innerHTML = pageCards.length ? pageCards.map(c =>
     `<div class="hit" onclick="add('${c.i}')"><img src="${imgSmall(c.i)}" alt="" loading="lazy" data-cid="${c.i}" onerror="imgFallback(this,&#39;${c.i}&#39;)">
       <span class="failmsg"></span><b>${c.n}</b><i>${c.s} · ${c.y}</i><i class="${c.a ? "" : "nocred"}">${c.a || "no credit recorded"}</i></div>`).join("")
     : suggestHtml(q);

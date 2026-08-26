@@ -679,10 +679,23 @@ const CASES = [
     restore: async () => { await copyFile(TMP("nt-pm.bak"), P("data/guard-blindspots.json")); } },
 
   { guard: "The tools stay free — no paywall language", detect: null,
-    // FREE FOREVER went out on a public page during a traffic spike. This fails
-    // if paywall language ever reaches a shipped surface, because the cheapest
-    // way to lose an early community is to charge them for the thing they were
-    // promised.
+    // FREE FOREVER went out on a public page during a traffic spike (7c7565c,
+    // 2026-08-23). This fails if HARD-SELL paywall language reaches a shipped
+    // surface, because the cheapest way to lose an early community is to charge
+    // them for the thing they were promised.
+    //
+    // THE POLICY BEHIND IT HAS SINCE BEEN NARROWED and this comment used to
+    // assert the old one. Decision 2026-08-25-beta-terms-and-free-for-life says:
+    // the free TIER stays free, some features probably become paid later, and
+    // beta testers who report keep everything permanently. So "we promised FREE
+    // FOREVER" is no longer the whole truth, and a future reader must not take
+    // this guard as evidence that the unscoped promise still stands.
+    //
+    // THE GUARD ITSELF IS UNCHANGED AND SHOULD STAY. Honestly disclosing that
+    // some features may be paid is not what this blocks; "upgrade to pro" and
+    // "start your subscription" on a page somebody joined from is. The
+    // distinction is between telling people the shape of the thing and selling
+    // at them, and only the second one breaks faith.
     fn: async () => {
       const { readdir } = await import("node:fs/promises");
       const files = (await readdir(P("research/assets"))).filter(f => f.endsWith(".html"));
@@ -692,7 +705,7 @@ const CASES = [
         if (/upgrade to pro|start your subscription|per month|paywall|premium plan/i.test(src)) bad.push(f);
       }
       return { pass: bad.length === 0,
-        why: bad.length ? "paywall language appeared in: " + bad.join(", ") + " — we promised FREE FOREVER in public on 2026-08-23" : "" };
+        why: bad.length ? "hard-sell paywall language appeared in: " + bad.join(", ") + " — see decision 2026-08-25-beta-terms-and-free-for-life; disclosing a future paid tier is fine, selling at people on a page they joined from is not" : "" };
     } },
 
   { guard: "Tease actually withholds", detect: "tease-guard.mjs",

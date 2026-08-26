@@ -98,3 +98,86 @@ No accounts. No billing. No entitlement flags.
 Fifteen people do not need infrastructure, and an entitlement system built now
 would lock in a shape for the paid tier before we know what the paid tier is.
 When it matters, a list of names in a file will do.
+
+---
+
+# Replacement copy — pin and landing page
+
+**Added 2026-08-26. Also NOT PUBLISHED.**
+
+## The pinned post
+
+Current: **"ALL FREE — free for life"**, no scope.
+
+Replacement, three lines:
+
+> **Catch'em is free, and the free tier stays that way.**
+>
+> **Some of the deeper tools will likely be paid later — saying so now rather
+> than later.**
+>
+> **Beta testers who tell us something useful keep everything free, permanently.**
+
+Three sentences for three promises, in the order someone cares about them: what
+it costs me now, what might change, what I get for helping. The word "likely"
+is doing real work in the middle line — we have not decided which features, and
+saying "will be paid" would be a firmer claim than the decision supports.
+
+## The landing page
+
+Current, in `research/assets/index-landing.html` and `scripts/build-waitlist.mjs`:
+
+> Free. **Built to make you better.**
+> Get into the closed beta — *Free forever · early access before anyone else*
+
+Replacement — a four-character change on the line that matters:
+
+> Free to use. **Built to make you better.**
+> Get into the closed beta — *Free tier forever · early access before anyone else*
+
+"Free forever" reads as *everything, forever*. "Free tier forever" is the same
+promise honestly bounded, and it is not a smaller-sounding line — it is a more
+specific one, which is the thing that actually builds trust.
+
+---
+
+# Who saw the wider claim
+
+**Everyone who has signed up so far.**
+
+The unscoped line shipped in commit `7c7565c` on **2026-08-23 19:48 UTC**,
+during the traffic spike the waitlist page was built for. It has been live
+continuously since. There has been no version of that page carrying a scoped
+promise.
+
+**I cannot list them.** The form posts to Formspree; the repo holds no signup
+records, by design. So the honest statement is not "these fourteen people" but
+"every signup between 2026-08-23 19:48 UTC and whenever the page changes."
+
+**The fair thing is to honour the wider reading for that group.** They did not
+misread it — the line genuinely says what they think it says, and the scope was
+missing on our side rather than misunderstood on theirs. At this cohort size the
+cost is close to nothing, and it converts a potential grievance into the
+strongest possible version of the beta offer: *everyone who was here before we
+knew what we were doing keeps everything.*
+
+That also makes the free-for-life offer easier to explain, because for the
+current cohort the two promises collapse into one.
+
+---
+
+# One guard needs its reasoning corrected
+
+`scripts/negative-tests.mjs` carries **"The tools stay free — no paywall
+language"**, added in the same commit as the FREE FOREVER line. It fails the
+build if `upgrade to pro`, `start your subscription`, `per month`, `paywall` or
+`premium plan` reaches any shipped page.
+
+**Keep the guard.** None of the copy above trips it, and it still blocks the
+hard-sell phrasing that would genuinely break faith with an early community.
+
+But its stated reason reads *"we promised FREE FOREVER in public on
+2026-08-23"*, and that sentence is now the old policy. Left as is, a future
+reader treats the guard as evidence that the unscoped promise still stands.
+The protection stays; the justification gets updated to point at the new
+decision. I have not touched it pending your read of this page.

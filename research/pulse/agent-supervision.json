@@ -1,16 +1,16 @@
 {
- "generatedAt": "2026-08-25T23:49:41.129Z",
- "date": "2026-08-25",
+ "generatedAt": "2026-08-26T00:24:23.408Z",
+ "date": "2026-08-26",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
   "breaker: 6 finding(s)",
   "falsifier: 0 finding(s)",
-  "correction-hunter: 5 finding(s)",
+  "correction-hunter: 6 finding(s)",
   "review-agents: 0 finding(s)",
   "decision-audit: 0 finding(s)",
   "designer: 12 finding(s)",
   "theme-scout: 22 finding(s)",
-  "teacher: 15 finding(s)",
+  "teacher: 12 finding(s)",
   "api-strategist: 8 finding(s)",
   "compliance: 0 finding(s)",
   "security: 0 finding(s)",
@@ -29,13 +29,11 @@
   "anomaly: clean run — nothing failed, which is the point of it"
  ],
  "problems": [
-  "correction-hunter: BROKEN RECORD — 3 finding(s) repeated three runs running (e.g. \"gone::Umbreon VMAX\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
-  "designer: BROKEN RECORD — 4 finding(s) repeated three runs running (e.g. \"medium::35 distinct colours\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
+  "correction-hunter: BROKEN RECORD — 4 finding(s) repeated three runs running (e.g. \"gone::Umbreon VMAX\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
+  "designer: BROKEN RECORD — 7 finding(s) repeated three runs running (e.g. \"medium::35 distinct colours\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "theme-scout: BROKEN RECORD — 22 finding(s) repeated three runs running (e.g. \"the one-off::Ken Sugimori drew Ampharos exactly on\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
-  "teacher: FARMING — findings climbed 14 → 14 → 14 → 15 across four runs with nothing resolved. Volume is not work.",
-  "teacher: BROKEN RECORD — 13 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
-  "teacher: OVER-BUDGET — 15 findings against a ceiling of 14. An unreadable list is an unread list.",
-  "steward: FARMING — findings climbed 4 → 4 → 4 → 5 across four runs with nothing resolved. Volume is not work.",
+  "teacher: BROKEN RECORD — 11 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
+  "steward: FARMING — findings climbed 4 → 5 → 5 → 5 across four runs with nothing resolved. Volume is not work.",
   "creator: OVER-BUDGET — 15 findings against a ceiling of 10. An unreadable list is an unread list."
  ],
  "workforce": [
@@ -100,6 +98,11 @@
    "agent": "platform",
    "finding": "runs daily and has returned the same count (10) four runs running.",
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
+  },
+  {
+   "agent": "platform",
+   "finding": "every finding from a week ago is still open (10).",
+   "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
    "agent": "anomaly",
@@ -471,7 +474,7 @@
   {
    "from": "platform",
    "owner": "tyler",
-   "what": "[YouTube] the sealed market — \"The whole sealed market in one number: 98.2.\"",
+   "what": "[YouTube] Pokemon GO Elite Trainer Box — \"forced quarantined pick\"",
    "do": "YouTube rewards a question somebody is already typing into search. We can answer three of the recurring ones with data nobody else holds, which is the whole reason to be here rather than reacting to other people's news.",
    "score": 33,
    "band": "NOTE ONLY",
@@ -487,7 +490,7 @@
   {
    "from": "platform",
    "owner": "tyler",
-   "what": "[YouTube] Paldean Fates — \"Paldean Fates listings moved -66.7% while its print window closes.\"",
+   "what": "[YouTube] the sealed market — \"The whole sealed market in one number: 98.2.\"",
    "do": "YouTube rewards a question somebody is already typing into search. We can answer three of the recurring ones with data nobody else holds, which is the whole reason to be here rather than reacting to other people's news.",
    "score": 33,
    "band": "NOTE ONLY",
@@ -567,7 +570,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "14 hand-written file(s) changed and not committed.",
+   "what": "4 hand-written file(s) changed and not committed.",
    "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -583,7 +586,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "5 supervisor problem(s) are open.",
+   "what": "6 supervisor problem(s) are open.",
    "do": "Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -599,7 +602,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "20 script(s) are not referenced anywhere: artifact-freshness.mjs, backfill-artists.mjs, build-faq.mjs, build-hooks.mjs.",
+   "what": "19 script(s) are not referenced anywhere: backfill-artists.mjs, build-faq.mjs, build-hooks.mjs, build-lines.mjs.",
    "do": "A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -759,7 +762,7 @@
   {
    "from": "api-strategist",
    "owner": "tyler",
-   "what": "the paid provider is called from 166 places",
+   "what": "the paid provider is called from 169 places",
    "do": "list what ONLY the paid provider gives us; if that list is short, either use more of it or stop paying for it",
    "score": 30,
    "band": "NOTE ONLY",

@@ -95,6 +95,15 @@ const SECRETS = [
 
 // ── 1 · IS A SECRET IN THE WORKING TREE? ───────────────────────────────────
 {
+// Pages that HOST the waitlist form, and therefore must carry its action URL.
+// Adding a file here is a decision somebody makes on purpose; the alternative -
+// exempting on an environment variable - silently exempted everything whenever
+// a .env happened to exist.
+const FORM_CARRIERS = [
+  "research/assets/index-landing.html",
+  "research/pulse/2026-08-19.html",
+];
+
   const scan = async (dir) => {
     let entries = [];
     try { entries = await readdir(join(ROOT, dir), { withFileTypes: true }); } catch { return; }
@@ -119,8 +128,22 @@ const SECRETS = [
           // Rewriting history would not unpublish it - anyone can already read
           // it - so the remedy is ROTATION, which only Tyler can do. Reported
           // once below rather than from each of the eight files that carry it.
-          .filter(h => { const known = (process.env.FORMSPREE_FORM_ID || "").trim();
-            return !(known && h.includes(known)); });
+          // THE EXEMPTION USED TO DEPEND ON process.env.FORMSPREE_FORM_ID, which
+          // meant this guard reached a DIFFERENT VERDICT depending on whether
+          // whoever ran it happened to have a .env file. It passed on every
+          // developer machine and raised a CRITICAL in CI - the one environment
+          // that actually runs the pipeline - where the variable is not set.
+          // That CRITICAL then killed generate-pulse and, with it, the daily
+          // commit. A guard whose answer depends on the environment rather than
+          // on the repository is not a guard, it is a coin toss with a stack
+          // trace.
+          //
+          // A FORM ACTION MUST CARRY ITS ENDPOINT. That is not a leak, it is how
+          // an HTML form works, and the value is public by construction. So the
+          // exemption is now a property of WHERE the string is: in a page that
+          // hosts the form, it is expected and inventoried. ANYWHERE ELSE it is
+          // still a CRITICAL, which is the case worth catching.
+          .filter(h => !(s.name === "Formspree form endpoint" && FORM_CARRIERS.includes(rel)));
         if (hits.length) C(`${s.name} found in ${rel}`,
           "A credential in the working tree is one commit from being permanent. There is no correction page for a leaked key.",
           "Revoke it first, then remove it. Revoking comes first because removal does not un-share what was already shared.");
@@ -132,12 +155,14 @@ const SECRETS = [
     // The waitlist endpoint, RECORDED rather than reported as a fault. It was a
     // CRITICAL here, blocking on a value that cannot be removed without breaking
     // the form, which is how a guard teaches people to ignore it.
-    const id = (process.env.FORMSPREE_FORM_ID || "").trim();
-    if (id) {
+    // Detected from the FILES, not from the environment, for the same reason as
+    // above: the inventory must say the same thing on a laptop and in CI.
+    const RX = /formspree\.io\/f\/[a-zA-Z0-9]{6,}/;
+    {
       const carriers = [];
-      for (const f of ["research/assets/index-landing.html", "research/pulse/2026-08-19.html"]) {
+      for (const f of FORM_CARRIERS) {
         const t = await readFile(join(ROOT, f), "utf-8").catch(() => "");
-        if (t.includes(id)) carriers.push(f);
+        if (RX.test(t)) carriers.push(f);
       }
       I("Formspree waitlist endpoint",
         carriers.length ? carriers.join(", ") : "generated artifacts only",

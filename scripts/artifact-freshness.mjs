@@ -12,10 +12,22 @@
 // outside — which is the whole point. This does not decide which. It NAMES the
 // ones where the question is worth asking, so nobody has to notice on their own.
 //
-// Deliberately advisory. Legitimate quiet exists: a radar of confirmed release
-// dates should not change most days, and blocking a build because nothing
-// happened would be the same mistake in the other direction. The failure mode
-// here is nobody LOOKING, so this prints and does not stop anything.
+// NOW BLOCKING, AND THE REASON IS WHERE THE SIGNAL LANDS RATHER THAN HOW LOUD
+// IT IS. The six failed price runs were VISIBLE the whole time — red ticks in
+// the GitHub Actions tab, a place nobody on this project opens. Tyler checks
+// the fleet. He does not check Actions. A signal delivered somewhere nobody
+// looks is not a signal, it is a record for the post-mortem.
+//
+// The earlier version of this file printed and exited 0, on the reasoning that
+// legitimate quiet exists and blocking on a slow news day is the same mistake
+// inverted. That reasoning was right about the RADAR and wrong about the rest:
+// a release radar can honestly go a week without moving, but a price feed that
+// has not moved in three daily runs is not having a quiet week.
+//
+// So the threshold does the discriminating instead of the exit code. Two runs
+// stale is the line, and anything that legitimately moves more slowly declares
+// itself in SLOW below rather than being waved through by making the whole
+// guard advisory.
 import { readFile, readdir } from "node:fs/promises";
 import { execFileSync } from "node:child_process";
 import { join, dirname } from "node:path";
@@ -87,32 +99,60 @@ rows.sort((a, b) => (b.runsMissed ?? 1e9) - (a.runsMissed ?? 1e9));
 console.log("ARTIFACT FRESHNESS — what each scheduled job promised, and when it last delivered\n");
 console.log(`  ${jobs.length} scheduled workflow(s) · ${rows.length} promised path(s)\n`);
 
-// A run every 24h that has not moved a file in 3 days is worth a look. Below
-// that is noise; a daily job legitimately produces nothing on a quiet day.
-const SUSPECT = 3;
-let suspect = 0;
+// TWO RUNS. A daily job that has produced nothing twice running is either
+// broken or has nothing to say, and it must be able to tell us which — the
+// same rule already applied to the radar's checkedAt.
+const SUSPECT = 2;
+
+// Paths that legitimately move slowly, each with the reason it is allowed to.
+// A file earns a place here by being genuinely event-driven; "it is often
+// unchanged" is not a reason, it is the symptom this guard exists to catch.
+const SLOW = {
+  "data/release-radar.json":
+    "confirmed release dates change when the world changes, not daily — but it now records checkedAt separately from updated, so a dead agent is still visible",
+  "data/recovery-log.json":
+    "written by the watchdog ONLY when the heartbeat goes red and a recovery is dispatched; never having fired is the healthy state",
+};
+let suspect = 0, excused = 0;
+
+const stale = [];
 
 for (const r of rows) {
   const label = `${r.p}`.padEnd(42);
+  const excuse = SLOW[r.p];
+
   if (r.days === null) {
+    if (excuse) { console.log(`  ·  ${label} never written — ${excuse}`); excused++; continue; }
     console.log(`  ?  ${label} never committed — promised by ${r.job.workflow}`);
-    suspect++;
+    suspect++; stale.push({ ...r, why: "never committed" });
     continue;
   }
-  const mark = r.runsMissed >= SUSPECT ? "!" : " ";
-  if (r.runsMissed >= SUSPECT) suspect++;
-  console.log(`  ${mark}  ${label} ${r.days.toFixed(1)}d ago · ~${r.runsMissed} run(s) since it last moved`);
+
+  const over = r.runsMissed >= SUSPECT;
+  if (over && excuse) {
+    console.log(`  ·  ${label} ${r.days.toFixed(1)}d · ~${r.runsMissed} runs — allowed: ${excuse.slice(0, 60)}…`);
+    excused++;
+    continue;
+  }
+  if (over) { suspect++; stale.push(r); }
+  console.log(`  ${over ? "!" : " "}  ${label} ${r.days.toFixed(1)}d ago · ~${r.runsMissed} run(s) since it last moved`);
 }
 
 console.log("");
 if (suspect) {
-  console.log(`${suspect} path(s) worth a look. "!" means the owning job has run several times`);
-  console.log("without the file changing. That is EITHER a quiet week OR a dead pipeline,");
-  console.log("and the two are indistinguishable from here — which is exactly how the release");
-  console.log("radar stayed frozen for eight days behind eight green runs.");
+  console.log(`✗ ARTIFACT FRESHNESS — ${suspect} promised artifact(s) more than ${SUSPECT} runs stale:`);
+  for (const r of stale)
+    console.log(`   ${r.p} — ${r.why ?? `~${r.runsMissed} runs, last moved ${r.days.toFixed(1)}d ago`} (${r.job.workflow})`);
   console.log("");
-  console.log("For each one, the question is: does the job record that it CHECKED, separately");
-  console.log("from whether it CHANGED anything? If not, that is the defect.");
-} else {
-  console.log("Every promised artifact has moved within the expected number of runs.");
+  console.log("A scheduled job that has produced nothing twice running is either broken or has");
+  console.log("nothing to say, and it must be able to tell us WHICH. Six red price runs sat in");
+  console.log("the Actions tab for three days because that is not a place anybody here looks.");
+  console.log("");
+  console.log("Either fix the job, or make it record that it CHECKED separately from whether it");
+  console.log("CHANGED anything — the way release-radar now writes checkedAt. If the file");
+  console.log("genuinely moves on events rather than on a schedule, add it to SLOW with the");
+  console.log("reason, which is a decision somebody makes on purpose rather than a silence.");
+  process.exit(1);
 }
+console.log(`✓ artifact freshness: every promised artifact moved within ${SUSPECT} runs` +
+  (excused ? ` · ${excused} event-driven path(s) excused by name` : ""));

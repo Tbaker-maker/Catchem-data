@@ -36,6 +36,9 @@ const head = (s) => console.log("\n  " + s);
 let art = null;
 try { art = JSON.parse(await readFile(join(ROOT, "data/connecting-art.json"), "utf-8")); } catch { art = null; }
 const html = await readFile(join(ROOT, "research/assets/build.html"), "utf-8");
+// The whole page script, for section 13 - which drives search() rather than
+// lifting its helpers out and calling them in isolation.
+const js = (html.match(/<script>([^]*?)<\/script>/) || [, ""])[1];
 const rowsMatch = html.match(/const CARD_ROWS = (\[\[[\s\S]*?\]\]);/);
 if (!rowsMatch) { console.error("\n  ✗ GAUNTLET: CARD_ROWS not found in build.html — the editor has not been built.\n"); process.exit(1); }
 const ROWS = JSON.parse(rowsMatch[1]);
@@ -672,6 +675,88 @@ head("12. filter notes match the cards they describe");
         `note says "${f.note}" but no card passing ${f.field} >= ${f.min} records ${n} in its reason`);
     }
     console.log(`     ${f.id.padEnd(9)} ${String(passing.length).padStart(5)} cards pass · ${cited.length} number(s) cited in its note`);
+  }
+}
+
+// ── 13. CALL search() ITSELF, NOT ITS HELPERS ──────────────────────────────
+// 6,365 checks passed over a search box that could not run at all.
+//
+// A `const hits` inside search() shadowed the hits() predicate declared above
+// it. const hoists into a temporal dead zone covering the whole function, so
+// the filter that calls hits(c, terms) threw "Cannot access 'hits' before
+// initialization" on EVERY query. Live since 2026-08-23.
+//
+// Every section above lifts hits(), termsOf() and fold() out of the page and
+// calls them directly, which is why they all passed: the helpers were fine. The
+// function that USES them was broken, and nothing here ever called it. A test
+// that exercises a helper is not a test of its caller — and the no-query
+// showcase returns before the bad line, so the page looked healthy on load and
+// only died when somebody typed.
+//
+// So this drives the real entry point through a real DOM, the way a person
+// does: put text in the box, call search(), read what landed in #res.
+head("13. the search box itself");
+{
+  // A DOM small enough to be honest about what it is: the ids search() touches,
+  // and nothing else. If search() starts touching something new this throws
+  // rather than silently returning empty.
+  const nodes = {};
+  const mk = (id) => nodes[id] = nodes[id] ?? { id, value: "", innerHTML: "", textContent: "", hidden: false,
+    style: {}, classList: { add(){}, remove(){}, toggle(){}, contains: () => false },
+    addEventListener(){}, querySelectorAll: () => [], appendChild(){} };
+  const dom = {
+    getElementById: (id) => mk(id),
+    querySelectorAll: () => [], querySelector: () => null,
+    createElement: () => ({ style: {}, className: "", textContent: "", setAttribute(){}, appendChild(){} }),
+    addEventListener(){},
+  };
+
+  const api = (() => {
+    try {
+      // The page probes image hosts on a timer and draws to a canvas. None of
+      // that is what section 13 is testing, so it is stubbed rather than
+      // avoided - a harness that cannot start the page cannot test the page.
+      const Img = function(){ const o = {};
+        Object.defineProperty(o, "src", { set(){ setTimeout(() => o.onerror && o.onerror(new Error("no network")), 0); } });
+        return o; };
+      return new Function("document", "localStorage", "window", "Image", "fetch", "AbortSignal", "navigator", js + `
+        ;return { search, setQ: (v) => document.getElementById("q").value = v,
+                  res: () => document.getElementById("res").innerHTML };`)(
+        dom,
+        { getItem: () => null, setItem(){}, removeItem(){} },
+        { addEventListener(){}, matchMedia: () => ({ matches: false, addEventListener(){} }) },
+        Img,
+        async () => { throw new TypeError("no network"); },
+        { timeout: () => null },
+        {});
+    } catch (e) {
+      check("searchbox", "the shipped page evaluates", false, e.message);
+      return null;
+    }
+  })();
+
+  if (api) {
+    // The queries a person types, and the ones that exercise the paths: a
+    // multi-term query, a folded query, a no-result query, and an empty box.
+    const QUERIES = ["charizard", "kimura", "magmar kimura", "pokemon", "farfetchd",
+                     "mr mime", "arita 2023", "zzzqqxx", ""];
+    for (const q of QUERIES) {
+      let threw = null, html = "";
+      try { api.setQ(q); api.search(); html = api.res(); }
+      catch (e) { threw = e.message; }
+      check("searchbox", `search("${q}") does not throw`, !threw,
+        `typing "${q}" into the box throws: ${threw}`);
+      // A query with known matches must actually render cards. "Did not throw"
+      // is not the same as "worked", and that gap is how this stayed hidden.
+      if (!threw && q && q !== "zzzqqxx")
+        check("searchbox", `search("${q}") renders at least one card`, /class="hit"/.test(html),
+          `"${q}" produced no rendered result — the box runs but shows nothing`);
+    }
+    // And the empty box must show the showcase rather than an empty panel.
+    api.setQ(""); api.search();
+    check("searchbox", "an empty query still shows cards", /class="hit"/.test(api.res()),
+      "an empty search box renders nothing, which is indistinguishable from broken");
+    console.log(`     ${QUERIES.length} queries driven through the real search()`);
   }
 }
 
