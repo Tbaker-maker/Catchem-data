@@ -1230,6 +1230,32 @@
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
+  },
+  {
+   "id": "pipeline-65",
+   "agent": "pipeline",
+   "question": "Should card-guard check every card ever committed, or only the ones this run produced?",
+   "evidence": "It currently fails the daily job on a dash rendering in 2026-08-21-social.svg, -22 and -23 — cards published days ago that nobody is going to re-render. That is the 'committed fossils' problem already logged in this repo when run-tests asserted artifacts no pipeline made. The findings are real, but blocking today's run on last week's output means the guard can never go green without someone hand-fixing history. Scoping it to the run's own output would keep the protection and let the job pass.",
+   "who": "tyler",
+   "firstAsked": "2026-08-26",
+   "lastAsked": "2026-08-26",
+   "asked": 1,
+   "answeredBy": null,
+   "answer": null,
+   "answeredOn": null
+  },
+  {
+   "id": "pipeline-66",
+   "agent": "pipeline",
+   "question": "Should verify-work and pre-mortem block the price pipeline, or only the fleet run?",
+   "evidence": "Both are declared blocking:true and both were built at your request on 2026-08-23. Both are imported bare by generate-pulse, so their findings stop the daily job — and their subject is MY work quality (un-interrogated guards, citation backlogs, an unwired card generator), not the correctness of the market data. I fixed the two findings that were mine to fix and left the rest red rather than silencing them. Market data now commits before the pulse regardless, so this is no longer urgent, but the question stands: do you want a work-quality ledger able to stop a data publication?",
+   "who": "tyler",
+   "firstAsked": "2026-08-26",
+   "lastAsked": "2026-08-26",
+   "asked": 1,
+   "answeredBy": null,
+   "answer": null,
+   "answeredOn": null
   }
  ]
 }
