@@ -166,29 +166,20 @@ function lineOptions(cards, themeName, followerCount){
   const span = years.length > 1 ? years[years.length - 1] - years[0] : 0;
   // THE COUNT IS THE CLAIM. "23 years between these two" over nine cards is the
   // Koga failure in a sentence. Two is a pair. Anything else is a number.
-  const nCards = cards.length;
-  const THESE_N = { 1:"this", 2:"these two", 3:"these three", 4:"these four", 6:"these six", 8:"these eight", 9:"these nine" };
-  const these = THESE_N[nCards] || ("these " + nCards);
-  const both = nCards === 2 ? "both of these" : "all " + nCards + " of these";
-
-  // ── THE NOUN HAS TO MATCH THE COUNT ─────────────────────────────────────
-  // With nine Arcanine loaded the panel said "23 years between these two" and
-  // "Blaine's Arcanine, Light Arcanine, Arcanine — pick one", naming three of
-  // nine as though they were the whole tray. The derivation was right and the
-  // COUNT was never part of it.
   //
-  // these() is the only way any line refers to the loaded cards from here on.
+  // MERGE TRAP 2026-08-26: two const these survived a rebase (THESE_N map then
+  // the nword form). lineOptions threw on first call, so NOTICE, evo-smoke,
+  // ask-smoke and notice-eye all died with the same SyntaxError.
+  // One name. One declaration.
   const N = cards.length;
-  // SPELLED HERE, NOT IMPORTED. words() lives in card-relations.mjs and is not
-  // emitted into line-engine.js, so calling it would have been a ReferenceError
-  // in the browser — the same shape as evoLineFor existing only as an object
-  // property. A tray holds at most nine cards, so the list is closed.
+  const nCards = N;
   const NWORD = ["zero","one","two","three","four","five","six","seven","eight","nine"];
   const nword = (k) => NWORD[k] || String(k);
   const these = N === 1 ? "this one"
     : N === 2 ? "these two"
     : N === 3 ? "these three"
     : "these " + nword(N);
+  const both = N === 2 ? "both of these" : "all " + nword(N) + " of these";
   // For a line that names a SUBSET, this says so out loud rather than implying
   // the subset is everything.
   const ofN = (k) => N > k ? " (" + nword(k) + " of " + nword(N) + ")" : "";

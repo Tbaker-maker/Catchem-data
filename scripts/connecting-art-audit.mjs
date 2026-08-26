@@ -9,10 +9,14 @@ const art = JSON.parse(await readFile("data/connecting-art.json", "utf8"));
 
 // Printed art checked against the files, not the wiki table.
 const ART_ACROSS = new Set(["ex1-51|ex1-22"]); // Carvanha | Sharpedo — panorama, left to right
+const ART_ORDER = {
+  "neo3-13|neo3-6|neo3-14": ["neo3-6", "neo3-13", "neo3-14"], // Entei | Raikou | Suicune
+};
 
 function decide(g) {
-  const c = (g.cards || []).map(x => typeof x === "string" ? x : x?.id).filter(Boolean);
-  const key = c.join("|");
+  const c0 = (g.cards || []).map(x => typeof x === "string" ? x : x?.id).filter(Boolean);
+  const key = c0.join("|");
+  const c = ART_ORDER[key] || c0;
   const shape = g.rowShape || [];
   const arr = String(g.arrangement || "");
   if (ART_ACROSS.has(key)) return { dir: "across", cols: c.length, rows: 1, shape: [c.length], c, why: "printed edges continue left-right (wiki table was top-bottom)" };
@@ -49,6 +53,13 @@ else if (JSON.stringify(legendD.shape) !== JSON.stringify(Array(legendD.c.length
   console.error("✗ LEGEND shape must be one card per row, not the wiki's [2] — that draws the bottom half off the canvas");
   failed++;
 } else console.log("✓ LEGEND stacks, one half per row");
+
+const beasts = groups.find(g => (g.cards || []).includes("neo3-6") && (g.cards || []).includes("neo3-13"));
+const beastsD = beasts ? decide(beasts) : null;
+if (!beastsD || beastsD.c.join("|") !== "neo3-6|neo3-13|neo3-14") {
+  console.error("✗ Neo Revelation beasts must read Entei | Raikou | Suicune — Entei's claws enter Raikou from the left");
+  failed++;
+} else console.log("✓ beasts read Entei, Raikou, Suicune left to right");
 
 const sizes = new Set(groups.map(g => (g.cards || []).length));
 if (![2,3,4,6,9,11].every(n => sizes.has(n))) {

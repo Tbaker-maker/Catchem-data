@@ -582,13 +582,20 @@ const CONNECTING = ${JSON.stringify((await (async () => {
     // edge is Sharpedo's left. Spidops' web does run down onto Tarountula.
     // Direction is taken from the printed edges, with one recorded override.
     const ART_ACROSS = new Set(["ex1-51|ex1-22"]);
+    // PRINTED LEFT-TO-RIGHT, not the wiki table's column order.
+    // Neo Revelation beasts: Entei's claws enter Raikou from the left,
+    // Raikou's lightning enters Suicune from the left. Wiki listed Raikou first.
+    const ART_ORDER = {
+      "neo3-13|neo3-6|neo3-14": ["neo3-6", "neo3-13", "neo3-14"],
+    };
     return (art?.groups ?? [])
       .filter(g => g.resolution === "COMPLETE" && g.relation === "COMBINED_ILLUSTRATION")
       .map(g => {
-        const c = (g.cards ?? []).map(x => (typeof x === "string" ? x : x?.id)).filter(Boolean);
+        const c0 = (g.cards ?? []).map(x => (typeof x === "string" ? x : x?.id)).filter(Boolean);
+        const key = c0.join("|");
+        const c = ART_ORDER[key] || c0;
         const shape = g.rowShape ?? [];
         const arr0 = String(g.arrangement ?? "");
-        const key = c.join("|");
         let dir, cols, rows, sh;
         if (ART_ACROSS.has(key)) { dir = "across"; cols = c.length; rows = 1; sh = [c.length]; }
         else if (arr0.startsWith("grid")) { dir = "grid"; cols = Math.max(1, ...shape); rows = shape.length; sh = shape; }
@@ -598,7 +605,14 @@ const CONNECTING = ${JSON.stringify((await (async () => {
         return { n: g.name ?? null, a: g.artist ?? null, r: g.relation ?? null, arr: dir, cols, rows, shape: sh, c };
       })
       .filter(g => g.c.length > 1);
-  } catch { return []; }
+  } catch (e) {
+    // SILENT EMPTY IS HOW CONNECTING ART VANISHED. This catch used to `return []`
+    // with no log, so a ReferenceError after an edit shipped a page whose
+    // "connecting art" chip did nothing and every guard that reads CONNECTING
+    // still passed on the generator.
+    console.error("CONNECTING build failed:", e && e.message);
+    throw e;
+  }
 })()))};
 
 const THEMES = ${JSON.stringify(themes?.themes ?? [])};
@@ -681,7 +695,6 @@ const CARD_ROWS = ${await (async () => {
       rich ? (lore[c.i] ?? 0) : 0, rich && T.a?.length ? T.a.slice(0, 2) : 0,
       // WEAKNESS. Captured weeks ago and never shipped, so every matchup lookup
       // read undefined. It is one short string per card.
-      rich ? (A.w ?? 0) : 0, rich ? 1 : 0,
       rich ? (A.w ?? 0) : 0, rich ? 1 : 0,
       // SUPERTYPE, AS ONE CHARACTER. Without it the browser cannot tell a
       // Trainer from a Pokemon, so monName("Evolution Incense") produced
@@ -863,7 +876,10 @@ function parseIntent(text, ctx) {
   const words = { one: 1, two: 2, three: 3, four: 4, six: 6, nine: 9, pair: 2, single: 1 };
   const num = q.match(/\b(\d+)\s*(cards?|of them)?\b/);
   if (num && [1, 2, 3, 4, 6, 8, 9].includes(Number(num[1]))) { found.count = Number(num[1]); found.matched.push(found.count + " cards"); }
-  else for (const [w, n] of Object.entries(words)) if (q.indexOf(w) >= 0) { found.count = n; found.matched.push(n + " cards"); break; }
+  else for (const [w, n] of Object.entries(words)) {
+    if (w === "one" && /one painting|one picture/.test(q)) continue;
+    if (q.indexOf(w) >= 0) { found.count = n; found.matched.push(n + " cards"); break; }
+  }
 
   // POKÉMON. Longest name first, so "mr. mime" beats "mime".
   // NOT CREATURE NAMES. "Dark", "Light", "Team" and "Mega" are form prefixes,
@@ -1651,6 +1667,7 @@ function search(){
 safeWire(function(){ ["q","rar","yr"].forEach(id => el(id).addEventListener("input", () => { resetPage(); search(); })); }, "wiring");
 
 function add(id){
+  if (tray.some(function(c){ return c.i === id; })) { setStatus("That card is already on the page.", true); return; }
   if (tray.length >= 9) { setStatus("Nine is the most a frame holds.", true); return; }
   const c = INDEX.find(x => x.i === id); if (!c) return;
   tray.push(c); blob = null; render();
@@ -2562,14 +2579,54 @@ function showSaveableBlob(b){
 window.showSaveable = showSaveable;
 
 async function copyImage(){
+  // COPY HAS TO LEAVE WITH A FILE even when the clipboard API refuses.
+  // Opening this page as a downloaded HTML file is file:// — Chrome will not
+  // write images to the clipboard from that origin. Safari often will not
+  // write image/png at all. A Copy button that only says "copy failed" is a
+  // dead end on the exact path we told Tyler to use.
+  const b = blob;
+  if (!b) { setStatus("Make the image first.", true); return; }
+  const png = b.type === "image/png" ? b : new Blob([await b.arrayBuffer()], { type: "image/png" });
+
+  const tryWrite = async function(item){
+    await navigator.clipboard.write([item]);
+  };
   try {
-    const b = blob || await new Promise(function(r){ el("cv").toBlob(r, "image/png"); });
-    if (!b) { setStatus("Make the image first.", true); return; }
-    await navigator.clipboard.write([new ClipboardItem({ "image/png": b })]);
-    setStatus("Copied — paste it straight into your post.", false);
-  } catch (e) {
-    setStatus("Copy is blocked in this browser. Press and hold the image above, or Download it.", true);
-  }
+    if (navigator.clipboard && window.ClipboardItem) {
+      try {
+        await tryWrite(new ClipboardItem({ "image/png": png }));
+        setStatus("Copied — paste it straight into your post.");
+        return;
+      } catch (e1) {
+        try {
+          await tryWrite(new ClipboardItem({ "image/png": Promise.resolve(png) }));
+          setStatus("Copied — paste it straight into your post.");
+          return;
+        } catch (e2) { /* fall through */ }
+      }
+    }
+  } catch (e) { /* fall through */ }
+
+  try {
+    const img = el("outimg");
+    if (img && !img.hidden && img.src) {
+      const range = document.createRange();
+      range.selectNode(img);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      if (document.execCommand("copy")) {
+        setStatus("Copied — paste it straight into your post.");
+        return;
+      }
+    }
+  } catch (e) { /* fall through */ }
+
+  dlImage();
+  const why = window.isSecureContext
+    ? "This browser blocked copying an image."
+    : "Copy does not work from a downloaded file (only from https).";
+  setStatus(why + " The PNG downloaded instead — attach that file to the post.", true);
 }
 async function shareImage(){
   try {
@@ -2596,14 +2653,15 @@ function openImage(){
 function dlImage(){
   if (!blob && !(el("outimg") && el("outimg").src)) { setStatus("Make the image first.", true); return; }
   const a = document.createElement("a");
-  a.href = previewUrl || (el("outimg") && el("outimg").src) || "";
-  a.download = "catchem.png";
-  if (typeof a.click === "function") {
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-  }
-  setStatus("If that opened the image instead of saving it, press and hold it.", false);
+  const href = previewUrl || (blob ? URL.createObjectURL(blob) : (el("outimg") && el("outimg").src) || "");
+  if (!href) { setStatus("Make the image first.", true); return; }
+  a.href = href;
+  a.download = (typeof fname === "function" ? fname() : "catchem.png");
+  a.rel = "noopener";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setStatus("Downloaded. If nothing appeared, right-click the image above and Save image.", false);
 }
 window.dlImage = dlImage;
 window.copyImage = copyImage; window.shareImage = shareImage; window.openImage = openImage;
@@ -2646,11 +2704,11 @@ window.imgFallback = imgFallback;
 // nothing is worse than no chip: it teaches a first-time user that the box does
 // not work, on their first attempt, using our own suggestion.
 const EXAMPLES = [
-  { q: "connecting art", label: "connecting art", demo: true },
+  { q: "three cards one painting", label: "Three cards, one painting", demo: true },
+  { q: "connecting art", label: "connecting art" },
   { q: "what kimura drew twice", label: "Same Pokémon, 25 years later" },
   { q: "squirtle evolution", label: "Evolution sets" },
   { q: "charizard through the years", label: "Charizard, then and now" },
-  { q: "cute cards", label: "Cute cards" },
 ];
 function intentCtx(){
   return {
@@ -2742,6 +2800,16 @@ function askResolve(text){
   var has = function(list){ for (var i = 0; i < list.length; i++) if (t.indexOf(" " + list[i] + " ") >= 0 || t.indexOf(list[i]) >= 0) return true; return false; };
   var mon = askFind(t, ASK_NAMES);
   var artist = askArtistLoose(t, mon);
+
+  // THE MORNING POST. Entei, Raikou and Suicune in Neo Revelation are one
+  // painting by Ken Sugimori. Naming all three, or asking for "one painting",
+  // must land on that group — not a name-fuzz, not a random 2-card pair.
+  if ((has(["entei"]) && has(["raikou"]) && has(["suicune"])) ||
+      has(["one painting", "three cards one painting"]))
+    return { relation: "CONNECTING_ART", subject: null,
+      pin: "neo3-6|neo3-13|neo3-14",
+      why: "the Neo Revelation beasts are one picture" };
+
   var TYPES = ["fire", "water", "grass", "lightning", "psychic", "fighting",
     "darkness", "metal", "dragon", "fairy", "colorless"];
   var type = null;
@@ -2771,7 +2839,7 @@ function askResolve(text){
   var bare = !mon && !artist && !setName;
   if (bare) {
     if (has(["connecting art", "connected art", "cards that connect", "connect",
-             "one picture", "join up", "joins up", "art that connects", "puzzle"]))
+             "one picture", "one painting", "join up", "joins up", "art that connects", "puzzle"]))
       return { relation: "CONNECTING_ART", subject: null,
         why: "you asked about art that connects across cards" };
     if (has(["same artist", "one artist", "same illustrator", "one illustrator",
@@ -2914,14 +2982,26 @@ function askCards(r, opts){
       if (cs.length === pool[gi].c.length && cs.length > 1) whole.push({ g: pool[gi], cards: cs });
     }
     if (whole.length) {
-      // Smallest complete group first: two or three cards read as one picture on
-      // a phone, twenty-three do not.
-      whole.sort(function(a, b){ return a.cards.length - b.cards.length; });
+      // THE PINNED TRIO FIRST. Ken Sugimori's Neo Revelation beasts are the
+      // post: three cards, one painting, Entei left of Raikou left of Suicune.
+      // Smallest-first used to bury them behind every 2-card pair, so the
+      // connecting-art chip never opened on the thing worth posting.
+      const PIN = "neo3-6|neo3-13|neo3-14";
+      whole.sort(function(a, b){
+        const ap = a.g.c.join("|") === PIN, bp = b.g.c.join("|") === PIN;
+        if (ap !== bp) return ap ? -1 : 1;
+        return a.cards.length - b.cards.length;
+      });
       var unusedG = whole.filter(function(w){
         return w.cards.every(function(c){ return !skipIds.has(c.i); });
       });
       var listG = unusedG.length ? unusedG : whole;
-      var pick = listG[rot % listG.length];
+      var pick = null;
+      if (r.pin && !rot) {
+        for (var pi = 0; pi < listG.length; pi++)
+          if (listG[pi].g.c.join("|") === r.pin) { pick = listG[pi]; break; }
+      }
+      if (!pick) pick = listG[rot % listG.length];
       out = orderByConnecting(pick.cards);
       reason = (pick.g.a ? pick.g.a + " drew " : "") + out.length +
         " cards that form one picture" +
@@ -3284,6 +3364,22 @@ function runAsk(text){
   // is new. New capability may not cost tested behaviour, so relations are
   // tried only where the existing path produces nothing.
   const askRel = askResolve(text);
+  if (askRel && askRel.pin) {
+    const pinned = askCards(askRel);
+    if (pinned && pinned.cards && pinned.cards.length > 1) {
+      const boxP = el("askreply");
+      if (boxP) {
+        boxP.textContent = (askRel.why || "connecting art") + ". " + (pinned.reason || "");
+        boxP.className = "askreply";
+      }
+      tray = orderByConnecting(pinned.cards).slice(0, 9); blob = null;
+      lastPref = { kind: "ask", ask: text };
+      anotherCursor = 0;
+      trail = [];
+      render(); resetPage(); search();
+      return;
+    }
+  }
   const tryRelation = function(){
     if (!askRel) return false;
     const got = askCards(askRel);
@@ -4638,7 +4734,7 @@ async function composeImage(){
       return;
     }
     el("dl").hidden=false;
-    if (navigator.clipboard && window.ClipboardItem) el("copy").hidden=false;
+    el("copy").hidden=false;
     if (navigator.canShare && navigator.canShare({files:[new File([""],"t.png",{type:"image/png"})]})) el("share").hidden=false;
     // SAY WHICH ONES ARE MISSING. A silent gap looks like a bug; a named one
     // looks like a card that would not load, which is the truth.
@@ -4733,9 +4829,9 @@ safeWire(function(){ el("make").onclick = () => { composeScale = null; composeIm
 
 const fname = () => "catchem-" + (el("label").value.trim() || tray.map(c=>c.n).join("-") || "cards")
   .replace(/[^a-z0-9]+/gi,"-").toLowerCase().slice(0,48) + ".png";
-safeWire(function(){ el("dl").onclick = () => { const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=fname(); a.click(); }; }, "dl");
-safeWire(function(){ el("copy").onclick = async () => { try{ await navigator.clipboard.write([new ClipboardItem({"image/png":blob})]); setStatus("copied — paste into the post"); }catch(e){ setStatus("copy failed: "+e.message,true); } }; }, "copy");
-safeWire(function(){ el("share").onclick = async () => { try{ await navigator.share({files:[new File([blob],fname(),{type:"image/png"})]}); }catch(e){ if(e.name!=="AbortError") setStatus("share failed: "+e.message,true); } }; }, "share");
+safeWire(function(){ el("dl").onclick = function(){ dlImage(); }; }, "dl");
+safeWire(function(){ el("copy").onclick = function(){ copyImage(); }; }, "copy");
+safeWire(function(){ el("share").onclick = function(){ shareImage(); }; }, "share");
 </script>`;
 
   await writeFile(join(ROOT, "research/assets/build.html"), html);
