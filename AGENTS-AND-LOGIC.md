@@ -3,7 +3,7 @@
 Everything that checks, watches, or decides in the Catch'em system — what each
 one does, why it exists, and what it cannot see.
 
-**63 guards. 8 agents. 11 specialists.** Every one of them exists because
+**64 guards. 8 agents. 11 specialists.** Every one of them exists because
 something went wrong once.
 
 ---

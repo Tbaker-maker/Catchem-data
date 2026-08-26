@@ -42,6 +42,34 @@ function lineOptions(cards, themeName, followerCount){
   const years = cards.map(c => Number(c.y)).filter(Boolean).sort(function(a,b){ return a - b; });
   const span = years.length > 1 ? years[years.length - 1] - years[0] : 0;
 
+  // ── THE NOUN HAS TO MATCH THE COUNT ─────────────────────────────────────
+  // With nine Arcanine loaded the panel said "23 years between these two" and
+  // "Blaine's Arcanine, Light Arcanine, Arcanine — pick one", naming three of
+  // nine as though they were the whole tray. The derivation was right and the
+  // COUNT was never part of it.
+  //
+  // these() is the only way any line refers to the loaded cards from here on.
+  const N = cards.length;
+  // SPELLED HERE, NOT IMPORTED. words() lives in card-relations.mjs and is not
+  // emitted into line-engine.js, so calling it would have been a ReferenceError
+  // in the browser — the same shape as evoLineFor existing only as an object
+  // property. A tray holds at most nine cards, so the list is closed.
+  const NWORD = ["zero","one","two","three","four","five","six","seven","eight","nine"];
+  const nword = (k) => NWORD[k] || String(k);
+  const these = N === 1 ? "this one"
+    : N === 2 ? "these two"
+    : N === 3 ? "these three"
+    : "these " + nword(N);
+  // For a line that names a SUBSET, this says so out loud rather than implying
+  // the subset is everything.
+  const ofN = (k) => N > k ? " (" + nword(k) + " of " + nword(N) + ")" : "";
+
+  // YEARS IN CALENDAR ORDER. first/last are TRAY order, so a tray built newest
+  // first produced "2024 to 2004" — the span was right and the sentence read
+  // backwards.
+  const yearLo = years.length ? years[0] : null;
+  const yearHi = years.length ? years[years.length - 1] : null;
+
   // ── WHAT IS WORTH NOTICING ───────────────────────────────────────────────
   // An attack name only earns a line if it is DISTINCTIVE. The old code led
   // with the first attack of the first card whatever it was, which produced
@@ -69,7 +97,8 @@ function lineOptions(cards, themeName, followerCount){
     }
   }
   if (artists.length === 1 && cards.length > 1 && span >= 8) {
-    add("observation", artists[0] + " drew both of these, " + span + " years apart.");
+    add("observation", artists[0] + " drew " + (N === 2 ? "both of these" : "all " + nword(N)) +
+      ", " + span + " years apart.");
   }
   if (artists.length === 1 && cards.length === 1) {
     add("observation", artists[0] + " drew this one in " + first.y + ".");
@@ -84,7 +113,13 @@ function lineOptions(cards, themeName, followerCount){
       ? "The " + first.y + " " + first.n + " or the " + last.y + "?"
       : label(first) + " or " + label(last) + "?");
   }
-  if (cards.length >= 3) add("question", names.slice(0, 3).join(", ") + DASH + "pick one.");
+  // NAMING A SUBSET SAYS SO. With nine loaded this read "Blaine's Arcanine,
+  // Light Arcanine, Arcanine - pick one", which offers three of nine as if they
+  // were the tray. Three or four can be named in full; beyond that the line
+  // either declares the subset or talks about the group.
+  if (N === 3 || N === 4) add("question", names.join(", ") + DASH + "pick one.");
+  else if (N > 4) add("question", names.slice(0, 3).join(", ") + DASH +
+    "pick one" + ofN(3) + ".");
   if (cards.length === 1) add("question", "Anyone else own the " + first.s + " " + first.n + "?");
 
   // ── DIVIDE - a real contrast between THESE cards, stated, then asked ─────
@@ -98,7 +133,9 @@ function lineOptions(cards, themeName, followerCount){
       "Which one would you rather own?" + NL + NL + "Not asking which is worth more.");
   }
   if (span >= 10 && cards.length > 1) {
-    add("divide", first.y + " and " + last.y + DASH + span + " years apart." + NL + NL +
+    // CALENDAR ORDER. first/last are TRAY order, so a newest-first tray printed
+    // "2024 and 2000" - the span correct and the sentence backwards.
+    add("divide", yearLo + " and " + yearHi + DASH + span + " years apart." + NL + NL +
       "Which era got it right?" + NL + NL + "Not my opinion, genuinely asking.");
   }
   if (artists.length > 1 && cards.length > 1) {
@@ -115,7 +152,7 @@ function lineOptions(cards, themeName, followerCount){
   // put these cards together; it may not be a question about the hobby.
   if (artists.length === 1 && cards.length > 1) {
     add("permission", "Anything else " + artists[0] + " drew that I should see?" + NL + NL +
-      "I only know these two.");
+      "I only know " + these + ".");
   }
   if (cards.length > 1 && names[0] === names[names.length - 1]) {
     add("permission", "Which " + names[0] + " is your favourite?" + NL + NL +
@@ -129,7 +166,7 @@ function lineOptions(cards, themeName, followerCount){
     // THE SPECIFIC FACT GOES FIRST. Led with the generic question, the opening
     // line was identical across two different pairings even though the second
     // sentence differed - and the opening line is what a reader sees.
-    add("permission", span + " years between these two, " + first.y + " to " + last.y + "." + NL + NL +
+    add("permission", span + " years across " + these + ", " + yearLo + " to " + yearHi + "." + NL + NL +
       "What is the biggest gap you own of one card?" + NL + NL + "Any card, any condition.");
   }
 
@@ -137,11 +174,31 @@ function lineOptions(cards, themeName, followerCount){
   // NAMES A CARD, so it cannot be the same sentence over another pair. This
   // read "Tell me which of these two you would swap out" and was the last line
   // in the panel that repeated verbatim across three different pairings.
-  if (cards.length > 1) add("invite", "Swap one of these out for me" + DASH + label(first) + " or " + label(last) + "?");
+  if (N === 2) add("invite", "Swap one of these out for me" + DASH + label(first) + " or " + label(last) + "?");
+  else if (N > 2) add("invite", "Swap one of " + these + " out for me" + DASH +
+    "start with " + label(first) + ", or tell me which one does not belong.");
   if (cards.length === 1) add("invite", "What would you pair the " + first.s + " " + first.n + " with?");
 
   // The theme, when it names a real group.
   if (themeName) add("invite", themeName + ". What am I missing?");
+
+  // ── CONFESS - about THESE cards, never about the hobby ──────────────────
+  // The register existed with no generator, so it never appeared. A confession
+  // about "collecting" is a sentence anybody could post over any cards; one
+  // that names what is loaded can only be posted over this page.
+  if (N > 1 && sets.length === 1)
+    add("confession", "Everything I own from " + sets[0] + " is in this picture.");
+  if (N > 1 && artists.length === 1)
+    add("confession", "I did not know " + artists[0] + " drew " + these + " until I looked.");
+  if (span >= 15 && yearLo)
+    add("confession", "I have been at this long enough to remember the " + yearLo + " one.");
+  if (N > 2 && names[0] === names[names.length - 1])
+    add("confession", nword(N) + " " + names[0] + " and I still have not stopped.");
+  const pricedAll = cards.filter(c => typeof c.p === "number" && c.p > 0);
+  if (pricedAll.length === N && N > 1) {
+    const cheap = pricedAll.slice().sort((a, b) => a.p - b.p)[0];
+    add("confession", "The one I reach for is " + cheap.n + ", and it is the cheapest here.");
+  }
 
   // ORDER BY TIER, DO NOT HIDE. Removing registers would be the tool deciding
   // for somebody, and the account works because Tyler chooses the line. So the
@@ -156,5 +213,16 @@ function lineOptions(cards, themeName, followerCount){
       else if (t.prefer.indexOf(o.reg) >= 0) o.note = "Suits your reach " + String.fromCharCode(8212) + " unproven, we hold five logged posts.";
     }
   }
-  return out.slice(0, 8);
+  // ── UP TO THREE PER REGISTER, NOT EIGHT OVERALL ─────────────────────────
+  // Slicing the whole pool to 8 meant a register with three good lines could
+  // lose two of them to a register that had one, and "Another" then had nowhere
+  // to go — which is why only NOTICE and DIVIDE had the button. Cap per
+  // register instead, so every register keeps its own depth.
+  const perReg = {};
+  const kept = [];
+  for (const o of out) {
+    perReg[o.reg] = (perReg[o.reg] || 0) + 1;
+    if (perReg[o.reg] <= 3) kept.push(o);
+  }
+  return kept;
 }

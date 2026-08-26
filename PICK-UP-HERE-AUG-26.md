@@ -123,7 +123,7 @@ the live page  >  the guards  >  the docs
 served by GitHub Pages from `main`. All 16,468 cards searchable. Guided
 tutorial, honesty box, questionnaire, 7 frame layouts.
 
-**Guards** — 19 in the fleet (`node scripts/fleet.mjs`), 63 with declared blind
+**Guards** — 20 in the fleet (`node scripts/fleet.mjs`), 64 with declared blind
 spots. Blocking vs advisory is a real distinction; read `scripts/fleet.mjs` for
 what each does and why.
 

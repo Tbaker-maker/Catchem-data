@@ -98,6 +98,11 @@ else {
 :root{
   --ink:#0a0c12; --panel:#11141c; --raise:#171b25; --line:#20252f;
   --text:#e8ebf2; --soft:#8a93a6; --faint:#5a6273;
+  /* --dim was read by .broke, .fb and .fbnote and DEFINED NOWHERE, so those
+     borders and that note rendered with an invalid colour — which in CSS
+     means the declaration is dropped and the element inherits whatever was
+     there. Same value as --faint, which is what the usages assumed. */
+  --dim:#5a6273;
   --live:#36d399; --warn:#d9a441;
   --display:'Syne',system-ui,sans-serif; --body:'Sora',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
   --ease:cubic-bezier(.22,.61,.36,1);
@@ -190,6 +195,14 @@ select:focus,input:focus{outline:none;border-color:var(--soft)}
 .streak button{background:transparent;border:1px solid var(--line);color:var(--soft);
   border-radius:9px;padding:9px 14px;font:400 13px var(--body);cursor:pointer}
 .streak button.go{background:var(--live);color:var(--ink);border:0;font-weight:600}
+/* THE PRIMARY ACTION WAS UNSTYLED. .go only existed inside .streak and
+   .streakactions, so #make — the button the whole page exists to get pressed —
+   rendered as a plain grey browser button, indistinguishable from Copy, Share
+   and Download sitting beside it. */
+button.go{background:var(--live);color:var(--ink);border:0;font-weight:700;
+  border-radius:12px;padding:14px 22px;font-size:15px;cursor:pointer;min-height:48px}
+button.go:hover{filter:brightness(1.08)}
+button.go:disabled{opacity:.45;cursor:default;filter:none}
 .broke{background:none;border:1px solid var(--dim);color:var(--dim);border-radius:999px;padding:8px 14px;font-size:13px;cursor:pointer;margin:0 0 14px}
 .broke:hover{color:var(--live);border-color:var(--live)}
 .fb{border:1px solid var(--dim);border-radius:14px;padding:16px;margin:0 0 18px}
@@ -328,7 +341,7 @@ summary:before{content:"→ ";color:var(--faint)}
 </style>
 <div class="wrap">
 <div class="top">
-  <h1>Build a page<em>.</em></h1>
+  <h1>Make a post<em>.</em></h1>
   <p class="lede">Pick a direction and we'll find combinations worth posting. Every image credits the artist.
      &nbsp;·&nbsp; <a href="/creators" style="color:var(--live)">Or start from one we made &rsaquo;</a></p>
 </div>
@@ -342,6 +355,40 @@ summary:before{content:"→ ";color:var(--faint)}
   <div class="hooks" id="hooks"></div>
   <div class="askreply" id="askreply"></div>
 </div>
+<!-- ORDER IS THE INSTRUCTION. Compose used to sit BELOW "Browse, filter and
+     fine-tune" and below the full card search, so a first-time visitor met two
+     collapsed filter panels before they met the thing that makes a post. The
+     tray, the caption and the button now follow the ask box directly; filters
+     stay available in the details block underneath, where somebody who wants
+     them will look. -->
+<div class="tut" id="tut" hidden>
+  <p class="tutline" id="tutline"></p>
+  <div class="tutacts">
+    <button class="go" id="tutgo"></button>
+    <button class="tutskip" id="tutskip">Skip this</button>
+  </div>
+</div>
+<div class="page-label" id="plabel">YOUR PAGE</div>
+<div class="binder" id="tray"></div>
+<div class="status" id="st"></div>
+<div class="tally" id="tally" hidden></div>
+<div class="lines" id="lines" hidden></div>
+<div class="selfreply" id="selfreply" hidden></div>
+<input id="label" placeholder="Your line — or leave it blank and let the cards talk" style="margin-bottom:18px">
+
+<p class="savehint" id="savehint"></p>
+<div class="acts">
+<button class="go" id="make">Make the image</button>
+<button id="copy" onclick="copyImage()">Copy image</button>
+<button id="share" onclick="shareImage()">Share</button>
+<button id="dl" onclick="dlImage()">Download</button>
+<button onclick="openImage()">Open in a tab</button>
+<button id="retryscale" hidden onclick="retryAtHalf()">Try again at half size</button>
+</div>
+<div class="status bad" id="blankwarn" hidden></div>
+<img id="outimg" alt="your image — press and hold to save" hidden>
+<canvas id="cv"></canvas>
+
 <details class="advanced"><summary>Browse, filter and fine-tune</summary>
 <div class="ratingrow">
   <span class="moodlabel">NARROW BY RATING — every one derives from a printed field</span>
@@ -423,33 +470,6 @@ summary:before{content:"→ ";color:var(--faint)}
   </div>
   <p class="fbstat" id="fbstat"></p>
 </div>
-<div class="tut" id="tut" hidden>
-  <p class="tutline" id="tutline"></p>
-  <div class="tutacts">
-    <button class="go" id="tutgo"></button>
-    <button class="tutskip" id="tutskip">Skip this</button>
-  </div>
-</div>
-<div class="page-label" id="plabel">YOUR PAGE</div>
-<div class="binder" id="tray"></div>
-<div class="status" id="st"></div>
-<div class="tally" id="tally" hidden></div>
-<div class="lines" id="lines" hidden></div>
-<div class="selfreply" id="selfreply" hidden></div>
-<input id="label" placeholder="Your line — or leave it blank and let the cards talk" style="margin-bottom:18px">
-
-<p class="savehint" id="savehint"></p>
-<div class="acts">
-<button class="go" id="make">Make the image</button>
-<button id="copy" onclick="copyImage()">Copy image</button>
-<button id="share" onclick="shareImage()">Share</button>
-<button id="dl" onclick="dlImage()">Download</button>
-<button onclick="openImage()">Open in a tab</button>
-<button id="retryscale" hidden onclick="retryAtHalf()">Try again at half size</button>
-</div>
-<div class="status bad" id="blankwarn" hidden></div>
-<img id="outimg" alt="your image — press and hold to save" hidden>
-<canvas id="cv"></canvas>
 
 <div class="foot">Every image carries the Catch'em mark and the artist's name — the credit isn't ours to remove.
 Cards marked in amber have no artist recorded in the public dataset. That's a backfill gap on recent sets,
@@ -602,6 +622,12 @@ const CARD_ROWS = ${await (async () => {
       // WEAKNESS. Captured weeks ago and never shipped, so every matchup lookup
       // read undefined. It is one short string per card.
       rich ? (A.w ?? 0) : 0, rich ? 1 : 0,
+      // SUPERTYPE, AS ONE CHARACTER. Without it the browser cannot tell a
+      // Trainer from a Pokemon, so monName("Evolution Incense") produced
+      // "Evolution" — nine characters, sorted ahead of "Magikarp" — and
+      // "magikarp evolution" resolved to a Trainer card. 13,862 Pokemon,
+      // 2,342 Trainers, 327 Energy; "P" or nothing is the whole cost.
+      A.sc === "Pokémon" ? "P" : 0,
       // PRICE DATE, AS AN EXCEPTION. 15,705 of 16,468 cards share one repricing
       // date, so a per-row string would be sixteen thousand copies of the same
       // eight characters. The common date ships once as PRICES_AS_OF; this
@@ -634,7 +660,8 @@ const CARD_INDEX = CARD_ROWS.map(function(r){
   if (r[14]) o.A = r[14];
   if (r[15]) o.W = r[15];
   if (r[16]) o.hero = 1;
-  if (r[17]) o.pd = r[17];   // price date, only when it differs from PRICES_AS_OF
+  if (r[17]) o.sup = r[17];       // "P" for Pokémon, absent otherwise
+  if (r[18]) o.pd = r[18];   // price date, only when it differs from PRICES_AS_OF
   return o;
 });
 // Sourced facts, so the 'story' shape has something true to build on. Only
@@ -665,7 +692,11 @@ bootSay("Script parsed. Loading catalogue…");
 const FORM_PREFIX = new RegExp("^(" + "Galarian|Alolan|Hisuian|Paldean|Dark|Light|Shining|Radiant|Team Aqua's|Team Magma's|Rocket's|Team Rocket's|Misty's|Brock's|Erika's|Sabrina's|Blaine's|Koga's|Giovanni's|Lillie's|N's|Marnie's|Ethan's|Cynthia's|Steven's|Iono's|Arven's|Hop's|Bea's|Crystal|Shadow|Mega" + ")" + String.fromCharCode(92) + "s+", "i");
 const MECH_SUFFIX = new RegExp(String.fromCharCode(92) + "s+(" + "ex|EX|GX|V|VMAX|VSTAR|BREAK|LEGEND|Prime|Star|LV.X|-EX|-GX" + ")$");
 function monName(full){
-  let n = String(full || "");
+  // "M Charizard-EX" is Mega shorthand, not a distinct creature. Left in, it
+  // became an extra stage in an evolution line and a separate entry in every
+  // name list. Stripped before the form prefixes, because "M " sits outside
+  // them.
+  let n = String(full || "").replace(/^M[ ]+(?=[A-Z])/, "");
   for (let i = 0; i < 2; i++) n = n.replace(FORM_PREFIX, "");
   // HYPHENATED MECHANICS TOO. "Charizard-GX" is the same creature as Charizard,
   // and MECH_SUFFIX only strips a SPACE-separated suffix — so autocomplete
@@ -723,7 +754,12 @@ function parseIntent(text, ctx) {
   // A TYPE IS NOT A POKEMON. "psychic types" parsed mon=Psychic and type=Psychic,
   // then narrowed to cards literally NAMED Psychic — Sabrina's Psychic Control,
   // a Trainer. Type words and form prefixes can never be creature names.
-  const NOT_MON = /^(dark|light|team|mega|shadow|crystal|shining|radiant|energy|great|iron|roaring|walking|raging|scream|brute|flutter|sandy|gouging|slither|fire|water|grass|lightning|psychic|fighting|darkness|metal|dragon|fairy|colorless|type|types|pokemon|pokémon|trainer|professor|supporter|stadium)$/i;
+  // SHAPE WORDS ARE NEVER CREATURE NAMES. "evolution", "family" and "incense"
+  // describe the FORMAT being asked for. Filtering monNames to Pokemon rows
+  // already removes the Trainer nouns; this is the second lock, because the
+  // same word could arrive as a Pokemon name in a future set and the shape
+  // reading is the one a person means.
+  const NOT_MON = /^(evolution|evolutions|evolve|evolves|evolving|incense|family|line|lines|dark|light|team|mega|shadow|crystal|shining|radiant|energy|great|iron|roaring|walking|raging|scream|brute|flutter|sandy|gouging|slither|fire|water|grass|lightning|psychic|fighting|darkness|metal|dragon|fairy|colorless|type|types|pokemon|pokémon|trainer|professor|supporter|stadium)$/i;
   const mons = (ctx.monNames || []).filter(m => !NOT_MON.test(m)).slice().sort((a, b) => b.length - a.length);
   for (const m of mons) {
     if (m.length < 4) continue;
@@ -924,6 +960,15 @@ function resolvePrompt(found, INDEX, helpers) {
   if (found.mon && found.shape === "evo-line") {
     const line = (helpers.evoLineFor && helpers.evoLineFor(found.mon)) || [found.mon];
     narrow(c => line.indexOf(monName(c.n)) >= 0, line.join(" → "));
+    // THE LINE IS THE ANSWER, SO THE LINE PICKS THE CARDS. Everything below
+    // this used to run: a hero-rarity collapse, then a spread across the years
+    // because found.mon was set. On "chikorita evolution" that returned
+    // Meganium, Meganium ex and Mega Meganium ex — three printings of the LAST
+    // stage, which is a price ranking wearing an evolution line's name.
+    //
+    // One CREDITED card per stage, in stage order, cheapest-first inside a
+    // stage so the picture is of the creature rather than of the chase card.
+    found.evoOrder = line;
   } else if (found.mon) narrow(c => monName(c.n) === found.mon, found.mon);
 
   // POKEMON ONLY, unless a Trainer was explicitly asked for. "Cards nobody
@@ -977,15 +1022,38 @@ function resolvePrompt(found, INDEX, helpers) {
   // Everything shown must be worth showing, and must credit its artist.
   narrow(c => c.a, "credited");
   const withHero = pool.filter(c => HERO_RX.test(c.r || ""));
-  if (withHero.length >= (found.count || 2)) { pool = withHero; why.push("hero rarities"); }
+  // A HERO-RARITY COLLAPSE IS WRONG FOR A LINE. It drops the ordinary printings
+  // that are the only cards some stages have, and an evolution line missing its
+  // first stage is not an evolution line.
+  if (!found.evoOrder && withHero.length >= (found.count || 2)) { pool = withHero; why.push("hero rarities"); }
 
   const n = found.count || (found.shape === "evo-line" ? 3 : 2);
 
   // ONE CARD PER POKEMON, unless the shape is about one Pokémon over time.
   // Nine Charizards is a composition; nine different Pokémon is a set.
-  const acrossTime = found.shape === "eras" || found.shape === "power-creep" || found.mon;
+  const acrossTime = !found.evoOrder &&
+    (found.shape === "eras" || found.shape === "power-creep" || found.mon);
   let picked;
-  if (acrossTime && found.mon) {
+  if (found.evoOrder) {
+    // Stage order, one card each, and a CREDITED card wherever the stage has
+    // one — an uncredited card in a line makes the credit strip lie by omission.
+    picked = [];
+    for (const stage of found.evoOrder) {
+      const forStage = pool.filter(c => monName(c.n) === stage);
+      if (!forStage.length) continue;
+      const credited = forStage.filter(c => c.a);
+      const from = credited.length ? credited : forStage;
+      // THE PLAINEST PRINTING OF THE STAGE. Sorting by price alone returned
+      // "Mega Meganium ex" as the Meganium stage and "Flygon V" as the Flygon
+      // stage — cheapest, yes, and a mechanic variant standing in for the
+      // creature. A card whose printed name IS the stage name is the one a
+      // reader recognises as that stage.
+      const plain = from.filter(c => c.n === stage);
+      const src = plain.length ? plain : from;
+      picked.push(src.slice().sort((a, b) => (a.p || 0) - (b.p || 0))[0]);
+    }
+    why.push("one card per stage, in order");
+  } else if (acrossTime && found.mon) {
     // Oldest to newest, spread across the years rather than clustered.
     const byYear = pool.slice().sort((a, b) => String(a.y).localeCompare(String(b.y)));
     if (byYear.length <= n) picked = byYear;
@@ -1095,7 +1163,13 @@ setTimeout(() => {
       //
       // It now reports a MEASURED state, filled in by probeHosts() when the
       // probe finishes, and says nothing about reachability until it knows.
-      bootSay("Loaded " + INDEX.length + " cards · " + imgs + " thumbnails on screen · " + chips + " angles. Checking the card art host…");
+      // A PERMANENT ORANGE BANNER READS AS A WARNING. It sat at the top of the
+      // page on every successful load saying how many cards had loaded — which
+      // nobody needs once they can see the cards, and which looks like
+      // something went wrong. It is an error channel now: hidden on success,
+      // shown only when something actually failed.
+      var bootEl = document.getElementById("boot");
+      if (bootEl) bootEl.hidden = true;
       if (!imgs || !chips) bootSay("Loaded " + INDEX.length + " cards but rendered " + imgs + " thumbnails and " + chips + " angles — the data arrived and the drawing failed.", true);
     } catch (e) { bootSay("Render failed: " + e.message, true); }
   }, 0);
@@ -2030,29 +2104,70 @@ function renderStreakLine(){
 // value make you less of a collector?" was offered over every pairing in the
 // catalogue. They are now derived the same way this is, and search-gauntlet
 // asserts that no line appears for two different pairings.
+// ── THREE HONEST FORMATS OVER THE SAME CARDS ──────────────────────────────
+// One fixed shape does not suit every page. A nine-card page with the same
+// illustrator three times reads better grouped by illustrator; a page spanning
+// twenty years reads better in date order. All three are built from the same
+// fields the credit strip uses, so none can say more than we hold.
+var SR_FORMAT = 0;
+var SR_FORMATS = ["List", "Credits", "Names"];
+
+function selfReplyText(which){
+  const NL = String.fromCharCode(10);
+  const num = (c) => c.i.slice(c.i.lastIndexOf("-") + 1);
+
+  if (which === 1) {
+    // CREDITS - grouped by illustrator, which is the thing worth surfacing when
+    // one person drew several of the cards on screen.
+    const by = {};
+    for (const c of tray) { const a = c.a || "no credit recorded"; (by[a] = by[a] || []).push(c); }
+    const names = Object.keys(by).sort((a, b) => by[b].length - by[a].length);
+    return "Illustrators above:" + NL + names.map(a =>
+      a + NL + by[a].map(c => "  · " + c.n + " (" + num(c) + " – " + c.s + ")").join(NL)
+    ).join(NL + NL);
+  }
+
+  if (which === 2) {
+    // NAMES - illustrators only, deduplicated, in the order they appear.
+    const seen = [];
+    for (const c of tray) if (c.a && seen.indexOf(c.a) < 0) seen.push(c.a);
+    const missing = tray.filter(c => !c.a).length;
+    return (seen.length ? "Art by " + seen.join(", ") + "." : "No illustrator recorded for these.") +
+      (missing ? NL + missing + " card" + (missing > 1 ? "s have" : " has") + " no artist in the public dataset." : "");
+  }
+
+  // LIST - oldest first, with the year, and the price date when we show prices.
+  const ordered = tray.slice().sort((a, b) => String(a.y).localeCompare(String(b.y)));
+  return "Cards above:" + NL + ordered.map(c =>
+    "· " + c.n + " (" + num(c) + " – " + c.s + ", " + c.y + ")" + (c.a ? " – " + c.a : "")
+  ).join(NL);
+}
+
 function renderSelfReply(){
   const box = el("selfreply");
   if (!box) return;
   if (!tray.length) { box.hidden = true; return; }
   box.hidden = false;
-  const NL = String.fromCharCode(10);
-  const text = "Cards above:" + NL + tray.map(c => {
-    const num = c.i.slice(c.i.lastIndexOf("-") + 1);
-    return "· " + c.n + " (" + num + " – " + c.s + ")" + (c.a ? " – " + c.a : "");
-  }).join(NL);
+  const text = selfReplyText(SR_FORMAT);
   box.innerHTML = "";
   const h = document.createElement("div");
   h.className = "srhead";
-  h.textContent = "POST THIS AS A REPLY TO YOUR OWN POST";
+  h.textContent = "POST THIS AS A REPLY TO YOUR OWN POST · " + SR_FORMATS[SR_FORMAT].toUpperCase();
   const pre = document.createElement("pre");
   pre.textContent = text;
   const b = document.createElement("button");
   b.textContent = "Copy the list";
+  // COPIES WHAT IS SHOWING. A copy button that copies a different format from
+  // the one on screen is a trap, and the reader would not find out until it was
+  // already posted.
   b.onclick = async () => {
-    try { await navigator.clipboard.writeText(text); b.textContent = "Copied"; }
+    try { await navigator.clipboard.writeText(selfReplyText(SR_FORMAT)); b.textContent = "Copied"; }
     catch { b.textContent = "Select and copy above"; }
   };
-  box.appendChild(h); box.appendChild(pre); box.appendChild(b);
+  const f = document.createElement("button");
+  f.textContent = "Another format";
+  f.onclick = function(){ SR_FORMAT = (SR_FORMAT + 1) % SR_FORMATS.length; renderSelfReply(); };
+  box.appendChild(h); box.appendChild(pre); box.appendChild(b); box.appendChild(f);
 }
 
 // RATING FILTERS. Each one is a real threshold on a derived number, and the
@@ -2288,17 +2403,24 @@ window.imgFallback = imgFallback;
 // APPLY WHAT WAS UNDERSTOOD. The box sets the same filters the panels do, so
 // there is one system underneath and the advanced controls stay honest — they
 // show what the sentence actually did.
+// EVERY ONE OF THESE IS VERIFIED TO RETURN CARDS. An example chip that returns
+// nothing is worse than no chip: it teaches a first-time user that the box does
+// not work, on their first attempt, using our own suggestion.
 const EXAMPLES = [
-  "cards nobody talks about",
-  "charizard through the years",
-  "cute cards under a fiver",
-  "two cards by the same artist",
-  "something dark",
+  "connecting art",
+  "squirtle evolution",
   "the whole charmander line",
+  "what kimura drew twice",
+  "charizard through the years",
+  "cards nobody talks about",
 ];
 function intentCtx(){
   return {
-    monNames: [...new Set(INDEX.map(c => monName(c.n)))],
+    // POKEMON ONLY. Built from every card, this list contained "Evolution"
+    // (from the Trainer card Evolution Incense), "Incense", "Candy" and every
+    // other Trainer noun — and the matcher takes the LONGEST match, so a
+    // Trainer noun beat the creature the person actually named.
+    monNames: [...new Set(INDEX.filter(c => c.sup === "P").map(c => monName(c.n)))],
     artists: [...new Set(INDEX.map(c => c.a).filter(Boolean))],
     sets: [...new Set(INDEX.map(c => c.s))],
     moods: MOODS,
@@ -2483,7 +2605,34 @@ function askResolve(text){
 // prompt first. It surfaced the moment a bare "evolution line" query — which
 // has no named Pokemon for the older parser to catch — reached the relation
 // path. Same shape as the const-shadowed search box: a live path nothing called.
+// BOTH DIRECTIONS. This only ever walked FORWARD, so asking about a middle or
+// final stage returned a truncated line: "blastoise evolution" gave Blastoise
+// alone, because nothing evolves FROM Blastoise. A person naming any member of
+// a family means the family.
+function evoRootOf(name){
+  var cur = name;
+  for (var i = 0; i < 3; i++) {
+    var parent = null;
+    for (var id in ATTRS) {
+      var a = ATTRS[id];
+      if (!a || !a.ev) continue;
+      var row = byIdRow[id];
+      if (!row) continue;
+      if (monName(row.n !== undefined ? row.n : row[1]) === cur) { parent = monName(a.ev); break; }
+    }
+    // THE BABY LINK IS NOT PRINTED ON THE CARD. A Pikachu is a Basic and never
+    // says "evolves from Pichu", so ATTRS alone stops at Pikachu and
+    // "pichu evolution" returned Pichu on its own. BABY_OF is the documented
+    // closed list this file already carries — it just was not consulted here.
+    if (!parent && BABY_OF[cur]) parent = BABY_OF[cur];
+    if (!parent || parent === cur) break;
+    cur = parent;
+  }
+  return cur;
+}
+
 function evoLineFor(name){
+  name = evoRootOf(name);
   const line = [name]; let cur = name;
   for (var i = 0; i < 3; i++) {
     var next = null;
@@ -2495,6 +2644,10 @@ function evoLineFor(name){
     // lines up already guards this with row0.n !== undefined ? row0.n : row0[1];
     // this one did not.
     for (var id in ATTRS) { var a = ATTRS[id]; if (a && a.ev === cur) { var row = byIdRow[id]; if (row) { next = monName(row.n !== undefined ? row.n : row[1]); break; } } }
+    // Forward across the same unprinted link: Pichu -> Pikachu.
+    if (!next) {
+      for (var bk in BABY_OF) if (BABY_OF[bk] === cur) { next = bk; break; }
+    }
     if (!next || line.indexOf(next) >= 0) break;
     line.push(next); cur = next;
   }
@@ -2716,7 +2869,10 @@ function tutStart(){
     ${JSON.stringify(TUT.line)},
     "Make the picture");
   el("tutgo").onclick = function(){ composeImage(); };
-  el("tutskip").onclick = function(){ tray = []; blob = null; render(); tutDone("skipped"); };
+  // SKIPPING IS NOT A REASON TO TAKE THE CARDS AWAY. This emptied the tray, so
+  // "Skip this" handed back the blank slate the tutorial exists to prevent —
+  // the exact screen Tyler described as being in the blind.
+  el("tutskip").onclick = function(){ tutDone("skipped"); };
 }
 
 // Called by composeImage when an image actually exists. Advancing on the BLOB
@@ -2735,7 +2891,9 @@ function tutComposed(ok, why){
   tutStep = 2;
   tutShow("Press and hold the image to save it. That is the whole thing.", "Now try your own");
   el("tutgo").onclick = function(){
-    tray = []; blob = null; render();
+    // FINISHING KEEPS THE CARDS TOO. Clearing the tray on the last step meant
+    // completing the tutorial was punished exactly like skipping it: the
+    // Magmars vanished and the page went back to empty.
     if (el("q")) el("q").value = "";
     resetPage(); search();
     tutDone("done");

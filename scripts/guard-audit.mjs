@@ -182,6 +182,7 @@ const MUST_RUN = [
   { script: "slop-guard.mjs", why: "every grouping must derive from a real field or an openly stored list" },
   { script: "card-guard.mjs", why: "a minted card must say something before anyone sees it" },
   { script: "heartbeat.mjs", why: "detects a missed scheduled run — runs on the watchdog workflow, not the daily pipeline, which is why it was absent from this list until it failed", offPipeline: true },
+  { script: "live-page-smoke.mjs", why: "loads the PUBLISHED Pages URL in a real browser and asserts the four things a first visit must deliver. Every other guard tests the generator or the index; three launch blockers passed all of them on 2026-08-26 and were found only by opening this URL. offPipeline because it reaches the network and depends on a Pages deploy having landed, which is not something a build step should wait on", offPipeline: true },
   { script: "live-smoke.mjs", why: "the presenter and audience views must stay in sync, and no unverified claim may reach the overlay — on a live stream that is unrecoverable" },
   { script: "creators-smoke.mjs", why: "the creators portal must LOAD and its buttons must be reachable — every one of them was dead and it parsed perfectly" },
   { script: "fuzz.mjs", why: "every other test checks something I already imagined — this one builds sentences and click-orders nobody chose, and found three crashes on its first run" },
@@ -375,7 +376,30 @@ for (const g of MANIFEST) {
 const pipe = await read(PIPELINE_FILE);
 if (!pipe) failures.push(`pipeline file missing (${PIPELINE_FILE})`);
 else {
+  // ── offPipeline WAS DECLARED AND NEVER READ ─────────────────────────────
+  // Three entries carried the flag and this loop ignored it entirely.
+  // heartbeat.mjs only passed because generate-pulse happens to import it
+  // anyway, so nobody found out. A field that describes an exemption and grants
+  // none is the same shape as the ATTRS Proxy reporting no keys: it looks like
+  // policy and does nothing.
+  //
+  // It is honoured now — AND it is not a way to opt out of being checked. A
+  // guard off the daily pipeline must still be wired to SOMETHING, so it is
+  // required to appear in a workflow instead.
+  const wfDir = join(ROOT, ".github", "workflows");
+  let wfAll = "";
+  try {
+    for (const f of await readdir(wfDir)) wfAll += await readFile(join(wfDir, f), "utf-8");
+  } catch { /* no workflows in this checkout */ }
+
   for (const m of MUST_RUN) {
+    if (m.offPipeline) {
+      if (pipe.includes(m.script) || wfAll.includes(m.script))
+        notes.push(`  ✓ ${m.script} wired off-pipeline`);
+      else
+        failures.push(`UNWIRED — ${m.script} is marked offPipeline but appears in no workflow either (${m.why})`);
+      continue;
+    }
     if (!pipe.includes(m.script)) failures.push(`PIPELINE GAP — ${m.script} is never imported by ${PIPELINE_FILE} (${m.why})`);
     else notes.push(`  ✓ pipeline runs ${m.script}`);
   }

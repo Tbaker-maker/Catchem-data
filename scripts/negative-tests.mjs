@@ -708,6 +708,41 @@ const CASES = [
         why: bad.length ? "hard-sell paywall language appeared in: " + bad.join(", ") + " — see decision 2026-08-25-beta-terms-and-free-for-life; disclosing a future paid tier is fine, selling at people on a page they joined from is not" : "" };
     } },
 
+  { guard: "Live page smoke fails on a page that is not ours", detect: "live-page-smoke.mjs",
+    // A SMOKE TEST THAT PASSES ON example.com IS NOT TESTING OUR PAGE. This
+    // points it at a URL with no tutorial, no cards and no ask box, and
+    // requires it to FAIL. Without this the guard could be quietly reduced to
+    // "did a page load", which is the shape of every green tick this repo has
+    // had to withdraw.
+    fn: async () => {
+      const src = await readFile(P("scripts/live-page-smoke.mjs"), "utf-8").catch(() => "");
+      if (!src) return { pass: false, why: "scripts/live-page-smoke.mjs is missing" };
+
+      // It must assert all four things, by name, or it is a weaker test than
+      // the one that was specified.
+      const needs = [
+        ["tutorial", /getElementById\("tut"\)/],
+        ["real image bytes", /naturalWidth > 0/],
+        ["a conceptual query", /askResolve\(/],
+        ["the evolution line", /charmander evolution/i],
+        ["page errors", /pageerror/],
+      ];
+      const missing = needs.filter(([, rx]) => !rx.test(src)).map(([n]) => n);
+      if (missing.length)
+        return { pass: false, why: "no longer asserts: " + missing.join(", ") };
+
+      // And it must refuse to pass without a browser rather than skipping.
+      if (!/a smoke test that skips/i.test(src))
+        return { pass: false, why: "no longer fails loudly when no browser is present — a skip is a green tick over an untested page" };
+
+      // Point it at example.com and require a non-zero exit. Nothing there can
+      // satisfy any of the four assertions.
+      const r = await run("node", [P("scripts/live-page-smoke.mjs")],
+        { env: { ...process.env, LIVE_PAGE_URL: "https://example.com" } });
+      return { pass: r.failed,
+        why: r.failed ? "" : "it passed against example.com, which has no tutorial, no cards and no ask box" };
+    } },
+
   { guard: "Tease actually withholds", detect: "tease-guard.mjs",
     // Verified by hand against the original copy: it caught both the product
     // name and the negation pattern. This keeps it caught.

@@ -165,6 +165,16 @@ jobs:
           fi
           curl -s -X POST "$CF_DEPLOY_HOOK" && echo "" && echo "App rebuild triggered."
 
+      # THE PAGE A STRANGER GETS, not the one we just built. Runs AFTER the
+      # commit and the deploy hook, because it reads the PUBLISHED URL — testing
+      # it before the deploy would assert yesterday's artifact and call it
+      # today's. continue-on-error because GitHub Pages publishes on its own
+      # schedule and a correct fix that has not propagated yet is a slow deploy,
+      # not a broken page; the fleet run is where it blocks.
+      - name: Live page smoke (the published Pages URL)
+        continue-on-error: true
+        run: node scripts/live-page-smoke.mjs
+
       - name: Smoke test (live site + feed + rendered app)
         # The blank-page guard: asserts the PUBLIC pages carry real content,
         # the feed parses fresh, and the APP MOUNTS in headless Chrome with
