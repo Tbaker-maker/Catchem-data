@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-26T00:43:56.977Z",
+ "generatedAt": "2026-08-26T00:55:51.765Z",
  "purpose": "Checks output against the failure classes in our own error ledger — things that actually happened here, not generic quality rules.",
  "runsOn": "output, never intent. What I meant to do is not evidence.",
  "classesChecked": [
@@ -23,7 +23,7 @@
  "problems": [
   {
    "errorClass": "ungated publication",
-   "what": "2 card generator(s) are not in the pipeline: card-composite.mjs, card-relations.mjs",
+   "what": "1 card generator(s) are not in the pipeline: card-composite.mjs",
    "why": "Anything that produces a publishable artifact outside the run is a path around every guard. That is how a wrong price reached a card today.",
    "ledgerRef": 18
   },

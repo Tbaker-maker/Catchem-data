@@ -75,7 +75,23 @@ const scripts = (await readdir(join(ROOT, "scripts"))).filter(f => f.endsWith(".
   const pipeline = await R("scripts/generate-pulse.mjs");
   const cardDir = await readdir(join(ROOT, "research/pulse/cards")).catch(() => []);
   const minted = cardDir.filter(f => f.endsWith(".svg"));
-  const generators = scripts.filter(f => /mint|card|rasterize/.test(f));
+  // A GENERATOR IS A SCRIPT THAT WRITES AN IMAGE, NOT ONE WITH "card" IN ITS
+  // NAME. The old test matched on the filename, so card-relations.mjs — a query
+  // library that writes no files at all — was reported as an ungated publisher
+  // every run, and card-guard.mjs with it. That is a heuristic on a name rather
+  // than on behaviour, the same shape as the flag guard matching any function
+  // called flag(), and it cost the same thing: a standing false finding on a
+  // BLOCKING guard, which stops the pipeline and trains people to skim it.
+  //
+  // Now it asks what the script DOES: writes a png/svg/jpg/webp, or hands bytes
+  // to a rasteriser. card-relations answers no and drops out; card-composite
+  // answers yes and stays, correctly.
+  const IMAGE_WRITER = /writeFile[^;]{0,160}\.(png|svg|jpg|jpeg|webp)|toBuffer\(|new Resvg|resvg/i;
+  const generators = [];
+  for (const f of scripts.filter(f => /mint|card|rasterize|composite/.test(f))) {
+    const src = await R("scripts/" + f).catch(() => "");
+    if (IMAGE_WRITER.test(src)) generators.push(f);
+  }
   const wired = generators.filter(f => pipeline.includes(f));
   if (generators.length > wired.length)
     P("ungated publication", `${generators.length - wired.length} card generator(s) are not in the pipeline: ${generators.filter(f => !wired.includes(f)).join(", ")}`,

@@ -57,6 +57,43 @@ jobs:
         run: node scripts/compute-supply-watch.mjs
       - name: Derived intelligence
         run: node scripts/compute-derived.mjs
+      # ── THE DATA COMMITS BEFORE ANYTHING REPORTS ON IT ────────────────────
+      # Six consecutive runs fetched prices, computed heat states and threw all
+      # of it away, because "Generate Morning Pulse" sits above the commit and a
+      # guard inside it exited non-zero. The prices were CORRECT every time —
+      # the last run reached "freshness: 100% of 177 products at 2026-08-26" and
+      # then discarded it.
+      #
+      # Market data and publication reporting are different concerns and only
+      # one of them is time-critical. A citation backlog, an un-interrogated
+      # guard or a dash on a card published five days ago are all real findings,
+      # and none of them is a reason for catchemtcg.com to show prices from last
+      # Saturday.
+      #
+      # So the DATA commits here, as soon as it is computed and its own data
+      # guards have passed. Everything downstream still runs, still reports, and
+      # still fails the job loudly if it should — it simply can no longer take
+      # the prices with it.
+      - name: Commit price data (before anything reports on it)
+        run: |
+          git config user.name "catchem-bot"
+          git config user.email "bot@catchem.app"
+          git add data/sealed-prices.json data/heat-report.json data/heat-history.json \
+                  data/sealed-crosscheck.json data/crosscheck-history.json \
+                  data/divergence-report.json data/supply-watch.json \
+                  data/derived-insights.json data/era-index-history.json \
+                  data/catalyst-log.json data/cohort-history.json data/artists.json
+          if git diff --staged --quiet; then
+            echo "No price changes to commit."
+          else
+            git commit -m "data: sealed prices $(date -u +'%Y-%m-%d')"
+            for i in 1 2 3; do
+              git push && break
+              echo "push rejected (attempt $i) — rebasing onto moved main"
+              git pull --rebase --autostash origin main || true
+            done
+          fi
+
       - name: Generate Morning Pulse
         run: node scripts/generate-pulse.mjs
       - name: Generate The Board

@@ -388,6 +388,31 @@
    "alsoCannot": "See drift in anything that is not generated HTML under research/assets - JSON feeds, the app bundle and the newsletter are outside it. And it strips timestamps and dates before comparing, so a page whose ONLY change is a date it stamps itself reads as matching. That is deliberate: without it every page is permanently stale and the check becomes noise nobody reads.",
    "whyAdvisory": "Blocking would stop a build because a price refreshed an hour ago. The failure this guards against is nobody LOOKING - promo.html was published saying 'Goodnight.' over a Musharna while its generator had moved to 'Waitlist open.' Naming it is enough.",
    "reviewed": "2026-08-25"
+  },
+  "visual-claim-guard.mjs": {
+   "cannotCatch": "A false visual claim phrased about ONE card. It only fires when a drawn feature is asserted across a whole population — 'every card', 'all of them'. 'There is a Pikachu on this card' is equally unverifiable from our data and passes silently, because we hold no field describing artwork at all. It also matches on wording, so a claim built from a synonym it does not know is invisible to it.",
+   "coveredBy": "Tyler's eyes, and the house rule that artwork claims belong to whoever can see the art",
+   "reviewed": "2026-08-26"
+  },
+  "reveal-watch-guard.mjs": {
+   "cannotCatch": "A human copying a reveal out of the queue and posting it by hand. It proves reveal-watch.mjs has no CODE PATH to the send gate; it cannot prevent a person from reading the file and pasting. It also only inspects the files it is told to watch, so a new script that reaches the send path is invisible until somebody adds it to WATCHED.",
+   "coveredBy": "send-gate's own confirm step, which is a separate control on the human path",
+   "reviewed": "2026-08-26"
+  },
+  "response-audit.mjs": {
+   "cannotCatch": "Whether the check it found is CORRECT. It sees that res.ok or stop_reason is read somewhere in the window; it cannot tell a real guard from `if (res.ok) {}`. It also knows only the completeness signals listed in HOST_RULES, so a new provider with a new field passes until somebody teaches it. And a declared RESPONSE-AUDIT-OK waiver is taken at its word — the reason is never validated.",
+   "coveredBy": "code review, and the fact that a wrong waiver has to be written deliberately",
+   "reviewed": "2026-08-26"
+  },
+  "artifact-freshness.mjs": {
+   "cannotCatch": "A file that is REWRITTEN every run with identical content — git sees no change, so it reads as stale even though the job is healthy — and its inverse, a job that commits a timestamp bump while producing nothing of value, which reads as fresh. It measures MOVEMENT, not correctness. It also trusts the workflow's git-add list as the artifact list, so a file the job writes but never stages is invisible to it, which is the exact failure CLAUDE.md calls the write-vs-commit law.",
+   "coveredBy": "the pipeline's own content guards, and the SLOW list being reviewed by a human",
+   "reviewed": "2026-08-26"
+  },
+  "escape-audit.mjs": {
+   "cannotCatch": "An eaten escape whose result is still valid syntax AND is not in its rule list — it knows \\\\s, \\\\d, \\\\w, \\\\S, \\\\/ and \\\\. and nothing else. It reads only the artifacts named in ARTIFACTS, so a new generated page is unwatched until it is added. And it skips lines opening with a comment marker, so an eaten escape on a line that begins as a comment and later carries code would be missed.",
+   "coveredBy": "search-gauntlet section 13, which drives the real functions rather than reading them",
+   "reviewed": "2026-08-26"
   }
  }
 }

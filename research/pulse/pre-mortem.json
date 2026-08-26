@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-08-26T00:43:53.357Z",
+  "generatedAt": "2026-08-26T00:55:03.625Z",
   "principle": "Every bug today was a check that was RIGHT IN PRINCIPLE and asked a question whose answer could not reveal the fault. Not a broken guard — a guard aimed slightly beside the thing it guards. We declare blind spots for every agent and none for guards, so a guard asking the wrong question looks exactly like one that works.",
   "guardsChecked": 54,
-  "declared": 57,
+  "declared": 62,
   "shapes": [
     {
       "id": "substring where structure exists",
@@ -38,31 +38,6 @@
     }
   ],
   "problems": [
-    {
-      "guard": "visual-claim-guard.mjs",
-      "what": "no declared blind spot",
-      "why": "A guard that has never been asked what it would MISS looks identical to one that works. The heartbeat looked identical to one that worked, on the morning it reported green through a failed run."
-    },
-    {
-      "guard": "reveal-watch-guard.mjs",
-      "what": "no declared blind spot",
-      "why": "A guard that has never been asked what it would MISS looks identical to one that works. The heartbeat looked identical to one that worked, on the morning it reported green through a failed run."
-    },
-    {
-      "guard": "response-audit.mjs",
-      "what": "no declared blind spot",
-      "why": "A guard that has never been asked what it would MISS looks identical to one that works. The heartbeat looked identical to one that worked, on the morning it reported green through a failed run."
-    },
-    {
-      "guard": "artifact-freshness.mjs",
-      "what": "no declared blind spot",
-      "why": "A guard that has never been asked what it would MISS looks identical to one that works. The heartbeat looked identical to one that worked, on the morning it reported green through a failed run."
-    },
-    {
-      "guard": "escape-audit.mjs",
-      "what": "no declared blind spot",
-      "why": "A guard that has never been asked what it would MISS looks identical to one that works. The heartbeat looked identical to one that worked, on the morning it reported green through a failed run."
-    },
     {
       "guard": "prompt-correctness.mjs",
       "what": "carries the \"substring where structure exists\" shape, unacknowledged",
