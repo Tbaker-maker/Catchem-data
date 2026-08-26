@@ -39,6 +39,8 @@ const FLEET = [
     does: "Mines the catalogue for post ideas nobody asked for — one-offs, long silences, specialists, the year a Pokémon owned." },
   { id: "secret-scan", script: "secret-scan.mjs", blocking: true,
     does: "Scans every TRACKED file for the actual values in .env, rather than guessing what a secret looks like. BLOCKING because a published credential cannot be unpublished - there is no correction page for it. security-agent matches credential SHAPES and reported clean for months while a Formspree endpoint with no distinctive shape sat in ten files." },
+  { id: "visual-claim-guard", script: "visual-claim-guard.mjs", blocking: true,
+    does: "Catches captions asserting a DRAWN feature across a whole set - 'a Pikachu hidden in every card', which was the 30th anniversary stamp on the entire promo run. BLOCKING because we hold NO field describing artwork: no stamp, no holo pattern, no border, no foil. Such a claim cannot be checked by any query we can run, and set-wide markers look exactly like per-card craft to anyone holding nine cards from a run of hundreds." },
   { id: "reveal-watch-guard", script: "reveal-watch-guard.mjs", blocking: true,
     does: "Proves the card-reveal watch has no route to the send path and stamps every reveal QUEUED FOR TYLER. BLOCKING because the confirm gate is a compliance control and a fast-moving feed is precisely where somebody argues for skipping it - 'it is just a reveal, it is time-sensitive' is a reasonable sentence and it is how an unreviewed post reaches a public account." },
   { id: "response-audit", script: "response-audit.mjs", blocking: true,

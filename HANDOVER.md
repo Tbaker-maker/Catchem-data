@@ -61,7 +61,7 @@ logged incidents.
 
 ## What to do
 
-**Read `research/house-theses.md`.** 102 laws, each a mistake made once.
+**Read `research/house-theses.md`.** 103 laws, each a mistake made once.
 
 **Break your own checks on purpose.** Twice a guard reported success while doing
 nothing. You only find that by attacking it.
@@ -116,7 +116,7 @@ highest-value unfinished thing in the project.
 
 ```
 catchem-knowledge-base.md          canonical state — read first, update last
-research/house-theses.md           102 laws
+research/house-theses.md           103 laws
 research/RESEARCH-GATE.md          33 logged errors, who caught each
 data/knowledge.json                52 facts with falsifiers
 data/guard-blindspots.json         what each guard cannot catch

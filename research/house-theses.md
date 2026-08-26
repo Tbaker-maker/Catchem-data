@@ -2723,3 +2723,36 @@ and the gap are now all computed from `artistRevisits()` at build time, so the
 copy cannot drift from the data and cannot outrun it. Which is the general
 principle: **a data-derived string cannot claim more than the data holds. A
 typed one can widen a narrow fact and nothing will notice.**
+
+## A PATTERN NOTICED BY EYE IS A HYPOTHESIS, NOT A FACT (Aug 25 2026)
+Tyler posted about the leaked nine-card Eeveelution set. I looked at the
+screenshot, saw a small Pikachu on every card, and suggested a caption built on
+**"there's a Pikachu hidden in every card."**
+
+It is the **30th anniversary stamp**. It is on the whole promo run. It is not an
+artistic choice, it is not a secret, and it is not about the Eeveelutions at
+all — I had taken a **set-wide marker** and reported it as a **per-card
+decision**, which is the most flattering possible misreading and therefore the
+one to be most suspicious of.
+
+Twenty minutes after logging the Kimura sentence, which is the same error with
+the pieces rearranged. There the relation measured one thing and the sentence
+claimed a wider one; here the eye saw a real repeated element and the caption
+invented a reason for it. **Both times the observation was correct and the
+scope was invented.**
+
+**SET-WIDE MARKERS LOOK LIKE PER-CARD CHOICES TO ANYONE WHO DOES NOT KNOW THE
+SET.** Anniversary stamps, holo patterns, regulation marks, era borders, set
+symbols, foil treatments — every one of them is a design decision made once,
+applied to hundreds of cards, and invisible as such unless you already know.
+Someone seeing nine cards from a run of hundreds has no way to tell "this
+artist did something clever" from "this is printed on everything".
+
+**A screenshot is nine cards. The catalogue is 16,468.** The check costs one
+query and the error costs a correction in public, on a caption whose entire
+appeal was that we notice things other people miss.
+
+**The rule: any claim about what appears "on every card" is checked against the
+catalogue before it reaches a caption. If it cannot be checked, it is written
+as a question — "is that on all of them?" — which is a better post anyway,
+because it invites the people who know.**

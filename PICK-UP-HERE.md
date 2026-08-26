@@ -181,7 +181,7 @@ catchem-knowledge-base.md          canonical — read first, update last
 SYSTEM-README.md                   what everything is and how to run it
 METHOD-PORTABLE.md                 the method with the domain stripped out
 HANDOVER.md                        for a model starting cold
-research/house-theses.md           102 laws
+research/house-theses.md           103 laws
 research/RESEARCH-GATE.md          33 logged errors, who caught each
 research/PENDING-X-KEYS.md         the credential steps
 research/PENDING-CLOSE-THE-LOOP.md what CC needs to wire
