@@ -27,9 +27,9 @@ We put something in front of readers and can no longer price it. That is the kin
 ## The agents themselves
 **NEEDS A HUMAN — the supervisor flagged the watchers:**
 - correction-hunter: BROKEN RECORD — 5 finding(s) repeated three runs running (e.g. "gone::Umbreon VMAX"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
-- designer: BROKEN RECORD — 7 finding(s) repeated three runs running (e.g. "medium::35 distinct colours"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
+- designer: BROKEN RECORD — 8 finding(s) repeated three runs running (e.g. "medium::35 distinct colours"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 - theme-scout: BROKEN RECORD — 22 finding(s) repeated three runs running (e.g. "the one-off::Ken Sugimori drew Ampharos exactly on"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
-- teacher: FARMING — findings climbed 12 → 12 → 12 → 13 across four runs with nothing resolved. Volume is not work.
+- teacher: FARMING — findings climbed 13 → 13 → 14 → 14 across four runs with nothing resolved. Volume is not work.
 
 ## If we expanded
 Pricing 50 more cards would unlock 17 artist cohorts and make 2018 catalogue cards analysable. That is Tyler's call, not the machine's.
@@ -64,7 +64,7 @@ Gaps in what we watch:
 
 **Chat (12):** top — The Today screen carries 17 sections: The Daily Three, 🗳 Rip or Hold?, Biggest movers, Set the app up for you, Movers, Release radar… *[QUEUE]*
 
-*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 0 ACT NOW, 9 QUEUE, 8 WATCH, 23 filed without surfacing, 4 confirmations.*
+*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 0 ACT NOW, 9 QUEUE, 8 WATCH, 22 filed without surfacing, 4 confirmations.*
 ## The creator cheat code
 *Could somebody open this, hit record within two minutes, and sound like the most informed voice in the hobby without pausing to look anything up? Every pause is a cut.*
 - **a visual that runs itself** — 35 card images minted today. *The gap is that they are files in a repo. A creator needs them one tap from the angle they picked, not from a folder.*
@@ -82,10 +82,10 @@ Nothing unusual, or not enough history to tell — 6 days of tape so far. Anomal
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
 
 ## Something is slipping
+- **unsaved** — 1 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
 - **ignored** — 7 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
 - **silent stage** — fetch last reported 3 days ago. *A stage that stopped running is invisible to every guard, because none of them run either. Silence is the one failure nothing else catches.*
 - **drift** — 19 script(s) are not referenced anywhere: backfill-artists.mjs, build-faq.mjs, build-hooks.mjs, build-lines.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
-- **drift** — 49 JSON files in research/pulse. *A directory nobody can scan is a directory where something goes missing without being noticed.*
 
 ## Legal standing
 Nothing has tripped. Highest live risk: **Effort-based consideration in the berry system, combined with the first live draw.** — It is the only item that is both imminent and genuinely uncertain. The IP question is larger but not triggered until revenue; registration and tax thresholds are comfortably clear at current prize values.
@@ -103,7 +103,7 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 - **domain-plausibility** — Would you catch this today? If yes, what specifically would fire. If no, what would you need?
 - **experience** — Would you catch this today? If yes, what specifically would fire. If no, what would you need?
 - **breaker** — You test what we built. What have we DELETED recently, and did anything depend on it?
-- **improver** — You measure against our own doctrine. What would somebody who has never read our doctrine find embarrassing here?
+- **correction-hunter** — You re-check figures that moved. Ask about the ones that never move — a price frozen for a month is a claim too.
 
 ## Who is catching our mistakes
 - **Tyler catches 19 of 26 incidents; the machines catch 7** — *Every guard here was written by the party being checked. If the human keeps finding what the tooling misses, the tooling is calibrated to what I already believed rather than to what actually goes wrong. That is what self-bias looks like from the outside — not a wrong rule, an absent one.*

@@ -1,8 +1,15 @@
 {
- "generatedAt": "2026-08-26T01:45:24.190Z",
+ "generatedAt": "2026-08-26T01:56:07.979Z",
  "role": "Keeps the work organised, saved and on track. Silent unless something is genuinely slipping — a day with nothing to say is a day it did its job.",
- "speaking": 4,
+ "speaking": 5,
  "speak": [
+  {
+   "kind": "unsaved",
+   "what": "1 hand-written file(s) changed and not committed.",
+   "why": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
+   "owner": "chat",
+   "confidence": "OBSERVED"
+  },
   {
    "kind": "ignored",
    "what": "7 supervisor problem(s) are open.",
@@ -33,7 +40,6 @@
   }
  ],
  "quiet": [
-  "everything hand-written is committed",
   "23 open commitment(s), all recent",
   "241 commits / 37 written records in the last few days"
  ]

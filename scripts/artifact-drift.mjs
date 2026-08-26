@@ -96,6 +96,14 @@ if (drifted.length) {
   console.log("  This says the two disagree. It does NOT say which is right: the committed");
   console.log("  page may be stale, or the generator may have just been changed and the");
   console.log("  rebuild is the correct new output. Look, then commit the rebuild.");
+  // A VERDICT LINE ON THE UNHAPPY PATH TOO. This printed a ✓ only when nothing
+  // drifted, so the moment it had something to SAY it emitted no mark at all —
+  // and fleet.mjs, which reads the last ✓/✗ line, reported it as CRASHED. An
+  // advisory guard doing its job was showing up as a broken one. Third instance
+  // of this today, after response-audit and escape-audit: a guard that reports
+  // findings must still state a verdict, because the summary is what gets read.
+  console.log(`  ✗ artifact drift: ${drifted.length} page(s) disagree with a fresh build` +
+    (failed.length ? `, ${failed.length} generator(s) could not be run` : ""));
 } else {
   console.log(`  ✓ artifact drift: ${pairs.length} generated page(s) match a fresh build`);
 }
