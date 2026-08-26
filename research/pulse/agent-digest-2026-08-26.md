@@ -29,7 +29,7 @@ We put something in front of readers and can no longer price it. That is the kin
 - correction-hunter: BROKEN RECORD — 5 finding(s) repeated three runs running (e.g. "gone::Umbreon VMAX"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 - designer: BROKEN RECORD — 7 finding(s) repeated three runs running (e.g. "medium::35 distinct colours"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 - theme-scout: BROKEN RECORD — 22 finding(s) repeated three runs running (e.g. "the one-off::Ken Sugimori drew Ampharos exactly on"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
-- teacher: BROKEN RECORD — 11 finding(s) repeated three runs running (e.g. "in a rut::breaker"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
+- teacher: FARMING — findings climbed 12 → 12 → 12 → 13 across four runs with nothing resolved. Volume is not work.
 
 ## If we expanded
 Pricing 50 more cards would unlock 17 artist cohorts and make 2018 catalogue cards analysable. That is Tyler's call, not the machine's.
@@ -82,10 +82,10 @@ Nothing unusual, or not enough history to tell — 6 days of tape so far. Anomal
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
 
 ## Something is slipping
-- **unsaved** — 3 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
-- **ignored** — 6 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
+- **ignored** — 7 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
 - **silent stage** — fetch last reported 3 days ago. *A stage that stopped running is invisible to every guard, because none of them run either. Silence is the one failure nothing else catches.*
 - **drift** — 19 script(s) are not referenced anywhere: backfill-artists.mjs, build-faq.mjs, build-hooks.mjs, build-lines.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
+- **drift** — 49 JSON files in research/pulse. *A directory nobody can scan is a directory where something goes missing without being noticed.*
 
 ## Legal standing
 Nothing has tripped. Highest live risk: **Effort-based consideration in the berry system, combined with the first live draw.** — It is the only item that is both imminent and genuinely uncertain. The IP question is larger but not triggered until revenue; registration and tax thresholds are comfortably clear at current prize values.
@@ -94,11 +94,10 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 *Legal INFORMATION, not legal advice. No lawyer has reviewed this. Sweepstakes law varies by state and changes; nothing here is a compliance opinion anyone can rely on. Its job is to make the conversation with counsel shorter and better, and to stop us doing something obviously wrong in the meantime.*
 
 ## Numbers that do not make sense for what they are
-54 value(s) are structurally fine and absurd in context.
-- **"packs"** killed 339 listings across the board — a single pack is often titled 'Booster Packs' — plural in the title, one in the box
-- **"sleeved"** killed 318 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
-- Battle Styles Booster Pack: 75% rejection rate (37/150) — *largest bucket: exclude = 76. A single over-broad term can eat a market.*
-- Fusion Strike Booster Pack: 72% rejection rate (42/150) — *largest bucket: exclude = 49. A single over-broad term can eat a market.*
+44 value(s) are structurally fine and absurd in context.
+- **"sleeved"** killed 341 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
+- Scarlet & Violet Booster Pack: 91% rejection rate (13/150) — *largest bucket: set = 59. A single over-broad term can eat a market.*
+- 151 Booster Pack: 74% rejection rate (39/150) — *largest bucket: type = 51. A single over-broad term can eat a market.*
 
 ## What the agents should be asking themselves
 - **domain-plausibility** — Would you catch this today? If yes, what specifically would fire. If no, what would you need?
@@ -120,7 +119,7 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 - **build.html** — the accent colour appears 44 times. *Spend it in two places: the active state and the one primary action. Everything else greys.*
 
 ## What the agents cannot answer themselves
-47 open — 28 need eyes on a rendered page, 19 need a decision.
+48 open — 29 need eyes on a rendered page, 19 need a decision.
 - **NEEDS A HUMAN** [theme-scout] 14 Pokémon share the "-eon" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 7 Pokémon share the "ite" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 10 Pokémon share the "-ish" ending — a theme, or a coincidence of naming?

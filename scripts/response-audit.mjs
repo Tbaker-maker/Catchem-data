@@ -125,4 +125,10 @@ if (findings.length) {
   console.log("to ignore. Silence is the one option this guard removes.");
   process.exit(1);
 }
-console.log(`RESPONSE AUDIT PASSED — ${callSites} call sites, every completeness signal read or waived.`);
+// A ✓ MARK, BECAUSE THAT IS WHAT THE FLEET READS. fleet.mjs extracts an
+// agent's verdict from the last ✓/✗ line in its output, and a guard printing
+// only "PASSED" produced NO mark at all — so the fleet reported it as CRASHED,
+// which is its label for an agent that emitted nothing. A passing guard was
+// showing up in the blocking-failure list. Following the house convention is
+// not cosmetic when another tool parses your output.
+console.log(`✓ response audit: ${callSites} call sites, every completeness signal read or waived`);

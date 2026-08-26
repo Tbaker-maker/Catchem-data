@@ -101,4 +101,4 @@ if (failures) {
   console.log("a negated class like /[^a-z0-9]+/ needs none, and cannot rot.");
   process.exit(1);
 }
-console.log(`ESCAPE AUDIT PASSED — ${scanned} artifact${scanned > 1 ? "s" : ""} clean.`);
+console.log(`✓ escape audit: ${scanned} artifact${scanned > 1 ? "s" : ""} clean, no eaten escapes`);

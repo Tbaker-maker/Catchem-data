@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-26T01:40:58.761Z",
+ "generatedAt": "2026-08-26T01:45:21.542Z",
  "date": "2026-08-26",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -10,7 +10,7 @@
   "decision-audit: 0 finding(s)",
   "designer: 12 finding(s)",
   "theme-scout: 22 finding(s)",
-  "teacher: 12 finding(s)",
+  "teacher: 13 finding(s)",
   "api-strategist: 8 finding(s)",
   "compliance: 0 finding(s)",
   "security: 0 finding(s)",
@@ -32,6 +32,7 @@
   "correction-hunter: BROKEN RECORD — 5 finding(s) repeated three runs running (e.g. \"gone::Umbreon VMAX\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "designer: BROKEN RECORD — 7 finding(s) repeated three runs running (e.g. \"medium::35 distinct colours\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "theme-scout: BROKEN RECORD — 22 finding(s) repeated three runs running (e.g. \"the one-off::Ken Sugimori drew Ampharos exactly on\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
+  "teacher: FARMING — findings climbed 12 → 12 → 12 → 13 across four runs with nothing resolved. Volume is not work.",
   "teacher: BROKEN RECORD — 11 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "steward: BROKEN RECORD — 3 finding(s) repeated three runs running (e.g. \"silent stage::fetch last reported 3 days ago.\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "creator: OVER-BUDGET — 15 findings against a ceiling of 10. An unreadable list is an unread list."
@@ -72,6 +73,11 @@
   {
    "agent": "falsifier",
    "finding": "runs daily and has returned the same count (0) four runs running.",
+   "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
+  },
+  {
+   "agent": "correction-hunter",
+   "finding": "runs daily and has returned the same count (6) four runs running.",
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
   },
   {
@@ -442,7 +448,7 @@
   {
    "from": "platform",
    "owner": "tyler",
-   "what": "[X] \"Paldean Fates listings moved -66.7% while its print window closes.\"",
+   "what": "[X] \"Prismatic Evolutions listings moved 312.5% while its print window closes.\"",
    "do": "X rewards a single surprising fact that makes somebody want to reply. The strongest shape we have is a number that moved with no headline attached — it implies a question and refuses to answer it, which is what makes people argue in the replies.",
    "score": 33,
    "band": "NOTE ONLY",
@@ -474,7 +480,7 @@
   {
    "from": "platform",
    "owner": "tyler",
-   "what": "[YouTube] the sealed market — \"The whole sealed market in one number: 97.6.\"",
+   "what": "[YouTube] Cosmic Eclipse Booster Box — \"A seller keeps about $4,466.96 online; a buyer pays about $5,510.17. Roughly $1,043.21 of room where a face-to-face trade beats the internet.\"",
    "do": "YouTube rewards a question somebody is already typing into search. We can answer three of the recurring ones with data nobody else holds, which is the whole reason to be here rather than reacting to other people's news.",
    "score": 33,
    "band": "NOTE ONLY",
@@ -490,7 +496,7 @@
   {
    "from": "platform",
    "owner": "tyler",
-   "what": "[YouTube] Paldean Fates — \"Paldean Fates listings moved -66.7% while its print window closes.\"",
+   "what": "[YouTube] the sealed market — \"The whole sealed market in one number: 96.9.\"",
    "do": "YouTube rewards a question somebody is already typing into search. We can answer three of the recurring ones with data nobody else holds, which is the whole reason to be here rather than reacting to other people's news.",
    "score": 33,
    "band": "NOTE ONLY",
@@ -570,7 +576,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "1 hand-written file(s) changed and not committed.",
+   "what": "3 hand-written file(s) changed and not committed.",
    "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -586,7 +592,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "5 supervisor problem(s) are open.",
+   "what": "6 supervisor problem(s) are open.",
    "do": "Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.",
    "score": 30,
    "band": "NOTE ONLY",
