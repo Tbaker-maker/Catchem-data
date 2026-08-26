@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-26T00:24:23.408Z",
+ "generatedAt": "2026-08-26T00:42:59.428Z",
  "date": "2026-08-26",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
@@ -33,7 +33,6 @@
   "designer: BROKEN RECORD — 7 finding(s) repeated three runs running (e.g. \"medium::35 distinct colours\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "theme-scout: BROKEN RECORD — 22 finding(s) repeated three runs running (e.g. \"the one-off::Ken Sugimori drew Ampharos exactly on\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "teacher: BROKEN RECORD — 11 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
-  "steward: FARMING — findings climbed 4 → 5 → 5 → 5 across four runs with nothing resolved. Volume is not work.",
   "creator: OVER-BUDGET — 15 findings against a ceiling of 10. An unreadable list is an unread list."
  ],
  "workforce": [
@@ -92,6 +91,11 @@
   {
    "agent": "security",
    "finding": "runs daily and has returned the same count (0) four runs running.",
+   "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
+  },
+  {
+   "agent": "steward",
+   "finding": "runs daily and has returned the same count (5) four runs running.",
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
   },
   {
@@ -474,7 +478,7 @@
   {
    "from": "platform",
    "owner": "tyler",
-   "what": "[YouTube] Pokemon GO Elite Trainer Box — \"forced quarantined pick\"",
+   "what": "[YouTube] the sealed market — \"The whole sealed market in one number: 97.6.\"",
    "do": "YouTube rewards a question somebody is already typing into search. We can answer three of the recurring ones with data nobody else holds, which is the whole reason to be here rather than reacting to other people's news.",
    "score": 33,
    "band": "NOTE ONLY",
@@ -490,7 +494,7 @@
   {
    "from": "platform",
    "owner": "tyler",
-   "what": "[YouTube] the sealed market — \"The whole sealed market in one number: 98.2.\"",
+   "what": "[YouTube] Paldean Fates — \"Paldean Fates listings moved -66.7% while its print window closes.\"",
    "do": "YouTube rewards a question somebody is already typing into search. We can answer three of the recurring ones with data nobody else holds, which is the whole reason to be here rather than reacting to other people's news.",
    "score": 33,
    "band": "NOTE ONLY",

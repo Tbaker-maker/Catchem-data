@@ -1,3 +1,33 @@
+// ── ADVISORY MEANS ADVISORY, INCLUDING THE EXIT CODE ───────────────────────
+// Wrapping an import in try/catch declares "a failure here must not stop the
+// pulse". That declaration was a lie for any guard reporting via
+// process.exitCode instead of throwing, because an exit code is not an
+// exception and try/catch never sees it. The guard printed its findings, set
+// exitCode = 1, execution carried on to the end, and node exited 1 anyway.
+//
+// THAT IS WHY THE DAILY PRICE JOB DIED. bias-guard gained
+// "process.exitCode = 1" on 2026-08-23T02:28 — the same day the run started
+// failing — and it is registered blocking:false. An advisory guard was
+// silently deciding whether the pipeline committed, and "Generate Morning
+// Pulse" sits 29 lines above "Commit updated prices".
+//
+// So advisory() restores whatever the exit code was BEFORE the import. A guard
+// that wants to stop the pipeline is imported bare, which is a decision
+// somebody makes on purpose rather than a side effect of how it happens to
+// report.
+const advisory = async (mod, label) => {
+  const before = process.exitCode;
+  try {
+    await import(mod);
+  } catch (e) {
+    console.warn("  " + label + ": " + e.message);
+  }
+  if (process.exitCode !== before) {
+    console.warn("  · " + label + " reported problems (advisory — the pulse continues)");
+    process.exitCode = before;
+  }
+};
+
 await import("./guard-audit.mjs");
 await import("./flag-guard.mjs");
 // SECURITY BLOCKS. Every other agent is wrapped and advisory because every
@@ -504,7 +534,7 @@ const feed = {
   // few lines below, so an artist-angles that ran after it would have shipped
   // yesterday's angles continuously — fresh on disk, stale in the app.
   // Still advisory: a failure costs the angles, never the pulse.
-  try { await import("./artist-angles.mjs"); } catch (e) { console.warn(`  ⚠ artist-angles.mjs failed: ${e.message} — advisory only, the run continues`); }
+  await advisory("./artist-angles.mjs", "artist-angles");
   const bank = await J("research/pulse/post-bank.json");
   const queue = await J("research/pulse/social-queue.json");
   // Artist angles ride the SAME ideas list as the other six, mapped into the
@@ -596,8 +626,8 @@ await import("./jargon-lint.mjs");
 // stop the run — on the day this line was written a simulated agent crash
 // killed publish-assert, the final safety check, which is precisely the class
 // of failure that check exists to catch. Agents are wrapped; guards are not.
-try { await import("./rip-sell-trade.mjs"); } catch (e) { console.warn(`  ⚠ rip-sell-trade: ${e.message}`); }
-try { await import("./agent-supervisor.mjs"); } catch (e) { console.warn(`  ⚠ agent supervisor: ${e.message} — advisory only`); }
+await advisory("./rip-sell-trade.mjs", "rip-sell-trade");
+await advisory("./agent-supervisor.mjs", "agent supervisor");
 try { const { shouldRun } = await import("./cadence.mjs");
   const __h = await (async () => { try { return JSON.parse(await (await import("node:fs/promises")).readFile(new URL("../data/agent-history.json", import.meta.url), "utf-8")); } catch { return {}; } })();
   const __last = (__h.runs?.["breaker"] ?? []).slice(-1)[0]?.date ?? null;
@@ -623,17 +653,17 @@ try { const { shouldRun } = await import("./cadence.mjs");
   const __last = (__h.runs?.["universe-advisor"] ?? []).slice(-1)[0]?.date ?? null;
   const __d = await shouldRun("universe-advisor", __last);
   if (__d.run) await import("./universe-advisor.mjs"); else console.log(`  · universe-advisor.mjs skipped — ${__d.why}`); } catch (e) { console.warn(`  ⚠ agent universe-advisor.mjs: ${e.message} — advisory only`); }
-try { await import("./agent-contract.mjs"); } catch (e) { console.warn(`  ⚠ agent contract: ${e.message} — advisory only`); }
-try { await import("./compute-demand.mjs"); } catch (e) { console.warn(`  ⚠ demand: ${e.message}`); }
-try { await import("./decision-audit.mjs"); } catch (e) { console.warn(`  ⚠ decision audit: ${e.message}`); }
-try { await import("./teacher.mjs"); } catch (e) { console.warn(`  ⚠ teacher: ${e.message} — advisory only`); }
-try { await import("./api-strategist.mjs"); } catch (e) { console.warn(`  ⚠ api strategist: ${e.message} — advisory only`); }
-try { await import("./compliance-agent.mjs"); } catch (e) { console.warn(`  ⚠ compliance: ${e.message} — advisory only`); }
-try { await import("./steward.mjs"); } catch (e) { console.warn(`  ⚠ steward: ${e.message} — advisory only`); }
-try { await import("./platform-agents.mjs"); } catch (e) { console.warn(`  ⚠ agent platform-agents: ${e.message} — advisory only`); }
-try { await import("./anomaly-watcher.mjs"); } catch (e) { console.warn(`  ⚠ agent anomaly-watcher: ${e.message} — advisory only`); }
-try { await import("./falsifier.mjs"); } catch (e) { console.warn(`  ⚠ agent falsifier.mjs failed: ${e.message} — advisory only, the run continues`); }
-try { await import("./correction-hunter.mjs"); } catch (e) { console.warn(`  ⚠ agent correction-hunter.mjs failed: ${e.message} — advisory only, the run continues`); }
+await advisory("./agent-contract.mjs", "agent contract");
+await advisory("./compute-demand.mjs", "demand");
+await advisory("./decision-audit.mjs", "decision audit");
+await advisory("./teacher.mjs", "teacher");
+await advisory("./api-strategist.mjs", "api strategist");
+await advisory("./compliance-agent.mjs", "compliance");
+await advisory("./steward.mjs", "steward");
+await advisory("./platform-agents.mjs", "agent platform-agents");
+await advisory("./anomaly-watcher.mjs", "agent anomaly-watcher");
+await advisory("./falsifier.mjs", "agent falsifier");
+await advisory("./correction-hunter.mjs", "agent correction-hunter");
 try { const { shouldRun } = await import("./cadence.mjs");
   const __h = await (async () => { try { return JSON.parse(await (await import("node:fs/promises")).readFile(new URL("../data/agent-history.json", import.meta.url), "utf-8")); } catch { return {}; } })();
   const __last = (__h.runs?.["review-agents"] ?? []).slice(-1)[0]?.date ?? null;
@@ -645,49 +675,49 @@ try { const { shouldRun } = await import("./cadence.mjs");
   const __last = (__h.runs?.["improver"] ?? []).slice(-1)[0]?.date ?? null;
   const __d = await shouldRun("improver", __last);
   if (__d.run) await import("./improver.mjs"); else console.log(`  · improver.mjs skipped — ${__d.why}`); } catch (e) { console.warn(`  ⚠ agent improver.mjs: ${e.message} — advisory only`); }
-try { await import("./agent-digest.mjs"); } catch (e) { console.warn(`  ⚠ agent agent-digest.mjs: ${e.message} — advisory only`); }
-try { await import("./domain-plausibility.mjs"); } catch (e) { console.warn(`  ⚠ domain plausibility: ${e.message} — advisory only`); }
-try { await import("./build-coverage.mjs"); } catch (e) { console.warn(`  ⚠ coverage page: ${e.message}`); }
+await advisory("./agent-digest.mjs", "agent agent-digest");
+await advisory("./domain-plausibility.mjs", "domain plausibility");
+await advisory("./build-coverage.mjs", "coverage page");
 await import("./windowless-price-guard.mjs");
 await import("./content-sanity.mjs");
-try { await import("./designer.mjs"); } catch (e) { console.warn("  designer: " + e.message); }
-try { await import("./theme-scout.mjs"); } catch (e) { console.warn("  theme scout: " + e.message); }
-try { await import("./formula-engine.mjs"); } catch (e) { console.warn("  formula-engine: " + e.message); }
-try { await import("./pairing-finder.mjs"); } catch (e) { console.warn("  pairing-finder: " + e.message); }
-try { await import("./build-creators-page.mjs"); } catch (e) { console.warn("  build-creators-page: " + e.message); }
-try { await import("./build-editor.mjs"); } catch (e) { console.warn("  build-editor: " + e.message); }
+await advisory("./designer.mjs", "designer");
+await advisory("./theme-scout.mjs", "theme scout");
+await advisory("./formula-engine.mjs", "formula-engine");
+await advisory("./pairing-finder.mjs", "pairing-finder");
+await advisory("./build-creators-page.mjs", "build-creators-page");
+await advisory("./build-editor.mjs", "build-editor");
 await import("./layout-check.mjs");
-try { await import("./build-bios.mjs"); } catch (e) { console.warn("  bios: " + e.message); }
+await advisory("./build-bios.mjs", "bios");
 await import("./doc-numbers.mjs");
 await import("./crop-guard.mjs");
 await import("./rating-guard.mjs");
 await import("./slop-guard.mjs");
 await import("./card-guard.mjs");
-try { await import("./build-live.mjs"); } catch (e) { console.warn("  live: " + e.message); }
-try { await import("./live-smoke.mjs"); } catch (e) { console.warn("  live smoke: " + e.message); }
-try { await import("./creators-smoke.mjs"); } catch (e) { console.warn("  creators smoke: " + e.message); }
+await advisory("./build-live.mjs", "live");
+await advisory("./live-smoke.mjs", "live smoke");
+await advisory("./creators-smoke.mjs", "creators smoke");
 await import("./audit-honesty.mjs");
 try { process.argv.push("250"); await import("./fuzz.mjs"); } catch (e) { console.warn("  fuzz: " + e.message); }
-try { await import("./journey-smoke.mjs"); } catch (e) { console.warn("  journey: " + e.message); }
-try { await import("./evo-smoke.mjs"); } catch (e) { console.warn("  evo smoke: " + e.message); }
-try { await import("./device-gauntlet.mjs"); } catch (e) { console.warn("  device gauntlet: " + e.message); }
-try { await import("./prompt-audit.mjs"); } catch (e) { console.warn("  prompt-audit.mjs: " + e.message); }
-try { await import("./env-matrix.mjs"); } catch (e) { console.warn("  env-matrix.mjs: " + e.message); }
-try { await import("./save-paths.mjs"); } catch (e) { console.warn("  save-paths.mjs: " + e.message); }
-try { await import("./user-journeys.mjs"); } catch (e) { console.warn("  user-journeys.mjs: " + e.message); }
-try { await import("./hook-guard.mjs"); } catch (e) { console.warn("  hook guard: " + e.message); }
-try { await import("./prompt-correctness.mjs"); } catch (e) { console.warn("  prompt correctness: " + e.message); }
-try { await import("./ask-smoke.mjs"); } catch (e) { console.warn("  ask smoke: " + e.message); }
-try { await import("./theme-smoke.mjs"); } catch (e) { console.warn("  theme smoke: " + e.message); }
-try { await import("./editor-hostile.mjs"); } catch (e) { console.warn("  editor-hostile.mjs: " + e.message); }
-try { await import("./editor-copy-rules.mjs"); } catch (e) { console.warn("  editor-copy-rules.mjs: " + e.message); }
-try { await import("./editor-claim-match.mjs"); } catch (e) { console.warn("  editor-claim-match.mjs: " + e.message); }
-try { await import("./editor-money-credit.mjs"); } catch (e) { console.warn("  editor-money-credit.mjs: " + e.message); }
-try { await import("./offline-smoke.mjs"); } catch (e) { console.warn("  offline smoke: " + e.message); }
-try { await import("./editor-smoke.mjs"); } catch (e) { console.warn("  editor smoke: " + e.message); }
-try { await import("./tease-guard.mjs"); } catch (e) { console.warn("  tease: " + e.message); }
+await advisory("./journey-smoke.mjs", "journey");
+await advisory("./evo-smoke.mjs", "evo smoke");
+await advisory("./device-gauntlet.mjs", "device gauntlet");
+await advisory("./prompt-audit.mjs", "prompt-audit");
+await advisory("./env-matrix.mjs", "env-matrix");
+await advisory("./save-paths.mjs", "save-paths");
+await advisory("./user-journeys.mjs", "user-journeys");
+await advisory("./hook-guard.mjs", "hook guard");
+await advisory("./prompt-correctness.mjs", "prompt correctness");
+await advisory("./ask-smoke.mjs", "ask smoke");
+await advisory("./theme-smoke.mjs", "theme smoke");
+await advisory("./editor-hostile.mjs", "editor-hostile");
+await advisory("./editor-copy-rules.mjs", "editor-copy-rules");
+await advisory("./editor-claim-match.mjs", "editor-claim-match");
+await advisory("./editor-money-credit.mjs", "editor-money-credit");
+await advisory("./offline-smoke.mjs", "offline smoke");
+await advisory("./editor-smoke.mjs", "editor smoke");
+await advisory("./tease-guard.mjs", "tease");
 await import("./pre-mortem.mjs");
 await import("./verify-work.mjs");
-try { await import("./bias-guard.mjs"); } catch (e) { console.warn(`  ⚠ bias guard: ${e.message} — advisory`); }
+await advisory("./bias-guard.mjs", "bias guard");
 try { if (new Date().getUTCDay() === 1) await import("./review.mjs"); } catch (e) { console.warn("  review: " + e.message); }
 await import("./publish-assert.mjs");
