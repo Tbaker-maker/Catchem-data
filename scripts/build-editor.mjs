@@ -452,6 +452,32 @@ Cards marked in amber have no artist recorded in the public dataset. That's a ba
 not a Pokémon decision, and you can still use them.</div>
 </div>
 <script>
+// ── THE 269 GROUPS WERE NEVER IN THE PAGE ─────────────────────────────────
+// Tyler typed "connecting art" and got six Pokemon whose names share letters
+// with "art". The parser was part of it, but the deeper cause is that this file
+// shipped ZERO bytes of connecting-art data: grep the artifact and the word does
+// not appear. No parser could have answered, because the answer was not there.
+//
+// 129 COMPLETE groups carry resolved card ids and 368 cards between them. That
+// is ~15KB, which is nothing against a 3.2MB page, and it converts our
+// best-evidenced dataset from invisible into searchable.
+//
+// PARTIAL groups are excluded: all 140 hold zero resolved ids, so shipping them
+// would add names with no cards behind them.
+const CONNECTING = ${JSON.stringify((await (async () => {
+  try {
+    const art = await J('data/connecting-art.json');
+    return (art?.groups ?? [])
+      .filter(g => g.resolution === "COMPLETE")
+      .map(g => ({
+        n: g.name ?? null, a: g.artist ?? null,
+        r: g.relation ?? null,
+        c: (g.cards ?? []).map(x => (typeof x === "string" ? x : x?.id)).filter(Boolean),
+      }))
+      .filter(g => g.c.length > 1);
+  } catch { return []; }
+})()))};
+
 const THEMES = ${JSON.stringify(themes?.themes ?? [])};
 const SETS = ${JSON.stringify(sets)};
 ${await (async () => { const { readFile: rf } = await import('node:fs/promises'); const t = JSON.parse(await rf(join(ROOT,'data/card-text.json'),'utf-8')).cards; const slim = {}; for (const [k,v] of Object.entries(t)) if (v.a && v.a.length) slim[k] = { a: v.a.slice(0,1) }; const eng = await rf(join(ROOT,'scripts/line-engine.js'),'utf-8'); return eng.replace('__CARD_TEXT__', JSON.stringify(slim)); })()}
@@ -731,9 +757,16 @@ function parseIntent(text, ctx) {
 // know that one", which is the sentence that loses a user.
 function intentReply(found, ctx) {
   if (!found || !found.understood) {
+    // SIX WRONG ANSWERS ARE WORSE THAN ONE HONEST "I DO NOT KNOW". "connecting
+    // art" returned Articuno, Artazon, Wartortle, Dartrix, Beartic and Kartana.
+    // Every one was a letter match and none was an answer, and a list of six
+    // confident wrong things reads as a tool that does not understand its own
+    // catalogue. Say what KINDS of thing it understands, and show two.
     return { ok: false,
-      say: "I didn't catch anything I hold data on. Try naming a Pokémon, an artist, a set, or a feeling — or tap one of the examples.",
-      suggest: ctx.examples.slice(0, 4) };
+      say: "I did not understand that. I can find: a Pokémon by name, an illustrator, " +
+           "a set, an evolution line, cards that connect into one picture, or one " +
+           "Pokémon across the years. Try \u201cconnecting art\u201d or \u201cwhat kimura drew twice\u201d.",
+      suggest: ["connecting art", "what kimura drew twice"] };
   }
   const bits = found.matched.join(" · ");
   return { ok: true, say: "Showing " + bits + ".", found };
@@ -978,7 +1011,26 @@ setTimeout(() => {
       var nThemes = (document.getElementById("ftheme") || {}).innerHTML || "";
       var imgs = (nCards.match(/<img/g) || []).length;
       var chips = (nThemes.match(/data-t=/g) || []).length;
-      bootSay("Loaded " + INDEX.length + " cards · " + imgs + " thumbnails on screen · " + chips + " angles. If the pictures are blank, the card art host is unreachable from this browser.");
+      // ── SAY WHAT HAPPENED, NOT WHAT MIGHT HAVE ──────────────────────────
+      // This line used to END with "If the pictures are blank, the card art
+      // host is unreachable from this browser" — printed on EVERY boot,
+      // unconditionally, whether or not anything had failed.
+      //
+      // The thumbnails are loading="lazy", so for the first moments after boot
+      // they are legitimately unpainted. A user who looks then sees empty
+      // panels AND a sentence telling them the host is unreachable, and
+      // concludes the tool is broken. Tyler saw exactly that in one session and
+      // not in another, which is what made it look intermittent: it was a race
+      // between the images painting and him reading the message.
+      //
+      // Verified from the published origin on 2026-08-26: all three hosts
+      // return 200 with real bytes and decode — pokemontcg 240x330,
+      // scrydex 245x336, weserv 400x550. No CORS problem, no CDN failure.
+      // The message was the defect.
+      //
+      // It now reports a MEASURED state, filled in by probeHosts() when the
+      // probe finishes, and says nothing about reachability until it knows.
+      bootSay("Loaded " + INDEX.length + " cards · " + imgs + " thumbnails on screen · " + chips + " angles. Checking the card art host…");
       if (!imgs || !chips) bootSay("Loaded " + INDEX.length + " cards but rendered " + imgs + " thumbnails and " + chips + " angles — the data arrived and the drawing failed.", true);
     } catch (e) { bootSay("Render failed: " + e.message, true); }
   }, 0);
@@ -2277,6 +2329,44 @@ function askResolve(text){
   var setName = null;
   if (setHit) for (var sj = 0; sj < INDEX.length; sj++) if (String(INDEX[sj].s).toLowerCase() === setHit) { setName = INDEX[sj].s; break; }
 
+  // ── A CONCEPT WITH NO SUBJECT IS STILL A REQUEST ────────────────────────
+  // Tyler typed "connecting art" and got Articuno, Artazon, Wartortle, Dartrix,
+  // Beartic and Kartana — fuzzy matches on letters, over a catalogue holding 269
+  // connecting-art groups. Every trigger below this point requires a named
+  // Pokemon, artist or set, so a bare concept matched nothing, fell through to
+  // name-fuzz, and came back with six Pokemon that share letters with "art".
+  //
+  // The chips already prove the tool HAS concepts. The free-text box just could
+  // not reach them, which makes typing the thing strictly worse than tapping it.
+  //
+  // THESE RUN FIRST, AND ONLY THESE. The comment below about relations running
+  // second is still right for NAMED queries - it protects prompts ask-smoke
+  // covers. But a query naming no card and no artist has nothing for the name
+  // path to answer well, so there is no tested behaviour to regress.
+  var bare = !mon && !artist && !setName;
+  if (bare) {
+    if (has(["connecting art", "connected art", "cards that connect", "connect",
+             "one picture", "join up", "joins up", "art that connects", "puzzle"]))
+      return { relation: "CONNECTING_ART", subject: null,
+        why: "you asked about art that connects across cards" };
+    if (has(["same artist", "one artist", "same illustrator", "one illustrator",
+             "by the same", "single artist"]))
+      return { relation: "SAME_ARTIST", subject: null,
+        why: "you asked for cards sharing an illustrator" };
+    if (has(["evolution line", "evolution", "evolves", "whole line", "the line",
+             "family", "evolutionary"]))
+      return { relation: "EVOLUTION_LINE", subject: null,
+        why: "you asked about an evolution line" };
+    if (has(["came back", "come back", "returned", "revisit", "years apart",
+             "years later", "drew it again", "same pokemon twice"]))
+      return { relation: "ARTIST_REVISITS", subject: null,
+        why: "you asked about an illustrator returning to a subject" };
+    if (has(["across time", "over the years", "through the years", "then and now",
+             "old and new", "history", "eras"]))
+      return { relation: "SAME_POKEMON_ACROSS_TIME", subject: null,
+        why: "you asked to see one Pokemon across time" };
+  }
+
   // ORDER IS THE POLICY. The most specific shape is tested first, so
   // "everything kimura drew for magmar" resolves as a revisit rather than as
   // that artist's whole catalogue.
@@ -2319,12 +2409,63 @@ function askResolve(text){
 function askCards(r){
   var out = [], reason = "";
   var byYear = function(a, b){ return String(a.y).localeCompare(String(b.y)); };
+  var byId = function(id){ return byIdRow[id] || null; };
+
+  // ── CONNECTING ART, WHICH THIS FUNCTION COULD NOT ANSWER AT ALL ─────────
+  // Not a missing branch so much as a missing dataset - see CONNECTING above.
+  if (r.relation === "CONNECTING_ART") {
+    var pool = CONNECTING.filter(function(g){
+      if (r.subject) return (g.a && g.a === r.subject) || (g.n && g.n === r.subject);
+      return true;
+    });
+    // Prefer a group we can show whole: every card present in the index.
+    var whole = [];
+    for (var gi = 0; gi < pool.length; gi++) {
+      var cs = pool[gi].c.map(byId).filter(Boolean);
+      if (cs.length === pool[gi].c.length && cs.length > 1) whole.push({ g: pool[gi], cards: cs });
+    }
+    if (whole.length) {
+      // Smallest complete group first: two or three cards read as one picture on
+      // a phone, twenty-three do not.
+      whole.sort(function(a, b){ return a.cards.length - b.cards.length; });
+      var pick = whole[0];
+      out = pick.cards;
+      reason = (pick.g.a ? pick.g.a + " drew " : "") + out.length +
+        " cards that form one picture" +
+        (pick.g.r ? " (" + String(pick.g.r).replace(/_/g, " ").toLowerCase() + ")" : "") +
+        ". We hold " + CONNECTING.length + " such groups.";
+    }
+    return { cards: out, reason: reason };
+  }
+
+  // ── A BARE CONCEPT NEEDS AN EXEMPLAR ───────────────────────────────────
+  // "same artist" and "evolution line" name no subject. Rather than returning
+  // nothing, pick a real one from the data and SAY that it is an example, so
+  // the reader knows it was chosen rather than asked for.
+  if (!r.subject) {
+    if (r.relation === "SAME_ARTIST" || r.relation === "ARTIST_REVISITS") {
+      var counts = {};
+      for (var ai = 0; ai < INDEX.length; ai++) if (INDEX[ai].a) counts[INDEX[ai].a] = (counts[INDEX[ai].a] || 0) + 1;
+      var best = null, bestN = 0;
+      for (var k in counts) if (counts[k] > bestN && counts[k] <= 40) { best = k; bestN = counts[k]; }
+      if (best) { r = Object.assign({}, r, { subject: best });
+        reason = "No illustrator named, so here is one: "; }
+    } else if (r.relation === "EVOLUTION_LINE" || r.relation === "SAME_POKEMON_ACROSS_TIME") {
+      var seen = {};
+      for (var mi = 0; mi < INDEX.length; mi++) { var nm = INDEX[mi].n; seen[nm] = (seen[nm] || 0) + 1; }
+      var pickMon = null;
+      for (var mk in seen) if (seen[mk] >= 3 && seen[mk] <= 12) { pickMon = mk; break; }
+      if (pickMon) { r = Object.assign({}, r, { subject: pickMon });
+        reason = "No Pokémon named, so here is one: "; }
+    }
+  }
+  var prefix = reason;
   if (r.relation === "SAME_POKEMON_ACROSS_TIME") {
     out = INDEX.filter(function(c){ return c.n === r.subject; }).sort(byYear);
-    if (out.length > 1) reason = r.subject + " has " + out.length + " cards, " + out[0].y + " to " + out[out.length - 1].y + ".";
+    if (out.length > 1) reason = prefix + r.subject + " has " + out.length + " cards, " + out[0].y + " to " + out[out.length - 1].y + ".";
   } else if (r.relation === "SAME_ARTIST") {
     out = INDEX.filter(function(c){ return c.a === r.subject; }).sort(byYear);
-    if (out.length > 1) reason = r.subject + " has " + out.length + " cards, " + out[0].y + " to " + out[out.length - 1].y + ".";
+    if (out.length > 1) reason = prefix + r.subject + " has " + out.length + " cards, " + out[0].y + " to " + out[out.length - 1].y + ".";
   } else if (r.relation === "ARTIST_REVISITS") {
     if (r.artist && r.subject) {
       out = INDEX.filter(function(c){ return c.a === r.artist && c.n === r.subject; }).sort(byYear);
@@ -2423,10 +2564,43 @@ function tutShow(line, go){
   b.textContent = go;
   t.hidden = false;
 }
+// ── A SPENT TUTORIAL LEFT A BLANK SLATE FOREVER ───────────────────────────
+// Tyler opened the live page and got no tutorial, no cards, no orientation:
+// "I was in the blind." Reproduced exactly on the published URL — set
+// catchem-tutorial to anything and tutStart() returns on its first line, so the
+// page renders an empty tray and a search box and nothing else.
+//
+// The tutorial being ONE-SHOT is right; nobody wants it every visit. What was
+// wrong is that it was the ONLY orientation, so spending it once — a single
+// skip, weeks ago — bought a permanently blank first screen. And the person
+// most likely to have spent it is the person who has used the tool most.
+//
+// So the tray is never empty on arrival. A returning visitor gets the same
+// pairing loaded and one quiet line explaining it, plus a way to see the walk
+// through again. A first-time visitor gets the full tutorial unchanged.
 function tutStart(){
-  if (store.get(TUT_KEY)) return;              // done or skipped, never again
   var missing = TUT_CARDS.filter(function(id){ return !byIdRow[id]; });
   if (missing.length) return;                  // catalogue changed; say nothing
+
+  if (store.get(TUT_KEY)) {
+    // RETURNING. Load the cards anyway — an empty tray is the blank slate the
+    // tutorial existed to prevent, and it should not come back the moment the
+    // tutorial is done.
+    tray = TUT_CARDS.map(function(id){ return byIdRow[id]; });
+    blob = null;
+    render();
+    var t = el("tut"), l = el("tutline"), go = el("tutgo"), sk = el("tutskip");
+    if (!t || !l || !go || !sk) return;
+    l.textContent = "Two cards are in your tray to start you off. Change them, or press the button.";
+    go.textContent = "Make the picture";
+    go.onclick = function(){ composeImage(); };
+    // The way back in. A one-shot that cannot be replayed is a one-shot that
+    // punishes anybody who skipped it while busy.
+    sk.textContent = "Show me how again";
+    sk.onclick = function(){ store.del(TUT_KEY); tutStep = 0; tutStart(); };
+    t.hidden = false;
+    return;
+  }
   tray = TUT_CARDS.map(function(id){ return byIdRow[id]; });
   blob = null;
   render();
@@ -2882,6 +3056,9 @@ function probeHosts(){
         // SWITCH EVERYTHING TO WHAT WORKS. A host that answers is worth more
         // than an accurate description of three that do not.
         if (h.id !== "pokemontcg") { liveHost = h; retryAllImages(); }
+        // The probe knows the answer, so the boot line should carry it rather
+        // than leaving the reader to guess from blank panels.
+        try { bootSay("Card art: " + h.id + " is reachable."); } catch (e) {}
       }
       if (settled === HOSTS.length) reportHosts(reachable);
     };
