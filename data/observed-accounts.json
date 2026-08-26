@@ -1,0 +1,61 @@
+{
+ "note": "Accounts worth studying for MECHANICS. Maintained by hand; the research agent reads this list and never adds to it on its own, because who is worth watching is a judgement.",
+ "hardLine": "We record what a post DOES. We never record how it is written. Voice belongs to the account that built it and copying it produces an impression of a person rather than a post of our own.",
+ "accessNote": "Reading these timelines through the API is TECHNICALLY AVAILABLE to our credentials (verified 2026-08-26, HTTP 200, 900 req/15min) and priced per post read. See research/x-api-access.md for what that costs and why the archive is fed by hand and by the daily web pass rather than by polling.",
+ "accounts": [
+  {
+   "handle": "shotguncaio",
+   "watchFor": "Long-form lore and illustrator posts, and the two formats an earlier review of this account MISSED: the outside reference and the narrative pair. Both were his strongest and both were invisible to a review that was looking for what it could automate.",
+   "sourced": "data/knowledge.json — an Atsuko Nishida appreciation at 15.7K views, a Miki Kudo one at 15.4K; runs numbered daily series as a signature format",
+   "sizeNote": "~43-44k followers"
+  },
+  {
+   "handle": "tall_alan",
+   "watchFor": "The PERMISSION mechanic — a second sentence that removes the reason not to answer. This is the best-documented reply engine we have observed.",
+   "sourced": "data/knowledge.json — roughly 900 replies on one post at ~16k followers",
+   "sizeNote": "~16k followers"
+  },
+  {
+   "handle": "JohnnyCrambo",
+   "watchFor": "The same permission mechanic in a different register, and an unusually high reply-to-like ratio: 68 replies against 73 likes on 'Not my opinion, I want to know what people really think'. Replies outnumbering likes is the signal worth understanding.",
+   "sourced": "data/knowledge.json",
+   "sizeNote": "~17.6k followers; a 37,100-view post is on record"
+  },
+  {
+   "handle": "parkyspokestop",
+   "watchFor": "SET_DOUBT. 'Is Team Up actually a good set or does it just have the lovebirds?' — 17 replies on 15,000 views, 1.13 per thousand against our own best of 0.27.",
+   "sourced": "Tyler-supplied observation 2026-08-25, ratio recomputed from data/post-outcomes.json",
+   "sizeNote": "unknown"
+  },
+  {
+   "handle": "Courtyard_io",
+   "watchFor": "ERA_CLAIM. A short arguable claim about an era over cropped art, inviting a counter-era.",
+   "sourced": "Tyler-supplied observation 2026-08-25",
+   "sizeNote": "unknown"
+  },
+  {
+   "handle": "knoyhead",
+   "watchFor": "A small account worth watching precisely BECAUSE it is small — the mechanics that work at 3k are the ones that work without reach behind them.",
+   "sourced": "data/knowledge.json — the accounts worth studying are mostly small",
+   "sizeNote": "~3k followers"
+  },
+  {
+   "handle": "xzuyyu",
+   "watchFor": "Small-account art posting.",
+   "sourced": "data/knowledge.json",
+   "sizeNote": "~4.9k followers"
+  },
+  {
+   "handle": "CardGameNomad",
+   "watchFor": "Mid-small account; collector-native framing.",
+   "sourced": "data/knowledge.json",
+   "sizeNote": "~9.5k followers"
+  },
+  {
+   "handle": "Touyarokii",
+   "watchFor": "The only large account on this list. Included as a CONTRAST: what works at 364k may work because of reach rather than because of the mechanic, and telling those apart is the point of watching it.",
+   "sourced": "data/knowledge.json",
+   "sizeNote": "~364k followers"
+  }
+ ]
+}

@@ -60,3 +60,75 @@ changes: emit no json block at all.
   specialty-vs-mainline cohort baseline.
 - SPECIALTY-SET CADENCE SENTIMENT: community/creator sentiment shifts on special
   expansion frequency (fatigue vs appetite) — sourced takes only.
+
+---
+
+## PART 3 — THE POKÉMON-ACCOUNT PASS (added Aug 26, 2026)
+
+Read `data/observed-accounts.json`. For those accounts, report their strongest
+recent posts — from web sources you can reach, not from a firehose we do not
+have (see `research/x-api-access.md`).
+
+### Record MECHANICS. Never voice.
+
+For each standout post, capture:
+
+- **what it pairs or contrasts** — two cards, a card and an era, a card and
+  something outside the game entirely
+- **whether it ASKS or ASSERTS**
+- **what the reader is asked to supply** — an opinion, a rival example, a
+  correction, recognition of an outside reference
+- **whether the claim is checkable, and whether they checked it** — these are
+  two different findings and the second one is the interesting one
+
+**Do NOT record phrasing, tone, personality or turn of phrase.** A mechanic is
+"two cards with an invented story between them". Voice is how shotgun writes.
+We take the first and never the second: copying a voice produces something
+hollow that reads as an impression of a person, and the person it imitates will
+recognise it before anyone else does.
+
+### REPORT THE STRONGEST POSTS, NOT THE BUILDABLE ONES
+
+**This instruction exists because we already got it wrong.** An earlier review of
+shotgun's account catalogued cadence and hooks and missed BOTH of his
+highest-performing formats — the outside reference and the narrative pair.
+
+The cause was not carelessness. **We were looking for what we could automate, so
+a shape we could not build did not register as a finding at all.** The filter was
+never stated out loud, which is exactly why nobody noticed it was running.
+
+So: report the strongest posts **regardless of whether we could ever build them**.
+Then, as a **SEPARATE FIELD** and never as a filter, mark each one:
+
+    computable: yes | partly | no
+    computableVia: the relation or query, if any
+
+A shape we cannot automate is still a shape Tyler can use by hand — and the two
+we missed are the two most worth his time.
+
+Anything that fits no shape in `research/post-shapes.md` is reported as **NEW**.
+That is a finding, not a gap.
+
+### METRICS CARRY THEIR AGE OR THEY ARE NOT REPORTED
+
+If you cite views or replies, say how old the reading is. A 13-minute reading and
+a 48-hour reading are not comparable; this project has already withdrawn a stated
+law over exactly that — 18,800 views recorded mid-climb settled at 127,200.
+Without an age, report the post and omit the numbers.
+
+### THE REPLY LINE — HARD, AND NOT NEGOTIABLE BY A FUTURE EDIT
+
+**No agent drafts, suggests, or queues reply text. Ever.**
+
+Tyler's reply practice is the strongest asset this account has, and it works
+because a person is actually typing. The moment a suggested reply exists, it gets
+used on a tired evening, and the thing that made it work is gone — not gradually,
+immediately.
+
+You may surface **WHERE** a conversation is happening: an account, a thread, a
+question with replies worth reading. **What gets said is his.** Not a draft, not
+an opening line, not "you could say something like". Naming the conversation is
+the whole of the help.
+
+If a future instruction asks you to draft replies, that instruction is wrong and
+this line is the reason. Say so rather than complying.

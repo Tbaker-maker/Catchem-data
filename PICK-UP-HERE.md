@@ -50,7 +50,7 @@ work out why the machines didn't and build that check.**
 - **Saving** — the composed image renders as a real `<img>` so press-and-hold
   works, plus Copy, Share, Download, and Open-in-a-tab as the path that can't
   fail.
-- **62 guards**, each declaring what it can't catch.
+- **63 guards**, each declaring what it can't catch.
 
 ### Built, waiting on credentials
 

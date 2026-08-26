@@ -415,6 +415,15 @@
    "cannotCatch": "An eaten escape whose result is still valid syntax AND is not in its rule list — it knows \\\\s, \\\\d, \\\\w, \\\\S, \\\\/ and \\\\. and nothing else. It reads only the artifacts named in ARTIFACTS, so a new generated page is unwatched until it is added. And it skips lines opening with a comment marker, so an eaten escape on a line that begins as a comment and later carries code would be missed.",
    "coveredBy": "search-gauntlet section 13, which drives the real functions rather than reading them",
    "reviewed": "2026-08-26"
+  },
+  "reply-line-guard.mjs": {
+   "cannotCatch": "A drafted reply that never uses the word 'reply'. It matches known field names and known phrasings, so anything calling it a 'response', a 'comment', a 'thread starter' or storing it under a neutral key like text[] slips straight past. It also cannot see outside this repo: a reply drafted in a chat window and pasted by hand is invisible to it, and that is the likeliest way the line actually gets crossed.",
+   "coveredBy": "The rule stated plainly in research/RESEARCH_PROMPT.md, which this guard checks is still present — the guard protects the letter, the brief carries the reason",
+   "knownPatterns": [
+    "substring where structure exists"
+   ],
+   "whyKnownPatterns": "It matches phrases in prose rather than structure, because the thing being policed IS prose — there is no field or type that distinguishes 'a reply Tyler wrote' from 'a reply an agent drafted'. The mitigation is polarity: a phrase only counts when it is not on a line that refuses it, and not under a heading that refuses it.",
+   "reviewed": "2026-08-26"
   }
  }
 }
