@@ -71,16 +71,18 @@ else {
   // follows it without anybody remembering to.
   const TUT = await (async () => {
     const FALLBACK = { cards: ["neo1-40", "sv9-20"],
-      line: "Two cards are already in your tray. Press the button and the two become one picture." };
+      line: "Two cards are already in your tray. Press the button — that's a post.",
+      caption: "Naoyo Kimura drew both of these, 25 years apart." };
     try {
       const top = (await artistRevisits({ minGap: 18, limit: 1 }))[0];
       if (!top) return FALLBACK;
       const e = top.evidence;
+      const who = (e.artist || "").split(" ").pop() || e.artist;
       return { cards: top.cards,
-        line: "Two cards are already in your tray. " + e.artist + " drew this " + e.name +
-              " in " + e.firstYear + ", then drew it again in " + e.latestYear + " — " + e.gap +
-              " years, the longest anyone in this catalogue has gone between drawing the same " +
-              "Pokémon twice. Press the button and the two become one picture." };
+        line: who + " drew this " + e.name + " in " + e.firstYear +
+              ", then again in " + e.latestYear + ". " + e.gap +
+              " years. Press the button — that's a post.",
+        caption: e.artist + " drew both of these, " + e.gap + " years apart." };
     } catch { return FALLBACK; }
   })();
 
@@ -106,17 +108,19 @@ else {
   --live:#36d399; --warn:#d9a441;
   --display:'Syne',system-ui,sans-serif; --body:'Sora',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
   --ease:cubic-bezier(.22,.61,.36,1);
+  --shadow-border:0 0 0 1px rgba(255,255,255,.06);
 }
 *{box-sizing:border-box}
 html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
-body{margin:0;background:var(--ink);color:var(--text);font:300 16px/1.6 var(--body);padding:0 0 120px}
+body{margin:0;background:var(--ink);color:var(--text);font:300 16px/1.6 var(--body);padding:0 0 160px}
 .wrap{max-width:1000px;margin:0 auto;padding:0 24px}
+button:not(:disabled),[role="button"]:not(:disabled){cursor:pointer}
 
 /* Masthead — type does the work, no hero graphic, no gradient. */
-.top{padding:56px 0 40px;border-bottom:1px solid var(--line);margin-bottom:40px}
-h1{font:800 clamp(34px,6vw,52px)/1 var(--display);letter-spacing:-.028em;margin:0 0 12px}
+.top{padding:32px 0 22px;border-bottom:1px solid var(--line);margin-bottom:22px}
+h1{font:800 clamp(28px,5.4vw,44px)/1 var(--display);letter-spacing:-.028em;margin:0 0 10px}
 h1 em{font-style:normal;color:var(--live)}
-.lede{color:var(--soft);font-size:17px;max-width:46ch;margin:0}
+.lede{color:var(--soft);font-size:16px;max-width:52ch;margin:0}
 
 /* Steps — a real sequence, so numbering earns its place. */
 .promptbar{margin-bottom:20px}
@@ -126,10 +130,14 @@ h1 em{font-style:normal;color:var(--live)}
 .suggest{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
 .sg{background:var(--panel);border:1px solid var(--live);color:var(--live);border-radius:8px;
   padding:7px 13px;font:500 13.5px var(--body);cursor:pointer}
-.egs{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
-.eg{background:transparent;border:1px solid var(--line);color:var(--soft);border-radius:20px;
-  padding:8px 15px;font:400 13.5px var(--body);cursor:pointer}
+.egs{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:stretch}
+.eg{background:transparent;border:1px solid var(--line);color:var(--soft);border-radius:16px;
+  padding:9px 16px;font:400 14px var(--body);cursor:pointer;text-align:left;line-height:1.35}
 .eg:hover{border-color:var(--live);color:var(--live)}
+.eg.demo{border-color:var(--live);color:var(--text);padding:12px 18px;flex:1 1 220px}
+.eg.demo:hover{background:rgba(54,211,153,.07)}
+.egkicker{display:block;font:500 9.5px var(--mono);letter-spacing:.16em;text-transform:uppercase;
+  color:var(--live);margin:0 0 4px}
 .hooklabel{font:500 9.5px var(--mono);color:var(--faint);letter-spacing:.15em;margin:16px 0 8px}
 .hooks{display:flex;flex-direction:column;gap:7px}
 .hookchip{background:transparent;border:1px solid var(--line);color:var(--soft);border-radius:10px;
@@ -218,18 +226,31 @@ button.go:disabled{opacity:.45;cursor:default;filter:none}
 .another{flex:0 0 auto;min-height:44px;min-width:44px;padding:0 12px;background:none;
   border:1px solid var(--line);border-radius:10px;color:var(--dim);font-size:12px;cursor:pointer}
 .another:hover{color:var(--live);border-color:var(--live)}
+.another:disabled{opacity:.32;cursor:default;border-color:var(--line);color:var(--faint)}
+.another:disabled:hover{color:var(--faint);border-color:var(--line)}
 .tut{border:1px solid var(--live);border-radius:14px;padding:14px 16px;margin:0 0 18px}
 .tutline{margin:0 0 12px;font-size:15px;line-height:1.45}
 .tutacts{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .tutskip{background:none;border:none;color:var(--dim);text-decoration:underline;cursor:pointer;font-size:13px;padding:6px}
-.page-label{font:500 11px/1 var(--mono);color:var(--faint);letter-spacing:.14em;margin-bottom:14px}
-.binder{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;
-  display:grid;gap:12px;justify-content:center;margin-bottom:16px}
-.pocket{aspect-ratio:745/1040;border-radius:9px;background:var(--raise);
+.page-label{font:500 11px/1 var(--mono);color:var(--faint);letter-spacing:.14em;margin:0}
+.pagerow{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.pageacts{display:flex;gap:8px;align-items:center}
+#anotherset,#backset{min-height:44px;min-width:44px;padding:10px 16px;font:500 14px var(--body);
+  color:var(--live);border:1px solid var(--live);border-radius:10px;background:transparent}
+#anotherset:hover,#backset:hover{background:rgba(54,211,153,.08)}
+#anotherset:disabled,#backset:disabled{opacity:.32;cursor:not-allowed}
+#backset{color:var(--soft);border-color:var(--line)}
+#backset:hover{color:var(--live);border-color:var(--live)}
+.binder{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:28px;
+  display:grid;gap:14px;justify-content:center;margin-bottom:16px;
+  box-shadow:var(--shadow-border), 0 24px 64px rgba(0,0,0,.35)}
+.pocket{aspect-ratio:745/1040;border-radius:12px;background:var(--raise);
   border:1px dashed var(--line);position:relative;overflow:hidden;
   animation:settle .34s var(--ease) both}
-.pocket.filled{border-style:solid;border-color:transparent;background:transparent}
-.pocket img{width:100%;height:100%;object-fit:contain;display:block}
+.pocket.filled{border-style:solid;border-color:transparent;background:transparent;
+  box-shadow:0 10px 28px rgba(0,0,0,.45)}
+.pocket img{width:100%;height:100%;object-fit:contain;display:block;
+  outline:1px solid rgba(255,255,255,.08);outline-offset:-1px}
 .pocket .x{position:absolute;top:5px;right:5px;width:22px;height:22px;border-radius:50%;border:0;
   background:rgba(10,12,18,.82);color:#fff;font-size:14px;line-height:1;cursor:pointer;opacity:0;
   transition:opacity .16s var(--ease)}
@@ -258,7 +279,9 @@ button.go:disabled{opacity:.45;cursor:default;filter:none}
 .selfreply{background:var(--panel);border:1px solid var(--line);border-radius:12px;
   padding:14px 16px;margin-bottom:14px}
 .selfreply .srhead{font:500 10.5px var(--mono);color:var(--faint);letter-spacing:.16em;margin-bottom:9px}
-.selfreply pre{margin:0 0 11px;font:400 13.5px var(--mono);color:var(--soft);
+.selfreply pre{margin:0 0 11px;font:400 13.5px var(--mono);color:var(--soft);white-space:pre-wrap}
+.selfreply input{width:100%;box-sizing:border-box;margin:0 0 11px;background:var(--raise);
+  border:1px solid var(--line);color:var(--text);border-radius:8px;padding:10px 12px;font:400 14px var(--body)}
   white-space:pre-wrap;line-height:1.65}
 .selfreply button{background:transparent;border:1px solid var(--line);color:var(--soft);
   border-radius:8px;padding:8px 14px;font:400 13px var(--body);cursor:pointer}
@@ -271,6 +294,9 @@ button.go:disabled{opacity:.45;cursor:default;filter:none}
   border:1px solid var(--line);border-radius:5px;padding:2px 6px;margin-right:9px;vertical-align:1px}
 .lineopt .txt{font:300 16px var(--body);color:var(--text)}
 .acts{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+button.go,#make{background:var(--live);color:var(--ink);border:0;border-radius:13px;padding:14px 26px;
+  font:600 15px var(--body);min-height:48px;transition:opacity .18s var(--ease)}
+button.go:hover,#make:hover{opacity:.9}
 button.pri{background:var(--live);color:var(--ink);border:0;border-radius:13px;padding:14px 26px;
   font:600 15px var(--body);cursor:pointer;transition:opacity .18s var(--ease)}
 button.pri:hover{opacity:.9}
@@ -278,7 +304,7 @@ button.sec{background:transparent;color:var(--soft);border:1px solid var(--line)
   padding:14px 20px;font:400 14.5px var(--body);cursor:pointer;transition:all .18s var(--ease)}
 button.sec:hover{border-color:var(--faint);color:var(--text)}
 button:disabled{opacity:.32;cursor:not-allowed}
-#outimg{max-width:100%;border-radius:13px;border:1px solid var(--line);display:block}
+#outimg{max-width:100%;border-radius:13px;border:1px solid var(--line);display:block;margin-top:14px}
 .savehint{font:400 13.5px var(--body);color:var(--live);margin:10px 0 0;text-align:center}
 canvas{max-width:100%;border-radius:13px;margin-top:24px;display:none;border:1px solid var(--line)}
 
@@ -322,7 +348,9 @@ summary:before{content:"→ ";color:var(--faint)}
 .streakactions button{background:transparent;border:1px solid var(--line);color:var(--soft);
   border-radius:8px;padding:8px 13px;font:400 13px var(--body);cursor:pointer}
 .streakactions button.go{background:var(--live);color:var(--ink);border:0;font-weight:600}
-.sortrow{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.viberow{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:0 0 12px}
+.viberow .moodlabel{margin:0 6px 0 0}
+.when{font:400 13px var(--body);color:var(--faint);margin:10px 0 0;line-height:1.55;max-width:62ch}
 .sortlabel{font:500 9.5px var(--mono);color:var(--faint);letter-spacing:.16em;margin-right:4px}
 .sortrow .chip.on{border-color:var(--live);color:var(--live)}
 .results{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:9px;
@@ -336,8 +364,14 @@ summary:before{content:"→ ";color:var(--faint)}
 .empty{color:var(--faint);font-size:14px;grid-column:1/-1;padding:22px 0;text-align:center}
 .foot{color:var(--faint);font-size:13px;margin-top:46px;border-top:1px solid var(--line);padding-top:20px;line-height:1.7}
 :focus-visible{outline:2px solid var(--live);outline-offset:2px}
-@media(max-width:760px){.steps{grid-template-columns:1fr;gap:22px}.controls{grid-template-columns:1fr}
-  .acts button{width:100%}}
+@media(max-width:760px){
+  .steps{grid-template-columns:1fr;gap:22px}
+  .controls{grid-template-columns:1fr}
+  .acts{position:sticky;bottom:0;z-index:8;background:linear-gradient(180deg,transparent,var(--ink) 28%);
+    padding:18px 0 12px;margin:0 -8px}
+  .acts button{width:100%}
+  .pocket .x,.pocket .own{opacity:1}
+}
 </style>
 <div class="wrap">
 <div class="top">
@@ -348,10 +382,10 @@ summary:before{content:"→ ";color:var(--faint)}
 
 <div id="boot" style="background:#1a1410;border:1px solid #4a3a20;border-radius:10px;padding:14px 16px;margin-bottom:16px;color:#d9a441;font:400 13.5px system-ui,sans-serif;line-height:1.6">Starting…</div>
 <div class="promptbar">
-  <input id="ask" placeholder="What do you want to post?" autocomplete="off">
+  <input id="ask" placeholder="A pairing, an evolution line, two cards that make one picture…" autocomplete="off">
   <div class="suggest" id="suggest" hidden></div>
   <div class="egs" id="egs"></div>
-  <div class="hooklabel">OR POST A FACT — every one is counted from the cards it loads</div>
+  <div class="hooklabel">OR A FACT WE COUNTED FROM THE CARDS</div>
   <div class="hooks" id="hooks"></div>
   <div class="askreply" id="askreply"></div>
 </div>
@@ -368,14 +402,27 @@ summary:before{content:"→ ";color:var(--faint)}
     <button class="tutskip" id="tutskip">Skip this</button>
   </div>
 </div>
-<div class="page-label" id="plabel">YOUR PAGE</div>
+<div class="pagerow">
+  <div class="page-label" id="plabel">YOUR PAGE</div>
+  <div class="pageacts">
+    <button type="button" class="another" id="backset" hidden>Back</button>
+    <button type="button" class="another" id="anotherset" hidden>Another</button>
+  </div>
+</div>
 <div class="binder" id="tray"></div>
 <div class="status" id="st"></div>
 <div class="tally" id="tally" hidden></div>
+<input id="label" placeholder="Your line — or leave it blank and let the cards talk" style="margin-bottom:18px">
+<div class="viberow" id="viberow" hidden>
+  <span class="moodlabel">VIBE</span>
+  <button type="button" class="chip on" data-v="">All</button>
+  <button type="button" class="chip" data-v="observation">Observed</button>
+  <button type="button" class="chip" data-v="question">Asked</button>
+  <button type="button" class="chip" data-v="divide">Split</button>
+  <button type="button" class="chip" data-v="confession">Soft</button>
+</div>
 <div class="lines" id="lines" hidden></div>
 <div class="selfreply" id="selfreply" hidden></div>
-<input id="label" placeholder="Your line — or leave it blank and let the cards talk" style="margin-bottom:18px">
-
 <p class="savehint" id="savehint"></p>
 <div class="acts">
 <button class="go" id="make">Make the image</button>
@@ -530,13 +577,26 @@ const EVO_EXEMPLAR = ${JSON.stringify((() => {
 const CONNECTING = ${JSON.stringify((await (async () => {
   try {
     const art = await J('data/connecting-art.json');
+    // THE WIKI TABLE IS NOT THE PICTURE. Carvanha sits above Sharpedo on
+    // Bulbapedia because the page is a column. On the cards, Carvanha's right
+    // edge is Sharpedo's left. Spidops' web does run down onto Tarountula.
+    // Direction is taken from the printed edges, with one recorded override.
+    const ART_ACROSS = new Set(["ex1-51|ex1-22"]);
     return (art?.groups ?? [])
-      .filter(g => g.resolution === "COMPLETE")
-      .map(g => ({
-        n: g.name ?? null, a: g.artist ?? null,
-        r: g.relation ?? null,
-        c: (g.cards ?? []).map(x => (typeof x === "string" ? x : x?.id)).filter(Boolean),
-      }))
+      .filter(g => g.resolution === "COMPLETE" && g.relation === "COMBINED_ILLUSTRATION")
+      .map(g => {
+        const c = (g.cards ?? []).map(x => (typeof x === "string" ? x : x?.id)).filter(Boolean);
+        const shape = g.rowShape ?? [];
+        const arr0 = String(g.arrangement ?? "");
+        const key = c.join("|");
+        let dir, cols, rows, sh;
+        if (ART_ACROSS.has(key)) { dir = "across"; cols = c.length; rows = 1; sh = [c.length]; }
+        else if (arr0.startsWith("grid")) { dir = "grid"; cols = Math.max(1, ...shape); rows = shape.length; sh = shape; }
+        else if (arr0 === "vertical" || (shape.length > 1 && shape[0] === 1)) {
+          dir = "down"; cols = 1; rows = c.length; sh = Array(c.length).fill(1);
+        } else { dir = "across"; cols = c.length; rows = 1; sh = shape.length ? shape : [c.length]; }
+        return { n: g.name ?? null, a: g.artist ?? null, r: g.relation ?? null, arr: dir, cols, rows, shape: sh, c };
+      })
       .filter(g => g.c.length > 1);
   } catch { return []; }
 })()))};
@@ -564,7 +624,7 @@ const CARD_ROWS = ${await (async () => {
   // line and were excluded — Metapod, Kakuna, Roselia, the stages nobody
   // chases. The post-worthy filter was right in general and wrong here: a cocoon
   // is not post-worthy alone and is essential to the line that is. Five KB.
-  const FORM_P = new RegExp("^(Galarian|Alolan|Hisuian|Paldean|Dark|Mega|Shadow|Crystal|Light|Shining|Radiant)\\s+", "i");
+  const FORM_P = new RegExp("^(Galarian|Alolan|Hisuian|Paldean|Dark|Mega|M|Shadow|Crystal|Light|Shining|Radiant)\\s+", "i");
   const MECH_P = new RegExp("\\s+(ex|EX|GX|V|VMAX|VSTAR|BREAK|LEGEND|Prime|Star|LV.X)$");
   const monP = (n) => { let x = String(n); for (let i = 0; i < 2; i++) x = x.replace(FORM_P, ""); return x.replace(MECH_P, "").trim().split(" ")[0]; };
   // EVERY CARD IS FINDABLE. This filter used to BE the index: hero rarity or
@@ -622,6 +682,7 @@ const CARD_ROWS = ${await (async () => {
       // WEAKNESS. Captured weeks ago and never shipped, so every matchup lookup
       // read undefined. It is one short string per card.
       rich ? (A.w ?? 0) : 0, rich ? 1 : 0,
+      rich ? (A.w ?? 0) : 0, rich ? 1 : 0,
       // SUPERTYPE, AS ONE CHARACTER. Without it the browser cannot tell a
       // Trainer from a Pokemon, so monName("Evolution Incense") produced
       // "Evolution" — nine characters, sorted ahead of "Magikarp" — and
@@ -634,7 +695,10 @@ const CARD_ROWS = ${await (async () => {
       // column carries a date only where it differs - the handful whose price
       // has not moved in years, which is exactly what a reader needs warning
       // about.
-      priceDateOf(c.i) === COMMON_PRICE_DATE ? 0 : (priceDateOf(c.i) || 0)];
+      priceDateOf(c.i) === COMMON_PRICE_DATE ? 0 : (priceDateOf(c.i) || 0),
+      rich ? (B.era || 0) : 0,
+      rich ? (B.region || 0) : 0,
+      rich && (Array.isArray(B.mechanic) ? B.mechanic[0] : B.mechanic) ? (Array.isArray(B.mechanic) ? B.mechanic[0] : B.mechanic) : 0];
   });
   return JSON.stringify(rows);
 })()};
@@ -662,6 +726,9 @@ const CARD_INDEX = CARD_ROWS.map(function(r){
   if (r[16]) o.hero = 1;
   if (r[17]) o.sup = r[17];       // "P" for Pokémon, absent otherwise
   if (r[18]) o.pd = r[18];   // price date, only when it differs from PRICES_AS_OF
+  if (r[19]) o.era = r[19];
+  if (r[20]) o.regn = r[20];
+  if (r[21]) o.mech = r[21];
   return o;
 });
 // Sourced facts, so the 'story' shape has something true to build on. Only
@@ -670,12 +737,63 @@ const CARD_INDEX = CARD_ROWS.map(function(r){
 const FACTS = ${JSON.stringify((await (async () => { try { return (JSON.parse(await readFile(join(ROOT, 'data/knowledge.json'), 'utf-8')).facts ?? []).filter(f => f.confidence === 'VERIFIED' && (f.usedBy ?? []).includes('build-editor')).map(f => ({ id: f.id, claim: f.claim })); } catch { return []; } })()))};
 const LAYOUTS = ${JSON.stringify(LAYOUTS)};
 const SUPPORTED = Object.keys(LAYOUTS).map(Number);
+function connectingGroupOf(cards){
+  cards = cards || tray;
+  if (typeof CONNECTING === "undefined" || !cards || cards.length < 2) return null;
+  const ids = cards.map(function(c){ return c.i; });
+  for (var i = 0; i < CONNECTING.length; i++) {
+    const g = CONNECTING[i];
+    if (!g.c || g.c.length !== ids.length) continue;
+    var ok = true;
+    for (var j = 0; j < ids.length; j++) if (g.c.indexOf(ids[j]) < 0) { ok = false; break; }
+    if (ok) return g;
+  }
+  return null;
+}
+function orderByConnecting(cards){
+  const g = connectingGroupOf(cards);
+  if (!g) return cards;
+  const by = {};
+  for (var i = 0; i < cards.length; i++) by[cards[i].i] = cards[i];
+  const ordered = [];
+  for (var k = 0; k < g.c.length; k++) if (by[g.c[k]]) ordered.push(by[g.c[k]]);
+  return ordered.length === cards.length ? ordered : cards;
+}
+function frameFromConnecting(g){
+  const CW = 745, CH = 1040, PAD = 90, GAP = 60;
+  const cols = g.cols || 1, rows = g.rows || 1;
+  const cap = (cols * rows <= 4) ? 70 : 0;
+  const W = PAD * 2 + cols * CW + (cols - 1) * GAP;
+  const H = PAD * 2 + rows * (CH + cap) + (rows - 1) * GAP;
+  return { name: "the picture", cols: cols, rows: rows, shape: g.shape, cardW: CW, cardCaption: cap,
+    W: W, H: H, connecting: true, dir: g.arr };
+}
+function slotPos(i, L){
+  if (L && L.shape && L.shape.length) {
+    var n = 0;
+    for (var r = 0; r < L.shape.length; r++) {
+      if (i < n + L.shape[r]) return { r: r, c: i - n };
+      n += L.shape[r];
+    }
+  }
+  const cols = (L && L.cols) || 1;
+  return { r: Math.floor(i / cols), c: i % cols };
+}
+function layoutForTray(){
+  const g = connectingGroupOf(tray);
+  if (g) return frameFromConnecting(g);
+  return LAYOUTS[tray.length] || null;
+}
 // BOOT REPORT. Three wrong guesses at why this dies on a phone, all made from
 // a sandbox that cannot run mobile Safari. A blank screen tells nobody
 // anything, so the page now reports its own failure on the page itself.
 function bootSay(msg, bad){
   var el2 = document.getElementById("boot");
   if (!el2) return;
+  // A HEALTHY LOAD SHOULD NOT LEAVE A BANNER. The box exists so a blank
+  // screen has something to say. Once the catalogue is in, it is noise.
+  if (!bad && /Loaded |reachable/.test(String(msg))) { el2.hidden = true; return; }
+  el2.hidden = false;
   el2.textContent = msg;
   if (bad) { el2.style.color = "#e0705a"; el2.style.borderColor = "#5a2a20"; }
 }
@@ -689,7 +807,7 @@ bootSay("Script parsed. Loading catalogue…");
 // with 72 cards and "Dark" with 69 — those are form and owner prefixes, not
 // creatures, and every grouping built on them was wrong. Strip the known
 // prefixes and the trailing mechanic suffix to get the actual name.
-const FORM_PREFIX = new RegExp("^(" + "Galarian|Alolan|Hisuian|Paldean|Dark|Light|Shining|Radiant|Team Aqua's|Team Magma's|Rocket's|Team Rocket's|Misty's|Brock's|Erika's|Sabrina's|Blaine's|Koga's|Giovanni's|Lillie's|N's|Marnie's|Ethan's|Cynthia's|Steven's|Iono's|Arven's|Hop's|Bea's|Crystal|Shadow|Mega" + ")" + String.fromCharCode(92) + "s+", "i");
+const FORM_PREFIX = new RegExp("^(" + "Galarian|Alolan|Hisuian|Paldean|Dark|Light|Shining|Radiant|Team Aqua's|Team Magma's|Rocket's|Team Rocket's|Misty's|Brock's|Erika's|Sabrina's|Blaine's|Koga's|Giovanni's|Lillie's|N's|Marnie's|Ethan's|Cynthia's|Steven's|Iono's|Arven's|Hop's|Bea's|Crystal|Shadow|Mega|M" + ")" + String.fromCharCode(92) + "s+", "i");
 const MECH_SUFFIX = new RegExp(String.fromCharCode(92) + "s+(" + "ex|EX|GX|V|VMAX|VSTAR|BREAK|LEGEND|Prime|Star|LV.X|-EX|-GX" + ")$");
 function monName(full){
   // "M Charizard-EX" is Mega shorthand, not a distinct creature. Left in, it
@@ -734,7 +852,7 @@ function parseIntent(text, ctx) {
   const q = String(text || "").toLowerCase().trim();
   if (!q) return null;
   const found = { count: null, mon: null, artist: null, set: null, type: null,
-    rating: null, mood: null, shape: null, matched: [], missed: [] };
+    rating: null, mood: null, shape: null, weakness: null, stage: null, era: null, region: null, matched: [], missed: [] };
 
   // NO WORD BOUNDARIES AT ALL. Every \b in this parser emitted as a BACKSPACE
   // character, so every shape and rating match silently failed — thirteenth
@@ -759,7 +877,7 @@ function parseIntent(text, ctx) {
   // already removes the Trainer nouns; this is the second lock, because the
   // same word could arrive as a Pokemon name in a future set and the shape
   // reading is the one a person means.
-  const NOT_MON = /^(evolution|evolutions|evolve|evolves|evolving|incense|family|line|lines|dark|light|team|mega|shadow|crystal|shining|radiant|energy|great|iron|roaring|walking|raging|scream|brute|flutter|sandy|gouging|slither|fire|water|grass|lightning|psychic|fighting|darkness|metal|dragon|fairy|colorless|type|types|pokemon|pokémon|trainer|professor|supporter|stadium)$/i;
+  const NOT_MON = /^(evolution|evolutions|evolve|evolves|evolving|incense|family|line|lines|dark|light|team|mega|shadow|crystal|shining|radiant|energy|great|iron|roaring|walking|raging|scream|brute|flutter|sandy|gouging|slither|fire|water|grass|lightning|psychic|fighting|darkness|metal|dragon|fairy|colorless|type|types|pokemon|pokémon|trainer|professor|supporter|stadium|evolutionary)$/i;
   const mons = (ctx.monNames || []).filter(m => !NOT_MON.test(m)).slice().sort((a, b) => b.length - a.length);
   for (const m of mons) {
     if (m.length < 4) continue;
@@ -786,9 +904,34 @@ function parseIntent(text, ctx) {
     if (hit) { found.set = s; found.matched.push(s); break; }
   }
 
+  // WEAKNESS BEFORE TYPE. "weak to fire" names the printed weakness, not the
+  // Fire type. Running type first narrowed to Fire cards, then weakness
+  // skipped because almost no Fire card is weak to Fire, and the box handed
+  // back Flareon.
+  for (const t of ["fire", "water", "grass", "lightning", "psychic", "fighting", "darkness", "metal", "dragon", "fairy"]) {
+    if (q.indexOf("weak to " + t) >= 0 || q.indexOf("weakness " + t) >= 0) {
+      found.weakness = t.charAt(0).toUpperCase() + t.slice(1);
+      found.matched.push("weak to " + found.weakness);
+      break;
+    }
+  }
+
   // TYPE — the printed card type, which differs from the game type.
-  for (const t of ["fire", "water", "grass", "lightning", "psychic", "fighting", "darkness", "metal", "dragon", "fairy", "colorless"])
+  for (const t of ["fire", "water", "grass", "lightning", "psychic", "fighting", "darkness", "metal", "dragon", "fairy", "colorless"]) {
+    if (found.weakness && found.weakness.toLowerCase() === t) continue;
     if (new RegExp(String.fromCharCode(92) + "b" + t + String.fromCharCode(92) + "b").test(q)) { found.type = t[0].toUpperCase() + t.slice(1); found.matched.push(found.type + " type"); break; }
+  }
+  if (q.indexOf("stage 2") >= 0) { found.stage = "Stage 2"; found.matched.push("Stage 2"); }
+  else if (q.indexOf("stage 1") >= 0) { found.stage = "Stage 1"; found.matched.push("Stage 1"); }
+  else if (q.indexOf("baby pokemon") >= 0 || q.indexOf("baby card") >= 0) { found.stage = "Baby"; found.matched.push("Baby"); }
+  else if (q.indexOf("basic pokemon") >= 0 || q.indexOf("basics") >= 0) { found.stage = "Basic"; found.matched.push("Basic"); }
+  if (q.indexOf("vintage") >= 0) { found.era = "vintage"; found.matched.push("vintage"); }
+  else if (q.indexOf("sun and moon") >= 0 || q.indexOf("sun & moon") >= 0) { found.era = "Sun & Moon"; found.matched.push("Sun & Moon"); }
+  else if (q.indexOf("modern") >= 0) { found.era = "modern"; found.matched.push("modern"); }
+  const REGIONS = ["kanto","johto","hoenn","sinnoh","unova","kalos","alola","galar","paldea","hisui"];
+  for (const r of REGIONS) if (q.indexOf(r) >= 0) {
+    found.region = r.charAt(0).toUpperCase() + r.slice(1); found.matched.push(found.region); break;
+  }
 
   // RATINGS, in the words people use rather than our field names.
   const RATING = [
@@ -843,9 +986,9 @@ function intentReply(found, ctx) {
     // catalogue. Say what KINDS of thing it understands, and show two.
     return { ok: false,
       say: "I did not understand that. I can find: a Pokémon by name, an illustrator, " +
-           "a set, an evolution line, cards that connect into one picture, or one " +
-           "Pokémon across the years. Try \u201cconnecting art\u201d or \u201cwhat kimura drew twice\u201d.",
-      suggest: ["connecting art", "what kimura drew twice"] };
+           "a set, an evolution line, cards that connect into one picture, one " +
+           "Pokémon across the years, a type, a weakness, a region, or an era. Try \u201cconnecting art\u201d or \u201cweak to fire\u201d.",
+      suggest: ["connecting art", "weak to fire"] };
   }
   const bits = found.matched.join(" · ");
   return { ok: true, say: "Showing " + bits + ".", found };
@@ -959,6 +1102,7 @@ function resolvePrompt(found, INDEX, helpers) {
   // Charmander.
   if (found.mon && found.shape === "evo-line") {
     const line = (helpers.evoLineFor && helpers.evoLineFor(found.mon)) || [found.mon];
+    found.evoLine = line;
     narrow(c => line.indexOf(monName(c.n)) >= 0, line.join(" → "));
     // THE LINE IS THE ANSWER, SO THE LINE PICKS THE CARDS. Everything below
     // this used to run: a hero-rarity collapse, then a spread across the years
@@ -983,6 +1127,16 @@ function resolvePrompt(found, INDEX, helpers) {
   // what the video game says. "Fire types" returned Gyarados because the type
   // was parsed and then never applied.
   if (found.type) narrow(c => { const a = attrs[c.i]; return a && (a.t || []).indexOf(found.type) >= 0; }, found.type + " type");
+  if (found.weakness) narrow(c => String(c.W || "").toLowerCase() === String(found.weakness).toLowerCase(), "weak to " + found.weakness);
+  if (found.stage) narrow(c => {
+    const s = c.S;
+    if (!s) return false;
+    if (Array.isArray(s)) return s.indexOf(found.stage) >= 0;
+    return String(s).indexOf(found.stage) >= 0;
+  }, found.stage);
+  if (found.era) narrow(c => c.era === found.era, found.era);
+  if (found.region) narrow(c => c.regn === found.region, found.region);
+  if (found.shape === "lore-self") narrow(c => !!c.L, "has flavour text");
 
   // RANK BY THE RATING, DO NOT FILTER ON IT. A threshold of 6 matched almost
   // nothing — most cards carry no score on a given axis — so the clause was
@@ -1020,6 +1174,12 @@ function resolvePrompt(found, INDEX, helpers) {
   }
 
   // Everything shown must be worth showing, and must credit its artist.
+  // AN EVO LINE MUST NOT DROP STAGES FOR BEING COMMON. The hero-rarity filter
+  // used to run on the whole pool: Charmander and Charmeleon (mostly commons)
+  // vanished, three Charizard SIRs remained, and "charmander evolution" showed
+  // Charizard → Charizard & Braixen-GX → Mega Charizard X ex. evo-smoke still
+  // passed because it only counted cards. Prefer a hero AT EACH STAGE; never
+  // delete a stage that only has a common.
   narrow(c => c.a, "credited");
   const withHero = pool.filter(c => HERO_RX.test(c.r || ""));
   // A HERO-RARITY COLLAPSE IS WRONG FOR A LINE. It drops the ordinary printings
@@ -1028,6 +1188,8 @@ function resolvePrompt(found, INDEX, helpers) {
   if (!found.evoOrder && withHero.length >= (found.count || 2)) { pool = withHero; why.push("hero rarities"); }
 
   const n = found.count || (found.shape === "evo-line" ? 3 : 2);
+  const skip = (helpers.exclude instanceof Set) ? helpers.exclude : new Set();
+  const rot = Number(helpers.rot) || 0;
 
   // ONE CARD PER POKEMON, unless the shape is about one Pokémon over time.
   // Nine Charizards is a composition; nine different Pokémon is a set.
@@ -1055,22 +1217,38 @@ function resolvePrompt(found, INDEX, helpers) {
     why.push("one card per stage, in order");
   } else if (acrossTime && found.mon) {
     // Oldest to newest, spread across the years rather than clustered.
-    const byYear = pool.slice().sort((a, b) => String(a.y).localeCompare(String(b.y)));
-    if (byYear.length <= n) picked = byYear;
+    const byYear = pool.slice().filter(c => !skip.has(c.i)).sort((a, b) => String(a.y).localeCompare(String(b.y)));
+    const years = byYear.length ? byYear : pool.slice().sort((a, b) => String(a.y).localeCompare(String(b.y)));
+    if (years.length <= n) picked = years;
     else {
       picked = [];
-      const step = (byYear.length - 1) / (n - 1);
-      for (let i = 0; i < n; i++) picked.push(byYear[Math.round(i * step)]);
+      const step = (years.length - 1) / (n - 1);
+      const shift = rot % years.length;
+      for (let i = 0; i < n; i++) picked.push(years[(Math.round(i * step) + shift) % years.length]);
     }
     why.push("spread across the years");
   } else {
     const best = {};
     for (const c of pool) { const k = monName(c.n);
+      if (skip.has(c.i)) continue;
       if (!best[k] || (c.p || 0) > (best[k].p || 0)) best[k] = c; }
-    picked = Object.values(best).sort(function(a, b){
+    let ranked = Object.values(best).sort(function(a, b){
       if (rankBy) { const d = (ratingOf(b.i, rankBy) || 0) - (ratingOf(a.i, rankBy) || 0); if (d) return d; }
       return (b.p || 0) - (a.p || 0);
-    }).slice(0, n);
+    });
+    if (ranked.length < n) {
+      const fallback = {};
+      for (const c of pool) { const k = monName(c.n);
+        if (!fallback[k] || (c.p || 0) > (fallback[k].p || 0)) fallback[k] = c; }
+      ranked = Object.values(fallback).sort(function(a, b){ return (b.p || 0) - (a.p || 0); });
+    }
+    if (rot && ranked.length > n) {
+      const start = (rot * n) % ranked.length;
+      picked = [];
+      for (let i = 0; i < n; i++) picked.push(ranked[(start + i) % ranked.length]);
+    } else {
+      picked = ranked.slice(0, n);
+    }
   }
 
   return { cards: picked, why, poolSize: pool.length };
@@ -1104,6 +1282,9 @@ const ATTRS = new Proxy({}, {
 const BIOS = new Proxy({}, { get: (_, k) => byIdRow[k]?.R });
 const LORE = new Proxy({}, { get: (_, k) => byIdRow[k]?.L });
 let INDEX = [], tray = [], blob = null;
+var lastPref = { kind: "revisit", ask: "" };
+var anotherCursor = 0;
+var trail = [];
 
 // CONSTRUCTED URLS 404 TO A CARD BACK. Newer sets serve from a different host
 // entirely, and a 404 here returns a valid 200 PNG of the wrong side of a card.
@@ -1906,6 +2087,8 @@ function loadMood(id){
   }
   if (picked.length < need) return;
   tray = picked; blob = null;
+  lastPref = { kind: "mood", ask: "" };
+  anotherCursor = 0;
   el("label").value = m.say;
   // Show WHY each card matched, so nobody has to take our word for it.
   const box = el("ideas");
@@ -1993,13 +2176,15 @@ window.imgOk = imgOk; window.imgBad = imgBad;
 // empty row would smuggle the category back in.
 var lineCursor = {};       // register -> index into that register's options
 var lineCursorKey = "";    // the tray these cursors belong to
+var fVibe = "";
 
 function renderLines(){
   const box = el("lines");
   if (!box) return;
   if (!tray.length) { box.hidden = true; return; }
   const themeName = fTheme ? (THEMES.find(x => x.id === fTheme) || {}).name : null;
-  const opts = lineOptions(tray, themeName, Number(store.get("typicalViews")) || 0);
+  const optsAll = lineOptions(tray, themeName, Number(store.get("typicalViews")) || 0);
+  const opts = fVibe ? optsAll.filter(function(o){ return o.reg === fVibe; }) : optsAll;
   if (!opts.length) { box.hidden = true; return; }
 
   // NEW CARDS, NEW POOLS. Keeping a cursor across a tray change would point at
@@ -2042,25 +2227,43 @@ function renderLines(){
     b.onclick = function(){ el("label").value = o.text; blob = null; };
     row.appendChild(b);
 
-    // Only when there IS another one.
+    const a = document.createElement("button");
+    a.className = "another";
+    a.textContent = "Another";
     if (pool.length > 1) {
-      const a = document.createElement("button");
-      a.className = "another";
-      // A WORD, NOT A GLYPH. A circular arrow on its own is the thing people
-      // guess wrong about, and guessing wrong here costs them the line they
-      // had already chosen.
-      a.textContent = "Another";
       a.setAttribute("aria-label", "Another " + o.label.toLowerCase() + " suggestion");
       a.onclick = function(){
-        // Walks the pool one at a time and wraps silently at the end. Every
-        // line is seen before any is seen twice, which is the whole reason the
-        // cursor is stored rather than a random pick made on each tap.
         lineCursor[reg] = idx + 1;
         renderLines();
       };
-      row.appendChild(a);
+    } else {
+      a.disabled = true;
+      a.setAttribute("aria-label", "No other " + o.label.toLowerCase() + " yet");
     }
+    row.appendChild(a);
     box.appendChild(row);
+  }
+}
+
+{
+  const vb = el("viberow");
+  if (vb) {
+    vb.querySelectorAll(".chip").forEach(function(b){
+      b.onclick = function(){
+        fVibe = b.dataset.v || "";
+        vb.querySelectorAll(".chip").forEach(function(x){ x.classList.toggle("on", x === b); });
+        const opts = lineOptions(tray, fTheme ? (THEMES.find(function(t){ return t.id === fTheme; }) || {}).name : null, Number(store.get("typicalViews")) || 0);
+        const hit = fVibe ? opts.find(function(o){ return o.reg === fVibe; }) : opts[0];
+        const lab = el("label");
+        if (hit && lab && !lab.value.trim()) lab.value = hit.text;
+        if (fVibe === "observation") replyFmt = 0;
+        else if (fVibe === "question") replyFmt = 2;
+        else if (fVibe === "divide") replyFmt = 3;
+        else if (fVibe === "confession") replyFmt = 4;
+        renderLines();
+        renderSelfReply();
+      };
+    });
   }
 }
 
@@ -2104,70 +2307,92 @@ function renderStreakLine(){
 // value make you less of a collector?" was offered over every pairing in the
 // catalogue. They are now derived the same way this is, and search-gauntlet
 // asserts that no line appears for two different pairings.
-// ── THREE HONEST FORMATS OVER THE SAME CARDS ──────────────────────────────
-// One fixed shape does not suit every page. A nine-card page with the same
-// illustrator three times reads better grouped by illustrator; a page spanning
-// twenty years reads better in date order. All three are built from the same
-// fields the credit strip uses, so none can say more than we hold.
-var SR_FORMAT = 0;
-var SR_FORMATS = ["List", "Credits", "Names"];
-
-function selfReplyText(which){
-  const NL = String.fromCharCode(10);
-  const num = (c) => c.i.slice(c.i.lastIndexOf("-") + 1);
-
-  if (which === 1) {
-    // CREDITS - grouped by illustrator, which is the thing worth surfacing when
-    // one person drew several of the cards on screen.
-    const by = {};
-    for (const c of tray) { const a = c.a || "no credit recorded"; (by[a] = by[a] || []).push(c); }
-    const names = Object.keys(by).sort((a, b) => by[b].length - by[a].length);
-    return "Illustrators above:" + NL + names.map(a =>
-      a + NL + by[a].map(c => "  · " + c.n + " (" + num(c) + " – " + c.s + ")").join(NL)
-    ).join(NL + NL);
-  }
-
-  if (which === 2) {
-    // NAMES - illustrators only, deduplicated, in the order they appear.
-    const seen = [];
-    for (const c of tray) if (c.a && seen.indexOf(c.a) < 0) seen.push(c.a);
-    const missing = tray.filter(c => !c.a).length;
-    return (seen.length ? "Art by " + seen.join(", ") + "." : "No illustrator recorded for these.") +
-      (missing ? NL + missing + " card" + (missing > 1 ? "s have" : " has") + " no artist in the public dataset." : "");
-  }
-
-  // LIST - oldest first, with the year, and the price date when we show prices.
-  const ordered = tray.slice().sort((a, b) => String(a.y).localeCompare(String(b.y)));
-  return "Cards above:" + NL + ordered.map(c =>
-    "· " + c.n + " (" + num(c) + " – " + c.s + ", " + c.y + ")" + (c.a ? " – " + c.a : "")
-  ).join(NL);
-}
-
+var replyFmt = 0, replyFmtKey = "";
 function renderSelfReply(){
   const box = el("selfreply");
   if (!box) return;
   if (!tray.length) { box.hidden = true; return; }
   box.hidden = false;
-  const text = selfReplyText(SR_FORMAT);
+  const NL = String.fromCharCode(10);
+  const key = tray.map(function(c){ return c.i; }).join(",");
+  if (key !== replyFmtKey) { replyFmt = 0; replyFmtKey = key; }
+  const notice = (typeof lineOptions === "function")
+    ? (lineOptions(tray, null, 0).find(function(o){ return /one picture/.test(o.text); })
+      || lineOptions(tray, null, 0).find(function(o){ return o.reg === "observation"; }) || {}).text
+    : "";
+  const gConn = connectingGroupOf(tray);
+  const stacked = !!(gConn && gConn.arr === "down" && tray.length === 2);
+  const across = !!(gConn && gConn.arr === "across" && tray.length === 2);
+  function credit(c, i){
+    const num = c.i.slice(c.i.lastIndexOf("-") + 1);
+    const place = stacked ? (i === 0 ? " (top)" : " (underneath)")
+      : across ? (i === 0 ? " (left)" : " (right)") : "";
+    return c.n + place + " — " + c.s + " " + c.y + " — " + (c.a || "uncredited") + " #" + num;
+  }
+  const credits = tray.map(credit).join(NL);
+  const numbered = tray.map(function(c, i){
+    return (i + 1) + ". " + c.n + " · " + c.s + " " + c.y + (c.a ? " · " + c.a : "") + (c.p ? " · $" + Math.round(c.p) : "");
+  }).join(NL);
+  const where = stacked
+    ? tray[0].n + " on top of " + tray[1].n + "."
+    : across
+      ? tray[0].n + " left, " + tray[1].n + " right."
+      : tray.map(function(c){ return c.n; }).join(", ") + ".";
+  const caption = (el("label") && el("label").value.trim()) || notice || "";
+  var liveShill = "";
+  try { if (typeof box.querySelector === "function") liveShill = (box.querySelector("#shill") || {}).value || ""; } catch (e) {}
+  const shillKeep = (liveShill && String(liveShill).trim()) || (store.get("catchem-shill") || "");
+  const shillLine = shillKeep ? NL + NL + shillKeep : "";
+  const pricesAsOf = (typeof PRICES_AS_OF !== "undefined") ? String(PRICES_AS_OF).slice(0, 10) : "";
+  const withPrices = tray.map(function(c){
+    const num = c.i.slice(c.i.lastIndexOf("-") + 1);
+    return c.n + " — " + c.s + " #" + num + (c.p ? " — $" + Math.round(c.p) : " — unpriced");
+  }).join(NL) + (pricesAsOf ? NL + NL + "Prices as of " + pricesAsOf + "." : "");
+  const formats = [
+    { label: "Credits", text: (notice ? notice + NL + NL : "") + credits + shillLine },
+    { label: "Caption", text: (caption ? caption + NL + NL : "") + credits + shillLine },
+    { label: "Inventory", text: numbered + shillLine },
+    { label: "Prices", text: withPrices + shillLine },
+    { label: "Short", text: where + (gConn && gConn.a ? " " + gConn.a + "." : "") + shillLine },
+    { label: "Thread", text: tray.map(function(c, i){
+        return (i + 1) + "/ " + c.n + " · " + c.s + (c.a ? " · " + c.a : "");
+      }).join(NL) + shillLine },
+    { label: "Names", text: tray.map(function(c){ return c.n; }).join(NL) + shillLine },
+    { label: "Link first", text: (shillKeep ? shillKeep + NL + NL : "") + (notice ? notice + NL + NL : "") + credits },
+  ];
+  const pick = formats[((replyFmt % formats.length) + formats.length) % formats.length];
   box.innerHTML = "";
   const h = document.createElement("div");
   h.className = "srhead";
-  h.textContent = "POST THIS AS A REPLY TO YOUR OWN POST · " + SR_FORMATS[SR_FORMAT].toUpperCase();
+  h.textContent = "REPLY TO YOUR OWN POST · " + pick.label.toUpperCase();
+  const sh = document.createElement("input");
+  sh.id = "shill";
+  sh.placeholder = "Your @ or shop link — added to every format";
+  sh.value = shillKeep;
+  if (typeof sh.addEventListener === "function") {
+    sh.addEventListener("change", function(){ store.set("catchem-shill", sh.value.trim()); renderSelfReply(); });
+    sh.addEventListener("keydown", function(e){ if (e.key === "Enter") { store.set("catchem-shill", sh.value.trim()); renderSelfReply(); } });
+  }
   const pre = document.createElement("pre");
-  pre.textContent = text;
+  pre.textContent = pick.text;
+  const row = document.createElement("div");
+  row.className = "tutacts";
   const b = document.createElement("button");
-  b.textContent = "Copy the list";
-  // COPIES WHAT IS SHOWING. A copy button that copies a different format from
-  // the one on screen is a trap, and the reader would not find out until it was
-  // already posted.
-  b.onclick = async () => {
-    try { await navigator.clipboard.writeText(selfReplyText(SR_FORMAT)); b.textContent = "Copied"; }
+  b.textContent = "Copy the reply";
+  b.onclick = async function(){
+    try { await navigator.clipboard.writeText(pick.text); b.textContent = "Copied"; }
     catch { b.textContent = "Select and copy above"; }
   };
-  const f = document.createElement("button");
-  f.textContent = "Another format";
-  f.onclick = function(){ SR_FORMAT = (SR_FORMAT + 1) % SR_FORMATS.length; renderSelfReply(); };
-  box.appendChild(h); box.appendChild(pre); box.appendChild(b); box.appendChild(f);
+  const a = document.createElement("button");
+  a.className = "another";
+  a.textContent = "Another format";
+  a.setAttribute("aria-label", "Another reply format");
+  a.onclick = function(){ replyFmt += 1; renderSelfReply(); };
+  row.appendChild(b); row.appendChild(a);
+  const when = document.createElement("p");
+  when.className = "when";
+  when.textContent = "Post this reply as soon as the image is up. Add your @ or shop above if you want it on the copy. A day-2 bump is unproven.";
+  box.appendChild(h); box.appendChild(sh); box.appendChild(pre); box.appendChild(row); box.appendChild(when);
 }
 
 // RATING FILTERS. Each one is a real threshold on a derived number, and the
@@ -2204,6 +2429,8 @@ let fRating = null;
       + "<div class='ratingwhy' id='ratingwhy'></div>";
     box.querySelectorAll(".chip").forEach(b => b.onclick = () => {
       fRating = fRating === b.dataset.i ? null : b.dataset.i;
+      lastPref = { kind: "filters", ask: lastPref.ask || "" };
+      anotherCursor = 0;
       box.querySelectorAll(".chip").forEach(x => x.classList.toggle("on", x.dataset.i === fRating));
       const f = RATING_FILTERS.find(x => x.id === fRating);
       const w = el("ratingwhy");
@@ -2304,66 +2531,78 @@ window.todaysCard = todaysCard;
 // menu — so the most natural action on the device silently did nothing and the
 // tool read as broken. Swapping in a real <img> after composing makes the
 // obvious gesture work.
+var previewUrl = null;
 function showSaveable(dataUrl){
   const img = el("outimg"), cv = el("cv");
   if (!img || !cv) return;
   img.src = dataUrl;
   img.hidden = false;
   cv.style.display = "none";
+  ["copy","share","dl"].forEach(function(i){ if (el(i)) el(i).hidden = false; });
   const hint = el("savehint");
-  if (hint) hint.textContent = "Press and hold the image to save it — or use the buttons below.";
+  if (hint) hint.textContent = "Press and hold the image to save it — or Copy / Download below.";
+}
+function showSaveableBlob(b){
+  if (!b) return;
+  blob = b;
+  const img = el("outimg"), cv = el("cv");
+  if (previewUrl) try { URL.revokeObjectURL(previewUrl); } catch (e) {}
+  try { previewUrl = URL.createObjectURL(b); } catch (e) { previewUrl = null; }
+  if (img && previewUrl) { img.src = previewUrl; img.hidden = false; }
+  else if (img && typeof FileReader === "function") {
+    const r = new FileReader();
+    r.onload = function(){ img.src = r.result; img.hidden = false; };
+    r.readAsDataURL(b);
+  }
+  if (cv) cv.style.display = "none";
+  ["copy","share","dl"].forEach(function(i){ if (el(i)) el(i).hidden = false; });
+  const hint = el("savehint");
+  if (hint) hint.textContent = "Press and hold the image to save it — or Copy / Download below.";
 }
 window.showSaveable = showSaveable;
 
-// FIVE WAYS OUT, ONE OF WHICH CANNOT FAIL. Press-and-hold works on phones,
-// Copy is fastest on desktop, Share opens the native sheet, Download is the
-// desktop default, and OPEN IN A TAB is just a URL — nothing to block. Every
-// one reports what happened, because a silent success looks exactly like a
-// silent failure and that is what makes people give up.
 async function copyImage(){
-  const cv = el("cv");
   try {
-    const b = await new Promise(r => cv.toBlob(r, "image/png"));
+    const b = blob || await new Promise(function(r){ el("cv").toBlob(r, "image/png"); });
+    if (!b) { setStatus("Make the image first.", true); return; }
     await navigator.clipboard.write([new ClipboardItem({ "image/png": b })]);
     setStatus("Copied — paste it straight into your post.", false);
   } catch (e) {
-    setStatus("Copy is blocked in this browser. Press and hold the image above, or use Open in a tab.", true);
+    setStatus("Copy is blocked in this browser. Press and hold the image above, or Download it.", true);
   }
 }
 async function shareImage(){
-  const cv = el("cv");
   try {
-    const b = await new Promise(r => cv.toBlob(r, "image/png"));
+    const b = blob || await new Promise(function(r){ el("cv").toBlob(r, "image/png"); });
+    if (!b) { setStatus("Make the image first.", true); return; }
     const f = new File([b], "catchem.png", { type: "image/png" });
     if (navigator.canShare && navigator.canShare({ files: [f] })) {
       await navigator.share({ files: [f] });
       setStatus("Shared.", false);
-    } else setStatus("Sharing is not available here. Press and hold the image above to save it.", true);
+    } else setStatus("Sharing is not available here. Download it, or press and hold the image.", true);
   } catch (e) { setStatus("Share cancelled.", false); }
 }
 function openImage(){
-  // THE ONE THAT CANNOT FAIL. No download attribute, no clipboard permission,
-  // no share API — just an image at a URL, which every browser can show and
-  // every user can then save however their device does it.
-  const cv = el("cv");
+  const src = previewUrl || (el("outimg") && el("outimg").src) || (el("cv") && el("cv").toDataURL("image/png"));
+  if (!src) { setStatus("Make the image first.", true); return; }
   const w = window.open();
   if (w) {
-    w.document.write('<img src="' + cv.toDataURL("image/png") + '" style="max-width:100%">');
+    w.document.write('<img src="' + src + '" style="max-width:100%">');
     w.document.close();
-    // SAY IT WORKED TOO. This is the last-resort path, reached by somebody for
-    // whom the other three already failed — silence here is the worst place for
-    // silence in the tool. On a phone the new tab may not even be visible.
     setStatus("Opened in a new tab. Press and hold it there to save.", false);
   }
   else setStatus("Your browser blocked the new tab. Press and hold the image above instead.", true);
 }
 function dlImage(){
-  const cv = el("cv");
+  if (!blob && !(el("outimg") && el("outimg").src)) { setStatus("Make the image first.", true); return; }
   const a = document.createElement("a");
-  a.href = cv.toDataURL("image/png");
+  a.href = previewUrl || (el("outimg") && el("outimg").src) || "";
   a.download = "catchem.png";
-  a.click();
-  // iOS often OPENS this instead of saving, so say what to do when it does.
+  if (typeof a.click === "function") {
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
   setStatus("If that opened the image instead of saving it, press and hold it.", false);
 }
 window.dlImage = dlImage;
@@ -2407,12 +2646,11 @@ window.imgFallback = imgFallback;
 // nothing is worse than no chip: it teaches a first-time user that the box does
 // not work, on their first attempt, using our own suggestion.
 const EXAMPLES = [
-  "connecting art",
-  "squirtle evolution",
-  "the whole charmander line",
-  "what kimura drew twice",
-  "charizard through the years",
-  "cards nobody talks about",
+  { q: "connecting art", label: "connecting art", demo: true },
+  { q: "what kimura drew twice", label: "Same Pokémon, 25 years later" },
+  { q: "squirtle evolution", label: "Evolution sets" },
+  { q: "charizard through the years", label: "Charizard, then and now" },
+  { q: "cute cards", label: "Cute cards" },
 ];
 function intentCtx(){
   return {
@@ -2424,7 +2662,7 @@ function intentCtx(){
     artists: [...new Set(INDEX.map(c => c.a).filter(Boolean))],
     sets: [...new Set(INDEX.map(c => c.s))],
     moods: MOODS,
-    examples: EXAMPLES,
+    examples: EXAMPLES.map(function(e){ return e.q; }),
   };
 }
 
@@ -2545,7 +2783,7 @@ function askResolve(text){
       return { relation: "EVOLUTION_LINE", subject: null,
         why: "you asked about an evolution line" };
     if (has(["came back", "come back", "returned", "revisit", "years apart",
-             "years later", "drew it again", "same pokemon twice"]))
+             "years later", "drew it again", "same pokemon twice", "drew twice"]))
       return { relation: "ARTIST_REVISITS", subject: null,
         why: "you asked about an illustrator returning to a subject" };
     if (has(["across time", "over the years", "through the years", "then and now",
@@ -2557,7 +2795,7 @@ function askResolve(text){
   // ORDER IS THE POLICY. The most specific shape is tested first, so
   // "everything kimura drew for magmar" resolves as a revisit rather than as
   // that artist's whole catalogue.
-  if (has(["came back", "come back", "returned", "revisit", "went back", "again years"])) {
+  if (has(["came back", "come back", "returned", "revisit", "went back", "again years", "drew twice", "twice"])) {
     return { relation: "ARTIST_REVISITS", subject: artist || null,
       why: artist
         ? "you named " + artist + ", and asked about coming back to a subject"
@@ -2654,10 +2892,13 @@ function evoLineFor(name){
   return line;
 }
 
-function askCards(r){
+function askCards(r, opts){
   var out = [], reason = "";
   var byYear = function(a, b){ return String(a.y).localeCompare(String(b.y)); };
   var byId = function(id){ return byIdRow[id] || null; };
+  opts = opts || {};
+  var skipIds = opts.exclude instanceof Set ? opts.exclude : new Set();
+  var rot = Number(opts.rot) || 0;
 
   // ── CONNECTING ART, WHICH THIS FUNCTION COULD NOT ANSWER AT ALL ─────────
   // Not a missing branch so much as a missing dataset - see CONNECTING above.
@@ -2676,11 +2917,15 @@ function askCards(r){
       // Smallest complete group first: two or three cards read as one picture on
       // a phone, twenty-three do not.
       whole.sort(function(a, b){ return a.cards.length - b.cards.length; });
-      var pick = whole[0];
-      out = pick.cards;
+      var unusedG = whole.filter(function(w){
+        return w.cards.every(function(c){ return !skipIds.has(c.i); });
+      });
+      var listG = unusedG.length ? unusedG : whole;
+      var pick = listG[rot % listG.length];
+      out = orderByConnecting(pick.cards);
       reason = (pick.g.a ? pick.g.a + " drew " : "") + out.length +
         " cards that form one picture" +
-        (pick.g.r ? " (" + String(pick.g.r).replace(/_/g, " ").toLowerCase() + ")" : "") +
+        (pick.g.arr === "down" ? ", top to bottom" : pick.g.arr === "across" ? ", left to right" : "") +
         ". We hold " + CONNECTING.length + " such groups.";
     }
     return { cards: out, reason: reason };
@@ -2736,12 +2981,19 @@ function askCards(r){
     if (r.subject && !r.artist) {
       var groups = {};
       for (var i = 0; i < out.length; i++) { var g = out[i].n; (groups[g] = groups[g] || []).push(out[i]); }
-      var bestG = null, bestGap = -1;
+      var bestG = null, bestGap = -1, allG = [];
       for (var k in groups) {
         var g2 = groups[k].sort(byYear);
         if (g2.length < 2) continue;
         var gap = Number(g2[g2.length - 1].y) - Number(g2[0].y);
+        if (gap < 8) continue;
+        allG.push({ gap: gap, cards: [g2[0], g2[g2.length - 1]] });
+        if (g2.some(function(c){ return skipIds.has(c.i); })) continue;
         if (gap > bestGap) { bestGap = gap; bestG = g2; }
+      }
+      if (!bestG && allG.length) {
+        allG.sort(function(a, b){ return b.gap - a.gap; });
+        bestG = allG[rot % allG.length].cards;
       }
       if (bestG) out = [bestG[0], bestG[bestG.length - 1]];
     }
@@ -2756,32 +3008,15 @@ function askCards(r){
     }).sort(function(a, b){ return (b.p || 0) - (a.p || 0); });
     if (out.length > 1) reason = out.length + " " + r.type + "-type cards in " + r.subject + ".";
   } else if (r.relation === "EVOLUTION_LINE") {
-    // BOTH DIRECTIONS. evoLineFor only walks FORWARD, so asking for the
-    // "charizard line" found no children of Charizard, produced a one-card
-    // line, bailed out, and left the previous prompt's cards sitting in the
-    // tray - the panel then claimed Charmander/Charmeleon/Charizard while
-    // showing Magikarp and Squirtle. Caught by ask-smoke, which checks that a
-    // prompt SHOWS what it SAID rather than merely returning something.
-    //
-    // A person naming any member of a family means the family. Walk back to the
-    // root first, then forward from there.
-    var root = monName(r.subject);
-    for (var guard = 0; guard < 4; guard++) {
-      var parent = null;
-      for (var id0 in ATTRS) {
-        var a0 = ATTRS[id0];
-        if (!a0 || !a0.ev) continue;
-        var row0 = byIdRow[id0];
-        if (!row0) continue;
-        if (monName(row0.n !== undefined ? row0.n : row0[1]) === root) { parent = monName(a0.ev); break; }
-      }
-      if (!parent || parent === root) break;
-      root = parent;
-    }
-    var line = evoLineFor(root);
+    // BOTH DIRECTIONS live in evoLineFor. This used to walk back here AND
+    // forward there; the two copies drifted, and resolvePrompt's copy never
+    // walked back at all.
+    var line = evoLineFor(r.subject);
     for (var j = 0; j < line.length; j++) {
-      var pick = INDEX.filter(function(c){ return monName(c.n) === line[j]; })
-        .sort(function(a, b){ return (b.p || 0) - (a.p || 0); })[0];
+      var candsE = INDEX.filter(function(c){ return monName(c.n) === line[j]; })
+        .sort(function(a, b){ return (b.p || 0) - (a.p || 0); });
+      var unusedE = candsE.filter(function(c){ return !skipIds.has(c.i); });
+      var pick = (unusedE.length ? unusedE : candsE)[0];
       if (pick) out.push(pick);
     }
     if (out.length > 1) reason = prefix + out.map(function(c){ return c.n; }).join(" evolves into ") + ".";
@@ -2838,6 +3073,17 @@ function tutShow(line, go){
 // So the tray is never empty on arrival. A returning visitor gets the same
 // pairing loaded and one quiet line explaining it, plus a way to see the walk
 // through again. A first-time visitor gets the full tutorial unchanged.
+function fillLineFromCards(preset){
+  const lab = el("label");
+  if (!lab) return;
+  if (typeof preset === "string" && preset) { lab.value = preset; return; }
+  if (preset !== true && lab.value.trim()) return;
+  const opts = (typeof lineOptions === "function") ? lineOptions(tray, null, 0) : [];
+  const hit = opts.find(function(o){ return /one picture/.test(o.text); })
+    || opts.find(function(o){ return o.reg === "observation"; }) || opts[0];
+  if (hit) lab.value = hit.text;
+}
+
 function tutStart(){
   var missing = TUT_CARDS.filter(function(id){ return !byIdRow[id]; });
   if (missing.length) return;                  // catalogue changed; say nothing
@@ -2848,6 +3094,8 @@ function tutStart(){
     // tutorial is done.
     tray = TUT_CARDS.map(function(id){ return byIdRow[id]; });
     blob = null;
+    lastPref = { kind: "revisit", ask: "" };
+    anotherCursor = 0;
     render();
     var t = el("tut"), l = el("tutline"), go = el("tutgo"), sk = el("tutskip");
     if (!t || !l || !go || !sk) return;
@@ -2859,10 +3107,13 @@ function tutStart(){
     sk.textContent = "Show me how again";
     sk.onclick = function(){ store.del(TUT_KEY); tutStep = 0; tutStart(); };
     t.hidden = false;
+    fillLineFromCards(${JSON.stringify(TUT.caption)});
     return;
   }
   tray = TUT_CARDS.map(function(id){ return byIdRow[id]; });
   blob = null;
+  lastPref = { kind: "revisit", ask: "" };
+  anotherCursor = 0;
   render();
   tutStep = 1;
   tutShow(
@@ -2921,7 +3172,7 @@ function fbContext(){
   try { lastCompose = window.__lastComposeOk === true ? "succeeded"
       : window.__lastComposeOk === false ? "FAILED" : "none attempted"; } catch (e) {}
   var layout = "";
-  try { var L = LAYOUTS[tray.length]; layout = L ? (tray.length + " cards, " + L.name) : (tray.length + " cards"); } catch (e) {}
+  try { var L = layoutForTray(); layout = L ? (tray.length + " cards, " + L.name) : (tray.length + " cards"); } catch (e) {}
   var relation = "";
   try { relation = (typeof lastRelation === "string" && lastRelation) ? lastRelation : "none"; } catch (e) { relation = "none"; }
   return {
@@ -3051,6 +3302,8 @@ function runAsk(text){
       // prompt's cards: a wrong answer that reads as a right one, which is
       // exactly what ask-smoke exists to catch. It caught it.
       tray = got.cards.slice(0, 9); blob = null;
+      lastPref = { kind: "ask", ask: text };
+      anotherCursor = 0;
       render(); resetPage(); search();
       return true;
     }
@@ -3083,7 +3336,7 @@ function runAsk(text){
   if (found.mon) fMon = found.mon;
   if (found.set) fSet = found.set;
   if (found.rating) fRating = found.rating;
-  if (found.mood) { loadMood(found.mood); return; }
+  if (found.mood) { lastPref = { kind: "mood", ask: "" }; loadMood(found.mood); return; }
 
   const res = resolvePrompt(found, INDEX, {
     monName: monName,
@@ -3109,6 +3362,9 @@ function runAsk(text){
   if (!res.cards.length && tryRelation()) return;
   if (res.cards.length) {
     tray = res.cards; blob = null;
+    lastPref = { kind: "ask", ask: text };
+    anotherCursor = 0;
+    trail = [];
     // SAY WHICH CONSTRAINTS WERE APPLIED. When the answer looks wrong, the user
     // can see whether the tool misread the sentence or the catalogue simply has
     // nothing — and those need different responses from them.
@@ -3121,8 +3377,20 @@ function runAsk(text){
 {
   const eg = el("egs");
   if (eg) {
-    eg.innerHTML = EXAMPLES.map(function(e){ return "<button class='eg'>" + e + "</button>"; }).join("");
-    eg.querySelectorAll(".eg").forEach(function(b){ b.onclick = function(){ el("ask").value = b.textContent; runAsk(b.textContent); }; });
+    eg.innerHTML = EXAMPLES.map(function(e){
+      const kicker = e.demo ? "<span class='egkicker'>Try this</span>" : "";
+      return "<button type='button' class='eg" + (e.demo ? " demo" : "") + "' data-q='" + e.q + "'>" +
+        kicker + e.label + "</button>";
+    }).join("");
+    eg.querySelectorAll(".eg").forEach(function(b){
+      b.onclick = function(){
+        const q = b.getAttribute("data-q") || b.textContent;
+        el("ask").value = q;
+        runAsk(q);
+        fillLineFromCards(true);
+        if (b.classList.contains("demo")) composeImage();
+      };
+    });
   }
   const ask = el("ask");
   if (ask) {
@@ -3131,6 +3399,202 @@ function runAsk(text){
   }
 }
 window.runAsk = runAsk;
+
+// ANOTHER SET, SAME PREFERENCE. The line panel already walks its pool one at
+// a time. The tray did not: changing the Magmars meant retyping the ask, or
+// picking a different idea, or accepting that the first answer was the only
+// answer. The button is "Another" because that is the word a person says, and
+// it walks the matching pool rather than shuffling — every set is seen before
+// any is seen twice.
+function promptHelpers(exclude, rot){
+  return {
+    monName: monName,
+    attrs: ATTRS,
+    ratingOf: function(id, k){
+      const c = byIdRow[id];
+      return c && c.R && typeof c.R[k] === "number" ? c.R[k] : 0;
+    },
+    HERO_RX: HERO_RX,
+    evoLineFor: evoLineFor,
+    exclude: exclude || new Set(),
+    rot: rot || 0,
+  };
+}
+function sameTray(cards){
+  if (!cards || cards.length !== tray.length) return false;
+  for (var i = 0; i < cards.length; i++) if (cards[i].i !== tray[i].i) return false;
+  return true;
+}
+function artistRevisitPairs(){
+  const groups = {};
+  for (var i = 0; i < INDEX.length; i++) {
+    const c = INDEX[i];
+    if (!c.a || !c.y) continue;
+    const k = c.a + "\0" + monName(c.n);
+    (groups[k] = groups[k] || []).push(c);
+  }
+  const pairs = [];
+  for (const k in groups) {
+    const g = groups[k].slice().sort(function(a, b){ return String(a.y).localeCompare(String(b.y)); });
+    if (g.length < 2) continue;
+    const gap = Number(g[g.length - 1].y) - Number(g[0].y);
+    if (gap < 8) continue;
+    pairs.push({ gap: gap, artist: g[0].a, cards: [g[0], g[g.length - 1]] });
+  }
+  pairs.sort(function(a, b){ return b.gap - a.gap; });
+  return pairs;
+}
+function rerunAsk(text, exclude, rot){
+  const ctx = intentCtx();
+  const found = parseIntent(text, ctx);
+  const reply = intentReply(found, ctx);
+  if (reply.ok) {
+    const res = resolvePrompt(found, INDEX, promptHelpers(exclude, rot));
+    if (res.cards && res.cards.length) return { cards: res.cards, why: res.why };
+  }
+  const rel = askResolve(text);
+  if (rel) {
+    const got = askCards(rel, { exclude: exclude, rot: rot });
+    if (got.cards && got.cards.length > 1) return { cards: got.cards.slice(0, 9), why: [got.reason] };
+  }
+  return null;
+}
+function rerollMood(id, exclude){
+  const m = MOODS.find(function(x){ return x.id === id; });
+  if (!m) return null;
+  const need = fCount || 2;
+  const ranked = m.cards.map(function(x){ return x.id; });
+  const unused = ranked.filter(function(id){ return !exclude.has(id); });
+  const source = unused.length >= need ? unused : ranked;
+  const picked = [];
+  const used = new Set();
+  for (var i = 0; i < source.length && picked.length < need; i++) {
+    if (used.has(source[i])) continue;
+    used.add(source[i]);
+    const c = byIdRow[source[i]];
+    if (c) picked.push(c);
+  }
+  return picked.length ? { cards: picked, why: ["mood · " + m.label] } : null;
+}
+function rerollTheme(exclude, rot){
+  if (typeof buildIdeas === "function") buildIdeas();
+  const ideas = window.__ideas || [];
+  if (!ideas.length) return null;
+  const unused = ideas.filter(function(idea){
+    return idea.cards.every(function(c){ return !exclude.has(c.i); });
+  });
+  const pool = unused.length ? unused : ideas;
+  const idea = pool[rot % pool.length];
+  return { cards: idea.cards, why: [idea.title] };
+}
+function rerollFilters(exclude, rot){
+  const need = fCount || 2;
+  let pool = INDEX.filter(function(c){
+    return c.a && ratingPass(c) && monPass(c) && (!fSet || c.s === fSet);
+  });
+  const hero = pool.filter(function(c){ return HERO_RX.test(c.r || ""); });
+  if (hero.length >= need) pool = hero;
+  const best = {};
+  for (var i = 0; i < pool.length; i++) {
+    const c = pool[i];
+    if (exclude.has(c.i)) continue;
+    const k = monName(c.n);
+    if (!best[k] || (c.p || 0) > (best[k].p || 0)) best[k] = c;
+  }
+  let list = Object.values(best).sort(function(a, b){ return (b.p || 0) - (a.p || 0); });
+  if (list.length < need) {
+    const fb = {};
+    for (var j = 0; j < pool.length; j++) {
+      const c2 = pool[j];
+      const k2 = monName(c2.n);
+      if (!fb[k2] || (c2.p || 0) > (fb[k2].p || 0)) fb[k2] = c2;
+    }
+    list = Object.values(fb).sort(function(a, b){ return (b.p || 0) - (a.p || 0); });
+  }
+  if (list.length < need) return null;
+  const start = (rot * need) % list.length;
+  const picked = [];
+  for (var n = 0; n < list.length && picked.length < need; n++) picked.push(list[(start + n) % list.length]);
+  return { cards: picked, why: ["same filters"] };
+}
+function rerollRevisit(exclude, rot){
+  const pairs = artistRevisitPairs();
+  if (!pairs.length) return null;
+  const unused = pairs.filter(function(p){
+    return p.cards.every(function(c){ return !exclude.has(c.i); });
+  });
+  const pool = unused.length ? unused : pairs;
+  const p = pool[rot % pool.length];
+  return { cards: p.cards, why: [p.artist + " · " + p.gap + " years apart"] };
+}
+function anotherSet(){
+  const exclude = new Set(tray.map(function(c){ return c.i; }));
+  const rot = ++anotherCursor;
+  let got = null;
+  if (lastPref.kind === "ask" && lastPref.ask) got = rerunAsk(lastPref.ask, exclude, rot);
+  else if (fMood || lastPref.kind === "mood") got = rerollMood(fMood || lastPref.mood, exclude);
+  else if (fTheme || lastPref.kind === "theme") got = rerollTheme(exclude, rot);
+  else if (fMon || fSet || fRating) got = rerollFilters(exclude, rot);
+  else got = rerollRevisit(exclude, rot);
+  if ((!got || !got.cards || !got.cards.length) && lastPref.kind === "ask" && lastPref.ask) {
+    got = rerunAsk(lastPref.ask, new Set(), rot);
+  }
+  if (!got || !got.cards || !got.cards.length) {
+    const box = el("askreply");
+    if (box) { box.textContent = "Nothing else matches this preference."; box.className = "askreply bad"; }
+    return;
+  }
+  if (sameTray(got.cards)) {
+    const box = el("askreply");
+    if (box) { box.textContent = "That is the only set that matches."; box.className = "askreply"; }
+    return;
+  }
+  pushTrail();
+  tray = orderByConnecting(got.cards); blob = null;
+  const box = el("askreply");
+  if (box) {
+    const why = (got.why && got.why.length ? got.why.filter(Boolean).join(" · ") : "").replace(/[.]+$/, "");
+    box.textContent = "Another set" + (why ? " — " + why : "") + ".";
+    box.className = "askreply";
+  }
+  fillLineFromCards(true);
+  render();
+  composeImage();
+}
+function snapTray(){
+  return {
+    cards: tray.map(function(c){ return c.i; }),
+    label: (el("label") && el("label").value) || "",
+    pref: lastPref ? { kind: lastPref.kind, ask: lastPref.ask, mood: lastPref.mood } : { kind: "", ask: "" },
+    cursor: anotherCursor,
+    why: (el("askreply") && el("askreply").textContent) || ""
+  };
+}
+function pushTrail(){
+  trail.push(snapTray());
+  if (trail.length > 30) trail.shift();
+}
+function backSet(){
+  if (!trail.length) return;
+  const s = trail.pop();
+  tray = (s.cards || []).map(function(id){ return byIdRow[id]; }).filter(Boolean);
+  lastPref = s.pref || lastPref;
+  anotherCursor = s.cursor || 0;
+  blob = null;
+  if (el("label")) el("label").value = s.label || "";
+  const box = el("askreply");
+  if (box) { box.textContent = s.why || ""; box.className = "askreply"; }
+  render();
+  if (tray.length) composeImage();
+}
+window.anotherSet = anotherSet;
+window.backSet = backSet;
+{
+  const b = el("anotherset");
+  if (b) b.onclick = function(){ anotherSet(); };
+  const back = el("backset");
+  if (back) back.onclick = function(){ backSet(); };
+}
 
 // THE ONE INPUT THE TIERS NEED, asked once and remembered. And the note says
 // plainly that it is unproven — we hold five logged posts, so presenting a
@@ -3386,18 +3850,28 @@ function renderHooks(){
 }
 
 function render(){
-  const L = LAYOUTS[tray.length];
+  const L = layoutForTray();
   const box = el("tray");
-  // THE BINDER PAGE. Empty pockets are drawn for the rest of the chosen layout,
-  // so a creator sees how many more fit without being told - the constraint
-  // teaches itself, the way a nine-pocket page does in your hands.
   const cols = L ? L.cols : Math.min(Math.max(tray.length, 3), 3);
-  const slots = L ? L.cols * Math.ceil(tray.length / L.cols) : Math.max(tray.length, 3);
-  box.style.gridTemplateColumns = \`repeat(\${cols}, minmax(0, \${cols > 3 ? 120 : 148}px))\`;
-  let html = tray.map((c, k) =>
-    \`<div class="pocket filled"><img src="\${imgSmall(c.i)}" alt="\${c.n}" loading=\"lazy\" data-cid=\"\${c.i}\" onerror=\"imgFallback(this,&#39;\${c.i}&#39;)\"><button class="x" onclick="remove(\${k})" aria-label="Remove \${c.n}">×</button><button class="own \${owned[c.i] ? 'yes' : ''}" onclick="toggleOwn('\${c.i}')">\${owned[c.i] ? 'OWNED' : 'want'}</button></div>\`).join("");
-  for (let i = tray.length; i < slots; i++) html += '<div class="pocket"></div>';
-  box.innerHTML = html || '<div class="pocket"></div><div class="pocket"></div><div class="pocket"></div>';
+  box.style.gridTemplateColumns = \`repeat(\${cols}, minmax(0, \${cols > 3 ? 110 : 148}px))\`;
+  const pocket = (c, k) => c
+    ? \`<div class="pocket filled"><img src="\${imgSmall(c.i)}" alt="\${c.n}" loading="lazy" data-cid="\${c.i}" onerror="imgFallback(this,&#39;\${c.i}&#39;)"><button class="x" onclick="remove(\${k})" aria-label="Remove \${c.n}">×</button><button class="own \${owned[c.i] ? "yes" : ""}" onclick="toggleOwn('\${c.i}')">\${owned[c.i] ? "OWNED" : "want"}</button></div>\`
+    : "<div class='pocket'></div>";
+  let html = "";
+  if (L && L.shape && L.shape.length) {
+    var pi = 0;
+    for (var rr = 0; rr < L.shape.length; rr++) {
+      for (var cc = 0; cc < L.cols; cc++) {
+        if (cc < L.shape[rr] && pi < tray.length) { html += pocket(tray[pi], pi); pi++; }
+        else html += "<div class='pocket'></div>";
+      }
+    }
+  } else {
+    const slots = L ? L.cols * Math.ceil(tray.length / L.cols) : Math.max(tray.length, 3);
+    html = tray.map(function(c, k){ return pocket(c, k); }).join("");
+    for (let i = tray.length; i < slots; i++) html += "<div class='pocket'></div>";
+  }
+  box.innerHTML = html || "<div class='pocket'></div><div class='pocket'></div><div class='pocket'></div>";
   const allowed = checkIntent();
   renderLines();
   renderStreakLine();
@@ -3405,11 +3879,28 @@ function render(){
   renderStreak();
   renderTally();
   el("plabel").textContent = L ? ("YOUR PAGE — " + L.name.toUpperCase()) : "YOUR PAGE";
+  const anotherBtn = el("anotherset");
+  if (anotherBtn) {
+    anotherBtn.hidden = !tray.length;
+    if (typeof anotherBtn.setAttribute === "function")
+      anotherBtn.setAttribute("aria-label", "Another set with the same filters");
+  }
+  const backBtn = el("backset");
+  if (backBtn) {
+    backBtn.hidden = !trail.length;
+    backBtn.disabled = !trail.length;
+    if (typeof backBtn.setAttribute === "function")
+      backBtn.setAttribute("aria-label", "Previous set");
+  }
+  const vb = el("viberow");
+  if (vb) vb.hidden = !tray.length;
 
   el("make").disabled = !L || !allowed;
   el("cv").style.display = "none";
-  ["copy","share","dl"].forEach(i => el(i).hidden = true);
-  if (!tray.length) { setStatus("Pick an idea above, or search for a card."); return; }
+  const out = el("outimg");
+  if (out && !blob) out.hidden = true;
+  ["copy","share","dl"].forEach(i => { if (el(i)) el(i).hidden = !blob; });
+  if (!tray.length) { setStatus("Type what you want above, or open browse below."); return; }
   if (L) {
     // WARN AT COMPOSE TIME. 216 cards are addable with no recorded artist, and
     // nothing said so before the image was made — card-composite refuses an
@@ -3469,7 +3960,7 @@ function renderThemes(){
     "<div class='tgroup'><span class='tglabel'>" + g + "</span>" +
     groups[g].map(t => "<button class='chip" + (fTheme === t.id ? " on" : "") + "' data-t='" + t.id + "'>" + t.name + "</button>").join("") +
     "</div>").join("");
-  box.querySelectorAll(".chip").forEach(b => b.onclick = () => { fTheme = b.dataset.t; renderThemes(); buildIdeas(); });
+  box.querySelectorAll(".chip").forEach(b => b.onclick = () => { fTheme = b.dataset.t; lastPref = { kind: "theme", ask: "" }; anotherCursor = 0; renderThemes(); buildIdeas(); });
 }
 safeWire(function(){ el("fcount").querySelectorAll(".chip").forEach(b => b.onclick = () => {
   fCount = fCount === +b.dataset.n ? 0 : +b.dataset.n;
@@ -3477,7 +3968,7 @@ safeWire(function(){ el("fcount").querySelectorAll(".chip").forEach(b => b.oncli
   if (fTheme && !THEMES.find(t => t.id === fTheme && (t.bestAt||[]).includes(fCount))) fTheme = null;
   renderThemes(); buildIdeas();
 }); }, "fcount");
-el("fset").onchange = () => { fSet = el("fset").value; renderThemes(); buildIdeas(); };
+el("fset").onchange = () => { fSet = el("fset").value; lastPref = { kind: "filters", ask: lastPref.ask || "" }; anotherCursor = 0; renderThemes(); buildIdeas(); };
 
 const HERO_RX = /(Special Illustration|Illustration Rare|Rare Holo|Rare Secret|Rare Ultra|Rare Rainbow|Ultra Rare)/i;
 
@@ -3905,6 +4396,8 @@ function buildIdeas(){
 function loadIdea(k){
   const idea = window.__ideas[k]; if (!idea) return;
   tray = idea.cards.slice(); blob = null;
+  lastPref = { kind: "theme", ask: "" };
+  anotherCursor = 0;
   el("label").value = idea.hook;
   render();
   el("make").scrollIntoView({ behavior: "smooth", block: "center" });
@@ -3921,8 +4414,10 @@ safeWire(function(){ tutStart(); }, "tutorial");
 // they were recovering from was a blank canvas, pressing Make just reproduced it.
 let composeScale = null;   // forced by the retry control; null means decide automatically
 let lastScale = 1;         // the linear scale actually used on the last attempt
+var composeGen = 0;
 async function composeImage(){
-  const L = LAYOUTS[tray.length]; if (!L) return;
+  const gen = ++composeGen;
+  const L = layoutForTray(); if (!L) return;
   // ENFORCE AT THE POINT OF ACTION, not only in the UI. The refusal used to
   // live entirely in el("make").disabled, and a disabled attribute is an
   // affordance rather than a guard — re-enabling it in the console, or calling
@@ -3959,7 +4454,7 @@ async function composeImage(){
     return Math.min(3, lines);
   })() : 0;
   const LABH = LABEL ? 110 + (LABLINES - 1) * 62 : 0;
-  const ROWS = Math.ceil(tray.length / L.cols);
+  const ROWS = L.rows || Math.ceil(tray.length / L.cols);
   // THE TABLE OWNS THE FRAME. This used to recompute the width from the column
   // count, which threw away the WIDENING that keeps a 2x2 from cropping on X —
   // the table said 2056 and the renderer drew 1730. A table is only a source of
@@ -4019,10 +4514,12 @@ async function composeImage(){
       // succeed. A missing card leaves a labelled gap instead: three cards and
       // one hole is a usable post, three cards and an error is not.
       if (!img) { missingArt.push(tray[i].n); continue; }
+      if (gen !== composeGen) return;
       // Centre the grid inside the widened frame, or a padded layout sits hard left.
       const gridW = CW*L.cols + GAP*(L.cols-1);
       const originX = Math.round((W - gridW) / 2);
-      const x = originX + (i % L.cols)*(CW+GAP), y = PAD + Math.floor(i/L.cols)*(CH+CAP+GAP);
+      const pos = slotPos(i, L);
+      const x = originX + pos.c*(CW+GAP), y = PAD + pos.r*(CH+CAP+GAP);
       drawSlab(g, img, x, y, CW, CH, tray[i]);
       if (CAP){ g.fillStyle="#8a93a8"; g.font="28px system-ui,sans-serif"; g.textAlign="center";
         g.fillText(tray[i].n + " · " + tray[i].y, x+CW/2, y+CH+46); }
@@ -4074,7 +4571,8 @@ async function composeImage(){
       g.fillStyle = "#8a93a8"; g.font = priceSize + "px system-ui,sans-serif"; g.textAlign = "center";
       tray.forEach((c, i) => {
         if (c.p == null) return;
-        const x = PAD + (i % L.cols) * (CW + GAP), y = PAD + Math.floor(i / L.cols) * (CH + CAP + GAP);
+        const pos = slotPos(i, L);
+        const x = PAD + pos.c * (CW + GAP), y = PAD + pos.r * (CH + CAP + GAP);
         g.fillStyle = owned[c.i] ? "#36d399" : "#8a93a8";
         g.fillText((owned[c.i] ? "HAVE  " : "") + "$" + Math.round(c.p).toLocaleString(), x + CW / 2, y + CH + (CAP ? 62 + priceSize : 14 + priceSize));
       });
@@ -4099,6 +4597,7 @@ async function composeImage(){
     g.fillText(artists || "artist not recorded", W-PAD, H-40);
 
     blob = await new Promise(r => cv.toBlob(r,"image/png"));
+    if (gen !== composeGen) return;
 
     // ── NEVER LET A BLANK EXPORT REACH A USER ──────────────────────────────
     // Two failures look identical from here and both are silent: toBlob hands
@@ -4118,7 +4617,7 @@ async function composeImage(){
       return;
     }
 
-    cv.style.display="block";
+    cv.style.display="none";
     // ── NONE OF THEM LOADED IS NOT A PARTIAL SUCCESS ──────────────────────
     // With the art host unreachable, every card failed and the tool still said
     // "Made it, but 4 card images would not load" over a 50KB frame holding a
@@ -4175,8 +4674,10 @@ async function composeImage(){
     // canvas, an old browser — the compose must NOT report failure, because the
     // drawing succeeded and the canvas is right there. Reporting a failure over
     // a finished image is the worst of both.
-    try { showSaveable(cv.toDataURL("image/png")); }
-    catch (e) { setStatus("Image is ready. Press and hold it, or use Open in a tab.", false); }
+    try { showSaveableBlob(blob); }
+    catch (e) {
+      try { showSaveable(cv.toDataURL("image/png")); } catch (e2) {}
+    }
     try { window.__lastComposeOk = true; } catch (e) {}
     try { tutComposed(true); } catch (e) {}
     // Offered only after something actually worked, and only once.

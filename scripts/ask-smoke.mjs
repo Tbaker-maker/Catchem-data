@@ -29,6 +29,7 @@ await new Promise(r => setTimeout(r, 60));
 const CLAIMS = [
   ["charizard evolution from 151", ["Charmander", "Charmeleon", "Charizard"], "151"],
   ["the charizard line from 151", ["Charmander", "Charmeleon", "Charizard"], "151"],
+  ["squirtle evolution", ["Squirtle", "Wartortle", "Blastoise"], null],
   ["pikachu cards", ["Pikachu"], null],
   ["cards from 151", null, "151"],
 ];
@@ -53,6 +54,8 @@ for (const [prompt, mustInclude, mustSet] of CLAIMS) {
   const names = t.map(c => String(c.n));
   let bad = null;
   if (!t.length) bad = "no cards at all";
+  else if (mustInclude && names.some(n => /incense/i.test(n) || /^Evolution\b/i.test(n)))
+    bad = "claimed a Pokémon line, showed " + names.join(", ");
   else if (mustInclude && !mustInclude.some(m => names.some(n => n.indexOf(m) === 0))) bad = "claimed " + mustInclude.join("/") + ", showed " + names.join(", ");
   else if (mustSet && !t.every(c => c.s === mustSet)) bad = "claimed set " + mustSet + ", showed " + [...new Set(t.map(c => c.s))].join(", ");
   if (bad) lied++;

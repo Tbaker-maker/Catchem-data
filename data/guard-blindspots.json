@@ -429,6 +429,18 @@
    "cannotCatch": "Anything it does not name. Four assertions cannot cover a page this size, so a regression in the tally, the frames, the honesty box or any layout is invisible to it. It also cannot see whether the page looks RIGHT — images resolving to bytes is not the same as the composite being legible. And it reads the DEPLOYED page, so a correct fix that GitHub Pages has not published yet fails it, which is honest but reads as a false alarm to anybody who has just committed.",
    "coveredBy": "Tyler opening it, and the per-feature guards for everything this does not assert",
    "reviewed": "2026-08-26"
+  },
+  "connecting-art-audit.mjs": {
+   "cannotCatch": "Whether a group we have not opened the files for is actually left-right. It encodes one printed-edge override (Carvanha/Sharpedo) and trusts the wiki grid for everything else that was checked. A new pair whose wiki table is a column and whose art is a panorama will pass until somebody looks at the cards. It also cannot see whether the editor DRAWS the decided layout — only that the decision exists.",
+   "coveredBy": "the editor layoutForTray and Tyler opening connecting art",
+   "reviewed": "2026-08-26",
+   "history": "Added after stacking Carvanha on Sharpedo from a wiki table that listed them top to bottom."
+  },
+  "notice-eye.mjs": {
+   "cannotCatch": "Whether an observation is INTERESTING, only whether it names three distinct printed fields. A true, dull sentence about HP still passes. Flavour text that is boilerplate, a connecting-art miss, and every tray this file does not ask for are invisible. It also cannot see whether NOTICE is shown first in the panel — only that the lines exist.",
+   "coveredBy": "editor-copy-rules (superlatives and leaked JS), editor-claim-match (count lies), search-gauntlet (relations)",
+   "reviewed": "2026-08-26",
+   "history": "Added when NOTICE was still three generators against forty facts, and the Magmar pairing only offered an attack name."
   }
  }
 }

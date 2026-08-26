@@ -700,6 +700,8 @@ await import("./audit-honesty.mjs");
 try { process.argv.push("250"); await import("./fuzz.mjs"); } catch (e) { console.warn("  fuzz: " + e.message); }
 await advisory("./journey-smoke.mjs", "journey");
 await advisory("./evo-smoke.mjs", "evo smoke");
+await advisory("./notice-eye.mjs", "notice eye");
+await advisory("./connecting-art-audit.mjs", "connecting art");
 await advisory("./device-gauntlet.mjs", "device gauntlet");
 await advisory("./prompt-audit.mjs", "prompt-audit");
 await advisory("./env-matrix.mjs", "env-matrix");

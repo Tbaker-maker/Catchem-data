@@ -17,17 +17,61 @@ globalThis.Image = function(){}; globalThis.AbortSignal = { timeout:()=>null };
 globalThis.fetch = async () => { throw new TypeError("x"); };
 const api = new Function(js + ";return { runAsk, tray:()=>tray };")();
 await new Promise(r => setTimeout(r, 60));
+
+// LENGTH IS NOT THE CLAIM. evo-smoke used to pass on three Charizard cards
+// for "charmander evolution" and on Evolution Incense for "squirtle evolution".
+// The line must be the named family, and a Trainer named Evolution must never
+// appear. Magikarp has two stages; Pichu is a baby — demanding three everywhere
+// was the CHECK being wrong, not the code.
+const FAMILY = {
+  charmander: ["Charmander", "Charmeleon", "Charizard"],
+  bulbasaur:  ["Bulbasaur", "Ivysaur", "Venusaur"],
+  squirtle:   ["Squirtle", "Wartortle", "Blastoise"],
+  pichu:      ["Pichu", "Pikachu", "Raichu"],
+  caterpie:   ["Caterpie", "Metapod", "Butterfree"],
+  weedle:     ["Weedle", "Kakuna", "Beedrill"],
+  eevee:      ["Eevee", "Vaporeon", "Jolteon", "Flareon", "Espeon", "Umbreon", "Leafeon", "Glaceon", "Sylveon"],
+  gastly:     ["Gastly", "Haunter", "Gengar"],
+  abra:       ["Abra", "Kadabra", "Alakazam"],
+  machop:     ["Machop", "Machoke", "Machamp"],
+  larvitar:   ["Larvitar", "Pupitar", "Tyranitar"],
+  ralts:      ["Ralts", "Kirlia", "Gardevoir", "Gallade"],
+  dratini:    ["Dratini", "Dragonair", "Dragonite"],
+  trapinch:   ["Trapinch", "Vibrava", "Flygon"],
+  magikarp:   ["Magikarp", "Gyarados"],
+  chikorita:  ["Chikorita", "Bayleef", "Meganium"],
+};
+const species = n => {
+  let x = String(n || "");
+  for (let i = 0; i < 2; i++) {
+    x = x.replace(/^(Galarian|Alolan|Hisuian|Paldean|Dark|Mega|M|Shadow|Crystal|Light|Shining|Radiant|Team Aqua's|Team Magma's|Rocket's|Team Rocket's|Misty's|Brock's|Erika's|Sabrina's|Blaine's|Koga's|Giovanni's|Lillie's|N's|Marnie's|Ethan's|Cynthia's|Steven's|Iono's|Arven's|Hop's|Bea's)\s+/i, "");
+  }
+  x = x.replace(/-(EX|GX|ex|V|VMAX|VSTAR)$/i, "");
+  x = x.replace(/\s+(ex|EX|GX|V|VMAX|VSTAR|BREAK|LEGEND|Prime|Star|LV\.X)$/i, "");
+  return x.trim().split(/[\s&]+/)[0];
+};
+
 console.log("EVOLUTION LINES, ASKED FOR BY NAME:\n");
 let ok = 0, bad = 0;
-for (const b of ["charmander","bulbasaur","squirtle","pichu","caterpie","weedle","eevee","gastly","abra","machop","larvitar","ralts","dratini","trapinch","magikarp","chikorita"]) {
+for (const b of Object.keys(FAMILY)) {
   api.runAsk(b + " evolution");
   const t = api.tray();
   const names = t.map(c => String(c.n));
-  // A LINE IS AS LONG AS IT IS. Magikarp has two stages and Pichu is a baby
-  // whose next stage is a Basic that does not print a link — demanding three
-  // everywhere was the CHECK being wrong, not the code.
-  const good = t.length >= 2;
+  const want = FAMILY[b];
+  const incense = names.some(n => /incense/i.test(n) || /^Evolution\b/i.test(n));
+  const inFamily = t.length >= 2 && t.every(c => want.includes(species(c.n)));
+  const named = t.some(c => species(c.n).toLowerCase() === b);
+  // A baby whose next stage is a Basic often has no printed evolvesFrom
+  // (Pikachu is a Basic). Demanding two cards invented a link we do not hold.
+  const babyNoLink = t.length === 1 && named && !incense;
+  const good = (inFamily && named && !incense) || babyNoLink;
   if (good) ok++; else bad++;
-  console.log("  " + (good ? "✓" : "✗") + " " + (b + " evolution").padEnd(22) + names.join(" → "));
+  const why = incense ? "  (Trainer named Evolution)"
+    : babyNoLink ? "  (no printed next stage — catalogue)"
+    : t.length < 2 ? "  (short)"
+    : !inFamily ? "  (wrong family: " + [...new Set(t.map(c => species(c.n)))].join(", ") + ")"
+    : !named ? "  (named Pokémon missing)" : "";
+  console.log("  " + (good ? "✓" : "✗") + " " + (b + " evolution").padEnd(22) + names.join(" → ") + why);
 }
 console.log("\n" + ok + " complete, " + bad + " incomplete");
+if (bad) process.exitCode = 1;

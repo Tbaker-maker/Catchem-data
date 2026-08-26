@@ -41,6 +41,12 @@ function lineOptions(cards, themeName, followerCount){
   const sets = [...new Set(cards.map(c => c.s).filter(Boolean))];
   const years = cards.map(c => Number(c.y)).filter(Boolean).sort(function(a,b){ return a - b; });
   const span = years.length > 1 ? years[years.length - 1] - years[0] : 0;
+  // THE COUNT IS THE CLAIM. "23 years between these two" over nine cards is the
+  // Koga failure in a sentence. Two is a pair. Anything else is a number.
+  const nCards = cards.length;
+  const THESE_N = { 1:"this", 2:"these two", 3:"these three", 4:"these four", 6:"these six", 8:"these eight", 9:"these nine" };
+  const these = THESE_N[nCards] || ("these " + nCards);
+  const both = nCards === 2 ? "both of these" : "all " + nCards + " of these";
 
   // ── THE NOUN HAS TO MATCH THE COUNT ─────────────────────────────────────
   // With nine Arcanine loaded the panel said "23 years between these two" and
@@ -87,7 +93,60 @@ function lineOptions(cards, themeName, followerCount){
     if (a && COMMON_ATTACKS.indexOf(a.toLowerCase()) < 0 && a.length > 4) notable.push({ c: c, atk: a });
   }
 
-  // NOTICE - a printed detail on a named card, or nothing at all.
+  // ── THE GLANCE TEST ──────────────────────────────────────────────────────
+  // "Both of these are Fire type" over two Magmars is true, derived, and
+  // worthless — the reader already has two orange lizards. Same failure as
+  // leading with the attack Psychic: a mould they can see the seam of.
+  //
+  // A notice has to be something you would NOT get from looking at the
+  // pictures. Years, credits, a type that is not the usual one, a weakness
+  // that is not the usual one, flavour text, one picture across two cards.
+  // Shared type, shared weakness, shared region, restating an evolution
+  // line that is already on the tray: furniture. Do not write them.
+  const speciesOf = function(c){
+    if (typeof monName === "function") return monName(c.n);
+    return String(c.n || "").replace(/-(EX|GX|ex|V|VMAX|VSTAR)$/i, "").split(" ")[0];
+  };
+  const species = cards.map(speciesOf);
+  const sameSpecies = nCards > 1 && species.every(function(s){ return s && s === species[0]; });
+  const evoLinked = nCards > 1 && cards.some(function(c){
+    if (!c.E) return false;
+    const parent = String(c.E);
+    return cards.some(function(o){ return o !== c && speciesOf(o) === parent; });
+  });
+  function majority(mon, pick){
+    if (typeof INDEX === "undefined" || !mon) return null;
+    const counts = {};
+    var total = 0;
+    for (var i = 0; i < INDEX.length; i++) {
+      if (speciesOf(INDEX[i]) !== mon) continue;
+      const v = pick(INDEX[i]);
+      if (!v) continue;
+      counts[v] = (counts[v] || 0) + 1;
+      total++;
+    }
+    var best = null, nBest = 0;
+    for (const k in counts) if (counts[k] > nBest) { nBest = counts[k]; best = k; }
+    if (!best || nBest < 3 || nBest / total < 0.5) return null;
+    return best;
+  }
+
+  const types = cards.map(function(c){ return c.T && c.T[0] ? c.T[0] : ""; }).filter(Boolean);
+  const typeSet = [...new Set(types)];
+  const hps = cards.filter(function(c){ return c.H; });
+  const stages = cards.map(function(c){ return c.S && c.S[0] ? c.S[0] : ""; }).filter(Boolean);
+  const stageSet = [...new Set(stages)];
+  const weaks = cards.map(function(c){ return c.W ? String(c.W) : ""; }).filter(Boolean);
+  const weakSet = [...new Set(weaks)];
+  const eras = cards.map(function(c){ return c.era || ""; }).filter(Boolean);
+  const eraSet = [...new Set(eras)];
+  const regions = cards.map(function(c){ return c.regn || ""; }).filter(Boolean);
+  const regionSet = [...new Set(regions)];
+
+  // NOTICE — THE EYE. Attack names were three of forty facts we hold. Every
+  // line below is read off THESE cards. If the cards changed, the sentence
+  // would have to. A superlative still does not belong here. A fact the
+  // picture already told you does not belong here either.
   if (notable.length) {
     const n = notable[0];
     add("observation", n.c.n + " has an attack called " + Q1 + n.atk + Q2 + ".");
@@ -103,6 +162,134 @@ function lineOptions(cards, themeName, followerCount){
   if (artists.length === 1 && cards.length === 1) {
     add("observation", artists[0] + " drew this one in " + first.y + ".");
   }
+  if (sets.length === 1 && nCards > 1 && !sameSpecies) {
+    add("observation", both.charAt(0).toUpperCase() + both.slice(1) + " are from " + sets[0] + ".");
+  }
+  if (sets.length >= 2) {
+    add("observation", sets[0] + " next to " + sets[sets.length - 1] + ".");
+  }
+
+  // TYPE: contrast, or a printing that is not the usual type for that Pokémon.
+  // Never "both Fire" — that is the glance.
+  if (typeSet.length >= 2) {
+    add("observation", typeSet[0] + " next to " + typeSet[1] + ".");
+  }
+  for (var ti = 0; ti < cards.length; ti++) {
+    const t = cards[ti].T && cards[ti].T[0];
+    if (!t) continue;
+    const usual = majority(speciesOf(cards[ti]), function(x){ return x.T && x.T[0]; });
+    if (usual && t !== usual) {
+      add("observation", label(cards[ti]) + " is " + t + " type. " + speciesOf(cards[ti]) + " is usually " + usual + ".");
+    }
+  }
+
+  // HP: a gap you would not guess from the art. 70 next to 80 is furniture.
+  if (hps.length >= 2) {
+    const lo = Math.min.apply(null, hps.map(function(c){ return c.H; }));
+    const hi = Math.max.apply(null, hps.map(function(c){ return c.H; }));
+    if (hi >= lo * 1.5 || hi - lo >= 50) {
+      const loC = hps.filter(function(c){ return c.H === lo; })[0];
+      const hiC = hps.filter(function(c){ return c.H === hi; })[0];
+      add("observation", label(loC) + " is printed at " + lo + " HP, " + label(hiC) + " at " + hi + ".");
+    }
+  }
+
+  // STAGE: only when these cards are not already an evolution line.
+  if (stageSet.length >= 2 && !evoLinked && !sameSpecies) {
+    add("observation", "A " + stageSet[0] + " beside a " + stageSet[1] + ".");
+  }
+
+  // WEAKNESS: only when it is not the usual one for that Pokémon.
+  for (var wi = 0; wi < cards.length; wi++) {
+    const w = cards[wi].W ? String(cards[wi].W) : "";
+    if (!w) continue;
+    const usualW = majority(speciesOf(cards[wi]), function(x){ return x.W ? String(x.W) : ""; });
+    if (usualW && w !== usualW) {
+      add("observation", label(cards[wi]) + " is weak to " + w + ". " + speciesOf(cards[wi]) + " is usually weak to " + usualW + ".");
+    }
+  }
+
+  function firstSentence(s){
+    const t = String(s).trim();
+    const cut = t.split(". ")[0];
+    return (cut.length > 90 ? cut.slice(0, 87) + "…" : cut).replace(/.$/, "");
+  }
+  for (var li = 0; li < cards.length && li < 2; li++) {
+    if (cards[li].L && String(cards[li].L).length > 24) {
+      add("observation", label(cards[li]) + " says " + Q1 + firstSentence(cards[li].L) + Q2 + ".");
+    }
+  }
+
+  // Era contrast is a notice when we did not already say the year span —
+  // otherwise it restates "25 years apart" in different clothes.
+  if (eraSet.length >= 2 && span < 8) {
+    add("observation", eraSet[0] + " next to " + eraSet[1] + ".");
+  }
+  if (regionSet.length >= 2) {
+    add("observation", regionSet[0] + " next to " + regionSet[1] + ".");
+  }
+
+  for (var mi = 0; mi < cards.length; mi++) {
+    const mech = cards[mi].mech ? String(cards[mi].mech) : "";
+    if (!mech) continue;
+    if (String(cards[mi].n).toLowerCase().indexOf(mech.toLowerCase()) >= 0) continue;
+    add("observation", label(cards[mi]) + " is a " + mech + ".");
+    break;
+  }
+
+  var connectingHit = false;
+  if (typeof CONNECTING !== "undefined") {
+    for (var gi = 0; gi < CONNECTING.length; gi++) {
+      const g = CONNECTING[gi];
+      const ids = cards.map(function(c){ return c.i; });
+      const hit = (g.c || []).filter(function(id){ return ids.indexOf(id) >= 0; });
+      if (hit.length >= 2) {
+        connectingHit = true;
+        add("observation", (g.a ? g.a + " drew " : "") + these + " as one picture" +
+          (g.arr === "down" ? ", top to bottom" : g.arr === "across" ? ", left to right" : "") + ".");
+        if (g.arr === "down" && nCards === 2) {
+          add("divide", "The top or the bottom?" + NL + NL +
+            "Which half is carrying the picture?" + NL + NL + "Genuinely asking.");
+          add("divide", label(cards[0]) + " sits on " + label(cards[1]) + "." + NL + NL +
+            "Would you post it this way up?" + NL + NL + "Not a trick.");
+        } else if (g.arr === "across" && nCards === 2) {
+          add("divide", "Left or right?" + NL + NL +
+            "Which half is carrying the picture?" + NL + NL + "Genuinely asking.");
+        }
+        break;
+      }
+    }
+  }
+
+  if (typeof INDEX !== "undefined" && artists.length === 1) {
+    var acount = 0;
+    for (var ai = 0; ai < INDEX.length; ai++) if (INDEX[ai].a === artists[0]) acount++;
+    if (acount >= 40) add("observation", artists[0] + " has " + acount + " cards in this catalogue.");
+    if (acount === 1) add("observation", "This is the only " + speciesOf(first) + " we hold by " + artists[0] + ".");
+  }
+
+  const pricedN = cards.filter(function(c){ return c.p != null && c.p > 0; }).sort(function(a,b){ return b.p - a.p; });
+  if (typeof PRICES_AS_OF !== "undefined" && pricedN.length >= 2 && pricedN[0].p >= pricedN[pricedN.length-1].p * 3 && pricedN[0].p >= 5) {
+    add("observation", "The " + pricedN[0].s + " " + pricedN[0].n + " is listed around $" +
+      Math.round(pricedN[0].p) + ", the " + pricedN[pricedN.length-1].s + " " + pricedN[pricedN.length-1].n +
+      " around $" + Math.round(pricedN[pricedN.length-1].p) + " as of " + String(PRICES_AS_OF).slice(0, 10) + ".");
+  } else if (typeof PRICES_AS_OF !== "undefined" && nCards === 1 && first.p && first.p >= 1) {
+    add("observation", "The " + first.s + " " + first.n + " is listed around $" +
+      Math.round(first.p) + " as of " + String(PRICES_AS_OF).slice(0, 10) + ".");
+  }
+
+  if (typeof INDEX !== "undefined" && hps.length) {
+    const mon = speciesOf(hps[0]);
+    var maxH = 0, minH = 9999;
+    for (var hi = 0; hi < INDEX.length; hi++) {
+      if (speciesOf(INDEX[hi]) !== mon || !INDEX[hi].H) continue;
+      if (INDEX[hi].H > maxH) maxH = INDEX[hi].H;
+      if (INDEX[hi].H < minH) minH = INDEX[hi].H;
+    }
+    if (maxH && hps[0].H && maxH >= hps[0].H * 1.5 && maxH - hps[0].H >= 40) {
+      add("observation", "This " + mon + " is printed at " + hps[0].H + " HP. Other printings go up to " + maxH + ".");
+    }
+  }
 
   // ASK - assembled from the loaded names. Already right, kept as it was.
   // SAME NAME, DIFFERENT PRINTS needs the year or the question is nonsense.
@@ -112,6 +299,21 @@ function lineOptions(cards, themeName, followerCount){
     add("question", first.n === last.n
       ? "The " + first.y + " " + first.n + " or the " + last.y + "?"
       : label(first) + " or " + label(last) + "?");
+    add("question", "Which of " + these + " would you actually keep?");
+    if (hps.length === 2) {
+      const loQ = Math.min(hps[0].H, hps[1].H), hiQ = Math.max(hps[0].H, hps[1].H);
+      if (hiQ >= loQ * 1.5 || hiQ - loQ >= 50) {
+        add("question", loQ + " HP or " + hiQ + " — which do you actually play?");
+      }
+    }
+  }
+  if (cards.length >= 3) {
+    add("question", names.slice(0, 3).join(", ") + DASH + "pick one.");
+    add("question", "Which of " + these + " is the one you would keep?");
+  }
+  if (cards.length === 1) {
+    add("question", "Anyone else own the " + first.s + " " + first.n + "?");
+    add("question", "Would you still buy the " + first.s + " " + first.n + " today?");
   }
   // NAMING A SUBSET SAYS SO. With nine loaded this read "Blaine's Arcanine,
   // Light Arcanine, Arcanine - pick one", which offers three of nine as if they
@@ -142,9 +344,21 @@ function lineOptions(cards, themeName, followerCount){
     add("divide", artists[0] + " drew one, " + artists[1] + " the other." + NL + NL +
       "Whose is doing more for you?" + NL + NL + "No wrong answer, they are different jobs.");
   }
+  if (stageSet.length >= 2 && !evoLinked && !sameSpecies) {
+    add("divide", "A " + stageSet[0] + " against a " + stageSet[1] + "." + NL + NL +
+      "Which job is the card actually doing?" + NL + NL + "Not asking which is rarer.");
+  }
+  if (typeSet.length === 2) {
+    add("divide", typeSet[0] + " against " + typeSet[1] + "." + NL + NL +
+      "Which type is doing more for you?" + NL + NL + "No wrong answer.");
+  }
   if (sets.length > 1 && cards.length > 1 && span < 10) {
     add("divide", first.s + " against " + last.s + "." + NL + NL +
       "Which set treated it better?" + NL + NL + "Both are fine answers.");
+  }
+  if (cards.length > 1) {
+    add("divide", label(first) + " or " + label(last) + "." + NL + NL +
+      "Which one is the post?" + NL + NL + "Not asking which is rarer.");
   }
 
   // ── PERMISSION - about the relation that produced THIS pair ─────────────
@@ -170,6 +384,42 @@ function lineOptions(cards, themeName, followerCount){
       "What is the biggest gap you own of one card?" + NL + NL + "Any card, any condition.");
   }
 
+  // CONFESS - a private reaction to THESE cards. Never a generic feeling about
+  // the hobby; if the cards changed, the sentence would have to.
+  if (nCards === 1 && first.L && String(first.L).length > 24) {
+    add("confession", "I still think about " + Q1 + firstSentence(first.L) + Q2 + " on the " + first.n + ".");
+  } else if (nCards === 1) {
+    add("confession", "I have stared at the " + first.s + " " + first.n + " longer than I will admit.");
+  }
+  if (weakSet.length === 1 && nCards > 1 && !sameSpecies && !evoLinked) {
+    add("invite", "What else is weak to " + weakSet[0] + "?");
+  }
+  for (var wii = 0; wii < cards.length; wii++) {
+    const wU = cards[wii].W ? String(cards[wii].W) : "";
+    if (!wU) continue;
+    const usualW2 = majority(speciesOf(cards[wii]), function(x){ return x.W ? String(x.W) : ""; });
+    if (usualW2 && wU !== usualW2) {
+      add("invite", "Anything else " + speciesOf(cards[wii]) + " that is weak to " + wU + "?");
+      break;
+    }
+  }
+  if (eraSet.length >= 2) {
+    add("permission", eraSet[0] + " sitting next to " + eraSet[1] + "." + NL + NL +
+      "Anyone else keep both in the same binder?" + NL + NL + "Any era, any condition.");
+  }
+  if (nCards > 1 && span >= 8) {
+    add("confession", "I keep coming back to the " + label(first) + ".");
+  }
+  if (nCards > 1) {
+    add("confession", "I did not expect " + label(first) + " to sit this well with " + label(last) + ".");
+  }
+  if (connectingHit && nCards > 1) {
+    add("confession", "I did not see they were one picture until they sat together.");
+  }
+  if (artists.length === 1 && nCards > 1 && span >= 8) {
+    add("confession", "I did not have " + artists[0] + " down as someone who would hold my attention for " + span + " years.");
+  }
+
   // INVITE - names a loaded card so it cannot be reused over another pair.
   // NAMES A CARD, so it cannot be the same sentence over another pair. This
   // read "Tell me which of these two you would swap out" and was the last line
@@ -178,6 +428,10 @@ function lineOptions(cards, themeName, followerCount){
   else if (N > 2) add("invite", "Swap one of " + these + " out for me" + DASH +
     "start with " + label(first) + ", or tell me which one does not belong.");
   if (cards.length === 1) add("invite", "What would you pair the " + first.s + " " + first.n + " with?");
+  if (cards.length > 1) add("invite", "What would you sit next to " + label(first) + "?");
+  if (typeof CONNECTING !== "undefined" && connectingHit) {
+    add("invite", "What other two cards make one picture?");
+  }
 
   // The theme, when it names a real group.
   if (themeName) add("invite", themeName + ". What am I missing?");
@@ -213,16 +467,15 @@ function lineOptions(cards, themeName, followerCount){
       else if (t.prefer.indexOf(o.reg) >= 0) o.note = "Suits your reach " + String.fromCharCode(8212) + " unproven, we hold five logged posts.";
     }
   }
-  // ── UP TO THREE PER REGISTER, NOT EIGHT OVERALL ─────────────────────────
-  // Slicing the whole pool to 8 meant a register with three good lines could
-  // lose two of them to a register that had one, and "Another" then had nowhere
-  // to go — which is why only NOTICE and DIVIDE had the button. Cap per
-  // register instead, so every register keeps its own depth.
-  const perReg = {};
-  const kept = [];
+  // KEEP THREE PER REGISTER so Another has somewhere to go. A hard cap of
+  // eight across every register left three categories with a single line, and
+  // the button that promised Another had nothing to show. The ranking still
+  // decides order; it no longer deletes the rest of a category.
+  const CAP = { observation: 6, question: 3, divide: 3, permission: 3, confession: 3, invite: 3 };
+  const kept = [], seen = {};
   for (const o of out) {
-    perReg[o.reg] = (perReg[o.reg] || 0) + 1;
-    if (perReg[o.reg] <= 3) kept.push(o);
+    seen[o.reg] = (seen[o.reg] || 0) + 1;
+    if (seen[o.reg] <= (CAP[o.reg] || 3)) kept.push(o);
   }
   return kept;
 }

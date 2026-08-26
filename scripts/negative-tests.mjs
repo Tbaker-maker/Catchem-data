@@ -1156,6 +1156,19 @@ const CASES = [
       return { pass: ok, why: `unitsFor is mispriced: 12→${unitsFor(12)} (want 2), 500→${unitsFor(500)} (want 30)` };
     } },
 
+  { guard: "Published editor is not a blank page", detect: "live-page-smoke.mjs",
+    fn: async () => {
+      try {
+        await run("node", [P("scripts/live-page-smoke.mjs")], {
+          cwd: ROOT,
+          env: { ...process.env, LIVE_PAGE_URL: "https://example.com" },
+        });
+        return { pass: false, why: "example.com passed live-page-smoke — a page with no tutorial is not caught" };
+      } catch {
+        return { pass: true, why: "" };
+      }
+    } },
+
 ];
 
 const results = [];

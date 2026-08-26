@@ -4,8 +4,8 @@
 
 > **How to use:** When Claude starts a new session, first action should be `view /mnt/user-data/outputs/catchem-knowledge-base.md`. When Claude learns something new worth persisting, append it to the relevant section and bump `last_updated`.
 
-**last_updated:** 2026-08-25 (prompt bar, evolution lines, matchup, audit-honesty agent)
-**version:** 1.2.0
+**last_updated:** 2026-08-26 (evolution ask: a format word is not a creature)
+**version:** 1.2.1
 
 > **KB editing rule (born from 4 silent-patch failures tonight):** edits
 > insert AFTER this version block using it as the anchor; every edit is
@@ -524,6 +524,11 @@ When Tyler says "Time for Issue 00X," Claude researches past 3 days of Pokemon n
 ---
 
 ## 11. Changelog
+
+### 2026-08-26 — A FORMAT WORD IS NOT A CREATURE
+- **"squirtle evolution" returned Evolution Incense.** Longest-name-first parsed `evolution` as the Pokémon from the Trainer *Evolution Incense* (9 letters) and beat Squirtle (8). Charmander (10) worked by accident. Then the hero-rarity filter dropped Charmander/Charmeleon commons so even the "working" line showed three Charizards, and evo-smoke still passed because it only counted cards.
+- **Fix:** shape-trigger words (`evolution`, `evolves`, `incense`, `family`) cannot be creature names. Evo pick is one card per stage in line order, hero preferred per stage never across the pool. evo-smoke now checks family membership and refuses Incense.
+- **live-page-smoke.mjs** (blocking in the fleet): loads the published editor URL, asserts tutorial, painted images, clean console, one real ask. Three 26 Aug blockers were only found that way.
 
 ### 2026-04-21 — v1.0.0 — Initial creation
 - Built after "major flaw" incident where Claude forgot the intrinsic value model mid-session

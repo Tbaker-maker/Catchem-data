@@ -20,6 +20,10 @@ if (SAFE_RATIO > X_CROPS_AT - MARGIN)
 
 for (const [n, l] of Object.entries(LAYOUTS)) {
   const r = l.H / l.W;
+  if (l.cropExempt) {
+    if (Math.abs(r - l.ratio) > 0.02) problems.push(`${n} cards: table says ratio ${l.ratio} but W and H give ${r.toFixed(2)}`);
+    continue;
+  }
   if (r > X_CROPS_AT) problems.push(`${n} cards: ratio ${r.toFixed(2)} EXCEEDS the crop line — the top will be cut off`);
   else if (r > X_CROPS_AT - MARGIN) problems.push(`${n} cards: ratio ${r.toFixed(2)} sits within ${MARGIN} of the crop line — no tolerance for rounding`);
   // The stated ratio must match the actual one, or the table is lying about
