@@ -2388,6 +2388,29 @@ function askResolve(text){
 
 // Turn a resolution into cards, plus the one-line REASON that a human edits
 // into a caption. The reason is a statement of fact and never a caption.
+// ── ONE DEFINITION, TWO CALLERS ───────────────────────────────────────────
+// This lived ONLY as a property of the object literal handed to
+// resolvePrompt(), so resolvePrompt could reach it via helpers.evoLineFor and
+// askCards could not. askCards called it bare anyway:
+//
+//     var line = evoLineFor(root);      // ReferenceError, every time
+//
+// That branch has been broken since it was written and no test ever drove it,
+// because relations run SECOND and the older parser answered every evolution
+// prompt first. It surfaced the moment a bare "evolution line" query — which
+// has no named Pokemon for the older parser to catch — reached the relation
+// path. Same shape as the const-shadowed search box: a live path nothing called.
+function evoLineFor(name){
+  const line = [name]; let cur = name;
+  for (var i = 0; i < 3; i++) {
+    var next = null;
+    for (var id in ATTRS) { var a = ATTRS[id]; if (a && a.ev === cur) { var row = byIdRow[id]; if (row) { next = monName(row[1]); break; } } }
+    if (!next || line.indexOf(next) >= 0) break;
+    line.push(next); cur = next;
+  }
+  return line;
+}
+
 function askCards(r){
   var out = [], reason = "";
   var byYear = function(a, b){ return String(a.y).localeCompare(String(b.y)); };
@@ -2817,16 +2840,7 @@ function runAsk(text){
     },
     HERO_RX: HERO_RX,
     // The chain, walked from evolvesFrom which is a printed field.
-    evoLineFor: function(name){
-      const line = [name]; let cur = name;
-      for (var i = 0; i < 3; i++) {
-        var next = null;
-        for (var id in ATTRS) { var a = ATTRS[id]; if (a && a.ev === cur) { var row = byIdRow[id]; if (row) { next = monName(row[1]); break; } } }
-        if (!next || line.indexOf(next) >= 0) break;
-        line.push(next); cur = next;
-      }
-      return line;
-    },
+    evoLineFor: evoLineFor,
   });
 
   // It read the sentence but the filters found nothing. Before reporting an
