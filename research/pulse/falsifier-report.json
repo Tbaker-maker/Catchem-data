@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-26T00:43:02.293Z",
+ "generatedAt": "2026-08-26T01:41:01.340Z",
  "date": "2026-08-26",
  "mood": "Mostly \"we cannot tell yet\" today — half these tests need weeks of history we simply do not have. Saying so beats guessing.",
  "note": "We test our own claims before anyone else gets the chance. INSUFFICIENT is an honest verdict and is reported as loudly as the others.",
@@ -9,9 +9,9 @@
   "untested": []
  },
  "summary": {
-  "survived": 4,
+  "survived": 5,
   "tripped": 0,
-  "insufficient": 7,
+  "insufficient": 6,
   "pending": 0
  },
  "results": [
@@ -20,7 +20,7 @@
    "name": "The Reprint Cycle",
    "falsifier": "a reprint-era product class stays below its pre-reprint level long enough that reprints are not absorbed",
    "verdict": "INSUFFICIENT",
-   "detail": "needs a multi-week price series to judge absorption; we hold 4 clean days",
+   "detail": "needs a multi-week price series to judge absorption; we hold 5 clean days",
    "needs": "30+ days of tape across a reprint event"
   },
   {
@@ -28,7 +28,7 @@
    "name": "Depth–Liquidity Matrix",
    "falsifier": "pile-up states precede 14-day price softness in fewer than 55% of cases",
    "verdict": "INSUFFICIENT",
-   "detail": "the test needs 14 days AFTER each pile-up state; we hold 4 days total",
+   "detail": "the test needs 14 days AFTER each pile-up state; we hold 5 days total",
    "needs": "21+ days of tape"
   },
   {
@@ -36,7 +36,7 @@
    "name": "The Photo Premium",
    "falsifier": "the resting cross-market baseline measures at or below 0% — i.e. eBay stops carrying a premium at all",
    "verdict": "SURVIVED",
-   "detail": "median gap 10.9% across 116 products, still positive"
+   "detail": "median gap 11.8% across 116 products, still positive"
   },
   {
    "id": "RT-4b",
@@ -50,7 +50,7 @@
    "name": "Venue Boundary",
    "falsifier": "TCGplayer vintage-sealed volume becomes material — listing depth comparable to modern",
    "verdict": "SURVIVED",
-   "detail": "vintage depth 15 vs modern 51 — still a thinner, separate market"
+   "detail": "vintage depth 15 vs modern 55 — still a thinner, separate market"
   },
   {
    "id": "RT-5",
@@ -72,9 +72,8 @@
    "id": "RT-2",
    "name": "Supply Injection Absorb-or-Stall",
    "falsifier": "a supply injection is followed by neither absorption nor a stall — listings rise and prices are unaffected either way",
-   "verdict": "INSUFFICIENT",
-   "detail": "no supply injections in today's data to test against",
-   "needs": "a shift with listings up 15%+"
+   "verdict": "SURVIVED",
+   "detail": "8 injections today; 87% moved prices measurably"
   },
   {
    "id": "RT-7",
@@ -89,7 +88,7 @@
    "name": "Reprint Pressure",
    "falsifier": "late-print sets with filling shelves are no more likely to see a reprint announced within 90 days than late-print sets generally",
    "verdict": "INSUFFICIENT",
-   "detail": "12 crossings today (0 arriving, 12 closing) — but the falsifier needs 90 days of reprint announcements to compare against, which we do not yet log",
+   "detail": "12 crossings today (11 arriving, 1 closing) — but the falsifier needs 90 days of reprint announcements to compare against, which we do not yet log",
    "needs": "a log of reprint announcements, and 90 days of these crossings to test them against"
   },
   {

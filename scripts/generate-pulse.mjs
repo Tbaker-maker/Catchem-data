@@ -716,8 +716,23 @@ await advisory("./editor-money-credit.mjs", "editor-money-credit");
 await advisory("./offline-smoke.mjs", "offline smoke");
 await advisory("./editor-smoke.mjs", "editor smoke");
 await advisory("./tease-guard.mjs", "tease");
-await import("./pre-mortem.mjs");
-await import("./verify-work.mjs");
+// ── BLOCKING FOR SHIPPING, ADVISORY FOR A SCHEDULED DATA JOB ──────────────
+// Tyler, 2026-08-26: "A ledger about our work quality should not stop prices
+// from publishing."
+//
+// Both stay blocking:true in the fleet, which is what gates shipping the editor
+// and any user-facing artifact. Here — inside a nightly job whose product is
+// market data — they report and do not stop it. The distinction is what the
+// finding is ABOUT: "6 guards not yet interrogated" and "24 facts rest only on
+// secondary sources" are true, worth fixing, and have nothing to do with
+// whether tonight's eBay medians are correct.
+//
+// This is the decision recorded as 2026-08-26-work-quality-vs-data-publication.
+// It is narrow on purpose: it does not downgrade a single guard that checks the
+// ARTIFACT (publish-assert, crop-guard, windowless-price-guard, content-sanity,
+// card-guard all stay bare and blocking), only the two that check US.
+await advisory("./pre-mortem.mjs", "pre-mortem");
+await advisory("./verify-work.mjs", "verify-work");
 await advisory("./bias-guard.mjs", "bias guard");
 try { if (new Date().getUTCDay() === 1) await import("./review.mjs"); } catch (e) { console.warn("  review: " + e.message); }
 await import("./publish-assert.mjs");

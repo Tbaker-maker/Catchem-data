@@ -325,7 +325,7 @@
    "who": "tyler",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-26",
-   "asked": 218,
+   "asked": 220,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -351,7 +351,7 @@
    "who": "tyler",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-26",
-   "asked": 196,
+   "asked": 198,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -522,7 +522,7 @@
    "who": "cc",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-26",
-   "asked": 191,
+   "asked": 193,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -546,7 +546,7 @@
    "who": "cc",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-26",
-   "asked": 191,
+   "asked": 193,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -575,7 +575,7 @@
    "who": "cc",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-26",
-   "asked": 191,
+   "asked": 193,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -598,7 +598,7 @@
    "who": "cc",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-26",
-   "asked": 191,
+   "asked": 193,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -626,7 +626,7 @@
    "who": "cc",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-26",
-   "asked": 191,
+   "asked": 193,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -655,7 +655,7 @@
    "who": "cc",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-26",
-   "asked": 191,
+   "asked": 193,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -759,7 +759,7 @@
    "who": "cc",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-26",
-   "asked": 97,
+   "asked": 99,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -819,7 +819,7 @@
    "who": "cc",
    "firstAsked": "2026-08-23",
    "lastAsked": "2026-08-26",
-   "asked": 63,
+   "asked": 65,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -1090,7 +1090,7 @@
    "who": "cc",
    "firstAsked": "2026-08-25",
    "lastAsked": "2026-08-26",
-   "asked": 7,
+   "asked": 9,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -1118,7 +1118,7 @@
    "who": "cc",
    "firstAsked": "2026-08-25",
    "lastAsked": "2026-08-26",
-   "asked": 7,
+   "asked": 9,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -1226,7 +1226,7 @@
    "who": "cc",
    "firstAsked": "2026-08-26",
    "lastAsked": "2026-08-26",
-   "asked": 4,
+   "asked": 5,
    "answeredBy": null,
    "answer": null,
    "answeredOn": null
@@ -1250,6 +1250,21 @@
    "question": "Should verify-work and pre-mortem block the price pipeline, or only the fleet run?",
    "evidence": "Both are declared blocking:true and both were built at your request on 2026-08-23. Both are imported bare by generate-pulse, so their findings stop the daily job — and their subject is MY work quality (un-interrogated guards, citation backlogs, an unwired card generator), not the correctness of the market data. I fixed the two findings that were mine to fix and left the rest red rather than silencing them. Market data now commits before the pulse regardless, so this is no longer urgent, but the question stands: do you want a work-quality ledger able to stop a data publication?",
    "who": "tyler",
+   "firstAsked": "2026-08-26",
+   "lastAsked": "2026-08-26",
+   "asked": 1,
+   "answeredBy": null,
+   "answer": null,
+   "answeredOn": null
+  },
+  {
+   "id": "designer-67",
+   "agent": "designer",
+   "question": "54 rendered card(s) exist. Open the most recent: does the artwork breathe, or is it crowded by the frame? Nothing in source can answer that.",
+   "evidence": {
+    "count": 54
+   },
+   "who": "cc",
    "firstAsked": "2026-08-26",
    "lastAsked": "2026-08-26",
    "asked": 1,

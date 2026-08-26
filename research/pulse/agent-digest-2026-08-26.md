@@ -4,7 +4,7 @@ Nothing here needs you this morning unless something is marked NEEDS A HUMAN.
 
 ## Our own claims
 Mostly "we cannot tell yet" today — half these tests need weeks of history we simply do not have. Saying so beats guessing.
-4 survived their own kill conditions, 7 could not be judged yet with the tape we hold.
+5 survived their own kill conditions, 6 could not be judged yet with the tape we hold.
 
 ## Our own numbers
 We put something in front of readers and can no longer price it. That is the kind of thing worth noticing before somebody asks.
@@ -26,7 +26,7 @@ We put something in front of readers and can no longer price it. That is the kin
 
 ## The agents themselves
 **NEEDS A HUMAN — the supervisor flagged the watchers:**
-- correction-hunter: BROKEN RECORD — 4 finding(s) repeated three runs running (e.g. "gone::Umbreon VMAX"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
+- correction-hunter: BROKEN RECORD — 5 finding(s) repeated three runs running (e.g. "gone::Umbreon VMAX"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 - designer: BROKEN RECORD — 7 finding(s) repeated three runs running (e.g. "medium::35 distinct colours"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 - theme-scout: BROKEN RECORD — 22 finding(s) repeated three runs running (e.g. "the one-off::Ken Sugimori drew Ampharos exactly on"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 - teacher: BROKEN RECORD — 11 finding(s) repeated three runs running (e.g. "in a rut::breaker"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
@@ -72,18 +72,18 @@ Gaps in what we watch:
 - **the cheat code** — Nothing tells a creator how a piece performed after they made it. *Ask one question after publication — did this land — and keep the answers. Even a yes/no on twenty videos would tell us which angles are worth generating.*
 
 ## What the market did
-Nothing unusual, or not enough history to tell — 5 days of tape so far. Anomaly detection needs a distribution, and saying so is the honest answer.
+Nothing unusual, or not enough history to tell — 6 days of tape so far. Anomaly detection needs a distribution, and saying so is the honest answer.
 
 ## Where today's story goes
-- **X** — "Paldean Fates listings moved -66.7% while its print window closes."
-- **YouTube** — the sealed market — "The whole sealed market in one number: 97.6."
-- **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 97.6."
+- **X** — "Prismatic Evolutions listings moved 312.5% while its print window closes."
+- **YouTube** — Cosmic Eclipse Booster Box — "A seller keeps about $4,466.96 online; a buyer pays about $5,510.17. Roughly $1,043.21 of room where a face-to-face trade beats the internet."
+- **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 96.9."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
 
 ## Something is slipping
-- **unsaved** — 1 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
-- **ignored** — 5 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
+- **unsaved** — 3 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
+- **ignored** — 6 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
 - **silent stage** — fetch last reported 3 days ago. *A stage that stopped running is invisible to every guard, because none of them run either. Silence is the one failure nothing else catches.*
 - **drift** — 19 script(s) are not referenced anywhere: backfill-artists.mjs, build-faq.mjs, build-hooks.mjs, build-lines.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
 
@@ -116,11 +116,11 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 - **Mitsuhiro Arita drew Houndoom exactly once** — Mitsuhiro Arita has 525 cards. Exactly one is a Houndoom.
 
 ## Design
-1 high, 10 medium across 14 shipped surfaces, 49 minted cards.
+1 high, 10 medium across 14 shipped surfaces, 50 minted cards.
 - **build.html** — the accent colour appears 44 times. *Spend it in two places: the active state and the one primary action. Everything else greys.*
 
 ## What the agents cannot answer themselves
-45 open — 28 need eyes on a rendered page, 17 need a decision.
+47 open — 28 need eyes on a rendered page, 19 need a decision.
 - **NEEDS A HUMAN** [theme-scout] 14 Pokémon share the "-eon" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 7 Pokémon share the "ite" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 10 Pokémon share the "-ish" ending — a theme, or a coincidence of naming?

@@ -26,7 +26,32 @@ import { dirname, join } from "node:path";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 const dir = join(ROOT, "research/pulse/cards");
-const files = (await readdir(dir).catch(() => [])).filter(f => f.endsWith(".svg"));
+// ── THIS RUN'S OUTPUT, NOT EVERY CARD EVER COMMITTED ──────────────────────
+// Tyler, 2026-08-26: "Scope it to the run's own output. The protection stays,
+// the job can go green, and we do not hand-edit history to satisfy a guard."
+//
+// It was reading all 105 svg files in the directory and failing the daily job
+// on a dash rendered in 2026-08-21-social.svg, -22 and -23 — cards published
+// days ago that nobody is going to re-render. A guard that can only be
+// satisfied by editing history can never go green, and one that can never go
+// green gets skimmed, which is how it stops working entirely.
+//
+// This repo has already logged that shape once: run-tests asserted card
+// artifacts no pipeline produced, so it was checking committed fossils, and
+// deleting one killed the whole daily run.
+//
+// TODAY'S CARDS plus the "latest-" aliases the pipeline rewrites every run.
+// Anything older is history: still on disk, still readable, no longer a reason
+// to stop a publication. --all re-reads everything for a deliberate audit.
+const today = new Date().toISOString().slice(0, 10);
+const ALL = process.argv.includes("--all");
+const every = (await readdir(dir).catch(() => [])).filter(f => f.endsWith(".svg"));
+const files = ALL ? every
+  : every.filter(f => f.startsWith(today) || f.startsWith("latest-"));
+if (!ALL) {
+  const skipped = every.length - files.length;
+  if (skipped > 0) console.log(`  (${files.length} card(s) from this run · ${skipped} older card(s) not re-checked — card-guard --all audits every one)`);
+}
 const problems = [];
 const P = (card, what, why) => problems.push({ card, what, why });
 

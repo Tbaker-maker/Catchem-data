@@ -78,9 +78,19 @@ export async function mintSocialCard() {
   if (prod) {
     const svg = socialCard({ img: imgFor(prod), title: prod.name, hero: "$" + Number(prod.priceMedian).toLocaleString("en-US"),
       heroLabel: "TODAY'S SEALED WATCH", hook: t3.spreadPct != null ? `eBay asks ${Math.abs(t3.spreadPct)}% ${t3.spreadPct > 0 ? "more" : "less"} than TCGplayer` : "",
-      stats: [{ label: "listings", value: String(prod.listingCount ?? "—") },
-              { label: "clean floor", value: "$" + Number(prod.priceFloorClean ?? prod.priceLow ?? 0).toLocaleString("en-US") },
-              { label: "per pack", value: prod.perPack ? "$" + prod.perPack : "—" }], date: today });
+      // ── A SLOT WITH A DASH IN IT LOOKS LIKE A MEASUREMENT ─────────────
+      // card-guard's rule, and it was right about our own card: "per pack"
+      // rendered "—" whenever the figure was unavailable, which reads as a
+      // measured value on a card whose entire purpose is measured values.
+      // Either the number exists or the tile does not. Same for listings,
+      // which had the identical fallback one line up.
+      stats: [
+        prod.listingCount != null ? { label: "listings", value: String(prod.listingCount) } : null,
+        (prod.priceFloorClean ?? prod.priceLow) != null
+          ? { label: "clean floor", value: "$" + Number(prod.priceFloorClean ?? prod.priceLow).toLocaleString("en-US") }
+          : null,
+        prod.perPack ? { label: "per pack", value: "$" + prod.perPack } : null,
+      ].filter(Boolean), date: today });
     await writeFile(join(ROOT, `research/pulse/cards/${today}-social.svg`), svg);
     await writeFile(join(ROOT, "research/pulse/cards/latest-social.svg"), svg);
     console.log("✓ social card minted (photo-forward)");

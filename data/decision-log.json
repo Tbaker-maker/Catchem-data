@@ -189,6 +189,38 @@
    "predicts": "If the terms are right, nobody in the beta asks a follow-up question about what happens to their access. A single 'so what happens after the beta?' reply means the four sentences did not do their job and need to be plainer, not longer.",
    "checkAfter": "2026-09-08",
    "buildsNothing": "No accounts, no billing, no entitlement flags, deliberately. Fifteen people do not need infrastructure, and building an entitlement system now would commit us to a shape for the paid tier before we know what it is."
+  },
+  {
+   "id": "2026-08-26-work-quality-vs-data-publication",
+   "date": "2026-08-26",
+   "decision": "verify-work and pre-mortem stay BLOCKING for shipping the editor and any user-facing artifact, and become ADVISORY inside scheduled data jobs. They report in full either way; only their power to stop the run changes, and only where the run's product is data rather than something a person will look at.",
+   "reasoning": "Tyler, 2026-08-26: 'A ledger about our work quality should not stop prices from publishing.' The distinction is WHAT THE FINDING IS ABOUT. 'Six guards not yet interrogated' and '24 facts rest only on secondary sources' are true, worth fixing, and carry no information about whether tonight's eBay medians are right. Letting them gate a data publication means the freshness of public prices depends on whether somebody has finished a code-review chore — two entirely unrelated things wired together by nothing more than both living in generate-pulse.",
+   "rejected": "Downgrading them everywhere, which would waste guards Tyler asked for by name. And leaving them blocking everywhere, which is what produced six days of stale public prices behind a citation backlog.",
+   "cost": "A scheduled run can now go green while carrying real work-quality findings. Mitigated because both still print in full, both still block the fleet run Tyler actually reads, and artifact-freshness is blocking so a data job that produces nothing still fails.",
+   "mistakeToRecord": "I wired both into generate-pulse as bare imports without asking what their findings were ABOUT. A guard's blast radius is part of its design and I treated it as an implementation detail — the same error as letting an advisory guard set process.exitCode.",
+   "risk": "A finding that genuinely should stop a data publication gets classified here by habit. The guard against that is the narrowness: this covers exactly two scripts, both of which check US rather than the artifact, and every guard that checks the artifact itself stays bare and blocking.",
+   "whatWouldChangeIt": "Either of them growing a check about the DATA rather than about our process. At that point the check belongs in a data guard, not in a widened exemption here.",
+   "checkBy": "Tyler",
+   "checkWith": "Whether a scheduled run ever goes green while something he would have wanted stopped slipped through.",
+   "status": "APPLIED",
+   "predicts": "Scheduled data jobs stop failing on process debt, and nothing user-facing ships with an un-interrogated guard, because the fleet run still refuses it.",
+   "checkAfter": "2026-09-09"
+  },
+  {
+   "id": "2026-08-26-card-guard-scoped-to-this-run",
+   "date": "2026-08-26",
+   "decision": "card-guard checks the cards THIS RUN produced — today's dated files plus the latest-* aliases the pipeline rewrites every run — rather than all 105 svg files ever committed. A --all flag re-reads everything for a deliberate audit.",
+   "reasoning": "Tyler, 2026-08-26: 'The protection stays, the job can go green, and we do not hand-edit history to satisfy a guard.' It was failing the daily job on a dash rendered in 2026-08-21-social.svg, -22 and -23 — cards published days ago that nobody will re-render. A guard that can only be satisfied by editing history can never go green, and one that can never go green gets skimmed, which is how it stops working at all. This repo has logged the same shape once already: run-tests asserted card artifacts no pipeline produced, so it was checking committed fossils, and deleting one killed the whole daily run.",
+   "rejected": "Hand-editing the three historical cards. It would have turned the guard green while teaching us that the way to satisfy a guard is to rewrite the past.",
+   "cost": "A defect introduced into an old card and never re-minted is no longer caught by the scheduled run. --all exists for that, and the cards it would miss are ones nothing regenerates.",
+   "mistakeToRecord": "The scoping immediately proved its own worth in the other direction: with the fossils gone, the one card-level finding left was REAL — latest-social.svg rendered 'per pack' as an em dash whenever the figure was missing, on a card whose whole purpose is measured values. It had been sitting behind the noise of three fossils. Fixed by omitting the tile rather than dashing it, which is card-guard's own rule: either the value exists or the slot should not.",
+   "risk": "Somebody reads the smaller number of checked cards as weaker coverage rather than as correctly aimed coverage.",
+   "whatWouldChangeIt": "Historical cards becoming re-publishable, at which point they are current output again and in scope.",
+   "checkBy": "CC",
+   "checkWith": "card-guard --all, run when a card is re-minted from history.",
+   "status": "APPLIED",
+   "predicts": "Card-level findings on the daily run drop to near zero and the ones that appear are about cards minted that morning.",
+   "checkAfter": "2026-09-09"
   }
  ]
 }

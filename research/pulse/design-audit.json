@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-26T00:43:02.613Z",
-  "audited": "14 shipped surfaces, 49 minted cards",
+  "generatedAt": "2026-08-26T01:41:01.628Z",
+  "audited": "14 shipped surfaces, 50 minted cards",
   "principle": "A linter asks whether the CSS is valid. A design lead asks whether the page was DESIGNED. The tells of an undesigned page are countable: too many type sizes, too many near-identical greys, an accent used everywhere so it accents nothing.",
   "blindSpot": "It cannot SEE. It counts and measures. It cannot tell you a page is ugly, only that the choices behind it were not made deliberately.",
   "counts": {
@@ -89,7 +89,7 @@
     {
       "surface": "cards",
       "severity": "medium",
-      "what": "1 of 49 cards use no brand typeface",
+      "what": "1 of 50 cards use no brand typeface",
       "why": "A card in the system default is a card that could have come from anywhere. The typeface is most of what makes it ours at a glance.",
       "fix": "Set Syne, Sora or JetBrains Mono on every text element."
     }
@@ -317,9 +317,9 @@
     },
     {
       "surface": "cards",
-      "question": "53 rendered card(s) exist. Open the most recent: does the artwork breathe, or is it crowded by the frame? Nothing in source can answer that.",
+      "question": "54 rendered card(s) exist. Open the most recent: does the artwork breathe, or is it crowded by the frame? Nothing in source can answer that.",
       "measured": {
-        "count": 53
+        "count": 54
       },
       "answeredBy": null,
       "answer": null

@@ -63,7 +63,12 @@ for (const f of wfFiles) {
   // evaporates, so the git-add list IS the artifact list.
   const adds = [...src.matchAll(/git add ([^\n]+)/g)]
     .flatMap(m => m[1].split(/\s+/))
-    .filter(p => p && !p.startsWith("-"));
+    // A SHELL LINE-CONTINUATION IS NOT A FILENAME. The price-data commit step
+    // wraps its git add across several lines, so the trailing "\" was captured
+    // as a promised path and reported as "never committed" — a guard inventing
+    // a missing artifact out of shell punctuation, which is exactly the kind of
+    // false finding that gets a guard ignored.
+    .filter(p => p && p !== String.fromCharCode(92) && !p.startsWith("-"));
 
   const hours = Math.min(...crons.map(c => cadenceHours(c) ?? 24 * 365));
   jobs.push({ workflow: f, crons, hours, paths: [...new Set(adds)] });

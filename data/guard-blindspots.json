@@ -286,11 +286,13 @@
    "cannotCatch": "Whether the right cards are the BEST cards. It proves a Charizard prompt returns Charizards and a Fire prompt returns Fire — it has no view on whether those particular Charizards are the ones worth posting.",
    "knownPatterns": [
     "filter-silently-skipped",
-    "theme-overrides-filter"
+    "theme-overrides-filter",
+    "substring where structure exists"
    ],
    "coveredBy": "Tyler",
-   "reviewed": "2026-08-24",
-   "history": "Written after Tyler said the prompts were still returning wrong cards for the third time. ask-smoke had been green throughout because it only checked cards APPEARED — a gap I documented in its own blind-spot file and then trusted the tick anyway."
+   "reviewed": "2026-08-26",
+   "history": "Written after Tyler said the prompts were still returning wrong cards for the third time. ask-smoke had been green throughout because it only checked cards APPEARED — a gap I documented in its own blind-spot file and then trusted the tick anyway.",
+   "whyKnownPatterns": "The substring IS the question here, not a shortcut around a field. This file is a test oracle: it asserts that asking for 'something dark' returns Dark-prefixed or villain-affiliated cards, and in this game villain affiliation is expressed as a NAME PREFIX — Dark Charizard, Team Rocket's Nidoking, Giovanni's Machamp. There is no villain field to match on instead, so matching the prefix is matching the structure the cards actually carry. Acknowledged rather than removed because the danger the shape names — a name match standing in for a field that exists — does not apply where the field does not exist."
   },
   "prompt-audit.mjs": {
    "cannotCatch": "Whether the right cards are the BEST cards, and whether a prompt I did not think of works. 56 is broad but it is still my imagination.",
