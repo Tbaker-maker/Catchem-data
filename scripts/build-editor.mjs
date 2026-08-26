@@ -2465,7 +2465,14 @@ function evoLineFor(name){
   const line = [name]; let cur = name;
   for (var i = 0; i < 3; i++) {
     var next = null;
-    for (var id in ATTRS) { var a = ATTRS[id]; if (a && a.ev === cur) { var row = byIdRow[id]; if (row) { next = monName(row[1]); break; } } }
+    // ROW IS AN OBJECT, NOT AN ARRAY. byIdRow holds the index records — {i,n,s,
+    // y,a,r} — so row[1] is undefined, monName(undefined) is empty, and the
+    // chain broke on its first step. evoLineFor has therefore NEVER returned
+    // more than the name it was given, which is why "evolution line" answered
+    // with one card even once the exemplar was right. The sibling walker eight
+    // lines up already guards this with row0.n !== undefined ? row0.n : row0[1];
+    // this one did not.
+    for (var id in ATTRS) { var a = ATTRS[id]; if (a && a.ev === cur) { var row = byIdRow[id]; if (row) { next = monName(row.n !== undefined ? row.n : row[1]); break; } } }
     if (!next || line.indexOf(next) >= 0) break;
     line.push(next); cur = next;
   }
