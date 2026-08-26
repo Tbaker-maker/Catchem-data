@@ -303,6 +303,53 @@ const RELATION_FNS = {
     return out;
   },
 
+  // ── SET_DEPTH ────────────────────────────────────────────────────────────
+  // The evidence behind "does this set have anything besides its famous card".
+  //
+  // The shape it answers to is SET_DOUBT, observed on @parkyspokestop: "Is Team
+  // Up actually a good set or does it just have the lovebirds?" — 17 replies on
+  // 15,000 views, 1.13 per thousand, against 0.27 for our best-reaching post.
+  // Four times the reply density on an eighth of the reach.
+  //
+  // SO THE REASON LINE STATES NUMBERS AND NEVER JUDGES, and that is not a style
+  // note — it is the mechanic. A relation that ANSWERS the question removes the
+  // reason to reply. "Team Up is carried by one card" is a verdict, and a reader
+  // who agrees has nothing to add while a reader who disagrees is contradicting
+  // us rather than discussing the set. The numbers laid out with the question
+  // left open is the whole trick, and it is the same property as doubting a set
+  // rather than a person: nobody's taste is on trial.
+  SET_DEPTH(c, ix, cards) {
+    if (!c.set) return [];
+    const ids = ix.bySet.get(c.set) ?? [];
+    if (ids.length < 8) return [];              // too small to have a shape
+    const all = ids.map(i => cards.get(i)).filter(Boolean);
+
+    const priced = all.filter(x => typeof x.price === "number" && x.price > 0)
+      .sort((a, b) => b.price - a.price);
+    if (priced.length < 5) return [];
+
+    const top = priced[0];
+    const median = priced[Math.floor(priced.length / 2)].price;
+    // The tail is what a set is like once its famous card is set aside.
+    const tail = priced.slice(1);
+    const tailMedian = tail.length ? tail[Math.floor(tail.length / 2)].price : null;
+    const illustrators = new Set(all.map(x => x.artist).filter(Boolean)).size;
+    // NO MARKET is not the same as cheap: it is a card we hold no price for at
+    // all, which is a different fact and should not be folded into an average.
+    const noMarket = all.length - priced.length;
+    const ratio = median > 0 ? top.price / median : null;
+
+    return [rel("SET_DEPTH",
+      `${c.set}: ${all.length} cards, ${illustrators} illustrator${illustrators === 1 ? "" : "s"}. ` +
+      `Dearest is ${top.name} at $${top.price.toFixed(2)}; the median is $${median.toFixed(2)}` +
+      (ratio ? ` (${ratio.toFixed(0)}x)` : "") +
+      (noMarket ? `; ${noMarket} card${noMarket === 1 ? " has" : "s have"} no market price` : "") + ".",
+      [c.id, top.id, ...tail.slice(0, 4).map(x => x.id)],
+      { set: c.set, cards: all.length, illustrators, noMarket,
+        top: { id: top.id, name: top.name, price: top.price },
+        median, tailMedian, topToMedian: ratio })];
+  },
+
   DEX_NEIGHBOURS(c, ix, cards) {
     if (!c.dex) return [];
     const ids = [];

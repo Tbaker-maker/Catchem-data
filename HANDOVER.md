@@ -118,7 +118,7 @@ highest-value unfinished thing in the project.
 catchem-knowledge-base.md          canonical state — read first, update last
 research/house-theses.md           102 laws
 research/RESEARCH-GATE.md          33 logged errors, who caught each
-data/knowledge.json                50 facts with falsifiers
+data/knowledge.json                52 facts with falsifiers
 data/guard-blindspots.json         what each guard cannot catch
 data/decision-log.json             decisions with predictions and check dates
 data/post-outcomes.json            what has actually been posted

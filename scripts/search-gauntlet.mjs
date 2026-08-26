@@ -257,6 +257,30 @@ function verify(r, subject) {
       if (r.evidence.artist && !r.reason.includes(r.evidence.artist)) return "reason does not name the artist it claims";
       return null;
     }
+    // SET_DEPTH claims counted facts about a whole set, so every number in the
+    // evidence is recomputed here from the catalogue rather than trusted. This
+    // relation exists to be READ ALOUD in a post - "198 cards, 47 illustrators,
+    // dearest $4166.89 against a $1.20 median" - and a wrong count in a caption
+    // is the failure this project can least afford.
+    case "SET_DEPTH": {
+      const inSet = [...cards.values()].filter(x => x.set === e.set);
+      if (inSet.length !== e.cards) return `claims ${e.cards} cards in ${e.set}, the catalogue holds ${inSet.length}`;
+      const illus = new Set(inSet.map(x => x.artist).filter(Boolean)).size;
+      if (illus !== e.illustrators) return `claims ${e.illustrators} illustrators, the catalogue holds ${illus}`;
+      const priced = inSet.filter(x => typeof x.price === "number" && x.price > 0)
+        .sort((a, b) => b.price - a.price);
+      if (!priced.length) return "claims prices for a set with none";
+      if (priced[0].id !== e.top.id) return `claims ${e.top.name} is dearest, the catalogue says ${priced[0].name}`;
+      const med = priced[Math.floor(priced.length / 2)].price;
+      if (Math.abs(med - e.median) > 0.005) return `claims a median of ${e.median}, the catalogue says ${med}`;
+      if (inSet.length - priced.length !== e.noMarket)
+        return `claims ${e.noMarket} without a market price, the catalogue says ${inSet.length - priced.length}`;
+      // The reason line must not judge - that is the whole mechanic. A relation
+      // that ANSWERS "is this set any good" removes the reason to reply.
+      if (/(good|bad|best|worst|weak|strong|carried|overrated|underrated|just)/i.test(r.reason))
+        return "the reason line passes judgement — SET_DEPTH states numbers and leaves the question open";
+      return null;
+    }
     default:
       return "unknown relation type";
   }

@@ -885,6 +885,35 @@
     "build-shots"
    ],
    "recheckAfter": "2027-02-25"
+  },
+  {
+   "id": "set-doubt-names-a-set-not-a-person",
+   "claim": "OBSERVED ON ANOTHER ACCOUNT, NOT OUR RESULT. @parkyspokestop: \"Is Team Up actually a good set or does it just have the lovebirds?\" — roughly 15,000 views and 17 replies, a reply density of about 1.13 per thousand views. Our own best-reaching post, 2026-08-22-arita-blastoise, took 34 replies on 127,200 views: 0.27 per thousand. That is 4.2x on reply density against 8x LESS reach, which is the whole point — the shape converts attention into conversation far better than ours does, at a fraction of the audience.",
+   "sources": [
+    "x.com/parkyspokestop",
+    "Tyler-supplied observation, 2026-08-25",
+    "data/post-outcomes.json for our own figure"
+   ],
+   "verified": "2026-08-25",
+   "verifier": "Tyler observed; the 4x ratio recomputed from our own outcome log",
+   "confidence": "COMMUNITY",
+   "falsifier": "The same question asked about a set with an undisputed reputation producing the same reply density. If 'is Base Set actually good' performs identically, the mechanic is the question form and not the doubt.",
+   "note": "THE MECHANIC: it doubts a SET, not a person, and it does not answer its own question. Doubting a set is safe to disagree with because nobody's taste is on trial — a reader defending Team Up is defending a set, not themselves, and no one loses. Leaving the question open is what makes replying the natural response rather than liking. State something arguable and then stop.",
+   "usedBy": []
+  },
+  {
+   "id": "era-claim-invites-a-counter-era",
+   "claim": "OBSERVED ON ANOTHER ACCOUNT, NOT OUR RESULT. @Courtyard_io: \"e-Reader era art was peak\", posted over cropped card art. A short arguable claim about an ERA, which invites a reader to name a different era rather than to agree or disagree with a person.",
+   "sources": [
+    "x.com/Courtyard_io",
+    "Tyler-supplied observation, 2026-08-25"
+   ],
+   "verified": "2026-08-25",
+   "verifier": "Tyler",
+   "confidence": "COMMUNITY",
+   "falsifier": "The same claim made about a single card rather than an era producing comparable replies. If 'this Charizard is peak' performs the same, the era framing is doing nothing and brevity is the whole effect.",
+   "note": "SAME MECHANIC AS SET_DOUBT, different noun. Name something arguable and leave it open. An era claim hands the reader a ready-made reply — their own era — so answering costs no thought, which is the same property as removing the reason not to reply. Note also what it is NOT: it does not rank, it does not explain itself, and it is short enough to disagree with in four words.",
+   "usedBy": []
   }
  ]
 }

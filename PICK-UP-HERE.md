@@ -185,7 +185,7 @@ research/house-theses.md           102 laws
 research/RESEARCH-GATE.md          33 logged errors, who caught each
 research/PENDING-X-KEYS.md         the credential steps
 research/PENDING-CLOSE-THE-LOOP.md what CC needs to wire
-data/knowledge.json                50 facts, each with a falsifier
+data/knowledge.json                52 facts, each with a falsifier
 data/post-outcomes.json            5 posts — the number that matters
 research/assets/build.html         the editor
 ```
