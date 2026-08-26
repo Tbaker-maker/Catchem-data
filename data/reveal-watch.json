@@ -1,0 +1,159 @@
+{
+ "note": "Individual CARD reveals, which run on a different clock from product releases. A release date is useful for months; a reveal for an afternoon. Nothing here posts — every entry is queued for Tyler.",
+ "whyWeBother": "We will never win the race to post a reveal first: news accounts are faster, staffed for it, and it is their whole job. What we hold and they do not is the illustrator's entire back catalogue, queryable in milliseconds. 'Uninori also drew these' within minutes of a reveal is a post nobody else can make. The reveal is the trigger; the back catalogue is the product.",
+ "sources": [
+  {
+   "id": "pokemon-cojp",
+   "name": "The Pokémon Company Japan (official)",
+   "url": "https://www.pokemon-card.com/",
+   "reliability": "CANONICAL — it is the primary source; nothing is more authoritative",
+   "speed": "UNMEASURED. Official reveals are the origin point for most cards, but TPC also publishes on its own schedule and aggregators sometimes surface leaked product photos first.",
+   "useFor": "Confirming anything before it reaches a caption. A reveal that only aggregators carry is a report, not a fact."
+  },
+  {
+   "id": "pokebeach",
+   "name": "PokéBeach",
+   "url": "https://www.pokebeach.com/",
+   "reliability": "HIGH — long-running, named editors, corrects itself, and already cited as a source in our release-radar entries",
+   "speed": "UNMEASURED. Known for breaking set news ahead of official announcements and actively covers Japanese reveals.",
+   "useFor": "Set-level news and early reveals. Already trusted enough to appear in radar sourcing."
+  },
+  {
+   "id": "pokeguardian",
+   "name": "PokeGuardian",
+   "url": "https://www.pokeguardian.com/",
+   "reliability": "MEDIUM-HIGH — independent fan site, named contributors (PrimalLugia as webmaster/lead editor), explicitly not affiliated with Pokémon, and invites readers to report news it missed",
+   "speed": "UNMEASURED. Publishes daily and is heavily Japan-focused, which is the profile of a fast source, but that is an inference from its coverage pattern and not something we have timed.",
+   "useFor": "Japanese card reveals specifically. Its about page does not claim a publication SLA and we should not invent one for it."
+  },
+  {
+   "id": "serebii",
+   "name": "Serebii",
+   "url": "https://www.serebii.net/",
+   "reliability": "HIGH for card DETAIL — a reference database rather than a news wire",
+   "speed": "UNMEASURED, and likely not the fastest by design. A database is completed carefully; a news post is published quickly. Those are different jobs.",
+   "useFor": "Filling in HP, attacks and numbering after a reveal is known. Not for finding out that a reveal happened."
+  }
+ ],
+ "sourcesFinding": "THE RANKING THIS FILE WAS ASKED FOR DOES NOT YET EXIST, and inventing it would be the exact error logged in house-theses.md as the Kimura trap — a sentence broader than its evidence. Searching established WHICH sources exist and their character; it did not establish which is fastest, because nobody publishes that and it can only be known by timing them. What is already clear is that reliability and speed sit on opposite ends: the canonical source (TPC Japan) is by definition never wrong and does not race, while the sources that surface leaked photos earliest are the ones carrying the most unconfirmed material. The cadence samples below are how the speed half gets settled, per source, from observation rather than reputation.",
+ "rules": [
+  "A reveal from an aggregator is a REPORT until the official source or a second independent outlet carries it. Report and fact are different things and the caption must not blur them.",
+  "Nothing in this file reaches the send path. It is queued for Tyler and he decides.",
+  "Illustrator credits get verified against our own catalogue before they reach a caption — a wrong illustrator credit is the one error this account cannot afford."
+ ],
+ "reveals": [
+  {
+   "name": "Slowpoke",
+   "set": "30th Celebration",
+   "number": null,
+   "illustrator": "Uninori",
+   "hp": 80,
+   "attacks": [
+    "Well-Hidden",
+    "Water Gun"
+   ],
+   "revealedAt": "pokebeach",
+   "url": null,
+   "publishedAt": "2026-08-25T04:10:00Z",
+   "firstSeenAt": "2026-08-26T00:00:15.554Z",
+   "angle": {
+    "artist": "Uninori",
+    "held": 20,
+    "span": {
+     "from": 2024,
+     "to": 2026
+    },
+    "sets": [
+     "Ascended Heroes",
+     "Black Bolt",
+     "Chaos Rising",
+     "Destined Rivals",
+     "Mega Evolution",
+     "Phantasmal Flames",
+     "Prismatic Evolutions",
+     "Shrouded Fable",
+     "Stellar Crown",
+     "Surging Sparks",
+     "Temporal Forces",
+     "Twilight Masquerade"
+    ],
+    "dearest": [
+     {
+      "id": "sv10-233",
+      "name": "Team Rocket's Nidoking ex",
+      "set": "Destined Rivals",
+      "year": 2025,
+      "price": 104.02
+     },
+     {
+      "id": "sv8pt5-166",
+      "name": "Raging Bolt ex",
+      "set": "Prismatic Evolutions",
+      "year": 2025,
+      "price": 69.29
+     },
+     {
+      "id": "zsv10pt5-137",
+      "name": "Krookodile",
+      "set": "Black Bolt",
+      "year": 2025,
+      "price": 55.39
+     },
+     {
+      "id": "me2-106",
+      "name": "Meowth",
+      "set": "Phantasmal Flames",
+      "year": 2025,
+      "price": 19
+     },
+     {
+      "id": "sv8-210",
+      "name": "Flapple",
+      "set": "Surging Sparks",
+      "year": 2024,
+      "price": 4.43
+     },
+     {
+      "id": "me1-101",
+      "name": "Latios",
+      "set": "Mega Evolution",
+      "year": 2025,
+      "price": 0.28
+     },
+     {
+      "id": "sv7-112",
+      "name": "Tauros",
+      "set": "Stellar Crown",
+      "year": 2024,
+      "price": 0.27
+     },
+     {
+      "id": "sv6-81",
+      "name": "Kadabra",
+      "set": "Twilight Masquerade",
+      "year": 2024,
+      "price": 0.26
+     }
+    ],
+    "revisits": [],
+    "line": "Uninori has 20 cards in our catalogue, from 2024 to 2026."
+   },
+   "status": "QUEUED FOR TYLER",
+   "posted": false
+  }
+ ],
+ "cadence": {
+  "runHourUtc": 13,
+  "note": "MEASURE BEFORE CHANGING THE SCHEDULE. If the median gap is hours, cadence is the problem. If reveals cluster in Japanese business hours (roughly 00:00-09:00 UTC), the run TIME is the problem and running twice a day at the wrong two times is the same miss twice. lagReport() refuses to give a verdict under five samples.",
+  "samples": [
+   {
+    "card": "Slowpoke",
+    "source": "pokebeach",
+    "publishedAt": "2026-08-25T04:10:00Z",
+    "publishedHourUtc": 4,
+    "wouldHaveCaughtAt": "2026-08-25T13:00:00.000Z",
+    "lagHours": 8.8
+   }
+  ]
+ }
+}
