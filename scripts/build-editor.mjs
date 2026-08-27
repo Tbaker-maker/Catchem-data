@@ -174,7 +174,24 @@ h1 em{font-style:normal;color:var(--live)}
 .eg.demo{border-color:var(--live);color:var(--text);padding:12px 18px;flex:1 1 220px}
 .eg.demo:hover{background:rgba(54,211,153,.07)}
 .egkicker{display:block;font:500 9.5px var(--mono);letter-spacing:.16em;text-transform:uppercase;
-  color:var(--live);margin:0 0 4px}
+  color:var(--faint);margin:0 0 4px}
+.series{margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+.series-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:0 0 10px}
+.series-title{font:500 11px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin:0}
+.cadence{display:flex;padding:3px;background:var(--raise);border-radius:10px;gap:3px}
+.cadence button{border:0;background:transparent;color:var(--soft);border-radius:8px;padding:8px 14px;
+  font:600 13px var(--body);min-height:36px}
+.cadence button.on{background:var(--panel);color:var(--text)}
+.rec{display:inline-flex;align-items:center;gap:8px;background:none;border:0;color:var(--soft);
+  font:400 13px var(--body);cursor:pointer;padding:0;min-height:36px}
+.rec.on{color:var(--text)}
+.rec .knob{width:36px;height:22px;border-radius:11px;background:var(--line);position:relative;flex:0 0 36px}
+.rec .knob i{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--soft);
+  display:block;transition:left .16s var(--ease)}
+.rec.on .knob{background:var(--text)}
+.rec.on .knob i{left:16px;background:var(--ink)}
+.series .streakexplain{margin:0 0 10px;font:400 14px var(--body);color:var(--soft);line-height:1.5;max-width:58ch}
+.series .streakactions{margin-top:4px}
 .hooklabel{font:500 9.5px var(--mono);color:var(--faint);letter-spacing:.15em;margin:16px 0 8px}
 .hooks{display:flex;flex-direction:column;gap:7px}
 .hookchip{background:transparent;border:1px solid var(--line);color:var(--soft);border-radius:10px;
@@ -188,7 +205,7 @@ h1 em{font-style:normal;color:var(--live)}
 .mode.on{background:var(--panel);color:var(--text);box-shadow:0 1px 2px rgba(0,0,0,.35)}
 body[data-mode="reply"] #postmode,body[data-mode="reply"] .tut{display:none}
 body[data-mode="post"] #office{display:none}
-body[data-mode="reply"] .advanced,body[data-mode="reply"] .ideas,body[data-mode="reply"] .streakwrap{display:none}
+body[data-mode="reply"] .advanced,body[data-mode="reply"] .ideas,body[data-mode="reply"] .streakwrap,body[data-mode="reply"] #streakbar{display:none}
 .morefacts{margin-top:14px;border:0;padding:0}
 .morefacts > summary{cursor:pointer}
 .replylede{margin:0 0 14px;color:var(--soft);font:400 16px/1.45 var(--body)}
@@ -515,6 +532,7 @@ ${TODAY_IMG ? `<div id="todaypost">
   </div>
   <div class="suggest" id="suggest" hidden></div>
   <div class="egs" id="egs"></div>
+  <div class="series" id="streakbar"></div>
   <details class="morefacts">
     <summary class="hooklabel">From the catalogue</summary>
     <div class="hooks" id="hooks"></div>
@@ -640,11 +658,6 @@ ${TODAY_IMG ? `<div id="todaypost">
 <div class="pager" id="pager"></div>
 </details>
 
-<!-- The old streak block lived here: a paragraph, two dropdowns and a Begin
-     button, rendering above the collapsed one that replaced it. I built the
-     replacement and never removed what it replaced, so the page shouted about
-     streaks to everyone regardless. -->
-<div class="streak" id="streakbar"></div>
 <button class="broke" id="brokebtn">Tell me what's broken</button>
 <div class="fb" id="fb" hidden>
   <p class="fbtitle" id="fbtitle"></p>
@@ -2042,25 +2055,40 @@ const STREAK_FILTERS = {
   "says-hit": { label: "Cards that just hit things",
     words: ["punch","kick","slam","smash","tackle","headbutt","bite","slash","crush","pound"],
     test: c => Array.isArray(c.k) && c.k.some(a => ["punch","kick","slam","smash","tackle","headbutt","bite","slash","crush","pound"].some(w => String(a).toLowerCase().includes(w))) },
+  "weekly-connect": { cadence: "weekly", label: "One connecting picture",
+    series: "one connecting picture a week — spread the good ones out",
+    test: c => typeof CONNECTING !== "undefined" && CONNECTING.some(function(g){ return g.c.indexOf(c.i) >= 0; }) },
+  "weekly-artist": { cadence: "weekly", label: "Forgotten illustrator",
+    series: "one overlooked illustrator a week",
+    test: c => !!(c.a && HERO_RX.test(c.r || "")), ordered: "artist" },
+  "weekly-twins": { cadence: "weekly", label: "Paper × Pocket",
+    series: "the same Pokémon in both games, one a week",
+    test: c => !!(typeof CROSSWALK !== "undefined" && CROSSWALK.twins && CROSSWALK.twins[(typeof monName === "function" ? monName(c.n) : c.n)]) },
+  "weekly-old": { cadence: "weekly", label: "1999–2003",
+    series: "one early-print card a week",
+    test: c => !!(c.y && c.y <= "2003" && c.a) },
+  "weekly-promo": { cadence: "weekly", label: "Promos",
+    series: "one promo a week",
+    test: c => /Promo/i.test(c.r || "") && !!c.a },
 };
 
 function startStreak(filterId, perDay){
-  // REFUSE AN UNKNOWN FILTER rather than storing it and crashing later. Writing
-  // a bad name to localStorage turns one bad click into a permanently broken
-  // page.
   if (!STREAK_FILTERS[filterId]) { setStatus("Unknown streak filter: " + filterId, true); return; }
-  // A SALT PER STREAK, not just the start date. The seed used to be
-  // started + day, and the comment beside it claimed two creators on the same
-  // filter would 'diverge immediately'. They did not diverge at all: same
-  // filter and same start date meant the same seed, and two creators got
-  // byte-identical series. Verified by running two fresh streaks on the same
-  // day — five days, same three cards each day, both times.
-  //
-  // The salt is drawn once and stored, so the series stays stable across
-  // reloads for its owner while differing from everybody else's.
   const salt = Math.floor(Math.random() * 1e9).toString(36);
-  streak = { filter: filterId, perDay: perDay, day: 0, used: [], salt: salt, started: new Date().toISOString().slice(0,10) };
-  saveStreak(); nextStreakDay();
+  const f = STREAK_FILTERS[filterId];
+  streak = {
+    filter: filterId,
+    cadence: f.cadence === "weekly" ? "weekly" : "daily",
+    perDay: perDay || 1,
+    day: 0,
+    days: [],
+    used: [],
+    salt: salt,
+    started: new Date().toISOString().slice(0,10),
+  };
+  saveStreak();
+  todaysCard();
+  renderStreak();
 }
 
 // NO REPEATS, EVER. A streak that serves the same card twice is a streak
@@ -2104,78 +2132,139 @@ function nextStreakDay(){
   render();
 }
 
+function weekKey(d){
+  var x = d ? new Date(String(d).length === 10 ? d + "T12:00:00" : d) : new Date();
+  var t = new Date(x.getFullYear(), x.getMonth(), x.getDate());
+  var day = t.getDay() || 7;
+  t.setDate(t.getDate() + 4 - day);
+  var y0 = new Date(t.getFullYear(), 0, 1);
+  var w = Math.ceil((((t - y0) / 86400000) + 1) / 7);
+  return t.getFullYear() + "-W" + (w < 10 ? "0" : "") + w;
+}
+var seriesCadence = "weekly";
+var recommendOn = false;
+try { recommendOn = store.get("catchem-recommend") === "1"; } catch (e) {}
+function setRecommend(on){
+  recommendOn = !!on;
+  try { store.set("catchem-recommend", recommendOn ? "1" : "0"); } catch (e) {}
+  if (recommendOn && typeof Notification !== "undefined" && Notification.permission === "default") {
+    try { Notification.requestPermission(); } catch (e) {}
+  }
+  renderStreak();
+}
+function recButton(){
+  var b = document.createElement("button");
+  b.type = "button";
+  b.className = "rec" + (recommendOn ? " on" : "");
+  b.setAttribute("aria-pressed", recommendOn ? "true" : "false");
+  b.innerHTML = "<span class='knob'><i></i></span>Recommend " + (recommendOn ? "on" : "off");
+  b.onclick = function(){ setRecommend(!recommendOn); };
+  return b;
+}
+function maybeRecommendPing(){
+  if (!recommendOn || !streak) return;
+  var st = streakState();
+  if (st.status !== "due") return;
+  var k = (streak.cadence === "weekly" ? weekKey() : dayKey());
+  try { if (store.get("catchem-last-ping") === k) return; store.set("catchem-last-ping", k); } catch (e) {}
+  if (typeof Notification === "undefined" || Notification.permission !== "granted") return;
+  var f = STREAK_FILTERS[streak.filter];
+  try {
+    new Notification("Catch'em", { body: (streak.cadence === "weekly" ? "This week's cards are ready. " : "Today's card is ready. ") + ((f && f.label) || "") });
+  } catch (e) {}
+}
+
 function renderStreak(remaining){
   const box = el("streakbar");
   if (!box) return;
   box.hidden = false;
+  box.className = "series";
   box.innerHTML = "";
 
-  // COLLAPSED UNLESS IT MATTERS. A wall of explanation shown to everybody,
-  // including the majority not starting a streak today, is the same mistake the
-  // prompt bar fixed. But an ACTIVE streak with a day due is exactly what
-  // somebody needs to see, and hiding that is how they miss a day.
   const st = streak ? streakState() : { day: 0, status: "not started" };
-  const wrap = document.createElement("details");
-  wrap.className = "streakwrap";
-  if (streak && st.status !== "done today") wrap.open = true;
+  const weekly = !streak ? seriesCadence === "weekly" : streak.cadence === "weekly";
 
-  const sum = document.createElement("summary");
-  sum.textContent = !streak ? "Start a daily series"
-    : st.status === "done today" ? "Day " + st.day + " — done today"
-    : st.status === "due" ? "Day " + (st.day + 1) + " is due"
-    : st.status === "broken" ? "Day " + st.day + " — gap of " + st.missed + " day" + (st.missed > 1 ? "s" : "")
-    : "Daily series";
-  wrap.appendChild(sum);
+  const head = document.createElement("div");
+  head.className = "series-head";
+  const title = document.createElement("p");
+  title.className = "series-title";
+  title.textContent = !streak ? "Start a series"
+    : st.status === "done today" ? (weekly ? "This week · posted" : "Day " + st.day + " · posted")
+    : st.status === "due" ? (weekly ? "This week is due" : "Day " + (st.day + 1) + " is due")
+    : st.status === "broken" ? (weekly ? "Gap in the weekly run" : "Day " + st.day + " — gap")
+    : (weekly ? "Weekly series" : "Daily series");
+  head.appendChild(title);
+  if (!streak) {
+    const cad = document.createElement("div");
+    cad.className = "cadence";
+    cad.setAttribute("role", "tablist");
+    [["daily","Daily"],["weekly","Weekly"]].forEach(function(pair){
+      const b = document.createElement("button");
+      b.type = "button";
+      b.textContent = pair[1];
+      b.className = seriesCadence === pair[0] ? "on" : "";
+      b.onclick = function(){ seriesCadence = pair[0]; renderStreak(); };
+      cad.appendChild(b);
+    });
+    head.appendChild(cad);
+  }
+  head.appendChild(recButton());
+  box.appendChild(head);
 
   if (!streak) {
     const p = document.createElement("div");
     p.className = "streakexplain";
-    p.textContent = "Pick a rule — one Illustration Rare a day, one card under $3, the whole history in order. The rule is what makes it a series rather than a man posting cards, and the day number is what brings people back. We never repeat a card you have used.";
-    wrap.appendChild(p);
+    p.textContent = seriesCadence === "weekly"
+      ? "Weekly is for spreading the good stuff out. One connecting picture, one forgotten illustrator, one early print — not the same post every morning."
+      : "Daily is a rule you can keep. One Illustration Rare, one cheap card, or the history in order. We never repeat a card you have used.";
+    box.appendChild(p);
     const row = document.createElement("div");
     row.className = "streakactions";
-    for (const k of Object.keys(STREAK_FILTERS)) {
+    Object.keys(STREAK_FILTERS).forEach(function(k){
       const f = STREAK_FILTERS[k];
+      const isW = f.cadence === "weekly";
+      if (seriesCadence === "weekly" ? !isW : isW) return;
+      if (k === "ir-cheap" || k === "ir-mid" || k === "ir-modern" || k === "five-dollar" || k === "says-rest" || k === "says-hit" || k === "one-artist" || k === "cheapest-up" || k === "sir-only") return;
       const b = document.createElement("button");
+      b.type = "button";
       b.textContent = f.label;
       b.onclick = function(){ startStreak(k); };
       row.appendChild(b);
-    }
-    wrap.appendChild(row);
-    box.appendChild(wrap);
+    });
+    box.appendChild(row);
     return;
   }
 
   const f = STREAK_FILTERS[streak.filter];
   const used = new Set(streak.used || []);
-  const left = INDEX.filter(function(c){ return f.test(c) && !used.has(c.i) && c.a; }).length;
-
+  const left = f ? INDEX.filter(function(c){ return f.test(c) && !used.has(c.i) && c.a; }).length : 0;
   const note = document.createElement("div");
   note.className = "streakexplain";
   note.textContent = st.status === "broken"
-    ? "You last counted a day on " + st.last + ". Nothing has been changed — you decide whether this continues the run or starts a new one."
-    : left + " card" + (left === 1 ? "" : "s") + " left that you have not used. The count only moves when you tell us you posted.";
-  wrap.appendChild(note);
+    ? "You last counted on " + st.last + ". Nothing has been changed — you decide whether this continues or starts over."
+    : (f ? f.series + ". " : "") + left + " left unused.";
+  box.appendChild(note);
 
   const row = document.createElement("div");
   row.className = "streakactions";
   const load = document.createElement("button");
   load.className = "go";
-  load.textContent = "Load today's card";
+  load.textContent = weekly ? "Load this week's cards" : "Load today's card";
   load.onclick = function(){ todaysCard(); };
   const conf = document.createElement("button");
-  conf.textContent = st.status === "done today" ? "Already counted today" : "I posted it — count day " + (st.day + 1);
+  conf.textContent = st.status === "done today"
+    ? (weekly ? "Already counted this week" : "Already counted today")
+    : (weekly ? "I posted it — count this week" : "I posted it — count day " + (st.day + 1));
   conf.disabled = st.status === "done today";
   conf.onclick = function(){ confirmPosted(); };
-  const filt = document.createElement("button");
-  filt.textContent = streakFilterOn ? "Show all cards" : "Show only my streak pool";
-  filt.onclick = function(){ toggleStreakFilter(); };
-  row.appendChild(load); row.appendChild(conf); row.appendChild(filt);
-  wrap.appendChild(row);
-  box.appendChild(wrap);
+  const stop = document.createElement("button");
+  stop.textContent = "Stop series";
+  stop.onclick = function(){ endStreak(); renderStreak(); };
+  row.appendChild(load); row.appendChild(conf); row.appendChild(stop);
+  box.appendChild(row);
 }
 
-function endStreak(){ streak = null; try { store.del("catchem-streak"); } catch {} el("streakbar").hidden = true; }
+function endStreak(){ streak = null; try { store.del("catchem-streak"); } catch {} }
 
 // Populate the filter list from the same object the picker uses, so a filter
 // added in one place cannot go missing in the other.
@@ -2188,7 +2277,9 @@ function beginStreak(){
   startStreak(el("sfilter").value, Number(el("sper").value));
   el("streakstart").hidden = true;
 }
-if (streak) { const st = el("streakstart"); if (st) st.hidden = true; renderStreak(); }
+if (el("streakstart") && streak) el("streakstart").hidden = true;
+renderStreak();
+maybeRecommendPing();
 
 // roundRect is Chrome 99+, Safari 16+, Firefox 112+. A card-show phone on
 // anything older throws mid-draw and the compose dies with no useful message,
@@ -2734,17 +2825,30 @@ function toggleStreakFilter(){
   resetPage(); search(); renderStreak();
 }
 function todaysCard(){
-  // A MISSING FILTER MUST NOT CRASH. A stale localStorage entry from an older
-  // build, or a filter renamed between versions, lands here with a name that no
-  // longer exists — and reading .test on undefined took the whole page down.
   if (!streak) return;
   const f = STREAK_FILTERS[streak.filter];
   if (!f) { setStatus("That streak used a filter this version no longer has. Start a new one.", true); return; }
   const used = new Set(streak.used || []);
+  if (streak.filter === "weekly-connect" && typeof CONNECTING !== "undefined") {
+    var groups = CONNECTING.filter(function(g){
+      var ok = 0;
+      for (var i = 0; i < g.c.length; i++) {
+        if (!byIdRow[g.c[i]]) return false;
+        if (used.has(g.c[i])) return false;
+        ok++;
+      }
+      return ok >= 2;
+    });
+    if (!groups.length) { setStatus("No unused connecting pictures left in this series.", false); return; }
+    var g = groups[Math.abs((streak.salt || "x").split("").reduce(function(a,ch){ return ((a<<5)-a+ch.charCodeAt(0))|0; }, 0) + (streak.days ? streak.days.length : 0) * 17) % groups.length];
+    tray = g.c.map(function(id){ return byIdRow[id]; }).filter(Boolean);
+    blob = null;
+    try { fillLineFromCards(true); } catch (e) {}
+    render();
+    return;
+  }
   const pool = INDEX.filter(c => f.test(c) && !used.has(c.i) && c.a);
-  if (!pool.length) return;
-  // Ordered streaks walk the pool in sequence; the rest pick at random so two
-  // creators on the same filter do not get the same card.
+  if (!pool.length) { setStatus("Nothing left unused in this series.", false); return; }
   const pick = f.ordered ? pool[0] : pool[Math.floor(Math.random() * pool.length)];
   tray = [pick]; blob = null;
   render();
@@ -4482,45 +4586,45 @@ function daysBetween(a, b){
   return Math.round((B - A) / DAY_MS);
 }
 function streakState(){
-  if (!streak || !streak.days || !streak.days.length) return { day: 0, status: "not started" };
+  if (!streak || !streak.days || !streak.days.length) return { day: 0, status: streak ? "due" : "not started" };
   const days = streak.days.slice().sort();
   const last = days[days.length - 1];
+  const weekly = streak.cadence === "weekly";
+  if (weekly) {
+    if (weekKey(last) === weekKey()) return { day: days.length, status: "done today", last };
+    const gap = daysBetween(last, dayKey());
+    if (gap > 13) return { day: days.length, status: "broken", missed: Math.floor((gap - 1) / 7), last };
+    return { day: days.length, status: "due", last };
+  }
   const gap = daysBetween(last, dayKey());
-  // BROKEN IS A STATE, NOT A RESET. Silently starting again at Day 1 hides
-  // something they would want to know, and quietly continuing the count is a
-  // lie somebody in their replies can check.
-  // MISSED DAYS = the gap minus today. Last posted four days ago means three
-  // days went by unposted. Getting this wrong by one puts a wrong number in
-  // front of an audience, which is the whole thing we are guarding against.
   if (gap > 1) return { day: days.length, status: "broken", missed: gap - 1, last };
   if (gap === 1) return { day: days.length, status: "due", last };
   return { day: days.length, status: "done today", last };
 }
 function confirmPosted(){
-  // Same guard. The fuzzer reached this with no streak and with an unknown
-  // filter, 173 times across 300 random journeys.
   if (!streak) { setStatus("No streak running — start one first.", false); return; }
   if (!STREAK_FILTERS[streak.filter]) { setStatus("That streak used a filter this version no longer has. Start a new one.", true); return; }
-  const k = dayKey();
+  const weekly = streak.cadence === "weekly";
+  const k = weekly ? weekKey() : dayKey();
   streak.days = streak.days || [];
-  // DOUBLE-COUNT GUARD. Two confirmations on one calendar day is one day.
-  if (streak.days.indexOf(k) >= 0) { setStatus("Already counted today — the streak stays at day " + streak.days.length + ".", false); renderStreak(); return; }
+  if (streak.days.indexOf(k) >= 0) {
+    setStatus(weekly ? "Already counted this week." : "Already counted today — the streak stays at day " + streak.days.length + ".", false);
+    renderStreak();
+    return;
+  }
   const st = streakState();
   if (st.status === "broken") {
-    // NEVER DECIDE THIS FOR THEM. Continuing or restarting is a claim about
-    // their own history, and only they know whether they posted elsewhere.
     var NL2 = String.fromCharCode(10);
-    const keep = confirm("You last posted " + st.missed + " day" + (st.missed > 1 ? "s" : "") + " ago, so the run has a gap." + NL2 + NL2 + "OK = count this as day " + (st.day + 1) + " and keep the total." + NL2 + "Cancel = start again at day 1.");
+    const keep = confirm("You last posted " + st.missed + (weekly ? " week" : " day") + (st.missed > 1 ? "s" : "") + " ago, so the run has a gap." + NL2 + NL2 + "OK = keep the total." + NL2 + "Cancel = start again at 1.");
     if (!keep) streak.days = [];
   }
   streak.days.push(k);
-  // NEVER REPEAT A CARD. Day 60 showing Day 12's card ends the series.
   if (tray.length) {
     streak.used = streak.used || [];
     for (const c of tray) if (streak.used.indexOf(c.i) < 0) streak.used.push(c.i);
   }
   saveStreak();
-  setStatus("Day " + streak.days.length + " counted. See you tomorrow.", false);
+  setStatus(weekly ? "Week " + streak.days.length + " counted. See you next week." : "Day " + streak.days.length + " counted. See you tomorrow.", false);
   renderStreak();
 }
 window.confirmPosted = confirmPosted;
