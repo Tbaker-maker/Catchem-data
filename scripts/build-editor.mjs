@@ -3520,6 +3520,7 @@ function askCards(r, opts){
         var c = INDEX[ii];
         if (skipIds.has(c.i)) continue;
         if (c.sup !== "P") continue;
+        if (String(c.n).indexOf("&") >= 0) continue;
         var mn = (typeof monName === "function") ? monName(c.n) : c.n;
         if (mn !== want && c.n !== want) continue;
         cands.push(c);
@@ -4023,14 +4024,23 @@ function runAsk(text){
   if (saysPocket && !(INDEX[0] && INDEX[0].g === "k")) applyGame("pocket", false);
   if (saysPaper && INDEX[0] && INDEX[0].g === "k") applyGame("paper", false);
   if (saysPocket) {
-    text = String(text || "").replace(/pokemon\s+tcg\s+pocket/ig, " ").replace(/tcg\s+pocket/ig, " ")
-      .replace(/pokemon\s+pocket/ig, " ").replace(/\bptcgp\b/ig, " ").replace(/\bpocket\b/ig, " ")
-      .replace(/\s+/g, " ").trim();
+    var sPocket = " " + String(text || "").toLowerCase().replace(/[^a-z0-9]+/g, " ") + " ";
+    var dropP = ["pokemon tcg pocket", "tcg pocket", "pokemon pocket", "ptcgp", "pocket"];
+    for (var di = 0; di < dropP.length; di++) {
+      var needle = " " + dropP[di] + " ";
+      while (sPocket.indexOf(needle) >= 0) sPocket = sPocket.split(needle).join(" ");
+    }
+    text = sPocket.replace(/  +/g, " ").trim();
     if (!text) text = "eeveelutions";
   }
   if (saysPaper) {
-    text = String(text || "").replace(/paper\s+tcg/ig, " ").replace(/paper\s+cards/ig, " ")
-      .replace(/\bphysical\b/ig, " ").replace(/\s+/g, " ").trim();
+    var sPaper = " " + String(text || "").toLowerCase().replace(/[^a-z0-9]+/g, " ") + " ";
+    var dropR = ["paper tcg", "paper cards", "physical"];
+    for (var dj = 0; dj < dropR.length; dj++) {
+      var n2 = " " + dropR[dj] + " ";
+      while (sPaper.indexOf(n2) >= 0) sPaper = sPaper.split(n2).join(" ");
+    }
+    text = sPaper.replace(/  +/g, " ").trim();
     if (!text) text = "the fishes";
   }
   const askRel = askResolve(text);
