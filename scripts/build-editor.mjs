@@ -3320,7 +3320,12 @@ function applyGame(g, rerun){
     : g === "both" ? CARD_INDEX.concat(POCKET_INDEX)
     : CARD_INDEX.slice();
   var gs = el("game");
-  if (gs && gs.value !== g) gs.value = g;
+  if (gs && gs.value !== g) {
+    var prev = gs.onchange;
+    gs.onchange = null;
+    gs.value = g;
+    gs.onchange = prev;
+  }
   var s = document.getElementById("searchall");
   if (s) s.textContent = "Search all " + INDEX.length.toLocaleString("en-US") + " cards instead";
   var ask = el("ask");
