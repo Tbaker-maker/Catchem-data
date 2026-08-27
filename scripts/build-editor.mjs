@@ -115,12 +115,12 @@ else {
   const pocketShow = [];
   if (pocketCat && pocketCat.cards) {
     for (const [id, c] of Object.entries(pocketCat.cards)) {
-      if (!SHOW_R.test(c.rarity || "")) continue;
-      pocketShow.push({
-        i: id, n: c.name, a: c.artist || null, s: c.setName,
-        y: (c.releaseDate || "").slice(0, 4), r: c.rarity || "",
-        g: "k", hero: 1, sup: "P",
-      });
+      pocketShow.push([
+        id, c.name, c.setName || "", (c.releaseDate || "").slice(0, 4),
+        c.artist || 0, c.rarity || 0,
+        SHOW_R.test(c.rarity || "") ? 1 : 0,
+        (c.supertype === "Pokémon" || !c.supertype) ? "P" : 0,
+      ]);
     }
   }
   const xwalk = (await J("data/pocket-crosswalk.json")) || { twins: {}, sharedBases: 0, sharedArtists: 0 };
@@ -891,7 +891,15 @@ const CARD_INDEX = CARD_ROWS.map(function(r){
   if (r[21]) o.mech = r[21];
   return o;
 });
-const POCKET_INDEX = ${JSON.stringify(pocketShow)};
+const POCKET_ROWS = ${JSON.stringify(pocketShow)};
+const POCKET_INDEX = POCKET_ROWS.map(function(r){
+  var o = { i: r[0], n: r[1], s: r[2], y: r[3], g: "k" };
+  if (r[4]) o.a = r[4];
+  if (r[5]) o.r = r[5];
+  if (r[6]) o.hero = 1;
+  if (r[7]) o.sup = r[7];
+  return o;
+});
 const CROSSWALK = ${JSON.stringify({ sharedBases: xwalk.sharedBases, sharedArtists: xwalk.sharedArtists, twins: xwalk.twins })};
 // Sourced facts, so the 'story' shape has something true to build on. Only
 // VERIFIED ones ship — an unsourced claim on a card image is the one mistake
@@ -1471,9 +1479,15 @@ var trail = [];
 // draw images 96 pixels wide. On a phone that never finishes, which is a grid of
 // blank squares.
 const imgSmall = (id) => {
+  var row = (typeof byIdRow !== "undefined") ? byIdRow[id] : null;
+  if (row && row.img) return row.img;
   if (String(id).indexOf("tcgp-") === 0) {
     var rest = id.slice(5), i = rest.lastIndexOf("-");
-    return "https://assets.tcgdex.net/en/tcgp/" + rest.slice(0, i) + "/" + rest.slice(i + 1) + "/high.webp";
+    var set = rest.slice(0, i), num = rest.slice(i + 1);
+    if (set === "P-A" || set === "P-B" || /^[AB]\d/.test(set)) {
+      return "https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/pocket/" + set + "/" + set + "_" + num + "_EN.webp";
+    }
+    return "https://assets.tcgdex.net/en/tcgp/" + set + "/" + num + "/high.webp";
   }
   return "https://images.pokemontcg.io/" + id.slice(0, id.lastIndexOf("-")) + "/" + id.slice(id.lastIndexOf("-") + 1) + ".png";
 };
