@@ -3007,6 +3007,7 @@ function askArtistLoose(text, monName){
       var p = parts[j];
       if (p.length < 4) continue;
       if (ASK_NAMES[p]) continue;                                  // it is a Pokemon
+      if (p === "team" || p === "art" || p === "from" || p === "with" || p === "company" || p === "pokemon") continue;
       if (monName && p === String(monName).toLowerCase()) continue;
       if (text.indexOf(" " + p + " ") < 0) continue;
       if (!best || ASK_ARTISTS[k].length > best.length) best = ASK_ARTISTS[k];
@@ -3025,25 +3026,33 @@ function askResolve(text){
   // THE MORNING POST. Naming the three beasts pins Sugimori's Neo Revelation
   // painting. "One painting" by itself must NOT, or every 3-card connecting
   // query becomes Entei and Another never reaches the birds.
-  if ((has(["entei"]) && has(["raikou"]) && has(["suicune"])) || has(["the beasts"]))
+  var pocketOn = INDEX.length && INDEX[0] && INDEX[0].g === "k";
+  if (pocketOn && (has(["team rocket"]) || has(["zapdos"]) || has(["articuno"]) || has(["moltres"])) &&
+      (has(["zapdos"]) || has(["articuno"]) || has(["moltres"]))) {
+    if (has(["zapdos"]) && has(["articuno"]) && has(["moltres"]) || has(["the birds", "legendary birds"]))
+      return { relation: "CONNECTING_ART", subject: null, need: 3,
+        pin: "tcgp-B4a-090|tcgp-B4a-089|tcgp-B4a-088",
+        why: "Team Rocket's Ambition birds (B4a)" };
+  }
+  if (!pocketOn && (has(["entei"]) && has(["raikou"]) && has(["suicune"])) || (!pocketOn && has(["the beasts"])))
     return { relation: "CONNECTING_ART", subject: null, need: 3,
       pin: "neo3-6|neo3-13|neo3-14",
       why: "the Neo Revelation beasts are one picture" };
-  if ((has(["moltres"]) && has(["zapdos"]) && has(["articuno"])) ||
-      has(["legendary birds", "the birds", "three birds"]))
+  if (!pocketOn && (has(["moltres"]) && has(["zapdos"]) && has(["articuno"])) ||
+      (!pocketOn && has(["legendary birds", "the birds", "three birds"])))
     return { relation: "CONNECTING_ART", subject: null, need: 3,
       pin: "basep-21|basep-23|basep-22",
       why: "the Wizards promo birds are one picture" };
-  if (has(["mega venusaur"]) || has(["mashu venusaur"]) ||
-      (has(["bulbasaur"]) && has(["ivysaur"]) && has(["venusaur"])))
+  if (!pocketOn && (has(["mega venusaur"]) || has(["mashu venusaur"]) ||
+      (has(["bulbasaur"]) && has(["ivysaur"]) && has(["venusaur"]))))
     return { relation: "CONNECTING_ART", subject: null, need: 3,
       pin: "me1-133|me1-134|me1-177",
       why: "mashu drew the Venusaur line as one picture" };
-  if ((has(["carvanha"]) && has(["sharpedo"])) || has(["the fishes", "fishes", "the shark"]))
+  if (!pocketOn && ((has(["carvanha"]) && has(["sharpedo"])) || has(["the fishes", "fishes", "the shark"])))
     return { relation: "CONNECTING_ART", subject: null, need: 2,
       pin: "ex1-51|ex1-22",
       why: "Carvanha and Sharpedo are one picture, left to right" };
-  if (has(["hyogonosuke"]) || has(["the beach"]) || has(["nine cards one beach"]))
+  if (!pocketOn && (has(["hyogonosuke"]) || has(["the beach"]) || has(["nine cards one beach"])))
     return { relation: "CONNECTING_ART", subject: null, need: 9,
       pin: "sv4pt5-31|sv3-8|sv4-152|sv2-42|sv2-96|sv4-91|sv3-180|sv1-151|sv4-30",
       why: "HYOGONOSUKE's nine-card beach" };
@@ -3458,14 +3467,21 @@ function askCards(r, opts){
   // ── CONNECTING ART, WHICH THIS FUNCTION COULD NOT ANSWER AT ALL ─────────
   // Not a missing branch so much as a missing dataset - see CONNECTING above.
   if (r.relation === "CONNECTING_ART") {
+    var inIndex = {};
+    for (var ii = 0; ii < INDEX.length; ii++) inIndex[INDEX[ii].i] = 1;
+    if (r.pin) {
+      var pinned = r.pin.split("|").map(byId).filter(function(c){ return c && inIndex[c.i]; });
+      if (pinned.length > 1) return { cards: pinned, reason: r.why || "connecting art" };
+    }
     var pool = CONNECTING.filter(function(g){
       if (r.subject) return (g.a && g.a === r.subject) || (g.n && g.n === r.subject);
       return true;
     });
-    // Prefer a group we can show whole: every card present in the index.
+    // Prefer a group we can show whole: every card present in the ACTIVE index
+    // (paper vs Pocket), not merely in byIdRow which holds both games.
     var whole = [];
     for (var gi = 0; gi < pool.length; gi++) {
-      var cs = pool[gi].c.map(byId).filter(Boolean);
+      var cs = pool[gi].c.map(byId).filter(function(c){ return c && inIndex[c.i]; });
       if (cs.length === pool[gi].c.length && cs.length > 1) whole.push({ g: pool[gi], cards: cs });
     }
     if (whole.length) {
