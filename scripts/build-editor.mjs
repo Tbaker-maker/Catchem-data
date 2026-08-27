@@ -143,10 +143,12 @@ h1 em{font-style:normal;color:var(--live)}
 /* Steps — a real sequence, so numbering earns its place. */
 .promptbar{margin-bottom:20px}
 .askrow{display:flex;gap:8px;align-items:stretch;min-width:0}
-#ask{flex:1;min-width:0;width:auto;background:var(--panel);border:1px solid var(--line);border-radius:14px;
+#ask,#label{flex:1;min-width:0;width:100%;background:var(--panel);border:1px solid var(--line);border-radius:14px;
   color:var(--text);padding:18px 20px;font:400 17px var(--body)}
+#ask{width:auto}
+#label{display:block;min-height:96px;resize:vertical;line-height:1.45;margin-bottom:18px}
 #askgo{flex:0 0 auto;min-width:72px}
-#ask:focus{outline:none;border-color:var(--live)}
+#ask:focus,#label:focus{outline:none;border-color:var(--live)}
 .suggest{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
 .sg{background:var(--panel);border:1px solid var(--live);color:var(--live);border-radius:8px;
   padding:7px 13px;font:500 13.5px var(--body);cursor:pointer}
@@ -528,7 +530,7 @@ ${TODAY_IMG ? `<div id="todaypost">
 <div class="binder" id="tray"></div>
 <div class="status" id="st"></div>
 <div class="tally" id="tally" hidden></div>
-<input id="label" placeholder="Your line — or leave it blank and let the cards talk" style="margin-bottom:18px">
+<textarea id="label" rows="3" placeholder="Your line — or leave it blank and let the cards talk"></textarea>
 <div class="viberow" id="viberow" hidden>
   <span class="moodlabel">VIBE</span>
   <button type="button" class="chip on" data-v="">All</button>
@@ -2374,7 +2376,7 @@ function renderLines(){
     tx.className = "txt";
     tx.textContent = o.text;
     b.appendChild(tg); b.appendChild(tx);
-    b.onclick = function(){ el("label").value = o.text; blob = null; };
+    b.onclick = function(){ el("label").value = o.text; rememberLine(o.text); blob = null; };
     row.appendChild(b);
 
     const a = document.createElement("button");
@@ -3579,15 +3581,27 @@ function skeletonLine(text){
     return true;
   return false;
 }
+function skipsMiddle(text){
+  if (!tray || tray.length < 3 || tray.length > 4) return false;
+  var t = String(text || "");
+  if (t.indexOf(tray[0].n) < 0 || t.indexOf(tray[tray.length - 1].n) < 0) return false;
+  return tray.slice(1, -1).some(function(c){ return t.indexOf(c.n) < 0; });
+}
 function pickCaption(){
   const NL = String.fromCharCode(10);
-  const opts = (typeof lineOptions === "function") ? (lineOptions(tray, null, 0) || []) : [];
+  const themeName = fTheme ? ((THEMES.find(function(x){ return x.id === fTheme; }) || {}).name) : null;
+  const views = Number(store.get("typicalViews")) || 0;
+  const opts = (typeof lineOptions === "function") ? (lineOptions(tray, themeName, views) || []) : [];
   const used = usedLines();
+  const g = (typeof connectingGroupOf === "function") ? connectingGroupOf(tray) : null;
+  function namedCount(t){
+    return (tray || []).filter(function(c){ return t.indexOf(c.n) >= 0; }).length;
+  }
   function ok(o){
     if (!o || !o.text || skeletonLine(o.text)) return false;
-    return (tray || []).some(function(c){
-      return o.text.indexOf(c.n) >= 0 || (c.a && o.text.indexOf(c.a) >= 0);
-    });
+    if (skipsMiddle(o.text)) return false;
+    if (g && tray.length >= 3 && /which one is the post/i.test(o.text)) return false;
+    return namedCount(o.text) >= 1 || (tray || []).some(function(c){ return c.a && o.text.indexOf(c.a) >= 0; });
   }
   const pool = [];
   const seen = {};
@@ -3596,13 +3610,22 @@ function pickCaption(){
     seen[o.text] = 1;
     pool.push(o);
   });
-  pool.sort(function(a, b){
-    var da = a.reg === "divide" ? 0 : 1;
-    var db = b.reg === "divide" ? 0 : 1;
-    return da - db;
-  });
-  for (var i = 0; i < pool.length; i++) if (used.indexOf(pool[i].text) < 0) return pool[i].text;
+  function score(o){
+    var t = o.text;
+    var named = namedCount(t);
+    var s = named * 8;
+    if (g && named === tray.length && tray.length <= 4) s += 40;
+    if (g && /one picture|one painting|as one picture/.test(t)) s += 25;
+    if (o.reg === "divide" && named === tray.length) s += 12;
+    if (o.reg === "divide" && named < Math.min(3, tray.length)) s -= 10;
+    if (used.indexOf(t) >= 0) s -= 12;
+    return s;
+  }
+  pool.sort(function(a, b){ return score(b) - score(a); });
   if (pool[0]) return pool[0].text;
+  if (g && tray.length >= 2 && tray.length <= 4)
+    return tray.map(function(c){ return c.n; }).join(tray.length === 2 ? " or " : ", ").replace(/, ([^,]*)$/, " or $1") +
+      "?" + NL + NL + "Keep one.";
   if (tray.length >= 2) return tray[0].n + " or " + tray[tray.length - 1].n + "?" + NL + NL + "Keep one.";
   return tray[0] ? tray[0].n : "";
 }
@@ -3611,9 +3634,7 @@ function fillLineFromCards(preset){
   if (!lab) return;
   if (typeof preset === "string" && preset) { lab.value = preset; return; }
   if (preset !== true && lab.value.trim()) return;
-  const text = pickCaption();
-  lab.value = text;
-  rememberLine(text);
+  lab.value = pickCaption();
 }
 
 function tutStart(){
@@ -4994,7 +5015,7 @@ function bootReady(){
   } catch (e) {}
   try { var t = el("tut"); if (t) t.hidden = true; } catch (e) {}
   try { if (el("ask")) el("ask").value = q; } catch (e) {}
-  try { runAsk(q); fillLineFromCards(true); } catch (e) {}
+  try { runAsk(q); } catch (e) {}
   setTimeout(function(){
     try { composeImage(); } catch (e) {}
   }, 400);

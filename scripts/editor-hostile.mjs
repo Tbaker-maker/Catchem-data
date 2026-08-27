@@ -10,9 +10,12 @@ if (!m) { console.error("✗ no script in build.html"); process.exit(1); }
 const js = m[1];
 
 const present = new Set([...html.matchAll(/id="([a-zA-Z0-9_-]+)"/g)].map(x => x[1]));
+const tagFor = {};
+for (const x of html.matchAll(/<(input|textarea|button|select|div|img|pre)[^>]*id="([a-zA-Z0-9_-]+)"/gi))
+  tagFor[x[2]] = x[1].toUpperCase();
 const nodes = {};
 const mk = id => nodes[id] = nodes[id] || {
-  id, innerHTML: "", value: "", textContent: "", hidden: false, style: {},
+  id, tagName: tagFor[id] || "DIV", innerHTML: "", value: "", textContent: "", hidden: false, style: {},
   dataset: {}, className: "", classList: { toggle() {}, add() {}, remove() {}, contains() { return false; } },
   querySelectorAll: () => [], querySelector: () => null, addEventListener() {},
   onclick: null, scrollIntoView() {}, appendChild() {}, setAttribute() {},
@@ -109,6 +112,16 @@ const birds = ask("the birds");
 check("the birds pin Moltres | Zapdos | Articuno",
   (birds || []).map(c => c.i).join(",") === "basep-21,basep-23,basep-22",
   "got " + (birds || []).map(c => (c.n || "") + " " + c.i).join(", "));
+try { api.fillLineFromCards(true); } catch (e) { check("birds fillLine", false, e.message); }
+const birdLab = (document.getElementById("label") || {}).value || "";
+check("3-card caption names all three birds",
+  /Moltres/.test(birdLab) && /Zapdos/.test(birdLab) && /Articuno/.test(birdLab),
+  JSON.stringify(birdLab));
+check("3-card caption keeps line breaks", /\n/.test(birdLab), JSON.stringify(birdLab));
+check("3-card caption is not first-or-last", !/Moltres or Articuno/i.test(birdLab), JSON.stringify(birdLab));
+check("label is a textarea so line breaks survive",
+  document.getElementById("label") && document.getElementById("label").tagName === "TEXTAREA",
+  document.getElementById("label") && document.getElementById("label").tagName);
 const three = ask("three cards one painting");
 check("three cards one painting is 3 cards", (three || []).length === 3, "got " + (three || []).length);
 check("three cards is not always the beasts", (three || []).map(c => c.i).join(",") !== "neo3-6,neo3-13,neo3-14");

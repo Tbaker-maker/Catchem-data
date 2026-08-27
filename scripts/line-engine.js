@@ -366,7 +366,7 @@ function lineOptions(cards, themeName, followerCount){
     add("divide", first.s + " against " + last.s + "." + NL + NL +
       "Which set treated it better?" + NL + NL + "Both are fine answers.");
   }
-  if (cards.length > 1) {
+  if (cards.length === 2) {
     add("divide", label(first) + " or " + label(last) + "." + NL + NL +
       "Which one is the post?" + NL + NL + "Not asking which is rarer.");
   }
