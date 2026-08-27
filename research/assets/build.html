@@ -4048,6 +4048,14 @@ safeWire(function(){ el("fbsend").onclick = function(){ fbSend(); }; }, "fbsend"
 safeWire(function(){ el("fbclose").onclick = function(){ el("fb").hidden = true; }; }, "fbclose");
 
 function runAsk(text){
+  const boxEarly = el("askreply");
+  if (!String(text || "").trim()) {
+    if (boxEarly) {
+      boxEarly.textContent = "Type a Pokémon, an artist, a set, or connecting art.";
+      boxEarly.className = "askreply";
+    }
+    return;
+  }
   const askRel = askResolve(text);
   if (askRel && askRel.need) markCount(askRel.need);
   const tryRelation = function(){
@@ -4125,7 +4133,11 @@ function runAsk(text){
   if (!res.cards.length && tryRelation()) return;
   if (res.cards.length) {
     var take = res.cards.length;
-    if (found.shape !== "evo-line" && fCount > 0) take = Math.min(take, fCount);
+    if (found.count) take = Math.min(take, found.count);
+    else if (found.mon && !found.shape) {
+      take = Math.min(take, 1);
+      markCount(1);
+    } else if (found.shape !== "evo-line" && fCount > 0) take = Math.min(take, fCount);
     tray = res.cards.slice(0, take); blob = null;
     lastPref = { kind: "ask", ask: text };
     anotherCursor = 0;
@@ -4135,6 +4147,7 @@ function runAsk(text){
     // nothing — and those need different responses from them.
     if (box) { box.textContent = "Showing " + res.why.join(" · ") + "."; box.className = "askreply"; }
     render(); resetPage(); search();
+    fillLineFromCards(true);
     return;
   }
   if (box) { box.textContent = "Nothing in the catalogue fits all of that. Try dropping one part of it."; box.className = "askreply bad"; }

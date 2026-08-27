@@ -8,10 +8,20 @@ guards, the guards win.
 
 ```
 git clone https://github.com/Tbaker-maker/Catchem-data.git
-# HEAD at handover: 5a8f301 (will move — git log -1)
+# HEAD at handover: 7432d6d (will move — git log -1)
 ```
 
-Live editor: https://tbaker-maker.github.io/Catchem-data/research/assets/build.html
+Live editor (the real one, 4MB): https://tbaker-maker.github.io/Catchem-data/research/assets/build.html
+
+**catchemtcg.com/build is the 68KB mockup.** It fetches `card-index.json`, has no Find, no connecting pins, no save sheet. Do not test it and call the editor done. I cannot deploy Cloudflare Pages from this repo.
+
+Counted on the live GitHub Pages editor (incognito, 26 Aug 21:22 PDT):
+
+| | |
+|---|---|
+| INDEX.length | 16,468 |
+| unique sets | 130 |
+| unique artists | 385 |
 
 Read in this order: `CLAUDE.md` → this file → `catchem-knowledge-base.md` →
 the live page. Then run `node scripts/editor-hostile.mjs` and

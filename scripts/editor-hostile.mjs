@@ -168,10 +168,23 @@ try {
   const gFish = api.connectingGroupOf(api.tray());
   check("fishes layout is across", !!(gFish && gFish.arr === "across"), JSON.stringify(gFish && gFish.arr));
 } catch (e) { check("fishes layout is across", false, e.message); }
+ask("the beach");
 ask("ninetales");
 check("ninetales is not a 9-card connecting dump",
-  api.tray().length <= 3 && api.tray().some(c => /Ninetales/i.test(c.n)),
-  api.tray().map(c => c.n).join("|") + " n=" + api.tray().length);
+  api.tray().length === 1 && /ninetales/i.test(api.tray()[0].n),
+  api.tray().map(c => c.n + " " + c.i).join(", "));
+const nineLab = (document.getElementById("label") || {}).value || "";
+check("ninetales caption follows the tray without a second fill",
+  /Ninetales/i.test(nineLab) && !/HYOGONOSUKE|Palossand|Mime Jr/i.test(nineLab),
+  JSON.stringify(nineLab));
+ask("asdfqwerzxcv");
+check("garbage does not swap the tray to a random card",
+  api.tray().length === 1 && /ninetales/i.test(api.tray()[0].n),
+  api.tray().map(c => c.n).join(", "));
+ask("");
+check("empty ask leaves the tray",
+  api.tray().length === 1 && /ninetales/i.test(api.tray()[0].n),
+  api.tray().map(c => c.n).join(", "));
 ask("connecting art");
 
 // 4. Fishes must go across; spiders down. Drive by id if the walker lands elsewhere.
