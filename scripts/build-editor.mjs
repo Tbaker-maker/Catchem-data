@@ -110,6 +110,21 @@ else {
   await mkdir(join(ROOT, "research/assets"), { recursive: true }).catch(() => {});
   await writeFile(join(ROOT, "research/assets/card-index.json"), JSON.stringify(index));
 
+  const pocketCat = await J("data/pocket-catalogue.json");
+  const SHOW_R = /Star|Shiny|Crown/;
+  const pocketShow = [];
+  if (pocketCat && pocketCat.cards) {
+    for (const [id, c] of Object.entries(pocketCat.cards)) {
+      if (!SHOW_R.test(c.rarity || "")) continue;
+      pocketShow.push({
+        i: id, n: c.name, a: c.artist || null, s: c.setName,
+        y: (c.releaseDate || "").slice(0, 4), r: c.rarity || "",
+        g: "k", hero: 1, sup: "P",
+      });
+    }
+  }
+  const xwalk = (await J("data/pocket-crosswalk.json")) || { twins: {}, sharedBases: 0, sharedArtists: 0 };
+
   const html = `<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex,nofollow,noarchive"><title>Catch'em Creators — build a post</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <style>
@@ -482,6 +497,13 @@ ${TODAY_IMG ? `<div id="todaypost">
     <option value="6">6 — two rows</option>
     <option value="8">8 — a tall page</option>
     <option value="9">9 — a binder page</option>
+  </select>
+</label>
+<label class="howmany">Game
+  <select id="game" aria-label="Paper or Pocket">
+    <option value="paper">Paper TCG</option>
+    <option value="pocket">Pocket</option>
+    <option value="both">Compare both</option>
   </select>
 </label>
 
@@ -869,6 +891,8 @@ const CARD_INDEX = CARD_ROWS.map(function(r){
   if (r[21]) o.mech = r[21];
   return o;
 });
+const POCKET_INDEX = ${JSON.stringify(pocketShow)};
+const CROSSWALK = ${JSON.stringify({ sharedBases: xwalk.sharedBases, sharedArtists: xwalk.sharedArtists, twins: xwalk.twins })};
 // Sourced facts, so the 'story' shape has something true to build on. Only
 // VERIFIED ones ship — an unsourced claim on a card image is the one mistake
 // this whole project exists to avoid.
@@ -1446,8 +1470,17 @@ var trail = [];
 // every thumbnail — 1-2MB each, and thirty-six of them is ~54MB of transfer to
 // draw images 96 pixels wide. On a phone that never finishes, which is a grid of
 // blank squares.
-const imgSmall = (id) => "https://images.pokemontcg.io/" + id.slice(0, id.lastIndexOf("-")) + "/" + id.slice(id.lastIndexOf("-") + 1) + ".png";
-const imgUrl = (id) => "https://images.pokemontcg.io/" + id.slice(0, id.lastIndexOf("-")) + "/" + id.slice(id.lastIndexOf("-") + 1) + "_hires.png";
+const imgSmall = (id) => {
+  if (String(id).indexOf("tcgp-") === 0) {
+    var rest = id.slice(5), i = rest.lastIndexOf("-");
+    return "https://assets.tcgdex.net/en/tcgp/" + rest.slice(0, i) + "/" + rest.slice(i + 1) + "/high.webp";
+  }
+  return "https://images.pokemontcg.io/" + id.slice(0, id.lastIndexOf("-")) + "/" + id.slice(id.lastIndexOf("-") + 1) + ".png";
+};
+const imgUrl = (id) => {
+  if (String(id).indexOf("tcgp-") === 0) return imgSmall(id);
+  return "https://images.pokemontcg.io/" + id.slice(0, id.lastIndexOf("-")) + "/" + id.slice(id.lastIndexOf("-") + 1) + "_hires.png";
+};
 const imgAlt = (id) => "https://images.scrydex.com/pokemon/" + id + "/large";
 function imgTag(c, cls){
   const alt = imgAlt(c.i).replace(/'/g, "");
@@ -1461,7 +1494,8 @@ function imgTag(c, cls){
 // means two files that must travel together, and a single file cannot arrive
 // half-configured.
 INDEX = CARD_INDEX;
-  for (const r of INDEX) byIdRow[r.i] = r;
+  for (const r of CARD_INDEX) byIdRow[r.i] = r;
+  for (var pi = 0; pi < POCKET_INDEX.length; pi++) byIdRow[POCKET_INDEX[pi].i] = POCKET_INDEX[pi];
 {
   var s = document.getElementById("searchall");
   if (s) s.textContent = "Search all " + INDEX.length.toLocaleString("en-US") + " cards instead";
@@ -3227,6 +3261,37 @@ function applyCount(n, rerun){
   if (lastPref.kind === "cta" && lastPref.ask) answerCta(lastPref.ask);
   else if (lastPref.ask) runAsk(lastPref.ask);
 }
+function setGame(g){
+  INDEX = g === "pocket" ? POCKET_INDEX.slice()
+    : g === "both" ? CARD_INDEX.concat(POCKET_INDEX)
+    : CARD_INDEX.slice();
+  var s = document.getElementById("searchall");
+  if (s) s.textContent = "Search all " + INDEX.length.toLocaleString("en-US") + " cards instead";
+  var ask = el("ask");
+  if (ask && String(ask.value || "").trim()) runAsk(ask.value);
+}
+function twinNote(cards){
+  if (!cards || !cards.length || typeof CROSSWALK === "undefined" || !CROSSWALK.twins) return "";
+  var bits = [], seen = {};
+  for (var i = 0; i < cards.length; i++) {
+    var b = (typeof monName === "function") ? monName(cards[i].n) : cards[i].n;
+    if (seen[b]) continue;
+    seen[b] = 1;
+    var t = CROSSWALK.twins[b];
+    if (!t) continue;
+    bits.push(String(cards[i].i).indexOf("tcgp-") === 0
+      ? (b + " also has " + t.paper + " paper prints")
+      : (b + " also has " + t.pocket + " Pocket prints"));
+  }
+  return bits.length ? bits.join(". ") + "." : "";
+}
+function applyTwin(){
+  var box = el("askreply");
+  var tn = twinNote(tray);
+  if (!box || !tn) return;
+  if (String(box.textContent || "").indexOf("also has") >= 0) return;
+  box.textContent = String(box.textContent || "").replace(/[. ]*$/, ". ") + tn;
+}
 function syncOfficeCount(n){
   officeCount = snapFormat(n);
   fCount = officeCount;
@@ -3866,6 +3931,7 @@ function runAsk(text){
       if (askRel.relation === "CONNECTING_ART") markCount(tray.length);
       render(); resetPage(); search();
       fillLineFromCards(true);
+      applyTwin();
       return true;
     }
     if (box0) {
@@ -3945,6 +4011,7 @@ function runAsk(text){
     if (box) { box.textContent = "Showing " + res.why.join(" · ") + "."; box.className = "askreply"; }
     render(); resetPage(); search();
     fillLineFromCards(true);
+    applyTwin();
     return;
   }
   tray = []; blob = null;
@@ -4010,6 +4077,8 @@ window.setMode = setMode;
   if (copyB) copyB.onclick = function(){ copyReply(); };
   const countSel = el("cardcount");
   if (countSel) countSel.onchange = function(){ applyCount(Number(countSel.value), true); };
+  const gameSel = el("game");
+  if (gameSel) gameSel.onchange = function(){ setGame(gameSel.value); };
   const st = el("savetoday");
   if (st) st.onclick = function(){ window.saveToday(); };
   const sp = el("savephotos");
@@ -4422,7 +4491,7 @@ function retryAllImages(){
   const imgs = document.querySelectorAll ? document.querySelectorAll("img[data-cid]") : [];
   for (let i = 0; i < imgs.length; i++) {
     const cid = imgs[i].getAttribute("data-cid");
-    if (cid) { imgs[i].dataset.tried = ""; imgs[i].style.display = ""; imgs[i].src = liveHost.url(cid); }
+    if (cid && cid.indexOf("tcgp-") !== 0) { imgs[i].dataset.tried = ""; imgs[i].style.display = ""; imgs[i].src = liveHost.url(cid); }
   }
   imgFails = 0;
 }
