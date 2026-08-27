@@ -1463,7 +1463,7 @@ function imgTag(c, cls){
 INDEX = CARD_INDEX;
   for (const r of INDEX) byIdRow[r.i] = r;
 {
-  const s = el("searchall");
+  var s = document.getElementById("searchall");
   if (s) s.textContent = "Search all " + INDEX.length.toLocaleString("en-US") + " cards instead";
 }
 // Deferred one tick. The fetch used to provide this gap by accident, so
