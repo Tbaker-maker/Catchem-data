@@ -1,10 +1,15 @@
 # Catch'em — Grok handover, 26 Aug 2026 21:00 PDT
 
+**Read this first.** Then `CLAUDE.md`, then `catchem-knowledge-base.md`.
+
+Older pickups are in `archive/` — `PICK-UP-HERE.md`, `PICK-UP-HERE-AUG-26.md`,
+`HANDOVER.md`, `TONIGHT.md`, `BOOTSTRAP.md`. They are history. Where they
+disagree with this file, this file wins. Where this file disagrees with the
+live page, the live page wins. Where docs disagree with the guards, the
+guards win.
+
 You are picking up **Catch'em** for Tyler Baker (@LongedEth). This file is
-what we actually shipped tonight. Older pickups (`PICK-UP-HERE-AUG-26.md`,
-`PICK-UP-HERE.md`) are still true on laws and history; **where they disagree
-with the live page, the live page wins.** Where they disagree with the
-guards, the guards win.
+what we actually shipped tonight.
 
 ```
 git clone https://github.com/Tbaker-maker/Catchem-data.git

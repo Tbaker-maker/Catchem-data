@@ -315,7 +315,7 @@ const scripts = (await readdir(join(ROOT, "scripts"))).filter(f => f.endsWith(".
   }
   // The same error in prose is the same error. A doc that tells a future
   // maintainer we are "N views from monetization" teaches the bug.
-  for (const f of ["SYSTEM-README.md", "HANDOVER.md", "PICK-UP-HERE.md"]) {
+  for (const f of ["SYSTEM-README.md", "GROK-HANDOVER-2026-08-26.md"]) {
     const src = await R(f);
     src.split(/\r?\n/).forEach((line, i) => {
       if (!THRESHOLD.test(line) || !RAW.test(line)) return;

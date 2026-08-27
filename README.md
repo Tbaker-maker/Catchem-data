@@ -4,7 +4,7 @@ Automated daily sealed-product pricing for the Catch'em app. Uses the free eBay 
 
 ## How it works
 
-1. **GitHub Action runs daily** at 4am UTC.
+1. **GitHub Action** — `workflow_dispatch` only (nightly cron is off).
 2. **Queries eBay Browse API** for each product in `data/sealed-products.json`.
 3. **Aggregates** active listing prices (trimmed median of the cheapest new-condition listings).
 4. **Commits** updated `data/sealed-prices.json` back to this repo.
