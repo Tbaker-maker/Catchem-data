@@ -4,8 +4,8 @@
 
 > **How to use:** When Claude starts a new session, first action should be `view /mnt/user-data/outputs/catchem-knowledge-base.md`. When Claude learns something new worth persisting, append it to the relevant section and bump `last_updated`.
 
-**last_updated:** 2026-08-26 (connecting post: the finisher puts the reader in the picture)
-**version:** 1.2.2
+**last_updated:** 2026-08-26 (the count is not the hook)
+**version:** 1.2.3
 
 > **KB editing rule (born from 4 silent-patch failures tonight):** edits
 > insert AFTER this version block using it as the anchor; every edit is
@@ -49,6 +49,7 @@ verified-only law. Bot zip → PRIVATE repo only.
 - PPT $9.99 tier (ledger; ~$15–20/mo total burn)
 
 ### HOW WE WRITE
+- THE COUNT IS NOT THE HOOK (Aug 26): three posts in one day opened the same way — "two cards / three cards / nine cards. one painting." The beasts post worked at 5.5k because it was the first time. The fishes post with the same skeleton is the same post with different cardboard. Tyler: "we're using the same line WAY too often." A line that does not name a card, an artist, a year or a set on THIS tray is a template, and a template is the bot farm. fillLineFromCards is forbidden from emitting the count skeleton. Another must change the sentence, not just the picture. Persist used lines and skip them.
 - THE FINISHER PUTS THE READER IN THE PICTURE (Aug 26): connecting-art post of HYOGONOSUKE's 9-card beach. "HYOGONOSUKE hid Magikarp in the middle" was a trivia flex — it named a Pokémon in the painting and asked the reader to admire the fact. Tyler replaced the punchline with "you already pulled a piece of this and didn't know." That sentence is 100000000x better because it is about THEM, not about the card we spotted. Shape that won: count the cards, count the packs, name the one thing they form (beach, not "picture"), then put the reader inside it. Never use a named Pokémon as the finisher of a connecting painting. Credits and the map belong in the self-reply.
 - I READ THE CARD, TYLER SEES IT (Aug 25): I picked Mabosstiff from flavour text about protecting family; Tyler looked at the ART — a dog staring at a picnic table of sandwiches — and posted "Time to get that bread", five words, both meanings. I can read what is PRINTED on a card and cannot see what is DRAWN on it, and the drawing is what people react to. So: find the card, hand over the printed facts, and leave the caption to whoever can see the art. A finished line from me is written blind. His format: GM + emoji, blank line, one short line.
 - PERMISSION IS THE MECHANIC (Aug 24): every high-reply post studied adds a second sentence removing a reason NOT to answer. tall_alan ~900 replies at 16k on "pick something quirky"; Crambo 68/73 on "not my opinion"; shotgun's "under $10". A question is not finished until it has said why answering is safe — now a register in the line engine.

@@ -234,10 +234,28 @@ function lineOptions(cards, themeName, followerCount){
       const g = CONNECTING[gi];
       const ids = cards.map(function(c){ return c.i; });
       const hit = (g.c || []).filter(function(id){ return ids.indexOf(id) >= 0; });
-      if (hit.length >= 2) {
+      if (hit.length === (g.c || []).length && hit.length === nCards && nCards >= 2) {
         connectingHit = true;
-        add("observation", (g.a ? g.a + " drew " : "") + these + " as one picture" +
+        add("observation", (g.a ? g.a + " drew " : "") +
+          names.join(nCards === 2 ? " and " : ", ") +
+          " as one picture" +
           (g.arr === "down" ? ", top to bottom" : g.arr === "across" ? ", left to right" : "") + ".");
+        if (nCards === 2) {
+          add("divide", label(cards[0]) + " or " + label(cards[1]) + "?" + NL + NL + "Keep one.");
+          add("observation", label(cards[0]) +
+            (g.arr === "down" ? " sits on " : " left, ") +
+            label(cards[1]) +
+            (g.arr === "down" ? "." : " right."));
+          if (g.a && yearLo) add("observation", g.a + ", " + yearLo + "." + NL + NL +
+            label(cards[0]) + " and " + label(cards[1]) + ".");
+        } else if (nCards === 3) {
+          add("divide", label(cards[0]) + ", " + label(cards[1]) + " or " + label(cards[2]) + "?" + NL + NL +
+            "Keep one.");
+          if (g.a) add("observation", g.a + " painted " + names.join(", ") + " as one picture.");
+        } else if (g.a) {
+          add("observation", g.a + " hid this across " +
+            (sets.length > 1 ? nword(sets.length) + " sets" : (sets[0] || "one set")) + ".");
+        }
         if (sets.length > 1 && nCards >= 3) {
           add("observation", nword(nCards) + " cards." + NL +
             nword(sets.length) + " different packs." + NL +
@@ -245,13 +263,8 @@ function lineOptions(cards, themeName, followerCount){
             "you already pulled a piece of this and didn't know.");
         }
         if (g.arr === "down" && nCards === 2) {
-          add("divide", "The top or the bottom?" + NL + NL +
-            "Which half is carrying the picture?" + NL + NL + "Genuinely asking.");
           add("divide", label(cards[0]) + " sits on " + label(cards[1]) + "." + NL + NL +
             "Would you post it this way up?" + NL + NL + "Not a trick.");
-        } else if (g.arr === "across" && nCards === 2) {
-          add("divide", "Left or right?" + NL + NL +
-            "Which half is carrying the picture?" + NL + NL + "Genuinely asking.");
         }
         break;
       }

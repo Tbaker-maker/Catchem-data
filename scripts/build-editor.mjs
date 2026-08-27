@@ -92,7 +92,7 @@ else {
   const attrsAtBuild = (await J('data/card-attrs.json'))?.cards ?? {};
 
   // Soft launch: CATCHEM_TODAY=1 bakes a Save-this-picture banner.
-  const TODAY_COPY = "two cards.\none painting.\n\nleft or right?";
+  const TODAY_COPY = "Carvanha or Sharpedo?\n\nKusajima, 2003.";
   const TODAY_REPLY = "Carvanha — left — Ruby & Sapphire 2003\nSharpedo — right — Ruby & Sapphire 2003\n\nHajime Kusajima.\n\nwhich one did you pull first";
   let TODAY_IMG = "";
   if (process.env.CATCHEM_TODAY === "1") {
@@ -130,7 +130,7 @@ else {
 *{box-sizing:border-box}
 html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--ink);color:var(--text);font:300 16px/1.6 var(--body);padding:0 0 160px;overflow-x:hidden}
-.wrap{max-width:1000px;margin:0 auto;padding:0 24px;padding-left:max(24px, env(safe-area-inset-left));padding-right:max(24px, env(safe-area-inset-right))}
+.wrap{max-width:1000px;margin:0 auto;padding:0 24px;padding-left:max(24px, env(safe-area-inset-left));padding-right:max(24px, env(safe-area-inset-right));overflow-x:hidden}
 button{-webkit-appearance:none;appearance:none}
 button:not(:disabled),[role="button"]:not(:disabled){cursor:pointer}
 
@@ -142,8 +142,8 @@ h1 em{font-style:normal;color:var(--live)}
 
 /* Steps — a real sequence, so numbering earns its place. */
 .promptbar{margin-bottom:20px}
-.askrow{display:flex;gap:8px;align-items:stretch}
-#ask{flex:1;width:auto;background:var(--panel);border:1px solid var(--line);border-radius:14px;
+.askrow{display:flex;gap:8px;align-items:stretch;min-width:0}
+#ask{flex:1;min-width:0;width:auto;background:var(--panel);border:1px solid var(--line);border-radius:14px;
   color:var(--text);padding:18px 20px;font:400 17px var(--body)}
 #askgo{flex:0 0 auto;min-width:72px}
 #ask:focus{outline:none;border-color:var(--live)}
@@ -370,7 +370,7 @@ summary::-webkit-details-marker{display:none}
 summary:before{content:"→ ";color:var(--faint)}
 .controls{display:grid;grid-template-columns:2fr 1fr .8fr;gap:9px;margin:16px 0 12px}
 .pager{display:flex;gap:10px;align-items:center;justify-content:center;margin-top:14px;
-  font:500 12.5px var(--mono);color:var(--faint)}
+  font:500 12.5px var(--mono);color:var(--faint);flex-wrap:wrap}
 .pager button{background:var(--panel);border:1px solid var(--line);color:var(--soft);
   border-radius:9px;padding:9px 15px;font:400 13.5px var(--body);cursor:pointer}
 .pager button:disabled{opacity:.3;cursor:not-allowed}
@@ -424,6 +424,8 @@ summary:before{content:"→ ";color:var(--faint)}
   body{padding-bottom:24px}
   .steps{grid-template-columns:1fr;gap:22px}
   .controls{grid-template-columns:1fr}
+  .pager{gap:6px}
+  .pager button{padding:8px 10px}
   .binder{padding:12px;gap:8px;border-radius:14px;width:100%;max-width:100%}
   .office .officerow{display:none}
   .seg{position:relative;z-index:2}
@@ -1002,7 +1004,8 @@ function parseIntent(text, ctx) {
   if (num && [1, 2, 3, 4, 6, 8, 9].includes(Number(num[1]))) { found.count = Number(num[1]); found.matched.push(found.count + " cards"); }
   else for (const [w, n] of Object.entries(words)) {
     if (w === "one" && /one painting|one picture|one beach/.test(q)) continue;
-    if (q.indexOf(w) >= 0) { found.count = n; found.matched.push(n + " cards"); break; }
+    const padded = " " + q.replace(/[^a-z0-9]+/g, " ") + " ";
+    if (padded.indexOf(" " + w + " ") >= 0) { found.count = n; found.matched.push(n + " cards"); break; }
   }
 
   // POKÉMON. Longest name first, so "mr. mime" beats "mime".
@@ -2866,7 +2869,7 @@ window.imgFallback = imgFallback;
 // nothing is worse than no chip: it teaches a first-time user that the box does
 // not work, on their first attempt, using our own suggestion.
 const EXAMPLES = [
-  { q: "the fishes", label: "2 cards · one painting", demo: true },
+  { q: "the fishes", label: "Carvanha · Sharpedo", demo: true },
   { q: "the birds", label: "3 birds · one painting" },
   { q: "connecting art", label: "connecting art" },
   { q: "what kimura drew twice", label: "Same Pokémon, 25 years later" },
@@ -2989,7 +2992,7 @@ function askResolve(text){
       why: "HYOGONOSUKE's nine-card beach" };
 
   var need = 0;
-  if (has(["nine cards", "9 cards", "nine"])) need = 9;
+  if (has(["nine cards", "9 cards"])) need = 9;
   else if (has(["eight cards", "8 cards"])) need = 8;
   else if (has(["six cards", "6 cards"])) need = 6;
   else if (has(["four cards", "4 cards"])) need = 4;
@@ -3557,49 +3560,60 @@ function tutShow(line, go){
 // So the tray is never empty on arrival. A returning visitor gets the same
 // pairing loaded and one quiet line explaining it, plus a way to see the walk
 // through again. A first-time visitor gets the full tutorial unchanged.
-function connectingPost(cards, g){
+function usedLines(){
+  try { return JSON.parse(store.get("catchem-used-lines") || "[]"); } catch (e) { return []; }
+}
+function rememberLine(t){
+  if (!t) return;
+  var u = usedLines().filter(function(x){ return x !== t; });
+  u.unshift(t);
+  store.set("catchem-used-lines", JSON.stringify(u.slice(0, 60)));
+}
+function skeletonLine(text){
+  var t = String(text || "");
+  var flat = t.split(String.fromCharCode(10)).join(" ");
+  if (/^left or right\?/i.test(t.trim())) return true;
+  if (/^the top or the bottom\?/i.test(t.trim())) return true;
+  if (/one painting|one picture/.test(flat) && /cards\./i.test(flat) &&
+      !(tray || []).some(function(c){ return t.indexOf(c.n) >= 0; }))
+    return true;
+  return false;
+}
+function pickCaption(){
   const NL = String.fromCharCode(10);
-  const NWORD = ["zero","one","two","three","four","five","six","seven","eight","nine"];
-  const nw = function(k){ return NWORD[k] || String(k); };
-  const nSets = [...new Set((cards || []).map(function(c){ return c.s; }).filter(Boolean))].length;
-  const scene = (g && g.scene) || "painting";
-  if (nSets <= 1 && (cards || []).length <= 3) {
-    var who = scene === "painting" ? "one" : scene;
-    return "These are " + nw((cards || []).length) + " cards." + NL + NL +
-      "One painting." + NL + NL +
-      "Which " + who + " are you keeping?";
+  const opts = (typeof lineOptions === "function") ? (lineOptions(tray, null, 0) || []) : [];
+  const used = usedLines();
+  function ok(o){
+    if (!o || !o.text || skeletonLine(o.text)) return false;
+    return (tray || []).some(function(c){
+      return o.text.indexOf(c.n) >= 0 || (c.a && o.text.indexOf(c.a) >= 0);
+    });
   }
-  return nw((cards || []).length) + " cards." + NL +
-    nw(nSets) + " different packs." + NL +
-    "one " + scene + "." + NL + NL +
-    "you already pulled a piece of this and didn't know.";
+  const pool = [];
+  const seen = {};
+  opts.forEach(function(o){
+    if (!ok(o) || seen[o.text]) return;
+    seen[o.text] = 1;
+    pool.push(o);
+  });
+  pool.sort(function(a, b){
+    var da = a.reg === "divide" ? 0 : 1;
+    var db = b.reg === "divide" ? 0 : 1;
+    return da - db;
+  });
+  for (var i = 0; i < pool.length; i++) if (used.indexOf(pool[i].text) < 0) return pool[i].text;
+  if (pool[0]) return pool[0].text;
+  if (tray.length >= 2) return tray[0].n + " or " + tray[tray.length - 1].n + "?" + NL + NL + "Keep one.";
+  return tray[0] ? tray[0].n : "";
 }
 function fillLineFromCards(preset){
   const lab = el("label");
   if (!lab) return;
   if (typeof preset === "string" && preset) { lab.value = preset; return; }
   if (preset !== true && lab.value.trim()) return;
-  const g = connectingGroupOf(tray);
-  if (g && tray.length === 2) {
-    const qn = g.arr === "down" ? "the top or the bottom?" : "left or right?";
-    lab.value = "two cards." + String.fromCharCode(10) +
-      "one painting." + String.fromCharCode(10) + String.fromCharCode(10) + qn;
-    return;
-  }
-  if (g && tray.length === 3) {
-    lab.value = "these are three cards." + String.fromCharCode(10) +
-      "one painting." + String.fromCharCode(10) + String.fromCharCode(10) +
-      "which one are you keeping?";
-    return;
-  }
-  if (g && tray.length >= 3) {
-    lab.value = connectingPost(tray, g);
-    return;
-  }
-  const opts = (typeof lineOptions === "function") ? lineOptions(tray, null, 0) : [];
-  const hit = opts.find(function(o){ return /one picture/.test(o.text); })
-    || opts.find(function(o){ return o.reg === "observation"; }) || opts[0];
-  if (hit) lab.value = hit.text;
+  const text = pickCaption();
+  lab.value = text;
+  rememberLine(text);
 }
 
 function tutStart(){

@@ -129,12 +129,17 @@ try {
   const nine = api.tray();
   check("9-card picture includes Palossand", nine.some(c => /Palossand/i.test(c.n)), nine.map(c => c.n).join(", "));
   const opts = api.lineOptions(nine, null, 0);
-  check("9-card notice has the finisher", (opts || []).some(o => /you already pulled a piece/i.test(o.text)), (opts || []).map(o => o.text).slice(0,3).join(" | "));
+  check("9-card notice names the artist or a card",
+    (opts || []).some(o => /HYOGONOSUKE|Palossand|Mime Jr/i.test(o.text)),
+    (opts || []).map(o => o.text).slice(0,3).join(" | "));
   try { api.fillLineFromCards(true); } catch (e) { check("fillLineFromCards", false, e.message); }
   const lab = (typeof document !== "undefined" && document.getElementById("label")) ? document.getElementById("label").value : "";
-  const want = "nine cards.\nfive different packs.\none beach.\n\nyou already pulled a piece of this and didn't know.";
-  check("caption is the winning post", lab === want, JSON.stringify(lab));
-  check("connecting post does not name Magikarp", !/Magikarp/i.test(lab), lab);
+  check("9-card caption names a card or artist",
+    nine.some(c => lab.indexOf(c.n) >= 0) || /HYOGONOSUKE/i.test(lab),
+    JSON.stringify(lab));
+  check("9-card caption is not the count skeleton",
+    !/^(two|three|nine) cards/i.test(lab.trim()) && !/^these are three cards/i.test(lab.trim()),
+    JSON.stringify(lab));
   api.applyCount(2, true);
 } catch (e) { check("how-many cards", false, e.message); }
 
@@ -142,10 +147,18 @@ ask("the fishes");
 check("the fishes is Carvanha then Sharpedo",
   api.tray().map(c => c.n).join("|") === "Carvanha|Sharpedo",
   api.tray().map(c => c.n).join("|"));
+try { api.fillLineFromCards(true); } catch (e) { check("fishes fillLine", false, e.message); }
+const fishLab = (document.getElementById("label") || {}).value || "";
+check("fishes caption names Carvanha or Sharpedo", /Carvanha|Sharpedo|Kusajima/i.test(fishLab), fishLab);
+check("fishes caption is not two-cards skeleton", !/^two cards/i.test(fishLab.trim()), fishLab);
 try {
   const gFish = api.connectingGroupOf(api.tray());
   check("fishes layout is across", !!(gFish && gFish.arr === "across"), JSON.stringify(gFish && gFish.arr));
 } catch (e) { check("fishes layout is across", false, e.message); }
+ask("ninetales");
+check("ninetales is not a 9-card connecting dump",
+  api.tray().length <= 3 && api.tray().some(c => /Ninetales/i.test(c.n)),
+  api.tray().map(c => c.n).join("|") + " n=" + api.tray().length);
 ask("connecting art");
 
 // 4. Fishes must go across; spiders down. Drive by id if the walker lands elsewhere.

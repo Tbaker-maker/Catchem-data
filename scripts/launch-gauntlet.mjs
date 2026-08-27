@@ -58,7 +58,7 @@ check("one copyImage", (htmlProbe.match(/async function copyImage/g) || []).leng
 check("How many cards control", htmlProbe.includes('id="cardcount"'));
 check("Save to Photos exists", htmlProbe.includes("Save to Photos"));
 check("no Magikarp finisher", !/hid Magikarp in the middle/i.test(htmlProbe));
-check("connectingPost shipped", htmlProbe.includes("function connectingPost"));
+check("pickCaption shipped", htmlProbe.includes("function pickCaption"));
 
 for (const p of VIEWPORTS) {
   const page = await browser.newPage();
@@ -120,8 +120,8 @@ for (const p of VIEWPORTS) {
       hit("Palossand in 9", tray.some((c) => /Palossand/i.test(c.n)), tray.map((c) => c.n).join(","));
       fillLineFromCards(true);
       const lab = (document.getElementById("label") || {}).value || "";
-      hit("caption is reader-finisher", /you already pulled a piece/i.test(lab) && /one beach/i.test(lab), lab);
-      hit("caption does not name Magikarp", !/Magikarp/i.test(lab), lab);
+      hit("caption names a card", tray.some((c) => lab.indexOf(c.n) >= 0) || /HYOGONOSUKE/i.test(lab), lab);
+      hit("caption is not the count skeleton", !/^(two|three|nine) cards/i.test((lab || "").trim()), lab);
       const pre = document.querySelector("#selfreply pre");
       const reply = (pre && pre.textContent) || "";
       hit("self-reply is a map", /Mime Jr/i.test(reply) && /Horsea/i.test(reply) && /which piece/i.test(reply), reply.slice(0, 180));
