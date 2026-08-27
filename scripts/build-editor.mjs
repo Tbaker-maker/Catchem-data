@@ -898,13 +898,13 @@ function orderByConnecting(cards){
   return ordered.length === cards.length ? ordered : cards;
 }
 function frameFromConnecting(g){
-  const CW = 745, CH = 1040, PAD = 90, GAP = 60;
+  const CW = 745, CH = 1040, PAD = 24, GAP = 0;
   const cols = g.cols || 1, rows = g.rows || 1;
-  const cap = (cols * rows <= 4) ? 70 : 0;
+  const cap = 0;
   const W = PAD * 2 + cols * CW + (cols - 1) * GAP;
   const H = PAD * 2 + rows * (CH + cap) + (rows - 1) * GAP;
   return { name: "the picture", cols: cols, rows: rows, shape: g.shape, cardW: CW, cardCaption: cap,
-    W: W, H: H, connecting: true, dir: g.arr };
+    W: W, H: H, connecting: true, dir: g.arr, gap: 0, pad: PAD };
 }
 function slotPos(i, L){
   if (L && L.shape && L.shape.length) {
@@ -3837,11 +3837,15 @@ safeWire(function(){ el("fbclose").onclick = function(){ el("fb").hidden = true;
 
 function runAsk(text){
   const boxEarly = el("askreply");
+  try { closeSaveSheet(); } catch (e) {}
   if (!String(text || "").trim()) {
+    tray = []; blob = null;
+    try { closeSaveSheet(); } catch (e) {}
     if (boxEarly) {
       boxEarly.textContent = "Type a Pokémon, an artist, a set, or connecting art.";
       boxEarly.className = "askreply";
     }
+    render();
     return;
   }
   const askRel = askResolve(text);
@@ -3883,8 +3887,13 @@ function runAsk(text){
   const box = el("askreply");
   // The old parser could not read it. A relationship still might.
   if (!reply.ok && tryRelation()) return;
-  if (box) { box.textContent = reply.say; box.className = "askreply" + (reply.ok ? "" : " bad"); }
-  if (!reply.ok) return;
+  if (!reply.ok) {
+    tray = []; blob = null;
+    try { closeSaveSheet(); } catch (e) {}
+    if (box) { box.textContent = reply.say; box.className = "askreply bad"; }
+    render();
+    return;
+  }
   // THE PROMPT RESOLVES ITS OWN CARDS. The old path set filters and then handed
   // off to the theme builder, which picks from its own pool and never consults
   // them — so "charizard through the years" parsed Charizard correctly and
@@ -3938,6 +3947,9 @@ function runAsk(text){
     fillLineFromCards(true);
     return;
   }
+  tray = []; blob = null;
+  try { closeSaveSheet(); } catch (e) {}
+  render();
   if (box) { box.textContent = "Nothing in the catalogue fits all of that. Try dropping one part of it."; box.className = "askreply bad"; }
 }
 {
@@ -4176,12 +4188,7 @@ function anotherSet(){
     box.className = "askreply";
   }
   fillLineFromCards(true);
-  if (lastPref.kind === "cta") {
-    const lab = el("label");
-    if (lab) lab.value = tray.length <= 1 ? CTA_SHOW_ONE : CTA_SHOW_LINES[rot % CTA_SHOW_LINES.length];
-  }
   render();
-  composeImage();
 }
 function snapTray(){
   return {
@@ -4207,7 +4214,7 @@ function backSet(){
   const box = el("askreply");
   if (box) { box.textContent = s.why || ""; box.className = "askreply"; }
   render();
-  if (tray.length) composeImage();
+  if (tray.length) { /* picture is made when they tap Make — not here */ }
 }
 window.anotherSet = anotherSet;
 window.backSet = backSet;
@@ -5037,9 +5044,6 @@ function bootReady(){
   try { var t = el("tut"); if (t) t.hidden = true; } catch (e) {}
   try { if (el("ask")) el("ask").value = q; } catch (e) {}
   try { runAsk(q); } catch (e) {}
-  setTimeout(function(){
-    try { composeImage(); } catch (e) {}
-  }, 400);
 }
 window.bootReady = bootReady;
 
@@ -5058,15 +5062,14 @@ var composeGen = 0;
 async function composeImage(){
   const gen = ++composeGen;
   const L = layoutForTray(); if (!L) return;
-  // ENFORCE AT THE POINT OF ACTION, not only in the UI. The refusal used to
-  // live entirely in el("make").disabled, and a disabled attribute is an
-  // affordance rather than a guard — re-enabling it in the console, or calling
-  // this handler directly, produced the sell image the refusal exists to
-  // prevent. Re-checking here means the rule holds wherever the call comes from.
   if (!checkIntent()) { setStatus("that combination is refused — see the note above", true); return; }
   setStatus("composing…");
   const missingArt = [];
-  const CW = 745, CH = 1040, GAP = 60, PAD = 90, CAP = tray.length <= 4 ? 70 : 0;
+  const CW = 745, CH = 1040;
+  const connecting = !!L.connecting;
+  const GAP = connecting ? 0 : 60;
+  const PAD = connecting ? (L.pad || 24) : 90;
+  const CAP = connecting ? 0 : (tray.length <= 4 ? 70 : 0);
   const LABEL = el("label").value.trim();
   // Reserve height for the WRAPPED label, not one line of it. measureText needs
   // a context we do not have yet, so estimate from character count at 52px bold
@@ -5318,9 +5321,6 @@ async function composeImage(){
     catch (e) {
       try { showSaveable(cv.toDataURL("image/png")); } catch (e2) {}
     }
-    try {
-      openSaveSheet(previewUrl || (el("outimg") && el("outimg").src));
-    } catch (e) {}
     try { window.__lastComposeOk = true; } catch (e) {}
     try { tutComposed(true); } catch (e) {}
     // Offered only after something actually worked, and only once.
