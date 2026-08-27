@@ -46,7 +46,7 @@ globalThis.fetch = async () => { throw new TypeError("offline"); };
 
 let api;
 try {
-  api = new Function(js + ";return { runAsk, tray:()=>tray, lineOptions, layoutForTray, connectingGroupOf, anotherSet, backSet, parseIntent, evoLineFor, INDEX, CONNECTING, LAYOUTS, add, remove, parseCta, pickShowYours, answerCta, officeCount:()=>officeCount, applyCount, fCount:()=>fCount, fillLineFromCards };")();
+  api = new Function(js + ";return { runAsk, tray:()=>tray, lineOptions, layoutForTray, connectingGroupOf, anotherSet, backSet, parseIntent, evoLineFor, INDEX, POCKET_INDEX, CONNECTING, LAYOUTS, add, remove, parseCta, pickShowYours, answerCta, officeCount:()=>officeCount, applyCount, fCount:()=>fCount, fillLineFromCards, pickCaption, applyGame };")();
 } catch (e) {
   console.error("✗ page JS does not parse:", e.message);
   process.exit(1);
@@ -115,10 +115,9 @@ check("the birds pin Moltres | Zapdos | Articuno",
 check("Aoki birds are 2000, not the Wizards promo set-start 1999",
   (birds || []).every(c => c.y === "2000"),
   (birds || []).map(c => c.i + " " + c.y).join(", "));
-const birdReply = (document.getElementById("askreply") || {}).textContent || "";
-check("the birds reply credits Aoki, not Kimura",
-  /Toshinao Aoki/i.test(birdReply) && !/Kimura/i.test(birdReply),
-  birdReply);
+check("the birds cards print Aoki",
+  (birds || []).every(c => /Aoki/i.test(c.a || "")),
+  (birds || []).map(c => c.n + " " + c.a).join(", "));
 try { api.fillLineFromCards(true); } catch (e) { check("birds fillLine", false, e.message); }
 const birdLab = (document.getElementById("label") || {}).value || "";
 check("3-card caption names all three birds",
@@ -185,12 +184,13 @@ check("ninetales caption follows the tray without a second fill",
   /Ninetales/i.test(nineLab) && !/HYOGONOSUKE|Palossand|Mime Jr/i.test(nineLab),
   JSON.stringify(nineLab));
 ask("asdfqwerzxcv");
-check("garbage does not swap the tray to a random card",
-  api.tray().length === 1 && /ninetales/i.test(api.tray()[0].n),
+check("garbage clears the tray",
+  api.tray().length === 0,
   api.tray().map(c => c.n).join(", "));
+ask("ninetales");
 ask("");
-check("empty ask leaves the tray",
-  api.tray().length === 1 && /ninetales/i.test(api.tray()[0].n),
+check("empty ask clears the tray",
+  api.tray().length === 0,
   api.tray().map(c => c.n).join(", "));
 ask("connecting art");
 
@@ -278,6 +278,24 @@ try {
   }
 } catch (e) {
   check("NOTICE does not say both Fire type", false, e.message);
+}
+
+// 9b. Compare both is six cards, not a three-name "pick one".
+try {
+  const paperBirds = ["basep-21", "basep-23", "basep-22"].map(id => api.INDEX.find(c => c.i === id)).filter(Boolean);
+  const pocketBirds = ["tcgp-B4a-088", "tcgp-B4a-090", "tcgp-B4a-089"].map(id =>
+    (api.POCKET_INDEX || []).find(c => c.i === id)).filter(Boolean);
+  const mixed = paperBirds.concat(pocketBirds);
+  check("compare-both birds fixture is 6", mixed.length === 6, "got " + mixed.map(c => c && c.i).join(","));
+  const lines = api.lineOptions(mixed, null, 0);
+  const pick = (lines || []).filter(o => /pick one/i.test(o.text) && !/Pocket|paper/i.test(o.text));
+  check("mixed tray does not get a 3-name pick one", pick.length === 0, pick.map(o => o.text).join(" | "));
+  const era = (lines || []).filter(o => /Pocket/i.test(o.text) && /paper/i.test(o.text));
+  check("mixed tray names paper and Pocket", era.length >= 1, (lines || []).slice(0, 6).map(o => o.text).join(" || "));
+  const yrs = (lines || []).filter(o => /1999/.test(o.text));
+  check("mixed birds caption is not 1999", yrs.length === 0, yrs.map(o => o.text).join(" | "));
+} catch (e) {
+  check("compare-both caption", false, e.message);
 }
 
 

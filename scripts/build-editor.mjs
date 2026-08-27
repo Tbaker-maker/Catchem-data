@@ -3938,10 +3938,18 @@ function skeletonLine(text){
   return false;
 }
 function skipsMiddle(text){
-  if (!tray || tray.length < 3 || tray.length > 4) return false;
+  if (!tray || tray.length < 3) return false;
   var t = String(text || "");
   if (t.indexOf(tray[0].n) < 0 || t.indexOf(tray[tray.length - 1].n) < 0) return false;
   return tray.slice(1, -1).some(function(c){ return t.indexOf(c.n) < 0; });
+}
+function trayMixed(){
+  var p = 0, k = 0;
+  for (var i = 0; i < (tray || []).length; i++) {
+    if (tray[i].g === "k" || String(tray[i].i).indexOf("tcgp-") === 0) k++;
+    else p++;
+  }
+  return p > 0 && k > 0;
 }
 function pickCaption(){
   const NL = String.fromCharCode(10);
@@ -3950,6 +3958,7 @@ function pickCaption(){
   const opts = (typeof lineOptions === "function") ? (lineOptions(tray, themeName, views) || []) : [];
   const used = usedLines();
   const g = (typeof connectingGroupOf === "function") ? connectingGroupOf(tray) : null;
+  const mixed = trayMixed();
   function namedCount(t){
     return (tray || []).filter(function(c){ return t.indexOf(c.n) >= 0; }).length;
   }
@@ -3957,7 +3966,9 @@ function pickCaption(){
     if (!o || !o.text || skeletonLine(o.text)) return false;
     if (skipsMiddle(o.text)) return false;
     if (g && tray.length >= 3 && /which one is the post/i.test(o.text)) return false;
-    return namedCount(o.text) >= 1 || (tray || []).some(function(c){ return c.a && o.text.indexOf(c.a) >= 0; });
+    if (mixed && /pick one/i.test(o.text) && !/Pocket|paper/i.test(o.text)) return false;
+    return namedCount(o.text) >= 1 || (tray || []).some(function(c){ return c.a && o.text.indexOf(c.a) >= 0; }) ||
+      (mixed && /Pocket|paper/i.test(o.text));
   }
   const pool = [];
   const seen = {};
@@ -3972,6 +3983,8 @@ function pickCaption(){
     var s = named * 8;
     if (g && named === tray.length && tray.length <= 4) s += 40;
     if (g && /one picture|one painting|as one picture/.test(t)) s += 25;
+    if (mixed && /Pocket/i.test(t) && /paper/i.test(t)) s += 50;
+    if (mixed && o.reg === "divide" && /era|years/i.test(t)) s += 20;
     if (o.reg === "divide" && named === tray.length) s += 12;
     if (o.reg === "divide" && named < Math.min(3, tray.length)) s -= 10;
     if (used.indexOf(t) >= 0) s -= 12;
@@ -3979,6 +3992,14 @@ function pickCaption(){
   }
   pool.sort(function(a, b){ return score(b) - score(a); });
   if (pool[0]) return pool[0].text;
+  if (mixed) {
+    var names = [];
+    for (var i = 0; i < tray.length; i++) {
+      var sp = (typeof monName === "function" ? monName(tray[i].n) : tray[i].n);
+      if (names.indexOf(sp) < 0) names.push(sp);
+    }
+    return "Paper on top. Pocket under." + NL + NL + names.slice(0, 3).join(", ") + ".";
+  }
   if (g && tray.length >= 2 && tray.length <= 4)
     return tray.map(function(c){ return c.n; }).join(tray.length === 2 ? " or " : ", ").replace(/, ([^,]*)$/, " or $1") +
       "?" + NL + NL + "Keep one.";

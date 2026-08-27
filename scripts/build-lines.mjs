@@ -184,6 +184,20 @@ function lineOptions(cards, themeName, followerCount){
   // the subset is everything.
   const ofN = (k) => N > k ? " (" + nword(k) + " of " + nword(N) + ")" : "";
 
+  function isPocketCard(c){
+    return c && (c.g === "k" || String(c.i || "").indexOf("tcgp-") === 0);
+  }
+  const pocketN = cards.filter(isPocketCard).length;
+  const paperN = nCards - pocketN;
+  const mixedGames = paperN > 0 && pocketN > 0;
+  function yearsUsable(){
+    if (typeof yearOk === "function") {
+      for (var yu = 0; yu < cards.length; yu++) if (!yearOk(cards[yu])) return false;
+      return years.length >= 2;
+    }
+    return years.length >= 2;
+  }
+
   // YEARS IN CALENDAR ORDER. first/last are TRAY order, so a tray built newest
   // first produced "2024 to 2004" — the span was right and the sentence read
   // backwards.
@@ -269,7 +283,7 @@ function lineOptions(cards, themeName, followerCount){
         notable[1].c.n + " has " + Q1 + notable[1].atk + Q2 + ".");
     }
   }
-  if (artists.length === 1 && cards.length > 1 && span >= 8) {
+  if (artists.length === 1 && cards.length > 1 && span >= 8 && yearsUsable() && !mixedGames) {
     add("observation", artists[0] + " drew " + (N === 2 ? "both of these" : "all " + nword(N)) +
       ", " + span + " years apart.");
   }
@@ -397,6 +411,28 @@ function lineOptions(cards, themeName, followerCount){
     }
   }
 
+  if (mixedGames) {
+    const uniq = [];
+    for (var us = 0; us < species.length; us++) {
+      if (species[us] && uniq.indexOf(species[us]) < 0) uniq.push(species[us]);
+    }
+    const who = uniq.length && uniq.length <= 3 ? uniq.join(", ") : (uniq.length ? nword(uniq.length) + " Pokémon" : "Pokémon");
+    add("observation", "Paper on top. Pocket under. Same " + who + ".");
+    if (yearsUsable() && span >= 1 && yearLo && yearHi) {
+      add("divide", yearLo + " paper and " + yearHi + " Pocket" + DASH + span + " years." + NL + NL +
+        "Which era got it right?" + NL + NL + "Not my opinion, genuinely asking.");
+    }
+    add("question", "Paper or Pocket" + DASH + who + ".");
+    add("invite", "Which row would you actually post" + DASH + "the paper or the Pocket?");
+  }
+
+  const birdIds = cards.map(function(c){ return c.i; });
+  if (!mixedGames && nCards === 3 &&
+      birdIds.indexOf("basep-21") >= 0 && birdIds.indexOf("basep-22") >= 0 && birdIds.indexOf("basep-23") >= 0) {
+    add("observation", "The card says Aoki. The painting is Kimura. Collectors call the first print the Aoki error.");
+    if (yearsUsable() && yearLo) add("observation", "English giveaway: The Power of One, " + yearLo + ". Not 1999.");
+  }
+
   if (typeof INDEX !== "undefined" && artists.length === 1) {
     var acount = 0;
     for (var ai = 0; ai < INDEX.length; ai++) if (INDEX[ai].a === artists[0]) acount++;
@@ -443,8 +479,7 @@ function lineOptions(cards, themeName, followerCount){
       }
     }
   }
-  if (cards.length >= 3) {
-    add("question", names.slice(0, 3).join(", ") + DASH + "pick one.");
+  if (cards.length >= 3 && !mixedGames) {
     add("question", "Which of " + these + " is the one you would keep?");
   }
   if (cards.length === 1) {
@@ -455,9 +490,15 @@ function lineOptions(cards, themeName, followerCount){
   // Light Arcanine, Arcanine - pick one", which offers three of nine as if they
   // were the tray. Three or four can be named in full; beyond that the line
   // either declares the subset or talks about the group.
-  if (N === 3 || N === 4) add("question", names.join(", ") + DASH + "pick one.");
-  else if (N > 4) add("question", names.slice(0, 3).join(", ") + DASH +
-    "pick one" + ofN(3) + ".");
+  //
+  // COMPARE BOTH is not a subset. Six cards, three paper names, "pick one"
+  // is how the 2026-08-27 birds post captioned a paper×Pocket grid as if
+  // the Pocket row was furniture.
+  if (!mixedGames) {
+    if (N === 3 || N === 4) add("question", names.join(", ") + DASH + "pick one.");
+    else if (N > 4) add("question", names.slice(0, 3).join(", ") + DASH +
+      "pick one" + ofN(3) + ".");
+  }
   if (cards.length === 1) add("question", "Anyone else own the " + first.s + " " + first.n + "?");
 
   // ── DIVIDE - a real contrast between THESE cards, stated, then asked ─────
@@ -470,7 +511,7 @@ function lineOptions(cards, themeName, followerCount){
       priced[priced.length-1].n + " for about " + Math.round(priced[priced.length-1].p) + "." + NL + NL +
       "Which one would you rather own?" + NL + NL + "Not asking which is worth more.");
   }
-  if (span >= 10 && cards.length > 1) {
+  if (span >= 10 && cards.length > 1 && yearsUsable() && !mixedGames) {
     // CALENDAR ORDER. first/last are TRAY order, so a newest-first tray printed
     // "2024 and 2000" - the span correct and the sentence backwards.
     add("divide", yearLo + " and " + yearHi + DASH + span + " years apart." + NL + NL +
@@ -512,7 +553,7 @@ function lineOptions(cards, themeName, followerCount){
     add("permission", "What else should I be looking at from " + sets[0] + "?" + NL + NL +
       "I have barely scratched that set.");
   }
-  if (span >= 10) {
+  if (span >= 10 && yearsUsable()) {
     // THE SPECIFIC FACT GOES FIRST. Led with the generic question, the opening
     // line was identical across two different pairings even though the second
     // sentence differed - and the opening line is what a reader sees.
