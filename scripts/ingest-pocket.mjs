@@ -40,6 +40,8 @@ const imgOf = (set, num) => TCGDEX_SETS.has(set)
   ? "https://assets.tcgdex.net/en/tcgp/" + set + "/" + pad(num) + "/high.webp"
   : set === "B4a"
   ? "https://www.serebii.net/tcgpocket/teamrocket%27sambition/" + Number(num) + ".jpg"
+  : set === "P-B" && Number(num) <= 86
+  ? "https://www.serebii.net/tcgpocket/promo-b/" + Number(num) + ".jpg"
   : "https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/pocket/" + set + "/" + set + "_" + pad(num) + "_EN.webp";
 
 console.log("fetching flibustier MIT pocket db…");

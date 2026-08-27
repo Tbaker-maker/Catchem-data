@@ -1500,6 +1500,9 @@ const imgSmall = (id) => {
     if (set === "B4a") {
       return "https://www.serebii.net/tcgpocket/teamrocket%27sambition/" + Number(num) + ".jpg";
     }
+    if (set === "P-B" && Number(num) <= 86) {
+      return "https://www.serebii.net/tcgpocket/promo-b/" + Number(num) + ".jpg";
+    }
     if (set === "P-A" || set === "P-B" || /^[AB]\d/.test(set)) {
       return "https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/pocket/" + set + "/" + set + "_" + num + "_EN.webp";
     }
