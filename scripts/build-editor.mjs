@@ -592,7 +592,7 @@ ${TODAY_IMG ? `<div id="todaypost">
 <div id="refuse" class="refuse" hidden></div>
 <div id="ideas" class="ideas"></div>
 
-<details open><summary>Search all ${index.length.toLocaleString("en-US")} cards instead</summary>
+<details open><summary id="searchall">Search the catalogue instead</summary>
 <div class="controls">
   <input id="q" placeholder="Pokémon, artist, or set" autocomplete="off">
   <select id="rar"><option value="">Any rarity</option>
@@ -1462,6 +1462,10 @@ function imgTag(c, cls){
 // half-configured.
 INDEX = CARD_INDEX;
   for (const r of INDEX) byIdRow[r.i] = r;
+{
+  const s = el("searchall");
+  if (s) s.textContent = "Search all " + INDEX.length.toLocaleString("en-US") + " cards instead";
+}
 // Deferred one tick. The fetch used to provide this gap by accident, so
 // removing it exposed an ordering bug that had always been there — el() and
 // the render functions are declared further down the file.

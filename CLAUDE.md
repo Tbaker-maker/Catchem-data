@@ -35,7 +35,7 @@ You are the operating engineer for Catch'em, a Pokemon TCG data + culture platfo
 ## What this repo is
 
 - `scripts/fetch-sealed-prices.mjs` — the bot. Queries eBay Browse API per product in `data/sealed-products.json`, aggregates active-listing prices, writes `data/sealed-prices.json`.
-- Runs via **GitHub Actions on `workflow_dispatch` only** (nightly cron disabled 2026-08-26). Deploying = pushing to main. Manual run picks up changes.
+- Runs via **GitHub Actions**. `workflow_dispatch` is on. Origin YAML still has `cron: "0 4 * * *"` — a PAT without `workflow` scope cannot delete it. Read the YAML, not this sentence.
 - Secrets: `EBAY_APP_ID`, `EBAY_CERT_ID` (repo secrets, client-credentials OAuth). **Never print, log, or move these. Never commit credentials.**
 - eBay specifics already in use: Browse API `item_summary/search`, category 2536, `conditionIds:{1000}` (New), `EBAY_US`, price filter $5–$10,000, `limit: 50`, `sort: price` (ascending), trimmed median (10% each end).
 
