@@ -1484,6 +1484,9 @@ const imgSmall = (id) => {
   if (String(id).indexOf("tcgp-") === 0) {
     var rest = id.slice(5), i = rest.lastIndexOf("-");
     var set = rest.slice(0, i), num = rest.slice(i + 1);
+    if (set === "B4a") {
+      return "https://www.serebii.net/tcgpocket/teamrocket%27sambition/" + Number(num) + ".jpg";
+    }
     if (set === "P-A" || set === "P-B" || /^[AB]\d/.test(set)) {
       return "https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/pocket/" + set + "/" + set + "_" + num + "_EN.webp";
     }

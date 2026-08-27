@@ -38,6 +38,8 @@ const pad = n => String(n).padStart(3, "0");
 const TCGDEX_SETS = new Set(["P-A","A1","A1a","A2","A2a","A2b","A3","A3a","A3b","A4","A4a","B1","B1a","B2","B2a"]);
 const imgOf = (set, num) => TCGDEX_SETS.has(set)
   ? "https://assets.tcgdex.net/en/tcgp/" + set + "/" + pad(num) + "/high.webp"
+  : set === "B4a"
+  ? "https://www.serebii.net/tcgpocket/teamrocket%27sambition/" + Number(num) + ".jpg"
   : "https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/pocket/" + set + "/" + set + "_" + pad(num) + "_EN.webp";
 
 console.log("fetching flibustier MIT pocket db…");
@@ -100,6 +102,58 @@ for (const c of list) {
   if (!store.sets[set]) store.sets[set] = { name: meta.name || set, releaseDate: meta.releaseDate || null, ingested: 0 };
   store.sets[set].ingested++;
 }
+
+// B4a Team Rocket's Ambition launched 2026-08-26. Flibustier and TCGdex
+// do not have it yet. Serebii listed all 110 the same night. When the MIT
+// db catches up, this block no-ops because the set is already present.
+if (!store.sets.B4a) {
+  console.log("B4a missing from MIT db — scraping Serebii…");
+  const html = await (await fetch("https://www.serebii.net/tcgpocket/teamrocket'sambition/", {
+    headers: { "User-Agent": "CatchEm-pocket-ingest/1.0" },
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+  })).text();
+  const blocks = [...html.matchAll(/href="\/tcgpocket\/teamrocket.sambition\/(\d+)\.shtml">(.*?)<\/a>/gs)];
+  const names = {};
+  for (const m of blocks) {
+    const n = Number(m[1]);
+    const name = m[2].replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
+    if (!name || name === "Team Rocket's Ambition") continue;
+    if (!names[n]) names[n] = name;
+  }
+  const TRAINER = /Machine|Goo-zooka|Researcher|Master Plan|Boss|Arcade/;
+  let n = 0;
+  for (let i = 1; i <= 110; i++) {
+    if (!names[i]) continue;
+    const id = "tcgp-B4a-" + pad(i);
+    let rarity = "One Diamond";
+    if (i <= 72 && / ex$/.test(names[i])) rarity = "Four Diamond";
+    else if (i <= 72 && TRAINER.test(names[i])) rarity = "Two Diamond";
+    else if (i >= 73 && i <= 78) rarity = "One Star";
+    else if (i >= 79 && i <= 87) rarity = "Two Star";
+    else if (i >= 88 && i <= 94) rarity = "Three Star";
+    else if (i >= 95 && i <= 104) rarity = "One Shiny";
+    else if (i >= 105 && i <= 108) rarity = "Two Shiny";
+    else if (i >= 109) rarity = "Crown";
+    store.cards[id] = {
+      name: names[i],
+      artist: null,
+      setId: "B4a",
+      setName: "Team Rocket's Ambition",
+      number: pad(i),
+      rarity,
+      releaseDate: "2026-08-26",
+      supertype: TRAINER.test(names[i]) ? "Trainer" : "Pokémon",
+      hp: null,
+      image: imgOf("B4a", i),
+      game: "tcgp",
+    };
+    n++;
+  }
+  store.sets.B4a = { name: "Team Rocket's Ambition", releaseDate: "2026-08-26", ingested: n, source: "serebii" };
+  console.log("  B4a  " + n + "/110  Team Rocket's Ambition (Serebii, until MIT db ships it)");
+}
+
+store.ingestedAt = new Date().toISOString();
 
 store.coverage = {
   cards: Object.keys(store.cards).length,
