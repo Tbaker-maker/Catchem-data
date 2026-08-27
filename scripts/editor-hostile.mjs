@@ -43,7 +43,7 @@ globalThis.fetch = async () => { throw new TypeError("offline"); };
 
 let api;
 try {
-  api = new Function(js + ";return { runAsk, tray:()=>tray, lineOptions, layoutForTray, connectingGroupOf, anotherSet, backSet, parseIntent, evoLineFor, INDEX, CONNECTING, LAYOUTS, add, remove };")();
+  api = new Function(js + ";return { runAsk, tray:()=>tray, lineOptions, layoutForTray, connectingGroupOf, anotherSet, backSet, parseIntent, evoLineFor, INDEX, CONNECTING, LAYOUTS, add, remove, parseCta, pickShowYours, answerCta, officeCount:()=>officeCount, applyCount, fCount:()=>fCount, fillLineFromCards };")();
 } catch (e) {
   console.error("✗ page JS does not parse:", e.message);
   process.exit(1);
@@ -110,6 +110,26 @@ check("connecting art returns 2+", conn.length >= 2, "got " + conn.length);
 let g = null;
 try { g = api.connectingGroupOf(api.tray()); } catch (e) { check("connectingGroupOf()", false, e.message); }
 check("connecting art is a real group", !!(g && g.c && g.c.length >= 2), g ? JSON.stringify(g.arr || g.shape) : "no group");
+try {
+  api.applyCount(3, true);
+  check("how-many 3 loads a 3-card picture", api.tray().length === 3, "got " + api.tray().length);
+  api.applyCount(4, true);
+  check("how-many 4 loads a 4-card picture", api.tray().length === 4, "got " + api.tray().length);
+  api.applyCount(6, true);
+  check("how-many 6 loads a 6-card picture", api.tray().length === 6, "got " + api.tray().length);
+  api.applyCount(9, true);
+  check("how-many 9 loads a 9-card picture", api.tray().length === 9, "got " + api.tray().length);
+  const nine = api.tray();
+  check("9-card picture includes Palossand", nine.some(c => /Palossand/i.test(c.n)), nine.map(c => c.n).join(", "));
+  const opts = api.lineOptions(nine, null, 0);
+  check("9-card notice has the finisher", (opts || []).some(o => /you already pulled a piece/i.test(o.text)), (opts || []).map(o => o.text).slice(0,3).join(" | "));
+  try { api.fillLineFromCards(true); } catch (e) { check("fillLineFromCards", false, e.message); }
+  const lab = (typeof document !== "undefined" && document.getElementById("label")) ? document.getElementById("label").value : "";
+  const want = "nine cards.\nfive different packs.\none beach.\n\nyou already pulled a piece of this and didn't know.";
+  check("caption is the winning post", lab === want, JSON.stringify(lab));
+  check("connecting post does not name Magikarp", !/Magikarp/i.test(lab), lab);
+  api.applyCount(2, true);
+} catch (e) { check("how-many cards", false, e.message); }
 
 // 4. Fishes must go across; spiders down. Drive by id if the walker lands elsewhere.
 function loadIds(ids) {
@@ -227,6 +247,27 @@ check("sup is not a printed type", !sample.sup || sample.sup === "P", "sup=" + s
 console.log("");
 for (const s of ok) console.log("  ✓ " + s);
 console.log("");
+// POST OFFICE. The Charizard show-yours must not return Blaine's, must not
+// say "better", and must land two Charizard cards.
+const tweet = "This is my best Charizard so far. Show me a better one below (Blaine's Charizard is not allowed)";
+let cta;
+try { cta = api.parseCta(tweet); } catch (e) { check("parseCta", false, e.message); cta = {}; }
+check("cta reads show-yours", cta && cta.kind === "show-yours", JSON.stringify(cta));
+check("cta names Charizard", cta && cta.mon === "Charizard", cta && cta.mon);
+check("cta bans Blaine", cta && (cta.exclude || []).indexOf("blaine") >= 0, JSON.stringify(cta && cta.exclude));
+try { api.applyCount(1, false); api.answerCta(tweet); } catch (e) { check("answerCta", false, e.message); }
+const ctaTray = api.tray();
+check("cta tray is one card by default", ctaTray.length === 1, "got " + ctaTray.length + " " + ctaTray.map(c => c.n).join(", "));
+check("cta cards are Charizard", ctaTray.every(c => String(c.n).indexOf("Charizard") >= 0), ctaTray.map(c => c.n).join(", "));
+check("cta skipped Blaine", ctaTray.every(c => !/^Blaine/i.test(c.n)), ctaTray.map(c => c.n).join(", "));
+const lab = (typeof document !== "undefined" && document.getElementById("label")) ? document.getElementById("label").value : "";
+check("cta reply does not compete", !/\bbetter\b/i.test(lab) || /not better/i.test(lab), lab);
+try {
+  const two = api.pickShowYours(cta, { need: 2 });
+  check("cta format 2 returns two", two.length === 2, "got " + two.length);
+  check("cta format 4 returns four", api.pickShowYours(cta, { need: 4 }).length === 4, "got " + api.pickShowYours(cta, { need: 4 }).length);
+} catch (e) { check("cta formats", false, e.message); }
+
 if (fail.length) {
   console.log("✗ HOSTILE EDITOR — " + fail.length + " failure(s):\n");
   for (const f of fail) console.log("  ✗ " + f);

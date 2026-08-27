@@ -361,6 +361,12 @@ function lineOptions(cards, themeName, followerCount){
         connectingHit = true;
         add("observation", (g.a ? g.a + " drew " : "") + these + " as one picture" +
           (g.arr === "down" ? ", top to bottom" : g.arr === "across" ? ", left to right" : "") + ".");
+        if (sets.length > 1 && nCards >= 3) {
+          add("observation", nword(nCards) + " cards." + NL +
+            nword(sets.length) + " different packs." + NL +
+            "one " + (g.scene || "painting") + "." + NL + NL +
+            "you already pulled a piece of this and didn't know.");
+        }
         if (g.arr === "down" && nCards === 2) {
           add("divide", "The top or the bottom?" + NL + NL +
             "Which half is carrying the picture?" + NL + NL + "Genuinely asking.");

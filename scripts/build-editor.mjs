@@ -18,6 +18,7 @@
 // Ships a 1.55MB slim index rather than the 6.1MB catalogue: id, name, artist,
 // set, year, rarity. Everything else is a lookup nobody needs in a browser.
 import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { existsSync, readFileSync } from "node:fs";
 import { artistRevisits } from "./card-relations.mjs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -90,11 +91,26 @@ else {
   // evolvesFrom against the same data the page ships.
   const attrsAtBuild = (await J('data/card-attrs.json'))?.cards ?? {};
 
+  // A one-off post image is not the product. Soft launch ships the editor.
+  // CATCHEM_TODAY=1 bakes a Save-this-picture banner from research/assets/post.jpg.
+  let TODAY_IMG = "";
+  if (process.env.CATCHEM_TODAY === "1") {
+    for (const p of [
+      "/workspace/artifacts/post.jpg",
+      join(ROOT, "research/assets/post.jpg"),
+    ]) {
+      if (existsSync(p)) {
+        TODAY_IMG = "data:image/jpeg;base64," + readFileSync(p).toString("base64");
+        break;
+      }
+    }
+  }
+
   await mkdir(join(ROOT, "research/assets"), { recursive: true }).catch(() => {});
   await writeFile(join(ROOT, "research/assets/card-index.json"), JSON.stringify(index));
 
   const html = `<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex,nofollow,noarchive"><title>Catch'em Creators — build a post</title>
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Sora:wght@300;400;600&family=JetBrains+Mono:wght@400;500&display=swap');
 :root{
@@ -106,14 +122,15 @@ else {
      there. Same value as --faint, which is what the usages assumed. */
   --dim:#5a6273;
   --live:#36d399; --warn:#d9a441;
-  --display:'Syne',system-ui,sans-serif; --body:'Sora',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+  --display:'Syne',-apple-system,system-ui,sans-serif; --body:-apple-system,BlinkMacSystemFont,'Sora',system-ui,sans-serif; --mono:ui-monospace,'SF Mono','JetBrains Mono',monospace;
   --ease:cubic-bezier(.22,.61,.36,1);
   --shadow-border:0 0 0 1px rgba(255,255,255,.06);
 }
 *{box-sizing:border-box}
-html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
-body{margin:0;background:var(--ink);color:var(--text);font:300 16px/1.6 var(--body);padding:0 0 160px}
-.wrap{max-width:1000px;margin:0 auto;padding:0 24px}
+html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--ink);color:var(--text);font:300 16px/1.6 var(--body);padding:0 0 160px;overflow-x:hidden}
+.wrap{max-width:1000px;margin:0 auto;padding:0 24px;padding-left:max(24px, env(safe-area-inset-left));padding-right:max(24px, env(safe-area-inset-right))}
+button{-webkit-appearance:none;appearance:none}
 button:not(:disabled),[role="button"]:not(:disabled){cursor:pointer}
 
 /* Masthead — type does the work, no hero graphic, no gradient. */
@@ -145,6 +162,32 @@ h1 em{font-style:normal;color:var(--live)}
 .hookchip:hover{border-color:var(--live);color:var(--live)}
 .askreply{color:var(--live);font:400 14px var(--body);margin-top:12px;min-height:20px}
 .askreply.bad{color:var(--warn)}
+.modes{display:flex;padding:3px;background:var(--raise);border-radius:12px;margin:0 0 22px;gap:3px}
+.mode{flex:1;border:0;background:transparent;color:var(--soft);border-radius:9px;padding:10px 12px;
+  font:600 15px var(--body);min-height:44px}
+.mode.on{background:var(--panel);color:var(--text);box-shadow:0 1px 2px rgba(0,0,0,.35)}
+body[data-mode="reply"] #postmode,body[data-mode="reply"] .tut{display:none}
+body[data-mode="post"] #office{display:none}
+body[data-mode="reply"] .advanced,body[data-mode="reply"] .ideas,body[data-mode="reply"] .streakwrap{display:none}
+.morefacts{margin-top:14px;border:0;padding:0}
+.morefacts > summary{cursor:pointer}
+.replylede{margin:0 0 14px;color:var(--soft);font:400 16px/1.45 var(--body)}
+.howmany{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  background:var(--panel);border-radius:14px;padding:2px 6px 2px 16px;min-height:52px;margin:0 0 18px}
+.howmany span{font:400 16px var(--body);color:var(--text)}
+.howmany select{width:auto;max-width:62%;flex:1;background:transparent;border:0;color:var(--soft);
+  font:400 16px var(--body);text-align:right;padding:14px 28px 14px 8px;appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath fill='%238a93a6' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 8px center}
+.howmany select:focus{outline:none;color:var(--text)}
+.office{margin:0;padding:0;background:transparent;border:0}
+.office textarea{min-height:120px;border-radius:14px;padding:16px;background:var(--panel);margin-bottom:12px}
+.office .go{width:100%}
+.textlink{display:block;width:100%;margin:10px 0 0;background:none;border:0;color:var(--faint);
+  font:400 15px var(--body);padding:10px;min-height:44px;text-align:center}
+.textlink:hover{color:var(--live)}
+#copyreply{width:100%;margin-top:10px}
+.officehint{margin:12px 0 0}
 .advanced{margin-bottom:20px}
 .advanced summary{color:var(--faint);font:400 14px var(--body);cursor:pointer;padding:8px 0;list-style:none}
 .advanced summary::-webkit-details-marker{display:none}
@@ -165,8 +208,8 @@ h1 em{font-style:normal;color:var(--live)}
 .step{min-width:0}
 .step .n{font:500 11px/1 var(--mono);color:var(--faint);letter-spacing:.14em;display:block;margin-bottom:10px}
 .step .t{font:600 14.5px/1.3 var(--body);margin-bottom:12px;display:block}
-select,input{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:9px;
-  color:var(--text);padding:13px 14px;font:400 14.5px var(--body);transition:border-color .18s var(--ease)}
+select,input,textarea{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:9px;
+  color:var(--text);padding:13px 14px;font:400 16px var(--body);transition:border-color .18s var(--ease)}
 select:focus,input:focus{outline:none;border-color:var(--soft)}
 .chips{display:flex;flex-wrap:wrap;gap:7px}
 .chip{background:var(--panel);border:1px solid var(--line);color:var(--soft);border-radius:9px;
@@ -304,7 +347,16 @@ button.sec{background:transparent;color:var(--soft);border:1px solid var(--line)
   padding:14px 20px;font:400 14.5px var(--body);cursor:pointer;transition:all .18s var(--ease)}
 button.sec:hover{border-color:var(--faint);color:var(--text)}
 button:disabled{opacity:.32;cursor:not-allowed}
-#outimg{max-width:100%;border-radius:13px;border:1px solid var(--line);display:block;margin-top:14px}
+#todaypost{margin:0 0 22px}
+#todaypost img{width:100%;height:auto;border-radius:14px;display:block;border:1px solid var(--line);background:var(--panel)}
+#todaypost .go{width:100%;margin-top:12px}
+#todaycopy{white-space:pre-wrap;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin:12px 0 0;font:400 17px/1.5 var(--body);color:var(--text)}
+#outimg,#todaypost img,#savesheet img{-webkit-touch-callout:default!important;-webkit-user-select:auto;user-select:auto;pointer-events:auto}
+#savesheet{display:none;position:fixed;inset:0;z-index:80;background:#0a0c12;padding:16px 16px calc(20px + env(safe-area-inset-bottom));overflow:auto}
+#savesheet.on{display:block}
+#savesheet img{width:100%;height:auto;border-radius:12px;margin:12px 0}
+#savesheet .go{width:100%;margin-top:8px}
+#savesheet .textlink{margin-top:4px}
 .savehint{font:400 13.5px var(--body);color:var(--live);margin:10px 0 0;text-align:center}
 canvas{max-width:100%;border-radius:13px;margin-top:24px;display:none;border:1px solid var(--line)}
 
@@ -365,29 +417,85 @@ summary:before{content:"→ ";color:var(--faint)}
 .foot{color:var(--faint);font-size:13px;margin-top:46px;border-top:1px solid var(--line);padding-top:20px;line-height:1.7}
 :focus-visible{outline:2px solid var(--live);outline-offset:2px}
 @media(max-width:760px){
+  .wrap{padding:0 14px;padding-left:max(14px, env(safe-area-inset-left));padding-right:max(14px, env(safe-area-inset-right))}
+  body{padding-bottom:24px}
   .steps{grid-template-columns:1fr;gap:22px}
   .controls{grid-template-columns:1fr}
-  .acts{position:sticky;bottom:0;z-index:8;background:linear-gradient(180deg,transparent,var(--ink) 28%);
-    padding:18px 0 12px;margin:0 -8px}
-  .acts button{width:100%}
+  .binder{padding:12px;gap:8px;border-radius:14px;width:100%;max-width:100%}
+  .office .officerow{display:none}
+  .seg{position:relative;z-index:2}
+  .egs{flex-direction:column}
+  .eg,.eg.demo{flex:1 1 auto;width:100%}
+  .pageacts{width:100%}
+  .pageacts .another,#anotherset,#backset{flex:1;min-height:44px}
+  .acts{position:sticky;bottom:0;z-index:8;
+    display:grid;grid-template-columns:1fr 1fr;gap:8px;
+    background:linear-gradient(180deg,transparent,var(--ink) 22%);
+    padding:14px 0 calc(12px + env(safe-area-inset-bottom));margin:0 -14px;padding-left:14px;padding-right:14px}
+  .acts button{width:auto;min-height:48px}
+  .acts #make,.acts .go{grid-column:1 / -1}
   .pocket .x,.pocket .own{opacity:1}
+  #outimg{scroll-margin-bottom:160px}
+  .selfreply pre,.lineopt .txt,.officehint,.askreply{overflow-wrap:anywhere}
 }
 </style>
+<body data-mode="post">
 <div class="wrap">
+${TODAY_IMG ? `<div id="todaypost">
+<p class="hooklabel">TODAY'S POST — tap Save picture</p>
+<img src="${TODAY_IMG}" alt="nine cards one beach" width="1600" height="980">
+<button type="button" class="go" id="savetoday" onclick="saveToday()">Save picture</button>
+<pre id="todaycopy">nine cards.
+five different packs.
+one beach.
+
+you already pulled a piece of this and didn't know.</pre>
+</div>` : ""}
+<div id="savesheet">
+  <p class="hooklabel">PRESS AND HOLD THE PICTURE, OR TAP SAVE TO PHOTOS</p>
+  <img id="savepreview" alt="your post">
+  <button type="button" class="go" id="savephotos">Save to Photos</button>
+  <button type="button" class="textlink" id="saveclose">Close</button>
+</div>
 <div class="top">
-  <h1>Make a post<em>.</em></h1>
-  <p class="lede">Pick a direction and we'll find combinations worth posting. Every image credits the artist.
-     &nbsp;·&nbsp; <a href="/creators" style="color:var(--live)">Or start from one we made &rsaquo;</a></p>
+  <h1 id="pagetitle">Make a post<em>.</em></h1>
+  <p class="lede" id="pagelede">Say what you want to post. We'll find the cards.</p>
 </div>
 
-<div id="boot" style="background:#1a1410;border:1px solid #4a3a20;border-radius:10px;padding:14px 16px;margin-bottom:16px;color:#d9a441;font:400 13.5px system-ui,sans-serif;line-height:1.6">Starting…</div>
-<div class="promptbar">
-  <input id="ask" placeholder="A pairing, an evolution line, two cards that make one picture…" autocomplete="off">
+<div class="modes" id="modes" role="tablist">
+  <button type="button" class="mode on" data-mode="post">Post</button>
+  <button type="button" class="mode" data-mode="reply">Reply</button>
+</div>
+<label class="howmany">How many cards
+  <select id="cardcount" aria-label="How many cards">
+    <option value="1">1 — one card</option>
+    <option value="2">2 — a pair</option>
+    <option value="3">3 — a row</option>
+    <option value="4">4 — a square</option>
+    <option value="6">6 — two rows</option>
+    <option value="8">8 — a tall page</option>
+    <option value="9">9 — a binder page</option>
+  </select>
+</label>
+
+<div id="boot" style="background:#1a1410;border:1px solid #3d2f1a;border-radius:10px;padding:12px 14px;margin-bottom:16px;color:#d9a441;font:400 13.5px system-ui,sans-serif;line-height:1.5">Starting…</div>
+<div class="promptbar" id="postmode">
+  <input id="ask" placeholder="Connecting art, a Charizard line, what Kimura drew twice…" autocomplete="off" enterkeyhint="go">
   <div class="suggest" id="suggest" hidden></div>
   <div class="egs" id="egs"></div>
-  <div class="hooklabel">OR A FACT WE COUNTED FROM THE CARDS</div>
-  <div class="hooks" id="hooks"></div>
+  <details class="morefacts">
+    <summary class="hooklabel">From the catalogue</summary>
+    <div class="hooks" id="hooks"></div>
+  </details>
   <div class="askreply" id="askreply"></div>
+</div>
+<div class="office" id="office">
+  <p class="replylede">Paste their post. We'll pick a card and a line you can put under it.</p>
+  <textarea id="cta" rows="4" enterkeyhint="go" placeholder="Show me a better Charizard below…"></textarea>
+  <button type="button" class="go" id="ctago">Answer</button>
+  <button type="button" class="textlink" id="ctademo">Try an example</button>
+  <button type="button" class="sec" id="copyreply" hidden>Copy reply</button>
+  <p class="officehint" id="officehint" hidden></p>
 </div>
 <!-- ORDER IS THE INSTRUCTION. Compose used to sit BELOW "Browse, filter and
      fine-tune" and below the full card search, so a first-time visitor met two
@@ -424,16 +532,16 @@ summary:before{content:"→ ";color:var(--faint)}
 <div class="lines" id="lines" hidden></div>
 <div class="selfreply" id="selfreply" hidden></div>
 <p class="savehint" id="savehint"></p>
+<img id="outimg" alt="your image — press and hold to save" hidden>
 <div class="acts">
 <button class="go" id="make">Make the image</button>
-<button id="copy" onclick="copyImage()">Copy image</button>
-<button id="share" onclick="shareImage()">Share</button>
+<button id="share" onclick="shareImage()">Save to Photos</button>
 <button id="dl" onclick="dlImage()">Download</button>
-<button onclick="openImage()">Open in a tab</button>
+<button id="copy" onclick="copyImage()">Copy image</button>
+<button onclick="openImage()">Open picture</button>
 <button id="retryscale" hidden onclick="retryAtHalf()">Try again at half size</button>
 </div>
 <div class="status bad" id="blankwarn" hidden></div>
-<img id="outimg" alt="your image — press and hold to save" hidden>
 <canvas id="cv"></canvas>
 
 <details class="advanced"><summary>Browse, filter and fine-tune</summary>
@@ -588,6 +696,13 @@ const CONNECTING = ${JSON.stringify((await (async () => {
     const ART_ORDER = {
       "neo3-13|neo3-6|neo3-14": ["neo3-6", "neo3-13", "neo3-14"],
     };
+    // THE POST NAMES THE PICTURE, NOT A POKEMON IN IT.
+    // Tyler 2026-08-26: "hid Magikarp in the middle" lost to
+    // "you already pulled a piece of this and didn't know."
+    // Scene noun only when the art is one thing we can name without guessing.
+    const ART_SCENE = {
+      "sv4pt5-31|sv3-8|sv4-152|sv2-42|sv2-96|sv4-91|sv3-180|sv1-151|sv4-30": "beach",
+    };
     return (art?.groups ?? [])
       .filter(g => g.resolution === "COMPLETE" && g.relation === "COMBINED_ILLUSTRATION")
       .map(g => {
@@ -602,7 +717,7 @@ const CONNECTING = ${JSON.stringify((await (async () => {
         else if (arr0 === "vertical" || (shape.length > 1 && shape[0] === 1)) {
           dir = "down"; cols = 1; rows = c.length; sh = Array(c.length).fill(1);
         } else { dir = "across"; cols = c.length; rows = 1; sh = shape.length ? shape : [c.length]; }
-        return { n: g.name ?? null, a: g.artist ?? null, r: g.relation ?? null, arr: dir, cols, rows, shape: sh, c };
+        return { n: g.name ?? null, a: g.artist ?? null, r: g.relation ?? null, arr: dir, cols, rows, shape: sh, c, scene: ART_SCENE[c.join("|")] || ART_SCENE[key] || null };
       })
       .filter(g => g.c.length > 1);
   } catch (e) {
@@ -2365,7 +2480,26 @@ function renderSelfReply(){
     const num = c.i.slice(c.i.lastIndexOf("-") + 1);
     return c.n + " — " + c.s + " #" + num + (c.p ? " — $" + Math.round(c.p) : " — unpriced");
   }).join(NL) + (pricesAsOf ? NL + NL + "Prices as of " + pricesAsOf + "." : "");
-  const formats = [
+  var map = "";
+  if (gConn && gConn.shape && gConn.shape.length) {
+    var mi = 0, rows = [];
+    for (var ri = 0; ri < gConn.shape.length; ri++) {
+      var n = gConn.shape[ri];
+      rows.push(tray.slice(mi, mi + n).map(function(c){ return c.n; }).join(" · "));
+      mi += n;
+    }
+    map = rows.join(NL);
+  }
+  const nSets = [...new Set(tray.map(function(c){ return c.s; }).filter(Boolean))].length;
+  const formats = [];
+  if (map) formats.push({
+    label: "Map",
+    text: map + NL + NL +
+      (gConn.a ? gConn.a + ". " : "") +
+      nSets + " set" + (nSets === 1 ? "" : "s") + ". one picture." + NL + NL +
+      "which piece did you already have" + shillLine
+  });
+  formats.push(
     { label: "Credits", text: (notice ? notice + NL + NL : "") + credits + shillLine },
     { label: "Caption", text: (caption ? caption + NL + NL : "") + credits + shillLine },
     { label: "Inventory", text: numbered + shillLine },
@@ -2375,8 +2509,8 @@ function renderSelfReply(){
         return (i + 1) + "/ " + c.n + " · " + c.s + (c.a ? " · " + c.a : "");
       }).join(NL) + shillLine },
     { label: "Names", text: tray.map(function(c){ return c.n; }).join(NL) + shillLine },
-    { label: "Link first", text: (shillKeep ? shillKeep + NL + NL : "") + (notice ? notice + NL + NL : "") + credits },
-  ];
+    { label: "Link first", text: (shillKeep ? shillKeep + NL + NL : "") + (notice ? notice + NL + NL : "") + credits }
+  );
   const pick = formats[((replyFmt % formats.length) + formats.length) % formats.length];
   box.innerHTML = "";
   const h = document.createElement("div");
@@ -2549,122 +2683,128 @@ window.todaysCard = todaysCard;
 // tool read as broken. Swapping in a real <img> after composing makes the
 // obvious gesture work.
 var previewUrl = null;
+function readBlobUrl(b){
+  return new Promise(function(ok, bad){
+    var r = new FileReader();
+    r.onload = function(){ ok(r.result); };
+    r.onerror = function(){ bad(new Error("read")); };
+    r.readAsDataURL(b);
+  });
+}
+function openSaveSheet(src){
+  var prev = el("savepreview");
+  if (prev && src) prev.src = src;
+  var sheet = el("savesheet");
+  if (sheet) sheet.classList.add("on");
+}
+function closeSaveSheet(){
+  var sheet = el("savesheet");
+  if (sheet) sheet.classList.remove("on");
+}
+window.closeSaveSheet = closeSaveSheet;
 function showSaveable(dataUrl){
   const img = el("outimg"), cv = el("cv");
-  if (!img || !cv) return;
+  if (!img || !dataUrl) return;
+  previewUrl = dataUrl;
   img.src = dataUrl;
   img.hidden = false;
-  cv.style.display = "none";
-  ["copy","share","dl"].forEach(function(i){ if (el(i)) el(i).hidden = false; });
-  const hint = el("savehint");
-  if (hint) hint.textContent = "Press and hold the image to save it — or Copy / Download below.";
-}
-function showSaveableBlob(b){
-  if (!b) return;
-  blob = b;
-  const img = el("outimg"), cv = el("cv");
-  if (previewUrl) try { URL.revokeObjectURL(previewUrl); } catch (e) {}
-  try { previewUrl = URL.createObjectURL(b); } catch (e) { previewUrl = null; }
-  if (img && previewUrl) { img.src = previewUrl; img.hidden = false; }
-  else if (img && typeof FileReader === "function") {
-    const r = new FileReader();
-    r.onload = function(){ img.src = r.result; img.hidden = false; };
-    r.readAsDataURL(b);
-  }
+  img.removeAttribute("hidden");
+  img.style.display = "block";
   if (cv) cv.style.display = "none";
   ["copy","share","dl"].forEach(function(i){ if (el(i)) el(i).hidden = false; });
   const hint = el("savehint");
-  if (hint) hint.textContent = "Press and hold the image to save it — or Copy / Download below.";
+  if (hint) hint.textContent = "Tap Save to Photos. If that is blocked, press and hold the picture.";
+  var prev = el("savepreview");
+  if (prev) prev.src = dataUrl;
+}
+async function showSaveableBlob(b){
+  if (!b) return;
+  blob = b;
+  var url = null;
+  try { url = await readBlobUrl(b); } catch (e) { url = null; }
+  if (!url) {
+    try { previewUrl = URL.createObjectURL(b); url = previewUrl; } catch (e2) { return; }
+  } else {
+    previewUrl = url;
+  }
+  showSaveable(url);
 }
 window.showSaveable = showSaveable;
 
 async function copyImage(){
-  // COPY HAS TO LEAVE WITH A FILE even when the clipboard API refuses.
-  // Opening this page as a downloaded HTML file is file:// — Chrome will not
-  // write images to the clipboard from that origin. Safari often will not
-  // write image/png at all. A Copy button that only says "copy failed" is a
-  // dead end on the exact path we told Tyler to use.
   const b = blob;
   if (!b) { setStatus("Make the image first.", true); return; }
   const png = b.type === "image/png" ? b : new Blob([await b.arrayBuffer()], { type: "image/png" });
-
-  const tryWrite = async function(item){
-    await navigator.clipboard.write([item]);
-  };
   try {
     if (navigator.clipboard && window.ClipboardItem) {
       try {
-        await tryWrite(new ClipboardItem({ "image/png": png }));
+        await navigator.clipboard.write([new ClipboardItem({ "image/png": png })]);
         setStatus("Copied — paste it straight into your post.");
         return;
       } catch (e1) {
         try {
-          await tryWrite(new ClipboardItem({ "image/png": Promise.resolve(png) }));
+          await navigator.clipboard.write([new ClipboardItem({ "image/png": Promise.resolve(png) })]);
           setStatus("Copied — paste it straight into your post.");
           return;
         } catch (e2) { /* fall through */ }
       }
     }
   } catch (e) { /* fall through */ }
-
-  try {
-    const img = el("outimg");
-    if (img && !img.hidden && img.src) {
-      const range = document.createRange();
-      range.selectNode(img);
-      const sel = window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(range);
-      if (document.execCommand("copy")) {
-        setStatus("Copied — paste it straight into your post.");
-        return;
-      }
-    }
-  } catch (e) { /* fall through */ }
-
-  dlImage();
-  const why = window.isSecureContext
-    ? "This browser blocked copying an image."
-    : "Copy does not work from a downloaded file (only from https).";
-  setStatus(why + " The PNG downloaded instead — attach that file to the post.", true);
+  await shareImage();
 }
 async function shareImage(){
+  const src = previewUrl || (el("outimg") && el("outimg").src) || (document.querySelector("#todaypost img") && document.querySelector("#todaypost img").src);
+  if (src) openSaveSheet(src);
   try {
-    const b = blob || await new Promise(function(r){ el("cv").toBlob(r, "image/png"); });
-    if (!b) { setStatus("Make the image first.", true); return; }
-    const f = new File([b], "catchem.png", { type: "image/png" });
-    if (navigator.canShare && navigator.canShare({ files: [f] })) {
-      await navigator.share({ files: [f] });
-      setStatus("Shared.", false);
-    } else setStatus("Sharing is not available here. Download it, or press and hold the image.", true);
-  } catch (e) { setStatus("Share cancelled.", false); }
+    var b = blob;
+    if (!b && src && src.indexOf("data:") === 0) {
+      var res = await fetch(src);
+      b = await res.blob();
+    }
+    if (!b) { setStatus("Press and hold the picture to save it.", true); return; }
+    blob = b;
+    var name = (typeof fname === "function" ? fname() : "catchem") + (b.type.indexOf("jpeg") >= 0 ? ".jpg" : ".png");
+    const f = new File([b], name, { type: b.type || "image/jpeg" });
+    if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [f] }))) {
+      await navigator.share({ files: [f], title: "Catch'em" });
+      setStatus("Pick Save Image / Save to Photos in that menu.");
+      return;
+    }
+    setStatus("Press and hold the picture to save it.");
+  } catch (e) {
+    if (e && e.name === "AbortError") return;
+    setStatus("Press and hold the picture to save it.", true);
+  }
 }
 function openImage(){
-  const src = previewUrl || (el("outimg") && el("outimg").src) || (el("cv") && el("cv").toDataURL("image/png"));
+  const src = previewUrl || (el("outimg") && el("outimg").src);
   if (!src) { setStatus("Make the image first.", true); return; }
+  openSaveSheet(src);
   const w = window.open();
   if (w) {
-    w.document.write('<img src="' + src + '" style="max-width:100%">');
-    w.document.close();
-    setStatus("Opened in a new tab. Press and hold it there to save.", false);
+    try {
+      w.document.write('<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><img src="' + src + '" style="width:100%;height:auto">');
+      w.document.close();
+    } catch (e) {}
   }
-  else setStatus("Your browser blocked the new tab. Press and hold the image above instead.", true);
 }
 function dlImage(){
-  if (!blob && !(el("outimg") && el("outimg").src)) { setStatus("Make the image first.", true); return; }
-  const a = document.createElement("a");
-  const href = previewUrl || (blob ? URL.createObjectURL(blob) : (el("outimg") && el("outimg").src) || "");
-  if (!href) { setStatus("Make the image first.", true); return; }
-  a.href = href;
-  a.download = (typeof fname === "function" ? fname() : "catchem.png");
-  a.rel = "noopener";
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setStatus("Downloaded. If nothing appeared, right-click the image above and Save image.", false);
+  shareImage();
 }
 window.dlImage = dlImage;
 window.copyImage = copyImage; window.shareImage = shareImage; window.openImage = openImage;
+window.saveToday = async function(){
+  var img = document.querySelector("#todaypost img");
+  if (!img || !img.src) { setStatus("Picture is missing.", true); return; }
+  previewUrl = img.src;
+  var out = el("outimg");
+  if (out) { out.src = img.src; out.hidden = false; out.style.display = "block"; }
+  try {
+    var res = await fetch(img.src);
+    blob = await res.blob();
+  } catch (e) { blob = null; }
+  await shareImage();
+};
 
 // A FAILED IMAGE MUST SAY SO. A broken icon explains nothing, and the user
 // cannot tell a slow connection from a dead host from a broken tool. This tries
@@ -2704,8 +2844,7 @@ window.imgFallback = imgFallback;
 // nothing is worse than no chip: it teaches a first-time user that the box does
 // not work, on their first attempt, using our own suggestion.
 const EXAMPLES = [
-  { q: "three cards one painting", label: "Three cards, one painting", demo: true },
-  { q: "connecting art", label: "connecting art" },
+  { q: "connecting art", label: "connecting art", demo: true },
   { q: "what kimura drew twice", label: "Same Pokémon, 25 years later" },
   { q: "squirtle evolution", label: "Evolution sets" },
   { q: "charizard through the years", label: "Charizard, then and now" },
@@ -2897,6 +3036,212 @@ function askResolve(text){
   return null;
 }
 
+// POST OFFICE. Someone on X asked the room to show a card. The editor makes
+// posts; this reads THEIR post and answers it. The trap is taking the bait of
+// "better". Tyler did not: "some that i personally love. they feel different
+// than most." Taste, not a scoreboard. The Chrome tool is this plus a paste.
+const CTA_SHOW_LINES = [
+  "some that i personally love. they feel different than most",
+  "not better. just the ones i keep looking at",
+  "these two never get old for me",
+  "mine aren't a flex. they're just the ones i actually like looking at"
+];
+const CTA_SHOW_ONE = "one i personally love. it feels different than most";
+const CTA_DEMO = "This is my best Charizard so far. Bought it at @Beezie\\n\\nShow me a better one below (Blaine's Charizard is not allowed)";
+const FORMAT_N = [1, 2, 3, 4, 6, 8, 9];
+var officeCount = 1;
+
+function parseCta(text){
+  askVocab();
+  var raw = String(text || "");
+  var t = " " + raw.toLowerCase().replace(/[^a-z0-9]+/g, " ") + " ";
+  var mon = askFind(t, ASK_NAMES);
+  var kind = null;
+  var keys = ["show me", "show yours", "drop yours", "better one", "better than",
+    "yours below", "post yours", "pull one up", "your favorite", "your favourite",
+    "drop your", "let me see"];
+  for (var ki = 0; ki < keys.length; ki++) if (t.indexOf(keys[ki]) >= 0) { kind = "show-yours"; break; }
+  var exclude = [];
+  var trainers = ["blaine", "brock", "misty", "erika", "sabrina", "koga", "giovanni"];
+  var banned = /not allowed|isnt allowed|isn't allowed|no |except |without |banned/.test(t);
+  for (var ti = 0; ti < trainers.length; ti++) {
+    if (t.indexOf(" " + trainers[ti] + " ") >= 0 && banned) exclude.push(trainers[ti]);
+  }
+  var yearHit = raw.match(/\\b((?:19|20)\\d{2})\\b/);
+  var year = yearHit ? Number(yearHit[1]) : null;
+  return { mon: mon, kind: kind, exclude: exclude, year: year, raw: raw };
+}
+
+function ctaRequired(r){
+  var t = " " + String((r && r.raw) || "").toLowerCase() + " ";
+  if (!r || !r.mon) return 0;
+  if (/evol/.test(t)) {
+    var line = evoLineFor(r.mon);
+    if (line && line.length > 1) return Math.min(9, line.length);
+  }
+  if (/connect|one picture|one painting|joins up/.test(t)) {
+    for (var i = 0; i < CONNECTING.length; i++) {
+      var ids = CONNECTING[i].c || [];
+      var cards = ids.map(function(id){ return byIdRow[id]; }).filter(Boolean);
+      if (cards.length > 1 && cards.some(function(c){ return monName(c.n) === r.mon; }))
+        return cards.length;
+    }
+  }
+  if (/\b(pair|both of|these two|two of them)\b/.test(t)) return 2;
+  return 0;
+}
+
+function snapFormat(n){
+  n = Number(n) || 1;
+  if (LAYOUTS[n]) return n;
+  for (var i = 0; i < FORMAT_N.length; i++) if (FORMAT_N[i] >= n) return FORMAT_N[i];
+  return 9;
+}
+
+function expandIfRequired(cards){
+  if (!cards || !cards.length) return cards || [];
+  var g = connectingGroupOf(cards);
+  if (!g && cards.length === 1) {
+    var id = cards[0].i;
+    for (var i = 0; i < CONNECTING.length; i++) {
+      if ((CONNECTING[i].c || []).indexOf(id) >= 0 && CONNECTING[i].c.length > 1) {
+        g = CONNECTING[i]; break;
+      }
+    }
+  }
+  if (g && g.c && g.c.length > cards.length) {
+    var full = g.c.map(function(id){ return byIdRow[id]; }).filter(Boolean);
+    if (full.length > cards.length) return orderByConnecting(full);
+  }
+  return cards;
+}
+
+function pickShowYours(r, opts){
+  opts = opts || {};
+  var skip = opts.exclude instanceof Set ? opts.exclude : new Set();
+  var rot = Number(opts.rot) || 0;
+  var need = Math.max(1, Number(opts.need) || officeCount || 1);
+  var ex = (r.exclude || []).map(function(x){ return String(x).toLowerCase(); });
+  var pool = INDEX.filter(function(c){
+    if (skip.has(c.i)) return false;
+    if (monName(c.n) !== r.mon) return false;
+    var nm = String(c.n).toLowerCase();
+    for (var i = 0; i < ex.length; i++) if (nm.indexOf(ex[i]) === 0 || nm.indexOf(ex[i] + "'s") >= 0 || nm.indexOf(ex[i] + "s ") >= 0) return false;
+    return true;
+  });
+  if (r.year) {
+    var split = r.year < 2014
+      ? pool.filter(function(c){ return (parseInt(c.y, 10) || 0) >= 2020; })
+      : pool.filter(function(c){ return (parseInt(c.y, 10) || 0) <= 2007; });
+    if (split.length >= need) pool = split;
+  }
+  pool.sort(function(a, b){ return (parseInt(b.y, 10) || 0) - (parseInt(a.y, 10) || 0); });
+  if (rot) pool = pool.slice(rot).concat(pool.slice(0, rot));
+  var picked = [], seenA = {};
+  for (var i = 0; i < pool.length && picked.length < need; i++) {
+    var a = pool[i].a || ("#" + i);
+    if (need > 1 && seenA[a] && picked.length) continue;
+    seenA[a] = 1;
+    picked.push(pool[i]);
+  }
+  if (picked.length < need) picked = pool.slice(0, need);
+  return expandIfRequired(picked);
+}
+
+function markCount(n){
+  n = Number(n) || 0;
+  if (FORMAT_N.indexOf(n) < 0) return;
+  fCount = n;
+  officeCount = n;
+  var sel = el("cardcount");
+  if (sel && String(sel.value) !== String(n)) sel.value = String(n);
+  ["postcount", "fcount", "ctacount"].forEach(function(id){
+    var box = el(id);
+    if (box) box.querySelectorAll(".chip").forEach(function(x){ x.classList.toggle("on", Number(x.dataset.n) === n); });
+  });
+}
+function applyCount(n, rerun){
+  markCount(n);
+  if (!rerun) return;
+  anotherCursor = 0;
+  if (lastPref.kind === "cta" && lastPref.ask) answerCta(lastPref.ask);
+  else if (lastPref.ask) runAsk(lastPref.ask);
+}
+function syncOfficeCount(n){
+  officeCount = snapFormat(n);
+  fCount = officeCount;
+  var box = el("ctacount");
+  if (box) box.querySelectorAll(".chip").forEach(function(x){ x.classList.toggle("on", Number(x.dataset.n) === officeCount); });
+  var fc = el("fcount");
+  if (fc) fc.querySelectorAll(".chip").forEach(function(x){ x.classList.toggle("on", Number(x.dataset.n) === fCount); });
+  markCount(officeCount);
+}
+
+function answerCta(text){
+  var r = parseCta(text);
+  var box = el("askreply");
+  var hint = el("officehint");
+  if (!r.kind) {
+    if (box) { box.textContent = "I don't see a call to action. Need 'show me yours', 'drop a better one', something like that."; box.className = "askreply bad"; }
+    return r;
+  }
+  if (!r.mon) {
+    if (box) { box.textContent = "I see the ask, but not which Pokemon."; box.className = "askreply bad"; }
+    return r;
+  }
+  var req = ctaRequired(r);
+  var n = req || officeCount || 1;
+  n = req ? n : snapFormat(n);
+  var cards = pickShowYours(r, { need: n });
+  if (!cards.length) {
+    if (box) { box.textContent = "Nothing in the catalogue for " + r.mon + " after skipping what they banned."; box.className = "askreply bad"; }
+    return r;
+  }
+  if (cards.length !== n) { n = cards.length; syncOfficeCount(LAYOUTS[n] ? n : officeCount); }
+  else syncOfficeCount(n);
+  tray = cards.slice(0, LAYOUTS[cards.length] ? cards.length : 9); blob = null;
+  lastPref = { kind: "cta", ask: text, need: tray.length };
+  anotherCursor = 0;
+  trail = [];
+  var lab = el("label");
+  if (lab) lab.value = tray.length <= 1 ? CTA_SHOW_ONE : CTA_SHOW_LINES[0];
+  var skip = r.exclude.length ? ", skipped " + r.exclude.join("/") : "";
+  var why = req ? "these cards need " + tray.length : tray.length + " card" + (tray.length === 1 ? "" : "s");
+  var msg = "Answering " + r.mon + skip + " — " + why + ".";
+  if (box) { box.textContent = msg; box.className = "askreply"; }
+  var hint = el("officehint");
+  if (hint) { hint.hidden = false; hint.textContent = msg; }
+  var cr = el("copyreply");
+  if (cr) cr.hidden = false;
+  var field = el("cta");
+  if (field && typeof field.blur === "function") field.blur();
+  render(); resetPage(); search();
+  if ((document.body && document.body.getAttribute && document.body.getAttribute("data-mode") === "reply") && typeof composeImage === "function") {
+    try { composeImage(); } catch (e) {}
+  }
+  return r;
+}
+
+window.parseCta = parseCta;
+window.answerCta = answerCta;
+window.pickShowYours = pickShowYours;
+
+async function copyReply(){
+  var t = (el("label") && el("label").value.trim()) || "";
+  if (!t) { setStatus("No reply to copy.", true); return; }
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(t);
+      setStatus("Reply copied — paste it under their post.");
+      return;
+    }
+  } catch (e) {}
+  var lab = el("label");
+  if (lab) { lab.focus(); lab.select(); }
+  setStatus("Select the line and copy it (Ctrl+C).", true);
+}
+window.copyReply = copyReply;
+
 // Turn a resolution into cards, plus the one-line REASON that a human edits
 // into a caption. The reason is a statement of fact and never a caption.
 // ── ONE DEFINITION, TWO CALLERS ───────────────────────────────────────────
@@ -2986,20 +3331,28 @@ function askCards(r, opts){
       // post: three cards, one painting, Entei left of Raikou left of Suicune.
       // Smallest-first used to bury them behind every 2-card pair, so the
       // connecting-art chip never opened on the thing worth posting.
-      const PIN = "neo3-6|neo3-13|neo3-14";
-      whole.sort(function(a, b){
-        const ap = a.g.c.join("|") === PIN, bp = b.g.c.join("|") === PIN;
-        if (ap !== bp) return ap ? -1 : 1;
-        return a.cards.length - b.cards.length;
-      });
-      var unusedG = whole.filter(function(w){
+      var want = Number(typeof fCount === "number" ? fCount : 0);
+      var sized = whole;
+      if (!r.pin && want >= 2) {
+        var exact = whole.filter(function(w){ return w.cards.length === want; });
+        if (exact.length) sized = exact;
+        else {
+          var bigger = whole.filter(function(w){ return w.cards.length > want; })
+            .sort(function(a, b){ return a.cards.length - b.cards.length; });
+          sized = bigger.length ? bigger : whole.slice().sort(function(a, b){ return b.cards.length - a.cards.length; });
+        }
+      } else if (!r.pin) {
+        var pairs = whole.filter(function(w){ return w.cards.length === 2; });
+        sized = pairs.length ? pairs : whole.slice().sort(function(a, b){ return a.cards.length - b.cards.length; });
+      }
+      var unusedG = sized.filter(function(w){
         return w.cards.every(function(c){ return !skipIds.has(c.i); });
       });
-      var listG = unusedG.length ? unusedG : whole;
+      var listG = unusedG.length ? unusedG : sized;
       var pick = null;
       if (r.pin && !rot) {
-        for (var pi = 0; pi < listG.length; pi++)
-          if (listG[pi].g.c.join("|") === r.pin) { pick = listG[pi]; break; }
+        for (var pi = 0; pi < whole.length; pi++)
+          if (whole[pi].g.c.join("|") === r.pin) { pick = whole[pi]; break; }
       }
       if (!pick) pick = listG[rot % listG.length];
       out = orderByConnecting(pick.cards);
@@ -3153,11 +3506,27 @@ function tutShow(line, go){
 // So the tray is never empty on arrival. A returning visitor gets the same
 // pairing loaded and one quiet line explaining it, plus a way to see the walk
 // through again. A first-time visitor gets the full tutorial unchanged.
+function connectingPost(cards, g){
+  const NL = String.fromCharCode(10);
+  const NWORD = ["zero","one","two","three","four","five","six","seven","eight","nine"];
+  const nw = function(k){ return NWORD[k] || String(k); };
+  const nSets = [...new Set((cards || []).map(function(c){ return c.s; }).filter(Boolean))].length;
+  const scene = (g && g.scene) || "painting";
+  return nw((cards || []).length) + " cards." + NL +
+    nw(nSets) + " different packs." + NL +
+    "one " + scene + "." + NL + NL +
+    "you already pulled a piece of this and didn't know.";
+}
 function fillLineFromCards(preset){
   const lab = el("label");
   if (!lab) return;
   if (typeof preset === "string" && preset) { lab.value = preset; return; }
   if (preset !== true && lab.value.trim()) return;
+  const g = connectingGroupOf(tray);
+  if (g && tray.length >= 3) {
+    lab.value = connectingPost(tray, g);
+    return;
+  }
   const opts = (typeof lineOptions === "function") ? lineOptions(tray, null, 0) : [];
   const hit = opts.find(function(o){ return /one picture/.test(o.text); })
     || opts.find(function(o){ return o.reg === "observation"; }) || opts[0];
@@ -3355,57 +3724,25 @@ safeWire(function(){ el("fbsend").onclick = function(){ fbSend(); }; }, "fbsend"
 safeWire(function(){ el("fbclose").onclick = function(){ el("fb").hidden = true; }; }, "fbclose");
 
 function runAsk(text){
-  // THE RELATION LAYER FILLS GAPS, IT DOES NOT OVERRIDE A WORKING ANSWER.
-  //
-  // It ran FIRST at first, on the reasoning that a relationship is what the
-  // person wanted. That regressed two prompts ask-smoke already covered:
-  // "charizard evolution from 151" was answered by the older parser correctly
-  // and by the relation layer wrongly. The older parser is tested; this layer
-  // is new. New capability may not cost tested behaviour, so relations are
-  // tried only where the existing path produces nothing.
   const askRel = askResolve(text);
-  if (askRel && askRel.pin) {
-    const pinned = askCards(askRel);
-    if (pinned && pinned.cards && pinned.cards.length > 1) {
-      const boxP = el("askreply");
-      if (boxP) {
-        boxP.textContent = (askRel.why || "connecting art") + ". " + (pinned.reason || "");
-        boxP.className = "askreply";
-      }
-      tray = orderByConnecting(pinned.cards).slice(0, 9); blob = null;
-      lastPref = { kind: "ask", ask: text };
-      anotherCursor = 0;
-      trail = [];
-      render(); resetPage(); search();
-      return;
-    }
-  }
   const tryRelation = function(){
     if (!askRel) return false;
     const got = askCards(askRel);
     const box0 = el("askreply");
     if (got.cards.length > 1) {
-      // SAY WHICH RELATION AND WHY, ALWAYS. A wrong reading has to be visible.
       if (box0) {
         box0.textContent = askRel.relation.replace(/_/g, " ").toLowerCase() +
           " — " + askRel.why + ". " + got.reason;
         box0.className = "askreply";
       }
-      // THE SAME THREE CALLS THE TESTED PATH MAKES. This set the tray variable and then
-      // called renderTray(), which does not exist - the guard around it was
-      // silently false, so the variable changed and the DOM did not. The panel
-      // then described a Charizard line while the tray still held the previous
-      // prompt's cards: a wrong answer that reads as a right one, which is
-      // exactly what ask-smoke exists to catch. It caught it.
-      tray = got.cards.slice(0, 9); blob = null;
+      tray = (askRel.relation === "CONNECTING_ART") ? got.cards.slice() : got.cards.slice(0, 9); blob = null;
       lastPref = { kind: "ask", ask: text };
       anotherCursor = 0;
+      if (askRel.relation === "CONNECTING_ART") markCount(tray.length);
       render(); resetPage(); search();
+      fillLineFromCards(true);
       return true;
     }
-    // COULD NOT FINISH THE JOB - SAY SO AND SHOW THE NEAREST THING. A silent
-    // zero is the failure being fixed; reproducing it in a new place would be
-    // the same bug wearing the relation layer's clothes.
     if (box0) {
       box0.textContent = "I read that as " + askRel.relation.replace(/_/g, " ").toLowerCase() +
         " (" + askRel.why + ") but there are not enough cards for it. Showing the closest match instead.";
@@ -3414,6 +3751,11 @@ function runAsk(text){
     if (askRel.subject) { el("q").value = askRel.subject; resetPage(); search(); return true; }
     return false;
   };
+  // Connecting art is a picture, not a search. The old parser always returned
+  // a 2-card pair and ignored How many cards. This path has to go first.
+  if (askRel && askRel.relation === "CONNECTING_ART") {
+    if (tryRelation()) return;
+  }
   const ctx = intentCtx();
   const found = parseIntent(text, ctx);
   const reply = intentReply(found, ctx);
@@ -3457,7 +3799,9 @@ function runAsk(text){
   // describes a relationship instead.
   if (!res.cards.length && tryRelation()) return;
   if (res.cards.length) {
-    tray = res.cards; blob = null;
+    var take = res.cards.length;
+    if (found.shape !== "evo-line" && fCount > 0) take = Math.min(take, fCount);
+    tray = res.cards.slice(0, take); blob = null;
     lastPref = { kind: "ask", ask: text };
     anotherCursor = 0;
     trail = [];
@@ -3495,6 +3839,51 @@ function runAsk(text){
   }
 }
 window.runAsk = runAsk;
+function setMode(m){
+  m = m === "reply" ? "reply" : "post";
+  if (document.body && document.body.setAttribute) document.body.setAttribute("data-mode", m);
+  const tabs = el("modes");
+  if (tabs) tabs.querySelectorAll(".mode").forEach(function(b){ b.classList.toggle("on", b.getAttribute("data-mode") === m); });
+  const t = el("pagetitle"), l = el("pagelede");
+  if (t) t.innerHTML = m === "reply" ? "Reply<em>.</em>" : "Make a post<em>.</em>";
+  if (l) l.textContent = m === "reply"
+    ? "Paste what they wrote. One card, unless the art needs more."
+    : "Say what you want to post. We'll find the cards.";
+  if (m === "reply") {
+    const box = el("cta");
+    if (box) setTimeout(function(){ try { box.focus(); } catch (e) {} }, 50);
+  }
+}
+window.setMode = setMode;
+{
+  const tabs = el("modes");
+  if (tabs) tabs.querySelectorAll(".mode").forEach(function(b){
+    b.onclick = function(){ setMode(b.getAttribute("data-mode")); };
+  });
+  const go = el("ctago"), demo = el("ctademo"), copyB = el("copyreply"), box = el("cta");
+  if (go && box) go.onclick = function(){ answerCta(box.value); };
+  if (demo && box) demo.onclick = function(){
+    box.value = CTA_DEMO.replace(/\\n/g, String.fromCharCode(10));
+    setMode("reply");
+    answerCta(box.value);
+  };
+  if (copyB) copyB.onclick = function(){ copyReply(); };
+  const countSel = el("cardcount");
+  if (countSel) countSel.onchange = function(){ applyCount(Number(countSel.value), true); };
+  const st = el("savetoday");
+  if (st) st.onclick = function(){ window.saveToday(); };
+  const sp = el("savephotos");
+  if (sp) sp.onclick = function(){ shareImage(); };
+  const sc = el("saveclose");
+  if (sc) sc.onclick = function(){ closeSaveSheet(); };
+  if (box) box.addEventListener("keydown", function(e){
+    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); answerCta(box.value); }
+  });
+  try {
+    const q = new URLSearchParams(location.search).get("reply");
+    if (q && box) { setMode("reply"); box.value = q; answerCta(q); }
+  } catch (e) {}
+}
 
 // ANOTHER SET, SAME PREFERENCE. The line panel already walks its pool one at
 // a time. The tray did not: changing the Magmars meant retyping the ask, or
@@ -3628,6 +4017,11 @@ function anotherSet(){
   const rot = ++anotherCursor;
   let got = null;
   if (lastPref.kind === "ask" && lastPref.ask) got = rerunAsk(lastPref.ask, exclude, rot);
+  else if (lastPref.kind === "cta" && lastPref.ask) {
+    const r = parseCta(lastPref.ask);
+    const cards = pickShowYours(r, { exclude: exclude, rot: rot, need: lastPref.need || officeCount || 1 });
+    got = { cards: cards, why: ["same ask, different cards"] };
+  }
   else if (fMood || lastPref.kind === "mood") got = rerollMood(fMood || lastPref.mood, exclude);
   else if (fTheme || lastPref.kind === "theme") got = rerollTheme(exclude, rot);
   else if (fMon || fSet || fRating) got = rerollFilters(exclude, rot);
@@ -3654,6 +4048,10 @@ function anotherSet(){
     box.className = "askreply";
   }
   fillLineFromCards(true);
+  if (lastPref.kind === "cta") {
+    const lab = el("label");
+    if (lab) lab.value = tray.length <= 1 ? CTA_SHOW_ONE : CTA_SHOW_LINES[rot % CTA_SHOW_LINES.length];
+  }
   render();
   composeImage();
 }
@@ -3949,7 +4347,9 @@ function render(){
   const L = layoutForTray();
   const box = el("tray");
   const cols = L ? L.cols : Math.min(Math.max(tray.length, 3), 3);
-  box.style.gridTemplateColumns = \`repeat(\${cols}, minmax(0, \${cols > 3 ? 110 : 148}px))\`;
+  const phone = window.innerWidth < 760;
+  const cell = phone || cols > 3 ? "1fr" : "148px";
+  box.style.gridTemplateColumns = \`repeat(\${cols}, minmax(0, \${cell}))\`;
   const pocket = (c, k) => c
     ? \`<div class="pocket filled"><img src="\${imgSmall(c.i)}" alt="\${c.n}" loading="lazy" data-cid="\${c.i}" onerror="imgFallback(this,&#39;\${c.i}&#39;)"><button class="x" onclick="remove(\${k})" aria-label="Remove \${c.n}">×</button><button class="own \${owned[c.i] ? "yes" : ""}" onclick="toggleOwn('\${c.i}')">\${owned[c.i] ? "OWNED" : "want"}</button></div>\`
     : "<div class='pocket'></div>";
@@ -4014,8 +4414,9 @@ function render(){
 // who arrives without an idea should leave with three.
 // NOTHING GATES, EVERY CONTROL REFINES. fCount used to start at 0, so clicking
 // an angle before a count returned silently and the whole column read as broken.
-// Two is the default because it is the shape that settled at 127,200 views.
-let fSet = "", fCount = 2, fTheme = null;
+// One is the default. Two is a tap. Connecting art and legend halves
+// raise the count themselves — those cards are not a single picture.
+let fSet = "", fCount = 1, fTheme = null;
 
 function renderThemes(){
   const box = el("ftheme");
@@ -4059,8 +4460,7 @@ function renderThemes(){
   box.querySelectorAll(".chip").forEach(b => b.onclick = () => { fTheme = b.dataset.t; lastPref = { kind: "theme", ask: "" }; anotherCursor = 0; renderThemes(); buildIdeas(); });
 }
 safeWire(function(){ el("fcount").querySelectorAll(".chip").forEach(b => b.onclick = () => {
-  fCount = fCount === +b.dataset.n ? 0 : +b.dataset.n;
-  el("fcount").querySelectorAll(".chip").forEach(x => x.classList.toggle("on", +x.dataset.n === fCount));
+  applyCount(+b.dataset.n, true);
   if (fTheme && !THEMES.find(t => t.id === fTheme && (t.bestAt||[]).includes(fCount))) fTheme = null;
   renderThemes(); buildIdeas();
 }); }, "fcount");
@@ -4770,7 +5170,7 @@ async function composeImage(){
     // canvas, an old browser — the compose must NOT report failure, because the
     // drawing succeeded and the canvas is right there. Reporting a failure over
     // a finished image is the worst of both.
-    try { showSaveableBlob(blob); }
+    try { await showSaveableBlob(blob); }
     catch (e) {
       try { showSaveable(cv.toDataURL("image/png")); } catch (e2) {}
     }

@@ -57,7 +57,7 @@ if (pagingWorks === false) fails.push("goPage(1) did not change the results — 
 if (pagingWorks === null) fails.push("goPage is not reachable, so the catalogue beyond page one cannot be browsed");
 if (!nodes.pager || !/of\s/.test(nodes.pager.innerHTML)) fails.push("the pager shows no total — the user cannot tell how much catalogue exists");
 if (err) fails.push("the emitted script THREW: " + err.message.slice(0, 80));
-if (!fetched) fails.push("the card index was never fetched");
+if (!fetched && !/const CARD_ROWS = \[/.test(js)) fails.push("the card index was never fetched");
 if (nodes.res.innerHTML.length < 200) fails.push("the results panel is empty on load — the user sees nothing and cannot tell it from broken");
 if (!nodes.ftheme.innerHTML.includes("chip")) fails.push("no theme chips rendered — themes filter against an INDEX that is still empty when they render");
 if ((nodes.res.innerHTML.match(/<img/g) || []).length < 5) fails.push("fewer than 5 images on load");
