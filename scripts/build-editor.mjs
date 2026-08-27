@@ -91,8 +91,9 @@ else {
   // evolvesFrom against the same data the page ships.
   const attrsAtBuild = (await J('data/card-attrs.json'))?.cards ?? {};
 
-  // A one-off post image is not the product. Soft launch ships the editor.
-  // CATCHEM_TODAY=1 bakes a Save-this-picture banner from research/assets/post.jpg.
+  // Soft launch: CATCHEM_TODAY=1 bakes a Save-this-picture banner.
+  const TODAY_COPY = "two cards.\none painting.\n\nleft or right?";
+  const TODAY_REPLY = "Carvanha — left — Ruby & Sapphire 2003\nSharpedo — right — Ruby & Sapphire 2003\n\nHajime Kusajima.\n\nwhich one did you pull first";
   let TODAY_IMG = "";
   if (process.env.CATCHEM_TODAY === "1") {
     for (const p of [
@@ -141,8 +142,10 @@ h1 em{font-style:normal;color:var(--live)}
 
 /* Steps — a real sequence, so numbering earns its place. */
 .promptbar{margin-bottom:20px}
-#ask{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:14px;
+.askrow{display:flex;gap:8px;align-items:stretch}
+#ask{flex:1;width:auto;background:var(--panel);border:1px solid var(--line);border-radius:14px;
   color:var(--text);padding:18px 20px;font:400 17px var(--body)}
+#askgo{flex:0 0 auto;min-width:72px}
 #ask:focus{outline:none;border-color:var(--live)}
 .suggest{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
 .sg{background:var(--panel);border:1px solid var(--live);color:var(--live);border-radius:8px;
@@ -443,13 +446,13 @@ summary:before{content:"→ ";color:var(--faint)}
 <div class="wrap">
 ${TODAY_IMG ? `<div id="todaypost">
 <p class="hooklabel">TODAY'S POST — tap Save picture</p>
-<img src="${TODAY_IMG}" alt="nine cards one beach" width="1600" height="980">
+<img src="${TODAY_IMG}" alt="two cards one painting" width="1600" height="980">
 <button type="button" class="go" id="savetoday" onclick="saveToday()">Save picture</button>
-<pre id="todaycopy">nine cards.
-five different packs.
-one beach.
-
-you already pulled a piece of this and didn't know.</pre>
+<pre id="todaycopy">${TODAY_COPY}</pre>
+<button type="button" class="textlink" onclick="copyToday('todaycopy')">Copy the post</button>
+<p class="hooklabel">REPLY TO YOURSELF — after the image is up</p>
+<pre id="todayreply">${TODAY_REPLY}</pre>
+<button type="button" class="textlink" onclick="copyToday('todayreply')">Copy the reply</button>
 </div>` : ""}
 <div id="savesheet">
   <p class="hooklabel">PRESS AND HOLD THE PICTURE, OR TAP SAVE TO PHOTOS</p>
@@ -480,7 +483,10 @@ you already pulled a piece of this and didn't know.</pre>
 
 <div id="boot" style="background:#1a1410;border:1px solid #3d2f1a;border-radius:10px;padding:12px 14px;margin-bottom:16px;color:#d9a441;font:400 13.5px system-ui,sans-serif;line-height:1.5">Starting…</div>
 <div class="promptbar" id="postmode">
-  <input id="ask" placeholder="Connecting art, a Charizard line, what Kimura drew twice…" autocomplete="off" enterkeyhint="go">
+  <div class="askrow">
+    <input id="ask" placeholder="the fishes, the birds, a Charizard line, what Kimura drew twice…" autocomplete="off" enterkeyhint="go">
+    <button type="button" class="go" id="askgo">Find</button>
+  </div>
   <div class="suggest" id="suggest" hidden></div>
   <div class="egs" id="egs"></div>
   <details class="morefacts">
@@ -695,13 +701,13 @@ const CONNECTING = ${JSON.stringify((await (async () => {
     // Raikou's lightning enters Suicune from the left. Wiki listed Raikou first.
     const ART_ORDER = {
       "neo3-13|neo3-6|neo3-14": ["neo3-6", "neo3-13", "neo3-14"],
+      "pl3-148|pl3-150|pl3-149": ["pl3-148", "pl3-150", "pl3-149"],
     };
-    // THE POST NAMES THE PICTURE, NOT A POKEMON IN IT.
-    // Tyler 2026-08-26: "hid Magikarp in the middle" lost to
-    // "you already pulled a piece of this and didn't know."
-    // Scene noun only when the art is one thing we can name without guessing.
     const ART_SCENE = {
       "sv4pt5-31|sv3-8|sv4-152|sv2-42|sv2-96|sv4-91|sv3-180|sv1-151|sv4-30": "beach",
+      "basep-21|basep-23|basep-22": "bird",
+      "pl3-148|pl3-150|pl3-149": "bird",
+      "me1-133|me1-134|me1-177": "stage",
     };
     return (art?.groups ?? [])
       .filter(g => g.resolution === "COMPLETE" && g.relation === "COMBINED_ILLUSTRATION")
@@ -989,10 +995,13 @@ function parseIntent(text, ctx) {
   // that keeps breaking.
   // COUNT. People say "four cards" and "a pair" and "9" — all the same thing.
   const words = { one: 1, two: 2, three: 3, four: 4, six: 6, nine: 9, pair: 2, single: 1 };
-  const num = q.match(/\b(\d+)\s*(cards?|of them)?\b/);
+  const B = String.fromCharCode(92) + "b";
+  const D = String.fromCharCode(92) + "d";
+  const S = String.fromCharCode(92) + "s";
+  const num = q.match(new RegExp(B + "(" + D + "+)" + S + "*(cards?|of them)?" + B));
   if (num && [1, 2, 3, 4, 6, 8, 9].includes(Number(num[1]))) { found.count = Number(num[1]); found.matched.push(found.count + " cards"); }
   else for (const [w, n] of Object.entries(words)) {
-    if (w === "one" && /one painting|one picture/.test(q)) continue;
+    if (w === "one" && /one painting|one picture|one beach/.test(q)) continue;
     if (q.indexOf(w) >= 0) { found.count = n; found.matched.push(n + " cards"); break; }
   }
 
@@ -1019,9 +1028,15 @@ function parseIntent(text, ctx) {
   }
 
   // ARTIST. Surname alone is how people actually refer to them.
+  // ENGLISH NOUNS ARE NOT SURNAMES. "beach" is Toyste Beach in the catalogue
+  // and also the thing HYOGONOSUKE painted. Matching the surname on the noun
+  // sent "nine cards one beach" to a Lugia-EX.
+  const ARTIST_TRAP = /^(beach|young|white|black|brown|green|king|wood|stone|gold|park|hall|west|north|south|long|short)$/;
   for (const a of (ctx.artists || [])) {
     const last = a.split(" ").pop().toLowerCase();
-    if (last.length >= 5 && q.includes(last)) { found.artist = a; found.matched.push(a); break; }
+    if (last.length < 5) continue;
+    if (ARTIST_TRAP.test(last) && q.indexOf(a.toLowerCase()) < 0) continue;
+    if (q.includes(last)) { found.artist = a; found.matched.push(a); break; }
   }
 
   // SET.
@@ -1080,8 +1095,8 @@ function parseIntent(text, ctx) {
 
   // MOOD.
   for (const m of (ctx.moods || []))
-    if (q.includes(m.label.toLowerCase()) || (m.id === "tired" && /\b(tired|wiped|exhausted|late night|sleepy)\b/.test(q))
-      || (m.id === "bright" && /\b(good morning|morning|sunrise|gm)\b/.test(q))) { found.mood = m.id; found.matched.push(m.label); break; }
+    if (q.includes(m.label.toLowerCase()) || (m.id === "tired" && /(tired|wiped|exhausted|late night|sleepy)/.test(q))
+      || (m.id === "bright" && (/(good morning|morning|sunrise)/.test(q) || q === "gm" || (" " + q + " ").indexOf(" gm ") >= 0))) { found.mood = m.id; found.matched.push(m.label); break; }
 
   // SHAPE — the phrasing that names a format.
   const SHAPE = [
@@ -2793,6 +2808,13 @@ function dlImage(){
 }
 window.dlImage = dlImage;
 window.copyImage = copyImage; window.shareImage = shareImage; window.openImage = openImage;
+window.copyToday = async function(id){
+  var node = el(id);
+  var t = node && (node.textContent || "");
+  if (!t) { setStatus("Nothing to copy.", true); return; }
+  try { await navigator.clipboard.writeText(t); setStatus("Copied."); }
+  catch (e) { setStatus("Select the text above and copy it.", true); }
+};
 window.saveToday = async function(){
   var img = document.querySelector("#todaypost img");
   if (!img || !img.src) { setStatus("Picture is missing.", true); return; }
@@ -2844,10 +2866,10 @@ window.imgFallback = imgFallback;
 // nothing is worse than no chip: it teaches a first-time user that the box does
 // not work, on their first attempt, using our own suggestion.
 const EXAMPLES = [
-  { q: "connecting art", label: "connecting art", demo: true },
+  { q: "the fishes", label: "2 cards · one painting", demo: true },
+  { q: "the birds", label: "3 birds · one painting" },
+  { q: "connecting art", label: "connecting art" },
   { q: "what kimura drew twice", label: "Same Pokémon, 25 years later" },
-  { q: "squirtle evolution", label: "Evolution sets" },
-  { q: "charizard through the years", label: "Charizard, then and now" },
 ];
 function intentCtx(){
   return {
@@ -2940,14 +2962,43 @@ function askResolve(text){
   var mon = askFind(t, ASK_NAMES);
   var artist = askArtistLoose(t, mon);
 
-  // THE MORNING POST. Entei, Raikou and Suicune in Neo Revelation are one
-  // painting by Ken Sugimori. Naming all three, or asking for "one painting",
-  // must land on that group — not a name-fuzz, not a random 2-card pair.
-  if ((has(["entei"]) && has(["raikou"]) && has(["suicune"])) ||
-      has(["one painting", "three cards one painting"]))
-    return { relation: "CONNECTING_ART", subject: null,
+  // THE MORNING POST. Naming the three beasts pins Sugimori's Neo Revelation
+  // painting. "One painting" by itself must NOT, or every 3-card connecting
+  // query becomes Entei and Another never reaches the birds.
+  if ((has(["entei"]) && has(["raikou"]) && has(["suicune"])) || has(["the beasts"]))
+    return { relation: "CONNECTING_ART", subject: null, need: 3,
       pin: "neo3-6|neo3-13|neo3-14",
       why: "the Neo Revelation beasts are one picture" };
+  if ((has(["moltres"]) && has(["zapdos"]) && has(["articuno"])) ||
+      has(["legendary birds", "the birds", "three birds"]))
+    return { relation: "CONNECTING_ART", subject: null, need: 3,
+      pin: "basep-21|basep-23|basep-22",
+      why: "the Wizards promo birds are one picture" };
+  if (has(["mega venusaur"]) || has(["mashu venusaur"]) ||
+      (has(["bulbasaur"]) && has(["ivysaur"]) && has(["venusaur"])))
+    return { relation: "CONNECTING_ART", subject: null, need: 3,
+      pin: "me1-133|me1-134|me1-177",
+      why: "mashu drew the Venusaur line as one picture" };
+  if ((has(["carvanha"]) && has(["sharpedo"])) || has(["the fishes", "fishes", "the shark"]))
+    return { relation: "CONNECTING_ART", subject: null, need: 2,
+      pin: "ex1-51|ex1-22",
+      why: "Carvanha and Sharpedo are one picture, left to right" };
+  if (has(["hyogonosuke"]) || has(["the beach"]) || has(["nine cards one beach"]))
+    return { relation: "CONNECTING_ART", subject: null, need: 9,
+      pin: "sv4pt5-31|sv3-8|sv4-152|sv2-42|sv2-96|sv4-91|sv3-180|sv1-151|sv4-30",
+      why: "HYOGONOSUKE's nine-card beach" };
+
+  var need = 0;
+  if (has(["nine cards", "9 cards", "nine"])) need = 9;
+  else if (has(["eight cards", "8 cards"])) need = 8;
+  else if (has(["six cards", "6 cards"])) need = 6;
+  else if (has(["four cards", "4 cards"])) need = 4;
+  else if (has(["three cards", "3 cards", "three card"])) need = 3;
+  else if (has(["two cards", "2 cards", "a pair"])) need = 2;
+  else {
+    var trail = t.match(/ ([0-9]+) $/);
+    if (trail && [1, 2, 3, 4, 6, 8, 9].includes(Number(trail[1]))) need = Number(trail[1]);
+  }
 
   var TYPES = ["fire", "water", "grass", "lightning", "psychic", "fighting",
     "darkness", "metal", "dragon", "fairy", "colorless"];
@@ -2977,9 +3028,9 @@ function askResolve(text){
   // path to answer well, so there is no tested behaviour to regress.
   var bare = !mon && !artist && !setName;
   if (bare) {
-    if (has(["connecting art", "connected art", "cards that connect", "connect",
-             "one picture", "one painting", "join up", "joins up", "art that connects", "puzzle"]))
-      return { relation: "CONNECTING_ART", subject: null,
+    if (has(["connecting art", "connected art", "cards that connect",
+             "connecting", "one picture", "one painting", "join up", "joins up", "art that connects", "puzzle"]))
+      return { relation: "CONNECTING_ART", subject: null, need: need || 0,
         why: "you asked about art that connects across cards" };
     if (has(["same artist", "one artist", "same illustrator", "one illustrator",
              "by the same", "single artist"]))
@@ -3087,7 +3138,7 @@ function ctaRequired(r){
         return cards.length;
     }
   }
-  if (/\b(pair|both of|these two|two of them)\b/.test(t)) return 2;
+  if (/(pair|both of|these two|two of them)/.test(t)) return 2;
   return 0;
 }
 
@@ -3512,6 +3563,12 @@ function connectingPost(cards, g){
   const nw = function(k){ return NWORD[k] || String(k); };
   const nSets = [...new Set((cards || []).map(function(c){ return c.s; }).filter(Boolean))].length;
   const scene = (g && g.scene) || "painting";
+  if (nSets <= 1 && (cards || []).length <= 3) {
+    var who = scene === "painting" ? "one" : scene;
+    return "These are " + nw((cards || []).length) + " cards." + NL + NL +
+      "One painting." + NL + NL +
+      "Which " + who + " are you keeping?";
+  }
   return nw((cards || []).length) + " cards." + NL +
     nw(nSets) + " different packs." + NL +
     "one " + scene + "." + NL + NL +
@@ -3523,6 +3580,18 @@ function fillLineFromCards(preset){
   if (typeof preset === "string" && preset) { lab.value = preset; return; }
   if (preset !== true && lab.value.trim()) return;
   const g = connectingGroupOf(tray);
+  if (g && tray.length === 2) {
+    const qn = g.arr === "down" ? "the top or the bottom?" : "left or right?";
+    lab.value = "two cards." + String.fromCharCode(10) +
+      "one painting." + String.fromCharCode(10) + String.fromCharCode(10) + qn;
+    return;
+  }
+  if (g && tray.length === 3) {
+    lab.value = "these are three cards." + String.fromCharCode(10) +
+      "one painting." + String.fromCharCode(10) + String.fromCharCode(10) +
+      "which one are you keeping?";
+    return;
+  }
   if (g && tray.length >= 3) {
     lab.value = connectingPost(tray, g);
     return;
@@ -3725,6 +3794,7 @@ safeWire(function(){ el("fbclose").onclick = function(){ el("fb").hidden = true;
 
 function runAsk(text){
   const askRel = askResolve(text);
+  if (askRel && askRel.need) markCount(askRel.need);
   const tryRelation = function(){
     if (!askRel) return false;
     const got = askCards(askRel);
@@ -3753,7 +3823,7 @@ function runAsk(text){
   };
   // Connecting art is a picture, not a search. The old parser always returned
   // a 2-card pair and ignored How many cards. This path has to go first.
-  if (askRel && askRel.relation === "CONNECTING_ART") {
+  if (askRel && (askRel.relation === "CONNECTING_ART" || askRel.relation === "ARTIST_REVISITS" || askRel.relation === "EVOLUTION_LINE")) {
     if (tryRelation()) return;
   }
   const ctx = intentCtx();
@@ -3833,6 +3903,8 @@ function runAsk(text){
     });
   }
   const ask = el("ask");
+  const askgo = el("askgo");
+  if (askgo && ask) askgo.onclick = function(){ el("suggest").hidden = true; runAsk(ask.value); };
   if (ask) {
     ask.addEventListener("keydown", function(e){ if (e.key === "Enter") { el("suggest").hidden = true; runAsk(ask.value); } });
     ask.addEventListener("input", function(){ renderSuggest(ask.value); });
@@ -4899,10 +4971,26 @@ function loadIdea(k){
   el("make").scrollIntoView({ behavior: "smooth", block: "center" });
 }
 renderThemes();
+function bootReady(){
+  var q = "the birds";
+  try {
+    var sp = new URLSearchParams(location.search);
+    if (sp.get("ready") === "venusaur" || /venusaur/i.test(sp.get("q") || "")) q = "mega venusaur";
+    else if (sp.get("q")) q = sp.get("q");
+  } catch (e) {}
+  try { var t = el("tut"); if (t) t.hidden = true; } catch (e) {}
+  try { if (el("ask")) el("ask").value = q; } catch (e) {}
+  try { runAsk(q); fillLineFromCards(true); } catch (e) {}
+  setTimeout(function(){
+    try { composeImage(); } catch (e) {}
+  }, 400);
+}
+window.bootReady = bootReady;
+
 // LAST, so a failure here cannot take the editor down with it. The tutorial is
 // the nicest thing on the page and the least important: if it throws, a
 // stranger should still get a working tool rather than a blank one.
-safeWire(function(){ tutStart(); }, "tutorial");
+safeWire(function(){ tutStart(); bootReady(); }, "tutorial");
 
 // THE COMPOSE IS A NAMED FUNCTION so the retry control can call it again with
 // a smaller scale. It used to be an anonymous click handler, which meant the
@@ -5174,6 +5262,9 @@ async function composeImage(){
     catch (e) {
       try { showSaveable(cv.toDataURL("image/png")); } catch (e2) {}
     }
+    try {
+      openSaveSheet(previewUrl || (el("outimg") && el("outimg").src));
+    } catch (e) {}
     try { window.__lastComposeOk = true; } catch (e) {}
     try { tutComposed(true); } catch (e) {}
     // Offered only after something actually worked, and only once.

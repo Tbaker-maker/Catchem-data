@@ -101,10 +101,17 @@ for (const [q, family] of [
 }
 
 // 3. Connecting art: a complete group, not letter-matches on "art".
-const beasts = ask("three cards one painting");
-check("one painting is Entei | Raikou | Suicune",
+const beasts = ask("entei raikou suicune");
+check("named beasts pin Entei | Raikou | Suicune",
   (beasts || []).map(c => c.i).join(",") === "neo3-6,neo3-13,neo3-14",
   "got " + (beasts || []).map(c => (c.n || "") + " " + c.i).join(", "));
+const birds = ask("the birds");
+check("the birds pin Moltres | Zapdos | Articuno",
+  (birds || []).map(c => c.i).join(",") === "basep-21,basep-23,basep-22",
+  "got " + (birds || []).map(c => (c.n || "") + " " + c.i).join(", "));
+const three = ask("three cards one painting");
+check("three cards one painting is 3 cards", (three || []).length === 3, "got " + (three || []).length);
+check("three cards is not always the beasts", (three || []).map(c => c.i).join(",") !== "neo3-6,neo3-13,neo3-14");
 const conn = ask("connecting art");
 check("connecting art returns 2+", conn.length >= 2, "got " + conn.length);
 let g = null;
@@ -130,6 +137,16 @@ try {
   check("connecting post does not name Magikarp", !/Magikarp/i.test(lab), lab);
   api.applyCount(2, true);
 } catch (e) { check("how-many cards", false, e.message); }
+
+ask("the fishes");
+check("the fishes is Carvanha then Sharpedo",
+  api.tray().map(c => c.n).join("|") === "Carvanha|Sharpedo",
+  api.tray().map(c => c.n).join("|"));
+try {
+  const gFish = api.connectingGroupOf(api.tray());
+  check("fishes layout is across", !!(gFish && gFish.arr === "across"), JSON.stringify(gFish && gFish.arr));
+} catch (e) { check("fishes layout is across", false, e.message); }
+ask("connecting art");
 
 // 4. Fishes must go across; spiders down. Drive by id if the walker lands elsewhere.
 function loadIds(ids) {
