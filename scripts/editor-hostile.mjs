@@ -112,6 +112,9 @@ const birds = ask("the birds");
 check("the birds pin Moltres | Zapdos | Articuno",
   (birds || []).map(c => c.i).join(",") === "basep-21,basep-23,basep-22",
   "got " + (birds || []).map(c => (c.n || "") + " " + c.i).join(", "));
+check("Aoki birds are 2000, not the Wizards promo set-start 1999",
+  (birds || []).every(c => c.y === "2000"),
+  (birds || []).map(c => c.i + " " + c.y).join(", "));
 const birdReply = (document.getElementById("askreply") || {}).textContent || "";
 check("the birds reply credits Aoki, not Kimura",
   /Toshinao Aoki/i.test(birdReply) && !/Kimura/i.test(birdReply),

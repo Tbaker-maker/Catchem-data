@@ -2,6 +2,16 @@
  "note": "Public corrections log. material=true means it affected a number a reader could have acted on. Entries are permanent.",
  "entries": [
   {
+   "date": "2026-08-27",
+   "material": true,
+   "what": "Wizards Black Star Promo birds were dated 1999. They are 2000.",
+   "claim": "The catalogue, the editor year field, and the 2026-08-27 post '1999 and 2026 — 27 years apart' all used pokemontcg.io's SET start (1999/07/01) for every Wizards promo. @dank_porygon corrected it. PSA slabs print 2000. Bulbapedia: Power of One theatrical giveaway, 21 July 2000, second week.",
+   "detail": "pokemontcg.io stores one releaseDate per set. Wizards Black Star Promos ran July 1999–March 2003, so all 53 cards inherited 1999. Same shape on Nintendo/DP/BW/SM/SWSH/SVP Black Star Promos. Main-set dates (Ruby & Sapphire 2003, Neo Revelation 2001) were already card-accurate because those sets dropped on one day.",
+   "whatChanged": "data/release-date-overrides.json holds per-card English dates for all 53 Wizards promos from Bulbapedia. ingest-catalogue.mjs reapplies them after every API pull. build-editor.mjs writes the override year into the index. Year-span captions skip Black Star promo sets that have no override. Editor hostile test: basep-21/22/23 year is 2000.",
+   "caughtBy": "Tyler, from the reply. The live page and the catalogue agreed with each other and with the API, and they were all wrong.",
+   "guardAdded": "Per-card overlay plus yearOk(): do not print 'N years apart' from a Black Star promo set-start date."
+  },
+  {
    "date": "2026-08-23",
    "material": true,
    "what": "Our marketplace gap was not comparing like with like. The eBay figure included shipping; TCGplayer market prices do not. On cheap items — packs especially — this reversed the answer: we showed some packs asking far more on eBay when, once shipping was counted on both sides, they were actually cheaper there.",

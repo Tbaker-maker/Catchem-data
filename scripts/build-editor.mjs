@@ -49,9 +49,11 @@ else {
 
   const themes = await J("data/themes.json");
   const sets = [...new Set(Object.values(cat.cards).map(c => c.setName).filter(Boolean))].sort();
+  const dateOvr = ((await J("data/release-date-overrides.json")) || {}).cards || {};
+  const YEAR_IS_SET_START = new Set((((await J("data/release-date-overrides.json")) || {}).setsYearIsSetStart) || []);
   const index = Object.entries(cat.cards).map(([id, c]) => ({
     i: id, n: c.name, a: c.artist ?? null, s: c.setName,
-    y: (c.releaseDate ?? "").slice(0, 4), r: c.rarity ?? "", k: c.attackNames ?? undefined, p: typeof c.price === "number" ? Math.round(c.price * 100) / 100 : null,
+    y: ((dateOvr[id] && dateOvr[id].date) || c.releaseDate || "").slice(0, 4), r: c.rarity ?? "", k: c.attackNames ?? undefined, p: typeof c.price === "number" ? Math.round(c.price * 100) / 100 : null,
   }));
   // WHEN THESE PRICES WERE READ, computed once. Hoisted to this scope because
   // two places need it: the row builder, which stores a date only where it
@@ -904,6 +906,14 @@ const CARD_INDEX = CARD_ROWS.map(function(r){
   if (r[21]) o.mech = r[21];
   return o;
 });
+const YEAR_SET_START = ${JSON.stringify([...(YEAR_IS_SET_START || [])])};
+const DATE_OVR_IDS = ${JSON.stringify(Object.keys(dateOvr || {}))};
+function yearOk(c){
+  if (!c || !c.y) return false;
+  if (DATE_OVR_IDS.indexOf(c.i) >= 0) return true;
+  for (var yi = 0; yi < YEAR_SET_START.length; yi++) if (c.s === YEAR_SET_START[yi]) return false;
+  return true;
+}
 const POCKET_ROWS = ${JSON.stringify(pocketShow)};
 const POCKET_INDEX = POCKET_ROWS.map(function(r){
   var o = { i: r[0], n: r[1], s: r[2], y: r[3], g: "k" };
@@ -3833,7 +3843,9 @@ function askCards(r, opts){
     if (out.length > 1) {
       var gap2 = Number(out[out.length - 1].y) - Number(out[0].y);
       out = [out[0], out[out.length - 1]];
-      reason = out[0].a + " illustrated both, " + gap2 + " years apart.";
+      reason = (yearOk(out[0]) && yearOk(out[out.length - 1]) && gap2 > 0)
+        ? (out[0].a + " illustrated both, " + gap2 + " years apart.")
+        : (out[0].a + " illustrated both.");
     }
   } else if (r.relation === "SAME_SET_AND_TYPE") {
     out = INDEX.filter(function(c){

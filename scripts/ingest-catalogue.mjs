@@ -162,6 +162,19 @@ store.coverage = {
   // present, which artist-instruments checks per artist rather than globally.
   note: "Per-set completeness. Artist-level 'ever' claims are validated per artist, not from this flag.",
 };
+{
+  const ovr = await J("data/release-date-overrides.json");
+  let n = 0;
+  if (ovr && ovr.cards) {
+    for (const [id, row] of Object.entries(ovr.cards)) {
+      if (store.cards[id] && row && row.date && store.cards[id].releaseDate !== row.date) {
+        store.cards[id].releaseDate = row.date;
+        n++;
+      }
+    }
+  }
+  if (n) console.log("  release-date overrides applied: " + n);
+}
 await writeFile(join(ROOT, "data/card-catalogue.json"), JSON.stringify(store));
 console.log(`✓ catalogue: ${Object.keys(store.cards).length} cards across ${Object.keys(store.sets).length} sets · ${withArtist} with an artist credit · ${withPrice} with a price · ${added} new this run`);
 if (failures.length) console.log(`  ⚠ ${failures.length} set(s) failed: ${failures.slice(0, 4).map(f => `${f.setId}(${f.status})`).join(", ")}`);
