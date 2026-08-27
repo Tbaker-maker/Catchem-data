@@ -1,5 +1,10 @@
 # Pick up here — Aug 26 2026
 
+**Tonight's Grok session is in `GROK-HANDOVER-2026-08-26.md`.** Read that
+first if you are a new chat. This file is the morning briefing; the handover
+is what actually shipped after 5pm PDT (captions, search pins, save-to-photos,
+the beach post post-mortem).
+
 **Supersedes `PICK-UP-HERE.md` (Aug 24), which predates 81 commits.** That file
 is still on disk; where the two disagree, this one is newer. Verify the count
 yourself with `git log --since=2026-08-25 --oneline | wc -l`.
