@@ -3044,6 +3044,53 @@ const POCKET_EXAMPLES = [
   { q: "team rocket's zapdos", label: "Team Rocket Zapdos" },
   { q: "paper tcg", label: "Paper TCG", game: "paper" },
 ];
+const BOTH_EXAMPLES = [
+  { q: "the birds", label: "paper × Pocket birds", demo: true },
+  { q: "the fishes", label: "paper × Pocket fishes" },
+  { q: "team rocket's zapdos", label: "Zapdos, both games" },
+  { q: "eeveelutions", label: "Eevee line" },
+];
+function currentGame(){
+  var gs = el("game");
+  if (gs && (gs.value === "pocket" || gs.value === "both" || gs.value === "paper")) return gs.value;
+  if (INDEX.length && INDEX[0] && INDEX[0].g === "k") return "pocket";
+  return "paper";
+}
+function pocketScore(c){
+  var s = 0, r = String((c && c.r) || ""), n = String((c && c.n) || ""), id = String((c && c.i) || "");
+  if (/Crown/i.test(r)) s += 60;
+  if (/Three Star/i.test(r)) s += 50;
+  if (/Two Shiny/i.test(r)) s += 45;
+  if (/Two Star/i.test(r)) s += 40;
+  if (/One Shiny|One Star/i.test(r)) s += 20;
+  if (n.indexOf("Team Rocket") >= 0) s += 18;
+  if (id.indexOf("B4a") >= 0) s += 12;
+  return s;
+}
+function pocketTwinFor(card, skip){
+  skip = skip || new Set();
+  var b = (typeof monName === "function") ? monName(card.n) : card.n;
+  var cands = [];
+  for (var i = 0; i < POCKET_INDEX.length; i++) {
+    var c = POCKET_INDEX[i];
+    if (skip.has(c.i)) continue;
+    var mb = (typeof monName === "function") ? monName(c.n) : c.n;
+    if (mb !== b) continue;
+    cands.push(c);
+  }
+  if (!cands.length) return null;
+  cands.sort(function(a, b){ return pocketScore(b) - pocketScore(a); });
+  return cands[0];
+}
+function pairPaperWithPocket(paperCards){
+  var skip = new Set();
+  var extra = [];
+  for (var i = 0; i < paperCards.length; i++) {
+    var tw = pocketTwinFor(paperCards[i], skip);
+    if (tw) { extra.push(tw); skip.add(tw.i); }
+  }
+  return extra;
+}
 function intentCtx(){
   return {
     // POKEMON ONLY. Built from every card, this list contained "Evolution"
@@ -3139,12 +3186,18 @@ function askResolve(text){
   // THE MORNING POST. Naming the three beasts pins Sugimori's Neo Revelation
   // painting. "One painting" by itself must NOT, or every 3-card connecting
   // query becomes Entei and Another never reaches the birds.
-  var pocketOn = INDEX.length && INDEX[0] && INDEX[0].g === "k";
-  if (pocketOn && (has(["the birds", "legendary birds", "three birds"]) ||
-      (has(["zapdos"]) && has(["articuno"]) && has(["moltres"]))))
+  var gNow = currentGame();
+  var pocketOn = gNow === "pocket";
+  var bothOn = gNow === "both";
+  if ((pocketOn || bothOn) && (has(["the birds", "legendary birds", "three birds"]) ||
+      (has(["zapdos"]) && has(["articuno"]) && has(["moltres"])))) {
+    if (bothOn) return { relation: "CONNECTING_ART", subject: null, need: 6,
+      pin: "basep-21|basep-23|basep-22|tcgp-B4a-088|tcgp-B4a-090|tcgp-B4a-089",
+      why: "paper Wizards birds over Pocket Rocket birds" };
     return { relation: "CONNECTING_ART", subject: null, need: 3,
       pin: "tcgp-B4a-090|tcgp-B4a-089|tcgp-B4a-088",
       why: "Team Rocket's Ambition birds (B4a)" };
+  }
   if (!pocketOn && ((has(["entei"]) && has(["raikou"]) && has(["suicune"])) || has(["the beasts", "legendary dogs", "legendary beasts"])))
     return { relation: "CONNECTING_ART", subject: null, need: 3,
       pin: "neo3-6|neo3-13|neo3-14",
@@ -3648,6 +3701,14 @@ function askCards(r, opts){
     for (var ii = 0; ii < INDEX.length; ii++) inIndex[INDEX[ii].i] = 1;
     if (r.pin) {
       var pinned = r.pin.split("|").map(byId).filter(function(c){ return c && inIndex[c.i]; });
+      if (currentGame() === "both") {
+        var paperish = pinned.filter(function(c){ return String(c.i).indexOf("tcgp-") !== 0; });
+        var pocketish = pinned.filter(function(c){ return String(c.i).indexOf("tcgp-") === 0; });
+        if (paperish.length > 1 && pocketish.length < paperish.length) {
+          var extra = pairPaperWithPocket(paperish);
+          if (extra.length) pinned = paperish.concat(extra);
+        }
+      }
       if (pinned.length > 1) return { cards: pinned, reason: r.why || "connecting art" };
     }
     var pool = CONNECTING.filter(function(g){
@@ -4151,7 +4212,10 @@ function runAsk(text){
     if (!text) text = "the fishes";
   }
   const askRel = askResolve(text);
-  if (askRel && askRel.need) markCount(askRel.need);
+  if (askRel && askRel.need) {
+    var haveN = Number((el("cardcount") && el("cardcount").value) || fCount || 0);
+    if (!haveN || haveN < askRel.need) markCount(askRel.need);
+  }
   const tryRelation = function(){
     if (!askRel) return false;
     const got = askCards(askRel);
@@ -4259,7 +4323,8 @@ function runAsk(text){
 function paintExamples(){
   const eg = el("egs");
   if (!eg) return;
-  var list = (INDEX[0] && INDEX[0].g === "k") ? POCKET_EXAMPLES : EXAMPLES;
+  var gNowEx = currentGame();
+  var list = gNowEx === "pocket" ? POCKET_EXAMPLES : gNowEx === "both" ? BOTH_EXAMPLES : EXAMPLES;
   eg.innerHTML = list.map(function(e){
     const kicker = e.demo ? "<span class='egkicker'>Try this</span>" : "";
     return "<button type='button' class='eg" + (e.demo ? " demo" : "") + "' data-q='" + e.q + "'" +
