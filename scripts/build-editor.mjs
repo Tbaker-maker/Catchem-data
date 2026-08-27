@@ -336,7 +336,10 @@ button.go:disabled{opacity:.45;cursor:default;filter:none}
 .pocket .x{position:absolute;top:5px;right:5px;width:22px;height:22px;border-radius:50%;border:0;
   background:rgba(10,12,18,.82);color:#fff;font-size:14px;line-height:1;cursor:pointer;opacity:0;
   transition:opacity .16s var(--ease)}
-.pocket:hover .x{opacity:1}
+.pocket .swap{position:absolute;top:5px;left:5px;width:22px;height:22px;border-radius:50%;border:0;
+  background:rgba(10,12,18,.82);color:#fff;font-size:13px;line-height:1;cursor:pointer;opacity:0;
+  transition:opacity .16s var(--ease)}
+.pocket:hover .x,.pocket:hover .swap{opacity:1}
 @keyframes settle{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){.pocket{animation:none}.idea:hover{transform:none}}
 
@@ -475,7 +478,7 @@ summary:before{content:"→ ";color:var(--faint)}
     padding:14px 0 calc(12px + env(safe-area-inset-bottom));margin:0 -14px;padding-left:14px;padding-right:14px}
   .acts button{width:auto;min-height:48px}
   .acts #make,.acts .go{grid-column:1 / -1}
-  .pocket .x,.pocket .own{opacity:1}
+  .pocket .x,.pocket .own,.pocket .swap{opacity:1}
   #outimg{scroll-margin-bottom:160px}
   .selfreply pre,.lineopt .txt,.officehint,.askreply{overflow-wrap:anywhere}
 }
@@ -1885,10 +1888,79 @@ safeWire(function(){ ["q","rar","yr"].forEach(id => el(id).addEventListener("inp
 function add(id){
   if (tray.some(function(c){ return c.i === id; })) { setStatus("That card is already on the page.", true); return; }
   if (tray.length >= 9) { setStatus("Nine is the most a frame holds.", true); return; }
-  const c = INDEX.find(x => x.i === id); if (!c) return;
+  const c = INDEX.find(x => x.i === id) || (typeof POCKET_INDEX !== "undefined" && POCKET_INDEX.find(x => x.i === id));
+  if (!c) return;
   tray.push(c); blob = null; render();
 }
 function remove(k){ tray.splice(k,1); blob = null; render(); }
+function printFamily(c){
+  if (!c) return "";
+  var r = String(c.r || "");
+  var n = String(c.n || "");
+  var s = String(c.s || "");
+  var y = Number(c.y) || 0;
+  var bits = n.split(/[\s-]+/);
+  var has = function(t){ return bits.indexOf(t) >= 0; };
+  if (/Special Illustration/i.test(r)) return "SIR · " + s;
+  if (/Illustration Rare/i.test(r)) return "IR · " + s;
+  if (/Rare Rainbow|Rainbow Rare/i.test(r)) return "Rainbow";
+  if (has("GX") && /Rainbow|Secret|Ultra/i.test(r)) return "GX rainbow";
+  if (has("GX")) return "GX";
+  if (has("VMAX")) return "VMAX · " + s;
+  if (has("VSTAR")) return "VSTAR";
+  if (has("V")) return "V · " + s;
+  if (has("ex") && y >= 2023) return "ex · " + s;
+  if (has("EX")) return "EX";
+  if (y <= 2002) return "Wizards";
+  if (y <= 2007) return "EX era";
+  if (y <= 2011) return "DP–HGSS";
+  if (y <= 2016) return "XY";
+  if (y <= 2019) return "SM";
+  if (y <= 2022) return "SWSH";
+  return "SV · " + s;
+}
+function speciesAlts(card){
+  if (!card) return [];
+  var want = (typeof monName === "function") ? monName(card.n) : card.n;
+  var fam = printFamily(card);
+  var same = [], other = [];
+  var pool = INDEX;
+  if (card.g === "k" && typeof POCKET_INDEX !== "undefined") pool = POCKET_INDEX;
+  for (var i = 0; i < pool.length; i++) {
+    var c = pool[i];
+    if (c.i === card.i) continue;
+    if (c.sup && c.sup !== "P") continue;
+    if (String(c.n).indexOf("&") >= 0) continue;
+    var mn = (typeof monName === "function") ? monName(c.n) : c.n;
+    if (mn !== want && c.n !== want) continue;
+    if (printFamily(c) === fam) same.push(c);
+    else other.push(c);
+  }
+  var rnk = function(a, b){
+    var ra = /Special Illustration|Rare Rainbow|Illustration Rare/i.test(a.r || "") ? 1 : 0;
+    var rb = /Special Illustration|Rare Rainbow|Illustration Rare/i.test(b.r || "") ? 1 : 0;
+    return (rb - ra) || String(b.y).localeCompare(String(a.y));
+  };
+  same.sort(rnk); other.sort(rnk);
+  return same.concat(other);
+}
+function swapSlot(k){
+  k = Number(k);
+  if (!tray[k]) return;
+  var alts = speciesAlts(tray[k]);
+  if (!alts.length) { setStatus("No other print of " + tray[k].n + ".", true); return; }
+  var used = {};
+  for (var i = 0; i < tray.length; i++) if (i !== k) used[tray[i].i] = 1;
+  var pick = null;
+  for (var j = 0; j < alts.length; j++) {
+    if (!used[alts[j].i]) { pick = alts[j]; break; }
+  }
+  if (!pick) pick = alts[0];
+  if (pick.i === tray[k].i) { setStatus("That is the only other print not already on the page.", true); return; }
+  tray[k] = pick; blob = null; render();
+  try { fillLineFromCards(true); } catch (e) {}
+}
+window.swapSlot = swapSlot;
 
 function setStatus(t, bad){ const s = el("st"); s.textContent = t; s.className = "status" + (bad ? " bad" : ""); }
 
@@ -3683,9 +3755,9 @@ function askCards(r, opts){
       if (/One Star|One Shiny|Rare Holo|Four Diamond|Double Rare/i.test(rar)) return 20;
       return 0;
     };
+    var byFam = {};
     for (var ni = 0; ni < names.length; ni++) {
       var want = names[ni];
-      var cands = [];
       for (var ii = 0; ii < INDEX.length; ii++) {
         var c = INDEX[ii];
         if (skipIds.has(c.i)) continue;
@@ -3693,15 +3765,49 @@ function askCards(r, opts){
         if (String(c.n).indexOf("&") >= 0) continue;
         var mn = (typeof monName === "function") ? monName(c.n) : c.n;
         if (mn !== want && c.n !== want) continue;
-        cands.push(c);
+        var fam = printFamily(c);
+        if (!byFam[fam]) byFam[fam] = {};
+        var prev = byFam[fam][want];
+        var score = (c.hero ? 20 : 0) + rank(c.r);
+        var prevScore = prev ? ((prev.hero ? 20 : 0) + rank(prev.r)) : -1;
+        if (!prev || score > prevScore) byFam[fam][want] = c;
       }
-      if (!cands.length) continue;
-      cands.sort(function(a, b){
-        return ((b.hero ? 20 : 0) + rank(b.r)) - ((a.hero ? 20 : 0) + rank(a.r));
-      });
-      out.push(cands[0]);
     }
-    reason = r.why + " — " + out.length + " Pokémon from the current catalogue.";
+    var fams = [];
+    for (var fk in byFam) {
+      var filled = 0;
+      var setN = {};
+      var cards = [];
+      for (var nj = 0; nj < names.length; nj++) {
+        var hit = byFam[fk][names[nj]];
+        if (hit) { filled++; cards.push(hit); setN[hit.s] = (setN[hit.s] || 0) + 1; }
+      }
+      if (filled < 2) continue;
+      var oneSet = 0;
+      for (var sk in setN) if (setN[sk] > oneSet) oneSet = setN[sk];
+      var sc = filled * 100;
+      if (filled === names.length) sc += 80;
+      if (/^SIR/.test(fk)) sc += 40;
+      if (fk === "Rainbow" || /^GX rainbow/.test(fk)) sc += 35;
+      if (/^IR/.test(fk)) sc += 20;
+      sc += oneSet * 3;
+      fams.push({ key: fk, n: filled, score: sc, cards: cards });
+    }
+    fams.sort(function(a, b){ return b.score - a.score; });
+    if (!fams.length) return { cards: [], reason: r.why };
+    var unused = fams.filter(function(f){
+      return f.cards.some(function(c){ return !skipIds.has(c.i); });
+    });
+    var pool = unused.length ? unused : fams;
+    var chosen = pool[0];
+    out = [];
+    for (var nk = 0; nk < names.length; nk++) {
+      var pick = byFam[chosen.key][names[nk]];
+      if (pick) out.push(pick);
+    }
+    // Do not plug a missing species from a different family. An 8-card
+    // Evolving Skies V row is cleaner than 8 of those plus a random Eevee.
+    reason = r.why + " — " + chosen.key + (out.length === names.length ? "" : " (" + out.length + " of " + names.length + ")");
     return { cards: out, reason: reason };
   }
 
@@ -4479,6 +4585,12 @@ function artistRevisitPairs(){
   return pairs;
 }
 function rerunAsk(text, exclude, rot){
+  const rel = askResolve(text);
+  if (rel && (rel.relation === "SPECIES_GROUP" || rel.relation === "CONNECTING_ART"
+      || rel.relation === "EVOLUTION_LINE" || rel.relation === "ARTIST_REVISITS")) {
+    const got = askCards(rel, { exclude: exclude, rot: rot });
+    if (got.cards && got.cards.length > 1) return { cards: got.cards.slice(0, 9), why: [got.reason] };
+  }
   const ctx = intentCtx();
   const found = parseIntent(text, ctx);
   const reply = intentReply(found, ctx);
@@ -4486,7 +4598,6 @@ function rerunAsk(text, exclude, rot){
     const res = resolvePrompt(found, INDEX, promptHelpers(exclude, rot));
     if (res.cards && res.cards.length) return { cards: res.cards, why: res.why };
   }
-  const rel = askResolve(text);
   if (rel) {
     const got = askCards(rel, { exclude: exclude, rot: rot });
     if (got.cards && got.cards.length > 1) return { cards: got.cards.slice(0, 9), why: [got.reason] };
@@ -4895,7 +5006,7 @@ function render(){
   const cell = phone || cols > 3 ? "1fr" : "148px";
   box.style.gridTemplateColumns = \`repeat(\${cols}, minmax(0, \${cell}))\`;
   const pocket = (c, k) => c
-    ? \`<div class="pocket filled"><img src="\${imgSmall(c.i)}" alt="\${c.n}" loading="lazy" data-cid="\${c.i}" onerror="imgFallback(this,&#39;\${c.i}&#39;)"><button class="x" onclick="remove(\${k})" aria-label="Remove \${c.n}">×</button><button class="own \${owned[c.i] ? "yes" : ""}" onclick="toggleOwn('\${c.i}')">\${owned[c.i] ? "OWNED" : "want"}</button></div>\`
+    ? \`<div class="pocket filled"><img src="\${imgSmall(c.i)}" alt="\${c.n}" loading="lazy" data-cid="\${c.i}" onerror="imgFallback(this,&#39;\${c.i}&#39;)"><button class="swap" onclick="swapSlot(\${k})" aria-label="Swap \${c.n}">↻</button><button class="x" onclick="remove(\${k})" aria-label="Remove \${c.n}">×</button><button class="own \${owned[c.i] ? "yes" : ""}" onclick="toggleOwn('\${c.i}')">\${owned[c.i] ? "OWNED" : "want"}</button></div>\`
     : "<div class='pocket'></div>";
   let html = "";
   if (L && L.shape && L.shape.length) {

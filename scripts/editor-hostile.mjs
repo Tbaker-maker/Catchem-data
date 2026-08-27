@@ -131,6 +131,17 @@ check("label is a textarea so line breaks survive",
 const three = ask("three cards one painting");
 check("three cards one painting is 3 cards", (three || []).length === 3, "got " + (three || []).length);
 check("three cards is not always the beasts", (three || []).map(c => c.i).join(",") !== "neo3-6,neo3-13,neo3-14");
+const evoe = ask("eeveelutions");
+check("eeveelutions is 9", (evoe || []).length === 9, "got " + (evoe || []).length + " " + (evoe || []).map(c => c.n).join(", "));
+const evoSets = [...new Set((evoe || []).map(c => c.s))];
+const evoR = [...new Set((evoe || []).map(c => c.r))];
+check("eeveelutions stay in one visual family",
+  evoSets.length === 1 || (evoR.length === 1 && /Rainbow|Illustration/i.test(evoR[0] || "")),
+  "sets=" + evoSets.join(" | ") + " rarities=" + evoR.join(" | "));
+const evoNames = (evoe || []).map(c => (c.n || "").split(" ")[0].split("-")[0]);
+check("eeveelutions keep line order",
+  evoNames[0] === "Eevee" && evoNames[1] === "Vaporeon" && evoNames[8] === "Sylveon",
+  evoNames.join(", "));
 const conn = ask("connecting art");
 check("connecting art returns 2+", conn.length >= 2, "got " + conn.length);
 let g = null;
