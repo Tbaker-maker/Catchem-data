@@ -3412,7 +3412,11 @@ function askCards(r, opts){
       }
       if (!pick) pick = listG[rot % listG.length];
       out = orderByConnecting(pick.cards);
-      reason = (pick.g.a ? pick.g.a + " drew " : "") + out.length +
+      var artFromCards = [];
+      for (var ai = 0; ai < out.length; ai++)
+        if (out[ai].a && artFromCards.indexOf(out[ai].a) < 0) artFromCards.push(out[ai].a);
+      var who = artFromCards.length === 1 ? artFromCards[0] : null;
+      reason = (who ? who + " drew " : "") + out.length +
         " cards that form one picture" +
         (pick.g.arr === "down" ? ", top to bottom" : pick.g.arr === "across" ? ", left to right" : "") +
         ". We hold " + CONNECTING.length + " such groups.";

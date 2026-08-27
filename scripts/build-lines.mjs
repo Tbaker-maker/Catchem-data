@@ -326,7 +326,10 @@ function lineOptions(cards, themeName, followerCount){
   function firstSentence(s){
     const t = String(s).trim();
     const cut = t.split(". ")[0];
-    return (cut.length > 90 ? cut.slice(0, 87) + "…" : cut).replace(/\.$/, "");
+    if (cut.length <= 80) return cut.replace(/\.$/, "");
+    const slice = cut.slice(0, 80);
+    const sp = slice.lastIndexOf(" ");
+    return (sp > 40 ? slice.slice(0, sp) : slice) + "…";
   }
   for (var li = 0; li < cards.length && li < 2; li++) {
     if (cards[li].L && String(cards[li].L).length > 24) {

@@ -112,6 +112,10 @@ const birds = ask("the birds");
 check("the birds pin Moltres | Zapdos | Articuno",
   (birds || []).map(c => c.i).join(",") === "basep-21,basep-23,basep-22",
   "got " + (birds || []).map(c => (c.n || "") + " " + c.i).join(", "));
+const birdReply = (document.getElementById("askreply") || {}).textContent || "";
+check("the birds reply credits Aoki, not Kimura",
+  /Toshinao Aoki/i.test(birdReply) && !/Kimura/i.test(birdReply),
+  birdReply);
 try { api.fillLineFromCards(true); } catch (e) { check("birds fillLine", false, e.message); }
 const birdLab = (document.getElementById("label") || {}).value || "";
 check("3-card caption names all three birds",
