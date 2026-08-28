@@ -387,7 +387,7 @@ summary:before{content:"→ ";color:var(--faint)}
   <button type="button" class="mode on" data-mode="post">Post</button>
   <button type="button" class="mode" data-mode="reply">Reply</button>
 </div>
-<label class="howmany"><span>How many cards</span>
+<label class="howmany"><span id="countlabel">How many cards</span>
   <select id="cardcount" aria-label="How many cards">
     <option value="0" selected>Fit — however many it needs</option>
     <option value="1">1 — one card</option>
@@ -399,8 +399,8 @@ summary:before{content:"→ ";color:var(--faint)}
     <option value="9">9 — a binder page</option>
   </select>
 </label>
-<label class="howmany"><span>Visual Categories</span>
-  <select id="game" aria-label="Visual Categories">
+<label class="howmany"><span>Visual content</span>
+  <select id="game" aria-label="Visual content">
     <option value="paper">Paper TCG</option>
     <option value="pocket">Pocket</option>
     <option value="movies">Movies</option>
@@ -3638,7 +3638,12 @@ const EXAMPLES = exampleChips;
 function currentGame(){
   var gs = el("game");
   if (gs && (gs.value === "pocket" || gs.value === "both" || gs.value === "paper" || gs.value === "movies" || gs.value === "consoles" || gs.value === "cartridges")) return gs.value;
-  if (INDEX.length && INDEX[0] && INDEX[0].g === "k") return "pocket";
+  if (INDEX.length && INDEX[0]) {
+    if (INDEX[0].g === "k") return "pocket";
+    if (INDEX[0].g === "m") return "movies";
+    if (INDEX[0].g === "h") return "consoles";
+    if (INDEX[0].g === "t") return "cartridges";
+  }
   return "paper";
 }
 function pocketScore(c){
@@ -4267,6 +4272,70 @@ function visualFactReply(cards, why){
 function movieAsk(t){ return visualAsk(MOVIE_INDEX, t, "movie posters"); }
 function consoleAsk(t){ return visualAsk(CONSOLE_INDEX, t, "consoles"); }
 function cartAsk(t){ return visualAsk(CART_INDEX, t, "cartridges"); }
+// VISUAL CONTENT, THEN THE CATEGORY. The picker is the umbrella. The lede,
+// the count label and the page label name the thing you actually picked, so
+// nobody has to remember that "Visual content → Consoles" means handhelds.
+function categoryCopy(g){
+  g = g || currentGame();
+  if (g === "movies") return {
+    name: "Movies",
+    lede: "Movies. A film, a legendary, or a scene.",
+    reply: "Movies. Paste what they wrote. One poster, unless the scene needs more.",
+    count: "How many posters",
+    page: "MOVIES"
+  };
+  if (g === "consoles") return {
+    name: "Consoles",
+    lede: "Consoles. Name a system or the handhelds.",
+    reply: "Consoles. Paste what they wrote. One picture, unless it needs more.",
+    count: "How many consoles",
+    page: "CONSOLES"
+  };
+  if (g === "cartridges") return {
+    name: "Cartridges",
+    lede: "Cartridges. A box, a disc, a version.",
+    reply: "Cartridges. Paste what they wrote. One box, unless it needs more.",
+    count: "How many boxes",
+    page: "CARTRIDGES"
+  };
+  if (g === "pocket") return {
+    name: "Pocket",
+    lede: "Pocket. Say what you want to post. We'll find the cards.",
+    reply: "Pocket. Paste what they wrote. One card, unless the art needs more.",
+    count: "How many cards",
+    page: "POCKET"
+  };
+  if (g === "both") return {
+    name: "Paper and Pocket",
+    lede: "Paper and Pocket. We'll find both.",
+    reply: "Paper and Pocket. Paste what they wrote. One card, unless the art needs more.",
+    count: "How many cards",
+    page: "PAPER × POCKET"
+  };
+  return {
+    name: "Paper TCG",
+    lede: "Say what you want to post. We'll find the cards.",
+    reply: "Paste what they wrote. One card, unless the art needs more.",
+    count: "How many cards",
+    page: "YOUR PAGE"
+  };
+}
+function paintCategory(mode, g){
+  var copy = categoryCopy(g || currentGame());
+  if (!mode) {
+    mode = (document.body && document.body.getAttribute) ? (document.body.getAttribute("data-mode") || "post") : "post";
+  }
+  var l = el("pagelede");
+  if (l) l.textContent = mode === "reply" ? copy.reply : copy.lede;
+  var cl = el("countlabel");
+  if (cl) cl.textContent = copy.count;
+  var cs = el("cardcount");
+  if (cs && cs.setAttribute) cs.setAttribute("aria-label", copy.count);
+  if (document.body && document.body.setAttribute) document.body.setAttribute("data-visual", g || currentGame());
+}
+function categoryPageLabel(){
+  return categoryCopy(currentGame()).page;
+}
 function applyGame(g, rerun){
   g = g === "pocket" ? "pocket" : g === "both" ? "both" : g === "movies" ? "movies" : g === "consoles" ? "consoles" : g === "cartridges" ? "cartridges" : "paper";
   ASK_NAMES = null;
@@ -4303,6 +4372,7 @@ function applyGame(g, rerun){
     : g === "cartridges"
     ? "yellow, stadium, gold and silver, let's go…"
     : "surprise me, the fishes, the beach, eeveelutions…";
+  try { paintCategory(null, g); } catch (e) {}
   try { paintExamples(); } catch (e) {}
   try { renderStreak(); } catch (e) {}
   try { resetPage(); search(); } catch (e) {}
@@ -5426,11 +5496,9 @@ function setMode(m){
   if (document.body && document.body.setAttribute) document.body.setAttribute("data-mode", m);
   const tabs = el("modes");
   if (tabs) tabs.querySelectorAll(".mode").forEach(function(b){ b.classList.toggle("on", b.getAttribute("data-mode") === m); });
-  const t = el("pagetitle"), l = el("pagelede");
+  const t = el("pagetitle");
   if (t) t.innerHTML = m === "reply" ? "Reply<em>.</em>" : "Make a post<em>.</em>";
-  if (l) l.textContent = m === "reply"
-    ? "Paste what they wrote. One card, unless the art needs more."
-    : "Say what you want to post. We'll find the cards.";
+  try { paintCategory(m); } catch (e) {}
   if (m === "reply") {
     const box = el("cta");
     if (box) setTimeout(function(){ try { box.focus(); } catch (e) {} }, 50);
@@ -5969,7 +6037,7 @@ function render(){
   renderStreak();
   renderTally();
   renderItemFacts();
-  el("plabel").textContent = L ? ("YOUR PAGE — " + L.name.toUpperCase()) : "YOUR PAGE";
+  el("plabel").textContent = L ? (categoryPageLabel() + " — " + L.name.toUpperCase()) : categoryPageLabel();
   const anotherBtn = el("anotherset");
   if (anotherBtn) {
     anotherBtn.hidden = !tray.length;

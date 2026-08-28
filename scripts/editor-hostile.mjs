@@ -51,7 +51,7 @@ globalThis.__POCKET_ROWS = pocketRows;
 
 let api;
 try {
-  api = new Function(js + ";return { runAsk, tray:()=>tray, lineOptions, layoutForTray, connectingGroupOf, anotherSet, backSet, parseIntent, evoLineFor, INDEX, POCKET_INDEX, MOVIE_INDEX, CONSOLE_INDEX, CART_INDEX, CONNECTING, LAYOUTS, add, remove, parseCta, pickShowYours, answerCta, officeCount:()=>officeCount, applyCount, fCount:()=>fCount, fillLineFromCards, pickCaption, applyGame, setGame, pocketShowcase, movieShowcase, imgSmall, imgFallback, pocketImgList, hydrateIndexes, visualDetail, visualBits, visualHome, wikiSrc, wikiSrcList, isVisual, kindLabel, currentGame };")();
+  api = new Function(js + ";return { runAsk, tray:()=>tray, lineOptions, layoutForTray, connectingGroupOf, anotherSet, backSet, parseIntent, evoLineFor, INDEX, POCKET_INDEX, MOVIE_INDEX, CONSOLE_INDEX, CART_INDEX, CONNECTING, LAYOUTS, add, remove, parseCta, pickShowYours, answerCta, officeCount:()=>officeCount, applyCount, fCount:()=>fCount, fillLineFromCards, pickCaption, applyGame, setGame, pocketShowcase, movieShowcase, imgSmall, imgFallback, pocketImgList, hydrateIndexes, visualDetail, visualBits, visualHome, wikiSrc, wikiSrcList, isVisual, kindLabel, currentGame, setMode, categoryCopy, paintCategory };")();
 } catch (e) {
   console.error("✗ page JS does not parse:", e.message);
   process.exit(1);
@@ -519,9 +519,35 @@ try {
   check("game boy image is weserv jpg, not raw Wikimedia",
     /images\.weserv\.nl/.test(gbSrc) && gbSrc.indexOf("upload.wikimedia.org") >= 0 && gbSrc.indexOf("output=jpg") >= 0 && gbSrc.indexOf("%2F") < 0 && gbSrc.indexOf("/thumb/") >= 0,
     gbSrc);
-  check("visual categories is the picker name",
-    html.indexOf("Visual Categories") >= 0 && !/<label class="howmany">Game/.test(html),
+  check("visual content is the picker name",
+    html.indexOf("Visual content") >= 0 && html.indexOf("Visual Categories") < 0 && !/<label class="howmany">Game/.test(html),
     "label missing");
+  api.applyGame("movies", false);
+  const ledeM = (document.getElementById("pagelede") || {}).textContent || "";
+  check("movies names the category in the lede", /^Movies\./.test(ledeM), ledeM);
+  const countM = (document.getElementById("countlabel") || {}).textContent || "";
+  check("movies count is posters, not cards", /poster/i.test(countM) && !/cards/i.test(countM), countM);
+  api.applyGame("consoles", false);
+  const ledeH = (document.getElementById("pagelede") || {}).textContent || "";
+  check("consoles names the category in the lede", /^Consoles\./.test(ledeH), ledeH);
+  api.applyGame("cartridges", false);
+  const ledeT = (document.getElementById("pagelede") || {}).textContent || "";
+  check("cartridges names the category in the lede", /^Cartridges\./.test(ledeT), ledeT);
+  api.applyGame("pocket", false);
+  const ledeK = (document.getElementById("pagelede") || {}).textContent || "";
+  check("pocket names the category in the lede", /^Pocket\./.test(ledeK), ledeK);
+  api.applyGame("paper", false);
+  const ledeP = (document.getElementById("pagelede") || {}).textContent || "";
+  check("paper lede still finds the cards", /We'll find the cards/.test(ledeP) && ledeP.indexOf("Movies.") !== 0, ledeP);
+  api.applyGame("movies", false);
+  if (typeof api.setMode === "function") api.setMode("post");
+  const ledeKeep = (document.getElementById("pagelede") || {}).textContent || "";
+  check("post mode keeps the movie category", /^Movies\./.test(ledeKeep), ledeKeep);
+  if (typeof api.setMode === "function") api.setMode("reply");
+  const ledeReply = (document.getElementById("pagelede") || {}).textContent || "";
+  check("reply mode still says Movies", /^Movies\./.test(ledeReply), ledeReply);
+  if (typeof api.setMode === "function") api.setMode("post");
+  api.applyGame("paper", false);
   const goldRow = (api.CART_INDEX || []).find(c => /Gold/.test(c.n));
   const goldSrc = goldRow ? api.imgSmall(goldRow.i) : "";
   check("gold box uses weserv, not a Commons thumb",
