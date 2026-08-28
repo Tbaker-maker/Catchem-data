@@ -90,6 +90,12 @@ body[data-mode="reply"] .advanced,body[data-mode="reply"] .ideas,body[data-mode=
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath fill='%238a93a6' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
   background-repeat:no-repeat;background-position:right 8px center}
 .howmany select:focus{outline:none;color:var(--text)}
+#artflipwrap{margin-top:-8px}
+body[data-visual="pocket"] #artflipwrap,
+body[data-visual="both"] #artflipwrap,
+body[data-visual="movies"] #artflipwrap,
+body[data-visual="consoles"] #artflipwrap,
+body[data-visual="cartridges"] #artflipwrap{display:none}
 .office{margin:0;padding:0;background:transparent;border:0}
 .office textarea{min-height:120px;border-radius:14px;padding:16px;background:var(--panel);margin-bottom:12px}
 .office .go{width:100%}
@@ -204,6 +210,12 @@ button.go:disabled{opacity:.45;cursor:default;filter:none}
   box-shadow:0 10px 28px rgba(0,0,0,.45)}
 .pocket img{width:100%;height:100%;object-fit:contain;display:block;
   outline:1px solid rgba(255,255,255,.08);outline-offset:-1px}
+.pocket.artclip{background:#070910}
+.pocket.artclip > img{
+  position:absolute;inset:auto;width:245%;height:245%;max-width:none;
+  left:50%;top:-29%;transform:translateX(-50%);
+  object-fit:fill;outline:none;
+}
 .pocket .x{position:absolute;top:5px;right:5px;width:22px;height:22px;border-radius:50%;border:0;
   background:rgba(10,12,18,.82);color:#fff;font-size:14px;line-height:1;cursor:pointer;opacity:0;
   transition:opacity .16s var(--ease)}
@@ -407,6 +419,12 @@ summary:before{content:"→ ";color:var(--faint)}
     <option value="cartridges">Cartridges</option>
     <option value="consoles">Consoles</option>
     <option value="both">Compare both</option>
+  </select>
+</label>
+<label class="howmany" id="artflipwrap"><span>Art flip</span>
+  <select id="artflip" aria-label="Art flip">
+    <option value="0" selected>Card only</option>
+    <option value="1">Card and the art</option>
   </select>
 </label>
 
@@ -1269,8 +1287,78 @@ function slotPos(i, L){
 function layoutForTray(){
   const g = connectingGroupOf(tray);
   if (g) return frameFromConnecting(g);
-  return LAYOUTS[tray.length] || null;
+  var n = tray.length;
+  if (typeof artFlipActive === "function" && artFlipActive()) {
+    if (n === 1) return LAYOUTS[2];
+    if (n === 2) return LAYOUTS[4];
+    if (n === 3) return artPairFrame(3);
+    if (n === 4) return LAYOUTS[8];
+    return null;
+  }
+  return LAYOUTS[n] || null;
 }
+// ART FLIP is paper TCG only: each card is followed by a crop of its
+// illustration. Quantity still means cards; the clip is extra. Connecting
+// art is already the picture, so it is never doubled.
+var artFlip = false;
+function artFlipOn(){
+  return !!artFlip && currentGame() === "paper";
+}
+function artFlipActive(){
+  if (!artFlipOn()) return false;
+  if (!tray || !tray.length) return false;
+  if (connectingGroupOf(tray)) return false;
+  return true;
+}
+function artPairFrame(rows){
+  var CW = 745, CH = 1040, PAD = 90, GAP = 60;
+  var W = PAD * 2 + CW * 2 + GAP;
+  var H = PAD * 2 + rows * CH + (rows - 1) * GAP;
+  return { name: "the pairing page", cols: 2, rows: rows, cardW: CW, cardCaption: 0,
+    W: W, H: H, ratio: H / W, artFlip: true, cropExempt: true };
+}
+function composeSlots(){
+  if (!artFlipActive()) {
+    return (tray || []).map(function(c, i){ return { card: c, art: false, trayIndex: i }; });
+  }
+  var out = [];
+  for (var i = 0; i < tray.length; i++) {
+    out.push({ card: tray[i], art: false, trayIndex: i });
+    out.push({ card: tray[i], art: true, trayIndex: i });
+  }
+  return out;
+}
+function applyArtFlip(on, rerun){
+  artFlip = !!on;
+  var sel = el("artflip");
+  if (sel && String(sel.value) !== (artFlip ? "1" : "0")) sel.value = artFlip ? "1" : "0";
+  try { paintArtFlip(); } catch (e0) {}
+  try { paintCountOptions(); } catch (e1) {}
+  if (document.body && document.body.setAttribute)
+    document.body.setAttribute("data-artflip", artFlipOn() ? "on" : "off");
+  if (rerun && lastPref && lastPref.ask) {
+    runAsk(lastPref.ask);
+    return;
+  }
+  if (artFlipOn() && tray && tray.length > 4 && !connectingGroupOf(tray)) {
+    tray = tray.slice(0, 4);
+    blob = null;
+  }
+  render();
+}
+function paintArtFlip(){
+  var wrap = el("artflipwrap");
+  var paper = currentGame() === "paper";
+  if (wrap) {
+    wrap.hidden = !paper;
+    if (wrap.style) wrap.style.display = paper ? "" : "none";
+  }
+  var sel = el("artflip");
+  if (sel && String(sel.value) !== (artFlip ? "1" : "0")) sel.value = artFlip ? "1" : "0";
+}
+window.artFlipOn = artFlipOn;
+window.applyArtFlip = applyArtFlip;
+window.composeSlots = composeSlots;
 // BOOT REPORT. Three wrong guesses at why this dies on a phone, all made from
 // a sandbox that cannot run mobile Safari. A blank screen tells nobody
 // anything, so the page now reports its own failure on the page itself.
@@ -2868,6 +2956,38 @@ function drawSlab(g, img, x, y, cw, ch, card){
   g.textAlign = "center";
 }
 
+// Illustration window of a printed TCG card, then cover-fit into the
+// destination slot. Same image as the card — never a second URL.
+function artSrcRect(img, dw, dh){
+  var iw = img.naturalWidth || img.width || 1;
+  var ih = img.naturalHeight || img.height || 1;
+  var ax = iw * 0.075, ay = ih * 0.12, aw = iw * 0.85, ah = ih * 0.41;
+  var dest = dw / dh, src = aw / ah;
+  var sx = ax, sy = ay, sw = aw, sh = ah;
+  if (src > dest) {
+    sw = ah * dest;
+    sx = ax + (aw - sw) / 2;
+  } else {
+    sh = aw / dest;
+    sy = ay + (ah - sh) * 0.22;
+  }
+  if (sx < 0) sx = 0;
+  if (sy < 0) sy = 0;
+  if (sx + sw > iw) sw = iw - sx;
+  if (sy + sh > ih) sh = ih - sy;
+  if (sw < 1) sw = 1;
+  if (sh < 1) sh = 1;
+  return { sx: sx, sy: sy, sw: sw, sh: sh };
+}
+function drawArtClip(g, img, x, y, cw, ch){
+  var r = artSrcRect(img, cw, ch);
+  try {
+    g.drawImage(img, r.sx, r.sy, r.sw, r.sh, x, y, cw, ch);
+  } catch (e) {
+    g.drawImage(img, x, y, cw, ch);
+  }
+}
+
 // MOOD. The only feature built directly on evidence: all three posts that
 // worked started from how Tyler felt, and none used the 84 formulas we
 // generate. It matches the WORDS PRINTED ON THE CARD rather than an opinion
@@ -4093,7 +4213,14 @@ function markCount(n){
 function categoryMax(g){
   var copy = categoryCopy(g);
   var m = Number(copy && copy.max);
-  return m > 0 ? m : 9;
+  m = m > 0 ? m : 9;
+  // Art flip doubles each card into a pair. Four cards is eight
+  // slots — the last page that still has a frame. Connecting art
+  // never uses this cap.
+  if (typeof artFlipOn === "function" && artFlipOn()) {
+    if (m > 4) m = 4;
+  }
+  return m;
 }
 function takeCap(){
   var max = categoryMax();
@@ -4420,7 +4547,8 @@ function categoryCopy(g){
 }
 function paintCountOptions(g){
   var copy = categoryCopy(g);
-  var max = Number(copy.max) || 9;
+  var max = 9;
+  try { max = categoryMax(g); } catch (eM) { max = Number(copy.max) || 9; }
   var sel = el("cardcount");
   if (sel && sel.options) {
     var labels = {};
@@ -4432,7 +4560,14 @@ function paintCountOptions(g){
     labels["6"] = "6 — two rows";
     labels["8"] = "8 — a tall page";
     labels["9"] = "9 — " + (copy.many || "a binder page");
-    if (labels[String(max)]) labels[String(max)] = max + " — " + (copy.many || labels[String(max)].split(" — ")[1] || "");
+    if (typeof artFlipOn === "function" && artFlipOn()) {
+      labels["1"] = "1 — one card and its art";
+      labels["2"] = "2 — two pairs";
+      labels["3"] = "3 — three pairs";
+      labels["4"] = "4 — four pairs";
+    } else if (labels[String(max)]) {
+      labels[String(max)] = max + " — " + (copy.many || labels[String(max)].split(" — ")[1] || "");
+    }
     for (var i = 0; i < sel.options.length; i++) {
       var opt = sel.options[i];
       var v = String(opt.value);
@@ -4444,6 +4579,7 @@ function paintCountOptions(g){
       }
       opt.disabled = !on;
       opt.hidden = !on;
+      if (opt.style) opt.style.display = on ? "" : "none";
     }
     if (Number(sel.value) > max) {
       try { markCount(0); } catch (e) {}
@@ -4473,7 +4609,8 @@ function paintCategory(mode, g){
   var cs = el("cardcount");
   if (cs && cs.setAttribute) cs.setAttribute("aria-label", copy.aria || copy.count);
   if (document.body && document.body.setAttribute) document.body.setAttribute("data-visual", g || currentGame());
-  paintCountOptions(g || currentGame());
+  try { paintCountOptions(g || currentGame()); } catch (e) {}
+  try { paintArtFlip(); } catch (e2) {}
 }
 function categoryPageLabel(){
   return categoryCopy(currentGame()).page;
@@ -5524,8 +5661,10 @@ function runAsk(text){
       // Connecting art is one picture and is never cropped to a cap.
       if (askRel.relation === "MOVIE_PIN" || askRel.relation === "HARDWARE_PIN")
         tray = got.cards.slice(0, takeCap());
-      else if (askRel.relation === "CONNECTING_ART" || askRel.relation === "SURPRISE")
+      else if (askRel.relation === "CONNECTING_ART")
         tray = got.cards.slice(0, 9);
+      else if (askRel.relation === "SURPRISE")
+        tray = got.cards.slice(0, takeCap());
       else if (askRel.relation === "SET_FACTS")
         tray = got.cards.slice(0, takeCap());
       else if (lockedN) tray = got.cards.slice(0, takeCap());
@@ -5693,6 +5832,8 @@ window.setMode = setMode;
   if (countSel) countSel.onchange = function(){ applyCount(Number(countSel.value), true); };
   const gameSel = el("game");
   if (gameSel) gameSel.onchange = function(){ setGame(gameSel.value); };
+  const artSel = el("artflip");
+  if (artSel) artSel.onchange = function(){ applyArtFlip(artSel.value === "1", true); };
   const st = el("savetoday");
   if (st) st.onclick = function(){ window.saveToday(); };
   const sp = el("savephotos");
@@ -6187,8 +6328,12 @@ function render(){
     var vis = isVisual(c);
     var kls = "pocket filled" + (vis ? " visual vis-" + String(c.kind || c.g).replace(/[^a-z]/g, "") : "");
     var own = vis ? "" : `<button class="own ${owned[c.i] ? "yes" : ""}" onclick="toggleOwn('${c.i}')">${owned[c.i] ? "OWNED" : "want"}</button>`;
-    var cap = vis ? `<span class="vcap"><b>${c.n}</b><i>${visualBits(c).join(" · ")}</i></span>` : "";
-    return `<div class="${kls}"><img src="${imgSmall(c.i)}" alt="${c.n}" loading="eager" data-cid="${c.i}" onerror="imgFallback(this,&#39;${c.i}&#39;)"><button class="swap" onclick="swapSlot(${k})" aria-label="Swap ${c.n}">↻</button><button class="x" onclick="remove(${k})" aria-label="Remove ${c.n}">×</button>${own}${cap}</div>`;
+    var cap = vis ? '<span class="vcap"><b>' + String(c.n).replace(/</g, "") + '</b><i>' + visualBits(c).join(" · ") + '</i></span>' : "";
+    return '<div class="' + kls + '"><img src="' + imgSmall(c.i) + '" alt="' + String(c.n).replace(/"/g, "") + '" loading="eager" data-cid="' + c.i + '" onerror="imgFallback(this,&#39;' + c.i + '&#39;)"><button class="swap" onclick="swapSlot(' + k + ')" aria-label="Swap ' + String(c.n).replace(/"/g, "") + '">↻</button><button class="x" onclick="remove(' + k + ')" aria-label="Remove ' + String(c.n).replace(/"/g, "") + '">×</button>' + own + cap + "</div>";
+  };
+  const pocketArt = function(c){
+    if (!c) return "<div class='pocket'></div>";
+    return '<div class="pocket filled artclip"><img src="' + imgSmall(c.i) + '" alt="' + String(c.n).replace(/"/g, "") + ' art" loading="eager" data-cid="' + c.i + '" onerror="imgFallback(this,&#39;' + c.i + '&#39;)"></div>';
   };
   let html = "";
   if (L && L.shape && L.shape.length) {
@@ -6199,6 +6344,15 @@ function render(){
         else html += "<div class='pocket'></div>";
       }
     }
+  } else if (typeof artFlipActive === "function" && artFlipActive()) {
+    var cells = [];
+    for (var ti = 0; ti < tray.length; ti++) {
+      cells.push(pocket(tray[ti], ti));
+      cells.push(pocketArt(tray[ti]));
+    }
+    html = cells.join("");
+    var slotN = L ? L.cols * Math.ceil(cells.length / L.cols) : cells.length;
+    for (var si = cells.length; si < slotN; si++) html += "<div class='pocket'></div>";
   } else {
     const slots = L ? L.cols * Math.ceil(tray.length / L.cols) : Math.max(tray.length, 3);
     html = tray.map(function(c, k){ return pocket(c, k); }).join("");
@@ -6244,7 +6398,8 @@ function render(){
     // nothing said so before the image was made — card-composite refuses an
     // uncredited art post and the editor let one through silently.
     const missing = tray.filter(c => !c.a).length;
-    setStatus(`${tray.length} cards · ${L.cols} across` + (missing ? ` · ${missing} will publish with NO artist credit` : ""), missing > 0);
+    var extra = (typeof artFlipActive === "function" && artFlipActive()) ? " · each with its art" : "";
+    setStatus(tray.length + (tray.length === 1 ? " card" : " cards") + " · " + L.cols + " across" + extra + (missing ? " · " + missing + " will publish with NO artist credit" : ""), missing > 0);
   } else {
     const below = SUPPORTED.filter(n => n < tray.length).pop(), above = SUPPORTED.find(n => n > tray.length);
     setStatus(`${tray.length} cards has no frame. ${below ? "Remove " + (tray.length - below) : ""}${below && above ? " or add " + (above - tray.length) : ""}.`, true);
@@ -6788,7 +6943,7 @@ async function composeImage(){
   const connecting = !!L.connecting;
   const GAP = connecting ? 0 : 60;
   const PAD = connecting ? (L.pad || 24) : 90;
-  const CAP = connecting ? 0 : (tray.length <= 4 ? 70 : 0);
+  const CAP = connecting || (typeof artFlipActive === "function" && artFlipActive()) ? 0 : (tray.length <= 4 ? 70 : 0);
   const LABEL = el("label").value.trim();
   // Reserve height for the WRAPPED label, not one line of it. measureText needs
   // a context we do not have yet, so estimate from character count at 52px bold
@@ -6816,7 +6971,8 @@ async function composeImage(){
     return Math.min(3, lines);
   })() : 0;
   const LABH = LABEL ? 110 + (LABLINES - 1) * 62 : 0;
-  const ROWS = L.rows || Math.ceil(tray.length / L.cols);
+  const slotList = (typeof composeSlots === "function") ? composeSlots() : tray.map(function(c, idx){ return { card: c, art: false, trayIndex: idx }; });
+  const ROWS = L.rows || Math.ceil(slotList.length / L.cols);
   // THE TABLE OWNS THE FRAME. This used to recompute the width from the column
   // count, which threw away the WIDENING that keeps a 2x2 from cropping on X —
   // the table said 2056 and the renderer drew 1730. A table is only a source of
@@ -6862,29 +7018,31 @@ async function composeImage(){
   if (scale !== 1) g.setTransform(scale, 0, 0, scale, 0, 0);
   g.fillStyle = "#070910"; g.fillRect(0,0,W,H);
   try{
-    for (let i=0;i<tray.length;i++){
-      const u = imgUrl(tray[i].i);
-      const routes = [u, "https://images.weserv.nl/?url=" + encodeURIComponent(u.replace(/^https?:\/\//,"")) + "&w=745&output=png"];
-      let img = null;
-      for (const r of routes){
-        try{ img = await new Promise((res,rej)=>{ const im=new Image(); im.crossOrigin="anonymous";
-          im.onload=()=>res(im); im.onerror=()=>rej(); im.src=r; }); break; }catch{}
+    var loadedImg = {};
+    for (let i=0;i<slotList.length;i++){
+      var card = slotList[i].card;
+      var img = null;
+      if (Object.prototype.hasOwnProperty.call(loadedImg, card.i)) img = loadedImg[card.i];
+      else {
+        const u = imgUrl(card.i);
+        const routes = [u, "https://images.weserv.nl/?url=" + encodeURIComponent(u.replace(/^https?:\/\//,"")) + "&w=745&output=png"];
+        for (const r of routes){
+          try{ img = await new Promise((res,rej)=>{ const im=new Image(); im.crossOrigin="anonymous";
+            im.onload=()=>res(im); im.onerror=()=>rej(); im.src=r; }); break; }catch{}
+        }
+        loadedImg[card.i] = img || null;
+        if (!img) missingArt.push(card.n);
       }
-      // ONE FAILED IMAGE MUST NOT KILL THE WHOLE IMAGE. This threw on the first
-      // card that would not load, so a single blocked request produced NOTHING —
-      // which is what Tyler saw, and what my harness hid by making every image
-      // succeed. A missing card leaves a labelled gap instead: three cards and
-      // one hole is a usable post, three cards and an error is not.
-      if (!img) { missingArt.push(tray[i].n); continue; }
+      if (!img) continue;
       if (gen !== composeGen) return;
-      // Centre the grid inside the widened frame, or a padded layout sits hard left.
       const gridW = CW*L.cols + GAP*(L.cols-1);
       const originX = Math.round((W - gridW) / 2);
       const pos = slotPos(i, L);
       const x = originX + pos.c*(CW+GAP), y = PAD + pos.r*(CH+CAP+GAP);
-      drawSlab(g, img, x, y, CW, CH, tray[i]);
-      if (CAP){ g.fillStyle="#8a93a8"; g.font="28px system-ui,sans-serif"; g.textAlign="center";
-        g.fillText(tray[i].n + " · " + tray[i].y, x+CW/2, y+CH+46); }
+      if (slotList[i].art) drawArtClip(g, img, x, y, CW, CH);
+      else drawSlab(g, img, x, y, CW, CH, card);
+      if (CAP && !slotList[i].art){ g.fillStyle="#8a93a8"; g.font="28px system-ui,sans-serif"; g.textAlign="center";
+        g.fillText(card.n + " · " + card.y, x+CW/2, y+CH+46); }
     }
     if (LABEL){ g.fillStyle="#f4f5f8"; g.font="800 52px system-ui,sans-serif"; g.textAlign="center";
       // WRAP, DO NOT OVERFLOW. A 182-character label was drawn as one line and
@@ -6931,8 +7089,9 @@ async function composeImage(){
       const thumbScale = 400 / W;
       const priceSize = Math.max(26, Math.round(11 / thumbScale));
       g.fillStyle = "#8a93a8"; g.font = priceSize + "px system-ui,sans-serif"; g.textAlign = "center";
-      tray.forEach((c, i) => {
-        if (c.p == null) return;
+      slotList.forEach(function(slot, i) {
+        var c = slot.card;
+        if (slot.art || c.p == null) return;
         const pos = slotPos(i, L);
         const x = PAD + pos.c * (CW + GAP), y = PAD + pos.r * (CH + CAP + GAP);
         g.fillStyle = owned[c.i] ? "#36d399" : "#8a93a8";
