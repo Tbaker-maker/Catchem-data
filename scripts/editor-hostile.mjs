@@ -44,9 +44,14 @@ globalThis.URL = { createObjectURL: () => "blob:hostile", revokeObjectURL() {} }
 globalThis.AbortSignal = { timeout: () => null };
 globalThis.fetch = async () => { throw new TypeError("offline"); };
 
+const paperRows = JSON.parse(await readFile("research/assets/paper-rows.json", "utf8"));
+const pocketRows = JSON.parse(await readFile("research/assets/pocket-rows.json", "utf8"));
+globalThis.__PAPER_ROWS = paperRows;
+globalThis.__POCKET_ROWS = pocketRows;
+
 let api;
 try {
-  api = new Function(js + ";return { runAsk, tray:()=>tray, lineOptions, layoutForTray, connectingGroupOf, anotherSet, backSet, parseIntent, evoLineFor, INDEX, POCKET_INDEX, CONNECTING, LAYOUTS, add, remove, parseCta, pickShowYours, answerCta, officeCount:()=>officeCount, applyCount, fCount:()=>fCount, fillLineFromCards, pickCaption, applyGame, setGame, pocketShowcase };")();
+  api = new Function(js + ";return { runAsk, tray:()=>tray, lineOptions, layoutForTray, connectingGroupOf, anotherSet, backSet, parseIntent, evoLineFor, INDEX, POCKET_INDEX, CONNECTING, LAYOUTS, add, remove, parseCta, pickShowYours, answerCta, officeCount:()=>officeCount, applyCount, fCount:()=>fCount, fillLineFromCards, pickCaption, applyGame, setGame, pocketShowcase, imgSmall, imgFallback, pocketImgList, hydrateIndexes };")();
 } catch (e) {
   console.error("✗ page JS does not parse:", e.message);
   process.exit(1);
@@ -425,6 +430,32 @@ try {
   check("pokemon pocket spans more than one set",
     pocketSets.size >= 2,
     [...pocketSets].join(", "));
+  const zap = ask("team rocket's zapdos");
+  check("team rocket zapdos is Zapdos",
+    zap.length >= 1 && zap.length <= 3 && zap.every(c => /zapdos/i.test(c.n)) && zap.every(c => String(c.i).indexOf("tcgp-") === 0),
+    zap.map(c => c.n + " " + c.i).join(", "));
+  const conn = ask("connecting art");
+  check("pocket connecting art returns Pocket cards",
+    conn.length >= 2 && conn.every(c => String(c.i).indexOf("tcgp-") === 0),
+    conn.map(c => c.n + " " + c.i).join(", "));
+  api.anotherSet();
+  const conn2 = api.tray() || [];
+  check("Another after Pocket connecting is a different Pocket set",
+    conn2.length >= 2 && conn2.some(c => conn.every(x => x.i !== c.i)),
+    conn2.map(c => c.n + " " + c.i).join(", "));
+  const src0 = api.imgSmall("tcgp-B4a-088");
+  check("B4a primary is not raw Serebii",
+    src0.indexOf("weserv") >= 0 || src0.indexOf("serebii") < 0,
+    src0);
+  const fake = { src: "https://www.serebii.net/tcgpocket/teamrocket%27sambition/88.jpg", dataset: {}, style: {}, parentElement: null };
+  api.imgFallback(fake, "tcgp-B4a-088");
+  check("imgFallback after Serebii is not Serebii again",
+    /images\.weserv\.nl/.test(fake.src) && fake.src.indexOf("scrydex") < 0 && !/^https:\/\/www\.serebii\.net\//.test(fake.src),
+    fake.src);
+  const birdsP = ask("the birds");
+  check("pocket birds are B4a 088/090/089",
+    birdsP.map(c => c.i).join("|") === "tcgp-B4a-088|tcgp-B4a-090|tcgp-B4a-089",
+    birdsP.map(c => c.i).join("|"));
   api.applyGame("paper", false);
 } catch (e) {
   check("game chips", false, e.message);

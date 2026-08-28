@@ -778,7 +778,11 @@ const CONNECTING = ${JSON.stringify((await (async () => {
         } else { dir = "across"; cols = c.length; rows = 1; sh = shape.length ? shape : [c.length]; }
         return { n: g.name ?? null, a: g.artist ?? null, r: g.relation ?? null, arr: dir, cols, rows, shape: sh, c, scene: ART_SCENE[c.join("|")] || ART_SCENE[key] || null };
       })
-      .filter(g => g.c.length > 1);
+      .filter(g => g.c.length > 1)
+      .concat([
+        { n: "Rocket birds", a: null, r: "COMBINED_ILLUSTRATION", arr: "across", cols: 3, rows: 1, shape: [3], c: ["tcgp-B4a-088","tcgp-B4a-090","tcgp-B4a-089"], scene: "bird" },
+        { n: "Rocket birds two-star", a: null, r: "COMBINED_ILLUSTRATION", arr: "across", cols: 3, rows: 1, shape: [3], c: ["tcgp-B4a-079","tcgp-B4a-081","tcgp-B4a-080"], scene: "bird" }
+      ]);
   } catch (e) {
     // SILENT EMPTY IS HOW CONNECTING ART VANISHED. This catch used to `return []`
     // with no log, so a ReferenceError after an edit shipped a page whose
@@ -802,7 +806,7 @@ const MOODS = ${JSON.stringify(Object.values((await J('data/moods.json'))?.moods
 // arrays plus a rehydrate loop drop a quarter of the payload and, more
 // importantly, parse faster — mobile is failing on the work of parsing a huge
 // literal, not on memory.
-const CARD_ROWS = ${await (async () => {
+var CARD_ROWS = ${await (async () => {
   const attrs = (await J('data/card-attrs.json'))?.cards ?? {};
   const bios = (await J('data/card-bios.json'))?.bios ?? {};
   const lore = (await J('data/lore.json'))?.lore ?? {};
@@ -887,7 +891,9 @@ const CARD_ROWS = ${await (async () => {
       rich ? (B.region || 0) : 0,
       rich && (Array.isArray(B.mechanic) ? B.mechanic[0] : B.mechanic) ? (Array.isArray(B.mechanic) ? B.mechanic[0] : B.mechanic) : 0];
   });
-  return JSON.stringify(rows);
+  await writeFile(join(ROOT, "research/assets/paper-rows.json"), JSON.stringify(rows));
+  await writeFile(join(ROOT, "research/assets/pocket-rows.json"), JSON.stringify(pocketShow));
+  return "window.__PAPER_ROWS || []";
 })()};
 // Rehydrate once. Positional decode is trivial and keeps every reader unchanged.
 // WHEN THESE PRICES WERE READ. A figure with no window is not publishable -
@@ -896,7 +902,7 @@ const CARD_ROWS = ${await (async () => {
 // sourced.
 const PRICES_AS_OF = "${COMMON_PRICE_DATE}";
 
-const CARD_INDEX = CARD_ROWS.map(function(r){
+function mapPaperRow(r){
   var o = { i: r[0], n: r[1], s: r[2], y: r[3] };
   if (r[4]) o.a = r[4];
   if (r[5]) o.r = r[5];
@@ -911,13 +917,14 @@ const CARD_INDEX = CARD_ROWS.map(function(r){
   if (r[14]) o.A = r[14];
   if (r[15]) o.W = r[15];
   if (r[16]) o.hero = 1;
-  if (r[17]) o.sup = r[17];       // "P" for Pokémon, absent otherwise
-  if (r[18]) o.pd = r[18];   // price date, only when it differs from PRICES_AS_OF
+  if (r[17]) o.sup = r[17];
+  if (r[18]) o.pd = r[18];
   if (r[19]) o.era = r[19];
   if (r[20]) o.regn = r[20];
   if (r[21]) o.mech = r[21];
   return o;
-});
+}
+var CARD_INDEX = [];
 const YEAR_SET_START = ${JSON.stringify([...(YEAR_IS_SET_START || [])])};
 const DATE_OVR_IDS = ${JSON.stringify(Object.keys(dateOvr || {}))};
 function yearOk(c){
@@ -926,8 +933,8 @@ function yearOk(c){
   for (var yi = 0; yi < YEAR_SET_START.length; yi++) if (c.s === YEAR_SET_START[yi]) return false;
   return true;
 }
-const POCKET_ROWS = ${JSON.stringify(pocketShow)};
-const POCKET_INDEX = POCKET_ROWS.map(function(r){
+var POCKET_ROWS = window.__POCKET_ROWS || [];
+function mapPocketRow(r){
   var o = { i: r[0], n: r[1], s: r[2], y: r[3], g: "k" };
   if (r[4]) o.a = r[4];
   if (r[5]) o.r = r[5];
@@ -940,7 +947,9 @@ const POCKET_INDEX = POCKET_ROWS.map(function(r){
   if (r[12]) o.num = r[12];
   if (r[13]) o.sid = r[13];
   return o;
-});
+}
+var POCKET_INDEX = [];
+var DATA_V = "${index.length}-${pocketShow.length}";
 const CROSSWALK = ${JSON.stringify({ sharedBases: xwalk.sharedBases, sharedArtists: xwalk.sharedArtists, twins: xwalk.twins })};
 // Sourced facts, so the 'story' shape has something true to build on. Only
 // VERIFIED ones ship — an unsourced claim on a card image is the one mistake
@@ -1405,7 +1414,8 @@ function resolvePrompt(found, INDEX, helpers) {
   // Charizard → Charizard & Braixen-GX → Mega Charizard X ex. evo-smoke still
   // passed because it only counted cards. Prefer a hero AT EACH STAGE; never
   // delete a stage that only has a common.
-  narrow(c => c.a, "credited");
+  if (!(typeof currentGame === "function" && currentGame() === "pocket"))
+    narrow(c => c.a, "credited");
   const withHero = pool.filter(c => HERO_RX.test(c.r || ""));
   // A HERO-RARITY COLLAPSE IS WRONG FOR A LINE. It drops the ordinary printings
   // that are the only cards some stages have, and an evolution line missing its
@@ -1521,22 +1531,32 @@ var trail = [];
 // every thumbnail — 1-2MB each, and thirty-six of them is ~54MB of transfer to
 // draw images 96 pixels wide. On a phone that never finishes, which is a grid of
 // blank squares.
+function pocketImgList(id){
+  id = String(id || "");
+  var rest = id.slice(5), cut = rest.lastIndexOf("-");
+  var set = rest.slice(0, cut), num = rest.slice(cut + 1);
+  var out = [];
+  if (set === "B4a") {
+    var leaf = "www.serebii.net/tcgpocket/teamrocket'sambition/" + Number(num) + ".jpg";
+    out.push("https://images.weserv.nl/?url=" + encodeURIComponent(leaf));
+    out.push("https://www.serebii.net/tcgpocket/teamrocket%27sambition/" + Number(num) + ".jpg");
+    return out;
+  }
+  if (set === "P-B" && Number(num) <= 86) {
+    var leafB = "www.serebii.net/tcgpocket/promo-b/" + Number(num) + ".jpg";
+    out.push("https://images.weserv.nl/?url=" + encodeURIComponent(leafB));
+    out.push("https://www.serebii.net/tcgpocket/promo-b/" + Number(num) + ".jpg");
+  }
+  out.push("https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/pocket/" + set + "/" + set + "_" + num + "_EN.webp");
+  out.push("https://assets.tcgdex.net/en/tcgp/" + set + "/" + num + "/high.webp");
+  return out;
+}
 const imgSmall = (id) => {
   var row = (typeof byIdRow !== "undefined") ? byIdRow[id] : null;
   if (row && row.img) return row.img;
   if (String(id).indexOf("tcgp-") === 0) {
-    var rest = id.slice(5), i = rest.lastIndexOf("-");
-    var set = rest.slice(0, i), num = rest.slice(i + 1);
-    if (set === "B4a") {
-      return "https://www.serebii.net/tcgpocket/teamrocket%27sambition/" + Number(num) + ".jpg";
-    }
-    if (set === "P-B" && Number(num) <= 86) {
-      return "https://www.serebii.net/tcgpocket/promo-b/" + Number(num) + ".jpg";
-    }
-    if (set === "P-A" || set === "P-B" || /^[AB]\d/.test(set)) {
-      return "https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/pocket/" + set + "/" + set + "_" + num + "_EN.webp";
-    }
-    return "https://assets.tcgdex.net/en/tcgp/" + set + "/" + num + "/high.webp";
+    var list = pocketImgList(id);
+    return list[0] || "";
   }
   return "https://images.pokemontcg.io/" + id.slice(0, id.lastIndexOf("-")) + "/" + id.slice(id.lastIndexOf("-") + 1) + ".png";
 };
@@ -1551,60 +1571,55 @@ function imgTag(c, cls){
     "' onerror='this.onerror=null;this.src=&quot;" + alt + "&quot;'>";
 }
 
-// EMBEDDED, NOT FETCHED. fetch() of a sibling file from a file:// page is
-// blocked by Chrome as cross-origin, so INDEX stayed empty — and every symptom
-// followed from that one cause: no images, no themes, no search. A fetch also
-// means two files that must travel together, and a single file cannot arrive
-// half-configured.
-INDEX = CARD_INDEX;
-  for (const r of CARD_INDEX) byIdRow[r.i] = r;
+function hydrateIndexes(){
+  CARD_INDEX = (CARD_ROWS || []).map(mapPaperRow);
+  POCKET_INDEX = (POCKET_ROWS || []).map(mapPocketRow);
+  INDEX = CARD_INDEX.slice();
+  for (var k in byIdRow) delete byIdRow[k];
+  for (var i = 0; i < CARD_INDEX.length; i++) byIdRow[CARD_INDEX[i].i] = CARD_INDEX[i];
   for (var pi = 0; pi < POCKET_INDEX.length; pi++) byIdRow[POCKET_INDEX[pi].i] = POCKET_INDEX[pi];
-{
-  var s = document.getElementById("searchall");
-  if (s) s.textContent = "Search all " + INDEX.length.toLocaleString("en-US") + " cards instead";
+  ASK_NAMES = null; ASK_ARTISTS = null;
 }
-// Deferred one tick. The fetch used to provide this gap by accident, so
-// removing it exposed an ordering bug that had always been there — el() and
-// the render functions are declared further down the file.
+function loadCatalogue(then){
+  function go(){
+    hydrateIndexes();
+    if (typeof then === "function") then();
+  }
+  if (CARD_ROWS && CARD_ROWS.length) { go(); return; }
+  var v = typeof DATA_V !== "undefined" ? DATA_V : "1";
+  Promise.all([
+    fetch("paper-rows.json?v=" + v).then(function(r){ if (!r.ok) throw new Error("paper " + r.status); return r.json(); }),
+    fetch("pocket-rows.json?v=" + v).then(function(r){ if (!r.ok) throw new Error("pocket " + r.status); return r.json(); })
+  ]).then(function(pair){
+    CARD_ROWS = pair[0];
+    POCKET_ROWS = pair[1];
+    go();
+  }).catch(function(e){
+    try { bootSay("Catalogue failed to load: " + e.message, true); } catch (x) {}
+  });
+}
+if (CARD_ROWS && CARD_ROWS.length) hydrateIndexes();
+
+// Live page fetches sibling JSON (Safari parses a small shell). Hostile injects
+// window.__PAPER_ROWS before eval. file:// cannot fetch; GitHub Pages can.
+INDEX = CARD_INDEX;
+{
+  var s0 = document.getElementById("searchall");
+  if (s0) s0.textContent = "Search the catalogue";
+}
 setTimeout(() => {
-    // Show the default as chosen, so the state on screen matches the state in
-    // memory — an invisible default is the same trap one level down.
     const cc = el("fcount");
     if (cc) cc.querySelectorAll(".chip").forEach(x => x.classList.toggle("on", Number(x.dataset.n) === fCount));
-    renderThemes(); search();
-    try {
-      var nCards = (document.getElementById("res") || {}).innerHTML || "";
-      var nThemes = (document.getElementById("ftheme") || {}).innerHTML || "";
-      var imgs = (nCards.match(/<img/g) || []).length;
-      var chips = (nThemes.match(/data-t=/g) || []).length;
-      // ── SAY WHAT HAPPENED, NOT WHAT MIGHT HAVE ──────────────────────────
-      // This line used to END with "If the pictures are blank, the card art
-      // host is unreachable from this browser" — printed on EVERY boot,
-      // unconditionally, whether or not anything had failed.
-      //
-      // The thumbnails are loading="lazy", so for the first moments after boot
-      // they are legitimately unpainted. A user who looks then sees empty
-      // panels AND a sentence telling them the host is unreachable, and
-      // concludes the tool is broken. Tyler saw exactly that in one session and
-      // not in another, which is what made it look intermittent: it was a race
-      // between the images painting and him reading the message.
-      //
-      // Verified from the published origin on 2026-08-26: all three hosts
-      // return 200 with real bytes and decode — pokemontcg 240x330,
-      // scrydex 245x336, weserv 400x550. No CORS problem, no CDN failure.
-      // The message was the defect.
-      //
-      // It now reports a MEASURED state, filled in by probeHosts() when the
-      // probe finishes, and says nothing about reachability until it knows.
-      // A PERMANENT ORANGE BANNER READS AS A WARNING. It sat at the top of the
-      // page on every successful load saying how many cards had loaded — which
-      // nobody needs once they can see the cards, and which looks like
-      // something went wrong. It is an error channel now: hidden on success,
-      // shown only when something actually failed.
-      var bootEl = document.getElementById("boot");
-      if (bootEl) bootEl.hidden = true;
-      if (!imgs || !chips) bootSay("Loaded " + INDEX.length + " cards but rendered " + imgs + " thumbnails and " + chips + " angles — the data arrived and the drawing failed.", true);
-    } catch (e) { bootSay("Render failed: " + e.message, true); }
+    loadCatalogue(function(){
+      try { renderThemes(); search(); paintExamples(); renderStreak(); } catch (e) {}
+      try {
+        var nCards = (document.getElementById("res") || {}).innerHTML || "";
+        var imgs = (nCards.match(/<img/g) || []).length;
+        var bootEl = document.getElementById("boot");
+        if (bootEl) bootEl.hidden = true;
+        if (!imgs) bootSay("Loaded " + INDEX.length + " cards but rendered 0 thumbnails — the data arrived and the drawing failed.", true);
+      } catch (e) { bootSay("Render failed: " + e.message, true); }
+    });
   }, 0);
 
 const el = id => document.getElementById(id);
@@ -2163,7 +2178,7 @@ const STREAK_FILTERS = {
   "pocket-crown": { games: ["pocket"], series: "posting one Crown card a day", label: "Crown",
     test: c => /Crown/i.test(c.r || "") && !!c.a },
   "pocket-rocket": { games: ["pocket"], series: "walking Team Rocket's Ambition", label: "Team Rocket's Ambition", ordered: "date",
-    test: c => (c.sid === "B4a" || String(c.i).indexOf("tcgp-B4a-") === 0) && !!c.a },
+    test: c => (c.sid === "B4a" || String(c.i).indexOf("tcgp-B4a-") === 0) },
   "pocket-apex": { games: ["pocket"], series: "walking Genetic Apex", label: "Genetic Apex", ordered: "date",
     test: c => /Genetic Apex/i.test(c.s || "") && !!c.a },
   "weekly-connect": { games: ["paper", "both"], cadence: "weekly", label: "One connecting picture",
@@ -2211,7 +2226,7 @@ function nextStreakDay(){
   if (!streak) return;
   const f = STREAK_FILTERS[streak.filter];
   const used = new Set(streak.used);
-  const pool = INDEX.filter(c => f.test(c) && !used.has(c.i) && c.a);
+  const pool = INDEX.filter(c => f.test(c) && !used.has(c.i) && (c.a || c.g === "k"));
   if (pool.length < streak.perDay) { renderStreak(0); return; }
   // Deterministic per day so reloading does not reshuffle the pick, and seeded
   // by the start date so two creators on the same filter diverge immediately.
@@ -2360,7 +2375,7 @@ function renderStreak(remaining){
 
   const f = STREAK_FILTERS[streak.filter];
   const used = new Set(streak.used || []);
-  const left = f ? INDEX.filter(function(c){ return f.test(c) && !used.has(c.i) && c.a; }).length : 0;
+  const left = f ? INDEX.filter(function(c){ return f.test(c) && !used.has(c.i) && (c.a || c.g === "k"); }).length : 0;
   const note = document.createElement("div");
   note.className = "streakexplain";
   note.textContent = st.status === "broken"
@@ -2970,7 +2985,7 @@ function todaysCard(){
     render();
     return;
   }
-  const pool = INDEX.filter(c => f.test(c) && !used.has(c.i) && c.a);
+  const pool = INDEX.filter(c => f.test(c) && !used.has(c.i) && (c.a || c.g === "k"));
   if (!pool.length) { setStatus("Nothing left unused in this series.", false); return; }
   const pick = f.ordered ? pool[0] : pool[Math.floor(Math.random() * pool.length)];
   tray = [pick]; blob = null;
@@ -3144,27 +3159,20 @@ window.saveToday = async function(){
 let imgFails = 0;
 function imgFallback(node, id){
   id = String(id || "");
-  var nTry = Number(node.dataset.tried || 0) + 1;
-  node.dataset.tried = String(nTry);
+  var cur = String(node.src || "");
+  var seen = String(node.dataset.seen || "");
+  if (cur && seen.indexOf(cur) < 0) seen += (seen ? String.fromCharCode(10) : "") + cur;
+  node.dataset.seen = seen;
+  var next = null;
   if (id.indexOf("tcgp-") === 0) {
-    var rest = id.slice(5), cut = rest.lastIndexOf("-");
-    var set = rest.slice(0, cut), num = rest.slice(cut + 1);
-    if (set === "B4a") {
-      if (nTry === 1) {
-        node.src = "https://www.serebii.net/tcgpocket/teamrocket%27sambition/" + Number(num) + ".jpg";
-        return;
-      }
-    } else if (nTry === 1) {
-      node.src = "https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/pocket/" + set + "/" + set + "_" + num + "_EN.webp";
-      return;
-    } else if (nTry === 2) {
-      node.src = "https://assets.tcgdex.net/en/tcgp/" + set + "/" + num + "/high.webp";
-      return;
+    var list = pocketImgList(id);
+    for (var i = 0; i < list.length; i++) {
+      if (seen.indexOf(list[i]) < 0 && list[i] !== cur) { next = list[i]; break; }
     }
-  } else if (nTry === 1) {
-    node.src = "https://images.scrydex.com/pokemon/" + id + "/small";
-    return;
+  } else if (seen.indexOf("scrydex.com") < 0) {
+    next = "https://images.scrydex.com/pokemon/" + id + "/small";
   }
+  if (next) { node.src = next; return; }
   imgFails++;
   node.style.display = "none";
   const msg = imgFails + " card image" + (imgFails > 1 ? "s" : "") + " could not load.";
@@ -3355,11 +3363,13 @@ function askResolve(text){
       pin: "basep-21|basep-23|basep-22|tcgp-B4a-088|tcgp-B4a-090|tcgp-B4a-089",
       why: "paper Wizards birds over Pocket Rocket birds" };
     return { relation: "CONNECTING_ART", subject: null, need: 3,
-      pin: "tcgp-B4a-090|tcgp-B4a-089|tcgp-B4a-088",
+      pin: "tcgp-B4a-088|tcgp-B4a-090|tcgp-B4a-089",
       why: "Team Rocket's Ambition birds (B4a)" };
   }
-  if ((pocketOn || bothOn) && has(["team rocket", "rockets ambition", "rocket ambition"]))
+  if ((pocketOn || bothOn) && has(["team rocket", "rockets ambition", "rocket ambition"])) {
+    if (mon) return { relation: "SET_FACTS", sid: "B4a", mon: mon, why: "Team Rocket's " + mon };
     return { relation: "SET_FACTS", sid: "B4a", why: "Team Rocket's Ambition" };
+  }
   if (!pocketOn && ((has(["entei"]) && has(["raikou"]) && has(["suicune"])) || has(["the beasts", "legendary dogs", "legendary beasts"])))
     return { relation: "CONNECTING_ART", subject: null, need: 3,
       pin: "neo3-6|neo3-13|neo3-14",
@@ -3697,6 +3707,8 @@ function applyGame(g, rerun){
   g = g === "pocket" ? "pocket" : g === "both" ? "both" : "paper";
   ASK_NAMES = null;
   ASK_ARTISTS = null;
+  NAMES = null;
+  SUGGEST_NAMES = null;
   INDEX = g === "pocket" ? POCKET_INDEX.slice()
     : g === "both" ? CARD_INDEX.concat(POCKET_INDEX)
     : CARD_INDEX.slice();
@@ -4027,7 +4039,11 @@ function askCards(r, opts){
         setCards.push(sc);
     }
     setCards.sort(function(a, b){ return ((b.hero ? 20 : 0) - (a.hero ? 20 : 0)); });
-    var nSet = (typeof countLocked === "function" && countLocked()) ? countLocked() : 9;
+    if (r.mon) {
+      var wantM = String(r.mon).toLowerCase();
+      setCards = setCards.filter(function(c){ return String(c.n).toLowerCase().indexOf(wantM) >= 0; });
+    }
+    var nSet = (typeof countLocked === "function" && countLocked()) ? countLocked() : (r.mon ? 1 : 9);
     return { cards: setCards.slice(0, nSet), reason: r.why || sid };
   }
 
@@ -4036,7 +4052,7 @@ function askCards(r, opts){
     var inIndex = {};
     for (var ii = 0; ii < INDEX.length; ii++) inIndex[INDEX[ii].i] = 1;
     if (r.pin) {
-      var pinned = r.pin.split("|").map(byId).filter(function(c){ return c && inIndex[c.i]; });
+      var pinned = r.pin.split("|").map(byId).filter(function(c){ return c && inIndex[c.i] && !skipIds.has(c.i); });
       if (currentGame() === "both") {
         var paperish = pinned.filter(function(c){ return String(c.i).indexOf("tcgp-") !== 0; });
         var pocketish = pinned.filter(function(c){ return String(c.i).indexOf("tcgp-") === 0; });
@@ -5815,15 +5831,7 @@ function loadIdea(k){
 }
 renderThemes();
 function bootReady(){
-  var q = "the birds";
-  try {
-    var sp = new URLSearchParams(location.search);
-    if (sp.get("ready") === "venusaur" || /venusaur/i.test(sp.get("q") || "")) q = "mega venusaur";
-    else if (sp.get("q")) q = sp.get("q");
-  } catch (e) {}
   try { var t = el("tut"); if (t) t.hidden = true; } catch (e) {}
-  try { if (el("ask")) el("ask").value = q; } catch (e) {}
-  try { runAsk(q); } catch (e) {}
 }
 window.bootReady = bootReady;
 
@@ -6162,10 +6170,7 @@ safeWire(function(){ el("share").onclick = function(){ shareImage(); }; }, "shar
 </script>`;
 
   await writeFile(join(ROOT, "research/assets/build.html"), html);
-  // REPORT THE ARTIFACT, NOT THE SOURCE. This printed index.length - the
-  // catalogue size - while the page shipped a filtered subset, so the log
-  // claimed 16,468 searchable cards over an index of 6,725 for as long as the
-  // filter existed. Count the rows that actually went into the file.
-  const shipped = JSON.parse(html.match(/const CARD_ROWS = (\[.*?\]);\n/s)?.[1] ?? "[]").length;
+  await writeFile(join(ROOT, "research/assets/play.html"), html);
+  const shipped = JSON.parse(await readFile(join(ROOT, "research/assets/paper-rows.json"), "utf8")).length;
   console.log(`✓ editor: ${shipped.toLocaleString("en-US")} cards searchable · ${Object.keys(LAYOUTS).length} frames · watermark and credit locked`);
 }
