@@ -194,6 +194,22 @@ const nineLab = (document.getElementById("label") || {}).value || "";
 check("ninetales caption follows the tray without a second fill",
   /Ninetales/i.test(nineLab) && !/HYOGONOSUKE|Palossand|Mime Jr/i.test(nineLab),
   JSON.stringify(nineLab));
+try { api.applyCount(0, false); } catch (e) { check("applyCount Fit", false, e.message); }
+const birdsFit = ask("the birds");
+check("Fit birds is 3", (birdsFit || []).length === 3, "got " + (birdsFit || []).length);
+const nineFit = ask("ninetales");
+check("Fit does not keep the previous count",
+  (nineFit || []).length === 1 && /ninetales/i.test((nineFit[0] || {}).n || ""),
+  (nineFit || []).map(c => c.n).join(", "));
+const sup = ask("surprise me");
+check("surprise me returns 2 to 9 cards", (sup || []).length >= 2 && (sup || []).length <= 9,
+  "got " + (sup || []).length + " " + (sup || []).map(c => c.n).join(", "));
+try {
+  const gSup = api.connectingGroupOf(api.tray());
+  check("surprise me is a connecting picture",
+    !!(gSup && gSup.c && gSup.c.length === api.tray().length),
+    gSup ? JSON.stringify({ n: gSup.c && gSup.c.length, arr: gSup.arr }) : "no group");
+} catch (e) { check("surprise me is a connecting picture", false, e.message); }
 ask("asdfqwerzxcv");
 check("garbage clears the tray",
   api.tray().length === 0,

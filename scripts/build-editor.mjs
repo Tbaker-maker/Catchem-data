@@ -512,6 +512,7 @@ ${TODAY_IMG ? `<div id="todaypost">
 </div>
 <label class="howmany">How many cards
   <select id="cardcount" aria-label="How many cards">
+    <option value="0" selected>Fit — however many it needs</option>
     <option value="1">1 — one card</option>
     <option value="2">2 — a pair</option>
     <option value="3">3 — a row</option>
@@ -532,7 +533,7 @@ ${TODAY_IMG ? `<div id="todaypost">
 <div id="boot" style="background:#1a1410;border:1px solid #3d2f1a;border-radius:10px;padding:12px 14px;margin-bottom:16px;color:#d9a441;font:400 13.5px system-ui,sans-serif;line-height:1.5">Starting…</div>
 <div class="promptbar" id="postmode">
   <div class="askrow">
-    <input id="ask" placeholder="the fishes, the birds, eeveelutions, pokemon pocket…" autocomplete="off" enterkeyhint="go">
+    <input id="ask" placeholder="surprise me, the fishes, eeveelutions…" autocomplete="off" enterkeyhint="go">
     <button type="button" class="go" id="askgo">Find</button>
   </div>
   <div class="suggest" id="suggest" hidden></div>
@@ -3115,18 +3116,21 @@ window.imgFallback = imgFallback;
 // nothing is worse than no chip: it teaches a first-time user that the box does
 // not work, on their first attempt, using our own suggestion.
 const EXAMPLES = [
+  { q: "surprise me", label: "Surprise me" },
   { q: "the fishes", label: "Carvanha · Sharpedo", demo: true },
   { q: "the birds", label: "3 birds · one painting" },
   { q: "eeveelutions", label: "the Eevee line" },
   { q: "pokemon pocket", label: "Pokémon Pocket", game: "pocket" },
 ];
 const POCKET_EXAMPLES = [
+  { q: "surprise me", label: "Surprise me" },
   { q: "eeveelutions", label: "Eevee line · Pocket", demo: true },
   { q: "the birds", label: "Rocket birds" },
   { q: "team rocket's zapdos", label: "Team Rocket Zapdos" },
   { q: "paper tcg", label: "Paper TCG", game: "paper" },
 ];
 const BOTH_EXAMPLES = [
+  { q: "surprise me", label: "Surprise me" },
   { q: "the birds", label: "paper × Pocket birds", demo: true },
   { q: "the fishes", label: "paper × Pocket fishes" },
   { q: "team rocket's zapdos", label: "Zapdos, both games" },
@@ -3302,6 +3306,9 @@ function askResolve(text){
     return { relation: "CONNECTING_ART", subject: null, need: 9,
       pin: "sv4pt5-31|sv3-8|sv4-152|sv2-42|sv2-96|sv4-91|sv3-180|sv1-151|sv4-30",
       why: "HYOGONOSUKE's nine-card beach" };
+
+  if (has(["surprise me", "surprise", "lucky", "dealers choice", "show me something"]))
+    return { relation: "SURPRISE", why: "a random picture from the catalogue" };
 
   // WELL-KNOWN FAN GROUPS ONLY. Bulbapedia fan terminology + how people
   // actually type in TCG search. A name that is not this famous stays a name
@@ -3536,7 +3543,17 @@ function pickShowYours(r, opts){
 }
 
 function markCount(n){
-  n = Number(n) || 0;
+  n = Number(n);
+  if (n === 0) {
+    fCount = 0;
+    var sel0 = el("cardcount");
+    if (sel0) sel0.value = "0";
+    ["postcount", "fcount", "ctacount"].forEach(function(id){
+      var box = el(id);
+      if (box) box.querySelectorAll(".chip").forEach(function(x){ x.classList.remove("on"); });
+    });
+    return;
+  }
   if (FORMAT_N.indexOf(n) < 0) return;
   fCount = n;
   officeCount = n;
@@ -3547,6 +3564,13 @@ function markCount(n){
     if (box) box.querySelectorAll(".chip").forEach(function(x){ x.classList.toggle("on", Number(x.dataset.n) === n); });
   });
 }
+function countLocked(){
+  var sel = el("cardcount");
+  var v = sel ? Number(sel.value) : Number(fCount);
+  if (FORMAT_N.indexOf(v) >= 0) return v;
+  return 0;
+}
+function countIsFit(){ return countLocked() === 0; }
 function applyCount(n, rerun){
   markCount(n);
   if (!rerun) return;
@@ -3572,8 +3596,8 @@ function applyGame(g, rerun){
   if (s) s.textContent = "Search all " + INDEX.length.toLocaleString("en-US") + " cards instead";
   var ask = el("ask");
   if (ask) ask.placeholder = g === "pocket"
-    ? "eeveelutions, the birds, team rocket's zapdos…"
-    : "the fishes, the birds, eeveelutions, pokemon pocket…";
+    ? "surprise me, eeveelutions, team rocket's zapdos…"
+    : "surprise me, the fishes, eeveelutions…";
   try { paintExamples(); } catch (e) {}
   if (rerun && ask && String(ask.value || "").trim()) runAsk(ask.value);
 }
@@ -3808,7 +3832,39 @@ function askCards(r, opts){
     // Do not plug a missing species from a different family. An 8-card
     // Evolving Skies V row is cleaner than 8 of those plus a random Eevee.
     reason = r.why + " — " + chosen.key + (out.length === names.length ? "" : " (" + out.length + " of " + names.length + ")");
+    var lockedN = (typeof countLocked === "function") ? countLocked() : 0;
+    if (lockedN && out.length > lockedN) out = out.slice(0, lockedN);
     return { cards: out, reason: reason };
+  }
+
+  if (r.relation === "SURPRISE") {
+    var inSurp = {};
+    for (var si = 0; si < INDEX.length; si++) inSurp[INDEX[si].i] = 1;
+    var whole = [];
+    for (var gi = 0; gi < CONNECTING.length; gi++) {
+      var g = CONNECTING[gi];
+      var cs = (g.c || []).map(byId).filter(function(c){ return c && inSurp[c.i]; });
+      if (cs.length === (g.c || []).length && cs.length >= 2 && cs.length <= 9) {
+        whole.push({ cards: orderByConnecting(cs), why: (g.a ? g.a + " — " : "") + "one picture" });
+      }
+    }
+    if (!whole.length) {
+      return askCards({
+        relation: "SPECIES_GROUP",
+        names: ["Eevee","Vaporeon","Jolteon","Flareon","Espeon","Umbreon","Leafeon","Glaceon","Sylveon"],
+        why: "the Eevee line"
+      }, opts);
+    }
+    var leftover = whole.filter(function(w){
+      return w.cards.every(function(c){ return !skipIds.has(c.i); });
+    });
+    var pool = leftover.length ? leftover : whole;
+    var pick = pool[(rot || 0) % pool.length];
+    if (!rot) {
+      var seed = (Date.now() % 997) + pool.length;
+      pick = pool[seed % pool.length];
+    }
+    return { cards: pick.cards, reason: pick.why };
   }
 
   // ── CONNECTING ART, WHICH THIS FUNCTION COULD NOT ANSWER AT ALL ─────────
@@ -3843,7 +3899,9 @@ function askCards(r, opts){
       // post: three cards, one painting, Entei left of Raikou left of Suicune.
       // Smallest-first used to bury them behind every 2-card pair, so the
       // connecting-art chip never opened on the thing worth posting.
-      var want = Number(typeof fCount === "number" ? fCount : 0);
+      var want = 0;
+      if (typeof countLocked === "function" && countLocked()) want = countLocked();
+      else if (r.need) want = Number(r.need) || 0;
       var sized = whole;
       if (!r.pin && want >= 2) {
         var exact = whole.filter(function(w){ return w.cards.length === want; });
@@ -4351,10 +4409,6 @@ function runAsk(text){
     if (!text) text = "the fishes";
   }
   const askRel = askResolve(text);
-  if (askRel && askRel.need) {
-    var haveN = Number((el("cardcount") && el("cardcount").value) || fCount || 0);
-    if (!haveN || haveN < askRel.need) markCount(askRel.need);
-  }
   const tryRelation = function(){
     if (!askRel) return false;
     const got = askCards(askRel);
@@ -4365,10 +4419,16 @@ function runAsk(text){
           " — " + askRel.why + ". " + got.reason;
         box0.className = "askreply";
       }
-      tray = (askRel.relation === "CONNECTING_ART") ? got.cards.slice() : got.cards.slice(0, 9); blob = null;
+      var lockedN = countLocked();
+      if (askRel.relation === "CONNECTING_ART" || askRel.relation === "SURPRISE")
+        tray = got.cards.slice();
+      else if (lockedN) tray = got.cards.slice(0, lockedN);
+      else tray = got.cards.slice(0, 9);
+      blob = null;
       lastPref = { kind: "ask", ask: text };
       anotherCursor = 0;
-      if (askRel.relation === "CONNECTING_ART" || askRel.relation === "SPECIES_GROUP") markCount(tray.length);
+      if (!countIsFit() && (askRel.relation === "CONNECTING_ART" || askRel.relation === "SPECIES_GROUP"))
+        markCount(tray.length);
       render(); resetPage(); search();
       fillLineFromCards(true);
       applyTwin();
@@ -4384,7 +4444,7 @@ function runAsk(text){
   };
   // Connecting art is a picture, not a search. The old parser always returned
   // a 2-card pair and ignored How many cards. This path has to go first.
-  if (askRel && (askRel.relation === "CONNECTING_ART" || askRel.relation === "ARTIST_REVISITS" || askRel.relation === "EVOLUTION_LINE" || askRel.relation === "SPECIES_GROUP")) {
+  if (askRel && (askRel.relation === "CONNECTING_ART" || askRel.relation === "ARTIST_REVISITS" || askRel.relation === "EVOLUTION_LINE" || askRel.relation === "SPECIES_GROUP" || askRel.relation === "SURPRISE")) {
     if (tryRelation()) return;
   }
   const ctx = intentCtx();
@@ -4587,7 +4647,8 @@ function artistRevisitPairs(){
 function rerunAsk(text, exclude, rot){
   const rel = askResolve(text);
   if (rel && (rel.relation === "SPECIES_GROUP" || rel.relation === "CONNECTING_ART"
-      || rel.relation === "EVOLUTION_LINE" || rel.relation === "ARTIST_REVISITS")) {
+      || rel.relation === "EVOLUTION_LINE" || rel.relation === "ARTIST_REVISITS"
+      || rel.relation === "SURPRISE")) {
     const got = askCards(rel, { exclude: exclude, rot: rot });
     if (got.cards && got.cards.length > 1) return { cards: got.cards.slice(0, 9), why: [got.reason] };
   }
@@ -5067,11 +5128,10 @@ function render(){
 // THE FUNNEL. Three small questions, then real combinations - not a list of
 // themes but a list of POSTS, each already loadable into the tray. A creator
 // who arrives without an idea should leave with three.
-// NOTHING GATES, EVERY CONTROL REFINES. fCount used to start at 0, so clicking
-// an angle before a count returned silently and the whole column read as broken.
-// One is the default. Two is a tap. Connecting art and legend halves
-// raise the count themselves — those cards are not a single picture.
-let fSet = "", fCount = 1, fTheme = null;
+// NOTHING GATES, EVERY CONTROL REFINES. Fit (0) is the default: the ask owns
+// the grid, because people do not know whether the fishes are two or the
+// beach is nine. One is a tap. Connecting art still fills its own picture.
+let fSet = "", fCount = 0, fTheme = null;
 
 function renderThemes(){
   const box = el("ftheme");
