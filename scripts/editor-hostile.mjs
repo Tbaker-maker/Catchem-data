@@ -51,7 +51,7 @@ globalThis.__POCKET_ROWS = pocketRows;
 
 let api;
 try {
-  api = new Function(js + ";return { runAsk, tray:()=>tray, lineOptions, layoutForTray, connectingGroupOf, anotherSet, backSet, parseIntent, evoLineFor, INDEX, POCKET_INDEX, MOVIE_INDEX, CONSOLE_INDEX, CART_INDEX, CONNECTING, LAYOUTS, add, remove, parseCta, pickShowYours, answerCta, officeCount:()=>officeCount, applyCount, fCount:()=>fCount, fillLineFromCards, pickCaption, applyGame, setGame, pocketShowcase, movieShowcase, imgSmall, imgFallback, pocketImgList, hydrateIndexes, visualDetail, visualBits, visualHome, wikiSrc, wikiSrcList, isVisual, kindLabel, currentGame, setMode, categoryCopy, paintCategory, artFlipOn, applyArtFlip, composeSlots, takeCap, categoryMax, artFlip:()=>artFlip };")();
+  api = new Function(js + ";return { runAsk, tray:()=>tray, lineOptions, layoutForTray, connectingGroupOf, anotherSet, backSet, parseIntent, evoLineFor, INDEX, POCKET_INDEX, MOVIE_INDEX, CONSOLE_INDEX, CART_INDEX, CONNECTING, LAYOUTS, add, remove, parseCta, pickShowYours, answerCta, officeCount:()=>officeCount, applyCount, fCount:()=>fCount, fillLineFromCards, pickCaption, applyGame, setGame, pocketShowcase, movieShowcase, imgSmall, imgFallback, pocketImgList, hydrateIndexes, visualDetail, visualBits, visualHome, wikiSrc, wikiSrcList, isVisual, kindLabel, currentGame, setMode, categoryCopy, paintCategory, artFlipOn, artJustOn, artCropMode, applyArtFlip, applyArtCrop, composeSlots, takeCap, categoryMax, artCrop:()=>artCrop };")();
 } catch (e) {
   console.error("✗ page JS does not parse:", e.message);
   process.exit(1);
@@ -528,7 +528,7 @@ try {
   check("Visual content comes before Visual Quantity",
     vcAt >= 0 && vqAt > vcAt,
     "vc=" + vcAt + " vq=" + vqAt);
-  check("Art flip sits after Visual Quantity",
+  check("Art crop sits after Visual Quantity",
     afAt > vqAt,
     "vq=" + vqAt + " af=" + afAt);
   api.applyGame("movies", false);
@@ -746,22 +746,26 @@ try {
   try { api.applyGame("paper", false); } catch (e2) {}
 }
 
-// ART FLIP. Paper TCG only: each card is followed by a crop of its
-// illustration. Quantity still means cards. Connecting art is one picture
-// and is never doubled. Visual catalogues do not grow a clip.
+// ART CROP. Paper TCG only. Full card, just the illustration, or both.
+// Quantity still means cards. Both doubles the slots and stops at four.
+// Just art keeps a full page. Connecting art is one picture and is never
+// cropped or doubled. Visual catalogues do not grow a clip.
 try {
-  check("art flip control is in the page",
-    html.indexOf('id="artflip"') >= 0 && html.indexOf('id="artflipwrap"') >= 0 && /Art flip/.test(html),
-    "missing Art flip");
+  check("art crop control is in the page",
+    html.indexOf('id="artflip"') >= 0 && html.indexOf('id="artflipwrap"') >= 0 && /Art crop/.test(html) && !/Art flip/.test(html),
+    "missing Art crop");
+  check("art crop offers full card, just art, and both",
+    />Full card</.test(html) && />Just art</.test(html) && />Both</.test(html) && html.indexOf('value="art"') >= 0,
+    "options missing");
   api.applyGame("paper", false);
   api.applyCount(0, false);
-  api.applyArtFlip(false, false);
-  check("art flip starts off", api.artFlipOn() === false, "on=" + api.artFlipOn());
+  api.applyArtCrop("card", false);
+  check("art crop starts on full card", api.artCropMode() === "card" && api.artFlipOn() === false && api.artJustOn() === false, "mode=" + api.artCropMode());
   api.applyArtFlip(true, false);
-  check("art flip is paper-only when paper is selected",
-    api.artFlipOn() === true && api.currentGame() === "paper",
-    "game=" + api.currentGame() + " on=" + api.artFlipOn());
-  check("art flip caps paper at four cards",
+  check("art crop both is paper-only when paper is selected",
+    api.artCropMode() === "both" && api.artFlipOn() === true && api.currentGame() === "paper",
+    "game=" + api.currentGame() + " mode=" + api.artCropMode());
+  check("art crop both caps paper at four cards",
     api.categoryMax() === 4 && api.takeCap() === 4,
     "max=" + api.categoryMax() + " cap=" + api.takeCap());
   api.applyCount(1, false);
@@ -784,45 +788,63 @@ try {
     four.length === 4 && L4 && L4.cols === 2 && L4.rows === 4 && api.composeSlots().length === 8,
     "n=" + four.length + " layout=" + (L4 && L4.name) + " slots=" + api.composeSlots().length);
   api.applyCount(9, false);
-  check("art flip refuses a binder of nine",
+  check("art crop both refuses a binder of nine",
     api.fCount() === 4 || api.fCount() === 0,
     "fCount=" + api.fCount());
   api.applyCount(0, false);
   const evo = ask("eeveelutions");
-  check("Fit eeveelutions with art flip is four, not nine",
+  check("Fit eeveelutions with both is four, not nine",
     evo.length === 4 && api.composeSlots().length === 8,
     "n=" + evo.length + " slots=" + api.composeSlots().length);
-  api.applyArtFlip(false, false);
+  api.applyArtCrop("card", false);
   api.applyCount(0, false);
   const beastsFlip = ask("entei raikou suicune");
-  api.applyArtFlip(true, false);
+  api.applyArtCrop("both", false);
   const Lc = api.layoutForTray();
-  check("connecting art is never doubled by art flip",
+  check("connecting art is never doubled by both",
     beastsFlip.length === 3 && Lc && Lc.connecting && api.composeSlots().length === 3 && api.composeSlots().every(function(s){ return !s.art; }),
     "n=" + (api.tray() || []).length + " connecting=" + !!(Lc && Lc.connecting) + " slots=" + api.composeSlots().length);
-  api.applyArtFlip(true, false);
+  api.applyArtCrop("art", false);
+  const LcArt = api.layoutForTray();
+  check("connecting art is never cropped into just art",
+    (api.tray() || []).length === 3 && LcArt && LcArt.connecting && api.composeSlots().every(function(s){ return !s.art; }),
+    "n=" + (api.tray() || []).length + " connecting=" + !!(LcArt && LcArt.connecting) + " art=" + api.composeSlots().filter(function(s){ return s.art; }).length);
+  api.applyArtCrop("card", false);
+  api.applyCount(1, false);
+  const justOneAsk = ask("celebi");
+  api.applyArtCrop("art", false);
+  const Lj = api.layoutForTray();
+  const sj = api.composeSlots();
+  check("just art is one crop, not a pairing",
+    justOneAsk.length === 1 && sj.length === 1 && sj[0].art === true && Lj && Lj.cols !== 2,
+    "n=" + justOneAsk.length + " layout=" + (Lj && Lj.name) + " slots=" + sj.length + " art=" + (sj[0] && sj[0].art));
+  api.applyCount(9, false);
+  check("just art still allows a binder of nine",
+    api.categoryMax() === 9 && api.takeCap() === 9,
+    "max=" + api.categoryMax() + " cap=" + api.takeCap());
+  api.applyArtCrop("art", false);
   api.applyGame("pocket", false);
-  check("art flip does not run on Pocket",
-    api.artFlipOn() === false,
-    "on=" + api.artFlipOn() + " game=" + api.currentGame());
+  check("art crop does not run on Pocket",
+    api.artFlipOn() === false && api.artJustOn() === false,
+    "on=" + api.artFlipOn() + " just=" + api.artJustOn() + " game=" + api.currentGame());
   api.applyGame("movies", false);
-  check("art flip does not cap movies",
-    api.artFlipOn() === false && api.categoryMax() === 6,
+  check("art crop does not cap movies",
+    api.artFlipOn() === false && api.artJustOn() === false && api.categoryMax() === 6,
     "on=" + api.artFlipOn() + " max=" + api.categoryMax());
   api.applyGame("consoles", false);
-  check("art flip does not run on consoles",
-    api.artFlipOn() === false && api.categoryMax() === 9,
+  check("art crop does not run on consoles",
+    api.artFlipOn() === false && api.artJustOn() === false && api.categoryMax() === 9,
     "on=" + api.artFlipOn() + " max=" + api.categoryMax());
   api.applyGame("cartridges", false);
-  check("art flip does not run on cartridges",
-    api.artFlipOn() === false,
+  check("art crop does not run on cartridges",
+    api.artFlipOn() === false && api.artJustOn() === false,
     "on=" + api.artFlipOn());
   api.applyGame("paper", false);
-  api.applyArtFlip(false, false);
+  api.applyArtCrop("card", false);
   api.applyCount(0, false);
 } catch (e) {
-  check("art flip", false, e.message);
-  try { api.applyGame("paper", false); api.applyArtFlip(false, false); api.applyCount(0, false); } catch (e2) {}
+  check("art crop", false, e.message);
+  try { api.applyGame("paper", false); api.applyArtCrop("card", false); api.applyCount(0, false); } catch (e2) {}
 }
 
 // 10. Same physical card twice is a broken page, not a pairing.

@@ -421,10 +421,11 @@ summary:before{content:"→ ";color:var(--faint)}
     <option value="9">9 — a binder page</option>
   </select>
 </label>
-<label class="howmany" id="artflipwrap"><span>Art flip</span>
-  <select id="artflip" aria-label="Art flip">
-    <option value="0" selected>Card only</option>
-    <option value="1">Card and the art</option>
+<label class="howmany" id="artflipwrap"><span>Art crop</span>
+  <select id="artflip" aria-label="Art crop">
+    <option value="0" selected>Full card</option>
+    <option value="art">Just art</option>
+    <option value="1">Both</option>
   </select>
 </label>
 
@@ -1297,15 +1298,37 @@ function layoutForTray(){
   }
   return LAYOUTS[n] || null;
 }
-// ART FLIP is paper TCG only: each card is followed by a crop of its
-// illustration. Quantity still means cards; the clip is extra. Connecting
-// art is already the picture, so it is never doubled.
-var artFlip = false;
+// ART CROP is paper TCG only. Full card is the default. Just art
+// replaces each card with a crop of its illustration. Both sits
+// the crop next to the card. Quantity still means cards; Both
+// doubles the slots so it stops at four. Connecting art is
+// already the picture, so it is never cropped or doubled.
+var artCrop = "card";
+function artCropMode(){ return artCrop; }
+function artCropValue(){
+  if (artCrop === "art") return "art";
+  if (artCrop === "both") return "1";
+  return "0";
+}
+function parseArtCrop(v){
+  if (v === true || v === 1 || v === "1" || v === "both") return "both";
+  if (v === "art" || v === "just") return "art";
+  return "card";
+}
 function artFlipOn(){
-  return !!artFlip && currentGame() === "paper";
+  return artCrop === "both" && currentGame() === "paper";
+}
+function artJustOn(){
+  return artCrop === "art" && currentGame() === "paper";
 }
 function artFlipActive(){
   if (!artFlipOn()) return false;
+  if (!tray || !tray.length) return false;
+  if (connectingGroupOf(tray)) return false;
+  return true;
+}
+function artJustActive(){
+  if (!artJustOn()) return false;
   if (!tray || !tray.length) return false;
   if (connectingGroupOf(tray)) return false;
   return true;
@@ -1318,24 +1341,31 @@ function artPairFrame(rows){
     W: W, H: H, ratio: H / W, artFlip: true, cropExempt: true };
 }
 function composeSlots(){
-  if (!artFlipActive()) {
-    return (tray || []).map(function(c, i){ return { card: c, art: false, trayIndex: i }; });
+  if (artFlipActive()) {
+    var out = [];
+    for (var i = 0; i < tray.length; i++) {
+      out.push({ card: tray[i], art: false, trayIndex: i });
+      out.push({ card: tray[i], art: true, trayIndex: i });
+    }
+    return out;
   }
-  var out = [];
-  for (var i = 0; i < tray.length; i++) {
-    out.push({ card: tray[i], art: false, trayIndex: i });
-    out.push({ card: tray[i], art: true, trayIndex: i });
+  if (artJustActive()) {
+    return (tray || []).map(function(c, i){ return { card: c, art: true, trayIndex: i }; });
   }
-  return out;
+  return (tray || []).map(function(c, i){ return { card: c, art: false, trayIndex: i }; });
 }
 function applyArtFlip(on, rerun){
-  artFlip = !!on;
+  applyArtCrop(parseArtCrop(on), rerun);
+}
+function applyArtCrop(mode, rerun){
+  artCrop = parseArtCrop(mode);
   var sel = el("artflip");
-  if (sel && String(sel.value) !== (artFlip ? "1" : "0")) sel.value = artFlip ? "1" : "0";
+  var want = artCropValue();
+  if (sel && String(sel.value) !== want) sel.value = want;
   try { paintArtFlip(); } catch (e0) {}
   try { paintCountOptions(); } catch (e1) {}
   if (document.body && document.body.setAttribute)
-    document.body.setAttribute("data-artflip", artFlipOn() ? "on" : "off");
+    document.body.setAttribute("data-artcrop", artCrop);
   if (rerun && lastPref && lastPref.ask) {
     runAsk(lastPref.ask);
     return;
@@ -1354,10 +1384,15 @@ function paintArtFlip(){
     if (wrap.style) wrap.style.display = paper ? "" : "none";
   }
   var sel = el("artflip");
-  if (sel && String(sel.value) !== (artFlip ? "1" : "0")) sel.value = artFlip ? "1" : "0";
+  var want = artCropValue();
+  if (sel && String(sel.value) !== want) sel.value = want;
 }
 window.artFlipOn = artFlipOn;
+window.artJustOn = artJustOn;
+window.artJustActive = artJustActive;
+window.artCropMode = artCropMode;
 window.applyArtFlip = applyArtFlip;
+window.applyArtCrop = applyArtCrop;
 window.composeSlots = composeSlots;
 // BOOT REPORT. Three wrong guesses at why this dies on a phone, all made from
 // a sandbox that cannot run mobile Safari. A blank screen tells nobody
@@ -4214,9 +4249,9 @@ function categoryMax(g){
   var copy = categoryCopy(g);
   var m = Number(copy && copy.max);
   m = m > 0 ? m : 9;
-  // Art flip doubles each card into a pair. Four cards is eight
-  // slots — the last page that still has a frame. Connecting art
-  // never uses this cap.
+  // Art crop "Both" doubles each card into a pair. Four cards is eight
+  // slots — the last page that still has a frame. Just art keeps the
+  // usual page. Connecting art never uses this cap.
   if (typeof artFlipOn === "function" && artFlipOn()) {
     if (m > 4) m = 4;
   }
@@ -5834,7 +5869,7 @@ window.setMode = setMode;
   const gameSel = el("game");
   if (gameSel) gameSel.onchange = function(){ setGame(gameSel.value); };
   const artSel = el("artflip");
-  if (artSel) artSel.onchange = function(){ applyArtFlip(artSel.value === "1", true); };
+  if (artSel) artSel.onchange = function(){ applyArtCrop(artSel.value, true); };
   const st = el("savetoday");
   if (st) st.onclick = function(){ window.saveToday(); };
   const sp = el("savephotos");
@@ -6332,9 +6367,11 @@ function render(){
     var cap = vis ? '<span class="vcap"><b>' + String(c.n).replace(/</g, "") + '</b><i>' + visualBits(c).join(" · ") + '</i></span>' : "";
     return '<div class="' + kls + '"><img src="' + imgSmall(c.i) + '" alt="' + String(c.n).replace(/"/g, "") + '" loading="eager" data-cid="' + c.i + '" onerror="imgFallback(this,&#39;' + c.i + '&#39;)"><button class="swap" onclick="swapSlot(' + k + ')" aria-label="Swap ' + String(c.n).replace(/"/g, "") + '">↻</button><button class="x" onclick="remove(' + k + ')" aria-label="Remove ' + String(c.n).replace(/"/g, "") + '">×</button>' + own + cap + "</div>";
   };
-  const pocketArt = function(c){
+  const pocketArt = function(c, k){
     if (!c) return "<div class='pocket'></div>";
-    return '<div class="pocket filled artclip"><img src="' + imgSmall(c.i) + '" alt="' + String(c.n).replace(/"/g, "") + ' art" loading="eager" data-cid="' + c.i + '" onerror="imgFallback(this,&#39;' + c.i + '&#39;)"></div>';
+    var buttons = (k == null || k === undefined) ? "" :
+      '<button class="swap" onclick="swapSlot(' + k + ')" aria-label="Swap ' + String(c.n).replace(/"/g, "") + '">↻</button><button class="x" onclick="remove(' + k + ')" aria-label="Remove ' + String(c.n).replace(/"/g, "") + '">×</button>';
+    return '<div class="pocket filled artclip"><img src="' + imgSmall(c.i) + '" alt="' + String(c.n).replace(/"/g, "") + ' art" loading="eager" data-cid="' + c.i + '" onerror="imgFallback(this,&#39;' + c.i + '&#39;)">' + buttons + "</div>";
   };
   let html = "";
   if (L && L.shape && L.shape.length) {
@@ -6354,6 +6391,10 @@ function render(){
     html = cells.join("");
     var slotN = L ? L.cols * Math.ceil(cells.length / L.cols) : cells.length;
     for (var si = cells.length; si < slotN; si++) html += "<div class='pocket'></div>";
+  } else if (typeof artJustActive === "function" && artJustActive()) {
+    html = tray.map(function(c, k){ return pocketArt(c, k); }).join("");
+    var justSlots = L ? L.cols * Math.ceil(tray.length / L.cols) : Math.max(tray.length, 3);
+    for (var ji = tray.length; ji < justSlots; ji++) html += "<div class='pocket'></div>";
   } else {
     const slots = L ? L.cols * Math.ceil(tray.length / L.cols) : Math.max(tray.length, 3);
     html = tray.map(function(c, k){ return pocket(c, k); }).join("");
@@ -6399,7 +6440,9 @@ function render(){
     // nothing said so before the image was made — card-composite refuses an
     // uncredited art post and the editor let one through silently.
     const missing = tray.filter(c => !c.a).length;
-    var extra = (typeof artFlipActive === "function" && artFlipActive()) ? " · each with its art" : "";
+    var extra = "";
+    if (typeof artFlipActive === "function" && artFlipActive()) extra = " · each with its art";
+    else if (typeof artJustActive === "function" && artJustActive()) extra = " · just the art";
     setStatus(tray.length + (tray.length === 1 ? " card" : " cards") + " · " + L.cols + " across" + extra + (missing ? " · " + missing + " will publish with NO artist credit" : ""), missing > 0);
   } else {
     const below = SUPPORTED.filter(n => n < tray.length).pop(), above = SUPPORTED.find(n => n > tray.length);
@@ -6944,7 +6987,7 @@ async function composeImage(){
   const connecting = !!L.connecting;
   const GAP = connecting ? 0 : 60;
   const PAD = connecting ? (L.pad || 24) : 90;
-  const CAP = connecting || (typeof artFlipActive === "function" && artFlipActive()) ? 0 : (tray.length <= 4 ? 70 : 0);
+  const CAP = connecting || (typeof artFlipActive === "function" && artFlipActive()) || (typeof artJustActive === "function" && artJustActive()) ? 0 : (tray.length <= 4 ? 70 : 0);
   const LABEL = el("label").value.trim();
   // Reserve height for the WRAPPED label, not one line of it. measureText needs
   // a context we do not have yet, so estimate from character count at 52px bold
