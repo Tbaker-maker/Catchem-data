@@ -646,7 +646,7 @@ ${TODAY_IMG ? `<div id="todaypost">
 <div id="refuse" class="refuse" hidden></div>
 <div id="ideas" class="ideas"></div>
 
-<details open><summary id="searchall">Search the catalogue instead</summary>
+<details id="catbox"><summary id="searchall">Search the catalogue instead</summary>
 <div class="controls">
   <input id="q" placeholder="Pokémon, artist, or set" autocomplete="off">
   <select id="rar"><option value="">Any rarity</option>
@@ -806,7 +806,7 @@ const MOODS = ${JSON.stringify(Object.values((await J('data/moods.json'))?.moods
 // arrays plus a rehydrate loop drop a quarter of the payload and, more
 // importantly, parse faster — mobile is failing on the work of parsing a huge
 // literal, not on memory.
-var CARD_ROWS = ${await (async () => {
+var CORE_ROWS = ${await (async () => {
   const attrs = (await J('data/card-attrs.json'))?.cards ?? {};
   const bios = (await J('data/card-bios.json'))?.bios ?? {};
   const lore = (await J('data/lore.json'))?.lore ?? {};
@@ -891,10 +891,22 @@ var CARD_ROWS = ${await (async () => {
       rich ? (B.region || 0) : 0,
       rich && (Array.isArray(B.mechanic) ? B.mechanic[0] : B.mechanic) ? (Array.isArray(B.mechanic) ? B.mechanic[0] : B.mechanic) : 0];
   });
+  const artCore = await J("data/connecting-art.json");
+  const coreIds = new Set(["ex1-51","ex1-22","basep-21","basep-23","basep-22","neo3-6","neo3-13","neo3-14"]);
+  for (const g of (artCore && artCore.groups) || []) {
+    if (g.resolution === "COMPLETE" && g.relation === "COMBINED_ILLUSTRATION") {
+      for (const c of g.cards || []) {
+        const id = typeof c === "string" ? c : c && c.id;
+        if (id) coreIds.add(id);
+      }
+    }
+  }
+  const coreRows = rows.filter(r => coreIds.has(r[0]));
   await writeFile(join(ROOT, "research/assets/paper-rows.json"), JSON.stringify(rows));
   await writeFile(join(ROOT, "research/assets/pocket-rows.json"), JSON.stringify(pocketShow));
-  return "window.__PAPER_ROWS || []";
+  return JSON.stringify(coreRows);
 })()};
+var CARD_ROWS = (window.__PAPER_ROWS && window.__PAPER_ROWS.length) ? window.__PAPER_ROWS : CORE_ROWS.slice();
 // Rehydrate once. Positional decode is trivial and keeps every reader unchanged.
 // WHEN THESE PRICES WERE READ. A figure with no window is not publishable -
 // that is a logged incident in this repo, and the tally was showing PAGE COST
@@ -933,7 +945,8 @@ function yearOk(c){
   for (var yi = 0; yi < YEAR_SET_START.length; yi++) if (c.s === YEAR_SET_START[yi]) return false;
   return true;
 }
-var POCKET_ROWS = window.__POCKET_ROWS || [];
+var POCKET_CORE = ${JSON.stringify((pocketShow || []).filter(r => /tcgp-B4a-0(79|80|81|88|89|90)$/.test(r[0])))};
+var POCKET_ROWS = (window.__POCKET_ROWS && window.__POCKET_ROWS.length) ? window.__POCKET_ROWS : POCKET_CORE.slice();
 function mapPocketRow(r){
   var o = { i: r[0], n: r[1], s: r[2], y: r[3], g: "k" };
   if (r[4]) o.a = r[4];
@@ -1581,11 +1594,9 @@ function hydrateIndexes(){
   ASK_NAMES = null; ASK_ARTISTS = null;
 }
 function loadCatalogue(then){
-  function go(){
-    hydrateIndexes();
-    if (typeof then === "function") then();
-  }
-  if (CARD_ROWS && CARD_ROWS.length) { go(); return; }
+  hydrateIndexes();
+  if (typeof then === "function") then();
+  if (CARD_ROWS && CARD_ROWS.length > 1000 && POCKET_ROWS && POCKET_ROWS.length > 1000) return;
   var v = typeof DATA_V !== "undefined" ? DATA_V : "1";
   Promise.all([
     fetch("paper-rows.json?v=" + v).then(function(r){ if (!r.ok) throw new Error("paper " + r.status); return r.json(); }),
@@ -1593,7 +1604,11 @@ function loadCatalogue(then){
   ]).then(function(pair){
     CARD_ROWS = pair[0];
     POCKET_ROWS = pair[1];
-    go();
+    var gNow = (typeof currentGame === "function") ? currentGame() : "paper";
+    hydrateIndexes();
+    try { applyGame(gNow, false); } catch (e) {}
+    var box = document.getElementById("catbox");
+    if (box && box.open) { try { resetPage(); search(); } catch (e) {} }
   }).catch(function(e){
     try { bootSay("Catalogue failed to load: " + e.message, true); } catch (x) {}
   });
@@ -1611,13 +1626,10 @@ setTimeout(() => {
     const cc = el("fcount");
     if (cc) cc.querySelectorAll(".chip").forEach(x => x.classList.toggle("on", Number(x.dataset.n) === fCount));
     loadCatalogue(function(){
-      try { renderThemes(); search(); paintExamples(); renderStreak(); } catch (e) {}
+      try { renderThemes(); paintExamples(); renderStreak(); } catch (e) {}
       try {
-        var nCards = (document.getElementById("res") || {}).innerHTML || "";
-        var imgs = (nCards.match(/<img/g) || []).length;
         var bootEl = document.getElementById("boot");
         if (bootEl) bootEl.hidden = true;
-        if (!imgs) bootSay("Loaded " + INDEX.length + " cards but rendered 0 thumbnails — the data arrived and the drawing failed.", true);
       } catch (e) { bootSay("Render failed: " + e.message, true); }
     });
   }, 0);
@@ -4760,6 +4772,8 @@ function paintExamples(){
   const ask = el("ask");
   const askgo = el("askgo");
   if (askgo && ask) askgo.onclick = function(){ el("suggest").hidden = true; runAsk(ask.value); };
+  var catbox = document.getElementById("catbox");
+  if (catbox) catbox.addEventListener("toggle", function(){ if (catbox.open) { resetPage(); search(); } });
   if (ask) {
     ask.addEventListener("keydown", function(e){ if (e.key === "Enter") { el("suggest").hidden = true; runAsk(ask.value); } });
     ask.addEventListener("input", function(){ renderSuggest(ask.value); });
