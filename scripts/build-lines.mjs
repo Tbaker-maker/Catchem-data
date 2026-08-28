@@ -217,7 +217,7 @@ function lineOptions(cards, themeName, followerCount){
   const notable = [];
   for (const c of cards) {
     const t = CARD_TEXT[c.i];
-    const a = t && t.a && t.a.length ? t.a[0] : null;
+    const a = (t && t.a && t.a.length ? t.a[0] : null) || (c.A && c.A[0] ? c.A[0] : null);
     if (a && COMMON_ATTACKS.indexOf(a.toLowerCase()) < 0 && a.length > 4) notable.push({ c: c, atk: a });
   }
 
@@ -282,6 +282,17 @@ function lineOptions(cards, themeName, followerCount){
       add("observation", notable[0].c.n + " has " + Q1 + notable[0].atk + Q2 + ", " +
         notable[1].c.n + " has " + Q1 + notable[1].atk + Q2 + ".");
     }
+  }
+  if (nCards === 1) {
+    const c0 = cards[0];
+    const bits = [];
+    if (c0.s && c0.y) bits.push(c0.s + ", " + c0.y);
+    else if (c0.s) bits.push(c0.s);
+    if (c0.a) bits.push(c0.a);
+    if (c0.H) bits.push(c0.H + " HP");
+    if (c0.T && c0.T[0]) bits.push(c0.T[0] + " type");
+    if (c0.r) bits.push(c0.r);
+    if (bits.length) add("observation", c0.n + ". " + bits.join(". ") + ".");
   }
   if (artists.length === 1 && cards.length > 1 && span >= 8 && yearsUsable() && !mixedGames) {
     add("observation", artists[0] + " drew " + (N === 2 ? "both of these" : "all " + nword(N)) +

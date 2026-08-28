@@ -325,6 +325,59 @@ try {
   check("compare-both caption", false, e.message);
 }
 
+check("pocket catalogue is the full set",
+  (api.POCKET_INDEX || []).length >= 3800,
+  "got " + ((api.POCKET_INDEX || []).length));
+try {
+  api.applyGame("pocket", false);
+  const pk = ask("pikachu");
+  check("pocket pikachu is pikachu",
+    pk.length >= 1 && /pikachu/i.test(pk[0].n) && String(pk[0].i).indexOf("tcgp-") === 0,
+    pk.map(c => c.n + " " + c.i).join(", "));
+  const pke = ask("eeveelutions");
+  check("pocket eeveelutions is 9", pke.length === 9, "got " + pke.length + " " + pke.map(c => c.n).join(", "));
+  check("pocket eeveelutions is not the birds",
+    !pke.some(c => /Moltres|Zapdos|Articuno/i.test(c.n)),
+    pke.map(c => c.n).join(", "));
+  const ga = ask("genetic apex");
+  check("genetic apex returns pocket cards",
+    ga.length >= 1 && ga.every(c => /Genetic Apex/i.test(c.s || "")),
+    ga.slice(0, 3).map(c => c.n + " " + c.s).join(", "));
+  const vine = ask("vine whip");
+  check("vine whip finds a printed attack",
+    vine.length >= 1,
+    vine.map(c => c.n + " " + (c.A || []).join("/")).join(", "));
+  const bulb = ask("bulbasaur");
+  const optsP = api.lineOptions(api.tray(), null, 0) || [];
+  check("pocket notice names HP or set or type",
+    optsP.some(o => /HP|Genetic Apex|Grass|Vine Whip/i.test(o.text)),
+    optsP.map(o => o.text).slice(0, 4).join(" | "));
+  check("download is a file, not a share",
+    /a\.download/.test(js),
+    "dlImage has no <a download>");
+  const pokeNames = [...new Set((api.POCKET_INDEX || [])
+    .filter(c => c.sup === "P" && c.n && c.n.indexOf("&") < 0)
+    .map(c => (c.n.split(" ")[0] || "").replace(/[^A-Za-z]/g, ""))
+    .filter(n => n.length > 3))].slice(0, 40);
+  var miss = [];
+  for (const n of pokeNames) {
+    const got = ask(n);
+    if (!got.some(c => (c.n || "").indexOf(n) === 0)) miss.push(n + "→" + got.map(c => c.n).slice(0, 2).join("/"));
+  }
+  check("pocket name sample pulls the Pokémon", miss.length === 0, miss.slice(0, 8).join("; "));
+  api.applyGame("paper", false);
+  const paperNames = ["Charizard", "Pikachu", "Umbreon", "Gengar", "Mewtwo", "Snorlax", "Lucario", "Gardevoir"];
+  var missP = [];
+  for (const n of paperNames) {
+    const got = ask(n);
+    if (!got.some(c => (c.n || "").indexOf(n) === 0)) missP.push(n + "→" + got.map(c => c.n).slice(0, 2).join("/"));
+  }
+  check("paper name sample pulls the Pokémon", missP.length === 0, missP.join("; "));
+} catch (e) {
+  check("pocket catalogue search", false, e.message);
+  try { api.applyGame("paper", false); } catch (e2) {}
+}
+
 
 // 10. Same physical card twice is a broken page, not a pairing.
 try {

@@ -117,11 +117,19 @@ else {
   const pocketShow = [];
   if (pocketCat && pocketCat.cards) {
     for (const [id, c] of Object.entries(pocketCat.cards)) {
+      const st = String(c.supertype || "");
+      const isPoke = !/trainer|energy/i.test(st);
       pocketShow.push([
         id, c.name, c.setName || "", (c.releaseDate || "").slice(0, 4),
         c.artist || 0, c.rarity || 0,
         SHOW_R.test(c.rarity || "") ? 1 : 0,
-        (c.supertype === "Pokémon" || !c.supertype) ? "P" : 0,
+        isPoke ? "P" : 0,
+        c.hp || 0,
+        (c.types && c.types.length) ? c.types : 0,
+        (c.attackNames && c.attackNames.length) ? c.attackNames.slice(0, 2) : 0,
+        c.stage || 0,
+        c.number || 0,
+        c.setId || 0,
       ]);
     }
   }
@@ -925,6 +933,12 @@ const POCKET_INDEX = POCKET_ROWS.map(function(r){
   if (r[5]) o.r = r[5];
   if (r[6]) o.hero = 1;
   if (r[7]) o.sup = r[7];
+  if (r[8]) o.H = r[8];
+  if (r[9]) o.T = r[9];
+  if (r[10]) o.A = r[10];
+  if (r[11]) o.S = [r[11]];
+  if (r[12]) o.num = r[12];
+  if (r[13]) o.sid = r[13];
   return o;
 });
 const CROSSWALK = ${JSON.stringify({ sharedBases: xwalk.sharedBases, sharedArtists: xwalk.sharedArtists, twins: xwalk.twins })};
@@ -1759,6 +1773,10 @@ function hay(c){
   if (c.S) parts = parts.concat(c.S);
   if (c.W) parts.push(c.W);
   if (c.E) parts.push(c.E);
+  if (c.A) parts = parts.concat(c.A);
+  if (c.H) parts.push(String(c.H), "hp");
+  if (c.num) parts.push(c.num);
+  if (c.sid) parts.push(c.sid);
   c._h = fold(parts.join(" "));
   return c._h;
 }
@@ -3054,7 +3072,29 @@ function openImage(){
   }
 }
 function dlImage(){
-  shareImage();
+  var src = previewUrl || (el("outimg") && el("outimg").src);
+  var ios = typeof navigator !== "undefined" && /iPad|iPhone|iPod/.test(navigator.userAgent || "");
+  if (ios) { shareImage(); return; }
+  var name = (typeof fname === "function" ? fname() : "catchem") + ".jpg";
+  function clickA(url){
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = name;
+    a.rel = "noopener";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+  if (src && src.indexOf("data:") === 0) { clickA(src); setStatus("Download started."); return; }
+  if (blob) {
+    var url = URL.createObjectURL(blob);
+    clickA(url);
+    setTimeout(function(){ try { URL.revokeObjectURL(url); } catch (e) {} }, 4000);
+    setStatus("Download started.");
+    return;
+  }
+  if (src) { clickA(src); setStatus("Download started."); return; }
+  setStatus("Make the image first.", true);
 }
 window.dlImage = dlImage;
 window.copyImage = copyImage; window.shareImage = shareImage; window.openImage = openImage;
@@ -3084,28 +3124,33 @@ window.saveToday = async function(){
 // panel can say how many.
 let imgFails = 0;
 function imgFallback(node, id){
-  if (node.dataset.tried) {
-    imgFails++;
-    node.style.display = "none";
-    // SAY IT WHERE THEY ARE LOOKING. This used to write only into #imgstatus,
-    // which sits up by the browse grid — somebody looking at the tray halfway
-    // down the page saw NOTHING, which is exactly what happened.
-    const msg = imgFails + " card image" + (imgFails > 1 ? "s" : "") + " could not load. "
-      + "The art is hosted by pokemontcg.io. If none of them load, that host is blocked or unreachable "
-      + "from this browser — an in-app browser inside another app is the usual cause. Opening the file in "
-      + "Safari or Chrome directly normally fixes it.";
-    for (const where of ["imgstatus", "st", "askreply"]) {
-      const box = el(where);
-      if (box) { box.hidden = false; box.textContent = msg; box.className = (box.className || "").replace(/ bad$/, "") + " bad"; }
+  id = String(id || "");
+  var nTry = Number(node.dataset.tried || 0) + 1;
+  node.dataset.tried = String(nTry);
+  if (id.indexOf("tcgp-") === 0) {
+    var rest = id.slice(5), cut = rest.lastIndexOf("-");
+    var set = rest.slice(0, cut), num = rest.slice(cut + 1);
+    if (nTry === 1) {
+      node.src = "https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/pocket/" + set + "/" + set + "_" + num + "_EN.webp";
+      return;
     }
-    // And mark the slot itself, so the failure is visible AT the empty card
-    // rather than only in a status line.
-    const slot = node.parentElement;
-    if (slot) { slot.style.opacity = "0.5"; slot.setAttribute("title", "image failed to load"); }
+    if (nTry === 2 && set === "B4a") {
+      node.src = "https://www.serebii.net/tcgpocket/teamrocket%27sambition/" + Number(num) + ".jpg";
+      return;
+    }
+  } else if (nTry === 1) {
+    node.src = "https://images.scrydex.com/pokemon/" + id + "/small";
     return;
   }
-  node.dataset.tried = "1";
-  node.src = "https://images.scrydex.com/pokemon/" + id + "/small";
+  imgFails++;
+  node.style.display = "none";
+  const msg = imgFails + " card image" + (imgFails > 1 ? "s" : "") + " could not load.";
+  for (const where of ["imgstatus", "st", "askreply"]) {
+    const box = el(where);
+    if (box) { box.hidden = false; box.textContent = msg; box.className = (box.className || "").replace(/ bad$/, "") + " bad"; }
+  }
+  const slot = node.parentElement;
+  if (slot) { slot.style.opacity = "0.5"; slot.setAttribute("title", "image failed to load"); }
 }
 window.imgFallback = imgFallback;
 
@@ -4368,6 +4413,34 @@ safeWire(function(){ el("brokebtn").onclick = function(){ fbOpen("broken"); }; }
 safeWire(function(){ el("fbsend").onclick = function(){ fbSend(); }; }, "fbsend");
 safeWire(function(){ el("fbclose").onclick = function(){ el("fb").hidden = true; }; }, "fbclose");
 
+function factSearch(text, need){
+  var terms = termsOf(text);
+  if (!terms.length) return [];
+  var hit = [];
+  for (var i = 0; i < INDEX.length; i++) if (hits(INDEX[i], terms)) hit.push(INDEX[i]);
+  hit.sort(function(a, b){ return ((b.hero ? 20 : 0) - (a.hero ? 20 : 0)); });
+  need = Number(need) || countLocked() || 1;
+  if (need < 1) need = 1;
+  return hit.slice(0, Math.min(9, need > hit.length ? hit.length : need));
+}
+function tryFacts(text){
+  var lockedN = countLocked();
+  var cards = factSearch(text, lockedN || 1);
+  if (!cards.length) return false;
+  tray = cards; blob = null;
+  lastPref = { kind: "ask", ask: text };
+  anotherCursor = 0;
+  var box = el("askreply");
+  if (box) {
+    box.textContent = "Matched " + cards.length + " on the printed facts.";
+    box.className = "askreply";
+  }
+  render(); resetPage(); search();
+  fillLineFromCards(true);
+  applyTwin();
+  return true;
+}
+
 function runAsk(text){
   const boxEarly = el("askreply");
   try { closeSaveSheet(); } catch (e) {}
@@ -4453,6 +4526,7 @@ function runAsk(text){
   const box = el("askreply");
   // The old parser could not read it. A relationship still might.
   if (!reply.ok && tryRelation()) return;
+  if (!reply.ok && tryFacts(text)) return;
   if (!reply.ok) {
     tray = []; blob = null;
     try { closeSaveSheet(); } catch (e) {}
@@ -4494,13 +4568,14 @@ function runAsk(text){
   // empty result - the failure this whole job is about - see whether the ask
   // describes a relationship instead.
   if (!res.cards.length && tryRelation()) return;
+  if (!res.cards.length && tryFacts(text)) return;
   if (res.cards.length) {
     var take = res.cards.length;
     if (found.count) take = Math.min(take, found.count);
     else if (found.mon && !found.shape) {
-      take = Math.min(take, 1);
-      markCount(1);
-    } else if (found.shape !== "evo-line" && fCount > 0) take = Math.min(take, fCount);
+      take = 1;
+      if (!countIsFit()) markCount(1);
+    } else if (found.shape !== "evo-line" && countLocked()) take = Math.min(take, countLocked());
     tray = res.cards.slice(0, take); blob = null;
     lastPref = { kind: "ask", ask: text };
     anotherCursor = 0;
@@ -4663,6 +4738,8 @@ function rerunAsk(text, exclude, rot){
     const got = askCards(rel, { exclude: exclude, rot: rot });
     if (got.cards && got.cards.length > 1) return { cards: got.cards.slice(0, 9), why: [got.reason] };
   }
+  var facts = factSearch(text, 9).filter(function(c){ return !exclude.has(c.i); });
+  if (facts.length) return { cards: facts, why: ["printed facts"] };
   return null;
 }
 function rerollMood(id, exclude){
