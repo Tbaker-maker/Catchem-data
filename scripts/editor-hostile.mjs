@@ -639,6 +639,28 @@ try {
     moviesAsk.length === 6 && moviesAsk.every(c => String(c.i).indexOf("mov-") === 0),
     "got " + moviesAsk.length + " " + moviesAsk.map(c => c.n).join(", "));
   api.applyCount(0, false);
+  api.applyGame("movies", false);
+  ask("the power of one");
+  const capOne = api.pickCaption();
+  check("poster caption is the title, not a metadata dump",
+    /power of one/i.test(capOne) && !/theatrical poster/i.test(capOne) && !/lugia|articuno/i.test(capOne) && capOne.indexOf("\n") < 0,
+    JSON.stringify(capOne));
+  check("poster caption stays on one line",
+    capOne.length <= 40,
+    "len=" + capOne.length + " " + JSON.stringify(capOne));
+  api.applyGame("consoles", false);
+  ask("n64");
+  const capN64 = api.pickCaption();
+  check("console caption is the name, not a product dump",
+    /nintendo 64/i.test(capN64) && !/stadium|snap|transfer/i.test(capN64),
+    JSON.stringify(capN64));
+  api.applyGame("cartridges", false);
+  ask("red");
+  const capRed = api.pickCaption();
+  check("box caption is the title and year",
+    /red/i.test(capRed) && capRed.indexOf("\n") < 0 && capRed.length <= 48,
+    JSON.stringify(capRed));
+  api.applyCount(0, false);
   api.applyGame("paper", false);
   const gbPaper = ask("game boy");
   check("paper game boy is the handheld, not GAME FREAK",
