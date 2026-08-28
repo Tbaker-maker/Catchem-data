@@ -1354,7 +1354,7 @@ function parseIntent(text, ctx) {
   const num = q.match(new RegExp(B + "(" + D + "+)" + S + "*(cards?|of them)?" + B));
   if (num && [1, 2, 3, 4, 6, 8, 9].includes(Number(num[1]))) { found.count = Number(num[1]); found.matched.push(found.count + " cards"); }
   else for (const [w, n] of Object.entries(words)) {
-    if (w === "one" && /one painting|one picture|one beach|one diamond|one star|one shiny/.test(q)) continue;
+    if (w === "one" && /one painting|one picture|one beach|one diamond|one star|one shiny|first one/.test(q)) continue;
     if (w === "three" && /three star|three birds/.test(q)) continue;
     const padded = " " + q.replace(/[^a-z0-9]+/g, " ") + " ";
     if (padded.indexOf(" " + w + " ") >= 0) { found.count = n; found.matched.push(n + " cards"); break; }
@@ -3758,6 +3758,9 @@ function askArtistLoose(text, monName){
       if (p.length < 4) continue;
       if (ASK_NAMES[p]) continue;                                  // it is a Pokemon
       if (p === "team" || p === "art" || p === "from" || p === "with" || p === "company" || p === "pokemon") continue;
+      // "game boy" is a handheld, not GAME FREAK inc. "nintendo 64" is a
+      // console, not a credit that happens to start with Nintendo.
+      if (p === "game" || p === "nintendo" || p === "inc") continue;
       if (monName && p === String(monName).toLowerCase()) continue;
       if (text.indexOf(" " + p + " ") < 0) continue;
       if (!best || ASK_ARTISTS[k].length > best.length) best = ASK_ARTISTS[k];
@@ -4219,7 +4222,7 @@ function visualAsk(index, t, whyEmpty){
   for (var i = 0; i < index.length; i++) {
     var c = index[i];
     var sc = 0;
-    var keys = (c.aliases || []).concat(c.scenes || []).concat([c.n, c.s]);
+    var keys = (c.aliases || []).concat(c.scenes || []).concat([c.n]);
     for (var k = 0; k < keys.length; k++) {
       var key = " " + String(keys[k] || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim() + " ";
       if (key.length > 3 && t.indexOf(key) >= 0) sc += key.trim().length + 4;
@@ -4248,6 +4251,14 @@ function visualHome(t){
   var order = cur === "consoles" ? ["cartridges", "movies"]
     : cur === "cartridges" ? ["consoles", "movies"]
     : ["consoles", "cartridges"];
+  return visualHomeOrder(t, order);
+}
+function visualHomeAny(t){
+  // Paper miss: consoles first, so "game boy" is the handheld, not a box
+  // whose platform field says Game Boy.
+  return visualHomeOrder(t, ["consoles", "cartridges", "movies"]);
+}
+function visualHomeOrder(t, order){
   for (var i = 0; i < order.length; i++) {
     var g = order[i];
     var idx = g === "movies" ? MOVIE_INDEX : g === "consoles" ? CONSOLE_INDEX : CART_INDEX;
@@ -4256,6 +4267,29 @@ function visualHome(t){
       return { g: g, r: r };
   }
   return null;
+}
+function tryVisualHomeAsk(text){
+  var gNow = currentGame();
+  if (gNow === "movies" || gNow === "consoles" || gNow === "cartridges") return false;
+  var t = " " + String(text || "").toLowerCase().replace(/[^a-z0-9]+/g, " ") + " ";
+  var home = visualHomeAny(t);
+  if (!home) return false;
+  applyGame(home.g, false);
+  var got = askCards(home.r);
+  if (!got.cards || !got.cards.length) return false;
+  var box0 = el("askreply");
+  var lockedN = (typeof countLocked === "function") ? countLocked() : 0;
+  tray = got.cards.slice(0, lockedN || 9);
+  blob = null;
+  lastPref = { kind: "ask", ask: text };
+  anotherCursor = 0;
+  if (box0) {
+    box0.textContent = visualFactReply(got.cards, home.r.why);
+    box0.className = "askreply";
+  }
+  render(); resetPage(); search();
+  fillLineFromCards(true);
+  return true;
 }
 function visualFactReply(cards, why){
   if (!cards || !cards.length) return "Nothing in this catalogue matches that.";
@@ -5348,13 +5382,21 @@ function runAsk(text){
     || tl.indexOf(" power of one ") >= 0 || tl.indexOf(" power of us ") >= 0;
   if (saysMovie && currentGame() !== "movies") applyGame("movies", false);
   var saysConsole = tl.indexOf(" console ") >= 0 || tl.indexOf(" consoles ") >= 0
-    || tl.indexOf(" handheld ") >= 0 || tl.indexOf(" handhelds ") >= 0;
+    || tl.indexOf(" handheld ") >= 0 || tl.indexOf(" handhelds ") >= 0
+    || tl.indexOf(" game boy ") >= 0 || tl.indexOf(" gameboy ") >= 0
+    || tl.indexOf(" nintendo 64 ") >= 0 || tl.indexOf(" n64 ") >= 0
+    || tl.indexOf(" gamecube ") >= 0 || tl.indexOf(" game cube ") >= 0
+    || tl.indexOf(" nintendo switch ") >= 0
+    || tl.indexOf(" nintendo ds ") >= 0 || tl.indexOf(" nintendo 3ds ") >= 0
+    || tl.indexOf(" pokewalker ") >= 0 || tl.indexOf(" poke walker ") >= 0;
+  var saysGbp = tl.indexOf(" game boy pocket ") >= 0 || tl.indexOf(" pocket game boy ") >= 0;
   var saysCart = tl.indexOf(" cartridge ") >= 0 || tl.indexOf(" cartridges ") >= 0
     || tl.indexOf(" cart ") >= 0 || tl.indexOf(" carts ") >= 0;
+  if (saysGbp && currentGame() !== "consoles") applyGame("consoles", false);
   if (saysConsole && currentGame() !== "consoles") applyGame("consoles", false);
   if (saysCart && currentGame() !== "cartridges") applyGame("cartridges", false);
-  var saysPocket = tl.indexOf(" pokemon pocket ") >= 0 || tl.indexOf(" tcg pocket ") >= 0
-    || tl.indexOf(" ptcgp ") >= 0 || tl.indexOf(" pocket ") >= 0;
+  var saysPocket = !saysGbp && (tl.indexOf(" pokemon pocket ") >= 0 || tl.indexOf(" tcg pocket ") >= 0
+    || tl.indexOf(" ptcgp ") >= 0 || tl.indexOf(" pocket ") >= 0);
   var saysPaper = tl.indexOf(" paper tcg ") >= 0 || tl.indexOf(" paper cards ") >= 0
     || tl.indexOf(" physical ") >= 0;
   if (saysPocket && !(INDEX[0] && INDEX[0].g === "k")) applyGame("pocket", false);
@@ -5450,6 +5492,7 @@ function runAsk(text){
   // The old parser could not read it. A relationship still might.
   if (!reply.ok && tryRelation()) return;
   if (!reply.ok && tryFacts(text)) return;
+  if (!reply.ok && tryVisualHomeAsk(text)) return;
   if (!reply.ok) {
     tray = []; blob = null;
     try { closeSaveSheet(); } catch (e) {}
@@ -5492,6 +5535,7 @@ function runAsk(text){
   // describes a relationship instead.
   if (!res.cards.length && tryRelation()) return;
   if (!res.cards.length && tryFacts(text)) return;
+  if (!res.cards.length && tryVisualHomeAsk(text)) return;
   if (res.cards.length) {
     var take = res.cards.length;
     if (found.count) take = Math.min(take, found.count);

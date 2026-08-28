@@ -602,6 +602,46 @@ try {
     stillOne.map(c => c.n).join(", "));
   api.applyCount(0, false);
   api.applyGame("paper", false);
+  const gbPaper = ask("game boy");
+  check("paper game boy is the handheld, not GAME FREAK",
+    gbPaper.length >= 1 && gbPaper.every(c => String(c.i).indexOf("hw-") === 0) && /game boy/i.test(gbPaper[0].n) && !/freak/i.test(gbPaper.map(c => c.a || c.n).join(" ")),
+    gbPaper.map(c => c.n + " " + c.i).join(", "));
+  api.applyGame("paper", false);
+  const gbpPaper = ask("game boy pocket");
+  check("paper game boy pocket is the handheld, not TCG Pocket",
+    gbpPaper.length >= 1 && gbpPaper.some(c => c.i === "hw-gbp") && gbpPaper.every(c => String(c.i).indexOf("hw-") === 0),
+    gbpPaper.map(c => c.n + " " + c.i).join(", "));
+  api.applyGame("paper", false);
+  const n64Paper = ask("nintendo 64");
+  check("paper nintendo 64 is the console",
+    n64Paper.length >= 1 && n64Paper.some(c => c.i === "hw-n64"),
+    n64Paper.map(c => c.n + " " + c.i).join(", "));
+  api.applyGame("paper", false);
+  const swPaper = ask("switch");
+  check("paper switch stays the item card",
+    swPaper.length >= 1 && swPaper.every(c => String(c.i).indexOf("hw-") !== 0 && String(c.i).indexOf("tcgp-") !== 0) && swPaper.every(c => /^Switch$/i.test(c.n) || /Switch/i.test(c.n)),
+    swPaper.slice(0, 4).map(c => c.n + " " + c.i).join(", "));
+  api.applyGame("consoles", false);
+  const gbpHw = ask("game boy pocket");
+  check("consoles game boy pocket is hw-gbp",
+    gbpHw.length >= 1 && gbpHw.some(c => c.i === "hw-gbp") && gbpHw.every(c => String(c.i).indexOf("tcgp-") !== 0),
+    gbpHw.map(c => c.n + " " + c.i).join(", "));
+  api.applyGame("cartridges", false);
+  const gbCart = ask("game boy");
+  check("cartridges game boy homes to the handheld",
+    gbCart.length >= 1 && gbCart.every(c => String(c.i).indexOf("hw-") === 0) && /game boy/i.test(gbCart[0].n),
+    gbCart.map(c => c.n + " " + c.i).join(", "));
+  api.applyGame("paper", false);
+  const firstOne = ask("the first one");
+  check("the first one is the original Game Boy",
+    firstOne.length >= 1 && firstOne.some(c => c.i === "hw-gb"),
+    firstOne.map(c => c.n + " " + c.i).join(", "));
+  api.applyGame("paper", false);
+  const letsGoP = ask("lets go");
+  check("paper lets go is the Let's Go box",
+    letsGoP.length >= 1 && letsGoP.every(c => String(c.i).indexOf("cart-") === 0) && /let/i.test(letsGoP[0].n),
+    letsGoP.map(c => c.n + " " + c.i).join(", "));
+  api.applyGame("paper", false);
   const goldRow = (api.CART_INDEX || []).find(c => /Gold/.test(c.n));
   const goldSrc = goldRow ? api.imgSmall(goldRow.i) : "";
   check("gold box uses weserv, not a Commons thumb",
