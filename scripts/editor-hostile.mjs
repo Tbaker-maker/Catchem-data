@@ -51,7 +51,7 @@ globalThis.__POCKET_ROWS = pocketRows;
 
 let api;
 try {
-  api = new Function(js + ";return { runAsk, tray:()=>tray, lineOptions, layoutForTray, connectingGroupOf, anotherSet, backSet, parseIntent, evoLineFor, INDEX, POCKET_INDEX, MOVIE_INDEX, CONSOLE_INDEX, CART_INDEX, CONNECTING, LAYOUTS, add, remove, parseCta, pickShowYours, answerCta, officeCount:()=>officeCount, applyCount, fCount:()=>fCount, fillLineFromCards, pickCaption, applyGame, setGame, pocketShowcase, movieShowcase, imgSmall, imgFallback, pocketImgList, hydrateIndexes };")();
+  api = new Function(js + ";return { runAsk, tray:()=>tray, lineOptions, layoutForTray, connectingGroupOf, anotherSet, backSet, parseIntent, evoLineFor, INDEX, POCKET_INDEX, MOVIE_INDEX, CONSOLE_INDEX, CART_INDEX, CONNECTING, LAYOUTS, add, remove, parseCta, pickShowYours, answerCta, officeCount:()=>officeCount, applyCount, fCount:()=>fCount, fillLineFromCards, pickCaption, applyGame, setGame, pocketShowcase, movieShowcase, imgSmall, imgFallback, pocketImgList, hydrateIndexes, visualDetail, visualBits, visualHome, wikiSrc, isVisual, kindLabel, currentGame };")();
 } catch (e) {
   console.error("✗ page JS does not parse:", e.message);
   process.exit(1);
@@ -515,6 +515,57 @@ try {
   check("stadium is the N64 disc",
     stad.length >= 1 && /stadium/i.test(stad[0].n) && String(stad[0].i).indexOf("cart-") === 0,
     stad.map(c => c.n).join(", "));
+  const gbSrc = api.imgSmall(gb[0].i);
+  check("game boy image is weserv jpg, not raw Wikimedia",
+    /images\.weserv\.nl/.test(gbSrc) && gbSrc.indexOf("upload.wikimedia.org") >= 0 && gbSrc.indexOf("output=jpg") >= 0 && gbSrc.indexOf("%2F") < 0 && gbSrc.indexOf("/thumb/") >= 0,
+    gbSrc);
+  const fakeHw = { src: gbSrc, dataset: {}, style: {}, parentElement: null };
+  api.imgFallback(fakeHw, gb[0].i);
+  api.imgFallback(fakeHw, gb[0].i);
+  api.imgFallback(fakeHw, gb[0].i);
+  check("hw fallback never goes to scrydex",
+    String(fakeHw.src).indexOf("scrydex") < 0,
+    fakeHw.src);
+  const gbRow = (api.CONSOLE_INDEX || []).find(c => c.i === "hw-gb") || gb[0];
+  check("game boy spark is not a species",
+    !(gbRow.species || []).some(s => /^(red|blue|yellow)$/i.test(s)),
+    JSON.stringify(gbRow.species));
+  check("game boy fact names the year and console",
+    /1989/.test(api.visualDetail(gbRow)) && /console/.test(api.visualDetail(gbRow)),
+    api.visualDetail(gbRow));
+  api.applyGame("consoles", false);
+  const stadFromHw = ask("stadium");
+  check("stadium on consoles homes to the disc",
+    stadFromHw.length >= 1 && /stadium/i.test(stadFromHw[0].n) && String(stadFromHw[0].i).indexOf("cart-") === 0 && stadFromHw[0].kind === "disc",
+    stadFromHw.map(c => c.n + " " + c.i + " " + c.kind).join(", "));
+  check("stadium fact says disc, not theatrical poster",
+    /disc/i.test(api.visualDetail(stadFromHw[0])) && !/theatrical poster/i.test(api.visualDetail(stadFromHw[0])),
+    api.visualDetail(stadFromHw[0]));
+  api.applyGame("movies", false);
+  const gbFromMov = ask("game boy");
+  check("game boy on movies homes to the handheld",
+    gbFromMov.length >= 1 && gbFromMov.every(c => String(c.i).indexOf("hw-") === 0) && /game boy/i.test(gbFromMov[0].n),
+    gbFromMov.map(c => c.n + " " + c.i).join(", "));
+  api.applyGame("movies", false);
+  const junk = ask("asdfghjkl");
+  check("garbage movie search is empty",
+    junk.length === 0,
+    junk.map(c => c.n).join(", "));
+  api.applyGame("consoles", false);
+  const hands = ask("the handhelds");
+  check("handhelds are not the N64",
+    hands.length >= 3 && hands.length <= 9 && hands.every(c => !/^Nintendo 64$/.test(c.n)),
+    hands.map(c => c.n).join(", "));
+  check("handhelds include Game Boy and Switch Lite",
+    hands.some(c => c.i === "hw-gb") && hands.some(c => c.i === "hw-nswlite"),
+    hands.map(c => c.i).join(", "));
+  api.applyGame("movies", false);
+  const surpriseM = ask("surprise me");
+  check("surprise on movies stays a movie poster",
+    surpriseM.length >= 1 && surpriseM.every(c => String(c.i).indexOf("mov-") === 0),
+    surpriseM.map(c => c.n + " " + c.i).join(", "));
+  const factsBox = typeof document !== "undefined" && document.getElementById("itemfacts");
+  check("dom #itemfacts", !!(factsBox || (typeof present !== "undefined" && present.has("itemfacts"))));
   api.applyGame("paper", false);
 } catch (e) {
   check("hardware", false, e.message);
@@ -534,7 +585,7 @@ try {
 
 // 11. Save controls exist in the DOM the page shipped.
 
-for (const id of ["cv", "outimg", "dl", "copy", "make", "anotherset", "backset"]) {
+for (const id of ["cv", "outimg", "dl", "copy", "make", "anotherset", "backset", "itemfacts"]) {
   check("dom #" + id, present.has(id));
 }
 

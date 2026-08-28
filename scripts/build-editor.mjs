@@ -153,7 +153,7 @@ else {
   if (hwCat && hwCat.consoles) {
     for (const c of hwCat.consoles) {
       if (!c.img) continue;
-      consoleShow.push([c.id, c.n, c.platform || c.n, c.year, c.img, c.kind || "console", (c.aliases || []).join("|"), (c.spark || []).join("|")]);
+      consoleShow.push([c.id, c.n, c.platform || c.n, c.year, c.img, c.kind || "console", (c.aliases || []).join("|"), "", (c.spark || []).join("|")]);
     }
   }
   if (hwCat && hwCat.carts) {
@@ -163,9 +163,10 @@ else {
         const row = cartSeen[c.img];
         row[1] = row[1] + " / " + String(c.n).replace(/^Pokémon /, "");
         row[6] = [row[6], (c.aliases || []).join("|")].filter(Boolean).join("|");
+        row[7] = [row[7], (c.species || []).join("|")].filter(Boolean).join("|");
         continue;
       }
-      const row = [c.id, c.n, c.platform || "", c.year, c.img, c.kind || "box", (c.aliases || []).join("|"), (c.species || []).join("|")];
+      const row = [c.id, c.n, c.platform || "", c.year, c.img, c.kind || "box", (c.aliases || []).join("|"), (c.species || []).join("|"), ""];
       cartSeen[c.img] = row;
       cartShow.push(row);
     }
@@ -400,6 +401,21 @@ button.go:disabled{opacity:.45;cursor:default;filter:none}
   transition:opacity .16s var(--ease)}
 .pocket:hover .own{opacity:1}
 .pocket .own.yes{opacity:1;background:var(--soft);color:var(--ink)}
+.pocket.visual{aspect-ratio:3/4}
+.pocket.visual.vis-console{aspect-ratio:4/3}
+.pocket.visual.vis-poster{aspect-ratio:2/3}
+.pocket.visual.vis-disc{aspect-ratio:1/1}
+.pocket.visual.vis-box{aspect-ratio:3/4}
+.pocket .vcap{position:absolute;left:0;right:0;bottom:0;padding:10px 10px 8px;
+  background:linear-gradient(transparent,rgba(10,12,18,.94) 38%);
+  pointer-events:none}
+.pocket .vcap b{display:block;font:600 12.5px/1.25 var(--body);color:var(--text)}
+.pocket .vcap i{display:block;font:400 10.5px/1.35 var(--mono);color:var(--soft);margin-top:3px;font-style:normal}
+.itemfacts{margin:0 0 16px;display:flex;flex-direction:column;gap:8px}
+.ifact{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.ifact b{display:block;font:600 15px/1.3 var(--body)}
+.ifact .when{display:block;font:400 12px/1.4 var(--mono);color:var(--soft);margin-top:3px}
+.ifact .more{font:400 13.5px/1.5 var(--body);color:var(--faint);margin-top:7px}
 .status.bad{color:var(--warn)}
 .reachrow{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
 .reachrow label{font:500 10.5px var(--mono);color:var(--faint);letter-spacing:.14em}
@@ -568,7 +584,7 @@ ${TODAY_IMG ? `<div id="todaypost">
   </select>
 </label>
 <label class="howmany">Game
-  <select id="game" aria-label="Paper or Pocket">
+  <select id="game" aria-label="Which catalogue">
     <option value="paper">Paper TCG</option>
     <option value="pocket">Pocket</option>
     <option value="movies">Movies</option>
@@ -624,6 +640,7 @@ ${TODAY_IMG ? `<div id="todaypost">
 <div class="binder" id="tray"></div>
 <div class="status" id="st"></div>
 <div class="tally" id="tally" hidden></div>
+<div class="itemfacts" id="itemfacts" hidden></div>
 <textarea id="label" rows="3" placeholder="Your line — or leave it blank and let the cards talk"></textarea>
 <div class="viberow" id="viberow" hidden>
   <span class="moodlabel">VIBE</span>
@@ -1003,7 +1020,7 @@ function mapPocketRow(r){
 }
 var MOVIE_ROWS = ${JSON.stringify(movieShow)};
 function mapMovieRow(r){
-  var o = { i: r[0], n: r[1], s: r[2], y: r[3], g: "m", img: r[4], r: "Poster", hero: 1, sup: "P" };
+  var o = { i: r[0], n: r[1], s: r[2], y: r[3], g: "m", img: r[4], r: "Poster", hero: 1, sup: "P", kind: "poster" };
   if (r[5]) o.species = String(r[5]).split("|");
   if (r[6]) o.aliases = String(r[6]).split("|");
   if (r[7]) o.scenes = String(r[7]).split("|");
@@ -1012,10 +1029,10 @@ function mapMovieRow(r){
 var CONSOLE_ROWS = ${JSON.stringify(consoleShow)};
 var CART_ROWS = ${JSON.stringify(cartShow)};
 function mapHwRow(r, g){
-  var o = { i: r[0], n: r[1], s: r[2], y: r[3], g: g, img: r[4], r: r[5] || "", hero: 1, sup: "P" };
-  if (r[6]) o.aliases = String(r[6]).split("|");
-  if (r[7]) o.species = String(r[7]).split("|");
-  o.kind = r[5] || "";
+  var o = { i: r[0], n: r[1], s: r[2], y: r[3], g: g, img: r[4], r: r[5] || "", hero: 1, sup: "P", kind: r[5] || "" };
+  if (r[6]) o.aliases = String(r[6]).split("|").filter(Boolean);
+  if (r[7]) o.species = String(r[7]).split("|").filter(Boolean);
+  if (r[8]) o.spark = String(r[8]).split("|").filter(Boolean);
   return o;
 }
 var CONSOLE_INDEX = [];
@@ -1622,9 +1639,33 @@ function pocketImgList(id){
   out.push("https://assets.tcgdex.net/en/tcgp/" + set + "/" + num + "/high.webp");
   return out;
 }
+function wikiSrc(url, w){
+  url = String(url || "");
+  w = w || 600;
+  if (!url) return "";
+  if (url.indexOf("images.weserv.nl") >= 0) return url;
+  if (url.indexOf("upload.wikimedia.org") < 0) return url;
+  var leaf = url;
+  if (leaf.indexOf("https://") === 0) leaf = leaf.slice(8);
+  else if (leaf.indexOf("http://") === 0) leaf = leaf.slice(7);
+  // Weserv 404s the full-size Commons originals under load. Thumbs do not.
+  if (leaf.indexOf("/thumb/") < 0) {
+    var slash = leaf.lastIndexOf("/");
+    if (slash > 0) {
+      var fn = leaf.slice(slash + 1);
+      var parts = leaf.slice(0, slash).split("/");
+      if (parts.length >= 3) {
+        parts.splice(3, 0, "thumb");
+        leaf = parts.join("/") + "/" + fn + "/" + w + "px-" + fn;
+      }
+    }
+  }
+  var enc = leaf.split("%").join("%25").split("?").join("%3F").split("#").join("%23").split("&").join("%26").split(" ").join("%20");
+  return "https://images.weserv.nl/?url=ssl:" + enc + "&w=" + w + "&output=jpg&q=75";
+}
 const imgSmall = (id) => {
   var row = (typeof byIdRow !== "undefined") ? byIdRow[id] : null;
-  if (row && row.img) return row.img;
+  if (row && row.img) return wikiSrc(row.img, 500);
   if (String(id).indexOf("tcgp-") === 0) {
     var list = pocketImgList(id);
     return list[0] || "";
@@ -1632,6 +1673,8 @@ const imgSmall = (id) => {
   return "https://images.pokemontcg.io/" + id.slice(0, id.lastIndexOf("-")) + "/" + id.slice(id.lastIndexOf("-") + 1) + ".png";
 };
 const imgUrl = (id) => {
+  var row = (typeof byIdRow !== "undefined") ? byIdRow[id] : null;
+  if (row && row.img) return wikiSrc(row.img, 1200);
   if (String(id).indexOf("tcgp-") === 0 || String(id).indexOf("mov-") === 0 || String(id).indexOf("hw-") === 0 || String(id).indexOf("cart-") === 0) return imgSmall(id);
   return "https://images.pokemontcg.io/" + id.slice(0, id.lastIndexOf("-")) + "/" + id.slice(id.lastIndexOf("-") + 1) + "_hires.png";
 };
@@ -1873,11 +1916,61 @@ function hay(c){
   if (c.aliases) parts = parts.concat(c.aliases);
   if (c.scenes) parts = parts.concat(c.scenes);
   if (c.species) parts = parts.concat(c.species);
+  if (c.spark) parts = parts.concat(c.spark);
+  if (c.kind) parts.push(c.kind);
   if (c.g === "m") parts.push("poster", "movie", "film");
   if (c.g === "h") parts.push("console", "handheld", "system");
   if (c.g === "t") parts.push("cartridge", "cart", "game", "box", "disc");
   c._h = fold(parts.join(" "));
   return c._h;
+}
+function isVisual(c){
+  return !!(c && (c.g === "m" || c.g === "h" || c.g === "t"));
+}
+function kindLabel(c){
+  if (!c) return "";
+  if (c.kind === "console") return "console";
+  if (c.kind === "box") return "retail box";
+  if (c.kind === "disc") return "disc";
+  if (c.kind === "cart") return "cartridge";
+  if (c.kind === "poster" || c.g === "m") return "theatrical poster";
+  return c.kind || "";
+}
+function visualBits(c){
+  var extra = [];
+  if (!c) return extra;
+  if (c.y) extra.push(String(c.y));
+  var k = kindLabel(c);
+  if (k) extra.push(k);
+  if (c.s && c.s !== c.n) extra.push(c.s);
+  var sp = (c.species || []).filter(function(s){ return s && s.length > 2 && s !== "thin"; });
+  if (c.g !== "h" && sp.length) extra.push(sp.slice(0, 4).join(", "));
+  return extra;
+}
+function visualDetail(c){
+  if (!c) return "";
+  var extra = visualBits(c);
+  var line = c.n + (extra.length ? " · " + extra.join(" · ") : "");
+  var more = [];
+  if (c.g === "m" && c.s && c.s !== c.n) more.push(c.s);
+  var al = (c.aliases || []).filter(function(a){ return a && fold(a) !== fold(c.n); }).slice(0, 5);
+  if (al.length) more.push("also called " + al.join(", "));
+  if (c.scenes && c.scenes.length) more.push("scenes: " + c.scenes.slice(0, 5).join(", "));
+  if (c.spark && c.spark.length) more.push("talk about: " + c.spark.join(", "));
+  return line + (more.length ? ". " + more.join(". ") : "");
+}
+function hitMeta(c){
+  if (isVisual(c)) return visualBits(c).join(" · ");
+  return (c.s || "") + " · " + (c.y || "");
+}
+function hitSub(c){
+  if (isVisual(c)) {
+    var al = (c.aliases || []).slice(0, 2).join(", ");
+    if (al) return al;
+    if (c.spark && c.spark.length) return "talk about: " + c.spark.slice(0, 3).join(", ");
+    return kindLabel(c);
+  }
+  return c.a || "no credit recorded";
 }
 
 // ══ WHY SO MUCH OF THIS FILE INTERPOLATES INSTEAD OF WRITING THE SENTENCE ══
@@ -1970,7 +2063,7 @@ function search(){
     renderPager(ranked.length, pages);
     el("res").innerHTML = showcase.map(c =>
       \`<div class="hit" onclick="add('\${c.i}')"><img src="\${imgSmall(c.i)}" alt="" loading=\"lazy\" data-cid=\"\${c.i}\" onerror=\"imgFallback(this,&#39;\${c.i}&#39;)\">
-        <span class=\"failmsg\"></span><b>\${c.n}</b><i>\${c.s} · \${c.y}</i><i>\${c.a}</i></div>\`).join("");
+        <span class=\"failmsg\"></span><b>\${c.n}</b><i>\${hitMeta(c)}</i><i>\${hitSub(c)}</i></div>\`).join("");
     return;
   }
   // PAGING. The whole index stays in memory — 1.7MB is nothing — and only the
@@ -1998,7 +2091,7 @@ function search(){
   renderPager(all.length, pages);
   el("res").innerHTML = pageCards.length ? pageCards.map(c =>
     \`<div class="hit" onclick="add('\${c.i}')"><img src="\${imgSmall(c.i)}" alt="" loading=\"lazy\" data-cid=\"\${c.i}\" onerror=\"imgFallback(this,&#39;\${c.i}&#39;)\">
-      <span class=\"failmsg\"></span><b>\${c.n}</b><i>\${c.s} · \${c.y}</i><i class="\${c.a ? "" : "nocred"}">\${c.a || "no credit recorded"}</i></div>\`).join("")
+      <span class=\"failmsg\"></span><b>\${c.n}</b><i>\${hitMeta(c)}</i><i class="\${c.a || isVisual(c) ? "" : "nocred"}">\${hitSub(c)}</i></div>\`).join("")
     : suggestHtml(q);
 }
 safeWire(function(){ ["q","rar","yr"].forEach(id => el(id).addEventListener("input", () => { resetPage(); search(); })); }, "wiring");
@@ -3252,14 +3345,19 @@ function imgFallback(node, id){
       if (seen.indexOf(list[i]) < 0 && list[i] !== cur) { next = list[i]; break; }
     }
   } else if (id.indexOf("mov-") === 0 || id.indexOf("hw-") === 0 || id.indexOf("cart-") === 0) {
-    next = null;
+    var row = byIdRow[id];
+    var raw = row && row.img ? String(row.img) : "";
+    var wrap = raw ? wikiSrc(raw, 800) : "";
+    if (wrap && seen.indexOf(wrap) < 0 && wrap !== cur) next = wrap;
+    else if (raw && seen.indexOf(raw) < 0 && raw !== cur) next = raw;
   } else if (seen.indexOf("scrydex.com") < 0) {
     next = "https://images.scrydex.com/pokemon/" + id + "/small";
   }
   if (next) { node.src = next; return; }
-  imgFails++;
   node.style.display = "none";
-  const msg = imgFails + " card image" + (imgFails > 1 ? "s" : "") + " could not load.";
+  if (id.indexOf("mov-") === 0 || id.indexOf("hw-") === 0 || id.indexOf("cart-") === 0) return;
+  imgFails++;
+  const msg = imgFails + " image" + (imgFails > 1 ? "s" : "") + " could not load.";
   for (const where of ["imgstatus", "st", "askreply"]) {
     const box = el(where);
     if (box) { box.hidden = false; box.textContent = msg; box.className = (box.className || "").replace(/ bad$/, "") + " bad"; }
@@ -3468,9 +3566,19 @@ function askResolve(text){
   var gNow = currentGame();
   var pocketOn = gNow === "pocket";
   var bothOn = gNow === "both";
-  if (gNow === "movies") return movieAsk(t);
-  if (gNow === "consoles") return consoleAsk(t);
-  if (gNow === "cartridges") return cartAsk(t);
+  if (has(["surprise me", "surprise", "lucky", "dealers choice", "show me something"]))
+    return { relation: "SURPRISE", why: "a random picture from the catalogue" };
+  if (gNow === "movies" || gNow === "consoles" || gNow === "cartridges") {
+    var vis = gNow === "movies" ? movieAsk(t) : gNow === "consoles" ? consoleAsk(t) : cartAsk(t);
+    if (vis && vis.pin === "__none__") {
+      var home = visualHome(t);
+      if (home) {
+        applyGame(home.g, false);
+        return home.r;
+      }
+    }
+    return vis;
+  }
   if ((pocketOn || bothOn) && (has(["the birds", "legendary birds", "three birds"]) ||
       (has(["zapdos"]) && has(["articuno"]) && has(["moltres"])))) {
     if (bothOn) return { relation: "CONNECTING_ART", subject: null, need: 6,
@@ -3867,22 +3975,52 @@ function visualShowcase(index, prefer, label){
 }
 function visualAsk(index, t, whyEmpty){
   t = " " + String(t || "").toLowerCase().replace(/[^a-z0-9]+/g, " ") + " ";
+  if (/ surprise me | surprise | lucky /.test(t))
+    return { relation: "SURPRISE", why: "a random picture from this catalogue" };
   var short = t.trim().split(" ").filter(Boolean);
-  if (short.length <= 2 && /consoles?|handhelds?|cartridges?|carts?|boxes|games|posters?|movies?|films?/.test(t))
+  if (/ handhelds /.test(t)) {
+    var prefer = ["hw-gb","hw-gbc","hw-gba","hw-ds","hw-3ds","hw-nswlite","hw-gbp","hw-gbasp","hw-2ds"];
+    var hands = [];
+    var seenH = {};
+    for (var pi = 0; pi < prefer.length; pi++) {
+      for (var hi = 0; hi < index.length; hi++) {
+        if (index[hi].i === prefer[pi] && !seenH[index[hi].i]) {
+          seenH[index[hi].i] = 1;
+          hands.push(index[hi]);
+        }
+      }
+    }
+    if (!hands.length) {
+      for (var hj = 0; hj < index.length; hj++) {
+        var nm = String(index[hj].n || "");
+        if (/Game Boy|Nintendo DS|3DS|2DS|Pokémon Mini|Switch Lite/i.test(nm) && !/N64|GameCube|Wii/i.test(nm))
+          hands.push(index[hj]);
+      }
+    }
+    if (hands.length)
+      return { relation: "HARDWARE_PIN", pin: hands.slice(0, 9).map(function(c){ return c.i; }).join("|"), why: "the handhelds", need: Math.min(9, hands.length) };
+  }
+  if (short.length <= 2 && /^(movies|posters|consoles|cartridges|carts|films)$/.test(short.join(" ")))
     return { relation: "HARDWARE_PIN", pin: "", why: whyEmpty, show: true };
   var scored = [];
   for (var i = 0; i < index.length; i++) {
     var c = index[i];
     var sc = 0;
-    var keys = (c.aliases || []).concat(c.scenes || []).concat(c.species || []).concat([c.n, c.s]);
+    var keys = (c.aliases || []).concat(c.scenes || []).concat([c.n, c.s]);
     for (var k = 0; k < keys.length; k++) {
       var key = " " + String(keys[k] || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim() + " ";
-      if (key.length > 3 && t.indexOf(key) >= 0) sc += key.trim().length;
+      if (key.length > 3 && t.indexOf(key) >= 0) sc += key.trim().length + 4;
+    }
+    var sp = c.species || [];
+    for (var s = 0; s < sp.length; s++) {
+      var sn = " " + String(sp[s] || "").toLowerCase() + " ";
+      if (sn.length > 3 && t.indexOf(sn) >= 0) sc += 6;
     }
     if (sc) scored.push({ c: c, sc: sc });
   }
   scored.sort(function(a, b){ return b.sc - a.sc; });
-  if (!scored.length) return { relation: "HARDWARE_PIN", pin: "", why: whyEmpty, show: true };
+  if (!scored.length)
+    return { relation: "HARDWARE_PIN", pin: "__none__", why: "no match" };
   var top = scored[0].sc;
   var keep = scored.filter(function(x){ return x.sc >= top * 0.55; }).slice(0, 6);
   return {
@@ -3891,6 +4029,32 @@ function visualAsk(index, t, whyEmpty){
     why: keep.map(function(x){ return x.c.n; }).join(" · "),
     need: keep.length
   };
+}
+function visualHome(t){
+  var cur = currentGame();
+  var order = cur === "consoles" ? ["cartridges", "movies"]
+    : cur === "cartridges" ? ["consoles", "movies"]
+    : ["consoles", "cartridges"];
+  for (var i = 0; i < order.length; i++) {
+    var g = order[i];
+    var idx = g === "movies" ? MOVIE_INDEX : g === "consoles" ? CONSOLE_INDEX : CART_INDEX;
+    var r = visualAsk(idx, t, g);
+    if (r && r.pin && r.pin !== "__none__" && !r.show && r.relation !== "SURPRISE")
+      return { g: g, r: r };
+  }
+  return null;
+}
+function visualFactReply(cards, why){
+  if (!cards || !cards.length) return "Nothing in this catalogue matches that.";
+  if (cards.length === 1) return visualDetail(cards[0]);
+  var bits = [];
+  for (var i = 0; i < cards.length && i < 6; i++) {
+    var c = cards[i];
+    var extra = visualBits(c);
+    bits.push(c.n + (extra.length ? " · " + extra.join(" · ") : ""));
+  }
+  if (cards.length > 6) bits.push("+" + (cards.length - 6) + " more");
+  return bits.join(". ");
 }
 function movieAsk(t){ return visualAsk(MOVIE_INDEX, t, "movie posters"); }
 function consoleAsk(t){ return visualAsk(CONSOLE_INDEX, t, "consoles"); }
@@ -4127,10 +4291,11 @@ function askCards(r, opts){
   var rot = Number(opts.rot) || 0;
 
   if (r.relation === "MOVIE_PIN" || r.relation === "HARDWARE_PIN") {
+    if (r.pin === "__none__") return { cards: [], reason: "no match" };
     if (r.show || !r.pin) {
-      if (r.relation === "HARDWARE_PIN" && currentGame() === "consoles")
+      if (currentGame() === "consoles")
         return { cards: CONSOLE_INDEX.slice(0, 9), reason: r.why || "consoles" };
-      if (r.relation === "HARDWARE_PIN" && currentGame() === "cartridges")
+      if (currentGame() === "cartridges")
         return { cards: CART_INDEX.slice(0, 9), reason: r.why || "cartridges" };
       var show = [];
       var prefer = ["mov-m01-poster","mov-m02-poster","mov-m05-poster","mov-m08-poster","mov-m10-poster","mov-m20-poster","mov-m23-poster","mov-mdp-poster","mov-m13-poster"];
@@ -4138,7 +4303,23 @@ function askCards(r, opts){
       return { cards: show.length ? show : MOVIE_INDEX.slice(0, 9), reason: r.why || "movie posters" };
     }
     var pinnedM = r.pin.split("|").map(byId).filter(Boolean);
-    return { cards: pinnedM, reason: r.why || "poster" };
+    return { cards: pinnedM.slice(0, 9), reason: r.why || "poster" };
+  }
+
+  if (r.relation === "SURPRISE") {
+    var cg = currentGame();
+    if (cg === "movies" || cg === "consoles" || cg === "cartridges") {
+      var poolV = INDEX.slice();
+      var nNeedV = 1;
+      if (typeof countLocked === "function" && countLocked()) nNeedV = countLocked();
+      if (nNeedV > 9) nNeedV = 9;
+      if (nNeedV > poolV.length) nNeedV = poolV.length;
+      var startV = ((rot || 0) * 7 + (Date.now() % Math.max(1, poolV.length))) % Math.max(1, poolV.length);
+      var pickV = [];
+      for (var vk = 0; vk < poolV.length && pickV.length < nNeedV; vk++)
+        pickV.push(poolV[(startV + vk) % poolV.length]);
+      return { cards: pickV, reason: "a random picture from this catalogue" };
+    }
   }
 
   if (r.relation === "SPECIES_GROUP") {
@@ -4517,6 +4698,14 @@ function trayMixed(){
 }
 function pickCaption(){
   const NL = String.fromCharCode(10);
+  if (tray && tray.length && tray[0] && isVisual(tray[0])) {
+    return tray.map(function(c){
+      var extra = visualBits(c);
+      var more = [];
+      if (c.scenes && c.scenes.length === 1) more.push(c.scenes[0]);
+      return c.n + (extra.length ? NL + extra.join(" · ") : "") + (more.length ? NL + more.join(" · ") : "");
+    }).join(NL + NL);
+  }
   const themeName = fTheme ? ((THEMES.find(function(x){ return x.id === fTheme; }) || {}).name) : null;
   const views = Number(store.get("typicalViews")) || 0;
   const opts = (typeof lineOptions === "function") ? (lineOptions(tray, themeName, views) || []) : [];
@@ -4863,21 +5052,30 @@ function runAsk(text){
     if (!askRel) return false;
     const got = askCards(askRel);
     const box0 = el("askreply");
-    if (got.cards.length > 1 || ((askRel.relation === "MOVIE_PIN" || askRel.relation === "HARDWARE_PIN") && got.cards.length >= 1)) {
+    if ((askRel.relation === "HARDWARE_PIN" || askRel.relation === "MOVIE_PIN") && got.cards.length === 0) {
+      tray = []; blob = null;
+      try { closeSaveSheet(); } catch (e) {}
       if (box0) {
-        if (askRel.relation === "MOVIE_PIN" || askRel.relation === "HARDWARE_PIN") {
-          var years = [];
-          for (var yi = 0; yi < got.cards.length; yi++) if (got.cards[yi].y && years.indexOf(got.cards[yi].y) < 0) years.push(got.cards[yi].y);
-          box0.textContent = (askRel.why || got.reason) + (years.length ? " · " + years.join("/") : "") + ". Theatrical poster. Search a scene if you want a different film.";
+        box0.textContent = "Nothing in this catalogue matches that.";
+        box0.className = "askreply bad";
+      }
+      render();
+      return true;
+    }
+    if (got.cards.length > 1 || ((askRel.relation === "MOVIE_PIN" || askRel.relation === "HARDWARE_PIN" || askRel.relation === "SURPRISE") && got.cards.length >= 1)) {
+      if (box0) {
+        if (askRel.relation === "MOVIE_PIN" || askRel.relation === "HARDWARE_PIN" ||
+            (askRel.relation === "SURPRISE" && got.cards[0] && isVisual(got.cards[0]))) {
+          box0.textContent = visualFactReply(got.cards, askRel.why);
         } else {
-        box0.textContent = askRel.relation.replace(/_/g, " ").toLowerCase() +
-          " — " + askRel.why + ". " + got.reason;
+          box0.textContent = askRel.relation.replace(/_/g, " ").toLowerCase() +
+            " — " + askRel.why + ". " + got.reason;
         }
         box0.className = "askreply";
       }
       var lockedN = countLocked();
       if (askRel.relation === "CONNECTING_ART" || askRel.relation === "SURPRISE" || askRel.relation === "MOVIE_PIN" || askRel.relation === "HARDWARE_PIN")
-        tray = got.cards.slice();
+        tray = got.cards.slice(0, 9);
       else if (askRel.relation === "SET_FACTS")
         tray = got.cards.slice(0, lockedN || 9);
       else if (lockedN) tray = got.cards.slice(0, lockedN);
@@ -5464,8 +5662,10 @@ function retryAllImages(){
   if (!liveHost) return;
   const imgs = document.querySelectorAll ? document.querySelectorAll("img[data-cid]") : [];
   for (let i = 0; i < imgs.length; i++) {
-    const cid = imgs[i].getAttribute("data-cid");
-    if (cid && cid.indexOf("tcgp-") !== 0) { imgs[i].dataset.tried = ""; imgs[i].style.display = ""; imgs[i].src = liveHost.url(cid); }
+    const cid = imgs[i].getAttribute("data-cid") || "";
+    if (!cid) continue;
+    if (cid.indexOf("tcgp-") === 0 || cid.indexOf("mov-") === 0 || cid.indexOf("hw-") === 0 || cid.indexOf("cart-") === 0) continue;
+    imgs[i].dataset.tried = ""; imgs[i].style.display = ""; imgs[i].src = liveHost.url(cid);
   }
   imgFails = 0;
 }
@@ -5528,9 +5728,14 @@ function render(){
   const phone = window.innerWidth < 760;
   const cell = phone || cols > 3 ? "1fr" : "148px";
   box.style.gridTemplateColumns = \`repeat(\${cols}, minmax(0, \${cell}))\`;
-  const pocket = (c, k) => c
-    ? \`<div class="pocket filled"><img src="\${imgSmall(c.i)}" alt="\${c.n}" loading="lazy" data-cid="\${c.i}" onerror="imgFallback(this,&#39;\${c.i}&#39;)"><button class="swap" onclick="swapSlot(\${k})" aria-label="Swap \${c.n}">↻</button><button class="x" onclick="remove(\${k})" aria-label="Remove \${c.n}">×</button><button class="own \${owned[c.i] ? "yes" : ""}" onclick="toggleOwn('\${c.i}')">\${owned[c.i] ? "OWNED" : "want"}</button></div>\`
-    : "<div class='pocket'></div>";
+  const pocket = (c, k) => {
+    if (!c) return "<div class='pocket'></div>";
+    var vis = isVisual(c);
+    var kls = "pocket filled" + (vis ? " visual vis-" + String(c.kind || c.g).replace(/[^a-z]/g, "") : "");
+    var own = vis ? "" : \`<button class="own \${owned[c.i] ? "yes" : ""}" onclick="toggleOwn('\${c.i}')">\${owned[c.i] ? "OWNED" : "want"}</button>\`;
+    var cap = vis ? \`<span class="vcap"><b>\${c.n}</b><i>\${visualBits(c).join(" · ")}</i></span>\` : "";
+    return \`<div class="\${kls}"><img src="\${imgSmall(c.i)}" alt="\${c.n}" loading="eager" data-cid="\${c.i}" onerror="imgFallback(this,&#39;\${c.i}&#39;)"><button class="swap" onclick="swapSlot(\${k})" aria-label="Swap \${c.n}">↻</button><button class="x" onclick="remove(\${k})" aria-label="Remove \${c.n}">×</button>\${own}\${cap}</div>\`;
+  };
   let html = "";
   if (L && L.shape && L.shape.length) {
     var pi = 0;
@@ -5552,6 +5757,7 @@ function render(){
   renderSelfReply();
   renderStreak();
   renderTally();
+  renderItemFacts();
   el("plabel").textContent = L ? ("YOUR PAGE — " + L.name.toUpperCase()) : "YOUR PAGE";
   const anotherBtn = el("anotherset");
   if (anotherBtn) {
@@ -5567,7 +5773,7 @@ function render(){
       backBtn.setAttribute("aria-label", "Previous set");
   }
   const vb = el("viberow");
-  if (vb) vb.hidden = !tray.length;
+  if (vb) vb.hidden = !tray.length || !!(tray[0] && isVisual(tray[0]));
 
   el("make").disabled = !L || !allowed;
   el("cv").style.display = "none";
@@ -5575,6 +5781,10 @@ function render(){
   if (out && !blob) out.hidden = true;
   ["copy","share","dl"].forEach(i => { if (el(i)) el(i).hidden = !blob; });
   if (!tray.length) { setStatus("Type what you want above, or open browse below."); return; }
+  if (tray[0] && isVisual(tray[0])) {
+    setStatus(tray.length + " · " + tray.map(function(c){ return c.n; }).slice(0, 4).join(" · ") + (tray.length > 4 ? "…" : ""));
+    return;
+  }
   if (L) {
     // WARN AT COMPOSE TIME. 216 cards are addable with no recorded artist, and
     // nothing said so before the image was made — card-composite refuses an
@@ -5585,6 +5795,27 @@ function render(){
     const below = SUPPORTED.filter(n => n < tray.length).pop(), above = SUPPORTED.find(n => n > tray.length);
     setStatus(\`\${tray.length} cards has no frame. \${below ? "Remove " + (tray.length - below) : ""}\${below && above ? " or add " + (above - tray.length) : ""}.\`, true);
   }
+}
+
+function renderItemFacts(){
+  var box = el("itemfacts");
+  if (!box) return;
+  var vis = (tray || []).filter(isVisual);
+  if (!vis.length) { box.hidden = true; box.innerHTML = ""; return; }
+  box.hidden = false;
+  box.innerHTML = vis.map(function(c){
+    var extra = visualBits(c).join(" · ");
+    var more = [];
+    var al = (c.aliases || []).filter(function(a){ return a && fold(a) !== fold(c.n); }).slice(0, 5);
+    if (al.length) more.push("Also called " + al.join(", "));
+    if (c.scenes && c.scenes.length) more.push("Scenes: " + c.scenes.slice(0, 6).join(", "));
+    if (c.spark && c.spark.length) more.push("Talk about: " + c.spark.join(", "));
+    if (c.g === "m" && c.s && c.s !== c.n) more.push(c.s);
+    return "<div class='ifact'><b>" + String(c.n).split("<").join("") + "</b>" +
+      (extra ? "<span class='when'>" + extra + "</span>" : "") +
+      (more.length ? "<div class='more'>" + more.join(". ") + "</div>" : "") +
+      "</div>";
+  }).join("");
 }
 
 // THE FUNNEL. Three small questions, then real combinations - not a list of
