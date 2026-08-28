@@ -389,6 +389,28 @@ try {
   try { api.applyGame("paper", false); } catch (e2) {}
 }
 
+try {
+  api.applyGame("paper", false);
+  const paperEg = (document.getElementById("egs") || {}).innerHTML || "";
+  check("paper chips mention the fishes", /Carvanha|fishes|Sharpedo/i.test(paperEg), paperEg.slice(0, 180));
+  check("paper chips do not lead with Three Star", !/Three Star/i.test(paperEg), paperEg.slice(0, 180));
+  api.applyGame("pocket", false);
+  const pocketEg = (document.getElementById("egs") || {}).innerHTML || "";
+  check("pocket chips mention Team Rocket", /Team Rocket/i.test(pocketEg), pocketEg.slice(0, 180));
+  check("pocket chips do not mention the fishes", !/Carvanha|Sharpedo/i.test(pocketEg), pocketEg.slice(0, 180));
+  const stars = ask("three star");
+  check("three star is Pocket rarity, not a count of 3 randoms",
+    stars.length >= 3 && stars.every(c => /Star|Immersive|Crown/i.test(c.r || "")),
+    stars.map(c => c.n + " " + c.r).join(", "));
+  api.applyGame("both", false);
+  const bothEg = (document.getElementById("egs") || {}).innerHTML || "";
+  check("both chips mention paper × Pocket", /paper|both|×/i.test(bothEg), bothEg.slice(0, 180));
+  api.applyGame("paper", false);
+} catch (e) {
+  check("game chips", false, e.message);
+  try { api.applyGame("paper", false); } catch (e2) {}
+}
+
 
 // 10. Same physical card twice is a broken page, not a pairing.
 try {

@@ -1079,6 +1079,7 @@ function parseIntent(text, ctx) {
   if (num && [1, 2, 3, 4, 6, 8, 9].includes(Number(num[1]))) { found.count = Number(num[1]); found.matched.push(found.count + " cards"); }
   else for (const [w, n] of Object.entries(words)) {
     if (w === "one" && /one painting|one picture|one beach|one diamond|one star|one shiny/.test(q)) continue;
+    if (w === "three" && /three star|three birds/.test(q)) continue;
     const padded = " " + q.replace(/[^a-z0-9]+/g, " ") + " ";
     if (padded.indexOf(" " + w + " ") >= 0) { found.count = n; found.matched.push(n + " cards"); break; }
   }
@@ -2123,58 +2124,66 @@ try { streak = JSON.parse(store.get("catchem-streak") || "null"); } catch {}
 
 function saveStreak(){ try { store.set("catchem-streak", JSON.stringify(streak)); } catch {} }
 
+function isHeroCard(c){
+  return !!(c && (c.hero || (typeof HERO_RX !== "undefined" && HERO_RX.test(c.r || ""))));
+}
+function cardAttacks(c){
+  var out = [], seen = {};
+  var src = [].concat((c && c.A) || [], (c && c.k) || []);
+  for (var i = 0; i < src.length; i++) {
+    var a = String(src[i] || "");
+    if (!a || seen[a]) continue;
+    seen[a] = 1; out.push(a);
+  }
+  return out;
+}
+
 const STREAK_FILTERS = {
-  "ir-any":    { series: "posting one Illustration Rare a day", label: "Illustration Rares", test: c => /Illustration Rare/i.test(c.r || "") },
-  "ir-cheap":  { series: "posting one Illustration Rare under $3", label: "IRs under $10",      test: c => /Illustration Rare/i.test(c.r || "") && c.p != null && c.p < 10 },
-  "ir-mid":    { series: "posting one mid-priced Illustration Rare a day", label: "IRs under $25",      test: c => /Illustration Rare/i.test(c.r || "") && c.p != null && c.p < 25 },
-  "sir-only":  { series: "posting one Special Illustration Rare a day", label: "Special Illustration Rares", test: c => /Special Illustration Rare/i.test(c.r || "") },
-  "ir-modern": { series: "posting one modern Illustration Rare a day", label: "IRs from 2024 on",   test: c => /Illustration Rare/i.test(c.r || "") && c.y >= "2024" },
-  // PRICE BANDS. Restricted to Illustration Rares these pools are 18 and 32
-  // cards — nine and sixteen days, which is not a streak, it is a fortnight.
-  // Open to every hero rarity they run 141 and 119 days, and nothing is lost:
-  // a Rare Holo at $2.50 is exactly as postable as an IR at $2.50, and the
-  // PRICE BAND is the theme. Restricting rarity too was my assumption, not the ask.
-  "two-dollar":  { series: "posting one card I love that costs under $3", label: "The $2–3 shelf", test: c => HERO_RX.test(c.r || "") && c.p != null && c.p >= 2 && c.p <= 3 },
-  "five-dollar": { series: "posting one card I love that costs under $6", label: "The $5 pickup",  test: c => HERO_RX.test(c.r || "") && c.p != null && c.p >= 4.50 && c.p <= 5.95 },
-  // THE SCOUT'S ANGLES — found by searching the data rather than my memory,
-  // which was thinking in categories while the data thinks in structure.
-  // Chronological is the strongest: a streak with a DIRECTION beats one with a
-  // filter, because "Day 40, we've reached Neo Destiny" is a story and "Day 40,
-  // another card" is a counter.
+  "ir-any":    { games: ["paper"], series: "posting one Illustration Rare a day", label: "Illustration Rares", test: c => /Illustration Rare/i.test(c.r || "") },
+  "ir-cheap":  { games: ["paper"], series: "posting one Illustration Rare under $3", label: "IRs under $10",      test: c => /Illustration Rare/i.test(c.r || "") && c.p != null && c.p < 10 },
+  "ir-mid":    { games: ["paper"], series: "posting one mid-priced Illustration Rare a day", label: "IRs under $25",      test: c => /Illustration Rare/i.test(c.r || "") && c.p != null && c.p < 25 },
+  "sir-only":  { games: ["paper"], series: "posting one Special Illustration Rare a day", label: "Special Illustration Rares", test: c => /Special Illustration Rare/i.test(c.r || "") },
+  "ir-modern": { games: ["paper"], series: "posting one modern Illustration Rare a day", label: "IRs from 2024 on",   test: c => /Illustration Rare/i.test(c.r || "") && c.y >= "2024" },
+  "two-dollar":  { games: ["paper"], series: "posting one card I love that costs under $3", label: "The $2–3 shelf", test: c => isHeroCard(c) && c.p != null && c.p >= 2 && c.p <= 3 },
+  "five-dollar": { games: ["paper"], series: "posting one card I love that costs under $6", label: "The $5 pickup",  test: c => isHeroCard(c) && c.p != null && c.p >= 4.50 && c.p <= 5.95 },
   "chronological": { series: "walking the whole history of this game, one set a day", label: "The whole history, in order", ordered: "date",
-    test: c => HERO_RX.test(c.r || "") && c.a && c.y },
+    test: c => isHeroCard(c) && c.a && c.y },
   "one-artist":    { series: "posting one card by a single artist", label: "One artist at a time", ordered: "artist",
-    test: c => HERO_RX.test(c.r || "") && c.a },
-  "cheapest-up":   { series: "posting the cheapest card I have not shown yet", label: "Cheapest first, working up", ordered: "price",
-    test: c => HERO_RX.test(c.r || "") && c.p != null },
-  // WHAT THE CARD SAYS. Tyler posted Slakoth at 2am after seventeen hours of
-  // coding and its attack is called Take It Easy — neither of us knew, because
-  // nothing we held could search it. attackNames now rides in the index, so a
-  // filter can find the joke by READING the cards rather than by anybody
-  // listing Pokemon they think look tired. The word list is here in the open
-  // where it can be argued with, which is the same standard a named list is
-  // held to; the difference is that membership is derived, not asserted.
+    test: c => isHeroCard(c) && c.a },
+  "cheapest-up":   { games: ["paper"], series: "posting the cheapest card I have not shown yet", label: "Cheapest first, working up", ordered: "price",
+    test: c => isHeroCard(c) && c.p != null },
   "says-rest": { label: "Cards that tell you to rest",
     words: ["take it easy","sleep","nap","rest","yawn","dream","slack","snooze","doze","drowsy","lazy"],
-    test: c => Array.isArray(c.k) && c.k.some(a => ["take it easy","sleep","nap","rest","yawn","dream","slack","snooze","doze","drowsy","lazy"].some(w => String(a).toLowerCase().includes(w))) },
+    test: c => cardAttacks(c).some(a => ["take it easy","sleep","nap","rest","yawn","dream","slack","snooze","doze","drowsy","lazy"].some(w => String(a).toLowerCase().indexOf(w) >= 0)) },
   "says-hit": { label: "Cards that just hit things",
     words: ["punch","kick","slam","smash","tackle","headbutt","bite","slash","crush","pound"],
-    test: c => Array.isArray(c.k) && c.k.some(a => ["punch","kick","slam","smash","tackle","headbutt","bite","slash","crush","pound"].some(w => String(a).toLowerCase().includes(w))) },
-  "weekly-connect": { cadence: "weekly", label: "One connecting picture",
+    test: c => cardAttacks(c).some(a => ["punch","kick","slam","smash","tackle","headbutt","bite","slash","crush","pound"].some(w => String(a).toLowerCase().indexOf(w) >= 0)) },
+  "pocket-star": { games: ["pocket"], series: "posting one Three Star a day", label: "Three Star",
+    test: c => /Three Star|Immersive/i.test(c.r || "") && !!c.a },
+  "pocket-crown": { games: ["pocket"], series: "posting one Crown card a day", label: "Crown",
+    test: c => /Crown/i.test(c.r || "") && !!c.a },
+  "pocket-rocket": { games: ["pocket"], series: "walking Team Rocket's Ambition", label: "Team Rocket's Ambition", ordered: "date",
+    test: c => (c.sid === "B4a" || String(c.i).indexOf("tcgp-B4a-") === 0) && !!c.a },
+  "pocket-apex": { games: ["pocket"], series: "walking Genetic Apex", label: "Genetic Apex", ordered: "date",
+    test: c => /Genetic Apex/i.test(c.s || "") && !!c.a },
+  "weekly-connect": { games: ["paper", "both"], cadence: "weekly", label: "One connecting picture",
     series: "one connecting picture a week — spread the good ones out",
     test: c => typeof CONNECTING !== "undefined" && CONNECTING.some(function(g){ return g.c.indexOf(c.i) >= 0; }) },
   "weekly-artist": { cadence: "weekly", label: "Forgotten illustrator",
     series: "one overlooked illustrator a week",
-    test: c => !!(c.a && HERO_RX.test(c.r || "")), ordered: "artist" },
-  "weekly-twins": { cadence: "weekly", label: "Paper × Pocket",
+    test: c => !!(c.a && isHeroCard(c)), ordered: "artist" },
+  "weekly-twins": { games: ["both", "paper", "pocket"], cadence: "weekly", label: "Paper × Pocket",
     series: "the same Pokémon in both games, one a week",
     test: c => !!(typeof CROSSWALK !== "undefined" && CROSSWALK.twins && CROSSWALK.twins[(typeof monName === "function" ? monName(c.n) : c.n)]) },
-  "weekly-old": { cadence: "weekly", label: "1999–2003",
+  "weekly-old": { games: ["paper"], cadence: "weekly", label: "1999–2003",
     series: "one early-print card a week",
     test: c => !!(c.y && c.y <= "2003" && c.a) },
   "weekly-promo": { cadence: "weekly", label: "Promos",
     series: "one promo a week",
     test: c => /Promo/i.test(c.r || "") && !!c.a },
+  "weekly-pocket-star": { games: ["pocket", "both"], cadence: "weekly", label: "One Three Star",
+    series: "one Three Star a week",
+    test: c => /Three Star|Immersive/i.test(c.r || "") && !!c.a },
 };
 
 function startStreak(filterId, perDay){
@@ -2320,8 +2329,16 @@ function renderStreak(remaining){
     const p = document.createElement("div");
     p.className = "streakexplain";
     p.textContent = seriesCadence === "weekly"
-      ? "Weekly is for spreading the good stuff out. One connecting picture, one forgotten illustrator, one early print — not the same post every morning."
-      : "Daily is a rule you can keep. One Illustration Rare, one cheap card, or the history in order. We never repeat a card you have used.";
+      ? (currentGame() === "pocket"
+        ? "Weekly Pocket: one Three Star, or the same Pokémon as paper. We never repeat a card you have used."
+        : currentGame() === "both"
+        ? "Weekly is the same Pokémon in both games, or one connecting picture. Spread the good ones out."
+        : "Weekly is for spreading the good stuff out. One connecting picture, one forgotten illustrator, one early print.")
+      : (currentGame() === "pocket"
+        ? "Daily Pocket: Three Stars, Team Rocket's Ambition, or the sets in order. We never repeat a card you have used."
+        : currentGame() === "both"
+        ? "Daily, both games: walk the history, or one artist. Weekly is where paper × Pocket lives."
+        : "Daily is a rule you can keep. One Illustration Rare, one cheap card, or the history in order. We never repeat a card you have used.");
     box.appendChild(p);
     const row = document.createElement("div");
     row.className = "streakactions";
@@ -2329,7 +2346,8 @@ function renderStreak(remaining){
       const f = STREAK_FILTERS[k];
       const isW = f.cadence === "weekly";
       if (seriesCadence === "weekly" ? !isW : isW) return;
-      if (k === "ir-cheap" || k === "ir-mid" || k === "ir-modern" || k === "five-dollar" || k === "says-rest" || k === "says-hit" || k === "one-artist" || k === "cheapest-up" || k === "sir-only") return;
+      if (f.games && f.games.indexOf(currentGame()) < 0) return;
+      if (k === "ir-cheap" || k === "ir-mid" || k === "ir-modern" || k === "five-dollar" || k === "says-rest" || k === "says-hit" || k === "one-artist" || k === "cheapest-up" || k === "sir-only" || k === "pocket-crown" || k === "pocket-apex") return;
       const b = document.createElement("button");
       b.type = "button";
       b.textContent = f.label;
@@ -3161,27 +3179,33 @@ window.imgFallback = imgFallback;
 // EVERY ONE OF THESE IS VERIFIED TO RETURN CARDS. An example chip that returns
 // nothing is worse than no chip: it teaches a first-time user that the box does
 // not work, on their first attempt, using our own suggestion.
-const EXAMPLES = [
-  { q: "surprise me", label: "Surprise me" },
-  { q: "the fishes", label: "Carvanha · Sharpedo", demo: true },
-  { q: "the birds", label: "3 birds · one painting" },
-  { q: "eeveelutions", label: "the Eevee line" },
-  { q: "pokemon pocket", label: "Pokémon Pocket", game: "pocket" },
-];
-const POCKET_EXAMPLES = [
-  { q: "surprise me", label: "Surprise me" },
-  { q: "eeveelutions", label: "Eevee line · Pocket", demo: true },
-  { q: "the birds", label: "Rocket birds" },
-  { q: "team rocket's zapdos", label: "Team Rocket Zapdos" },
-  { q: "paper tcg", label: "Paper TCG", game: "paper" },
-];
-const BOTH_EXAMPLES = [
-  { q: "surprise me", label: "Surprise me" },
-  { q: "the birds", label: "paper × Pocket birds", demo: true },
-  { q: "the fishes", label: "paper × Pocket fishes" },
-  { q: "team rocket's zapdos", label: "Zapdos, both games" },
-  { q: "eeveelutions", label: "Eevee line" },
-];
+function exampleChips(){
+  var g = currentGame();
+  if (g === "pocket") return [
+    { q: "surprise me", label: "Surprise me" },
+    { q: "eeveelutions", label: "Eevee line", demo: true },
+    { q: "the birds", label: "Rocket birds" },
+    { q: "team rocket", label: "Team Rocket" },
+    { q: "three star", label: "Three Star" },
+    { q: "paper tcg", label: "Paper TCG", game: "paper" },
+  ];
+  if (g === "both") return [
+    { q: "surprise me", label: "Surprise me" },
+    { q: "the birds", label: "paper × Pocket birds", demo: true },
+    { q: "eeveelutions", label: "Eevee line, both" },
+    { q: "pikachu", label: "Pikachu, both games" },
+    { q: "team rocket", label: "Team Rocket" },
+  ];
+  return [
+    { q: "surprise me", label: "Surprise me" },
+    { q: "the fishes", label: "Carvanha · Sharpedo", demo: true },
+    { q: "the birds", label: "3 birds · one painting" },
+    { q: "eeveelutions", label: "the Eevee line" },
+    { q: "the beach", label: "nine cards, one beach" },
+    { q: "pokemon pocket", label: "Pokémon Pocket", game: "pocket" },
+  ];
+}
+const EXAMPLES = exampleChips;
 function currentGame(){
   var gs = el("game");
   if (gs && (gs.value === "pocket" || gs.value === "both" || gs.value === "paper")) return gs.value;
@@ -3233,7 +3257,7 @@ function intentCtx(){
     artists: [...new Set(INDEX.map(c => c.a).filter(Boolean))],
     sets: [...new Set(INDEX.map(c => c.s))],
     moods: MOODS,
-    examples: EXAMPLES.map(function(e){ return e.q; }),
+    examples: exampleChips().map(function(e){ return e.q; }),
   };
 }
 
@@ -3330,7 +3354,7 @@ function askResolve(text){
       pin: "tcgp-B4a-090|tcgp-B4a-089|tcgp-B4a-088",
       why: "Team Rocket's Ambition birds (B4a)" };
   }
-  if (pocketOn && has(["team rocket", "rockets ambition", "rocket ambition"]))
+  if ((pocketOn || bothOn) && has(["team rocket", "rockets ambition", "rocket ambition"]))
     return { relation: "SET_FACTS", sid: "B4a", why: "Team Rocket's Ambition" };
   if (!pocketOn && ((has(["entei"]) && has(["raikou"]) && has(["suicune"])) || has(["the beasts", "legendary dogs", "legendary beasts"])))
     return { relation: "CONNECTING_ART", subject: null, need: 3,
@@ -3644,9 +3668,12 @@ function applyGame(g, rerun){
   if (s) s.textContent = "Search all " + INDEX.length.toLocaleString("en-US") + " cards instead";
   var ask = el("ask");
   if (ask) ask.placeholder = g === "pocket"
-    ? "surprise me, eeveelutions, team rocket's zapdos…"
-    : "surprise me, the fishes, eeveelutions…";
+    ? "surprise me, team rocket, three star, eeveelutions…"
+    : g === "both"
+    ? "surprise me, the birds, pikachu, eeveelutions…"
+    : "surprise me, the fishes, the beach, eeveelutions…";
   try { paintExamples(); } catch (e) {}
+  try { renderStreak(); } catch (e) {}
   if (rerun && ask && String(ask.value || "").trim()) runAsk(ask.value);
 }
 function setGame(g){ applyGame(g, true); }
@@ -4627,8 +4654,7 @@ function runAsk(text){
 function paintExamples(){
   const eg = el("egs");
   if (!eg) return;
-  var gNowEx = currentGame();
-  var list = gNowEx === "pocket" ? POCKET_EXAMPLES : gNowEx === "both" ? BOTH_EXAMPLES : EXAMPLES;
+  var list = exampleChips();
   eg.innerHTML = list.map(function(e){
     const kicker = e.demo ? "<span class='egkicker'>Try this</span>" : "";
     return "<button type='button' class='eg" + (e.demo ? " demo" : "") + "' data-q='" + e.q + "'" +
