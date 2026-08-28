@@ -1078,7 +1078,7 @@ function parseIntent(text, ctx) {
   const num = q.match(new RegExp(B + "(" + D + "+)" + S + "*(cards?|of them)?" + B));
   if (num && [1, 2, 3, 4, 6, 8, 9].includes(Number(num[1]))) { found.count = Number(num[1]); found.matched.push(found.count + " cards"); }
   else for (const [w, n] of Object.entries(words)) {
-    if (w === "one" && /one painting|one picture|one beach/.test(q)) continue;
+    if (w === "one" && /one painting|one picture|one beach|one diamond|one star|one shiny/.test(q)) continue;
     const padded = " " + q.replace(/[^a-z0-9]+/g, " ") + " ";
     if (padded.indexOf(" " + w + " ") >= 0) { found.count = n; found.matched.push(n + " cards"); break; }
   }
@@ -1112,7 +1112,7 @@ function parseIntent(text, ctx) {
   const ARTIST_TRAP = /^(beach|young|white|black|brown|green|king|wood|stone|gold|park|hall|west|north|south|long|short)$/;
   for (const a of (ctx.artists || [])) {
     const last = a.split(" ").pop().toLowerCase();
-    if (last.length < 5) continue;
+    if (last.length < 4) continue;
     if (ARTIST_TRAP.test(last) && q.indexOf(a.toLowerCase()) < 0) continue;
     if (q.includes(last)) { found.artist = a; found.matched.push(a); break; }
   }
@@ -1342,7 +1342,7 @@ function resolvePrompt(found, INDEX, helpers) {
   // POKEMON ONLY, unless a Trainer was explicitly asked for. "Cards nobody
   // talks about" returned Erika's Invitation and Giovanni's Charisma — both
   // Trainers, neither a card anybody means by that phrase.
-  if (!found.trainerOk) narrow(c => { const a = attrs[c.i]; return a && a.dex; }, "Pokémon only");
+  if (!found.trainerOk) narrow(c => c.sup === "P" || (attrs[c.i] && attrs[c.i].dex), "Pokémon only");
 
   if (found.artist) narrow(c => c.a === found.artist, found.artist);
   if (found.set) narrow(c => c.s === found.set, found.set);
@@ -1411,7 +1411,7 @@ function resolvePrompt(found, INDEX, helpers) {
   // first stage is not an evolution line.
   if (!found.evoOrder && withHero.length >= (found.count || 2)) { pool = withHero; why.push("hero rarities"); }
 
-  const n = found.count || (found.shape === "evo-line" ? 3 : 2);
+  const n = found.count || (typeof countLocked === "function" && countLocked()) || (found.mon && !found.shape ? 1 : found.shape === "evo-line" ? 3 : 2);
   const skip = (helpers.exclude instanceof Set) ? helpers.exclude : new Set();
   const rot = Number(helpers.rot) || 0;
 
@@ -1444,6 +1444,7 @@ function resolvePrompt(found, INDEX, helpers) {
     const byYear = pool.slice().filter(c => !skip.has(c.i)).sort((a, b) => String(a.y).localeCompare(String(b.y)));
     const years = byYear.length ? byYear : pool.slice().sort((a, b) => String(a.y).localeCompare(String(b.y)));
     if (years.length <= n) picked = years;
+    else if (n === 1) picked = [years[0]];
     else {
       picked = [];
       const step = (years.length - 1) / (n - 1);
@@ -2101,7 +2102,7 @@ function checkIntent(){
   //
   // If sealed products ever enter the tray they must arrive with an explicit
   // kind. Absence of a flag means single, which fails toward refusing.
-  const singles = tray.filter(c => c.kind !== "sealed");
+  const singles = tray.filter(c => c && c.kind !== "sealed");
   if (fIntent === "sell" && singles.length) {
     box.hidden = false;
     box.innerHTML = "<b>We will not make a sell image for singles.</b><br>" +
@@ -3329,6 +3330,8 @@ function askResolve(text){
       pin: "tcgp-B4a-090|tcgp-B4a-089|tcgp-B4a-088",
       why: "Team Rocket's Ambition birds (B4a)" };
   }
+  if (pocketOn && has(["team rocket", "rockets ambition", "rocket ambition"]))
+    return { relation: "SET_FACTS", sid: "B4a", why: "Team Rocket's Ambition" };
   if (!pocketOn && ((has(["entei"]) && has(["raikou"]) && has(["suicune"])) || has(["the beasts", "legendary dogs", "legendary beasts"])))
     return { relation: "CONNECTING_ART", subject: null, need: 3,
       pin: "neo3-6|neo3-13|neo3-14",
@@ -3894,6 +3897,17 @@ function askCards(r, opts){
       }
     }
     if (!whole.length) {
+      var heroes = [];
+      for (var hi = 0; hi < INDEX.length; hi++)
+        if (INDEX[hi].hero && INDEX[hi].sup === "P") heroes.push(INDEX[hi]);
+      if (heroes.length >= 2) {
+        var nNeed = (typeof countLocked === "function" && countLocked()) ? countLocked() : 6;
+        var start = ((rot || 0) * nNeed) % heroes.length;
+        var pickH = [];
+        for (var hk = 0; hk < heroes.length && pickH.length < nNeed; hk++)
+          pickH.push(heroes[(start + hk) % heroes.length]);
+        return { cards: pickH, reason: "a Pocket pull" };
+      }
       return askCards({
         relation: "SPECIES_GROUP",
         names: ["Eevee","Vaporeon","Jolteon","Flareon","Espeon","Umbreon","Leafeon","Glaceon","Sylveon"],
@@ -3910,6 +3924,20 @@ function askCards(r, opts){
       pick = pool[seed % pool.length];
     }
     return { cards: pick.cards, reason: pick.why };
+  }
+
+  if (r.relation === "SET_FACTS") {
+    var sid = r.sid || "";
+    var setCards = [];
+    for (var si2 = 0; si2 < INDEX.length; si2++) {
+      var sc = INDEX[si2];
+      if (skipIds.has(sc.i)) continue;
+      if ((sc.sid && sc.sid === sid) || String(sc.i).indexOf("tcgp-" + sid + "-") === 0)
+        setCards.push(sc);
+    }
+    setCards.sort(function(a, b){ return ((b.hero ? 20 : 0) - (a.hero ? 20 : 0)); });
+    var nSet = (typeof countLocked === "function" && countLocked()) ? countLocked() : 9;
+    return { cards: setCards.slice(0, nSet), reason: r.why || sid };
   }
 
   // ── CONNECTING ART, WHICH THIS FUNCTION COULD NOT ANSWER AT ALL ─────────
@@ -4419,13 +4447,14 @@ function factSearch(text, need){
   var hit = [];
   for (var i = 0; i < INDEX.length; i++) if (hits(INDEX[i], terms)) hit.push(INDEX[i]);
   hit.sort(function(a, b){ return ((b.hero ? 20 : 0) - (a.hero ? 20 : 0)); });
-  need = Number(need) || countLocked() || 1;
+  need = Number(need);
+  if (!need) need = countLocked() || 9;
   if (need < 1) need = 1;
   return hit.slice(0, Math.min(9, need > hit.length ? hit.length : need));
 }
 function tryFacts(text){
   var lockedN = countLocked();
-  var cards = factSearch(text, lockedN || 1);
+  var cards = factSearch(text, lockedN || 9);
   if (!cards.length) return false;
   tray = cards; blob = null;
   lastPref = { kind: "ask", ask: text };
@@ -4495,6 +4524,8 @@ function runAsk(text){
       var lockedN = countLocked();
       if (askRel.relation === "CONNECTING_ART" || askRel.relation === "SURPRISE")
         tray = got.cards.slice();
+      else if (askRel.relation === "SET_FACTS")
+        tray = got.cards.slice(0, lockedN || 9);
       else if (lockedN) tray = got.cards.slice(0, lockedN);
       else tray = got.cards.slice(0, 9);
       blob = null;
@@ -4517,7 +4548,7 @@ function runAsk(text){
   };
   // Connecting art is a picture, not a search. The old parser always returned
   // a 2-card pair and ignored How many cards. This path has to go first.
-  if (askRel && (askRel.relation === "CONNECTING_ART" || askRel.relation === "ARTIST_REVISITS" || askRel.relation === "EVOLUTION_LINE" || askRel.relation === "SPECIES_GROUP" || askRel.relation === "SURPRISE")) {
+  if (askRel && (askRel.relation === "CONNECTING_ART" || askRel.relation === "ARTIST_REVISITS" || askRel.relation === "EVOLUTION_LINE" || askRel.relation === "SPECIES_GROUP" || askRel.relation === "SURPRISE" || askRel.relation === "SET_FACTS")) {
     if (tryRelation()) return;
   }
   const ctx = intentCtx();
@@ -4572,10 +4603,9 @@ function runAsk(text){
   if (res.cards.length) {
     var take = res.cards.length;
     if (found.count) take = Math.min(take, found.count);
-    else if (found.mon && !found.shape) {
-      take = 1;
-      if (!countIsFit()) markCount(1);
-    } else if (found.shape !== "evo-line" && countLocked()) take = Math.min(take, countLocked());
+    else if (found.mon && !found.shape) take = countLocked() || 1;
+    else if (found.shape !== "evo-line" && countLocked()) take = Math.min(take, countLocked());
+    take = Math.min(take, 9);
     tray = res.cards.slice(0, take); blob = null;
     lastPref = { kind: "ask", ask: text };
     anotherCursor = 0;
@@ -4723,7 +4753,7 @@ function rerunAsk(text, exclude, rot){
   const rel = askResolve(text);
   if (rel && (rel.relation === "SPECIES_GROUP" || rel.relation === "CONNECTING_ART"
       || rel.relation === "EVOLUTION_LINE" || rel.relation === "ARTIST_REVISITS"
-      || rel.relation === "SURPRISE")) {
+      || rel.relation === "SURPRISE" || rel.relation === "SET_FACTS")) {
     const got = askCards(rel, { exclude: exclude, rot: rot });
     if (got.cards && got.cards.length > 1) return { cards: got.cards.slice(0, 9), why: [got.reason] };
   }

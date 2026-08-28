@@ -95,7 +95,7 @@ function lineOptions(cards, themeName, followerCount){
   for (const c of cards) {
     const t = CARD_TEXT[c.i];
     const a = (t && t.a && t.a.length ? t.a[0] : null) || (c.A && c.A[0] ? c.A[0] : null);
-    if (a && COMMON_ATTACKS.indexOf(a.toLowerCase()) < 0 && a.length > 4) notable.push({ c: c, atk: a });
+    if (a && COMMON_ATTACKS.indexOf(a.toLowerCase()) < 0 && a.length >= 4) notable.push({ c: c, atk: a });
   }
 
   // ── THE GLANCE TEST ──────────────────────────────────────────────────────

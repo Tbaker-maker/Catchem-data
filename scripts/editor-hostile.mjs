@@ -186,6 +186,7 @@ try {
   check("fishes layout is across", !!(gFish && gFish.arr === "across"), JSON.stringify(gFish && gFish.arr));
 } catch (e) { check("fishes layout is across", false, e.message); }
 ask("the beach");
+try { api.applyCount(0, false); } catch (e) {}
 ask("ninetales");
 check("ninetales is not a 9-card connecting dump",
   api.tray().length === 1 && /ninetales/i.test(api.tray()[0].n),
@@ -345,8 +346,18 @@ try {
     ga.slice(0, 3).map(c => c.n + " " + c.s).join(", "));
   const vine = ask("vine whip");
   check("vine whip finds a printed attack",
-    vine.length >= 1,
+    vine.length >= 3 && vine.some(c => (c.A || []).some(a => /vine whip/i.test(a)) || /bulba|tangela|carnivine/i.test(c.n)),
     vine.map(c => c.n + " " + (c.A || []).join("/")).join(", "));
+  const rocket = ask("team rocket");
+  check("pocket team rocket is B4a",
+    rocket.length >= 2 && rocket.every(c => String(c.i).indexOf("tcgp-B4a-") === 0),
+    rocket.slice(0, 4).map(c => c.n + " " + c.i).join(", "));
+  api.applyCount(6, false);
+  const sixP = ask("pikachu");
+  check("locked 6 pikachu is 6",
+    sixP.length === 6 && sixP.every(c => /pikachu/i.test(c.n)),
+    sixP.map(c => c.n).join(", "));
+  api.applyCount(0, false);
   const bulb = ask("bulbasaur");
   const optsP = api.lineOptions(api.tray(), null, 0) || [];
   check("pocket notice names HP or set or type",
