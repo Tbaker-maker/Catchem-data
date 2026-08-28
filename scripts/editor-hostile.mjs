@@ -51,7 +51,7 @@ globalThis.__POCKET_ROWS = pocketRows;
 
 let api;
 try {
-  api = new Function(js + ";return { runAsk, tray:()=>tray, lineOptions, layoutForTray, connectingGroupOf, anotherSet, backSet, parseIntent, evoLineFor, INDEX, POCKET_INDEX, MOVIE_INDEX, CONNECTING, LAYOUTS, add, remove, parseCta, pickShowYours, answerCta, officeCount:()=>officeCount, applyCount, fCount:()=>fCount, fillLineFromCards, pickCaption, applyGame, setGame, pocketShowcase, movieShowcase, imgSmall, imgFallback, pocketImgList, hydrateIndexes };")();
+  api = new Function(js + ";return { runAsk, tray:()=>tray, lineOptions, layoutForTray, connectingGroupOf, anotherSet, backSet, parseIntent, evoLineFor, INDEX, POCKET_INDEX, MOVIE_INDEX, CONSOLE_INDEX, CART_INDEX, CONNECTING, LAYOUTS, add, remove, parseCta, pickShowYours, answerCta, officeCount:()=>officeCount, applyCount, fCount:()=>fCount, fillLineFromCards, pickCaption, applyGame, setGame, pocketShowcase, movieShowcase, imgSmall, imgFallback, pocketImgList, hydrateIndexes };")();
 } catch (e) {
   console.error("✗ page JS does not parse:", e.message);
   process.exit(1);
@@ -489,6 +489,35 @@ try {
   api.applyGame("paper", false);
 } catch (e) {
   check("movies", false, e.message);
+  try { api.applyGame("paper", false); } catch (e2) {}
+}
+
+try {
+  check("console catalogue shipped", (api.CONSOLE_INDEX || []).length >= 18,
+    "CONSOLE_INDEX=" + ((api.CONSOLE_INDEX || []).length));
+  check("cartridge catalogue shipped", (api.CART_INDEX || []).length >= 15,
+    "CART_INDEX=" + ((api.CART_INDEX || []).length));
+  api.applyGame("consoles", false);
+  const gb = ask("game boy");
+  check("game boy is the handheld",
+    gb.length >= 1 && gb.every(c => String(c.i).indexOf("hw-") === 0) && /game boy/i.test(gb[0].n),
+    gb.map(c => c.n + " " + c.i).join(", "));
+  const sw = ask("switch");
+  check("switch is a Nintendo Switch",
+    sw.length >= 1 && sw.every(c => String(c.i).indexOf("hw-") === 0) && /switch/i.test(sw.map(c => c.n).join(" ")),
+    sw.map(c => c.n).join(", "));
+  api.applyGame("cartridges", false);
+  const yel = ask("yellow");
+  check("yellow cartridge is Yellow",
+    yel.length >= 1 && yel.every(c => String(c.i).indexOf("cart-") === 0) && /yellow/i.test(yel[0].n),
+    yel.map(c => c.n + " " + c.i).join(", "));
+  const stad = ask("stadium");
+  check("stadium is the N64 disc",
+    stad.length >= 1 && /stadium/i.test(stad[0].n) && String(stad[0].i).indexOf("cart-") === 0,
+    stad.map(c => c.n).join(", "));
+  api.applyGame("paper", false);
+} catch (e) {
+  check("hardware", false, e.message);
   try { api.applyGame("paper", false); } catch (e2) {}
 }
 

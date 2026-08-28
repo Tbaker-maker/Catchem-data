@@ -146,6 +146,30 @@ else {
       ]);
     }
   }
+  const hwCat = await J("data/hardware-catalogue.json");
+  const consoleShow = [];
+  const cartShow = [];
+  const cartSeen = {};
+  if (hwCat && hwCat.consoles) {
+    for (const c of hwCat.consoles) {
+      if (!c.img) continue;
+      consoleShow.push([c.id, c.n, c.platform || c.n, c.year, c.img, c.kind || "console", (c.aliases || []).join("|"), (c.spark || []).join("|")]);
+    }
+  }
+  if (hwCat && hwCat.carts) {
+    for (const c of hwCat.carts) {
+      if (!c.img) continue;
+      if (cartSeen[c.img]) {
+        const row = cartSeen[c.img];
+        row[1] = row[1] + " / " + String(c.n).replace(/^Pokémon /, "");
+        row[6] = [row[6], (c.aliases || []).join("|")].filter(Boolean).join("|");
+        continue;
+      }
+      const row = [c.id, c.n, c.platform || "", c.year, c.img, c.kind || "box", (c.aliases || []).join("|"), (c.species || []).join("|")];
+      cartSeen[c.img] = row;
+      cartShow.push(row);
+    }
+  }
   const xwalk = (await J("data/pocket-crosswalk.json")) || { twins: {}, sharedBases: 0, sharedArtists: 0 };
 
   const html = `<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex,nofollow,noarchive"><title>Catch'em Creators — build a post</title>
@@ -548,6 +572,8 @@ ${TODAY_IMG ? `<div id="todaypost">
     <option value="paper">Paper TCG</option>
     <option value="pocket">Pocket</option>
     <option value="movies">Movies</option>
+    <option value="cartridges">Cartridges</option>
+    <option value="consoles">Consoles</option>
     <option value="both">Compare both</option>
   </select>
 </label>
@@ -983,8 +1009,18 @@ function mapMovieRow(r){
   if (r[7]) o.scenes = String(r[7]).split("|");
   return o;
 }
-var MOVIE_INDEX = [];
-var DATA_V = "${index.length}-${pocketShow.length}-${movieShow.length}";
+var CONSOLE_ROWS = ${JSON.stringify(consoleShow)};
+var CART_ROWS = ${JSON.stringify(cartShow)};
+function mapHwRow(r, g){
+  var o = { i: r[0], n: r[1], s: r[2], y: r[3], g: g, img: r[4], r: r[5] || "", hero: 1, sup: "P" };
+  if (r[6]) o.aliases = String(r[6]).split("|");
+  if (r[7]) o.species = String(r[7]).split("|");
+  o.kind = r[5] || "";
+  return o;
+}
+var CONSOLE_INDEX = [];
+var CART_INDEX = [];
+var DATA_V = "${index.length}-${pocketShow.length}-${movieShow.length}-${consoleShow.length}-${cartShow.length}";
 const CROSSWALK = ${JSON.stringify({ sharedBases: xwalk.sharedBases, sharedArtists: xwalk.sharedArtists, twins: xwalk.twins })};
 // Sourced facts, so the 'story' shape has something true to build on. Only
 // VERIFIED ones ship — an unsourced claim on a card image is the one mistake
@@ -1596,7 +1632,7 @@ const imgSmall = (id) => {
   return "https://images.pokemontcg.io/" + id.slice(0, id.lastIndexOf("-")) + "/" + id.slice(id.lastIndexOf("-") + 1) + ".png";
 };
 const imgUrl = (id) => {
-  if (String(id).indexOf("tcgp-") === 0 || String(id).indexOf("mov-") === 0) return imgSmall(id);
+  if (String(id).indexOf("tcgp-") === 0 || String(id).indexOf("mov-") === 0 || String(id).indexOf("hw-") === 0 || String(id).indexOf("cart-") === 0) return imgSmall(id);
   return "https://images.pokemontcg.io/" + id.slice(0, id.lastIndexOf("-")) + "/" + id.slice(id.lastIndexOf("-") + 1) + "_hires.png";
 };
 const imgAlt = (id) => "https://images.scrydex.com/pokemon/" + id + "/large";
@@ -1610,11 +1646,15 @@ function hydrateIndexes(){
   CARD_INDEX = (CARD_ROWS || []).map(mapPaperRow);
   POCKET_INDEX = (POCKET_ROWS || []).map(mapPocketRow);
   MOVIE_INDEX = (MOVIE_ROWS || []).map(mapMovieRow);
+  CONSOLE_INDEX = (CONSOLE_ROWS || []).map(function(r){ return mapHwRow(r, "h"); });
+  CART_INDEX = (CART_ROWS || []).map(function(r){ return mapHwRow(r, "t"); });
   INDEX = CARD_INDEX.slice();
   for (var k in byIdRow) delete byIdRow[k];
   for (var i = 0; i < CARD_INDEX.length; i++) byIdRow[CARD_INDEX[i].i] = CARD_INDEX[i];
   for (var pi = 0; pi < POCKET_INDEX.length; pi++) byIdRow[POCKET_INDEX[pi].i] = POCKET_INDEX[pi];
   for (var mi = 0; mi < MOVIE_INDEX.length; mi++) byIdRow[MOVIE_INDEX[mi].i] = MOVIE_INDEX[mi];
+  for (var hi = 0; hi < CONSOLE_INDEX.length; hi++) byIdRow[CONSOLE_INDEX[hi].i] = CONSOLE_INDEX[hi];
+  for (var ti = 0; ti < CART_INDEX.length; ti++) byIdRow[CART_INDEX[ti].i] = CART_INDEX[ti];
   ASK_NAMES = null; ASK_ARTISTS = null;
 }
 function loadCatalogue(then){
@@ -1834,6 +1874,8 @@ function hay(c){
   if (c.scenes) parts = parts.concat(c.scenes);
   if (c.species) parts = parts.concat(c.species);
   if (c.g === "m") parts.push("poster", "movie", "film");
+  if (c.g === "h") parts.push("console", "handheld", "system");
+  if (c.g === "t") parts.push("cartridge", "cart", "game", "box", "disc");
   c._h = fold(parts.join(" "));
   return c._h;
 }
@@ -3209,7 +3251,7 @@ function imgFallback(node, id){
     for (var i = 0; i < list.length; i++) {
       if (seen.indexOf(list[i]) < 0 && list[i] !== cur) { next = list[i]; break; }
     }
-  } else if (id.indexOf("mov-") === 0) {
+  } else if (id.indexOf("mov-") === 0 || id.indexOf("hw-") === 0 || id.indexOf("cart-") === 0) {
     next = null;
   } else if (seen.indexOf("scrydex.com") < 0) {
     next = "https://images.scrydex.com/pokemon/" + id + "/small";
@@ -3251,6 +3293,22 @@ function exampleChips(){
     { q: "detective pikachu", label: "Detective Pikachu" },
     { q: "mewtwo is born", label: "Mewtwo is born" },
   ];
+  if (g === "consoles") return [
+    { q: "surprise me", label: "Surprise me" },
+    { q: "game boy", label: "Game Boy", demo: true },
+    { q: "nintendo 64", label: "N64" },
+    { q: "switch", label: "Switch" },
+    { q: "the handhelds", label: "the handhelds" },
+    { q: "pikachu n64", label: "Pikachu N64" },
+  ];
+  if (g === "cartridges") return [
+    { q: "surprise me", label: "Surprise me" },
+    { q: "yellow", label: "Yellow", demo: true },
+    { q: "gold and silver", label: "Gold / Silver" },
+    { q: "stadium", label: "Stadium" },
+    { q: "let's go", label: "Let's Go" },
+    { q: "emerald", label: "Emerald" },
+  ];
   if (g === "both") return [
     { q: "surprise me", label: "Surprise me" },
     { q: "the birds", label: "paper × Pocket birds", demo: true },
@@ -3266,12 +3324,14 @@ function exampleChips(){
     { q: "the beach", label: "nine cards, one beach" },
     { q: "pokemon pocket", label: "Pokémon Pocket", game: "pocket" },
     { q: "the first movie", label: "Movies", game: "movies" },
+    { q: "game boy", label: "Consoles", game: "consoles" },
+    { q: "yellow", label: "Cartridges", game: "cartridges" },
   ];
 }
 const EXAMPLES = exampleChips;
 function currentGame(){
   var gs = el("game");
-  if (gs && (gs.value === "pocket" || gs.value === "both" || gs.value === "paper" || gs.value === "movies")) return gs.value;
+  if (gs && (gs.value === "pocket" || gs.value === "both" || gs.value === "paper" || gs.value === "movies" || gs.value === "consoles" || gs.value === "cartridges")) return gs.value;
   if (INDEX.length && INDEX[0] && INDEX[0].g === "k") return "pocket";
   return "paper";
 }
@@ -3409,6 +3469,8 @@ function askResolve(text){
   var pocketOn = gNow === "pocket";
   var bothOn = gNow === "both";
   if (gNow === "movies") return movieAsk(t);
+  if (gNow === "consoles") return consoleAsk(t);
+  if (gNow === "cartridges") return cartAsk(t);
   if ((pocketOn || bothOn) && (has(["the birds", "legendary birds", "three birds"]) ||
       (has(["zapdos"]) && has(["articuno"]) && has(["moltres"])))) {
     if (bothOn) return { relation: "CONNECTING_ART", subject: null, need: 6,
@@ -3780,39 +3842,61 @@ function movieShowcase(){
   fillLineFromCards(true);
   return true;
 }
-function movieAsk(t){
+function visualShowcase(index, prefer, label){
+  if (!index || !index.length) return false;
+  var pick = [];
+  prefer = prefer || [];
+  for (var i = 0; i < prefer.length; i++) {
+    var c = byIdRow[prefer[i]];
+    if (c) pick.push(c);
+  }
+  for (var j = 0; j < index.length && pick.length < 9; j++) {
+    if (pick.indexOf(index[j]) < 0) pick.push(index[j]);
+  }
+  tray = pick.slice(0, 9);
+  blob = null;
+  lastPref = { kind: "ask", ask: label || "" };
+  var box = el("askreply");
+  if (box) {
+    box.textContent = label + " — " + index.length + ". Name one, or pick a chip.";
+    box.className = "askreply";
+  }
+  render(); resetPage(); search();
+  fillLineFromCards(true);
+  return true;
+}
+function visualAsk(index, t, whyEmpty){
   t = " " + String(t || "").toLowerCase().replace(/[^a-z0-9]+/g, " ") + " ";
-  if (/ posters? | movies? | films? /.test(t) && t.trim().split(" ").length <= 2)
-    return { relation: "MOVIE_PIN", pin: "", why: "movie posters", show: true };
+  var short = t.trim().split(" ").filter(Boolean);
+  if (short.length <= 2 && /consoles?|handhelds?|cartridges?|carts?|boxes|games|posters?|movies?|films?/.test(t))
+    return { relation: "HARDWARE_PIN", pin: "", why: whyEmpty, show: true };
   var scored = [];
-  for (var i = 0; i < MOVIE_INDEX.length; i++) {
-    var c = MOVIE_INDEX[i];
+  for (var i = 0; i < index.length; i++) {
+    var c = index[i];
     var sc = 0;
-    var keys = (c.aliases || []).concat(c.scenes || []).concat([c.n, c.s]);
+    var keys = (c.aliases || []).concat(c.scenes || []).concat(c.species || []).concat([c.n, c.s]);
     for (var k = 0; k < keys.length; k++) {
       var key = " " + String(keys[k] || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim() + " ";
       if (key.length > 3 && t.indexOf(key) >= 0) sc += key.trim().length;
     }
-    var sp = c.species || [];
-    for (var s = 0; s < sp.length; s++) {
-      var sn = " " + String(sp[s] || "").toLowerCase() + " ";
-      if (t.indexOf(sn) >= 0) sc += 8;
-    }
     if (sc) scored.push({ c: c, sc: sc });
   }
   scored.sort(function(a, b){ return b.sc - a.sc; });
-  if (!scored.length) return { relation: "MOVIE_PIN", pin: "", why: "movie posters", show: true };
+  if (!scored.length) return { relation: "HARDWARE_PIN", pin: "", why: whyEmpty, show: true };
   var top = scored[0].sc;
-  var keep = scored.filter(function(x){ return x.sc >= top * 0.6; }).slice(0, 4);
+  var keep = scored.filter(function(x){ return x.sc >= top * 0.55; }).slice(0, 6);
   return {
-    relation: "MOVIE_PIN",
+    relation: "HARDWARE_PIN",
     pin: keep.map(function(x){ return x.c.i; }).join("|"),
     why: keep.map(function(x){ return x.c.n; }).join(" · "),
     need: keep.length
   };
 }
+function movieAsk(t){ return visualAsk(MOVIE_INDEX, t, "movie posters"); }
+function consoleAsk(t){ return visualAsk(CONSOLE_INDEX, t, "consoles"); }
+function cartAsk(t){ return visualAsk(CART_INDEX, t, "cartridges"); }
 function applyGame(g, rerun){
-  g = g === "pocket" ? "pocket" : g === "both" ? "both" : g === "movies" ? "movies" : "paper";
+  g = g === "pocket" ? "pocket" : g === "both" ? "both" : g === "movies" ? "movies" : g === "consoles" ? "consoles" : g === "cartridges" ? "cartridges" : "paper";
   ASK_NAMES = null;
   ASK_ARTISTS = null;
   NAMES = null;
@@ -3820,6 +3904,8 @@ function applyGame(g, rerun){
   INDEX = g === "pocket" ? POCKET_INDEX.slice()
     : g === "both" ? CARD_INDEX.concat(POCKET_INDEX)
     : g === "movies" ? MOVIE_INDEX.slice()
+    : g === "consoles" ? CONSOLE_INDEX.slice()
+    : g === "cartridges" ? CART_INDEX.slice()
     : CARD_INDEX.slice();
   var gs = el("game");
   if (gs && gs.value !== g) {
@@ -3837,6 +3923,10 @@ function applyGame(g, rerun){
     ? "surprise me, the birds, pikachu, eeveelutions…"
     : g === "movies"
     ? "the first movie, I choose you, Lugia, Mewtwo is born…"
+    : g === "consoles"
+    ? "game boy, N64, Switch, the handhelds…"
+    : g === "cartridges"
+    ? "yellow, stadium, gold and silver, let's go…"
     : "surprise me, the fishes, the beach, eeveelutions…";
   try { paintExamples(); } catch (e) {}
   try { renderStreak(); } catch (e) {}
@@ -3847,7 +3937,7 @@ function setGame(g){
   var ask = el("ask");
   var q = ask ? String(ask.value || "").trim() : "";
   applyGame(g, false);
-  if (/^(pokemon pocket|tcg pocket|ptcgp|paper tcg|paper cards|movies|posters)$/i.test(q.replace(/\s+/g, " "))) {
+  if (/^(pokemon pocket|tcg pocket|ptcgp|paper tcg|paper cards|movies|posters|consoles|cartridges|carts)$/i.test(q.replace(/\s+/g, " "))) {
     q = "";
     if (ask) ask.value = "";
   }
@@ -3855,6 +3945,8 @@ function setGame(g){
     if (g === "pocket") pocketShowcase();
     else if (g === "both") runAsk("the birds");
     else if (g === "movies") movieShowcase();
+    else if (g === "consoles") visualShowcase(CONSOLE_INDEX, ["hw-gb","hw-gbc","hw-gba","hw-n64","hw-gcn","hw-ds","hw-3ds","hw-nsw","hw-n64pika"], "Consoles");
+    else if (g === "cartridges") visualShowcase(CART_INDEX, ["cart-yellow","cart-crystal","cart-emerald","cart-hg","cart-stad","cart-snap","cart-lgpe","cart-sv","cart-colo"], "Cartridges");
     else { tray = []; blob = null; render(); }
     return;
   }
@@ -3867,7 +3959,7 @@ function setGame(g){
 }
 function twinNote(cards){
   if (!cards || !cards.length || typeof CROSSWALK === "undefined" || !CROSSWALK.twins) return "";
-  if (cards.some(function(c){ return c.g === "m"; })) return "";
+  if (cards.some(function(c){ return c.g === "m" || c.g === "h" || c.g === "t"; })) return "";
   var bits = [], seen = {};
   for (var i = 0; i < cards.length; i++) {
     var b = (typeof monName === "function") ? monName(cards[i].n) : cards[i].n;
@@ -4034,15 +4126,19 @@ function askCards(r, opts){
   var skipIds = opts.exclude instanceof Set ? opts.exclude : new Set();
   var rot = Number(opts.rot) || 0;
 
-  if (r.relation === "MOVIE_PIN") {
+  if (r.relation === "MOVIE_PIN" || r.relation === "HARDWARE_PIN") {
     if (r.show || !r.pin) {
+      if (r.relation === "HARDWARE_PIN" && currentGame() === "consoles")
+        return { cards: CONSOLE_INDEX.slice(0, 9), reason: r.why || "consoles" };
+      if (r.relation === "HARDWARE_PIN" && currentGame() === "cartridges")
+        return { cards: CART_INDEX.slice(0, 9), reason: r.why || "cartridges" };
       var show = [];
       var prefer = ["mov-m01-poster","mov-m02-poster","mov-m05-poster","mov-m08-poster","mov-m10-poster","mov-m20-poster","mov-m23-poster","mov-mdp-poster","mov-m13-poster"];
       for (var mi = 0; mi < prefer.length; mi++) if (byId(prefer[mi])) show.push(byId(prefer[mi]));
       return { cards: show.length ? show : MOVIE_INDEX.slice(0, 9), reason: r.why || "movie posters" };
     }
     var pinnedM = r.pin.split("|").map(byId).filter(Boolean);
-    return { cards: pinnedM, reason: r.why || "movie poster" };
+    return { cards: pinnedM, reason: r.why || "poster" };
   }
 
   if (r.relation === "SPECIES_GROUP") {
@@ -4715,12 +4811,24 @@ function runAsk(text){
     return;
   }
   var tl = " " + String(text || "").toLowerCase().replace(/[^a-z0-9]+/g, " ") + " ";
+  var gNowSel = currentGame();
+  if (gNowSel === "movies" && !(INDEX[0] && INDEX[0].g === "m")) applyGame("movies", false);
+  if (gNowSel === "consoles" && !(INDEX[0] && INDEX[0].g === "h")) applyGame("consoles", false);
+  if (gNowSel === "cartridges" && !(INDEX[0] && INDEX[0].g === "t")) applyGame("cartridges", false);
+  if (gNowSel === "pocket" && !(INDEX[0] && INDEX[0].g === "k")) applyGame("pocket", false);
+  if (gNowSel === "paper" && INDEX[0] && (INDEX[0].g === "k" || INDEX[0].g === "m" || INDEX[0].g === "h" || INDEX[0].g === "t")) applyGame("paper", false);
   var saysMovie = tl.indexOf(" movie ") >= 0 || tl.indexOf(" movies ") >= 0
     || tl.indexOf(" poster ") >= 0 || tl.indexOf(" posters ") >= 0
     || tl.indexOf(" the first movie ") >= 0 || tl.indexOf(" i choose you ") >= 0
     || tl.indexOf(" detective pikachu ") >= 0 || tl.indexOf(" mewtwo is born ") >= 0
     || tl.indexOf(" power of one ") >= 0 || tl.indexOf(" power of us ") >= 0;
   if (saysMovie && currentGame() !== "movies") applyGame("movies", false);
+  var saysConsole = tl.indexOf(" console ") >= 0 || tl.indexOf(" consoles ") >= 0
+    || tl.indexOf(" handheld ") >= 0 || tl.indexOf(" handhelds ") >= 0;
+  var saysCart = tl.indexOf(" cartridge ") >= 0 || tl.indexOf(" cartridges ") >= 0
+    || tl.indexOf(" cart ") >= 0 || tl.indexOf(" carts ") >= 0;
+  if (saysConsole && currentGame() !== "consoles") applyGame("consoles", false);
+  if (saysCart && currentGame() !== "cartridges") applyGame("cartridges", false);
   var saysPocket = tl.indexOf(" pokemon pocket ") >= 0 || tl.indexOf(" tcg pocket ") >= 0
     || tl.indexOf(" ptcgp ") >= 0 || tl.indexOf(" pocket ") >= 0;
   var saysPaper = tl.indexOf(" paper tcg ") >= 0 || tl.indexOf(" paper cards ") >= 0
@@ -4755,9 +4863,9 @@ function runAsk(text){
     if (!askRel) return false;
     const got = askCards(askRel);
     const box0 = el("askreply");
-    if (got.cards.length > 1 || (askRel.relation === "MOVIE_PIN" && got.cards.length >= 1)) {
+    if (got.cards.length > 1 || ((askRel.relation === "MOVIE_PIN" || askRel.relation === "HARDWARE_PIN") && got.cards.length >= 1)) {
       if (box0) {
-        if (askRel.relation === "MOVIE_PIN") {
+        if (askRel.relation === "MOVIE_PIN" || askRel.relation === "HARDWARE_PIN") {
           var years = [];
           for (var yi = 0; yi < got.cards.length; yi++) if (got.cards[yi].y && years.indexOf(got.cards[yi].y) < 0) years.push(got.cards[yi].y);
           box0.textContent = (askRel.why || got.reason) + (years.length ? " · " + years.join("/") : "") + ". Theatrical poster. Search a scene if you want a different film.";
@@ -4768,7 +4876,7 @@ function runAsk(text){
         box0.className = "askreply";
       }
       var lockedN = countLocked();
-      if (askRel.relation === "CONNECTING_ART" || askRel.relation === "SURPRISE" || askRel.relation === "MOVIE_PIN")
+      if (askRel.relation === "CONNECTING_ART" || askRel.relation === "SURPRISE" || askRel.relation === "MOVIE_PIN" || askRel.relation === "HARDWARE_PIN")
         tray = got.cards.slice();
       else if (askRel.relation === "SET_FACTS")
         tray = got.cards.slice(0, lockedN || 9);
@@ -4794,7 +4902,7 @@ function runAsk(text){
   };
   // Connecting art is a picture, not a search. The old parser always returned
   // a 2-card pair and ignored How many cards. This path has to go first.
-  if (askRel && (askRel.relation === "CONNECTING_ART" || askRel.relation === "ARTIST_REVISITS" || askRel.relation === "EVOLUTION_LINE" || askRel.relation === "SPECIES_GROUP" || askRel.relation === "SURPRISE" || askRel.relation === "SET_FACTS" || askRel.relation === "MOVIE_PIN")) {
+  if (askRel && (askRel.relation === "CONNECTING_ART" || askRel.relation === "ARTIST_REVISITS" || askRel.relation === "EVOLUTION_LINE" || askRel.relation === "SPECIES_GROUP" || askRel.relation === "SURPRISE" || askRel.relation === "SET_FACTS" || askRel.relation === "MOVIE_PIN" || askRel.relation === "HARDWARE_PIN")) {
     if (tryRelation()) return;
   }
   const ctx = intentCtx();
