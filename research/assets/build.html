@@ -3383,12 +3383,16 @@ function imgFallback(node, id){
   if (id.indexOf("tcgp-") === 0) {
     var rest = id.slice(5), cut = rest.lastIndexOf("-");
     var set = rest.slice(0, cut), num = rest.slice(cut + 1);
-    if (nTry === 1) {
+    if (set === "B4a") {
+      if (nTry === 1) {
+        node.src = "https://www.serebii.net/tcgpocket/teamrocket%27sambition/" + Number(num) + ".jpg";
+        return;
+      }
+    } else if (nTry === 1) {
       node.src = "https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/pocket/" + set + "/" + set + "_" + num + "_EN.webp";
       return;
-    }
-    if (nTry === 2 && set === "B4a") {
-      node.src = "https://www.serebii.net/tcgpocket/teamrocket%27sambition/" + Number(num) + ".jpg";
+    } else if (nTry === 2) {
+      node.src = "https://assets.tcgdex.net/en/tcgp/" + set + "/" + num + "/high.webp";
       return;
     }
   } else if (nTry === 1) {
@@ -3884,6 +3888,45 @@ function applyCount(n, rerun){
   if (lastPref.kind === "cta" && lastPref.ask) answerCta(lastPref.ask);
   else if (lastPref.ask) runAsk(lastPref.ask);
 }
+function pocketShowcase(){
+  if (!POCKET_INDEX || !POCKET_INDEX.length) return false;
+  var nNeed = (typeof countLocked === "function" && countLocked()) ? countLocked() : 6;
+  if (nNeed < 2) nNeed = 6;
+  var buckets = {}, order = [];
+  for (var i = 0; i < POCKET_INDEX.length; i++) {
+    var c = POCKET_INDEX[i];
+    if (c.sup !== "P") continue;
+    if (!c.hero && !/Three Star|Crown|Two Star/i.test(c.r || "")) continue;
+    var sid = c.sid || c.s || "?";
+    if (!buckets[sid]) { buckets[sid] = []; order.push(sid); }
+    buckets[sid].push(c);
+  }
+  for (var s in buckets) buckets[s].sort(function(a, b){ return pocketScore(b) - pocketScore(a); });
+  var pick = [], guard = 0;
+  while (pick.length < nNeed && guard < 80) {
+    guard++;
+    var progressed = false;
+    for (var oi = 0; oi < order.length && pick.length < nNeed; oi++) {
+      var list = buckets[order[oi]];
+      if (list && list.length) { pick.push(list.shift()); progressed = true; }
+    }
+    if (!progressed) break;
+  }
+  if (pick.length < 2) return false;
+  tray = pick;
+  blob = null;
+  lastPref = { kind: "ask", ask: "pokemon pocket" };
+  anotherCursor = 0;
+  var box = el("askreply");
+  if (box) {
+    box.textContent = "Pokémon Pocket — " + POCKET_INDEX.length.toLocaleString("en-US") + " cards. A pull from across the sets.";
+    box.className = "askreply";
+  }
+  render(); resetPage(); search();
+  fillLineFromCards(true);
+  applyTwin();
+  return true;
+}
 function applyGame(g, rerun){
   g = g === "pocket" ? "pocket" : g === "both" ? "both" : "paper";
   ASK_NAMES = null;
@@ -3908,9 +3951,30 @@ function applyGame(g, rerun){
     : "surprise me, the fishes, the beach, eeveelutions…";
   try { paintExamples(); } catch (e) {}
   try { renderStreak(); } catch (e) {}
+  try { resetPage(); search(); } catch (e) {}
   if (rerun && ask && String(ask.value || "").trim()) runAsk(ask.value);
 }
-function setGame(g){ applyGame(g, true); }
+function setGame(g){
+  var ask = el("ask");
+  var q = ask ? String(ask.value || "").trim() : "";
+  applyGame(g, false);
+  if (/^(pokemon pocket|tcg pocket|ptcgp|paper tcg|paper cards)$/i.test(q.replace(/s+/g, " "))) {
+    q = "";
+    if (ask) ask.value = "";
+  }
+  if (!q) {
+    if (g === "pocket") pocketShowcase();
+    else if (g === "both") runAsk("the birds");
+    else { tray = []; blob = null; render(); }
+    return;
+  }
+  runAsk(q);
+  var onTray = tray || [];
+  var pocketN = 0;
+  for (var i = 0; i < onTray.length; i++)
+    if (onTray[i].g === "k" || String(onTray[i].i).indexOf("tcgp-") === 0) pocketN++;
+  if (g === "pocket" && pocketN < 2) pocketShowcase();
+}
 function twinNote(cards){
   if (!cards || !cards.length || typeof CROSSWALK === "undefined" || !CROSSWALK.twins) return "";
   var bits = [], seen = {};
@@ -4759,7 +4823,10 @@ function runAsk(text){
       while (sPocket.indexOf(needle) >= 0) sPocket = sPocket.split(needle).join(" ");
     }
     text = sPocket.replace(/  +/g, " ").trim();
-    if (!text) text = "eeveelutions";
+    if (!text) {
+      pocketShowcase();
+      return;
+    }
   }
   if (saysPaper) {
     var sPaper = " " + String(text || "").toLowerCase().replace(/[^a-z0-9]+/g, " ") + " ";

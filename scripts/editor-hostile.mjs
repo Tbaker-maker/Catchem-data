@@ -46,7 +46,7 @@ globalThis.fetch = async () => { throw new TypeError("offline"); };
 
 let api;
 try {
-  api = new Function(js + ";return { runAsk, tray:()=>tray, lineOptions, layoutForTray, connectingGroupOf, anotherSet, backSet, parseIntent, evoLineFor, INDEX, POCKET_INDEX, CONNECTING, LAYOUTS, add, remove, parseCta, pickShowYours, answerCta, officeCount:()=>officeCount, applyCount, fCount:()=>fCount, fillLineFromCards, pickCaption, applyGame };")();
+  api = new Function(js + ";return { runAsk, tray:()=>tray, lineOptions, layoutForTray, connectingGroupOf, anotherSet, backSet, parseIntent, evoLineFor, INDEX, POCKET_INDEX, CONNECTING, LAYOUTS, add, remove, parseCta, pickShowYours, answerCta, officeCount:()=>officeCount, applyCount, fCount:()=>fCount, fillLineFromCards, pickCaption, applyGame, setGame, pocketShowcase };")();
 } catch (e) {
   console.error("✗ page JS does not parse:", e.message);
   process.exit(1);
@@ -405,6 +405,26 @@ try {
   api.applyGame("both", false);
   const bothEg = (document.getElementById("egs") || {}).innerHTML || "";
   check("both chips mention paper × Pocket", /paper|both|×/i.test(bothEg), bothEg.slice(0, 180));
+  api.applyGame("paper", false);
+  ask("the fishes");
+  api.setGame("pocket");
+  const afterSwitch = api.tray() || [];
+  check("switching to Pocket after fishes is not Carvanha",
+    afterSwitch.length >= 2 && afterSwitch.every(c => String(c.i).indexOf("tcgp-") === 0) && !afterSwitch.some(c => /carvanha|sharpedo/i.test(c.n)),
+    afterSwitch.map(c => c.n + " " + c.i).join(", "));
+  const pocketOpen = ask("pokemon pocket");
+  const pocketSets = new Set(pocketOpen.map(c => c.sid || c.s));
+  const eeveeN = pocketOpen.filter(c => /eevee|vaporeon|jolteon|flareon|espeon|umbreon|leafeon|glaceon|sylveon/i.test(c.n)).length;
+  const birdN = pocketOpen.filter(c => /moltres|zapdos|articuno/i.test(c.n)).length;
+  check("pokemon pocket is a Pocket pull, not the Eevee line",
+    pocketOpen.length >= 4 && pocketOpen.every(c => String(c.i).indexOf("tcgp-") === 0) && eeveeN < pocketOpen.length,
+    pocketOpen.map(c => c.n).join(", "));
+  check("pokemon pocket is not only the birds",
+    birdN < 3 || pocketOpen.length > 3,
+    pocketOpen.map(c => c.n).join(", "));
+  check("pokemon pocket spans more than one set",
+    pocketSets.size >= 2,
+    [...pocketSets].join(", "));
   api.applyGame("paper", false);
 } catch (e) {
   check("game chips", false, e.message);
