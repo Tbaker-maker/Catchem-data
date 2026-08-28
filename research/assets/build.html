@@ -211,11 +211,15 @@ button.go:disabled{opacity:.45;cursor:default;filter:none}
 .pocket img{width:100%;height:100%;object-fit:contain;display:block;
   outline:1px solid rgba(255,255,255,.08);outline-offset:-1px}
 .pocket.artclip{background:#070910}
-.pocket.artclip > img{
-  position:absolute;inset:auto;width:245%;height:245%;max-width:none;
-  left:50%;top:-29%;transform:translateX(-50%);
-  object-fit:fill;outline:none;
-}
+.pocket.artclip > img.artbg{
+  position:absolute;inset:-18%;width:136%;height:136%;max-width:none;
+  object-fit:cover;object-position:50% 28%;
+  filter:blur(18px) saturate(1.15);opacity:.8;outline:none}
+.pocket.artclip > img.artfg{
+  position:absolute;left:-9%;top:12%;width:118%;height:118%;max-width:none;
+  object-fit:fill;outline:none}
+.pocket.artclip.fullart > img.artfg{
+  left:-6%;top:1%;width:112%;height:112%}
 .pocket .x{position:absolute;top:5px;right:5px;width:22px;height:22px;border-radius:50%;border:0;
   background:rgba(10,12,18,.82);color:#fff;font-size:14px;line-height:1;cursor:pointer;opacity:0;
   transition:opacity .16s var(--ease)}
@@ -1358,6 +1362,7 @@ function applyArtFlip(on, rerun){
   applyArtCrop(parseArtCrop(on), rerun);
 }
 function applyArtCrop(mode, rerun){
+  var prev = artCrop;
   artCrop = parseArtCrop(mode);
   var sel = el("artflip");
   var want = artCropValue();
@@ -1366,13 +1371,14 @@ function applyArtCrop(mode, rerun){
   try { paintCountOptions(); } catch (e1) {}
   if (document.body && document.body.setAttribute)
     document.body.setAttribute("data-artcrop", artCrop);
-  if (rerun && lastPref && lastPref.ask) {
-    runAsk(lastPref.ask);
-    return;
-  }
+  if (artCrop !== prev) blob = null;
   if (artFlipOn() && tray && tray.length > 4 && !connectingGroupOf(tray)) {
     tray = tray.slice(0, 4);
     blob = null;
+  }
+  if (rerun && lastPref && lastPref.ask && typeof countIsFit === "function" && countIsFit() && (artCrop === "both" || prev === "both") && artCrop !== prev) {
+    runAsk(lastPref.ask);
+    return;
   }
   render();
 }
@@ -1394,6 +1400,8 @@ window.artCropMode = artCropMode;
 window.applyArtFlip = applyArtFlip;
 window.applyArtCrop = applyArtCrop;
 window.composeSlots = composeSlots;
+window.artWindow = artWindow;
+window.isFullArtCard = isFullArtCard;
 // BOOT REPORT. Three wrong guesses at why this dies on a phone, all made from
 // a sandbox that cannot run mobile Safari. A blank screen tells nobody
 // anything, so the page now reports its own failure on the page itself.
@@ -2991,35 +2999,82 @@ function drawSlab(g, img, x, y, cw, ch, card){
   g.textAlign = "center";
 }
 
-// Illustration window of a printed TCG card, then cover-fit into the
-// destination slot. Same image as the card — never a second URL.
-function artSrcRect(img, dw, dh){
+// Illustration window of a printed TCG card. Regular cards have a landscape
+// painting under the name. LV.X / V / full art IS the painting, so the
+// window is taller. Cover-fitting a landscape window into a portrait slot
+// was the body-close-up bug: we now draw the whole window, contained, on
+// a blurred fill of itself.
+function isFullArtCard(card){
+  var n = String((card && card.n) || "");
+  var r = String((card && card.r) || "").toLowerCase();
+  if (n.indexOf("LV.X") >= 0 || n.indexOf("LVX") >= 0) return true;
+  if (n.indexOf("VMAX") >= 0 || n.indexOf("VSTAR") >= 0) return true;
+  if (n.slice(-3) === " GX" || n.slice(-2) === " V" || n.slice(-3) === " ex" || n.slice(-3) === " EX") return true;
+  if (r.indexOf("illustration") >= 0 || r.indexOf("full art") >= 0 || r.indexOf("alternate") >= 0) return true;
+  return false;
+}
+function artWindow(img, card){
   var iw = img.naturalWidth || img.width || 1;
   var ih = img.naturalHeight || img.height || 1;
-  var ax = iw * 0.075, ay = ih * 0.12, aw = iw * 0.85, ah = ih * 0.41;
-  var dest = dw / dh, src = aw / ah;
-  var sx = ax, sy = ay, sw = aw, sh = ah;
-  if (src > dest) {
-    sw = ah * dest;
-    sx = ax + (aw - sw) / 2;
-  } else {
-    sh = aw / dest;
-    sy = ay + (ah - sh) * 0.22;
+  if (isFullArtCard(card)) {
+    return { sx: iw * 0.05, sy: ih * 0.085, sw: iw * 0.90, sh: ih * 0.70 };
   }
-  if (sx < 0) sx = 0;
-  if (sy < 0) sy = 0;
-  if (sx + sw > iw) sw = iw - sx;
-  if (sy + sh > ih) sh = ih - sy;
-  if (sw < 1) sw = 1;
-  if (sh < 1) sh = 1;
-  return { sx: sx, sy: sy, sw: sw, sh: sh };
+  return { sx: iw * 0.075, sy: ih * 0.125, sw: iw * 0.85, sh: ih * 0.40 };
 }
-function drawArtClip(g, img, x, y, cw, ch){
-  var r = artSrcRect(img, cw, ch);
+function artSrcRect(img, dw, dh, card){
+  return artWindow(img, card);
+}
+function coverArt(g, img, r, x, y, w, h){
+  var dest = w / h, src = r.sw / r.sh;
+  var sx = r.sx, sy = r.sy, sw = r.sw, sh = r.sh;
+  if (src > dest) {
+    sw = r.sh * dest;
+    sx = r.sx + (r.sw - sw) / 2;
+  } else {
+    sh = r.sw / dest;
+    sy = r.sy + (r.sh - sh) / 2;
+  }
+  g.drawImage(img, sx, sy, sw, sh, x, y, w, h);
+}
+function containArt(g, img, r, x, y, w, h){
+  var scale = Math.min(w / r.sw, h / r.sh);
+  var dw = r.sw * scale, dh = r.sh * scale;
+  var dx = x + (w - dw) / 2, dy = y + (h - dh) / 2;
+  g.drawImage(img, r.sx, r.sy, r.sw, r.sh, dx, dy, dw, dh);
+}
+function drawArtClip(g, img, x, y, cw, ch, card){
+  var r = artWindow(img, card);
+  g.save();
+  roundRectSafe(g, x, y, cw, ch, cw * 0.045);
+  g.clip();
+  g.fillStyle = "#070910";
+  g.fillRect(x, y, cw, ch);
   try {
-    g.drawImage(img, r.sx, r.sy, r.sw, r.sh, x, y, cw, ch);
+    containArt(g, img, r, x + cw * 0.04, y + ch * 0.08, cw * 0.92, ch * 0.84);
   } catch (e) {
-    g.drawImage(img, x, y, cw, ch);
+    try { g.drawImage(img, x, y, cw, ch); }
+    catch (e2) {}
+  }
+  g.restore();
+}
+function paintArtClips(){
+  var box = el("tray");
+  if (!box || !box.querySelectorAll) return;
+  var nodes = box.querySelectorAll("canvas.artcv");
+  for (var i = 0; i < nodes.length; i++) {
+    (function(cv){
+      var wrap = cv.parentNode;
+      var id = wrap && wrap.getAttribute ? wrap.getAttribute("data-art") : "";
+      var card = (typeof byIdRow !== "undefined" && id && byIdRow[id]) ? byIdRow[id] : null;
+      var im = new Image();
+      im.onload = function(){
+        var g = cv.getContext("2d");
+        if (!g) return;
+        g.clearRect(0, 0, cv.width, cv.height);
+        drawArtClip(g, im, 0, 0, cv.width, cv.height, card);
+      };
+      im.src = imgSmall(id);
+    })(nodes[i]);
   }
 }
 
@@ -6369,9 +6424,10 @@ function render(){
   };
   const pocketArt = function(c, k){
     if (!c) return "<div class='pocket'></div>";
+    var full = isFullArtCard(c) ? " fullart" : "";
     var buttons = (k == null || k === undefined) ? "" :
       '<button class="swap" onclick="swapSlot(' + k + ')" aria-label="Swap ' + String(c.n).replace(/"/g, "") + '">↻</button><button class="x" onclick="remove(' + k + ')" aria-label="Remove ' + String(c.n).replace(/"/g, "") + '">×</button>';
-    return '<div class="pocket filled artclip"><img src="' + imgSmall(c.i) + '" alt="' + String(c.n).replace(/"/g, "") + ' art" loading="eager" data-cid="' + c.i + '" onerror="imgFallback(this,&#39;' + c.i + '&#39;)">' + buttons + "</div>";
+    return '<div class="pocket filled artclip' + full + '" data-art="' + c.i + '"><img class="artbg" src="' + imgSmall(c.i) + '" alt="" aria-hidden="true"><img class="artfg" src="' + imgSmall(c.i) + '" alt="' + String(c.n).replace(/"/g, "") + ' art" loading="eager" data-cid="' + c.i + '" onerror="imgFallback(this,&#39;' + c.i + '&#39;)">' + buttons + "</div>";
   };
   let html = "";
   if (L && L.shape && L.shape.length) {
@@ -6401,6 +6457,7 @@ function render(){
     for (let i = tray.length; i < slots; i++) html += "<div class='pocket'></div>";
   }
   box.innerHTML = html || "<div class='pocket'></div><div class='pocket'></div><div class='pocket'></div>";
+  try { paintArtClips(); } catch (ePaint) {}
   const allowed = checkIntent();
   renderLines();
   renderStreakLine();
@@ -7083,7 +7140,7 @@ async function composeImage(){
       const originX = Math.round((W - gridW) / 2);
       const pos = slotPos(i, L);
       const x = originX + pos.c*(CW+GAP), y = PAD + pos.r*(CH+CAP+GAP);
-      if (slotList[i].art) drawArtClip(g, img, x, y, CW, CH);
+      if (slotList[i].art) drawArtClip(g, img, x, y, CW, CH, card);
       else drawSlab(g, img, x, y, CW, CH, card);
       if (CAP && !slotList[i].art){ g.fillStyle="#8a93a8"; g.font="28px system-ui,sans-serif"; g.textAlign="center";
         g.fillText(card.n + " · " + card.y, x+CW/2, y+CH+46); }

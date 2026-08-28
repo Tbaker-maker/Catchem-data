@@ -51,7 +51,7 @@ globalThis.__POCKET_ROWS = pocketRows;
 
 let api;
 try {
-  api = new Function(js + ";return { runAsk, tray:()=>tray, lineOptions, layoutForTray, connectingGroupOf, anotherSet, backSet, parseIntent, evoLineFor, INDEX, POCKET_INDEX, MOVIE_INDEX, CONSOLE_INDEX, CART_INDEX, CONNECTING, LAYOUTS, add, remove, parseCta, pickShowYours, answerCta, officeCount:()=>officeCount, applyCount, fCount:()=>fCount, fillLineFromCards, pickCaption, applyGame, setGame, pocketShowcase, movieShowcase, imgSmall, imgFallback, pocketImgList, hydrateIndexes, visualDetail, visualBits, visualHome, wikiSrc, wikiSrcList, isVisual, kindLabel, currentGame, setMode, categoryCopy, paintCategory, artFlipOn, artJustOn, artCropMode, applyArtFlip, applyArtCrop, composeSlots, takeCap, categoryMax, artCrop:()=>artCrop };")();
+  api = new Function(js + ";return { runAsk, tray:()=>tray, lineOptions, layoutForTray, connectingGroupOf, anotherSet, backSet, parseIntent, evoLineFor, INDEX, POCKET_INDEX, MOVIE_INDEX, CONSOLE_INDEX, CART_INDEX, CONNECTING, LAYOUTS, add, remove, parseCta, pickShowYours, answerCta, officeCount:()=>officeCount, applyCount, fCount:()=>fCount, fillLineFromCards, pickCaption, applyGame, setGame, pocketShowcase, movieShowcase, imgSmall, imgFallback, pocketImgList, hydrateIndexes, visualDetail, visualBits, visualHome, wikiSrc, wikiSrcList, isVisual, kindLabel, currentGame, setMode, categoryCopy, paintCategory, artFlipOn, artJustOn, artCropMode, applyArtFlip, applyArtCrop, composeSlots, takeCap, categoryMax, artCrop:()=>artCrop, artWindow, isFullArtCard };")();
 } catch (e) {
   console.error("✗ page JS does not parse:", e.message);
   process.exit(1);
@@ -822,6 +822,15 @@ try {
   check("just art still allows a binder of nine",
     api.categoryMax() === 9 && api.takeCap() === 9,
     "max=" + api.categoryMax() + " cap=" + api.takeCap());
+  const fakeImg = { width: 1000, height: 1400, naturalWidth: 1000, naturalHeight: 1400 };
+  const stdW = api.artWindow(fakeImg, { n: "Pikachu", r: "Common" });
+  const lvxW = api.artWindow(fakeImg, { n: "Celebi LV.X", r: "Rare Holo LV.X" });
+  check("regular art window is the landscape painting",
+    stdW.sh < fakeImg.height * 0.5 && stdW.sw > fakeImg.width * 0.7,
+    JSON.stringify(stdW));
+  check("LV.X art window is the painting, not a strip",
+    api.isFullArtCard({ n: "Celebi LV.X" }) === true && lvxW.sh > stdW.sh * 1.4,
+    JSON.stringify({ lvx: lvxW, std: stdW }));
   api.applyArtCrop("art", false);
   api.applyGame("pocket", false);
   check("art crop does not run on Pocket",
