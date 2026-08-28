@@ -51,7 +51,7 @@ globalThis.__POCKET_ROWS = pocketRows;
 
 let api;
 try {
-  api = new Function(js + ";return { runAsk, tray:()=>tray, lineOptions, layoutForTray, connectingGroupOf, anotherSet, backSet, parseIntent, evoLineFor, INDEX, POCKET_INDEX, MOVIE_INDEX, CONSOLE_INDEX, CART_INDEX, CONNECTING, LAYOUTS, add, remove, parseCta, pickShowYours, answerCta, officeCount:()=>officeCount, applyCount, fCount:()=>fCount, fillLineFromCards, pickCaption, applyGame, setGame, pocketShowcase, movieShowcase, imgSmall, imgFallback, pocketImgList, hydrateIndexes, visualDetail, visualBits, visualHome, wikiSrc, isVisual, kindLabel, currentGame };")();
+  api = new Function(js + ";return { runAsk, tray:()=>tray, lineOptions, layoutForTray, connectingGroupOf, anotherSet, backSet, parseIntent, evoLineFor, INDEX, POCKET_INDEX, MOVIE_INDEX, CONSOLE_INDEX, CART_INDEX, CONNECTING, LAYOUTS, add, remove, parseCta, pickShowYours, answerCta, officeCount:()=>officeCount, applyCount, fCount:()=>fCount, fillLineFromCards, pickCaption, applyGame, setGame, pocketShowcase, movieShowcase, imgSmall, imgFallback, pocketImgList, hydrateIndexes, visualDetail, visualBits, visualHome, wikiSrc, wikiSrcList, isVisual, kindLabel, currentGame };")();
 } catch (e) {
   console.error("✗ page JS does not parse:", e.message);
   process.exit(1);
@@ -519,6 +519,22 @@ try {
   check("game boy image is weserv jpg, not raw Wikimedia",
     /images\.weserv\.nl/.test(gbSrc) && gbSrc.indexOf("upload.wikimedia.org") >= 0 && gbSrc.indexOf("output=jpg") >= 0 && gbSrc.indexOf("%2F") < 0 && gbSrc.indexOf("/thumb/") >= 0,
     gbSrc);
+  check("visual categories is the picker name",
+    html.indexOf("Visual Categories") >= 0 && !/<label class="howmany">Game/.test(html),
+    "label missing");
+  const goldRow = (api.CART_INDEX || []).find(c => /Gold/.test(c.n));
+  const goldSrc = goldRow ? api.imgSmall(goldRow.i) : "";
+  check("gold box uses weserv, not a Commons thumb",
+    /images\.weserv\.nl/.test(goldSrc) && goldSrc.indexOf("/thumb/") < 0,
+    goldSrc);
+  const oledRow = (api.CONSOLE_INDEX || []).find(c => c.i === "hw-nswoled");
+  check("oled photo is not the dead docked png",
+    oledRow && String(oledRow.img).indexOf("Nintendo-Switch-OLED-Docked.png") < 0,
+    oledRow && oledRow.img);
+  const listN = typeof api.wikiSrcList === "function" && goldRow ? api.wikiSrcList(goldRow.img, 500) : [];
+  check("en-wiki images have more than one host to try",
+    listN.length >= 2,
+    JSON.stringify(listN).slice(0, 180));
   const fakeHw = { src: gbSrc, dataset: {}, style: {}, parentElement: null };
   api.imgFallback(fakeHw, gb[0].i);
   api.imgFallback(fakeHw, gb[0].i);

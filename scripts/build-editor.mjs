@@ -571,7 +571,7 @@ ${TODAY_IMG ? `<div id="todaypost">
   <button type="button" class="mode on" data-mode="post">Post</button>
   <button type="button" class="mode" data-mode="reply">Reply</button>
 </div>
-<label class="howmany">How many cards
+<label class="howmany"><span>How many cards</span>
   <select id="cardcount" aria-label="How many cards">
     <option value="0" selected>Fit — however many it needs</option>
     <option value="1">1 — one card</option>
@@ -583,8 +583,8 @@ ${TODAY_IMG ? `<div id="todaypost">
     <option value="9">9 — a binder page</option>
   </select>
 </label>
-<label class="howmany">Game
-  <select id="game" aria-label="Which catalogue">
+<label class="howmany"><span>Visual Categories</span>
+  <select id="game" aria-label="Visual Categories">
     <option value="paper">Paper TCG</option>
     <option value="pocket">Pocket</option>
     <option value="movies">Movies</option>
@@ -1639,29 +1639,57 @@ function pocketImgList(id){
   out.push("https://assets.tcgdex.net/en/tcgp/" + set + "/" + num + "/high.webp");
   return out;
 }
-function wikiSrc(url, w){
+function wikiLeaf(url){
   url = String(url || "");
+  if (url.indexOf("https://") === 0) return url.slice(8);
+  if (url.indexOf("http://") === 0) return url.slice(7);
+  return url;
+}
+function weservSsl(leaf, w){
+  leaf = String(leaf || "").split(" ").join("%20");
+  return "https://images.weserv.nl/?url=ssl:" + leaf + "&w=" + (w || 600) + "&output=jpg&q=75";
+}
+function weservQuoted(leaf, w){
+  var bits = String(leaf || "").split("/");
+  var enc = [];
+  for (var i = 0; i < bits.length; i++) enc.push(encodeURIComponent(bits[i]));
+  return "https://images.weserv.nl/?url=" + enc.join("/") + "&w=" + (w || 600) + "&output=jpg&q=75";
+}
+function wikiSrcList(url, w){
   w = w || 600;
-  if (!url) return "";
-  if (url.indexOf("images.weserv.nl") >= 0) return url;
-  if (url.indexOf("upload.wikimedia.org") < 0) return url;
-  var leaf = url;
-  if (leaf.indexOf("https://") === 0) leaf = leaf.slice(8);
-  else if (leaf.indexOf("http://") === 0) leaf = leaf.slice(7);
-  // Weserv 404s the full-size Commons originals under load. Thumbs do not.
-  if (leaf.indexOf("/thumb/") < 0) {
-    var slash = leaf.lastIndexOf("/");
-    if (slash > 0) {
+  url = String(url || "");
+  var out = [], seen = {};
+  function add(u){ if (u && !seen[u]) { seen[u] = 1; out.push(u); } }
+  if (!url) return out;
+  if (url.indexOf("images.weserv.nl") >= 0) { add(url); return out; }
+  if (url.indexOf("upload.wikimedia.org") < 0) { add(url); return out; }
+  var leaf = wikiLeaf(url);
+  var isCommons = leaf.indexOf("/wikipedia/commons/") >= 0;
+  if (isCommons) {
+    if (leaf.indexOf("/thumb/") < 0) {
+      var slash = leaf.lastIndexOf("/");
       var fn = leaf.slice(slash + 1);
       var parts = leaf.slice(0, slash).split("/");
       if (parts.length >= 3) {
         parts.splice(3, 0, "thumb");
-        leaf = parts.join("/") + "/" + fn + "/" + w + "px-" + fn;
+        add(weservSsl(parts.join("/") + "/" + fn + "/" + w + "px-" + fn, w));
       }
+      var name = fn;
+      try { name = decodeURIComponent(fn); } catch (e) {}
+      add(weservSsl("commons.wikimedia.org/wiki/Special:FilePath/" + encodeURIComponent(name) + "%3Fwidth=" + w, w));
     }
+    add(weservSsl(leaf, w));
+    add(weservQuoted(leaf, w));
+  } else {
+    add(weservQuoted(leaf, w));
+    add(weservSsl(leaf, w));
+    add(url);
   }
-  var enc = leaf.split("%").join("%25").split("?").join("%3F").split("#").join("%23").split("&").join("%26").split(" ").join("%20");
-  return "https://images.weserv.nl/?url=ssl:" + enc + "&w=" + w + "&output=jpg&q=75";
+  return out;
+}
+function wikiSrc(url, w){
+  var list = wikiSrcList(url, w);
+  return list[0] || "";
 }
 const imgSmall = (id) => {
   var row = (typeof byIdRow !== "undefined") ? byIdRow[id] : null;
@@ -3347,9 +3375,10 @@ function imgFallback(node, id){
   } else if (id.indexOf("mov-") === 0 || id.indexOf("hw-") === 0 || id.indexOf("cart-") === 0) {
     var row = byIdRow[id];
     var raw = row && row.img ? String(row.img) : "";
-    var wrap = raw ? wikiSrc(raw, 800) : "";
-    if (wrap && seen.indexOf(wrap) < 0 && wrap !== cur) next = wrap;
-    else if (raw && seen.indexOf(raw) < 0 && raw !== cur) next = raw;
+    var list = wikiSrcList(raw, 800);
+    for (var vi = 0; vi < list.length; vi++) {
+      if (seen.indexOf(list[vi]) < 0 && list[vi] !== cur) { next = list[vi]; break; }
+    }
   } else if (seen.indexOf("scrydex.com") < 0) {
     next = "https://images.scrydex.com/pokemon/" + id + "/small";
   }
@@ -3411,7 +3440,7 @@ function exampleChips(){
     { q: "surprise me", label: "Surprise me" },
     { q: "the birds", label: "paper × Pocket birds", demo: true },
     { q: "eeveelutions", label: "Eevee line, both" },
-    { q: "pikachu", label: "Pikachu, both games" },
+    { q: "pikachu", label: "Pikachu, both" },
     { q: "team rocket", label: "Team Rocket" },
   ];
   return [
@@ -4079,7 +4108,10 @@ function applyGame(g, rerun){
     gs.onchange = prev;
   }
   var s = document.getElementById("searchall");
-  if (s) s.textContent = "Search all " + INDEX.length.toLocaleString("en-US") + " cards instead";
+  if (s) {
+    var noun = (g === "movies" || g === "consoles" || g === "cartridges") ? " in this category" : " cards instead";
+    s.textContent = "Search all " + INDEX.length.toLocaleString("en-US") + noun;
+  }
   var ask = el("ask");
   if (ask) ask.placeholder = g === "pocket"
     ? "surprise me, team rocket, three star, eeveelutions…"
