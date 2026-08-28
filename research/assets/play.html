@@ -387,8 +387,8 @@ summary:before{content:"→ ";color:var(--faint)}
   <button type="button" class="mode on" data-mode="post">Post</button>
   <button type="button" class="mode" data-mode="reply">Reply</button>
 </div>
-<label class="howmany"><span id="countlabel">How many cards</span>
-  <select id="cardcount" aria-label="How many cards">
+<label class="howmany"><span id="countlabel">How many</span>
+  <select id="cardcount" aria-label="How many">
     <option value="0" selected>Fit — however many it needs</option>
     <option value="1">1 — one card</option>
     <option value="2">2 — a pair</option>
@@ -495,7 +495,7 @@ summary:before{content:"→ ";color:var(--faint)}
 <div class="steps">
   <div class="step"><span class="n">01 / SET</span><span class="t">Narrow it down, or don't</span>
     <select id="fset"><option value="">Every set</option><option>151</option><option>Aquapolis</option><option>Ascended Heroes</option><option>Astral Radiance</option><option>Astral Radiance Trainer Gallery</option><option>BREAKpoint</option><option>BREAKthrough</option><option>BW Black Star Promos</option><option>Base</option><option>Base Set 2</option><option>Battle Styles</option><option>Best of Game</option><option>Black Bolt</option><option>Boundaries Crossed</option><option>Brilliant Stars</option><option>Brilliant Stars Trainer Gallery</option><option>Burning Shadows</option><option>Call of Legends</option><option>Celebrations</option><option>Celestial Storm</option><option>Chaos Rising</option><option>Chilling Reign</option><option>Cosmic Eclipse</option><option>Crimson Invasion</option><option>Crown Zenith</option><option>Crown Zenith Galarian Gallery</option><option>DP Black Star Promos</option><option>Dark Explorers</option><option>Darkness Ablaze</option><option>Delta Species</option><option>Deoxys</option><option>Destined Rivals</option><option>Diamond &amp; Pearl</option><option>Dragon Majesty</option><option>Dragon Vault</option><option>Dragons Exalted</option><option>EX Trainer Kit Latias</option><option>EX Trainer Kit Latios</option><option>Evolutions</option><option>Evolving Skies</option><option>Expedition Base Set</option><option>FireRed &amp; LeafGreen</option><option>Flashfire</option><option>Forbidden Light</option><option>Fossil</option><option>Generations</option><option>Great Encounters</option><option>Guardians Rising</option><option>Gym Challenge</option><option>Gym Heroes</option><option>HS—Undaunted</option><option>HS—Unleashed</option><option>HeartGold &amp; SoulSilver</option><option>Hidden Fates</option><option>Hidden Fates Shiny Vault</option><option>Holon Phantoms</option><option>Journey Together</option><option>Jungle</option><option>Legends Awakened</option><option>Lost Origin</option><option>Lost Origin Trainer Gallery</option><option>Lost Thunder</option><option>McDonald's Collection 2012</option><option>McDonald's Collection 2014</option><option>McDonald's Collection 2015</option><option>McDonald's Collection 2016</option><option>McDonald's Collection 2018</option><option>McDonald's Collection 2019</option><option>McDonald's Collection 2021</option><option>Mega Evolution</option><option>Neo Destiny</option><option>Neo Genesis</option><option>Neo Revelation</option><option>Next Destinies</option><option>Noble Victories</option><option>Obsidian Flames</option><option>POP Series 1</option><option>POP Series 3</option><option>POP Series 4</option><option>POP Series 5</option><option>POP Series 6</option><option>POP Series 7</option><option>POP Series 8</option><option>POP Series 9</option><option>Paldea Evolved</option><option>Paldean Fates</option><option>Paradox Rift</option><option>Perfect Order</option><option>Phantasmal Flames</option><option>Phantom Forces</option><option>Plasma Blast</option><option>Plasma Storm</option><option>Pokémon Futsal Collection</option><option>Pokémon GO</option><option>Power Keepers</option><option>Primal Clash</option><option>Prismatic Evolutions</option><option>Rebel Clash</option><option>Rising Rivals</option><option>Ruby &amp; Sapphire</option><option>SM Black Star Promos</option><option>SWSH Black Star Promos</option><option>Sandstorm</option><option>Scarlet &amp; Violet</option><option>Scarlet &amp; Violet Energies</option><option>Secret Wonders</option><option>Shining Fates Shiny Vault</option><option>Shining Legends</option><option>Shrouded Fable</option><option>Silver Tempest</option><option>Silver Tempest Trainer Gallery</option><option>Steam Siege</option><option>Stellar Crown</option><option>Stormfront</option><option>Sun &amp; Moon</option><option>Supreme Victors</option><option>Surging Sparks</option><option>Sword &amp; Shield</option><option>Team Rocket</option><option>Team Up</option><option>Temporal Forces</option><option>Twilight Masquerade</option><option>Ultra Prism</option><option>Unbroken Bonds</option><option>Unified Minds</option><option>Unseen Forces</option><option>Vivid Voltage</option><option>White Flare</option><option>Wizards Black Star Promos</option><option>XY</option></select></div>
-  <div class="step"><span class="n">02 / COUNT</span><span class="t" id="countstep">How many cards</span>
+  <div class="step"><span class="n">02 / COUNT</span><span class="t" id="countstep">How many</span>
     <div class="chips" id="fcount"><button class="chip" data-n="1">1</button><button class="chip" data-n="2">2</button><button class="chip" data-n="3">3</button><button class="chip" data-n="4">4</button><button class="chip" data-n="6">6</button><button class="chip" data-n="8">8</button><button class="chip" data-n="9">9</button></div></div>
   <div class="step"><span class="n">03 / SLAB</span><span class="t">Show them slabbed</span>
     <div class="chips" id="fslab">
@@ -4079,6 +4079,8 @@ function markCount(n){
     return;
   }
   if (FORMAT_N.indexOf(n) < 0) return;
+  var maxN = categoryMax();
+  if (n > maxN) n = maxN;
   fCount = n;
   officeCount = n;
   var sel = el("cardcount");
@@ -4087,6 +4089,17 @@ function markCount(n){
     var box = el(id);
     if (box) box.querySelectorAll(".chip").forEach(function(x){ x.classList.toggle("on", Number(x.dataset.n) === n); });
   });
+}
+function categoryMax(g){
+  var copy = categoryCopy(g);
+  var m = Number(copy && copy.max);
+  return m > 0 ? m : 9;
+}
+function takeCap(){
+  var max = categoryMax();
+  var locked = countLocked();
+  if (locked) return locked > max ? max : locked;
+  return max;
 }
 function countLocked(){
   var sel = el("cardcount");
@@ -4143,18 +4156,21 @@ function pocketShowcase(){
 }
 function movieShowcase(){
   if (!MOVIE_INDEX || !MOVIE_INDEX.length) return false;
+  var cap = 6;
+  try { cap = takeCap(); } catch (e) {}
+  if (cap < 1) cap = 6;
   var prefer = ["mov-m01-poster","mov-m02-poster","mov-m05-poster","mov-m08-poster","mov-m10-poster","mov-m20-poster","mov-m23-poster","mov-mdp-poster","mov-m13-poster"];
   var pick = [];
   for (var i = 0; i < prefer.length; i++) {
     var c = byIdRow[prefer[i]];
     if (c) pick.push(c);
   }
-  if (pick.length < 6) {
-    for (var j = 0; j < MOVIE_INDEX.length && pick.length < 9; j++) {
+  if (pick.length < cap) {
+    for (var j = 0; j < MOVIE_INDEX.length && pick.length < cap; j++) {
       if (pick.indexOf(MOVIE_INDEX[j]) < 0) pick.push(MOVIE_INDEX[j]);
     }
   }
-  tray = pick.slice(0, 9);
+  tray = pick.slice(0, cap);
   blob = null;
   lastPref = { kind: "ask", ask: "movies" };
   var box = el("askreply");
@@ -4168,16 +4184,19 @@ function movieShowcase(){
 }
 function visualShowcase(index, prefer, label){
   if (!index || !index.length) return false;
+  var cap = 9;
+  try { cap = takeCap(); } catch (e) {}
+  if (cap < 1) cap = 9;
   var pick = [];
   prefer = prefer || [];
   for (var i = 0; i < prefer.length; i++) {
     var c = byIdRow[prefer[i]];
     if (c) pick.push(c);
   }
-  for (var j = 0; j < index.length && pick.length < 9; j++) {
+  for (var j = 0; j < index.length && pick.length < cap; j++) {
     if (pick.indexOf(index[j]) < 0) pick.push(index[j]);
   }
-  tray = pick.slice(0, 9);
+  tray = pick.slice(0, cap);
   blob = null;
   lastPref = { kind: "ask", ask: label || "" };
   var box = el("askreply");
@@ -4214,7 +4233,7 @@ function visualAsk(index, t, whyEmpty){
       }
     }
     if (hands.length)
-      return { relation: "HARDWARE_PIN", pin: hands.slice(0, 9).map(function(c){ return c.i; }).join("|"), why: "the handhelds", need: Math.min(9, hands.length) };
+      return { relation: "HARDWARE_PIN", pin: hands.slice(0, takeCap()).map(function(c){ return c.i; }).join("|"), why: "the handhelds", need: Math.min(takeCap(), hands.length) };
   }
   if (short.length <= 2 && /^(movies|posters|consoles|cartridges|carts|films)$/.test(short.join(" ")))
     return { relation: "HARDWARE_PIN", pin: "", why: whyEmpty, show: true };
@@ -4278,8 +4297,7 @@ function tryVisualHomeAsk(text){
   var got = askCards(home.r);
   if (!got.cards || !got.cards.length) return false;
   var box0 = el("askreply");
-  var lockedN = (typeof countLocked === "function") ? countLocked() : 0;
-  tray = got.cards.slice(0, lockedN || 9);
+  tray = got.cards.slice(0, takeCap());
   blob = null;
   lastPref = { kind: "ask", ask: text };
   anotherCursor = 0;
@@ -4311,69 +4329,98 @@ function cartAsk(t){ return visualAsk(CART_INDEX, t, "cartridges"); }
 // nobody has to remember that "Visual content → Consoles" means handhelds.
 function categoryCopy(g){
   g = g || currentGame();
+  // HOW MANY, THEN THE NOUN. The umbrella is How many; the options name
+  // the thing (one poster, one console). Caps are per catalogue: posters
+  // and murals are tall art, so they stop before a binder page; games have
+  // a wide shelf and can fill nine.
   if (g === "movies") return {
     name: "Movies",
     lede: "Movies. A film, a legendary, or a scene.",
     reply: "Movies. Paste what they wrote. One poster, unless the scene needs more.",
-    count: "How many posters",
+    count: "How many",
+    aria: "How many posters",
     page: "MOVIES",
     fit: "Fit — however many it needs",
     one: "one poster",
-    nine: "a wall"
+    many: "a wall",
+    max: 6
+  };
+  if (g === "mural" || g === "murals") return {
+    name: "Murals",
+    lede: "Murals. A wall, a scene, a city.",
+    reply: "Murals. Paste what they wrote. One picture, unless the wall needs more.",
+    count: "How many",
+    aria: "How many murals",
+    page: "MURALS",
+    fit: "Fit — however many it needs",
+    one: "one mural",
+    many: "a square",
+    max: 4
   };
   if (g === "consoles") return {
     name: "Consoles",
     lede: "Consoles. Name a system or the handhelds.",
     reply: "Consoles. Paste what they wrote. One picture, unless it needs more.",
-    count: "How many consoles",
+    count: "How many",
+    aria: "How many consoles",
     page: "CONSOLES",
     fit: "Fit — however many it needs",
     one: "one console",
-    nine: "a shelf"
+    many: "a shelf",
+    max: 9
   };
   if (g === "cartridges") return {
     name: "Cartridges",
     lede: "Cartridges. A box, a disc, a version.",
     reply: "Cartridges. Paste what they wrote. One box, unless it needs more.",
-    count: "How many boxes",
+    count: "How many",
+    aria: "How many boxes",
     page: "CARTRIDGES",
     fit: "Fit — however many it needs",
     one: "one box",
-    nine: "a shelf"
+    many: "a shelf",
+    max: 9
   };
   if (g === "pocket") return {
     name: "Pocket",
     lede: "Pocket. Say what you want to post. We'll find the cards.",
     reply: "Pocket. Paste what they wrote. One card, unless the art needs more.",
-    count: "How many cards",
+    count: "How many",
+    aria: "How many cards",
     page: "POCKET",
     fit: "Fit — however many it needs",
     one: "one card",
-    nine: "a binder page"
+    many: "a binder page",
+    max: 9
   };
   if (g === "both") return {
     name: "Paper and Pocket",
     lede: "Paper and Pocket. We'll find both.",
     reply: "Paper and Pocket. Paste what they wrote. One card, unless the art needs more.",
-    count: "How many cards",
+    count: "How many",
+    aria: "How many cards",
     page: "PAPER × POCKET",
     fit: "Fit — however many it needs",
     one: "one card",
-    nine: "a binder page"
+    many: "a binder page",
+    max: 9
   };
   return {
     name: "Paper TCG",
     lede: "Say what you want to post. We'll find the cards.",
     reply: "Paste what they wrote. One card, unless the art needs more.",
-    count: "How many cards",
+    count: "How many",
+    aria: "How many cards",
     page: "YOUR PAGE",
     fit: "Fit — however many it needs",
     one: "one card",
-    nine: "a binder page"
+    many: "a binder page",
+    max: 9
   };
 }
 function paintCountOptions(g){
   var copy = categoryCopy(g);
+  var max = Number(copy.max) || 9;
   var sel = el("cardcount");
   if (sel && sel.options) {
     var labels = {};
@@ -4384,17 +4431,35 @@ function paintCountOptions(g){
     labels["4"] = "4 — a square";
     labels["6"] = "6 — two rows";
     labels["8"] = "8 — a tall page";
-    labels["9"] = "9 — " + copy.nine;
+    labels["9"] = "9 — " + (copy.many || "a binder page");
+    if (labels[String(max)]) labels[String(max)] = max + " — " + (copy.many || labels[String(max)].split(" — ")[1] || "");
     for (var i = 0; i < sel.options.length; i++) {
-      var v = String(sel.options[i].value);
+      var opt = sel.options[i];
+      var v = String(opt.value);
+      var n = Number(v);
+      var on = v === "0" || (FORMAT_N.indexOf(n) >= 0 && n <= max);
       if (labels[v]) {
-        sel.options[i].text = labels[v];
-        sel.options[i].textContent = labels[v];
+        opt.text = labels[v];
+        opt.textContent = labels[v];
       }
+      opt.disabled = !on;
+      opt.hidden = !on;
+    }
+    if (Number(sel.value) > max) {
+      try { markCount(0); } catch (e) {}
     }
   }
   var step = el("countstep");
   if (step) step.textContent = copy.count;
+  var chips = el("fcount");
+  if (chips && chips.querySelectorAll) {
+    chips.querySelectorAll("[data-n]").forEach(function(x){
+      var n = Number(x.getAttribute("data-n") || x.dataset.n);
+      var on = FORMAT_N.indexOf(n) >= 0 && n <= max;
+      x.hidden = !on;
+      if (x.style) x.style.display = on ? "" : "none";
+    });
+  }
 }
 function paintCategory(mode, g){
   var copy = categoryCopy(g || currentGame());
@@ -4406,7 +4471,7 @@ function paintCategory(mode, g){
   var cl = el("countlabel");
   if (cl) cl.textContent = copy.count;
   var cs = el("cardcount");
-  if (cs && cs.setAttribute) cs.setAttribute("aria-label", copy.count);
+  if (cs && cs.setAttribute) cs.setAttribute("aria-label", copy.aria || copy.count);
   if (document.body && document.body.setAttribute) document.body.setAttribute("data-visual", g || currentGame());
   paintCountOptions(g || currentGame());
 }
@@ -4661,18 +4726,21 @@ function askCards(r, opts){
 
   if (r.relation === "MOVIE_PIN" || r.relation === "HARDWARE_PIN") {
     if (r.pin === "__none__") return { cards: [], reason: "no match" };
+    var capPin = 9;
+    try { capPin = takeCap(); } catch (ePin) {}
+    if (capPin < 1) capPin = 9;
     if (r.show || !r.pin) {
       if (currentGame() === "consoles")
-        return { cards: CONSOLE_INDEX.slice(0, 9), reason: r.why || "consoles" };
+        return { cards: CONSOLE_INDEX.slice(0, capPin), reason: r.why || "consoles" };
       if (currentGame() === "cartridges")
-        return { cards: CART_INDEX.slice(0, 9), reason: r.why || "cartridges" };
+        return { cards: CART_INDEX.slice(0, capPin), reason: r.why || "cartridges" };
       var show = [];
       var prefer = ["mov-m01-poster","mov-m02-poster","mov-m05-poster","mov-m08-poster","mov-m10-poster","mov-m20-poster","mov-m23-poster","mov-mdp-poster","mov-m13-poster"];
-      for (var mi = 0; mi < prefer.length; mi++) if (byId(prefer[mi])) show.push(byId(prefer[mi]));
-      return { cards: show.length ? show : MOVIE_INDEX.slice(0, 9), reason: r.why || "movie posters" };
+      for (var mi = 0; mi < prefer.length && show.length < capPin; mi++) if (byId(prefer[mi])) show.push(byId(prefer[mi]));
+      return { cards: show.length ? show : MOVIE_INDEX.slice(0, capPin), reason: r.why || "movie posters" };
     }
     var pinnedM = r.pin.split("|").map(byId).filter(Boolean);
-    return { cards: pinnedM.slice(0, 9), reason: r.why || "poster" };
+    return { cards: pinnedM.slice(0, capPin), reason: r.why || "poster" };
   }
 
   if (r.relation === "SURPRISE") {
@@ -4681,7 +4749,7 @@ function askCards(r, opts){
       var poolV = INDEX.slice();
       var nNeedV = 1;
       if (typeof countLocked === "function" && countLocked()) nNeedV = countLocked();
-      if (nNeedV > 9) nNeedV = 9;
+      try { var maxV = categoryMax(); if (nNeedV > maxV) nNeedV = maxV; } catch (eV) { if (nNeedV > 9) nNeedV = 9; }
       if (nNeedV > poolV.length) nNeedV = poolV.length;
       var startV = ((rot || 0) * 7 + (Date.now() % Math.max(1, poolV.length))) % Math.max(1, poolV.length);
       var pickV = [];
@@ -5451,17 +5519,17 @@ function runAsk(text){
         box0.className = "askreply";
       }
       var lockedN = countLocked();
-      // FIT (0) IS NOT A COUNT. The ask picks how many. A locked number caps
-      // visual pins (handhelds, a wall of posters) but never pads a named
-      // one, and never crops connecting art — that is one picture.
+      // FIT (0) IS NOT A COUNT. The ask picks how many, then takeCap is the
+      // catalogue ceiling — posters stop at 6, murals at 4, games at 9.
+      // Connecting art is one picture and is never cropped to a cap.
       if (askRel.relation === "MOVIE_PIN" || askRel.relation === "HARDWARE_PIN")
-        tray = got.cards.slice(0, lockedN || 9);
+        tray = got.cards.slice(0, takeCap());
       else if (askRel.relation === "CONNECTING_ART" || askRel.relation === "SURPRISE")
         tray = got.cards.slice(0, 9);
       else if (askRel.relation === "SET_FACTS")
-        tray = got.cards.slice(0, lockedN || 9);
-      else if (lockedN) tray = got.cards.slice(0, lockedN);
-      else tray = got.cards.slice(0, 9);
+        tray = got.cards.slice(0, takeCap());
+      else if (lockedN) tray = got.cards.slice(0, takeCap());
+      else tray = got.cards.slice(0, takeCap());
       blob = null;
       lastPref = { kind: "ask", ask: text };
       anotherCursor = 0;
@@ -5686,11 +5754,15 @@ function artistRevisitPairs(){
 }
 function rerunAsk(text, exclude, rot){
   const rel = askResolve(text);
+  var capR = 9;
+  try { capR = takeCap(); } catch (eR) {}
+  // Connecting art is one picture. Never crop it to a poster wall.
+  var sliceN = (rel && rel.relation === "CONNECTING_ART") ? 9 : capR;
   if (rel && (rel.relation === "SPECIES_GROUP" || rel.relation === "CONNECTING_ART"
       || rel.relation === "EVOLUTION_LINE" || rel.relation === "ARTIST_REVISITS"
       || rel.relation === "SURPRISE" || rel.relation === "SET_FACTS")) {
     const got = askCards(rel, { exclude: exclude, rot: rot });
-    if (got.cards && got.cards.length > 1) return { cards: got.cards.slice(0, 9), why: [got.reason] };
+    if (got.cards && got.cards.length > 1) return { cards: got.cards.slice(0, sliceN), why: [got.reason] };
   }
   const ctx = intentCtx();
   const found = parseIntent(text, ctx);
@@ -5701,9 +5773,9 @@ function rerunAsk(text, exclude, rot){
   }
   if (rel) {
     const got = askCards(rel, { exclude: exclude, rot: rot });
-    if (got.cards && got.cards.length > 1) return { cards: got.cards.slice(0, 9), why: [got.reason] };
+    if (got.cards && got.cards.length > 1) return { cards: got.cards.slice(0, sliceN), why: [got.reason] };
   }
-  var facts = factSearch(text, 9).filter(function(c){ return !exclude.has(c.i); });
+  var facts = factSearch(text, capR).filter(function(c){ return !exclude.has(c.i); });
   if (facts.length) return { cards: facts, why: ["printed facts"] };
   return null;
 }

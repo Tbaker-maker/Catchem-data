@@ -526,7 +526,9 @@ try {
   const ledeM = (document.getElementById("pagelede") || {}).textContent || "";
   check("movies names the category in the lede", /^Movies\./.test(ledeM), ledeM);
   const countM = (document.getElementById("countlabel") || {}).textContent || "";
-  check("movies count is posters, not cards", /poster/i.test(countM) && !/cards/i.test(countM), countM);
+  check("count umbrella is How many, not cards",
+    countM === "How many" && html.indexOf('id="countlabel">How many</span>') >= 0 && !/id="countlabel">How many cards/.test(html),
+    countM);
   api.applyGame("consoles", false);
   const ledeH = (document.getElementById("pagelede") || {}).textContent || "";
   check("consoles names the category in the lede", /^Consoles\./.test(ledeH), ledeH);
@@ -553,8 +555,8 @@ try {
     "Fit is not the selected default");
   const copyM2 = api.categoryCopy("movies");
   check("movies count nouns are posters, Fit never says cards",
-    /poster/i.test(copyM2.one) && /poster/i.test(copyM2.count) && /Fit/.test(copyM2.fit) && !/card/i.test(copyM2.one + copyM2.fit),
-    JSON.stringify({ one: copyM2.one, fit: copyM2.fit, count: copyM2.count }));
+    /poster/i.test(copyM2.one) && copyM2.max === 6 && /How many/.test(copyM2.count) && /poster/i.test(copyM2.aria) && /Fit/.test(copyM2.fit) && !/card/i.test(copyM2.one + copyM2.fit),
+    JSON.stringify({ one: copyM2.one, fit: copyM2.fit, count: copyM2.count, max: copyM2.max }));
   const copyH2 = api.categoryCopy("consoles");
   check("consoles count nouns are consoles",
     /console/i.test(copyH2.one) && !/card/i.test(copyH2.one + copyH2.fit),
@@ -565,8 +567,17 @@ try {
     JSON.stringify({ one: copyT2.one }));
   const copyP2 = api.categoryCopy("paper");
   check("paper count nouns stay cards",
-    /card/i.test(copyP2.one) && /How many cards/.test(copyP2.count) && /Fit/.test(copyP2.fit),
-    JSON.stringify({ one: copyP2.one, count: copyP2.count }));
+    /card/i.test(copyP2.one) && copyP2.count === "How many" && copyP2.max === 9 && /Fit/.test(copyP2.fit),
+    JSON.stringify({ one: copyP2.one, count: copyP2.count, max: copyP2.max }));
+  check("movies cap at a wall of 6",
+    api.categoryCopy("movies").max === 6 && api.categoryCopy("movies").many === "a wall",
+    JSON.stringify(api.categoryCopy("movies")));
+  check("murals cap at a square of 4",
+    api.categoryCopy("murals").max === 4 && /mural/i.test(api.categoryCopy("murals").one),
+    JSON.stringify(api.categoryCopy("murals")));
+  check("games keep a shelf of 9",
+    api.categoryCopy("consoles").max === 9 && api.categoryCopy("cartridges").max === 9,
+    "consoles=" + api.categoryCopy("consoles").max + " carts=" + api.categoryCopy("cartridges").max);
   api.applyGame("paper", false);
   api.applyCount(4, false);
   api.applyGame("movies", false);
@@ -600,6 +611,24 @@ try {
   check("locked 4 does not pad a named poster",
     stillOne.length === 1,
     stillOne.map(c => c.n).join(", "));
+  api.applyCount(0, false);
+  if (typeof api.movieShowcase === "function") api.movieShowcase();
+  check("movies showcase is a wall of 6, not a binder of 9",
+    api.tray().length === 6 && api.tray().every(c => String(c.i).indexOf("mov-") === 0),
+    "got " + api.tray().length + " " + api.tray().map(c => c.n).join(", "));
+  api.applyCount(9, false);
+  check("movies cannot lock a binder page",
+    api.fCount() === 6,
+    "fCount=" + api.fCount());
+  api.applyCount(8, false);
+  check("movies cannot lock a tall page either",
+    api.fCount() === 6,
+    "fCount=" + api.fCount());
+  api.applyCount(0, false);
+  const moviesAsk = ask("movies");
+  check("Fit movies ask is a wall of 6",
+    moviesAsk.length === 6 && moviesAsk.every(c => String(c.i).indexOf("mov-") === 0),
+    "got " + moviesAsk.length + " " + moviesAsk.map(c => c.n).join(", "));
   api.applyCount(0, false);
   api.applyGame("paper", false);
   const gbPaper = ask("game boy");
