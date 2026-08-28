@@ -583,18 +583,6 @@ ${TODAY_IMG ? `<div id="todaypost">
   <button type="button" class="mode on" data-mode="post">Post</button>
   <button type="button" class="mode" data-mode="reply">Reply</button>
 </div>
-<label class="howmany"><span id="countlabel">How many</span>
-  <select id="cardcount" aria-label="How many">
-    <option value="0" selected>Fit — however many it needs</option>
-    <option value="1">1 — one card</option>
-    <option value="2">2 — a pair</option>
-    <option value="3">3 — a row</option>
-    <option value="4">4 — a square</option>
-    <option value="6">6 — two rows</option>
-    <option value="8">8 — a tall page</option>
-    <option value="9">9 — a binder page</option>
-  </select>
-</label>
 <label class="howmany"><span>Visual content</span>
   <select id="game" aria-label="Visual content">
     <option value="paper">Paper TCG</option>
@@ -603,6 +591,18 @@ ${TODAY_IMG ? `<div id="todaypost">
     <option value="cartridges">Cartridges</option>
     <option value="consoles">Consoles</option>
     <option value="both">Compare both</option>
+  </select>
+</label>
+<label class="howmany"><span id="countlabel">Visual Quantity</span>
+  <select id="cardcount" aria-label="Visual Quantity">
+    <option value="0" selected>Fit — however many it needs</option>
+    <option value="1">1 — one card</option>
+    <option value="2">2 — a pair</option>
+    <option value="3">3 — a row</option>
+    <option value="4">4 — a square</option>
+    <option value="6">6 — two rows</option>
+    <option value="8">8 — a tall page</option>
+    <option value="9">9 — a binder page</option>
   </select>
 </label>
 <label class="howmany" id="artflipwrap"><span>Art flip</span>
@@ -697,7 +697,7 @@ ${TODAY_IMG ? `<div id="todaypost">
 <div class="steps">
   <div class="step"><span class="n">01 / SET</span><span class="t">Narrow it down, or don't</span>
     <select id="fset"><option value="">Every set</option>${sets.map(x => `<option>${x.replace(/&/g, "&amp;")}</option>`).join("")}</select></div>
-  <div class="step"><span class="n">02 / COUNT</span><span class="t" id="countstep">How many</span>
+  <div class="step"><span class="n">02 / COUNT</span><span class="t" id="countstep">Visual Quantity</span>
     <div class="chips" id="fcount">${[1,2,3,4,6,8,9].map(n => `<button class="chip" data-n="${n}">${n}</button>`).join("")}</div></div>
   <div class="step"><span class="n">03 / SLAB</span><span class="t">Show them slabbed</span>
     <div class="chips" id="fslab">
@@ -4277,16 +4277,17 @@ function cartAsk(t){ return visualAsk(CART_INDEX, t, "cartridges"); }
 // nobody has to remember that "Visual content → Consoles" means handhelds.
 function categoryCopy(g){
   g = g || currentGame();
-  // HOW MANY, THEN THE NOUN. The umbrella is How many; the options name
-  // the thing (one poster, one console). Caps are per catalogue: posters
-  // and murals are tall art, so they stop before a binder page; games have
-  // a wide shelf and can fill nine.
+  // VISUAL CONTENT, THEN VISUAL QUANTITY. Catalogue first, then how
+  // many of that thing. Options still name the noun (one poster, one
+  // console). Caps are per catalogue: posters and murals are tall art,
+  // so they stop before a binder page; games have a wide shelf and can
+  // fill nine.
   if (g === "movies") return {
     name: "Movies",
     lede: "Movies. A film, a legendary, or a scene.",
     reply: "Movies. Paste what they wrote. One poster, unless the scene needs more.",
-    count: "How many",
-    aria: "How many posters",
+    count: "Visual Quantity",
+    aria: "Visual Quantity",
     page: "MOVIES",
     fit: "Fit — however many it needs",
     one: "one poster",
@@ -4297,8 +4298,8 @@ function categoryCopy(g){
     name: "Murals",
     lede: "Murals. A wall, a scene, a city.",
     reply: "Murals. Paste what they wrote. One picture, unless the wall needs more.",
-    count: "How many",
-    aria: "How many murals",
+    count: "Visual Quantity",
+    aria: "Visual Quantity",
     page: "MURALS",
     fit: "Fit — however many it needs",
     one: "one mural",
@@ -4309,8 +4310,8 @@ function categoryCopy(g){
     name: "Consoles",
     lede: "Consoles. Name a system or the handhelds.",
     reply: "Consoles. Paste what they wrote. One picture, unless it needs more.",
-    count: "How many",
-    aria: "How many consoles",
+    count: "Visual Quantity",
+    aria: "Visual Quantity",
     page: "CONSOLES",
     fit: "Fit — however many it needs",
     one: "one console",
@@ -4321,8 +4322,8 @@ function categoryCopy(g){
     name: "Cartridges",
     lede: "Cartridges. A box, a disc, a version.",
     reply: "Cartridges. Paste what they wrote. One box, unless it needs more.",
-    count: "How many",
-    aria: "How many boxes",
+    count: "Visual Quantity",
+    aria: "Visual Quantity",
     page: "CARTRIDGES",
     fit: "Fit — however many it needs",
     one: "one box",
@@ -4333,8 +4334,8 @@ function categoryCopy(g){
     name: "Pocket",
     lede: "Pocket. Say what you want to post. We'll find the cards.",
     reply: "Pocket. Paste what they wrote. One card, unless the art needs more.",
-    count: "How many",
-    aria: "How many cards",
+    count: "Visual Quantity",
+    aria: "Visual Quantity",
     page: "POCKET",
     fit: "Fit — however many it needs",
     one: "one card",
@@ -4345,8 +4346,8 @@ function categoryCopy(g){
     name: "Paper and Pocket",
     lede: "Paper and Pocket. We'll find both.",
     reply: "Paper and Pocket. Paste what they wrote. One card, unless the art needs more.",
-    count: "How many",
-    aria: "How many cards",
+    count: "Visual Quantity",
+    aria: "Visual Quantity",
     page: "PAPER × POCKET",
     fit: "Fit — however many it needs",
     one: "one card",
@@ -4357,8 +4358,8 @@ function categoryCopy(g){
     name: "Paper TCG",
     lede: "Say what you want to post. We'll find the cards.",
     reply: "Paste what they wrote. One card, unless the art needs more.",
-    count: "How many",
-    aria: "How many cards",
+    count: "Visual Quantity",
+    aria: "Visual Quantity",
     page: "YOUR PAGE",
     fit: "Fit — however many it needs",
     one: "one card",

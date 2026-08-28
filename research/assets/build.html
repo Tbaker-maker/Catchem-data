@@ -399,18 +399,6 @@ summary:before{content:"→ ";color:var(--faint)}
   <button type="button" class="mode on" data-mode="post">Post</button>
   <button type="button" class="mode" data-mode="reply">Reply</button>
 </div>
-<label class="howmany"><span id="countlabel">How many</span>
-  <select id="cardcount" aria-label="How many">
-    <option value="0" selected>Fit — however many it needs</option>
-    <option value="1">1 — one card</option>
-    <option value="2">2 — a pair</option>
-    <option value="3">3 — a row</option>
-    <option value="4">4 — a square</option>
-    <option value="6">6 — two rows</option>
-    <option value="8">8 — a tall page</option>
-    <option value="9">9 — a binder page</option>
-  </select>
-</label>
 <label class="howmany"><span>Visual content</span>
   <select id="game" aria-label="Visual content">
     <option value="paper">Paper TCG</option>
@@ -419,6 +407,18 @@ summary:before{content:"→ ";color:var(--faint)}
     <option value="cartridges">Cartridges</option>
     <option value="consoles">Consoles</option>
     <option value="both">Compare both</option>
+  </select>
+</label>
+<label class="howmany"><span id="countlabel">Visual Quantity</span>
+  <select id="cardcount" aria-label="Visual Quantity">
+    <option value="0" selected>Fit — however many it needs</option>
+    <option value="1">1 — one card</option>
+    <option value="2">2 — a pair</option>
+    <option value="3">3 — a row</option>
+    <option value="4">4 — a square</option>
+    <option value="6">6 — two rows</option>
+    <option value="8">8 — a tall page</option>
+    <option value="9">9 — a binder page</option>
   </select>
 </label>
 <label class="howmany" id="artflipwrap"><span>Art flip</span>
@@ -513,7 +513,7 @@ summary:before{content:"→ ";color:var(--faint)}
 <div class="steps">
   <div class="step"><span class="n">01 / SET</span><span class="t">Narrow it down, or don't</span>
     <select id="fset"><option value="">Every set</option><option>151</option><option>Aquapolis</option><option>Ascended Heroes</option><option>Astral Radiance</option><option>Astral Radiance Trainer Gallery</option><option>BREAKpoint</option><option>BREAKthrough</option><option>BW Black Star Promos</option><option>Base</option><option>Base Set 2</option><option>Battle Styles</option><option>Best of Game</option><option>Black Bolt</option><option>Boundaries Crossed</option><option>Brilliant Stars</option><option>Brilliant Stars Trainer Gallery</option><option>Burning Shadows</option><option>Call of Legends</option><option>Celebrations</option><option>Celestial Storm</option><option>Chaos Rising</option><option>Chilling Reign</option><option>Cosmic Eclipse</option><option>Crimson Invasion</option><option>Crown Zenith</option><option>Crown Zenith Galarian Gallery</option><option>DP Black Star Promos</option><option>Dark Explorers</option><option>Darkness Ablaze</option><option>Delta Species</option><option>Deoxys</option><option>Destined Rivals</option><option>Diamond &amp; Pearl</option><option>Dragon Majesty</option><option>Dragon Vault</option><option>Dragons Exalted</option><option>EX Trainer Kit Latias</option><option>EX Trainer Kit Latios</option><option>Evolutions</option><option>Evolving Skies</option><option>Expedition Base Set</option><option>FireRed &amp; LeafGreen</option><option>Flashfire</option><option>Forbidden Light</option><option>Fossil</option><option>Generations</option><option>Great Encounters</option><option>Guardians Rising</option><option>Gym Challenge</option><option>Gym Heroes</option><option>HS—Undaunted</option><option>HS—Unleashed</option><option>HeartGold &amp; SoulSilver</option><option>Hidden Fates</option><option>Hidden Fates Shiny Vault</option><option>Holon Phantoms</option><option>Journey Together</option><option>Jungle</option><option>Legends Awakened</option><option>Lost Origin</option><option>Lost Origin Trainer Gallery</option><option>Lost Thunder</option><option>McDonald's Collection 2012</option><option>McDonald's Collection 2014</option><option>McDonald's Collection 2015</option><option>McDonald's Collection 2016</option><option>McDonald's Collection 2018</option><option>McDonald's Collection 2019</option><option>McDonald's Collection 2021</option><option>Mega Evolution</option><option>Neo Destiny</option><option>Neo Genesis</option><option>Neo Revelation</option><option>Next Destinies</option><option>Noble Victories</option><option>Obsidian Flames</option><option>POP Series 1</option><option>POP Series 3</option><option>POP Series 4</option><option>POP Series 5</option><option>POP Series 6</option><option>POP Series 7</option><option>POP Series 8</option><option>POP Series 9</option><option>Paldea Evolved</option><option>Paldean Fates</option><option>Paradox Rift</option><option>Perfect Order</option><option>Phantasmal Flames</option><option>Phantom Forces</option><option>Plasma Blast</option><option>Plasma Storm</option><option>Pokémon Futsal Collection</option><option>Pokémon GO</option><option>Power Keepers</option><option>Primal Clash</option><option>Prismatic Evolutions</option><option>Rebel Clash</option><option>Rising Rivals</option><option>Ruby &amp; Sapphire</option><option>SM Black Star Promos</option><option>SWSH Black Star Promos</option><option>Sandstorm</option><option>Scarlet &amp; Violet</option><option>Scarlet &amp; Violet Energies</option><option>Secret Wonders</option><option>Shining Fates Shiny Vault</option><option>Shining Legends</option><option>Shrouded Fable</option><option>Silver Tempest</option><option>Silver Tempest Trainer Gallery</option><option>Steam Siege</option><option>Stellar Crown</option><option>Stormfront</option><option>Sun &amp; Moon</option><option>Supreme Victors</option><option>Surging Sparks</option><option>Sword &amp; Shield</option><option>Team Rocket</option><option>Team Up</option><option>Temporal Forces</option><option>Twilight Masquerade</option><option>Ultra Prism</option><option>Unbroken Bonds</option><option>Unified Minds</option><option>Unseen Forces</option><option>Vivid Voltage</option><option>White Flare</option><option>Wizards Black Star Promos</option><option>XY</option></select></div>
-  <div class="step"><span class="n">02 / COUNT</span><span class="t" id="countstep">How many</span>
+  <div class="step"><span class="n">02 / COUNT</span><span class="t" id="countstep">Visual Quantity</span>
     <div class="chips" id="fcount"><button class="chip" data-n="1">1</button><button class="chip" data-n="2">2</button><button class="chip" data-n="3">3</button><button class="chip" data-n="4">4</button><button class="chip" data-n="6">6</button><button class="chip" data-n="8">8</button><button class="chip" data-n="9">9</button></div></div>
   <div class="step"><span class="n">03 / SLAB</span><span class="t">Show them slabbed</span>
     <div class="chips" id="fslab">
@@ -4456,16 +4456,17 @@ function cartAsk(t){ return visualAsk(CART_INDEX, t, "cartridges"); }
 // nobody has to remember that "Visual content → Consoles" means handhelds.
 function categoryCopy(g){
   g = g || currentGame();
-  // HOW MANY, THEN THE NOUN. The umbrella is How many; the options name
-  // the thing (one poster, one console). Caps are per catalogue: posters
-  // and murals are tall art, so they stop before a binder page; games have
-  // a wide shelf and can fill nine.
+  // VISUAL CONTENT, THEN VISUAL QUANTITY. Catalogue first, then how
+  // many of that thing. Options still name the noun (one poster, one
+  // console). Caps are per catalogue: posters and murals are tall art,
+  // so they stop before a binder page; games have a wide shelf and can
+  // fill nine.
   if (g === "movies") return {
     name: "Movies",
     lede: "Movies. A film, a legendary, or a scene.",
     reply: "Movies. Paste what they wrote. One poster, unless the scene needs more.",
-    count: "How many",
-    aria: "How many posters",
+    count: "Visual Quantity",
+    aria: "Visual Quantity",
     page: "MOVIES",
     fit: "Fit — however many it needs",
     one: "one poster",
@@ -4476,8 +4477,8 @@ function categoryCopy(g){
     name: "Murals",
     lede: "Murals. A wall, a scene, a city.",
     reply: "Murals. Paste what they wrote. One picture, unless the wall needs more.",
-    count: "How many",
-    aria: "How many murals",
+    count: "Visual Quantity",
+    aria: "Visual Quantity",
     page: "MURALS",
     fit: "Fit — however many it needs",
     one: "one mural",
@@ -4488,8 +4489,8 @@ function categoryCopy(g){
     name: "Consoles",
     lede: "Consoles. Name a system or the handhelds.",
     reply: "Consoles. Paste what they wrote. One picture, unless it needs more.",
-    count: "How many",
-    aria: "How many consoles",
+    count: "Visual Quantity",
+    aria: "Visual Quantity",
     page: "CONSOLES",
     fit: "Fit — however many it needs",
     one: "one console",
@@ -4500,8 +4501,8 @@ function categoryCopy(g){
     name: "Cartridges",
     lede: "Cartridges. A box, a disc, a version.",
     reply: "Cartridges. Paste what they wrote. One box, unless it needs more.",
-    count: "How many",
-    aria: "How many boxes",
+    count: "Visual Quantity",
+    aria: "Visual Quantity",
     page: "CARTRIDGES",
     fit: "Fit — however many it needs",
     one: "one box",
@@ -4512,8 +4513,8 @@ function categoryCopy(g){
     name: "Pocket",
     lede: "Pocket. Say what you want to post. We'll find the cards.",
     reply: "Pocket. Paste what they wrote. One card, unless the art needs more.",
-    count: "How many",
-    aria: "How many cards",
+    count: "Visual Quantity",
+    aria: "Visual Quantity",
     page: "POCKET",
     fit: "Fit — however many it needs",
     one: "one card",
@@ -4524,8 +4525,8 @@ function categoryCopy(g){
     name: "Paper and Pocket",
     lede: "Paper and Pocket. We'll find both.",
     reply: "Paper and Pocket. Paste what they wrote. One card, unless the art needs more.",
-    count: "How many",
-    aria: "How many cards",
+    count: "Visual Quantity",
+    aria: "Visual Quantity",
     page: "PAPER × POCKET",
     fit: "Fit — however many it needs",
     one: "one card",
@@ -4536,8 +4537,8 @@ function categoryCopy(g){
     name: "Paper TCG",
     lede: "Say what you want to post. We'll find the cards.",
     reply: "Paste what they wrote. One card, unless the art needs more.",
-    count: "How many",
-    aria: "How many cards",
+    count: "Visual Quantity",
+    aria: "Visual Quantity",
     page: "YOUR PAGE",
     fit: "Fit — however many it needs",
     one: "one card",

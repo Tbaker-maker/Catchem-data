@@ -522,12 +522,21 @@ try {
   check("visual content is the picker name",
     html.indexOf("Visual content") >= 0 && html.indexOf("Visual Categories") < 0 && !/<label class="howmany">Game/.test(html),
     "label missing");
+  const vcAt = html.indexOf(">Visual content</span>");
+  const vqAt = html.indexOf('id="countlabel">Visual Quantity</span>');
+  const afAt = html.indexOf('id="artflipwrap"');
+  check("Visual content comes before Visual Quantity",
+    vcAt >= 0 && vqAt > vcAt,
+    "vc=" + vcAt + " vq=" + vqAt);
+  check("Art flip sits after Visual Quantity",
+    afAt > vqAt,
+    "vq=" + vqAt + " af=" + afAt);
   api.applyGame("movies", false);
   const ledeM = (document.getElementById("pagelede") || {}).textContent || "";
   check("movies names the category in the lede", /^Movies\./.test(ledeM), ledeM);
   const countM = (document.getElementById("countlabel") || {}).textContent || "";
-  check("count umbrella is How many, not cards",
-    countM === "How many" && html.indexOf('id="countlabel">How many</span>') >= 0 && !/id="countlabel">How many cards/.test(html),
+  check("count umbrella is Visual Quantity, not How many cards",
+    countM === "Visual Quantity" && html.indexOf('id="countlabel">Visual Quantity</span>') >= 0 && !/id="countlabel">How many/.test(html),
     countM);
   api.applyGame("consoles", false);
   const ledeH = (document.getElementById("pagelede") || {}).textContent || "";
@@ -555,7 +564,7 @@ try {
     "Fit is not the selected default");
   const copyM2 = api.categoryCopy("movies");
   check("movies count nouns are posters, Fit never says cards",
-    /poster/i.test(copyM2.one) && copyM2.max === 6 && /How many/.test(copyM2.count) && /poster/i.test(copyM2.aria) && /Fit/.test(copyM2.fit) && !/card/i.test(copyM2.one + copyM2.fit),
+    /poster/i.test(copyM2.one) && copyM2.max === 6 && copyM2.count === "Visual Quantity" && /Quantity/.test(copyM2.aria) && /Fit/.test(copyM2.fit) && !/card/i.test(copyM2.one + copyM2.fit),
     JSON.stringify({ one: copyM2.one, fit: copyM2.fit, count: copyM2.count, max: copyM2.max }));
   const copyH2 = api.categoryCopy("consoles");
   check("consoles count nouns are consoles",
@@ -567,7 +576,7 @@ try {
     JSON.stringify({ one: copyT2.one }));
   const copyP2 = api.categoryCopy("paper");
   check("paper count nouns stay cards",
-    /card/i.test(copyP2.one) && copyP2.count === "How many" && copyP2.max === 9 && /Fit/.test(copyP2.fit),
+    /card/i.test(copyP2.one) && copyP2.count === "Visual Quantity" && copyP2.max === 9 && /Fit/.test(copyP2.fit),
     JSON.stringify({ one: copyP2.one, count: copyP2.count, max: copyP2.max }));
   check("movies cap at a wall of 6",
     api.categoryCopy("movies").max === 6 && api.categoryCopy("movies").many === "a wall",
