@@ -679,7 +679,7 @@ ${TODAY_IMG ? `<div id="todaypost">
 <div class="steps">
   <div class="step"><span class="n">01 / SET</span><span class="t">Narrow it down, or don't</span>
     <select id="fset"><option value="">Every set</option>${sets.map(x => `<option>${x.replace(/&/g, "&amp;")}</option>`).join("")}</select></div>
-  <div class="step"><span class="n">02 / COUNT</span><span class="t">How many cards</span>
+  <div class="step"><span class="n">02 / COUNT</span><span class="t" id="countstep">How many cards</span>
     <div class="chips" id="fcount">${[1,2,3,4,6,8,9].map(n => `<button class="chip" data-n="${n}">${n}</button>`).join("")}</div></div>
   <div class="step"><span class="n">03 / SLAB</span><span class="t">Show them slabbed</span>
     <div class="chips" id="fslab">
@@ -4103,43 +4103,85 @@ function categoryCopy(g){
     lede: "Movies. A film, a legendary, or a scene.",
     reply: "Movies. Paste what they wrote. One poster, unless the scene needs more.",
     count: "How many posters",
-    page: "MOVIES"
+    page: "MOVIES",
+    fit: "Fit — however many it needs",
+    one: "one poster",
+    nine: "a wall"
   };
   if (g === "consoles") return {
     name: "Consoles",
     lede: "Consoles. Name a system or the handhelds.",
     reply: "Consoles. Paste what they wrote. One picture, unless it needs more.",
     count: "How many consoles",
-    page: "CONSOLES"
+    page: "CONSOLES",
+    fit: "Fit — however many it needs",
+    one: "one console",
+    nine: "a shelf"
   };
   if (g === "cartridges") return {
     name: "Cartridges",
     lede: "Cartridges. A box, a disc, a version.",
     reply: "Cartridges. Paste what they wrote. One box, unless it needs more.",
     count: "How many boxes",
-    page: "CARTRIDGES"
+    page: "CARTRIDGES",
+    fit: "Fit — however many it needs",
+    one: "one box",
+    nine: "a shelf"
   };
   if (g === "pocket") return {
     name: "Pocket",
     lede: "Pocket. Say what you want to post. We'll find the cards.",
     reply: "Pocket. Paste what they wrote. One card, unless the art needs more.",
     count: "How many cards",
-    page: "POCKET"
+    page: "POCKET",
+    fit: "Fit — however many it needs",
+    one: "one card",
+    nine: "a binder page"
   };
   if (g === "both") return {
     name: "Paper and Pocket",
     lede: "Paper and Pocket. We'll find both.",
     reply: "Paper and Pocket. Paste what they wrote. One card, unless the art needs more.",
     count: "How many cards",
-    page: "PAPER × POCKET"
+    page: "PAPER × POCKET",
+    fit: "Fit — however many it needs",
+    one: "one card",
+    nine: "a binder page"
   };
   return {
     name: "Paper TCG",
     lede: "Say what you want to post. We'll find the cards.",
     reply: "Paste what they wrote. One card, unless the art needs more.",
     count: "How many cards",
-    page: "YOUR PAGE"
+    page: "YOUR PAGE",
+    fit: "Fit — however many it needs",
+    one: "one card",
+    nine: "a binder page"
   };
+}
+function paintCountOptions(g){
+  var copy = categoryCopy(g);
+  var sel = el("cardcount");
+  if (sel && sel.options) {
+    var labels = {};
+    labels["0"] = copy.fit;
+    labels["1"] = "1 — " + copy.one;
+    labels["2"] = "2 — a pair";
+    labels["3"] = "3 — a row";
+    labels["4"] = "4 — a square";
+    labels["6"] = "6 — two rows";
+    labels["8"] = "8 — a tall page";
+    labels["9"] = "9 — " + copy.nine;
+    for (var i = 0; i < sel.options.length; i++) {
+      var v = String(sel.options[i].value);
+      if (labels[v]) {
+        sel.options[i].text = labels[v];
+        sel.options[i].textContent = labels[v];
+      }
+    }
+  }
+  var step = el("countstep");
+  if (step) step.textContent = copy.count;
 }
 function paintCategory(mode, g){
   var copy = categoryCopy(g || currentGame());
@@ -4153,12 +4195,24 @@ function paintCategory(mode, g){
   var cs = el("cardcount");
   if (cs && cs.setAttribute) cs.setAttribute("aria-label", copy.count);
   if (document.body && document.body.setAttribute) document.body.setAttribute("data-visual", g || currentGame());
+  paintCountOptions(g || currentGame());
 }
 function categoryPageLabel(){
   return categoryCopy(currentGame()).page;
 }
+// FIT IS THE DEFAULT. Value 0 is not "zero cards" — it is unlocked. The
+// search picks the natural count (one named poster, nine handhelds, a pair
+// of fishes). A leftover 4 from Paper must not clip Movies. Reset Fit only
+// when the catalogue actually changes; staying on Movies keeps a lock they
+// just set.
+var appliedGame = "paper";
 function applyGame(g, rerun){
   g = g === "pocket" ? "pocket" : g === "both" ? "both" : g === "movies" ? "movies" : g === "consoles" ? "consoles" : g === "cartridges" ? "cartridges" : "paper";
+  var prevApplied = appliedGame;
+  appliedGame = g;
+  if (prevApplied !== g) {
+    try { markCount(0); } catch (e0) {}
+  }
   ASK_NAMES = null;
   ASK_ARTISTS = null;
   NAMES = null;
@@ -5176,7 +5230,12 @@ function runAsk(text){
         box0.className = "askreply";
       }
       var lockedN = countLocked();
-      if (askRel.relation === "CONNECTING_ART" || askRel.relation === "SURPRISE" || askRel.relation === "MOVIE_PIN" || askRel.relation === "HARDWARE_PIN")
+      // FIT (0) IS NOT A COUNT. The ask picks how many. A locked number caps
+      // visual pins (handhelds, a wall of posters) but never pads a named
+      // one, and never crops connecting art — that is one picture.
+      if (askRel.relation === "MOVIE_PIN" || askRel.relation === "HARDWARE_PIN")
+        tray = got.cards.slice(0, lockedN || 9);
+      else if (askRel.relation === "CONNECTING_ART" || askRel.relation === "SURPRISE")
         tray = got.cards.slice(0, 9);
       else if (askRel.relation === "SET_FACTS")
         tray = got.cards.slice(0, lockedN || 9);

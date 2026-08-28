@@ -547,6 +547,60 @@ try {
   const ledeReply = (document.getElementById("pagelede") || {}).textContent || "";
   check("reply mode still says Movies", /^Movies\./.test(ledeReply), ledeReply);
   if (typeof api.setMode === "function") api.setMode("post");
+  check("count default is Fit, not a number",
+    /<option value="0" selected>Fit — however many it needs/.test(html) &&
+      html.indexOf('value="1"') >= 0 && html.indexOf('value="5"') < 0,
+    "Fit is not the selected default");
+  const copyM2 = api.categoryCopy("movies");
+  check("movies count nouns are posters, Fit never says cards",
+    /poster/i.test(copyM2.one) && /poster/i.test(copyM2.count) && /Fit/.test(copyM2.fit) && !/card/i.test(copyM2.one + copyM2.fit),
+    JSON.stringify({ one: copyM2.one, fit: copyM2.fit, count: copyM2.count }));
+  const copyH2 = api.categoryCopy("consoles");
+  check("consoles count nouns are consoles",
+    /console/i.test(copyH2.one) && !/card/i.test(copyH2.one + copyH2.fit),
+    JSON.stringify({ one: copyH2.one, fit: copyH2.fit }));
+  const copyT2 = api.categoryCopy("cartridges");
+  check("cartridges count nouns are boxes",
+    /box/i.test(copyT2.one) && !/card/i.test(copyT2.one),
+    JSON.stringify({ one: copyT2.one }));
+  const copyP2 = api.categoryCopy("paper");
+  check("paper count nouns stay cards",
+    /card/i.test(copyP2.one) && /How many cards/.test(copyP2.count) && /Fit/.test(copyP2.fit),
+    JSON.stringify({ one: copyP2.one, count: copyP2.count }));
+  api.applyGame("paper", false);
+  api.applyCount(4, false);
+  api.applyGame("movies", false);
+  check("switching catalogue returns count to Fit",
+    api.fCount() === 0,
+    "fCount=" + api.fCount());
+  api.applyCount(4, false);
+  api.applyGame("movies", false);
+  check("same catalogue keeps a locked count",
+    api.fCount() === 4,
+    "fCount=" + api.fCount());
+  api.applyCount(0, false);
+  api.applyGame("consoles", false);
+  const handsFit = ask("the handhelds");
+  check("Fit handhelds is the row",
+    handsFit.length >= 6 && handsFit.every(c => String(c.i).indexOf("hw-") === 0),
+    "got " + handsFit.length + " " + handsFit.map(c => c.n).join(", "));
+  api.applyCount(3, false);
+  const hands3 = ask("the handhelds");
+  check("locked 3 handhelds is 3, not 9",
+    hands3.length === 3 && hands3.every(c => String(c.i).indexOf("hw-") === 0),
+    hands3.map(c => c.n).join(", "));
+  api.applyCount(0, false);
+  api.applyGame("movies", false);
+  const oneFilm = ask("the first movie");
+  check("Fit named movie stays one poster",
+    oneFilm.length === 1 && /mewtwo/i.test((oneFilm[0] || {}).n || ""),
+    oneFilm.map(c => c.n).join(", "));
+  api.applyCount(4, false);
+  const stillOne = ask("the first movie");
+  check("locked 4 does not pad a named poster",
+    stillOne.length === 1,
+    stillOne.map(c => c.n).join(", "));
+  api.applyCount(0, false);
   api.applyGame("paper", false);
   const goldRow = (api.CART_INDEX || []).find(c => /Gold/.test(c.n));
   const goldSrc = goldRow ? api.imgSmall(goldRow.i) : "";
