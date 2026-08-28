@@ -51,7 +51,7 @@ globalThis.__POCKET_ROWS = pocketRows;
 
 let api;
 try {
-  api = new Function(js + ";return { runAsk, tray:()=>tray, lineOptions, layoutForTray, connectingGroupOf, anotherSet, backSet, parseIntent, evoLineFor, INDEX, POCKET_INDEX, CONNECTING, LAYOUTS, add, remove, parseCta, pickShowYours, answerCta, officeCount:()=>officeCount, applyCount, fCount:()=>fCount, fillLineFromCards, pickCaption, applyGame, setGame, pocketShowcase, imgSmall, imgFallback, pocketImgList, hydrateIndexes };")();
+  api = new Function(js + ";return { runAsk, tray:()=>tray, lineOptions, layoutForTray, connectingGroupOf, anotherSet, backSet, parseIntent, evoLineFor, INDEX, POCKET_INDEX, MOVIE_INDEX, CONNECTING, LAYOUTS, add, remove, parseCta, pickShowYours, answerCta, officeCount:()=>officeCount, applyCount, fCount:()=>fCount, fillLineFromCards, pickCaption, applyGame, setGame, pocketShowcase, movieShowcase, imgSmall, imgFallback, pocketImgList, hydrateIndexes };")();
 } catch (e) {
   console.error("✗ page JS does not parse:", e.message);
   process.exit(1);
@@ -462,6 +462,35 @@ try {
   try { api.applyGame("paper", false); } catch (e2) {}
 }
 
+try {
+  check("movie catalogue shipped", (api.MOVIE_INDEX || []).length >= 20,
+    "MOVIE_INDEX=" + ((api.MOVIE_INDEX || []).length));
+  api.applyGame("movies", false);
+  const first = ask("the first movie");
+  check("the first movie is Mewtwo Strikes Back",
+    first.length >= 1 && first.every(c => String(c.i).indexOf("mov-") === 0) && /mewtwo/i.test(first[0].n),
+    first.map(c => c.n + " " + c.i).join(", "));
+  const born = ask("mewtwo is born");
+  check("mewtwo is born is a movie poster",
+    born.length >= 1 && born.every(c => String(c.i).indexOf("mov-") === 0) && born.some(c => /mewtwo/i.test(c.n)),
+    born.map(c => c.n + " " + c.i).join(", "));
+  const choose = ask("i choose you");
+  check("i choose you is the 2017 film",
+    choose.length >= 1 && choose.every(c => String(c.i).indexOf("mov-") === 0) && /choose/i.test(choose[0].n),
+    choose.map(c => c.n + " " + c.i).join(", "));
+  const det = ask("detective pikachu");
+  check("detective pikachu is the live-action poster",
+    det.length >= 1 && /detective/i.test(det[0].n) && String(det[0].i).indexOf("mov-") === 0,
+    det.map(c => c.n + " " + c.i).join(", "));
+  const src = api.imgSmall(first[0].i);
+  check("movie poster is wikimedia, not pokemontcg.io",
+    /upload\.wikimedia\.org/.test(src) && src.indexOf("pokemontcg.io") < 0,
+    src);
+  api.applyGame("paper", false);
+} catch (e) {
+  check("movies", false, e.message);
+  try { api.applyGame("paper", false); } catch (e2) {}
+}
 
 // 10. Same physical card twice is a broken page, not a pairing.
 try {

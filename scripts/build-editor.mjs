@@ -133,6 +133,19 @@ else {
       ]);
     }
   }
+  const movieCat = await J("data/movie-catalogue.json");
+  const movieShow = [];
+  if (movieCat && movieCat.films) {
+    for (const f of movieCat.films) {
+      if (!f.img) continue;
+      movieShow.push([
+        f.id, f.n, f.title, f.year, f.img,
+        (f.species || []).join("|"),
+        (f.aliases || []).join("|"),
+        (f.scenes || []).join("|"),
+      ]);
+    }
+  }
   const xwalk = (await J("data/pocket-crosswalk.json")) || { twins: {}, sharedBases: 0, sharedArtists: 0 };
 
   const html = `<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex,nofollow,noarchive"><title>Catch'em Creators — build a post</title>
@@ -534,6 +547,7 @@ ${TODAY_IMG ? `<div id="todaypost">
   <select id="game" aria-label="Paper or Pocket">
     <option value="paper">Paper TCG</option>
     <option value="pocket">Pocket</option>
+    <option value="movies">Movies</option>
     <option value="both">Compare both</option>
   </select>
 </label>
@@ -961,8 +975,16 @@ function mapPocketRow(r){
   if (r[13]) o.sid = r[13];
   return o;
 }
-var POCKET_INDEX = [];
-var DATA_V = "${index.length}-${pocketShow.length}";
+var MOVIE_ROWS = ${JSON.stringify(movieShow)};
+function mapMovieRow(r){
+  var o = { i: r[0], n: r[1], s: r[2], y: r[3], g: "m", img: r[4], r: "Poster", hero: 1, sup: "P" };
+  if (r[5]) o.species = String(r[5]).split("|");
+  if (r[6]) o.aliases = String(r[6]).split("|");
+  if (r[7]) o.scenes = String(r[7]).split("|");
+  return o;
+}
+var MOVIE_INDEX = [];
+var DATA_V = "${index.length}-${pocketShow.length}-${movieShow.length}";
 const CROSSWALK = ${JSON.stringify({ sharedBases: xwalk.sharedBases, sharedArtists: xwalk.sharedArtists, twins: xwalk.twins })};
 // Sourced facts, so the 'story' shape has something true to build on. Only
 // VERIFIED ones ship — an unsourced claim on a card image is the one mistake
@@ -1574,7 +1596,7 @@ const imgSmall = (id) => {
   return "https://images.pokemontcg.io/" + id.slice(0, id.lastIndexOf("-")) + "/" + id.slice(id.lastIndexOf("-") + 1) + ".png";
 };
 const imgUrl = (id) => {
-  if (String(id).indexOf("tcgp-") === 0) return imgSmall(id);
+  if (String(id).indexOf("tcgp-") === 0 || String(id).indexOf("mov-") === 0) return imgSmall(id);
   return "https://images.pokemontcg.io/" + id.slice(0, id.lastIndexOf("-")) + "/" + id.slice(id.lastIndexOf("-") + 1) + "_hires.png";
 };
 const imgAlt = (id) => "https://images.scrydex.com/pokemon/" + id + "/large";
@@ -1587,10 +1609,12 @@ function imgTag(c, cls){
 function hydrateIndexes(){
   CARD_INDEX = (CARD_ROWS || []).map(mapPaperRow);
   POCKET_INDEX = (POCKET_ROWS || []).map(mapPocketRow);
+  MOVIE_INDEX = (MOVIE_ROWS || []).map(mapMovieRow);
   INDEX = CARD_INDEX.slice();
   for (var k in byIdRow) delete byIdRow[k];
   for (var i = 0; i < CARD_INDEX.length; i++) byIdRow[CARD_INDEX[i].i] = CARD_INDEX[i];
   for (var pi = 0; pi < POCKET_INDEX.length; pi++) byIdRow[POCKET_INDEX[pi].i] = POCKET_INDEX[pi];
+  for (var mi = 0; mi < MOVIE_INDEX.length; mi++) byIdRow[MOVIE_INDEX[mi].i] = MOVIE_INDEX[mi];
   ASK_NAMES = null; ASK_ARTISTS = null;
 }
 function loadCatalogue(then){
@@ -1806,6 +1830,10 @@ function hay(c){
   if (c.H) parts.push(String(c.H), "hp");
   if (c.num) parts.push(c.num);
   if (c.sid) parts.push(c.sid);
+  if (c.aliases) parts = parts.concat(c.aliases);
+  if (c.scenes) parts = parts.concat(c.scenes);
+  if (c.species) parts = parts.concat(c.species);
+  if (c.g === "m") parts.push("poster", "movie", "film");
   c._h = fold(parts.join(" "));
   return c._h;
 }
@@ -3181,6 +3209,8 @@ function imgFallback(node, id){
     for (var i = 0; i < list.length; i++) {
       if (seen.indexOf(list[i]) < 0 && list[i] !== cur) { next = list[i]; break; }
     }
+  } else if (id.indexOf("mov-") === 0) {
+    next = null;
   } else if (seen.indexOf("scrydex.com") < 0) {
     next = "https://images.scrydex.com/pokemon/" + id + "/small";
   }
@@ -3213,6 +3243,14 @@ function exampleChips(){
     { q: "three star", label: "Three Star" },
     { q: "paper tcg", label: "Paper TCG", game: "paper" },
   ];
+  if (g === "movies") return [
+    { q: "surprise me", label: "Surprise me" },
+    { q: "the first movie", label: "The First Movie", demo: true },
+    { q: "i choose you", label: "I choose you" },
+    { q: "lugia", label: "Lugia · Power of One" },
+    { q: "detective pikachu", label: "Detective Pikachu" },
+    { q: "mewtwo is born", label: "Mewtwo is born" },
+  ];
   if (g === "both") return [
     { q: "surprise me", label: "Surprise me" },
     { q: "the birds", label: "paper × Pocket birds", demo: true },
@@ -3227,12 +3265,13 @@ function exampleChips(){
     { q: "eeveelutions", label: "the Eevee line" },
     { q: "the beach", label: "nine cards, one beach" },
     { q: "pokemon pocket", label: "Pokémon Pocket", game: "pocket" },
+    { q: "the first movie", label: "Movies", game: "movies" },
   ];
 }
 const EXAMPLES = exampleChips;
 function currentGame(){
   var gs = el("game");
-  if (gs && (gs.value === "pocket" || gs.value === "both" || gs.value === "paper")) return gs.value;
+  if (gs && (gs.value === "pocket" || gs.value === "both" || gs.value === "paper" || gs.value === "movies")) return gs.value;
   if (INDEX.length && INDEX[0] && INDEX[0].g === "k") return "pocket";
   return "paper";
 }
@@ -3369,6 +3408,7 @@ function askResolve(text){
   var gNow = currentGame();
   var pocketOn = gNow === "pocket";
   var bothOn = gNow === "both";
+  if (gNow === "movies") return movieAsk(t);
   if ((pocketOn || bothOn) && (has(["the birds", "legendary birds", "three birds"]) ||
       (has(["zapdos"]) && has(["articuno"]) && has(["moltres"])))) {
     if (bothOn) return { relation: "CONNECTING_ART", subject: null, need: 6,
@@ -3715,14 +3755,71 @@ function pocketShowcase(){
   applyTwin();
   return true;
 }
+function movieShowcase(){
+  if (!MOVIE_INDEX || !MOVIE_INDEX.length) return false;
+  var prefer = ["mov-m01-poster","mov-m02-poster","mov-m05-poster","mov-m08-poster","mov-m10-poster","mov-m20-poster","mov-m23-poster","mov-mdp-poster","mov-m13-poster"];
+  var pick = [];
+  for (var i = 0; i < prefer.length; i++) {
+    var c = byIdRow[prefer[i]];
+    if (c) pick.push(c);
+  }
+  if (pick.length < 6) {
+    for (var j = 0; j < MOVIE_INDEX.length && pick.length < 9; j++) {
+      if (pick.indexOf(MOVIE_INDEX[j]) < 0) pick.push(MOVIE_INDEX[j]);
+    }
+  }
+  tray = pick.slice(0, 9);
+  blob = null;
+  lastPref = { kind: "ask", ask: "movies" };
+  var box = el("askreply");
+  if (box) {
+    box.textContent = "Movies — " + MOVIE_INDEX.length + " theatrical posters. Search a film, a legendary, or a scene (I choose you, Mewtwo is born).";
+    box.className = "askreply";
+  }
+  render(); resetPage(); search();
+  fillLineFromCards(true);
+  return true;
+}
+function movieAsk(t){
+  t = " " + String(t || "").toLowerCase().replace(/[^a-z0-9]+/g, " ") + " ";
+  if (/ posters? | movies? | films? /.test(t) && t.trim().split(" ").length <= 2)
+    return { relation: "MOVIE_PIN", pin: "", why: "movie posters", show: true };
+  var scored = [];
+  for (var i = 0; i < MOVIE_INDEX.length; i++) {
+    var c = MOVIE_INDEX[i];
+    var sc = 0;
+    var keys = (c.aliases || []).concat(c.scenes || []).concat([c.n, c.s]);
+    for (var k = 0; k < keys.length; k++) {
+      var key = " " + String(keys[k] || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim() + " ";
+      if (key.length > 3 && t.indexOf(key) >= 0) sc += key.trim().length;
+    }
+    var sp = c.species || [];
+    for (var s = 0; s < sp.length; s++) {
+      var sn = " " + String(sp[s] || "").toLowerCase() + " ";
+      if (t.indexOf(sn) >= 0) sc += 8;
+    }
+    if (sc) scored.push({ c: c, sc: sc });
+  }
+  scored.sort(function(a, b){ return b.sc - a.sc; });
+  if (!scored.length) return { relation: "MOVIE_PIN", pin: "", why: "movie posters", show: true };
+  var top = scored[0].sc;
+  var keep = scored.filter(function(x){ return x.sc >= top * 0.6; }).slice(0, 4);
+  return {
+    relation: "MOVIE_PIN",
+    pin: keep.map(function(x){ return x.c.i; }).join("|"),
+    why: keep.map(function(x){ return x.c.n; }).join(" · "),
+    need: keep.length
+  };
+}
 function applyGame(g, rerun){
-  g = g === "pocket" ? "pocket" : g === "both" ? "both" : "paper";
+  g = g === "pocket" ? "pocket" : g === "both" ? "both" : g === "movies" ? "movies" : "paper";
   ASK_NAMES = null;
   ASK_ARTISTS = null;
   NAMES = null;
   SUGGEST_NAMES = null;
   INDEX = g === "pocket" ? POCKET_INDEX.slice()
     : g === "both" ? CARD_INDEX.concat(POCKET_INDEX)
+    : g === "movies" ? MOVIE_INDEX.slice()
     : CARD_INDEX.slice();
   var gs = el("game");
   if (gs && gs.value !== g) {
@@ -3738,6 +3835,8 @@ function applyGame(g, rerun){
     ? "surprise me, team rocket, three star, eeveelutions…"
     : g === "both"
     ? "surprise me, the birds, pikachu, eeveelutions…"
+    : g === "movies"
+    ? "the first movie, I choose you, Lugia, Mewtwo is born…"
     : "surprise me, the fishes, the beach, eeveelutions…";
   try { paintExamples(); } catch (e) {}
   try { renderStreak(); } catch (e) {}
@@ -3748,13 +3847,14 @@ function setGame(g){
   var ask = el("ask");
   var q = ask ? String(ask.value || "").trim() : "";
   applyGame(g, false);
-  if (/^(pokemon pocket|tcg pocket|ptcgp|paper tcg|paper cards)$/i.test(q.replace(/\s+/g, " "))) {
+  if (/^(pokemon pocket|tcg pocket|ptcgp|paper tcg|paper cards|movies|posters)$/i.test(q.replace(/\s+/g, " "))) {
     q = "";
     if (ask) ask.value = "";
   }
   if (!q) {
     if (g === "pocket") pocketShowcase();
     else if (g === "both") runAsk("the birds");
+    else if (g === "movies") movieShowcase();
     else { tray = []; blob = null; render(); }
     return;
   }
@@ -3767,6 +3867,7 @@ function setGame(g){
 }
 function twinNote(cards){
   if (!cards || !cards.length || typeof CROSSWALK === "undefined" || !CROSSWALK.twins) return "";
+  if (cards.some(function(c){ return c.g === "m"; })) return "";
   var bits = [], seen = {};
   for (var i = 0; i < cards.length; i++) {
     var b = (typeof monName === "function") ? monName(cards[i].n) : cards[i].n;
@@ -3932,6 +4033,17 @@ function askCards(r, opts){
   opts = opts || {};
   var skipIds = opts.exclude instanceof Set ? opts.exclude : new Set();
   var rot = Number(opts.rot) || 0;
+
+  if (r.relation === "MOVIE_PIN") {
+    if (r.show || !r.pin) {
+      var show = [];
+      var prefer = ["mov-m01-poster","mov-m02-poster","mov-m05-poster","mov-m08-poster","mov-m10-poster","mov-m20-poster","mov-m23-poster","mov-mdp-poster","mov-m13-poster"];
+      for (var mi = 0; mi < prefer.length; mi++) if (byId(prefer[mi])) show.push(byId(prefer[mi]));
+      return { cards: show.length ? show : MOVIE_INDEX.slice(0, 9), reason: r.why || "movie posters" };
+    }
+    var pinnedM = r.pin.split("|").map(byId).filter(Boolean);
+    return { cards: pinnedM, reason: r.why || "movie poster" };
+  }
 
   if (r.relation === "SPECIES_GROUP") {
     var names = r.names || [];
@@ -4603,6 +4715,12 @@ function runAsk(text){
     return;
   }
   var tl = " " + String(text || "").toLowerCase().replace(/[^a-z0-9]+/g, " ") + " ";
+  var saysMovie = tl.indexOf(" movie ") >= 0 || tl.indexOf(" movies ") >= 0
+    || tl.indexOf(" poster ") >= 0 || tl.indexOf(" posters ") >= 0
+    || tl.indexOf(" the first movie ") >= 0 || tl.indexOf(" i choose you ") >= 0
+    || tl.indexOf(" detective pikachu ") >= 0 || tl.indexOf(" mewtwo is born ") >= 0
+    || tl.indexOf(" power of one ") >= 0 || tl.indexOf(" power of us ") >= 0;
+  if (saysMovie && currentGame() !== "movies") applyGame("movies", false);
   var saysPocket = tl.indexOf(" pokemon pocket ") >= 0 || tl.indexOf(" tcg pocket ") >= 0
     || tl.indexOf(" ptcgp ") >= 0 || tl.indexOf(" pocket ") >= 0;
   var saysPaper = tl.indexOf(" paper tcg ") >= 0 || tl.indexOf(" paper cards ") >= 0
@@ -4637,14 +4755,20 @@ function runAsk(text){
     if (!askRel) return false;
     const got = askCards(askRel);
     const box0 = el("askreply");
-    if (got.cards.length > 1) {
+    if (got.cards.length > 1 || (askRel.relation === "MOVIE_PIN" && got.cards.length >= 1)) {
       if (box0) {
+        if (askRel.relation === "MOVIE_PIN") {
+          var years = [];
+          for (var yi = 0; yi < got.cards.length; yi++) if (got.cards[yi].y && years.indexOf(got.cards[yi].y) < 0) years.push(got.cards[yi].y);
+          box0.textContent = (askRel.why || got.reason) + (years.length ? " · " + years.join("/") : "") + ". Theatrical poster. Search a scene if you want a different film.";
+        } else {
         box0.textContent = askRel.relation.replace(/_/g, " ").toLowerCase() +
           " — " + askRel.why + ". " + got.reason;
+        }
         box0.className = "askreply";
       }
       var lockedN = countLocked();
-      if (askRel.relation === "CONNECTING_ART" || askRel.relation === "SURPRISE")
+      if (askRel.relation === "CONNECTING_ART" || askRel.relation === "SURPRISE" || askRel.relation === "MOVIE_PIN")
         tray = got.cards.slice();
       else if (askRel.relation === "SET_FACTS")
         tray = got.cards.slice(0, lockedN || 9);
@@ -4670,7 +4794,7 @@ function runAsk(text){
   };
   // Connecting art is a picture, not a search. The old parser always returned
   // a 2-card pair and ignored How many cards. This path has to go first.
-  if (askRel && (askRel.relation === "CONNECTING_ART" || askRel.relation === "ARTIST_REVISITS" || askRel.relation === "EVOLUTION_LINE" || askRel.relation === "SPECIES_GROUP" || askRel.relation === "SURPRISE" || askRel.relation === "SET_FACTS")) {
+  if (askRel && (askRel.relation === "CONNECTING_ART" || askRel.relation === "ARTIST_REVISITS" || askRel.relation === "EVOLUTION_LINE" || askRel.relation === "SPECIES_GROUP" || askRel.relation === "SURPRISE" || askRel.relation === "SET_FACTS" || askRel.relation === "MOVIE_PIN")) {
     if (tryRelation()) return;
   }
   const ctx = intentCtx();
