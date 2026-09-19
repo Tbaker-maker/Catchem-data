@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Catch'em — Trending</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Oswald:wght@500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0b0c0d;
+      --fg: #ecece8;
+      --muted: #9a9d96;
+      --faint: #6a6e68;
+      --line: #2a2d30;
+      --raised: #1c1f22;
+      --accent: #d5d9cf;
+      --accent-fg: #0b0c0d;
+      --ok: #8fa37a;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; background: var(--bg); color: var(--fg); font-family: "IBM Plex Sans", system-ui, sans-serif; }
+    body { overscroll-behavior: none; }
+    .stage { max-width: 28rem; margin: 0 auto; min-height: 100dvh; display: flex; flex-direction: column; }
+    header { display: flex; align-items: center; justify-content: space-between; padding: 0.85rem 1.1rem 0.4rem; }
+    .word { font-family: "Oswald", sans-serif; letter-spacing: 0.22em; font-size: 0.85rem; }
+    .badge { font-family: "IBM Plex Mono", monospace; font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); }
+    .photo { height: min(38dvh, 18rem); display: flex; align-items: center; justify-content: center; padding: 0.5rem 1rem; }
+    .photo img { max-height: 100%; max-width: 88%; object-fit: contain; filter: drop-shadow(0 16px 28px rgb(0 0 0 / 0.36)); }
+    .copy { flex: 1; padding: 0.4rem 1.25rem 1.5rem; }
+    .kicker { display: flex; gap: 0.5rem; align-items: center; font-family: "IBM Plex Mono", monospace; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+    .kicker span { border: 1px solid var(--line); background: var(--raised); color: var(--fg); padding: 0.15rem 0.45rem; border-radius: 4px; }
+    h1 { font-family: "Oswald", sans-serif; font-weight: 600; font-size: 1.7rem; line-height: 1.15; margin: 0.45rem 0 0; letter-spacing: -0.02em; }
+    .play { font-family: "IBM Plex Mono", monospace; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 0.7rem 0 0; font-weight: 600; }
+    .do { margin: 0.45rem 0 0; font-size: 0.98rem; line-height: 1.4; }
+    .why { margin: 0.4rem 0 0; color: var(--muted); font-size: 0.92rem; line-height: 1.4; }
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-top: 1rem; border-top: 1px solid var(--line); }
+    .stats div { padding: 0.7rem 0.85rem 0; }
+    .stats div:first-child { padding-left: 0; border-right: 1px solid var(--line); }
+    .stats kbd { display: block; font-family: "IBM Plex Sans", sans-serif; font-size: 0.7rem; color: var(--muted); font-weight: 500; }
+    .stats b { font-family: "IBM Plex Mono", monospace; font-size: 1.05rem; font-weight: 600; }
+    .stats small { display: block; color: var(--faint); font-size: 0.72rem; margin-top: 0.15rem; }
+    nav { display: flex; gap: 0.5rem; padding: 0 1.25rem calc(1rem + env(safe-area-inset-bottom)); }
+    nav button { flex: 1; min-height: 2.75rem; border: 0; border-radius: 8px; font-weight: 600; font-size: 0.9rem; }
+    #prev { background: transparent; color: var(--muted); }
+    #next { background: var(--accent); color: var(--accent-fg); }
+    .dots { display: flex; justify-content: center; gap: 0.28rem; padding: 0.2rem 0 0.6rem; }
+    .dots i { width: 5px; height: 5px; border-radius: 99px; background: var(--line); display: block; }
+    .dots i.on { background: var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <header>
+      <div class="word">CATCH'EM</div>
+      <div class="badge">Private preview</div>
+    </header>
+    <div class="photo" id="photo"></div>
+    <div class="copy">
+      <div class="kicker"><span id="topic">TCG</span><span id="rest">SEALED</span></div>
+      <h1 id="title">Loading…</h1>
+      <p class="play" id="play"></p>
+      <p class="do" id="do"></p>
+      <p class="why" id="why"></p>
+      <div class="stats">
+        <div><kbd>TCG sold · 30 days</kbd><b id="vol">—</b><small id="volNote"></small></div>
+        <div><kbd>Floor</kbd><b id="floor">—</b><small id="usd"></small></div>
+      </div>
+    </div>
+    <div class="dots" id="dots"></div>
+    <nav>
+      <button type="button" id="prev">Back</button>
+      <button type="button" id="next">Next read</button>
+    </nav>
+  </div>
+  <script>
+    const money = (n) => "$" + Number(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    let plays = [];
+    let i = 0;
+    const $ = (id) => document.getElementById(id);
+    function paint() {
+      const p = plays[i];
+      if (!p) return;
+      $("title").textContent = p.name;
+      $("play").textContent = "The play · " + p.play;
+      $("do").textContent = p.do;
+      $("why").textContent = p.why;
+      $("vol").textContent = (p.vol30 || 0).toLocaleString("en-US") + " copies";
+      $("volNote").textContent = (p.volFirst7 ?? "") + " sold the first week · " + (p.volLast7 ?? "") + " this week";
+      $("floor").textContent = money(p.floorUsd);
+      $("usd").textContent = "Tonight " + money(p.usd);
+      const photo = $("photo");
+      photo.innerHTML = p.image ? '<img src="' + p.image + '" alt="' + p.tcgName + '" />' : "";
+      [...$("dots").children].forEach((d, n) => d.classList.toggle("on", n === i));
+    }
+    function go(d) {
+      i = (i + d + plays.length) % plays.length;
+      paint();
+    }
+    $("next").onclick = () => go(1);
+    $("prev").onclick = () => go(-1);
+    let y0 = null;
+    document.addEventListener("touchstart", (e) => { y0 = e.touches[0].clientY; }, { passive: true });
+    document.addEventListener("touchend", (e) => {
+      if (y0 == null) return;
+      const dy = e.changedTouches[0].clientY - y0;
+      if (dy < -48) go(1);
+      if (dy > 48) go(-1);
+      y0 = null;
+    }, { passive: true });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowDown" || e.key === "ArrowRight") go(1);
+      if (e.key === "ArrowUp" || e.key === "ArrowLeft") go(-1);
+    });
+    fetch("./plays.json")
+      .then((r) => r.json())
+      .then((data) => {
+        plays = data.plays || [];
+        $("dots").innerHTML = plays.map(() => "<i></i>").join("");
+        paint();
+      })
+      .catch(() => { $("title").textContent = "Could not load reads"; });
+  </script>
+</body>
+</html>
