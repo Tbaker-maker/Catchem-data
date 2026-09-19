@@ -1,3 +1,14 @@
+# Catch'Em — Trending
+
+Public desk Catch'Em Bot should read:
+
+- https://tbaker-maker.github.io/Catchem-data/trending
+- https://tbaker-maker.github.io/Catchem-data/trending.json
+
+Tools pick Fill / Watch the floor / Wait. A person does not lock it.
+
+---
+
 # catchem-data
 
 Automated daily sealed-product pricing for the Catch'em app. Uses the free eBay Browse API and GitHub Actions. Zero ongoing cost, zero manual work.
