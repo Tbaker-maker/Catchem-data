@@ -635,7 +635,7 @@
     var BIRD_IR = [
       { id:"c30-ir-moltres", name:"Moltres", species:"Moltres", set:"30th Celebration", year:"2026", artist:"HYOGONOSUKE", lock:"011/128", rarity:"Illustration Rare", rank:99, tags:"30th connecting birds ir en", feat:1, src:"/cards/c30/ir-moltres.png" },
       { id:"c30-ir-articuno", name:"Articuno", species:"Articuno", set:"30th Celebration", year:"2026", artist:"HYOGONOSUKE", lock:"018/128", rarity:"Illustration Rare", rank:99, tags:"30th connecting birds ir en", feat:1, src:"/cards/c30/ir-articuno.png" },
-      { id:"c30-ir-zapdos", name:"Zapdos", species:"Zapdos", set:"30th Celebration", year:"2026", artist:"HYOGONOSUKE", lock:"055/128", rarity:"Illustration Rare", rank:99, tags:"30th connecting birds ir en", feat:1, src:"/cards/c30/ir-zapdos.png" }
+      { id:"c30-ir-zapdos", name:"Zapdos", species:"Zapdos", set:"30th Celebration", year:"2026", artist:"HYOGONOSUKE", lock:"055/128", rarity:"Illustration Rare", rank:99, tags:"30th connecting birds ir en", feat:1, src:"/cards/c30/ir-zapdos.png?v=20sep-zapface" }
     ];
     var BLASTOISE_TONIGHT = [
       { id:"base5-3", name:"Dark Blastoise", species:"Blastoise", set:"Team Rocket", year:"2000", artist:"Mitsuhiro Arita", lock:"3/82", rarity:"Rare Holo", rank:88, tags:"blastoise vintage arita then", feat:1, src:"/cards/seed/base5-3.png" },
@@ -3835,6 +3835,10 @@
           "The forest is the screenshot.\n\nThe holo is the one I still want.",
           "It took 20 years to get Umbreon out of the box.\n\nI still look at the holo first."
         ];
+      } else if (sel.length === 1 && (sel[0].tags || "").indexOf("connecting") !== -1) {
+        var bird = sel[0];
+        var birdLine = (bird.species || bird.name) + ".\n\n" + (bird.set || "30th Celebration") + " " + (bird.lock || "") + ".";
+        doors = [birdLine, birdLine, birdLine];
       } else if (all30) {
         doors = [
         sel.length + " from 30th Celebration.\n\nKeep one.",
