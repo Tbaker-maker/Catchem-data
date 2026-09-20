@@ -1,1 +1,1 @@
-/workspace/catchem-work/ingest-hardware.mjs
+__FILE__:/workspace/catchem-work/ingest-hardware.mjs
