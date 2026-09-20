@@ -805,15 +805,29 @@
       if ($("preview")) $("preview").style.display = "none";
       if ($("tonight-hero")) $("tonight-hero").style.display = "none";
       if ($("compose-note")) $("compose-note").textContent = "";
+      if ($("tray")) $("tray").innerHTML = "<span class=\"empty\">Tap a card to pin. Up to four. Order is the picture.</span>";
+      if ($("tray-fact")) $("tray-fact").textContent = "";
+      if ($("btn-compose")) {
+        $("btn-compose").disabled = true;
+        $("btn-compose").textContent = "Make the picture";
+      }
+    }
+    function isConnectQuery(nq) {
+      nq = String(nq || "").trim().toLowerCase().replace(/\s+/g, " ");
+      return !nq || nq === "birds" || nq === "the birds" || nq === "connect" || nq === "connecting art";
     }
     function fillSpecialTray() {
       var nq = String(q || "").trim().toLowerCase().replace(/\s+/g, " ");
-      if (prompt === "connect") {
+      if (nq === "the fishes" || nq === "fishes") {
+        pins = ["bw8-32", "bw8-33"];
+        return true;
+      }
+      if (prompt === "connect" && isConnectQuery(nq) && !mon) {
         pins = ["c30-ir-moltres", "c30-ir-articuno", "c30-ir-zapdos"];
         return true;
       }
-      if (nq === "the fishes" || nq === "fishes") {
-        pins = ["bw8-32", "bw8-33"];
+      if (nq === "birds" || nq === "the birds") {
+        pins = ["c30-ir-moltres", "c30-ir-articuno", "c30-ir-zapdos"];
         return true;
       }
       return false;
@@ -1502,6 +1516,7 @@
         setFilter = "";
         lastPaperEra = "";
         lastPaperSet = "";
+        mon = "";
         q = "";
         if ($("q")) $("q").value = "";
         prompt = h.v;
@@ -4352,11 +4367,14 @@
       var b = e.target.closest("[data-mon]");
       if (!b) return;
       var v = b.getAttribute("data-mon");
+      wipeTray();
       if (v === "All") mon = "";
       else mon = mon === v ? "" : v;
       if (medium === "games" && mon && prompt === "top") prompt = "all";
+      if (prompt === "connect" && mon) prompt = "all";
       unstickIfEmpty();
       resetPage();
+      fillSpecialTray();
       paintMons(); paintSets(); paintPrompts(); paintStrip();
       if (mon && ["then","line","origin","megaform","dark","region","star","eras","trio","night"].indexOf(prompt) !== -1) {
         pairFocus = -1;
@@ -4443,6 +4461,7 @@
       }
       resetPage();
       if (prompt === "connect") {
+        mon = "";
         pins = ["c30-ir-moltres", "c30-ir-articuno", "c30-ir-zapdos"];
       } else if (fromPair && autoPin.indexOf(prompt) !== -1) {
         pairFocus = -1;
@@ -4490,6 +4509,8 @@
       var use = raw.toLowerCase();
       if (top && top.fix && foldQ(top.t) !== foldQ(raw)) use = top.t.toLowerCase();
       q = use;
+      var nq = String(q || "").trim().toLowerCase().replace(/\s+/g, " ");
+      if (prompt === "connect" && !isConnectQuery(nq)) prompt = "all";
       var artHit = (top && top.k === "artist" && top.score <= 0.6) ? top.t : matchArtist(q);
       if (artHit && raw.length >= 4) {
         era = "";
@@ -4514,6 +4535,7 @@
       }
       resetPage();
       fillSpecialTray();
+      paintPrompts();
       paintStrip();
     };
     $("q").onkeydown = function (e) {
