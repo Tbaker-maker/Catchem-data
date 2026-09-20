@@ -563,8 +563,8 @@
       <div id="review-posts"></div>
       <p class="lab">Graph — who writes back</p>
       <div id="review-graph"></div>
-      <p class="lab">This week (built from your logs)</p>
-      <div class="auth" id="review-week"></div>
+      <p class="lab" id="lab-week" hidden>This week (built from your logs)</p>
+      <div class="auth" id="review-week" hidden></div>
       <p class="lab">Sunday 20 min — keep / kill / Monday change</p>
       <textarea id="aar" placeholder="One metric: saves per 1k. One keep. One kill. One change for Monday."></textarea>
     </section>
@@ -665,8 +665,8 @@
       { id:"swsh7-215", name:"Umbreon VMAX", species:"Umbreon", set:"Evolving Skies", year:"2021", artist:"KEIICHIRO ITO", lock:"215/203", rarity:"Rare Rainbow", rank:100, tags:"umbreon moonbreon chase", feat:1, src:"/img/swsh7/215" }
     ];
     var FISH_PAPER = [
-      { id:"bw8-32", name:"Carvanha", species:"Carvanha", set:"Plasma Storm", year:"2013", artist:"Mitsuhiro Arita", lock:"32/135", rarity:"Common", rank:55, tags:"carvanha fishes paper readable", feat:1, src:"/cards/seed/bw8-32.png" },
-      { id:"bw8-33", name:"Sharpedo", species:"Sharpedo", set:"Plasma Storm", year:"2013", artist:"5ban Graphics", lock:"33/135", rarity:"Rare", rank:70, tags:"sharpedo fishes paper readable", feat:1, src:"/cards/seed/bw8-33.png" }
+      { id:"bw8-32", name:"Carvanha", species:"Carvanha", set:"Plasma Storm", year:"2013", artist:"Mitsuhiro Arita", lock:"32/135", rarity:"Common", rank:55, tags:"carvanha fishes paper readable", feat:1, src:"/img/bw8/32" },
+      { id:"bw8-33", name:"Sharpedo", species:"Sharpedo", set:"Plasma Storm", year:"2013", artist:"5ban Graphics", lock:"33/135", rarity:"Rare", rank:70, tags:"sharpedo fishes paper readable", feat:1, src:"/img/bw8/33" }
     ];
     var CHECK_STUBS = [
       { id:"xy6-11", name:"Shedinja", species:"Shedinja", set:"Roaring Skies", year:"2015", artist:"Aya Kusube", lock:"11/108", rarity:"Rare", rank:50, tags:"shedinja empty-shell", src:"/cards/seed/xy6-11.png" },
@@ -687,11 +687,18 @@
       hedge: "Refuse. Hedge on the Parent."
     };
     var FISH_PARENT = "Carvanha or Sharpedo.\n\nKeep the one that still looks like a fish.";
-    var FISH_SELF = "Left · Carvanha · Plasma Storm 32/135 · Mitsuhiro Arita\nRight · Sharpedo · Plasma Storm 33/135 · 5ban Graphics\n\nPaste this ~30 min after the parent if the thread is quiet.";
+    var FISH_SELF = "Left · Carvanha · Plasma Storm 32/135 · Mitsuhiro Arita\nRight · Sharpedo · Plasma Storm 33/135 · 5ban Graphics";
     var FISH_ANS = {
       agree: "Carvanha is the one I keep looking at too.",
       disagree: "Sharpedo is the one I'd keep.",
       add: "I'd still sit a second Sharpedo next to that Carvanha."
+    };
+    var BIRD_PARENT = "Moltres. Articuno. Zapdos.\n\nOne painting. You need all three.";
+    var BIRD_SELF = "Left · Moltres · 30th Celebration 011/128 · HYOGONOSUKE\nCenter · Articuno · 30th Celebration 018/128 · HYOGONOSUKE\nRight · Zapdos · 30th Celebration 055/128 · HYOGONOSUKE";
+    var BIRD_ANS = {
+      agree: "Zapdos is the one I keep looking at too.",
+      disagree: "Articuno is the one I'd keep.",
+      add: "I'd still sit Moltres next to that Zapdos."
     };
     var SQUIRTLE_PARENT = "Same artist.\n24 years of Squirtle. I kept Base.";
     var SQUIRTLE_SELF = "Left · Squirtle · Base 63/102 · 1999 · Mitsuhiro Arita\nRight · Squirtle · 151 170/165 · 2023 · Mitsuhiro Arita\n\nPaste ~30 min if the thread is quiet.";
@@ -790,6 +797,27 @@
     var SET_PIN = SET_PIN_EN;
     var q = "";
     var pins = [];
+    function wipeTray() {
+      pins = [];
+      pairFocus = -1;
+      pairRoles = [];
+      pairRound = 0;
+      if ($("preview")) $("preview").style.display = "none";
+      if ($("tonight-hero")) $("tonight-hero").style.display = "none";
+      if ($("compose-note")) $("compose-note").textContent = "";
+    }
+    function fillSpecialTray() {
+      var nq = String(q || "").trim().toLowerCase().replace(/\s+/g, " ");
+      if (prompt === "connect") {
+        pins = ["c30-ir-moltres", "c30-ir-articuno", "c30-ir-zapdos"];
+        return true;
+      }
+      if (nq === "the fishes" || nq === "fishes") {
+        pins = ["bw8-32", "bw8-33"];
+        return true;
+      }
+      return false;
+    }
     var door = 0;
     var page = 0;
     var PAGE = 9;
@@ -1094,6 +1122,21 @@
       var m = String(path || "").match(/^\/(?:img|thumb)\/([^/]+)\/([^/?#]+)/);
       if (!m) return path;
       return "https://images.pokemontcg.io/" + m[1] + "/" + m[2] + (hi ? "_hires.png" : ".png");
+    }
+    function scanUrls(c) {
+      var s = srcOf(c) || "";
+      var out = [];
+      function add(u) { if (u && out.indexOf(u) === -1) out.push(u); }
+      if (!s) return out;
+      if (/^https?:\/\//i.test(s)) { add(s); return out; }
+      if (s.indexOf("/img/") === 0 || s.indexOf("/thumb/") === 0) {
+        add(tcgImg(s, true));
+        add(tcgImg(s, false));
+      }
+      add(hiresOf(c));
+      if (s.charAt(0) === "/") add(s);
+      add(assetUrl(s));
+      return out;
     }
     function srcOf(c) {
       if (!c) return "";
@@ -1416,6 +1459,7 @@
     }
     function applyHint(h) {
       if (!h) return;
+      wipeTray();
       $("q").value = h.t;
       if (h.k === "set") {
         adoptSet(h.t);
@@ -1462,15 +1506,14 @@
         if ($("q")) $("q").value = "";
         prompt = h.v;
       } else {
-        if (h.rail && h.rail !== paperLang && (h.rail === "en" || h.rail === "jp")) {
-          switchLang(h.rail, { repaint: false, keepQ: true });
-        }
         q = h.t.toLowerCase();
       }
+      fillSpecialTray();
       paintHints([], "");
       if ($("q-fix")) $("q-fix").hidden = true;
       resetPage();
       paintMons(); paintSets(); paintPrompts(); paintStrip();
+      if (pins.length) seedCaption(true);
     }
     function isJp(c) { return c && c.lang === "jp"; }
     function paperOk(c) {
@@ -1679,6 +1722,7 @@
       chromeForMedium();
     }
     function adoptSet(name) {
+      wipeTray();
       if (!name || name === "All") {
         setFilter = "";
         if (medium === "paper") lastPaperSet = "";
@@ -3259,6 +3303,11 @@
       var n = sel.map(function (c) { return (c.species || "").toLowerCase(); }).sort();
       return n[0] === "carvanha" && n[1] === "sharpedo";
     }
+    function isBirdTray(sel) {
+      if (!sel || sel.length !== 3) return false;
+      var ids = sel.map(function (c) { return c.id; });
+      return ids.indexOf("c30-ir-moltres") !== -1 && ids.indexOf("c30-ir-articuno") !== -1 && ids.indexOf("c30-ir-zapdos") !== -1;
+    }
     function isBlastTray(sel) {
       if (!sel || sel.length !== 2) return false;
       var ids = sel.map(function (c) { return c.id; });
@@ -3513,6 +3562,7 @@
       var sel = refetchSel();
       var draft = ($("caption") && $("caption").value) || "";
       if (isFishTray(sel)) draft = FISH_PARENT;
+      if (isBirdTray(sel)) draft = BIRD_PARENT;
       if (isBlastTray(sel) && !draft) draft = BLAST_PARENT;
       var chk = runCheck(sel, q, draft);
       var box = $("check-box");
@@ -3542,6 +3592,11 @@
         parent = FISH_PARENT;
         self = FISH_SELF;
         ans = FISH_ANS;
+        if ($("selfreply")) $("selfreply").value = self;
+      } else if (isBirdTray(sel)) {
+        parent = BIRD_PARENT;
+        self = BIRD_SELF;
+        ans = BIRD_ANS;
         if ($("selfreply")) $("selfreply").value = self;
       } else if (isBlastTray(sel)) {
         parent = ($("caption") && $("caption").value && $("caption").value.indexOf("1st Edition Charizard") !== -1)
@@ -3749,12 +3804,8 @@
           "MSRP vs this price.\n\nThat’s the official warning — not a verdict.",
           "PSA grades after they authenticate.\n\nWe don’t grade from a photo."
         ];
-      } else if (connecting) {
-        doors = [
-          "This is one painting.\n\nYou need all three.",
-          "30th birds.\n\nThey only make sense as a set.",
-          "Same hand on all three.\n\nKeeping one looks unfinished."
-        ];
+      } else if (connecting || isBirdTray(sel)) {
+        doors = [BIRD_PARENT, BIRD_PARENT, BIRD_PARENT];
       } else if (visualTray || prompt === "vs") {
         var seen = {};
         var names = [];
@@ -3972,6 +4023,7 @@
       var safe = gKeys.filter(function (h) { return graphStatus(graph[h]) === "safe"; });
       var ghost = out7.length >= 6 && avgOut < 40;
       var outLine = outToday >= 25 ? "Outbound today is full. Quality or stop." : (outToday < 8 ? "Under 8 outbound today. The graph starves." : "Outbound in range.");
+      if ($("review-week") && !$("review-week").hidden) {
       $("review-week").innerHTML =
         "<p><strong>" + who + "</strong> · " + outLine + "</p>" +
         "<p><strong>Outbound law (2026)</strong> — Reply-guy is alive. 15–25 <em>named</em> replies / day, 60–90 min, spread. 80 templated in an hour is the #1 ghost-ban trigger. Duplicate text is a repo rule. Mutual reply is 4× a stranger reply.</p>" +
@@ -3981,6 +4033,7 @@
         "<p><strong>Week shape</strong> — 1 swing at 8:30pm. Optional PC photo afternoon after a clearing swing (Thu/Sat). 15–25 outbound before 8:00. After you post: answer humans on the parent, credits at T+20, no outbound until T+90. Sunday: one keep, one kill, one Monday change on saves/1k (Catch'em quality, not a Phoenix weight).</p>" +
         (ghost ? "<p class=\"hold\"><strong>Deboost watch</strong> — last 7 days of outbound average " + avgOut + " views. If those sat on busy TCG posts, you are in the collapsed replies. Slow down. Longer lines. Fewer, not more.</p>" : "") +
         "<p class=\"note\">Mild = one named reply on a big public thread. Careful = NFT-forward or they never reply. Pokémon fans do not follow you into NFT. NFT people will follow you into Pokémon.</p>";
+      }
 
       if ($("out-law")) {
         $("out-law").innerHTML =
@@ -4320,6 +4373,7 @@
     $("sets").onclick = function (e) {
       var b = e.target.closest("[data-set]");
       if (!b) return;
+      wipeTray();
       var v = b.getAttribute("data-set");
       if (v === "All") {
         setFilter = "";
@@ -4356,6 +4410,7 @@
     if ($("eras")) $("eras").onclick = function (e) {
       var b = e.target.closest("[data-era]");
       if (!b) return;
+      wipeTray();
       var v = b.getAttribute("data-era");
       if (v === "All" || era === v) {
         era = "";
@@ -4379,6 +4434,7 @@
       var pairKeys = ["then", "artist", "hand", "line", "origin", "megaform", "dark", "region", "star", "eras", "trio", "night"];
       var autoPin = ["then", "line", "origin", "megaform", "dark", "region", "star", "eras", "trio", "night"];
       prompt = prompt === v ? "all" : v;
+      wipeTray();
       if (pairKeys.indexOf(prompt) !== -1) {
         setFilter = "";
         era = "";
@@ -4427,6 +4483,7 @@
     };
     $("q").oninput = function () {
       var raw = ($("q").value || "").trim();
+      wipeTray();
       var hints = suggestQ(raw);
       paintHints(hints, raw);
       var top = hints[0];
@@ -4456,6 +4513,7 @@
         /* prefix of a Pokémon — keep hay, don't steal the set */
       }
       resetPage();
+      fillSpecialTray();
       paintStrip();
     };
     $("q").onkeydown = function (e) {
@@ -4487,6 +4545,8 @@
       var b = e.target.closest("[data-id]");
       if (!b) return;
       var id = b.getAttribute("data-id");
+      var card = CARDS.filter(function (x) { return x.id === id; })[0];
+      if (!onDesk(card)) return;
       if (pairEditing() && placeInPair(id)) {
         resetPage();
         refreshPairUI();
@@ -4758,6 +4818,10 @@
       switchLang(b.getAttribute("data-lang"));
     };
     $("btn-compose").onclick = function () {
+      pins = pins.filter(function (id) {
+        var c = CARDS.filter(function (x) { return x.id === id; })[0];
+        return c && onDesk(c);
+      });
       var sel = selected();
       if (!sel.length) {
         $("compose-note").textContent = "Pin first. We will not paste a four you didn't pick.";
@@ -4778,10 +4842,24 @@
       var cols = lay.cols, rowsN = lay.rows;
       var canvas = document.createElement("canvas");
       var ctx = canvas.getContext("2d");
-      var loaded = 0;
       var imgs = [];
-      var failed = false;
+      var failedIds = [];
+      var pending = n;
+      function loadScan(c, done) {
+        var urls = scanUrls(c);
+        var u = 0;
+        function next() {
+          if (u >= urls.length) { done(null); return; }
+          var im = new Image();
+          im.crossOrigin = "anonymous";
+          im.onload = function () { done(im); };
+          im.onerror = function () { u += 1; next(); };
+          im.src = urls[u];
+        }
+        next();
+      }
       function knockMatte(im) {
+        try {
         var c = document.createElement("canvas");
         c.width = im.width;
         c.height = im.height;
@@ -4849,6 +4927,9 @@
         flood(w - 1, h - 1, -1, -1);
         x.putImageData(img, 0, 0);
         return c;
+        } catch (err) {
+          return im;
+        }
       }
       function sampleAccent(im) {
         try {
@@ -4883,18 +4964,16 @@
         if (cur) lines.push(cur);
         return lines.slice(0, maxLines || 4);
       }
-      sel.forEach(function (c, i) {
-        var im = new Image();
-        im.onload = function () {
-          if (failed) return;
-          imgs[i] = im;
-          loaded++;
-          if (loaded !== n) return;
+      function paintBoard() {
           var mats = sel.map(function (card, k) {
             if (card.kind === "poster" || card.kind === "manga" || isGameBox(card)) return imgs[k];
             if ((card.tags || "").indexOf("connecting") !== -1) return imgs[k];
             return knockMatte(imgs[k]);
           });
+          if (mats.some(function (m) { return !m; })) {
+            $("compose-note").textContent = "A scan failed. Don't send a hole.";
+            return;
+          }
           var pack = packCards(n, cols, rowsN, mats, lay.kind === "connect");
           var W = pack.W, H = pack.H, margin = pack.margin, artW = pack.artW, packBot = pack.packBot;
           canvas.width = W;
@@ -4991,13 +5070,24 @@
             ? "That's an edit, not a scan. Fact sits under the card. Premium file. Long-press."
             : "That's an edit, not a scan. Fact sits under the card. Catch'Em stays — fun is free. Premium takes the mark off to monetize. Long-press.";
           seedCaption(false);
-        };
-        im.onerror = function () {
-          failed = true;
-          $("compose-note").textContent = "A scan failed (" + c.id + "). Don't send a hole.";
-        };
-        im.src = hiresOf(c);
-      });
+      }
+      sel.forEach(function (c, i) {
+          loadScan(c, function (im) {
+            if (im) imgs[i] = im;
+            else failedIds.push(c.id);
+            pending -= 1;
+            if (pending) return;
+            if (failedIds.length) {
+              $("compose-note").textContent = "A scan failed (" + failedIds.join(", ") + "). Don't send a hole.";
+              if ($("btn-compose")) {
+                $("btn-compose").disabled = false;
+                $("btn-compose").textContent = "Make the picture";
+              }
+              return;
+            }
+            paintBoard();
+          });
+        });
     };
     function merge(rows, extraTags) {
       var have = {};
