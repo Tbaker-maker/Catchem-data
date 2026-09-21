@@ -51,7 +51,7 @@ const browser = await puppeteer.launch({
 console.log("LAUNCH GAUNTLET\n  url: " + URL + "\n  browser: " + chrome + "\n");
 
 // Duplicate bindings in the shipped page are how the live editor went white.
-const htmlProbe = await (await fetch(URL)).text();
+const htmlProbe = await (await fetch(URL, { signal: AbortSignal.timeout(20000) })).text();
 check("page is HTML", htmlProbe.includes("<!doctype html") || htmlProbe.includes("<html") || htmlProbe.includes("Catch'em"), "not html");
 check("one shareImage", (htmlProbe.match(/async function shareImage/g) || []).length <= 1, String((htmlProbe.match(/async function shareImage/g) || []).length));
 check("one copyImage", (htmlProbe.match(/async function copyImage/g) || []).length <= 1, String((htmlProbe.match(/async function copyImage/g) || []).length));

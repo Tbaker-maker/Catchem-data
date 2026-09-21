@@ -1,45 +1,52 @@
 {
- "note": "EVERY gate in one place. On 2026-08-23 chat and CC each added a PPT licensing gate to pack-basis.mjs independently; the second silently overrode the first and Tyler's ruling did not take effect. Gates written as code stack invisibly. Gates written as named keys collide in git, which is the point.",
- "law": "One condition, one key, one owner file. Code reads from here and never re-implements a gate. Adding a gate means adding a key — if the key exists, you are duplicating something.",
- "flags": {
-  "ppt.publicDisplay": {
-   "value": true,
-   "owner": "scripts/pack-basis.mjs + scripts/compute-divergence.mjs",
-   "why": "Tyler ruled 2026-08-23: free tool, development phase, proceed on the current tier. Governs BOTH the displayed pack basis and whether PPT-derived spread figures may publish — one condition, one key. (Was duplicated as pptLicensed until 2026-08-22; both keys bound CATCHEM_PPT_LICENSED, so setting one value moved nothing.)",
-   "trigger": "Must be re-decided BEFORE the first dollar — a Pro tier, ads, sponsorship, or any paid feature.",
-   "env": "CATCHEM_PPT_LICENSED"
-  },
-  "spread.headline": {
-   "value": false,
-   "owner": "scripts/compute-derived.mjs",
-   "why": "RULED 2026-08-22 (Tyler): retired to a footnote. The gap is biased in a known direction by an unmeasurable amount — our eBay side includes postage, the TCGplayer side excludes it, and no shipping-inclusive TCG figure is purchasable at any tier. It no longer drives Daily Three selection or raises signals; it stays a labelled stat on product pages and is still computed internally.",
-   "trigger": "Shipping-inclusive TCGplayer data becoming obtainable (see tcgDelivered). Until then this stays false."
-  },
-  "images.darkroom": {
-   "value": true,
-   "owner": "scripts/rasterize-cards.mjs",
-   "why": "Repaint white catalogue backgrounds to the brand surface on minted cards. VERIFIED 2026-08-22 on 12 real photos: safe on dark packaging, and it DESTROYED light packaging (the 151 box came back navy, the Prismatic wordmark half eaten) until a centre-breach guard was added — it now returns the original untouched when the fill would reach the product.",
-   "trigger": "Turn off if CC's visual verification shows it damages real product photos."
-  },
-  "graded.publish": {
-   "value": false,
-   "owner": "scripts/compute-derived.mjs",
-   "why": "Graded instruments need a licensed daily graded-price feed we do not have.",
-   "trigger": "A GemRate or equivalent licence."
-  },
-  "site": {
-   "value": "https://catchemtcg.com",
-   "type": "value",
-   "owner": "scripts/social-posts.mjs",
-   "why": "The public host. The app domain is unlisted after the public/gated split, so every published link points here.",
-   "trigger": "If the public host changes, or the app stops being unlisted.",
-   "env": "CATCHEM_SITE"
-  },
-  "tcgDelivered": {
-   "value": false,
-   "owner": "scripts/compute-divergence.mjs",
-   "why": "Whether our TCGplayer figures include shipping. They do not: PPT reports item-only market price and exposes no shipping field on any tier. Never estimate the difference — the Pricing Basis Law forbids it.",
-   "trigger": "A source that reports TCGplayer prices inclusive of shipping."
+  "note": "EVERY gate in one place. On 2026-08-23 chat and CC each added a PPT licensing gate to pack-basis.mjs independently; the second silently overrode the first and Tyler's ruling did not take effect. Gates written as code stack invisibly. Gates written as named keys collide in git, which is the point.",
+  "law": "One condition, one key, one owner file. Code reads from here and never re-implements a gate. Adding a gate means adding a key — if the key exists, you are duplicating something.",
+  "flags": {
+    "ppt.publicDisplay": {
+      "value": true,
+      "owner": "scripts/pack-basis.mjs + scripts/compute-divergence.mjs",
+      "why": "Tyler ruled 2026-08-23: free tool, development phase, proceed on the current tier. Governs BOTH the displayed pack basis and whether PPT-derived spread figures may publish — one condition, one key. (Was duplicated as pptLicensed until 2026-08-22; both keys bound CATCHEM_PPT_LICENSED, so setting one value moved nothing.)",
+      "trigger": "Must be re-decided BEFORE the first dollar — a Pro tier, ads, sponsorship, or any paid feature.",
+      "env": "CATCHEM_PPT_LICENSED"
+    },
+    "spread.headline": {
+      "value": false,
+      "owner": "scripts/compute-derived.mjs",
+      "why": "RULED 2026-08-22 (Tyler): retired to a footnote. The gap is biased in a known direction by an unmeasurable amount — our eBay side includes postage, the TCGplayer side excludes it, and no shipping-inclusive TCG figure is purchasable at any tier. It no longer drives Daily Three selection or raises signals; it stays a labelled stat on product pages and is still computed internally.",
+      "trigger": "Shipping-inclusive TCGplayer data becoming obtainable (see tcgDelivered). Until then this stays false."
+    },
+    "images.darkroom": {
+      "value": true,
+      "owner": "scripts/rasterize-cards.mjs",
+      "why": "Repaint white catalogue backgrounds to the brand surface on minted cards. VERIFIED 2026-08-22 on 12 real photos: safe on dark packaging, and it DESTROYED light packaging (the 151 box came back navy, the Prismatic wordmark half eaten) until a centre-breach guard was added — it now returns the original untouched when the fill would reach the product.",
+      "trigger": "Turn off if CC's visual verification shows it damages real product photos."
+    },
+    "graded.publish": {
+      "value": false,
+      "owner": "scripts/compute-derived.mjs",
+      "why": "Graded instruments need a licensed daily graded-price feed we do not have.",
+      "trigger": "A GemRate or equivalent licence."
+    },
+    "site": {
+      "value": "https://catchemtcg.com",
+      "type": "value",
+      "owner": "scripts/social-posts.mjs",
+      "why": "The public host. The app domain is unlisted after the public/gated split, so every published link points here.",
+      "trigger": "If the public host changes, or the app stops being unlisted.",
+      "env": "CATCHEM_SITE"
+    },
+    "tcgDelivered": {
+      "value": false,
+      "owner": "scripts/compute-divergence.mjs",
+      "why": "Whether our TCGplayer figures include shipping. They do not: PPT reports item-only market price and exposes no shipping field on any tier. Never estimate the difference — the Pricing Basis Law forbids it.",
+      "trigger": "A source that reports TCGplayer prices inclusive of shipping."
+    },
+    "editor.todayBanner": {
+      "value": false,
+      "owner": "scripts/build-editor.mjs",
+      "why": "Soft-launch Save-this-picture banner bake. Was process.env.CATCHEM_TODAY direct read — duplicate-gate risk.",
+      "trigger": "Set CATCHEM_TODAY=1 when shipping a daily featured post.",
+      "env": "CATCHEM_TODAY"
+    }
   }
- }
 }
