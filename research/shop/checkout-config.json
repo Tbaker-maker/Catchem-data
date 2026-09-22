@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "enabled": false,
+  "storeName": "Catch'em",
+  "origin": {
+    "city": "Victoria",
+    "region": "BC",
+    "country": "CA",
+    "note": "Ships from British Columbia, Canada."
+  },
+  "currencyDisplay": "USD",
+  "oneRailPerOrder": true,
+  "shipOnlyToCheckoutAddress": true,
+  "noFriendsAndFamily": true,
+  "rails": {
+    "paypal": {
+      "enabled": false,
+      "id": "paypal",
+      "label": "PayPal Goods & Services",
+      "defaultFor": ["US", "INTL"],
+      "goodsAndServicesOnly": true,
+      "merchantEmail": "",
+      "invoicePrefix": "CATCH",
+      "notes": "US default. G&S only. Ship only to the PayPal transaction address."
+    },
+    "interac": {
+      "enabled": false,
+      "id": "interac",
+      "label": "Interac e-Transfer",
+      "allowedCountries": ["CA"],
+      "autodepositEmail": "",
+      "memoRequired": "order number",
+      "nameMustMatchOrder": true,
+      "shipOnScreenshot": false,
+      "notes": "Canada only. Ship after autodeposit lands. No cousin-sends-it."
+    },
+    "crypto": {
+      "enabled": false,
+      "id": "crypto",
+      "label": "Crypto",
+      "minMerchandiseUsd": 200,
+      "quoteTtlMinutes": 30,
+      "assets": [
+        {
+          "id": "btc",
+          "symbol": "BTC",
+          "network": "bitcoin",
+          "address": "",
+          "enabled": false
+        },
+        {
+          "id": "usdc-eth",
+          "symbol": "USDC",
+          "network": "ethereum",
+          "address": "",
+          "enabled": false
+        }
+      ],
+      "wrongNetworkNotRefundable": true,
+      "notes": "Exact invoice amount. Quote expires. Wrong chain is a loss."
+    }
+  },
+  "shipping": {
+    "trackedOnly": true,
+    "lettermailForbidden": true,
+    "buyerPaysTrackedUnderUsd": 300,
+    "freeTrackedUsPacketAtUsd": null,
+    "freeTrackedCanadaAtCad": 300,
+    "signatureAtUsd": 300,
+    "insuranceAtUsd": 150,
+    "usDefaultService": "canada-post-tracked-packet-usa",
+    "caDefaultService": "canada-post-expedited-tracked",
+    "boxAlwaysCalculated": true,
+    "buyerPaysUsDuties": true,
+    "ratesUsd": {
+      "usPacket": 16,
+      "usBox": null,
+      "caPacket": 12,
+      "caBox": null
+    }
+  },
+  "copy": {
+    "checkoutBlurb": "Ships from British Columbia, Canada. PayPal Goods & Services is the default for US buyers. Interac e-Transfer is Canada only (we ship after autodeposit). Crypto (BTC / USDC-ETH) on invoices $200+ USD; quote expires in 30 minutes; wrong network is not refundable. All orders ship tracked. One payment method per order. We do not ship on screenshots. We ship only to the address on the order / PayPal transaction. Buyer pays any US import charges."
+  }
+}
