@@ -1,0 +1,47 @@
+{
+  "product": "Catch'Em \u2014 Trending",
+  "asOf": "2026-09-22T16:14:15.000Z",
+  "source": "TCGPlayer infinite-api GET /price/history/{id}?range=month",
+  "note": "TCG sold copies, not eBay listings, not a print run. Tools decide the play. The founder does not lock it.",
+  "plays": [
+    {
+      "id": "sv10-etb",
+      "name": "Destined ETB",
+      "tcgName": "Destined Rivals Elite Trainer Box",
+      "clock": "long",
+      "usd": 117.29,
+      "floorUsd": 106.78,
+      "floorDate": "2026-08-27",
+      "offPct": 0.09842667128638228,
+      "daysSinceLow": 26,
+      "kind": "forming",
+      "signs": ["climax", "exhaust", "higher-low", "quiet-retest"],
+      "vol30": 2242,
+      "volFirst7": 518,
+      "volLast7": 304,
+      "play": "Watch the floor",
+      "verb": "watch-floor",
+      "do": "Watch the floor at $106.78. Copies dried after the wash. Price held near $113\u2013117. The factory can still add boxes \u2014 don't pay up.",
+      "why": "The dump looks done on copies sold. Mark the low. The instruction is Watch the floor.",
+      "turn": "Turns into Fill when the next dip sits above $106.78 and sells fewer copies than the wash, and extra boxes look done.",
+      "hook": "A floor looks like it's forming."
+    }
+  ],
+  "versionNote": "desk dump 2026-09-22 from TCG infinite-api solds (tools decide)",
+  "live": "https://tbaker-maker.github.io/Catchem-data/trending",
+  "playsExplainer": {
+    "fill": "Buy it tonight if you already wanted it. Copies dried. New lows stopped. Collector product now. Not a promise it pays.",
+    "watch-floor": "Mark the low. Do not dump under it. Do not buy the first bounce. Turns into Fill when the next dip sits above that low on fewer copies, and extra boxes look done.",
+    "wait": "Do nothing tonight. New lows are still printing, or the shape is early.",
+    "dont-chase": "The listed price already jumped. Paying tonight is paying after the move.",
+    "pass": "Walk away. More copies just hit at a high listed price.",
+    "hold": "Keep what you already own only while copies for sale keep leaving."
+  },
+  "rules": [
+    "Tools decide. A person does not lock a play.",
+    "Never Fill on climax-only. Never buy the climax day.",
+    "Still cutting (new low in last 3 days) is Wait.",
+    "Set still in play cannot Fill \u2014 Watch the floor at most.",
+    "eBay listings are not TCG solds are not a print run."
+  ]
+}
