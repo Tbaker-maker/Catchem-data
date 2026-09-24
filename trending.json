@@ -1,1 +1,19 @@
-PLACEHOLDER
+{
+  "asOf": "2026-09-24T15:30:00Z",
+  "source": "TCGPlayer product 3-month snapshots (copies sold), not listings, not print-run guesses",
+  "product": "Catch'Em Trending — sealed floor board",
+  "firstPlay": {
+    "sku": "perfect-order-booster-box",
+    "name": "Perfect Order Booster Box",
+    "call": "Watch",
+    "why": "Set still in play (ME03, Mar 27 2026). 3-month solds are real and fat. Floor is not old enough and the set has not left print. Watch the floor only."
+  },
+  "rules": {
+    "stillCutting": "Wait",
+    "climaxOnly": "never Fill",
+    "setStillInPlay": "Watch the floor at most",
+    "fillRequires": ["near-clock (set left play)", "higher-low forming", "exhaust", "within 8% of the low", "low is >= 8 days old"],
+    "forceLock": "Tyler does not lock a play unless the prompt starts with FORCE:"
+  },
+  "plays": []
+}
