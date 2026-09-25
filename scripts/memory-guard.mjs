@@ -27,9 +27,19 @@ if (!kb) { console.log("· memory guard: no knowledge base"); process.exit(0); }
   const stamped = m?.[1];
   const { stdout } = await run("git", ["log", "-1", "--format=%ad", "--date=short", "--", "catchem-knowledge-base.md"], { cwd: ROOT }).catch(() => ({ stdout: "" }));
   const lastTouched = stdout.trim();
+  // A stamp that lags the last edit by a few weeks is a nudge, not a reason to
+  // kill the whole daily data run (2026-09-22..25: four red mornings, prices
+  // and #bot-logs alerts all blocked by a date). Beyond STAMP_GRACE_DAYS it is
+  // a real stale picture and still fails (negative-tests' 2020-01-01 break).
+  const STAMP_GRACE_DAYS = 60;
+  const lagDays = stamped && lastTouched ? Math.round((Date.parse(lastTouched) - Date.parse(stamped)) / 864e5) : 0;
   if (!stamped) problems.push("the knowledge base has no last_updated stamp — a future session cannot tell how current it is");
-  else if (lastTouched && stamped < lastTouched)
+  else if (lastTouched && stamped < lastTouched && lagDays > STAMP_GRACE_DAYS)
     problems.push(`stamp says ${stamped} but the file was last changed ${lastTouched} — a stale stamp makes a future session trust an old picture`);
+  else if (lastTouched && stamped < lastTouched) {
+    console.warn(`⚠ memory guard: stamp says ${stamped} but the file was last changed ${lastTouched} (${lagDays}d) — bump last_updated in catchem-knowledge-base.md (fails after ${STAMP_GRACE_DAYS}d)`);
+    notes.push(`stamp lags ${lagDays}d (warning)`);
+  }
   else notes.push(`stamp current (${stamped})`);
 }
 
