@@ -116,7 +116,7 @@ async function main() {
         history = history.filter(h => !(h.date === today && h.id === e.id));
         history.push({ date: today, id: e.id, tcgListings: null, tcgMarket: p.unopenedPrice });
       }
-      console.log(`  ${e.id.padEnd(26)} $${String(p.unopenedPrice).padStart(9)}  ${dataStatus}`);
+      console.log(`  ${e.id.padEnd(26)} ${dataStatus}`);
     } catch (err) {
       products.push({ id: e.id, tcgMarket: null, tcgListings: null, providerUpdatedAt: null, dataStatus: "error" });
       console.warn(`  ${e.id}: ${err.message}`);

@@ -834,7 +834,7 @@ const LENSES = [
       // product pages; it just no longer drives a pick.
       ...(flag("spread.headline") ? [{ id: "gap", label: "widest gap between the two markets",
         pick: () => eligibleAll.filter(r => r.signal).sort((a,b)=>Math.abs(b.spreadPct)-Math.abs(a.spreadPct))[0],
-        why: r => `The two marketplaces are ${Math.abs(r.spreadPct)}% apart on the same product — eBay at $${r.ebayAskMedian.toLocaleString("en-US")}, TCGplayer at $${(r.tcgMarket||0).toLocaleString("en-US")}. The widest disagreement on the board today.` }] : []),
+        why: r => `The two marketplaces are ${Math.abs(r.spreadPct)}% apart on the same product — eBay at $${r.ebayAskMedian.toLocaleString("en-US")}. The widest disagreement on the board today.` }] : []),
     ];
     let lensUsed = null, lensPick = null;
     for (let i = 0; i < LENSES.length && !lensPick; i++) {

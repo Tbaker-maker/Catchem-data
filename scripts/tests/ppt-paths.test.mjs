@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { loadMarketHistory } from "../lib/market-history.mjs";
 import { readCrosscheck } from "../lib/ppt-paths.mjs";
-import { buildRunReport, isRawPublicPath, reportLine, safetyVerdict } from "../lib/run-report.mjs";
+import { buildRunReport, findPptPriceKeys, isRawPublicPath, reportLine, safetyVerdict } from "../lib/run-report.mjs";
 import { pushPrivate } from "../push-private-ppt.mjs";
 
 let fail = 0;
@@ -40,6 +40,8 @@ export async function runPptPathTests() {
   t("an expected failed push is not ok", safetyVerdict({ push: { expected: true, pushed: false, reason: "clone failed" }, tracked: [] }).ok === false);
   t("a skipped push with a clean tree is ok", safetyVerdict({ push: { expected: false, pushed: false }, tracked: ["data/sealed-prices.json"] }).ok === true);
   t("a raw eval sample is a leak", isRawPublicPath("research/eval-samples/ppt-sealed-RAW.json") && safetyVerdict({ push: { expected: false }, tracked: ["research/eval-samples/ppt-sealed-RAW.json"] }).ok === false);
+  t("a public json price field is a leak", findPptPriceKeys({ rows: [{ unopenedPrice: 1 }] }).length === 1 && safetyVerdict({ push: { expected: false }, tracked: [], fieldHits: ["data/divergence-report.json.rows[0].tcgMarket"] }).ok === false);
+  t("spread percent is not a ppt price field", findPptPriceKeys({ rows: [{ spreadPct: 1.2, id: "a" }] }).length === 0);
   t("the private history mount is not a public leak", !isRawPublicPath("data/history/ppt-sealed-private/box.json"));
   t("the summary line names the sha", reportLine(report).includes("abc123") && reportLine(report).includes("history yes"));
 

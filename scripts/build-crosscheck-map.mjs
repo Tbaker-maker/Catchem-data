@@ -102,7 +102,7 @@ async function main() {
       const d = await getJSON(`${BASE}/sealed-products?search=${encodeURIComponent(q)}&limit=5`);
       candidates = d.data || [];
     } catch (e) {
-      entries.push({ id: product.id, ourName: product.name, tcgPlayerId: null, matchedName: null, unopenedPrice: null, matchConfidence: "low", note: `search failed: ${e.message}` });
+      entries.push({ id: product.id, ourName: product.name, tcgPlayerId: null, matchedName: null, matchConfidence: "low", note: `search failed: ${e.message}` });
       console.log(`  ${product.id.padEnd(26)} ERROR ${e.message}`);
       continue;
     }
@@ -115,20 +115,19 @@ async function main() {
       if (!best || rank > best.rank) best = { c, s, rank };
     }
     if (!best) {
-      entries.push({ id: product.id, ourName: product.name, tcgPlayerId: null, matchedName: null, unopenedPrice: null, matchConfidence: "low", note: `no viable candidate among ${candidates.length} results` });
+      entries.push({ id: product.id, ourName: product.name, tcgPlayerId: null, matchedName: null, matchConfidence: "low", note: `no viable candidate among ${candidates.length} results` });
       console.log(`  ${product.id.padEnd(26)} NO MATCH (${candidates.length} results)`);
       continue;
     }
     entries.push({
       id: product.id, ourName: product.name,
       tcgPlayerId: best.c.tcgPlayerId, matchedName: best.c.name,
-      unopenedPrice: best.c.unopenedPrice ?? null,
       providerUpdatedAt: best.c.updatedAt ?? null,
       matchConfidence: best.s,
       ...(ourMedian != null && best.c.unopenedPrice != null
         ? { eBayMedian: ourMedian, priceRatio: Math.round((best.c.unopenedPrice / ourMedian) * 100) / 100 } : {}),
     });
-    console.log(`  ${product.id.padEnd(26)} ${best.s.toUpperCase().padEnd(6)} → ${best.c.name} ($${best.c.unopenedPrice ?? "—"})`);
+    console.log(`  ${product.id.padEnd(26)} ${best.s.toUpperCase().padEnd(6)} → ${best.c.name}`);
   }
 
   const counts = { high: 0, medium: 0, low: 0 };

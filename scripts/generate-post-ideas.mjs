@@ -17,7 +17,7 @@ const chases = (sg?.cards||[]).filter(c=>!c.needsReview&&c.priceMarket).sort((a,
 const upcoming = (rad?.items||rad?.releases||[]).filter(r=>(r.date||r.releaseDate||"")>=today).slice(0,3);
 let md = `# 🎯 Post Ideas — ${today}\n*Angles + live numbers. Voice = yours. [FACT] verified · [READ] hedge it.*\n\n`;
 md += `## ⚡ Two-market gaps (who's right?)\n`;
-for (const r of sigs.slice(0,4)) md += `- [FACT] **${r.name}**: eBay $${r.ebayAskMedian} vs TCG $${r.tcgMarket} (${r.spreadPct>0?"+":""}${r.spreadPct}%, ${r.ebayListings??"—"} listings). Hook: "two markets, ${Math.abs(r.spreadPct)}% apart — somebody's wrong."\n`;
+for (const r of sigs.slice(0,4)) md += `- [FACT] **${r.name}**: eBay $${r.ebayAskMedian} (${r.spreadPct>0?"+":""}${r.spreadPct}% vs the other market, ${r.ebayListings??"—"} listings). Hook: "two markets, ${Math.abs(r.spreadPct)}% apart — somebody's wrong."\n`;
 md += `\n## 🏜 Supply stories\n`;
 for (const p of thin.slice(0,3)) md += `- [FACT] **${p.name}** — only ${p.listingCount} active listings at $${p.priceMedian}. Hook: scarcity-on-tape / "try to buy one."\n`;
 if (deep[0]) md += `- [FACT] Deepest market: **${deep[0].name}** ($${deep[0].priceMedian}, ${deep[0].listingCount} listings). Hook: liquidity king / easiest entry-exit.\n`;

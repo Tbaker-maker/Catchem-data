@@ -155,7 +155,7 @@ let md = `# ☀️ Morning Pulse — ${today}\n*Written by the machine at ${new 
 md += `## The instrument panel\n- **${sp.products.length} sealed products tracked** · ${live.length} live · ${noMkt} no-active-market (honest) · run ${sp.updatedAt?.slice(0,16)}Z\n- **Heat reads:** ${heatLine}\n- **The Spread:** ${div?.counts?.compared??0} sealed cross-checked · **${sigs.length} signals** · ${div?.counts?.skipped??0} excluded with reasons\n\n`;
 if (sigs.length) {
   md += `## ⚡ Spread signals (eBay delivered asks vs TCGplayer market — recent sales + est. shipping)\n`;
-  for (const r of sigs.slice(0,6)) md += `- **${r.name}** — eBay $${r.ebayAskMedian} (${r.ebayListings??"—"} listings) vs TCG $${r.tcgMarket} (supply ${r.tcgListings??"—"}) (**${r.spreadPct>0?"+":""}${r.spreadPct}%**) — ${r.read}\n`;
+  for (const r of sigs.slice(0,6)) md += `- **${r.name}** — eBay $${r.ebayAskMedian} (${r.ebayListings??"—"} listings), **${r.spreadPct>0?"+":""}${r.spreadPct}%** vs the other market — ${r.read}\n`;
   if (sigs.some(r=>r.tcgListings==null)) md += `\n*TCG-side supply: provider exposes no sealed listing counts — slot is wired, lights up the day they ship it.*\n`;
   md += `\n`;
 }
@@ -231,7 +231,7 @@ await writeFile(join(ROOT,`research/pulse/${today}.md`), md);
 // ── HTML edition: the human-facing morning brief (same data, designed) ──
 const sigCards = sigs.slice(0,6).map(r=>`
   <div class="sig"><div class="sighead"><span class="pct" title="eBay ask vs TCGplayer price">${r.spreadPct>0?"+":""}${r.spreadPct}% gap</span><span class="signame">${r.name}</span></div>
-  <div class="sigsub">eBay <b>$${r.ebayAskMedian}</b> <span class="sup">· ${r.ebayListings??"—"} listings</span> &nbsp;vs&nbsp; TCG <b>$${r.tcgMarket}</b> <span class="sup">· supply ${r.tcgListings??"—"}</span></div>
+  <div class="sigsub">eBay <b>$${r.ebayAskMedian}</b> <span class="sup">· ${r.ebayListings??"—"} listings</span> &nbsp;·&nbsp; <b>${r.spreadPct>0?"+":""}${r.spreadPct}%</b> vs the other market</div>
   <div class="sigread">${r.read}</div></div>`).join("");
 const supNote = sigs.some(r=>r.tcgListings==null) ? `<div class="foot">* TCG-side supply: provider exposes no sealed listing counts — slot is wired; lights up the day they ship it.</div>` : "";
 // Sandbox rule: plain-words labels ride the display path DARK until each
@@ -405,7 +405,7 @@ const s0 = [...sigs].sort((a, b) => Math.abs(b.spreadPct) - Math.abs(a.spreadPct
 if (s0) storyKits.push({
   id: "gap", angle: "Two markets, one product — who's right?",
   headline: `${s0.name}: two markets, ${Math.abs(s0.spreadPct)}% apart`,
-  body: `eBay asks $${s0.ebayAskMedian} (${s0.ebayListings ?? "—"} active listings) while the TCG side sits at $${s0.tcgMarket}. ${s0.spreadPct > 0 ? "Sellers reaching, or eBay supply tightening" : "eBay discounting the TCG-side ask"} — somebody's wrong.`,
+  body: `eBay asks $${s0.ebayAskMedian} (${s0.ebayListings ?? "—"} active listings). The two markets are ${Math.abs(s0.spreadPct)}% apart. ${s0.spreadPct > 0 ? "Sellers reaching, or eBay supply tightening" : "eBay asks sit under the other market"} — somebody's wrong.`,
   productId: s0.id,
   receipts: `eBay active asks, BIN-only delivered · TCG-side provider market · ${today} · catchemtcg.com`,
 });
@@ -480,7 +480,7 @@ const feed = {
            calibrationDay: Number(heatDays)||null, calibrationOf: 8, heatMode: heat?.mode||null },
   signals: sigs.slice(0,8).map(r=>({ id:r.id, name:r.name, imageUrl: sealedImg(sp.products.find(x=>x.id===r.id)||{}), spreadPct:r.spreadPct,
     ebay:{ ask:r.ebayAskMedian, listings:r.ebayListings??null },
-    tcg:{ market:r.tcgMarket, listings:r.tcgListings??null },
+    tcg:{ listings:r.tcgListings??null },
     read:r.read, provenance:r.provenance, class:"VERIFIED" })),
   quietMovers: (der?.narrative?.quietMovers??[]).slice(0,4).map(q=>({...q, class:"READ"})),
   dailyThree: der?.dailyThree ?? null,
