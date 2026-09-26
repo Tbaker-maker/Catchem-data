@@ -77,6 +77,11 @@ export async function runPrivatePptTests() {
   t("mount runs before the PPT refresh", mountAt < refreshAt);
   t("slab status is in the commit list", workflow.includes("data/history/slabs/status.json"));
   t("the id review file is in the commit list", workflow.includes("data/ppt/sealed-id-review.json"));
+  const heartbeatAdds = workflow.split("git add").filter((part) => part.includes("data/heartbeat.json"));
+  t("heartbeat.json is on both daily commit lists", heartbeatAdds.length >= 2);
+  const watchdog = await readFile(join(dirname(fileURLToPath(import.meta.url)), "..", "..", ".github/workflows/watchdog.yml"), "utf8");
+  t("watchdog can write the retry log", /contents:\s*write/.test(watchdog));
+  t("watchdog does not swallow a failed push", !watchdog.includes("git push || true"));
   await rm(root, { recursive: true, force: true });
   return fail;
 }
