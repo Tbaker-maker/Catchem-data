@@ -6,6 +6,7 @@ import { readFile, stat } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { indexLevel, offTcgEra, sealedPremium, mergeByDate } from "../lib/instruments.mjs";
+import { runStressTests } from "./stress.test.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const J = async (p) => JSON.parse(await readFile(join(ROOT, p), "utf-8"));
@@ -99,6 +100,12 @@ for (const name of ["index", "sealed", "graded", "raw"]) {
     if (required) t(`latest-${name}.svg exists nonzero`, false, "missing");
     else console.log(`  - latest-${name}.svg absent, and dailyThree.${name} is absent too - not a failure`);
   }
+}
+
+console.log("── index stress ──");
+{
+  const n = runStressTests();
+  t("stress suite", n === 0, `${n} failed`);
 }
 
 console.log(`\n${pass} passed · ${fail} failed`);
