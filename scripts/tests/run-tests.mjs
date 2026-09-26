@@ -6,7 +6,7 @@ import { readFile, stat } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { indexLevel, offTcgEra, sealedPremium, mergeByDate } from "../lib/instruments.mjs";
-import { searchItems } from "../lib/search-rank.mjs";
+import { runTcgcsvCatalogTests } from "./tcgcsv-catalog.test.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const J = async (p) => JSON.parse(await readFile(join(ROOT, p), "utf-8"));
@@ -102,16 +102,10 @@ for (const name of ["index", "sealed", "graded", "raw"]) {
   }
 }
 
-console.log("── search rank ──");
+console.log("── tcgcsv catalog ──");
 {
-  const rows = [
-    { id: "a", name: "Umbreon VMAX", set: "Evolving Skies", number: "215", kind: "single", aliases: ["moonbreon"], price: 1 },
-    { id: "b", name: "Krabby", set: "Base", kind: "single", aliases: [], price: 2 },
-    { id: "c", name: "151 Elite Trainer Box", set: "151", kind: "sealed", subtype: "etb", aliases: ["etb", "151"], price: 3 },
-  ];
-  t("moonbreon alias", searchItems(rows, "moonbreon")[0]?.id === "a");
-  t("bb is not inside Krabby", searchItems(rows, "bb").length === 0);
-  t("151 etb is sealed", searchItems(rows, "151 etb")[0]?.id === "c");
+  const n = runTcgcsvCatalogTests();
+  t("tcgcsv catalog suite", n === 0, `${n} failed`);
 }
 
 console.log(`\n${pass} passed · ${fail} failed`);
