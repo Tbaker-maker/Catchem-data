@@ -5,7 +5,7 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { safetyVerdict } from "./lib/run-report.mjs";
+import { findPptPriceKeys, safetyVerdict } from "./lib/run-report.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const exec = promisify(execFile);
@@ -24,7 +24,14 @@ export async function checkSafety(root = ROOT) {
     tracked = [];
   }
   const status = push || { expected: false, pushed: false, reason: "no push status" };
-  return safetyVerdict({ push: status, tracked });
+  const fieldHits = [];
+  for (const rel of tracked) {
+    if (!rel.endsWith(".json")) continue;
+    let body;
+    try { body = JSON.parse(await readFile(join(root, rel), "utf8")); } catch { continue; }
+    for (const hit of findPptPriceKeys(body, rel)) fieldHits.push(hit);
+  }
+  return safetyVerdict({ push: status, tracked, fieldHits });
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

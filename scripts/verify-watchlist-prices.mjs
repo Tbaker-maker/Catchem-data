@@ -55,10 +55,10 @@ for (const id of ids){ await sleep(350);
   const pv=p?.prices?.market ?? p?.marketPrice ?? p?.price ?? null;
   let status="unverified", note="";
   if (t!=null&&pv!=null){ const dv=Math.abs(t-pv)/((t+pv)/2);
-    status = dv<=0.20?"verified":"divergent"; note=`ptcgio $${t} vs PPT $${pv} (Δ${Math.round(dv*100)}%)`; }
-  else note=`ptcgio ${t??"—"} · PPT ${pv??"—"}`;
-  out.push({id,name:c.name,number:c.number,setId:c.set?.id,tcgMarket:t,pptMarket:pv,status,note});
-  console.log(`${status==="verified"?"✓":"⚠"} ${id} ${c.name} — ${note}`);}
+    status = dv<=0.20?"verified":"divergent"; note = status==="verified" ? "dual-source within 20%" : "dual-source apart by more than 20%"; }
+  else note = t==null && pv==null ? "both sources missing" : "one source missing";
+  out.push({id,name:c.name,number:c.number,setId:c.set?.id,status,note});
+  console.log(`${status==="verified"?"✓":"⚠"} ${id} ${c.name} — ${status}`);}
 // MERGE, never overwrite (2026-08-18: a targeted 8-id run wholesale-replaced
 // the 329-row dataset — same bug class as the singles resolver's carry-forward
 // fix). Prior rows persist; this run's ids win on collision.

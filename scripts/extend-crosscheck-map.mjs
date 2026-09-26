@@ -90,7 +90,7 @@ for (const product of products) {
   const entry = {
     id: product.id, ourName: product.name,
     tcgPlayerId: best.c.tcgPlayerId, matchedName: best.c.name,
-    unopenedPrice: best.c.unopenedPrice ?? null, providerUpdatedAt: best.c.updatedAt ?? null,
+    providerUpdatedAt: best.c.updatedAt ?? null,
     matchConfidence: best.confHigh ? "high" : "medium",
     ...(best.ratio != null ? { eBayMedian: medianOf(product.id), priceRatio: Math.round(best.ratio * 100) / 100 } : {}),
   };
@@ -106,7 +106,7 @@ for (const product of products) {
   }
   map.entries.push(entry);
   added++;
-  console.log(`  ${product.id.padEnd(26)} ${entry.reviewed ? "AUTO" : "HOLD"} → ${best.c.name} ($${best.c.unopenedPrice ?? "—"}${entry.priceRatio ? ", r" + entry.priceRatio : ""})`);
+  console.log(`  ${product.id.padEnd(26)} ${entry.reviewed ? "AUTO" : "HOLD"} → ${best.c.name}${entry.priceRatio ? " r" + entry.priceRatio : ""}`);
 }
 
 map.classification = { ...(map.classification || {}),

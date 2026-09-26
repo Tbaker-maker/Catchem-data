@@ -91,7 +91,8 @@ for (const p of ebay.products || []) {
   const ebayDelivered = p.priceMedian;
   const spreadBasis = "as-stated both sides, no shipping estimated (shipping in where stated, tax out)";
   const spread = (ebayDelivered - t.tcgMarket) / t.tcgMarket;
-rows.push({ id: p.id, spreadBasis, publishBlocked: (p.publishBlock || q.blocked(p.id)) || undefined, name: p.name, ebayAskMedian: p.priceMedian, tcgMarket: t.tcgMarket,
+  const tcgSource = String(tcg.source || "TCGplayer-derived sealed market").replace(/unopenedPrice/g, "sealed market");
+rows.push({ id: p.id, spreadBasis, publishBlocked: (p.publishBlock || q.blocked(p.id)) || undefined, name: p.name, ebayAskMedian: p.priceMedian,
     ebayListings: p.listingCount ?? null, tcgListings: t.tcgListings ?? null,
     spreadPct: Math.round(spread * 1000) / 10,
     signal: SPREAD_PUBLISHABLE && !OFF_TCG(p.id) && !p.publishBlock && !q.blocked(p.id) && Math.abs(spread) >= SIGNAL_PCT,
@@ -101,7 +102,7 @@ rows.push({ id: p.id, spreadBasis, publishBlocked: (p.publishBlock || q.blocked(
         : spread <= -SIGNAL_PCT ? "eBay asks under TCG-side — motivated eBay sellers, or the TCG sales average trailing a falling market"
         : "markets agree",
     provenance: { ebay: `Catchem-data eBay active asks, ${ebay.updatedAt?.split("T")[0]}`,
-                  tcg: `${tcg.source}, ${t.providerUpdatedAt || tcg.updatedAt?.split("T")[0]}` } });
+                  tcg: `${tcgSource}, ${t.providerUpdatedAt || tcg.updatedAt?.split("T")[0]}` } });
 }
 rows.sort((a, b) => Math.abs(b.spreadPct) - Math.abs(a.spreadPct));
 // ZERO-RESULT SAFETY, the same law sealed prices already live under.

@@ -59,10 +59,26 @@ export function isRawPublicPath(path) {
   return false;
 }
 
-export function safetyVerdict({ push = {}, tracked = [] } = {}) {
+export const PPT_PRICE_KEYS = new Set(["tcgMarket", "unopenedPrice", "pptMarket"]);
+
+export function findPptPriceKeys(value, path = "$", hits = []) {
+  if (!value || typeof value !== "object") return hits;
+  if (Array.isArray(value)) {
+    for (let i = 0; i < value.length; i += 1) findPptPriceKeys(value[i], `${path}[${i}]`, hits);
+    return hits;
+  }
+  for (const [key, child] of Object.entries(value)) {
+    if (PPT_PRICE_KEYS.has(key)) hits.push(`${path}.${key}`);
+    findPptPriceKeys(child, `${path}.${key}`, hits);
+  }
+  return hits;
+}
+
+export function safetyVerdict({ push = {}, tracked = [], fieldHits = [] } = {}) {
   const leaks = tracked.filter(isRawPublicPath);
   const reasons = [];
   if (push.expected && !push.pushed) reasons.push(`private push was expected and failed: ${push.reason || "no reason"}`);
   if (leaks.length) reasons.push(`raw PPT is tracked in the public tree: ${leaks.slice(0, 8).join(", ")}`);
-  return { ok: reasons.length === 0, reasons, leaks };
+  if (fieldHits.length) reasons.push(`PPT price fields are in public JSON: ${fieldHits.slice(0, 8).join(", ")}`);
+  return { ok: reasons.length === 0, reasons, leaks, fieldHits };
 }
