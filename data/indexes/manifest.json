@@ -1,0 +1,82 @@
+{
+  "asOf": "2026-09-25",
+  "stale": false,
+  "sourceLive": "eBay asking prices",
+  "sourceBackfill": "TCGplayer market price",
+  "rawChase": {
+    "hidden": true,
+    "products": 0,
+    "reason": "No chase-single price history is on file, so the Raw Chase Index is not published."
+  },
+  "excluded": [
+    {
+      "id": "pgo-etb",
+      "name": "Pokemon GO Elite Trainer Box",
+      "reason": "on the quarantine list"
+    },
+    {
+      "id": "sv1-bundle",
+      "name": "Scarlet & Violet Booster Bundle",
+      "reason": "on the quarantine list"
+    },
+    {
+      "id": "swsh1-bundle",
+      "name": "Sword & Shield Booster Bundle",
+      "reason": "on the quarantine list"
+    },
+    {
+      "id": "swsh1-pack",
+      "name": "Sword & Shield Booster Pack",
+      "reason": "on the quarantine list"
+    },
+    {
+      "id": "swsh1-etb",
+      "name": "Sword & Shield Base Elite Trainer Box",
+      "reason": "on the quarantine list"
+    },
+    {
+      "id": "sm1-booster-box",
+      "name": "Sun & Moon Booster Box",
+      "reason": "on the quarantine list"
+    },
+    {
+      "id": "swsh1-booster-box",
+      "name": "Sword & Shield Base Booster Box",
+      "reason": "on the quarantine list"
+    },
+    {
+      "id": "xy12-etb",
+      "name": "Evolutions Elite Trainer Box",
+      "reason": "eBay titles are Prismatic Evolutions cases, not XY Evolutions boxes"
+    },
+    {
+      "id": "sm9-booster-box",
+      "name": "Team Up Booster Box",
+      "reason": "eBay titles are foreign mini-pack boxes, and there are fewer than 8 listings"
+    },
+    {
+      "id": "sm1-booster-box",
+      "name": "Sun & Moon Booster Box",
+      "reason": "eBay titles are other Sun & Moon sets and Japanese boxes, not the English base box"
+    }
+  ],
+  "hiddenEras": [
+    {
+      "era": "WOTC / vintage",
+      "reason": "No product in this era cleared the listing, quarantine, and match checks."
+    }
+  ],
+  "files": [
+    "sealed.json",
+    "type-booster-box.json",
+    "type-etb.json",
+    "type-pc-etb.json",
+    "type-bundle.json",
+    "type-pack.json",
+    "era-xy.json",
+    "era-sun-moon.json",
+    "era-sword-shield.json",
+    "era-scarlet-violet.json",
+    "era-mega-evolution.json"
+  ]
+}

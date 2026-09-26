@@ -12,6 +12,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { applyPackBasis } from "./pack-basis.mjs";
 import { rotate } from "./rotate.mjs";
+import { publishChartIndexes } from "./compute-indexes.mjs";
 
 // Node's fetch has NO default timeout: a host that accepts the connection
 // and never answers hangs this script until the CI runner kills the job.
@@ -396,7 +397,7 @@ const sealedIndex = { name: "Catchem Sealed Index", level: idxLevel,
   seasoningBench: liveList.filter(p => !seasoned(p)).length,
   medianProductUsd: (() => { const a = liveList.filter(p=>p.priceMedian).map(p=>p.priceMedian).sort((x,y)=>x-y); return a.length ? a[Math.floor(a.length/2)] : null; })(),
   baseline: "chain-linked from 100.0; each day's move is the average return of products present on both days",
-  breadth, chip: "VERIFIED", methodologyUrl: "/methodology.html",
+  breadth, source: "eBay asking prices", methodologyUrl: "/methodology.html",
   simple: `One number for the whole sealed market. It starts at 100 and moves by the average daily change of the products we track — only products we could price on both days count toward a move, so adding or removing products never shifts it.` };
 {
   ixh.entries = (ixh.entries || []).filter(e => e.date !== todayIx);
@@ -425,11 +426,14 @@ await writeFile(new URL("../research/pulse/singles-history.json", import.meta.ur
 const rawFirst = {};
 for (const e of [...sgh.entries].sort((a, b) => a.date < b.date ? -1 : 1)) if (!rawFirst[e.cardId]) rawFirst[e.cardId] = e.price;
 const rawRatios = chasesLive.map(c => c.priceMarket / (rawFirst[c.cardId] || c.priceMarket));
-const rawIndex = { name: "Raw Chase Index",
-  level: rawRatios.length ? Math.round(rawRatios.reduce((a, b) => a + b, 0) / rawRatios.length * 1000) / 10 : 100.0,
-  constituents: rawRatios.length,
-  baselineDate: [...new Set(sgh.entries.map(e => e.date))].sort()[0] ?? todayS,
-  note: "same equation as the Sealed Index — confirmed chase singles, each against its own first clean price", chip: "VERIFIED" };
+const rawIndex = rawRatios.length
+  ? { name: "Raw Chase Index",
+      level: Math.round(rawRatios.reduce((a, b) => a + b, 0) / rawRatios.length * 1000) / 10,
+      constituents: rawRatios.length,
+      baselineDate: [...new Set(sgh.entries.map(e => e.date))].sort()[0] ?? todayS,
+      source: "eBay asking prices",
+      note: "confirmed chase singles, each against its own first clean price" }
+  : { name: "Raw Chase Index", hidden: true, constituents: 0, note: "No chase singles with a price, so this index is not published." };
 const gradedIndex = { available: false, note: "same equation, graded shelf — waiting on a licensed daily graded-price feed" };
 
 // ── VALUE-WEIGHTED TWIN (Tyler, Aug 22) ─────────────────────────────────
@@ -458,7 +462,7 @@ const valueWeighted = vwLevel == null ? null : {
   vsEqualWeight: Math.round((vwLevel - idxLevel) * 10) / 10,
   simple: "Same shelf, but the expensive boxes get a bigger say. If this number and the main one disagree, the cheap end and the expensive end of the market are moving differently.",
   method: "Each product's move is weighted by what it was worth at its baseline, so a $5,000 box counts for more than a $10 pack. The main index gives every product one equal vote.",
-  chip: "VERIFIED" };
+  source: "eBay asking prices" };
 
 
 
@@ -705,6 +709,24 @@ const reprintPressure = (() => {
 })();
 
 const demandData = await J("research/pulse/demand.json").catch(() => null);
+try {
+  const chartSealed = await publishChartIndexes();
+  const pts = chartSealed?.series?.live?.points || [];
+  const last = pts[pts.length - 1];
+  if (chartSealed?.series?.live?.available && last) {
+    sealedIndex.level = last.equal;
+    sealedIndex.ddPct = last.equalMovePct ?? null;
+    sealedIndex.matchedSample = last.matched ?? sealedIndex.matchedSample;
+    sealedIndex.source = "eBay asking prices";
+    sealedIndex.baseline = chartSealed.method;
+    if (valueWeighted && last.value != null) {
+      valueWeighted.level = last.value;
+      valueWeighted.vsEqualWeight = Math.round((last.value - last.equal) * 10) / 10;
+    }
+  }
+} catch (err) {
+  console.error("chart indexes were not rebuilt:", err.message);
+}
 const out = {
   generatedAt: new Date().toISOString(),
   method: "Pack Math: ask median / era-aware pack count (arithmetic, no estimation; variable-count products excluded by name). Narrative: latest agent digest cross-referenced against tracked sets; 'quiet movers' = spread signal with zero digest mention.",
