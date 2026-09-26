@@ -49,6 +49,14 @@ export function trimItem(item) {
   return out;
 }
 
+export function staleShardNames(existingNames, liveIds) {
+  const live = new Set(liveIds || []);
+  return (existingNames || [])
+    .filter((name) => String(name).endsWith(".json"))
+    .filter((name) => !live.has(name.slice(0, -".json".length)))
+    .sort();
+}
+
 export function buildShardMap(items) {
   const shards = new Map();
   for (const item of items || []) {

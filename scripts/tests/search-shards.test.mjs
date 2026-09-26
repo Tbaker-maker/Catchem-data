@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { searchItems } from "../lib/search-rank.mjs";
-import { buildShardMap, shardIdsForItem, shardIdsForQuery, trimItem } from "../lib/search-shards.mjs";
+import { buildShardMap, shardIdsForItem, shardIdsForQuery, staleShardNames, trimItem } from "../lib/search-shards.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 let fail = 0;
@@ -62,6 +62,8 @@ export async function runSearchShardTests() {
     ? JSON.parse(await readFile(join(ROOT, "data/search", manifest.shards["single-bb"].file), "utf8"))
     : [];
   t("the published bb shard does not return krabby", searchItems(bb, "bb").every((row) => !/krabby/i.test(row.name)));
+  t("a shard left out of the manifest is deleted", staleShardNames(["single-mo.json", "single-zz.json", "notes.txt"], ["single-mo"]).join(",") === "single-zz.json");
+  t("an empty rebuild drops every old shard", staleShardNames(["sealed-et.json", "single-mo.json"], []).join(",") === "sealed-et.json,single-mo.json");
 
   console.log(fail ? `${fail} failed` : "search shards ok");
   return fail;
