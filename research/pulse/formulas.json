@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-26T01:58:07.028Z",
+  "generatedAt": "2026-09-26T01:18:17.808Z",
   "antiSlopRule": "A formula must be derivable from a field we hold: name, artist, setId, rarity, releaseDate, price. Where a theme needs judgment, that judgment is a NAMED LIST stored openly and arguable — never an adjective smuggled into a sentence. 'Cute' is not in the data; the nine Eeveelutions are.",
   "fieldsUsed": [
     "name",
@@ -1257,31 +1257,31 @@
       ],
       "count": 2,
       "why": "Their first card beside their best-known one. A debut is a date in the data, not a judgment.",
-      "angle": "Hiromichi Sugiyama's first card was Cool Porygon in 1999."
+      "angle": "Hiromichi Sugiyama's first card was Cool Porygon in 2000."
     },
     {
       "kind": "the debut",
       "title": "Sumiyoshi Kizuki started here",
       "basis": "earliest releaseDate for that artist",
       "cards": [
-        "basep-16",
+        "base5-49",
         "ex8-9"
       ],
       "count": 2,
       "why": "Their first card beside their best-known one. A debut is a date in the data, not a judgment.",
-      "angle": "Sumiyoshi Kizuki's first card was Computer Error in 1999."
+      "angle": "Sumiyoshi Kizuki's first card was Abra in 2000."
     },
     {
       "kind": "the debut",
       "title": "Atsuko Nishida started here",
       "basis": "earliest releaseDate for that artist",
       "cards": [
-        "basep-19",
+        "base5-55",
         "neo4-14"
       ],
       "count": 2,
       "why": "Their first card beside their best-known one. A debut is a date in the data, not a judgment.",
-      "angle": "Atsuko Nishida's first card was Sabrina's Abra in 1999."
+      "angle": "Atsuko Nishida's first card was Eevee in 2000."
     },
     {
       "kind": "the pair",
@@ -1525,6 +1525,17 @@
     },
     {
       "kind": "the single",
+      "title": "Zapdos: wizards birds aoki error 2000",
+      "basis": "a sourced fact from data/knowledge.json plus the card it is about",
+      "cards": [
+        "base1-16"
+      ],
+      "count": 1,
+      "why": "One card, one thing most people do not know. Every claim carries a source and a falsifier, which is why we can say it plainly.",
+      "angle": "The English Wizards Black Star Promo Moltres, Articuno and Zapdos credit Toshinao Aoki."
+    },
+    {
+      "kind": "the single",
       "title": "The Rocket's Trap: first edition print run unknown",
       "basis": "a sourced fact from data/knowledge.json plus the card it is about",
       "cards": [
@@ -1599,17 +1610,6 @@
       "count": 1,
       "why": "One card, one thing most people do not know. Every claim carries a source and a falsifier, which is why we can say it plainly.",
       "angle": "Missing illustrator credits in the community card dataset are a BACKFILL LAG, not a Pokemon decision."
-    },
-    {
-      "kind": "the single",
-      "title": "The Rocket's Trap: graded window unknown",
-      "basis": "a sourced fact from data/knowledge.json plus the card it is about",
-      "cards": [
-        "gym1-19"
-      ],
-      "count": 1,
-      "why": "One card, one thing most people do not know. Every claim carries a source and a falsifier, which is why we can say it plainly.",
-      "angle": "PPT supplies eBay sold-by-grade aggregates (count, median, min, max per PSA grade) on every enriched card."
     }
   ]
 }

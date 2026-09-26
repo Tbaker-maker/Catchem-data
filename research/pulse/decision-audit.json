@@ -1,12 +1,25 @@
 {
- "generatedAt": "2026-08-26T01:58:03.339Z",
+ "generatedAt": "2026-09-26T01:18:14.673Z",
  "purpose": "Grades reasoning by its predictions, because reasoning cannot be inspected after the fact without being rewritten.",
  "total": 17,
- "dueForGrading": 0,
+ "dueForGrading": 2,
  "record": {
   "graded": 0,
   "note": "nothing has come due yet. The first grades land from October."
  },
  "problems": [],
- "due": []
+ "due": [
+  {
+   "id": "2026-08-23-everything-daily",
+   "decision": "Refresh the whole universe daily while it fits the budget; tier only as a fallback.",
+   "predicted": "Daily refresh of everything will stay inside budget until the universe exceeds ~18,000 items. If we breach the allowance before then, the arithmetic was wrong.",
+   "decidedBy": "Tyler, correcting chat"
+  },
+  {
+   "id": "2026-08-23-art-post-spec",
+   "decision": "Treat the Charizard/Blastoise post as the specification for art content: same artist, both hero cards, a gap long enough to surprise, household Pokemon.",
+   "predicted": "The next three art posts built to this spec will each get more engagement than the Keldeo-style recency pick would have. If a recency pick outperforms a spec pick, the model is wrong.",
+   "decidedBy": "chat, from Tyler's post"
+  }
+ ]
 }
