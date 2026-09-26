@@ -1,18 +1,46 @@
 {
- "generatedAt": "2026-09-26T15:22:13.920Z",
+ "generatedAt": "2026-09-26T15:46:57.254Z",
  "date": "2026-09-26",
  "checked": 178,
- "warned": 49,
- "blocked": 8,
+ "warned": 48,
+ "blocked": 10,
  "note": "Blocked products stay in the data and on the Board (labeled); they are barred from Daily Three, social posts, cards, and the newsletter until they pass.",
  "flags": [
+  {
+   "id": "sv4-pack",
+   "name": "Paradox Rift Booster Pack",
+   "median": 13.99,
+   "high": 75,
+   "floor": 6,
+   "listings": 52,
+   "reasons": [
+    "66% from TCGplayer ($8.44) — beyond any photo-premium explanation"
+   ],
+   "warns": [
+    "high $75 is 5.4× the median — watch for lot/case listings in the top half"
+   ],
+   "topPricedTitles": [
+    {
+     "t": "Pokemon TCG: Paradox Rift Booster Packs w/ Twilight Masquerade Packs",
+     "p": 75
+    },
+    {
+     "t": "Pokémon Paradox Rift 5 Booster Packs English Meowth Trading Card Game",
+     "p": 60
+    },
+    {
+     "t": "Pokemon TCG Paradox Rift 5 Booster Packs 50 Cards English Factory Sealed",
+     "p": 52.99
+    }
+   ]
+  },
   {
    "id": "pgo-etb",
    "name": "Pokemon GO Elite Trainer Box",
    "median": 220,
    "high": 477.3,
    "floor": 157.34,
-   "listings": 77,
+   "listings": 76,
    "reasons": [
     "manually quarantined 2026-08-21 (Tyler (founder QA)): median read $240 against an observed ~$205 market; multi-item listings suspected in the top half"
    ],
@@ -109,6 +137,32 @@
     {
      "t": "Pokemon Lost Thunder Booster Box English Sealed",
      "p": 2495
+    }
+   ]
+  },
+  {
+   "id": "sm8-etb",
+   "name": "Lost Thunder Elite Trainer Box",
+   "median": 774.95,
+   "high": 799.95,
+   "floor": 636.4,
+   "listings": 4,
+   "reasons": [
+    "only 4 listings — too thin to headline"
+   ],
+   "warns": [],
+   "topPricedTitles": [
+    {
+     "t": "Pokemon TCG Sun & Moon Lost Thunder Elite Trainer Box SEALED WITH ACRYLIC",
+     "p": 799.95
+    },
+    {
+     "t": "(403301) Pokemon 2018 Sun & Moon Lost Thunder Elite Trainer Box - Factory Sealed",
+     "p": 774.95
+    },
+    {
+     "t": "*403149* Pokemon 2018 Sun & Moon Lost Thunder Elite Trainer Box - Factory Sealed",
+     "p": 774.95
     }
    ]
   },

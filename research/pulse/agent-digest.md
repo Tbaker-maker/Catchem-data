@@ -6,7 +6,7 @@ Read it with coffee. Anything urgent says so in capitals.
 We said in advance what would end this thesis. That thing happened. So it ends.
 
 **NEEDS A HUMAN — 1 thesis/theses failed its own kill condition.** We said in advance what would end them, and that happened, so they end. Drafts of the public amendment are in the falsifier report.
-- **RT-2 (Supply Injection Absorb-or-Stall)** — 100% of 1 supply injections moved prices less than 1% — injections are not being absorbed OR stalling, which is the stated kill condition
+- **RT-2 (Supply Injection Absorb-or-Stall)** — 100% of 2 supply injections moved prices less than 1% — injections are not being absorbed OR stalling, which is the stated kill condition
 
 ## Our own numbers
 A product we featured has gone quiet on us. Either it stopped trading or we broke its query, and we should know which.
@@ -55,7 +55,9 @@ Gaps in what we watch:
 - *ease of use* — A number appears above the fold on Today. Holds — check on a 390px screen that it is still above the fold with the banner and nav present.
 
 ## Who needs to do what
-**NEEDS A HUMAN — Tyler (2):**
+**NEEDS A HUMAN — Tyler (4):**
+- **[ACT NOW 90]** RT-2 failed its own kill condition — *publish the amendment — we said in advance this would end the thesis*
+- **[ACT NOW 76]** Surging Sparks Booster Pack moved -21.9% — about 3.9× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
 - **[QUEUE 58]** The knowledge base is only used for one fact a day. — *The same sourced facts could power a "why is this card like this" explainer on every product page — set context, print quirks, what makes it odd. It compounds with every fact added.*
 - **[WATCH 40]** pricing 50 more cards would unlock 17 artist cohorts — *an expansion decision, not a machine's call*
 
@@ -66,7 +68,7 @@ Gaps in what we watch:
 
 **Chat (12):** top — The Today screen carries 17 sections: The Daily Three, 🗳 Rip or Hold?, Biggest movers, Set the app up for you, Movers, Release radar… *[QUEUE]*
 
-*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 0 ACT NOW, 9 QUEUE, 8 WATCH, 26 filed without surfacing, 4 confirmations.*
+*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 2 ACT NOW, 9 QUEUE, 8 WATCH, 26 filed without surfacing, 4 confirmations.*
 ## The creator cheat code
 *Could somebody open this, hit record within two minutes, and sound like the most informed voice in the hobby without pausing to look anything up? Every pause is a cut.*
 - **a visual that runs itself** — 35 card images minted today. *The gap is that they are files in a repo. A creator needs them one tap from the angle they picked, not from a folder.*
@@ -78,7 +80,7 @@ Gaps in what we watch:
 
 ## Where today's story goes
 - **X** — "Chilling Reign listings moved -17.7% while its print window closes."
-- **YouTube** — 151 Booster Pack — "Cheapest believable listing $4, middle of the market $29.64. A floor that far below the median usually rewards patience."
+- **YouTube** — Celebrations Ultra Premium Collection — "Cheapest believable listing $215, middle of the market $1,339.25. A floor that far below the median usually rewards patience."
 - **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 100.7."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
@@ -96,10 +98,10 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 *Legal INFORMATION, not legal advice. No lawyer has reviewed this. Sweepstakes law varies by state and changes; nothing here is a compliance opinion anyone can rely on. Its job is to make the conversation with counsel shorter and better, and to stop us doing something obviously wrong in the meantime.*
 
 ## Numbers that do not make sense for what they are
-55 value(s) are structurally fine and absurd in context.
-- **"sleeved"** killed 352 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
-- Scarlet & Violet Booster Pack: 94% rejection rate (9/150) — *largest bucket: set = 54. A single over-broad term can eat a market.*
-- 151 Booster Pack: 82% rejection rate (27/150) — *largest bucket: type = 87. A single over-broad term can eat a market.*
+53 value(s) are structurally fine and absurd in context.
+- **"sleeved"** killed 353 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
+- Scarlet & Violet Booster Pack: 93% rejection rate (11/150) — *largest bucket: set = 54. A single over-broad term can eat a market.*
+- 151 Booster Pack: 80% rejection rate (30/150) — *largest bucket: type = 77. A single over-broad term can eat a market.*
 
 ## What the agents should be asking themselves
 - **domain-plausibility** — Would you catch this today? If yes, what specifically would fire. If no, what would you need?
