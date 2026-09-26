@@ -24,7 +24,7 @@ jobs:
   watch:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write # commit the retry log; a read-only job cannot, so the next run redispatches
       actions: write # to re-dispatch the daily job exactly once
     steps:
       - uses: actions/checkout@v4
@@ -84,7 +84,7 @@ jobs:
           git config user.name "catchem-bot"
           git config user.email "bot@catchem.app"
           git add data/recovery-log.json
-          git diff --staged --quiet || { git commit -m "recovery: retry dispatched after a red heartbeat"; git push || true; }
+          git diff --staged --quiet || { git commit -m "recovery: retry dispatched after a red heartbeat"; git push; }
 
       # If the heartbeat says something is silent, say so somewhere a human
       # looks. Guarded on the secret so a fork or a fresh clone skips it
