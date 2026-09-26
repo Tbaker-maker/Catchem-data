@@ -6,12 +6,16 @@ import {
   chooseQuery,
   createLimiter,
   creditCost,
+  fetchWithBackoff,
   intradayPlan,
+  isDailyCap,
+  packCalls,
   planFromRecords,
+  retryDelayMs,
   schedule,
   tierOf,
 } from "../lib/ppt-plan.mjs";
-import { callsFor, executePlan } from "../ppt-refresh.mjs";
+import { callsFor, executePlan, resumeIds } from "../ppt-refresh.mjs";
 
 let fail = 0;
 const t = (name, cond, detail = "") => {
@@ -88,6 +92,62 @@ export async function runPptPlanTests() {
   t("error text would redact the key", !JSON.stringify(ran).includes(secret));
 
   t("execute without a key sends nothing", (await executePlan({ key: "", calls, fetchImpl: () => { throw new Error("called"); }, reserve: async () => {} })).used.total === 0);
+
+  const packed = packCalls([
+    { id: "big", estimated: 9000, items: 9 },
+    { id: "mid", estimated: 8000, items: 8 },
+    { id: "small", estimated: 1000, items: 1 },
+  ], 10000);
+  t("pack uses the leftover instead of stopping", packed.chosen.map((c) => c.id).join(",") === "big,small" && packed.leftover === 0);
+
+  t("retry-after is honored", retryDelayMs(3, "2", 0, () => 0) === 2000);
+  t("backoff grows when no retry-after", retryDelayMs(2, null, 0, () => 0) === 1600);
+  t("a long retry-after is the daily cap", isDailyCap(429, {}, "400") === true);
+  const waits = [];
+  let hits = 0;
+  const backed = await fetchWithBackoff("https://example.test", "k", {
+    request: async () => {
+      hits += 1;
+      if (hits < 3) return { status: 429, body: { limitType: "per_minute" }, retryAfter: "0" };
+      return { status: 200, body: { ok: true } };
+    },
+    sleep: async (ms) => { waits.push(ms); },
+    random: () => 0,
+    now: () => 0,
+  });
+  t("429 is retried then accepted", backed.body.ok === true && hits === 3 && waits.length === 2);
+  let dailyHits = 0;
+  let dailyThrew = false;
+  try {
+    await fetchWithBackoff("https://example.test", "k", {
+      request: async () => {
+        dailyHits += 1;
+        return { status: 429, body: { limitType: "daily" }, retryAfter: "1" };
+      },
+      sleep: async () => {},
+    });
+  } catch (err) {
+    dailyThrew = err.daily === true;
+  }
+  t("daily cap is not retried", dailyThrew && dailyHits === 1);
+
+  const continued = await executePlan({
+    key: "k",
+    calls: [
+      { bucket: "sealed", id: "a", estimated: 2, units: 1, items: 1, url: "a" },
+      { bucket: "sealed", id: "b", estimated: 2, units: 1, items: 1, url: "b" },
+    ],
+    fetchImpl: async (url) => {
+      if (url === "a") { const err = new Error("rate limited"); err.rateLimits = 2; throw err; }
+      return { metadata: { apiCallsConsumed: { total: 2 } } };
+    },
+    reserve: async () => {},
+    budget: 16000,
+  });
+  t("a rate limit does not end the day", continued.used.total === 2 && continued.done.includes("b") && continued.rateLimits === 2 && continued.skipped === 1);
+  t("a finished cycle starts over the next day", resumeIds({ asOf: "2026-09-25", done: ["a", "b"] }, ["a", "b"], "2026-09-26").length === 0);
+  t("the same day does not start the cycle over", resumeIds({ asOf: "2026-09-26", done: ["a", "b"] }, ["a", "b"], "2026-09-26").join(",") === "a,b");
+  t("an unfinished cycle keeps its place", resumeIds({ asOf: "2026-09-25", done: ["a"] }, ["a", "b"], "2026-09-26").join(",") === "a");
 
   console.log(fail ? `${fail} failed` : "ppt plan ok");
   return fail;

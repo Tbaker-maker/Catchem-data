@@ -10,7 +10,9 @@ import {
   SLAB_TARGET,
   createLimiter,
   creditCost,
+  fetchWithBackoff,
   minuteUnits,
+  packCalls,
   planFromRecords,
   usageSkeleton,
 } from "./lib/ppt-plan.mjs";
@@ -55,35 +57,75 @@ export function callsFor(sealedRows, sets) {
   return calls;
 }
 
-export async function executePlan({ key, calls, fetchImpl, reserve, rawDir, budget = MAIN_BUDGET, secrets = [] }) {
+// A provider outage should not turn into hours of retries on every queued call.
+export const MAX_FAILS_IN_ROW = 5;
+
+export function resumeIds(cursor, callIds, today) {
+  const prev = new Set(Array.isArray(cursor?.done) ? cursor.done : []);
+  const complete = callIds.length > 0 && callIds.every((id) => prev.has(id));
+  if (complete && cursor?.asOf && cursor.asOf !== today) return [];
+  return callIds.filter((id) => prev.has(id));
+}
+
+export async function executePlan({ key, calls, fetchImpl, reserve, rawDir, budget = MAIN_BUDGET, secrets = [], alreadyDone = [] } = {}) {
   const used = { sealed: 0, singles: 0, slabs: 0, intraday: 0, crosscheck: 0, total: 0 };
   const items = { sealed: 0, singles: 0, slabs: 0 };
   const errors = [];
-  if (!key) return { used, items, errors, raw: "not fetched" };
+  const done = [];
+  let skipped = 0;
+  let rateLimits = 0;
+  let failedInRow = 0;
+  const finished = new Set(alreadyDone || []);
+  if (!key) return { used, items, errors, raw: "not fetched", skipped, rateLimits, done };
   if (rawDir) await mkdir(rawDir, { recursive: true });
-  for (const call of calls) {
-    if (used.total + call.estimated > budget) break;
-    await reserve(call.units);
+  const open = (calls || []).filter((call) => call?.id && !finished.has(call.id));
+  const { chosen, skipped: parked } = packCalls(open, budget, 0);
+  const queue = [...chosen, ...parked];
+  for (let i = 0; i < queue.length; i += 1) {
+    const call = queue[i];
+    if (used.total + call.estimated > budget) {
+      skipped += call.items || 1;
+      continue;
+    }
+    await reserve(call.units || 1);
     let body;
     try {
       body = await fetchImpl(call.url, key);
     } catch (err) {
+      rateLimits += err.rateLimits || 0;
       errors.push(redact(err.message, [key, ...secrets]));
-      if (err.daily || errors.length >= 3) break;
+      if (err.daily) {
+        skipped += call.items || 1;
+        for (const rest of queue.slice(i + 1)) skipped += rest.items || 1;
+        break;
+      }
+      skipped += call.items || 1;
+      failedInRow += 1;
+      if (failedInRow >= MAX_FAILS_IN_ROW) {
+        errors.push(`${MAX_FAILS_IN_ROW} calls failed in a row; stopped for today`);
+        for (const rest of queue.slice(i + 1)) skipped += rest.items || 1;
+        break;
+      }
       continue;
     }
+    failedInRow = 0;
     const spent = body?.metadata?.apiCallsConsumed?.total;
     if (typeof spent !== "number") {
-      errors.push("response did not say how many credits it used; stopped");
+      errors.push("response did not say how many credits it used; skipped");
+      skipped += call.items || 1;
+      continue;
+    }
+    used[call.bucket] = (used[call.bucket] || 0) + spent;
+    used.total += spent;
+    items[call.bucket] = (items[call.bucket] || 0) + call.items;
+    done.push(call.id);
+    if (rawDir) await writeFile(join(rawDir, `${call.id}.json`), JSON.stringify(body));
+    if (used.total >= budget) {
+      for (const rest of queue.slice(i + 1)) skipped += rest.items || 1;
       break;
     }
-    used[call.bucket] += spent;
-    used.total += spent;
-    items[call.bucket] += call.items;
-    if (rawDir) await writeFile(join(rawDir, `${call.id}.json`), JSON.stringify(body));
-    if (used.total >= budget) break;
   }
-  return { used, items, errors, raw: rawDir ? "artifact" : "not fetched" };
+  return { used, items, errors, raw: rawDir ? "artifact" : "not fetched", skipped, rateLimits, done };
 }
 
 export async function loadQueue(root = ROOT) {
@@ -93,7 +135,7 @@ export async function loadQueue(root = ROOT) {
   const sealedCfg = await readJson(join(root, "scripts/ppt-history-backfill-ids.json"));
   const sealed = (sealedCfg.products || []).map((row) => ({
     tcgPlayerId: String(row.tcgPlayerId),
-    hasHistory: (row.keys || []).some((key) => existsSync(join(root, "data/history/ppt-sealed", `${key}.json`))),
+    hasHistory: (row.keys || []).some((key) => ["data/history/ppt-sealed-private", "data/history/ppt-sealed"].some((dir) => existsSync(join(root, dir, `${key}.json`)))),
   }));
   const priced = cards.reduce((n, card) => n + (Number(card.price) > 0 ? 1 : 0), 0);
   const withId = cards.some((card) => card.tcgplayerProductId);
@@ -126,20 +168,20 @@ function publicUsage(plan, extra) {
   return usage;
 }
 
-async function defaultFetch(url, key) {
-  const res = await fetch(url, {
-    headers: { Authorization: `Bearer ${key}` },
-    signal: AbortSignal.timeout(30000),
+async function defaultFetch(url, key, stats) {
+  const { body, rateLimits } = await fetchWithBackoff(url, key, {
+    request: async (oneUrl, oneKey) => {
+      const res = await fetch(oneUrl, {
+        headers: { Authorization: `Bearer ${oneKey}` },
+        signal: AbortSignal.timeout(30000),
+      });
+      let body = {};
+      try { body = await res.json(); } catch { body = {}; }
+      return { status: res.status, body, retryAfter: res.headers.get("retry-after") };
+    },
+    sleep: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
   });
-  let body = {};
-  try { body = await res.json(); } catch { body = {}; }
-  if (res.status === 429) {
-    const daily = body.limitType === "daily";
-    const err = new Error(daily ? "daily cap" : "rate limited");
-    err.daily = daily;
-    throw err;
-  }
-  if (!res.ok) throw new Error(`http ${res.status}`);
+  if (stats) stats.rateLimits += rateLimits;
   return body;
 }
 
@@ -154,37 +196,58 @@ export async function main() {
     reason: key ? "Key was present. Credits below are what the provider reported." : "POKEMONPRICETRACKER_API_KEY is not set. No request was sent.",
   });
   usage.raw = "not fetched";
+  usage.run = { creditsUsed: 0, itemsDone: 0, itemsSkipped: 0, rateLimitCount: 0 };
+  const cursorPath = join(ROOT, "data/meta/ppt-cursor.json");
+  let cursor = { done: [] };
+  if (existsSync(cursorPath)) {
+    try { cursor = JSON.parse(await readFile(cursorPath, "utf8")); } catch { cursor = { done: [] }; }
+  }
   if (key) {
+    const stats = { rateLimits: 0 };
     const calls = callsFor(sealed, sets);
+    const alreadyDone = resumeIds(cursor, calls.map((call) => call.id), today);
     const ran = await executePlan({
       key,
       calls,
-      fetchImpl: defaultFetch,
+      fetchImpl: (url, oneKey) => defaultFetch(url, oneKey, stats),
       reserve: createLimiter(),
       rawDir: join(ROOT, "ppt-raw-private", today),
       secrets: [token],
+      alreadyDone,
     });
     usage.credits.used = ran.used;
     usage.credits.remaining = Math.max(0, usage.credits.budget - ran.used.total);
     usage.items = { sealed: ran.items.sealed, singles: ran.items.singles, slabs: ran.items.slabs };
     usage.errors = ran.errors;
-    usage.raw = "actions artifact ppt-raw-private, 90 days";
+    usage.run = {
+      creditsUsed: ran.used.total,
+      itemsDone: ran.items.sealed + ran.items.singles + ran.items.slabs,
+      itemsSkipped: ran.skipped,
+      rateLimitCount: ran.rateLimits + stats.rateLimits,
+    };
+    usage.raw = "private repo catchem-data-private";
     usage.rawNote = token
-      ? "PRIVATE_DATA_TOKEN is set. Raw is still written only under ppt-raw-private for the artifact. It is not committed."
-      : "PRIVATE_DATA_TOKEN is not set. Raw stays in the artifact and out of this repo.";
+      ? "PRIVATE_DATA_TOKEN is set. Raw is written under ppt-raw-private and pushed to the private repo. It is not committed here."
+      : "PRIVATE_DATA_TOKEN is not set. Raw was not pushed and is not committed here.";
+    cursor = {
+      asOf: today,
+      done: [...new Set([...alreadyDone, ...ran.done])],
+      advanced: ran.done.length > 0,
+      note: "Resume point. Ids only. Not a price.",
+    };
   }
   const meta = join(ROOT, "data/meta");
   await mkdir(meta, { recursive: true });
   await writeFile(join(meta, "ppt-usage.json"), JSON.stringify(usage, null, 2));
-  const cursorPath = join(meta, "ppt-cursor.json");
-  if (!existsSync(cursorPath)) {
-    await writeFile(cursorPath, JSON.stringify({
+  const cursorReady = Array.isArray(cursor.done);
+  if (!cursorReady || key) {
+    const next = key && cursorReady ? cursor : {
       asOf: today,
-      sealedOffset: 0,
-      setOffset: 0,
+      done: [],
       advanced: false,
-      note: "Resume point. Not a price.",
-    }, null, 2));
+      note: "Resume point. Ids only. Not a price.",
+    };
+    await writeFile(cursorPath, JSON.stringify(next, null, 2));
   }
   console.log(`ppt-refresh ${usage.status} credits=${usage.credits.used.total} sealedQueued=${plan.sealed.queued} singles=${plan.singles.items} days=${plan.schedule.days}`);
 }

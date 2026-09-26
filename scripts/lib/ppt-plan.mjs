@@ -108,6 +108,76 @@ export function intradayPlan(sampleChanged) {
   };
 }
 
+export function retryDelayMs(attempt, retryAfter, now = Date.now(), random = Math.random) {
+  const raw = retryAfter == null ? "" : String(retryAfter).trim();
+  if (raw) {
+    const seconds = Number(raw);
+    if (Number.isFinite(seconds) && seconds >= 0) return Math.round(seconds * 1000);
+    const when = Date.parse(raw);
+    if (Number.isFinite(when)) return Math.max(0, when - now);
+  }
+  const base = Math.min(30000, 400 * 2 ** attempt);
+  return base + Math.floor(random() * 200);
+}
+
+export function isDailyCap(status, body, retryAfter) {
+  if (status !== 429) return false;
+  if (body?.limitType === "daily") return true;
+  const seconds = Number(retryAfter);
+  return Number.isFinite(seconds) && seconds > 300;
+}
+
+export async function fetchWithBackoff(url, key, { request, sleep, random = Math.random, now = Date.now, maxAttempts = 5 } = {}) {
+  let rateLimits = 0;
+  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+    const res = await request(url, key);
+    const status = res?.status ?? 0;
+    if (status === 429 || status >= 500) {
+      rateLimits += 1;
+      if (status === 429 && isDailyCap(status, res.body, res.retryAfter)) {
+        const err = new Error("daily cap");
+        err.daily = true;
+        err.rateLimits = rateLimits;
+        throw err;
+      }
+      if (attempt === maxAttempts - 1) {
+        const err = new Error(status === 429 ? "rate limited" : `http ${status}`);
+        err.rateLimits = rateLimits;
+        throw err;
+      }
+      await sleep(retryDelayMs(attempt, res.retryAfter, now(), random));
+      continue;
+    }
+    if (status >= 400) {
+      const err = new Error(`http ${status}`);
+      err.rateLimits = rateLimits;
+      throw err;
+    }
+    return { body: res.body, rateLimits };
+  }
+  const err = new Error("rate limited");
+  err.rateLimits = rateLimits;
+  throw err;
+}
+
+// Take every call that still fits. A set that is too big is skipped so a
+// smaller one later in the queue can use the rest of the 16,000.
+export function packCalls(calls, budget, spent = 0) {
+  const chosen = [];
+  const skipped = [];
+  let left = budget - spent;
+  for (const call of calls) {
+    if (!(call.estimated > 0)) continue;
+    if (call.estimated <= left) {
+      chosen.push(call);
+      left -= call.estimated;
+    } else {
+      skipped.push(call);
+    }
+  }
+  return { chosen, skipped, leftover: left };
+}
+
 export function createLimiter({ unitsPerMinute = 60, now = () => Date.now(), sleep = (ms) => new Promise((r) => setTimeout(r, ms)) } = {}) {
   const window = [];
   return async function reserve(units) {
