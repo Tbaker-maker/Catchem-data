@@ -32,8 +32,8 @@
     "extra": 5
   },
   "lines": {
-    "equal": 100.1,
-    "capped": 98.9,
+    "equal": 100.2,
+    "capped": 99,
     "median": 100.7,
     "capAppliedDays": 11,
     "capInfeasibleDays": 0
@@ -149,8 +149,8 @@
     {
       "date": "2026-09-26",
       "from": "2026-09-25",
-      "equal": 100.1,
-      "capped": 98.9,
+      "equal": 100.2,
+      "capped": 99,
       "median": 100.7,
       "matched": 59,
       "capApplied": true,
@@ -159,9 +159,9 @@
   ],
   "disagree": {
     "flag": true,
-    "maxGap": 1.8,
+    "maxGap": 1.7,
     "threshold": 0.5,
-    "note": "Equal, 5%-capped and median end 1.8 points apart, which is over the 0.5 point line."
+    "note": "Equal, 5%-capped and median end 1.7 points apart, which is over the 0.5 point line."
   },
   "trustBand": {
     "method": "median line",
@@ -315,9 +315,9 @@
       "n": 37,
       "start": "2026-08-18",
       "levels": {
-        "equal": 99.3,
-        "capped": 99.2,
-        "median": 99.9
+        "equal": 99.7,
+        "capped": 99.7,
+        "median": 100
       },
       "matchedLast": 21,
       "outsideHeadline": false
@@ -327,8 +327,8 @@
       "n": 25,
       "start": "2026-08-18",
       "levels": {
-        "equal": 102.4,
-        "capped": 101.2,
+        "equal": 102.9,
+        "capped": 101.3,
         "median": 103.5
       },
       "matchedLast": 9,
@@ -339,9 +339,9 @@
       "n": 5,
       "start": "2026-08-18",
       "levels": {
-        "equal": 105.4,
-        "capped": 102.7,
-        "median": 105.4
+        "equal": 106.3,
+        "capped": 103.6,
+        "median": 106.4
       },
       "matchedLast": 4,
       "outsideHeadline": true
@@ -351,8 +351,8 @@
       "n": 38,
       "start": "2026-08-18",
       "levels": {
-        "equal": 100.2,
-        "capped": 99.7,
+        "equal": 100.1,
+        "capped": 99.5,
         "median": 99.7
       },
       "matchedLast": 23,
@@ -363,8 +363,8 @@
       "n": 34,
       "start": "2026-08-19",
       "levels": {
-        "equal": 107.9,
-        "capped": 103.2,
+        "equal": 104.8,
+        "capped": 100.8,
         "median": 110.7
       },
       "matchedLast": 14,
@@ -375,8 +375,8 @@
       "n": 30,
       "start": "2026-08-18",
       "levels": {
-        "equal": 99,
-        "capped": 97.4,
+        "equal": 98.4,
+        "capped": 96.7,
         "median": 99.7
       },
       "matchedLast": 6,
@@ -451,7 +451,7 @@
       "observations": 12,
       "first": "2026-08-18",
       "last": "2026-09-26",
-      "maxAbsReturn": 0.0264
+      "maxAbsReturn": 0.0271
     },
     {
       "id": "me1-etb",
@@ -653,7 +653,7 @@
       "observations": 12,
       "first": "2026-08-18",
       "last": "2026-09-26",
-      "maxAbsReturn": 0.0211
+      "maxAbsReturn": 0.025
     },
     {
       "id": "me4-etb",
@@ -865,7 +865,7 @@
       "observations": 11,
       "first": "2026-08-19",
       "last": "2026-09-26",
-      "maxAbsReturn": 0.0002
+      "maxAbsReturn": 0.06
     },
     {
       "id": "sm4-booster-box",
@@ -970,7 +970,7 @@
       "observations": 11,
       "first": "2026-08-19",
       "last": "2026-09-26",
-      "maxAbsReturn": 0.0287
+      "maxAbsReturn": 0.0293
     },
     {
       "id": "sv10-booster-box",
@@ -1090,7 +1090,7 @@
       "observations": 11,
       "first": "2026-08-19",
       "last": "2026-09-26",
-      "maxAbsReturn": 0.0645
+      "maxAbsReturn": 0.0458
     },
     {
       "id": "sv3pt5-bb",
@@ -1454,7 +1454,7 @@
       "observations": 11,
       "first": "2026-08-19",
       "last": "2026-09-26",
-      "maxAbsReturn": 0.1898
+      "maxAbsReturn": 0.2189
     },
     {
       "id": "sv8-pc-etb",
@@ -1694,7 +1694,7 @@
       "observations": 11,
       "first": "2026-08-19",
       "last": "2026-09-26",
-      "maxAbsReturn": 0.0222
+      "maxAbsReturn": 0.0228
     },
     {
       "id": "swsh12pt5-bb",
@@ -1724,7 +1724,7 @@
       "observations": 9,
       "first": "2026-08-21",
       "last": "2026-09-26",
-      "maxAbsReturn": 0.0343
+      "maxAbsReturn": 0.0733
     },
     {
       "id": "swsh12pt5-pc-etb",
@@ -1836,7 +1836,7 @@
       "observations": 11,
       "first": "2026-08-19",
       "last": "2026-09-26",
-      "maxAbsReturn": 0.0166
+      "maxAbsReturn": 0.02
     },
     {
       "id": "swsh4-etb",
@@ -1898,7 +1898,7 @@
       "observations": 11,
       "first": "2026-08-19",
       "last": "2026-09-26",
-      "maxAbsReturn": 0.0083
+      "maxAbsReturn": 0.0089
     },
     {
       "id": "swsh5-pack",
@@ -1998,7 +1998,7 @@
       "observations": 11,
       "first": "2026-08-19",
       "last": "2026-09-26",
-      "maxAbsReturn": 0.046
+      "maxAbsReturn": 0.0563
     },
     {
       "id": "swsh8-etb",
@@ -2048,7 +2048,7 @@
       "observations": 9,
       "first": "2026-08-21",
       "last": "2026-09-26",
-      "maxAbsReturn": 0.0356
+      "maxAbsReturn": 0.0369
     },
     {
       "id": "swsh9-pc-etb",

@@ -1,27 +1,31 @@
 {
   "asOf": "2026-09-26",
-  "status": "skipped",
-  "reason": "POKEMONPRICETRACKER_API_KEY is not set. No request was sent.",
+  "status": "ran",
+  "reason": "Key was present. Credits below are what the provider reported.",
   "credits": {
     "budget": 20000,
     "main": 16000,
     "reserve": 4000,
     "used": {
-      "sealed": 0,
+      "sealed": 52,
       "singles": 0,
       "slabs": 0,
       "intraday": 0,
       "crosscheck": 0,
-      "total": 0
+      "total": 52
     },
-    "remaining": 20000
+    "remaining": 19948
   },
   "items": {
-    "sealed": 0,
+    "sealed": 26,
     "singles": 0,
     "slabs": 0
   },
-  "errors": [],
+  "errors": [
+    "rate limited",
+    "rate limited",
+    "rate limited"
+  ],
   "estimate": {
     "sealedQueued": 171,
     "sealedTarget": 1000,
@@ -76,5 +80,6 @@
     "note": "No same-day sample yet. The reserve is not spent on a 4-hour loop."
   },
   "note": "Public log only. No API key and no raw prices.",
-  "raw": "not fetched"
+  "raw": "actions artifact ppt-raw-private, 90 days",
+  "rawNote": "PRIVATE_DATA_TOKEN is not set. Raw stays in the artifact and out of this repo."
 }
