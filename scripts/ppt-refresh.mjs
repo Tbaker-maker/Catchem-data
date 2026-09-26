@@ -12,10 +12,10 @@ import {
   creditCost,
   fetchWithBackoff,
   minuteUnits,
-  packCalls,
   planFromRecords,
   usageSkeleton,
 } from "./lib/ppt-plan.mjs";
+import { orderRefreshCalls, sanitizeDates, setBand } from "./lib/ppt-refresh-order.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const BASE = "https://www.pokemonpricetracker.com/api/v2";
@@ -32,23 +32,34 @@ async function readJson(path) {
   return JSON.parse(await readFile(path, "utf8"));
 }
 
-export function callsFor(sealedRows, sets) {
+export function callsFor(sealedRows, sets, { dates = {}, volumes = {} } = {}) {
   const calls = [];
   for (const row of sealedRows) {
+    const id = `sealed-${row.tcgPlayerId}`;
+    const hasHistory = !!row.hasHistory || Boolean(dates[id]);
     calls.push({
       bucket: "sealed",
-      id: `sealed-${row.tcgPlayerId}`,
-      estimated: creditCost({ hasHistory: !!row.hasHistory }),
+      priority: "sealed",
+      id,
+      refreshed: dates[id] || "",
+      volume: 0,
+      estimated: creditCost({ hasHistory }),
       units: 1,
       items: 1,
       url: `${BASE}/sealed-products?tcgPlayerId=${encodeURIComponent(row.tcgPlayerId)}&limit=1&includeHistory=true&days=${HISTORY_DAYS}`,
     });
   }
   for (const set of sets) {
+    const id = `set-${set.setId}`;
+    const hasHistory = Boolean(dates[id]);
+    const volume = volumes[set.setId] || 0;
     calls.push({
       bucket: "singles",
-      id: `set-${set.setId}`,
-      estimated: set.cardCount * 2,
+      priority: setBand(set, volume),
+      id,
+      refreshed: dates[id] || "",
+      volume,
+      estimated: set.cardCount * (hasHistory ? 1 : 2),
       units: minuteUnits(set.cardCount),
       items: set.cardCount,
       url: `${BASE}/cards?setId=${encodeURIComponent(set.pptSetId)}&fetchAllInSet=true&includeHistory=true&days=${HISTORY_DAYS}`,
@@ -74,13 +85,12 @@ export async function executePlan({ key, calls, fetchImpl, reserve, rawDir, budg
   const done = [];
   let skipped = 0;
   let rateLimits = 0;
+  let retries = 0;
   let failedInRow = 0;
   const finished = new Set(alreadyDone || []);
-  if (!key) return { used, items, errors, raw: "not fetched", skipped, rateLimits, done };
+  if (!key) return { used, items, errors, raw: "not fetched", skipped, rateLimits, retries, done };
   if (rawDir) await mkdir(rawDir, { recursive: true });
-  const open = (calls || []).filter((call) => call?.id && !finished.has(call.id));
-  const { chosen, skipped: parked } = packCalls(open, budget, 0);
-  const queue = [...chosen, ...parked];
+  const queue = (calls || []).filter((call) => call?.id && call.estimated > 0 && !finished.has(call.id));
   for (let i = 0; i < queue.length; i += 1) {
     const call = queue[i];
     if (used.total + call.estimated > budget) {
@@ -93,6 +103,7 @@ export async function executePlan({ key, calls, fetchImpl, reserve, rawDir, budg
       body = await fetchImpl(call.url, key);
     } catch (err) {
       rateLimits += err.rateLimits || 0;
+      retries += err.rateLimits || 1;
       errors.push(redact(err.message, [key, ...secrets]));
       if (err.daily) {
         skipped += call.items || 1;
@@ -125,7 +136,7 @@ export async function executePlan({ key, calls, fetchImpl, reserve, rawDir, budg
       break;
     }
   }
-  return { used, items, errors, raw: rawDir ? "artifact" : "not fetched", skipped, rateLimits, done };
+  return { used, items, errors, raw: rawDir ? "artifact" : "not fetched", skipped, rateLimits, retries, done };
 }
 
 export async function loadQueue(root = ROOT) {
@@ -147,6 +158,24 @@ export async function loadQueue(root = ROOT) {
     slabExecutable: withId ? Math.min(SLAB_TARGET, priced) : 0,
   });
   return { plan, sealed, sets: plan.setOrder || [] };
+}
+
+export async function volumeBySet(root) {
+  const out = {};
+  try {
+    const enrichment = JSON.parse(await readFile(join(root, "data/singles-enrichment.json"), "utf8"));
+    const catalogue = JSON.parse(await readFile(join(root, "data/card-catalogue.json"), "utf8"));
+    const cards = catalogue.cards || {};
+    for (const row of enrichment.cards || []) {
+      const setId = cards[row.cardId]?.setId;
+      const vol = Number(row.raw?.vol30);
+      if (!setId || !(vol > 0)) continue;
+      out[setId] = (out[setId] || 0) + vol;
+    }
+  } catch {
+    return {};
+  }
+  return out;
 }
 
 function publicUsage(plan, extra) {
@@ -196,15 +225,21 @@ export async function main() {
     reason: key ? "Key was present. Credits below are what the provider reported." : "POKEMONPRICETRACKER_API_KEY is not set. No request was sent.",
   });
   usage.raw = "not fetched";
-  usage.run = { creditsUsed: 0, itemsDone: 0, itemsSkipped: 0, rateLimitCount: 0 };
+  usage.run = { creditsUsed: 0, itemsDone: 0, itemsSkipped: 0, rateLimitCount: 0, retries: 0 };
   const cursorPath = join(ROOT, "data/meta/ppt-cursor.json");
+  const datesPath = join(ROOT, "ppt-raw-private/refresh-dates.json");
   let cursor = { done: [] };
   if (existsSync(cursorPath)) {
     try { cursor = JSON.parse(await readFile(cursorPath, "utf8")); } catch { cursor = { done: [] }; }
   }
+  let dates = {};
+  if (existsSync(datesPath)) {
+    try { dates = sanitizeDates(JSON.parse(await readFile(datesPath, "utf8"))); } catch { dates = {}; }
+  }
   if (key) {
     const stats = { rateLimits: 0 };
-    const calls = callsFor(sealed, sets);
+    const volumes = await volumeBySet(ROOT);
+    const calls = orderRefreshCalls(callsFor(sealed, sets, { dates, volumes }));
     const alreadyDone = resumeIds(cursor, calls.map((call) => call.id), today);
     const ran = await executePlan({
       key,
@@ -224,11 +259,16 @@ export async function main() {
       itemsDone: ran.items.sealed + ran.items.singles + ran.items.slabs,
       itemsSkipped: ran.skipped,
       rateLimitCount: ran.rateLimits + stats.rateLimits,
+      retries: ran.retries + stats.rateLimits,
     };
     usage.raw = "private repo catchem-data-private";
     usage.rawNote = token
       ? "PRIVATE_DATA_TOKEN is set. Raw is written under ppt-raw-private and pushed to the private repo. It is not committed here."
       : "PRIVATE_DATA_TOKEN is not set. Raw was not pushed and is not committed here.";
+    const nextDates = { ...dates };
+    for (const id of ran.done) nextDates[id] = today;
+    await mkdir(join(ROOT, "ppt-raw-private"), { recursive: true });
+    await writeFile(datesPath, `${JSON.stringify({ asOf: today, dates: sanitizeDates(nextDates) }, null, 2)}\n`);
     cursor = {
       asOf: today,
       done: [...new Set([...alreadyDone, ...ran.done])],

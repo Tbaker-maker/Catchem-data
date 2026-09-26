@@ -1,4 +1,4 @@
-import { mkdtemp, readFile } from "node:fs/promises";
+import { mkdtemp, mkdir, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -16,6 +16,8 @@ import {
   tierOf,
 } from "../lib/ppt-plan.mjs";
 import { callsFor, executePlan, resumeIds } from "../ppt-refresh.mjs";
+import { orderRefreshCalls, setBand } from "../lib/ppt-refresh-order.mjs";
+import { restorePrivate, stagePrivate } from "../lib/private-ppt.mjs";
 
 let fail = 0;
 const t = (name, cond, detail = "") => {
@@ -148,6 +150,48 @@ export async function runPptPlanTests() {
   t("a finished cycle starts over the next day", resumeIds({ asOf: "2026-09-25", done: ["a", "b"] }, ["a", "b"], "2026-09-26").length === 0);
   t("the same day does not start the cycle over", resumeIds({ asOf: "2026-09-26", done: ["a", "b"] }, ["a", "b"], "2026-09-26").join(",") === "a,b");
   t("an unfinished cycle keeps its place", resumeIds({ asOf: "2026-09-25", done: ["a"] }, ["a", "b"], "2026-09-26").join(",") === "a");
+
+  const ordered = orderRefreshCalls([
+    { id: "set-vol-low", priority: "volume", volume: 10, refreshed: "" },
+    { id: "set-vol-high", priority: "volume", volume: 50, refreshed: "2026-01-01" },
+    { id: "set-other-new", priority: "other", refreshed: "2026-08-01" },
+    { id: "set-other-old", priority: "other", refreshed: "" },
+    { id: "set-gal", priority: "gallery", refreshed: "2026-08-01" },
+    { id: "set-sir", priority: "sir", refreshed: "" },
+    { id: "set-ir", priority: "ir", refreshed: "2026-09-01" },
+    { id: "sealed-old", priority: "sealed", refreshed: "2026-09-01" },
+    { id: "sealed-new", priority: "sealed", refreshed: "" },
+  ]);
+  t("order is sealed, ir, sir, gallery, volume, then other", ordered.map((call) => call.id).join(",") === "sealed-new,sealed-old,set-ir,set-sir,set-gal,set-vol-high,set-vol-low,set-other-old,set-other-new");
+  t("a set with an illustration rare stays ahead of a special illustration rare", setBand({ tiers: { ir: 2, sir: 4 } }) === "ir");
+  const dated = callsFor(
+    [{ tcgPlayerId: "9", hasHistory: false }],
+    [{ setId: "sv1", pptSetId: "abc", cardCount: 4, tiers: { ir: 1 } }],
+    { dates: { "set-sv1": "2026-09-01" } },
+  );
+  t("a refreshed set is estimated at one credit per card", dated[1].estimated === 4 && dated[1].priority === "ir");
+  t("sealed refresh is still estimated at 1 when history is known", callsFor([{ tcgPlayerId: "9", hasHistory: true }], [{ setId: "sv1", pptSetId: "abc", cardCount: 2, tiers: {} }])[0].estimated === 1);
+
+  let fetches = 0;
+  const stopped = await executePlan({
+    key: "k",
+    calls: [0, 1, 2, 3, 4, 5].map((n) => ({ bucket: "sealed", id: `f-${n}`, estimated: 1, units: 1, items: 1, url: String(n) })),
+    fetchImpl: async () => { fetches += 1; throw new Error("down"); },
+    reserve: async () => {},
+    budget: 16000,
+  });
+  t("five failures in a row stop before the sixth call", fetches === 5 && stopped.done.length === 0 && stopped.errors.some((err) => err.includes("5 calls failed")));
+
+  const stampRoot = await mkdtemp(join(tmpdir(), "ppt-dates-"));
+  const rawDir = join(stampRoot, "raw");
+  const dest = join(stampRoot, "private");
+  await mkdir(rawDir, { recursive: true });
+  await writeFile(join(rawDir, "refresh-dates.json"), JSON.stringify({ asOf: "2026-09-26", dates: { "sealed-9": "2026-09-26" } }));
+  const staged = await stagePrivate({ checkout: join(stampRoot, "empty"), rawDir, dest, date: "2026-09-26" });
+  t("refresh dates are staged privately", staged.includes("refresh-dates"));
+  const back = await restorePrivate({ clone: dest, root: join(stampRoot, "public") });
+  const restoredDates = JSON.parse(await readFile(join(stampRoot, "public/ppt-raw-private/refresh-dates.json"), "utf8"));
+  t("refresh dates mount back and stay an id list", Array.isArray(back) && back.includes("refresh-dates") && restoredDates.dates["sealed-9"] === "2026-09-26" && !JSON.stringify(restoredDates).includes("price"));
 
   console.log(fail ? `${fail} failed` : "ppt plan ok");
   return fail;
