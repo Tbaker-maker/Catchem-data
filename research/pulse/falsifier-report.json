@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-26T01:48:05.986Z",
+ "generatedAt": "2026-09-26T09:18:51.486Z",
  "date": "2026-09-26",
  "mood": "A lot of honest shrugs on this run. The tape is young; the tests are patient.",
  "note": "We test our own claims before anyone else gets the chance. INSUFFICIENT is an honest verdict and is reported as loudly as the others.",
@@ -9,9 +9,9 @@
   "untested": []
  },
  "summary": {
-  "survived": 5,
+  "survived": 4,
   "tripped": 0,
-  "insufficient": 6,
+  "insufficient": 7,
   "pending": 0
  },
  "results": [
@@ -36,7 +36,7 @@
    "name": "The Photo Premium",
    "falsifier": "the resting cross-market baseline measures at or below 0% — i.e. eBay stops carrying a premium at all",
    "verdict": "SURVIVED",
-   "detail": "median gap 13.3% across 118 products, still positive"
+   "detail": "median gap 12.5% across 118 products, still positive"
   },
   {
    "id": "RT-4b",
@@ -72,8 +72,9 @@
    "id": "RT-2",
    "name": "Supply Injection Absorb-or-Stall",
    "falsifier": "a supply injection is followed by neither absorption nor a stall — listings rise and prices are unaffected either way",
-   "verdict": "SURVIVED",
-   "detail": "2 injections today; 50% moved prices measurably"
+   "verdict": "INSUFFICIENT",
+   "detail": "1 shifts with both listing and price deltas",
+   "needs": "5+ shift events"
   },
   {
    "id": "RT-7",
@@ -88,8 +89,8 @@
    "name": "Reprint Pressure",
    "falsifier": "late-print sets with filling shelves are no more likely to see a reprint announced within 90 days than late-print sets generally",
    "verdict": "INSUFFICIENT",
-   "detail": "2 crossings today (0 arriving, 2 closing) — but the falsifier needs 90 days of reprint announcements to compare against, which we do not yet log",
-   "needs": "a log of reprint announcements, and 90 days of these crossings to test them against"
+   "detail": "no late-print set showed a shelf move over 10% today",
+   "needs": "a late-print set with a real shelf move"
   },
   {
    "id": "IDX",
