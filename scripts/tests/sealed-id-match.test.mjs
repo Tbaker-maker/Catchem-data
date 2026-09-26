@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { applyQueue, chooseMatch, queueDecision } from "../lib/sealed-id-match.mjs";
+import { catalogRowDecision, choosePass2, normSet } from "../lib/sealed-id-pass2.mjs";
 import { applySetMap, matchMissingSets } from "../lib/ppt-set-id-match.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -107,6 +108,46 @@ export async function runSealedIdTests() {
   t("review rows were not keyed", review.tracked.every((row) => !queue.products.some((product) => product.keys.includes(row.id))));
   t("seven set slugs were mapped", report.singles.setsMapped === 7 && report.singles.cardsMapped === 88);
   t("the report stores no price", !JSON.stringify(report).includes("\"price\"") && !JSON.stringify(review).includes("unopenedPrice"));
+
+  t("xy evolutions normalizes to evolutions", normSet("XY - Evolutions") === "evolutions");
+  t("black and white pack is a clear catalog accept", catalogRowDecision({ name: "Black and White Booster Pack", subtype: "booster-pack", tcgplayerProductId: "98553" }, 1).status === "accepted");
+  t("a half booster box stays in review", catalogRowDecision({ name: "Mega Evolution Half Booster Box", subtype: "booster-box", tcgplayerProductId: "644351" }, 1).status === "review");
+  const twoArts = choosePass2(
+    { id: "xy12-etb", name: "Evolutions Elite Trainer Box", set: "Evolutions", subtype: "etb" },
+    [
+      etb("123447", "XY Evolutions Elite Trainer Box [Mega Charizard Y]", "XY - Evolutions"),
+      etb("123448", "XY Evolutions Elite Trainer Box [Mega Blastoise]", "XY - Evolutions"),
+    ],
+  );
+  t("two art etbs stay in the second pass", twoArts.status === "review" && twoArts.candidates.length === 2);
+  const oneBox = choosePass2(
+    { id: "swsh10-bb", name: "Astral Radiance Booster Box", set: "Astral Radiance", subtype: "booster-box" },
+    [{ kind: "sealed", subtype: "booster-box", tcgplayerProductId: "90", name: "Astral Radiance Booster Box", set: "SWSH10: Astral Radiance" }],
+  );
+  t("one clear booster box is accepted", oneBox.status === "accepted" && oneBox.confidence >= 0.85 && oneBox.margin >= 0.08);
+  const editions = choosePass2(
+    { id: "base2-booster-box", name: "Jungle Booster Box", set: "Jungle", subtype: "booster-box" },
+    [
+      { kind: "sealed", subtype: "booster-box", tcgplayerProductId: "7", name: "Jungle Booster Box [1st Edition]", set: "Jungle" },
+      { kind: "sealed", subtype: "booster-box", tcgplayerProductId: "8", name: "Jungle Booster Box [Unlimited Edition]", set: "Jungle" },
+    ],
+  );
+  t("close edition rows stay in review", editions.status === "review");
+  const wrongSet = choosePass2(
+    { id: "sv1-pc-etb", name: "Scarlet & Violet Base Pokemon Center Elite Trainer Box", set: "Scarlet & Violet", subtype: "pc-etb" },
+    [{ kind: "sealed", subtype: "pc-etb", tcgplayerProductId: "501999", name: "151 Pokemon Center Elite Trainer Box (Exclusive)", set: "SV: Scarlet & Violet 151" }],
+  );
+  t("151 is not the base set pokemon center etb", wrongSet.status !== "accepted");
+  const costcoAgain = choosePass2(
+    { id: "swsh7-etb", name: "Evolving Skies Elite Trainer Box", set: "Evolving Skies", subtype: "etb" },
+    [{ kind: "sealed", subtype: "etb", tcgplayerProductId: "610741", name: "Costco Pokemon Evolving Skies Elite Trainer Box and Tin", set: "Miscellaneous Cards & Products" }],
+  );
+  t("a costco tin bundle is not the etb", costcoAgain.status !== "accepted");
+  const specific = choosePass2(
+    { id: "swsh12pt5-premium", name: "Crown Zenith Special Collection", set: "Crown Zenith", subtype: "special-collection" },
+    [{ kind: "sealed", subtype: "special-collection", tcgplayerProductId: "454452", name: "Pikachu VMAX Special Collection", set: "SWSH: Crown Zenith" }],
+  );
+  t("a named collection is not the generic one", specific.status !== "accepted");
 
   console.log(fail ? `${fail} failed` : "sealed id match ok");
   return fail;
