@@ -4,7 +4,7 @@ import { rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { spawn } from "node:child_process";
-import { homedir } from "node:os";
+import { homedir, tmpdir } from "node:os";
 import { redact, restorePrivate } from "./lib/private-ppt.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -23,7 +23,7 @@ export async function mountPrivate({ token, root = ROOT, runGit = run } = {}) {
     return { mounted: false, reason: "PRIVATE_DATA_TOKEN is not set. PPT history stays unmounted. No public raw is written." };
   }
   const netrc = join(homedir(), ".netrc");
-  const clone = "/tmp/catchem-data-private";
+  const clone = join(tmpdir(), "catchem-data-private");
   try {
     await writeFile(netrc, `machine github.com\nlogin x-access-token\npassword ${token}\n`, { mode: 0o600 });
     await rm(clone, { recursive: true, force: true });
