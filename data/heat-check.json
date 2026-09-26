@@ -1,0 +1,9 @@
+{
+  "asOf": "2026-09-26",
+  "method": "Each input is a z-score against that product's own trailing 90 days. Weights: listings 0.40, TCGplayer market momentum 0.30, Google Trends 0.20, new YouTube videos 0.10. A missing input is left out and the score is marked partial. 50 is the middle.",
+  "skipped": {
+    "trends": "Google Trends was not called. The pytrends package is not installed, so this input is empty.",
+    "youtube": "Not scored. There is no 90-day trail of new-video counts, so one lookup would not be a z-score. No YouTube API key is set either."
+  },
+  "products": []
+}
