@@ -78,6 +78,15 @@ export function resumeIds(cursor, callIds, today) {
   return callIds.filter((id) => prev.has(id));
 }
 
+// Credits this refresh already spent earlier in the same UTC day. A retry or a
+// manual dispatch must share the 16k main budget, not get a fresh one.
+export function spentEarlierToday(prev, today) {
+  if (!prev || prev.asOf !== today) return 0;
+  const credits = prev.credits || {};
+  const value = Number.isFinite(credits.usedToday) ? credits.usedToday : credits.used?.total;
+  return Number.isFinite(value) && value > 0 ? value : 0;
+}
+
 export async function executePlan({ key, calls, fetchImpl, reserve, rawDir, budget = MAIN_BUDGET, secrets = [], alreadyDone = [] } = {}) {
   const used = { sealed: 0, singles: 0, slabs: 0, intraday: 0, crosscheck: 0, total: 0 };
   const items = { sealed: 0, singles: 0, slabs: 0 };
@@ -219,12 +228,20 @@ export async function main() {
   const key = process.env.POKEMONPRICETRACKER_API_KEY || "";
   const token = process.env.PRIVATE_DATA_TOKEN || "";
   const { plan, sealed, sets } = await loadQueue();
+  let spentToday = 0;
+  try {
+    spentToday = spentEarlierToday(JSON.parse(await readFile(join(ROOT, "data/meta/ppt-usage.json"), "utf8")), today);
+  } catch {
+    spentToday = 0;
+  }
+  const budget = Math.max(0, MAIN_BUDGET - spentToday);
   const usage = publicUsage(plan, {
     asOf: today,
     status: key ? "ran" : "skipped",
     reason: key ? "Key was present. Credits below are what the provider reported." : "POKEMONPRICETRACKER_API_KEY is not set. No request was sent.",
   });
   usage.raw = "not fetched";
+  usage.credits.usedToday = spentToday;
   usage.run = { creditsUsed: 0, itemsDone: 0, itemsSkipped: 0, rateLimitCount: 0, retries: 0 };
   const cursorPath = join(ROOT, "data/meta/ppt-cursor.json");
   const datesPath = join(ROOT, "ppt-raw-private/refresh-dates.json");
@@ -249,9 +266,11 @@ export async function main() {
       rawDir: join(ROOT, "ppt-raw-private", today),
       secrets: [token],
       alreadyDone,
+      budget,
     });
     usage.credits.used = ran.used;
-    usage.credits.remaining = Math.max(0, usage.credits.budget - ran.used.total);
+    usage.credits.usedToday = spentToday + ran.used.total;
+    usage.credits.remaining = Math.max(0, usage.credits.budget - usage.credits.usedToday);
     usage.items = { sealed: ran.items.sealed, singles: ran.items.singles, slabs: ran.items.slabs };
     usage.errors = ran.errors;
     usage.run = {
