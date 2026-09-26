@@ -3,8 +3,10 @@
 Read it with coffee. Anything urgent says so in capitals.
 
 ## Our own claims
-A lot of honest shrugs on this run. The tape is young; the tests are patient.
-4 survived their own kill conditions, 7 could not be judged yet with the tape we hold.
+We said in advance what would end this thesis. That thing happened. So it ends.
+
+**NEEDS A HUMAN — 1 thesis/theses failed its own kill condition.** We said in advance what would end them, and that happened, so they end. Drafts of the public amendment are in the falsifier report.
+- **RT-2 (Supply Injection Absorb-or-Stall)** — 100% of 1 supply injections moved prices less than 1% — injections are not being absorbed OR stalling, which is the stated kill condition
 
 ## Our own numbers
 A product we featured has gone quiet on us. Either it stopped trading or we broke its query, and we should know which.
@@ -71,9 +73,12 @@ Gaps in what we watch:
 - **the cheat code** — The pieces exist and are reachable, but a creator still assembles them: pick an angle here, find the card there, open the overlay separately. *ONE screen per angle: the subject, the spoken open, the numbers as a lower-third, the card ready to download, the source line, and a record checklist. Pick an angle, hit record.*
 - **the cheat code** — Nothing tells a creator how a piece performed after they made it. *Ask one question after publication — did this land — and keep the answers. Even a yes/no on twenty videos would tell us which angles are worth generating.*
 
+## What the market did
+- **product** — Surging Sparks Booster Pack moved -21.9% — about 3.9× its own typical daily swing. *Measured against its own 9 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
+
 ## Where today's story goes
-- **X** — "Cheapest believable listing $100, middle of the market $999. A floor that far below the median usually rewards patience."
-- **YouTube** — 151 Ultra Premium Collection — "Cheapest believable listing $100, middle of the market $999. A floor that far below the median usually rewards patience."
+- **X** — "Chilling Reign listings moved -17.7% while its print window closes."
+- **YouTube** — 151 Booster Pack — "Cheapest believable listing $4, middle of the market $29.64. A floor that far below the median usually rewards patience."
 - **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 100.7."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
@@ -81,8 +86,8 @@ Gaps in what we watch:
 ## Something is slipping
 - **unsaved** — 3 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
 - **ignored** — 7 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
-- **silent stage** — pulse last reported 31 days ago. *A stage that stopped running is invisible to every guard, because none of them run either. Silence is the one failure nothing else catches.*
-- **drift** — 22 script(s) are not referenced anywhere: backfill-artists.mjs, backfill-tcgcsv.mjs, build-faq.mjs, build-hooks.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
+- **silent stage** — pulse last reported 32 days ago. *A stage that stopped running is invisible to every guard, because none of them run either. Silence is the one failure nothing else catches.*
+- **drift** — 24 script(s) are not referenced anywhere: backfill-artists.mjs, backfill-tcgcsv.mjs, build-faq.mjs, build-hooks.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
 
 ## Legal standing
 Nothing has tripped. Highest live risk: **Effort-based consideration in the berry system, combined with the first live draw.** — It is the only item that is both imminent and genuinely uncertain. The IP question is larger but not triggered until revenue; registration and tax thresholds are comfortably clear at current prize values.
@@ -91,10 +96,10 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 *Legal INFORMATION, not legal advice. No lawyer has reviewed this. Sweepstakes law varies by state and changes; nothing here is a compliance opinion anyone can rely on. Its job is to make the conversation with counsel shorter and better, and to stop us doing something obviously wrong in the meantime.*
 
 ## Numbers that do not make sense for what they are
-54 value(s) are structurally fine and absurd in context.
-- **"sleeved"** killed 344 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
-- Scarlet & Violet Booster Pack: 92% rejection rate (12/150) — *largest bucket: set = 51. A single over-broad term can eat a market.*
-- 151 Booster Pack: 77% rejection rate (34/150) — *largest bucket: type = 74. A single over-broad term can eat a market.*
+55 value(s) are structurally fine and absurd in context.
+- **"sleeved"** killed 352 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
+- Scarlet & Violet Booster Pack: 94% rejection rate (9/150) — *largest bucket: set = 54. A single over-broad term can eat a market.*
+- 151 Booster Pack: 82% rejection rate (27/150) — *largest bucket: type = 87. A single over-broad term can eat a market.*
 
 ## What the agents should be asking themselves
 - **domain-plausibility** — Would you catch this today? If yes, what specifically would fire. If no, what would you need?

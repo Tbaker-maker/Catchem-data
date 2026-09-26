@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-09-26T09:18:38.680Z",
+ "generatedAt": "2026-09-26T15:22:13.920Z",
  "date": "2026-09-26",
  "checked": 178,
- "warned": 50,
+ "warned": 49,
  "blocked": 8,
  "note": "Blocked products stay in the data and on the Board (labeled); they are barred from Daily Three, social posts, cards, and the newsletter until they pass.",
  "flags": [
@@ -12,7 +12,7 @@
    "median": 220,
    "high": 477.3,
    "floor": 157.34,
-   "listings": 76,
+   "listings": 77,
    "reasons": [
     "manually quarantined 2026-08-21 (Tyler (founder QA)): median read $240 against an observed ~$205 market; multi-item listings suspected in the top half"
    ],
@@ -64,7 +64,7 @@
    "median": 1200,
    "high": 4299.99,
    "floor": 802.05,
-   "listings": 12,
+   "listings": 11,
    "reasons": [
     "manually quarantined 2026-08-22 (CC (era-base contamination audit)): the price included boxes from later Sun & Moon sets. Most listings we fetched name a different set, so the $2,300 reading is not this product."
    ],
@@ -193,15 +193,19 @@
   {
    "id": "swsh1-pack",
    "name": "Sword & Shield Booster Pack",
-   "median": 12.49,
-   "high": 20,
+   "median": 14.24,
+   "high": 21,
    "floor": 4.99,
-   "listings": 7,
+   "listings": 8,
    "reasons": [
     "manually quarantined 2026-08-22 (CC (era-base contamination audit)): the price was built from other sets. Later Sword & Shield packs were counted as base-set packs, reading about $20 against a real price nearer $5."
    ],
    "warns": [],
    "topPricedTitles": [
+    {
+     "t": "⭐Pokémon Sword & Shield Booster Pack⭐",
+     "p": 21
+    },
     {
      "t": "Sword & Shield Champions Path Sealed Pokemon TCG Card Booster Pack",
      "p": 20
@@ -209,10 +213,6 @@
     {
      "t": "1x Pokemon Sword & Shield Champions Path Booster Pack Unweighed TRUSTED SELLER!!",
      "p": 19.97
-    },
-    {
-     "t": "Pokemon Sword & Shield Base Set Booster Pack 10 Cards New Sealed Official TCG",
-     "p": 14.24
     }
    ]
   }
