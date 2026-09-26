@@ -1,0 +1,43 @@
+name: PPT history backfill (manual, one-off)
+
+# Manual only. Pulls sealed price history from PokemonPriceTracker and uploads
+# the raw responses as an artifact. Commits nothing.
+on:
+  workflow_dispatch:
+    inputs:
+      days:
+        description: "History window in days (Pro tier max 180)"
+        default: "180"
+      max_products:
+        description: "0 = all products in scripts/ppt-history-backfill-ids.json"
+        default: "0"
+      credit_ceiling:
+        description: "Hard stop on credits spent this run"
+        default: "1500"
+
+permissions:
+  contents: read
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Pull PPT sealed history
+        env:
+          POKEMONPRICETRACKER_API_KEY: ${{ secrets.POKEMONPRICETRACKER_API_KEY }}
+          PPT_DAYS: ${{ inputs.days }}
+          PPT_MAX_PRODUCTS: ${{ inputs.max_products }}
+          PPT_CREDIT_CEILING: ${{ inputs.credit_ceiling }}
+        run: node scripts/ppt-history-backfill.mjs
+      - name: Upload raw responses
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ppt-history-raw
+          path: ppt-history-raw/
+          retention-days: 14
