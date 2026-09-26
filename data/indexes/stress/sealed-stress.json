@@ -1,0 +1,2276 @@
+{
+  "kind": "sealed",
+  "asOf": "2026-09-26",
+  "today": "2026-09-26",
+  "source": "eBay asking prices",
+  "sourceFile": "data/heat-history.json",
+  "seriesStale": false,
+  "removalsApplied": 0,
+  "thresholds": {
+    "bootstrap": 1000,
+    "band": [
+      5,
+      95
+    ],
+    "weightCap": 0.05,
+    "disagreeIndexPoints": 0.5,
+    "spikeAbsReturn": 0.25,
+    "staleDays": 2,
+    "lateEntryDays": 3,
+    "seed": 20260926,
+    "rng": "mulberry32"
+  },
+  "method": "Quarter basket, same rule as the published index. Equal line is the mean price change. Median line is the median price change. Capped line is value-weighted with no name above 5% when 20 or more names are in that day's move. Fewer than 20 names makes a 5% cap impossible, so that day uses the uncapped value weight and says so. The trust band and the leave-one-out list are on the median line. A single spike often does not move a median; spikes are flagged on their own. Missing days are gaps. Nothing is removed.",
+  "sufficient": true,
+  "thin": false,
+  "insufficientReason": null,
+  "universe": {
+    "items": 164,
+    "basket": 59,
+    "observedDays": 12,
+    "withTwoPrices": 164,
+    "extra": 5
+  },
+  "lines": {
+    "equal": 100.1,
+    "capped": 98.9,
+    "median": 100.7,
+    "capAppliedDays": 11,
+    "capInfeasibleDays": 0
+  },
+  "points": [
+    {
+      "date": "2026-08-18",
+      "equal": 100,
+      "capped": 100,
+      "median": 100,
+      "matched": 59
+    },
+    {
+      "date": "2026-08-19",
+      "from": "2026-08-18",
+      "equal": 101.4,
+      "capped": 100.8,
+      "median": 100.7,
+      "matched": 59,
+      "capApplied": true,
+      "capInfeasible": false
+    },
+    {
+      "date": "2026-08-20",
+      "from": "2026-08-19",
+      "equal": 101.4,
+      "capped": 101,
+      "median": 100.7,
+      "matched": 59,
+      "capApplied": true,
+      "capInfeasible": false
+    },
+    {
+      "date": "2026-08-21",
+      "from": "2026-08-20",
+      "equal": 101.2,
+      "capped": 100.7,
+      "median": 100.7,
+      "matched": 59,
+      "capApplied": true,
+      "capInfeasible": false
+    },
+    {
+      "date": "2026-08-22",
+      "from": "2026-08-21",
+      "equal": 101.1,
+      "capped": 100.7,
+      "median": 100.7,
+      "matched": 59,
+      "capApplied": true,
+      "capInfeasible": false
+    },
+    {
+      "date": "2026-08-26",
+      "from": "2026-08-22",
+      "equal": 100.8,
+      "capped": 100.3,
+      "median": 100.7,
+      "matched": 59,
+      "capApplied": true,
+      "capInfeasible": false
+    },
+    {
+      "date": "2026-09-21",
+      "from": "2026-08-26",
+      "equal": 100.2,
+      "capped": 99,
+      "median": 100.7,
+      "matched": 59,
+      "capApplied": true,
+      "capInfeasible": false
+    },
+    {
+      "date": "2026-09-22",
+      "from": "2026-09-21",
+      "equal": 100,
+      "capped": 99,
+      "median": 100.7,
+      "matched": 59,
+      "capApplied": true,
+      "capInfeasible": false
+    },
+    {
+      "date": "2026-09-23",
+      "from": "2026-09-22",
+      "equal": 100.2,
+      "capped": 99,
+      "median": 100.7,
+      "matched": 59,
+      "capApplied": true,
+      "capInfeasible": false
+    },
+    {
+      "date": "2026-09-24",
+      "from": "2026-09-23",
+      "equal": 99.9,
+      "capped": 98.9,
+      "median": 100.7,
+      "matched": 59,
+      "capApplied": true,
+      "capInfeasible": false
+    },
+    {
+      "date": "2026-09-25",
+      "from": "2026-09-24",
+      "equal": 100.2,
+      "capped": 98.9,
+      "median": 100.7,
+      "matched": 59,
+      "capApplied": true,
+      "capInfeasible": false
+    },
+    {
+      "date": "2026-09-26",
+      "from": "2026-09-25",
+      "equal": 100.1,
+      "capped": 98.9,
+      "median": 100.7,
+      "matched": 59,
+      "capApplied": true,
+      "capInfeasible": false
+    }
+  ],
+  "disagree": {
+    "flag": true,
+    "maxGap": 1.8,
+    "threshold": 0.5,
+    "note": "Equal, 5%-capped and median end 1.8 points apart, which is over the 0.5 point line."
+  },
+  "trustBand": {
+    "method": "median line",
+    "latest": {
+      "date": "2026-09-26",
+      "p05": 99.5,
+      "p95": 101.4,
+      "draws": 1000
+    },
+    "byDate": [
+      {
+        "date": "2026-08-18",
+        "p05": 100,
+        "p95": 100,
+        "draws": 1000
+      },
+      {
+        "date": "2026-08-19",
+        "p05": 100.4,
+        "p95": 101.4,
+        "draws": 1000
+      },
+      {
+        "date": "2026-08-20",
+        "p05": 100.4,
+        "p95": 101.4,
+        "draws": 1000
+      },
+      {
+        "date": "2026-08-21",
+        "p05": 100.4,
+        "p95": 101.4,
+        "draws": 1000
+      },
+      {
+        "date": "2026-08-22",
+        "p05": 100.4,
+        "p95": 101.4,
+        "draws": 1000
+      },
+      {
+        "date": "2026-08-26",
+        "p05": 100.3,
+        "p95": 101.4,
+        "draws": 1000
+      },
+      {
+        "date": "2026-09-21",
+        "p05": 99.5,
+        "p95": 101.4,
+        "draws": 1000
+      },
+      {
+        "date": "2026-09-22",
+        "p05": 99.5,
+        "p95": 101.4,
+        "draws": 1000
+      },
+      {
+        "date": "2026-09-23",
+        "p05": 99.5,
+        "p95": 101.4,
+        "draws": 1000
+      },
+      {
+        "date": "2026-09-24",
+        "p05": 99.5,
+        "p95": 101.4,
+        "draws": 1000
+      },
+      {
+        "date": "2026-09-25",
+        "p05": 99.5,
+        "p95": 101.4,
+        "draws": 1000
+      },
+      {
+        "date": "2026-09-26",
+        "p05": 99.5,
+        "p95": 101.4,
+        "draws": 1000
+      }
+    ]
+  },
+  "leaveOneOutTop10": [
+    {
+      "id": "cel25-etb",
+      "name": "Celebrations Elite Trainer Box",
+      "levelWithout": 100.7,
+      "delta": 0
+    },
+    {
+      "id": "me1-booster-box",
+      "name": "Mega Evolution Booster Box",
+      "levelWithout": 100.7,
+      "delta": 0
+    },
+    {
+      "id": "me1-enhanced-booster-box",
+      "name": "Mega Evolution Enhanced Booster Box",
+      "levelWithout": 100.7,
+      "delta": 0
+    },
+    {
+      "id": "me1-etb",
+      "name": "Mega Evolution Elite Trainer Box",
+      "levelWithout": 100.7,
+      "delta": 0
+    },
+    {
+      "id": "me1-pc-etb",
+      "name": "Mega Evolution Pokemon Center Elite Trainer Box",
+      "levelWithout": 100.7,
+      "delta": 0
+    },
+    {
+      "id": "me2-bb",
+      "name": "Phantasmal Flames Booster Bundle",
+      "levelWithout": 100.7,
+      "delta": 0
+    },
+    {
+      "id": "me2-booster-box",
+      "name": "Phantasmal Flames Booster Box",
+      "levelWithout": 100.7,
+      "delta": 0
+    },
+    {
+      "id": "me2-etb",
+      "name": "Phantasmal Flames Elite Trainer Box",
+      "levelWithout": 100.7,
+      "delta": 0
+    },
+    {
+      "id": "me2-pc-etb",
+      "name": "Phantasmal Flames Pokemon Center Elite Trainer Box",
+      "levelWithout": 100.7,
+      "delta": 0
+    },
+    {
+      "id": "me2pt5-bb",
+      "name": "Ascended Heroes Booster Bundle",
+      "levelWithout": 100.7,
+      "delta": 0
+    }
+  ],
+  "leaveOneOutNote": "Removing any one basket name moves the rounded median by less than 0.01 points.",
+  "byType": [
+    {
+      "type": "booster-box",
+      "n": 37,
+      "start": "2026-08-18",
+      "levels": {
+        "equal": 99.3,
+        "capped": 99.2,
+        "median": 99.9
+      },
+      "matchedLast": 21,
+      "outsideHeadline": false
+    },
+    {
+      "type": "bundle",
+      "n": 25,
+      "start": "2026-08-18",
+      "levels": {
+        "equal": 102.4,
+        "capped": 101.2,
+        "median": 103.5
+      },
+      "matchedLast": 9,
+      "outsideHeadline": false
+    },
+    {
+      "type": "collection",
+      "n": 5,
+      "start": "2026-08-18",
+      "levels": {
+        "equal": 105.4,
+        "capped": 102.7,
+        "median": 105.4
+      },
+      "matchedLast": 4,
+      "outsideHeadline": true
+    },
+    {
+      "type": "etb",
+      "n": 38,
+      "start": "2026-08-18",
+      "levels": {
+        "equal": 100.2,
+        "capped": 99.7,
+        "median": 99.7
+      },
+      "matchedLast": 23,
+      "outsideHeadline": false
+    },
+    {
+      "type": "pack",
+      "n": 34,
+      "start": "2026-08-19",
+      "levels": {
+        "equal": 107.9,
+        "capped": 103.2,
+        "median": 110.7
+      },
+      "matchedLast": 14,
+      "outsideHeadline": false
+    },
+    {
+      "type": "pc-etb",
+      "n": 30,
+      "start": "2026-08-18",
+      "levels": {
+        "equal": 99,
+        "capped": 97.4,
+        "median": 99.7
+      },
+      "matchedLast": 6,
+      "outsideHeadline": false
+    }
+  ],
+  "byRarity": [],
+  "flagCounts": {
+    "stale": 1,
+    "gappy": 3,
+    "spiky": 4,
+    "late": 3
+  },
+  "items": [
+    {
+      "id": "cel25-bb",
+      "name": "Celebrations Booster Bundle",
+      "type": "bundle",
+      "flags": [
+        "spiky"
+      ],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.2807
+    },
+    {
+      "id": "cel25-etb",
+      "name": "Celebrations Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.2267
+    },
+    {
+      "id": "cel25-upc",
+      "name": "Celebrations Ultra Premium Collection",
+      "type": "collection",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.037
+    },
+    {
+      "id": "me1-bb",
+      "name": "Mega Evolution Booster Bundle",
+      "type": "bundle",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0605
+    },
+    {
+      "id": "me1-booster-box",
+      "name": "Mega Evolution Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0487
+    },
+    {
+      "id": "me1-enhanced-booster-box",
+      "name": "Mega Evolution Enhanced Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0264
+    },
+    {
+      "id": "me1-etb",
+      "name": "Mega Evolution Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0833
+    },
+    {
+      "id": "me1-pack",
+      "name": "Mega Evolution Booster Pack",
+      "type": "pack",
+      "flags": [
+        "late"
+      ],
+      "observations": 8,
+      "first": "2026-08-22",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.049
+    },
+    {
+      "id": "me1-pc-etb",
+      "name": "Mega Evolution Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0351
+    },
+    {
+      "id": "me2-bb",
+      "name": "Phantasmal Flames Booster Bundle",
+      "type": "bundle",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0233
+    },
+    {
+      "id": "me2-booster-box",
+      "name": "Phantasmal Flames Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0304
+    },
+    {
+      "id": "me2-etb",
+      "name": "Phantasmal Flames Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0218
+    },
+    {
+      "id": "me2-pack",
+      "name": "Phantasmal Flames Booster Pack",
+      "type": "pack",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.1193
+    },
+    {
+      "id": "me2-pc-etb",
+      "name": "Phantasmal Flames Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0154
+    },
+    {
+      "id": "me2pt5-bb",
+      "name": "Ascended Heroes Booster Bundle",
+      "type": "bundle",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.023
+    },
+    {
+      "id": "me2pt5-etb",
+      "name": "Ascended Heroes Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0851
+    },
+    {
+      "id": "me2pt5-pack",
+      "name": "Ascended Heroes Booster Pack",
+      "type": "pack",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0452
+    },
+    {
+      "id": "me2pt5-pc-etb",
+      "name": "Ascended Heroes Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.1
+    },
+    {
+      "id": "me2pt5-tin",
+      "name": "Ascended Heroes Tin",
+      "type": "collection",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.2008
+    },
+    {
+      "id": "me3-bb",
+      "name": "Perfect Order Booster Bundle",
+      "type": "bundle",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0973
+    },
+    {
+      "id": "me3-booster-box",
+      "name": "Perfect Order Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0257
+    },
+    {
+      "id": "me3-etb",
+      "name": "Perfect Order Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.04
+    },
+    {
+      "id": "me3-pack",
+      "name": "Perfect Order Booster Pack",
+      "type": "pack",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.1357
+    },
+    {
+      "id": "me3-pc-etb",
+      "name": "Perfect Order Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.037
+    },
+    {
+      "id": "me4-bb",
+      "name": "Chaos Rising Booster Bundle",
+      "type": "bundle",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0656
+    },
+    {
+      "id": "me4-booster-box",
+      "name": "Chaos Rising Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0211
+    },
+    {
+      "id": "me4-etb",
+      "name": "Chaos Rising Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0267
+    },
+    {
+      "id": "me4-pack",
+      "name": "Chaos Rising Booster Pack",
+      "type": "pack",
+      "flags": [],
+      "observations": 9,
+      "first": "2026-08-21",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.1579
+    },
+    {
+      "id": "me4-pc-etb",
+      "name": "Chaos Rising Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0321
+    },
+    {
+      "id": "me5-bb",
+      "name": "Pitch Black Booster Bundle",
+      "type": "bundle",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.05
+    },
+    {
+      "id": "me5-booster-box",
+      "name": "Pitch Black Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0251
+    },
+    {
+      "id": "me5-etb",
+      "name": "Pitch Black Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.066
+    },
+    {
+      "id": "me5-pack",
+      "name": "Pitch Black Booster Pack",
+      "type": "pack",
+      "flags": [],
+      "observations": 9,
+      "first": "2026-08-21",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.1389
+    },
+    {
+      "id": "me5-pc-etb",
+      "name": "Pitch Black Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0242
+    },
+    {
+      "id": "rsv10pt5-bundle",
+      "name": "White Flare Booster Bundle",
+      "type": "bundle",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0298
+    },
+    {
+      "id": "rsv10pt5-etb",
+      "name": "White Flare Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0313
+    },
+    {
+      "id": "rsv10pt5-wf-pc-etb",
+      "name": "White Flare Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0666
+    },
+    {
+      "id": "sm1-etb",
+      "name": "Sun & Moon Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.2102
+    },
+    {
+      "id": "sm10-booster-box",
+      "name": "Unbroken Bonds Booster Box",
+      "type": "booster-box",
+      "flags": [
+        "stale"
+      ],
+      "observations": 5,
+      "first": "2026-08-19",
+      "last": "2026-08-26",
+      "maxAbsReturn": 0.0135
+    },
+    {
+      "id": "sm11-booster-box",
+      "name": "Unified Minds Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.2268
+    },
+    {
+      "id": "sm12-booster-box",
+      "name": "Cosmic Eclipse Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0369
+    },
+    {
+      "id": "sm12-etb",
+      "name": "Hidden Fates Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0067
+    },
+    {
+      "id": "sm2-booster-box",
+      "name": "Guardians Rising Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.2121
+    },
+    {
+      "id": "sm2-etb",
+      "name": "Guardians Rising Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.125
+    },
+    {
+      "id": "sm3-booster-box",
+      "name": "Burning Shadows Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0106
+    },
+    {
+      "id": "sm3-etb",
+      "name": "Burning Shadows Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0633
+    },
+    {
+      "id": "sm35-etb",
+      "name": "Shining Legends Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0002
+    },
+    {
+      "id": "sm4-booster-box",
+      "name": "Crimson Invasion Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0064
+    },
+    {
+      "id": "sm4-etb",
+      "name": "Crimson Invasion Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.094
+    },
+    {
+      "id": "sm5-booster-box",
+      "name": "Ultra Prism Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0674
+    },
+    {
+      "id": "sm6-booster-box",
+      "name": "Forbidden Light Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0182
+    },
+    {
+      "id": "sm7-booster-box",
+      "name": "Celestial Storm Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0454
+    },
+    {
+      "id": "sm75-etb",
+      "name": "Dragon Majesty Elite Trainer Box",
+      "type": "etb",
+      "flags": [
+        "late"
+      ],
+      "observations": 6,
+      "first": "2026-09-21",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0533
+    },
+    {
+      "id": "sv1-booster-box",
+      "name": "Scarlet & Violet Base Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0273
+    },
+    {
+      "id": "sv1-pack",
+      "name": "Scarlet & Violet Booster Pack",
+      "type": "pack",
+      "flags": [
+        "spiky",
+        "gappy"
+      ],
+      "observations": 10,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.3318
+    },
+    {
+      "id": "sv1-pc-etb",
+      "name": "Scarlet & Violet Base Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0476
+    },
+    {
+      "id": "sv10-bb",
+      "name": "Destined Rivals Booster Bundle",
+      "type": "bundle",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0287
+    },
+    {
+      "id": "sv10-booster-box",
+      "name": "Destined Rivals Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0297
+    },
+    {
+      "id": "sv10-etb",
+      "name": "Destined Rivals Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0222
+    },
+    {
+      "id": "sv10-pack",
+      "name": "Destined Rivals Booster Pack",
+      "type": "pack",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.2128
+    },
+    {
+      "id": "sv10-pc-etb",
+      "name": "Destined Rivals Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0289
+    },
+    {
+      "id": "sv2-booster-box",
+      "name": "Paldea Evolved Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.028
+    },
+    {
+      "id": "sv2-bundle",
+      "name": "Paldea Evolved Booster Bundle",
+      "type": "bundle",
+      "flags": [],
+      "observations": 9,
+      "first": "2026-08-21",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0813
+    },
+    {
+      "id": "sv2-pack",
+      "name": "Paldea Evolved Booster Pack",
+      "type": "pack",
+      "flags": [],
+      "observations": 9,
+      "first": "2026-08-21",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.1193
+    },
+    {
+      "id": "sv2-pc-etb",
+      "name": "Paldea Evolved Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0554
+    },
+    {
+      "id": "sv3-booster-box",
+      "name": "Obsidian Flames Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0435
+    },
+    {
+      "id": "sv3-bundle",
+      "name": "Obsidian Flames Booster Bundle",
+      "type": "bundle",
+      "flags": [],
+      "observations": 9,
+      "first": "2026-08-21",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.042
+    },
+    {
+      "id": "sv3-pack",
+      "name": "Obsidian Flames Booster Pack",
+      "type": "pack",
+      "flags": [],
+      "observations": 9,
+      "first": "2026-08-21",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.125
+    },
+    {
+      "id": "sv3-pc-etb",
+      "name": "Obsidian Flames Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0645
+    },
+    {
+      "id": "sv3pt5-bb",
+      "name": "151 Booster Bundle",
+      "type": "bundle",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0258
+    },
+    {
+      "id": "sv3pt5-etb",
+      "name": "151 Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0165
+    },
+    {
+      "id": "sv3pt5-pack",
+      "name": "151 Booster Pack",
+      "type": "pack",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.1663
+    },
+    {
+      "id": "sv3pt5-pc-etb",
+      "name": "Pokemon 151 Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0427
+    },
+    {
+      "id": "sv3pt5-upc",
+      "name": "151 Ultra Premium Collection",
+      "type": "collection",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0465
+    },
+    {
+      "id": "sv4-booster-box",
+      "name": "Paradox Rift Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0213
+    },
+    {
+      "id": "sv4-bundle",
+      "name": "Paradox Rift Booster Bundle",
+      "type": "bundle",
+      "flags": [],
+      "observations": 9,
+      "first": "2026-08-21",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.1873
+    },
+    {
+      "id": "sv4-pack",
+      "name": "Paradox Rift Booster Pack",
+      "type": "pack",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.1455
+    },
+    {
+      "id": "sv4-pc-etb",
+      "name": "Paradox Rift Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.049
+    },
+    {
+      "id": "sv4pt5-bb",
+      "name": "Paldean Fates Booster Bundle",
+      "type": "bundle",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0446
+    },
+    {
+      "id": "sv4pt5-etb",
+      "name": "Paldean Fates Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0506
+    },
+    {
+      "id": "sv4pt5-pack",
+      "name": "Paldean Fates Booster Pack",
+      "type": "pack",
+      "flags": [],
+      "observations": 9,
+      "first": "2026-08-21",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.042
+    },
+    {
+      "id": "sv4pt5-pc-etb",
+      "name": "Paldean Fates Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0338
+    },
+    {
+      "id": "sv5-bb",
+      "name": "Temporal Forces Booster Bundle",
+      "type": "bundle",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0421
+    },
+    {
+      "id": "sv5-booster-box",
+      "name": "Temporal Forces Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "sv5-etb",
+      "name": "Temporal Forces Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.023
+    },
+    {
+      "id": "sv5-pack",
+      "name": "Temporal Forces Booster Pack",
+      "type": "pack",
+      "flags": [],
+      "observations": 9,
+      "first": "2026-08-21",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.2494
+    },
+    {
+      "id": "sv5-pc-etb",
+      "name": "Temporal Forces Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.1943
+    },
+    {
+      "id": "sv6-bb",
+      "name": "Twilight Masquerade Booster Bundle",
+      "type": "bundle",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0331
+    },
+    {
+      "id": "sv6-booster-box",
+      "name": "Twilight Masquerade Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0442
+    },
+    {
+      "id": "sv6-etb",
+      "name": "Twilight Masquerade Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0094
+    },
+    {
+      "id": "sv6-pack",
+      "name": "Twilight Masquerade Booster Pack",
+      "type": "pack",
+      "flags": [
+        "spiky"
+      ],
+      "observations": 9,
+      "first": "2026-08-21",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.2682
+    },
+    {
+      "id": "sv6-pc-etb",
+      "name": "Twilight Masquerade Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0215
+    },
+    {
+      "id": "sv6pt5-bb",
+      "name": "Shrouded Fable Booster Bundle",
+      "type": "bundle",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.05
+    },
+    {
+      "id": "sv6pt5-etb",
+      "name": "Shrouded Fable Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0591
+    },
+    {
+      "id": "sv6pt5-pack",
+      "name": "Shrouded Fable Booster Pack",
+      "type": "pack",
+      "flags": [
+        "gappy"
+      ],
+      "observations": 8,
+      "first": "2026-08-21",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.211
+    },
+    {
+      "id": "sv6pt5-pc-etb",
+      "name": "Shrouded Fable Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0465
+    },
+    {
+      "id": "sv7-bb",
+      "name": "Stellar Crown Booster Bundle",
+      "type": "bundle",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.1013
+    },
+    {
+      "id": "sv7-booster-box",
+      "name": "Stellar Crown Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0369
+    },
+    {
+      "id": "sv7-etb",
+      "name": "Stellar Crown Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0129
+    },
+    {
+      "id": "sv7-pack",
+      "name": "Stellar Crown Booster Pack",
+      "type": "pack",
+      "flags": [],
+      "observations": 9,
+      "first": "2026-08-21",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.2385
+    },
+    {
+      "id": "sv7-pc-etb",
+      "name": "Stellar Crown Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0003
+    },
+    {
+      "id": "sv8-bb",
+      "name": "Surging Sparks Booster Bundle",
+      "type": "bundle",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0417
+    },
+    {
+      "id": "sv8-booster-box",
+      "name": "Surging Sparks Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0225
+    },
+    {
+      "id": "sv8-etb",
+      "name": "Surging Sparks Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0369
+    },
+    {
+      "id": "sv8-pack",
+      "name": "Surging Sparks Booster Pack",
+      "type": "pack",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.1898
+    },
+    {
+      "id": "sv8-pc-etb",
+      "name": "Surging Sparks Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0772
+    },
+    {
+      "id": "sv8pt5-bb",
+      "name": "Prismatic Evolutions Booster Bundle",
+      "type": "bundle",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0582
+    },
+    {
+      "id": "sv8pt5-etb",
+      "name": "Prismatic Evolutions Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.091
+    },
+    {
+      "id": "sv8pt5-pack",
+      "name": "Prismatic Evolutions Booster Pack",
+      "type": "pack",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.2115
+    },
+    {
+      "id": "sv8pt5-pc-etb",
+      "name": "Prismatic Evolutions Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0431
+    },
+    {
+      "id": "sv8pt5-sc",
+      "name": "Prismatic Evolutions Surprise Box",
+      "type": "collection",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.2385
+    },
+    {
+      "id": "sv9-bb",
+      "name": "Journey Together Booster Bundle",
+      "type": "bundle",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0381
+    },
+    {
+      "id": "sv9-booster-box",
+      "name": "Journey Together Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0425
+    },
+    {
+      "id": "sv9-etb",
+      "name": "Journey Together Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.045
+    },
+    {
+      "id": "sv9-pack",
+      "name": "Journey Together Booster Pack",
+      "type": "pack",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.2002
+    },
+    {
+      "id": "sv9-pc-etb",
+      "name": "Journey Together Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0425
+    },
+    {
+      "id": "swsh10-booster-box",
+      "name": "Astral Radiance Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0361
+    },
+    {
+      "id": "swsh10-pack",
+      "name": "Astral Radiance Booster Pack",
+      "type": "pack",
+      "flags": [],
+      "observations": 9,
+      "first": "2026-08-21",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.1447
+    },
+    {
+      "id": "swsh10-pc-etb",
+      "name": "Astral Radiance Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0574
+    },
+    {
+      "id": "swsh11-booster-box",
+      "name": "Lost Origin Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0323
+    },
+    {
+      "id": "swsh11-bundle",
+      "name": "Lost Origin Booster Bundle",
+      "type": "bundle",
+      "flags": [],
+      "observations": 9,
+      "first": "2026-08-21",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.1101
+    },
+    {
+      "id": "swsh11-etb",
+      "name": "Lost Origin Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0417
+    },
+    {
+      "id": "swsh11-pack",
+      "name": "Lost Origin Booster Pack",
+      "type": "pack",
+      "flags": [],
+      "observations": 10,
+      "first": "2026-08-20",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0417
+    },
+    {
+      "id": "swsh11-pc-etb",
+      "name": "Lost Origin Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0416
+    },
+    {
+      "id": "swsh12-booster-box",
+      "name": "Silver Tempest Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0273
+    },
+    {
+      "id": "swsh12-bundle",
+      "name": "Silver Tempest Booster Bundle",
+      "type": "bundle",
+      "flags": [],
+      "observations": 9,
+      "first": "2026-08-21",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0859
+    },
+    {
+      "id": "swsh12-etb",
+      "name": "Silver Tempest Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0285
+    },
+    {
+      "id": "swsh12-pack",
+      "name": "Silver Tempest Booster Pack",
+      "type": "pack",
+      "flags": [],
+      "observations": 9,
+      "first": "2026-08-21",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.1194
+    },
+    {
+      "id": "swsh12-pc-etb",
+      "name": "Silver Tempest Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0222
+    },
+    {
+      "id": "swsh12pt5-bb",
+      "name": "Crown Zenith Booster Bundle",
+      "type": "bundle",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0229
+    },
+    {
+      "id": "swsh12pt5-etb",
+      "name": "Crown Zenith Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.022
+    },
+    {
+      "id": "swsh12pt5-pack",
+      "name": "Crown Zenith Booster Pack",
+      "type": "pack",
+      "flags": [],
+      "observations": 9,
+      "first": "2026-08-21",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0343
+    },
+    {
+      "id": "swsh12pt5-pc-etb",
+      "name": "Crown Zenith Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0356
+    },
+    {
+      "id": "swsh12pt5-premium",
+      "name": "Crown Zenith Special Collection",
+      "type": "collection",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0521
+    },
+    {
+      "id": "swsh2-booster-box",
+      "name": "Rebel Clash Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0417
+    },
+    {
+      "id": "swsh2-etb",
+      "name": "Rebel Clash Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0531
+    },
+    {
+      "id": "swsh2-pack",
+      "name": "Rebel Clash Booster Pack",
+      "type": "pack",
+      "flags": [],
+      "observations": 9,
+      "first": "2026-08-21",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.1028
+    },
+    {
+      "id": "swsh3-booster-box",
+      "name": "Darkness Ablaze Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0488
+    },
+    {
+      "id": "swsh3-etb",
+      "name": "Darkness Ablaze Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0664
+    },
+    {
+      "id": "swsh3-pack",
+      "name": "Darkness Ablaze Booster Pack",
+      "type": "pack",
+      "flags": [],
+      "observations": 9,
+      "first": "2026-08-21",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0967
+    },
+    {
+      "id": "swsh35-etb",
+      "name": "Champion's Path Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0222
+    },
+    {
+      "id": "swsh35-pack",
+      "name": "Champion's Path Booster Pack",
+      "type": "pack",
+      "flags": [
+        "gappy"
+      ],
+      "observations": 8,
+      "first": "2026-08-21",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.1601
+    },
+    {
+      "id": "swsh4-booster-box",
+      "name": "Vivid Voltage Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0166
+    },
+    {
+      "id": "swsh4-etb",
+      "name": "Vivid Voltage Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0312
+    },
+    {
+      "id": "swsh4-pack",
+      "name": "Vivid Voltage Booster Pack",
+      "type": "pack",
+      "flags": [],
+      "observations": 9,
+      "first": "2026-08-21",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0534
+    },
+    {
+      "id": "swsh45-etb",
+      "name": "Shining Fates Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0269
+    },
+    {
+      "id": "swsh45-pack",
+      "name": "Shining Fates Booster Pack",
+      "type": "pack",
+      "flags": [
+        "late"
+      ],
+      "observations": 8,
+      "first": "2026-08-22",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.1075
+    },
+    {
+      "id": "swsh5-booster-box",
+      "name": "Battle Styles Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0097
+    },
+    {
+      "id": "swsh5-etb",
+      "name": "Battle Styles Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0083
+    },
+    {
+      "id": "swsh5-pack",
+      "name": "Battle Styles Booster Pack",
+      "type": "pack",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0929
+    },
+    {
+      "id": "swsh6-booster-box",
+      "name": "Chilling Reign Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0333
+    },
+    {
+      "id": "swsh6-etb",
+      "name": "Chilling Reign Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0606
+    },
+    {
+      "id": "swsh6-pack",
+      "name": "Chilling Reign Booster Pack",
+      "type": "pack",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.066
+    },
+    {
+      "id": "swsh6-pc-etb",
+      "name": "Chilling Reign Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0579
+    },
+    {
+      "id": "swsh7-booster-box",
+      "name": "Evolving Skies Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0281
+    },
+    {
+      "id": "swsh7-etb",
+      "name": "Evolving Skies Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0145
+    },
+    {
+      "id": "swsh7-pack",
+      "name": "Evolving Skies Booster Pack",
+      "type": "pack",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0192
+    },
+    {
+      "id": "swsh7-pc-etb",
+      "name": "Evolving Skies Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0458
+    },
+    {
+      "id": "swsh8-booster-box",
+      "name": "Fusion Strike Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.046
+    },
+    {
+      "id": "swsh8-etb",
+      "name": "Fusion Strike Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0286
+    },
+    {
+      "id": "swsh8-pack",
+      "name": "Fusion Strike Booster Pack",
+      "type": "pack",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.087
+    },
+    {
+      "id": "swsh8-pc-etb",
+      "name": "Fusion Strike Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0242
+    },
+    {
+      "id": "swsh9-booster-box",
+      "name": "Brilliant Stars Booster Box",
+      "type": "booster-box",
+      "flags": [],
+      "observations": 12,
+      "first": "2026-08-18",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0452
+    },
+    {
+      "id": "swsh9-pack",
+      "name": "Brilliant Stars Booster Pack",
+      "type": "pack",
+      "flags": [],
+      "observations": 9,
+      "first": "2026-08-21",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0356
+    },
+    {
+      "id": "swsh9-pc-etb",
+      "name": "Brilliant Stars Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0179
+    },
+    {
+      "id": "xy12-booster-box",
+      "name": "Evolutions Booster Box",
+      "type": "booster-box",
+      "flags": [
+        "spiky"
+      ],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.2782
+    },
+    {
+      "id": "zsv10pt5-bb-pc-etb",
+      "name": "Black Bolt Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0515
+    },
+    {
+      "id": "zsv10pt5-bundle",
+      "name": "Black Bolt Booster Bundle",
+      "type": "bundle",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0101
+    },
+    {
+      "id": "zsv10pt5-etb",
+      "name": "Black Bolt Elite Trainer Box",
+      "type": "etb",
+      "flags": [],
+      "observations": 11,
+      "first": "2026-08-19",
+      "last": "2026-09-26",
+      "maxAbsReturn": 0.0231
+    }
+  ],
+  "weedOut": [
+    {
+      "rank": 1,
+      "id": "sv1-pack",
+      "name": "Scarlet & Violet Booster Pack",
+      "type": "pack",
+      "flags": [
+        "spiky",
+        "gappy"
+      ],
+      "reasons": [
+        "Price moved 33% from 2026-08-22 to 2026-08-26.",
+        "Missing at least one observed day between its first and last price.",
+        "Not in the current quarter basket, so it does not move this line."
+      ],
+      "influence": null,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 2,
+      "id": "cel25-bb",
+      "name": "Celebrations Booster Bundle",
+      "type": "bundle",
+      "flags": [
+        "spiky"
+      ],
+      "reasons": [
+        "Price moved 28% from 2026-08-26 to 2026-09-21.",
+        "Not in the current quarter basket, so it does not move this line."
+      ],
+      "influence": null,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 3,
+      "id": "sv6-pack",
+      "name": "Twilight Masquerade Booster Pack",
+      "type": "pack",
+      "flags": [
+        "spiky"
+      ],
+      "reasons": [
+        "Price moved 27% from 2026-09-22 to 2026-09-23.",
+        "Not in the current quarter basket, so it does not move this line."
+      ],
+      "influence": null,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 4,
+      "id": "xy12-booster-box",
+      "name": "Evolutions Booster Box",
+      "type": "booster-box",
+      "flags": [
+        "spiky"
+      ],
+      "reasons": [
+        "Price moved 28% from 2026-08-26 to 2026-09-21.",
+        "Not in the current quarter basket, so it does not move this line."
+      ],
+      "influence": null,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 5,
+      "id": "sm10-booster-box",
+      "name": "Unbroken Bonds Booster Box",
+      "type": "booster-box",
+      "flags": [
+        "stale"
+      ],
+      "reasons": [
+        "No fresh price within 2 days of 2026-09-26. Last observation 2026-08-26.",
+        "Not in the current quarter basket, so it does not move this line."
+      ],
+      "influence": null,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 6,
+      "id": "me1-pack",
+      "name": "Mega Evolution Booster Pack",
+      "type": "pack",
+      "flags": [
+        "late"
+      ],
+      "reasons": [
+        "First price is more than 3 days after the series starts.",
+        "Not in the current quarter basket, so it does not move this line."
+      ],
+      "influence": null,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 7,
+      "id": "sm75-etb",
+      "name": "Dragon Majesty Elite Trainer Box",
+      "type": "etb",
+      "flags": [
+        "late"
+      ],
+      "reasons": [
+        "First price is more than 3 days after the series starts.",
+        "Not in the current quarter basket, so it does not move this line."
+      ],
+      "influence": null,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 8,
+      "id": "sv6pt5-pack",
+      "name": "Shrouded Fable Booster Pack",
+      "type": "pack",
+      "flags": [
+        "gappy"
+      ],
+      "reasons": [
+        "Missing at least one observed day between its first and last price.",
+        "Not in the current quarter basket, so it does not move this line."
+      ],
+      "influence": null,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 9,
+      "id": "swsh35-pack",
+      "name": "Champion's Path Booster Pack",
+      "type": "pack",
+      "flags": [
+        "gappy"
+      ],
+      "reasons": [
+        "Missing at least one observed day between its first and last price.",
+        "Not in the current quarter basket, so it does not move this line."
+      ],
+      "influence": null,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 10,
+      "id": "swsh45-pack",
+      "name": "Shining Fates Booster Pack",
+      "type": "pack",
+      "flags": [
+        "late"
+      ],
+      "reasons": [
+        "First price is more than 3 days after the series starts.",
+        "Not in the current quarter basket, so it does not move this line."
+      ],
+      "influence": null,
+      "recommendation": "Review only. This product was not removed."
+    }
+  ],
+  "weedOutCount": 10,
+  "gaps": [
+    {
+      "from": "2026-08-22",
+      "to": "2026-08-26",
+      "missingDays": 3,
+      "note": "No price was invented for the days in between."
+    },
+    {
+      "from": "2026-08-26",
+      "to": "2026-09-21",
+      "missingDays": 25,
+      "note": "No price was invented for the days in between."
+    }
+  ],
+  "note": "10 of 10 flagged products are listed, ranked. None were removed."
+}
