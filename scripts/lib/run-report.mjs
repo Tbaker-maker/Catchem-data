@@ -74,6 +74,24 @@ export function findPptPriceKeys(value, path = "$", hits = []) {
   return hits;
 }
 
+// priceRatio is unopened divided by our ask. spreadPct next to an ask median
+// is the same leak. spreadPct by itself is not.
+export function findBackcalcLeaks(value, path = "$", hits = []) {
+  if (!value || typeof value !== "object") return hits;
+  if (Array.isArray(value)) {
+    for (let i = 0; i < value.length; i += 1) findBackcalcLeaks(value[i], `${path}[${i}]`, hits);
+    return hits;
+  }
+  if (Object.prototype.hasOwnProperty.call(value, "priceRatio")) hits.push(`${path}.priceRatio`);
+  const hasSpread = Object.prototype.hasOwnProperty.call(value, "spreadPct") && value.spreadPct != null;
+  const hasAsk = Object.prototype.hasOwnProperty.call(value, "ebayAskMedian") || Object.prototype.hasOwnProperty.call(value, "eBayMedian");
+  if (hasSpread && hasAsk) hits.push(`${path}.spreadPct+ask`);
+  for (const [key, child] of Object.entries(value)) {
+    findBackcalcLeaks(child, `${path}.${key}`, hits);
+  }
+  return hits;
+}
+
 export function safetyVerdict({ push = {}, tracked = [], fieldHits = [] } = {}) {
   const leaks = tracked.filter(isRawPublicPath);
   const reasons = [];

@@ -5,7 +5,7 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { findPptPriceKeys, safetyVerdict } from "./lib/run-report.mjs";
+import { findBackcalcLeaks, findPptPriceKeys, safetyVerdict } from "./lib/run-report.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const exec = promisify(execFile);
@@ -30,6 +30,7 @@ export async function checkSafety(root = ROOT) {
     let body;
     try { body = JSON.parse(await readFile(join(root, rel), "utf8")); } catch { continue; }
     for (const hit of findPptPriceKeys(body, rel)) fieldHits.push(hit);
+    for (const hit of findBackcalcLeaks(body, rel)) fieldHits.push(hit);
   }
   return safetyVerdict({ push: status, tracked, fieldHits });
 }

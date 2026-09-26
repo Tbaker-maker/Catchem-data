@@ -1,10 +1,12 @@
 // scripts/fetch-sealed-crosscheck.mjs — "The Spread" data source
 // Fetches TCGplayer-derived sealed prices from PokemonPriceTracker for every
-// SKU in data/crosscheck-id-map.json (reviewed entries only) and writes the
-// divergence-engine contract:
-//   data/sealed-crosscheck.json    { updatedAt, source, products: [{ id,
-//       tcgMarket, tcgListings, providerUpdatedAt, dataStatus }] }
-//   data/crosscheck-history.json   append { date, id, tcgListings, tcgMarket }
+// SKU in data/crosscheck-id-map.json (reviewed entries only).
+//
+// tcgMarket (copied from the provider's unopenedPrice) is written ONLY to
+// ppt-raw-private/crosscheck/. That folder is gitignored. push-private-ppt.mjs
+// stages it into Tbaker-maker/catchem-data-private. It is never git-added here.
+// Public readers mount it back from the private repo for one run, still under
+// ppt-raw-private, which the safety check treats as a leak if it is tracked.
 //
 // Built 2026-08-18 against REAL response shapes (research/eval-samples/
 // ppt-sealed-RAW.json) per the eval decision rule — not from docs.
