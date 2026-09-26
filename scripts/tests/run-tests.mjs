@@ -4,6 +4,7 @@
 // artifacts. Any failure kills the run before API quota burns.
 import { readFile, stat } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
+import { runSearchShardTests } from "./search-shards.test.mjs";
 import { dirname, join } from "node:path";
 import { indexLevel, offTcgEra, sealedPremium, mergeByDate } from "../lib/instruments.mjs";
 import { runTcgcsvCatalogTests } from "./tcgcsv-catalog.test.mjs";
@@ -11,7 +12,6 @@ import { runPptPlanTests } from "./ppt-plan.test.mjs";
 import { runStressTests } from "./stress.test.mjs";
 import { enterIndex } from "../lib/index-baskets.mjs";
 import { searchItems } from "../lib/search-rank.mjs";
-import { runSearchShardTests } from "./search-shards.test.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const J = async (p) => JSON.parse(await readFile(join(ROOT, p), "utf-8"));
@@ -49,6 +49,12 @@ console.log("── sealed premium (thin-n aware) ──");
   t("n=7 → thin flag", thin.thin === true);
   t("no loose lane → null pct", sealedPremium(10, null, null).pct === null);
   t("null pct never thin", sealedPremium(10, null, null).thin === false);
+}
+
+console.log("── search shards ──");
+{
+  const n = await runSearchShardTests();
+  t("search shard suite", n === 0, `${n} failed`);
 }
 
 console.log("── merge-by-date (8-vs-329 guard) ──");
@@ -146,12 +152,6 @@ console.log("── search rank ──");
   t("moonbreon alias", searchItems(rows, "moonbreon")[0]?.id === "a");
   t("bb is not inside Krabby", searchItems(rows, "bb").length === 0);
   t("151 etb is sealed", searchItems(rows, "151 etb")[0]?.id === "c");
-}
-
-console.log("── search shards ──");
-{
-  const n = await runSearchShardTests();
-  t("search shard suite", n === 0, `${n} failed`);
 }
 
 console.log(`\n${pass} passed · ${fail} failed`);
