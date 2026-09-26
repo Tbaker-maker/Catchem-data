@@ -32,8 +32,8 @@ Type what you want to post. It hands back cards.
 | **4,464 cards with lore** | the flavour text printed on the card |
 | **61 themes** | across 9 groups, every one verified to produce |
 | **207 sealed products** | tracked daily by the bot |
-| **52 sourced facts** | each with a falsifier and a recheck date |
-| **64 guards** | each with a declared blind spot |
+| **53 sourced facts** | each with a falsifier and a recheck date |
+| **66 guards** | each with a declared blind spot |
 
 ---
 

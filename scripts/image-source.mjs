@@ -31,7 +31,14 @@ export const productImage = (p, size = 1000) => {
   return p.representativeImage || p.image || "";
 };
 export const hasCleanImage = p => Boolean(TCG[p.id]);
+// Card art: the URL the source data publishes for that card id
+// (data/card-images.json, built by scripts/build-card-images.mjs). Never
+// constructed from the id: hosts differ per set, and a guessed URL that 404s
+// comes back as a card back. No entry means no image.
+let CARD_IMAGES = {};
+try { CARD_IMAGES = JSON.parse(await readFile(join(ROOT, "data/card-images.json"), "utf-8")).images || {}; } catch {}
 export const cardImage = (cardId, hires = true) => {
-  const m = /^(.+)-([^-]+)$/.exec(cardId || "");
-  return m ? `https://images.pokemontcg.io/${m[1]}/${m[2]}${hires ? "_hires" : ""}.png` : "";
+  const e = CARD_IMAGES[cardId];
+  if (!e) return "";
+  return (hires ? (e.large || e.small) : (e.small || e.large)) || "";
 };

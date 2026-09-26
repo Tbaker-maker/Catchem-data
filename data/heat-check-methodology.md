@@ -11,7 +11,11 @@ Each input is compared with that same product's own last 90 days. The comparison
 - **Google Trends (20%)**. Interest in the set or the Pokémon. If the lookup fails, this input is left empty.
 - **YouTube (10%)**. How many new videos mention the set. This needs its own 90-day trail before it can be a z-score. We do not have that trail, and no API key is set, so this input is left empty.
 
-A product needs 30 days of listing changes before it gets a score. Anything short of that is left out.
+A product gets a score when at least one input has 30 days behind it: 30 one-day changes in listings, or 30 days of TCGplayer market price (with 30 momentum readings to compare against). An input that is short is left empty and the score is marked partial. A product with neither is left out.
+
+Listing changes are only counted between two days in a row. Our eBay history has a gap from 2026-08-26 to 2026-09-21, and the jump across it is not treated as one day's change.
+
+TCGplayer market price history comes from two labelled sources: PokemonPriceTracker daily history (TCGplayer-derived) from 2026-03-31, and TCGCSV live days from 2026-09-25. On a day both have, the TCGCSV price is used. A series whose newest price is more than 3 days old is not used.
 
 ## The number
 

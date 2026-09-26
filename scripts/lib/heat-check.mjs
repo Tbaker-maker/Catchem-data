@@ -40,8 +40,12 @@ export function listingHeat(rows, asOf) {
     const t = Date.parse(r.date);
     return t >= start && t <= end && r.listingCount != null;
   });
+  // A change is only counted between two consecutive calendar days. A jump
+  // across a gap in our eBay history (e.g. 2026-08-26 to 2026-09-21) is not one
+  // day's change, so it is left out rather than counted as if it were.
   const deltas = [];
   for (let i = 1; i < window.length; i++) {
+    if (Date.parse(window[i].date) - Date.parse(window[i - 1].date) !== 86400000) continue;
     deltas.push(window[i].listingCount - window[i - 1].listingCount);
   }
   if (deltas.length < 30) return { z: null, latest: deltas.at(-1) ?? null, days: deltas.length };
@@ -64,5 +68,6 @@ export function momentum(points) {
     const s = w.slice(-7);
     if (s.length === 7) ratios.push(mean(s) / mean(w) - 1);
   }
-  return { z: zscore(latest, ratios), latest, days: priced.length };
+  // z against the trailing 90 readings only, to match the 90-day method.
+  return { z: zscore(latest, ratios.slice(-90)), latest, days: priced.length };
 }

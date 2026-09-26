@@ -6,6 +6,7 @@ import { flag } from "./flags.mjs";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { cardImage } from "./image-source.mjs";
 import { HEAT_DEBUT, DEPTH_DEBUT, heatPlain, depthPlain } from "./lib/instruments.mjs";
 
 // wrapText — rasterizer-safe line breaking. foreignObject is NOT supported
@@ -41,7 +42,7 @@ let sg = { cards: [] }; try { sg = await J("data/singles-prices.json"); } catch 
 const tcgId = {}; for (const e of cm.entries || []) if (e.reviewed && !e.exclude && e.tcgPlayerId) tcgId[e.id] = e.tcgPlayerId;
 const prodImg = id => tcgId[id] ? `https://tcgplayer-cdn.tcgplayer.com/product/${tcgId[id]}_in_1000x1000.jpg`
   : (sp.products.find(p => p.id === id) || {}).image || "";
-const cardImg = cid => { const m = /^(.+)-(\w+)$/.exec(cid || ""); return m ? `https://images.pokemontcg.io/${m[1]}/${m[2]}.png` : ""; };
+const cardImg = cid => cardImage(cid, false); // source-published URL, never constructed
 const esc = s => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
 const today = new Date().toISOString().slice(0, 10);
 

@@ -48,11 +48,12 @@ import { rootCss } from "./lib/brand.mjs";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { cardImage } from "./image-source.mjs";
 import { applyPackBasis } from "./pack-basis.mjs";
 import { rotate } from "./rotate.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const today = new Date().toISOString().split("T")[0];
-const cardImg = id => { const m=/^(.+)-(\w+)$/.exec(id||""); return m?`https://images.pokemontcg.io/${m[1]}/${m[2]}.png`:null; };
+const cardImg = id => cardImage(id, false) || null; // source-published URL, never constructed
 
 // ONE image decision, made in image-source.mjs (reviewed override →
 // catalogue shot → seller photo → nothing). An inline copy of the same
@@ -240,7 +241,9 @@ const depthReadOf = r => (today >= DEPTH_DEBUT && depthPlain[r.flow])
   ? `${depthPlain[r.flow].label} — ${depthPlain[r.flow].plain}`
   : r.read;
 const deepRows = (der?.depthReads??[]).map(r=>`<div class="row"><span>${r.tag} ${r.name} <em>${depthReadOf(r)}</em></span><span class="mono">$${r.price} · ${r.listings}L</span></div>`).join("") + `<div class="foot">Depth read = Active Listings (measured) × flow (Buy Pressure est.) · unlocks at 3 clean days per product.</div>`;
-const heatReads = Array.isArray(heat?.reads) ? heat.reads : [];
+// Blocked/quarantined products never headline here either: every other
+// editorial list above is filtered through __blk, and this one was not.
+const heatReads = (Array.isArray(heat?.reads) ? heat.reads : []).filter(r => !__blk.blocked(r.id));
 const heatSection = (today >= HEAT_DEBUT && heatReads.length)
   ? `<h2>🌦 Heat reads — the weather on the shelf</h2>` + heatReads.slice(0, 8).map(r => {
       const w = heatPlain[r.state] || { emoji: "", label: r.state, plain: r.read || "" };
