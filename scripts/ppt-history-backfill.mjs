@@ -38,12 +38,12 @@ const cfg = JSON.parse(await readFile("scripts/ppt-history-backfill-ids.json", "
 let products = cfg.products;
 if (LIMIT_N > 0) products = products.slice(0, LIMIT_N);
 await mkdir(OUT, { recursive: true });
-let spent = 0, ok = 0, miss = 0, err = 0;
+let spent = 0, ok = 0, miss = 0, err = 0, badRun = 0;
 const summary = [];
 for (const p of products) {
   if (spent + 2 > CREDIT_CEILING) { console.log(`stop: credit ceiling ${CREDIT_CEILING} reached`); break; }
   await sleep(1500); // well under 60 calls/min
-  const url = `${BASE}/sealed-products?tcgPlayerId=${encodeURIComponent(p.tcgPlayerId)}&limit=1&includeHistory=true&days=${DAYS}&maxDataPoints=${DAYS}`;
+  const url = `${BASE}/sealed-products?tcgPlayerId=${encodeURIComponent(p.tcgPlayerId)}&limit=1&includeHistory=true&days=${DAYS}`; // sealed endpoint rejects maxDataPoints (400)
   const r = await get(url);
   const used = r.body?.metadata?.apiCallsConsumed?.total ?? 0;
   spent += used;
@@ -55,6 +55,8 @@ for (const p of products) {
   summary.push({ tcgPlayerId: p.tcgPlayerId, keys: p.keys, status: r.status, hit: !!hit, credits: used, historyWindow: r.body?.metadata?.historyWindow || null });
   console.log(`${p.tcgPlayerId.padStart(7)} ${String(r.status)} hit=${!!hit} credits=${used} histSize=${n} total=${spent}`);
   if (r.fatal) { console.log("daily cap reached — stopping"); break; }
+  badRun = r.status === 200 ? 0 : badRun + 1;
+  if (badRun >= 3) { console.log(`stop: 3 non-200 responses in a row (last ${r.status}: ${r.body?.message || r.body?.error || ""})`); break; }
 }
 await writeFile(`${OUT}/_summary.json`, JSON.stringify({ ranAt: new Date().toISOString(), days: DAYS, creditsSpent: spent, ok, miss, err, products: summary }, null, 1) + "\n");
 console.log(`done: ok=${ok} miss=${miss} err=${err} credits=${spent}`);
