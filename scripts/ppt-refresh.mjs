@@ -57,6 +57,9 @@ export function callsFor(sealedRows, sets) {
   return calls;
 }
 
+// A provider outage should not turn into hours of retries on every queued call.
+export const MAX_FAILS_IN_ROW = 5;
+
 export function resumeIds(cursor, callIds, today) {
   const prev = new Set(Array.isArray(cursor?.done) ? cursor.done : []);
   const complete = callIds.length > 0 && callIds.every((id) => prev.has(id));
@@ -71,6 +74,7 @@ export async function executePlan({ key, calls, fetchImpl, reserve, rawDir, budg
   const done = [];
   let skipped = 0;
   let rateLimits = 0;
+  let failedInRow = 0;
   const finished = new Set(alreadyDone || []);
   if (!key) return { used, items, errors, raw: "not fetched", skipped, rateLimits, done };
   if (rawDir) await mkdir(rawDir, { recursive: true });
@@ -96,8 +100,15 @@ export async function executePlan({ key, calls, fetchImpl, reserve, rawDir, budg
         break;
       }
       skipped += call.items || 1;
+      failedInRow += 1;
+      if (failedInRow >= MAX_FAILS_IN_ROW) {
+        errors.push(`${MAX_FAILS_IN_ROW} calls failed in a row; stopped for today`);
+        for (const rest of queue.slice(i + 1)) skipped += rest.items || 1;
+        break;
+      }
       continue;
     }
+    failedInRow = 0;
     const spent = body?.metadata?.apiCallsConsumed?.total;
     if (typeof spent !== "number") {
       errors.push("response did not say how many credits it used; skipped");
@@ -124,7 +135,7 @@ export async function loadQueue(root = ROOT) {
   const sealedCfg = await readJson(join(root, "scripts/ppt-history-backfill-ids.json"));
   const sealed = (sealedCfg.products || []).map((row) => ({
     tcgPlayerId: String(row.tcgPlayerId),
-    hasHistory: (row.keys || []).some((key) => existsSync(join(root, "data/history/ppt-sealed", `${key}.json`))),
+    hasHistory: (row.keys || []).some((key) => ["data/history/ppt-sealed-private", "data/history/ppt-sealed"].some((dir) => existsSync(join(root, dir, `${key}.json`)))),
   }));
   const priced = cards.reduce((n, card) => n + (Number(card.price) > 0 ? 1 : 0), 0);
   const withId = cards.some((card) => card.tcgplayerProductId);
@@ -214,10 +225,10 @@ export async function main() {
       itemsSkipped: ran.skipped,
       rateLimitCount: ran.rateLimits + stats.rateLimits,
     };
-    usage.raw = "actions artifact ppt-raw-private, 90 days";
+    usage.raw = "private repo catchem-data-private";
     usage.rawNote = token
-      ? "PRIVATE_DATA_TOKEN is set. Raw is still written only under ppt-raw-private for the artifact. It is not committed."
-      : "PRIVATE_DATA_TOKEN is not set. Raw stays in the artifact and out of this repo.";
+      ? "PRIVATE_DATA_TOKEN is set. Raw is written under ppt-raw-private and pushed to the private repo. It is not committed here."
+      : "PRIVATE_DATA_TOKEN is not set. Raw was not pushed and is not committed here.";
     cursor = {
       asOf: today,
       done: [...new Set([...alreadyDone, ...ran.done])],
