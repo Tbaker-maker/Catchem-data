@@ -8,6 +8,7 @@ import { dirname, join } from "node:path";
 import { indexLevel, offTcgEra, sealedPremium, mergeByDate } from "../lib/instruments.mjs";
 import { runTcgcsvCatalogTests } from "./tcgcsv-catalog.test.mjs";
 import { runPptPlanTests } from "./ppt-plan.test.mjs";
+import { runSealedIdTests } from "./sealed-id-match.test.mjs";
 import { runStressTests } from "./stress.test.mjs";
 import { runPptPathTests } from "./ppt-paths.test.mjs";
 import { enterIndex } from "../lib/index-baskets.mjs";
@@ -119,6 +120,12 @@ console.log("── ppt plan ──");
 {
   const n = await runPptPlanTests();
   t("ppt plan suite", n === 0, `${n} failed`);
+}
+
+console.log("── sealed id match ──");
+{
+  const n = await runSealedIdTests();
+  t("sealed id match suite", n === 0, `${n} failed`);
 }
 
 console.log("── index stress ──");
