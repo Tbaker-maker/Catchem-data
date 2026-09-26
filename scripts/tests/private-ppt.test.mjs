@@ -1,7 +1,7 @@
 import { mkdtemp, mkdir, readFile, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
-import { pathToFileURL } from "node:url";
+import { dirname, join } from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { redact, restorePrivate, stagePrivate } from "../lib/private-ppt.mjs";
 import { pushPrivate } from "../push-private-ppt.mjs";
 import { mountPrivate } from "../mount-private-ppt.mjs";
@@ -69,6 +69,14 @@ export async function runPrivatePptTests() {
     runGit: async () => ({ code: 128, err: "auth failed not-a-real-token-value", out: "" }),
   });
   t("a down mount does not throw or print the token", mountDown.mounted === false && !String(mountDown.reason).includes("not-a-real-token-value"));
+  const workflow = await readFile(join(dirname(fileURLToPath(import.meta.url)), "..", "..", ".github/workflows/update-sealed-prices.yml"), "utf8");
+  const mountAt = workflow.indexOf("node scripts/mount-private-ppt.mjs");
+  const crossAt = workflow.indexOf("node scripts/fetch-sealed-crosscheck.mjs");
+  const refreshAt = workflow.indexOf("node scripts/ppt-refresh.mjs");
+  t("mount runs before the crosscheck fetch", mountAt > 0 && mountAt < crossAt);
+  t("mount runs before the PPT refresh", mountAt < refreshAt);
+  t("slab status is in the commit list", workflow.includes("data/history/slabs/status.json"));
+  t("the id review file is in the commit list", workflow.includes("data/ppt/sealed-id-review.json"));
   await rm(root, { recursive: true, force: true });
   return fail;
 }

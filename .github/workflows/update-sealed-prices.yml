@@ -42,6 +42,14 @@ jobs:
           EBAY_APP_ID: ${{ secrets.EBAY_APP_ID }}
           EBAY_CERT_ID: ${{ secrets.EBAY_CERT_ID }}
         run: node scripts/fetch-sealed-prices.mjs
+      - name: Mount private PPT history
+        # Before the crosscheck and the refresh, so a product that already has
+        # history is estimated at 1 credit instead of 2. Missing token or a
+        # down repo logs and continues. Nothing here is committed.
+        continue-on-error: true
+        env:
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+        run: node scripts/mount-private-ppt.mjs
       - name: Fetch TCG crosscheck (PPT)
         continue-on-error: true # a PPT hiccup must never kill the sealed run
         env:
@@ -62,12 +70,6 @@ jobs:
         env:
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
         run: node scripts/push-private-ppt.mjs
-      - name: Mount private PPT history
-        # Missing token or a down repo logs and continues. Nothing here is committed.
-        continue-on-error: true
-        env:
-          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
-        run: node scripts/mount-private-ppt.mjs
       - name: Fetch illustrator credits (pokemontcg.io)
         continue-on-error: true # a flaky free API must never kill the sealed run
         env:
@@ -150,7 +152,10 @@ jobs:
                   data/indexes/ data/heat-check.json data/history/tcgplayer-market/ \
                   data/catalog/tcgcsv-latest.json data/catalog/tcgcsv-coverage.json \
                   data/history/tcgcsv-daily/ data/search/ \
-                  data/meta/ppt-usage.json data/meta/ppt-cursor.json
+                  data/meta/ppt-usage.json data/meta/ppt-cursor.json \
+                  data/history/slabs/status.json \
+                  data/ppt/intraday-test.json data/ppt/sealed-id-report.json \
+                  data/ppt/sealed-id-review.json data/ppt/singles-set-review.json
           if git diff --staged --quiet; then
             echo "No price changes to commit."
           else
@@ -199,7 +204,7 @@ jobs:
           # step writes is listed here. A file written in CI but not added
           # evaporates at job end — the class that froze the app feed and ate
           # era/catalyst history daily.
-          git add data/sealed-prices.json data/heat-report.json data/heat-history.json data/divergence-report.json data/supply-watch.json data/derived-insights.json data/era-index-history.json data/catalyst-log.json data/cohort-history.json data/alerts-state.json data/artists.json data/indexes/ data/heat-check.json data/history/tcgplayer-market/ data/catalog/tcgcsv-latest.json data/catalog/tcgcsv-coverage.json data/history/tcgcsv-daily/ data/search/ data/meta/ppt-usage.json data/meta/ppt-cursor.json research/pulse/ research/assets/the-board.html research/assets/the-pulse.html research/assets/pulse-feed.json research/assets/print-watch.html research/assets/methodology.html research/assets/corrections.html research/assets/creators.html research/assets/build.html research/assets/card-index.json research/assets/faq.html
+          git add data/sealed-prices.json data/heat-report.json data/heat-history.json data/divergence-report.json data/supply-watch.json data/derived-insights.json data/era-index-history.json data/catalyst-log.json data/cohort-history.json data/alerts-state.json data/artists.json data/indexes/ data/heat-check.json data/history/tcgplayer-market/ data/catalog/tcgcsv-latest.json data/catalog/tcgcsv-coverage.json data/history/tcgcsv-daily/ data/search/ data/meta/ppt-usage.json data/meta/ppt-cursor.json data/history/slabs/status.json data/ppt/intraday-test.json data/ppt/sealed-id-report.json data/ppt/sealed-id-review.json data/ppt/singles-set-review.json research/pulse/ research/assets/the-board.html research/assets/the-pulse.html research/assets/pulse-feed.json research/assets/print-watch.html research/assets/methodology.html research/assets/corrections.html research/assets/creators.html research/assets/build.html research/assets/card-index.json research/assets/faq.html
           if git diff --staged --quiet; then
             echo "No price changes to commit."
           else
