@@ -3,12 +3,12 @@
 // the same lib the engines ship, contract tests validate yesterday's committed
 // artifacts. Any failure kills the run before API quota burns.
 import { readFile, stat } from "node:fs/promises";
+import { runSlabTests } from "./ppt-slabs.test.mjs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { indexLevel, offTcgEra, sealedPremium, mergeByDate } from "../lib/instruments.mjs";
 import { runTcgcsvCatalogTests } from "./tcgcsv-catalog.test.mjs";
 import { runPptPlanTests } from "./ppt-plan.test.mjs";
-import { runSlabTests } from "./ppt-slabs.test.mjs";
 import { runStressTests } from "./stress.test.mjs";
 import { enterIndex } from "../lib/index-baskets.mjs";
 import { searchItems } from "../lib/search-rank.mjs";
@@ -38,6 +38,12 @@ for (const id of ["sm1-etb", "sm35-etb", "base1-booster-box", "neo1-booster-box"
   t(`${id} gated`, offTcgEra(id) === true);
 for (const id of ["sv9-booster-box", "swsh7-pack", "me1-booster-box", "cel25-upc", "swsh12pt5-bb"])
   t(`${id} NOT gated`, offTcgEra(id) === false);
+
+console.log("── slabs ──");
+{
+  const n = await runSlabTests();
+  t("slab suite", n === 0, `${n} failed`);
+}
 
 console.log("── sealed premium (thin-n aware) ──");
 {
@@ -117,12 +123,6 @@ console.log("── ppt plan ──");
 {
   const n = await runPptPlanTests();
   t("ppt plan suite", n === 0, `${n} failed`);
-}
-
-console.log("── slabs ──");
-{
-  const n = await runSlabTests();
-  t("slab suite", n === 0, `${n} failed`);
 }
 
 console.log("── index stress ──");

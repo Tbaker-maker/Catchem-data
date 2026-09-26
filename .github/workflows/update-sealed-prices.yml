@@ -63,6 +63,11 @@ jobs:
           path: ppt-raw-private/
           retention-days: 90
           if-no-files-found: ignore
+      - name: Fetch illustrator credits (pokemontcg.io)
+        continue-on-error: true # a flaky free API must never kill the sealed run
+        env:
+          POKEMONTCG_API_KEY: ${{ secrets.POKEMONTCG_API_KEY }}
+        run: node scripts/fetch-artists.mjs
       - name: Slab history status
         # Writes how many slabs qualify. Does not call PPT unless a later change
         # turns the pull on. continue-on-error so it cannot drop the price commit.
@@ -71,11 +76,6 @@ jobs:
           POKEMONPRICETRACKER_API_KEY: ${{ secrets.POKEMONPRICETRACKER_API_KEY }}
           PPT_SLABS_ENABLED: ${{ vars.PPT_SLABS_ENABLED }}
         run: node scripts/ppt-slabs.mjs
-      - name: Fetch illustrator credits (pokemontcg.io)
-        continue-on-error: true # a flaky free API must never kill the sealed run
-        env:
-          POKEMONTCG_API_KEY: ${{ secrets.POKEMONTCG_API_KEY }}
-        run: node scripts/fetch-artists.mjs
       - name: Compute heat states
         run: node scripts/compute-heat-states.mjs
       - name: Compute The Spread
