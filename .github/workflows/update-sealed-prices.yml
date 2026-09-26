@@ -54,15 +54,14 @@ jobs:
           POKEMONPRICETRACKER_API_KEY: ${{ secrets.POKEMONPRICETRACKER_API_KEY }}
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
         run: node scripts/ppt-refresh.mjs
-      - name: Upload raw PPT (private artifact)
+      - name: Push raw PPT to private repo
+        # No token or a failed clone logs and exits 0. The token is not printed.
+        # Raw stays out of public artifacts.
         if: always()
         continue-on-error: true
-        uses: actions/upload-artifact@v4
-        with:
-          name: ppt-raw-private
-          path: ppt-raw-private/
-          retention-days: 90
-          if-no-files-found: ignore
+        env:
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+        run: node scripts/push-private-ppt.mjs
       - name: Fetch illustrator credits (pokemontcg.io)
         continue-on-error: true # a flaky free API must never kill the sealed run
         env:
