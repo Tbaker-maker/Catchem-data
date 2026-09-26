@@ -21,6 +21,8 @@ data/enrichment-raw.ndjson
 # Transient OAuth request token — never committed.
 data/.x-request-token.json
 
-# Raw PokemonPriceTracker payloads. Public repo gets data/meta/ppt-usage.json only.
+# Raw PokemonPriceTracker payloads. Public repo gets derived files only.
 ppt-raw-private/
 ppt-history-raw/
+# Private mount is per-run only. Never commit it.
+data/history/ppt-sealed-private/

@@ -28,7 +28,7 @@ const names = new Map(products.map((p) => [p.id, p.name]));
 try {
   for (const pl of (await J(join(ROOT, "trending.json"))).plays || []) if (pl.sku && !names.has(pl.sku)) names.set(pl.sku, pl.name);
 } catch {}
-const sealedOut = join(ROOT, "data/history/ppt-sealed");
+const sealedOut = join(ROOT, "ppt-raw-private", "ppt-sealed");
 await mkdir(sealedOut, { recursive: true });
 let sealedFiles = 0, sealedPoints = 0, skippedTcgcsv = 0;
 const noHistory = [];

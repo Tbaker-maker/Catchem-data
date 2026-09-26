@@ -4,6 +4,7 @@
 // When one market's supply drains first, the other gets a WATCH read.
 // Listing counts are inferred supply; lead-lag states are READS, not facts.
 
+import { readCrosscheck } from "./lib/ppt-paths.mjs";
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -27,8 +28,8 @@ const state = (e, t) => {
 };
 
 const ebayH = JSON.parse(await readFile(join(DATA,"heat-history.json"),"utf-8").catch?.()||await readFile(join(DATA,"heat-history.json"),"utf-8"));
-let tcgH; try { tcgH = JSON.parse(await readFile(join(DATA,"crosscheck-history.json"),"utf-8")); }
-catch { console.log("no crosscheck-history.json yet — provider eval pending; exiting clean"); process.exit(0); }
+const tcgH = await readCrosscheck(dirname(DATA), "crosscheck-history.json");
+if (!Array.isArray(tcgH)) process.exit(0);
 
 const ids = [...new Set(ebayH.map(r=>r.id))];
 const rows=[], maturing=[];

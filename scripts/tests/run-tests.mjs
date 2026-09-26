@@ -9,7 +9,9 @@ import { indexLevel, offTcgEra, sealedPremium, mergeByDate } from "../lib/instru
 import { runTcgcsvCatalogTests } from "./tcgcsv-catalog.test.mjs";
 import { runPptPlanTests } from "./ppt-plan.test.mjs";
 import { runStressTests } from "./stress.test.mjs";
+import { runPptPathTests } from "./ppt-paths.test.mjs";
 import { enterIndex } from "../lib/index-baskets.mjs";
+import { keepMarch31 } from "../compute-indexes.mjs";
 import { searchItems } from "../lib/search-rank.mjs";
 import { runPrivatePptTests } from "./private-ppt.test.mjs";
 
@@ -134,6 +136,11 @@ console.log("── chain-linked entry ──");
   const elig = new Map([["2026-03-31", new Set(["a"])], ["2026-04-01", new Set(["a", "b"])]]);
   const entered = enterIndex(["2026-03-31", "2026-04-01"], prices, elig, ["a", "b"]);
   t("new constituent does not jump a chain-linked index", entered.points[1].equal === 110 && entered.points[1].entered === 1, JSON.stringify(entered.points[1]));
+  const kept = keepMarch31(
+    { series: { backfill: { anchorUsed: "2026-09-25", points: [{ date: "2026-09-25", equal: 100 }] } } },
+    { series: { backfill: { anchorUsed: "2026-03-31", points: [{ date: "2026-03-31", equal: 100 }] } } },
+  );
+  t("unmounted PPT history does not drop March 31", kept.series.backfill.anchorUsed === "2026-03-31");
 }
 
 console.log("── search rank ──");
@@ -152,6 +159,12 @@ console.log("── private ppt push ──");
 {
   const n = await runPrivatePptTests();
   t("private ppt suite", n === 0, `${n} failed`);
+}
+
+console.log("── ppt paths ──");
+{
+  const n = await runPptPathTests();
+  t("ppt path suite", n === 0, `${n} failed`);
 }
 
 console.log(`\n${pass} passed · ${fail} failed`);

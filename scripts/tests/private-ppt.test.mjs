@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { redact, restorePrivate, stagePrivate } from "../lib/private-ppt.mjs";
 import { pushPrivate } from "../push-private-ppt.mjs";
+import { mountPrivate } from "../mount-private-ppt.mjs";
 
 export async function runPrivatePptTests() {
   let fail = 0;
@@ -56,6 +57,18 @@ export async function runPrivatePptTests() {
     runGit: async () => ({ code: 128, err: "fatal: could not read Password not-a-real-token-value", out: "" }),
   });
   t("a down private repo does not throw", down.pushed === false && typeof down.reason === "string" && !down.reason.includes("not-a-real-token-value"));
+  await writeFile(join(dest, "data/crosscheck-history.json"), JSON.stringify([{ date: "2026-06-01", id: "a", tcgMarket: 5 }]) + "\n");
+  await writeFile(join(raw, "crosscheck/crosscheck-history.json"), JSON.stringify([{ date: "2026-09-27", id: "a", tcgMarket: 6 }]) + "\n");
+  await stagePrivate({ checkout: join(root, "gone"), rawDir: raw, dest, date: "2026-09-27" });
+  const mergedHist = JSON.parse(await readFile(join(dest, "data/crosscheck-history.json"), "utf8"));
+  t("a fresh runner's crosscheck history is merged, not overwritten", mergedHist.length === 2 && mergedHist[0].date === "2026-06-01" && mergedHist[1].date === "2026-09-27");
+  const unmounted = await mountPrivate({ token: "" });
+  t("mount without a token does not clone", unmounted.mounted === false);
+  const mountDown = await mountPrivate({
+    token: "not-a-real-token-value",
+    runGit: async () => ({ code: 128, err: "auth failed not-a-real-token-value", out: "" }),
+  });
+  t("a down mount does not throw or print the token", mountDown.mounted === false && !String(mountDown.reason).includes("not-a-real-token-value"));
   await rm(root, { recursive: true, force: true });
   return fail;
 }

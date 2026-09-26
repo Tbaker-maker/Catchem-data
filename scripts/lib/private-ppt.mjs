@@ -1,6 +1,6 @@
 // Stage raw PPT into a checkout of the private repo, and copy it back
 // for one Actions run. No network and no token.
-import { cp, mkdir, readdir } from "node:fs/promises";
+import { cp, mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 
@@ -12,6 +12,19 @@ export function redact(text, secrets) {
     if (secret && String(secret).length > 3) out = out.split(secret).join("[redacted]");
   }
   return out.slice(0, 240);
+}
+
+async function readJsonSafe(path) {
+  try { return JSON.parse(await readFile(path, "utf8")); } catch { return null; }
+}
+
+// crosscheck-history.json is append-only. A fresh runner only holds the days it
+// fetched, so merge by date+id instead of overwriting the private history.
+export function mergeHistory(existing, incoming) {
+  const rows = new Map();
+  for (const row of Array.isArray(existing) ? existing : []) rows.set(`${row.date}|${row.id}`, row);
+  for (const row of Array.isArray(incoming) ? incoming : []) rows.set(`${row.date}|${row.id}`, row);
+  return [...rows.values()].sort((a, b) => String(a.date).localeCompare(String(b.date)) || String(a.id).localeCompare(String(b.id)));
 }
 
 async function hasJson(dir) {
@@ -46,7 +59,13 @@ export async function stagePrivate({ checkout, rawDir, dest, date }) {
     const from = fromRaw && existsSync(fromRaw) ? fromRaw : (existsSync(fromPublic) ? fromPublic : "");
     if (!from) continue;
     await mkdir(join(dest, "data"), { recursive: true });
-    await cp(from, join(dest, "data", name));
+    const target = join(dest, "data", name);
+    if (name === "crosscheck-history.json" && existsSync(target)) {
+      const merged = mergeHistory(await readJsonSafe(target), await readJsonSafe(from));
+      await writeFile(target, JSON.stringify(merged) + "\n");
+    } else {
+      await cp(from, target);
+    }
     actions.push(name);
   }
   if (rawDir && existsSync(rawDir) && date) {

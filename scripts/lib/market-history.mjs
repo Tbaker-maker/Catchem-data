@@ -1,7 +1,7 @@
 // TCGplayer market history for sealed products, from two labelled folders.
 //   data/history/tcgplayer-market/  TCGCSV live days (daily append from 2026-09-25)
-//   data/history/ppt-sealed/        PokemonPriceTracker daily history (TCGplayer-derived),
-//                                   one-off backfill 2026-03-31..2026-09-25
+//   data/history/ppt-sealed-private/  mounted from the private repo for one run, if the token exists
+//   data/history/ppt-sealed/          old public folder; removed. Still read if a checkout has it.
 // The folders are never merged on disk. Readers get one value per day: the
 // TCGCSV point when there is one, otherwise the PPT point. A day in neither
 // folder is missing and stays missing.
@@ -9,7 +9,8 @@ import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 
 export const TCGCSV_DIR = "data/history/tcgplayer-market";
-export const PPT_DIR = "data/history/ppt-sealed";
+export const PPT_DIR = "data/history/ppt-sealed-private";
+export const PPT_DIR_LEGACY = "data/history/ppt-sealed";
 export const TCGCSV_SOURCE = "TCGplayer market via TCGCSV";
 export const PPT_SOURCE = "PokemonPriceTracker (TCGplayer-derived)";
 const META = new Set(["mapping.json", "unmatched.json", "coverage.json", "manifest.json"]);
@@ -33,7 +34,10 @@ async function readFolder(root, dir) {
 //           pairPrice(id, a, b) -> [pa, pb] | null, coverage }
 export async function loadMarketHistory(root) {
   const tcg = await readFolder(root, TCGCSV_DIR);
-  const ppt = await readFolder(root, PPT_DIR);
+  const mounted = await readFolder(root, PPT_DIR);
+  const legacy = await readFolder(root, PPT_DIR_LEGACY);
+  const ppt = mounted.size ? mounted : legacy;
+  if (!ppt.size) console.log("No PPT sealed history mounted. Those days are skipped, not filled.");
   const ids = new Set([...tcg.keys(), ...ppt.keys()]);
   const merged = new Map();
   const priceMap = new Map();
