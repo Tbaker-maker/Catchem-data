@@ -99,6 +99,11 @@ jobs:
         # build failure cannot throw away the price commit that follows.
         continue-on-error: true
         run: node scripts/build-search-index.mjs
+      - name: Split search index into shards
+        # The phone loads the manifest and one or two shards, not the whole index.
+        # continue-on-error so a shard failure cannot throw away the price commit.
+        continue-on-error: true
+        run: node scripts/build-search-shards.mjs
       - name: Index stress (sealed and singles)
         # Recommendations only. continue-on-error so a stress failure cannot
         # throw away the price commit that follows.
