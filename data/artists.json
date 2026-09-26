@@ -1,12 +1,85 @@
 {
  "note": "Illustrator credits from pokemontcg.io. Coverage is recorded honestly: an 'only N cards ever' claim requires complete coverage, otherwise the angle must say 'in the sets we track'.",
- "fetchedAt": "2026-09-26T00:43:22.395Z",
+ "fetchedAt": "2026-09-26T01:17:46.487Z",
  "coverage": {
-  "cardsQueried": 0,
-  "cardsResolved": 0,
-  "failed": 0,
-  "complete": true,
-  "unresolved": [],
+  "cardsQueried": 139,
+  "cardsResolved": 121,
+  "failed": 18,
+  "complete": false,
+  "unresolved": [
+   {
+    "id": "sv8pt5-34",
+    "reason": "no artist field"
+   },
+   {
+    "id": "sv8pt5-155",
+    "reason": "no artist field"
+   },
+   {
+    "id": "sv8pt5-60",
+    "reason": "no artist field"
+   },
+   {
+    "id": "sv8pt5-161",
+    "reason": "no artist field"
+   },
+   {
+    "id": "sv6pt5-98",
+    "reason": "no artist field"
+   },
+   {
+    "id": "sv6pt5-78",
+    "reason": "no artist field"
+   },
+   {
+    "id": "sv7-143",
+    "reason": "no artist field"
+   },
+   {
+    "id": "sv8-239",
+    "reason": "no artist field"
+   },
+   {
+    "id": "sv7-148",
+    "reason": "no artist field"
+   },
+   {
+    "id": "sv8-238",
+    "reason": "no artist field"
+   },
+   {
+    "id": "sv7-169",
+    "reason": "no artist field"
+   },
+   {
+    "id": "sv6pt5-66",
+    "reason": "no artist field"
+   },
+   {
+    "id": "sv8-237",
+    "reason": "no artist field"
+   },
+   {
+    "id": "sv8pt5-156",
+    "reason": "no artist field"
+   },
+   {
+    "id": "sv8pt5-144",
+    "reason": "no artist field"
+   },
+   {
+    "id": "me1-187",
+    "reason": "no artist field"
+   },
+   {
+    "id": "me1-179",
+    "reason": "no artist field"
+   },
+   {
+    "id": "me1-188",
+    "reason": "no artist field"
+   }
+  ],
   "scopeWarning": "This covers only the cards we track. Never phrase a count as 'ever' from this data."
  },
  "byCard": {
@@ -1077,6 +1150,24 @@
    "number": "212",
    "rarity": "Illustration Rare",
    "releaseDate": "2023/03/31"
+  },
+  "sv2-226": {
+   "artist": "Mizue",
+   "name": "Maushold",
+   "setId": "sv2",
+   "setName": "Paldea Evolved",
+   "number": "226",
+   "rarity": "Illustration Rare",
+   "releaseDate": "2023/06/09"
+  },
+  "sv6-220": {
+   "artist": "GIDORA",
+   "name": "Perrin",
+   "setId": "sv6",
+   "setName": "Twilight Masquerade",
+   "number": "220",
+   "rarity": "Special Illustration Rare",
+   "releaseDate": "2024/05/24"
   }
  },
  "byArtist": {
@@ -2614,6 +2705,42 @@
    "cardCount": 1,
    "firstSeen": "2022/02/25",
    "latestSeen": "2022/02/25"
+  },
+  "Mizue": {
+   "cards": [
+    {
+     "cardId": "sv2-226",
+     "name": "Maushold",
+     "setName": "Paldea Evolved",
+     "number": "226",
+     "rarity": "Illustration Rare",
+     "releaseDate": "2023/06/09"
+    }
+   ],
+   "sets": [
+    "Paldea Evolved"
+   ],
+   "cardCount": 1,
+   "firstSeen": "2023/06/09",
+   "latestSeen": "2023/06/09"
+  },
+  "GIDORA": {
+   "cards": [
+    {
+     "cardId": "sv6-220",
+     "name": "Perrin",
+     "setName": "Twilight Masquerade",
+     "number": "220",
+     "rarity": "Special Illustration Rare",
+     "releaseDate": "2024/05/24"
+    }
+   ],
+   "sets": [
+    "Twilight Masquerade"
+   ],
+   "cardCount": 1,
+   "firstSeen": "2024/05/24",
+   "latestSeen": "2024/05/24"
   }
  }
 }

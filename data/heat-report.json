@@ -1,43 +1,43 @@
 {
-  "generatedAt": "2026-09-26T00:43:22.466Z",
+  "generatedAt": "2026-09-26T01:17:46.550Z",
   "method": "Wyckoff-state reads, weekly lens (the 3-day depth read is the short lens; same history). Five states: heating/cooling/quiet-tightening/supply-into-strength/ranging. Demand = Buy Pressure (est. from listing activity, not reported sales). Active Listings measured.",
   "mode": "dual-signal",
   "counts": {
     "markup": 5,
-    "markdown": 15,
+    "markdown": 14,
     "accumulation": 15,
     "distribution": 49,
-    "ranging": 90,
+    "ranging": 91,
     "excluded": 33
   },
   "reads": [
-    {
-      "id": "cel25-bb",
-      "name": "Celebrations Booster Bundle",
-      "set": "Celebrations",
-      "subtype": "booster-bundle",
-      "priceMedian": 102.44,
-      "listingCount": 12,
-      "state": "markup",
-      "emoji": "🔥",
-      "read": "Heating up — price climbing while listings shrink. Buyers outpacing sellers.",
-      "confidence": "dual-signal",
-      "priceWoW": 0.281,
-      "supplyWoW": -0.613
-    },
     {
       "id": "xy12-booster-box",
       "name": "Evolutions Booster Box",
       "set": "Evolutions",
       "subtype": "booster-box",
-      "priceMedian": 3399.99,
-      "listingCount": 21,
+      "priceMedian": 3470.9,
+      "listingCount": 22,
       "state": "markup",
       "emoji": "🔥",
       "read": "Heating up — price climbing while listings shrink. Buyers outpacing sellers.",
       "confidence": "dual-signal",
-      "priceWoW": 0.236,
-      "supplyWoW": -0.222
+      "priceWoW": 0.262,
+      "supplyWoW": -0.185
+    },
+    {
+      "id": "cel25-bb",
+      "name": "Celebrations Booster Bundle",
+      "set": "Celebrations",
+      "subtype": "booster-bundle",
+      "priceMedian": 100,
+      "listingCount": 13,
+      "state": "markup",
+      "emoji": "🔥",
+      "read": "Heating up — price climbing while listings shrink. Buyers outpacing sellers.",
+      "confidence": "dual-signal",
+      "priceWoW": 0.25,
+      "supplyWoW": -0.581
     },
     {
       "id": "sm8-booster-box",
@@ -110,46 +110,46 @@
       "supplyWoW": 1.179
     },
     {
-      "id": "sv6-pack",
-      "name": "Twilight Masquerade Booster Pack",
-      "set": "Twilight Masquerade",
+      "id": "swsh2-pack",
+      "name": "Rebel Clash Booster Pack",
+      "set": "Rebel Clash",
       "subtype": "booster-pack",
-      "priceMedian": 11.7,
-      "listingCount": 61,
+      "priceMedian": 12,
+      "listingCount": 64,
       "state": "markdown",
       "emoji": "❄️",
       "read": "Cooling off — price falling while listings pile up. Sellers outpacing buyers.",
       "confidence": "dual-signal",
-      "priceWoW": -0.161,
-      "supplyWoW": 0.906
+      "priceWoW": -0.142,
+      "supplyWoW": 0.306
+    },
+    {
+      "id": "sv6-pack",
+      "name": "Twilight Masquerade Booster Pack",
+      "set": "Twilight Masquerade",
+      "subtype": "booster-pack",
+      "priceMedian": 11.98,
+      "listingCount": 62,
+      "state": "markdown",
+      "emoji": "❄️",
+      "read": "Cooling off — price falling while listings pile up. Sellers outpacing buyers.",
+      "confidence": "dual-signal",
+      "priceWoW": -0.141,
+      "supplyWoW": 0.938
     },
     {
       "id": "sv2-pack",
       "name": "Paldea Evolved Booster Pack",
       "set": "Paldea Evolved",
       "subtype": "booster-pack",
-      "priceMedian": 16.89,
+      "priceMedian": 17.49,
       "listingCount": 44,
       "state": "markdown",
       "emoji": "❄️",
       "read": "Cooling off — price falling while listings pile up. Sellers outpacing buyers.",
       "confidence": "dual-signal",
-      "priceWoW": -0.155,
+      "priceWoW": -0.125,
       "supplyWoW": 0.467
-    },
-    {
-      "id": "swsh2-pack",
-      "name": "Rebel Clash Booster Pack",
-      "set": "Rebel Clash",
-      "subtype": "booster-pack",
-      "priceMedian": 12,
-      "listingCount": 63,
-      "state": "markdown",
-      "emoji": "❄️",
-      "read": "Cooling off — price falling while listings pile up. Sellers outpacing buyers.",
-      "confidence": "dual-signal",
-      "priceWoW": -0.142,
-      "supplyWoW": 0.286
     },
     {
       "id": "sv7-bb",
@@ -199,27 +199,13 @@
       "set": "Prismatic Evolutions",
       "subtype": "etb",
       "priceMedian": 149.99,
-      "listingCount": 102,
+      "listingCount": 106,
       "state": "markdown",
       "emoji": "❄️",
       "read": "Cooling off — price falling while listings pile up. Sellers outpacing buyers.",
       "confidence": "dual-signal",
       "priceWoW": -0.091,
-      "supplyWoW": 0.2
-    },
-    {
-      "id": "sv9-booster-box",
-      "name": "Journey Together Booster Box",
-      "set": "Journey Together",
-      "subtype": "booster-box",
-      "priceMedian": 260,
-      "listingCount": 79,
-      "state": "markdown",
-      "emoji": "❄️",
-      "read": "Cooling off — price falling while listings pile up. Sellers outpacing buyers.",
-      "confidence": "dual-signal",
-      "priceWoW": -0.071,
-      "supplyWoW": 0.129
+      "supplyWoW": 0.247
     },
     {
       "id": "zsv10pt5-bb-pc-etb",
@@ -250,18 +236,18 @@
       "supplyWoW": 0.261
     },
     {
-      "id": "sv3-pack",
-      "name": "Obsidian Flames Booster Pack",
-      "set": "Obsidian Flames",
+      "id": "swsh7-pack",
+      "name": "Evolving Skies Booster Pack",
+      "set": "Evolving Skies",
       "subtype": "booster-pack",
-      "priceMedian": 14.95,
-      "listingCount": 45,
+      "priceMedian": 51,
+      "listingCount": 75,
       "state": "markdown",
       "emoji": "❄️",
       "read": "Cooling off — price falling while listings pile up. Sellers outpacing buyers.",
       "confidence": "dual-signal",
-      "priceWoW": -0.066,
-      "supplyWoW": 0.875
+      "priceWoW": -0.064,
+      "supplyWoW": 0.364
     },
     {
       "id": "sv9-pc-etb",
@@ -283,13 +269,13 @@
       "set": "Chilling Reign",
       "subtype": "booster-pack",
       "priceMedian": 15,
-      "listingCount": 64,
+      "listingCount": 61,
       "state": "markdown",
       "emoji": "❄️",
       "read": "Cooling off — price falling while listings pile up. Sellers outpacing buyers.",
       "confidence": "dual-signal",
       "priceWoW": -0.062,
-      "supplyWoW": 0.231
+      "supplyWoW": 0.173
     },
     {
       "id": "sv6pt5-pack",
@@ -310,14 +296,14 @@
       "name": "Surging Sparks Booster Pack",
       "set": "Surging Sparks",
       "subtype": "booster-pack",
-      "priceMedian": 12.9,
-      "listingCount": 42,
+      "priceMedian": 12.79,
+      "listingCount": 43,
       "state": "distribution",
       "emoji": "📤",
       "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
       "confidence": "dual-signal",
-      "priceWoW": 0.291,
-      "supplyWoW": 0.75
+      "priceWoW": 0.28,
+      "supplyWoW": 0.792
     },
     {
       "id": "sv9-pack",
@@ -325,13 +311,13 @@
       "set": "Journey Together",
       "subtype": "booster-pack",
       "priceMedian": 9.99,
-      "listingCount": 34,
+      "listingCount": 37,
       "state": "distribution",
       "emoji": "📤",
       "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
       "confidence": "dual-signal",
       "priceWoW": 0.249,
-      "supplyWoW": 0.789
+      "supplyWoW": 0.947
     },
     {
       "id": "sm2-booster-box",
@@ -348,18 +334,18 @@
       "supplyWoW": 0.25
     },
     {
-      "id": "swsh12-pack",
-      "name": "Silver Tempest Booster Pack",
-      "set": "Silver Tempest",
+      "id": "sv3pt5-pack",
+      "name": "151 Booster Pack",
+      "set": "151",
       "subtype": "booster-pack",
-      "priceMedian": 17.99,
-      "listingCount": 50,
+      "priceMedian": 35.74,
+      "listingCount": 35,
       "state": "distribution",
       "emoji": "📤",
       "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
       "confidence": "dual-signal",
-      "priceWoW": 0.199,
-      "supplyWoW": 0.25
+      "priceWoW": 0.192,
+      "supplyWoW": 0.207
     },
     {
       "id": "sv10-pack",
@@ -367,41 +353,27 @@
       "set": "Destined Rivals",
       "subtype": "booster-pack",
       "priceMedian": 13.08,
-      "listingCount": 32,
+      "listingCount": 33,
       "state": "distribution",
       "emoji": "📤",
       "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
       "confidence": "dual-signal",
       "priceWoW": 0.19,
-      "supplyWoW": 1.462
+      "supplyWoW": 1.538
     },
     {
-      "id": "sv3pt5-pack",
-      "name": "151 Booster Pack",
-      "set": "151",
+      "id": "swsh12-pack",
+      "name": "Silver Tempest Booster Pack",
+      "set": "Silver Tempest",
       "subtype": "booster-pack",
-      "priceMedian": 34.99,
-      "listingCount": 34,
+      "priceMedian": 17.75,
+      "listingCount": 50,
       "state": "distribution",
       "emoji": "📤",
       "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
       "confidence": "dual-signal",
-      "priceWoW": 0.167,
-      "supplyWoW": 0.172
-    },
-    {
-      "id": "sv8pt5-pack",
-      "name": "Prismatic Evolutions Booster Pack",
-      "set": "Prismatic Evolutions",
-      "subtype": "booster-pack",
-      "priceMedian": 18.99,
-      "listingCount": 18,
-      "state": "distribution",
-      "emoji": "📤",
-      "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
-      "confidence": "dual-signal",
-      "priceWoW": 0.151,
-      "supplyWoW": 1.25
+      "priceWoW": 0.183,
+      "supplyWoW": 0.25
     },
     {
       "id": "sv4pt5-pack",
@@ -423,13 +395,27 @@
       "set": "Phantasmal Flames",
       "subtype": "booster-pack",
       "priceMedian": 15,
-      "listingCount": 24,
+      "listingCount": 22,
       "state": "distribution",
       "emoji": "📤",
       "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
       "confidence": "dual-signal",
       "priceWoW": 0.133,
-      "supplyWoW": 0.333
+      "supplyWoW": 0.222
+    },
+    {
+      "id": "swsh8-pack",
+      "name": "Fusion Strike Booster Pack",
+      "set": "Fusion Strike",
+      "subtype": "booster-pack",
+      "priceMedian": 26,
+      "listingCount": 52,
+      "state": "distribution",
+      "emoji": "📤",
+      "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
+      "confidence": "dual-signal",
+      "priceWoW": 0.131,
+      "supplyWoW": 0.733
     },
     {
       "id": "swsh10-pack",
@@ -446,46 +432,60 @@
       "supplyWoW": 1.556
     },
     {
+      "id": "sv8pt5-pack",
+      "name": "Prismatic Evolutions Booster Pack",
+      "set": "Prismatic Evolutions",
+      "subtype": "booster-pack",
+      "priceMedian": 17.99,
+      "listingCount": 19,
+      "state": "distribution",
+      "emoji": "📤",
+      "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
+      "confidence": "dual-signal",
+      "priceWoW": 0.09,
+      "supplyWoW": 1.375
+    },
+    {
+      "id": "sv4-pack",
+      "name": "Paradox Rift Booster Pack",
+      "set": "Paradox Rift",
+      "subtype": "booster-pack",
+      "priceMedian": 12.99,
+      "listingCount": 50,
+      "state": "distribution",
+      "emoji": "📤",
+      "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
+      "confidence": "dual-signal",
+      "priceWoW": 0.083,
+      "supplyWoW": 0.786
+    },
+    {
       "id": "swsh3-pack",
       "name": "Darkness Ablaze Booster Pack",
       "set": "Darkness Ablaze",
       "subtype": "booster-pack",
-      "priceMedian": 14.99,
+      "priceMedian": 14.74,
       "listingCount": 55,
       "state": "distribution",
       "emoji": "📤",
       "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
       "confidence": "dual-signal",
-      "priceWoW": 0.1,
+      "priceWoW": 0.081,
       "supplyWoW": 0.375
-    },
-    {
-      "id": "swsh8-pack",
-      "name": "Fusion Strike Booster Pack",
-      "set": "Fusion Strike",
-      "subtype": "booster-pack",
-      "priceMedian": 25,
-      "listingCount": 55,
-      "state": "distribution",
-      "emoji": "📤",
-      "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
-      "confidence": "dual-signal",
-      "priceWoW": 0.088,
-      "supplyWoW": 0.833
     },
     {
       "id": "swsh4-pack",
       "name": "Vivid Voltage Booster Pack",
       "set": "Vivid Voltage",
       "subtype": "booster-pack",
-      "priceMedian": 14.99,
-      "listingCount": 53,
+      "priceMedian": 15,
+      "listingCount": 50,
       "state": "distribution",
       "emoji": "📤",
       "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
       "confidence": "dual-signal",
       "priceWoW": 0.071,
-      "supplyWoW": 0.293
+      "supplyWoW": 0.22
     },
     {
       "id": "swsh35-pack",
@@ -507,13 +507,13 @@
       "set": "Shining Fates",
       "subtype": "booster-pack",
       "priceMedian": 18.86,
-      "listingCount": 45,
+      "listingCount": 44,
       "state": "distribution",
       "emoji": "📤",
       "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
       "confidence": "dual-signal",
       "priceWoW": 0.065,
-      "supplyWoW": 0.875
+      "supplyWoW": 0.833
     },
     {
       "id": "swsh12pt5-pack",
@@ -528,6 +528,20 @@
       "confidence": "dual-signal",
       "priceWoW": 0.061,
       "supplyWoW": 0.419
+    },
+    {
+      "id": "sv9-booster-box",
+      "name": "Journey Together Booster Box",
+      "set": "Journey Together",
+      "subtype": "booster-box",
+      "priceMedian": 265,
+      "listingCount": 79,
+      "state": "distribution",
+      "emoji": "📤",
+      "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
+      "confidence": "dual-signal",
+      "priceWoW": -0.054,
+      "supplyWoW": 0.129
     },
     {
       "id": "sm75-etb",
@@ -577,13 +591,13 @@
       "set": "Perfect Order",
       "subtype": "booster-pack",
       "priceMedian": 8.35,
-      "listingCount": 29,
+      "listingCount": 28,
       "state": "distribution",
       "emoji": "📤",
       "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
       "confidence": "dual-signal",
       "priceWoW": 0.05,
-      "supplyWoW": 1.071
+      "supplyWoW": 1
     },
     {
       "id": "swsh9-pack",
@@ -605,27 +619,13 @@
       "set": "Ascended Heroes",
       "subtype": "booster-pack",
       "priceMedian": 15,
-      "listingCount": 27,
+      "listingCount": 25,
       "state": "distribution",
       "emoji": "📤",
       "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
       "confidence": "dual-signal",
       "priceWoW": -0.047,
-      "supplyWoW": 0.5
-    },
-    {
-      "id": "swsh7-pack",
-      "name": "Evolving Skies Booster Pack",
-      "set": "Evolving Skies",
-      "subtype": "booster-pack",
-      "priceMedian": 51.99,
-      "listingCount": 76,
-      "state": "distribution",
-      "emoji": "📤",
-      "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
-      "confidence": "dual-signal",
-      "priceWoW": -0.046,
-      "supplyWoW": 0.382
+      "supplyWoW": 0.389
     },
     {
       "id": "sv6-booster-box",
@@ -646,14 +646,14 @@
       "name": "Sword & Shield Base Elite Trainer Box",
       "set": "Sword & Shield",
       "subtype": "etb",
-      "priceMedian": 175,
-      "listingCount": 12,
+      "priceMedian": 174.49,
+      "listingCount": 13,
       "state": "distribution",
       "emoji": "📤",
       "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
       "confidence": "dual-signal",
-      "priceWoW": -0.041,
-      "supplyWoW": 0.2
+      "priceWoW": -0.044,
+      "supplyWoW": 0.3
     },
     {
       "id": "sv5-pack",
@@ -717,13 +717,13 @@
       "set": "Lost Origin",
       "subtype": "booster-pack",
       "priceMedian": 24.75,
-      "listingCount": 72,
+      "listingCount": 73,
       "state": "distribution",
       "emoji": "📤",
       "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
       "confidence": "dual-signal",
       "priceWoW": 0.032,
-      "supplyWoW": 0.5
+      "supplyWoW": 0.521
     },
     {
       "id": "swsh5-pack",
@@ -731,13 +731,13 @@
       "set": "Battle Styles",
       "subtype": "booster-pack",
       "priceMedian": 12.34,
-      "listingCount": 46,
+      "listingCount": 47,
       "state": "distribution",
       "emoji": "📤",
       "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
       "confidence": "dual-signal",
       "priceWoW": 0.029,
-      "supplyWoW": 0.586
+      "supplyWoW": 0.621
     },
     {
       "id": "sv2-bundle",
@@ -768,48 +768,6 @@
       "supplyWoW": 0.182
     },
     {
-      "id": "swsh8-etb",
-      "name": "Fusion Strike Elite Trainer Box",
-      "set": "Fusion Strike",
-      "subtype": "etb",
-      "priceMedian": 340.95,
-      "listingCount": 87,
-      "state": "distribution",
-      "emoji": "📤",
-      "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
-      "confidence": "dual-signal",
-      "priceWoW": -0.026,
-      "supplyWoW": 0.13
-    },
-    {
-      "id": "sv4-pack",
-      "name": "Paradox Rift Booster Pack",
-      "set": "Paradox Rift",
-      "subtype": "booster-pack",
-      "priceMedian": 12.23,
-      "listingCount": 51,
-      "state": "distribution",
-      "emoji": "📤",
-      "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
-      "confidence": "dual-signal",
-      "priceWoW": 0.02,
-      "supplyWoW": 0.821
-    },
-    {
-      "id": "sv7-pack",
-      "name": "Stellar Crown Booster Pack",
-      "set": "Stellar Crown",
-      "subtype": "booster-pack",
-      "priceMedian": 14.79,
-      "listingCount": 39,
-      "state": "distribution",
-      "emoji": "📤",
-      "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
-      "confidence": "dual-signal",
-      "priceWoW": 0.02,
-      "supplyWoW": 0.625
-    },
-    {
       "id": "sv4-pc-etb",
       "name": "Paradox Rift Pokemon Center Elite Trainer Box",
       "set": "Paradox Rift",
@@ -828,27 +786,27 @@
       "name": "Mega Evolution Booster Bundle",
       "set": "Mega Evolution",
       "subtype": "booster-bundle",
-      "priceMedian": 64.99,
-      "listingCount": 20,
+      "priceMedian": 64.96,
+      "listingCount": 22,
       "state": "distribution",
       "emoji": "📤",
       "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
       "confidence": "dual-signal",
-      "priceWoW": 0.016,
-      "supplyWoW": 0.25
+      "priceWoW": 0.015,
+      "supplyWoW": 0.375
     },
     {
       "id": "me2-etb",
       "name": "Phantasmal Flames Elite Trainer Box",
       "set": "Phantasmal Flames",
       "subtype": "etb",
-      "priceMedian": 159.99,
+      "priceMedian": 159.95,
       "listingCount": 112,
       "state": "distribution",
       "emoji": "📤",
       "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
       "confidence": "dual-signal",
-      "priceWoW": 0.013,
+      "priceWoW": 0.012,
       "supplyWoW": 0.217
     },
     {
@@ -908,18 +866,46 @@
       "supplyWoW": 0.167
     },
     {
+      "id": "sv4pt5-etb",
+      "name": "Paldean Fates Elite Trainer Box",
+      "set": "Paldean Fates",
+      "subtype": "etb",
+      "priceMedian": 477,
+      "listingCount": 112,
+      "state": "distribution",
+      "emoji": "📤",
+      "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
+      "confidence": "dual-signal",
+      "priceWoW": -0.006,
+      "supplyWoW": 0.131
+    },
+    {
+      "id": "sv7-pack",
+      "name": "Stellar Crown Booster Pack",
+      "set": "Stellar Crown",
+      "subtype": "booster-pack",
+      "priceMedian": 14.54,
+      "listingCount": 39,
+      "state": "distribution",
+      "emoji": "📤",
+      "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
+      "confidence": "dual-signal",
+      "priceWoW": 0.003,
+      "supplyWoW": 0.625
+    },
+    {
       "id": "me1-pack",
       "name": "Mega Evolution Booster Pack",
       "set": "Mega Evolution",
       "subtype": "booster-pack",
       "priceMedian": 9.99,
-      "listingCount": 14,
+      "listingCount": 12,
       "state": "distribution",
       "emoji": "📤",
       "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
       "confidence": "dual-signal",
       "priceWoW": 0,
-      "supplyWoW": 0.556
+      "supplyWoW": 0.333
     },
     {
       "id": "sm8-etb",
@@ -950,32 +936,32 @@
       "supplyWoW": 0.424
     },
     {
-      "id": "sv4pt5-etb",
-      "name": "Paldean Fates Elite Trainer Box",
-      "set": "Paldean Fates",
-      "subtype": "etb",
-      "priceMedian": 480,
-      "listingCount": 115,
-      "state": "distribution",
-      "emoji": "📤",
-      "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
-      "confidence": "dual-signal",
-      "priceWoW": 0,
-      "supplyWoW": 0.162
-    },
-    {
       "id": "me5-pack",
       "name": "Pitch Black Booster Pack",
       "set": "Pitch Black",
       "subtype": "booster-pack",
       "priceMedian": 8,
-      "listingCount": 43,
+      "listingCount": 46,
       "state": "distribution",
       "emoji": "📤",
       "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
       "confidence": "dual-signal",
       "priceWoW": 0,
-      "supplyWoW": 0.792
+      "supplyWoW": 0.917
+    },
+    {
+      "id": "sv3-pack",
+      "name": "Obsidian Flames Booster Pack",
+      "set": "Obsidian Flames",
+      "subtype": "booster-pack",
+      "priceMedian": 16,
+      "listingCount": 52,
+      "state": "distribution",
+      "emoji": "📤",
+      "read": "Supply building while price holds — sellers stepping into strength. Historically precedes cooling.",
+      "confidence": "dual-signal",
+      "priceWoW": 0,
+      "supplyWoW": 1.167
     },
     {
       "id": "sv7-booster-box",
@@ -983,13 +969,13 @@
       "set": "Stellar Crown",
       "subtype": "booster-box",
       "priceMedian": 353.99,
-      "listingCount": 46,
+      "listingCount": 47,
       "state": "accumulation",
       "emoji": "😴",
       "read": "Quietly tightening — price steady while listings drain. Supply leaving without headlines.",
       "confidence": "dual-signal",
       "priceWoW": -0.056,
-      "supplyWoW": -0.148
+      "supplyWoW": -0.13
     },
     {
       "id": "me1-booster-box",
@@ -1011,13 +997,13 @@
       "set": "Shrouded Fable",
       "subtype": "booster-bundle",
       "priceMedian": 64.99,
-      "listingCount": 58,
+      "listingCount": 59,
       "state": "accumulation",
       "emoji": "😴",
       "read": "Quietly tightening — price steady while listings drain. Supply leaving without headlines.",
       "confidence": "dual-signal",
       "priceWoW": 0.049,
-      "supplyWoW": -0.256
+      "supplyWoW": -0.244
     },
     {
       "id": "sm7-booster-box",
@@ -1104,6 +1090,20 @@
       "supplyWoW": -0.189
     },
     {
+      "id": "swsh3-booster-box",
+      "name": "Darkness Ablaze Booster Box",
+      "set": "Darkness Ablaze",
+      "subtype": "booster-box",
+      "priceMedian": 396.57,
+      "listingCount": 54,
+      "state": "accumulation",
+      "emoji": "😴",
+      "read": "Quietly tightening — price steady while listings drain. Supply leaving without headlines.",
+      "confidence": "dual-signal",
+      "priceWoW": -0.009,
+      "supplyWoW": -0.182
+    },
+    {
       "id": "swsh12pt5-pc-etb",
       "name": "Crown Zenith Pokemon Center Elite Trainer Box",
       "set": "Crown Zenith",
@@ -1146,20 +1146,6 @@
       "supplyWoW": -0.819
     },
     {
-      "id": "swsh3-booster-box",
-      "name": "Darkness Ablaze Booster Box",
-      "set": "Darkness Ablaze",
-      "subtype": "booster-box",
-      "priceMedian": 399.99,
-      "listingCount": 56,
-      "state": "accumulation",
-      "emoji": "😴",
-      "read": "Quietly tightening — price steady while listings drain. Supply leaving without headlines.",
-      "confidence": "dual-signal",
-      "priceWoW": 0,
-      "supplyWoW": -0.152
-    },
-    {
       "id": "sv7-pc-etb",
       "name": "Stellar Crown Pokemon Center Elite Trainer Box",
       "set": "Stellar Crown",
@@ -1193,13 +1179,13 @@
       "set": "Scarlet & Violet",
       "subtype": "booster-pack",
       "priceMedian": 9.99,
-      "listingCount": 13,
+      "listingCount": 14,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
       "priceWoW": -0.332,
-      "supplyWoW": 0
+      "supplyWoW": 0.077
     },
     {
       "id": "sv5-pc-etb",
@@ -1228,34 +1214,6 @@
       "confidence": "dual-signal",
       "priceWoW": 0.148,
       "supplyWoW": 0
-    },
-    {
-      "id": "cel25-etb",
-      "name": "Celebrations Elite Trainer Box",
-      "set": "Celebrations",
-      "subtype": "etb",
-      "priceMedian": 320,
-      "listingCount": 34,
-      "state": "ranging",
-      "emoji": "⏸",
-      "read": "No clear phase — price and listings both quiet this week.",
-      "confidence": "dual-signal",
-      "priceWoW": -0.147,
-      "supplyWoW": -0.404
-    },
-    {
-      "id": "me4-pack",
-      "name": "Chaos Rising Booster Pack",
-      "set": "Chaos Rising",
-      "subtype": "booster-pack",
-      "priceMedian": 6.99,
-      "listingCount": 21,
-      "state": "ranging",
-      "emoji": "⏸",
-      "read": "No clear phase — price and listings both quiet this week.",
-      "confidence": "dual-signal",
-      "priceWoW": -0.124,
-      "supplyWoW": -0.192
     },
     {
       "id": "sm2-etb",
@@ -1300,25 +1258,25 @@
       "supplyWoW": -0.071
     },
     {
-      "id": "me2pt5-pc-etb",
-      "name": "Ascended Heroes Pokemon Center Elite Trainer Box",
-      "set": "Ascended Heroes",
-      "subtype": "pc-etb",
-      "priceMedian": 425,
-      "listingCount": 120,
+      "id": "me3-etb",
+      "name": "Perfect Order Elite Trainer Box",
+      "set": "Perfect Order",
+      "subtype": "etb",
+      "priceMedian": 78.99,
+      "listingCount": 118,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
-      "priceWoW": -0.096,
-      "supplyWoW": 0.091
+      "priceWoW": 0.097,
+      "supplyWoW": -0.017
     },
     {
       "id": "sv8pt5-sc",
       "name": "Prismatic Evolutions Surprise Box",
       "set": "Prismatic Evolutions",
       "subtype": "special-collection",
-      "priceMedian": 100,
+      "priceMedian": 99.99,
       "listingCount": 96,
       "state": "ranging",
       "emoji": "⏸",
@@ -1333,27 +1291,27 @@
       "set": "Ascended Heroes",
       "subtype": "etb",
       "priceMedian": 160,
-      "listingCount": 124,
+      "listingCount": 125,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
       "priceWoW": -0.086,
-      "supplyWoW": 0.06
+      "supplyWoW": 0.068
     },
     {
-      "id": "sv8pt5-pc-etb",
-      "name": "Prismatic Evolutions Pokemon Center Elite Trainer Box",
-      "set": "Prismatic Evolutions",
+      "id": "me2pt5-pc-etb",
+      "name": "Ascended Heroes Pokemon Center Elite Trainer Box",
+      "set": "Ascended Heroes",
       "subtype": "pc-etb",
-      "priceMedian": 508.42,
-      "listingCount": 103,
+      "priceMedian": 429.99,
+      "listingCount": 120,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
-      "priceWoW": -0.084,
-      "supplyWoW": -0.01
+      "priceWoW": -0.085,
+      "supplyWoW": 0.091
     },
     {
       "id": "pgo-etb",
@@ -1361,41 +1319,27 @@
       "set": "Pokemon GO",
       "subtype": "etb",
       "priceMedian": 220,
-      "listingCount": 78,
+      "listingCount": 76,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
       "priceWoW": -0.083,
-      "supplyWoW": 0.054
+      "supplyWoW": 0.027
     },
     {
-      "id": "me3-etb",
-      "name": "Perfect Order Elite Trainer Box",
-      "set": "Perfect Order",
-      "subtype": "etb",
-      "priceMedian": 77.98,
-      "listingCount": 116,
+      "id": "sv8pt5-pc-etb",
+      "name": "Prismatic Evolutions Pokemon Center Elite Trainer Box",
+      "set": "Prismatic Evolutions",
+      "subtype": "pc-etb",
+      "priceMedian": 510,
+      "listingCount": 103,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
-      "priceWoW": 0.083,
-      "supplyWoW": -0.033
-    },
-    {
-      "id": "me1-etb",
-      "name": "Mega Evolution Elite Trainer Box",
-      "set": "Mega Evolution",
-      "subtype": "etb",
-      "priceMedian": 129.99,
-      "listingCount": 34,
-      "state": "ranging",
-      "emoji": "⏸",
-      "read": "No clear phase — price and listings both quiet this week.",
-      "confidence": "dual-signal",
-      "priceWoW": 0.083,
-      "supplyWoW": -0.056
+      "priceWoW": -0.081,
+      "supplyWoW": -0.01
     },
     {
       "id": "swsh11-etb",
@@ -1431,13 +1375,27 @@
       "set": "Perfect Order",
       "subtype": "booster-bundle",
       "priceMedian": 41.95,
-      "listingCount": 123,
+      "listingCount": 121,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
       "priceWoW": -0.067,
-      "supplyWoW": -0.075
+      "supplyWoW": -0.09
+    },
+    {
+      "id": "cel25-etb",
+      "name": "Celebrations Elite Trainer Box",
+      "set": "Celebrations",
+      "subtype": "etb",
+      "priceMedian": 350.12,
+      "listingCount": 32,
+      "state": "ranging",
+      "emoji": "⏸",
+      "read": "No clear phase — price and listings both quiet this week.",
+      "confidence": "dual-signal",
+      "priceWoW": -0.066,
+      "supplyWoW": -0.439
     },
     {
       "id": "sm1-etb",
@@ -1468,6 +1426,20 @@
       "supplyWoW": -0.059
     },
     {
+      "id": "me4-pack",
+      "name": "Chaos Rising Booster Pack",
+      "set": "Chaos Rising",
+      "subtype": "booster-pack",
+      "priceMedian": 7.49,
+      "listingCount": 19,
+      "state": "ranging",
+      "emoji": "⏸",
+      "read": "No clear phase — price and listings both quiet this week.",
+      "confidence": "dual-signal",
+      "priceWoW": -0.061,
+      "supplyWoW": -0.269
+    },
+    {
       "id": "swsh10-pc-etb",
       "name": "Astral Radiance Pokemon Center Elite Trainer Box",
       "set": "Astral Radiance",
@@ -1487,13 +1459,13 @@
       "set": "Ascended Heroes",
       "subtype": "booster-bundle",
       "priceMedian": 89.99,
-      "listingCount": 106,
+      "listingCount": 110,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
       "priceWoW": 0.059,
-      "supplyWoW": -0.102
+      "supplyWoW": -0.068
     },
     {
       "id": "swsh12-bundle",
@@ -1515,27 +1487,13 @@
       "set": "White Flare",
       "subtype": "booster-bundle",
       "priceMedian": 94.99,
-      "listingCount": 85,
+      "listingCount": 87,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
       "priceWoW": 0.055,
-      "supplyWoW": -0.023
-    },
-    {
-      "id": "swsh4-booster-box",
-      "name": "Vivid Voltage Booster Box",
-      "set": "Vivid Voltage",
-      "subtype": "booster-box",
-      "priceMedian": 350,
-      "listingCount": 83,
-      "state": "ranging",
-      "emoji": "⏸",
-      "read": "No clear phase — price and listings both quiet this week.",
-      "confidence": "dual-signal",
-      "priceWoW": -0.054,
-      "supplyWoW": 0.078
+      "supplyWoW": 0
     },
     {
       "id": "sv3pt5-pc-etb",
@@ -1564,6 +1522,20 @@
       "confidence": "dual-signal",
       "priceWoW": 0.053,
       "supplyWoW": -0.111
+    },
+    {
+      "id": "swsh4-booster-box",
+      "name": "Vivid Voltage Booster Box",
+      "set": "Vivid Voltage",
+      "subtype": "booster-box",
+      "priceMedian": 350.12,
+      "listingCount": 83,
+      "state": "ranging",
+      "emoji": "⏸",
+      "read": "No clear phase — price and listings both quiet this week.",
+      "confidence": "dual-signal",
+      "priceWoW": -0.053,
+      "supplyWoW": 0.078
     },
     {
       "id": "swsh11-pc-etb",
@@ -1613,13 +1585,55 @@
       "set": "Black Bolt",
       "subtype": "etb",
       "priceMedian": 170.98,
-      "listingCount": 89,
+      "listingCount": 87,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
       "priceWoW": -0.05,
-      "supplyWoW": -0.082
+      "supplyWoW": -0.103
+    },
+    {
+      "id": "me1-etb",
+      "name": "Mega Evolution Elite Trainer Box",
+      "set": "Mega Evolution",
+      "subtype": "etb",
+      "priceMedian": 125.98,
+      "listingCount": 32,
+      "state": "ranging",
+      "emoji": "⏸",
+      "read": "No clear phase — price and listings both quiet this week.",
+      "confidence": "dual-signal",
+      "priceWoW": 0.05,
+      "supplyWoW": -0.111
+    },
+    {
+      "id": "me4-bb",
+      "name": "Chaos Rising Booster Bundle",
+      "set": "Chaos Rising",
+      "subtype": "booster-bundle",
+      "priceMedian": 40,
+      "listingCount": 104,
+      "state": "ranging",
+      "emoji": "⏸",
+      "read": "No clear phase — price and listings both quiet this week.",
+      "confidence": "dual-signal",
+      "priceWoW": -0.047,
+      "supplyWoW": -0.111
+    },
+    {
+      "id": "sv8pt5-bb",
+      "name": "Prismatic Evolutions Booster Bundle",
+      "set": "Prismatic Evolutions",
+      "subtype": "booster-bundle",
+      "priceMedian": 88.99,
+      "listingCount": 96,
+      "state": "ranging",
+      "emoji": "⏸",
+      "read": "No clear phase — price and listings both quiet this week.",
+      "confidence": "dual-signal",
+      "priceWoW": 0.047,
+      "supplyWoW": 0.032
     },
     {
       "id": "swsh9-booster-box",
@@ -1634,20 +1648,6 @@
       "confidence": "dual-signal",
       "priceWoW": -0.047,
       "supplyWoW": -0.1
-    },
-    {
-      "id": "sv10-bb",
-      "name": "Destined Rivals Booster Bundle",
-      "set": "Destined Rivals",
-      "subtype": "booster-bundle",
-      "priceMedian": 67,
-      "listingCount": 121,
-      "state": "ranging",
-      "emoji": "⏸",
-      "read": "No clear phase — price and listings both quiet this week.",
-      "confidence": "dual-signal",
-      "priceWoW": -0.043,
-      "supplyWoW": -0.062
     },
     {
       "id": "me1-pc-etb",
@@ -1668,14 +1668,14 @@
       "name": "Journey Together Elite Trainer Box",
       "set": "Journey Together",
       "subtype": "etb",
-      "priceMedian": 144.99,
-      "listingCount": 105,
+      "priceMedian": 145,
+      "listingCount": 107,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
       "priceWoW": 0.043,
-      "supplyWoW": -0.071
+      "supplyWoW": -0.053
     },
     {
       "id": "sv8-etb",
@@ -1683,13 +1683,13 @@
       "set": "Surging Sparks",
       "subtype": "etb",
       "priceMedian": 144.98,
-      "listingCount": 99,
+      "listingCount": 100,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
       "priceWoW": 0.043,
-      "supplyWoW": -0.075
+      "supplyWoW": -0.065
     },
     {
       "id": "sv2-booster-box",
@@ -1710,14 +1710,14 @@
       "name": "Surging Sparks Booster Bundle",
       "set": "Surging Sparks",
       "subtype": "booster-bundle",
-      "priceMedian": 68,
-      "listingCount": 113,
+      "priceMedian": 67.99,
+      "listingCount": 115,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
       "priceWoW": 0.042,
-      "supplyWoW": 0.097
+      "supplyWoW": 0.117
     },
     {
       "id": "sm12-booster-box",
@@ -1753,13 +1753,27 @@
       "set": "Pitch Black",
       "subtype": "booster-bundle",
       "priceMedian": 41.45,
-      "listingCount": 98,
+      "listingCount": 99,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
       "priceWoW": -0.036,
-      "supplyWoW": -0.049
+      "supplyWoW": -0.039
+    },
+    {
+      "id": "swsh12-booster-box",
+      "name": "Silver Tempest Booster Box",
+      "set": "Silver Tempest",
+      "subtype": "booster-box",
+      "priceMedian": 540,
+      "listingCount": 57,
+      "state": "ranging",
+      "emoji": "⏸",
+      "read": "No clear phase — price and listings both quiet this week.",
+      "confidence": "dual-signal",
+      "priceWoW": -0.036,
+      "supplyWoW": 0
     },
     {
       "id": "swsh3-etb",
@@ -1776,32 +1790,18 @@
       "supplyWoW": -0.05
     },
     {
-      "id": "sv8pt5-bb",
-      "name": "Prismatic Evolutions Booster Bundle",
-      "set": "Prismatic Evolutions",
-      "subtype": "booster-bundle",
-      "priceMedian": 88,
-      "listingCount": 95,
-      "state": "ranging",
-      "emoji": "⏸",
-      "read": "No clear phase — price and listings both quiet this week.",
-      "confidence": "dual-signal",
-      "priceWoW": 0.035,
-      "supplyWoW": 0.022
-    },
-    {
       "id": "swsh45-etb",
       "name": "Shining Fates Elite Trainer Box",
       "set": "Shining Fates",
       "subtype": "etb",
-      "priceMedian": 155,
-      "listingCount": 144,
+      "priceMedian": 154.98,
+      "listingCount": 143,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
       "priceWoW": 0.033,
-      "supplyWoW": 0.029
+      "supplyWoW": 0.021
     },
     {
       "id": "swsh4-etb",
@@ -1822,28 +1822,28 @@
       "name": "Pitch Black Booster Box",
       "set": "Pitch Black",
       "subtype": "booster-box",
-      "priceMedian": 199.99,
-      "listingCount": 83,
+      "priceMedian": 200,
+      "listingCount": 86,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
       "priceWoW": 0.03,
-      "supplyWoW": -0.108
+      "supplyWoW": -0.075
     },
     {
-      "id": "sv3pt5-bb",
-      "name": "151 Booster Bundle",
-      "set": "151",
+      "id": "sv10-bb",
+      "name": "Destined Rivals Booster Bundle",
+      "set": "Destined Rivals",
       "subtype": "booster-bundle",
-      "priceMedian": 190,
-      "listingCount": 123,
+      "priceMedian": 67.98,
+      "listingCount": 121,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
-      "priceWoW": -0.03,
-      "supplyWoW": -0.082
+      "priceWoW": -0.029,
+      "supplyWoW": -0.062
     },
     {
       "id": "me3-booster-box",
@@ -1851,13 +1851,27 @@
       "set": "Perfect Order",
       "subtype": "booster-box",
       "priceMedian": 201.48,
-      "listingCount": 86,
+      "listingCount": 88,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
       "priceWoW": 0.029,
-      "supplyWoW": -0.075
+      "supplyWoW": -0.054
+    },
+    {
+      "id": "sv3pt5-bb",
+      "name": "151 Booster Bundle",
+      "set": "151",
+      "subtype": "booster-bundle",
+      "priceMedian": 190.2,
+      "listingCount": 122,
+      "state": "ranging",
+      "emoji": "⏸",
+      "read": "No clear phase — price and listings both quiet this week.",
+      "confidence": "dual-signal",
+      "priceWoW": -0.029,
+      "supplyWoW": -0.09
     },
     {
       "id": "swsh12-etb",
@@ -1902,102 +1916,88 @@
       "supplyWoW": -0.052
     },
     {
-      "id": "me4-bb",
-      "name": "Chaos Rising Booster Bundle",
-      "set": "Chaos Rising",
-      "subtype": "booster-bundle",
-      "priceMedian": 40.95,
-      "listingCount": 103,
-      "state": "ranging",
-      "emoji": "⏸",
-      "read": "No clear phase — price and listings both quiet this week.",
-      "confidence": "dual-signal",
-      "priceWoW": -0.025,
-      "supplyWoW": -0.12
-    },
-    {
-      "id": "me5-etb",
-      "name": "Pitch Black Elite Trainer Box",
-      "set": "Pitch Black",
-      "subtype": "etb",
-      "priceMedian": 79.78,
-      "listingCount": 83,
-      "state": "ranging",
-      "emoji": "⏸",
-      "read": "No clear phase — price and listings both quiet this week.",
-      "confidence": "dual-signal",
-      "priceWoW": 0.023,
-      "supplyWoW": 0
-    },
-    {
       "id": "sv10-etb",
       "name": "Destined Rivals Elite Trainer Box",
       "set": "Destined Rivals",
       "subtype": "etb",
       "priceMedian": 129.99,
-      "listingCount": 138,
+      "listingCount": 137,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
       "priceWoW": -0.023,
-      "supplyWoW": -0.014
-    },
-    {
-      "id": "sv5-etb",
-      "name": "Temporal Forces Elite Trainer Box",
-      "set": "Temporal Forces",
-      "subtype": "etb",
-      "priceMedian": 139.99,
-      "listingCount": 129,
-      "state": "ranging",
-      "emoji": "⏸",
-      "read": "No clear phase — price and listings both quiet this week.",
-      "confidence": "dual-signal",
-      "priceWoW": -0.021,
-      "supplyWoW": 0.066
+      "supplyWoW": -0.021
     },
     {
       "id": "swsh12pt5-etb",
       "name": "Crown Zenith Elite Trainer Box",
       "set": "Crown Zenith",
       "subtype": "etb",
-      "priceMedian": 333,
-      "listingCount": 108,
+      "priceMedian": 332.37,
+      "listingCount": 109,
+      "state": "ranging",
+      "emoji": "⏸",
+      "read": "No clear phase — price and listings both quiet this week.",
+      "confidence": "dual-signal",
+      "priceWoW": -0.022,
+      "supplyWoW": 0.028
+    },
+    {
+      "id": "sv5-etb",
+      "name": "Temporal Forces Elite Trainer Box",
+      "set": "Temporal Forces",
+      "subtype": "etb",
+      "priceMedian": 140,
+      "listingCount": 130,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
       "priceWoW": -0.021,
-      "supplyWoW": 0.019
+      "supplyWoW": 0.074
     },
     {
       "id": "sv9-bb",
       "name": "Journey Together Booster Bundle",
       "set": "Journey Together",
       "subtype": "booster-bundle",
-      "priceMedian": 48,
-      "listingCount": 130,
+      "priceMedian": 47.99,
+      "listingCount": 131,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
       "priceWoW": -0.02,
-      "supplyWoW": -0.03
+      "supplyWoW": -0.022
+    },
+    {
+      "id": "me4-booster-box",
+      "name": "Chaos Rising Booster Box",
+      "set": "Chaos Rising",
+      "subtype": "booster-box",
+      "priceMedian": 204,
+      "listingCount": 104,
+      "state": "ranging",
+      "emoji": "⏸",
+      "read": "No clear phase — price and listings both quiet this week.",
+      "confidence": "dual-signal",
+      "priceWoW": 0.02,
+      "supplyWoW": -0.028
     },
     {
       "id": "sv10-booster-box",
       "name": "Destined Rivals Booster Box",
       "set": "Destined Rivals",
       "subtype": "booster-box",
-      "priceMedian": 499.99,
-      "listingCount": 81,
+      "priceMedian": 500,
+      "listingCount": 84,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
       "priceWoW": 0.02,
-      "supplyWoW": -0.024
+      "supplyWoW": 0.012
     },
     {
       "id": "sv6pt5-etb",
@@ -2005,27 +2005,13 @@
       "set": "Shrouded Fable",
       "subtype": "etb",
       "priceMedian": 139,
-      "listingCount": 104,
+      "listingCount": 105,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
       "priceWoW": 0.019,
-      "supplyWoW": -0.071
-    },
-    {
-      "id": "swsh12-booster-box",
-      "name": "Silver Tempest Booster Box",
-      "set": "Silver Tempest",
-      "subtype": "booster-box",
-      "priceMedian": 550,
-      "listingCount": 56,
-      "state": "ranging",
-      "emoji": "⏸",
-      "read": "No clear phase — price and listings both quiet this week.",
-      "confidence": "dual-signal",
-      "priceWoW": -0.018,
-      "supplyWoW": -0.018
+      "supplyWoW": -0.062
     },
     {
       "id": "sm6-booster-box",
@@ -2047,13 +2033,13 @@
       "set": "Phantasmal Flames",
       "subtype": "booster-bundle",
       "priceMedian": 89.99,
-      "listingCount": 98,
+      "listingCount": 96,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
       "priceWoW": 0.015,
-      "supplyWoW": -0.01
+      "supplyWoW": -0.03
     },
     {
       "id": "swsh10-booster-box",
@@ -2061,13 +2047,13 @@
       "set": "Astral Radiance",
       "subtype": "booster-box",
       "priceMedian": 420,
-      "listingCount": 69,
+      "listingCount": 70,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
       "priceWoW": -0.014,
-      "supplyWoW": 0.03
+      "supplyWoW": 0.045
     },
     {
       "id": "sm3-booster-box",
@@ -2096,6 +2082,20 @@
       "confidence": "dual-signal",
       "priceWoW": -0.013,
       "supplyWoW": -0.111
+    },
+    {
+      "id": "me5-etb",
+      "name": "Pitch Black Elite Trainer Box",
+      "set": "Pitch Black",
+      "subtype": "etb",
+      "priceMedian": 78.99,
+      "listingCount": 83,
+      "state": "ranging",
+      "emoji": "⏸",
+      "read": "No clear phase — price and listings both quiet this week.",
+      "confidence": "dual-signal",
+      "priceWoW": 0.013,
+      "supplyWoW": 0
     },
     {
       "id": "cel25-upc",
@@ -2145,13 +2145,27 @@
       "set": "Perfect Order",
       "subtype": "pc-etb",
       "priceMedian": 141.45,
-      "listingCount": 96,
+      "listingCount": 95,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
       "priceWoW": 0.01,
-      "supplyWoW": -0.086
+      "supplyWoW": -0.095
+    },
+    {
+      "id": "swsh8-etb",
+      "name": "Fusion Strike Elite Trainer Box",
+      "set": "Fusion Strike",
+      "subtype": "etb",
+      "priceMedian": 346.58,
+      "listingCount": 86,
+      "state": "ranging",
+      "emoji": "⏸",
+      "read": "No clear phase — price and listings both quiet this week.",
+      "confidence": "dual-signal",
+      "priceWoW": -0.01,
+      "supplyWoW": 0.117
     },
     {
       "id": "swsh35-etb",
@@ -2173,13 +2187,13 @@
       "set": "Surging Sparks",
       "subtype": "booster-box",
       "priceMedian": 311.98,
-      "listingCount": 73,
+      "listingCount": 71,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
       "priceWoW": 0.006,
-      "supplyWoW": -0.064
+      "supplyWoW": -0.09
     },
     {
       "id": "sv4pt5-bb",
@@ -2229,13 +2243,13 @@
       "set": "Chilling Reign",
       "subtype": "booster-box",
       "priceMedian": 540.36,
-      "listingCount": 95,
+      "listingCount": 96,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
       "priceWoW": 0.001,
-      "supplyWoW": 0.044
+      "supplyWoW": 0.055
     },
     {
       "id": "sm35-etb",
@@ -2257,13 +2271,13 @@
       "set": "Black Bolt",
       "subtype": "booster-bundle",
       "priceMedian": 100,
-      "listingCount": 76,
+      "listingCount": 75,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
       "priceWoW": 0,
-      "supplyWoW": -0.038
+      "supplyWoW": -0.051
     },
     {
       "id": "sm4-booster-box",
@@ -2299,27 +2313,13 @@
       "set": "Pitch Black",
       "subtype": "pc-etb",
       "priceMedian": 135,
-      "listingCount": 125,
+      "listingCount": 124,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
       "priceWoW": 0,
-      "supplyWoW": 0
-    },
-    {
-      "id": "me4-booster-box",
-      "name": "Chaos Rising Booster Box",
-      "set": "Chaos Rising",
-      "subtype": "booster-box",
-      "priceMedian": 200,
-      "listingCount": 110,
-      "state": "ranging",
-      "emoji": "⏸",
-      "read": "No clear phase — price and listings both quiet this week.",
-      "confidence": "dual-signal",
-      "priceWoW": 0,
-      "supplyWoW": 0.028
+      "supplyWoW": -0.008
     },
     {
       "id": "me4-pc-etb",
@@ -2327,13 +2327,13 @@
       "set": "Chaos Rising",
       "subtype": "pc-etb",
       "priceMedian": 149.99,
-      "listingCount": 121,
+      "listingCount": 120,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
       "priceWoW": 0,
-      "supplyWoW": 0.034
+      "supplyWoW": 0.026
     },
     {
       "id": "me2-booster-box",
@@ -2341,20 +2341,20 @@
       "set": "Phantasmal Flames",
       "subtype": "booster-box",
       "priceMedian": 430,
-      "listingCount": 71,
+      "listingCount": 72,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
       "priceWoW": 0,
-      "supplyWoW": -0.053
+      "supplyWoW": -0.04
     },
     {
       "id": "sv6-etb",
       "name": "Twilight Masquerade Elite Trainer Box",
       "set": "Twilight Masquerade",
       "subtype": "etb",
-      "priceMedian": 119.99,
+      "priceMedian": 120,
       "listingCount": 129,
       "state": "ranging",
       "emoji": "⏸",
@@ -2369,13 +2369,13 @@
       "set": "151",
       "subtype": "etb",
       "priceMedian": 600,
-      "listingCount": 129,
+      "listingCount": 130,
       "state": "ranging",
       "emoji": "⏸",
       "read": "No clear phase — price and listings both quiet this week.",
       "confidence": "dual-signal",
       "priceWoW": 0,
-      "supplyWoW": -0.044
+      "supplyWoW": -0.037
     },
     {
       "id": "swsh7-etb",
@@ -2463,8 +2463,8 @@
       "name": "Evolutions Elite Trainer Box",
       "set": "Evolutions",
       "subtype": "etb",
-      "priceMedian": 419.9,
-      "listingCount": 25,
+      "priceMedian": 420,
+      "listingCount": 28,
       "reason": "implausible WoW -42% — likely query contamination, needs data-quality review"
     },
     {
@@ -2633,8 +2633,8 @@
       "name": "Sword & Shield Booster Pack",
       "set": "Sword & Shield",
       "subtype": "booster-pack",
-      "priceMedian": 16.9,
-      "listingCount": 10,
+      "priceMedian": 14.24,
+      "listingCount": 9,
       "reason": "insufficient history (7 days)"
     },
     {
