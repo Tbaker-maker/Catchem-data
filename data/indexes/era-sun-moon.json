@@ -1,7 +1,7 @@
 {
   "id": "era-sun-moon",
   "name": "Sun & Moon",
-  "asOf": "2026-09-25",
+  "asOf": "2026-09-26",
   "method": "Fixed basket, reset each quarter. Each day's move is the median price change of products priced on both days, with equal weight. A value-weighted line gives a dearer product a bigger say. A day with no shared prices is a gap.",
   "basket": [
     {
@@ -223,6 +223,15 @@
           "matched": 15,
           "equalMovePct": 0,
           "valueMovePct": 0.4074
+        },
+        {
+          "date": "2026-09-26",
+          "from": "2026-09-25",
+          "equal": 101.9,
+          "value": 108.9,
+          "matched": 15,
+          "equalMovePct": 0,
+          "valueMovePct": -0.0097
         }
       ],
       "gaps": [

@@ -1,7 +1,7 @@
 {
   "id": "type-booster-box",
   "name": "booster-box",
-  "asOf": "2026-09-25",
+  "asOf": "2026-09-26",
   "method": "Fixed basket, reset each quarter. Each day's move is the median price change of products priced on both days, with equal weight. A value-weighted line gives a dearer product a bigger say. A day with no shared prices is a gap.",
   "basket": [
     {
@@ -349,6 +349,15 @@
           "matched": 36,
           "equalMovePct": 0,
           "valueMovePct": 0.3703
+        },
+        {
+          "date": "2026-09-26",
+          "from": "2026-09-25",
+          "equal": 100.5,
+          "value": 106.6,
+          "matched": 36,
+          "equalMovePct": 0,
+          "valueMovePct": -0.2423
         }
       ],
       "gaps": [

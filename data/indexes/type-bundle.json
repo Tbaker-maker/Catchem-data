@@ -1,7 +1,7 @@
 {
   "id": "type-bundle",
   "name": "bundle",
-  "asOf": "2026-09-25",
+  "asOf": "2026-09-26",
   "method": "Fixed basket, reset each quarter. Each day's move is the median price change of products priced on both days, with equal weight. A value-weighted line gives a dearer product a bigger say. A day with no shared prices is a gap.",
   "basket": [
     {
@@ -277,6 +277,15 @@
           "matched": 25,
           "equalMovePct": 0,
           "valueMovePct": -0.0555
+        },
+        {
+          "date": "2026-09-26",
+          "from": "2026-09-25",
+          "equal": 103.6,
+          "value": 102.5,
+          "matched": 25,
+          "equalMovePct": 0,
+          "valueMovePct": -0.2581
         }
       ],
       "gaps": [

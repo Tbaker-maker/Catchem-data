@@ -1,7 +1,7 @@
 {
   "id": "era-scarlet-violet",
   "name": "Scarlet & Violet",
-  "asOf": "2026-09-25",
+  "asOf": "2026-09-26",
   "method": "Fixed basket, reset each quarter. Each day's move is the median price change of products priced on both days, with equal weight. A value-weighted line gives a dearer product a bigger say. A day with no shared prices is a gap.",
   "basket": [
     {
@@ -529,6 +529,15 @@
           "matched": 66,
           "equalMovePct": 0,
           "valueMovePct": 0.5974
+        },
+        {
+          "date": "2026-09-26",
+          "from": "2026-09-25",
+          "equal": 101.1,
+          "value": 99.2,
+          "matched": 66,
+          "equalMovePct": 0,
+          "valueMovePct": -0.2235
         }
       ],
       "gaps": [
