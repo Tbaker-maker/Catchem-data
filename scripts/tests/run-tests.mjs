@@ -5,6 +5,7 @@
 import { readFile, stat } from "node:fs/promises";
 import { runSlabTests } from "./ppt-slabs.test.mjs";
 import { fileURLToPath } from "node:url";
+import { runSearchShardTests } from "./search-shards.test.mjs";
 import { dirname, join } from "node:path";
 import { runIntradayTests } from "./ppt-intraday.test.mjs";
 import { indexLevel, offTcgEra, sealedPremium, mergeByDate } from "../lib/instruments.mjs";
@@ -66,6 +67,12 @@ console.log("── sealed premium (thin-n aware) ──");
   t("n=7 → thin flag", thin.thin === true);
   t("no loose lane → null pct", sealedPremium(10, null, null).pct === null);
   t("null pct never thin", sealedPremium(10, null, null).thin === false);
+}
+
+console.log("── search shards ──");
+{
+  const n = await runSearchShardTests();
+  t("search shard suite", n === 0, `${n} failed`);
 }
 
 console.log("── merge-by-date (8-vs-329 guard) ──");
