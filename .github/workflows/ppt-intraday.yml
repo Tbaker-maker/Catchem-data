@@ -1,0 +1,28 @@
+name: PPT intraday refresh
+
+# Off unless the repository variable PPT_INTRADAY_ENABLED is the string true.
+# The 50-item test has not been run (no paired pulls), so this must not spend
+# the reserve. Six slots fit in the 3,863 credits left after the crosscheck.
+on:
+  schedule:
+    - cron: "0 0,4,8,12,16,20 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  refresh:
+    if: vars.PPT_INTRADAY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Intraday status
+        continue-on-error: true
+        env:
+          POKEMONPRICETRACKER_API_KEY: ${{ secrets.POKEMONPRICETRACKER_API_KEY }}
+        run: node scripts/ppt-intraday.mjs
