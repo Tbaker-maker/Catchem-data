@@ -8,6 +8,7 @@ import { dirname, join } from "node:path";
 import { indexLevel, offTcgEra, sealedPremium, mergeByDate } from "../lib/instruments.mjs";
 import { runTcgcsvCatalogTests } from "./tcgcsv-catalog.test.mjs";
 import { runPptPlanTests } from "./ppt-plan.test.mjs";
+import { runSlabTests } from "./ppt-slabs.test.mjs";
 import { runStressTests } from "./stress.test.mjs";
 import { enterIndex } from "../lib/index-baskets.mjs";
 import { searchItems } from "../lib/search-rank.mjs";
@@ -116,6 +117,12 @@ console.log("── ppt plan ──");
 {
   const n = await runPptPlanTests();
   t("ppt plan suite", n === 0, `${n} failed`);
+}
+
+console.log("── slabs ──");
+{
+  const n = await runSlabTests();
+  t("slab suite", n === 0, `${n} failed`);
 }
 
 console.log("── index stress ──");
