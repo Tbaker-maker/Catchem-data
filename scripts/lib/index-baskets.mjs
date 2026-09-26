@@ -98,6 +98,68 @@ export function chainIndex(dates, prices, eligible, members, pairPrice = null) {
   return { base: 100, points, gaps };
 }
 
+// Same median and value-weight math as chainIndex, but a new name joins on the
+// first day it has a price and does not move the level that day. Its first
+// return is the next day it is priced again. A quarter change does not reset
+// the basket or the level. Missing days stay gaps.
+export function enterIndex(dates, prices, eligible, members, pairPrice = null) {
+  const points = [];
+  const gaps = [];
+  let level = 100;
+  let levelValue = 100;
+  let prev = null;
+  const memberList = [...members];
+  for (const date of dates) {
+    const elig = eligible.get(date) || new Set();
+    const priced = memberList.filter((id) => elig.has(id) && prices.get(id)?.get(date) > 0);
+    if (!prev) {
+      if (!priced.length) continue;
+      points.push({ date, equal: 100, value: 100, matched: priced.length, entered: priced.length });
+      prev = date;
+      continue;
+    }
+    const span = daysBetween(prev, date);
+    if (span > 1) gaps.push({ from: prev, to: date, missingDays: span - 1, note: "No price was invented for the days in between." });
+    const rels = [];
+    const weights = [];
+    let entered = 0;
+    for (const id of memberList) {
+      if (!elig.has(id) || !(prices.get(id)?.get(date) > 0)) continue;
+      const prevPrice = prices.get(id)?.get(prev);
+      const pair = pairPrice ? pairPrice(id, prev, date) : [prevPrice > 0 ? prevPrice : 0, prices.get(id).get(date)];
+      if (!pair) { entered += 1; continue; }
+      const [a, b] = pair;
+      if (!(a > 0)) { entered += 1; continue; }
+      if (!(b > 0)) continue;
+      rels.push(b / a);
+      weights.push(a);
+    }
+    if (!rels.length) {
+      gaps.push({ from: prev, to: date, missingDays: Math.max(span - 1, 0), note: "No product was priced on both days. A new name did not move the level." });
+      prev = date;
+      continue;
+    }
+    const med = median(rels);
+    let wnum = 0, wden = 0;
+    rels.forEach((rel, i) => { wnum += rel * weights[i]; wden += weights[i]; });
+    const vw = wnum / wden;
+    level *= med;
+    levelValue *= vw;
+    points.push({
+      date,
+      from: prev,
+      equal: r1(level),
+      value: r1(levelValue),
+      matched: rels.length,
+      entered,
+      equalMovePct: r4((med - 1) * 100),
+      valueMovePct: r4((vw - 1) * 100),
+    });
+    prev = date;
+  }
+  return { base: 100, points, gaps };
+}
+
 export const WRONG_MATCH_IDS = new Set([
   "xy12-etb",
   "sm9-booster-box",

@@ -6,6 +6,8 @@ import { readFile, stat } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { indexLevel, offTcgEra, sealedPremium, mergeByDate } from "../lib/instruments.mjs";
+import { enterIndex } from "../lib/index-baskets.mjs";
+import { runStressTests } from "./stress.test.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const J = async (p) => JSON.parse(await readFile(join(ROOT, p), "utf-8"));
@@ -25,6 +27,15 @@ t("symmetric moves cancel", indexLevel([1.1, 0.9]) === 100.0);
   t("composition invariance: entrant at baseline never jumps the level", before === afterAdd,
     `${before} → ${afterAdd}`);
   t("known value: [1.2, 1.0] → 110.0", indexLevel([1.2, 1.0]) === 110.0);
+{
+  const prices = new Map([
+    ["a", new Map([["2026-03-31", 100], ["2026-04-01", 110]])],
+    ["b", new Map([["2026-04-01", 50]])],
+  ]);
+  const elig = new Map([["2026-03-31", new Set(["a"])], ["2026-04-01", new Set(["a", "b"])]]);
+  const entered = enterIndex(["2026-03-31", "2026-04-01"], prices, elig, ["a", "b"]);
+  t("new constituent does not jump a chain-linked index", entered.points[1].equal === 110 && entered.points[1].entered === 1, JSON.stringify(entered.points[1]));
+}
 }
 
 console.log("── venue gate (RT-4a) ──");
@@ -99,6 +110,12 @@ for (const name of ["index", "sealed", "graded", "raw"]) {
     if (required) t(`latest-${name}.svg exists nonzero`, false, "missing");
     else console.log(`  - latest-${name}.svg absent, and dailyThree.${name} is absent too - not a failure`);
   }
+}
+
+console.log("── index stress ──");
+{
+  const n = runStressTests();
+  t("stress suite", n === 0, `${n} failed`);
 }
 
 console.log(`\n${pass} passed · ${fail} failed`);

@@ -1,0 +1,42 @@
+{
+  "id": "singles",
+  "name": "Singles Index",
+  "asOf": "2026-08-18",
+  "source": "TCGplayer market price",
+  "anchorRequested": "2026-03-31",
+  "anchorUsed": "2026-08-18",
+  "anchorLevel": 100,
+  "anchorReason": "First real singles day on file is 2026-08-18. March 31 was not invented. Days between observations are gaps.",
+  "method": "Chain-linked. A card joins on its first priced day and does not move the level that day. Sealed products are not in this index.",
+  "basket": 121,
+  "series": {
+    "base": 100,
+    "points": [
+      {
+        "date": "2026-08-18",
+        "equal": 100,
+        "value": 100,
+        "matched": 119,
+        "entered": 119
+      },
+      {
+        "date": "2026-09-21",
+        "from": "2026-08-18",
+        "equal": 99.2,
+        "value": 98.9,
+        "matched": 36,
+        "entered": 2,
+        "equalMovePct": -0.8194,
+        "valueMovePct": -1.1449
+      }
+    ],
+    "gaps": [
+      {
+        "from": "2026-08-18",
+        "to": "2026-09-21",
+        "missingDays": 33,
+        "note": "No price was invented for the days in between."
+      }
+    ]
+  }
+}

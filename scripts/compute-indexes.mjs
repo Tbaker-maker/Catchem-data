@@ -3,7 +3,7 @@
 import { mkdir, readFile, writeFile, readdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { WRONG_MATCH_IDS, WRONG_MATCH_WHY, chainIndex, eraOf, typeKey } from "./lib/index-baskets.mjs";
+import { WRONG_MATCH_IDS, WRONG_MATCH_WHY, enterIndex, eraOf, typeKey } from "./lib/index-baskets.mjs";
 import { PPT_SOURCE, TCGCSV_SOURCE, loadMarketHistory } from "./lib/market-history.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -68,12 +68,18 @@ export async function publishChartIndexes() {
 
   function seriesFor(memberIds) {
     const members = new Set(memberIds);
-    const live = chainIndex(liveDates, livePrice, liveElig, members);
+    const live = enterIndex(liveDates, livePrice, liveElig, members);
     const backElig = new Map(backfillDates.map((d) => [d, new Set(memberIds.filter((id) => backfillPrice.get(id)?.has(d)))]));
-    const back = backfillDates.length ? chainIndex(backfillDates, backfillPrice, backElig, members, pairPrice) : { base: 100, points: [], gaps: [] };
+    const back = backfillDates.length ? enterIndex(backfillDates, backfillPrice, backElig, members, pairPrice) : { base: 100, points: [], gaps: [] };
     return {
       backfill: {
         source: "TCGplayer market price",
+        anchorRequested: "2026-03-31",
+        anchorUsed: back.points[0]?.date || null,
+        anchorLevel: 100,
+        anchorReason: back.points[0]?.date === "2026-03-31"
+          ? "First real TCGplayer day on file is 2026-03-31. Level 100 starts there. No earlier day was invented."
+          : `No TCGplayer price on 2026-03-31 is on file. Level 100 starts on ${back.points[0]?.date || "no day"}. The days before that are a gap.`,
         sources: [
           { label: PPT_SOURCE, folder: "data/history/ppt-sealed", role: "daily history backfill, 2026-03-31 to 2026-09-25" },
           { label: TCGCSV_SOURCE, folder: "data/history/tcgplayer-market", role: "live daily append from 2026-09-25; wins on any day both have" },
@@ -87,6 +93,10 @@ export async function publishChartIndexes() {
       },
       live: {
         source: "eBay asking prices",
+        anchorRequested: "2026-03-31",
+        anchorUsed: live.points[0]?.date || null,
+        anchorLevel: 100,
+        anchorReason: "No eBay asking prices before the first day in heat history. Level 100 starts on that day. March 31 was not invented.",
         available: !stale && live.points.length > 0,
         withheld: stale ? `Newest sealed price file is ${newest}, more than 2 days before ${today}. This index is not published.` : null,
         base: 100,
@@ -100,7 +110,7 @@ export async function publishChartIndexes() {
   function doc(id, name, memberIds) {
     return {
       id, name, asOf: newest,
-      method: "Fixed basket, reset each quarter. Each day's move is the median price change of products priced on both days, with equal weight. A value-weighted line gives a dearer product a bigger say. A day with no shared prices is a gap.",
+      method: "Chain-linked. A name joins on the first day it has a price and does not move the level that day. Its first return is the next day it is priced. Each day's move is the median price change of names priced on both days. A value-weighted line gives a dearer product a bigger say. A day with no shared prices is a gap. Nothing is filled in.",
       basket: memberIds.map((pid) => {
         const p = byId.get(pid);
         return { id: pid, name: p?.name || pid, type: typeKey(p?.subtype), era: eraOf(p?.setId) };
@@ -139,8 +149,57 @@ export async function publishChartIndexes() {
     rawChase: { hidden: true, products: 0, reason: "Chase-single history is on file (data/history/singles-rarebox/), but it is change-only and stops on 2026-09-15, so a daily chain-linked index would need filled-in days. The Raw Chase Index is not published." },
     excluded, hiddenEras, files: written,
   }, null, 2));
+  await writeSinglesAndSlabs(newest);
   console.log(`indexes ${written.length}, stale=${stale}, newest=${newest}`);
   return headline;
+}
+
+async function writeSinglesAndSlabs(asOf) {
+  let singles = { cards: [] };
+  try { singles = await J("data/singles-prices.json"); } catch { /* none */ }
+  const prices = new Map();
+  const elig = new Map();
+  const members = [];
+  for (const card of singles.cards || []) {
+    const id = card.cardId || card.id;
+    if (!id) continue;
+    const map = new Map();
+    for (const row of card.priceHistory || []) {
+      if (!row?.date || !(row.price > 0)) continue;
+      map.set(row.date, row.price);
+      if (!elig.has(row.date)) elig.set(row.date, new Set());
+      elig.get(row.date).add(id);
+    }
+    if (!map.size) continue;
+    prices.set(id, map);
+    members.push(id);
+  }
+  const dates = [...elig.keys()].sort();
+  const series = dates.length ? enterIndex(dates, prices, elig, members) : { base: 100, points: [], gaps: [] };
+  const start = series.points[0]?.date || null;
+  await writeFile(join(OUT, "singles.json"), JSON.stringify({
+    id: "singles",
+    name: "Singles Index",
+    asOf: start,
+    source: "TCGplayer market price",
+    anchorRequested: "2026-03-31",
+    anchorUsed: start,
+    anchorLevel: 100,
+    anchorReason: start
+      ? `First real singles day on file is ${start}. March 31 was not invented. Days between observations are gaps.`
+      : "No singles price history on file. No index level was invented.",
+    method: "Chain-linked. A card joins on its first priced day and does not move the level that day. Sealed products are not in this index.",
+    basket: members.length,
+    series: { base: 100, points: series.points, gaps: series.gaps },
+  }, null, 2));
+  await writeFile(join(OUT, "slabs-status.json"), JSON.stringify({
+    asOf,
+    indexed: false,
+    slabsWith30Days: 0,
+    required: 30,
+    source: "none on file",
+    note: "No slab history is on file. 0 of 30 slabs have 30 days, so no slabs index was started. Slabs are not mixed into singles.",
+  }, null, 2));
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) await publishChartIndexes();

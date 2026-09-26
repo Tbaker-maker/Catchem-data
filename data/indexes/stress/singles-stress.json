@@ -1,0 +1,2080 @@
+{
+  "kind": "single",
+  "asOf": "2026-09-21",
+  "today": "2026-09-26",
+  "source": "TCGplayer market price",
+  "sourceFile": "data/singles-prices.json",
+  "seriesStale": true,
+  "removalsApplied": 0,
+  "thresholds": {
+    "bootstrap": 1000,
+    "band": [
+      5,
+      95
+    ],
+    "weightCap": 0.05,
+    "disagreeIndexPoints": 0.5,
+    "spikeAbsReturn": 0.25,
+    "staleDays": 2,
+    "lateEntryDays": 3,
+    "seed": 20260926,
+    "rng": "mulberry32"
+  },
+  "method": "Quarter basket, same rule as the published index. Equal line is the mean price change. Median line is the median price change. Capped line is value-weighted with no name above 5% when 20 or more names are in that day's move. Fewer than 20 names makes a 5% cap impossible, so that day uses the uncapped value weight and says so. The trust band and the leave-one-out list are on the median line. A single spike often does not move a median; spikes are flagged on their own. Missing days are gaps. Nothing is removed.",
+  "sufficient": true,
+  "thin": true,
+  "insufficientReason": null,
+  "universe": {
+    "items": 121,
+    "basket": 119,
+    "observedDays": 2,
+    "withTwoPrices": 36,
+    "extra": 0
+  },
+  "lines": {
+    "equal": 99,
+    "capped": 97.4,
+    "median": 99.2,
+    "capAppliedDays": 1,
+    "capInfeasibleDays": 0
+  },
+  "points": [
+    {
+      "date": "2026-08-18",
+      "equal": 100,
+      "capped": 100,
+      "median": 100,
+      "matched": 119
+    },
+    {
+      "date": "2026-09-21",
+      "from": "2026-08-18",
+      "equal": 99,
+      "capped": 97.4,
+      "median": 99.2,
+      "matched": 36,
+      "capApplied": true,
+      "capInfeasible": false
+    }
+  ],
+  "disagree": {
+    "flag": true,
+    "maxGap": 1.8,
+    "threshold": 0.5,
+    "note": "Equal, 5%-capped and median end 1.8 points apart, which is over the 0.5 point line."
+  },
+  "trustBand": {
+    "method": "median line",
+    "latest": {
+      "date": "2026-09-21",
+      "p05": 96.7,
+      "p95": 100,
+      "draws": 1000
+    },
+    "byDate": [
+      {
+        "date": "2026-08-18",
+        "p05": 100,
+        "p95": 100,
+        "draws": 1000
+      },
+      {
+        "date": "2026-09-21",
+        "p05": 96.7,
+        "p95": 100,
+        "draws": 1000
+      }
+    ]
+  },
+  "leaveOneOutTop10": [
+    {
+      "id": "cel25-9",
+      "name": "Surfing Pikachu VMAX",
+      "levelWithout": 99.1,
+      "delta": -0.1
+    },
+    {
+      "id": "pgo-79",
+      "name": "Mewtwo VSTAR",
+      "levelWithout": 99.1,
+      "delta": -0.1
+    },
+    {
+      "id": "pgo-81",
+      "name": "Dragonite VSTAR",
+      "levelWithout": 99.1,
+      "delta": -0.1
+    },
+    {
+      "id": "sv1-245",
+      "name": "Gardevoir ex",
+      "levelWithout": 99.1,
+      "delta": -0.1
+    },
+    {
+      "id": "sv2-211",
+      "name": "Raichu",
+      "levelWithout": 99.1,
+      "delta": -0.1
+    },
+    {
+      "id": "sv8pt5-144",
+      "name": "Leafeon ex",
+      "levelWithout": 99.1,
+      "delta": -0.1
+    },
+    {
+      "id": "sv8pt5-156",
+      "name": "Sylveon ex",
+      "levelWithout": 99.1,
+      "delta": -0.1
+    },
+    {
+      "id": "sv8pt5-60",
+      "name": "Umbreon ex",
+      "levelWithout": 99.1,
+      "delta": -0.1
+    },
+    {
+      "id": "swsh11-177",
+      "name": "Rotom V",
+      "levelWithout": 99.1,
+      "delta": -0.1
+    },
+    {
+      "id": "swsh11tg-TG17",
+      "name": "Pikachu VMAX",
+      "levelWithout": 99.1,
+      "delta": -0.1
+    }
+  ],
+  "leaveOneOutNote": "Ranked by how far the median line moves when that name is left out. A spike in one name often does not move a median.",
+  "byType": [],
+  "byRarity": [
+    {
+      "type": "Amazing Rare",
+      "n": 1,
+      "levels": null,
+      "note": "Fewer than 3 products, so no line was built."
+    },
+    {
+      "type": "Black White Rare",
+      "n": 1,
+      "levels": null,
+      "note": "Fewer than 3 products, so no line was built."
+    },
+    {
+      "type": "Classic Collection",
+      "n": 3,
+      "start": "2026-08-18",
+      "levels": {
+        "equal": 91.9,
+        "capped": 91.9,
+        "median": 91.9
+      },
+      "matchedLast": 1,
+      "outsideHeadline": false
+    },
+    {
+      "type": "Double Rare",
+      "n": 4,
+      "start": "2026-08-18",
+      "levels": {
+        "equal": 113.7,
+        "capped": 113.7,
+        "median": 113.7
+      },
+      "matchedLast": 1,
+      "outsideHeadline": false
+    },
+    {
+      "type": "Hyper Rare",
+      "n": 1,
+      "levels": null,
+      "note": "Fewer than 3 products, so no line was built."
+    },
+    {
+      "type": "Illustration Rare",
+      "n": 12,
+      "start": "2026-08-18",
+      "levels": {
+        "equal": 103.4,
+        "capped": 103.4,
+        "median": 103.4
+      },
+      "matchedLast": 1,
+      "outsideHeadline": false
+    },
+    {
+      "type": "Mega Hyper Rare",
+      "n": 3,
+      "start": "2026-08-18",
+      "levels": {
+        "equal": 91.2,
+        "capped": 91.2,
+        "median": 91.2
+      },
+      "matchedLast": 1,
+      "outsideHeadline": false
+    },
+    {
+      "type": "Rare",
+      "n": 2,
+      "levels": null,
+      "note": "Fewer than 3 products, so no line was built."
+    },
+    {
+      "type": "Rare Holo",
+      "n": 1,
+      "levels": null,
+      "note": "Fewer than 3 products, so no line was built."
+    },
+    {
+      "type": "Rare Holo V",
+      "n": 7,
+      "start": "2026-08-18",
+      "levels": {
+        "equal": 98,
+        "capped": 97.9,
+        "median": 97.7
+      },
+      "matchedLast": 3,
+      "outsideHeadline": false
+    },
+    {
+      "type": "Rare Holo VMAX",
+      "n": 11,
+      "start": "2026-08-18",
+      "levels": {
+        "equal": 102.4,
+        "capped": 100.3,
+        "median": 103
+      },
+      "matchedLast": 5,
+      "outsideHeadline": false
+    },
+    {
+      "type": "Rare Holo VSTAR",
+      "n": 1,
+      "levels": null,
+      "note": "Fewer than 3 products, so no line was built."
+    },
+    {
+      "type": "Rare Rainbow",
+      "n": 15,
+      "start": "2026-08-18",
+      "levels": {
+        "equal": 97.4,
+        "capped": 100.3,
+        "median": 99.5
+      },
+      "matchedLast": 7,
+      "outsideHeadline": false
+    },
+    {
+      "type": "Rare Secret",
+      "n": 6,
+      "start": "2026-08-18",
+      "levels": {
+        "equal": 99.5,
+        "capped": 99.5,
+        "median": 99.5
+      },
+      "matchedLast": 1,
+      "outsideHeadline": false
+    },
+    {
+      "type": "Rare Shiny",
+      "n": 2,
+      "levels": null,
+      "note": "Fewer than 3 products, so no line was built."
+    },
+    {
+      "type": "Rare Ultra",
+      "n": 23,
+      "start": "2026-08-18",
+      "levels": {
+        "equal": 100.4,
+        "capped": 98.5,
+        "median": 99.3
+      },
+      "matchedLast": 7,
+      "outsideHeadline": false
+    },
+    {
+      "type": "Special Illustration Rare",
+      "n": 25,
+      "start": "2026-08-18",
+      "levels": {
+        "equal": 97.3,
+        "capped": 97,
+        "median": 98
+      },
+      "matchedLast": 7,
+      "outsideHeadline": false
+    },
+    {
+      "type": "Trainer Gallery Rare Holo",
+      "n": 1,
+      "levels": null,
+      "note": "Fewer than 3 products, so no line was built."
+    },
+    {
+      "type": "Ultra Rare",
+      "n": 2,
+      "levels": null,
+      "note": "Fewer than 3 products, so no line was built."
+    }
+  ],
+  "flagCounts": {
+    "stale": 83,
+    "gappy": 0,
+    "spiky": 0,
+    "late": 2
+  },
+  "items": [
+    {
+      "id": "cel25-25",
+      "name": "Mew",
+      "type": "Rare Holo",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "cel25-7",
+      "name": "Flying Pikachu VMAX",
+      "type": "Rare Holo VMAX",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "cel25-9",
+      "name": "Surfing Pikachu VMAX",
+      "type": "Rare Holo VMAX",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.1053
+    },
+    {
+      "id": "cel25c-17_A",
+      "name": "Umbreon ★",
+      "type": "Classic Collection",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.0807
+    },
+    {
+      "id": "cel25c-4_A",
+      "name": "Charizard",
+      "type": "Classic Collection",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "cel25c-76_A",
+      "name": "M Rayquaza-EX",
+      "type": "Classic Collection",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "me1-179",
+      "name": "Mega Lucario ex",
+      "type": "Special Illustration Rare",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.1153
+    },
+    {
+      "id": "me1-187",
+      "name": "Mega Gardevoir ex",
+      "type": "Mega Hyper Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "me1-188",
+      "name": "Mega Lucario ex",
+      "type": "Mega Hyper Rare",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.0878
+    },
+    {
+      "id": "me2-109",
+      "name": "Mega Charizard X ex",
+      "type": "Ultra Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "me2-125",
+      "name": "Mega Charizard X ex",
+      "type": "Special Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "me2-13",
+      "name": "Mega Charizard X ex",
+      "type": "Double Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "me2-130",
+      "name": "Mega Charizard X ex",
+      "type": "Mega Hyper Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "pgo-72",
+      "name": "Mewtwo V",
+      "type": "Rare Ultra",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "pgo-79",
+      "name": "Mewtwo VSTAR",
+      "type": "Rare Rainbow",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.0443
+    },
+    {
+      "id": "pgo-81",
+      "name": "Dragonite VSTAR",
+      "type": "Rare Rainbow",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.0047
+    },
+    {
+      "id": "rsv10pt5-166",
+      "name": "Reshiram ex",
+      "type": "Special Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "rsv10pt5-172",
+      "name": "Victini",
+      "type": "Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "sv1-210",
+      "name": "Drowzee",
+      "type": "Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "sv1-212",
+      "name": "Kirlia",
+      "type": "Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "sv1-245",
+      "name": "Gardevoir ex",
+      "type": "Special Illustration Rare",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.0001
+    },
+    {
+      "id": "sv10-230",
+      "name": "Ethan's Ho-Oh ex",
+      "type": "Special Illustration Rare",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.0423
+    },
+    {
+      "id": "sv10-231",
+      "name": "Team Rocket's Mewtwo ex",
+      "type": "Special Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "sv10-232",
+      "name": "Cynthia's Garchomp ex",
+      "type": "Special Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "sv2-211",
+      "name": "Raichu",
+      "type": "Illustration Rare",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.0338
+    },
+    {
+      "id": "sv2-226",
+      "name": "Maushold",
+      "type": "Illustration Rare",
+      "flags": [
+        "late"
+      ],
+      "observations": 1,
+      "first": "2026-09-21",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "sv3-199",
+      "name": "Ninetales",
+      "type": "Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "sv3-202",
+      "name": "Cleffa",
+      "type": "Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "sv3-223",
+      "name": "Charizard ex",
+      "type": "Special Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "sv3pt5-183",
+      "name": "Charizard ex",
+      "type": "Ultra Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "sv3pt5-198",
+      "name": "Venusaur ex",
+      "type": "Special Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "sv3pt5-199",
+      "name": "Charizard ex",
+      "type": "Special Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "sv3pt5-200",
+      "name": "Blastoise ex",
+      "type": "Special Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "sv3pt5-6",
+      "name": "Charizard ex",
+      "type": "Double Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "sv5-177",
+      "name": "Gastly",
+      "type": "Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "sv5-208",
+      "name": "Raging Bolt ex",
+      "type": "Special Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "sv5-211",
+      "name": "Morty's Conviction",
+      "type": "Special Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "sv6-188",
+      "name": "Eevee",
+      "type": "Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "sv6-214",
+      "name": "Greninja ex",
+      "type": "Special Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "sv6-220",
+      "name": "Perrin",
+      "type": "Special Illustration Rare",
+      "flags": [
+        "late"
+      ],
+      "observations": 1,
+      "first": "2026-09-21",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "sv6pt5-66",
+      "name": "Houndoom",
+      "type": "Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "sv6pt5-78",
+      "name": "Persian",
+      "type": "Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "sv6pt5-98",
+      "name": "Basic Darkness Energy",
+      "type": "Hyper Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "sv7-143",
+      "name": "Bulbasaur",
+      "type": "Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "sv7-148",
+      "name": "Squirtle",
+      "type": "Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "sv7-169",
+      "name": "Dachsbun ex",
+      "type": "Special Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "sv8-237",
+      "name": "Milotic ex",
+      "type": "Special Illustration Rare",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.0201
+    },
+    {
+      "id": "sv8-238",
+      "name": "Pikachu ex",
+      "type": "Special Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "sv8-239",
+      "name": "Latias ex",
+      "type": "Special Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "sv8pt5-144",
+      "name": "Leafeon ex",
+      "type": "Special Illustration Rare",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.003
+    },
+    {
+      "id": "sv8pt5-155",
+      "name": "Espeon ex",
+      "type": "Special Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "sv8pt5-156",
+      "name": "Sylveon ex",
+      "type": "Special Illustration Rare",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.0464
+    },
+    {
+      "id": "sv8pt5-161",
+      "name": "Umbreon ex",
+      "type": "Special Illustration Rare",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.0524
+    },
+    {
+      "id": "sv8pt5-34",
+      "name": "Espeon ex",
+      "type": "Double Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "sv8pt5-60",
+      "name": "Umbreon ex",
+      "type": "Double Rare",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.137
+    },
+    {
+      "id": "sv9-184",
+      "name": "Lillie's Clefairy ex",
+      "type": "Special Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh1-142",
+      "name": "Snorlax VMAX",
+      "type": "Rare Holo VMAX",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh1-200",
+      "name": "Marnie",
+      "type": "Rare Ultra",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh1-206",
+      "name": "Snorlax VMAX",
+      "type": "Rare Rainbow",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh10-161",
+      "name": "Beedrill V",
+      "type": "Rare Ultra",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh10-167",
+      "name": "Origin Forme Palkia V",
+      "type": "Rare Ultra",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh10-172",
+      "name": "Machamp V",
+      "type": "Rare Ultra",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.0484
+    },
+    {
+      "id": "swsh10tg-TG13",
+      "name": "Starmie V",
+      "type": "Rare Holo V",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh10tg-TG21",
+      "name": "Zacian V",
+      "type": "Rare Holo V",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh11-130",
+      "name": "Giratina V",
+      "type": "Rare Holo V",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh11-177",
+      "name": "Rotom V",
+      "type": "Rare Ultra",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.0006
+    },
+    {
+      "id": "swsh11-180",
+      "name": "Aerodactyl V",
+      "type": "Rare Ultra",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh11-185",
+      "name": "Giratina V",
+      "type": "Rare Ultra",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh11-186",
+      "name": "Giratina V",
+      "type": "Rare Ultra",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh11tg-TG06",
+      "name": "Gengar",
+      "type": "Trainer Gallery Rare Holo",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh11tg-TG16",
+      "name": "Pikachu V",
+      "type": "Rare Holo V",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.0285
+    },
+    {
+      "id": "swsh11tg-TG17",
+      "name": "Pikachu VMAX",
+      "type": "Rare Holo VMAX",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.0302
+    },
+    {
+      "id": "swsh12-138",
+      "name": "Lugia V",
+      "type": "Rare Holo V",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.0228
+    },
+    {
+      "id": "swsh12-177",
+      "name": "Unown V",
+      "type": "Rare Ultra",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh12-185",
+      "name": "Lugia V",
+      "type": "Rare Ultra",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.051
+    },
+    {
+      "id": "swsh12-186",
+      "name": "Lugia V",
+      "type": "Rare Ultra",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.0072
+    },
+    {
+      "id": "swsh12-202",
+      "name": "Lugia VSTAR",
+      "type": "Rare Rainbow",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh12pt5-102",
+      "name": "Rayquaza VMAX",
+      "type": "Rare Holo VMAX",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh12pt5-147",
+      "name": "Elesa's Sparkle",
+      "type": "Rare Ultra",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh12pt5-160",
+      "name": "Pikachu",
+      "type": "Rare Secret",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh12pt5gg-GG44",
+      "name": "Mewtwo VSTAR",
+      "type": "Rare Holo VSTAR",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh12pt5gg-GG69",
+      "name": "Giratina VSTAR",
+      "type": "Rare Secret",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh12pt5gg-GG70",
+      "name": "Arceus VSTAR",
+      "type": "Rare Secret",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh12tg-TG15",
+      "name": "Blaziken VMAX",
+      "type": "Rare Holo VMAX",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh12tg-TG20",
+      "name": "Rayquaza VMAX",
+      "type": "Rare Holo VMAX",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh12tg-TG29",
+      "name": "Rayquaza VMAX",
+      "type": "Rare Secret",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh2-177",
+      "name": "Ninetales V",
+      "type": "Rare Ultra",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.1229
+    },
+    {
+      "id": "swsh2-189",
+      "name": "Boss's Orders",
+      "type": "Rare Ultra",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.0365
+    },
+    {
+      "id": "swsh2-200",
+      "name": "Boss's Orders",
+      "type": "Rare Rainbow",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh3-194",
+      "name": "Salamence VMAX",
+      "type": "Rare Rainbow",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh3-20",
+      "name": "Charizard VMAX",
+      "type": "Rare Holo VMAX",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.1332
+    },
+    {
+      "id": "swsh35-74",
+      "name": "Charizard VMAX",
+      "type": "Rare Rainbow",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh35-76",
+      "name": "Gardevoir VMAX",
+      "type": "Rare Rainbow",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh35-79",
+      "name": "Charizard V",
+      "type": "Rare Secret",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh4-138",
+      "name": "Rayquaza",
+      "type": "Amazing Rare",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.0883
+    },
+    {
+      "id": "swsh4-170",
+      "name": "Pikachu V",
+      "type": "Rare Ultra",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh4-188",
+      "name": "Pikachu VMAX",
+      "type": "Rare Rainbow",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.108
+    },
+    {
+      "id": "swsh45-64",
+      "name": "Alcremie V",
+      "type": "Rare Ultra",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh45-70",
+      "name": "Poké Kid",
+      "type": "Rare Ultra",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh45-72",
+      "name": "Skyla",
+      "type": "Rare Ultra",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh45sv-SV039",
+      "name": "Yamper",
+      "type": "Rare Shiny",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh45sv-SV044",
+      "name": "Morpeko",
+      "type": "Rare Shiny",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh45sv-SV107",
+      "name": "Charizard VMAX",
+      "type": "Rare Holo VMAX",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh6-177",
+      "name": "Galarian Moltres V",
+      "type": "Rare Ultra",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh6-201",
+      "name": "Blaziken VMAX",
+      "type": "Rare Rainbow",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh6-224",
+      "name": "Snorlax",
+      "type": "Rare Secret",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.0048
+    },
+    {
+      "id": "swsh7-111",
+      "name": "Rayquaza VMAX",
+      "type": "Rare Holo VMAX",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.0374
+    },
+    {
+      "id": "swsh7-192",
+      "name": "Dragonite V",
+      "type": "Rare Ultra",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh7-214",
+      "name": "Umbreon VMAX",
+      "type": "Rare Rainbow",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.0119
+    },
+    {
+      "id": "swsh7-215",
+      "name": "Umbreon VMAX",
+      "type": "Rare Rainbow",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.0172
+    },
+    {
+      "id": "swsh7-217",
+      "name": "Rayquaza VMAX",
+      "type": "Rare Rainbow",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.1261
+    },
+    {
+      "id": "swsh7-218",
+      "name": "Rayquaza VMAX",
+      "type": "Rare Rainbow",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.006
+    },
+    {
+      "id": "swsh7-95",
+      "name": "Umbreon VMAX",
+      "type": "Rare Holo VMAX",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.1548
+    },
+    {
+      "id": "swsh9-154",
+      "name": "Charizard V",
+      "type": "Rare Ultra",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh9-166",
+      "name": "Arceus V",
+      "type": "Rare Ultra",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.0539
+    },
+    {
+      "id": "swsh9-174",
+      "name": "Charizard VSTAR",
+      "type": "Rare Rainbow",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh9tg-TG14",
+      "name": "Sylveon V",
+      "type": "Rare Holo V",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "swsh9tg-TG16",
+      "name": "Mimikyu V",
+      "type": "Rare Holo V",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.0092
+    },
+    {
+      "id": "zsv10pt5-166",
+      "name": "Zekrom ex",
+      "type": "Special Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    },
+    {
+      "id": "zsv10pt5-171",
+      "name": "Victini",
+      "type": "Rare",
+      "flags": [],
+      "observations": 2,
+      "first": "2026-08-18",
+      "last": "2026-09-21",
+      "maxAbsReturn": 0.0288
+    },
+    {
+      "id": "zsv10pt5-172",
+      "name": "Zekrom ex",
+      "type": "Black White Rare",
+      "flags": [
+        "stale"
+      ],
+      "observations": 1,
+      "first": "2026-08-18",
+      "last": "2026-08-18",
+      "maxAbsReturn": 0
+    }
+  ],
+  "weedOut": [
+    {
+      "rank": 1,
+      "id": "cel25-25",
+      "name": "Mew",
+      "type": "Rare Holo",
+      "flags": [
+        "stale"
+      ],
+      "reasons": [
+        "No fresh price within 2 days of 2026-09-21. Last observation 2026-08-18."
+      ],
+      "influence": 0,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 2,
+      "id": "cel25-7",
+      "name": "Flying Pikachu VMAX",
+      "type": "Rare Holo VMAX",
+      "flags": [
+        "stale"
+      ],
+      "reasons": [
+        "No fresh price within 2 days of 2026-09-21. Last observation 2026-08-18."
+      ],
+      "influence": 0,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 3,
+      "id": "cel25c-4_A",
+      "name": "Charizard",
+      "type": "Classic Collection",
+      "flags": [
+        "stale"
+      ],
+      "reasons": [
+        "No fresh price within 2 days of 2026-09-21. Last observation 2026-08-18."
+      ],
+      "influence": 0,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 4,
+      "id": "cel25c-76_A",
+      "name": "M Rayquaza-EX",
+      "type": "Classic Collection",
+      "flags": [
+        "stale"
+      ],
+      "reasons": [
+        "No fresh price within 2 days of 2026-09-21. Last observation 2026-08-18."
+      ],
+      "influence": 0,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 5,
+      "id": "me1-187",
+      "name": "Mega Gardevoir ex",
+      "type": "Mega Hyper Rare",
+      "flags": [
+        "stale"
+      ],
+      "reasons": [
+        "No fresh price within 2 days of 2026-09-21. Last observation 2026-08-18."
+      ],
+      "influence": 0,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 6,
+      "id": "me2-109",
+      "name": "Mega Charizard X ex",
+      "type": "Ultra Rare",
+      "flags": [
+        "stale"
+      ],
+      "reasons": [
+        "No fresh price within 2 days of 2026-09-21. Last observation 2026-08-18."
+      ],
+      "influence": 0,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 7,
+      "id": "me2-125",
+      "name": "Mega Charizard X ex",
+      "type": "Special Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "reasons": [
+        "No fresh price within 2 days of 2026-09-21. Last observation 2026-08-18."
+      ],
+      "influence": 0,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 8,
+      "id": "me2-13",
+      "name": "Mega Charizard X ex",
+      "type": "Double Rare",
+      "flags": [
+        "stale"
+      ],
+      "reasons": [
+        "No fresh price within 2 days of 2026-09-21. Last observation 2026-08-18."
+      ],
+      "influence": 0,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 9,
+      "id": "me2-130",
+      "name": "Mega Charizard X ex",
+      "type": "Mega Hyper Rare",
+      "flags": [
+        "stale"
+      ],
+      "reasons": [
+        "No fresh price within 2 days of 2026-09-21. Last observation 2026-08-18."
+      ],
+      "influence": 0,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 10,
+      "id": "pgo-72",
+      "name": "Mewtwo V",
+      "type": "Rare Ultra",
+      "flags": [
+        "stale"
+      ],
+      "reasons": [
+        "No fresh price within 2 days of 2026-09-21. Last observation 2026-08-18."
+      ],
+      "influence": 0,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 11,
+      "id": "rsv10pt5-166",
+      "name": "Reshiram ex",
+      "type": "Special Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "reasons": [
+        "No fresh price within 2 days of 2026-09-21. Last observation 2026-08-18."
+      ],
+      "influence": 0,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 12,
+      "id": "rsv10pt5-172",
+      "name": "Victini",
+      "type": "Rare",
+      "flags": [
+        "stale"
+      ],
+      "reasons": [
+        "No fresh price within 2 days of 2026-09-21. Last observation 2026-08-18."
+      ],
+      "influence": 0,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 13,
+      "id": "sv1-210",
+      "name": "Drowzee",
+      "type": "Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "reasons": [
+        "No fresh price within 2 days of 2026-09-21. Last observation 2026-08-18."
+      ],
+      "influence": 0,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 14,
+      "id": "sv1-212",
+      "name": "Kirlia",
+      "type": "Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "reasons": [
+        "No fresh price within 2 days of 2026-09-21. Last observation 2026-08-18."
+      ],
+      "influence": 0,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 15,
+      "id": "sv10-231",
+      "name": "Team Rocket's Mewtwo ex",
+      "type": "Special Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "reasons": [
+        "No fresh price within 2 days of 2026-09-21. Last observation 2026-08-18."
+      ],
+      "influence": 0,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 16,
+      "id": "sv10-232",
+      "name": "Cynthia's Garchomp ex",
+      "type": "Special Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "reasons": [
+        "No fresh price within 2 days of 2026-09-21. Last observation 2026-08-18."
+      ],
+      "influence": 0,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 17,
+      "id": "sv3-199",
+      "name": "Ninetales",
+      "type": "Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "reasons": [
+        "No fresh price within 2 days of 2026-09-21. Last observation 2026-08-18."
+      ],
+      "influence": 0,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 18,
+      "id": "sv3-202",
+      "name": "Cleffa",
+      "type": "Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "reasons": [
+        "No fresh price within 2 days of 2026-09-21. Last observation 2026-08-18."
+      ],
+      "influence": 0,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 19,
+      "id": "sv3-223",
+      "name": "Charizard ex",
+      "type": "Special Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "reasons": [
+        "No fresh price within 2 days of 2026-09-21. Last observation 2026-08-18."
+      ],
+      "influence": 0,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 20,
+      "id": "sv3pt5-183",
+      "name": "Charizard ex",
+      "type": "Ultra Rare",
+      "flags": [
+        "stale"
+      ],
+      "reasons": [
+        "No fresh price within 2 days of 2026-09-21. Last observation 2026-08-18."
+      ],
+      "influence": 0,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 21,
+      "id": "sv3pt5-198",
+      "name": "Venusaur ex",
+      "type": "Special Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "reasons": [
+        "No fresh price within 2 days of 2026-09-21. Last observation 2026-08-18."
+      ],
+      "influence": 0,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 22,
+      "id": "sv3pt5-199",
+      "name": "Charizard ex",
+      "type": "Special Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "reasons": [
+        "No fresh price within 2 days of 2026-09-21. Last observation 2026-08-18."
+      ],
+      "influence": 0,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 23,
+      "id": "sv3pt5-200",
+      "name": "Blastoise ex",
+      "type": "Special Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "reasons": [
+        "No fresh price within 2 days of 2026-09-21. Last observation 2026-08-18."
+      ],
+      "influence": 0,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 24,
+      "id": "sv3pt5-6",
+      "name": "Charizard ex",
+      "type": "Double Rare",
+      "flags": [
+        "stale"
+      ],
+      "reasons": [
+        "No fresh price within 2 days of 2026-09-21. Last observation 2026-08-18."
+      ],
+      "influence": 0,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 25,
+      "id": "sv5-177",
+      "name": "Gastly",
+      "type": "Illustration Rare",
+      "flags": [
+        "stale"
+      ],
+      "reasons": [
+        "No fresh price within 2 days of 2026-09-21. Last observation 2026-08-18."
+      ],
+      "influence": 0,
+      "recommendation": "Review only. This product was not removed."
+    }
+  ],
+  "weedOutCount": 85,
+  "gaps": [
+    {
+      "from": "2026-08-18",
+      "to": "2026-09-21",
+      "missingDays": 33,
+      "note": "No price was invented for the days in between."
+    }
+  ],
+  "note": "25 of 85 flagged products are listed, ranked. None were removed. Thin history: most cards have one or two observations, and the days between them are a gap.",
+  "fileUpdatedAt": "2026-09-21"
+}
