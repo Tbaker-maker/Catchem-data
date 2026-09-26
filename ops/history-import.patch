@@ -1,0 +1,631 @@
+diff --git a/AGENTS-AND-LOGIC.md b/AGENTS-AND-LOGIC.md
+index 15136241..60629af0 100644
+--- a/AGENTS-AND-LOGIC.md
++++ b/AGENTS-AND-LOGIC.md
+@@ -5,3 +5,3 @@ one does, why it exists, and what it cannot see.
+ 
+-**64 guards. 8 agents. 11 specialists.** Every one of them exists because
++**66 guards. 8 agents. 11 specialists.** Every one of them exists because
+ something went wrong once.
+diff --git a/SYSTEM-README.md b/SYSTEM-README.md
+index 37d50253..4cab2b4a 100644
+--- a/SYSTEM-README.md
++++ b/SYSTEM-README.md
+@@ -34,4 +34,4 @@ Type what you want to post. It hands back cards.
+ | **207 sealed products** | tracked daily by the bot |
+-| **52 sourced facts** | each with a falsifier and a recheck date |
+-| **64 guards** | each with a declared blind spot |
++| **53 sourced facts** | each with a falsifier and a recheck date |
++| **66 guards** | each with a declared blind spot |
+ 
+diff --git a/data/heat-check-methodology.md b/data/heat-check-methodology.md
+index 99000644..f1b6cf8c 100644
+--- a/data/heat-check-methodology.md
++++ b/data/heat-check-methodology.md
+@@ -13,3 +13,7 @@ Each input is compared with that same product's own last 90 days. The comparison
+ 
+-A product needs 30 days of listing changes before it gets a score. Anything short of that is left out.
++A product gets a score when at least one input has 30 days behind it: 30 one-day changes in listings, or 30 days of TCGplayer market price (with 30 momentum readings to compare against). An input that is short is left empty and the score is marked partial. A product with neither is left out.
++
++Listing changes are only counted between two days in a row. Our eBay history has a gap from 2026-08-26 to 2026-09-21, and the jump across it is not treated as one day's change.
++
++TCGplayer market price history comes from two labelled sources: PokemonPriceTracker daily history (TCGplayer-derived) from 2026-03-31, and TCGCSV live days from 2026-09-25. On a day both have, the TCGCSV price is used. A series whose newest price is more than 3 days old is not used.
+ 
+diff --git a/scripts/binder-page.mjs b/scripts/binder-page.mjs
+index 4e7cfb3b..2c4360dd 100644
+--- a/scripts/binder-page.mjs
++++ b/scripts/binder-page.mjs
+@@ -21,2 +21,3 @@ import { fileURLToPath, pathToFileURL } from "node:url";
+ import { dirname, join } from "node:path";
++import { cardImage } from "./image-source.mjs";
+ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+@@ -24,3 +25,3 @@ const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "ut
+ const esc = s => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+-const cardImg = id => { const m = /^(.+)-([^-]+)$/.exec(id); return m ? `https://images.pokemontcg.io/${m[1]}/${m[2]}.png` : ""; };
++const cardImg = id => cardImage(id, false); // source-published URL, never constructed
+ 
+diff --git a/scripts/build-card-images.mjs b/scripts/build-card-images.mjs
+new file mode 100644
+index 00000000..5c6593c4
+--- /dev/null
++++ b/scripts/build-card-images.mjs
+@@ -0,0 +1,47 @@
++// Build data/card-images.json: the image URL the SOURCE publishes for each card
++// id we render (PokemonTCG/pokemon-tcg-data, the dataset behind pokemontcg.io).
++// Why: card-guard fails any script that builds an image URL from a card id.
++// Hosts differ per set (me4+ serve from images.scrydex.com), and a constructed
++// URL that 404s comes back as a card back that renders fine. Scripts now read
++// this map via cardImage() in image-source.mjs; an id with no entry gets no
++// image rather than a guessed one.
++import { readFile, writeFile } from "node:fs/promises";
++import { dirname, join } from "node:path";
++import { fileURLToPath } from "node:url";
++
++const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
++const SRC = "https://raw.githubusercontent.com/PokemonTCG/pokemon-tcg-data/master/cards/en";
++const J = async (p) => { try { return JSON.parse(await readFile(join(ROOT, p), "utf8")); } catch { return null; } };
++
++const ids = new Set();
++const cat = await J("data/card-catalogue.json");
++for (const id of Object.keys(cat?.cards || {})) ids.add(id);
++for (const c of (await J("data/singles-prices.json"))?.cards || []) if (c.cardId) ids.add(c.cardId);
++const setOf = (id) => id.slice(0, id.lastIndexOf("-"));
++const sets = [...new Set([...ids].map(setOf))].sort();
++
++const images = {};
++const missingSets = [];
++for (const set of sets) {
++  let cards = null;
++  try {
++    const r = await fetch(`${SRC}/${set}.json`, { signal: AbortSignal.timeout(20000) });
++    if (r.ok) cards = await r.json();
++  } catch {}
++  if (!Array.isArray(cards)) { missingSets.push(set); continue; }
++  for (const c of cards) {
++    if (!ids.has(c.id)) continue;
++    const small = c.images?.small || null, large = c.images?.large || null;
++    if (small || large) images[c.id] = { small, large };
++  }
++}
++const doc = {
++  source: "PokemonTCG/pokemon-tcg-data cards/en/<set>.json images.small / images.large",
++  builtAt: new Date().toISOString(),
++  cards: Object.keys(images).length,
++  requested: ids.size,
++  missingSets,
++  images,
++};
++await writeFile(join(ROOT, "data/card-images.json"), JSON.stringify(doc).replace(/\},"/g, '},\n"') + "\n");
++console.log(`card images: ${doc.cards}/${ids.size} ids, ${missingSets.length} set file(s) missing`);
+diff --git a/scripts/compute-heat-check.mjs b/scripts/compute-heat-check.mjs
+index 9530a312..175c384c 100644
+--- a/scripts/compute-heat-check.mjs
++++ b/scripts/compute-heat-check.mjs
+@@ -6,2 +6,3 @@ import { fileURLToPath } from "node:url";
+ import { WRONG_MATCH_IDS, labelFor, listingHeat, momentum, scoreFrom } from "./lib/heat-check.mjs";
++import { loadMarketHistory } from "./lib/market-history.mjs";
+ 
+@@ -22,11 +23,6 @@ for (const list of rows.values()) list.sort((a, b) => a.date < b.date ? -1 : 1);
+ 
+-const tcg = new Map();
+-try {
+-  const dir = join(ROOT, "data/history/tcgplayer-market");
+-  for (const name of await readdir(dir)) {
+-    if (!name.endsWith(".json") || name === "mapping.json" || name === "unmatched.json" || name === "coverage.json") continue;
+-    const doc = JSON.parse(await readFile(join(dir, name), "utf8"));
+-    tcg.set(doc.id, doc.points || []);
+-  }
+-} catch { /* no backfill on this branch */ }
++// TCGplayer market history: TCGCSV live days, plus the PokemonPriceTracker
++// daily backfill where TCGCSV has no point for that day. Missing days stay missing.
++const hist = await loadMarketHistory(ROOT);
++const tcg = new Map([...hist.merged].map(([id, pts]) => [id, pts]));
+ 
+@@ -38,7 +34,16 @@ const skipped = {
+ const out = [];
+-for (const [id, list] of rows) {
++// A product is scored when at least one input has its 30 days: 30 one-day
++// listing changes, or 30 TCGplayer market prices (plus 30 momentum readings to
++// z-score against). Whatever is short is left empty and the score says partial.
++const ids = new Set([...rows.keys(), ...tcg.keys()]);
++for (const id of ids) {
+   if (quarantine.has(id) || WRONG_MATCH_IDS.has(id)) continue;
++  if (!byId.has(id)) continue;
++  const list = rows.get(id) || [];
+   const listings = listingHeat(list.map((r) => ({ date: r.date, listingCount: r.listingCount })), today);
+-  if (listings.z == null) continue;
+-  const mom = momentum(tcg.get(id) || []);
++  const series = tcg.get(id) || [];
++  // A TCGplayer series that stopped more than 3 days ago describes an older
++  // market, not today's. It is left out rather than scored as current.
++  const fresh = series.length && Date.parse(today) - Date.parse(series.at(-1).date) <= 3 * 86400000;
++  const mom = fresh ? momentum(series) : { z: null, latest: null, days: series.length, stale: series.length ? series.at(-1).date : null };
+   const parts = [
+@@ -61,3 +66,3 @@ for (const [id, list] of rows) {
+       listingChange: listings.latest,
+-      listingChangeZ: Math.round(listings.z * 1000) / 1000,
++      listingChangeZ: listings.z == null ? null : Math.round(listings.z * 1000) / 1000,
+       listingDays: listings.days,
+@@ -66,2 +71,5 @@ for (const [id, list] of rows) {
+       tcgplayerDays: mom.days,
++      tcgplayerStaleSince: mom.stale || null,
++      tcgplayerFrom: (tcg.get(id) || [])[0]?.date || null,
++      tcgplayerSources: [...new Set((tcg.get(id) || []).map((p) => p.source))],
+       googleTrends: null,
+@@ -75,2 +83,4 @@ const doc = {
+   method: "Each input is a z-score against that product's own trailing 90 days. Weights: listings 0.40, TCGplayer market momentum 0.30, Google Trends 0.20, new YouTube videos 0.10. A missing input is left out and the score is marked partial. 50 is the middle.",
++  eligibility: "Scored when at least one input has 30 days: 30 one-day listing changes, or 30 TCGplayer market prices with 30 momentum readings. Listing changes across a gap in our eBay history are not counted.",
++  marketHistory: hist.coverage,
+   skipped,
+@@ -82,5 +92,5 @@ if (out.length) {
+   console.log("hottest");
+-  for (const r of out.slice(0, 10)) console.log(`  ${r.score} ${r.label} ${r.name} change ${r.inputs.listingChange}`);
++  for (const r of out.slice(0, 10)) console.log(`  ${r.score} ${r.label} ${r.name} listings ${r.inputs.listingChange} momentum ${r.inputs.tcgplayerMomentum == null ? '-' : (r.inputs.tcgplayerMomentum * 100).toFixed(2) + '%'}`);
+   console.log("coldest");
+-  for (const r of out.slice(-10)) console.log(`  ${r.score} ${r.label} ${r.name} change ${r.inputs.listingChange}`);
++  for (const r of out.slice(-10)) console.log(`  ${r.score} ${r.label} ${r.name} listings ${r.inputs.listingChange} momentum ${r.inputs.tcgplayerMomentum == null ? '-' : (r.inputs.tcgplayerMomentum * 100).toFixed(2) + '%'}`);
+ }
+diff --git a/scripts/compute-indexes.mjs b/scripts/compute-indexes.mjs
+index 3a49251f..8f6fb53c 100644
+--- a/scripts/compute-indexes.mjs
++++ b/scripts/compute-indexes.mjs
+@@ -6,2 +6,3 @@ import { fileURLToPath, pathToFileURL } from "node:url";
+ import { WRONG_MATCH_IDS, WRONG_MATCH_WHY, chainIndex, eraOf, typeKey } from "./lib/index-baskets.mjs";
++import { PPT_SOURCE, TCGCSV_SOURCE, loadMarketHistory } from "./lib/market-history.mjs";
+ 
+@@ -41,23 +42,27 @@ export async function publishChartIndexes() {
+ 
++  // TCGplayer market history: TCGCSV live days plus the PokemonPriceTracker
++  // daily backfill (both TCGplayer market price, kept in separate folders and
++  // labelled per source). A move is only ever taken within one source.
+   const backfillPrice = new Map();
+-  const backfillDir = join(ROOT, "data/history/tcgplayer-market");
+   let backfillDates = [];
++  let pairPrice = null;
++  let backfillCoverage = null;
+   let backfillGap = [{ from: daysBefore(today, 365), to: daysBefore(today, 1), note: "No TCGplayer history file is in this run, so this series is empty. It is not filled from eBay." }];
+   try {
+-    const cov = JSON.parse(await readFile(join(backfillDir, "coverage.json"), "utf8"));
+-    if (cov.archive && cov.archive.available === false) {
+-      backfillGap = [{ from: cov.window.from, to: cov.window.to, note: "TCGCSV has not published the price archive. Only days we could read live are in this series. Missing days are not filled in." }];
+-    }
+-    const names = (await readdir(backfillDir)).filter((n) => n.endsWith(".json") && !["mapping.json", "unmatched.json", "coverage.json"].includes(n));
++    const hist = await loadMarketHistory(ROOT);
++    pairPrice = hist.pairPrice;
++    backfillCoverage = hist.coverage;
+     const dates = new Set();
+-    for (const name of names) {
+-      const doc = JSON.parse(await readFile(join(backfillDir, name), "utf8"));
+-      if (quarantine.has(doc.id) || WRONG_MATCH_IDS.has(doc.id)) continue;
+-      const pts = (doc.points || []).filter((p) => p.market > 0 && p.date);
+-      if (!pts.length) continue;
+-      backfillPrice.set(doc.id, new Map(pts.map((p) => [p.date, p.market])));
+-      for (const p of pts) dates.add(p.date);
++    for (const id of hist.ids) {
++      if (quarantine.has(id) || WRONG_MATCH_IDS.has(id)) continue;
++      const m = hist.priceMap.get(id);
++      if (!m?.size) continue;
++      backfillPrice.set(id, m);
++      for (const d of m.keys()) dates.add(d);
+     }
+     backfillDates = [...dates].sort();
+-  } catch { /* backfill not on this branch */ }
++    if (backfillDates.length) {
++      backfillGap = [{ from: daysBefore(backfillDates[0], 365), to: daysBefore(backfillDates[0], 1), note: "No TCGplayer history before this date is on file (the TCGCSV archive is offline and PokemonPriceTracker returns 180 days). Nothing earlier is filled in." }];
++    }
++  } catch { /* no history on this branch */ }
+ 
+@@ -67,3 +72,3 @@ export async function publishChartIndexes() {
+     const backElig = new Map(backfillDates.map((d) => [d, new Set(memberIds.filter((id) => backfillPrice.get(id)?.has(d)))]));
+-    const back = backfillDates.length ? chainIndex(backfillDates, backfillPrice, backElig, members) : { base: 100, points: [], gaps: [] };
++    const back = backfillDates.length ? chainIndex(backfillDates, backfillPrice, backElig, members, pairPrice) : { base: 100, points: [], gaps: [] };
+     return {
+@@ -71,6 +76,12 @@ export async function publishChartIndexes() {
+         source: "TCGplayer market price",
++        sources: [
++          { label: PPT_SOURCE, folder: "data/history/ppt-sealed", role: "daily history backfill, 2026-03-31 to 2026-09-25" },
++          { label: TCGCSV_SOURCE, folder: "data/history/tcgplayer-market", role: "live daily append from 2026-09-25; wins on any day both have" },
++        ],
++        sameSourceMoves: "Each day's move uses two prices from the same source. No move is computed across sources.",
+         available: back.points.length > 0,
++        start: back.points[0]?.date || null,
+         base: 100,
+         points: back.points.map(({ basket, ...p }) => p),
+-        gaps: back.points.length > 1 ? back.gaps : backfillGap,
++        gaps: back.points.length > 1 ? [...backfillGap, ...back.gaps] : backfillGap,
+       },
+@@ -125,4 +136,5 @@ export async function publishChartIndexes() {
+     sourceLive: "eBay asking prices",
+-    sourceBackfill: "TCGplayer market price",
+-    rawChase: { hidden: true, products: 0, reason: "No chase-single price history is on file, so the Raw Chase Index is not published." },
++    sourceBackfill: "TCGplayer market price (PokemonPriceTracker daily backfill + TCGCSV live days)",
++    backfillCoverage,
++    rawChase: { hidden: true, products: 0, reason: "Chase-single history is on file (data/history/singles-rarebox/), but it is change-only and stops on 2026-09-15, so a daily chain-linked index would need filled-in days. The Raw Chase Index is not published." },
+     excluded, hiddenEras, files: written,
+diff --git a/scripts/fuzz.mjs b/scripts/fuzz.mjs
+index 6df7507a..1fa7fa86 100644
+--- a/scripts/fuzz.mjs
++++ b/scripts/fuzz.mjs
+@@ -47,2 +47,4 @@ const ctx = { fillStyle:"", font:"", textAlign:"", globalAlpha:1, lineWidth:1, s
+   setTransform(){}, resetTransform(){}, scale(){},
++  // clearRect arrived with build.html's canvas redraw; the stub check below named it.
++  clearRect(){},
+   fill(){}, stroke(){}, clip(){}, createLinearGradient(){ return { addColorStop(){} }; } };
+diff --git a/scripts/generate-board.mjs b/scripts/generate-board.mjs
+index 1173b134..9f6a0eff 100644
+--- a/scripts/generate-board.mjs
++++ b/scripts/generate-board.mjs
+@@ -8,5 +8,6 @@ import { fileURLToPath } from "node:url";
+ import { dirname, join } from "node:path";
++import { cardImage } from "./image-source.mjs";
+ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+ const J = async p => JSON.parse(await readFile(join(ROOT,p),"utf-8"));
+-const cardImg = id => { const m=/^(.+)-(\w+)$/.exec(id||""); return m?`https://images.pokemontcg.io/${m[1]}/${m[2]}.png`:null; };
++const cardImg = id => cardImage(id, false) || null; // source-published URL, never constructed
+ let __tcgIds = {}, __imgOv = {};
+diff --git a/scripts/generate-pulse.mjs b/scripts/generate-pulse.mjs
+index 8c298a09..34a22f6a 100644
+--- a/scripts/generate-pulse.mjs
++++ b/scripts/generate-pulse.mjs
+@@ -50,2 +50,3 @@ import { fileURLToPath } from "node:url";
+ import { dirname, join } from "node:path";
++import { cardImage } from "./image-source.mjs";
+ import { applyPackBasis } from "./pack-basis.mjs";
+@@ -54,3 +55,3 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+ const today = new Date().toISOString().split("T")[0];
+-const cardImg = id => { const m=/^(.+)-(\w+)$/.exec(id||""); return m?`https://images.pokemontcg.io/${m[1]}/${m[2]}.png`:null; };
++const cardImg = id => cardImage(id, false) || null; // source-published URL, never constructed
+ 
+@@ -242,3 +243,5 @@ const depthReadOf = r => (today >= DEPTH_DEBUT && depthPlain[r.flow])
+ const deepRows = (der?.depthReads??[]).map(r=>`<div class="row"><span>${r.tag} ${r.name} <em>${depthReadOf(r)}</em></span><span class="mono">$${r.price} · ${r.listings}L</span></div>`).join("") + `<div class="foot">Depth read = Active Listings (measured) × flow (Buy Pressure est.) · unlocks at 3 clean days per product.</div>`;
+-const heatReads = Array.isArray(heat?.reads) ? heat.reads : [];
++// Blocked/quarantined products never headline here either: every other
++// editorial list above is filtered through __blk, and this one was not.
++const heatReads = (Array.isArray(heat?.reads) ? heat.reads : []).filter(r => !__blk.blocked(r.id));
+ const heatSection = (today >= HEAT_DEBUT && heatReads.length)
+diff --git a/scripts/image-source.mjs b/scripts/image-source.mjs
+index d3eb2db2..a7953394 100644
+--- a/scripts/image-source.mjs
++++ b/scripts/image-source.mjs
+@@ -33,5 +33,12 @@ export const productImage = (p, size = 1000) => {
+ export const hasCleanImage = p => Boolean(TCG[p.id]);
++// Card art: the URL the source data publishes for that card id
++// (data/card-images.json, built by scripts/build-card-images.mjs). Never
++// constructed from the id: hosts differ per set, and a guessed URL that 404s
++// comes back as a card back. No entry means no image.
++let CARD_IMAGES = {};
++try { CARD_IMAGES = JSON.parse(await readFile(join(ROOT, "data/card-images.json"), "utf-8")).images || {}; } catch {}
+ export const cardImage = (cardId, hires = true) => {
+-  const m = /^(.+)-([^-]+)$/.exec(cardId || "");
+-  return m ? `https://images.pokemontcg.io/${m[1]}/${m[2]}${hires ? "_hires" : ""}.png` : "";
++  const e = CARD_IMAGES[cardId];
++  if (!e) return "";
++  return (hires ? (e.large || e.small) : (e.small || e.large)) || "";
+ };
+diff --git a/scripts/import-history-backfill.mjs b/scripts/import-history-backfill.mjs
+new file mode 100644
+index 00000000..cd161a66
+--- /dev/null
++++ b/scripts/import-history-backfill.mjs
+@@ -0,0 +1,148 @@
++// ONE-OFF import of the 2026-09-25 history backfill into labelled per-product files.
++//   Sealed:  PokemonPriceTracker raw responses (artifact of PPT backfill run
++//            36206031966) -> data/history/ppt-sealed/<id>.json
++//   Singles: novaoc/rarebox-price-history (TCGplayer market via the TCGCSV
++//            archive, change-only) -> data/history/singles-rarebox/<cardId>.json
++// Rules: nothing in data/history/tcgplayer-market/ (TCGCSV) is touched. Where
++// both sources have a day, readers use the TCGCSV point (scripts/lib/market-history.mjs);
++// the PPT point stays in its own folder so a day's move can be taken within PPT.
++// No gap is filled; nothing is interpolated.
++// Usage: PPT_RAW_DIR=ppt-history-raw node scripts/import-history-backfill.mjs
++import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
++import { dirname, join } from "node:path";
++import { fileURLToPath } from "node:url";
++import { PPT_SOURCE } from "./lib/market-history.mjs";
++
++const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
++const RAW = process.env.PPT_RAW_DIR || "ppt-history-raw";
++const RAREBOX_DIR = process.env.RAREBOX_DIR || null; // local copy, else fetched live
++const RAREBOX_URL = "https://raw.githubusercontent.com/novaoc/rarebox-price-history/main/data/pokemon";
++const SINGLES_SOURCE = "TCGplayer market via TCGCSV archive (rarebox-price-history)";
++const J = async (p) => JSON.parse(await readFile(p, "utf8"));
++const DAY = 86400000;
++const iso = (d) => new Date(d * DAY).toISOString().slice(0, 10);
++
++// ── sealed ──────────────────────────────────────────────────────────────────────
++const products = await J(join(ROOT, "data/sealed-products.json"));
++const names = new Map(products.map((p) => [p.id, p.name]));
++try {
++  for (const pl of (await J(join(ROOT, "trending.json"))).plays || []) if (pl.sku && !names.has(pl.sku)) names.set(pl.sku, pl.name);
++} catch {}
++const sealedOut = join(ROOT, "data/history/ppt-sealed");
++await mkdir(sealedOut, { recursive: true });
++let sealedFiles = 0, sealedPoints = 0, skippedTcgcsv = 0;
++const noHistory = [];
++for (const f of (await readdir(RAW)).filter((n) => n.endsWith(".json") && !n.startsWith("_")).sort()) {
++  const raw = await J(join(RAW, f));
++  const pid = String(raw.request.tcgPlayerId);
++  const hit = (raw.response?.data || []).find((d) => String(d.tcgPlayerId) === pid);
++  for (const id of raw.request.keys) {
++    if (!names.has(id)) continue;
++    if (!hit || !(hit.priceHistory || []).length) { noHistory.push({ id, tcgplayerProductId: Number(pid), reason: hit ? "PPT returned no price history" : "PPT returned no product for this id" }); continue; }
++    let tcgcsvDates = new Set();
++    try {
++      const t = await J(join(ROOT, "data/history/tcgplayer-market", `${id}.json`));
++      tcgcsvDates = new Set((t.points || []).map((p) => p.date));
++    } catch {}
++    const points = [];
++    for (const h of hit.priceHistory) {
++      const date = String(h.date).slice(0, 10);
++      if (!(h.unopenedPrice > 0)) continue;
++      if (tcgcsvDates.has(date)) skippedTcgcsv++; // kept here, but on read the TCGCSV point for that day wins
++      points.push({ date, market: h.unopenedPrice });
++    }
++    points.sort((a, b) => (a.date < b.date ? -1 : 1));
++    const dedup = points.filter((p, i) => i === 0 || p.date !== points[i - 1].date);
++    const gaps = [];
++    for (let i = 1; i < dedup.length; i++) {
++      const span = Math.round((Date.parse(dedup[i].date) - Date.parse(dedup[i - 1].date)) / DAY);
++      if (span > 1) gaps.push({ from: dedup[i - 1].date, to: dedup[i].date, missingDays: span - 1, reason: "PPT has no price for these days. Not filled in." });
++    }
++    await writeFile(join(sealedOut, `${id}.json`), JSON.stringify({
++      id,
++      name: names.get(id),
++      tcgplayerProductId: Number(pid),
++      providerName: hit.name,
++      source: PPT_SOURCE,
++      field: "market = PPT unopenedPrice for that day (TCGplayer market price). PPT sealed history has no low, high or sales counts.",
++      fetched: { at: "2026-09-26T00:50:34Z", run: "Catchem-data Actions run 36206031966 (ppt-history-backfill.yml)", request: "GET /api/v2/sealed-products?tcgPlayerId=<id>&limit=1&includeHistory=true&days=180", window: raw.response?.metadata?.historyWindow || null },
++      note: "Every point in this file is from the source above. On a day that data/history/tcgplayer-market/ (TCGCSV) also has, readers use the TCGCSV point. Missing days are not filled in.",
++      points: dedup,
++      gaps,
++    }) .replace(/\},\{"date"/g, '},\n{"date"') + "\n");
++    sealedFiles++; sealedPoints += dedup.length;
++  }
++}
++await writeFile(join(sealedOut, "manifest.json"), JSON.stringify({
++  source: PPT_SOURCE, files: sealedFiles, points: sealedPoints, daysAlsoOnFileFromTcgcsv_tcgcsvWinsOnRead: skippedTcgcsv, noHistory,
++}, null, 2) + "\n");
++console.log(`sealed: ${sealedFiles} files, ${sealedPoints} points, ${skippedTcgcsv} days also on file from TCGCSV (TCGCSV wins on read), ${noHistory.length} without history`);
++
++// ── singles ─────────────────────────────────────────────────────────────────────
++function normNumber(num) { // rarebox common.norm_number
++  let n = String(num || "").split("/")[0].trim().toLowerCase();
++  n = n.replace(/^0+(?=[a-z0-9])/, "");
++  const m = n.match(/^([a-z]+)0*(\d.*)$/);
++  return m ? m[1] + m[2] : n;
++}
++// singles-prices.json rows that errored on 2026-09-21 carry only a label.
++const LABEL_SETS = { "Darkness Ablaze": "swsh3", "Brilliant Stars Trainer Gallery": "swsh9tg", "Astral Radiance Trainer Gallery": "swsh10tg", "Paldea Evolved": "sv2", "Journey Together": "sv9", "White Flare": "rsv10pt5", "Pokémon Futsal Collection": "fut20" };
++const singles = await J(join(ROOT, "data/singles-prices.json"));
++const singlesOut = join(ROOT, "data/history/singles-rarebox");
++await mkdir(singlesOut, { recursive: true });
++const sets = new Map();
++async function setFile(setId) {
++  if (sets.has(setId)) return sets.get(setId);
++  let doc = null;
++  try {
++    if (RAREBOX_DIR) doc = await J(join(RAREBOX_DIR, `${setId}.json`));
++    else {
++      const res = await fetch(`${RAREBOX_URL}/${setId}.json`, { signal: AbortSignal.timeout(20000) });
++      if (res.ok) doc = await res.json();
++    }
++  } catch { doc = null; }
++  sets.set(setId, doc);
++  return doc;
++}
++const seen = new Set();
++const missing = [];
++let singleFiles = 0;
++for (const c of singles.cards || []) {
++  let setId = c.setId, number = c.number, name = c.name, how = "data/singles-prices.json";
++  if (!setId) {
++    const m = String(c.watchLabel || "").match(/^(?:AUTO-\w+: )?(.+?) #(\S+) \((.+)\)$/);
++    if (!m || !LABEL_SETS[m[3]]) { missing.push({ watchLabel: c.watchLabel, reason: "no set id or number on file" }); continue; }
++    [name, number, setId] = [m[1], m[2], LABEL_SETS[m[3]]];
++    how = "parsed from watchLabel (row errored in singles-prices.json)";
++  }
++  const cardId = `${setId}-${number}`;
++  if (seen.has(cardId)) continue;
++  seen.add(cardId);
++  const doc = await setFile(setId);
++  if (!doc) { missing.push({ cardId, watchLabel: c.watchLabel, reason: `rarebox has no data/pokemon/${setId}.json` }); continue; }
++  const card = doc.cards?.[normNumber(number)];
++  if (!card) { missing.push({ cardId, watchLabel: c.watchLabel, reason: `card ${normNumber(number)} not in rarebox ${setId}.json` }); continue; }
++  const want = c.priceVariant;
++  const variants = want && card[want] ? [want] : Object.keys(card);
++  await writeFile(join(singlesOut, `${cardId}.json`), JSON.stringify({
++    id: cardId,
++    name,
++    watchLabel: c.watchLabel,
++    setId, number,
++    mapping: how,
++    source: SINGLES_SOURCE,
++    sourceRepo: "https://github.com/novaoc/rarebox-price-history",
++    note: "Change-only: a point is stored only when the price changed (with a 7-day heartbeat). Weekly steps from 2024-02-08, daily for about the last 90 days, ending 2026-09-15 when the TCGCSV archive went offline. Days between points are not filled in. Prices (c) TCGplayer.",
++    variants: variants.map((v) => ({
++      variant: v,
++      selection: want && card[want] ? "matches singles-prices priceVariant" : "no usable priceVariant on file; every rarebox variant kept",
++      points: card[v].map(([d, usd]) => ({ date: iso(d), market: usd })),
++    })),
++  }).replace(/\},\{"date"/g, '},\n{"date"') + "\n");
++  singleFiles++;
++}
++await writeFile(join(singlesOut, "manifest.json"), JSON.stringify({
++  source: SINGLES_SOURCE, epoch: "day numbers are days since 1970-01-01 UTC; checked: swsh7 #215 holofoil = 2302.74 on 2026-09-15",
++  files: singleFiles, missing,
++}, null, 2) + "\n");
++console.log(`singles: ${singleFiles} files, ${missing.length} missing`);
+diff --git a/scripts/lib/heat-check.mjs b/scripts/lib/heat-check.mjs
+index 6a277950..ce149904 100644
+--- a/scripts/lib/heat-check.mjs
++++ b/scripts/lib/heat-check.mjs
+@@ -42,4 +42,8 @@ export function listingHeat(rows, asOf) {
+   });
++  // A change is only counted between two consecutive calendar days. A jump
++  // across a gap in our eBay history (e.g. 2026-08-26 to 2026-09-21) is not one
++  // day's change, so it is left out rather than counted as if it were.
+   const deltas = [];
+   for (let i = 1; i < window.length; i++) {
++    if (Date.parse(window[i].date) - Date.parse(window[i - 1].date) !== 86400000) continue;
+     deltas.push(window[i].listingCount - window[i - 1].listingCount);
+@@ -66,3 +70,4 @@ export function momentum(points) {
+   }
+-  return { z: zscore(latest, ratios), latest, days: priced.length };
++  // z against the trailing 90 readings only, to match the 90-day method.
++  return { z: zscore(latest, ratios.slice(-90)), latest, days: priced.length };
+ }
+diff --git a/scripts/lib/index-baskets.mjs b/scripts/lib/index-baskets.mjs
+index 21cc7718..182bea31 100644
+--- a/scripts/lib/index-baskets.mjs
++++ b/scripts/lib/index-baskets.mjs
+@@ -15,3 +15,3 @@ export function quarterKey(date) {
+   const [y, m] = date.split("-").map(Number);
+-  return `${y}-Q${Math.floor((m - 1) / 4) + 1}`;
++  return `${y}-Q${Math.floor((m - 1) / 3) + 1}`;
+ }
+@@ -35,3 +35,5 @@ function daysBetween(a, b) {
+ // members: the fixed universe this index is allowed to draw a basket from
+-export function chainIndex(dates, prices, eligible, members) {
++// pairPrice (optional): (id, prevDate, date) -> [prevPrice, price] | null. Lets a
++// caller insist that both prices of one move come from the same source.
++export function chainIndex(dates, prices, eligible, members, pairPrice = null) {
+   const points = [];
+@@ -65,4 +67,5 @@ export function chainIndex(dates, prices, eligible, members) {
+       if (!elig.has(id) || !prevElig.has(id)) continue;
+-      const a = prices.get(id)?.get(prev);
+-      const b = prices.get(id)?.get(date);
++      const pair = pairPrice ? pairPrice(id, prev, date) : [prices.get(id)?.get(prev), prices.get(id)?.get(date)];
++      if (!pair) continue;
++      const [a, b] = pair;
+       if (!(a > 0) || !(b > 0)) continue;
+diff --git a/scripts/lib/market-history.mjs b/scripts/lib/market-history.mjs
+new file mode 100644
+index 00000000..77b2595a
+--- /dev/null
++++ b/scripts/lib/market-history.mjs
+@@ -0,0 +1,70 @@
++// TCGplayer market history for sealed products, from two labelled folders.
++//   data/history/tcgplayer-market/  TCGCSV live days (daily append from 2026-09-25)
++//   data/history/ppt-sealed/        PokemonPriceTracker daily history (TCGplayer-derived),
++//                                   one-off backfill 2026-03-31..2026-09-25
++// The folders are never merged on disk. Readers get one value per day: the
++// TCGCSV point when there is one, otherwise the PPT point. A day in neither
++// folder is missing and stays missing.
++import { readFile, readdir } from "node:fs/promises";
++import { join } from "node:path";
++
++export const TCGCSV_DIR = "data/history/tcgplayer-market";
++export const PPT_DIR = "data/history/ppt-sealed";
++export const TCGCSV_SOURCE = "TCGplayer market via TCGCSV";
++export const PPT_SOURCE = "PokemonPriceTracker (TCGplayer-derived)";
++const META = new Set(["mapping.json", "unmatched.json", "coverage.json", "manifest.json"]);
++
++async function readFolder(root, dir) {
++  const out = new Map();
++  let names = [];
++  try { names = await readdir(join(root, dir)); } catch { return out; }
++  for (const name of names) {
++    if (!name.endsWith(".json") || META.has(name)) continue;
++    const doc = JSON.parse(await readFile(join(root, dir, name), "utf8"));
++    if (!doc.id) continue;
++    const m = new Map();
++    for (const p of doc.points || []) if (p.date && p.market > 0) m.set(p.date, p.market);
++    out.set(doc.id, m);
++  }
++  return out;
++}
++
++// Returns { ids, merged: Map id -> [{date, market, source}], priceMap: Map id -> Map date -> market,
++//           pairPrice(id, a, b) -> [pa, pb] | null, coverage }
++export async function loadMarketHistory(root) {
++  const tcg = await readFolder(root, TCGCSV_DIR);
++  const ppt = await readFolder(root, PPT_DIR);
++  const ids = new Set([...tcg.keys(), ...ppt.keys()]);
++  const merged = new Map();
++  const priceMap = new Map();
++  let first = null, last = null;
++  for (const id of ids) {
++    const t = tcg.get(id) || new Map();
++    const p = ppt.get(id) || new Map();
++    const dates = [...new Set([...t.keys(), ...p.keys()])].sort();
++    const pts = dates.map((date) => t.has(date)
++      ? { date, market: t.get(date), source: TCGCSV_SOURCE }
++      : { date, market: p.get(date), source: PPT_SOURCE });
++    if (!pts.length) continue;
++    merged.set(id, pts);
++    priceMap.set(id, new Map(pts.map((x) => [x.date, x.market])));
++    if (!first || pts[0].date < first) first = pts[0].date;
++    if (!last || pts.at(-1).date > last) last = pts.at(-1).date;
++  }
++  // A day-over-day move is only taken from ONE source: TCGCSV if it has both
++  // days, else PPT if it has both days. A move is never computed across sources.
++  function pairPrice(id, a, b) {
++    const t = tcg.get(id);
++    if (t?.has(a) && t.has(b)) return [t.get(a), t.get(b)];
++    const p = ppt.get(id);
++    if (p?.has(a) && p.has(b)) return [p.get(a), p.get(b)];
++    return null;
++  }
++  return {
++    ids: [...merged.keys()],
++    merged,
++    priceMap,
++    pairPrice,
++    coverage: { products: merged.size, tcgcsvProducts: tcg.size, pptProducts: ppt.size, first, last },
++  };
++}
+diff --git a/scripts/mint-cards.mjs b/scripts/mint-cards.mjs
+index e6ba82d7..148eae69 100644
+--- a/scripts/mint-cards.mjs
++++ b/scripts/mint-cards.mjs
+@@ -8,2 +8,3 @@ import { fileURLToPath } from "node:url";
+ import { dirname, join } from "node:path";
++import { cardImage } from "./image-source.mjs";
+ import { HEAT_DEBUT, DEPTH_DEBUT, heatPlain, depthPlain } from "./lib/instruments.mjs";
+@@ -43,3 +44,3 @@ const prodImg = id => tcgId[id] ? `https://tcgplayer-cdn.tcgplayer.com/product/$
+   : (sp.products.find(p => p.id === id) || {}).image || "";
+-const cardImg = cid => { const m = /^(.+)-(\w+)$/.exec(cid || ""); return m ? `https://images.pokemontcg.io/${m[1]}/${m[2]}.png` : ""; };
++const cardImg = cid => cardImage(cid, false); // source-published URL, never constructed
+ const esc = s => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+diff --git a/scripts/seam-check.mjs b/scripts/seam-check.mjs
+index 550bda5c..d04e0d56 100644
+--- a/scripts/seam-check.mjs
++++ b/scripts/seam-check.mjs
+@@ -21,2 +21,3 @@ import { writeFileSync, existsSync, mkdirSync } from "node:fs";
+ import { join } from "node:path";
++import { cardImage } from "./image-source.mjs";
+ 
+@@ -37,3 +38,4 @@ for (const id of IDS) {
+   const [setId, num] = [id.slice(0, id.lastIndexOf("-")), id.slice(id.lastIndexOf("-") + 1)];
+-  const url = `https://images.pokemontcg.io/${setId}/${num}_hires.png`;
++  const url = cardImage(id, true); // source-published URL, never constructed
++  if (!url) { console.error("  NO SOURCE IMAGE URL", id); process.exit(1); }
+   const f = join(DIR, id.replace(/[^a-z0-9-]/gi, "_") + ".png");
+diff --git a/scripts/tests/heat-check.test.mjs b/scripts/tests/heat-check.test.mjs
+index bb74871a..38b0aa1e 100644
+--- a/scripts/tests/heat-check.test.mjs
++++ b/scripts/tests/heat-check.test.mjs
+@@ -24,2 +24,6 @@ t("more listings scores colder", cold.z < 0, String(cold.z));
+ 
++const gapped = [{ date: "2026-08-25", listingCount: 20 }, { date: "2026-08-26", listingCount: 21 }, { date: "2026-09-21", listingCount: 60 }, { date: "2026-09-22", listingCount: 61 }];
++const g = listingHeat(gapped, "2026-09-22");
++t("a jump across a gap is not counted as a day's change", g.days === 2 && g.latest === 1, JSON.stringify(g));
++
+ t("short series has no z", zscore(1, [1, 2, 3]) == null);
+diff --git a/scripts/tests/index-baskets.test.mjs b/scripts/tests/index-baskets.test.mjs
+index 89441155..ec319b61 100644
+--- a/scripts/tests/index-baskets.test.mjs
++++ b/scripts/tests/index-baskets.test.mjs
+@@ -15,2 +15,4 @@ t("heartgold is not dumped in vintage", eraOf("hgss1") === null);
+ t("quarter", quarterKey("2026-09-25") === "2026-Q3");
++t("april is Q2, not Q1", quarterKey("2026-04-01") === "2026-Q2");
++t("december is Q4", quarterKey("2026-12-31") === "2026-Q4");
+ 
+@@ -39,2 +41,6 @@ t("a day with nobody priced does not print a flat index", thinSeries.points.leng
+ 
++// A move is never taken across two sources: pairPrice returns null for "a" here.
++const mixed = chainIndex(["2026-08-22", "2026-08-23"], prices, elig, ["a", "b"], (id, x, y) => id === "a" ? null : [prices.get(id).get(x), prices.get(id).get(y)]);
++t("pairPrice null keeps that product out of the move", mixed.points[1].matched === 1 && mixed.points[1].equalMovePct === 0, JSON.stringify(mixed.points[1]));
++
+ console.log(fail ? `${fail} failed` : "index baskets ok");
