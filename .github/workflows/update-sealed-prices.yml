@@ -37,6 +37,10 @@ jobs:
         # any eBay/PPT quota burns.
         run: node scripts/tests/run-tests.mjs
 
+      - name: Note PPT run start
+        continue-on-error: true
+        run: node scripts/note-run-start.mjs
+
       - name: Fetch sealed prices from eBay
         env:
           EBAY_APP_ID: ${{ secrets.EBAY_APP_ID }}
@@ -122,6 +126,10 @@ jobs:
         # throw away the price commit that follows.
         continue-on-error: true
         run: node scripts/compute-stress.mjs
+      - name: Write PPT run report
+        # Counts only. continue-on-error so a missing log cannot drop the price commit.
+        continue-on-error: true
+        run: node scripts/write-run-report.mjs
       # ── THE DATA COMMITS BEFORE ANYTHING REPORTS ON IT ────────────────────
       # Six consecutive runs fetched prices, computed heat states and threw all
       # of it away, because "Generate Morning Pulse" sits above the commit and a
@@ -150,7 +158,8 @@ jobs:
                   data/indexes/ data/heat-check.json data/history/tcgplayer-market/ \
                   data/catalog/tcgcsv-latest.json data/catalog/tcgcsv-coverage.json \
                   data/history/tcgcsv-daily/ data/search/ \
-                  data/meta/ppt-usage.json data/meta/ppt-cursor.json
+                  data/meta/ppt-usage.json data/meta/ppt-cursor.json \
+                  data/ppt/run-report.json
           if git diff --staged --quiet; then
             echo "No price changes to commit."
           else
@@ -161,6 +170,11 @@ jobs:
               git pull --rebase --autostash origin main || true
             done
           fi
+
+      - name: PPT safety check
+        # Prices are already committed. This fails the job only when a private
+        # push was expected and did not land, or raw PPT is tracked here.
+        run: node scripts/check-ppt-safety.mjs
 
       - name: Generate Morning Pulse
         run: node scripts/generate-pulse.mjs
@@ -199,7 +213,7 @@ jobs:
           # step writes is listed here. A file written in CI but not added
           # evaporates at job end — the class that froze the app feed and ate
           # era/catalyst history daily.
-          git add data/sealed-prices.json data/heat-report.json data/heat-history.json data/divergence-report.json data/supply-watch.json data/derived-insights.json data/era-index-history.json data/catalyst-log.json data/cohort-history.json data/alerts-state.json data/artists.json data/indexes/ data/heat-check.json data/history/tcgplayer-market/ data/catalog/tcgcsv-latest.json data/catalog/tcgcsv-coverage.json data/history/tcgcsv-daily/ data/search/ data/meta/ppt-usage.json data/meta/ppt-cursor.json research/pulse/ research/assets/the-board.html research/assets/the-pulse.html research/assets/pulse-feed.json research/assets/print-watch.html research/assets/methodology.html research/assets/corrections.html research/assets/creators.html research/assets/build.html research/assets/card-index.json research/assets/faq.html
+          git add data/sealed-prices.json data/heat-report.json data/heat-history.json data/divergence-report.json data/supply-watch.json data/derived-insights.json data/era-index-history.json data/catalyst-log.json data/cohort-history.json data/alerts-state.json data/artists.json data/indexes/ data/heat-check.json data/history/tcgplayer-market/ data/catalog/tcgcsv-latest.json data/catalog/tcgcsv-coverage.json data/history/tcgcsv-daily/ data/search/ data/meta/ppt-usage.json data/meta/ppt-cursor.json data/ppt/run-report.json research/pulse/ research/assets/the-board.html research/assets/the-pulse.html research/assets/pulse-feed.json research/assets/print-watch.html research/assets/methodology.html research/assets/corrections.html research/assets/creators.html research/assets/build.html research/assets/card-index.json research/assets/faq.html
           if git diff --staged --quiet; then
             echo "No price changes to commit."
           else

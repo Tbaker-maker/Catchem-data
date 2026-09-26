@@ -1,6 +1,7 @@
 // Copy PPT history out of the private repo when the token exists.
 // Missing token or a failed clone logs and exits 0. The token is never printed.
-import { rm, writeFile } from "node:fs/promises";
+import { mkdir, readdir, rm, writeFile } from "node:fs/promises";
+import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { spawn } from "node:child_process";
@@ -45,6 +46,20 @@ export async function mountPrivate({ token, root = ROOT, runGit = run } = {}) {
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const result = await mountPrivate({ token: process.env.PRIVATE_DATA_TOKEN || "" });
+  let files = 0;
+  const sealedDir = join(ROOT, "data/history/ppt-sealed-private");
+  if (result.mounted && existsSync(sealedDir)) {
+    const names = await readdir(sealedDir);
+    files += names.filter((name) => name.endsWith(".json")).length;
+  }
+  files += (result.actions || []).filter((name) => String(name).endsWith(".json")).length;
+  const status = {
+    restored: result.mounted === true,
+    files,
+    reason: result.reason || "",
+  };
+  await mkdir(join(ROOT, "data/ppt"), { recursive: true });
+  await writeFile(join(ROOT, "data/ppt/mount-status.json"), `${JSON.stringify(status, null, 2)}\n`);
   console.log(result.reason || `Mounted private PPT (${result.actions.join(", ")}). It is not committed.`);
   process.exit(0);
 }
