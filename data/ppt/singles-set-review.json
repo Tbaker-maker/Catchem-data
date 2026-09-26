@@ -1,0 +1,74 @@
+{
+  "asOf": "2026-09-26",
+  "note": "Uncertain PPT set matches. Not written into bySlug. No prices.",
+  "review": [
+    {
+      "slug": "tk1a",
+      "name": "EX Trainer Kit Latias",
+      "reason": "one provider set covers more than one of our slugs",
+      "candidates": [
+        {
+          "pptSetId": "696e3ca2bb2a772e0d056872",
+          "name": "XY Trainer Kit: Latias & Latios",
+          "cardCount": 61,
+          "alsoCovers": [
+            "tk1b"
+          ]
+        },
+        {
+          "pptSetId": "696e3ca2bb2a772e0d056878",
+          "name": "EX Trainer Kit 1: Latias & Latios",
+          "cardCount": 20,
+          "alsoCovers": [
+            "tk1b"
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "tk1b",
+      "name": "EX Trainer Kit Latios",
+      "reason": "one provider set covers more than one of our slugs",
+      "candidates": [
+        {
+          "pptSetId": "696e3ca2bb2a772e0d056872",
+          "name": "XY Trainer Kit: Latias & Latios",
+          "cardCount": 61,
+          "alsoCovers": [
+            "tk1a"
+          ]
+        },
+        {
+          "pptSetId": "696e3ca2bb2a772e0d056878",
+          "name": "EX Trainer Kit 1: Latias & Latios",
+          "cardCount": 20,
+          "alsoCovers": [
+            "tk1a"
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "mcd21",
+      "name": "McDonald's Collection 2021",
+      "reason": "no McDonald's provider set names this year",
+      "candidates": [
+        {
+          "pptSetId": "696e3ca6bb2a772e0d0568b2",
+          "name": "McDonald's 25th Anniversary Promos",
+          "cardCount": 25
+        }
+      ]
+    }
+  ],
+  "unmatched": [
+    {
+      "slug": "bp",
+      "name": "Best of Game"
+    },
+    {
+      "slug": "fut20",
+      "name": "Pokémon Futsal Collection"
+    }
+  ]
+}
