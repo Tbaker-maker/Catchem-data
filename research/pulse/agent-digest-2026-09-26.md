@@ -4,7 +4,7 @@ Read it with coffee. Anything urgent says so in capitals.
 
 ## Our own claims
 A lot of honest shrugs on this run. The tape is young; the tests are patient.
-4 survived their own kill conditions, 7 could not be judged yet with the tape we hold.
+5 survived their own kill conditions, 6 could not be judged yet with the tape we hold.
 
 ## Our own numbers
 A product we featured has gone quiet on us. Either it stopped trading or we broke its query, and we should know which.
@@ -27,9 +27,9 @@ A product we featured has gone quiet on us. Either it stopped trading or we brok
 ## The agents themselves
 **NEEDS A HUMAN — the supervisor flagged the watchers:**
 - correction-hunter: BROKEN RECORD — 5 finding(s) repeated three runs running (e.g. "gone::Umbreon VMAX"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
-- designer: BROKEN RECORD — 8 finding(s) repeated three runs running (e.g. "medium::35 distinct colours"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
+- designer: FARMING — findings climbed 12 → 12 → 12 → 13 across four runs with nothing resolved. Volume is not work.
+- designer: BROKEN RECORD — 3 finding(s) repeated three runs running (e.g. "medium::--faint on the background is 3.2:1"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 - theme-scout: BROKEN RECORD — 22 finding(s) repeated three runs running (e.g. "the one-off::Ken Sugimori drew Ampharos exactly on"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
-- teacher: BROKEN RECORD — 12 finding(s) repeated three runs running (e.g. "in a rut::breaker"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 
 ## If we expanded
 Pricing 50 more cards would unlock 17 artist cohorts and make 2018 catalogue cards analysable. That is Tyler's call, not the machine's.
@@ -53,7 +53,8 @@ Gaps in what we watch:
 - *ease of use* — A number appears above the fold on Today. Holds — check on a 390px screen that it is still above the fold with the banner and nav present.
 
 ## Who needs to do what
-**NEEDS A HUMAN — Tyler (2):**
+**NEEDS A HUMAN — Tyler (3):**
+- **[ACT NOW 76]** Champion's Path Booster Pack moved 36.3% — about 4.1× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
 - **[QUEUE 58]** The knowledge base is only used for one fact a day. — *The same sourced facts could power a "why is this card like this" explainer on every product page — set context, print quirks, what makes it odd. It compounds with every fact added.*
 - **[WATCH 40]** pricing 50 more cards would unlock 17 artist cohorts — *an expansion decision, not a machine's call*
 
@@ -64,26 +65,23 @@ Gaps in what we watch:
 
 **Chat (12):** top — The Today screen carries 17 sections: The Daily Three, 🗳 Rip or Hold?, Biggest movers, Set the app up for you, Movers, Release radar… *[QUEUE]*
 
-*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 0 ACT NOW, 9 QUEUE, 8 WATCH, 22 filed without surfacing, 4 confirmations.*
+*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 1 ACT NOW, 9 QUEUE, 8 WATCH, 26 filed without surfacing, 4 confirmations.*
 ## The creator cheat code
 *Could somebody open this, hit record within two minutes, and sound like the most informed voice in the hobby without pausing to look anything up? Every pause is a cut.*
 - **a visual that runs itself** — 35 card images minted today. *The gap is that they are files in a repo. A creator needs them one tap from the angle they picked, not from a folder.*
 - **the cheat code** — The pieces exist and are reachable, but a creator still assembles them: pick an angle here, find the card there, open the overlay separately. *ONE screen per angle: the subject, the spoken open, the numbers as a lower-third, the card ready to download, the source line, and a record checklist. Pick an angle, hit record.*
 - **the cheat code** — Nothing tells a creator how a piece performed after they made it. *Ask one question after publication — did this land — and keep the answers. Even a yes/no on twenty videos would tell us which angles are worth generating.*
 
-## What the market did
-- **product** — Champion's Path Booster Pack moved 36.3% — about 4.1× its own typical daily swing. *Measured against its own 6 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
-
 ## Where today's story goes
-- **X** — "Celebrations listings moved -17.9% while its print window closes."
-- **YouTube** — 151 Ultra Premium Collection — "Cheapest believable listing $100, middle of the market $998. A floor that far below the median usually rewards patience."
+- **X** — "Prismatic Evolutions listings moved -21.7% while its print window closes."
+- **YouTube** — 151 Booster Pack — "Cheapest believable listing $4, middle of the market $29.61. A floor that far below the median usually rewards patience."
 - **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 100.7."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
 
 ## Something is slipping
 - **unsaved** — 3 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
-- **ignored** — 6 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
+- **ignored** — 7 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
 - **silent stage** — pulse last reported 31 days ago. *A stage that stopped running is invisible to every guard, because none of them run either. Silence is the one failure nothing else catches.*
 - **drift** — 22 script(s) are not referenced anywhere: backfill-artists.mjs, backfill-tcgcsv.mjs, build-faq.mjs, build-hooks.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
 
@@ -94,16 +92,16 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 *Legal INFORMATION, not legal advice. No lawyer has reviewed this. Sweepstakes law varies by state and changes; nothing here is a compliance opinion anyone can rely on. Its job is to make the conversation with counsel shorter and better, and to stop us doing something obviously wrong in the meantime.*
 
 ## Numbers that do not make sense for what they are
-44 value(s) are structurally fine and absurd in context.
-- **"sleeved"** killed 341 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
-- Scarlet & Violet Booster Pack: 91% rejection rate (13/150) — *largest bucket: set = 59. A single over-broad term can eat a market.*
-- 151 Booster Pack: 74% rejection rate (39/150) — *largest bucket: type = 51. A single over-broad term can eat a market.*
+54 value(s) are structurally fine and absurd in context.
+- **"sleeved"** killed 351 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
+- Scarlet & Violet Booster Pack: 91% rejection rate (14/150) — *largest bucket: set = 52. A single over-broad term can eat a market.*
+- 151 Booster Pack: 77% rejection rate (35/150) — *largest bucket: type = 74. A single over-broad term can eat a market.*
 
 ## What the agents should be asking themselves
 - **domain-plausibility** — Would you catch this today? If yes, what specifically would fire. If no, what would you need?
 - **experience** — Would you catch this today? If yes, what specifically would fire. If no, what would you need?
 - **breaker** — You test what we built. What have we DELETED recently, and did anything depend on it?
-- **correction-hunter** — You re-check figures that moved. Ask about the ones that never move — a price frozen for a month is a claim too.
+- **improver** — You measure against our own doctrine. What would somebody who has never read our doctrine find embarrassing here?
 
 ## A decision has come due
 - **Refresh the whole universe daily while it fits the budget; tier only as a fallback.** — predicted: *Daily refresh of everything will stay inside budget until the universe exceeds ~18,000 items. If we breach the allowance before then, the arithmetic was wrong.* Did it hold?
@@ -119,11 +117,12 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 - **Mitsuhiro Arita drew Houndoom exactly once** — Mitsuhiro Arita has 525 cards. Exactly one is a Houndoom.
 
 ## Design
-1 high, 10 medium across 14 shipped surfaces, 50 minted cards.
-- **build.html** — the accent colour appears 44 times. *Spend it in two places: the active state and the one primary action. Everything else greys.*
+2 high, 11 medium across 15 shipped surfaces, 56 minted cards.
+- **build.html** — 10 distinct font sizes: 10, 11, 12, 13, 14, 15, 16, 19, 20, 22. *Collapse to a scale. Anything within 1px of a neighbour is the same size wearing a different number.*
+- **play.html** — 10 distinct font sizes: 10, 11, 12, 13, 14, 15, 16, 19, 20, 22. *Collapse to a scale. Anything within 1px of a neighbour is the same size wearing a different number.*
 
 ## What the agents cannot answer themselves
-48 open — 29 need eyes on a rendered page, 19 need a decision.
+53 open — 34 need eyes on a rendered page, 19 need a decision.
 - **NEEDS A HUMAN** [theme-scout] 14 Pokémon share the "-eon" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 7 Pokémon share the "ite" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 10 Pokémon share the "-ish" ending — a theme, or a coincidence of naming?

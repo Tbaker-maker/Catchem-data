@@ -1,39 +1,38 @@
 {
- "generatedAt": "2026-09-26T01:18:14.296Z",
+ "generatedAt": "2026-09-26T01:48:04.304Z",
  "date": "2026-09-26",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
   "breaker: 6 finding(s)",
   "falsifier: 0 finding(s)",
-  "correction-hunter: 6 finding(s)",
+  "correction-hunter: 7 finding(s)",
   "review-agents: 0 finding(s)",
-  "decision-audit: 0 finding(s)",
-  "designer: 12 finding(s)",
+  "decision-audit: 2 finding(s)",
+  "designer: 13 finding(s)",
   "theme-scout: 22 finding(s)",
   "teacher: 13 finding(s)",
   "api-strategist: 8 finding(s)",
   "compliance: 0 finding(s)",
   "security: 0 finding(s)",
-  "steward: 4 finding(s)",
+  "steward: 5 finding(s)",
   "platform: 10 finding(s)",
-  "anomaly: 0 finding(s)",
+  "anomaly: 1 finding(s)",
   "creator: 15 finding(s)",
   "experience: 6 finding(s)",
   "improver: 8 finding(s)",
   "universe-advisor: 5 finding(s)",
   "falsifier: clean run — nothing failed, which is the point of it",
   "review-agents: has never actually run (no key) — costing nothing, proving nothing, and honest about both",
-  "decision-audit: clean run — nothing failed, which is the point of it",
   "compliance: clean run — nothing failed, which is the point of it",
-  "security: clean run — nothing failed, which is the point of it",
-  "anomaly: clean run — nothing failed, which is the point of it"
+  "security: clean run — nothing failed, which is the point of it"
  ],
  "problems": [
   "correction-hunter: BROKEN RECORD — 5 finding(s) repeated three runs running (e.g. \"gone::Umbreon VMAX\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
-  "designer: BROKEN RECORD — 8 finding(s) repeated three runs running (e.g. \"medium::35 distinct colours\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
+  "designer: FARMING — findings climbed 12 → 12 → 12 → 13 across four runs with nothing resolved. Volume is not work.",
+  "designer: BROKEN RECORD — 3 finding(s) repeated three runs running (e.g. \"medium::--faint on the background is 3.2:1\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "theme-scout: BROKEN RECORD — 22 finding(s) repeated three runs running (e.g. \"the one-off::Ken Sugimori drew Ampharos exactly on\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "teacher: BROKEN RECORD — 12 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
-  "steward: BROKEN RECORD — 3 finding(s) repeated three runs running (e.g. \"silent stage::fetch last reported 3 days ago.\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
+  "steward: FARMING — findings climbed 4 → 4 → 5 → 5 across four runs with nothing resolved. Volume is not work.",
   "creator: OVER-BUDGET — 15 findings against a ceiling of 10. An unreadable list is an unread list."
  ],
  "workforce": [
@@ -76,17 +75,7 @@
   },
   {
    "agent": "correction-hunter",
-   "finding": "runs daily and has returned the same count (6) four runs running.",
-   "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
-  },
-  {
-   "agent": "correction-hunter",
    "finding": "every finding from a week ago is still open (5).",
-   "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
-  },
-  {
-   "agent": "designer",
-   "finding": "every finding from a week ago is still open (8).",
    "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
@@ -97,11 +86,6 @@
   {
    "agent": "teacher",
    "finding": "every finding from a week ago is still open (12).",
-   "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
-  },
-  {
-   "agent": "api-strategist",
-   "finding": "every finding from a week ago is still open (7).",
    "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
   },
   {
@@ -117,16 +101,6 @@
   {
    "agent": "platform",
    "finding": "runs daily and has returned the same count (10) four runs running.",
-   "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
-  },
-  {
-   "agent": "platform",
-   "finding": "every finding from a week ago is still open (10).",
-   "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
-  },
-  {
-   "agent": "anomaly",
-   "finding": "runs daily and has returned the same count (0) four runs running.",
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
   },
   {
@@ -151,6 +125,22 @@
   }
  ],
  "reviewed": [
+  {
+   "from": "anomaly",
+   "owner": "tyler",
+   "what": "Champion's Path Booster Pack moved 36.3% — about 4.1× its own typical daily swing.",
+   "do": "worth a look — the market did something unusual, which is where stories start",
+   "score": 76,
+   "band": "ACT NOW",
+   "selfScore": 76,
+   "demotions": [],
+   "components": {
+    "evidence": "MEASURED (40) — computed from data we hold; anyone could check it",
+    "impact": "HIGH (22) — materially changes what a reader sees or believes",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
   {
    "from": "experience",
    "owner": "chat",
@@ -462,7 +452,7 @@
   {
    "from": "platform",
    "owner": "tyler",
-   "what": "[X] \"Prismatic Evolutions listings moved 312.5% while its print window closes.\"",
+   "what": "[X] \"Celebrations listings moved -17.9% while its print window closes.\"",
    "do": "X rewards a single surprising fact that makes somebody want to reply. The strongest shape we have is a number that moved with no headline attached — it implies a question and refuses to answer it, which is what makes people argue in the replies.",
    "score": 33,
    "band": "NOTE ONLY",
@@ -494,7 +484,7 @@
   {
    "from": "platform",
    "owner": "tyler",
-   "what": "[YouTube] Cosmic Eclipse Booster Box — \"A seller keeps about $4,466.96 online; a buyer pays about $5,510.17. Roughly $1,043.21 of room where a face-to-face trade beats the internet.\"",
+   "what": "[YouTube] 151 Ultra Premium Collection — \"Cheapest believable listing $100, middle of the market $998. A floor that far below the median usually rewards patience.\"",
    "do": "YouTube rewards a question somebody is already typing into search. We can answer three of the recurring ones with data nobody else holds, which is the whole reason to be here rather than reacting to other people's news.",
    "score": 33,
    "band": "NOTE ONLY",
@@ -510,7 +500,7 @@
   {
    "from": "platform",
    "owner": "tyler",
-   "what": "[YouTube] the sealed market — \"The whole sealed market in one number: 96.9.\"",
+   "what": "[YouTube] the sealed market — \"The whole sealed market in one number: 100.7.\"",
    "do": "YouTube rewards a question somebody is already typing into search. We can answer three of the recurring ones with data nobody else holds, which is the whole reason to be here rather than reacting to other people's news.",
    "score": 33,
    "band": "NOTE ONLY",
@@ -526,8 +516,24 @@
   {
    "from": "designer",
    "owner": "chat",
-   "what": "build.html: the accent colour appears 44 times",
-   "do": "Spend it in two places: the active state and the one primary action. Everything else greys.",
+   "what": "build.html: 10 distinct font sizes: 10, 11, 12, 13, 14, 15, 16, 19, 20, 22",
+   "do": "Collapse to a scale. Anything within 1px of a neighbour is the same size wearing a different number.",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "designer",
+   "owner": "chat",
+   "what": "play.html: 10 distinct font sizes: 10, 11, 12, 13, 14, 15, 16, 19, 20, 22",
+   "do": "Collapse to a scale. Anything within 1px of a neighbour is the same size wearing a different number.",
    "score": 30,
    "band": "NOTE ONLY",
    "selfScore": 30,
@@ -590,7 +596,23 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "8 supervisor problem(s) are open.",
+   "what": "3 hand-written file(s) changed and not committed.",
+   "do": "Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "steward",
+   "owner": "chat",
+   "what": "6 supervisor problem(s) are open.",
    "do": "Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -606,7 +628,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "19 script(s) are not referenced anywhere: backfill-artists.mjs, build-faq.mjs, build-hooks.mjs, build-lines.mjs.",
+   "what": "22 script(s) are not referenced anywhere: backfill-artists.mjs, backfill-tcgcsv.mjs, build-faq.mjs, build-hooks.mjs.",
    "do": "A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -654,7 +676,7 @@
   {
    "from": "api-strategist",
    "owner": "cc",
-   "what": "6 places fetch one item at a time inside a loop",
+   "what": "7 places fetch one item at a time inside a loop",
    "do": "check whether each endpoint supports a set, page or id-list parameter before scaling the loop up",
    "score": 30,
    "band": "NOTE ONLY",
@@ -718,8 +740,40 @@
   {
    "from": "steward",
    "owner": "cc",
-   "what": "fetch last reported 3 days ago.",
+   "what": "pulse last reported 31 days ago.",
    "do": "A stage that stopped running is invisible to every guard, because none of them run either. Silence is the one failure nothing else catches.",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "decision-audit",
+   "owner": "tyler",
+   "what": "a prediction has come due: Refresh the whole universe daily while it fits the budget; tier only as a fallback.",
+   "do": "Predicted: Daily refresh of everything will stay inside budget until the universe exceeds ~18,000 items. If we breach the allowance before then, the arithmetic was wrong. — did it hold?",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "decision-audit",
+   "owner": "tyler",
+   "what": "a prediction has come due: Treat the Charizard/Blastoise post as the specification for art content: same artist, both hero cards, a gap long enough to surprise, household Pokemon.",
+   "do": "Predicted: The next three art posts built to this spec will each get more engagement than the Keldeo-style recency pick would have. If a recency pick outperforms a spec pick, the model is wrong. — did it hold?",
    "score": 30,
    "band": "NOTE ONLY",
    "selfScore": 30,
@@ -766,7 +820,7 @@
   {
    "from": "api-strategist",
    "owner": "tyler",
-   "what": "the paid provider is called from 169 places",
+   "what": "the paid provider is called from 186 places",
    "do": "list what ONLY the paid provider gives us; if that list is short, either use more of it or stop paying for it",
    "score": 30,
    "band": "NOTE ONLY",
@@ -1075,6 +1129,22 @@
   ],
   "tyler": [
    {
+    "from": "anomaly",
+    "owner": "tyler",
+    "what": "Champion's Path Booster Pack moved 36.3% — about 4.1× its own typical daily swing.",
+    "do": "worth a look — the market did something unusual, which is where stories start",
+    "score": 76,
+    "band": "ACT NOW",
+    "selfScore": 76,
+    "demotions": [],
+    "components": {
+     "evidence": "MEASURED (40) — computed from data we hold; anyone could check it",
+     "impact": "HIGH (22) — materially changes what a reader sees or believes",
+     "actionable": "SOON (14) — clear what to do, needs a slot",
+     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+    }
+   },
+   {
     "from": "improver",
     "owner": "tyler",
     "what": "The knowledge base is only used for one fact a day.",
@@ -1110,9 +1180,9 @@
  },
  "ratings": {
   "confirmed": 4,
-  "actNow": 0,
+  "actNow": 1,
   "queue": 9,
   "watch": 8,
-  "noteOnly": 22
+  "noteOnly": 26
  }
 }

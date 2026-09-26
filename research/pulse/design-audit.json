@@ -1,34 +1,48 @@
 {
-  "generatedAt": "2026-09-26T01:18:16.266Z",
+  "generatedAt": "2026-09-26T01:48:06.249Z",
   "audited": "15 shipped surfaces, 56 minted cards",
   "principle": "A linter asks whether the CSS is valid. A design lead asks whether the page was DESIGNED. The tells of an undesigned page are countable: too many type sizes, too many near-identical greys, an accent used everywhere so it accents nothing.",
   "blindSpot": "It cannot SEE. It counts and measures. It cannot tell you a page is ugly, only that the choices behind it were not made deliberately.",
   "counts": {
     "high": 2,
-    "medium": 11,
-    "low": 0
+    "medium": 12,
+    "low": 1
   },
   "findings": [
     {
       "surface": "build.html",
-      "severity": "high",
-      "what": "10 distinct font sizes: 10, 11, 12, 13, 14, 15, 16, 19, 20, 22",
-      "why": "A type scale is normally five to seven steps. More than that means sizes were chosen per element rather than from a system, which is the clearest tell of an undesigned page.",
-      "fix": "Collapse to a scale. Anything within 1px of a neighbour is the same size wearing a different number."
-    },
-    {
-      "surface": "build.html",
       "severity": "medium",
-      "what": "18 distinct colours",
+      "what": "34 distinct colours",
       "why": "Beyond a dozen, the palette stops being a palette. Most of the extras are near-duplicate greys nobody chose on purpose.",
       "fix": "Reduce to tokens. If two greys differ by less than 6% luminance, they are one grey."
     },
     {
       "surface": "build.html",
+      "severity": "high",
+      "what": "the accent colour appears 52 times",
+      "why": "An accent used everywhere accents nothing, and it is the most common reason a dark page reads as cheap rather than considered.",
+      "fix": "Spend it in two places: the active state and the one primary action. Everything else greys."
+    },
+    {
+      "surface": "build.html",
       "severity": "medium",
-      "what": "5 controls with vertical padding under 10px",
+      "what": "--faint on the background is 3.2:1",
+      "why": "WCAG AA wants 4.5:1 for body text and 3:1 for large text. Below 3 it is unreadable on a phone in daylight, which is where this is actually seen.",
+      "fix": "Lighten --faint until it clears 4.5, or reserve it for text at 18px and above."
+    },
+    {
+      "surface": "build.html",
+      "severity": "medium",
+      "what": "11 controls with vertical padding under 10px",
       "why": "A tap target under about 44px total height is missed on a phone, and this is a phone-first tool.",
       "fix": "Raise vertical padding or set a min-height on interactive elements."
+    },
+    {
+      "surface": "build.html",
+      "severity": "low",
+      "what": "7 odd-numbered spacing values: 9, 7, 3, 11, 13, 17, 15",
+      "why": "Odd values usually mean nudging until it looked right rather than working from a scale. It is invisible individually and reads as sloppy in aggregate.",
+      "fix": "Snap to a 4px rhythm."
     },
     {
       "surface": "live-audience.html",
@@ -104,29 +118,22 @@
   "forEyes": [
     {
       "surface": "build.html",
-      "question": "build.html: 8 font sizes sit within 12% of a neighbour (11, 12, 13, 14, 15, 16, 20, 22). Are those distinct steps or the same intent typed twice?",
+      "question": "build.html: 5 font sizes sit within 12% of a neighbour (13, 14, 14.5, 15, 16). Are those distinct steps or the same intent typed twice?",
       "measured": {
         "sizes": [
-          10,
-          11,
           12,
           13,
           14,
+          14.5,
           15,
-          16,
-          19,
-          20,
-          22
+          16
         ],
         "nearDupes": [
-          11,
-          12,
           13,
           14,
+          14.5,
           15,
-          16,
-          20,
-          22
+          16
         ]
       },
       "answeredBy": null,
@@ -134,12 +141,19 @@
     },
     {
       "surface": "build.html",
-      "question": "build.html: 5 corner radii in use (8, 10, 18, 20, 999). Does the page read as one family of shapes, or several?",
+      "question": "build.html: 12 corner radii in use (5, 6, 8, 9, 10, 11, 12, 13, 14, 16, 20, 999). Does the page read as one family of shapes, or several?",
       "measured": {
         "radii": [
+          5,
+          6,
           8,
+          9,
           10,
-          18,
+          11,
+          12,
+          13,
+          14,
+          16,
           20,
           999
         ]
