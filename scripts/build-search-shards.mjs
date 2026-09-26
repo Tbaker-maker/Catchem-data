@@ -1,9 +1,9 @@
 // Write data/search/manifest.json and data/search/shards/*.json from the search index.
 // Does not fetch. Does not add a price that was not already on the row.
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { buildShardMap } from "./lib/search-shards.mjs";
+import { buildShardMap, staleShardNames } from "./lib/search-shards.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const INDEX = join(ROOT, "data", "search", "search-index.json");
@@ -26,5 +26,12 @@ const manifest = {
   shards: listed,
 };
 writeFileSync(MANIFEST, JSON.stringify(manifest));
+let removed = 0;
+if (existsSync(DIR)) {
+  for (const name of staleShardNames(readdirSync(DIR), Object.keys(listed))) {
+    unlinkSync(join(DIR, name));
+    removed += 1;
+  }
+}
 const biggest = Object.values(listed).reduce((max, row) => Math.max(max, row.bytes), 0);
-console.log(`search shards ${Object.keys(listed).length} biggest=${biggest}`);
+console.log(`search shards ${Object.keys(listed).length} removed=${removed} biggest=${biggest}`);
