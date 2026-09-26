@@ -1,9 +1,9 @@
-# Catch'Em Trending — 2026-09-25
+# Catch'Em Trending — 2026-09-26
 
 Product: Catch'Em Trending — sealed floor board
-asOf: 2026-09-25T15:25:00Z
+asOf: 2026-09-26T15:30:00Z
 
-**First play:** Perfect Order Booster Box — Watch. Set still in play. Last printed 3-month solds 2,627 copies on TCGPlayer (29/day). Market $176.44 vs 3-month sold low $149.99. That is flow, not a Fill.
+**First play:** Perfect Order Booster Box — Watch. Set still in play. 2,639 copies sold in 3 months on TCGPlayer (29/day). Market $177.69 vs 3-month sold low $149.99. That is flow, not a Fill.
 
 ## Rules
 
@@ -14,45 +14,51 @@ asOf: 2026-09-25T15:25:00Z
 * No FORCE in this run. No Fill locked.
 
 Solds are TCGPlayer 3-month snapshots (copies sold). Not listings. Not a print run.
-Infinite-api `/price/history/{id}/detailed?range=quarter` returned 403 this pass. Missing solds stay missing.
+Infinite-api quarter returned 403. Product pages printed Total Sold this pass.
 
 ## Board
 
 **Perfect Order Booster Box** — Watch
-Market $176.44 · 3m sold 2627 · low $149.99 · 29/day
+Market $177.69 · 3m sold 2639 · low $149.99 · 29/day
 Turns into Fill if: set leaves play, solds dry up, higher-low holds 8+ days, market within 8% of that low.
 
 **Perfect Order ETB** — Watch
-Market $72.07. 3m sold missing. Still in play.
+Market $70.82 · 3m sold 1591 · low $49.97 · 17/day. Still in play.
+Turns into Fill if: left-play, higher-low 8+ days, solds dry, within 8%.
 
 **Destined Rivals Booster Box** — Wait
-Market $417.51 · 3m sold 875 · low $361.99 · 10/day. Still in play. Fresh quarter solds blocked.
+Market $415.78 · last $414.99 · 3m sold 894 · low $361.99 · 10/day. Still in play.
 
 **Destined Rivals ETB** — Wait
-Market $117.21. 3m count missing. Still in play.
+Market $116.85 · 3m sold 5717 · low $93.98 · 62/day. Still in play. Flow.
 
 **Destined Rivals Bundle** — Wait
-Market $64.66. 3m count missing. Still in play.
+Market $64.25 · 3m sold 1042 · low $52.76 · 11/day. Still in play.
 
 **151 Booster Bundle** — Watch
-Market $161.94 · 3m sold 1088 · low $135 · 12/day. ~20% above low.
+Market $161.10 · 3m sold 1099 · low $135 · 12/day. ~19% above low.
+Turns into Fill if: left-play, higher-low 8+ days, solds thin, within 8% of $135.
 
 **151 ETB** — Watch
-Market $470.95 · 3m sold 214 · low $335. Well above 8% band. Fill blocked on clock / age / exhaust / band.
+Market $469.32 · 3m sold 141 · low $452 · 2/day. Near the new window low. Fill blocked on clock / age / exhaust.
+Turns into Fill if: 151 off clock, $452 holds 8+ days, solds exhaust, within 8%.
 
 **Prismatic ETB** — Wait
-Market $136.67. 3m sold missing.
+Market $143.09 · 3m sold 2249 · 24/day. Printed low $3.01 is junk, not a floor.
+Turns into Fill if: a clean low ages 8+ days, left-play, solds thin, 8% band.
 
 **Prismatic Bundle** — Wait
-Market $65.71. 3m Total Sold did not print.
+Market $80.58 · 3m sold 3140 · low $46.99 · 34/day. Still in play.
 
 **Prismatic PC-ETB** — Watch
-Market $411.69. Not the retail ETB.
+Market $411.35 · 3m sold 106 · low $390 · 1/day. Not the retail ETB. Still in play.
+Turns into Fill if: left-play, $390 holds 8+ days, exhaust, within 8%.
 
 **Surging Sparks Box** — Wait
-Market $301.98. Box-level 3m sold not pulled.
+Market $303.62. Product page printed Total Sold 0 this session. Case is the wrong SKU.
 
 **Evolving Skies Box** — Watch
-Left play. Clean box 3m sold missing this pass. Case is the wrong SKU.
+Left play. Market $2341.75. Product page printed Total Sold 0. Case is the wrong SKU.
+Turns into Fill if: box (not case) 3m low prints, low ≥8 days, solds exhausted, within 8%.
 
 No Fill. No invented solds. Editor untouched.
