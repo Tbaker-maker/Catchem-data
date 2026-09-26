@@ -26,3 +26,8 @@ ppt-raw-private/
 ppt-history-raw/
 # Private mount is per-run only. Never commit it.
 data/history/ppt-sealed-private/
+
+# Per-run PPT status. The public report is data/ppt/run-report.json.
+data/ppt/run-started.json
+data/ppt/mount-status.json
+data/ppt/push-status.json
