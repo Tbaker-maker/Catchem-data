@@ -1,4 +1,6 @@
 // Pull TCGplayer market prices from TCGCSV for products we can match.
+// Runs daily in CI against the LIVE endpoint (tcgcsv.com/tcgplayer/3/...), so
+// history accumulates one real day at a time from 2026-09-25.
 // Historical archive files are used when TCGCSV publishes them. If the
 // archive is offline, those days are a gap. Today's live price is appended
 // only when the catalog name passes the match checks.
@@ -172,14 +174,20 @@ await mkdir(OUT, { recursive: true });
 const files = [];
 for (const a of accepted) {
   const got = todayPrice.get(a.id) || { gap: "no price file" };
-  const points = [];
-  const gaps = [];
-  if (gap) gaps.push(gap);
-  if (got.market != null) {
+  // Append, never replace: keep every day already on file and add today only
+  // if it is not there yet. A day that fails is recorded as a gap, not filled.
+  let prev = null;
+  try { prev = JSON.parse(await readFile(join(OUT, `${a.id}.json`), "utf8")); } catch {}
+  const points = Array.isArray(prev?.points) ? [...prev.points] : [];
+  const gaps = Array.isArray(prev?.gaps) ? [...prev.gaps] : [];
+  if (gap && !gaps.some((g) => g.from && g.to)) gaps.push(gap);
+  const haveToday = points.some((p) => p.date === TODAY);
+  if (!haveToday && got.market != null) {
     points.push({ date: TODAY, market: got.market, low: got.low, source: SOURCE });
-  } else {
+  } else if (!haveToday && !gaps.some((g) => g.date === TODAY)) {
     gaps.push({ date: TODAY, reason: got.gap || "no price" });
   }
+  points.sort((x, y) => (x.date < y.date ? -1 : x.date > y.date ? 1 : 0));
   const doc = {
     id: a.id,
     name: a.name,
@@ -190,7 +198,7 @@ for (const a of accepted) {
     gaps,
   };
   await writeFile(join(OUT, `${a.id}.json`), JSON.stringify(doc, null, 2));
-  files.push({ id: a.id, days: points.length, gaps: gaps.length, market: points[0]?.market ?? null });
+  files.push({ id: a.id, days: points.length, gaps: gaps.length, market: points[points.length - 1]?.market ?? null });
 }
 
 const coverage = {
