@@ -1,19 +1,33 @@
 {
   "asOf": "2026-09-26",
-  "note": "Uncertain sealed matches. Not used by the PPT queue. No prices.",
+  "note": "Second pass. Auto-apply only at 0.85 or higher with a lead of 0.08. Set names, product type, language, and edition are normalized. Group id and release date break ties. No price is stored.",
+  "pass2": {
+    "asOf": "2026-09-26",
+    "note": "Second pass. Auto-apply only at 0.85 or higher with a lead of 0.08. Set names, product type, language, and edition are normalized. Group id and release date break ties. No price is stored.",
+    "before": 102,
+    "resolved": 5,
+    "trackedResolved": 0,
+    "catalogResolved": 5,
+    "stillReview": 23,
+    "stillUnmatched": 13,
+    "stillCatalogReview": 61,
+    "queueAfter": 389,
+    "left": 97
+  },
   "tracked": [
     {
       "id": "xy12-etb",
       "name": "Evolutions Elite Trainer Box",
       "set": "Evolutions",
       "subtype": "etb",
-      "reason": "cover variant: the TCGplayer name names a specific art and ours does not",
+      "reason": "cover variant: the catalog name names a specific art and ours does not",
       "candidates": [
         {
           "tcgplayerProductId": "123447",
           "name": "XY Evolutions Elite Trainer Box [Mega Charizard Y]",
           "set": "XY - Evolutions",
           "subtype": "etb",
+          "groupId": 1842,
           "confidence": 0.66
         },
         {
@@ -21,6 +35,15 @@
           "name": "XY Evolutions Elite Trainer Box [Mega Blastoise]",
           "set": "XY - Evolutions",
           "subtype": "etb",
+          "groupId": 1842,
+          "confidence": 0.66
+        },
+        {
+          "tcgplayerProductId": "593355",
+          "name": "Prismatic Evolutions Elite Trainer Box",
+          "set": "SV: Prismatic Evolutions",
+          "subtype": "etb",
+          "groupId": 23821,
           "confidence": 0.66
         }
       ]
@@ -30,13 +53,14 @@
       "name": "Ascended Heroes Tin",
       "set": "Ascended Heroes",
       "subtype": "tin",
-      "reason": "cover variant: the TCGplayer name names a specific art and ours does not",
+      "reason": "cover variant: the catalog name names a specific art and ours does not",
       "candidates": [
         {
           "tcgplayerProductId": "702496",
           "name": "Ascended Heroes Tin [Mega Emboar ex]",
           "set": "ME: Ascended Heroes",
           "subtype": "tin",
+          "groupId": 24541,
           "confidence": 0.66
         },
         {
@@ -44,6 +68,7 @@
           "name": "Ascended Heroes Tin [Mega Feraligatr ex]",
           "set": "ME: Ascended Heroes",
           "subtype": "tin",
+          "groupId": 24541,
           "confidence": 0.66
         },
         {
@@ -51,6 +76,7 @@
           "name": "Ascended Heroes Tin [Mega Meganium ex]",
           "set": "ME: Ascended Heroes",
           "subtype": "tin",
+          "groupId": 24541,
           "confidence": 0.66
         }
       ]
@@ -60,28 +86,31 @@
       "name": "Mega Forces Tin",
       "set": "Mega Forces",
       "subtype": "tin",
-      "reason": "two catalog rows score too close",
+      "reason": "catalog name is more specific than ours",
       "candidates": [
         {
           "tcgplayerProductId": "702505",
           "name": "Mega Forces Tin [Mega Dragonite ex]",
           "set": "Miscellaneous Cards & Products",
           "subtype": "tin",
-          "confidence": 1
+          "groupId": 2374,
+          "confidence": 0.66
         },
         {
           "tcgplayerProductId": "702506",
           "name": "Mega Forces Tin [Mega Darkrai ex]",
           "set": "Miscellaneous Cards & Products",
           "subtype": "tin",
-          "confidence": 1
+          "groupId": 2374,
+          "confidence": 0.66
         },
         {
           "tcgplayerProductId": "702507",
           "name": "Mega Forces Tin [Mega Zeraora ex]",
           "set": "Miscellaneous Cards & Products",
           "subtype": "tin",
-          "confidence": 1
+          "groupId": 2374,
+          "confidence": 0.66
         }
       ]
     },
@@ -90,13 +119,14 @@
       "name": "Sun & Moon Elite Trainer Box",
       "set": "Sun & Moon",
       "subtype": "etb",
-      "reason": "cover variant: the TCGplayer name names a specific art and ours does not",
+      "reason": "cover variant: the catalog name names a specific art and ours does not",
       "candidates": [
         {
           "tcgplayerProductId": "126089",
           "name": "Sun & Moon Elite Trainer Box [Solgaleo]",
           "set": "SM Base Set",
           "subtype": "etb",
+          "groupId": 1863,
           "confidence": 0.66
         },
         {
@@ -104,6 +134,7 @@
           "name": "Sun & Moon Elite Trainer Box [Lunala]",
           "set": "SM Base Set",
           "subtype": "etb",
+          "groupId": 1863,
           "confidence": 0.66
         }
       ]
@@ -113,13 +144,14 @@
       "name": "Ultra Prism Elite Trainer Box",
       "set": "Ultra Prism",
       "subtype": "etb",
-      "reason": "cover variant: the TCGplayer name names a specific art and ours does not",
+      "reason": "cover variant: the catalog name names a specific art and ours does not",
       "candidates": [
         {
           "tcgplayerProductId": "155663",
           "name": "Ultra Prism Elite Trainer Box [Dawn Wings Necrozma]",
           "set": "SM - Ultra Prism",
           "subtype": "etb",
+          "groupId": 2178,
           "confidence": 0.66
         },
         {
@@ -127,6 +159,7 @@
           "name": "Ultra Prism Elite Trainer Box [Dusk Mane Necrozma]",
           "set": "SM - Ultra Prism",
           "subtype": "etb",
+          "groupId": 2178,
           "confidence": 0.66
         }
       ]
@@ -136,13 +169,14 @@
       "name": "Battle Styles Elite Trainer Box",
       "set": "Battle Styles",
       "subtype": "etb",
-      "reason": "cover variant: the TCGplayer name names a specific art and ours does not",
+      "reason": "cover variant: the catalog name names a specific art and ours does not",
       "candidates": [
         {
           "tcgplayerProductId": "229284",
           "name": "Battle Styles Elite Trainer Box [Single Strike Urshifu] (Red)",
           "set": "SWSH05: Battle Styles",
           "subtype": "etb",
+          "groupId": 2765,
           "confidence": 0.66
         },
         {
@@ -150,6 +184,15 @@
           "name": "Battle Styles Elite Trainer Box [Rapid Strike Urshifu] (Blue)",
           "set": "SWSH05: Battle Styles",
           "subtype": "etb",
+          "groupId": 2765,
+          "confidence": 0.66
+        },
+        {
+          "tcgplayerProductId": "244414",
+          "name": "Battle Styles Elite Trainer Box [Set of 2]",
+          "set": "SWSH05: Battle Styles",
+          "subtype": "etb",
+          "groupId": 2765,
           "confidence": 0.66
         }
       ]
@@ -159,13 +202,14 @@
       "name": "Chilling Reign Elite Trainer Box",
       "set": "Chilling Reign",
       "subtype": "etb",
-      "reason": "cover variant: the TCGplayer name names a specific art and ours does not",
+      "reason": "cover variant: the catalog name names a specific art and ours does not",
       "candidates": [
         {
           "tcgplayerProductId": "236260",
           "name": "Chilling Reign Elite Trainer Box [Ice Rider Calyrex]",
           "set": "SWSH06: Chilling Reign",
           "subtype": "etb",
+          "groupId": 2807,
           "confidence": 0.66
         },
         {
@@ -173,6 +217,15 @@
           "name": "Chilling Reign Elite Trainer Box [Shadow Rider Calyrex]",
           "set": "SWSH06: Chilling Reign",
           "subtype": "etb",
+          "groupId": 2807,
+          "confidence": 0.66
+        },
+        {
+          "tcgplayerProductId": "244410",
+          "name": "Chilling Reign Elite Trainer Box [Set of 2]",
+          "set": "SWSH06: Chilling Reign",
+          "subtype": "etb",
+          "groupId": 2807,
           "confidence": 0.66
         }
       ]
@@ -182,13 +235,14 @@
       "name": "Chilling Reign Pokemon Center Elite Trainer Box",
       "set": "Chilling Reign",
       "subtype": "pc-etb",
-      "reason": "cover variant: the TCGplayer name names a specific art and ours does not",
+      "reason": "cover variant: the catalog name names a specific art and ours does not",
       "candidates": [
         {
           "tcgplayerProductId": "247281",
           "name": "Chilling Reign Pokemon Center Elite Trainer Box [Ice Rider Calyrex] (Exclusive)",
           "set": "SWSH06: Chilling Reign",
           "subtype": "pc-etb",
+          "groupId": 2807,
           "confidence": 0.66
         },
         {
@@ -196,6 +250,7 @@
           "name": "Chilling Reign Pokemon Center Elite Trainer Box [Shadow Rider Calyrex] (Exclusive)",
           "set": "SWSH06: Chilling Reign",
           "subtype": "pc-etb",
+          "groupId": 2807,
           "confidence": 0.66
         }
       ]
@@ -205,13 +260,14 @@
       "name": "Evolving Skies Pokemon Center Elite Trainer Box",
       "set": "Evolving Skies",
       "subtype": "pc-etb",
-      "reason": "cover variant: the TCGplayer name names a specific art and ours does not",
+      "reason": "cover variant: the catalog name names a specific art and ours does not",
       "candidates": [
         {
           "tcgplayerProductId": "245352",
           "name": "Evolving Skies Pokemon Center Elite Trainer Box [Glaceon/Vaporeon/Sylveon/Espeon] (Exclusive)",
           "set": "SWSH07: Evolving Skies",
           "subtype": "pc-etb",
+          "groupId": 2848,
           "confidence": 0.66
         },
         {
@@ -219,6 +275,15 @@
           "name": "Evolving Skies Pokemon Center Elite Trainer Box [Jolteon/Flareon/Umbreon/Leafeon] (Exclusive)",
           "set": "SWSH07: Evolving Skies",
           "subtype": "pc-etb",
+          "groupId": 2848,
+          "confidence": 0.66
+        },
+        {
+          "tcgplayerProductId": "245855",
+          "name": "Evolving Skies Pokemon Center Elite Trainer Box [Set of 2] (Exclusive)",
+          "set": "SWSH07: Evolving Skies",
+          "subtype": "pc-etb",
+          "groupId": 2848,
           "confidence": 0.66
         }
       ]
@@ -228,13 +293,14 @@
       "name": "Crown Zenith Pokemon Center Elite Trainer Box",
       "set": "Crown Zenith",
       "subtype": "pc-etb",
-      "reason": "catalog name adds a bundle, a plus, or a store exclusive",
+      "reason": "catalog name adds a half, a plus, or a case",
       "candidates": [
         {
           "tcgplayerProductId": "454246",
           "name": "Crown Zenith Pokemon Center Elite Trainer Box Plus",
           "set": "SWSH: Crown Zenith",
           "subtype": "pc-etb",
+          "groupId": 17688,
           "confidence": 0.66
         }
       ]
@@ -244,13 +310,14 @@
       "name": "Scarlet & Violet Base Pokemon Center Elite Trainer Box",
       "set": "Scarlet & Violet",
       "subtype": "pc-etb",
-      "reason": "cover variant: the TCGplayer name names a specific art and ours does not",
+      "reason": "cover variant: the catalog name names a specific art and ours does not",
       "candidates": [
         {
           "tcgplayerProductId": "478756",
           "name": "Scarlet & Violet Pokemon Center Elite Trainer Box (Exclusive) [Miraidon]",
           "set": "SV01: Scarlet & Violet Base Set",
           "subtype": "pc-etb",
+          "groupId": 22873,
           "confidence": 0.66
         },
         {
@@ -258,6 +325,7 @@
           "name": "Scarlet & Violet Pokemon Center Elite Trainer Box (Exclusive) [Koraidon]",
           "set": "SV01: Scarlet & Violet Base Set",
           "subtype": "pc-etb",
+          "groupId": 22873,
           "confidence": 0.66
         }
       ]
@@ -267,13 +335,14 @@
       "name": "Paradox Rift Pokemon Center Elite Trainer Box",
       "set": "Paradox Rift",
       "subtype": "pc-etb",
-      "reason": "cover variant: the TCGplayer name names a specific art and ours does not",
+      "reason": "cover variant: the catalog name names a specific art and ours does not",
       "candidates": [
         {
           "tcgplayerProductId": "512801",
           "name": "Paradox Rift Pokemon Center Elite Trainer Box (Exclusive) [Iron Valiant]",
           "set": "SV04: Paradox Rift",
           "subtype": "pc-etb",
+          "groupId": 23286,
           "confidence": 0.66
         },
         {
@@ -281,6 +350,15 @@
           "name": "Paradox Rift Pokemon Center Elite Trainer Box (Exclusive) [Roaring Moon]",
           "set": "SV04: Paradox Rift",
           "subtype": "pc-etb",
+          "groupId": 23286,
+          "confidence": 0.66
+        },
+        {
+          "tcgplayerProductId": "524394",
+          "name": "Paradox Rift Pokemon Center Elite Trainer Box (Exclusive) [Set of 2]",
+          "set": "SV04: Paradox Rift",
+          "subtype": "pc-etb",
+          "groupId": 23286,
           "confidence": 0.66
         }
       ]
@@ -290,13 +368,14 @@
       "name": "Temporal Forces Pokemon Center Elite Trainer Box",
       "set": "Temporal Forces",
       "subtype": "pc-etb",
-      "reason": "cover variant: the TCGplayer name names a specific art and ours does not",
+      "reason": "cover variant: the catalog name names a specific art and ours does not",
       "candidates": [
         {
           "tcgplayerProductId": "532853",
           "name": "Temporal Forces Pokemon Center Elite Trainer Box (Exclusive) [Iron Leaves]",
           "set": "SV05: Temporal Forces",
           "subtype": "pc-etb",
+          "groupId": 23381,
           "confidence": 0.66
         },
         {
@@ -304,6 +383,7 @@
           "name": "Temporal Forces Pokemon Center Elite Trainer Box (Exclusive) [Walking Wake]",
           "set": "SV05: Temporal Forces",
           "subtype": "pc-etb",
+          "groupId": 23381,
           "confidence": 0.66
         }
       ]
@@ -313,21 +393,23 @@
       "name": "Mega Evolution Pokemon Center Elite Trainer Box",
       "set": "Mega Evolution",
       "subtype": "pc-etb",
-      "reason": "two catalog rows score too close",
+      "reason": "catalog name is more specific than ours",
       "candidates": [
         {
           "tcgplayerProductId": "644282",
           "name": "Mega Evolution Pokemon Center Elite Trainer Box (Exclusive) [Mega Lucario]",
           "set": "ME01: Mega Evolution",
           "subtype": "pc-etb",
-          "confidence": 1
+          "groupId": 24380,
+          "confidence": 0.66
         },
         {
           "tcgplayerProductId": "648415",
           "name": "Mega Evolution Pokemon Center Elite Trainer Box (Exclusive) [Mega Gardevoir]",
           "set": "ME01: Mega Evolution",
           "subtype": "pc-etb",
-          "confidence": 1
+          "groupId": 24380,
+          "confidence": 0.66
         }
       ]
     },
@@ -336,13 +418,14 @@
       "name": "Temporal Forces Elite Trainer Box",
       "set": "Temporal Forces",
       "subtype": "etb",
-      "reason": "cover variant: the TCGplayer name names a specific art and ours does not",
+      "reason": "cover variant: the catalog name names a specific art and ours does not",
       "candidates": [
         {
           "tcgplayerProductId": "532845",
           "name": "Temporal Forces Elite Trainer Box [Walking Wake]",
           "set": "SV05: Temporal Forces",
           "subtype": "etb",
+          "groupId": 23381,
           "confidence": 0.66
         },
         {
@@ -350,6 +433,15 @@
           "name": "Temporal Forces Elite Trainer Box [Iron Leaves ex]",
           "set": "SV05: Temporal Forces",
           "subtype": "etb",
+          "groupId": 23381,
+          "confidence": 0.66
+        },
+        {
+          "tcgplayerProductId": "532849",
+          "name": "Temporal Forces Elite Trainer Box [Set of 2]",
+          "set": "SV05: Temporal Forces",
+          "subtype": "etb",
+          "groupId": 23381,
           "confidence": 0.66
         }
       ]
@@ -359,13 +451,14 @@
       "name": "Crown Zenith Special Collection",
       "set": "Crown Zenith",
       "subtype": "special-collection",
-      "reason": "cover variant: the TCGplayer name names a specific art and ours does not",
+      "reason": "cover variant: the catalog name names a specific art and ours does not",
       "candidates": [
         {
           "tcgplayerProductId": "453467",
           "name": "Crown Zenith Collection [Regieleki V]",
           "set": "SWSH: Crown Zenith",
           "subtype": "special-collection",
+          "groupId": 17688,
           "confidence": 0.66
         },
         {
@@ -373,13 +466,15 @@
           "name": "Crown Zenith Collection [Regidrago V]",
           "set": "SWSH: Crown Zenith",
           "subtype": "special-collection",
+          "groupId": 17688,
           "confidence": 0.66
         },
         {
-          "tcgplayerProductId": "475617",
-          "name": "Crown Zenith Pin Collection [Cinderace]",
+          "tcgplayerProductId": "453474",
+          "name": "Crown Zenith Collection [Set of 2]",
           "set": "SWSH: Crown Zenith",
           "subtype": "special-collection",
+          "groupId": 17688,
           "confidence": 0.66
         }
       ]
@@ -389,13 +484,14 @@
       "name": "Evolving Skies Elite Trainer Box",
       "set": "Evolving Skies",
       "subtype": "etb",
-      "reason": "cover variant: the TCGplayer name names a specific art and ours does not",
+      "reason": "cover variant: the catalog name names a specific art and ours does not",
       "candidates": [
         {
           "tcgplayerProductId": "242434",
           "name": "Evolving Skies Elite Trainer Box [Flareon/Jolteon/Umbreon/Leafeon]",
           "set": "SWSH07: Evolving Skies",
           "subtype": "etb",
+          "groupId": 2848,
           "confidence": 0.66
         },
         {
@@ -403,6 +499,15 @@
           "name": "Evolving Skies Elite Trainer Box [Glaceon/Vaporeon/Sylveon/Espeon]",
           "set": "SWSH07: Evolving Skies",
           "subtype": "etb",
+          "groupId": 2848,
+          "confidence": 0.66
+        },
+        {
+          "tcgplayerProductId": "243721",
+          "name": "Evolving Skies Elite Trainer Box [Set of 2]",
+          "set": "SWSH07: Evolving Skies",
+          "subtype": "etb",
+          "groupId": 2848,
           "confidence": 0.66
         }
       ]
@@ -412,13 +517,14 @@
       "name": "Sword & Shield Base Elite Trainer Box",
       "set": "Sword & Shield",
       "subtype": "etb",
-      "reason": "cover variant: the TCGplayer name names a specific art and ours does not",
+      "reason": "cover variant: the catalog name names a specific art and ours does not",
       "candidates": [
         {
           "tcgplayerProductId": "206038",
           "name": "Sword & Shield Elite Trainer Box [Zacian]",
           "set": "SWSH01: Sword & Shield Base Set",
           "subtype": "etb",
+          "groupId": 2585,
           "confidence": 0.66
         },
         {
@@ -426,6 +532,15 @@
           "name": "Sword & Shield Elite Trainer Box [Zamazenta]",
           "set": "SWSH01: Sword & Shield Base Set",
           "subtype": "etb",
+          "groupId": 2585,
+          "confidence": 0.66
+        },
+        {
+          "tcgplayerProductId": "244411",
+          "name": "Sword & Shield Elite Trainer Box [Set of 2]",
+          "set": "SWSH01: Sword & Shield Base Set",
+          "subtype": "etb",
+          "groupId": 2585,
           "confidence": 0.66
         }
       ]
@@ -438,25 +553,28 @@
       "reason": "two catalog rows score too close",
       "candidates": [
         {
-          "tcgplayerProductId": "107597",
-          "name": "Pokemon Base Set (Shadowless) [Unlimited Edition] Booster Box",
-          "set": "Base Set (Shadowless)",
+          "tcgplayerProductId": "107610",
+          "name": "Base Set 2 Booster Box",
+          "set": "Base Set 2",
           "subtype": "booster-box",
-          "confidence": 1
+          "groupId": 605,
+          "confidence": 0.92
         },
         {
-          "tcgplayerProductId": "185731",
-          "name": "Base Set Booster Box [Revised Unlimited Edition]",
-          "set": "Base Set",
+          "tcgplayerProductId": "91601",
+          "name": "XY Booster Box",
+          "set": "XY Base Set",
           "subtype": "booster-box",
-          "confidence": 1
+          "groupId": 1387,
+          "confidence": 0.92
         },
         {
-          "tcgplayerProductId": "107596",
-          "name": "Pokemon Base Set (Shadowless) [1st Edition] Booster Box",
-          "set": "Base Set (Shadowless)",
+          "tcgplayerProductId": "126048",
+          "name": "Sun & Moon Booster Box",
+          "set": "SM Base Set",
           "subtype": "booster-box",
-          "confidence": 0.7
+          "groupId": 1863,
+          "confidence": 0.66
         }
       ]
     },
@@ -465,13 +583,14 @@
       "name": "Jungle Booster Box",
       "set": "Jungle",
       "subtype": "booster-box",
-      "reason": "catalog row is one printing and our name does not say which",
+      "reason": "catalog row names an edition and ours does not",
       "candidates": [
         {
           "tcgplayerProductId": "107598",
           "name": "Jungle Booster Box [1st Edition]",
           "set": "Jungle",
           "subtype": "booster-box",
+          "groupId": 635,
           "confidence": 0.8
         },
         {
@@ -479,6 +598,7 @@
           "name": "Jungle Booster Box [Unlimited Edition]",
           "set": "Jungle",
           "subtype": "booster-box",
+          "groupId": 635,
           "confidence": 0.8
         }
       ]
@@ -488,13 +608,14 @@
       "name": "Fossil Booster Box",
       "set": "Fossil",
       "subtype": "booster-box",
-      "reason": "catalog row is one printing and our name does not say which",
+      "reason": "catalog row names an edition and ours does not",
       "candidates": [
         {
           "tcgplayerProductId": "107600",
           "name": "Pokemon Fossil [Unlimited Edition] Booster Box",
           "set": "Fossil",
           "subtype": "booster-box",
+          "groupId": 630,
           "confidence": 0.8
         },
         {
@@ -502,6 +623,7 @@
           "name": "Pokemon Fossil [1st Edition] Booster Box",
           "set": "Fossil",
           "subtype": "booster-box",
+          "groupId": 630,
           "confidence": 0.8
         }
       ]
@@ -511,13 +633,14 @@
       "name": "Neo Genesis Booster Box",
       "set": "Neo Genesis",
       "subtype": "booster-box",
-      "reason": "catalog row is one printing and our name does not say which",
+      "reason": "catalog row names an edition and ours does not",
       "candidates": [
         {
           "tcgplayerProductId": "193334",
           "name": "Neo Genesis Booster Box [1st Edition]",
           "set": "Neo Genesis",
           "subtype": "booster-box",
+          "groupId": 1396,
           "confidence": 0.8
         },
         {
@@ -525,7 +648,41 @@
           "name": "Neo Genesis Booster Box [Unlimited Edition]",
           "set": "Neo Genesis",
           "subtype": "booster-box",
+          "groupId": 1396,
           "confidence": 0.8
+        }
+      ]
+    },
+    {
+      "id": "swsh45-bundle",
+      "name": "SWSH Promos Booster Bundle",
+      "set": "SWSH Promos",
+      "subtype": "booster-bundle",
+      "reason": "cover variant: the catalog name names a specific art and ours does not",
+      "candidates": [
+        {
+          "tcgplayerProductId": "230394",
+          "name": "V Battle Deck Bundle [Venusaur V/Blastoise V]",
+          "set": "Miscellaneous Cards & Products",
+          "subtype": "booster-bundle",
+          "groupId": 2374,
+          "confidence": 0.66
+        },
+        {
+          "tcgplayerProductId": "233354",
+          "name": "V Battle Deck Bundle [Victini V/Gardevoir V]",
+          "set": "Miscellaneous Cards & Products",
+          "subtype": "booster-bundle",
+          "groupId": 2374,
+          "confidence": 0.66
+        },
+        {
+          "tcgplayerProductId": "245728",
+          "name": "V Battle Deck Bundle [Rayquaza V/Noivern V]",
+          "set": "Miscellaneous Cards & Products",
+          "subtype": "booster-bundle",
+          "groupId": 2374,
+          "confidence": 0.66
         }
       ]
     }
@@ -535,123 +692,108 @@
       "id": "det1-etb",
       "name": "Detective Pikachu Elite Trainer Box",
       "set": "Detective Pikachu",
-      "subtype": "etb"
+      "subtype": "etb",
+      "reason": "no catalog row matched the set and the product type",
+      "candidates": []
     },
     {
       "id": "cel25-bb",
       "name": "Celebrations Booster Bundle",
       "set": "Celebrations",
-      "subtype": "booster-bundle"
+      "subtype": "booster-bundle",
+      "reason": "no catalog row matched the set and the product type",
+      "candidates": []
     },
     {
       "id": "swsh1-bundle",
       "name": "Sword & Shield Booster Bundle",
       "set": "Sword & Shield",
-      "subtype": "booster-bundle"
+      "subtype": "booster-bundle",
+      "reason": "no catalog row matched the set and the product type",
+      "candidates": []
     },
     {
       "id": "swsh10-bundle",
       "name": "Astral Radiance Booster Bundle",
       "set": "Astral Radiance",
-      "subtype": "booster-bundle"
+      "subtype": "booster-bundle",
+      "reason": "no catalog row matched the set and the product type",
+      "candidates": []
     },
     {
       "id": "swsh2-bundle",
       "name": "Rebel Clash Booster Bundle",
       "set": "Rebel Clash",
-      "subtype": "booster-bundle"
+      "subtype": "booster-bundle",
+      "reason": "no catalog row matched the set and the product type",
+      "candidates": []
     },
     {
       "id": "swsh3-bundle",
       "name": "Darkness Ablaze Booster Bundle",
       "set": "Darkness Ablaze",
-      "subtype": "booster-bundle"
+      "subtype": "booster-bundle",
+      "reason": "no catalog row matched the set and the product type",
+      "candidates": []
     },
     {
       "id": "swsh35-bundle",
       "name": "Champion's Path Booster Bundle",
       "set": "Champion's Path",
-      "subtype": "booster-bundle"
+      "subtype": "booster-bundle",
+      "reason": "no catalog row matched the set and the product type",
+      "candidates": []
     },
     {
       "id": "swsh4-bundle",
       "name": "Vivid Voltage Booster Bundle",
       "set": "Vivid Voltage",
-      "subtype": "booster-bundle"
-    },
-    {
-      "id": "swsh45-bundle",
-      "name": "SWSH Promos Booster Bundle",
-      "set": "SWSH Promos",
-      "subtype": "booster-bundle"
+      "subtype": "booster-bundle",
+      "reason": "no catalog row matched the set and the product type",
+      "candidates": []
     },
     {
       "id": "swsh5-bundle",
       "name": "Battle Styles Booster Bundle",
       "set": "Battle Styles",
-      "subtype": "booster-bundle"
+      "subtype": "booster-bundle",
+      "reason": "no catalog row matched the set and the product type",
+      "candidates": []
     },
     {
       "id": "swsh6-bundle",
       "name": "Chilling Reign Booster Bundle",
       "set": "Chilling Reign",
-      "subtype": "booster-bundle"
+      "subtype": "booster-bundle",
+      "reason": "no catalog row matched the set and the product type",
+      "candidates": []
     },
     {
       "id": "swsh7-bundle",
       "name": "Evolving Skies Booster Bundle",
       "set": "Evolving Skies",
-      "subtype": "booster-bundle"
+      "subtype": "booster-bundle",
+      "reason": "no catalog row matched the set and the product type",
+      "candidates": []
     },
     {
       "id": "swsh8-bundle",
       "name": "Fusion Strike Booster Bundle",
       "set": "Fusion Strike",
-      "subtype": "booster-bundle"
+      "subtype": "booster-bundle",
+      "reason": "no catalog row matched the set and the product type",
+      "candidates": []
     },
     {
       "id": "swsh9-bundle",
       "name": "Brilliant Stars Booster Bundle",
       "set": "Brilliant Stars",
-      "subtype": "booster-bundle"
+      "subtype": "booster-bundle",
+      "reason": "no catalog row matched the set and the product type",
+      "candidates": []
     }
   ],
   "catalog": [
-    {
-      "tcgplayerProductId": "98553",
-      "name": "Black and White Booster Pack",
-      "set": "Black and White",
-      "subtype": "booster-pack",
-      "reason": "name adds a bundle, a plus, or a store exclusive"
-    },
-    {
-      "tcgplayerProductId": "98524",
-      "name": "Diamond and Pearl Booster Box",
-      "set": "Diamond and Pearl",
-      "subtype": "booster-box",
-      "reason": "name adds a bundle, a plus, or a store exclusive"
-    },
-    {
-      "tcgplayerProductId": "98525",
-      "name": "Diamond and Pearl Booster Pack",
-      "set": "Diamond and Pearl",
-      "subtype": "booster-pack",
-      "reason": "name adds a bundle, a plus, or a store exclusive"
-    },
-    {
-      "tcgplayerProductId": "98559",
-      "name": "Ruby and Sapphire Booster Box",
-      "set": "EX Ruby and Sapphire",
-      "subtype": "booster-box",
-      "reason": "name adds a bundle, a plus, or a store exclusive"
-    },
-    {
-      "tcgplayerProductId": "98558",
-      "name": "Ruby and Sapphire Booster Pack",
-      "set": "EX Ruby and Sapphire",
-      "subtype": "booster-pack",
-      "reason": "name adds a bundle, a plus, or a store exclusive"
-    },
     {
       "tcgplayerProductId": "644279",
       "name": "Mega Evolution Elite Trainer Box [Mega Gardevoir]",
@@ -664,7 +806,7 @@
       "name": "Mega Evolution Half Booster Box",
       "set": "ME01: Mega Evolution",
       "subtype": "booster-box",
-      "reason": "name adds a bundle, a plus, or a store exclusive"
+      "reason": "name adds a half, a plus, a case, or a mini"
     },
     {
       "tcgplayerProductId": "648415",
@@ -685,28 +827,28 @@
       "name": "Perfect Order Half Booster Boxes",
       "set": "ME03: Perfect Order",
       "subtype": "booster-box",
-      "reason": "name adds a bundle, a plus, or a store exclusive"
+      "reason": "name adds a half, a plus, a case, or a mini"
     },
     {
       "tcgplayerProductId": "695395",
       "name": "Chaos Rising Half Booster Box",
       "set": "ME04: Chaos Rising",
       "subtype": "booster-box",
-      "reason": "name adds a bundle, a plus, or a store exclusive"
+      "reason": "name adds a half, a plus, a case, or a mini"
     },
     {
       "tcgplayerProductId": "692940",
       "name": "Pitch Black Half Booster Boxes",
       "set": "ME05: Pitch Black",
       "subtype": "booster-box",
-      "reason": "name adds a bundle, a plus, or a store exclusive"
+      "reason": "name adds a half, a plus, a case, or a mini"
     },
     {
       "tcgplayerProductId": "712095",
       "name": "Delta Reign Half Booster Box",
       "set": "ME06: Delta Reign",
       "subtype": "booster-box",
-      "reason": "name adds a bundle, a plus, or a store exclusive"
+      "reason": "name adds a half, a plus, a case, or a mini"
     },
     {
       "tcgplayerProductId": "190359",
@@ -727,7 +869,7 @@
       "name": "Pokemon GO Pokemon Center Elite Trainer Box Plus (Exclusive)",
       "set": "Pokemon GO",
       "subtype": "pc-etb",
-      "reason": "name adds a bundle, a plus, or a store exclusive"
+      "reason": "name adds a half, a plus, a case, or a mini"
     },
     {
       "tcgplayerProductId": "155663",
@@ -776,7 +918,7 @@
       "name": "Scarlet & Violet Half Booster Box",
       "set": "SV01: Scarlet & Violet Base Set",
       "subtype": "booster-box",
-      "reason": "name adds a bundle, a plus, or a store exclusive"
+      "reason": "name adds a half, a plus, a case, or a mini"
     },
     {
       "tcgplayerProductId": "478758",
@@ -797,7 +939,7 @@
       "name": "Paldea Evolved Half Booster Box",
       "set": "SV02: Paldea Evolved",
       "subtype": "booster-box",
-      "reason": "name adds a bundle, a plus, or a store exclusive"
+      "reason": "name adds a half, a plus, a case, or a mini"
     },
     {
       "tcgplayerProductId": "512813",
@@ -818,7 +960,7 @@
       "name": "Paradox Rift Half Booster Box",
       "set": "SV04: Paradox Rift",
       "subtype": "booster-box",
-      "reason": "name adds a bundle, a plus, or a store exclusive"
+      "reason": "name adds a half, a plus, a case, or a mini"
     },
     {
       "tcgplayerProductId": "512801",
@@ -853,7 +995,7 @@
       "name": "Temporal Forces Half Booster Box",
       "set": "SV05: Temporal Forces",
       "subtype": "booster-box",
-      "reason": "name adds a bundle, a plus, or a store exclusive"
+      "reason": "name adds a half, a plus, a case, or a mini"
     },
     {
       "tcgplayerProductId": "532853",
@@ -874,42 +1016,42 @@
       "name": "Twilight Masqueade Half Booster Box",
       "set": "SV06: Twilight Masquerade",
       "subtype": "booster-box",
-      "reason": "name adds a bundle, a plus, or a store exclusive"
+      "reason": "name adds a half, a plus, a case, or a mini"
     },
     {
       "tcgplayerProductId": "649420",
       "name": "Stellar Crown Half Booster Box",
       "set": "SV07: Stellar Crown",
       "subtype": "booster-box",
-      "reason": "name adds a bundle, a plus, or a store exclusive"
+      "reason": "name adds a half, a plus, a case, or a mini"
     },
     {
       "tcgplayerProductId": "646039",
       "name": "Surging Sparks Half Booster Box",
       "set": "SV08: Surging Sparks",
       "subtype": "booster-box",
-      "reason": "name adds a bundle, a plus, or a store exclusive"
+      "reason": "name adds a half, a plus, a case, or a mini"
     },
     {
       "tcgplayerProductId": "649492",
       "name": "Journey Together Half Booster Box",
       "set": "SV09: Journey Together",
       "subtype": "booster-box",
-      "reason": "name adds a bundle, a plus, or a store exclusive"
+      "reason": "name adds a half, a plus, a case, or a mini"
     },
     {
       "tcgplayerProductId": "624681",
       "name": "Destined Rivals Half Booster Box",
       "set": "SV10: Destined Rivals",
       "subtype": "booster-box",
-      "reason": "name adds a bundle, a plus, or a store exclusive"
+      "reason": "name adds a half, a plus, a case, or a mini"
     },
     {
       "tcgplayerProductId": "454246",
       "name": "Crown Zenith Pokemon Center Elite Trainer Box Plus",
       "set": "SWSH: Crown Zenith",
       "subtype": "pc-etb",
-      "reason": "name adds a bundle, a plus, or a store exclusive"
+      "reason": "name adds a half, a plus, a case, or a mini"
     },
     {
       "tcgplayerProductId": "206038",
@@ -930,14 +1072,14 @@
       "name": "Sword & Shield Elite Trainer Box Plus [Zacian]",
       "set": "SWSH04: Vivid Voltage",
       "subtype": "etb",
-      "reason": "name adds a bundle, a plus, or a store exclusive"
+      "reason": "name adds a half, a plus, a case, or a mini"
     },
     {
       "tcgplayerProductId": "222986",
       "name": "Sword & Shield Elite Trainer Box Plus [Zamazenta]",
       "set": "SWSH04: Vivid Voltage",
       "subtype": "etb",
-      "reason": "name adds a bundle, a plus, or a store exclusive"
+      "reason": "name adds a half, a plus, a case, or a mini"
     },
     {
       "tcgplayerProductId": "229285",
@@ -1000,7 +1142,7 @@
       "name": "Evolving Skies Half Booster Box",
       "set": "SWSH07: Evolving Skies",
       "subtype": "booster-box",
-      "reason": "name adds a bundle, a plus, or a store exclusive"
+      "reason": "name adds a half, a plus, a case, or a mini"
     },
     {
       "tcgplayerProductId": "245352",
@@ -1021,7 +1163,7 @@
       "name": "Astral Radiance Half Booster Box",
       "set": "SWSH10: Astral Radiance",
       "subtype": "booster-box",
-      "reason": "name adds a bundle, a plus, or a store exclusive"
+      "reason": "name adds a half, a plus, a case, or a mini"
     },
     {
       "tcgplayerProductId": "107106",
