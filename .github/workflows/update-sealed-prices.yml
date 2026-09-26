@@ -65,6 +65,9 @@ jobs:
         # the price commit that follows.
         continue-on-error: true
         run: node scripts/compute-heat-check.mjs
+      - name: Build search index
+        continue-on-error: true
+        run: node scripts/build-search-index.mjs
       - name: TCGplayer market history (TCGCSV daily append)
         # Appends today's live TCGCSV market price to each matched product's
         # file in data/history/tcgplayer-market/. Never rewrites earlier days;
@@ -98,7 +101,7 @@ jobs:
                   data/divergence-report.json data/supply-watch.json \
                   data/derived-insights.json data/era-index-history.json \
                   data/catalyst-log.json data/cohort-history.json data/artists.json \
-                  data/indexes/ data/heat-check.json data/history/tcgplayer-market/
+                  data/indexes/ data/heat-check.json data/history/tcgplayer-market/ data/search/
           if git diff --staged --quiet; then
             echo "No price changes to commit."
           else
@@ -147,7 +150,7 @@ jobs:
           # step writes is listed here. A file written in CI but not added
           # evaporates at job end — the class that froze the app feed and ate
           # era/catalyst history daily.
-          git add data/sealed-prices.json data/heat-report.json data/heat-history.json data/sealed-crosscheck.json data/crosscheck-history.json data/divergence-report.json data/supply-watch.json data/derived-insights.json data/era-index-history.json data/catalyst-log.json data/cohort-history.json data/alerts-state.json data/artists.json data/indexes/ data/heat-check.json data/history/tcgplayer-market/ research/pulse/ research/assets/the-board.html research/assets/the-pulse.html research/assets/pulse-feed.json research/assets/print-watch.html research/assets/methodology.html research/assets/corrections.html research/assets/creators.html research/assets/build.html research/assets/card-index.json research/assets/faq.html
+          git add data/sealed-prices.json data/heat-report.json data/heat-history.json data/sealed-crosscheck.json data/crosscheck-history.json data/divergence-report.json data/supply-watch.json data/derived-insights.json data/era-index-history.json data/catalyst-log.json data/cohort-history.json data/alerts-state.json data/artists.json data/indexes/ data/heat-check.json data/history/tcgplayer-market/ data/search/ research/pulse/ research/assets/the-board.html research/assets/the-pulse.html research/assets/pulse-feed.json research/assets/print-watch.html research/assets/methodology.html research/assets/corrections.html research/assets/creators.html research/assets/build.html research/assets/card-index.json research/assets/faq.html
           if git diff --staged --quiet; then
             echo "No price changes to commit."
           else

@@ -1,0 +1,20 @@
+{
+  "note": "Hand-edited nicknames. The daily search build copies a matching alias onto the product. ETB, BB, and the set nicknames are matched at search time from this file too.",
+  "nicknames": [
+    {"alias": "moonbreon", "nameIncludes": "umbreon", "nameAlso": "vmax", "number": "215", "setIncludes": "evolving skies"},
+    {"alias": "zard", "nameIncludes": "charizard"},
+    {"alias": "charzard", "nameIncludes": "charizard"},
+    {"alias": "umbrean", "nameIncludes": "umbreon"}
+  ],
+  "setAliases": [
+    {"alias": ["151"], "setIncludes": "151"},
+    {"alias": ["pe", "prismatic"], "setIncludes": "prismatic evolutions"},
+    {"alias": ["es", "evolving skies"], "setIncludes": "evolving skies"}
+  ],
+  "kindAliases": [
+    {"alias": ["etb", "elite trainer box"], "subtype": "etb"},
+    {"alias": ["pc etb", "pokemon center etb"], "subtype": "pc-etb"},
+    {"alias": ["bb", "booster box"], "subtype": "booster-box"},
+    {"alias": ["bbd", "booster bundle display"], "subtype": "booster-bundle-display"}
+  ]
+}
