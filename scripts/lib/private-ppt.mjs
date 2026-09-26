@@ -1,4 +1,5 @@
-// Stage raw PPT into a checkout of the private repo. No network and no token.
+// Stage raw PPT into a checkout of the private repo, and copy it back
+// for one Actions run. No network and no token.
 import { cp, mkdir, readdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
@@ -19,17 +20,25 @@ async function hasJson(dir) {
   return names.some((name) => name.endsWith(".json"));
 }
 
-// Copies the public sealed history (one-time seed, and later updates while the
-// folder is still in the checkout), the two crosscheck files, and that day's
-// raw pulls. Does not invent prices. Skips anything that is not on disk.
+async function overlayJson(src, dest) {
+  if (!(await hasJson(src))) return false;
+  await mkdir(dest, { recursive: true });
+  await cp(src, dest, { recursive: true });
+  return true;
+}
+
+// Copies the public sealed history (one-time seed, while that folder is still
+// in the checkout), then overlays ppt-raw-private/ppt-sealed so later days
+// keep landing in data/history/ppt-sealed after the public copy is removed.
+// Also copies the two crosscheck files and that day's raw pulls.
 export async function stagePrivate({ checkout, rawDir, dest, date }) {
   const actions = [];
-  const sealedSrc = join(checkout, "data/history/ppt-sealed");
-  if (await hasJson(sealedSrc)) {
-    const sealedDest = join(dest, "data/history/ppt-sealed");
-    await mkdir(sealedDest, { recursive: true });
-    await cp(sealedSrc, sealedDest, { recursive: true });
+  const sealedDest = join(dest, "data/history/ppt-sealed");
+  if (await overlayJson(join(checkout, "data/history/ppt-sealed"), sealedDest)) {
     actions.push("ppt-sealed");
+  }
+  if (rawDir && await overlayJson(join(rawDir, "ppt-sealed"), sealedDest)) {
+    actions.push("ppt-sealed-update");
   }
   for (const name of CROSSCHECK_FILES) {
     const fromRaw = rawDir ? join(rawDir, "crosscheck", name) : "";
@@ -45,6 +54,25 @@ export async function stagePrivate({ checkout, rawDir, dest, date }) {
     await mkdir(dayDir, { recursive: true });
     await cp(rawDir, dayDir, { recursive: true });
     actions.push(`raw:${date}`);
+  }
+  return actions;
+}
+
+// What the daily job mounts back into the public checkout. The sealed history
+// goes to a gitignored folder. The two crosscheck files go to the gitignored
+// raw path the readers already check. Nothing here is committed.
+export async function restorePrivate({ clone, root }) {
+  const actions = [];
+  if (await overlayJson(join(clone, "data/history/ppt-sealed"), join(root, "data/history/ppt-sealed-private"))) {
+    actions.push("ppt-sealed");
+  }
+  const crossDest = join(root, "ppt-raw-private/crosscheck");
+  for (const name of CROSSCHECK_FILES) {
+    const from = join(clone, "data", name);
+    if (!existsSync(from)) continue;
+    await mkdir(crossDest, { recursive: true });
+    await cp(from, join(crossDest, name));
+    actions.push(name);
   }
   return actions;
 }

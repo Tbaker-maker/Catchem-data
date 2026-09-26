@@ -22,7 +22,7 @@ function run(cmd, args, env) {
   });
 }
 
-export async function pushPrivate({ token, checkout = ROOT, rawDir, date, env = process.env } = {}) {
+export async function pushPrivate({ token, checkout = ROOT, rawDir, date, env = process.env, runGit = run } = {}) {
   if (!token) {
     return { pushed: false, reason: "PRIVATE_DATA_TOKEN is not set. Raw PPT was not pushed." };
   }
@@ -31,7 +31,7 @@ export async function pushPrivate({ token, checkout = ROOT, rawDir, date, env = 
   const childEnv = { ...env, GIT_TERMINAL_PROMPT: "0" };
   try {
     await writeFile(netrc, `machine github.com\nlogin x-access-token\npassword ${token}\n`, { mode: 0o600 });
-    const cloned = await run("git", ["clone", "--depth", "1", REMOTE, clone], childEnv);
+    const cloned = await runGit("git", ["clone", "--depth", "1", REMOTE, clone], childEnv);
     if (cloned.code !== 0) {
       return { pushed: false, reason: `Private repo was not cloned (${redact(cloned.err, [token]) || "clone failed"}).` };
     }
@@ -44,19 +44,19 @@ export async function pushPrivate({ token, checkout = ROOT, rawDir, date, env = 
     if (!actions.length) {
       return { pushed: false, reason: "Nothing to copy. Public raw folders are empty." };
     }
-    await run("git", ["-C", clone, "config", "user.email", "bot@catchem.app"], childEnv);
-    await run("git", ["-C", clone, "config", "user.name", "catchem-bot"], childEnv);
-    await run("git", ["-C", clone, "add", "data", "raw"], childEnv);
-    const quiet = await run("git", ["-C", clone, "diff", "--cached", "--quiet"], childEnv);
+    await runGit("git", ["-C", clone, "config", "user.email", "bot@catchem.app"], childEnv);
+    await runGit("git", ["-C", clone, "config", "user.name", "catchem-bot"], childEnv);
+    await runGit("git", ["-C", clone, "add", "data", "raw"], childEnv);
+    const quiet = await runGit("git", ["-C", clone, "diff", "--cached", "--quiet"], childEnv);
     if (quiet.code === 0) {
       return { pushed: false, reason: "Private repo already has this copy.", actions };
     }
     const message = `Add raw PPT for ${date}`;
-    const committed = await run("git", ["-C", clone, "commit", "-m", message], childEnv);
+    const committed = await runGit("git", ["-C", clone, "commit", "-m", message], childEnv);
     if (committed.code !== 0) {
       return { pushed: false, reason: `Commit failed (${redact(committed.err || committed.out, [token])}).`, actions };
     }
-    const pushed = await run("git", ["-C", clone, "push", "origin", "HEAD:main"], childEnv);
+    const pushed = await runGit("git", ["-C", clone, "push", "origin", "HEAD:main"], childEnv);
     if (pushed.code !== 0) {
       return { pushed: false, reason: `Push failed (${redact(pushed.err || pushed.out, [token])}).`, actions };
     }
