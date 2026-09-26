@@ -3,6 +3,7 @@
 // the same lib the engines ship, contract tests validate yesterday's committed
 // artifacts. Any failure kills the run before API quota burns.
 import { readFile, stat } from "node:fs/promises";
+import { runSlabTests } from "./ppt-slabs.test.mjs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { runIntradayTests } from "./ppt-intraday.test.mjs";
@@ -48,6 +49,12 @@ for (const id of ["sm1-etb", "sm35-etb", "base1-booster-box", "neo1-booster-box"
   t(`${id} gated`, offTcgEra(id) === true);
 for (const id of ["sv9-booster-box", "swsh7-pack", "me1-booster-box", "cel25-upc", "swsh12pt5-bb"])
   t(`${id} NOT gated`, offTcgEra(id) === false);
+
+console.log("── slabs ──");
+{
+  const n = await runSlabTests();
+  t("slab suite", n === 0, `${n} failed`);
+}
 
 console.log("── sealed premium (thin-n aware) ──");
 {
