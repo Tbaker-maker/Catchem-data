@@ -95,6 +95,10 @@ jobs:
         run: node scripts/compute-supply-watch.mjs
       - name: Derived intelligence
         run: node scripts/compute-derived.mjs
+      - name: Repeat appearance
+        # Counts only. continue-on-error so a short tape cannot drop the price commit.
+        continue-on-error: true
+        run: node scripts/compute-repeat-rank.mjs
       - name: Heat Check
         # Local file only. continue-on-error so a score failure cannot throw away
         # the price commit that follows.
@@ -165,7 +169,7 @@ jobs:
                   data/history/slabs/status.json \
                   data/ppt/intraday-test.json data/ppt/sealed-id-report.json \
                   data/ppt/sealed-id-review.json data/ppt/singles-set-review.json \
-                  data/heartbeat.json
+                  data/heartbeat.json data/derived/
           if git diff --staged --quiet; then
             echo "No price changes to commit."
           else
@@ -215,7 +219,7 @@ jobs:
           # step writes is listed here. A file written in CI but not added
           # evaporates at job end — the class that froze the app feed and ate
           # era/catalyst history daily.
-          git add data/sealed-prices.json data/heat-report.json data/heat-history.json data/divergence-report.json data/supply-watch.json data/derived-insights.json data/era-index-history.json data/catalyst-log.json data/cohort-history.json data/alerts-state.json data/artists.json data/indexes/ data/heat-check.json data/history/tcgplayer-market/ data/catalog/tcgcsv-latest.json data/catalog/tcgcsv-coverage.json data/history/tcgcsv-daily/ data/search/ data/meta/ppt-usage.json data/meta/ppt-cursor.json data/history/slabs/status.json data/ppt/intraday-test.json data/ppt/sealed-id-report.json data/ppt/sealed-id-review.json data/ppt/singles-set-review.json data/heartbeat.json research/pulse/ research/assets/the-board.html research/assets/the-pulse.html research/assets/pulse-feed.json research/assets/print-watch.html research/assets/methodology.html research/assets/corrections.html research/assets/creators.html research/assets/build.html research/assets/card-index.json research/assets/faq.html
+          git add data/sealed-prices.json data/heat-report.json data/heat-history.json data/divergence-report.json data/supply-watch.json data/derived-insights.json data/era-index-history.json data/catalyst-log.json data/cohort-history.json data/alerts-state.json data/artists.json data/indexes/ data/heat-check.json data/history/tcgplayer-market/ data/catalog/tcgcsv-latest.json data/catalog/tcgcsv-coverage.json data/history/tcgcsv-daily/ data/search/ data/meta/ppt-usage.json data/meta/ppt-cursor.json data/history/slabs/status.json data/ppt/intraday-test.json data/ppt/sealed-id-report.json data/ppt/sealed-id-review.json data/ppt/singles-set-review.json data/heartbeat.json data/derived/ research/pulse/ research/assets/the-board.html research/assets/the-pulse.html research/assets/pulse-feed.json research/assets/print-watch.html research/assets/methodology.html research/assets/corrections.html research/assets/creators.html research/assets/build.html research/assets/card-index.json research/assets/faq.html
           if git diff --staged --quiet; then
             echo "No price changes to commit."
           else
