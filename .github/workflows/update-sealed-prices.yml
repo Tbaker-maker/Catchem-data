@@ -151,6 +151,7 @@ jobs:
         run: |
           git config user.name "catchem-bot"
           git config user.email "bot@catchem.app"
+          git add data/ppt/run-report.json
           git add data/sealed-prices.json data/heat-report.json data/heat-history.json \
                   data/divergence-report.json data/supply-watch.json \
                   data/derived-insights.json data/era-index-history.json \
@@ -158,8 +159,7 @@ jobs:
                   data/indexes/ data/heat-check.json data/history/tcgplayer-market/ \
                   data/catalog/tcgcsv-latest.json data/catalog/tcgcsv-coverage.json \
                   data/history/tcgcsv-daily/ data/search/ \
-                  data/meta/ppt-usage.json data/meta/ppt-cursor.json \
-                  data/ppt/run-report.json
+                  data/meta/ppt-usage.json data/meta/ppt-cursor.json
           if git diff --staged --quiet; then
             echo "No price changes to commit."
           else
@@ -170,11 +170,6 @@ jobs:
               git pull --rebase --autostash origin main || true
             done
           fi
-
-      - name: PPT safety check
-        # Prices are already committed. This fails the job only when a private
-        # push was expected and did not land, or raw PPT is tracked here.
-        run: node scripts/check-ppt-safety.mjs
 
       - name: Generate Morning Pulse
         run: node scripts/generate-pulse.mjs
@@ -209,11 +204,12 @@ jobs:
         run: |
           git config user.name "catchem-bot"
           git config user.email "bot@catchem.app"
+          git add data/ppt/run-report.json
           # Complete write-vs-commit matrix (audited 2026-08-19): every file a
           # step writes is listed here. A file written in CI but not added
           # evaporates at job end — the class that froze the app feed and ate
           # era/catalyst history daily.
-          git add data/sealed-prices.json data/heat-report.json data/heat-history.json data/divergence-report.json data/supply-watch.json data/derived-insights.json data/era-index-history.json data/catalyst-log.json data/cohort-history.json data/alerts-state.json data/artists.json data/indexes/ data/heat-check.json data/history/tcgplayer-market/ data/catalog/tcgcsv-latest.json data/catalog/tcgcsv-coverage.json data/history/tcgcsv-daily/ data/search/ data/meta/ppt-usage.json data/meta/ppt-cursor.json data/ppt/run-report.json research/pulse/ research/assets/the-board.html research/assets/the-pulse.html research/assets/pulse-feed.json research/assets/print-watch.html research/assets/methodology.html research/assets/corrections.html research/assets/creators.html research/assets/build.html research/assets/card-index.json research/assets/faq.html
+          git add data/sealed-prices.json data/heat-report.json data/heat-history.json data/divergence-report.json data/supply-watch.json data/derived-insights.json data/era-index-history.json data/catalyst-log.json data/cohort-history.json data/alerts-state.json data/artists.json data/indexes/ data/heat-check.json data/history/tcgplayer-market/ data/catalog/tcgcsv-latest.json data/catalog/tcgcsv-coverage.json data/history/tcgcsv-daily/ data/search/ data/meta/ppt-usage.json data/meta/ppt-cursor.json research/pulse/ research/assets/the-board.html research/assets/the-pulse.html research/assets/pulse-feed.json research/assets/print-watch.html research/assets/methodology.html research/assets/corrections.html research/assets/creators.html research/assets/build.html research/assets/card-index.json research/assets/faq.html
           if git diff --staged --quiet; then
             echo "No price changes to commit."
           else
@@ -270,6 +266,14 @@ jobs:
         # mode renders every figure — order and accent only. An echo-chamber
         # mode fails the run.
         run: node scripts/mode-diff-test.mjs
+
+      - name: PPT safety check
+        # Runs after every data, publish and smoke step, so a failed private
+        # push turns the run red without skipping the pulse, board, second
+        # commit or app rebuild. Fails only when a push was expected and did
+        # not land, or raw PPT is tracked in this public tree.
+        if: always()
+        run: node scripts/check-ppt-safety.mjs
 
       - name: Deliver the agent digest to Discord
         # Fourteen agents write research/pulse/agent-digest.md every morning and
