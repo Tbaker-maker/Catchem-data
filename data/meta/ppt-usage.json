@@ -1,0 +1,80 @@
+{
+  "asOf": "2026-09-26",
+  "status": "skipped",
+  "reason": "POKEMONPRICETRACKER_API_KEY is not set. No request was sent.",
+  "credits": {
+    "budget": 20000,
+    "main": 16000,
+    "reserve": 4000,
+    "used": {
+      "sealed": 0,
+      "singles": 0,
+      "slabs": 0,
+      "intraday": 0,
+      "crosscheck": 0,
+      "total": 0
+    },
+    "remaining": 20000
+  },
+  "items": {
+    "sealed": 0,
+    "singles": 0,
+    "slabs": 0
+  },
+  "errors": [],
+  "estimate": {
+    "sealedQueued": 171,
+    "sealedTarget": 1000,
+    "sealedShortfall": 829,
+    "singlesItems": 17717,
+    "slabsExecutable": 0,
+    "days": 3,
+    "singlesByTier": {
+      "sir": 208,
+      "ir": 479,
+      "gallery": 190,
+      "hyper": 67,
+      "alt": 951,
+      "rare-over-5": 2170,
+      "other": 12256
+    },
+    "blockedNoSetId": 147,
+    "sealedNote": "Only 171 sealed products have a TCGplayer id on file. The other 829 toward the 1,000 target are not queued, because an id was not invented.",
+    "slabNote": "Top chase cards are counted, but none have a TCGplayer id on this branch, so no slab call is queued.",
+    "schedule": [
+      {
+        "tier": "sealed",
+        "items": 171,
+        "credits": 174,
+        "startDay": 1,
+        "endDay": 1,
+        "days": 1
+      },
+      {
+        "tier": "singles",
+        "items": 17717,
+        "credits": 35434,
+        "startDay": 1,
+        "endDay": 3,
+        "days": 3
+      },
+      {
+        "tier": "slabs",
+        "items": 0,
+        "credits": 0,
+        "startDay": null,
+        "endDay": null,
+        "days": 0
+      }
+    ]
+  },
+  "intraday": {
+    "tested": false,
+    "pricesChanged": null,
+    "mode": "untested",
+    "runsUtc": [],
+    "note": "No same-day sample yet. The reserve is not spent on a 4-hour loop."
+  },
+  "note": "Public log only. No API key and no raw prices.",
+  "raw": "not fetched"
+}

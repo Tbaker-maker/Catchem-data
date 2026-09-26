@@ -47,6 +47,22 @@ jobs:
         env:
           POKEMONPRICETRACKER_API_KEY: ${{ secrets.POKEMONPRICETRACKER_API_KEY }}
         run: node scripts/fetch-sealed-crosscheck.mjs
+      - name: PPT budgeted refresh
+        # No key: the script logs credits 0 and exits 0. Raw never lands in data/.
+        continue-on-error: true
+        env:
+          POKEMONPRICETRACKER_API_KEY: ${{ secrets.POKEMONPRICETRACKER_API_KEY }}
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+        run: node scripts/ppt-refresh.mjs
+      - name: Upload raw PPT (private artifact)
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: ppt-raw-private
+          path: ppt-raw-private/
+          retention-days: 90
+          if-no-files-found: ignore
       - name: Fetch illustrator credits (pokemontcg.io)
         continue-on-error: true # a flaky free API must never kill the sealed run
         env:
@@ -98,7 +114,8 @@ jobs:
                   data/divergence-report.json data/supply-watch.json \
                   data/derived-insights.json data/era-index-history.json \
                   data/catalyst-log.json data/cohort-history.json data/artists.json \
-                  data/indexes/ data/heat-check.json data/history/tcgplayer-market/
+                  data/indexes/ data/heat-check.json data/history/tcgplayer-market/ \
+                  data/meta/ppt-usage.json data/meta/ppt-cursor.json
           if git diff --staged --quiet; then
             echo "No price changes to commit."
           else
@@ -147,7 +164,7 @@ jobs:
           # step writes is listed here. A file written in CI but not added
           # evaporates at job end — the class that froze the app feed and ate
           # era/catalyst history daily.
-          git add data/sealed-prices.json data/heat-report.json data/heat-history.json data/sealed-crosscheck.json data/crosscheck-history.json data/divergence-report.json data/supply-watch.json data/derived-insights.json data/era-index-history.json data/catalyst-log.json data/cohort-history.json data/alerts-state.json data/artists.json data/indexes/ data/heat-check.json data/history/tcgplayer-market/ research/pulse/ research/assets/the-board.html research/assets/the-pulse.html research/assets/pulse-feed.json research/assets/print-watch.html research/assets/methodology.html research/assets/corrections.html research/assets/creators.html research/assets/build.html research/assets/card-index.json research/assets/faq.html
+          git add data/sealed-prices.json data/heat-report.json data/heat-history.json data/sealed-crosscheck.json data/crosscheck-history.json data/divergence-report.json data/supply-watch.json data/derived-insights.json data/era-index-history.json data/catalyst-log.json data/cohort-history.json data/alerts-state.json data/artists.json data/indexes/ data/heat-check.json data/history/tcgplayer-market/ data/meta/ppt-usage.json data/meta/ppt-cursor.json research/pulse/ research/assets/the-board.html research/assets/the-pulse.html research/assets/pulse-feed.json research/assets/print-watch.html research/assets/methodology.html research/assets/corrections.html research/assets/creators.html research/assets/build.html research/assets/card-index.json research/assets/faq.html
           if git diff --staged --quiet; then
             echo "No price changes to commit."
           else
