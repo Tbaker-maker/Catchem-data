@@ -5,10 +5,10 @@
 import { readFile, stat } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { runIntradayTests } from "./ppt-intraday.test.mjs";
 import { indexLevel, offTcgEra, sealedPremium, mergeByDate } from "../lib/instruments.mjs";
 import { runTcgcsvCatalogTests } from "./tcgcsv-catalog.test.mjs";
 import { runPptPlanTests } from "./ppt-plan.test.mjs";
-import { runIntradayTests } from "./ppt-intraday.test.mjs";
 import { runStressTests } from "./stress.test.mjs";
 import { enterIndex } from "../lib/index-baskets.mjs";
 import { searchItems } from "../lib/search-rank.mjs";
@@ -31,6 +31,12 @@ t("symmetric moves cancel", indexLevel([1.1, 0.9]) === 100.0);
   t("composition invariance: entrant at baseline never jumps the level", before === afterAdd,
     `${before} → ${afterAdd}`);
   t("known value: [1.2, 1.0] → 110.0", indexLevel([1.2, 1.0]) === 110.0);
+}
+
+console.log("── intraday ──");
+{
+  const n = await runIntradayTests();
+  t("intraday suite", n === 0, `${n} failed`);
 }
 
 console.log("── venue gate (RT-4a) ──");
@@ -117,12 +123,6 @@ console.log("── ppt plan ──");
 {
   const n = await runPptPlanTests();
   t("ppt plan suite", n === 0, `${n} failed`);
-}
-
-console.log("── intraday ──");
-{
-  const n = await runIntradayTests();
-  t("intraday suite", n === 0, `${n} failed`);
 }
 
 console.log("── index stress ──");
