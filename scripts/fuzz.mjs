@@ -45,6 +45,8 @@ const ctx = { fillStyle:"", font:"", textAlign:"", globalAlpha:1, lineWidth:1, s
   // compared against every g.<method>() the artifact actually calls, so the next
   // canvas call to arrive is named rather than thrown.
   setTransform(){}, resetTransform(){}, scale(){},
+  // clearRect arrived with build.html's canvas redraw; the stub check below named it.
+  clearRect(){},
   fill(){}, stroke(){}, clip(){}, createLinearGradient(){ return { addColorStop(){} }; } };
 
 // ── THE STUB MUST KEEP UP WITH THE ARTIFACT ────────────────────────────────

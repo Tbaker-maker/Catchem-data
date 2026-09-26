@@ -2,11 +2,18 @@
   "asOf": "2026-09-26",
   "stale": false,
   "sourceLive": "eBay asking prices",
-  "sourceBackfill": "TCGplayer market price",
+  "sourceBackfill": "TCGplayer market price (PokemonPriceTracker daily backfill + TCGCSV live days)",
+  "backfillCoverage": {
+    "products": 180,
+    "tcgcsvProducts": 133,
+    "pptProducts": 180,
+    "first": "2026-03-31",
+    "last": "2026-09-26"
+  },
   "rawChase": {
     "hidden": true,
     "products": 0,
-    "reason": "No chase-single price history is on file, so the Raw Chase Index is not published."
+    "reason": "Chase-single history is on file (data/history/singles-rarebox/), but it is change-only and stops on 2026-09-15, so a daily chain-linked index would need filled-in days. The Raw Chase Index is not published."
   },
   "excluded": [
     {

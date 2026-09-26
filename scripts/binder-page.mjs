@@ -19,10 +19,11 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { dirname, join } from "node:path";
+import { cardImage } from "./image-source.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "utf-8")); } catch { return null; } };
 const esc = s => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
-const cardImg = id => { const m = /^(.+)-([^-]+)$/.exec(id); return m ? `https://images.pokemontcg.io/${m[1]}/${m[2]}.png` : ""; };
+const cardImg = id => cardImage(id, false); // source-published URL, never constructed
 
 // One card slot. PAINT ORDER IS LOAD-BEARING: frame → fallback text →
 // image. SVG paints in document order, so the art (when it inlines)

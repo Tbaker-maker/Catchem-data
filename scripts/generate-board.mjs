@@ -6,9 +6,10 @@ import { rootCss } from "./lib/brand.mjs";
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { cardImage } from "./image-source.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => JSON.parse(await readFile(join(ROOT,p),"utf-8"));
-const cardImg = id => { const m=/^(.+)-(\w+)$/.exec(id||""); return m?`https://images.pokemontcg.io/${m[1]}/${m[2]}.png`:null; };
+const cardImg = id => cardImage(id, false) || null; // source-published URL, never constructed
 let __tcgIds = {}, __imgOv = {};
 // PRIORITY FIXED 2026-08-22: clean catalogue shot FIRST. Seller photos are
 // phone snapshots — glare, hands, kitchen tables — and they make every number

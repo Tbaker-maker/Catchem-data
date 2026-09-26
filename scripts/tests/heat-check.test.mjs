@@ -22,6 +22,10 @@ const coldRows = rows.map((r, i) => ({ ...r, listingCount: i === rows.length - 1
 const cold = listingHeat(coldRows, "2026-09-09");
 t("more listings scores colder", cold.z < 0, String(cold.z));
 
+const gapped = [{ date: "2026-08-25", listingCount: 20 }, { date: "2026-08-26", listingCount: 21 }, { date: "2026-09-21", listingCount: 60 }, { date: "2026-09-22", listingCount: 61 }];
+const g = listingHeat(gapped, "2026-09-22");
+t("a jump across a gap is not counted as a day's change", g.days === 2 && g.latest === 1, JSON.stringify(g));
+
 t("short series has no z", zscore(1, [1, 2, 3]) == null);
 t("labels", labelFor(10) === "Cold" && labelFor(30) === "Cool" && labelFor(50) === "Steady" && labelFor(70) === "Warm" && labelFor(90) === "Hot");
 const scored = scoreFrom([

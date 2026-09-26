@@ -158,21 +158,1646 @@
   "series": {
     "backfill": {
       "source": "TCGplayer market price",
+      "sources": [
+        {
+          "label": "PokemonPriceTracker (TCGplayer-derived)",
+          "folder": "data/history/ppt-sealed",
+          "role": "daily history backfill, 2026-03-31 to 2026-09-25"
+        },
+        {
+          "label": "TCGplayer market via TCGCSV",
+          "folder": "data/history/tcgplayer-market",
+          "role": "live daily append from 2026-09-25; wins on any day both have"
+        }
+      ],
+      "sameSourceMoves": "Each day's move uses two prices from the same source. No move is computed across sources.",
       "available": true,
+      "start": "2026-03-31",
       "base": 100,
       "points": [
         {
-          "date": "2026-09-25",
+          "date": "2026-03-31",
           "equal": 100,
           "value": 100,
-          "matched": 19
+          "matched": 23
+        },
+        {
+          "date": "2026-04-01",
+          "from": "2026-03-31",
+          "equal": 100,
+          "value": 99.9,
+          "matched": 23,
+          "equalMovePct": -0.025,
+          "valueMovePct": -0.0526
+        },
+        {
+          "date": "2026-04-02",
+          "from": "2026-04-01",
+          "equal": 100.2,
+          "value": 100.4,
+          "matched": 23,
+          "equalMovePct": 0.1884,
+          "valueMovePct": 0.4203
+        },
+        {
+          "date": "2026-04-03",
+          "from": "2026-04-02",
+          "equal": 100.4,
+          "value": 100,
+          "matched": 23,
+          "equalMovePct": 0.2308,
+          "valueMovePct": -0.3232
+        },
+        {
+          "date": "2026-04-04",
+          "from": "2026-04-03",
+          "equal": 100.2,
+          "value": 99,
+          "matched": 23,
+          "equalMovePct": -0.1754,
+          "valueMovePct": -1.0449
+        },
+        {
+          "date": "2026-04-05",
+          "from": "2026-04-04",
+          "equal": 100.4,
+          "value": 100.3,
+          "matched": 23,
+          "equalMovePct": 0.1714,
+          "valueMovePct": 1.3234
+        },
+        {
+          "date": "2026-04-06",
+          "from": "2026-04-05",
+          "equal": 100.7,
+          "value": 100.4,
+          "matched": 23,
+          "equalMovePct": 0.3078,
+          "valueMovePct": 0.0652
+        },
+        {
+          "date": "2026-04-07",
+          "from": "2026-04-06",
+          "equal": 100.7,
+          "value": 100.2,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": -0.2193
+        },
+        {
+          "date": "2026-04-08",
+          "from": "2026-04-07",
+          "equal": 100.7,
+          "value": 99.8,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": -0.3196
+        },
+        {
+          "date": "2026-04-09",
+          "from": "2026-04-08",
+          "equal": 100.6,
+          "value": 99.8,
+          "matched": 23,
+          "equalMovePct": -0.0616,
+          "valueMovePct": -0.0501
+        },
+        {
+          "date": "2026-04-10",
+          "from": "2026-04-09",
+          "equal": 101.9,
+          "value": 100.4,
+          "matched": 23,
+          "equalMovePct": 1.2645,
+          "valueMovePct": 0.5867
+        },
+        {
+          "date": "2026-04-11",
+          "from": "2026-04-10",
+          "equal": 102,
+          "value": 100.5,
+          "matched": 23,
+          "equalMovePct": 0.135,
+          "valueMovePct": 0.1732
+        },
+        {
+          "date": "2026-04-12",
+          "from": "2026-04-11",
+          "equal": 102.1,
+          "value": 101.1,
+          "matched": 23,
+          "equalMovePct": 0.086,
+          "valueMovePct": 0.5188
+        },
+        {
+          "date": "2026-04-13",
+          "from": "2026-04-12",
+          "equal": 102.2,
+          "value": 101.1,
+          "matched": 23,
+          "equalMovePct": 0.0477,
+          "valueMovePct": 0.0542
+        },
+        {
+          "date": "2026-04-14",
+          "from": "2026-04-13",
+          "equal": 102.2,
+          "value": 100.8,
+          "matched": 23,
+          "equalMovePct": -0.0225,
+          "valueMovePct": -0.2708
+        },
+        {
+          "date": "2026-04-15",
+          "from": "2026-04-14",
+          "equal": 102.3,
+          "value": 101.5,
+          "matched": 23,
+          "equalMovePct": 0.1646,
+          "valueMovePct": 0.6749
+        },
+        {
+          "date": "2026-04-16",
+          "from": "2026-04-15",
+          "equal": 102.4,
+          "value": 101.9,
+          "matched": 23,
+          "equalMovePct": 0.0499,
+          "valueMovePct": 0.343
+        },
+        {
+          "date": "2026-04-17",
+          "from": "2026-04-16",
+          "equal": 102.5,
+          "value": 102.2,
+          "matched": 23,
+          "equalMovePct": 0.1248,
+          "valueMovePct": 0.3111
+        },
+        {
+          "date": "2026-04-18",
+          "from": "2026-04-17",
+          "equal": 102.5,
+          "value": 102.1,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": -0.0905
+        },
+        {
+          "date": "2026-04-19",
+          "from": "2026-04-18",
+          "equal": 102.8,
+          "value": 102.8,
+          "matched": 23,
+          "equalMovePct": 0.2377,
+          "valueMovePct": 0.6921
+        },
+        {
+          "date": "2026-04-20",
+          "from": "2026-04-19",
+          "equal": 102.7,
+          "value": 102.7,
+          "matched": 23,
+          "equalMovePct": -0.0336,
+          "valueMovePct": -0.0921
+        },
+        {
+          "date": "2026-04-21",
+          "from": "2026-04-20",
+          "equal": 103.1,
+          "value": 103,
+          "matched": 23,
+          "equalMovePct": 0.389,
+          "valueMovePct": 0.2878
+        },
+        {
+          "date": "2026-04-22",
+          "from": "2026-04-21",
+          "equal": 103.1,
+          "value": 103,
+          "matched": 23,
+          "equalMovePct": 0.0181,
+          "valueMovePct": -0.0005
+        },
+        {
+          "date": "2026-04-23",
+          "from": "2026-04-22",
+          "equal": 103.2,
+          "value": 103.1,
+          "matched": 23,
+          "equalMovePct": 0.1042,
+          "valueMovePct": 0.1265
+        },
+        {
+          "date": "2026-04-24",
+          "from": "2026-04-23",
+          "equal": 103.8,
+          "value": 103.4,
+          "matched": 23,
+          "equalMovePct": 0.5749,
+          "valueMovePct": 0.2506
+        },
+        {
+          "date": "2026-04-25",
+          "from": "2026-04-24",
+          "equal": 104,
+          "value": 103.5,
+          "matched": 23,
+          "equalMovePct": 0.1843,
+          "valueMovePct": 0.0962
+        },
+        {
+          "date": "2026-04-26",
+          "from": "2026-04-25",
+          "equal": 104,
+          "value": 103.6,
+          "matched": 23,
+          "equalMovePct": -0.0404,
+          "valueMovePct": 0.0837
+        },
+        {
+          "date": "2026-04-27",
+          "from": "2026-04-26",
+          "equal": 104.3,
+          "value": 103.5,
+          "matched": 23,
+          "equalMovePct": 0.3236,
+          "valueMovePct": -0.1022
+        },
+        {
+          "date": "2026-04-28",
+          "from": "2026-04-27",
+          "equal": 104.9,
+          "value": 105.3,
+          "matched": 23,
+          "equalMovePct": 0.5262,
+          "valueMovePct": 1.7297
+        },
+        {
+          "date": "2026-04-29",
+          "from": "2026-04-28",
+          "equal": 104.9,
+          "value": 105.4,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": 0.1
+        },
+        {
+          "date": "2026-04-30",
+          "from": "2026-04-29",
+          "equal": 105.1,
+          "value": 106.4,
+          "matched": 23,
+          "equalMovePct": 0.2157,
+          "valueMovePct": 0.9341
+        },
+        {
+          "date": "2026-05-01",
+          "from": "2026-04-30",
+          "equal": 105.2,
+          "value": 112.9,
+          "matched": 23,
+          "equalMovePct": 0.0864,
+          "valueMovePct": 6.1224
+        },
+        {
+          "date": "2026-05-02",
+          "from": "2026-05-01",
+          "equal": 105.6,
+          "value": 115.6,
+          "matched": 23,
+          "equalMovePct": 0.3711,
+          "valueMovePct": 2.4347
+        },
+        {
+          "date": "2026-05-03",
+          "from": "2026-05-02",
+          "equal": 106.2,
+          "value": 116.6,
+          "matched": 23,
+          "equalMovePct": 0.5968,
+          "valueMovePct": 0.8338
+        },
+        {
+          "date": "2026-05-04",
+          "from": "2026-05-03",
+          "equal": 106.3,
+          "value": 111.1,
+          "matched": 23,
+          "equalMovePct": 0.1188,
+          "valueMovePct": -4.6646
+        },
+        {
+          "date": "2026-05-05",
+          "from": "2026-05-04",
+          "equal": 107.3,
+          "value": 112.2,
+          "matched": 23,
+          "equalMovePct": 0.9219,
+          "valueMovePct": 0.9229
+        },
+        {
+          "date": "2026-05-06",
+          "from": "2026-05-05",
+          "equal": 107.3,
+          "value": 112.3,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": 0.1019
+        },
+        {
+          "date": "2026-05-07",
+          "from": "2026-05-06",
+          "equal": 107.3,
+          "value": 112,
+          "matched": 23,
+          "equalMovePct": -0.0172,
+          "valueMovePct": -0.2903
+        },
+        {
+          "date": "2026-05-08",
+          "from": "2026-05-07",
+          "equal": 107.6,
+          "value": 114.6,
+          "matched": 23,
+          "equalMovePct": 0.2998,
+          "valueMovePct": 2.3933
+        },
+        {
+          "date": "2026-05-09",
+          "from": "2026-05-08",
+          "equal": 108,
+          "value": 114.6,
+          "matched": 23,
+          "equalMovePct": 0.3157,
+          "valueMovePct": -0.0441
+        },
+        {
+          "date": "2026-05-10",
+          "from": "2026-05-09",
+          "equal": 108.3,
+          "value": 115.1,
+          "matched": 23,
+          "equalMovePct": 0.3411,
+          "valueMovePct": 0.4478
+        },
+        {
+          "date": "2026-05-11",
+          "from": "2026-05-10",
+          "equal": 108.3,
+          "value": 115.4,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": 0.2398
+        },
+        {
+          "date": "2026-05-12",
+          "from": "2026-05-11",
+          "equal": 108.3,
+          "value": 114.8,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": -0.4687
+        },
+        {
+          "date": "2026-05-13",
+          "from": "2026-05-12",
+          "equal": 108.3,
+          "value": 114.2,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": -0.5589
+        },
+        {
+          "date": "2026-05-14",
+          "from": "2026-05-13",
+          "equal": 108.3,
+          "value": 113.6,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": -0.5346
+        },
+        {
+          "date": "2026-05-15",
+          "from": "2026-05-14",
+          "equal": 108.3,
+          "value": 113.8,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": 0.1718
+        },
+        {
+          "date": "2026-05-16",
+          "from": "2026-05-15",
+          "equal": 108.3,
+          "value": 114,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": 0.1888
+        },
+        {
+          "date": "2026-05-17",
+          "from": "2026-05-16",
+          "equal": 108.3,
+          "value": 114.9,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": 0.7683
+        },
+        {
+          "date": "2026-05-18",
+          "from": "2026-05-17",
+          "equal": 108.6,
+          "value": 115.2,
+          "matched": 23,
+          "equalMovePct": 0.2292,
+          "valueMovePct": 0.2639
+        },
+        {
+          "date": "2026-05-19",
+          "from": "2026-05-18",
+          "equal": 108.6,
+          "value": 115.4,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": 0.1634
+        },
+        {
+          "date": "2026-05-20",
+          "from": "2026-05-19",
+          "equal": 108.6,
+          "value": 115.5,
+          "matched": 23,
+          "equalMovePct": 0.0335,
+          "valueMovePct": 0.1102
+        },
+        {
+          "date": "2026-05-21",
+          "from": "2026-05-20",
+          "equal": 108.6,
+          "value": 115.6,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": 0.1381
+        },
+        {
+          "date": "2026-05-22",
+          "from": "2026-05-21",
+          "equal": 108.5,
+          "value": 114.8,
+          "matched": 23,
+          "equalMovePct": -0.1127,
+          "valueMovePct": -0.7679
+        },
+        {
+          "date": "2026-05-23",
+          "from": "2026-05-22",
+          "equal": 108.5,
+          "value": 115,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": 0.209
+        },
+        {
+          "date": "2026-05-24",
+          "from": "2026-05-23",
+          "equal": 108.5,
+          "value": 114.8,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": -0.1808
+        },
+        {
+          "date": "2026-05-25",
+          "from": "2026-05-24",
+          "equal": 108.5,
+          "value": 114.9,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": 0.0584
+        },
+        {
+          "date": "2026-05-26",
+          "from": "2026-05-25",
+          "equal": 108.5,
+          "value": 113.7,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": -0.9625
+        },
+        {
+          "date": "2026-05-27",
+          "from": "2026-05-26",
+          "equal": 108.5,
+          "value": 113.5,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": -0.2169
+        },
+        {
+          "date": "2026-05-28",
+          "from": "2026-05-27",
+          "equal": 108.5,
+          "value": 113.7,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": 0.1832
+        },
+        {
+          "date": "2026-05-29",
+          "from": "2026-05-28",
+          "equal": 108.7,
+          "value": 114.6,
+          "matched": 23,
+          "equalMovePct": 0.2266,
+          "valueMovePct": 0.8034
+        },
+        {
+          "date": "2026-05-30",
+          "from": "2026-05-29",
+          "equal": 108.9,
+          "value": 115,
+          "matched": 23,
+          "equalMovePct": 0.1425,
+          "valueMovePct": 0.3011
+        },
+        {
+          "date": "2026-05-31",
+          "from": "2026-05-30",
+          "equal": 108.9,
+          "value": 115.2,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": 0.2026
+        },
+        {
+          "date": "2026-06-01",
+          "from": "2026-05-31",
+          "equal": 108.9,
+          "value": 114.7,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": -0.3993
+        },
+        {
+          "date": "2026-06-02",
+          "from": "2026-06-01",
+          "equal": 108.9,
+          "value": 114.4,
+          "matched": 22,
+          "equalMovePct": 0,
+          "valueMovePct": -0.2664
+        },
+        {
+          "date": "2026-06-03",
+          "from": "2026-06-02",
+          "equal": 108.9,
+          "value": 114.6,
+          "matched": 22,
+          "equalMovePct": 0,
+          "valueMovePct": 0.1177
+        },
+        {
+          "date": "2026-06-04",
+          "from": "2026-06-03",
+          "equal": 108.9,
+          "value": 115,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": 0.4176
+        },
+        {
+          "date": "2026-06-05",
+          "from": "2026-06-04",
+          "equal": 109.3,
+          "value": 115.6,
+          "matched": 23,
+          "equalMovePct": 0.3457,
+          "valueMovePct": 0.4403
+        },
+        {
+          "date": "2026-06-06",
+          "from": "2026-06-05",
+          "equal": 109.4,
+          "value": 115.9,
+          "matched": 23,
+          "equalMovePct": 0.1005,
+          "valueMovePct": 0.2691
+        },
+        {
+          "date": "2026-06-07",
+          "from": "2026-06-06",
+          "equal": 109.4,
+          "value": 115.9,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": 0.0491
+        },
+        {
+          "date": "2026-06-08",
+          "from": "2026-06-07",
+          "equal": 109.4,
+          "value": 116.8,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": 0.7452
+        },
+        {
+          "date": "2026-06-09",
+          "from": "2026-06-08",
+          "equal": 109.2,
+          "value": 116.1,
+          "matched": 23,
+          "equalMovePct": -0.1367,
+          "valueMovePct": -0.5799
+        },
+        {
+          "date": "2026-06-10",
+          "from": "2026-06-09",
+          "equal": 109.2,
+          "value": 117.2,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": 0.9207
+        },
+        {
+          "date": "2026-06-11",
+          "from": "2026-06-10",
+          "equal": 109.2,
+          "value": 116.4,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": -0.6646
+        },
+        {
+          "date": "2026-06-12",
+          "from": "2026-06-11",
+          "equal": 109.2,
+          "value": 116.6,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": 0.1991
+        },
+        {
+          "date": "2026-06-13",
+          "from": "2026-06-12",
+          "equal": 109.6,
+          "value": 117.6,
+          "matched": 23,
+          "equalMovePct": 0.3415,
+          "valueMovePct": 0.8624
+        },
+        {
+          "date": "2026-06-14",
+          "from": "2026-06-13",
+          "equal": 110,
+          "value": 118.4,
+          "matched": 23,
+          "equalMovePct": 0.3616,
+          "valueMovePct": 0.6553
+        },
+        {
+          "date": "2026-06-15",
+          "from": "2026-06-14",
+          "equal": 110,
+          "value": 119.1,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": 0.5616
+        },
+        {
+          "date": "2026-06-16",
+          "from": "2026-06-15",
+          "equal": 110,
+          "value": 118.4,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": -0.5406
+        },
+        {
+          "date": "2026-06-17",
+          "from": "2026-06-16",
+          "equal": 110,
+          "value": 119.2,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": 0.6262
+        },
+        {
+          "date": "2026-06-18",
+          "from": "2026-06-17",
+          "equal": 110,
+          "value": 118.6,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": -0.4621
+        },
+        {
+          "date": "2026-06-19",
+          "from": "2026-06-18",
+          "equal": 110,
+          "value": 118.8,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": 0.1116
+        },
+        {
+          "date": "2026-06-20",
+          "from": "2026-06-19",
+          "equal": 110.2,
+          "value": 119.1,
+          "matched": 23,
+          "equalMovePct": 0.1497,
+          "valueMovePct": 0.2892
+        },
+        {
+          "date": "2026-06-21",
+          "from": "2026-06-20",
+          "equal": 110.4,
+          "value": 119.7,
+          "matched": 23,
+          "equalMovePct": 0.1996,
+          "valueMovePct": 0.4946
+        },
+        {
+          "date": "2026-06-22",
+          "from": "2026-06-21",
+          "equal": 110.9,
+          "value": 120.5,
+          "matched": 23,
+          "equalMovePct": 0.4595,
+          "valueMovePct": 0.6774
+        },
+        {
+          "date": "2026-06-23",
+          "from": "2026-06-22",
+          "equal": 110.9,
+          "value": 121.5,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": 0.825
+        },
+        {
+          "date": "2026-06-24",
+          "from": "2026-06-23",
+          "equal": 110.9,
+          "value": 121.6,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": 0.1269
+        },
+        {
+          "date": "2026-06-25",
+          "from": "2026-06-24",
+          "equal": 111,
+          "value": 121.6,
+          "matched": 23,
+          "equalMovePct": 0.1099,
+          "valueMovePct": -0.0642
+        },
+        {
+          "date": "2026-06-26",
+          "from": "2026-06-25",
+          "equal": 111,
+          "value": 120.9,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": -0.5366
+        },
+        {
+          "date": "2026-06-27",
+          "from": "2026-06-26",
+          "equal": 111,
+          "value": 120.9,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": 0.0176
+        },
+        {
+          "date": "2026-06-28",
+          "from": "2026-06-27",
+          "equal": 111,
+          "value": 120.3,
+          "matched": 23,
+          "equalMovePct": -0.0454,
+          "valueMovePct": -0.5038
+        },
+        {
+          "date": "2026-06-29",
+          "from": "2026-06-28",
+          "equal": 111,
+          "value": 120.3,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": -0.0437
+        },
+        {
+          "date": "2026-06-30",
+          "from": "2026-06-29",
+          "equal": 111,
+          "value": 120.3,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": 0.0486
+        },
+        {
+          "date": "2026-07-01",
+          "from": "2026-06-30",
+          "equal": 111,
+          "value": 120.4,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.0675
+        },
+        {
+          "date": "2026-07-02",
+          "from": "2026-07-01",
+          "equal": 110.9,
+          "value": 119.8,
+          "matched": 24,
+          "equalMovePct": -0.053,
+          "valueMovePct": -0.5319
+        },
+        {
+          "date": "2026-07-03",
+          "from": "2026-07-02",
+          "equal": 110.9,
+          "value": 119.8,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.0339
+        },
+        {
+          "date": "2026-07-04",
+          "from": "2026-07-03",
+          "equal": 110.9,
+          "value": 119.8,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.0253
+        },
+        {
+          "date": "2026-07-05",
+          "from": "2026-07-04",
+          "equal": 110.9,
+          "value": 119.8,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": -0.0309
+        },
+        {
+          "date": "2026-07-06",
+          "from": "2026-07-05",
+          "equal": 110.9,
+          "value": 120.1,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.2177
+        },
+        {
+          "date": "2026-07-07",
+          "from": "2026-07-06",
+          "equal": 110.9,
+          "value": 119.8,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": -0.2215
+        },
+        {
+          "date": "2026-07-08",
+          "from": "2026-07-07",
+          "equal": 110.9,
+          "value": 119.1,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": -0.5509
+        },
+        {
+          "date": "2026-07-09",
+          "from": "2026-07-08",
+          "equal": 110.9,
+          "value": 119,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": -0.0786
+        },
+        {
+          "date": "2026-07-10",
+          "from": "2026-07-09",
+          "equal": 110.9,
+          "value": 118.4,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": -0.5017
+        },
+        {
+          "date": "2026-07-11",
+          "from": "2026-07-10",
+          "equal": 110.9,
+          "value": 118,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": -0.387
+        },
+        {
+          "date": "2026-07-12",
+          "from": "2026-07-11",
+          "equal": 110.9,
+          "value": 117.8,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": -0.2023
+        },
+        {
+          "date": "2026-07-13",
+          "from": "2026-07-12",
+          "equal": 110.9,
+          "value": 115.5,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": -1.8843
+        },
+        {
+          "date": "2026-07-14",
+          "from": "2026-07-13",
+          "equal": 110.9,
+          "value": 116.2,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.5655
+        },
+        {
+          "date": "2026-07-15",
+          "from": "2026-07-14",
+          "equal": 110.9,
+          "value": 116.7,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.4751
+        },
+        {
+          "date": "2026-07-16",
+          "from": "2026-07-15",
+          "equal": 110.9,
+          "value": 116.8,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.0494
+        },
+        {
+          "date": "2026-07-17",
+          "from": "2026-07-16",
+          "equal": 110.9,
+          "value": 115.9,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": -0.7814
+        },
+        {
+          "date": "2026-07-18",
+          "from": "2026-07-17",
+          "equal": 110.9,
+          "value": 115.8,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": -0.0542
+        },
+        {
+          "date": "2026-07-19",
+          "from": "2026-07-18",
+          "equal": 110.9,
+          "value": 116.2,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.3593
+        },
+        {
+          "date": "2026-07-20",
+          "from": "2026-07-19",
+          "equal": 111.1,
+          "value": 116.6,
+          "matched": 24,
+          "equalMovePct": 0.1953,
+          "valueMovePct": 0.274
+        },
+        {
+          "date": "2026-07-21",
+          "from": "2026-07-20",
+          "equal": 111.1,
+          "value": 116.8,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.2048
+        },
+        {
+          "date": "2026-07-22",
+          "from": "2026-07-21",
+          "equal": 111.1,
+          "value": 116.6,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": -0.1484
+        },
+        {
+          "date": "2026-07-23",
+          "from": "2026-07-22",
+          "equal": 111.1,
+          "value": 115.8,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": -0.663
+        },
+        {
+          "date": "2026-07-24",
+          "from": "2026-07-23",
+          "equal": 111.1,
+          "value": 116,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.091
+        },
+        {
+          "date": "2026-07-25",
+          "from": "2026-07-24",
+          "equal": 111.1,
+          "value": 116.1,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.1118
+        },
+        {
+          "date": "2026-07-26",
+          "from": "2026-07-25",
+          "equal": 111.4,
+          "value": 116.3,
+          "matched": 24,
+          "equalMovePct": 0.2122,
+          "valueMovePct": 0.1702
+        },
+        {
+          "date": "2026-07-27",
+          "from": "2026-07-26",
+          "equal": 111.6,
+          "value": 116.7,
+          "matched": 24,
+          "equalMovePct": 0.2119,
+          "valueMovePct": 0.3831
+        },
+        {
+          "date": "2026-07-28",
+          "from": "2026-07-27",
+          "equal": 111.6,
+          "value": 116.8,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.067
+        },
+        {
+          "date": "2026-07-29",
+          "from": "2026-07-28",
+          "equal": 111.6,
+          "value": 116.5,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": -0.2189
+        },
+        {
+          "date": "2026-07-30",
+          "from": "2026-07-29",
+          "equal": 111.8,
+          "value": 117.1,
+          "matched": 24,
+          "equalMovePct": 0.1601,
+          "valueMovePct": 0.4705
+        },
+        {
+          "date": "2026-07-31",
+          "from": "2026-07-30",
+          "equal": 111.8,
+          "value": 117.2,
+          "matched": 24,
+          "equalMovePct": 0.0478,
+          "valueMovePct": 0.127
+        },
+        {
+          "date": "2026-08-01",
+          "from": "2026-07-31",
+          "equal": 111.8,
+          "value": 117.9,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.5822
+        },
+        {
+          "date": "2026-08-02",
+          "from": "2026-08-01",
+          "equal": 111.8,
+          "value": 118.3,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.356
+        },
+        {
+          "date": "2026-08-03",
+          "from": "2026-08-02",
+          "equal": 111.9,
+          "value": 118.7,
+          "matched": 24,
+          "equalMovePct": 0.0805,
+          "valueMovePct": 0.3373
+        },
+        {
+          "date": "2026-08-04",
+          "from": "2026-08-03",
+          "equal": 111.9,
+          "value": 118.9,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.1421
+        },
+        {
+          "date": "2026-08-05",
+          "from": "2026-08-04",
+          "equal": 111.5,
+          "value": 118.6,
+          "matched": 24,
+          "equalMovePct": -0.3272,
+          "valueMovePct": -0.2423
+        },
+        {
+          "date": "2026-08-06",
+          "from": "2026-08-05",
+          "equal": 111.5,
+          "value": 118.9,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.2103
+        },
+        {
+          "date": "2026-08-07",
+          "from": "2026-08-06",
+          "equal": 111.5,
+          "value": 118.4,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": -0.3596
+        },
+        {
+          "date": "2026-08-08",
+          "from": "2026-08-07",
+          "equal": 111.5,
+          "value": 117.9,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": -0.4847
+        },
+        {
+          "date": "2026-08-09",
+          "from": "2026-08-08",
+          "equal": 111.5,
+          "value": 117.9,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.0275
+        },
+        {
+          "date": "2026-08-10",
+          "from": "2026-08-09",
+          "equal": 111.5,
+          "value": 118.2,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.2587
+        },
+        {
+          "date": "2026-08-11",
+          "from": "2026-08-10",
+          "equal": 111.5,
+          "value": 118.3,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.0574
+        },
+        {
+          "date": "2026-08-12",
+          "from": "2026-08-11",
+          "equal": 111.5,
+          "value": 118.6,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.2592
+        },
+        {
+          "date": "2026-08-13",
+          "from": "2026-08-12",
+          "equal": 111.5,
+          "value": 118.7,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.0568
+        },
+        {
+          "date": "2026-08-14",
+          "from": "2026-08-13",
+          "equal": 111.5,
+          "value": 118.2,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": -0.3442
+        },
+        {
+          "date": "2026-08-15",
+          "from": "2026-08-14",
+          "equal": 111.5,
+          "value": 118.2,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": -0.0392
+        },
+        {
+          "date": "2026-08-16",
+          "from": "2026-08-15",
+          "equal": 111.5,
+          "value": 118.8,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.4901
+        },
+        {
+          "date": "2026-08-17",
+          "from": "2026-08-16",
+          "equal": 111.5,
+          "value": 119,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.1711
+        },
+        {
+          "date": "2026-08-18",
+          "from": "2026-08-17",
+          "equal": 111.6,
+          "value": 119.1,
+          "matched": 24,
+          "equalMovePct": 0.0112,
+          "valueMovePct": 0.1397
+        },
+        {
+          "date": "2026-08-19",
+          "from": "2026-08-18",
+          "equal": 111.6,
+          "value": 118.9,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": -0.2116
+        },
+        {
+          "date": "2026-08-20",
+          "from": "2026-08-19",
+          "equal": 111.6,
+          "value": 118.3,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": -0.5374
+        },
+        {
+          "date": "2026-08-21",
+          "from": "2026-08-20",
+          "equal": 111.6,
+          "value": 118.7,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.3402
+        },
+        {
+          "date": "2026-08-22",
+          "from": "2026-08-21",
+          "equal": 111.6,
+          "value": 118,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": -0.5922
+        },
+        {
+          "date": "2026-08-23",
+          "from": "2026-08-22",
+          "equal": 111.6,
+          "value": 118.6,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.536
+        },
+        {
+          "date": "2026-08-24",
+          "from": "2026-08-23",
+          "equal": 111.6,
+          "value": 118.7,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.128
+        },
+        {
+          "date": "2026-08-25",
+          "from": "2026-08-24",
+          "equal": 111.6,
+          "value": 118.6,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": -0.1343
+        },
+        {
+          "date": "2026-08-26",
+          "from": "2026-08-25",
+          "equal": 111.6,
+          "value": 118.8,
+          "matched": 24,
+          "equalMovePct": 0.067,
+          "valueMovePct": 0.1874
+        },
+        {
+          "date": "2026-08-27",
+          "from": "2026-08-26",
+          "equal": 111.6,
+          "value": 118.9,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.0701
+        },
+        {
+          "date": "2026-08-28",
+          "from": "2026-08-27",
+          "equal": 111.6,
+          "value": 118.4,
+          "matched": 24,
+          "equalMovePct": -0.0563,
+          "valueMovePct": -0.3812
+        },
+        {
+          "date": "2026-08-29",
+          "from": "2026-08-28",
+          "equal": 111.5,
+          "value": 118.4,
+          "matched": 24,
+          "equalMovePct": -0.0944,
+          "valueMovePct": -0.0065
+        },
+        {
+          "date": "2026-08-30",
+          "from": "2026-08-29",
+          "equal": 111.5,
+          "value": 118.7,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.2606
+        },
+        {
+          "date": "2026-08-31",
+          "from": "2026-08-30",
+          "equal": 111.5,
+          "value": 118.7,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.01
+        },
+        {
+          "date": "2026-09-01",
+          "from": "2026-08-31",
+          "equal": 111.5,
+          "value": 118.7,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": -0.052
+        },
+        {
+          "date": "2026-09-02",
+          "from": "2026-09-01",
+          "equal": 111.5,
+          "value": 118.4,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": -0.2523
+        },
+        {
+          "date": "2026-09-03",
+          "from": "2026-09-02",
+          "equal": 111.5,
+          "value": 118.7,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.2555
+        },
+        {
+          "date": "2026-09-04",
+          "from": "2026-09-03",
+          "equal": 111.5,
+          "value": 118.9,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.1391
+        },
+        {
+          "date": "2026-09-05",
+          "from": "2026-09-04",
+          "equal": 111.5,
+          "value": 119,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.1039
+        },
+        {
+          "date": "2026-09-06",
+          "from": "2026-09-05",
+          "equal": 111.5,
+          "value": 119.1,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.1111
+        },
+        {
+          "date": "2026-09-07",
+          "from": "2026-09-06",
+          "equal": 111.5,
+          "value": 119.3,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.1287
+        },
+        {
+          "date": "2026-09-08",
+          "from": "2026-09-07",
+          "equal": 111.5,
+          "value": 119.1,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": -0.1531
+        },
+        {
+          "date": "2026-09-09",
+          "from": "2026-09-08",
+          "equal": 111.5,
+          "value": 118.8,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": -0.2454
+        },
+        {
+          "date": "2026-09-10",
+          "from": "2026-09-09",
+          "equal": 111.5,
+          "value": 118.9,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.0567
+        },
+        {
+          "date": "2026-09-11",
+          "from": "2026-09-10",
+          "equal": 111.5,
+          "value": 118.7,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": -0.1311
+        },
+        {
+          "date": "2026-09-12",
+          "from": "2026-09-11",
+          "equal": 111.5,
+          "value": 118.9,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.1989
+        },
+        {
+          "date": "2026-09-13",
+          "from": "2026-09-12",
+          "equal": 111.5,
+          "value": 119.1,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.1138
+        },
+        {
+          "date": "2026-09-14",
+          "from": "2026-09-13",
+          "equal": 111.5,
+          "value": 119,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": -0.0259
+        },
+        {
+          "date": "2026-09-15",
+          "from": "2026-09-14",
+          "equal": 111.5,
+          "value": 118.8,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": -0.1759
+        },
+        {
+          "date": "2026-09-16",
+          "from": "2026-09-15",
+          "equal": 111.5,
+          "value": 119,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": 0.1286
+        },
+        {
+          "date": "2026-09-17",
+          "from": "2026-09-16",
+          "equal": 111.5,
+          "value": 119,
+          "matched": 24,
+          "equalMovePct": 0,
+          "valueMovePct": -0.0259
+        },
+        {
+          "date": "2026-09-18",
+          "from": "2026-09-17",
+          "equal": 111.5,
+          "value": 118.9,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": -0.0469
+        },
+        {
+          "date": "2026-09-19",
+          "from": "2026-09-18",
+          "equal": 111.5,
+          "value": 118.7,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": -0.1579
+        },
+        {
+          "date": "2026-09-20",
+          "from": "2026-09-19",
+          "equal": 111.5,
+          "value": 118.8,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": 0.0969
+        },
+        {
+          "date": "2026-09-21",
+          "from": "2026-09-20",
+          "equal": 111.5,
+          "value": 119,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": 0.1608
+        },
+        {
+          "date": "2026-09-22",
+          "from": "2026-09-21",
+          "equal": 111.5,
+          "value": 118.6,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": -0.3145
+        },
+        {
+          "date": "2026-09-23",
+          "from": "2026-09-22",
+          "equal": 111.5,
+          "value": 118.3,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": -0.267
+        },
+        {
+          "date": "2026-09-24",
+          "from": "2026-09-23",
+          "equal": 111.5,
+          "value": 118.1,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": -0.2187
+        },
+        {
+          "date": "2026-09-25",
+          "from": "2026-09-24",
+          "equal": 111.5,
+          "value": 118.2,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": 0.0984
+        },
+        {
+          "date": "2026-09-26",
+          "from": "2026-09-25",
+          "equal": 111.5,
+          "value": 118.2,
+          "matched": 19,
+          "equalMovePct": 0,
+          "valueMovePct": 0
         }
       ],
       "gaps": [
         {
-          "from": "2025-09-25",
-          "to": "2026-09-25",
-          "note": "TCGCSV has not published the price archive. Only days we could read live are in this series. Missing days are not filled in."
+          "from": "2025-03-31",
+          "to": "2026-03-30",
+          "note": "No TCGplayer history before this date is on file (the TCGCSV archive is offline and PokemonPriceTracker returns 180 days). Nothing earlier is filled in."
         }
       ]
     },
@@ -236,56 +1861,56 @@
         {
           "date": "2026-09-21",
           "from": "2026-08-26",
-          "equal": 103.6,
-          "value": 101.7,
-          "matched": 25,
-          "equalMovePct": 0.01,
-          "valueMovePct": 0.2236
+          "equal": 104.1,
+          "value": 101.9,
+          "matched": 9,
+          "equalMovePct": 0.4129,
+          "valueMovePct": 0.4026
         },
         {
           "date": "2026-09-22",
           "from": "2026-09-21",
-          "equal": 103.6,
-          "value": 101.9,
-          "matched": 25,
-          "equalMovePct": 0,
-          "valueMovePct": 0.1317
+          "equal": 103.8,
+          "value": 101.7,
+          "matched": 9,
+          "equalMovePct": -0.2501,
+          "valueMovePct": -0.2052
         },
         {
           "date": "2026-09-23",
           "from": "2026-09-22",
-          "equal": 103.6,
-          "value": 102,
-          "matched": 25,
-          "equalMovePct": 0,
-          "valueMovePct": 0.1601
+          "equal": 104.4,
+          "value": 101.9,
+          "matched": 9,
+          "equalMovePct": 0.5747,
+          "valueMovePct": 0.1312
         },
         {
           "date": "2026-09-24",
           "from": "2026-09-23",
-          "equal": 103.6,
-          "value": 102.9,
-          "matched": 25,
-          "equalMovePct": 0,
-          "valueMovePct": 0.7965
+          "equal": 103.5,
+          "value": 100.8,
+          "matched": 9,
+          "equalMovePct": -0.8247,
+          "valueMovePct": -1.0576
         },
         {
           "date": "2026-09-25",
           "from": "2026-09-24",
-          "equal": 103.6,
-          "value": 102.8,
-          "matched": 25,
+          "equal": 103.5,
+          "value": 102,
+          "matched": 9,
           "equalMovePct": 0,
-          "valueMovePct": -0.0555
+          "valueMovePct": 1.2001
         },
         {
           "date": "2026-09-26",
           "from": "2026-09-25",
-          "equal": 103.6,
-          "value": 102.5,
-          "matched": 25,
+          "equal": 103.5,
+          "value": 101.3,
+          "matched": 9,
           "equalMovePct": 0,
-          "valueMovePct": -0.2581
+          "valueMovePct": -0.7096
         }
       ],
       "gaps": [

@@ -13,6 +13,8 @@ t("pokemon go is sword and shield", eraOf("pgo") === "Sword & Shield");
 t("base set is wotc", eraOf("base1") === "WOTC / vintage");
 t("heartgold is not dumped in vintage", eraOf("hgss1") === null);
 t("quarter", quarterKey("2026-09-25") === "2026-Q3");
+t("april is Q2, not Q1", quarterKey("2026-04-01") === "2026-Q2");
+t("december is Q4", quarterKey("2026-12-31") === "2026-Q4");
 
 const prices = new Map([
   ["a", new Map([["2026-08-22", 100], ["2026-08-23", 110], ["2026-08-25", 110]])],
@@ -36,6 +38,10 @@ const thin = new Map([
 ]);
 const thinSeries = chainIndex(["2026-08-22", "2026-08-23"], prices, thin, ["a", "b"]);
 t("a day with nobody priced does not print a flat index", thinSeries.points.length === 1);
+
+// A move is never taken across two sources: pairPrice returns null for "a" here.
+const mixed = chainIndex(["2026-08-22", "2026-08-23"], prices, elig, ["a", "b"], (id, x, y) => id === "a" ? null : [prices.get(id).get(x), prices.get(id).get(y)]);
+t("pairPrice null keeps that product out of the move", mixed.points[1].matched === 1 && mixed.points[1].equalMovePct === 0, JSON.stringify(mixed.points[1]));
 
 console.log(fail ? `${fail} failed` : "index baskets ok");
 if (fail) process.exit(1);

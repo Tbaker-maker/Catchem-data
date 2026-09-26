@@ -4,6 +4,7 @@ import { mkdir, readFile, writeFile, readdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { WRONG_MATCH_IDS, WRONG_MATCH_WHY, chainIndex, eraOf, typeKey } from "./lib/index-baskets.mjs";
+import { PPT_SOURCE, TCGCSV_SOURCE, loadMarketHistory } from "./lib/market-history.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "data/indexes");
@@ -39,40 +40,50 @@ export async function publishChartIndexes() {
   }
   const liveDates = [...liveElig.keys()].sort();
 
+  // TCGplayer market history: TCGCSV live days plus the PokemonPriceTracker
+  // daily backfill (both TCGplayer market price, kept in separate folders and
+  // labelled per source). A move is only ever taken within one source.
   const backfillPrice = new Map();
-  const backfillDir = join(ROOT, "data/history/tcgplayer-market");
   let backfillDates = [];
+  let pairPrice = null;
+  let backfillCoverage = null;
   let backfillGap = [{ from: daysBefore(today, 365), to: daysBefore(today, 1), note: "No TCGplayer history file is in this run, so this series is empty. It is not filled from eBay." }];
   try {
-    const cov = JSON.parse(await readFile(join(backfillDir, "coverage.json"), "utf8"));
-    if (cov.archive && cov.archive.available === false) {
-      backfillGap = [{ from: cov.window.from, to: cov.window.to, note: "TCGCSV has not published the price archive. Only days we could read live are in this series. Missing days are not filled in." }];
-    }
-    const names = (await readdir(backfillDir)).filter((n) => n.endsWith(".json") && !["mapping.json", "unmatched.json", "coverage.json"].includes(n));
+    const hist = await loadMarketHistory(ROOT);
+    pairPrice = hist.pairPrice;
+    backfillCoverage = hist.coverage;
     const dates = new Set();
-    for (const name of names) {
-      const doc = JSON.parse(await readFile(join(backfillDir, name), "utf8"));
-      if (quarantine.has(doc.id) || WRONG_MATCH_IDS.has(doc.id)) continue;
-      const pts = (doc.points || []).filter((p) => p.market > 0 && p.date);
-      if (!pts.length) continue;
-      backfillPrice.set(doc.id, new Map(pts.map((p) => [p.date, p.market])));
-      for (const p of pts) dates.add(p.date);
+    for (const id of hist.ids) {
+      if (quarantine.has(id) || WRONG_MATCH_IDS.has(id)) continue;
+      const m = hist.priceMap.get(id);
+      if (!m?.size) continue;
+      backfillPrice.set(id, m);
+      for (const d of m.keys()) dates.add(d);
     }
     backfillDates = [...dates].sort();
-  } catch { /* backfill not on this branch */ }
+    if (backfillDates.length) {
+      backfillGap = [{ from: daysBefore(backfillDates[0], 365), to: daysBefore(backfillDates[0], 1), note: "No TCGplayer history before this date is on file (the TCGCSV archive is offline and PokemonPriceTracker returns 180 days). Nothing earlier is filled in." }];
+    }
+  } catch { /* no history on this branch */ }
 
   function seriesFor(memberIds) {
     const members = new Set(memberIds);
     const live = chainIndex(liveDates, livePrice, liveElig, members);
     const backElig = new Map(backfillDates.map((d) => [d, new Set(memberIds.filter((id) => backfillPrice.get(id)?.has(d)))]));
-    const back = backfillDates.length ? chainIndex(backfillDates, backfillPrice, backElig, members) : { base: 100, points: [], gaps: [] };
+    const back = backfillDates.length ? chainIndex(backfillDates, backfillPrice, backElig, members, pairPrice) : { base: 100, points: [], gaps: [] };
     return {
       backfill: {
         source: "TCGplayer market price",
+        sources: [
+          { label: PPT_SOURCE, folder: "data/history/ppt-sealed", role: "daily history backfill, 2026-03-31 to 2026-09-25" },
+          { label: TCGCSV_SOURCE, folder: "data/history/tcgplayer-market", role: "live daily append from 2026-09-25; wins on any day both have" },
+        ],
+        sameSourceMoves: "Each day's move uses two prices from the same source. No move is computed across sources.",
         available: back.points.length > 0,
+        start: back.points[0]?.date || null,
         base: 100,
         points: back.points.map(({ basket, ...p }) => p),
-        gaps: back.points.length > 1 ? back.gaps : backfillGap,
+        gaps: back.points.length > 1 ? [...backfillGap, ...back.gaps] : backfillGap,
       },
       live: {
         source: "eBay asking prices",
@@ -123,8 +134,9 @@ export async function publishChartIndexes() {
   await writeFile(join(OUT, "manifest.json"), JSON.stringify({
     asOf: newest, stale,
     sourceLive: "eBay asking prices",
-    sourceBackfill: "TCGplayer market price",
-    rawChase: { hidden: true, products: 0, reason: "No chase-single price history is on file, so the Raw Chase Index is not published." },
+    sourceBackfill: "TCGplayer market price (PokemonPriceTracker daily backfill + TCGCSV live days)",
+    backfillCoverage,
+    rawChase: { hidden: true, products: 0, reason: "Chase-single history is on file (data/history/singles-rarebox/), but it is change-only and stops on 2026-09-15, so a daily chain-linked index would need filled-in days. The Raw Chase Index is not published." },
     excluded, hiddenEras, files: written,
   }, null, 2));
   console.log(`indexes ${written.length}, stale=${stale}, newest=${newest}`);

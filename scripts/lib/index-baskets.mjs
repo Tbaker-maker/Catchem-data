@@ -13,7 +13,7 @@ export function eraOf(setId = "") {
 
 export function quarterKey(date) {
   const [y, m] = date.split("-").map(Number);
-  return `${y}-Q${Math.floor((m - 1) / 4) + 1}`;
+  return `${y}-Q${Math.floor((m - 1) / 3) + 1}`;
 }
 
 export function median(nums) {
@@ -33,7 +33,9 @@ function daysBetween(a, b) {
 // prices: Map id -> Map date -> number
 // eligible: Map date -> Set id   (already filtered: not quarantined, enough listings, not a known bad match)
 // members: the fixed universe this index is allowed to draw a basket from
-export function chainIndex(dates, prices, eligible, members) {
+// pairPrice (optional): (id, prevDate, date) -> [prevPrice, price] | null. Lets a
+// caller insist that both prices of one move come from the same source.
+export function chainIndex(dates, prices, eligible, members, pairPrice = null) {
   const points = [];
   const gaps = [];
   let level = 100;
@@ -63,8 +65,9 @@ export function chainIndex(dates, prices, eligible, members) {
     const weights = [];
     for (const id of basket) {
       if (!elig.has(id) || !prevElig.has(id)) continue;
-      const a = prices.get(id)?.get(prev);
-      const b = prices.get(id)?.get(date);
+      const pair = pairPrice ? pairPrice(id, prev, date) : [prices.get(id)?.get(prev), prices.get(id)?.get(date)];
+      if (!pair) continue;
+      const [a, b] = pair;
       if (!(a > 0) || !(b > 0)) continue;
       rels.push(b / a);
       weights.push(a);

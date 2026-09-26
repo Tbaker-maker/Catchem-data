@@ -19,6 +19,7 @@
 import sharp from "sharp";
 import { writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
+import { cardImage } from "./image-source.mjs";
 
 const OUT = process.argv[2];
 const IDS = process.argv.slice(3);
@@ -35,7 +36,8 @@ const cat = JSON.parse(await (await import("node:fs/promises")).readFile("C:/Use
 const tiles = [];
 for (const id of IDS) {
   const [setId, num] = [id.slice(0, id.lastIndexOf("-")), id.slice(id.lastIndexOf("-") + 1)];
-  const url = `https://images.pokemontcg.io/${setId}/${num}_hires.png`;
+  const url = cardImage(id, true); // source-published URL, never constructed
+  if (!url) { console.error("  NO SOURCE IMAGE URL", id); process.exit(1); }
   const f = join(DIR, id.replace(/[^a-z0-9-]/gi, "_") + ".png");
   if (!existsSync(f)) {
     const r = await fetch(url, { signal: AbortSignal.timeout(30000) });
