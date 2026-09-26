@@ -68,6 +68,11 @@ export async function stagePrivate({ checkout, rawDir, dest, date }) {
     }
     actions.push(name);
   }
+  if (rawDir && existsSync(join(rawDir, "refresh-dates.json"))) {
+    await mkdir(join(dest, "data/meta"), { recursive: true });
+    await cp(join(rawDir, "refresh-dates.json"), join(dest, "data/meta/ppt-refresh-dates.json"));
+    actions.push("refresh-dates");
+  }
   if (rawDir && existsSync(rawDir) && date) {
     const dayDir = join(dest, "raw", date);
     await mkdir(dayDir, { recursive: true });
@@ -92,6 +97,13 @@ export async function restorePrivate({ clone, root }) {
     await mkdir(crossDest, { recursive: true });
     await cp(from, join(crossDest, name));
     actions.push(name);
+  }
+  const datesFrom = join(clone, "data/meta/ppt-refresh-dates.json");
+  if (existsSync(datesFrom)) {
+    const datesTo = join(root, "ppt-raw-private/refresh-dates.json");
+    await mkdir(join(root, "ppt-raw-private"), { recursive: true });
+    await cp(datesFrom, datesTo);
+    actions.push("refresh-dates");
   }
   return actions;
 }
