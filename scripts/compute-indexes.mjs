@@ -10,6 +10,22 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "data/indexes");
 const J = async (p) => JSON.parse(await readFile(join(ROOT, p), "utf8"));
 
+export function keepMarch31(next, previous) {
+  const start = next?.series?.backfill?.anchorUsed || next?.series?.backfill?.points?.[0]?.date;
+  const prevStart = previous?.series?.backfill?.anchorUsed || previous?.series?.backfill?.points?.[0]?.date;
+  if (start === "2026-03-31" || prevStart !== "2026-03-31" || !previous?.series?.backfill) return next;
+  return {
+    ...next,
+    series: {
+      ...next.series,
+      backfill: {
+        ...previous.series.backfill,
+        keptBecauseUnmounted: "PPT history was not mounted. The published TCGplayer series was left in place so 2026-03-31 stays 100. No day was invented.",
+      },
+    },
+  };
+}
+
 export async function publishChartIndexes() {
   const today = new Date().toISOString().slice(0, 10);
   const daysBefore = (date, n) => new Date(Date.parse(date) - n * 86400000).toISOString().slice(0, 10);
@@ -81,7 +97,7 @@ export async function publishChartIndexes() {
           ? "First real TCGplayer day on file is 2026-03-31. Level 100 starts there. No earlier day was invented."
           : `No TCGplayer price on 2026-03-31 is on file. Level 100 starts on ${back.points[0]?.date || "no day"}. The days before that are a gap.`,
         sources: [
-          { label: PPT_SOURCE, folder: "data/history/ppt-sealed", role: "daily history backfill, 2026-03-31 to 2026-09-25" },
+          { label: PPT_SOURCE, folder: "data/history/ppt-sealed-private", role: "mounted from the private repo when PRIVATE_DATA_TOKEN is set; otherwise this series has no PPT days" },
           { label: TCGCSV_SOURCE, folder: "data/history/tcgplayer-market", role: "live daily append from 2026-09-25; wins on any day both have" },
         ],
         sameSourceMoves: "Each day's move uses two prices from the same source. No move is computed across sources.",
@@ -124,7 +140,10 @@ export async function publishChartIndexes() {
   const written = [];
   async function put(file, body) {
     if (!body.basket.length) return null;
-    await writeFile(join(OUT, file), JSON.stringify(body, null, 2));
+    let prev = null;
+    try { prev = JSON.parse(await readFile(join(OUT, file), "utf8")); } catch { /* first write */ }
+    const held = keepMarch31(body, prev);
+    await writeFile(join(OUT, file), JSON.stringify(held, null, 2));
     written.push(file);
     return body;
   }

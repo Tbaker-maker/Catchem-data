@@ -1024,6 +1024,8 @@ const CASES = [
   // run naming divergence — the victim, not the cause.
   { guard: "An empty crosscheck cannot wipe The Spread", detect: null,
     fn: async () => {
+      try { await readFile(P("data/sealed-crosscheck.json")); }
+      catch { return { pass: null, why: "public sealed-crosscheck.json is gone; this guard waits for the private copy" }; }
       const bak = TMP("/tmp/nt-cc.bak"), dbak = TMP("/tmp/nt-div.bak");
       await copyFile(P("data/sealed-crosscheck.json"), bak);
       await copyFile(P("data/divergence-report.json"), dbak);

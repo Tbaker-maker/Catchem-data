@@ -19,6 +19,7 @@
 // Runs standalone; consumes whatever provider fills the crosscheck contract.
 
 import { flag } from "./flags.mjs";
+import { readCrosscheck } from "./lib/ppt-paths.mjs";
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -26,9 +27,8 @@ const DATA = join(dirname(dirname(fileURLToPath(import.meta.url))), "data");
 const SIGNAL_PCT = 0.15;
 
 const ebay = JSON.parse(await readFile(join(DATA, "sealed-prices.json"), "utf-8"));
-let tcg;
-try { tcg = JSON.parse(await readFile(join(DATA, "sealed-crosscheck.json"), "utf-8")); }
-catch { console.log("no sealed-crosscheck.json yet — provider eval pending; exiting clean"); process.exit(0); }
+const tcg = await readCrosscheck(dirname(DATA), "sealed-crosscheck.json");
+if (!tcg?.products) process.exit(0);
 
 const tcgById = new Map(tcg.products.map(p => [p.id, p]));
 // RT-4a venue gate — canonical implementation in lib, unit-tested in CI.

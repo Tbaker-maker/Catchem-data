@@ -20,7 +20,7 @@
 // Requires: POKEMONPRICETRACKER_API_KEY env (GitHub secret in Actions; local
 // runs receive it via Tyler's shell — never committed, never logged).
 
-import { readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
@@ -33,7 +33,10 @@ const FETCH_TIMEOUT_MS = 20000;
 const DATA = join(dirname(dirname(fileURLToPath(import.meta.url))), "data");
 const BASE = "https://www.pokemonpricetracker.com/api/v2";
 const KEY = process.env.POKEMONPRICETRACKER_API_KEY;
-if (!KEY) { console.error("Missing POKEMONPRICETRACKER_API_KEY"); process.exit(1); }
+if (!KEY) {
+  console.log("POKEMONPRICETRACKER_API_KEY is not set. No request was sent. Public raw files are not written.");
+  process.exit(0);
+}
 const H = { Authorization: `Bearer ${KEY}` };
 const STALE_DAYS = 3;
 const HISTORY_DAYS = 120;
@@ -91,8 +94,10 @@ async function main() {
     e.tcgPlayerId && (e.matchConfidence !== "low" || e.reviewed === true) && e.exclude !== true);
   console.log(`crosscheck: ${entries.length} mapped SKUs (of ${map.entries.length} in map)`);
 
+  const OUT = join(dirname(DATA), "ppt-raw-private", "crosscheck");
+  await mkdir(OUT, { recursive: true });
   let history = [];
-  try { history = JSON.parse(await readFile(join(DATA, "crosscheck-history.json"), "utf-8")); } catch {}
+  try { history = JSON.parse(await readFile(join(OUT, "crosscheck-history.json"), "utf-8")); } catch {}
 
   const products = [];
   for (const e of entries) {
@@ -121,15 +126,15 @@ async function main() {
   const cutoff = new Date(Date.now() - HISTORY_DAYS * 86400000).toISOString().split("T")[0];
   history = history.filter(h => h.date >= cutoff);
 
-  await writeFile(join(DATA, "sealed-crosscheck.json"), JSON.stringify({
+  await writeFile(join(OUT, "sealed-crosscheck.json"), JSON.stringify({
     updatedAt: new Date().toISOString(),
     source: "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived unopenedPrice)",
     note: "tcgListings is null by provider limitation (sealed endpoint has no supply counts); The Spread consumes tcgMarket.",
     products,
   }, null, 2) + "\n");
-  await writeFile(join(DATA, "crosscheck-history.json"), JSON.stringify(history) + "\n");
+  await writeFile(join(OUT, "crosscheck-history.json"), JSON.stringify(history) + "\n");
   const live = products.filter(p => p.dataStatus === "live").length;
-  console.log(`✓ sealed-crosscheck.json: ${live} live / ${products.length}; history rows: ${history.length}`);
+  console.log(`crosscheck under ppt-raw-private (not public): ${live} live / ${products.length}; history rows: ${history.length}`);
 }
 
 main().catch(e => { console.error("Fatal:", e); process.exit(1); });
