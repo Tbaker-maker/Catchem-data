@@ -1,0 +1,329 @@
+{
+  "id": "era-mega-evolution",
+  "name": "Mega Evolution",
+  "asOf": "2026-09-25",
+  "method": "Fixed basket, reset each quarter. Each day's move is the median price change of products priced on both days, with equal weight. A value-weighted line gives a dearer product a bigger say. A day with no shared prices is a gap.",
+  "basket": [
+    {
+      "id": "me5-booster-box",
+      "name": "Pitch Black Booster Box",
+      "type": "booster-box",
+      "era": "Mega Evolution"
+    },
+    {
+      "id": "me5-etb",
+      "name": "Pitch Black Elite Trainer Box",
+      "type": "etb",
+      "era": "Mega Evolution"
+    },
+    {
+      "id": "me5-bb",
+      "name": "Pitch Black Booster Bundle",
+      "type": "bundle",
+      "era": "Mega Evolution"
+    },
+    {
+      "id": "me5-pc-etb",
+      "name": "Pitch Black Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "era": "Mega Evolution"
+    },
+    {
+      "id": "me4-booster-box",
+      "name": "Chaos Rising Booster Box",
+      "type": "booster-box",
+      "era": "Mega Evolution"
+    },
+    {
+      "id": "me4-etb",
+      "name": "Chaos Rising Elite Trainer Box",
+      "type": "etb",
+      "era": "Mega Evolution"
+    },
+    {
+      "id": "me4-bb",
+      "name": "Chaos Rising Booster Bundle",
+      "type": "bundle",
+      "era": "Mega Evolution"
+    },
+    {
+      "id": "me4-pc-etb",
+      "name": "Chaos Rising Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "era": "Mega Evolution"
+    },
+    {
+      "id": "me3-booster-box",
+      "name": "Perfect Order Booster Box",
+      "type": "booster-box",
+      "era": "Mega Evolution"
+    },
+    {
+      "id": "me3-etb",
+      "name": "Perfect Order Elite Trainer Box",
+      "type": "etb",
+      "era": "Mega Evolution"
+    },
+    {
+      "id": "me3-bb",
+      "name": "Perfect Order Booster Bundle",
+      "type": "bundle",
+      "era": "Mega Evolution"
+    },
+    {
+      "id": "me3-pc-etb",
+      "name": "Perfect Order Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "era": "Mega Evolution"
+    },
+    {
+      "id": "me2pt5-etb",
+      "name": "Ascended Heroes Elite Trainer Box",
+      "type": "etb",
+      "era": "Mega Evolution"
+    },
+    {
+      "id": "me2pt5-bb",
+      "name": "Ascended Heroes Booster Bundle",
+      "type": "bundle",
+      "era": "Mega Evolution"
+    },
+    {
+      "id": "me2pt5-pc-etb",
+      "name": "Ascended Heroes Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "era": "Mega Evolution"
+    },
+    {
+      "id": "me2-booster-box",
+      "name": "Phantasmal Flames Booster Box",
+      "type": "booster-box",
+      "era": "Mega Evolution"
+    },
+    {
+      "id": "me2-etb",
+      "name": "Phantasmal Flames Elite Trainer Box",
+      "type": "etb",
+      "era": "Mega Evolution"
+    },
+    {
+      "id": "me2-bb",
+      "name": "Phantasmal Flames Booster Bundle",
+      "type": "bundle",
+      "era": "Mega Evolution"
+    },
+    {
+      "id": "me2-pc-etb",
+      "name": "Phantasmal Flames Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "era": "Mega Evolution"
+    },
+    {
+      "id": "me1-booster-box",
+      "name": "Mega Evolution Booster Box",
+      "type": "booster-box",
+      "era": "Mega Evolution"
+    },
+    {
+      "id": "me1-enhanced-booster-box",
+      "name": "Mega Evolution Enhanced Booster Box",
+      "type": "booster-box",
+      "era": "Mega Evolution"
+    },
+    {
+      "id": "me1-etb",
+      "name": "Mega Evolution Elite Trainer Box",
+      "type": "etb",
+      "era": "Mega Evolution"
+    },
+    {
+      "id": "me1-pc-etb",
+      "name": "Mega Evolution Pokemon Center Elite Trainer Box",
+      "type": "pc-etb",
+      "era": "Mega Evolution"
+    },
+    {
+      "id": "me2-pack",
+      "name": "Phantasmal Flames Booster Pack",
+      "type": "pack",
+      "era": "Mega Evolution"
+    },
+    {
+      "id": "me2pt5-pack",
+      "name": "Ascended Heroes Booster Pack",
+      "type": "pack",
+      "era": "Mega Evolution"
+    },
+    {
+      "id": "me3-pack",
+      "name": "Perfect Order Booster Pack",
+      "type": "pack",
+      "era": "Mega Evolution"
+    },
+    {
+      "id": "me1-bb",
+      "name": "Mega Evolution Booster Bundle",
+      "type": "bundle",
+      "era": "Mega Evolution"
+    },
+    {
+      "id": "me4-pack",
+      "name": "Chaos Rising Booster Pack",
+      "type": "pack",
+      "era": "Mega Evolution"
+    },
+    {
+      "id": "me5-pack",
+      "name": "Pitch Black Booster Pack",
+      "type": "pack",
+      "era": "Mega Evolution"
+    },
+    {
+      "id": "me1-pack",
+      "name": "Mega Evolution Booster Pack",
+      "type": "pack",
+      "era": "Mega Evolution"
+    }
+  ],
+  "series": {
+    "backfill": {
+      "source": "TCGplayer market price",
+      "available": true,
+      "base": 100,
+      "points": [
+        {
+          "date": "2026-09-25",
+          "equal": 100,
+          "value": 100,
+          "matched": 24
+        }
+      ],
+      "gaps": [
+        {
+          "from": "2025-09-25",
+          "to": "2026-09-25",
+          "note": "TCGCSV has not published the price archive. Only days we could read live are in this series. Missing days are not filled in."
+        }
+      ]
+    },
+    "live": {
+      "source": "eBay asking prices",
+      "available": true,
+      "withheld": null,
+      "base": 100,
+      "points": [
+        {
+          "date": "2026-08-18",
+          "equal": 100,
+          "value": 100,
+          "matched": 23
+        },
+        {
+          "date": "2026-08-19",
+          "from": "2026-08-18",
+          "equal": 101.3,
+          "value": 100.9,
+          "matched": 23,
+          "equalMovePct": 1.2941,
+          "valueMovePct": 0.8654
+        },
+        {
+          "date": "2026-08-20",
+          "from": "2026-08-19",
+          "equal": 101.3,
+          "value": 101,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": 0.0894
+        },
+        {
+          "date": "2026-08-21",
+          "from": "2026-08-20",
+          "equal": 101.3,
+          "value": 100.6,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": -0.3701
+        },
+        {
+          "date": "2026-08-22",
+          "from": "2026-08-21",
+          "equal": 101.3,
+          "value": 100.5,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": -0.1184
+        },
+        {
+          "date": "2026-08-26",
+          "from": "2026-08-22",
+          "equal": 101.3,
+          "value": 101,
+          "matched": 23,
+          "equalMovePct": 0,
+          "valueMovePct": 0.4887
+        },
+        {
+          "date": "2026-09-21",
+          "from": "2026-08-26",
+          "equal": 101.5,
+          "value": 100.2,
+          "matched": 30,
+          "equalMovePct": 0.2125,
+          "valueMovePct": -0.7595
+        },
+        {
+          "date": "2026-09-22",
+          "from": "2026-09-21",
+          "equal": 101.5,
+          "value": 100.1,
+          "matched": 30,
+          "equalMovePct": 0,
+          "valueMovePct": -0.13
+        },
+        {
+          "date": "2026-09-23",
+          "from": "2026-09-22",
+          "equal": 101.5,
+          "value": 100.1,
+          "matched": 30,
+          "equalMovePct": 0,
+          "valueMovePct": 0.0214
+        },
+        {
+          "date": "2026-09-24",
+          "from": "2026-09-23",
+          "equal": 101.5,
+          "value": 100,
+          "matched": 30,
+          "equalMovePct": 0,
+          "valueMovePct": -0.0508
+        },
+        {
+          "date": "2026-09-25",
+          "from": "2026-09-24",
+          "equal": 101.5,
+          "value": 100,
+          "matched": 30,
+          "equalMovePct": 0,
+          "valueMovePct": -0.056
+        }
+      ],
+      "gaps": [
+        {
+          "from": "2026-08-22",
+          "to": "2026-08-26",
+          "missingDays": 3,
+          "note": "No price was invented for the days in between."
+        },
+        {
+          "from": "2026-08-26",
+          "to": "2026-09-21",
+          "missingDays": 25,
+          "note": "No price was invented for the days in between."
+        }
+      ]
+    },
+    "break": "The TCGplayer series and the eBay series are separate. They are not spliced into one line."
+  }
+}

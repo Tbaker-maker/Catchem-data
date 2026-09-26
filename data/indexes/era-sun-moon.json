@@ -1,0 +1,245 @@
+{
+  "id": "era-sun-moon",
+  "name": "Sun & Moon",
+  "asOf": "2026-09-25",
+  "method": "Fixed basket, reset each quarter. Each day's move is the median price change of products priced on both days, with equal weight. A value-weighted line gives a dearer product a bigger say. A day with no shared prices is a gap.",
+  "basket": [
+    {
+      "id": "sm12-etb",
+      "name": "Hidden Fates Elite Trainer Box",
+      "type": "etb",
+      "era": "Sun & Moon"
+    },
+    {
+      "id": "sm35-etb",
+      "name": "Shining Legends Elite Trainer Box",
+      "type": "etb",
+      "era": "Sun & Moon"
+    },
+    {
+      "id": "sm1-etb",
+      "name": "Sun & Moon Elite Trainer Box",
+      "type": "etb",
+      "era": "Sun & Moon"
+    },
+    {
+      "id": "sm2-booster-box",
+      "name": "Guardians Rising Booster Box",
+      "type": "booster-box",
+      "era": "Sun & Moon"
+    },
+    {
+      "id": "sm2-etb",
+      "name": "Guardians Rising Elite Trainer Box",
+      "type": "etb",
+      "era": "Sun & Moon"
+    },
+    {
+      "id": "sm3-booster-box",
+      "name": "Burning Shadows Booster Box",
+      "type": "booster-box",
+      "era": "Sun & Moon"
+    },
+    {
+      "id": "sm3-etb",
+      "name": "Burning Shadows Elite Trainer Box",
+      "type": "etb",
+      "era": "Sun & Moon"
+    },
+    {
+      "id": "sm4-booster-box",
+      "name": "Crimson Invasion Booster Box",
+      "type": "booster-box",
+      "era": "Sun & Moon"
+    },
+    {
+      "id": "sm4-etb",
+      "name": "Crimson Invasion Elite Trainer Box",
+      "type": "etb",
+      "era": "Sun & Moon"
+    },
+    {
+      "id": "sm5-booster-box",
+      "name": "Ultra Prism Booster Box",
+      "type": "booster-box",
+      "era": "Sun & Moon"
+    },
+    {
+      "id": "sm6-booster-box",
+      "name": "Forbidden Light Booster Box",
+      "type": "booster-box",
+      "era": "Sun & Moon"
+    },
+    {
+      "id": "sm7-booster-box",
+      "name": "Celestial Storm Booster Box",
+      "type": "booster-box",
+      "era": "Sun & Moon"
+    },
+    {
+      "id": "sm10-booster-box",
+      "name": "Unbroken Bonds Booster Box",
+      "type": "booster-box",
+      "era": "Sun & Moon"
+    },
+    {
+      "id": "sm11-booster-box",
+      "name": "Unified Minds Booster Box",
+      "type": "booster-box",
+      "era": "Sun & Moon"
+    },
+    {
+      "id": "sm12-booster-box",
+      "name": "Cosmic Eclipse Booster Box",
+      "type": "booster-box",
+      "era": "Sun & Moon"
+    },
+    {
+      "id": "sm75-etb",
+      "name": "Dragon Majesty Elite Trainer Box",
+      "type": "etb",
+      "era": "Sun & Moon"
+    }
+  ],
+  "series": {
+    "backfill": {
+      "source": "TCGplayer market price",
+      "available": true,
+      "base": 100,
+      "points": [
+        {
+          "date": "2026-09-25",
+          "equal": 100,
+          "value": 100,
+          "matched": 15
+        }
+      ],
+      "gaps": [
+        {
+          "from": "2025-09-25",
+          "to": "2026-09-25",
+          "note": "TCGCSV has not published the price archive. Only days we could read live are in this series. Missing days are not filled in."
+        }
+      ]
+    },
+    "live": {
+      "source": "eBay asking prices",
+      "available": true,
+      "withheld": null,
+      "base": 100,
+      "points": [
+        {
+          "date": "2026-08-18",
+          "equal": 100,
+          "value": 100,
+          "matched": 1
+        },
+        {
+          "date": "2026-08-19",
+          "from": "2026-08-18",
+          "equal": 100.7,
+          "value": 100.7,
+          "matched": 1,
+          "equalMovePct": 0.6717,
+          "valueMovePct": 0.6717
+        },
+        {
+          "date": "2026-08-20",
+          "from": "2026-08-19",
+          "equal": 100.8,
+          "value": 100.8,
+          "matched": 1,
+          "equalMovePct": 0.1597,
+          "valueMovePct": 0.1597
+        },
+        {
+          "date": "2026-08-21",
+          "from": "2026-08-20",
+          "equal": 100.8,
+          "value": 100.8,
+          "matched": 1,
+          "equalMovePct": 0.0084,
+          "valueMovePct": 0.0084
+        },
+        {
+          "date": "2026-08-22",
+          "from": "2026-08-21",
+          "equal": 101.5,
+          "value": 101.5,
+          "matched": 1,
+          "equalMovePct": 0.6695,
+          "valueMovePct": 0.6695
+        },
+        {
+          "date": "2026-08-26",
+          "from": "2026-08-22",
+          "equal": 101.5,
+          "value": 101.5,
+          "matched": 1,
+          "equalMovePct": -0.015,
+          "valueMovePct": -0.015
+        },
+        {
+          "date": "2026-09-21",
+          "from": "2026-08-26",
+          "equal": 101.9,
+          "value": 107.7,
+          "matched": 14,
+          "equalMovePct": 0.435,
+          "valueMovePct": 6.0889
+        },
+        {
+          "date": "2026-09-22",
+          "from": "2026-09-21",
+          "equal": 101.9,
+          "value": 108.9,
+          "matched": 15,
+          "equalMovePct": 0,
+          "valueMovePct": 1.1331
+        },
+        {
+          "date": "2026-09-23",
+          "from": "2026-09-22",
+          "equal": 101.9,
+          "value": 108.7,
+          "matched": 15,
+          "equalMovePct": 0,
+          "valueMovePct": -0.1737
+        },
+        {
+          "date": "2026-09-24",
+          "from": "2026-09-23",
+          "equal": 101.9,
+          "value": 108.5,
+          "matched": 15,
+          "equalMovePct": 0,
+          "valueMovePct": -0.2315
+        },
+        {
+          "date": "2026-09-25",
+          "from": "2026-09-24",
+          "equal": 101.9,
+          "value": 108.9,
+          "matched": 15,
+          "equalMovePct": 0,
+          "valueMovePct": 0.4074
+        }
+      ],
+      "gaps": [
+        {
+          "from": "2026-08-22",
+          "to": "2026-08-26",
+          "missingDays": 3,
+          "note": "No price was invented for the days in between."
+        },
+        {
+          "from": "2026-08-26",
+          "to": "2026-09-21",
+          "missingDays": 25,
+          "note": "No price was invented for the days in between."
+        }
+      ]
+    },
+    "break": "The TCGplayer series and the eBay series are separate. They are not spliced into one line."
+  }
+}
