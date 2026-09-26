@@ -79,6 +79,8 @@ const heat = await J("data/heat-report.json");
 const sg = await J("data/singles-prices.json");
 const radar = await J("data/release-radar.json");
 const der = await J("data/derived-insights.json");
+const { freshnessFromReport } = await import("./lib/freshness.mjs");
+const fresh = freshnessFromReport(await J("data/ppt/run-report.json"));
 
 // Email capture (retention hedge: iOS PWA push is unreliable, email is the
 // backstop). Posts to the LIVE Formspree waitlist — the same list newsletter
@@ -89,7 +91,7 @@ const CAPTURE_URL = BUTTONDOWN_USERNAME
   ? `https://buttondown.com/api/emails/embed-subscribe/${BUTTONDOWN_USERNAME}`
   : ((process.env.FORMSPREE_FORM_ID || "").trim() ? "https://formspree.io/f/" + process.env.FORMSPREE_FORM_ID.trim() : "");
 const captureBlock = `<div style="margin-top:26px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px">
-<b style="font-size:15px">Get the Morning Pulse in your inbox</b>
+<b style="font-size:15px">Get The Feed in your inbox</b>
 <div style="font-size:12px;color:var(--dim);margin:4px 0 10px">Same page, delivered every morning. No spam, unsubscribe anytime.</div>
 <form id="cap" style="display:flex;gap:8px">
 <input name="email" type="email" required placeholder="you@example.com" aria-label="email address" style="flex:1;min-width:0;background:var(--bg);border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:10px 12px;font:13px 'Sora,system-ui,sans-serif',sans-serif">
@@ -151,7 +153,7 @@ const upcoming = (radar?.items||radar?.releases||[]).filter(r=>{
   const d = r.date || r.releaseDate || ""; return d >= today;
 }).slice(0,4);
 
-let md = `# ☀️ Morning Pulse — ${today}\n*Written by the machine at ${new Date().toISOString().slice(11,16)} UTC. Every number below is live production data.*\n\n`;
+let md = `# The Feed — ${today}\n*${fresh.label}. Written by the machine at ${new Date().toISOString().slice(11,16)} UTC. Every number below is live production data.*\n\n`;
 md += `## The instrument panel\n- **${sp.products.length} sealed products tracked** · ${live.length} live · ${noMkt} no-active-market (honest) · run ${sp.updatedAt?.slice(0,16)}Z\n- **Heat reads:** ${heatLine}\n- **The Spread:** ${div?.counts?.compared??0} sealed cross-checked · **${sigs.length} signals** · ${div?.counts?.skipped??0} excluded with reasons\n\n`;
 if (sigs.length) {
   md += `## ⚡ Spread signals (eBay delivered asks vs TCGplayer market — recent sales + est. shipping)\n`;
@@ -253,7 +255,7 @@ const heatSection = (today >= HEAT_DEBUT && heatReads.length)
 const chaseRows = chases.map(c=>`<div class="row"><span style="display:flex;align-items:center;gap:10px">${cardImg(c.cardId)?`<img class="thumb" style="width:34px" src="${cardImg(c.cardId)}" alt="">`:""}<span>${c.name} <em>${c.setName}</em></span></span><span class="mono">$${c.priceMarket}</span></div>`).join("");
 const radarRows = upcoming.map(r=>`<div class="row"><span>${r.name||r.title}</span><span class="mono">${r.date||r.releaseDate}</span></div>`).join("");
 const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Sora:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-<title>Morning Pulse — ${today} · Catch'em</title><style>
+<title>The Feed — ${today} · Catch'em</title><style>
 ${rootCss()}
 *{box-sizing:border-box;margin:0}body{background:var(--bg);color:var(--txt);font:15px/1.55 'Sora,system-ui,sans-serif',system-ui,sans-serif;max-width:680px;margin:0 auto;padding:36px 20px 60px}
 .kicker{font:11px 'JetBrains Mono,ui-monospace,monospace',monospace;letter-spacing:.14em;color:var(--gold)}
@@ -274,9 +276,11 @@ footer{margin-top:30px;font:12px 'JetBrains Mono,ui-monospace,monospace',monospa
 .thumb{width:46px;height:auto;border-radius:6px;flex:none;border:1px solid rgba(255,255,255,.07)}.thumb.logo{width:56px;background:#0b0d14;padding:4px}.sigbody{flex:1}
 .idxhead{display:flex;justify-content:space-between;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin:0 0 16px}
 </style></head><body>
-<div class="kicker">CATCH'EM · MORNING PULSE</div>
-<h1>☀️ ${today} <span>#${today.replaceAll("-","")}</span></h1>
+<div class="kicker">CATCH'EM · THE FEED</div>
+<h1>The Feed <span>${today}</span></h1>
 <div class="byline">Written by the machine at ${new Date().toISOString().slice(11,16)} UTC · every number is live production data</div>
+<div class="byline" id="fresh" data-at="${fresh.at || ""}">${fresh.label}</div>
+<script id="fresh-stamp-script">document.addEventListener("DOMContentLoaded",function(){var el=document.getElementById("fresh");if(!el)return;var t=Date.parse(el.getAttribute("data-at")||"");if(!isFinite(t)||(Date.now()-t)/36e5>36)el.textContent="Data delayed";});</script>
 <div class="panel">
   <div class="stat"><b>${sp.products.length}</b><i>sealed products TRACKED</i></div>
   <div class="stat"><b>${sigs.length}</b><i>SPREAD SIGNALS</i></div>
@@ -310,7 +314,7 @@ ${upcoming.length?`<h2>Radar</h2>${radarRows}`:""}
 ${heatSection}
 ${captureBlock}
 ${heatSection ? "" : `<div class="calib">HEAT READS: day ${heatDays} of 8 clean days — Wyckoff states return ~Aug 26. We publish nothing false in the meantime.</div>`}
-<footer>Catch'em. Catch Feels. · prices: Catchem-data, eBay active listings (measured) · spread: internal instrument</footer>
+<footer>Catch'em. Catch Feels. · ${fresh.label} · prices: Catchem-data, eBay active listings (measured) · spread: internal instrument</footer>
 </body></html>`;
 await writeFile(join(ROOT,`research/pulse/${today}.html`), html);
 await writeFile(join(ROOT,`research/assets/the-pulse.html`), html);
@@ -476,6 +480,8 @@ const indexHistory = (ixHist?.entries ?? []).slice(-HIST_DEPTH).map(e => [e.date
 const feed = {
   didYouKnow: dyk,
   generatedAt: new Date().toISOString(), date: today,
+  title: `The Feed — ${today}`,
+  freshness: fresh,
   panel: { skusTracked: sp.products.length, signals: sigs.length,
            calibrationDay: Number(heatDays)||null, calibrationOf: 8, heatMode: heat?.mode||null },
   signals: sigs.slice(0,8).map(r=>({ id:r.id, name:r.name, imageUrl: sealedImg(sp.products.find(x=>x.id===r.id)||{}), spreadPct:r.spreadPct,
@@ -604,7 +610,7 @@ h2{font-family:"Syne",sans-serif;font-size:20px;margin:30px 0 10px}.foot{color:v
 
 console.log("✓ pulse-feed.json (app Ticker feed) written");
 console.log("✓ Pulse HTML edition written (dated + stable path)");
-console.log(`✓ Morning Pulse written: research/pulse/${today}.md`);
+console.log(`✓ The Feed written: research/pulse/${today}.md`);
 
 await import("./mint-cards.mjs");
 // mint-social-card's mint is a named export (same disconnected-CLI-guard

@@ -3,6 +3,7 @@
 // data. No mockup numbers, no illustrative states — if an instrument is
 // calibrating, the page says so. Output: research/assets/the-board.html
 import { rootCss } from "./lib/brand.mjs";
+import { freshnessFromReport } from "./lib/freshness.mjs";
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -24,6 +25,8 @@ const sealedImg = p => {
 };
 
 const sp = await J("data/sealed-prices.json");
+let runReport = null; try { runReport = await J("data/ppt/run-report.json"); } catch {}
+const fresh = freshnessFromReport(runReport);
 try { const ov = await J("data/image-overrides.json"); __imgOv = ov?.products || {}; } catch {}
 try { const cm = await J("data/crosscheck-id-map.json");
   for (const e of (cm.entries||[])) if (e.reviewed && !e.exclude && e.tcgPlayerId) __tcgIds[e.id] = e.tcgPlayerId;
@@ -85,7 +88,9 @@ tr:last-child td{border-bottom:0}
 footer{max-width:1080px;margin:22px auto 0;padding:0 24px;font:12px 'JetBrains Mono,ui-monospace,monospace',monospace;color:var(--dim)}
 </style></head><body>
 <header><h1>The <em>Board</em></h1>
-<div class="tag">Every sealed product. Two markets. Honest instruments. — Catch'em</div></header>
+<div class="tag">Every sealed product. Two markets. Honest instruments. — Catch'em</div>
+<div class="tag" id="fresh" data-at="${fresh.at || ""}">${fresh.label}</div>
+<script id="fresh-stamp-script">document.addEventListener("DOMContentLoaded",function(){var el=document.getElementById("fresh");if(!el)return;var t=Date.parse(el.getAttribute("data-at")||"");if(!isFinite(t)||(Date.now()-t)/36e5>36)el.textContent="Data delayed";});</script></header>
 <div class="calib"><span class="lbl">HEAT READS CALIBRATING</span><div class="bar"><div class="fill"></div></div><span class="lbl">day ${heatDay} of 8 · live ~Aug 26</span></div>
 <div class="stats"><span><b>${sp.products.length}</b> sealed products tracked</span><span><b>${rows.length}</b> live</span><span><b>${(div.rows||[]).filter(r=>r.signal).length}</b> spread signals</span><span>run <b>${sp.updatedAt?.slice(0,16)}Z</b></span></div>
 <main><table><thead><tr><th>Product</th><th>Type</th><th>Ask Median</th><th>Active Listings</th><th>Spread vs TCG</th><th>Status</th></tr></thead>
