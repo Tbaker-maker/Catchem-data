@@ -7,6 +7,10 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { indexLevel, offTcgEra, sealedPremium, mergeByDate } from "../lib/instruments.mjs";
 import { runTcgcsvCatalogTests } from "./tcgcsv-catalog.test.mjs";
+import { runPptPlanTests } from "./ppt-plan.test.mjs";
+import { runStressTests } from "./stress.test.mjs";
+import { enterIndex } from "../lib/index-baskets.mjs";
+import { searchItems } from "../lib/search-rank.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const J = async (p) => JSON.parse(await readFile(join(ROOT, p), "utf-8"));
@@ -106,6 +110,41 @@ console.log("── tcgcsv catalog ──");
 {
   const n = runTcgcsvCatalogTests();
   t("tcgcsv catalog suite", n === 0, `${n} failed`);
+}
+
+console.log("── ppt plan ──");
+{
+  const n = await runPptPlanTests();
+  t("ppt plan suite", n === 0, `${n} failed`);
+}
+
+console.log("── index stress ──");
+{
+  const n = runStressTests();
+  t("stress suite", n === 0, `${n} failed`);
+}
+
+console.log("── chain-linked entry ──");
+{
+  const prices = new Map([
+    ["a", new Map([["2026-03-31", 100], ["2026-04-01", 110]])],
+    ["b", new Map([["2026-04-01", 50]])],
+  ]);
+  const elig = new Map([["2026-03-31", new Set(["a"])], ["2026-04-01", new Set(["a", "b"])]]);
+  const entered = enterIndex(["2026-03-31", "2026-04-01"], prices, elig, ["a", "b"]);
+  t("new constituent does not jump a chain-linked index", entered.points[1].equal === 110 && entered.points[1].entered === 1, JSON.stringify(entered.points[1]));
+}
+
+console.log("── search rank ──");
+{
+  const rows = [
+    { id: "a", name: "Umbreon VMAX", set: "Evolving Skies", number: "215", kind: "single", aliases: ["moonbreon"], price: 1 },
+    { id: "b", name: "Krabby", set: "Base", kind: "single", aliases: [], price: 2 },
+    { id: "c", name: "151 Elite Trainer Box", set: "151", kind: "sealed", subtype: "etb", aliases: ["etb", "151"], price: 3 },
+  ];
+  t("moonbreon alias", searchItems(rows, "moonbreon")[0]?.id === "a");
+  t("bb is not inside Krabby", searchItems(rows, "bb").length === 0);
+  t("151 etb is sealed", searchItems(rows, "151 etb")[0]?.id === "c");
 }
 
 console.log(`\n${pass} passed · ${fail} failed`);
