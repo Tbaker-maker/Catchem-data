@@ -195,5 +195,16 @@ console.log("── ppt paths ──");
   t("ppt path suite", n === 0, `${n} failed`);
 }
 
+console.log("── feature suites ──");
+{
+  const { readdir } = await import("node:fs/promises");
+  const names = (await readdir(new URL(".", import.meta.url))).filter((n) => n.endsWith(".suite.mjs")).sort();
+  for (const name of names) {
+    const mod = await import("./" + name);
+    const n = typeof mod.run === "function" ? await mod.run() : 1;
+    t(name, n === 0, `${n} failed`);
+  }
+}
+
 console.log(`\n${pass} passed · ${fail} failed`);
 if (fail) process.exit(1);
