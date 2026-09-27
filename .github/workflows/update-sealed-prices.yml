@@ -104,6 +104,10 @@ jobs:
         # the price commit that follows.
         continue-on-error: true
         run: node scripts/compute-heat-check.mjs
+      - name: Set lines
+        # Sealed line and chase line, never averaged. continue-on-error so a thin tape cannot drop the price commit.
+        continue-on-error: true
+        run: node scripts/compute-set-lines.mjs
       - name: TCGplayer market history (TCGCSV daily append)
         # Appends today's live TCGCSV market price to each matched product's
         # file in data/history/tcgplayer-market/. Never rewrites earlier days;
