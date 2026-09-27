@@ -268,7 +268,7 @@ const radarRows = upcoming.map(r=>`<div class="row"><span>${r.name||r.title}</sp
 const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Sora:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <title>The Feed — ${today} · Catch'em</title><style>
 ${rootCss()}
-*{box-sizing:border-box;margin:0}body{background:var(--bg);color:var(--txt);font:15px/1.55 'Sora,system-ui,sans-serif',system-ui,sans-serif;max-width:680px;margin:0 auto;padding:36px 20px 60px}
+*{box-sizing:border-box;margin:0}html,body{overflow-x:hidden}body{background:var(--bg);color:var(--txt);font:15px/1.55 'Sora,system-ui,sans-serif',system-ui,sans-serif;max-width:680px;margin:0 auto;padding:36px 20px 60px}
 .kicker{font:11px 'JetBrains Mono,ui-monospace,monospace',monospace;letter-spacing:.14em;color:var(--gold)}
 h1{font-size:34px;letter-spacing:-.5px;margin:6px 0 2px}h1 span{color:var(--dim);font-weight:400}
 .byline{color:var(--dim);font-size:13px;margin-bottom:22px}
@@ -284,7 +284,7 @@ h2{font-size:13px;font-family:'JetBrains Mono',ui-monospace,monospace',monospace
 .row em{color:var(--dim);font-style:normal;font-size:12px}.mono{font:13px 'JetBrains Mono,ui-monospace,monospace',monospace;color:var(--txt);white-space:nowrap}
 .calib{margin-top:26px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:11px 14px;font:12px 'JetBrains Mono,ui-monospace,monospace',monospace;color:var(--dim)}
 footer{margin-top:30px;font:12px 'JetBrains Mono,ui-monospace,monospace',monospace;color:var(--dim)}
-.thumb{width:46px;height:auto;border-radius:6px;flex:none;border:1px solid rgba(255,255,255,.07)}.thumb.logo{width:56px;background:#0b0d14;padding:4px}.sigbody{flex:1}
+.thumb{width:46px;max-width:46px;min-width:0;height:auto;border-radius:6px;flex:none;border:1px solid rgba(255,255,255,.07)}.thumb.logo{width:56px;max-width:56px;min-width:0;height:auto;background:#0b0d14;padding:4px}.sig{min-width:0;max-width:100%}.sigbody{flex:1;min-width:0}
 .idxhead{display:flex;justify-content:space-between;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin:0 0 16px}
 </style></head><body>
 <div class="kicker">CATCH'EM · THE FEED</div>
