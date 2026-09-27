@@ -53,7 +53,7 @@ async function page(url, anchors, name) {
 
 console.log("── 1 · public site (static, server-rendered) ──");
 await page(SITE + "/", ["Catch'em", "email"], "landing");
-await page(SITE + "/methodology", ['id="deal-zone"', 'id="prices"', "Buy Pressure"], "methodology");
+await page(SITE + "/methodology", ['id="deal-zone"', 'id="prices"'], "methodology");
 await page(SITE + "/p/sv9-booster-box", ["Journey Together Booster Box", "Clean floor", "Deal Zone"], "lander sv9-bb");
 await page(SITE + "/board", ["The Board"], "board");
 

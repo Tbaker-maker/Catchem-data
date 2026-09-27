@@ -51,7 +51,7 @@ const tr = ({p,s}) => `
   <td><span class="pill">${p.subtype?.replace("-"," ").toUpperCase()||""}</span>${(der.lifecycle&&der.lifecycle[p.setId])?`<span class="pill" title="${der.lifecycle[p.setId].phase} (est.) · ${der.lifecycle[p.setId].legalTag||""}" style="margin-left:4px">${der.lifecycle[p.setId].tag} ${der.lifecycle[p.setId].ageMonths}mo${der.lifecycle[p.setId].standardLegal?" ⚖":""}</span>`:""}</td>
   <td class="num">${money(p.priceMedian)}</td>
   <td class="num">${p.listingCount??"—"}</td>
-  <td>${s ? (s.signal
+  <td>${s && typeof s.spreadPct === "number" ? (s.signal
       ? `<span class="spread sig">${s.spreadPct>0?"+":""}${s.spreadPct}%</span>`
       : `<span class="spread ok">${s.spreadPct>0?"+":""}${s.spreadPct}%</span>`)
     : `<span class="spread na">—</span>`}</td>
@@ -95,7 +95,7 @@ footer{max-width:1080px;margin:22px auto 0;padding:0 24px;font:12px 'JetBrains M
 <div class="stats"><span><b>${sp.products.length}</b> sealed products tracked</span><span><b>${rows.length}</b> live</span><span><b>${(div.rows||[]).filter(r=>r.signal).length}</b> spread signals</span><span>run <b>${sp.updatedAt?.slice(0,16)}Z</b></span></div>
 <main><table><thead><tr><th>Product</th><th>Type</th><th>Ask Median</th><th>Active Listings</th><th>Spread vs TCG</th><th>Status</th></tr></thead>
 <tbody>${rows.map(tr).join("")}</tbody></table></main>
-<footer>Prices: Catchem-data, eBay active listings (measured) · Spread: vs TCG-side ask (PPT), internal instrument · Buy Pressure &amp; heat states arrive with calibration · Generated ${new Date().toISOString().slice(0,16)}Z · Catch'em. Catch Feels.</footer>
+<footer>Prices: Catchem-data, eBay active listings (measured) · Spread column stays blank while that percent is off the public file · Demand and heat states arrive with calibration · Generated ${new Date().toISOString().slice(0,16)}Z · Catch'em. Catch Feels.</footer>
 </body></html>`;
 await writeFile(join(ROOT,"research/assets/the-board.html"), html);
 console.log("✓ The Board: " + rows.length + " live rows, " + (div.rows||[]).filter(r=>r.signal).length + " signals rendered");

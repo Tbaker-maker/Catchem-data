@@ -242,7 +242,7 @@ const { HEAT_DEBUT, DEPTH_DEBUT, heatPlain, depthPlain } = await import("./lib/i
 const depthReadOf = r => (today >= DEPTH_DEBUT && depthPlain[r.flow])
   ? `${depthPlain[r.flow].label} — ${depthPlain[r.flow].plain}`
   : r.read;
-const deepRows = (der?.depthReads??[]).map(r=>`<div class="row"><span>${r.tag} ${r.name} <em>${depthReadOf(r)}</em></span><span class="mono">$${r.price} · ${r.listings}L</span></div>`).join("") + `<div class="foot">Depth read = Active Listings (measured) × flow (Buy Pressure est.) · unlocks at 3 clean days per product.</div>`;
+const deepRows = (der?.depthReads??[]).map(r=>`<div class="row"><span>${r.tag} ${r.name} <em>${depthReadOf(r)}</em></span><span class="mono">$${r.price} · ${r.listings}L</span></div>`).join("") + `<div class="foot">Depth read = Active Listings (measured) × flow (Demand est.) · unlocks at 3 clean days per product.</div>`;
 // Blocked/quarantined products never headline here either: every other
 // editorial list above is filtered through __blk, and this one was not.
 const heatReads = (Array.isArray(heat?.reads) ? heat.reads : []).filter(r => !__blk.blocked(r.id));
@@ -537,7 +537,7 @@ const feed = {
   chases: chases.map(c=>({ cardId:c.cardId, name:c.name, set:c.setName, market:c.priceMarket, imageUrl: cardImg(c.cardId),
     provenance:c.provenance, class:"VERIFIED" })),
   keepsShowingUp: keepsFeed,
-  disclosure: "Buy Pressure is estimated from listing activity — not reported sales. Active Listings are measured.",
+  disclosure: "Demand is estimated from listing activity — not reported sales. Active Listings are measured.",
   shippingNote: "Prices include shipping and exclude tax. eBay figures are delivered totals — item plus postage wherever a listing states it. TCGplayer figures come to us without shipping, so comparisons between the two are not yet like-for-like and we flag them rather than estimate the difference.",
   products: catalog,
   history,

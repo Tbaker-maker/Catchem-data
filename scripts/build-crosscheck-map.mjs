@@ -124,8 +124,7 @@ async function main() {
       tcgPlayerId: best.c.tcgPlayerId, matchedName: best.c.name,
       providerUpdatedAt: best.c.updatedAt ?? null,
       matchConfidence: best.s,
-      ...(ourMedian != null && best.c.unopenedPrice != null
-        ? { eBayMedian: ourMedian, priceRatio: Math.round((best.c.unopenedPrice / ourMedian) * 100) / 100 } : {}),
+      ...(ourMedian != null ? { eBayMedian: ourMedian } : {}),
     });
     console.log(`  ${product.id.padEnd(26)} ${best.s.toUpperCase().padEnd(6)} → ${best.c.name}`);
   }

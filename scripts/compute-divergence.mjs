@@ -105,6 +105,10 @@ rows.push({ id: p.id, spreadBasis, publishBlocked: (p.publishBlock || q.blocked(
                   tcg: `${tcgSource}, ${t.providerUpdatedAt || tcg.updatedAt?.split("T")[0]}` } });
 }
 rows.sort((a, b) => Math.abs(b.spreadPct) - Math.abs(a.spreadPct));
+for (const r of rows.slice(0, 5)) console.log(`  ${r.signal ? "⚡" : "  "} ${String(r.spreadPct).padStart(6)}%  ${r.name.slice(0, 40)}`);
+// spreadPct next to ebayAskMedian recreates the provider price. The signal
+// boolean stays. The percent does not leave this process.
+for (const r of rows) delete r.spreadPct;
 // ZERO-RESULT SAFETY, the same law sealed prices already live under.
 // On 2026-08-23 the PPT daily credit pool was exhausted, so the crosscheck
 // returned 0 live of 137 SKUs, so this compared NOTHING and wrote an empty
@@ -118,6 +122,7 @@ let prior = null;
 try { prior = JSON.parse(await readFile(join(DATA, "divergence-report.json"), "utf-8")); } catch {}
 const priorRows = prior?.rows?.length ?? 0;
 if (!rows.length && priorRows > 0) {
+  for (const r of prior.rows || []) delete r.spreadPct;
   await writeFile(join(DATA, "divergence-report.json"), JSON.stringify({
     ...prior,
     dataStatus: "stale-upstream",
@@ -134,4 +139,3 @@ await writeFile(join(DATA, "divergence-report.json"), JSON.stringify({
   counts: { compared: rows.length, signals: rows.filter(r => r.signal).length, skipped: skipped.length },
   rows, skipped }, null, 2) + "\n");
 console.log(`✓ The Spread: ${rows.length} compared, ${rows.filter(r=>r.signal).length} signals`);
-for (const r of rows.slice(0, 5)) console.log(`  ${r.signal?"⚡":"  "} ${String(r.spreadPct).padStart(6)}%  ${r.name.slice(0,40)}`);

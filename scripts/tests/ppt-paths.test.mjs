@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { loadMarketHistory } from "../lib/market-history.mjs";
 import { readCrosscheck } from "../lib/ppt-paths.mjs";
-import { buildRunReport, findPptPriceKeys, isRawPublicPath, reportLine, safetyVerdict } from "../lib/run-report.mjs";
+import { buildRunReport, findBackcalcLeaks, findPptPriceKeys, isRawPublicPath, reportLine, safetyVerdict } from "../lib/run-report.mjs";
 import { pushPrivate } from "../push-private-ppt.mjs";
 
 let fail = 0;
@@ -42,6 +42,9 @@ export async function runPptPathTests() {
   t("a raw eval sample is a leak", isRawPublicPath("research/eval-samples/ppt-sealed-RAW.json") && safetyVerdict({ push: { expected: false }, tracked: ["research/eval-samples/ppt-sealed-RAW.json"] }).ok === false);
   t("a public json price field is a leak", findPptPriceKeys({ rows: [{ unopenedPrice: 1 }] }).length === 1 && safetyVerdict({ push: { expected: false }, tracked: [], fieldHits: ["data/divergence-report.json.rows[0].tcgMarket"] }).ok === false);
   t("spread percent is not a ppt price field", findPptPriceKeys({ rows: [{ spreadPct: 1.2, id: "a" }] }).length === 0);
+  t("spread percent alone is not a back-calc", findBackcalcLeaks({ rows: [{ spreadPct: 1.2, id: "a" }] }).length === 0);
+  t("priceRatio is a back-calc", findBackcalcLeaks({ entries: [{ priceRatio: 1 }] }).length === 1);
+  t("spread next to an ask median is a back-calc", findBackcalcLeaks({ rows: [{ spreadPct: 1, ebayAskMedian: 2 }] }).length === 1 && findBackcalcLeaks({ entries: [{ spreadPct: 1, eBayMedian: 2 }] }).length === 1);
   t("the private history mount is not a public leak", !isRawPublicPath("data/history/ppt-sealed-private/box.json"));
   t("the summary line names the sha", reportLine(report).includes("abc123") && reportLine(report).includes("history yes"));
 
@@ -55,6 +58,12 @@ export async function runPptPathTests() {
   const safetyHead = live.slice(live.lastIndexOf("- name: PPT safety check"), safetyAt);
   t("the safety check is not continue-on-error", !safetyHead.includes("continue-on-error"));
   t("both commits add the run report", live.split("data/ppt/run-report.json").length >= 3);
+  const crossSrc = await readFile(new URL("../fetch-sealed-crosscheck.mjs", import.meta.url), "utf8");
+  const writes = [...crossSrc.matchAll(/writeFile\(([^)]*)\)/g)].map((m) => m[1]);
+  t("crosscheck writes only the private folder", writes.length === 2 && writes.every((w) => w.includes("OUT")) && crossSrc.includes('join(dirname(DATA), "ppt-raw-private", "crosscheck")') && !/writeFile\(\s*join\(\s*DATA/.test(crossSrc));
+  const ignore = await readFile(new URL("../../.gitignore", import.meta.url), "utf8");
+  t("private crosscheck paths are gitignored", ignore.includes("ppt-raw-private/") && ignore.includes("data/sealed-crosscheck.json") && ignore.includes("data/crosscheck-history.json"));
+  t("the daily commits do not add the private crosscheck", !live.includes("data/sealed-crosscheck.json") && !live.includes("ppt-raw-private"));
 
   const pushed = await pushPrivate({
     token: "not-a-real-token-value",

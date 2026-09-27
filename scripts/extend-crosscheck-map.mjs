@@ -92,7 +92,7 @@ for (const product of products) {
     tcgPlayerId: best.c.tcgPlayerId, matchedName: best.c.name,
     providerUpdatedAt: best.c.updatedAt ?? null,
     matchConfidence: best.confHigh ? "high" : "medium",
-    ...(best.ratio != null ? { eBayMedian: medianOf(product.id), priceRatio: Math.round(best.ratio * 100) / 100 } : {}),
+    ...(best.ratio != null ? { eBayMedian: medianOf(product.id) } : {}),
   };
   if (best.confHigh && best.ratioOk) {
     entry.reviewed = true;
@@ -101,12 +101,12 @@ for (const product of products) {
   } else {
     entry.reviewed = false;
     entry.exclude = entry.matchConfidence !== "low"; // block non-low HOLDs from the fetch gate
-    entry.holdReason = !best.confHigh ? "name confidence below high" : `ratio ${entry.priceRatio ?? "n/a"} outside 0.6-1.6`;
-    holds.push({ id: product.id, reason: entry.holdReason, theirs: best.c.name, ratio: entry.priceRatio ?? null });
+    entry.holdReason = !best.confHigh ? "name confidence below high" : "ratio outside 0.6-1.6";
+    holds.push({ id: product.id, reason: entry.holdReason, theirs: best.c.name });
   }
   map.entries.push(entry);
   added++;
-  console.log(`  ${product.id.padEnd(26)} ${entry.reviewed ? "AUTO" : "HOLD"} → ${best.c.name}${entry.priceRatio ? " r" + entry.priceRatio : ""}`);
+  console.log(`  ${product.id.padEnd(26)} ${entry.reviewed ? "AUTO" : "HOLD"} → ${best.c.name}`);
 }
 
 map.classification = { ...(map.classification || {}),

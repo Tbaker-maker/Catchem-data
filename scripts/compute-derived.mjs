@@ -116,14 +116,14 @@ for (const [setName, prods] of bySet) {
 // horizon + house-thesis links (research/house-theses.md). Never advice.
 const TAXONOMY = [
   { k:["reprint","reprinted","back in print","restock wave","second wave","print run"],
-    cls:"bullish", horizon:"long", thesis:"RT-1", note:"reprint = short-term supply, long-term demand (RT-1)" },
+    cls:"HEAT", horizon:"long", thesis:"RT-1", note:"reprint = short-term supply, long-term demand (RT-1)" },
   { k:["tin","bundle","collection box","injection"], cls:"mixed", horizon:"short", thesis:"RT-2",
     note:"supply injection — absorb-or-stall watch (RT-2)" },
-  { k:["rotation","rotates","regulation mark"], cls:"bearish", horizon:"short", thesis:null,
+  { k:["rotation","rotates","regulation mark"], cls:"COOL", horizon:"short", thesis:null,
     note:"format rotation — competitive demand shifts off rotated sets" },
-  { k:["anniversary","30th","celebration","special set"], cls:"bullish", horizon:"long", thesis:null,
+  { k:["anniversary","30th","celebration","special set"], cls:"HEAT", horizon:"long", thesis:null,
     note:"franchise moment — demand catalyst" },
-  { k:["ban","errata","recall"], cls:"bearish", horizon:"short", thesis:null, note:"negative shock class" },
+  { k:["ban","errata","recall"], cls:"COOL", horizon:"short", thesis:null, note:"negative shock class" },
   { k:["grading price","psa price","fee increase","turnaround"], cls:"mixed", horizon:"short", thesis:null,
     note:"grading-economics shift — premium math moves" },
 ];
@@ -144,7 +144,7 @@ if (digestText) {
 
 
 // ── (d) DEPTH READS — RT-3 matrix on the deepest markets ─────────────────
-// Active Listings (measured) × listing-delta flow (Buy Pressure est.).
+// Active Listings (measured) × listing-delta flow (Demand est.).
 // Reads unlock per-product at 3+ clean snapshot days; calibrating until.
 const CLEAN_CUT = "2026-08-18";
 // Union with the durable quarantine file: the fetch rebuild wipes
@@ -173,7 +173,7 @@ const depthReads = [...liveList].sort((a,b)=>b.listingCount-a.listingCount).slic
   if (f.state==="calibrating") { read = `flow calibrating — day ${f.days}/3`; tag = "⏳"; }
   else if (hiS && f.state==="building") { read = "pile-up — supply outpacing demand est. (RT-3)"; tag = "⚠"; }
   else if (hiS && f.state==="draining") { read = "deep & moving — churn; historically reversal-prone (RT-3)"; tag = "🌊"; }
-  else if (hiS) { read = "holding pattern — deep, flow flat"; tag = "⏸"; }
+  else if (hiS) { read = "steady shelf — deep, flow flat"; tag = "⏸"; }
   else if (f.state==="draining") { read = "thinning fast — scarcity forming"; tag = "📉"; }
   else if (f.state==="building") { read = "restocking or interest fading — context decides"; tag = "❓"; }
   else { read = "quiet depth"; tag = "·"; }
@@ -222,7 +222,7 @@ const supplyBySet = {};
 for (const p of liveList) supplyBySet[p.setId] = (supplyBySet[p.setId]||0) + (p.listingCount||0);
 const setNameBy = {}; for (const p of sp.products) if (p.setId && p.set) setNameBy[p.setId] = p.set;
 const reprintSets = new Set();
-for (const e of (clog.entries||[])) if (e.class==="bullish" && /reprint|print run|back in print|restock/.test(e.trigger||"")) {
+for (const e of (clog.entries||[])) if ((e.class==="HEAT" || e.class==="bullish") && /reprint|print run|back in print|restock/.test(e.trigger||"")) {
   for (const sid of Object.keys(setNameBy)) if ((e.context||"").includes(setNameBy[sid])) reprintSets.add(sid);
 }
 const EOL_MO = 30;

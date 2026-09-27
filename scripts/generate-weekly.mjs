@@ -52,7 +52,7 @@ md += `\n## SLOT-8 · Quiet movers (moving without headlines)\n`;
 if (der?.narrative?.quietMovers?.length) {
   for (const q of der.narrative.quietMovers.slice(0,5)) md += `- ${q.flagship}: $${q.price}${q.spreadPct!=null?` (asking ${Math.abs(q.spreadPct)}% ${q.spreadPct>0?"over":"under"} TCG-side)`:""} — zero coverage found\n`;
 } else md += `- SLOT UNFILLED: narrative.quietMovers missing/empty — do not publish this section.\n`;
-md += `\n*Feeds Cold-issue sections directly. Buy Pressure reads: see heat-report.*\n`;
+md += `\n*Feeds Cold-issue sections directly. Demand reads: see heat-report.*\n`;
 await mkdir(join(ROOT,"research/weekly"),{recursive:true});
 const out = DRY ? `research/weekly/DRYRUN-${days[days.length-1]}.md` : `research/weekly/${wk}.md`;
 await writeFile(join(ROOT,out), md);

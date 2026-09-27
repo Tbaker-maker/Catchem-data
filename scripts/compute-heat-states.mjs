@@ -118,7 +118,7 @@ async function main() {
   const supplyDays = new Set(snapshots.map(s => s.date)).size;
   const report = {
     generatedAt: new Date().toISOString(),
-    method: "Wyckoff-state reads, weekly lens (the 3-day depth read is the short lens; same history). Five states: heating/cooling/quiet-tightening/supply-into-strength/ranging. Demand = Buy Pressure (est. from listing activity, not reported sales). Active Listings measured.",
+    method: "Wyckoff-state reads, weekly lens (the 3-day depth read is the short lens; same history). Five states: heating/cooling/quiet-tightening/supply-into-strength/ranging. Demand = listing-count flow (est. from listing activity, not reported sales). Active Listings measured.",
     mode: supplyDays >= 8 ? "dual-signal" : `price-only (supply history: day ${supplyDays} of 8 needed)`,
     counts: { markup: reads.filter(r=>r.state==="markup").length, markdown: reads.filter(r=>r.state==="markdown").length,
               accumulation: reads.filter(r=>r.state==="accumulation").length, distribution: reads.filter(r=>r.state==="distribution").length, ranging: reads.filter(r=>r.state==="ranging").length,
