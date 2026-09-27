@@ -814,7 +814,7 @@ const LENSES = [
         pick: () => eligibleAll.map(r => ({ r, p: prodById.get(r.id) }))
                       .filter(x => x.p?.priceFloorClean && x.p?.priceMedian && x.p.listingCount >= 10)
                       .sort((a,b)=>(b.p.priceMedian/b.p.priceFloorClean)-(a.p.priceMedian/a.p.priceFloorClean))[0]?.r,
-        why: r => { const p = prodById.get(r.id); return `Cheapest believable listing $${p.priceFloorClean.toLocaleString("en-US")}, middle of the market $${p.priceMedian.toLocaleString("en-US")}. A floor that far below the median usually rewards patience.`; } },
+        why: r => { const p = prodById.get(r.id); return `Cheapest believable listing $${p.priceFloorClean.toLocaleString("en-US")}, middle of the market $${p.priceMedian.toLocaleString("en-US")}. The lowest ask sits far below the median.`; } },
       { id: "zone", label: "most room in a face-to-face deal",
         // A wide PERCENTAGE on a $5 pack is not a story — $1.50 of room is not a
         // negotiation. Headlines need enough absolute room to matter.

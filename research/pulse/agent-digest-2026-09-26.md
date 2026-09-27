@@ -80,7 +80,7 @@ Gaps in what we watch:
 
 ## Where today's story goes
 - **X** — "Chilling Reign listings moved -17.7% while its print window closes."
-- **YouTube** — Celebrations Ultra Premium Collection — "Cheapest believable listing $215, middle of the market $1,339.25. A floor that far below the median usually rewards patience."
+- **YouTube** — Celebrations Ultra Premium Collection — "Cheapest believable listing $215, middle of the market $1,339.25. The lowest ask sits far below the median."
 - **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 100.7."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.

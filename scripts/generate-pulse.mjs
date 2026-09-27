@@ -79,8 +79,9 @@ const heat = await J("data/heat-report.json");
 const sg = await J("data/singles-prices.json");
 const radar = await J("data/release-radar.json");
 const der = await J("data/derived-insights.json");
-const { freshnessFromReport } = await import("./lib/freshness.mjs");
+const { freshnessFromReport, formatPt } = await import("./lib/freshness.mjs");
 const fresh = freshnessFromReport(await J("data/ppt/run-report.json"));
+const writtenAt = formatPt(fresh.at) || fresh.label;
 
 // Email capture (retention hedge: iOS PWA push is unreliable, email is the
 // backstop). Posts to the LIVE Formspree waitlist — the same list newsletter
@@ -153,7 +154,7 @@ const upcoming = (radar?.items||radar?.releases||[]).filter(r=>{
   const d = r.date || r.releaseDate || ""; return d >= today;
 }).slice(0,4);
 
-let md = `# The Feed — ${today}\n*${fresh.label}. Written by the machine at ${new Date().toISOString().slice(11,16)} UTC. Every number below is live production data.*\n\n`;
+let md = `# The Feed — ${today}\n*${fresh.label}. Written by the machine at ${writtenAt}. Every number below is live production data.*\n\n`;
 md += `## The instrument panel\n- **${sp.products.length} sealed products tracked** · ${live.length} live · ${noMkt} no-active-market (honest) · run ${sp.updatedAt?.slice(0,16)}Z\n- **Heat reads:** ${heatLine}\n- **The Spread:** ${div?.counts?.compared??0} sealed cross-checked · **${sigs.length} signals** · ${div?.counts?.skipped??0} excluded with reasons\n\n`;
 if (sigs.length) {
   md += `## ⚡ Spread signals (eBay delivered asks vs TCGplayer market — recent sales + est. shipping)\n`;
@@ -289,7 +290,7 @@ footer{margin-top:30px;font:12px 'JetBrains Mono,ui-monospace,monospace',monospa
 </style></head><body>
 <div class="kicker">CATCH'EM · THE FEED</div>
 <h1>The Feed <span>${today}</span></h1>
-<div class="byline">Written by the machine at ${new Date().toISOString().slice(11,16)} UTC · every number is live production data</div>
+<div class="byline">Written by the machine at ${writtenAt} · every number is live production data</div>
 <div class="byline" id="fresh" data-at="${fresh.at || ""}">${fresh.label}</div>
 <script id="fresh-stamp-script">document.addEventListener("DOMContentLoaded",function(){var el=document.getElementById("fresh");if(!el)return;var t=Date.parse(el.getAttribute("data-at")||"");if(!isFinite(t)||(Date.now()-t)/36e5>36)el.textContent="Data delayed";});</script>
 <div class="panel">
