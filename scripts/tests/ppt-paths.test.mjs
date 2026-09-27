@@ -41,6 +41,7 @@ export async function runPptPathTests() {
   t("a skipped push with a clean tree is ok", safetyVerdict({ push: { expected: false, pushed: false }, tracked: ["data/sealed-prices.json"] }).ok === true);
   t("a raw eval sample is a leak", isRawPublicPath("research/eval-samples/ppt-sealed-RAW.json") && safetyVerdict({ push: { expected: false }, tracked: ["research/eval-samples/ppt-sealed-RAW.json"] }).ok === false);
   t("a public json price field is a leak", findPptPriceKeys({ rows: [{ unopenedPrice: 1 }] }).length === 1 && safetyVerdict({ push: { expected: false }, tracked: [], fieldHits: ["data/divergence-report.json.rows[0].tcgMarket"] }).ok === false);
+  t("naming the provider price key in a schema is a leak", findPptPriceKeys({ rowRequires: ["id", "tcgMarket"] }).length === 1 && findPptPriceKeys({ rowRequires: ["tcgListings"] }).length === 0);
   t("spread percent is not a ppt price field", findPptPriceKeys({ rows: [{ spreadPct: 1.2, id: "a" }] }).length === 0);
   t("spread percent alone is not a back-calc", findBackcalcLeaks({ rows: [{ spreadPct: 1.2, id: "a" }] }).length === 0);
   t("priceRatio is a back-calc", findBackcalcLeaks({ entries: [{ priceRatio: 1 }] }).length === 1);
@@ -64,6 +65,8 @@ export async function runPptPathTests() {
   const ignore = await readFile(new URL("../../.gitignore", import.meta.url), "utf8");
   t("private crosscheck paths are gitignored", ignore.includes("ppt-raw-private/") && ignore.includes("data/sealed-crosscheck.json") && ignore.includes("data/crosscheck-history.json"));
   t("the daily commits do not add the private crosscheck", !live.includes("data/sealed-crosscheck.json") && !live.includes("ppt-raw-private"));
+  const pulseSrc = await readFile(new URL("../generate-pulse.mjs", import.meta.url), "utf8");
+  t("the feed logo cannot force a wide page", pulseSrc.includes("max-width:56px") && pulseSrc.includes("min-width:0") && pulseSrc.includes("overflow-x:hidden"));
 
   const pushed = await pushPrivate({
     token: "not-a-real-token-value",

@@ -62,6 +62,10 @@ export function isRawPublicPath(path) {
 export const PPT_PRICE_KEYS = new Set(["tcgMarket", "unopenedPrice", "pptMarket"]);
 
 export function findPptPriceKeys(value, path = "$", hits = []) {
+  if (typeof value === "string") {
+    if (PPT_PRICE_KEYS.has(value)) hits.push(path);
+    return hits;
+  }
   if (!value || typeof value !== "object") return hits;
   if (Array.isArray(value)) {
     for (let i = 0; i < value.length; i += 1) findPptPriceKeys(value[i], `${path}[${i}]`, hits);
