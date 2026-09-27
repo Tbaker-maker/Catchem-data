@@ -140,6 +140,10 @@ jobs:
         # throw away the price commit that follows.
         continue-on-error: true
         run: node scripts/compute-stress.mjs
+      - name: Weekly Read
+        # Four-part outline. continue-on-error so a missing section cannot drop the price commit.
+        continue-on-error: true
+        run: node scripts/compute-weekly-read.mjs
       - name: Write PPT run report
         # Counts only. continue-on-error so a missing log cannot drop the price commit.
         continue-on-error: true
