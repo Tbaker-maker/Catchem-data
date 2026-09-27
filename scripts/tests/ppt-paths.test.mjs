@@ -65,7 +65,7 @@ export async function runPptPathTests() {
   const ignore = await readFile(new URL("../../.gitignore", import.meta.url), "utf8");
   t("private crosscheck paths are gitignored", ignore.includes("ppt-raw-private/") && ignore.includes("data/sealed-crosscheck.json") && ignore.includes("data/crosscheck-history.json"));
   t("the daily commits do not add the private crosscheck", !live.includes("data/sealed-crosscheck.json") && !live.includes("ppt-raw-private"));
-  const pulseSrc = await readFile(new URL("../generate-pulse.mjs", import.meta.url), "utf8");
+  const pulseSrc = await readFile(new URL("../lib/public-chrome.mjs", import.meta.url), "utf8");
   t("the feed logo cannot force a wide page", pulseSrc.includes("max-width:56px") && pulseSrc.includes("min-width:0") && pulseSrc.includes("overflow-x:hidden"));
 
   const pushed = await pushPrivate({

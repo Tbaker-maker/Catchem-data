@@ -28,7 +28,8 @@ const advisory = async (mod, label) => {
   }
 };
 
-await import("./guard-audit.mjs");
+// advisory imports follow. guard-audit stays first in CI; a local regen can pass CATCHEM_SKIP_GUARD_AUDIT=1.
+if (process.env.CATCHEM_SKIP_GUARD_AUDIT !== "1") await import("./guard-audit.mjs");
 await import("./flag-guard.mjs");
 // SECURITY BLOCKS. Every other agent is wrapped and advisory because every
 // other failure is recoverable. A leaked credential is not — there is no
@@ -82,6 +83,10 @@ const der = await J("data/derived-insights.json");
 const { freshnessFromReport, formatPt } = await import("./lib/freshness.mjs");
 const fresh = freshnessFromReport(await J("data/ppt/run-report.json"));
 const writtenAt = formatPt(fresh.at) || fresh.label;
+const {
+  esc: escHtml, pretty, money, moveLabel, cleanLine, feedStyle, headerHtml, footerHtml, assertCleanHtml, stampLabel,
+} = await import("./lib/public-chrome.mjs");
+const show = (s) => escHtml(pretty(cleanLine(s)));
 
 // Email capture (retention hedge: iOS PWA push is unreliable, email is the
 // backstop). Posts to the LIVE Formspree waitlist — the same list newsletter
@@ -95,11 +100,11 @@ const captureBlock = `<div style="margin-top:26px;background:var(--panel);border
 <b style="font-size:15px">Get The Feed in your inbox</b>
 <div style="font-size:12px;color:var(--dim);margin:4px 0 10px">Same page, delivered every morning. No spam, unsubscribe anytime.</div>
 <form id="cap" style="display:flex;gap:8px">
-<input name="email" type="email" required placeholder="you@example.com" aria-label="email address" style="flex:1;min-width:0;background:var(--bg);border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:10px 12px;font:13px 'Sora,system-ui,sans-serif',sans-serif">
-<button type="submit" style="background:var(--green);border:0;color:#0b0d14;font:700 13px 'Sora,system-ui,sans-serif',sans-serif;border-radius:8px;padding:10px 16px;cursor:pointer">Send it</button>
+<input name="email" type="email" required placeholder="you@example.com" aria-label="email address" style="flex:1;min-width:0;background:var(--bg);border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:10px 12px;font:13px 'IBM Plex Sans',system-ui,sans-serif">
+<button type="submit" style="background:var(--gold);border:0;color:#1a1407;font:700 13px 'IBM Plex Sans',system-ui,sans-serif;border-radius:8px;padding:10px 16px;cursor:pointer">Send it</button>
 </form>
 <div id="capmsg" style="font-size:12px;color:var(--dim);margin-top:8px"></div>
-<script>document.getElementById("cap").addEventListener("submit",async e=>{e.preventDefault();const f=e.target,m=document.getElementById("capmsg");m.textContent="sending…";try{const r=await fetch("${CAPTURE_URL}",{method:"POST",body:new FormData(f),headers:{Accept:"application/json"}});if(!r.ok)throw 0;f.style.display="none";m.textContent="✓ You're on the list — the Pulse lands from the next send.";}catch{m.textContent="Couldn't reach the list — try again in a moment."}});</script>
+<script>document.getElementById("cap").addEventListener("submit",async e=>{e.preventDefault();const f=e.target,m=document.getElementById("capmsg");m.textContent="sending…";try{const r=await fetch("${CAPTURE_URL}",{method:"POST",body:new FormData(f),headers:{Accept:"application/json"}});if(!r.ok)throw 0;f.style.display="none";m.textContent="You're on the list. The Feed arrives with the next send.";}catch{m.textContent="Couldn't reach the list — try again in a moment."}});</script>
 </div>`;
 
 const live = sp.products.filter(p=>p.dataStatus==="live");
@@ -138,14 +143,10 @@ if (der?.watchOutcomes) for (const k of Object.keys(der.watchOutcomes)) {
   }
 }
 const noMkt = sp.products.filter(p=>p.dataStatus==="no-active-market").length;
-const heatDays = (heat?.mode||"").match(/day (\d+)/)?.[1] ?? "?";
-// Debut-day copy: the panel line must flip WITH the engine mode — the old
-// hardcoded "calibrating" would have printed "day ? of 8" forever once the
-// engine went dual-signal (caught in the Aug-22 debut rehearsal).
 const heatLive = (heat?.mode||"").startsWith("dual-signal") && (heat?.reads||[]).length > 0;
 const heatLine = heatLive
-  ? `live — ${heat.reads.length} reads (dual-signal, 8-day tape)`
-  : `calibrating — day ${heatDays} of 8 clean days (return ~Aug 26)`;
+  ? `${heat.reads.length} heat reads`
+  : `heat reads are still calibrating`;
 const sigs = (div?.rows||[]).filter(r=>r.signal && !__blk.blocked(r.id));
 const topListed = [...pub].sort((a,b)=>(b.listingCount||0)-(a.listingCount||0)).slice(0,3);
 const chases = (sg?.cards||[]).filter(c=>!c.needsReview && c.dataStatus==="live")
@@ -212,15 +213,21 @@ md += `\n## 🌊 Supply shifts\n`;
 }
 md += `\n## 🏛 Generation indexes\n`;
 for (const e of (der?.eraIndexes??[])) md += `- **${e.era}** — ${e.boxMedian?`boxes $${e.boxMedian.toLocaleString("en-US")} · `:""}all-products median $${e.level.toLocaleString("en-US")} · ${e.avgGapPct!=null?`asking ${Math.abs(e.avgGapPct)}% ${e.avgGapPct>=0?"more":"less"} on eBay than TCGplayer · `:""}${e.products} products · ${e.listingsPerProduct} listings each. ${e.read}.\n`;
-md += `*Baseline 100 set today — era momentum lines start tomorrow.*\n`;
+md += `*The index started at 100 on ${der.sealedIndex?.baselineDate || der.rawIndex?.baselineDate || "2026-08-19"}.*\n`;
 md += `\n## ⏳ Print watch\n`;
   for (const r of near) md += `- **${r.set}** — est. print window closes in ~${r.eol.daysLeftEst} days (30-month model) · ${r.supply} listings tracked\n`;
   if (der.tightening?.length) md += `- 🔒 Tightening: ${der.tightening.map(t=>t.set).join(" · ")} — out of print, low supply, no reprint news\n`;
 }
-md += `\n## 📣 In today's Pokémon news\n`;
-  for (const r of der.narrative.inNews.slice(0,4)) md += `- **${r.set}** — top product sits at $${r.price}${r.spreadPct!=null?`, asking ${Math.abs(r.spreadPct)}% ${r.spreadPct>0?"more":"less"} on eBay than TCGplayer`:""}\n`;
-  md += `\n## 🤫 Moving without headlines\n`;
-  for (const r of der.narrative.quietMovers.slice(0,4)) md += `- **${r.flagship}** — $${r.price}, asking ${Math.abs(r.spreadPct)}% ${r.spreadPct>0?"more":"less"} on eBay than TCGplayer — and nobody's covering it\n`;
+md += `\n## In today's Pokémon news\n`;
+  const inNews = (der.narrative.inNews || []).filter(r => r && r.price != null).slice(0, 4);
+  if (inNews.length) {
+  for (const r of inNews) md += `- **${r.set}** — top product sits at $${r.price}${r.spreadPct!=null?`, asking ${Math.abs(r.spreadPct)}% ${r.spreadPct>0?"more":"less"} on eBay than TCGplayer`:""}\n`;
+  }
+  const quiet = (der.narrative.quietMovers || []).filter(r => r && r.price != null).slice(0, 4);
+  if (quiet.length) {
+  md += `\n## Moving without headlines\n`;
+  for (const r of quiet) md += `- **${r.flagship}** — $${r.price}${Number.isFinite(Number(r.spreadPct)) && r.spreadPct !== 0 ? `, asking ${Math.abs(r.spreadPct)}% ${r.spreadPct>0?"more":"less"} on eBay than TCGplayer` : ""}\n`;
+  }
 }
 if (upcoming.length) {
   md += `\n## Radar — next up\n`;
@@ -232,32 +239,56 @@ await mkdir(join(ROOT,"research/pulse"),{recursive:true});
 await writeFile(join(ROOT,`research/pulse/${today}.md`), md);
 
 // ── HTML edition: the human-facing morning brief (same data, designed) ──
-const sigCards = sigs.slice(0,6).map(r=>`
-  <div class="sig"><div class="sighead"><span class="pct" title="eBay ask vs TCGplayer price">${r.spreadPct>0?"+":""}${r.spreadPct}% gap</span><span class="signame">${r.name}</span></div>
-  <div class="sigsub">eBay <b>$${r.ebayAskMedian}</b> <span class="sup">· ${r.ebayListings??"—"} listings</span> &nbsp;·&nbsp; <b>${r.spreadPct>0?"+":""}${r.spreadPct}%</b> vs the other market</div>
-  <div class="sigread">${r.read}</div></div>`).join("");
-const supNote = sigs.some(r=>r.tcgListings==null) ? `<div class="foot">* TCG-side supply: provider exposes no sealed listing counts — slot is wired; lights up the day they ship it.</div>` : "";
+const sigCards = sigs.slice(0, 6).map((r) => {
+  const ask = money(r.ebayAskMedian);
+  const gap = Number(r.spreadPct);
+  if (!ask || !Number.isFinite(gap) || gap === 0) return "";
+  const read = show(r.read);
+  const listings = Number.isFinite(Number(r.ebayListings)) ? `${r.ebayListings} listings` : "";
+  return `<div class="sig"><div class="sighead"><span class="pct">${gap > 0 ? "+" : ""}${gap}% gap</span><span class="signame">${show(r.name)}</span></div>
+  <div class="sigsub">eBay <b>${ask}</b>${listings ? ` · ${listings}` : ""}</div>
+  ${read ? `<div class="sigread">${read}</div>` : ""}</div>`;
+}).join("");
+const supNote = "";
 // Sandbox rule: plain-words labels ride the display path DARK until each
 // instrument's debut date (lib gates) — launches arrive pre-translated.
 const { HEAT_DEBUT, DEPTH_DEBUT, heatPlain, depthPlain } = await import("./lib/instruments.mjs");
 const depthReadOf = r => (today >= DEPTH_DEBUT && depthPlain[r.flow])
   ? `${depthPlain[r.flow].label} — ${depthPlain[r.flow].plain}`
   : r.read;
-const deepRows = (der?.depthReads??[]).map(r=>`<div class="row"><span>${r.tag} ${r.name} <em>${depthReadOf(r)}</em></span><span class="mono">$${r.price} · ${r.listings}L</span></div>`).join("") + `<div class="foot">Depth read = Active Listings (measured) × flow (Demand est.) · unlocks at 3 clean days per product.</div>`;
+const deepRows = (der?.depthReads??[]).filter(r => money(r.price)).map(r=>`<div class="row"><span>${escHtml(pretty(r.tag + " " + r.name))} <em>${escHtml(cleanLine(depthReadOf(r)))}</em></span><span class="mono">${money(r.price)} · ${r.listings} listings</span></div>`).join("");
 // Blocked/quarantined products never headline here either: every other
 // editorial list above is filtered through __blk, and this one was not.
 const heatReads = (Array.isArray(heat?.reads) ? heat.reads : []).filter(r => !__blk.blocked(r.id));
-const heatSection = (today >= HEAT_DEBUT && heatReads.length)
-  ? `<h2>🌦 Heat reads — the weather on the shelf</h2>` + heatReads.slice(0, 8).map(r => {
-      const w = heatPlain[r.state] || { emoji: "", label: r.state, plain: r.read || "" };
-      return `<div class="row"><span>${w.emoji} <b>${r.name || r.id}</b><em> ${w.label} — ${w.plain}</em></span><span class="mono">${r.confidence || ""}</span></div>`;
-    }).join("")
+const heatGroups = [];
+{
+  const bySentence = new Map();
+  for (const r of heatReads) {
+    const w = heatPlain[r.state] || { emoji: "", label: r.state, plain: r.read || "" };
+    const sentence = cleanLine(`${w.label} — ${w.plain}`);
+    if (!sentence) continue;
+    const g = bySentence.get(sentence) || { emoji: w.emoji, sentence, names: [] };
+    const name = pretty(r.name || r.id);
+    if (name && !g.names.includes(name)) g.names.push(name);
+    bySentence.set(sentence, g);
+  }
+  heatGroups.push(...[...bySentence.values()].slice(0, 4));
+}
+const heatSection = (today >= HEAT_DEBUT && heatGroups.length)
+  ? `<h2>Heat reads</h2>` + heatGroups.map((g) =>
+      `<div class="row"><span>${g.emoji} <b>${escHtml(g.sentence)}</b></span><span class="mono">${escHtml(g.names.slice(0, 4).join(", "))}</span></div>`
+    ).join("")
   : "";
-const chaseRows = chases.map(c=>`<div class="row"><span style="display:flex;align-items:center;gap:10px">${cardImg(c.cardId)?`<img class="thumb" style="width:34px" src="${cardImg(c.cardId)}" alt="">`:""}<span>${c.name} <em>${c.setName}</em></span></span><span class="mono">$${c.priceMarket}</span></div>`).join("");
+const chaseRows = chases.filter(c => money(c.priceMarket)).map(c=>`<div class="row"><span style="display:flex;align-items:center;gap:10px">${cardImg(c.cardId)?`<img class="thumb" style="width:34px;max-width:34px" src="${cardImg(c.cardId)}" alt="">`:""}<span>${escHtml(pretty(c.name))} <em>${escHtml(pretty(c.setName))}</em></span></span><span class="mono">${money(c.priceMarket)}</span></div>`).join("");
 const repeatDoc = await J("data/derived/repeat-rank.json");
 const keepRows = (rows) => (rows || []).slice(0, 5);
 const keepLine = (rows) => keepRows(rows).length
-  ? keepRows(rows).map(r => `<div class="row"><span>${r.name}</span><span class="mono">${r.days7 ?? 0} in 7d · streak ${r.streak ?? 0}</span></div>`).join("")
+  ? keepRows(rows).map(r => {
+      const streak = Number(r.streak) > 0 ? ` · streak ${r.streak}` : "";
+      const days = Number(r.days7) > 0 ? `${r.days7} in 7d` : "";
+      const meta = [days, streak.replace(/^ · /, "")].filter(Boolean).join(" · ");
+      return `<div class="row"><span>${escHtml(pretty(r.name))}</span>${meta ? `<span class="mono">${escHtml(meta)}</span>` : ""}</div>`;
+    }).join("")
   : `<div class="foot">building history</div>`;
 const keepsHtml = `<h2>Keeps showing up</h2><div class="foot">${repeatDoc?.status === "live" ? "Names on our own board, sealed and singles apart." : "building history"}</div><div class="foot">Sealed</div>${keepLine(repeatDoc?.sealed?.rows)}<div class="foot">Singles</div>${keepLine(repeatDoc?.singles?.rows)}`;
 const keepsFeed = {
@@ -266,71 +297,121 @@ const keepsFeed = {
   singles: keepRows(repeatDoc?.singles?.rows).map(r => ({ id: r.id, name: r.name, days7: r.days7, days30: r.days30, days90: r.days90, streak: r.streak, lastSeen: r.lastSeen })),
 };
 const radarRows = upcoming.map(r=>`<div class="row"><span>${r.name||r.title}</span><span class="mono">${r.date||r.releaseDate}</span></div>`).join("");
-const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Sora:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+const newsBits = (rows, nameKey) => (rows || []).slice(0, 3).map((r) => {
+  const price = money(r.price);
+  const name = show(r[nameKey]);
+  if (!price || !name) return "";
+  const gap = Number(r.spreadPct);
+  const gapTxt = Number.isFinite(gap) && gap !== 0
+    ? ` asking ${Math.abs(gap)}% ${gap > 0 ? "more" : "less"} on eBay` : "";
+  return `<div class="row"><span>${name}${gapTxt ? `<em>${gapTxt}</em>` : ""}</span><span class="mono">${price}</span></div>`;
+}).filter(Boolean).join("");
+const topicBits = (der?.topicHits || []).map((t) => {
+  const detail = cleanLine(t.hits?.[0]?.detail || "");
+  if (!detail) return "";
+  const where = cleanLine((t.hits || []).map((h) => h.where).filter(Boolean).join(" · "));
+  return `<div class="row"><span>${show(t.topic)}${where ? `<em> ${escHtml(where)}</em>` : ""}</span><span class="mono">${escHtml(detail.slice(0, 80))}</span></div>`;
+}).filter(Boolean).join("");
+const sealedWatch = (s) => {
+  if (!s) return "";
+  const ebay = money(s.ebay);
+  const tcg = money(s.tcg);
+  const gap = Number(s.spreadPct);
+  const bits = [];
+  if (ebay && tcg) bits.push(`eBay <b>${ebay}</b> vs TCGplayer <b>${tcg}</b>`);
+  else if (ebay) bits.push(`eBay <b>${ebay}</b>`);
+  const gapTxt = Number.isFinite(gap) && gap !== 0 ? `eBay asks ${Math.abs(gap)}% ${gap > 0 ? "more" : "less"} than TCGplayer` : "";
+  const why = show(s.whyChosen);
+  const explain = show(s.explain || s.reason);
+  if (!bits.length && !gapTxt && !why && !explain) return "";
+  const pr = sp.products.find((x) => x.name === s.name);
+  const u = pr && sealedImg(pr);
+  return `<div class="sig">${u ? `<img class="thumb logo" src="${escHtml(u)}" alt="">` : ""}<div class="sigbody"><div class="sighead"><span class="pct">SEALED</span><span class="signame">${escHtml(pretty(s.name))}</span></div>${bits.length ? `<div class="sigsub">${bits.join(" ")}</div>` : ""}${gapTxt ? `<div class="sigread">${gapTxt}</div>` : ""}${why ? `<div class="sigread">${why}</div>` : ""}${explain ? `<div class="sigread">${explain}</div>` : ""}</div></div>`;
+};
+const eraHtml = (der?.eraIndexes || []).map((e) => {
+  const price = money(e.boxMedian) || money(e.level);
+  if (!price) return "";
+  const gap = Number(e.avgGapPct);
+  const gapTxt = Number.isFinite(gap) && gap !== 0 ? `asking ${Math.abs(gap)}% ${gap >= 0 ? "more" : "less"} than TCGplayer · ` : "";
+  return `<div class="row"><span><b>${escHtml(pretty(e.era))}</b><em> ${e.products} products · ${gapTxt}${e.listingsPerProduct} listings each</em></span><span class="mono">${price}</span></div>`;
+}).join("");
+const shiftHtml = (der?.supplyShifts || []).slice(0, 5).map((x) => {
+  const name = show(x.name);
+  const dPct = Number(x.dPct);
+  if (!name || !Number.isFinite(dPct)) return "";
+  const read = show(x.read);
+  const cat = show(x.catalystMatch);
+  const priceD = Number(x.priceDPct);
+  const price = Number.isFinite(priceD) && priceD !== 0 ? ` · price ${priceD > 0 ? "+" : ""}${priceD}%` : "";
+  return `<div class="row"><span><b>${name}</b><em> ${x.prev}→${x.listings} listings${price}${read ? ` · ${read}` : ""}${cat ? ` · ${cat}` : ""}</em></span><span class="mono">${dPct > 0 ? "+" : ""}${dPct}%</span></div>`;
+}).join("");
+const catalystHtml = (der?.catalysts || []).slice(0, 4).map((c) => {
+  const note = show(c.note);
+  if (!note) return "";
+  const meta = [show(c.class), show(c.horizon)].filter(Boolean).join(" · ");
+  return `<div class="row"><span>${note}</span>${meta ? `<span class="mono">${meta}</span>` : ""}</div>`;
+}).join("");
+const byline = fresh.at ? stampLabel(fresh.at) : fresh.label;
+const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="${"https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap"}" rel="stylesheet">
 <title>The Feed — ${today} · Catch'em</title><style>
-${rootCss()}
-*{box-sizing:border-box;margin:0}html,body{overflow-x:hidden}body{background:var(--bg);color:var(--txt);font:15px/1.55 'Sora,system-ui,sans-serif',system-ui,sans-serif;max-width:680px;margin:0 auto;padding:36px 20px 60px}
-.kicker{font:11px 'JetBrains Mono,ui-monospace,monospace',monospace;letter-spacing:.14em;color:var(--gold)}
-h1{font-size:34px;letter-spacing:-.5px;margin:6px 0 2px}h1 span{color:var(--dim);font-weight:400}
-.byline{color:var(--dim);font-size:13px;margin-bottom:22px}
-.panel{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:26px}
-.stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 12px;text-align:center}
-.stat b{display:block;font:22px 'JetBrains Mono,ui-monospace,monospace',monospace;color:var(--txt)}
-.stat i{font-style:normal;font-size:11px;color:var(--dim)}
-h2{font-size:13px;font-family:'JetBrains Mono',ui-monospace,monospace',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin:26px 0 10px}
-.sig{display:flex;gap:12px;align-items:center;background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:8px;padding:12px 14px;margin-bottom:8px}
-.sighead{display:flex;gap:12px;align-items:baseline}.pct{font:16px 'JetBrains Mono,ui-monospace,monospace',monospace;color:var(--gold)}
-.signame{font-weight:600}.sigsub{font-size:13px;color:var(--dim);margin-top:3px}.sigsub b{color:var(--txt)}.sup{font:11px 'JetBrains Mono,ui-monospace,monospace',monospace;color:var(--dim)}.sigread{font-size:12px;color:var(--dim);margin-top:4px;font-style:italic}.foot{font:11px 'JetBrains Mono,ui-monospace,monospace',monospace;color:var(--dim);margin-top:8px}
-.row{display:flex;justify-content:space-between;gap:12px;padding:9px 2px;border-bottom:1px solid var(--line)}
-.row em{color:var(--dim);font-style:normal;font-size:12px}.mono{font:13px 'JetBrains Mono,ui-monospace,monospace',monospace;color:var(--txt);white-space:nowrap}
-.calib{margin-top:26px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:11px 14px;font:12px 'JetBrains Mono,ui-monospace,monospace',monospace;color:var(--dim)}
-footer{margin-top:30px;font:12px 'JetBrains Mono,ui-monospace,monospace',monospace;color:var(--dim)}
-.thumb{width:46px;max-width:46px;min-width:0;height:auto;border-radius:6px;flex:none;border:1px solid rgba(255,255,255,.07)}.thumb.logo{width:56px;max-width:56px;min-width:0;height:auto;background:#0b0d14;padding:4px}.sig{min-width:0;max-width:100%}.sigbody{flex:1;min-width:0}
-.idxhead{display:flex;justify-content:space-between;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin:0 0 16px}
+${feedStyle()}
 </style></head><body>
-<div class="kicker">CATCH'EM · THE FEED</div>
+${headerHtml("The Feed")}
+<main class="col">
 <h1>The Feed <span>${today}</span></h1>
-<div class="byline">Written by the machine at ${writtenAt} · every number is live production data</div>
-<div class="byline" id="fresh" data-at="${fresh.at || ""}">${fresh.label}</div>
-<script id="fresh-stamp-script">document.addEventListener("DOMContentLoaded",function(){var el=document.getElementById("fresh");if(!el)return;var t=Date.parse(el.getAttribute("data-at")||"");if(!isFinite(t)||(Date.now()-t)/36e5>36)el.textContent="Data delayed";});</script>
+<div class="byline" id="fresh" data-at="${fresh.at || ""}">${byline}</div>
+<script id="fresh-stamp-script">document.addEventListener("DOMContentLoaded",function(){var el=document.getElementById("fresh");if(!el)return;var t=Date.parse(el.getAttribute("data-at")||"");if(!isFinite(t))return;if((Date.now()-t)/36e5>48){el.textContent=el.textContent.replace(/ · STALE$/,"")+" · STALE";}});</script>
 <div class="panel">
-  <div class="stat"><b>${sp.products.length}</b><i>sealed products TRACKED</i></div>
-  <div class="stat"><b>${sigs.length}</b><i>SPREAD SIGNALS</i></div>
-  <div class="stat"><b>${heatLive ? heat.reads.length : `${heatDays}/8`}</b><i>${heatLive ? "HEAT READS LIVE" : "READS CALIBRATING"}</i></div>
+  <div class="stat"><b>${sp.products.length}</b><i>tracked products</i></div>
+  ${sigs.length ? `<div class="stat"><b>${sigs.length}</b><i>price gaps</i></div>` : ""}
+  ${heatLive ? `<div class="stat"><b>${heat.reads.length}</b><i>heat reads</i></div>` : ""}
 </div>
 ${sigs.length?`<h2>⚡ Biggest price gaps between eBay and TCGplayer</h2><div class="foot" style="margin:-2px 0 10px">eBay usually runs a little higher on sealed — photos let buyers see exactly what they're getting. We flag the gaps beyond that.</div>${sigCards}${supNote}`:""}
 <h2>Deepest markets</h2>${deepRows}
-<h2>Chase board · TCGplayer market</h2>${chaseRows}
+<h2>Chase cards</h2>${chaseRows}
 ${keepsHtml}
-${(der?.dailyThree&&(der.dailyThree.sealed||der.dailyThree.raw))?`<h2>🎯 The Daily Three</h2>
-${der.dailyThree.sealed?`<div class="sig">${(()=>{const pr=sp.products.find(x=>x.name===der.dailyThree.sealed.name);const u=pr&&sealedImg(pr);return u?`<img class="thumb logo" src="${u}" alt="">`:"";})()}<div class="sigbody"><div class="sighead"><span class="pct">SEALED</span><span class="signame">${der.dailyThree.sealed.name}</span></div><div class="sigsub">eBay <b>$${der.dailyThree.sealed.ebay}</b> vs TCG <b>$${der.dailyThree.sealed.tcg}</b> </div><div class="sigread">eBay asks ${Math.abs(der.dailyThree.sealed.spreadPct)}% ${der.dailyThree.sealed.spreadPct>0?"more":"less"} than TCGplayer</div><div class="sigread">${der.dailyThree.sealed.whyChosen??""}</div><div class="sigread">${der.dailyThree.sealed.explain??der.dailyThree.sealed.reason}</div></div></div>`:""}
-<div class="sig" style="border-left-color:${der.dailyThree.graded?"var(--gold)":"var(--line)"}"><div class="sighead"><span class="pct">GRADED</span><span class="signame">${der.dailyThree.graded?der.dailyThree.graded.name:"calibrating"}</span></div><div class="sigsub">${der.dailyThree.graded?`raw <b>$${der.dailyThree.graded.raw}</b> → PSA10 <b>$${der.dailyThree.graded.psa10}</b> · premium +$${der.dailyThree.graded.premium}`:"returns with the Grading Premium table"}</div>${der.dailyThree.graded?`<div class="sigread">${der.dailyThree.graded.explain}</div>`:""}</div>
-${der.dailyThree.raw?`<div class="sig">${(()=>{const c=(sg?.cards||[]).find(x=>x.name===der.dailyThree.raw.name&&x.setName===der.dailyThree.raw.set);const u=c&&cardImg(c.cardId);return u?`<img class="thumb" src="${u}" alt="">`:"";})()}<div class="sigbody"><div class="sighead"><span class="pct">RAW</span><span class="signame">${der.dailyThree.raw.name}</span></div><div class="sigsub"><b>$${der.dailyThree.raw.price}</b> · ${der.dailyThree.raw.set}</div><div class="sigread">${der.dailyThree.raw.explain}</div></div></div>`:""}
+${(der?.dailyThree&&(der.dailyThree.sealed||der.dailyThree.raw))?`<h2>The Daily Three</h2>
+${sealedWatch(der.dailyThree.sealed)}
+${der.dailyThree.graded && money(der.dailyThree.graded.raw) && money(der.dailyThree.graded.psa10) ? `<div class="sig"><div class="sighead"><span class="pct">GRADED</span><span class="signame">${escHtml(pretty(der.dailyThree.graded.name))}</span></div><div class="sigsub">raw <b>${money(der.dailyThree.graded.raw)}</b> · PSA 10 <b>${money(der.dailyThree.graded.psa10)}</b></div></div>` : ""}
+${der.dailyThree.raw && money(der.dailyThree.raw.price)?`<div class="sig">${(()=>{const c=(sg?.cards||[]).find(x=>x.name===der.dailyThree.raw.name&&x.setName===der.dailyThree.raw.set);const u=c&&cardImg(c.cardId);return u?`<img class="thumb" src="${u}" alt="">`:"";})()}<div class="sigbody"><div class="sighead"><span class="pct">RAW</span><span class="signame">${escHtml(pretty(der.dailyThree.raw.name))}</span></div><div class="sigsub"><b>${money(der.dailyThree.raw.price)}</b> · ${escHtml(pretty(der.dailyThree.raw.set))}</div>${show(der.dailyThree.raw.explain)?`<div class="sigread">${show(der.dailyThree.raw.explain)}</div>`:""}</div></div>`:""}
 `:""}
-${der?.catalysts?.length?`<h2>📡 Catalyst reads</h2>${der.catalysts.slice(0,4).map(c=>`<div class="row"><span>${c.note}</span><span class="mono">${c.class.toUpperCase()}·${c.horizon}</span></div>`).join("")}`:""}
+${catalystHtml ? `<h2>Catalyst reads</h2>${catalystHtml}` : ""}
 ${der?.packMath?`<h2>🧮 Pack math — $ per sealed pack</h2>
-${editorial(der.packMath.priciest).slice(0,3).map(r=>`<div class="row"><span>${r.name}${r.sealedPremiumPct!=null?` <em>vs loose $${r.loosePack}</em>`:""}</span><span class="mono">$${r.perPack}/pk${r.sealedPremiumPct!=null?` · ${r.sealedPremiumPct>0?"+":""}${r.sealedPremiumPct}%`:""}</span></div>`).join("")}
+${editorial(der.packMath.priciest).filter(r => money(r.perPack)).slice(0,3).map(r=>`<div class="row"><span>${escHtml(pretty(r.name))}${money(r.loosePack)?` <em>vs loose ${money(r.loosePack)}</em>`:""}</span><span class="mono">${money(r.perPack)} each${Number.isFinite(r.sealedPremiumPct) ? ` · ${r.sealedPremiumPct > 0 ? "+" : ""}${r.sealedPremiumPct}%` : ""}</span></div>`).join("")}
 <div class="row" style="border-bottom:0"><span style="color:var(--dim)">···</span><span></span></div>
-${editorial(der.packMath.cheapest).slice(0,3).map(r=>`<div class="row"><span>${r.name}${r.sealedPremiumPct!=null?` <em>vs loose $${r.loosePack}</em>`:""}</span><span class="mono">$${r.perPack}/pk${r.sealedPremiumPct!=null?` · ${r.sealedPremiumPct>0?"+":""}${r.sealedPremiumPct}%`:""}</span></div>`).join("")}`:""}
-${der?.narrative?`${der?.topicHits?.length?`<h2>🔎 Watched topics</h2>${der.topicHits.map(t=>`<div class="row"><span>${t.topic}<em> ${t.hits.map(h=>h.where).join(" · ")}</em></span><span class="mono" style="max-width:55%;text-align:right">${t.hits[0].detail.slice(0,64)}${t.hits[0].detail.length>64?"…":""}</span></div>`).join("")}`:""}
-${der?.sealedIndex?`<div class="idxhead"><div><div class="lbl" style="font-size:10px;letter-spacing:.09em;color:var(--dim)">CATCH'EM SEALED INDEX</div><div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:34px;font-weight:700">${der.sealedIndex.level}${der.sealedIndex.ddPct!=null?` <span style="font-size:16px;color:${der.sealedIndex.ddPct>=0?"var(--green)":"#ef5a5a"}">${der.sealedIndex.ddPct>0?"▲":"▼"} ${Math.abs(der.sealedIndex.ddPct)}%</span>`:""}</div></div><div class="mono" style="text-align:right;color:var(--dim);font-size:12px">${der.sealedIndex.constituents} sealed products<br>breadth ▲${der.sealedIndex.breadth.up} ▼${der.sealedIndex.breadth.down}<br><a href="/methodology.html" style="color:var(--green)">methodology →</a></div></div${der?.rawIndex?`<div class="foot" style="margin:-8px 0 14px">Raw Chase Index <b class="mono">${der.rawIndex.level}</b> (${der.rawIndex.constituents} chases, baseline ${der.rawIndex.baselineDate}) · Graded Index: same equation, awaits licensed daily feed</div>`:""}`:""}
-${der?.eraIndexes?.length?`<h2>\ud83c\udfdb Generation indexes</h2>${der.eraIndexes.map(e=>`<div class="row"><span><b>${e.era}</b><em> ${e.products} products \u00b7 ${e.avgGapPct!=null?`asking ${Math.abs(e.avgGapPct)}% ${e.avgGapPct>=0?"more":"less"} than TCGplayer \u00b7 `:"eBay-native era \u00b7 "}${e.listingsPerProduct} listings each</em></span><span class="mono">${e.boxMedian?`$${e.boxMedian.toLocaleString("en-US")}`:`$${e.level.toLocaleString("en-US")}`}</span></div>`).join("")}${der?.supplyShifts?.length?`<h2>\ud83c\udf0a Supply shifts</h2>${der.supplyShifts.slice(0,5).map(x=>`<div class="row"><span><b>${x.name}</b><em> ${x.prev}\u2192${x.listings} listings${x.priceDPct!=null?` \u00b7 price ${x.priceDPct>0?"+":""}${x.priceDPct}%`:""} \u00b7 ${x.read}${x.catalystMatch?` \u00b7 ${x.catalystMatch}`:""}</em></span><span class="mono" style="color:${x.dPct>0?"var(--gold)":"var(--green)"}">${x.dPct>0?"+":""}${x.dPct}%</span></div>`).join("")}<div class="foot">Shelf count vs yesterday \u00b7 cause candidates, never verdicts \u00b7 only shown for products with 20+ listings so small shelves can\u2019t fake big percents.</div><div class="foot" style="margin-top:8px">Prices are the delivered total \u2014 item plus shipping wherever a listing states it. A low sticker price with expensive postage is not a cheap listing.</div>`:""}
-<div class="foot">Bold figure = median BOOSTER BOX (the anchor collectors price eras by); packs and bundles keep the all-products median lower — both shown. Baseline 100 today \u2014 momentum lines grow from tomorrow.</div>`:""}
-${der?.watchOutcomes && (der.watchOutcomes.sealed?.dPct!=null||der.watchOutcomes.raw?.dPct!=null)?`<h2>\ud83d\udcca Yesterday's watches, revisited</h2>${["sealed","raw"].map(k=>{const w=der.watchOutcomes[k];return w&&w.dPct!=null?`<div class="row"><span><b>${w.name}</b><em> ${k} watch</em></span><span class="mono" style="color:${w.dPct>0?"var(--green)":w.dPct<0?"#ef5a5a":"var(--dim)"}">${w.dPct>0?"\u25b2":w.dPct<0?"\u25bc":"\u00b7"} ${Math.abs(w.dPct)}%</span></div>`:""}).join("")}<div class="foot">We keep our own score \u2014 hits and misses both.</div>`:""}
+${editorial(der.packMath.cheapest).filter(r => money(r.perPack)).slice(0,3).map(r=>`<div class="row"><span>${escHtml(pretty(r.name))}${money(r.loosePack)?` <em>vs loose ${money(r.loosePack)}</em>`:""}</span><span class="mono">${money(r.perPack)} each${Number.isFinite(r.sealedPremiumPct) ? ` · ${r.sealedPremiumPct > 0 ? "+" : ""}${r.sealedPremiumPct}%` : ""}</span></div>`).join("")}`:""}
+${der?.narrative?`${topicBits ? `<h2>Watched topics</h2>${topicBits}` : ""}
+${der?.sealedIndex?`<div class="idxhead"><div><div class="lbl" style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)">Sealed index</div><div style="font:600 34px/1.1 var(--serif)">${der.sealedIndex.level}${moveLabel(der.sealedIndex.ddPct)?` <span style="font-size:16px;color:var(--dim)">${moveLabel(der.sealedIndex.ddPct)}</span>`:""}</div></div><div class="mono" style="text-align:right;color:var(--dim);font-size:13px">${der.sealedIndex.constituents} sealed products<br>up ${der.sealedIndex.breadth.up} · down ${der.sealedIndex.breadth.down}<br><a href="/methodology">How the numbers are made</a></div></div>${der?.rawIndex?`<div class="foot" style="margin:-8px 0 14px">Chase index <b class="mono">${der.rawIndex.level}</b> (${der.rawIndex.constituents} cards, started ${der.rawIndex.baselineDate}). Graded index uses the same math and waits on a licensed daily feed.</div>`:""}`:""}
+${eraHtml ? `<h2>Generation indexes</h2>${eraHtml}` : ""}
+${shiftHtml ? `<h2>Supply shifts</h2>${shiftHtml}<div class="foot">How many are listed versus yesterday. Shown only when a product has 20 or more listings.</div><div class="foot" style="margin-top:8px">Prices are the delivered total — item plus shipping wherever a listing states it. A low sticker price with expensive postage is not a cheap listing.</div>` : ""}
+${der?.sealedIndex ? `<div class="foot">The bold figure is the median booster box. Packs and bundles sit lower, so the all-products figure is smaller. The index started at 100 on ${der.sealedIndex.baselineDate || der.rawIndex?.baselineDate || "2026-08-19"}.</div>` : ""}
+${(() => {
+  const bits = ["sealed", "raw"].map((k) => {
+    const w = der.watchOutcomes?.[k];
+    const d = Number(w?.dPct);
+    if (!w || !Number.isFinite(d)) return "";
+    const move = d === 0 ? "unchanged" : `${d > 0 ? "▲" : "▼"} ${Math.abs(d)}%`;
+    return `<div class="row"><span><b>${show(w.name)}</b><em> ${k}</em></span><span class="mono">${move}</span></div>`;
+  }).join("");
+  return bits ? `<h2>Yesterday's watches, revisited</h2>${bits}<div class="foot">We keep our own score — hits and misses both.</div>` : "";
+})()}
 ${der?.subtypeIndexes?.length?`<div class="foot" style="margin:-6px 0 14px">Product-class indexes: ${der.subtypeIndexes.map(s=>`${s.subtype} <b class="mono">${s.level}</b>`).join(" \u00b7 ")}</div>`:""}
 ${der?.printWatch?.length?`<h2>⏳ Print watch</h2>${der.printWatch.filter(r=>r.eol.status==="printing").slice(0,2).map(r=>`<div class="row"><span>${r.set}<em> est. window closes ~${r.eol.daysLeftEst}d (30-mo model)</em></span><span class="mono">${r.supply} listings</span></div>`).join("")}${der.tightening?.length?`<div class="row"><span>🔒 Tightening<em> out of print · low supply · no reprint news</em></span><span class="mono">${der.tightening.map(t=>t.set.split(" ")[0]).join(" · ")}</span></div>`:""}`:""}
-<h2>📣 In today's Pokémon news</h2>
-${der.narrative.inNews.slice(0,3).map(r=>`<div class="row"><span>${r.set}<em>${r.spreadPct!=null?` asking ${Math.abs(r.spreadPct)}% ${r.spreadPct>0?"more":"less"} on eBay than TCGplayer`:""}</em></span><span class="mono">$${r.price}</span></div>`).join("")}
-<h2>🤫 Moving without headlines</h2>
-${der.narrative.quietMovers.slice(0,3).map(r=>`<div class="row"><span>${r.flagship}<em> asking ${Math.abs(r.spreadPct)}% ${r.spreadPct>0?"more":"less"} on eBay — no coverage anywhere ⚡</em></span><span class="mono">$${r.price}</span></div>`).join("")}`:""}
+${newsBits(der.narrative.inNews, "set") ? `<h2>In today's Pokémon news</h2>${newsBits(der.narrative.inNews, "set")}` : ""}
+${newsBits(der.narrative.quietMovers, "flagship") ? `<h2>Moving without headlines</h2>${newsBits(der.narrative.quietMovers, "flagship")}` : ""}`:""}
 ${upcoming.length?`<h2>Radar</h2>${radarRows}`:""}
 ${heatSection}
 ${captureBlock}
-${heatSection ? "" : `<div class="calib">HEAT READS: day ${heatDays} of 8 clean days — Wyckoff states return ~Aug 26. We publish nothing false in the meantime.</div>`}
-<footer>Catch'em. Catch Feels. · ${fresh.label} · prices: Catchem-data, eBay active listings (measured) · spread: internal instrument</footer>
+</main>
+${footerHtml()}
 </body></html>`;
+assertCleanHtml(html, "the-pulse.html");
 await writeFile(join(ROOT,`research/pulse/${today}.html`), html);
 await writeFile(join(ROOT,`research/assets/the-pulse.html`), html);
+if (process.env.CATCHEM_PULSE_HTML_ONLY === "1") {
+  console.log("pulse html only");
+  process.exit(0);
+}
 
 // ── Feed history: real sparklines for first-time visitors ──
 // Per-product daily {date, price, listings} from heat-history.json (committed
