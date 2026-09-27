@@ -253,6 +253,17 @@ const heatSection = (today >= HEAT_DEBUT && heatReads.length)
     }).join("")
   : "";
 const chaseRows = chases.map(c=>`<div class="row"><span style="display:flex;align-items:center;gap:10px">${cardImg(c.cardId)?`<img class="thumb" style="width:34px" src="${cardImg(c.cardId)}" alt="">`:""}<span>${c.name} <em>${c.setName}</em></span></span><span class="mono">$${c.priceMarket}</span></div>`).join("");
+const repeatDoc = await J("data/derived/repeat-rank.json");
+const keepRows = (rows) => (rows || []).slice(0, 5);
+const keepLine = (rows) => keepRows(rows).length
+  ? keepRows(rows).map(r => `<div class="row"><span>${r.name}</span><span class="mono">${r.days7 ?? 0} in 7d · streak ${r.streak ?? 0}</span></div>`).join("")
+  : `<div class="foot">building history</div>`;
+const keepsHtml = `<h2>Keeps showing up</h2><div class="foot">${repeatDoc?.status === "live" ? "Names on our own board, sealed and singles apart." : "building history"}</div><div class="foot">Sealed</div>${keepLine(repeatDoc?.sealed?.rows)}<div class="foot">Singles</div>${keepLine(repeatDoc?.singles?.rows)}`;
+const keepsFeed = {
+  status: repeatDoc?.status || "building history",
+  sealed: keepRows(repeatDoc?.sealed?.rows).map(r => ({ id: r.id, name: r.name, days7: r.days7, days30: r.days30, days90: r.days90, streak: r.streak, lastSeen: r.lastSeen })),
+  singles: keepRows(repeatDoc?.singles?.rows).map(r => ({ id: r.id, name: r.name, days7: r.days7, days30: r.days30, days90: r.days90, streak: r.streak, lastSeen: r.lastSeen })),
+};
 const radarRows = upcoming.map(r=>`<div class="row"><span>${r.name||r.title}</span><span class="mono">${r.date||r.releaseDate}</span></div>`).join("");
 const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Sora:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <title>The Feed — ${today} · Catch'em</title><style>
@@ -289,6 +300,7 @@ footer{margin-top:30px;font:12px 'JetBrains Mono,ui-monospace,monospace',monospa
 ${sigs.length?`<h2>⚡ Biggest price gaps between eBay and TCGplayer</h2><div class="foot" style="margin:-2px 0 10px">eBay usually runs a little higher on sealed — photos let buyers see exactly what they're getting. We flag the gaps beyond that.</div>${sigCards}${supNote}`:""}
 <h2>Deepest markets</h2>${deepRows}
 <h2>Chase board · TCGplayer market</h2>${chaseRows}
+${keepsHtml}
 ${(der?.dailyThree&&(der.dailyThree.sealed||der.dailyThree.raw))?`<h2>🎯 The Daily Three</h2>
 ${der.dailyThree.sealed?`<div class="sig">${(()=>{const pr=sp.products.find(x=>x.name===der.dailyThree.sealed.name);const u=pr&&sealedImg(pr);return u?`<img class="thumb logo" src="${u}" alt="">`:"";})()}<div class="sigbody"><div class="sighead"><span class="pct">SEALED</span><span class="signame">${der.dailyThree.sealed.name}</span></div><div class="sigsub">eBay <b>$${der.dailyThree.sealed.ebay}</b> vs TCG <b>$${der.dailyThree.sealed.tcg}</b> </div><div class="sigread">eBay asks ${Math.abs(der.dailyThree.sealed.spreadPct)}% ${der.dailyThree.sealed.spreadPct>0?"more":"less"} than TCGplayer</div><div class="sigread">${der.dailyThree.sealed.whyChosen??""}</div><div class="sigread">${der.dailyThree.sealed.explain??der.dailyThree.sealed.reason}</div></div></div>`:""}
 <div class="sig" style="border-left-color:${der.dailyThree.graded?"var(--gold)":"var(--line)"}"><div class="sighead"><span class="pct">GRADED</span><span class="signame">${der.dailyThree.graded?der.dailyThree.graded.name:"calibrating"}</span></div><div class="sigsub">${der.dailyThree.graded?`raw <b>$${der.dailyThree.graded.raw}</b> → PSA10 <b>$${der.dailyThree.graded.psa10}</b> · premium +$${der.dailyThree.graded.premium}`:"returns with the Grading Premium table"}</div>${der.dailyThree.graded?`<div class="sigread">${der.dailyThree.graded.explain}</div>`:""}</div>
@@ -524,6 +536,7 @@ const feed = {
   radar: upcoming.slice(0,4),
   chases: chases.map(c=>({ cardId:c.cardId, name:c.name, set:c.setName, market:c.priceMarket, imageUrl: cardImg(c.cardId),
     provenance:c.provenance, class:"VERIFIED" })),
+  keepsShowingUp: keepsFeed,
   disclosure: "Buy Pressure is estimated from listing activity — not reported sales. Active Listings are measured.",
   shippingNote: "Prices include shipping and exclude tax. eBay figures are delivered totals — item plus postage wherever a listing states it. TCGplayer figures come to us without shipping, so comparisons between the two are not yet like-for-like and we flag them rather than estimate the difference.",
   products: catalog,
