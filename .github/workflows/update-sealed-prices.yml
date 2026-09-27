@@ -93,6 +93,10 @@ jobs:
         run: node scripts/compute-divergence.mjs
       - name: Compute Supply Watch
         run: node scripts/compute-supply-watch.mjs
+      - name: Weekly receipts
+        # Reads we tracked. continue-on-error so a quiet week cannot drop the price commit.
+        continue-on-error: true
+        run: node scripts/compute-receipts.mjs
       - name: Derived intelligence
         run: node scripts/compute-derived.mjs
       - name: Repeat appearance
