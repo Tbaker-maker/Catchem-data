@@ -1,88 +1,187 @@
 {
  "asOf": "2026-09-27",
  "updatedAt": "2026-09-27T10:19:31.933Z",
- "note": "A hit rate is published only after 20 calls had a direction written down first. These rows use the same market price as the product page.",
+ "note": "A hit means the next print moved the same way as the print we wrote down. A miss moved the other way. A hit rate stays hidden until 20 calls are scored. These are not sold prices.",
  "hitRate": null,
- "scored": 1,
+ "scored": 4,
+ "hits": 2,
+ "misses": 2,
  "rows": [
   {
-   "id": "receipt-sealed",
+   "id": "receipt-2026-08-20-sealed-pgo-etb",
    "type": "receipt",
+   "result": "hit",
    "kind": "sealed",
-   "set": "Celebrations",
-   "setSlug": "celebrations",
-   "name": "Celebrations Ultra-Premium Collection",
-   "price": 1226.14,
-   "changePct": -0.3,
-   "source": "TCGplayer market",
-   "asOf": "2026-09-27",
-   "confidence": "Early",
-   "history": [
-    1230.38,
-    1230.38,
-    1226.14
-   ],
+   "name": "Pokemon GO Elite Trainer Box",
+   "headline": "Pokemon GO Elite Trainer Box. Hit.",
+   "price": 240,
+   "source": "Sealed print we stored",
+   "asOf": "2026-08-21",
+   "why": "Written down August 20, 2026 at $239.22, after a lower print. Next print August 21, 2026 was $240.00. Same way.",
    "hist": [
     [
-     "2026-09-25",
-     1230.38
+     "2026-08-20",
+     239.22
     ],
     [
-     "2026-09-26",
-     1230.38
-    ],
-    [
-     "2026-09-27",
-     1226.14
+     "2026-08-21",
+     240
     ]
    ],
-   "image": "https://tcgplayer-cdn.tcgplayer.com/product/245140_in_400x400.jpg",
-   "href": "/p/tcgcsv-245140",
-   "number": "",
-   "rarity": "",
-   "low": 1148.98,
-   "artist": "",
-   "why": "Same TCGplayer market price as the product page. A hit rate waits until 20 calls had a direction written down first.",
-   "score": 18,
-   "headline": "Celebrations Ultra-Premium Collection, checked again.",
-   "result": "miss"
+   "href": "",
+   "changePct": 0.3
   },
   {
-   "id": "receipt-raw",
+   "id": "receipt-2026-08-21-sealed-sv8pt5-sc",
    "type": "receipt",
-   "kind": "single",
-   "set": "SWSH07: Evolving Skies",
-   "setSlug": "swsh07-evolving-skies",
-   "name": "Umbreon VMAX (Alternate Art Secret)",
-   "price": 2214.79,
-   "changePct": -3.7,
-   "source": "TCGplayer market",
-   "asOf": "2026-09-27",
-   "confidence": "Early",
-   "history": [
-    2299.94,
-    2214.79
+   "result": "hit",
+   "kind": "sealed",
+   "name": "Prismatic Evolutions Surprise Box",
+   "headline": "Prismatic Evolutions Surprise Box. Hit.",
+   "price": 100,
+   "source": "Sealed print we stored",
+   "asOf": "2026-08-22",
+   "why": "Written down August 21, 2026 at $91.23, after a lower print. Next print August 22, 2026 was $100.00. Same way.",
+   "hist": [
+    [
+     "2026-08-21",
+     91.23
+    ],
+    [
+     "2026-08-22",
+     100
+    ]
    ],
+   "href": "",
+   "changePct": 9.6
+  },
+  {
+   "id": "receipt-2026-08-22-sealed-sm11-booster-box",
+   "type": "receipt",
+   "result": "miss",
+   "kind": "sealed",
+   "name": "Unified Minds Booster Box",
+   "headline": "Unified Minds Booster Box. Miss.",
+   "price": 4014.95,
+   "source": "Sealed print we stored",
+   "asOf": "2026-08-26",
+   "why": "Written down August 22, 2026 at $4,450.00, after a lower print. Next print August 26, 2026 was $4,014.95. The other way.",
+   "hist": [
+    [
+     "2026-08-22",
+     4450
+    ],
+    [
+     "2026-08-26",
+     4014.95
+    ]
+   ],
+   "href": "",
+   "changePct": -9.8
+  },
+  {
+   "id": "receipt-2026-09-26-sealed-cel25-upc",
+   "type": "receipt",
+   "result": "miss",
+   "kind": "sealed",
+   "name": "Celebrations Ultra Premium Collection",
+   "headline": "Celebrations Ultra Premium Collection. Miss.",
+   "price": 1319.99,
+   "source": "Sealed print we stored",
+   "asOf": "2026-09-27",
+   "why": "Written down September 26, 2026 at $1,339.25, after a lower print. Next print September 27, 2026 was $1,319.99. The other way.",
    "hist": [
     [
      "2026-09-26",
-     2299.94
+     1339.25
     ],
     [
      "2026-09-27",
-     2214.79
+     1319.99
     ]
    ],
-   "image": "https://tcgplayer-cdn.tcgplayer.com/product/246723_in_400x400.jpg",
-   "href": "/c/tcgcsv-246723",
-   "number": "215/203",
-   "rarity": "Secret Rare",
-   "low": null,
-   "artist": "Keiichiro Ito",
-   "why": "Same TCGplayer market price as the product page. A hit rate waits until 20 calls had a direction written down first.",
-   "score": 18,
-   "headline": "Umbreon VMAX (Alternate Art Secret), checked again.",
-   "result": "Open"
+   "href": "",
+   "changePct": -1.4
+  },
+  {
+   "id": "receipt-2026-08-26-single-swsh7-218",
+   "type": "receipt",
+   "result": "open",
+   "kind": "single",
+   "name": "Rayquaza VMAX",
+   "headline": "Rayquaza VMAX. Open.",
+   "price": 1247.9,
+   "source": "Price we stored",
+   "asOf": "2026-08-26",
+   "why": "Written down August 26, 2026 at $1,247.90. No earlier print, so this stays open.",
+   "hist": [
+    [
+     "2026-08-26",
+     1247.9
+    ]
+   ],
+   "href": "",
+   "changePct": null
+  },
+  {
+   "id": "receipt-2026-09-26-single-swsh7-215",
+   "type": "receipt",
+   "result": "open",
+   "kind": "single",
+   "name": "Umbreon VMAX",
+   "headline": "Umbreon VMAX. Open.",
+   "price": 2283.14,
+   "source": "Price we stored",
+   "asOf": "2026-09-26",
+   "why": "Written down September 26, 2026 at $2,283.14. No earlier print, so this stays open.",
+   "hist": [
+    [
+     "2026-09-26",
+     2283.14
+    ]
+   ],
+   "href": "",
+   "changePct": null
+  },
+  {
+   "id": "receipt-2026-09-27-sealed-sm12-booster-box",
+   "type": "receipt",
+   "result": "open",
+   "kind": "sealed",
+   "name": "Cosmic Eclipse Booster Box",
+   "headline": "Cosmic Eclipse Booster Box. Open.",
+   "price": 5349.69,
+   "source": "Sealed print we stored",
+   "asOf": "2026-09-27",
+   "why": "Written down September 27, 2026 at $5,349.69. No earlier print, so this stays open.",
+   "hist": [
+    [
+     "2026-09-27",
+     5349.69
+    ]
+   ],
+   "href": "",
+   "changePct": null
+  },
+  {
+   "id": "receipt-2026-09-27-single-sv8pt5-161",
+   "type": "receipt",
+   "result": "open",
+   "kind": "single",
+   "name": "Umbreon ex",
+   "headline": "Umbreon ex. Open.",
+   "price": 1412.72,
+   "source": "Price we stored",
+   "asOf": "2026-09-27",
+   "why": "Written down September 27, 2026 at $1,412.72. No earlier print, so this stays open.",
+   "hist": [
+    [
+     "2026-09-27",
+     1412.72
+    ]
+   ],
+   "href": "",
+   "changePct": null
   }
  ]
 }
