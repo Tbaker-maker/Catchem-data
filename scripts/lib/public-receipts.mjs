@@ -31,7 +31,7 @@ function directionInto(by, id, date, start) {
   if (!prior || !(start > 0)) return null;
   if (start > prior.price) return "up";
   if (start < prior.price) return "down";
-  return null;
+  return "flat";
 }
 
 function laterOf(by, kind, id, date, sealedNow) {
@@ -73,13 +73,24 @@ export function scoreWatch({ entries, heat, sealedNow }) {
   return out;
 }
 
+export function receiptSource(row) {
+  return row.kind === "sealed" ? "eBay asking prices" : "TCGplayer market";
+}
+
 export function receiptWhy(row) {
+  const one = row.kind === "sealed" ? "eBay asking price" : "TCGplayer market price";
   if (row.result === "hit" || row.result === "miss") {
-    const way = row.direction === "up" ? "after a lower print" : "after a higher print";
+    const way = row.direction === "up" ? "after a lower one" : "after a higher one";
     const end = row.result === "hit" ? "Same way." : "The other way.";
-    return `Written down ${longDay(row.date)} at ${usd(row.start)}, ${way}. Next print ${longDay(row.laterDate)} was ${usd(row.later)}. ${end}`;
+    return `Written down ${longDay(row.date)} at ${usd(row.start)}, ${way}. Next ${one} on ${longDay(row.laterDate)} was ${usd(row.later)}. ${end}`;
   }
-  return `Written down ${longDay(row.date)} at ${usd(row.start)}. No earlier print, so this stays open.`;
+  if (row.direction === "flat") {
+    return `Written down ${longDay(row.date)} at ${usd(row.start)}. The ${one} before it was the same, so this stays open.`;
+  }
+  if (!row.direction) {
+    return `Written down ${longDay(row.date)} at ${usd(row.start)}. No earlier ${one} is stored, so this stays open.`;
+  }
+  return `Written down ${longDay(row.date)} at ${usd(row.start)}. No later ${one} is stored, so this stays open.`;
 }
 
 export function publicReceipts(rows) {
@@ -105,7 +116,7 @@ export function publicReceipts(rows) {
         name: row.name,
         headline: `${row.name}. ${label}.`,
         price,
-        source: row.kind === "sealed" ? "Sealed print we stored" : "Price we stored",
+        source: receiptSource(row),
         asOf: row.laterDate || row.date,
         why: receiptWhy(row),
         hist,

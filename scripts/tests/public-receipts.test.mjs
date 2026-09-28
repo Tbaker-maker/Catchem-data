@@ -26,6 +26,12 @@ test("a rising print that keeps rising is a hit, and the reverse is a miss", () 
   assert.equal(pub.hitRate, null);
   assert.equal(pub.rows.find((r) => r.name.startsWith("Pokemon GO")).result, "hit");
   assert.match(pub.rows.find((r) => r.name.startsWith("Unified")).why, /The other way/);
+  assert.equal(pub.rows.find((r) => r.name.startsWith("Pokemon GO")).source, "eBay asking prices");
   assert.equal(pub.rows.find((r) => r.name.startsWith("Umbreon")).result, "open");
-  assert.doesNotMatch(JSON.stringify(pub.rows), /TCGplayer market|worth buying|asks/);
+  assert.match(pub.rows.find((r) => r.name.startsWith("Umbreon")).why, /No earlier TCGplayer market price/);
+  assert.doesNotMatch(JSON.stringify(pub.rows), /worth buying|Sealed print|Price we stored/);
+  for (const row of pub.rows) {
+    const line = `${row.source} ${row.why}`;
+    assert.equal(/eBay asking/.test(line) && /TCGplayer market/.test(line), false);
+  }
 });

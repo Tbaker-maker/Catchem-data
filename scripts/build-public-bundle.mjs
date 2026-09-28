@@ -180,6 +180,49 @@ for (const card of Object.values(catalogue.cards || {})) {
     artistGroups.set(artist, list);
   }
 }
+function foldSet(s) {
+  return String(s || "").replace(/[—–]/g, " ").normalize("NFD").replace(/\p{M}/gu, "");
+}
+const SET_ALIAS = {
+  "swsh black star promos": "SWSH: Sword & Shield Promo Cards",
+  "sm black star promos": "SM Promos",
+  "bw black star promos": "Black and White Promos",
+  "dp black star promos": "Diamond and Pearl Promos",
+  "wizards black star promos": "WoTC Promo",
+  "sun moon": "SM Base Set",
+  "expedition base set": "Expedition",
+  "xy": "XY Base Set",
+  "hs unleashed": "Unleashed",
+  "hs undaunted": "Undaunted",
+};
+function aliasSet(s) {
+  const key = norm(foldSet(s));
+  const year = key.match(/^mcdonald s collection (\d{4})$/);
+  if (year) return `McDonald's Promos ${year[1]}`;
+  return SET_ALIAS[key] || s;
+}
+function setTokens(s) {
+  return norm(foldSet(s)).split(" ").filter((w) => w && w !== "and" && !/^(sv|swsh|sm|xy|me|bw|dp|hgss|ex)\d*$/.test(w));
+}
+// How well an index set name is the same set as a catalog group. 0 means no.
+function setScore(indexSet, catalogSet) {
+  const a = setTokens(indexSet);
+  const b = setTokens(catalogSet);
+  if (!a.length || !b.length) return 0;
+  const have = new Set(b);
+  if (!a.every((t) => have.has(t))) return 0;
+  let pen = 0;
+  for (const t of b) {
+    if (a.includes(t)) continue;
+    if (/^\d+$/.test(t)) pen += 6;
+    else if (t === "base" || t === "set") pen += 1;
+    else pen += 3;
+  }
+  const era = /^(sv|swsh|sm|xy|me|bw|dp|hgss|ex)\d*\b/;
+  if (era.test(norm(catalogSet)) && !era.test(norm(indexSet))) pen += 4;
+  if (norm(indexSet) === norm(catalogSet)) pen -= 5;
+  return 20 - pen;
+}
 let cardIndex = [];
 try {
   cardIndex = JSON.parse(await readFile(join(ROOT, "research/assets/card-index.json"), "utf8"));
@@ -191,22 +234,17 @@ for (const card of cardIndex) {
   const num = ident.includes("-") ? ident.slice(ident.lastIndexOf("-") + 1) : "";
   const left = numLeft(num);
   if (!artist || !left) continue;
-  const setName = norm(card.s);
   let best = null;
   let bestScore = 0;
   for (const item of byNum.get(left) || []) {
     if (artistById.has(item.id) || linkedPrize.has(item.id)) continue;
     const ns = nameScore(card.n, item.name);
-    const setn = norm(item.set);
-    const setHit = setName && setn && (setn === setName || setn.includes(setName) || setName.includes(setn));
-    if (ns < 1) continue;
-    if (!setHit && ns < 3) continue;
-    let score = ns;
-    if (setHit && setn === setName) score += 8;
-    else if (setHit) score += 3;
+    const agree = setScore(aliasSet(card.s), item.set);
+    if (ns < 1 || agree < 8) continue;
+    const score = ns + agree;
     if (score > bestScore) { bestScore = score; best = item; }
   }
-  if (!best || bestScore < 3) continue;
+  if (!best || bestScore < 9) continue;
   artistById.set(best.id, artist);
   artistMatches += 1;
   const list = artistGroups.get(artist) || [];
@@ -460,12 +498,16 @@ const counts = {
   sets: setIndex.length,
   priced: published.reduce((n, set) => n + set.priced, 0),
   artists: artistIndex.length,
-  artistCards: artistById.size,
-  artistNote: "Illustrator credits come from the card catalogue and the card index, when the name and the set agree. Not every card has a credit.",
+  artistCards: 0,
+  artistNote: "",
   sealedNote: "Sealed means the box, tin, pack, or collection. Cards are singles, including trainer-kit cards and the cards inside a world championship deck. Those cards used to be counted as sealed (the old figure was 2,998). No sealed name is repeated in one set.",
-  soldNote: "No sold list is in this catalog. The price on a card is TCGplayer market, not a sold price.",
+  soldNote: "No sold list is in this catalog. A sold price is shown only when one is stored. The price on a card is TCGplayer market, not a sold price.",
   ebaySealedTracked: null,
 };
+const singleN = counts.single;
+const credited = published.reduce((n, set) => n + set.items.filter((it) => it.kind === "single" && it.artist).length, 0);
+counts.artistCards = credited;
+counts.artistNote = `Illustrator credits come from the card catalogue and the card index, when the name and the set agree. ${credited.toLocaleString("en-US")} of ${singleN.toLocaleString("en-US")} singles have a credit. Not every card has one.`;
 await writeFile(join(OUT, "counts.json"), JSON.stringify(counts, null, 1) + "\n");
 await writeFile(join(OUT, "sets.json"), JSON.stringify({ asOf: catalog.asOf, source: "TCGplayer market", sets: setIndex }));
 await writeFile(join(OUT, "artists.json"), JSON.stringify({ asOf: catalog.asOf, note: counts.artistNote, artists: artistIndex }));
@@ -703,6 +745,18 @@ try {
   const sealedNow = new Map((sealed.products || []).map((p) => [p.id, p.priceMedian]));
   const scored = scoreWatch({ entries: log.entries || [], heat, sealedNow });
   const pub = publicReceipts(scored);
+  for (const row of pub.rows) {
+    if (row.result !== "hit" && row.result !== "miss") continue;
+    candidates.push({
+      ...row,
+      score: 30,
+      confidence: "Early",
+      set: "",
+      image: "",
+      low: null,
+      sold: null,
+    });
+  }
   watchReads.push(...pub.rows);
   counts.receipts = { scored: pub.scored, hits: pub.hits, misses: pub.misses, hitRate: pub.hitRate };
 } catch { /* receipts stay empty if the log is missing */ }
@@ -762,7 +816,7 @@ const receiptPub = {
 await writeFile(join(OUT, "receipts.json"), JSON.stringify({
   asOf: catalog.asOf,
   updatedAt,
-  note: "A hit means the next print moved the same way as the print we wrote down. A miss moved the other way. A hit rate stays hidden until 20 calls are scored. These are not sold prices.",
+  note: "A hit means the next stored price moved the same way as the price we wrote down. A miss moved the other way. A hit rate stays hidden until 20 calls are scored. These are not sold prices.",
   hitRate: receiptPub.hitRate,
   scored: receiptPub.scored,
   hits: receiptPub.hits,
@@ -790,7 +844,7 @@ await writeFile(join(OUT, "accuracy.json"), JSON.stringify({
   hits: receiptPub.hits,
   misses: receiptPub.misses,
   hitRate: receiptPub.hitRate,
-  note: "Scored only when a direction was written down first and a later print exists. A hit rate stays hidden until 20. Crowd votes are not in this file. No sold list is in this catalog.",
+  note: "Scored only when a direction was written down first and a later price exists. A hit rate stays hidden until 20. Crowd votes are not in this file. No sold list is in this catalog.",
   rows: watchReads.filter((row) => row.result === "hit" || row.result === "miss").map((row) => ({
     name: row.name, result: row.result, date: row.asOf,
   })),
