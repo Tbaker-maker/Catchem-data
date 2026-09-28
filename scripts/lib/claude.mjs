@@ -33,6 +33,7 @@ export async function callClaude({
   tools,
   system,
   allowTruncated = false,
+  timeoutMs = FETCH_TIMEOUT_MS,
   label = "anthropic",
 } = {}) {
   if (!apiKey) throw new Error(`${label}: no API key`);
@@ -42,7 +43,7 @@ export async function callClaude({
   if (system) body.system = system;
 
   const res = await fetch("https://api.anthropic.com/v1/messages", {
-    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+    signal: AbortSignal.timeout(timeoutMs),
     method: "POST",
     headers: {
       "x-api-key": apiKey,

@@ -1,13 +1,18 @@
-name: PPT safety check
+name: PPT safety
 on:
-  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
 jobs:
   safety:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "22"
-      - name: check-ppt-safety
+          node-version: 22
+      - name: Check public files for provider price leaks
         run: node scripts/check-ppt-safety.mjs
