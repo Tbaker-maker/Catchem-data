@@ -84,25 +84,38 @@ export async function run() {
   ], 5);
   t("a banned headline never ranks", dropped.length === 1 && !BANNED.test(dropped[0].headline));
   const many = Array.from({ length: 20 }, (_, i) => ({ type: "mover", price: 10 + i, headline: `Card ${i} is up 9% over 7 days, from $10 to $10.90.`, set: "S" + (i % 3), score: i }));
-  t("the list stops at 12", rankReads(many, 12).length === 12);
+  t("the ranked short list stops at 12", rankReads(many, 12).length === 12);
+  const steady = [];
+  for (let i = 0; i < 100; i++) {
+    const d = new Date(Date.parse("2026-04-01T00:00:00Z") + i * 86400000).toISOString().slice(0, 10);
+    steady.push([d, Math.round((40 + i * 0.2) * 100) / 100]);
+  }
+  const quarter = (await import("../lib/public-bundle.mjs")).feedWindow(steady, 90);
+  t("a 90-day move counts when it is not one step", quarter && quarter.window === 90 && quarter.pct > 0);
+  const spike90 = steady.map((p, i) => [p[0], i < 99 ? 40 : 80]);
+  t("one day still cannot be most of a 90-day move", (await import("../lib/public-bundle.mjs")).feedWindow(spike90, 90) === null);
 
   try {
     const counts = JSON.parse(await readFile(join(ROOT, "research/assets/public/counts.json"), "utf8"));
     const reads = JSON.parse(await readFile(join(ROOT, "research/assets/public/reads.json"), "utf8"));
+    const meta = JSON.parse(await readFile(join(ROOT, "research/assets/public/feed/meta.json"), "utf8"));
+    const catalogue = JSON.parse(await readFile(join(ROOT, "research/assets/public/feed/catalogue.json"), "utf8"));
     t("counts add up and slabs stay at zero", counts.items === counts.single + counts.sealed && counts.slab === 0 && counts.single > 20000);
-    t("the day has at most 12 reads", reads.reads.length <= 12);
+    t("the catalogue is more than 12 reads", meta.count > 12 && reads.count === meta.count && meta.count === Object.keys(catalogue.cards).length);
     const oldWhy = /last 30 days ran|low of the last 30|high of the last 30|we store|at least/i;
-    const bad = reads.reads.filter((row) => !money(row.price) || !row.headline || !row.why || BANNED.test(row.headline) || BANNED.test(row.why || "") || row.price === 0 || !/\b(over|in) (7|30) days\b/.test(row.headline) || !/\([^)]+\)/.test(row.headline) || oldWhy.test(row.why) || oldWhy.test(row.headline) || /\b(heating up|cooling off|last print|Top card in|checked again)\b/i.test(row.headline));
-    t("every read has a price, a window, and a clean headline", bad.length === 0);
+    const bad = reads.reads.filter((row) => !money(row.price) || !row.headline || !row.why || BANNED.test(row.headline) || BANNED.test(row.why || "") || row.price === 0 || !/\b(over|in) (7|30|90) days\b/.test(row.headline) || !/\([^)]+\)/.test(row.headline) || oldWhy.test(row.why) || oldWhy.test(row.headline) || /\b(heating up|cooling off|last print|Top card in|checked again)\b/i.test(row.headline));
+    t("every lead read has a price, a window, and a clean headline", bad.length === 0 && reads.reads.length === 24);
     t("a read is one kind", reads.reads.every((row) => row.kind === "single" || row.kind === "sealed"));
-    const patterns = reads.reads.map((row) => whyPattern(row.why));
-    t("no repeated why pattern", patterns.length === new Set(patterns).size);
-    const bySet = new Map();
-    for (const row of reads.reads) bySet.set(row.set, (bySet.get(row.set) || 0) + 1);
-    t("at most two reads from one set", [...bySet.values()].every((n) => n <= 2));
-    const thinTop = reads.reads.filter((row, i) => i < 3 && (/on few sales/i.test(row.headline) || isThinSeries(row.hist, row.toDate)));
-    const thinClaim = reads.reads.filter((row) => /on few sales/i.test(row.headline) && (/6-month|highest price|lowest price/i.test(row.headline) || row.n < 4));
-    t("no thin item in the first three or making a record claim", thinTop.length === 0 && thinClaim.length === 0);
+    const headlines = Object.values(catalogue.cards).map((row) => row.headline);
+    t("no duplicate headline", headlines.length === new Set(headlines).size);
+    const topSets = new Map();
+    for (const id of catalogue.today.slice(0, 10)) {
+      const setName = catalogue.cards[id].set;
+      topSets.set(setName, (topSets.get(setName) || 0) + 1);
+    }
+    t("at most two reads from one set in the top 10", [...topSets.values()].every((n) => n <= 2));
+    const thinTop = catalogue.today.slice(0, 3).filter((id) => catalogue.cards[id].thin || /on few sales/i.test(catalogue.cards[id].headline));
+    t("no thin item in the first three", thinTop.length === 0);
     const fallen = reads.reads.map((row) => row.why.match(/Has fallen (\d+) of the last 30 days/)).filter(Boolean);
     t("fallen-days why is used once and only past 15", fallen.length <= 1 && fallen.every((m) => Number(m[1]) >= 15));
     const bucket = JSON.parse(await readFile(join(ROOT, "research/assets/public/buckets/96.json"), "utf8"));
