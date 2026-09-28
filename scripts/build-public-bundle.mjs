@@ -753,8 +753,8 @@ for (const [item, set] of flat) {
     image: stockImage(item),
   });
 }
-const logFile = join(ROOT, "data/learning/calls.jsonl");
-const priorCalls = await readCallLog(logFile);
+const logFile = process.env.LEARNING_LOG || "";
+const priorCalls = logFile ? await readCallLog(logFile) : [];
 const feedResult = await publishFeed({
   items: feedItems,
   prior: priorCalls,
@@ -762,7 +762,7 @@ const feedResult = await publishFeed({
   asOf: catalog.asOf,
   updatedAt,
   outDir: OUT,
-  logFile,
+  logFile: logFile || null,
 });
 console.log(`feed catalogue ${feedResult.count} logged +${feedResult.logged.added}`);
 

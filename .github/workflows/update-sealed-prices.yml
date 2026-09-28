@@ -193,6 +193,12 @@ jobs:
             done
           fi
 
+      - name: Append shelf counts to the private log
+        continue-on-error: true
+        env:
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+        run: node scripts/append-shelf.mjs
+
       - name: Generate Morning Pulse
         run: node scripts/generate-pulse.mjs
       - name: Generate The Board

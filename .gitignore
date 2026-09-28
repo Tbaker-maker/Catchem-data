@@ -35,3 +35,9 @@ data/ppt/push-status.json
 # Crosscheck working files still carry provider prices for in-memory math. Never public.
 data/sealed-crosscheck.json
 data/crosscheck-history.json
+
+# Private learning logs. GitHub Pages publishes this repo, so these files
+# must not be tracked. The canonical copies live in catchem-data-private.
+data/learning/calls.jsonl
+data/learning/shelf.jsonl
+data/learning/snapshots/
