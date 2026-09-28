@@ -7,6 +7,7 @@ import {
   bucketOf, bestMove, changePct, chartSeries, cleanHistory, dropTiledCycles, eraOf, money, pretty, selectFeedReads, slug,
 } from "./lib/public-bundle.mjs";
 import { publicReceipts, scoreWatch } from "./lib/public-receipts.mjs";
+import { appendLearningLog } from "./lib/learning-log.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "research/assets/public");
@@ -745,6 +746,11 @@ await writeFile(join(OUT, "reads.json"), JSON.stringify({
   count: reads.length,
   reads,
 }, null, 1) + "\n");
+await appendLearningLog(join(ROOT, "data/learning/calls.jsonl"), {
+  asOf: catalog.asOf,
+  updatedAt,
+  reads,
+});
 
 const splitMovers = (kind) => {
   const rows = movers.filter((row) => row.kind === kind && row.price >= 20).map((row) => ({
