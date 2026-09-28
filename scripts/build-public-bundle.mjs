@@ -4,7 +4,7 @@ import { readFile, writeFile, mkdir, readdir, copyFile } from "node:fs/promises"
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
-  bucketOf, bestMove, changePct, cleanHistory, eraOf, headlineFor, money, pretty, rankReads, slug, whyFor, BANNED,
+  bucketOf, bestMove, changePct, cleanHistory, eraOf, money, pretty, rankReads, readCopy, slug, BANNED,
 } from "./lib/public-bundle.mjs";
 import { publicReceipts, scoreWatch } from "./lib/public-receipts.mjs";
 
@@ -569,10 +569,12 @@ for (const [item, set] of flat) {
     number: item.num || "",
     rarity: item.rarity || "",
     artist: item.artist || "",
-    why: whyFor(hist),
+    release: set.release || "",
     score: Math.round(Math.abs(move.to - move.from) * 100) / 100,
   };
-  read.headline = headlineFor(read);
+  const copy = readCopy(read);
+  read.headline = copy.headline;
+  read.why = copy.why;
   if (!read.headline || !read.why || BANNED.test(read.headline) || BANNED.test(read.why)) continue;
   if (/ebayimg|i\.ebayimg/i.test(read.image || "")) read.image = "";
   qualified.push(read);
