@@ -1,0 +1,77 @@
+import { mkdtemp, readFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+import { appendLearningLog, callsFromBundle, readCallLog } from "../lib/learning-log.mjs";
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
+
+export async function run() {
+  let fail = 0;
+  const t = (name, cond) => {
+    if (cond) console.log("  ok ", name);
+    else { fail += 1; console.error("  FAIL", name); }
+  };
+
+  const day = { asOf: "2026-09-27", updatedAt: "2026-09-27T10:19:31.933Z" };
+  const section6 = [
+    ["Primarina is heating up, up 47.1% since yesterday.", "heating", "single", "TCGplayer market", 3, 47.1, 2, "tcgcsv-1001", "heat_1d", "daily", "up", "singles", false],
+    ["Weavile is cooling off, down 33.4% since yesterday.", "cooling", "single", "TCGplayer market", 29.99, -33.4, 2, "tcgcsv-1002", "cool_1d", "daily", "down", "singles", false],
+    ["30th Celebration Booster Bundle is down 7.5% since yesterday.", "mover", "sealed", "TCGplayer market", 113.79, -7.5, 4, "tcgcsv-1003", "mover_down_1d", "daily", "down", "sealed", true],
+    ["Top card in SM Team Up: Latias & Latios GX.", "chase", "single", "TCGplayer market", 3913.85, -13, 2, "tcgcsv-1004", "chase_top", "cook", "none", "singles", false],
+    ["Evolutions Booster Box works out to $20 a pack.", "box", "sealed", "eBay ask", 3474.26, 0, 2, "tcgcsv-1005", "box_packout_ask", "cook", "none", "sealed", false],
+    ["Celebrations UPC, checked again. No direction was promised.", "receipt", "sealed", "eBay ask", 1319.99, -1.4, 3, "tcgcsv-1006", "watch_revisit", "watch", "none", "sealed", false],
+    ["Pikachu is heating up, up 45.1% since yesterday.", "heating", "single", "TCGplayer market", 119.95, 45.1, 2, "tcgcsv-1007", "heat_1d", "daily", "up", "singles", false],
+    ["Enriching Energy is cooling off, down 32.7% since yesterday.", "cooling", "single", "TCGplayer market", 3.7, -32.7, 2, "tcgcsv-1008", "cool_1d", "daily", "down", "singles", false],
+    ["Deluxe Battle Deck is up 6.8% since yesterday.", "mover", "sealed", "TCGplayer market", 32.87, 6.8, 4, "tcgcsv-1009", "mover_up_1d", "daily", "up", "sealed", true],
+    ["Top card in EX Unseen Forces: Raikou Star.", "chase", "single", "TCGplayer market", 1600, 0, 2, "tcgcsv-1010", "chase_top", "cook", "none", "singles", false],
+    ["Black Bolt Booster Bundle works out to $4 a pack.", "box", "sealed", "eBay ask", 100, 0, 2, "tcgcsv-1011", "box_packout_ask", "cook", "none", "sealed", false],
+    ["Umbreon VMAX, checked again. No direction was promised.", "receipt", "single", "TCGplayer market", 2283.14, 0, 6, "tcgcsv-1012", "watch_revisit", "watch", "none", "singles", false],
+  ];
+  const fixtureReads = section6.map((row, i) => ({
+    headline: row[0],
+    type: row[1],
+    kind: row[2],
+    source: row[3],
+    price: row[4],
+    changePct: row[5],
+    hist: Array.from({ length: row[6] }, (_, n) => [`2026-09-${String(20 + n).padStart(2, "0")}`, row[4]]),
+    id: `${row[1]}-${row[7]}`,
+    href: `/${row[2] === "sealed" ? "p" : "c"}/${row[7]}`,
+    asOf: "2026-09-27",
+    confidence: "Early",
+    n: i + 1,
+  }));
+  const logged = callsFromBundle({ ...day, reads: fixtureReads });
+  t("section 6 twelve reproduce from the log rules", logged.length === 12 && section6.every((row, i) => {
+    const got = logged[i];
+    return got.pattern === row[8] && got.read_type === row[9] && got.direction === row[10] && got.kind === row[11] && got.gradeable === row[12] && got.sku_id === row[7] && got.price_source === (row[3] === "eBay ask" ? "ebay_ask" : "tcgplayer_market") && got.copied === false;
+  }));
+  t("ask is never gradeable", logged.filter((row) => row.price_source === "ebay_ask").every((row) => row.gradeable === false));
+  t("a copied claim is not gradeable", callsFromBundle({ ...day, reads: [fixtureReads[2]] }, [logged[2]]).every((row) => row.copied === true && row.gradeable === false));
+
+  const dir = await mkdtemp(join(tmpdir(), "learn-"));
+  const file = join(dir, "calls.jsonl");
+  const first = await appendLearningLog(file, { ...day, reads: fixtureReads });
+  const second = await appendLearningLog(file, { ...day, reads: fixtureReads });
+  const back = await readCallLog(file);
+  t("append writes twelve and does not duplicate", first.added === 12 && second.added === 0 && back.length === 12);
+  t("the log has no member key", !JSON.stringify(back).includes("member"));
+
+  const shipped = await readCallLog(join(ROOT, "data/learning/calls.jsonl"));
+  const template = shipped.filter((row) => row.printed_on === "2026-09-27" && /_(heat_1d|cool_1d|chase_top|box_on_list|mover_up_1d|mover_down_1d)$/.test(row.call_id));
+  t("tonight's template stack is 24 rows", template.length === 24 && new Set(shipped.map((row) => row.call_id)).size === shipped.length);
+  t("every shipped row has a sku", shipped.every((row) => /^tcgcsv-\d+$/.test(row.sku_id)));
+  t("shipped rows stay off the public bundle keys", !shipped.some((row) => "member_key" in row || "member" in row));
+  const publicReads = JSON.parse(await readFile(join(ROOT, "research/assets/public/reads.json"), "utf8"));
+  t("public reads are not the call log", !JSON.stringify(publicReads).includes("call_id") && !JSON.stringify(publicReads).includes("gradeable"));
+  const sample = shipped.find((row) => row.sku_id === "tcgcsv-88537");
+  t("Raikou Star logs as a cook chase with no direction", sample && sample.pattern === "chase_top" && sample.read_type === "cook" && sample.direction === "none" && sample.gradeable === false && sample.price_at_flag === 1600);
+  return fail;
+}
+
+if (process.argv[1] && import.meta.url.endsWith("learning-log.suite.mjs")) {
+  const n = await run();
+  if (n) process.exit(1);
+  console.log("learning log ok");
+}
