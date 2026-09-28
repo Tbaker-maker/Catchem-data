@@ -4,7 +4,7 @@ import { readFile, writeFile, mkdir, readdir, copyFile } from "node:fs/promises"
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
-  bucketOf, bestMove, changePct, cleanHistory, eraOf, money, pretty, rankReads, readCopy, slug, BANNED,
+  bucketOf, bestMove, changePct, clampSpikes, cleanHistory, dropTiledCycles, eraOf, money, pretty, selectFeedReads, slug,
 } from "./lib/public-bundle.mjs";
 import { publicReceipts, scoreWatch } from "./lib/public-receipts.mjs";
 
@@ -76,7 +76,7 @@ try {
 function histFor(pid) {
   const days = series.get(Number(pid));
   if (!days) return [];
-  return [...days.entries()].sort((a, b) => a[0] < b[0] ? -1 : 1);
+  return dropTiledCycles([...days.entries()].sort((a, b) => a[0] < b[0] ? -1 : 1));
 }
 
 const PRODUCT_WORD = /\b(deck|booster|elite trainer|\btin\b|\bbox\b|bundle|\bpack\b|case|collection|binder|sleeve|playmat|album|\bcoin\b|display)\b/i;
@@ -321,6 +321,7 @@ function releaseFor(setName, groupId) {
 let RUN_AT = null;
 try { RUN_AT = (await read("data/ppt/run-report.json")).finishedAt || null; } catch { RUN_AT = null; }
 
+const rawById = new Map();
 const sets = new Map();
 for (const item of items) {
   if (linkedPrize.has(item.id)) continue;
@@ -346,7 +347,9 @@ for (const item of items) {
   else set.single += 1;
   const price = money(item.price) ? Number(item.price) : null;
   if (price) set.priced += 1;
-  const hist = histFor(item.tcgplayerProductId);
+  const histRaw = histFor(item.tcgplayerProductId);
+  const hist = clampSpikes(histRaw);
+  rawById.set(item.id, histRaw);
   const prevP = hist.length >= 2 ? hist[hist.length - 2][1] : null;
   const pct = price ? changePct(prevP, price) : null;
   if (pct > 0) set.up += 1;
@@ -538,13 +541,14 @@ let hist30 = 0;
 let hist90 = 0;
 const qualified = [];
 for (const [item, set] of flat) {
-  const hist = item.hist || [];
-  if (hist.length >= 30) hist30 += 1;
-  if (hist.length >= 90) hist90 += 1;
+  const raw = rawById.get(item.id) || item.hist || [];
+  if (raw.length >= 30) hist30 += 1;
+  if (raw.length >= 90) hist90 += 1;
   const kind = item.kind === "sealed" ? "sealed" : "single";
-  const move = bestMove(hist, kind);
+  const move = bestMove(raw, kind);
   if (!move || move.from < 5 || move.to < 5) continue;
   const year = Number(String(set.release || "").slice(0, 4)) || null;
+  const chart = item.hist || [];
   const read = {
     id: `move-${item.id}`,
     type: "mover",
@@ -562,8 +566,9 @@ for (const [item, set] of flat) {
     chartWindow: `${move.window} days, ${move.fromDate} to ${move.toDate}`,
     source: `TCGplayer market, ${move.toDate}`,
     asOf: move.toDate,
-    history: hist.map((pt) => pt[1]),
-    hist,
+    history: chart.map((pt) => pt[1]),
+    hist: chart,
+    rawHist: raw,
     image: stockImage(item),
     href: kind === "sealed" ? `/p/${item.id}` : `/c/${item.id}`,
     number: item.num || "",
@@ -572,10 +577,6 @@ for (const [item, set] of flat) {
     release: set.release || "",
     score: Math.round(Math.abs(move.to - move.from) * 100) / 100,
   };
-  const copy = readCopy(read);
-  read.headline = copy.headline;
-  read.why = copy.why;
-  if (!read.headline || !read.why || BANNED.test(read.headline) || BANNED.test(read.why)) continue;
   if (/ebayimg|i\.ebayimg/i.test(read.image || "")) read.image = "";
   qualified.push(read);
 }
@@ -732,7 +733,11 @@ counts.updatedAt = updatedAt;
 counts.ebaySealedTracked = ebayTracked;
 await writeFile(join(OUT, "counts.json"), JSON.stringify(counts, null, 1) + "\n");
 
-const reads = rankReads(candidates, 12).map((row, i) => ({ ...row, n: i + 1 }));
+const reads = selectFeedReads(candidates, 12).map((row, i) => {
+  const { rawHist, ...pub } = row;
+  void rawHist;
+  return { ...pub, n: i + 1 };
+});
 await writeFile(join(OUT, "reads.json"), JSON.stringify({
   asOf: catalog.asOf,
   updatedAt,

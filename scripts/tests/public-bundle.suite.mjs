@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { BANNED, bestMove, changePct, headlineFor, money, rankReads, whyFor } from "../lib/public-bundle.mjs";
+import { BANNED, bestMove, changePct, clampSpikes, dropTiledCycles, headlineFor, isThinSeries, money, rankReads, selectFeedReads, whyFor, whyPattern } from "../lib/public-bundle.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 
@@ -35,11 +35,36 @@ export async function run() {
   const accent = headlineFor({ name: "Pokemon Catcher", set: "Test Set", price: 12.5, fromPrice: 10, changePct: 25, windowDays: 7, toDate: "2026-09-27" });
   t("Pokémon stays accented", accent.startsWith("Pokémon Catcher (Test Set) is up 25% over 7 days"));
   const why = whyFor(down);
-  t("why uses the whole series and skips the old 30-day line", /^Has fallen \d+ of the last 30 days\.$/.test(why) && !/last 30 days ran|low of the last 30|high of the last 30/i.test(why));
+  t("why uses the whole series and skips the old 30-day line", why.length > 0 && !/last 30 days ran|low of the last 30|high of the last 30|we store|at least/i.test(why));
   const led = headlineFor({ name: "151 Elite Trainer Box", set: "SV: Scarlet & Violet 151", release: "2023-09-22", price: down.at(-1)[1], fromPrice: down[30][1], changePct: -17.6, windowDays: 30, toDate: down.at(-1)[0], fromDate: down[30][0], hist: down });
-  t("a series low leads when it is the stronger fact", led.startsWith("151 Elite Trainer Box (Scarlet & Violet 151) hit its lowest price since at least April") && led.includes("down 17.6% in 30 days"));
-  const thin = down.map((p, i) => [p[0], i < 20 ? 80 : p[1]]);
-  t("a flat stretch is a thin market", whyFor(thin, { fromDate: thin[10][0], toDate: thin.at(-1)[0], changePct: -10 }) === "Few sales, so moves come in jumps.");
+  t("a series low leads when it is the stronger fact", led.startsWith("151 Elite Trainer Box (Scarlet & Violet 151) hit its lowest price since April") && led.includes("down 17.6% in 30 days") && !/at least|we store/i.test(led));
+  const long = [];
+  for (let i = 0; i < 170; i++) {
+    const d = new Date(Date.parse("2026-04-01T00:00:00Z") + i * 86400000).toISOString().slice(0, 10);
+    long.push([d, Math.round((80 - i * 0.2) * 100) / 100]);
+  }
+  const six = headlineFor({ name: "Lost Thunder Booster Box", set: "SM - Lost Thunder", release: "2018-11-02", price: long.at(-1)[1], fromPrice: long.at(-30)[1], changePct: -8, windowDays: 30, toDate: long.at(-1)[0], hist: long });
+  t("a long series says a 6-month low", six.includes("hit a 6-month low") && !/we store|at least/i.test(six));
+  const thinPts = [];
+  for (let i = 0; i < 40; i++) {
+    const d = new Date(Date.parse("2026-08-01T00:00:00Z") + i * 86400000).toISOString().slice(0, 10);
+    thinPts.push([d, i < 25 ? 50 : Math.round((50 - (i - 24) * 1.5) * 100) / 100]);
+  }
+  const thinCopy = headlineFor({ name: "Arceus LV.X", set: "Diamond and Pearl Promos", number: "DP53", release: "2007-05-01", price: thinPts.at(-1)[1], fromPrice: thinPts[10][1], changePct: -20, windowDays: 30, toDate: thinPts.at(-1)[0], hist: thinPts });
+  t("a thin series is not a record and says on few sales", isThinSeries(thinPts) && thinCopy.includes("on few sales") && !/6-month|highest price|lowest price/i.test(thinCopy));
+  const tiled = [];
+  const seed = [10, 10, 9];
+  for (let i = 0; i < 15; i++) tiled.push([new Date(Date.parse("2026-03-31T00:00:00Z") + i * 86400000).toISOString().slice(0, 10), seed[i % 3]]);
+  tiled.push(["2026-04-15", 12], ["2026-04-16", 12.4]);
+  const cleaned = dropTiledCycles(tiled);
+  t("a 3-day tiled cycle keeps only the first three days", cleaned.length === 5 && cleaned[2][1] === 9 && cleaned[3][0] === "2026-04-15");
+  const spiked = down.map((p, i) => i === 40 ? [p[0], p[1] * 0.4] : p);
+  const clamped = clampSpikes(spiked);
+  t("a one-day spike is clamped and is not the high", clamped[40][1] > spiked[40][1] && clamped[40][1] < spiked[39][1] && !headlineFor({ name: "Mega Gengar ex", set: "ME: Ascended Heroes", number: "284/217", release: "2026-01-30", price: spiked.at(-1)[1], fromPrice: spiked[30][1], changePct: -8, windowDays: 30, hist: spiked, toDate: spiked.at(-1)[0] }).includes(String(spiked[40][1])));
+  const sameSet = [1, 2, 3].map((n) => ({ type: "mover", price: 20, fromPrice: 10, changePct: -10, windowDays: 30, set: "ME: Ascended Heroes", name: "Card " + n, score: 100 - n, hist: down, toDate: down.at(-1)[0], release: "2026-01-30" }));
+  const other = { type: "mover", price: 20, fromPrice: 10, changePct: 12, windowDays: 30, set: "Base Set", name: "Other", score: 50, hist: down.map((p, i) => [p[0], 40 + i]), toDate: down.at(-1)[0], release: "1999-01-09" };
+  const capped = selectFeedReads([...sameSet, other], 12);
+  t("at most two reads from one set", capped.filter((row) => row.set === "ME: Ascended Heroes").length <= 2 && new Set(capped.map((row) => whyPattern(row.why))).size === capped.length);
   const dropped = rankReads([
     { type: "mover", price: 10, headline: "This is a buy.", set: "A", score: 9 },
     { type: "mover", price: 10, headline: "Pikachu is up 4% over 7 days, from $10 to $10.40.", set: "A", score: 2 },
@@ -53,10 +78,24 @@ export async function run() {
     const reads = JSON.parse(await readFile(join(ROOT, "research/assets/public/reads.json"), "utf8"));
     t("counts add up and slabs stay at zero", counts.items === counts.single + counts.sealed && counts.slab === 0 && counts.single > 20000);
     t("the day has at most 12 reads", reads.reads.length <= 12);
-    const oldWhy = /last 30 days ran|low of the last 30|high of the last 30/i;
+    const oldWhy = /last 30 days ran|low of the last 30|high of the last 30|we store|at least/i;
     const bad = reads.reads.filter((row) => !money(row.price) || !row.headline || !row.why || BANNED.test(row.headline) || BANNED.test(row.why || "") || row.price === 0 || !/\b(over|in) (7|30) days\b/.test(row.headline) || !/\([^)]+\)/.test(row.headline) || oldWhy.test(row.why) || oldWhy.test(row.headline) || /\b(heating up|cooling off|last print|Top card in|checked again)\b/i.test(row.headline));
     t("every read has a price, a window, and a clean headline", bad.length === 0);
     t("a read is one kind", reads.reads.every((row) => row.kind === "single" || row.kind === "sealed"));
+    const patterns = reads.reads.map((row) => whyPattern(row.why));
+    t("no repeated why pattern", patterns.length === new Set(patterns).size);
+    const bySet = new Map();
+    for (const row of reads.reads) bySet.set(row.set, (bySet.get(row.set) || 0) + 1);
+    t("at most two reads from one set", [...bySet.values()].every((n) => n <= 2));
+    const thinTop = reads.reads.filter((row, i) => i < 3 && (/on few sales/i.test(row.headline) || isThinSeries(row.hist, row.toDate)));
+    const thinClaim = reads.reads.filter((row) => /on few sales/i.test(row.headline) && (/6-month|highest price|lowest price/i.test(row.headline) || row.n < 4));
+    t("no thin item in the first three or making a record claim", thinTop.length === 0 && thinClaim.length === 0);
+    const fallen = reads.reads.map((row) => row.why.match(/Has fallen (\d+) of the last 30 days/)).filter(Boolean);
+    t("fallen-days why is used once and only past 15", fallen.length <= 1 && fallen.every((m) => Number(m[1]) >= 15));
+    const bucket = JSON.parse(await readFile(join(ROOT, "research/assets/public/buckets/96.json"), "utf8"));
+    const gengarCard = bucket.find((card) => card.id === "tcgcsv-676096");
+    const dip = (gengarCard?.hist || []).filter((pt) => pt[0] === "2026-04-24" || pt[0] === "2026-04-25");
+    t("the Gengar April spike is gone from the chart", dip.length === 2 && dip.every((pt) => pt[1] > 800));
   } catch (err) {
     t("public bundle is on disk", false);
     console.error(err);
