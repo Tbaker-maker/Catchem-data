@@ -30,6 +30,12 @@ export function runTcgcsvCatalogTests() {
   t("a case is skipped", classify({ name: "Prismatic Evolutions Elite Trainer Box Case", extendedData: [] }).skip === "case, not one product");
   t("a code card is skipped", classify({ name: "Code Card - Prismatic Evolutions Booster Pack", extendedData: [] }).skip === "code card");
   t("a Japanese group is skipped", classify({ name: "Pikachu", extendedData: [{ name: "Number", value: "1" }] }, "Ash vs Team Rocket Deck Kit (JP Exclusive)").skip === "not an English product");
+  const worldsCard = classify({ name: "Air Balloon - 2025 (Jose Cruz Galindo-Resendiz)", extendedData: [] }, "World Championship Decks");
+  t("a worlds deck card is a single", worldsCard.kind === "single");
+  const secretBox = classify({ name: "Secret Box - 2025 (Riley McKay)", extendedData: [] }, "World Championship Decks");
+  t("a worlds card named Secret Box is still a single", secretBox.kind === "single");
+  const worldsDeck = classify({ name: "2024 World Championship Deck: Evan Pavelski (Regidrago VSTAR)", extendedData: [] }, "World Championship Decks");
+  t("a worlds deck product stays sealed", worldsDeck.kind === "sealed");
 
   t("no market price stays empty", pickMarket([{ marketPrice: null, subTypeName: "Normal" }]) === null);
   t("zero is not a price", pickMarket([{ marketPrice: 0, subTypeName: "Normal" }]) === null);

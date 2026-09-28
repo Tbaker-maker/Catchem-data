@@ -44,6 +44,16 @@ export function classify(product, groupName = "") {
   const rarity = extValue(product, "Rarity");
   if (/\b(psa|bgs|cgc|sgc)\b/.test(n)) return { kind: "slab", number, rarity, subtype: null };
   if (number) return { kind: "single", number, rarity, subtype: null };
+  // World Championship groups mix real decks with the cards inside them.
+  // A deck product is "YYYY World Championship…" or "Championship Deck:".
+  // A card is "Name - YEAR (Player)", even when the card is named Secret Box.
+  const worlds = /world championship/i.test(g);
+  if (worlds) {
+    if (/championship deck\s*:/i.test(name) || /^\d{4}\s+world championship/i.test(name)) {
+      return { kind: "sealed", number: null, rarity: null, subtype: sealedSubtype(name) || "deck" };
+    }
+    return { kind: "single", number, rarity, subtype: null };
+  }
   return { kind: "sealed", number: null, rarity: null, subtype: sealedSubtype(name) };
 }
 

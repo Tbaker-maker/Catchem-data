@@ -76,17 +76,35 @@ export function headlineFor(read) {
   if (!name || !price) return "";
   const pct = read.changePct;
   const moved = Number.isFinite(pct) && pct !== 0
-    ? `${pct > 0 ? "up" : "down"} ${Math.abs(pct)}% since yesterday`
-    : "unchanged since yesterday";
+    ? `${pct > 0 ? "up" : "down"} ${Math.abs(pct)}% from the last print`
+    : "flat versus the last print";
+  const id = String(read.id || read.type || "");
+  let h = 0;
+  for (const c of id) h = (h + c.charCodeAt(0)) % 997;
+  const pick = (lines) => lines[id ? h % lines.length : 0];
   if (read.type === "box") {
     const each = money(read.perPack);
-    return each ? `${name} works out to ${each} a pack on the eBay ask.` : "";
+    return each ? `${name} works out to ${each} a pack. The market price is ${price}.` : "";
   }
-  if (read.type === "chase") return `Top card in ${pretty(read.set)}: ${name} at ${price}.`;
-  if (read.type === "receipt") return `${name}, revisited: ${moved}.`;
-  if (read.type === "heating") return `${name} is heating up, ${moved}.`;
-  if (read.type === "cooling") return `${name} is cooling off, ${moved}.`;
-  return `${name} is ${moved}. The market price is ${price}.`;
+  if (read.type === "chase") return pick([
+    `Top card in ${pretty(read.set)}: ${name} at ${price}.`,
+    `${name} is the chase we can price in ${pretty(read.set)}. The market price is ${price}.`,
+  ]);
+  if (read.type === "receipt") return `${name}, checked again. The market price is ${price}.`;
+  if (read.type === "heating") return pick([
+    `${name} is heating up. The market price is ${price}.`,
+    `${name} is heating up, ${moved}. The market price is ${price}.`,
+    `${name} is heating up. The last print was lower. The market price is ${price}.`,
+  ]);
+  if (read.type === "cooling") return pick([
+    `${name} is cooling off. The market price is ${price}.`,
+    `${name} is ${moved}. The market price is ${price}.`,
+    `${name} printed lower. The market price is ${price}.`,
+  ]);
+  return pick([
+    `${name} changed since the last print. The market price is ${price}.`,
+    `${name} is ${moved}. The market price is ${price}.`,
+  ]);
 }
 
 export function rankReads(rows, limit = 24) {
