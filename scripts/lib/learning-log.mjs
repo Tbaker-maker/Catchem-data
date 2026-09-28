@@ -1,8 +1,8 @@
 // One immutable call row per Feed read. Not a public Pages file.
-import { appendFile, readFile, writeFile, mkdir } from "node:fs/promises";
+import { appendFile, readFile, mkdir } from "node:fs/promises";
 import { dirname } from "node:path";
 
-const DEADBAND_7D = 0.03;
+const FIELDS = ["call_id", "printed_on", "sku_id", "kind", "read_type", "pattern", "claim", "direction", "price_at_flag", "price_source", "price_as_of", "points_in_chart", "label", "gradeable", "copied", "exclude_reason"];
 
 export function printedOnPT(bundle) {
   const asOf = String(bundle?.asOf || "");
@@ -84,30 +84,40 @@ export function mapTemplate(read) {
     return { read_type: "cook", pattern, direction: "none" };
   }
   const direction = Number.isFinite(pct) ? (pct > 0 ? "up" : pct < 0 ? "down" : "none") : "none";
-  const windowed = /\b(over|in) \d+ days\b/i.test(headline);
-  const stem = windowed ? "nd" : "1d";
-  const pattern = direction === "down" ? `mover_down_${stem}` : direction === "up" ? `mover_up_${stem}` : `mover_flat_${stem}`;
+  const pattern = direction === "down" ? "mover_down_1d" : direction === "up" ? "mover_up_1d" : "mover_flat_1d";
   return { read_type: "daily", pattern, direction };
 }
 
-export function isCopied(claim, sku, price, prior) {
-  const prev = (prior || []).filter((row) => row.sku_id === sku).at(-1);
-  if (!prev) return false;
-  if (String(prev.claim) !== String(claim)) return false;
-  const a = Number(prev.price_at_flag);
-  const b = Number(price);
-  if (!(a > 0) || !(b > 0)) return true;
-  return Math.abs((b - a) / a) < DEADBAND_7D;
+export function oneDayPct(read) {
+  const headline = String(read?.headline || read?.claim || "");
+  const hist = Array.isArray(read?.hist) ? read.hist : Array.isArray(read?.history) ? read.history : [];
+  const windowed = /\b(over|in) \d+ days\b/i.test(headline);
+  if (!windowed && Number.isFinite(Number(read?.changePct))) return Number(read.changePct);
+  if (hist.length >= 2) {
+    const prev = hist[hist.length - 2];
+    const last = hist[hist.length - 1];
+    const a = Number(Array.isArray(prev) ? prev[1] : prev);
+    const b = Number(Array.isArray(last) ? last[1] : last);
+    if (a > 0 && b > 0) return ((b - a) / a) * 100;
+  }
+  return null;
 }
 
-export function gradeableOf(row, changePct) {
-  if (!["up", "down", "sideways"].includes(row.direction)) return false;
-  if (row.price_source !== "tcgplayer_market") return false;
-  if (!(Number(row.price_at_flag) > 0)) return false;
-  if (row.copied) return false;
-  const pct = Number(changePct);
-  if (Number.isFinite(pct) && Math.abs(pct) >= 25 && row.points_in_chart <= 3) return false;
-  return true;
+export function isCopied(claim, sku, prior) {
+  return (prior || []).some((row) => row.sku_id === sku && String(row.claim) === String(claim));
+}
+
+export function excludeReason(row, dayPct) {
+  if (row.price_source === "ebay_ask") return "ask";
+  if (!["up", "down", "sideways"].includes(row.direction)) return "no_direction";
+  if (row.copied) return "copied";
+  const pct = Number(dayPct);
+  if (Number.isFinite(pct) && Math.abs(pct) >= 25 && row.points_in_chart <= 3) return "spike";
+  return null;
+}
+
+export function gradeableOf(row, dayPct) {
+  return excludeReason(row, dayPct) == null && Number(row.price_at_flag) > 0;
 }
 
 export function callFromRead(read, bundle, prior = []) {
@@ -117,7 +127,8 @@ export function callFromRead(read, bundle, prior = []) {
   const printed = printedOnPT(bundle);
   const claim = String(read?.headline || read?.claim || "");
   const price = Number(read?.price);
-  const copied = isCopied(claim, sku, price, prior);
+  const copied = isCopied(claim, sku, prior);
+  const dayPct = oneDayPct(read);
   const row = {
     call_id: `${printed}_${sku}_${mapped.pattern}`,
     printed_on: printed,
@@ -134,9 +145,13 @@ export function callFromRead(read, bundle, prior = []) {
     label: labelOf(read, points),
     gradeable: false,
     copied,
+    exclude_reason: null,
   };
-  row.gradeable = gradeableOf(row, read?.changePct);
-  return row;
+  row.exclude_reason = excludeReason(row, dayPct);
+  row.gradeable = row.exclude_reason == null && price > 0;
+  const out = {};
+  for (const key of FIELDS) out[key] = row[key];
+  return out;
 }
 
 export function callsFromBundle(bundle, prior = []) {
@@ -162,23 +177,25 @@ export async function readCallLog(file) {
 }
 
 export async function appendLearningLog(file, bundle) {
-  const prior = await readCallLog(file);
+  let priorText = "";
+  try { priorText = await readFile(file, "utf8"); } catch (err) { if (!err || err.code !== "ENOENT") throw err; }
+  const prior = priorText.split("\n").map((line) => line.trim()).filter(Boolean).map((line) => JSON.parse(line));
   const have = new Set(prior.map((row) => row.call_id));
-  const fresh = callsFromBundle(bundle, prior).filter((row) => row.call_id && !have.has(row.call_id));
-  const missing = fresh.filter((row) => !row.sku_id);
+  const built = callsFromBundle(bundle, prior).filter((row) => row.call_id);
+  const skipped = built.filter((row) => have.has(row.call_id)).map((row) => row.call_id);
+  const fresh = built.filter((row) => !have.has(row.call_id));
+  const missing = fresh.filter((row) => !String(row.sku_id || "").startsWith("tcgcsv-"));
   if (missing.length) {
     const err = new Error(`sku_id missing on ${missing.length} reads`);
     err.missing = missing.map((row) => row.claim);
     throw err;
   }
-  if (!fresh.length) return { added: 0, total: prior.length };
+  if (!fresh.length) return { added: 0, total: prior.length, skipped };
   await mkdir(dirname(file), { recursive: true });
+  const prefix = priorText.endsWith("\n") || priorText.length === 0 ? priorText : priorText + "\n";
   const body = fresh.map((row) => JSON.stringify(row)).join("\n") + "\n";
   await appendFile(file, body, "utf8");
-  return { added: fresh.length, total: prior.length + fresh.length };
-}
-
-export async function writeCallLog(file, rows) {
-  await mkdir(dirname(file), { recursive: true });
-  await writeFile(file, rows.map((row) => JSON.stringify(row)).join("\n") + (rows.length ? "\n" : ""), "utf8");
+  const after = await readFile(file, "utf8");
+  if (!after.startsWith(prefix)) throw new Error("call log was rewritten");
+  return { added: fresh.length, total: prior.length + fresh.length, skipped };
 }
