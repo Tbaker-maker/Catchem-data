@@ -53,6 +53,9 @@ export function labelOf(read, points) {
 }
 
 export function mapTemplate(read) {
+  if (read?.pattern && read?.read_type && ["up", "down", "sideways", "none"].includes(read.direction)) {
+    return { read_type: read.read_type, pattern: read.pattern, direction: read.direction };
+  }
   const type = String(read?.type || "");
   const headline = String(read?.headline || read?.claim || "");
   const pct = Number(read?.changePct);

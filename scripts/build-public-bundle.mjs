@@ -4,10 +4,10 @@ import { readFile, writeFile, mkdir, readdir, copyFile } from "node:fs/promises"
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
-  bucketOf, bestMove, changePct, chartSeries, cleanHistory, dropTiledCycles, eraOf, money, pretty, selectFeedReads, slug,
+  bucketOf, bestMove, changePct, chartSeries, cleanHistory, dropTiledCycles, eraOf, money, pretty, slug,
 } from "./lib/public-bundle.mjs";
 import { publicReceipts, scoreWatch } from "./lib/public-receipts.mjs";
-import { appendLearningLog } from "./lib/learning-log.mjs";
+import { publishFeed, readCallLog } from "./lib/feed-catalogue.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "research/assets/public");
@@ -734,23 +734,37 @@ counts.updatedAt = updatedAt;
 counts.ebaySealedTracked = ebayTracked;
 await writeFile(join(OUT, "counts.json"), JSON.stringify(counts, null, 1) + "\n");
 
-const reads = selectFeedReads(candidates, 12).map((row, i) => {
-  const { rawHist, ...pub } = row;
-  void rawHist;
-  return { ...pub, n: i + 1 };
-});
-await writeFile(join(OUT, "reads.json"), JSON.stringify({
+const feedItems = [];
+for (const [item, set] of flat) {
+  const raw = rawById.get(item.id) || item.hist || [];
+  if (raw.length < 30) continue;
+  const kind = item.kind === "sealed" ? "sealed" : "single";
+  feedItems.push({
+    id: item.id,
+    name: pretty(item.name),
+    set: set.name,
+    setSlug: set.slug,
+    kind,
+    number: item.num || item.number || "",
+    price: money(item.price) ? Number(item.price) : (raw.at(-1)?.[1] || 0),
+    release: set.release || "",
+    hist: raw,
+    href: kind === "sealed" ? `/p/${item.id}` : `/c/${item.id}`,
+    image: stockImage(item),
+  });
+}
+const logFile = join(ROOT, "data/learning/calls.jsonl");
+const priorCalls = await readCallLog(logFile);
+const feedResult = await publishFeed({
+  items: feedItems,
+  prior: priorCalls,
+  prices: new Map(items.filter((item) => Number(item.price) > 0 && item.id).map((item) => [item.id, Number(item.price)])),
   asOf: catalog.asOf,
   updatedAt,
-  source: "TCGplayer market",
-  count: reads.length,
-  reads,
-}, null, 1) + "\n");
-await appendLearningLog(join(ROOT, "data/learning/calls.jsonl"), {
-  asOf: catalog.asOf,
-  updatedAt,
-  reads,
+  outDir: OUT,
+  logFile,
 });
+console.log(`feed catalogue ${feedResult.count} logged +${feedResult.logged.added}`);
 
 const splitMovers = (kind) => {
   const rows = movers.filter((row) => row.kind === kind && row.price >= 20).map((row) => ({

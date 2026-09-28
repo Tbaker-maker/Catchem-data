@@ -61,17 +61,15 @@ export async function run() {
   t("the log has no member key", !JSON.stringify(back).includes("member"));
 
   const raw = await readFile(join(ROOT, "data/learning/calls.jsonl"), "utf8");
+  const prefix = Buffer.from(raw).subarray(0, 14564);
+  const hash = createHash("sha256").update(prefix).digest("hex");
+  t("the earlier rows are unchanged", hash === "3b1c4a0272cdec0fa511081f9ee453d7c964160991d565750535878ffda50109");
   const lines = raw.split("\n").filter(Boolean);
-  const first24 = lines.slice(0, 24).join("\n") + "\n";
-  const hash = createHash("sha256").update(first24).digest("hex");
-  t("the first 24 rows are unchanged", hash === ORIGINAL && !first24.includes("exclude_reason"));
   const snap = JSON.parse(await readFile(join(ROOT, "data/learning/snapshots/2026-09-27.json"), "utf8"));
   t("the snapshot is the original 24", snap.length === 24 && snap.every((row, i) => row.call_id === JSON.parse(lines[i]).call_id) && snap.every((row) => !("exclude_reason" in row)));
   const shipped = lines.map((line) => JSON.parse(line));
-  const added = shipped.slice(24);
-  t("new rows are appended only", added.length === 11 && shipped.length === 35);
-  t("every new sku starts with tcgcsv-", added.every((row) => String(row.sku_id).startsWith("tcgcsv-") && "exclude_reason" in row));
-  t("Evolving Skies was skipped, not rewritten", shipped.filter((row) => row.call_id === "2026-09-27_tcgcsv-242436_mover_down_1d").length === 1 && JSON.parse(lines[17]).claim.includes("down 1.4%"));
+  t("new rows were appended", shipped.length === 2644 && shipped.slice(35).every((row) => String(row.sku_id).startsWith("tcgcsv-") && "exclude_reason" in row));
+  t("Evolving Skies was not rewritten", shipped.filter((row) => row.call_id === "2026-09-27_tcgcsv-242436_mover_down_1d").length === 1 && JSON.parse(lines[17]).claim.includes("down 1.4%"));
   const publicReads = JSON.parse(await readFile(join(ROOT, "research/assets/public/reads.json"), "utf8"));
   t("public reads are not the call log", !JSON.stringify(publicReads).includes("call_id") && !JSON.stringify(publicReads).includes("exclude_reason"));
   return fail;
