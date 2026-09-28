@@ -190,57 +190,170 @@ export function cardLabel(read) {
   return bits.length ? `${name} (${bits.join(", ")})` : name;
 }
 
-function longestFlat(pts) {
-  let best = 1;
-  let run = 1;
-  for (let i = 1; i < pts.length; i += 1) {
-    if (cents(pts[i][1]) === cents(pts[i - 1][1])) {
-      run += 1;
-      if (run > best) best = run;
-    } else run = 1;
+function closestPrices(pts, i, n = 7) {
+  const neigh = [];
+  for (let k = 1; neigh.length < n && (i - k >= 0 || i + k < pts.length); k += 1) {
+    if (i - k >= 0) neigh.push(pts[i - k][1]);
+    if (neigh.length < n && i + k < pts.length) neigh.push(pts[i + k][1]);
   }
-  return pts.length ? best : 0;
+  return neigh;
+}
+
+function medianOf(values) {
+  const s = [...values].sort((a, b) => a - b);
+  return s[Math.floor(s.length / 2)];
+}
+
+// A 3-day sample copied forward (price[i] = price[i % 3]) is not a day's price.
+// Keep the first three days of that run. Drop the copies. Do not fill the gap.
+export function dropTiledCycles(points) {
+  const pts = seriesOf(points);
+  if (pts.length < 9) return pts;
+  const drop = new Set();
+  let a = 0;
+  while (a < pts.length) {
+    let b = a;
+    while (b + 3 < pts.length && cents(pts[b][1]) === cents(pts[b + 3][1]) && daySpan(pts[b][0], pts[b + 3][0]) === 3) b += 1;
+    if (b > a) {
+      const end = b + 2;
+      const length = end - a + 1;
+      if (length >= 9 && a + 2 < pts.length) {
+        const pat = [pts[a][1], pts[a + 1][1], pts[a + 2][1]];
+        let pure = true;
+        const uniq = new Set();
+        for (let i = 0; i < length; i += 1) {
+          uniq.add(cents(pts[a + i][1]));
+          if (cents(pts[a + i][1]) !== cents(pat[i % 3])) pure = false;
+        }
+        if (pure && uniq.size > 1) {
+          for (let i = 3; i < length; i += 1) drop.add(a + i);
+        }
+      }
+      a = b;
+    } else a += 1;
+  }
+  if (!drop.size) return pts;
+  return pts.filter((_, i) => !drop.has(i));
+}
+
+// A day more than 35% from the median of its 7 neighboring days is a spike.
+export function spikeDates(points) {
+  const pts = seriesOf(points);
+  const out = new Set();
+  for (let i = 0; i < pts.length; i += 1) {
+    const neigh = closestPrices(pts, i, 7);
+    if (neigh.length < 7) continue;
+    const med = medianOf(neigh);
+    if (!(med > 0)) continue;
+    const ratio = pts[i][1] / med;
+    if (ratio > 1.35 || ratio < 0.65) out.add(pts[i][0]);
+  }
+  return out;
+}
+
+export function clampSpikes(points) {
+  const pts = seriesOf(points);
+  const spikes = spikeDates(pts);
+  if (!spikes.size) return pts;
+  return pts.map((p, i) => {
+    if (!spikes.has(p[0])) return p;
+    const med = medianOf(closestPrices(pts, i, 7));
+    const ratio = p[1] / med;
+    const clamped = ratio > 1.35 ? med * 1.35 : med * 0.65;
+    return [p[0], Math.round(clamped * 100) / 100];
+  });
+}
+
+export function claimSeries(points) {
+  const pts = dropTiledCycles(points);
+  const spikes = spikeDates(pts);
+  const kept = pts.filter((p) => !spikes.has(p[0]));
+  return kept.length >= 2 ? kept : pts;
+}
+
+export function isThinSeries(points, asOf) {
+  const pts = dropTiledCycles(points);
+  if (!pts.length) return false;
+  const end = /^\d{4}-\d{2}-\d{2}$/.test(String(asOf || "")) ? asOf : pts[pts.length - 1][0];
+  const cut = new Date(Date.parse(`${end}T00:00:00Z`) - 180 * 86400000).toISOString().slice(0, 10);
+  const seen = new Set();
+  for (const p of pts) if (p[0] >= cut && p[0] <= end) seen.add(cents(p[1]));
+  return seen.size < 30;
+}
+
+function seriesBounds(pts) {
+  let lo = pts[0];
+  let hi = pts[0];
+  for (const p of pts) {
+    if (p[1] < lo[1]) lo = p;
+    if (p[1] > hi[1]) hi = p;
+  }
+  return { lo, hi };
 }
 
 function extremeOf(pts) {
   if (pts.length < 2) return null;
-  let lo = pts[0];
-  let hi = pts[0];
-  for (const p of pts) {
-    if (p[1] < lo[1]) lo = p;
-    if (p[1] > hi[1]) hi = p;
-  }
+  const { lo, hi } = seriesBounds(pts);
   if (cents(lo[1]) === cents(hi[1])) return null;
   const last = pts[pts.length - 1];
   const span = daySpan(pts[0][0], last[0]);
-  if (cents(last[1]) === cents(lo[1])) {
-    return { kind: "low", month: monthOf(pts[0][0]), price: last[1], sixMonths: span >= 150 };
-  }
-  if (cents(last[1]) === cents(hi[1])) {
-    return { kind: "high", month: monthOf(pts[0][0]), price: last[1], sixMonths: span >= 150 };
-  }
+  const month = monthOf(pts[0][0]);
+  const sixMonths = span >= 150;
+  if (cents(last[1]) === cents(lo[1])) return { kind: "low", month, price: last[1], sixMonths };
+  if (cents(last[1]) === cents(hi[1])) return { kind: "high", month, price: last[1], sixMonths };
   return null;
 }
 
-function distanceFact(pts) {
-  let lo = pts[0];
-  let hi = pts[0];
-  for (const p of pts) {
-    if (p[1] < lo[1]) lo = p;
-    if (p[1] > hi[1]) hi = p;
+function extremePhrase(extreme) {
+  if (!extreme) return "";
+  if (extreme.sixMonths) return extreme.kind === "low" ? "a 6-month low" : "a 6-month high";
+  const word = extreme.kind === "low" ? "lowest" : "highest";
+  return `its ${word} price since ${extreme.month}`;
+}
+
+function endStreak(pts) {
+  let n = 0;
+  let dir = 0;
+  for (let i = pts.length - 1; i > 0; i -= 1) {
+    if (daySpan(pts[i - 1][0], pts[i][0]) !== 1) break;
+    const step = cents(pts[i][1]) - cents(pts[i - 1][1]);
+    if (step === 0) break;
+    const d = Math.sign(step);
+    if (!dir) dir = d;
+    if (d !== dir) break;
+    n += 1;
   }
+  return { n, dir };
+}
+
+function lastPriceInMonth(pts, monthIndex) {
+  let hit = null;
+  for (const p of pts) if (Number(p[0].slice(5, 7)) === monthIndex) hit = p;
+  return hit;
+}
+
+function whyChoices(pts, sign, headline) {
+  if (pts.length < 2) return [];
+  const { lo, hi } = seriesBounds(pts);
   const last = pts[pts.length - 1][1];
   const vsHigh = hi[1] > 0 ? last / hi[1] : 0;
   const vsLow = lo[1] > 0 ? last / lo[1] : 0;
-  const half = vsHigh >= 0.45 && vsHigh <= 0.55;
-  const doubled = vsLow >= 1.75 && vsLow <= 2.25;
-  if (half && !doubled) return `Half its ${monthOf(hi[0])} high of ${priceWords(hi[1])}.`;
-  if (doubled && !half) return `Almost double its ${monthOf(lo[0])} price of ${priceWords(lo[1])}.`;
-  if (half && doubled) return last < hi[1] / 2 ? `Half its ${monthOf(hi[0])} high of ${priceWords(hi[1])}.` : `Almost double its ${monthOf(lo[0])} price of ${priceWords(lo[1])}.`;
-  return "";
-}
-
-function shapeFact(pts, sign) {
+  const choices = [];
+  const add = (text) => {
+    if (!text || headline.includes(text.replace(/\.$/, ""))) return;
+    choices.push(text);
+  };
+  if (vsHigh >= 0.45 && vsHigh <= 0.55) add(`Half its ${monthOf(hi[0])} high of ${priceWords(hi[1])}.`);
+  if (vsLow >= 1.75 && vsLow <= 2.25) add(`Almost double its ${monthOf(lo[0])} price of ${priceWords(lo[1])}.`);
+  if (vsHigh >= 0.64 && vsHigh <= 0.7) add(`About two-thirds of its ${monthOf(hi[0])} high of ${priceWords(hi[1])}.`);
+  if (vsHigh >= 0.72 && vsHigh <= 0.78) add(`About three-quarters of its ${monthOf(hi[0])} high of ${priceWords(hi[1])}.`);
+  if (vsHigh >= 0.3 && vsHigh <= 0.4) add(`About a third of its ${monthOf(hi[0])} high of ${priceWords(hi[1])}.`);
+  const under = hi[1] - last;
+  const over = last - lo[1];
+  if (hi[1] > last && under / hi[1] >= 0.2) add(`Down ${priceWords(under)} from its ${monthOf(hi[0])} high of ${priceWords(hi[1])}.`);
+  if (last > lo[1] && over / lo[1] >= 0.2) add(`Up ${priceWords(over)} from its ${monthOf(lo[0])} low of ${priceWords(lo[1])}.`);
+  const streak = endStreak(pts);
+  if (streak.n >= 4 && (streak.dir === sign || streak.n >= 6)) add(`${streak.dir < 0 ? "Down" : "Up"} ${streak.n} straight days.`);
   const end = pts[pts.length - 1][0];
   const cut = new Date(Date.parse(`${end}T00:00:00Z`) - 30 * 86400000).toISOString().slice(0, 10);
   let down = 0;
@@ -248,59 +361,83 @@ function shapeFact(pts, sign) {
   const steps = [];
   for (let i = 1; i < pts.length; i += 1) {
     const step = pts[i][1] - pts[i - 1][1];
-    if (pts[i][0] > cut) {
-      if (step < 0) down += 1;
-      else if (step > 0) up += 1;
-    }
-    if ((sign < 0 && step < 0) || (sign > 0 && step > 0)) {
-      if (pts[i][0] > cut) steps.push({ date: pts[i][0], from: pts[i - 1][1] });
-    }
+    if (pts[i][0] <= cut) continue;
+    if (step < 0) down += 1;
+    else if (step > 0) up += 1;
+    if ((sign < 0 && step < 0) || (sign > 0 && step > 0)) steps.push({ date: pts[i][0], from: pts[i - 1][1] });
   }
   const toward = sign < 0 ? down : up;
-  const word = sign < 0 ? "fallen" : "risen";
-  if (toward >= 10) return `Has ${word} ${toward} of the last 30 days.`;
+  if (toward >= 15) add(`Has ${sign < 0 ? "fallen" : "risen"} ${toward} of the last 30 days.`);
   if (steps.length >= 2 && steps.length <= 6) {
     const n = COUNT_WORDS[steps.length] || String(steps.length);
     const kind = sign < 0 ? "step-downs" : "step-ups";
-    return `${n} ${kind} since ${monthDay(steps[0].date)}, from ${priceWords(steps[0].from)}.`;
+    add(`${n} ${kind} since ${monthDay(steps[0].date)}, from ${priceWords(steps[0].from)}.`);
   }
-  if (toward >= 3) return `Has ${word} ${toward} of the last 30 days.`;
-  return "";
+  const lastMonth = Number(end.slice(5, 7));
+  let bestMonth = null;
+  for (let m = 1; m <= 12; m += 1) {
+    if (m === lastMonth) continue;
+    const point = lastPriceInMonth(pts, m);
+    if (!point || !(point[1] > 0)) continue;
+    const gap = Math.abs(last - point[1]) / point[1];
+    if (gap < 0.08) continue;
+    if (!bestMonth || gap > bestMonth.gap) bestMonth = { gap, point, above: last > point[1] };
+  }
+  if (bestMonth) {
+    const word = bestMonth.above ? "Above" : "Below";
+    add(`${word} its ${monthOf(bestMonth.point[0])} price of ${priceWords(bestMonth.point[1])}.`);
+  }
+  if (hi[1] > last && under / hi[1] >= 0.08 && under / hi[1] < 0.2) add(`Down ${priceWords(under)} from its ${monthOf(hi[0])} high of ${priceWords(hi[1])}.`);
+  if (last > lo[1] && over / lo[1] >= 0.08 && over / lo[1] < 0.2) add(`Up ${priceWords(over)} from its ${monthOf(lo[0])} low of ${priceWords(lo[1])}.`);
+  return choices;
 }
 
-export function readCopy(read) {
-  const pts = seriesOf(read.hist || read.points || []);
+function makeHeadline(read, pts, thin, allowExtreme = true) {
   const price = priceWords(read.price);
   const from = priceWords(read.fromPrice);
   const pct = Number(read.changePct);
   const days = Number(read.windowDays);
   const label = cardLabel(read);
-  const shown = Number.isFinite(pct) ? (Number.isInteger(Math.abs(pct)) ? String(Math.abs(pct)) : String(Math.abs(pct))) : "";
+  const shown = Number.isFinite(pct) ? String(Math.abs(pct)) : "";
+  if (!label || !price || !from || !shown || pct === 0 || (days !== 7 && days !== 30)) return "";
   const dir = pct > 0 ? "up" : "down";
-  const empty = { headline: "", why: "" };
-  if (!label || !price || !from || !shown || pct === 0 || (days !== 7 && days !== 30)) return empty;
-  const windowPts = read.fromDate ? pts.filter((p) => p[0] >= read.fromDate && p[0] <= (read.toDate || p[0])) : pts;
-  const thin = longestFlat(windowPts) >= 10;
-  const extreme = pts.length ? extremeOf(pts) : null;
-  const leadExtreme = !!extreme;
-  let why = "";
-  if (thin) why = "Few sales, so moves come in jumps.";
-  else if (pts.length >= 2) {
-    if (!leadExtreme && extreme?.kind === "low") why = `Lowest since at least ${extreme.month}.`;
-    else if (!leadExtreme && extreme?.kind === "high") why = extreme.sixMonths ? "Highest in the 6 months we store." : `Highest since at least ${extreme.month}.`;
-    else why = distanceFact(pts) || shapeFact(pts, Math.sign(pct));
+  const extreme = allowExtreme && !thin && pts.length ? extremeOf(pts) : null;
+  const phrase = extremePhrase(extreme);
+  if (phrase) return `${label} hit ${phrase}: ${price}, ${dir} ${shown}% in ${days} days.`;
+  const tail = thin ? ", on few sales." : ".";
+  return `${label} is ${dir} ${shown}% over ${days} days, from ${from} to ${price}${tail}`;
+}
+
+export function whyPattern(text) {
+  return String(text || "")
+    .toLowerCase()
+    .replace(/\$[\d,]+(?:\.\d+)?/g, "$x")
+    .replace(/\b(?:january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec)\s+\d{1,2}\b/g, "date")
+    .replace(/\b(?:january|february|march|april|may|june|july|august|september|october|november|december)\b/g, "mon")
+    .replace(/\b(?:one|two|three|four|five|six|seven|eight|nine)\b/g, "n")
+    .replace(/\b(?:fallen|risen)\b/g, "moved")
+    .replace(/\b\d+(?:\.\d+)?\b/g, "n")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+export function readCopy(read, used = new Set()) {
+  const raw = dropTiledCycles(read.hist || read.points || []);
+  const spikes = spikeDates(raw);
+  const lastDate = raw.at(-1)?.[0];
+  const pts = claimSeries(raw);
+  const thin = isThinSeries(raw, read.toDate || read.asOf);
+  const headline = makeHeadline(read, pts, thin, !(lastDate && spikes.has(lastDate)));
+  const empty = { headline: "", why: "", thin };
+  if (!headline || BANNED.test(headline)) return empty;
+  const sign = Math.sign(Number(read.changePct));
+  for (const text of whyChoices(pts, sign, headline)) {
+    if (BANNED.test(text)) continue;
+    const pattern = whyPattern(text);
+    if (!pattern || used.has(pattern)) continue;
+    return { headline, why: text, thin, pattern };
   }
-  let headline = "";
-  if (leadExtreme && extreme.kind === "low") {
-    headline = `${label} hit its lowest price since at least ${extreme.month}: ${price}, ${dir} ${shown}% in ${days} days.`;
-  } else if (leadExtreme && extreme.kind === "high") {
-    const where = extreme.sixMonths ? "in the 6 months we store" : `since at least ${extreme.month}`;
-    headline = `${label} hit its highest price ${where}: ${price}, ${dir} ${shown}% in ${days} days.`;
-  } else {
-    headline = `${label} is ${dir} ${shown}% over ${days} days, from ${from} to ${price}.`;
-  }
-  if (why && headline.includes(why.replace(/\.$/, ""))) why = shapeFact(pts, Math.sign(pct));
-  return { headline, why };
+  return { headline, why: "", thin };
 }
 
 export function whyFor(points, opts = {}) {
@@ -321,6 +458,52 @@ export function whyFor(points, opts = {}) {
 export function headlineFor(read) {
   return readCopy(read).headline;
 }
+
+export function selectFeedReads(rows, limit = 12) {
+  const sorted = [...(rows || [])].sort((a, b) => (b.score || 0) - (a.score || 0) || String(a.name).localeCompare(String(b.name)));
+  const picked = [];
+  const used = new Set();
+  const sets = new Map();
+  const thinHeld = [];
+  let index = 0;
+  const tryRow = (row) => {
+    const setName = row.set || "";
+    if ((sets.get(setName) || 0) >= 2) return false;
+    const copy = readCopy({ ...row, hist: row.rawHist || row.hist }, used);
+    if (!copy.headline || !copy.why) return false;
+    if (copy.thin && picked.length < 3) return false;
+    used.add(copy.pattern);
+    sets.set(setName, (sets.get(setName) || 0) + 1);
+    const { rawHist, ...rest } = row;
+    void rawHist;
+    picked.push({ ...rest, headline: copy.headline, why: copy.why });
+    return true;
+  };
+  while (picked.length < limit && (index < sorted.length || thinHeld.length)) {
+    let row = null;
+    if (picked.length < 3) {
+      while (index < sorted.length && isThinSeries(sorted[index].rawHist || sorted[index].hist, sorted[index].toDate)) {
+        thinHeld.push(sorted[index]);
+        index += 1;
+      }
+      if (index >= sorted.length) break;
+      row = sorted[index];
+      index += 1;
+    } else {
+      const next = sorted[index];
+      const held = thinHeld[0];
+      if (held && (!next || (held.score || 0) > (next.score || 0))) row = thinHeld.shift();
+      else if (next) {
+        row = next;
+        index += 1;
+      } else row = thinHeld.shift();
+    }
+    if (!row) break;
+    tryRow(row);
+  }
+  return picked;
+}
+
 
 // A window counts only when the series already has 30 days, the two ends are
 // real stored days, and at least three separate days moved the same way.
