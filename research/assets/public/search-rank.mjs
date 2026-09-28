@@ -118,3 +118,33 @@ export function rankCatalog(query, rows, limit = 8) {
   scored.sort((a, b) => b[0] - a[0] || String(a[1][1]).length - String(b[1][1]).length);
   return scored.slice(0, limit).map((x) => x[1]);
 }
+
+function partialScore(query, row) {
+  const toks = tokens(query);
+  if (!toks.length || !row) return 0;
+  const nameParts = fold(row[1]).split(/[^a-z0-9]+/).filter(Boolean);
+  const setParts = fold(row[2]).split(/[^a-z0-9]+/).filter(Boolean);
+  let score = 0;
+  let nameHits = 0;
+  for (const tok of toks) {
+    if (nameParts.includes(tok)) {
+      nameHits += 1;
+      score += 40;
+      if (nameParts[0] === tok) score += 20;
+    } else if (setParts.includes(tok)) score += 4;
+  }
+  // A set that merely mentions the word is not a nearest card.
+  return nameHits ? score : 0;
+}
+
+export function searchCatalog(query, rows, limit = 8) {
+  const hits = rankCatalog(query, rows, limit);
+  if (hits.length) return { hits, missing: false, nearest: [] };
+  const scored = [];
+  for (const row of rows) {
+    const s = partialScore(query, row);
+    if (s > 0) scored.push([s, row]);
+  }
+  scored.sort((a, b) => b[0] - a[0] || String(a[1][1]).length - String(b[1][1]).length);
+  return { hits: [], missing: true, nearest: scored.slice(0, limit).map((x) => x[1]) };
+}

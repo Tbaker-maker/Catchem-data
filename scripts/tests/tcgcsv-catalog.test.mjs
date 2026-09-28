@@ -36,6 +36,16 @@ export function runTcgcsvCatalogTests() {
   t("a worlds card named Secret Box is still a single", secretBox.kind === "single");
   const worldsDeck = classify({ name: "2024 World Championship Deck: Evan Pavelski (Regidrago VSTAR)", extendedData: [] }, "World Championship Decks");
   t("a worlds deck product stays sealed", worldsDeck.kind === "sealed");
+  const energy = classify({
+    name: "Fire Energy - Charizard Stamped",
+    extendedData: [{ name: "Card Type", value: "Energy" }],
+  }, "League & Championship Cards");
+  t("a stamped energy with a card type is a single", energy.kind === "single");
+  const academy = classify({
+    name: "Pikachu",
+    extendedData: [{ name: "Rarity", value: "Common" }, { name: "Card Type", value: "Lightning" }],
+  }, "Battle Academy");
+  t("a Battle Academy card is a single", academy.kind === "single");
 
   t("no market price stays empty", pickMarket([{ marketPrice: null, subTypeName: "Normal" }]) === null);
   t("zero is not a price", pickMarket([{ marketPrice: 0, subTypeName: "Normal" }]) === null);

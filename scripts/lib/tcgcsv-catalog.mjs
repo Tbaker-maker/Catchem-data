@@ -42,8 +42,11 @@ export function classify(product, groupName = "") {
   if (/\bcase\b/.test(n)) return { skip: "case, not one product" };
   const number = extValue(product, "Number");
   const rarity = extValue(product, "Rarity");
+  const cardType = extValue(product, "Card Type") || extValue(product, "CardType");
   if (/\b(psa|bgs|cgc|sgc)\b/.test(n)) return { kind: "slab", number, rarity, subtype: null };
-  if (number) return { kind: "single", number, rarity, subtype: null };
+  // A card field means a card. League energies, stamped energies, Battle Academy
+  // cards, and trainer-kit cards often have no collector number.
+  if (number || rarity || cardType) return { kind: "single", number, rarity, subtype: null };
   // World Championship groups mix real decks with the cards inside them.
   // A deck product is "YYYY World Championship…" or "Championship Deck:".
   // A card is "Name - YEAR (Player)", even when the card is named Secret Box.

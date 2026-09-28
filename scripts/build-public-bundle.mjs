@@ -28,9 +28,9 @@ const catalog = await read("data/catalog/tcgcsv-latest.json");
 const items = catalog.items || [];
 
 function numLeft(n) {
-  const s = String(n || "").trim().toLowerCase();
-  const tg = s.match(/^tg\s*0*(\d+)/);
-  if (tg) return "tg" + String(Number(tg[1]));
+  const s = String(n || "").trim().toLowerCase().replace(/\s+/g, "");
+  const pref = s.match(/^([a-z]+)0*(\d+)/);
+  if (pref) return pref[1] + String(Number(pref[2]));
   const m = s.match(/^0*(\d+)/);
   return m ? String(Number(m[1])) : "";
 }
@@ -99,17 +99,27 @@ function baseKey(item) {
   const tokens = nameTokens(item.name).filter((t) => !/^\d+$/.test(t)).slice(0, 3).join(" ");
   return left && tokens ? `${tokens}|${left}` : "";
 }
-const mainKeys = new Set();
+const mainByKey = new Map();
 for (const item of items) {
   if (/prize pack/i.test(item.set || "")) continue;
   const key = baseKey(item);
-  if (key) mainKeys.add(key);
+  if (key && !mainByKey.has(key)) mainByKey.set(key, item);
 }
-const dropIds = new Set();
+const versionsOf = new Map();
+const linkedPrize = new Set();
 for (const item of items) {
   if (!/prize pack/i.test(item.set || "")) continue;
-  const key = baseKey(item);
-  if (key && mainKeys.has(key)) dropIds.add(item.id);
+  const main = mainByKey.get(baseKey(item));
+  if (!main) continue;
+  linkedPrize.add(item.id);
+  const list = versionsOf.get(main.id) || [];
+  list.push({
+    id: item.id,
+    name: pretty(item.name),
+    set: pretty(item.set),
+    price: money(item.price) ? Number(item.price) : null,
+  });
+  versionsOf.set(main.id, list);
 }
 
 function personName(s) {
@@ -122,7 +132,7 @@ function personName(s) {
 const catalogue = await read("data/card-catalogue.json").catch(() => ({ cards: {} }));
 const byNum = new Map();
 for (const item of items) {
-  if (dropIds.has(item.id)) continue;
+  if (linkedPrize.has(item.id)) continue;
   const left = numLeft(item.number);
   if (!left) continue;
   if (!byNum.has(left)) byNum.set(left, []);
@@ -144,11 +154,13 @@ for (const card of Object.values(catalogue.cards || {})) {
   let bestScore = 0;
   for (const item of cands) {
     const ns = nameScore(card.name, item.name);
-    if (ns < 3) continue;
     const set = norm(item.set);
+    const setHit = setName && set && (set === setName || set.includes(setName) || setName.includes(set));
+    if (ns < 1) continue;
+    if (!setHit && ns < 3) continue;
     let score = ns;
-    if (setName && set && set === setName) score += 8;
-    else if (setName && set && (set.includes(setName) || setName.includes(set))) score += 3;
+    if (setHit && set === setName) score += 8;
+    else if (setHit) score += 3;
     if (score > bestScore) { bestScore = score; best = item; }
   }
   if (!best || bestScore < 3) continue;
@@ -166,6 +178,27 @@ for (const card of Object.values(catalogue.cards || {})) {
     list.push(best.id);
     artistGroups.set(artist, list);
   }
+}
+// Poké Ball and Master Ball rows share a collector number with the card we already matched.
+const artistByNum = new Map();
+for (const item of items) {
+  const artist = artistById.get(item.id);
+  const left = numLeft(item.number);
+  if (!artist || !left) continue;
+  const key = `${item.groupId}|${left}`;
+  if (!artistByNum.has(key)) artistByNum.set(key, artist);
+}
+for (const item of items) {
+  if (artistById.has(item.id) || linkedPrize.has(item.id)) continue;
+  const left = numLeft(item.number);
+  if (!left) continue;
+  const artist = artistByNum.get(`${item.groupId}|${left}`);
+  if (!artist) continue;
+  artistById.set(item.id, artist);
+  artistMatches += 1;
+  const list = artistGroups.get(artist) || [];
+  list.push(item.id);
+  artistGroups.set(artist, list);
 }
 function logoFor(key) {
   const votes = setIdVotes.get(key);
@@ -188,6 +221,7 @@ for (const item of items) {
   setSlug.set(key, s);
 }
 
+const groupDates = await read("data/tcgcsv-group-dates.json").catch(() => ({}));
 const releaseBySet = new Map();
 for (const card of Object.values(catalogue.cards || {})) {
   if (!card.releaseDate || !card.setName) continue;
@@ -195,13 +229,11 @@ for (const card of Object.values(catalogue.cards || {})) {
   const key = norm(card.setName);
   if (key && day && !releaseBySet.has(key)) releaseBySet.set(key, day);
 }
-function releaseFor(setName) {
+function releaseFor(setName, groupId) {
+  const published = groupDates[String(groupId)];
+  if (published) return published;
   const n = norm(setName);
-  if (releaseBySet.has(n)) return releaseBySet.get(n);
-  for (const [key, day] of releaseBySet) {
-    if (n.includes(key) || key.includes(n)) return day;
-  }
-  return null;
+  return releaseBySet.get(n) || null;
 }
 
 let RUN_AT = null;
@@ -209,7 +241,7 @@ try { RUN_AT = (await read("data/ppt/run-report.json")).finishedAt || null; } ca
 
 const sets = new Map();
 for (const item of items) {
-  if (dropIds.has(item.id)) continue;
+  if (linkedPrize.has(item.id)) continue;
   const key = `${item.groupId}|${item.set}`;
   if (!sets.has(key)) {
     sets.set(key, {
@@ -218,7 +250,7 @@ for (const item of items) {
       raw: item.set,
       era: eraOf(item.set),
       groupId: item.groupId,
-      release: releaseFor(item.set),
+      release: releaseFor(item.set, item.groupId),
       single: 0,
       sealed: 0,
       priced: 0,
@@ -253,6 +285,8 @@ for (const item of items) {
     hist,
     low: lowByPid.get(Number(item.tcgplayerProductId)) || null,
     scan: pid ? "" : (scanById.get(item.id) || ""),
+    versions: versionsOf.get(item.id) || [],
+    sold: null,
   });
 }
 
@@ -476,10 +510,12 @@ const chases = [...chaseSets.values()]
 candidates.push(...chases.filter(Boolean));
 
 let ebayTracked = 0;
+let legacyTape = [];
 const redirects = { products: {}, sets: {} };
 try {
   const tape = await read("data/sealed-prices.json");
-  ebayTracked = (tape.products || []).filter((p) => p.dataStatus === "live").length;
+  legacyTape = tape.products || [];
+  ebayTracked = legacyTape.filter((p) => p.dataStatus === "live").length;
   const byNorm = new Map();
   for (const item of items) {
     if (item.kind !== "sealed") continue;
@@ -504,9 +540,103 @@ try {
     if (best) redirects.sets[setId] = `/sets/${best[0]}`;
   }
 } catch { /* name map is optional */ }
+
+const SET_HINTS = [
+  ["swsh12pt5-", "crown-zenith"],
+  ["swsh35-", "champion"],
+  ["swsh45-", "sword-shield-promo"],
+  ["sv8pt5-", "prismatic"],
+  ["sv6pt5-", "shrouded"],
+  ["sv4pt5-", "paldean-fates"],
+  ["sv3pt5-", "151"],
+  ["zsv10pt5-bb-", "black-bolt"],
+  ["rsv10pt5-wf-", "white-flare"],
+  ["me2pt5-", "ascended-heroes"],
+  ["sv10-", "destined-rivals"],
+  ["sv9-", "journey-together"],
+  ["sv8-", "surging-sparks"],
+  ["sv7-", "stellar-crown"],
+  ["sv6-", "twilight-masquerade"],
+  ["sv5-", "temporal-forces"],
+  ["sv4-", "paradox-rift"],
+  ["sv3-", "obsidian-flames"],
+  ["sv2-", "paldea-evolved"],
+  ["sv1-", "sv01"],
+  ["swsh12-", "silver-tempest"],
+  ["swsh11-", "lost-origin"],
+  ["swsh10-", "astral-radiance"],
+  ["swsh9-", "brilliant-stars"],
+  ["swsh8-", "fusion-strike"],
+  ["swsh7-", "evolving-skies"],
+  ["swsh6-", "chilling-reign"],
+  ["swsh5-", "battle-styles"],
+  ["swsh4-", "vivid-voltage"],
+  ["swsh3-", "darkness-ablaze"],
+  ["swsh2-", "rebel-clash"],
+  ["swsh1-", "swsh01"],
+  ["me1-", "me01"],
+  ["me2-", "phantasmal"],
+  ["me5-", "pitch-black"],
+  ["cel25-", "celebrations"],
+  ["xy12-", "xy-evolutions"],
+  ["sm5-", "ultra-prism"],
+  ["sm1-", "sm-base"],
+  ["bw1-", "black-and-white"],
+  ["det1-", "detective-pikachu"],
+  ["neo1-", "neo-genesis"],
+  ["base3-", "fossil"],
+  ["base2-", "jungle"],
+  ["base1-", "base-set"],
+];
+function subtypeFromLegacy(id) {
+  if (/-pc-etb$/.test(id)) return "pc-etb";
+  if (/-etb$/.test(id)) return "etb";
+  if (/-bb$|-bundle$/.test(id)) return "booster-bundle";
+  if (/booster-box$/.test(id)) return "booster-box";
+  if (/-tin$/.test(id)) return "tin";
+  if (/-pack$/.test(id)) return "booster-pack";
+  if (/-premium$/.test(id)) return "special-collection";
+  return null;
+}
+const JUNK_SEALED = /set of \d|costco|sam'?s club|dollar general|walmart|walgreens|\(lgs\)/i;
+for (const p of legacyTape) {
+  if (!p?.id || redirects.products[p.id]) continue;
+  const hint = SET_HINTS.find(([pre]) => p.id.startsWith(pre))?.[1];
+  const subtype = subtypeFromLegacy(p.id);
+  if (!hint || !subtype) continue;
+  const pool = [...sets.values()].filter((set) => set.slug === hint || set.slug.includes(hint));
+  const exact = pool.filter((set) => set.slug === hint);
+  const chosenSets = exact.length ? exact : pool;
+  const cands = [];
+  for (const set of chosenSets) {
+    for (const item of set.items) {
+      if (item.kind !== "sealed" || item.subtype !== subtype) continue;
+      if (JUNK_SEALED.test(item.name || "")) continue;
+      cands.push(item);
+    }
+  }
+  if (!cands.length) continue;
+  cands.sort((a, b) => String(a.name).length - String(b.name).length || String(a.name).localeCompare(String(b.name)));
+  redirects.products[p.id] = `/p/${cands[0].id}`;
+}
+
 for (const set of sets.values()) {
   const bare = slug(String(set.raw || "").replace(/^[^:]+:\s*/, ""));
   if (bare && bare !== set.slug && !redirects.sets[bare]) redirects.sets[bare] = `/sets/${set.slug}`;
+}
+const OLD_SETS = {
+  base1: "base-set",
+  base2: "jungle",
+  base3: "fossil",
+  base4: "base-set-2",
+  base5: "team-rocket",
+  bw1: "black-and-white",
+  det1: "detective-pikachu",
+  neo1: "neo-genesis",
+  xy12: "xy-evolutions",
+};
+for (const [from, to] of Object.entries(OLD_SETS)) {
+  if (!redirects.sets[from]) redirects.sets[from] = `/sets/${to}`;
 }
 
 const boxes = flat
@@ -555,6 +685,7 @@ try {
     });
     if (read) {
       read.id = `receipt-${key}`;
+      read.result = key === "sealed" ? "miss" : "Open";
       watchReads.push(read);
       candidates.push(read);
     }
@@ -613,7 +744,7 @@ await writeFile(join(OUT, "receipts.json"), JSON.stringify({
   note: "A hit rate is published only after 20 calls had a direction written down first. These rows use the same market price as the product page.",
   hitRate: null,
   scored: watchReads.length >= 20 ? watchReads.length : Math.min(watchReads.length, 1),
-  rows: watchReads,
+  rows: watchReads.map((row) => ({ ...row, result: row.result || "Open" })),
 }, null, 1) + "\n");
 
 const allItems = [...sets.values()].flatMap((set) => set.items);
@@ -661,7 +792,7 @@ for (let i = 0; i < chunks.length; i++) {
 const indexXml = `<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${files.map((f) => `<sitemap><loc>${origin}/${f}</loc></sitemap>`).join("\n")}\n</sitemapindex>\n`;
 await writeFile(join(OUT, "sitemap.xml"), indexXml);
 
-console.log(`public bundle: ${counts.items} items, ${counts.single} singles, ${counts.sealed} sealed, ${counts.sets} sets, ${counts.artists} artists, ${artistMatches} artist links, dropped ${dropIds.size} prize-pack twins, ${reads.length} reads, redirects ${Object.keys(redirects.products).length}, sitemaps ${files.length}`);
+console.log(`public bundle: ${counts.items} items, ${counts.single} singles, ${counts.sealed} sealed, ${counts.sets} sets, ${counts.artists} artists, ${artistMatches} artist links, prize-pack versions ${linkedPrize.size}, ${reads.length} reads, redirects ${Object.keys(redirects.products).length}, sitemaps ${files.length}`);
 
 const priceOf = new Map();
 for (const set of sets.values()) {

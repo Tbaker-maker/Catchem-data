@@ -35,9 +35,9 @@ export function bucketOf(id) {
 
 export function eraOf(name) {
   const n = String(name ?? "");
-  if (/^ME:|mega evolution/i.test(n)) return "Mega Evolution";
-  if (/^SV:|scarlet|violet/i.test(n)) return "Scarlet & Violet";
-  if (/^SWSH:|sword|shield/i.test(n)) return "Sword & Shield";
+  if (/^ME\d|^ME:|mega evolution/i.test(n)) return "Mega Evolution";
+  if (/^SV\d|^SV:|^SVE:|scarlet|violet/i.test(n)) return "Scarlet & Violet";
+  if (/^SWSH|sword|shield/i.test(n)) return "Sword & Shield";
   if (/^SM[: ]|sun (&|and) moon/i.test(n)) return "Sun & Moon";
   if (/^XY/i.test(n)) return "XY";
   if (/^BW/i.test(n) || /black (&|and) white/i.test(n)) return "Black & White";
@@ -45,8 +45,54 @@ export function eraOf(name) {
   if (/^DP[: ]|diamond|pearl|platinum/i.test(n)) return "Diamond & Pearl";
   if (/^EX[: ]/i.test(n)) return "EX";
   if (/^NP[: ]|^N[1-4]:|neo /i.test(n)) return "Neo";
+  const bare = n.toLowerCase().replace(/\s+/g, " ").trim();
+  const named = {
+    "champion's path": "Sword & Shield",
+    "shining fates": "Sword & Shield",
+    "shining fates: shiny vault": "Sword & Shield",
+    "celebrations": "Sword & Shield",
+    "celebrations: classic collection": "Sword & Shield",
+    "pokemon go": "Sword & Shield",
+    "pokémon go": "Sword & Shield",
+    "hidden fates": "Sun & Moon",
+    "hidden fates: shiny vault": "Sun & Moon",
+    "shining legends": "Sun & Moon",
+    "dragon majesty": "Sun & Moon",
+    "detective pikachu": "Sun & Moon",
+    "generations": "XY",
+    "generations: radiant collection": "XY",
+    "double crisis": "XY",
+    "kalos starter set": "XY",
+    "emerging powers": "Black & White",
+    "noble victories": "Black & White",
+    "next destinies": "Black & White",
+    "dark explorers": "Black & White",
+    "dragons exalted": "Black & White",
+    "dragon vault": "Black & White",
+    "boundaries crossed": "Black & White",
+    "plasma storm": "Black & White",
+    "plasma freeze": "Black & White",
+    "plasma blast": "Black & White",
+    "legendary treasures": "Black & White",
+    "legendary treasures: radiant collection": "Black & White",
+    "undaunted": "HeartGold & SoulSilver",
+    "unleashed": "HeartGold & SoulSilver",
+    "triumphant": "HeartGold & SoulSilver",
+    "call of legends": "HeartGold & SoulSilver",
+    "mysterious treasures": "Diamond & Pearl",
+    "secret wonders": "Diamond & Pearl",
+    "great encounters": "Diamond & Pearl",
+    "majestic dawn": "Diamond & Pearl",
+    "legends awakened": "Diamond & Pearl",
+    "stormfront": "Diamond & Pearl",
+    "rising rivals": "Diamond & Pearl",
+    "supreme victors": "Diamond & Pearl",
+    "arceus": "Diamond & Pearl",
+    "rumble": "Diamond & Pearl",
+  };
+  if (named[bare]) return named[bare];
   if (/base set|jungle|fossil|team rocket|gym heroes|gym challenge/i.test(n)) return "Original";
-  if (/promo|league|championship|prize pack|jumbo|deck exclusive|miscellaneous/i.test(n)) return "Promos and extras";
+  if (/promo|league|championship|prize pack|jumbo|deck exclusive|miscellaneous|battle academy|trick or trade|my first battle|trading card game classic|first partner/i.test(n)) return "Promos and extras";
   return "Other";
 }
 
@@ -72,8 +118,7 @@ export function changePct(prev, next) {
 
 export function headlineFor(read) {
   const name = pretty(read.name);
-  const price = money(read.price);
-  if (!name || !price) return "";
+  if (!name || !money(read.price)) return "";
   const pct = read.changePct;
   const moved = Number.isFinite(pct) && pct !== 0
     ? `${pct > 0 ? "up" : "down"} ${Math.abs(pct)}% from the last print`
@@ -82,28 +127,25 @@ export function headlineFor(read) {
   let h = 0;
   for (const c of id) h = (h + c.charCodeAt(0)) % 997;
   const pick = (lines) => lines[id ? h % lines.length : 0];
-  if (read.type === "box") {
-    const each = money(read.perPack);
-    return each ? `${name} works out to ${each} a pack. The market price is ${price}.` : "";
-  }
+  if (read.type === "box") return `${name} is the sealed box on today's list.`;
   if (read.type === "chase") return pick([
-    `Top card in ${pretty(read.set)}: ${name} at ${price}.`,
-    `${name} is the chase we can price in ${pretty(read.set)}. The market price is ${price}.`,
+    `Top card in ${pretty(read.set)}: ${name}.`,
+    `${name} is the chase we can price in ${pretty(read.set)}.`,
   ]);
-  if (read.type === "receipt") return `${name}, checked again. The market price is ${price}.`;
+  if (read.type === "receipt") return `${name}, checked again.`;
   if (read.type === "heating") return pick([
-    `${name} is heating up. The market price is ${price}.`,
-    `${name} is heating up, ${moved}. The market price is ${price}.`,
-    `${name} is heating up. The last print was lower. The market price is ${price}.`,
+    `${name} is heating up.`,
+    `${name} is heating up, ${moved}.`,
+    `${name} is heating up. The last print was lower.`,
   ]);
   if (read.type === "cooling") return pick([
-    `${name} is cooling off. The market price is ${price}.`,
-    `${name} is ${moved}. The market price is ${price}.`,
-    `${name} printed lower. The market price is ${price}.`,
+    `${name} is cooling off.`,
+    `${name} is ${moved}.`,
+    `${name} printed lower.`,
   ]);
   return pick([
-    `${name} changed since the last print. The market price is ${price}.`,
-    `${name} is ${moved}. The market price is ${price}.`,
+    `${name} changed since the last print.`,
+    `${name} is ${moved}.`,
   ]);
 }
 
@@ -116,8 +158,9 @@ export function rankReads(rows, limit = 24) {
     pools.get(key).push(row);
   }
   for (const arr of pools.values()) arr.sort((a, b) => (b.score || 0) - (a.score || 0));
-  const types = [...pools.keys()];
+  const types = [...pools.keys()].sort((a, b) => (a === "receipt" ? -1 : b === "receipt" ? 1 : 0));
   const out = [];
+  const used = new Set();
   let spins = 0;
   while (out.length < limit && spins < 400) {
     spins += 1;
@@ -126,9 +169,20 @@ export function rankReads(rows, limit = 24) {
       const arr = pools.get(type);
       if (!arr?.length) continue;
       const prev = out[out.length - 1];
-      let idx = arr.findIndex((row) => !prev || (row.type !== prev.type && row.set !== prev.set));
-      if (idx < 0) idx = 0;
+      const keyOf = (row) => String(row.href || row.id || "");
+      let idx = arr.findIndex((row) => {
+        const key = keyOf(row);
+        if (key && used.has(key)) return false;
+        return !prev || (row.type !== prev.type && row.set !== prev.set);
+      });
+      if (idx < 0) idx = arr.findIndex((row) => {
+        const key = keyOf(row);
+        return !(key && used.has(key));
+      });
+      if (idx < 0) continue;
       const [row] = arr.splice(idx, 1);
+      const key = keyOf(row);
+      if (key) used.add(key);
       out.push(row);
       placed = true;
       if (out.length >= limit) break;
