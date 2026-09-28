@@ -9,7 +9,15 @@ const args = process.argv.slice(2);
 const bundleFlag = args.indexOf("--bundle");
 const bundlePath = bundleFlag >= 0 ? args[bundleFlag + 1] : join(ROOT, "research/assets/public/reads.json");
 const outFlag = args.indexOf("--out");
-const outPath = outFlag >= 0 ? args[outFlag + 1] : join(ROOT, "data/learning/calls.jsonl");
+const outPath = outFlag >= 0 ? args[outFlag + 1] : (process.env.LEARNING_LOG || "");
+if (!outPath) {
+  console.error("The call log is private. Set LEARNING_LOG or pass --out.");
+  process.exit(1);
+}
+if (outPath.startsWith(ROOT)) {
+  console.error("Refusing to write the call log inside the public repo.");
+  process.exit(1);
+}
 const snapFlag = args.indexOf("--snapshot");
 const snapPath = snapFlag >= 0 ? args[snapFlag + 1] : "";
 

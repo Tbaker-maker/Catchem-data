@@ -89,8 +89,8 @@ for (const item of catalog.items || []) {
   const price = Number(item.price);
   if (price > 0 && item.id) prices.set(item.id, price);
 }
-const logFile = join(ROOT, "data/learning/calls.jsonl");
-const prior = await readCallLog(logFile);
+const logFile = process.env.LEARNING_LOG || "";
+const prior = logFile ? await readCallLog(logFile) : [];
 const result = await publishFeed({
   items,
   prior,
@@ -98,6 +98,6 @@ const result = await publishFeed({
   asOf: catalog.asOf,
   updatedAt,
   outDir: OUT,
-  logFile,
+  logFile: logFile || null,
 });
 console.log(JSON.stringify({ count: result.count, sections: result.sections, tracked: result.tracked, added: result.logged.added, skipped: result.logged.skipped.length }));
