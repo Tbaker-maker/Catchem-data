@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import {
   bucketOf, changePct, cleanHistory, eraOf, headlineFor, money, pretty, rankReads, slug,
 } from "./lib/public-bundle.mjs";
+import { publicReceipts, scoreWatch } from "./lib/public-receipts.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "research/assets/public");
@@ -178,6 +179,77 @@ for (const card of Object.values(catalogue.cards || {})) {
     list.push(best.id);
     artistGroups.set(artist, list);
   }
+}
+function foldSet(s) {
+  return String(s || "").replace(/[—–]/g, " ").normalize("NFD").replace(/\p{M}/gu, "");
+}
+const SET_ALIAS = {
+  "swsh black star promos": "SWSH: Sword & Shield Promo Cards",
+  "sm black star promos": "SM Promos",
+  "bw black star promos": "Black and White Promos",
+  "dp black star promos": "Diamond and Pearl Promos",
+  "wizards black star promos": "WoTC Promo",
+  "sun moon": "SM Base Set",
+  "expedition base set": "Expedition",
+  "xy": "XY Base Set",
+  "hs unleashed": "Unleashed",
+  "hs undaunted": "Undaunted",
+};
+function aliasSet(s) {
+  const key = norm(foldSet(s));
+  const year = key.match(/^mcdonald s collection (\d{4})$/);
+  if (year) return `McDonald's Promos ${year[1]}`;
+  return SET_ALIAS[key] || s;
+}
+function setTokens(s) {
+  return norm(foldSet(s)).split(" ").filter((w) => w && w !== "and" && !/^(sv|swsh|sm|xy|me|bw|dp|hgss|ex)\d*$/.test(w));
+}
+// How well an index set name is the same set as a catalog group. 0 means no.
+function setScore(indexSet, catalogSet) {
+  const a = setTokens(indexSet);
+  const b = setTokens(catalogSet);
+  if (!a.length || !b.length) return 0;
+  const have = new Set(b);
+  if (!a.every((t) => have.has(t))) return 0;
+  let pen = 0;
+  for (const t of b) {
+    if (a.includes(t)) continue;
+    if (/^\d+$/.test(t)) pen += 6;
+    else if (t === "base" || t === "set") pen += 1;
+    else pen += 3;
+  }
+  const era = /^(sv|swsh|sm|xy|me|bw|dp|hgss|ex)\d*\b/;
+  if (era.test(norm(catalogSet)) && !era.test(norm(indexSet))) pen += 4;
+  if (norm(indexSet) === norm(catalogSet)) pen -= 5;
+  return 20 - pen;
+}
+let cardIndex = [];
+try {
+  cardIndex = JSON.parse(await readFile(join(ROOT, "research/assets/card-index.json"), "utf8"));
+} catch { cardIndex = []; }
+if (!Array.isArray(cardIndex)) cardIndex = [];
+for (const card of cardIndex) {
+  const artist = personName(card.a);
+  const ident = String(card.i || "");
+  const num = ident.includes("-") ? ident.slice(ident.lastIndexOf("-") + 1) : "";
+  const left = numLeft(num);
+  if (!artist || !left) continue;
+  let best = null;
+  let bestScore = 0;
+  for (const item of byNum.get(left) || []) {
+    if (artistById.has(item.id) || linkedPrize.has(item.id)) continue;
+    const ns = nameScore(card.n, item.name);
+    const agree = setScore(aliasSet(card.s), item.set);
+    if (ns < 1 || agree < 8) continue;
+    const score = ns + agree;
+    if (score > bestScore) { bestScore = score; best = item; }
+  }
+  if (!best || bestScore < 9) continue;
+  artistById.set(best.id, artist);
+  artistMatches += 1;
+  const list = artistGroups.get(artist) || [];
+  list.push(best.id);
+  artistGroups.set(artist, list);
 }
 // Poké Ball and Master Ball rows share a collector number with the card we already matched.
 const artistByNum = new Map();
@@ -426,10 +498,16 @@ const counts = {
   sets: setIndex.length,
   priced: published.reduce((n, set) => n + set.priced, 0),
   artists: artistIndex.length,
-  artistCards: artistById.size,
-  artistNote: "Illustrator credits cover only the cards we could match. Not every card, and not every artist.",
+  artistCards: 0,
+  artistNote: "",
+  sealedNote: "Sealed means the box, tin, pack, or collection. Cards are singles, including trainer-kit cards and the cards inside a world championship deck. Those cards used to be counted as sealed (the old figure was 2,998). No sealed name is repeated in one set.",
+  soldNote: "No sold list is in this catalog. A sold price is shown only when one is stored. The price on a card is TCGplayer market, not a sold price.",
   ebaySealedTracked: null,
 };
+const singleN = counts.single;
+const credited = published.reduce((n, set) => n + set.items.filter((it) => it.kind === "single" && it.artist).length, 0);
+counts.artistCards = credited;
+counts.artistNote = `Illustrator credits come from the card catalogue and the card index, when the name and the set agree. ${credited.toLocaleString("en-US")} of ${singleN.toLocaleString("en-US")} singles have a credit. Not every card has one.`;
 await writeFile(join(OUT, "counts.json"), JSON.stringify(counts, null, 1) + "\n");
 await writeFile(join(OUT, "sets.json"), JSON.stringify({ asOf: catalog.asOf, source: "TCGplayer market", sets: setIndex }));
 await writeFile(join(OUT, "artists.json"), JSON.stringify({ asOf: catalog.asOf, note: counts.artistNote, artists: artistIndex }));
@@ -659,38 +737,29 @@ const boxes = flat
   .slice(0, 4);
 candidates.push(...boxes);
 
-function catalogForWatch(w) {
-  if (w?.id === "swsh7-215") return items.find((item) => item.id === "tcgcsv-246723") || null;
-  const key = norm(w?.name);
-  if (!key) return null;
-  return items.find((item) => norm(item.name) === key && money(item.price))
-    || items.find((item) => norm(item.name).includes(key) && money(item.price))
-    || null;
-}
-
 const watchReads = [];
 try {
-  const der = await read("data/derived-insights.json");
-  const watches = der.watchOutcomes || {};
-  for (const key of ["sealed", "raw"]) {
-    const w = watches[key];
-    const item = catalogForWatch(w);
-    if (!item) continue;
-    const set = sets.get(`${item.groupId}|${item.set}`);
-    const row = set?.items.find((it) => it.id === item.id);
-    if (!row) continue;
-    const read = rowRead(row, set, "receipt", {
-      score: 18,
-      why: "Same TCGplayer market price as the product page. A hit rate waits until 20 calls had a direction written down first.",
+  const log = await read("research/pulse/watch-log.json");
+  const heat = await read("data/heat-history.json").catch(() => []);
+  const sealed = await read("data/sealed-prices.json").catch(() => ({ products: [] }));
+  const sealedNow = new Map((sealed.products || []).map((p) => [p.id, p.priceMedian]));
+  const scored = scoreWatch({ entries: log.entries || [], heat, sealedNow });
+  const pub = publicReceipts(scored);
+  for (const row of pub.rows) {
+    if (row.result !== "hit" && row.result !== "miss") continue;
+    candidates.push({
+      ...row,
+      score: 30,
+      confidence: "Early",
+      set: "",
+      image: "",
+      low: null,
+      sold: null,
     });
-    if (read) {
-      read.id = `receipt-${key}`;
-      read.result = key === "sealed" ? "miss" : "Open";
-      watchReads.push(read);
-      candidates.push(read);
-    }
   }
-} catch { /* receipts stay empty if the file is missing */ }
+  watchReads.push(...pub.rows);
+  counts.receipts = { scored: pub.scored, hits: pub.hits, misses: pub.misses, hitRate: pub.hitRate };
+} catch { /* receipts stay empty if the log is missing */ }
 
 let updatedAt = null;
 try { updatedAt = (await read("data/ppt/run-report.json")).finishedAt || null; } catch { /* clock stays null */ }
@@ -738,13 +807,21 @@ await writeFile(join(OUT, "movers.json"), JSON.stringify({
   slabs: [],
 }, null, 1) + "\n");
 
+const receiptPub = {
+  scored: counts.receipts?.scored || 0,
+  hits: counts.receipts?.hits || 0,
+  misses: counts.receipts?.misses || 0,
+  hitRate: counts.receipts?.hitRate ?? null,
+};
 await writeFile(join(OUT, "receipts.json"), JSON.stringify({
   asOf: catalog.asOf,
   updatedAt,
-  note: "A hit rate is published only after 20 calls had a direction written down first. These rows use the same market price as the product page.",
-  hitRate: null,
-  scored: watchReads.length >= 20 ? watchReads.length : Math.min(watchReads.length, 1),
-  rows: watchReads.map((row) => ({ ...row, result: row.result || "Open" })),
+  note: "A hit means the next stored price moved the same way as the price we wrote down. A miss moved the other way. A hit rate stays hidden until 20 calls are scored. These are not sold prices.",
+  hitRate: receiptPub.hitRate,
+  scored: receiptPub.scored,
+  hits: receiptPub.hits,
+  misses: receiptPub.misses,
+  rows: watchReads,
 }, null, 1) + "\n");
 
 const allItems = [...sets.values()].flatMap((set) => set.items);
@@ -763,13 +840,21 @@ await copyFile(new URL("./lib/collector-search.mjs", import.meta.url), join(OUT,
 await writeFile(join(OUT, "accuracy.json"), JSON.stringify({
   asOf: catalog.asOf,
   updatedAt,
-  scored: 1,
-  hits: 0,
-  misses: 1,
-  hitRate: null,
-  note: "One call was scored from the 2026-09-26 revisit. A hit rate is hidden until 20 calls had a direction written down first. Crowd votes are not in this file.",
-  rows: [{ name: "Celebrations Ultra-Premium Collection", result: "miss", date: "2026-09-26" }],
+  scored: receiptPub.scored,
+  hits: receiptPub.hits,
+  misses: receiptPub.misses,
+  hitRate: receiptPub.hitRate,
+  note: "Scored only when a direction was written down first and a later price exists. A hit rate stays hidden until 20. Crowd votes are not in this file. No sold list is in this catalog.",
+  rows: watchReads.filter((row) => row.result === "hit" || row.result === "miss").map((row) => ({
+    name: row.name, result: row.result, date: row.asOf,
+  })),
 }, null, 1) + "\n");
+
+for (const set of setIndex) {
+  if (/sun & moon|^xy$|scarlet|sword|mega/i.test(set.era || "") && String(set.release || "").startsWith("1999")) {
+    throw new Error(`${set.name} still shows ${set.release}`);
+  }
+}
 
 const origin = "https://catchemtcg.com";
 const chunks = [];
