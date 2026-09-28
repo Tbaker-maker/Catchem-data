@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { BANNED, bestMove, changePct, clampSpikes, dropTiledCycles, headlineFor, isThinSeries, money, rankReads, selectFeedReads, whyFor, whyPattern } from "../lib/public-bundle.mjs";
+import { BANNED, bestMove, changePct, chartSeries, dropTiledCycles, headlineFor, isThinSeries, money, rankReads, selectFeedReads, spikeDates, whyFor, whyPattern } from "../lib/public-bundle.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 
@@ -59,8 +59,21 @@ export async function run() {
   const cleaned = dropTiledCycles(tiled);
   t("a 3-day tiled cycle keeps only the first three days", cleaned.length === 5 && cleaned[2][1] === 9 && cleaned[3][0] === "2026-04-15");
   const spiked = down.map((p, i) => i === 40 ? [p[0], p[1] * 0.4] : p);
-  const clamped = clampSpikes(spiked);
-  t("a one-day spike is clamped and is not the high", clamped[40][1] > spiked[40][1] && clamped[40][1] < spiked[39][1] && !headlineFor({ name: "Mega Gengar ex", set: "ME: Ascended Heroes", number: "284/217", release: "2026-01-30", price: spiked.at(-1)[1], fromPrice: spiked[30][1], changePct: -8, windowDays: 30, hist: spiked, toDate: spiked.at(-1)[0] }).includes(String(spiked[40][1])));
+  const drawn = chartSeries(spiked);
+  t("a one-day spike is left off the chart", drawn.length === spiked.length - 1 && !drawn.some((p) => p[0] === spiked[40][0]) && !headlineFor({ name: "Mega Gengar ex", set: "ME: Ascended Heroes", number: "284/217", release: "2026-01-30", price: spiked.at(-1)[1], fromPrice: spiked[30][1], changePct: -8, windowDays: 30, hist: spiked, toDate: spiked.at(-1)[0] }).includes(String(spiked[40][1])));
+  const gengarApril = [
+    ["2026-04-14", 1199.04], ["2026-04-15", 1213.21], ["2026-04-16", 1245.44], ["2026-04-17", 1243.94],
+    ["2026-04-18", 1261.54], ["2026-04-19", 1269.14], ["2026-04-20", 1279.54], ["2026-04-21", 1268.24],
+    ["2026-04-22", 1293.56], ["2026-04-23", 1284.21], ["2026-04-24", 792.62], ["2026-04-25", 727.76],
+    ["2026-04-26", 1291.94], ["2026-04-27", 924.79], ["2026-04-28", 1492.76], ["2026-04-29", 1304.65],
+    ["2026-04-30", 1490.65], ["2026-05-01", 1424.59], ["2026-05-02", 1469.33], ["2026-05-03", 1423.96],
+    ["2026-05-04", 1348.06], ["2026-05-05", 1260.97], ["2026-05-06", 818.98], ["2026-05-07", 1057.55],
+    ["2026-05-08", 1420.03],
+  ];
+  const gengarSpikes = spikeDates(gengarApril);
+  const gengarChart = chartSeries(gengarApril);
+  const gengarCopy = headlineFor({ name: "Mega Gengar ex - 284/217", set: "ME: Ascended Heroes", number: "284/217", release: "2026-01-30", price: 866.33, fromPrice: 984.26, changePct: -12, windowDays: 30, toDate: "2026-09-27", hist: gengarApril }) + whyFor(gengarApril, { name: "Mega Gengar ex - 284/217", set: "ME: Ascended Heroes", number: "284/217", release: "2026-01-30", price: 866.33, fromPrice: 984.26, changePct: -12, windowDays: 30, toDate: "2026-09-27" });
+  t("Gengar April 24 to 28 drops the bad cluster and does not draw it", gengarSpikes.has("2026-04-24") && gengarSpikes.has("2026-04-25") && gengarSpikes.has("2026-04-27") && !gengarChart.some((p) => ["2026-04-24", "2026-04-25", "2026-04-27"].includes(p[0])) && !gengarChart.some((p) => p[1] > 800 && p[1] < 860) && !/792\.62|727\.76|924\.79|831\.70|834\.74/.test(gengarCopy));
   const sameSet = [1, 2, 3].map((n) => ({ type: "mover", price: 20, fromPrice: 10, changePct: -10, windowDays: 30, set: "ME: Ascended Heroes", name: "Card " + n, score: 100 - n, hist: down, toDate: down.at(-1)[0], release: "2026-01-30" }));
   const other = { type: "mover", price: 20, fromPrice: 10, changePct: 12, windowDays: 30, set: "Base Set", name: "Other", score: 50, hist: down.map((p, i) => [p[0], 40 + i]), toDate: down.at(-1)[0], release: "1999-01-09" };
   const capped = selectFeedReads([...sameSet, other], 12);
@@ -94,8 +107,9 @@ export async function run() {
     t("fallen-days why is used once and only past 15", fallen.length <= 1 && fallen.every((m) => Number(m[1]) >= 15));
     const bucket = JSON.parse(await readFile(join(ROOT, "research/assets/public/buckets/96.json"), "utf8"));
     const gengarCard = bucket.find((card) => card.id === "tcgcsv-676096");
-    const dip = (gengarCard?.hist || []).filter((pt) => pt[0] === "2026-04-24" || pt[0] === "2026-04-25");
-    t("the Gengar April spike is gone from the chart", dip.length === 2 && dip.every((pt) => pt[1] > 800));
+    const dip = (gengarCard?.hist || []).filter((pt) => pt[0] === "2026-04-24" || pt[0] === "2026-04-25" || pt[0] === "2026-04-27");
+    const standIn = (gengarCard?.hist || []).some((pt) => pt[0] >= "2026-04-24" && pt[0] <= "2026-04-27" && pt[1] > 800 && pt[1] < 860);
+    t("the Gengar April spike is gone from the chart", gengarCard && dip.length === 0 && !standIn);
   } catch (err) {
     t("public bundle is on disk", false);
     console.error(err);

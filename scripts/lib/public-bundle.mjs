@@ -190,13 +190,55 @@ export function cardLabel(read) {
   return bits.length ? `${name} (${bits.join(", ")})` : name;
 }
 
-function closestPrices(pts, i, n = 7) {
-  const neigh = [];
-  for (let k = 1; neigh.length < n && (i - k >= 0 || i + k < pts.length); k += 1) {
-    if (i - k >= 0) neigh.push(pts[i - k][1]);
-    if (neigh.length < n && i + k < pts.length) neigh.push(pts[i + k][1]);
+function shiftDay(iso, n) {
+  return new Date(Date.parse(`${iso}T00:00:00Z`) + n * 86400000).toISOString().slice(0, 10);
+}
+
+function windowPrices(pts, i, radius) {
+  const start = shiftDay(pts[i][0], -radius);
+  const end = shiftDay(pts[i][0], radius);
+  const out = [];
+  for (let j = 0; j < pts.length; j += 1) {
+    if (j === i) continue;
+    if (pts[j][0] >= start && pts[j][0] <= end) out.push(pts[j][1]);
   }
-  return neigh;
+  return out;
+}
+
+function farFrom(price, median, limit) {
+  if (!(median > 0)) return false;
+  const ratio = price / median;
+  return ratio > 1 + limit || ratio < 1 - limit;
+}
+
+// A day is a spike when it sits more than 35% from the other days in a ±3 day
+// window, or more than 25% from the other days in a ±10 day window. The wider
+// window keeps a cluster of bad days from shielding each other.
+export function spikeDates(points) {
+  const pts = seriesOf(points);
+  const out = new Set();
+  for (let i = 0; i < pts.length; i += 1) {
+    const near = windowPrices(pts, i, 3);
+    const wide = windowPrices(pts, i, 10);
+    const price = pts[i][1];
+    const tight = near.length >= 3 && farFrom(price, medianOf(near), 0.35);
+    const broad = wide.length >= 5 && farFrom(price, medianOf(wide), 0.25);
+    if (tight || broad) out.add(pts[i][0]);
+  }
+  return out;
+}
+
+// Spikes are left off the chart. They are not redrawn at a capped price.
+export function chartSeries(points) {
+  const pts = seriesOf(points);
+  const spikes = spikeDates(pts);
+  if (!spikes.size) return pts;
+  const kept = pts.filter((p) => !spikes.has(p[0]));
+  return kept.length ? kept : pts;
+}
+
+export function clampSpikes(points) {
+  return chartSeries(points);
 }
 
 function medianOf(values) {
@@ -234,34 +276,6 @@ export function dropTiledCycles(points) {
   }
   if (!drop.size) return pts;
   return pts.filter((_, i) => !drop.has(i));
-}
-
-// A day more than 35% from the median of its 7 neighboring days is a spike.
-export function spikeDates(points) {
-  const pts = seriesOf(points);
-  const out = new Set();
-  for (let i = 0; i < pts.length; i += 1) {
-    const neigh = closestPrices(pts, i, 7);
-    if (neigh.length < 7) continue;
-    const med = medianOf(neigh);
-    if (!(med > 0)) continue;
-    const ratio = pts[i][1] / med;
-    if (ratio > 1.35 || ratio < 0.65) out.add(pts[i][0]);
-  }
-  return out;
-}
-
-export function clampSpikes(points) {
-  const pts = seriesOf(points);
-  const spikes = spikeDates(pts);
-  if (!spikes.size) return pts;
-  return pts.map((p, i) => {
-    if (!spikes.has(p[0])) return p;
-    const med = medianOf(closestPrices(pts, i, 7));
-    const ratio = p[1] / med;
-    const clamped = ratio > 1.35 ? med * 1.35 : med * 0.65;
-    return [p[0], Math.round(clamped * 100) / 100];
-  });
 }
 
 export function claimSeries(points) {

@@ -4,7 +4,7 @@ import { readFile, writeFile, mkdir, readdir, copyFile } from "node:fs/promises"
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
-  bucketOf, bestMove, changePct, clampSpikes, cleanHistory, dropTiledCycles, eraOf, money, pretty, selectFeedReads, slug,
+  bucketOf, bestMove, changePct, chartSeries, cleanHistory, dropTiledCycles, eraOf, money, pretty, selectFeedReads, slug,
 } from "./lib/public-bundle.mjs";
 import { publicReceipts, scoreWatch } from "./lib/public-receipts.mjs";
 
@@ -348,7 +348,7 @@ for (const item of items) {
   const price = money(item.price) ? Number(item.price) : null;
   if (price) set.priced += 1;
   const histRaw = histFor(item.tcgplayerProductId);
-  const hist = clampSpikes(histRaw);
+  const hist = chartSeries(histRaw);
   rawById.set(item.id, histRaw);
   const prevP = hist.length >= 2 ? hist[hist.length - 2][1] : null;
   const pct = price ? changePct(prevP, price) : null;
