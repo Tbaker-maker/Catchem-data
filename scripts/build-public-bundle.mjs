@@ -4,7 +4,7 @@ import { readFile, writeFile, mkdir, readdir, copyFile } from "node:fs/promises"
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
-  bucketOf, changePct, cleanHistory, eraOf, headlineFor, money, pretty, rankReads, slug,
+  bucketOf, bestMove, changePct, cleanHistory, eraOf, headlineFor, money, pretty, rankReads, slug, whyFor, BANNED,
 } from "./lib/public-bundle.mjs";
 import { publicReceipts, scoreWatch } from "./lib/public-receipts.mjs";
 
@@ -44,6 +44,16 @@ function addPoint(map, pid, date, market) {
 }
 const series = new Map();
 const lowByPid = new Map();
+try {
+  const backfillDir = join(ROOT, "data/history/market-backfill");
+  for (const file of (await readdir(backfillDir)).sort()) {
+    if (!file.endsWith(".json")) continue;
+    const doc = JSON.parse(await readFile(join(backfillDir, file), "utf8"));
+    for (const [pid, pts] of Object.entries(doc.series || {})) {
+      for (const pt of pts || []) addPoint(series, pid, pt?.[0], pt?.[1]);
+    }
+  }
+} catch { /* backfill is optional until a history import has run */ }
 try {
   for (const file of await readdir(join(ROOT, "data/history/tcgplayer-market"))) {
     if (!file.endsWith(".json")) continue;
@@ -433,7 +443,7 @@ for (const set of sets.values()) {
   for (const item of set.items) {
     if (item.price && item.kind === "single") pricedSingles += 1;
     if (item.price && item.kind === "sealed") pricedSealed += 1;
-    const card = { ...item, set: set.name, setSlug: set.slug, source: "TCGplayer market", asOf: catalog.asOf };
+    const card = { ...item, set: set.name, setSlug: set.slug, release: set.release || null, source: "TCGplayer market", asOf: catalog.asOf };
     const b = bucketOf(item.id);
     if (!buckets.has(b)) buckets.set(b, []);
     buckets.get(b).push(card);
@@ -520,72 +530,57 @@ function stockImage(item) {
   if (scan.startsWith("https://images.pokemontcg.io/")) return scan;
   return "";
 }
-function rowRead(item, set, type, extra = {}) {
-  const price = money(item.price) ? Number(item.price) : null;
-  if (!price || price < 20) return null;
-  const hist = item.hist || [];
-  const prev = hist.length >= 2 ? hist[hist.length - 2][1] : null;
-  const pct = Number.isFinite(item.pct) ? item.pct : changePct(prev, price);
-  const read = {
-    id: `${type}-${item.id}`,
-    type,
-    kind: item.kind === "sealed" ? "sealed" : "single",
-    set: set.name,
-    setSlug: set.slug,
-    name: item.name,
-    price,
-    changePct: pct,
-    source: "TCGplayer market",
-    asOf: catalog.asOf,
-    confidence: hist.length >= 7 ? "Tracked" : "Early",
-    history: hist.map((pt) => pt[1]),
-    hist,
-    image: stockImage(item),
-    href: item.kind === "sealed" ? `/p/${item.id}` : `/c/${item.id}`,
-    number: item.num || "",
-    rarity: item.rarity || "",
-    low: item.low || null,
-    artist: item.artist || "",
-    why: "Compared with the previous TCGplayer market print. One day is not a trend.",
-    score: Math.round(Math.log10(price) * 30 + Math.min(Math.abs(pct || 0), 25)),
-    ...extra,
-  };
-  read.headline = headlineFor(read);
-  if (!read.headline || /ebayimg|i\.ebayimg/i.test(read.image || "")) return null;
-  return read;
-}
-
-const candidates = [];
 const flat = [];
 for (const set of sets.values()) {
   for (const item of set.items) flat.push([item, set]);
 }
-const movers = flat
-  .map(([item, set]) => rowRead(item, set, "mover"))
-  .filter((row) => row && Number.isFinite(row.changePct) && row.changePct !== 0);
-movers.sort((a, b) => (b.score || 0) - (a.score || 0) || Math.abs(b.changePct) - Math.abs(a.changePct));
-for (const row of movers) {
-  if (row.changePct >= 8) row.type = "heating";
-  else if (row.changePct <= -8) row.type = "cooling";
-  row.headline = headlineFor(row);
-  row.id = `${row.type}-${row.id.split("-").slice(1).join("-")}`;
-}
-const singleMovers = movers.filter((row) => row.kind === "single").slice(0, 40);
-const sealedMovers = movers.filter((row) => row.kind === "sealed").slice(0, 20);
-candidates.push(...singleMovers.slice(0, 14), ...sealedMovers.slice(0, 8));
-
-const chaseSets = new Map();
+let hist30 = 0;
+let hist90 = 0;
+const qualified = [];
 for (const [item, set] of flat) {
-  if (item.kind !== "single" || !item.price) continue;
-  if (!/illustration|special illustration|hyper|rainbow|art rare|ultra rare/i.test(item.rarity || "")) continue;
-  const prev = chaseSets.get(set.slug);
-  if (!prev || item.price > prev[0].price) chaseSets.set(set.slug, [item, set]);
+  const hist = item.hist || [];
+  if (hist.length >= 30) hist30 += 1;
+  if (hist.length >= 90) hist90 += 1;
+  const kind = item.kind === "sealed" ? "sealed" : "single";
+  const move = bestMove(hist, kind);
+  if (!move || move.from < 5 || move.to < 5) continue;
+  const year = Number(String(set.release || "").slice(0, 4)) || null;
+  const read = {
+    id: `move-${item.id}`,
+    type: "mover",
+    kind,
+    set: set.name,
+    setSlug: set.slug,
+    name: pretty(item.name),
+    year,
+    price: move.to,
+    fromPrice: move.from,
+    changePct: move.pct,
+    windowDays: move.window,
+    fromDate: move.fromDate,
+    toDate: move.toDate,
+    chartWindow: `${move.window} days, ${move.fromDate} to ${move.toDate}`,
+    source: `TCGplayer market, ${move.toDate}`,
+    asOf: move.toDate,
+    history: hist.map((pt) => pt[1]),
+    hist,
+    image: stockImage(item),
+    href: kind === "sealed" ? `/p/${item.id}` : `/c/${item.id}`,
+    number: item.num || "",
+    rarity: item.rarity || "",
+    artist: item.artist || "",
+    why: whyFor(hist),
+    score: Math.round(Math.abs(move.to - move.from) * 100) / 100,
+  };
+  read.headline = headlineFor(read);
+  if (!read.headline || !read.why || BANNED.test(read.headline) || BANNED.test(read.why)) continue;
+  if (/ebayimg|i\.ebayimg/i.test(read.image || "")) read.image = "";
+  qualified.push(read);
 }
-const chases = [...chaseSets.values()]
-  .sort((a, b) => b[0].price - a[0].price)
-  .slice(0, 6)
-  .map(([item, set]) => rowRead(item, set, "chase", { score: 50, why: "Highest matching chase rarity we have a market price for in this set today." }));
-candidates.push(...chases.filter(Boolean));
+qualified.sort((a, b) => b.score - a.score || String(a.name).localeCompare(String(b.name)));
+console.log(`history >=30 ${hist30} >=90 ${hist90} qualifying ${qualified.length}`);
+const candidates = qualified;
+const movers = qualified;
 
 let ebayTracked = 0;
 let legacyTape = [];
@@ -717,26 +712,6 @@ for (const [from, to] of Object.entries(OLD_SETS)) {
   if (!redirects.sets[from]) redirects.sets[from] = `/sets/${to}`;
 }
 
-const boxes = flat
-  .map(([item, set]) => {
-    const packs = item.subtype === "booster-box" ? 36
-      : item.subtype === "booster-bundle" ? 6
-      : (item.subtype === "etb" || item.subtype === "pc-etb") && !/celebrations/i.test(item.set || "")
-        ? (/sword|shield|swsh/i.test(item.set || "") ? 8 : 9)
-        : null;
-    if (!(packs > 1) || !(item.price >= 40)) return null;
-    const perPack = Math.round((item.price / packs) * 100) / 100;
-    return rowRead(item, set, "box", {
-      perPack,
-      score: 40 + Math.log10(item.price),
-      why: `TCGplayer market price divided by ${packs} packs. Not a sold price.`,
-    });
-  })
-  .filter(Boolean)
-  .sort((a, b) => b.price - a.price)
-  .slice(0, 4);
-candidates.push(...boxes);
-
 const watchReads = [];
 try {
   const log = await read("research/pulse/watch-log.json");
@@ -745,18 +720,6 @@ try {
   const sealedNow = new Map((sealed.products || []).map((p) => [p.id, p.priceMedian]));
   const scored = scoreWatch({ entries: log.entries || [], heat, sealedNow });
   const pub = publicReceipts(scored);
-  for (const row of pub.rows) {
-    if (row.result !== "hit" && row.result !== "miss") continue;
-    candidates.push({
-      ...row,
-      score: 30,
-      confidence: "Early",
-      set: "",
-      image: "",
-      low: null,
-      sold: null,
-    });
-  }
   watchReads.push(...pub.rows);
   counts.receipts = { scored: pub.scored, hits: pub.hits, misses: pub.misses, hitRate: pub.hitRate };
 } catch { /* receipts stay empty if the log is missing */ }
@@ -767,7 +730,7 @@ counts.updatedAt = updatedAt;
 counts.ebaySealedTracked = ebayTracked;
 await writeFile(join(OUT, "counts.json"), JSON.stringify(counts, null, 1) + "\n");
 
-const reads = rankReads(candidates, 24).map((row, i) => ({ ...row, n: i + 1 }));
+const reads = rankReads(candidates, 12).map((row, i) => ({ ...row, n: i + 1 }));
 await writeFile(join(OUT, "reads.json"), JSON.stringify({
   asOf: catalog.asOf,
   updatedAt,

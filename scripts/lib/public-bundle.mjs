@@ -116,40 +116,104 @@ export function changePct(prev, next) {
   return Math.round(pct * 10) / 10;
 }
 
-export function headlineFor(read) {
-  const name = pretty(read.name);
-  if (!name || !money(read.price)) return "";
-  const pct = read.changePct;
-  const moved = Number.isFinite(pct) && pct !== 0
-    ? `${pct > 0 ? "up" : "down"} ${Math.abs(pct)}% from the last print`
-    : "flat versus the last print";
-  const id = String(read.id || read.type || "");
-  let h = 0;
-  for (const c of id) h = (h + c.charCodeAt(0)) % 997;
-  const pick = (lines) => lines[id ? h % lines.length : 0];
-  if (read.type === "box") return `${name} is the sealed box on today's list.`;
-  if (read.type === "chase") return pick([
-    `Top card in ${pretty(read.set)}: ${name}.`,
-    `${name} is the chase we can price in ${pretty(read.set)}.`,
-  ]);
-  if (read.type === "receipt") return `${name}, checked again.`;
-  if (read.type === "heating") return pick([
-    `${name} is heating up.`,
-    `${name} is heating up, ${moved}.`,
-    `${name} is heating up. The last print was lower.`,
-  ]);
-  if (read.type === "cooling") return pick([
-    `${name} is cooling off.`,
-    `${name} is ${moved}.`,
-    `${name} printed lower.`,
-  ]);
-  return pick([
-    `${name} changed since the last print.`,
-    `${name} is ${moved}.`,
-  ]);
+export function priceWords(n) {
+  const text = money(n);
+  if (!text) return "";
+  return text.endsWith(".00") ? text.slice(0, -3) : text;
 }
 
-export function rankReads(rows, limit = 24) {
+function daySpan(a, b) {
+  return Math.round((Date.parse(`${b}T00:00:00Z`) - Date.parse(`${a}T00:00:00Z`)) / 86400000);
+}
+
+// A window counts only when the series already has 30 days, the two ends are
+// real stored days, and at least three separate days moved the same way.
+// One step, then a flat line, is a spike and does not count.
+export function moveOver(points, days) {
+  const pts = (points || []).filter((p) => Array.isArray(p) && /^\d{4}-\d{2}-\d{2}$/.test(String(p[0])) && Number(p[1]) > 0);
+  if (pts.length < 30 || (days !== 7 && days !== 30)) return null;
+  const end = pts[pts.length - 1];
+  const target = new Date(Date.parse(`${end[0]}T00:00:00Z`) - days * 86400000).toISOString().slice(0, 10);
+  let then = null;
+  for (const p of pts) {
+    if (p[0] <= target) then = p;
+    else break;
+  }
+  if (!then) return null;
+  const span = daySpan(then[0], end[0]);
+  if (span < days - 1 || span > days + 3) return null;
+  const from = Number(then[1]);
+  const to = Number(end[1]);
+  if (!(from > 0) || !(to > 0) || from === to) return null;
+  const pct = ((to - from) / from) * 100;
+  if (!Number.isFinite(pct) || pct === 0) return null;
+  const sign = Math.sign(pct);
+  let prev = from;
+  let confirms = 0;
+  let maxStep = 0;
+  for (const p of pts) {
+    if (p[0] <= then[0] || p[0] > end[0]) continue;
+    const step = Number(p[1]) - prev;
+    if (step !== 0 && Math.sign(step) === sign) {
+      confirms += 1;
+      if (Math.abs(step) > maxStep) maxStep = Math.abs(step);
+    }
+    prev = Number(p[1]);
+  }
+  const net = Math.abs(to - from);
+  if (confirms < 3 || !(net > 0) || maxStep / net > 0.5) return null;
+  return {
+    pct: Math.round(pct * 10) / 10,
+    from,
+    to,
+    fromDate: then[0],
+    toDate: end[0],
+    window: days,
+    confirms,
+  };
+}
+
+export function bestMove(points, kind) {
+  const need = kind === "sealed" ? 5 : 8;
+  const hits = [30, 7].map((days) => moveOver(points, days)).filter((row) => row && Math.abs(row.pct) >= need);
+  if (!hits.length) return null;
+  hits.sort((a, b) => Math.abs(b.pct) - Math.abs(a.pct) || b.window - a.window);
+  return hits[0];
+}
+
+export function whyFor(points) {
+  const pts = (points || []).filter((p) => Array.isArray(p) && p[0] && Number(p[1]) > 0);
+  if (pts.length < 2) return "";
+  const end = pts[pts.length - 1][0];
+  const cut = new Date(Date.parse(`${end}T00:00:00Z`) - 30 * 86400000).toISOString().slice(0, 10);
+  const window = pts.filter((p) => p[0] >= cut);
+  if (window.length < 2) return "";
+  const vals = window.map((p) => Number(p[1]));
+  const lo = Math.min(...vals);
+  const hi = Math.max(...vals);
+  const last = Number(pts[pts.length - 1][1]);
+  if (lo === hi) return "";
+  if (last === lo) return `This is the low of the last 30 days, ${priceWords(lo)}.`;
+  if (last === hi) return `This is the high of the last 30 days, ${priceWords(hi)}.`;
+  return `The last 30 days ran from ${priceWords(lo)} to ${priceWords(hi)}.`;
+}
+
+export function headlineFor(read) {
+  const name = pretty(read.name);
+  const price = priceWords(read.price);
+  const from = priceWords(read.fromPrice);
+  const pct = Number(read.changePct);
+  const days = Number(read.windowDays);
+  if (!name || !price || !from || !Number.isFinite(pct) || pct === 0 || (days !== 7 && days !== 30)) return "";
+  const dir = pct > 0 ? "up" : "down";
+  const abs = Math.abs(pct);
+  const shown = Number.isInteger(abs) ? String(abs) : String(abs);
+  const year = Number(read.year);
+  const who = read.set && year && year < 2017 ? `${name}, ${pretty(read.set)} (${year})` : name;
+  return `${who} is ${dir} ${shown}% over ${days} days, from ${from} to ${price}.`;
+}
+
+export function rankReads(rows, limit = 12) {
   const pools = new Map();
   for (const row of rows) {
     if (!row || !money(row.price) || !row.headline || BANNED.test(row.headline)) continue;
