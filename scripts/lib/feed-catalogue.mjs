@@ -1,5 +1,5 @@
 // The Feed catalogue. One read per honest window. No 12 cap.
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import {
   BANNED, chartSeries, endStreak, feedWindow, isThinSeries, money, pretty, readCopy, slug,
@@ -39,16 +39,51 @@ function orderLead(rows) {
   return lead.concat(held);
 }
 
-function sectionFor(days) {
-  if (days === 7) return "today";
-  if (days === 30) return "watch";
-  return "cook";
-}
-
 function readTypeFor(days) {
   if (days === 7) return "daily";
   if (days === 30) return "watch";
   return "cook";
+}
+
+// A 7-day move of 8% or more is a mover. A smaller 7-day move stays in Today.
+// A 90-day move is a cook. The same read is never in two of those lists.
+export const MOVER_PCT = 8;
+
+export function assignSections(cards) {
+  const lists = { today: [], watch: [], cook: [], up: [], down: [], heat: [], cool: [] };
+  for (const card of Object.values(cards || {})) {
+    if (!card?.id) continue;
+    if (card.score == null) card.score = Math.abs(Number(card.changePct) || 0);
+    const days = Number(card.windowDays);
+    const abs = Math.abs(Number(card.changePct) || 0);
+    if (days === 90) lists.cook.push(card);
+    else if (days === 30) lists.watch.push(card);
+    else if (days === 7 && abs >= MOVER_PCT) lists[card.direction === "down" ? "down" : "up"].push(card);
+    else if (days === 7) lists.today.push(card);
+    if (card.tempo === "heat" || card.tempo === "cool") lists[card.tempo].push(card);
+  }
+  const out = {};
+  for (const [key, rows] of Object.entries(lists)) out[key] = orderLead(rows).map((row) => row.id);
+  return out;
+}
+
+export function applyShelf(cards, shelfRows) {
+  const latest = new Map();
+  for (const row of shelfRows || []) {
+    const sku = String(row?.sku_id || "");
+    const n = Number(row?.listing_count);
+    const date = String(row?.date || "");
+    if (!sku.startsWith("tcgcsv-") || !(n >= 20) || !/^\d{4}-\d{2}-\d{2}$/.test(date)) continue;
+    const prev = latest.get(sku);
+    if (!prev || date > prev.date) latest.set(sku, { n, date });
+  }
+  for (const card of Object.values(cards || {})) {
+    const hit = latest.get(card?.sku);
+    if (!hit) continue;
+    card.listings = hit.n;
+    card.listingsAsOf = hit.date;
+  }
+  return latest.size;
 }
 
 export function assembleCatalogue(items, prior = []) {
@@ -59,7 +94,6 @@ export function assembleCatalogue(items, prior = []) {
   }
   const headlines = new Set();
   const cards = {};
-  const lists = { today: [], watch: [], cook: [], up: [], down: [], heat: [], cool: [] };
   for (const item of items || []) {
     if (!item?.id || !String(item.id).startsWith("tcgcsv-")) continue;
     if (JUNK.test(item.name || "")) continue;
@@ -137,17 +171,12 @@ export function assembleCatalogue(items, prior = []) {
         read_type: readTypeFor(move.window),
       };
       cards[card.id] = card;
-      lists[sectionFor(move.window)].push(card.id);
-      if (move === strongest) {
-        lists[direction === "up" ? "up" : "down"].push(card.id);
-        if (streak.n >= 4 && streak.dir === Math.sign(move.pct)) lists[streak.dir > 0 ? "heat" : "cool"].push(card.id);
+      if (move === strongest && streak.n >= 4 && streak.dir === Math.sign(move.pct)) {
+        card.tempo = streak.dir > 0 ? "heat" : "cool";
       }
     }
   }
-  for (const key of Object.keys(lists)) {
-    const rows = lists[key].map((id) => cards[id]);
-    lists[key] = orderLead(rows).map((row) => row.id);
-  }
+  const lists = assignSections(cards);
   return { cards, lists };
 }
 
@@ -177,8 +206,9 @@ export function trackedRows(prior, priceBySku) {
   return out;
 }
 
-export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDir, logFile }) {
+export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDir, logFile, shelf }) {
   const { cards, lists } = assembleCatalogue(items, prior);
+  applyShelf(cards, shelf);
   const priceBySku = prices || new Map(items.map((item) => [item.id, Number(item.price)]));
   const freshIds = new Set(Object.values(cards).map((card) => `${card.asOf}_${card.sku}_${card.pattern}`));
   const tracked = trackedRows(prior, priceBySku).filter((row) => !freshIds.has(row.call_id));
@@ -221,6 +251,7 @@ export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDi
     delete card.read_type;
     delete card.points;
     delete card.score;
+    delete card.tempo;
   }
   const pageSize = 24;
   for (const key of Object.keys(lists)) {
@@ -256,6 +287,16 @@ export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDi
     sets: catalogue.sets,
   }));
   await writeFile(join(outDir, "feed", "catalogue.json"), JSON.stringify(catalogue));
+  const lookup = {};
+  for (const part of ["today", "watch", "cook", "up", "down", "heat", "cool"]) {
+    (lists[part] || []).forEach((id, index) => {
+      if (!lookup[id]) lookup[id] = [part, Math.floor(index / pageSize)];
+    });
+  }
+  tracked.forEach((row, index) => {
+    if (row?.call_id && !lookup[row.call_id]) lookup[row.call_id] = ["tracked", Math.floor(index / pageSize)];
+  });
+  await writeFile(join(outDir, "feed", "lookup.json"), JSON.stringify(lookup));
   const lead = lists.today.slice(0, 24).map((id) => cards[id]);
   await writeFile(join(outDir, "reads.json"), JSON.stringify({
     asOf: catalogue.asOf,
@@ -267,6 +308,21 @@ export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDi
   }, null, 1) + "\n");
   const logged = logFile ? await appendLearningLog(logFile, { asOf, updatedAt, reads: logReads }) : { added: 0, total: 0, skipped: [] };
   return { count: catalogue.count, sections: Object.fromEntries(Object.entries(lists).map(([k, v]) => [k, v.length])), tracked: tracked.length, logged };
+}
+
+export async function readShelfFile(file) {
+  if (!file) return [];
+  try {
+    const text = await readFile(file, "utf8");
+    const rows = [];
+    for (const line of text.split("\n")) {
+      if (!line.trim()) continue;
+      rows.push(JSON.parse(line));
+    }
+    return rows;
+  } catch {
+    return [];
+  }
 }
 
 export { orderLead, readCallLog };
