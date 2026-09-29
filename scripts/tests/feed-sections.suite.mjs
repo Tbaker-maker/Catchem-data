@@ -1,4 +1,4 @@
-import { applyShelf, assignSections } from "../lib/feed-catalogue.mjs";
+import { applyImageGaps, applyShelf, assignSections } from "../lib/feed-catalogue.mjs";
 
 export async function run() {
   let fail = 0;
@@ -29,6 +29,13 @@ export async function run() {
   ]);
   t("listings under 20 are left off", cards.a.listings == null);
   t("the newest shelf count of at least 20 is kept", cards.b.listings === 50 && cards.b.listingsAsOf === "2026-09-27");
+  const gaps = {
+    v: { id: "v", sku: "tcgcsv-642634", set: "SV: Black Bolt", image: "https://tcgplayer-cdn.tcgplayer.com/product/642634_in_400x400.jpg", name: "Victini (Master Ball Pattern)" },
+    ok: { id: "ok", sku: "tcgcsv-42346", set: "Base Set", image: "https://tcgplayer-cdn.tcgplayer.com/product/42346_in_400x400.jpg", name: "Charizard" },
+  };
+  applyImageGaps(gaps, [642634], new Map([["SV: Black Bolt", "https://images.pokemontcg.io/zsv10pt5/logo.png"]]));
+  t("a missing product photo is cleared and the set logo is kept", gaps.v.image === "" && gaps.v.logo === "https://images.pokemontcg.io/zsv10pt5/logo.png");
+  t("a real product photo is left alone", gaps.ok.image.includes("42346") && !gaps.ok.logo);
   return fail;
 }
 
