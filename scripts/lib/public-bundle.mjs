@@ -148,6 +148,114 @@ function cents(n) {
   return Math.round(Number(n) * 100);
 }
 
+const WEEK_WORDS = ["", "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh", "twelfth", "thirteenth", "fourteenth", "fifteenth", "sixteenth", "seventeenth", "eighteenth", "nineteenth", "twentieth"];
+
+function weekWord(n) {
+  if (n >= 1 && n < WEEK_WORDS.length) return WEEK_WORDS[n];
+  const mod = n % 100;
+  const suffix = mod >= 11 && mod <= 13 ? "th" : ["th", "st", "nd", "rd"][n % 10] || "th";
+  return `${n}${suffix}`;
+}
+
+// Weeks walk backward from the last stored day. A lower low is a week whose
+// low is under the week before it. The sentence names that path, not a shared
+// percent line.
+export function pathSentence(points, opts = {}) {
+  const all = seriesOf(points);
+  if (all.length < 2) return "";
+  const toDate = /^\d{4}-\d{2}-\d{2}$/.test(String(opts.toDate || "")) ? opts.toDate : all[all.length - 1][0];
+  const fromDate = /^\d{4}-\d{2}-\d{2}$/.test(String(opts.fromDate || "")) ? opts.fromDate : all[0][0];
+  const days = Number(opts.windowDays) || daySpan(fromDate, toDate);
+  const endMs = Date.parse(`${toDate}T00:00:00Z`);
+  const byDate = new Map(all.filter((p) => p[0] <= toDate).map((p) => [p[0], Number(p[1])]));
+  const weeks = [];
+  for (let w = 0; w < 20; w += 1) {
+    const stop = endMs - w * 7 * 86400000;
+    const start = stop - 6 * 86400000;
+    let low = null;
+    let lowDate = "";
+    let high = null;
+    let highDate = "";
+    for (let t = start; t <= stop; t += 86400000) {
+      const date = new Date(t).toISOString().slice(0, 10);
+      const value = byDate.get(date);
+      if (!(value > 0)) continue;
+      if (low == null || cents(value) < cents(low)) {
+        low = value;
+        lowDate = date;
+      }
+      if (high == null || cents(value) > cents(high)) {
+        high = value;
+        highDate = date;
+      }
+    }
+    if (low == null) {
+      if (weeks.length) break;
+      continue;
+    }
+    weeks.push({ low, lowDate, high, highDate, stop: new Date(stop).toISOString().slice(0, 10) });
+  }
+  if (!weeks.length) return "";
+  const down = opts.direction === "down" || (opts.direction !== "up" && Number(opts.fromPrice) > Number(all.at(-1)?.[1]));
+  let steps = 0;
+  for (let i = 0; i < weeks.length - 1; i += 1) {
+    const lower = cents(weeks[i].low) < cents(weeks[i + 1].low);
+    const higher = cents(weeks[i].high) > cents(weeks[i + 1].high);
+    if (down ? lower : higher) steps += 1;
+    else break;
+  }
+  const latest = weeks[0];
+  const prior = weeks[1];
+  const base = weeks[steps] || prior || latest;
+  const windowBit = days > 0 && opts.fromPrice > 0 && fromDate
+    ? ` In this ${days}-day window it starts at ${priceWords(opts.fromPrice)} on ${monthDay(fromDate)}.`
+    : "";
+  let sentence = "";
+  if (down && steps >= 2) {
+    const since = base?.lowDate ? `, from ${priceWords(base.low)} on ${monthDay(base.lowDate)}` : "";
+    sentence = `This is the ${weekWord(steps)} week of lower lows${since}, not the first down week.${windowBit}`;
+  } else if (!down && steps >= 2) {
+    const since = base?.highDate ? `, from ${priceWords(base.high)} on ${monthDay(base.highDate)}` : "";
+    sentence = `This is the ${weekWord(steps)} week of higher highs${since}, not the first up week.${windowBit}`;
+  } else if (down && steps === 1 && prior) {
+    sentence = `This is the first down week. The weekly low is ${priceWords(latest.low)} on ${monthDay(latest.lowDate)}, under ${priceWords(prior.low)} on ${monthDay(prior.lowDate)}.${windowBit}`;
+  } else if (!down && steps === 1 && prior) {
+    sentence = `This is the first up week. The weekly high is ${priceWords(latest.high)} on ${monthDay(latest.highDate)}, above ${priceWords(prior.high)} on ${monthDay(prior.highDate)}.${windowBit}`;
+  } else if (prior) {
+    const way = down ? "did not make a lower low" : "did not make a higher high";
+    const nowBit = down
+      ? `Weekly low ${priceWords(latest.low)} on ${monthDay(latest.lowDate)}, after ${priceWords(prior.low)} on ${monthDay(prior.lowDate)}.`
+      : `Weekly high ${priceWords(latest.high)} on ${monthDay(latest.highDate)}, after ${priceWords(prior.high)} on ${monthDay(prior.highDate)}.`;
+    sentence = `The last week ${way}. ${nowBit}${windowBit}`;
+  } else {
+    sentence = `The last stored print is ${priceWords(latest.low)} on ${monthDay(latest.lowDate)}.${windowBit}`;
+  }
+  return sentence.replace(/\s+/g, " ").trim();
+}
+
+export function windowBounds(points, toDate) {
+  const pts = seriesOf(points).filter((p) => !toDate || p[0] <= toDate);
+  if (!pts.length) return null;
+  const end = toDate && pts.some((p) => p[0] === toDate) ? toDate : pts[pts.length - 1][0];
+  const start = new Date(Date.parse(`${end}T00:00:00Z`) - 90 * 86400000).toISOString().slice(0, 10);
+  const win = pts.filter((p) => p[0] >= start);
+  const use = win.length >= 2 ? win : pts;
+  let hi = use[0];
+  let lo = use[0];
+  for (const p of use) {
+    if (cents(p[1]) > cents(hi[1]) || (cents(p[1]) === cents(hi[1]) && p[0] > hi[0])) hi = p;
+    if (cents(p[1]) < cents(lo[1]) || (cents(p[1]) === cents(lo[1]) && p[0] > lo[0])) lo = p;
+  }
+  return {
+    high: hi[1],
+    highOn: hi[0],
+    low: lo[1],
+    lowOn: lo[0],
+    daysSinceHigh: daySpan(hi[0], end),
+    window: win.length >= 2 ? 90 : daySpan(use[0][0], end),
+  };
+}
+
 export function shortSet(name) {
   return pretty(name)
     .replace(/^[A-Z]{1,8}\d*[a-z]?:\s+/, "")

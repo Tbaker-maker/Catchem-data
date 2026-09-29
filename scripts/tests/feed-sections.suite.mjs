@@ -1,4 +1,5 @@
 import { applyImageGaps, applyShelf, assignSections } from "../lib/feed-catalogue.mjs";
+import { BANNED, pathSentence } from "../lib/public-bundle.mjs";
 
 export async function run() {
   let fail = 0;
@@ -36,6 +37,17 @@ export async function run() {
   applyImageGaps(gaps, [642634], new Map([["SV: Black Bolt", "https://images.pokemontcg.io/zsv10pt5/logo.png"]]));
   t("a missing product photo is cleared and the set logo is kept", gaps.v.image === "" && gaps.v.logo === "https://images.pokemontcg.io/zsv10pt5/logo.png");
   t("a real product photo is left alone", gaps.ok.image.includes("42346") && !gaps.ok.logo);
+  const down = [];
+  for (let i = 0; i < 28; i += 1) {
+    const day = new Date(Date.parse("2026-09-01T00:00:00Z") + i * 86400000).toISOString().slice(0, 10);
+    down.push([day, Math.round((10 - i * 0.2) * 100) / 100]);
+  }
+  const dug = pathSentence(down, { direction: "down", fromDate: "2026-09-01", toDate: "2026-09-28", fromPrice: 10, windowDays: 30 });
+  const flat = down.map((p, i) => [p[0], i < 21 ? 8 : p[1]]);
+  const first = pathSentence(flat, { direction: "down", fromDate: "2026-09-01", toDate: "2026-09-28", fromPrice: 8, windowDays: 30 });
+  t("a falling series names the week of lower lows", /week of lower lows/.test(dug) && /not the first down week/.test(dug) && !BANNED.test(dug));
+  t("a new drop is the first down week", /first down week/.test(first) && !/not the first down week/.test(first));
+  t("two paths are not the same sentence", dug !== first);
   return fail;
 }
 

@@ -1,8 +1,8 @@
 // The Feed catalogue. One read per honest window. No 12 cap.
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, unlink, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import {
-  BANNED, chartSeries, endStreak, feedWindow, isThinSeries, money, pretty, readCopy, slug,
+  BANNED, chartSeries, endStreak, feedWindow, isThinSeries, money, pathSentence, pretty, readCopy, slug, windowBounds,
 } from "./public-bundle.mjs";
 import { appendLearningLog, readCallLog } from "./learning-log.mjs";
 
@@ -189,15 +189,44 @@ export function assembleCatalogue(items, prior = []) {
         flagged,
         pattern: `mover_${direction}_${move.window}d`,
         read_type: readTypeFor(move.window),
+        path: "",
+        _bounds: windowBounds(raw, move.toDate),
       };
+      const sentence = pathSentence(raw, {
+        direction,
+        fromDate: move.fromDate,
+        toDate: move.toDate,
+        fromPrice: move.from,
+        windowDays: move.window,
+      });
+      if (sentence && !BANNED.test(sentence)) card.path = sentence;
       cards[card.id] = card;
       if (move === strongest && streak.n >= 4 && streak.dir === Math.sign(move.pct)) {
         card.tempo = streak.dir > 0 ? "heat" : "cool";
       }
     }
   }
+  disambiguatePaths(cards);
   const lists = assignSections(cards);
   return { cards, lists };
+}
+
+function disambiguatePaths(cards) {
+  const groups = new Map();
+  for (const card of Object.values(cards)) {
+    const text = card.path || "";
+    if (!text) continue;
+    if (!groups.has(text)) groups.set(text, []);
+    groups.get(text).push(card);
+  }
+  for (const rows of groups.values()) {
+    if (rows.length < 2) continue;
+    for (const card of rows) {
+      const tag = `${card.windowDays}-day ${card.sku}`;
+      const withSet = `${card.path.replace(/\.$/, "")} (${card.set}, ${tag}).`;
+      card.path = BANNED.test(withSet) ? `${card.path.replace(/\.$/, "")} (${tag}).` : withSet;
+    }
+  }
 }
 
 export function trackedRows(prior, priceBySku) {
@@ -237,6 +266,38 @@ export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDi
     }
   } catch { /* a missing set list leaves the logo blank */ }
   applyImageGaps(cards, gapPids, logoByName);
+  const facts = {};
+  for (const card of Object.values(cards)) {
+    const bounds = card._bounds || {};
+    delete card._bounds;
+    const row = {
+      price: card.price,
+      asOf: card.asOf,
+      change7: card.change7,
+      change30: card.change30,
+      change90: card.change90,
+      high: bounds.high ?? null,
+      highOn: bounds.highOn || "",
+      low: bounds.low ?? null,
+      lowOn: bounds.lowOn || "",
+      daysSinceHigh: Number.isFinite(bounds.daysSinceHigh) ? bounds.daysSinceHigh : null,
+      listings: card.listings ?? null,
+      listingsAsOf: card.listingsAsOf || "",
+      flagged: card.flagged || null,
+    };
+    const prev = facts[card.sku];
+    if (!prev || card.windowDays === 30) {
+      if (prev?.listings >= 20 && !(row.listings >= 20)) {
+        row.listings = prev.listings;
+        row.listingsAsOf = prev.listingsAsOf;
+      }
+      if (prev?.flagged && !prev.flagged.first && row.flagged?.first) row.flagged = prev.flagged;
+      facts[card.sku] = row;
+    } else if (row.listings >= 20) {
+      prev.listings = row.listings;
+      prev.listingsAsOf = row.listingsAsOf;
+    }
+  }
   const priceBySku = prices || new Map(items.map((item) => [item.id, Number(item.price)]));
   const freshIds = new Set(Object.values(cards).map((card) => `${card.asOf}_${card.sku}_${card.pattern}`));
   const tracked = trackedRows(prior, priceBySku).filter((row) => !freshIds.has(row.call_id));
@@ -285,16 +346,24 @@ export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDi
     delete card.tempo;
   }
   const pageSize = 24;
+  async function clearJson(dir) {
+    try {
+      const names = await readdir(dir);
+      await Promise.all(names.filter((name) => name.endsWith(".json")).map((name) => unlink(join(dir, name))));
+    } catch { /* first publish */ }
+  }
   for (const key of Object.keys(lists)) {
     const ids = lists[key];
     const pages = Math.max(1, Math.ceil(ids.length / pageSize));
+    await mkdir(join(outDir, "feed", key), { recursive: true });
+    await clearJson(join(outDir, "feed", key));
     for (let n = 0; n < pages; n += 1) {
       const slice = ids.slice(n * pageSize, (n + 1) * pageSize).map((id) => cards[id]);
-      await mkdir(join(outDir, "feed", key), { recursive: true });
       await writeFile(join(outDir, "feed", key, `${n}.json`), JSON.stringify(slice));
     }
   }
   await mkdir(join(outDir, "feed", "tracked"), { recursive: true });
+  await clearJson(join(outDir, "feed", "tracked"));
   const trackedPages = Math.max(1, Math.ceil(tracked.length / pageSize));
   for (let n = 0; n < trackedPages; n += 1) {
     await writeFile(join(outDir, "feed", "tracked", `${n}.json`), JSON.stringify(tracked.slice(n * pageSize, (n + 1) * pageSize)));
@@ -328,6 +397,7 @@ export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDi
     if (row?.call_id && !lookup[row.call_id]) lookup[row.call_id] = ["tracked", Math.floor(index / pageSize)];
   });
   await writeFile(join(outDir, "feed", "lookup.json"), JSON.stringify(lookup));
+  await writeFile(join(outDir, "feed", "facts.json"), JSON.stringify(facts));
   const lead = lists.today.slice(0, 24).map((id) => cards[id]);
   await writeFile(join(outDir, "reads.json"), JSON.stringify({
     asOf: catalogue.asOf,
