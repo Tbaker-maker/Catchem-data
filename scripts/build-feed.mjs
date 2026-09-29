@@ -60,6 +60,7 @@ function releaseFor(item) {
 }
 
 const BAD_IMAGE = new Set([232881, 532629]);
+const GAP_IMAGE = new Set(((await read("data/image-gaps.json").catch(() => ({ pids: [] }))).pids || []).map(Number));
 const items = [];
 for (const item of catalog.items || []) {
   const days = series.get(Number(item.tcgplayerProductId));
@@ -78,7 +79,7 @@ for (const item of catalog.items || []) {
     release: releaseFor(item),
     hist,
     href: kind === "sealed" ? `/p/${item.id}` : `/c/${item.id}`,
-    image: pid && !BAD_IMAGE.has(pid) ? `https://tcgplayer-cdn.tcgplayer.com/product/${pid}_in_400x400.jpg` : "",
+    image: pid && !BAD_IMAGE.has(pid) && !GAP_IMAGE.has(pid) ? `https://tcgplayer-cdn.tcgplayer.com/product/${pid}_in_400x400.jpg` : "",
   });
 }
 
@@ -100,5 +101,6 @@ const result = await publishFeed({
   outDir: OUT,
   logFile: logFile || null,
   shelf: await readShelfFile(process.env.SHELF_LOG || join(ROOT, "data/learning/shelf.jsonl")),
+  gapPids: [...GAP_IMAGE],
 });
 console.log(JSON.stringify({ count: result.count, sections: result.sections, tracked: result.tracked, added: result.logged.added, skipped: result.logged.skipped.length }));

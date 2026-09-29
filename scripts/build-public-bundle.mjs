@@ -82,6 +82,7 @@ function histFor(pid) {
 
 const PRODUCT_WORD = /\b(deck|booster|elite trainer|\btin\b|\bbox\b|bundle|\bpack\b|case|collection|binder|sleeve|playmat|album|\bcoin\b|display)\b/i;
 const BAD_IMAGE = new Set([232881, 532629]);
+const GAP_IMAGE = new Set(((await read("data/image-gaps.json").catch(() => ({ pids: [] }))).pids || []).map(Number));
 function publicKind(item) {
   const setName = item.set || "";
   const name = item.name || "";
@@ -529,7 +530,8 @@ await writeFile(join(OUT, "search-lite.json"), JSON.stringify(search));
 
 function stockImage(item) {
   const n = Number(item?.pid);
-  if (n && !BAD_IMAGE.has(n)) return `https://tcgplayer-cdn.tcgplayer.com/product/${n}_in_400x400.jpg`;
+  if (n && (BAD_IMAGE.has(n) || GAP_IMAGE.has(n))) return "";
+  if (n) return `https://tcgplayer-cdn.tcgplayer.com/product/${n}_in_400x400.jpg`;
   const scan = String(item?.scan || "");
   if (scan.startsWith("https://images.pokemontcg.io/")) return scan;
   return "";
@@ -764,6 +766,7 @@ const feedResult = await publishFeed({
   outDir: OUT,
   logFile: logFile || null,
   shelf: await readShelfFile(process.env.SHELF_LOG || join(ROOT, "data/learning/shelf.jsonl")),
+  gapPids: [...GAP_IMAGE],
 });
 console.log(`feed catalogue ${feedResult.count} logged +${feedResult.logged.added}`);
 
