@@ -36,9 +36,11 @@ try {
     }
   }
 } catch { /* optional */ }
+let dailyAsOf = "";
 for (const file of (await readdir(join(ROOT, "data/history/tcgcsv-daily"))).sort()) {
   if (!file.endsWith(".json")) continue;
   const day = file.slice(0, 10);
+  if (/^\d{4}-\d{2}-\d{2}$/.test(day) && day > dailyAsOf) dailyAsOf = day;
   const doc = JSON.parse(await readFile(join(ROOT, "data/history/tcgcsv-daily", file), "utf8"));
   for (const row of doc.prices || []) addPoint(series, row.id, day, row.market);
 }
@@ -87,7 +89,17 @@ let updatedAt = null;
 try { updatedAt = (await read("data/ppt/run-report.json")).finishedAt || null; } catch { /* clock stays null */ }
 const prices = new Map();
 for (const item of catalog.items || []) {
-  const price = Number(item.price);
+  const hist = series.get(Number(item.tcgplayerProductId));
+  let price = Number(item.price);
+  let lastDate = "";
+  if (hist) {
+    for (const [date, value] of hist) {
+      if (date > lastDate && value > 0) {
+        lastDate = date;
+        price = value;
+      }
+    }
+  }
   if (price > 0 && item.id) prices.set(item.id, price);
 }
 const logFile = process.env.LEARNING_LOG || "";
@@ -96,7 +108,7 @@ const result = await publishFeed({
   items,
   prior,
   prices,
-  asOf: catalog.asOf,
+  asOf: dailyAsOf && dailyAsOf > String(catalog.asOf || "") ? dailyAsOf : catalog.asOf,
   updatedAt,
   outDir: OUT,
   logFile: logFile || null,
