@@ -7,7 +7,7 @@ import {
   bucketOf, bestMove, changePct, chartSeries, cleanHistory, dropTiledCycles, eraOf, money, pretty, slug,
 } from "./lib/public-bundle.mjs";
 import { publicReceipts, scoreWatch } from "./lib/public-receipts.mjs";
-import { publishFeed, readCallLog } from "./lib/feed-catalogue.mjs";
+import { publishFeed, readCallLog, readShelfFile } from "./lib/feed-catalogue.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "research/assets/public");
@@ -763,6 +763,7 @@ const feedResult = await publishFeed({
   updatedAt,
   outDir: OUT,
   logFile: logFile || null,
+  shelf: await readShelfFile(process.env.SHELF_LOG || join(ROOT, "data/learning/shelf.jsonl")),
 });
 console.log(`feed catalogue ${feedResult.count} logged +${feedResult.logged.added}`);
 

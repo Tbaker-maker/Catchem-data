@@ -3,7 +3,7 @@ import { readFile, readdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { dropTiledCycles, pretty, slug } from "./lib/public-bundle.mjs";
-import { publishFeed, readCallLog } from "./lib/feed-catalogue.mjs";
+import { publishFeed, readCallLog, readShelfFile } from "./lib/feed-catalogue.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "research/assets/public");
@@ -99,5 +99,6 @@ const result = await publishFeed({
   updatedAt,
   outDir: OUT,
   logFile: logFile || null,
+  shelf: await readShelfFile(process.env.SHELF_LOG || join(ROOT, "data/learning/shelf.jsonl")),
 });
 console.log(JSON.stringify({ count: result.count, sections: result.sections, tracked: result.tracked, added: result.logged.added, skipped: result.logged.skipped.length }));
