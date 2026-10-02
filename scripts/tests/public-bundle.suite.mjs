@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { BANNED, FILLER_BAN, bestMove, changePct, chartSeries, dropTiledCycles, headlineFor, isThinSeries, money, phrasePeak, rankReads, selectFeedReads, spikeDates, whyFor, whyPattern } from "../lib/public-bundle.mjs";
+import { BANNED, FILLER_BAN, bestMove, changePct, chartSeries, dropTiledCycles, headlineFor, isThinSeries, money, phrasePeak, rankReads, selectFeedReads, spikeDates, statesBothMoves, whyFor, whyPattern } from "../lib/public-bundle.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 
@@ -108,7 +108,10 @@ export async function run() {
     const shape = (text) => String(text).replace(/\$[0-9,.]+/g, "$").replace(/\b(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2}\b/g, "DATE").replace(/\b\d+(?:\.\d+)?\b/g, "n");
     const shapes = reads.reads.map((row) => shape(row.path || ""));
     t("the catalogue day is not the partial 2026-09-29 file", reads.asOf !== "2026-09-29" && meta.asOf !== "2026-09-29");
-    t("lead paths do not share a stripped shape", new Set(shapes).size === reads.reads.length && reads.reads.every((row) => row.path));
+    const fold = (line) => shape(line).replace(/\bthat price\b/gi, "$").replace(/\bthat day\b/gi, "DATE").replace(/\b(rose|fell|eased|above)\b/gi, "DIR");
+    t("lead paths do not share a stripped shape", new Set(reads.reads.map((row) => fold(row.path || ""))).size === reads.reads.length && reads.reads.every((row) => row.path));
+    t("paired frames are gone", reads.reads.every((row) => !/newest move widened|step shrank versus|unchanged price across|\bas of\b/i.test(row.path || "")));
+    t("a line that uses both verbs states both moves", reads.reads.every((row) => !(/\brose\b/i.test(row.path || "") && /\bfell\b/i.test(row.path || "")) || statesBothMoves(row.path)));
     t("the lead is not only small 7-day moves", reads.reads.some((row) => Number(row.windowDays) !== 7 || Math.abs(Number(row.changePct)) >= 8));
     t("one product is one lead card", new Set(reads.reads.map((row) => row.sku)).size === reads.reads.length);
     t("lead lines do not say stored or last print", reads.reads.every((row) => !/\bstored\b|last print/i.test(String(row.path || "") + String(row.headline || "") + String(row.why || ""))));

@@ -1,5 +1,5 @@
 import { applyImageGaps, applyShelf, assignSections, selectLead, sentenceShape } from "../lib/feed-catalogue.mjs";
-import { BANNED, FILLER_BAN, directionAgrees, leadFrameLines, pathSentence, phrasePeak, separateHalfCopies } from "../lib/public-bundle.mjs";
+import { BANNED, FILLER_BAN, directionAgrees, leadFrameLines, pathSentence, phrasePeak, separateHalfCopies, statesBothMoves } from "../lib/public-bundle.mjs";
 
 export async function run() {
   let fail = 0;
@@ -155,8 +155,20 @@ export async function run() {
   const pool = leadFrameLines(down, { name: "Trubbish", direction: "down", fromDate: "2026-09-01", toDate: "2026-09-28", fromPrice: 10, windowDays: 30 });
   t("the frame pool stays under the phrase cap", pool.length >= 1 && pool.length < 24 && phrasePeak(pool.map((line) => sentenceShape(line, { name: "Trubbish", set: "" }))).peak <= 2);
   t("the frame pool does not reuse a stripped shape", new Set(pool.map((line) => sentenceShape(line, { name: "Trubbish", set: "" }))).size === pool.length);
-  t("a filler closer is banned", ["in context", "for reference", "as written", "on record", "in view", "at hand", "for now", "on paper", "as shown", "as listed", "in short"].every((phrase) => FILLER_BAN.test(`The latest price is $1 on Sep 1 ${phrase}.`)));
-  t("generated sentences do not use a filler closer", [dug, first, again, named, soldLine, ...pool].every((line) => !FILLER_BAN.test(line)));
+  t("a filler closer is banned", ["in context", "for reference", "as written", "on record", "in view", "at hand", "for now", "on paper", "as shown", "as listed", "in short", "beside", "beyond", "posted", "stamped", "as of", "following", "within", "during"].every((phrase) => FILLER_BAN.test(`The latest price is $1 on Sep 1 ${phrase}.`)));
+  const fold = (line, name) => sentenceShape(line, { name }).replace(/\b(rose|fell|eased|above)\b/gi, "DIR");
+  const widened = (name, rel) => `The newest move widened against its previous move on ${name}, latest price $1.56 posted Sep 29 ${rel} beyond $1.76 posted Sep 27.`;
+  const shrunk = (name, rel) => `Last step shrank versus the earlier step for ${name}, where latest price $1.96 stamped Sep 29 ${rel} beside $1.84 stamped Sep 27.`;
+  const soldCopy = (name, rel) => `Over 3 months the TCGplayer product page counts 5754 copies sold as of Oct 2 on ${name}, not eBay and not a 7-day count, with latest price $118.37 as of Sep 29 which ${rel} versus $116.85 on Sep 27.`;
+  const flatCopy = (name, rel) => `${name} printed one unchanged price across 8 prints through Sep 13, and latest price $12.28 dated Sep 29 ${rel} versus that flat $11.26.`;
+  t("rose and fell copies are one shape", fold(widened("Duraludon", "fell"), "Duraludon") === fold(widened("Kieran", "rose"), "Kieran") && fold(shrunk("Snorlax ex", "rose"), "Snorlax ex") === fold(shrunk("Magnezone ex", "fell"), "Magnezone ex") && fold(soldCopy("Destined Rivals Elite Trainer Box", "rose"), "Destined Rivals Elite Trainer Box") === fold(soldCopy("Destined Rivals Booster Box", "fell"), "Destined Rivals Booster Box") && fold(flatCopy("Rebel Clash Booster Pack", "rose"), "Rebel Clash Booster Pack") === fold(flatCopy("Scarlet and Violet Booster Bundle", "fell"), "Scarlet and Violet Booster Bundle"));
+  t("the paired frames are rejected", [widened("Duraludon", "fell"), shrunk("Snorlax ex", "rose"), soldCopy("Destined Rivals Elite Trainer Box", "rose")].every((line) => FILLER_BAN.test(line)) && /unchanged price across/.test(flatCopy("Rebel Clash Booster Pack", "rose")));
+  const etb = [["2026-07-01", 184.65], ["2026-09-27", 116.85], ["2026-09-29", 118.37]];
+  const etbLine = pathSentence(etb, { name: "Destined Rivals Elite Trainer Box", fromDate: "2026-07-01", toDate: "2026-09-29", fromPrice: 184.65, windowDays: 90 });
+  const uptick = "The latest price is $118.37 on Sep 29, rose from $116.85 on Sep 27.";
+  t("a sign split states both moves", statesBothMoves(etbLine) && etbLine.includes("$118.37") && etbLine.includes("$116.85") && etbLine.includes("$184.65") && /minus 35\.9%/.test(etbLine) && /\brose\b/.test(etbLine) && /\bfell\b/.test(etbLine) && /Sep 27/.test(etbLine) && /Sep 29/.test(etbLine) && /Jul 1/.test(etbLine));
+  t("an uptick alone is not both moves", statesBothMoves(uptick) === false);
+  t("generated sentences do not use a filler closer", [dug, first, again, named, soldLine, etbLine, ...pool].every((line) => !FILLER_BAN.test(line) && !/newest move widened|step shrank versus|unchanged price across|\bas of\b/i.test(line)));
   const prose = [];
   const addProse = (kind, window, pct, subtype) => {
     const raw = [];
@@ -183,7 +195,7 @@ export async function run() {
   const proseLead = selectLead(prose, 24).lead;
   t("generated lines match their two prices", proseLead.length >= 1 && proseLead.length <= 24 && proseLead.every((row) => directionAgrees(row.path) && /latest price/.test(row.path) && !/\bstored\b|last print/i.test(row.path) && !FILLER_BAN.test(row.path) && row.secondFact));
   t("generated lines keep the phrase cap", phrasePeak(proseLead.map((row) => sentenceShape(row.path, row))).peak <= 2);
-  t("generated lines do not share a stripped shape", new Set(proseLead.map((row) => sentenceShape(row.path, row))).size === proseLead.length);
+  t("generated lines do not share a stripped shape", new Set(proseLead.map((row) => sentenceShape(row.path, row).replace(/\b(rose|fell|eased|above)\b/gi, "DIR"))).size === proseLead.length);
   t("a plain climb is not padded out to 24", proseLead.length < 24);
 
   return fail;
