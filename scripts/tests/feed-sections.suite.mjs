@@ -1,5 +1,5 @@
 import { applyImageGaps, applyShelf, assignSections, selectLead, sentenceShape } from "../lib/feed-catalogue.mjs";
-import { BANNED, pathSentence } from "../lib/public-bundle.mjs";
+import { BANNED, pathSentence, phrasePeak, separateHalfCopies } from "../lib/public-bundle.mjs";
 
 export async function run() {
   let fail = 0;
@@ -69,6 +69,81 @@ export async function run() {
   t("sealed can sit in the lead", picked.lead.some((row) => row.kind === "sealed"));
   t("a shared shape is rewritten or left out", new Set(picked.lead.map((row) => sentenceShape(row.path))).size === picked.lead.length);
   t("a failed shape is logged with the new line", picked.rewrites.some((row) => row.failed && Object.prototype.hasOwnProperty.call(row, "next")));
+
+  const named = pathSentence(down, { name: "Trubbish", direction: "down", fromDate: "2026-09-01", toDate: "2026-09-28", fromPrice: 10, windowDays: 30 });
+  t("the product name is on the line", named.includes("Trubbish") && /latest price/.test(named) && !/stored|last print/i.test(named));
+  t("a full series does not mention a missing day", !/missing|no print|gap on/i.test(dug) && !/missing|no print/i.test(named));
+  const soldLine = pathSentence(down, { name: "Perfect Order Booster Box", direction: "down", fromDate: "2026-09-01", toDate: "2026-09-28", fromPrice: 10, windowDays: 30, sold: { count: 2717, asOf: "2026-10-02" } });
+  t("a sold line is a 3-month TCGplayer product-page count", /3 months/.test(soldLine) && /TCGplayer/.test(soldLine) && /not eBay/.test(soldLine) && /2717/.test(soldLine) && !/listings/.test(soldLine));
+  const closer = (text) => String(text).split(",").at(-1).replace(/\$[0-9,.]+/g, "$").replace(/\b\d+(?:\.\d+)?\b/g, "n").trim();
+  t("two paths do not share a closer", closer(dug) !== closer(first));
+  const half = [];
+  for (let i = 0; i < 24; i += 1) {
+    const day = new Date(Date.parse("2026-08-01T00:00:00Z") + i * 86400000).toISOString().slice(0, 10);
+    half.push([day, i === 4 ? 4 : 12]);
+  }
+  const split = separateHalfCopies(half);
+  t("a price 50% under the cluster is dropped", split.dropped.some((pt) => pt[1] === 4) && split.keep.every((pt) => pt[1] !== 4) && split.keep.at(-1)[1] === 12 && !split.ambiguous);
+  const ambPts = [];
+  for (let i = 0; i < 16; i += 1) {
+    const day = new Date(Date.parse("2026-08-01T00:00:00Z") + i * 86400000).toISOString().slice(0, 10);
+    ambPts.push([day, i < 8 ? 5 : 12]);
+  }
+  const amb = separateHalfCopies(ambPts);
+  t("an even split is not given a cleaned price", amb.ambiguous === true && amb.dropped.length === 0 && amb.keep.length === ambPts.length);
+  const syl = ["ba","be","bi","bo","bu","ca","ce","ci","co","cu","da","de","di","do","du","fa","fe","fi","fo","fu","ga","ge","gi","go","gu","ha","he","hi","ho","hu","ka","ke","ki","ko","ku","la","le","li","lo","lu","ma","me","mi","mo","mu","na","ne","ni","no","nu"];
+  const token = (n) => {
+    let s = "";
+    let x = n + 1;
+    while (x > 0) { s = syl[(x - 1) % syl.length] + s; x = Math.floor((x - 1) / syl.length); }
+    return s;
+  };
+  const lineFor = (i, name) => `${name} ${token(i * 4)} ${token(i * 4 + 1)} ${token(i * 4 + 2)} ${token(i * 4 + 3)}.`;
+  const mix = [];
+  let seq = 0;
+  const add = (kind, window, pct, set, subtype, name) => {
+    mix.push({
+      id: `m${seq}`, sku: `tcgcsv-${2000 + seq}`, kind, name, set, subtype, sealedKind: subtype,
+      thin: false, score: Math.abs(pct), windowDays: window, changePct: pct, path: lineFor(seq, name),
+    });
+    seq += 1;
+  };
+  for (let i = 0; i < 30; i += 1) add("single", 90, 80 - i, `Set${i % 12}`, "", `Single${i}`);
+  for (let i = 0; i < 16; i += 1) add("single", 30, 30 - i, `Month${i % 8}`, "", `Month${i}`);
+  for (let i = 0; i < 16; i += 1) add("single", 7, 12 - i * 0.1, `Week${i % 8}`, "", `Week${i}`);
+  for (const kind of ["box", "etb", "bundle", "pack"]) {
+    for (let i = 0; i < 3; i += 1) add("sealed", 30, 4 - i * 0.1, `Seal${kind}${i}`, kind, `${kind}Item${i}`);
+  }
+  const mixed = selectLead(mix, 24);
+  const lead = mixed.lead;
+  const windows = {};
+  for (const row of lead) windows[row.windowDays] = (windows[row.windowDays] || 0) + 1;
+  let run = 1;
+  let maxRun = 1;
+  for (let i = 1; i < lead.length; i += 1) {
+    run = lead[i].kind === lead[i - 1].kind ? run + 1 : 1;
+    if (run > maxRun) maxRun = run;
+  }
+  const sealedKinds = new Set(lead.filter((row) => row.kind === "sealed").map((row) => row.sealedKind || row.subtype));
+  t("a fixture with sealed qualifiers does not ship zero sealed", lead.filter((row) => row.kind === "sealed").length >= 6);
+  t("one window cannot take every seat when others qualify", Object.values(windows).every((n) => n <= 12) && Object.keys(windows).length > 1);
+  t("each qualifying sealed kind is in the lead", ["box", "etb", "bundle", "pack"].every((kind) => sealedKinds.has(kind)));
+  t("the lead is not six of one kind in a row", maxRun < 6 && lead.some((row) => row.kind === "single"));
+  t("stripped shapes in the mix do not collide", new Set(lead.map((row) => sentenceShape(row.path, row))).size === lead.length);
+  t("no 4-word phrase is on more than 6 lines", phrasePeak(lead.map((row) => row.path)).peak <= 6);
+  const loose = (text, name) => text.split(name).join(" ").replace(/\b\d+(?:\.\d+)?\s*%/g, "PCT").replace(/\s+/g, " ").trim();
+  t("a name and percent swap is the same line", loose("Alpha is up 10% today", "Alpha") === loose("Beta is up 12% today", "Beta"));
+  const desk = lead.map((row) => row.path);
+  const mode = new Map();
+  for (const row of lead) {
+    const key = loose(row.path, row.name);
+    mode.set(key, (mode.get(key) || 0) + 1);
+  }
+  t("half the lines do not match after name and percent are stripped", [...mode.values()].every((n) => n <= lead.length / 2));
+  const ambiguous = { id: "bad", sku: "tcgcsv-9", kind: "single", name: "Bad", set: "Zed", thin: false, score: 400, windowDays: 90, changePct: 400, path: lineFor(90, "Bad"), ambiguousCopy: true };
+  const plain = { id: "ok", sku: "tcgcsv-8", kind: "single", name: "Ok", set: "Yew", thin: false, score: 9, windowDays: 7, changePct: 9, path: lineFor(91, "Ok") };
+  t("an ambiguous half-price product stays out of the lead", !selectLead([ambiguous, plain], 24).lead.some((row) => row.id === "bad") && selectLead([ambiguous, plain], 24).lead.some((row) => row.id === "ok"));
+
   return fail;
 }
 
