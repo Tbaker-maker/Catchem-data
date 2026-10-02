@@ -159,24 +159,161 @@ function weekWord(n) {
 
 // One sentence from this product's own points. The lead fact is whatever
 // is different on this path. No shared opener and no shared closer.
-export function pathSentence(points, opts = {}) {
+const FAMILIES = [
+  (s) => `The latest price for ${s.name} is ${s.p1} on ${s.d1} and it ${s.rel} from ${s.p2} on ${s.d2} ${s.u}.`,
+  (s) => `${s.name} carries a latest price of ${s.p1} dated ${s.d1} because it ${s.rel} off ${s.p2} dated ${s.d2} ${s.u}.`,
+  (s) => `On ${s.d1} the latest price of ${s.name} read ${s.p1} after it ${s.rel} versus ${s.p2} during ${s.d2} ${s.u}.`,
+  (s) => `${s.name} latest price hit ${s.p1} on ${s.d1} once it ${s.rel} against ${s.p2} back on ${s.d2} ${s.u}.`,
+  (s) => `Quoted latest price ${s.p1} for ${s.name} on ${s.d1} ${s.rel} from the ${s.p2} recorded ${s.d2} ${s.u}.`,
+  (s) => `See the latest price, ${s.p1} on ${s.d1}, under ${s.name} as it ${s.rel} past ${s.p2} since ${s.d2} ${s.u}.`,
+  (s) => `${s.name} posted latest price ${s.p1} this ${s.d1} when it ${s.rel} away from ${s.p2} of ${s.d2} ${s.u}.`,
+  (s) => `Under ${s.name} the latest price equals ${s.p1} on ${s.d1} yet it ${s.rel} clear from ${s.p2} at ${s.d2} ${s.u}.`,
+  (s) => `Tracking shows latest price at ${s.p1} as of ${s.d1} under ${s.name} where it ${s.rel} starting from ${s.p2} over ${s.d2} ${s.u}.`,
+  (s) => `A latest price update for ${s.name}: ${s.p1} dated ${s.d1}, and the path ${s.rel} from ${s.p2} versus ${s.d2} ${s.u}.`,
+];
+const FLAT_FAMILY = (s) => `Following a flat run, latest price on ${s.name} is ${s.p1} at ${s.d1} and the quote ${s.rel} from ${s.p2} at ${s.d2} ${s.u}.`;
+const ENDINGS = ["in context", "for reference", "as written", "on record", "in view", "at hand", "for now", "in short", "as shown", "on file", "in place", "for clarity", "as listed", "on paper", "in brief", "for scale", "as noted", "on deck", "in sum", "for detail", "as given", "on view", "in full", "for measure", "as read", "on site", "in turn", "for keeping", "as logged", "on balance"];
+
+function buildLeadFrames() {
+  const frames = [{ flat: true, render: FLAT_FAMILY, u: "after that" }];
+  let n = 0;
+  for (let round = 0; round < 3; round += 1) {
+    for (const render of FAMILIES) {
+      frames.push({ flat: false, render, u: ENDINGS[n] });
+      n += 1;
+    }
+  }
+  return frames;
+}
+
+const LEAD_FRAMES = buildLeadFrames();
+
+function scopeFacts(points, opts) {
   const all = seriesOf(points);
-  if (all.length < 2) return "A price path is missing.";
+  if (all.length < 2) return null;
   const toDate = /^\d{4}-\d{2}-\d{2}$/.test(String(opts.toDate || "")) ? opts.toDate : all[all.length - 1][0];
   const fromDate = /^\d{4}-\d{2}-\d{2}$/.test(String(opts.fromDate || "")) ? opts.fromDate : all[0][0];
   const scoped = all.filter((pt) => pt[0] <= toDate);
-  if (scoped.length < 2) return "A price path is missing.";
+  if (scoped.length < 2) return null;
   const facts = pathFacts(scoped, { ...opts, fromDate, toDate });
-  if (!(facts.lastPrice > 0)) return "The latest price is missing.";
-  const fact = chooseFact(facts);
-  const body = renderFact(fact, facts, opts);
-  const extra = extraClause(fact, facts, opts);
-  let sentence = dedupeRepeats([body, extra].filter(Boolean).join(", ") + ".").replace(/\s+/g, " ").trim();
+  if (!(facts.lastPrice > 0)) return null;
+  return facts;
+}
+
+function resolvePair(facts, kinds) {
+  for (const kind of kinds) {
+    let price = 0;
+    let date = "";
+    if (kind === "open") {
+      price = facts.fromPrice;
+      date = facts.fromDate;
+    } else if (kind === "prev" && facts.prev) {
+      price = facts.prev[1];
+      date = facts.prev[0];
+    } else if (kind === "high" && facts.hi) {
+      price = facts.hi[1];
+      date = facts.hi[0];
+    } else if (kind === "low" && facts.lo) {
+      price = facts.lo[1];
+      date = facts.lo[0];
+    } else continue;
+    if (!(Number(price) > 0) || !/^\d{4}-\d{2}-\d{2}$/.test(String(date || ""))) continue;
+    if (cents(price) === cents(facts.lastPrice) || date === facts.lastDate) continue;
+    if (!priceWords(price) || priceWords(price) === priceWords(facts.lastPrice)) continue;
+    if (!monthDay(date) || monthDay(date) === monthDay(facts.lastDate)) continue;
+    return { p: Number(price), d: date };
+  }
+  return null;
+}
+
+function renderLead(frame, facts, pair, opts, withSold) {
+  const rel = cents(facts.lastPrice) > cents(pair.p) ? "rose" : "fell";
+  const slots = {
+    name: opts.name ? String(opts.name).trim() : "this ask",
+    p1: priceWords(facts.lastPrice),
+    d1: monthDay(facts.lastDate),
+    rel,
+    p2: priceWords(pair.p),
+    d2: monthDay(pair.d),
+    u: frame.u,
+  };
+  if (!slots.p1 || !slots.p2 || !slots.d1 || !slots.d2) return "";
+  let sentence = frame.render(slots);
+  const sold = opts.sold;
+  if (withSold && sold && Number.isInteger(sold.count) && sold.count >= 0 && /^\d{4}-\d{2}-\d{2}$/.test(String(sold.asOf || ""))) {
+    sentence = sentence.replace(/\.$/, "");
+    sentence += `, and TCGplayer product-page data for 3 months lists ${sold.count} copies sold as of ${monthDay(sold.asOf)}, not a 7-day count and not eBay.`;
+  }
+  sentence = dedupeRepeats(sentence).replace(/\s+/g, " ").trim();
   if (!sentence.endsWith(".")) sentence += ".";
   return sentence;
 }
+function usableLead(sentence) {
+  if (!sentence || !/latest price/.test(sentence)) return false;
+  if (BANNED.test(sentence) || /\bstored\b|last print/i.test(sentence) || /%/.test(sentence)) return false;
+  if (/\. [A-Z]/.test(sentence)) return false;
+  return directionAgrees(sentence);
+}
 
-// A second line from the same points, used only when the first shape is already taken.
+export function directionAgrees(text) {
+  const raw = String(text || "");
+  const lower = raw.toLowerCase();
+  const up = /\b(rose|above|up)\b/.test(lower);
+  const down = /\b(fell|eased|down)\b/.test(lower);
+  if (up && down) return false;
+  if (!up && !down) return true;
+  const anchor = lower.indexOf("latest price");
+  if (anchor < 0) return false;
+  const re = /\$([0-9,]+(?:\.\d+)?)/g;
+  let latest = null;
+  let other = null;
+  let match;
+  while ((match = re.exec(raw))) {
+    const value = Number(match[1].replace(/,/g, ""));
+    if (!Number.isFinite(value)) continue;
+    if (match.index >= anchor && latest == null) latest = value;
+    else if (other == null) other = value;
+  }
+  if (latest == null || other == null || latest === other) return false;
+  if (up) return latest > other;
+  return latest < other;
+}
+
+export function leadFrameLines(points, opts = {}) {
+  const facts = scopeFacts(points, opts);
+  if (!facts) return [];
+  const out = [];
+  for (const frame of LEAD_FRAMES) {
+    if (frame.flat && !(facts.flatDays >= 5 && cents(facts.flatPrice) !== cents(facts.lastPrice))) continue;
+    const pair = resolvePair(facts, ["open", "prev", "high", "low"]);
+    if (!pair) continue;
+    const sentence = renderLead(frame, facts, pair, opts, false);
+    if (usableLead(sentence)) out.push(sentence);
+  }
+  return out;
+}
+
+export function composeLead(points, opts = {}, accept = null) {
+  const facts = scopeFacts(points, opts);
+  if (!facts) return "";
+  for (const frame of LEAD_FRAMES) {
+    if (frame.flat && !(facts.flatDays >= 5 && cents(facts.flatPrice) !== cents(facts.lastPrice))) continue;
+    const pair = resolvePair(facts, ["open", "prev", "high", "low"]);
+    if (!pair) continue;
+    const rich = renderLead(frame, facts, pair, opts, true);
+    const plain = renderLead(frame, facts, pair, opts, false);
+    if (usableLead(rich) && (!accept || accept(rich))) return rich;
+    if (plain !== rich && usableLead(plain) && (!accept || accept(plain))) return plain;
+  }
+  return "";
+}
+
+export function pathSentence(points, opts = {}) {
+  const all = seriesOf(points);
+  if (all.length < 2) return "A price path is missing.";
+  return composeLead(points, opts) || "The latest price is missing.";
+}
+
 export function pathAlt(points, opts = {}) {
   const all = seriesOf(points).filter((pt) => !opts.toDate || pt[0] <= opts.toDate);
   if (all.length < 2) return "";

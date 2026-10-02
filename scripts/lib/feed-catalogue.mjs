@@ -2,7 +2,7 @@
 import { appendFile, mkdir, readFile, readdir, unlink, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import {
-  BANNED, chartSeries, endStreak, feedWindow, fourGrams, isThinSeries, money, pathAlt, pathSentence, pretty, readCopy, separateHalfCopies, slug, windowBounds,
+  BANNED, chartSeries, composeLead, directionAgrees, endStreak, feedWindow, fourGrams, isThinSeries, money, pathAlt, pathSentence, pretty, readCopy, separateHalfCopies, slug, windowBounds,
 } from "./public-bundle.mjs";
 import { appendLearningLog, readCallLog } from "./learning-log.mjs";
 
@@ -146,34 +146,39 @@ export function selectLead(cards, limit = 24) {
     }
     return n;
   }
-  function gramsOk(text) {
+  function gramsOk(card, text) {
     const local = new Map();
-    for (const gram of fourGrams(text)) local.set(gram, (local.get(gram) || 0) + 1);
-    for (const [gram, n] of local) if ((grams.get(gram) || 0) + n > 6) return false;
+    for (const gram of fourGrams(sentenceShape(text, card))) local.set(gram, (local.get(gram) || 0) + 1);
+    for (const [gram, n] of local) if ((grams.get(gram) || 0) + n > 3) return false;
     return true;
   }
   function usable(card, text) {
     if (!text || BANNED.test(text)) return false;
     const key = sentenceShape(text, card);
     if (!key || shapes.has(key)) return false;
-    return gramsOk(text);
+    return gramsOk(card, text);
   }
   function resolve(card) {
     const failed = String(card.path || "").trim();
-    if (usable(card, failed)) return failed;
-    const altOpts = { ...(card._pathOpts || {}), name: card.name, set: card.set, listings: card.listings, listingsAsOf: card.listingsAsOf, sold: card._sold || null };
-    const next = String(pathAlt(card._raw || card.hist || [], altOpts) || "").trim();
-    const ok = next && next !== failed && usable(card, next);
-    if (failed) rewrites.push({ id: card.id || "", failed, next: ok ? next : "" });
-    if (!ok) return "";
-    card.path = next;
-    return next;
+    const altOpts = { ...(card._pathOpts || {}), name: card.name, set: card.set, listings: card.listings, listingsAsOf: card.listingsAsOf, sold: card._sold || null, sealedKind: card.sealedKind || sealedKindOf(card) };
+    const accept = (text) => usable(card, text) && directionAgrees(text);
+    if (accept(failed)) return failed;
+    let made = "";
+    if ((card._raw || []).length >= 2) made = composeLead(card._raw, altOpts, accept) || "";
+    if (!made) {
+      const alt = String(pathAlt(card._raw || card.hist || [], altOpts) || "").trim();
+      if (alt && alt !== failed && accept(alt)) made = alt;
+    }
+    if (failed && failed !== made) rewrites.push({ id: card.id || "", failed, next: made });
+    if (!made) return "";
+    card.path = made;
+    return made;
   }
   function remember(card) {
     const w = Number(card.windowDays);
     windows[w] = (windows[w] || 0) + 1;
     shapes.add(sentenceShape(card.path, card));
-    for (const gram of fourGrams(card.path)) grams.set(gram, (grams.get(gram) || 0) + 1);
+    for (const gram of fourGrams(sentenceShape(card.path, card))) grams.set(gram, (grams.get(gram) || 0) + 1);
     if (chosen.length < 10) sets.set(card.set || "", (sets.get(card.set || "") || 0) + 1);
     if (card.kind === "sealed") sealedKept += 1;
     chosen.push(card);

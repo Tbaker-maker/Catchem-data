@@ -1,5 +1,5 @@
 import { applyImageGaps, applyShelf, assignSections, selectLead, sentenceShape } from "../lib/feed-catalogue.mjs";
-import { BANNED, pathSentence, phrasePeak, separateHalfCopies } from "../lib/public-bundle.mjs";
+import { BANNED, directionAgrees, leadFrameLines, pathSentence, phrasePeak, separateHalfCopies } from "../lib/public-bundle.mjs";
 
 export async function run() {
   let fail = 0;
@@ -61,7 +61,7 @@ export async function run() {
   const leadCards = [
     { id: "s7", sku: "tcgcsv-1", kind: "single", name: "Small", set: "A", thin: false, score: 3, windowDays: 7, changePct: 3, path: "The latest price is $3 on Sep 27, and this 7-day window opened at $2 on Sep 20." },
     { id: "b90", sku: "tcgcsv-1", kind: "single", name: "Big", set: "A", thin: false, score: 40, windowDays: 90, changePct: -40, path: "Lower lows are still printing, and the latest price is $4 on Sep 27." },
-    { id: "seal", sku: "tcgcsv-2", kind: "sealed", name: "Box", set: "B", thin: false, score: 12, windowDays: 30, changePct: 12, path: "An up week started, and the latest price is $90 on Sep 27." },
+    { id: "seal", sku: "tcgcsv-2", kind: "sealed", name: "Box", set: "B", thin: false, score: 12, windowDays: 30, changePct: 12, path: "Box lane started, and the latest price is $90 on Sep 27." },
     { id: "same", sku: "tcgcsv-3", kind: "single", name: "Twin", set: "C", thin: false, score: 11, windowDays: 30, changePct: 11, path: "An up week started, and the latest price is $10 on Sep 20.", _raw: [["2026-09-26", 9], ["2026-09-27", 10]], _pathOpts: { fromPrice: 8, fromDate: "2026-08-28", toDate: "2026-09-27", windowDays: 30 } },
   ];
   const picked = selectLead(leadCards, 24);
@@ -130,7 +130,7 @@ export async function run() {
   t("each qualifying sealed kind is in the lead", ["box", "etb", "bundle", "pack"].every((kind) => sealedKinds.has(kind)));
   t("the lead is not six of one kind in a row", maxRun < 6 && lead.some((row) => row.kind === "single"));
   t("stripped shapes in the mix do not collide", new Set(lead.map((row) => sentenceShape(row.path, row))).size === lead.length);
-  t("no 4-word phrase is on more than 6 lines", phrasePeak(lead.map((row) => row.path)).peak <= 6);
+  t("no 4-word phrase is on more than 3 lines", phrasePeak(lead.map((row) => sentenceShape(row.path, row))).peak <= 3);
   const loose = (text, name) => text.split(name).join(" ").replace(/\b\d+(?:\.\d+)?\s*%/g, "PCT").replace(/\s+/g, " ").trim();
   t("a name and percent swap is the same line", loose("Alpha is up 10% today", "Alpha") === loose("Beta is up 12% today", "Beta"));
   const desk = lead.map((row) => row.path);
@@ -143,6 +143,44 @@ export async function run() {
   const ambiguous = { id: "bad", sku: "tcgcsv-9", kind: "single", name: "Bad", set: "Zed", thin: false, score: 400, windowDays: 90, changePct: 400, path: lineFor(90, "Bad"), ambiguousCopy: true };
   const plain = { id: "ok", sku: "tcgcsv-8", kind: "single", name: "Ok", set: "Yew", thin: false, score: 9, windowDays: 7, changePct: 9, path: lineFor(91, "Ok") };
   t("an ambiguous half-price product stays out of the lead", !selectLead([ambiguous, plain], 24).lead.some((row) => row.id === "bad") && selectLead([ambiguous, plain], 24).lead.some((row) => row.id === "ok"));
+
+
+  t("rose cannot claim a lower latest price", directionAgrees("Oshawott (Master Ball Pattern) rose by a smaller up step, latest price $10.09 dated Sep 29 against $10.46 on Sep 27.") === false);
+  t("eased down cannot claim a higher latest price", directionAgrees("Pitch Black Booster Box eased by a smaller down step, latest price $187.75 dated Sep 29 versus $186.21 on Sep 27.") === false);
+  t("a smaller down step cannot claim a higher latest price", directionAgrees("Night Stretcher eased by a smaller down step, latest price $1.77 dated Sep 29 versus $1.71 on Sep 27.") === false);
+  t("above cannot claim a lower latest price", directionAgrees("Noibat (Master Ball Pattern) rose by a smaller up step, latest price $1.74 dated Sep 29 above $1.83 on Sep 27.") === false);
+  t("fell cannot claim a higher latest price", directionAgrees("Destined Rivals Elite Trainer Box fell by a larger down step, latest price $118.37 on Sep 29 off $116.85 from Sep 27.") === false);
+  t("a generated line agrees with its two prices", [dug, first, again, named, soldLine].every((line) => directionAgrees(line)));
+  const pool = leadFrameLines(down, { name: "Trubbish", direction: "down", fromDate: "2026-09-01", toDate: "2026-09-28", fromPrice: 10, windowDays: 30 });
+  t("the frame pool stays under the phrase cap", pool.length >= 24 && phrasePeak(pool.map((line) => sentenceShape(line, { name: "Trubbish", set: "" }))).peak <= 3);
+  t("the frame pool does not reuse a stripped shape", new Set(pool.map((line) => sentenceShape(line, { name: "Trubbish", set: "" }))).size === pool.length);
+  const prose = [];
+  const addProse = (kind, window, pct, subtype) => {
+    const raw = [];
+    const start = 30 + prose.length;
+    const step = pct >= 0 ? 0.17 : -0.13;
+    for (let i = 0; i < 40; i += 1) {
+      const day = new Date(Date.parse("2026-08-01T00:00:00Z") + i * 86400000).toISOString().slice(0, 10);
+      raw.push([day, Math.round((start + i * step) * 100) / 100]);
+    }
+    const from = raw[Math.max(0, raw.length - Math.min(window, raw.length - 1) - 1)];
+    prose.push({
+      id: `p${prose.length}`, sku: `tcgcsv-${8000 + prose.length}`, kind, subtype, sealedKind: subtype,
+      name: `Samplecard${prose.length}`, set: `Lane${prose.length}`, thin: false, score: Math.abs(pct),
+      windowDays: window, changePct: pct, path: "", _raw: raw,
+      _pathOpts: { fromPrice: from[1], fromDate: from[0], toDate: raw.at(-1)[0], windowDays: window, direction: pct < 0 ? "down" : "up" },
+    });
+  };
+  for (let i = 0; i < 20; i += 1) addProse("single", 90, 40 - i, "");
+  for (let i = 0; i < 16; i += 1) addProse("single", 30, 22 - i, "");
+  for (let i = 0; i < 10; i += 1) addProse("single", 7, 9 - i * 0.2, "");
+  for (const kind of ["box", "etb", "bundle", "pack"]) {
+    for (let i = 0; i < 3; i += 1) addProse("sealed", 30, 7 - i, kind);
+  }
+  const proseLead = selectLead(prose, 24).lead;
+  t("generated lines match their two prices", proseLead.length === 24 && proseLead.every((row) => directionAgrees(row.path) && /latest price/.test(row.path) && !/\bstored\b|last print/i.test(row.path)));
+  t("generated lines keep the phrase cap", phrasePeak(proseLead.map((row) => sentenceShape(row.path, row))).peak <= 3);
+  t("generated lines do not share a stripped shape", new Set(proseLead.map((row) => sentenceShape(row.path, row))).size === proseLead.length);
 
   return fail;
 }
