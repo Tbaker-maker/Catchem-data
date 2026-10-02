@@ -207,30 +207,46 @@ export function pathSentence(points, opts = {}) {
   const latest = weeks[0];
   const prior = weeks[1];
   const base = weeks[steps] || prior || latest;
+  const lastPrice = Number(all.at(-1)?.[1]);
+  const watch = watchClause(toDate, lastPrice);
   const windowBit = days > 0 && opts.fromPrice > 0 && fromDate
-    ? ` In this ${days}-day window it starts at ${priceWords(opts.fromPrice)} on ${monthDay(fromDate)}.`
+    ? `, and this ${days}-day window starts at ${priceWords(opts.fromPrice)} on ${monthDay(fromDate)}`
     : "";
+  const seen = (text) => windowBit && text.includes(priceWords(opts.fromPrice)) && text.includes(monthDay(fromDate));
   let sentence = "";
   if (down && steps >= 2) {
     const since = base?.lowDate ? `, from ${priceWords(base.low)} on ${monthDay(base.lowDate)}` : "";
-    sentence = `This is the ${weekWord(steps)} week of lower lows${since}, not the first down week.${windowBit}`;
+    const main = `This is the ${weekWord(steps)} week of lower lows${since}`;
+    sentence = `${main}${seen(main) ? "" : windowBit}${watch}.`;
   } else if (!down && steps >= 2) {
     const since = base?.highDate ? `, from ${priceWords(base.high)} on ${monthDay(base.highDate)}` : "";
-    sentence = `This is the ${weekWord(steps)} week of higher highs${since}, not the first up week.${windowBit}`;
+    const main = `This is the ${weekWord(steps)} week of higher highs${since}`;
+    sentence = `${main}${seen(main) ? "" : windowBit}${watch}.`;
   } else if (down && steps === 1 && prior) {
-    sentence = `This is the first down week. The weekly low is ${priceWords(latest.low)} on ${monthDay(latest.lowDate)}, under ${priceWords(prior.low)} on ${monthDay(prior.lowDate)}.${windowBit}`;
+    const main = `This is the first down week, with a weekly low of ${priceWords(latest.low)} on ${monthDay(latest.lowDate)}, under ${priceWords(prior.low)} on ${monthDay(prior.lowDate)}`;
+    sentence = `${main}${seen(main) ? "" : windowBit}${watch}.`;
   } else if (!down && steps === 1 && prior) {
-    sentence = `This is the first up week. The weekly high is ${priceWords(latest.high)} on ${monthDay(latest.highDate)}, above ${priceWords(prior.high)} on ${monthDay(prior.highDate)}.${windowBit}`;
+    const main = `This is the first up week, with a weekly high of ${priceWords(latest.high)} on ${monthDay(latest.highDate)}, above ${priceWords(prior.high)} on ${monthDay(prior.highDate)}`;
+    sentence = `${main}${seen(main) ? "" : windowBit}${watch}.`;
   } else if (prior) {
     const way = down ? "did not make a lower low" : "did not make a higher high";
     const nowBit = down
-      ? `Weekly low ${priceWords(latest.low)} on ${monthDay(latest.lowDate)}, after ${priceWords(prior.low)} on ${monthDay(prior.lowDate)}.`
-      : `Weekly high ${priceWords(latest.high)} on ${monthDay(latest.highDate)}, after ${priceWords(prior.high)} on ${monthDay(prior.highDate)}.`;
-    sentence = `The last week ${way}. ${nowBit}${windowBit}`;
+      ? `with a weekly low of ${priceWords(latest.low)} on ${monthDay(latest.lowDate)}, after ${priceWords(prior.low)} on ${monthDay(prior.lowDate)}`
+      : `with a weekly high of ${priceWords(latest.high)} on ${monthDay(latest.highDate)}, after ${priceWords(prior.high)} on ${monthDay(prior.highDate)}`;
+    const main = `The last week ${way}, ${nowBit}`;
+    sentence = `${main}${seen(main) ? "" : windowBit}${watch}.`;
   } else {
-    sentence = `The last stored print is ${priceWords(latest.low)} on ${monthDay(latest.lowDate)}.${windowBit}`;
+    const main = `The last stored print is ${priceWords(latest.low)} on ${monthDay(latest.lowDate)}`;
+    sentence = `${main}${seen(main) ? "" : windowBit}${watch}.`;
   }
   return sentence.replace(/\s+/g, " ").trim();
+}
+
+function watchClause(toDate, price) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(toDate || "")) || !(Number(price) > 0)) return "";
+  const d = new Date(Date.parse(`${toDate}T00:00:00Z`) + 7 * 86400000);
+  const when = `${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}`;
+  return `, and check on ${when} whether it is still near ${priceWords(price)}`;
 }
 
 export function windowBounds(points, toDate) {

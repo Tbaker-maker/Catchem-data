@@ -108,7 +108,7 @@ const result = await publishFeed({
   items,
   prior,
   prices,
-  asOf: dailyAsOf && dailyAsOf > String(catalog.asOf || "") ? dailyAsOf : catalog.asOf,
+  asOf: catalog.asOf || dailyAsOf || "",
   updatedAt,
   outDir: OUT,
   logFile: logFile || null,

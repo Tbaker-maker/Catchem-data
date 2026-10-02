@@ -45,7 +45,7 @@ export async function run() {
   const dug = pathSentence(down, { direction: "down", fromDate: "2026-09-01", toDate: "2026-09-28", fromPrice: 10, windowDays: 30 });
   const flat = down.map((p, i) => [p[0], i < 21 ? 8 : p[1]]);
   const first = pathSentence(flat, { direction: "down", fromDate: "2026-09-01", toDate: "2026-09-28", fromPrice: 8, windowDays: 30 });
-  t("a falling series names the week of lower lows", /week of lower lows/.test(dug) && /not the first down week/.test(dug) && !BANNED.test(dug));
+  t("a falling series names the week of lower lows", /week of lower lows/.test(dug) && !/not the first down week/.test(dug) && !/\. [A-Z]/.test(dug) && dug.endsWith(".") && !BANNED.test(dug));
   t("a new drop is the first down week", /first down week/.test(first) && !/not the first down week/.test(first));
   t("two paths are not the same sentence", dug !== first);
   return fail;
