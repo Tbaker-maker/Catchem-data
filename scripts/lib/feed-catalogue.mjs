@@ -146,6 +146,9 @@ export function selectLead(cards, limit = 24) {
     }
     return n;
   }
+  function leadShape(text, card) {
+    return sentenceShape(text, card).replace(/\bthat price\b/gi, "$").replace(/\bthat day\b/gi, "DATE").replace(/\b(rose|fell|eased|above)\b/gi, "DIR");
+  }
   function gramsOk(card, text) {
     const local = new Map();
     for (const gram of fourGrams(sentenceShape(text, card))) local.set(gram, (local.get(gram) || 0) + 1);
@@ -154,7 +157,7 @@ export function selectLead(cards, limit = 24) {
   }
   function usable(card, text) {
     if (!text || BANNED.test(text)) return false;
-    const key = sentenceShape(text, card);
+    const key = leadShape(text, card);
     if (!key || shapes.has(key)) return false;
     return gramsOk(card, text);
   }
@@ -183,7 +186,7 @@ export function selectLead(cards, limit = 24) {
   function remember(card) {
     const w = Number(card.windowDays);
     windows[w] = (windows[w] || 0) + 1;
-    shapes.add(sentenceShape(card.path, card));
+    shapes.add(leadShape(card.path, card));
     for (const gram of fourGrams(sentenceShape(card.path, card))) grams.set(gram, (grams.get(gram) || 0) + 1);
     if (chosen.length < 10) sets.set(card.set || "", (sets.get(card.set || "") || 0) + 1);
     if (card.kind === "sealed") sealedKept += 1;
