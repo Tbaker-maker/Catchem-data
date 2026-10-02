@@ -41,6 +41,20 @@
       "why": "Whether our TCGplayer figures include shipping. They do not: PPT reports item-only market price and exposes no shipping field on any tier. Never estimate the difference — the Pricing Basis Law forbids it.",
       "trigger": "A source that reports TCGplayer prices inclusive of shipping."
     },
+    "pulse.skipGuardAudit": {
+      "value": false,
+      "owner": "scripts/generate-pulse.mjs",
+      "why": "A local pulse regen can skip the guard audit. The daily workflow does not set this. Was a direct CATCHEM_SKIP_GUARD_AUDIT read, which guard-audit treats as a second gate.",
+      "trigger": "Set CATCHEM_SKIP_GUARD_AUDIT=1 only for a local regen that already ran the audit.",
+      "env": "CATCHEM_SKIP_GUARD_AUDIT"
+    },
+    "pulse.htmlOnly": {
+      "value": false,
+      "owner": "scripts/generate-pulse.mjs",
+      "why": "Stop after the pulse HTML write. Was a direct CATCHEM_PULSE_HTML_ONLY read, the other gate that failed the 2026-10-02 guard audit.",
+      "trigger": "Set CATCHEM_PULSE_HTML_ONLY=1 for an HTML-only regen.",
+      "env": "CATCHEM_PULSE_HTML_ONLY"
+    },
     "editor.todayBanner": {
       "value": false,
       "owner": "scripts/build-editor.mjs",

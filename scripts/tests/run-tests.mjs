@@ -14,6 +14,7 @@ import { runPptPlanTests } from "./ppt-plan.test.mjs";
 import { runSealedIdTests } from "./sealed-id-match.test.mjs";
 import { runStressTests } from "./stress.test.mjs";
 import { runPptPathTests } from "./ppt-paths.test.mjs";
+import { runEbayInsightsTests } from "./ebay-insights.test.mjs";
 import { enterIndex } from "../lib/index-baskets.mjs";
 import { keepMarch31 } from "../compute-indexes.mjs";
 import { searchItems } from "../lib/search-rank.mjs";
@@ -181,6 +182,13 @@ console.log("── search rank ──");
   t("moonbreon alias", searchItems(rows, "moonbreon")[0]?.id === "a");
   t("bb is not inside Krabby", searchItems(rows, "bb").length === 0);
   t("151 etb is sealed", searchItems(rows, "151 etb")[0]?.id === "c");
+}
+
+
+console.log("── ebay marketplace insights ──");
+{
+  const n = await runEbayInsightsTests();
+  t("ebay insights suite", n === 0, `${n} failed`);
 }
 
 console.log("── private ppt push ──");

@@ -20,6 +20,7 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { existsSync, readFileSync } from "node:fs";
 import { artistRevisits } from "./card-relations.mjs";
+import { flag } from "./flags.mjs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -97,7 +98,7 @@ else {
   const TODAY_COPY = "Carvanha or Sharpedo?\n\nKusajima, 2003.";
   const TODAY_REPLY = "Carvanha — left — Ruby & Sapphire 2003\nSharpedo — right — Ruby & Sapphire 2003\n\nHajime Kusajima.\n\nwhich one did you pull first";
   let TODAY_IMG = "";
-  if (process.env.CATCHEM_TODAY === "1") {
+  if (flag("editor.todayBanner")) {
     for (const p of [
       "/workspace/artifacts/post.jpg",
       join(ROOT, "research/assets/post.jpg"),
