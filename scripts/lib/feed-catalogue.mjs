@@ -149,6 +149,7 @@ export function selectLead(cards, limit = 24) {
   function leadShape(text, card) {
     return sentenceShape(text, card)
       .replace(/,?\s*while the n-day window\b.*/i, "")
+      .replace(/moved less on the latest step than on the step before it\b.*/i, "moved less on the latest step than on the step before it")
       .replace(/\bthat price\b/gi, "$")
       .replace(/\bthat day\b/gi, "DATE")
       .replace(/\b(rose|fell|eased|above|higher|lower|highs|lows|high|low)\b/gi, " ")
