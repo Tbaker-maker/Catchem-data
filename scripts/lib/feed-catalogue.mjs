@@ -2,7 +2,7 @@
 import { appendFile, mkdir, readFile, readdir, unlink, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import {
-  BANNED, chartSeries, endStreak, feedWindow, isThinSeries, money, pathAlt, pathSentence, pretty, readCopy, slug, windowBounds,
+  BANNED, chartSeries, endStreak, feedWindow, fourGrams, isThinSeries, money, pathAlt, pathSentence, pretty, readCopy, separateHalfCopies, slug, windowBounds,
 } from "./public-bundle.mjs";
 import { appendLearningLog, readCallLog } from "./learning-log.mjs";
 
@@ -41,52 +41,214 @@ function orderLead(rows) {
 
 const SHAPE_MONTHS = "January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec";
 
-export function sentenceShape(text) {
-  return String(text || "")
+export function sentenceShape(text, card) {
+  let s = String(text || "");
+  if (card && typeof card === "object") {
+    for (const part of [card.name, card.set]) {
+      const name = String(part || "").trim();
+      if (name.length >= 3) s = s.split(name).join(" ");
+    }
+  }
+  return s
     .replace(/\$[0-9,.]+/g, "$")
     .replace(new RegExp(`\\b(?:${SHAPE_MONTHS})\\s+\\d{1,2}\\b`, "g"), "DATE")
+    .replace(/\b\d+(?:\.\d+)?\s*%/g, "PCT")
     .replace(/\b\d+(?:\.\d+)?\b/g, "n")
     .replace(/\s+/g, " ")
     .trim();
 }
 
-// One window per product, the largest absolute move, then orderLead, then 24
-// paths that do not share a shape once prices and dates are stripped.
+export function sealedKindOf(card) {
+  const sub = String(card?.subtype || card?.sealedKind || "").toLowerCase();
+  const name = String(card?.name || "").toLowerCase();
+  if (sub === "box" || sub === "booster-box" || /\bbooster box\b/.test(name)) return "box";
+  if (sub === "etb" || sub === "pc-etb" || /elite trainer/.test(name) || /\betb\b/.test(name)) return "etb";
+  if (sub === "bundle" || sub === "booster-bundle" || /\bbundle\b/.test(name)) return "bundle";
+  if (sub === "pack" || sub === "booster-pack" || /\bpacks?\b/.test(name)) return "pack";
+  return card?.kind === "sealed" ? "other" : "";
+}
+
+function rankInWindow(a, b) {
+  return Number(a.thin) - Number(b.thin)
+    || Math.abs(Number(b.changePct) || 0) - Math.abs(Number(a.changePct) || 0)
+    || String(a.name).localeCompare(String(b.name));
+}
+
+function orderPool(rows) {
+  const groups = new Map();
+  for (const row of rows || []) {
+    const w = Number(row.windowDays);
+    if (!groups.has(w)) groups.set(w, []);
+    groups.get(w).push(row);
+  }
+  for (const list of groups.values()) list.sort(rankInWindow);
+  const windows = [...groups.keys()].sort((a, b) => rankInWindow(groups.get(a)[0], groups.get(b)[0]));
+  const out = [];
+  for (const w of windows) out.push(...groups.get(w));
+  return out;
+}
+
+function orderSealed(rows) {
+  const pool = orderPool(rows);
+  const buckets = new Map();
+  for (const row of pool) {
+    const kind = sealedKindOf(row);
+    if (!buckets.has(kind)) buckets.set(kind, []);
+    buckets.get(kind).push(row);
+  }
+  const seeded = [];
+  for (const kind of ["box", "etb", "bundle", "pack"]) {
+    const list = buckets.get(kind);
+    if (list?.length) seeded.push(list.shift());
+  }
+  const rest = [];
+  for (const list of buckets.values()) rest.push(...list);
+  return seeded.concat(rest);
+}
+
+// One window per product, the largest absolute move. Sealed and singles are
+// ranked in their own pools, then interleaved. A window can take at most 12
+// of the 24. A shared shape is dropped for the next qualifier.
 export function selectLead(cards, limit = 24) {
   const bySku = new Map();
   for (const card of cards || []) {
     if (!card?.sku || !String(card.sku).startsWith("tcgcsv-")) continue;
     if (card.kind !== "sealed" && card.kind !== "single") continue;
+    if (card.ambiguousCopy) continue;
     const abs = Math.abs(Number(card.changePct) || 0);
     const prev = bySku.get(card.sku);
     const prevAbs = prev ? Math.abs(Number(prev.changePct) || 0) : -1;
     if (!prev || abs > prevAbs || (abs === prevAbs && Number(card.windowDays) > Number(prev.windowDays))) bySku.set(card.sku, card);
   }
-  const ordered = orderLead([...bySku.values()]);
+  const rows = [...bySku.values()];
+  const sealedRows = rows.filter((row) => row.kind === "sealed");
+  const singleRows = rows.filter((row) => row.kind !== "sealed");
+  const sealedOrder = orderSealed(sealedRows);
+  const singleOrder = orderPool(singleRows);
+  const kindCount = new Set(sealedOrder.map((row) => sealedKindOf(row)).filter((kind) => kind && kind !== "other")).size;
+  const sealedTarget = sealedOrder.length >= 6 ? Math.max(6, kindCount) : sealedOrder.length;
   const chosen = [];
   const shapes = new Set();
+  const grams = new Map();
   const rewrites = [];
-  for (const card of ordered) {
-    if (chosen.length >= limit) break;
-    const failed = String(card.path || "").trim();
-    if (!failed || BANNED.test(failed)) continue;
-    const key = sentenceShape(failed);
-    if (key && !shapes.has(key)) {
-      shapes.add(key);
-      chosen.push(card);
-      continue;
+  const windows = { 7: 0, 30: 0, 90: 0 };
+  const sets = new Map();
+  const pointers = { sealed: 0, single: 0 };
+  const queues = { sealed: sealedOrder, single: singleOrder };
+  const waiting = { sealed: [], single: [] };
+  let sealedKept = 0;
+
+  function runOf(kind) {
+    let n = 0;
+    for (let i = chosen.length - 1; i >= 0; i -= 1) {
+      if (chosen[i].kind !== kind) break;
+      n += 1;
     }
-    const next = String(pathAlt(card._raw || card.hist || [], card._pathOpts || {}) || "").trim();
-    const nextKey = sentenceShape(next);
-    const usable = next && next !== failed && nextKey && !shapes.has(nextKey) && !BANNED.test(next);
-    rewrites.push({ id: card.id || "", failed, next: usable ? next : "" });
-    if (!usable) continue;
+    return n;
+  }
+  function gramsOk(text) {
+    const local = new Map();
+    for (const gram of fourGrams(text)) local.set(gram, (local.get(gram) || 0) + 1);
+    for (const [gram, n] of local) if ((grams.get(gram) || 0) + n > 6) return false;
+    return true;
+  }
+  function usable(card, text) {
+    if (!text || BANNED.test(text)) return false;
+    const key = sentenceShape(text, card);
+    if (!key || shapes.has(key)) return false;
+    return gramsOk(text);
+  }
+  function resolve(card) {
+    const failed = String(card.path || "").trim();
+    if (usable(card, failed)) return failed;
+    const altOpts = { ...(card._pathOpts || {}), name: card.name, set: card.set, listings: card.listings, listingsAsOf: card.listingsAsOf, sold: card._sold || null };
+    const next = String(pathAlt(card._raw || card.hist || [], altOpts) || "").trim();
+    const ok = next && next !== failed && usable(card, next);
+    if (failed) rewrites.push({ id: card.id || "", failed, next: ok ? next : "" });
+    if (!ok) return "";
     card.path = next;
-    shapes.add(nextKey);
+    return next;
+  }
+  function remember(card) {
+    const w = Number(card.windowDays);
+    windows[w] = (windows[w] || 0) + 1;
+    shapes.add(sentenceShape(card.path, card));
+    for (const gram of fourGrams(card.path)) grams.set(gram, (grams.get(gram) || 0) + 1);
+    if (chosen.length < 10) sets.set(card.set || "", (sets.get(card.set || "") || 0) + 1);
+    if (card.kind === "sealed") sealedKept += 1;
     chosen.push(card);
+  }
+  function take(kind) {
+    const queue = queues[kind];
+    const hold = waiting[kind];
+    if (kind === "sealed") {
+      const have = new Set(chosen.filter((row) => row.kind === "sealed").map((row) => sealedKindOf(row)));
+      const missing = ["box", "etb", "bundle", "pack"].find((name) => !have.has(name) && queue.some((row) => sealedKindOf(row) === name));
+      if (missing) {
+        let i = pointers[kind];
+        while (i < queue.length) {
+          if (sealedKindOf(queue[i]) !== missing) { i += 1; continue; }
+          const w = Number(queue[i].windowDays);
+          if ((windows[w] || 0) >= 12) { i += 1; continue; }
+          const [card] = queue.splice(i, 1);
+          const text = resolve(card);
+          if (!text) continue;
+          remember(card);
+          return true;
+        }
+      }
+    }
+    const pending = [];
+    if (chosen.length >= 10) pending.push(...hold.splice(0, hold.length));
+    while (pointers[kind] < queue.length || pending.length) {
+      const fromQueue = !pending.length;
+      const card = pending.length ? pending.shift() : queue[pointers[kind]++];
+      const w = Number(card.windowDays);
+      if ((windows[w] || 0) >= 12) continue;
+      if (kind === "single") {
+        const need = Math.max(0, sealedTarget - sealedKept);
+        const left = queues.sealed.slice(pointers.sealed).filter((row) => Number(row.windowDays) === w).length;
+        if (need > 0 && left > 0 && (windows[w] || 0) + 1 > 12 - Math.min(need, left)) continue;
+      }
+      if (chosen.length < 10 && (sets.get(card.set || "") || 0) >= 2) {
+        if (fromQueue) hold.push(card);
+        else pending.push(card);
+        if (!fromQueue && pending.length > hold.length + queue.length) break;
+        continue;
+      }
+      const text = resolve(card);
+      if (!text) continue;
+      remember(card);
+      return true;
+    }
+    return false;
+  }
+  function remaining(kind) {
+    if (pointers[kind] < queues[kind].length) return true;
+    if (chosen.length >= 10 && waiting[kind].length) return true;
+    if (chosen.length < 10 && waiting[kind].some((card) => (windows[Number(card.windowDays)] || 0) < 12 && (sets.get(card.set || "") || 0) < 2)) return true;
+    return false;
+  }
+
+  let guard = 0;
+  while (chosen.length < limit && guard < 4000) {
+    guard += 1;
+    const slots = limit - chosen.length;
+    const sealedLeft = Math.max(0, sealedTarget - sealedKept);
+    const mustSealed = sealedLeft > 0 && slots <= sealedLeft;
+    const last = chosen[chosen.length - 1];
+    let want = "single";
+    if (mustSealed) want = "sealed";
+    else if (last && runOf(last.kind) >= 5 && remaining(last.kind === "sealed" ? "single" : "sealed")) want = last.kind === "sealed" ? "single" : "sealed";
+    else if (sealedLeft > 0 && remaining("sealed") && (chosen.length === 0 || (chosen.length + 1) % 4 === 0)) want = "sealed";
+    else if (!remaining("single") && remaining("sealed")) want = "sealed";
+    if (!take(want)) {
+      if (!take(want === "sealed" ? "single" : "sealed")) break;
+    }
   }
   return { lead: chosen, rewrites };
 }
+
 
 async function appendPathRewrites(dir, day, rows) {
   if (!dir || !rows?.length) return;
@@ -178,10 +340,19 @@ export function assembleCatalogue(items, prior = []) {
   }
   const headlines = new Set();
   const cards = {};
+  const halfDropped = [];
   for (const item of items || []) {
     if (!item?.id || !String(item.id).startsWith("tcgcsv-")) continue;
     if (JUNK.test(item.name || "")) continue;
-    const raw = item.hist || [];
+    const split = separateHalfCopies(item.hist || []);
+    if (split.ambiguous) {
+      halfDropped.push({ id: item.id, name: pretty(item.name), set: pretty(item.set), low: split.low, high: split.high, reason: "ambiguous" });
+      continue;
+    }
+    if (split.dropped.length) {
+      halfDropped.push({ id: item.id, name: pretty(item.name), set: pretty(item.set), low: split.low, high: split.high, reason: "cheap-copy", dropped: split.dropped.length });
+    }
+    const raw = split.keep;
     const windows = [7, 30, 90].map((days) => feedWindow(raw, days)).filter(Boolean);
     if (!windows.length) continue;
     const kind = item.kind === "sealed" ? "sealed" : "single";
@@ -254,6 +425,8 @@ export function assembleCatalogue(items, prior = []) {
         pattern: `mover_${direction}_${move.window}d`,
         read_type: readTypeFor(move.window),
         path: "",
+        subtype: item.subtype || "",
+        sealedKind: sealedKindOf({ name: item.name, subtype: item.subtype, kind }),
         _bounds: windowBounds(raw, move.toDate),
         _raw: raw,
         _pathOpts: {
@@ -270,6 +443,8 @@ export function assembleCatalogue(items, prior = []) {
         toDate: move.toDate,
         fromPrice: move.from,
         windowDays: move.window,
+        name: draft.name,
+        sealedKind: card.sealedKind,
       });
       if (sentence && !BANNED.test(sentence)) card.path = sentence;
       cards[card.id] = card;
@@ -280,7 +455,7 @@ export function assembleCatalogue(items, prior = []) {
   }
   disambiguatePaths(cards);
   const lists = assignSections(cards);
-  return { cards, lists };
+  return { cards, lists, halfDropped };
 }
 
 function disambiguatePaths(cards) {
@@ -327,9 +502,25 @@ export function trackedRows(prior, priceBySku) {
   return out;
 }
 
-export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDir, logFile, shelf, gapPids = [], rewriteDir = "" }) {
-  const { cards, lists } = assembleCatalogue(items, prior);
+export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDir, logFile, shelf, gapPids = [], rewriteDir = "", soldBySku = null }) {
+  const { cards, lists, halfDropped = [] } = assembleCatalogue(items, prior);
   applyShelf(cards, shelf);
+  const soldMap = soldBySku instanceof Map ? soldBySku : new Map();
+  for (const card of Object.values(cards)) {
+    const sold = soldMap.get(card.sku) || null;
+    card._sold = sold && Number.isInteger(sold.count) ? sold : null;
+    const listings = Number.isInteger(card.listings) && card.listings >= 20 ? card.listings : null;
+    const sentence = pathSentence(card._raw || [], {
+      ...(card._pathOpts || {}),
+      name: card.name,
+      sealedKind: card.sealedKind,
+      listings,
+      listingsAsOf: card.listingsAsOf || "",
+      sold: card._sold,
+    });
+    if (sentence && !BANNED.test(sentence)) card.path = sentence;
+  }
+  disambiguatePaths(cards);
   let logoByName = new Map();
   try {
     const setsDoc = JSON.parse(await readFile(join(outDir, "sets.json"), "utf8"));
@@ -411,13 +602,24 @@ export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDi
     hist: Array.from({ length: card.points || 0 }, () => ["x", 1]),
   }));
   const picked = selectLead(Object.values(cards));
-  if (rewriteDir) await appendPathRewrites(rewriteDir, asOf, picked.rewrites);
+  if (rewriteDir) {
+    await appendPathRewrites(rewriteDir, asOf, picked.rewrites);
+    const halfDir = join(dirname(rewriteDir), "half-copies");
+    await mkdir(halfDir, { recursive: true });
+    const day = /^\d{4}-\d{2}-\d{2}$/.test(String(asOf || "")) ? asOf : "undated";
+    const excluded = halfDropped.filter((row) => row.reason === "ambiguous");
+    const cheap = halfDropped.filter((row) => row.reason === "cheap-copy");
+    await writeFile(join(halfDir, `${day}.json`), JSON.stringify({ excluded: excluded.length, cheapCopies: cheap.length, rows: halfDropped }, null, 1) + "\n");
+  }
   for (const card of Object.values(cards)) {
     delete card.pattern;
     delete card.read_type;
     delete card.points;
     delete card.score;
     delete card.tempo;
+    delete card.subtype;
+    delete card.sealedKind;
+    delete card._sold;
     delete card._raw;
     delete card._pathOpts;
   }
@@ -484,7 +686,7 @@ export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDi
     reads: lead,
   }, null, 1) + "\n");
   const logged = logFile ? await appendLearningLog(logFile, { asOf, updatedAt, reads: logReads }) : { added: 0, total: 0, skipped: [] };
-  return { count: catalogue.count, sections: Object.fromEntries(Object.entries(lists).map(([k, v]) => [k, v.length])), tracked: tracked.length, logged };
+  return { count: catalogue.count, sections: Object.fromEntries(Object.entries(lists).map(([k, v]) => [k, v.length])), tracked: tracked.length, logged, halfExcluded: halfDropped.filter((row) => row.reason === "ambiguous").length, halfCheap: halfDropped.filter((row) => row.reason === "cheap-copy").length, lead: picked.lead.length };
 }
 
 export async function readShelfFile(file) {
