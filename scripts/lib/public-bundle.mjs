@@ -322,7 +322,7 @@ function renderFactLine(fact, facts, opts) {
   } else if (fact.id === "step-smaller") {
     move = `versus ${p2} on ${d2}, and its latest price still ${rel} on ${d1} to a price of ${p1}`;
   } else if (fact.id === "step-larger") {
-    move = `off ${p2} printed on ${d2}, but the latest price then ${rel} on ${d1} to a close of ${p1}`;
+    move = `off ${p2} printed on ${d2}, but the latest price then ${rel} on ${d1} and is ${p1}`;
   } else if (fact.id === "low-now" || fact.id === "high-now") {
     move = `after the mark of ${p2} on ${d2}, with the latest price, which ${rel}, landing on ${d1} at ${p1}`;
   }
