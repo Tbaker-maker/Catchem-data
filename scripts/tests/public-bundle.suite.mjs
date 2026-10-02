@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { BANNED, FILLER_BAN, bestMove, changePct, chartSeries, dropTiledCycles, headlineFor, isThinSeries, money, phrasePeak, rankReads, selectFeedReads, spikeDates, statesBothMoves, whyFor, whyPattern } from "../lib/public-bundle.mjs";
+import { BAD_DATE, BANNED, FILLER_BAN, bestMove, changePct, chartSeries, dropTiledCycles, headlineFor, isThinSeries, money, phrasePeak, rankReads, selectFeedReads, spikeDates, statesBothMoves, whyFor, whyPattern } from "../lib/public-bundle.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 
@@ -108,8 +108,16 @@ export async function run() {
     const shape = (text) => String(text).replace(/\$[0-9,.]+/g, "$").replace(/\b(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2}\b/g, "DATE").replace(/\b\d+(?:\.\d+)?\b/g, "n");
     const shapes = reads.reads.map((row) => shape(row.path || ""));
     t("the catalogue day is not the partial 2026-09-29 file", reads.asOf !== "2026-09-29" && meta.asOf !== "2026-09-29");
-    const fold = (line) => shape(line).replace(/\bthat price\b/gi, "$").replace(/\bthat day\b/gi, "DATE").replace(/\b(rose|fell|eased|above)\b/gi, "DIR");
-    t("lead paths do not share a stripped shape", new Set(reads.reads.map((row) => fold(row.path || ""))).size === reads.reads.length && reads.reads.every((row) => row.path));
+    const fold = (line, name, setName) => {
+      let s = String(line || "");
+      for (const part of [name, setName]) {
+        const token = String(part || "").trim();
+        if (token.length >= 3) s = s.split(token).join(" ");
+      }
+      return shape(s).replace(/,?\s*while the n-day window\b.*/i, "").replace(/\bthat price\b/gi, "$").replace(/\bthat day\b/gi, "DATE").replace(/\b(rose|fell|eased|above|higher|lower|highs|lows|high|low)\b/gi, " ").replace(/\s+/g, " ").replace(/[.]+$/g, "").trim();
+    };
+    t("lead paths do not share a stripped shape", new Set(reads.reads.map((row) => fold(row.path || "", row.name, row.set))).size === reads.reads.length && reads.reads.every((row) => row.path));
+    t("a date is not at Sep or dated Sep on Sep", reads.reads.every((row) => !BAD_DATE.test(row.path || "")));
     t("paired frames are gone", reads.reads.every((row) => !/newest move widened|step shrank versus|unchanged price across|\bas of\b/i.test(row.path || "")));
     t("a line that uses both verbs states both moves", reads.reads.every((row) => !(/\brose\b/i.test(row.path || "") && /\bfell\b/i.test(row.path || "")) || statesBothMoves(row.path)));
     t("the lead is not only small 7-day moves", reads.reads.some((row) => Number(row.windowDays) !== 7 || Math.abs(Number(row.changePct)) >= 8));
