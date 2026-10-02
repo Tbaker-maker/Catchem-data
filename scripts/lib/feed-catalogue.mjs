@@ -2,7 +2,7 @@
 import { appendFile, mkdir, readFile, readdir, unlink, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import {
-  BANNED, chartSeries, composeLead, directionAgrees, endStreak, feedWindow, fourGrams, isThinSeries, money, pathAlt, pathSentence, pretty, readCopy, separateHalfCopies, slug, windowBounds,
+  BANNED, chartSeries, composeLead, directionAgrees, endStreak, feedWindow, FILLER_BAN, fourGrams, isThinSeries, money, pathAlt, pathSentence, pickLead, pretty, readCopy, separateHalfCopies, slug, windowBounds,
 } from "./public-bundle.mjs";
 import { appendLearningLog, readCallLog } from "./learning-log.mjs";
 
@@ -149,7 +149,7 @@ export function selectLead(cards, limit = 24) {
   function gramsOk(card, text) {
     const local = new Map();
     for (const gram of fourGrams(sentenceShape(text, card))) local.set(gram, (local.get(gram) || 0) + 1);
-    for (const [gram, n] of local) if ((grams.get(gram) || 0) + n > 3) return false;
+    for (const [gram, n] of local) if ((grams.get(gram) || 0) + n > 2) return false;
     return true;
   }
   function usable(card, text) {
@@ -161,13 +161,19 @@ export function selectLead(cards, limit = 24) {
   function resolve(card) {
     const failed = String(card.path || "").trim();
     const altOpts = { ...(card._pathOpts || {}), name: card.name, set: card.set, listings: card.listings, listingsAsOf: card.listingsAsOf, sold: card._sold || null, sealedKind: card.sealedKind || sealedKindOf(card) };
-    const accept = (text) => usable(card, text) && directionAgrees(text);
-    if (accept(failed)) return failed;
+    const accept = (text, factId) => {
+      if (!text || FILLER_BAN.test(text) || !directionAgrees(text)) return false;
+      return usable(card, text);
+    };
     let made = "";
-    if ((card._raw || []).length >= 2) made = composeLead(card._raw, altOpts, accept) || "";
-    if (!made) {
-      const alt = String(pathAlt(card._raw || card.hist || [], altOpts) || "").trim();
-      if (alt && alt !== failed && accept(alt)) made = alt;
+    if ((card._raw || []).length >= 2) {
+      const picked = pickLead(card._raw, altOpts, accept);
+      if (picked) {
+        made = picked.line;
+        card.secondFact = picked.id;
+      }
+    } else if (accept(failed)) {
+      made = failed;
     }
     if (failed && failed !== made) rewrites.push({ id: card.id || "", failed, next: made });
     if (!made) return "";
@@ -233,6 +239,35 @@ export function selectLead(cards, limit = 24) {
     if (chosen.length >= 10 && waiting[kind].length) return true;
     if (chosen.length < 10 && waiting[kind].some((card) => (windows[Number(card.windowDays)] || 0) < 12 && (sets.get(card.set || "") || 0) < 2)) return true;
     return false;
+  }
+
+  function takeDays(days) {
+    for (const kind of ["single", "sealed"]) {
+      const queue = queues[kind];
+      let i = 0;
+      while (i < queue.length) {
+        if (Number(queue[i].windowDays) !== days) { i += 1; continue; }
+        if ((windows[days] || 0) >= 12) return false;
+        const [card] = queue.splice(i, 1);
+        const text = resolve(card);
+        if (!text) continue;
+        remember(card);
+        return true;
+      }
+    }
+    return false;
+  }
+  let reserved = 0;
+  while (reserved < 4 && chosen.length < limit) {
+    if (!takeDays(7)) break;
+    reserved += 1;
+  }
+  for (let seeded = 0; seeded < 4 && chosen.length < limit; seeded += 1) {
+    if (!take("sealed")) break;
+  }
+
+  while (sealedKept < sealedTarget - 1 && chosen.length < limit) {
+    if (!take("sealed")) break;
   }
 
   let guard = 0;

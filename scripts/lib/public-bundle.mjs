@@ -157,100 +157,134 @@ function weekWord(n) {
   return `${n}${suffix}`;
 }
 
-// One sentence from this product's own points. The lead fact is whatever
-// is different on this path. No shared opener and no shared closer.
-const FAMILIES = [
-  (s) => `The latest price for ${s.name} is ${s.p1} on ${s.d1} and it ${s.rel} from ${s.p2} on ${s.d2} ${s.u}.`,
-  (s) => `${s.name} carries a latest price of ${s.p1} dated ${s.d1} because it ${s.rel} off ${s.p2} dated ${s.d2} ${s.u}.`,
-  (s) => `On ${s.d1} the latest price of ${s.name} read ${s.p1} after it ${s.rel} versus ${s.p2} during ${s.d2} ${s.u}.`,
-  (s) => `${s.name} latest price hit ${s.p1} on ${s.d1} once it ${s.rel} against ${s.p2} back on ${s.d2} ${s.u}.`,
-  (s) => `Quoted latest price ${s.p1} for ${s.name} on ${s.d1} ${s.rel} from the ${s.p2} recorded ${s.d2} ${s.u}.`,
-  (s) => `See the latest price, ${s.p1} on ${s.d1}, under ${s.name} as it ${s.rel} past ${s.p2} since ${s.d2} ${s.u}.`,
-  (s) => `${s.name} posted latest price ${s.p1} this ${s.d1} when it ${s.rel} away from ${s.p2} of ${s.d2} ${s.u}.`,
-  (s) => `Under ${s.name} the latest price equals ${s.p1} on ${s.d1} yet it ${s.rel} clear from ${s.p2} at ${s.d2} ${s.u}.`,
-  (s) => `Tracking shows latest price at ${s.p1} as of ${s.d1} under ${s.name} where it ${s.rel} starting from ${s.p2} over ${s.d2} ${s.u}.`,
-  (s) => `A latest price update for ${s.name}: ${s.p1} dated ${s.d1}, and the path ${s.rel} from ${s.p2} versus ${s.d2} ${s.u}.`,
-];
-const FLAT_FAMILY = (s) => `Following a flat run, latest price on ${s.name} is ${s.p1} at ${s.d1} and the quote ${s.rel} from ${s.p2} at ${s.d2} ${s.u}.`;
-const ENDINGS = ["in context", "for reference", "as written", "on record", "in view", "at hand", "for now", "in short", "as shown", "on file", "in place", "for clarity", "as listed", "on paper", "in brief", "for scale", "as noted", "on deck", "in sum", "for detail", "as given", "on view", "in full", "for measure", "as read", "on site", "in turn", "for keeping", "as logged", "on balance"];
-
-function buildLeadFrames() {
-  const frames = [{ flat: true, render: FLAT_FAMILY, u: "after that" }];
-  let n = 0;
-  for (let round = 0; round < 3; round += 1) {
-    for (const render of FAMILIES) {
-      frames.push({ flat: false, render, u: ENDINGS[n] });
-      n += 1;
-    }
-  }
-  return frames;
-}
-
-const LEAD_FRAMES = buildLeadFrames();
+// The lead names one structural fact that is true of this series.
+// A window-open comparison is not that fact, and filler closers are banned.
+export const FILLER_BAN = /\b(in context|for reference|as written|on record|in view|at hand|for now|on paper|as shown|as listed|in short)\b/i;
 
 function scopeFacts(points, opts) {
   const all = seriesOf(points);
   if (all.length < 2) return null;
   const toDate = /^\d{4}-\d{2}-\d{2}$/.test(String(opts.toDate || "")) ? opts.toDate : all[all.length - 1][0];
   const fromDate = /^\d{4}-\d{2}-\d{2}$/.test(String(opts.fromDate || "")) ? opts.fromDate : all[0][0];
-  const scoped = all.filter((pt) => pt[0] <= toDate);
+  const scoped = all.filter((pt) => pt[0] <= toDate && pt[0] >= fromDate);
   if (scoped.length < 2) return null;
   const facts = pathFacts(scoped, { ...opts, fromDate, toDate });
   if (!(facts.lastPrice > 0)) return null;
   return facts;
 }
 
-function resolvePair(facts, kinds) {
-  for (const kind of kinds) {
-    let price = 0;
-    let date = "";
-    if (kind === "open") {
-      price = facts.fromPrice;
-      date = facts.fromDate;
-    } else if (kind === "prev" && facts.prev) {
-      price = facts.prev[1];
-      date = facts.prev[0];
-    } else if (kind === "high" && facts.hi) {
-      price = facts.hi[1];
-      date = facts.hi[0];
-    } else if (kind === "low" && facts.lo) {
-      price = facts.lo[1];
-      date = facts.lo[0];
-    } else continue;
-    if (!(Number(price) > 0) || !/^\d{4}-\d{2}-\d{2}$/.test(String(date || ""))) continue;
-    if (cents(price) === cents(facts.lastPrice) || date === facts.lastDate) continue;
-    if (!priceWords(price) || priceWords(price) === priceWords(facts.lastPrice)) continue;
-    if (!monthDay(date) || monthDay(date) === monthDay(facts.lastDate)) continue;
-    return { p: Number(price), d: date };
-  }
-  return null;
+function pairOk(facts, price, date) {
+  if (!(Number(price) > 0) || !/^\d{4}-\d{2}-\d{2}$/.test(String(date || ""))) return false;
+  if (cents(price) === cents(facts.lastPrice) || date === facts.lastDate) return false;
+  if (!priceWords(price) || priceWords(price) === priceWords(facts.lastPrice)) return false;
+  if (!monthDay(date) || monthDay(date) === monthDay(facts.lastDate)) return false;
+  return true;
 }
 
-function renderLead(frame, facts, pair, opts, withSold) {
-  const rel = cents(facts.lastPrice) > cents(pair.p) ? "rose" : "fell";
-  const slots = {
-    name: opts.name ? String(opts.name).trim() : "this ask",
-    p1: priceWords(facts.lastPrice),
-    d1: monthDay(facts.lastDate),
-    rel,
-    p2: priceWords(pair.p),
-    d2: monthDay(pair.d),
-    u: frame.u,
-  };
-  if (!slots.p1 || !slots.p2 || !slots.d1 || !slots.d2) return "";
-  let sentence = frame.render(slots);
+function relOf(latest, other) {
+  if (cents(latest) === cents(other)) return "";
+  return cents(latest) > cents(other) ? "rose" : "fell";
+}
+
+function buildSecondFacts(facts, opts) {
+  const out = [];
+  const prev = facts.prev;
+  const lastStep = prev ? cents(facts.lastPrice) - cents(prev[1]) : 0;
+  const prior = facts.priorStep;
+  if (facts.gap.length >= 2 && prev && pairOk(facts, prev[1], prev[0])) {
+    out.push({ id: "gap", gap: facts.gap.slice(), pair: { p: prev[1], d: prev[0] } });
+  }
+  if (facts.roundHigh && pairOk(facts, facts.hi[1], facts.hi[0])) {
+    out.push({ id: "round-rally", pair: { p: facts.hi[1], d: facts.hi[0] } });
+  }
+  if (facts.roundLow && pairOk(facts, facts.lo[1], facts.lo[0])) {
+    out.push({ id: "round-drop", pair: { p: facts.lo[1], d: facts.lo[0] } });
+  }
+  if (facts.flatDays >= 5 && pairOk(facts, facts.flatPrice, facts.flatEnd)) {
+    out.push({ id: "flat", n: facts.flatDays, pair: { p: facts.flatPrice, d: facts.flatEnd } });
+  }
   const sold = opts.sold;
-  if (withSold && sold && Number.isInteger(sold.count) && sold.count >= 0 && /^\d{4}-\d{2}-\d{2}$/.test(String(sold.asOf || ""))) {
-    sentence = sentence.replace(/\.$/, "");
-    sentence += `, and TCGplayer product-page data for 3 months lists ${sold.count} copies sold as of ${monthDay(sold.asOf)}, not a 7-day count and not eBay.`;
+  if (sold && Number.isInteger(sold.count) && sold.count >= 0 && /^\d{4}-\d{2}-\d{2}$/.test(String(sold.asOf || "")) && prev && pairOk(facts, prev[1], prev[0])) {
+    out.push({ id: "sold", n: sold.count, asOf: sold.asOf, pair: { p: prev[1], d: prev[0] } });
+  }
+  if (facts.stepCmp === "smaller" && prev && pairOk(facts, prev[1], prev[0])) {
+    out.push({ id: "step-smaller", pair: { p: prev[1], d: prev[0] } });
+  }
+  if (facts.stepCmp === "larger" && prev && pairOk(facts, prev[1], prev[0])) {
+    out.push({ id: "step-larger", pair: { p: prev[1], d: prev[0] } });
+  }
+  if (facts.lowStairs >= 2 && facts.onLow && prev && pairOk(facts, prev[1], prev[0]) && relOf(facts.lastPrice, prev[1]) === "fell") {
+    out.push({ id: "low-now", pair: { p: prev[1], d: prev[0] } });
+  }
+  if (facts.lowStairs >= 2 && !facts.onLow && facts.stairLow && facts.stairLow[0] !== facts.fromDate && facts.stairLow[0] !== facts.lastDate && pairOk(facts, facts.stairLow[1], facts.stairLow[0]) && relOf(facts.lastPrice, facts.stairLow[1]) === "rose") {
+    out.push({ id: "low-early", pair: { p: facts.stairLow[1], d: facts.stairLow[0] } });
+  }
+  if (facts.highStairs >= 2 && facts.onHigh && prev && pairOk(facts, prev[1], prev[0]) && relOf(facts.lastPrice, prev[1]) === "rose") {
+    out.push({ id: "high-now", pair: { p: prev[1], d: prev[0] } });
+  }
+  if (facts.highStairs >= 2 && !facts.onHigh && facts.stairHigh && facts.stairHigh[0] !== facts.fromDate && facts.stairHigh[0] !== facts.lastDate && pairOk(facts, facts.stairHigh[1], facts.stairHigh[0]) && relOf(facts.lastPrice, facts.stairHigh[1]) === "fell") {
+    out.push({ id: "high-early", pair: { p: facts.stairHigh[1], d: facts.stairHigh[0] } });
+  }
+  return out.filter((fact) => relOf(facts.lastPrice, fact.pair.p));
+}
+
+function renderFactLine(fact, facts, opts) {
+  const name = opts.name ? String(opts.name).trim() : "This ask";
+  const p1 = priceWords(facts.lastPrice);
+  const d1 = monthDay(facts.lastDate);
+  const p2 = priceWords(fact.pair.p);
+  const d2 = monthDay(fact.pair.d);
+  const rel = relOf(facts.lastPrice, fact.pair.p);
+  if (!p1 || !p2 || !d1 || !d2 || !rel) return "";
+  let sentence = "";
+  switch (fact.id) {
+    case "gap": {
+      const days = fact.gap.map(monthDay);
+      const listed = days.length < 2 ? days.join(", ") : `${days.slice(0, -1).join(", ")} and ${days.at(-1)}`;
+      sentence = `Missing weekday dates for ${name} are ${listed}, while its latest price ${rel} to ${p1} on ${d1} against ${p2} on ${d2}.`;
+      break;
+    }
+    case "round-rally":
+      sentence = `Giving the rally back leaves latest price sitting ${p1} on ${d1} for ${name}, down from ${p2} on ${d2}.`;
+      break;
+    case "round-drop":
+      sentence = `Recovering the drop puts latest price near ${p1} upon ${d1} for ${name}, up from ${p2} dated ${d2}.`;
+      break;
+    case "flat":
+      sentence = `${name} printed one unchanged price across ${fact.n} prints through ${d2}, and latest price ${p1} dated ${d1} ${rel} versus that flat ${p2}.`;
+      break;
+    case "sold":
+      sentence = `Over 3 months the TCGplayer product page counts ${fact.n} copies sold as of ${monthDay(fact.asOf)} on ${name}, not eBay and not a 7-day count, with latest price ${p1} as of ${d1} which ${rel} versus ${p2} on ${d2}.`;
+      break;
+    case "step-smaller":
+      sentence = `Last step shrank versus the earlier step for ${name}, where latest price ${p1} stamped ${d1} ${rel} beside ${p2} stamped ${d2}.`;
+      break;
+    case "step-larger":
+      sentence = `The newest move widened against its previous move on ${name}, latest price ${p1} posted ${d1} ${rel} beyond ${p2} posted ${d2}.`;
+      break;
+    case "low-now":
+      sentence = `Printing a fresh lower low, ${name} carries latest price ${p1} during ${d1} and it fell under ${p2} during ${d2}.`;
+      break;
+    case "low-early":
+      sentence = `${name} set a lower low at ${p2} on ${d2}, after which latest price ${p1} following ${d1} rose off it.`;
+      break;
+    case "high-now":
+      sentence = `Printing a fresh higher high, ${name} carries latest price ${p1} within ${d1} and it rose over ${p2} within ${d2}.`;
+      break;
+    case "high-early":
+      sentence = `${name} set a higher high at ${p2} on ${d2}, after which latest price ${p1} following ${d1} fell off it.`;
+      break;
+    default:
+      return "";
   }
   sentence = dedupeRepeats(sentence).replace(/\s+/g, " ").trim();
   if (!sentence.endsWith(".")) sentence += ".";
   return sentence;
 }
+
 function usableLead(sentence) {
   if (!sentence || !/latest price/.test(sentence)) return false;
-  if (BANNED.test(sentence) || /\bstored\b|last print/i.test(sentence) || /%/.test(sentence)) return false;
+  if (BANNED.test(sentence) || FILLER_BAN.test(sentence) || /\bstored\b|last print/i.test(sentence) || /%/.test(sentence)) return false;
   if (/\. [A-Z]/.test(sentence)) return false;
   return directionAgrees(sentence);
 }
@@ -283,35 +317,38 @@ export function leadFrameLines(points, opts = {}) {
   const facts = scopeFacts(points, opts);
   if (!facts) return [];
   const out = [];
-  for (const frame of LEAD_FRAMES) {
-    if (frame.flat && !(facts.flatDays >= 5 && cents(facts.flatPrice) !== cents(facts.lastPrice))) continue;
-    const pair = resolvePair(facts, ["open", "prev", "high", "low"]);
-    if (!pair) continue;
-    const sentence = renderLead(frame, facts, pair, opts, false);
+  for (const fact of buildSecondFacts(facts, opts)) {
+    const sentence = renderFactLine(fact, facts, opts);
     if (usableLead(sentence)) out.push(sentence);
   }
   return out;
 }
 
-export function composeLead(points, opts = {}, accept = null) {
+export function pickLead(points, opts = {}, accept = null) {
   const facts = scopeFacts(points, opts);
-  if (!facts) return "";
-  for (const frame of LEAD_FRAMES) {
-    if (frame.flat && !(facts.flatDays >= 5 && cents(facts.flatPrice) !== cents(facts.lastPrice))) continue;
-    const pair = resolvePair(facts, ["open", "prev", "high", "low"]);
-    if (!pair) continue;
-    const rich = renderLead(frame, facts, pair, opts, true);
-    const plain = renderLead(frame, facts, pair, opts, false);
-    if (usableLead(rich) && (!accept || accept(rich))) return rich;
-    if (plain !== rich && usableLead(plain) && (!accept || accept(plain))) return plain;
+  if (!facts) return null;
+  for (const fact of buildSecondFacts(facts, opts)) {
+    const line = renderFactLine(fact, facts, opts);
+    if (!usableLead(line)) continue;
+    if (accept && !accept(line, fact.id)) continue;
+    return { line, id: fact.id };
   }
-  return "";
+  return null;
+}
+
+export function composeLead(points, opts = {}, accept = null) {
+  return pickLead(points, opts, accept)?.line || "";
 }
 
 export function pathSentence(points, opts = {}) {
   const all = seriesOf(points);
   if (all.length < 2) return "A price path is missing.";
-  return composeLead(points, opts) || "The latest price is missing.";
+  const led = composeLead(points, opts);
+  if (led) return led;
+  const facts = scopeFacts(points, opts);
+  if (!facts) return "The latest price is missing.";
+  const who = opts.name ? ` of ${String(opts.name).trim()}` : "";
+  return `The latest price${who} is ${priceWords(facts.lastPrice)} on ${monthDay(facts.lastDate)}.`;
 }
 
 export function pathAlt(points, opts = {}) {
@@ -466,11 +503,14 @@ function pathFacts(scoped, opts) {
     lastDate: last[0],
     prev,
     stepCmp,
+    priorStep: priorStep,
     dir: last[1] >= (Number(opts.fromPrice) || start[1]) ? "up" : "down",
     lowStairs: stairs.low,
     highStairs: stairs.high,
     onLow: stairs.onLow,
     onHigh: stairs.onHigh,
+    stairLow: stairs.lowAt,
+    stairHigh: stairs.highAt,
     flatDays: bestFlat,
     flatPrice: bestFlatPrice,
     flatEnd: bestFlatEnd,
@@ -525,11 +565,14 @@ function weekStairs(scoped, toDate) {
     else break;
   }
   const latest = weeks[0];
+  const end = toDate || scoped[scoped.length - 1][0];
   return {
     low,
     high,
-    onLow: !!(latest && latest.lowDate === (toDate || scoped[scoped.length - 1][0])),
-    onHigh: !!(latest && latest.highDate === (toDate || scoped[scoped.length - 1][0])),
+    onLow: !!(latest && latest.lowDate === end),
+    onHigh: !!(latest && latest.highDate === end),
+    lowAt: latest ? [latest.lowDate, latest.low] : null,
+    highAt: latest ? [latest.highDate, latest.high] : null,
   };
 }
 

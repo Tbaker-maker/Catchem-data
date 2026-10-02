@@ -1,5 +1,5 @@
 import { applyImageGaps, applyShelf, assignSections, selectLead, sentenceShape } from "../lib/feed-catalogue.mjs";
-import { BANNED, directionAgrees, leadFrameLines, pathSentence, phrasePeak, separateHalfCopies } from "../lib/public-bundle.mjs";
+import { BANNED, FILLER_BAN, directionAgrees, leadFrameLines, pathSentence, phrasePeak, separateHalfCopies } from "../lib/public-bundle.mjs";
 
 export async function run() {
   let fail = 0;
@@ -130,7 +130,8 @@ export async function run() {
   t("each qualifying sealed kind is in the lead", ["box", "etb", "bundle", "pack"].every((kind) => sealedKinds.has(kind)));
   t("the lead is not six of one kind in a row", maxRun < 6 && lead.some((row) => row.kind === "single"));
   t("stripped shapes in the mix do not collide", new Set(lead.map((row) => sentenceShape(row.path, row))).size === lead.length);
-  t("no 4-word phrase is on more than 3 lines", phrasePeak(lead.map((row) => sentenceShape(row.path, row))).peak <= 3);
+  t("no 4-word phrase is on more than 2 lines", phrasePeak(lead.map((row) => sentenceShape(row.path, row))).peak <= 2);
+  t("7-day products keep reserved seats", (windows[7] || 0) >= 4 && (windows[7] || 0) <= 12);
   const loose = (text, name) => text.split(name).join(" ").replace(/\b\d+(?:\.\d+)?\s*%/g, "PCT").replace(/\s+/g, " ").trim();
   t("a name and percent swap is the same line", loose("Alpha is up 10% today", "Alpha") === loose("Beta is up 12% today", "Beta"));
   const desk = lead.map((row) => row.path);
@@ -152,8 +153,10 @@ export async function run() {
   t("fell cannot claim a higher latest price", directionAgrees("Destined Rivals Elite Trainer Box fell by a larger down step, latest price $118.37 on Sep 29 off $116.85 from Sep 27.") === false);
   t("a generated line agrees with its two prices", [dug, first, again, named, soldLine].every((line) => directionAgrees(line)));
   const pool = leadFrameLines(down, { name: "Trubbish", direction: "down", fromDate: "2026-09-01", toDate: "2026-09-28", fromPrice: 10, windowDays: 30 });
-  t("the frame pool stays under the phrase cap", pool.length >= 24 && phrasePeak(pool.map((line) => sentenceShape(line, { name: "Trubbish", set: "" }))).peak <= 3);
+  t("the frame pool stays under the phrase cap", pool.length >= 1 && pool.length < 24 && phrasePeak(pool.map((line) => sentenceShape(line, { name: "Trubbish", set: "" }))).peak <= 2);
   t("the frame pool does not reuse a stripped shape", new Set(pool.map((line) => sentenceShape(line, { name: "Trubbish", set: "" }))).size === pool.length);
+  t("a filler closer is banned", ["in context", "for reference", "as written", "on record", "in view", "at hand", "for now", "on paper", "as shown", "as listed", "in short"].every((phrase) => FILLER_BAN.test(`The latest price is $1 on Sep 1 ${phrase}.`)));
+  t("generated sentences do not use a filler closer", [dug, first, again, named, soldLine, ...pool].every((line) => !FILLER_BAN.test(line)));
   const prose = [];
   const addProse = (kind, window, pct, subtype) => {
     const raw = [];
@@ -178,9 +181,10 @@ export async function run() {
     for (let i = 0; i < 3; i += 1) addProse("sealed", 30, 7 - i, kind);
   }
   const proseLead = selectLead(prose, 24).lead;
-  t("generated lines match their two prices", proseLead.length === 24 && proseLead.every((row) => directionAgrees(row.path) && /latest price/.test(row.path) && !/\bstored\b|last print/i.test(row.path)));
-  t("generated lines keep the phrase cap", phrasePeak(proseLead.map((row) => sentenceShape(row.path, row))).peak <= 3);
+  t("generated lines match their two prices", proseLead.length >= 1 && proseLead.length <= 24 && proseLead.every((row) => directionAgrees(row.path) && /latest price/.test(row.path) && !/\bstored\b|last print/i.test(row.path) && !FILLER_BAN.test(row.path) && row.secondFact));
+  t("generated lines keep the phrase cap", phrasePeak(proseLead.map((row) => sentenceShape(row.path, row))).peak <= 2);
   t("generated lines do not share a stripped shape", new Set(proseLead.map((row) => sentenceShape(row.path, row))).size === proseLead.length);
+  t("a plain climb is not padded out to 24", proseLead.length < 24);
 
   return fail;
 }
