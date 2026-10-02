@@ -1,8 +1,8 @@
 // The Feed catalogue. One read per honest window. No 12 cap.
-import { mkdir, readFile, readdir, unlink, writeFile } from "node:fs/promises";
+import { appendFile, mkdir, readFile, readdir, unlink, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import {
-  BANNED, chartSeries, endStreak, feedWindow, isThinSeries, money, pathSentence, pretty, readCopy, slug, windowBounds,
+  BANNED, chartSeries, endStreak, feedWindow, isThinSeries, money, pathAlt, pathSentence, pretty, readCopy, slug, windowBounds,
 } from "./public-bundle.mjs";
 import { appendLearningLog, readCallLog } from "./learning-log.mjs";
 
@@ -37,6 +37,70 @@ function orderLead(rows) {
   }
   held.sort((a, b) => Number(a.thin) - Number(b.thin) || (b.score || 0) - (a.score || 0) || String(a.name).localeCompare(String(b.name)));
   return lead.concat(held);
+}
+
+const SHAPE_MONTHS = "January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec";
+
+export function sentenceShape(text) {
+  return String(text || "")
+    .replace(/\$[0-9,.]+/g, "$")
+    .replace(new RegExp(`\\b(?:${SHAPE_MONTHS})\\s+\\d{1,2}\\b`, "g"), "DATE")
+    .replace(/\b\d+(?:\.\d+)?\b/g, "n")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+// One window per product, the largest absolute move, then orderLead, then 24
+// paths that do not share a shape once prices and dates are stripped.
+export function selectLead(cards, limit = 24) {
+  const bySku = new Map();
+  for (const card of cards || []) {
+    if (!card?.sku || !String(card.sku).startsWith("tcgcsv-")) continue;
+    if (card.kind !== "sealed" && card.kind !== "single") continue;
+    const abs = Math.abs(Number(card.changePct) || 0);
+    const prev = bySku.get(card.sku);
+    const prevAbs = prev ? Math.abs(Number(prev.changePct) || 0) : -1;
+    if (!prev || abs > prevAbs || (abs === prevAbs && Number(card.windowDays) > Number(prev.windowDays))) bySku.set(card.sku, card);
+  }
+  const ordered = orderLead([...bySku.values()]);
+  const chosen = [];
+  const shapes = new Set();
+  const rewrites = [];
+  for (const card of ordered) {
+    if (chosen.length >= limit) break;
+    const failed = String(card.path || "").trim();
+    if (!failed || BANNED.test(failed)) continue;
+    const key = sentenceShape(failed);
+    if (key && !shapes.has(key)) {
+      shapes.add(key);
+      chosen.push(card);
+      continue;
+    }
+    const next = String(pathAlt(card._raw || card.hist || [], card._pathOpts || {}) || "").trim();
+    const nextKey = sentenceShape(next);
+    const usable = next && next !== failed && nextKey && !shapes.has(nextKey) && !BANNED.test(next);
+    rewrites.push({ id: card.id || "", failed, next: usable ? next : "" });
+    if (!usable) continue;
+    card.path = next;
+    shapes.add(nextKey);
+    chosen.push(card);
+  }
+  return { lead: chosen, rewrites };
+}
+
+async function appendPathRewrites(dir, day, rows) {
+  if (!dir || !rows?.length) return;
+  const name = /^\d{4}-\d{2}-\d{2}$/.test(String(day || "")) ? day : "undated";
+  await mkdir(dir, { recursive: true });
+  const file = join(dir, `${name}.jsonl`);
+  let have = "";
+  try { have = await readFile(file, "utf8"); } catch { have = ""; }
+  const lines = [];
+  for (const row of rows) {
+    const line = JSON.stringify({ id: row.id, failed: row.failed, next: row.next });
+    if (!have.includes(line)) lines.push(line);
+  }
+  if (lines.length) await appendFile(file, lines.join("\n") + "\n");
 }
 
 function readTypeFor(days) {
@@ -191,6 +255,14 @@ export function assembleCatalogue(items, prior = []) {
         read_type: readTypeFor(move.window),
         path: "",
         _bounds: windowBounds(raw, move.toDate),
+        _raw: raw,
+        _pathOpts: {
+          direction,
+          fromDate: move.fromDate,
+          toDate: move.toDate,
+          fromPrice: move.from,
+          windowDays: move.window,
+        },
       };
       const sentence = pathSentence(raw, {
         direction,
@@ -255,7 +327,7 @@ export function trackedRows(prior, priceBySku) {
   return out;
 }
 
-export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDir, logFile, shelf, gapPids = [] }) {
+export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDir, logFile, shelf, gapPids = [], rewriteDir = "" }) {
   const { cards, lists } = assembleCatalogue(items, prior);
   applyShelf(cards, shelf);
   let logoByName = new Map();
@@ -338,12 +410,16 @@ export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDi
     changePct: card.changePct,
     hist: Array.from({ length: card.points || 0 }, () => ["x", 1]),
   }));
+  const picked = selectLead(Object.values(cards));
+  if (rewriteDir) await appendPathRewrites(rewriteDir, asOf, picked.rewrites);
   for (const card of Object.values(cards)) {
     delete card.pattern;
     delete card.read_type;
     delete card.points;
     delete card.score;
     delete card.tempo;
+    delete card._raw;
+    delete card._pathOpts;
   }
   const pageSize = 24;
   async function clearJson(dir) {
@@ -398,7 +474,7 @@ export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDi
   });
   await writeFile(join(outDir, "feed", "lookup.json"), JSON.stringify(lookup));
   await writeFile(join(outDir, "feed", "facts.json"), JSON.stringify(facts));
-  const lead = lists.today.slice(0, 24).map((id) => cards[id]);
+  const lead = picked.lead;
   await writeFile(join(outDir, "reads.json"), JSON.stringify({
     asOf: catalogue.asOf,
     updatedAt: catalogue.updatedAt,
