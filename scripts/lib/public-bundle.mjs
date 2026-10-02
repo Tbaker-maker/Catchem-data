@@ -162,7 +162,7 @@ function weekWord(n) {
 // percent line.
 export function pathSentence(points, opts = {}) {
   const all = seriesOf(points);
-  if (all.length < 2) return "";
+  if (all.length < 2) return "A price path is missing.";
   const toDate = /^\d{4}-\d{2}-\d{2}$/.test(String(opts.toDate || "")) ? opts.toDate : all[all.length - 1][0];
   const fromDate = /^\d{4}-\d{2}-\d{2}$/.test(String(opts.fromDate || "")) ? opts.fromDate : all[0][0];
   const days = Number(opts.windowDays) || daySpan(fromDate, toDate);
@@ -176,10 +176,12 @@ export function pathSentence(points, opts = {}) {
     let lowDate = "";
     let high = null;
     let highDate = "";
+    let n = 0;
     for (let t = start; t <= stop; t += 86400000) {
       const date = new Date(t).toISOString().slice(0, 10);
       const value = byDate.get(date);
       if (!(value > 0)) continue;
+      n += 1;
       if (low == null || cents(value) < cents(low)) {
         low = value;
         lowDate = date;
@@ -193,9 +195,9 @@ export function pathSentence(points, opts = {}) {
       if (weeks.length) break;
       continue;
     }
-    weeks.push({ low, lowDate, high, highDate, stop: new Date(stop).toISOString().slice(0, 10) });
+    weeks.push({ low, lowDate, high, highDate, stop: new Date(stop).toISOString().slice(0, 10), n });
   }
-  if (!weeks.length) return "";
+  if (!weeks.length) return "A weekly path is missing.";
   const down = opts.direction === "down" || (opts.direction !== "up" && Number(opts.fromPrice) > Number(all.at(-1)?.[1]));
   let steps = 0;
   for (let i = 0; i < weeks.length - 1; i += 1) {
@@ -207,39 +209,88 @@ export function pathSentence(points, opts = {}) {
   const latest = weeks[0];
   const prior = weeks[1];
   const base = weeks[steps] || prior || latest;
-  const lastPrice = Number(all.at(-1)?.[1]);
-  const watch = watchClause(toDate, lastPrice);
-  const windowBit = days > 0 && opts.fromPrice > 0 && fromDate
-    ? `, and this ${days}-day window starts at ${priceWords(opts.fromPrice)} on ${monthDay(fromDate)}`
-    : "";
-  const seen = (text) => windowBit && text.includes(priceWords(opts.fromPrice)) && text.includes(monthDay(fromDate));
-  let sentence = "";
-  if (down && steps >= 2) {
-    const since = base?.lowDate ? `, from ${priceWords(base.low)} on ${monthDay(base.lowDate)}` : "";
-    const main = `This is the ${weekWord(steps)} week of lower lows${since}`;
-    sentence = `${main}${seen(main) ? "" : windowBit}${watch}.`;
-  } else if (!down && steps >= 2) {
-    const since = base?.highDate ? `, from ${priceWords(base.high)} on ${monthDay(base.highDate)}` : "";
-    const main = `This is the ${weekWord(steps)} week of higher highs${since}`;
-    sentence = `${main}${seen(main) ? "" : windowBit}${watch}.`;
-  } else if (down && steps === 1 && prior) {
-    const main = `This is the first down week, with a weekly low of ${priceWords(latest.low)} on ${monthDay(latest.lowDate)}, under ${priceWords(prior.low)} on ${monthDay(prior.lowDate)}`;
-    sentence = `${main}${seen(main) ? "" : windowBit}${watch}.`;
-  } else if (!down && steps === 1 && prior) {
-    const main = `This is the first up week, with a weekly high of ${priceWords(latest.high)} on ${monthDay(latest.highDate)}, above ${priceWords(prior.high)} on ${monthDay(prior.highDate)}`;
-    sentence = `${main}${seen(main) ? "" : windowBit}${watch}.`;
+  const lastPrice = Number(all.filter((p) => p[0] <= toDate).at(-1)?.[1]);
+  if (!(lastPrice > 0)) return "The latest price is missing.";
+  const onLast = down ? latest.lowDate === toDate : latest.highDate === toDate;
+  const extremeDate = down ? latest.lowDate : latest.highDate;
+  const gap = latest.n < 7 ? ", and a day in the week is missing" : "";
+  const cmp = compareSteps(weeks, down);
+  let open = "";
+  if (steps >= 2) {
+    const move = down ? "drop" : "climb";
+    const end = down ? "low" : "high";
+    const where = onLast ? `the last stored day is the ${end}` : `the ${end} landed on ${monthDay(extremeDate)}`;
+    if (cmp === "larger") open = `The latest ${move} is larger than the one before it, and ${where}`;
+    else if (cmp === "smaller") open = `The latest ${move} is smaller than the one before it, and ${where}`;
+    else if (cmp === "same") open = `The latest ${move} matches the one before it, and ${where}`;
+    else open = down
+      ? `Lower lows are still printing, and ${where}`
+      : `Higher highs are still printing, and ${where}`;
+  } else if (steps === 1 && prior) {
+    const where = onLast ? "the last stored day is that print" : `that print landed on ${monthDay(extremeDate)}`;
+    open = down
+      ? `A down week started, and ${where}`
+      : `An up week started, and ${where}`;
   } else if (prior) {
-    const way = down ? "did not make a lower low" : "did not make a higher high";
-    const nowBit = down
-      ? `with a weekly low of ${priceWords(latest.low)} on ${monthDay(latest.lowDate)}, after ${priceWords(prior.low)} on ${monthDay(prior.lowDate)}`
-      : `with a weekly high of ${priceWords(latest.high)} on ${monthDay(latest.highDate)}, after ${priceWords(prior.high)} on ${monthDay(prior.highDate)}`;
-    const main = `The last week ${way}, ${nowBit}`;
-    sentence = `${main}${seen(main) ? "" : windowBit}${watch}.`;
+    const where = onLast ? "the last stored day is the week extreme" : `the week extreme landed on ${monthDay(extremeDate)}`;
+    open = down
+      ? `The week did not undercut the week before, and ${where}`
+      : `The week did not clear the week before, and ${where}`;
   } else {
-    const main = `The last stored print is ${priceWords(latest.low)} on ${monthDay(latest.lowDate)}`;
-    sentence = `${main}${seen(main) ? "" : windowBit}${watch}.`;
+    open = `The last stored print is ${priceWords(latest.low)} on ${monthDay(latest.lowDate)}, and an earlier week is missing`;
   }
-  return sentence.replace(/\s+/g, " ").trim();
+  const parts = [open + gap];
+  if (steps >= 2 && base && base !== latest) {
+    const price = down ? base.low : base.high;
+    const date = down ? base.lowDate : base.highDate;
+    if (price && date) parts.push(`from ${priceWords(price)} on ${monthDay(date)}`);
+  } else if (prior && steps <= 1) {
+    const price = down ? prior.low : prior.high;
+    const date = down ? prior.lowDate : prior.highDate;
+    const rel = down ? "under" : "above";
+    if (steps === 0) parts.push(`after ${priceWords(price)} on ${monthDay(date)}`);
+    else parts.push(`${rel} ${priceWords(price)} on ${monthDay(date)}`);
+  }
+  if (opts.fromPrice > 0 && fromDate) {
+    const baseDate = steps >= 2 && base ? (down ? base.lowDate : base.highDate) : "";
+    let when = "";
+    if (baseDate && fromDate < baseDate) when = " before that move";
+    else if (baseDate && fromDate > baseDate) when = " after that move began";
+    else if (baseDate && fromDate === baseDate) when = " as that move began";
+    const price = priceWords(opts.fromPrice);
+    const date = monthDay(fromDate);
+    parts.push(`and this ${days}-day window opened at ${price} on ${date}${when}`);
+  } else if (days > 0) {
+    parts.push("and the window start is missing");
+  }
+  const watch = watchClause(toDate, lastPrice).replace(/^, /, "");
+  parts.push(watch || "and the next check date is missing");
+  return dedupeRepeats(parts.filter(Boolean).join(", ") + ".").replace(/\s+/g, " ").trim();
+}
+
+function compareSteps(weeks, down) {
+  if (!weeks[1] || !weeks[2]) return "missing";
+  const lastStep = down ? cents(weeks[1].low) - cents(weeks[0].low) : cents(weeks[0].high) - cents(weeks[1].high);
+  const prevStep = down ? cents(weeks[2].low) - cents(weeks[1].low) : cents(weeks[1].high) - cents(weeks[2].high);
+  if (lastStep > prevStep) return "larger";
+  if (lastStep < prevStep) return "smaller";
+  return "same";
+}
+
+function dedupeRepeats(sentence) {
+  const seenPrice = new Set();
+  const seenDate = new Set();
+  let out = sentence.replace(/\$[0-9,]+(?:\.\d+)?/g, (token) => {
+    if (seenPrice.has(token)) return "that price";
+    seenPrice.add(token);
+    return token;
+  });
+  out = out.replace(/\b(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2}\b/g, (token) => {
+    if (seenDate.has(token)) return "that day";
+    seenDate.add(token);
+    return token;
+  });
+  return out;
 }
 
 function watchClause(toDate, price) {

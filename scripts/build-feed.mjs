@@ -9,15 +9,19 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "research/assets/public");
 const read = async (rel) => JSON.parse(await readFile(join(ROOT, rel), "utf8"));
 
+let seriesCap = "";
 function addPoint(map, pid, date, market) {
   const id = Number(pid);
   const v = Number(market);
-  if (!id || !/^\d{4}-\d{2}-\d{2}$/.test(String(date || "")) || !(v > 0)) return;
+  const day = String(date || "");
+  if (!id || !/^\d{4}-\d{2}-\d{2}$/.test(day) || !(v > 0)) return;
+  if (seriesCap && day > seriesCap) return;
   if (!map.has(id)) map.set(id, new Map());
-  map.get(id).set(String(date), Math.round(v * 100) / 100);
+  map.get(id).set(day, Math.round(v * 100) / 100);
 }
 
 const catalog = await read("data/catalog/tcgcsv-latest.json");
+seriesCap = String(catalog.asOf || "").slice(0, 10);
 const series = new Map();
 for (const file of (await readdir(join(ROOT, "data/history/market-backfill"))).sort()) {
   if (!file.endsWith(".json")) continue;

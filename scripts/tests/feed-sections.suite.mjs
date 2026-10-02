@@ -45,9 +45,16 @@ export async function run() {
   const dug = pathSentence(down, { direction: "down", fromDate: "2026-09-01", toDate: "2026-09-28", fromPrice: 10, windowDays: 30 });
   const flat = down.map((p, i) => [p[0], i < 21 ? 8 : p[1]]);
   const first = pathSentence(flat, { direction: "down", fromDate: "2026-09-01", toDate: "2026-09-28", fromPrice: 8, windowDays: 30 });
-  t("a falling series names the week of lower lows", /week of lower lows/.test(dug) && !/not the first down week/.test(dug) && !/\. [A-Z]/.test(dug) && dug.endsWith(".") && !BANNED.test(dug));
-  t("a new drop is the first down week", /first down week/.test(first) && !/not the first down week/.test(first));
-  t("two paths are not the same sentence", dug !== first);
+  const shape = (text) => String(text).replace(/\$[0-9,.]+/g, "$").replace(/\b(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2}\b/g, "DATE").replace(/\b\d+(?:\.\d+)?\b/g, "n");
+  const repeats = (text) => {
+    const prices = text.match(/\$[0-9,.]+/g) || [];
+    const dates = text.match(/\b(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2}\b/g) || [];
+    return new Set(prices).size !== prices.length || new Set(dates).size !== dates.length;
+  };
+  t("a falling series is one sentence and does not restate a percent", !/not the first/.test(dug) && !/%/.test(dug) && !/\. [A-Z]/.test(dug) && dug.endsWith(".") && /check on /.test(dug) && !repeats(dug) && !BANNED.test(dug));
+  t("a new drop does not use the old week line", !/not the first down week/.test(first) && !/first down week/.test(first) && !/week of lower lows/.test(first) && first.endsWith(".") && !repeats(first));
+  t("two paths do not share a sentence shape", shape(dug) !== shape(first));
+  t("a missing series says so", pathSentence([], {}) === "A price path is missing." && pathSentence([["2026-09-27", 4]], {}) === "A price path is missing.");
   return fail;
 }
 
