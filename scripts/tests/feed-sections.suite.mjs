@@ -1,5 +1,5 @@
 import { applyImageGaps, applyShelf, assignSections, selectLead, sentenceShape } from "../lib/feed-catalogue.mjs";
-import { BANNED, FILLER_BAN, directionAgrees, leadFrameLines, pathSentence, phrasePeak, separateHalfCopies, statesBothMoves } from "../lib/public-bundle.mjs";
+import { BAD_DATE, BANNED, FILLER_BAN, directionAgrees, leadFrameLines, pathSentence, phrasePeak, separateHalfCopies, statesBothMoves } from "../lib/public-bundle.mjs";
 
 export async function run() {
   let fail = 0;
@@ -195,8 +195,9 @@ export async function run() {
   const proseLead = selectLead(prose, 24).lead;
   t("generated lines match their two prices", proseLead.length >= 1 && proseLead.length <= 24 && proseLead.every((row) => directionAgrees(row.path) && /latest price/.test(row.path) && !/\bstored\b|last print/i.test(row.path) && !FILLER_BAN.test(row.path) && row.secondFact));
   t("generated lines keep the phrase cap", phrasePeak(proseLead.map((row) => sentenceShape(row.path, row))).peak <= 2);
-  t("generated lines do not share a stripped shape", new Set(proseLead.map((row) => sentenceShape(row.path, row).replace(/\b(rose|fell|eased|above)\b/gi, "DIR"))).size === proseLead.length);
+  t("generated lines do not share a stripped shape", new Set(proseLead.map((row) => sentenceShape(row.path, row).replace(/,?\s*while the n-day window\b.*/i, "").replace(/\b(rose|fell|eased|above|higher|lower|highs|lows|high|low)\b/gi, " "))).size === proseLead.length);
   t("a plain climb is not padded out to 24", proseLead.length < 24);
+  t("a date is not at Sep or dated Sep on Sep", [dug, first, again, named, soldLine, etbLine, ...pool, ...proseLead.map((row) => row.path)].every((line) => !BAD_DATE.test(line)));
 
   return fail;
 }

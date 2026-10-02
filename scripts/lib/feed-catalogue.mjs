@@ -2,7 +2,7 @@
 import { appendFile, mkdir, readFile, readdir, unlink, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import {
-  BANNED, chartSeries, composeLead, directionAgrees, endStreak, feedWindow, FILLER_BAN, fourGrams, isThinSeries, money, pathAlt, pathSentence, pickLead, pretty, readCopy, separateHalfCopies, slug, windowBounds,
+  BANNED, BAD_DATE, chartSeries, composeLead, directionAgrees, endStreak, feedWindow, FILLER_BAN, fourGrams, isThinSeries, money, pathAlt, pathSentence, pickLead, pretty, readCopy, separateHalfCopies, slug, statesBothMoves, windowBounds,
 } from "./public-bundle.mjs";
 import { appendLearningLog, readCallLog } from "./learning-log.mjs";
 
@@ -147,19 +147,39 @@ export function selectLead(cards, limit = 24) {
     return n;
   }
   function leadShape(text, card) {
-    return sentenceShape(text, card).replace(/\bthat price\b/gi, "$").replace(/\bthat day\b/gi, "DATE").replace(/\b(rose|fell|eased|above)\b/gi, "DIR");
+    return sentenceShape(text, card)
+      .replace(/,?\s*while the n-day window\b.*/i, "")
+      .replace(/\bthat price\b/gi, "$")
+      .replace(/\bthat day\b/gi, "DATE")
+      .replace(/\b(rose|fell|eased|above|higher|lower|highs|lows|high|low)\b/gi, " ")
+      .replace(/\s+/g, " ")
+      .replace(/[.]+$/g, "")
+      .trim();
   }
-  function gramsOk(card, text) {
+  function gramBag(text, card) {
     const local = new Map();
     for (const gram of fourGrams(sentenceShape(text, card))) local.set(gram, (local.get(gram) || 0) + 1);
-    for (const [gram, n] of local) if ((grams.get(gram) || 0) + n > 2) return false;
+    return local;
+  }
+  function shapeIndex(text, card) {
+    const key = leadShape(text, card);
+    if (!key) return -1;
+    return chosen.findIndex((row) => leadShape(row.path, row) === key);
+  }
+  function gramsOk(card, text, ignore) {
+    const local = gramBag(text, card);
+    const drop = ignore ? gramBag(ignore.path, ignore) : new Map();
+    for (const [gram, n] of local) {
+      if ((grams.get(gram) || 0) - (drop.get(gram) || 0) + n > 2) return false;
+    }
     return true;
   }
   function usable(card, text) {
-    if (!text || BANNED.test(text)) return false;
-    const key = leadShape(text, card);
-    if (!key || shapes.has(key)) return false;
-    return gramsOk(card, text);
+    if (!text || BANNED.test(text) || BAD_DATE.test(text)) return false;
+    const index = shapeIndex(text, card);
+    const replace = index >= 0 && statesBothMoves(text) && !statesBothMoves(chosen[index].path);
+    if (index >= 0 && !replace) return false;
+    return gramsOk(card, text, replace ? chosen[index] : null);
   }
   function resolve(card) {
     const failed = String(card.path || "").trim();
@@ -183,14 +203,40 @@ export function selectLead(cards, limit = 24) {
     card.path = made;
     return made;
   }
-  function remember(card) {
+  function addCounts(card, index) {
     const w = Number(card.windowDays);
     windows[w] = (windows[w] || 0) + 1;
     shapes.add(leadShape(card.path, card));
     for (const gram of fourGrams(sentenceShape(card.path, card))) grams.set(gram, (grams.get(gram) || 0) + 1);
-    if (chosen.length < 10) sets.set(card.set || "", (sets.get(card.set || "") || 0) + 1);
+    if (index < 10) sets.set(card.set || "", (sets.get(card.set || "") || 0) + 1);
     if (card.kind === "sealed") sealedKept += 1;
+  }
+  function dropCounts(card, index) {
+    const w = Number(card.windowDays);
+    windows[w] = Math.max(0, (windows[w] || 0) - 1);
+    for (const gram of fourGrams(sentenceShape(card.path, card))) {
+      const next = (grams.get(gram) || 0) - 1;
+      if (next > 0) grams.set(gram, next);
+      else grams.delete(gram);
+    }
+    if (index < 10) sets.set(card.set || "", Math.max(0, (sets.get(card.set || "") || 0) - 1));
+    if (card.kind === "sealed") sealedKept = Math.max(0, sealedKept - 1);
+  }
+  function remember(card) {
+    addCounts(card, chosen.length);
     chosen.push(card);
+  }
+  function place(card) {
+    const index = shapeIndex(card.path, card);
+    if (index >= 0) {
+      if (!(statesBothMoves(card.path) && !statesBothMoves(chosen[index].path))) return false;
+      dropCounts(chosen[index], index);
+      chosen[index] = card;
+      addCounts(card, index);
+      return true;
+    }
+    remember(card);
+    return true;
   }
   function take(kind) {
     const queue = queues[kind];
@@ -207,7 +253,7 @@ export function selectLead(cards, limit = 24) {
           const [card] = queue.splice(i, 1);
           const text = resolve(card);
           if (!text) continue;
-          remember(card);
+          if (!place(card)) continue;
           return true;
         }
       }
@@ -232,7 +278,7 @@ export function selectLead(cards, limit = 24) {
       }
       const text = resolve(card);
       if (!text) continue;
-      remember(card);
+      if (!place(card)) continue;
       return true;
     }
     return false;
@@ -254,7 +300,7 @@ export function selectLead(cards, limit = 24) {
         const [card] = queue.splice(i, 1);
         const text = resolve(card);
         if (!text) continue;
-        remember(card);
+        if (!place(card)) continue;
         return true;
       }
     }

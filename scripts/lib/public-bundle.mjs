@@ -200,8 +200,8 @@ function buildSecondFacts(facts, opts) {
   if (facts.roundLow && pairOk(facts, facts.lo[1], facts.lo[0])) {
     out.push({ id: "round-drop", pair: { p: facts.lo[1], d: facts.lo[0] } });
   }
-  if (facts.flatDays >= 5 && pairOk(facts, facts.flatPrice, facts.flatEnd)) {
-    out.push({ id: "flat", n: facts.flatDays, pair: { p: facts.flatPrice, d: facts.flatEnd } });
+  if (facts.tailFlat && pairOk(facts, facts.tailFlat.price, facts.tailFlat.end)) {
+    out.push({ id: "flat", n: facts.tailFlat.n, pair: { p: facts.tailFlat.price, d: facts.tailFlat.end } });
   }
   const sold = opts.sold;
   if (sold && Number.isInteger(sold.count) && sold.count >= 0 && /^\d{4}-\d{2}-\d{2}$/.test(String(sold.asOf || "")) && prev && pairOk(facts, prev[1], prev[0])) {
@@ -251,6 +251,8 @@ function pairIsStep(fact, facts) {
   return !!(prev && fact.pair && fact.pair.d === prev[0] && cents(fact.pair.p) === cents(prev[1]));
 }
 
+export const BAD_DATE = /at Sep|dated Sep \d+ on Sep|of Sep \d+ on Sep/;
+
 function renderFactLine(fact, facts, opts) {
   const name = opts.name ? String(opts.name).trim() : "This ask";
   const p1 = priceWords(facts.lastPrice);
@@ -264,66 +266,68 @@ function renderFactLine(fact, facts, opts) {
   let claim = "";
   switch (fact.id) {
     case "gap": {
-      const days = fact.gap.map(monthDay);
+      const days = fact.gap.map((day) => `on ${monthDay(day)}`);
       const listed = days.length < 2 ? days.join(", ") : `${days.slice(0, -1).join(", ")} and ${days.at(-1)}`;
-      claim = `Missing weekday dates for ${name} are ${listed}`;
+      claim = `Weekday prints for ${name} are missing ${listed}`;
       break;
     }
     case "round-rally":
-      claim = `The rally reaching ${p2} dated ${d2} was given back on ${name}`;
+      claim = `${name} gave back a rally that reached ${p2} on ${d2}`;
       break;
     case "round-drop":
-      claim = `The drop reaching ${p2} at ${d2} was recovered on ${name}`;
+      claim = `${name} recovered a drop that reached ${p2} on ${d2}`;
       break;
     case "flat":
       claim = `${name} held one price across ${fact.n} prints through ${d2} at ${p2}`;
       break;
     case "sold":
-      claim = `TCGplayer counted ${fact.n} copies sold over 3 months on ${monthDay(fact.asOf)} for ${name}, not eBay and not a 7-day count`;
+      claim = `${name} has ${fact.n} copies sold on TCGplayer over 3 months on ${monthDay(fact.asOf)}, not eBay and not a 7-day count`;
       break;
     case "step-smaller":
-      claim = `The last step is smaller than the step before it for ${name}`;
+      claim = `${name} moved less on the latest step than on the step before it`;
       break;
     case "step-larger":
-      claim = `A bigger last step than the one ahead of it shows on ${name}`;
+      claim = `${name} took a bigger last step than the earlier one`;
       break;
     case "low-now":
-      claim = `A fresh lower low printed for ${name}`;
+      claim = `${name} printed a fresh lower low`;
       break;
     case "low-early":
-      claim = `${name} made a lower low of ${p2} dated ${d2}`;
+      claim = `${name} made a lower low of ${p2} on ${d2}`;
       break;
     case "high-now":
-      claim = `A fresh higher high printed for ${name}`;
+      claim = `${name} printed a fresh higher high`;
       break;
     case "high-early":
-      claim = `${name} made a higher high of ${p2} at ${d2}`;
+      claim = `${name} made a higher high of ${p2} on ${d2}`;
       break;
     default:
       return "";
   }
-  let tail = "";
+  let move = "";
   if (split && prev) {
-    const stepP = priceWords(pairIsStep(fact, facts) ? fact.pair.p : prev[1]);
-    const stepD = monthDay(pairIsStep(fact, facts) ? fact.pair.d : prev[0]);
-    const stepRel = pairIsStep(fact, facts) ? rel : split.stepRel;
-    tail = `latest price stands at ${p1} on ${d1} ${stepRel} from ${stepP} since ${stepD}${split.text}`;
-  } else if (p2 && d2) {
-    if (fact.id === "flat") tail = `latest price ${p1} at ${d1} ${rel} against that flat price`;
-    else if (fact.id === "sold") tail = `latest price ${p1} by ${d1} ${rel} versus ${p2} on ${d2}`;
-    else if (fact.id === "step-larger") tail = `latest price ${p1} which ${rel} from ${p2} at ${d2} on ${d1}`;
-    else if (fact.id === "step-smaller") tail = `latest price reads ${p1} and ${rel} from ${p2} dated ${d2} on ${d1}`;
-    else if (fact.id === "low-early") tail = `the ${d1} latest price is ${p1}, ${rel} from that extreme`;
-    else if (fact.id === "high-early") tail = `on ${d1} latest price is ${p1}, ${rel} from that extreme`;
-    else if (fact.id === "low-now") tail = `latest price fell to ${p1} from ${p2} of ${d2} on ${d1}`;
-    else if (fact.id === "high-now") tail = `latest price rose to ${p1} from ${p2} for ${d2} on ${d1}`;
-    else if (fact.id === "round-rally") tail = `latest price back at ${p1} on ${d1} fell from that extreme`;
-    else if (fact.id === "round-drop") tail = `latest price back near ${p1} on ${d1} rose from that extreme`;
-    else if (fact.id === "gap") tail = `latest price shows ${p1} ${rel} from ${p2} by ${d2} on ${d1}`;
-    else tail = `latest price ${p1} on ${d1} ${rel} from ${p2} on ${d2}`;
+    const stepP = priceWords(prev[1]);
+    const stepD = monthDay(prev[0]);
+    move = `and the latest price ${split.stepRel} to ${p1} on ${d1} after ${stepP} on ${stepD}${split.text}`;
+  } else if (fact.id === "flat") {
+    move = `then the latest price ${rel} and finished at ${p1} on ${d1}`;
+  } else if (fact.id === "low-early" || fact.id === "high-early") {
+    move = `while the latest price ${rel}, and ${d1} finished at ${p1}`;
+  } else if (fact.id === "round-rally" || fact.id === "round-drop") {
+    move = `as the latest price finally ${rel} and ${d1} settled at ${p1}`;
+  } else if (fact.id === "gap") {
+    move = `so the latest price also ${rel}, with ${d1} showing ${p1} and ${d2} having shown ${p2}`;
+  } else if (fact.id === "sold") {
+    move = `and the latest price ${rel} to ${p1} on ${d1} after ${p2} on ${d2}`;
+  } else if (fact.id === "step-smaller") {
+    move = `versus ${p2} on ${d2}, and its latest price still ${rel} on ${d1} to a price of ${p1}`;
+  } else if (fact.id === "step-larger") {
+    move = `off ${p2} printed on ${d2}, but the latest price then ${rel} on ${d1} to a close of ${p1}`;
+  } else if (fact.id === "low-now" || fact.id === "high-now") {
+    move = `after the mark of ${p2} on ${d2}, with the latest price, which ${rel}, landing on ${d1} at ${p1}`;
   }
-  if (!tail) return "";
-  let sentence = dedupeRepeats(`${claim}, ${tail}.`).replace(/\s+/g, " ").trim();
+  if (!move) return "";
+  let sentence = dedupeRepeats(`${claim}, ${move}.`).replace(/\s+/g, " ").trim();
   if (!sentence.endsWith(".")) sentence += ".";
   return sentence;
 }
@@ -341,10 +345,11 @@ function splitMovesAgree(raw) {
   const right = text.slice(cut);
   const anchor = left.toLowerCase().indexOf("latest price");
   if (anchor < 0) return false;
+  const moved = left.slice(anchor).match(/\b(?:rose|fell|eased)\s+from\s+\$([0-9,.]+)\s+on\s+[A-Za-z]+\s+\d{1,2}\s+to\s+\$([0-9,.]+)/i);
   const leftPrices = dollarsAfter(left.slice(anchor));
-  if (leftPrices.length < 2) return false;
-  const latest = leftPrices[0];
-  const stepOther = leftPrices[1];
+  if (!moved && leftPrices.length < 2) return false;
+  const latest = moved ? Number(moved[2].replace(/,/g, "")) : leftPrices[0];
+  const stepOther = moved ? Number(moved[1].replace(/,/g, "")) : leftPrices[1];
   const leftLower = left.toLowerCase();
   const stepUp = /\brose\b|\babove\b|\bup\b/.test(leftLower);
   const stepDown = /\bfell\b|\beased\b|\bdown\b/.test(leftLower);
@@ -378,7 +383,7 @@ export function statesBothMoves(text) {
 
 function usableLead(sentence) {
   if (!sentence || !/latest price/.test(sentence)) return false;
-  if (BANNED.test(sentence) || FILLER_BAN.test(sentence) || /\bstored\b|last print/i.test(sentence)) return false;
+  if (BANNED.test(sentence) || FILLER_BAN.test(sentence) || BAD_DATE.test(sentence) || /\bsince Sep\b/.test(sentence) || /\bstored\b|last print/i.test(sentence)) return false;
   if (/%/.test(sentence) && !splitMovesAgree(sentence)) return false;
   if (/\. [A-Z]/.test(sentence)) return false;
   return directionAgrees(sentence);
@@ -392,6 +397,15 @@ export function directionAgrees(text) {
   if (up && down) return splitMovesAgree(raw);
   if (!up && !down) return true;
   const anchor = lower.indexOf("latest price");
+  if (anchor < 0) return false;
+  const moved = raw.slice(anchor).match(/\b(?:rose|fell|eased)\s+from\s+\$([0-9,.]+)\s+on\s+[A-Za-z]+\s+\d{1,2}\s+to\s+\$([0-9,.]+)/i);
+  if (moved) {
+    const from = Number(moved[1].replace(/,/g, ""));
+    const to = Number(moved[2].replace(/,/g, ""));
+    if (!(from > 0) || !(to > 0) || from === to) return false;
+    if (up) return to > from;
+    return to < from;
+  }
   if (anchor < 0) return false;
   const re = /\$([0-9,]+(?:\.\d+)?)/g;
   let latest = null;
@@ -549,6 +563,21 @@ function halfMode(pts) {
   return none;
 }
 
+
+function tailFlat(scoped) {
+  if (!scoped || scoped.length < 6) return null;
+  const prev = scoped[scoped.length - 2];
+  const last = scoped[scoped.length - 1];
+  if (cents(prev[1]) === cents(last[1])) return null;
+  let n = 1;
+  for (let i = scoped.length - 2; i > 0; i -= 1) {
+    if (cents(scoped[i - 1][1]) !== cents(prev[1])) break;
+    if (daySpan(scoped[i - 1][0], scoped[i][0]) > 3) break;
+    n += 1;
+  }
+  return n >= 5 ? { n, price: prev[1], end: prev[0] } : null;
+}
+
 function pathFacts(scoped, opts) {
   const last = scoped[scoped.length - 1];
   const prev = scoped[scoped.length - 2];
@@ -609,6 +638,7 @@ function pathFacts(scoped, opts) {
     flatDays: bestFlat,
     flatPrice: bestFlatPrice,
     flatEnd: bestFlatEnd,
+    tailFlat: tailFlat(scoped),
     hi,
     lo,
     roundHigh,
