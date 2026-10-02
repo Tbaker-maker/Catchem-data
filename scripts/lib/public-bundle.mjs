@@ -157,7 +157,7 @@ function weekWord(n) {
   return `${n}${suffix}`;
 }
 
-// Weeks walk backward from the last stored day. A lower low is a week whose
+// Weeks walk backward from the latest market day. A lower low is a week whose
 // low is under the week before it. The sentence names that path, not a shared
 // percent line.
 export function pathSentence(points, opts = {}) {
@@ -213,31 +213,32 @@ export function pathSentence(points, opts = {}) {
   if (!(lastPrice > 0)) return "The latest price is missing.";
   const onLast = down ? latest.lowDate === toDate : latest.highDate === toDate;
   const extremeDate = down ? latest.lowDate : latest.highDate;
+  const extremePrice = down ? latest.low : latest.high;
   const gap = latest.n < 7 ? ", and a day in the week is missing" : "";
   const cmp = compareSteps(weeks, down);
   let open = "";
   if (steps >= 2) {
     const move = down ? "drop" : "climb";
     const end = down ? "low" : "high";
-    const where = onLast ? `the last stored day is the ${end}` : `the ${end} landed on ${monthDay(extremeDate)}`;
+    const where = onLast ? `the latest price is ${priceWords(extremePrice)} on ${monthDay(extremeDate)}` : `the ${end} of ${priceWords(extremePrice)} landed on ${monthDay(extremeDate)}`;
     if (cmp === "larger") open = `The latest ${move} is larger than the one before it, and ${where}`;
     else if (cmp === "smaller") open = `The latest ${move} is smaller than the one before it, and ${where}`;
     else if (cmp === "same") open = `The latest ${move} matches the one before it, and ${where}`;
     else open = down
-      ? `Lower lows are still printing, and ${where}`
-      : `Higher highs are still printing, and ${where}`;
+      ? `Lower lows are still there, and ${where}`
+      : `Higher highs are still there, and ${where}`;
   } else if (steps === 1 && prior) {
-    const where = onLast ? "the last stored day is that print" : `that print landed on ${monthDay(extremeDate)}`;
+    const where = onLast ? `the latest price is ${priceWords(extremePrice)} on ${monthDay(extremeDate)}` : `a ${down ? "low" : "high"} of ${priceWords(extremePrice)} landed on ${monthDay(extremeDate)}`;
     open = down
       ? `A down week started, and ${where}`
       : `An up week started, and ${where}`;
   } else if (prior) {
-    const where = onLast ? "the last stored day is the week extreme" : `the week extreme landed on ${monthDay(extremeDate)}`;
+    const where = onLast ? `the latest price is ${priceWords(extremePrice)} on ${monthDay(extremeDate)}` : `the week extreme of ${priceWords(extremePrice)} landed on ${monthDay(extremeDate)}`;
     open = down
       ? `The week did not undercut the week before, and ${where}`
       : `The week did not clear the week before, and ${where}`;
   } else {
-    open = `The last stored print is ${priceWords(latest.low)} on ${monthDay(latest.lowDate)}, and an earlier week is missing`;
+    open = `The latest price is ${priceWords(lastPrice)} on ${monthDay(toDate)}, and an earlier week is missing`;
   }
   const parts = [open + gap];
   if (steps >= 2 && base && base !== latest) {
@@ -263,9 +264,34 @@ export function pathSentence(points, opts = {}) {
   } else if (days > 0) {
     parts.push("and the window start is missing");
   }
-  const watch = watchClause(toDate, lastPrice).replace(/^, /, "");
-  parts.push(watch || "and the next check date is missing");
-  return dedupeRepeats(parts.filter(Boolean).join(", ") + ".").replace(/\s+/g, " ").trim();
+  const lastPoint = all.filter((p) => p[0] <= toDate).at(-1);
+  const priorPoint = all.filter((p) => p[0] <= toDate).at(-2);
+  if (lastPoint && priorPoint && lastPoint[0] !== extremeDate && cents(lastPoint[1]) !== cents(priorPoint[1])) {
+    const step = cents(lastPoint[1]) < cents(priorPoint[1]) ? "down" : "up";
+    parts.push(`and the latest price is ${priceWords(lastPoint[1])} on ${monthDay(lastPoint[0])}`);
+  }
+  let sentence = dedupeRepeats(parts.filter(Boolean).join(", ") + ".").replace(/\s+/g, " ").trim();
+  if (lastPrice > 0) sentence = sentence.replace("the latest price is that price", `the latest price is ${priceWords(lastPrice)}`);
+  if (lastPrice > 0 && toDate && !sentence.includes("the latest price is")) {
+    sentence = sentence.replace(/\.$/, `, and the latest price is ${priceWords(lastPrice)} on ${monthDay(toDate)}.`);
+  }
+  return sentence;
+}
+
+// A second line from the same points, used only when the first shape is already taken.
+// It names the latest price and the day before it. It does not invent a sold count.
+export function pathAlt(points, opts = {}) {
+  const all = seriesOf(points).filter((p) => !opts.toDate || p[0] <= opts.toDate);
+  if (all.length < 2) return "";
+  const last = all[all.length - 1];
+  const prev = all[all.length - 2];
+  if (cents(last[1]) === cents(prev[1])) return "";
+  const bits = [`The latest price is ${priceWords(last[1])} on ${monthDay(last[0])}, from ${priceWords(prev[1])} on ${monthDay(prev[0])}`];
+  if (Number(opts.fromPrice) > 0 && opts.fromDate) {
+    const span = Number(opts.windowDays) || daySpan(opts.fromDate, last[0]);
+    bits.push(`and this ${span}-day window opened at ${priceWords(opts.fromPrice)} on ${monthDay(opts.fromDate)}`);
+  }
+  return dedupeRepeats(bits.join(", ") + ".").replace(/\s+/g, " ").trim();
 }
 
 function compareSteps(weeks, down) {

@@ -9,19 +9,18 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "research/assets/public");
 const read = async (rel) => JSON.parse(await readFile(join(ROOT, rel), "utf8"));
 
-let seriesCap = "";
 function addPoint(map, pid, date, market) {
   const id = Number(pid);
   const v = Number(market);
   const day = String(date || "");
   if (!id || !/^\d{4}-\d{2}-\d{2}$/.test(day) || !(v > 0)) return;
-  if (seriesCap && day > seriesCap) return;
   if (!map.has(id)) map.set(id, new Map());
   map.get(id).set(day, Math.round(v * 100) / 100);
 }
 
 const catalog = await read("data/catalog/tcgcsv-latest.json");
-seriesCap = String(catalog.asOf || "").slice(0, 10);
+// A later daily file is not a new catalog day. 2026-09-29 prices 1,695 products,
+// not the catalog. addPoint keeps a later print only for a product that has it.
 const series = new Map();
 for (const file of (await readdir(join(ROOT, "data/history/market-backfill"))).sort()) {
   if (!file.endsWith(".json")) continue;
@@ -40,11 +39,10 @@ try {
     }
   }
 } catch { /* optional */ }
-let dailyAsOf = "";
 for (const file of (await readdir(join(ROOT, "data/history/tcgcsv-daily"))).sort()) {
   if (!file.endsWith(".json")) continue;
   const day = file.slice(0, 10);
-  if (/^\d{4}-\d{2}-\d{2}$/.test(day) && day > dailyAsOf) dailyAsOf = day;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) continue;
   const doc = JSON.parse(await readFile(join(ROOT, "data/history/tcgcsv-daily", file), "utf8"));
   for (const row of doc.prices || []) addPoint(series, row.id, day, row.market);
 }
@@ -112,7 +110,8 @@ const result = await publishFeed({
   items,
   prior,
   prices,
-  asOf: catalog.asOf || dailyAsOf || "",
+  asOf: catalog.asOf || "",
+  rewriteDir: join(ROOT, "data/learning/path-rewrites"),
   updatedAt,
   outDir: OUT,
   logFile: logFile || null,

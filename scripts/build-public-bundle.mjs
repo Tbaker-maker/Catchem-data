@@ -767,6 +767,7 @@ const feedResult = await publishFeed({
   logFile: logFile || null,
   shelf: await readShelfFile(process.env.SHELF_LOG || join(ROOT, "data/learning/shelf.jsonl")),
   gapPids: [...GAP_IMAGE],
+  rewriteDir: join(ROOT, "data/learning/path-rewrites"),
 });
 console.log(`feed catalogue ${feedResult.count} logged +${feedResult.logged.added}`);
 

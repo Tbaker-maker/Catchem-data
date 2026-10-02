@@ -105,6 +105,13 @@ export async function run() {
     const oldWhy = /last 30 days ran|low of the last 30|high of the last 30|we store|at least/i;
     const bad = reads.reads.filter((row) => !money(row.price) || !row.headline || !row.why || BANNED.test(row.headline) || BANNED.test(row.why || "") || row.price === 0 || !/\b(over|in) (7|30|90) days\b/.test(row.headline) || !/\([^)]+\)/.test(row.headline) || oldWhy.test(row.why) || oldWhy.test(row.headline) || /\b(heating up|cooling off|last print|Top card in|checked again)\b/i.test(row.headline));
     t("every lead read has a price, a window, and a clean headline", bad.length === 0 && reads.reads.length === 24);
+    const shape = (text) => String(text).replace(/\$[0-9,.]+/g, "$").replace(/\b(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2}\b/g, "DATE").replace(/\b\d+(?:\.\d+)?\b/g, "n");
+    const shapes = reads.reads.map((row) => shape(row.path || ""));
+    t("the catalogue day is not the partial 2026-09-29 file", reads.asOf !== "2026-09-29" && meta.asOf !== "2026-09-29");
+    t("lead paths do not share a stripped shape", new Set(shapes).size === reads.reads.length && reads.reads.every((row) => row.path));
+    t("the lead is not only small 7-day moves", reads.reads.some((row) => Number(row.windowDays) !== 7 || Math.abs(Number(row.changePct)) >= 8));
+    t("one product is one lead card", new Set(reads.reads.map((row) => row.sku)).size === reads.reads.length);
+    t("lead lines do not say stored or last print", reads.reads.every((row) => !/\bstored\b|last print/i.test(String(row.path || "") + String(row.headline || "") + String(row.why || ""))));
     t("a read is one kind", reads.reads.every((row) => row.kind === "single" || row.kind === "sealed"));
     const headlines = Object.values(catalogue.cards).map((row) => row.headline);
     t("no duplicate headline", headlines.length === new Set(headlines).size);
