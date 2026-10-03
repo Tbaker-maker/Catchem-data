@@ -23,14 +23,17 @@
       --font: "Segoe UI", system-ui, -apple-system, sans-serif;
     }
     * { box-sizing: border-box; }
-    html { overflow-x: hidden; overflow-y: auto; min-height: 100dvh; color-scheme: dark; }
+    html { height: 100%; overflow: hidden; color-scheme: dark; }
     html, body {
       margin: 0;
       background: var(--paper);
       color: var(--ink);
       font: 16px/1.45 var(--font);
-      min-height: 100dvh;
+      height: 100%;
+      min-height: 0;
       -webkit-text-size-adjust: 100%;
+    }
+    body {
       overflow-x: hidden;
       overflow-y: auto;
       overscroll-behavior-y: auto;
@@ -121,10 +124,10 @@
     }
     .card img {
       width: 100%; height: auto; display: block;
-      aspect-ratio: 63 / 88; object-fit: contain; object-position: center;
-      background: var(--sheet);
+      aspect-ratio: 63 / 88; object-fit: cover; object-position: center;
+      background: transparent;
     }
-    .card img.still { aspect-ratio: 1 / 1; background: var(--paper); }
+    .card img.still { aspect-ratio: 1 / 1; background: var(--paper); object-fit: contain; }
     .card img.print { aspect-ratio: 2 / 3; background: var(--sheet); object-fit: contain; }
     .card img.pixel { image-rendering: pixelated; image-rendering: crisp-edges; padding: 26%; background: #121810; }
     .card .meta { padding: 8px 4px 2px; font-size: 12px; color: var(--mute); line-height: 1.35; }
@@ -157,7 +160,7 @@
       display: flex; flex-direction: column; align-items: center; gap: 6px;
     }
     .slot img {
-      width: 108px; height: auto; aspect-ratio: 63 / 88; object-fit: contain;
+      width: 108px; height: auto; aspect-ratio: 63 / 88; object-fit: cover;
       border-radius: 10px; background: #0e0e10; display: block;
     }
     .slot .pos {
@@ -1221,14 +1224,73 @@
         return false;
       }
     }
-    function killPrintedBack(img) {
-      if (!img || img.getAttribute("data-face") === "1") return;
-      if (!isPrintedBack(img)) {
-        img.setAttribute("data-face", "1");
+    function cropCardEdge(img) {
+      if (!img || img.getAttribute("data-crop") === "1") return;
+      var cls = " " + (img.className || "") + " ";
+      if (cls.indexOf(" pixel ") !== -1 || cls.indexOf(" still ") !== -1 || cls.indexOf(" print ") !== -1) return;
+      var nw = img.naturalWidth || 0;
+      var nh = img.naturalHeight || 0;
+      if (nw < 8 || nh < 8) {
+        img.setAttribute("data-crop", "1");
         return;
       }
-      var n = img.closest(".card") || img.closest(".slot");
-      if (n) n.style.display = "none";
+      img.setAttribute("data-crop", "1");
+      try {
+        var pw = 40;
+        var ph = Math.max(8, Math.round(pw * nh / nw));
+        var probe = document.createElement("canvas");
+        probe.width = pw;
+        probe.height = ph;
+        var g = probe.getContext("2d");
+        g.drawImage(img, 0, 0, pw, ph);
+        var data = g.getImageData(0, 0, pw, ph).data;
+        function studio(xx, yy) {
+          var i = (yy * pw + xx) * 4;
+          var r = data[i], gg = data[i + 1], b = data[i + 2], a = data[i + 3];
+          if (a < 20) return true;
+          if (Math.max(r, gg, b) - Math.min(r, gg, b) > 26) return false;
+          var L = (r + gg + b) / 3;
+          return L >= 234 || L <= 22;
+        }
+        function rowMatte(yy) {
+          var n = 0, xx;
+          for (xx = 0; xx < pw; xx++) if (studio(xx, yy)) n++;
+          return n / pw >= 0.9;
+        }
+        function colMatte(xx) {
+          var n = 0, yy;
+          for (yy = 0; yy < ph; yy++) if (studio(xx, yy)) n++;
+          return n / ph >= 0.9;
+        }
+        var top = 0, bot = 0, left = 0, right = 0;
+        var maxY = Math.floor(ph * 0.16);
+        var maxX = Math.floor(pw * 0.16);
+        while (top < maxY && rowMatte(top)) top++;
+        while (bot < maxY && rowMatte(ph - 1 - bot)) bot++;
+        while (left < maxX && colMatte(left)) left++;
+        while (right < maxX && colMatte(pw - 1 - right)) right++;
+        if (top + bot < 1 && left + right < 1) return;
+        var sx = Math.round(left / pw * nw);
+        var sy = Math.round(top / ph * nh);
+        var sw = Math.max(1, Math.round((pw - left - right) / pw * nw));
+        var sh = Math.max(1, Math.round((ph - top - bot) / ph * nh));
+        if (sw < nw * 0.64 || sh < nh * 0.64) return;
+        var maxW = 480;
+        var sc = sw > maxW ? maxW / sw : 1;
+        var cw = Math.max(1, Math.round(sw * sc));
+        var ch = Math.max(1, Math.round(sh * sc));
+        var out = document.createElement("canvas");
+        out.width = cw;
+        out.height = ch;
+        out.getContext("2d").drawImage(img, sx, sy, sw, sh, 0, 0, cw, ch);
+        var url = out.toDataURL("image/jpeg", 0.86);
+        if (url && url.indexOf("data:image") === 0) img.src = url;
+      } catch (e) {}
+    }
+    function killPrintedBack(img) {
+      if (!img || img.getAttribute("data-face") === "1") return;
+      img.setAttribute("data-face", "1");
+      cropCardEdge(img);
     }
     function resetPage() { page = 0; }
     var ALIAS = {
@@ -1996,11 +2058,7 @@
       if (isGoldStar(c)) return true;
       if (isIrSir(c)) return true;
       var r = (c.rarity || "").toLowerCase();
-      var set = (c.set || "").toLowerCase();
-      var n = c.name || "";
-      if (/promo/.test(r) || /promo/.test(set) || (c.tags || "").indexOf("promo") !== -1) return true;
       if (/secret|rainbow|gold|hyper rare|ultra rare|rare ultra|rare holo vmax|rare holo vstar|illustration|full art|alternate/.test(r)) return true;
-      if (/^(dark|light)\s/i.test(n)) return true;
       if ((c.rank || 0) >= 78) return true;
       if ((c.tags || "").indexOf("chase") !== -1) return true;
       return false;
@@ -2104,18 +2162,9 @@
       return 8;
     }
     function heatScore(c) {
-      if (isGoldStar(c)) return Math.max(Number(c && c.usd || 0), 8000);
       var usd = Number(c && c.usd || 0);
-      var l = rarityLane(c);
-      if (usd > 0) {
-        if (isBulk(c) && usd > 8) usd = 0;
-        else if ((l === "exs" || l === "ex" || !l) && usd > 80) usd = 0;
-        if (usd > 0) return usd;
-      }
-      var fake = { sir: 35, bwr: 40, ir: 10, alt: 80, crystal: 60, star: 70, shining: 50, prism: 18, amazing: 25, rainbow: 22, gold: 25, secret: 20, fa: 15, ur: 12, sur: 20, shiny: 8, holo: 8, vmax: 6, gx: 8, ex: 4, exs: 3, sar: 40, im: 50, ssr: 25, radiant: 12, ace: 8, lvx: 15, prime: 12, legend: 20, brk: 6 };
-      if (fake[l]) return fake[l];
-      if (isChase(c)) return Math.max(4, (c.rank || 40) / 8);
-      return 0.05;
+      if (usd > 0) return usd;
+      return 0;
     }
     function applyPrices(p) {
       if (!p || !p.usd) return;
@@ -2232,7 +2281,45 @@
       if (e === "sv" || e === "mega") return "now";
       return "";
     }
+    var PATH_151 = [
+      { kind: "line", ids: ["sv3pt5-166", "sv3pt5-167", "sv3pt5-198"] },
+      { kind: "line", ids: ["sv3pt5-168", "sv3pt5-169", "sv3pt5-199"] },
+      { kind: "line", ids: ["sv3pt5-170", "sv3pt5-171", "sv3pt5-200"] },
+      { kind: "line", ids: ["sv3pt5-63", "sv3pt5-64", "sv3pt5-201"] },
+      { kind: "line", ids: ["sv3pt5-92", "sv3pt5-93", "sv3pt5-94"] },
+      { kind: "line", ids: ["sv3pt5-147", "sv3pt5-181", "sv3pt5-149"] },
+      { kind: "line", ids: ["sv3pt5-66", "sv3pt5-177", "sv3pt5-68"] },
+      { kind: "line", ids: ["sv3pt5-74", "sv3pt5-75", "sv3pt5-189"] },
+      { kind: "line", ids: ["sv3pt5-129", "sv3pt5-130"] },
+      { kind: "line", ids: ["sv3pt5-79", "sv3pt5-80"] },
+      { kind: "trio", ids: ["sv3pt5-144", "sv3pt5-202", "sv3pt5-146"] }
+    ];
+    function pathCards(ids) {
+      var out = [], i, c;
+      for (i = 0; i < ids.length; i++) {
+        c = cardById(ids[i]);
+        if (!c || c.id !== ids[i]) return null;
+        if (c.id === "base5-3" || c.id === "base1-63") return null;
+        if (setIdOf(c) !== "sv3pt5") return null;
+        out.push(c);
+      }
+      return out.length === ids.length ? out : null;
+    }
+    function path151For(who, kind) {
+      if (!who) return null;
+      var i, row, cards;
+      for (i = 0; i < PATH_151.length; i++) {
+        row = PATH_151[i];
+        if (kind && row.kind !== kind) continue;
+        cards = pathCards(row.ids);
+        if (!cards) continue;
+        if (cards.some(function (c) { return ofMon(c, who); })) return cards;
+      }
+      return null;
+    }
     function pickLine(who) {
+      var safe = path151For(who, "line");
+      if (safe) return safe;
       var fam = evoFamily(who);
       if (!fam || fam.length < 2) return [];
       if (fam[0] === "Eevee" && fam.length > 3) {
@@ -2267,6 +2354,11 @@
       return role || "card";
     }
     function rolePool(role) {
+      return _rolePool(role).filter(function (c) {
+        return c && c.id !== "base5-3" && c.id !== "base1-63";
+      });
+    }
+    function _rolePool(role) {
       var who = mon;
       var pool = who ? paperOf(who) : [];
       if (role === "first" || role === "then") {
@@ -2460,8 +2552,12 @@
     }
     function pairStory(kind, who) {
       if (!who) return [];
-      var pool = paperOf(who);
       if (kind === "line") return pickLine(who);
+      if (kind === "trio") {
+        var birds = path151For(who, "trio");
+        if (birds) return birds;
+      }
+      var pool = paperOf(who).filter(function (c) { return c.id !== "base5-3" && c.id !== "base1-63"; });
       if (kind === "origin") {
         var dated = pool.filter(function (c) { return c.year; }).sort(function (a, b) { return String(a.year).localeCompare(String(b.year)); });
         if (dated.length < 2) return [];
@@ -2590,12 +2686,6 @@
         if (prompt === "line") return true;
         if (prompt === "vs") return true;
         if (LANE_LABEL[prompt]) return rarityLane(c) === prompt;
-        if (prompt === "all" && !q && (medium === "paper" || medium === "pocket")) {
-          if (setFilter) return true;
-          if ((c.tags || "").indexOf("connecting") !== -1) return true;
-          if (!mon) return !isBulk(c);
-          return !isModernBulk(c);
-        }
         if (prompt === "all") return true;
         return true;
       });
@@ -2619,10 +2709,10 @@
         var out = [];
         var seen = {};
         var i;
-        for (i = 0; i < PAGE; i++) {
+        var n = Math.max(paper.length, pk.length);
+        for (i = 0; i < n; i++) {
           if (paper[i] && !seen[paper[i].id]) { seen[paper[i].id] = 1; out.push(paper[i]); }
           if (pk[i] && !seen[pk[i].id]) { seen[pk[i].id] = 1; out.push(pk[i]); }
-          if (out.length >= PAGE) break;
         }
         return out;
       }
@@ -2778,17 +2868,17 @@
           if (aMine !== bMine) return aMine - bMine;
           return heatScore(b) - heatScore(a);
         });
-        return hits.slice(0, 18);
+        return hits;
       }
       if (prompt === "line") {
         if (pairEditing() && pairFocus >= 0) {
-          return pairBrowseRows().slice(0, 48);
+          return pairBrowseRows();
         }
         return pickLine(mon);
       }
       if (prompt === "origin" || prompt === "megaform" || prompt === "dark" || prompt === "region" || prompt === "star" || prompt === "eras" || prompt === "trio" || prompt === "night") {
         if (pairEditing() && pairFocus >= 0) {
-          return pairBrowseRows().slice(0, 48);
+          return pairBrowseRows();
         }
         return pairStory(prompt, mon);
       }
@@ -3004,7 +3094,10 @@
           offers.push({ v: "hand", l: "Other work", s: artKeys[0] });
         }
         var fam = evoFamily(who);
-        if (fam && fam.length >= 2) {
+        var linePath = path151For(who, "line");
+        if (linePath) {
+          offers.push({ v: "line", l: "Evo line", s: linePath.map(function (c) { return c.name; }).join(" → ") });
+        } else if (fam && fam.length >= 2) {
           var lineOk = fam.every(function (sp) { return rolePool(sp).length; });
           if (fam[0] === "Eevee" && fam.length > 3) lineOk = rolePool("Eevee").length && rolePool(who === "Eevee" ? "Umbreon" : who).length;
           if (lineOk) {
@@ -3032,10 +3125,13 @@
         var buckets = { old: 0, mid: 0, now: 0 };
         pool.forEach(function (c) { var b = eraBucket(c); if (b) buckets[b] += 1; });
         if (buckets.old && buckets.mid && buckets.now) offers.push({ v: "eras", l: "Three eras", s: "Vintage → SWSH → now" });
+        var trioPath = path151For(who, "trio");
+        if (trioPath) offers.push({ v: "trio", l: "The birds", s: trioPath.map(function (c) { return c.name; }).join(" · ") });
         var i, t;
         for (i = 0; i < TRIADS.length; i++) {
           t = TRIADS[i];
           if (t.keys.indexOf(who) === -1) continue;
+          if (t.l === "The birds") break;
           if (t.mons.every(function (sp) { return rolePool(sp).length; })) offers.push({ v: "trio", l: t.l, s: t.s });
           break;
         }
@@ -3200,7 +3296,7 @@
       if (prompt === "line") {
         return shown.length + " on this page · " + rows.length + " · evo line · " + (mon || "");
       }
-      var bits = [shown.length + " on this page", String(rows.length)];
+      var bits = shown.length === rows.length ? [String(rows.length)] : [shown.length + " on this page", String(rows.length)];
       if (medium === "paper") bits.push(paperLang === "jp" ? "Japanese" : "English");
       else if (medium === "pocket") bits.push("Pocket");
       else if (medium === "games") bits.push("games");
@@ -3224,20 +3320,10 @@
         rows = list();
         paintSets();
       }
-      var pages = Math.max(1, Math.ceil(rows.length / PAGE));
-      if (page > pages - 1) page = pages - 1;
-      if (page < 0) page = 0;
-      var shown = rows.slice(page * PAGE, page * PAGE + PAGE);
+      var shown = rows;
       $("count").textContent = countLabel(rows, shown);
-      $("pager").hidden = rows.length <= PAGE;
-      if ($("page-hint")) $("page-hint").hidden = rows.length <= PAGE;
-      $("page-now").textContent = (page + 1) + " / " + pages;
-      $("btn-prev-page").disabled = page <= 0;
-      $("btn-next-page").disabled = page >= pages - 1;
-      if ($("page-scrub")) {
-        $("page-scrub").max = String(pages);
-        $("page-scrub").value = String(page + 1);
-      }
+      $("pager").hidden = true;
+      if ($("page-hint")) $("page-hint").hidden = true;
       if (!rows.length) {
         var why = $("count").textContent || "Nothing here.";
         var btns = "";
@@ -3259,7 +3345,7 @@
         var still = (c.kind === "cutout" || (c.kind === "game" && !print)) ? " still" : "";
         var pixel = /\/visual\/(rb|crystal|emerald|gold|silver|frlg|rs)\//.test(c.src || "") || (c.tags || "").indexOf("sprite") !== -1 ? " pixel" : "";
         return "<button type=\"button\" class=\"card" + on + "\" data-id=\"" + c.id + "\">" + flag +
-          "<img class=\"" + (print + still + pixel).trim() + "\" alt=\"" + esc(c.name || "") + "\" loading=\"lazy\" decoding=\"async\" src=\"" + thumbOf(c) + "\" onload=\"killPrintedBack(this)\" onerror=\"var n=this.closest('.card'); if(n) n.style.display='none'\" />" +
+          "<img class=\"" + (print + still + pixel).trim() + "\" alt=\"" + esc(c.name || "") + "\" loading=\"lazy\" decoding=\"async\" src=\"" + thumbOf(c) + "\" onload=\"killPrintedBack(this)\" onerror=\"this.style.visibility='hidden'\" />" +
           "<div class=\"meta\"><strong>" + esc(c.name) + "</strong>" +
           "<div class=\"fact\">" + esc(factOf(c)) + "</div></div></button>";
       }).join("");
@@ -3301,7 +3387,7 @@
           var on = pins.indexOf(c.id) !== -1 ? " pin" : "";
           return "<button type=\"button\" class=\"card" + on + "\" data-id=\"" + c.id + "\">" +
             "<span class=\"flag\">REAL DUMP</span>" +
-            "<img alt=\"\" loading=\"lazy\" decoding=\"async\" src=\"" + thumbOf(c) + "\" onload=\"killPrintedBack(this)\" onerror=\"var n=this.closest('.card'); if(n) n.style.display='none'\" />" +
+            "<img alt=\"\" loading=\"lazy\" decoding=\"async\" src=\"" + thumbOf(c) + "\" onload=\"killPrintedBack(this)\" onerror=\"this.style.visibility='hidden'\" />" +
             "<div class=\"meta\"><strong>" + c.name + "</strong>" + c.set + " · " + c.lock + " · known real from the English dump<br>Art: " + (c.artist || "UNKNOWN") + "</div></button>";
         }).join("");
       paintTray();
@@ -3329,7 +3415,7 @@
         var posLab = pairFocus === i ? ("Swap " + (c.species || speciesOf(c.name) || "")) : pos;
         html += "<div class=\"slot" + on + "\" data-focus=\"" + i + "\">" +
           "<button type=\"button\" class=\"drop\" data-drop=\"" + id + "\" aria-label=\"Remove " + (c.name || "") + "\">×</button>" +
-          "<img src=\"" + thumbOf(c) + "\" alt=\"" + (c.name || "") + "\" onload=\"killPrintedBack(this)\" onerror=\"this.style.display='none'\" />" +
+          "<img src=\"" + thumbOf(c) + "\" alt=\"" + (c.name || "") + "\" onload=\"killPrintedBack(this)\" onerror=\"this.style.visibility='hidden'\" />" +
           "<span class=\"pos\">" + posLab + "</span></div>";
         if (i < n - 1) {
           html += "<button type=\"button\" class=\"swap\" data-move=\"" + i + "\" data-dir=\"1\" aria-label=\"Swap with next\">‹ ›</button>";
@@ -4989,7 +5075,37 @@
         flood(0, h - 1, 1, -1);
         flood(w - 1, h - 1, -1, -1);
         x.putImageData(img, 0, 0);
-        return c;
+        var top = 0, bot = h - 1, left = 0, right = w - 1;
+        function rowStudio(yy) {
+          var n = 0, xx;
+          for (xx = 0; xx < w; xx++) {
+            var p = pix(xx, yy);
+            if (p[3] < 18 || isStudio(p)) n++;
+          }
+          return n / w >= 0.92;
+        }
+        function colStudio(xx) {
+          var n = 0, yy;
+          for (yy = 0; yy < h; yy++) {
+            var p = pix(xx, yy);
+            if (p[3] < 18 || isStudio(p)) n++;
+          }
+          return n / h >= 0.92;
+        }
+        var maxTop = Math.floor(h * 0.16);
+        var maxSide = Math.floor(w * 0.16);
+        while (top < maxTop && rowStudio(top)) top++;
+        while (h - 1 - bot < maxTop && rowStudio(bot)) bot--;
+        while (left < maxSide && colStudio(left)) left++;
+        while (w - 1 - right < maxSide && colStudio(right)) right--;
+        if (top === 0 && bot === h - 1 && left === 0 && right === w - 1) return c;
+        var cw = right - left + 1, ch = bot - top + 1;
+        if (cw < 8 || ch < 8) return c;
+        var cut = document.createElement("canvas");
+        cut.width = cw;
+        cut.height = ch;
+        cut.getContext("2d").drawImage(c, left, top, cw, ch, 0, 0, cw, ch);
+        return cut;
         } catch (err) {
           return im;
         }
