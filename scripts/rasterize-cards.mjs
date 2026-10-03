@@ -92,6 +92,8 @@ let files = [];
 // the run (this catch used to exit(0) and would have taken CI down with it).
 if (Resvg) {
   try { files = (await readdir(CARDS)).filter(f => f.endsWith(".svg")); } catch { files = []; }
+  const only = process.argv.slice(2).filter(f => f.endsWith(".svg"));
+  if (only.length) files = files.filter(f => only.includes(f));
 }
 let made = 0;
 for (const f of files) {
