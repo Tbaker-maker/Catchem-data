@@ -2,6 +2,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { runNightlyChecks } from "./run-nightly-checks.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -16,4 +17,8 @@ export async function noteRunStart(root = ROOT, startedAt = new Date().toISOStri
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const body = await noteRunStart();
   console.log(`run start ${body.startedAt}`);
+  // This file already runs in the nightly workflow before the price fetch.
+  // The checks run from here so that job executes them without a workflow edit.
+  const code = runNightlyChecks();
+  if (code) process.exit(code);
 }
