@@ -471,7 +471,9 @@ async function searchEbay(token, query, floor = MIN_PRICE, ceiling = MAX_PRICE) 
   if (lastTotal != null && lastTotal > all.length) {
     console.log(`    read ${all.length} of ${lastTotal} eBay results (capped at ${SEARCH_PAGES} pages)`);
   }
-  return all;
+  // `total` is the Browse response field (result-set size). It is not the
+  // filtered page count stored as listingCount. Caller saves it once per day.
+  return { items: all, total: lastTotal };
 }
 
 // ─── Aggregate prices with outlier trimming ──────────────────────────────────
@@ -575,7 +577,7 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
   const updated = await mapConcurrent(products, async (product) => {
     try {
       const [floor, ceiling] = priceBoundsFor(product);
-      const items = await searchEbay(token, product.searchQuery, floor, ceiling);
+      const { items, total: browseTotal } = await searchEbay(token, product.searchQuery, floor, ceiling);
       const { kept, report, samples } = filterItemsForProduct(product, items);
       console.log(
         `   ${product.id}: fetched=${report.fetched} kept=${report.kept} ` +
@@ -613,6 +615,8 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
       // A healthy SKU dropping below 8 kept is a query problem until proven otherwise.
       if ((prev?.listingCount ?? 0) >= 10 && kept.length < 8) {
         console.warn(`   ⚠ ${product.id}: query_error (had ${prev.listingCount}, kept ${kept.length})`);
+        // Leave today blank. Do not append a priceHistory point, and do not
+        // copy yesterday's Browse total (or listingCount-as-total) onto today.
         return {
           ...product,
           priceUsd: prev?.priceUsd,
@@ -653,11 +657,17 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
       if (agg) {
         // Replace today's entry if already present (idempotent within a day),
         // otherwise append. Trim to HISTORY_DAYS.
+        // Browse `total` sits next to price, once per product per day.
+        // listingCount is the filtered page count and is not written here.
+        // If this response has no numeric total, the field stays off the
+        // point — yesterday's total is never copied forward.
         const lastIdx = history.length - 1;
+        const point = { date: today, price: agg.priceMedian };
+        if (typeof browseTotal === "number") point.total = browseTotal;
         if (lastIdx >= 0 && history[lastIdx].date === today) {
-          history[lastIdx] = { date: today, price: agg.priceMedian };
+          history[lastIdx] = point;
         } else {
-          history.push({ date: today, price: agg.priceMedian });
+          history.push(point);
         }
         while (history.length > HISTORY_DAYS) history.shift();
       }
