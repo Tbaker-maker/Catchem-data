@@ -224,6 +224,20 @@ jobs:
             fi
           fi
 
+      - name: Fetch TCG news
+        # After the price commit and the feed rebuild. A failed fetch fails the job.
+        # The four research checks stay on the earlier continue-on-error step.
+        # This step does not call eBay.
+        run: node scripts/fetch-tcg-news.mjs
+
+      - name: Write the weekly letter
+        continue-on-error: true
+        run: node scripts/compute-weekly-read.mjs
+
+      - name: Grade repo jobs
+        continue-on-error: true
+        run: node scripts/audit-repo-bots.mjs
+
       - name: Append shelf counts to the private log
         continue-on-error: true
         env:
@@ -268,7 +282,8 @@ jobs:
           # step writes is listed here. A file written in CI but not added
           # evaporates at job end — the class that froze the app feed and ate
           # era/catalyst history daily.
-          git add data/sealed-prices.json data/heat-report.json data/heat-history.json data/divergence-report.json data/supply-watch.json data/derived-insights.json data/era-index-history.json data/catalyst-log.json data/cohort-history.json data/alerts-state.json data/artists.json data/indexes/ data/heat-check.json data/history/tcgplayer-market/ data/catalog/tcgcsv-latest.json data/catalog/tcgcsv-coverage.json data/history/tcgcsv-daily/ data/search/ data/meta/ppt-usage.json data/meta/ppt-cursor.json data/history/slabs/status.json data/ppt/intraday-test.json data/ppt/sealed-id-report.json data/ppt/sealed-id-review.json data/ppt/singles-set-review.json data/heartbeat.json data/derived/ research/pulse/ research/assets/the-board.html research/assets/the-pulse.html research/assets/pulse-feed.json research/assets/print-watch.html research/assets/methodology.html research/assets/corrections.html research/assets/creators.html research/assets/build.html research/assets/card-index.json research/assets/faq.html
+          git add data/sealed-prices.json data/heat-report.json data/heat-history.json data/divergence-report.json data/supply-watch.json data/derived-insights.json data/era-index-history.json data/catalyst-log.json data/cohort-history.json data/alerts-state.json data/artists.json data/indexes/ data/heat-check.json data/history/tcgplayer-market/ data/catalog/tcgcsv-latest.json data/catalog/tcgcsv-coverage.json data/history/tcgcsv-daily/ data/search/ data/meta/ppt-usage.json data/meta/ppt-cursor.json data/history/slabs/status.json data/ppt/intraday-test.json data/ppt/sealed-id-report.json data/ppt/sealed-id-review.json data/ppt/singles-set-review.json data/heartbeat.json data/derived/ research/pulse/ research/assets/the-board.html research/assets/the-pulse.html research/assets/pulse-feed.json research/assets/print-watch.html research/assets/methodology.html research/assets/corrections.html research/assets/creators.html research/assets/build.html research/assets/card-index.json research/assets/faq.html research/digests/news.json research/digests/weekly-news.json
+          if compgen -G "data/learning/grades-*.json" > /dev/null; then git add data/learning/grades-*.json; fi
           if git diff --staged --quiet; then
             echo "No price changes to commit."
           else

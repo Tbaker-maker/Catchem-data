@@ -1,6 +1,6 @@
 // Public Pokémon TCG news. No model calls, no API keys, no eBay.
 // Sources named in the repo: pokemon.com, official press, PokeBeach, Beckett, PokeGuardian.
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
@@ -496,22 +496,27 @@ async function main() {
     sources,
     failures,
   };
+  const weeklyItems = weekly;
+  let priorWeekly = {};
+  try { priorWeekly = JSON.parse(await readFile(WEEKLY_PATH, "utf8")); } catch { priorWeekly = {}; }
   const weeklyDoc = {
     updated,
     timezone: "America/Vancouver",
     asOf: today,
-    items: weekly,
+    items: weeklyItems,
   };
+  if (priorWeekly.priceMovers) weeklyDoc.priceMovers = priorWeekly.priceMovers;
   await mkdir(dirname(NEWS_PATH), { recursive: true });
   await writeFile(NEWS_PATH, JSON.stringify(newsDoc, null, 2) + "\n");
   await writeFile(WEEKLY_PATH, JSON.stringify(weeklyDoc, null, 2) + "\n");
-  console.log(`catalog ${stored.length} · public ${items.length} · news ${news.length} · weekly ${weekly.length} · failures ${failures.length}`);
+  console.log(`catalog ${stored.length} · public ${items.length} · news ${news.length} · weekly ${weeklyItems.length} · failures ${failures.length}`);
   for (const source of sources) {
     console.log(`  source ${source.items}\t${source.skipped ? "SKIP " + source.skipped : "ok"}\t${source.source}\t${source.url}`);
   }
   const notes = stored.filter((item) => item.note && item.note.includes("disagree"));
   console.log(`disagreements ${notes.length}`);
   for (const item of notes) console.log(`  note ${item.source} ${item.product} ${item.setDate}`);
+  if (failures.length) process.exitCode = 1;
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
