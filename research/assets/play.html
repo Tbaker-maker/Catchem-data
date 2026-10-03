@@ -2320,16 +2320,6 @@
       if (offer) return offer;
       var fam = evoFamily(who);
       if (!fam || fam.length < 2) return [];
-      if (fam[0] === "Eevee" && fam.length > 3) {
-        if (who === "Eevee") {
-          var night = cohesiveCombos(["Eevee", "Espeon", "Umbreon"]);
-          if (night.length) return night[0];
-          var eevee = hottest(paperOf("Eevee"));
-          var tops = ["Umbreon", "Espeon", "Sylveon"].map(function (sp) { return hottest(rolePool(sp)); }).filter(Boolean);
-          return [eevee].concat(tops.slice(0, 2)).filter(Boolean);
-        }
-        fam = ["Eevee", who];
-      }
       var combos = cohesiveCombos(fam);
       return combos[0] || [];
     }
@@ -2405,6 +2395,7 @@
       var seen = {};
       function add(cards) {
         if (!cards || cards.some(function (c) { return !c; })) return;
+        if (cards.some(function (c) { return c.id === "base5-3" || c.id === "base1-63"; })) return;
         var k = cards.map(function (c) { return c.id; }).join("|");
         if (seen[k]) return;
         seen[k] = 1;
@@ -2612,8 +2603,7 @@
           if (t.keys.indexOf(who) === -1) continue;
           var combos = cohesiveCombos(t.mons);
           if (combos.length) return combos[0];
-          var cards = t.mons.map(function (sp) { return hottest(paperOf(sp).filter(function (c) { return !isBulk(c); })); });
-          if (cards.every(Boolean)) return cards;
+          return [];
         }
         return [];
       }
@@ -2621,10 +2611,7 @@
         if (["Eevee","Espeon","Umbreon"].indexOf(who) === -1) return [];
         var night = cohesiveCombos(["Espeon", "Umbreon"]);
         if (night.length) return night[0];
-        var a = hottest(paperOf("Espeon").filter(function (c) { return !isBulk(c); }));
-        var b = hottest(paperOf("Umbreon").filter(function (c) { return !isBulk(c); }));
-        if (!a || !b) return [];
-        return [a, b];
+        return [];
       }
       return [];
     }
@@ -3315,6 +3302,44 @@
       else bits.push(prompt);
       return bits.join(" · ");
     }
+    function applyRowPrices(rows) {
+      var by = {};
+      (rows || []).forEach(function (r) {
+        if (!r || !r.length || !r[0]) return;
+        var n = Number(r[6]);
+        if (!Number.isFinite(n) || n <= 0) return;
+        by[r[0]] = n;
+      });
+      CARDS.forEach(function (c) {
+        if (by[c.id] != null) c.usd = by[c.id];
+      });
+    }
+    function storedPrice(c) {
+      var n = Number(c && c.usd);
+      return Number.isFinite(n) && n > 0 ? n : 0;
+    }
+    function pictureInFile(c) {
+      return !!(c && String(c.src || "").trim());
+    }
+    var SCREEN = 40;
+    var screenAsk = 40;
+    var screenKey = "";
+    function pathwayView() {
+      return prompt === "line" || prompt === "trio" || prompt === "night" || prompt === "origin" || prompt === "megaform" || prompt === "dark" || prompt === "region" || prompt === "star" || prompt === "eras" || prompt === "then";
+    }
+    function listKey() {
+      return [medium, paperLang, prompt, mon, q, setFilter, era].join("|");
+    }
+    function screenRows(rows) {
+      var lead = [];
+      var later = [];
+      (rows || []).forEach(function (c) {
+        if (storedPrice(c) > 0 && pictureInFile(c)) lead.push(c);
+        else later.push(c);
+      });
+      lead.sort(function (a, b) { return storedPrice(b) - storedPrice(a); });
+      return { lead: lead, ordered: lead.concat(later) };
+    }
     function paintStrip() {
       var rows = list();
       if ((prompt === "artist" || prompt === "then") && setFilter && rows.length < 2 && (mon || q)) {
@@ -3325,7 +3350,11 @@
         rows = list();
         paintSets();
       }
-      var shown = rows;
+      var key = listKey();
+      if (key !== screenKey) { screenKey = key; screenAsk = SCREEN; }
+      var pack = pathwayView() ? null : screenRows(rows);
+      var shown = pack ? (screenAsk <= SCREEN ? pack.lead.slice(0, SCREEN) : pack.ordered.slice(0, screenAsk)) : rows;
+      var more = !!(pack && shown.length < pack.ordered.length);
       $("count").textContent = countLabel(rows, shown);
       $("pager").hidden = true;
       if ($("page-hint")) $("page-hint").hidden = true;
@@ -3354,6 +3383,7 @@
           "<div class=\"meta\"><strong>" + esc(c.name) + "</strong>" +
           "<div class=\"fact\">" + esc(factOf(c)) + "</div></div></button>";
       }).join("");
+      if (more) $("strip").insertAdjacentHTML("beforeend", "<button type=\"button\" class=\"ghost\" data-more=\"1\">More</button>");
       }
       paintTray();
     }
@@ -4709,6 +4739,12 @@
         paintMons(); paintSets(); paintPrompts(); paintStrip();
         return;
       }
+      var moreBtn = e.target.closest("[data-more]");
+      if (moreBtn) {
+        screenAsk += SCREEN;
+        paintStrip();
+        return;
+      }
       var b = e.target.closest("[data-id]");
       if (!b) return;
       var id = b.getAttribute("data-id");
@@ -5681,7 +5717,8 @@
       })
       .then(function (d) { merge(d || [], ""); bootPaint("Visuals"); return fetchJson(assetUrl("cards/full/index.json?v=19sep-share")); })
       .then(function (d) { merge(d || [], ""); bootPaint("English"); return fetchJson(assetUrl("cards/jp/index.json?v=11sep-vis2")); })
-      .then(function (d) { merge(d || [], " jp"); return fetchJson(assetUrl("cards/prices.json?v=16sep-price")); })
+      .then(function (d) { merge(d || [], " jp"); return fetchJson(assetUrl("paper-rows.json")); })
+      .then(function (d) { applyRowPrices(d); return fetchJson(assetUrl("cards/prices.json?v=16sep-price")); })
       .then(function (d) { applyPrices(d); bootPaint("Closed beta"); finishBoot(); return syncLiveSets(); })
       .catch(function () {
         bootPaint("Closed beta");
