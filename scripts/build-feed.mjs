@@ -9,19 +9,18 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "research/assets/public");
 const read = async (rel) => JSON.parse(await readFile(join(ROOT, rel), "utf8"));
 
-let seriesCap = "";
 function addPoint(map, pid, date, market) {
   const id = Number(pid);
   const v = Number(market);
   const day = String(date || "");
   if (!id || !/^\d{4}-\d{2}-\d{2}$/.test(day) || !(v > 0)) return;
-  if (seriesCap && day > seriesCap) return;
   if (!map.has(id)) map.set(id, new Map());
   map.get(id).set(day, Math.round(v * 100) / 100);
 }
 
 const catalog = await read("data/catalog/tcgcsv-latest.json");
-seriesCap = String(catalog.asOf || "").slice(0, 10);
+// A later daily file is not a new catalog day. 2026-09-29 prices 1,695 products,
+// not the catalog. addPoint keeps a later print only for a product that has it.
 const series = new Map();
 for (const file of (await readdir(join(ROOT, "data/history/market-backfill"))).sort()) {
   if (!file.endsWith(".json")) continue;
@@ -40,11 +39,10 @@ try {
     }
   }
 } catch { /* optional */ }
-let dailyAsOf = "";
 for (const file of (await readdir(join(ROOT, "data/history/tcgcsv-daily"))).sort()) {
   if (!file.endsWith(".json")) continue;
   const day = file.slice(0, 10);
-  if (/^\d{4}-\d{2}-\d{2}$/.test(day) && day > dailyAsOf) dailyAsOf = day;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) continue;
   const doc = JSON.parse(await readFile(join(ROOT, "data/history/tcgcsv-daily", file), "utf8"));
   for (const row of doc.prices || []) addPoint(series, row.id, day, row.market);
 }
@@ -80,6 +78,7 @@ for (const item of catalog.items || []) {
     set: pretty(item.set),
     setSlug: slug(item.set || ""),
     kind,
+    subtype: item.subtype || "",
     number: item.number || "",
     price: Number(item.price) || hist.at(-1)?.[1] || 0,
     release: releaseFor(item),
@@ -108,15 +107,30 @@ for (const item of catalog.items || []) {
 }
 const logFile = process.env.LEARNING_LOG || "";
 const prior = logFile ? await readCallLog(logFile) : [];
+let soldBySku = new Map();
+try {
+  const trending = await read("trending.json");
+  for (const play of trending.plays || []) {
+    const pid = Number(play.tcgplayerProductId);
+    if (!pid || !Number.isInteger(play.sold3m)) continue;
+    const dated = /2026-10-01|10-01/.test(String(play.why || "")) || play.sku === "surging-sparks-box";
+    soldBySku.set(`tcgcsv-${pid}`, {
+      count: play.sold3m,
+      asOf: dated ? "2026-10-01" : String(trending.asOf || "").slice(0, 10),
+    });
+  }
+} catch { /* snapshot is optional until it is on this branch */ }
 const result = await publishFeed({
   items,
   prior,
   prices,
-  asOf: catalog.asOf || dailyAsOf || "",
+  asOf: catalog.asOf || "",
+  rewriteDir: join(ROOT, "data/learning/path-rewrites"),
   updatedAt,
   outDir: OUT,
   logFile: logFile || null,
   shelf: await readShelfFile(process.env.SHELF_LOG || join(ROOT, "data/learning/shelf.jsonl")),
   gapPids: [...GAP_IMAGE],
+  soldBySku,
 });
-console.log(JSON.stringify({ count: result.count, sections: result.sections, tracked: result.tracked, added: result.logged.added, skipped: result.logged.skipped.length }));
+console.log(JSON.stringify({ count: result.count, sections: result.sections, tracked: result.tracked, added: result.logged.added, skipped: result.logged.skipped.length, lead: result.lead, halfExcluded: result.halfExcluded, halfCheap: result.halfCheap, soldFacts: soldBySku.size }));
