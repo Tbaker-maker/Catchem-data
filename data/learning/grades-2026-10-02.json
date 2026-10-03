@@ -9,38 +9,38 @@
     },
     {
       "job": "half-price",
-      "grade": "not built",
-      "sentence": "scripts/check-half-price.mjs is not in the repo."
+      "grade": "pass",
+      "sentence": "scripts/check-half-price.mjs is in the repo and data/learning/half-price-2026-10-02.json is a learning file for today (2026-10-02)."
     },
     {
       "job": "stale",
-      "grade": "not built",
-      "sentence": "scripts/check-stale.mjs is not in the repo."
+      "grade": "not run",
+      "sentence": "scripts/check-stale.mjs is in the repo and no dated learning file for this job is under data/learning."
     },
     {
       "job": "coverage",
-      "grade": "not built",
-      "sentence": "scripts/check-coverage.mjs is not in the repo."
+      "grade": "not run",
+      "sentence": "scripts/check-coverage.mjs is in the repo and no dated learning file for this job is under data/learning."
     },
     {
       "job": "learning log",
-      "grade": "not built",
-      "sentence": "scripts/write-learning-log.mjs is not in the repo."
+      "grade": "pass",
+      "sentence": "scripts/write-learning-log.mjs is in the repo and data/learning/feed-loop-notes/2026-10-02.jsonl is a learning file for today (2026-10-02)."
     },
     {
       "job": "news",
-      "grade": "not on main",
-      "sentence": "research/digests/news.json is not on main."
+      "grade": "pass",
+      "sentence": "research/digests/news.json is on main and all 89 items have a source URL."
     },
     {
       "job": "weekly letter",
-      "grade": "not on main",
-      "sentence": "research/digests/weekly-news.json is not on main."
+      "grade": "pass",
+      "sentence": "research/digests/weekly-news.json is on main and all 22 items have a source URL."
     },
     {
       "job": "creator posts",
-      "grade": "not on main",
-      "sentence": "research/assets/public/creator-posts.json is not on main."
+      "grade": "pass",
+      "sentence": "research/assets/public/creator-posts.json is on main and contains no unapproved post."
     }
   ]
 }
