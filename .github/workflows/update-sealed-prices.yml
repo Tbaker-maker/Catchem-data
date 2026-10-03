@@ -193,6 +193,37 @@ jobs:
             done
           fi
 
+      - name: Rebuild the public feed
+        # After the price commit, not before. A failed feed build fails the job.
+        # The catalog day stays the full TCGCSV day. A later partial file is
+        # used only for a product that has that print.
+        run: node scripts/build-feed.mjs
+
+      - name: Commit the rebuilt feed
+        run: |
+          git config user.name "catchem-bot"
+          git config user.email "bot@catchem.app"
+          git add research/assets/public/reads.json research/assets/public/feed/
+          if git diff --staged --quiet; then
+            echo "No feed changes to commit."
+          else
+            git commit -m "data: public feed $(date -u +'%Y-%m-%d')"
+            pushed=0
+            for i in 1 2 3; do
+              if git push; then
+                pushed=1
+                break
+              fi
+              echo "push rejected (attempt $i) — rebasing onto moved main"
+              git pull --rebase --autostash origin main || exit 1
+              sleep 5
+            done
+            if [ "$pushed" != 1 ]; then
+              echo "feed commit was not pushed"
+              exit 1
+            fi
+          fi
+
       - name: Append shelf counts to the private log
         continue-on-error: true
         env:
