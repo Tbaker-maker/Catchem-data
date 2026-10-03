@@ -4,6 +4,9 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
+  annotate,
+  applyDisagreements,
+  blockedUrlReason,
   decodeEntities,
   hasSourceUrl,
   htmlToText,
@@ -13,7 +16,26 @@ import {
   pickWeekly,
   ptDay,
   sentenceForItem,
+  shapeNewsItem,
 } from "./lib/tcg-news.mjs";
+import {
+  parseAsiaPress,
+  parseAsiaSg,
+  parseGematsu,
+  parseJpInfo,
+  parseLimitless,
+  parsePcPreorders,
+  parsePgNews,
+  parsePgSets,
+  parsePlayNews,
+  parsePogoList,
+  parseRk9,
+  parseRss,
+  parseSerebiiMonth,
+  parseSerebiiSets,
+  pogoArticleDate,
+  serebiiMonthLinks,
+} from "./lib/news-sources.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const UA = "CatchEmNews/1.0 (+https://github.com/Tbaker-maker/Catchem-data)";
@@ -23,13 +45,19 @@ const WEEKLY_PATH = join(ROOT, "research", "digests", "weekly-news.json");
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 async function getText(url) {
+  const blocked = blockedUrlReason(url);
+  if (blocked) throw new Error(blocked);
   const res = await fetch(url, {
     headers: { "user-agent": UA, accept: "text/html, application/rss+xml, application/xml, text/xml;q=0.9, */*;q=0.8" },
     signal: AbortSignal.timeout(25000),
     redirect: "follow",
   });
-  const text = await res.text();
-  return { status: res.status, type: res.headers.get("content-type") || "", finalUrl: res.url, text };
+  if (blockedUrlReason(res.url)) throw new Error(blockedUrlReason(res.url));
+  const buf = Buffer.from(await res.arrayBuffer());
+  const type = res.headers.get("content-type") || "";
+  const charset = (type.match(/charset=([^;]+)/i)?.[1] || "").toLowerCase();
+  const text = buf.toString(/iso-8859-1|latin1|windows-1252/.test(charset) ? "latin1" : "utf8");
+  return { status: res.status, type, finalUrl: res.url, text };
 }
 
 function threadId(url) {
@@ -55,19 +83,6 @@ function ptFromIso(value) {
 }
 
 async function pokebeach(failures) {
-  try {
-    const wp = await getText("https://www.pokebeach.com/feed");
-    if (wp.status >= 400 || /wp_die|No feed available/i.test(wp.text) || !wp.text.includes("<item>")) {
-      failures.push({
-        source: "PokeBeach",
-        url: "https://www.pokebeach.com/feed",
-        error: `HTTP ${wp.status}: site feed is not available`,
-      });
-    }
-  } catch (err) {
-    failures.push({ source: "PokeBeach", url: "https://www.pokebeach.com/feed", error: err.message });
-  }
-
   let rss = "";
   try {
     const res = await getText("https://www.pokebeach.com/forums/forum/front-page-news.18/index.rss");
@@ -163,14 +178,14 @@ async function pokebeach(failures) {
   for (const row of listed) {
     if (isPriceText(row.title)) continue;
     const sentence = sentenceForItem(bodies.get(row.id) || "", row.title);
-    if (!sentence) continue;
     const item = {
       title: row.title,
       date: row.date,
       url: row.url,
-      sentence,
+      sentence: sentence || undefined,
       kind: "news",
       source: "PokeBeach",
+      listUrl: "https://www.pokebeach.com/forums/forum/front-page-news.18/index.rss",
       published: row.published,
     };
     if (!hasSourceUrl(item)) continue;
@@ -227,15 +242,15 @@ async function officialPress(failures) {
       const date = ptFromIso(publishedAttr[1]);
       if (!date) continue;
       const sentence = sentenceForItem(text, link.title);
-      if (!sentence) continue;
-      if (isPriceText(link.title) || isPriceText(sentence)) continue;
+      if ((sentence && isPriceText(sentence)) || isPriceText(link.title)) continue;
       const item = {
         title: link.title,
         date,
         url: link.url,
-        sentence,
+        sentence: sentence || undefined,
         kind: "news",
         source: "Pokémon press",
+        listUrl: "https://press.pokemon.com/en",
         published: new Date(publishedAttr[1]).toISOString(),
       };
       if (hasSourceUrl(item)) items.push(item);
@@ -246,56 +261,217 @@ async function officialPress(failures) {
   return items;
 }
 
-async function recordClosedSources(failures) {
-  const checks = [
-    ["pokemon.com", "https://www.pokemon.com/us/pokemon-news"],
-    ["Beckett", "https://www.beckett.com/news/feed/"],
-    ["PokeGuardian", "https://www.pokeguardian.com/feed/"],
-  ];
-  for (const [source, url] of checks) {
-    try {
-      const res = await getText(url);
-      const blocked = /Pardon Our Interruption|maintenance\.beckett|Request Rejected/i.test(res.text);
-      const rss = res.text.includes("<item>") || res.text.includes("<entry>");
-      if (res.status >= 400 || blocked || !rss) {
-        failures.push({
-          source,
-          url,
-          error: blocked
-            ? `HTTP ${res.status}: page is blocked or not a public feed`
-            : `HTTP ${res.status}: not a public RSS feed`,
-        });
-      }
-    } catch (err) {
-      failures.push({ source, url, error: err.message });
-    }
-  }
-}
-
 function dedupe(items) {
   const seen = new Set();
   const out = [];
   for (const item of items) {
-    if (seen.has(item.url)) continue;
-    seen.add(item.url);
+    const key = [item.url, item.title, item.product || "", item.region || "", item.setDate || ""].join("\n");
+    if (seen.has(key)) continue;
+    seen.add(key);
     out.push(item);
   }
   return out;
 }
 
+function finalize(raw) {
+  const parsed = raw.publishedText ? new Date(raw.publishedText) : null;
+  const published = raw.published || (parsed && !Number.isNaN(parsed.getTime()) ? parsed.toISOString() : undefined);
+  let date = raw.date;
+  if (!date && published) {
+    const day = ptDay(new Date(published));
+    if (day) date = day;
+  }
+  const sentence = raw.sentence || sentenceForItem(raw.sentenceText || "", raw.title) || undefined;
+  const tags = [...(raw.tags || [])];
+  if (raw.source === "Victory Road" && (raw.categories || []).some((category) => /events/i.test(category))) {
+    tags.push("tournaments");
+  }
+  return annotate({
+    title: raw.title,
+    url: raw.url,
+    source: raw.source,
+    date,
+    dateEnd: raw.dateEnd,
+    statedDate: raw.statedDate,
+    sentence,
+    kind: raw.kind || "news",
+    tags,
+    product: raw.product,
+    wave: raw.wave,
+    reprint: raw.reprint,
+    setDate: raw.setDate,
+    region: raw.region,
+    published,
+    note: raw.note,
+    listUrl: raw.listUrl,
+  });
+}
+
+function blockedPage(text) {
+  return /Pardon Our Interruption|Request Rejected|cf-browser-verification|Just a moment/i.test(String(text || "").slice(0, 2500));
+}
+
+async function readSource(source, url, failures) {
+  try {
+    const res = await getText(url);
+    if (res.status >= 400 || blockedPage(res.text)) {
+      const error = blockedPage(res.text) ? `HTTP ${res.status}: page blocked the fetch` : `HTTP ${res.status}`;
+      failures.push({ source, url, error });
+      return { source, url, skipped: error };
+    }
+    return { source, url, res };
+  } catch (err) {
+    failures.push({ source, url, error: err.message });
+    return { source, url, skipped: err.message };
+  }
+}
+
+async function fetchAdded(failures) {
+  const reports = [];
+  const items = [];
+  async function one(source, url, parse) {
+    const loaded = await readSource(source, url, failures);
+    if (loaded.skipped) {
+      reports.push({ source, url, items: 0, skipped: loaded.skipped });
+      return;
+    }
+    let parsed = [];
+    try {
+      parsed = parse(loaded.res.text) || [];
+    } catch (err) {
+      failures.push({ source, url, error: err.message });
+      reports.push({ source, url, items: 0, skipped: err.message });
+      return;
+    }
+    items.push(...parsed);
+    reports.push({
+      source,
+      url,
+      items: parsed.length,
+      skipped: parsed.length ? undefined : "page had no titled items",
+    });
+  }
+
+  await Promise.all([
+    one("Bulbagarden", "https://bulbagarden.net/home/index.rss", (html) => parseRss(html, "Bulbagarden")),
+    one("Victory Road", "https://victoryroad.pro/feed/", (html) => parseRss(html, "Victory Road")),
+    one("Siliconera", "https://www.siliconera.com/tag/pokemon/feed/", (html) => parseRss(html, "Siliconera")),
+    one("Play! Pokémon", "https://play.pokemon.com/en-us/news/", parsePlayNews),
+    one("Pokémon Card (Japan)", "https://www.pokemon-card.com/info/", parseJpInfo),
+    one("PokeGuardian", "https://www.pokeguardian.com/articles/news-archive", parsePgNews),
+    one("PokeGuardian", "https://www.pokeguardian.com/sets/upcoming-sets", parsePgSets),
+    one("Limitless", "https://limitlesstcg.com/tournaments", parseLimitless),
+    one("RK9", "https://rk9.gg/events/pokemon", parseRk9),
+    one("Pokémon Center Support", "https://support.pokemoncenter.com/hc/en-us/articles/4407702295572-Estimated-Preorder-Release-Dates", parsePcPreorders),
+    one("Pokémon Card (Asia)", "https://asia.pokemon-card.com/sg/", parseAsiaSg),
+    one("Serebii", "https://www.serebii.net/card/english.shtml", parseSerebiiSets),
+    one("Pokémon Asia press", "https://asia-press.portal-pokemon.com/", parseAsiaPress),
+    one("Gematsu", "https://www.gematsu.com/companies/the-pokemon-company", parseGematsu),
+  ]);
+
+  for (const report of reports) {
+    if (report.url === "https://asia.pokemon-card.com/sg/" && report.items) {
+      report.note = "The list stated titles and links. It did not state a publication date.";
+    }
+  }
+
+  const newsUrl = "https://www.serebii.net/news/";
+  const index = await readSource("Serebii", newsUrl, failures);
+  if (index.skipped) {
+    reports.push({ source: "Serebii", url: newsUrl, items: 0, skipped: index.skipped });
+  } else {
+    const months = serebiiMonthLinks(index.res.text);
+    let count = 0;
+    if (!months.length) {
+      reports.push({ source: "Serebii", url: newsUrl, items: 0, skipped: "index did not link a month archive" });
+    } else {
+      for (const month of months) {
+        const loaded = await readSource("Serebii", month.url, failures);
+        if (loaded.skipped) continue;
+        const parsed = parseSerebiiMonth(loaded.res.text);
+        items.push(...parsed);
+        count += parsed.length;
+        await sleep(120);
+      }
+      reports.push({
+        source: "Serebii",
+        url: newsUrl,
+        items: count,
+        skipped: count ? undefined : "month pages had no dated posts",
+      });
+    }
+  }
+
+  const goUrl = "https://pokemongo.com/en/news";
+  const go = await readSource("Pokémon GO", goUrl, failures);
+  if (go.skipped) {
+    reports.push({ source: "Pokémon GO", url: goUrl, items: 0, skipped: go.skipped });
+  } else {
+    const list = parsePogoList(go.res.text);
+    let cursor = 0;
+    async function worker() {
+      while (cursor < list.length) {
+        const item = list[cursor++];
+        try {
+          const res = await getText(item.url);
+          if (res.status >= 400 || blockedPage(res.text)) throw new Error(`HTTP ${res.status}: article page blocked the fetch`);
+          const publishedText = pogoArticleDate(res.text);
+          if (!publishedText) {
+            failures.push({ source: "Pokémon GO", url: item.url, error: "article did not state a publication date" });
+          } else item.publishedText = publishedText;
+        } catch (err) {
+          failures.push({ source: "Pokémon GO", url: item.url, error: err.message });
+        }
+        await sleep(80);
+      }
+    }
+    await Promise.all(Array.from({ length: 4 }, worker));
+    items.push(...list);
+    reports.push({ source: "Pokémon GO", url: goUrl, items: list.length, skipped: list.length ? undefined : "page had no titled items" });
+  }
+
+  return { items, reports };
+}
+
+function byCatalog(a, b) {
+  const ad = a.published || a.date || "";
+  const bd = b.published || b.date || "";
+  if (ad !== bd) return ad < bd ? 1 : -1;
+  return a.title < b.title ? -1 : a.title > b.title ? 1 : 0;
+}
+
 async function main() {
   const today = ptDay();
   const failures = [];
-  const [beach, press] = await Promise.all([
+  const [beach, press, added] = await Promise.all([
     pokebeach(failures),
     officialPress(failures),
-    recordClosedSources(failures),
+    fetchAdded(failures),
   ]);
-  const all = dedupe([...press, ...beach]).filter((item) => item.kind === "news" && hasSourceUrl(item));
-  const items = pickDefault(all, today, 8);
-  const news = pickNews(all, today);
-  const weekly = pickWeekly(all, today);
+  const raw = [...press, ...beach, ...added.items];
+  const catalog = dedupe(raw.map(finalize).filter(hasSourceUrl)).sort(byCatalog);
+  applyDisagreements(catalog);
+  const stored = catalog.map(shapeNewsItem);
+  const newsPool = stored.filter((item) => item.kind === "news" && item.sentence && item.date && hasSourceUrl(item));
+  const items = pickDefault(newsPool, today, 8);
+  const news = pickNews(newsPool, today);
+  const weekly = pickWeekly(newsPool, today);
   const updated = new Date().toISOString();
+  const sources = [
+    {
+      source: "PokeBeach",
+      url: "https://www.pokebeach.com/forums/forum/front-page-news.18/index.rss",
+      items: beach.length,
+      skipped: beach.length ? undefined : "front-page news returned no items",
+    },
+    {
+      source: "Pokémon press",
+      url: "https://press.pokemon.com/en",
+      items: press.length,
+      skipped: press.length ? undefined : "press page returned no TCG items",
+    },
+    ...added.reports,
+  ];
   const newsDoc = {
     updated,
     timezone: "America/Vancouver",
@@ -310,6 +486,8 @@ async function main() {
         items: news,
       },
     },
+    catalog: stored,
+    sources,
     failures,
   };
   const weeklyDoc = {
@@ -321,13 +499,13 @@ async function main() {
   await mkdir(dirname(NEWS_PATH), { recursive: true });
   await writeFile(NEWS_PATH, JSON.stringify(newsDoc, null, 2) + "\n");
   await writeFile(WEEKLY_PATH, JSON.stringify(weeklyDoc, null, 2) + "\n");
-  console.log(`news default ${items.length} · filter ${news.length} · weekly ${weekly.length} · failures ${failures.length}`);
-  for (const item of items) console.log(`  ${item.date}  ${item.title}`);
-  if (weekly.length > items.length) {
-    console.log("weekly older:");
-    for (const item of weekly.slice(items.length)) console.log(`  ${item.date}  ${item.title}`);
+  console.log(`catalog ${stored.length} · public ${items.length} · news ${news.length} · weekly ${weekly.length} · failures ${failures.length}`);
+  for (const source of sources) {
+    console.log(`  source ${source.items}\t${source.skipped ? "SKIP " + source.skipped : "ok"}\t${source.source}\t${source.url}`);
   }
-  for (const fail of failures) console.log(`  fail ${fail.source} ${fail.url} ${fail.error}`);
+  const notes = stored.filter((item) => item.note && item.note.includes("disagree"));
+  console.log(`disagreements ${notes.length}`);
+  for (const item of notes) console.log(`  note ${item.source} ${item.product} ${item.setDate}`);
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {

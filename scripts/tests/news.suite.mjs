@@ -2,11 +2,16 @@ import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
+  applyDisagreements,
+  blockedUrlReason,
   hasSourceUrl,
   pickDefault,
   pickNews,
   pickWeekly,
+  preciseDays,
+  productKey,
   sourceAllowsOlderWeekly,
+  tagsFor,
 } from "../lib/tcg-news.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -65,6 +70,22 @@ export async function run() {
   t("weekly letter leaves out an item older than 90 days", weekly.every((row) => !row.url.endsWith("/e")));
   t("release wording is the source, not a guess", sourceAllowsOlderWeekly("Pokemon to release a new box on January 27th.") === true);
   t("a plain older recap is not treated as important", sourceAllowsOlderWeekly("The column looks at how a deck felt at the event.") === false);
+  t("a merch headline is not tagged as cards", tagsFor("New merch collection starring Dedenne, Joltik, and more").length === 0);
+  t("a regional headline is a tournament", tagsFor("Sign-ups for the Stuttgart Regional are open").includes("tournaments"));
+  t("November 6 and November 6th are the same day", preciseDays("November 6, 2026").join() === preciseDays("November 6th 2026").join());
+  t("early October is not a specific day", preciseDays("Early October 2026").length === 0);
+  t("mega evolution prefix still matches the set name", productKey("Mega Evolution - Delta Reign") === productKey("Delta Reign"));
+  const left = { title: "A", url: "https://www.serebii.net/card/deltareign", source: "Serebii", product: "Delta Reign", setDate: "November 6th 2026" };
+  const right = { title: "B", url: "https://www.pokeguardian.com/sets/upcoming-sets", source: "PokeGuardian", product: "Mega Evolution - Delta Reign", setDate: "December 1, 2026" };
+  applyDisagreements([left, right]);
+  t("a date disagreement keeps both items and notes it", Boolean(left.note && right.note && left.note.includes("disagree")));
+  const same = { title: "C", url: "https://www.serebii.net/card/example", source: "Serebii", product: "Delta Reign", setDate: "November 6, 2026" };
+  const other = { title: "D", url: "https://www.pokeguardian.com/example", source: "PokeGuardian", product: "Delta Reign", setDate: "November 6th 2026" };
+  applyDisagreements([same, other]);
+  t("the same day is not called a disagreement", !same.note);
+  t("pokemon.com is not fetched", Boolean(blockedUrlReason("https://www.pokemon.com/us/pokemon-news")));
+  t("pokebeach feed is not fetched", Boolean(blockedUrlReason("https://www.pokebeach.com/feed")));
+  t("the front-page RSS is still allowed", blockedUrlReason("https://www.pokebeach.com/forums/forum/front-page-news.18/index.rss") === null);
 
   for (const rel of ["research/digests/news.json", "research/digests/weekly-news.json"]) {
     let doc;
@@ -79,6 +100,12 @@ export async function run() {
       for (const row of group) if (!hasSourceUrl(row)) bare += 1;
     }
     t(`${rel} items all have a source URL`, bare === 0);
+    if (rel.endsWith("research/digests/news.json")) {
+      t("news.json keeps the longer catalog", Array.isArray(doc.catalog) && doc.catalog.length > doc.items.length);
+      let bareCatalog = 0;
+      for (const row of doc.catalog || []) if (!hasSourceUrl(row)) bareCatalog += 1;
+      t("catalog items all have a source URL", bareCatalog === 0);
+    }
   }
   return fail;
 }
