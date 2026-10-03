@@ -114,7 +114,27 @@
     "first": true
    },
    "path": "Duraludon (Master Ball Pattern) latest price fell from $2.19 on Sep 22 to $1.56 on Sep 29, down 28.8%.",
-   "secondFact": "move"
+   "secondFact": "move",
+   "readKind": "price"
+  },
+  {
+   "id": "pokemon-duraludon",
+   "sku": "pokemon-duraludon",
+   "readKind": "pokemon",
+   "kind": "pokemon",
+   "name": "Duraludon",
+   "set": "",
+   "path": "Duraludon has 19 cards in the catalog, drawn by 12 artists, and the national dex number on those cards is 884.",
+   "headline": "Duraludon has 19 cards in the catalog, drawn by 12 artists, and the national dex number on those cards is 884.",
+   "why": "Card count is cards in data/card-catalogue.json whose data/card-attrs.json dex is 884. Artist count is the distinct artist field on those cards. No pronunciation field is on file.",
+   "cardCount": 19,
+   "artistCount": 12,
+   "dex": 884,
+   "sources": {
+    "cardCount": "data/card-catalogue.json",
+    "artistCount": "data/card-catalogue.json",
+    "dex": "data/card-attrs.json"
+   }
   },
   {
    "id": "move-tcgcsv-516668-7",
@@ -225,7 +245,28 @@
     "first": true
    },
    "path": "Kingler latest price rose from $1.06 on Sep 18 to $1.34 on Sep 25, up 26.4%.",
-   "secondFact": "move"
+   "secondFact": "move",
+   "readKind": "price"
+  },
+  {
+   "id": "pokemon-kingler",
+   "sku": "pokemon-kingler",
+   "readKind": "pokemon",
+   "kind": "pokemon",
+   "name": "Kingler",
+   "set": "",
+   "path": "Kingler has 11 cards in the catalog, drawn by 10 artists, and the national dex number on those cards is 99.",
+   "headline": "Kingler has 11 cards in the catalog, drawn by 10 artists, and the national dex number on those cards is 99.",
+   "why": "Card count is cards in data/card-catalogue.json whose data/card-attrs.json dex is 99. Artist count is the distinct artist field on those cards. No pronunciation field is on file.",
+   "cardCount": 11,
+   "artistCount": 10,
+   "dex": 99,
+   "sources": {
+    "cardCount": "data/card-catalogue.json",
+    "artistCount": "data/card-catalogue.json",
+    "dex": "data/card-attrs.json"
+   }
   }
- ]
+ ],
+ "filterField": "readKind"
 }
