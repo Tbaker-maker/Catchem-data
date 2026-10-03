@@ -1159,7 +1159,7 @@
       if (!c) return "";
       if (typeof c === "string") {
         var hit = CARDS.filter(function (x) { return x.id === c; })[0];
-        if (hit && hit.src) return srcOf(hit);
+        if (hit) return hit.src ? srcOf(hit) : "";
         if (c.indexOf("jp-") === 0) return "";
         if (c.indexOf("c30-") === 0) return "/cards/c30/" + c.slice(4) + ".png";
         if (c.indexOf("pk-") === 0) return "/pocket-img/" + c.slice(3).replace("-", "/");
@@ -1867,7 +1867,7 @@
     }
     function onDesk(c) {
       if (!c) return false;
-      if (!c.src) return false;
+      if (!c.src && c.fact !== "The picture is missing.") return false;
       var id = c.id || "";
       if (id.indexOf("stub-") === 0) return false;
       if (id === "xy6-11" || id === "sm1-79") return false;
@@ -3330,10 +3330,11 @@
         var print = (c.kind === "poster" || c.kind === "manga" || isGameBox(c)) ? " print" : "";
         var still = (c.kind === "cutout" || (c.kind === "game" && !print)) ? " still" : "";
         var pixel = /\/visual\/(rb|crystal|emerald|gold|silver|frlg|rs)\//.test(c.src || "") || (c.tags || "").indexOf("sprite") !== -1 ? " pixel" : "";
+        var missingPic = !c.src;
         return "<button type=\"button\" class=\"card" + on + "\" data-id=\"" + c.id + "\">" + flag +
-          "<img class=\"" + (print + still + pixel).trim() + "\" alt=\"" + esc(c.name || "") + "\" loading=\"lazy\" decoding=\"async\" src=\"" + thumbOf(c) + "\" onload=\"killPrintedBack(this)\" onerror=\"this.style.visibility='hidden'\" />" +
+          (missingPic ? "" : "<img class=\"" + (print + still + pixel).trim() + "\" alt=\"" + esc(c.name || "") + "\" loading=\"lazy\" decoding=\"async\" src=\"" + thumbOf(c) + "\" onload=\"killPrintedBack(this)\" onerror=\"this.style.visibility='hidden'\" />") +
           "<div class=\"meta\"><strong>" + esc(c.name) + "</strong>" +
-          "<div class=\"fact\">" + esc(factOf(c)) + "</div></div></button>";
+          "<div class=\"fact\">" + esc(missingPic ? "The picture is missing." : factOf(c)) + "</div></div></button>";
       }).join("");
       }
       paintTray();
@@ -3877,7 +3878,9 @@
     function paintPostVisual() {
       var sel = selected();
       $("post-visual").innerHTML = sel.map(function (c) {
-        return "<img src=\"" + srcOf(c) + "\" alt=\"" + c.name + "\" style=\"height:84px;border-radius:8px;border:1px solid var(--line)\" />";
+        var s = srcOf(c);
+        if (!s) return "<span class=\"note\">" + esc(c.name || "Card") + ". The picture is missing.</span>";
+        return "<img src=\"" + s + "\" alt=\"" + c.name + "\" style=\"height:84px;border-radius:8px;border:1px solid var(--line)\" />";
       }).join("") || "<span class=\"note\">Pin on Visuals first. Post will not invent a four.</span>";
       var prev = $("preview").src;
       var show = prev && $("preview").style.display === "block";
