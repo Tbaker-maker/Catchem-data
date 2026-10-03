@@ -1,7 +1,7 @@
 {
   "id": "type-bundle",
   "name": "bundle",
-  "asOf": "2026-09-27",
+  "asOf": "2026-10-03",
   "method": "Chain-linked. A name joins on the first day it has a price and does not move the level that day. Its first return is the next day it is priced. Each day's move is the median price change of names priced on both days. A value-weighted line gives a dearer product a bigger say. A day with no shared prices is a gap. Nothing is filled in.",
   "basket": [
     {
@@ -1975,6 +1975,16 @@
           "entered": 0,
           "equalMovePct": 0,
           "valueMovePct": 0
+        },
+        {
+          "date": "2026-09-27",
+          "from": "2026-09-26",
+          "equal": 111.1,
+          "value": 116.7,
+          "matched": 19,
+          "entered": 0,
+          "equalMovePct": 0,
+          "valueMovePct": -0.177
         }
       ],
       "gaps": [
@@ -2121,6 +2131,16 @@
           "entered": 0,
           "equalMovePct": 0,
           "valueMovePct": 0.0067
+        },
+        {
+          "date": "2026-10-03",
+          "from": "2026-09-27",
+          "equal": 101.8,
+          "value": 101.9,
+          "matched": 25,
+          "entered": 0,
+          "equalMovePct": -0.7608,
+          "valueMovePct": -0.8551
         }
       ],
       "gaps": [
@@ -2134,6 +2154,12 @@
           "from": "2026-08-26",
           "to": "2026-09-21",
           "missingDays": 25,
+          "note": "No price was invented for the days in between."
+        },
+        {
+          "from": "2026-09-27",
+          "to": "2026-10-03",
+          "missingDays": 5,
           "note": "No price was invented for the days in between."
         }
       ]
