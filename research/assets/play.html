@@ -124,8 +124,8 @@
     }
     .card img {
       width: 100%; height: auto; display: block;
-      aspect-ratio: 63 / 88; object-fit: cover; object-position: center;
-      background: transparent;
+      aspect-ratio: 63 / 88; object-fit: contain; object-position: center;
+      background: var(--sheet);
     }
     .card img.still { aspect-ratio: 1 / 1; background: var(--paper); object-fit: contain; }
     .card img.print { aspect-ratio: 2 / 3; background: var(--sheet); object-fit: contain; }
@@ -160,7 +160,7 @@
       display: flex; flex-direction: column; align-items: center; gap: 6px;
     }
     .slot img {
-      width: 108px; height: auto; aspect-ratio: 63 / 88; object-fit: cover;
+      width: 108px; height: auto; aspect-ratio: 63 / 88; object-fit: contain;
       border-radius: 10px; background: #0e0e10; display: block;
     }
     .slot .pos {
@@ -1224,68 +1224,44 @@
         return false;
       }
     }
+    function edgeCropped(im) {
+      try {
+        var w = im.naturalWidth || im.width;
+        var h = im.naturalHeight || im.height;
+        if (!w || !h || w < 8 || h < 8) return false;
+        var c = document.createElement("canvas");
+        c.width = w;
+        c.height = h;
+        var x = c.getContext("2d");
+        x.drawImage(im, 0, 0);
+        var d = x.getImageData(0, 0, w, h).data;
+        function pix(xx, yy) {
+          var i = (yy * w + xx) * 4;
+          return [d[i], d[i + 1], d[i + 2], d[i + 3]];
+        }
+        var corners = [pix(1, 1), pix(Math.max(1, w - 2), 1), pix(1, Math.max(1, h - 2)), pix(Math.max(1, w - 2), Math.max(1, h - 2))];
+        var i, p, L, C;
+        for (i = 0; i < corners.length; i++) {
+          p = corners[i];
+          if (p[3] < 18) return false;
+          C = Math.max(p[0], p[1], p[2]) - Math.min(p[0], p[1], p[2]);
+          L = (p[0] + p[1] + p[2]) / 3;
+          if (C <= 22 && L >= 242) return false;
+        }
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+    function sayCropMissing() {
+      if ($("compose-note")) $("compose-note").textContent = "The crop is missing.";
+    }
     function cropCardEdge(img) {
       if (!img || img.getAttribute("data-crop") === "1") return;
       var cls = " " + (img.className || "") + " ";
       if (cls.indexOf(" pixel ") !== -1 || cls.indexOf(" still ") !== -1 || cls.indexOf(" print ") !== -1) return;
-      var nw = img.naturalWidth || 0;
-      var nh = img.naturalHeight || 0;
-      if (nw < 8 || nh < 8) {
-        img.setAttribute("data-crop", "1");
-        return;
-      }
       img.setAttribute("data-crop", "1");
-      try {
-        var pw = 40;
-        var ph = Math.max(8, Math.round(pw * nh / nw));
-        var probe = document.createElement("canvas");
-        probe.width = pw;
-        probe.height = ph;
-        var g = probe.getContext("2d");
-        g.drawImage(img, 0, 0, pw, ph);
-        var data = g.getImageData(0, 0, pw, ph).data;
-        function studio(xx, yy) {
-          var i = (yy * pw + xx) * 4;
-          var r = data[i], gg = data[i + 1], b = data[i + 2], a = data[i + 3];
-          if (a < 20) return true;
-          if (Math.max(r, gg, b) - Math.min(r, gg, b) > 26) return false;
-          var L = (r + gg + b) / 3;
-          return L >= 234 || L <= 22;
-        }
-        function rowMatte(yy) {
-          var n = 0, xx;
-          for (xx = 0; xx < pw; xx++) if (studio(xx, yy)) n++;
-          return n / pw >= 0.9;
-        }
-        function colMatte(xx) {
-          var n = 0, yy;
-          for (yy = 0; yy < ph; yy++) if (studio(xx, yy)) n++;
-          return n / ph >= 0.9;
-        }
-        var top = 0, bot = 0, left = 0, right = 0;
-        var maxY = Math.floor(ph * 0.16);
-        var maxX = Math.floor(pw * 0.16);
-        while (top < maxY && rowMatte(top)) top++;
-        while (bot < maxY && rowMatte(ph - 1 - bot)) bot++;
-        while (left < maxX && colMatte(left)) left++;
-        while (right < maxX && colMatte(pw - 1 - right)) right++;
-        if (top + bot < 1 && left + right < 1) return;
-        var sx = Math.round(left / pw * nw);
-        var sy = Math.round(top / ph * nh);
-        var sw = Math.max(1, Math.round((pw - left - right) / pw * nw));
-        var sh = Math.max(1, Math.round((ph - top - bot) / ph * nh));
-        if (sw < nw * 0.64 || sh < nh * 0.64) return;
-        var maxW = 480;
-        var sc = sw > maxW ? maxW / sw : 1;
-        var cw = Math.max(1, Math.round(sw * sc));
-        var ch = Math.max(1, Math.round(sh * sc));
-        var out = document.createElement("canvas");
-        out.width = cw;
-        out.height = ch;
-        out.getContext("2d").drawImage(img, sx, sy, sw, sh, 0, 0, cw, ch);
-        var url = out.toDataURL("image/jpeg", 0.86);
-        if (url && url.indexOf("data:image") === 0) img.src = url;
-      } catch (e) {}
+      if (!edgeCropped(img)) sayCropMissing();
     }
     function killPrintedBack(img) {
       if (!img || img.getAttribute("data-face") === "1") return;
@@ -2294,6 +2270,14 @@
       { kind: "line", ids: ["sv3pt5-79", "sv3pt5-80"] },
       { kind: "trio", ids: ["sv3pt5-144", "sv3pt5-202", "sv3pt5-146"] }
     ];
+    function pathwayListed(c) {
+      if (!c || !c.id || setIdOf(c) !== "sv3pt5") return false;
+      var i;
+      for (i = 0; i < PATH_151.length; i++) {
+        if (PATH_151[i].ids.indexOf(c.id) !== -1) return true;
+      }
+      return false;
+    }
     function pathCards(ids) {
       var out = [], i, c;
       for (i = 0; i < ids.length; i++) {
@@ -2378,6 +2362,8 @@
       if (role === "now") return pool.filter(function (c) { return eraBucket(c) === "now"; });
       return paperOf(role).filter(function (c) {
         if (isDarkName(c) || isMegaPrint(c) || isRegionalName(c)) return false;
+        var pathwayRarity = String((c && c.rarity) || "").toLowerCase();
+        if ((pathwayRarity === "common" || pathwayRarity === "uncommon" || pathwayRarity === "rare") && pathwayListed(c)) return true;
         return !isBulk(c) || role === who;
       });
     }
@@ -5008,6 +4994,7 @@
         next();
       }
       function knockMatte(im) {
+        return im;
         try {
         var c = document.createElement("canvas");
         c.width = im.width;
@@ -5144,10 +5131,13 @@
         return lines.slice(0, maxLines || 4);
       }
       function paintBoard() {
+          var cropMissing = false;
           var mats = sel.map(function (card, k) {
-            if (card.kind === "poster" || card.kind === "manga" || isGameBox(card)) return imgs[k];
-            if ((card.tags || "").indexOf("connecting") !== -1) return imgs[k];
-            return knockMatte(imgs[k]);
+            var scan = imgs[k];
+            if (card.kind === "poster" || card.kind === "manga" || isGameBox(card)) return scan;
+            if ((card.tags || "").indexOf("connecting") !== -1) return scan;
+            if (scan && !edgeCropped(scan)) cropMissing = true;
+            return scan;
           });
           if (mats.some(function (m) { return !m; })) {
             $("compose-note").textContent = "A scan failed. Don't send a hole.";
@@ -5245,9 +5235,11 @@
             el.src = png;
             el.style.display = "block";
           });
-          $("compose-note").textContent = seatIsStudio()
+          $("compose-note").textContent = cropMissing
+            ? "The crop is missing."
+            : (seatIsStudio()
             ? "That's an edit, not a scan. Fact sits under the card. Premium file. Long-press."
-            : "That's an edit, not a scan. Fact sits under the card. Catch'Em stays — fun is free. Premium takes the mark off to monetize. Long-press.";
+            : "That's an edit, not a scan. Fact sits under the card. Catch'Em stays — fun is free. Premium takes the mark off to monetize. Long-press.");
           seedCaption(false);
       }
       sel.forEach(function (c, i) {
