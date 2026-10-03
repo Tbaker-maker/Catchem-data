@@ -284,19 +284,19 @@ function renderFactLine(fact, facts, opts) {
       claim = `${name} has ${fact.n} copies sold on TCGplayer over 3 months on ${monthDay(fact.asOf)}, not eBay and not a 7-day count`;
       break;
     case "step-smaller":
-      claim = `${name} moved less on the latest step than on the step before it`;
+      return "";
       break;
     case "step-larger":
-      claim = `${name} took a bigger last step than the earlier one`;
+      return "";
       break;
     case "low-now":
-      claim = `${name} printed a fresh lower low`;
+      return "";
       break;
     case "low-early":
       claim = `${name} made a lower low of ${p2} on ${d2}`;
       break;
     case "high-now":
-      claim = `${name} printed a fresh higher high`;
+      return "";
       break;
     case "high-early":
       claim = `${name} made a higher high of ${p2} on ${d2}`;
@@ -322,7 +322,7 @@ function renderFactLine(fact, facts, opts) {
   } else if (fact.id === "step-smaller") {
     move = `versus ${p2} on ${d2}, and its latest price still ${rel} on ${d1} to a price of ${p1}`;
   } else if (fact.id === "step-larger") {
-    move = `off ${p2} printed on ${d2}, but the latest price then ${rel} on ${d1} and is ${p1}`;
+    return "";
   } else if (fact.id === "low-now" || fact.id === "high-now") {
     move = `after the mark of ${p2} on ${d2}, with the latest price, which ${rel}, landing on ${d1} at ${p1}`;
   }
@@ -381,12 +381,84 @@ export function statesBothMoves(text) {
   return splitMovesAgree(text);
 }
 
+const LEAD_BAN = /\b(bigger last step|moved less on the latest step|smaller last step|fresh lower low|fresh higher high|printed|stored|last print|expected|model price)\b/i;
+
+function stepPercentAgrees(text) {
+  const raw = String(text || "");
+  const moved = raw.match(/\b(?:rose|fell|eased)\s+from\s+\$([0-9,.]+)\s+on\s+[A-Za-z]+\s+\d{1,2}\s+to\s+\$([0-9,.]+)/i);
+  const pct = raw.match(/\b(up|down|minus|plus)\s+([0-9]+(?:\.[0-9]+)?)%/i);
+  if (!moved || !pct) return false;
+  const from = Number(moved[1].replace(/,/g, ""));
+  const to = Number(moved[2].replace(/,/g, ""));
+  if (!(from > 0) || !(to > 0) || from === to) return false;
+  const expected = Math.round(Math.abs((to - from) / from) * 1000) / 10;
+  const stated = Number(pct[2]);
+  if (!Number.isFinite(stated) || Math.abs(stated - expected) > 0.05) return false;
+  const up = pct[1].toLowerCase() === "up" || pct[1].toLowerCase() === "plus";
+  if (up && !(to > from)) return false;
+  if (!up && !(to < from)) return false;
+  return true;
+}
+
 function usableLead(sentence) {
   if (!sentence || !/latest price/.test(sentence)) return false;
-  if (BANNED.test(sentence) || FILLER_BAN.test(sentence) || BAD_DATE.test(sentence) || /\bsince Sep\b/.test(sentence) || /\bstored\b|last print/i.test(sentence)) return false;
-  if (/%/.test(sentence) && !splitMovesAgree(sentence)) return false;
+  if (BANNED.test(sentence) || FILLER_BAN.test(sentence) || BAD_DATE.test(sentence) || /\bsince Sep\b/.test(sentence) || LEAD_BAN.test(sentence)) return false;
+  if (!stepPercentAgrees(sentence)) return false;
+  if (/ while the /.test(sentence) && !splitMovesAgree(sentence)) return false;
   if (/\. [A-Z]/.test(sentence)) return false;
   return directionAgrees(sentence);
+}
+
+function oneDecimalPct(from, to) {
+  if (!(Number(from) > 0) || !(Number(to) > 0)) return "";
+  return (Math.round(Math.abs((to - from) / from) * 1000) / 10).toFixed(1);
+}
+
+function moveEnds(from, fromDate, to, toDate) {
+  const rel = relOf(to, from);
+  if (!rel) return null;
+  const fromP = priceWords(from);
+  const toP = priceWords(to);
+  const fromD = monthDay(fromDate);
+  const toD = monthDay(toDate);
+  if (!fromP || !toP || !fromD || !toD || fromP === toP || fromD === toD) return null;
+  const pct = oneDecimalPct(from, to);
+  if (!pct) return null;
+  return { rel, fromP, toP, fromD, toD, from, to, pct };
+}
+
+function collectorFact(facts, opts) {
+  const prev = facts.prev;
+  const step = prev ? moveEnds(prev[1], prev[0], facts.lastPrice, facts.lastDate) : null;
+  if (!step) return null;
+  const days = Number(opts.windowDays);
+  const open = Number(facts.fromPrice) || 0;
+  const openDate = String(facts.fromDate || "");
+  const win = [7, 30, 90].includes(days) ? moveEnds(open, openDate, facts.lastPrice, facts.lastDate) : null;
+  const split = windowSplit(facts, opts);
+  const use = !split && win ? win : step;
+  const name = opts.name ? String(opts.name).trim() : "";
+  const who = name ? `${name} latest price` : "The latest price";
+  const dirWord = use.rel === "rose" ? "up" : "down";
+  let line = `${who} ${use.rel} from ${use.fromP} on ${use.fromD} to ${use.toP} on ${use.toD}, ${dirWord} ${use.pct}%`;
+  let id = "move";
+  const sold = opts.sold;
+  const soldOk = !!(sold && Number.isInteger(sold.count) && sold.count >= 0 && /^\d{4}-\d{2}-\d{2}$/.test(String(sold.asOf || "")));
+  const flatN = Number(facts.flatDays) || 0;
+  const flatOk = flatN >= 5 && cents(facts.flatPrice) !== cents(facts.lastPrice);
+  if (split) {
+    line += split.text;
+    id = "split";
+  } else if (soldOk) {
+    line += `, with ${sold.count} copies sold on TCGplayer over 3 months on ${monthDay(sold.asOf)}, not eBay and not a 7-day count`;
+    id = "sold";
+  } else if (flatOk) {
+    line += `, after ${flatN} prints at one price`;
+    id = "flat";
+  }
+  line = line.replace(/\s+/g, " ").trim();
+  if (!line.endsWith(".")) line += ".";
+  return { line, id };
 }
 
 export function directionAgrees(text) {
@@ -425,24 +497,18 @@ export function directionAgrees(text) {
 export function leadFrameLines(points, opts = {}) {
   const facts = scopeFacts(points, opts);
   if (!facts) return [];
-  const out = [];
-  for (const fact of buildSecondFacts(facts, opts)) {
-    const sentence = renderFactLine(fact, facts, opts);
-    if (usableLead(sentence)) out.push(sentence);
-  }
-  return out;
+  const made = collectorFact(facts, opts);
+  if (!made || !usableLead(made.line)) return [];
+  return [made.line];
 }
 
 export function pickLead(points, opts = {}, accept = null) {
   const facts = scopeFacts(points, opts);
   if (!facts) return null;
-  for (const fact of buildSecondFacts(facts, opts)) {
-    const line = renderFactLine(fact, facts, opts);
-    if (!usableLead(line)) continue;
-    if (accept && !accept(line, fact.id)) continue;
-    return { line, id: fact.id };
-  }
-  return null;
+  const made = collectorFact(facts, opts);
+  if (!made || !usableLead(made.line)) return null;
+  if (accept && !accept(made.line, made.id)) return null;
+  return made;
 }
 
 export function composeLead(points, opts = {}, accept = null) {
