@@ -29,7 +29,8 @@ const advisory = async (mod, label) => {
 };
 
 // advisory imports follow. guard-audit stays first in CI; a local regen can pass CATCHEM_SKIP_GUARD_AUDIT=1.
-if (process.env.CATCHEM_SKIP_GUARD_AUDIT !== "1") await import("./guard-audit.mjs");
+const { flag } = await import("./flags.mjs");
+if (!flag("pulse.skipGuardAudit")) await import("./guard-audit.mjs");
 await import("./flag-guard.mjs");
 // SECURITY BLOCKS. Every other agent is wrapped and advisory because every
 // other failure is recoverable. A leaked credential is not — there is no
@@ -408,7 +409,7 @@ ${footerHtml()}
 assertCleanHtml(html, "the-pulse.html");
 await writeFile(join(ROOT,`research/pulse/${today}.html`), html);
 await writeFile(join(ROOT,`research/assets/the-pulse.html`), html);
-if (process.env.CATCHEM_PULSE_HTML_ONLY === "1") {
+if (flag("pulse.htmlOnly")) {
   console.log("pulse html only");
   process.exit(0);
 }
