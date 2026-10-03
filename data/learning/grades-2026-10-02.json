@@ -1,0 +1,46 @@
+{
+  "date": "2026-10-02",
+  "failCount": 0,
+  "grades": [
+    {
+      "job": "nightly price/feed",
+      "grade": "pass",
+      "sentence": "research/assets/public/reads.json asOf 2026-09-27 equals data/catalog/tcgcsv-latest.json asOf 2026-09-27."
+    },
+    {
+      "job": "half-price",
+      "grade": "not built",
+      "sentence": "scripts/check-half-price.mjs is not in the repo."
+    },
+    {
+      "job": "stale",
+      "grade": "not built",
+      "sentence": "scripts/check-stale.mjs is not in the repo."
+    },
+    {
+      "job": "coverage",
+      "grade": "not built",
+      "sentence": "scripts/check-coverage.mjs is not in the repo."
+    },
+    {
+      "job": "learning log",
+      "grade": "not built",
+      "sentence": "scripts/write-learning-log.mjs is not in the repo."
+    },
+    {
+      "job": "news",
+      "grade": "not on main",
+      "sentence": "research/digests/news.json is not on main."
+    },
+    {
+      "job": "weekly letter",
+      "grade": "not on main",
+      "sentence": "research/digests/weekly-news.json is not on main."
+    },
+    {
+      "job": "creator posts",
+      "grade": "not on main",
+      "sentence": "research/assets/public/creator-posts.json is not on main."
+    }
+  ]
+}
