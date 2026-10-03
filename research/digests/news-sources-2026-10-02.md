@@ -48,3 +48,11 @@ Delta Reign is November 6, 2026 on Serebii and on PokeGuardian. 30th Celebration
 ## Not fetched
 
 pokemon.com, www.pokemoncenter.com, pokebeach.com/feed, PokeGuardian /feed and /rss, Nintendo Life, and Gematsu's all-games feed. PokeBeach's front-page RSS and press.pokemon.com still run.
+
+## Language
+
+The public read is English. A Japanese page, including the Pokémon Card Game site at pokemon-card.com, is marked `region: "jp"` and `language: "ja"`. The stored `title` stays the original Japanese, `titleEn` is the English title, and the source URL is unchanged. Public titles for those items start with "Japan:".
+
+Asia English pages, including asia.pokemon-card.com, stay English. An English headline is not marked Japan only because a fan site reported something in Japan.
+
+One catalog title was not translated, 「ポケっす広場2026」開催決定！, because the name could not be rendered with confidence. It stays in the catalog with the note "Translation is missing." and is not in the public slice. No Chinese or other non-English titles were in this file. The same rule would leave those out of the public slice until a confident English title exists.

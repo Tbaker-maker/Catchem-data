@@ -6,17 +6,21 @@ import { fileURLToPath } from "node:url";
 import {
   annotate,
   applyDisagreements,
+  applyTitleLanguage,
   blockedUrlReason,
   decodeEntities,
   hasSourceUrl,
   htmlToText,
   isPriceText,
+  isPublicNewsCandidate,
   pickDefault,
   pickNews,
   pickWeekly,
   ptDay,
+  publicNewsRecord,
   sentenceForItem,
   shapeNewsItem,
+  titleTranslations,
 } from "./lib/tcg-news.mjs";
 import {
   parseAsiaPress,
@@ -451,8 +455,10 @@ async function main() {
   const raw = [...press, ...beach, ...added.items];
   const catalog = dedupe(raw.map(finalize).filter(hasSourceUrl)).sort(byCatalog);
   applyDisagreements(catalog);
+  const translations = titleTranslations();
+  for (const item of catalog) applyTitleLanguage(item, translations);
   const stored = catalog.map(shapeNewsItem);
-  const newsPool = stored.filter((item) => item.kind === "news" && item.sentence && item.date && hasSourceUrl(item));
+  const newsPool = stored.filter(isPublicNewsCandidate).map(publicNewsRecord);
   const items = pickDefault(newsPool, today, 8);
   const news = pickNews(newsPool, today);
   const weekly = pickWeekly(newsPool, today);

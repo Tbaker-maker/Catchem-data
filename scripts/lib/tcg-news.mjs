@@ -1,4 +1,13 @@
 // Pure selection for the free TCG news job. No network. No prices.
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const TITLE_EN = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), "news-title-en.json"), "utf8"));
+
+export function titleTranslations() {
+  return TITLE_EN;
+}
 
 const MONTHS = "january|february|march|april|may|june|july|august|september|october|november|december";
 
@@ -323,6 +332,90 @@ export function blockedUrlReason(url) {
   return null;
 }
 
+const KANA = /[\u3040-\u30ff]/;
+const HANGUL = /[\uac00-\ud7af]/;
+const HANI = /[\u3400-\u9fff]/;
+const CYRILLIC = /[\u0400-\u04ff]/;
+const ARABIC = /[\u0600-\u06ff]/;
+const THAI = /[\u0e00-\u0e7f]/;
+const MISSING_TRANSLATION = "Translation is missing.";
+
+export function pageHost(url) {
+  try { return new URL(String(url || "")).hostname.toLowerCase(); }
+  catch { return ""; }
+}
+
+export function isAsiaEnglishHost(host) {
+  return host === "asia.pokemon-card.com" || host === "asia-press.portal-pokemon.com";
+}
+
+// The Japan card site and other Japanese pages. Asia English hosts are not Japan.
+export function isJapanPageHost(host) {
+  if (!host || isAsiaEnglishHost(host)) return false;
+  if (host === "www.pokemon-card.com" || host === "www.30th.pokemon-card.com") return true;
+  if (host === "www.pokemoncenter-online.com" || host === "ptcg-abc.pokemon.co.jp") return true;
+  if (host.endsWith(".jp")) return true;
+  return false;
+}
+
+export function nonEnglishTitle(title) {
+  const text = String(title || "");
+  return KANA.test(text) || HANGUL.test(text) || HANI.test(text) || CYRILLIC.test(text) || ARABIC.test(text) || THAI.test(text);
+}
+
+// Null for English, including Asia English pages and English fan headlines.
+export function sourceLanguage(item) {
+  const title = String(item?.title || "");
+  const host = pageHost(item?.url || "");
+  if (!nonEnglishTitle(title)) {
+    if (isJapanPageHost(host)) return { language: "ja", region: "jp", place: "Japan", englishAlready: true };
+    return null;
+  }
+  if (KANA.test(title) || isJapanPageHost(host)) return { language: "ja", region: "jp", place: "Japan" };
+  if (HANGUL.test(title)) return { language: "ko", region: "kr", place: "Korea" };
+  if (HANI.test(title)) return { language: "zh", place: "Chinese" };
+  if (CYRILLIC.test(title)) return { language: "ru", place: "Russian" };
+  if (ARABIC.test(title)) return { language: "ar", place: "Arabic" };
+  if (THAI.test(title)) return { language: "th", region: "th", place: "Thai" };
+  return null;
+}
+
+export function applyTitleLanguage(item, dict = TITLE_EN) {
+  const mark = sourceLanguage(item);
+  if (!mark) return item;
+  if (mark.englishAlready) {
+    if (!item.region) item.region = "jp";
+    if (!item.titleEn) item.titleEn = /^japan:/i.test(item.title) ? item.title : `Japan: ${item.title}`;
+    return item;
+  }
+  if (mark.region && !item.region) item.region = mark.region;
+  if (mark.language) item.language = mark.language;
+  const en = dict?.[item.title];
+  if (en) {
+    item.titleEn = en;
+    return item;
+  }
+  if (!item.titleEn && !(item.note || "").includes(MISSING_TRANSLATION)) {
+    item.note = item.note ? `${item.note} ${MISSING_TRANSLATION}` : MISSING_TRANSLATION;
+  }
+  return item;
+}
+
+export function isPublicNewsCandidate(item) {
+  if (!hasSourceUrl(item) || item.kind !== "news" || !item.date) return false;
+  if (nonEnglishTitle(item.title)) return Boolean(item.titleEn);
+  return Boolean(item.sentence);
+}
+
+export function publicNewsRecord(item) {
+  if (!item.titleEn || item.titleEn === item.title) return shapeNewsItem(item);
+  return shapeNewsItem({
+    ...item,
+    title: item.titleEn,
+    originalTitle: item.title,
+  });
+}
+
 export function shapeNewsItem(item) {
   const out = {
     title: item.title,
@@ -339,6 +432,9 @@ export function shapeNewsItem(item) {
   if (item.wave) out.wave = item.wave;
   if (item.reprint) out.reprint = item.reprint;
   if (item.setDate) out.setDate = item.setDate;
+  if (item.titleEn) out.titleEn = item.titleEn;
+  if (item.originalTitle) out.originalTitle = item.originalTitle;
+  if (item.language) out.language = item.language;
   if (item.region) out.region = item.region;
   if (item.published) out.published = item.published;
   if (item.note) out.note = item.note;
