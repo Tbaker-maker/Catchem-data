@@ -426,7 +426,7 @@ const histSet = new Set(histDates);
 const history = {};
 for (const r of histCut) {
   if (!histSet.has(r.date)) continue;
-  (history[r.id] ??= []).push([r.date, r.price, r.listingCount ?? null]);
+  (history[r.id] ??= []).push([r.date, r.price, Number.isInteger(r.total) ? r.total : null]);
 }
 for (const k in history) history[k].sort((a, b) => (a[0] < b[0] ? -1 : 1));
 

@@ -159,9 +159,9 @@ const packPricing = applyPackBasis(sp.products, div.rows);
 const counts = liveList.map(p=>p.listingCount).sort((a,b)=>a-b);
 const q3 = counts[Math.floor(counts.length*0.75)] ?? 0;
 function flowFor(id){
-  const rows = hh.filter(r=>r.id===id && r.date>=CLEAN_CUT).sort((a,b)=>a.date<b.date?-1:1);
+  const rows = hh.filter(r=>r.id===id && r.date>=CLEAN_CUT && Number.isInteger(r.total)).sort((a,b)=>a.date<b.date?-1:1);
   if (rows.length < 3) return { state:"calibrating", days: rows.length };
-  const a = rows[0].listingCount, b = rows[rows.length-1].listingCount;
+  const a = rows[0].total, b = rows[rows.length-1].total;
   if (!a) return { state:"calibrating", days: rows.length };
   const d = (b-a)/a;
   return { state: d <= -0.05 ? "draining" : d >= 0.05 ? "building" : "flat", pct: Math.round(d*100), days: rows.length };
@@ -544,7 +544,7 @@ const lastTwo = {}, lastTwoN = {};
 for (const r of [...hh].sort((a, b) => a.date < b.date ? -1 : 1)) {
   if (r.date < "2026-08-19") continue;
   if (r.price) { (lastTwo[r.id] ||= []).push(r.price); if (lastTwo[r.id].length > 2) lastTwo[r.id].shift(); }
-  (lastTwoN[r.id] ||= []).push(r.listingCount ?? null); if (lastTwoN[r.id].length > 2) lastTwoN[r.id].shift();
+  if (Number.isInteger(r.total)) { (lastTwoN[r.id] ||= []).push(r.total); if (lastTwoN[r.id].length > 2) lastTwoN[r.id].shift(); }
 }
 
 // ── 🌊 SUPPLY SHIFTS (Tyler, Aug 20) — % supply change + cause candidates ──
