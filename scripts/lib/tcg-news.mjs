@@ -1,4 +1,13 @@
 // Pure selection for the free TCG news job. No network. No prices.
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const TITLE_EN = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), "news-title-en.json"), "utf8"));
+
+export function titleTranslations() {
+  return TITLE_EN;
+}
 
 const MONTHS = "january|february|march|april|may|june|july|august|september|october|november|december";
 
@@ -133,6 +142,302 @@ export function pickWeekly(items, today) {
 }
 
 function byNewest(a, b) {
-  if (a.published !== b.published) return a.published < b.published ? 1 : -1;
+  const ap = a.published || a.date || "";
+  const bp = b.published || b.date || "";
+  if (ap !== bp) return ap < bp ? 1 : -1;
   return a.title < b.title ? -1 : a.title > b.title ? 1 : 0;
+}
+
+const MONTH_INDEX = {
+  jan: 1, january: 1, feb: 2, february: 2, mar: 3, march: 3, apr: 4, april: 4,
+  may: 5, jun: 6, june: 6, jul: 7, july: 7, aug: 8, august: 8,
+  sep: 9, sept: 9, september: 9, oct: 10, october: 10, nov: 11, november: 11,
+  dec: 12, december: 12,
+};
+
+const MONTH_NAME = "(?:jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sept?|september|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)";
+
+function isoDay(year, month, day) {
+  const y = Number(year);
+  const m = Number(month);
+  const d = Number(day);
+  if (m < 1 || m > 12 || d < 1 || d > 31) return null;
+  const dt = new Date(Date.UTC(y, m - 1, d));
+  if (dt.getUTCFullYear() !== y || dt.getUTCMonth() !== m - 1 || dt.getUTCDate() !== d) return null;
+  return dt.toISOString().slice(0, 10);
+}
+
+function monthNumber(name) {
+  return MONTH_INDEX[String(name || "").toLowerCase().replace(/\./g, "")] || 0;
+}
+
+function addDays(found, year, month, start, end) {
+  const from = Number(start);
+  const to = Number(end);
+  const step = from <= to ? 1 : -1;
+  for (let day = from; step > 0 ? day <= to : day >= to; day += step) {
+    const value = isoDay(year, month, day);
+    if (value) found.add(value);
+    if (Math.abs(to - from) > 31) break;
+  }
+}
+
+// Specific days a page actually wrote. Vague phrases such as "early October" stay empty.
+export function preciseDays(phrase) {
+  const found = new Set();
+  let text = ` ${String(phrase || "")} `;
+  const take = (re, fn) => {
+    text = text.replace(re, (full, ...args) => {
+      fn(full, args);
+      return " ";
+    });
+  };
+  take(new RegExp(`\\b(${MONTH_NAME})\\.?\\s+(\\d{1,2})(?:st|nd|rd|th)?\\s*[-–—]\\s*(${MONTH_NAME})\\.?\\s+(\\d{1,2})(?:st|nd|rd|th)?(?:,)?\\s+(\\d{4})`, "gi"), (_full, args) => {
+    const start = isoDay(args[4], monthNumber(args[0]), args[1]);
+    const end = isoDay(args[4], monthNumber(args[2]), args[3]);
+    if (start) found.add(start);
+    if (end) found.add(end);
+  });
+  take(new RegExp(`\\b(${MONTH_NAME})\\.?\\s+(\\d{1,2})(?:st|nd|rd|th)?\\s*[-–—]\\s*(\\d{1,2})(?:st|nd|rd|th)?(?:,)?\\s+(\\d{4})`, "gi"), (_full, args) => {
+    addDays(found, args[3], monthNumber(args[0]), args[1], args[2]);
+  });
+  take(new RegExp(`\\b(\\d{1,2})(?:st|nd|rd|th)?\\s*[-–—]\\s*(\\d{1,2})(?:st|nd|rd|th)?\\s+(${MONTH_NAME})\\.?\\s+(\\d{4})`, "gi"), (_full, args) => {
+    addDays(found, args[3], monthNumber(args[2]), args[0], args[1]);
+  });
+  take(new RegExp(`\\b(${MONTH_NAME})\\.?\\s+(\\d{1,2})(?:st|nd|rd|th)?(?:,)?\\s+(\\d{4})`, "gi"), (_full, args) => {
+    const value = isoDay(args[2], monthNumber(args[0]), args[1]);
+    if (value) found.add(value);
+  });
+  take(new RegExp(`\\b(\\d{1,2})(?:st|nd|rd|th)?\\s+(${MONTH_NAME})\\.?\\s+(\\d{4})`, "gi"), (_full, args) => {
+    const value = isoDay(args[2], monthNumber(args[1]), args[0]);
+    if (value) found.add(value);
+  });
+  take(/\b(\d{4})-(\d{2})-(\d{2})\b/g, (_full, args) => {
+    const value = isoDay(args[0], args[1], args[2]);
+    if (value) found.add(value);
+  });
+  return [...found].sort();
+}
+
+export function productKey(name) {
+  let text = String(name || "").toLowerCase().replace(/pokémon/g, "pokemon");
+  text = text.replace(/[’']/g, "").replace(/[^a-z0-9]+/g, " ").trim();
+  text = text.replace(/^(?:pokemon tcg|mega evolution|mega expansion pack)\s+/, "");
+  text = text.replace(/^pokemon tcg\s+/, "");
+  return text;
+}
+
+const RELEASE_WORDS = "(?:releas(?:e|es|ed|ing)|launch(?:es|ed|ing)?|ships|shipping|ship date|available)";
+
+export function extractStated(text) {
+  const flat = String(text || "").replace(/\s+/g, " ").trim();
+  const out = {};
+  const wave = flat.match(/\bwave\s*#?\s*(\d+)\b/i);
+  if (wave) out.wave = `Wave ${wave[1]}`;
+  const reprint = flat.match(/\b(reprints?(?:\s+of)?\s+[^.]{0,140})/i);
+  if (reprint) out.reprint = reprint[1].replace(/\s+/g, " ").trim();
+  const quoted = flat.match(/[“"]([^”"]{2,80})[”"]/);
+  if (quoted && /\b(set|box|pack|collection|deck|tin|etb|product)\b/i.test(flat)) out.product = quoted[1].trim();
+  const dated = flat.match(new RegExp(
+    `${RELEASE_WORDS}\\s+(?:on\\s+|in\\s+)?(?:(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday),?\\s+)?((?:${MONTH_NAME})\\.?\\s+\\d{1,2}(?:st|nd|rd|th)?(?:,)?\\s+\\d{4}|\\d{1,2}(?:st|nd|rd|th)?\\s+(?:${MONTH_NAME})\\.?\\s+\\d{4}|(?:${MONTH_NAME})\\.?\\s+\\d{1,2}(?:st|nd|rd|th)?)`,
+    "i",
+  ));
+  if (dated) out.setDate = dated[1].replace(/\s+/g, " ").trim();
+  return out;
+}
+
+const TAG_ORDER = ["cards", "sealed", "video-games", "tournaments", "release"];
+
+export function tagsFor(text) {
+  const value = String(text || "");
+  const tags = new Set();
+  if (/\b(trading card|tcg|booster|elite trainer|promo card|expansion pack|set list)\b/i.test(value) || /カード|拡張パック|プロモ/.test(value)) tags.add("cards");
+  if (/\b(elite trainer box|booster box|booster bundle|booster display|mini tins?|pre-?orders?)\b/i.test(value) || /パック|ボックス|カートン|デッキセット/.test(value)) tags.add("sealed");
+  if (/\b(nintendo switch|video games?|fan game|dlc|pokémon go|pokemon go|pokopia|legends:\s*z-a|pokémon unite|pokemon unite)\b/i.test(value)) tags.add("video-games");
+  if (/\b(tournaments?|championships?|regionals?|invitational|league cup|worlds)\b/i.test(value) || /大会|リーグ|チャンピオン/.test(value)) tags.add("tournaments");
+  if (new RegExp(RELEASE_WORDS, "i").test(value) || /\bto release\b|\bto launch\b/i.test(value)) tags.add("release");
+  return TAG_ORDER.filter((tag) => tags.has(tag));
+}
+
+export function annotate(item) {
+  const text = [item.title, item.sentence, item.sentenceText, item.product, item.setDate, item.statedDate].filter(Boolean).join(" ");
+  const stated = extractStated(text);
+  if (!item.product && stated.product) item.product = stated.product;
+  if (!item.wave && stated.wave) item.wave = stated.wave;
+  if (!item.reprint && stated.reprint) item.reprint = stated.reprint;
+  if (!item.setDate && stated.setDate) item.setDate = stated.setDate;
+  const tags = new Set([...(item.tags || []), ...tagsFor(text)]);
+  if (item.setDate) tags.add("release");
+  item.tags = TAG_ORDER.filter((tag) => tags.has(tag));
+  return item;
+}
+
+export function applyDisagreements(items) {
+  const groups = new Map();
+  for (const item of items) {
+    const key = productKey(item.product);
+    if (!key || !item.setDate) continue;
+    const region = item.region || "";
+    const id = `${key}@@${region.toLowerCase()}`;
+    if (!groups.has(id)) groups.set(id, []);
+    groups.get(id).push(item);
+  }
+  for (const group of groups.values()) {
+    const dated = group.filter((item) => preciseDays(item.setDate).length > 0);
+    const conflicting = [];
+    for (let i = 0; i < dated.length; i++) {
+      for (let j = i + 1; j < dated.length; j++) {
+        if (dated[i].source === dated[j].source) continue;
+        const left = preciseDays(dated[i].setDate);
+        const right = preciseDays(dated[j].setDate);
+        const overlap = left.some((day) => right.includes(day));
+        if (!overlap) {
+          conflicting.push(dated[i], dated[j]);
+        }
+      }
+    }
+    if (!conflicting.length) continue;
+    const unique = [];
+    const seen = new Set();
+    for (const item of conflicting) {
+      const mark = `${item.source}|${item.setDate}|${item.url}`;
+      if (seen.has(mark)) continue;
+      seen.add(mark);
+      unique.push(item);
+    }
+    const detail = unique.map((item) => `${item.source} says ${item.setDate}`).join("; ");
+    const note = `Sources disagree on the date for ${unique[0].product}. ${detail}.`;
+    for (const item of unique) {
+      item.note = item.note ? `${item.note} ${note}` : note;
+    }
+  }
+  return items;
+}
+
+export function blockedUrlReason(url) {
+  let parsed;
+  try { parsed = new URL(url); } catch { return "not a url"; }
+  const host = parsed.hostname.toLowerCase();
+  const path = parsed.pathname.toLowerCase();
+  if (host === "pokemon.com" || host === "www.pokemon.com") return "pokemon.com is not fetched";
+  if (host === "www.pokemoncenter.com") return "www.pokemoncenter.com is not fetched";
+  if ((host === "pokebeach.com" || host === "www.pokebeach.com") && (path === "/feed" || path.startsWith("/feed/"))) {
+    return "pokebeach.com/feed is not fetched";
+  }
+  if (host.endsWith("pokeguardian.com") && (path === "/feed" || path.startsWith("/feed/") || path === "/rss" || path.startsWith("/rss/"))) {
+    return "PokeGuardian feed is not fetched";
+  }
+  if (host.endsWith("nintendolife.com")) return "Nintendo Life is not fetched";
+  if (host.endsWith("gematsu.com") && (path === "/feed" || path.startsWith("/feed/"))) return "Gematsu all-games feed is not fetched";
+  return null;
+}
+
+const KANA = /[\u3040-\u30ff]/;
+const HANGUL = /[\uac00-\ud7af]/;
+const HANI = /[\u3400-\u9fff]/;
+const CYRILLIC = /[\u0400-\u04ff]/;
+const ARABIC = /[\u0600-\u06ff]/;
+const THAI = /[\u0e00-\u0e7f]/;
+const MISSING_TRANSLATION = "Translation is missing.";
+
+export function pageHost(url) {
+  try { return new URL(String(url || "")).hostname.toLowerCase(); }
+  catch { return ""; }
+}
+
+export function isAsiaEnglishHost(host) {
+  return host === "asia.pokemon-card.com" || host === "asia-press.portal-pokemon.com";
+}
+
+// The Japan card site and other Japanese pages. Asia English hosts are not Japan.
+export function isJapanPageHost(host) {
+  if (!host || isAsiaEnglishHost(host)) return false;
+  if (host === "www.pokemon-card.com" || host === "www.30th.pokemon-card.com") return true;
+  if (host === "www.pokemoncenter-online.com" || host === "ptcg-abc.pokemon.co.jp") return true;
+  if (host.endsWith(".jp")) return true;
+  return false;
+}
+
+export function nonEnglishTitle(title) {
+  const text = String(title || "");
+  return KANA.test(text) || HANGUL.test(text) || HANI.test(text) || CYRILLIC.test(text) || ARABIC.test(text) || THAI.test(text);
+}
+
+// Null for English, including Asia English pages and English fan headlines.
+export function sourceLanguage(item) {
+  const title = String(item?.title || "");
+  const host = pageHost(item?.url || "");
+  if (!nonEnglishTitle(title)) {
+    if (isJapanPageHost(host)) return { language: "ja", region: "jp", place: "Japan", englishAlready: true };
+    return null;
+  }
+  if (KANA.test(title) || isJapanPageHost(host)) return { language: "ja", region: "jp", place: "Japan" };
+  if (HANGUL.test(title)) return { language: "ko", region: "kr", place: "Korea" };
+  if (HANI.test(title)) return { language: "zh", place: "Chinese" };
+  if (CYRILLIC.test(title)) return { language: "ru", place: "Russian" };
+  if (ARABIC.test(title)) return { language: "ar", place: "Arabic" };
+  if (THAI.test(title)) return { language: "th", region: "th", place: "Thai" };
+  return null;
+}
+
+export function applyTitleLanguage(item, dict = TITLE_EN) {
+  const mark = sourceLanguage(item);
+  if (!mark) return item;
+  if (mark.englishAlready) {
+    if (!item.region) item.region = "jp";
+    if (!item.titleEn) item.titleEn = /^japan:/i.test(item.title) ? item.title : `Japan: ${item.title}`;
+    return item;
+  }
+  if (mark.region && !item.region) item.region = mark.region;
+  if (mark.language) item.language = mark.language;
+  const en = dict?.[item.title];
+  if (en) {
+    item.titleEn = en;
+    return item;
+  }
+  if (!item.titleEn && !(item.note || "").includes(MISSING_TRANSLATION)) {
+    item.note = item.note ? `${item.note} ${MISSING_TRANSLATION}` : MISSING_TRANSLATION;
+  }
+  return item;
+}
+
+export function isPublicNewsCandidate(item) {
+  if (!hasSourceUrl(item) || item.kind !== "news" || !item.date) return false;
+  if (nonEnglishTitle(item.title)) return Boolean(item.titleEn);
+  return Boolean(item.sentence);
+}
+
+export function publicNewsRecord(item) {
+  if (!item.titleEn || item.titleEn === item.title) return shapeNewsItem(item);
+  return shapeNewsItem({
+    ...item,
+    title: item.titleEn,
+    originalTitle: item.title,
+  });
+}
+
+export function shapeNewsItem(item) {
+  const out = {
+    title: item.title,
+    url: item.url,
+    source: item.source,
+  };
+  if (item.date) out.date = item.date;
+  if (item.dateEnd) out.dateEnd = item.dateEnd;
+  if (item.statedDate && item.statedDate !== item.date) out.statedDate = item.statedDate;
+  if (item.sentence) out.sentence = item.sentence;
+  out.kind = item.kind || "news";
+  if (item.tags?.length) out.tags = item.tags;
+  if (item.product) out.product = item.product;
+  if (item.wave) out.wave = item.wave;
+  if (item.reprint) out.reprint = item.reprint;
+  if (item.setDate) out.setDate = item.setDate;
+  if (item.titleEn) out.titleEn = item.titleEn;
+  if (item.originalTitle) out.originalTitle = item.originalTitle;
+  if (item.language) out.language = item.language;
+  if (item.region) out.region = item.region;
+  if (item.published) out.published = item.published;
+  if (item.note) out.note = item.note;
+  if (item.listUrl) out.listUrl = item.listUrl;
+  return out;
 }
