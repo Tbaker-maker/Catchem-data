@@ -23,6 +23,7 @@
 import { readFile, readdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { catalogueCardDate } from "./lib/card-date.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 const dir = join(ROOT, "research/pulse/cards");
@@ -43,11 +44,12 @@ const dir = join(ROOT, "research/pulse/cards");
 // TODAY'S CARDS plus the "latest-" aliases the pipeline rewrites every run.
 // Anything older is history: still on disk, still readable, no longer a reason
 // to stop a publication. --all re-reads everything for a deliberate audit.
-const today = new Date().toISOString().slice(0, 10);
+let today = "";
+try { today = catalogueCardDate(JSON.parse(await readFile(join(ROOT, "research/assets/public/feed/meta.json"), "utf-8"))); } catch { today = ""; }
 const ALL = process.argv.includes("--all");
 const every = (await readdir(dir).catch(() => [])).filter(f => f.endsWith(".svg"));
 const files = ALL ? every
-  : every.filter(f => f.startsWith(today) || f.startsWith("latest-"));
+  : every.filter(f => (today && f.startsWith(today + "-")) || f.startsWith("latest-"));
 if (!ALL) {
   const skipped = every.length - files.length;
   if (skipped > 0) console.log(`  (${files.length} card(s) from this run · ${skipped} older card(s) not re-checked — card-guard --all audits every one)`);
