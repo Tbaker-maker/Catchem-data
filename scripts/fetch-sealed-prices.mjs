@@ -541,8 +541,34 @@ async function mapConcurrent(items, fn, concurrency) {
   return results;
 }
 
+
+async function exitIfInsightsProbe() {
+  // Present only for a one-product Marketplace Insights probe. Absent on a
+  // normal daily run, so Browse asks are unchanged. The probe exits before
+  // any ask call so a failed sold auth does not spend the ask budget.
+  const probeFile = join(DATA_DIR, "ebay-solds.probe.json");
+  let raw;
+  try { raw = await readFile(probeFile, "utf8"); } catch { return; }
+  const { runSealedInsightsProbe } = await import("./fetch-ebay-solds.mjs");
+  let probe;
+  try { probe = JSON.parse(raw); }
+  catch {
+    console.log("EBAY_INSIGHTS_PROBE_JSON=" + JSON.stringify({ ok: false, kind: "other", status: 0, errorId: null, message: "probe file is not json" }));
+    process.exit(1);
+  }
+  const catalog = JSON.parse(await readFile(PRODUCTS_FILE, "utf8"));
+  const code = await runSealedInsightsProbe({
+    probe,
+    catalog,
+    outFile: join(DATA_DIR, "ebay-completed-sales.json"),
+    writeFileImpl: writeFile,
+  });
+  process.exit(code);
+}
+
 // ─── Main ────────────────────────────────────────────────────────────────────
 async function main() {
+  await exitIfInsightsProbe();
   console.log("📦 Loading product list...");
   const catalog = JSON.parse(await readFile(PRODUCTS_FILE, "utf-8"));
   // menu-listing guard corpus: distinct catalog set names, ≥6 chars —
