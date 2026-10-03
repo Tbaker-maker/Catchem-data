@@ -21,7 +21,7 @@ let der = null; try { der = await J("data/derived-insights.json"); } catch {}
 const CUT = "2026-08-18"; // fix-deploy: earlier rows untrusted
 const movers = [];
 for (const p of sp.products) {
-  const h = (p.priceHistory||[]).filter(r=>r.date>=CUT);
+  const h = (p.priceHistory||[]).filter(r=>r.date>=CUT && Number(r.price) > 0);
   if (h.length>=win && p.dataStatus==="live" && h[h.length-win].price) {
     const wow=(h[h.length-1].price-h[h.length-win].price)/h[h.length-win].price;
     movers.push({name:p.name, now:h[h.length-1].price, wow:Math.round(wow*1000)/10});
@@ -30,9 +30,9 @@ for (const p of sp.products) {
 movers.sort((a,b)=>Math.abs(b.wow)-Math.abs(a.wow));
 const supply = [];
 for (const id of new Set(hh.map(r=>r.id))) {
-  const rows = hh.filter(r=>r.id===id).sort((a,b)=>a.date<b.date?-1:1);
-  if (rows.length>=win && rows[rows.length-win].listingCount>0)
-    supply.push({id, d:(rows[rows.length-1].listingCount-rows[rows.length-win].listingCount)/rows[rows.length-win].listingCount});
+  const rows = hh.filter(r=>r.id===id && Number.isInteger(r.total)).sort((a,b)=>a.date<b.date?-1:1);
+  if (rows.length>=win && rows[rows.length-win].total>0)
+    supply.push({id, d:(rows[rows.length-1].total-rows[rows.length-win].total)/rows[rows.length-win].total});
 }
 supply.sort((a,b)=>a.d-b.d);
 const wk = `${days[days.length-1]}-week`;

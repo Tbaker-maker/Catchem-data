@@ -32,7 +32,7 @@ const pct = (now, then) => (then > 0 ? (now - then) / then : null);
 const round = n => (n == null ? null : Math.round(n * 1000) / 1000);
 
 function priceWoW(history, cutoff) {
-  const usable = cutoff ? history.filter(h => h.date >= cutoff) : history;
+  const usable = (cutoff ? history.filter(h => h.date >= cutoff) : history).filter(h => Number(h.price) > 0);
   if (usable.length < MIN_HISTORY_DAYS) return { wow: null, days: usable.length };
   const now = usable[usable.length - 1].price;
   const then = usable[usable.length - 8].price; // 7 days back
@@ -40,10 +40,10 @@ function priceWoW(history, cutoff) {
 }
 
 function supplyWoW(snapshots, id) {
-  const rows = snapshots.filter(s => s.id === id).sort((a, b) => a.date < b.date ? -1 : 1);
+  const rows = snapshots.filter(s => s.id === id && Number.isInteger(s.total)).sort((a, b) => a.date < b.date ? -1 : 1);
   if (rows.length < 8) return { wow: null, days: rows.length };
-  const now = rows[rows.length - 1].listingCount;
-  const then = rows[rows.length - 8].listingCount;
+  const now = rows[rows.length - 1].total;
+  const then = rows[rows.length - 8].total;
   return { wow: pct(now, then), days: rows.length };
 }
 
@@ -79,9 +79,10 @@ async function main() {
   // Append today's snapshot (idempotent per day)
   snapshots = snapshots.filter(s => s.date !== today);
   for (const p of prices.products || []) {
-    if (p.dataStatus === "live") {
-      snapshots.push({ date: today, id: p.id, price: p.priceMedian, listingCount: p.listingCount });
-    }
+    if (!Number.isInteger(p.activeTotal)) continue;
+    const row = { date: today, id: p.id, total: p.activeTotal };
+    if (p.dataStatus === "live" && p.lastSeen === today && Number(p.priceMedian) > 0) row.price = p.priceMedian;
+    snapshots.push(row);
   }
   // Keep 120 days
   const cutoffDate = new Date(Date.now() - 120 * 86400000).toISOString().split("T")[0];
@@ -115,11 +116,11 @@ async function main() {
   const order = { markup: 0, markdown: 1, distribution: 2, accumulation: 3, ranging: 4 };
   reads.sort((a, b) => order[a.state] - order[b.state] || Math.abs(b.priceWoW ?? 0) - Math.abs(a.priceWoW ?? 0));
 
-  const supplyDays = new Set(snapshots.map(s => s.date)).size;
+  const totalDays = new Set(snapshots.filter((s) => Number.isInteger(s.total)).map((s) => s.date)).size;
   const report = {
     generatedAt: new Date().toISOString(),
-    method: "Wyckoff-state reads, weekly lens (the 3-day depth read is the short lens; same history). Five states: heating/cooling/quiet-tightening/supply-into-strength/ranging. Demand = listing-count flow (est. from listing activity, not reported sales). Active Listings measured.",
-    mode: supplyDays >= 8 ? "dual-signal" : `price-only (supply history: day ${supplyDays} of 8 needed)`,
+    method: "Wyckoff-state reads, weekly lens (the 3-day depth read is the short lens; same history). Five states: heating/cooling/quiet-tightening/supply-into-strength/ranging. Demand = listing-count flow (est. from listing activity, not reported sales). Active listings are the Browse response field total. A filtered page count is not the lead.",
+    mode: totalDays >= 8 ? "dual-signal" : `price-only (browse totals: day ${totalDays} of 8 needed)`,
     counts: { markup: reads.filter(r=>r.state==="markup").length, markdown: reads.filter(r=>r.state==="markdown").length,
               accumulation: reads.filter(r=>r.state==="accumulation").length, distribution: reads.filter(r=>r.state==="distribution").length, ranging: reads.filter(r=>r.state==="ranging").length,
               excluded: excluded.length },

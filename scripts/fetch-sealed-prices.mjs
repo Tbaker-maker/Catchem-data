@@ -14,8 +14,9 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { readFile, writeFile } from "node:fs/promises";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { dirname, join } from "node:path";
+import { leadTotal } from "./lib/active-total.mjs";
 
 // Node's fetch has NO default timeout: a host that accepts the connection
 // and never answers hangs this script until the CI runner kills the job.
@@ -63,7 +64,7 @@ const SUBTYPE_PRICE_BOUNDS = {
   "booster-pack":       [2.5, 75],
 };
 
-function priceBoundsFor(product) {
+export function priceBoundsFor(product) {
   // Vintage SKUs (WOTC/early-era boxes) trade far above modern subtype
   // ceilings — an $800 booster-box cap excludes every genuine Base Set box
   // before fetch. They get the global window unless per-SKU overrides say more.
@@ -394,7 +395,7 @@ function filterItemsForProduct(product, items) {
 
 
 // ─── eBay OAuth (client_credentials grant) ───────────────────────────────────
-async function getEbayToken() {
+export async function getEbayToken() {
   const appId = process.env.EBAY_APP_ID;
   const certId = process.env.EBAY_CERT_ID;
   if (!appId || !certId) {
@@ -468,10 +469,32 @@ async function searchEbay(token, query, floor = MIN_PRICE, ceiling = MAX_PRICE) 
     if (batch.length < 50) break; // last page
     await new Promise(r => setTimeout(r, QUERY_DELAY_MS));
   }
-  if (lastTotal != null && lastTotal > all.length) {
-    console.log(`    read ${all.length} of ${lastTotal} eBay results (capped at ${SEARCH_PAGES} pages)`);
+  const total = Number.isInteger(lastTotal) && lastTotal >= 0 ? lastTotal : null;
+  if (total != null && total > all.length) {
+    console.log(`    read ${all.length} of ${total} eBay results (capped at ${SEARCH_PAGES} pages)`);
   }
-  return all;
+  return { items: all, total };
+}
+
+// One Browse call. `total` is the active listing count. A missing field or a
+// failed response is null — the caller leaves that day blank.
+export async function browseActiveTotal(token, query, floor = MIN_PRICE, ceiling = MAX_PRICE) {
+  const params = new URLSearchParams({
+    q: query,
+    category_ids: EBAY_TCG_CATEGORY,
+    filter: `buyingOptions:{FIXED_PRICE},conditionIds:{${CONDITION_NEW}},priceCurrency:USD,price:[${floor}..${ceiling}]`,
+    limit: "1",
+    offset: "0",
+  });
+  const res = await fetch(`${EBAY_SEARCH_URL}?${params}`, { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "X-EBAY-C-MARKETPLACE-ID": MARKETPLACE,
+    },
+  });
+  if (!res.ok) return { total: null, status: res.status };
+  const data = await res.json();
+  return { total: leadTotal(data.total), status: res.status };
 }
 
 // ─── Aggregate prices with outlier trimming ──────────────────────────────────
@@ -519,7 +542,6 @@ function aggregatePrices(items, floor = MIN_PRICE, ceiling = MAX_PRICE, report =
     // SKU on 2026-08-22 CI: 192 misses, 0 live, and the run still exited 0)
     topPricedTitles: [...items].sort((x, y) => (y._delivered ?? 0) - (x._delivered ?? 0)).slice(0, 3)
       .map(i => ({ t: (i.title || "").slice(0, 90), p: round(i._delivered) })),
-    listingCount: prices.length,
   };
 }
 
@@ -575,7 +597,9 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
   const updated = await mapConcurrent(products, async (product) => {
     try {
       const [floor, ceiling] = priceBoundsFor(product);
-      const items = await searchEbay(token, product.searchQuery, floor, ceiling);
+      const found = await searchEbay(token, product.searchQuery, floor, ceiling);
+      const items = found.items;
+      const browseTotal = found.total;
       const { kept, report, samples } = filterItemsForProduct(product, items);
       console.log(
         `   ${product.id}: fetched=${report.fetched} kept=${report.kept} ` +
@@ -583,6 +607,7 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
       );
 
       const prev = previous[product.id];
+      const lead = leadTotal(browseTotal);
 
       // No-active-market (Tyler ruling 2026-08-18, option b): SKUs flagged
       // activeMarketThin (vintage boxes) publish honest nulls when <3 genuine
@@ -596,7 +621,9 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
         return {
           ...product,
           priceUsd: null, priceMedian: null, priceLow: null, priceHigh: null,
-          listingCount: kept.length,
+          listingCount: lead,
+          activeTotal: lead,
+          activeTotalAsOf: today,
           priceHistory: prev?.priceHistory || [],
           dataStatus: "no-active-market",
           lastSeen: prev?.lastSeen,
@@ -611,16 +638,29 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
       // bad query can leave exactly 3 wrong-product survivors (observed Aug 17:
       // 3 JP/CN import boxes would have published $110 as a clean "live" price).
       // A healthy SKU dropping below 8 kept is a query problem until proven otherwise.
-      if ((prev?.listingCount ?? 0) >= 10 && kept.length < 8) {
-        console.warn(`   ⚠ ${product.id}: query_error (had ${prev.listingCount}, kept ${kept.length})`);
+      const prevKept = prev?.filterReport?.kept;
+      if ((prevKept ?? 0) >= 10 && kept.length < 8) {
+        console.warn(`   ⚠ ${product.id}: query_error (had ${prevKept} kept, now ${kept.length})`);
+        const history = prev?.priceHistory ? [...prev.priceHistory] : [];
+        if (lead == null) {
+          const last = history[history.length - 1];
+          if (last && last.date === today) last.total = null;
+        } else {
+          const last = history[history.length - 1];
+          if (last && last.date === today && last.price == null) last.total = lead;
+          else if (!last || last.date !== today) history.push({ date: today, total: lead });
+          else last.total = lead;
+        }
         return {
           ...product,
           priceUsd: prev?.priceUsd,
           priceMedian: prev?.priceMedian,
           priceLow: prev?.priceLow,
           priceHigh: prev?.priceHigh,
-          listingCount: prev?.listingCount ?? 0,
-          priceHistory: prev?.priceHistory || [],
+          listingCount: lead,
+          activeTotal: lead,
+          activeTotalAsOf: today,
+          priceHistory: history,
           dataStatus: "query_error",
           lastSeen: prev?.lastSeen,
           filterReport: report,
@@ -655,11 +695,18 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
         // otherwise append. Trim to HISTORY_DAYS.
         const lastIdx = history.length - 1;
         if (lastIdx >= 0 && history[lastIdx].date === today) {
-          history[lastIdx] = { date: today, price: agg.priceMedian };
+          history[lastIdx] = { date: today, price: agg.priceMedian, total: lead };
         } else {
-          history.push({ date: today, price: agg.priceMedian });
+          history.push({ date: today, price: agg.priceMedian, total: lead });
         }
         while (history.length > HISTORY_DAYS) history.shift();
+      } else if (lead == null) {
+        const last = history[history.length - 1];
+        if (last && last.date === today) last.total = null;
+      } else {
+        const last = history[history.length - 1];
+        if (last && last.date === today) last.total = lead;
+        else history.push({ date: today, total: lead });
       }
 
       return {
@@ -670,8 +717,10 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
           priceMedian: prev?.priceMedian,
           priceLow: prev?.priceLow,
           priceHigh: prev?.priceHigh,
-          listingCount: 0,
         }),
+        listingCount: lead,
+        activeTotal: lead,
+        activeTotalAsOf: today,
         priceHistory: history,
         ...(representativeImage ? { representativeImage } : {}),
         rejectionSamples: samples,
@@ -684,6 +733,9 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
       return {
         ...product,
         ...(previous[product.id] || {}),
+        listingCount: null,
+        activeTotal: null,
+        activeTotalAsOf: today,
         dataStatus: "error",
       };
     }
@@ -737,7 +789,10 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
   console.log(`💾 Wrote ${OUTPUT_FILE}`);
 }
 
-main().catch(err => {
-  console.error("💥 Fatal error:", err);
-  process.exit(1);
-});
+const isDirect = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+if (isDirect) {
+  main().catch(err => {
+    console.error("💥 Fatal error:", err);
+    process.exit(1);
+  });
+}

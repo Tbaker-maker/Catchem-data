@@ -34,7 +34,7 @@ if (!Array.isArray(tcgH)) process.exit(0);
 const ids = [...new Set(ebayH.map(r=>r.id))];
 const rows=[], maturing=[];
 for (const id of ids) {
-  const e = delta7(ebayH.filter(r=>r.id===id), "listingCount");
+  const e = delta7(ebayH.filter(r=>r.id===id && Number.isInteger(r.total)), "total");
   const t = delta7(tcgH.filter(r=>r.id===id), "tcgListings");
   const s = state(e.d, t.d);
   if (!s) { maturing.push({ id, ebayDays: e.days, tcgDays: t.days }); continue; }
