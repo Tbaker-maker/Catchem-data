@@ -51,7 +51,7 @@ export async function run() {
     const dates = text.match(/\b(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2}\b/g) || [];
     return new Set(prices).size !== prices.length || new Set(dates).size !== dates.length;
   };
-  t("a falling series is one sentence and does not restate a percent", !/not the first/.test(dug) && !/%/.test(dug) && !/\. [A-Z]/.test(dug) && dug.endsWith(".") && !/check on /.test(dug) && !/\bstored\b|last print/i.test(dug) && /latest price/.test(dug) && !repeats(dug) && !BANNED.test(dug));
+  t("a falling series is one sentence and does not restate a percent", !/not the first/.test(dug) && (dug.match(/%/g) || []).length === 1 && !/\. [A-Z]/.test(dug) && dug.endsWith(".") && !/check on /.test(dug) && !/\bstored\b|last print|\bprinted\b/i.test(dug) && /latest price/.test(dug) && !repeats(dug) && !BANNED.test(dug));
   const moved = down.map((p, i) => i === down.length - 1 ? [p[0], Math.round((p[1] - 1) * 100) / 100] : p);
   const again = pathSentence(moved, { direction: "down", fromDate: "2026-09-01", toDate: "2026-09-28", fromPrice: 10, windowDays: 30 });
   t("a real point change changes the sentence", again !== dug && /latest price/.test(again));
@@ -198,6 +198,11 @@ export async function run() {
   t("generated lines do not share a stripped shape", new Set(proseLead.map((row) => sentenceShape(row.path, row).replace(/,?\s*while the n-day window\b.*/i, "").replace(/\b(rose|fell|eased|above|higher|lower|highs|lows|high|low)\b/gi, " "))).size === proseLead.length);
   t("a plain climb is not padded out to 24", proseLead.length < 24);
   t("a date is not at Sep or dated Sep on Sep", [dug, first, again, named, soldLine, etbLine, ...pool, ...proseLead.map((row) => row.path)].every((line) => !BAD_DATE.test(line)));
+
+  const leadBan = /bigger last step|moved less on the latest step|printed on|\bprinted\b|\bstored\b|last print|model price|\bexpected\b/i;
+  const shipped = [dug, first, again, named, soldLine, etbLine, ...pool, ...proseLead.map((row) => row.path)];
+  t("a lead does not use a banned step phrase", shipped.every((line) => !leadBan.test(line)));
+  t("a read names two prices and one percent", [named, soldLine].every((line) => (line.match(/\$[0-9,.]+/g) || []).length === 2 && (line.match(/%/g) || []).length === 1 && /latest price/.test(line)));
 
   return fail;
 }
