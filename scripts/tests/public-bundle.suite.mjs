@@ -103,8 +103,11 @@ export async function run() {
     t("counts add up and slabs stay at zero", counts.items === counts.single + counts.sealed && counts.slab === 0 && counts.single > 20000);
     t("the catalogue is more than 12 reads", meta.count > 12 && reads.count === meta.count && meta.count === Object.keys(catalogue.cards).length);
     const oldWhy = /last 30 days ran|low of the last 30|high of the last 30|we store|at least/i;
-    const bad = reads.reads.filter((row) => !money(row.price) || !row.headline || !row.why || BANNED.test(row.headline) || BANNED.test(row.why || "") || row.price === 0 || !/\b(over|in) (7|30|90) days\b/.test(row.headline) || !/\([^)]+\)/.test(row.headline) || oldWhy.test(row.why) || oldWhy.test(row.headline) || /\b(heating up|cooling off|last print|Top card in|checked again)\b/i.test(row.headline));
-    t("every lead read has a price, a window, and a clean headline", bad.length === 0 && reads.reads.length >= 1 && reads.reads.length <= 24);
+    const priceReads = reads.reads.filter((row) => row.readKind === "price" || row.kind === "single" || row.kind === "sealed");
+    const otherReads = reads.reads.filter((row) => !priceReads.includes(row));
+    const bad = priceReads.filter((row) => !money(row.price) || !row.headline || !row.why || BANNED.test(row.headline) || BANNED.test(row.why || "") || row.price === 0 || !/\b(over|in) (7|30|90) days\b/.test(row.headline) || !/\([^)]+\)/.test(row.headline) || oldWhy.test(row.why) || oldWhy.test(row.headline) || /\b(heating up|cooling off|last print|Top card in|checked again)\b/i.test(row.headline));
+    t("every price lead read has a price, a window, and a clean headline", bad.length === 0 && priceReads.length >= 1 && priceReads.length <= 24);
+    t("a non-price read is pull or pokemon", otherReads.every((row) => row.readKind === "pull" || row.readKind === "pokemon"));
     const shape = (text) => String(text).replace(/\$[0-9,.]+/g, "$").replace(/\b(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2}\b/g, "DATE").replace(/\b\d+(?:\.\d+)?\b/g, "n");
     const shapes = reads.reads.map((row) => shape(row.path || ""));
     t("the catalogue day is not the partial 2026-09-29 file", reads.asOf !== "2026-09-29" && meta.asOf !== "2026-09-29");
@@ -116,16 +119,17 @@ export async function run() {
       }
       return shape(s).replace(/,?\s*while the n-day window\b.*/i, "").replace(/\bthat price\b/gi, "$").replace(/\bthat day\b/gi, "DATE").replace(/\b(rose|fell|eased|above|higher|lower|highs|lows|high|low)\b/gi, " ").replace(/\s+/g, " ").replace(/[.]+$/g, "").trim();
     };
-    t("lead paths do not share a stripped shape", new Set(reads.reads.map((row) => fold(row.path || "", row.name, row.set))).size === reads.reads.length && reads.reads.every((row) => row.path));
+    t("lead paths do not share a stripped shape", new Set(priceReads.map((row) => fold(row.path || "", row.name, row.set))).size === priceReads.length && reads.reads.every((row) => row.path));
     t("a date is not at Sep or dated Sep on Sep", reads.reads.every((row) => !BAD_DATE.test(row.path || "")));
     t("paired frames are gone", reads.reads.every((row) => !/newest move widened|step shrank versus|unchanged price across|\bas of\b/i.test(row.path || "")));
     t("a line that uses both verbs states both moves", reads.reads.every((row) => !(/\brose\b/i.test(row.path || "") && /\bfell\b/i.test(row.path || "")) || statesBothMoves(row.path)));
     t("the lead is not only small 7-day moves", reads.reads.some((row) => Number(row.windowDays) !== 7 || Math.abs(Number(row.changePct)) >= 8));
-    t("one product is one lead card", new Set(reads.reads.map((row) => row.sku)).size === reads.reads.length);
+    t("one product is one lead card", new Set(priceReads.map((row) => row.sku)).size === priceReads.length);
     t("lead lines do not say stored or last print", reads.reads.every((row) => !/\bstored\b|last print/i.test(String(row.path || "") + String(row.headline || "") + String(row.why || ""))));
     t("lead lines do not use a filler closer", reads.reads.every((row) => !FILLER_BAN.test(String(row.path || ""))));
-    t("no 4-word phrase is on more than 2 lead lines", phrasePeak(reads.reads.map((row) => shape(row.path || ""))).peak <= 2);
-    t("a read is one kind", reads.reads.every((row) => row.kind === "single" || row.kind === "sealed"));
+    t("no 4-word phrase is on more than 2 price lead lines", phrasePeak(priceReads.map((row) => shape(row.path || ""))).peak <= 2);
+    t("a read is one kind", reads.reads.every((row) => row.kind === "single" || row.kind === "sealed" || row.kind === "pull" || row.kind === "pokemon"));
+    t("no lead says bigger last step or printed on", reads.reads.every((row) => !/bigger last step|printed on/i.test(String(row.path || "") + String(row.headline || "") + String(row.why || ""))));
     const headlines = Object.values(catalogue.cards).map((row) => row.headline);
     t("no duplicate headline", headlines.length === new Set(headlines).size);
     const topSets = new Map();

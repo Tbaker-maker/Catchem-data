@@ -5,6 +5,7 @@ import {
   BANNED, BAD_DATE, chartSeries, composeLead, directionAgrees, endStreak, feedWindow, FILLER_BAN, fourGrams, isThinSeries, money, pathAlt, pathSentence, pickLead, pretty, readCopy, separateHalfCopies, slug, statesBothMoves, windowBounds,
 } from "./public-bundle.mjs";
 import { appendLearningLog, readCallLog } from "./learning-log.mjs";
+import { interleavePokemonFacts, loadPokemonIndex } from "./fact-reads.mjs";
 
 const JUNK = /set of \d|costco|sam'?s club|dollar general|walmart|walgreens|\(lgs\)/i;
 
@@ -592,7 +593,7 @@ export function trackedRows(prior, priceBySku) {
   return out;
 }
 
-export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDir, logFile, shelf, gapPids = [], rewriteDir = "", soldBySku = null }) {
+export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDir, logFile, shelf, gapPids = [], rewriteDir = "", soldBySku = null, root = "" }) {
   const { cards, lists, halfDropped = [] } = assembleCatalogue(items, prior);
   applyShelf(cards, shelf);
   const soldMap = soldBySku instanceof Map ? soldBySku : new Map();
@@ -766,17 +767,23 @@ export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDi
   });
   await writeFile(join(outDir, "feed", "lookup.json"), JSON.stringify(lookup));
   await writeFile(join(outDir, "feed", "facts.json"), JSON.stringify(facts));
-  const lead = picked.lead;
+  const priceLead = picked.lead.map((row) => ({ ...row, readKind: "price" }));
+  let pokemonIndex = null;
+  if (root) {
+    try { pokemonIndex = await loadPokemonIndex(root); } catch { pokemonIndex = null; }
+  }
+  const lead = pokemonIndex ? interleavePokemonFacts(priceLead, pokemonIndex) : priceLead;
   await writeFile(join(outDir, "reads.json"), JSON.stringify({
     asOf: catalogue.asOf,
     updatedAt: catalogue.updatedAt,
     source: "TCGplayer market",
     count: catalogue.count,
     catalogue: "feed/catalogue.json",
+    filterField: "readKind",
     reads: lead,
   }, null, 1) + "\n");
   const logged = logFile ? await appendLearningLog(logFile, { asOf, updatedAt, reads: logReads }) : { added: 0, total: 0, skipped: [] };
-  return { count: catalogue.count, sections: Object.fromEntries(Object.entries(lists).map(([k, v]) => [k, v.length])), tracked: tracked.length, logged, halfExcluded: halfDropped.filter((row) => row.reason === "ambiguous").length, halfCheap: halfDropped.filter((row) => row.reason === "cheap-copy").length, lead: picked.lead.length };
+  return { count: catalogue.count, sections: Object.fromEntries(Object.entries(lists).map(([k, v]) => [k, v.length])), tracked: tracked.length, logged, halfExcluded: halfDropped.filter((row) => row.reason === "ambiguous").length, halfCheap: halfDropped.filter((row) => row.reason === "cheap-copy").length, lead: lead.length, pullLines: lead.filter((row) => row.readKind === "pull").length, pokemonLines: lead.filter((row) => row.readKind === "pokemon").length };
 }
 
 export async function readShelfFile(file) {
