@@ -8,6 +8,7 @@ import {
 } from "./lib/public-bundle.mjs";
 import { publicReceipts, scoreWatch } from "./lib/public-receipts.mjs";
 import { publishFeed, readCallLog, readShelfFile } from "./lib/feed-catalogue.mjs";
+import { priceFileStamp } from "./lib/price-stamp.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "research/assets/public");
@@ -732,7 +733,9 @@ try {
 
 let updatedAt = null;
 try { updatedAt = (await read("data/ppt/run-report.json")).finishedAt || null; } catch { /* clock stays null */ }
-counts.updatedAt = updatedAt;
+let priceAt = null;
+try { priceAt = priceFileStamp(await read("data/sealed-prices.json")); } catch { /* no price file */ }
+counts.updatedAt = priceAt || updatedAt;
 counts.ebaySealedTracked = ebayTracked;
 await writeFile(join(OUT, "counts.json"), JSON.stringify(counts, null, 1) + "\n");
 
