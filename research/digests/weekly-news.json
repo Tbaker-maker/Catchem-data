@@ -325,17 +325,6 @@
           "sentence": "Pitch Black Booster Bundle from ME05: Pitch Black fell from $74.48 on 2026-07-01 to $38.43 on 2026-09-29, 48.4% over 90 days."
         },
         {
-          "name": "Destined Rivals Elite Trainer Box",
-          "set": "SV10: Destined Rivals",
-          "fromPrice": 184.65,
-          "toPrice": 118.37,
-          "fromDate": "2026-07-01",
-          "toDate": "2026-09-29",
-          "percent": -35.9,
-          "windowDays": 90,
-          "sentence": "Destined Rivals Elite Trainer Box from SV10: Destined Rivals fell from $184.65 on 2026-07-01 to $118.37 on 2026-09-29, 35.9% over 90 days."
-        },
-        {
           "name": "Pitch Black Booster Box",
           "set": "ME05: Pitch Black",
           "fromPrice": 282.64,
@@ -372,6 +361,34 @@
         "sentence": "The largest 30-day move in sealed is Temporal Forces Booster Pack from SV05: Temporal Forces, from $11.19 on 2026-08-30 to $9.27 on 2026-09-29, 17.2%."
       }
     },
-    "graded": "not included"
+    "graded": "not included",
+    "omitted": [
+      {
+        "name": "Destined Rivals Elite Trainer Box",
+        "set": "SV10: Destined Rivals",
+        "id": "tcgcsv-624676",
+        "reason": "Two TCGplayer market sources disagree, so this product is left out. No figure was chosen.",
+        "figures": [
+          {
+            "price": 118.37,
+            "date": "2026-09-29",
+            "file": "data/history/tcgcsv-daily/2026-09-29.json",
+            "note": "partial day print for this product only"
+          },
+          {
+            "price": 116.85,
+            "date": "2026-09-27",
+            "file": "data/history/tcgcsv-daily/2026-09-27.json",
+            "note": "catalog day"
+          },
+          {
+            "price": 114.94,
+            "file": "trending.json",
+            "sku": "destined-rivals-etb",
+            "note": "product-page market kept from the 2026-10-01 snapshot; markets not refreshed"
+          }
+        ]
+      }
+    ]
   }
 }
