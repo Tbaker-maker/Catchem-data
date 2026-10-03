@@ -89,6 +89,14 @@ export async function run() {
     const built = pokemonFactLine(fresh);
     t(`pokemon line ${row.name} matches the catalogue count`, built && built.cardCount === row.cardCount && built.artistCount === row.artistCount && built.dex === row.dex && built.path === row.path);
   }
+
+  const stepBan = /moved less on the latest step|bigger last step|\bprinted\b|\bstored\b|last print/i;
+  t("lead lines do not use a last-step rewrite", (reads.reads || []).every((row) => !stepBan.test(String(row.path || "") + String(row.headline || ""))));
+  const today = JSON.parse(await readFile(join(ROOT, "research/assets/public/feed/today/0.json"), "utf8"));
+  const chaos = today.find((row) => row.sku === "tcgcsv-684452");
+  t("a window path uses the window percent, not the last print step",
+    chaos && chaos.changePct === 7.9 && /from \$115\.08 on Sep 22 to \$124\.16 on Sep 29, up 7\.9%/.test(chaos.path) && !/2\.8%/.test(chaos.path) && !/\$120\.82/.test(chaos.path));
+
   return fail;
 }
 

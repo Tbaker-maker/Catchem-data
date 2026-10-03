@@ -198,7 +198,11 @@ export async function run() {
   t("generated lines do not share a stripped shape", new Set(proseLead.map((row) => sentenceShape(row.path, row).replace(/,?\s*while the n-day window\b.*/i, "").replace(/\b(rose|fell|eased|above|higher|lower|highs|lows|high|low)\b/gi, " "))).size === proseLead.length);
   t("a plain climb is not padded out to 24", proseLead.length < 24);
   t("a date is not at Sep or dated Sep on Sep", [dug, first, again, named, soldLine, etbLine, ...pool, ...proseLead.map((row) => row.path)].every((line) => !BAD_DATE.test(line)));
-  t("a lead does not say bigger last step or printed on", [dug, first, again, named, soldLine, etbLine, ...pool, ...proseLead.map((row) => row.path)].every((line) => !/bigger last step|printed on/i.test(line)));
+
+  const leadBan = /bigger last step|moved less on the latest step|printed on|\bprinted\b|\bstored\b|last print|model price|\bexpected\b/i;
+  const shipped = [dug, first, again, named, soldLine, etbLine, ...pool, ...proseLead.map((row) => row.path)];
+  t("a lead does not use a banned step phrase", shipped.every((line) => !leadBan.test(line)));
+  t("a read names two prices and one percent", [named, soldLine].every((line) => (line.match(/\$[0-9,.]+/g) || []).length === 2 && (line.match(/%/g) || []).length === 1 && /latest price/.test(line)));
 
   const leadBan = /bigger last step|moved less on the latest step|printed on|\bprinted\b|\bstored\b|last print|model price|\bexpected\b/i;
   const shipped = [dug, first, again, named, soldLine, etbLine, ...pool, ...proseLead.map((row) => row.path)];
