@@ -132,5 +132,6 @@ const result = await publishFeed({
   shelf: await readShelfFile(process.env.SHELF_LOG || join(ROOT, "data/learning/shelf.jsonl")),
   gapPids: [...GAP_IMAGE],
   soldBySku,
+  root: ROOT,
 });
 console.log(JSON.stringify({ count: result.count, sections: result.sections, tracked: result.tracked, added: result.logged.added, skipped: result.logged.skipped.length, lead: result.lead, halfExcluded: result.halfExcluded, halfCheap: result.halfCheap, soldFacts: soldBySku.size }));
