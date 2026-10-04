@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildPokemonIndex, pokemonFactLine, pullCostLine, speciesToken } from "../lib/fact-reads.mjs";
+import { pathSentence } from "../lib/public-bundle.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
@@ -94,8 +95,35 @@ export async function run() {
   t("lead lines do not use a last-step rewrite", (reads.reads || []).every((row) => !stepBan.test(String(row.path || "") + String(row.headline || ""))));
   const today = JSON.parse(await readFile(join(ROOT, "research/assets/public/feed/today/0.json"), "utf8"));
   const chaos = today.find((row) => row.sku === "tcgcsv-684452");
+  // The percent is the price move across the window, not the last print and
+  // not a share of today's listings. $120.82 on Sep 27 to $124.16 on Sep 29
+  // is the last step (2.8%). $115.08 on Sep 22 to $124.16 on Sep 29 is the window (7.9%).
+  const windowPath = pathSentence([
+    ["2026-09-22", 115.08],
+    ["2026-09-27", 120.82],
+    ["2026-09-29", 124.16],
+  ], {
+    name: "Chaos Rising Pokémon Center Elite Trainer Box",
+    fromPrice: 115.08,
+    fromDate: "2026-09-22",
+    toDate: "2026-09-29",
+    windowDays: 7,
+    direction: "up",
+  });
+  const liveMove = String(chaos?.path || "").match(/from \$([0-9,.]+) on [A-Za-z]+ \d{1,2} to \$([0-9,.]+) on [A-Za-z]+ \d{1,2}, up ([0-9]+(?:\.[0-9]+)?)%/);
+  const liveFrom = liveMove ? Number(liveMove[1].replace(/,/g, "")) : NaN;
+  const liveTo = liveMove ? Number(liveMove[2].replace(/,/g, "")) : NaN;
+  const liveStated = liveMove ? Number(liveMove[3]) : NaN;
+  const liveWindow = liveFrom > 0 ? Math.round(Math.abs((liveTo - liveFrom) / liveFrom) * 1000) / 10 : NaN;
   t("a window path uses the window percent, not the last print step",
-    chaos && chaos.changePct === 7.9 && /from \$115\.08 on Sep 22 to \$124\.16 on Sep 29, up 7\.9%/.test(chaos.path) && !/2\.8%/.test(chaos.path) && !/\$120\.82/.test(chaos.path));
+    /from \$115\.08 on Sep 22 to \$124\.16 on Sep 29, up 7\.9%/.test(windowPath)
+    && !/2\.8%/.test(windowPath)
+    && !/\$120\.82/.test(windowPath)
+    && chaos
+    && liveMove
+    && Math.abs(liveStated - liveWindow) <= 0.05
+    && Math.abs(liveStated - Number(chaos.changePct)) <= 0.05
+    && Number(chaos.windowDays) > 0);
 
   return fail;
 }
