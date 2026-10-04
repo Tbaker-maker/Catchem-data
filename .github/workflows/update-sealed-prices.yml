@@ -199,11 +199,17 @@ jobs:
         # used only for a product that has that print.
         run: node scripts/build-feed.mjs
 
+      - name: Stamp the Updated line from the price file
+        # Site pages read counts.json for the Updated line. That clock is the
+        # timestamp already on sealed-prices.json, not the last public bundle.
+        # A price file with no updatedAt leaves the line as it is.
+        run: node scripts/stamp-public-updated.mjs
+
       - name: Commit the rebuilt feed
         run: |
           git config user.name "catchem-bot"
           git config user.email "bot@catchem.app"
-          git add research/assets/public/reads.json research/assets/public/feed/
+          git add research/assets/public/reads.json research/assets/public/feed/ research/assets/public/counts.json
           if git diff --staged --quiet; then
             echo "No feed changes to commit."
           else

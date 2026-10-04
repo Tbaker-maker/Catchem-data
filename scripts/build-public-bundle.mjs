@@ -8,6 +8,7 @@ import {
 } from "./lib/public-bundle.mjs";
 import { publicReceipts, scoreWatch } from "./lib/public-receipts.mjs";
 import { publishFeed, readCallLog, readShelfFile } from "./lib/feed-catalogue.mjs";
+import { nextCountsUpdatedAt } from "./lib/price-stamp.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "research/assets/public");
@@ -523,6 +524,15 @@ const singleN = counts.single;
 const credited = published.reduce((n, set) => n + set.items.filter((it) => it.kind === "single" && it.artist).length, 0);
 counts.artistCards = credited;
 counts.artistNote = `Illustrator credits come from the card catalogue and the card index, when the name and the set agree. ${credited.toLocaleString("en-US")} of ${singleN.toLocaleString("en-US")} singles have a credit. Not every card has one.`;
+let priorUpdatedAt = null;
+try {
+  const priorCounts = await read("research/assets/public/counts.json");
+  if (priorCounts && typeof priorCounts.updatedAt === "string") priorUpdatedAt = priorCounts.updatedAt;
+} catch { /* no previous line */ }
+let priceDoc = null;
+try { priceDoc = await read("data/sealed-prices.json"); } catch { /* no price file */ }
+const lineAt = nextCountsUpdatedAt(priceDoc, priorUpdatedAt);
+if (lineAt) counts.updatedAt = lineAt;
 await writeFile(join(OUT, "counts.json"), JSON.stringify(counts, null, 1) + "\n");
 await writeFile(join(OUT, "sets.json"), JSON.stringify({ asOf: catalog.asOf, source: "TCGplayer market", sets: setIndex }));
 await writeFile(join(OUT, "artists.json"), JSON.stringify({ asOf: catalog.asOf, note: counts.artistNote, artists: artistIndex }));
@@ -732,7 +742,6 @@ try {
 
 let updatedAt = null;
 try { updatedAt = (await read("data/ppt/run-report.json")).finishedAt || null; } catch { /* clock stays null */ }
-counts.updatedAt = updatedAt;
 counts.ebaySealedTracked = ebayTracked;
 await writeFile(join(OUT, "counts.json"), JSON.stringify(counts, null, 1) + "\n");
 
