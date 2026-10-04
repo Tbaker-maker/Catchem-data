@@ -148,3 +148,59 @@ export function interleavePokemonFacts(priceRows, index) {
   }
   return out;
 }
+
+function nameBoundary(cardName, pokemon) {
+  const card = String(cardName || "");
+  const who = String(pokemon || "");
+  if (!who || !card.startsWith(who)) return false;
+  if (card.length === who.length) return true;
+  return /[^A-Za-z0-9]/.test(card.charAt(who.length));
+}
+
+// A Post Office cutout is kind cutout with a src, or a cutout field already on the row.
+// A card picture is not a cutout.
+export function cutoutSrc(row) {
+  if (!row || typeof row !== "object" || Array.isArray(row)) return "";
+  if (row.kind === "cutout") {
+    const src = String(row.src || "").trim();
+    if (src) return src;
+  }
+  const box = row.cutout;
+  if (typeof box === "string" && box.trim()) return box.trim();
+  if (box && typeof box === "object" && !Array.isArray(box)) {
+    const src = String(box.src || "").trim();
+    if (src) return src;
+  }
+  return "";
+}
+
+export function factCutoutReport(facts, catalogue) {
+  const cards = Array.isArray(catalogue)
+    ? catalogue
+    : (catalogue && catalogue.cards && typeof catalogue.cards === "object" ? Object.values(catalogue.cards) : []);
+  const cutout = [];
+  const missing = [];
+  const absent = [];
+  const seen = new Set();
+  for (const fact of facts || []) {
+    const name = String(fact?.name || "").trim();
+    if (!name || seen.has(name)) continue;
+    seen.add(name);
+    let inFile = false;
+    let hasCut = false;
+    for (const row of cards) {
+      if (!row || typeof row !== "object") continue;
+      if (!nameBoundary(row.name, name) && !nameBoundary(row.species, name)) continue;
+      inFile = true;
+      if (cutoutSrc(row)) hasCut = true;
+    }
+    if (!inFile) absent.push(name);
+    else if (hasCut) cutout.push(name);
+    else missing.push(name);
+  }
+  const byName = (a, b) => a.localeCompare(b);
+  cutout.sort(byName);
+  missing.sort(byName);
+  absent.sort(byName);
+  return { cutout, missing, absent };
+}

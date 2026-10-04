@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { buildPokemonIndex, pokemonFactLine, pullCostLine, speciesToken } from "../lib/fact-reads.mjs";
+import { buildPokemonIndex, cutoutSrc, factCutoutReport, pokemonFactLine, pullCostLine, speciesToken } from "../lib/fact-reads.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
@@ -92,6 +92,24 @@ export async function run() {
 
   const stepBan = /moved less on the latest step|bigger last step|\bprinted\b|\bstored\b|last print/i;
   t("lead lines do not use a last-step rewrite", (reads.reads || []).every((row) => !stepBan.test(String(row.path || "") + String(row.headline || ""))));
+  const feedCat = JSON.parse(await readFile(join(ROOT, "research/assets/public", reads.catalogue || "feed/catalogue.json"), "utf8"));
+  const sample = factCutoutReport(
+    [{ name: "Aaa" }, { name: "Bbb" }, { name: "Ccc" }],
+    { cards: {
+      a: { name: "Aaa", kind: "cutout", src: "/cards/visuals/aaa.png" },
+      b: { name: "Bbb", image: "https://tcgplayer-cdn.tcgplayer.com/product/1_in_400x400.jpg" },
+    } },
+  );
+  t("a cutout already on the row is named and a card picture is not one", sample.cutout.join() === "Aaa" && sample.missing.join() === "Bbb" && sample.absent.join() === "Ccc" && cutoutSrc({ image: "https://tcgplayer-cdn.tcgplayer.com/x.jpg" }) === "" && cutoutSrc({ kind: "cutout", src: "" }) === "");
+  const facts = (reads.reads || []).filter((row) => row.readKind === "pokemon");
+  const named = factCutoutReport(facts, feedCat);
+  const names = facts.map((row) => row.name);
+  const listed = [...named.cutout, ...named.missing, ...named.absent];
+  t("every fact name is listed once", names.length === listed.length && names.every((name) => listed.includes(name)));
+  t("Talonflame and Gyarados are in the catalogue and the cutout is missing", named.missing.includes("Talonflame") && named.missing.includes("Gyarados") && !named.cutout.includes("Talonflame") && !named.cutout.includes("Gyarados") && !named.absent.includes("Talonflame") && !named.absent.includes("Gyarados"));
+  console.log("cutout: " + (named.cutout.join(", ") || "(none)"));
+  console.log("missing: " + named.missing.join(", "));
+  console.log("not in the catalogue: " + (named.absent.join(", ") || "(none)"));
   const today = JSON.parse(await readFile(join(ROOT, "research/assets/public/feed/today/0.json"), "utf8"));
   const chaos = today.find((row) => row.sku === "tcgcsv-684452");
   t("a window path uses the window percent, not the last print step",
