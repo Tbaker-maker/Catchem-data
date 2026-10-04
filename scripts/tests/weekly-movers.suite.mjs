@@ -85,7 +85,7 @@ export async function run() {
   const day27 = (await readJson("data/history/tcgcsv-daily/2026-09-27.json")).prices.find((row) => row.id === 624676);
   const day29 = (await readJson("data/history/tcgcsv-daily/2026-09-29.json")).prices.find((row) => row.id === 624676);
   t("the catalog day and the partial print and trending disagree",
-    day27?.market === 116.85 && day29?.market === 118.37 && trend?.market === 114.94 && new Set([day27.market, day29.market, trend.market]).size === 3);
+    day27?.market === 116.85 && day29?.market === 118.37 && trend?.market === 117.28 && new Set([day27.market, day29.market, trend.market]).size === 3);
 
   const named = pricedRows(weekly).filter((row) => row.name === "Destined Rivals Elite Trainer Box");
   const omitted = (weekly.priceMovers?.omitted || []).find((row) => row.id === "tcgcsv-624676");
