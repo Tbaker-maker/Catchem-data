@@ -3,7 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { priceFileStamp, stampCountsText } from "../lib/price-stamp.mjs";
+import { priceFileStamp, stampCountsText, nextCountsUpdatedAt } from "../lib/price-stamp.mjs";
 
 const script = fileURLToPath(new URL("../stamp-public-updated.mjs", import.meta.url));
 
@@ -26,6 +26,9 @@ export async function run() {
   const iso = "2026-10-03T09:46:08.660Z";
   t("the price file clock is kept as written", priceFileStamp({ updatedAt: iso }) === iso);
   t("a missing clock is not filled in", priceFileStamp({}) === null && priceFileStamp({ updatedAt: "2026-10-03" }) === null);
+  t("a missing price clock keeps the line that is already there", nextCountsUpdatedAt({}, "2026-09-27T10:19:31.933Z") === "2026-09-27T10:19:31.933Z");
+  t("no price clock and no previous line invents nothing", nextCountsUpdatedAt({}, null) === null && nextCountsUpdatedAt({ updatedAt: "2026-10-03" }, "") === null);
+  t("the price file clock replaces the old line", nextCountsUpdatedAt({ updatedAt: iso }, "2026-09-27T10:19:31.933Z") === iso);
   const before = '{\n "asOf": "2026-09-27",\n "updatedAt": "2026-09-27T10:19:31.933Z"\n}\n';
   const after = stampCountsText(before, iso);
   t("only the updated line moves", after.includes(`"updatedAt": "${iso}"`) && after.includes('"asOf": "2026-09-27"'));

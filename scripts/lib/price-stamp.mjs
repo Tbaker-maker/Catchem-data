@@ -9,6 +9,15 @@ export function priceFileStamp(doc) {
   return iso;
 }
 
+// The homepage line uses the price-file clock. If that clock is missing,
+// the previous counts.json line stays. No other clock is filled in.
+export function nextCountsUpdatedAt(priceDoc, previousUpdatedAt) {
+  const stamp = priceFileStamp(priceDoc);
+  if (stamp) return stamp;
+  if (typeof previousUpdatedAt === "string" && previousUpdatedAt) return previousUpdatedAt;
+  return null;
+}
+
 export function stampCountsText(raw, stamp) {
   if (!stamp) return null;
   const text = String(raw ?? "");
