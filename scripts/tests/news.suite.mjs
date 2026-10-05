@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { newsFetchExitCode } from "../fetch-tcg-news.mjs";
 import {
   applyDisagreements,
   applyTitleLanguage,
@@ -140,6 +141,41 @@ export async function run() {
   };
   applyTitleLanguage(zh, {});
   t("an untranslated Chinese title stays out of the public mix", zh.language === "zh" && zh.note === "Translation is missing." && isPublicNewsCandidate(zh) === false);
+
+  const partialFailures = [
+    { source: "Bulbagarden", url: "https://bulbagarden.net/home/index.rss", error: "HTTP 403" },
+  ];
+  t("one source failed and a digest exists exits 0", newsFetchExitCode({
+    wrote: true,
+    sources: [
+      { source: "Victory Road", url: "https://victoryroad.pro/feed/", items: 2 },
+      { source: "Bulbagarden", url: "https://bulbagarden.net/home/index.rss", items: 0, skipped: "HTTP 403" },
+    ],
+    failures: partialFailures,
+  }) === 0);
+  t("a recorded 403 failure is not deleted", partialFailures.length === 1 && partialFailures[0].error === "HTTP 403");
+  t("all sources failed exits non-zero", newsFetchExitCode({
+    wrote: true,
+    sources: [
+      { source: "PokeBeach", url: "https://www.pokebeach.com/forums/forum/front-page-news.18/index.rss", items: 0, skipped: "front-page news returned no items" },
+      { source: "Bulbagarden", url: "https://bulbagarden.net/home/index.rss", items: 0, skipped: "HTTP 403" },
+      { source: "Pokémon Center Support", url: "https://support.pokemoncenter.com/hc/en-us/articles/4407702295572-Estimated-Preorder-Release-Dates", items: 0, skipped: "HTTP 403" },
+    ],
+    failures: [
+      { source: "Bulbagarden", url: "https://bulbagarden.net/home/index.rss", error: "HTTP 403" },
+      { source: "Pokémon Center Support", url: "https://support.pokemoncenter.com/hc/en-us/articles/4407702295572-Estimated-Preorder-Release-Dates", error: "HTTP 403" },
+    ],
+  }) !== 0);
+  t("a 403 with no other success exits non-zero", newsFetchExitCode({
+    wrote: true,
+    sources: [{ source: "Bulbagarden", url: "https://bulbagarden.net/home/index.rss", items: 1, skipped: "HTTP 403" }],
+    failures: [{ source: "Bulbagarden", url: "https://bulbagarden.net/home/index.rss", error: "HTTP 403" }],
+  }) !== 0);
+  t("nothing written exits non-zero", newsFetchExitCode({
+    wrote: false,
+    sources: [{ source: "Victory Road", url: "https://victoryroad.pro/feed/", items: 2 }],
+    failures: [],
+  }) !== 0);
 
   for (const rel of ["research/digests/news.json", "research/digests/weekly-news.json"]) {
     let doc;

@@ -516,7 +516,27 @@ async function main() {
   const notes = stored.filter((item) => item.note && item.note.includes("disagree"));
   console.log(`disagreements ${notes.length}`);
   for (const item of notes) console.log(`  note ${item.source} ${item.product} ${item.setDate}`);
-  if (failures.length) process.exitCode = 1;
+  // Both digest files are already on disk, with each failed source's name and
+  // reason left on the document. A partial failure must not skip later steps.
+  const exitCode = newsFetchExitCode({ wrote: true, sources, failures });
+  if (exitCode) process.exitCode = exitCode;
+}
+
+// Exit 0 only when a catalog or digest was written and at least one source
+// returned items. Failed sources stay recorded. Every source failed, or
+// nothing written, exits non-zero. A skipped source, including HTTP 403, is
+// not a success.
+export function newsFetchExitCode({ wrote = false, sources = [], failures = [] } = {}) {
+  const failedKeys = new Set(
+    (Array.isArray(failures) ? failures : []).map((row) => `${row?.source}\n${row?.url}`),
+  );
+  const oneSucceeded = (Array.isArray(sources) ? sources : []).some((source) => {
+    if (!source || !(source.items > 0) || source.skipped) return false;
+    if (failedKeys.has(`${source.source}\n${source.url}`)) return false;
+    return true;
+  });
+  if (wrote && oneSucceeded) return 0;
+  return 1;
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
