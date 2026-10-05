@@ -1,5 +1,5 @@
 {
-  "asOf": "2026-10-03",
+  "asOf": "2026-10-05",
   "status": "ran",
   "reason": "Key was present. Credits below are what the provider reported.",
   "credits": {
@@ -8,18 +8,18 @@
     "reserve": 4000,
     "used": {
       "sealed": 0,
-      "singles": 15800,
+      "singles": 4862,
       "slabs": 0,
       "intraday": 0,
       "crosscheck": 0,
-      "total": 15800
+      "total": 4862
     },
-    "remaining": 4200,
-    "usedToday": 15800
+    "remaining": 15138,
+    "usedToday": 4862
   },
   "items": {
     "sealed": 0,
-    "singles": 7854,
+    "singles": 2410,
     "slabs": 0
   },
   "errors": [],
@@ -79,11 +79,11 @@
   "note": "Public log only. No API key and no raw prices.",
   "raw": "private repo catchem-data-private",
   "run": {
-    "creditsUsed": 15800,
-    "itemsDone": 7854,
-    "itemsSkipped": 2410,
-    "rateLimitCount": 12,
-    "retries": 12
+    "creditsUsed": 4862,
+    "itemsDone": 2410,
+    "itemsSkipped": 0,
+    "rateLimitCount": 5,
+    "retries": 5
   },
   "rawNote": "PRIVATE_DATA_TOKEN is set. Raw is written under ppt-raw-private and pushed to the private repo. It is not committed here."
 }

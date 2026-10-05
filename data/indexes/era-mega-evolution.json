@@ -1,7 +1,7 @@
 {
   "id": "era-mega-evolution",
   "name": "Mega Evolution",
-  "asOf": "2026-10-03",
+  "asOf": "2026-10-05",
   "method": "Chain-linked. A name joins on the first day it has a price and does not move the level that day. Its first return is the next day it is priced. Each day's move is the median price change of names priced on both days. A value-weighted line gives a dearer product a bigger say. A day with no shared prices is a gap. Nothing is filled in.",
   "basket": [
     {
@@ -2015,6 +2015,16 @@
           "entered": 0,
           "equalMovePct": 0,
           "valueMovePct": 0.2036
+        },
+        {
+          "date": "2026-10-03",
+          "from": "2026-09-27",
+          "equal": 93,
+          "value": 74,
+          "matched": 24,
+          "entered": 0,
+          "equalMovePct": -0.4497,
+          "valueMovePct": 0.2997
         }
       ],
       "gaps": [
@@ -2022,6 +2032,12 @@
           "from": "2025-03-31",
           "to": "2026-03-30",
           "note": "No TCGplayer history before this date is on file (the TCGCSV archive is offline and PokemonPriceTracker returns 180 days). Nothing earlier is filled in."
+        },
+        {
+          "from": "2026-09-27",
+          "to": "2026-10-03",
+          "missingDays": 5,
+          "note": "No price was invented for the days in between."
         }
       ]
     },
@@ -2171,6 +2187,16 @@
           "entered": 0,
           "equalMovePct": 0.0104,
           "valueMovePct": -0.2503
+        },
+        {
+          "date": "2026-10-05",
+          "from": "2026-10-03",
+          "equal": 101.5,
+          "value": 99.9,
+          "matched": 30,
+          "entered": 0,
+          "equalMovePct": 0.015,
+          "valueMovePct": 0.2722
         }
       ],
       "gaps": [
@@ -2190,6 +2216,12 @@
           "from": "2026-09-27",
           "to": "2026-10-03",
           "missingDays": 5,
+          "note": "No price was invented for the days in between."
+        },
+        {
+          "from": "2026-10-03",
+          "to": "2026-10-05",
+          "missingDays": 1,
           "note": "No price was invented for the days in between."
         }
       ]
