@@ -144,6 +144,7 @@ if (der?.watchOutcomes) for (const k of Object.keys(der.watchOutcomes)) {
   }
 }
 const noMkt = sp.products.filter(p=>p.dataStatus==="no-active-market").length;
+const heatDays = (heat?.mode||"").match(/day (\d+)/)?.[1] ?? "?";
 const heatLive = (heat?.mode||"").startsWith("dual-signal") && (heat?.reads||[]).length > 0;
 const heatLine = heatLive
   ? `${heat.reads.length} heat reads`

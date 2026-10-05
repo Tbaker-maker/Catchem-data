@@ -9,6 +9,7 @@ import { dirname, join } from "node:path";
 import { cardImage } from "./image-source.mjs";
 import { headerHtml, footerHtml, FONTS, stampLabel } from "./lib/public-chrome.mjs";
 import { freshnessFromReport } from "./lib/freshness.mjs";
+import { HEAT_DEBUT, DEPTH_DEBUT, heatPlain, depthPlain } from "./lib/instruments.mjs";
 
 // wrapText — rasterizer-safe line breaking. foreignObject is NOT supported
 // by SVG rasterizers (resvg/librsvg silently drop it), which cost us a
