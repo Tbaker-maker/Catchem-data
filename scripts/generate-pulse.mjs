@@ -75,12 +75,19 @@ try {
 
 const sp = await J("data/sealed-prices.json");
 
-
-const div = await J("data/divergence-report.json");
-const heat = await J("data/heat-report.json");
-const sg = await J("data/singles-prices.json");
-const radar = await J("data/release-radar.json");
-const der = await J("data/derived-insights.json");
+// EDITORIAL INPUTS are read through ONE held-product scrub (lib/publish-guard
+// loadEditorialJson). qa-gate has already run (top of this file) and stamped
+// tonight's flags, so a held product is removed from every list in these files
+// before any section can render it. sp itself stays whole: the Board and the
+// feed catalog keep held products, labeled held.
+const { loadBlocked, loadEditorialJson } = await import("./lib/publish-guard.mjs");
+const __blk = await loadBlocked();
+const E = (rel) => loadEditorialJson(rel, __blk);
+const div = await E("data/divergence-report.json");
+const heat = await E("data/heat-report.json");
+const sg = await E("data/singles-prices.json");
+const radar = await E("data/release-radar.json");
+const der = await E("data/derived-insights.json");
 const { freshnessFromReport, formatPt } = await import("./lib/freshness.mjs");
 const fresh = freshnessFromReport(await J("data/ppt/run-report.json"));
 const writtenAt = formatPt(fresh.at) || fresh.label;
@@ -113,8 +120,6 @@ const live = sp.products.filter(p=>p.dataStatus==="live");
 // Board with a held label but never get FEATURED — qa-gate has run by now,
 // and the durable file catches anything a rebuild un-flagged. The 2026-08-22
 // leak was this file rendering spread signals + deepest-markets from raw rows.
-const { loadBlocked } = await import("./lib/publish-guard.mjs");
-const __blk = await loadBlocked();
 const pub = live.filter(p=>!p.publishBlock && !__blk.blocked(p.id));
 // derived-insights rows were computed BEFORE qa-gate stamped today's flags —
 // re-filter any derived list at render time (first caught: swsh1-pack passed
@@ -286,7 +291,7 @@ const heatSection = (today >= HEAT_DEBUT && heatGroups.length)
     ).join("")
   : "";
 const chaseRows = chases.filter(c => money(c.priceMarket)).map(c=>`<div class="row"><span style="display:flex;align-items:center;gap:10px">${cardImg(c.cardId)?`<img class="thumb" style="width:34px;max-width:34px" src="${cardImg(c.cardId)}" alt="">`:""}<span>${escHtml(pretty(c.name))} <em>${escHtml(pretty(c.setName))}</em></span></span><span class="mono">${money(c.priceMarket)}</span></div>`).join("");
-const repeatDoc = await J("data/derived/repeat-rank.json");
+const repeatDoc = await E("data/derived/repeat-rank.json");
 // repeat-rank.json is computed before qa-gate stamps today's flags, so a
 // product blocked tonight (e.g. a median that moved 30%+ overnight) still sits
 // in its rows. Run them through the same editorial filter as every other
@@ -466,7 +471,7 @@ const packsForFeed = (p) => {
 // MUST run before looseLane is built (fixed 2026-08-22, CC): the loose-pack
 // street price feeding the sealed premium has to be the SAME number we display
 // as the pack price, or the premium reconciles against a price no longer shown.
-applyPackBasis(sp.products, (await J("data/divergence-report.json"))?.rows || []);
+applyPackBasis(sp.products, (await J("data/divergence-report.json"))?.rows || []); // held-scrub: catalog — the Board/feed catalog keeps held rows, labeled held
 const looseLane = new Map(sp.products
   .filter(p => p.subtype === "booster-pack" && p.dataStatus === "live" && p.priceMedian != null)
   .map(p => [p.setId, p.priceMedian]));
@@ -608,7 +613,7 @@ const feed = {
   rawIndex: der?.rawIndex ?? null,
   reprintPressure: der?.reprintPressure ?? [],
   dealZone: der?.dealZone ?? null,
-  ripSellTrade: (await J("research/pulse/rip-sell-trade.json"))?.rows?.slice(0, 40) ?? null,
+  ripSellTrade: (await E("research/pulse/rip-sell-trade.json"))?.rows?.slice(0, 40) ?? null,
   netProceeds: der?.netProceeds ? { ...der.netProceeds,
     tcgModel: { pct: 13.25, fixed: 0.30, venue: "TCGplayer", ...(der.netProceeds.tcgModel || {}) } } : null,
   fx: der?.fx ?? null,

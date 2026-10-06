@@ -15,8 +15,10 @@ const FETCH_TIMEOUT_MS = 15000;
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "utf-8")); } catch { return null; } };
 
-const der = await J("data/derived-insights.json") ?? {};
-const div = await J("data/divergence-report.json") ?? { rows: [] };
+// Held products are scrubbed at load (lib/publish-guard), so no Discord line
+// (Daily Three, track record, Rip or Hold) can name one.
+const der = await (await import("./lib/publish-guard.mjs")).loadEditorialJson("data/derived-insights.json") ?? {};
+const div = await (await import("./lib/publish-guard.mjs")).loadEditorialJson("data/divergence-report.json") ?? { rows: [] };
 const state = await J("data/alerts-state.json") ?? { sentSignals: [], mutedHooks: {} };
 const six = der.sealedIndex, t3 = der.dailyThree ?? {}, wo = der.watchOutcomes, roh = der.ripOrHold;
 const today = new Date().toISOString().slice(0, 10);
