@@ -654,6 +654,17 @@ ${TODAY_IMG ? `<div id="todaypost">
     <button class="tutskip" id="tutskip">Skip this</button>
   </div>
 </div>
+<!-- THE RETURNING NOTE IS NOT THE TUTORIAL. It used to reuse #tut, so a
+     tutorial somebody had dismissed came back on every reload, just reworded.
+     A returning visitor still gets the cards and one line (no blank slate), in
+     its own box, and #tut stays hidden until they ask to see it again. -->
+<div class="tut tutback" id="tutback" hidden>
+  <p class="tutline" id="tutbackline"></p>
+  <div class="tutacts">
+    <button class="go" id="tutbackgo">Make the picture</button>
+    <button class="tutskip" id="tutagain">Show me how again</button>
+  </div>
+</div>
 <div class="pagerow">
   <div class="page-label" id="plabel">YOUR PAGE</div>
   <div class="pageacts">
@@ -982,6 +993,12 @@ var CORE_ROWS = ${await (async () => {
       }
     }
   }
+  // THE TUTORIAL'S CARDS SHIP INLINE. tutStart() runs while the page is still
+  // parsing, before paper-rows.json arrives, so a tutorial card that was not a
+  // core row was "missing" and the tutorial stayed hidden for every fresh
+  // visitor. It also kept the tutorial off the page whenever the published
+  // paper-rows.json was older than build.html.
+  for (const id of TUT.cards) coreIds.add(id);
   const coreRows = rows.filter(r => coreIds.has(r[0]));
   await writeFile(join(ROOT, "research/assets/paper-rows.json"), JSON.stringify(rows));
   await writeFile(join(ROOT, "research/assets/pocket-rows.json"), JSON.stringify(pocketShow));
@@ -1869,10 +1886,18 @@ function loadCatalogue(then){
     fetch("paper-rows.json?v=" + v).then(function(r){ if (!r.ok) throw new Error("paper " + r.status); return r.json(); }),
     fetch("pocket-rows.json?v=" + v).then(function(r){ if (!r.ok) throw new Error("pocket " + r.status); return r.json(); })
   ]).then(function(pair){
-    CARD_ROWS = pair[0];
+    // A row this page shipped inline stays, even if the fetched file is older
+    // than the page and lacks it (paper-rows.json can lag build.html).
+    var fetchedIds = {};
+    for (var fi = 0; fi < pair[0].length; fi++) fetchedIds[pair[0][fi][0]] = 1;
+    CARD_ROWS = pair[0].concat(CORE_ROWS.filter(function(r){ return !fetchedIds[r[0]]; }));
     POCKET_ROWS = pair[1];
     var gNow = (typeof currentGame === "function") ? currentGame() : "paper";
     hydrateIndexes();
+    if (typeof tutPending !== "undefined" && tutPending && (!tray || !tray.length)) {
+      tutPending = false;
+      try { tutStart(); } catch (eT) {}
+    }
     try { applyGame(gNow, false); } catch (e) {}
     var box = document.getElementById("catbox");
     if (box && box.open) { try { resetPage(); search(); } catch (e) {} }
@@ -5124,16 +5149,19 @@ function askCards(r, opts){
 var TUT_KEY = "catchem-tutorial";
 var TUT_CARDS = ${JSON.stringify(TUT.cards)};
 var tutStep = 0;
+var tutPending = false;   // tutStart() ran before its cards were loaded
 
 function tutDone(how){
   store.set(TUT_KEY, how);
   var t = el("tut"); if (t) t.hidden = true;
+  var b = el("tutback"); if (b) b.hidden = true;
 }
 function tutShow(line, go){
   var t = el("tut"), l = el("tutline"), b = el("tutgo");
   if (!t || !l || !b) return;
   l.textContent = line;
   b.textContent = go;
+  var back = el("tutback"); if (back) back.hidden = true;
   t.hidden = false;
 }
 // ── A SPENT TUTORIAL LEFT A BLANK SLATE FOREVER ───────────────────────────
@@ -5262,7 +5290,9 @@ function fillLineFromCards(preset){
 
 function tutStart(){
   var missing = TUT_CARDS.filter(function(id){ return !byIdRow[id]; });
-  if (missing.length) return;                  // catalogue changed; say nothing
+  // Not loaded yet: say nothing now, and try again when the catalogue lands.
+  if (missing.length) { tutPending = true; return; }
+  tutPending = false;
 
   if (store.get(TUT_KEY)) {
     // RETURNING. Load the cards anyway — an empty tray is the blank slate the
@@ -5273,15 +5303,14 @@ function tutStart(){
     lastPref = { kind: "revisit", ask: "" };
     anotherCursor = 0;
     render();
-    var t = el("tut"), l = el("tutline"), go = el("tutgo"), sk = el("tutskip");
+    var tt = el("tut"); if (tt) tt.hidden = true;
+    var t = el("tutback"), l = el("tutbackline"), go = el("tutbackgo"), sk = el("tutagain");
     if (!t || !l || !go || !sk) return;
     l.textContent = "Two cards are in your tray to start you off. Change them, or press the button.";
-    go.textContent = "Make the picture";
     go.onclick = function(){ composeImage(); };
     // The way back in. A one-shot that cannot be replayed is a one-shot that
     // punishes anybody who skipped it while busy.
-    sk.textContent = "Show me how again";
-    sk.onclick = function(){ store.del(TUT_KEY); tutStep = 0; tutStart(); };
+    sk.onclick = function(){ store.del(TUT_KEY); t.hidden = true; tutStep = 0; tutStart(); };
     t.hidden = false;
     fillLineFromCards(${JSON.stringify(TUT.caption)});
     return;
@@ -6849,8 +6878,15 @@ function loadIdea(k){
   el("make").scrollIntoView({ behavior: "smooth", block: "center" });
 }
 renderThemes();
+// BOOT READY CLEARS THE BOOT BANNER, NOT THE TUTORIAL. It hid #tut, and it is
+// called on the line straight after tutStart(), so any tutorial tutStart()
+// showed was hidden again in the same tick. An error the banner is reporting
+// stays up.
 function bootReady(){
-  try { var t = el("tut"); if (t) t.hidden = true; } catch (e) {}
+  try {
+    var b = el("boot");
+    if (b && !/error|failed|skipped/i.test(b.textContent || "")) b.hidden = true;
+  } catch (e) {}
 }
 window.bootReady = bootReady;
 
