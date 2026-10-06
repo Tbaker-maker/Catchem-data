@@ -291,14 +291,19 @@ for (const item of items) {
   list.push(item.id);
   artistGroups.set(artist, list);
 }
+// Set logos come from data/set-logos.json, the logo URL pokemontcg.io /v2/sets
+// publishes for each set id (regenerate with scripts/fetch-set-logos.mjs).
+// Never built from the id: newer sets are served from a different host, so a
+// templated path 404s. A set with no entry gets no logo.
+const setLogos = (await read("data/set-logos.json").catch(() => ({ sets: {} }))).sets || {};
 function logoFor(key) {
   const votes = setIdVotes.get(key);
-  if (!votes) return "";
+  if (!votes) return null;
   const ranked = [...votes.entries()].sort((a, b) => b[1] - a[1]);
   const [id, n] = ranked[0];
   const total = [...votes.values()].reduce((s, x) => s + x, 0);
-  if (!id || n < 3 || n / total < 0.6) return "";
-  return `https://images.pokemontcg.io/${id}/logo.png`;
+  if (!id || n < 3 || n / total < 0.6) return null;
+  return setLogos[id]?.logo || null;
 }
 
 const slugUsed = new Map();
@@ -435,7 +440,7 @@ for (const set of sets.values()) {
     single: set.single,
     sealed: set.sealed,
     priced: set.priced,
-    logo,
+    ...(logo ? { logo } : {}),
   };
   setIndex.push(row);
   const line = (kind) => indexLine(set.items.filter((it) => it.kind === kind));
