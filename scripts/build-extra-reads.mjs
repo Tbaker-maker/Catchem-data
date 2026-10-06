@@ -3,6 +3,13 @@ import { readFile, readdir, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { assembleCatalog, buildBrowse, supplyNotes } from "./lib/extra-reads.mjs";
+import {
+  diveTeaserReads,
+  interleaveExtraKinds,
+  loadDiveDocsForTeasers,
+  loadOutlierDoc,
+  outlierReads,
+} from "./lib/outlier-dive-reads.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = async (rel) => JSON.parse(await readFile(join(ROOT, rel), "utf8"));
@@ -55,7 +62,7 @@ export function supplyMap(docs) {
 }
 
 export function publicRead(row) {
-  return {
+  const out = {
     id: row.id,
     sku: row.sku,
     readKind: row.readKind,
@@ -67,6 +74,16 @@ export function publicRead(row) {
     why: row.why,
     fullFile: "feed/extra-reads.json",
   };
+  if (row.diveId) out.diveId = row.diveId;
+  if (row.href) out.href = row.href;
+  if (Number(row.price) > 0) out.price = Number(row.price);
+  if (row.asOf) out.asOf = row.asOf;
+  if (row.flagged) out.flagged = row.flagged;
+  if (row.severity) out.severity = row.severity;
+  if (row.pctGap != null) out.pctGap = row.pctGap;
+  if (row.direction) out.direction = row.direction;
+  if (row.sources) out.sources = row.sources;
+  return out;
 }
 
 export async function writeExtra(root, extra, browse) {
@@ -75,11 +92,25 @@ export async function writeExtra(root, extra, browse) {
   await writeFile(join(outDir, "browse.json"), JSON.stringify(browse) + "\n");
   const readsPath = join(root, "research/assets/public/reads.json");
   const doc = JSON.parse(await readFile(readsPath, "utf8"));
-  const kept = (doc.reads || []).filter((row) => row.readKind !== "lag" && row.readKind !== "group" && row.readKind !== "supply");
-  doc.reads = kept.concat(extra.reads.map(publicRead));
+  const drop = new Set(["lag", "group", "supply", "outlier", "dive"]);
+  const kept = (doc.reads || []).filter((row) => !drop.has(row.readKind));
+  const extras = (extra.reads || []).map(publicRead);
+  const frontExtras = extras.filter((r) => r.readKind === "outlier")
+    .concat(extras.filter((r) => r.readKind === "dive").slice(0, 4));
+  // Sprinkle a few flagged and dive teasers into the short front. Prices stay.
+  doc.reads = interleaveExtraKinds(kept, frontExtras, { every: 2 });
   doc.filterField = "readKind";
   await writeFile(readsPath, JSON.stringify(doc, null, 1) + "\n");
-  return { lag: extra.lag.reads.length, missingPrice: extra.lag.missingPrice.length, omitted: extra.lag.omitted.length, group: extra.group.reads.length, browse: browse.unfiltered.length };
+  return {
+    lag: extra.lag?.reads?.length || 0,
+    missingPrice: extra.lag?.missingPrice?.length || 0,
+    omitted: extra.lag?.omitted?.length || 0,
+    group: extra.group?.reads?.length || 0,
+    outliers: (extra.reads || []).filter((r) => r.readKind === "outlier").length,
+    dives: (extra.reads || []).filter((r) => r.readKind === "dive").length,
+    volume: Array.isArray(extra.volume) ? extra.volume.length : 0,
+    browse: browse.unfiltered.length,
+  };
 }
 
 async function main() {
@@ -108,7 +139,23 @@ async function main() {
     newsCount = (news.filters?.news?.items || []).length;
     waves = (news.catalog || []).filter((row) => row && (row.wave || row.reprint));
   } catch { /* news file is optional for the browse shell */ }
-  const browse = buildBrowse({ asOf: catalog.asOf, cardIds, rankedIds: ranked, news: new Array(newsCount), waves });
+  const outlierDoc = await loadOutlierDoc(ROOT);
+  const flagged = outlierReads(outlierDoc);
+  const diveDocs = await loadDiveDocsForTeasers(ROOT, { max: 12 });
+  const dives = diveTeaserReads(diveDocs);
+  // Volume stays empty until Insights solds exist. Do not invent.
+  extra.volume = [];
+  extra.volumeNote = extra.volumeNote || "No sold count is on file, so no volume read ships.";
+  extra.reads = [...(extra.reads || []), ...flagged, ...dives];
+  const browse = buildBrowse({
+    asOf: catalog.asOf,
+    cardIds,
+    rankedIds: ranked,
+    news: new Array(newsCount),
+    waves,
+    flagged: flagged.map(publicRead),
+    dives: dives.map(publicRead),
+  });
   const summary = await writeExtra(ROOT, extra, browse);
   console.log(JSON.stringify(summary));
 }

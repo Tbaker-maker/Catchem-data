@@ -138,6 +138,33 @@
    }
   },
   {
+   "id": "outlier-sv5-pc-etb",
+   "sku": "sv5-pc-etb",
+   "readKind": "outlier",
+   "kind": "outlier",
+   "name": "Temporal Forces Pokemon Center Elite Trainer Box",
+   "set": "",
+   "path": "Temporal Forces Pokemon Center Elite Trainer Box ask $499.99 on Oct 6 sits 95.5% above its recent median $255.75 — review.",
+   "headline": "Temporal Forces Pokemon Center Elite Trainer Box ask $499.99 on Oct 6 sits 95.5% above its recent median $255.75 — review.",
+   "why": "From data/derived/sealed-price-outliers.json (high). Median window is on that file.",
+   "fullFile": "feed/extra-reads.json",
+   "diveId": "sv5-pc-etb",
+   "href": "/dive/sv5-pc-etb",
+   "price": 499.99,
+   "asOf": "2026-10-06",
+   "flagged": {
+    "on": "2026-10-06",
+    "at": 499.99,
+    "first": true
+   },
+   "severity": "high",
+   "pctGap": 95.5,
+   "direction": "high",
+   "sources": {
+    "outliers": "data/derived/sealed-price-outliers.json"
+   }
+  },
+  {
    "id": "move-tcgcsv-516072-7",
    "sku": "tcgcsv-516072",
    "kind": "single",
@@ -266,6 +293,109 @@
     "cardCount": "data/card-catalogue.json",
     "artistCount": "data/card-catalogue.json",
     "dex": "data/card-attrs.json"
+   }
+  },
+  {
+   "id": "outlier-cel25-etb",
+   "sku": "cel25-etb",
+   "readKind": "outlier",
+   "kind": "outlier",
+   "name": "Celebrations Elite Trainer Box",
+   "set": "",
+   "path": "Celebrations Elite Trainer Box ask $161.99 on Oct 6 sits 50.9% below its recent median $330.00 — review.",
+   "headline": "Celebrations Elite Trainer Box ask $161.99 on Oct 6 sits 50.9% below its recent median $330.00 — review.",
+   "why": "From data/derived/sealed-price-outliers.json (high). Median window is on that file.",
+   "fullFile": "feed/extra-reads.json",
+   "diveId": "cel25-etb",
+   "href": "/dive/cel25-etb",
+   "price": 161.99,
+   "asOf": "2026-10-06",
+   "flagged": {
+    "on": "2026-10-06",
+    "at": 161.99,
+    "first": true
+   },
+   "severity": "high",
+   "pctGap": -50.9,
+   "direction": "low",
+   "sources": {
+    "outliers": "data/derived/sealed-price-outliers.json"
+   }
+  },
+  {
+   "id": "dive-cel25-etb",
+   "sku": "cel25-etb",
+   "readKind": "dive",
+   "kind": "dive",
+   "name": "Celebrations Elite Trainer Box",
+   "set": "",
+   "path": "Celebrations Elite Trainer Box: $161.99 on Oct 6. Price flagged: 50.9% below recent median — review Deeper look on the chart.",
+   "headline": "Celebrations Elite Trainer Box: $161.99 on Oct 6. Price flagged: 50.9% below recent median — review Deeper look on the chart.",
+   "why": "Fields are from research/pulse/dive/<id>.json. No sold count is on this read.",
+   "fullFile": "feed/extra-reads.json",
+   "diveId": "cel25-etb",
+   "href": "/dive/cel25-etb",
+   "price": 161.99,
+   "asOf": "2026-10-06",
+   "sources": {
+    "dive": "research/pulse/dive/cel25-etb.json"
+   }
+  },
+  {
+   "id": "dive-sv5-pc-etb",
+   "sku": "sv5-pc-etb",
+   "readKind": "dive",
+   "kind": "dive",
+   "name": "Temporal Forces Pokemon Center Elite Trainer Box",
+   "set": "",
+   "path": "Temporal Forces Pokemon Center Elite Trainer Box: $499.99 on Oct 6. Price flagged: 95.5% above recent median — review Deeper look on the chart.",
+   "headline": "Temporal Forces Pokemon Center Elite Trainer Box: $499.99 on Oct 6. Price flagged: 95.5% above recent median — review Deeper look on the chart.",
+   "why": "Fields are from research/pulse/dive/<id>.json. No sold count is on this read.",
+   "fullFile": "feed/extra-reads.json",
+   "diveId": "sv5-pc-etb",
+   "href": "/dive/sv5-pc-etb",
+   "price": 499.99,
+   "asOf": "2026-10-06",
+   "sources": {
+    "dive": "research/pulse/dive/sv5-pc-etb.json"
+   }
+  },
+  {
+   "id": "dive-cel25-bb",
+   "sku": "cel25-bb",
+   "readKind": "dive",
+   "kind": "dive",
+   "name": "Celebrations Booster Bundle",
+   "set": "",
+   "path": "Celebrations Booster Bundle: $79.99 on Oct 6. Deeper look on the chart.",
+   "headline": "Celebrations Booster Bundle: $79.99 on Oct 6. Deeper look on the chart.",
+   "why": "Fields are from research/pulse/dive/<id>.json. No sold count is on this read.",
+   "fullFile": "feed/extra-reads.json",
+   "diveId": "cel25-bb",
+   "href": "/dive/cel25-bb",
+   "price": 79.99,
+   "asOf": "2026-10-06",
+   "sources": {
+    "dive": "research/pulse/dive/cel25-bb.json"
+   }
+  },
+  {
+   "id": "dive-cel25-upc",
+   "sku": "cel25-upc",
+   "readKind": "dive",
+   "kind": "dive",
+   "name": "Celebrations Ultra Premium Collection",
+   "set": "",
+   "path": "Celebrations Ultra Premium Collection: $1,250.00 on Oct 6. Deeper look on the chart.",
+   "headline": "Celebrations Ultra Premium Collection: $1,250.00 on Oct 6. Deeper look on the chart.",
+   "why": "Fields are from research/pulse/dive/<id>.json. No sold count is on this read.",
+   "fullFile": "feed/extra-reads.json",
+   "diveId": "cel25-upc",
+   "href": "/dive/cel25-upc",
+   "price": 1250,
+   "asOf": "2026-10-06",
+   "sources": {
+    "dive": "research/pulse/dive/cel25-upc.json"
    }
   }
  ]
