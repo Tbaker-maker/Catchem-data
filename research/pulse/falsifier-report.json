@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-06T13:37:57.236Z",
+ "generatedAt": "2026-10-06T14:34:56.829Z",
  "date": "2026-10-06",
  "mood": "Not much of a verdict today. Most of our claims need more time before they can be judged, and pretending otherwise would be the actual failure.",
  "note": "We test our own claims before anyone else gets the chance. INSUFFICIENT is an honest verdict and is reported as loudly as the others.",
@@ -9,9 +9,9 @@
   "untested": []
  },
  "summary": {
-  "survived": 2,
+  "survived": 3,
   "tripped": 0,
-  "insufficient": 9,
+  "insufficient": 8,
   "pending": 0
  },
  "results": [
@@ -74,9 +74,8 @@
    "id": "RT-2",
    "name": "Supply Injection Absorb-or-Stall",
    "falsifier": "a supply injection is followed by neither absorption nor a stall — listings rise and prices are unaffected either way",
-   "verdict": "INSUFFICIENT",
-   "detail": "3 shifts with both listing and price deltas",
-   "needs": "5+ shift events"
+   "verdict": "SURVIVED",
+   "detail": "5 injections today; 80% moved prices measurably"
   },
   {
    "id": "RT-7",
@@ -91,7 +90,7 @@
    "name": "Reprint Pressure",
    "falsifier": "late-print sets with filling shelves are no more likely to see a reprint announced within 90 days than late-print sets generally",
    "verdict": "INSUFFICIENT",
-   "detail": "2 crossings today (2 arriving, 0 closing) — but the falsifier needs 90 days of reprint announcements to compare against, which we do not yet log",
+   "detail": "5 crossings today (4 arriving, 1 closing) — but the falsifier needs 90 days of reprint announcements to compare against, which we do not yet log",
    "needs": "a log of reprint announcements, and 90 days of these crossings to test them against"
   },
   {

@@ -4,7 +4,7 @@ The overnight shift's notes. Short on purpose.
 
 ## Our own claims
 Not much of a verdict today. Most of our claims need more time before they can be judged, and pretending otherwise would be the actual failure.
-2 survived their own kill conditions, 9 could not be judged yet with the tape we hold.
+3 survived their own kill conditions, 8 could not be judged yet with the tape we hold.
 
 ## Our own numbers
 A handful of suspicious jumps in our own history. Probably ours, not the market's — that is the usual answer.
@@ -12,7 +12,7 @@ A handful of suspicious jumps in our own history. Probably ours, not the market'
 **NEEDS A HUMAN — 3 figure(s) moved faster than a market can:
 - Temporal Forces Pokemon Center Elite Trainer Box: $253.74 → $499.99 in 2026-10-05→2026-10-06 (+97%)
 - Evolutions Elite Trainer Box: $419.99 → $760 in 2026-10-03→2026-10-05 (+81%)
-- Celebrations Elite Trainer Box: $300 → $174.99 in 2026-10-05→2026-10-06 (-41.7%)
+- Celebrations Elite Trainer Box: $300 → $161.99 in 2026-10-05→2026-10-06 (-46%)
 
 9 product(s) we featured and can no longer price:
 - Umbreon VMAX (featured 2026-08-20)
@@ -32,9 +32,9 @@ A handful of suspicious jumps in our own history. Probably ours, not the market'
 ## The agents themselves
 **NEEDS A HUMAN — the supervisor flagged the watchers:**
 - correction-hunter: BROKEN RECORD — 5 finding(s) repeated three runs running (e.g. "gone::Umbreon VMAX"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
-- designer: FARMING — findings climbed 12 → 12 → 12 → 14 across four runs with nothing resolved. Volume is not work.
-- designer: BROKEN RECORD — 3 finding(s) repeated three runs running (e.g. "medium::--faint on the background is 3.2:1"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
+- designer: FARMING — findings climbed 12 → 12 → 12 → 19 across four runs with nothing resolved. Volume is not work.
 - theme-scout: BROKEN RECORD — 22 finding(s) repeated three runs running (e.g. "the one-off::Ken Sugimori drew Ampharos exactly on"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
+- teacher: BROKEN RECORD — 10 finding(s) repeated three runs running (e.g. "in a rut::breaker"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 
 ## If we expanded
 Pricing 50 more cards would unlock 17 artist cohorts and make 2018 catalogue cards analysable. That is Tyler's call, not the machine's.
@@ -58,18 +58,21 @@ Gaps in what we watch:
 - *ease of use* — A number appears above the fold on Today. Holds — check on a 390px screen that it is still above the fold with the banner and nav present.
 
 ## Who needs to do what
-**NEEDS A HUMAN — Tyler (2):**
-- **[QUEUE 58]** The knowledge base is only used for one fact a day. — *The same sourced facts could power a "why is this card like this" explainer on every product page — set context, print quirks, what makes it odd. It compounds with every fact added.*
-- **[WATCH 40]** pricing 50 more cards would unlock 17 artist cohorts — *an expansion decision, not a machine's call*
+**NEEDS A HUMAN — Tyler (7):**
+- **[ACT NOW 76]** Celebrations Elite Trainer Box moved -41.7% — about 4.8× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
+- **[ACT NOW 76]** Mega Evolution Booster Pack moved -9.9% — about 4.2× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
+- **[ACT NOW 76]** Ascended Heroes Booster Pack moved -11.8% — about 3.0× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
+- **[ACT NOW 76]** Temporal Forces Pokemon Center Elite Trainer Box moved 97.0% — about 12.7× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
 
-**CC (3):**
+**CC (6):**
+- **[ACT NOW 90]** Temporal Forces Pokemon Center Elite Trainer Box moved 97% in 2026-10-05→2026-10-06 — *verify against listings; file a correction if the earlier figure was ours*
+- **[ACT NOW 90]** Evolutions Elite Trainer Box moved 81% in 2026-10-03→2026-10-05 — *verify against listings; file a correction if the earlier figure was ours*
+- **[ACT NOW 90]** Celebrations Elite Trainer Box moved -41.7% in 2026-10-05→2026-10-06 — *verify against listings; file a correction if the earlier figure was ours*
 - **[QUEUE 58]** 5 accent colours appear on the same surface. — *Reserve green for positive, red for negative, and let mode accent everything else. Gold stays a highlight, never a third voice.*
-- **[QUEUE 58]** 31 emoji in the interface. — *Keep them for section headers and the ELI5 lollipop; drop them from anything carrying a number.*
-- **[WATCH 48]** 35 card images minted today. — *The gap is that they are files in a repo. A creator needs them one tap from the angle they picked, not from a folder.*
 
 **Chat (12):** top — The Today screen carries 17 sections: The Daily Three, 🗳 Rip or Hold?, Biggest movers, Set the app up for you, Movers, Release radar… *[QUEUE]*
 
-*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 0 ACT NOW, 9 QUEUE, 8 WATCH, 26 filed without surfacing, 4 confirmations.*
+*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 8 ACT NOW, 9 QUEUE, 8 WATCH, 30 filed without surfacing, 4 confirmations.*
 ## The creator cheat code
 *Could somebody open this, hit record within two minutes, and sound like the most informed voice in the hobby without pausing to look anything up? Every pause is a cut.*
 - **a visual that runs itself** — 35 card images minted today. *The gap is that they are files in a repo. A creator needs them one tap from the angle they picked, not from a folder.*
@@ -77,14 +80,14 @@ Gaps in what we watch:
 - **the cheat code** — Nothing tells a creator how a piece performed after they made it. *Ask one question after publication — did this land — and keep the answers. Even a yes/no on twenty videos would tell us which angles are worth generating.*
 
 ## What the market did
-- **product** — Celebrations Elite Trainer Box moved -41.7% — about 4.8× its own typical daily swing. *Measured against its own 14 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
-- **product** — Mega Evolution Booster Pack moved -9.9% — about 4.2× its own typical daily swing. *Measured against its own 13 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
+- **product** — Celebrations Elite Trainer Box moved -46.0% — about 5.3× its own typical daily swing. *Measured against its own 14 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
+- **product** — Mega Evolution Booster Pack moved -10.0% — about 4.3× its own typical daily swing. *Measured against its own 13 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
 - **product** — Ascended Heroes Booster Pack moved -11.8% — about 3.0× its own typical daily swing. *Measured against its own 13 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
 - **product** — Temporal Forces Pokemon Center Elite Trainer Box moved 97.0% — about 12.7× its own typical daily swing. *Measured against its own 13 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
 
 ## Where today's story goes
-- **X** — "Stellar Crown listings moved 34.3% while its print window closes."
-- **YouTube** — Rebel Clash Elite Trainer Box — "Sealed carries a 222.5% premium over the cost of its packs bought loose — the widest gap of that kind we track today."
+- **X** — "Vivid Voltage listings moved 33% while its print window closes."
+- **YouTube** — 151 Elite Trainer Box — "Sealed carries a 84.1% premium over the cost of its packs bought loose — the widest gap of that kind we track today."
 - **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 100.7."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
@@ -92,8 +95,8 @@ Gaps in what we watch:
 ## Something is slipping
 - **unsaved** — 3 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
 - **ignored** — 7 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
-- **silent stage** — pulse last reported 9 days ago. *A stage that stopped running is invisible to every guard, because none of them run either. Silence is the one failure nothing else catches.*
 - **drift** — 36 script(s) are not referenced anywhere: append-learning-log.mjs, append-shelf.mjs, audit-repo-bots.mjs, backfill-artists.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
+- **drift** — 49 JSON files in research/pulse. *A directory nobody can scan is a directory where something goes missing without being noticed.*
 
 ## Legal standing
 Nothing has tripped. Highest live risk: **Effort-based consideration in the berry system, combined with the first live draw.** — It is the only item that is both imminent and genuinely uncertain. The IP question is larger but not triggered until revenue; registration and tax thresholds are comfortably clear at current prize values.
@@ -102,10 +105,10 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 *Legal INFORMATION, not legal advice. No lawyer has reviewed this. Sweepstakes law varies by state and changes; nothing here is a compliance opinion anyone can rely on. Its job is to make the conversation with counsel shorter and better, and to stop us doing something obviously wrong in the meantime.*
 
 ## Numbers that do not make sense for what they are
-56 value(s) are structurally fine and absurd in context.
-- **"sleeved"** killed 350 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
-- Battle Styles Booster Pack: 72% rejection rate (42/150) — *largest bucket: exclude = 58. A single over-broad term can eat a market.*
-- Scarlet & Violet Booster Pack: 91% rejection rate (14/150) — *largest bucket: set = 59. A single over-broad term can eat a market.*
+52 value(s) are structurally fine and absurd in context.
+- **"sleeved"** killed 349 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
+- Battle Styles Booster Pack: 71% rejection rate (43/150) — *largest bucket: exclude = 61. A single over-broad term can eat a market.*
+- Scarlet & Violet Booster Pack: 95% rejection rate (7/150) — *largest bucket: set = 48. A single over-broad term can eat a market.*
 
 ## What the agents should be asking themselves
 - **domain-plausibility** — Would you catch this today? If yes, what specifically would fire. If no, what would you need?
@@ -122,17 +125,18 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 - **1 error class(es) in the ledger have no matching check: structurally valid, contextually absurd** — *I chose which classes the verifier covers, and I am the one it checks. Any class I skipped is a mistake I decided was not worth guarding — which is exactly the decision I should not be making alone.*
 
 ## Post ideas nobody looked for
-- **Ken Sugimori drew Ampharos exactly once** — Ken Sugimori has 729 cards. Exactly one is a Ampharos.
-- **Ken Sugimori drew Azumarill exactly once** — Ken Sugimori has 729 cards. Exactly one is a Azumarill.
-- **Mitsuhiro Arita drew Houndoom exactly once** — Mitsuhiro Arita has 525 cards. Exactly one is a Houndoom.
+- **Ken Sugimori drew Ampharos exactly once** — Ken Sugimori has 717 cards. Exactly one is a Ampharos.
+- **Ken Sugimori drew Azumarill exactly once** — Ken Sugimori has 717 cards. Exactly one is a Azumarill.
+- **Mitsuhiro Arita drew Houndoom exactly once** — Mitsuhiro Arita has 496 cards. Exactly one is a Houndoom.
 
 ## Design
-2 high, 11 medium across 15 shipped surfaces, 62 minted cards.
+6 high, 12 medium across 15 shipped surfaces, 68 minted cards.
 - **build.html** — the accent colour appears 52 times. *Spend it in two places: the active state and the one primary action. Everything else greys.*
-- **play.html** — 10 distinct font sizes: 10, 11, 12, 13, 14, 15, 16, 19, 20, 22. *Collapse to a scale. Anything within 1px of a neighbour is the same size wearing a different number.*
+- **corrections.html** — remote fonts with no local fallback. *Add system-ui and a generic family to every font stack.*
+- **methodology.html** — remote fonts with no local fallback. *Add system-ui and a generic family to every font stack.*
 
 ## What the agents cannot answer themselves
-55 open — 36 need eyes on a rendered page, 19 need a decision.
+60 open — 41 need eyes on a rendered page, 19 need a decision.
 - **NEEDS A HUMAN** [theme-scout] 14 Pokémon share the "-eon" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 7 Pokémon share the "ite" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 10 Pokémon share the "-ish" ending — a theme, or a coincidence of naming?

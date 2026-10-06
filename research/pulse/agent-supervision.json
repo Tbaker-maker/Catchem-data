@@ -1,14 +1,14 @@
 {
- "generatedAt": "2026-10-06T13:37:55.915Z",
+ "generatedAt": "2026-10-06T14:34:54.759Z",
  "date": "2026-10-06",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
   "breaker: 6 finding(s)",
   "falsifier: 0 finding(s)",
-  "correction-hunter: 8 finding(s)",
+  "correction-hunter: 12 finding(s)",
   "review-agents: 0 finding(s)",
   "decision-audit: 2 finding(s)",
-  "designer: 14 finding(s)",
+  "designer: 19 finding(s)",
   "theme-scout: 22 finding(s)",
   "teacher: 11 finding(s)",
   "api-strategist: 8 finding(s)",
@@ -16,7 +16,7 @@
   "security: 0 finding(s)",
   "steward: 5 finding(s)",
   "platform: 10 finding(s)",
-  "anomaly: 0 finding(s)",
+  "anomaly: 5 finding(s)",
   "creator: 15 finding(s)",
   "experience: 6 finding(s)",
   "improver: 8 finding(s)",
@@ -24,16 +24,15 @@
   "falsifier: clean run — nothing failed, which is the point of it",
   "review-agents: has never actually run (no key) — costing nothing, proving nothing, and honest about both",
   "compliance: clean run — nothing failed, which is the point of it",
-  "security: clean run — nothing failed, which is the point of it",
-  "anomaly: clean run — nothing failed, which is the point of it"
+  "security: clean run — nothing failed, which is the point of it"
  ],
  "problems": [
   "correction-hunter: BROKEN RECORD — 5 finding(s) repeated three runs running (e.g. \"gone::Umbreon VMAX\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
-  "designer: FARMING — findings climbed 12 → 12 → 12 → 14 across four runs with nothing resolved. Volume is not work.",
-  "designer: BROKEN RECORD — 3 finding(s) repeated three runs running (e.g. \"medium::--faint on the background is 3.2:1\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
+  "designer: FARMING — findings climbed 12 → 12 → 12 → 19 across four runs with nothing resolved. Volume is not work.",
   "theme-scout: BROKEN RECORD — 22 finding(s) repeated three runs running (e.g. \"the one-off::Ken Sugimori drew Ampharos exactly on\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "teacher: BROKEN RECORD — 10 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "steward: FARMING — findings climbed 4 → 4 → 5 → 5 across four runs with nothing resolved. Volume is not work.",
+  "anomaly: FARMING — findings climbed 0 → 0 → 0 → 5 across four runs with nothing resolved. Volume is not work.",
   "creator: OVER-BUDGET — 15 findings against a ceiling of 10. An unreadable list is an unread list."
  ],
  "workforce": [
@@ -100,11 +99,6 @@
    "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
   },
   {
-   "agent": "anomaly",
-   "finding": "runs daily and has returned the same count (0) four runs running.",
-   "fix": "Either what it watches is not changing daily — move it to on-change — or it is not really looking. Same answer, same cost, every day, is the definition of waste."
-  },
-  {
    "agent": "creator",
    "finding": "every finding from a week ago is still open (15).",
    "fix": "Findings nobody acts on are not findings, they are a list. Either they need to be handed to someone who can act, or the bar for reporting is too low."
@@ -126,6 +120,134 @@
   }
  ],
  "reviewed": [
+  {
+   "from": "correction-hunter",
+   "owner": "cc",
+   "what": "Temporal Forces Pokemon Center Elite Trainer Box moved 97% in 2026-10-05→2026-10-06",
+   "do": "verify against listings; file a correction if the earlier figure was ours",
+   "score": 90,
+   "band": "ACT NOW",
+   "selfScore": 90,
+   "demotions": [],
+   "components": {
+    "evidence": "MEASURED (40) — computed from data we hold; anyone could check it",
+    "impact": "CRITICAL (30) — publishes something wrong, or breaks in front of a person",
+    "actionable": "NOW (20) — somebody named can do it today",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "correction-hunter",
+   "owner": "cc",
+   "what": "Evolutions Elite Trainer Box moved 81% in 2026-10-03→2026-10-05",
+   "do": "verify against listings; file a correction if the earlier figure was ours",
+   "score": 90,
+   "band": "ACT NOW",
+   "selfScore": 90,
+   "demotions": [],
+   "components": {
+    "evidence": "MEASURED (40) — computed from data we hold; anyone could check it",
+    "impact": "CRITICAL (30) — publishes something wrong, or breaks in front of a person",
+    "actionable": "NOW (20) — somebody named can do it today",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "correction-hunter",
+   "owner": "cc",
+   "what": "Celebrations Elite Trainer Box moved -41.7% in 2026-10-05→2026-10-06",
+   "do": "verify against listings; file a correction if the earlier figure was ours",
+   "score": 90,
+   "band": "ACT NOW",
+   "selfScore": 90,
+   "demotions": [],
+   "components": {
+    "evidence": "MEASURED (40) — computed from data we hold; anyone could check it",
+    "impact": "CRITICAL (30) — publishes something wrong, or breaks in front of a person",
+    "actionable": "NOW (20) — somebody named can do it today",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "anomaly",
+   "owner": "tyler",
+   "what": "Celebrations Elite Trainer Box moved -41.7% — about 4.8× its own typical daily swing.",
+   "do": "worth a look — the market did something unusual, which is where stories start",
+   "score": 76,
+   "band": "ACT NOW",
+   "selfScore": 76,
+   "demotions": [],
+   "components": {
+    "evidence": "MEASURED (40) — computed from data we hold; anyone could check it",
+    "impact": "HIGH (22) — materially changes what a reader sees or believes",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "anomaly",
+   "owner": "tyler",
+   "what": "Mega Evolution Booster Pack moved -9.9% — about 4.2× its own typical daily swing.",
+   "do": "worth a look — the market did something unusual, which is where stories start",
+   "score": 76,
+   "band": "ACT NOW",
+   "selfScore": 76,
+   "demotions": [],
+   "components": {
+    "evidence": "MEASURED (40) — computed from data we hold; anyone could check it",
+    "impact": "HIGH (22) — materially changes what a reader sees or believes",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "anomaly",
+   "owner": "tyler",
+   "what": "Ascended Heroes Booster Pack moved -11.8% — about 3.0× its own typical daily swing.",
+   "do": "worth a look — the market did something unusual, which is where stories start",
+   "score": 76,
+   "band": "ACT NOW",
+   "selfScore": 76,
+   "demotions": [],
+   "components": {
+    "evidence": "MEASURED (40) — computed from data we hold; anyone could check it",
+    "impact": "HIGH (22) — materially changes what a reader sees or believes",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "anomaly",
+   "owner": "tyler",
+   "what": "Temporal Forces Pokemon Center Elite Trainer Box moved 97.0% — about 12.7× its own typical daily swing.",
+   "do": "worth a look — the market did something unusual, which is where stories start",
+   "score": 76,
+   "band": "ACT NOW",
+   "selfScore": 76,
+   "demotions": [],
+   "components": {
+    "evidence": "MEASURED (40) — computed from data we hold; anyone could check it",
+    "impact": "HIGH (22) — materially changes what a reader sees or believes",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "anomaly",
+   "owner": "tyler",
+   "what": "Paldean Fates Booster Pack moved 10.1% — about 7.4× its own typical daily swing.",
+   "do": "worth a look — the market did something unusual, which is where stories start",
+   "score": 76,
+   "band": "ACT NOW",
+   "selfScore": 76,
+   "demotions": [],
+   "components": {
+    "evidence": "MEASURED (40) — computed from data we hold; anyone could check it",
+    "impact": "HIGH (22) — materially changes what a reader sees or believes",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
   {
    "from": "experience",
    "owner": "chat",
@@ -437,7 +559,7 @@
   {
    "from": "platform",
    "owner": "tyler",
-   "what": "[X] \"Paldean Fates listings moved -63.9% while its print window closes.\"",
+   "what": "[X] \"Stellar Crown listings moved 34.3% while its print window closes.\"",
    "do": "X rewards a single surprising fact that makes somebody want to reply. The strongest shape we have is a number that moved with no headline attached — it implies a question and refuses to answer it, which is what makes people argue in the replies.",
    "score": 33,
    "band": "NOTE ONLY",
@@ -469,7 +591,7 @@
   {
    "from": "platform",
    "owner": "tyler",
-   "what": "[YouTube] Cosmic Eclipse Booster Box — \"A seller keeps about $4,640.46 online; a buyer pays about $5,724.17. Roughly $1,083.71 of room where a face-to-face trade beats the internet.\"",
+   "what": "[YouTube] Rebel Clash Elite Trainer Box — \"Sealed carries a 222.5% premium over the cost of its packs bought loose — the widest gap of that kind we track today.\"",
    "do": "YouTube rewards a question somebody is already typing into search. We can answer three of the recurring ones with data nobody else holds, which is the whole reason to be here rather than reacting to other people's news.",
    "score": 33,
    "band": "NOTE ONLY",
@@ -517,8 +639,72 @@
   {
    "from": "designer",
    "owner": "chat",
+   "what": "corrections.html: remote fonts with no local fallback",
+   "do": "Add system-ui and a generic family to every font stack.",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "designer",
+   "owner": "chat",
+   "what": "methodology.html: remote fonts with no local fallback",
+   "do": "Add system-ui and a generic family to every font stack.",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "designer",
+   "owner": "chat",
    "what": "play.html: 10 distinct font sizes: 10, 11, 12, 13, 14, 15, 16, 19, 20, 22",
    "do": "Collapse to a scale. Anything within 1px of a neighbour is the same size wearing a different number.",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "designer",
+   "owner": "chat",
+   "what": "the-board.html: remote fonts with no local fallback",
+   "do": "Add system-ui and a generic family to every font stack.",
+   "score": 30,
+   "band": "NOTE ONLY",
+   "selfScore": 30,
+   "demotions": [],
+   "components": {
+    "evidence": "REASONED (10) — an argument from principle — defensible, not verifiable",
+    "impact": "LOW (6) — tidier, cheaper, or nicer — real, but survivable",
+    "actionable": "SOON (14) — clear what to do, needs a slot",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "designer",
+   "owner": "chat",
+   "what": "the-pulse.html: remote fonts with no local fallback",
+   "do": "Add system-ui and a generic family to every font stack.",
    "score": 30,
    "band": "NOTE ONLY",
    "selfScore": 30,
@@ -613,7 +799,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "31 script(s) are not referenced anywhere: backfill-artists.mjs, backfill-tcgcsv.mjs, build-faq.mjs, build-hooks.mjs.",
+   "what": "36 script(s) are not referenced anywhere: append-learning-log.mjs, append-shelf.mjs, audit-repo-bots.mjs, backfill-artists.mjs.",
    "do": "A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -725,7 +911,7 @@
   {
    "from": "steward",
    "owner": "cc",
-   "what": "pulse last reported 32 days ago.",
+   "what": "pulse last reported 9 days ago.",
    "do": "A stage that stopped running is invisible to every guard, because none of them run either. Silence is the one failure nothing else catches.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -805,7 +991,7 @@
   {
    "from": "api-strategist",
    "owner": "tyler",
-   "what": "the paid provider is called from 204 places",
+   "what": "the paid provider is called from 221 places",
    "do": "list what ONLY the paid provider gives us; if that list is short, either use more of it or stop paying for it",
    "score": 30,
    "band": "NOTE ONLY",
@@ -1064,6 +1250,54 @@
   ],
   "cc": [
    {
+    "from": "correction-hunter",
+    "owner": "cc",
+    "what": "Temporal Forces Pokemon Center Elite Trainer Box moved 97% in 2026-10-05→2026-10-06",
+    "do": "verify against listings; file a correction if the earlier figure was ours",
+    "score": 90,
+    "band": "ACT NOW",
+    "selfScore": 90,
+    "demotions": [],
+    "components": {
+     "evidence": "MEASURED (40) — computed from data we hold; anyone could check it",
+     "impact": "CRITICAL (30) — publishes something wrong, or breaks in front of a person",
+     "actionable": "NOW (20) — somebody named can do it today",
+     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+    }
+   },
+   {
+    "from": "correction-hunter",
+    "owner": "cc",
+    "what": "Evolutions Elite Trainer Box moved 81% in 2026-10-03→2026-10-05",
+    "do": "verify against listings; file a correction if the earlier figure was ours",
+    "score": 90,
+    "band": "ACT NOW",
+    "selfScore": 90,
+    "demotions": [],
+    "components": {
+     "evidence": "MEASURED (40) — computed from data we hold; anyone could check it",
+     "impact": "CRITICAL (30) — publishes something wrong, or breaks in front of a person",
+     "actionable": "NOW (20) — somebody named can do it today",
+     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+    }
+   },
+   {
+    "from": "correction-hunter",
+    "owner": "cc",
+    "what": "Celebrations Elite Trainer Box moved -41.7% in 2026-10-05→2026-10-06",
+    "do": "verify against listings; file a correction if the earlier figure was ours",
+    "score": 90,
+    "band": "ACT NOW",
+    "selfScore": 90,
+    "demotions": [],
+    "components": {
+     "evidence": "MEASURED (40) — computed from data we hold; anyone could check it",
+     "impact": "CRITICAL (30) — publishes something wrong, or breaks in front of a person",
+     "actionable": "NOW (20) — somebody named can do it today",
+     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+    }
+   },
+   {
     "from": "experience",
     "owner": "cc",
     "what": "5 accent colours appear on the same surface.",
@@ -1114,6 +1348,86 @@
   ],
   "tyler": [
    {
+    "from": "anomaly",
+    "owner": "tyler",
+    "what": "Celebrations Elite Trainer Box moved -41.7% — about 4.8× its own typical daily swing.",
+    "do": "worth a look — the market did something unusual, which is where stories start",
+    "score": 76,
+    "band": "ACT NOW",
+    "selfScore": 76,
+    "demotions": [],
+    "components": {
+     "evidence": "MEASURED (40) — computed from data we hold; anyone could check it",
+     "impact": "HIGH (22) — materially changes what a reader sees or believes",
+     "actionable": "SOON (14) — clear what to do, needs a slot",
+     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+    }
+   },
+   {
+    "from": "anomaly",
+    "owner": "tyler",
+    "what": "Mega Evolution Booster Pack moved -9.9% — about 4.2× its own typical daily swing.",
+    "do": "worth a look — the market did something unusual, which is where stories start",
+    "score": 76,
+    "band": "ACT NOW",
+    "selfScore": 76,
+    "demotions": [],
+    "components": {
+     "evidence": "MEASURED (40) — computed from data we hold; anyone could check it",
+     "impact": "HIGH (22) — materially changes what a reader sees or believes",
+     "actionable": "SOON (14) — clear what to do, needs a slot",
+     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+    }
+   },
+   {
+    "from": "anomaly",
+    "owner": "tyler",
+    "what": "Ascended Heroes Booster Pack moved -11.8% — about 3.0× its own typical daily swing.",
+    "do": "worth a look — the market did something unusual, which is where stories start",
+    "score": 76,
+    "band": "ACT NOW",
+    "selfScore": 76,
+    "demotions": [],
+    "components": {
+     "evidence": "MEASURED (40) — computed from data we hold; anyone could check it",
+     "impact": "HIGH (22) — materially changes what a reader sees or believes",
+     "actionable": "SOON (14) — clear what to do, needs a slot",
+     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+    }
+   },
+   {
+    "from": "anomaly",
+    "owner": "tyler",
+    "what": "Temporal Forces Pokemon Center Elite Trainer Box moved 97.0% — about 12.7× its own typical daily swing.",
+    "do": "worth a look — the market did something unusual, which is where stories start",
+    "score": 76,
+    "band": "ACT NOW",
+    "selfScore": 76,
+    "demotions": [],
+    "components": {
+     "evidence": "MEASURED (40) — computed from data we hold; anyone could check it",
+     "impact": "HIGH (22) — materially changes what a reader sees or believes",
+     "actionable": "SOON (14) — clear what to do, needs a slot",
+     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+    }
+   },
+   {
+    "from": "anomaly",
+    "owner": "tyler",
+    "what": "Paldean Fates Booster Pack moved 10.1% — about 7.4× its own typical daily swing.",
+    "do": "worth a look — the market did something unusual, which is where stories start",
+    "score": 76,
+    "band": "ACT NOW",
+    "selfScore": 76,
+    "demotions": [],
+    "components": {
+     "evidence": "MEASURED (40) — computed from data we hold; anyone could check it",
+     "impact": "HIGH (22) — materially changes what a reader sees or believes",
+     "actionable": "SOON (14) — clear what to do, needs a slot",
+     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+    }
+   },
+   {
     "from": "improver",
     "owner": "tyler",
     "what": "The knowledge base is only used for one fact a day.",
@@ -1149,9 +1463,9 @@
  },
  "ratings": {
   "confirmed": 4,
-  "actNow": 0,
+  "actNow": 8,
   "queue": 9,
   "watch": 8,
-  "noteOnly": 26
+  "noteOnly": 30
  }
 }
