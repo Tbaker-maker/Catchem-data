@@ -35,13 +35,19 @@ try { const cm = await J("data/crosscheck-id-map.json");
 
 const div = await J("data/divergence-report.json").catch?.() ?? await J("data/divergence-report.json");
 const heat = await J("data/heat-report.json");
-let der = {}; try { der = await J("data/derived-insights.json"); } catch {}
 const spreadBy = new Map((div.rows||[]).map(r=>[r.id,r]));
+// HELD products stay on the Board but carry a held label, with no price and
+// no gap: qa-gate (or the durable quarantine) says the number is suspect, so
+// it does not get shown as a price. Same rule as the feed's held rows.
+const { loadBlocked } = await import("./lib/publish-guard.mjs");
+const __blk = await loadBlocked();
+const isHeld = (p) => Boolean(p.publishBlock || __blk.blocked(p.id));
+const heldWhy = (p) => (p.qaReasons || [])[0] || __blk.reasonFor?.(p.id) || "held pending re-verification";
 
 const rows = sp.products
   .filter(p=>p.dataStatus==="live")
   .map(p=>({p, s:spreadBy.get(p.id)}))
-  .sort((a,b)=>((b.s?.signal?1:0)-(a.s?.signal?1:0)) || (b.p.listingCount||0)-(a.p.listingCount||0));
+  .sort((a,b)=>((isHeld(a.p)?1:0)-(isHeld(b.p)?1:0)) || ((b.s?.signal?1:0)-(a.s?.signal?1:0)) || (b.p.listingCount||0)-(a.p.listingCount||0));
 
 const showSpread = rows.some(({ s }) => s && typeof s.spreadPct === "number");
 const thumb = (p) => {
@@ -53,10 +59,10 @@ const tr = ({ p, s }) => `
 <tr>
   <td class="name">${thumb(p)}<span><a href="/p/${esc(p.id)}.html">${esc(pretty(p.name))}</a><span class="sub">${esc(pretty(p.set || ""))}</span></span></td>
   <td data-label="Type"><span class="pill">${esc((p.subtype || "").replaceAll("-", " "))}</span></td>
-  <td class="num" data-label="Median">${money(p.priceMedian) || "—"}</td>
+  <td class="num" data-label="Median">${isHeld(p) ? "held" : (money(p.priceMedian) || "—")}</td>
   <td class="num" data-label="Listings">${p.listingCount ?? "—"}</td>
-  ${showSpread ? `<td data-label="Gap">${s && typeof s.spreadPct === "number" ? `<span class="spread">${s.spreadPct > 0 ? "+" : ""}${s.spreadPct}%</span>` : `<span class="spread na">—</span>`}</td>` : ""}
-  <td data-label="Status"><span class="dot"></span>priced</td>
+  ${showSpread ? `<td data-label="Gap">${!isHeld(p) && s && typeof s.spreadPct === "number" ? `<span class="spread">${s.spreadPct > 0 ? "+" : ""}${s.spreadPct}%</span>` : `<span class="spread na">—</span>`}</td>` : ""}
+  <td data-label="Status">${isHeld(p) ? `<span class="dot held"></span><span title="${esc(heldWhy(p))}">held</span>` : `<span class="dot"></span>priced`}</td>
 </tr>`;
 
 const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -85,6 +91,7 @@ tr:last-child td{border-bottom:0}
 .spread{font-variant-numeric:tabular-nums;color:var(--gold)}
 .spread.na{color:var(--faint)}
 .dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;background:var(--green)}
+.dot.held{background:var(--gold)}
 @media (max-width:720px){
   table,thead,tbody,tr,td{display:block;width:100%}
   thead{display:none}
@@ -99,7 +106,7 @@ ${headerHtml("Board")}
 <h1>The Board</h1>
 <div class="byline" id="fresh" data-at="${fresh.at || ""}">${fresh.at ? stampLabel(fresh.at) : fresh.label}</div>
 </header>
-<div class="stats"><span><b>${sp.products.length}</b> tracked</span><span><b>${rows.length}</b> with a price</span></div>
+<div class="stats"><span><b>${sp.products.length}</b> tracked</span><span><b>${rows.filter(({ p }) => !isHeld(p)).length}</b> with a price</span>${rows.some(({ p }) => isHeld(p)) ? `<span><b>${rows.filter(({ p }) => isHeld(p)).length}</b> held for re-verification</span>` : ""}</div>
 <main><table><thead><tr><th>Product</th><th>Type</th><th>Median</th><th>Listings</th>${showSpread ? "<th>Price gap</th>" : ""}<th>Status</th></tr></thead>
 <tbody>${rows.map(tr).join("")}</tbody></table></main>
 ${footerHtml()}

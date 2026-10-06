@@ -37,7 +37,9 @@ const METHODOLOGY_URL = `${SITE}/methodology.html`;
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => JSON.parse(await readFile(join(ROOT, p), "utf-8"));
 
-const der = await J("data/derived-insights.json");
+// Held products are scrubbed at load (lib/publish-guard): a Daily Three pick
+// that qa-gate held tonight is null here, so no card is minted for it.
+const der = await (await import("./lib/publish-guard.mjs")).loadEditorialJson("data/derived-insights.json") ?? {};
 const sp = await J("data/sealed-prices.json");
 let cm = { entries: [] }; try { cm = await J("data/crosscheck-id-map.json"); } catch {}
 let sg = { cards: [] }; try { sg = await J("data/singles-prices.json"); } catch {}
