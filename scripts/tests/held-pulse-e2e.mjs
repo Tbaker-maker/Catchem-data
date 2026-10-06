@@ -51,7 +51,8 @@ try {
 
   const hit = (text) => {
     const out = [];
-    for (const n of names) if (text.includes(n)) out.push(n);
+    // Names are checked raw and HTML-escaped ("Scarlet &amp; Violet ...").
+    for (const n of names) if (text.includes(n) || text.includes(n.replaceAll("&", "&amp;"))) out.push(n);
     for (const id of held) if (text.includes(`"${id}"`)) out.push(id);
     return out;
   };
@@ -82,7 +83,7 @@ try {
   // The Board: a held product's row must say held and show no price.
   const board = await readFile(join(wt, "research/assets/the-board.html"), "utf8").catch(() => "");
   const rows = board.split("<tr>").slice(1);
-  const badRows = names.filter((n) => rows.some((r) => r.includes(`>${n}<`) && !/data-label="Median">held</.test(r)));
+  const badRows = names.filter((n) => rows.some((r) => (r.includes(`>${n}<`) || r.includes(`>${n.replaceAll("&", "&amp;")}<`)) && !/data-label="Median">held</.test(r)));
   if (!board) { failed += 1; console.error("  FAIL the-board.html was not written"); }
   else if (badRows.length) { failed += 1; console.error(`  FAIL Board rows priced instead of held: ${badRows.join(", ")}`); }
   else console.log("  ok  the-board.html held rows labeled, no price");
