@@ -4,7 +4,7 @@
 import { readFile, writeFile, mkdir, rm } from "node:fs/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { dirname, join } from "node:path";
-import { buildAllDives } from "./lib/product-dives.mjs";
+import { buildAllDives, indexOutlierMap } from "./lib/product-dives.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "research/pulse/dive");
@@ -20,7 +20,8 @@ export async function buildProductDives() {
   const heatHistory = (await J("data/heat-history.json")) ?? [];
   const sealedPrices = (await J("data/sealed-prices.json")) ?? { products: [] };
   const buyoutTape = (await J("data/buyout-tape.json")) ?? { rows: [] };
-  const outlierMap = (await J("data/price-outliers.json")) ?? null;
+  const outlierDoc = (await J("data/derived/sealed-price-outliers.json")) ?? (await J("data/price-outliers.json")) ?? null;
+  const outlierMap = indexOutlierMap(outlierDoc);
   const redirects = (await J("research/assets/public/redirects.json")) ?? { products: {} };
 
   const bundle = buildAllDives({
