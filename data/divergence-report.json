@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-06T13:54:16.014Z",
+  "generatedAt": "2026-10-06T14:31:34.043Z",
   "method": "Cross-market divergence, both sides taken AS STATED — no shipping cost is ever estimated (no-guess law). eBay ask medians are delivered totals where a listing states postage, and where none is stated the cost is baked in. TCGplayer Market Price states no postage, so it is taken as delivered too. Tax excluded both sides, always. The TCG figure is TCGplayer's average of recent COMPLETED SALES on the US marketplace, USD (source-verified 2026-08-22; no region/filter parameters exist on the provider endpoint to get wrong, and no shipping-inclusive field is retrievable at any tier). Two structural asymmetries remain and are NOT signals: ASK vs SOLD, and any real postage the TCG side charges that we cannot see. |spread| >= 15% flags. A flat TCG line can mean no recent sales, not a frozen ask. TCG-side listing counts: provider exposes none for sealed - field carried as null, lights up if they ship it.",
   "counts": {
     "compared": 135,
@@ -8,25 +8,11 @@
   },
   "rows": [
     {
-      "id": "sv1-pack",
-      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "Scarlet & Violet Booster Pack",
-      "ebayAskMedian": 17.5,
-      "ebayListings": 8,
-      "tcgListings": null,
-      "signal": false,
-      "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
-      "provenance": {
-        "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:36:00.619Z"
-      }
-    },
-    {
       "id": "sv8pt5-sc",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Prismatic Evolutions Surprise Box",
-      "ebayAskMedian": 120,
-      "ebayListings": 95,
+      "ebayAskMedian": 125,
+      "ebayListings": 96,
       "tcgListings": null,
       "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
@@ -40,7 +26,7 @@
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Temporal Forces Booster Pack",
       "ebayAskMedian": 16.45,
-      "ebayListings": 38,
+      "ebayListings": 39,
       "tcgListings": null,
       "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
@@ -50,11 +36,25 @@
       }
     },
     {
+      "id": "me5-pack",
+      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
+      "name": "Pitch Black Booster Pack",
+      "ebayAskMedian": 10.25,
+      "ebayListings": 50,
+      "tcgListings": null,
+      "signal": false,
+      "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
+      "provenance": {
+        "ebay": "Catchem-data eBay active asks, 2026-10-06",
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:36:01.181Z"
+      }
+    },
+    {
       "id": "sv4-pack",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Paradox Rift Booster Pack",
       "ebayAskMedian": 14,
-      "ebayListings": 45,
+      "ebayListings": 46,
       "tcgListings": null,
       "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
@@ -82,7 +82,7 @@
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Darkness Ablaze Booster Pack",
       "ebayAskMedian": 15.33,
-      "ebayListings": 59,
+      "ebayListings": 57,
       "tcgListings": null,
       "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
@@ -96,7 +96,7 @@
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Celebrations Elite Trainer Box",
       "ebayAskMedian": 161.99,
-      "ebayListings": 35,
+      "ebayListings": 29,
       "tcgListings": null,
       "signal": false,
       "read": "eBay asks under TCG-side — motivated eBay sellers, or the TCG sales average trailing a falling market",
@@ -110,7 +110,7 @@
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Champion's Path Booster Pack",
       "ebayAskMedian": 29.99,
-      "ebayListings": 22,
+      "ebayListings": 21,
       "tcgListings": null,
       "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
@@ -136,17 +136,17 @@
       }
     },
     {
-      "id": "me5-pack",
+      "id": "sv1-pack",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "Pitch Black Booster Pack",
-      "ebayAskMedian": 9,
-      "ebayListings": 39,
+      "name": "Scarlet & Violet Booster Pack",
+      "ebayAskMedian": 13.5,
+      "ebayListings": 8,
       "tcgListings": null,
       "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:36:01.181Z"
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:36:00.619Z"
       }
     },
     {
@@ -171,7 +171,7 @@
       "publishBlocked": true,
       "name": "Sword & Shield Booster Pack",
       "ebayAskMedian": 16.9,
-      "ebayListings": 12,
+      "ebayListings": 13,
       "tcgListings": null,
       "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
@@ -185,7 +185,7 @@
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Journey Together Booster Pack",
       "ebayAskMedian": 9.42,
-      "ebayListings": 31,
+      "ebayListings": 30,
       "tcgListings": null,
       "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
@@ -199,7 +199,7 @@
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Evolutions Elite Trainer Box",
       "ebayAskMedian": 499.99,
-      "ebayListings": 29,
+      "ebayListings": 28,
       "tcgListings": null,
       "signal": false,
       "offTcgEra": true,
@@ -259,7 +259,7 @@
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Ascended Heroes Booster Pack",
       "ebayAskMedian": 14.99,
-      "ebayListings": 27,
+      "ebayListings": 26,
       "tcgListings": null,
       "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
@@ -272,8 +272,8 @@
       "id": "xy12-booster-box",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Evolutions Booster Box",
-      "ebayAskMedian": 3519.98,
-      "ebayListings": 18,
+      "ebayAskMedian": 3514.95,
+      "ebayListings": 17,
       "tcgListings": null,
       "signal": false,
       "offTcgEra": true,
@@ -289,7 +289,7 @@
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Astral Radiance Booster Pack",
       "ebayAskMedian": 14,
-      "ebayListings": 40,
+      "ebayListings": 38,
       "tcgListings": null,
       "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
@@ -316,8 +316,8 @@
       "id": "swsh8-pack",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Fusion Strike Booster Pack",
-      "ebayAskMedian": 24.95,
-      "ebayListings": 57,
+      "ebayAskMedian": 24.98,
+      "ebayListings": 56,
       "tcgListings": null,
       "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
@@ -346,7 +346,7 @@
       "publishBlocked": true,
       "name": "Pokemon GO Elite Trainer Box",
       "ebayAskMedian": 220,
-      "ebayListings": 82,
+      "ebayListings": 83,
       "tcgListings": null,
       "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
@@ -359,8 +359,8 @@
       "id": "me3-pack",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Perfect Order Booster Pack",
-      "ebayAskMedian": 8,
-      "ebayListings": 22,
+      "ebayAskMedian": 7.99,
+      "ebayListings": 27,
       "tcgListings": null,
       "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
@@ -370,31 +370,31 @@
       }
     },
     {
-      "id": "swsh5-pack",
-      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "Battle Styles Booster Pack",
-      "ebayAskMedian": 12.49,
-      "ebayListings": 39,
-      "tcgListings": null,
-      "signal": false,
-      "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
-      "provenance": {
-        "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:36:00.527Z"
-      }
-    },
-    {
       "id": "sv2-pack",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Paldea Evolved Booster Pack",
-      "ebayAskMedian": 19.97,
-      "ebayListings": 33,
+      "ebayAskMedian": 19.99,
+      "ebayListings": 36,
       "tcgListings": null,
       "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-10-06",
         "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:35:58.442Z"
+      }
+    },
+    {
+      "id": "swsh5-pack",
+      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
+      "name": "Battle Styles Booster Pack",
+      "ebayAskMedian": 12.34,
+      "ebayListings": 42,
+      "tcgListings": null,
+      "signal": false,
+      "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
+      "provenance": {
+        "ebay": "Catchem-data eBay active asks, 2026-10-06",
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:36:00.527Z"
       }
     },
     {
@@ -412,17 +412,17 @@
       }
     },
     {
-      "id": "sv9-booster-box",
+      "id": "swsh4-pack",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "Journey Together Booster Box",
-      "ebayAskMedian": 261.38,
-      "ebayListings": 84,
+      "name": "Vivid Voltage Booster Pack",
+      "ebayAskMedian": 14,
+      "ebayListings": 45,
       "tcgListings": null,
       "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:33:32.182Z"
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:36:00.177Z"
       }
     },
     {
@@ -458,6 +458,20 @@
       }
     },
     {
+      "id": "sv9-booster-box",
+      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
+      "name": "Journey Together Booster Box",
+      "ebayAskMedian": 260,
+      "ebayListings": 81,
+      "tcgListings": null,
+      "signal": false,
+      "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
+      "provenance": {
+        "ebay": "Catchem-data eBay active asks, 2026-10-06",
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:33:32.182Z"
+      }
+    },
+    {
       "id": "sv3-pack",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Obsidian Flames Booster Pack",
@@ -488,11 +502,25 @@
       }
     },
     {
+      "id": "me2-pack",
+      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
+      "name": "Phantasmal Flames Booster Pack",
+      "ebayAskMedian": 15,
+      "ebayListings": 34,
+      "tcgListings": null,
+      "signal": false,
+      "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
+      "provenance": {
+        "ebay": "Catchem-data eBay active asks, 2026-10-06",
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:35:59.876Z"
+      }
+    },
+    {
       "id": "sv6pt5-etb",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Shrouded Fable Elite Trainer Box",
       "ebayAskMedian": 139,
-      "ebayListings": 107,
+      "ebayListings": 104,
       "tcgListings": null,
       "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
@@ -505,8 +533,8 @@
       "id": "swsh7-pack",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Evolving Skies Booster Pack",
-      "ebayAskMedian": 54.99,
-      "ebayListings": 71,
+      "ebayAskMedian": 54.95,
+      "ebayListings": 73,
       "tcgListings": null,
       "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
@@ -516,11 +544,25 @@
       }
     },
     {
+      "id": "swsh11-pack",
+      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
+      "name": "Lost Origin Booster Pack",
+      "ebayAskMedian": 24,
+      "ebayListings": 76,
+      "tcgListings": null,
+      "signal": false,
+      "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
+      "provenance": {
+        "ebay": "Catchem-data eBay active asks, 2026-10-06",
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:35:57.518Z"
+      }
+    },
+    {
       "id": "swsh7-booster-box",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Evolving Skies Booster Box",
       "ebayAskMedian": 2800,
-      "ebayListings": 101,
+      "ebayListings": 100,
       "tcgListings": null,
       "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
@@ -549,8 +591,8 @@
       "id": "sv8-pack",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Surging Sparks Booster Pack",
-      "ebayAskMedian": 10.73,
-      "ebayListings": 49,
+      "ebayAskMedian": 10.75,
+      "ebayListings": 50,
       "tcgListings": null,
       "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
@@ -576,52 +618,24 @@
       }
     },
     {
-      "id": "me2-pack",
+      "id": "sv7-bb",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "Phantasmal Flames Booster Pack",
-      "ebayAskMedian": 14.5,
-      "ebayListings": 35,
+      "name": "Stellar Crown Booster Bundle",
+      "ebayAskMedian": 87.95,
+      "ebayListings": 28,
       "tcgListings": null,
       "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:35:59.876Z"
-      }
-    },
-    {
-      "id": "swsh11-pack",
-      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "Lost Origin Booster Pack",
-      "ebayAskMedian": 23.44,
-      "ebayListings": 75,
-      "tcgListings": null,
-      "signal": false,
-      "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
-      "provenance": {
-        "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:35:57.518Z"
-      }
-    },
-    {
-      "id": "sv7-pack",
-      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "Stellar Crown Booster Pack",
-      "ebayAskMedian": 13,
-      "ebayListings": 48,
-      "tcgListings": null,
-      "signal": false,
-      "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
-      "provenance": {
-        "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:36:00.316Z"
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:34:39.944Z"
       }
     },
     {
       "id": "sv10-booster-box",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Destined Rivals Booster Box",
-      "ebayAskMedian": 490,
+      "ebayAskMedian": 493.15,
       "ebayListings": 77,
       "tcgListings": null,
       "signal": false,
@@ -632,11 +646,25 @@
       }
     },
     {
+      "id": "sv7-pack",
+      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
+      "name": "Stellar Crown Booster Pack",
+      "ebayAskMedian": 13,
+      "ebayListings": 45,
+      "tcgListings": null,
+      "signal": false,
+      "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
+      "provenance": {
+        "ebay": "Catchem-data eBay active asks, 2026-10-06",
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:36:00.316Z"
+      }
+    },
+    {
       "id": "swsh2-pack",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Rebel Clash Booster Pack",
       "ebayAskMedian": 15,
-      "ebayListings": 58,
+      "ebayListings": 57,
       "tcgListings": null,
       "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
@@ -650,7 +678,7 @@
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Darkness Ablaze Elite Trainer Box",
       "ebayAskMedian": 139.99,
-      "ebayListings": 115,
+      "ebayListings": 113,
       "tcgListings": null,
       "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
@@ -678,27 +706,13 @@
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Twilight Masquerade Booster Pack",
       "ebayAskMedian": 10.98,
-      "ebayListings": 56,
+      "ebayListings": 55,
       "tcgListings": null,
       "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-10-06",
         "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:36:00.610Z"
-      }
-    },
-    {
-      "id": "sv7-bb",
-      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "Stellar Crown Booster Bundle",
-      "ebayAskMedian": 86,
-      "ebayListings": 27,
-      "tcgListings": null,
-      "signal": false,
-      "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
-      "provenance": {
-        "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:34:39.944Z"
       }
     },
     {
@@ -716,24 +730,10 @@
       }
     },
     {
-      "id": "swsh4-pack",
-      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "Vivid Voltage Booster Pack",
-      "ebayAskMedian": 12.99,
-      "ebayListings": 39,
-      "tcgListings": null,
-      "signal": false,
-      "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
-      "provenance": {
-        "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:36:00.177Z"
-      }
-    },
-    {
       "id": "sv3pt5-pack",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "151 Booster Pack",
-      "ebayAskMedian": 34.99,
+      "ebayAskMedian": 35,
       "ebayListings": 28,
       "tcgListings": null,
       "signal": false,
@@ -778,7 +778,7 @@
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Chilling Reign Booster Pack",
       "ebayAskMedian": 14.99,
-      "ebayListings": 64,
+      "ebayListings": 66,
       "tcgListings": null,
       "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
@@ -802,31 +802,31 @@
       }
     },
     {
+      "id": "sv7-booster-box",
+      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
+      "name": "Stellar Crown Booster Box",
+      "ebayAskMedian": 355.68,
+      "ebayListings": 51,
+      "tcgListings": null,
+      "signal": false,
+      "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
+      "provenance": {
+        "ebay": "Catchem-data eBay active asks, 2026-10-06",
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:33:07.688Z"
+      }
+    },
+    {
       "id": "sv3pt5-etb",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "151 Elite Trainer Box",
       "ebayAskMedian": 580,
-      "ebayListings": 135,
+      "ebayListings": 133,
       "tcgListings": null,
       "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-10-06",
         "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:33:02.641Z"
-      }
-    },
-    {
-      "id": "sv8-etb",
-      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "Surging Sparks Elite Trainer Box",
-      "ebayAskMedian": 140,
-      "ebayListings": 108,
-      "tcgListings": null,
-      "signal": false,
-      "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
-      "provenance": {
-        "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:34:10.408Z"
       }
     },
     {
@@ -846,6 +846,34 @@
       }
     },
     {
+      "id": "sv8-etb",
+      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
+      "name": "Surging Sparks Elite Trainer Box",
+      "ebayAskMedian": 139.99,
+      "ebayListings": 107,
+      "tcgListings": null,
+      "signal": false,
+      "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
+      "provenance": {
+        "ebay": "Catchem-data eBay active asks, 2026-10-06",
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:34:10.408Z"
+      }
+    },
+    {
+      "id": "sv5-booster-box",
+      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
+      "name": "Temporal Forces Booster Box",
+      "ebayAskMedian": 349.99,
+      "ebayListings": 47,
+      "tcgListings": null,
+      "signal": false,
+      "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
+      "provenance": {
+        "ebay": "Catchem-data eBay active asks, 2026-10-06",
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:33:08.077Z"
+      }
+    },
+    {
       "id": "me1-enhanced-booster-box",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Mega Evolution Enhanced Booster Box",
@@ -857,20 +885,6 @@
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-10-06",
         "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:33:10.169Z"
-      }
-    },
-    {
-      "id": "sv7-booster-box",
-      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "Stellar Crown Booster Box",
-      "ebayAskMedian": 350,
-      "ebayListings": 49,
-      "tcgListings": null,
-      "signal": false,
-      "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
-      "provenance": {
-        "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:33:07.688Z"
       }
     },
     {
@@ -894,27 +908,13 @@
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Perfect Order Booster Box",
       "ebayAskMedian": 199.99,
-      "ebayListings": 82,
+      "ebayListings": 83,
       "tcgListings": null,
       "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-10-06",
         "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:33:44.029Z"
-      }
-    },
-    {
-      "id": "sv4pt5-etb",
-      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "Paldean Fates Elite Trainer Box",
-      "ebayAskMedian": 499,
-      "ebayListings": 115,
-      "tcgListings": null,
-      "signal": false,
-      "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
-      "provenance": {
-        "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:33:03.250Z"
       }
     },
     {
@@ -936,7 +936,7 @@
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Paradox Rift Booster Box",
       "ebayAskMedian": 323.89,
-      "ebayListings": 63,
+      "ebayListings": 62,
       "tcgListings": null,
       "signal": false,
       "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
@@ -960,11 +960,25 @@
       }
     },
     {
+      "id": "sv4pt5-etb",
+      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
+      "name": "Paldean Fates Elite Trainer Box",
+      "ebayAskMedian": 497.89,
+      "ebayListings": 115,
+      "tcgListings": null,
+      "signal": false,
+      "read": "eBay asks running hot vs TCG-side — sellers reaching or eBay supply tightening",
+      "provenance": {
+        "ebay": "Catchem-data eBay active asks, 2026-10-06",
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:33:03.250Z"
+      }
+    },
+    {
       "id": "sv6-etb",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Twilight Masquerade Elite Trainer Box",
       "ebayAskMedian": 120,
-      "ebayListings": 122,
+      "ebayListings": 121,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
@@ -1045,17 +1059,17 @@
       }
     },
     {
-      "id": "sv5-booster-box",
+      "id": "swsh4-booster-box",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "Temporal Forces Booster Box",
-      "ebayAskMedian": 336.99,
-      "ebayListings": 49,
+      "name": "Vivid Voltage Booster Box",
+      "ebayAskMedian": 354.12,
+      "ebayListings": 89,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:33:08.077Z"
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:33:05.784Z"
       }
     },
     {
@@ -1063,7 +1077,7 @@
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Shining Fates Elite Trainer Box",
       "ebayAskMedian": 154.98,
-      "ebayListings": 139,
+      "ebayListings": 141,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
@@ -1089,25 +1103,11 @@
       }
     },
     {
-      "id": "swsh4-booster-box",
-      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "Vivid Voltage Booster Box",
-      "ebayAskMedian": 350,
-      "ebayListings": 92,
-      "tcgListings": null,
-      "signal": false,
-      "read": "markets agree",
-      "provenance": {
-        "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:33:05.784Z"
-      }
-    },
-    {
       "id": "sv6-booster-box",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Twilight Masquerade Booster Box",
       "ebayAskMedian": 379.99,
-      "ebayListings": 42,
+      "ebayListings": 44,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
@@ -1121,7 +1121,7 @@
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Battle Styles Booster Box",
       "ebayAskMedian": 320,
-      "ebayListings": 90,
+      "ebayListings": 89,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
@@ -1131,25 +1131,11 @@
       }
     },
     {
-      "id": "sv1-booster-box",
-      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "Scarlet & Violet Base Booster Box",
-      "ebayAskMedian": 329.95,
-      "ebayListings": 36,
-      "tcgListings": null,
-      "signal": false,
-      "read": "markets agree",
-      "provenance": {
-        "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:33:09.368Z"
-      }
-    },
-    {
       "id": "sv3-booster-box",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Obsidian Flames Booster Box",
       "ebayAskMedian": 409.88,
-      "ebayListings": 40,
+      "ebayListings": 37,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
@@ -1159,25 +1145,11 @@
       }
     },
     {
-      "id": "me1-etb",
-      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "Mega Evolution Elite Trainer Box",
-      "ebayAskMedian": 136.74,
-      "ebayListings": 32,
-      "tcgListings": null,
-      "signal": false,
-      "read": "markets agree",
-      "provenance": {
-        "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:34:07.828Z"
-      }
-    },
-    {
       "id": "sv7-etb",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Stellar Crown Elite Trainer Box",
       "ebayAskMedian": 174.3,
-      "ebayListings": 85,
+      "ebayListings": 84,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
@@ -1187,17 +1159,31 @@
       }
     },
     {
-      "id": "sv8pt5-etb",
+      "id": "sv1-booster-box",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "Prismatic Evolutions Elite Trainer Box",
-      "ebayAskMedian": 149.95,
-      "ebayListings": 92,
+      "name": "Scarlet & Violet Base Booster Box",
+      "ebayAskMedian": 328.89,
+      "ebayListings": 37,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:33:59.068Z"
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:33:09.368Z"
+      }
+    },
+    {
+      "id": "me2pt5-tin",
+      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
+      "name": "Ascended Heroes Tin",
+      "ebayAskMedian": 49.98,
+      "ebayListings": 56,
+      "tcgListings": null,
+      "signal": false,
+      "read": "markets agree",
+      "provenance": {
+        "ebay": "Catchem-data eBay active asks, 2026-10-06",
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:35:17.751Z"
       }
     },
     {
@@ -1215,20 +1201,6 @@
       }
     },
     {
-      "id": "me1-pack",
-      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "Mega Evolution Booster Pack",
-      "ebayAskMedian": 9,
-      "ebayListings": 14,
-      "tcgListings": null,
-      "signal": false,
-      "read": "markets agree",
-      "provenance": {
-        "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:36:00.824Z"
-      }
-    },
-    {
       "id": "sv6pt5-bb",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Shrouded Fable Booster Bundle",
@@ -1243,17 +1215,73 @@
       }
     },
     {
+      "id": "me1-pack",
+      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
+      "name": "Mega Evolution Booster Pack",
+      "ebayAskMedian": 8.99,
+      "ebayListings": 14,
+      "tcgListings": null,
+      "signal": false,
+      "read": "markets agree",
+      "provenance": {
+        "ebay": "Catchem-data eBay active asks, 2026-10-06",
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:36:00.824Z"
+      }
+    },
+    {
+      "id": "sv3pt5-bb",
+      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
+      "name": "151 Booster Bundle",
+      "ebayAskMedian": 185.9,
+      "ebayListings": 124,
+      "tcgListings": null,
+      "signal": false,
+      "read": "markets agree",
+      "provenance": {
+        "ebay": "Catchem-data eBay active asks, 2026-10-06",
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:33:45.343Z"
+      }
+    },
+    {
+      "id": "me3-etb",
+      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
+      "name": "Perfect Order Elite Trainer Box",
+      "ebayAskMedian": 76.67,
+      "ebayListings": 119,
+      "tcgListings": null,
+      "signal": false,
+      "read": "markets agree",
+      "provenance": {
+        "ebay": "Catchem-data eBay active asks, 2026-10-06",
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:34:43.560Z"
+      }
+    },
+    {
       "id": "me4-etb",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Chaos Rising Elite Trainer Box",
-      "ebayAskMedian": 74.99,
-      "ebayListings": 114,
+      "ebayAskMedian": 74.95,
+      "ebayListings": 112,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-10-06",
         "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:34:45.389Z"
+      }
+    },
+    {
+      "id": "sv8pt5-etb",
+      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
+      "name": "Prismatic Evolutions Elite Trainer Box",
+      "ebayAskMedian": 149,
+      "ebayListings": 94,
+      "tcgListings": null,
+      "signal": false,
+      "read": "markets agree",
+      "provenance": {
+        "ebay": "Catchem-data eBay active asks, 2026-10-06",
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:33:59.068Z"
       }
     },
     {
@@ -1271,38 +1299,52 @@
       }
     },
     {
-      "id": "sv3pt5-bb",
+      "id": "me1-etb",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "151 Booster Bundle",
-      "ebayAskMedian": 185,
-      "ebayListings": 126,
+      "name": "Mega Evolution Elite Trainer Box",
+      "ebayAskMedian": 135,
+      "ebayListings": 31,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:33:45.343Z"
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:34:07.828Z"
       }
     },
     {
-      "id": "me4-booster-box",
+      "id": "sv8-bb",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "Chaos Rising Booster Box",
-      "ebayAskMedian": 207.95,
-      "ebayListings": 106,
+      "name": "Surging Sparks Booster Bundle",
+      "ebayAskMedian": 67,
+      "ebayListings": 117,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:33:38.104Z"
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:34:53.337Z"
+      }
+    },
+    {
+      "id": "me5-bb",
+      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
+      "name": "Pitch Black Booster Bundle",
+      "ebayAskMedian": 42.99,
+      "ebayListings": 114,
+      "tcgListings": null,
+      "signal": false,
+      "read": "markets agree",
+      "provenance": {
+        "ebay": "Catchem-data eBay active asks, 2026-10-06",
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:35:31.714Z"
       }
     },
     {
       "id": "sv3pt5-upc",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "151 Ultra Premium Collection",
-      "ebayAskMedian": 950,
+      "ebayAskMedian": 949.98,
       "ebayListings": 139,
       "tcgListings": null,
       "signal": false,
@@ -1313,31 +1355,17 @@
       }
     },
     {
-      "id": "me2-booster-box",
+      "id": "me3-bb",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "Phantasmal Flames Booster Box",
-      "ebayAskMedian": 424.88,
-      "ebayListings": 76,
+      "name": "Perfect Order Booster Bundle",
+      "ebayAskMedian": 42,
+      "ebayListings": 127,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:33:04.085Z"
-      }
-    },
-    {
-      "id": "me3-etb",
-      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "Perfect Order Elite Trainer Box",
-      "ebayAskMedian": 75.99,
-      "ebayListings": 115,
-      "tcgListings": null,
-      "signal": false,
-      "read": "markets agree",
-      "provenance": {
-        "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:34:43.560Z"
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:35:33.262Z"
       }
     },
     {
@@ -1357,20 +1385,6 @@
       }
     },
     {
-      "id": "me3-bb",
-      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "Perfect Order Booster Bundle",
-      "ebayAskMedian": 41.97,
-      "ebayListings": 133,
-      "tcgListings": null,
-      "signal": false,
-      "read": "markets agree",
-      "provenance": {
-        "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:35:33.262Z"
-      }
-    },
-    {
       "id": "swsh9-pack",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Brilliant Stars Booster Pack",
@@ -1382,20 +1396,6 @@
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-10-06",
         "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:35:58.224Z"
-      }
-    },
-    {
-      "id": "sv2-booster-box",
-      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "Paldea Evolved Booster Box",
-      "ebayAskMedian": 507,
-      "ebayListings": 50,
-      "tcgListings": null,
-      "signal": false,
-      "read": "markets agree",
-      "provenance": {
-        "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:33:02.903Z"
       }
     },
     {
@@ -1413,17 +1413,31 @@
       }
     },
     {
-      "id": "sv8-bb",
+      "id": "me4-booster-box",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "Surging Sparks Booster Bundle",
-      "ebayAskMedian": 66,
-      "ebayListings": 117,
+      "name": "Chaos Rising Booster Box",
+      "ebayAskMedian": 205,
+      "ebayListings": 103,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:34:53.337Z"
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:33:38.104Z"
+      }
+    },
+    {
+      "id": "me2-booster-box",
+      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
+      "name": "Phantasmal Flames Booster Box",
+      "ebayAskMedian": 419.99,
+      "ebayListings": 76,
+      "tcgListings": null,
+      "signal": false,
+      "read": "markets agree",
+      "provenance": {
+        "ebay": "Catchem-data eBay active asks, 2026-10-06",
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:33:04.085Z"
       }
     },
     {
@@ -1431,7 +1445,7 @@
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Chilling Reign Booster Box",
       "ebayAskMedian": 499.99,
-      "ebayListings": 90,
+      "ebayListings": 91,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
@@ -1441,11 +1455,25 @@
       }
     },
     {
+      "id": "sv2-booster-box",
+      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
+      "name": "Paldea Evolved Booster Box",
+      "ebayAskMedian": 500,
+      "ebayListings": 51,
+      "tcgListings": null,
+      "signal": false,
+      "read": "markets agree",
+      "provenance": {
+        "ebay": "Catchem-data eBay active asks, 2026-10-06",
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:33:02.903Z"
+      }
+    },
+    {
       "id": "swsh35-etb",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Champion's Path Elite Trainer Box",
       "ebayAskMedian": 230,
-      "ebayListings": 68,
+      "ebayListings": 69,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
@@ -1455,11 +1483,25 @@
       }
     },
     {
+      "id": "sv9-bb",
+      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
+      "name": "Journey Together Booster Bundle",
+      "ebayAskMedian": 45.98,
+      "ebayListings": 130,
+      "tcgListings": null,
+      "signal": false,
+      "read": "markets agree",
+      "provenance": {
+        "ebay": "Catchem-data eBay active asks, 2026-10-06",
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:35:22.696Z"
+      }
+    },
+    {
       "id": "swsh9-booster-box",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Brilliant Stars Booster Box",
       "ebayAskMedian": 604.99,
-      "ebayListings": 56,
+      "ebayListings": 55,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
@@ -1473,7 +1515,7 @@
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Crown Zenith Elite Trainer Box",
       "ebayAskMedian": 334.99,
-      "ebayListings": 103,
+      "ebayListings": 102,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
@@ -1483,25 +1525,11 @@
       }
     },
     {
-      "id": "me5-bb",
-      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "Pitch Black Booster Bundle",
-      "ebayAskMedian": 41.98,
-      "ebayListings": 115,
-      "tcgListings": null,
-      "signal": false,
-      "read": "markets agree",
-      "provenance": {
-        "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:35:31.714Z"
-      }
-    },
-    {
       "id": "me4-bb",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Chaos Rising Booster Bundle",
-      "ebayAskMedian": 42.99,
-      "ebayListings": 125,
+      "ebayAskMedian": 42.96,
+      "ebayListings": 123,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
@@ -1515,7 +1543,7 @@
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Phantasmal Flames Booster Bundle",
       "ebayAskMedian": 89,
-      "ebayListings": 87,
+      "ebayListings": 89,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
@@ -1529,7 +1557,7 @@
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Silver Tempest Booster Pack",
       "ebayAskMedian": 16.19,
-      "ebayListings": 49,
+      "ebayListings": 50,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
@@ -1571,11 +1599,39 @@
       }
     },
     {
+      "id": "sv9-etb",
+      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
+      "name": "Journey Together Elite Trainer Box",
+      "ebayAskMedian": 145,
+      "ebayListings": 111,
+      "tcgListings": null,
+      "signal": false,
+      "read": "markets agree",
+      "provenance": {
+        "ebay": "Catchem-data eBay active asks, 2026-10-06",
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:33:57.417Z"
+      }
+    },
+    {
+      "id": "me5-etb",
+      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
+      "name": "Pitch Black Elite Trainer Box",
+      "ebayAskMedian": 79.98,
+      "ebayListings": 108,
+      "tcgListings": null,
+      "signal": false,
+      "read": "markets agree",
+      "provenance": {
+        "ebay": "Catchem-data eBay active asks, 2026-10-06",
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:34:38.200Z"
+      }
+    },
+    {
       "id": "rsv10pt5-bundle",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "White Flare Booster Bundle",
       "ebayAskMedian": 94.49,
-      "ebayListings": 90,
+      "ebayListings": 97,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
@@ -1603,7 +1659,7 @@
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Black Bolt Elite Trainer Box",
       "ebayAskMedian": 170,
-      "ebayListings": 105,
+      "ebayListings": 102,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
@@ -1613,25 +1669,25 @@
       }
     },
     {
-      "id": "sv9-etb",
+      "id": "sv10-etb",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "Journey Together Elite Trainer Box",
-      "ebayAskMedian": 144.19,
-      "ebayListings": 115,
+      "name": "Destined Rivals Elite Trainer Box",
+      "ebayAskMedian": 125,
+      "ebayListings": 137,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:33:57.417Z"
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:34:12.545Z"
       }
     },
     {
       "id": "swsh12-etb",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Silver Tempest Elite Trainer Box",
-      "ebayAskMedian": 172.48,
-      "ebayListings": 105,
+      "ebayAskMedian": 172.49,
+      "ebayListings": 106,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
@@ -1641,25 +1697,11 @@
       }
     },
     {
-      "id": "me2pt5-tin",
-      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "Ascended Heroes Tin",
-      "ebayAskMedian": 47.5,
-      "ebayListings": 54,
-      "tcgListings": null,
-      "signal": false,
-      "read": "markets agree",
-      "provenance": {
-        "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:35:17.751Z"
-      }
-    },
-    {
       "id": "zsv10pt5-bundle",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Black Bolt Booster Bundle",
       "ebayAskMedian": 99.99,
-      "ebayListings": 81,
+      "ebayListings": 83,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
@@ -1683,53 +1725,11 @@
       }
     },
     {
-      "id": "sv9-bb",
-      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "Journey Together Booster Bundle",
-      "ebayAskMedian": 45,
-      "ebayListings": 135,
-      "tcgListings": null,
-      "signal": false,
-      "read": "markets agree",
-      "provenance": {
-        "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:35:22.696Z"
-      }
-    },
-    {
-      "id": "sv10-etb",
-      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "Destined Rivals Elite Trainer Box",
-      "ebayAskMedian": 124,
-      "ebayListings": 137,
-      "tcgListings": null,
-      "signal": false,
-      "read": "markets agree",
-      "provenance": {
-        "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:34:12.545Z"
-      }
-    },
-    {
-      "id": "me5-etb",
-      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "Pitch Black Elite Trainer Box",
-      "ebayAskMedian": 78.74,
-      "ebayListings": 104,
-      "tcgListings": null,
-      "signal": false,
-      "read": "markets agree",
-      "provenance": {
-        "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:34:38.200Z"
-      }
-    },
-    {
       "id": "me5-booster-box",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Pitch Black Booster Box",
-      "ebayAskMedian": 199.99,
-      "ebayListings": 101,
+      "ebayAskMedian": 200,
+      "ebayListings": 97,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
@@ -1743,7 +1743,7 @@
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Evolving Skies Elite Trainer Box",
       "ebayAskMedian": 550,
-      "ebayListings": 118,
+      "ebayListings": 115,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
@@ -1757,7 +1757,7 @@
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Phantasmal Flames Elite Trainer Box",
       "ebayAskMedian": 159.99,
-      "ebayListings": 120,
+      "ebayListings": 124,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
@@ -1771,7 +1771,7 @@
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Prismatic Evolutions Booster Bundle",
       "ebayAskMedian": 85,
-      "ebayListings": 93,
+      "ebayListings": 89,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
@@ -1781,25 +1781,11 @@
       }
     },
     {
-      "id": "swsh8-etb",
-      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
-      "name": "Fusion Strike Elite Trainer Box",
-      "ebayAskMedian": 343.61,
-      "ebayListings": 82,
-      "tcgListings": null,
-      "signal": false,
-      "read": "markets agree",
-      "provenance": {
-        "ebay": "Catchem-data eBay active asks, 2026-10-06",
-        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:33:05.273Z"
-      }
-    },
-    {
       "id": "sv10-bb",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Destined Rivals Booster Bundle",
       "ebayAskMedian": 65,
-      "ebayListings": 119,
+      "ebayListings": 121,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
@@ -1813,13 +1799,27 @@
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Astral Radiance Booster Box",
       "ebayAskMedian": 420,
-      "ebayListings": 58,
+      "ebayListings": 60,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
       "provenance": {
         "ebay": "Catchem-data eBay active asks, 2026-10-06",
         "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:33:03.570Z"
+      }
+    },
+    {
+      "id": "swsh8-etb",
+      "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
+      "name": "Fusion Strike Elite Trainer Box",
+      "ebayAskMedian": 342.89,
+      "ebayListings": 83,
+      "tcgListings": null,
+      "signal": false,
+      "read": "markets agree",
+      "provenance": {
+        "ebay": "Catchem-data eBay active asks, 2026-10-06",
+        "tcg": "pokemonpricetracker.com v2 sealed-products (TCGplayer-derived sealed market), 2026-10-06T13:33:05.273Z"
       }
     },
     {
@@ -1841,7 +1841,7 @@
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Temporal Forces Elite Trainer Box",
       "ebayAskMedian": 140,
-      "ebayListings": 134,
+      "ebayListings": 135,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
@@ -1869,7 +1869,7 @@
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Silver Tempest Booster Box",
       "ebayAskMedian": 530,
-      "ebayListings": 53,
+      "ebayListings": 50,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
@@ -1883,7 +1883,7 @@
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Ascended Heroes Booster Bundle",
       "ebayAskMedian": 85,
-      "ebayListings": 107,
+      "ebayListings": 109,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
@@ -1912,7 +1912,7 @@
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Ascended Heroes Elite Trainer Box",
       "ebayAskMedian": 159.99,
-      "ebayListings": 126,
+      "ebayListings": 125,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
@@ -1925,8 +1925,8 @@
       "id": "me1-bb",
       "spreadBasis": "as-stated both sides, no shipping estimated (shipping in where stated, tax out)",
       "name": "Mega Evolution Booster Bundle",
-      "ebayAskMedian": 65,
-      "ebayListings": 22,
+      "ebayAskMedian": 64.99,
+      "ebayListings": 20,
       "tcgListings": null,
       "signal": false,
       "read": "markets agree",
