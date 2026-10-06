@@ -7,7 +7,8 @@
 //
 // Three layers, all against the LIVE deployments:
 //   1. PUBLIC SITE (server-rendered → static assertions are honest):
-//      landing, methodology (#deal-zone), a product lander, the board —
+//      landing, methodology (the price method), a product lander (its
+//      TCGplayer market chart), the board (Movers) —
 //      each must be 200 AND contain its load-bearing content, not a shell.
 //   2. FEED CONTRACT: pulse-feed.json parses, carries its required keys,
 //      has a plausible product count, and is fresh (<48h).
@@ -53,9 +54,14 @@ async function page(url, anchors, name) {
 
 console.log("── 1 · public site (static, server-rendered) ──");
 await page(SITE + "/", ["Catch'em", "email"], "landing");
-await page(SITE + "/methodology", ['id="deal-zone"', 'id="prices"'], "methodology");
-await page(SITE + "/p/sv9-booster-box", ["Journey Together Booster Box", "Deal Zone"], "lander sv9-bb");
-await page(SITE + "/board", ["The Board"], "board");
+// Anchors follow what catchem-site renders today (src/ui.mjs renderMethod,
+// the product page chart, renderMovers). The site dropped the Deal Zone and
+// renamed The Board to Movers, so the old anchors failed on a page that works.
+// Each anchor is body content, not the shared header or footer: the footer
+// on every page also says "How the numbers are made" and "TCGplayer market".
+await page(SITE + "/methodology", ["<h1>How the numbers are made</h1>", "<b>TCGplayer market</b> is the catalog price"], "methodology");
+await page(SITE + "/p/sv9-booster-box", ["Journey Together Booster Box", 'data-caption="TCGplayer market, daily"'], "lander sv9-bb");
+await page(SITE + "/board", ["<h1>Movers</h1>", 'id="singles"'], "board");
 
 console.log("── 2 · feed contract ──");
 try {
