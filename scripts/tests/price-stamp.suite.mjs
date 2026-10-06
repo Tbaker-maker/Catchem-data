@@ -3,7 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { priceFileStamp, stampCountsText, nextCountsUpdatedAt } from "../lib/price-stamp.mjs";
+import { priceFileStamp, priceFileDay, newestCommittedDay, stampCountsText, nextCountsUpdatedAt } from "../lib/price-stamp.mjs";
 
 const script = fileURLToPath(new URL("../stamp-public-updated.mjs", import.meta.url));
 
@@ -29,10 +29,14 @@ export async function run() {
   t("a missing price clock keeps the line that is already there", nextCountsUpdatedAt({}, "2026-09-27T10:19:31.933Z") === "2026-09-27T10:19:31.933Z");
   t("no price clock and no previous line invents nothing", nextCountsUpdatedAt({}, null) === null && nextCountsUpdatedAt({ updatedAt: "2026-10-03" }, "") === null);
   t("the price file clock replaces the old line", nextCountsUpdatedAt({ updatedAt: iso }, "2026-09-27T10:19:31.933Z") === iso);
+  t("the price file day is the calendar day of its clock", priceFileDay({ updatedAt: iso }) === "2026-10-03" && priceFileDay({ asOf: "2026-10-06" }) === "2026-10-06");
+  t("the newest committed day wins without inventing", newestCommittedDay({ updatedAt: "2026-09-27T10:19:31.933Z" }, { asOf: "2026-10-06" }, { updatedAt: iso }) === "2026-10-06");
   const before = '{\n "asOf": "2026-09-27",\n "updatedAt": "2026-09-27T10:19:31.933Z"\n}\n';
   const after = stampCountsText(before, iso);
-  t("only the updated line moves", after.includes(`"updatedAt": "${iso}"`) && after.includes('"asOf": "2026-09-27"'));
-  t("a file with no updated field is left alone", stampCountsText('{"asOf":"2026-09-27"}\n', iso) === null);
+  t("updatedAt can move while asOf waits for an explicit day", after.includes(`"updatedAt": "${iso}"`) && after.includes('"asOf": "2026-09-27"'));
+  const both = stampCountsText(before, iso, "2026-10-06");
+  t("an explicit day moves asOf with the price clock", both.includes(`"updatedAt": "${iso}"`) && both.includes('"asOf": "2026-10-06"'));
+  t("a file with no stamp fields is left alone", stampCountsText('{"items":1}\n', iso, "2026-10-06") === null);
   t("the same clock is not rewritten", stampCountsText(after, iso) === after);
 
   const dir = await mkdtemp(join(tmpdir(), "price-stamp-"));
@@ -42,7 +46,7 @@ export async function run() {
   await writeFile(counts, before);
   const ok = await runScript({ PRICE_FILE: price, COUNTS_FILE: counts });
   const written = await readFile(counts, "utf8");
-  t("the script writes the price file clock", ok.code === 0 && written.includes(iso) && written.includes("2026-09-27"));
+  t("the script writes the price file clock and its day", ok.code === 0 && written.includes(iso) && written.includes("2026-10-03"));
   const blank = join(dir, "blank.json");
   await writeFile(blank, JSON.stringify({ products: [] }));
   const held = await runScript({ PRICE_FILE: blank, COUNTS_FILE: counts });
