@@ -9,8 +9,10 @@ const HIST_CUT = "2026-08-18";
 export const VOLUME_NOTE =
   "Sold counts need eBay Marketplace Insights scope. listingCount is active Browse asks, not solds. Browse total is not solds.";
 
+export const OUTLIER_SOURCE = "data/derived/sealed-price-outliers.json";
+
 export const OUTLIER_HOOK =
-  "Optional file data/price-outliers.json (map id → {flag, note, asOf}). Absent today — leave outlier null.";
+  "Optional file data/derived/sealed-price-outliers.json (HIGH/SOFT rows from flag-sealed-price-outliers). Absent → leave outlier null.";
 
 function pickLatest(product) {
   if (!product || typeof product !== "object") return null;
@@ -52,16 +54,72 @@ function pickBuyout(row) {
   return out;
 }
 
+/**
+ * Index sealed-price-outliers.json (high[]/soft[]) or a legacy id→row map.
+ * Does not invent rows — only indexes what the file already has.
+ */
+export function indexOutlierMap(doc) {
+  if (!doc || typeof doc !== "object") return null;
+  const map = Object.create(null);
+  let n = 0;
+  const take = (row) => {
+    if (!row || typeof row !== "object" || typeof row.id !== "string" || !row.id) return;
+    map[row.id] = row;
+    n += 1;
+  };
+  if (Array.isArray(doc.high) || Array.isArray(doc.soft)) {
+    for (const row of doc.high || []) take(row);
+    for (const row of doc.soft || []) take(row);
+    return n ? map : null;
+  }
+  if (doc.products && typeof doc.products === "object" && !Array.isArray(doc.products)) {
+    for (const [id, row] of Object.entries(doc.products)) {
+      if (row && typeof row === "object") take({ ...row, id: row.id || id });
+    }
+    return n ? map : null;
+  }
+  // Legacy / test shape: plain id → {flag, note, asOf}
+  for (const [id, row] of Object.entries(doc)) {
+    if (!row || typeof row !== "object") continue;
+    if (["generatedAt", "asOf", "source", "rule", "skippedPacks", "skippedNoFlag", "highCount", "softCount", "high", "soft", "products"].includes(id)) continue;
+    take({ ...row, id: row.id || id });
+  }
+  return n ? map : null;
+}
+
+/** Human flag from real pctGap/direction only — no invented percentages. */
+export function outlierFlagNote(row) {
+  if (!row || typeof row !== "object") return null;
+  if (typeof row.pctGap === "number" && Number.isFinite(row.pctGap)) {
+    // Use the file's own pctGap (already one decimal in sealed-price-outliers).
+    const abs = Math.abs(row.pctGap);
+    const pct = Number.isInteger(abs) ? String(abs) : abs.toFixed(1).replace(/\.0$/, "");
+    const dir =
+      row.direction === "low" || row.pctGap < 0
+        ? "below"
+        : row.direction === "high" || row.pctGap > 0
+          ? "above"
+          : "off";
+    return `Price flagged: ${pct}% ${dir} recent median — review`;
+  }
+  return row.note ?? row.why ?? row.provisionalLabel ?? null;
+}
+
 function pickOutlier(map, id) {
   if (!map || typeof map !== "object") return null;
   const row = map[id] ?? map.products?.[id] ?? null;
   if (!row || typeof row !== "object") return null;
-  return {
-    flag: row.flag ?? row.kind ?? true,
-    note: row.note ?? row.why ?? null,
-    asOf: row.asOf ?? null,
-    source: "data/price-outliers.json",
+  const out = {
+    flag: row.severity ?? row.flag ?? row.kind ?? true,
+    note: outlierFlagNote(row),
+    asOf: row.asOf ?? row.todayDate ?? null,
+    source: OUTLIER_SOURCE,
   };
+  if (typeof row.pctGap === "number" && Number.isFinite(row.pctGap)) out.pctGap = row.pctGap;
+  if (row.direction) out.direction = row.direction;
+  if (row.severity) out.severity = row.severity;
+  if (row.provisionalLabel) out.provisionalLabel = row.provisionalLabel;
+  return out;
 }
 
 /**
@@ -106,7 +164,7 @@ export function buildDivePayload({
       latest: "data/sealed-prices.json",
       buyoutBrowseTotals: "data/buyout-tape.json Browse total field only",
       volume: "absent — Insights scope required",
-      outlier: outlier ? "data/price-outliers.json" : OUTLIER_HOOK,
+      outlier: outlier ? OUTLIER_SOURCE : OUTLIER_HOOK,
     },
     series,
     latest,

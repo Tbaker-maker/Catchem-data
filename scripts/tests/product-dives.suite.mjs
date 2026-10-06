@@ -1,5 +1,5 @@
 // Product deep-dive payloads: real series only, never invent solds or Browse totals.
-import { buildDivePayload, buildAllDives, VOLUME_NOTE } from "../lib/product-dives.mjs";
+import { buildDivePayload, buildAllDives, VOLUME_NOTE, indexOutlierMap, outlierFlagNote, OUTLIER_SOURCE } from "../lib/product-dives.mjs";
 
 export async function run() {
   let fail = 0;
@@ -62,6 +62,30 @@ export async function run() {
     outlierMap: { "sv3pt5-etb": { flag: "spike", note: "median jumped vs own history", asOf: "2026-10-06" } },
   });
   t("outlier file wires when present", withFlag.outlier?.flag === "spike" && withFlag.outlierHook === null);
+  t("outlier source path is derived file", withFlag.outlier?.source === OUTLIER_SOURCE);
+
+  const sealedDoc = {
+    asOf: "2026-10-06",
+    high: [{
+      id: "sv5-pc-etb",
+      severity: "high",
+      direction: "high",
+      todayDate: "2026-10-06",
+      pctGap: 95.5,
+      provisionalLabel: "review — possible bad listing; review — possible real move",
+    }],
+    soft: [],
+  };
+  const indexed = indexOutlierMap(sealedDoc);
+  t("indexes high[] by id", indexed?.["sv5-pc-etb"]?.pctGap === 95.5);
+  t("flag note from pctGap", outlierFlagNote(sealedDoc.high[0]) === "Price flagged: 95.5% above recent median — review");
+  const highDive = buildDivePayload({
+    id: "sv5-pc-etb",
+    seriesRows: [{ date: "2026-08-20", id: "sv5-pc-etb", price: 200, listingCount: 10 }],
+    outlierMap: indexed,
+  });
+  t("HIGH sealed outlier lands on dive", highDive.outlier?.note === "Price flagged: 95.5% above recent median — review" && highDive.outlier?.pctGap === 95.5 && highDive.outlierHook === null);
+  t("below uses direction/sign", outlierFlagNote({ pctGap: -50.9, direction: "low" }) === "Price flagged: 50.9% below recent median — review");
 
   const bundle = buildAllDives({
     heatHistory: seriesRows,
