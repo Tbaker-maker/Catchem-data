@@ -121,6 +121,10 @@ const pub = live.filter(p=>!p.publishBlock && !__blk.blocked(p.id));
 // derived, failed qa-gate's ±60% cross-source check, leaked via Pack Math).
 const byIdBlk = new Map(sp.products.map(p=>[p.id, !!p.publishBlock]));
 const editorial = (rows)=>(rows||[]).filter(r=>!__blk.blocked(r.id) && !byIdBlk.get(r.id));
+// supplyShifts is computed before qa-gate stamps today's flags, so a product
+// held tonight (e.g. a median that moved 30%+ overnight) can still sit in it.
+// Same editorial filter as every other derived list: a held product is left out.
+const shiftRows = editorial(der?.supplyShifts);
 // Daily Three picks carry only a NAME (no id) and were chosen before
 // qa-gate stamped today's flags — CI 32548174725: an 86%-spread pack became
 // the SEALED pick, got blocked by the cross-source check, and leaked into
@@ -207,10 +211,10 @@ if (der?.watchOutcomes?.sealed?.dPct != null || der?.watchOutcomes?.raw?.dPct !=
   md += `*We keep our own score — hits and misses both.*\n`;
 }
 if (der?.subtypeIndexes?.length) md += `\n**Product-class indexes:** ${der.subtypeIndexes.map(s=>`${s.subtype} ${s.level}`).join(" · ")} *(same equation, shelves by class)*\n`;
-if (der?.supplyShifts?.length) {
+if (shiftRows.length) {
   if (dyk) md += `\n## 💡 Did you know?\n**${dyk.hook}**\n\n${dyk.body}\n\n${dyk.why_it_matters}\n\n*Source: ${dyk.sources.join("; ")}, checked ${dyk.verified}.*\n`;
 md += `\n## 🌊 Supply shifts\n`;
-  for (const x of der.supplyShifts.slice(0,5)) md += `- **${x.name}** — listings ${x.prev}→${x.listings} (**${x.dPct>0?"+":""}${x.dPct}%**)${x.priceDPct!=null?`, price ${x.priceDPct>0?"+":""}${x.priceDPct}%`:""}. ${x.read}${x.catalystMatch?` · ${x.catalystMatch}`:""}.\n`;
+  for (const x of shiftRows.slice(0,5)) md += `- **${x.name}** — listings ${x.prev}→${x.listings} (**${x.dPct>0?"+":""}${x.dPct}%**)${x.priceDPct!=null?`, price ${x.priceDPct>0?"+":""}${x.priceDPct}%`:""}. ${x.read}${x.catalystMatch?` · ${x.catalystMatch}`:""}.\n`;
   md += `*Shelf math, plainly: how many are for sale vs yesterday — and what usually causes a swing that size.*\n`;
 }
 md += `\n## 🏛 Generation indexes\n`;
@@ -341,7 +345,7 @@ const eraHtml = (der?.eraIndexes || []).map((e) => {
   const gapTxt = Number.isFinite(gap) && gap !== 0 ? `asking ${Math.abs(gap)}% ${gap >= 0 ? "more" : "less"} than TCGplayer · ` : "";
   return `<div class="row"><span><b>${escHtml(pretty(e.era))}</b><em> ${e.products} products · ${gapTxt}${e.listingsPerProduct} listings each</em></span><span class="mono">${price}</span></div>`;
 }).join("");
-const shiftHtml = (der?.supplyShifts || []).slice(0, 5).map((x) => {
+const shiftHtml = shiftRows.slice(0, 5).map((x) => {
   const name = show(x.name);
   const dPct = Number(x.dPct);
   if (!name || !Number.isFinite(dPct)) return "";
