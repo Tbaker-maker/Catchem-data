@@ -332,7 +332,7 @@ export function seededShuffle(ids, seedText) {
   return arr;
 }
 
-export function buildBrowse({ asOf, cardIds, rankedIds, news, waves }) {
+export function buildBrowse({ asOf, cardIds, rankedIds, news, waves, flagged, dives }) {
   const shuffled = seededShuffle(cardIds, asOf);
   return {
     asOf,
@@ -345,7 +345,9 @@ export function buildBrowse({ asOf, cardIds, rankedIds, news, waves }) {
       set: { order: "ranked", field: "set" },
       news: { order: "ranked", windowDays: 14, furtherBackWhenFiltered: true, file: "research/digests/news.json" },
       pokemon: { order: "shuffled unless the filter is on", readKind: "pokemon", premiumCanHide: true },
-      wave: { order: "ranked", items: waves },
+      wave: { order: "ranked", items: waves || [] },
+      flagged: { order: "ranked", readKind: "outlier", items: flagged || [], empty: "No flagged prices." },
+      dive: { order: "ranked", readKind: "dive", items: dives || [], empty: "No deep dives." },
     },
     newsCount: Array.isArray(news) ? news.length : 0,
   };

@@ -1524,6 +1524,285 @@
  "group": {
   "reads": []
  },
- "reads": [],
- "supplyNotes": []
+ "reads": [
+  {
+   "id": "outlier-sv5-pc-etb",
+   "sku": "sv5-pc-etb",
+   "diveId": "sv5-pc-etb",
+   "readKind": "outlier",
+   "kind": "outlier",
+   "name": "Temporal Forces Pokemon Center Elite Trainer Box",
+   "set": "",
+   "path": "Temporal Forces Pokemon Center Elite Trainer Box ask $499.99 on Oct 6 sits 95.5% above its recent median $255.75 — review.",
+   "headline": "Temporal Forces Pokemon Center Elite Trainer Box ask $499.99 on Oct 6 sits 95.5% above its recent median $255.75 — review.",
+   "why": "From data/derived/sealed-price-outliers.json (high). Median window is on that file.",
+   "price": 499.99,
+   "asOf": "2026-10-06",
+   "pctGap": 95.5,
+   "direction": "high",
+   "severity": "high",
+   "referencePrice": 255.75,
+   "href": "/dive/sv5-pc-etb",
+   "flagged": {
+    "on": "2026-10-06",
+    "at": 499.99,
+    "first": true
+   },
+   "sources": {
+    "outliers": "data/derived/sealed-price-outliers.json"
+   }
+  },
+  {
+   "id": "outlier-cel25-etb",
+   "sku": "cel25-etb",
+   "diveId": "cel25-etb",
+   "readKind": "outlier",
+   "kind": "outlier",
+   "name": "Celebrations Elite Trainer Box",
+   "set": "",
+   "path": "Celebrations Elite Trainer Box ask $161.99 on Oct 6 sits 50.9% below its recent median $330.00 — review.",
+   "headline": "Celebrations Elite Trainer Box ask $161.99 on Oct 6 sits 50.9% below its recent median $330.00 — review.",
+   "why": "From data/derived/sealed-price-outliers.json (high). Median window is on that file.",
+   "price": 161.99,
+   "asOf": "2026-10-06",
+   "pctGap": -50.9,
+   "direction": "low",
+   "severity": "high",
+   "referencePrice": 330,
+   "href": "/dive/cel25-etb",
+   "flagged": {
+    "on": "2026-10-06",
+    "at": 161.99,
+    "first": true
+   },
+   "sources": {
+    "outliers": "data/derived/sealed-price-outliers.json"
+   }
+  },
+  {
+   "id": "dive-cel25-etb",
+   "sku": "cel25-etb",
+   "diveId": "cel25-etb",
+   "readKind": "dive",
+   "kind": "dive",
+   "name": "Celebrations Elite Trainer Box",
+   "set": "",
+   "path": "Celebrations Elite Trainer Box: $161.99 on Oct 6. Price flagged: 50.9% below recent median — review Deeper look on the chart.",
+   "headline": "Celebrations Elite Trainer Box: $161.99 on Oct 6. Price flagged: 50.9% below recent median — review Deeper look on the chart.",
+   "why": "Fields are from research/pulse/dive/<id>.json. No sold count is on this read.",
+   "price": 161.99,
+   "asOf": "2026-10-06",
+   "href": "/dive/cel25-etb",
+   "sources": {
+    "dive": "research/pulse/dive/cel25-etb.json"
+   }
+  },
+  {
+   "id": "dive-sv5-pc-etb",
+   "sku": "sv5-pc-etb",
+   "diveId": "sv5-pc-etb",
+   "readKind": "dive",
+   "kind": "dive",
+   "name": "Temporal Forces Pokemon Center Elite Trainer Box",
+   "set": "",
+   "path": "Temporal Forces Pokemon Center Elite Trainer Box: $499.99 on Oct 6. Price flagged: 95.5% above recent median — review Deeper look on the chart.",
+   "headline": "Temporal Forces Pokemon Center Elite Trainer Box: $499.99 on Oct 6. Price flagged: 95.5% above recent median — review Deeper look on the chart.",
+   "why": "Fields are from research/pulse/dive/<id>.json. No sold count is on this read.",
+   "price": 499.99,
+   "asOf": "2026-10-06",
+   "href": "/dive/sv5-pc-etb",
+   "sources": {
+    "dive": "research/pulse/dive/sv5-pc-etb.json"
+   }
+  },
+  {
+   "id": "dive-cel25-bb",
+   "sku": "cel25-bb",
+   "diveId": "cel25-bb",
+   "readKind": "dive",
+   "kind": "dive",
+   "name": "Celebrations Booster Bundle",
+   "set": "",
+   "path": "Celebrations Booster Bundle: $79.99 on Oct 6. Deeper look on the chart.",
+   "headline": "Celebrations Booster Bundle: $79.99 on Oct 6. Deeper look on the chart.",
+   "why": "Fields are from research/pulse/dive/<id>.json. No sold count is on this read.",
+   "price": 79.99,
+   "asOf": "2026-10-06",
+   "href": "/dive/cel25-bb",
+   "sources": {
+    "dive": "research/pulse/dive/cel25-bb.json"
+   }
+  },
+  {
+   "id": "dive-cel25-upc",
+   "sku": "cel25-upc",
+   "diveId": "cel25-upc",
+   "readKind": "dive",
+   "kind": "dive",
+   "name": "Celebrations Ultra Premium Collection",
+   "set": "",
+   "path": "Celebrations Ultra Premium Collection: $1,250.00 on Oct 6. Deeper look on the chart.",
+   "headline": "Celebrations Ultra Premium Collection: $1,250.00 on Oct 6. Deeper look on the chart.",
+   "why": "Fields are from research/pulse/dive/<id>.json. No sold count is on this read.",
+   "price": 1250,
+   "asOf": "2026-10-06",
+   "href": "/dive/cel25-upc",
+   "sources": {
+    "dive": "research/pulse/dive/cel25-upc.json"
+   }
+  },
+  {
+   "id": "dive-me1-bb",
+   "sku": "me1-bb",
+   "diveId": "me1-bb",
+   "readKind": "dive",
+   "kind": "dive",
+   "name": "Mega Evolution Booster Bundle",
+   "set": "",
+   "path": "Mega Evolution Booster Bundle: $64.99 on Oct 6. Deeper look on the chart.",
+   "headline": "Mega Evolution Booster Bundle: $64.99 on Oct 6. Deeper look on the chart.",
+   "why": "Fields are from research/pulse/dive/<id>.json. No sold count is on this read.",
+   "price": 64.99,
+   "asOf": "2026-10-06",
+   "href": "/dive/me1-bb",
+   "sources": {
+    "dive": "research/pulse/dive/me1-bb.json"
+   }
+  },
+  {
+   "id": "dive-me1-booster-box",
+   "sku": "me1-booster-box",
+   "diveId": "me1-booster-box",
+   "readKind": "dive",
+   "kind": "dive",
+   "name": "Mega Evolution Booster Box",
+   "set": "",
+   "path": "Mega Evolution Booster Box: $350.63 on Oct 6. Deeper look on the chart.",
+   "headline": "Mega Evolution Booster Box: $350.63 on Oct 6. Deeper look on the chart.",
+   "why": "Fields are from research/pulse/dive/<id>.json. No sold count is on this read.",
+   "price": 350.63,
+   "asOf": "2026-10-06",
+   "href": "/dive/me1-booster-box",
+   "sources": {
+    "dive": "research/pulse/dive/me1-booster-box.json"
+   }
+  },
+  {
+   "id": "dive-me1-enhanced-booster-box",
+   "sku": "me1-enhanced-booster-box",
+   "diveId": "me1-enhanced-booster-box",
+   "readKind": "dive",
+   "kind": "dive",
+   "name": "Mega Evolution Enhanced Booster Box",
+   "set": "",
+   "path": "Mega Evolution Enhanced Booster Box: $335.89 on Oct 6. Deeper look on the chart.",
+   "headline": "Mega Evolution Enhanced Booster Box: $335.89 on Oct 6. Deeper look on the chart.",
+   "why": "Fields are from research/pulse/dive/<id>.json. No sold count is on this read.",
+   "price": 335.89,
+   "asOf": "2026-10-06",
+   "href": "/dive/me1-enhanced-booster-box",
+   "sources": {
+    "dive": "research/pulse/dive/me1-enhanced-booster-box.json"
+   }
+  },
+  {
+   "id": "dive-me1-etb",
+   "sku": "me1-etb",
+   "diveId": "me1-etb",
+   "readKind": "dive",
+   "kind": "dive",
+   "name": "Mega Evolution Elite Trainer Box",
+   "set": "",
+   "path": "Mega Evolution Elite Trainer Box: $135.00 on Oct 6. Deeper look on the chart.",
+   "headline": "Mega Evolution Elite Trainer Box: $135.00 on Oct 6. Deeper look on the chart.",
+   "why": "Fields are from research/pulse/dive/<id>.json. No sold count is on this read.",
+   "price": 135,
+   "asOf": "2026-10-06",
+   "href": "/dive/me1-etb",
+   "sources": {
+    "dive": "research/pulse/dive/me1-etb.json"
+   }
+  },
+  {
+   "id": "dive-me1-pack",
+   "sku": "me1-pack",
+   "diveId": "me1-pack",
+   "readKind": "dive",
+   "kind": "dive",
+   "name": "Mega Evolution Booster Pack",
+   "set": "",
+   "path": "Mega Evolution Booster Pack: $8.99 on Oct 6. Deeper look on the chart.",
+   "headline": "Mega Evolution Booster Pack: $8.99 on Oct 6. Deeper look on the chart.",
+   "why": "Fields are from research/pulse/dive/<id>.json. No sold count is on this read.",
+   "price": 8.99,
+   "asOf": "2026-10-06",
+   "href": "/dive/me1-pack",
+   "sources": {
+    "dive": "research/pulse/dive/me1-pack.json"
+   }
+  },
+  {
+   "id": "dive-me1-pc-etb",
+   "sku": "me1-pc-etb",
+   "diveId": "me1-pc-etb",
+   "readKind": "dive",
+   "kind": "dive",
+   "name": "Mega Evolution Pokemon Center Elite Trainer Box",
+   "set": "",
+   "path": "Mega Evolution Pokemon Center Elite Trainer Box: $224.99 on Oct 6. Deeper look on the chart.",
+   "headline": "Mega Evolution Pokemon Center Elite Trainer Box: $224.99 on Oct 6. Deeper look on the chart.",
+   "why": "Fields are from research/pulse/dive/<id>.json. No sold count is on this read.",
+   "price": 224.99,
+   "asOf": "2026-10-06",
+   "href": "/dive/me1-pc-etb",
+   "sources": {
+    "dive": "research/pulse/dive/me1-pc-etb.json"
+   }
+  },
+  {
+   "id": "dive-me2-bb",
+   "sku": "me2-bb",
+   "diveId": "me2-bb",
+   "readKind": "dive",
+   "kind": "dive",
+   "name": "Phantasmal Flames Booster Bundle",
+   "set": "",
+   "path": "Phantasmal Flames Booster Bundle: $89.00 on Oct 6. Deeper look on the chart.",
+   "headline": "Phantasmal Flames Booster Bundle: $89.00 on Oct 6. Deeper look on the chart.",
+   "why": "Fields are from research/pulse/dive/<id>.json. No sold count is on this read.",
+   "price": 89,
+   "asOf": "2026-10-06",
+   "href": "/dive/me2-bb",
+   "sources": {
+    "dive": "research/pulse/dive/me2-bb.json"
+   }
+  },
+  {
+   "id": "dive-me2-booster-box",
+   "sku": "me2-booster-box",
+   "diveId": "me2-booster-box",
+   "readKind": "dive",
+   "kind": "dive",
+   "name": "Phantasmal Flames Booster Box",
+   "set": "",
+   "path": "Phantasmal Flames Booster Box: $419.99 on Oct 6. Deeper look on the chart.",
+   "headline": "Phantasmal Flames Booster Box: $419.99 on Oct 6. Deeper look on the chart.",
+   "why": "Fields are from research/pulse/dive/<id>.json. No sold count is on this read.",
+   "price": 419.99,
+   "asOf": "2026-10-06",
+   "href": "/dive/me2-booster-box",
+   "sources": {
+    "dive": "research/pulse/dive/me2-booster-box.json"
+   }
+  }
+ ],
+ "supplyNotes": [],
+ "flagged": {
+  "count": 2,
+  "source": "data/derived/sealed-price-outliers.json"
+ },
+ "dives": {
+  "count": 12,
+  "source": "research/pulse/dive/"
+ }
 }
