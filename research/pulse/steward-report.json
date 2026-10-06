@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-27T10:19:54.813Z",
+ "generatedAt": "2026-10-06T13:37:57.213Z",
  "role": "Keeps the work organised, saved and on track. Silent unless something is genuinely slipping — a day with nothing to say is a day it did its job.",
  "speaking": 5,
  "speak": [
@@ -19,14 +19,14 @@
   },
   {
    "kind": "silent stage",
-   "what": "pulse last reported 32 days ago.",
+   "what": "pulse last reported 9 days ago.",
    "why": "A stage that stopped running is invisible to every guard, because none of them run either. Silence is the one failure nothing else catches.",
    "owner": "cc",
    "confidence": "OBSERVED"
   },
   {
    "kind": "drift",
-   "what": "31 script(s) are not referenced anywhere: backfill-artists.mjs, backfill-tcgcsv.mjs, build-faq.mjs, build-hooks.mjs.",
+   "what": "36 script(s) are not referenced anywhere: append-learning-log.mjs, append-shelf.mjs, audit-repo-bots.mjs, backfill-artists.mjs.",
    "why": "A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.",
    "owner": "chat",
    "confidence": "OBSERVED"
@@ -41,6 +41,6 @@
  ],
  "quiet": [
   "23 open commitment(s), all recent",
-  "2 commits / 37 written records in the last few days"
+  "3 commits / 37 written records in the last few days"
  ]
 }

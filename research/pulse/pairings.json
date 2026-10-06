@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-09-27T10:19:56.664Z",
+  "generatedAt": "2026-10-06T13:37:58.234Z",
   "specification": "Modelled on the one art post that landed: Base Set Charizard beside 151 Blastoise ex, same illustrator, 24 years, both hero cards, both household Pokémon.",
   "whatItIsNot": "Not scored by recency, which is what produced a common card and an underwhelming post. Latest is a data choice; this scores the editorial one.",
-  "found": 16,
+  "found": 18,
   "pairings": [
     {
       "artist": "Mitsuhiro Arita",
-      "score": 103,
-      "years": 24,
+      "score": 109,
+      "years": 27,
       "first": {
         "id": "base1-4",
         "name": "Charizard",
@@ -16,19 +16,19 @@
         "rarity": "Rare Holo"
       },
       "last": {
-        "id": "sv3pt5-200",
-        "name": "Blastoise ex",
-        "set": "151",
-        "year": "2023",
-        "rarity": "Special Illustration Rare"
+        "id": "me55c-33",
+        "name": "Pikachu & Zekrom-GX",
+        "set": "30th Celebration: Classic Collection",
+        "year": "2026",
+        "rarity": "Rare Holo GX"
       },
       "because": [
-        "24 years apart",
+        "27 years apart",
         "both are Pokémon nobody needs introduced",
         "both are the good version, not a common",
         "cards people actually chase"
       ],
-      "command": "node scripts/card-composite.mjs base1-4 sv3pt5-200 --label \"...\""
+      "command": "node scripts/card-composite.mjs base1-4 me55c-33 --label \"...\""
     },
     {
       "artist": "Hironobu Yoshida",
@@ -55,6 +55,31 @@
         "cards people actually chase"
       ],
       "command": "node scripts/card-composite.mjs neo1-9 sm7-87 --label \"...\""
+    },
+    {
+      "artist": "Naoyo Kimura",
+      "score": 91,
+      "years": 23,
+      "first": {
+        "id": "ecard2-H28",
+        "name": "Tyranitar",
+        "set": "Aquapolis",
+        "year": "2003",
+        "rarity": "Rare Holo"
+      },
+      "last": {
+        "id": "me55c-149",
+        "name": "Lugia",
+        "set": "30th Celebration: Classic Collection",
+        "year": "2026",
+        "rarity": "Rare Secret"
+      },
+      "because": [
+        "23 years apart",
+        "both are Pokémon nobody needs introduced",
+        "both are the good version, not a common"
+      ],
+      "command": "node scripts/card-composite.mjs ecard2-H28 me55c-149 --label \"...\""
     },
     {
       "artist": "Kouki Saitou",
@@ -158,31 +183,6 @@
         "cards people actually chase"
       ],
       "command": "node scripts/card-composite.mjs ex8-107 swsh1-141 --label \"...\""
-    },
-    {
-      "artist": "Naoyo Kimura",
-      "score": 83,
-      "years": 19,
-      "first": {
-        "id": "ecard2-H28",
-        "name": "Tyranitar",
-        "set": "Aquapolis",
-        "year": "2003",
-        "rarity": "Rare Holo"
-      },
-      "last": {
-        "id": "swsh12-131",
-        "name": "Dragonite",
-        "set": "Silver Tempest",
-        "year": "2022",
-        "rarity": "Rare Holo"
-      },
-      "because": [
-        "19 years apart",
-        "both are Pokémon nobody needs introduced",
-        "both are the good version, not a common"
-      ],
-      "command": "node scripts/card-composite.mjs ecard2-H28 swsh12-131 --label \"...\""
     },
     {
       "artist": "kawayoo",
