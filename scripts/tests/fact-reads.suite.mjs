@@ -94,7 +94,6 @@ export async function run() {
   const stepBan = /moved less on the latest step|bigger last step|\bprinted\b|\bstored\b|last print/i;
   t("lead lines do not use a last-step rewrite", (reads.reads || []).every((row) => !stepBan.test(String(row.path || "") + String(row.headline || ""))));
   const today = JSON.parse(await readFile(join(ROOT, "research/assets/public/feed/today/0.json"), "utf8"));
-  const chaos = today.find((row) => row.sku === "tcgcsv-684452");
   // The percent is the price move across the window, not the last print and
   // not a share of today's listings. $120.82 on Sep 27 to $124.16 on Sep 29
   // is the last step (2.8%). $115.08 on Sep 22 to $124.16 on Sep 29 is the window (7.9%).
@@ -110,20 +109,36 @@ export async function run() {
     windowDays: 7,
     direction: "up",
   });
-  const liveMove = String(chaos?.path || "").match(/from \$([0-9,.]+) on [A-Za-z]+ \d{1,2} to \$([0-9,.]+) on [A-Za-z]+ \d{1,2}, up ([0-9]+(?:\.[0-9]+)?)%/);
-  const liveFrom = liveMove ? Number(liveMove[1].replace(/,/g, "")) : NaN;
-  const liveTo = liveMove ? Number(liveMove[2].replace(/,/g, "")) : NaN;
-  const liveStated = liveMove ? Number(liveMove[3]) : NaN;
-  const liveWindow = liveFrom > 0 ? Math.round(Math.abs((liveTo - liveFrom) / liveFrom) * 1000) / 10 : NaN;
+  // The live feed rotates every night: the Chaos Rising ETB (tcgcsv-684452)
+  // was in it on Sep 29 and is not in the Oct 6 feed, which failed this check
+  // with nothing wrong. So the live half now checks EVERY row of today's feed
+  // instead of one pinned sku: each stated percent must equal the move between
+  // the two prices the same sentence names, match changePct in sign and size,
+  // and carry a window. An empty feed fails.
+  const pathRx = /from \$([0-9,.]+) on [A-Za-z]+ \d{1,2} to \$([0-9,.]+) on [A-Za-z]+ \d{1,2}, (up|down) ([0-9]+(?:\.[0-9]+)?)%/;
+  const liveRows = Array.isArray(today) ? today : [];
+  const liveBad = [];
+  for (const row of liveRows) {
+    const m = String(row?.path || "").match(pathRx);
+    if (!m) { liveBad.push(`${row?.sku}: no window sentence`); continue; }
+    const from = Number(m[1].replace(/,/g, ""));
+    const to = Number(m[2].replace(/,/g, ""));
+    const sign = m[3] === "up" ? 1 : -1;
+    const stated = Number(m[4]);
+    const window = from > 0 ? Math.round(Math.abs((to - from) / from) * 1000) / 10 : NaN;
+    const ok = from > 0 && to > 0 && (to > from) === (sign > 0)
+      && Math.abs(stated - window) <= 0.05
+      && Math.abs(sign * stated - Number(row.changePct)) <= 0.05
+      && Number(row.windowDays) > 0;
+    if (!ok) liveBad.push(`${row.sku}: says ${m[3]} ${stated}%, window ${window}%, changePct ${row.changePct}`);
+  }
   t("a window path uses the window percent, not the last print step",
     /from \$115\.08 on Sep 22 to \$124\.16 on Sep 29, up 7\.9%/.test(windowPath)
     && !/2\.8%/.test(windowPath)
     && !/\$120\.82/.test(windowPath)
-    && chaos
-    && liveMove
-    && Math.abs(liveStated - liveWindow) <= 0.05
-    && Math.abs(liveStated - Number(chaos.changePct)) <= 0.05
-    && Number(chaos.windowDays) > 0);
+    && liveRows.length > 0
+    && liveBad.length === 0);
+  if (liveBad.length) console.error("       " + liveBad.slice(0, 5).join("\n       "));
 
   return fail;
 }
