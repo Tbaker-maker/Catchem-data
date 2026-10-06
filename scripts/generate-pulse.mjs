@@ -696,6 +696,22 @@ const feedJson = JSON.stringify(feed) + "\n";
 await writeFile(join(ROOT,"research/pulse/pulse-feed.json"), feedJson);
 await writeFile(join(ROOT,"research/assets/pulse-feed.json"), feedJson);
 
+// Per-product deep-dive payloads a read can open (/dive/<id>).
+// Writes research/pulse/dive/* — already covered by the nightly git-add of research/pulse/.
+// No workflow edit. volume stays null until Insights solds exist.
+{
+  const { buildProductDives } = await import("./build-product-dives.mjs");
+  const diveBundle = await buildProductDives();
+  const diveIds = new Set(diveBundle.ids || []);
+  for (const p of feed.products || []) {
+    if (diveIds.has(p.id)) p.dive = `/dive/${p.id}`;
+  }
+  // Rewrite feed with dive links once payloads exist.
+  const feedJson2 = JSON.stringify(feed) + "\n";
+  await writeFile(join(ROOT,"research/pulse/pulse-feed.json"), feedJson2);
+  await writeFile(join(ROOT,"research/assets/pulse-feed.json"), feedJson2);
+}
+
 // ── PRINT & ROTATION WATCH page (rides this step; no workflow change) ──
 if (der?.printWatch?.length) {
   const rows = der.printWatch.map(r=>`<tr><td>${r.set}</td><td class="mono">${r.ageMonths}mo</td><td>${r.eol.status==="printing"?`<b class="ok">~${r.eol.daysLeftEst}d left</b> <i class="dim">est.</i>`:`<span class="dim">out ~${r.eol.monthsOutEst}mo</span>`}</td><td class="mono">${r.supply}</td><td><span class="pill ${r.supplyTier}">${r.supplyTier.toUpperCase()}</span></td><td>${r.reprintSignal??`<span class="dim">—</span>`}</td><td>${r.standardLegal?`<b class="ok">⚖ ${r.mark}</b>`:r.mark?`<span class="dim">${r.mark} rotated</span>`:`<span class="dim">pre-mark</span>`}</td></tr>`).join("");
