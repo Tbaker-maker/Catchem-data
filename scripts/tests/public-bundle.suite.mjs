@@ -154,7 +154,7 @@ export async function run() {
   return fail;
 }
 
-if (process.argv[1] && import.meta.url.endsWith("public-bundle.suite.mjs")) {
+if (process.argv[1] && process.argv[1].endsWith("public-bundle.suite.mjs")) {
   const n = await run();
   if (n) process.exit(1);
 }
