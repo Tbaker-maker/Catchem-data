@@ -32,7 +32,7 @@
     "extra": 5
   },
   "lines": {
-    "equal": 99.5,
+    "equal": 99.4,
     "capped": 97.9,
     "median": 100.7,
     "capAppliedDays": 15,
@@ -189,7 +189,7 @@
     {
       "date": "2026-10-06",
       "from": "2026-10-05",
-      "equal": 99.5,
+      "equal": 99.4,
       "capped": 97.9,
       "median": 100.7,
       "matched": 158,
@@ -379,7 +379,7 @@
       "n": 37,
       "start": "2026-08-18",
       "levels": {
-        "equal": 98.5,
+        "equal": 98.4,
         "capped": 98.4,
         "median": 99.9
       },
@@ -391,8 +391,8 @@
       "n": 25,
       "start": "2026-08-18",
       "levels": {
-        "equal": 100.8,
-        "capped": 99,
+        "equal": 100.6,
+        "capped": 98.9,
         "median": 102.8
       },
       "matchedLast": 25,
@@ -403,9 +403,9 @@
       "n": 5,
       "start": "2026-08-18",
       "levels": {
-        "equal": 109.2,
-        "capped": 98.8,
-        "median": 105.3
+        "equal": 106.7,
+        "capped": 98.5,
+        "median": 105.4
       },
       "matchedLast": 5,
       "outsideHeadline": true
@@ -415,8 +415,8 @@
       "n": 38,
       "start": "2026-08-18",
       "levels": {
-        "equal": 98.1,
-        "capped": 97,
+        "equal": 98.2,
+        "capped": 97.1,
         "median": 99.7
       },
       "matchedLast": 37,
@@ -427,8 +427,8 @@
       "n": 34,
       "start": "2026-08-19",
       "levels": {
-        "equal": 109.3,
-        "capped": 104.7,
+        "equal": 109.2,
+        "capped": 104.8,
         "median": 110.7
       },
       "matchedLast": 33,
@@ -439,8 +439,8 @@
       "n": 30,
       "start": "2026-08-18",
       "levels": {
-        "equal": 97.8,
-        "capped": 96.4,
+        "equal": 97.6,
+        "capped": 96.2,
         "median": 99.1
       },
       "matchedLast": 28,
@@ -449,7 +449,7 @@
   ],
   "byRarity": [],
   "flagCounts": {
-    "stale": 3,
+    "stale": 4,
     "gappy": 3,
     "spiky": 6,
     "late": 3
@@ -539,7 +539,7 @@
       "observations": 12,
       "first": "2026-08-22",
       "last": "2026-10-06",
-      "maxAbsReturn": 0.1001
+      "maxAbsReturn": 0.0991
     },
     {
       "id": "me1-pc-etb",
@@ -799,7 +799,7 @@
       "observations": 16,
       "first": "2026-08-18",
       "last": "2026-10-06",
-      "maxAbsReturn": 0.0368
+      "maxAbsReturn": 0.027
     },
     {
       "id": "rsv10pt5-bundle",
@@ -1012,11 +1012,12 @@
       "type": "pack",
       "flags": [
         "spiky",
+        "stale",
         "gappy"
       ],
-      "observations": 12,
+      "observations": 11,
       "first": "2026-08-19",
-      "last": "2026-10-06",
+      "last": "2026-09-27",
       "maxAbsReturn": 0.3318
     },
     {
@@ -1167,7 +1168,7 @@
       "observations": 16,
       "first": "2026-08-18",
       "last": "2026-10-06",
-      "maxAbsReturn": 0.0258
+      "maxAbsReturn": 0.0263
     },
     {
       "id": "sv3pt5-etb",
@@ -1309,7 +1310,7 @@
       "observations": 16,
       "first": "2026-08-18",
       "last": "2026-10-06",
-      "maxAbsReturn": 0.0383
+      "maxAbsReturn": 0.0371
     },
     {
       "id": "sv5-etb",
@@ -1917,7 +1918,7 @@
       "observations": 15,
       "first": "2026-08-19",
       "last": "2026-10-06",
-      "maxAbsReturn": 0.0312
+      "maxAbsReturn": 0.0322
     },
     {
       "id": "swsh4-pack",
@@ -1969,7 +1970,7 @@
       "observations": 15,
       "first": "2026-08-19",
       "last": "2026-10-06",
-      "maxAbsReturn": 0.0259
+      "maxAbsReturn": 0.0338
     },
     {
       "id": "swsh5-pack",
@@ -2182,10 +2183,12 @@
       "type": "pack",
       "flags": [
         "spiky",
+        "stale",
         "gappy"
       ],
       "reasons": [
         "Price moved 33% from 2026-08-22 to 2026-08-26.",
+        "No fresh price within 2 days of 2026-10-06. Last observation 2026-09-27.",
         "Missing at least one observed day between its first and last price.",
         "Not in the current quarter basket, so it does not move this line."
       ],

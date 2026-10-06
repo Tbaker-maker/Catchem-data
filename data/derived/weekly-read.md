@@ -3,22 +3,22 @@
 Video outline. Same four parts every week. Say "reads we tracked". Do not say a name is a play or a target.
 
 ## 1. Heat
-- Shining Legends Elite Trainer Box — Hot
-- Chaos Rising Booster Pack — Hot
 - Chaos Rising Booster Bundle — Hot
-- Perfect Order Booster Pack — Hot
+- Shining Legends Elite Trainer Box — Hot
+- Ultra Prism Booster Box — Hot
+- Chaos Rising Booster Pack — Hot
 - Paradox Rift Booster Pack — Hot
-- Surging Sparks Booster Pack — Hot
+- Perfect Order Booster Pack — Hot
 
 ## 2. Keeps showing up
 Status: building history
 
 Sealed
-- Stellar Crown Booster Pack — 2 in 7 days, 6 in 30, streak 0
-- Evolutions Elite Trainer Box — 2 in 7 days, 6 in 30, streak 2
+- Stellar Crown Booster Pack — 3 in 7 days, 7 in 30, streak 3
 - Prismatic Evolutions Surprise Box — 3 in 7 days, 5 in 30, streak 3
-- Sword & Shield Booster Pack — 2 in 7 days, 5 in 30, streak 2
+- Evolutions Elite Trainer Box — 1 in 7 days, 5 in 30, streak 0
 - Celebrations Elite Trainer Box — 1 in 7 days, 4 in 30, streak 1
+- Paradox Rift Booster Pack — 1 in 7 days, 4 in 30, streak 0
 
 Singles
 - Surfing Pikachu VMAX — 0 in 7 days, 1 in 30, streak 1
@@ -34,7 +34,7 @@ Tracked 0. Graded 0. Hits 0. Misses 0. Hit rate not enough yet.
 
 ## 4. Sealed line and chase line
 These are two lines. They are not one number.
-- 151: sealed 97.8; chase building history (Charizard ex, Blastoise ex, Venusaur ex)
-- Ascended Heroes: sealed 91.4; chase building history (Mega Dragonite ex, Mega Dragonite ex, Mega Gengar ex)
+- 151: sealed 99.5; chase building history (Charizard ex, Blastoise ex, Venusaur ex)
+- Ascended Heroes: sealed 91.5; chase building history (Mega Dragonite ex, Mega Dragonite ex, Mega Gengar ex)
 - Astral Radiance: sealed 99; chase 95.2 (Machamp V, Origin Forme Palkia V, Beedrill V)
 - Base Set: sealed building history; chase building history
