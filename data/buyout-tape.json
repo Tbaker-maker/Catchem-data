@@ -1888,5 +1888,10 @@
       "latestDate": "2026-10-06",
       "price": 13.5
     }
-  ]
+  ],
+  "priceOutlierFile": "data/derived/sealed-price-outliers.json",
+  "priceOutlierPolicy": "high≥50% soft≥40% vs median of last ≤7 prior heat-history prices (min 3); packs skipped; missing history → no flag",
+  "priceOutlierAsOf": "2026-10-06",
+  "priceOutlierHighCount": 2,
+  "priceOutlierSoftCount": 0
 }

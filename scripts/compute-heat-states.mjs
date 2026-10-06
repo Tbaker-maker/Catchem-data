@@ -130,6 +130,16 @@ async function main() {
   await writeFile(join(DATA, "heat-report.json"), JSON.stringify(report, null, 2) + "\n");
   console.log(`✓ heat-report.json — mode: ${report.mode}`);
   console.log(`  🔥${report.counts.markup} ❄️${report.counts.markdown} 📤${report.counts.distribution} 😴${report.counts.accumulation} ⏸${report.counts.ranging} · excluded: ${report.counts.excluded}`);
+
+  // Price sanity flags for the desk. Reads the heat-history just written.
+  // No network. Does not invent prices or solds. Does not edit workflows.
+  try {
+    const { writeSealedPriceOutliers } = await import("./flag-sealed-price-outliers.mjs");
+    const flagged = await writeSealedPriceOutliers({ root: join(__dirname, ".."), asOf: today });
+    console.log(`✓ sealed-price outliers — high ${flagged.report.highCount}, soft ${flagged.report.softCount}`);
+  } catch (err) {
+    console.error(`⚠ sealed-price outliers skipped: ${err?.message || err}`);
+  }
 }
 
 main().catch(e => { console.error("Fatal:", e); process.exit(1); });
