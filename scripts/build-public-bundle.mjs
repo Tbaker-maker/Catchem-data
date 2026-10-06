@@ -893,14 +893,15 @@ for (let i = 0; i < chunks.length; i++) {
 const indexXml = `<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${files.map((f) => `<sitemap><loc>${origin}/${f}</loc></sitemap>`).join("\n")}\n</sitemapindex>\n`;
 await writeFile(join(OUT, "sitemap.xml"), indexXml);
 
-console.log(`public bundle: ${counts.items} items, ${counts.single} singles, ${counts.sealed} sealed, ${counts.sets} sets, ${counts.artists} artists, ${artistMatches} artist links, prize-pack versions ${linkedPrize.size}, ${reads.length} reads, redirects ${Object.keys(redirects.products).length}, sitemaps ${files.length}`);
+const publishedReads = JSON.parse(await readFile(join(OUT, "reads.json"), "utf8")).reads || [];
+console.log(`public bundle: ${counts.items} items, ${counts.single} singles, ${counts.sealed} sealed, ${counts.sets} sets, ${counts.artists} artists, ${artistMatches} artist links, prize-pack versions ${linkedPrize.size}, ${publishedReads.length} reads, redirects ${Object.keys(redirects.products).length}, sitemaps ${files.length}`);
 
 const priceOf = new Map();
 for (const set of sets.values()) {
   for (const it of set.items) if (it.price) priceOf.set(it.id, it.price);
 }
 const mismatches = [];
-for (const read of reads) {
+for (const read of publishedReads) {
   const id = String(read.href || "").split("/").pop();
   const want = priceOf.get(id);
   if (want != null && Math.abs(want - Number(read.price)) > 0.009) mismatches.push(`${id} read ${read.price} vs ${want}`);
