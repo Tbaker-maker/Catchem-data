@@ -57,7 +57,7 @@ const thumb = (p) => {
 };
 const tr = ({ p, s }) => `
 <tr>
-  <td class="name">${thumb(p)}<span><a href="/p/${esc(p.id)}.html">${esc(pretty(p.name))}</a><span class="sub">${esc(pretty(p.set || ""))}</span></span></td>
+  <td class="name">${thumb(p)}<span><a href="/dive/${esc(p.id)}">${esc(pretty(p.name))}</a><span class="sub">${esc(pretty(p.set || ""))}</span></span></td>
   <td data-label="Type"><span class="pill">${esc((p.subtype || "").replaceAll("-", " "))}</span></td>
   <td class="num" data-label="Median">${isHeld(p) ? "held" : (money(p.priceMedian) || "—")}</td>
   <td class="num" data-label="Listings">${p.listingCount ?? "—"}</td>
