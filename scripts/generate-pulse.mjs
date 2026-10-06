@@ -283,7 +283,11 @@ const heatSection = (today >= HEAT_DEBUT && heatGroups.length)
   : "";
 const chaseRows = chases.filter(c => money(c.priceMarket)).map(c=>`<div class="row"><span style="display:flex;align-items:center;gap:10px">${cardImg(c.cardId)?`<img class="thumb" style="width:34px;max-width:34px" src="${cardImg(c.cardId)}" alt="">`:""}<span>${escHtml(pretty(c.name))} <em>${escHtml(pretty(c.setName))}</em></span></span><span class="mono">${money(c.priceMarket)}</span></div>`).join("");
 const repeatDoc = await J("data/derived/repeat-rank.json");
-const keepRows = (rows) => (rows || []).slice(0, 5);
+// repeat-rank.json is computed before qa-gate stamps today's flags, so a
+// product blocked tonight (e.g. a median that moved 30%+ overnight) still sits
+// in its rows. Run them through the same editorial filter as every other
+// derived list, so a held product is left out instead of featured.
+const keepRows = (rows) => editorial(rows).slice(0, 5);
 const keepLine = (rows) => keepRows(rows).length
   ? keepRows(rows).map(r => {
       const streak = Number(r.streak) > 0 ? ` · streak ${r.streak}` : "";

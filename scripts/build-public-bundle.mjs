@@ -9,6 +9,7 @@ import {
 import { publicReceipts, scoreWatch } from "./lib/public-receipts.mjs";
 import { publishFeed, readCallLog, readShelfFile } from "./lib/feed-catalogue.mjs";
 import { nextCountsUpdatedAt } from "./lib/price-stamp.mjs";
+import { cardImage } from "./image-source.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "research/assets/public");
@@ -158,7 +159,7 @@ const scanById = new Map();
 const setIdVotes = new Map();
 let artistMatches = 0;
 const artistGroups = new Map();
-for (const card of Object.values(catalogue.cards || {})) {
+for (const [cardId, card] of Object.entries(catalogue.cards || {})) {
   const artist = personName(card.artist);
   const left = numLeft(card.number);
   if (!left) continue;
@@ -180,7 +181,12 @@ for (const card of Object.values(catalogue.cards || {})) {
   if (!best || bestScore < 3) continue;
   if (artist && !artistById.has(best.id)) artistById.set(best.id, artist);
   if (card.setId && card.number) {
-    scanById.set(best.id, `https://images.pokemontcg.io/${card.setId}/${String(card.number).replace(/^0+/, "")}.png`);
+    // The scan URL comes from data/card-images.json (the URL the source
+    // publishes for this card id), never built from setId/number: hosts differ
+    // per set and a guessed path that 404s comes back as a card back. No entry
+    // means no scan.
+    const scan = cardImage(cardId, false);
+    if (scan) scanById.set(best.id, scan);
     const voteKey = `${best.groupId}|${best.set}`;
     if (!setIdVotes.has(voteKey)) setIdVotes.set(voteKey, new Map());
     const votes = setIdVotes.get(voteKey);
