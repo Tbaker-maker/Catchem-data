@@ -69,7 +69,7 @@ export async function run() {
   return fail;
 }
 
-if (process.argv[1] && import.meta.url.endsWith("learning-log.suite.mjs")) {
+if (process.argv[1] && process.argv[1].endsWith("learning-log.suite.mjs")) {
   const n = await run();
   if (n) process.exit(1);
   console.log("learning log ok");

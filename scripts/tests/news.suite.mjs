@@ -223,7 +223,7 @@ export async function run() {
   return fail;
 }
 
-if (process.argv[1] && import.meta.url.endsWith("news.suite.mjs")) {
+if (process.argv[1] && process.argv[1].endsWith("news.suite.mjs")) {
   const n = await run();
   if (n) process.exit(1);
 }
