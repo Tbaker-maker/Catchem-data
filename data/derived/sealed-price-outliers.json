@@ -1,0 +1,83 @@
+{
+  "generatedAt": "2026-10-06T18:00:40.984Z",
+  "asOf": "2026-10-06",
+  "source": {
+    "heatHistory": "data/heat-history.json",
+    "sealedPrices": "data/sealed-prices.json",
+    "buyoutTape": "data/buyout-tape.json",
+    "sealedPricesUpdatedAt": "2026-10-06T14:27:02.617Z"
+  },
+  "rule": {
+    "highGap": 0.5,
+    "softGap": 0.4,
+    "priorWindow": 7,
+    "minPriors": 3,
+    "listingCrash": 0.3,
+    "note": "HIGH when |today − median(last ≤7 prior heat-history prices)| / median ≥ 50%. SOFT at ≥40% and <50%. Conservative default (flag fewer). Packs skipped. Missing history → no flag. Do not invent prices or solds."
+  },
+  "skippedPacks": 35,
+  "skippedNoFlag": 146,
+  "highCount": 2,
+  "softCount": 0,
+  "high": [
+    {
+      "id": "sv5-pc-etb",
+      "name": "Temporal Forces Pokemon Center Elite Trainer Box",
+      "subtype": "pc-etb",
+      "severity": "high",
+      "direction": "high",
+      "todayDate": "2026-10-06",
+      "todayPrice": 499.99,
+      "referencePrice": 255.75,
+      "referenceWindow": {
+        "priorCount": 7,
+        "from": "2026-09-23",
+        "to": "2026-10-05",
+        "rule": "median of last 7 prior heat-history prices (window ≤7, min 3)"
+      },
+      "pctGap": 95.5,
+      "listingCount": 6,
+      "listingCountPrior": 9,
+      "listingCountNote": "heat-history listingCount is the filtered page count, not Browse total, not solds",
+      "browseTotal": 49,
+      "browseTotalPrior": 49,
+      "provisionalLabel": "review — possible bad listing; review — possible real move",
+      "evidence": [
+        "Browse total 49 → 49 (0%)",
+        "heat-history listingCount (filtered page count, not solds) 9 → 6 (-33.3%)",
+        "Browse total and filtered listingCount disagree — both labels kept"
+      ],
+      "conflict": true
+    },
+    {
+      "id": "cel25-etb",
+      "name": "Celebrations Elite Trainer Box",
+      "subtype": "etb",
+      "severity": "high",
+      "direction": "low",
+      "todayDate": "2026-10-06",
+      "todayPrice": 161.99,
+      "referencePrice": 330,
+      "referenceWindow": {
+        "priorCount": 7,
+        "from": "2026-09-23",
+        "to": "2026-10-05",
+        "rule": "median of last 7 prior heat-history prices (window ≤7, min 3)"
+      },
+      "pctGap": -50.9,
+      "listingCount": 29,
+      "listingCountPrior": 29,
+      "listingCountNote": "heat-history listingCount is the filtered page count, not Browse total, not solds",
+      "browseTotal": 4072,
+      "browseTotalPrior": 3898,
+      "provisionalLabel": "review — possible bad listing",
+      "evidence": [
+        "Browse total 3898 → 4072 (4.5%)",
+        "heat-history listingCount (filtered page count, not solds) 29 → 29 (0%)",
+        "wild price with listings flat or up"
+      ],
+      "conflict": false
+    }
+  ],
+  "soft": []
+}
