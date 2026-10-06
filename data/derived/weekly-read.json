@@ -44,10 +44,19 @@
    {
     "id": "sv7-pack",
     "name": "Stellar Crown Booster Pack",
-    "days7": 3,
-    "days30": 7,
-    "days90": 7,
-    "streak": 3,
+    "days7": 2,
+    "days30": 6,
+    "days90": 6,
+    "streak": 0,
+    "lastSeen": "2026-10-05"
+   },
+   {
+    "id": "xy12-etb",
+    "name": "Evolutions Elite Trainer Box",
+    "days7": 2,
+    "days30": 6,
+    "days90": 8,
+    "streak": 2,
     "lastSeen": "2026-10-06"
    },
    {
@@ -58,15 +67,6 @@
     "days90": 7,
     "streak": 3,
     "lastSeen": "2026-10-06"
-   },
-   {
-    "id": "xy12-etb",
-    "name": "Evolutions Elite Trainer Box",
-    "days7": 1,
-    "days30": 5,
-    "days90": 7,
-    "streak": 0,
-    "lastSeen": "2026-10-05"
    },
    {
     "id": "cel25-etb",
@@ -138,22 +138,39 @@
  },
  "readsWeTracked": {
   "asOf": "2026-10-06",
-  "generatedAt": "2026-10-06T13:35:42.589Z",
+  "generatedAt": "2026-10-06T13:54:16.150Z",
   "method": "Reads we tracked in the last 7 days. A hit moved the same way as the move into the read. A miss moved the other way, or did not move. The largest misses are listed with the largest hits. Dollars are not stored here.",
-  "tracked": 0,
+  "tracked": 2,
   "graded": 0,
   "hits": 0,
   "misses": 0,
   "hitRate": null,
   "biggestHits": [],
   "biggestMisses": [],
-  "open": 0,
-  "reads": []
+  "open": 2,
+  "reads": [
+   {
+    "id": "swsh2-etb",
+    "name": "Rebel Clash Elite Trainer Box",
+    "kind": "sealed",
+    "date": "2026-10-06",
+    "result": "open",
+    "movePct": 0
+   },
+   {
+    "id": "swsh7-215",
+    "name": "Umbreon VMAX",
+    "kind": "single",
+    "date": "2026-10-06",
+    "result": "open",
+    "movePct": 0
+   }
+  ]
  },
  "sealedAndChase": [
   {
    "set": "151",
-   "sealed": 99.5,
+   "sealed": 99,
    "sealedStatus": "live",
    "chase": null,
    "chaseStatus": "building history",
@@ -196,5 +213,5 @@
    "chaseNames": []
   }
  ],
- "generatedAt": "2026-10-06T13:37:24.698Z"
+ "generatedAt": "2026-10-06T13:54:30.048Z"
 }

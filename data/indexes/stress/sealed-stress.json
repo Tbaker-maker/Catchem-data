@@ -32,8 +32,8 @@
     "extra": 5
   },
   "lines": {
-    "equal": 99.4,
-    "capped": 97.9,
+    "equal": 99.3,
+    "capped": 97.8,
     "median": 100.7,
     "capAppliedDays": 15,
     "capInfeasibleDays": 0
@@ -189,8 +189,8 @@
     {
       "date": "2026-10-06",
       "from": "2026-10-05",
-      "equal": 99.4,
-      "capped": 97.9,
+      "equal": 99.3,
+      "capped": 97.8,
       "median": 100.7,
       "matched": 158,
       "capApplied": true,
@@ -199,9 +199,9 @@
   ],
   "disagree": {
     "flag": true,
-    "maxGap": 2.8,
+    "maxGap": 2.9,
     "threshold": 0.5,
-    "note": "Equal, 5%-capped and median end 2.8 points apart, which is over the 0.5 point line."
+    "note": "Equal, 5%-capped and median end 2.9 points apart, which is over the 0.5 point line."
   },
   "trustBand": {
     "method": "median line",
@@ -391,7 +391,7 @@
       "n": 25,
       "start": "2026-08-18",
       "levels": {
-        "equal": 100.6,
+        "equal": 100.5,
         "capped": 98.9,
         "median": 102.8
       },
@@ -403,9 +403,9 @@
       "n": 5,
       "start": "2026-08-18",
       "levels": {
-        "equal": 106.7,
-        "capped": 98.5,
-        "median": 105.4
+        "equal": 108.1,
+        "capped": 98.7,
+        "median": 105.3
       },
       "matchedLast": 5,
       "outsideHeadline": true
@@ -415,8 +415,8 @@
       "n": 38,
       "start": "2026-08-18",
       "levels": {
-        "equal": 98.2,
-        "capped": 97.1,
+        "equal": 98,
+        "capped": 96.8,
         "median": 99.7
       },
       "matchedLast": 37,
@@ -427,9 +427,9 @@
       "n": 34,
       "start": "2026-08-19",
       "levels": {
-        "equal": 109.2,
-        "capped": 104.8,
-        "median": 110.7
+        "equal": 108.2,
+        "capped": 104,
+        "median": 110.6
       },
       "matchedLast": 33,
       "outsideHeadline": false
@@ -439,8 +439,8 @@
       "n": 30,
       "start": "2026-08-18",
       "levels": {
-        "equal": 97.6,
-        "capped": 96.2,
+        "equal": 97.9,
+        "capped": 96.5,
         "median": 99.1
       },
       "matchedLast": 28,
@@ -449,7 +449,7 @@
   ],
   "byRarity": [],
   "flagCounts": {
-    "stale": 4,
+    "stale": 3,
     "gappy": 3,
     "spiky": 6,
     "late": 3
@@ -477,7 +477,7 @@
       "observations": 16,
       "first": "2026-08-18",
       "last": "2026-10-06",
-      "maxAbsReturn": 0.4167
+      "maxAbsReturn": 0.46
     },
     {
       "id": "cel25-upc",
@@ -799,7 +799,7 @@
       "observations": 16,
       "first": "2026-08-18",
       "last": "2026-10-06",
-      "maxAbsReturn": 0.027
+      "maxAbsReturn": 0.0368
     },
     {
       "id": "rsv10pt5-bundle",
@@ -1012,13 +1012,12 @@
       "type": "pack",
       "flags": [
         "spiky",
-        "stale",
         "gappy"
       ],
-      "observations": 11,
+      "observations": 12,
       "first": "2026-08-19",
-      "last": "2026-09-27",
-      "maxAbsReturn": 0.3318
+      "last": "2026-10-06",
+      "maxAbsReturn": 0.6219
     },
     {
       "id": "sv1-pc-etb",
@@ -1494,7 +1493,7 @@
       "observations": 15,
       "first": "2026-08-19",
       "last": "2026-10-06",
-      "maxAbsReturn": 0.0448
+      "maxAbsReturn": 0.057
     },
     {
       "id": "sv8-booster-box",
@@ -1928,7 +1927,7 @@
       "observations": 13,
       "first": "2026-08-21",
       "last": "2026-10-06",
-      "maxAbsReturn": 0.0747
+      "maxAbsReturn": 0.134
     },
     {
       "id": "swsh45-etb",
@@ -1970,7 +1969,7 @@
       "observations": 15,
       "first": "2026-08-19",
       "last": "2026-10-06",
-      "maxAbsReturn": 0.0338
+      "maxAbsReturn": 0.0259
     },
     {
       "id": "swsh5-pack",
@@ -2183,12 +2182,10 @@
       "type": "pack",
       "flags": [
         "spiky",
-        "stale",
         "gappy"
       ],
       "reasons": [
         "Price moved 33% from 2026-08-22 to 2026-08-26.",
-        "No fresh price within 2 days of 2026-10-06. Last observation 2026-09-27.",
         "Missing at least one observed day between its first and last price.",
         "Not in the current quarter basket, so it does not move this line."
       ],
@@ -2218,7 +2215,7 @@
         "spiky"
       ],
       "reasons": [
-        "Price moved 42% from 2026-10-05 to 2026-10-06."
+        "Price moved 46% from 2026-10-05 to 2026-10-06."
       ],
       "influence": 0,
       "recommendation": "Review only. This product was not removed."
