@@ -10,6 +10,7 @@ import { flag } from "./flags.mjs";
 import { indexLevel, sealedPremium } from "./lib/instruments.mjs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { pickDigestNames } from "./lib/research-reads.mjs";
 import { applyPackBasis } from "./pack-basis.mjs";
 import { rotate } from "./rotate.mjs";
 import { publishChartIndexes } from "./compute-indexes.mjs";
@@ -82,8 +83,8 @@ for (const r of packRows) {
 let digestText = "", digestName = null;
 try {
   const dir = join(ROOT,"research","digests");
-  const files = (await readdir(dir)).filter(f=>f.endsWith(".md")).sort();
-  digestName = files[files.length-1] || null;
+  // Dated digests only: research/digests/ also holds notes and news JSON.
+  digestName = pickDigestNames(await readdir(dir), 1)[0] || null;
   if (digestName) digestText = (await readFile(join(dir,digestName),"utf-8")).toLowerCase();
 } catch {}
 const bySet = new Map();
