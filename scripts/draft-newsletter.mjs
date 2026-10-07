@@ -14,6 +14,7 @@ import { readFile, writeFile, mkdir, readdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { callClaude } from "./lib/claude.mjs";
+import { pickDigestNames } from "./lib/research-reads.mjs";
 
 // Node's fetch has NO default timeout: a host that accepts the connection
 // and never answers hangs this script until the CI runner kills the job.
@@ -35,7 +36,7 @@ const today = new Date().toISOString().split("T")[0];
 async function latestDigests(n = 3) {
   try {
     const dir = join(ROOT, "research", "digests");
-    const files = (await readdir(dir)).filter(f => f.endsWith(".md")).sort().slice(-n);
+    const files = pickDigestNames(await readdir(dir), n);
     const out = [];
     for (const f of files) out.push(`--- DIGEST ${f} ---\n` + await readFile(join(dir, f), "utf-8"));
     return out.join("\n\n");

@@ -53,6 +53,7 @@ import { dirname, join } from "node:path";
 import { cardImage } from "./image-source.mjs";
 import { applyPackBasis } from "./pack-basis.mjs";
 import { rotate } from "./rotate.mjs";
+import { upcomingRadar } from "./lib/research-reads.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const today = new Date().toISOString().split("T")[0];
 const cardImg = id => cardImage(id, false) || null; // source-published URL, never constructed
@@ -162,9 +163,12 @@ const sigs = (div?.rows||[]).filter(r=>r.signal && !__blk.blocked(r.id));
 const topListed = [...pub].sort((a,b)=>(b.listingCount||0)-(a.listingCount||0)).slice(0,3);
 const chases = (sg?.cards||[]).filter(c=>!c.needsReview && c.dataStatus==="live")
   .sort((a,b)=>(b.priceMarket||0)-(a.priceMarket||0)).slice(0,5);
-const upcoming = (radar?.items||radar?.releases||[]).filter(r=>{
-  const d = r.date || r.releaseDate || ""; return d >= today;
-}).slice(0,4);
+// The radar's rows are in upcoming[] (items/releases kept as fallbacks). Past
+// rows drop at read time. Public page: verified rows only — the brief calls
+// single-source rows leads that need a human before any public page.
+const upcoming = upcomingRadar(radar, today, { limit: 4, verifiedOnly: true })
+  .map(r => ({ name: r.name || r.title, date: r.date || r.releaseDate, type: r.type ?? null, confidence: r.confidence ?? null }));
+const escRadar = s => String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 
 let md = `# The Feed — ${today}\n*${fresh.label}. Written by the machine at ${writtenAt}. Every number below is live production data.*\n\n`;
 md += `## The instrument panel\n- **${sp.products.length} sealed products tracked** · ${live.length} live · ${noMkt} no-active-market (honest) · run ${sp.updatedAt?.slice(0,16)}Z\n- **Heat reads:** ${heatLine}\n- **The Spread:** ${div?.counts?.compared??0} sealed cross-checked · **${sigs.length} signals** · ${div?.counts?.skipped??0} excluded with reasons\n\n`;
@@ -311,7 +315,7 @@ const keepsFeed = {
   sealed: keepRows(repeatDoc?.sealed?.rows).map(r => ({ id: r.id, name: r.name, days7: r.days7, days30: r.days30, days90: r.days90, streak: r.streak, lastSeen: r.lastSeen })),
   singles: keepRows(repeatDoc?.singles?.rows).map(r => ({ id: r.id, name: r.name, days7: r.days7, days30: r.days30, days90: r.days90, streak: r.streak, lastSeen: r.lastSeen })),
 };
-const radarRows = upcoming.map(r=>`<div class="row"><span>${r.name||r.title}</span><span class="mono">${r.date||r.releaseDate}</span></div>`).join("");
+const radarRows = upcoming.map(r=>`<div class="row"><span>${escRadar(r.name)}</span><span class="mono">${escRadar(r.date)}</span></div>`).join("");
 const newsBits = (rows, nameKey) => (rows || []).slice(0, 3).map((r) => {
   const price = money(r.price);
   const name = show(r[nameKey]);
