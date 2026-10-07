@@ -5,6 +5,10 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 
 export const CROSSCHECK_FILES = ["sealed-crosscheck.json", "crosscheck-history.json"];
+// Full per-card TCGplayer sold counts derived from PPT. Bulk derived data stays
+// private (PPT licensing: no bulk datasets or exports, on any plan); only the
+// cards a read displays are written to the public data/derived file.
+export const VOLUME_STATE = "tcgplayer-volume.json";
 
 export function redact(text, secrets) {
   let out = String(text || "");
@@ -73,10 +77,16 @@ export async function stagePrivate({ checkout, rawDir, dest, date }) {
     await cp(join(rawDir, "refresh-dates.json"), join(dest, "data/meta/ppt-refresh-dates.json"));
     actions.push("refresh-dates");
   }
+  if (rawDir && existsSync(join(rawDir, VOLUME_STATE))) {
+    await mkdir(join(dest, "data/meta"), { recursive: true });
+    await cp(join(rawDir, VOLUME_STATE), join(dest, "data/meta", VOLUME_STATE));
+    actions.push("tcgplayer-volume");
+  }
   if (rawDir && existsSync(rawDir) && date) {
     const dayDir = join(dest, "raw", date);
     await mkdir(dayDir, { recursive: true });
-    await cp(rawDir, dayDir, { recursive: true });
+    // The volume state is a running file, not a day's pull; keep it out of raw/<date>.
+    await cp(rawDir, dayDir, { recursive: true, filter: (src) => src !== join(rawDir, VOLUME_STATE) });
     actions.push(`raw:${date}`);
   }
   return actions;
@@ -104,6 +114,12 @@ export async function restorePrivate({ clone, root }) {
     await mkdir(join(root, "ppt-raw-private"), { recursive: true });
     await cp(datesFrom, datesTo);
     actions.push("refresh-dates");
+  }
+  const volumeFrom = join(clone, "data/meta", VOLUME_STATE);
+  if (existsSync(volumeFrom)) {
+    await mkdir(join(root, "ppt-raw-private"), { recursive: true });
+    await cp(volumeFrom, join(root, "ppt-raw-private", VOLUME_STATE));
+    actions.push("tcgplayer-volume");
   }
   return actions;
 }

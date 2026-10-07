@@ -16,6 +16,7 @@ import {
   usageSkeleton,
 } from "./lib/ppt-plan.mjs";
 import { orderRefreshCalls, sanitizeDates, setBand } from "./lib/ppt-refresh-order.mjs";
+import { updateVolumeFile } from "./compute-tcgplayer-volume.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const BASE = "https://www.pokemonpricetracker.com/api/v2";
@@ -288,6 +289,15 @@ export async function main() {
     for (const id of ran.done) nextDates[id] = today;
     await mkdir(join(ROOT, "ppt-raw-private"), { recursive: true });
     await writeFile(datesPath, `${JSON.stringify({ asOf: today, dates: sanitizeDates(nextDates) }, null, 2)}\n`);
+    // TCGplayer sold counts (Near Mint, 7d/30d) from the set raws just written.
+    // Counts only, into data/derived/ (committed with the price data). A failure
+    // here never stops the refresh; yesterday's file simply stays.
+    try {
+      const vol = await updateVolumeFile({ root: ROOT, rawDirs: [join(ROOT, "ppt-raw-private", today)], today });
+      console.log(`tcgplayer-volume ${vol.written ? "written" : "unchanged"} files=${vol.files} cards=${vol.cards} full30d=${vol.counts?.full30d ?? 0}`);
+    } catch (err) {
+      console.error(`tcgplayer-volume skipped: ${redact(err.message, [key, token])}`);
+    }
     cursor = {
       asOf: today,
       done: [...new Set([...alreadyDone, ...ran.done])],
