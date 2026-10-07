@@ -45,13 +45,26 @@ const used = (field) => new RegExp(`\\b${field}\\b`).test(downstream);
     // Value judgments are stated, not implied — each one is arguable and should be.
     const WORTH = {
       vol30: { v: "critical", why: "actual 30-day sales VOLUME. Every instrument we own reads listings — asks — and infers demand from them. This is demand measured directly, and no competitor publishes it." },
-      recentSales: { v: "critical", why: "what things actually SOLD for. We currently compare asks to prices and label the mismatch; sales would let us report the transaction instead of the intention." },
+      // recentSales is deliberately NOT here. PPT retired prices.recentSales: it
+      // is 0 on every card in every response we store, so "wiring it through"
+      // would publish a zero as a sale count. Per-day sold counts arrive in
+      // priceHistory.variants[printing][condition].history[].volume instead.
       sellers: { v: "high", why: "how many distinct sellers, not just how many listings. One seller with forty listings is a very different market from forty sellers with one each, and listing count cannot tell them apart." },
       listings: { v: "medium", why: "TCGplayer listing depth — the number we said we could not get, sitting in a response we already receive." },
       low: { v: "medium", why: "the floor beneath the market price, which is the number a buyer actually chases." },
       psa10: { v: "critical", why: "graded sold prices. This is the licensed graded feed we have spent weeks recording as unavailable, and it may already be in our hands." },
       psa9: { v: "critical", why: "the other half of the PSA-9 tax thesis (RT-5), which is currently INSUFFICIENT for want of exactly this." },
     };
+    // Fields the provider has retired. If one still arrives it is a constant,
+    // not data, and nothing should read it as a count.
+    const RETIRED = {
+      recentSales: "PPT retired prices.recentSales; it is always 0. Use priceHistory[...].history[].volume (copies sold per day; null = no sale) for sold counts.",
+    };
+    for (const [k, why] of Object.entries(RETIRED)) {
+      const v = row?.raw?.[k] ?? row?.[k];
+      if (v != null && Number(v) !== 0)
+        F("high", `${k} arrived non-zero (${v}) — it is documented as retired`, why, "re-check the provider docs before trusting it", "chat");
+    }
     // psa8/9/10 are OBJECTS, and the original walk only inspected scalars - so
     // the most valuable finding in the system was invisible to the agent built
     // to find it. Inspect a block by its own key, not only by its leaves.
