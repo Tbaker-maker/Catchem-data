@@ -6,6 +6,7 @@ import { dropTiledCycles, pretty, slug } from "./lib/public-bundle.mjs";
 import { publishFeed, readCallLog, readShelfFile } from "./lib/feed-catalogue.mjs";
 import { assembleCatalog, supplyNotes } from "./lib/extra-reads.mjs";
 import { supplyMap, writeFeedExtras } from "./build-extra-reads.mjs";
+import { writeSealedPriceOutliers } from "./flag-sealed-price-outliers.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "research/assets/public");
@@ -166,5 +167,6 @@ try {
 } catch { /* news stays in its own file */ }
 // Flagged-price (outlier) and dive-teaser reads are rebuilt here from the files
 // on disk, the same way build-extra-reads does — writeExtra alone strips them.
+await writeSealedPriceOutliers({ root: ROOT });
 const extraSummary = await writeFeedExtras(ROOT, extra, { asOf: catalog.asOf || "", cardIds, rankedIds: ranked, news: new Array(newsCount), waves });
 console.log(JSON.stringify({ extra: extraSummary }));

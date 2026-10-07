@@ -23,14 +23,26 @@ export async function run() {
       todayPrice: 499.99,
       referencePrice: 255.75,
       pctGap: 95.5,
+      provisionalLabel: "possible real move",
     }],
-    soft: [],
+    soft: [{
+      id: "xy12-etb",
+      name: "Evolutions Elite Trainer Box",
+      severity: "high",
+      direction: "high",
+      todayDate: "2026-10-06",
+      todayPrice: 850,
+      referencePrice: 420,
+      pctGap: 102.4,
+      provisionalLabel: "likely bad listing",
+    }],
   };
   const flagged = outlierReads(doc);
   t("outlier read uses the product id", flagged.length === 1 && flagged[0].id === "outlier-sv5-pc-etb" && flagged[0].sku === "sv5-pc-etb");
   t("outlier read keeps prices and dates from the file", flagged[0].price === 499.99 && flagged[0].asOf === "2026-10-06" && flagged[0].referencePrice === 255.75);
   t("outlier sentence states the gap without inventing solds", /499\.99/.test(flagged[0].path) && /255\.75/.test(flagged[0].path) && /95\.5%/.test(flagged[0].path) && !/\bsolds?\b/i.test(flagged[0].path));
-  t("a row without an id is dropped", outlierReads({ high: [{ name: "No Id", todayPrice: 1, referencePrice: 2, todayDate: "2026-10-06", pctGap: 10 }], soft: [] }).length === 0);
+  t("likely bad listing stays out of Flagged reads", !flagged.some((row) => row.sku === "xy12-etb"));
+  t("a row without an id is dropped", outlierReads({ high: [{ name: "No Id", todayPrice: 1, referencePrice: 2, todayDate: "2026-10-06", pctGap: 10, provisionalLabel: "possible real move" }], soft: [] }).length === 0);
 
   const dives = diveTeaserReads([
     { id: "sv5-pc-etb", name: "Temporal Forces Pokemon Center Elite Trainer Box", asOf: "2026-10-06", latest: { priceMedian: 499.99, lastSeen: "2026-10-06", dataStatus: "live" }, outlier: { note: "Price flagged: 95.5% above recent median — review" } },

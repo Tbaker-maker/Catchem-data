@@ -1,5 +1,6 @@
 // Product deep-dive payloads: real series only, never invent solds or Browse totals.
-import { buildDivePayload, buildAllDives, VOLUME_NOTE, indexOutlierMap, outlierFlagNote, OUTLIER_SOURCE, LISTING_CHANGE_LABEL, listingChangeEstimate } from "../lib/product-dives.mjs";
+import { buildDivePayload, buildAllDives, VOLUME_NOTE, indexOutlierMap, outlierFlagNote, OUTLIER_SOURCE, LISTING_CHANGE_LABEL, listingChangeEstimate, listingChangeRead } from "../lib/product-dives.mjs";
+import { pickNight } from "../lib/night-reads.mjs";
 import { readFile as readSrc } from "node:fs/promises";
 
 export async function run() {
@@ -117,6 +118,13 @@ export async function run() {
   t("estimate stays out of reads under 7 days", est.readEligible === false);
   const week = { priceHistory: Array.from({ length: 7 }, (_, i) => ({ date: `2026-10-0${i + 1}`, total: 100 + i })) };
   t("estimate becomes read-eligible at 7 days", listingChangeEstimate(week).readEligible === true && listingChangeEstimate(week).net === 6);
+  const weekRead = listingChangeRead({ id: "x-etb", name: "X ETB", priceHistory: week.priceHistory });
+  t("listing read uses the exact sentence", weekRead?.path === "Net change in active eBay listings (estimate): +6 over 7 nights.");
+  t("listing read never says sold or sell-through", weekRead && !/\bsold\b|sell-through|sell through/i.test(weekRead.path + weekRead.why));
+  t("six nights stay out of reads", listingChangeRead({ id: "x-etb", name: "X ETB", priceHistory: week.priceHistory.slice(0, 6) }) == null);
+  const cooled = pickNight([weekRead, { ...weekRead, id: "listing-y", sku: "y-etb", name: "Y" }], { shown: [] }, "2026-10-07");
+  const next = pickNight([weekRead, { ...weekRead, id: "listing-y", sku: "y-etb", name: "Y" }], cooled.state, "2026-10-08");
+  t("a listing read does not repeat the next night", !next.reads.some((row) => cooled.reads.some((prev) => prev.sku === row.sku)));
   t("no estimate from one total or from listingCount", listingChangeEstimate({ listingCount: 40, priceHistory: [{ date: "2026-10-06", total: 5 }] }) === null && listingChangeEstimate({ listingCount: 40 }) === null);
   t("estimate never says sold or sell-through", !/\bsold\b|sell-through|sell through/i.test(JSON.stringify(est)));
   const estDive = buildDivePayload({ id: "x-etb", seriesRows: [{ date: "2026-10-05", id: "x-etb", price: 50, listingCount: 12 }], latestProduct: withTotals });

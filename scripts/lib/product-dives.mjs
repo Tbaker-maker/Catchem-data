@@ -47,6 +47,39 @@ export function listingChangeEstimate(product) {
   };
 }
 
+/** Feed read. Exact sentence. Ships only after 7 nights of Browse totals. */
+export function listingChangeRead(product) {
+  const est = listingChangeEstimate(product);
+  if (!est?.readEligible || !product?.id) return null;
+  const name = String(product.name || "").trim();
+  if (!name) return null;
+  const net = est.net > 0 ? `+${est.net}` : est.net < 0 ? String(est.net) : "+0";
+  const sentence = `Net change in active eBay listings (estimate): ${net} over ${est.days} nights.`;
+  if (/\bsold\b|sell-through|sell through/i.test(sentence)) return null;
+  return {
+    id: `listing-${product.id}`,
+    sku: String(product.id),
+    readKind: "listing",
+    kind: "listing",
+    name,
+    set: product.set || "",
+    path: sentence,
+    headline: sentence,
+    why: `${LISTING_CHANGE_SOURCE}. Browse totals only.`,
+    asOf: est.to,
+    href: `/dive/${encodeURIComponent(product.id)}`,
+    lane: "sealed",
+    receipt: {
+      net: est.net,
+      days: est.days,
+      from: est.from,
+      to: est.to,
+      startTotal: est.startTotal,
+      endTotal: est.endTotal,
+    },
+  };
+}
+
 export const OUTLIER_HOOK =
   "Optional file data/derived/sealed-price-outliers.json (HIGH/SOFT rows from flag-sealed-price-outliers). Absent → leave outlier null.";
 

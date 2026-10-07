@@ -10,14 +10,18 @@
 //   Browse total null is left null; listingCount is the filtered page count, never
 //   solds, never copied into Browse total.
 //
-// Provisional label uses only file evidence (Browse total from sealed-prices
-// priceHistory / buyout-tape when present, and heat-history listingCount):
-//   listing crash (≥30% day-over-day drop) + price spike → possible real move
-//   wild price + listings flat or up → possible bad listing
-//   conflict → both labels (Tyler's lag rule — do not pick a winner)
+// Provisional label compares the eBay ask to the TCGplayer price for the same id.
+//   TCGplayer stayed flat (under 15%, the same band as The Spread) while the
+//   eBay median jumped → "likely bad listing" (kept out of Flagged reads)
+//   both moved the same way → "possible real move" (the only Flagged read)
+//   they moved opposite ways, or the TCGplayer series is missing or held → "review"
+// A held id (cover variant, no TCGplayer id, not on the id map) is not the same product.
+// listingCount is the filtered page count. It is not used for this label.
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { readCrosscheck } from "./lib/ppt-paths.mjs";
+import { loadMarketHistory } from "./lib/market-history.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -26,8 +30,8 @@ export const HIGH_GAP = 0.5;
 export const SOFT_GAP = 0.4;
 export const PRIOR_WINDOW = 7;
 export const MIN_PRIORS = 3;
-/** Day-over-day listing drop treated as a crash for the provisional label. */
-export const LISTING_CRASH = 0.3;
+/** TCGplayer move has to clear this before it counts. Same 15% as The Spread. */
+export const TCG_MOVE = 0.15;
 
 const DAY_RE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -117,18 +121,6 @@ export function severityFor(gap) {
   return null;
 }
 
-function listingChange(now, before) {
-  if (typeof now !== "number" || !Number.isFinite(now) || typeof before !== "number" || !Number.isFinite(before) || !(before > 0)) {
-    return { pct: null, crash: false, flatOrUp: false };
-  }
-  const pct = (now - before) / before;
-  return {
-    pct,
-    crash: pct <= -LISTING_CRASH,
-    flatOrUp: pct >= -0.05,
-  };
-}
-
 /**
  * Browse totals from sealed-prices priceHistory[].total when present.
  * Never invent. Never treat listingCount as Browse total.
@@ -148,73 +140,84 @@ export function browseTotalsFromHistory(product, todayDate) {
 }
 
 /**
- * Provisional label from file evidence only.
- * Returns { label, reasons, conflict }.
+ * Review label from the eBay median gap and the TCGplayer gap for the same id.
+ * hold is a reason the TCGplayer series is not this product. A null tcg gap
+ * means no series was on file — the label stays "review" and nothing is invented.
  */
-export function provisionalLabel({ gap, browse, heatListings }) {
-  const reasons = [];
-  const priceSpike = gap != null && gap >= HIGH_GAP;
-  const priceDump = gap != null && gap <= -HIGH_GAP;
-  const priceExtreme = priceSpike || priceDump;
-
-  const browseCh = listingChange(browse?.today, browse?.prior);
-  const heatCh = listingChange(heatListings?.today, heatListings?.prior);
-
-  if (browseCh.pct != null) {
-    reasons.push(`Browse total ${browse.prior} → ${browse.today} (${Math.round(browseCh.pct * 1000) / 10}%)`);
-  } else {
-    reasons.push("Browse total missing on this window — not invented");
+export function reviewLabel({ ebayGap, tcgGap, hold = "" } = {}) {
+  if (hold) return { label: "review", conflict: true, why: hold };
+  if (typeof ebayGap !== "number" || !Number.isFinite(ebayGap) || typeof tcgGap !== "number" || !Number.isFinite(tcgGap)) {
+    return { label: "review", conflict: false, why: "No TCGplayer price for this id on the window — not invented" };
   }
-  if (heatCh.pct != null) {
-    reasons.push(`heat-history listingCount (filtered page count, not solds) ${heatListings.prior} → ${heatListings.today} (${Math.round(heatCh.pct * 1000) / 10}%)`);
+  const tcgSign = Math.abs(tcgGap) < TCG_MOVE ? 0 : Math.sign(tcgGap);
+  const ebaySign = Math.sign(ebayGap);
+  if (tcgSign === 0) {
+    return { label: "likely bad listing", conflict: false, why: "TCGplayer price stayed flat while the eBay median jumped" };
   }
-
-  const realSignals = [];
-  const fakeSignals = [];
-
-  if (priceSpike && (browseCh.crash || heatCh.crash)) realSignals.push("price spike with listing crash");
-  if (priceDump && (browseCh.crash || heatCh.crash)) realSignals.push("price dump with listing crash");
-
-  if (priceExtreme && (browseCh.flatOrUp || (browseCh.pct == null && heatCh.flatOrUp))) {
-    fakeSignals.push("wild price with listings flat or up");
+  if (tcgSign === ebaySign) {
+    return { label: "possible real move", conflict: false, why: "TCGplayer price and the eBay median moved the same way" };
   }
-  if (priceExtreme && browseCh.pct == null && heatCh.pct == null) {
-    fakeSignals.push("wild price with no listing change to read");
-  }
-
-  // Conflict: Browse and filtered listingCount disagree on crash vs flat.
-  const listingConflict = browseCh.pct != null && heatCh.pct != null
-    && ((browseCh.crash && heatCh.flatOrUp) || (heatCh.crash && browseCh.flatOrUp));
-
-  if (listingConflict) {
-    reasons.push("Browse total and filtered listingCount disagree — both labels kept");
-    return {
-      label: "review — possible bad listing; review — possible real move",
-      reasons,
-      conflict: true,
-    };
-  }
-
-  if (realSignals.length && fakeSignals.length) {
-    reasons.push(...realSignals, ...fakeSignals);
-    return {
-      label: "review — possible bad listing; review — possible real move",
-      reasons,
-      conflict: true,
-    };
-  }
-  if (realSignals.length) {
-    reasons.push(...realSignals);
-    return { label: "review — possible real move", reasons, conflict: false };
-  }
-  if (fakeSignals.length || priceExtreme) {
-    reasons.push(...(fakeSignals.length ? fakeSignals : ["wild price without a matching listing crash"]));
-    return { label: "review — possible bad listing", reasons, conflict: false };
-  }
-  return { label: "review — possible bad listing", reasons, conflict: false };
+  return { label: "review", conflict: true, why: "TCGplayer price and the eBay median moved opposite ways" };
 }
 
-export function evaluateProduct({ id, name, subtype, heatRows, product, asOf, tapeRow }) {
+/** Last point vs the median of up to PRIOR_WINDOW earlier points. Same id only. */
+export function tcgWindowGap(points, todayDate) {
+  const byDate = new Map();
+  for (const row of points || []) {
+    if (!isDay(row?.date) || (todayDate && row.date > todayDate)) continue;
+    if (typeof row.tcgMarket !== "number" || !(row.tcgMarket > 0)) continue;
+    byDate.set(row.date, row.tcgMarket);
+  }
+  const dates = [...byDate.keys()].sort();
+  if (dates.length < 2) return null;
+  const today = dates[dates.length - 1];
+  const priorDates = dates.slice(0, -1).slice(-PRIOR_WINDOW);
+  if (!priorDates.length) return null;
+  const ref = median(priorDates.map((day) => byDate.get(day)));
+  const now = byDate.get(today);
+  const gap = pctGap(now, ref);
+  if (gap == null || ref == null) return null;
+  return {
+    today,
+    now,
+    ref: Math.round(ref * 100) / 100,
+    gap,
+    priorFrom: priorDates[0],
+    priorTo: priorDates[priorDates.length - 1],
+  };
+}
+
+/** Unmatched ids are not the same product. A cover variant or a missing id stays out. */
+export function tcgHoldReason(id, unmatchedProducts) {
+  const row = (unmatchedProducts || []).find((item) => item && item.id === id);
+  if (!row) return "";
+  const reason = String(row.reason || "").trim();
+  if (!reason) return "";
+  if (/cover variant|no TCGplayer id|held out of the id map|not high confidence/i.test(reason)) return reason;
+  return "";
+}
+
+/**
+ * Provisional label from the eBay gap and the TCGplayer series for this id.
+ * Returns { label, reasons, conflict }.
+ */
+export function provisionalLabel({ gap, tcg, hold = "" }) {
+  const reasons = [];
+  const decision = reviewLabel({ ebayGap: gap, tcgGap: tcg?.gap, hold });
+  if (gap != null && Number.isFinite(gap)) {
+    reasons.push(`eBay ask vs its recent median ${gap > 0 ? "+" : ""}${Math.round(gap * 1000) / 10}%`);
+  }
+  if (hold) reasons.push(`TCGplayer series not used: ${hold}`);
+  else if (tcg && tcg.gap != null) {
+    reasons.push(`TCGplayer ${tcg.ref} → ${tcg.now} (${tcg.gap > 0 ? "+" : ""}${Math.round(tcg.gap * 1000) / 10}%)`);
+    reasons.push(decision.why);
+  } else {
+    reasons.push("No TCGplayer price for this id on the window — not invented");
+  }
+  return { label: decision.label, reasons, conflict: decision.conflict };
+}
+
+export function evaluateProduct({ id, name, subtype, heatRows, product, asOf, tapeRow, tcgPoints, hold = "" }) {
   if (isPack({ id, subtype })) return null;
   const series = seriesFor(id, heatRows);
   const win = referenceWindow(series, asOf);
@@ -229,11 +232,8 @@ export function evaluateProduct({ id, name, subtype, heatRows, product, asOf, ta
   if (browseToday == null && typeof tapeRow?.browseTotalNow === "number") browseToday = tapeRow.browseTotalNow;
   if (browsePrior == null && typeof tapeRow?.browseTotalBefore === "number") browsePrior = tapeRow.browseTotalBefore;
 
-  const label = provisionalLabel({
-    gap: win.gap,
-    browse: { today: browseToday, prior: browsePrior },
-    heatListings: { today: win.todayListingCount, prior: win.priorListingCount },
-  });
+  const tcg = hold ? null : tcgWindowGap(tcgPoints, win.todayDate);
+  const label = provisionalLabel({ gap: win.gap, tcg, hold });
 
   return {
     id,
@@ -253,21 +253,26 @@ export function evaluateProduct({ id, name, subtype, heatRows, product, asOf, ta
     pctGap: Math.round(win.gap * 1000) / 10,
     listingCount: win.todayListingCount,
     listingCountPrior: win.priorListingCount,
-    listingCountNote: "heat-history listingCount is the filtered page count, not Browse total, not solds",
+    listingCountNote: "heat-history listingCount is the filtered page count, not Browse total, not solds, and not the review label",
     browseTotal: browseToday,
     browseTotalPrior: browsePrior,
+    tcgNow: tcg ? tcg.now : null,
+    tcgReference: tcg ? tcg.ref : null,
+    tcgPct: tcg ? Math.round(tcg.gap * 1000) / 10 : null,
+    tcgAsOf: tcg ? tcg.today : null,
     provisionalLabel: label.label,
     evidence: label.reasons,
     conflict: label.conflict,
   };
 }
 
-export function flagSealedPriceOutliers({ heatHistory, sealedPrices, buyoutTape, asOf = "" } = {}) {
+export function flagSealedPriceOutliers({ heatHistory, sealedPrices, buyoutTape, tcgById = null, unmatched = [], asOf = "" } = {}) {
   const heatRows = Array.isArray(heatHistory) ? heatHistory : [];
   const products = Array.isArray(sealedPrices?.products) ? sealedPrices.products : [];
   const byProduct = new Map(products.map((p) => [p.id, p]));
   const tapeRows = Array.isArray(buyoutTape?.rows) ? buyoutTape.rows : [];
   const byTape = new Map(tapeRows.map((r) => [r.id, r]));
+  const tcg = tcgById instanceof Map ? tcgById : new Map();
 
   const dates = [...new Set(heatRows.map((r) => r.date).filter(isDay))].sort();
   const day = isDay(asOf) ? asOf : (dates.at(-1) || "");
@@ -292,6 +297,8 @@ export function flagSealedPriceOutliers({ heatHistory, sealedPrices, buyoutTape,
       product,
       asOf: day,
       tapeRow: byTape.get(id),
+      tcgPoints: tcg.get(id) || [],
+      hold: tcgHoldReason(id, unmatched),
     });
     if (!row) {
       skippedNoHistory += 1;
@@ -311,6 +318,7 @@ export function flagSealedPriceOutliers({ heatHistory, sealedPrices, buyoutTape,
       heatHistory: "data/heat-history.json",
       sealedPrices: "data/sealed-prices.json",
       buyoutTape: "data/buyout-tape.json",
+      tcgplayer: "TCGplayer market for the same id only (crosscheck history or data/history/tcgplayer-market). A held id is not used.",
       sealedPricesUpdatedAt: sealedPrices?.updatedAt || null,
     },
     rule: {
@@ -318,8 +326,8 @@ export function flagSealedPriceOutliers({ heatHistory, sealedPrices, buyoutTape,
       softGap: SOFT_GAP,
       priorWindow: PRIOR_WINDOW,
       minPriors: MIN_PRIORS,
-      listingCrash: LISTING_CRASH,
-      note: "HIGH when |today − median(last ≤7 prior heat-history prices)| / median ≥ 50%. SOFT at ≥40% and <50%. Conservative default (flag fewer). Packs skipped. Missing history → no flag. Do not invent prices or solds.",
+      tcgMove: TCG_MOVE,
+      note: "HIGH when |today − median(last ≤7 prior heat-history prices)| / median ≥ 50%. SOFT at ≥40% and <50%. Review label: TCGplayer flat while the eBay median jumped → likely bad listing. Both moved the same way → possible real move. Opposite moves, a missing series, or a held id → review. Only possible real move is a Flagged read. Packs skipped. Do not invent prices.",
     },
     skippedPacks,
     skippedNoFlag: skippedNoHistory,
@@ -334,26 +342,54 @@ async function readJson(path) {
   return JSON.parse(await readFile(path, "utf8"));
 }
 
+/** Points whose id field is the sealed id. No name matching. */
+export async function loadTcgById(root) {
+  const byId = new Map();
+  const add = (id, date, market) => {
+    if (!id || !isDay(date) || typeof market !== "number" || !(market > 0)) return;
+    if (!byId.has(id)) byId.set(id, []);
+    byId.get(id).push({ id, date, tcgMarket: market });
+  };
+  const history = await readCrosscheck(root, "crosscheck-history.json");
+  const rows = Array.isArray(history) ? history : (history?.rows || []);
+  for (const row of rows) add(row?.id, row?.date, row?.tcgMarket);
+  try {
+    const market = await loadMarketHistory(root);
+    for (const [id, pts] of market.merged) {
+      for (const point of pts) add(id, point.date, point.market);
+    }
+  } catch { /* market history optional */ }
+  return byId;
+}
+
 export async function writeSealedPriceOutliers({ root = ROOT, asOf = "" } = {}) {
   const heatHistory = await readJson(join(root, "data/heat-history.json")).catch(() => []);
   const sealedPrices = await readJson(join(root, "data/sealed-prices.json")).catch(() => ({ products: [] }));
   const buyoutTape = await readJson(join(root, "data/buyout-tape.json")).catch(() => ({ rows: [] }));
-  const report = flagSealedPriceOutliers({ heatHistory, sealedPrices, buyoutTape, asOf });
+  const unmatchedDoc = await readJson(join(root, "data/history/tcgplayer-market/unmatched.json")).catch(() => ({ products: [] }));
+  const tcgById = await loadTcgById(root);
+  const report = flagSealedPriceOutliers({
+    heatHistory,
+    sealedPrices,
+    buyoutTape,
+    tcgById,
+    unmatched: unmatchedDoc?.products || [],
+    asOf,
+  });
 
   const outDir = join(root, "data/derived");
   await mkdir(outDir, { recursive: true });
   const outPath = join(outDir, "sealed-price-outliers.json");
   await writeFile(outPath, JSON.stringify(report, null, 2) + "\n", "utf8");
 
-  // Desk already reads buyout-tape; attach a pointer without changing browse levels.
+  // Pointer only. Do not rescore browse levels here.
   try {
     const tape = { ...buyoutTape };
     tape.priceOutlierFile = "data/derived/sealed-price-outliers.json";
-    tape.priceOutlierPolicy = `high≥${HIGH_GAP * 100}% soft≥${SOFT_GAP * 100}% vs median of last ≤${PRIOR_WINDOW} prior heat-history prices (min ${MIN_PRIORS}); packs skipped; missing history → no flag`;
+    tape.priceOutlierPolicy = `high≥${HIGH_GAP * 100}% soft≥${SOFT_GAP * 100}% vs median of last ≤${PRIOR_WINDOW} prior heat-history prices (min ${MIN_PRIORS}); TCGplayer flat → likely bad listing; same direction → possible real move; otherwise review; packs skipped`;
     tape.priceOutlierAsOf = report.asOf;
     tape.priceOutlierHighCount = report.highCount;
     tape.priceOutlierSoftCount = report.softCount;
-    // Keep browse levelPolicy unscored — that lane still has no cutoff.
     await writeFile(join(root, "data/buyout-tape.json"), JSON.stringify(tape, null, 2) + "\n", "utf8");
   } catch {
     /* buyout-tape optional */

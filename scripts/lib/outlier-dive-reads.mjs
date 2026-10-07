@@ -24,12 +24,13 @@ function pctGapWords(pct) {
   return (Math.round(Math.abs(n) * 10) / 10).toFixed(1);
 }
 
-/** One read per HIGH/SOFT row already in sealed-price-outliers.json. */
+/** One Flagged read per row already labeled "possible real move". Other labels stay out. */
 export function outlierReads(doc) {
   const rows = [...(doc?.high || []), ...(doc?.soft || [])];
   const out = [];
   for (const row of rows) {
     if (!row || !row.id) continue;
+    if (String(row.provisionalLabel || "") !== "possible real move") continue;
     const name = String(row.name || "").trim();
     const today = Number(row.todayPrice);
     const ref = Number(row.referencePrice);

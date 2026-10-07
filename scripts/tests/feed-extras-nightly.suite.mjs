@@ -39,8 +39,9 @@ async function fixture({ withSources }) {
     await put(root, "data/derived/sealed-price-outliers.json", {
       asOf: "2026-10-06",
       high: [
-        { id: "sv5-pc-etb", name: "Temporal Forces Pokemon Center Elite Trainer Box", severity: "high", direction: "high", todayDate: "2026-10-06", todayPrice: 499.99, referencePrice: 255.75, pctGap: 95.5 },
-        { id: "cel25-etb", name: "Celebrations Elite Trainer Box", severity: "high", direction: "low", todayDate: "2026-10-06", todayPrice: 161.99, referencePrice: 330, pctGap: -50.9 },
+        { id: "sv5-pc-etb", name: "Temporal Forces Pokemon Center Elite Trainer Box", severity: "high", direction: "high", todayDate: "2026-10-06", todayPrice: 499.99, referencePrice: 255.75, pctGap: 95.5, provisionalLabel: "possible real move" },
+        { id: "cel25-etb", name: "Celebrations Elite Trainer Box", severity: "high", direction: "low", todayDate: "2026-10-06", todayPrice: 161.99, referencePrice: 330, pctGap: -50.9, provisionalLabel: "possible real move" },
+        { id: "xy12-etb", name: "Evolutions Elite Trainer Box", severity: "high", direction: "high", todayDate: "2026-10-06", todayPrice: 850, referencePrice: 420, pctGap: 102.4, provisionalLabel: "likely bad listing" },
       ],
       soft: [],
     });
@@ -69,6 +70,7 @@ export async function run() {
     const browse = await get(full, "research/assets/public/feed/browse.json");
     const ids = reads.map((r) => r.id);
     t("both outlier rows in the file survive the rebuild", ids.includes("outlier-sv5-pc-etb") && ids.includes("outlier-cel25-etb") && reads.filter((r) => r.readKind === "outlier").length === 2);
+    t("a likely bad listing is not a Flagged read", !ids.includes("outlier-xy12-etb") && !ex.reads.some((r) => r.id === "outlier-xy12-etb"));
     t("dive teasers with a live price survive the rebuild", ids.includes("dive-sv5-pc-etb") && ids.includes("dive-cel25-etb") && reads.filter((r) => r.readKind === "dive").length === 2);
     t("a dive with no market and no outlier note does not ship", !ids.includes("dive-no-market") && !ids.includes("dive-missing-file"));
     t("stale outlier/dive rows from an earlier build are dropped", !ids.includes("outlier-old") && !ids.includes("dive-old") && !ex.reads.some((r) => r.id === "outlier-old"));
