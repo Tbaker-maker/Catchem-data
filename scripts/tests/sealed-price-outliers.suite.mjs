@@ -8,8 +8,10 @@ import {
   median,
   provisionalLabel,
   referenceWindow,
+  reviewLabel,
   seriesFor,
   severityFor,
+  tcgHoldReason,
 } from "../flag-sealed-price-outliers.mjs";
 
 export async function run() {
@@ -63,26 +65,35 @@ export async function run() {
       { id: "flat-etb", name: "Flat ETB", subtype: "etb", priceHistory: [] },
     ],
   };
-  const report = flagSealedPriceOutliers({ heatHistory: heat, sealedPrices: sealed, buyoutTape: { rows: [] }, asOf: "2026-09-04" });
+  const report = flagSealedPriceOutliers({
+    heatHistory: heat,
+    sealedPrices: sealed,
+    buyoutTape: { rows: [] },
+    asOf: "2026-09-04",
+    tcgById: new Map([["demo-etb", [
+      { date: "2026-09-01", tcgMarket: 100 },
+      { date: "2026-09-02", tcgMarket: 100 },
+      { date: "2026-09-03", tcgMarket: 110 },
+      { date: "2026-09-04", tcgMarket: 180 },
+    ]]]),
+  });
   t("flags the extreme etb as high", report.highCount === 1 && report.high[0].id === "demo-etb");
   t("skips packs", report.skippedPacks >= 1 && !report.high.some((r) => r.id === "swsh5-pack"));
   t("flat product is not flagged", !report.high.some((r) => r.id === "flat-etb") && !report.soft.some((r) => r.id === "flat-etb"));
   t("demo gap is about +95%", report.high[0].pctGap >= 90);
-  t("listing crash + spike → possible real move", report.high[0].provisionalLabel.includes("possible real move"));
+  t("same-direction TCGplayer move → possible real move", report.high[0].provisionalLabel === "possible real move");
 
-  const badOnly = provisionalLabel({
-    gap: 0.9,
-    browse: { today: 50, prior: 50 },
-    heatListings: { today: 9, prior: 9 },
-  });
-  t("flat listings + spike → possible bad listing", badOnly.label === "review — possible bad listing" && !badOnly.conflict);
+  const badOnly = provisionalLabel({ gap: 0.9, tcg: { gap: 0.007, now: 870.98, ref: 864.53 } });
+  t("flat TCGplayer + eBay jump → likely bad listing", badOnly.label === "likely bad listing" && !badOnly.conflict);
 
-  const conflict = provisionalLabel({
-    gap: 0.9,
-    browse: { today: 50, prior: 50 },
-    heatListings: { today: 6, prior: 10 },
-  });
-  t("browse flat + filtered crash → both labels", conflict.conflict && conflict.label.includes("bad listing") && conflict.label.includes("real move"));
+  const conflict = provisionalLabel({ gap: 0.9, tcg: { gap: -0.2, now: 80, ref: 100 } });
+  t("opposite moves stay review", conflict.conflict && conflict.label === "review");
+
+  const same = reviewLabel({ ebayGap: -0.5, tcgGap: -0.2 });
+  t("both down is a possible real move", same.label === "possible real move");
+  t("a held id is review even if the prices look flat", reviewLabel({ ebayGap: 1, tcgGap: 0, hold: "cover variant" }).label === "review");
+  t("a cover variant is not the same product", tcgHoldReason("xy12-etb", [{ id: "xy12-etb", reason: "cover variant: the TCGplayer name names a specific art and ours does not" }]).includes("cover variant"));
+  t("no series stays review and does not invent a move", reviewLabel({ ebayGap: 0.41, tcgGap: null }).label === "review");
 
   const missing = evaluateProduct({
     id: "thin",

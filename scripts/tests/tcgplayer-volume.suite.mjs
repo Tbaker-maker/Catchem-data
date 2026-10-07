@@ -143,6 +143,17 @@ export async function run() {
   t("read never mentions listings or eBay", !/listing|ebay/i.test(r.path + r.why));
   t("no read for a stale window", volumeReads(doc, CATALOG, { asOf: "2026-11-30" }).length === 0);
   t("no read when the ids do not match", volumeRead(got.rows["tcgcsv-101"], CATALOG[1]) === null);
+  const bench = { cards: {} };
+  const benchItems = [];
+  for (let i = 0; i < 45; i += 1) {
+    const id = `tcgcsv-${1000 + i}`;
+    bench.cards[id] = { ...a, id, tcgplayerProductId: 1000 + i, sold30d: 500 - i };
+    benchItems.push({ id, kind: "single", price: 10, tcgplayerProductId: 1000 + i, name: `Card ${i}`, number: "1", set: "Set" });
+  }
+  const top = volumeReads(bench, benchItems, { asOf: SCRAPE, max: 40 }).map((row) => row.sku);
+  const cooled = new Set(top.slice(0, 4));
+  const filled = volumeReads(bench, benchItems, { asOf: SCRAPE, max: 40, exclude: cooled });
+  t("cooldown is applied before the cap so the shelf still fills", filled.length === 40 && filled.every((row) => !cooled.has(row.sku)));
   t("no file means no reads", volumeReads(null, CATALOG).length === 0);
   t("singular copy reads right", volumeRead({ ...a, sold30d: 1 }, CATALOG[0]).path.includes(": 1 Near Mint copy sold"));
 

@@ -86,13 +86,15 @@ export function volumeRead(row, item) {
  * TCGplayer market of at least MIN_MARKET on the catalog. Empty when there is
  * no file or no card qualifies.
  */
-export function volumeReads(doc, items, { asOf = "", max = MAX_READS, minMarket = MIN_MARKET } = {}) {
+export function volumeReads(doc, items, { asOf = "", max = MAX_READS, minMarket = MIN_MARKET, exclude = null } = {}) {
   const cards = doc?.cards || {};
   if (!Object.keys(cards).length) return [];
+  const skip = exclude instanceof Set ? exclude : new Set(exclude || []);
   const byId = new Map((items || []).filter((i) => i && i.kind === "single").map((i) => [i.id, i]));
   const oldest = asOf ? shiftDay(asOf, -MAX_AGE_DAYS) : "";
   const out = [];
   for (const row of Object.values(cards)) {
+    if (skip.has(row?.id)) continue;
     const item = byId.get(row?.id);
     if (!item || !(Number(item.price) >= minMarket)) continue;
     if (Number(item.tcgplayerProductId) !== Number(row.tcgplayerProductId)) continue;

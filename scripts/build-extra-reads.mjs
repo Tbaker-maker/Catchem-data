@@ -1,5 +1,5 @@
 // Builds lag, group, and browse files from prices already on disk.
-import { readFile, readdir, writeFile } from "node:fs/promises";
+import { readFile, readdir, writeFile, mkdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { assembleCatalog, buildBrowse, supplyNotes } from "./lib/extra-reads.mjs";
@@ -11,6 +11,7 @@ import {
   outlierReads,
 } from "./lib/outlier-dive-reads.mjs";
 import { VOLUME_EMPTY_NOTE, VOLUME_NOTE, loadVolumeDoc, volumeReads } from "./lib/volume-reads.mjs";
+import { publicVolumeDoc, serializeVolumeDoc, VOLUME_FILE, VOLUME_STATE_FILE } from "./lib/tcgplayer-volume.mjs";
 import { cooledSet, loadRotation, loadShapeCandidates, pickNight, rememberShown } from "./lib/night-reads.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -96,7 +97,7 @@ export async function writeExtra(root, extra, browse) {
   await writeFile(join(outDir, "browse.json"), JSON.stringify(browse) + "\n");
   const readsPath = join(root, "research/assets/public/reads.json");
   const doc = JSON.parse(await readFile(readsPath, "utf8"));
-  const drop = new Set(["lag", "group", "supply", "outlier", "dive", "volume", "quiet", "mix", "conditions", "soldflat", "solddown", "setshare", "spread", "askmove", "mktmove", "still"]);
+  const drop = new Set(["lag", "group", "supply", "outlier", "dive", "volume", "quiet", "mix", "conditions", "soldflat", "solddown", "setshare", "spread", "askmove", "mktmove", "still", "listing"]);
   const rotation = await loadRotation(root);
   const blocked = cooledSet(rotation, browse.asOf || "");
   const kept = (doc.reads || []).filter((row) => !drop.has(row.readKind) && !blocked.has(String(row.sku || "")));
@@ -105,7 +106,7 @@ export async function writeExtra(root, extra, browse) {
   const shapeSeen = new Set();
   for (const row of extras) {
     if (!row || shapeSeen.has(row.readKind)) continue;
-    if (!["quiet", "mix", "conditions", "soldflat", "solddown", "setshare", "spread", "askmove", "mktmove", "still"].includes(row.readKind)) continue;
+    if (!["quiet", "mix", "conditions", "soldflat", "solddown", "setshare", "spread", "askmove", "mktmove", "still", "listing"].includes(row.readKind)) continue;
     shapeSeen.add(row.readKind);
     shapeFront.push(row);
   }
@@ -119,7 +120,7 @@ export async function writeExtra(root, extra, browse) {
   await writeFile(readsPath, JSON.stringify(doc, null, 1) + "\n");
   const asOf = browse.asOf || "";
   if (asOf) {
-    const shipped = doc.reads.concat(extras.filter((row) => shapeSeen.has(row.readKind)));
+  const shipped = doc.reads.concat(extras.filter((row) => row && (shapeSeen.has(row.readKind) || row.readKind === "volume" || row.readKind === "outlier" || row.readKind === "dive" || row.readKind === "listing")));
     await writeFile(join(outDir, "rotation.json"), `${JSON.stringify(rememberShown(rotation, shipped, asOf), null, 1)}\n`);
   }
   return {
@@ -148,10 +149,21 @@ export async function flaggedAndDiveReads(root = ROOT) {
   return { flagged, dives };
 }
 
-// Volume reads come only from data/derived/tcgplayer-volume.json, matched to the
-// catalog by card id. No file, or no card with a full 30-day count: none ship.
-export async function volumeFeedReads(root = ROOT, { asOf = "" } = {}) {
-  const doc = await loadVolumeDoc(root);
+// Volume reads come from the private full table when it is mounted, otherwise
+// from the public slice. Cooled cards are skipped before the cap, so a night
+// still fills when later cards qualify. The public file keeps only the cards
+// this night shows. The full table is never written here.
+export async function volumeFeedReads(root = ROOT, { asOf = "", exclude = null } = {}) {
+  let doc = null;
+  let fromPrivate = false;
+  try {
+    const state = JSON.parse(await readFile(join(root, VOLUME_STATE_FILE), "utf8"));
+    if (state?.cards && Object.keys(state.cards).length) {
+      doc = state;
+      fromPrivate = true;
+    }
+  } catch { /* public slice only */ }
+  if (!doc) doc = await loadVolumeDoc(root);
   if (!doc) return [];
   let items = [];
   try {
@@ -159,7 +171,13 @@ export async function volumeFeedReads(root = ROOT, { asOf = "" } = {}) {
   } catch {
     return [];
   }
-  return volumeReads(doc, items, { asOf });
+  const reads = volumeReads(doc, items, { asOf, exclude });
+  if (fromPrivate) {
+    const pub = publicVolumeDoc(doc, reads.map((row) => row.sku));
+    await mkdir(dirname(join(root, VOLUME_FILE)), { recursive: true });
+    await writeFile(join(root, VOLUME_FILE), serializeVolumeDoc(pub));
+  }
+  return reads;
 }
 
 export async function writeFeedExtras(root, extra, { asOf, cardIds, rankedIds, news, waves }) {
@@ -168,11 +186,11 @@ export async function writeFeedExtras(root, extra, { asOf, cardIds, rankedIds, n
   const freshKinds = await flaggedAndDiveReads(root);
   const flagged = freshKinds.flagged.filter((row) => !blocked.has(String(row.sku || "")));
   const dives = freshKinds.dives.filter((row) => !blocked.has(String(row.sku || row.diveId || "")));
-  const volume = (await volumeFeedReads(root, { asOf })).filter((row) => !blocked.has(String(row.sku || "")));
+  const volume = await volumeFeedReads(root, { asOf, exclude: blocked });
   const taken = new Set(flagged.concat(dives, volume).map((row) => String(row.sku || "")));
   const candidates = (await loadShapeCandidates(root, asOf)).filter((row) => row && !taken.has(String(row.sku || "")));
   const shape = pickNight(candidates, rotation, asOf);
-  const fresh = new Set(["outlier", "dive", "volume", "quiet", "mix", "conditions", "soldflat", "solddown", "setshare", "spread", "askmove", "mktmove", "still"]);
+  const fresh = new Set(["outlier", "dive", "volume", "quiet", "mix", "conditions", "soldflat", "solddown", "setshare", "spread", "askmove", "mktmove", "still", "listing"]);
   extra.reads = [...(extra.reads || []).filter((r) => !fresh.has(r.readKind)), ...flagged, ...dives, ...volume, ...shape.reads];
   extra.flagged = { count: flagged.length, source: "data/derived/sealed-price-outliers.json" };
   extra.dives = { count: dives.length, source: "research/pulse/dive/" };

@@ -1,10 +1,11 @@
 {
-  "generatedAt": "2026-10-07T11:19:36.109Z",
+  "generatedAt": "2026-10-07T19:18:45.289Z",
   "asOf": "2026-10-07",
   "source": {
     "heatHistory": "data/heat-history.json",
     "sealedPrices": "data/sealed-prices.json",
     "buyoutTape": "data/buyout-tape.json",
+    "tcgplayer": "TCGplayer market for the same id only (crosscheck history or data/history/tcgplayer-market). A held id is not used.",
     "sealedPricesUpdatedAt": "2026-10-07T10:57:22.143Z"
   },
   "rule": {
@@ -12,8 +13,8 @@
     "softGap": 0.4,
     "priorWindow": 7,
     "minPriors": 3,
-    "listingCrash": 0.3,
-    "note": "HIGH when |today − median(last ≤7 prior heat-history prices)| / median ≥ 50%. SOFT at ≥40% and <50%. Conservative default (flag fewer). Packs skipped. Missing history → no flag. Do not invent prices or solds."
+    "tcgMove": 0.15,
+    "note": "HIGH when |today − median(last ≤7 prior heat-history prices)| / median ≥ 50%. SOFT at ≥40% and <50%. Review label: TCGplayer flat while the eBay median jumped → likely bad listing. Both moved the same way → possible real move. Opposite moves, a missing series, or a held id → review. Only possible real move is a Flagged read. Packs skipped. Do not invent prices."
   },
   "skippedPacks": 35,
   "skippedNoFlag": 146,
@@ -38,16 +39,19 @@
       "pctGap": 102.4,
       "listingCount": 38,
       "listingCountPrior": 28,
-      "listingCountNote": "heat-history listingCount is the filtered page count, not Browse total, not solds",
+      "listingCountNote": "heat-history listingCount is the filtered page count, not Browse total, not solds, and not the review label",
       "browseTotal": 2391,
       "browseTotalPrior": 2377,
-      "provisionalLabel": "review — possible bad listing",
+      "tcgNow": null,
+      "tcgReference": null,
+      "tcgPct": null,
+      "tcgAsOf": null,
+      "provisionalLabel": "review",
       "evidence": [
-        "Browse total 2377 → 2391 (0.6%)",
-        "heat-history listingCount (filtered page count, not solds) 28 → 38 (35.7%)",
-        "wild price with listings flat or up"
+        "eBay ask vs its recent median +102.4%",
+        "TCGplayer series not used: cover variant: the TCGplayer name names a specific art and ours does not"
       ],
-      "conflict": false
+      "conflict": true
     }
   ],
   "soft": [
@@ -69,15 +73,19 @@
       "pctGap": 41,
       "listingCount": 9,
       "listingCountPrior": 6,
-      "listingCountNote": "heat-history listingCount is the filtered page count, not Browse total, not solds",
+      "listingCountNote": "heat-history listingCount is the filtered page count, not Browse total, not solds, and not the review label",
       "browseTotal": 61,
       "browseTotalPrior": 49,
-      "provisionalLabel": "review — possible bad listing",
+      "tcgNow": null,
+      "tcgReference": null,
+      "tcgPct": null,
+      "tcgAsOf": null,
+      "provisionalLabel": "review",
       "evidence": [
-        "Browse total 49 → 61 (24.5%)",
-        "heat-history listingCount (filtered page count, not solds) 6 → 9 (50%)"
+        "eBay ask vs its recent median +41%",
+        "TCGplayer series not used: held out of the id map"
       ],
-      "conflict": false
+      "conflict": true
     }
   ]
 }

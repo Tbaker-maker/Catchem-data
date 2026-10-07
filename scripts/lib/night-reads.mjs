@@ -8,6 +8,7 @@ import { SHAPE_STATE_FILE } from "./shape-facts.mjs";
 import { monthDay, money } from "./outlier-dive-reads.mjs";
 import { seededShuffle } from "./extra-reads.mjs";
 import { fullWindow, shiftDay } from "./tcgplayer-volume.mjs";
+import { listingChangeRead } from "./product-dives.mjs";
 
 export const COOLDOWN_DAYS = 5;
 export const ROTATION_FILE = "research/assets/public/feed/rotation.json";
@@ -24,7 +25,7 @@ export const MKT_CLAUSE = "The market price changed. The ask did not. Asks are n
 export const STILL_CLAUSE = "Asks and listing count. Not sales.";
 
 export const RANKED_KINDS = new Set(["setshare", "spread"]);
-export const KIND_ORDER = ["quiet", "mix", "conditions", "soldflat", "solddown", "setshare", "spread", "askmove", "mktmove", "still"];
+export const KIND_ORDER = ["quiet", "mix", "conditions", "soldflat", "solddown", "setshare", "spread", "askmove", "mktmove", "still", "listing"];
 export const EMPTY_COPY = {
   quiet: "No quiet Near Mint window is on file.",
   mix: "No condition mix is on file.",
@@ -36,6 +37,7 @@ export const EMPTY_COPY = {
   askmove: "No ask move with a still market price is on file.",
   mktmove: "No market move with a still ask is on file.",
   still: "No unchanged ask is on file.",
+  listing: "No 7-night Browse total is on file.",
 };
 
 const DAY = /^\d{4}-\d{2}-\d{2}$/;
@@ -555,6 +557,8 @@ export async function loadShapeCandidates(root, asOf) {
     if (spread) spreads.push(spread);
     const still = stillRead(product.id, heatById.get(product.id) || [], product.name, product.set);
     if (still) out.push(still);
+    const listing = listingChangeRead(product);
+    if (listing) out.push(listing);
   }
   spreads.sort((a, b) => b.rank - a.rank || (a.id < b.id ? -1 : 1));
   out.push(...spreads);

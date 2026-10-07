@@ -12,6 +12,7 @@ import { basename, dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { VOLUME_FILE, VOLUME_STATE_FILE, catalogIndex, mergeVolumeDoc, publicVolumeDoc, serializeVolumeDoc, setVolumes } from "./lib/tcgplayer-volume.mjs";
 import { volumeReads } from "./lib/volume-reads.mjs";
+import { cooledSet, loadRotation } from "./lib/night-reads.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -57,8 +58,10 @@ export async function updateVolumeFile({ root = ROOT, rawDirs = [], today = new 
   if (!report.files) return { ...report, written: false, counts: doc?.counts || null };
   await mkdir(dirname(statePath), { recursive: true });
   await writeFile(statePath, serializeVolumeDoc(doc));
-  // Public: only the cards a volume read will show.
-  const shown = volumeReads(doc, catalog.items || [], { asOf: today }).map((r) => r.sku);
+  // Public: only the cards a volume read will show, after the 5-day cooldown,
+  // so a card that just shipped does not take a slot the next night.
+  const exclude = cooledSet(await loadRotation(root), today);
+  const shown = volumeReads(doc, catalog.items || [], { asOf: today, exclude }).map((r) => r.sku);
   const pub = publicVolumeDoc(doc, shown);
   await mkdir(dirname(outPath), { recursive: true });
   await writeFile(outPath, serializeVolumeDoc(pub));
