@@ -1141,10 +1141,19 @@
       return "https://images.pokemontcg.io/" + m[1] + "/" + m[2] + (hi ? "_hires.png" : ".png");
     }
     function scanUrls(c) {
-      if (!pictureInFile(c)) return [];
-      var s = String(c.src || "").split("?")[0];
-      if (s.indexOf("/cards/") === 0) return [assetUrl(s)];
-      return [];
+      var s = srcOf(c) || "";
+      var out = [];
+      function add(u) { if (u && out.indexOf(u) === -1) out.push(u); }
+      if (!s) return out;
+      if (/^https?:\/\//i.test(s)) { add(s); return out; }
+      if (s.indexOf("/img/") === 0 || s.indexOf("/thumb/") === 0) {
+        add(tcgImg(s, true));
+        add(tcgImg(s, false));
+      }
+      add(hiresOf(c));
+      if (s.charAt(0) === "/") add(s);
+      add(assetUrl(s));
+      return out;
     }
     function srcOf(c) {
       if (!c) return "";
@@ -1181,69 +1190,11 @@
       if (s.indexOf("/cards/") === 0 || s.indexOf("/jp-img/") === 0 || s.indexOf("/pocket-img/") === 0) return assetUrl(s);
       return s;
     }
-    function pictureInFile(c) {
-      var s = String((c && c.src) || "").split("?")[0];
-      return s === "/cards/c30/ir-articuno.png"
-        || s === "/cards/c30/ir-moltres.png"
-        || s === "/cards/c30/ir-zapdos.png"
-        || s === "/cards/seed/mep-10-pc.png"
-        || s === "/cards/seed/mep-10.png"
-        || s === "/cards/seed/mep-101-pc.png"
-        || s === "/cards/seed/mep-101.png"
-        || s === "/cards/seed/mep-22-pc.png"
-        || s === "/cards/seed/mep-22.png"
-        || s === "/cards/seed/mep-31-pc.png"
-        || s === "/cards/seed/mep-31.png"
-        || s === "/cards/seed/mep-70-pc.png"
-        || s === "/cards/seed/mep-70.png"
-        || s === "/cards/seed/mep-80-pc.png"
-        || s === "/cards/seed/mep-80.png"
-        || s === "/cards/seed/mep-88-pc.png"
-        || s === "/cards/seed/mep-88.png"
-        || s === "/cards/seed/mep-9-pc.png"
-        || s === "/cards/seed/mep-9.png"
-        || s === "/cards/seed/svp-123-pc.png"
-        || s === "/cards/seed/svp-123.png"
-        || s === "/cards/seed/svp-129-pc.png"
-        || s === "/cards/seed/svp-129.png"
-        || s === "/cards/seed/svp-13-pc.png"
-        || s === "/cards/seed/svp-13.png"
-        || s === "/cards/seed/svp-14-pc.png"
-        || s === "/cards/seed/svp-14.png"
-        || s === "/cards/seed/svp-141-pc.png"
-        || s === "/cards/seed/svp-141.png"
-        || s === "/cards/seed/svp-159-pc.png"
-        || s === "/cards/seed/svp-159.png"
-        || s === "/cards/seed/svp-173-pc.png"
-        || s === "/cards/seed/svp-173.png"
-        || s === "/cards/seed/svp-189-pc.png"
-        || s === "/cards/seed/svp-189.png"
-        || s === "/cards/seed/svp-203-pc.png"
-        || s === "/cards/seed/svp-203.png"
-        || s === "/cards/seed/svp-209-pc.png"
-        || s === "/cards/seed/svp-209.png"
-        || s === "/cards/seed/svp-210-pc.png"
-        || s === "/cards/seed/svp-210.png"
-        || s === "/cards/seed/svp-27-pc.png"
-        || s === "/cards/seed/svp-27.png"
-        || s === "/cards/seed/svp-44-pc.png"
-        || s === "/cards/seed/svp-44.png"
-        || s === "/cards/seed/svp-51-pc.png"
-        || s === "/cards/seed/svp-51.png"
-        || s === "/cards/seed/svp-65-pc.png"
-        || s === "/cards/seed/svp-65.png"
-        || s === "/cards/seed/svp-66-pc.png"
-        || s === "/cards/seed/svp-66.png"
-        || s === "/cards/seed/svp-75-pc.png"
-        || s === "/cards/seed/svp-75.png"
-        || s === "/cards/seed/svp-97-pc.png"
-        || s === "/cards/seed/svp-97.png"
-        || s === "/cards/seed/svp-98-pc.png"
-        || s === "/cards/seed/svp-98.png";
-    }
     function thumbOf(c) {
-      if (!pictureInFile(c)) return "";
-      return assetUrl(String(c.src).split("?")[0]);
+      var s = srcOf(c);
+      if (s.indexOf("/img/") === 0 || s.indexOf("/thumb/") === 0) return tcgImg(s, true);
+      if (s.indexOf("/cards/") === 0) return assetUrl(s);
+      return s;
     }
     function isPrintedBack(im) {
       try {
@@ -2338,37 +2289,33 @@
       }
       return out.length === ids.length ? out : null;
     }
-    function path151Offer(who, kind) {
+    function path151For(who, kind) {
       if (!who) return null;
-      var i, row, j, c, known, cards;
+      var i, row, cards;
       for (i = 0; i < PATH_151.length; i++) {
         row = PATH_151[i];
         if (kind && row.kind !== kind) continue;
-        if (row.ids.indexOf("base5-3") !== -1 || row.ids.indexOf("base1-63") !== -1) continue;
-        known = [];
-        for (j = 0; j < row.ids.length; j++) {
-          c = cardById(row.ids[j]);
-          if (!c || c.id !== row.ids[j]) continue;
-          if (c.id === "base5-3" || c.id === "base1-63") continue;
-          if (setIdOf(c) !== "sv3pt5") continue;
-          known.push(c);
-        }
-        if (!known.length || !known.some(function (card) { return ofMon(card, who); })) continue;
         cards = pathCards(row.ids);
-        return cards || [];
+        if (!cards) continue;
+        if (cards.some(function (c) { return ofMon(c, who); })) return cards;
       }
       return null;
     }
-    function path151For(who, kind) {
-      var offer = path151Offer(who, kind);
-      if (!offer || !offer.length) return null;
-      return offer;
-    }
     function pickLine(who) {
-      var offer = path151Offer(who, "line");
-      if (offer) return offer;
+      var safe = path151For(who, "line");
+      if (safe) return safe;
       var fam = evoFamily(who);
       if (!fam || fam.length < 2) return [];
+      if (fam[0] === "Eevee" && fam.length > 3) {
+        if (who === "Eevee") {
+          var night = cohesiveCombos(["Eevee", "Espeon", "Umbreon"]);
+          if (night.length) return night[0];
+          var eevee = hottest(paperOf("Eevee"));
+          var tops = ["Umbreon", "Espeon", "Sylveon"].map(function (sp) { return hottest(rolePool(sp)); }).filter(Boolean);
+          return [eevee].concat(tops.slice(0, 2)).filter(Boolean);
+        }
+        fam = ["Eevee", who];
+      }
       var combos = cohesiveCombos(fam);
       return combos[0] || [];
     }
@@ -2444,7 +2391,6 @@
       var seen = {};
       function add(cards) {
         if (!cards || cards.some(function (c) { return !c; })) return;
-        if (cards.some(function (c) { return c.id === "base5-3" || c.id === "base1-63"; })) return;
         var k = cards.map(function (c) { return c.id; }).join("|");
         if (seen[k]) return;
         seen[k] = 1;
@@ -2594,7 +2540,7 @@
       if (!who) return [];
       if (kind === "line") return pickLine(who);
       if (kind === "trio") {
-        var birds = path151Offer(who, "trio");
+        var birds = path151For(who, "trio");
         if (birds) return birds;
       }
       var pool = paperOf(who).filter(function (c) { return c.id !== "base5-3" && c.id !== "base1-63"; });
@@ -2652,7 +2598,8 @@
           if (t.keys.indexOf(who) === -1) continue;
           var combos = cohesiveCombos(t.mons);
           if (combos.length) return combos[0];
-          return [];
+          var cards = t.mons.map(function (sp) { return hottest(paperOf(sp).filter(function (c) { return !isBulk(c); })); });
+          if (cards.every(Boolean)) return cards;
         }
         return [];
       }
@@ -2660,7 +2607,10 @@
         if (["Eevee","Espeon","Umbreon"].indexOf(who) === -1) return [];
         var night = cohesiveCombos(["Espeon", "Umbreon"]);
         if (night.length) return night[0];
-        return [];
+        var a = hottest(paperOf("Espeon").filter(function (c) { return !isBulk(c); }));
+        var b = hottest(paperOf("Umbreon").filter(function (c) { return !isBulk(c); }));
+        if (!a || !b) return [];
+        return [a, b];
       }
       return [];
     }
@@ -2907,8 +2857,6 @@
         return hits;
       }
       if (prompt === "line") {
-        var onlyLine = path151Offer(mon, "line");
-        if (onlyLine) return onlyLine;
         if (pairEditing() && pairFocus >= 0) {
           return pairBrowseRows();
         }
@@ -3132,9 +3080,9 @@
           offers.push({ v: "hand", l: "Other work", s: artKeys[0] });
         }
         var fam = evoFamily(who);
-        var lineOffer = path151Offer(who, "line");
-        if (lineOffer) {
-          if (lineOffer.length) offers.push({ v: "line", l: "Evo line", s: lineOffer.map(function (c) { return c.name; }).join(" → ") });
+        var linePath = path151For(who, "line");
+        if (linePath) {
+          offers.push({ v: "line", l: "Evo line", s: linePath.map(function (c) { return c.name; }).join(" → ") });
         } else if (fam && fam.length >= 2) {
           var lineOk = fam.every(function (sp) { return rolePool(sp).length; });
           if (fam[0] === "Eevee" && fam.length > 3) lineOk = rolePool("Eevee").length && rolePool(who === "Eevee" ? "Umbreon" : who).length;
@@ -3163,10 +3111,8 @@
         var buckets = { old: 0, mid: 0, now: 0 };
         pool.forEach(function (c) { var b = eraBucket(c); if (b) buckets[b] += 1; });
         if (buckets.old && buckets.mid && buckets.now) offers.push({ v: "eras", l: "Three eras", s: "Vintage → SWSH → now" });
-        var trioOffer = path151Offer(who, "trio");
-        if (trioOffer) {
-          if (trioOffer.length) offers.push({ v: "trio", l: "The birds", s: trioOffer.map(function (c) { return c.name; }).join(" · ") });
-        } else {
+        var trioPath = path151For(who, "trio");
+        if (trioPath) offers.push({ v: "trio", l: "The birds", s: trioPath.map(function (c) { return c.name; }).join(" · ") });
         var i, t;
         for (i = 0; i < TRIADS.length; i++) {
           t = TRIADS[i];
@@ -3174,7 +3120,6 @@
           if (t.l === "The birds") break;
           if (t.mons.every(function (sp) { return rolePool(sp).length; })) offers.push({ v: "trio", l: t.l, s: t.s });
           break;
-        }
         }
       }
       return offers;
@@ -3318,24 +3263,24 @@
         var note = unstuckNote;
         unstuckNote = "";
         if (!rows.length) return note;
-        return note + " · " + shown.length + " on this page · " + rows.length + " · " + pictureCounts();
+        return note + " · " + shown.length + " on this page · " + rows.length;
       }
-      if (!rows.length) return emptyReason() + " · " + pictureCounts();
+      if (!rows.length) return emptyReason();
       if (prompt === "then" && rows.length >= 2 && mon) {
-        return rows[0].year + " → " + rows[rows.length - 1].year + " · " + mon + " · " + pictureCounts();
+        return rows[0].year + " → " + rows[rows.length - 1].year + " · " + mon;
       }
       if (prompt === "vs") {
-        return shown.length + " on this page · " + rows.length + " Pokémon · pin two to compare · × to drop · " + pictureCounts();
+        return shown.length + " on this page · " + rows.length + " Pokémon · pin two to compare · × to drop";
       }
       if (prompt === "artist") {
-        return shown.length + " on this page · " + rows.length + " · " + (mon || q || "artist") + " · grouped by artist · " + pictureCounts();
+        return shown.length + " on this page · " + rows.length + " · " + (mon || q || "artist") + " · grouped by artist";
       }
       if (prompt === "hand") {
         var painter = rows[0] && rows[0].artist;
-        return shown.length + " on this page · " + rows.length + " · " + (painter || "this hand") + " · other work · " + pictureCounts();
+        return shown.length + " on this page · " + rows.length + " · " + (painter || "this hand") + " · other work";
       }
       if (prompt === "line") {
-        return shown.length + " on this page · " + rows.length + " · evo line · " + (mon || "") + " · " + pictureCounts();
+        return shown.length + " on this page · " + rows.length + " · evo line · " + (mon || "");
       }
       var bits = shown.length === rows.length ? [String(rows.length)] : [shown.length + " on this page", String(rows.length)];
       if (medium === "paper") bits.push(paperLang === "jp" ? "Japanese" : "English");
@@ -3349,47 +3294,7 @@
       if (q || mon) bits.push(q || mon);
       if (LANE_LABEL[prompt]) bits.push(LANE_LABEL[prompt]);
       else bits.push(prompt);
-      return bits.join(" · ") + " · " + pictureCounts();
-    }
-    function pictureCounts() {
-      var withPic = 0, i;
-      for (i = 0; i < CARDS.length; i++) if (pictureInFile(CARDS[i])) withPic += 1;
-      return withPic + " with a picture · " + (CARDS.length - withPic) + " without";
-    }
-    function applyRowPrices(rows) {
-      var by = {};
-      (rows || []).forEach(function (r) {
-        if (!r || !r.length || !r[0]) return;
-        var n = Number(r[6]);
-        if (!Number.isFinite(n) || n <= 0) return;
-        by[r[0]] = n;
-      });
-      CARDS.forEach(function (c) {
-        if (by[c.id] != null) c.usd = by[c.id];
-      });
-    }
-    function storedPrice(c) {
-      var n = Number(c && c.usd);
-      return Number.isFinite(n) && n > 0 ? n : 0;
-    }
-    var SCREEN = 40;
-    var screenAsk = 40;
-    var screenKey = "";
-    function pathwayView() {
-      return prompt === "line" || prompt === "trio" || prompt === "night" || prompt === "origin" || prompt === "megaform" || prompt === "dark" || prompt === "region" || prompt === "star" || prompt === "eras" || prompt === "then";
-    }
-    function listKey() {
-      return [medium, paperLang, prompt, mon, q, setFilter, era].join("|");
-    }
-    function screenRows(rows) {
-      var lead = [];
-      var later = [];
-      (rows || []).forEach(function (c) {
-        if (storedPrice(c) > 0 && pictureInFile(c)) lead.push(c);
-        else later.push(c);
-      });
-      lead.sort(function (a, b) { return storedPrice(b) - storedPrice(a); });
-      return { lead: lead, ordered: lead.concat(later) };
+      return bits.join(" · ");
     }
     function paintStrip() {
       var rows = list();
@@ -3401,11 +3306,7 @@
         rows = list();
         paintSets();
       }
-      var key = listKey();
-      if (key !== screenKey) { screenKey = key; screenAsk = SCREEN; }
-      var pack = pathwayView() ? null : screenRows(rows);
-      var shown = pack ? (screenAsk <= SCREEN ? pack.lead.slice(0, SCREEN) : pack.ordered.slice(0, screenAsk)) : rows;
-      var more = !!(pack && shown.length < pack.ordered.length);
+      var shown = rows;
       $("count").textContent = countLabel(rows, shown);
       $("pager").hidden = true;
       if ($("page-hint")) $("page-hint").hidden = true;
@@ -3429,15 +3330,12 @@
         var print = (c.kind === "poster" || c.kind === "manga" || isGameBox(c)) ? " print" : "";
         var still = (c.kind === "cutout" || (c.kind === "game" && !print)) ? " still" : "";
         var pixel = /\/visual\/(rb|crystal|emerald|gold|silver|frlg|rs)\//.test(c.src || "") || (c.tags || "").indexOf("sprite") !== -1 ? " pixel" : "";
-        var shot = pictureInFile(c) ? thumbOf(c) : "";
-        var face = shot ? "<img class=\"" + (print + still + pixel).trim() + "\" alt=\"" + esc(c.name || "") + "\" loading=\"lazy\" decoding=\"async\" src=\"" + shot + "\" onload=\"killPrintedBack(this)\" />" : "";
-        var line = shot ? factOf(c) : "The picture is missing.";
+        var missingPic = !c.src;
         return "<button type=\"button\" class=\"card" + on + "\" data-id=\"" + c.id + "\">" + flag +
-          face +
+          (missingPic ? "" : "<img class=\"" + (print + still + pixel).trim() + "\" alt=\"" + esc(c.name || "") + "\" loading=\"lazy\" decoding=\"async\" src=\"" + thumbOf(c) + "\" onload=\"killPrintedBack(this)\" onerror=\"this.style.visibility='hidden'\" />") +
           "<div class=\"meta\"><strong>" + esc(c.name) + "</strong>" +
-          "<div class=\"fact\">" + esc(line) + "</div></div></button>";
+          "<div class=\"fact\">" + esc(missingPic ? "The picture is missing." : factOf(c)) + "</div></div></button>";
       }).join("");
-      if (more) $("strip").insertAdjacentHTML("beforeend", "<button type=\"button\" class=\"ghost\" data-more=\"1\">More</button>");
       }
       paintTray();
     }
@@ -3476,7 +3374,7 @@
           var on = pins.indexOf(c.id) !== -1 ? " pin" : "";
           return "<button type=\"button\" class=\"card" + on + "\" data-id=\"" + c.id + "\">" +
             "<span class=\"flag\">REAL DUMP</span>" +
-            (thumbOf(c) ? "<img alt=\"\" loading=\"lazy\" decoding=\"async\" src=\"" + thumbOf(c) + "\" onload=\"killPrintedBack(this)\" />" : "<span class=\"note\">The picture is missing.</span>") +
+            "<img alt=\"\" loading=\"lazy\" decoding=\"async\" src=\"" + thumbOf(c) + "\" onload=\"killPrintedBack(this)\" onerror=\"this.style.visibility='hidden'\" />" +
             "<div class=\"meta\"><strong>" + c.name + "</strong>" + c.set + " · " + c.lock + " · known real from the English dump<br>Art: " + (c.artist || "UNKNOWN") + "</div></button>";
         }).join("");
       paintTray();
@@ -3504,7 +3402,7 @@
         var posLab = pairFocus === i ? ("Swap " + (c.species || speciesOf(c.name) || "")) : pos;
         html += "<div class=\"slot" + on + "\" data-focus=\"" + i + "\">" +
           "<button type=\"button\" class=\"drop\" data-drop=\"" + id + "\" aria-label=\"Remove " + (c.name || "") + "\">×</button>" +
-          (thumbOf(c) ? "<img src=\"" + thumbOf(c) + "\" alt=\"" + (c.name || "") + "\" onload=\"killPrintedBack(this)\" />" : "<span class=\"note\">The picture is missing.</span>") +
+          "<img src=\"" + thumbOf(c) + "\" alt=\"" + (c.name || "") + "\" onload=\"killPrintedBack(this)\" onerror=\"this.style.visibility='hidden'\" />" +
           "<span class=\"pos\">" + posLab + "</span></div>";
         if (i < n - 1) {
           html += "<button type=\"button\" class=\"swap\" data-move=\"" + i + "\" data-dir=\"1\" aria-label=\"Swap with next\">‹ ›</button>";
@@ -3712,43 +3610,35 @@
       var onscreen;
       var title;
       if (sel.length === 2 && years.length >= 2) {
-        var bothPins = pins.map(function (id) {
-          var pinned = cardById(id);
-          return pinned && pinned.name ? pinned.name : ("No catalog row for " + id + ".");
-        }).join(". ");
         hookDoors = [
-          bothPins + ".",
-          years[0] + ".\nThen " + years[1] + ".\n" + bothPins + ".",
-          "Same artist.\n" + bothPins + "."
+          years[0] + ".\nThen " + years[1] + ".",
+          a.name + ".\nThen the new one.",
+          "Same artist.\n" + years[0] + " to " + years[1] + "."
         ];
-        shots = pins.map(function (id, i) {
-          var pinned = cardById(id);
-          var label = pinned && pinned.name ? pinned.name : ("No catalog row for " + id + ".");
-          return (i === 0 ? "0–1s: " : "1–8s: ") + label + ".";
-        });
+        shots = [
+          "0–1s: full frame on " + a.name + ". No move.",
+          "1–8s: slow tilt. Card stays. Light moves.",
+          "8–14s: cut to " + b.name + ". Same crop.",
+          "14–22s: hold. Don’t zoom."
+        ];
         if (yt) shots.push("22–38s: both in frame if you can. End still.");
         else shots.push("22–28s: end on the one you’d keep.");
-        onscreen = bothPins;
-        title = bothPins + ".";
+        onscreen = years[0] + "  →  " + years[1];
+        title = (a.species || a.name) + ". " + years[0] + " vs " + years[1] + ".";
       } else if (sel.length >= 2) {
-        var everyPin = pins.map(function (id) {
-          var pinned = cardById(id);
-          return pinned && pinned.name ? pinned.name : ("No catalog row for " + id + ".");
-        }).join(". ");
         hookDoors = [
-          everyPin + ".",
-          sel.length + " prints. " + everyPin + ".",
-          everyPin + "."
+          (a.species || a.name) + ".",
+          sel.length + " prints. One keep.",
+          a.year + "."
         ];
-        shots = pins.map(function (id, i) {
-          var pinned = cardById(id);
-          var label = pinned && pinned.name ? pinned.name : ("No catalog row for " + id + ".");
-          return (i === 0 ? "0–1s: " : (i + "–" + (i + 6) + "s: ")) + label + ".";
-        });
-        if (yt) shots.push("Hold the last card.");
-        else shots.push("Hold the last card.");
-        onscreen = everyPin;
-        title = everyPin + ".";
+        shots = [
+          "0–1s: lock " + a.name + ".",
+          "1–7s: tilt.",
+          "7–14s: next card. Same distance.",
+          yt ? "14–36s: last card. Hold." : "14–24s: last card. Hold."
+        ];
+        onscreen = sel.map(function (c) { return c.year || c.name; }).join("  ·  ");
+        title = (a.species || a.name) + ". Then & now.";
       } else {
         hookDoors = [
           a.name + ".",
@@ -3988,9 +3878,9 @@
     function paintPostVisual() {
       var sel = selected();
       $("post-visual").innerHTML = sel.map(function (c) {
-        var shot = pictureInFile(c) ? thumbOf(c) : "";
-        if (!shot) return "<span class=\"note\">" + esc(c.name || "Card") + ". The picture is missing.</span>";
-        return "<img src=\"" + shot + "\" alt=\"" + c.name + "\" style=\"height:84px;border-radius:8px;border:1px solid var(--line)\" />";
+        var s = srcOf(c);
+        if (!s) return "<span class=\"note\">" + esc(c.name || "Card") + ". The picture is missing.</span>";
+        return "<img src=\"" + s + "\" alt=\"" + c.name + "\" style=\"height:84px;border-radius:8px;border:1px solid var(--line)\" />";
       }).join("") || "<span class=\"note\">Pin on Visuals first. Post will not invent a four.</span>";
       var prev = $("preview").src;
       var show = prev && $("preview").style.display === "block";
@@ -4097,16 +3987,11 @@
           "One in the grass. One in a tree.\n\nWho did it better\nChunkachu or Treeachu?!?!"
         ];
       } else {
-        var pinNames = pins.map(function (id) {
-          var pinned = cardById(id);
-          return pinned && pinned.name ? pinned.name : ("No catalog row for " + id + ".");
-        });
-        var named = pinNames.join(". ");
         var facts = sel.map(factOf).filter(Boolean);
         doors = [
-          named + (facts.length ? ("\n" + facts.join("\n")) : ""),
-          named + ".",
-          named + "."
+          facts.length ? (facts.length === 1 ? facts[0] : facts.join("\n") + "\n\nKeep the one that still feels like yours.") : (sel.map(function (c) { return c.year; }).filter(function (y, i, a) { return a.indexOf(y) === i; }).join(" · ") + "\n\nKeep the one that still feels like yours."),
+          sel.length === 2 ? (sel[0].year + " or " + sel[1].year + ".") : sel.map(function (c) { return c.year + " · " + c.set; }).join("\n"),
+          sel.map(function (c) { return c.set; }).join(" / ")
         ];
       }
       var next = doors[door % doors.length];
@@ -4793,12 +4678,6 @@
         prompt = snapPrompt("all");
         resetPage();
         paintMons(); paintSets(); paintPrompts(); paintStrip();
-        return;
-      }
-      var moreBtn = e.target.closest("[data-more]");
-      if (moreBtn) {
-        screenAsk += SCREEN;
-        paintStrip();
         return;
       }
       var b = e.target.closest("[data-id]");
@@ -5773,8 +5652,7 @@
       })
       .then(function (d) { merge(d || [], ""); bootPaint("Visuals"); return fetchJson(assetUrl("cards/full/index.json?v=19sep-share")); })
       .then(function (d) { merge(d || [], ""); bootPaint("English"); return fetchJson(assetUrl("cards/jp/index.json?v=11sep-vis2")); })
-      .then(function (d) { merge(d || [], " jp"); return fetchJson(assetUrl("paper-rows.json")); })
-      .then(function (d) { applyRowPrices(d); return fetchJson(assetUrl("cards/prices.json?v=16sep-price")); })
+      .then(function (d) { merge(d || [], " jp"); return fetchJson(assetUrl("cards/prices.json?v=16sep-price")); })
       .then(function (d) { applyPrices(d); bootPaint("Closed beta"); finishBoot(); return syncLiveSets(); })
       .catch(function () {
         bootPaint("Closed beta");
