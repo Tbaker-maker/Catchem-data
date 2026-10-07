@@ -15,7 +15,7 @@ import {
   planFromRecords,
   usageSkeleton,
 } from "./lib/ppt-plan.mjs";
-import { nextEmptySealed, orderRefreshCalls, sanitizeDates, sanitizeEmpty, setBand, skipRecentEmpty } from "./lib/ppt-refresh-order.mjs";
+import { nextEmptySealed, nextFailedIds, orderRefreshCalls, sanitizeDates, sanitizeEmpty, sanitizeFailed, setBand, skipRecentEmpty, skipRecentFailed } from "./lib/ppt-refresh-order.mjs";
 import { updateVolumeFile } from "./compute-tcgplayer-volume.mjs";
 import { updateShapeFile } from "./compute-shape-reads.mjs";
 
@@ -95,18 +95,29 @@ export async function executePlan({ key, calls, fetchImpl, reserve, rawDir, budg
   const errors = [];
   const done = [];
   const empty = [];
+  const failedIds = [];
   let skipped = 0;
+  let budgetSkipped = 0;
+  let httpFailed = 0;
+  let callsSent = 0;
+  let callsFailed = 0;
+  let callsNotSent = 0;
   let rateLimits = 0;
   let retries = 0;
   let failedInRow = 0;
   const finished = new Set(alreadyDone || []);
-  if (!key) return { used, items, errors, raw: "not fetched", skipped, rateLimits, retries, done, empty };
+  const hold = (call) => {
+    budgetSkipped += call.items || 1;
+    callsNotSent += 1;
+    skipped += call.items || 1;
+  };
+  if (!key) return { used, items, errors, raw: "not fetched", skipped, budgetSkipped, httpFailed, callsSent, callsFailed, callsNotSent, rateLimits, retries, done, empty, failedIds };
   if (rawDir) await mkdir(rawDir, { recursive: true });
   const queue = (calls || []).filter((call) => call?.id && call.estimated > 0 && !finished.has(call.id));
   for (let i = 0; i < queue.length; i += 1) {
     const call = queue[i];
     if (used.total + call.estimated > budget) {
-      skipped += call.items || 1;
+      hold(call);
       continue;
     }
     await reserve(call.units || 1);
@@ -117,16 +128,20 @@ export async function executePlan({ key, calls, fetchImpl, reserve, rawDir, budg
       rateLimits += err.rateLimits || 0;
       retries += err.rateLimits || 1;
       errors.push(redact(err.message, [key, ...secrets]));
+      httpFailed += call.items || 1;
+      callsFailed += 1;
+      skipped += call.items || 1;
+      // A 404 or other 4xx is the id, not the minute. Remember it. A 429
+      // already slept inside fetchWithBackoff and is tried again next run.
+      if (err.status >= 400 && err.status < 500 && err.status !== 429) failedIds.push(call.id);
       if (err.daily) {
-        skipped += call.items || 1;
-        for (const rest of queue.slice(i + 1)) skipped += rest.items || 1;
+        for (const rest of queue.slice(i + 1)) hold(rest);
         break;
       }
-      skipped += call.items || 1;
       failedInRow += 1;
       if (failedInRow >= MAX_FAILS_IN_ROW) {
         errors.push(`${MAX_FAILS_IN_ROW} calls failed in a row; stopped for today`);
-        for (const rest of queue.slice(i + 1)) skipped += rest.items || 1;
+        for (const rest of queue.slice(i + 1)) hold(rest);
         break;
       }
       continue;
@@ -135,21 +150,24 @@ export async function executePlan({ key, calls, fetchImpl, reserve, rawDir, budg
     const spent = body?.metadata?.apiCallsConsumed?.total;
     if (typeof spent !== "number") {
       errors.push("response did not say how many credits it used; skipped");
+      httpFailed += call.items || 1;
+      callsFailed += 1;
       skipped += call.items || 1;
       continue;
     }
     used[call.bucket] = (used[call.bucket] || 0) + spent;
     used.total += spent;
     items[call.bucket] = (items[call.bucket] || 0) + call.items;
+    callsSent += 1;
     done.push(call.id);
     if (call.bucket === "sealed" && Array.isArray(body?.data) && body.data.length === 0) empty.push(call.id);
     if (rawDir) await writeFile(join(rawDir, `${call.id}.json`), JSON.stringify(body));
     if (used.total >= budget) {
-      for (const rest of queue.slice(i + 1)) skipped += rest.items || 1;
+      for (const rest of queue.slice(i + 1)) hold(rest);
       break;
     }
   }
-  return { used, items, errors, raw: rawDir ? "artifact" : "not fetched", skipped, rateLimits, retries, done, empty };
+  return { used, items, errors, raw: rawDir ? "artifact" : "not fetched", skipped, budgetSkipped, httpFailed, callsSent, callsFailed, callsNotSent, rateLimits, retries, done, empty, failedIds };
 }
 
 export async function loadQueue(root = ROOT) {
@@ -255,18 +273,21 @@ export async function main() {
   }
   let dates = {};
   let emptySealed = {};
+  let failedIds = {};
   if (existsSync(datesPath)) {
     try {
       const saved = JSON.parse(await readFile(datesPath, "utf8"));
       dates = sanitizeDates(saved);
       emptySealed = sanitizeEmpty(saved);
-    } catch { dates = {}; emptySealed = {}; }
+      failedIds = sanitizeFailed(saved);
+    } catch { dates = {}; emptySealed = {}; failedIds = {}; }
   }
   if (key) {
     const stats = { rateLimits: 0 };
     const volumes = await volumeBySet(ROOT);
     // Sealed ids that came back empty in the last week are not asked again yet.
-    const { calls: wanted, skipped: emptySkipped } = skipRecentEmpty(callsFor(sealed, sets, { dates, volumes }), emptySealed, today);
+    const { calls: afterEmpty, skipped: emptySkipped } = skipRecentEmpty(callsFor(sealed, sets, { dates, volumes }), emptySealed, today);
+    const { calls: wanted, skipped: failSkipped } = skipRecentFailed(afterEmpty, failedIds, today);
     const calls = orderRefreshCalls(wanted);
     const alreadyDone = resumeIds(cursor, calls.map((call) => call.id), today);
     const ran = await executePlan({
@@ -287,7 +308,12 @@ export async function main() {
     usage.run = {
       creditsUsed: ran.used.total,
       itemsDone: ran.items.sealed + ran.items.singles + ran.items.slabs,
+      itemsFailed: ran.httpFailed,
+      itemsBudgetSkipped: ran.budgetSkipped,
       itemsSkipped: ran.skipped,
+      callsSent: ran.callsSent,
+      callsFailed: ran.callsFailed,
+      callsNotSent: ran.callsNotSent,
       rateLimitCount: ran.rateLimits + stats.rateLimits,
       retries: ran.retries + stats.rateLimits,
     };
@@ -299,6 +325,7 @@ export async function main() {
     for (const id of ran.done) nextDates[id] = today;
     await mkdir(join(ROOT, "ppt-raw-private"), { recursive: true });
     const nextEmpty = nextEmptySealed(emptySealed, { done: ran.done, empty: ran.empty, today });
+    const nextFailed = nextFailedIds(failedIds, { done: ran.done, failed: ran.failedIds, today });
     usage.emptySealed = {
       skippedToday: emptySkipped.length,
       foundEmptyToday: ran.empty.length,
@@ -306,7 +333,14 @@ export async function main() {
       recheckDays: 7,
       note: "Sealed ids PPT answered with no product. Skipped until a week has passed, then asked once more.",
     };
-    await writeFile(datesPath, `${JSON.stringify({ asOf: today, dates: sanitizeDates(nextDates), emptySealed: nextEmpty }, null, 2)}\n`);
+    usage.failedIds = {
+      skippedToday: failSkipped.length,
+      foundToday: ran.failedIds.length,
+      marked: Object.keys(nextFailed).length,
+      recheckDays: 7,
+      note: "Ids PPT rejected with a 4xx. Skipped for a week, then asked once more. Rate limits are not cached. Successes stay on the cursor.",
+    };
+    await writeFile(datesPath, `${JSON.stringify({ asOf: today, dates: sanitizeDates(nextDates), emptySealed: nextEmpty, failedIds: nextFailed }, null, 2)}\n`);
     // TCGplayer sold counts (Near Mint, 7d/30d) from the set raws just written.
     // Counts only: every card to the private state (ppt-raw-private, pushed to
     // catchem-data-private), only the cards reads show to data/derived/. A

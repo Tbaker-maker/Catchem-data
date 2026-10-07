@@ -80,3 +80,35 @@ export function nextEmptySealed(prev, { done = [], empty = [], today }) {
   }
   return Object.fromEntries(Object.keys(out).sort().map((id) => [id, out[id]]));
 }
+
+// HTTP 4xx (bad id, unknown set) is remembered like an empty sealed lookup.
+// A 429 or a 5xx is not: those are the provider, and the same id can work
+// after a backoff. A later success clears the mark. Ids and dates only.
+export function sanitizeFailed(input) {
+  const src = input && typeof input === "object" && input.failedIds && typeof input.failedIds === "object" ? input.failedIds : {};
+  const out = {};
+  for (const [id, value] of Object.entries(src)) {
+    if (/^(sealed|set)-/.test(id) && typeof value === "string" && /^\d{4}-\d{2}-\d{2}/.test(value)) out[id] = value.slice(0, 10);
+  }
+  return out;
+}
+
+export function skipRecentFailed(calls, failed, today, days = EMPTY_RECHECK_DAYS) {
+  const kept = [];
+  const skipped = [];
+  for (const call of calls || []) {
+    const seen = failed?.[call?.id];
+    if (seen && daysBetween(seen, today) >= 0 && daysBetween(seen, today) < days) skipped.push(call.id);
+    else kept.push(call);
+  }
+  return { calls: kept, skipped };
+}
+
+export function nextFailedIds(prev, { done = [], failed = [], today }) {
+  const out = { ...(prev || {}) };
+  for (const id of done) delete out[id];
+  for (const id of failed) {
+    if (/^(sealed|set)-/.test(id)) out[id] = today;
+  }
+  return Object.fromEntries(Object.keys(out).sort().map((id) => [id, out[id]]));
+}

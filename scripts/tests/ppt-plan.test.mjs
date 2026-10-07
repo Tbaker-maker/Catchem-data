@@ -16,7 +16,7 @@ import {
   tierOf,
 } from "../lib/ppt-plan.mjs";
 import { callsFor, executePlan, resumeIds } from "../ppt-refresh.mjs";
-import { EMPTY_RECHECK_DAYS, nextEmptySealed, orderRefreshCalls, sanitizeEmpty, setBand, skipRecentEmpty } from "../lib/ppt-refresh-order.mjs";
+import { EMPTY_RECHECK_DAYS, nextEmptySealed, nextFailedIds, orderRefreshCalls, sanitizeEmpty, sanitizeFailed, setBand, skipRecentEmpty, skipRecentFailed } from "../lib/ppt-refresh-order.mjs";
 import { restorePrivate, stagePrivate } from "../lib/private-ppt.mjs";
 
 let fail = 0;
@@ -215,7 +215,38 @@ export async function runPptPlanTests() {
   t("singles are never skipped by the empty cache", skipRecentEmpty([{ bucket: "singles", id: "sealed-1" }], { "sealed-1": "2026-10-06" }, "2026-10-06").calls.length === 1);
   t("empty marks are ids and dates only", JSON.stringify(sanitizeEmpty({ emptySealed: { "sealed-1": "2026-10-06", "set-x": "2026-10-06", "sealed-2": 5 } })) === '{"sealed-1":"2026-10-06"}');
   const refreshSrc = await readFile(new URL("../ppt-refresh.mjs", import.meta.url), "utf8");
-  t("ppt-refresh skips recent empties and saves the marks with refresh dates", /skipRecentEmpty\(callsFor\(/.test(refreshSrc) && /emptySealed: nextEmpty/.test(refreshSrc));
+  t("ppt-refresh skips recent empties and saves the marks with refresh dates", /skipRecentEmpty\(callsFor\(/.test(refreshSrc) && /emptySealed: nextEmpty/.test(refreshSrc) && /skipRecentFailed\(/.test(refreshSrc) && /failedIds: nextFailed/.test(refreshSrc));
+
+  const missed = await executePlan({
+    key: "k",
+    calls: [
+      { bucket: "singles", id: "set-bad", estimated: 2, units: 1, items: 4, url: "bad" },
+      { bucket: "singles", id: "set-ok", estimated: 2, units: 1, items: 3, url: "ok" },
+    ],
+    fetchImpl: async (url) => {
+      if (url === "bad") { const err = new Error("http 404"); err.status = 404; throw err; }
+      return { metadata: { apiCallsConsumed: { total: 2 } }, data: [{ id: "c" }] };
+    },
+    reserve: async () => {},
+    budget: 16000,
+  });
+  t("a 404 is cached and the success is kept", missed.failedIds.join() === "set-bad" && missed.done.join() === "set-ok" && missed.httpFailed === 4 && missed.callsSent === 1 && missed.callsFailed === 1);
+  const remembered = nextFailedIds({}, { done: missed.done, failed: missed.failedIds, today: "2026-10-07" });
+  t("a later success clears a cached failure", nextFailedIds(remembered, { done: ["set-bad"], failed: [], today: "2026-10-08" })["set-bad"] === undefined);
+  const held = skipRecentFailed([
+    { id: "set-bad", estimated: 2 },
+    { id: "set-ok", estimated: 2 },
+  ], remembered, "2026-10-08");
+  t("a cached 404 is not called again inside the week", held.skipped.join() === "set-bad" && held.calls.map((c) => c.id).join() === "set-ok");
+  t("failed marks are ids and dates only", JSON.stringify(sanitizeFailed({ failedIds: { "set-bad": "2026-10-07", price: "2026-10-07", "set-x": 5 } })) === '{"set-bad":"2026-10-07"}');
+  const limited = await executePlan({
+    key: "k",
+    calls: [{ bucket: "sealed", id: "sealed-z", estimated: 1, units: 1, items: 1, url: "z" }],
+    fetchImpl: async () => { const err = new Error("rate limited"); err.status = 429; err.rateLimits = 2; throw err; },
+    reserve: async () => {},
+    budget: 16000,
+  });
+  t("a rate limit is not cached", limited.failedIds.length === 0 && limited.rateLimits === 2 && limited.done.length === 0);
 
   console.log(fail ? `${fail} failed` : "ppt plan ok");
   return fail;

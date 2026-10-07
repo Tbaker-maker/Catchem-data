@@ -3,7 +3,7 @@
 import { readFile, readdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { isDigestName, pickDigestNames, radarRows, upcomingRadar } from "../lib/research-reads.mjs";
+import { isDigestName, pickDigestNames, radarRows, upcomingRadar, canConfirm } from "../lib/research-reads.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
@@ -41,6 +41,10 @@ export async function run() {
   t("rows come soonest first", up.map((r) => r.date).join() === "2026-10-07,2026-11-06,2026-12-04");
   t("limit applies after sorting", upcomingRadar(radar, "2026-10-07", { limit: 1 })[0].name === "Today");
   t("verifiedOnly leaves single-source leads out", !upcomingRadar(radar, "2026-10-07", { verifiedOnly: true }).some((r) => r.confidence === "single-source"));
+  t("verified without an official source is not public", upcomingRadar({ upcoming: [{ name: "Rumor", date: "2026-12-01", confidence: "verified", note: "Sources: PokeBeach." }] }, "2026-10-07", { verifiedOnly: true }).length === 0);
+  t("an official pokemon.com page can confirm a row", canConfirm({ confidence: "verified", note: "Sources: pokemon.com/us/pokemon-tcg/product-gallery/example." }));
+  t("a news index cited as missing the product does not confirm", !canConfirm({ confidence: "verified", note: "pokemon-card.com's news list carries no announcement. Sources add: pokemon-card.com/info." }));
+  t("unconfirmed stays off the public radar", upcomingRadar({ upcoming: [{ name: "Aura", date: "2026-11-27", confidence: "unconfirmed", note: "Sources: pokemon.com/us/news/example." }] }, "2026-10-07", { verifiedOnly: true }).length === 0);
   t("items[] still works as a fallback", upcomingRadar({ items: [{ name: "A", date: "2027-01-01" }] }, "2026-10-07").length === 1);
   t("releases[] with releaseDate still works", upcomingRadar({ releases: [{ title: "B", releaseDate: "2027-01-01" }] }, "2026-10-07").length === 1);
   t("upcoming[] wins over items[]", radarRows({ upcoming: [{ name: "U" }], items: [{ name: "I" }] })[0].name === "U");
@@ -49,6 +53,12 @@ export async function run() {
   // ── the committed radar and the readers ──
   const committed = JSON.parse(await readFile(join(ROOT, "data", "release-radar.json"), "utf-8"));
   t("data/release-radar.json keeps its rows in upcoming[]", Array.isArray(committed.upcoming));
+  t("every confirmed row cites an official source", committed.upcoming.every((row) => {
+    const label = String(row.confidence || "").toLowerCase();
+    if (label !== "verified" && label !== "confirmed") return true;
+    return canConfirm(row);
+  }));
+  t("Aura Seeker is unconfirmed and off the public radar", committed.upcoming.some((row) => /Aura Seeker/.test(row.name) && row.confidence === "unconfirmed") && !upcomingRadar(committed, "2026-10-07", { verifiedOnly: true }).some((row) => /Aura Seeker/.test(row.name)));
   const src = async (rel) => readFile(join(ROOT, rel), "utf-8");
   for (const rel of ["scripts/generate-pulse.mjs", "scripts/generate-post-ideas.mjs"]) {
     const s = await src(rel);

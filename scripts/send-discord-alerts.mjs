@@ -84,6 +84,7 @@ if (creatorHooks.length) {
 } else console.log("creator network: disarmed — no CREATOR_WEBHOOKS_JSON");
 
 state.sentSignals = [...new Set([...(state.sentSignals || []), ...newSignals.map(r => r.id)])].slice(-500);
+state.checkedAt = new Date().toISOString();
 await writeFile(join(ROOT, "data/alerts-state.json"), JSON.stringify(state, null, 1));
 await (await import("./heartbeat.mjs")).beat("discord");
 console.log(`done · destinations posted: ${posted}`);
