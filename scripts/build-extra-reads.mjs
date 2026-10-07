@@ -11,6 +11,7 @@ import {
   outlierReads,
 } from "./lib/outlier-dive-reads.mjs";
 import { VOLUME_EMPTY_NOTE, VOLUME_NOTE, loadVolumeDoc, volumeReads } from "./lib/volume-reads.mjs";
+import { cooledSet, loadRotation, loadShapeCandidates, pickNight, rememberShown } from "./lib/night-reads.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = async (rel) => JSON.parse(await readFile(join(ROOT, rel), "utf8"));
@@ -85,6 +86,7 @@ export function publicRead(row) {
   if (row.direction) out.direction = row.direction;
   if (row.sources) out.sources = row.sources;
   if (row.sold) out.sold = row.sold;
+  if (row.receipt) out.receipt = row.receipt;
   return out;
 }
 
@@ -94,16 +96,32 @@ export async function writeExtra(root, extra, browse) {
   await writeFile(join(outDir, "browse.json"), JSON.stringify(browse) + "\n");
   const readsPath = join(root, "research/assets/public/reads.json");
   const doc = JSON.parse(await readFile(readsPath, "utf8"));
-  const drop = new Set(["lag", "group", "supply", "outlier", "dive", "volume"]);
-  const kept = (doc.reads || []).filter((row) => !drop.has(row.readKind));
+  const drop = new Set(["lag", "group", "supply", "outlier", "dive", "volume", "quiet", "mix", "conditions", "soldflat", "solddown", "setshare", "spread", "askmove", "mktmove", "still"]);
+  const rotation = await loadRotation(root);
+  const blocked = cooledSet(rotation, browse.asOf || "");
+  const kept = (doc.reads || []).filter((row) => !drop.has(row.readKind) && !blocked.has(String(row.sku || "")));
   const extras = (extra.reads || []).map(publicRead);
+  const shapeFront = [];
+  const shapeSeen = new Set();
+  for (const row of extras) {
+    if (!row || shapeSeen.has(row.readKind)) continue;
+    if (!["quiet", "mix", "conditions", "soldflat", "solddown", "setshare", "spread", "askmove", "mktmove", "still"].includes(row.readKind)) continue;
+    shapeSeen.add(row.readKind);
+    shapeFront.push(row);
+  }
   const frontExtras = extras.filter((r) => r.readKind === "outlier")
     .concat(extras.filter((r) => r.readKind === "dive").slice(0, 4))
-    .concat(extras.filter((r) => r.readKind === "volume").slice(0, 3));
+    .concat(extras.filter((r) => r.readKind === "volume").slice(0, 3))
+    .concat(shapeFront);
   // Sprinkle a few flagged, dive and volume reads into the short front. Prices stay.
   doc.reads = interleaveExtraKinds(kept, frontExtras, { every: 2 });
   doc.filterField = "readKind";
   await writeFile(readsPath, JSON.stringify(doc, null, 1) + "\n");
+  const asOf = browse.asOf || "";
+  if (asOf) {
+    const shipped = doc.reads.concat(extras.filter((row) => shapeSeen.has(row.readKind)));
+    await writeFile(join(outDir, "rotation.json"), `${JSON.stringify(rememberShown(rotation, shipped, asOf), null, 1)}\n`);
+  }
   return {
     lag: extra.lag?.reads?.length || 0,
     missingPrice: extra.lag?.missingPrice?.length || 0,
@@ -145,14 +163,22 @@ export async function volumeFeedReads(root = ROOT, { asOf = "" } = {}) {
 }
 
 export async function writeFeedExtras(root, extra, { asOf, cardIds, rankedIds, news, waves }) {
-  const { flagged, dives } = await flaggedAndDiveReads(root);
-  const volume = await volumeFeedReads(root, { asOf });
-  const fresh = new Set(["outlier", "dive", "volume"]);
-  extra.reads = [...(extra.reads || []).filter((r) => !fresh.has(r.readKind)), ...flagged, ...dives, ...volume];
+  const rotation = await loadRotation(root);
+  const blocked = cooledSet(rotation, asOf);
+  const freshKinds = await flaggedAndDiveReads(root);
+  const flagged = freshKinds.flagged.filter((row) => !blocked.has(String(row.sku || "")));
+  const dives = freshKinds.dives.filter((row) => !blocked.has(String(row.sku || row.diveId || "")));
+  const volume = (await volumeFeedReads(root, { asOf })).filter((row) => !blocked.has(String(row.sku || "")));
+  const taken = new Set(flagged.concat(dives, volume).map((row) => String(row.sku || "")));
+  const candidates = (await loadShapeCandidates(root, asOf)).filter((row) => row && !taken.has(String(row.sku || "")));
+  const shape = pickNight(candidates, rotation, asOf);
+  const fresh = new Set(["outlier", "dive", "volume", "quiet", "mix", "conditions", "soldflat", "solddown", "setshare", "spread", "askmove", "mktmove", "still"]);
+  extra.reads = [...(extra.reads || []).filter((r) => !fresh.has(r.readKind)), ...flagged, ...dives, ...volume, ...shape.reads];
   extra.flagged = { count: flagged.length, source: "data/derived/sealed-price-outliers.json" };
   extra.dives = { count: dives.length, source: "research/pulse/dive/" };
   extra.volume = volume.map((r) => r.id);
   extra.volumeNote = volume.length ? VOLUME_NOTE : VOLUME_EMPTY_NOTE;
+  extra.shape = Object.fromEntries(Object.entries(shape.byKind || {}).map(([kind, block]) => [kind, block.items.map((row) => row.id)]));
   const browse = buildBrowse({
     asOf,
     cardIds,
@@ -162,6 +188,7 @@ export async function writeFeedExtras(root, extra, { asOf, cardIds, rankedIds, n
     flagged: flagged.map(publicRead),
     dives: dives.map(publicRead),
     volume: volume.map(publicRead),
+    shape: shape.byKind,
   });
   return writeExtra(root, extra, browse);
 }
