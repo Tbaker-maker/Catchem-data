@@ -18,6 +18,7 @@ import { enterIndex } from "../lib/index-baskets.mjs";
 import { keepMarch31 } from "../compute-indexes.mjs";
 import { searchItems } from "../lib/search-rank.mjs";
 import { runPrivatePptTests } from "./private-ppt.test.mjs";
+import { catalogueCardDate } from "../lib/card-date.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const J = async (p) => JSON.parse(await readFile(join(ROOT, p), "utf-8"));
@@ -104,6 +105,10 @@ try {
   t("feed carries the full catalog", (feed.products || []).length >= 150, String(feed.products?.length));
   t("feed history is arrays of [date,price,listings]", Object.values(feed.history || {}).every((h) => Array.isArray(h) && h.every((r) => Array.isArray(r))));
 } catch (e) { t("pulse-feed readable", false, e.message); }
+
+console.log("── share-card date ──");
+t("the sealed picture date is the catalogue asOf already on file", catalogueCardDate({ asOf: "2026-10-03" }) === "2026-10-03" && catalogueCardDate({ asOf: "2026-10-03T10:07:07.858Z" }) === "2026-10-03");
+t("a missing catalogue day does not invent a card date", catalogueCardDate({}) === "" && catalogueCardDate({ asOf: "Sep 27" }) === "" && catalogueCardDate(null) === "");
 
 console.log("── share-card mint smoke ──");
 // A CARD IS ONLY REQUIRED IF ITS DATA EXISTS. This asserted all four cards
