@@ -16,7 +16,7 @@ import {
   tierOf,
 } from "../lib/ppt-plan.mjs";
 import { callsFor, executePlan, resumeIds } from "../ppt-refresh.mjs";
-import { orderRefreshCalls, setBand } from "../lib/ppt-refresh-order.mjs";
+import { EMPTY_RECHECK_DAYS, nextEmptySealed, orderRefreshCalls, sanitizeEmpty, setBand, skipRecentEmpty } from "../lib/ppt-refresh-order.mjs";
 import { restorePrivate, stagePrivate } from "../lib/private-ppt.mjs";
 
 let fail = 0;
@@ -192,6 +192,30 @@ export async function runPptPlanTests() {
   const back = await restorePrivate({ clone: dest, root: join(stampRoot, "public") });
   const restoredDates = JSON.parse(await readFile(join(stampRoot, "public/ppt-raw-private/refresh-dates.json"), "utf8"));
   t("refresh dates mount back and stay an id list", Array.isArray(back) && back.includes("refresh-dates") && restoredDates.dates["sealed-9"] === "2026-09-26" && !JSON.stringify(restoredDates).includes("price"));
+
+  // ── empty sealed lookups are cached for a week, then rechecked ──
+  const emptyRun = await executePlan({
+    key: "k1234",
+    calls: [
+      { bucket: "sealed", id: "sealed-1", estimated: 2, units: 1, items: 1, url: "https://example.test/1" },
+      { bucket: "sealed", id: "sealed-2", estimated: 2, units: 1, items: 1, url: "https://example.test/2" },
+      { bucket: "singles", id: "set-x", estimated: 2, units: 1, items: 1, url: "https://example.test/x" },
+    ],
+    fetchImpl: async (url) => ({ metadata: { apiCallsConsumed: { total: 2 } }, data: url.endsWith("/1") || url.endsWith("/x") ? [] : [{ unopenedPrice: 5 }] }),
+    reserve: async () => {},
+    budget: 16000,
+  });
+  t("executePlan reports sealed ids that came back empty (sealed only)", emptyRun.empty.join() === "sealed-1");
+  const marks = nextEmptySealed({ "sealed-2": "2026-09-30", "sealed-7": "2026-10-01" }, { done: emptyRun.done, empty: emptyRun.empty, today: "2026-10-06" });
+  t("empty answers are marked, non-empty answers clear the mark, others keep theirs", marks["sealed-1"] === "2026-10-06" && !("sealed-2" in marks) && marks["sealed-7"] === "2026-10-01");
+  const sealedCalls = callsFor([{ tcgPlayerId: "1" }, { tcgPlayerId: "7" }, { tcgPlayerId: "8" }], []);
+  const day3 = skipRecentEmpty(sealedCalls, { "sealed-1": "2026-10-06", "sealed-7": "2026-09-29" }, "2026-10-09");
+  t("an id marked empty 3 days ago is skipped", day3.skipped.includes("sealed-1") && !day3.calls.some((c) => c.id === "sealed-1"));
+  t("an id marked empty 7+ days ago is asked again", EMPTY_RECHECK_DAYS === 7 && day3.calls.some((c) => c.id === "sealed-7") && day3.calls.some((c) => c.id === "sealed-8"));
+  t("singles are never skipped by the empty cache", skipRecentEmpty([{ bucket: "singles", id: "sealed-1" }], { "sealed-1": "2026-10-06" }, "2026-10-06").calls.length === 1);
+  t("empty marks are ids and dates only", JSON.stringify(sanitizeEmpty({ emptySealed: { "sealed-1": "2026-10-06", "set-x": "2026-10-06", "sealed-2": 5 } })) === '{"sealed-1":"2026-10-06"}');
+  const refreshSrc = await readFile(new URL("../ppt-refresh.mjs", import.meta.url), "utf8");
+  t("ppt-refresh skips recent empties and saves the marks with refresh dates", /skipRecentEmpty\(callsFor\(/.test(refreshSrc) && /emptySealed: nextEmpty/.test(refreshSrc));
 
   console.log(fail ? `${fail} failed` : "ppt plan ok");
   return fail;
