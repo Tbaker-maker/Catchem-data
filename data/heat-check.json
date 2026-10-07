@@ -1,5 +1,5 @@
 {
-  "asOf": "2026-10-06",
+  "asOf": "2026-10-07",
   "method": "Each input is a z-score against that product's own trailing 90 days. Weights: listings 0.40, TCGplayer market momentum 0.30, Google Trends 0.20, new YouTube videos 0.10. A missing input is left out and the score is marked partial. 50 is the middle.",
   "eligibility": "Scored when at least one input has 30 days: 30 one-day listing changes, or 30 TCGplayer market prices with 30 momentum readings. Listing changes across a gap in our eBay history are not counted.",
   "marketHistory": {
@@ -24,9 +24,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -4,
+        "listingChange": 2,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": 0.03306233062330666,
         "tcgplayerMomentumZ": 2.815,
         "tcgplayerDays": 184,
@@ -50,9 +50,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 1,
+        "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": 0.09649995366222841,
         "tcgplayerMomentumZ": 2.686,
         "tcgplayerDays": 184,
@@ -76,9 +76,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -3,
+        "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": 0.00897705005288052,
         "tcgplayerMomentumZ": 2.665,
         "tcgplayerDays": 184,
@@ -102,9 +102,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -2,
+        "listingChange": 6,
         "listingChangeZ": null,
-        "listingDays": 8,
+        "listingDays": 9,
         "tcgplayerMomentum": 0.06645370758274005,
         "tcgplayerMomentumZ": 2.448,
         "tcgplayerDays": 183,
@@ -128,9 +128,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -6,
+        "listingChange": -2,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": 0.02568929812250742,
         "tcgplayerMomentumZ": 2.38,
         "tcgplayerDays": 184,
@@ -154,9 +154,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -4,
+        "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": 0.07501107318725442,
         "tcgplayerMomentumZ": 2.303,
         "tcgplayerDays": 184,
@@ -180,9 +180,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 0,
+        "listingChange": -5,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": 0.054110787172011454,
         "tcgplayerMomentumZ": 2.075,
         "tcgplayerDays": 184,
@@ -206,9 +206,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 6,
+        "listingChange": -3,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": 0.02718632651366426,
         "tcgplayerMomentumZ": 1.946,
         "tcgplayerDays": 184,
@@ -232,9 +232,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 8,
+        "listingChange": -7,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": 0.04091527933694805,
         "tcgplayerMomentumZ": 1.958,
         "tcgplayerDays": 184,
@@ -258,9 +258,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 3,
+        "listingChange": -2,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": 0.028359679016179085,
         "tcgplayerMomentumZ": 1.746,
         "tcgplayerDays": 184,
@@ -284,9 +284,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 3,
+        "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": 0.0003809829359746608,
         "tcgplayerMomentumZ": 1.634,
         "tcgplayerDays": 184,
@@ -310,9 +310,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 2,
+        "listingChange": -2,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": 0.04531732777029607,
         "tcgplayerMomentumZ": 1.562,
         "tcgplayerDays": 154,
@@ -336,9 +336,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -7,
+        "listingChange": 5,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": 0.038026362415839676,
         "tcgplayerMomentumZ": 1.459,
         "tcgplayerDays": 184,
@@ -362,9 +362,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -2,
+        "listingChange": -6,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": 0.01482896410081791,
         "tcgplayerMomentumZ": 1.377,
         "tcgplayerDays": 184,
@@ -388,9 +388,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -2,
+        "listingChange": 1,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": 0.005960436807211478,
         "tcgplayerMomentumZ": 1.333,
         "tcgplayerDays": 184,
@@ -414,9 +414,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 0,
+        "listingChange": -1,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": 0.0029853505561585614,
         "tcgplayerMomentumZ": 1.31,
         "tcgplayerDays": 184,
@@ -440,9 +440,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 4,
+        "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": 0.01470909787096919,
         "tcgplayerMomentumZ": 1.307,
         "tcgplayerDays": 184,
@@ -466,9 +466,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 5,
+        "listingChange": -3,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": 0.03365611780336075,
         "tcgplayerMomentumZ": 1.225,
         "tcgplayerDays": 184,
@@ -492,9 +492,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -2,
+        "listingChange": 3,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": 0.008372246107008152,
         "tcgplayerMomentumZ": 1.205,
         "tcgplayerDays": 184,
@@ -518,9 +518,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 3,
+        "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": 0.002144257451194953,
         "tcgplayerMomentumZ": 1.08,
         "tcgplayerDays": 184,
@@ -546,7 +546,7 @@
       "inputs": {
         "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 9,
+        "listingDays": 10,
         "tcgplayerMomentum": 0.04815618442490255,
         "tcgplayerMomentumZ": 1.102,
         "tcgplayerDays": 184,
@@ -570,9 +570,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 4,
+        "listingChange": -1,
         "listingChangeZ": null,
-        "listingDays": 8,
+        "listingDays": 9,
         "tcgplayerMomentum": 0.060052369579605136,
         "tcgplayerMomentumZ": 1.105,
         "tcgplayerDays": 184,
@@ -596,9 +596,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 2,
+        "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": 0.0008052128126574409,
         "tcgplayerMomentumZ": 0.93,
         "tcgplayerDays": 184,
@@ -622,9 +622,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -1,
+        "listingChange": 4,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.0045949050819755755,
         "tcgplayerMomentumZ": 0.928,
         "tcgplayerDays": 184,
@@ -648,9 +648,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 2,
+        "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": 0.030032630585645537,
         "tcgplayerMomentumZ": 0.867,
         "tcgplayerDays": 184,
@@ -674,9 +674,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 2,
+        "listingChange": 8,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": 0.011011390334718207,
         "tcgplayerMomentumZ": 0.778,
         "tcgplayerDays": 184,
@@ -700,9 +700,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 3,
+        "listingChange": 1,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": 0.0024674786316354336,
         "tcgplayerMomentumZ": 0.791,
         "tcgplayerDays": 184,
@@ -726,9 +726,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -4,
+        "listingChange": 2,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": 0.024323196563704075,
         "tcgplayerMomentumZ": 0.752,
         "tcgplayerDays": 154,
@@ -752,9 +752,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 1,
+        "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": 0.009269325903963344,
         "tcgplayerMomentumZ": 0.646,
         "tcgplayerDays": 184,
@@ -778,9 +778,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 1,
+        "listingChange": -5,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.005107126742786572,
         "tcgplayerMomentumZ": 0.601,
         "tcgplayerDays": 153,
@@ -806,7 +806,7 @@
       "inputs": {
         "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": 0.009006739308433653,
         "tcgplayerMomentumZ": 0.598,
         "tcgplayerDays": 183,
@@ -830,9 +830,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 6,
+        "listingChange": 5,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": 0.003050616755126523,
         "tcgplayerMomentumZ": 0.563,
         "tcgplayerDays": 184,
@@ -856,9 +856,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 6,
+        "listingChange": 1,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": 0.008908990533881056,
         "tcgplayerMomentumZ": 0.581,
         "tcgplayerDays": 184,
@@ -884,7 +884,7 @@
       "inputs": {
         "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.003307649580788663,
         "tcgplayerMomentumZ": 0.529,
         "tcgplayerDays": 183,
@@ -908,9 +908,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 9,
+        "listingChange": 4,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.0016501109235627087,
         "tcgplayerMomentumZ": 0.533,
         "tcgplayerDays": 184,
@@ -934,9 +934,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -1,
+        "listingChange": 4,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": 0.00035863546439940386,
         "tcgplayerMomentumZ": 0.479,
         "tcgplayerDays": 184,
@@ -960,9 +960,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 3,
+        "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 8,
+        "listingDays": 9,
         "tcgplayerMomentum": 0.0029755310056660544,
         "tcgplayerMomentumZ": 0.479,
         "tcgplayerDays": 184,
@@ -986,9 +986,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 3,
+        "listingChange": -1,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": 0.0071816778499265155,
         "tcgplayerMomentumZ": 0.5,
         "tcgplayerDays": 184,
@@ -1012,9 +1012,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 2,
+        "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": 0.029366853982793595,
         "tcgplayerMomentumZ": 0.506,
         "tcgplayerDays": 184,
@@ -1038,9 +1038,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -2,
+        "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": 0.01845896996154206,
         "tcgplayerMomentumZ": 0.428,
         "tcgplayerDays": 173,
@@ -1064,9 +1064,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 9,
+        "listingChange": -6,
         "listingChangeZ": null,
-        "listingDays": 8,
+        "listingDays": 9,
         "tcgplayerMomentum": -0.0028838872867288368,
         "tcgplayerMomentumZ": 0.407,
         "tcgplayerDays": 117,
@@ -1090,9 +1090,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -1,
+        "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": 0.004738283778996433,
         "tcgplayerMomentumZ": 0.343,
         "tcgplayerDays": 184,
@@ -1118,7 +1118,7 @@
       "inputs": {
         "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": 0.0033618322653827803,
         "tcgplayerMomentumZ": 0.374,
         "tcgplayerDays": 184,
@@ -1142,9 +1142,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -9,
+        "listingChange": -3,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.026829575114661552,
         "tcgplayerMomentumZ": 0.368,
         "tcgplayerDays": 184,
@@ -1168,9 +1168,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -1,
+        "listingChange": 2,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": -0.006403668274171936,
         "tcgplayerMomentumZ": 0.335,
         "tcgplayerDays": 184,
@@ -1194,9 +1194,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -1,
+        "listingChange": 1,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": 0.015243580756952646,
         "tcgplayerMomentumZ": 0.299,
         "tcgplayerDays": 184,
@@ -1222,7 +1222,7 @@
       "inputs": {
         "listingChange": -2,
         "listingChangeZ": null,
-        "listingDays": 8,
+        "listingDays": 9,
         "tcgplayerMomentum": 0.01022632890365438,
         "tcgplayerMomentumZ": 0.263,
         "tcgplayerDays": 184,
@@ -1246,9 +1246,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 15,
+        "listingChange": -11,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": 0.029609005480518036,
         "tcgplayerMomentumZ": 0.281,
         "tcgplayerDays": 184,
@@ -1272,9 +1272,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 0,
+        "listingChange": -1,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": 0.016868242160484215,
         "tcgplayerMomentumZ": 0.243,
         "tcgplayerDays": 184,
@@ -1298,9 +1298,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -2,
+        "listingChange": -8,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": -0.005853815003408203,
         "tcgplayerMomentumZ": 0.228,
         "tcgplayerDays": 184,
@@ -1324,9 +1324,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 0,
+        "listingChange": 2,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.0035637938355356225,
         "tcgplayerMomentumZ": 0.221,
         "tcgplayerDays": 184,
@@ -1350,9 +1350,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 10,
+        "listingChange": -2,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": 0.0012770286357437488,
         "tcgplayerMomentumZ": 0.123,
         "tcgplayerDays": 184,
@@ -1376,9 +1376,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 10,
+        "listingChange": -5,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.004963839241320933,
         "tcgplayerMomentumZ": 0.094,
         "tcgplayerDays": 184,
@@ -1402,9 +1402,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 0,
+        "listingChange": 1,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": -0.006280834590681961,
         "tcgplayerMomentumZ": 0.081,
         "tcgplayerDays": 184,
@@ -1428,9 +1428,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -7,
+        "listingChange": 8,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.014494610527215124,
         "tcgplayerMomentumZ": 0.087,
         "tcgplayerDays": 184,
@@ -1454,9 +1454,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 2,
+        "listingChange": -2,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": -0.0029794406234154858,
         "tcgplayerMomentumZ": 0.025,
         "tcgplayerDays": 184,
@@ -1480,9 +1480,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 0,
+        "listingChange": -1,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.007550048383923147,
         "tcgplayerMomentumZ": 0.053,
         "tcgplayerDays": 184,
@@ -1506,9 +1506,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -4,
+        "listingChange": 1,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": 0.005012384277206738,
         "tcgplayerMomentumZ": -0.024,
         "tcgplayerDays": 184,
@@ -1532,9 +1532,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -1,
+        "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.015073422153068172,
         "tcgplayerMomentumZ": -0.039,
         "tcgplayerDays": 184,
@@ -1558,9 +1558,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -8,
+        "listingChange": 1,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.023438491408847018,
         "tcgplayerMomentumZ": -0.085,
         "tcgplayerDays": 184,
@@ -1584,9 +1584,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -10,
+        "listingChange": 4,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": -0.03277378097521988,
         "tcgplayerMomentumZ": -0.075,
         "tcgplayerDays": 184,
@@ -1610,9 +1610,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 30,
+        "listingChange": 4,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": -0.008266456773749598,
         "tcgplayerMomentumZ": -0.124,
         "tcgplayerDays": 184,
@@ -1636,9 +1636,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 10,
+        "listingChange": -2,
         "listingChangeZ": null,
-        "listingDays": 8,
+        "listingDays": 9,
         "tcgplayerMomentum": 0.009275271183776468,
         "tcgplayerMomentumZ": -0.201,
         "tcgplayerDays": 184,
@@ -1662,9 +1662,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 0,
+        "listingChange": 1,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.012580530867462691,
         "tcgplayerMomentumZ": -0.285,
         "tcgplayerDays": 184,
@@ -1688,9 +1688,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -5,
+        "listingChange": 4,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.027304968117797812,
         "tcgplayerMomentumZ": -0.32,
         "tcgplayerDays": 184,
@@ -1714,9 +1714,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 1,
+        "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": 0.00041322314049518916,
         "tcgplayerMomentumZ": -0.336,
         "tcgplayerDays": 184,
@@ -1766,9 +1766,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -2,
+        "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": 0.019545823318907862,
         "tcgplayerMomentumZ": -0.344,
         "tcgplayerDays": 184,
@@ -1792,9 +1792,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -2,
+        "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": 0.001231199229810409,
         "tcgplayerMomentumZ": -0.345,
         "tcgplayerDays": 184,
@@ -1818,9 +1818,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 3,
+        "listingChange": -2,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.010437196546963512,
         "tcgplayerMomentumZ": -0.382,
         "tcgplayerDays": 184,
@@ -1844,9 +1844,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -6,
+        "listingChange": -5,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.04299256109957905,
         "tcgplayerMomentumZ": -0.36,
         "tcgplayerDays": 184,
@@ -1872,7 +1872,7 @@
       "inputs": {
         "listingChange": 4,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.028515998503388373,
         "tcgplayerMomentumZ": -0.407,
         "tcgplayerDays": 184,
@@ -1896,9 +1896,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 4,
+        "listingChange": -1,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.015706879445508193,
         "tcgplayerMomentumZ": -0.418,
         "tcgplayerDays": 184,
@@ -1922,9 +1922,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 0,
+        "listingChange": -3,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.01586772422631355,
         "tcgplayerMomentumZ": -0.416,
         "tcgplayerDays": 184,
@@ -1950,7 +1950,7 @@
       "inputs": {
         "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": -0.004931424740975299,
         "tcgplayerMomentumZ": -0.438,
         "tcgplayerDays": 171,
@@ -1974,9 +1974,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -3,
+        "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.0013082733565554783,
         "tcgplayerMomentumZ": -0.494,
         "tcgplayerDays": 184,
@@ -2000,9 +2000,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -5,
+        "listingChange": 6,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.009330457785780677,
         "tcgplayerMomentumZ": -0.487,
         "tcgplayerDays": 184,
@@ -2028,7 +2028,7 @@
       "inputs": {
         "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.0032845615241516857,
         "tcgplayerMomentumZ": -0.523,
         "tcgplayerDays": 184,
@@ -2052,9 +2052,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -1,
+        "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.016571272586516805,
         "tcgplayerMomentumZ": -0.535,
         "tcgplayerDays": 184,
@@ -2078,9 +2078,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 1,
+        "listingChange": -3,
         "listingChangeZ": null,
-        "listingDays": 7,
+        "listingDays": 8,
         "tcgplayerMomentum": 0.0041453972386857885,
         "tcgplayerMomentumZ": -0.589,
         "tcgplayerDays": 184,
@@ -2104,9 +2104,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -7,
+        "listingChange": 6,
         "listingChangeZ": null,
-        "listingDays": 8,
+        "listingDays": 9,
         "tcgplayerMomentum": 0.0010340439070952723,
         "tcgplayerMomentumZ": -0.602,
         "tcgplayerDays": 184,
@@ -2132,7 +2132,7 @@
       "inputs": {
         "listingChange": 2,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": -0.03494254196918778,
         "tcgplayerMomentumZ": -0.667,
         "tcgplayerDays": 184,
@@ -2158,7 +2158,7 @@
       "inputs": {
         "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": 0.004885167930477774,
         "tcgplayerMomentumZ": -0.673,
         "tcgplayerDays": 184,
@@ -2182,9 +2182,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -2,
+        "listingChange": 2,
         "listingChangeZ": null,
-        "listingDays": 8,
+        "listingDays": 9,
         "tcgplayerMomentum": -0.0036414207030317503,
         "tcgplayerMomentumZ": -0.646,
         "tcgplayerDays": 184,
@@ -2208,9 +2208,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -8,
+        "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 8,
+        "listingDays": 9,
         "tcgplayerMomentum": 0.005947779443085999,
         "tcgplayerMomentumZ": -0.702,
         "tcgplayerDays": 184,
@@ -2234,9 +2234,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -2,
+        "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.005914221396147168,
         "tcgplayerMomentumZ": -0.82,
         "tcgplayerDays": 184,
@@ -2260,9 +2260,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 0,
+        "listingChange": -1,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": -0.003153035558288164,
         "tcgplayerMomentumZ": -0.877,
         "tcgplayerDays": 184,
@@ -2286,9 +2286,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 0,
+        "listingChange": 1,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": 0.005362156237682436,
         "tcgplayerMomentumZ": -0.903,
         "tcgplayerDays": 184,
@@ -2312,9 +2312,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 2,
+        "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 8,
+        "listingDays": 9,
         "tcgplayerMomentum": -0.00572235755365591,
         "tcgplayerMomentumZ": -0.88,
         "tcgplayerDays": 184,
@@ -2364,9 +2364,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 1,
+        "listingChange": 2,
         "listingChangeZ": null,
-        "listingDays": 8,
+        "listingDays": 9,
         "tcgplayerMomentum": 0.003546576490147446,
         "tcgplayerMomentumZ": -0.894,
         "tcgplayerDays": 180,
@@ -2390,9 +2390,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -1,
+        "listingChange": 3,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": -0.004375719990346916,
         "tcgplayerMomentumZ": -0.96,
         "tcgplayerDays": 184,
@@ -2416,9 +2416,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -2,
+        "listingChange": -3,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.0018743784922062856,
         "tcgplayerMomentumZ": -0.953,
         "tcgplayerDays": 184,
@@ -2442,9 +2442,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 1,
+        "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": -0.011894145114582533,
         "tcgplayerMomentumZ": -0.987,
         "tcgplayerDays": 184,
@@ -2468,9 +2468,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 8,
+        "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.014996292427016389,
         "tcgplayerMomentumZ": -1,
         "tcgplayerDays": 184,
@@ -2494,9 +2494,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 0,
+        "listingChange": 1,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.01875041038179115,
         "tcgplayerMomentumZ": -0.977,
         "tcgplayerDays": 184,
@@ -2520,9 +2520,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 0,
+        "listingChange": -5,
         "listingChangeZ": null,
-        "listingDays": 8,
+        "listingDays": 9,
         "tcgplayerMomentum": -0.012281041558221517,
         "tcgplayerMomentumZ": -0.971,
         "tcgplayerDays": 184,
@@ -2546,9 +2546,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 1,
+        "listingChange": -4,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": -0.013305088779930196,
         "tcgplayerMomentumZ": -0.984,
         "tcgplayerDays": 184,
@@ -2572,9 +2572,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -5,
+        "listingChange": 8,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.053057147073561906,
         "tcgplayerMomentumZ": -0.977,
         "tcgplayerDays": 184,
@@ -2598,9 +2598,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -4,
+        "listingChange": 1,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": -0.012569494802997294,
         "tcgplayerMomentumZ": -1.041,
         "tcgplayerDays": 184,
@@ -2624,9 +2624,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -4,
+        "listingChange": -3,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.044958219696715984,
         "tcgplayerMomentumZ": -1.224,
         "tcgplayerDays": 184,
@@ -2650,9 +2650,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -1,
+        "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": 0.001559495044133774,
         "tcgplayerMomentumZ": -1.251,
         "tcgplayerDays": 184,
@@ -2676,9 +2676,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 3,
+        "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.09109105477318002,
         "tcgplayerMomentumZ": -1.272,
         "tcgplayerDays": 184,
@@ -2702,9 +2702,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -1,
+        "listingChange": 4,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": 0.002879942401151858,
         "tcgplayerMomentumZ": -1.308,
         "tcgplayerDays": 184,
@@ -2728,9 +2728,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 2,
+        "listingChange": 1,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": -0.0329493376850879,
         "tcgplayerMomentumZ": -1.312,
         "tcgplayerDays": 184,
@@ -2754,9 +2754,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 0,
+        "listingChange": 1,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.04339255229423755,
         "tcgplayerMomentumZ": -1.473,
         "tcgplayerDays": 184,
@@ -2780,9 +2780,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 0,
+        "listingChange": 7,
         "listingChangeZ": null,
-        "listingDays": 8,
+        "listingDays": 9,
         "tcgplayerMomentum": -0.0034385942774216582,
         "tcgplayerMomentumZ": -1.443,
         "tcgplayerDays": 184,
@@ -2808,7 +2808,7 @@
       "inputs": {
         "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": -0.0007256429319959512,
         "tcgplayerMomentumZ": -1.437,
         "tcgplayerDays": 184,
@@ -2834,7 +2834,7 @@
       "inputs": {
         "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": -6.661338147750939e-16,
         "tcgplayerMomentumZ": -1.513,
         "tcgplayerDays": 123,
@@ -2858,9 +2858,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -2,
+        "listingChange": 5,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": -0.024487556730337978,
         "tcgplayerMomentumZ": -1.51,
         "tcgplayerDays": 184,
@@ -2884,9 +2884,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 1,
+        "listingChange": 2,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": -0.014522847280899365,
         "tcgplayerMomentumZ": -1.573,
         "tcgplayerDays": 184,
@@ -2910,9 +2910,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 2,
+        "listingChange": 5,
         "listingChangeZ": null,
-        "listingDays": 8,
+        "listingDays": 9,
         "tcgplayerMomentum": -0.01791193057300622,
         "tcgplayerMomentumZ": -1.683,
         "tcgplayerDays": 184,
@@ -2936,9 +2936,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -4,
+        "listingChange": 4,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.026165275892421236,
         "tcgplayerMomentumZ": -1.856,
         "tcgplayerDays": 184,
@@ -2964,7 +2964,7 @@
       "inputs": {
         "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 8,
+        "listingDays": 9,
         "tcgplayerMomentum": -0.07890004250727523,
         "tcgplayerMomentumZ": -1.92,
         "tcgplayerDays": 184,
@@ -2988,9 +2988,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 1,
+        "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": -0.012910713269745688,
         "tcgplayerMomentumZ": -2.007,
         "tcgplayerDays": 184,
@@ -3016,7 +3016,7 @@
       "inputs": {
         "listingChange": 2,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.08678367302898027,
         "tcgplayerMomentumZ": -2.117,
         "tcgplayerDays": 184,
@@ -3040,9 +3040,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -6,
+        "listingChange": 2,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": -0.04129883074242802,
         "tcgplayerMomentumZ": -2.073,
         "tcgplayerDays": 184,
@@ -3066,9 +3066,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 2,
+        "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 11,
+        "listingDays": 12,
         "tcgplayerMomentum": -0.0391550138138973,
         "tcgplayerMomentumZ": -2.238,
         "tcgplayerDays": 184,
@@ -3092,9 +3092,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": -1,
+        "listingChange": 1,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": -0.010667526891289136,
         "tcgplayerMomentumZ": -2.223,
         "tcgplayerDays": 184,
@@ -3118,9 +3118,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 5,
+        "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": -0.012800279874010223,
         "tcgplayerMomentumZ": -2.278,
         "tcgplayerDays": 184,
@@ -3144,9 +3144,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 0,
+        "listingChange": -5,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": -0.029723627048368395,
         "tcgplayerMomentumZ": -2.486,
         "tcgplayerDays": 184,
@@ -3172,7 +3172,7 @@
       "inputs": {
         "listingChange": 1,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": -0.023100956786754834,
         "tcgplayerMomentumZ": -2.589,
         "tcgplayerDays": 184,
@@ -3196,9 +3196,9 @@
         "tcgplayerMomentum"
       ],
       "inputs": {
-        "listingChange": 5,
+        "listingChange": 0,
         "listingChangeZ": null,
-        "listingDays": 10,
+        "listingDays": 11,
         "tcgplayerMomentum": -0.025564758221947592,
         "tcgplayerMomentumZ": -2.536,
         "tcgplayerDays": 184,
