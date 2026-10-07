@@ -1141,19 +1141,10 @@
       return "https://images.pokemontcg.io/" + m[1] + "/" + m[2] + (hi ? "_hires.png" : ".png");
     }
     function scanUrls(c) {
-      var s = srcOf(c) || "";
-      var out = [];
-      function add(u) { if (u && out.indexOf(u) === -1) out.push(u); }
-      if (!s) return out;
-      if (/^https?:\/\//i.test(s)) { add(s); return out; }
-      if (s.indexOf("/img/") === 0 || s.indexOf("/thumb/") === 0) {
-        add(tcgImg(s, true));
-        add(tcgImg(s, false));
-      }
-      add(hiresOf(c));
-      if (s.charAt(0) === "/") add(s);
-      add(assetUrl(s));
-      return out;
+      if (!pictureInFile(c)) return [];
+      var s = String(c.src || "").split("?")[0];
+      if (s.indexOf("/cards/") === 0) return [assetUrl(s)];
+      return [];
     }
     function srcOf(c) {
       if (!c) return "";
@@ -1190,11 +1181,69 @@
       if (s.indexOf("/cards/") === 0 || s.indexOf("/jp-img/") === 0 || s.indexOf("/pocket-img/") === 0) return assetUrl(s);
       return s;
     }
+    function pictureInFile(c) {
+      var s = String((c && c.src) || "").split("?")[0];
+      return s === "/cards/c30/ir-articuno.png"
+        || s === "/cards/c30/ir-moltres.png"
+        || s === "/cards/c30/ir-zapdos.png"
+        || s === "/cards/seed/mep-10-pc.png"
+        || s === "/cards/seed/mep-10.png"
+        || s === "/cards/seed/mep-101-pc.png"
+        || s === "/cards/seed/mep-101.png"
+        || s === "/cards/seed/mep-22-pc.png"
+        || s === "/cards/seed/mep-22.png"
+        || s === "/cards/seed/mep-31-pc.png"
+        || s === "/cards/seed/mep-31.png"
+        || s === "/cards/seed/mep-70-pc.png"
+        || s === "/cards/seed/mep-70.png"
+        || s === "/cards/seed/mep-80-pc.png"
+        || s === "/cards/seed/mep-80.png"
+        || s === "/cards/seed/mep-88-pc.png"
+        || s === "/cards/seed/mep-88.png"
+        || s === "/cards/seed/mep-9-pc.png"
+        || s === "/cards/seed/mep-9.png"
+        || s === "/cards/seed/svp-123-pc.png"
+        || s === "/cards/seed/svp-123.png"
+        || s === "/cards/seed/svp-129-pc.png"
+        || s === "/cards/seed/svp-129.png"
+        || s === "/cards/seed/svp-13-pc.png"
+        || s === "/cards/seed/svp-13.png"
+        || s === "/cards/seed/svp-14-pc.png"
+        || s === "/cards/seed/svp-14.png"
+        || s === "/cards/seed/svp-141-pc.png"
+        || s === "/cards/seed/svp-141.png"
+        || s === "/cards/seed/svp-159-pc.png"
+        || s === "/cards/seed/svp-159.png"
+        || s === "/cards/seed/svp-173-pc.png"
+        || s === "/cards/seed/svp-173.png"
+        || s === "/cards/seed/svp-189-pc.png"
+        || s === "/cards/seed/svp-189.png"
+        || s === "/cards/seed/svp-203-pc.png"
+        || s === "/cards/seed/svp-203.png"
+        || s === "/cards/seed/svp-209-pc.png"
+        || s === "/cards/seed/svp-209.png"
+        || s === "/cards/seed/svp-210-pc.png"
+        || s === "/cards/seed/svp-210.png"
+        || s === "/cards/seed/svp-27-pc.png"
+        || s === "/cards/seed/svp-27.png"
+        || s === "/cards/seed/svp-44-pc.png"
+        || s === "/cards/seed/svp-44.png"
+        || s === "/cards/seed/svp-51-pc.png"
+        || s === "/cards/seed/svp-51.png"
+        || s === "/cards/seed/svp-65-pc.png"
+        || s === "/cards/seed/svp-65.png"
+        || s === "/cards/seed/svp-66-pc.png"
+        || s === "/cards/seed/svp-66.png"
+        || s === "/cards/seed/svp-75-pc.png"
+        || s === "/cards/seed/svp-75.png"
+        || s === "/cards/seed/svp-97-pc.png"
+        || s === "/cards/seed/svp-97.png"
+        || s === "/cards/seed/svp-98-pc.png"
+        || s === "/cards/seed/svp-98.png";
+    }
     function thumbOf(c) {
-      var s = srcOf(c);
-      if (s.indexOf("/img/") === 0 || s.indexOf("/thumb/") === 0) return tcgImg(s, true);
-      if (s.indexOf("/cards/") === 0) return assetUrl(s);
-      return s;
+      if (!pictureInFile(c)) return "";
+      return assetUrl(String(c.src).split("?")[0]);
     }
     function isPrintedBack(im) {
       try {
@@ -3269,24 +3318,24 @@
         var note = unstuckNote;
         unstuckNote = "";
         if (!rows.length) return note;
-        return note + " · " + shown.length + " on this page · " + rows.length;
+        return note + " · " + shown.length + " on this page · " + rows.length + " · " + pictureCounts();
       }
-      if (!rows.length) return emptyReason();
+      if (!rows.length) return emptyReason() + " · " + pictureCounts();
       if (prompt === "then" && rows.length >= 2 && mon) {
-        return rows[0].year + " → " + rows[rows.length - 1].year + " · " + mon;
+        return rows[0].year + " → " + rows[rows.length - 1].year + " · " + mon + " · " + pictureCounts();
       }
       if (prompt === "vs") {
-        return shown.length + " on this page · " + rows.length + " Pokémon · pin two to compare · × to drop";
+        return shown.length + " on this page · " + rows.length + " Pokémon · pin two to compare · × to drop · " + pictureCounts();
       }
       if (prompt === "artist") {
-        return shown.length + " on this page · " + rows.length + " · " + (mon || q || "artist") + " · grouped by artist";
+        return shown.length + " on this page · " + rows.length + " · " + (mon || q || "artist") + " · grouped by artist · " + pictureCounts();
       }
       if (prompt === "hand") {
         var painter = rows[0] && rows[0].artist;
-        return shown.length + " on this page · " + rows.length + " · " + (painter || "this hand") + " · other work";
+        return shown.length + " on this page · " + rows.length + " · " + (painter || "this hand") + " · other work · " + pictureCounts();
       }
       if (prompt === "line") {
-        return shown.length + " on this page · " + rows.length + " · evo line · " + (mon || "");
+        return shown.length + " on this page · " + rows.length + " · evo line · " + (mon || "") + " · " + pictureCounts();
       }
       var bits = shown.length === rows.length ? [String(rows.length)] : [shown.length + " on this page", String(rows.length)];
       if (medium === "paper") bits.push(paperLang === "jp" ? "Japanese" : "English");
@@ -3300,7 +3349,12 @@
       if (q || mon) bits.push(q || mon);
       if (LANE_LABEL[prompt]) bits.push(LANE_LABEL[prompt]);
       else bits.push(prompt);
-      return bits.join(" · ");
+      return bits.join(" · ") + " · " + pictureCounts();
+    }
+    function pictureCounts() {
+      var withPic = 0, i;
+      for (i = 0; i < CARDS.length; i++) if (pictureInFile(CARDS[i])) withPic += 1;
+      return withPic + " with a picture · " + (CARDS.length - withPic) + " without";
     }
     function applyRowPrices(rows) {
       var by = {};
@@ -3317,9 +3371,6 @@
     function storedPrice(c) {
       var n = Number(c && c.usd);
       return Number.isFinite(n) && n > 0 ? n : 0;
-    }
-    function pictureInFile(c) {
-      return !!(c && String(c.src || "").trim());
     }
     var SCREEN = 40;
     var screenAsk = 40;
@@ -3378,11 +3429,13 @@
         var print = (c.kind === "poster" || c.kind === "manga" || isGameBox(c)) ? " print" : "";
         var still = (c.kind === "cutout" || (c.kind === "game" && !print)) ? " still" : "";
         var pixel = /\/visual\/(rb|crystal|emerald|gold|silver|frlg|rs)\//.test(c.src || "") || (c.tags || "").indexOf("sprite") !== -1 ? " pixel" : "";
-        var missingPic = !c.src;
+        var shot = pictureInFile(c) ? thumbOf(c) : "";
+        var face = shot ? "<img class=\"" + (print + still + pixel).trim() + "\" alt=\"" + esc(c.name || "") + "\" loading=\"lazy\" decoding=\"async\" src=\"" + shot + "\" onload=\"killPrintedBack(this)\" />" : "";
+        var line = shot ? factOf(c) : "The picture is missing.";
         return "<button type=\"button\" class=\"card" + on + "\" data-id=\"" + c.id + "\">" + flag +
-          (missingPic ? "" : "<img class=\"" + (print + still + pixel).trim() + "\" alt=\"" + esc(c.name || "") + "\" loading=\"lazy\" decoding=\"async\" src=\"" + thumbOf(c) + "\" onload=\"killPrintedBack(this)\" onerror=\"this.style.visibility='hidden'\" />") +
+          face +
           "<div class=\"meta\"><strong>" + esc(c.name) + "</strong>" +
-          "<div class=\"fact\">" + esc(missingPic ? "The picture is missing." : factOf(c)) + "</div></div></button>";
+          "<div class=\"fact\">" + esc(line) + "</div></div></button>";
       }).join("");
       if (more) $("strip").insertAdjacentHTML("beforeend", "<button type=\"button\" class=\"ghost\" data-more=\"1\">More</button>");
       }
@@ -3423,7 +3476,7 @@
           var on = pins.indexOf(c.id) !== -1 ? " pin" : "";
           return "<button type=\"button\" class=\"card" + on + "\" data-id=\"" + c.id + "\">" +
             "<span class=\"flag\">REAL DUMP</span>" +
-            "<img alt=\"\" loading=\"lazy\" decoding=\"async\" src=\"" + thumbOf(c) + "\" onload=\"killPrintedBack(this)\" onerror=\"this.style.visibility='hidden'\" />" +
+            (thumbOf(c) ? "<img alt=\"\" loading=\"lazy\" decoding=\"async\" src=\"" + thumbOf(c) + "\" onload=\"killPrintedBack(this)\" />" : "<span class=\"note\">The picture is missing.</span>") +
             "<div class=\"meta\"><strong>" + c.name + "</strong>" + c.set + " · " + c.lock + " · known real from the English dump<br>Art: " + (c.artist || "UNKNOWN") + "</div></button>";
         }).join("");
       paintTray();
@@ -3451,7 +3504,7 @@
         var posLab = pairFocus === i ? ("Swap " + (c.species || speciesOf(c.name) || "")) : pos;
         html += "<div class=\"slot" + on + "\" data-focus=\"" + i + "\">" +
           "<button type=\"button\" class=\"drop\" data-drop=\"" + id + "\" aria-label=\"Remove " + (c.name || "") + "\">×</button>" +
-          "<img src=\"" + thumbOf(c) + "\" alt=\"" + (c.name || "") + "\" onload=\"killPrintedBack(this)\" onerror=\"this.style.visibility='hidden'\" />" +
+          (thumbOf(c) ? "<img src=\"" + thumbOf(c) + "\" alt=\"" + (c.name || "") + "\" onload=\"killPrintedBack(this)\" />" : "<span class=\"note\">The picture is missing.</span>") +
           "<span class=\"pos\">" + posLab + "</span></div>";
         if (i < n - 1) {
           html += "<button type=\"button\" class=\"swap\" data-move=\"" + i + "\" data-dir=\"1\" aria-label=\"Swap with next\">‹ ›</button>";
@@ -3935,9 +3988,9 @@
     function paintPostVisual() {
       var sel = selected();
       $("post-visual").innerHTML = sel.map(function (c) {
-        var s = srcOf(c);
-        if (!s) return "<span class=\"note\">" + esc(c.name || "Card") + ". The picture is missing.</span>";
-        return "<img src=\"" + s + "\" alt=\"" + c.name + "\" style=\"height:84px;border-radius:8px;border:1px solid var(--line)\" />";
+        var shot = pictureInFile(c) ? thumbOf(c) : "";
+        if (!shot) return "<span class=\"note\">" + esc(c.name || "Card") + ". The picture is missing.</span>";
+        return "<img src=\"" + shot + "\" alt=\"" + c.name + "\" style=\"height:84px;border-radius:8px;border:1px solid var(--line)\" />";
       }).join("") || "<span class=\"note\">Pin on Visuals first. Post will not invent a four.</span>";
       var prev = $("preview").src;
       var show = prev && $("preview").style.display === "block";
