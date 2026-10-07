@@ -107,7 +107,7 @@ export async function run() {
     const otherReads = reads.reads.filter((row) => !priceReads.includes(row));
     const bad = priceReads.filter((row) => !money(row.price) || !row.headline || !row.why || BANNED.test(row.headline) || BANNED.test(row.why || "") || row.price === 0 || !/\b(over|in) (7|30|90) days\b/.test(row.headline) || !/\([^)]+\)/.test(row.headline) || oldWhy.test(row.why) || oldWhy.test(row.headline) || /\b(heating up|cooling off|last print|Top card in|checked again)\b/i.test(row.headline));
     t("every price lead read has a price, a window, and a clean headline", bad.length === 0 && priceReads.length >= 1 && priceReads.length <= 24);
-    t("a non-price read is pull, pokemon, lag, group, or supply", otherReads.every((row) => row.readKind === "pull" || row.readKind === "pokemon" || row.readKind === "lag" || row.readKind === "group" || row.readKind === "supply"));
+    t("a non-price read is pull, pokemon, lag, group, supply, outlier, or dive", otherReads.every((row) => row.readKind === "pull" || row.readKind === "pokemon" || row.readKind === "lag" || row.readKind === "group" || row.readKind === "supply" || row.readKind === "outlier" || row.readKind === "dive"));
     const shape = (text) => String(text).replace(/\$[0-9,.]+/g, "$").replace(/\b(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2}\b/g, "DATE").replace(/\b\d+(?:\.\d+)?\b/g, "n");
     const shapes = reads.reads.map((row) => shape(row.path || ""));
     t("the catalogue day is not the partial 2026-09-29 file", reads.asOf !== "2026-09-29" && meta.asOf !== "2026-09-29");
@@ -128,7 +128,34 @@ export async function run() {
     t("lead lines do not say stored or last print", reads.reads.every((row) => !/\bstored\b|last print/i.test(String(row.path || "") + String(row.headline || "") + String(row.why || ""))));
     t("lead lines do not use a filler closer", reads.reads.every((row) => !FILLER_BAN.test(String(row.path || ""))));
     t("no 4-word phrase is on more than 2 price lead lines", phrasePeak(priceReads.map((row) => shape(row.path || ""))).peak <= 2);
-    t("a read is one kind", reads.reads.every((row) => row.kind === "single" || row.kind === "sealed" || row.kind === "pull" || row.kind === "pokemon" || row.kind === "lag" || row.kind === "group" || row.kind === "supply"));
+    t("a read is one kind", reads.reads.every((row) => row.kind === "single" || row.kind === "sealed" || row.kind === "pull" || row.kind === "pokemon" || row.kind === "lag" || row.kind === "group" || row.kind === "supply" || row.kind === "outlier" || row.kind === "dive"));
+    // #103 put flagged-price (outlier) and dive-teaser reads on the short
+    // front. They are allowed kinds only while they carry their receipts: a
+    // real price, the dive they open, and the file on disk the numbers came
+    // from — on the outlier file's own day the row must be in
+    // sealed-price-outliers.json at that price, and the dive payload must
+    // exist. No sold counts.
+    const flaggedDive = reads.reads.filter((row) => row.readKind === "outlier" || row.readKind === "dive");
+    let outlierDoc = { high: [], soft: [] };
+    try { outlierDoc = JSON.parse(await readFile(join(ROOT, "data/derived/sealed-price-outliers.json"), "utf8")); } catch {}
+    const outlierAt = new Map([...(outlierDoc.high || []), ...(outlierDoc.soft || [])].map((r) => [String(r.id), Number(r.todayPrice)]));
+    const diveOnDisk = async (id) => { try { await readFile(join(ROOT, "research/pulse/dive", `${id}.json`), "utf8"); return true; } catch { return false; } };
+    const unreceipted = [];
+    for (const row of flaggedDive) {
+      const ok = row.kind === row.readKind && money(row.price) && row.diveId && row.sku === row.diveId
+        && row.href === `/dive/${encodeURIComponent(row.diveId)}` && String(row.path || "").includes(money(row.price))
+        && !/\b(solds?|volume)\b/i.test(String(row.path || "") + " " + String(row.headline || ""))
+        && (row.readKind === "outlier"
+          // Same day as the outlier file: the row must be in it at that price.
+          // A later file (re-flagged after the read was built) is not a defect
+          // of the read, so only the pointer is required then — deterministic
+          // across a nightly that recomputes outliers before the feed rebuild.
+          ? row.sources?.outliers === "data/derived/sealed-price-outliers.json"
+            && (outlierDoc.asOf !== row.asOf || outlierAt.get(row.diveId) === Number(row.price))
+          : row.sources?.dive === `research/pulse/dive/${row.diveId}.json` && await diveOnDisk(row.diveId));
+      if (!ok) unreceipted.push(row.id);
+    }
+    t("flagged and dive reads carry a price, their dive, and the file they came from", unreceipted.length === 0);
     t("no lead says bigger last step or printed on", reads.reads.every((row) => !/bigger last step|printed on/i.test(String(row.path || "") + String(row.headline || "") + String(row.why || ""))));
     const headlines = Object.values(catalogue.cards).map((row) => row.headline);
     t("no duplicate headline", headlines.length === new Set(headlines).size);
