@@ -15,23 +15,34 @@ export function buildRunReport({ startedAt = null, finishedAt, usage = {}, mount
   const left = Number.isFinite(credits.remaining) ? credits.remaining : null;
   const itemSum = (usage.items?.sealed || 0) + (usage.items?.singles || 0) + (usage.items?.slabs || 0);
   const succeeded = run.itemsDone != null ? run.itemsDone : itemSum;
-  const failed = run.itemsSkipped != null ? run.itemsSkipped : (Array.isArray(usage.errors) ? usage.errors.length : 0);
+  // itemsFailed is an HTTP failure. itemsBudgetSkipped was never sent.
+  // Older logs only have itemsSkipped, which mixed the two and called both failed.
+  const split = run.itemsFailed != null || run.itemsBudgetSkipped != null;
+  const failed = split ? (run.itemsFailed || 0) : (run.itemsSkipped != null ? run.itemsSkipped : (Array.isArray(usage.errors) ? usage.errors.length : 0));
+  const notSent = split ? (run.itemsBudgetSkipped || 0) : 0;
   const rateLimitHits = run.rateLimitCount != null
     ? run.rateLimitCount
     : (Array.isArray(usage.errors) ? usage.errors.filter((err) => /rate/i.test(String(err))).length : 0);
   const startMs = Date.parse(startedAt || "");
   const endMs = Date.parse(finishedAt || "");
   const durationSec = Number.isFinite(startMs) && Number.isFinite(endMs) ? Math.max(0, Math.round((endMs - startMs) / 1000)) : null;
+  const calls = run.callsSent != null ? {
+    sent: run.callsSent,
+    failed: run.callsFailed || 0,
+    notSent: run.callsNotSent || 0,
+  } : null;
   return {
     asOf: String(finishedAt || "").slice(0, 10),
     startedAt,
     finishedAt,
     durationSec,
     items: {
-      attempted: succeeded + failed,
+      attempted: succeeded + failed + notSent,
       succeeded,
       failed,
+      notSent,
     },
+    calls,
     credits: { used, left },
     rateLimitHits,
     retries: run.retries || 0,
@@ -44,7 +55,10 @@ export function reportLine(report) {
   const history = report.historyRestored?.yes ? "yes" : "no";
   const files = report.historyRestored?.files || 0;
   const left = report.credits?.left == null ? "unknown" : report.credits.left;
-  return `PPT run: attempted ${report.items.attempted}, succeeded ${report.items.succeeded}, failed ${report.items.failed}, credits ${report.credits.used} used / ${left} left, rate limits ${report.rateLimitHits}, retries ${report.retries}, history ${history} (${files} files), private push ${report.privatePush}, duration ${report.durationSec == null ? "unknown" : report.durationSec + "s"}`;
+  const calls = report.calls
+    ? `, calls sent ${report.calls.sent}, call failures ${report.calls.failed}, calls not sent ${report.calls.notSent}`
+    : "";
+  return `PPT run: attempted ${report.items.attempted}, succeeded ${report.items.succeeded}, failed ${report.items.failed}, not sent ${report.items.notSent || 0}${calls}, credits ${report.credits.used} used / ${left} left, rate limits ${report.rateLimitHits}, retries ${report.retries}, history ${history} (${files} files), private push ${report.privatePush}, duration ${report.durationSec == null ? "unknown" : report.durationSec + "s"}`;
 }
 
 const RAW_FILE = /(?:^|\/)ppt-[^/]*RAW\.json$/i;

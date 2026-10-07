@@ -137,11 +137,13 @@ export async function fetchWithBackoff(url, key, { request, sleep, random = Math
       if (status === 429 && isDailyCap(status, res.body, res.retryAfter)) {
         const err = new Error("daily cap");
         err.daily = true;
+        err.status = status;
         err.rateLimits = rateLimits;
         throw err;
       }
       if (attempt === maxAttempts - 1) {
         const err = new Error(status === 429 ? "rate limited" : `http ${status}`);
+        err.status = status;
         err.rateLimits = rateLimits;
         throw err;
       }
@@ -150,12 +152,14 @@ export async function fetchWithBackoff(url, key, { request, sleep, random = Math
     }
     if (status >= 400) {
       const err = new Error(`http ${status}`);
+      err.status = status;
       err.rateLimits = rateLimits;
       throw err;
     }
     return { body: res.body, rateLimits };
   }
   const err = new Error("rate limited");
+  err.status = 429;
   err.rateLimits = rateLimits;
   throw err;
 }

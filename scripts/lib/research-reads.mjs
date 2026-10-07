@@ -45,11 +45,48 @@ export function rowDate(row) {
 
 // Future-or-today rows, soonest first. A row with no parseable date is not
 // "upcoming" and is left out rather than sorted to the top.
+// A row is confirmed only when its source list cites an official page:
+// pokemon.com, pokemon-card.com, or the publisher's own shop
+// (pokemoncenter.com / pokemon-center.com). A news index cited to say the
+// product is not on it does not count. PokeBeach, SNKRDUNK and retailer
+// trackers are not official.
+const OFFICIAL_HOST = /(?:https?:\/\/)?(?:[a-z0-9-]+\.)*(?:pokemon\.com|pokemon-card\.com|pokemoncenter\.com|pokemon-center\.com)(?=\/|[^a-z0-9-]|$)/gi;
+const SENTENCE_NEG = /\b(no|not|without|404|unconfirmed|provisional|rumor|rumour)\b/i;
+const DENIED_OFFICIAL = /carries no|no announcement|returns 404|lists no|not on pokemon|no pokemon-card\.com page|no tpc\/pokemon-card\.com page|no official/i;
+
+function officialHits(text) {
+  return [...String(text || "").matchAll(new RegExp(OFFICIAL_HOST.source, "gi"))].map((m) => m[0]);
+}
+
+function indexOnly(hit) {
+  const path = String(hit).replace(/^https?:\/\//i, "").replace(/^www\./i, "").replace(/[.,;]+$/, "");
+  return /^(?:[a-z0-9-]+\.)*(?:pokemon\.com|pokemon-card\.com|pokemoncenter\.com|pokemon-center\.com)(?:\/info\/?)?$/i.test(path);
+}
+
+export function officialSources(row) {
+  const note = String(row?.note || "");
+  const chunks = String(note).split(/(?<=[.!?])\s+/).filter((sentence) => !SENTENCE_NEG.test(sentence));
+  if (Array.isArray(row?.sources)) chunks.push(...row.sources.map((src) => String(src)));
+  const hits = chunks.flatMap((chunk) => officialHits(chunk));
+  const denied = DENIED_OFFICIAL.test(note);
+  if (denied && hits.every(indexOnly)) return [];
+  return hits;
+}
+
+// "verified" and "confirmed" are the same public claim. Both require an
+// official source. Anything else stays off the public radar.
+export function canConfirm(row) {
+  const label = String(row?.confidence || "").toLowerCase();
+  if (label === "unconfirmed" || label === "single-source" || label === "rumor") return false;
+  if (label && label !== "verified" && label !== "confirmed") return false;
+  return officialSources(row).length > 0;
+}
+
 export function upcomingRadar(radar, today, { limit = Infinity, verifiedOnly = false } = {}) {
   const day = String(today).slice(0, 10);
   return radarRows(radar)
     .filter((r) => /^\d{4}-\d{2}-\d{2}$/.test(rowDate(r)) && rowDate(r) >= day)
-    .filter((r) => !verifiedOnly || !r.confidence || r.confidence === "verified")
+    .filter((r) => !verifiedOnly || canConfirm(r))
     .sort((a, b) => rowDate(a).localeCompare(rowDate(b)))
     .slice(0, limit);
 }

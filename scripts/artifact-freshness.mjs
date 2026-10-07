@@ -29,6 +29,7 @@
 // itself in SLOW below rather than being waved through by making the whole
 // guard advisory.
 import { readFile, readdir } from "node:fs/promises";
+import { readFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -50,6 +51,72 @@ function cadenceHours(cron) {
   return null;
 }
 
+const SHELL = new Set(["fi", "then", "else", "elif", "do", "done", "if", "esac", "in"]);
+
+function cleanAddToken(raw) {
+  let p = String(raw || "").trim();
+  if (!p) return "";
+  if ((p.startsWith("\"") && p.endsWith("\"")) || (p.startsWith("'") && p.endsWith("'"))) p = p.slice(1, -1);
+  p = p.replace(/;+$/g, "");
+  if (!p || p === "\\" || p.startsWith("-") || p.startsWith(">") || SHELL.has(p)) return "";
+  return p;
+}
+
+function lineNo(src, index) {
+  return src.slice(0, index).split("\n").length;
+}
+
+function newestTracked(pattern) {
+  let out = "";
+  try { out = execFileSync("git", ["ls-files", "--", pattern], { cwd: ROOT, encoding: "utf8" }); }
+  catch { return ""; }
+  const files = out.split("\n").map((s) => s.trim()).filter(Boolean);
+  let best = "";
+  let bestIso = "";
+  for (const file of files) {
+    let iso = "";
+    try { iso = execFileSync("git", ["log", "-1", "--format=%cI", "--", file], { cwd: ROOT, encoding: "utf8" }).trim(); }
+    catch { iso = ""; }
+    if (!best || iso > bestIso) { best = file; bestIso = iso; }
+  }
+  return best;
+}
+
+function invokedText(src) {
+  const names = [...src.matchAll(/\bnode\s+(scripts\/[\w./-]+\.mjs)/g)].map((m) => m[1])
+    .filter((rel) => !rel.includes("/tests/") && rel !== "scripts/tests/run-tests.mjs");
+  const seen = new Set();
+  const out = [];
+  const readScript = (rel) => {
+    const norm = rel.replace(/^\.\//, "");
+    if (seen.has(norm)) return;
+    seen.add(norm);
+    let text = "";
+    try { text = readFileSync(join(ROOT, norm), "utf8"); } catch { return; }
+    out.push(text);
+    const dir = dirname(norm);
+    for (const match of text.matchAll(/["'](\.[^"']+\.mjs)["']/g)) {
+      readScript(join(dir, match[1]));
+    }
+  };
+  for (const rel of names) readScript(rel);
+  return out.join("\n");
+}
+
+function isProduced(path, scripts, workflowSrc) {
+  const bare = String(path || "").replace(/\/+$/, "");
+  if (!bare) return false;
+  if (scripts.includes(bare)) return true;
+  const base = bare.split("/").pop() || "";
+  if (base && scripts.includes(base)) return true;
+  if (/^grades-\d{4}-\d{2}-\d{2}\.json$/.test(base) && scripts.includes("grades-") && scripts.includes("learning")) return true;
+  // A path written in the workflow itself (not only listed on git add) is a product.
+  // Continuation lines under `git add` are arguments, not writers.
+  const lines = String(workflowSrc || "").split("\n");
+  if (lines.some((line) => line.includes(bare) && !/git add\b/.test(line) && /writeFile|>>/.test(line))) return true;
+  return false;
+}
+
 const wfFiles = (await readdir(WF)).filter(f => f.endsWith(".yml") || f.endsWith(".yaml"));
 const jobs = [];
 
@@ -61,17 +128,27 @@ for (const f of wfFiles) {
   // Everything the job stages. This is the job's own promise about what it
   // produces — the write-vs-commit law in CLAUDE.md means an unlisted file
   // evaporates, so the git-add list IS the artifact list.
-  const adds = [...src.matchAll(/git add ([^\n]+)/g)]
-    .flatMap(m => m[1].split(/\s+/))
-    // A SHELL LINE-CONTINUATION IS NOT A FILENAME. The price-data commit step
-    // wraps its git add across several lines, so the trailing "\" was captured
-    // as a promised path and reported as "never committed" — a guard inventing
-    // a missing artifact out of shell punctuation, which is exactly the kind of
-    // false finding that gets a guard ignored.
-    .filter(p => p && p !== String.fromCharCode(92) && !p.startsWith("-"));
+  // A shell word is not a path. `git add grades-*.json; fi` used to report
+  // a file named "fi" and the unexpanded glob as never committed.
+  const scripts = invokedText(src);
+  const paths = [];
+  const unwired = [];
+  const seen = new Set();
+  for (const match of src.matchAll(/git add ([^\n]+)/g)) {
+    const line = lineNo(src, match.index);
+    for (const token of match[1].split(/\s+/)) {
+      const cleaned = cleanAddToken(token);
+      if (!cleaned || seen.has(cleaned)) continue;
+      seen.add(cleaned);
+      const expanded = /[*?\[]/.test(cleaned) ? (newestTracked(cleaned) || cleaned) : cleaned;
+      const entry = { path: expanded, line, from: cleaned };
+      if (isProduced(expanded, scripts, src) || isProduced(cleaned, scripts, src)) paths.push(entry);
+      else unwired.push(entry);
+    }
+  }
 
   const hours = Math.min(...crons.map(c => cadenceHours(c) ?? 24 * 365));
-  jobs.push({ workflow: f, crons, hours, paths: [...new Set(adds)] });
+  jobs.push({ workflow: f, crons, hours, paths, unwired });
 }
 
 // git log is the honest record: mtime changes on checkout, commit dates do not.
@@ -87,15 +164,23 @@ const now = Date.now();
 const rows = [];
 
 for (const job of jobs) {
-  for (const p of job.paths) {
+  for (const entry of job.unwired || []) {
+    rows.push({
+      job, p: entry.path, days: null, line: entry.line,
+      note: `git add at ${job.workflow}:${entry.line} but no step in that workflow runs a writer`,
+      unwired: true,
+    });
+  }
+  for (const entry of job.paths) {
+    const p = entry.path;
     // A directory promise ("research/") is checked as a whole: the newest thing
     // inside it is what the job last managed to produce.
     const iso = lastChanged(p);
-    if (!iso) { rows.push({ job, p, days: null, note: "never committed" }); continue; }
+    if (!iso) { rows.push({ job, p, days: null, note: "never committed", line: entry.line }); continue; }
     const days = (now - Date.parse(iso)) / 86400000;
     // How many runs should have touched this since it last moved?
     const runsMissed = Math.floor(days * 24 / job.hours);
-    rows.push({ job, p, days, iso, runsMissed });
+    rows.push({ job, p, days, iso, runsMissed, line: entry.line });
   }
 }
 
@@ -127,6 +212,11 @@ for (const r of rows) {
   const excuse = SLOW[r.p];
 
   if (r.days === null) {
+    if (r.unwired) {
+      console.log(`  ·  ${label} not a product of ${r.job.workflow}:${r.line} — no step runs a writer. A workflow edit at that line would be required.`);
+      excused++;
+      continue;
+    }
     if (excuse) { console.log(`  ·  ${label} never written — ${excuse}`); excused++; continue; }
     console.log(`  ?  ${label} never committed — promised by ${r.job.workflow}`);
     suspect++; stale.push({ ...r, why: "never committed" });
@@ -160,4 +250,4 @@ if (suspect) {
   process.exit(1);
 }
 console.log(`✓ artifact freshness: every promised artifact moved within ${SUSPECT} runs` +
-  (excused ? ` · ${excused} event-driven path(s) excused by name` : ""));
+  (excused ? ` · ${excused} path(s) excused (slow on purpose, or not written by that workflow)` : ""));
