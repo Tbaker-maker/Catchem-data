@@ -9,6 +9,7 @@ import { dirname, join } from "node:path";
 import { cardImage } from "./image-source.mjs";
 import { headerHtml, footerHtml, FONTS, stampLabel } from "./lib/public-chrome.mjs";
 import { freshnessFromReport } from "./lib/freshness.mjs";
+import { catalogueCardDate } from "./lib/card-date.mjs";
 import { HEAT_DEBUT, DEPTH_DEBUT, heatPlain, depthPlain } from "./lib/instruments.mjs";
 
 // wrapText — rasterizer-safe line breaking. foreignObject is NOT supported
@@ -48,7 +49,13 @@ const prodImg = id => tcgId[id] ? `https://tcgplayer-cdn.tcgplayer.com/product/$
   : (sp.products.find(p => p.id === id) || {}).image || "";
 const cardImg = cid => cardImage(cid, false); // source-published URL, never constructed
 const esc = s => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
-const today = new Date().toISOString().slice(0, 10);
+const todaySources = ["research/assets/public/feed/meta.json", "research/assets/public/feed/catalogue.json", "research/assets/public/reads.json"];
+let today = "";
+for (const path of todaySources) {
+  try { today = catalogueCardDate(await J(path)); } catch { today = ""; }
+  if (today) break;
+}
+if (!today) console.log("· mint-cards: catalogue asOf is not on file — no picture written");
 
 function card({ label, title, hero, heroColor, sub, why, img, chip, wide }) {
   const W = 1200, H = 675; // share-ready 16:9
@@ -76,11 +83,11 @@ async function mint(name, svg) {
   await writeFile(join(ROOT, `research/pulse/cards/latest-${name}.svg`), svg);
   minted.push(name);
 }
-if (six) await mint("index", card({ label: "CATCH'EM SEALED INDEX", title: `${six.constituents} sealed products, one number`,
+if (today && six) await mint("index", card({ label: "CATCH'EM SEALED INDEX", title: `${six.constituents} sealed products, one number`,
   hero: String(six.level), heroColor: "#36d399",
   sub: six.ddPct != null ? `${six.ddPct > 0 ? "▲" : "▼"} ${Math.abs(six.ddPct)}% vs yesterday · breadth ▲${six.breadth.up} ▼${six.breadth.down}` : `baseline 100 · breadth ▲${six.breadth.up} ▼${six.breadth.down}`,
   why: `${six.constituents} boxes, one honest number. 100 was the starting line. Today: ${six.breadth.up} boxes raised their hand and said "I went up" — ${six.breadth.down} said "I went down." Full story: ${METHODOLOGY_URL}`, chip: "VERIFIED", wide: true }));
-if (t3.sealed) { const r = t3.sealed; const pid = (sp.products.find(p => p.name === r.name) || {}).id;
+if (today && t3.sealed) { const r = t3.sealed; const pid = (sp.products.find(p => p.name === r.name) || {}).id;
   await mint("sealed", card({ label: "SEALED · DAILY WATCH", title: r.name, hero: `$${Math.round(r.ebay).toLocaleString("en-US")}`,
     // The Spread is retired (Tyler 2026-08-22) and no longer travels on this
     // card, so the subtitle can no longer be a cross-market comparison — with
@@ -88,11 +95,11 @@ if (t3.sealed) { const r = t3.sealed; const pid = (sp.products.find(p => p.name 
     // TCGplayer". It now states the card's own measured context.
     heroColor: "#f4f5f8", sub: `${r.listings} live listings · ${r.reason}`,
     why: r.explain || r.reason, img: prodImg(pid), chip: "VERIFIED", wide: true })); }
-if (t3.graded) { const g = t3.graded; const gc = (sg.cards || []).find(c => (c.watchLabel || c.name || "").includes((g.name || "").split(" (")[0]));
+if (today && t3.graded) { const g = t3.graded; const gc = (sg.cards || []).find(c => (c.watchLabel || c.name || "").includes((g.name || "").split(" (")[0]));
   await mint("graded", card({ label: "GRADED · DAILY WATCH", title: g.name, hero: `+$${Math.round(g.premium).toLocaleString("en-US")}`,
     heroColor: "#c77dff", sub: `raw $${Math.round(g.raw).toLocaleString("en-US")} → PSA 10 sold $${Math.round(g.psa10).toLocaleString("en-US")}`,
     why: g.explain || g.reason, img: gc ? cardImg(gc.cardId) : "", chip: "VERIFIED" })); }
-if (t3.raw) { const r = t3.raw; const rc = (sg.cards || []).find(c => c.name === r.name || (c.watchLabel || "").includes(r.name));
+if (today && t3.raw) { const r = t3.raw; const rc = (sg.cards || []).find(c => c.name === r.name || (c.watchLabel || "").includes(r.name));
   await mint("raw", card({ label: "RAW · DAILY WATCH", title: `${r.name} · ${r.set}`, hero: `$${Math.round(r.price).toLocaleString("en-US")}`,
     heroColor: "#f4f5f8", sub: "the chase inside a set that moved without headlines",
     why: r.explain || r.reason, img: rc ? cardImg(rc.cardId) : "", chip: "READ" })); }
