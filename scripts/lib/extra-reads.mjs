@@ -332,7 +332,7 @@ export function seededShuffle(ids, seedText) {
   return arr;
 }
 
-export function buildBrowse({ asOf, cardIds, rankedIds, news, waves, flagged, dives, volume }) {
+export function buildBrowse({ asOf, cardIds, rankedIds, news, waves, flagged, dives, volume, shape }) {
   const shuffled = seededShuffle(cardIds, asOf);
   const out = {
     asOf,
@@ -359,6 +359,15 @@ export function buildBrowse({ asOf, cardIds, rankedIds, news, waves, flagged, di
       items: volume,
       source: "TCGplayer sales via PokemonPriceTracker",
       empty: "No sold counts on file.",
+    };
+  }
+  for (const [kind, block] of Object.entries(shape || {})) {
+    if (!block || !Array.isArray(block.items) || !block.items.length) continue;
+    out.filters[kind] = {
+      order: block.order === "ranked" ? "ranked" : "shuffled",
+      readKind: kind,
+      items: block.items,
+      empty: block.empty || "",
     };
   }
   return out;

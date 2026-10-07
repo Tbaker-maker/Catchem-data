@@ -17,6 +17,7 @@ import {
 } from "./lib/ppt-plan.mjs";
 import { nextEmptySealed, orderRefreshCalls, sanitizeDates, sanitizeEmpty, setBand, skipRecentEmpty } from "./lib/ppt-refresh-order.mjs";
 import { updateVolumeFile } from "./compute-tcgplayer-volume.mjs";
+import { updateShapeFile } from "./compute-shape-reads.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const BASE = "https://www.pokemonpricetracker.com/api/v2";
@@ -315,6 +316,12 @@ export async function main() {
       console.log(`tcgplayer-volume ${vol.written ? "written" : "unchanged"} files=${vol.files} cards=${vol.cards} full30d=${vol.counts?.full30d ?? 0}`);
     } catch (err) {
       console.error(`tcgplayer-volume skipped: ${redact(err.message, [key, token])}`);
+    }
+    try {
+      const shape = await updateShapeFile({ root: ROOT, rawDirs: [join(ROOT, "ppt-raw-private", today)], today });
+      console.log(`shape-facts ${shape.written ? "written" : "unchanged"} files=${shape.files} cards=${shape.cards} graded=${shape.graded}`);
+    } catch (err) {
+      console.error(`shape-facts skipped: ${redact(err.message, [key, token])}`);
     }
     cursor = {
       asOf: today,
