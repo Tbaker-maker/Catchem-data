@@ -113,6 +113,38 @@ export async function writeExtra(root, extra, browse) {
   };
 }
 
+// ── ONE PATH FOR FLAGGED AND DIVE READS ─────────────────────────────────────
+// The nightly rebuild (build-feed.mjs) called writeExtra with only the catalog
+// reads. writeExtra drops every outlier/dive row from reads.json and adds back
+// only what it is handed, so each night stripped the flagged-price and dive
+// teasers that build-extra-reads had shipped, and emptied the Flagged and Dive
+// browse filters. Both callers now go through here, which reads the rows from
+// the files on disk — data/derived/sealed-price-outliers.json and
+// research/pulse/dive/ — and ships none when those files have none.
+export async function flaggedAndDiveReads(root = ROOT) {
+  const flagged = outlierReads(await loadOutlierDoc(root));
+  const dives = diveTeaserReads(await loadDiveDocsForTeasers(root, { max: 12 }));
+  return { flagged, dives };
+}
+
+export async function writeFeedExtras(root, extra, { asOf, cardIds, rankedIds, news, waves }) {
+  const { flagged, dives } = await flaggedAndDiveReads(root);
+  const fresh = new Set(["outlier", "dive"]);
+  extra.reads = [...(extra.reads || []).filter((r) => !fresh.has(r.readKind)), ...flagged, ...dives];
+  extra.flagged = { count: flagged.length, source: "data/derived/sealed-price-outliers.json" };
+  extra.dives = { count: dives.length, source: "research/pulse/dive/" };
+  const browse = buildBrowse({
+    asOf,
+    cardIds,
+    rankedIds,
+    news,
+    waves,
+    flagged: flagged.map(publicRead),
+    dives: dives.map(publicRead),
+  });
+  return writeExtra(root, extra, browse);
+}
+
 async function main() {
   const catalog = await read("data/catalog/tcgcsv-latest.json");
   const series = await loadSeries(ROOT);
@@ -139,24 +171,16 @@ async function main() {
     newsCount = (news.filters?.news?.items || []).length;
     waves = (news.catalog || []).filter((row) => row && (row.wave || row.reprint));
   } catch { /* news file is optional for the browse shell */ }
-  const outlierDoc = await loadOutlierDoc(ROOT);
-  const flagged = outlierReads(outlierDoc);
-  const diveDocs = await loadDiveDocsForTeasers(ROOT, { max: 12 });
-  const dives = diveTeaserReads(diveDocs);
   // Volume stays empty until Insights solds exist. Do not invent.
   extra.volume = [];
   extra.volumeNote = extra.volumeNote || "No sold count is on file, so no volume read ships.";
-  extra.reads = [...(extra.reads || []), ...flagged, ...dives];
-  const browse = buildBrowse({
+  const summary = await writeFeedExtras(ROOT, extra, {
     asOf: catalog.asOf,
     cardIds,
     rankedIds: ranked,
     news: new Array(newsCount),
     waves,
-    flagged: flagged.map(publicRead),
-    dives: dives.map(publicRead),
   });
-  const summary = await writeExtra(ROOT, extra, browse);
   console.log(JSON.stringify(summary));
 }
 

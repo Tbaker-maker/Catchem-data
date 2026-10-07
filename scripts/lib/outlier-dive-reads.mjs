@@ -81,7 +81,10 @@ export function diveTeaserReads(dives) {
     const day = String(latest.lastSeen || latest.asOf || latest.date || doc.asOf || "").slice(0, 10);
     const live = String(latest.dataStatus || "") === "live";
     const hasPrice = live && price > 0 && /^\d{4}-\d{2}-\d{2}$/.test(day);
-    const outlierNote = doc.outlier && (doc.outlier.note || "");
+    // The payload note can end without a stop ("… — review"); the teaser adds
+    // one so the next sentence does not run on ("review Deeper look").
+    const rawNote = String((doc.outlier && doc.outlier.note) || "").trim();
+    const outlierNote = rawNote && !/[.!?]$/.test(rawNote) ? rawNote + "." : rawNote;
     let sentence = "";
     if (hasPrice && outlierNote) {
       sentence = `${name}: ${money(price)} on ${monthDay(day)}. ${outlierNote} Deeper look on the chart.`;
