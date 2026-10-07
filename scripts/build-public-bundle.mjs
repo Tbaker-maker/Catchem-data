@@ -9,6 +9,7 @@ import {
 import { publicReceipts, scoreWatch } from "./lib/public-receipts.mjs";
 import { publishFeed, readCallLog, readShelfFile } from "./lib/feed-catalogue.mjs";
 import { nextCountsUpdatedAt } from "./lib/price-stamp.mjs";
+import { cardImage } from "./image-source.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "research/assets/public");
@@ -158,7 +159,7 @@ const scanById = new Map();
 const setIdVotes = new Map();
 let artistMatches = 0;
 const artistGroups = new Map();
-for (const card of Object.values(catalogue.cards || {})) {
+for (const [cardId, card] of Object.entries(catalogue.cards || {})) {
   const artist = personName(card.artist);
   const left = numLeft(card.number);
   if (!left) continue;
@@ -180,7 +181,12 @@ for (const card of Object.values(catalogue.cards || {})) {
   if (!best || bestScore < 3) continue;
   if (artist && !artistById.has(best.id)) artistById.set(best.id, artist);
   if (card.setId && card.number) {
-    scanById.set(best.id, `https://images.pokemontcg.io/${card.setId}/${String(card.number).replace(/^0+/, "")}.png`);
+    // The scan URL comes from data/card-images.json (the URL the source
+    // publishes for this card id), never built from setId/number: hosts differ
+    // per set and a guessed path that 404s comes back as a card back. No entry
+    // means no scan.
+    const scan = cardImage(cardId, false);
+    if (scan) scanById.set(best.id, scan);
     const voteKey = `${best.groupId}|${best.set}`;
     if (!setIdVotes.has(voteKey)) setIdVotes.set(voteKey, new Map());
     const votes = setIdVotes.get(voteKey);
@@ -285,14 +291,19 @@ for (const item of items) {
   list.push(item.id);
   artistGroups.set(artist, list);
 }
+// Set logos come from data/set-logos.json, the logo URL pokemontcg.io /v2/sets
+// publishes for each set id (regenerate with scripts/fetch-set-logos.mjs).
+// Never built from the id: newer sets are served from a different host, so a
+// templated path 404s. A set with no entry gets no logo.
+const setLogos = (await read("data/set-logos.json").catch(() => ({ sets: {} }))).sets || {};
 function logoFor(key) {
   const votes = setIdVotes.get(key);
-  if (!votes) return "";
+  if (!votes) return null;
   const ranked = [...votes.entries()].sort((a, b) => b[1] - a[1]);
   const [id, n] = ranked[0];
   const total = [...votes.values()].reduce((s, x) => s + x, 0);
-  if (!id || n < 3 || n / total < 0.6) return "";
-  return `https://images.pokemontcg.io/${id}/logo.png`;
+  if (!id || n < 3 || n / total < 0.6) return null;
+  return setLogos[id]?.logo || null;
 }
 
 const slugUsed = new Map();
@@ -429,7 +440,7 @@ for (const set of sets.values()) {
     single: set.single,
     sealed: set.sealed,
     priced: set.priced,
-    logo,
+    ...(logo ? { logo } : {}),
   };
   setIndex.push(row);
   const line = (kind) => indexLine(set.items.filter((it) => it.kind === kind));
@@ -882,14 +893,15 @@ for (let i = 0; i < chunks.length; i++) {
 const indexXml = `<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${files.map((f) => `<sitemap><loc>${origin}/${f}</loc></sitemap>`).join("\n")}\n</sitemapindex>\n`;
 await writeFile(join(OUT, "sitemap.xml"), indexXml);
 
-console.log(`public bundle: ${counts.items} items, ${counts.single} singles, ${counts.sealed} sealed, ${counts.sets} sets, ${counts.artists} artists, ${artistMatches} artist links, prize-pack versions ${linkedPrize.size}, ${reads.length} reads, redirects ${Object.keys(redirects.products).length}, sitemaps ${files.length}`);
+const publishedReads = JSON.parse(await readFile(join(OUT, "reads.json"), "utf8")).reads || [];
+console.log(`public bundle: ${counts.items} items, ${counts.single} singles, ${counts.sealed} sealed, ${counts.sets} sets, ${counts.artists} artists, ${artistMatches} artist links, prize-pack versions ${linkedPrize.size}, ${publishedReads.length} reads, redirects ${Object.keys(redirects.products).length}, sitemaps ${files.length}`);
 
 const priceOf = new Map();
 for (const set of sets.values()) {
   for (const it of set.items) if (it.price) priceOf.set(it.id, it.price);
 }
 const mismatches = [];
-for (const read of reads) {
+for (const read of publishedReads) {
   const id = String(read.href || "").split("/").pop();
   const want = priceOf.get(id);
   if (want != null && Math.abs(want - Number(read.price)) > 0.009) mismatches.push(`${id} read ${read.price} vs ${want}`);

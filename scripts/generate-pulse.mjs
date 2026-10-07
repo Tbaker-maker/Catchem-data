@@ -53,6 +53,7 @@ import { dirname, join } from "node:path";
 import { cardImage } from "./image-source.mjs";
 import { applyPackBasis } from "./pack-basis.mjs";
 import { rotate } from "./rotate.mjs";
+import { upcomingRadar } from "./lib/research-reads.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const today = new Date().toISOString().split("T")[0];
 const cardImg = id => cardImage(id, false) || null; // source-published URL, never constructed
@@ -75,12 +76,19 @@ try {
 
 const sp = await J("data/sealed-prices.json");
 
-
-const div = await J("data/divergence-report.json");
-const heat = await J("data/heat-report.json");
-const sg = await J("data/singles-prices.json");
-const radar = await J("data/release-radar.json");
-const der = await J("data/derived-insights.json");
+// EDITORIAL INPUTS are read through ONE held-product scrub (lib/publish-guard
+// loadEditorialJson). qa-gate has already run (top of this file) and stamped
+// tonight's flags, so a held product is removed from every list in these files
+// before any section can render it. sp itself stays whole: the Board and the
+// feed catalog keep held products, labeled held.
+const { loadBlocked, loadEditorialJson } = await import("./lib/publish-guard.mjs");
+const __blk = await loadBlocked();
+const E = (rel) => loadEditorialJson(rel, __blk);
+const div = await E("data/divergence-report.json");
+const heat = await E("data/heat-report.json");
+const sg = await E("data/singles-prices.json");
+const radar = await E("data/release-radar.json");
+const der = await E("data/derived-insights.json");
 const { freshnessFromReport, formatPt } = await import("./lib/freshness.mjs");
 const fresh = freshnessFromReport(await J("data/ppt/run-report.json"));
 const writtenAt = formatPt(fresh.at) || fresh.label;
@@ -113,14 +121,16 @@ const live = sp.products.filter(p=>p.dataStatus==="live");
 // Board with a held label but never get FEATURED — qa-gate has run by now,
 // and the durable file catches anything a rebuild un-flagged. The 2026-08-22
 // leak was this file rendering spread signals + deepest-markets from raw rows.
-const { loadBlocked } = await import("./lib/publish-guard.mjs");
-const __blk = await loadBlocked();
 const pub = live.filter(p=>!p.publishBlock && !__blk.blocked(p.id));
 // derived-insights rows were computed BEFORE qa-gate stamped today's flags —
 // re-filter any derived list at render time (first caught: swsh1-pack passed
 // derived, failed qa-gate's ±60% cross-source check, leaked via Pack Math).
 const byIdBlk = new Map(sp.products.map(p=>[p.id, !!p.publishBlock]));
 const editorial = (rows)=>(rows||[]).filter(r=>!__blk.blocked(r.id) && !byIdBlk.get(r.id));
+// supplyShifts is computed before qa-gate stamps today's flags, so a product
+// held tonight (e.g. a median that moved 30%+ overnight) can still sit in it.
+// Same editorial filter as every other derived list: a held product is left out.
+const shiftRows = editorial(der?.supplyShifts);
 // Daily Three picks carry only a NAME (no id) and were chosen before
 // qa-gate stamped today's flags — CI 32548174725: an 86%-spread pack became
 // the SEALED pick, got blocked by the cross-source check, and leaked into
@@ -144,6 +154,7 @@ if (der?.watchOutcomes) for (const k of Object.keys(der.watchOutcomes)) {
   }
 }
 const noMkt = sp.products.filter(p=>p.dataStatus==="no-active-market").length;
+const heatDays = (heat?.mode||"").match(/day (\d+)/)?.[1] ?? "?";
 const heatLive = (heat?.mode||"").startsWith("dual-signal") && (heat?.reads||[]).length > 0;
 const heatLine = heatLive
   ? `${heat.reads.length} heat reads`
@@ -152,9 +163,12 @@ const sigs = (div?.rows||[]).filter(r=>r.signal && !__blk.blocked(r.id));
 const topListed = [...pub].sort((a,b)=>(b.listingCount||0)-(a.listingCount||0)).slice(0,3);
 const chases = (sg?.cards||[]).filter(c=>!c.needsReview && c.dataStatus==="live")
   .sort((a,b)=>(b.priceMarket||0)-(a.priceMarket||0)).slice(0,5);
-const upcoming = (radar?.items||radar?.releases||[]).filter(r=>{
-  const d = r.date || r.releaseDate || ""; return d >= today;
-}).slice(0,4);
+// The radar's rows are in upcoming[] (items/releases kept as fallbacks). Past
+// rows drop at read time. Public page: verified rows only — the brief calls
+// single-source rows leads that need a human before any public page.
+const upcoming = upcomingRadar(radar, today, { limit: 4, verifiedOnly: true })
+  .map(r => ({ name: r.name || r.title, date: r.date || r.releaseDate, type: r.type ?? null, confidence: r.confidence ?? null }));
+const escRadar = s => String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 
 let md = `# The Feed — ${today}\n*${fresh.label}. Written by the machine at ${writtenAt}. Every number below is live production data.*\n\n`;
 md += `## The instrument panel\n- **${sp.products.length} sealed products tracked** · ${live.length} live · ${noMkt} no-active-market (honest) · run ${sp.updatedAt?.slice(0,16)}Z\n- **Heat reads:** ${heatLine}\n- **The Spread:** ${div?.counts?.compared??0} sealed cross-checked · **${sigs.length} signals** · ${div?.counts?.skipped??0} excluded with reasons\n\n`;
@@ -206,10 +220,10 @@ if (der?.watchOutcomes?.sealed?.dPct != null || der?.watchOutcomes?.raw?.dPct !=
   md += `*We keep our own score — hits and misses both.*\n`;
 }
 if (der?.subtypeIndexes?.length) md += `\n**Product-class indexes:** ${der.subtypeIndexes.map(s=>`${s.subtype} ${s.level}`).join(" · ")} *(same equation, shelves by class)*\n`;
-if (der?.supplyShifts?.length) {
+if (shiftRows.length) {
   if (dyk) md += `\n## 💡 Did you know?\n**${dyk.hook}**\n\n${dyk.body}\n\n${dyk.why_it_matters}\n\n*Source: ${dyk.sources.join("; ")}, checked ${dyk.verified}.*\n`;
 md += `\n## 🌊 Supply shifts\n`;
-  for (const x of der.supplyShifts.slice(0,5)) md += `- **${x.name}** — listings ${x.prev}→${x.listings} (**${x.dPct>0?"+":""}${x.dPct}%**)${x.priceDPct!=null?`, price ${x.priceDPct>0?"+":""}${x.priceDPct}%`:""}. ${x.read}${x.catalystMatch?` · ${x.catalystMatch}`:""}.\n`;
+  for (const x of shiftRows.slice(0,5)) md += `- **${x.name}** — listings ${x.prev}→${x.listings} (**${x.dPct>0?"+":""}${x.dPct}%**)${x.priceDPct!=null?`, price ${x.priceDPct>0?"+":""}${x.priceDPct}%`:""}. ${x.read}${x.catalystMatch?` · ${x.catalystMatch}`:""}.\n`;
   md += `*Shelf math, plainly: how many are for sale vs yesterday — and what usually causes a swing that size.*\n`;
 }
 md += `\n## 🏛 Generation indexes\n`;
@@ -281,8 +295,12 @@ const heatSection = (today >= HEAT_DEBUT && heatGroups.length)
     ).join("")
   : "";
 const chaseRows = chases.filter(c => money(c.priceMarket)).map(c=>`<div class="row"><span style="display:flex;align-items:center;gap:10px">${cardImg(c.cardId)?`<img class="thumb" style="width:34px;max-width:34px" src="${cardImg(c.cardId)}" alt="">`:""}<span>${escHtml(pretty(c.name))} <em>${escHtml(pretty(c.setName))}</em></span></span><span class="mono">${money(c.priceMarket)}</span></div>`).join("");
-const repeatDoc = await J("data/derived/repeat-rank.json");
-const keepRows = (rows) => (rows || []).slice(0, 5);
+const repeatDoc = await E("data/derived/repeat-rank.json");
+// repeat-rank.json is computed before qa-gate stamps today's flags, so a
+// product blocked tonight (e.g. a median that moved 30%+ overnight) still sits
+// in its rows. Run them through the same editorial filter as every other
+// derived list, so a held product is left out instead of featured.
+const keepRows = (rows) => editorial(rows).slice(0, 5);
 const keepLine = (rows) => keepRows(rows).length
   ? keepRows(rows).map(r => {
       const streak = Number(r.streak) > 0 ? ` · streak ${r.streak}` : "";
@@ -297,7 +315,7 @@ const keepsFeed = {
   sealed: keepRows(repeatDoc?.sealed?.rows).map(r => ({ id: r.id, name: r.name, days7: r.days7, days30: r.days30, days90: r.days90, streak: r.streak, lastSeen: r.lastSeen })),
   singles: keepRows(repeatDoc?.singles?.rows).map(r => ({ id: r.id, name: r.name, days7: r.days7, days30: r.days30, days90: r.days90, streak: r.streak, lastSeen: r.lastSeen })),
 };
-const radarRows = upcoming.map(r=>`<div class="row"><span>${r.name||r.title}</span><span class="mono">${r.date||r.releaseDate}</span></div>`).join("");
+const radarRows = upcoming.map(r=>`<div class="row"><span>${escRadar(r.name)}</span><span class="mono">${escRadar(r.date)}</span></div>`).join("");
 const newsBits = (rows, nameKey) => (rows || []).slice(0, 3).map((r) => {
   const price = money(r.price);
   const name = show(r[nameKey]);
@@ -336,7 +354,7 @@ const eraHtml = (der?.eraIndexes || []).map((e) => {
   const gapTxt = Number.isFinite(gap) && gap !== 0 ? `asking ${Math.abs(gap)}% ${gap >= 0 ? "more" : "less"} than TCGplayer · ` : "";
   return `<div class="row"><span><b>${escHtml(pretty(e.era))}</b><em> ${e.products} products · ${gapTxt}${e.listingsPerProduct} listings each</em></span><span class="mono">${price}</span></div>`;
 }).join("");
-const shiftHtml = (der?.supplyShifts || []).slice(0, 5).map((x) => {
+const shiftHtml = shiftRows.slice(0, 5).map((x) => {
   const name = show(x.name);
   const dPct = Number(x.dPct);
   if (!name || !Number.isFinite(dPct)) return "";
@@ -457,7 +475,7 @@ const packsForFeed = (p) => {
 // MUST run before looseLane is built (fixed 2026-08-22, CC): the loose-pack
 // street price feeding the sealed premium has to be the SAME number we display
 // as the pack price, or the premium reconciles against a price no longer shown.
-applyPackBasis(sp.products, (await J("data/divergence-report.json"))?.rows || []);
+applyPackBasis(sp.products, (await J("data/divergence-report.json"))?.rows || []); // held-scrub: catalog — the Board/feed catalog keeps held rows, labeled held
 const looseLane = new Map(sp.products
   .filter(p => p.subtype === "booster-pack" && p.dataStatus === "live" && p.priceMedian != null)
   .map(p => [p.setId, p.priceMedian]));
@@ -513,8 +531,8 @@ if (s0) storyKits.push({
   const deep = [...pub].sort((a, b) => (b.listingCount || 0) - (a.listingCount || 0))[0];
   if (thin || deep) storyKits.push(thin
     ? { id: "supply", angle: "Scarcity on tape",
-        headline: `${thin.name}: ${thin.listingCount} listings left`,
-        body: `Only ${thin.listingCount} active listing${thin.listingCount === 1 ? "" : "s"} on all of eBay, asking $${thin.priceMedian}. Try to buy one — that's the story.`,
+        headline: `${thin.name}: ${thin.listingCount} listing${thin.listingCount === 1 ? "" : "s"} in our filtered count`,
+        body: `Only ${thin.listingCount} listing${thin.listingCount === 1 ? "" : "s"} made it through our filtered eBay count (Buy It Now, delivered, title-matched), asking $${thin.priceMedian}. Try to buy one — that's the story.`,
         productId: thin.id,
         receipts: `eBay active listings, BIN-only delivered, title-filtered · ${today} · catchemtcg.com` }
     : { id: "supply", angle: "Liquidity king",
@@ -599,7 +617,7 @@ const feed = {
   rawIndex: der?.rawIndex ?? null,
   reprintPressure: der?.reprintPressure ?? [],
   dealZone: der?.dealZone ?? null,
-  ripSellTrade: (await J("research/pulse/rip-sell-trade.json"))?.rows?.slice(0, 40) ?? null,
+  ripSellTrade: (await E("research/pulse/rip-sell-trade.json"))?.rows?.slice(0, 40) ?? null,
   netProceeds: der?.netProceeds ? { ...der.netProceeds,
     tcgModel: { pct: 13.25, fixed: 0.30, venue: "TCGplayer", ...(der.netProceeds.tcgModel || {}) } } : null,
   fx: der?.fx ?? null,
@@ -681,6 +699,22 @@ for (const p of feed.products || []) {
 const feedJson = JSON.stringify(feed) + "\n";
 await writeFile(join(ROOT,"research/pulse/pulse-feed.json"), feedJson);
 await writeFile(join(ROOT,"research/assets/pulse-feed.json"), feedJson);
+
+// Per-product deep-dive payloads a read can open (/dive/<id>).
+// Writes research/pulse/dive/* — already covered by the nightly git-add of research/pulse/.
+// No workflow edit. volume stays null until Insights solds exist.
+{
+  const { buildProductDives } = await import("./build-product-dives.mjs");
+  const diveBundle = await buildProductDives();
+  const diveIds = new Set(diveBundle.ids || []);
+  for (const p of feed.products || []) {
+    if (diveIds.has(p.id)) p.dive = `/dive/${p.id}`;
+  }
+  // Rewrite feed with dive links once payloads exist.
+  const feedJson2 = JSON.stringify(feed) + "\n";
+  await writeFile(join(ROOT,"research/pulse/pulse-feed.json"), feedJson2);
+  await writeFile(join(ROOT,"research/assets/pulse-feed.json"), feedJson2);
+}
 
 // ── PRINT & ROTATION WATCH page (rides this step; no workflow change) ──
 if (der?.printWatch?.length) {

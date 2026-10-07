@@ -80,15 +80,30 @@ export async function run() {
   t("the weekly 30-day sealed example matches that series",
     day30.sealed?.fromPrice === pack?.from && day30.sealed?.toPrice === pack?.to && day30.sealed?.percent === pack?.pct && day30.sealed?.fromDate === pack?.fromDate && day30.sealed?.toDate === pack?.toDate);
 
+  // trending.json is a living file: its markets are refreshed by hand (e.g.
+  // e9ab044 moved this ETB from $117.28 to $118.26 on 2026-10-05). Pinning the
+  // live value broke the nightly run without anything being wrong. The weekly
+  // letter froze the trending figure it compared in its omitted note, so the
+  // disagreement is checked against that frozen figure plus the two dated
+  // tcgcsv-daily files, which never change. The live file is only checked to
+  // still map this sku to product 624676.
   const trending = await readJson("trending.json");
   const trend = (trending.plays || []).find((row) => row.sku === "destined-rivals-etb");
   const day27 = (await readJson("data/history/tcgcsv-daily/2026-09-27.json")).prices.find((row) => row.id === 624676);
   const day29 = (await readJson("data/history/tcgcsv-daily/2026-09-29.json")).prices.find((row) => row.id === 624676);
+  const omitted = (weekly.priceMovers?.omitted || []).find((row) => row.id === "tcgcsv-624676");
+  const keptTrend = (omitted?.figures || []).find((row) => row.file === "trending.json" && row.sku === "destined-rivals-etb");
+  const keptDay27 = (omitted?.figures || []).find((row) => row.file === "data/history/tcgcsv-daily/2026-09-27.json");
+  const keptDay29 = (omitted?.figures || []).find((row) => row.file === "data/history/tcgcsv-daily/2026-09-29.json");
   t("the catalog day and the partial print and trending disagree",
-    day27?.market === 116.85 && day29?.market === 118.37 && trend?.market === 114.94 && new Set([day27.market, day29.market, trend.market]).size === 3);
+    day27?.market === 116.85 && day29?.market === 118.37
+      && keptDay27?.price === day27.market && keptDay29?.price === day29.market
+      && keptTrend?.price === 114.94
+      && trend?.tcgplayerProductId === 624676 && trend.market > 0
+      && new Set([day27.market, day29.market, keptTrend.price]).size === 3,
+    JSON.stringify({ day27: day27?.market, day29: day29?.market, letterTrending: keptTrend?.price, liveTrending: trend?.market, liveId: trend?.tcgplayerProductId }));
 
   const named = pricedRows(weekly).filter((row) => row.name === "Destined Rivals Elite Trainer Box");
-  const omitted = (weekly.priceMovers?.omitted || []).find((row) => row.id === "tcgcsv-624676");
   const figures = new Set((omitted?.figures || []).map((row) => row.price));
   t("Destined Rivals Elite Trainer Box is left out", named.length === 0 && omitted && !omitted.percent && !omitted.toPrice);
   t("the omitted note keeps both disagreeing markets and the catalog-day print",
@@ -99,7 +114,7 @@ export async function run() {
   return fail;
 }
 
-if (process.argv[1] && import.meta.url.endsWith("weekly-movers.suite.mjs")) {
+if (process.argv[1] && process.argv[1].endsWith("weekly-movers.suite.mjs")) {
   const n = await run();
   if (n) process.exit(1);
   console.log("weekly movers ok");

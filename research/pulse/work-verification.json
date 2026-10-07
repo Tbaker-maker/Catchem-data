@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-27T10:21:47.688Z",
+ "generatedAt": "2026-10-06T14:36:46.025Z",
  "purpose": "Checks output against the failure classes in our own error ledger — things that actually happened here, not generic quality rules.",
  "runsOn": "output, never intent. What I meant to do is not evidence.",
  "classesChecked": [
@@ -35,7 +35,7 @@
   },
   {
    "errorClass": "unviewed image",
-   "what": "66 rendered card(s) exist",
+   "what": "72 rendered card(s) exist",
    "why": "Nothing here can tell whether they LOOK right — clipping, overlap, a wordmark colliding with a stat row. Every card shown to a person must be opened and looked at first. That rule was broken twice today and both failures reached Tyler.",
    "ledgerRef": 18
   },
@@ -53,13 +53,13 @@
   },
   {
    "errorClass": "unverified success line",
-   "what": "build-editor.mjs:7419 reports ${shipped.toLocaleString(\"en-US\")} from an input, not from research/assets/card-index.json",
+   "what": "build-editor.mjs:7420 reports ${shipped.toLocaleString(\"en-US\")} from an input, not from research/assets/card-index.json",
    "why": "The number describes the file it READ, not the file it WROTE. build-editor printed the catalogue size over an index holding 41% of it, in plain output, for weeks. Derive the count from what was written, or mark the line as counting work rather than artifact.",
    "ledgerRef": "unverified-success-line"
   },
   {
    "errorClass": "unsettled view count",
-   "what": "./scripts/build-editor.mjs:265 cites 93 views for 2026-08-23-sunflora-only-good-vibes-pass-it with no reading age",
+   "what": "./scripts/build-editor.mjs:266 cites 93 views for 2026-08-23-sunflora-only-good-vibes-pass-it with no reading age",
    "why": "That reading was taken at 0.03h - below the 1h floor and excluded from analysis. A view count without its age is a reading age wearing the clothes of a result. State the age, or state that the claim is withdrawn.",
    "ledgerRef": "unsettled-view-count"
   }

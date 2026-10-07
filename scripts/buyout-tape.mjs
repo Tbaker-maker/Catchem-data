@@ -1,197 +1,123 @@
-// listingCount is filtered pages, not Browse total, not solds.
-// Buyout tape from files already on disk. Does not call eBay, does not harvest.
-//
-// Compares each product's latest listing observation to the one before it.
-// Uses the saved Browse response field `total` (priceHistory[].total, or a
-// heat-history total if one is ever stored) when BOTH dates have it.
-// Otherwise the row is the old filtered-page listingCount, and it says so.
-// No high/medium cutoff: this file does not define one.
+// Buyout tape. Does not call eBay. The nightly price job already calls Browse
+// and reads the response total. This file only records that total.
+// listingCount is the filtered page count. It is not the Browse total.
 
-import { readFile, writeFile, mkdir } from "node:fs/promises";
-import { existsSync } from "node:fs";
+import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
-const DATA = join(ROOT, "data");
+const TAPE = join(ROOT, "data", "buyout-tape.json");
 
 const NOTE = "listingCount is filtered pages, not Browse total, not solds.";
 
-function num(v) {
-  return typeof v === "number" && Number.isFinite(v) ? v : null;
+function numericTotal(value) {
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
 }
 
-function marksPack(id, meta) {
-  const name = typeof meta?.name === "string" ? meta.name : "";
-  const subtype = typeof meta?.subtype === "string" ? meta.subtype : "";
-  if (subtype === "booster-pack") return true;
-  if (typeof id === "string" && /(?:^|-)pack(?:-|$)/.test(id)) return true;
-  if (/\bbooster pack\b/i.test(name)) return true;
-  if (/\bpack\b/i.test(name)) return true;
-  return false;
+function numericPrice(value) {
+  return typeof value === "number" && Number.isFinite(value) && value > 0 ? value : null;
 }
 
-function pctChange(now, before) {
-  if (before === 0) return null;
-  return Math.round(((now - before) / before) * 1000) / 10;
-}
-
-function quantile(sorted, p) {
-  if (!sorted.length) return null;
-  const i = Math.min(sorted.length - 1, Math.max(0, Math.round((sorted.length - 1) * p)));
-  return sorted[i];
-}
-
-async function loadJson(path) {
-  return JSON.parse(await readFile(path, "utf8"));
-}
-
-function indexById(list) {
-  const map = new Map();
-  for (const row of list || []) {
-    if (row && row.id) map.set(row.id, row);
+async function readTape() {
+  try {
+    const doc = JSON.parse(await readFile(TAPE, "utf8"));
+    if (!doc || typeof doc !== "object" || Array.isArray(doc)) return { rows: [] };
+    if (!Array.isArray(doc.rows)) doc.rows = [];
+    return doc;
+  } catch {
+    return { note: NOTE, rows: [] };
   }
-  return map;
+}
+
+// A row is written only when this same run called eBay and saved a Browse total.
+// If the call does not return, the old rows stay and no filtered page count is
+// copied into the Browse total. A null Browse total stays unscored.
+export async function recordBuyoutHarvest(run) {
+  const prev = await readTape();
+  const saved = Array.isArray(run?.saved) ? run.saved : [];
+  const returned = [];
+  for (const item of saved) {
+    const total = numericTotal(item?.browseTotal);
+    const id = typeof item?.id === "string" ? item.id : "";
+    if (!id || total == null) continue;
+    returned.push({
+      id,
+      browseTotal: total,
+      price: numericPrice(item?.price),
+      name: typeof item?.name === "string" && item.name ? item.name : "",
+      date: typeof item?.date === "string" ? item.date : "",
+    });
+  }
+
+  if (!run?.ebayReturned || returned.length === 0) {
+    prev.note = prev.note || NOTE;
+    prev.harvestRan = false;
+    prev.ebayCalled = false;
+    prev.rows = (prev.rows || []).map((row) => ({ ...row }));
+    await writeFile(TAPE, JSON.stringify(prev, null, 2) + "\n");
+    return { harvestRan: false, ebayCalled: false, wrote: 0, kept: prev.rows.length };
+  }
+
+  const rows = (prev.rows || []).map((row) => ({ ...row }));
+  const index = new Map();
+  rows.forEach((row, i) => { if (row && row.id) index.set(row.id, i); });
+
+  for (const item of returned) {
+    const at = index.get(item.id);
+    const old = at == null ? null : rows[at];
+    const before = numericTotal(old?.browseTotalNow);
+    const row = {
+      id: item.id,
+      ebayCalled: true,
+      browseTotalNow: item.browseTotal,
+      browseTotalBefore: before,
+      level: "unscored",
+    };
+    if (old?.name) row.name = old.name;
+    else if (item.name) row.name = item.name;
+    if (item.date) row.latestDate = item.date;
+    if (old?.latestDate && old.latestDate !== item.date) row.previousDate = old.latestDate;
+    if (item.price != null) row.price = item.price;
+    if (at == null) {
+      index.set(item.id, rows.length);
+      rows.push(row);
+    } else {
+      rows[at] = row;
+    }
+  }
+
+  prev.note = prev.note || NOTE;
+  prev.harvestRan = true;
+  prev.ebayCalled = true;
+  prev.levelPolicy = "unscored";
+  prev.levelPolicyNote = "No cutoff. A row with a null Browse total stays unscored. A filtered page count is not the Browse total.";
+  const browseRows = rows.filter((row) => numericTotal(row.browseTotalNow) != null).length;
+  prev.countSourceSummary = {
+    browseTotalRows: browseRows,
+    filteredPageRows: rows.length - browseRows,
+    onlyFilteredPageCount: browseRows === 0,
+  };
+  const days = rows.map((row) => row.latestDate).filter((day) => /^\d{4}-\d{2}-\d{2}$/.test(day || ""));
+  if (days.length) prev.latestDateInFile = days.sort().at(-1);
+  delete prev.deltaDistribution;
+  delete prev.transitions;
+  prev.rows = rows;
+  prev.rowCount = rows.length;
+  await writeFile(TAPE, JSON.stringify(prev, null, 2) + "\n");
+  return { harvestRan: true, ebayCalled: true, wrote: returned.length, kept: rows.length - returned.length };
 }
 
 async function main() {
-  const heat = await loadJson(join(DATA, "heat-history.json"));
-  if (!Array.isArray(heat)) throw new Error("heat-history.json is not an array");
-
-  let catalog = [];
-  try { catalog = await loadJson(join(DATA, "sealed-products.json")); } catch { catalog = []; }
-  let pricesDoc = { products: [] };
-  try { pricesDoc = await loadJson(join(DATA, "sealed-prices.json")); } catch { pricesDoc = { products: [] }; }
-
-  const catalogById = indexById(catalog);
-  const priceById = indexById(pricesDoc.products);
-
-  const byId = new Map();
-  for (const row of heat) {
-    if (!row || !row.id || !row.date) continue;
-    if (!byId.has(row.id)) byId.set(row.id, []);
-    byId.get(row.id).push(row);
-  }
-
-  const rows = [];
-  let skippedPacks = 0;
-  let singleSnapshot = 0;
-  const transitions = {};
-  const dates = new Set();
-
-  for (const [id, series] of byId) {
-    const meta = catalogById.get(id) || priceById.get(id) || null;
-    if (marksPack(id, meta)) { skippedPacks++; continue; }
-
-    series.sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : 0);
-    for (const r of series) dates.add(r.date);
-    if (series.length < 2) { singleSnapshot++; continue; }
-
-    const latest = series[series.length - 1];
-    const prev = series[series.length - 2];
-    const history = priceById.get(id)?.priceHistory || [];
-    const totalByDate = new Map();
-    for (const h of history) {
-      const t = num(h?.total);
-      if (h?.date && t != null) totalByDate.set(h.date, t);
-    }
-
-    const browseNow = num(latest.total) ?? totalByDate.get(latest.date) ?? null;
-    const browseBefore = num(prev.total) ?? totalByDate.get(prev.date) ?? null;
-    const filteredNow = num(latest.listingCount);
-    const filteredBefore = num(prev.listingCount);
-
-    let listedNow, listedBefore, countSource, countSourceNote;
-    if (browseNow != null && browseBefore != null) {
-      listedNow = browseNow;
-      listedBefore = browseBefore;
-      countSource = "browse-total";
-      countSourceNote = "Saved eBay Browse response field total on both dates. Not listingCount, not solds.";
-    } else {
-      if (filteredNow == null || filteredBefore == null) continue;
-      listedNow = filteredNow;
-      listedBefore = filteredBefore;
-      countSource = "filtered-page-listingCount";
-      countSourceNote = browseNow == null && browseBefore == null
-        ? "No saved Browse total on these dates. listingCount is the filtered page count, not the eBay Browse total, and not solds."
-        : "Browse total is missing on one of these dates, so the delta uses listingCount. listingCount is the filtered page count, not the eBay Browse total, and not solds.";
-    }
-
-    const delta = listedNow - listedBefore;
-    const key = `${prev.date} -> ${latest.date}`;
-    transitions[key] = (transitions[key] || 0) + 1;
-
-    const name = typeof meta?.name === "string" && meta.name ? meta.name : null;
-    const row = {
-      id,
-      latestDate: latest.date,
-      previousDate: prev.date,
-      listedNow,
-      listedBefore,
-      delta,
-      pct: pctChange(listedNow, listedBefore),
-      level: "unscored",
-      countSource,
-      countSourceNote,
-      browseTotalNow: browseNow,
-      browseTotalBefore: browseBefore,
-    };
-    if (name) row.name = name;
-    rows.push(row);
-  }
-
-  rows.sort((a, b) => b.delta - a.delta || a.id.localeCompare(b.id));
-
-  const deltas = rows.map(r => r.delta).slice().sort((a, b) => a - b);
-  const usingBrowse = rows.filter(r => r.countSource === "browse-total").length;
-  const usingFiltered = rows.filter(r => r.countSource === "filtered-page-listingCount").length;
-  const sortedDates = [...dates].sort();
-
-  const marketDir = join(ROOT, "src", "data", "market");
-  const outPath = existsSync(marketDir)
-    ? join(marketDir, "buyout-tape.json")
-    : join(DATA, "buyout-tape.json");
-  if (outPath.startsWith(marketDir)) await mkdir(marketDir, { recursive: true });
-
-  const doc = {
-    note: NOTE,
-    harvestRan: false,
-    ebayCalled: false,
-    listingCountMeaning: "filtered page count kept after the sealed-price title filters, not the eBay Browse response total, and not units sold",
-    outputPath: outPath.slice(ROOT.length + 1),
-    asOfDates: sortedDates,
-    latestDateInFile: sortedDates.length ? sortedDates[sortedDates.length - 1] : null,
-    transitions,
-    countSourceSummary: {
-      browseTotalRows: usingBrowse,
-      filteredPageRows: usingFiltered,
-      onlyFilteredPageCount: usingBrowse === 0,
-    },
-    levelPolicy: "unscored",
-    levelPolicyNote: "No high or medium cutoff. The files do not define one, and the observed deltas are not a gap the file itself labels. Raw listedNow, listedBefore, delta, and pct are written instead.",
-    deltaDistribution: {
-      n: deltas.length,
-      min: deltas[0] ?? null,
-      p50: quantile(deltas, 0.5),
-      p90: quantile(deltas, 0.9),
-      p95: quantile(deltas, 0.95),
-      max: deltas.length ? deltas[deltas.length - 1] : null,
-    },
-    skippedPacks,
-    singleSnapshot,
-    rowCount: rows.length,
-    rows,
-  };
-
-  await writeFile(outPath, JSON.stringify(doc, null, 2) + "\n");
-  console.log(`wrote ${doc.outputPath}`);
-  console.log(`rows ${rows.length} browse ${usingBrowse} filtered ${usingFiltered} packs skipped ${skippedPacks}`);
-  console.log(`as-of ${doc.latestDateInFile} dates ${sortedDates.join(", ")}`);
-  console.log(`levels unscored ${rows.length}`);
+  // Running this file on its own does not call eBay. Leave the old rows.
+  const result = await recordBuyoutHarvest({ ebayReturned: false, saved: [] });
+  console.log(`harvestRan ${result.harvestRan} ebayCalled ${result.ebayCalled} wrote ${result.wrote} kept ${result.kept}`);
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+  main().catch((err) => {
+    console.error(err.message || err);
+    process.exit(1);
+  });
+}

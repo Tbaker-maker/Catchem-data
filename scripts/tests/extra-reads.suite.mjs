@@ -130,7 +130,7 @@ export async function run() {
   return fail;
 }
 
-if (process.argv[1] && import.meta.url.endsWith("extra-reads.suite.mjs")) {
+if (process.argv[1] && process.argv[1].endsWith("extra-reads.suite.mjs")) {
   const n = await run();
   if (n) process.exit(1);
   console.log("extra reads ok");

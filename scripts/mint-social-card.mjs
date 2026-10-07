@@ -58,7 +58,7 @@ ${statCells}
 // Exported: the old `file://argv[1]` CLI guard was false under the
 // pipeline import AND on Windows paths — no social card ever minted in CI.
 export async function mintSocialCard() {
-  const der = await J("data/derived-insights.json") ?? {};
+  const der = await (await import("./lib/publish-guard.mjs")).loadEditorialJson("data/derived-insights.json") ?? {};
   const sp = await J("data/sealed-prices.json") ?? { products: [] };
   const cm = await J("data/crosscheck-id-map.json") ?? { entries: [] };
   const tcg = {}; for (const e of cm.entries || []) if (e.reviewed && !e.exclude && e.tcgPlayerId) tcg[e.id] = e.tcgPlayerId;

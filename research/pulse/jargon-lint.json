@@ -1,7 +1,29 @@
 {
- "generatedAt": "2026-09-27T10:19:52.913Z",
+ "generatedAt": "2026-10-06T14:34:54.660Z",
  "surfaces": 5,
- "blocks": 0,
- "warns": 0,
- "findings": []
+ "blocks": 2,
+ "warns": 1,
+ "findings": [
+  {
+   "surface": "research/pulse/pulse-feed.json",
+   "term": "sealed premium",
+   "severity": "BLOCK",
+   "issue": "used without a plain-words explanation nearby",
+   "suggestedGloss": "how much more a sealed box costs per pack than buying packs loose"
+  },
+  {
+   "surface": "research/pulse/post-bank.json",
+   "term": "per-pack",
+   "severity": "WARN",
+   "issue": "used without a plain-words explanation nearby",
+   "suggestedGloss": "the box price divided by how many packs are inside"
+  },
+  {
+   "surface": "research/pulse/2026-10-06.md",
+   "term": "the spread",
+   "severity": "BLOCK",
+   "issue": "used without a plain-words explanation nearby",
+   "suggestedGloss": "the gap between what the two marketplaces are asking"
+  }
+ ]
 }

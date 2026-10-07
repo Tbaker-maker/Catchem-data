@@ -169,7 +169,7 @@ jobs:
         run: |
           git config user.name "catchem-bot"
           git config user.email "bot@catchem.app"
-          git add data/ppt/run-report.json
+          git add data/ppt/run-report.json data/buyout-tape.json
           git add data/sealed-prices.json data/heat-report.json data/heat-history.json \
                   data/divergence-report.json data/supply-watch.json \
                   data/derived-insights.json data/era-index-history.json \
@@ -283,7 +283,7 @@ jobs:
         run: |
           git config user.name "catchem-bot"
           git config user.email "bot@catchem.app"
-          git add data/ppt/run-report.json
+          git add data/ppt/run-report.json data/buyout-tape.json
           # Complete write-vs-commit matrix (audited 2026-08-19): every file a
           # step writes is listed here. A file written in CI but not added
           # evaporates at job end — the class that froze the app feed and ate

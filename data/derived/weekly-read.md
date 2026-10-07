@@ -1,19 +1,24 @@
-# Weekly Read — 2026-10-03
+# Weekly Read — 2026-10-06
 
 Video outline. Same four parts every week. Say "reads we tracked". Do not say a name is a play or a target.
 
 ## 1. Heat
-- No heat list in this run.
+- Chaos Rising Booster Bundle — Hot
+- Shining Legends Elite Trainer Box — Hot
+- Ultra Prism Booster Box — Hot
+- Chaos Rising Booster Pack — Hot
+- Paradox Rift Booster Pack — Hot
+- Perfect Order Booster Pack — Hot
 
 ## 2. Keeps showing up
 Status: building history
 
 Sealed
-- Stellar Crown Booster Pack — 1 in 7 days, 5 in 30, streak 1
-- Champion's Path Booster Pack — 2 in 7 days, 4 in 30, streak 1
-- Evolutions Elite Trainer Box — 0 in 7 days, 4 in 30, streak 0
-- Sword & Shield Booster Pack — 2 in 7 days, 3 in 30, streak 0
-- Paradox Rift Booster Pack — 1 in 7 days, 3 in 30, streak 0
+- Stellar Crown Booster Pack — 3 in 7 days, 7 in 30, streak 3
+- Evolutions Elite Trainer Box — 2 in 7 days, 6 in 30, streak 2
+- Prismatic Evolutions Surprise Box — 3 in 7 days, 5 in 30, streak 3
+- Celebrations Elite Trainer Box — 1 in 7 days, 4 in 30, streak 1
+- Paradox Rift Booster Pack — 1 in 7 days, 4 in 30, streak 0
 
 Singles
 - Surfing Pikachu VMAX — 0 in 7 days, 1 in 30, streak 1
@@ -23,13 +28,13 @@ Singles
 - Charizard VMAX — 0 in 7 days, 1 in 30, streak 1
 
 ## 3. Reads we tracked
-Tracked 4. Graded 1. Hits 0. Misses 1. Hit rate 0%.
+Tracked 2. Graded 0. Hits 0. Misses 0. Hit rate not enough yet.
 
-- Miss — Celebrations Ultra Premium Collection (sealed) -1.4%
+- Nothing graded yet. The misses will sit in this list with the hits.
 
 ## 4. Sealed line and chase line
 These are two lines. They are not one number.
-- 151: sealed 106.2; chase building history (Charizard ex, Blastoise ex, Venusaur ex)
-- Ascended Heroes: sealed 91.8; chase building history (Mega Dragonite ex, Mega Dragonite ex, Mega Gengar ex)
-- Astral Radiance: sealed 102.2; chase 95.2 (Machamp V, Origin Forme Palkia V, Beedrill V)
+- 151: sealed 99.1; chase building history (Charizard ex, Blastoise ex, Venusaur ex)
+- Ascended Heroes: sealed 92.1; chase building history (Mega Dragonite ex, Mega Dragonite ex, Mega Gengar ex)
+- Astral Radiance: sealed 99; chase 95.2 (Machamp V, Origin Forme Palkia V, Beedrill V)
 - Base Set: sealed building history; chase building history

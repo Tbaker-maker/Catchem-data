@@ -332,9 +332,9 @@ export function seededShuffle(ids, seedText) {
   return arr;
 }
 
-export function buildBrowse({ asOf, cardIds, rankedIds, news, waves }) {
+export function buildBrowse({ asOf, cardIds, rankedIds, news, waves, flagged, dives, volume, shape }) {
   const shuffled = seededShuffle(cardIds, asOf);
-  return {
+  const out = {
     asOf,
     rule: "A ranked filter stays in order. Every other loop is shuffled, unless a filter is on.",
     unfiltered: shuffled,
@@ -345,10 +345,32 @@ export function buildBrowse({ asOf, cardIds, rankedIds, news, waves }) {
       set: { order: "ranked", field: "set" },
       news: { order: "ranked", windowDays: 14, furtherBackWhenFiltered: true, file: "research/digests/news.json" },
       pokemon: { order: "shuffled unless the filter is on", readKind: "pokemon", premiumCanHide: true },
-      wave: { order: "ranked", items: waves },
+      wave: { order: "ranked", items: waves || [] },
+      flagged: { order: "ranked", readKind: "outlier", items: flagged || [], empty: "No flagged prices." },
+      dive: { order: "ranked", readKind: "dive", items: dives || [], empty: "No deep dives." },
     },
     newsCount: Array.isArray(news) ? news.length : 0,
   };
+  // The Volume filter exists only when a real TCGplayer sold count is on file.
+  if (Array.isArray(volume) && volume.length) {
+    out.filters.volume = {
+      order: "ranked",
+      readKind: "volume",
+      items: volume,
+      source: "TCGplayer sales via PokemonPriceTracker",
+      empty: "No sold counts on file.",
+    };
+  }
+  for (const [kind, block] of Object.entries(shape || {})) {
+    if (!block || !Array.isArray(block.items) || !block.items.length) continue;
+    out.filters[kind] = {
+      order: block.order === "ranked" ? "ranked" : "shuffled",
+      readKind: kind,
+      items: block.items,
+      empty: block.empty || "",
+    };
+  }
+  return out;
 }
 
 export function seriesRows(seriesMap, pid) {

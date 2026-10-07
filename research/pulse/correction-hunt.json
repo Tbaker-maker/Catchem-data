@@ -1,11 +1,48 @@
 {
- "generatedAt": "2026-09-27T10:19:54.865Z",
- "date": "2026-09-27",
- "mood": "We put something in front of readers and can no longer price it. That is the kind of thing worth noticing before somebody asks.",
+ "generatedAt": "2026-10-06T14:34:56.842Z",
+ "date": "2026-10-06",
+ "mood": "A handful of suspicious jumps in our own history. Probably ours, not the market's — that is the usual answer.",
  "confidence": "MEASURED",
  "note": "Re-checks numbers we already published. Flags are SUSPECT, not proven wrong — each needs a human or CC to verify against listings before a correction is filed.",
  "window": "40% inside 3 days",
- "suspectFigures": [],
+ "suspectFigures": [
+  {
+   "id": "sv5-pc-etb",
+   "name": "Temporal Forces Pokemon Center Elite Trainer Box",
+   "from": "2026-10-05",
+   "to": "2026-10-06",
+   "was": 253.74,
+   "became": 499.99,
+   "movePct": 97,
+   "published": true,
+   "read": "A 97% move over 1 day(s) on a sealed product is more consistent with a change in how we measured it than with the market. Both figures were published.",
+   "action": "verify against listings; if the earlier figure was an artefact, file a correction"
+  },
+  {
+   "id": "xy12-etb",
+   "name": "Evolutions Elite Trainer Box",
+   "from": "2026-10-03",
+   "to": "2026-10-05",
+   "was": 419.99,
+   "became": 760,
+   "movePct": 81,
+   "published": true,
+   "read": "A 81% move over 2 day(s) on a sealed product is more consistent with a change in how we measured it than with the market. Both figures were published.",
+   "action": "verify against listings; if the earlier figure was an artefact, file a correction"
+  },
+  {
+   "id": "cel25-etb",
+   "name": "Celebrations Elite Trainer Box",
+   "from": "2026-10-05",
+   "to": "2026-10-06",
+   "was": 300,
+   "became": 161.99,
+   "movePct": -46,
+   "published": true,
+   "read": "A 46% move over 1 day(s) on a sealed product is more consistent with a change in how we measured it than with the market. Both figures were published.",
+   "action": "verify against listings; if the earlier figure was an artefact, file a correction"
+  }
+ ],
  "featuredThenUnmeasurable": [
   {
    "name": "Umbreon VMAX",
@@ -46,7 +83,25 @@
    "name": "Umbreon VMAX",
    "featuredOn": "2026-09-26",
    "read": "we put this in front of readers and can no longer price it — either it stopped trading or our query broke"
+  },
+  {
+   "name": "Umbreon ex",
+   "featuredOn": "2026-09-27",
+   "read": "we put this in front of readers and can no longer price it — either it stopped trading or our query broke"
   }
  ],
- "draftCorrections": []
+ "draftCorrections": [
+  {
+   "product": "Temporal Forces Pokemon Center Elite Trainer Box",
+   "draft": "We published Temporal Forces Pokemon Center Elite Trainer Box at $253.74 on 2026-10-05 and $499.99 on 2026-10-06. A 97% move in that window is unlikely to be the market. One of those two figures was probably ours rather than the market's, and we are checking which."
+  },
+  {
+   "product": "Evolutions Elite Trainer Box",
+   "draft": "We published Evolutions Elite Trainer Box at $419.99 on 2026-10-03 and $760 on 2026-10-05. A 81% move in that window is unlikely to be the market. One of those two figures was probably ours rather than the market's, and we are checking which."
+  },
+  {
+   "product": "Celebrations Elite Trainer Box",
+   "draft": "We published Celebrations Elite Trainer Box at $300 on 2026-10-05 and $161.99 on 2026-10-06. A 46% move in that window is unlikely to be the market. One of those two figures was probably ours rather than the market's, and we are checking which."
+  }
+ ]
 }

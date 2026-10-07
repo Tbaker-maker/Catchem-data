@@ -16,6 +16,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { recordBuyoutHarvest } from "./buyout-tape.mjs";
 
 // Node's fetch has NO default timeout: a host that accepts the connection
 // and never answers hangs this script until the CI runner kills the job.
@@ -573,6 +574,7 @@ async function main() {
 console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
   const today = new Date().toISOString().split("T")[0];
   const startTs = Date.now();
+  const harvestSaved = [];
 
   const updated = await mapConcurrent(products, async (product) => {
     try {
@@ -663,7 +665,16 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
         // point — yesterday's total is never copied forward.
         const lastIdx = history.length - 1;
         const point = { date: today, price: agg.priceMedian };
-        if (typeof browseTotal === "number") point.total = browseTotal;
+        if (typeof browseTotal === "number") {
+          point.total = browseTotal;
+          harvestSaved.push({
+            id: product.id,
+            browseTotal,
+            price: typeof agg.priceMedian === "number" && agg.priceMedian > 0 ? agg.priceMedian : null,
+            name: product.name,
+            date: today,
+          });
+        }
         if (lastIdx >= 0 && history[lastIdx].date === today) {
           history[lastIdx] = point;
         } else {
@@ -731,6 +742,7 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
   const prevLive = Object.values(previous).filter(p => p?.dataStatus === "live").length;
   if (prevLive >= 50 && live < prevLive * 0.2) {
     console.error(`💥 WIPE GUARD: previous run had ${prevLive} live, this run has ${live}. Refusing to overwrite ${OUTPUT_FILE} — inspect the errors above.`);
+    await recordBuyoutHarvest({ ebayReturned: false, saved: [] });
     process.exit(1);
   }
 
@@ -745,9 +757,15 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
 
   await writeFile(OUTPUT_FILE, JSON.stringify(output, null, 2) + "\n");
   console.log(`💾 Wrote ${OUTPUT_FILE}`);
+  const harvest = await recordBuyoutHarvest({
+    ebayReturned: harvestSaved.length > 0,
+    saved: harvestSaved,
+  });
+  console.log(`buyout harvestRan ${harvest.harvestRan} ebayCalled ${harvest.ebayCalled} wrote ${harvest.wrote}`);
 }
 
-main().catch(err => {
-  console.error("💥 Fatal error:", err);
+main().catch(async (err) => {
+  try { await recordBuyoutHarvest({ ebayReturned: false, saved: [] }); } catch { /* keep the old tape */ }
+  console.error("💥 Fatal error:", err?.message || err);
   process.exit(1);
 });

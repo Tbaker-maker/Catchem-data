@@ -1150,7 +1150,7 @@
       if (!c) return "";
       if (typeof c === "string") {
         var hit = CARDS.filter(function (x) { return x.id === c; })[0];
-        if (hit && hit.src) return srcOf(hit);
+        if (hit) return hit.src ? srcOf(hit) : "";
         if (c.indexOf("jp-") === 0) return "";
         if (c.indexOf("c30-") === 0) return "/cards/c30/" + c.slice(4) + ".png";
         if (c.indexOf("pk-") === 0) return "/pocket-img/" + c.slice(3).replace("-", "/");
@@ -1183,9 +1183,63 @@
     }
     function pictureInFile(c) {
       var s = String((c && c.src) || "").split("?")[0];
-      return s === "/cards/c30/ir-moltres.png"
-        || s === "/cards/c30/ir-articuno.png"
-        || s === "/cards/c30/ir-zapdos.png";
+      return s === "/cards/c30/ir-articuno.png"
+        || s === "/cards/c30/ir-moltres.png"
+        || s === "/cards/c30/ir-zapdos.png"
+        || s === "/cards/seed/mep-10-pc.png"
+        || s === "/cards/seed/mep-10.png"
+        || s === "/cards/seed/mep-101-pc.png"
+        || s === "/cards/seed/mep-101.png"
+        || s === "/cards/seed/mep-22-pc.png"
+        || s === "/cards/seed/mep-22.png"
+        || s === "/cards/seed/mep-31-pc.png"
+        || s === "/cards/seed/mep-31.png"
+        || s === "/cards/seed/mep-70-pc.png"
+        || s === "/cards/seed/mep-70.png"
+        || s === "/cards/seed/mep-80-pc.png"
+        || s === "/cards/seed/mep-80.png"
+        || s === "/cards/seed/mep-88-pc.png"
+        || s === "/cards/seed/mep-88.png"
+        || s === "/cards/seed/mep-9-pc.png"
+        || s === "/cards/seed/mep-9.png"
+        || s === "/cards/seed/svp-123-pc.png"
+        || s === "/cards/seed/svp-123.png"
+        || s === "/cards/seed/svp-129-pc.png"
+        || s === "/cards/seed/svp-129.png"
+        || s === "/cards/seed/svp-13-pc.png"
+        || s === "/cards/seed/svp-13.png"
+        || s === "/cards/seed/svp-14-pc.png"
+        || s === "/cards/seed/svp-14.png"
+        || s === "/cards/seed/svp-141-pc.png"
+        || s === "/cards/seed/svp-141.png"
+        || s === "/cards/seed/svp-159-pc.png"
+        || s === "/cards/seed/svp-159.png"
+        || s === "/cards/seed/svp-173-pc.png"
+        || s === "/cards/seed/svp-173.png"
+        || s === "/cards/seed/svp-189-pc.png"
+        || s === "/cards/seed/svp-189.png"
+        || s === "/cards/seed/svp-203-pc.png"
+        || s === "/cards/seed/svp-203.png"
+        || s === "/cards/seed/svp-209-pc.png"
+        || s === "/cards/seed/svp-209.png"
+        || s === "/cards/seed/svp-210-pc.png"
+        || s === "/cards/seed/svp-210.png"
+        || s === "/cards/seed/svp-27-pc.png"
+        || s === "/cards/seed/svp-27.png"
+        || s === "/cards/seed/svp-44-pc.png"
+        || s === "/cards/seed/svp-44.png"
+        || s === "/cards/seed/svp-51-pc.png"
+        || s === "/cards/seed/svp-51.png"
+        || s === "/cards/seed/svp-65-pc.png"
+        || s === "/cards/seed/svp-65.png"
+        || s === "/cards/seed/svp-66-pc.png"
+        || s === "/cards/seed/svp-66.png"
+        || s === "/cards/seed/svp-75-pc.png"
+        || s === "/cards/seed/svp-75.png"
+        || s === "/cards/seed/svp-97-pc.png"
+        || s === "/cards/seed/svp-97.png"
+        || s === "/cards/seed/svp-98-pc.png"
+        || s === "/cards/seed/svp-98.png";
     }
     function thumbOf(c) {
       if (!pictureInFile(c)) return "";
@@ -1862,7 +1916,7 @@
     }
     function onDesk(c) {
       if (!c) return false;
-      if (!c.src) return false;
+      if (!c.src && c.fact !== "The picture is missing.") return false;
       var id = c.id || "";
       if (id.indexOf("stub-") === 0) return false;
       if (id === "xy6-11" || id === "sm1-79") return false;
@@ -2284,33 +2338,37 @@
       }
       return out.length === ids.length ? out : null;
     }
-    function path151For(who, kind) {
+    function path151Offer(who, kind) {
       if (!who) return null;
-      var i, row, cards;
+      var i, row, j, c, known, cards;
       for (i = 0; i < PATH_151.length; i++) {
         row = PATH_151[i];
         if (kind && row.kind !== kind) continue;
+        if (row.ids.indexOf("base5-3") !== -1 || row.ids.indexOf("base1-63") !== -1) continue;
+        known = [];
+        for (j = 0; j < row.ids.length; j++) {
+          c = cardById(row.ids[j]);
+          if (!c || c.id !== row.ids[j]) continue;
+          if (c.id === "base5-3" || c.id === "base1-63") continue;
+          if (setIdOf(c) !== "sv3pt5") continue;
+          known.push(c);
+        }
+        if (!known.length || !known.some(function (card) { return ofMon(card, who); })) continue;
         cards = pathCards(row.ids);
-        if (!cards) continue;
-        if (cards.some(function (c) { return ofMon(c, who); })) return cards;
+        return cards || [];
       }
       return null;
     }
+    function path151For(who, kind) {
+      var offer = path151Offer(who, kind);
+      if (!offer || !offer.length) return null;
+      return offer;
+    }
     function pickLine(who) {
-      var safe = path151For(who, "line");
-      if (safe) return safe;
+      var offer = path151Offer(who, "line");
+      if (offer) return offer;
       var fam = evoFamily(who);
       if (!fam || fam.length < 2) return [];
-      if (fam[0] === "Eevee" && fam.length > 3) {
-        if (who === "Eevee") {
-          var night = cohesiveCombos(["Eevee", "Espeon", "Umbreon"]);
-          if (night.length) return night[0];
-          var eevee = hottest(paperOf("Eevee"));
-          var tops = ["Umbreon", "Espeon", "Sylveon"].map(function (sp) { return hottest(rolePool(sp)); }).filter(Boolean);
-          return [eevee].concat(tops.slice(0, 2)).filter(Boolean);
-        }
-        fam = ["Eevee", who];
-      }
       var combos = cohesiveCombos(fam);
       return combos[0] || [];
     }
@@ -2386,6 +2444,7 @@
       var seen = {};
       function add(cards) {
         if (!cards || cards.some(function (c) { return !c; })) return;
+        if (cards.some(function (c) { return c.id === "base5-3" || c.id === "base1-63"; })) return;
         var k = cards.map(function (c) { return c.id; }).join("|");
         if (seen[k]) return;
         seen[k] = 1;
@@ -2535,7 +2594,7 @@
       if (!who) return [];
       if (kind === "line") return pickLine(who);
       if (kind === "trio") {
-        var birds = path151For(who, "trio");
+        var birds = path151Offer(who, "trio");
         if (birds) return birds;
       }
       var pool = paperOf(who).filter(function (c) { return c.id !== "base5-3" && c.id !== "base1-63"; });
@@ -2593,8 +2652,7 @@
           if (t.keys.indexOf(who) === -1) continue;
           var combos = cohesiveCombos(t.mons);
           if (combos.length) return combos[0];
-          var cards = t.mons.map(function (sp) { return hottest(paperOf(sp).filter(function (c) { return !isBulk(c); })); });
-          if (cards.every(Boolean)) return cards;
+          return [];
         }
         return [];
       }
@@ -2602,10 +2660,7 @@
         if (["Eevee","Espeon","Umbreon"].indexOf(who) === -1) return [];
         var night = cohesiveCombos(["Espeon", "Umbreon"]);
         if (night.length) return night[0];
-        var a = hottest(paperOf("Espeon").filter(function (c) { return !isBulk(c); }));
-        var b = hottest(paperOf("Umbreon").filter(function (c) { return !isBulk(c); }));
-        if (!a || !b) return [];
-        return [a, b];
+        return [];
       }
       return [];
     }
@@ -2852,6 +2907,8 @@
         return hits;
       }
       if (prompt === "line") {
+        var onlyLine = path151Offer(mon, "line");
+        if (onlyLine) return onlyLine;
         if (pairEditing() && pairFocus >= 0) {
           return pairBrowseRows();
         }
@@ -3075,9 +3132,9 @@
           offers.push({ v: "hand", l: "Other work", s: artKeys[0] });
         }
         var fam = evoFamily(who);
-        var linePath = path151For(who, "line");
-        if (linePath) {
-          offers.push({ v: "line", l: "Evo line", s: linePath.map(function (c) { return c.name; }).join(" → ") });
+        var lineOffer = path151Offer(who, "line");
+        if (lineOffer) {
+          if (lineOffer.length) offers.push({ v: "line", l: "Evo line", s: lineOffer.map(function (c) { return c.name; }).join(" → ") });
         } else if (fam && fam.length >= 2) {
           var lineOk = fam.every(function (sp) { return rolePool(sp).length; });
           if (fam[0] === "Eevee" && fam.length > 3) lineOk = rolePool("Eevee").length && rolePool(who === "Eevee" ? "Umbreon" : who).length;
@@ -3106,8 +3163,10 @@
         var buckets = { old: 0, mid: 0, now: 0 };
         pool.forEach(function (c) { var b = eraBucket(c); if (b) buckets[b] += 1; });
         if (buckets.old && buckets.mid && buckets.now) offers.push({ v: "eras", l: "Three eras", s: "Vintage → SWSH → now" });
-        var trioPath = path151For(who, "trio");
-        if (trioPath) offers.push({ v: "trio", l: "The birds", s: trioPath.map(function (c) { return c.name; }).join(" · ") });
+        var trioOffer = path151Offer(who, "trio");
+        if (trioOffer) {
+          if (trioOffer.length) offers.push({ v: "trio", l: "The birds", s: trioOffer.map(function (c) { return c.name; }).join(" · ") });
+        } else {
         var i, t;
         for (i = 0; i < TRIADS.length; i++) {
           t = TRIADS[i];
@@ -3115,6 +3174,7 @@
           if (t.l === "The birds") break;
           if (t.mons.every(function (sp) { return rolePool(sp).length; })) offers.push({ v: "trio", l: t.l, s: t.s });
           break;
+        }
         }
       }
       return offers;
@@ -3296,6 +3356,41 @@
       for (i = 0; i < CARDS.length; i++) if (pictureInFile(CARDS[i])) withPic += 1;
       return withPic + " with a picture · " + (CARDS.length - withPic) + " without";
     }
+    function applyRowPrices(rows) {
+      var by = {};
+      (rows || []).forEach(function (r) {
+        if (!r || !r.length || !r[0]) return;
+        var n = Number(r[6]);
+        if (!Number.isFinite(n) || n <= 0) return;
+        by[r[0]] = n;
+      });
+      CARDS.forEach(function (c) {
+        if (by[c.id] != null) c.usd = by[c.id];
+      });
+    }
+    function storedPrice(c) {
+      var n = Number(c && c.usd);
+      return Number.isFinite(n) && n > 0 ? n : 0;
+    }
+    var SCREEN = 40;
+    var screenAsk = 40;
+    var screenKey = "";
+    function pathwayView() {
+      return prompt === "line" || prompt === "trio" || prompt === "night" || prompt === "origin" || prompt === "megaform" || prompt === "dark" || prompt === "region" || prompt === "star" || prompt === "eras" || prompt === "then";
+    }
+    function listKey() {
+      return [medium, paperLang, prompt, mon, q, setFilter, era].join("|");
+    }
+    function screenRows(rows) {
+      var lead = [];
+      var later = [];
+      (rows || []).forEach(function (c) {
+        if (storedPrice(c) > 0 && pictureInFile(c)) lead.push(c);
+        else later.push(c);
+      });
+      lead.sort(function (a, b) { return storedPrice(b) - storedPrice(a); });
+      return { lead: lead, ordered: lead.concat(later) };
+    }
     function paintStrip() {
       var rows = list();
       if ((prompt === "artist" || prompt === "then") && setFilter && rows.length < 2 && (mon || q)) {
@@ -3306,7 +3401,11 @@
         rows = list();
         paintSets();
       }
-      var shown = rows;
+      var key = listKey();
+      if (key !== screenKey) { screenKey = key; screenAsk = SCREEN; }
+      var pack = pathwayView() ? null : screenRows(rows);
+      var shown = pack ? (screenAsk <= SCREEN ? pack.lead.slice(0, SCREEN) : pack.ordered.slice(0, screenAsk)) : rows;
+      var more = !!(pack && shown.length < pack.ordered.length);
       $("count").textContent = countLabel(rows, shown);
       $("pager").hidden = true;
       if ($("page-hint")) $("page-hint").hidden = true;
@@ -3338,6 +3437,7 @@
           "<div class=\"meta\"><strong>" + esc(c.name) + "</strong>" +
           "<div class=\"fact\">" + esc(line) + "</div></div></button>";
       }).join("");
+      if (more) $("strip").insertAdjacentHTML("beforeend", "<button type=\"button\" class=\"ghost\" data-more=\"1\">More</button>");
       }
       paintTray();
     }
@@ -3612,35 +3712,43 @@
       var onscreen;
       var title;
       if (sel.length === 2 && years.length >= 2) {
+        var bothPins = pins.map(function (id) {
+          var pinned = cardById(id);
+          return pinned && pinned.name ? pinned.name : ("No catalog row for " + id + ".");
+        }).join(". ");
         hookDoors = [
-          years[0] + ".\nThen " + years[1] + ".",
-          a.name + ".\nThen the new one.",
-          "Same artist.\n" + years[0] + " to " + years[1] + "."
+          bothPins + ".",
+          years[0] + ".\nThen " + years[1] + ".\n" + bothPins + ".",
+          "Same artist.\n" + bothPins + "."
         ];
-        shots = [
-          "0–1s: full frame on " + a.name + ". No move.",
-          "1–8s: slow tilt. Card stays. Light moves.",
-          "8–14s: cut to " + b.name + ". Same crop.",
-          "14–22s: hold. Don’t zoom."
-        ];
+        shots = pins.map(function (id, i) {
+          var pinned = cardById(id);
+          var label = pinned && pinned.name ? pinned.name : ("No catalog row for " + id + ".");
+          return (i === 0 ? "0–1s: " : "1–8s: ") + label + ".";
+        });
         if (yt) shots.push("22–38s: both in frame if you can. End still.");
         else shots.push("22–28s: end on the one you’d keep.");
-        onscreen = years[0] + "  →  " + years[1];
-        title = (a.species || a.name) + ". " + years[0] + " vs " + years[1] + ".";
+        onscreen = bothPins;
+        title = bothPins + ".";
       } else if (sel.length >= 2) {
+        var everyPin = pins.map(function (id) {
+          var pinned = cardById(id);
+          return pinned && pinned.name ? pinned.name : ("No catalog row for " + id + ".");
+        }).join(". ");
         hookDoors = [
-          (a.species || a.name) + ".",
-          sel.length + " prints. One keep.",
-          a.year + "."
+          everyPin + ".",
+          sel.length + " prints. " + everyPin + ".",
+          everyPin + "."
         ];
-        shots = [
-          "0–1s: lock " + a.name + ".",
-          "1–7s: tilt.",
-          "7–14s: next card. Same distance.",
-          yt ? "14–36s: last card. Hold." : "14–24s: last card. Hold."
-        ];
-        onscreen = sel.map(function (c) { return c.year || c.name; }).join("  ·  ");
-        title = (a.species || a.name) + ". Then & now.";
+        shots = pins.map(function (id, i) {
+          var pinned = cardById(id);
+          var label = pinned && pinned.name ? pinned.name : ("No catalog row for " + id + ".");
+          return (i === 0 ? "0–1s: " : (i + "–" + (i + 6) + "s: ")) + label + ".";
+        });
+        if (yt) shots.push("Hold the last card.");
+        else shots.push("Hold the last card.");
+        onscreen = everyPin;
+        title = everyPin + ".";
       } else {
         hookDoors = [
           a.name + ".",
@@ -3989,11 +4097,16 @@
           "One in the grass. One in a tree.\n\nWho did it better\nChunkachu or Treeachu?!?!"
         ];
       } else {
+        var pinNames = pins.map(function (id) {
+          var pinned = cardById(id);
+          return pinned && pinned.name ? pinned.name : ("No catalog row for " + id + ".");
+        });
+        var named = pinNames.join(". ");
         var facts = sel.map(factOf).filter(Boolean);
         doors = [
-          facts.length ? (facts.length === 1 ? facts[0] : facts.join("\n") + "\n\nKeep the one that still feels like yours.") : (sel.map(function (c) { return c.year; }).filter(function (y, i, a) { return a.indexOf(y) === i; }).join(" · ") + "\n\nKeep the one that still feels like yours."),
-          sel.length === 2 ? (sel[0].year + " or " + sel[1].year + ".") : sel.map(function (c) { return c.year + " · " + c.set; }).join("\n"),
-          sel.map(function (c) { return c.set; }).join(" / ")
+          named + (facts.length ? ("\n" + facts.join("\n")) : ""),
+          named + ".",
+          named + "."
         ];
       }
       var next = doors[door % doors.length];
@@ -4680,6 +4793,12 @@
         prompt = snapPrompt("all");
         resetPage();
         paintMons(); paintSets(); paintPrompts(); paintStrip();
+        return;
+      }
+      var moreBtn = e.target.closest("[data-more]");
+      if (moreBtn) {
+        screenAsk += SCREEN;
+        paintStrip();
         return;
       }
       var b = e.target.closest("[data-id]");
@@ -5654,7 +5773,8 @@
       })
       .then(function (d) { merge(d || [], ""); bootPaint("Visuals"); return fetchJson(assetUrl("cards/full/index.json?v=19sep-share")); })
       .then(function (d) { merge(d || [], ""); bootPaint("English"); return fetchJson(assetUrl("cards/jp/index.json?v=11sep-vis2")); })
-      .then(function (d) { merge(d || [], " jp"); return fetchJson(assetUrl("cards/prices.json?v=16sep-price")); })
+      .then(function (d) { merge(d || [], " jp"); return fetchJson(assetUrl("paper-rows.json")); })
+      .then(function (d) { applyRowPrices(d); return fetchJson(assetUrl("cards/prices.json?v=16sep-price")); })
       .then(function (d) { applyPrices(d); bootPaint("Closed beta"); finishBoot(); return syncLiveSets(); })
       .catch(function () {
         bootPaint("Closed beta");

@@ -4,8 +4,8 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { dropTiledCycles, pretty, slug } from "./lib/public-bundle.mjs";
 import { publishFeed, readCallLog, readShelfFile } from "./lib/feed-catalogue.mjs";
-import { assembleCatalog, buildBrowse, supplyNotes } from "./lib/extra-reads.mjs";
-import { supplyMap, writeExtra } from "./build-extra-reads.mjs";
+import { assembleCatalog, supplyNotes } from "./lib/extra-reads.mjs";
+import { supplyMap, writeFeedExtras } from "./build-extra-reads.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "research/assets/public");
@@ -164,6 +164,7 @@ try {
   newsCount = (news.filters?.news?.items || []).length;
   waves = (news.catalog || []).filter((row) => row && (row.wave || row.reprint));
 } catch { /* news stays in its own file */ }
-const browse = buildBrowse({ asOf: catalog.asOf || "", cardIds, rankedIds: ranked, news: new Array(newsCount), waves });
-const extraSummary = await writeExtra(ROOT, extra, browse);
+// Flagged-price (outlier) and dive-teaser reads are rebuilt here from the files
+// on disk, the same way build-extra-reads does — writeExtra alone strips them.
+const extraSummary = await writeFeedExtras(ROOT, extra, { asOf: catalog.asOf || "", cardIds, rankedIds: ranked, news: new Array(newsCount), waves });
 console.log(JSON.stringify({ extra: extraSummary }));
