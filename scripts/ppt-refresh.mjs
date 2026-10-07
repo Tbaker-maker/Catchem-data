@@ -15,7 +15,7 @@ import {
   planFromRecords,
   usageSkeleton,
 } from "./lib/ppt-plan.mjs";
-import { orderRefreshCalls, sanitizeDates, setBand } from "./lib/ppt-refresh-order.mjs";
+import { nextEmptySealed, orderRefreshCalls, sanitizeDates, sanitizeEmpty, setBand, skipRecentEmpty } from "./lib/ppt-refresh-order.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const BASE = "https://www.pokemonpricetracker.com/api/v2";
@@ -92,12 +92,13 @@ export async function executePlan({ key, calls, fetchImpl, reserve, rawDir, budg
   const items = { sealed: 0, singles: 0, slabs: 0 };
   const errors = [];
   const done = [];
+  const empty = [];
   let skipped = 0;
   let rateLimits = 0;
   let retries = 0;
   let failedInRow = 0;
   const finished = new Set(alreadyDone || []);
-  if (!key) return { used, items, errors, raw: "not fetched", skipped, rateLimits, retries, done };
+  if (!key) return { used, items, errors, raw: "not fetched", skipped, rateLimits, retries, done, empty };
   if (rawDir) await mkdir(rawDir, { recursive: true });
   const queue = (calls || []).filter((call) => call?.id && call.estimated > 0 && !finished.has(call.id));
   for (let i = 0; i < queue.length; i += 1) {
@@ -139,13 +140,14 @@ export async function executePlan({ key, calls, fetchImpl, reserve, rawDir, budg
     used.total += spent;
     items[call.bucket] = (items[call.bucket] || 0) + call.items;
     done.push(call.id);
+    if (call.bucket === "sealed" && Array.isArray(body?.data) && body.data.length === 0) empty.push(call.id);
     if (rawDir) await writeFile(join(rawDir, `${call.id}.json`), JSON.stringify(body));
     if (used.total >= budget) {
       for (const rest of queue.slice(i + 1)) skipped += rest.items || 1;
       break;
     }
   }
-  return { used, items, errors, raw: rawDir ? "artifact" : "not fetched", skipped, rateLimits, retries, done };
+  return { used, items, errors, raw: rawDir ? "artifact" : "not fetched", skipped, rateLimits, retries, done, empty };
 }
 
 export async function loadQueue(root = ROOT) {
@@ -250,13 +252,20 @@ export async function main() {
     try { cursor = JSON.parse(await readFile(cursorPath, "utf8")); } catch { cursor = { done: [] }; }
   }
   let dates = {};
+  let emptySealed = {};
   if (existsSync(datesPath)) {
-    try { dates = sanitizeDates(JSON.parse(await readFile(datesPath, "utf8"))); } catch { dates = {}; }
+    try {
+      const saved = JSON.parse(await readFile(datesPath, "utf8"));
+      dates = sanitizeDates(saved);
+      emptySealed = sanitizeEmpty(saved);
+    } catch { dates = {}; emptySealed = {}; }
   }
   if (key) {
     const stats = { rateLimits: 0 };
     const volumes = await volumeBySet(ROOT);
-    const calls = orderRefreshCalls(callsFor(sealed, sets, { dates, volumes }));
+    // Sealed ids that came back empty in the last week are not asked again yet.
+    const { calls: wanted, skipped: emptySkipped } = skipRecentEmpty(callsFor(sealed, sets, { dates, volumes }), emptySealed, today);
+    const calls = orderRefreshCalls(wanted);
     const alreadyDone = resumeIds(cursor, calls.map((call) => call.id), today);
     const ran = await executePlan({
       key,
@@ -287,7 +296,15 @@ export async function main() {
     const nextDates = { ...dates };
     for (const id of ran.done) nextDates[id] = today;
     await mkdir(join(ROOT, "ppt-raw-private"), { recursive: true });
-    await writeFile(datesPath, `${JSON.stringify({ asOf: today, dates: sanitizeDates(nextDates) }, null, 2)}\n`);
+    const nextEmpty = nextEmptySealed(emptySealed, { done: ran.done, empty: ran.empty, today });
+    usage.emptySealed = {
+      skippedToday: emptySkipped.length,
+      foundEmptyToday: ran.empty.length,
+      marked: Object.keys(nextEmpty).length,
+      recheckDays: 7,
+      note: "Sealed ids PPT answered with no product. Skipped until a week has passed, then asked once more.",
+    };
+    await writeFile(datesPath, `${JSON.stringify({ asOf: today, dates: sanitizeDates(nextDates), emptySealed: nextEmpty }, null, 2)}\n`);
     cursor = {
       asOf: today,
       done: [...new Set([...alreadyDone, ...ran.done])],

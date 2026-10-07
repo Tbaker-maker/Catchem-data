@@ -36,3 +36,47 @@ export function orderRefreshCalls(calls) {
     return String(a.id).localeCompare(String(b.id));
   });
 }
+
+// ── Empty sealed lookups ───────────────────────────────────────────────────
+// Some sealed tcgPlayerIds come back from PPT with data: [] yet are still
+// billed (2 credits each on 2026-10-06, 75 of 389). We remember the day an id
+// came back empty and skip it until EMPTY_RECHECK_DAYS have passed, then ask
+// once more. Any non-empty answer clears the mark. Ids only; no prices.
+export const EMPTY_RECHECK_DAYS = 7;
+
+export function sanitizeEmpty(input) {
+  const src = input && typeof input === "object" && input.emptySealed && typeof input.emptySealed === "object" ? input.emptySealed : {};
+  const out = {};
+  for (const [id, value] of Object.entries(src)) {
+    if (/^sealed-/.test(id) && typeof value === "string" && /^\d{4}-\d{2}-\d{2}/.test(value)) out[id] = value.slice(0, 10);
+  }
+  return out;
+}
+
+function daysBetween(a, b) {
+  return Math.round((Date.parse(`${b}T00:00:00Z`) - Date.parse(`${a}T00:00:00Z`)) / 86400000);
+}
+
+/** Drops sealed calls whose id came back empty less than EMPTY_RECHECK_DAYS ago. */
+export function skipRecentEmpty(calls, empty, today, days = EMPTY_RECHECK_DAYS) {
+  const kept = [];
+  const skipped = [];
+  for (const call of calls || []) {
+    const seen = call?.bucket === "sealed" ? empty?.[call.id] : null;
+    if (seen && daysBetween(seen, today) >= 0 && daysBetween(seen, today) < days) skipped.push(call.id);
+    else kept.push(call);
+  }
+  return { calls: kept, skipped };
+}
+
+/** Next empty map: today's empties marked, today's non-empty answers cleared. */
+export function nextEmptySealed(prev, { done = [], empty = [], today }) {
+  const out = { ...(prev || {}) };
+  const emptySet = new Set(empty);
+  for (const id of done) {
+    if (!/^sealed-/.test(id)) continue;
+    if (emptySet.has(id)) out[id] = today;
+    else delete out[id];
+  }
+  return Object.fromEntries(Object.keys(out).sort().map((id) => [id, out[id]]));
+}
