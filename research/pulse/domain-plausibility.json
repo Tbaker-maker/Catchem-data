@@ -1,15 +1,15 @@
 {
- "generatedAt": "2026-10-06T14:34:56.884Z",
+ "generatedAt": "2026-10-07T11:22:43.958Z",
  "termSuspects": [
   {
    "term": "lot",
-   "kills": 631,
+   "kills": 650,
    "suspicious": false,
    "note": ""
   },
   {
    "term": "pokemon center",
-   "kills": 356,
+   "kills": 358,
    "suspicious": false,
    "note": ""
   },
@@ -21,19 +21,19 @@
   },
   {
    "term": "set of",
-   "kills": 169,
+   "kills": 158,
    "suspicious": false,
    "note": ""
   },
   {
    "term": "heavy",
-   "kills": 129,
+   "kills": 133,
    "suspicious": false,
    "note": ""
   },
   {
    "term": "bundle",
-   "kills": 116,
+   "kills": 122,
    "suspicious": false,
    "note": ""
   }
@@ -42,110 +42,110 @@
  "rules": 5,
  "findings": [
   {
-   "id": "swsh5-pack",
-   "name": "Battle Styles Booster Pack",
-   "what": "72% rejection rate (42/150)",
-   "expected": "a healthy query keeps most of what it fetches",
-   "likelyCause": "largest bucket: exclude = 57. A single over-broad term can eat a market.",
-   "severity": "high",
-   "chip": "READ"
-  },
-  {
    "id": "sv1-pack",
    "name": "Scarlet & Violet Booster Pack",
    "what": "95% rejection rate (8/150)",
    "expected": "a healthy query keeps most of what it fetches",
-   "likelyCause": "largest bucket: set = 49. A single over-broad term can eat a market.",
+   "likelyCause": "largest bucket: set = 57. A single over-broad term can eat a market.",
    "severity": "high",
    "chip": "READ"
   },
   {
    "id": "sv3pt5-pack",
    "name": "151 Booster Pack",
-   "what": "81% rejection rate (28/150)",
-   "expected": "a healthy query keeps most of what it fetches",
-   "likelyCause": "largest bucket: type = 72. A single over-broad term can eat a market.",
-   "severity": "high",
-   "chip": "READ"
-  },
-  {
-   "id": "sv8pt5-pack",
-   "name": "Prismatic Evolutions Booster Pack",
-   "what": "29 listings kept from 150 fetched",
-   "expected": "an in-print product this recent should hold dozens of listings at minimum",
-   "likelyCause": "81% of fetched listings were rejected — check filterReport.excludeTerms and failType before believing this is the market",
-   "severity": "high",
-   "chip": "READ"
-  },
-  {
-   "id": "sv8pt5-pack",
-   "name": "Prismatic Evolutions Booster Pack",
-   "what": "81% rejection rate (29/150)",
-   "expected": "a healthy query keeps most of what it fetches",
-   "likelyCause": "largest bucket: type = 79. A single over-broad term can eat a market.",
-   "severity": "high",
-   "chip": "READ"
-  },
-  {
-   "id": "sv9-pack",
-   "name": "Journey Together Booster Pack",
-   "what": "80% rejection rate (30/150)",
-   "expected": "a healthy query keeps most of what it fetches",
-   "likelyCause": "largest bucket: type = 56. A single over-broad term can eat a market.",
-   "severity": "high",
-   "chip": "READ"
-  },
-  {
-   "id": "sv10-pack",
-   "name": "Destined Rivals Booster Pack",
-   "what": "80% rejection rate (30/150)",
-   "expected": "a healthy query keeps most of what it fetches",
-   "likelyCause": "largest bucket: exclude = 57. A single over-broad term can eat a market.",
-   "severity": "high",
-   "chip": "READ"
-  },
-  {
-   "id": "me1-pack",
-   "name": "Mega Evolution Booster Pack",
-   "what": "14 listings kept from 150 fetched",
-   "expected": "an in-print product this recent should hold dozens of listings at minimum",
-   "likelyCause": "91% of fetched listings were rejected — check filterReport.excludeTerms and failType before believing this is the market",
-   "severity": "high",
-   "chip": "READ"
-  },
-  {
-   "id": "me1-pack",
-   "name": "Mega Evolution Booster Pack",
-   "what": "91% rejection rate (14/150)",
+   "what": "78% rejection rate (33/150)",
    "expected": "a healthy query keeps most of what it fetches",
    "likelyCause": "largest bucket: type = 69. A single over-broad term can eat a market.",
    "severity": "high",
    "chip": "READ"
   },
   {
-   "id": "me2-pack",
-   "name": "Phantasmal Flames Booster Pack",
-   "what": "77% rejection rate (34/150)",
+   "id": "sv4-pack",
+   "name": "Paradox Rift Booster Pack",
+   "what": "71% rejection rate (44/150)",
+   "expected": "a healthy query keeps most of what it fetches",
+   "likelyCause": "largest bucket: exclude = 58. A single over-broad term can eat a market.",
+   "severity": "high",
+   "chip": "READ"
+  },
+  {
+   "id": "sv8pt5-pack",
+   "name": "Prismatic Evolutions Booster Pack",
+   "what": "21 listings kept from 150 fetched",
+   "expected": "an in-print product this recent should hold dozens of listings at minimum",
+   "likelyCause": "86% of fetched listings were rejected — check filterReport.excludeTerms and failType before believing this is the market",
+   "severity": "high",
+   "chip": "READ"
+  },
+  {
+   "id": "sv8pt5-pack",
+   "name": "Prismatic Evolutions Booster Pack",
+   "what": "86% rejection rate (21/150)",
+   "expected": "a healthy query keeps most of what it fetches",
+   "likelyCause": "largest bucket: type = 81. A single over-broad term can eat a market.",
+   "severity": "high",
+   "chip": "READ"
+  },
+  {
+   "id": "sv9-pack",
+   "name": "Journey Together Booster Pack",
+   "what": "77% rejection rate (35/150)",
    "expected": "a healthy query keeps most of what it fetches",
    "likelyCause": "largest bucket: exclude = 54. A single over-broad term can eat a market.",
    "severity": "high",
    "chip": "READ"
   },
   {
-   "id": "me2pt5-pack",
-   "name": "Ascended Heroes Booster Pack",
-   "what": "26 listings kept from 150 fetched",
+   "id": "sv10-pack",
+   "name": "Destined Rivals Booster Pack",
+   "what": "79% rejection rate (32/150)",
+   "expected": "a healthy query keeps most of what it fetches",
+   "likelyCause": "largest bucket: type = 64. A single over-broad term can eat a market.",
+   "severity": "high",
+   "chip": "READ"
+  },
+  {
+   "id": "me1-pack",
+   "name": "Mega Evolution Booster Pack",
+   "what": "15 listings kept from 150 fetched",
    "expected": "an in-print product this recent should hold dozens of listings at minimum",
-   "likelyCause": "83% of fetched listings were rejected — check filterReport.excludeTerms and failType before believing this is the market",
+   "likelyCause": "90% of fetched listings were rejected — check filterReport.excludeTerms and failType before believing this is the market",
+   "severity": "high",
+   "chip": "READ"
+  },
+  {
+   "id": "me1-pack",
+   "name": "Mega Evolution Booster Pack",
+   "what": "90% rejection rate (15/150)",
+   "expected": "a healthy query keeps most of what it fetches",
+   "likelyCause": "largest bucket: type = 65. A single over-broad term can eat a market.",
+   "severity": "high",
+   "chip": "READ"
+  },
+  {
+   "id": "me2-pack",
+   "name": "Phantasmal Flames Booster Pack",
+   "what": "80% rejection rate (30/150)",
+   "expected": "a healthy query keeps most of what it fetches",
+   "likelyCause": "largest bucket: type = 58. A single over-broad term can eat a market.",
    "severity": "high",
    "chip": "READ"
   },
   {
    "id": "me2pt5-pack",
    "name": "Ascended Heroes Booster Pack",
-   "what": "83% rejection rate (26/150)",
+   "what": "28 listings kept from 150 fetched",
+   "expected": "an in-print product this recent should hold dozens of listings at minimum",
+   "likelyCause": "81% of fetched listings were rejected — check filterReport.excludeTerms and failType before believing this is the market",
+   "severity": "high",
+   "chip": "READ"
+  },
+  {
+   "id": "me2pt5-pack",
+   "name": "Ascended Heroes Booster Pack",
+   "what": "81% rejection rate (28/150)",
    "expected": "a healthy query keeps most of what it fetches",
-   "likelyCause": "largest bucket: type = 80. A single over-broad term can eat a market.",
+   "likelyCause": "largest bucket: type = 76. A single over-broad term can eat a market.",
    "severity": "high",
    "chip": "READ"
   },
@@ -163,7 +163,7 @@
    "name": "Perfect Order Booster Pack",
    "what": "82% rejection rate (27/150)",
    "expected": "a healthy query keeps most of what it fetches",
-   "likelyCause": "largest bucket: type = 67. A single over-broad term can eat a market.",
+   "likelyCause": "largest bucket: type = 63. A single over-broad term can eat a market.",
    "severity": "high",
    "chip": "READ"
   },
@@ -179,9 +179,9 @@
   {
    "id": "xy12-etb",
    "name": "Evolutions Elite Trainer Box",
-   "what": "81% rejection rate (28/150)",
+   "what": "75% rejection rate (38/150)",
    "expected": "a healthy query keeps most of what it fetches",
-   "likelyCause": "largest bucket: set = 62. A single over-broad term can eat a market.",
+   "likelyCause": "largest bucket: set = 60. A single over-broad term can eat a market.",
    "severity": "high",
    "chip": "READ"
   },
@@ -206,7 +206,7 @@
   {
    "id": "sm1-booster-box",
    "name": "Sun & Moon Booster Box",
-   "what": "94% rejection rate (9/150)",
+   "what": "93% rejection rate (10/150)",
    "expected": "a healthy query keeps most of what it fetches",
    "likelyCause": "largest bucket: set = 43. A single over-broad term can eat a market.",
    "severity": "high",
@@ -215,18 +215,18 @@
   {
    "id": "sm1-etb",
    "name": "Sun & Moon Elite Trainer Box",
-   "what": "71% rejection rate (43/150)",
+   "what": "71% rejection rate (44/150)",
    "expected": "a healthy query keeps most of what it fetches",
-   "likelyCause": "largest bucket: set = 50. A single over-broad term can eat a market.",
+   "likelyCause": "largest bucket: set = 48. A single over-broad term can eat a market.",
    "severity": "high",
    "chip": "READ"
   },
   {
    "id": "sm8-etb",
    "name": "Lost Thunder Elite Trainer Box",
-   "what": "98% rejection rate (3/122)",
+   "what": "98% rejection rate (3/124)",
    "expected": "a healthy query keeps most of what it fetches",
-   "likelyCause": "largest bucket: set = 118. A single over-broad term can eat a market.",
+   "likelyCause": "largest bucket: set = 120. A single over-broad term can eat a market.",
    "severity": "high",
    "chip": "READ"
   },
@@ -244,25 +244,25 @@
    "name": "Mega Evolution Booster Bundle",
    "what": "87% rejection rate (20/150)",
    "expected": "a healthy query keeps most of what it fetches",
-   "likelyCause": "largest bucket: exclude = 116. A single over-broad term can eat a market.",
+   "likelyCause": "largest bucket: exclude = 118. A single over-broad term can eat a market.",
    "severity": "high",
    "chip": "READ"
   },
   {
    "id": "swsh1-booster-box",
    "name": "Sword & Shield Base Booster Box",
-   "what": "81% rejection rate (10/52)",
+   "what": "81% rejection rate (10/54)",
    "expected": "a healthy query keeps most of what it fetches",
-   "likelyCause": "largest bucket: set = 23. A single over-broad term can eat a market.",
+   "likelyCause": "largest bucket: set = 26. A single over-broad term can eat a market.",
    "severity": "high",
    "chip": "READ"
   },
   {
    "id": "cel25-bb",
    "name": "Celebrations Booster Bundle",
-   "what": "86% rejection rate (21/150)",
+   "what": "83% rejection rate (26/150)",
    "expected": "a healthy query keeps most of what it fetches",
-   "likelyCause": "largest bucket: set = 119. A single over-broad term can eat a market.",
+   "likelyCause": "largest bucket: set = 105. A single over-broad term can eat a market.",
    "severity": "high",
    "chip": "READ"
   }
