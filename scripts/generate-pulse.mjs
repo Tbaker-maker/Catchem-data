@@ -531,8 +531,8 @@ if (s0) storyKits.push({
   const deep = [...pub].sort((a, b) => (b.listingCount || 0) - (a.listingCount || 0))[0];
   if (thin || deep) storyKits.push(thin
     ? { id: "supply", angle: "Scarcity on tape",
-        headline: `${thin.name}: ${thin.listingCount} listings left`,
-        body: `Only ${thin.listingCount} active listing${thin.listingCount === 1 ? "" : "s"} on all of eBay, asking $${thin.priceMedian}. Try to buy one — that's the story.`,
+        headline: `${thin.name}: ${thin.listingCount} listing${thin.listingCount === 1 ? "" : "s"} in our filtered count`,
+        body: `Only ${thin.listingCount} listing${thin.listingCount === 1 ? "" : "s"} made it through our filtered eBay count (Buy It Now, delivered, title-matched), asking $${thin.priceMedian}. Try to buy one — that's the story.`,
         productId: thin.id,
         receipts: `eBay active listings, BIN-only delivered, title-filtered · ${today} · catchemtcg.com` }
     : { id: "supply", angle: "Liquidity king",

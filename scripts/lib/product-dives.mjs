@@ -11,6 +11,42 @@ export const VOLUME_NOTE =
 
 export const OUTLIER_SOURCE = "data/derived/sealed-price-outliers.json";
 
+// Net change in the eBay Browse search total between the first and the last day
+// that total was recorded. It is an estimate of listing churn, nothing more:
+// listings end, get relisted or pulled for many reasons. It must never be
+// called a sale count, and reads may use it only after MIN_DAYS of totals.
+export const LISTING_CHANGE_LABEL = "net change in active eBay listings (estimate)";
+export const LISTING_CHANGE_MIN_DAYS_FOR_READS = 7;
+export const LISTING_CHANGE_SOURCE = "data/sealed-prices.json priceHistory[].total (eBay Browse search total)";
+
+export function listingChangeEstimate(product) {
+  const byDate = new Map();
+  for (const p of product?.priceHistory || []) {
+    const day = String(p?.date || "").slice(0, 10);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) continue;
+    if (!Number.isInteger(p.total) || p.total < 0) continue;
+    byDate.set(day, p.total);
+  }
+  const days = [...byDate.keys()].sort();
+  if (days.length < 2) return null;
+  const from = days[0];
+  const to = days[days.length - 1];
+  const startTotal = byDate.get(from);
+  const endTotal = byDate.get(to);
+  return {
+    label: LISTING_CHANGE_LABEL,
+    net: endTotal - startTotal,
+    from,
+    to,
+    days: days.length,
+    startTotal,
+    endTotal,
+    readEligible: days.length >= LISTING_CHANGE_MIN_DAYS_FOR_READS,
+    readGate: `Kept out of reads until ${LISTING_CHANGE_MIN_DAYS_FOR_READS} days of eBay Browse totals exist.`,
+    source: LISTING_CHANGE_SOURCE,
+  };
+}
+
 export const OUTLIER_HOOK =
   "Optional file data/derived/sealed-price-outliers.json (HIGH/SOFT rows from flag-sealed-price-outliers). Absent → leave outlier null.";
 
@@ -152,6 +188,7 @@ export function buildDivePayload({
   const latest = pickLatest(latestProduct);
   const buyout = pickBuyout(buyoutRow);
   const outlier = pickOutlier(outlierMap, id);
+  const listingChange = listingChangeEstimate(latestProduct);
 
   return {
     id,
@@ -165,12 +202,14 @@ export function buildDivePayload({
       buyoutBrowseTotals: "data/buyout-tape.json Browse total field only",
       volume: "absent — Insights scope required",
       outlier: outlier ? OUTLIER_SOURCE : OUTLIER_HOOK,
+      listingChange: LISTING_CHANGE_SOURCE,
     },
     series,
     latest,
     buyout,
     volume: null,
     volumeNote: VOLUME_NOTE,
+    listingChange,
     outlier,
     outlierHook: outlier ? null : OUTLIER_HOOK,
   };

@@ -1,5 +1,6 @@
 // Product deep-dive payloads: real series only, never invent solds or Browse totals.
-import { buildDivePayload, buildAllDives, VOLUME_NOTE, indexOutlierMap, outlierFlagNote, OUTLIER_SOURCE } from "../lib/product-dives.mjs";
+import { buildDivePayload, buildAllDives, VOLUME_NOTE, indexOutlierMap, outlierFlagNote, OUTLIER_SOURCE, LISTING_CHANGE_LABEL, listingChangeEstimate } from "../lib/product-dives.mjs";
+import { readFile as readSrc } from "node:fs/promises";
 
 export async function run() {
   let fail = 0;
@@ -99,6 +100,33 @@ export async function run() {
   // Never treat listingCount as a sold count in the payload shape
   t("volume field is null", dive.volume === null);
   t("payload has no soldCount field", !Object.prototype.hasOwnProperty.call(dive, "soldCount") && !("soldCount" in (dive.latest || {})));
+
+  // ── listing-change estimate: Browse totals only, labelled, gated from reads ──
+  const withTotals = {
+    id: "x-etb", name: "X ETB", listingCount: 12,
+    priceHistory: [
+      { date: "2026-10-03", price: 50 },
+      { date: "2026-10-04", price: 50, total: 509 },
+      { date: "2026-10-05", price: 51, total: 498 },
+      { date: "2026-10-06", price: 52, total: 470 },
+    ],
+  };
+  const est = listingChangeEstimate(withTotals);
+  t("estimate label is exact", LISTING_CHANGE_LABEL === "net change in active eBay listings (estimate)" && est.label === LISTING_CHANGE_LABEL);
+  t("estimate is last total minus first total, with the day count", est.net === -39 && est.days === 3 && est.from === "2026-10-04" && est.to === "2026-10-06");
+  t("estimate stays out of reads under 7 days", est.readEligible === false);
+  const week = { priceHistory: Array.from({ length: 7 }, (_, i) => ({ date: `2026-10-0${i + 1}`, total: 100 + i })) };
+  t("estimate becomes read-eligible at 7 days", listingChangeEstimate(week).readEligible === true && listingChangeEstimate(week).net === 6);
+  t("no estimate from one total or from listingCount", listingChangeEstimate({ listingCount: 40, priceHistory: [{ date: "2026-10-06", total: 5 }] }) === null && listingChangeEstimate({ listingCount: 40 }) === null);
+  t("estimate never says sold or sell-through", !/\bsold\b|sell-through|sell through/i.test(JSON.stringify(est)));
+  const estDive = buildDivePayload({ id: "x-etb", seriesRows: [{ date: "2026-10-05", id: "x-etb", price: 50, listingCount: 12 }], latestProduct: withTotals });
+  t("dive carries the estimate and volume stays null", estDive.listingChange?.net === -39 && estDive.volume === null);
+
+  // ── pulse copy: a filtered count is not "all of eBay" ──
+  const pulseSrc = await readSrc(new URL("../generate-pulse.mjs", import.meta.url), "utf8");
+  t("pulse never calls the filtered count all of eBay", !/on all of eBay/.test(pulseSrc));
+  const strategist = await readSrc(new URL("../api-strategist.mjs", import.meta.url), "utf8");
+  t("api-strategist does not rate retired recentSales as worth wiring", !/recentSales:\s*\{\s*v:/.test(strategist) && /RETIRED/.test(strategist));
 
   return fail;
 }

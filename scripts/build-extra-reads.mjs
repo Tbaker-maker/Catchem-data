@@ -10,6 +10,7 @@ import {
   loadOutlierDoc,
   outlierReads,
 } from "./lib/outlier-dive-reads.mjs";
+import { VOLUME_EMPTY_NOTE, VOLUME_NOTE, loadVolumeDoc, volumeReads } from "./lib/volume-reads.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = async (rel) => JSON.parse(await readFile(join(ROOT, rel), "utf8"));
@@ -83,6 +84,7 @@ export function publicRead(row) {
   if (row.pctGap != null) out.pctGap = row.pctGap;
   if (row.direction) out.direction = row.direction;
   if (row.sources) out.sources = row.sources;
+  if (row.sold) out.sold = row.sold;
   return out;
 }
 
@@ -92,12 +94,13 @@ export async function writeExtra(root, extra, browse) {
   await writeFile(join(outDir, "browse.json"), JSON.stringify(browse) + "\n");
   const readsPath = join(root, "research/assets/public/reads.json");
   const doc = JSON.parse(await readFile(readsPath, "utf8"));
-  const drop = new Set(["lag", "group", "supply", "outlier", "dive"]);
+  const drop = new Set(["lag", "group", "supply", "outlier", "dive", "volume"]);
   const kept = (doc.reads || []).filter((row) => !drop.has(row.readKind));
   const extras = (extra.reads || []).map(publicRead);
   const frontExtras = extras.filter((r) => r.readKind === "outlier")
-    .concat(extras.filter((r) => r.readKind === "dive").slice(0, 4));
-  // Sprinkle a few flagged and dive teasers into the short front. Prices stay.
+    .concat(extras.filter((r) => r.readKind === "dive").slice(0, 4))
+    .concat(extras.filter((r) => r.readKind === "volume").slice(0, 3));
+  // Sprinkle a few flagged, dive and volume reads into the short front. Prices stay.
   doc.reads = interleaveExtraKinds(kept, frontExtras, { every: 2 });
   doc.filterField = "readKind";
   await writeFile(readsPath, JSON.stringify(doc, null, 1) + "\n");
@@ -108,7 +111,7 @@ export async function writeExtra(root, extra, browse) {
     group: extra.group?.reads?.length || 0,
     outliers: (extra.reads || []).filter((r) => r.readKind === "outlier").length,
     dives: (extra.reads || []).filter((r) => r.readKind === "dive").length,
-    volume: Array.isArray(extra.volume) ? extra.volume.length : 0,
+    volume: (extra.reads || []).filter((r) => r.readKind === "volume").length,
     browse: browse.unfiltered.length,
   };
 }
@@ -127,12 +130,29 @@ export async function flaggedAndDiveReads(root = ROOT) {
   return { flagged, dives };
 }
 
+// Volume reads come only from data/derived/tcgplayer-volume.json, matched to the
+// catalog by card id. No file, or no card with a full 30-day count: none ship.
+export async function volumeFeedReads(root = ROOT, { asOf = "" } = {}) {
+  const doc = await loadVolumeDoc(root);
+  if (!doc) return [];
+  let items = [];
+  try {
+    items = JSON.parse(await readFile(join(root, "data/catalog/tcgcsv-latest.json"), "utf8")).items || [];
+  } catch {
+    return [];
+  }
+  return volumeReads(doc, items, { asOf });
+}
+
 export async function writeFeedExtras(root, extra, { asOf, cardIds, rankedIds, news, waves }) {
   const { flagged, dives } = await flaggedAndDiveReads(root);
-  const fresh = new Set(["outlier", "dive"]);
-  extra.reads = [...(extra.reads || []).filter((r) => !fresh.has(r.readKind)), ...flagged, ...dives];
+  const volume = await volumeFeedReads(root, { asOf });
+  const fresh = new Set(["outlier", "dive", "volume"]);
+  extra.reads = [...(extra.reads || []).filter((r) => !fresh.has(r.readKind)), ...flagged, ...dives, ...volume];
   extra.flagged = { count: flagged.length, source: "data/derived/sealed-price-outliers.json" };
   extra.dives = { count: dives.length, source: "research/pulse/dive/" };
+  extra.volume = volume.map((r) => r.id);
+  extra.volumeNote = volume.length ? VOLUME_NOTE : VOLUME_EMPTY_NOTE;
   const browse = buildBrowse({
     asOf,
     cardIds,
@@ -141,6 +161,7 @@ export async function writeFeedExtras(root, extra, { asOf, cardIds, rankedIds, n
     waves,
     flagged: flagged.map(publicRead),
     dives: dives.map(publicRead),
+    volume: volume.map(publicRead),
   });
   return writeExtra(root, extra, browse);
 }
@@ -171,9 +192,7 @@ async function main() {
     newsCount = (news.filters?.news?.items || []).length;
     waves = (news.catalog || []).filter((row) => row && (row.wave || row.reprint));
   } catch { /* news file is optional for the browse shell */ }
-  // Volume stays empty until Insights solds exist. Do not invent.
-  extra.volume = [];
-  extra.volumeNote = extra.volumeNote || "No sold count is on file, so no volume read ships.";
+  // Volume reads are set by writeFeedExtras from data/derived/tcgplayer-volume.json.
   const summary = await writeFeedExtras(ROOT, extra, {
     asOf: catalog.asOf,
     cardIds,
