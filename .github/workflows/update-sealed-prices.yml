@@ -191,6 +191,15 @@ jobs:
             done
           fi
 
+      - name: Rebuild public set pages
+        # Before the feed build, so build-feed.mjs (with sold facts, extras and
+        # rotation) writes the final feed. The bundle throws before any write if
+        # the catalog is empty. continue-on-error so a set-page failure cannot
+        # drop tonight's feed; a failed run's set files are discarded below.
+        id: setpages
+        continue-on-error: true
+        run: node scripts/build-public-bundle.mjs
+
       - name: Rebuild the public feed
         # After the price commit, not before. A failed feed build fails the job.
         # The catalog day stays the full TCGCSV day. A later partial file is
@@ -207,6 +216,15 @@ jobs:
         run: |
           git config user.name "catchem-bot"
           git config user.email "bot@catchem.app"
+          SET_PATHS="research/assets/public/sets.json research/assets/public/sets research/assets/public/buckets research/assets/public/artists research/assets/public/artists.json research/assets/public/search-lite.json research/assets/public/redirects.json research/assets/public/indexes.json research/assets/public/movers.json research/assets/public/receipts.json research/assets/public/accuracy.json research/assets/public/search-rank.mjs research/assets/public/sitemap.xml"
+          if [ "${{ steps.setpages.outcome }}" = "success" ]; then
+            for p in $SET_PATHS; do if [ -e "$p" ]; then git add "$p"; fi; done
+            if compgen -G "research/assets/public/sitemap-*.xml" > /dev/null; then git add research/assets/public/sitemap-*.xml; fi
+          else
+            echo "::warning::Set-page rebuild failed; keeping yesterday's set pages."
+            for p in $SET_PATHS; do git checkout -q -- "$p" 2>/dev/null || true; done
+            git clean -fdq -- research/assets/public/sets research/assets/public/buckets research/assets/public/artists || true
+          fi
           git add research/assets/public/reads.json research/assets/public/feed/ research/assets/public/counts.json
           if git diff --staged --quiet; then
             echo "No feed changes to commit."
