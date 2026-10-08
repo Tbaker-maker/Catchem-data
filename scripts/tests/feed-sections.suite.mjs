@@ -35,8 +35,8 @@ export async function run() {
     ok: { id: "ok", sku: "tcgcsv-42346", set: "Base Set", image: "https://tcgplayer-cdn.tcgplayer.com/product/42346_in_400x400.jpg", name: "Charizard" },
   };
   applyImageGaps(gaps, [642634], new Map([["SV: Black Bolt", "https://images.pokemontcg.io/zsv10pt5/logo.png"]]));
-  t("a missing product photo is cleared and the set logo is kept", gaps.v.image === "" && gaps.v.logo === "https://images.pokemontcg.io/zsv10pt5/logo.png");
-  t("a real product photo is left alone", gaps.ok.image.includes("42346") && !gaps.ok.logo);
+  t("a foreign photo is cleared and a set logo is not borrowed by name", gaps.v.image === "" && !gaps.v.logo);
+  t("a foreign photo on any row is cleared", gaps.ok.image === "" && !gaps.ok.logo);
   const down = [];
   for (let i = 0; i < 28; i += 1) {
     const day = new Date(Date.parse("2026-09-01T00:00:00Z") + i * 86400000).toISOString().slice(0, 10);

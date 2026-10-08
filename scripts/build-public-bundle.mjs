@@ -9,10 +9,11 @@ import {
 import { publicReceipts, scoreWatch } from "./lib/public-receipts.mjs";
 import { publishFeed, readCallLog, readShelfFile } from "./lib/feed-catalogue.mjs";
 import { nextCountsUpdatedAt } from "./lib/price-stamp.mjs";
-import { cardImage } from "./image-source.mjs";
+import { cataloguePath, loadCatalogueImages } from "./catalogue-images.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "research/assets/public");
+const catalogueImages = await loadCatalogueImages(ROOT);
 
 const read = async (rel) => JSON.parse(await readFile(join(ROOT, rel), "utf8"));
 const norm = (s) => String(s ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
@@ -155,8 +156,6 @@ for (const item of items) {
 }
 
 const artistById = new Map();
-const scanById = new Map();
-const setIdVotes = new Map();
 let artistMatches = 0;
 const artistGroups = new Map();
 for (const [cardId, card] of Object.entries(catalogue.cards || {})) {
@@ -180,18 +179,6 @@ for (const [cardId, card] of Object.entries(catalogue.cards || {})) {
   }
   if (!best || bestScore < 3) continue;
   if (artist && !artistById.has(best.id)) artistById.set(best.id, artist);
-  if (card.setId && card.number) {
-    // The scan URL comes from data/card-images.json (the URL the source
-    // publishes for this card id), never built from setId/number: hosts differ
-    // per set and a guessed path that 404s comes back as a card back. No entry
-    // means no scan.
-    const scan = cardImage(cardId, false);
-    if (scan) scanById.set(best.id, scan);
-    const voteKey = `${best.groupId}|${best.set}`;
-    if (!setIdVotes.has(voteKey)) setIdVotes.set(voteKey, new Map());
-    const votes = setIdVotes.get(voteKey);
-    votes.set(card.setId, (votes.get(card.setId) || 0) + 1);
-  }
   if (artist) {
     artistMatches += 1;
     const list = artistGroups.get(artist) || [];
@@ -291,19 +278,9 @@ for (const item of items) {
   list.push(item.id);
   artistGroups.set(artist, list);
 }
-// Set logos come from data/set-logos.json, the logo URL pokemontcg.io /v2/sets
-// publishes for each set id (regenerate with scripts/fetch-set-logos.mjs).
-// Never built from the id: newer sets are served from a different host, so a
-// templated path 404s. A set with no entry gets no logo.
-const setLogos = (await read("data/set-logos.json").catch(() => ({ sets: {} }))).sets || {};
-function logoFor(key) {
-  const votes = setIdVotes.get(key);
-  if (!votes) return null;
-  const ranked = [...votes.entries()].sort((a, b) => b[1] - a[1]);
-  const [id, n] = ranked[0];
-  const total = [...votes.values()].reduce((s, x) => s + x, 0);
-  if (!id || n < 3 || n / total < 0.6) return null;
-  return setLogos[id]?.logo || null;
+// A set logo is a catalogue id, never a name vote and never a host URL.
+function logoFor(slug) {
+  return cataloguePath(catalogueImages, slug);
 }
 
 const slugUsed = new Map();
@@ -383,7 +360,7 @@ for (const item of items) {
     pct,
     hist,
     low: lowByPid.get(Number(item.tcgplayerProductId)) || null,
-    scan: pid ? "" : (scanById.get(item.id) || ""),
+    scan: cataloguePath(catalogueImages, item.id),
     versions: versionsOf.get(item.id) || [],
     sold: null,
   });
@@ -431,7 +408,7 @@ for (const set of sets.values()) {
   pricedSinglesInSet.forEach((it, i) => { it.rank = i + 1; it.of = pricedSinglesInSet.length; });
   const also = pricedSinglesInSet.slice(0, 4).map((it) => ({ id: it.id, name: it.name }));
   for (const it of set.items) it.also = also.filter((x) => x.id !== it.id).slice(0, 3);
-  const logo = logoFor(`${set.groupId}|${set.raw}`);
+  const logo = logoFor(set.slug);
   const row = {
     slug: set.slug,
     name: set.name,
@@ -550,12 +527,13 @@ await writeFile(join(OUT, "artists.json"), JSON.stringify({ asOf: catalog.asOf, 
 await writeFile(join(OUT, "search-lite.json"), JSON.stringify(search));
 
 function stockImage(item) {
-  const n = Number(item?.pid);
-  if (n && (BAD_IMAGE.has(n) || GAP_IMAGE.has(n))) return "";
-  if (n) return `https://tcgplayer-cdn.tcgplayer.com/product/${n}_in_400x400.jpg`;
-  const scan = String(item?.scan || "");
-  if (scan.startsWith("https://images.pokemontcg.io/")) return scan;
-  return "";
+  const path = cataloguePath(catalogueImages, item && item.id);
+  if (!path) return "";
+  if (path.startsWith("/cards/")) return "https://raw.githubusercontent.com/Tbaker-maker/Catchem-data/main/research/assets" + path;
+  const m = path.match(/^\/(?:img|thumb)\/([A-Za-z0-9]+)\/([A-Za-z0-9._-]+)$/);
+  if (!m) return "";
+  const file = /\.[A-Za-z0-9]+$/.test(m[2]) ? m[2] : m[2] + "_hires.png";
+  return "/data/editor/tcg/" + m[1] + "/" + file;
 }
 const flat = [];
 for (const set of sets.values()) {
