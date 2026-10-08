@@ -37,6 +37,10 @@ export async function checkSafety(root = ROOT) {
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const verdict = await checkSafety();
+  if (verdict.skipped && verdict.ok) {
+    console.log("PPT skipped");
+    process.exit(0);
+  }
   if (!verdict.ok) {
     console.error(verdict.reasons.join("\n"));
     process.exit(1);
