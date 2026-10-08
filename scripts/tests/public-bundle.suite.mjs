@@ -192,6 +192,17 @@ export async function run() {
     const dip = (gengarCard?.hist || []).filter((pt) => pt[0] === "2026-04-24" || pt[0] === "2026-04-25" || pt[0] === "2026-04-27");
     const standIn = (gengarCard?.hist || []).some((pt) => pt[0] >= "2026-04-24" && pt[0] <= "2026-04-27" && pt[1] > 800 && pt[1] < 860);
     t("the Gengar April spike is gone from the chart", gengarCard && dip.length === 0 && !standIn);
+    const celebration = JSON.parse(await readFile(join(ROOT, "research/assets/public/sets/me-30th-celebration.json"), "utf8"));
+    const classicCards = celebration.items.filter((it) => it.section === "Classic Collection");
+    const classicIds = new Set(classicCards.map((it) => it.id));
+    t("30th Classic Collection is a section of the one set", classicCards.length === 30 && classicIds.size === 30 && classicCards.every((it) => /^tcgcsv-\d+$/.test(it.id) && it.pid > 0 && it.kind === "single") && celebration.single === celebration.items.filter((it) => it.kind === "single").length && celebration.sealed === celebration.items.filter((it) => it.kind === "sealed").length);
+    let classicFile = false;
+    try { await readFile(join(ROOT, "research/assets/public/sets/me-30th-celebration-classic-collection.json"), "utf8"); classicFile = true; } catch { classicFile = false; }
+    const redirects = JSON.parse(await readFile(join(ROOT, "research/assets/public/redirects.json"), "utf8"));
+    t("the old Classic Collection URL redirects to that section", !classicFile && redirects.sets["me-30th-celebration-classic-collection"] === "/sets/me-30th-celebration#classic-collection" && redirects.sets["30th-celebration-classic-collection"] === "/sets/me-30th-celebration#classic-collection");
+    const index = JSON.parse(await readFile(join(ROOT, "research/assets/public/sets.json"), "utf8"));
+    const tiles = index.sets.filter((set) => set.slug === "me-30th-celebration" || set.slug === "me-30th-celebration-classic-collection");
+    t("Sets lists one 30th Celebration tile and counts the section inside it", tiles.length === 1 && tiles[0].single === celebration.single && tiles[0].sealed === celebration.sealed && tiles[0].priced === celebration.priced);
   } catch (err) {
     t("public bundle is on disk", false);
     console.error(err);

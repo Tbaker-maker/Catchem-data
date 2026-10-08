@@ -1,6 +1,6 @@
 // Builds research/assets/public from the TCGplayer catalog and the eBay sealed tape.
 // No PPT fields. Missing prices are omitted, never written as 0.
-import { readFile, writeFile, mkdir, readdir, copyFile } from "node:fs/promises";
+import { readFile, writeFile, mkdir, readdir, copyFile, unlink } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
@@ -285,11 +285,39 @@ function logoFor(slug) {
 
 const slugUsed = new Map();
 const setSlug = new Map();
+// TCGplayer group 24837 is the Classic Collection subset of ME: 30th Celebration
+// (group 24722). Fold by group id. Other splits stay separate until asked.
+const FOLD_GROUPS = new Map([
+  [24837, { parent: 24722, section: "Classic Collection" }],
+]);
+const setNameByGroup = new Map();
 for (const item of items) {
-  const key = `${item.groupId}|${item.set}`;
+  const gid = Number(item.groupId);
+  if (!setNameByGroup.has(gid)) setNameByGroup.set(gid, item.set);
+}
+function foldOf(item) {
+  const fold = FOLD_GROUPS.get(Number(item.groupId));
+  if (!fold || !setNameByGroup.has(fold.parent)) return null;
+  return fold;
+}
+function homeKey(item) {
+  const fold = foldOf(item);
+  if (!fold) return `${item.groupId}|${item.set}`;
+  return `${fold.parent}|${setNameByGroup.get(fold.parent)}`;
+}
+function homeSetName(item) {
+  const fold = foldOf(item);
+  return fold ? setNameByGroup.get(fold.parent) : item.set;
+}
+function homeGroupId(item) {
+  const fold = foldOf(item);
+  return fold ? fold.parent : item.groupId;
+}
+for (const item of items) {
+  const key = homeKey(item);
   if (setSlug.has(key)) continue;
-  let s = slug(item.set) || "set";
-  if (slugUsed.has(s)) s = `${s}-${item.groupId}`;
+  let s = slug(homeSetName(item)) || "set";
+  if (slugUsed.has(s)) s = `${s}-${homeGroupId(item)}`;
   slugUsed.set(s, key);
   setSlug.set(key, s);
 }
@@ -316,15 +344,18 @@ const rawById = new Map();
 const sets = new Map();
 for (const item of items) {
   if (linkedPrize.has(item.id)) continue;
-  const key = `${item.groupId}|${item.set}`;
+  const key = homeKey(item);
+  const fold = foldOf(item);
   if (!sets.has(key)) {
+    const nameSource = homeSetName(item);
+    const groupId = homeGroupId(item);
     sets.set(key, {
       slug: setSlug.get(key),
-      name: pretty(item.set),
-      raw: item.set,
-      era: eraOf(item.set),
-      groupId: item.groupId,
-      release: releaseFor(item.set, item.groupId),
+      name: pretty(nameSource),
+      raw: nameSource,
+      era: eraOf(nameSource),
+      groupId,
+      release: releaseFor(nameSource, groupId),
       single: 0,
       sealed: 0,
       priced: 0,
@@ -363,6 +394,7 @@ for (const item of items) {
     scan: cataloguePath(catalogueImages, item.id),
     versions: versionsOf.get(item.id) || [],
     sold: null,
+    ...(fold ? { section: fold.section } : {}),
   });
 }
 
@@ -467,12 +499,12 @@ for (const [name, ids] of [...artistGroups.entries()].sort((a, b) => b[1].length
   for (const id of unique) {
     const item = byId.get(id);
     if (!item) continue;
-    const key = `${item.groupId}|${item.set}`;
+    const key = homeKey(item);
     const price = money(item.price) ? Number(item.price) : null;
     cards.push({
       id: item.id,
       name: pretty(item.name),
-      set: pretty(item.set),
+      set: pretty(homeSetName(item)),
       setSlug: setSlug.get(key),
       num: item.number || "",
       price,
@@ -605,7 +637,7 @@ try {
     const hit = byNorm.get(norm(p.name));
     if (!hit) continue;
     redirects.products[p.id] = `/p/${hit.id}`;
-    const setKey = `${hit.groupId}|${hit.set}`;
+    const setKey = homeKey(hit);
     const slugHit = setSlug.get(setKey);
     if (p.setId && slugHit) {
       if (!setVotes.has(p.setId)) setVotes.set(p.setId, new Map());
@@ -715,6 +747,18 @@ const OLD_SETS = {
 };
 for (const [from, to] of Object.entries(OLD_SETS)) {
   if (!redirects.sets[from]) redirects.sets[from] = `/sets/${to}`;
+}
+for (const [gid, fold] of FOLD_GROUPS) {
+  const childName = setNameByGroup.get(gid);
+  const parentName = setNameByGroup.get(fold.parent);
+  const parentSlug = parentName ? setSlug.get(`${fold.parent}|${parentName}`) : "";
+  const childSlug = childName ? slug(childName) : "";
+  if (childSlug && parentSlug && childSlug !== parentSlug) {
+    redirects.sets[childSlug] = `/sets/${parentSlug}#${slug(fold.section)}`;
+    const bare = slug(String(childName).replace(/^[^:]+:\s*/, ""));
+    if (bare && bare !== childSlug) redirects.sets[bare] = `/sets/${parentSlug}#${slug(fold.section)}`;
+    await unlink(join(OUT, "sets", `${childSlug}.json`)).catch(() => {});
+  }
 }
 
 const watchReads = [];
