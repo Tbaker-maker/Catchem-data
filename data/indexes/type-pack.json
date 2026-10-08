@@ -1,7 +1,7 @@
 {
   "id": "type-pack",
   "name": "pack",
-  "asOf": "2026-10-07",
+  "asOf": "2026-10-08",
   "method": "Chain-linked. A name joins on the first day it has a price and does not move the level that day. Its first return is the next day it is priced. Each day's move is the median price change of names priced on both days. A value-weighted line gives a dearer product a bigger say. A day with no shared prices is a gap. Nothing is filled in.",
   "basket": [
     {
@@ -2069,6 +2069,16 @@
           "entered": 0,
           "equalMovePct": 0,
           "valueMovePct": 0.0517
+        },
+        {
+          "date": "2026-10-07",
+          "from": "2026-10-06",
+          "equal": 107.7,
+          "value": 116.1,
+          "matched": 31,
+          "entered": 0,
+          "equalMovePct": 0,
+          "valueMovePct": 0.0148
         }
       ],
       "gaps": [
@@ -2257,6 +2267,16 @@
           "entered": 0,
           "equalMovePct": -0.0626,
           "valueMovePct": -0.8924
+        },
+        {
+          "date": "2026-10-08",
+          "from": "2026-10-07",
+          "equal": 103,
+          "value": 104.2,
+          "matched": 34,
+          "entered": 0,
+          "equalMovePct": 0.0341,
+          "valueMovePct": 2.0978
         }
       ],
       "gaps": [

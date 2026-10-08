@@ -1,5 +1,5 @@
 {
-  "asOf": "2026-10-07",
+  "asOf": "2026-10-08",
   "status": "ran",
   "reason": "Key was present. Credits below are what the provider reported.",
   "credits": {
@@ -8,18 +8,18 @@
     "reserve": 4000,
     "used": {
       "sealed": 0,
-      "singles": 16210,
+      "singles": 4432,
       "slabs": 0,
       "intraday": 0,
       "crosscheck": 0,
-      "total": 16210
+      "total": 4432
     },
-    "remaining": 3790,
-    "usedToday": 16210
+    "remaining": 15568,
+    "usedToday": 4432
   },
   "items": {
     "sealed": 0,
-    "singles": 8055,
+    "singles": 2197,
     "slabs": 0
   },
   "errors": [],
@@ -79,11 +79,16 @@
   "note": "Public log only. No API key and no raw prices.",
   "raw": "private repo catchem-data-private",
   "run": {
-    "creditsUsed": 16210,
-    "itemsDone": 8055,
-    "itemsSkipped": 2197,
-    "rateLimitCount": 10,
-    "retries": 10
+    "creditsUsed": 4432,
+    "itemsDone": 2197,
+    "itemsFailed": 0,
+    "itemsBudgetSkipped": 0,
+    "itemsSkipped": 0,
+    "callsSent": 13,
+    "callsFailed": 0,
+    "callsNotSent": 0,
+    "rateLimitCount": 4,
+    "retries": 4
   },
   "rawNote": "PRIVATE_DATA_TOKEN is set. Raw is written under ppt-raw-private and pushed to the private repo. It is not committed here.",
   "emptySealed": {
@@ -92,5 +97,12 @@
     "marked": 75,
     "recheckDays": 7,
     "note": "Sealed ids PPT answered with no product. Skipped until a week has passed, then asked once more."
+  },
+  "failedIds": {
+    "skippedToday": 0,
+    "foundToday": 0,
+    "marked": 0,
+    "recheckDays": 7,
+    "note": "Ids PPT rejected with a 4xx. Skipped for a week, then asked once more. Rate limits are not cached. Successes stay on the cursor."
   }
 }
