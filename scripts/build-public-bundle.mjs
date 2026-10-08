@@ -16,6 +16,8 @@ const OUT = join(ROOT, "research/assets/public");
 const catalogueImages = await loadCatalogueImages(ROOT);
 
 const read = async (rel) => JSON.parse(await readFile(join(ROOT, rel), "utf8"));
+const setLogoDoc = await read("research/assets/public/set-logos.json").catch(() => ({ logos: {} }));
+const setLogos = setLogoDoc.logos && typeof setLogoDoc.logos === "object" ? setLogoDoc.logos : {};
 const norm = (s) => String(s ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 
 function packsFor(p) {
@@ -278,8 +280,12 @@ for (const item of items) {
   list.push(item.id);
   artistGroups.set(artist, list);
 }
-// A set logo is a catalogue id, never a name vote and never a host URL.
+// Official URL from research/assets/public/set-logos.json. Never a name vote
+// and never a path invented for a set that has no record.
 function logoFor(slug) {
+  const row = setLogos[slug];
+  const logo = row && typeof row.logo === "string" ? row.logo.trim() : "";
+  if (/^https:\/\/images\.(?:pokemontcg\.io|scrydex\.com)\//.test(logo)) return logo;
   return cataloguePath(catalogueImages, slug);
 }
 
