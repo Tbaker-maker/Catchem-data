@@ -1,5 +1,5 @@
 import { pathToFileURL } from "node:url";
-import { buildGroup, classify, mergeSnapshot, pickMarket } from "../lib/tcgcsv-catalog.mjs";
+import { buildGroup, classify, listPrintings, mergeSnapshot, pickMarket } from "../lib/tcgcsv-catalog.mjs";
 
 let fail = 0;
 const t = (name, cond, detail = "") => {
@@ -27,7 +27,9 @@ export function runTcgcsvCatalogTests() {
   t("Pokemon Center ETB is not a regular ETB", pc.kind === "sealed" && pc.subtype === "pc-etb");
   t("a card number is a single", classify(card(1, "Umbreon", "161/131", "Special Illustration Rare")).kind === "single");
   t("PSA is a slab, not a single", classify(card(2, "Umbreon PSA 10", "161/131", "Special Illustration Rare")).kind === "slab");
-  t("a case is skipped", classify({ name: "Prismatic Evolutions Elite Trainer Box Case", extendedData: [] }).skip === "case, not one product");
+  const boxed = classify({ name: "Prismatic Evolutions Elite Trainer Box Case", extendedData: [] });
+  t("a case is sealed and labelled case", boxed.kind === "sealed" && boxed.subtype === "case" && !boxed.skip);
+  t("a set of two is not a case", classify({ name: "30th Celebration ex Box [Set of 2]", extendedData: [] }).subtype !== "case");
   t("a code card is skipped", classify({ name: "Code Card - Prismatic Evolutions Booster Pack", extendedData: [] }).skip === "code card");
   t("a Japanese group is skipped", classify({ name: "Pikachu", extendedData: [{ name: "Number", value: "1" }] }, "Ash vs Team Rocket Deck Kit (JP Exclusive)").skip === "not an English product");
   const worldsCard = classify({ name: "Air Balloon - 2025 (Jose Cruz Galindo-Resendiz)", extendedData: [] }, "World Championship Decks");
@@ -58,6 +60,16 @@ export function runTcgcsvCatalogTests() {
     { marketPrice: 4, subTypeName: "Mystery A" },
     { marketPrice: 9, subTypeName: "Mystery B" },
   ]) === null);
+  const both = listPrintings([
+    { marketPrice: 1.5, subTypeName: "Normal" },
+    { marketPrice: 2.25, subTypeName: "Reverse Holofoil" },
+    { marketPrice: 0, subTypeName: "Holofoil" },
+  ]);
+  t("every priced printing is stored", both.length === 2 && both[0].name === "Normal" && both[0].price === 1.5 && both[1].name === "Reverse Holofoil" && both[1].price === 2.25);
+  t("a repeated printing name is not averaged", listPrintings([
+    { marketPrice: 4, subTypeName: "Holofoil" },
+    { marketPrice: 9, subTypeName: "Holofoil" },
+  ]).length === 0);
 
   const built = buildGroup({
     groupId: 23821,
@@ -71,17 +83,21 @@ export function runTcgcsvCatalogTests() {
     ],
     priceRows: [
       { productId: 10, marketPrice: 800.1, subTypeName: "Holofoil" },
+      { productId: 10, marketPrice: 40, subTypeName: "Reverse Holofoil" },
       { productId: 11, marketPrice: 250, subTypeName: "Normal" },
       { productId: 12, marketPrice: 2000, subTypeName: "Normal" },
       { productId: 13, marketPrice: null, subTypeName: "Normal" },
     ],
   });
-  t("case price is not kept", built.items.every((i) => i.tcgplayerProductId !== 12) && built.prices.every((p) => p.id !== 12));
+  const keptCase = built.items.find((i) => i.tcgplayerProductId === 12);
+  t("case price is kept and labelled case", keptCase && keptCase.kind === "sealed" && keptCase.subtype === "case" && keptCase.price === 2000);
+  const umbreon = built.items.find((i) => i.tcgplayerProductId === 10);
+  t("both printings stay on the card", umbreon.price === 800.1 && umbreon.printing === "Holofoil" && umbreon.printings.length === 2 && umbreon.printings[1].name === "Reverse Holofoil" && umbreon.printings[1].price === 40 && umbreon.printings[1].asOf === "2026-09-26");
   t("missing price is not filled", built.items.find((i) => i.tcgplayerProductId === 13).price == null);
-  t("source label is TCGplayer market price", built.items.find((i) => i.tcgplayerProductId === 10).source === "TCGplayer market price");
+  t("source label is TCGplayer market price", umbreon.source === "TCGplayer market price");
   const snap = mergeSnapshot([built], { asOf: "2026-09-26", failedGroups: [] });
-  t("kinds stay apart", snap.latest.counts.single === 2 && snap.latest.counts.sealed === 1 && snap.latest.counts.slab === 0);
-  t("daily file is priced rows only", snap.daily.prices.length === 2 && snap.daily.date === "2026-09-26");
+  t("kinds stay apart", snap.latest.counts.single === 2 && snap.latest.counts.sealed === 2 && snap.latest.counts.slab === 0 && snap.latest.counts.skipped.case === 0);
+  t("daily file keeps the primary price and the other printing", snap.daily.prices.length === 3 && snap.daily.prices.find((p) => p.id === 10).printings.length === 2 && snap.daily.date === "2026-09-26");
   t("history points at the daily file", snap.latest.items[0].history.startsWith("data/history/tcgcsv-daily/2026-09-26.json#"));
 
   console.log(fail ? `${fail} failed` : "tcgcsv catalog ok");

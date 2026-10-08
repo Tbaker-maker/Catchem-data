@@ -10,6 +10,9 @@ import { publicReceipts, scoreWatch } from "./lib/public-receipts.mjs";
 import { publishFeed, readCallLog, readShelfFile } from "./lib/feed-catalogue.mjs";
 import { nextCountsUpdatedAt } from "./lib/price-stamp.mjs";
 import { cataloguePath, loadCatalogueImages } from "./catalogue-images.mjs";
+import { ATTACH_SEALED, FOLD_GROUPS, assertFolds, assertWritable, cardPrintings, completionCounts } from "./lib/set-master.mjs";
+
+assertFolds();
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "research/assets/public");
@@ -136,6 +139,7 @@ for (const item of items) {
     name: pretty(item.name),
     set: pretty(item.set),
     price: money(item.price) ? Number(item.price) : null,
+    pid: item.tcgplayerProductId || null,
   });
   versionsOf.set(main.id, list);
 }
@@ -280,22 +284,24 @@ for (const item of items) {
   list.push(item.id);
   artistGroups.set(artist, list);
 }
-// Official URL from research/assets/public/set-logos.json. Never a name vote
-// and never a path invented for a set that has no record.
-function logoFor(slug) {
-  const row = setLogos[slug];
+// Official URL from research/assets/public/set-logos.json. Never a name vote.
+// If that file and the catalogue have none, keep the logo already published.
+const priorLogos = new Map();
+try {
+  const priorSets = JSON.parse(await readFile(join(OUT, "sets.json"), "utf8"));
+  for (const row of priorSets.sets || []) {
+    if (row && row.slug && row.logo) priorLogos.set(row.slug, row.logo);
+  }
+} catch { /* first build has no published logos */ }
+function logoFor(slugName) {
+  const row = setLogos[slugName];
   const logo = row && typeof row.logo === "string" ? row.logo.trim() : "";
   if (/^https:\/\/images\.(?:pokemontcg\.io|scrydex\.com)\//.test(logo)) return logo;
-  return cataloguePath(catalogueImages, slug);
+  return cataloguePath(catalogueImages, slugName) || priorLogos.get(slugName) || "";
 }
 
 const slugUsed = new Map();
 const setSlug = new Map();
-// TCGplayer group 24837 is the Classic Collection subset of ME: 30th Celebration
-// (group 24722). Fold by group id. Other splits stay separate until asked.
-const FOLD_GROUPS = new Map([
-  [24837, { parent: 24722, section: "Classic Collection" }],
-]);
 const setNameByGroup = new Map();
 for (const item of items) {
   const gid = Number(item.groupId);
@@ -306,16 +312,27 @@ function foldOf(item) {
   if (!fold || !setNameByGroup.has(fold.parent)) return null;
   return fold;
 }
+function attachParent(item) {
+  const parent = ATTACH_SEALED.get(Number(item.tcgplayerProductId));
+  if (!parent || !setNameByGroup.has(parent)) return null;
+  return parent;
+}
 function homeKey(item) {
+  const parent = attachParent(item);
+  if (parent) return `${parent}|${setNameByGroup.get(parent)}`;
   const fold = foldOf(item);
   if (!fold) return `${item.groupId}|${item.set}`;
   return `${fold.parent}|${setNameByGroup.get(fold.parent)}`;
 }
 function homeSetName(item) {
+  const parent = attachParent(item);
+  if (parent) return setNameByGroup.get(parent);
   const fold = foldOf(item);
   return fold ? setNameByGroup.get(fold.parent) : item.set;
 }
 function homeGroupId(item) {
+  const parent = attachParent(item);
+  if (parent) return parent;
   const fold = foldOf(item);
   return fold ? fold.parent : item.groupId;
 }
@@ -349,7 +366,6 @@ try { RUN_AT = (await read("data/ppt/run-report.json")).finishedAt || null; } ca
 const rawById = new Map();
 const sets = new Map();
 for (const item of items) {
-  if (linkedPrize.has(item.id)) continue;
   const key = homeKey(item);
   const fold = foldOf(item);
   if (!sets.has(key)) {
@@ -384,6 +400,7 @@ for (const item of items) {
   else if (pct < 0) set.down += 1;
   const artist = artistById.get(item.id) || null;
   const pid = BAD_IMAGE.has(Number(item.tcgplayerProductId)) ? null : item.tcgplayerProductId;
+  const printings = item.kind === "sealed" ? [] : cardPrintings(item, versionsOf.get(item.id), catalog.asOf);
   set.items.push({
     id: item.id,
     name: pretty(item.name),
@@ -392,6 +409,8 @@ for (const item of items) {
     subtype: item.subtype || null,
     rarity: item.rarity || "",
     price,
+    printing: item.printing || null,
+    ...(printings.length ? { printings } : {}),
     pid,
     artist,
     pct,
@@ -403,6 +422,8 @@ for (const item of items) {
     ...(fold ? { section: fold.section } : {}),
   });
 }
+
+assertWritable({ itemCount: items.length, setCount: sets.size });
 
 await mkdir(join(OUT, "sets"), { recursive: true });
 await mkdir(join(OUT, "buckets"), { recursive: true });
@@ -461,8 +482,11 @@ for (const set of sets.values()) {
   const line = (kind) => indexLine(set.items.filter((it) => it.kind === kind));
   const topSealed = set.items.filter((it) => it.kind === "sealed" && it.price).sort((a, b) => b.price - a.price)[0] || null;
   const topChase = set.items.filter((it) => it.kind === "single" && it.price && /illustration|special illustration|hyper|secret|ultra|rainbow/i.test(it.rarity || "")).sort((a, b) => b.price - a.price)[0] || null;
+  const done = completionCounts(set.items);
   const body = {
     ...row,
+    cards: done.cards,
+    printings: done.printings,
     source: "TCGplayer market",
     asOf: catalog.asOf,
     singleIndex: line("single"),
