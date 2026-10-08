@@ -62,6 +62,9 @@
     }
     nav button.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
     main { padding: 16px 16px calc(28px + env(safe-area-inset-bottom)); max-width: 720px; margin: 0 auto; overflow-x: hidden; }
+    @media (max-width: 1023px) {
+      main { padding-bottom: calc(96px + env(safe-area-inset-bottom)); }
+    }
     @media (min-width: 840px) {
       header .wrap, main { max-width: 980px; }
       #strip { grid-template-columns: repeat(4, minmax(0, 1fr)); }
@@ -117,6 +120,9 @@
       p.lab { margin: 6px 0 2px; }
       .rail-wrap { margin-bottom: 4px; }
       #q { margin: 0 0 8px; }
+    }
+    @media (max-width: 1023px) {
+      #now-era, #now-mon, #now-set { display: none; }
     }
     .card {
       background: transparent; border: 0; border-radius: var(--radius); overflow: hidden;
@@ -336,7 +342,6 @@
   </header>
   <main>
     <section id="visuals" class="on">
-      <img id="tonight-hero" class="lab-only" alt="Tonight: Delta Reign Eevee IR 114/103, Hideki Ishikawa, picnic bag" src="/tonight-eevee.png?v=crop-facts" width="592" height="894" loading="eager" decoding="async" />
       <div class="banner" id="banner">Pin two cards. We make a picture.</div>
       <div class="media" id="media">
         <button type="button" class="go" data-med="paper">Paper TCG</button>
@@ -747,6 +752,28 @@
     try { platform = localStorage.getItem("ce-plat") || "x"; } catch (e) { platform = "x"; }
     if (["x","fb","ig","yt"].indexOf(platform) === -1) platform = "x";
     var paperLang = "en";
+    var CATALOG = { pocket: false, jp: false, games: false, posters: false, cutouts: false, manga: false };
+    function catalogReady(next) {
+      if (!next || next === "paper") return true;
+      if (next === "pocket" || next === "compare") return !!CATALOG.pocket;
+      if (next === "games") return !!CATALOG.games;
+      if (next === "posters") return !!CATALOG.posters;
+      if (next === "cutouts") return !!CATALOG.cutouts;
+      if (next === "manga") return !!CATALOG.manga;
+      return false;
+    }
+    function catalogNote() {
+      if ($("count")) $("count").textContent = "This catalog isn't ready yet";
+    }
+    function setCatalogReady(name) {
+      if (SET_PIN_PK.indexOf(name) !== -1) return catalogReady("pocket");
+      if (SET_PIN_GAME.indexOf(name) !== -1) return catalogReady("games");
+      if (SET_PIN_POSTER.indexOf(name) !== -1) return catalogReady("posters");
+      if (SET_PIN_MANGA.indexOf(name) !== -1) return catalogReady("manga");
+      if (SET_PIN_CUTOUT.indexOf(name) !== -1) return catalogReady("cutouts");
+      if (SET_PIN_JP.indexOf(name) !== -1) return !!CATALOG.jp;
+      return true;
+    }
     var lastPaperSet = "";
     var lastPaperLang = "en";
     var lastPaperEra = "";
@@ -1548,16 +1575,24 @@
     }
     function applyHint(h) {
       if (!h) return;
+      if (h.k === "set" && !setCatalogReady(h.t)) {
+        catalogNote();
+        return;
+      }
+      if (h.k === "mon" && h.rail === "jp" && !CATALOG.jp && medium === "paper" && paperLang !== "jp") {
+        catalogNote();
+        return;
+      }
       wipeTray();
       $("q").value = h.t;
       if (h.k === "set") {
-        adoptSet(h.t);
+        if (adoptSet(h.t) === false) return;
         mon = "";
         q = "";
         if ($("q")) $("q").value = "";
       } else if (h.k === "mon") {
         if (h.rail && h.rail !== paperLang && (h.rail === "en" || h.rail === "jp") && medium === "paper") {
-          switchLang(h.rail, { repaint: false, keepQ: true });
+          if (switchLang(h.rail, { repaint: false, keepQ: true }) === false) return;
         }
         mon = h.t;
         q = "";
@@ -1782,11 +1817,15 @@
       if ($("era-block")) $("era-block").hidden = visMedium() || medium === "pocket" || medium === "compare";
     }
     function applyMedium(next) {
-      if (!next) return;
+      if (!next) return false;
+      if (!catalogReady(next)) {
+        catalogNote();
+        return false;
+      }
       if (next === medium) {
         syncMediaButtons();
         chromeForMedium();
-        return;
+        return true;
       }
       bustScan();
       rememberMedium();
@@ -1810,6 +1849,7 @@
       resetPage();
       syncMediaButtons();
       chromeForMedium();
+      return true;
     }
     function adoptSet(name) {
       wipeTray();
@@ -1820,34 +1860,34 @@
         return;
       }
       if (SET_PIN_PK.indexOf(name) !== -1) {
-        if (medium !== "pocket") applyMedium("pocket");
+        if (medium !== "pocket" && applyMedium("pocket") === false) return false;
         setFilter = name;
         lastPocketSet = name;
-        return;
+        return true;
       }
       if (SET_PIN_GAME.indexOf(name) !== -1) {
-        if (medium !== "games") applyMedium("games");
+        if (medium !== "games" && applyMedium("games") === false) return false;
         setFilter = name;
-        return;
+        return true;
       }
       if (SET_PIN_POSTER.indexOf(name) !== -1) {
-        if (medium !== "posters") applyMedium("posters");
+        if (medium !== "posters" && applyMedium("posters") === false) return false;
         setFilter = name;
-        return;
+        return true;
       }
       if (SET_PIN_MANGA.indexOf(name) !== -1) {
-        if (medium !== "manga") applyMedium("manga");
+        if (medium !== "manga" && applyMedium("manga") === false) return false;
         setFilter = name;
-        return;
+        return true;
       }
       if (SET_PIN_CUTOUT.indexOf(name) !== -1) {
-        if (medium !== "cutouts") applyMedium("cutouts");
+        if (medium !== "cutouts" && applyMedium("cutouts") === false) return false;
         setFilter = name;
-        return;
+        return true;
       }
       if (SET_PIN_JP.indexOf(name) !== -1) {
-        if (medium !== "paper") applyMedium("paper");
-        if (paperLang !== "jp") switchLang("jp", { repaint: false, keepQ: true });
+        if (medium !== "paper" && applyMedium("paper") === false) return false;
+        if (paperLang !== "jp" && switchLang("jp", { repaint: false, keepQ: true }) === false) return false;
         setFilter = name;
         lastPaperSet = name;
         lastPaperLang = "jp";
@@ -1915,8 +1955,12 @@
     function switchLang(next, opts) {
       if (typeof opts === "boolean") opts = { repaint: opts };
       opts = opts || {};
-      if (next !== "en" && next !== "jp") return;
-      if (next === paperLang) return;
+      if (next !== "en" && next !== "jp") return false;
+      if (next === "jp" && !CATALOG.jp) {
+        catalogNote();
+        return false;
+      }
+      if (next === paperLang) return true;
       paperLang = next;
       lastPaperLang = next;
       bustScan();
@@ -1935,6 +1979,7 @@
       if (opts.repaint !== false) {
         paintMons(); paintSets(); paintPrompts(); paintStrip();
       }
+      return true;
     }
     function isGameBox(c) {
       return !!c && c.kind === "game" && /boxart|\bbox\b/i.test(c.tags || "");
@@ -3353,7 +3398,8 @@
       var key = listKey();
       if (key !== screenKey) { screenKey = key; screenAsk = SCREEN; }
       var pack = pathwayView() ? null : screenRows(rows);
-      var shown = pack ? (screenAsk <= SCREEN ? pack.lead.slice(0, SCREEN) : pack.ordered.slice(0, screenAsk)) : rows;
+      var first = pack ? (pack.lead.length ? pack.lead : pack.ordered) : rows;
+      var shown = pack ? (screenAsk <= SCREEN ? first.slice(0, SCREEN) : pack.ordered.slice(0, screenAsk)) : rows;
       var more = !!(pack && shown.length < pack.ordered.length);
       $("count").textContent = countLabel(rows, shown);
       $("pager").hidden = true;
@@ -5016,6 +5062,7 @@
       var b = e.target.closest("[data-med]");
       if (!b) return;
       applyMedium(b.getAttribute("data-med"));
+      if (!catalogReady(b.getAttribute("data-med"))) return;
       paintMons(); paintSets(); paintPrompts(); paintStrip();
     };
     if ($("lang")) $("lang").onclick = function (e) {
@@ -5493,7 +5540,7 @@
       var arg = j.getAttribute("data-arg") || "";
       if (view === "sealed") { location.href = "/sealed.html"; return; }
       if (arg === "paper" || arg === "pocket" || arg === "compare" || arg === "games" || arg === "posters" || arg === "manga" || arg === "cutouts") {
-        applyMedium(arg);
+        if (applyMedium(arg) === false) return;
       }
       if (arg.indexOf("set:") === 0) {
         adoptSet(arg.slice(4));
@@ -5531,9 +5578,96 @@
     });
     function fetchJson(url) {
       return fetch(url).then(function (r) {
-        if (!r.ok) throw new Error("miss " + url);
+        if (!r.ok) return null;
         return r.json();
+      }).catch(function () { return null; });
+    }
+    function pocketPinName(setId) {
+      var id = String(setId || "");
+      if (id === "P-A") return "Pocket PROMO-A";
+      if (id === "P-B") return "Pocket PROMO-B";
+      if (!id) return "";
+      return "Pocket " + id;
+    }
+    function rowsFromPocket(rows) {
+      var out = [];
+      if (!Array.isArray(rows)) return out;
+      (rows || []).forEach(function (r) {
+        if (!r || !r.length || !r[0] || !r[1]) return;
+        var setId = String(r[13] || "");
+        var printed = String(r[2] || "");
+        var pin = pocketPinName(setId);
+        out.push({
+          id: r[0],
+          name: r[1],
+          set: pin || printed,
+          year: String(r[3] || ""),
+          artist: r[4] && r[4] !== "Pocket" ? r[4] : "unlisted",
+          lock: r[12] || "",
+          rarity: r[5] || "",
+          rank: r[6] ? 80 : 0,
+          tags: ("pocket " + printed).trim(),
+          src: "",
+          kind: "pocket",
+          setCode: setId,
+          num: r[12] || "",
+          setId: setId,
+          lang: "",
+          fact: "The picture is missing."
+        });
       });
+      return out;
+    }
+    function rowsFromMovies(rows) {
+      var out = [];
+      if (!Array.isArray(rows)) return out;
+      (rows || []).forEach(function (r) {
+        if (!r || !r.length || !r[0] || !r[1]) return;
+        var src = String(r[4] || "").trim();
+        var species = String(r[5] || "").split("|").filter(Boolean)[0] || "";
+        out.push({
+          id: r[0],
+          name: r[1],
+          species: species,
+          set: "Movies",
+          year: String(r[3] || ""),
+          artist: "unlisted",
+          lock: "",
+          rarity: "Poster",
+          rank: 0,
+          tags: ("poster " + (r[2] || "") + " " + String(r[6] || "").replace(/\|/g, " ")).replace(/\s+/g, " ").trim(),
+          src: src,
+          kind: "poster",
+          fact: src ? "" : "The picture is missing."
+        });
+      });
+      return out;
+    }
+    function rowsFromHardware(rows) {
+      var out = [];
+      if (!Array.isArray(rows)) return out;
+      (rows || []).forEach(function (r) {
+        if (!r || !r.length || !r[0] || !r[1]) return;
+        var word = String(r[5] || "");
+        var src = String(r[4] || "").trim();
+        var species = String(r[7] || "").split("|").filter(Boolean)[0] || "";
+        out.push({
+          id: r[0],
+          name: r[1],
+          species: species,
+          set: r[2] || "",
+          year: String(r[3] || ""),
+          artist: "unlisted",
+          lock: "",
+          rarity: word,
+          rank: 0,
+          tags: word === "box" ? "box" : (word || "game"),
+          src: src,
+          kind: "game",
+          fact: src ? "" : "The picture is missing."
+        });
+      });
+      return out;
     }
     function ingestC30(rows) {
       (rows || []).forEach(function (r) {
@@ -5706,23 +5840,57 @@
       paintPlat();
     }
     fetchJson(assetUrl("cards/seed/index.json?v=19sep-share"))
-      .then(function (d) { merge(d, ""); bootPaint("Seed"); return fetchJson(assetUrl("cards/dlr/index.json?v=16sep-dlr")); })
-      .then(function (d) { merge(d || [], ""); bootPaint("Delta"); return fetchJson(assetUrl("cards/c30/index.json?v=17sep-30th-en")); })
-      .then(function (d) { ingestC30(d); bootPaint("30th"); return fetchJson(assetUrl("cards/pocket/index.json?v=11sep-vis2")); })
       .then(function (d) {
-        (d || []).forEach(function (r) {
-          r.kind = "pocket";
-          r.artist = r.artist && r.artist !== "Pocket" ? r.artist : "unlisted";
-        });
-        merge(d || [], " pocket");
-        bootPaint("Pocket");
-        return fetchJson(assetUrl("cards/visuals/index.json?v=12sep-games"));
+        merge(d || [], "");
+        bootPaint("Seed");
+        return fetchJson(assetUrl("pocket-rows.json"));
       })
-      .then(function (d) { merge(d || [], ""); bootPaint("Visuals"); return fetchJson(assetUrl("cards/full/index.json?v=19sep-share")); })
-      .then(function (d) { merge(d || [], ""); bootPaint("English"); return fetchJson(assetUrl("cards/jp/index.json?v=11sep-vis2")); })
-      .then(function (d) { merge(d || [], " jp"); return fetchJson(assetUrl("paper-rows.json")); })
-      .then(function (d) { applyRowPrices(d); return fetchJson(assetUrl("cards/prices.json?v=16sep-price")); })
-      .then(function (d) { applyPrices(d); bootPaint("Closed beta"); finishBoot(); return syncLiveSets(); })
+      .then(function (d) {
+        var pocket = rowsFromPocket(d);
+        if (pocket.length) {
+          merge(pocket, "");
+          CATALOG.pocket = true;
+          bootPaint("Pocket");
+        }
+        return fetchJson(assetUrl("movie-rows.json"));
+      })
+      .then(function (d) {
+        var posters = rowsFromMovies(d);
+        if (posters.length) {
+          merge(posters, "");
+          CATALOG.posters = true;
+          bootPaint("Posters");
+        }
+        return fetchJson(assetUrl("console-rows.json"));
+      })
+      .then(function (d) {
+        var consoles = rowsFromHardware(d);
+        if (consoles.length) {
+          merge(consoles, "");
+          CATALOG.games = true;
+        }
+        return fetchJson(assetUrl("cart-rows.json"));
+      })
+      .then(function (d) {
+        var carts = rowsFromHardware(d);
+        if (carts.length) {
+          merge(carts, "");
+          CATALOG.games = true;
+          bootPaint("Games");
+        }
+        return fetchJson(assetUrl("cards/full/index.json?v=19sep-share"));
+      })
+      .then(function (d) {
+        merge(d || [], "");
+        bootPaint("English");
+        return fetchJson(assetUrl("paper-rows.json"));
+      })
+      .then(function (d) {
+        applyRowPrices(d);
+        bootPaint("Closed beta");
+        finishBoot();
+        return syncLiveSets();
+      })
       .catch(function () {
         bootPaint("Closed beta");
         finishBoot();
