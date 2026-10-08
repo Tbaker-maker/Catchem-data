@@ -76,7 +76,7 @@ export async function runPrivatePptTests() {
   t("mount runs before the crosscheck fetch", mountAt > 0 && mountAt < crossAt);
   t("mount runs before the PPT refresh", mountAt < refreshAt);
   t("slab status is in the commit list", workflow.includes("data/history/slabs/status.json"));
-  t("the id review file is in the commit list", workflow.includes("data/ppt/sealed-id-review.json"));
+  t("the one-off id review file stays off the nightly commit list (PR #116)", !workflow.includes("data/ppt/sealed-id-review.json"));
   const heartbeatAdds = workflow.split("git add").filter((part) => part.includes("data/heartbeat.json"));
   t("heartbeat.json is on both daily commit lists", heartbeatAdds.length >= 2);
   const watchdog = await readFile(join(dirname(fileURLToPath(import.meta.url)), "..", "..", ".github/workflows/watchdog.yml"), "utf8");
