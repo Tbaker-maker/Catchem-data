@@ -239,10 +239,12 @@ function windowSplit(facts, opts) {
   const step = Math.sign(cents(facts.lastPrice) - cents(prev[1]));
   const win = Math.sign(cents(facts.lastPrice) - cents(open));
   if (!step || !win || step === win) return null;
-  const pct = (Math.round(Math.abs((facts.lastPrice - open) / open) * 1000) / 10).toFixed(1);
+  const stepPct = (Math.round(Math.abs((facts.lastPrice - prev[1]) / prev[1]) * 1000) / 10).toFixed(1);
+  // The window leads. This clause is only the disagreeing last print, so the
+  // first from/to percent stays the window percent.
   return {
     stepRel: step > 0 ? "rose" : "fell",
-    text: `, while the ${days}-day window ${win > 0 ? "rose" : "fell"} from ${priceWords(open)} on ${monthDay(openDate)}, ${win < 0 ? "minus" : "plus"} ${pct}%`,
+    text: `, while the ${days}-day window's latest step ${step > 0 ? "rose" : "fell"} from ${priceWords(prev[1])} on ${monthDay(prev[0])}, ${step < 0 ? "minus" : "plus"} ${stepPct}%`,
   };
 }
 
@@ -430,13 +432,15 @@ function moveEnds(from, fromDate, to, toDate) {
 function collectorFact(facts, opts) {
   const prev = facts.prev;
   const step = prev ? moveEnds(prev[1], prev[0], facts.lastPrice, facts.lastDate) : null;
-  if (!step) return null;
   const days = Number(opts.windowDays);
   const open = Number(facts.fromPrice) || 0;
   const openDate = String(facts.fromDate || "");
   const win = [7, 30, 90].includes(days) ? moveEnds(open, openDate, facts.lastPrice, facts.lastDate) : null;
+  // The read's percent is the window, not the last print. A flat last print
+  // must not hide the window, and an opposite last step must not lead.
   const split = windowSplit(facts, opts);
-  const use = !split && win ? win : step;
+  const use = win || step;
+  if (!use) return null;
   const name = opts.name ? String(opts.name).trim() : "";
   const who = name ? `${name} latest price` : "The latest price";
   const dirWord = use.rel === "rose" ? "up" : "down";
@@ -446,7 +450,7 @@ function collectorFact(facts, opts) {
   const soldOk = !!(sold && Number.isInteger(sold.count) && sold.count >= 0 && /^\d{4}-\d{2}-\d{2}$/.test(String(sold.asOf || "")));
   const flatN = Number(facts.flatDays) || 0;
   const flatOk = flatN >= 5 && cents(facts.flatPrice) !== cents(facts.lastPrice);
-  if (split) {
+  if (split && win) {
     line += split.text;
     id = "split";
   } else if (soldOk) {

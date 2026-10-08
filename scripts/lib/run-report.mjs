@@ -110,11 +110,17 @@ export function findBackcalcLeaks(value, path = "$", hits = []) {
   return hits;
 }
 
+export function pptSkipped(push = {}) {
+  const reason = String(push.reason || "");
+  return /nothing to copy/i.test(reason);
+}
+
 export function safetyVerdict({ push = {}, tracked = [], fieldHits = [] } = {}) {
   const leaks = tracked.filter(isRawPublicPath);
   const reasons = [];
-  if (push.expected && !push.pushed) reasons.push(`private push was expected and failed: ${push.reason || "no reason"}`);
+  const skipped = Boolean(push.expected && !push.pushed && pptSkipped(push));
+  if (push.expected && !push.pushed && !skipped) reasons.push(`private push was expected and failed: ${push.reason || "no reason"}`);
   if (leaks.length) reasons.push(`raw PPT is tracked in the public tree: ${leaks.slice(0, 8).join(", ")}`);
   if (fieldHits.length) reasons.push(`PPT price fields are in public JSON: ${fieldHits.slice(0, 8).join(", ")}`);
-  return { ok: reasons.length === 0, reasons, leaks, fieldHits };
+  return { ok: reasons.length === 0, reasons, leaks, fieldHits, skipped };
 }

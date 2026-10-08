@@ -140,6 +140,40 @@ export async function run() {
     && liveBad.length === 0);
   if (liveBad.length) console.error("       " + liveBad.slice(0, 5).join("\n       "));
 
+  // Bronzor's last print did not move ($1.16 on Oct 6 and Oct 7) while the
+  // 7-day window did ($1.08 on Sep 29 to $1.16). The sentence still states 7.4%.
+  const flatLast = pathSentence([
+    ["2026-09-29", 1.08],
+    ["2026-10-06", 1.16],
+    ["2026-10-07", 1.16],
+  ], {
+    name: "Bronzor (Master Ball Pattern)",
+    fromPrice: 1.08,
+    fromDate: "2026-09-29",
+    toDate: "2026-10-07",
+    windowDays: 7,
+    direction: "up",
+  });
+  t("a flat last print still states the window percent",
+    flatLast === "Bronzor (Master Ball Pattern) latest price rose from $1.08 on Sep 29 to $1.16 on Oct 7, up 7.4%.");
+  // Drapion's last print fell 0.5% ($1.82 to $1.81) while the 7-day window rose 7.1%.
+  const opposite = pathSentence([
+    ["2026-09-27", 1.69],
+    ["2026-10-06", 1.82],
+    ["2026-10-07", 1.81],
+  ], {
+    name: "Drapion V (Full Art)",
+    fromPrice: 1.69,
+    fromDate: "2026-09-27",
+    toDate: "2026-10-07",
+    windowDays: 7,
+    direction: "up",
+  });
+  t("an opposite last step does not replace the window percent",
+    /rose from \$1\.69 on Sep 27 to \$1\.81 on Oct 7, up 7\.1%/.test(opposite)
+    && !/, down 0\.5%/.test(opposite)
+    && opposite.indexOf("up 7.1%") < (opposite.indexOf("0.5%") === -1 ? opposite.length : opposite.indexOf("0.5%")));
+
   return fail;
 }
 

@@ -38,6 +38,8 @@ export async function runPptPathTests() {
   t("the run report has no price", !JSON.stringify(report).includes("\"price\"") && report.items.attempted === 4 && report.credits.used === 12 && report.privatePush === "abc123" && report.durationSec === 600);
   t("a skipped push is labeled", buildRunReport({ finishedAt: "2026-09-26T00:00:00.000Z", push: { expected: false, reason: "skipped: PRIVATE_DATA_TOKEN is not set" } }).privatePush.startsWith("skipped:"));
   t("an expected failed push is not ok", safetyVerdict({ push: { expected: true, pushed: false, reason: "clone failed" }, tracked: [] }).ok === false);
+  const emptyRaw = safetyVerdict({ push: { expected: true, pushed: false, reason: "Nothing to copy. Public raw folders are empty." }, tracked: [] });
+  t("an empty raw folder after skipped PPT steps is not a failed push", emptyRaw.ok === true && emptyRaw.skipped === true);
   t("a skipped push with a clean tree is ok", safetyVerdict({ push: { expected: false, pushed: false }, tracked: ["data/sealed-prices.json"] }).ok === true);
   t("a raw eval sample is a leak", isRawPublicPath("research/eval-samples/ppt-sealed-RAW.json") && safetyVerdict({ push: { expected: false }, tracked: ["research/eval-samples/ppt-sealed-RAW.json"] }).ok === false);
   t("a public json price field is a leak", findPptPriceKeys({ rows: [{ unopenedPrice: 1 }] }).length === 1 && safetyVerdict({ push: { expected: false }, tracked: [], fieldHits: ["data/divergence-report.json.rows[0].tcgMarket"] }).ok === false);

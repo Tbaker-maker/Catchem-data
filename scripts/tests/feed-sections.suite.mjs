@@ -166,7 +166,7 @@ export async function run() {
   const etb = [["2026-07-01", 184.65], ["2026-09-27", 116.85], ["2026-09-29", 118.37]];
   const etbLine = pathSentence(etb, { name: "Destined Rivals Elite Trainer Box", fromDate: "2026-07-01", toDate: "2026-09-29", fromPrice: 184.65, windowDays: 90 });
   const uptick = "The latest price is $118.37 on Sep 29, rose from $116.85 on Sep 27.";
-  t("a sign split states both moves", statesBothMoves(etbLine) && etbLine.includes("$118.37") && etbLine.includes("$116.85") && etbLine.includes("$184.65") && /minus 35\.9%/.test(etbLine) && /\brose\b/.test(etbLine) && /\bfell\b/.test(etbLine) && /Sep 27/.test(etbLine) && /Sep 29/.test(etbLine) && /Jul 1/.test(etbLine));
+  t("a sign split states both moves", statesBothMoves(etbLine) && etbLine.includes("$118.37") && etbLine.includes("$116.85") && etbLine.includes("$184.65") && /from \$184\.65 on Jul 1 to \$118\.37 on Sep 29, down 35\.9%/.test(etbLine) && /\brose\b/.test(etbLine) && /\bfell\b/.test(etbLine) && /Sep 27/.test(etbLine) && /Sep 29/.test(etbLine) && /Jul 1/.test(etbLine));
   t("an uptick alone is not both moves", statesBothMoves(uptick) === false);
   t("generated sentences do not use a filler closer", [dug, first, again, named, soldLine, etbLine, ...pool].every((line) => !FILLER_BAN.test(line) && !/newest move widened|step shrank versus|unchanged price across|\bas of\b/i.test(line)));
   const prose = [];
