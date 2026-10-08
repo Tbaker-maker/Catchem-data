@@ -7,6 +7,7 @@ import { publishFeed, readCallLog, readShelfFile } from "./lib/feed-catalogue.mj
 import { assembleCatalog, supplyNotes } from "./lib/extra-reads.mjs";
 import { supplyMap, writeFeedExtras } from "./build-extra-reads.mjs";
 import { writeSealedPriceOutliers } from "./flag-sealed-price-outliers.mjs";
+import { writeReadLibrary } from "./lib/read-library.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "research/assets/public");
@@ -169,4 +170,6 @@ try {
 // on disk, the same way build-extra-reads does — writeExtra alone strips them.
 await writeSealedPriceOutliers({ root: ROOT });
 const extraSummary = await writeFeedExtras(ROOT, extra, { asOf: catalog.asOf || "", cardIds, rankedIds: ranked, news: new Array(newsCount), waves });
-console.log(JSON.stringify({ extra: extraSummary }));
+const extraDoc = JSON.parse(await readFile(join(OUT, "feed/extra-reads.json"), "utf8"));
+const library = await writeReadLibrary({ root: ROOT, catalogue: catalogueDoc, extra: extraDoc, series });
+console.log(JSON.stringify({ extra: extraSummary, library: library.counts }));
