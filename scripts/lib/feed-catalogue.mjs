@@ -403,22 +403,19 @@ export function applyShelf(cards, shelfRows) {
   return latest.size;
 }
 
-// Product photos that 403 stay blank. The set logo is not a substitute printing.
-export function applyImageGaps(cards, gapPids, logoBySet = new Map()) {
+// A foreign host is not the catalogue. A set name is not an id.
+export function applyImageGaps(cards, gapPids) {
   const gaps = new Set((gapPids || []).map(Number));
-  const logoOf = (setName) => (logoBySet && typeof logoBySet.get === "function" ? logoBySet.get(setName) : logoBySet?.[setName]) || "";
+  const foreign = /tcgplayer-cdn\.tcgplayer\.com|images\.pokemontcg\.io|ebayimg|i\.ebayimg/i;
   let n = 0;
   for (const card of Object.values(cards || {})) {
-    if (!card?.sku || (!("image" in card) && !card.name)) continue;
-    const pid = Number(String(card.sku).slice("tcgcsv-".length));
-    if (gaps.has(pid)) {
+    if (!card || typeof card !== "object") continue;
+    const pid = Number(String(card.sku || "").replace(/^tcgcsv-/, ""));
+    if ((gaps.has(pid) || foreign.test(String(card.image || ""))) && card.image) {
       card.image = "";
       n += 1;
     }
-    if (!card.image) {
-      const logo = card.logo || logoOf(card.set);
-      if (logo) card.logo = logo;
-    }
+    if (foreign.test(String(card.logo || ""))) card.logo = "";
   }
   return n;
 }
@@ -612,14 +609,7 @@ export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDi
     if (sentence && !BANNED.test(sentence)) card.path = sentence;
   }
   disambiguatePaths(cards);
-  let logoByName = new Map();
-  try {
-    const setsDoc = JSON.parse(await readFile(join(outDir, "sets.json"), "utf8"));
-    for (const set of setsDoc.sets || []) {
-      if (set?.name && set.logo) logoByName.set(set.name, set.logo);
-    }
-  } catch { /* a missing set list leaves the logo blank */ }
-  applyImageGaps(cards, gapPids, logoByName);
+  applyImageGaps(cards, gapPids);
   const facts = {};
   for (const card of Object.values(cards)) {
     const bounds = card._bounds || {};
@@ -662,10 +652,7 @@ export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDi
     updatedAt: updatedAt || null,
     source: "TCGplayer market",
     count: Object.keys(cards).length,
-    sets: [...sets.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([name, n]) => {
-      const logo = logoByName.get(name) || "";
-      return logo ? { name, n, logo } : { name, n };
-    }),
+    sets: [...sets.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([name, n]) => ({ name, n })),
     cards,
     today: lists.today,
     watch: lists.watch,
