@@ -22,6 +22,7 @@ export function extValue(product, name) {
 
 export function sealedSubtype(name) {
   const n = String(name || "").toLowerCase();
+  if (/\bcase\b/.test(n)) return "case";
   const center = /pok[eé]mon center/.test(n);
   if (center && /elite trainer/.test(n)) return "pc-etb";
   if (/elite trainer/.test(n)) return "etb";
@@ -39,7 +40,7 @@ export function classify(product, groupName = "") {
   const g = String(groupName || "").toLowerCase();
   if (FOREIGN.test(n) || FOREIGN.test(g)) return { skip: "not an English product" };
   if (/\bcode card\b/.test(n)) return { skip: "code card" };
-  if (/\bcase\b/.test(n)) return { skip: "case, not one product" };
+  if (/\bcase\b/.test(n)) return { kind: "sealed", number: null, rarity: null, subtype: "case" };
   const number = extValue(product, "Number");
   const rarity = extValue(product, "Rarity");
   const cardType = extValue(product, "Card Type") || extValue(product, "CardType");
@@ -72,6 +73,26 @@ export function pickMarket(rows) {
   return null;
 }
 
+// Every printing that has one market price. A repeated name is not averaged and is not kept.
+export function listPrintings(rows) {
+  const priced = (rows || []).filter((r) => typeof r.marketPrice === "number" && r.marketPrice > 0 && r.subTypeName);
+  const byName = new Map();
+  for (const row of priced) {
+    const name = String(row.subTypeName);
+    if (!byName.has(name)) byName.set(name, []);
+    byName.get(name).push(row);
+  }
+  const out = [];
+  const take = (name) => {
+    const hit = byName.get(name);
+    if (hit && hit.length === 1) out.push({ name, price: money(hit[0].marketPrice) });
+    byName.delete(name);
+  };
+  for (const name of PRINTING_ORDER) take(name);
+  for (const name of [...byName.keys()].sort()) take(name);
+  return out;
+}
+
 const money = (n) => Math.round(n * 100) / 100;
 
 export function buildGroup({ groupId, groupName, products, priceRows, asOf }) {
@@ -93,6 +114,7 @@ export function buildGroup({ groupId, groupName, products, priceRows, asOf }) {
     const rows = byProduct.get(product.productId) || [];
     const priced = rows.filter((r) => typeof r.marketPrice === "number" && r.marketPrice > 0);
     const picked = pickMarket(rows);
+    const printings = listPrintings(rows).map((p) => ({ name: p.name, price: p.price, asOf }));
     if (!picked && priced.length > 1) ambiguous++;
     const item = {
       id: `tcgcsv-${product.productId}`,
@@ -106,12 +128,15 @@ export function buildGroup({ groupId, groupName, products, priceRows, asOf }) {
       subtype: c.subtype,
       history: `data/history/tcgcsv-daily/${asOf}.json#${product.productId}`,
     };
+    if (printings.length) item.printings = printings;
     if (picked) {
       item.price = money(picked.marketPrice);
       item.source = TCGCSV_SOURCE;
       item.asOf = asOf;
       item.printing = picked.subTypeName || null;
-      prices.push({ id: product.productId, market: item.price, printing: item.printing });
+      const priceRow = { id: product.productId, market: item.price, printing: item.printing };
+      if (printings.length > 1) priceRow.printings = printings.map(({ name, price }) => ({ name, price }));
+      prices.push(priceRow);
     }
     items.push(item);
   }
