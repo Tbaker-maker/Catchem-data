@@ -1,9 +1,16 @@
 {
- "generatedAt": "2026-10-07T11:22:42.002Z",
+ "generatedAt": "2026-10-08T16:30:35.244Z",
  "surfaces": 5,
- "blocks": 1,
+ "blocks": 2,
  "warns": 1,
  "findings": [
+  {
+   "surface": "research/pulse/pulse-feed.json",
+   "term": "the ditto premium",
+   "severity": "BLOCK",
+   "issue": "reads like a defined term the piece never defines — the reader is told a rule exists but not what it is",
+   "suggestedGloss": "say what the reader would DO or SEE, in plain words, in the same sentence"
+  },
   {
    "surface": "research/pulse/post-bank.json",
    "term": "per-pack",
@@ -12,7 +19,7 @@
    "suggestedGloss": "the box price divided by how many packs are inside"
   },
   {
-   "surface": "research/pulse/2026-10-07.md",
+   "surface": "research/pulse/2026-10-08.md",
    "term": "the spread",
    "severity": "BLOCK",
    "issue": "used without a plain-words explanation nearby",

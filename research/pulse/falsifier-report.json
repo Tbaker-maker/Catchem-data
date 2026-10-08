@@ -1,7 +1,7 @@
 {
- "generatedAt": "2026-10-07T11:22:43.915Z",
- "date": "2026-10-07",
- "mood": "Mostly \"we cannot tell yet\" today — half these tests need weeks of history we simply do not have. Saying so beats guessing.",
+ "generatedAt": "2026-10-08T16:30:37.201Z",
+ "date": "2026-10-08",
+ "mood": "A lot of honest shrugs on this run. The tape is young; the tests are patient.",
  "note": "We test our own claims before anyone else gets the chance. INSUFFICIENT is an honest verdict and is reported as loudly as the others.",
  "coverage": {
   "thesesInDoctrine": 10,
@@ -20,7 +20,7 @@
    "name": "The Reprint Cycle",
    "falsifier": "a reprint-era product class stays below its pre-reprint level long enough that reprints are not absorbed",
    "verdict": "INSUFFICIENT",
-   "detail": "needs a multi-week price series to judge absorption; we hold 16 clean days",
+   "detail": "needs a multi-week price series to judge absorption; we hold 17 clean days",
    "needs": "30+ days of tape across a reprint event"
   },
   {
@@ -28,7 +28,7 @@
    "name": "Depth–Liquidity Matrix",
    "falsifier": "pile-up states precede 14-day price softness in fewer than 55% of cases",
    "verdict": "INSUFFICIENT",
-   "detail": "the test needs 14 days AFTER each pile-up state; we hold 16 days total",
+   "detail": "the test needs 14 days AFTER each pile-up state; we hold 17 days total",
    "needs": "21+ days of tape"
   },
   {
@@ -75,7 +75,7 @@
    "name": "Supply Injection Absorb-or-Stall",
    "falsifier": "a supply injection is followed by neither absorption nor a stall — listings rise and prices are unaffected either way",
    "verdict": "SURVIVED",
-   "detail": "7 injections today; 71% moved prices measurably"
+   "detail": "5 injections today; 40% moved prices measurably"
   },
   {
    "id": "RT-7",
@@ -90,7 +90,7 @@
    "name": "Reprint Pressure",
    "falsifier": "late-print sets with filling shelves are no more likely to see a reprint announced within 90 days than late-print sets generally",
    "verdict": "INSUFFICIENT",
-   "detail": "7 crossings today (6 arriving, 1 closing) — but the falsifier needs 90 days of reprint announcements to compare against, which we do not yet log",
+   "detail": "5 crossings today (2 arriving, 3 closing) — but the falsifier needs 90 days of reprint announcements to compare against, which we do not yet log",
    "needs": "a log of reprint announcements, and 90 days of these crossings to test them against"
   },
   {
@@ -98,7 +98,7 @@
    "name": "Index moves only on the market",
    "falsifier": "the index level changes on a day when composition or pricing basis changed",
    "verdict": "SURVIVED",
-   "detail": "171 products carried the day's move; 0 entered or lacked a prior price and correctly contributed nothing"
+   "detail": "171 products carried the day's move; 1 entered or lacked a prior price and correctly contributed nothing"
   }
  ],
  "amendmentsDrafted": []
