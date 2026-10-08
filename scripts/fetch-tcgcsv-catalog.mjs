@@ -75,9 +75,16 @@ export async function fetchCatalog(today = TODAY) {
   const dayPath = join(ROOT, "data/history/tcgcsv-daily", `${today}.json`);
   await mkdir(catalogDir, { recursive: true });
   await mkdir(dirname(dayPath), { recursive: true });
-  await writeFile(join(catalogDir, "tcgcsv-latest.json"), JSON.stringify(snap.latest));
-  await writeFile(join(catalogDir, "tcgcsv-coverage.json"), JSON.stringify(snap.coverage, null, 2));
+  // Write the day before the other catalog files. A later write in this
+  // process must not be able to drop the day that already landed.
   await writeFile(dayPath, JSON.stringify(snap.daily));
+  try {
+    await writeFile(join(catalogDir, "tcgcsv-latest.json"), JSON.stringify(snap.latest));
+    await writeFile(join(catalogDir, "tcgcsv-coverage.json"), JSON.stringify(snap.coverage, null, 2));
+  } catch (err) {
+    console.error(`tcgcsv day ${today} is on disk; a later catalog write failed: ${err.message}`);
+    throw err;
+  }
   console.log(`tcgcsv groups ${groups.length - failedGroups.length}/${groups.length} items ${snap.latest.counts.items} priced ${snap.latest.counts.priced} sealed ${snap.latest.counts.sealed} slabs ${snap.latest.counts.slab}`);
   return snap;
 }
