@@ -44,9 +44,33 @@ const ALIAS = {
   "nintendo-promos": "",
 };
 
-const PREFIX = /^(?:ex|xy|sm|sv|swsh|mee|me|sve|bw|dp|hgss|hs)\d*(?:pt\d+)?\s+/;
+// Confirmed by set id, not by name. mep's own Scrydex logo is the generic
+// promo star (same bytes as svp and swshp), so the promo set uses the ME01 logo.
+// mee is Scrydex's own id: card mee-1 is that set's Grass Energy, and the logo
+// bytes are neither fallback.
+const EXTRA = {
+  "me-mega-evolution-promo": {
+    setId: "mep",
+    parentSetId: "me1",
+    logoFrom: "me1",
+    confirmed: "Catalogue cards are setId mep (mep-9, mep-10, mep-22, mep-31). Scrydex image mep-003 is Alakazam 003, a card in this set. The mep logo URL is the generic promo star, so the logo is parent me1.",
+  },
+  "mee-mega-evolution-energies": {
+    setId: "mee",
+    logo: "https://images.scrydex.com/pokemon/mee-logo/logo",
+    src: "",
+    confirmed: "Scrydex card id mee-1 is Basic Grass Energy from this set, not an unknown-id fallback. Logo sha256 0dd471be5fa51a263ef4487eedc11ef49ac1e3a92f0635312579b6df88922b90 matches neither rejected image.",
+  },
+};
+
+// Scrydex serves these two images for ids that are not a real set logo.
+const REJECT_SHA256 = {
+  genericSet: "97bd74b939562df8df81ca5adb37db55632fea64eca631208e02152344c6ee3b",
+  genericPromo: "7d7c739c448dfb28d03b38310f834e0cfdd748d8a37dcc34169a4f8c33bd2dd7",
+};
 const PTCG_LOGO = /^https:\/\/images\.pokemontcg\.io\/([A-Za-z0-9]+)\/logo\.png$/;
 const SCRY_LOGO = /^https:\/\/images\.scrydex\.com\/pokemon\/([A-Za-z0-9]+)-logo\/logo$/;
+const PREFIX = /^(?:ex|xy|sm|sv|swsh|mee|me|sve|bw|dp|hgss|hs)\d*(?:pt\d+)?\s+/;
 
 function norm(value) {
   return String(value || "")
@@ -117,6 +141,10 @@ export async function buildSetLogoIndex(root = ROOT) {
       assigned.set(slug, { id: FIX[slug], reason: "fix" });
       continue;
     }
+    if (EXTRA[slug]) {
+      assigned.set(slug, { id: EXTRA[slug].setId, reason: "confirmed" });
+      continue;
+    }
     if (DENY.has(slug)) {
       assigned.set(slug, { id: "", reason: "deny" });
       continue;
@@ -154,6 +182,25 @@ export async function buildSetLogoIndex(root = ROOT) {
   const entries = [];
   const noLogo = [];
   for (const row of rows) {
+    const spec = EXTRA[row.slug];
+    if (spec) {
+      const parent = spec.logoFrom ? official[spec.logoFrom] : null;
+      const logo = spec.logo || parent?.logo || "";
+      if (!/^https:\/\//.test(logo)) throw new Error(`${row.slug} has no confirmed logo`);
+      if (spec.logoFrom && spec.logoFrom !== "me1") throw new Error(`${row.slug} parent is not me1`);
+      const entry = {
+        setId: spec.setId,
+        slug: row.slug,
+        name: row.name,
+        logo,
+        src: spec.src != null ? spec.src : catalogueSrc(logo, spec.logoFrom || spec.setId),
+        confirmed: spec.confirmed,
+        via: "confirmed",
+      };
+      if (spec.parentSetId) entry.parentSetId = spec.parentSetId;
+      entries.push(entry);
+      continue;
+    }
     const { id, reason } = assigned.get(row.slug);
     if (!id) {
       noLogo.push({ slug: row.slug, name: row.name });
@@ -235,8 +282,9 @@ export async function buildSetLogoIndex(root = ROOT) {
   const withLogo = entries.length + 1;
   return {
     index: {
-      source: "Official logos from data/set-logos.json (pokemontcg.io /v2/sets, including scrydex URLs that file already publishes). Keyed by pokemontcg set id and by site slug. Trainer Gallery, Galarian Gallery, Shiny Vault, Classic Collection, and Radiant Collection use the parent logo. No logo was invented.",
-      read: "Look up research/assets/public/set-logos.json by site slug or by pokemontcg set id. Write logo (the https URL) onto the set. src is the catalogue path /img/{setId}/logo.png when the official file hosts that logo on images.pokemontcg.io. An empty src means the official URL is not on that host. A slug absent from logos has no real logo.",
+      source: "Official logos from data/set-logos.json (pokemontcg.io /v2/sets, including scrydex URLs that file already publishes), plus two ids confirmed on Scrydex: mep uses the parent me1 logo, mee uses its own logo. Keyed by set id and by site slug. Gallery subsets use the parent logo. No logo was invented. A name is not a match.",
+      read: "Look up research/assets/public/set-logos.json by site slug or by set id. Write logo (the https URL) onto the set. src is /img/{setId}/logo.png only when that logo is on images.pokemontcg.io. Reject a Scrydex image whose sha256 is rejectSha256.genericSet (the Pokémon Trading Card Game fallback returned for any unknown id) or rejectSha256.genericPromo (the shared PROMO star).",
+      rejectSha256: REJECT_SHA256,
       universe: names.length + 1,
       publishedSets: names.length,
       withLogo,
