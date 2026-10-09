@@ -25,6 +25,40 @@ jobs:
         # rasterizer skips gracefully and the daily cards stay SVG-only.
         run: npm install --no-audit --no-fund
 
+      - name: Write today's TCGCSV catalog day
+        # Before the guard audit and the unit tests, so a fail-fast step above
+        # the price commit can no longer skip the day (09-28, 09-30, 10-01,
+        # 10-02 and 10-04 were lost that way). The later "Full Pokémon catalog
+        # (TCGCSV)" step still runs and rewrites the same day. continue-on-error
+        # so a TCGCSV outage cannot stop the run.
+        id: tcgcsv-day
+        continue-on-error: true
+        run: node scripts/fetch-tcgcsv-catalog.mjs
+
+      - name: Commit today's TCGCSV day
+        # Commits only the day file. Never fails the job: three rejected pushes
+        # print a warning, and the price commit below pushes the local commit with it.
+        if: always()
+        continue-on-error: true
+        run: |
+          git config user.name "catchem-bot"
+          git config user.email "bot@catchem.app"
+          git add data/history/tcgcsv-daily/ || true
+          if git diff --staged --quiet; then
+            echo "No new TCGCSV day."
+          else
+            git commit -m "data: tcgcsv day $(date -u +'%Y-%m-%d')"
+            pushed=0
+            for i in 1 2 3; do
+              if git push; then pushed=1; break; fi
+              echo "push rejected (attempt $i) — rebasing onto moved main"
+              git pull --rebase --autostash origin main || true
+            done
+            if [ "$pushed" != "1" ]; then
+              echo "::warning::TCGCSV day was committed locally but not pushed after 3 tries. The price commit push below carries it."
+            fi
+          fi
+
       - name: Preflight patch guard-audit (deep script lookback + registered env bridge)
         run: node scripts/patch-guard-audit-ci.mjs
 
