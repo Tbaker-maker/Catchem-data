@@ -65,18 +65,21 @@ export async function run() {
 
   const weekly = await readJson("research/digests/weekly-news.json");
   const built = await seriesFor([509848, 532841, 624676]);
-  const espeon = built.get(509848).move30;
   const pack = built.get(532841).move30;
-  t("Espeon 30-day series is $1.07 on 2026-08-26 to $2.07 on 2026-09-25",
-    espeon && espeon.from === 1.07 && espeon.to === 2.07 && espeon.fromDate === "2026-08-26" && espeon.toDate === "2026-09-25" && espeon.pct === 93.5,
-    JSON.stringify(espeon));
+  const removed = new Set(((await readJson("data/history/market-backfill-removed.json")).products || []).map((row) => Number(row.id)));
+  t("Espeon and Sleep! backfill was a different printing and is removed",
+    removed.has(509848) && removed.has(89301) && built.get(509848).hist.every(([day]) => day >= "2026-09-26"),
+    JSON.stringify(built.get(509848).hist.slice(0, 3)));
   t("Temporal Forces pack 30-day series is $11.19 on 2026-08-30 to $9.27 on 2026-09-29",
     pack && pack.from === 11.19 && pack.to === 9.27 && pack.fromDate === "2026-08-30" && pack.toDate === "2026-09-29" && pack.pct === -17.2,
     JSON.stringify(pack));
 
   const day30 = weekly.priceMovers?.day30 || {};
-  t("the weekly 30-day singles example matches that series",
-    day30.singles?.fromPrice === espeon?.from && day30.singles?.toPrice === espeon?.to && day30.singles?.percent === espeon?.pct && day30.singles?.fromDate === espeon?.fromDate && day30.singles?.toDate === espeon?.toDate);
+  const omittedIds = new Set((weekly.priceMovers?.omitted || []).map((row) => row.id));
+  t("the weekly letter carries no move for a removed printing",
+    !day30.singles && !pricedRows(weekly).some((row) => row.name === "Espeon" || /^Sleep!/.test(row.name || ""))
+      && omittedIds.has("tcgcsv-509848") && omittedIds.has("tcgcsv-89301")
+      && (weekly.priceMovers?.omitted || []).filter((row) => row.id === "tcgcsv-509848" || row.id === "tcgcsv-89301").every((row) => !row.figures && !row.percent && !row.toPrice));
   t("the weekly 30-day sealed example matches that series",
     day30.sealed?.fromPrice === pack?.from && day30.sealed?.toPrice === pack?.to && day30.sealed?.percent === pack?.pct && day30.sealed?.fromDate === pack?.fromDate && day30.sealed?.toDate === pack?.toDate);
 
