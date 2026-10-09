@@ -1,7 +1,7 @@
 {
   "id": "era-scarlet-violet",
   "name": "Scarlet & Violet",
-  "asOf": "2026-10-08",
+  "asOf": "2026-10-09",
   "method": "Chain-linked. A name joins on the first day it has a price and does not move the level that day. Its first return is the next day it is priced. Each day's move is the median price change of names priced on both days. A value-weighted line gives a dearer product a bigger say. A day with no shared prices is a gap. Nothing is filled in.",
   "basket": [
     {
@@ -2277,6 +2277,16 @@
           "entered": 0,
           "equalMovePct": -0.0679,
           "valueMovePct": 0.0161
+        },
+        {
+          "date": "2026-10-08",
+          "from": "2026-10-07",
+          "equal": 106,
+          "value": 100.6,
+          "matched": 45,
+          "entered": 0,
+          "equalMovePct": 0,
+          "valueMovePct": -0.1295
         }
       ],
       "gaps": [
@@ -2485,6 +2495,16 @@
           "entered": 0,
           "equalMovePct": 0,
           "valueMovePct": -1.0714
+        },
+        {
+          "date": "2026-10-09",
+          "from": "2026-10-08",
+          "equal": 101.1,
+          "value": 97.1,
+          "matched": 66,
+          "entered": 0,
+          "equalMovePct": 0,
+          "valueMovePct": 0.3396
         }
       ],
       "gaps": [
