@@ -19,6 +19,8 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   console.log(`run start ${body.startedAt}`);
   // This file already runs in the nightly workflow before the price fetch.
   // The checks run from here so that job executes them without a workflow edit.
-  const code = runNightlyChecks();
+  // The feed is not rebuilt yet, so the stale check compares it with the
+  // published catalog day, not the day the early TCGCSV step just wrote.
+  const code = runNightlyChecks({ atRunStart: true });
   if (code) process.exit(code);
 }

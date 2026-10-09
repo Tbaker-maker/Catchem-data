@@ -23,10 +23,14 @@ function oneLine(name, stdout, stderr) {
   return `${name} produced no line.`;
 }
 
-export function runNightlyChecks() {
+// atRunStart: called from note-run-start, before the feed is rebuilt. The
+// stale check then compares the feed with the published (committed) catalog
+// day, because the early TCGCSV step has already written today's day.
+export function runNightlyChecks({ atRunStart = false } = {}) {
   let fail = 0;
   for (const name of STEPS) {
-    const child = spawnSync(process.execPath, [join(dirname(fileURLToPath(import.meta.url)), name)], {
+    const extra = atRunStart && name === "check-stale.mjs" ? ["--at-run-start"] : [];
+    const child = spawnSync(process.execPath, [join(dirname(fileURLToPath(import.meta.url)), name), ...extra], {
       cwd: ROOT,
       encoding: "utf8",
     });
