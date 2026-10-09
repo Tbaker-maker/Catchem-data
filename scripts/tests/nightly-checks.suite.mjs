@@ -3,7 +3,8 @@ import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { checkHalfPrice } from "../check-half-price.mjs";
-import { checkStale } from "../check-stale.mjs";
+import { checkStale, committedCatalogDay } from "../check-stale.mjs";
+import { execFileSync } from "node:child_process";
 import { checkCoverage } from "../check-coverage.mjs";
 import { writeLearningLog } from "../write-learning-log.mjs";
 
@@ -108,6 +109,41 @@ export async function run() {
     asOf: "2026-09-27",
     items: [{ kind: "single" }, { kind: "single" }, { kind: "sealed" }],
   }));
+
+  // Run start: the early TCGCSV step has written today's catalog day, the feed
+  // is still the one built from the published (committed) day.
+  const runDir = await mkdtemp(join(tmpdir(), "nightly-runstart-"));
+  const runCatalog = join(runDir, "data/catalog/tcgcsv-latest.json");
+  const runFeed = join(runDir, "reads.json");
+  await mkdir(dirname(runCatalog), { recursive: true });
+  await writeFile(runCatalog, JSON.stringify({ asOf: "2026-10-09", items: [] }));
+  await writeFile(runFeed, JSON.stringify({ asOf: "2026-10-08", reads: [] }));
+  const plain = await checkStale({ catalog: runCatalog, feed: runFeed });
+  t("without run start, a feed a day behind the catalog still exits 1", plain.exitCode === 1 && plain.sentence === "The feed file asOf 2026-10-08 is older than the catalog day 2026-10-09.");
+  const pending = await checkStale({ catalog: runCatalog, feed: runFeed, publishedDay: "2026-10-08" });
+  t("at run start, the feed is checked against the published day and the new day is named", pending.exitCode === 0 && pending.comparedDay === "2026-10-08" && pending.sentence === "The feed file asOf 2026-10-08 matches the published catalog day 2026-10-08, and catalog day 2026-10-09 was written earlier in this run and is not published yet, so the feed is rebuilt from it later in the run.");
+  await writeFile(runFeed, JSON.stringify({ asOf: "2026-10-07", reads: [] }));
+  const realStale = await checkStale({ catalog: runCatalog, feed: runFeed, publishedDay: "2026-10-08" });
+  t("at run start, a feed older than the published day still exits 1", realStale.exitCode === 1 && realStale.sentence.startsWith("The feed file asOf 2026-10-07 is older than the published catalog day 2026-10-08,"));
+  const unread = await checkStale({ catalog: runCatalog, feed: runFeed, publishedDay: "" });
+  t("an unreadable published day falls back to the working day and says so", unread.exitCode === 1 && unread.comparedDay === "2026-10-09" && unread.sentence.includes("could not be read"));
+  await writeFile(runFeed, JSON.stringify({ asOf: "2026-10-09", reads: [] }));
+  const sameDay = await checkStale({ catalog: runCatalog, feed: runFeed, publishedDay: "2026-10-09" });
+  t("when nothing new was written, run start is the plain check", sameDay.exitCode === 0 && sameDay.sentence === "The feed file asOf 2026-10-09 matches the catalog day 2026-10-09.");
+  const badPublished = await checkStale({ catalog: runCatalog, feed: runFeed, publishedDay: "2026-10-08T00:00:00Z" });
+  t("a published timestamp is not used as a day", badPublished.exitCode === 1 && badPublished.sentence === "The published catalog asOf is not a calendar day.");
+
+  t("no repo means no published day", committedCatalogDay(runCatalog) === "");
+  let gitOk = true;
+  try {
+    const g = (...a) => execFileSync("git", a, { cwd: runDir, stdio: "ignore" });
+    g("init", "-q");
+    await writeFile(runCatalog, JSON.stringify({ asOf: "2026-10-08", items: [] }));
+    g("add", "data/catalog/tcgcsv-latest.json");
+    g("-c", "user.name=t", "-c", "user.email=t@t", "commit", "-q", "-m", "catalog");
+    await writeFile(runCatalog, JSON.stringify({ asOf: "2026-10-09", items: [] }));
+  } catch { gitOk = false; }
+  if (gitOk) t("the published day is the committed catalog asOf, not the working file", committedCatalogDay(runCatalog) === "2026-10-08");
 
   const coverOk = await checkCoverage({ catalog, coverage });
   t("matching kind counts exit 0", coverOk.exitCode === 0 && coverOk.sentence === "Catalog single 2 and sealed 1 match the coverage file.");
