@@ -16,6 +16,113 @@ export const BOARD_ORDER = ["mover", "set", "high", "streak", "plain"];
 export const LIBRARY_FILE = "research/assets/public/feed/read-library.json";
 
 const BANNED_COPY = /\b(stored|printed|last print|took a bigger last step)\b/i;
+const MONTHS = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+const WINDOW_DAYS = new Set([7, 30, 90]);
+
+export function shiftDay(iso, days) {
+  const ms = Date.parse(`${iso}T00:00:00Z`);
+  if (!Number.isFinite(ms)) return "";
+  return new Date(ms + days * 86400000).toISOString().slice(0, 10);
+}
+
+function productId(sku) {
+  const hit = String(sku || "").match(/tcgcsv-(\d+)/);
+  return hit ? Number(hit[1]) : 0;
+}
+
+function priceOn(series, sku, day) {
+  const id = productId(sku);
+  const days = id && series?.get?.(id);
+  if (!days || !day) return null;
+  const value = Number(days.get(day));
+  return value > 0 ? value : null;
+}
+
+// A window is the price on the day exactly N calendar days before the latest
+// price day. An earlier day does not count, and a missing day is not filled.
+export function exactWindow(series, sku, asOf, days) {
+  const n = Number(days);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(asOf || "")) || !WINDOW_DAYS.has(n)) return null;
+  const start = shiftDay(asOf, -n);
+  const from = priceOn(series, sku, start);
+  const to = priceOn(series, sku, asOf);
+  if (from == null || to == null || !start) return null;
+  const pct = Math.round((((to - from) / from) * 100) * 10) / 10;
+  if (!Number.isFinite(pct)) return null;
+  return { start, end: asOf, from, to, pct, days: n };
+}
+
+function namedDate(asOf, mon, day) {
+  const month = MONTHS.indexOf(String(mon || "").toLowerCase()) + 1;
+  const n = Number(day);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(asOf || "")) || month < 1 || n < 1 || n > 31) return "";
+  const iso = `${asOf.slice(0, 4)}-${String(month).padStart(2, "0")}-${String(n).padStart(2, "0")}`;
+  if (iso > asOf) return `${Number(asOf.slice(0, 4)) - 1}-${iso.slice(5)}`;
+  return iso;
+}
+
+function windowAgrees(row, proof) {
+  if (!proof || cents(row?.price) !== cents(proof.to)) return false;
+  const claimed = pctOf(row);
+  if (claimed == null || Math.abs(claimed - proof.pct) > 0.05) return false;
+  const quoted = String(row?.headline || "").match(/from\s+(\$[\d,]+(?:\.\d+)?)/i);
+  if (quoted && quoted[1] !== money(proof.from)) return false;
+  const cited = `${row?.headline || ""} ${row?.path || ""}`.match(/from\s+\$[\d,]+(?:\.\d+)?\s+on\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(\d{1,2})/i);
+  if (cited && namedDate(row.asOf || proof.end, cited[1], cited[2]) !== proof.start) return false;
+  return true;
+}
+
+function extremeAt(series, sku, asOf) {
+  const id = productId(sku);
+  const days = id && series?.get?.(id);
+  if (!days || !asOf) return null;
+  const pts = [...days.entries()].filter((row) => row[0] && row[0] <= asOf && Number(row[1]) > 0);
+  pts.sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
+  if (pts.length < 2 || pts[pts.length - 1][0] !== asOf) return null;
+  let max = pts[0];
+  let min = pts[0];
+  for (const pt of pts) {
+    if (pt[1] > max[1]) max = pt;
+    if (pt[1] < min[1]) min = pt;
+  }
+  const span = daySpan(pts[0][0], asOf);
+  return { span, sixMonths: span >= 150, last: pts[pts.length - 1], max, min };
+}
+
+function proveMove(row, series, asOf) {
+  const proof = exactWindow(series, skuOf(row), asOf, row?.windowDays);
+  return windowAgrees({ ...row, asOf }, proof) ? proof : null;
+}
+
+function proveExtreme(row, series, asOf, kind) {
+  const proof = proveMove(row, series, asOf);
+  const ex = extremeAt(series, skuOf(row), asOf);
+  if (!proof || !ex?.sixMonths || cents(ex.max[1]) === cents(ex.min[1])) return null;
+  if (kind === "high" && cents(ex.last[1]) !== cents(ex.max[1])) return null;
+  if (kind === "low" && cents(ex.last[1]) !== cents(ex.min[1])) return null;
+  return proof;
+}
+
+function proveSet(row, asOf) {
+  const n = Number(row?.windowDays) || 30;
+  const lag = row?.readKind === "lag" || row?.kind === "lag";
+  const group = row?.readKind === "group" || row?.kind === "group";
+  if (lag) {
+    const pack = row.pack;
+    const box = row.box;
+    if (!pack || !box || pack.toDate !== asOf || box.toDate !== asOf) return null;
+    if (daySpan(pack.fromDate, pack.toDate) !== n || daySpan(box.fromDate, box.toDate) !== n) return null;
+    return { start: pack.fromDate, end: asOf, days: n };
+  }
+  if (group && row.fromDate && row.toDate === asOf && daySpan(row.fromDate, row.toDate) === n) {
+    return { start: row.fromDate, end: asOf, days: n };
+  }
+  return null;
+}
+
+function withProof(row, proof) {
+  return { ...row, _proof: proof, startDate: proof.start, endDate: proof.end };
+}
 
 export function daySpan(a, b) {
   const ms = Date.parse(`${b}T00:00:00Z`) - Date.parse(`${a}T00:00:00Z`);
@@ -71,33 +178,34 @@ function clean(text) {
 
 export function explainRead(row, kind) {
   const sku = skuOf(row);
-  const asOf = String(row?.asOf || "");
+  const asOf = String(row?.asOf || row?._proof?.end || "");
   const price = money(row?.price);
   const days = Number(row?.windowDays);
   const change = pctOf(row);
   const head = String(row?.headline || row?.path || "");
+  const proof = row?._proof || null;
   let why = "";
   let wrong = "";
-  if (kind === "mover" && sku && asOf && price && days === 7 && change != null && Math.abs(change) >= MOVER_PCT) {
-    why = `A 7-day TCGplayer market move of ${absText(change)}% ${way(change)} on ${sku} is at least 8%. Latest price ${price} on ${asOf}.`;
-    wrong = `Wrong if this is not ${sku}, if a day is missing inside those 7 days, or if the move is under 8%. A listing is not a sale.`;
-  } else if (kind === "high" && head.includes("6-month high") && sku) {
-    why = `The sentence on this card already calls the latest price a 6-month high${price ? ` at ${price}` : ""}${asOf ? ` on ${asOf}` : ""}. Product id ${sku}.`;
-    wrong = `Wrong if the latest price on ${sku} is not the highest price in a series that spans at least 150 days, or if the chart spark was treated as that whole series. A listing is not a sale.`;
-  } else if (kind === "low" && head.includes("6-month low") && sku) {
-    why = `The sentence on this card already calls the latest price a 6-month low${price ? ` at ${price}` : ""}${asOf ? ` on ${asOf}` : ""}. Product id ${sku}.`;
-    wrong = `Wrong if the latest price on ${sku} is not the lowest price in a series that spans at least 150 days, or if the chart spark was treated as that whole series. A listing is not a sale.`;
-  } else if (kind === "streak" && sku && asOf && price && Number(row?.streakN) >= STREAK_MIN) {
+  if (kind === "mover" && proof && sku && price && days === 7 && change != null && Math.abs(change) >= MOVER_PCT) {
+    why = `A 7-day TCGplayer market move of ${absText(change)}% ${way(change)} on ${sku} is at least 8%, using the price on ${proof.start}, exactly 7 days before ${proof.end}. Latest price ${price}.`;
+    wrong = `Wrong if this is not ${sku}, if ${sku} has no price on ${proof.start}, or if the move is under 8%. A listing is not a sale.`;
+  } else if (kind === "high" && proof && head.includes("6-month high") && sku) {
+    why = `The latest price on ${sku} is the highest price in a series that spans at least 150 days. The ${proof.days}-day change uses the price on ${proof.start}. Latest price ${price || ""} on ${proof.end}.`.replace(/\s+/g, " ").trim();
+    wrong = `Wrong if ${sku} has no price on ${proof.start}, exactly ${proof.days} days before ${proof.end}, or if the latest price is not the highest price in a series that spans at least 150 days. A listing is not a sale.`;
+  } else if (kind === "low" && proof && head.includes("6-month low") && sku) {
+    why = `The latest price on ${sku} is the lowest price in a series that spans at least 150 days. The ${proof.days}-day change uses the price on ${proof.start}. Latest price ${price || ""} on ${proof.end}.`.replace(/\s+/g, " ").trim();
+    wrong = `Wrong if ${sku} has no price on ${proof.start}, exactly ${proof.days} days before ${proof.end}, or if the latest price is not the lowest price in a series that spans at least 150 days. A listing is not a sale.`;
+  } else if (kind === "streak" && proof && sku && asOf && price && Number(row?.streakN) >= STREAK_MIN) {
     const n = Number(row.streakN);
     const word = Number(row.streakDir) < 0 ? "Down" : "Up";
     why = `${word} ${n} straight days on ${sku} through ${asOf}. Latest price ${price}. Each step is the next calendar day.`;
-    wrong = `Wrong if any calendar day in that run is missing, or if one step did not move the same way. A listing is not a sale.`;
-  } else if (kind === "set" && (row?.readKind === "lag" || row?.kind === "lag" || row?.readKind === "group" || row?.kind === "group")) {
-    why = clean(row?.why) || "Both series are on the row. A missing pack price or box price keeps the set out.";
-    wrong = "Wrong if the pack price or the box price is missing, or if the box price already moved. A listing is not a sale.";
-  } else if (kind === "plain" && sku && asOf && price && days === 7 && change != null && Math.abs(change) < MOVER_PCT) {
-    why = `Latest price ${price} on ${asOf} for ${sku}. The 7-day move is ${absText(change)}% ${way(change)}, under the 8% mover line.`;
-    wrong = `Wrong if this is not ${sku}, or if the 7-day move is 8% or more. A listing is not a sale.`;
+    wrong = `Wrong if ${sku} has no price on any day from ${proof.start} through ${asOf}, or if one step did not move the same way. A listing is not a sale.`;
+  } else if (kind === "set" && proof && (row?.readKind === "lag" || row?.kind === "lag" || row?.readKind === "group" || row?.kind === "group")) {
+    why = clean(row?.why) || `Both series have a price on ${proof.start}, exactly ${proof.days} days before ${proof.end}.`;
+    wrong = `Wrong if the pack or the box has no price on ${proof.start}, exactly ${proof.days} days before ${proof.end}, or if an earlier day was used. A listing is not a sale.`;
+  } else if (kind === "plain" && proof && sku && price && days === 7 && change != null && Math.abs(change) < MOVER_PCT) {
+    why = `Latest price ${price} on ${proof.end} for ${sku}. The 7-day move is ${absText(change)}% ${way(change)}, from the price on ${proof.start}, and it is under the 8% mover line.`;
+    wrong = `Wrong if this is not ${sku}, if ${sku} has no price on ${proof.start}, or if the 7-day move is 8% or more. A listing is not a sale.`;
   } else if ((!kind || kind === "read") && sku && (head || price)) {
     const bits = [`This read is product id ${sku}`];
     if (asOf) bits.push(`as of ${asOf}`);
@@ -159,7 +267,9 @@ function publicRow(row, kind, lines) {
     path: row.path || row.headline || "",
     price: Number(row.price) > 0 ? Number(row.price) : undefined,
     changePct: pctOf(row),
-    windowDays: Number(row.windowDays) || undefined,
+    windowDays: Number(row.windowDays) || Number(row._proof?.days) || undefined,
+    startDate: row.startDate || undefined,
+    endDate: row.endDate || undefined,
     asOf: row.asOf || "",
     source: row.source || "TCGplayer market",
     href: row.href || "",
@@ -179,6 +289,40 @@ function pointsOf(series, sku) {
   return [...days.entries()].filter((row) => row[0] && Number(row[1]) > 0).sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
 }
 
+function preferHigh(a, b) {
+  const aw = Number(a.windowDays) || 999;
+  const bw = Number(b.windowDays) || 999;
+  if (aw !== bw) return aw - bw;
+  return byAbs(a, b);
+}
+
+function provedPool(rows, prove, prefer) {
+  const passed = [];
+  const failedSku = new Set();
+  const passedSku = new Set();
+  for (const row of rows || []) {
+    const sku = skuOf(row);
+    const proof = prove(row);
+    if (!proof || !sku) {
+      if (sku) failedSku.add(sku);
+      continue;
+    }
+    passedSku.add(sku);
+    passed.push(withProof(row, proof));
+  }
+  const unique = onePerSku(passed, prefer);
+  unique.sort(prefer);
+  return { rows: unique, dropped: [...failedSku].filter((sku) => !passedSku.has(sku)).length };
+}
+
+function daysHold(pts, asOf, n) {
+  const have = new Map(pts);
+  for (let i = 0; i <= n; i += 1) {
+    if (!(Number(have.get(shiftDay(asOf, -i))) > 0)) return false;
+  }
+  return true;
+}
+
 function cents(n) {
   return Math.round(Number(n) * 100);
 }
@@ -187,7 +331,7 @@ export function buildReadLibrary({ catalogue, extra, series } = {}) {
   const asOf = String(catalogue?.asOf || extra?.asOf || "");
   const cards = cardsOf(catalogue).filter((row) => !asOf || String(row.asOf || "") === asOf);
   const staleMovers = onePerSku(
-    cardsOf(catalogue).filter((row) => priceKind(row) === "mover" && asOf && String(row.asOf || "") !== asOf),
+    cardsOf(catalogue).filter((row) => priceKind(row) === "mover" && asOf && String(row.asOf || "") !== asOf && proveMove(row, series, row.asOf)),
     (a, b) => byAbs(a, b),
   );
   const nameBySku = new Map();
@@ -196,25 +340,40 @@ export function buildReadLibrary({ catalogue, extra, series } = {}) {
     if (sku && card.name && !nameBySku.has(sku)) nameBySku.set(sku, card);
   }
 
-  const moverRows = onePerSku(cards.filter((row) => priceKind(row) === "mover"), (a, b) => byAbs(a, b));
-  moverRows.sort(byAbs);
-  const highRows = onePerSku(cards.filter((row) => String(row.headline || "").includes("6-month high")), (a, b) => {
-    const aw = Number(a.windowDays) || 999;
-    const bw = Number(b.windowDays) || 999;
-    if (aw !== bw) return aw - bw;
-    return byAbs(a, b);
-  });
-  highRows.sort(byAbs);
-  const lowRows = onePerSku(cards.filter((row) => String(row.headline || "").includes("6-month low")), (a, b) => byAbs(a, b));
-  const plainRows = onePerSku(cards.filter((row) => priceKind(row) === "plain"), (a, b) => byAbs(a, b));
-  plainRows.sort(byAbs);
+  const moverPool = provedPool(
+    cards.filter((row) => priceKind(row) === "mover"),
+    (row) => proveMove(row, series, asOf),
+    byAbs,
+  );
+  const highPool = provedPool(
+    cards.filter((row) => String(row.headline || "").includes("6-month high")),
+    (row) => proveExtreme(row, series, asOf, "high"),
+    preferHigh,
+  );
+  highPool.rows.sort(byAbs);
+  const lowPool = provedPool(
+    cards.filter((row) => String(row.headline || "").includes("6-month low")),
+    (row) => proveExtreme(row, series, asOf, "low"),
+    byAbs,
+  );
+  const plainPool = provedPool(
+    cards.filter((row) => priceKind(row) === "plain"),
+    (row) => proveMove(row, series, asOf),
+    byAbs,
+  );
+  const moverRows = moverPool.rows;
+  const highRows = highPool.rows;
+  const lowRows = lowPool.rows;
+  const plainRows = plainPool.rows;
 
   const setRows = [];
-  for (const row of extra?.lag?.reads || []) {
-    if (row && (row.readKind === "lag" || row.kind === "lag") && row.headline) setRows.push(row);
-  }
-  for (const row of extra?.group?.reads || []) {
-    if (row && (row.readKind === "group" || row.kind === "group") && row.headline) setRows.push(row);
+  for (const row of [...(extra?.lag?.reads || []), ...(extra?.group?.reads || [])]) {
+    const lag = row && (row.readKind === "lag" || row.kind === "lag");
+    const group = row && (row.readKind === "group" || row.kind === "group");
+    if ((!lag && !group) || !row.headline) continue;
+    const proof = proveSet(row, asOf);
+    if (!proof) continue;
+    setRows.push(withProof(row, proof));
   }
 
   const streakRows = [];
@@ -233,10 +392,13 @@ export function buildReadLibrary({ catalogue, extra, series } = {}) {
         continue;
       }
       if (!named?.name) continue;
+      const start = shiftDay(asOf, -streak.n);
+      if (!daysHold(pts, asOf, streak.n)) continue;
       const word = streak.dir < 0 ? "Down" : "Up";
       const price = money(seriesPrice);
       if (!price) continue;
-      streakRows.push({
+      const proof = { start, end: asOf, days: streak.n };
+      streakRows.push(withProof({
         id: `streak-${sku}`,
         sku,
         readKind: "streak",
@@ -252,7 +414,7 @@ export function buildReadLibrary({ catalogue, extra, series } = {}) {
         image: named.image || "",
         streakN: streak.n,
         streakDir: streak.dir,
-      });
+      }, proof));
     }
   }
   streakRows.sort((a, b) => b.streakN - a.streakN || String(a.sku).localeCompare(String(b.sku)));
@@ -305,7 +467,7 @@ export function buildReadLibrary({ catalogue, extra, series } = {}) {
   });
 
   const counts = {
-    mover: { qualified: moverRows.length, boarded: boarded.mover, stale: staleMovers.length },
+    mover: { qualified: moverRows.length, boarded: boarded.mover, stale: staleMovers.length, droppedNoExactDay: moverPool.dropped },
     set: {
       qualified: setRows.length,
       boarded: boarded.set,
@@ -313,10 +475,10 @@ export function buildReadLibrary({ catalogue, extra, series } = {}) {
       missingPrice: (extra?.lag?.missingPrice || []).length,
       groupQualified: (extra?.group?.reads || []).length,
     },
-    high: { qualified: highRows.length, boarded: boarded.high },
-    low: { qualified: lowRows.length, boarded: 0 },
+    high: { qualified: highRows.length, boarded: boarded.high, droppedNoExactDay: highPool.dropped },
+    low: { qualified: lowRows.length, boarded: 0, droppedNoExactDay: lowPool.dropped },
     streak: { qualified: streakRows.length, boarded: boarded.streak, leftOutOnPriceDisagree: disagreements.length },
-    plain: { qualified: plainRows.length, boarded: boarded.plain },
+    plain: { qualified: plainRows.length, boarded: boarded.plain, droppedNoExactDay: plainPool.dropped },
   };
 
   return {
