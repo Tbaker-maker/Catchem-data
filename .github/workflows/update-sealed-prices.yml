@@ -43,7 +43,9 @@ jobs:
         run: |
           git config user.name "catchem-bot"
           git config user.email "bot@catchem.app"
-          git add data/history/tcgcsv-daily/ || true
+          if ! git add data/history/tcgcsv-daily/; then
+            echo "::warning::Could not stage the TCGCSV day; the price commit below stages it again."
+          fi
           if git diff --staged --quiet; then
             echo "No new TCGCSV day."
           else

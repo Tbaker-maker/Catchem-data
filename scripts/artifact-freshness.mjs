@@ -202,6 +202,18 @@ const SLOW = {
     "confirmed release dates change when the world changes, not daily — but it now records checkedAt separately from updated, so a dead agent is still visible",
   "data/recovery-log.json":
     "written by the watchdog ONLY when the heartbeat goes red and a recovery is dispatched; never having fired is the healthy state",
+  // The next three are rebuilt by "Build creator pages" on every nightly run
+  // (the log prints ✓ Catch'em Creators / ✓ editor each night), and git only
+  // records a change when the output differs. Their inputs are the card
+  // catalogue, card attrs and the pairings list, whose only nightly change is
+  // generatedAt, so the bytes match until the catalogue moves (2026-10-06 #84
+  // moved it; build.html and card-index.json followed on 2026-10-07).
+  "research/assets/creators.html":
+    "rebuilt every night by build-creators-page.mjs; it changes only when the pairings or card catalogue change, and creators-smoke checks the page each run",
+  "research/assets/build.html":
+    "rebuilt every night by build-editor.mjs from data/card-catalogue.json and data/card-attrs.json; identical bytes until the catalogue changes",
+  "research/assets/card-index.json":
+    "written every night by build-editor.mjs from data/card-catalogue.json; identical bytes until the catalogue changes",
 };
 let suspect = 0, excused = 0;
 
