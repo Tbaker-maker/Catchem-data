@@ -1,0 +1,30 @@
+name: pr-tests
+# Full test suite on every PR and on main. PR #142: PR checks only ran PPT
+# safety, so a merge could break the nightly's first step (run-tests).
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # artifact-freshness reads git log
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install
+        run: npm install --no-audit --no-fund
+      - name: Patch guard audit for CI
+        run: node scripts/patch-guard-audit-ci.mjs
+      - name: Guard audit
+        run: node scripts/guard-audit.mjs
+      - name: Artifact freshness
+        run: node scripts/artifact-freshness.mjs
+      - name: Full test suite
+        run: node scripts/tests/run-tests.mjs
