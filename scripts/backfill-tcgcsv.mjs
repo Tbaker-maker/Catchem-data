@@ -91,6 +91,15 @@ try {
 const candidates = [];
 const unmatched = [];
 for (const p of products) {
+  // A combined all-arts row has no single TCGplayer product, so it gets no
+  // TCGplayer history. Each art row is joined by its own productId only.
+  if (p.combinedArts) { unmatched.push({ id: p.id, name: p.name, reason: "combined all-arts row; each art has its own history" }); continue; }
+  if (p.artOf) {
+    const pid = Number(p.tcgPlayerId);
+    if (!Number.isInteger(pid) || pid <= 0) { unmatched.push({ id: p.id, name: p.name, reason: "art row has no TCGplayer product id" }); continue; }
+    candidates.push({ id: p.id, name: p.name, subtype: p.subtype, tcgplayerProductId: pid, matchedName: p.tcgplayerName || null, kind: "sealed" });
+    continue;
+  }
   const row = byOur.get(p.id);
   if (!row) { unmatched.push({ id: p.id, name: p.name, reason: "no TCGplayer id on file" }); continue; }
   const why = rowAcceptable(row);

@@ -553,7 +553,11 @@ async function main() {
   // hit ONE SKU"). Full catalog still loads (guards need it); only the
   // fetch set narrows. Pair with a scratchpad copy for a temp OUTPUT_FILE.
   const only = process.env.ONLY ? new Set(process.env.ONLY.split(",")) : null;
-  const products = only ? catalog.filter(p => only.has(p.id)) : catalog;
+  // Per-art rows (artOf, ebay:false) have no eBay query of their own: eBay
+  // listings are not split by art without matching titles by name, so the
+  // combined all-arts parent row keeps the one eBay search.
+  const ebayRows = catalog.filter(p => p.ebay !== false && p.searchQuery);
+  const products = only ? ebayRows.filter(p => only.has(p.id)) : ebayRows;
   console.log(`   → ${products.length} products to refresh${only ? ` (ONLY=${process.env.ONLY})` : ""}.`);
 
   console.log("📜 Loading previous prices (for history continuity)...");
