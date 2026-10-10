@@ -1,3 +1,4 @@
+import { pathToFileURL } from "node:url";
 import { pickMorning } from "../lib/morning-card.mjs";
 
 let fail = 0;
@@ -23,5 +24,11 @@ t("the 6-month high is its own line", doc.lines.some((line) => line.slot === "hi
 t("the species fact is not called a set move", doc.lines.find((line) => line.slot === "fact").note.includes("No set move"));
 t("news is the longer release, not a regional signup", doc.lines.find((line) => line.slot === "news").text.startsWith("Mega Evolution - Delta Reign") && !JSON.stringify(doc).includes("Puebla"));
 
-if (fail) process.exit(1);
-console.log("morning card ok");
+if (fail) console.log(fail + " failed");
+else console.log("morning card ok");
+// run-tests.mjs imports every *.suite.mjs and counts a missing run() as a
+// failure, which stopped the nightly. The checks above run on import; run()
+// reports their count. Run directly, a failure still exits non-zero.
+export async function run() { return fail; }
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href && fail) process.exit(1);
+

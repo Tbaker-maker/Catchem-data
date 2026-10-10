@@ -180,7 +180,11 @@ export async function run() {
     // A second day merges onto the mounted private state, not onto the public slice.
     const later = raw();
     later.metadata.historyWindow.to = "2026-10-08";
-    later.data = [card(101, "1/100", { Holofoil: { "Near Mint": { history: history("2026-10-07", Array.from({ length: 32 }, () => 1)) } } })];
+    // Since #133 a volume read ships only when the last 7 days beat the 30-day
+    // pace, so this card sells 30 in the window (09-07..10-06) with 14 of them in
+    // the last 7 (09-30..10-06). 10-07 is the partial scrape-eve day and never counts.
+    const paced = [1, ...Array(16).fill(1), ...Array(7).fill(0), ...Array(7).fill(2), 1];
+    later.data = [card(101, "1/100", { Holofoil: { "Near Mint": { history: history("2026-10-07", paced) } } })];
     await put(root, "ppt-raw-private/2026-10-08/set-test.json", later);
     await updateVolumeFile({ root, rawDirs: [join(root, "ppt-raw-private", "2026-10-08")], today: "2026-10-08" });
     const state2 = await get(root, "ppt-raw-private/tcgplayer-volume.json");
@@ -205,7 +209,7 @@ export async function run() {
     const lead = (await get(root, "research/assets/public/reads.json")).reads;
     const ex = await get(root, "research/assets/public/feed/extra-reads.json");
     const br = await get(root, "research/assets/public/feed/browse.json");
-    t("nightly path ships the volume read", summary.volume === 1 && ex.reads.some((x) => x.id === "volume-tcgcsv-101") && lead.some((x) => x.id === "volume-tcgcsv-101"));
+    t("nightly path ships the volume read", summary.volume === 1 && ex.reads.find((x) => x.id === "volume-tcgcsv-101")?.sold?.count7d === 14 && ex.reads.some((x) => x.id === "volume-tcgcsv-101") && lead.some((x) => x.id === "volume-tcgcsv-101"));
     t("stale volume rows are dropped", !lead.some((x) => x.id === "volume-old"));
     t("Volume filter is on browse", br.filters.volume?.items?.[0]?.sold?.count30d === 30);
     const publicDirs = await readdir(join(root, "research/assets/public/feed"));

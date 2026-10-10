@@ -1,3 +1,4 @@
+import { pathToFileURL } from "node:url";
 import { buildSetValue, setMove, sumBoth } from "../lib/set-value.mjs";
 
 let fail = 0;
@@ -22,5 +23,11 @@ t("flag off keeps the count and hides the sentence", off.wouldQualify === 1 && o
 const missing = buildSetValue(sets, { "2026-10-09": end }, { enabled: true, endDate: "2026-10-09" });
 t("a missing exact day qualifies nothing", missing.exactStart === "2026-09-09" && missing.exactStartOnFile === false && missing.wouldQualify === 0 && missing.reads.length === 0);
 
-if (fail) process.exit(1);
-console.log("set value ok");
+if (fail) console.log(fail + " failed");
+else console.log("set value ok");
+// run-tests.mjs imports every *.suite.mjs and counts a missing run() as a
+// failure, which stopped the nightly. The checks above run on import; run()
+// reports their count. Run directly, a failure still exits non-zero.
+export async function run() { return fail; }
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href && fail) process.exit(1);
+

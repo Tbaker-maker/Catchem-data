@@ -1,3 +1,4 @@
+import { pathToFileURL } from "node:url";
 import { buildSupplyLead, chartSegments, gapDates, listingSentence, listingWindow } from "../lib/supply-lead.mjs";
 
 let fail = 0;
@@ -55,8 +56,11 @@ const on = buildSupplyLead([
 ], { "sv8-etb": "Surging Sparks ETB" }, { enabled: true });
 t("flag on publishes the same read", on.reads.length === 1 && on.reads[0].id === "sv8-etb" && on.reads[0].sentence.includes("140 → 109"));
 
-if (fail) {
-  console.log(fail + " failed");
-  process.exit(1);
-}
-console.log("supply lead ok");
+if (fail) console.log(fail + " failed");
+else console.log("supply lead ok");
+// run-tests.mjs imports every *.suite.mjs and counts a missing run() as a
+// failure, which stopped the nightly. The checks above run on import; run()
+// reports their count. Run directly, a failure still exits non-zero.
+export async function run() { return fail; }
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href && fail) process.exit(1);
+
