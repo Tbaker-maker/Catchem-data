@@ -150,6 +150,14 @@ export async function runSealedIdTests() {
   t("a named collection is not the generic one", specific.status !== "accepted");
 
   console.log(fail ? `${fail} failed` : "sealed id match ok");
+  // Reviewed TCGplayer ids on sealed products: unique, labelled, and the only link source.
+  const sealedRows = JSON.parse(await readFile(join(ROOT, "data/sealed-products.json"), "utf8"));
+  const withId = sealedRows.filter((r) => r.tcgPlayerId != null);
+  t("every sealed tcgPlayerId is a reviewed numeric id", withId.every((r) => /^\d+$/.test(String(r.tcgPlayerId)) && r.tcgPlayerIdMethod === "ppt-tcgplayer-id-reviewed"));
+  t("no two sealed products share a tcgPlayerId", new Set(withId.map((r) => String(r.tcgPlayerId))).size === withId.length);
+  t("held swsh5 rows stay unlinked", ["swsh5-booster-box", "swsh5-etb", "swsh5-pack"].every((id) => sealedRows.find((r) => r.id === id)?.tcgPlayerId == null));
+  const bundleSrc = await readFile(join(ROOT, "scripts/build-public-bundle.mjs"), "utf8");
+  t("sealed redirects are not built from names", !/byNorm|SET_HINTS|subtypeFromLegacy/.test(bundleSrc));
   return fail;
 }
 
