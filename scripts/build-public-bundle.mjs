@@ -525,7 +525,7 @@ for (const [name, ids] of [...artistGroups.entries()].sort((a, b) => b[1].length
     source: "illustrator credit from pokemontcg.io, price from TCGplayer market",
     index: artistLine.points,
     indexCards: artistLine.cards,
-    indexNote: `Median day-over-day move of ${artistLine.cards} of ${cards.length} cards (priced $2+ on both days, at least 8 cards a day). Days with no price file are gaps.`,
+    indexNote: `Value-weighted: each day is the sum of today's prices over the sum of the same cards' prices on the last real day. ${artistLine.cards} of ${cards.length} cards used (priced on both days, at least 8 cards a day). Days with no price file are gaps.`,
     cards,
   }));
 }
@@ -819,7 +819,7 @@ await writeFile(join(OUT, "indexes.json"), JSON.stringify({
   asOf: catalog.asOf,
   updatedAt,
   source: "TCGplayer market, daily",
-  note: "Chain-linked median of day-to-day ratios. Singles and sealed are separate. Two days is not a month.",
+  note: "Chain-linked value-weighted index: each day is the sum of today's prices over the sum of the same cards' prices on the last real day. Singles and sealed are separate. Two days is not a month.",
   singles: indexLine(allItems.filter((it) => it.kind === "single")),
   sealed: indexLine(allItems.filter((it) => it.kind === "sealed")),
 }, null, 1) + "\n");
