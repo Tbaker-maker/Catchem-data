@@ -1,10 +1,16 @@
-// Chain-linked median index for the public bundle (set and artist lines).
+// Chain-linked value-weighted index for the public bundle (set and artist lines).
+// Each day's link is (sum of today's prices) / (sum of the same cards' prices on
+// the last real day on the line), over cards with a price on BOTH days. A dearer
+// card has a bigger say, the way a collection's value moves. The daily TCGCSV
+// files do not mark a repeated price as carried forward, so every card with a
+// price on both days is used (a repeated value is a real published price).
 // Every calendar day from the first to the last price day gets a point.
 // A day with no file, or fewer than MIN_LINKS cards priced on it and on the
 // last day on the line, is a gap: v is null and nothing is carried forward.
 // The level is kept unrounded between days; only the published value is rounded.
 export const MIN_LINKS = 8;
-export const MIN_PRICE = 2;
+export const MIN_PRICE = 0.01;
+export const METHOD = "value-weighted";
 
 const DAY = 86400000;
 const iso = (t) => new Date(t).toISOString().slice(0, 10);
@@ -24,23 +30,23 @@ export function indexLine(list) {
   let gaps = 0;
   for (let t = start + DAY; t <= end; t += DAY) {
     const day = iso(t);
-    const ratios = [];
+    let sumA = 0;
+    let sumB = 0;
     const ids = [];
     maps.forEach((m, i) => {
-      const a = m.get(from);
-      const b = m.get(day);
-      if (a >= MIN_PRICE && b > 0) { ratios.push(b / a); ids.push(i); }
+      const a = Number(m.get(from));
+      const b = Number(m.get(day));
+      if (a >= MIN_PRICE && b > 0) { sumA += a; sumB += b; ids.push(i); }
     });
-    if (ratios.length < MIN_LINKS) {
-      points.push({ d: day, v: null, n: ratios.length });
+    if (ids.length < MIN_LINKS || !(sumA > 0)) {
+      points.push({ d: day, v: null, n: ids.length });
       gaps += 1;
       continue;
     }
-    ratios.sort((x, y) => x - y);
-    level *= ratios[Math.floor(ratios.length / 2)];
+    level *= sumB / sumA;
     ids.forEach((i) => used.add(i));
     links += 1;
-    points.push({ d: day, v: Math.round(level * 10) / 10, n: ratios.length, ...(from !== iso(t - DAY) ? { from } : {}) });
+    points.push({ d: day, v: Math.round(level * 10) / 10, n: ids.length, ...(from !== iso(t - DAY) ? { from } : {}) });
     from = day;
   }
   return { points, cards: used.size, links, gaps };

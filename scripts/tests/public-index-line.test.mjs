@@ -29,8 +29,19 @@ const ten = (rows) => Array.from({ length: 10 }, () => card(rows));
   t("0.04% a day is not rounded away", r.points.at(-1).v === 101.2, String(r.points.at(-1).v));
 }
 {
-  const r = indexLine(ten([["2026-01-01", 1], ["2026-01-02", 5]]));
-  t("cards under $2 on the from-day are left out", r.points[1].v === null);
+  // Value-weighted: 8 cards flat at $1 and 2 cards $100 -> $110 move the line by
+  // (8 + 220) / (8 + 200) = 109.6, not the median move (0%).
+  const flat = Array.from({ length: 8 }, () => card([["2026-01-01", 1], ["2026-01-02", 1]]));
+  const big = Array.from({ length: 2 }, () => card([["2026-01-01", 100], ["2026-01-02", 110]]));
+  const r = indexLine([...flat, ...big]);
+  t("a day is the sum of prices over the same cards' sum the day before", r.points[1].v === 109.6 && r.points[1].n === 10, String(r.points[1].v));
+}
+{
+  // A card priced on only one of the two days is not in that day's sums.
+  const both = Array.from({ length: 8 }, () => card([["2026-01-01", 10], ["2026-01-02", 10]]));
+  const newcomer = card([["2026-01-02", 500]]);
+  const r = indexLine([...both, newcomer]);
+  t("a card new on the day does not move the line", r.points[1].v === 100 && r.points[1].n === 8);
 }
 
 if (fail) { console.error(`public-index-line: ${fail} failed`); process.exit(1); }
