@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 // tcgplayer-volume.suite.mjs — TCGplayer sold counts from PPT set raws.
 // Nulls are never filled, the window holds complete days only, a card is kept
 // only when its id, number and printing verify against the catalog, and the
@@ -205,7 +206,11 @@ export async function run() {
       { id: "volume-old", sku: "tcgcsv-1", readKind: "volume", kind: "volume", path: "stale" },
     ] });
     await mkdir(join(root, "research/assets/public/feed"), { recursive: true });
+    const offSummary = await writeFeedExtras(root, { asOf: SCRAPE, reads: [] }, { asOf: SCRAPE, cardIds: ["a"], rankedIds: [], news: [], waves: [] });
+    t("volume reads are off by default (PPT written yes pending)", offSummary.volume === 0);
+    process.env.CATCHEM_VOLUME_READS = "1";
     const summary = await writeFeedExtras(root, { asOf: SCRAPE, reads: [] }, { asOf: SCRAPE, cardIds: ["a"], rankedIds: [], news: [], waves: [] });
+    delete process.env.CATCHEM_VOLUME_READS;
     const lead = (await get(root, "research/assets/public/reads.json")).reads;
     const ex = await get(root, "research/assets/public/feed/extra-reads.json");
     const br = await get(root, "research/assets/public/feed/browse.json");
@@ -225,10 +230,12 @@ export async function run() {
   }
 
   // ── the committed public file is a display slice, not the table ──
-  try {
-    const committed = JSON.parse(await readFile(join(ROOT, "data/derived/tcgplayer-volume.json"), "utf8"));
-    t("committed public volume file holds at most the read cards", Object.keys(committed.cards || {}).length <= MAX_READS);
-  } catch { t("committed public volume file is readable", false); }
+  // PPT-sourced: the public file left the repo on 2026-10-10 (catchem-data-private).
+  {
+    let tracked = "";
+    try { tracked = execFileSync("git", ["ls-files", "data/derived/tcgplayer-volume.json"], { cwd: ROOT, encoding: "utf8" }); } catch {}
+    t("no public volume file is tracked until PPT's written yes", tracked.trim() === "");
+  }
 
   // ── nightly wiring, no workflow edit ──
   const refresh = await readFile(join(ROOT, "scripts/ppt-refresh.mjs"), "utf8");

@@ -733,7 +733,7 @@ await writeFile(join(OUT, "counts.json"), JSON.stringify(counts, null, 1) + "\n"
 const feedItems = [];
 for (const [item, set] of flat) {
   const raw = rawById.get(item.id) || item.hist || [];
-  if (raw.length < 30) continue;
+  if (raw.length < 2) continue; // feedWindow decides which windows exist
   const kind = item.kind === "sealed" ? "sealed" : "single";
   feedItems.push({
     id: item.id,

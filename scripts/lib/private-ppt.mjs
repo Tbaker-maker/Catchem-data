@@ -10,6 +10,10 @@ export const CROSSCHECK_FILES = ["sealed-crosscheck.json", "crosscheck-history.j
 // cards a read displays are written to the public data/derived file.
 export const VOLUME_STATE = "tcgplayer-volume.json";
 export const SHAPE_STATE = "shape-facts.json";
+// PPT-valued enrichment files (market, low, sold counts per card). They left the
+// public repo on 2026-10-10 and live in catchem-data-private data/ppt-enrichment/.
+// A run with the token mounts them back to their old gitignored paths.
+export const ENRICH_FILES = ["singles-enrichment.json", "enrichment-distilled.json"];
 
 export function redact(text, secrets) {
   let out = String(text || "");
@@ -133,6 +137,13 @@ export async function restorePrivate({ clone, root }) {
     await mkdir(join(root, "ppt-raw-private"), { recursive: true });
     await cp(shapeFrom, join(root, "ppt-raw-private", SHAPE_STATE));
     actions.push("shape-facts");
+  }
+  for (const name of ENRICH_FILES) {
+    const from = join(clone, "data/ppt-enrichment", name);
+    if (!existsSync(from)) continue;
+    await mkdir(join(root, "data"), { recursive: true });
+    await cp(from, join(root, "data", name));
+    actions.push(name);
   }
   return actions;
 }

@@ -11,7 +11,9 @@ function enabledFlag() {
 }
 
 export async function writeSlabStatus(root = ROOT) {
-  const enrich = JSON.parse(await readFile(join(root, "data/singles-enrichment.json"), "utf8"));
+  // singles-enrichment.json is PPT-valued and private; it is only here when mounted.
+  let enrich = { cards: [] };
+  try { enrich = JSON.parse(await readFile(join(root, "data/singles-enrichment.json"), "utf8")); } catch { /* not mounted */ }
   const candidates = slabCandidates(enrich.cards || []);
   const status = slabStatus({
     asOf: new Date().toISOString().slice(0, 10),

@@ -13,6 +13,7 @@ import {
 } from "./lib/outlier-dive-reads.mjs";
 import { VOLUME_EMPTY_NOTE, VOLUME_NOTE, loadVolumeDoc, volumeReads } from "./lib/volume-reads.mjs";
 import { publicVolumeDoc, serializeVolumeDoc, VOLUME_FILE, VOLUME_STATE_FILE } from "./lib/tcgplayer-volume.mjs";
+import { flag } from "./flags.mjs";
 import { cooledSet, loadRotation, loadShapeCandidates, pickNight, rememberShown } from "./lib/night-reads.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -151,7 +152,11 @@ export async function flaggedAndDiveReads(root = ROOT) {
 // from the public slice. Cooled cards are skipped before the cap, so a night
 // still fills when later cards qualify. The public file keeps only the cards
 // this night shows. The full table is never written here.
+// Volume reads are OFF until PokemonPriceTracker gives a written yes: the sold
+// counts come from PPT. Nothing is read and data/derived/tcgplayer-volume.json is
+// never written to the public repo. Gate: data/flags.json "reads.volume".
 export async function volumeFeedReads(root = ROOT, { asOf = "", exclude = null } = {}) {
+  if (!flag("reads.volume")) return [];
   let doc = null;
   let fromPrivate = false;
   try {

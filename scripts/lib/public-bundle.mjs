@@ -1109,7 +1109,11 @@ export function isThinSeries(points, asOf) {
   const cut = new Date(Date.parse(`${end}T00:00:00Z`) - 180 * 86400000).toISOString().slice(0, 10);
   const seen = new Set();
   for (const p of pts) if (p[0] >= cut && p[0] <= end) seen.add(cents(p[1]));
-  return seen.size < 30;
+  // Thin = few distinct prices for the days on file. A short TCGCSV-only
+  // history is not thin by itself.
+  let onFile = 0;
+  for (const p of pts) if (p[0] >= cut && p[0] <= end) onFile += 1;
+  return seen.size < Math.min(30, Math.ceil(onFile / 2));
 }
 
 function seriesBounds(pts) {
@@ -1130,14 +1134,18 @@ function extremeOf(pts) {
   const span = daySpan(pts[0][0], last[0]);
   const month = monthOf(pts[0][0]);
   const sixMonths = span >= 150;
-  if (cents(last[1]) === cents(lo[1])) return { kind: "low", month, price: last[1], sixMonths };
-  if (cents(last[1]) === cents(hi[1])) return { kind: "high", month, price: last[1], sixMonths };
+  const longSeries = span >= 90;
+  if (cents(last[1]) === cents(lo[1])) return { kind: "low", month, price: last[1], sixMonths, longSeries };
+  if (cents(last[1]) === cents(hi[1])) return { kind: "high", month, price: last[1], sixMonths, longSeries };
   return null;
 }
 
 function extremePhrase(extreme) {
   if (!extreme) return "";
   if (extreme.sixMonths) return extreme.kind === "low" ? "a 6-month low" : "a 6-month high";
+  // A high or low on a short series (TCGCSV-only days start 2026-09-25) is not
+  // claimed. "Since September" on two weeks of days would read as a long high.
+  if (!extreme.longSeries) return "";
   const word = extreme.kind === "low" ? "lowest" : "highest";
   return `its ${word} price since ${extreme.month}`;
 }
@@ -1342,7 +1350,9 @@ export function selectFeedReads(rows, limit = 12) {
 // One step, then a flat line, is a spike and does not count.
 export function moveOver(points, days) {
   const pts = (points || []).filter((p) => Array.isArray(p) && /^\d{4}-\d{2}-\d{2}$/.test(String(p[0])) && Number(p[1]) > 0);
-  if (pts.length < 30 || (days !== 7 && days !== 30)) return null;
+  // The window is the gate: an exact day N days back, plus confirming steps.
+  // No minimum series length (TCGCSV-only history starts 2026-09-25).
+  if (pts.length < 4 || (days !== 7 && days !== 30)) return null;
   const end = pts[pts.length - 1];
   const target = new Date(Date.parse(`${end[0]}T00:00:00Z`) - days * 86400000).toISOString().slice(0, 10);
   const then = pts.find((p) => p[0] === target) || null;
@@ -1404,7 +1414,9 @@ export function highValueSpike(pts, from, to, { name = "" } = {}) {
 
 export function feedWindow(points, days, opts = {}) {
   const pts = (points || []).filter((p) => Array.isArray(p) && /^\d{4}-\d{2}-\d{2}$/.test(String(p[0])) && Number(p[1]) > 0);
-  if (pts.length < 30 || (days !== 7 && days !== 30 && days !== 90)) return null;
+  // The window is the gate: an exact day N days back, plus confirming steps.
+  // No minimum series length, so a 7-day window qualifies on 7 days of history.
+  if (pts.length < 3 || (days !== 7 && days !== 30 && days !== 90)) return null;
   const end = pts[pts.length - 1];
   const target = new Date(Date.parse(`${end[0]}T00:00:00Z`) - days * 86400000).toISOString().slice(0, 10);
   const then = pts.find((p) => p[0] === target) || null;

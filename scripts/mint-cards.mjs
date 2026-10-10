@@ -167,6 +167,7 @@ Imagine you and a friend both know a toy costs $10 at the store — but getting 
 <p>None of that makes the numbers unreliable. It makes them single-sourced, which is a different and smaller claim than the word "verified" usually carries, and you should know which one you are reading.</p>
 
 <h2 id="house-reads">House reads &amp; falsifiers</h2><p>Interpretations (reprint cycles, depth reads, the <b>PSA-9 tax</b> — on established sets, a 9 usually returns less than the raw card plus the grading fee; only the 10 pays) publish with the condition that would prove them wrong, and when a falsifier trips we amend in public. Being seen self-correcting is the point.</p>
+<h2 id="date-lag">Date lag</h2><p>TCGplayer market via TCGCSV, published the day before the date shown. A price dated Oct 10 is the TCGplayer market price TCGCSV published on Oct 9. Past days are not relabelled.</p><p>This product uses TCGplayer data but is not endorsed or certified by TCGplayer.</p>
 <p class="dim" style="margin-top:36px"><a href="/corrections.html">Corrections</a></p>
 </main>
 ${footerHtml()}
