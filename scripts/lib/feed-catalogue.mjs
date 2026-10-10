@@ -147,6 +147,9 @@ export function selectLead(cards, limit = 24) {
     }
     return n;
   }
+  function shownText(card) {
+    return card._leadText || card.path;
+  }
   function leadShape(text, card) {
     return sentenceShape(text, card)
       .replace(/,?\s*while the n-day window\b.*/i, "")
@@ -166,11 +169,11 @@ export function selectLead(cards, limit = 24) {
   function shapeIndex(text, card) {
     const key = leadShape(text, card);
     if (!key) return -1;
-    return chosen.findIndex((row) => leadShape(row.path, row) === key);
+    return chosen.findIndex((row) => leadShape(shownText(row), row) === key);
   }
   function gramsOk(card, text, ignore) {
     const local = gramBag(text, card);
-    const drop = ignore ? gramBag(ignore.path, ignore) : new Map();
+    const drop = ignore ? gramBag(shownText(ignore), ignore) : new Map();
     for (const [gram, n] of local) {
       if ((grams.get(gram) || 0) - (drop.get(gram) || 0) + n > 2) return false;
     }
@@ -179,7 +182,7 @@ export function selectLead(cards, limit = 24) {
   function usable(card, text) {
     if (!text || BANNED.test(text) || BAD_DATE.test(text)) return false;
     const index = shapeIndex(text, card);
-    const replace = index >= 0 && statesBothMoves(text) && !statesBothMoves(chosen[index].path);
+    const replace = index >= 0 && statesBothMoves(text) && !statesBothMoves(shownText(chosen[index]));
     if (index >= 0 && !replace) return false;
     return gramsOk(card, text, replace ? chosen[index] : null);
   }
@@ -191,7 +194,14 @@ export function selectLead(cards, limit = 24) {
       return usable(card, text);
     };
     let made = "";
-    if ((card._raw || []).length >= 2) {
+    const head = String(card.headline || "").trim();
+    const headIsLine = head && head !== failed && /\$/.test(head) && /%/.test(head);
+    if (headIsLine) {
+      if (!FILLER_BAN.test(head) && usable(card, head)) {
+        made = head;
+        card._leadText = head;
+      }
+    } else if ((card._raw || []).length >= 2) {
       const picked = pickLead(card._raw, altOpts, accept);
       if (picked) {
         made = picked.line;
@@ -202,21 +212,21 @@ export function selectLead(cards, limit = 24) {
     }
     if (failed && failed !== made) rewrites.push({ id: card.id || "", failed, next: made });
     if (!made) return "";
-    card.path = made;
-    return made;
+    if (!card._leadText) card.path = made;
+    return shownText(card);
   }
   function addCounts(card, index) {
     const w = Number(card.windowDays);
     windows[w] = (windows[w] || 0) + 1;
-    shapes.add(leadShape(card.path, card));
-    for (const gram of fourGrams(sentenceShape(card.path, card))) grams.set(gram, (grams.get(gram) || 0) + 1);
+    shapes.add(leadShape(shownText(card), card));
+    for (const gram of fourGrams(sentenceShape(shownText(card), card))) grams.set(gram, (grams.get(gram) || 0) + 1);
     if (index < 10) sets.set(card.set || "", (sets.get(card.set || "") || 0) + 1);
     if (card.kind === "sealed") sealedKept += 1;
   }
   function dropCounts(card, index) {
     const w = Number(card.windowDays);
     windows[w] = Math.max(0, (windows[w] || 0) - 1);
-    for (const gram of fourGrams(sentenceShape(card.path, card))) {
+    for (const gram of fourGrams(sentenceShape(shownText(card), card))) {
       const next = (grams.get(gram) || 0) - 1;
       if (next > 0) grams.set(gram, next);
       else grams.delete(gram);
@@ -229,9 +239,9 @@ export function selectLead(cards, limit = 24) {
     chosen.push(card);
   }
   function place(card) {
-    const index = shapeIndex(card.path, card);
+    const index = shapeIndex(shownText(card), card);
     if (index >= 0) {
-      if (!(statesBothMoves(card.path) && !statesBothMoves(chosen[index].path))) return false;
+      if (!(statesBothMoves(shownText(card)) && !statesBothMoves(shownText(chosen[index])))) return false;
       dropCounts(chosen[index], index);
       chosen[index] = card;
       addCounts(card, index);
@@ -492,6 +502,7 @@ export function assembleCatalogue(items, prior = []) {
         set: draft.set,
         setSlug: draft.setSlug,
         name: draft.name,
+        number: draft.number,
         price: move.to,
         change7: changes[7],
         change30: changes[30],
@@ -699,6 +710,7 @@ export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDi
     delete card.sealedKind;
     delete card._sold;
     delete card._raw;
+    delete card._leadText;
     delete card._pathOpts;
   }
   const pageSize = 24;

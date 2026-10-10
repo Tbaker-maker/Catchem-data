@@ -4,6 +4,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { assembleCatalog, buildBrowse, supplyNotes } from "./lib/extra-reads.mjs";
 import {
+  attachCatalogMarkets,
   diveTeaserReads,
   interleaveExtraKinds,
   loadDiveDocsForTeasers,
@@ -145,7 +146,9 @@ export async function writeExtra(root, extra, browse) {
 // research/pulse/dive/ — and ships none when those files have none.
 export async function flaggedAndDiveReads(root = ROOT) {
   const flagged = outlierReads(await loadOutlierDoc(root));
-  const dives = diveTeaserReads(await loadDiveDocsForTeasers(root, { max: 12 }));
+  const docs = await loadDiveDocsForTeasers(root, { max: 400 });
+  await attachCatalogMarkets(root, docs);
+  const dives = diveTeaserReads(docs).slice(0, 12);
   return { flagged, dives };
 }
 

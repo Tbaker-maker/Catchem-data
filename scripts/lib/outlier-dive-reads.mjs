@@ -66,9 +66,21 @@ export function outlierReads(doc) {
   return out;
 }
 
+function marketOnDive(doc) {
+  const latest = doc?.latest || {};
+  const values = [doc?.tcgMarket, doc?.tcgplayerMarket, latest.tcgMarket, latest.tcgplayerMarket];
+  for (const value of values) {
+    const n = Number(value);
+    if (n > 0) return n;
+  }
+  return 0;
+}
+
 /**
  * Short dive teasers. Uses only fields already on a dive payload (name, latest
  * price/date, optional outlier note). Points at /dive/<id>.
+ * priceMedian is an eBay ask, never a sale and never the TCGplayer market.
+ * A live ask with no other signal does not ship.
  */
 export function diveTeaserReads(dives) {
   const out = [];
@@ -77,25 +89,35 @@ export function diveTeaserReads(dives) {
     const name = String(doc.name || "").trim();
     if (!name) continue;
     const latest = doc.latest || {};
-    // Dive payloads store the ask median as priceMedian and the day as lastSeen.
-    const price = Number(latest.priceMedian ?? latest.price ?? latest.ask ?? latest.market);
+    const price = Number(latest.priceMedian ?? latest.price ?? latest.ask);
     const day = String(latest.lastSeen || latest.asOf || latest.date || doc.asOf || "").slice(0, 10);
     const live = String(latest.dataStatus || "") === "live";
     const hasPrice = live && price > 0 && /^\d{4}-\d{2}-\d{2}$/.test(day);
-    // The payload note can end without a stop ("… — review"); the teaser adds
-    // one so the next sentence does not run on ("review Deeper look").
     const rawNote = String((doc.outlier && doc.outlier.note) || "").trim();
     const outlierNote = rawNote && !/[.!?]$/.test(rawNote) ? rawNote + "." : rawNote;
+    const market = marketOnDive(doc);
+    const askText = hasPrice ? money(price) : "";
+    const marketText = market > 0 ? money(market) : "";
     let sentence = "";
-    if (hasPrice && outlierNote) {
-      sentence = `${name}: ${money(price)} on ${monthDay(day)}. ${outlierNote} Deeper look on the chart.`;
-    } else if (hasPrice) {
-      sentence = `${name}: ${money(price)} on ${monthDay(day)}. Deeper look on the chart.`;
-    } else if (outlierNote) {
+    if (hasPrice && marketText) {
+      const gap = Math.round((price - market) * 100) / 100;
+      const gapText = money(Math.abs(gap));
+      if (gap > 0 && gapText) sentence = `${name}: eBay asks (${askText}) sit ${gapText} over TCGplayer market (${marketText}).`;
+      else if (gap < 0 && gapText) sentence = `${name}: eBay asks (${askText}) sit ${gapText} under TCGplayer market (${marketText}).`;
+    }
+    if (!sentence && hasPrice && outlierNote) {
+      sentence = `${name}: eBay asks (${askText}) on ${monthDay(day)}. ${outlierNote} Deeper look on the chart.`;
+    } else if (!sentence && outlierNote) {
       sentence = `${name}: ${outlierNote} Deeper look on the chart.`;
-    } else {
+    } else if (!sentence) {
       continue;
     }
+    const marketFile = String(doc.marketFile || "");
+    const why = marketFile
+      ? `eBay ask is the price median in research/pulse/dive/${doc.id}.json. TCGplayer market is the price for ${doc.tcgcsvId} in ${marketFile}. Asks are not sales.`
+      : "Fields are from research/pulse/dive/<id>.json. No sold count is on this read.";
+    const sources = { dive: `research/pulse/dive/${doc.id}.json` };
+    if (marketFile) sources.market = marketFile;
     out.push({
       id: `dive-${doc.id}`,
       sku: String(doc.id),
@@ -106,11 +128,11 @@ export function diveTeaserReads(dives) {
       set: "",
       path: sentence,
       headline: sentence,
-      why: "Fields are from research/pulse/dive/<id>.json. No sold count is on this read.",
+      why,
       price: hasPrice ? price : undefined,
       asOf: hasPrice ? day : String(doc.asOf || "").slice(0, 10),
       href: `/dive/${encodeURIComponent(doc.id)}`,
-      sources: { dive: `research/pulse/dive/${doc.id}.json` },
+      sources,
     });
   }
   return out;
@@ -122,6 +144,34 @@ export async function loadOutlierDoc(root) {
   } catch {
     return null;
   }
+}
+
+export async function attachCatalogMarkets(root, docs) {
+  let catalog;
+  try {
+    catalog = JSON.parse(await readFile(join(root, "data/catalog/tcgcsv-latest.json"), "utf8"));
+  } catch {
+    return 0;
+  }
+  const asOf = String(catalog.asOf || "").slice(0, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(asOf)) return 0;
+  const priceById = new Map();
+  for (const item of catalog.items || []) {
+    if (!item?.id || !(Number(item.price) > 0)) continue;
+    priceById.set(String(item.id), Number(item.price));
+  }
+  let n = 0;
+  for (const doc of docs || []) {
+    if (!doc || marketOnDive(doc) > 0) continue;
+    const id = String(doc.tcgcsvId || "");
+    const day = String(doc.latest?.lastSeen || doc.latest?.asOf || doc.latest?.date || doc.asOf || "").slice(0, 10);
+    const price = priceById.get(id);
+    if (!id || day !== asOf || !(price > 0)) continue;
+    doc.tcgplayerMarket = price;
+    doc.marketFile = "data/catalog/tcgcsv-latest.json";
+    n += 1;
+  }
+  return n;
 }
 
 /** Prefer dives that already carry an outlier, then live asks with a real median. */

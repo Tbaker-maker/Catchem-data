@@ -85,7 +85,7 @@ export async function run() {
   t("plain takes at most two seats", lib.board.filter((row) => row.signal === "plain").length <= PLAIN_CAP);
   t("one sku is not boarded twice", new Set(lib.board.map((row) => row.sku)).size === lib.board.length);
   const streak = lib.board.find((row) => row.signal === "streak");
-  t("streak sentence uses the series price", streak && streak.headline.includes("Up 4 straight days") && streak.headline.includes("$5.00") && streak.sku === "tcgcsv-9");
+  t("streak sentence uses the series price", streak && streak.headline.includes("has risen 4 days running") && streak.headline.includes("$5.00") && streak.sku === "tcgcsv-9");
   t("signals chip rows are movers, set moves, highs, and streaks", lib.signals.every((row) => ["mover", "set", "high", "streak"].includes(row.signal)) && lib.signals.some((row) => row.signal === "mover") && !lib.signals.some((row) => row.signal === "plain"));
   const mover = lib.board.find((row) => row.signal === "mover");
   t("mover names the id and the 8% line", mover && mover.whyItMatters.includes("tcgcsv-1") && mover.whyItMatters.includes("at least 8%"));

@@ -394,9 +394,12 @@ export function buildReadLibrary({ catalogue, extra, series } = {}) {
       if (!named?.name) continue;
       const start = shiftDay(asOf, -streak.n);
       if (!daysHold(pts, asOf, streak.n)) continue;
-      const word = streak.dir < 0 ? "Down" : "Up";
       const price = money(seriesPrice);
       if (!price) continue;
+      const num = String(named.number || "").trim();
+      const who = num ? `${named.name} (${num})` : named.name;
+      const verb = streak.dir < 0 ? "has slipped" : "has risen";
+      const sentence = `${who} ${verb} ${streak.n} days running. Now ${price}.`;
       const proof = { start, end: asOf, days: streak.n };
       streakRows.push(withProof({
         id: `streak-${sku}`,
@@ -405,8 +408,8 @@ export function buildReadLibrary({ catalogue, extra, series } = {}) {
         kind: "streak",
         name: named.name,
         set: named.set || "",
-        headline: `${named.name} latest price: ${word} ${streak.n} straight days through ${asOf}, at ${price}.`,
-        path: `${named.name} latest price: ${word} ${streak.n} straight days through ${asOf}, at ${price}.`,
+        headline: sentence,
+        path: sentence,
         price: seriesPrice,
         asOf,
         source: named.source || "TCGplayer market",
