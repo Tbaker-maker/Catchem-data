@@ -61,6 +61,13 @@
       "why": "Soft-launch Save-this-picture banner bake. Was process.env.CATCHEM_TODAY direct read — duplicate-gate risk.",
       "trigger": "Set CATCHEM_TODAY=1 when shipping a daily featured post.",
       "env": "CATCHEM_TODAY"
+    },
+    "supply.leadReads": {
+      "value": false,
+      "owner": "scripts/write-supply-lead.mjs",
+      "why": "Listing-count reads stay off until RD rules KEEP. The count of what would qualify is still written. A listing is not a sale.",
+      "trigger": "RD rules KEEP for supply leads price.",
+      "env": "CATCHEM_SUPPLY_LEAD"
     }
   }
 }
