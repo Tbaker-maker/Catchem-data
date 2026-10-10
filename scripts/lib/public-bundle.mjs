@@ -1040,7 +1040,12 @@ export function spikeDates(points) {
     const price = pts[i][1];
     const tight = near.length >= 3 && farFrom(price, medianOf(near), 0.35);
     const broad = wide.length >= 5 && farFrom(price, medianOf(wide), 0.25);
-    if (tight || broad) out.add(pts[i][0]);
+    // A day within 25% of each real neighbouring day is part of a trend, not a
+    // spike: a steady climb (500, 600, 700, 850) keeps every point.
+    const prev = pts[i - 1]?.[1];
+    const next = pts[i + 1]?.[1];
+    const steady = (prev == null || !farFrom(price, prev, 0.25)) && (next == null || !farFrom(price, next, 0.25)) && (prev != null || next != null);
+    if ((tight || broad) && !steady) out.add(pts[i][0]);
   }
   return out;
 }
