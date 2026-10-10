@@ -10,7 +10,6 @@ import {
   STILL_CLAUSE,
   gapRead,
   pickNight,
-  quietClause,
   quietRead,
   spreadRead,
   stillRead,
@@ -46,12 +45,14 @@ export async function run() {
   };
   const fact = cardFacts(card, item, "2026-10-06");
   t("a grade block in the raw is not a read", fact && !fact.grade);
-  const quiet = quietRead({ quiet: { days: 7, price: 2.5, from: "2026-09-28", to: "2026-10-04" }, printing: "Normal" }, item, "2026-10-06");
-  t("the quiet line keeps its clause", quiet.path.includes(quietClause(7)) && quiet.path.includes("$2.50"));
+  const cheap = quietRead({ quiet: { days: 7, price: 2.5, from: "2026-09-28", to: "2026-10-04" }, printing: "Normal" }, item, "2026-10-06");
+  t("a quiet read under $5 does not ship", cheap == null);
+  const quiet = quietRead({ quiet: { days: 7, price: 12.5, from: "2026-09-28", to: "2026-10-04" }, printing: "Normal" }, item, "2026-10-06");
+  t("the quiet line keeps its clause on the why line", quiet && quiet.path.includes("No TCGplayer sales recorded in 7 days.") && quiet.path.includes("$12.50") && quiet.why.includes("That is not a scarcity claim.") && !quiet.path.includes("That is not a scarcity claim."));
   t("mix, pair, and move clauses stay word for word", [MIX_CLAUSE, PAIR_CLAUSE, MOVE_CLAUSE, SHARE_CLAUSE, SPREAD_CLAUSE, ASK_CLAUSE, MKT_CLAUSE, STILL_CLAUSE].every((line) => line.length > 10));
 
   const spread = spreadRead({ id: "me5-etb", name: "Pitch Black ETB", set: "ME", dataStatus: "live", priceLow: 70, priceHigh: 90, lastSeen: "2026-10-06" });
-  t("an asking spread uses both ends", spread.path.includes("$70.00") && spread.path.includes("$90.00") && spread.path.includes(SPREAD_CLAUSE));
+  t("an asking spread uses both ends", spread.path.includes("$70.00") && spread.path.includes("$90.00") && spread.why.includes(SPREAD_CLAUSE) && !spread.path.includes(SPREAD_CLAUSE));
   t("a missing high is not a spread", spreadRead({ id: "me5-etb", name: "Pitch Black ETB", dataStatus: "live", priceLow: 70, lastSeen: "2026-10-06" }) == null);
 
   const heat = [
@@ -59,15 +60,15 @@ export async function run() {
     { id: "me5-etb", date: "2026-10-06", price: 80, listingCount: 12 },
   ];
   const still = stillRead("me5-etb", heat, "Pitch Black ETB", "ME");
-  t("an unchanged ask keeps the listing count", still.path.includes("12") && still.path.includes(STILL_CLAUSE));
+  t("an unchanged ask keeps the listing count on the why line", still && still.path.includes("12") && still.why.includes(STILL_CLAUSE) && !still.path.includes(STILL_CLAUSE));
   t("a missing listing count stays off", stillRead("me5-etb", heat.map((row) => ({ ...row, listingCount: null })), "Pitch Black ETB", "ME") == null);
 
   const market = { id: "me5-etb", name: "Pitch Black ETB", tcgplayerProductId: 5, points: [{ date: "2026-10-05", market: 40 }, { date: "2026-10-06", market: 40 }] };
   const moved = heat.map((row, i) => ({ ...row, price: i ? 88 : 80 }));
   const ask = gapRead("me5-etb", moved, market, { id: "me5-etb", tcgplayerProductId: 5 });
-  t("the ask clause is used only when the market price stayed", ask.readKind === "askmove" && ask.path.includes(ASK_CLAUSE) && ask.path.includes("$40.00"));
+  t("the ask clause is used only when the market price stayed", ask.readKind === "askmove" && ask.why.includes(ASK_CLAUSE) && !ask.path.includes(ASK_CLAUSE) && ask.path.includes("$40.00"));
   const reverse = gapRead("me5-etb", heat, { ...market, points: [{ date: "2026-10-05", market: 40 }, { date: "2026-10-06", market: 44 }] }, { id: "me5-etb", tcgplayerProductId: 5 });
-  t("the reverse names the market move and the still ask", reverse.readKind === "mktmove" && reverse.path.includes(MKT_CLAUSE));
+  t("the reverse names the market move and the still ask", reverse.readKind === "mktmove" && reverse.why.includes(MKT_CLAUSE) && !reverse.path.includes(MKT_CLAUSE));
   t("a different product id is not a pair", gapRead("me5-etb", moved, market, { id: "other", tcgplayerProductId: 5 }) == null);
 
   const clean = [];

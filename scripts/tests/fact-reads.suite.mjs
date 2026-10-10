@@ -48,15 +48,16 @@ export async function run() {
   t("a pull line ships only when both numbers are in the cited text", traced && traced.cost === 162 && traced.oneIn === 36 && traced.packPrice === 4.5);
 
   const cards = {
-    a: { name: "Duraludon", artist: "Ada" },
-    b: { name: "Duraludon ex", artist: "Bea" },
-    c: { name: "Duraludon V", artist: "Ada" },
+    a: { name: "Duraludon", artist: "Ada", price: 2 },
+    b: { name: "Duraludon ex", artist: "Bea", price: 9 },
+    c: { name: "Duraludon V", artist: "Ada", price: 4 },
   };
   const attrs = { a: { dex: 884 }, b: { dex: 884 }, c: { dex: 884 } };
   const index = buildPokemonIndex(cards, attrs);
   const line = pokemonFactLine(index.get("Duraludon"));
   t("species token strips a mechanic suffix", speciesToken("Duraludon ex") === "Duraludon");
-  t("a pokemon line counts cards and distinct artists from the fields", line && line.cardCount === 3 && line.artistCount === 2 && line.dex === 884 && line.readKind === "pokemon");
+  t("a pokemon line counts cards and distinct artists from the fields", line && line.cardCount === 3 && line.artistCount === 2 && line.dex === 884 && line.readKind === "pokemon" && line.path === "Duraludon (#884): 3 cards, 2 artists.");
+  t("the photo id is the highest priced card the fact counted", line && line.sku === "b" && line.cardId === "b");
   t("a pokemon line does not invent a pronunciation", line && !/pronounced|sounds like/i.test(line.path));
 
   const reads = JSON.parse(await readFile(join(ROOT, "research/assets/public/reads.json"), "utf8"));
@@ -94,9 +95,9 @@ export async function run() {
   const stepBan = /moved less on the latest step|bigger last step|\bprinted\b|\bstored\b|last print/i;
   t("lead lines do not use a last-step rewrite", (reads.reads || []).every((row) => !stepBan.test(String(row.path || "") + String(row.headline || ""))));
   const today = JSON.parse(await readFile(join(ROOT, "research/assets/public/feed/today/0.json"), "utf8"));
-  // The percent is the price move across the window, not the last print and
-  // not a share of today's listings. $120.82 on Sep 27 to $124.16 on Sep 29
-  // is the last step (2.8%). $115.08 on Sep 22 to $124.16 on Sep 29 is the window (7.9%).
+  const watch = JSON.parse(await readFile(join(ROOT, "research/assets/public/feed/watch/0.json"), "utf8"));
+  // A 7-day read needs the price from exactly 7 days earlier. When that file
+  // is missing, Today is empty on purpose. The percent check then uses Watch.
   const windowPath = pathSentence([
     ["2026-09-22", 115.08],
     ["2026-09-27", 120.82],
@@ -109,14 +110,11 @@ export async function run() {
     windowDays: 7,
     direction: "up",
   });
-  // The live feed rotates every night: the Chaos Rising ETB (tcgcsv-684452)
-  // was in it on Sep 29 and is not in the Oct 6 feed, which failed this check
-  // with nothing wrong. So the live half now checks EVERY row of today's feed
-  // instead of one pinned sku: each stated percent must equal the move between
-  // the two prices the same sentence names, match changePct in sign and size,
-  // and carry a window. An empty feed fails.
+  // The live feed rotates every night. Each stated percent must equal the move
+  // between the two prices the same sentence names. Today is empty when no
+  // 7-day window has its exact start day, so Watch is the check.
   const pathRx = /from \$([0-9,.]+) on [A-Za-z]+ \d{1,2} to \$([0-9,.]+) on [A-Za-z]+ \d{1,2}, (up|down) ([0-9]+(?:\.[0-9]+)?)%/;
-  const liveRows = Array.isArray(today) ? today : [];
+  const liveRows = Array.isArray(today) && today.length ? today : (Array.isArray(watch) ? watch : []);
   const liveBad = [];
   for (const row of liveRows) {
     const m = String(row?.path || "").match(pathRx);

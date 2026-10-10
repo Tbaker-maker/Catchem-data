@@ -997,8 +997,14 @@ export function cardLabel(read) {
   const no = collectorNo(read.number);
   const asOf = read.toDate || read.asOf || "2026-09-28";
   const year = olderThanFiveYears(read.release || read.year, asOf) ? Number(String(read.release || read.year).slice(0, 4)) : 0;
-  const bits = [set, year || "", no ? `#${no}` : ""].filter(Boolean);
-  return bits.length ? `${name} (${bits.join(", ")})` : name;
+  const num = no ? `#${no}` : "";
+  if (year) {
+    const bits = [set, String(year), num].filter(Boolean);
+    return bits.length ? `${name} (${bits.join(", ")})` : name;
+  }
+  if (set && num) return `${name} (${set} ${num})`;
+  const bits = [set, num].filter(Boolean);
+  return bits.length ? `${name} (${bits.join(" ")})` : name;
 }
 
 function shiftDay(iso, n) {
@@ -1229,8 +1235,9 @@ function makeHeadline(read, pts, thin, allowExtreme = true) {
   const extreme = allowExtreme && !thin && pts.length ? extremeOf(pts) : null;
   const phrase = extremePhrase(extreme);
   if (phrase) return `${label} hit ${phrase}: ${price}, ${dir} ${shown}% in ${days} days.`;
+  const spanWord = days === 7 ? "this week" : days === 30 ? "this month" : "over 90 days";
   const tail = thin ? ", on few sales." : ".";
-  return `${label} is ${dir} ${shown}% over ${days} days, from ${from} to ${price}${tail}`;
+  return `${label} is ${dir} ${shown}% ${spanWord}: ${from} → ${price}${tail}`;
 }
 
 export function whyPattern(text) {
@@ -1338,14 +1345,10 @@ export function moveOver(points, days) {
   if (pts.length < 30 || (days !== 7 && days !== 30)) return null;
   const end = pts[pts.length - 1];
   const target = new Date(Date.parse(`${end[0]}T00:00:00Z`) - days * 86400000).toISOString().slice(0, 10);
-  let then = null;
-  for (const p of pts) {
-    if (p[0] <= target) then = p;
-    else break;
-  }
+  const then = pts.find((p) => p[0] === target) || null;
   if (!then) return null;
   const span = daySpan(then[0], end[0]);
-  if (span < days - 1 || span > days + 3) return null;
+  if (span !== days) return null;
   const from = Number(then[1]);
   const to = Number(end[1]);
   if (!(from > 0) || !(to > 0) || from === to) return null;
@@ -1392,14 +1395,10 @@ export function feedWindow(points, days) {
   if (pts.length < 30 || (days !== 7 && days !== 30 && days !== 90)) return null;
   const end = pts[pts.length - 1];
   const target = new Date(Date.parse(`${end[0]}T00:00:00Z`) - days * 86400000).toISOString().slice(0, 10);
-  let then = null;
-  for (const p of pts) {
-    if (p[0] <= target) then = p;
-    else break;
-  }
+  const then = pts.find((p) => p[0] === target) || null;
   if (!then) return null;
   const span = daySpan(then[0], end[0]);
-  if (span < days - 2 || span > days + 5) return null;
+  if (span !== days) return null;
   const from = Number(then[1]);
   const to = Number(end[1]);
   if (from < 1 || to < 1 || from === to) return null;

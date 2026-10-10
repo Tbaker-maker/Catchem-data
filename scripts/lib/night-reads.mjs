@@ -25,7 +25,7 @@ export const MKT_CLAUSE = "The market price changed. The ask did not. Asks are n
 export const STILL_CLAUSE = "Asks and listing count. Not sales.";
 
 export const RANKED_KINDS = new Set(["setshare", "spread"]);
-export const KIND_ORDER = ["quiet", "mix", "conditions", "soldflat", "solddown", "setshare", "spread", "askmove", "mktmove", "still", "listing"];
+export const KIND_ORDER = ["quiet", "mix", "conditions", "solddown", "setshare", "spread", "askmove", "mktmove", "listing"];
 export const EMPTY_COPY = {
   quiet: "No quiet Near Mint window is on file.",
   mix: "No condition mix is on file.",
@@ -93,24 +93,34 @@ function baseRead(kind, item, path, asOf) {
   };
 }
 
+function finishRead(row, clause) {
+  if (!row || !clause) return null;
+  const signal = String(row.path || "").replace(/\s+/g, " ").trim();
+  if (!signal || signal.includes(clause)) return null;
+  row.path = signal;
+  row.headline = signal;
+  row.why = `${signal} ${clause}`;
+  return row;
+}
+
 export function quietRead(fact, item, asOf) {
   const q = fact?.quiet;
-  if (!q || !Number.isInteger(q.days) || !(q.price > 0) || !range(q.from, q.to)) return null;
+  if (!q || !Number.isInteger(q.days) || !(q.price >= 5) || !range(q.from, q.to)) return null;
   const name = displayName(item);
   const price = money(q.price);
   const when = range(q.from, q.to);
   if (!name || !price) return null;
-  const clause = quietClause(q.days);
+  const signalBit = `No TCGplayer sales recorded in ${q.days} days.`;
   const phrases = [
-    `${name}: ${clause} The Near Mint market price stayed ${price} over ${when}.`,
-    `${clause} ${name} stayed ${price} in Near Mint over ${when}.`,
-    `${name} in Near Mint stayed ${price} over ${when}. ${clause}`,
+    `${name}: ${signalBit} The Near Mint market price stayed ${price} over ${when}.`,
+    `${signalBit} ${name} stayed ${price} in Near Mint over ${when}.`,
+    `${name} in Near Mint stayed ${price} over ${when}. ${signalBit}`,
   ];
   const path = pickPhrase(phrases, `${asOf}|quiet|${item.id}`);
   const row = baseRead("quiet", item, path, q.to);
-  if (!row || !row.path.includes(clause)) return null;
+  if (!row || !row.path.includes(signalBit)) return null;
   row.receipt = { days: q.days, price: q.price, from: q.from, to: q.to, printing: fact.printing };
-  return row;
+  return finishRead(row, QUIET_TAIL);
 }
 
 export function mixRead(fact, item, asOf) {
@@ -121,17 +131,19 @@ export function mixRead(fact, item, asOf) {
   if (!when || !name) return null;
   const bits = mix.conditions.map((row) => `${row.sold} ${row.condition}`);
   if (bits.some((bit) => !/^\d+ /.test(bit))) return null;
+  const sold = mix.conditions.reduce((sum, row) => sum + Number(row.sold), 0);
+  if (!Number.isInteger(sold) || sold < 10) return null;
   const list = bits.join(", ");
   const phrases = [
-    `${name}, ${when}: ${list}. ${MIX_CLAUSE}`,
-    `${list} for ${name} over ${when}. ${MIX_CLAUSE}`,
-    `${name}: ${list} over ${when}. ${MIX_CLAUSE}`,
+    `${name}, ${when}: ${list}.`,
+    `${list} for ${name} over ${when}.`,
+    `${name}: ${list} over ${when}.`,
   ];
   const path = pickPhrase(phrases, `${asOf}|mix|${item.id}`);
   const row = baseRead("mix", item, path, mix.to);
-  if (!row || !row.path.includes(MIX_CLAUSE)) return null;
+  if (!row) return null;
   row.receipt = { from: mix.from, to: mix.to, conditions: mix.conditions, printing: fact.printing };
-  return row;
+  return finishRead(row, MIX_CLAUSE);
 }
 
 export function pairRead(fact, item, asOf) {
@@ -143,15 +155,15 @@ export function pairRead(fact, item, asOf) {
   if (!nm || !played || !name || !pair.playedCondition) return null;
   const when = monthDay(pair.date);
   const phrases = [
-    `${name} on ${when}: Near Mint ${nm}, ${pair.playedCondition} ${played}. ${PAIR_CLAUSE}`,
-    `Near Mint ${nm} and ${pair.playedCondition} ${played} for ${name} on ${when}. ${PAIR_CLAUSE}`,
-    `${name}: Near Mint ${nm}. ${pair.playedCondition} ${played}. ${when}. ${PAIR_CLAUSE}`,
+    `${name} on ${when}: Near Mint ${nm}, ${pair.playedCondition} ${played}.`,
+    `Near Mint ${nm} and ${pair.playedCondition} ${played} for ${name} on ${when}.`,
+    `${name}: Near Mint ${nm}. ${pair.playedCondition} ${played}. ${when}.`,
   ];
   const path = pickPhrase(phrases, `${asOf}|conditions|${item.id}`);
   const row = baseRead("conditions", item, path, pair.date);
-  if (!row || !row.path.includes(PAIR_CLAUSE)) return null;
+  if (!row) return null;
   row.receipt = { date: pair.date, nearMint: pair.nearMint, played: pair.played, playedCondition: pair.playedCondition };
-  return row;
+  return finishRead(row, PAIR_CLAUSE);
 }
 
 export function flatRead(fact, item, asOf) {
@@ -162,15 +174,15 @@ export function flatRead(fact, item, asOf) {
   const when = range(flat.from, flat.to);
   if (!name || !price) return null;
   const phrases = [
-    `${name}: ${copiesSold(flat.sold)} over ${when} and the market price stayed ${price}. ${MOVE_CLAUSE}`,
-    `${copiesSold(flat.sold)}, and ${name} stayed ${price} over ${when}. ${MOVE_CLAUSE}`,
-    `${name} stayed ${price} over ${when}, with ${copiesSold(flat.sold)}. ${MOVE_CLAUSE}`,
+    `${name}: ${copiesSold(flat.sold)} over ${when} and the market price stayed ${price}.`,
+    `${copiesSold(flat.sold)}, and ${name} stayed ${price} over ${when}.`,
+    `${name} stayed ${price} over ${when}, with ${copiesSold(flat.sold)}.`,
   ];
   const path = pickPhrase(phrases, `${asOf}|soldflat|${item.id}`);
   const row = baseRead("soldflat", item, path, flat.to);
-  if (!row || !row.path.includes(MOVE_CLAUSE)) return null;
+  if (!row || row.path.includes(MOVE_CLAUSE)) return null;
   row.receipt = { days: flat.days, sold: flat.sold, price: flat.price, from: flat.from, to: flat.to };
-  return row;
+  return finishRead(row, "The market price did not move. Not a cause.");
 }
 
 export function fellRead(fact, item, asOf) {
@@ -182,15 +194,15 @@ export function fellRead(fact, item, asOf) {
   const when = range(fell.from, fell.to);
   if (!name || !fromPrice || !toPrice || !when || !(fell.toPrice < fell.fromPrice)) return null;
   const phrases = [
-    `${name}: ${copiesSold(fell.sold)} over ${when} and the market price went from ${fromPrice} to ${toPrice}. ${MOVE_CLAUSE}`,
-    `${copiesSold(fell.sold)} while ${name} went from ${fromPrice} to ${toPrice} over ${when}. ${MOVE_CLAUSE}`,
-    `${name} went from ${fromPrice} to ${toPrice} over ${when}, with ${copiesSold(fell.sold)}. ${MOVE_CLAUSE}`,
+    `${name}: ${copiesSold(fell.sold)} over ${when} and the market price went from ${fromPrice} to ${toPrice}.`,
+    `${copiesSold(fell.sold)} while ${name} went from ${fromPrice} to ${toPrice} over ${when}.`,
+    `${name} went from ${fromPrice} to ${toPrice} over ${when}, with ${copiesSold(fell.sold)}.`,
   ];
   const path = pickPhrase(phrases, `${asOf}|solddown|${item.id}`);
   const row = baseRead("solddown", item, path, fell.to);
-  if (!row || !row.path.includes(MOVE_CLAUSE)) return null;
+  if (!row) return null;
   row.receipt = { days: fell.days, sold: fell.sold, fromPrice: fell.fromPrice, toPrice: fell.toPrice, from: fell.from, to: fell.to };
-  return row;
+  return finishRead(row, MOVE_CLAUSE);
 }
 
 function sameWindow(rows) {
@@ -236,12 +248,12 @@ export function setShareReads(volumeDoc, items) {
     const when = range(window.from, window.to);
     if (!name || !when) continue;
     const phrases = [
-      `${name} is ${top.row.sold7d} of ${total} Near Mint copies sold in ${setName} over ${when}. ${SHARE_CLAUSE}`,
-      `${setName}, ${when}: ${name} accounts for ${top.row.sold7d} of ${total} Near Mint copies sold. ${SHARE_CLAUSE}`,
-      `${top.row.sold7d} of ${total} Near Mint copies sold in ${setName} over ${when} are ${name}. ${SHARE_CLAUSE}`,
+      `${name} is ${top.row.sold7d} of ${total} Near Mint copies sold in ${setName} over ${when}.`,
+      `${setName}, ${when}: ${name} accounts for ${top.row.sold7d} of ${total} Near Mint copies sold.`,
+      `${top.row.sold7d} of ${total} Near Mint copies sold in ${setName} over ${when} are ${name}.`,
     ];
     const path = pickPhrase(phrases, `${window.to}|setshare|${groupId}`);
-    if (!path.includes(SHARE_CLAUSE) || !path.includes(String(top.row.sold7d)) || !path.includes(String(total))) continue;
+    if (!path || path.includes(SHARE_CLAUSE) || !path.includes(String(top.row.sold7d)) || !path.includes(String(total))) continue;
     out.push({
       id: `setshare-${groupId}-${window.to}`,
       sku: top.item.id,
@@ -251,7 +263,7 @@ export function setShareReads(volumeDoc, items) {
       set: setName,
       path,
       headline: path,
-      why: path,
+      why: `${path} ${SHARE_CLAUSE}`,
       asOf: window.to,
       href: `/c/${encodeURIComponent(top.item.id)}`,
       lane: "single",
@@ -273,12 +285,12 @@ export function spreadRead(product) {
   const b = money(high);
   if (!a || !b) return null;
   const phrases = [
-    `${name}: asking prices in the search run from ${a} to ${b}. ${SPREAD_CLAUSE}`,
-    `The search for ${name} asks from ${a} to ${b}. ${SPREAD_CLAUSE}`,
-    `${name} asks run from ${a} up to ${b}. ${SPREAD_CLAUSE}`,
+    `${name}: asking prices in the search run from ${a} to ${b}.`,
+    `The search for ${name} asks from ${a} to ${b}.`,
+    `${name} asks run from ${a} up to ${b}.`,
   ];
   const path = pickPhrase(phrases, `${day}|spread|${product.id}`);
-  if (!path.includes(SPREAD_CLAUSE)) return null;
+  if (!path || path.includes(SPREAD_CLAUSE)) return null;
   return {
     id: `spread-${product.id}`,
     sku: product.id,
@@ -288,7 +300,7 @@ export function spreadRead(product) {
     set: product.set || "",
     path,
     headline: path,
-    why: path,
+    why: `${path} ${SPREAD_CLAUSE}`,
     asOf: day,
     href: `/p/${encodeURIComponent(product.id)}`,
     lane: "sealed",
@@ -352,12 +364,12 @@ export function gapRead(productId, heatRows, marketDoc, mappingRow) {
   if (!askA || !askB || !mktA || !mktB) return null;
   if (askMoved && !mktMoved) {
     const phrases = [
-      `${name}: the eBay ask went from ${askA} to ${askB} over ${when}. The TCGplayer market price stayed ${mktA}. ${ASK_CLAUSE}`,
-      `The eBay ask for ${name} went from ${askA} to ${askB} over ${when}. The TCGplayer market price stayed ${mktA}. ${ASK_CLAUSE}`,
-      `${name} over ${when}: eBay ask ${askA} to ${askB}, TCGplayer market price ${mktA}. ${ASK_CLAUSE}`,
+      `${name}: the eBay ask went from ${askA} to ${askB} over ${when}. The TCGplayer market price stayed ${mktA}.`,
+      `The eBay ask for ${name} went from ${askA} to ${askB} over ${when}. The TCGplayer market price stayed ${mktA}.`,
+      `${name} over ${when}: eBay ask ${askA} to ${askB}, TCGplayer market price ${mktA}.`,
     ];
     const path = pickPhrase(phrases, `${to}|askmove|${productId}`);
-    if (!path.includes(ASK_CLAUSE)) return null;
+    if (!path || path.includes(ASK_CLAUSE)) return null;
     return {
       id: `askmove-${productId}`,
       sku: productId,
@@ -367,7 +379,7 @@ export function gapRead(productId, heatRows, marketDoc, mappingRow) {
       set: "",
       path,
       headline: path,
-      why: path,
+      why: `${path} ${ASK_CLAUSE}`,
       asOf: to,
       href: `/p/${encodeURIComponent(productId)}`,
       lane: "sealed",
@@ -375,12 +387,12 @@ export function gapRead(productId, heatRows, marketDoc, mappingRow) {
     };
   }
   const phrases = [
-    `${name}: the TCGplayer market price went from ${mktA} to ${mktB} over ${when}. The eBay ask stayed ${askA}. ${MKT_CLAUSE}`,
-    `The TCGplayer market price for ${name} went from ${mktA} to ${mktB} over ${when}. The eBay ask stayed ${askA}. ${MKT_CLAUSE}`,
-    `${name} over ${when}: TCGplayer market price ${mktA} to ${mktB}, eBay ask ${askA}. ${MKT_CLAUSE}`,
+    `${name}: the TCGplayer market price went from ${mktA} to ${mktB} over ${when}. The eBay ask stayed ${askA}.`,
+    `The TCGplayer market price for ${name} went from ${mktA} to ${mktB} over ${when}. The eBay ask stayed ${askA}.`,
+    `${name} over ${when}: TCGplayer market price ${mktA} to ${mktB}, eBay ask ${askA}.`,
   ];
   const path = pickPhrase(phrases, `${to}|mktmove|${productId}`);
-  if (!path.includes(MKT_CLAUSE)) return null;
+  if (!path || path.includes(MKT_CLAUSE)) return null;
   return {
     id: `mktmove-${productId}`,
     sku: productId,
@@ -390,7 +402,7 @@ export function gapRead(productId, heatRows, marketDoc, mappingRow) {
     set: "",
     path,
     headline: path,
-    why: path,
+    why: `${path} ${MKT_CLAUSE}`,
     asOf: to,
     href: `/p/${encodeURIComponent(productId)}`,
     lane: "sealed",
@@ -416,12 +428,12 @@ export function stillRead(productId, heatRows, name, setName) {
   const when = range(from, to);
   if (!label || !price || !when) return null;
   const phrases = [
-    `${label}: the ask stayed ${price} and the listing count stayed ${a.listingCount} over ${when}. ${STILL_CLAUSE}`,
-    `${label} over ${when}: ask ${price}, listing count ${a.listingCount}. ${STILL_CLAUSE}`,
-    `The ask for ${label} stayed ${price} over ${when}. The listing count stayed ${a.listingCount}. ${STILL_CLAUSE}`,
+    `${label}: the ask stayed ${price} and the listing count stayed ${a.listingCount} over ${when}.`,
+    `${label} over ${when}: ask ${price}, listing count ${a.listingCount}.`,
+    `The ask for ${label} stayed ${price} over ${when}. The listing count stayed ${a.listingCount}.`,
   ];
   const path = pickPhrase(phrases, `${to}|still|${productId}`);
-  if (!path.includes(STILL_CLAUSE)) return null;
+  if (!path || path.includes(STILL_CLAUSE)) return null;
   return {
     id: `still-${productId}`,
     sku: productId,
@@ -431,7 +443,7 @@ export function stillRead(productId, heatRows, name, setName) {
     set: setName || "",
     path,
     headline: path,
-    why: path,
+    why: `${path} ${STILL_CLAUSE}`,
     asOf: to,
     href: `/p/${encodeURIComponent(productId)}`,
     lane: "sealed",
@@ -445,7 +457,7 @@ export function singleCandidates(facts, items, asOf) {
   for (const fact of Object.values(facts || {})) {
     const item = byId.get(fact?.id);
     if (!item || Number(item.tcgplayerProductId) !== Number(fact.tcgplayerProductId)) continue;
-    for (const read of [quietRead(fact, item, asOf), mixRead(fact, item, asOf), pairRead(fact, item, asOf), flatRead(fact, item, asOf), fellRead(fact, item, asOf)]) {
+    for (const read of [quietRead(fact, item, asOf), mixRead(fact, item, asOf), pairRead(fact, item, asOf), fellRead(fact, item, asOf)]) {
       if (read) out.push(read);
     }
   }
@@ -555,8 +567,6 @@ export async function loadShapeCandidates(root, asOf) {
   for (const product of products) {
     const spread = spreadRead(product);
     if (spread) spreads.push(spread);
-    const still = stillRead(product.id, heatById.get(product.id) || [], product.name, product.set);
-    if (still) out.push(still);
     const listing = listingChangeRead(product);
     if (listing) out.push(listing);
   }

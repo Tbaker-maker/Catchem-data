@@ -69,7 +69,12 @@ export function buildPokemonIndex(cards, attrs) {
     const token = speciesToken(card?.name);
     if (!token) continue;
     if (!byDex.has(dex)) byDex.set(dex, []);
-    byDex.get(dex).push({ token, artist: String(card?.artist || "").trim() });
+    byDex.get(dex).push({
+      token,
+      artist: String(card?.artist || "").trim(),
+      id: String(id),
+      price: Number(card?.price) > 0 ? Number(card.price) : 0,
+    });
   }
   const named = new Map();
   for (const [dex, rows] of byDex) {
@@ -85,7 +90,16 @@ export function buildPokemonIndex(cards, attrs) {
     }
     const artists = new Set(rows.map((row) => row.artist).filter(Boolean));
     if (!token || rows.length < 1 || artists.size < 1) continue;
-    const entry = { name: token, dex, cardCount: rows.length, artistCount: artists.size };
+    let photoId = "";
+    let photoPrice = 0;
+    for (const row of rows) {
+      if (!(row.price > 0) || !row.id) continue;
+      if (!photoId || row.price > photoPrice || (row.price === photoPrice && row.id < photoId)) {
+        photoId = row.id;
+        photoPrice = row.price;
+      }
+    }
+    const entry = { name: token, dex, cardCount: rows.length, artistCount: artists.size, photoId };
     if (!named.has(token)) named.set(token, []);
     named.get(token).push(entry);
   }
@@ -110,11 +124,13 @@ export function pokemonFactLine(entry) {
   const name = String(entry.name || "");
   if (!name || !Number.isInteger(cardCount) || !Number.isInteger(artistCount) || !Number.isInteger(dex)) return null;
   if (cardCount < 1 || artistCount < 1 || dex < 1) return null;
-  const sentence = `${name} has ${cardCount} cards in the catalog, drawn by ${artistCount} artists, and the national dex number on those cards is ${dex}.`;
+  const sentence = `${name} (#${dex}): ${cardCount} cards, ${artistCount} artists.`;
   const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  const photoId = String(entry.photoId || "");
   return {
     id: `pokemon-${slug}`,
-    sku: `pokemon-${slug}`,
+    sku: photoId || `pokemon-${slug}`,
+    cardId: photoId,
     readKind: "pokemon",
     kind: "pokemon",
     name,

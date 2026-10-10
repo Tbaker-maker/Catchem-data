@@ -48,9 +48,13 @@ export async function run() {
     { id: "sv5-pc-etb", name: "Temporal Forces Pokemon Center Elite Trainer Box", asOf: "2026-10-06", latest: { priceMedian: 499.99, lastSeen: "2026-10-06", dataStatus: "live" }, outlier: { note: "Price flagged: 95.5% above recent median — review" } },
     { id: "no-price", name: "Empty", asOf: "2026-10-06", latest: { dataStatus: "no-active-market", listingCount: 0 } },
     { id: "me1-bb", name: "Mega Evolution Booster Bundle", asOf: "2026-10-06", latest: { priceMedian: 64.99, lastSeen: "2026-10-06", dataStatus: "live" } },
+    { id: "upc-151", name: "151 UPC", asOf: "2026-10-06", latest: { priceMedian: 100, lastSeen: "2026-10-06", dataStatus: "live", tcgMarket: 80 } },
   ]);
   t("dive teaser keeps the dive id", dives.some((r) => r.id === "dive-sv5-pc-etb" && r.diveId === "sv5-pc-etb" && r.href === "/dive/sv5-pc-etb"));
-  t("dive teaser uses the file price", dives.find((r) => r.id === "dive-sv5-pc-etb").price === 499.99 && /499\.99/.test(dives.find((r) => r.id === "dive-sv5-pc-etb").path) && dives.some((r) => r.id === "dive-me1-bb" && r.price === 64.99));
+  const sv5 = dives.find((r) => r.id === "dive-sv5-pc-etb");
+  const upc = dives.find((r) => r.id === "dive-upc-151");
+  t("dive teaser labels the eBay ask and drops a price with no signal", sv5 && sv5.price === 499.99 && /eBay asks \(\$499\.99\)/.test(sv5.path) && !/market/.test(sv5.path) && !dives.some((r) => r.id === "dive-me1-bb"));
+  t("an ask and a market on the file name both and the dollar gap", upc && upc.path === "151 UPC: eBay asks ($100.00) sit $20.00 over TCGplayer market ($80.00).");
   t("a dive without price or outlier note does not ship", !dives.some((r) => r.id === "dive-no-price"));
 
   const lead = [

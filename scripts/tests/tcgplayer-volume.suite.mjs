@@ -136,18 +136,18 @@ export async function run() {
 
   // ── reads ──
   const reads = volumeReads(doc, CATALOG, { asOf: SCRAPE });
-  t("only cards with a full window, a count above zero and a $5+ market get a read", reads.map((r) => r.sku).join() === "tcgcsv-101");
-  const r = reads[0];
-  t("read states the count, the window and Near Mint", r.path === "Alpha (Test Set, 001/100): 15 Near Mint copies sold on TCGplayer in the 30 days Sep 5–Oct 4, 3 of them in the last 7 (Sep 28–Oct 4).");
-  t("read is attributed and points at the card page", r.sold.source === VOLUME_SOURCE && r.why.startsWith(VOLUME_SOURCE) && r.href === "/c/tcgcsv-101" && r.readKind === "volume");
-  t("read never mentions listings or eBay", !/listing|ebay/i.test(r.path + r.why));
+  t("a week that does not beat the monthly pace does not ship", reads.length === 0);
+  const hot = volumeRead({ ...a, sold7d: 8 }, CATALOG[0]);
+  t("read states the count when last week beats the monthly pace", hot && hot.path === "Alpha (Test Set, 001/100): 15 Near Mint copies sold on TCGplayer in the 30 days Sep 5–Oct 4, 8 of them in the last 7 (Sep 28–Oct 4).");
+  t("read is attributed and points at the card page", hot.sold.source === VOLUME_SOURCE && hot.why.startsWith(VOLUME_SOURCE) && hot.href === "/c/tcgcsv-101" && hot.readKind === "volume");
+  t("read never mentions listings or eBay", !/listing|ebay/i.test(hot.path + hot.why));
   t("no read for a stale window", volumeReads(doc, CATALOG, { asOf: "2026-11-30" }).length === 0);
   t("no read when the ids do not match", volumeRead(got.rows["tcgcsv-101"], CATALOG[1]) === null);
   const bench = { cards: {} };
   const benchItems = [];
   for (let i = 0; i < 45; i += 1) {
     const id = `tcgcsv-${1000 + i}`;
-    bench.cards[id] = { ...a, id, tcgplayerProductId: 1000 + i, sold30d: 500 - i };
+    bench.cards[id] = { ...a, id, tcgplayerProductId: 1000 + i, sold30d: 500 - i, sold7d: 400 };
     benchItems.push({ id, kind: "single", price: 10, tcgplayerProductId: 1000 + i, name: `Card ${i}`, number: "1", set: "Set" });
   }
   const top = volumeReads(bench, benchItems, { asOf: SCRAPE, max: 40 }).map((row) => row.sku);
@@ -159,7 +159,7 @@ export async function run() {
 
   // ── browse filter ──
   t("no Volume filter without counts", !buildBrowse({ asOf: SCRAPE, cardIds: [], volume: [] }).filters.volume);
-  const browse = buildBrowse({ asOf: SCRAPE, cardIds: [], volume: reads });
+  const browse = buildBrowse({ asOf: SCRAPE, cardIds: [], volume: [hot] });
   t("Volume filter lists the reads when counts exist", browse.filters.volume.items.length === 1 && browse.filters.volume.readKind === "volume");
 
   // ── compute script + nightly feed path on a fixture root ──
@@ -174,7 +174,7 @@ export async function run() {
     const state = await get(root, "ppt-raw-private/tcgplayer-volume.json");
     const pub = await get(root, "data/derived/tcgplayer-volume.json");
     t("every verified card goes to the private state", Object.keys(state.cards).sort().join() === "tcgcsv-101,tcgcsv-103,tcgcsv-106,tcgcsv-107");
-    t("the public file holds only the cards a read shows", Object.keys(pub.cards).join() === "tcgcsv-101" && pub.published === 1 && pub.counts.full30d === 3);
+    t("the public file holds only the cards a read shows", Object.keys(pub.cards).join() === "" && pub.published === 0 && pub.counts.full30d === 3);
     const none = await updateVolumeFile({ root, rawDirs: [join(root, "ppt-raw-private", "2026-10-07")], today: "2026-10-07" });
     t("a day with no set raws leaves the files alone", !none.written && (await get(root, "data/derived/tcgplayer-volume.json")).updatedOn === SCRAPE);
     // A second day merges onto the mounted private state, not onto the public slice.

@@ -50,6 +50,7 @@ export function volumeRead(row, item) {
   const r30 = range(row.window30d);
   if (!name || !r30) return null;
   const has7 = fullWindow(row, 7) && Number.isInteger(row.sold7d) && row.window7d.to === row.window30d.to;
+  if (!has7 || !(row.sold7d > row.sold30d * 7 / 30)) return null;
   const where = [item.set, item.number].filter(Boolean).join(", ");
   let sentence = `${name}${where ? ` (${where})` : ""}: ${plural(row.sold30d, "Near Mint copy", "Near Mint copies")} sold on TCGplayer in the 30 days ${r30}`;
   sentence += has7 ? `, ${row.sold7d} of them in the last 7 (${range(row.window7d)}).` : ".";

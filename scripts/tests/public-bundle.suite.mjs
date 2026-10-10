@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { BAD_DATE, BANNED, FILLER_BAN, bestMove, changePct, chartSeries, dropTiledCycles, headlineFor, isThinSeries, money, phrasePeak, rankReads, selectFeedReads, spikeDates, statesBothMoves, whyFor, whyPattern } from "../lib/public-bundle.mjs";
+import { BAD_DATE, BANNED, FILLER_BAN, bestMove, changePct, chartSeries, dropTiledCycles, feedWindow, headlineFor, isThinSeries, money, phrasePeak, rankReads, selectFeedReads, spikeDates, statesBothMoves, whyFor, whyPattern } from "../lib/public-bundle.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 
@@ -21,7 +21,7 @@ export async function run() {
   }
   const move = bestMove(down, "single");
   const banned = headlineFor({ name: "Latias & Latios GX", set: "Team Up", price: move.to, fromPrice: move.from, changePct: move.pct, windowDays: move.window });
-  t("a headline names the window and the two prices", move.window === 30 && banned.includes("over 30 days") && banned.includes("is down") && banned.includes("(Team Up)") && !banned.includes("heating") && !/\bprint\b/i.test(banned) && !BANNED.test(banned));
+  t("a headline names the window and the two prices", move.window === 30 && banned.includes("this month") && banned.includes("→") && banned.includes("is down") && banned.includes("(Team Up)") && !banned.includes("heating") && !/\bprint\b/i.test(banned) && !BANNED.test(banned));
   const spike = down.map((p, i) => i === 50 ? [p[0], p[1] * 3] : p);
   t("a one-day spike is not a read", bestMove(spike, "single") === null || bestMove(down.map((p, i) => [p[0], i === 50 ? 400 : 100]), "single") === null);
   const stuck = down.map((p, i) => [p[0], i < 50 ? 100 : 140]);
@@ -29,11 +29,11 @@ export async function run() {
   const jumped = down.map((p, i) => [p[0], i < 59 ? 20 + i * 0.05 : 200]);
   t("one day cannot be most of the move", bestMove(jumped, "single") === null);
   const old = headlineFor({ name: "Charizard", set: "Base Set", year: 1999, release: "1999-01-09", number: "004/102", price: 3914, fromPrice: 4500, changePct: -13, windowDays: 30, toDate: "2026-09-27" });
-  t("an old card names the set and the year", old === "Charizard (Base Set, 1999, #4) is down 13% over 30 days, from $4,500 to $3,914.");
+  t("an old card names the set and the year", old === "Charizard (Base Set, 1999, #4) is down 13% this month: $4,500 → $3,914.");
   const gengar = headlineFor({ name: "Mega Gengar ex - 284/217", set: "ME: Ascended Heroes", number: "284/217", release: "2026-01-30", price: 866.33, fromPrice: 984.26, changePct: -12, windowDays: 30, toDate: "2026-09-27" });
-  t("a suffix becomes the collector number", gengar === "Mega Gengar ex (Ascended Heroes, #284) is down 12% over 30 days, from $984.26 to $866.33.");
+  t("a suffix becomes the collector number", gengar === "Mega Gengar ex (Ascended Heroes #284) is down 12% this month: $984.26 → $866.33.");
   const accent = headlineFor({ name: "Pokemon Catcher", set: "Test Set", price: 12.5, fromPrice: 10, changePct: 25, windowDays: 7, toDate: "2026-09-27" });
-  t("Pokémon stays accented", accent.startsWith("Pokémon Catcher (Test Set) is up 25% over 7 days"));
+  t("Pokémon stays accented", accent.startsWith("Pokémon Catcher (Test Set) is up 25% this week"));
   const why = whyFor(down);
   t("why uses the whole series and skips the old 30-day line", why.length > 0 && !/last 30 days ran|low of the last 30|high of the last 30|we store|at least/i.test(why));
   const led = headlineFor({ name: "151 Elite Trainer Box", set: "SV: Scarlet & Violet 151", release: "2023-09-22", price: down.at(-1)[1], fromPrice: down[30][1], changePct: -17.6, windowDays: 30, toDate: down.at(-1)[0], fromDate: down[30][0], hist: down });
@@ -94,6 +94,8 @@ export async function run() {
   t("a 90-day move counts when it is not one step", quarter && quarter.window === 90 && quarter.pct > 0);
   const spike90 = steady.map((p, i) => [p[0], i < 99 ? 40 : 80]);
   t("one day still cannot be most of a 90-day move", (await import("../lib/public-bundle.mjs")).feedWindow(spike90, 90) === null);
+  const missingDay = steady.filter((p) => p[0] !== quarter.fromDate);
+  t("a missing exact day drops the window", quarter && quarter.fromDate && feedWindow(missingDay, 90) === null);
 
   try {
     const counts = JSON.parse(await readFile(join(ROOT, "research/assets/public/counts.json"), "utf8"));
@@ -105,7 +107,7 @@ export async function run() {
     const oldWhy = /last 30 days ran|low of the last 30|high of the last 30|we store|at least/i;
     const priceReads = reads.reads.filter((row) => row.readKind === "price" || row.kind === "single" || row.kind === "sealed");
     const otherReads = reads.reads.filter((row) => !priceReads.includes(row));
-    const bad = priceReads.filter((row) => !money(row.price) || !row.headline || !row.why || BANNED.test(row.headline) || BANNED.test(row.why || "") || row.price === 0 || !/\b(over|in) (7|30|90) days\b/.test(row.headline) || !/\([^)]+\)/.test(row.headline) || oldWhy.test(row.why) || oldWhy.test(row.headline) || /\b(heating up|cooling off|last print|Top card in|checked again)\b/i.test(row.headline));
+    const bad = priceReads.filter((row) => !money(row.price) || !row.headline || !row.why || BANNED.test(row.headline) || BANNED.test(row.why || "") || row.price === 0 || !/(this week|this month|over 90 days|\b(over|in) (7|30|90) days\b)/.test(row.headline) || !/\([^)]+\)/.test(row.headline) || oldWhy.test(row.why) || oldWhy.test(row.headline) || /\b(heating up|cooling off|last print|Top card in|checked again)\b/i.test(row.headline));
     t("every price lead read has a price, a window, and a clean headline", bad.length === 0 && priceReads.length >= 1 && priceReads.length <= 24);
     t("a non-price read is pull, pokemon, lag, group, supply, outlier, dive, volume, or a shape read", otherReads.every((row) => row.readKind === "pull" || row.readKind === "pokemon" || row.readKind === "lag" || row.readKind === "group" || row.readKind === "supply" || row.readKind === "outlier" || row.readKind === "dive" || row.readKind === "volume" || row.readKind === "listing" || row.readKind === "quiet" || row.readKind === "mix" || row.readKind === "conditions" || row.readKind === "soldflat" || row.readKind === "solddown" || row.readKind === "setshare" || row.readKind === "spread" || row.readKind === "askmove" || row.readKind === "mktmove" || row.readKind === "still"));
     const shape = (text) => String(text).replace(/\$[0-9,.]+/g, "$").replace(/\b(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2}\b/g, "DATE").replace(/\b\d+(?:\.\d+)?\b/g, "n");
@@ -119,7 +121,13 @@ export async function run() {
       }
       return shape(s).replace(/,?\s*while the n-day window\b.*/i, "").replace(/\bthat price\b/gi, "$").replace(/\bthat day\b/gi, "DATE").replace(/\b(rose|fell|eased|above|higher|lower|highs|lows|high|low)\b/gi, " ").replace(/\s+/g, " ").replace(/[.]+$/g, "").trim();
     };
-    t("lead paths do not share a stripped shape", new Set(priceReads.map((row) => fold(row.path || "", row.name, row.set))).size === priceReads.length && reads.reads.every((row) => row.path));
+    const shownLine = (row) => {
+      const head = String(row.headline || "");
+      const path = String(row.path || "");
+      if (head && (head.includes("$") || head.includes("%")) && (row.readKind === "price" || row.kind === "single" || row.kind === "sealed")) return head;
+      return path;
+    };
+    t("lead paths do not share a stripped shape", new Set(priceReads.map((row) => fold(shownLine(row), row.name, row.set))).size === priceReads.length && reads.reads.every((row) => row.path));
     t("a date is not at Sep or dated Sep on Sep", reads.reads.every((row) => !BAD_DATE.test(row.path || "")));
     t("paired frames are gone", reads.reads.every((row) => !/newest move widened|step shrank versus|unchanged price across|\bas of\b/i.test(row.path || "")));
     t("a line that uses both verbs states both moves", reads.reads.every((row) => !(/\brose\b/i.test(row.path || "") && /\bfell\b/i.test(row.path || "")) || statesBothMoves(row.path)));
@@ -127,7 +135,7 @@ export async function run() {
     t("one product is one lead card", new Set(priceReads.map((row) => row.sku)).size === priceReads.length);
     t("lead lines do not say stored or last print", reads.reads.every((row) => !/\bstored\b|last print/i.test(String(row.path || "") + String(row.headline || "") + String(row.why || ""))));
     t("lead lines do not use a filler closer", reads.reads.every((row) => !FILLER_BAN.test(String(row.path || ""))));
-    t("no 4-word phrase is on more than 2 price lead lines", phrasePeak(priceReads.map((row) => shape(row.path || ""))).peak <= 2);
+    t("no 4-word phrase is on more than 2 price lead lines", phrasePeak(priceReads.map((row) => shape(shownLine(row)))).peak <= 2);
     t("a read is one kind", reads.reads.every((row) => row.kind === "single" || row.kind === "sealed" || row.kind === "pull" || row.kind === "pokemon" || row.kind === "lag" || row.kind === "group" || row.kind === "supply" || row.kind === "outlier" || row.kind === "dive" || row.kind === "volume" || row.kind === row.readKind && ["quiet", "mix", "conditions", "soldflat", "solddown", "setshare", "spread", "askmove", "mktmove", "still"].includes(row.kind)));
     // #103 put flagged-price (outlier) and dive-teaser reads on the short
     // front. They are allowed kinds only while they carry their receipts: a
