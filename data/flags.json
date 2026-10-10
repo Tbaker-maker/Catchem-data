@@ -68,6 +68,13 @@
       "why": "Listing-count reads stay off until RD rules KEEP. The count of what would qualify is still written. A listing is not a sale.",
       "trigger": "RD rules KEEP for supply leads price.",
       "env": "CATCHEM_SUPPLY_LEAD"
+    },
+    "set.valueReads": {
+      "value": false,
+      "owner": "scripts/write-set-value.mjs",
+      "why": "A set value read stays off until RD rules KEEP. The sum is singles priced on both exact days, and the card count is that intersection.",
+      "trigger": "RD rules KEEP for the set value line.",
+      "env": "CATCHEM_SET_VALUE"
     }
   }
 }
