@@ -3,12 +3,7 @@
 Video outline. Same four parts every week. Say "reads we tracked". Do not say a name is a play or a target.
 
 ## 1. Heat
-- Chaos Rising Booster Bundle — Hot
-- Ultra Prism Booster Box — Hot
-- Celestial Storm Booster Box — Hot
-- Chilling Reign Booster Pack — Hot
-- Chaos Rising Booster Pack — Hot
-- Surging Sparks Booster Pack — Hot
+- No heat list in this run.
 
 ## 2. Keeps showing up
 Status: building history

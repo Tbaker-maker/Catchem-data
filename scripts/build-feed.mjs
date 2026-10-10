@@ -26,13 +26,8 @@ const catalog = await read("data/catalog/tcgcsv-latest.json");
 // A later daily file is not a new catalog day. 2026-09-29 prices 1,695 products,
 // not the catalog. addPoint keeps a later print only for a product that has it.
 const series = new Map();
-for (const file of (await readdir(join(ROOT, "data/history/market-backfill"))).sort()) {
-  if (!file.endsWith(".json")) continue;
-  const doc = JSON.parse(await readFile(join(ROOT, "data/history/market-backfill", file), "utf8"));
-  for (const [pid, pts] of Object.entries(doc.series || {})) {
-    for (const pt of pts || []) addPoint(series, pid, pt?.[0], pt?.[1]);
-  }
-}
+// PPT Near Mint history (data/history/market-backfill) moved to the private repo on 2026-10-10.
+// Public builds use TCGCSV days only. A day TCGCSV does not have stays a gap.
 try {
   for (const file of await readdir(join(ROOT, "data/history/tcgplayer-market"))) {
     if (!file.endsWith(".json")) continue;

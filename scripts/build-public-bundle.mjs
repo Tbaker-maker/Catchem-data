@@ -55,16 +55,8 @@ function addPoint(map, pid, date, market) {
 }
 const series = new Map();
 const lowByPid = new Map();
-try {
-  const backfillDir = join(ROOT, "data/history/market-backfill");
-  for (const file of (await readdir(backfillDir)).sort()) {
-    if (!file.endsWith(".json")) continue;
-    const doc = JSON.parse(await readFile(join(backfillDir, file), "utf8"));
-    for (const [pid, pts] of Object.entries(doc.series || {})) {
-      for (const pt of pts || []) addPoint(series, pid, pt?.[0], pt?.[1]);
-    }
-  }
-} catch { /* backfill is optional until a history import has run */ }
+// PPT Near Mint history (data/history/market-backfill) moved to the private repo on 2026-10-10.
+// Public builds use TCGCSV days only. A day TCGCSV does not have stays a gap.
 try {
   for (const file of await readdir(join(ROOT, "data/history/tcgplayer-market"))) {
     if (!file.endsWith(".json")) continue;

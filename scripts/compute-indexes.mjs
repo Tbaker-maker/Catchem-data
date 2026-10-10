@@ -10,7 +10,12 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "data/indexes");
 const J = async (p) => JSON.parse(await readFile(join(ROOT, p), "utf8"));
 
+// Public builds never keep an earlier PPT-built series (licence: PPT data stays
+// private). The new series is written as computed from TCGCSV days only.
 export function keepMarch31(next, previous) {
+  return next;
+}
+export function keepMarch31Legacy(next, previous) {
   const start = next?.series?.backfill?.anchorUsed || next?.series?.backfill?.points?.[0]?.date;
   const prevStart = previous?.series?.backfill?.anchorUsed || previous?.series?.backfill?.points?.[0]?.date;
   if (start === "2026-03-31" || prevStart !== "2026-03-31" || !previous?.series?.backfill) return next;
@@ -78,7 +83,7 @@ export async function publishChartIndexes() {
     }
     backfillDates = [...dates].sort();
     if (backfillDates.length) {
-      backfillGap = [{ from: daysBefore(backfillDates[0], 365), to: daysBefore(backfillDates[0], 1), note: "No TCGplayer history before this date is on file (the TCGCSV archive is offline and PokemonPriceTracker returns 180 days). Nothing earlier is filled in." }];
+      backfillGap = [{ from: daysBefore(backfillDates[0], 365), to: daysBefore(backfillDates[0], 1), note: "No public TCGplayer history before this date is on file (the TCGCSV archive is offline; PokemonPriceTracker history stays private). Nothing earlier is filled in." }];
     }
   } catch { /* no history on this branch */ }
 
@@ -97,7 +102,6 @@ export async function publishChartIndexes() {
           ? "First real TCGplayer day on file is 2026-03-31. Level 100 starts there. No earlier day was invented."
           : `No TCGplayer price on 2026-03-31 is on file. Level 100 starts on ${back.points[0]?.date || "no day"}. The days before that are a gap.`,
         sources: [
-          { label: PPT_SOURCE, folder: "data/history/ppt-sealed-private", role: "mounted from the private repo when PRIVATE_DATA_TOKEN is set; otherwise this series has no PPT days" },
           { label: TCGCSV_SOURCE, folder: "data/history/tcgplayer-market", role: "live daily append from 2026-09-25; wins on any day both have" },
         ],
         sameSourceMoves: "Each day's move uses two prices from the same source. No move is computed across sources.",

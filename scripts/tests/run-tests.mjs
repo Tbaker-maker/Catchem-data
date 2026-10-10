@@ -20,6 +20,8 @@ import { keepMarch31 } from "../compute-indexes.mjs";
 import { searchItems } from "../lib/search-rank.mjs";
 import { runPrivatePptTests } from "./private-ppt.test.mjs";
 import { runSparkTests } from "./spark30.test.mjs";
+import { runNoPptPublicTests } from "./no-ppt-public.test.mjs";
+import { runHighValueSpikeTests } from "./high-value-spike.test.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const J = async (p) => JSON.parse(await readFile(join(ROOT, p), "utf-8"));
@@ -163,6 +165,14 @@ console.log("── 30-day sparks ──");
   t("spark suite", n === 0, `${n} failed`);
 }
 
+console.log("── no PPT history in public outputs ──");
+{
+  const n = await runNoPptPublicTests();
+  t("no-PPT public suite", n === 0, `${n} failed`);
+}
+console.log("── high-value spike guard ──");
+t("high-value spike suite", runHighValueSpikeTests() === 0);
+
 console.log("── index stress ──");
 {
   const n = runStressTests();
@@ -182,7 +192,7 @@ console.log("── chain-linked entry ──");
     { series: { backfill: { anchorUsed: "2026-09-25", points: [{ date: "2026-09-25", equal: 100 }] } } },
     { series: { backfill: { anchorUsed: "2026-03-31", points: [{ date: "2026-03-31", equal: 100 }] } } },
   );
-  t("unmounted PPT history does not drop March 31", kept.series.backfill.anchorUsed === "2026-03-31");
+  t("an earlier PPT-built series is not kept in a public build", kept.series.backfill.anchorUsed === "2026-09-25" && !kept.series.backfill.keptBecauseUnmounted);
 }
 
 console.log("── search rank ──");

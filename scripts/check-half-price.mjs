@@ -74,20 +74,8 @@ export async function loadPriceSeries(root) {
     return true;
   }
 
-  const backfillDir = join(root, "data/history/market-backfill");
-  try {
-    const files = (await readdir(backfillDir)).filter((name) => name.endsWith(".json")).sort();
-    sawDir = true;
-    for (const file of files) {
-      const doc = await readJson(join(backfillDir, file));
-      const source = `data/history/market-backfill/${file}`;
-      for (const [pid, pts] of Object.entries(doc.series || {})) {
-        for (const pt of pts || []) add(pid, pt?.[0], pt?.[1], source, "data/history/market-backfill");
-      }
-    }
-  } catch (err) {
-    if (!err || err.code !== "ENOENT") throw err;
-  }
+  // PPT Near Mint history (data/history/market-backfill) moved to the private repo on 2026-10-10.
+  // Public builds use TCGCSV days only. A day TCGCSV does not have stays a gap.
 
   const watchDir = join(root, "data/history/tcgplayer-market");
   try {

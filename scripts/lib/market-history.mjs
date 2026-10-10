@@ -32,10 +32,12 @@ async function readFolder(root, dir) {
 
 // Returns { ids, merged: Map id -> [{date, market, source}], priceMap: Map id -> Map date -> market,
 //           pairPrice(id, a, b) -> [pa, pb] | null, coverage }
-export async function loadMarketHistory(root) {
+export async function loadMarketHistory(root, { allowPpt = false } = {}) {
   const tcg = await readFolder(root, TCGCSV_DIR);
-  const mounted = await readFolder(root, PPT_DIR);
-  const legacy = await readFolder(root, PPT_DIR_LEGACY);
+  // PPT days are never read into a public build (licence: PPT data stays
+  // private). Only a private run that passes { allowPpt: true } reads them.
+  const mounted = allowPpt ? await readFolder(root, PPT_DIR) : new Map();
+  const legacy = allowPpt ? await readFolder(root, PPT_DIR_LEGACY) : new Map();
   const ppt = mounted.size ? mounted : legacy;
   if (!ppt.size) console.log("No PPT sealed history mounted. Those days are skipped, not filled.");
   const ids = new Set([...tcg.keys(), ...ppt.keys()]);
