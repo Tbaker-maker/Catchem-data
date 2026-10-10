@@ -1192,7 +1192,7 @@
         if (c.indexOf("pk-") === 0) return "/pocket-img/" + c.slice(3).replace("-", "/");
         return "/cards/seed/" + c + ".png";
       }
-      if (c.kind === "pocket") return "/pocket-img/" + (c.setCode || "A1") + "/" + (c.num || c.lock);
+      if (c.kind === "pocket") return c.src || "";
       if (c.kind === "poster" || c.kind === "game" || c.kind === "manga" || c.kind === "cutout") return c.src || "";
       if (c.lang === "jp" && (c.setId === "SV2a" || /^jp\s*151$/i.test(c.set || ""))) {
         var en = CARDS.filter(function (x) {
@@ -5607,13 +5607,13 @@
           rarity: r[5] || "",
           rank: r[6] ? 80 : 0,
           tags: ("pocket " + printed).trim(),
-          src: "",
+          src: r[14] ? String(r[14]) : "",
           kind: "pocket",
           setCode: setId,
           num: r[12] || "",
           setId: setId,
           lang: "",
-          fact: "The picture is missing."
+          fact: r[14] ? "" : "The picture is missing."
         });
       });
       return out;
