@@ -1,6 +1,8 @@
 // Pull the live Pokémon catalog from TCGCSV and append one daily price file.
 // Does not rewrite earlier days. Does not invent a price. continue-on-error in CI.
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
+import { gzipSync } from "node:zlib";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { buildGroup, mergeSnapshot } from "./lib/tcgcsv-catalog.mjs";
@@ -43,8 +45,75 @@ async function pool(items, limit, fn) {
   await Promise.all(workers);
 }
 
+// Keep every raw TCGCSV response we fetch, in full, forever: one folder per
+// day, gzip ndjson, every field as served (low/mid/high/market/directLow,
+// subTypeName, extendedData...). Lives under tcgcsv-daily/raw/ so the nightly
+// commit step already keeps it; readers only take top-level *.json files.
+export function rawLines(rows, extra = {}) {
+  return rows.map((row) => JSON.stringify({ ...extra, ...row })).join("\n") + (rows.length ? "\n" : "");
+}
+
+const sha = (text) => createHash("sha256").update(text).digest("hex").slice(0, 16);
+
+// Product metadata barely changes day to day (~3.4 MB gz). Store a group's
+// products only when they differ from the last stored copy; the manifest maps
+// every group to the day holding its current copy, so any day rebuilds fully.
+async function lastProductMap(rawRoot, today) {
+  let days = [];
+  try { days = (await readdir(rawRoot)).filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d) && d < today).sort(); } catch {}
+  for (const day of days.reverse()) {
+    try {
+      const m = JSON.parse(await readFile(join(rawRoot, day, "manifest.json"), "utf8"));
+      if (m.productGroups) return m.productGroups;
+    } catch {}
+  }
+  return {};
+}
+
+export async function writeRawDay(root, today, raw) {
+  const rawRoot = join(root, "data/history/tcgcsv-daily/raw");
+  const dir = join(rawRoot, today);
+  await mkdir(dir, { recursive: true });
+  const parts = raw.parts.slice().sort((a, b) => a.groupId - b.groupId);
+  const prev = await lastProductMap(rawRoot, today);
+  const productGroups = {};
+  let productText = "";
+  for (const p of parts) {
+    const text = rawLines(p.products, { _groupId: p.groupId });
+    const h = sha(text);
+    if (prev[p.groupId]?.sha === h) {
+      productGroups[p.groupId] = prev[p.groupId];
+    } else {
+      productGroups[p.groupId] = { sha: h, day: today, count: p.products.length };
+      productText += text;
+    }
+  }
+  // A failed group keeps pointing at its last stored copy.
+  for (const [gid, v] of Object.entries(prev)) if (!productGroups[gid]) productGroups[gid] = v;
+  const files = {
+    "groups.ndjson.gz": rawLines(raw.groups),
+    "products.ndjson.gz": productText,
+    "prices.ndjson.gz": parts.map((p) => rawLines(p.prices, { _groupId: p.groupId })).join(""),
+  };
+  for (const [name, text] of Object.entries(files)) {
+    await writeFile(join(dir, name), gzipSync(text, { level: 9 }));
+  }
+  await writeFile(join(dir, "manifest.json"), JSON.stringify({
+    date: today,
+    source: "https://tcgcsv.com/tcgplayer/3 (TCGplayer data via TCGCSV)",
+    note: "Raw responses as fetched, unmodified except _groupId. Kept permanently. products.ndjson.gz holds only groups that changed; productGroups says which day holds each group.",
+    groups: raw.groups.length,
+    products: parts.reduce((n, p) => n + p.products.length, 0),
+    productGroupsStoredToday: Object.values(productGroups).filter((v) => v.day === today).length,
+    priceRows: parts.reduce((n, p) => n + p.prices.length, 0),
+    failedGroups: raw.failedGroups,
+    productGroups,
+  }));
+}
+
 export async function fetchCatalog(today = TODAY) {
   const groups = (await getJson(GROUPS)).results || [];
+  const rawParts = [];
   const parts = [];
   const failedGroups = [];
   let done = 0;
@@ -55,6 +124,7 @@ export async function fetchCatalog(today = TODAY) {
         getJson(`https://tcgcsv.com/tcgplayer/3/${id}/products`),
         getJson(`https://tcgcsv.com/tcgplayer/3/${id}/prices`),
       ]);
+      rawParts.push({ groupId: id, products: products.results || [], prices: prices.results || [] });
       parts.push(buildGroup({
         groupId: id,
         groupName: group.name,
@@ -78,6 +148,11 @@ export async function fetchCatalog(today = TODAY) {
   // Write the day before the other catalog files. A later write in this
   // process must not be able to drop the day that already landed.
   await writeFile(dayPath, JSON.stringify(snap.daily));
+  try {
+    await writeRawDay(ROOT, today, { groups, parts: rawParts, failedGroups });
+  } catch (err) {
+    console.error(`tcgcsv raw archive ${today} failed: ${err.message}`);
+  }
   try {
     await writeFile(join(catalogDir, "tcgcsv-latest.json"), JSON.stringify(snap.latest));
     await writeFile(join(catalogDir, "tcgcsv-coverage.json"), JSON.stringify(snap.coverage, null, 2));

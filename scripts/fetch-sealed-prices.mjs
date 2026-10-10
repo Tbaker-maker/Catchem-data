@@ -13,7 +13,8 @@
 //   EBAY_CERT_ID  — your eBay developer Cert ID (Client Secret)
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { gzipSync } from "node:zlib";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { recordBuyoutHarvest } from "./buyout-tape.mjs";
@@ -761,6 +762,16 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
 
   await writeFile(OUTPUT_FILE, JSON.stringify(output, null, 2) + "\n");
   console.log(`💾 Wrote ${OUTPUT_FILE}`);
+  // Permanent per-night copy of tonight's full eBay result (same data we just
+  // fetched; no extra calls). priceHistory in the live file is capped, this is not.
+  try {
+    const day = output.updatedAt.slice(0, 10);
+    const dir = new URL("../data/raw/ebay-sealed/", import.meta.url);
+    await mkdir(dir, { recursive: true });
+    await writeFile(new URL(`${day}.json.gz`, dir), gzipSync(JSON.stringify(output), { level: 9 }));
+  } catch (err) {
+    console.error(`ebay raw archive failed: ${err.message}`);
+  }
   const harvest = await recordBuyoutHarvest({
     ebayReturned: harvestSaved.length > 0,
     saved: harvestSaved,

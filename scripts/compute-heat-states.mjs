@@ -83,9 +83,8 @@ async function main() {
       snapshots.push({ date: today, id: p.id, price: p.priceMedian, listingCount: p.listingCount });
     }
   }
-  // Keep 120 days
-  const cutoffDate = new Date(Date.now() - 120 * 86400000).toISOString().split("T")[0];
-  snapshots = snapshots.filter(s => s.date >= cutoffDate);
+  // Keep every night forever (~1.7 MB/year). Our own listing-count history
+  // must never depend on a provider; readers pick their own windows.
 
   const reads = [], excluded = [];
   for (const p of prices.products || []) {
