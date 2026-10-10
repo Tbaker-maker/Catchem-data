@@ -19,6 +19,7 @@ import { indexLine as publicIndexLine } from "../lib/public-index-line.mjs";
 import { keepMarch31 } from "../compute-indexes.mjs";
 import { searchItems } from "../lib/search-rank.mjs";
 import { runPrivatePptTests } from "./private-ppt.test.mjs";
+import { runSparkTests } from "./spark30.test.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const J = async (p) => JSON.parse(await readFile(join(ROOT, p), "utf-8"));
@@ -154,6 +155,12 @@ console.log("── sealed id match ──");
 {
   const n = await runSealedIdTests();
   t("sealed id match suite", n === 0, `${n} failed`);
+}
+
+console.log("── 30-day sparks ──");
+{
+  const n = await runSparkTests();
+  t("spark suite", n === 0, `${n} failed`);
 }
 
 console.log("── index stress ──");

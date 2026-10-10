@@ -10,6 +10,7 @@ import { publicReceipts, scoreWatch } from "./lib/public-receipts.mjs";
 import { publishFeed, readCallLog, readShelfFile } from "./lib/feed-catalogue.mjs";
 import { nextCountsUpdatedAt } from "./lib/price-stamp.mjs";
 import { cataloguePath, loadCatalogueImages } from "./catalogue-images.mjs";
+import { writeSparks } from "./build-sparks.mjs";
 import { ATTACH_SEALED, FOLD_GROUPS, assertFolds, assertWritable, cardPrintings, completionCounts } from "./lib/set-master.mjs";
 import { indexLine as indexLineFull } from "./lib/public-index-line.mjs";
 
@@ -489,6 +490,8 @@ setIndex.sort((a, b) => a.era.localeCompare(b.era) || a.name.localeCompare(b.nam
 for (const [b, rows] of buckets) {
   await writeFile(join(OUT, "buckets", `${b}.json`), JSON.stringify(rows));
 }
+const sparkOut = await writeSparks(OUT);
+console.log(`sparks: ${sparkOut.rows} series in ${sparkOut.files} files, as of ${sparkOut.asOf}`);
 
 const byId = new Map(items.map((item) => [item.id, item]));
 const histById = new Map();
