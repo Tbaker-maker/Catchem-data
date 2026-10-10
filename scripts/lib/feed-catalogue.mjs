@@ -451,7 +451,7 @@ export function assembleCatalogue(items, prior = []) {
       halfDropped.push({ id: item.id, name: pretty(item.name), set: pretty(item.set), low: split.low, high: split.high, reason: "cheap-copy", dropped: split.dropped.length });
     }
     const raw = split.keep;
-    const windows = [7, 30, 90].map((days) => feedWindow(raw, days)).filter(Boolean);
+    const windows = [7, 30, 90].map((days) => feedWindow(raw, days, { name: `${item.name || ""} ${item.printing || ""}` })).filter(Boolean);
     if (!windows.length) continue;
     const kind = item.kind === "sealed" ? "sealed" : "single";
     const thin = isThinSeries(raw, windows[0].toDate);

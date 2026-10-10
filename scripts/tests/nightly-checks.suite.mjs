@@ -37,16 +37,16 @@ export async function run() {
   t("a missing series exits 0 and says source missing", missing.exitCode === 0 && missing.sentence === "Source missing." && missingBody.source === "missing" && missingBody.note === "source missing" && !("halfPriceCount" in missingBody));
 
   const seriesRoot = await mkdtemp(join(tmpdir(), "nightly-series-"));
-  const backfill = join(seriesRoot, "data/history/market-backfill");
+  // TCGCSV history only (PPT market-backfill left the public repo on 2026-10-10).
+  const backfill = join(seriesRoot, "data/history/tcgplayer-market");
   await mkdir(backfill, { recursive: true });
+  const tm = (pid, pts) => JSON.stringify({ tcgplayerProductId: Number(pid), points: pts.map(([date, market]) => ({ date, market, source: "TCGplayer market via TCGCSV" })) });
   const half = days("2026-08-01", 24, (i) => (i === 4 ? 4 : 12));
   const even = days("2026-08-01", 16, (i) => (i < 8 ? 5 : 12));
   const flat = days("2026-08-01", 12, () => 10);
-  await writeFile(join(backfill, "00.json"), JSON.stringify({
-    source: "TCGplayer market",
-    note: "fixture",
-    series: { "11": half, "22": even, "33": flat },
-  }));
+  await writeFile(join(backfill, "11.json"), tm(11, half));
+  await writeFile(join(backfill, "22.json"), tm(22, even));
+  await writeFile(join(backfill, "33.json"), tm(33, flat));
   await mkdir(join(seriesRoot, "data/catalog"), { recursive: true });
   await writeFile(join(seriesRoot, "data/catalog/tcgcsv-latest.json"), JSON.stringify({
     asOf: "2026-08-24",
@@ -64,12 +64,11 @@ export async function run() {
   t("an agreed series keeps the day and does not store a price", foundBody.asOf === "2026-08-24" && foundBody.sourceDays.length === 1 && !("market" in foundBody) && !foundBody.unresolved && foundBody.halfPriceCount === foundBody.halfPriceIds.length);
 
   const clashRoot = await mkdtemp(join(tmpdir(), "nightly-clash-"));
-  await mkdir(join(clashRoot, "data/history/market-backfill"), { recursive: true });
+  await mkdir(join(clashRoot, "data/history/tcgplayer-market"), { recursive: true });
   await mkdir(join(clashRoot, "data/history/tcgcsv-daily"), { recursive: true });
   await mkdir(join(clashRoot, "data/catalog"), { recursive: true });
-  await writeFile(join(clashRoot, "data/history/market-backfill/00.json"), JSON.stringify({
-    series: { "11": half, "44": half },
-  }));
+  await writeFile(join(clashRoot, "data/history/tcgplayer-market/11.json"), tm(11, half));
+  await writeFile(join(clashRoot, "data/history/tcgplayer-market/44.json"), tm(44, half));
   await writeFile(join(clashRoot, "data/history/tcgcsv-daily/2026-08-05.json"), JSON.stringify({
     prices: [{ id: 11, market: 99 }],
   }));

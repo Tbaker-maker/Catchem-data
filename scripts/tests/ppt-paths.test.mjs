@@ -25,8 +25,10 @@ export async function runPptPathTests() {
     id: "box",
     points: [{ date: "2026-09-26", market: 10 }],
   }));
-  const mounted = await loadMarketHistory(root);
-  t("private mount is read", mounted.coverage.pptProducts === 1 && mounted.priceMap.get("box").get("2026-09-26") === 10);
+  const publicRun = await loadMarketHistory(root);
+  t("a public build does not read the private mount", publicRun.coverage.pptProducts === 0 && !publicRun.priceMap.has("box"));
+  const mounted = await loadMarketHistory(root, { allowPpt: true });
+  t("private mount is read only when a private run asks", mounted.coverage.pptProducts === 1 && mounted.priceMap.get("box").get("2026-09-26") === 10);
 
   const report = buildRunReport({
     startedAt: "2026-09-26T04:00:00.000Z",

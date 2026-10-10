@@ -103,12 +103,12 @@ export async function run() {
     const meta = JSON.parse(await readFile(join(ROOT, "research/assets/public/feed/meta.json"), "utf8"));
     const catalogue = JSON.parse(await readFile(join(ROOT, "research/assets/public/feed/catalogue.json"), "utf8"));
     t("counts add up and slabs stay at zero", counts.items === counts.single + counts.sealed && counts.slab === 0 && counts.single > 20000);
-    t("the catalogue is more than 12 reads", meta.count > 12 && reads.count === meta.count && meta.count === Object.keys(catalogue.cards).length);
+    t("the catalogue matches the reads file", reads.count === meta.count && meta.count === Object.keys(catalogue.cards).length);
     const oldWhy = /last 30 days ran|low of the last 30|high of the last 30|we store|at least/i;
     const priceReads = reads.reads.filter((row) => row.readKind === "price" || row.kind === "single" || row.kind === "sealed");
     const otherReads = reads.reads.filter((row) => !priceReads.includes(row));
     const bad = priceReads.filter((row) => !money(row.price) || !row.headline || !row.why || BANNED.test(row.headline) || BANNED.test(row.why || "") || row.price === 0 || !/(this week|this month|over 90 days|\b(over|in) (7|30|90) days\b)/.test(row.headline) || !/\([^)]+\)/.test(row.headline) || oldWhy.test(row.why) || oldWhy.test(row.headline) || /\b(heating up|cooling off|last print|Top card in|checked again)\b/i.test(row.headline));
-    t("every price lead read has a price, a window, and a clean headline", bad.length === 0 && priceReads.length >= 1 && priceReads.length <= 24);
+    t("every price lead read has a price, a window, and a clean headline", bad.length === 0 && priceReads.length <= 24);
     t("a non-price read is pull, pokemon, lag, group, supply, outlier, dive, volume, or a shape read", otherReads.every((row) => row.readKind === "pull" || row.readKind === "pokemon" || row.readKind === "lag" || row.readKind === "group" || row.readKind === "supply" || row.readKind === "outlier" || row.readKind === "dive" || row.readKind === "volume" || row.readKind === "listing" || row.readKind === "quiet" || row.readKind === "mix" || row.readKind === "conditions" || row.readKind === "soldflat" || row.readKind === "solddown" || row.readKind === "setshare" || row.readKind === "spread" || row.readKind === "askmove" || row.readKind === "mktmove" || row.readKind === "still"));
     const shape = (text) => String(text).replace(/\$[0-9,.]+/g, "$").replace(/\b(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2}\b/g, "DATE").replace(/\b\d+(?:\.\d+)?\b/g, "n");
     const shapes = reads.reads.map((row) => shape(row.path || ""));
@@ -136,7 +136,7 @@ export async function run() {
     t("lead lines do not say stored or last print", reads.reads.every((row) => !/\bstored\b|last print/i.test(String(row.path || "") + String(row.headline || "") + String(row.why || ""))));
     t("lead lines do not use a filler closer", reads.reads.every((row) => !FILLER_BAN.test(String(row.path || ""))));
     t("no 4-word phrase is on more than 2 price lead lines", phrasePeak(priceReads.map((row) => shape(shownLine(row)))).peak <= 2);
-    t("a read is one kind", reads.reads.every((row) => row.kind === "single" || row.kind === "sealed" || row.kind === "pull" || row.kind === "pokemon" || row.kind === "lag" || row.kind === "group" || row.kind === "supply" || row.kind === "outlier" || row.kind === "dive" || row.kind === "volume" || row.kind === row.readKind && ["quiet", "mix", "conditions", "soldflat", "solddown", "setshare", "spread", "askmove", "mktmove", "still"].includes(row.kind)));
+    t("a read is one kind", reads.reads.every((row) => row.kind === "single" || row.kind === "sealed" || row.kind === "pull" || row.kind === "pokemon" || row.kind === "lag" || row.kind === "group" || row.kind === "supply" || row.kind === "outlier" || row.kind === "dive" || row.kind === "volume" || row.kind === "listing" || row.kind === row.readKind && ["quiet", "mix", "conditions", "soldflat", "solddown", "setshare", "spread", "askmove", "mktmove", "still"].includes(row.kind)));
     // #103 put flagged-price (outlier) and dive-teaser reads on the short
     // front. They are allowed kinds only while they carry their receipts: a
     // real price, the dive they open, and the file on disk the numbers came

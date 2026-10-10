@@ -1390,7 +1390,19 @@ export function bestMove(points, kind) {
 
 // A catalogue window. Same spike rule as a ranked move, but a 1% change counts
 // and 90 days counts. One step that is most of the move does not.
-export function feedWindow(points, days) {
+// TCGCSV-only history is thin on $500+ cards and 1st Edition holos: one day's
+// print can swing hundreds of percent. A high-value move must still be there on
+// the previous real day too (same direction, at least half the size) or it is skipped.
+export function highValueSpike(pts, from, to, { name = "" } = {}) {
+  const highValue = to >= 500 || from >= 500 || /1st Edition/i.test(String(name));
+  if (!highValue || pts.length < 2) return false;
+  const pct = (to - from) / from;
+  const prev = Number(pts[pts.length - 2][1]);
+  const prevPct = (prev - from) / from;
+  return !(Math.sign(prevPct) === Math.sign(pct) && Math.abs(prevPct) >= Math.abs(pct) / 2);
+}
+
+export function feedWindow(points, days, opts = {}) {
   const pts = (points || []).filter((p) => Array.isArray(p) && /^\d{4}-\d{2}-\d{2}$/.test(String(p[0])) && Number(p[1]) > 0);
   if (pts.length < 30 || (days !== 7 && days !== 30 && days !== 90)) return null;
   const end = pts[pts.length - 1];
@@ -1419,6 +1431,7 @@ export function feedWindow(points, days) {
   }
   const net = Math.abs(to - from);
   if (confirms < 2 || !(net > 0) || maxStep / net > 0.5) return null;
+  if (highValueSpike(pts.filter((p) => p[0] <= end[0]), from, to, opts)) return null;
   return {
     pct: Math.round(pct * 10) / 10,
     from,

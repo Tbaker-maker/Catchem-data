@@ -505,7 +505,8 @@ async function main() {
     asOf: today,
     items: weeklyItems,
   };
-  if (priorWeekly.priceMovers) weeklyDoc.priceMovers = priorWeekly.priceMovers;
+  // priceMovers is not carried forward: the old block was built from PPT history,
+  // which left the public repo on 2026-10-10.
   await mkdir(dirname(NEWS_PATH), { recursive: true });
   await writeFile(NEWS_PATH, JSON.stringify(newsDoc, null, 2) + "\n");
   await writeFile(WEEKLY_PATH, JSON.stringify(weeklyDoc, null, 2) + "\n");
