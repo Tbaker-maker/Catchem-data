@@ -20,6 +20,7 @@ export const ALIASES = [
   [/\b151\b/g, "151"],
   [/\bupc\b/g, "ultra premium collection"],
   [/\bcz\b/g, "crown zenith"],
+  [/\bzard\b/g, "charizard"],
 ];
 
 const STOP = new Set(["the", "a", "of", "and", "card"]);
@@ -55,7 +56,15 @@ function fold(s) {
 }
 
 function hay(row) {
-  return fold(`${row[1]} ${row[2]} ${row[3]} ${row[4]} ${row[8] || ""}`);
+  return fold(`${row[1]} ${row[2]} ${row[3]} ${row[4]} ${row[7] || ""} ${row[8] || ""} ${row[9] || ""}`);
+}
+
+export function withSetCodes(query, codes) {
+  if (!codes) return String(query || "");
+  return String(query || "").split(/(\s+)/).map((part) => {
+    const hit = codes[part.toLowerCase()];
+    return hit ? String(hit).replace(/-/g, " ") : part;
+  }).join("");
 }
 
 function tokenHit(tok, text) {
@@ -74,8 +83,8 @@ function tokenHit(tok, text) {
 
 const JUNK = /costco|sam's club|sams club|dollar general|walmart|walgreens|best buy|target exclusive|gamestop/;
 
-export function scoreRow(query, row) {
-  const toks = tokens(query);
+export function scoreRow(query, row, codes = null) {
+  const toks = tokens(withSetCodes(query, codes));
   if (!toks.length || !row) return 0;
   const text = hay(row);
   const name = fold(row[1]);
@@ -109,11 +118,70 @@ export function scoreRow(query, row) {
   return score;
 }
 
-export function rankCatalog(query, rows, limit = 8) {
+const PREPARED = new WeakMap();
+
+export function prepareCatalog(rows) {
+  const cached = PREPARED.get(rows);
+  if (cached) return cached;
+  const byToken = new Map();
+  const words = [];
+  const seenWord = new Set();
+  for (let i = 0; i < (rows || []).length; i += 1) {
+    const parts = hay(rows[i]).split(/[^a-z0-9]+/).filter(Boolean);
+    const seen = new Set();
+    for (const part of parts) {
+      if (seen.has(part)) continue;
+      seen.add(part);
+      let list = byToken.get(part);
+      if (!list) { list = []; byToken.set(part, list); }
+      list.push(i);
+      if (part.length >= 4 && !seenWord.has(part)) { seenWord.add(part); words.push(part); }
+    }
+  }
+  const index = { byToken, words };
+  if (rows) PREPARED.set(rows, index);
+  return index;
+}
+
+export function rankCatalog(query, rows, limit = 8, codes = null) {
   const scored = [];
-  for (const row of rows) {
-    const s = scoreRow(query, row);
-    if (s > 0) scored.push([s, row]);
+  const prepared = prepareCatalog(rows);
+  if (prepared) {
+    const toks = tokens(withSetCodes(query, codes));
+    let ids = null;
+    for (const tok of toks) {
+      let list = prepared.byToken.get(tok);
+      if (!list && tok.length >= 5) {
+        const near = [];
+        for (const word of prepared.words) {
+          if (Math.abs(word.length - tok.length) > 1) continue;
+          if (lev(tok, word) <= 1) near.push(word);
+          if (near.length > 6) break;
+        }
+        const merged = [];
+        for (const word of near) {
+          const arr = prepared.byToken.get(word);
+          if (arr) merged.push(...arr);
+        }
+        list = merged;
+      }
+      if (!list || !list.length) { ids = new Set(); break; }
+      const set = new Set(list);
+      ids = ids ? new Set([...ids].filter((id) => set.has(id))) : set;
+      if (!ids.size) break;
+    }
+    const pool = ids && ids.size ? [...ids] : null;
+    const list = pool || rows.map((_, index) => index);
+    for (const index of list) {
+      const row = rows[index];
+      const s = scoreRow(query, row, codes);
+      if (s > 0) scored.push([s, row]);
+    }
+  } else {
+    for (const row of rows) {
+      const s = scoreRow(query, row, codes);
+      if (s > 0) scored.push([s, row]);
+    }
   }
   scored.sort((a, b) => b[0] - a[0] || String(a[1][1]).length - String(b[1][1]).length);
   return scored.slice(0, limit).map((x) => x[1]);
