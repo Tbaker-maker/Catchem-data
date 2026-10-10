@@ -1,0 +1,207 @@
+{
+  "asOf": "2026-10-09",
+  "rule": "A read is stored with its ship date and price. After 7 and 30 days, the later price is the exact day, or there is no score. Under 7 days is too early to score.",
+  "oldest": "2026-10-09",
+  "newest": "2026-10-09",
+  "count": 11,
+  "tooEarly": 7,
+  "noLaterPrice": 0,
+  "scored7": 0,
+  "scored30": 0,
+  "types": [
+    {
+      "type": "askmove",
+      "reads": 1,
+      "tooEarly": 0,
+      "noLaterPrice": 0,
+      "scored7": 0,
+      "hit7": 0,
+      "scored30": 0,
+      "hit30": 0
+    },
+    {
+      "type": "dive",
+      "reads": 1,
+      "tooEarly": 1,
+      "noLaterPrice": 0,
+      "scored7": 0,
+      "hit7": 0,
+      "scored30": 0,
+      "hit30": 0
+    },
+    {
+      "type": "mktmove",
+      "reads": 1,
+      "tooEarly": 0,
+      "noLaterPrice": 0,
+      "scored7": 0,
+      "hit7": 0,
+      "scored30": 0,
+      "hit30": 0
+    },
+    {
+      "type": "pokemon",
+      "reads": 1,
+      "tooEarly": 0,
+      "noLaterPrice": 0,
+      "scored7": 0,
+      "hit7": 0,
+      "scored30": 0,
+      "hit30": 0
+    },
+    {
+      "type": "price",
+      "reads": 6,
+      "tooEarly": 6,
+      "noLaterPrice": 0,
+      "scored7": 0,
+      "hit7": 0,
+      "scored30": 0,
+      "hit30": 0
+    },
+    {
+      "type": "spread",
+      "reads": 1,
+      "tooEarly": 0,
+      "noLaterPrice": 0,
+      "scored7": 0,
+      "hit7": 0,
+      "scored30": 0,
+      "hit30": 0
+    }
+  ],
+  "rows": [
+    {
+      "id": "pokemon-pidgey",
+      "productId": "ecard1-123",
+      "type": "pokemon",
+      "shipped": "",
+      "price": null,
+      "direction": "",
+      "headline": "Pidgey (#16): 17 cards, 14 artists.",
+      "age": null,
+      "status": "no-score",
+      "note": "The read has no date, product id, or price."
+    },
+    {
+      "id": "askmove-sm5-booster-box",
+      "productId": "sm5-booster-box",
+      "type": "askmove",
+      "shipped": "2026-10-09",
+      "price": null,
+      "direction": "",
+      "headline": "Ultra Prism Booster Box over Oct 8–Oct 9: eBay ask $1,999.99 to $2,086.40, TCGplayer market price $1,516.62.",
+      "age": 0,
+      "status": "no-score",
+      "note": "The read has no date, product id, or price."
+    },
+    {
+      "id": "dive-me2-pack",
+      "productId": "me2-pack",
+      "type": "dive",
+      "shipped": "2026-10-09",
+      "price": 16.98,
+      "direction": "",
+      "headline": "Phantasmal Flames Booster Pack: eBay asks ($16.98) sit $4.76 over TCGplayer market ($12.22).",
+      "age": 0,
+      "status": "too-early",
+      "note": "Too early to score."
+    },
+    {
+      "id": "mktmove-sv3pt5-pack",
+      "productId": "sv3pt5-pack",
+      "type": "mktmove",
+      "shipped": "2026-10-09",
+      "price": null,
+      "direction": "",
+      "headline": "151 Booster Pack: the TCGplayer market price went from $29.10 to $29.03 over Oct 8–Oct 9. The eBay ask stayed $32.99.",
+      "age": 0,
+      "status": "no-score",
+      "note": "The read has no date, product id, or price."
+    },
+    {
+      "id": "move-tcgcsv-210562-90",
+      "productId": "tcgcsv-210562",
+      "type": "price",
+      "shipped": "2026-10-09",
+      "price": 12.55,
+      "direction": "up",
+      "headline": "Rebel Clash Booster Pack (Rebel Clash, 2020) hit a 6-month high: $12.55, up 33.5% in 90 days.",
+      "age": 0,
+      "status": "too-early",
+      "note": "Too early to score."
+    },
+    {
+      "id": "move-tcgcsv-42401-30",
+      "productId": "tcgcsv-42401",
+      "type": "price",
+      "shipped": "2026-10-09",
+      "price": 2.63,
+      "direction": "up",
+      "headline": "Pidgey (Base Set, 1999, #57) is up 74.2% this month: $1.51 → $2.63.",
+      "age": 0,
+      "status": "too-early",
+      "note": "Too early to score."
+    },
+    {
+      "id": "move-tcgcsv-610931-90",
+      "productId": "tcgcsv-610931",
+      "type": "price",
+      "shipped": "2026-10-09",
+      "price": 197,
+      "direction": "down",
+      "headline": "Journey Together Booster Box (Journey Together) hit a 6-month low: $197, down 33.7% in 90 days.",
+      "age": 0,
+      "status": "too-early",
+      "note": "Too early to score."
+    },
+    {
+      "id": "move-tcgcsv-625670-90",
+      "productId": "tcgcsv-625670",
+      "type": "price",
+      "shipped": "2026-10-09",
+      "price": 63,
+      "direction": "down",
+      "headline": "Destined Rivals Booster Bundle (Destined Rivals) is down 19% over 90 days: $77.74 → $63.",
+      "age": 0,
+      "status": "too-early",
+      "note": "Too early to score."
+    },
+    {
+      "id": "move-tcgcsv-672398-30",
+      "productId": "tcgcsv-672398",
+      "type": "price",
+      "shipped": "2026-10-09",
+      "price": 6.05,
+      "direction": "up",
+      "headline": "Perfect Order Booster Pack (Perfect Order) is up 16.3% this month: $5.20 → $6.05.",
+      "age": 0,
+      "status": "too-early",
+      "note": "Too early to score."
+    },
+    {
+      "id": "move-tcgcsv-692947-90",
+      "productId": "tcgcsv-692947",
+      "type": "price",
+      "shipped": "2026-10-09",
+      "price": 66.22,
+      "direction": "down",
+      "headline": "Pitch Black Elite Trainer Box (Pitch Black) is down 35.2% over 90 days: $102.25 → $66.22.",
+      "age": 0,
+      "status": "too-early",
+      "note": "Too early to score."
+    },
+    {
+      "id": "spread-swsh8-booster-box",
+      "productId": "swsh8-booster-box",
+      "type": "spread",
+      "shipped": "2026-10-09",
+      "price": null,
+      "direction": "",
+      "headline": "The search for Fusion Strike Booster Box asks from $861.80 to $3,000.00.",
+      "age": 0,
+      "status": "no-score",
+      "note": "The read has no date, product id, or price."
+    }
+  ]
+}
