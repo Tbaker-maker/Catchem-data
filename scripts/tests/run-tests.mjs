@@ -15,6 +15,7 @@ import { runSealedIdTests } from "./sealed-id-match.test.mjs";
 import { runStressTests } from "./stress.test.mjs";
 import { runPptPathTests } from "./ppt-paths.test.mjs";
 import { enterIndex } from "../lib/index-baskets.mjs";
+import { indexLine as publicIndexLine } from "../lib/public-index-line.mjs";
 import { keepMarch31 } from "../compute-indexes.mjs";
 import { searchItems } from "../lib/search-rank.mjs";
 import { runPrivatePptTests } from "./private-ppt.test.mjs";
@@ -28,6 +29,12 @@ const t = (name, cond, detail = "") => {
 };
 
 console.log("── index math ──");
+{
+  const ten = Array.from({ length: 10 }, () => ({ hist: [["2026-09-27", 10], ["2026-09-29", 11]] }));
+  const line = publicIndexLine(ten);
+  t("public index line: a day with no file is a gap, not a carried level", line.points[1].d === "2026-09-28" && line.points[1].v === null);
+  t("public index line: the next real day moves from the last real day", line.points[2].v === 110 && line.cards === 10);
+}
 t("empty basket defaults to 100.0", indexLevel([]) === 100.0);
 t("flat basket is exactly 100.0", indexLevel([1, 1, 1]) === 100.0);
 t("symmetric moves cancel", indexLevel([1.1, 0.9]) === 100.0);

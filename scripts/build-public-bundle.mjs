@@ -11,6 +11,7 @@ import { publishFeed, readCallLog, readShelfFile } from "./lib/feed-catalogue.mj
 import { nextCountsUpdatedAt } from "./lib/price-stamp.mjs";
 import { cataloguePath, loadCatalogueImages } from "./catalogue-images.mjs";
 import { ATTACH_SEALED, FOLD_GROUPS, assertFolds, assertWritable, cardPrintings, completionCounts } from "./lib/set-master.mjs";
+import { indexLine as indexLineFull } from "./lib/public-index-line.mjs";
 
 assertFolds();
 
@@ -430,29 +431,7 @@ await mkdir(join(OUT, "buckets"), { recursive: true });
 await mkdir(join(OUT, "artists"), { recursive: true });
 
 function indexLine(list) {
-  const dates = [...new Set(list.flatMap((it) => (it.hist || []).map((pt) => pt[0])))].sort();
-  if (dates.length < 2) return dates.map((d) => ({ d, v: null, n: 0 }));
-  let level = 100;
-  const out = [{ d: dates[0], v: 100, n: 0 }];
-  for (let i = 1; i < dates.length; i++) {
-    const prev = dates[i - 1];
-    const day = dates[i];
-    const ratios = [];
-    for (const item of list) {
-      const a = (item.hist || []).find((pt) => pt[0] === prev);
-      const b = (item.hist || []).find((pt) => pt[0] === day);
-      if (a && b && a[1] >= 2 && b[1] > 0) ratios.push(b[1] / a[1]);
-    }
-    if (ratios.length < 8) {
-      out.push({ d: day, v: level, n: ratios.length });
-      continue;
-    }
-    ratios.sort((x, y) => x - y);
-    const med = ratios[Math.floor(ratios.length / 2)];
-    level = Math.round(level * med * 10) / 10;
-    out.push({ d: day, v: level, n: ratios.length });
-  }
-  return out;
+  return indexLineFull(list).points;
 }
 
 const setIndex = [];
@@ -544,11 +523,14 @@ for (const [name, ids] of [...artistGroups.entries()].sort((a, b) => b[1].length
   }
   if (!cards.length) continue;
   artistIndex.push({ slug: aSlug, name: pretty(name), count: cards.length });
+  const artistLine = indexLineFull(cards);
   await writeFile(join(OUT, "artists", `${aSlug}.json`), JSON.stringify({
     name: pretty(name),
     slug: aSlug,
     source: "illustrator credit from pokemontcg.io, price from TCGplayer market",
-    index: indexLine(cards),
+    index: artistLine.points,
+    indexCards: artistLine.cards,
+    indexNote: `Median day-over-day move of ${artistLine.cards} of ${cards.length} cards (priced $2+ on both days, at least 8 cards a day). Days with no price file are gaps.`,
     cards,
   }));
 }
