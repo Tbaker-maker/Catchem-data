@@ -116,6 +116,7 @@ else {
   const pocketCat = await J("data/pocket-catalogue.json");
   const SHOW_R = /Star|Shiny|Crown/;
   const pocketShow = [];
+  const pocketImg = ((await J("data/pocket-images.json")) || {}).images || {};
   if (pocketCat && pocketCat.cards) {
     for (const [id, c] of Object.entries(pocketCat.cards)) {
       const st = String(c.supertype || "");
@@ -131,6 +132,7 @@ else {
         c.stage || 0,
         c.number || 0,
         c.setId || 0,
+        pocketImg[id] || 0,
       ]);
     }
   }
