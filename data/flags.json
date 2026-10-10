@@ -3,10 +3,10 @@
   "law": "One condition, one key, one owner file. Code reads from here and never re-implements a gate. Adding a gate means adding a key — if the key exists, you are duplicating something.",
   "flags": {
     "ppt.publicDisplay": {
-      "value": true,
+      "value": false,
       "owner": "scripts/pack-basis.mjs + scripts/compute-divergence.mjs",
-      "why": "Tyler ruled 2026-08-23: free tool, development phase, proceed on the current tier. Governs BOTH the displayed pack basis and whether PPT-derived spread figures may publish — one condition, one key. (Was duplicated as pptLicensed until 2026-08-22; both keys bound CATCHEM_PPT_LICENSED, so setting one value moved nothing.)",
-      "trigger": "Must be re-decided BEFORE the first dollar — a Pro tier, ads, sponsorship, or any paid feature.",
+      "why": "OFF for every public output since 2026-10-10. Premium is paid, so the 2026-08-23 free-tool ruling no longer holds. PPT numbers stay private until PPT's Business plan and a written yes. Governs BOTH the displayed pack basis and whether PPT-derived spread figures may publish. scripts/tests/no-ppt-public.test.mjs fails if this is true.",
+      "trigger": "PPT Business plan plus PPT's written yes for public and paid display.",
       "env": "CATCHEM_PPT_LICENSED"
     },
     "spread.headline": {

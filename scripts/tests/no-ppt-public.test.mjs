@@ -26,6 +26,9 @@ export const BANNED_PATHS = [
   "data/derived/tcgplayer-volume.json",
   "data/singles-enrichment.json",
   "data/enrichment-distilled.json",
+  // rarebox archive: no licence, personal use only. Private repo since 2026-10-10.
+  "data/history/singles-rarebox/",
+  "ppt-raw-private/singles-rarebox/",
 ];
 
 // A public JSON file must not carry PPT-sourced values. Names and ids may stay.
@@ -95,6 +98,14 @@ export async function runNoPptPublicTests() {
     t("a point on a public day passes", unexplainedPoints([{ pid: 1, hist: [["2026-10-10", 2]] }], allowed).length === 0);
     t("a point on a day no public file holds fails", unexplainedPoints([{ pid: 1, hist: [["2026-04-01", 2]] }], allowed).length === 1);
     t("a different value on a public day fails", unexplainedPoints([{ pid: 1, hist: [["2026-10-10", 3]] }], allowed).length === 1);
+  }
+  t("a rarebox singles file is a banned path", pptPathsIn(["data/history/singles-rarebox/swsh2-200.json"]).length === 1);
+  {
+    const flags = JSON.parse(await readFile(join(ROOT, "data/flags.json"), "utf8")).flags;
+    t("ppt.publicDisplay flag is off (no PPT numbers in public until Business plan + written yes)", flags["ppt.publicDisplay"]?.value === false, `value=${flags["ppt.publicDisplay"]?.value}`);
+    t("CATCHEM_PPT_LICENSED is not forcing PPT on", process.env.CATCHEM_PPT_LICENSED !== "1");
+    const importer = await readFile(join(ROOT, "scripts/import-history-backfill.mjs"), "utf8");
+    t("history importer never writes rarebox singles under data/", !/join\(ROOT,\s*"data\/history\/singles-rarebox"/.test(importer));
   }
   let tracked = [];
   try { tracked = execFileSync("git", ["ls-files"], { cwd: ROOT, encoding: "utf8" }).split("\n").filter(Boolean); } catch {}

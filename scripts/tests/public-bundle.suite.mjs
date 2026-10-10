@@ -68,6 +68,11 @@ export async function run() {
   const spiked = down.map((p, i) => i === 40 ? [p[0], p[1] * 0.4] : p);
   const drawn = chartSeries(spiked);
   t("a one-day spike is left off the chart", drawn.length === spiked.length - 1 && !drawn.some((p) => p[0] === spiked[40][0]) && !headlineFor({ name: "Mega Gengar ex", set: "ME: Ascended Heroes", number: "284/217", release: "2026-01-30", price: spiked.at(-1)[1], fromPrice: spiked[30][1], changePct: -8, windowDays: 30, hist: spiked, toDate: spiked.at(-1)[0] }).includes(String(spiked[40][1])));
+  {
+    const climb = [["2026-09-26", 500], ["2026-09-27", 500], ["2026-10-03", 600], ["2026-10-05", 700], ["2026-10-06", 700], ["2026-10-07", 850], ["2026-10-08", 850], ["2026-10-09", 999.99], ["2026-10-10", 999.99]];
+    const drawnClimb = chartSeries(climb);
+    t("a steady climb keeps every real day on the chart (Oct 3 stays)", drawnClimb.length === climb.length && drawnClimb.some((p) => p[0] === "2026-10-03"));
+  }
   const gengarApril = [
     ["2026-04-14", 1199.04], ["2026-04-15", 1213.21], ["2026-04-16", 1245.44], ["2026-04-17", 1243.94],
     ["2026-04-18", 1261.54], ["2026-04-19", 1269.14], ["2026-04-20", 1279.54], ["2026-04-21", 1268.24],

@@ -9,15 +9,21 @@ import { interleavePokemonFacts, loadPokemonIndex } from "./fact-reads.mjs";
 
 const JUNK = /set of \d|costco|sam'?s club|dollar general|walmart|walgreens|\(lgs\)/i;
 
-function spark(points, max = 20) {
-  const pts = chartSeries(points);
+// The chart carries every real day, and always the days the read quotes.
+// A quoted day is never dropped as a spike or by thinning.
+export function spark(points, max = 20, quoted = []) {
+  const raw = (points || []).filter((p) => Array.isArray(p) && p[1] > 0);
+  const want = new Set(quoted.filter(Boolean));
+  const kept = chartSeries(raw);
+  const have = new Set(kept.map((p) => p[0]));
+  const pts = kept.concat(raw.filter((p) => want.has(p[0]) && !have.has(p[0]))).sort((a, b) => (a[0] < b[0] ? -1 : 1));
   if (pts.length <= max) return pts;
-  const out = [];
+  const idx = new Set();
   const step = (pts.length - 1) / (max - 1);
-  for (let i = 0; i < max; i += 1) out.push(pts[Math.round(i * step)]);
-  const last = pts[pts.length - 1];
-  if (out[out.length - 1][0] !== last[0]) out[out.length - 1] = last;
-  return out;
+  for (let i = 0; i < max; i += 1) idx.add(Math.round(i * step));
+  pts.forEach((p, i) => { if (want.has(p[0])) idx.add(i); });
+  idx.add(pts.length - 1);
+  return [...idx].sort((a, b) => a - b).map((i) => pts[i]);
 }
 
 function orderLead(rows) {
@@ -518,7 +524,7 @@ export function assembleCatalogue(items, prior = []) {
         asOf: move.toDate,
         href: item.href || (kind === "sealed" ? `/p/${item.id}` : `/c/${item.id}`),
         image: item.image && !/ebayimg|i\.ebayimg/i.test(item.image) ? item.image : "",
-        hist: spark(raw),
+        hist: spark(raw, 20, [move.fromDate, move.toDate]),
         points: raw.length,
         flagged,
         pattern: `mover_${direction}_${move.window}d`,

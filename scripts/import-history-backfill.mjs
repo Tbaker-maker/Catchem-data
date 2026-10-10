@@ -2,7 +2,7 @@
 //   Sealed:  PokemonPriceTracker raw responses (artifact of PPT backfill run
 //            36206031966) -> data/history/ppt-sealed/<id>.json
 //   Singles: novaoc/rarebox-price-history (TCGplayer market via the TCGCSV
-//            archive, change-only) -> data/history/singles-rarebox/<cardId>.json
+//            archive, change-only) -> ppt-raw-private/singles-rarebox/<cardId>.json (private only)
 // Rules: nothing in data/history/tcgplayer-market/ (TCGCSV) is touched. Where
 // both sources have a day, readers use the TCGCSV point (scripts/lib/market-history.mjs);
 // the PPT point stays in its own folder so a day's move can be taken within PPT.
@@ -88,7 +88,9 @@ function normNumber(num) { // rarebox common.norm_number
 // singles-prices.json rows that errored on 2026-09-21 carry only a label.
 const LABEL_SETS = { "Darkness Ablaze": "swsh3", "Brilliant Stars Trainer Gallery": "swsh9tg", "Astral Radiance Trainer Gallery": "swsh10tg", "Paldea Evolved": "sv2", "Journey Together": "sv9", "White Flare": "rsv10pt5", "Pokémon Futsal Collection": "fut20" };
 const singles = await J(join(ROOT, "data/singles-prices.json"));
-const singlesOut = join(ROOT, "data/history/singles-rarebox");
+// rarebox has no licence ("for personal collection tracking"): write only to the
+// private mount, never to data/. Moved to catchem-data-private 2026-10-10.
+const singlesOut = join(ROOT, "ppt-raw-private", "singles-rarebox");
 await mkdir(singlesOut, { recursive: true });
 const sets = new Map();
 async function setFile(setId) {

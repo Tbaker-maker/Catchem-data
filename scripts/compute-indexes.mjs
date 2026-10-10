@@ -169,7 +169,7 @@ export async function publishChartIndexes() {
     sourceLive: "eBay asking prices",
     sourceBackfill: "TCGplayer market price (TCGCSV daily files from 2026-09-25; PokemonPriceTracker history stays private)",
     backfillCoverage,
-    rawChase: { hidden: true, products: 0, reason: "Chase-single history is on file (data/history/singles-rarebox/), but it is change-only and stops on 2026-09-15, so a daily chain-linked index would need filled-in days. The Raw Chase Index is not published." },
+    rawChase: { hidden: true, products: 0, reason: "No licensed daily chase-single history before our own TCGCSV days (the rarebox archive is personal-use only and lives in the private repo). The Raw Chase Index is not published." },
     excluded, hiddenEras, files: written,
   }, null, 2));
   await writeSinglesAndSlabs(newest);
