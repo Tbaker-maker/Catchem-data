@@ -683,6 +683,14 @@ try {
       m.set(slugHit, (m.get(slugHit) || 0) + 1);
     }
   }
+  // A combined all-arts row (one product split per art, Tyler 2026-10-10)
+  // has no productId of its own. Its old URL goes to its first art row that
+  // links by productId, so /p/<parent> keeps working and nothing is guessed.
+  for (const row of Array.isArray(sealedRows) ? sealedRows : []) {
+    if (!row?.combinedArts || redirects.products[row.id]) continue;
+    const first = (row.arts || []).find((artId) => redirects.products[artId]);
+    if (first) redirects.products[row.id] = redirects.products[first];
+  }
   for (const [setId, m] of setVotes) {
     const best = [...m.entries()].sort((a, b) => b[1] - a[1])[0];
     if (best) redirects.sets[setId] = `/sets/${best[0]}`;

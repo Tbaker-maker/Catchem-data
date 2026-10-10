@@ -307,7 +307,28 @@
     "vintage": false,
     "priceFloor": 200,
     "priceCeiling": 2000,
-    "boundsNote": "Comps 2026-08-18: no liquid quote. LOW-CONF; J5 applies."
+    "boundsNote": "Comps 2026-08-18: no liquid quote. LOW-CONF; J5 applies.",
+    "combinedArts": true,
+    "arts": [
+      "xy12-etb-mega-blastoise"
+    ],
+    "artsNote": "All arts combined. The eBay ask series and listing counts on this row come from one search across every art and are not attributed to any one art. Per-art TCGplayer prices live on the art rows."
+  },
+  {
+    "id": "xy12-etb-mega-blastoise",
+    "name": "Evolutions Elite Trainer Box [Mega Blastoise]",
+    "set": "Evolutions",
+    "setId": "xy12",
+    "subtype": "etb",
+    "vintage": false,
+    "image": "https://images.pokemontcg.io/xy12/logo.png",
+    "tcgPlayerId": "123448",
+    "tcgPlayerIdMethod": "art-split-by-productId",
+    "artOf": "xy12-etb",
+    "art": "Mega Blastoise",
+    "tcgplayerName": "XY Evolutions Elite Trainer Box [Mega Blastoise]",
+    "ebay": false,
+    "artNote": "One TCGplayer product per art (Tyler, 2026-10-10). Price and history are this productId only. eBay listings are not split by art; the combined eBay ask series stays on the parent all-arts row."
   },
   {
     "id": "zsv10pt5-etb",
@@ -401,7 +422,62 @@
     "searchQuery": "Pokemon Ascended Heroes Tin",
     "image": "https://images.pokemontcg.io/me2pt5/logo.png",
     "vintage": false,
-    "boundsNote": "Releases 2026-08-28 ($21.99 retail, Feraligatr/Meganium/Emboar line tracked as one SKU). Added 2026-08-18 pre-release per Newsletter 002 constraint; presale asks are valid drop-day data. Default tin window [15,150]."
+    "boundsNote": "Releases 2026-08-28 ($21.99 retail, Feraligatr/Meganium/Emboar line tracked as one SKU). Added 2026-08-18 pre-release per Newsletter 002 constraint; presale asks are valid drop-day data. Default tin window [15,150].",
+    "combinedArts": true,
+    "arts": [
+      "me2pt5-tin-mega-meganium-ex",
+      "me2pt5-tin-mega-emboar-ex",
+      "me2pt5-tin-mega-feraligatr-ex"
+    ],
+    "artsNote": "All arts combined. The eBay ask series and listing counts on this row come from one search across every art and are not attributed to any one art. Per-art TCGplayer prices live on the art rows."
+  },
+  {
+    "id": "me2pt5-tin-mega-emboar-ex",
+    "name": "Ascended Heroes Tin [Mega Emboar ex]",
+    "set": "Ascended Heroes",
+    "setId": "me2pt5",
+    "subtype": "tin",
+    "vintage": false,
+    "image": "https://images.pokemontcg.io/me2pt5/logo.png",
+    "tcgPlayerId": "702496",
+    "tcgPlayerIdMethod": "art-split-by-productId",
+    "artOf": "me2pt5-tin",
+    "art": "Mega Emboar ex",
+    "tcgplayerName": "Ascended Heroes Tin [Mega Emboar ex]",
+    "ebay": false,
+    "artNote": "One TCGplayer product per art (Tyler, 2026-10-10). Price and history are this productId only. eBay listings are not split by art; the combined eBay ask series stays on the parent all-arts row."
+  },
+  {
+    "id": "me2pt5-tin-mega-feraligatr-ex",
+    "name": "Ascended Heroes Tin [Mega Feraligatr ex]",
+    "set": "Ascended Heroes",
+    "setId": "me2pt5",
+    "subtype": "tin",
+    "vintage": false,
+    "image": "https://images.pokemontcg.io/me2pt5/logo.png",
+    "tcgPlayerId": "702497",
+    "tcgPlayerIdMethod": "art-split-by-productId",
+    "artOf": "me2pt5-tin",
+    "art": "Mega Feraligatr ex",
+    "tcgplayerName": "Ascended Heroes Tin [Mega Feraligatr ex]",
+    "ebay": false,
+    "artNote": "One TCGplayer product per art (Tyler, 2026-10-10). Price and history are this productId only. eBay listings are not split by art; the combined eBay ask series stays on the parent all-arts row."
+  },
+  {
+    "id": "me2pt5-tin-mega-meganium-ex",
+    "name": "Ascended Heroes Tin [Mega Meganium ex]",
+    "set": "Ascended Heroes",
+    "setId": "me2pt5",
+    "subtype": "tin",
+    "vintage": false,
+    "image": "https://images.pokemontcg.io/me2pt5/logo.png",
+    "tcgPlayerId": "702498",
+    "tcgPlayerIdMethod": "art-split-by-productId",
+    "artOf": "me2pt5-tin",
+    "art": "Mega Meganium ex",
+    "tcgplayerName": "Ascended Heroes Tin [Mega Meganium ex]",
+    "ebay": false,
+    "artNote": "One TCGplayer product per art (Tyler, 2026-10-10). Price and history are this productId only. eBay listings are not split by art; the combined eBay ask series stays on the parent all-arts row."
   },
   {
     "id": "mega-forces-tin",
@@ -440,7 +516,45 @@
     "priceFloor": 80,
     "priceCeiling": 800,
     "boundsNote": "Era window LOW-CONF (2026-08-18); validation median is the working comp. J5 applies.",
-    "eraBaseSet": true
+    "eraBaseSet": true,
+    "combinedArts": true,
+    "arts": [
+      "sm1-etb-solgaleo",
+      "sm1-etb-lunala"
+    ],
+    "artsNote": "All arts combined. The eBay ask series and listing counts on this row come from one search across every art and are not attributed to any one art. Per-art TCGplayer prices live on the art rows."
+  },
+  {
+    "id": "sm1-etb-solgaleo",
+    "name": "Sun & Moon Elite Trainer Box [Solgaleo]",
+    "set": "Sun & Moon",
+    "setId": "sm1",
+    "subtype": "etb",
+    "vintage": false,
+    "image": "https://images.pokemontcg.io/sm1/logo.png",
+    "tcgPlayerId": "126089",
+    "tcgPlayerIdMethod": "art-split-by-productId",
+    "artOf": "sm1-etb",
+    "art": "Solgaleo",
+    "tcgplayerName": "Sun & Moon Elite Trainer Box [Solgaleo]",
+    "ebay": false,
+    "artNote": "One TCGplayer product per art (Tyler, 2026-10-10). Price and history are this productId only. eBay listings are not split by art; the combined eBay ask series stays on the parent all-arts row."
+  },
+  {
+    "id": "sm1-etb-lunala",
+    "name": "Sun & Moon Elite Trainer Box [Lunala]",
+    "set": "Sun & Moon",
+    "setId": "sm1",
+    "subtype": "etb",
+    "vintage": false,
+    "image": "https://images.pokemontcg.io/sm1/logo.png",
+    "tcgPlayerId": "126091",
+    "tcgPlayerIdMethod": "art-split-by-productId",
+    "artOf": "sm1-etb",
+    "art": "Lunala",
+    "tcgplayerName": "Sun & Moon Elite Trainer Box [Lunala]",
+    "ebay": false,
+    "artNote": "One TCGplayer product per art (Tyler, 2026-10-10). Price and history are this productId only. eBay listings are not split by art; the combined eBay ask series stays on the parent all-arts row."
   },
   {
     "id": "sm2-booster-box",
@@ -835,7 +949,45 @@
     "vintage": false,
     "priceFloor": 20,
     "priceCeiling": 250,
-    "boundsNote": "Hot-set bundle headroom precedent (2026-08-18)."
+    "boundsNote": "Hot-set bundle headroom precedent (2026-08-18).",
+    "combinedArts": true,
+    "arts": [
+      "sv8-bb-retail",
+      "sv8-bb-lgs"
+    ],
+    "artsNote": "All arts combined. The eBay ask series and listing counts on this row come from one search across every art and are not attributed to any one art. Per-art TCGplayer prices live on the art rows."
+  },
+  {
+    "id": "sv8-bb-lgs",
+    "name": "Surging Sparks Booster Bundle [LGS]",
+    "set": "Surging Sparks",
+    "setId": "sv8",
+    "subtype": "booster-bundle",
+    "vintage": false,
+    "image": "https://images.pokemontcg.io/sv8/logo.png",
+    "tcgPlayerId": "565629",
+    "tcgPlayerIdMethod": "art-split-by-productId",
+    "artOf": "sv8-bb",
+    "art": "LGS",
+    "tcgplayerName": "Surging Sparks Booster Bundle (LGS)",
+    "ebay": false,
+    "artNote": "One TCGplayer product per art (Tyler, 2026-10-10). Price and history are this productId only. eBay listings are not split by art; the combined eBay ask series stays on the parent all-arts row."
+  },
+  {
+    "id": "sv8-bb-retail",
+    "name": "Surging Sparks Booster Bundle [Retail]",
+    "set": "Surging Sparks",
+    "setId": "sv8",
+    "subtype": "booster-bundle",
+    "vintage": false,
+    "image": "https://images.pokemontcg.io/sv8/logo.png",
+    "tcgPlayerId": "679564",
+    "tcgPlayerIdMethod": "art-split-by-productId",
+    "artOf": "sv8-bb",
+    "art": "Retail",
+    "tcgplayerName": "Surging Sparks Booster Bundle (Retail)",
+    "ebay": false,
+    "artNote": "One TCGplayer product per art (Tyler, 2026-10-10). Price and history are this productId only. eBay listings are not split by art; the combined eBay ask series stays on the parent all-arts row."
   },
   {
     "id": "sv7-bb",
@@ -1012,7 +1164,45 @@
     "vintage": false,
     "priceFloor": 50,
     "priceCeiling": 500,
-    "boundsNote": "Era anchor LOW-CONF."
+    "boundsNote": "Era anchor LOW-CONF.",
+    "combinedArts": true,
+    "arts": [
+      "swsh5-etb-single-strike-urshifu-red",
+      "swsh5-etb-rapid-strike-urshifu-blue"
+    ],
+    "artsNote": "All arts combined. The eBay ask series and listing counts on this row come from one search across every art and are not attributed to any one art. Per-art TCGplayer prices live on the art rows."
+  },
+  {
+    "id": "swsh5-etb-single-strike-urshifu-red",
+    "name": "Battle Styles Elite Trainer Box [Single Strike Urshifu Red]",
+    "set": "Battle Styles",
+    "setId": "swsh5",
+    "subtype": "etb",
+    "vintage": false,
+    "image": "https://images.pokemontcg.io/swsh5/logo.png",
+    "tcgPlayerId": "229284",
+    "tcgPlayerIdMethod": "art-split-by-productId",
+    "artOf": "swsh5-etb",
+    "art": "Single Strike Urshifu Red",
+    "tcgplayerName": "Battle Styles Elite Trainer Box [Single Strike Urshifu] (Red)",
+    "ebay": false,
+    "artNote": "One TCGplayer product per art (Tyler, 2026-10-10). Price and history are this productId only. eBay listings are not split by art; the combined eBay ask series stays on the parent all-arts row."
+  },
+  {
+    "id": "swsh5-etb-rapid-strike-urshifu-blue",
+    "name": "Battle Styles Elite Trainer Box [Rapid Strike Urshifu Blue]",
+    "set": "Battle Styles",
+    "setId": "swsh5",
+    "subtype": "etb",
+    "vintage": false,
+    "image": "https://images.pokemontcg.io/swsh5/logo.png",
+    "tcgPlayerId": "229285",
+    "tcgPlayerIdMethod": "art-split-by-productId",
+    "artOf": "swsh5-etb",
+    "art": "Rapid Strike Urshifu Blue",
+    "tcgplayerName": "Battle Styles Elite Trainer Box [Rapid Strike Urshifu] (Blue)",
+    "ebay": false,
+    "artNote": "One TCGplayer product per art (Tyler, 2026-10-10). Price and history are this productId only. eBay listings are not split by art; the combined eBay ask series stays on the parent all-arts row."
   },
   {
     "id": "swsh6-booster-box",
@@ -1040,7 +1230,45 @@
     "vintage": false,
     "priceFloor": 60,
     "priceCeiling": 600,
-    "boundsNote": "Era anchor LOW-CONF (PC variant tracked separately at $299 median)."
+    "boundsNote": "Era anchor LOW-CONF (PC variant tracked separately at $299 median).",
+    "combinedArts": true,
+    "arts": [
+      "swsh6-etb-shadow-rider-calyrex",
+      "swsh6-etb-ice-rider-calyrex"
+    ],
+    "artsNote": "All arts combined. The eBay ask series and listing counts on this row come from one search across every art and are not attributed to any one art. Per-art TCGplayer prices live on the art rows."
+  },
+  {
+    "id": "swsh6-etb-ice-rider-calyrex",
+    "name": "Chilling Reign Elite Trainer Box [Ice Rider Calyrex]",
+    "set": "Chilling Reign",
+    "setId": "swsh6",
+    "subtype": "etb",
+    "vintage": false,
+    "image": "https://images.pokemontcg.io/swsh6/logo.png",
+    "tcgPlayerId": "236260",
+    "tcgPlayerIdMethod": "art-split-by-productId",
+    "artOf": "swsh6-etb",
+    "art": "Ice Rider Calyrex",
+    "tcgplayerName": "Chilling Reign Elite Trainer Box [Ice Rider Calyrex]",
+    "ebay": false,
+    "artNote": "One TCGplayer product per art (Tyler, 2026-10-10). Price and history are this productId only. eBay listings are not split by art; the combined eBay ask series stays on the parent all-arts row."
+  },
+  {
+    "id": "swsh6-etb-shadow-rider-calyrex",
+    "name": "Chilling Reign Elite Trainer Box [Shadow Rider Calyrex]",
+    "set": "Chilling Reign",
+    "setId": "swsh6",
+    "subtype": "etb",
+    "vintage": false,
+    "image": "https://images.pokemontcg.io/swsh6/logo.png",
+    "tcgPlayerId": "236261",
+    "tcgPlayerIdMethod": "art-split-by-productId",
+    "artOf": "swsh6-etb",
+    "art": "Shadow Rider Calyrex",
+    "tcgplayerName": "Chilling Reign Elite Trainer Box [Shadow Rider Calyrex]",
+    "ebay": false,
+    "artNote": "One TCGplayer product per art (Tyler, 2026-10-10). Price and history are this productId only. eBay listings are not split by art; the combined eBay ask series stays on the parent all-arts row."
   },
   {
     "id": "swsh8-booster-box",
@@ -1691,7 +1919,45 @@
       "chaos rising",
       "pitch black",
       "delta reign"
-    ]
+    ],
+    "combinedArts": true,
+    "arts": [
+      "me1-etb-mega-lucario",
+      "me1-etb-mega-gardevoir"
+    ],
+    "artsNote": "All arts combined. The eBay ask series and listing counts on this row come from one search across every art and are not attributed to any one art. Per-art TCGplayer prices live on the art rows."
+  },
+  {
+    "id": "me1-etb-mega-gardevoir",
+    "name": "Mega Evolution Elite Trainer Box [Mega Gardevoir]",
+    "set": "Mega Evolution",
+    "setId": "me1",
+    "subtype": "etb",
+    "vintage": false,
+    "image": "https://images.pokemontcg.io/me1/logo.png",
+    "tcgPlayerId": "644279",
+    "tcgPlayerIdMethod": "art-split-by-productId",
+    "artOf": "me1-etb",
+    "art": "Mega Gardevoir",
+    "tcgplayerName": "Mega Evolution Elite Trainer Box [Mega Gardevoir]",
+    "ebay": false,
+    "artNote": "One TCGplayer product per art (Tyler, 2026-10-10). Price and history are this productId only. eBay listings are not split by art; the combined eBay ask series stays on the parent all-arts row."
+  },
+  {
+    "id": "me1-etb-mega-lucario",
+    "name": "Mega Evolution Elite Trainer Box [Mega Lucario]",
+    "set": "Mega Evolution",
+    "setId": "me1",
+    "subtype": "etb",
+    "vintage": false,
+    "image": "https://images.pokemontcg.io/me1/logo.png",
+    "tcgPlayerId": "648394",
+    "tcgPlayerIdMethod": "art-split-by-productId",
+    "artOf": "me1-etb",
+    "art": "Mega Lucario",
+    "tcgplayerName": "Mega Evolution Elite Trainer Box [Mega Lucario]",
+    "ebay": false,
+    "artNote": "One TCGplayer product per art (Tyler, 2026-10-10). Price and history are this productId only. eBay listings are not split by art; the combined eBay ask series stays on the parent all-arts row."
   },
   {
     "id": "me1-pc-etb",
@@ -1892,7 +2158,45 @@
     "subtype": "etb",
     "searchQuery": "Pokemon Temporal Forces Elite Trainer Box",
     "image": "https://images.pokemontcg.io/sv5/logo.png",
-    "vintage": false
+    "vintage": false,
+    "combinedArts": true,
+    "arts": [
+      "sv5-etb-walking-wake",
+      "sv5-etb-iron-leaves-ex"
+    ],
+    "artsNote": "All arts combined. The eBay ask series and listing counts on this row come from one search across every art and are not attributed to any one art. Per-art TCGplayer prices live on the art rows."
+  },
+  {
+    "id": "sv5-etb-walking-wake",
+    "name": "Temporal Forces Elite Trainer Box [Walking Wake]",
+    "set": "Temporal Forces",
+    "setId": "sv5",
+    "subtype": "etb",
+    "vintage": false,
+    "image": "https://images.pokemontcg.io/sv5/logo.png",
+    "tcgPlayerId": "532845",
+    "tcgPlayerIdMethod": "art-split-by-productId",
+    "artOf": "sv5-etb",
+    "art": "Walking Wake",
+    "tcgplayerName": "Temporal Forces Elite Trainer Box [Walking Wake]",
+    "ebay": false,
+    "artNote": "One TCGplayer product per art (Tyler, 2026-10-10). Price and history are this productId only. eBay listings are not split by art; the combined eBay ask series stays on the parent all-arts row."
+  },
+  {
+    "id": "sv5-etb-iron-leaves-ex",
+    "name": "Temporal Forces Elite Trainer Box [Iron Leaves ex]",
+    "set": "Temporal Forces",
+    "setId": "sv5",
+    "subtype": "etb",
+    "vintage": false,
+    "image": "https://images.pokemontcg.io/sv5/logo.png",
+    "tcgPlayerId": "532848",
+    "tcgPlayerIdMethod": "art-split-by-productId",
+    "artOf": "sv5-etb",
+    "art": "Iron Leaves ex",
+    "tcgplayerName": "Temporal Forces Elite Trainer Box [Iron Leaves ex]",
+    "ebay": false,
+    "artNote": "One TCGplayer product per art (Tyler, 2026-10-10). Price and history are this productId only. eBay listings are not split by art; the combined eBay ask series stays on the parent all-arts row."
   },
   {
     "id": "sv4pt5-etb",
@@ -2006,7 +2310,45 @@
     "priceFloor": 150,
     "priceCeiling": 1200,
     "boundsNote": "Comps 2026-08-18: market ~$700, out of print. Old ceiling 400 below market — class B.",
-    "dataQualityNote": "priceHistory before 2026-08-18 is contaminated: last published $15 was pack prices under the old window. Do not chart or cite pre-fix rows."
+    "dataQualityNote": "priceHistory before 2026-08-18 is contaminated: last published $15 was pack prices under the old window. Do not chart or cite pre-fix rows.",
+    "combinedArts": true,
+    "arts": [
+      "swsh7-etb-flareon-jolteon-umbreon-leafeon",
+      "swsh7-etb-glaceon-vaporeon-sylveon-espeon"
+    ],
+    "artsNote": "All arts combined. The eBay ask series and listing counts on this row come from one search across every art and are not attributed to any one art. Per-art TCGplayer prices live on the art rows."
+  },
+  {
+    "id": "swsh7-etb-flareon-jolteon-umbreon-leafeon",
+    "name": "Evolving Skies Elite Trainer Box [Flareon/Jolteon/Umbreon/Leafeon]",
+    "set": "Evolving Skies",
+    "setId": "swsh7",
+    "subtype": "etb",
+    "vintage": false,
+    "image": "https://images.pokemontcg.io/swsh7/logo.png",
+    "tcgPlayerId": "242434",
+    "tcgPlayerIdMethod": "art-split-by-productId",
+    "artOf": "swsh7-etb",
+    "art": "Flareon/Jolteon/Umbreon/Leafeon",
+    "tcgplayerName": "Evolving Skies Elite Trainer Box [Flareon/Jolteon/Umbreon/Leafeon]",
+    "ebay": false,
+    "artNote": "One TCGplayer product per art (Tyler, 2026-10-10). Price and history are this productId only. eBay listings are not split by art; the combined eBay ask series stays on the parent all-arts row."
+  },
+  {
+    "id": "swsh7-etb-glaceon-vaporeon-sylveon-espeon",
+    "name": "Evolving Skies Elite Trainer Box [Glaceon/Vaporeon/Sylveon/Espeon]",
+    "set": "Evolving Skies",
+    "setId": "swsh7",
+    "subtype": "etb",
+    "vintage": false,
+    "image": "https://images.pokemontcg.io/swsh7/logo.png",
+    "tcgPlayerId": "242443",
+    "tcgPlayerIdMethod": "art-split-by-productId",
+    "artOf": "swsh7-etb",
+    "art": "Glaceon/Vaporeon/Sylveon/Espeon",
+    "tcgplayerName": "Evolving Skies Elite Trainer Box [Glaceon/Vaporeon/Sylveon/Espeon]",
+    "ebay": false,
+    "artNote": "One TCGplayer product per art (Tyler, 2026-10-10). Price and history are this productId only. eBay listings are not split by art; the combined eBay ask series stays on the parent all-arts row."
   },
   {
     "id": "swsh7-booster-box",
@@ -2054,7 +2396,45 @@
     "searchQuery": "Pokemon Sword Shield Base Elite Trainer Box",
     "image": "https://images.pokemontcg.io/swsh1/logo.png",
     "vintage": false,
-    "eraBaseSet": true
+    "eraBaseSet": true,
+    "combinedArts": true,
+    "arts": [
+      "swsh1-etb-zacian",
+      "swsh1-etb-zamazenta"
+    ],
+    "artsNote": "All arts combined. The eBay ask series and listing counts on this row come from one search across every art and are not attributed to any one art. Per-art TCGplayer prices live on the art rows."
+  },
+  {
+    "id": "swsh1-etb-zacian",
+    "name": "Sword & Shield Elite Trainer Box [Zacian]",
+    "set": "Sword & Shield",
+    "setId": "swsh1",
+    "subtype": "etb",
+    "vintage": false,
+    "image": "https://images.pokemontcg.io/swsh1/logo.png",
+    "tcgPlayerId": "206038",
+    "tcgPlayerIdMethod": "art-split-by-productId",
+    "artOf": "swsh1-etb",
+    "art": "Zacian",
+    "tcgplayerName": "Sword & Shield Elite Trainer Box [Zacian]",
+    "ebay": false,
+    "artNote": "One TCGplayer product per art (Tyler, 2026-10-10). Price and history are this productId only. eBay listings are not split by art; the combined eBay ask series stays on the parent all-arts row."
+  },
+  {
+    "id": "swsh1-etb-zamazenta",
+    "name": "Sword & Shield Elite Trainer Box [Zamazenta]",
+    "set": "Sword & Shield",
+    "setId": "swsh1",
+    "subtype": "etb",
+    "vintage": false,
+    "image": "https://images.pokemontcg.io/swsh1/logo.png",
+    "tcgPlayerId": "206039",
+    "tcgPlayerIdMethod": "art-split-by-productId",
+    "artOf": "swsh1-etb",
+    "art": "Zamazenta",
+    "tcgplayerName": "Sword & Shield Elite Trainer Box [Zamazenta]",
+    "ebay": false,
+    "artNote": "One TCGplayer product per art (Tyler, 2026-10-10). Price and history are this productId only. eBay listings are not split by art; the combined eBay ask series stays on the parent all-arts row."
   },
   {
     "id": "sm12-etb",

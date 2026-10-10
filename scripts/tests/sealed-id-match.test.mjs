@@ -153,11 +153,29 @@ export async function runSealedIdTests() {
   // Reviewed TCGplayer ids on sealed products: unique, labelled, and the only link source.
   const sealedRows = JSON.parse(await readFile(join(ROOT, "data/sealed-products.json"), "utf8"));
   const withId = sealedRows.filter((r) => r.tcgPlayerId != null);
-  t("every sealed tcgPlayerId is a reviewed numeric id", withId.every((r) => /^\d+$/.test(String(r.tcgPlayerId)) && r.tcgPlayerIdMethod === "ppt-tcgplayer-id-reviewed"));
+  t("every sealed tcgPlayerId is a reviewed numeric id", withId.every((r) => /^\d+$/.test(String(r.tcgPlayerId)) && (r.tcgPlayerIdMethod === "ppt-tcgplayer-id-reviewed" || (r.artOf && r.tcgPlayerIdMethod === "art-split-by-productId"))));
   t("no two sealed products share a tcgPlayerId", new Set(withId.map((r) => String(r.tcgPlayerId))).size === withId.length);
   t("held swsh5 rows stay unlinked", ["swsh5-booster-box", "swsh5-etb", "swsh5-pack"].every((id) => sealedRows.find((r) => r.id === id)?.tcgPlayerId == null));
   const bundleSrc = await readFile(join(ROOT, "scripts/build-public-bundle.mjs"), "utf8");
   t("sealed redirects are not built from names", !/byNorm|SET_HINTS|subtypeFromLegacy/.test(bundleSrc));
+  // Per-art split (Tyler, 2026-10-10): each art is its own row keyed by its
+  // own productId; the combined parent has no productId and no TCGplayer history.
+  {
+    const rows = JSON.parse(await readFile(join(ROOT, "data/sealed-products.json"), "utf8"));
+    const byId = new Map(rows.map((r) => [r.id, r]));
+    const pids = rows.filter((r) => r.tcgPlayerId != null).map((r) => String(r.tcgPlayerId));
+    t("no two sealed rows share a productId", new Set(pids).size === pids.length);
+    const artRows = rows.filter((r) => r.artOf);
+    t("art rows exist", artRows.length > 0);
+    t("every art row has its own productId, parent and art name", artRows.every((r) =>
+      /^\d+$/.test(String(r.tcgPlayerId)) && byId.get(r.artOf)?.combinedArts === true
+      && r.id.startsWith(r.artOf + "-") && r.name.includes(r.art) && r.ebay === false && !r.searchQuery));
+    t("every combined parent lists only real art rows and has no productId", rows.filter((r) => r.combinedArts).every((p) =>
+      p.tcgPlayerId == null && p.arts.length > 0 && p.arts.every((a) => byId.get(a)?.artOf === p.id)));
+    const hist = await readFile(join(ROOT, "data/history/tcgplayer-market/me1-etb.json"), "utf8").catch(() => null);
+    t("the combined parent carries no single-art TCGplayer history", hist === null);
+  }
+
   return fail;
 }
 

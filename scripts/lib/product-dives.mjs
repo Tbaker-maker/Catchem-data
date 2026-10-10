@@ -280,6 +280,13 @@ export function buildAllDives({
     if (row?.id && /^\d+$/.test(pid)) tcgBySealed[row.id] = `tcgcsv-${pid}`;
   }
 
+  // A combined all-arts row (split per art, Tyler 2026-10-10) holds one eBay
+  // search across every art. It is never tied to one art's productId.
+  const combined = new Map();
+  for (const row of Array.isArray(sealedProducts) ? sealedProducts : []) {
+    if (row?.id && row.combinedArts) { combined.set(row.id, row); delete tcgBySealed[row.id]; }
+  }
+
   const asOf =
     (sealedPrices?.updatedAt && String(sealedPrices.updatedAt).slice(0, 10)) ||
     null;
@@ -292,18 +299,23 @@ export function buildAllDives({
     // Only ship a payload when there is at least one real series point or a latest row.
     const hasSeries = rows.some((r) => r.date >= HIST_CUT && r.price != null);
     if (!hasSeries && !product) continue;
-    dives.push(
-      buildDivePayload({
+    const parent = combined.get(id);
+    const payload = buildDivePayload({
         id,
-        name: product?.name,
+        name: parent && product?.name ? `${product.name} (all arts combined)` : product?.name,
         seriesRows: rows,
         latestProduct: product,
         buyoutRow: buyoutBy.get(id) || null,
         outlierMap,
         asOf,
         tcgcsvId: tcgBySealed[id] || null,
-      }),
-    );
+      });
+    if (parent) {
+      payload.combinedArts = true;
+      payload.arts = [...(parent.arts || [])];
+      payload.artsNote = "eBay asks and listing counts here are one search across every art. They are not any one art's numbers. Listings are not sales.";
+    }
+    dives.push(payload);
   }
   return {
     asOf,
