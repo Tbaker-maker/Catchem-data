@@ -257,6 +257,7 @@ export function buildAllDives({
   buyoutTape = null,
   outlierMap = null,
   redirects = null,
+  sealedProducts = null,
 } = {}) {
   const products = sealedPrices?.products || [];
   const byId = new Map(products.map((p) => [p.id, p]));
@@ -272,6 +273,11 @@ export function buildAllDives({
   for (const [sid, href] of Object.entries(redirects?.products || {})) {
     const m = String(href).match(/tcgcsv-(\d+)/);
     if (m) tcgBySealed[sid] = `tcgcsv-${m[1]}`;
+  }
+  // The reviewed TCGplayer productId on the sealed product wins (id, not name).
+  for (const row of Array.isArray(sealedProducts) ? sealedProducts : []) {
+    const pid = String(row?.tcgPlayerId ?? "");
+    if (row?.id && /^\d+$/.test(pid)) tcgBySealed[row.id] = `tcgcsv-${pid}`;
   }
 
   const asOf =

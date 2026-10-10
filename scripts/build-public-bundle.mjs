@@ -656,15 +656,23 @@ try {
   const tape = await read("data/sealed-prices.json");
   legacyTape = tape.products || [];
   ebayTracked = legacyTape.filter((p) => p.dataStatus === "live").length;
-  const byNorm = new Map();
+  // Sealed products link by TCGplayer productId only (tcgPlayerId on
+  // data/sealed-products.json). No name matching.
+  const sealedRows = await read("data/sealed-products.json").catch(() => []);
+  const pidBySealed = new Map();
+  for (const row of Array.isArray(sealedRows) ? sealedRows : []) {
+    const pid = String(row?.tcgPlayerId ?? "");
+    if (row?.id && /^\d+$/.test(pid)) pidBySealed.set(row.id, Number(pid));
+  }
+  const byPid = new Map();
   for (const item of items) {
-    if (item.kind !== "sealed") continue;
-    const key = norm(item.name);
-    if (key && !byNorm.has(key)) byNorm.set(key, item);
+    if (item.kind === "sealed" && Number(item.tcgplayerProductId) > 0) byPid.set(Number(item.tcgplayerProductId), item);
   }
   const setVotes = new Map();
-  for (const p of tape.products || []) {
-    const hit = byNorm.get(norm(p.name));
+  const linkIds = new Set([...(tape.products || []).map((p) => p?.id), ...pidBySealed.keys()]);
+  for (const id of linkIds) {
+    const p = (tape.products || []).find((row) => row?.id === id) || { id, setId: (Array.isArray(sealedRows) ? sealedRows : []).find((row) => row?.id === id)?.setId };
+    const hit = byPid.get(pidBySealed.get(id));
     if (!hit) continue;
     redirects.products[p.id] = `/p/${hit.id}`;
     const setKey = homeKey(hit);
@@ -679,86 +687,10 @@ try {
     const best = [...m.entries()].sort((a, b) => b[1] - a[1])[0];
     if (best) redirects.sets[setId] = `/sets/${best[0]}`;
   }
-} catch { /* name map is optional */ }
+} catch { /* id map is optional */ }
 
-const SET_HINTS = [
-  ["swsh12pt5-", "crown-zenith"],
-  ["swsh35-", "champion"],
-  ["swsh45-", "sword-shield-promo"],
-  ["sv8pt5-", "prismatic"],
-  ["sv6pt5-", "shrouded"],
-  ["sv4pt5-", "paldean-fates"],
-  ["sv3pt5-", "151"],
-  ["zsv10pt5-bb-", "black-bolt"],
-  ["rsv10pt5-wf-", "white-flare"],
-  ["me2pt5-", "ascended-heroes"],
-  ["sv10-", "destined-rivals"],
-  ["sv9-", "journey-together"],
-  ["sv8-", "surging-sparks"],
-  ["sv7-", "stellar-crown"],
-  ["sv6-", "twilight-masquerade"],
-  ["sv5-", "temporal-forces"],
-  ["sv4-", "paradox-rift"],
-  ["sv3-", "obsidian-flames"],
-  ["sv2-", "paldea-evolved"],
-  ["sv1-", "sv01"],
-  ["swsh12-", "silver-tempest"],
-  ["swsh11-", "lost-origin"],
-  ["swsh10-", "astral-radiance"],
-  ["swsh9-", "brilliant-stars"],
-  ["swsh8-", "fusion-strike"],
-  ["swsh7-", "evolving-skies"],
-  ["swsh6-", "chilling-reign"],
-  ["swsh5-", "battle-styles"],
-  ["swsh4-", "vivid-voltage"],
-  ["swsh3-", "darkness-ablaze"],
-  ["swsh2-", "rebel-clash"],
-  ["swsh1-", "swsh01"],
-  ["me1-", "me01"],
-  ["me2-", "phantasmal"],
-  ["me5-", "pitch-black"],
-  ["cel25-", "celebrations"],
-  ["xy12-", "xy-evolutions"],
-  ["sm5-", "ultra-prism"],
-  ["sm1-", "sm-base"],
-  ["bw1-", "black-and-white"],
-  ["det1-", "detective-pikachu"],
-  ["neo1-", "neo-genesis"],
-  ["base3-", "fossil"],
-  ["base2-", "jungle"],
-  ["base1-", "base-set"],
-];
-function subtypeFromLegacy(id) {
-  if (/-pc-etb$/.test(id)) return "pc-etb";
-  if (/-etb$/.test(id)) return "etb";
-  if (/-bb$|-bundle$/.test(id)) return "booster-bundle";
-  if (/booster-box$/.test(id)) return "booster-box";
-  if (/-tin$/.test(id)) return "tin";
-  if (/-pack$/.test(id)) return "booster-pack";
-  if (/-premium$/.test(id)) return "special-collection";
-  return null;
-}
-const JUNK_SEALED = /set of \d|costco|sam'?s club|dollar general|walmart|walgreens|\(lgs\)/i;
-for (const p of legacyTape) {
-  if (!p?.id || redirects.products[p.id]) continue;
-  const hint = SET_HINTS.find(([pre]) => p.id.startsWith(pre))?.[1];
-  const subtype = subtypeFromLegacy(p.id);
-  if (!hint || !subtype) continue;
-  const pool = [...sets.values()].filter((set) => set.slug === hint || set.slug.includes(hint));
-  const exact = pool.filter((set) => set.slug === hint);
-  const chosenSets = exact.length ? exact : pool;
-  const cands = [];
-  for (const set of chosenSets) {
-    for (const item of set.items) {
-      if (item.kind !== "sealed" || item.subtype !== subtype) continue;
-      if (JUNK_SEALED.test(item.name || "")) continue;
-      cands.push(item);
-    }
-  }
-  if (!cands.length) continue;
-  cands.sort((a, b) => String(a.name).length - String(b.name).length || String(a.name).localeCompare(String(b.name)));
-  redirects.products[p.id] = `/p/${cands[0].id}`;
-}
+// Sealed redirects are id-only (see above). The old name/subtype hint
+// fallback picked a product by name and is gone.
 
 for (const set of sets.values()) {
   const bare = slug(String(set.raw || "").replace(/^[^:]+:\s*/, ""));
@@ -773,6 +705,11 @@ const OLD_SETS = {
   bw1: "black-and-white",
   det1: "detective-pikachu",
   neo1: "neo-genesis",
+  hgss1: "heartgold-soulsilver",
+  sm8: "sm-lost-thunder",
+  sm9: "sm-team-up",
+  sm1: "sm-base-set",
+  swsh5: "swsh05-battle-styles",
   xy12: "xy-evolutions",
 };
 for (const [from, to] of Object.entries(OLD_SETS)) {

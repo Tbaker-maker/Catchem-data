@@ -23,6 +23,7 @@ export async function buildProductDives() {
   const outlierDoc = (await J("data/derived/sealed-price-outliers.json")) ?? (await J("data/price-outliers.json")) ?? null;
   const outlierMap = indexOutlierMap(outlierDoc);
   const redirects = (await J("research/assets/public/redirects.json")) ?? { products: {} };
+  const sealedProducts = (await J("data/sealed-products.json")) ?? [];
 
   const bundle = buildAllDives({
     heatHistory,
@@ -30,6 +31,7 @@ export async function buildProductDives() {
     buyoutTape,
     outlierMap,
     redirects,
+    sealedProducts,
   });
 
   await rm(OUT, { recursive: true, force: true });
