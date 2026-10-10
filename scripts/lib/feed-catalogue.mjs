@@ -601,7 +601,7 @@ export function trackedRows(prior, priceBySku) {
   return out;
 }
 
-export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDir, logFile, shelf, gapPids = [], rewriteDir = "", soldBySku = null, root = "" }) {
+export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDir, logFile, shelf, gapPids = [], rewriteDir = "", soldBySku = null, root = "", cooled = null }) {
   const { cards, lists, halfDropped = [] } = assembleCatalogue(items, prior);
   applyShelf(cards, shelf);
   const soldMap = soldBySku instanceof Map ? soldBySku : new Map();
@@ -690,7 +690,9 @@ export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDi
     changePct: card.changePct,
     hist: Array.from({ length: card.points || 0 }, () => ["x", 1]),
   }));
-  const picked = selectLead(Object.values(cards));
+  // A card still inside the rotation cooldown is skipped here, so the next
+  // qualifier takes its place instead of the lead going empty later.
+  const picked = selectLead(Object.values(cards).filter((card) => !cooled || !cooled.has(String(card.sku || ""))));
   if (rewriteDir) {
     await appendPathRewrites(rewriteDir, asOf, picked.rewrites);
     const halfDir = join(dirname(rewriteDir), "half-copies");
@@ -737,6 +739,7 @@ export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDi
     await writeFile(join(outDir, "feed", "tracked", `${n}.json`), JSON.stringify(tracked.slice(n * pageSize, (n + 1) * pageSize)));
   }
   await writeFile(join(outDir, "feed", "meta.json"), JSON.stringify({
+    sourceNote: "TCGplayer market via TCGCSV, published the day before the date shown.",
     asOf: catalogue.asOf,
     updatedAt: catalogue.updatedAt,
     source: catalogue.source,

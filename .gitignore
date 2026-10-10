@@ -41,3 +41,9 @@ data/crosscheck-history.json
 data/learning/calls.jsonl
 data/learning/shelf.jsonl
 data/learning/snapshots/
+
+# PPT-valued files. They live in catchem-data-private and are mounted per run only.
+# Volume reads stay off until PPT's written yes.
+data/derived/tcgplayer-volume.json
+data/singles-enrichment.json
+data/enrichment-distilled.json

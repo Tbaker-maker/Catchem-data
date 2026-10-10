@@ -22,7 +22,24 @@ export const BANNED_PATHS = [
   "data/history/ppt-sealed/",
   "data/history/ppt-sealed-private/",
   "ppt-raw-private/",
+  // PPT-valued files moved to catchem-data-private on 2026-10-10.
+  "data/derived/tcgplayer-volume.json",
+  "data/singles-enrichment.json",
+  "data/enrichment-distilled.json",
 ];
+
+// A public JSON file must not carry PPT-sourced values. Names and ids may stay.
+export const PPT_SOURCE_RE = /pokemon\s*price\s*tracker|pokemonpricetracker/i;
+export const VALUE_KEYS = /^(market|low|high|mid|price|sold7d|sold30d|vol30|recentSales|conditions|tcgMarket|tcgPrice)$/;
+export function pptValuedDoc(doc) {
+  // true when the top-level source names PPT and any nested object holds a value key
+  const src = `${doc?.source || ""} ${doc?.provenance || ""}`;
+  if (!PPT_SOURCE_RE.test(src)) return false;
+  let hit = false;
+  const walk = (v, d) => { if (hit || d > 6 || !v || typeof v !== "object") return; for (const [k, x] of Object.entries(v)) { if (VALUE_KEYS.test(k) && (typeof x === "number" || (x && typeof x === "object"))) { hit = true; return; } walk(x, d + 1); } };
+  walk(doc.cards || doc.rows || doc.entries || doc, 0);
+  return hit;
+}
 
 export function pptPathsIn(files) {
   return files.filter((f) => BANNED_PATHS.some((p) => p.endsWith("/") ? f.startsWith(p) : f === p));
@@ -83,6 +100,21 @@ export async function runNoPptPublicTests() {
   try { tracked = execFileSync("git", ["ls-files"], { cwd: ROOT, encoding: "utf8" }).split("\n").filter(Boolean); } catch {}
   const leaked = pptPathsIn(tracked);
   t("no PPT history file is tracked in the public repo", leaked.length === 0, leaked.slice(0, 5).join(", "));
+
+  t("a PPT-sourced doc with prices is flagged", pptValuedDoc({ source: "pokemonpricetracker v2", cards: [{ raw: { market: 2 } }] }));
+  t("a PPT-named ids-only map is not flagged", !pptValuedDoc({ source: "build-crosscheck-map.mjs vs pokemonpricetracker v2", entries: [{ id: "a", tcgPlayerId: "1" }] }));
+  const pptValued = [];
+  for (const f of tracked.filter((n) => /^(data|research\/assets)\/.*\.json$/.test(n) && !n.startsWith("data/history/"))) {
+    try {
+      const raw = await readFile(join(ROOT, f), "utf8");
+      if (raw.length > 30_000_000 || !PPT_SOURCE_RE.test(raw.slice(0, 4000))) continue;
+      if (pptValuedDoc(JSON.parse(raw))) pptValued.push(f);
+    } catch {}
+  }
+  t("no tracked public JSON carries PPT-sourced values", pptValued.length === 0, pptValued.slice(0, 5).join(", "));
+  let volumeReads = [];
+  try { volumeReads = JSON.parse(await readFile(join(ROOT, "research/assets/public/reads.json"), "utf8")).reads.filter((r) => r.readKind === "volume" || r.kind === "volume"); } catch {}
+  t("volume reads are off until PPT's written yes", volumeReads.length === 0, `${volumeReads.length} volume reads`);
 
   const allowed = await publicDays();
   const allowsVariant = (pid, day, v) => { const m = allowed.get(pid); if (!m) return false; for (const [k, x] of m) if ((k === day || k.startsWith(day + "#")) && Math.abs(x - v) <= 0.011) return true; return false; };

@@ -8,6 +8,7 @@ import { assembleCatalog, supplyNotes } from "./lib/extra-reads.mjs";
 import { supplyMap, writeFeedExtras } from "./build-extra-reads.mjs";
 import { writeSealedPriceOutliers } from "./flag-sealed-price-outliers.mjs";
 import { writeReadLibrary } from "./lib/read-library.mjs";
+import { cooledSet, loadRotation } from "./lib/night-reads.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "research/assets/public");
@@ -67,7 +68,7 @@ const GAP_IMAGE = new Set(((await read("data/image-gaps.json").catch(() => ({ pi
 const items = [];
 for (const item of catalog.items || []) {
   const days = series.get(Number(item.tcgplayerProductId));
-  if (!days || days.size < 30) continue;
+  if (!days || days.size < 2) continue; // windows below decide what qualifies
   const hist = dropTiledCycles([...days.entries()].sort((a, b) => a[0] < b[0] ? -1 : 1));
   const pid = Number(item.tcgplayerProductId);
   const kind = item.kind === "sealed" ? "sealed" : "single";
@@ -119,7 +120,9 @@ try {
     });
   }
 } catch { /* snapshot is optional until it is on this branch */ }
+const cooled = cooledSet(await loadRotation(ROOT), catalog.asOf || "");
 const result = await publishFeed({
+  cooled,
   items,
   prior,
   prices,

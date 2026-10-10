@@ -13,6 +13,7 @@ export const PLAIN_CAP = 2;
 export const TYPE_CAP = 2;
 export const STREAK_MIN = 4;
 export const BOARD_ORDER = ["mover", "set", "high", "streak", "plain"];
+export const SOURCE_NOTE = "TCGplayer market via TCGCSV, published the day before the date shown.";
 export const LIBRARY_FILE = "research/assets/public/feed/read-library.json";
 
 const BANNED_COPY = /\b(stored|printed|last print|took a bigger last step)\b/i;
@@ -487,6 +488,7 @@ export function buildReadLibrary({ catalogue, extra, series } = {}) {
   return {
     asOf,
     source: catalogue?.source || "TCGplayer market",
+    sourceNote: SOURCE_NOTE,
     order: BOARD_ORDER,
     boardMax: BOARD_MAX,
     plainCap: PLAIN_CAP,

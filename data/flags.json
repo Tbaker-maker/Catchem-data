@@ -75,6 +75,13 @@
       "why": "A set value read stays off until RD rules KEEP. The sum is singles priced on both exact days, and the card count is that intersection.",
       "trigger": "RD rules KEEP for the set value line.",
       "env": "CATCHEM_SET_VALUE"
+    },
+    "reads.volume": {
+      "value": false,
+      "owner": "scripts/build-extra-reads.mjs",
+      "why": "Volume reads use TCGplayer sold counts from PokemonPriceTracker. Off and nothing published (data/derived/tcgplayer-volume.json left the public repo 2026-10-10) until PPT's Business plan and written yes.",
+      "trigger": "PPT written yes for public display.",
+      "env": "CATCHEM_VOLUME_READS"
     }
   }
 }

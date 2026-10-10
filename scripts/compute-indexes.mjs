@@ -167,7 +167,7 @@ export async function publishChartIndexes() {
   await writeFile(join(OUT, "manifest.json"), JSON.stringify({
     asOf: newest, stale,
     sourceLive: "eBay asking prices",
-    sourceBackfill: "TCGplayer market price (PokemonPriceTracker daily backfill + TCGCSV live days)",
+    sourceBackfill: "TCGplayer market price (TCGCSV daily files from 2026-09-25; PokemonPriceTracker history stays private)",
     backfillCoverage,
     rawChase: { hidden: true, products: 0, reason: "Chase-single history is on file (data/history/singles-rarebox/), but it is change-only and stops on 2026-09-15, so a daily chain-linked index would need filled-in days. The Raw Chase Index is not published." },
     excluded, hiddenEras, files: written,
