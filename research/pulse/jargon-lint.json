@@ -1,15 +1,15 @@
 {
- "generatedAt": "2026-10-09T11:44:07.701Z",
+ "generatedAt": "2026-10-10T11:00:49.031Z",
  "surfaces": 5,
  "blocks": 2,
  "warns": 1,
  "findings": [
   {
    "surface": "research/pulse/pulse-feed.json",
-   "term": "the ditto premium",
+   "term": "sealed premium",
    "severity": "BLOCK",
-   "issue": "reads like a defined term the piece never defines — the reader is told a rule exists but not what it is",
-   "suggestedGloss": "say what the reader would DO or SEE, in plain words, in the same sentence"
+   "issue": "used without a plain-words explanation nearby",
+   "suggestedGloss": "how much more a sealed box costs per pack than buying packs loose"
   },
   {
    "surface": "research/pulse/post-bank.json",
@@ -19,7 +19,7 @@
    "suggestedGloss": "the box price divided by how many packs are inside"
   },
   {
-   "surface": "research/pulse/2026-10-09.md",
+   "surface": "research/pulse/2026-10-10.md",
    "term": "the spread",
    "severity": "BLOCK",
    "issue": "used without a plain-words explanation nearby",

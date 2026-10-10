@@ -1,7 +1,7 @@
 {
- "generatedAt": "2026-10-09T11:44:09.286Z",
- "date": "2026-10-09",
- "mood": "Not much of a verdict today. Most of our claims need more time before they can be judged, and pretending otherwise would be the actual failure.",
+ "generatedAt": "2026-10-10T11:00:51.274Z",
+ "date": "2026-10-10",
+ "mood": "Mostly \"we cannot tell yet\" today — half these tests need weeks of history we simply do not have. Saying so beats guessing.",
  "note": "We test our own claims before anyone else gets the chance. INSUFFICIENT is an honest verdict and is reported as loudly as the others.",
  "coverage": {
   "thesesInDoctrine": 10,
@@ -20,7 +20,7 @@
    "name": "The Reprint Cycle",
    "falsifier": "a reprint-era product class stays below its pre-reprint level long enough that reprints are not absorbed",
    "verdict": "INSUFFICIENT",
-   "detail": "needs a multi-week price series to judge absorption; we hold 18 clean days",
+   "detail": "needs a multi-week price series to judge absorption; we hold 19 clean days",
    "needs": "30+ days of tape across a reprint event"
   },
   {
@@ -28,7 +28,7 @@
    "name": "Depth–Liquidity Matrix",
    "falsifier": "pile-up states precede 14-day price softness in fewer than 55% of cases",
    "verdict": "INSUFFICIENT",
-   "detail": "the test needs 14 days AFTER each pile-up state; we hold 18 days total",
+   "detail": "the test needs 14 days AFTER each pile-up state; we hold 19 days total",
    "needs": "21+ days of tape"
   },
   {
@@ -52,7 +52,7 @@
    "name": "Venue Boundary",
    "falsifier": "TCGplayer vintage-sealed volume becomes material — listing depth comparable to modern",
    "verdict": "SURVIVED",
-   "detail": "vintage depth 15 vs modern 58 — still a thinner, separate market"
+   "detail": "vintage depth 16 vs modern 56 — still a thinner, separate market"
   },
   {
    "id": "RT-5",
@@ -75,7 +75,7 @@
    "name": "Supply Injection Absorb-or-Stall",
    "falsifier": "a supply injection is followed by neither absorption nor a stall — listings rise and prices are unaffected either way",
    "verdict": "SURVIVED",
-   "detail": "7 injections today; 71% moved prices measurably"
+   "detail": "3 injections today; 67% moved prices measurably"
   },
   {
    "id": "RT-7",
@@ -90,7 +90,7 @@
    "name": "Reprint Pressure",
    "falsifier": "late-print sets with filling shelves are no more likely to see a reprint announced within 90 days than late-print sets generally",
    "verdict": "INSUFFICIENT",
-   "detail": "7 crossings today (5 arriving, 2 closing) — but the falsifier needs 90 days of reprint announcements to compare against, which we do not yet log",
+   "detail": "8 crossings today (4 arriving, 4 closing) — but the falsifier needs 90 days of reprint announcements to compare against, which we do not yet log",
    "needs": "a log of reprint announcements, and 90 days of these crossings to test them against"
   },
   {
