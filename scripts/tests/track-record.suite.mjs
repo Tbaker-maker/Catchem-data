@@ -1,3 +1,4 @@
+import { pathToFileURL } from "node:url";
 import { buildTrackRecord, scoreRead } from "../lib/track-record.mjs";
 
 let fail = 0;
@@ -19,5 +20,11 @@ const book = buildTrackRecord([
 ], { "tcgcsv-1": { "2026-10-08": 9 }, "tcgcsv-2": {} }, "2026-10-10");
 t("every read is kept and only the priced one scores", book.count === 2 && book.scored7 === 1 && book.types.find((row) => row.type === "streak").noLaterPrice === 1);
 
-if (fail) process.exit(1);
-console.log("track record ok");
+if (fail) console.log(fail + " failed");
+else console.log("track record ok");
+// run-tests.mjs imports every *.suite.mjs and counts a missing run() as a
+// failure, which stopped the nightly. The checks above run on import; run()
+// reports their count. Run directly, a failure still exits non-zero.
+export async function run() { return fail; }
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href && fail) process.exit(1);
+
