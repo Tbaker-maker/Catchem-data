@@ -1,7 +1,7 @@
 {
   "id": "sealed",
   "name": "Sealed Index",
-  "asOf": "2026-10-09",
+  "asOf": "2026-10-10",
   "method": "Chain-linked. A name joins on the first day it has a price and does not move the level that day. Its first return is the next day it is priced. Each day's move is the median price change of names priced on both days. A value-weighted line gives a dearer product a bigger say. A day with no shared prices is a gap. Nothing is filled in.",
   "basket": [
     {
@@ -2805,7 +2805,7 @@
           "from": "2026-09-25",
           "equal": 102.5,
           "value": 106,
-          "matched": 119,
+          "matched": 117,
           "entered": 0,
           "equalMovePct": 0,
           "valueMovePct": 0
@@ -2815,60 +2815,70 @@
           "from": "2026-09-26",
           "equal": 102.5,
           "value": 105.9,
-          "matched": 119,
+          "matched": 117,
           "entered": 0,
           "equalMovePct": 0,
-          "valueMovePct": -0.0963
+          "valueMovePct": -0.0967
         },
         {
           "date": "2026-10-03",
           "from": "2026-09-27",
           "equal": 102.5,
           "value": 105.7,
-          "matched": 119,
+          "matched": 117,
           "entered": 0,
           "equalMovePct": 0,
-          "valueMovePct": -0.1865
+          "valueMovePct": -0.1895
         },
         {
           "date": "2026-10-05",
           "from": "2026-10-03",
           "equal": 102.5,
           "value": 105.8,
-          "matched": 119,
+          "matched": 117,
           "entered": 0,
           "equalMovePct": 0,
-          "valueMovePct": 0.061
+          "valueMovePct": 0.0683
         },
         {
           "date": "2026-10-06",
           "from": "2026-10-05",
           "equal": 102.5,
           "value": 106.1,
-          "matched": 119,
+          "matched": 117,
           "entered": 0,
           "equalMovePct": 0,
-          "valueMovePct": 0.2649
+          "valueMovePct": 0.2679
         },
         {
           "date": "2026-10-07",
           "from": "2026-10-06",
           "equal": 102.5,
           "value": 106.1,
-          "matched": 119,
+          "matched": 117,
           "entered": 0,
           "equalMovePct": 0,
-          "valueMovePct": 0.0087
+          "valueMovePct": 0.009
         },
         {
           "date": "2026-10-08",
           "from": "2026-10-07",
           "equal": 102.5,
           "value": 105.5,
-          "matched": 119,
+          "matched": 117,
           "entered": 0,
           "equalMovePct": 0,
-          "valueMovePct": -0.6067
+          "valueMovePct": -0.6128
+        },
+        {
+          "date": "2026-10-09",
+          "from": "2026-10-08",
+          "equal": 102.5,
+          "value": 105.4,
+          "matched": 117,
+          "entered": 0,
+          "equalMovePct": 0,
+          "valueMovePct": -0.0156
         }
       ],
       "gaps": [
@@ -3087,6 +3097,16 @@
           "entered": 0,
           "equalMovePct": 0,
           "valueMovePct": -0.1458
+        },
+        {
+          "date": "2026-10-10",
+          "from": "2026-10-09",
+          "equal": 100.7,
+          "value": 102.5,
+          "matched": 160,
+          "entered": 1,
+          "equalMovePct": 0,
+          "valueMovePct": 0.2297
         }
       ],
       "gaps": [

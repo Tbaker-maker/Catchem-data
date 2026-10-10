@@ -1,7 +1,7 @@
 {
   "kind": "sealed",
-  "asOf": "2026-10-09",
-  "today": "2026-10-09",
+  "asOf": "2026-10-10",
+  "today": "2026-10-10",
   "source": "eBay asking prices",
   "sourceFile": "data/heat-history.json",
   "seriesStale": false,
@@ -27,15 +27,15 @@
   "universe": {
     "items": 164,
     "basket": 161,
-    "observedDays": 19,
+    "observedDays": 20,
     "withTwoPrices": 164,
     "extra": 5
   },
   "lines": {
-    "equal": 100.4,
-    "capped": 97.9,
+    "equal": 101,
+    "capped": 98.1,
     "median": 100.7,
-    "capAppliedDays": 18,
+    "capAppliedDays": 19,
     "capInfeasibleDays": 0
   },
   "points": [
@@ -225,18 +225,28 @@
       "matched": 159,
       "capApplied": true,
       "capInfeasible": false
+    },
+    {
+      "date": "2026-10-10",
+      "from": "2026-10-09",
+      "equal": 101,
+      "capped": 98.1,
+      "median": 100.7,
+      "matched": 159,
+      "capApplied": true,
+      "capInfeasible": false
     }
   ],
   "disagree": {
     "flag": true,
-    "maxGap": 2.8,
+    "maxGap": 2.9,
     "threshold": 0.5,
-    "note": "Equal, 5%-capped and median end 2.8 points apart, which is over the 0.5 point line."
+    "note": "Equal, 5%-capped and median end 2.9 points apart, which is over the 0.5 point line."
   },
   "trustBand": {
     "method": "median line",
     "latest": {
-      "date": "2026-10-09",
+      "date": "2026-10-10",
       "p05": 99.5,
       "p95": 101.4,
       "draws": 1000
@@ -355,6 +365,12 @@
         "p05": 99.5,
         "p95": 101.4,
         "draws": 1000
+      },
+      {
+        "date": "2026-10-10",
+        "p05": 99.5,
+        "p95": 101.4,
+        "draws": 1000
       }
     ]
   },
@@ -439,8 +455,8 @@
       "n": 25,
       "start": "2026-08-18",
       "levels": {
-        "equal": 101.3,
-        "capped": 99.8,
+        "equal": 100.9,
+        "capped": 99.4,
         "median": 102.8
       },
       "matchedLast": 25,
@@ -451,7 +467,7 @@
       "n": 5,
       "start": "2026-08-18",
       "levels": {
-        "equal": 107,
+        "equal": 110.4,
         "capped": 99.4,
         "median": 105.7
       },
@@ -463,8 +479,8 @@
       "n": 38,
       "start": "2026-08-18",
       "levels": {
-        "equal": 99.5,
-        "capped": 97.3,
+        "equal": 101.1,
+        "capped": 98.7,
         "median": 99.7
       },
       "matchedLast": 37,
@@ -475,8 +491,8 @@
       "n": 34,
       "start": "2026-08-19",
       "levels": {
-        "equal": 112.8,
-        "capped": 106.7,
+        "equal": 114.6,
+        "capped": 108.4,
         "median": 110.8
       },
       "matchedLast": 33,
@@ -487,8 +503,8 @@
       "n": 30,
       "start": "2026-08-18",
       "levels": {
-        "equal": 96.4,
-        "capped": 95,
+        "equal": 96.3,
+        "capped": 94.9,
         "median": 99.1
       },
       "matchedLast": 29,
@@ -497,8 +513,8 @@
   ],
   "byRarity": [],
   "flagCounts": {
-    "stale": 4,
-    "gappy": 4,
+    "stale": 3,
+    "gappy": 5,
     "spiky": 8,
     "late": 3
   },
@@ -510,9 +526,9 @@
       "flags": [
         "spiky"
       ],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.2807
     },
     {
@@ -522,9 +538,9 @@
       "flags": [
         "spiky"
       ],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 1.0372
     },
     {
@@ -532,9 +548,9 @@
       "name": "Celebrations Ultra Premium Collection",
       "type": "collection",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.053
     },
     {
@@ -542,9 +558,9 @@
       "name": "Mega Evolution Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0763
     },
     {
@@ -552,9 +568,9 @@
       "name": "Mega Evolution Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0487
     },
     {
@@ -562,9 +578,9 @@
       "name": "Mega Evolution Enhanced Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0376
     },
     {
@@ -572,9 +588,9 @@
       "name": "Mega Evolution Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0833
     },
     {
@@ -585,9 +601,9 @@
         "spiky",
         "late"
       ],
-      "observations": 15,
+      "observations": 16,
       "first": "2026-08-22",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.364
     },
     {
@@ -595,19 +611,19 @@
       "name": "Mega Evolution Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
-      "maxAbsReturn": 0.0444
+      "last": "2026-10-10",
+      "maxAbsReturn": 0.0513
     },
     {
       "id": "me2-bb",
       "name": "Phantasmal Flames Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0233
     },
     {
@@ -615,9 +631,9 @@
       "name": "Phantasmal Flames Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0304
     },
     {
@@ -625,9 +641,9 @@
       "name": "Phantasmal Flames Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0256
     },
     {
@@ -635,9 +651,9 @@
       "name": "Phantasmal Flames Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.1193
     },
     {
@@ -645,9 +661,9 @@
       "name": "Phantasmal Flames Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0327
     },
     {
@@ -655,9 +671,9 @@
       "name": "Ascended Heroes Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0433
     },
     {
@@ -665,9 +681,9 @@
       "name": "Ascended Heroes Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0851
     },
     {
@@ -675,9 +691,9 @@
       "name": "Ascended Heroes Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.1334
     },
     {
@@ -685,9 +701,9 @@
       "name": "Ascended Heroes Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.1
     },
     {
@@ -695,9 +711,9 @@
       "name": "Ascended Heroes Tin",
       "type": "collection",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.2008
     },
     {
@@ -705,9 +721,9 @@
       "name": "Perfect Order Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0973
     },
     {
@@ -715,9 +731,9 @@
       "name": "Perfect Order Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0257
     },
     {
@@ -725,9 +741,9 @@
       "name": "Perfect Order Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.052
     },
     {
@@ -735,9 +751,9 @@
       "name": "Perfect Order Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.1357
     },
     {
@@ -745,9 +761,9 @@
       "name": "Perfect Order Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.037
     },
     {
@@ -755,9 +771,9 @@
       "name": "Chaos Rising Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0656
     },
     {
@@ -765,9 +781,9 @@
       "name": "Chaos Rising Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.041
     },
     {
@@ -775,9 +791,9 @@
       "name": "Chaos Rising Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0386
     },
     {
@@ -785,9 +801,9 @@
       "name": "Chaos Rising Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 16,
+      "observations": 17,
       "first": "2026-08-21",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.1602
     },
     {
@@ -795,9 +811,9 @@
       "name": "Chaos Rising Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0321
     },
     {
@@ -805,9 +821,9 @@
       "name": "Pitch Black Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.05
     },
     {
@@ -815,9 +831,9 @@
       "name": "Pitch Black Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0251
     },
     {
@@ -825,9 +841,9 @@
       "name": "Pitch Black Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.066
     },
     {
@@ -835,9 +851,9 @@
       "name": "Pitch Black Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 16,
+      "observations": 17,
       "first": "2026-08-21",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.1949
     },
     {
@@ -845,19 +861,19 @@
       "name": "Pitch Black Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
-      "maxAbsReturn": 0.0361
+      "last": "2026-10-10",
+      "maxAbsReturn": 0.037
     },
     {
       "id": "rsv10pt5-bundle",
       "name": "White Flare Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0298
     },
     {
@@ -865,9 +881,9 @@
       "name": "White Flare Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0313
     },
     {
@@ -875,9 +891,9 @@
       "name": "White Flare Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0666
     },
     {
@@ -885,9 +901,9 @@
       "name": "Sun & Moon Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.2102
     },
     {
@@ -907,9 +923,9 @@
       "name": "Unified Minds Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.2268
     },
     {
@@ -917,9 +933,9 @@
       "name": "Cosmic Eclipse Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0369
     },
     {
@@ -927,9 +943,9 @@
       "name": "Hidden Fates Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0101
     },
     {
@@ -937,11 +953,11 @@
       "name": "Guardians Rising Booster Box",
       "type": "booster-box",
       "flags": [
-        "stale"
+        "gappy"
       ],
-      "observations": 14,
+      "observations": 15,
       "first": "2026-08-19",
-      "last": "2026-10-05",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.2121
     },
     {
@@ -949,9 +965,9 @@
       "name": "Guardians Rising Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.125
     },
     {
@@ -959,9 +975,9 @@
       "name": "Burning Shadows Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0106
     },
     {
@@ -969,9 +985,9 @@
       "name": "Burning Shadows Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0633
     },
     {
@@ -979,9 +995,9 @@
       "name": "Shining Legends Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0002
     },
     {
@@ -989,9 +1005,9 @@
       "name": "Crimson Invasion Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0549
     },
     {
@@ -999,9 +1015,9 @@
       "name": "Crimson Invasion Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.094
     },
     {
@@ -1009,9 +1025,9 @@
       "name": "Ultra Prism Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0674
     },
     {
@@ -1019,9 +1035,9 @@
       "name": "Forbidden Light Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0182
     },
     {
@@ -1029,9 +1045,9 @@
       "name": "Celestial Storm Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0454
     },
     {
@@ -1052,9 +1068,9 @@
       "name": "Scarlet & Violet Base Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0273
     },
     {
@@ -1065,9 +1081,9 @@
         "spiky",
         "gappy"
       ],
-      "observations": 15,
+      "observations": 16,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.3318
     },
     {
@@ -1075,9 +1091,9 @@
       "name": "Scarlet & Violet Base Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0625
     },
     {
@@ -1085,9 +1101,9 @@
       "name": "Destined Rivals Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0438
     },
     {
@@ -1095,9 +1111,9 @@
       "name": "Destined Rivals Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0477
     },
     {
@@ -1105,9 +1121,9 @@
       "name": "Destined Rivals Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0461
     },
     {
@@ -1115,9 +1131,9 @@
       "name": "Destined Rivals Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.2128
     },
     {
@@ -1125,9 +1141,9 @@
       "name": "Destined Rivals Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0289
     },
     {
@@ -1135,9 +1151,9 @@
       "name": "Paldea Evolved Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.028
     },
     {
@@ -1145,9 +1161,9 @@
       "name": "Paldea Evolved Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 16,
+      "observations": 17,
       "first": "2026-08-21",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0813
     },
     {
@@ -1155,9 +1171,9 @@
       "name": "Paldea Evolved Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 16,
+      "observations": 17,
       "first": "2026-08-21",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.1193
     },
     {
@@ -1165,9 +1181,9 @@
       "name": "Paldea Evolved Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0554
     },
     {
@@ -1175,9 +1191,9 @@
       "name": "Obsidian Flames Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0435
     },
     {
@@ -1185,9 +1201,9 @@
       "name": "Obsidian Flames Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 16,
+      "observations": 17,
       "first": "2026-08-21",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.04
     },
     {
@@ -1195,9 +1211,9 @@
       "name": "Obsidian Flames Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 16,
+      "observations": 17,
       "first": "2026-08-21",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.2488
     },
     {
@@ -1205,9 +1221,9 @@
       "name": "Obsidian Flames Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.069
     },
     {
@@ -1215,9 +1231,9 @@
       "name": "151 Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0258
     },
     {
@@ -1225,9 +1241,9 @@
       "name": "151 Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0333
     },
     {
@@ -1235,9 +1251,9 @@
       "name": "151 Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.1663
     },
     {
@@ -1257,9 +1273,9 @@
       "name": "151 Ultra Premium Collection",
       "type": "collection",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0499
     },
     {
@@ -1267,9 +1283,9 @@
       "name": "Paradox Rift Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0213
     },
     {
@@ -1277,9 +1293,9 @@
       "name": "Paradox Rift Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 16,
+      "observations": 17,
       "first": "2026-08-21",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.1873
     },
     {
@@ -1287,9 +1303,9 @@
       "name": "Paradox Rift Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.1455
     },
     {
@@ -1297,9 +1313,9 @@
       "name": "Paradox Rift Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.084
     },
     {
@@ -1307,9 +1323,9 @@
       "name": "Paldean Fates Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0476
     },
     {
@@ -1317,9 +1333,9 @@
       "name": "Paldean Fates Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0664
     },
     {
@@ -1327,9 +1343,9 @@
       "name": "Paldean Fates Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 16,
+      "observations": 17,
       "first": "2026-08-21",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.1008
     },
     {
@@ -1337,9 +1353,9 @@
       "name": "Paldean Fates Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0338
     },
     {
@@ -1347,9 +1363,9 @@
       "name": "Temporal Forces Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.05
     },
     {
@@ -1357,9 +1373,9 @@
       "name": "Temporal Forces Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0386
     },
     {
@@ -1367,9 +1383,9 @@
       "name": "Temporal Forces Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.023
     },
     {
@@ -1377,9 +1393,9 @@
       "name": "Temporal Forces Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 16,
+      "observations": 17,
       "first": "2026-08-21",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.2494
     },
     {
@@ -1390,9 +1406,9 @@
         "spiky",
         "gappy"
       ],
-      "observations": 17,
+      "observations": 18,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.4388
     },
     {
@@ -1400,9 +1416,9 @@
       "name": "Twilight Masquerade Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0331
     },
     {
@@ -1410,9 +1426,9 @@
       "name": "Twilight Masquerade Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0442
     },
     {
@@ -1420,9 +1436,9 @@
       "name": "Twilight Masquerade Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0094
     },
     {
@@ -1432,9 +1448,9 @@
       "flags": [
         "spiky"
       ],
-      "observations": 16,
+      "observations": 17,
       "first": "2026-08-21",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.2682
     },
     {
@@ -1442,9 +1458,9 @@
       "name": "Twilight Masquerade Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0228
     },
     {
@@ -1452,9 +1468,9 @@
       "name": "Shrouded Fable Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.05
     },
     {
@@ -1462,9 +1478,9 @@
       "name": "Shrouded Fable Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0591
     },
     {
@@ -1474,9 +1490,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 15,
+      "observations": 16,
       "first": "2026-08-21",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.211
     },
     {
@@ -1484,9 +1500,9 @@
       "name": "Shrouded Fable Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0465
     },
     {
@@ -1494,9 +1510,9 @@
       "name": "Stellar Crown Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.1013
     },
     {
@@ -1504,9 +1520,9 @@
       "name": "Stellar Crown Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0371
     },
     {
@@ -1514,9 +1530,9 @@
       "name": "Stellar Crown Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0247
     },
     {
@@ -1524,9 +1540,9 @@
       "name": "Stellar Crown Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 16,
+      "observations": 17,
       "first": "2026-08-21",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.2385
     },
     {
@@ -1534,9 +1550,9 @@
       "name": "Stellar Crown Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0003
     },
     {
@@ -1544,9 +1560,9 @@
       "name": "Surging Sparks Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0448
     },
     {
@@ -1554,9 +1570,9 @@
       "name": "Surging Sparks Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.029
     },
     {
@@ -1564,9 +1580,9 @@
       "name": "Surging Sparks Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0369
     },
     {
@@ -1574,9 +1590,9 @@
       "name": "Surging Sparks Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.2189
     },
     {
@@ -1584,9 +1600,9 @@
       "name": "Surging Sparks Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0772
     },
     {
@@ -1594,9 +1610,9 @@
       "name": "Prismatic Evolutions Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0582
     },
     {
@@ -1604,9 +1620,9 @@
       "name": "Prismatic Evolutions Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.091
     },
     {
@@ -1614,9 +1630,9 @@
       "name": "Prismatic Evolutions Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.2115
     },
     {
@@ -1624,9 +1640,9 @@
       "name": "Prismatic Evolutions Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0431
     },
     {
@@ -1636,9 +1652,9 @@
       "flags": [
         "spiky"
       ],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.2999
     },
     {
@@ -1646,9 +1662,9 @@
       "name": "Journey Together Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0612
     },
     {
@@ -1656,9 +1672,9 @@
       "name": "Journey Together Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0425
     },
     {
@@ -1666,9 +1682,9 @@
       "name": "Journey Together Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.045
     },
     {
@@ -1676,9 +1692,9 @@
       "name": "Journey Together Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.2363
     },
     {
@@ -1686,9 +1702,9 @@
       "name": "Journey Together Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0425
     },
     {
@@ -1696,9 +1712,9 @@
       "name": "Astral Radiance Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0361
     },
     {
@@ -1706,9 +1722,9 @@
       "name": "Astral Radiance Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 16,
+      "observations": 17,
       "first": "2026-08-21",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.154
     },
     {
@@ -1716,9 +1732,9 @@
       "name": "Astral Radiance Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0574
     },
     {
@@ -1726,9 +1742,9 @@
       "name": "Lost Origin Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0323
     },
     {
@@ -1736,9 +1752,9 @@
       "name": "Lost Origin Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 16,
+      "observations": 17,
       "first": "2026-08-21",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.1101
     },
     {
@@ -1746,9 +1762,9 @@
       "name": "Lost Origin Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0417
     },
     {
@@ -1756,9 +1772,9 @@
       "name": "Lost Origin Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 17,
+      "observations": 18,
       "first": "2026-08-20",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.1364
     },
     {
@@ -1766,9 +1782,9 @@
       "name": "Lost Origin Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0416
     },
     {
@@ -1776,9 +1792,9 @@
       "name": "Silver Tempest Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0273
     },
     {
@@ -1786,9 +1802,9 @@
       "name": "Silver Tempest Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 16,
+      "observations": 17,
       "first": "2026-08-21",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0859
     },
     {
@@ -1796,9 +1812,9 @@
       "name": "Silver Tempest Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0285
     },
     {
@@ -1806,9 +1822,9 @@
       "name": "Silver Tempest Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 16,
+      "observations": 17,
       "first": "2026-08-21",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.1194
     },
     {
@@ -1816,9 +1832,9 @@
       "name": "Silver Tempest Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0556
     },
     {
@@ -1826,9 +1842,9 @@
       "name": "Crown Zenith Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0229
     },
     {
@@ -1836,9 +1852,9 @@
       "name": "Crown Zenith Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.022
     },
     {
@@ -1846,9 +1862,9 @@
       "name": "Crown Zenith Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 16,
+      "observations": 17,
       "first": "2026-08-21",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0343
     },
     {
@@ -1856,9 +1872,9 @@
       "name": "Crown Zenith Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0356
     },
     {
@@ -1866,9 +1882,9 @@
       "name": "Crown Zenith Special Collection",
       "type": "collection",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0753
     },
     {
@@ -1876,9 +1892,9 @@
       "name": "Rebel Clash Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0417
     },
     {
@@ -1886,9 +1902,9 @@
       "name": "Rebel Clash Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0531
     },
     {
@@ -1896,9 +1912,9 @@
       "name": "Rebel Clash Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 16,
+      "observations": 17,
       "first": "2026-08-21",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.1523
     },
     {
@@ -1906,9 +1922,9 @@
       "name": "Darkness Ablaze Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0488
     },
     {
@@ -1916,9 +1932,9 @@
       "name": "Darkness Ablaze Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0664
     },
     {
@@ -1926,9 +1942,9 @@
       "name": "Darkness Ablaze Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 16,
+      "observations": 17,
       "first": "2026-08-21",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0967
     },
     {
@@ -1936,9 +1952,9 @@
       "name": "Champion's Path Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0222
     },
     {
@@ -1948,9 +1964,9 @@
       "flags": [
         "gappy"
       ],
-      "observations": 15,
+      "observations": 16,
       "first": "2026-08-21",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.1601
     },
     {
@@ -1958,9 +1974,9 @@
       "name": "Vivid Voltage Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0201
     },
     {
@@ -1968,9 +1984,9 @@
       "name": "Vivid Voltage Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0322
     },
     {
@@ -1978,19 +1994,19 @@
       "name": "Vivid Voltage Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 16,
+      "observations": 17,
       "first": "2026-08-21",
-      "last": "2026-10-09",
-      "maxAbsReturn": 0.0778
+      "last": "2026-10-10",
+      "maxAbsReturn": 0.2136
     },
     {
       "id": "swsh45-etb",
       "name": "Shining Fates Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0332
     },
     {
@@ -2000,9 +2016,9 @@
       "flags": [
         "late"
       ],
-      "observations": 15,
+      "observations": 16,
       "first": "2026-08-22",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.1075
     },
     {
@@ -2010,9 +2026,9 @@
       "name": "Battle Styles Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0313
     },
     {
@@ -2020,9 +2036,9 @@
       "name": "Battle Styles Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0327
     },
     {
@@ -2030,9 +2046,9 @@
       "name": "Battle Styles Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.1062
     },
     {
@@ -2040,9 +2056,9 @@
       "name": "Chilling Reign Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0398
     },
     {
@@ -2050,9 +2066,9 @@
       "name": "Chilling Reign Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0606
     },
     {
@@ -2060,9 +2076,9 @@
       "name": "Chilling Reign Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.1308
     },
     {
@@ -2070,9 +2086,9 @@
       "name": "Chilling Reign Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0795
     },
     {
@@ -2080,9 +2096,9 @@
       "name": "Evolving Skies Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0678
     },
     {
@@ -2090,9 +2106,9 @@
       "name": "Evolving Skies Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0145
     },
     {
@@ -2100,9 +2116,9 @@
       "name": "Evolving Skies Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0579
     },
     {
@@ -2110,9 +2126,9 @@
       "name": "Evolving Skies Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0458
     },
     {
@@ -2120,9 +2136,9 @@
       "name": "Fusion Strike Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0563
     },
     {
@@ -2130,9 +2146,9 @@
       "name": "Fusion Strike Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0286
     },
     {
@@ -2140,9 +2156,9 @@
       "name": "Fusion Strike Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.087
     },
     {
@@ -2150,9 +2166,9 @@
       "name": "Fusion Strike Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0242
     },
     {
@@ -2160,9 +2176,9 @@
       "name": "Brilliant Stars Booster Box",
       "type": "booster-box",
       "flags": [],
-      "observations": 19,
+      "observations": 20,
       "first": "2026-08-18",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0452
     },
     {
@@ -2170,9 +2186,9 @@
       "name": "Brilliant Stars Booster Pack",
       "type": "pack",
       "flags": [],
-      "observations": 16,
+      "observations": 17,
       "first": "2026-08-21",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0811
     },
     {
@@ -2180,9 +2196,9 @@
       "name": "Brilliant Stars Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0642
     },
     {
@@ -2192,9 +2208,9 @@
       "flags": [
         "spiky"
       ],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.2782
     },
     {
@@ -2202,9 +2218,9 @@
       "name": "Black Bolt Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0515
     },
     {
@@ -2212,9 +2228,9 @@
       "name": "Black Bolt Booster Bundle",
       "type": "bundle",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0101
     },
     {
@@ -2222,9 +2238,9 @@
       "name": "Black Bolt Elite Trainer Box",
       "type": "etb",
       "flags": [],
-      "observations": 18,
+      "observations": 19,
       "first": "2026-08-19",
-      "last": "2026-10-09",
+      "last": "2026-10-10",
       "maxAbsReturn": 0.0231
     }
   ],
@@ -2359,7 +2375,7 @@
         "late"
       ],
       "reasons": [
-        "No fresh price within 2 days of 2026-10-09. Last observation 2026-10-03.",
+        "No fresh price within 2 days of 2026-10-10. Last observation 2026-10-03.",
         "First price is more than 3 days after the series starts."
       ],
       "influence": 0,
@@ -2374,7 +2390,7 @@
         "stale"
       ],
       "reasons": [
-        "No fresh price within 2 days of 2026-10-09. Last observation 2026-08-26.",
+        "No fresh price within 2 days of 2026-10-10. Last observation 2026-08-26.",
         "Not in the current quarter basket, so it does not move this line."
       ],
       "influence": null,
@@ -2382,20 +2398,6 @@
     },
     {
       "rank": 11,
-      "id": "sm2-booster-box",
-      "name": "Guardians Rising Booster Box",
-      "type": "booster-box",
-      "flags": [
-        "stale"
-      ],
-      "reasons": [
-        "No fresh price within 2 days of 2026-10-09. Last observation 2026-10-05."
-      ],
-      "influence": 0,
-      "recommendation": "Review only. This product was not removed."
-    },
-    {
-      "rank": 12,
       "id": "sv3pt5-pc-etb",
       "name": "Pokemon 151 Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
@@ -2403,10 +2405,24 @@
         "stale"
       ],
       "reasons": [
-        "No fresh price within 2 days of 2026-10-09. Last observation 2026-09-27.",
+        "No fresh price within 2 days of 2026-10-10. Last observation 2026-09-27.",
         "Not in the current quarter basket, so it does not move this line."
       ],
       "influence": null,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 12,
+      "id": "sm2-booster-box",
+      "name": "Guardians Rising Booster Box",
+      "type": "booster-box",
+      "flags": [
+        "gappy"
+      ],
+      "reasons": [
+        "Missing at least one observed day between its first and last price."
+      ],
+      "influence": 0,
       "recommendation": "Review only. This product was not removed."
     },
     {

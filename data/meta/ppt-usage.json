@@ -1,5 +1,5 @@
 {
-  "asOf": "2026-10-09",
+  "asOf": "2026-10-10",
   "status": "ran",
   "reason": "Key was present. Credits below are what the provider reported.",
   "credits": {
@@ -7,19 +7,19 @@
     "main": 16000,
     "reserve": 4000,
     "used": {
-      "sealed": 628,
-      "singles": 15520,
+      "sealed": 0,
+      "singles": 15914,
       "slabs": 0,
       "intraday": 0,
       "crosscheck": 0,
-      "total": 16148
+      "total": 15914
     },
-    "remaining": 3852,
-    "usedToday": 16148
+    "remaining": 4086,
+    "usedToday": 15914
   },
   "items": {
-    "sealed": 314,
-    "singles": 7725,
+    "sealed": 0,
+    "singles": 7907,
     "slabs": 0
   },
   "errors": [],
@@ -79,16 +79,16 @@
   "note": "Public log only. No API key and no raw prices.",
   "raw": "private repo catchem-data-private",
   "run": {
-    "creditsUsed": 16148,
-    "itemsDone": 8039,
+    "creditsUsed": 15914,
+    "itemsDone": 7907,
     "itemsFailed": 0,
-    "itemsBudgetSkipped": 10104,
-    "itemsSkipped": 10104,
-    "callsSent": 361,
+    "itemsBudgetSkipped": 2197,
+    "itemsSkipped": 2197,
+    "callsSent": 65,
     "callsFailed": 0,
-    "callsNotSent": 78,
-    "rateLimitCount": 17,
-    "retries": 17
+    "callsNotSent": 13,
+    "rateLimitCount": 9,
+    "retries": 9
   },
   "rawNote": "PRIVATE_DATA_TOKEN is set. Raw is written under ppt-raw-private and pushed to the private repo. It is not committed here.",
   "emptySealed": {

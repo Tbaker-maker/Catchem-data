@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-10-09T11:42:36.045Z",
-  "asOf": "2026-10-09",
+  "generatedAt": "2026-10-10T10:54:50.878Z",
+  "asOf": "2026-10-10",
   "source": {
     "heatHistory": "data/heat-history.json",
     "sealedPrices": "data/sealed-prices.json",
     "buyoutTape": "data/buyout-tape.json",
     "tcgplayer": "TCGplayer market for the same id only (crosscheck history or data/history/tcgplayer-market). A held id is not used.",
-    "sealedPricesUpdatedAt": "2026-10-09T11:13:33.200Z"
+    "sealedPricesUpdatedAt": "2026-10-10T10:32:00.413Z"
   },
   "rule": {
     "highGap": 0.5,
@@ -17,9 +17,42 @@
     "note": "HIGH when |today − median(last ≤7 prior heat-history prices)| / median ≥ 50%. SOFT at ≥40% and <50%. Review label: TCGplayer flat while the eBay median jumped → likely bad listing. Both moved the same way → possible real move. Opposite moves, a missing series, or a held id → review. Only possible real move is a Flagged read. Packs skipped. Do not invent prices."
   },
   "skippedPacks": 35,
-  "skippedNoFlag": 148,
-  "highCount": 0,
+  "skippedNoFlag": 147,
+  "highCount": 1,
   "softCount": 0,
-  "high": [],
+  "high": [
+    {
+      "id": "xy12-etb",
+      "name": "Evolutions Elite Trainer Box",
+      "subtype": "etb",
+      "severity": "high",
+      "direction": "high",
+      "todayDate": "2026-10-10",
+      "todayPrice": 775,
+      "referencePrice": 499.99,
+      "referenceWindow": {
+        "priorCount": 7,
+        "from": "2026-09-27",
+        "to": "2026-10-09",
+        "rule": "median of last 7 prior heat-history prices (window ≤7, min 3)"
+      },
+      "pctGap": 55,
+      "listingCount": 29,
+      "listingCountPrior": 37,
+      "listingCountNote": "heat-history listingCount is the filtered page count, not Browse total, not solds, and not the review label",
+      "browseTotal": 2417,
+      "browseTotalPrior": 2404,
+      "tcgNow": null,
+      "tcgReference": null,
+      "tcgPct": null,
+      "tcgAsOf": null,
+      "provisionalLabel": "review",
+      "evidence": [
+        "eBay ask vs its recent median +55%",
+        "TCGplayer series not used: cover variant: the TCGplayer name names a specific art and ours does not"
+      ],
+      "conflict": true
+    }
+  ],
   "soft": []
 }

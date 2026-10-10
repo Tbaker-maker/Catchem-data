@@ -1,7 +1,7 @@
 {
   "id": "era-scarlet-violet",
   "name": "Scarlet & Violet",
-  "asOf": "2026-10-09",
+  "asOf": "2026-10-10",
   "method": "Chain-linked. A name joins on the first day it has a price and does not move the level that day. Its first return is the next day it is priced. Each day's move is the median price change of names priced on both days. A value-weighted line gives a dearer product a bigger say. A day with no shared prices is a gap. Nothing is filled in.",
   "basket": [
     {
@@ -2223,7 +2223,7 @@
           "from": "2026-09-25",
           "equal": 106.3,
           "value": 101.5,
-          "matched": 45,
+          "matched": 44,
           "entered": 0,
           "equalMovePct": 0,
           "valueMovePct": 0
@@ -2233,60 +2233,70 @@
           "from": "2026-09-26",
           "equal": 106.3,
           "value": 101.4,
-          "matched": 45,
+          "matched": 44,
           "entered": 0,
           "equalMovePct": 0,
-          "valueMovePct": -0.1234
+          "valueMovePct": -0.1246
         },
         {
           "date": "2026-10-03",
           "from": "2026-09-27",
           "equal": 106.1,
           "value": 100.9,
-          "matched": 45,
+          "matched": 44,
           "entered": 0,
-          "equalMovePct": -0.1851,
-          "valueMovePct": -0.4926
+          "equalMovePct": -0.1889,
+          "valueMovePct": -0.5025
         },
         {
           "date": "2026-10-05",
           "from": "2026-10-03",
           "equal": 106.1,
           "value": 100.9,
-          "matched": 45,
+          "matched": 44,
           "entered": 0,
           "equalMovePct": 0,
-          "valueMovePct": -0.0077
+          "valueMovePct": -0.0003
         },
         {
           "date": "2026-10-06",
           "from": "2026-10-05",
           "equal": 106.1,
-          "value": 100.8,
-          "matched": 45,
+          "value": 100.7,
+          "matched": 44,
           "entered": 0,
           "equalMovePct": 0,
-          "valueMovePct": -0.1001
+          "valueMovePct": -0.101
         },
         {
           "date": "2026-10-07",
           "from": "2026-10-06",
-          "equal": 106,
+          "equal": 106.1,
           "value": 100.8,
-          "matched": 45,
+          "matched": 44,
           "entered": 0,
-          "equalMovePct": -0.0679,
-          "valueMovePct": 0.0161
+          "equalMovePct": -0.034,
+          "valueMovePct": 0.0225
         },
         {
           "date": "2026-10-08",
           "from": "2026-10-07",
-          "equal": 106,
+          "equal": 106.1,
           "value": 100.6,
-          "matched": 45,
+          "matched": 44,
           "entered": 0,
           "equalMovePct": 0,
-          "valueMovePct": -0.1295
+          "valueMovePct": -0.1212
+        },
+        {
+          "date": "2026-10-09",
+          "from": "2026-10-08",
+          "equal": 105.9,
+          "value": 100.4,
+          "matched": 44,
+          "entered": 0,
+          "equalMovePct": -0.16,
+          "valueMovePct": -0.2922
         }
       ],
       "gaps": [
@@ -2505,6 +2515,16 @@
           "entered": 0,
           "equalMovePct": 0,
           "valueMovePct": 0.3396
+        },
+        {
+          "date": "2026-10-10",
+          "from": "2026-10-09",
+          "equal": 101.1,
+          "value": 96.8,
+          "matched": 66,
+          "entered": 0,
+          "equalMovePct": 0,
+          "valueMovePct": -0.2999
         }
       ],
       "gaps": [
