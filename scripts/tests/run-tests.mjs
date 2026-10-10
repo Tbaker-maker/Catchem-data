@@ -20,6 +20,7 @@ import { keepMarch31 } from "../compute-indexes.mjs";
 import { searchItems } from "../lib/search-rank.mjs";
 import { runPrivatePptTests } from "./private-ppt.test.mjs";
 import { runSparkTests } from "./spark30.test.mjs";
+import { runTcgcsvRawTests } from "./tcgcsv-raw.test.mjs";
 import { runNoPptPublicTests } from "./no-ppt-public.test.mjs";
 import { runHighValueSpikeTests } from "./high-value-spike.test.mjs";
 
@@ -145,6 +146,12 @@ console.log("── tcgcsv catalog ──");
 {
   const n = runTcgcsvCatalogTests();
   t("tcgcsv catalog suite", n === 0, `${n} failed`);
+}
+
+console.log("── tcgcsv raw archive ──");
+{
+  const n = await runTcgcsvRawTests();
+  t("tcgcsv raw archive suite", n === 0, `${n} failed`);
 }
 
 console.log("── ppt plan ──");
