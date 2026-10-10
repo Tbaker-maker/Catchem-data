@@ -205,6 +205,7 @@ jobs:
         run: |
           git config user.name "catchem-bot"
           git config user.email "bot@catchem.app"
+          mkdir -p data/raw  # eBay raw copy (#145); an empty folder adds nothing
           git add data/ppt/run-report.json data/buyout-tape.json
           git add data/sealed-prices.json data/heat-report.json data/heat-history.json \
                   data/divergence-report.json data/supply-watch.json \
@@ -212,7 +213,7 @@ jobs:
                   data/catalyst-log.json data/cohort-history.json data/artists.json \
                   data/indexes/ data/heat-check.json data/history/tcgplayer-market/ \
                   data/catalog/tcgcsv-latest.json data/catalog/tcgcsv-coverage.json \
-                  data/history/tcgcsv-daily/ data/search/ \
+                  data/history/tcgcsv-daily/ data/raw/ data/search/ \
                   data/meta/ppt-usage.json data/meta/ppt-cursor.json \
                   data/history/slabs/status.json \
                   data/heartbeat.json data/derived/
@@ -335,12 +336,13 @@ jobs:
         run: |
           git config user.name "catchem-bot"
           git config user.email "bot@catchem.app"
+          mkdir -p data/raw  # eBay raw copy (#145); an empty folder adds nothing
           git add data/ppt/run-report.json data/buyout-tape.json
           # Complete write-vs-commit matrix (audited 2026-08-19): every file a
           # step writes is listed here. A file written in CI but not added
           # evaporates at job end — the class that froze the app feed and ate
           # era/catalyst history daily.
-          git add data/sealed-prices.json data/heat-report.json data/heat-history.json data/divergence-report.json data/supply-watch.json data/derived-insights.json data/era-index-history.json data/catalyst-log.json data/cohort-history.json data/alerts-state.json data/artists.json data/indexes/ data/heat-check.json data/history/tcgplayer-market/ data/catalog/tcgcsv-latest.json data/catalog/tcgcsv-coverage.json data/history/tcgcsv-daily/ data/search/ data/meta/ppt-usage.json data/meta/ppt-cursor.json data/history/slabs/status.json data/heartbeat.json data/derived/ research/pulse/ research/assets/the-board.html research/assets/the-pulse.html research/assets/pulse-feed.json research/assets/print-watch.html research/assets/methodology.html research/assets/corrections.html research/assets/creators.html research/assets/build.html research/assets/card-index.json research/assets/faq.html research/digests/news.json research/digests/weekly-news.json
+          git add data/sealed-prices.json data/heat-report.json data/heat-history.json data/divergence-report.json data/supply-watch.json data/derived-insights.json data/era-index-history.json data/catalyst-log.json data/cohort-history.json data/alerts-state.json data/artists.json data/indexes/ data/heat-check.json data/history/tcgplayer-market/ data/catalog/tcgcsv-latest.json data/catalog/tcgcsv-coverage.json data/history/tcgcsv-daily/ data/raw/ data/search/ data/meta/ppt-usage.json data/meta/ppt-cursor.json data/history/slabs/status.json data/heartbeat.json data/derived/ research/pulse/ research/assets/the-board.html research/assets/the-pulse.html research/assets/pulse-feed.json research/assets/print-watch.html research/assets/methodology.html research/assets/corrections.html research/assets/creators.html research/assets/build.html research/assets/card-index.json research/assets/faq.html research/digests/news.json research/digests/weekly-news.json
           if compgen -G "data/learning/grades-*.json" > /dev/null; then git add data/learning/grades-*.json; fi
           if git diff --staged --quiet; then
             echo "No price changes to commit."
