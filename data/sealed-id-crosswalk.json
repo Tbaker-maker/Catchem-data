@@ -1,0 +1,2008 @@
+{
+ "note": "Sealed id crosswalk. A tcgPlayerId is written only when a hard id confirms the product. Name overlap was not used. None of the 207 products cleared that bar, so every tcgPlayerId stays null.",
+ "asOf": "2026-10-10",
+ "source": "TCGCSV category 3 groups and product files, plus pokemontcg.io /v2/sets ptcgoCode.",
+ "confirmed": 0,
+ "unlinked": 207,
+ "whyNone": [
+  "Product objects from https://tcgcsv.com/tcgplayer/3/{groupId}/products have no productType field. Keys are productId, name, cleanName, imageUrl, categoryId, groupId, url, modifiedOn, imageCount, presaleInfo, extendedData.",
+  "extendedData on the files that were opened is a key-value list. Names seen: Rarity, Number, Card Type, HP, Stage, Attack 1, Attack 2, Weakness, RetreatCost, Resistance, CardText, UPC. TCGCSV docs say Rarity or Number means the product is a card. That distinguishes a card from a non-card. It does not say ETB, booster box, bundle, pack, tin, or UPC.",
+  "The subtype stored on our sealed products is our own label. The subtype on data/catalog/tcgcsv-latest.json is parsed from the product name. Neither was treated as a product type field.",
+  "No sealed product stores a UPC or any other TCGplayer product id (no 12 to 14 digit token in the record). A UPC on the TCGCSV side cannot be checked against our id.",
+  "Where a groupId was found, it identifies the set only. Several non-card products sit in each of those groups, and the same UPC is reused across art variants, so the group id alone does not pick one productId."
+ ],
+ "placeholder": {
+  "givenPrefix": "23c8d781",
+  "fullHashFound": false,
+  "whatWasHashed": "CDN files at https://tcgplayer-cdn.tcgplayer.com/product/{id}_in_400x400.jpg. imageCount 0 returns HTTP 403 with an XML body, sha256 a824bc7739e226e1b40ea0f8c4e4f4c6f796fc3b4abfa6e9abe3bd119a30d938, which is not a JPEG and does not start with 23c8d781. The 78 pattern jpegs that returned 200 are unique and none start with 23c8d781.",
+  "confirmedStillATile": 0,
+  "whyZero": "No sealed product received a tcgPlayerId, so none can be a confirmed id whose photo is the placeholder."
+ },
+ "ballPattern": {
+  "hosted": false,
+  "officialSourceForThePattern": null,
+  "sets": {
+   "White Flare": {
+    "setId": "rsv10pt5",
+    "groupId": 24326,
+    "groupJoin": "abbreviation equals the only ptcgoCode (WHT or BLK)",
+    "patternProducts": 152,
+    "realCdnJpeg": 3,
+    "noCdnPhoto": 149,
+    "byPattern": {
+     "Master Ball Pattern / imageCount 0, CDN not a photo (403 on the sample)": 70,
+     "Master Ball Pattern / real jpeg": 2,
+     "Poke Ball Pattern / imageCount 0, CDN not a photo (403 on the sample)": 79,
+     "Poke Ball Pattern / real jpeg": 1
+    },
+    "photoProductIds": [
+     642331,
+     642361,
+     642408
+    ]
+   },
+   "Black Bolt": {
+    "setId": "zsv10pt5",
+    "groupId": 24325,
+    "groupJoin": "abbreviation equals the only ptcgoCode (WHT or BLK)",
+    "patternProducts": 152,
+    "realCdnJpeg": 75,
+    "noCdnPhoto": 77,
+    "byPattern": {
+     "Master Ball Pattern / imageCount 0, CDN not a photo (403 on the sample)": 54,
+     "Poke Ball Pattern / real jpeg": 57,
+     "Master Ball Pattern / real jpeg": 18,
+     "Poke Ball Pattern / imageCount 0, CDN not a photo (403 on the sample)": 22,
+     "Poke Ball Pattern / imageCount set but CDN 403": 1
+    },
+    "photoProductIds": [
+     642421,
+     642422,
+     642423,
+     642431,
+     642432,
+     642625,
+     642626,
+     642630,
+     642633,
+     642635,
+     642640,
+     642647,
+     642649,
+     642650,
+     642654,
+     642663,
+     642668,
+     642676,
+     642678,
+     642690,
+     642692,
+     642693,
+     642695,
+     642696,
+     642698,
+     642700,
+     642702,
+     642703,
+     642705,
+     642706,
+     642707,
+     642708,
+     642712,
+     642715,
+     642716,
+     642718,
+     642720,
+     642721,
+     642723,
+     642724,
+     642726,
+     642729,
+     642730,
+     642731,
+     642732,
+     642733,
+     642734,
+     642735,
+     642736,
+     642737,
+     642738,
+     642739,
+     642740,
+     642741,
+     642743,
+     642744,
+     642745,
+     642748,
+     642750,
+     642752,
+     642753,
+     642756,
+     642757,
+     642758,
+     642759,
+     642760,
+     642763,
+     642764,
+     642766,
+     642767,
+     642769,
+     642770,
+     642772,
+     644830,
+     644869
+    ]
+   }
+  },
+  "official": {
+   "catalogue": "data/card-catalogue.json has 173 rsv10pt5 cards and 172 zsv10pt5 cards from pokemontcg.io. None of those ids is a ball-pattern variant. The only name containing ball is zsv10pt5-79 Air Balloon, which is a card name, not a pattern.",
+   "imageByCardId": "https://images.pokemontcg.io/rsv10pt5/1_hires.png is card id rsv10pt5-1 (Sewaddle, number 1). sha256 4f91ee0139826970bb704e297fffa86127ea5ae9aa7577c3e5e90220f6b41c3a. The same bytes are at https://images.scrydex.com/pokemon/rsv10pt5-1/large. The picture is the standard Sewaddle, not a Poke Ball or Master Ball pattern.",
+   "whyNotThePattern": "TCGCSV lists separate products for the base card and each pattern, and they share a collector number. Sewaddle base product 642116, Master Ball 642290, and Poke Ball 642362 are all Number 001/086. The official card id follows that number. It is not the pattern productId. There is no second official id for the pattern."
+  }
+ },
+ "products": [
+  {
+   "id": "swsh5-pack",
+   "setId": "swsh5",
+   "subtype": "booster-pack",
+   "groupId": 1853,
+   "groupJoin": "ptcgoCode BST equals the only group abbreviation BST",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "swsh6-pack",
+   "setId": "swsh6",
+   "subtype": "booster-pack",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh7-pack",
+   "setId": "swsh7",
+   "subtype": "booster-pack",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh8-pack",
+   "setId": "swsh8",
+   "subtype": "booster-pack",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh11-pack",
+   "setId": "swsh11",
+   "subtype": "booster-pack",
+   "groupId": 3118,
+   "groupJoin": "group abbreviation SWSH11 equals setId swsh11",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv1-pack",
+   "setId": "sv1",
+   "subtype": "booster-pack",
+   "groupId": 22873,
+   "groupJoin": "ptcgoCode SVI equals the only group abbreviation SVI",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv3pt5-pack",
+   "setId": "sv3pt5",
+   "subtype": "booster-pack",
+   "groupId": 23237,
+   "groupJoin": "ptcgoCode MEW equals the only group abbreviation MEW",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv4-pack",
+   "setId": "sv4",
+   "subtype": "booster-pack",
+   "groupId": 23286,
+   "groupJoin": "ptcgoCode PAR equals the only group abbreviation PAR",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv8-pack",
+   "setId": "sv8",
+   "subtype": "booster-pack",
+   "groupId": 23651,
+   "groupJoin": "ptcgoCode SSP equals the only group abbreviation SSP",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv8pt5-pack",
+   "setId": "sv8pt5",
+   "subtype": "booster-pack",
+   "groupId": 23821,
+   "groupJoin": "ptcgoCode PRE equals the only group abbreviation PRE",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv9-pack",
+   "setId": "sv9",
+   "subtype": "booster-pack",
+   "groupId": 24073,
+   "groupJoin": "ptcgoCode JTG equals the only group abbreviation JTG",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv10-pack",
+   "setId": "sv10",
+   "subtype": "booster-pack",
+   "groupId": 24269,
+   "groupJoin": "ptcgoCode DRI equals the only group abbreviation DRI",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "me1-pack",
+   "setId": "me1",
+   "subtype": "booster-pack",
+   "groupId": 24380,
+   "groupJoin": "ptcgoCode MEG equals the only group abbreviation MEG",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "me2-pack",
+   "setId": "me2",
+   "subtype": "booster-pack",
+   "groupId": 24448,
+   "groupJoin": "ptcgoCode PFL equals the only group abbreviation PFL",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "me2pt5-pack",
+   "setId": "me2pt5",
+   "subtype": "booster-pack",
+   "groupId": 24541,
+   "groupJoin": "ptcgoCode ASC equals the only group abbreviation ASC",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "me3-pack",
+   "setId": "me3",
+   "subtype": "booster-pack",
+   "groupId": 24587,
+   "groupJoin": "ptcgoCode POR equals the only group abbreviation POR",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sm35-etb",
+   "setId": "sm35",
+   "subtype": "etb",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "sm75-etb",
+   "setId": "sm75",
+   "subtype": "etb",
+   "groupId": 2295,
+   "groupJoin": "ptcgoCode DRM equals the only group abbreviation DRM",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "det1-etb",
+   "setId": "det1",
+   "subtype": "etb",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "xy12-booster-box",
+   "setId": "xy12",
+   "subtype": "booster-box",
+   "groupId": 1842,
+   "groupJoin": "ptcgoCode EVO equals the only group abbreviation EVO",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "xy12-etb",
+   "setId": "xy12",
+   "subtype": "etb",
+   "groupId": 1842,
+   "groupJoin": "ptcgoCode EVO equals the only group abbreviation EVO",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "zsv10pt5-etb",
+   "setId": "zsv10pt5",
+   "subtype": "etb",
+   "groupId": 24325,
+   "groupJoin": "ptcgoCode BLK equals the only group abbreviation BLK",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "zsv10pt5-bundle",
+   "setId": "zsv10pt5",
+   "subtype": "booster-bundle",
+   "groupId": 24325,
+   "groupJoin": "ptcgoCode BLK equals the only group abbreviation BLK",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "rsv10pt5-etb",
+   "setId": "rsv10pt5",
+   "subtype": "etb",
+   "groupId": 24326,
+   "groupJoin": "ptcgoCode WHT equals the only group abbreviation WHT",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "rsv10pt5-bundle",
+   "setId": "rsv10pt5",
+   "subtype": "booster-bundle",
+   "groupId": 24326,
+   "groupJoin": "ptcgoCode WHT equals the only group abbreviation WHT",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "pgo-etb",
+   "setId": "pgo",
+   "subtype": "etb",
+   "groupId": 3064,
+   "groupJoin": "ptcgoCode PGO equals the only group abbreviation PGO",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "me2pt5-tin",
+   "setId": "me2pt5",
+   "subtype": "tin",
+   "groupId": 24541,
+   "groupJoin": "ptcgoCode ASC equals the only group abbreviation ASC",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "mega-forces-tin",
+   "setId": "me2pt5",
+   "subtype": "tin",
+   "groupId": 24541,
+   "groupJoin": "ptcgoCode ASC equals the only group abbreviation ASC",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sm1-booster-box",
+   "setId": "sm1",
+   "subtype": "booster-box",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "sm1-etb",
+   "setId": "sm1",
+   "subtype": "etb",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "sm2-booster-box",
+   "setId": "sm2",
+   "subtype": "booster-box",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "sm2-etb",
+   "setId": "sm2",
+   "subtype": "etb",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "sm3-booster-box",
+   "setId": "sm3",
+   "subtype": "booster-box",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "sm3-etb",
+   "setId": "sm3",
+   "subtype": "etb",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "sm4-booster-box",
+   "setId": "sm4",
+   "subtype": "booster-box",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "sm4-etb",
+   "setId": "sm4",
+   "subtype": "etb",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "sm5-booster-box",
+   "setId": "sm5",
+   "subtype": "booster-box",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "sm5-etb",
+   "setId": "sm5",
+   "subtype": "etb",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "sm6-booster-box",
+   "setId": "sm6",
+   "subtype": "booster-box",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "sm6-etb",
+   "setId": "sm6",
+   "subtype": "etb",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "sm7-booster-box",
+   "setId": "sm7",
+   "subtype": "booster-box",
+   "groupId": 2278,
+   "groupJoin": "ptcgoCode CES equals the only group abbreviation CES",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sm7-etb",
+   "setId": "sm7",
+   "subtype": "etb",
+   "groupId": 2278,
+   "groupJoin": "ptcgoCode CES equals the only group abbreviation CES",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sm8-booster-box",
+   "setId": "sm8",
+   "subtype": "booster-box",
+   "groupId": 2328,
+   "groupJoin": "group abbreviation SM8 equals setId sm8",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sm8-etb",
+   "setId": "sm8",
+   "subtype": "etb",
+   "groupId": 2328,
+   "groupJoin": "group abbreviation SM8 equals setId sm8",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sm9-booster-box",
+   "setId": "sm9",
+   "subtype": "booster-box",
+   "groupId": 2377,
+   "groupJoin": "group abbreviation SM9 equals setId sm9",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sm9-etb",
+   "setId": "sm9",
+   "subtype": "etb",
+   "groupId": 2377,
+   "groupJoin": "group abbreviation SM9 equals setId sm9",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sm10-booster-box",
+   "setId": "sm10",
+   "subtype": "booster-box",
+   "groupId": 2420,
+   "groupJoin": "group abbreviation SM10 equals setId sm10",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sm10-etb",
+   "setId": "sm10",
+   "subtype": "etb",
+   "groupId": 2420,
+   "groupJoin": "group abbreviation SM10 equals setId sm10",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sm11-booster-box",
+   "setId": "sm11",
+   "subtype": "booster-box",
+   "groupId": 2464,
+   "groupJoin": "group abbreviation SM11 equals setId sm11",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sm11-etb",
+   "setId": "sm11",
+   "subtype": "etb",
+   "groupId": 2464,
+   "groupJoin": "group abbreviation SM11 equals setId sm11",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sm12-booster-box",
+   "setId": "sm12",
+   "subtype": "booster-box",
+   "groupId": 2534,
+   "groupJoin": "group abbreviation SM12 equals setId sm12",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sm12-cosmic-etb",
+   "setId": "sm12",
+   "subtype": "etb",
+   "groupId": 2534,
+   "groupJoin": "group abbreviation SM12 equals setId sm12",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "me1-bb",
+   "setId": "me1",
+   "subtype": "booster-bundle",
+   "groupId": 24380,
+   "groupJoin": "ptcgoCode MEG equals the only group abbreviation MEG",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv10-bb",
+   "setId": "sv10",
+   "subtype": "booster-bundle",
+   "groupId": 24269,
+   "groupJoin": "ptcgoCode DRI equals the only group abbreviation DRI",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv9-bb",
+   "setId": "sv9",
+   "subtype": "booster-bundle",
+   "groupId": 24073,
+   "groupJoin": "ptcgoCode JTG equals the only group abbreviation JTG",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv8-bb",
+   "setId": "sv8",
+   "subtype": "booster-bundle",
+   "groupId": 23651,
+   "groupJoin": "ptcgoCode SSP equals the only group abbreviation SSP",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv7-bb",
+   "setId": "sv7",
+   "subtype": "booster-bundle",
+   "groupId": 23537,
+   "groupJoin": "ptcgoCode SCR equals the only group abbreviation SCR",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv6-bb",
+   "setId": "sv6",
+   "subtype": "booster-bundle",
+   "groupId": 23473,
+   "groupJoin": "ptcgoCode TWM equals the only group abbreviation TWM",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv5-bb",
+   "setId": "sv5",
+   "subtype": "booster-bundle",
+   "groupId": 23381,
+   "groupJoin": "ptcgoCode TEF equals the only group abbreviation TEF",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "swsh1-booster-box",
+   "setId": "swsh1",
+   "subtype": "booster-box",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh2-booster-box",
+   "setId": "swsh2",
+   "subtype": "booster-box",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh2-etb",
+   "setId": "swsh2",
+   "subtype": "etb",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh3-booster-box",
+   "setId": "swsh3",
+   "subtype": "booster-box",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh3-etb",
+   "setId": "swsh3",
+   "subtype": "etb",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh4-booster-box",
+   "setId": "swsh4",
+   "subtype": "booster-box",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh4-etb",
+   "setId": "swsh4",
+   "subtype": "etb",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh5-booster-box",
+   "setId": "swsh5",
+   "subtype": "booster-box",
+   "groupId": 1853,
+   "groupJoin": "ptcgoCode BST equals the only group abbreviation BST",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "swsh5-etb",
+   "setId": "swsh5",
+   "subtype": "etb",
+   "groupId": 1853,
+   "groupJoin": "ptcgoCode BST equals the only group abbreviation BST",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "swsh6-booster-box",
+   "setId": "swsh6",
+   "subtype": "booster-box",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh6-etb",
+   "setId": "swsh6",
+   "subtype": "etb",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh8-booster-box",
+   "setId": "swsh8",
+   "subtype": "booster-box",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh45-etb",
+   "setId": "swsh45",
+   "subtype": "etb",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh35-etb",
+   "setId": "swsh35",
+   "subtype": "etb",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "cel25-bb",
+   "setId": "cel25",
+   "subtype": "booster-bundle",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh12pt5-bb",
+   "setId": "swsh12pt5",
+   "subtype": "booster-bundle",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh6-pc-etb",
+   "setId": "swsh6",
+   "subtype": "pc-etb",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh7-pc-etb",
+   "setId": "swsh7",
+   "subtype": "pc-etb",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh8-pc-etb",
+   "setId": "swsh8",
+   "subtype": "pc-etb",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh9-pc-etb",
+   "setId": "swsh9",
+   "subtype": "pc-etb",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh10-pc-etb",
+   "setId": "swsh10",
+   "subtype": "pc-etb",
+   "groupId": 3040,
+   "groupJoin": "group abbreviation SWSH10 equals setId swsh10",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "swsh11-pc-etb",
+   "setId": "swsh11",
+   "subtype": "pc-etb",
+   "groupId": 3118,
+   "groupJoin": "group abbreviation SWSH11 equals setId swsh11",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "swsh12-pc-etb",
+   "setId": "swsh12",
+   "subtype": "pc-etb",
+   "groupId": 3170,
+   "groupJoin": "group abbreviation SWSH12 equals setId swsh12",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "swsh12pt5-pc-etb",
+   "setId": "swsh12pt5",
+   "subtype": "pc-etb",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "sv1-pc-etb",
+   "setId": "sv1",
+   "subtype": "pc-etb",
+   "groupId": 22873,
+   "groupJoin": "ptcgoCode SVI equals the only group abbreviation SVI",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv2-pc-etb",
+   "setId": "sv2",
+   "subtype": "pc-etb",
+   "groupId": 23120,
+   "groupJoin": "ptcgoCode PAL equals the only group abbreviation PAL",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv3-pc-etb",
+   "setId": "sv3",
+   "subtype": "pc-etb",
+   "groupId": 23228,
+   "groupJoin": "ptcgoCode OBF equals the only group abbreviation OBF",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv3pt5-pc-etb",
+   "setId": "sv3pt5",
+   "subtype": "pc-etb",
+   "groupId": 23237,
+   "groupJoin": "ptcgoCode MEW equals the only group abbreviation MEW",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv4-pc-etb",
+   "setId": "sv4",
+   "subtype": "pc-etb",
+   "groupId": 23286,
+   "groupJoin": "ptcgoCode PAR equals the only group abbreviation PAR",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv4pt5-pc-etb",
+   "setId": "sv4pt5",
+   "subtype": "pc-etb",
+   "groupId": 23353,
+   "groupJoin": "ptcgoCode PAF equals the only group abbreviation PAF",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv5-pc-etb",
+   "setId": "sv5",
+   "subtype": "pc-etb",
+   "groupId": 23381,
+   "groupJoin": "ptcgoCode TEF equals the only group abbreviation TEF",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv6-pc-etb",
+   "setId": "sv6",
+   "subtype": "pc-etb",
+   "groupId": 23473,
+   "groupJoin": "ptcgoCode TWM equals the only group abbreviation TWM",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv6pt5-pc-etb",
+   "setId": "sv6pt5",
+   "subtype": "pc-etb",
+   "groupId": 23529,
+   "groupJoin": "ptcgoCode SFA equals the only group abbreviation SFA",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv7-pc-etb",
+   "setId": "sv7",
+   "subtype": "pc-etb",
+   "groupId": 23537,
+   "groupJoin": "ptcgoCode SCR equals the only group abbreviation SCR",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv8-pc-etb",
+   "setId": "sv8",
+   "subtype": "pc-etb",
+   "groupId": 23651,
+   "groupJoin": "ptcgoCode SSP equals the only group abbreviation SSP",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv8pt5-pc-etb",
+   "setId": "sv8pt5",
+   "subtype": "pc-etb",
+   "groupId": 23821,
+   "groupJoin": "ptcgoCode PRE equals the only group abbreviation PRE",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv9-pc-etb",
+   "setId": "sv9",
+   "subtype": "pc-etb",
+   "groupId": 24073,
+   "groupJoin": "ptcgoCode JTG equals the only group abbreviation JTG",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv10-pc-etb",
+   "setId": "sv10",
+   "subtype": "pc-etb",
+   "groupId": 24269,
+   "groupJoin": "ptcgoCode DRI equals the only group abbreviation DRI",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "zsv10pt5-bb-pc-etb",
+   "setId": "zsv10pt5",
+   "subtype": "pc-etb",
+   "groupId": 24325,
+   "groupJoin": "ptcgoCode BLK equals the only group abbreviation BLK",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "rsv10pt5-wf-pc-etb",
+   "setId": "rsv10pt5",
+   "subtype": "pc-etb",
+   "groupId": 24326,
+   "groupJoin": "ptcgoCode WHT equals the only group abbreviation WHT",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "me5-booster-box",
+   "setId": "me5",
+   "subtype": "booster-box",
+   "groupId": 24688,
+   "groupJoin": "ptcgoCode PBL equals the only group abbreviation PBL",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "me5-etb",
+   "setId": "me5",
+   "subtype": "etb",
+   "groupId": 24688,
+   "groupJoin": "ptcgoCode PBL equals the only group abbreviation PBL",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "me5-bb",
+   "setId": "me5",
+   "subtype": "booster-bundle",
+   "groupId": 24688,
+   "groupJoin": "ptcgoCode PBL equals the only group abbreviation PBL",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "me5-pc-etb",
+   "setId": "me5",
+   "subtype": "pc-etb",
+   "groupId": 24688,
+   "groupJoin": "ptcgoCode PBL equals the only group abbreviation PBL",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "me4-booster-box",
+   "setId": "me4",
+   "subtype": "booster-box",
+   "groupId": 24655,
+   "groupJoin": "ptcgoCode CRI equals the only group abbreviation CRI",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "me4-etb",
+   "setId": "me4",
+   "subtype": "etb",
+   "groupId": 24655,
+   "groupJoin": "ptcgoCode CRI equals the only group abbreviation CRI",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "me4-bb",
+   "setId": "me4",
+   "subtype": "booster-bundle",
+   "groupId": 24655,
+   "groupJoin": "ptcgoCode CRI equals the only group abbreviation CRI",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "me4-pc-etb",
+   "setId": "me4",
+   "subtype": "pc-etb",
+   "groupId": 24655,
+   "groupJoin": "ptcgoCode CRI equals the only group abbreviation CRI",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "me3-booster-box",
+   "setId": "me3",
+   "subtype": "booster-box",
+   "groupId": 24587,
+   "groupJoin": "ptcgoCode POR equals the only group abbreviation POR",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "me3-etb",
+   "setId": "me3",
+   "subtype": "etb",
+   "groupId": 24587,
+   "groupJoin": "ptcgoCode POR equals the only group abbreviation POR",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "me3-bb",
+   "setId": "me3",
+   "subtype": "booster-bundle",
+   "groupId": 24587,
+   "groupJoin": "ptcgoCode POR equals the only group abbreviation POR",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "me3-pc-etb",
+   "setId": "me3",
+   "subtype": "pc-etb",
+   "groupId": 24587,
+   "groupJoin": "ptcgoCode POR equals the only group abbreviation POR",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "me2pt5-etb",
+   "setId": "me2pt5",
+   "subtype": "etb",
+   "groupId": 24541,
+   "groupJoin": "ptcgoCode ASC equals the only group abbreviation ASC",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "me2pt5-bb",
+   "setId": "me2pt5",
+   "subtype": "booster-bundle",
+   "groupId": 24541,
+   "groupJoin": "ptcgoCode ASC equals the only group abbreviation ASC",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "me2pt5-pc-etb",
+   "setId": "me2pt5",
+   "subtype": "pc-etb",
+   "groupId": 24541,
+   "groupJoin": "ptcgoCode ASC equals the only group abbreviation ASC",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "me2-booster-box",
+   "setId": "me2",
+   "subtype": "booster-box",
+   "groupId": 24448,
+   "groupJoin": "ptcgoCode PFL equals the only group abbreviation PFL",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "me2-etb",
+   "setId": "me2",
+   "subtype": "etb",
+   "groupId": 24448,
+   "groupJoin": "ptcgoCode PFL equals the only group abbreviation PFL",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "me2-bb",
+   "setId": "me2",
+   "subtype": "booster-bundle",
+   "groupId": 24448,
+   "groupJoin": "ptcgoCode PFL equals the only group abbreviation PFL",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "me2-pc-etb",
+   "setId": "me2",
+   "subtype": "pc-etb",
+   "groupId": 24448,
+   "groupJoin": "ptcgoCode PFL equals the only group abbreviation PFL",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "me1-booster-box",
+   "setId": "me1",
+   "subtype": "booster-box",
+   "groupId": 24380,
+   "groupJoin": "ptcgoCode MEG equals the only group abbreviation MEG",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "me1-enhanced-booster-box",
+   "setId": "me1",
+   "subtype": "booster-box",
+   "groupId": 24380,
+   "groupJoin": "ptcgoCode MEG equals the only group abbreviation MEG",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "me1-etb",
+   "setId": "me1",
+   "subtype": "etb",
+   "groupId": 24380,
+   "groupJoin": "ptcgoCode MEG equals the only group abbreviation MEG",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "me1-pc-etb",
+   "setId": "me1",
+   "subtype": "pc-etb",
+   "groupId": 24380,
+   "groupJoin": "ptcgoCode MEG equals the only group abbreviation MEG",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv8pt5-etb",
+   "setId": "sv8pt5",
+   "subtype": "etb",
+   "groupId": 23821,
+   "groupJoin": "ptcgoCode PRE equals the only group abbreviation PRE",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv8pt5-bb",
+   "setId": "sv8pt5",
+   "subtype": "booster-bundle",
+   "groupId": 23821,
+   "groupJoin": "ptcgoCode PRE equals the only group abbreviation PRE",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv8pt5-sc",
+   "setId": "sv8pt5",
+   "subtype": "special-collection",
+   "groupId": 23821,
+   "groupJoin": "ptcgoCode PRE equals the only group abbreviation PRE",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "swsh-eevee-evolutions-premium",
+   "setId": "swsh45",
+   "subtype": "special-collection",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "sv10-etb",
+   "setId": "sv10",
+   "subtype": "etb",
+   "groupId": 24269,
+   "groupJoin": "ptcgoCode DRI equals the only group abbreviation DRI",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv10-booster-box",
+   "setId": "sv10",
+   "subtype": "booster-box",
+   "groupId": 24269,
+   "groupJoin": "ptcgoCode DRI equals the only group abbreviation DRI",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv9-etb",
+   "setId": "sv9",
+   "subtype": "etb",
+   "groupId": 24073,
+   "groupJoin": "ptcgoCode JTG equals the only group abbreviation JTG",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv9-booster-box",
+   "setId": "sv9",
+   "subtype": "booster-box",
+   "groupId": 24073,
+   "groupJoin": "ptcgoCode JTG equals the only group abbreviation JTG",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv8-etb",
+   "setId": "sv8",
+   "subtype": "etb",
+   "groupId": 23651,
+   "groupJoin": "ptcgoCode SSP equals the only group abbreviation SSP",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv8-booster-box",
+   "setId": "sv8",
+   "subtype": "booster-box",
+   "groupId": 23651,
+   "groupJoin": "ptcgoCode SSP equals the only group abbreviation SSP",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv7-etb",
+   "setId": "sv7",
+   "subtype": "etb",
+   "groupId": 23537,
+   "groupJoin": "ptcgoCode SCR equals the only group abbreviation SCR",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv7-booster-box",
+   "setId": "sv7",
+   "subtype": "booster-box",
+   "groupId": 23537,
+   "groupJoin": "ptcgoCode SCR equals the only group abbreviation SCR",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv6pt5-etb",
+   "setId": "sv6pt5",
+   "subtype": "etb",
+   "groupId": 23529,
+   "groupJoin": "ptcgoCode SFA equals the only group abbreviation SFA",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv6-etb",
+   "setId": "sv6",
+   "subtype": "etb",
+   "groupId": 23473,
+   "groupJoin": "ptcgoCode TWM equals the only group abbreviation TWM",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv5-etb",
+   "setId": "sv5",
+   "subtype": "etb",
+   "groupId": 23381,
+   "groupJoin": "ptcgoCode TEF equals the only group abbreviation TEF",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv4pt5-etb",
+   "setId": "sv4pt5",
+   "subtype": "etb",
+   "groupId": 23353,
+   "groupJoin": "ptcgoCode PAF equals the only group abbreviation PAF",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv3pt5-etb",
+   "setId": "sv3pt5",
+   "subtype": "etb",
+   "groupId": 23237,
+   "groupJoin": "ptcgoCode MEW equals the only group abbreviation MEW",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv3pt5-upc",
+   "setId": "sv3pt5",
+   "subtype": "upc",
+   "groupId": 23237,
+   "groupJoin": "ptcgoCode MEW equals the only group abbreviation MEW",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "swsh12pt5-etb",
+   "setId": "swsh12pt5",
+   "subtype": "etb",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh12pt5-premium",
+   "setId": "swsh12pt5",
+   "subtype": "special-collection",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh12-etb",
+   "setId": "swsh12",
+   "subtype": "etb",
+   "groupId": 3170,
+   "groupJoin": "group abbreviation SWSH12 equals setId swsh12",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "swsh11-etb",
+   "setId": "swsh11",
+   "subtype": "etb",
+   "groupId": 3118,
+   "groupJoin": "group abbreviation SWSH11 equals setId swsh11",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "swsh8-etb",
+   "setId": "swsh8",
+   "subtype": "etb",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh7-etb",
+   "setId": "swsh7",
+   "subtype": "etb",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh7-booster-box",
+   "setId": "swsh7",
+   "subtype": "booster-box",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "cel25-etb",
+   "setId": "cel25",
+   "subtype": "etb",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "cel25-upc",
+   "setId": "cel25",
+   "subtype": "upc",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh1-etb",
+   "setId": "swsh1",
+   "subtype": "etb",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "sm12-etb",
+   "setId": "sm115",
+   "subtype": "etb",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "bw1-booster-box",
+   "setId": "bw1",
+   "subtype": "booster-box",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "hgss1-booster-box",
+   "setId": "hgss1",
+   "subtype": "booster-box",
+   "groupId": 1402,
+   "groupJoin": "ptcgoCode HS equals the only group abbreviation HS",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "base1-booster-box",
+   "setId": "base1",
+   "subtype": "booster-box",
+   "groupId": 604,
+   "groupJoin": "ptcgoCode BS equals the only group abbreviation BS",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "base2-booster-box",
+   "setId": "base2",
+   "subtype": "booster-box",
+   "groupId": 635,
+   "groupJoin": "ptcgoCode JU equals the only group abbreviation JU",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "base3-booster-box",
+   "setId": "base3",
+   "subtype": "booster-box",
+   "groupId": 630,
+   "groupJoin": "ptcgoCode FO equals the only group abbreviation FO",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "neo1-booster-box",
+   "setId": "neo1",
+   "subtype": "booster-box",
+   "groupId": 1396,
+   "groupJoin": "ptcgoCode N1 equals the only group abbreviation N1",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv5-booster-box",
+   "setId": "sv5",
+   "subtype": "booster-box",
+   "groupId": 23381,
+   "groupJoin": "ptcgoCode TEF equals the only group abbreviation TEF",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv6-booster-box",
+   "setId": "sv6",
+   "subtype": "booster-box",
+   "groupId": 23473,
+   "groupJoin": "ptcgoCode TWM equals the only group abbreviation TWM",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv4-booster-box",
+   "setId": "sv4",
+   "subtype": "booster-box",
+   "groupId": 23286,
+   "groupJoin": "ptcgoCode PAR equals the only group abbreviation PAR",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv3-booster-box",
+   "setId": "sv3",
+   "subtype": "booster-box",
+   "groupId": 23228,
+   "groupJoin": "ptcgoCode OBF equals the only group abbreviation OBF",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv2-booster-box",
+   "setId": "sv2",
+   "subtype": "booster-box",
+   "groupId": 23120,
+   "groupJoin": "ptcgoCode PAL equals the only group abbreviation PAL",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv1-booster-box",
+   "setId": "sv1",
+   "subtype": "booster-box",
+   "groupId": 22873,
+   "groupJoin": "ptcgoCode SVI equals the only group abbreviation SVI",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "swsh12-booster-box",
+   "setId": "swsh12",
+   "subtype": "booster-box",
+   "groupId": 3170,
+   "groupJoin": "group abbreviation SWSH12 equals setId swsh12",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "swsh11-booster-box",
+   "setId": "swsh11",
+   "subtype": "booster-box",
+   "groupId": 3118,
+   "groupJoin": "group abbreviation SWSH11 equals setId swsh11",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "swsh9-booster-box",
+   "setId": "swsh9",
+   "subtype": "booster-box",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh10-booster-box",
+   "setId": "swsh10",
+   "subtype": "booster-box",
+   "groupId": 3040,
+   "groupJoin": "group abbreviation SWSH10 equals setId swsh10",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv4pt5-bb",
+   "setId": "sv4pt5",
+   "subtype": "booster-bundle",
+   "groupId": 23353,
+   "groupJoin": "ptcgoCode PAF equals the only group abbreviation PAF",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv3pt5-bb",
+   "setId": "sv3pt5",
+   "subtype": "booster-bundle",
+   "groupId": 23237,
+   "groupJoin": "ptcgoCode MEW equals the only group abbreviation MEW",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv6pt5-bb",
+   "setId": "sv6pt5",
+   "subtype": "booster-bundle",
+   "groupId": 23529,
+   "groupJoin": "ptcgoCode SFA equals the only group abbreviation SFA",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "me4-pack",
+   "setId": "me4",
+   "subtype": "booster-pack",
+   "groupId": 24655,
+   "groupJoin": "ptcgoCode CRI equals the only group abbreviation CRI",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "me5-pack",
+   "setId": "me5",
+   "subtype": "booster-pack",
+   "groupId": 24688,
+   "groupJoin": "ptcgoCode PBL equals the only group abbreviation PBL",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv1-bundle",
+   "setId": "sv1",
+   "subtype": "booster-bundle",
+   "groupId": 22873,
+   "groupJoin": "ptcgoCode SVI equals the only group abbreviation SVI",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv2-pack",
+   "setId": "sv2",
+   "subtype": "booster-pack",
+   "groupId": 23120,
+   "groupJoin": "ptcgoCode PAL equals the only group abbreviation PAL",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv2-bundle",
+   "setId": "sv2",
+   "subtype": "booster-bundle",
+   "groupId": 23120,
+   "groupJoin": "ptcgoCode PAL equals the only group abbreviation PAL",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv3-pack",
+   "setId": "sv3",
+   "subtype": "booster-pack",
+   "groupId": 23228,
+   "groupJoin": "ptcgoCode OBF equals the only group abbreviation OBF",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv3-bundle",
+   "setId": "sv3",
+   "subtype": "booster-bundle",
+   "groupId": 23228,
+   "groupJoin": "ptcgoCode OBF equals the only group abbreviation OBF",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv4-bundle",
+   "setId": "sv4",
+   "subtype": "booster-bundle",
+   "groupId": 23286,
+   "groupJoin": "ptcgoCode PAR equals the only group abbreviation PAR",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv4pt5-pack",
+   "setId": "sv4pt5",
+   "subtype": "booster-pack",
+   "groupId": 23353,
+   "groupJoin": "ptcgoCode PAF equals the only group abbreviation PAF",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv5-pack",
+   "setId": "sv5",
+   "subtype": "booster-pack",
+   "groupId": 23381,
+   "groupJoin": "ptcgoCode TEF equals the only group abbreviation TEF",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv6-pack",
+   "setId": "sv6",
+   "subtype": "booster-pack",
+   "groupId": 23473,
+   "groupJoin": "ptcgoCode TWM equals the only group abbreviation TWM",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv6pt5-pack",
+   "setId": "sv6pt5",
+   "subtype": "booster-pack",
+   "groupId": 23529,
+   "groupJoin": "ptcgoCode SFA equals the only group abbreviation SFA",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "sv7-pack",
+   "setId": "sv7",
+   "subtype": "booster-pack",
+   "groupId": 23537,
+   "groupJoin": "ptcgoCode SCR equals the only group abbreviation SCR",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "swsh1-pack",
+   "setId": "swsh1",
+   "subtype": "booster-pack",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh1-bundle",
+   "setId": "swsh1",
+   "subtype": "booster-bundle",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh10-pack",
+   "setId": "swsh10",
+   "subtype": "booster-pack",
+   "groupId": 3040,
+   "groupJoin": "group abbreviation SWSH10 equals setId swsh10",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "swsh10-bundle",
+   "setId": "swsh10",
+   "subtype": "booster-bundle",
+   "groupId": 3040,
+   "groupJoin": "group abbreviation SWSH10 equals setId swsh10",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "swsh11-bundle",
+   "setId": "swsh11",
+   "subtype": "booster-bundle",
+   "groupId": 3118,
+   "groupJoin": "group abbreviation SWSH11 equals setId swsh11",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "swsh12-pack",
+   "setId": "swsh12",
+   "subtype": "booster-pack",
+   "groupId": 3170,
+   "groupJoin": "group abbreviation SWSH12 equals setId swsh12",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "swsh12-bundle",
+   "setId": "swsh12",
+   "subtype": "booster-bundle",
+   "groupId": 3170,
+   "groupJoin": "group abbreviation SWSH12 equals setId swsh12",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "swsh12pt5-pack",
+   "setId": "swsh12pt5",
+   "subtype": "booster-pack",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh2-pack",
+   "setId": "swsh2",
+   "subtype": "booster-pack",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh2-bundle",
+   "setId": "swsh2",
+   "subtype": "booster-bundle",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh3-pack",
+   "setId": "swsh3",
+   "subtype": "booster-pack",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh3-bundle",
+   "setId": "swsh3",
+   "subtype": "booster-bundle",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh35-pack",
+   "setId": "swsh35",
+   "subtype": "booster-pack",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh35-bundle",
+   "setId": "swsh35",
+   "subtype": "booster-bundle",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh4-pack",
+   "setId": "swsh4",
+   "subtype": "booster-pack",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh4-bundle",
+   "setId": "swsh4",
+   "subtype": "booster-bundle",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh45-pack",
+   "setId": "swsh45",
+   "subtype": "booster-pack",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh45-bundle",
+   "setId": "swsh45",
+   "subtype": "booster-bundle",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh5-bundle",
+   "setId": "swsh5",
+   "subtype": "booster-bundle",
+   "groupId": 1853,
+   "groupJoin": "ptcgoCode BST equals the only group abbreviation BST",
+   "tcgPlayerId": null,
+   "reason": "groupId only. TCGCSV product files have no productType field, and this sealed product stores no UPC or other TCGplayer id, so the product inside the group cannot be confirmed without the name."
+  },
+  {
+   "id": "swsh6-bundle",
+   "setId": "swsh6",
+   "subtype": "booster-bundle",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh7-bundle",
+   "setId": "swsh7",
+   "subtype": "booster-bundle",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh8-bundle",
+   "setId": "swsh8",
+   "subtype": "booster-bundle",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh9-pack",
+   "setId": "swsh9",
+   "subtype": "booster-pack",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  },
+  {
+   "id": "swsh9-bundle",
+   "setId": "swsh9",
+   "subtype": "booster-bundle",
+   "groupId": null,
+   "groupJoin": null,
+   "tcgPlayerId": null,
+   "reason": "no unique groupId. The set id is not the only ptcgoCode equal to one group abbreviation, and no group abbreviation equals the setId."
+  }
+ ]
+}
