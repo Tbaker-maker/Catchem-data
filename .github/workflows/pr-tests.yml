@@ -28,3 +28,11 @@ jobs:
         run: node scripts/artifact-freshness.mjs
       - name: Full test suite
         run: node scripts/tests/run-tests.mjs
+      - name: No schedule in daily-research
+        run: |
+          if grep -E '^[[:space:]]*schedule:' .github/workflows/daily-research.yml; then
+            echo "FAIL: daily-research.yml has a schedule. Remove it."
+            exit 1
+          fi
+          echo "OK: no schedule in daily-research.yml"
+
