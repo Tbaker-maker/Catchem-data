@@ -83,6 +83,13 @@
       "trigger": "PPT written yes for public display.",
       "env": "CATCHEM_VOLUME_READS"
     },
+    "images.tcgplayer": {
+      "value": true,
+      "owner": "scripts/write-health.mjs",
+      "why": "TCGplayer photos stay in the picture order until Tyler turns this off. Order is the Post Office catalogue by id, then the pokemontcg.io scan by id, then this photo, then a branded tile. Default true.",
+      "trigger": "Tyler decides the TCGplayer photo comes off.",
+      "env": "CATCHEM_IMAGES_TCGPLAYER"
+    },
     "reads.library": {
       "value": false,
       "owner": "scripts/lib/second-library.mjs",
