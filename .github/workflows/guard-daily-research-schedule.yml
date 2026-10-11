@@ -1,0 +1,22 @@
+name: guard-daily-research-schedule
+# Fails if daily-research.yml regains a schedule block.
+# Does not enable daily-research. Does not spend Anthropic credit.
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  no-schedule:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fail if daily-research.yml has a schedule
+        run: |
+          if grep -nE '^[[:space:]]*schedule:' .github/workflows/daily-research.yml; then
+            echo "daily-research.yml has a schedule. Remove it."
+            exit 1
+          fi
+          echo "No schedule in daily-research.yml."
