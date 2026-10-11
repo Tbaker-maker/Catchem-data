@@ -148,7 +148,9 @@ export function freshnessFailures(rows, nightlyDay, maxDays = FRESH_DAYS) {
     const gap = daysBetween(asOf, night);
     if (gap == null) continue;
     if (gap > maxDays) failures.push(`${row.file} is ${gap} days behind ${night}`);
-    if (gap < 0) failures.push(`${row.file} is dated ${asOf}, after the nightly date ${night}`);
+    // A file written earlier in tonight's run can be one day ahead of counts.json,
+    // which the feed build only rewrites later. More than a day ahead is still wrong.
+    if (gap < -1) failures.push(`${row.file} is dated ${asOf}, after the nightly date ${night}`);
   }
   return failures;
 }

@@ -68,6 +68,10 @@ export async function run() {
     const asOf = doc && (doc.asOf || doc.updatedAt || doc.generatedAt || doc.finishedAt || doc.date) || "";
     live.push({ file: row.file, live: true, dateRequired: true, asOf });
   }
+  t("a file one day ahead of counts.json (written earlier in the same run) is not a failure",
+    freshnessFailures([{ file: "x.json", live: true, dateRequired: true, asOf: "2026-10-11" }], "2026-10-10").length === 0);
+  t("a file two days ahead of counts.json is a failure",
+    freshnessFailures([{ file: "x.json", live: true, dateRequired: true, asOf: "2026-10-12" }], "2026-10-10").length === 1);
   const failures = freshnessFailures(live, nightly);
   t("reader files are within 2 days of the nightly date on counts.json", failures.length === 0, );
   if (failures.length) console.error(failures.join("\n"));
