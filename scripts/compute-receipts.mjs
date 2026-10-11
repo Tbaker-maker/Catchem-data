@@ -69,3 +69,7 @@ const out = join(ROOT, "data/private/receipts-weekly.json");
 await mkdir(dirname(out), { recursive: true });
 await writeFile(out, JSON.stringify(doc, null, 1) + "\n");
 console.log(`receipts: tracked ${summary.tracked}, graded ${summary.graded}, hit rate ${summary.hitRate}`);
+if (!Array.isArray(doc.reads) || doc.reads.length === 0) {
+  console.error("reads wrote nothing");
+  process.exit(1);
+}

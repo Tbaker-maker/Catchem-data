@@ -180,3 +180,7 @@ const doc = {
 mkdirSync(dirname(OUT), { recursive: true });
 writeFileSync(OUT, JSON.stringify(doc));
 console.log(`search index ${doc.counts.items} rows (${doc.counts.priced} priced, ${doc.counts.sealed} sealed, ${doc.counts.single} singles, ${doc.counts.slab} slabs)`);
+if (!doc.counts.items) {
+  console.error("search wrote nothing");
+  process.exit(1);
+}

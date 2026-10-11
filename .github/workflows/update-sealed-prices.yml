@@ -28,7 +28,8 @@ jobs:
       - name: Write today's TCGCSV catalog day
         # Before the guard audit and the unit tests, so a fail-fast step above
         # the price commit can no longer skip the day (09-28, 09-30, 10-01,
-        # 10-02 and 10-04 were lost that way). The later "Full Pokémon catalog
+        # 10-02 and 10-04 were lost that way). Those five days stay gaps. Do not
+        # backfill them. The later "Full Pokémon catalog
         # (TCGCSV)" step still runs and rewrites the same day. continue-on-error
         # so a TCGCSV outage cannot stop the run.
         id: tcgcsv-day
@@ -130,7 +131,9 @@ jobs:
       - name: Compute Supply Watch
         run: node scripts/compute-supply-watch.mjs
       - name: Weekly receipts
+        id: reads
         # Reads we tracked. continue-on-error so a quiet week cannot drop the price commit.
+        # An empty write still fails the job after the price commit.
         continue-on-error: true
         run: node scripts/compute-receipts.mjs
       - name: Derived intelligence
@@ -162,8 +165,10 @@ jobs:
         continue-on-error: true
         run: node scripts/fetch-tcgcsv-catalog.mjs
       - name: Build search index
+        id: search
         # Reads the catalog written just above. continue-on-error so a search
         # build failure cannot throw away the price commit that follows.
+        # An empty index still fails the job after the price commit.
         continue-on-error: true
         run: node scripts/build-search-index.mjs
       - name: Split search index into shards
@@ -282,6 +287,17 @@ jobs:
               exit 1
             fi
           fi
+
+      - name: Fail if reads, search, or the index wrote nothing
+        # Reads, search, and the public index may fail without dropping the
+        # price commit. This step is the red X when one of them wrote nothing.
+        # The five missing days stay null. Unpriced rows stay unpriced.
+        if: always()
+        env:
+          READS_OUTCOME: ${{ steps.reads.outcome }}
+          SEARCH_OUTCOME: ${{ steps.search.outcome }}
+          INDEX_OUTCOME: ${{ steps.setpages.outcome }}
+        run: node scripts/check-publish-writes.mjs
 
       - name: Fetch TCG news
         # After the price commit and the feed rebuild. A failed fetch fails the job.
