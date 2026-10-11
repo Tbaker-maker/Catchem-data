@@ -7,6 +7,7 @@ function rate(hit, scored, min) {
 
 export function learningReport(track, { scoreMin = 20 } = {}) {
   const min = Number(scoreMin) > 0 ? Number(scoreMin) : 20;
+  const hidden = track?.public === false;
   const detectors = (track?.types || []).map((row) => {
     const scored14 = Number(row?.scored14) || 0;
     const hit14 = Number(row?.hit14) || 0;
@@ -20,13 +21,13 @@ export function learningReport(track, { scoreMin = 20 } = {}) {
       tooEarly: Number(row?.tooEarly) || 0,
       scored14,
       hit14,
-      hitRate14: rate(hit14, scored14, min),
+      hitRate14: hidden ? null : rate(hit14, scored14, min),
       scored28,
       hit28,
-      hitRate28: rate(hit28, scored28, min),
+      hitRate28: hidden ? null : rate(hit28, scored28, min),
       scored56,
       hit56,
-      hitRate56: rate(hit56, scored56, min),
+      hitRate56: hidden ? null : rate(hit56, scored56, min),
       review: (scored14 >= min && hit14 === 0) || (scored28 >= min && hit28 === 0) || (scored56 >= min && hit56 === 0),
       minimums: "unchanged",
     };

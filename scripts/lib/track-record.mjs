@@ -23,6 +23,27 @@ function sameWay(direction, from, to) {
   return null;
 }
 
+const TAKE_CODES = new Set(["up", "dip", "watch", "avoid", "stretched"]);
+const LABEL_BAN = /Looks like a buy|Wait for a dip|Avoid for now|Looks stretched/;
+
+export function takeOf(read) {
+  const code = String(read?.take || "");
+  return TAKE_CODES.has(code) ? code : "";
+}
+
+function hitOf(read, from, to) {
+  const code = takeOf(read);
+  if (code === "watch") return "skip";
+  if (code === "up") return to > from;
+  if (code === "dip" || code === "stretched" || code === "avoid") return to < from;
+  return sameWay(read?.direction, from, to);
+}
+
+export function percentFor(hit, n, isPublic) {
+  if (isPublic !== true || !(n >= SCORE_MIN)) return null;
+  return Math.round((100 * hit) / n);
+}
+
 export function scoreRead(read, later = {}, today, shipFromFile = null) {
   const shipped = String(read?.asOf || "").slice(0, 10);
   const price = Number(shipFromFile?.market);
@@ -38,6 +59,7 @@ export function scoreRead(read, later = {}, today, shipFromFile = null) {
     price: price > 0 ? price : null,
     shipSource: price > 0 ? String(shipFromFile?.source || "") : "",
     direction,
+    take: takeOf(read),
     age,
   };
   if (!base.id || !base.productId || age == null) {
@@ -46,6 +68,7 @@ export function scoreRead(read, later = {}, today, shipFromFile = null) {
   if (!(price > 0)) {
     return { ...base, status: "no-score", note: "No ship price in the price file, so no score." };
   }
+  if (base.take === "watch") return { ...base, status: "no-score", note: "watch is not scored." };
   if (age < HORIZONS[0]) return { ...base, status: "too-early", note: "Too early to score." };
   const marks = {};
   for (const horizon of HORIZONS) {
@@ -56,7 +79,7 @@ export function scoreRead(read, later = {}, today, shipFromFile = null) {
       marks[String(horizon)] = { day, price: null, sameDirection: null };
       continue;
     }
-    marks[String(horizon)] = { day, price: next, sameDirection: sameWay(direction, price, next) };
+    marks[String(horizon)] = { day, price: next, sameDirection: hitOf(read, price, next) };
   }
   const scored = Object.values(marks).some((mark) => mark.price != null);
   return { ...base, status: scored ? "scored" : "no-later-price", note: scored ? "" : "No later price, so no score.", marks };
@@ -95,14 +118,16 @@ export function buildTrackRecord(reads, laterByProduct = {}, today, shipByProduc
     for (const horizon of HORIZONS) {
       const n = bag[`scored${horizon}`];
       bag[`line${horizon}`] = `${n} scored so far`;
-      if (n >= SCORE_MIN) bag[`percent${horizon}`] = Math.round(100 * bag[`hit${horizon}`] / n);
+      const pct = percentFor(bag[`hit${horizon}`], n, false);
+      if (pct != null) bag[`percent${horizon}`] = pct;
     }
   }
   const dates = rows.map((row) => row.shipped).filter((day) => /^\d{4}-\d{2}-\d{2}$/.test(day)).sort();
   const blob = JSON.stringify({ rows, types });
-  if (COPY_BAN.test(blob)) throw new Error("track record used a banned word");
+  if (COPY_BAN.test(blob) || LABEL_BAN.test(blob)) throw new Error("track record used a banned word");
   return {
     asOf: today,
+    public: false,
     rule: "A read is stored with its ship date. The ship price is the TCGplayer market on that date from the price file. It is not taken from a headline. After 14, 28, and 56 days, the later price is that exact day, or there is no score. Under 14 days is too early to score.",
     oldest: dates[0] || "",
     newest: dates[dates.length - 1] || "",
