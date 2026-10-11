@@ -1,0 +1,75 @@
+{
+  "sourceDate": "2026-10-11",
+  "imported": false,
+  "rule": "Options only. No Japanese card list, image, or price was copied into the catalogue.",
+  "options": [
+    {
+      "name": "TCGCSV category 3",
+      "covers": "The one Japanese group in the Pokémon category",
+      "ids": false,
+      "prices": false,
+      "images": false,
+      "used": false,
+      "evidence": "data/tcgcsv-japanese.json group 23095 returned 0 products on 2026-10-10.",
+      "source": "https://tcgcsv.com/tcgplayer/3/23095/products"
+    },
+    {
+      "name": "TCGdex API",
+      "covers": "Japanese singles. One set-index request returned 184 sets. No sealed collection at /v2/ja/sealed (HTTP 404). Card id tcgcsv-642290 is HTTP 404.",
+      "ids": true,
+      "prices": "The sample card returned a pricing.cardmarket object and pricing.tcgplayer null. Amounts were not copied.",
+      "images": "The sample card has an image field on assets.tcgdex.net. The image was not downloaded.",
+      "sampleId": "SV2a-001",
+      "sampleUrl": "https://api.tcgdex.net/v2/ja/cards/sv2a-001",
+      "setIndex": "https://api.tcgdex.net/v2/ja/sets",
+      "setCount": 184,
+      "used": false,
+      "terms": {
+        "databaseLicense": "https://github.com/tcgdex/cards-database/blob/master/LICENSE",
+        "readme": "https://github.com/tcgdex/cards-database/blob/master/README.md",
+        "quotes": [
+          "Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software",
+          "This database is not produced, endorsed, supported or affiliated with Nintendo or The Pokémon Company",
+          "The Database is licensed under the MIT License."
+        ],
+        "limit": "The MIT grant is TCGdex's license for their database. It is not a Pokémon Company license for the artwork. Cardmarket prices on the API are a third party's observations. Not imported."
+      }
+    },
+    {
+      "name": "Scrydex Pokémon API",
+      "covers": "Docs say English and Japanese expansions are selected with a language code. Sealed coverage was not verified. No API key was used.",
+      "ids": "https://api.scrydex.com/pokemon/v1/ja/cards requires X-Api-Key and X-Team-ID",
+      "prices": "Not requested",
+      "images": "The public CDN is not an id check. Unknown ids, including tcgcsv pattern ids, return one card-back PNG.",
+      "used": false,
+      "docs": "https://scrydex.com/docs/pokemon/api-reference",
+      "terms": {
+        "url": "https://scrydex.com/terms",
+        "quotes": [
+          "Resell, sublicense, redistribute, mirror, or commercially exploit the Services without prior written authorization from Scrydex.",
+          "Use the Services primarily as a substitute backend, proxy, or wholesale data source for a competing commercial product or service without written authorization from Scrydex.",
+          "Any third-party card data, metadata, trademarks, or related content accessible through the Services remains the property of its respective owners or licensors. Scrydex does not claim ownership of third-party intellectual property.",
+          "Except as expressly permitted under these Terms, no rights are granted to you by implication or otherwise."
+        ]
+      }
+    },
+    {
+      "name": "pokemontcgapi.com",
+      "covers": "Not the pokemontcg.io API. The terms page navigation labels Sealed product prices and Japanese card API. That is a label, not a coverage count. The API was not called. A key is required.",
+      "used": false,
+      "terms": {
+        "url": "https://pokemontcgapi.com/legal/terms",
+        "lastUpdated": "2026-09-18",
+        "quotes": [
+          "pokemontcgapi.com is a read-only REST API over a factual database of published Pokémon Trading Card Game cards and sets, together with dated price observations for those cards.",
+          "Unofficial. Not produced, endorsed, supported by or affiliated with Nintendo, Creatures Inc., GAME FREAK inc. or The Pokémon Company International.",
+          "We publish facts about published cards: names, numbers, set membership, release dates, rarities, artist credits, images and observed prices. We do not claim any right in the underlying works, we do not use any third-party logo, wordmark or typeface in our branding, and nothing you receive from this API is a licence to use anybody’s trademarks.",
+          "You may build anything on this API, including a commercial product. You may not: redistribute the price observations as a dataset, a feed, a dump or a mirror, or operate a competing price API on top of them",
+          "use the service to build or train a product whose purpose is to reproduce the catalogue as a substitute for it",
+          "Card images are served for identification, on signed URLs that expire, for display inside your application; systematically downloading or mirroring the images is not permitted.",
+          "In practice: you may use price observations inside your own product, including commercially, under your plan. You may not resell them as data."
+        ]
+      }
+    }
+  ]
+}

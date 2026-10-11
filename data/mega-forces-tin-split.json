@@ -1,0 +1,43 @@
+{
+  "sourceDate": "2026-10-11",
+  "id": "mega-forces-tin",
+  "written": false,
+  "reason": "Split only when all three arts have a TCGplayer market price. Two have no prices row.",
+  "pricesSource": "https://tcgcsv.com/tcgplayer/3/2374/prices",
+  "productsSource": "https://tcgcsv.com/tcgplayer/3/2374/products",
+  "arts": [
+    {
+      "productId": 702505,
+      "tcgcsvName": "Mega Forces Tin [Mega Dragonite ex]",
+      "rowId": "tcgcsv-702505",
+      "pricesRows": 0,
+      "marketPrice": null
+    },
+    {
+      "productId": 702506,
+      "tcgcsvName": "Mega Forces Tin [Mega Darkrai ex]",
+      "rowId": "tcgcsv-702506",
+      "pricesRows": 0,
+      "marketPrice": null
+    },
+    {
+      "productId": 702507,
+      "tcgcsvName": "Mega Forces Tin [Mega Zeraora ex]",
+      "rowId": "tcgcsv-702507",
+      "pricesRows": 1,
+      "marketPrice": 52.27
+    }
+  ],
+  "notArts": [
+    {
+      "productId": 702508,
+      "tcgcsvName": "Mega Forces Tin [Set of 3]",
+      "note": "Set of 3, not an art. Already its own row."
+    },
+    {
+      "productId": 702509,
+      "tcgcsvName": "Mega Forces Tin Case",
+      "note": "Case, not an art. Already browse:false."
+    }
+  ]
+}
