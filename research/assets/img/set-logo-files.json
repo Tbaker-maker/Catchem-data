@@ -1,0 +1,87 @@
+{
+  "rule": "A Post Office catalogue logo is research/assets/img/{setId}/logo.png. The file is an official pokemon.com set logo, trimmed to the artwork. The same trim on the Mega Evolution logo matches the catalogue logo pixel for pixel. A set with no allowed logo file is listed under missing and is left on the tile.",
+  "listed": [
+    "me55",
+    "me2pt5",
+    "me3",
+    "me4",
+    "me5",
+    "mee",
+    "me55c"
+  ],
+  "present": [
+    {
+      "id": "me55",
+      "file": "research/assets/img/me55/logo.png",
+      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/me_series/30th/30th_logo_169_en.png",
+      "rawBytes": 94152,
+      "rawWidth": 578,
+      "rawHeight": 325,
+      "bytes": 85964,
+      "width": 409,
+      "height": 226,
+      "sha256": "d5cfd412787700016f043b6e3fd88b5b7e5b795576f8886053e8368ce9e736e4"
+    },
+    {
+      "id": "me2pt5",
+      "file": "research/assets/img/me2pt5/logo.png",
+      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/me_series/me2pt5/me2pt5_logo_169_en.png",
+      "rawBytes": 153224,
+      "rawWidth": 578,
+      "rawHeight": 325,
+      "bytes": 142180,
+      "width": 505,
+      "height": 254,
+      "sha256": "c87b4323e6657f37b7475ca734ffd688c813835434d87b0502506656c4ad08f6"
+    },
+    {
+      "id": "me3",
+      "file": "research/assets/img/me3/logo.png",
+      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/me_series/me03/me03_logo_169_en.png",
+      "rawBytes": 98605,
+      "rawWidth": 578,
+      "rawHeight": 325,
+      "bytes": 91309,
+      "width": 458,
+      "height": 204,
+      "sha256": "cdac259a41476cfc64051772f3b4f4696515a847d77a7d05d9ff7593af4e1a5a"
+    },
+    {
+      "id": "me4",
+      "file": "research/assets/img/me4/logo.png",
+      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/me_series/me04/me04_logo_169_en.png",
+      "rawBytes": 136718,
+      "rawWidth": 578,
+      "rawHeight": 325,
+      "bytes": 127320,
+      "width": 549,
+      "height": 157,
+      "sha256": "32ce41eac17f95f19bcd52802ddc4bedf2648e61c4efd21c9bf59b0c4f059519"
+    },
+    {
+      "id": "me5",
+      "file": "research/assets/img/me5/logo.png",
+      "source": "https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/series/me_series/me05/me05_logo_169_en.png",
+      "rawBytes": 101987,
+      "rawWidth": 578,
+      "rawHeight": 325,
+      "bytes": 95853,
+      "width": 555,
+      "height": 154,
+      "sha256": "e271a4b86a0c6e34f81174b364dd3dd81884ebeea4607d46c08ed5112e981268"
+    }
+  ],
+  "missing": [
+    {
+      "id": "mee",
+      "slug": "mee-mega-evolution-energies",
+      "reason": "No official pokemon.com set logo at the series path used by the other Mega Evolution logos (me_series/{code}/{code}_logo_169_en.png). That URL returns S3 AccessDenied, 111 bytes. data/set-logos.json has no mee key (fetchedAt 2026-10-06T13:26:26.731Z, count 176). Left on the tile."
+    },
+    {
+      "id": "me55c",
+      "slug": "me-30th-celebration",
+      "name": "30th Celebration: Classic Collection",
+      "reason": "me55c is a set id in data/set-logos.json (30th Celebration: Classic Collection, releaseDate 2026/09/16). It has no separate official pokemon.com logo file. me55c_logo_169_en.png and classic-collection_logo_169_en.png return S3 AccessDenied, 111 bytes. The 30th Celebration logo is the parent file at research/assets/img/me55/logo.png. No second file was written."
+    }
+  ]
+}
