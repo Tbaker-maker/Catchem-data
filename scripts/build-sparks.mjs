@@ -8,9 +8,9 @@ import { packSpark } from "./lib/spark30.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "research/assets/public");
 
-export async function writeSparks(outDir = OUT) {
-  const counts = JSON.parse(await readFile(join(outDir, "counts.json"), "utf8"));
-  const asOf = String(counts.asOf || "").slice(0, 10);
+// asOfDay: pass the catalog day when counts.json has not been rewritten yet in this run.
+export async function writeSparks(outDir = OUT, asOfDay = null) {
+  const asOf = String(asOfDay || JSON.parse(await readFile(join(outDir, "counts.json"), "utf8")).asOf || "").slice(0, 10);
   const dir = join(outDir, "buckets");
   const names = (await readdir(dir)).filter((name) => /^\d{2}\.json$/.test(name));
   const dest = join(outDir, "sparks");
