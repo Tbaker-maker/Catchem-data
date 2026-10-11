@@ -13,7 +13,7 @@ Sealed
 - Celebrations Elite Trainer Box — 6 in 7 days, 9 in 30, streak 6
 - Stellar Crown Booster Pack — 4 in 7 days, 9 in 30, streak 0
 - Prismatic Evolutions Surprise Box — 5 in 7 days, 8 in 30, streak 3
-- Temporal Forces Pokemon Center Elite Trainer Box — 3 in 7 days, 6 in 30, streak 0
+- Temporal Forces Booster Pack — 3 in 7 days, 6 in 30, streak 2
 
 Singles
 - Surfing Pikachu VMAX — 0 in 7 days, 1 in 30, streak 1
@@ -29,7 +29,7 @@ Tracked 10. Graded 1. Hits 0. Misses 1. Hit rate 0%.
 
 ## 4. Sealed line and chase line
 These are two lines. They are not one number.
-- 151: sealed 98.6; chase building history (Charizard ex, Blastoise ex, Venusaur ex)
-- Ascended Heroes: sealed 90.8; chase building history (Mega Dragonite ex, Mega Dragonite ex, Mega Gengar ex)
-- Astral Radiance: sealed 102.4; chase 95.2 (Machamp V, Origin Forme Palkia V, Beedrill V)
+- 151: sealed 98.9; chase building history (Charizard ex, Blastoise ex, Venusaur ex)
+- Ascended Heroes: sealed 91.3; chase building history (Mega Dragonite ex, Mega Dragonite ex, Mega Gengar ex)
+- Astral Radiance: sealed 102.5; chase 95.2 (Machamp V, Origin Forme Palkia V, Beedrill V)
 - Base Set: sealed building history; chase building history
