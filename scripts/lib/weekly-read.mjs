@@ -1,17 +1,29 @@
-// Fixed weekly outline. Sections stay in this order even when a source is missing.
+// Fixed weekly outline. Public file only. Track record lives in catchem-data-private.
 import { BOARD_MAX, POST_CAP, capPost } from "./second-library.mjs";
 
-const BANNED = /\b(buy|hold|plays|targets|bullish|calls|picks|floor|support line|crash)\b/i;
+const BANNED = /\b(buy|hold|plays|targets|bullish|calls|picks|floor|support line|crash|hit rate|hits|misses)\b/i;
 
-export function weeklyRead({ asOf, heat = [], repeat = null, receipts = null, sets = [] }) {
+export function dedupeNames(names) {
+  const seen = new Set();
+  const out = [];
+  for (const name of names || []) {
+    const key = String(name || "").trim().toLowerCase();
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    out.push(name);
+  }
+  return out;
+}
+
+export function weeklyRead({ asOf, heat = [], repeat = null, sets = [] }) {
   const movers = (heat || []).slice(0, Math.min(6, BOARD_MAX)).map((p) => ({
     id: p.id,
     name: p.name,
     heat: p.label || "Steady",
   }));
   const keeps = {
-    sealed: (repeat?.sealed?.rows || []).slice(0, 5).map(brief),
-    singles: (repeat?.singles?.rows || []).slice(0, 5).map(brief),
+    sealed: (repeat?.sealed?.rows || []).slice(0, 5).map(brief).filter((r) => r.days7 > 0),
+    singles: (repeat?.singles?.rows || []).slice(0, 5).map(brief).filter((r) => r.days7 > 0),
     status: repeat?.status || "building history",
   };
   const lines = (sets || []).slice(0, 4).map((s) => ({
@@ -20,18 +32,20 @@ export function weeklyRead({ asOf, heat = [], repeat = null, receipts = null, se
     sealedStatus: s.sealed?.status || "building history",
     chase: s.chase?.status === "live" ? s.chase.level : null,
     chaseStatus: s.chase?.status || "building history",
-    chaseNames: s.chase?.names || [],
+    chaseNames: dedupeNames(s.chase?.names || []),
   }));
-  const doc = {
+  const sections = [];
+  if (movers.length >= 3) sections.push("heat");
+  if (keeps.sealed.length >= 3 || keeps.singles.length >= 3) sections.push("keepsShowingUp");
+  if (lines.length >= 3) sections.push("sealedAndChase");
+  return {
     asOf,
-    title: `Weekly Read — ${asOf}`,
-    sections: ["heat", "keepsShowingUp", "readsWeTracked", "sealedAndChase"],
+    title: `Weekly Read, ${asOf}`,
+    sections,
     heat: movers,
     keepsShowingUp: keeps,
-    readsWeTracked: receipts || { tracked: 0, graded: 0, hits: 0, misses: 0, hitRate: null, biggestHits: [], biggestMisses: [], open: 0 },
     sealedAndChase: lines,
   };
-  return doc;
 }
 
 function brief(r) {
@@ -39,46 +53,27 @@ function brief(r) {
 }
 
 export function weeklyMarkdown(doc) {
-  const heat = doc.heat.length
-    ? doc.heat.map((p) => `- ${p.name} — ${p.heat}`).join("\n")
-    : "- No heat list in this run.";
-  const side = (rows, label) => rows.length
-    ? rows.map((r) => `- ${r.name} — ${r.days7} in 7 days, ${r.days30} in 30, streak ${r.streak}`).join("\n")
-    : `- ${label}: building history.`;
-  const rec = doc.readsWeTracked;
-  const both = [
-    ...(rec.biggestHits || []).map((r) => `- Hit — ${r.name} (${r.kind}) ${r.movePct == null ? "" : r.movePct + "%"}`.trim()),
-    ...(rec.biggestMisses || []).map((r) => `- Miss — ${r.name} (${r.kind}) ${r.movePct == null ? "" : r.movePct + "%"}`.trim()),
-  ];
-  const lines = doc.sealedAndChase.length
-    ? doc.sealedAndChase.map((s) => `- ${s.set}: sealed ${s.sealedStatus === "live" ? s.sealed : "building history"}; chase ${s.chaseStatus === "live" ? s.chase : "building history"}${s.chaseNames?.length ? ` (${s.chaseNames.join(", ")})` : ""}`).join("\n")
-    : "- Set lines are not in this run.";
-  const md = `# ${doc.title}
-
-Video outline. Same four parts every week. Say "reads we tracked". Do not say a name is a play or a target.
-
-## 1. Heat
-${heat}
-
-## 2. Keeps showing up
-Status: ${doc.keepsShowingUp.status}
-
-Sealed
-${side(doc.keepsShowingUp.sealed, "Sealed")}
-
-Singles
-${side(doc.keepsShowingUp.singles, "Singles")}
-
-## 3. Reads we tracked
-Tracked ${rec.tracked}. Graded ${rec.graded}. Hits ${rec.hits}. Misses ${rec.misses}. Hit rate ${rec.hitRate == null ? "not enough yet" : rec.hitRate + "%"}.
-
-${both.length ? both.join("\n") : "- Nothing graded yet. The misses will sit in this list with the hits."}
-
-## 4. Sealed line and chase line
-These are two lines. They are not one number.
-${lines}
-`;
+  const parts = [`# ${doc.title}`, "", "Video outline. Same parts every week. Do not say a name is a move to make."];
+  if (doc.heat.length >= 3) {
+    parts.push("", "## Heat", doc.heat.map((p) => `- ${p.name}: ${p.heat}`).join("\n"));
+  }
+  const sealed = (doc.keepsShowingUp.sealed || []).filter((r) => r.days7 > 0);
+  const singles = (doc.keepsShowingUp.singles || []).filter((r) => r.days7 > 0);
+  if (sealed.length >= 3 || singles.length >= 3) {
+    parts.push("", "## Keeps showing up", `Status: ${doc.keepsShowingUp.status}`);
+    if (sealed.length >= 3) parts.push("", "Sealed", sealed.map((r) => `- ${r.name}: ${r.days7} in 7 days, ${r.days30} in 30, streak ${r.streak}`).join("\n"));
+    if (singles.length >= 3) parts.push("", "Singles", singles.map((r) => `- ${r.name}: ${r.days7} in 7 days, ${r.days30} in 30, streak ${r.streak}`).join("\n"));
+  }
+  if (doc.sealedAndChase.length >= 3) {
+    const lines = doc.sealedAndChase.map((s) => {
+      const names = dedupeNames(s.chaseNames);
+      return `- ${s.set}: sealed ${s.sealedStatus === "live" ? s.sealed : "building history"}; chase ${s.chaseStatus === "live" ? s.chase : "building history"}${names.length ? ` (${names.join(", ")})` : ""}`;
+    }).join("\n");
+    parts.push("", "## Sealed line and chase line", "These are two lines. They are not one number.", lines);
+  }
+  const md = parts.join("\n") + "\n";
   if (BANNED.test(md)) throw new Error("weekly outline used a banned word");
+  if (md.includes("\u2014") || md.includes("\u2013")) throw new Error("weekly outline used a dash");
   const capped = capPost(md, POST_CAP);
   if (capped.length > POST_CAP) throw new Error("weekly post is over 1800 characters");
   return capped;

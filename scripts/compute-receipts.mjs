@@ -65,7 +65,7 @@ const doc = {
   ...summary,
   reads: reads.map(({ id, name, kind, date, result, movePct: pct }) => ({ id, name, kind, date, result, movePct: pct })),
 };
-const out = join(ROOT, "data/derived/receipts-weekly.json");
+const out = join(ROOT, "data/private/receipts-weekly.json");
 await mkdir(dirname(out), { recursive: true });
 await writeFile(out, JSON.stringify(doc, null, 1) + "\n");
 console.log(`receipts: tracked ${summary.tracked}, graded ${summary.graded}, hit rate ${summary.hitRate}`);

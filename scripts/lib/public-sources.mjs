@@ -23,7 +23,6 @@ export const READERS = [
   { file: "research/assets/public/search-rank.mjs", readers: ["site"], writer: "scripts/build-public-bundle.mjs", live: false, dateRequired: false },
   { file: "data/sealed-prices.json", readers: ["bot"], writer: "scripts/fetch-sealed-prices.mjs", live: true, dateRequired: true },
   { file: "data/derived/weekly-read.json", readers: ["bot"], writer: "scripts/compute-weekly-read.mjs", live: true, dateRequired: true },
-  { file: "data/derived/receipts-weekly.json", readers: ["bot"], writer: "scripts/compute-weekly-read.mjs", live: true, dateRequired: true },
   { file: "research/assets/the-pulse.html", readers: ["site"], writer: "scripts/generate-pulse.mjs", live: false, dateRequired: false, note: "HTML. The date is inside the page, not a JSON field this check reads." },
   { file: "data/ppt/run-report.json", readers: ["site"], writer: "scripts/write-run-report.mjs", live: true, dateRequired: true },
   { file: "research/pulse/pulse-feed.json", readers: ["bot-rehearsal"], writer: "scripts/generate-pulse.mjs", live: true, dateRequired: true, note: "tests/rehearse_raffle_001.py only. Not a live cog." },

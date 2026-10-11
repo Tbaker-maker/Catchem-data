@@ -9,13 +9,11 @@ const asOf = new Date().toISOString().slice(0, 10);
 const heatDoc = await read("data/heat-check.json");
 const heat = [...(heatDoc?.products || [])].sort((a, b) => (b.score || 0) - (a.score || 0));
 const repeat = await read("data/derived/repeat-rank.json");
-const receipts = await read("data/derived/receipts-weekly.json");
 const lines = await read("data/derived/set-lines.json");
 const doc = weeklyRead({
   asOf,
   heat,
   repeat,
-  receipts,
   sets: lines?.sets || [],
 });
 doc.generatedAt = new Date().toISOString();
