@@ -1,27 +1,9 @@
 {
   "sourceDate": "2026-10-10",
   "rule": "A Catch'em SKU gets a tcgPlayerId only from a hard id. A name match is not a link. TCGCSV products that were not already linked are their own rows, id tcgcsv-{productId}.",
-  "trackedStillMissing": 85,
+  "trackedStillMissing": 39,
   "addedByOwnProductId": 2791,
   "products": [
-    {
-      "id": "swsh5-pack",
-      "setId": "swsh5",
-      "subtype": "booster-pack",
-      "tcgPlayerId": null,
-      "groupId": 1853,
-      "groupJoin": "ptcgoCode BST equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "me1-pack",
-      "setId": "me1",
-      "subtype": "booster-pack",
-      "tcgPlayerId": null,
-      "groupId": 24380,
-      "groupJoin": "ptcgoCode MEG equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
     {
       "id": "det1-etb",
       "setId": "det1",
@@ -29,7 +11,8 @@
       "tcgPlayerId": null,
       "groupId": null,
       "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
+      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name",
+      "verifiedCheck2026_10_10": "no product of this exact type in the TCGCSV group: group 2409 Detective Pikachu has no Elite Trainer Box"
     },
     {
       "id": "xy12-etb",
@@ -38,7 +21,8 @@
       "tcgPlayerId": null,
       "groupId": null,
       "groupJoin": "art split already on the art rows",
-      "why": "already split: each art row has its own productId and this all-arts row has none"
+      "why": "already split: each art row has its own productId and this all-arts row has none",
+      "verifiedCheck2026_10_10": "already split by art; the parent stays null on purpose"
     },
     {
       "id": "me2pt5-tin",
@@ -47,7 +31,8 @@
       "tcgPlayerId": null,
       "groupId": null,
       "groupJoin": "art split already on the art rows",
-      "why": "already split: each art row has its own productId and this all-arts row has none"
+      "why": "already split: each art row has its own productId and this all-arts row has none",
+      "verifiedCheck2026_10_10": "already split by art; the parent stays null on purpose"
     },
     {
       "id": "mega-forces-tin",
@@ -56,16 +41,8 @@
       "tcgPlayerId": null,
       "groupId": 24541,
       "groupJoin": "ptcgoCode ASC equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "sm1-booster-box",
-      "setId": "sm1",
-      "subtype": "booster-box",
-      "tcgPlayerId": null,
-      "groupId": null,
-      "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
+      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name",
+      "verifiedCheck2026_10_10": "two or more arts or editions of this exact product exist on TCGCSV; none picked: group 2374: [Mega Dragonite ex] 702505, [Mega Darkrai ex] 702506, [Mega Zeraora ex] 702507"
     },
     {
       "id": "sm1-etb",
@@ -74,7 +51,8 @@
       "tcgPlayerId": null,
       "groupId": null,
       "groupJoin": "art split already on the art rows",
-      "why": "already split: each art row has its own productId and this all-arts row has none"
+      "why": "already split: each art row has its own productId and this all-arts row has none",
+      "verifiedCheck2026_10_10": "already split by art; the parent stays null on purpose"
     },
     {
       "id": "sm5-etb",
@@ -83,79 +61,8 @@
       "tcgPlayerId": null,
       "groupId": null,
       "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "sm7-etb",
-      "setId": "sm7",
-      "subtype": "etb",
-      "tcgPlayerId": null,
-      "groupId": 2278,
-      "groupJoin": "ptcgoCode CES equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "sm8-booster-box",
-      "setId": "sm8",
-      "subtype": "booster-box",
-      "tcgPlayerId": null,
-      "groupId": null,
-      "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "sm8-etb",
-      "setId": "sm8",
-      "subtype": "etb",
-      "tcgPlayerId": null,
-      "groupId": null,
-      "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "sm9-booster-box",
-      "setId": "sm9",
-      "subtype": "booster-box",
-      "tcgPlayerId": null,
-      "groupId": null,
-      "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "sm9-etb",
-      "setId": "sm9",
-      "subtype": "etb",
-      "tcgPlayerId": null,
-      "groupId": null,
-      "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "sm10-etb",
-      "setId": "sm10",
-      "subtype": "etb",
-      "tcgPlayerId": null,
-      "groupId": null,
-      "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "sm11-etb",
-      "setId": "sm11",
-      "subtype": "etb",
-      "tcgPlayerId": null,
-      "groupId": null,
-      "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "sm12-cosmic-etb",
-      "setId": "sm12",
-      "subtype": "etb",
-      "tcgPlayerId": null,
-      "groupId": null,
-      "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
+      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name",
+      "verifiedCheck2026_10_10": "two or more arts or editions of this exact product exist on TCGCSV; none picked: group 2178: [Dawn Wings Necrozma] 155663, [Dusk Mane Necrozma] 155664"
     },
     {
       "id": "sv8-bb",
@@ -164,16 +71,8 @@
       "tcgPlayerId": null,
       "groupId": null,
       "groupJoin": "art split already on the art rows",
-      "why": "already split: each art row has its own productId and this all-arts row has none"
-    },
-    {
-      "id": "swsh5-booster-box",
-      "setId": "swsh5",
-      "subtype": "booster-box",
-      "tcgPlayerId": null,
-      "groupId": 1853,
-      "groupJoin": "ptcgoCode BST equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
+      "why": "already split: each art row has its own productId and this all-arts row has none",
+      "verifiedCheck2026_10_10": "already split by art; the parent stays null on purpose"
     },
     {
       "id": "swsh5-etb",
@@ -182,7 +81,8 @@
       "tcgPlayerId": null,
       "groupId": null,
       "groupJoin": "art split already on the art rows",
-      "why": "already split: each art row has its own productId and this all-arts row has none"
+      "why": "already split: each art row has its own productId and this all-arts row has none",
+      "verifiedCheck2026_10_10": "already split by art; the parent stays null on purpose"
     },
     {
       "id": "swsh6-etb",
@@ -191,7 +91,8 @@
       "tcgPlayerId": null,
       "groupId": null,
       "groupJoin": "art split already on the art rows",
-      "why": "already split: each art row has its own productId and this all-arts row has none"
+      "why": "already split: each art row has its own productId and this all-arts row has none",
+      "verifiedCheck2026_10_10": "already split by art; the parent stays null on purpose"
     },
     {
       "id": "cel25-bb",
@@ -200,7 +101,8 @@
       "tcgPlayerId": null,
       "groupId": null,
       "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
+      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name",
+      "verifiedCheck2026_10_10": "no product of this exact type in the TCGCSV group: groups 2867/2931 have no Celebrations Booster Bundle"
     },
     {
       "id": "swsh6-pc-etb",
@@ -209,7 +111,8 @@
       "tcgPlayerId": null,
       "groupId": null,
       "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
+      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name",
+      "verifiedCheck2026_10_10": "two or more arts or editions of this exact product exist on TCGCSV; none picked: 247281 Ice Rider, 247282 Shadow Rider"
     },
     {
       "id": "swsh7-pc-etb",
@@ -218,61 +121,8 @@
       "tcgPlayerId": null,
       "groupId": null,
       "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "swsh8-pc-etb",
-      "setId": "swsh8",
-      "subtype": "pc-etb",
-      "tcgPlayerId": null,
-      "groupId": null,
-      "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "swsh9-pc-etb",
-      "setId": "swsh9",
-      "subtype": "pc-etb",
-      "tcgPlayerId": null,
-      "groupId": null,
-      "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "swsh10-pc-etb",
-      "setId": "swsh10",
-      "subtype": "pc-etb",
-      "tcgPlayerId": null,
-      "groupId": null,
-      "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "swsh11-pc-etb",
-      "setId": "swsh11",
-      "subtype": "pc-etb",
-      "tcgPlayerId": null,
-      "groupId": null,
-      "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "swsh12-pc-etb",
-      "setId": "swsh12",
-      "subtype": "pc-etb",
-      "tcgPlayerId": null,
-      "groupId": null,
-      "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "swsh12pt5-pc-etb",
-      "setId": "swsh12pt5",
-      "subtype": "pc-etb",
-      "tcgPlayerId": null,
-      "groupId": null,
-      "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
+      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name",
+      "verifiedCheck2026_10_10": "two or more arts or editions of this exact product exist on TCGCSV; none picked: 245352 Glaceon/Vaporeon/Sylveon/Espeon, 245376 Jolteon/Flareon/Umbreon/Leafeon"
     },
     {
       "id": "sv1-pc-etb",
@@ -281,34 +131,8 @@
       "tcgPlayerId": null,
       "groupId": 22873,
       "groupJoin": "ptcgoCode SVI equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "sv2-pc-etb",
-      "setId": "sv2",
-      "subtype": "pc-etb",
-      "tcgPlayerId": null,
-      "groupId": 23120,
-      "groupJoin": "ptcgoCode PAL equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "sv3-pc-etb",
-      "setId": "sv3",
-      "subtype": "pc-etb",
-      "tcgPlayerId": null,
-      "groupId": 23228,
-      "groupJoin": "ptcgoCode OBF equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "sv3pt5-pc-etb",
-      "setId": "sv3pt5",
-      "subtype": "pc-etb",
-      "tcgPlayerId": null,
-      "groupId": 23237,
-      "groupJoin": "ptcgoCode MEW equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
+      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name",
+      "verifiedCheck2026_10_10": "two or more arts or editions of this exact product exist on TCGCSV; none picked: 478756 Miraidon, 478758 Koraidon"
     },
     {
       "id": "sv4-pc-etb",
@@ -317,16 +141,8 @@
       "tcgPlayerId": null,
       "groupId": 23286,
       "groupJoin": "ptcgoCode PAR equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "sv4pt5-pc-etb",
-      "setId": "sv4pt5",
-      "subtype": "pc-etb",
-      "tcgPlayerId": null,
-      "groupId": 23353,
-      "groupJoin": "ptcgoCode PAF equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
+      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name",
+      "verifiedCheck2026_10_10": "two or more arts or editions of this exact product exist on TCGCSV; none picked: 512801 Iron Valiant, 512809 Roaring Moon"
     },
     {
       "id": "sv5-pc-etb",
@@ -335,124 +151,8 @@
       "tcgPlayerId": null,
       "groupId": 23381,
       "groupJoin": "ptcgoCode TEF equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "sv6-pc-etb",
-      "setId": "sv6",
-      "subtype": "pc-etb",
-      "tcgPlayerId": null,
-      "groupId": 23473,
-      "groupJoin": "ptcgoCode TWM equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "sv6pt5-pc-etb",
-      "setId": "sv6pt5",
-      "subtype": "pc-etb",
-      "tcgPlayerId": null,
-      "groupId": 23529,
-      "groupJoin": "ptcgoCode SFA equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "sv7-pc-etb",
-      "setId": "sv7",
-      "subtype": "pc-etb",
-      "tcgPlayerId": null,
-      "groupId": 23537,
-      "groupJoin": "ptcgoCode SCR equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "sv8-pc-etb",
-      "setId": "sv8",
-      "subtype": "pc-etb",
-      "tcgPlayerId": null,
-      "groupId": 23651,
-      "groupJoin": "ptcgoCode SSP equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "sv8pt5-pc-etb",
-      "setId": "sv8pt5",
-      "subtype": "pc-etb",
-      "tcgPlayerId": null,
-      "groupId": 23821,
-      "groupJoin": "ptcgoCode PRE equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "sv9-pc-etb",
-      "setId": "sv9",
-      "subtype": "pc-etb",
-      "tcgPlayerId": null,
-      "groupId": 24073,
-      "groupJoin": "ptcgoCode JTG equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "sv10-pc-etb",
-      "setId": "sv10",
-      "subtype": "pc-etb",
-      "tcgPlayerId": null,
-      "groupId": 24269,
-      "groupJoin": "ptcgoCode DRI equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "zsv10pt5-bb-pc-etb",
-      "setId": "zsv10pt5",
-      "subtype": "pc-etb",
-      "tcgPlayerId": null,
-      "groupId": 24325,
-      "groupJoin": "ptcgoCode BLK equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "rsv10pt5-wf-pc-etb",
-      "setId": "rsv10pt5",
-      "subtype": "pc-etb",
-      "tcgPlayerId": null,
-      "groupId": 24326,
-      "groupJoin": "ptcgoCode WHT equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "me5-pc-etb",
-      "setId": "me5",
-      "subtype": "pc-etb",
-      "tcgPlayerId": null,
-      "groupId": 24688,
-      "groupJoin": "ptcgoCode PBL equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "me4-pc-etb",
-      "setId": "me4",
-      "subtype": "pc-etb",
-      "tcgPlayerId": null,
-      "groupId": 24655,
-      "groupJoin": "ptcgoCode CRI equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "me3-pc-etb",
-      "setId": "me3",
-      "subtype": "pc-etb",
-      "tcgPlayerId": null,
-      "groupId": 24587,
-      "groupJoin": "ptcgoCode POR equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "me2-pc-etb",
-      "setId": "me2",
-      "subtype": "pc-etb",
-      "tcgPlayerId": null,
-      "groupId": 24448,
-      "groupJoin": "ptcgoCode PFL equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
+      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name",
+      "verifiedCheck2026_10_10": "two or more arts or editions of this exact product exist on TCGCSV; none picked: 532853 Iron Leaves, 538775 Walking Wake"
     },
     {
       "id": "me1-etb",
@@ -461,7 +161,8 @@
       "tcgPlayerId": null,
       "groupId": null,
       "groupJoin": "art split already on the art rows",
-      "why": "already split: each art row has its own productId and this all-arts row has none"
+      "why": "already split: each art row has its own productId and this all-arts row has none",
+      "verifiedCheck2026_10_10": "already split by art; the parent stays null on purpose"
     },
     {
       "id": "me1-pc-etb",
@@ -470,16 +171,8 @@
       "tcgPlayerId": null,
       "groupId": 24380,
       "groupJoin": "ptcgoCode MEG equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "swsh-eevee-evolutions-premium",
-      "setId": "swsh45",
-      "subtype": "special-collection",
-      "tcgPlayerId": null,
-      "groupId": null,
-      "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
+      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name",
+      "verifiedCheck2026_10_10": "two or more arts or editions of this exact product exist on TCGCSV; none picked: 644282 Mega Lucario, 648415 Mega Gardevoir"
     },
     {
       "id": "sv5-etb",
@@ -488,7 +181,8 @@
       "tcgPlayerId": null,
       "groupId": null,
       "groupJoin": "art split already on the art rows",
-      "why": "already split: each art row has its own productId and this all-arts row has none"
+      "why": "already split: each art row has its own productId and this all-arts row has none",
+      "verifiedCheck2026_10_10": "already split by art; the parent stays null on purpose"
     },
     {
       "id": "swsh12pt5-premium",
@@ -497,7 +191,8 @@
       "tcgPlayerId": null,
       "groupId": null,
       "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
+      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name",
+      "verifiedCheck2026_10_10": "two or more arts or editions of this exact product exist on TCGCSV; none picked: several named Crown Zenith collections (505916 Unown V & Lugia V Special Collection, 454452 Pikachu VMAX Special Collection); the generic name does not pick one"
     },
     {
       "id": "swsh7-etb",
@@ -506,16 +201,8 @@
       "tcgPlayerId": null,
       "groupId": null,
       "groupJoin": "art split already on the art rows",
-      "why": "already split: each art row has its own productId and this all-arts row has none"
-    },
-    {
-      "id": "cel25-etb",
-      "setId": "cel25",
-      "subtype": "etb",
-      "tcgPlayerId": null,
-      "groupId": null,
-      "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
+      "why": "already split: each art row has its own productId and this all-arts row has none",
+      "verifiedCheck2026_10_10": "already split by art; the parent stays null on purpose"
     },
     {
       "id": "swsh1-etb",
@@ -524,7 +211,8 @@
       "tcgPlayerId": null,
       "groupId": null,
       "groupJoin": "art split already on the art rows",
-      "why": "already split: each art row has its own productId and this all-arts row has none"
+      "why": "already split: each art row has its own productId and this all-arts row has none",
+      "verifiedCheck2026_10_10": "already split by art; the parent stays null on purpose"
     },
     {
       "id": "bw1-booster-box",
@@ -533,7 +221,8 @@
       "tcgPlayerId": null,
       "groupId": null,
       "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
+      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name",
+      "verifiedCheck2026_10_10": "one candidate exists but TCGCSV has no TCGplayer market price for it, so the price check could not be done: 98552"
     },
     {
       "id": "hgss1-booster-box",
@@ -542,7 +231,8 @@
       "tcgPlayerId": null,
       "groupId": 1402,
       "groupJoin": "ptcgoCode HS equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
+      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name",
+      "verifiedCheck2026_10_10": "one candidate exists but TCGCSV has no TCGplayer market price for it, so the price check could not be done: 98531"
     },
     {
       "id": "base1-booster-box",
@@ -551,7 +241,8 @@
       "tcgPlayerId": null,
       "groupId": 604,
       "groupJoin": "ptcgoCode BS equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
+      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name",
+      "verifiedCheck2026_10_10": "one candidate exists but TCGCSV has no TCGplayer market price for it, so the price check could not be done: 185731 Base Set Booster Box [Revised Unlimited Edition]"
     },
     {
       "id": "base2-booster-box",
@@ -560,7 +251,8 @@
       "tcgPlayerId": null,
       "groupId": 635,
       "groupJoin": "ptcgoCode JU equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
+      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name",
+      "verifiedCheck2026_10_10": "two or more arts or editions of this exact product exist on TCGCSV; none picked: 107598 1st Edition, 107599 Unlimited; no market price"
     },
     {
       "id": "base3-booster-box",
@@ -569,7 +261,8 @@
       "tcgPlayerId": null,
       "groupId": 630,
       "groupJoin": "ptcgoCode FO equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
+      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name",
+      "verifiedCheck2026_10_10": "two or more arts or editions of this exact product exist on TCGCSV; none picked: 107600 Unlimited, 107601 1st Edition; no market price"
     },
     {
       "id": "neo1-booster-box",
@@ -578,52 +271,8 @@
       "tcgPlayerId": null,
       "groupId": 1396,
       "groupJoin": "ptcgoCode N1 equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "sv1-bundle",
-      "setId": "sv1",
-      "subtype": "booster-bundle",
-      "tcgPlayerId": null,
-      "groupId": 22873,
-      "groupJoin": "ptcgoCode SVI equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "sv2-bundle",
-      "setId": "sv2",
-      "subtype": "booster-bundle",
-      "tcgPlayerId": null,
-      "groupId": 23120,
-      "groupJoin": "ptcgoCode PAL equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "sv3-bundle",
-      "setId": "sv3",
-      "subtype": "booster-bundle",
-      "tcgPlayerId": null,
-      "groupId": 23228,
-      "groupJoin": "ptcgoCode OBF equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "sv4-bundle",
-      "setId": "sv4",
-      "subtype": "booster-bundle",
-      "tcgPlayerId": null,
-      "groupId": 23286,
-      "groupJoin": "ptcgoCode PAR equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "sv4pt5-pack",
-      "setId": "sv4pt5",
-      "subtype": "booster-pack",
-      "tcgPlayerId": null,
-      "groupId": 23353,
-      "groupJoin": "ptcgoCode PAF equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
+      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name",
+      "verifiedCheck2026_10_10": "two or more arts or editions of this exact product exist on TCGCSV; none picked: 193334 1st Edition, 193335 Unlimited; no market price"
     },
     {
       "id": "swsh1-bundle",
@@ -632,7 +281,8 @@
       "tcgPlayerId": null,
       "groupId": null,
       "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
+      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name",
+      "verifiedCheck2026_10_10": "no product of this exact type in the TCGCSV group: the set's TCGCSV group has no Booster Bundle (only pack art bundles or sleeved sets)"
     },
     {
       "id": "swsh10-bundle",
@@ -641,34 +291,8 @@
       "tcgPlayerId": null,
       "groupId": null,
       "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "swsh11-bundle",
-      "setId": "swsh11",
-      "subtype": "booster-bundle",
-      "tcgPlayerId": null,
-      "groupId": null,
-      "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "swsh12-bundle",
-      "setId": "swsh12",
-      "subtype": "booster-bundle",
-      "tcgPlayerId": null,
-      "groupId": null,
-      "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "swsh12pt5-pack",
-      "setId": "swsh12pt5",
-      "subtype": "booster-pack",
-      "tcgPlayerId": null,
-      "groupId": null,
-      "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
+      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name",
+      "verifiedCheck2026_10_10": "no product of this exact type in the TCGCSV group: the set's TCGCSV group has no Booster Bundle (only pack art bundles or sleeved sets)"
     },
     {
       "id": "swsh2-bundle",
@@ -677,7 +301,8 @@
       "tcgPlayerId": null,
       "groupId": null,
       "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
+      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name",
+      "verifiedCheck2026_10_10": "no product of this exact type in the TCGCSV group: the set's TCGCSV group has no Booster Bundle (only pack art bundles or sleeved sets)"
     },
     {
       "id": "swsh3-bundle",
@@ -686,7 +311,8 @@
       "tcgPlayerId": null,
       "groupId": null,
       "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
+      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name",
+      "verifiedCheck2026_10_10": "no product of this exact type in the TCGCSV group: the set's TCGCSV group has no Booster Bundle (only pack art bundles or sleeved sets)"
     },
     {
       "id": "swsh35-bundle",
@@ -695,7 +321,8 @@
       "tcgPlayerId": null,
       "groupId": null,
       "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
+      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name",
+      "verifiedCheck2026_10_10": "no product of this exact type in the TCGCSV group: the set's TCGCSV group has no Booster Bundle (only pack art bundles or sleeved sets)"
     },
     {
       "id": "swsh4-bundle",
@@ -704,16 +331,8 @@
       "tcgPlayerId": null,
       "groupId": null,
       "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
-    },
-    {
-      "id": "swsh45-pack",
-      "setId": "swsh45",
-      "subtype": "booster-pack",
-      "tcgPlayerId": null,
-      "groupId": null,
-      "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
+      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name",
+      "verifiedCheck2026_10_10": "no product of this exact type in the TCGCSV group: the set's TCGCSV group has no Booster Bundle (only pack art bundles or sleeved sets)"
     },
     {
       "id": "swsh45-bundle",
@@ -722,7 +341,8 @@
       "tcgPlayerId": null,
       "groupId": null,
       "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
+      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name",
+      "verifiedCheck2026_10_10": "no product of this exact type in the TCGCSV group: no SWSH Promos Booster Bundle on TCGCSV"
     },
     {
       "id": "swsh5-bundle",
@@ -731,7 +351,9 @@
       "tcgPlayerId": null,
       "groupId": 1853,
       "groupJoin": "ptcgoCode BST equals the only group abbreviation",
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
+      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name",
+      "verifiedCheck2026_10_10": "no product of this exact type in the TCGCSV group: the set's TCGCSV group has no Booster Bundle (only pack art bundles or sleeved sets)",
+      "groupNote": "group 1853 is EX Battle Stadium (abbreviation collision); Battle Styles is group 2765"
     },
     {
       "id": "swsh6-bundle",
@@ -740,7 +362,8 @@
       "tcgPlayerId": null,
       "groupId": null,
       "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
+      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name",
+      "verifiedCheck2026_10_10": "no product of this exact type in the TCGCSV group: the set's TCGCSV group has no Booster Bundle (only pack art bundles or sleeved sets)"
     },
     {
       "id": "swsh7-bundle",
@@ -749,7 +372,8 @@
       "tcgPlayerId": null,
       "groupId": null,
       "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
+      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name",
+      "verifiedCheck2026_10_10": "no product of this exact type in the TCGCSV group: the set's TCGCSV group has no Booster Bundle (only pack art bundles or sleeved sets)"
     },
     {
       "id": "swsh8-bundle",
@@ -758,7 +382,8 @@
       "tcgPlayerId": null,
       "groupId": null,
       "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
+      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name",
+      "verifiedCheck2026_10_10": "no product of this exact type in the TCGCSV group: the set's TCGCSV group has no Booster Bundle (only pack art bundles or sleeved sets)"
     },
     {
       "id": "swsh9-bundle",
@@ -767,7 +392,61 @@
       "tcgPlayerId": null,
       "groupId": null,
       "groupJoin": null,
-      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name"
+      "why": "no productType field on the TCGCSV product and no UPC on this SKU, so the productId was not guessed from the name",
+      "verifiedCheck2026_10_10": "no product of this exact type in the TCGCSV group: the set's TCGCSV group has no Booster Bundle (only pack art bundles or sleeved sets)"
     }
-  ]
+  ],
+  "verifiedById": {
+    "date": "2026-10-10",
+    "count": 46,
+    "method": "tcgcsv-verified-by-id",
+    "mergedAutoRows": [
+      "tcgcsv-126048",
+      "tcgcsv-170277",
+      "tcgcsv-175509",
+      "tcgcsv-175511",
+      "tcgcsv-181698",
+      "tcgcsv-181704",
+      "tcgcsv-185719",
+      "tcgcsv-193052",
+      "tcgcsv-199308",
+      "tcgcsv-229276",
+      "tcgcsv-229277",
+      "tcgcsv-232636",
+      "tcgcsv-242811",
+      "tcgcsv-247673",
+      "tcgcsv-256140",
+      "tcgcsv-265528",
+      "tcgcsv-277336",
+      "tcgcsv-278819",
+      "tcgcsv-283396",
+      "tcgcsv-285860",
+      "tcgcsv-286470",
+      "tcgcsv-453466",
+      "tcgcsv-454246",
+      "tcgcsv-478258",
+      "tcgcsv-493973",
+      "tcgcsv-496914",
+      "tcgcsv-501263",
+      "tcgcsv-501266",
+      "tcgcsv-501999",
+      "tcgcsv-512820",
+      "tcgcsv-528038",
+      "tcgcsv-528039",
+      "tcgcsv-543844",
+      "tcgcsv-552998",
+      "tcgcsv-557340",
+      "tcgcsv-565632",
+      "tcgcsv-593324",
+      "tcgcsv-610929",
+      "tcgcsv-624675",
+      "tcgcsv-630687",
+      "tcgcsv-630688",
+      "tcgcsv-644352",
+      "tcgcsv-654135",
+      "tcgcsv-672404",
+      "tcgcsv-684452",
+      "tcgcsv-692949"
+    ]
+  }
 }
