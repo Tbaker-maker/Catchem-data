@@ -45,7 +45,7 @@ export async function run() {
     asOf: "2026-10-08",
     source: "TCGplayer market",
     cards: {
-      a: card({ id: "move-tcgcsv-1-7", sku: "tcgcsv-1", headline: "Pikachu is up 16.2% over 7 days, from $6.05 to $7.03.", price: 7.03, changePct: 16.2, windowDays: 7 }),
+      a: card({ id: "move-tcgcsv-1-7", sku: "tcgcsv-1", headline: "Pikachu is up 17.2% over 7 days, from $6.00 to $7.03.", price: 7.03, changePct: 17.2, windowDays: 7 }),
       b: card({ id: "move-tcgcsv-2-7", sku: "tcgcsv-2", name: "Dragonair", headline: "Dragonair is down 7.5% over 7 days, from $18.88 to $17.46.", price: 17.46, changePct: -7.5, windowDays: 7 }),
       c: card({ id: "move-tcgcsv-3-30", sku: "tcgcsv-3", name: "Pidgey", headline: "Pidgey hit a 6-month high: $2.66, up 72.7% in 30 days.", price: 2.66, changePct: 72.7, windowDays: 30 }),
       d: card({ id: "move-tcgcsv-3-90", sku: "tcgcsv-3", name: "Pidgey", headline: "Pidgey hit a 6-month high: $2.66, up 9.9% in 90 days.", price: 2.66, changePct: 9.9, windowDays: 90 }),
@@ -56,7 +56,7 @@ export async function run() {
     },
   };
   const series = new Map([
-    [1, new Map([["2026-10-01", 6.05], ["2026-10-08", 7.03]])],
+    [1, new Map([["2026-10-01", 6], ["2026-10-08", 7.03]])],
     [2, new Map([["2026-10-01", 18.88], ["2026-10-08", 17.46]])],
     [3, new Map([["2026-04-01", 1], ["2026-07-10", 2.42], ["2026-09-08", 1.54], ["2026-10-08", 2.66]])],
     [4, new Map([["2026-10-01", 1], ["2026-10-08", 1.01]])],
@@ -85,11 +85,11 @@ export async function run() {
   t("plain takes at most two seats", lib.board.filter((row) => row.signal === "plain").length <= PLAIN_CAP);
   t("one sku is not boarded twice", new Set(lib.board.map((row) => row.sku)).size === lib.board.length);
   const streak = lib.board.find((row) => row.signal === "streak");
-  t("streak sentence uses the series price", streak && streak.headline.includes("has risen 4 days running") && streak.headline.includes("$5.00") && streak.sku === "tcgcsv-9");
+  t("streak shows both prices and both dates", streak && streak.headline.includes("$5.00") && streak.headline.includes("$1.00") && streak.headline.includes("2026-10-08") && streak.headline.includes("2026-10-04") && streak.sku === "tcgcsv-9");
   t("signals chip rows are movers, set moves, highs, and streaks", lib.signals.every((row) => ["mover", "set", "high", "streak"].includes(row.signal)) && lib.signals.some((row) => row.signal === "mover") && !lib.signals.some((row) => row.signal === "plain"));
   const mover = lib.board.find((row) => row.signal === "mover");
-  t("mover names the id and the 8% line", mover && mover.whyItMatters.includes("tcgcsv-1") && mover.whyItMatters.includes("at least 8%"));
-  t("wrong line says a listing is not a sale", lib.board.every((row) => row.whatWouldMakeThisWrong.includes("listing is not a sale")));
+  t("mover why is the dollar move and the id stays on the source line", mover && mover.whyItMatters === "Up $1.03 on those two dates." && !mover.whyItMatters.includes("tcgcsv-") && !mover.whyItMatters.includes("data/") && mover.sourceLine === "tcgcsv-1");
+  t("listing sentence is the footer once", lib.footer === "An ask is a listing price. A listing is not a sale." && lib.board.every((row) => !String(row.whatWouldMakeThisWrong).includes("listing is not a sale") && !String(row.whyItMatters).includes("listing is not a sale")));
   t("no banned word in a board line", lib.board.every((row) => !BANNED.test(row.headline) && !BANNED.test(row.whyItMatters) && !BANNED.test(row.whatWouldMakeThisWrong)));
   t("a 7.9% move is not a mover", explainRead(card({ id: "move-tcgcsv-8-7", sku: "tcgcsv-8", headline: "x", price: 10, changePct: 7.9, windowDays: 7 }), "mover") == null);
   t("streak minimum stays 4", STREAK_MIN === 4);

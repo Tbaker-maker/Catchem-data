@@ -3,9 +3,26 @@
 // Fill order is the order named for this job: movers, set moves, highs,
 // streaks, then plain price. Nothing else is boarded.
 
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
-import { BANNED, money } from "./public-bundle.mjs";
+import { BANNED, money, pretty } from "./public-bundle.mjs";
+import { flag } from "../flags.mjs";
+import {
+  FOOTER,
+  longWindowBlocked,
+  moverGate,
+  priceForm,
+  publishReads,
+  quietNight,
+  releaseReads,
+  scrub,
+  sealedWeekReads,
+  shapeReads,
+  streakGate,
+  turnedReads,
+  whyLeak,
+  whyPlain,
+} from "./read-quality.mjs";
 
 export const MOVER_PCT = 8;
 export const BOARD_MAX = 8;
@@ -15,6 +32,8 @@ export const STREAK_MIN = 4;
 export const BOARD_ORDER = ["mover", "set", "high", "streak", "plain"];
 export const SOURCE_NOTE = "TCGplayer market via TCGCSV, published the day before the date shown.";
 export const LIBRARY_FILE = "research/assets/public/feed/read-library.json";
+export const READS_FILE = "research/assets/public/reads.json";
+export { FOOTER };
 
 const BANNED_COPY = /\b(stored|printed|last print|took a bigger last step)\b/i;
 const MONTHS = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
@@ -95,12 +114,15 @@ function proveMove(row, series, asOf) {
   return windowAgrees({ ...row, asOf }, proof) ? proof : null;
 }
 
-function proveExtreme(row, series, asOf, kind) {
+function proveExtreme(row, series, asOf, kind, dailyFiles) {
   const proof = proveMove(row, series, asOf);
   const ex = extremeAt(series, skuOf(row), asOf);
   if (!proof || !ex?.sixMonths || cents(ex.max[1]) === cents(ex.min[1])) return null;
   if (kind === "high" && cents(ex.last[1]) !== cents(ex.max[1])) return null;
   if (kind === "low" && cents(ex.last[1]) !== cents(ex.min[1])) return null;
+  const pts = pointsOf(series, skuOf(row));
+  const have = new Set(pts.map((pt) => pt[0]));
+  if (longWindowBlocked({ ...row, _proof: proof, asOf }, dailyFiles, (day) => have.has(day))) return null;
   return proof;
 }
 
@@ -160,19 +182,8 @@ function pctOf(row) {
   return Number.isFinite(n) ? n : null;
 }
 
-function absText(n) {
-  if (Number.isInteger(n)) return String(Math.abs(n));
-  return String(Math.abs(n));
-}
-
-function way(n) {
-  if (n > 0) return "up";
-  if (n < 0) return "down";
-  return "";
-}
-
 function clean(text) {
-  const s = String(text || "").replace(/\s+/g, " ").trim();
+  const s = scrub(text);
   if (!s || BANNED.test(s) || BANNED_COPY.test(s)) return "";
   return s;
 }
@@ -187,32 +198,27 @@ export function explainRead(row, kind) {
   const proof = row?._proof || null;
   let why = "";
   let wrong = "";
-  if (kind === "mover" && proof && sku && price && days === 7 && change != null && Math.abs(change) >= MOVER_PCT) {
-    why = `A 7-day TCGplayer market move of ${absText(change)}% ${way(change)} on ${sku} is at least 8%, using the price on ${proof.start}, exactly 7 days before ${proof.end}. Latest price ${price}.`;
-    wrong = `Wrong if this is not ${sku}, if ${sku} has no price on ${proof.start}, or if the move is under 8%. A listing is not a sale.`;
+  if (kind === "mover" && proof && sku && price && days === 7 && change != null && moverGate(proof)) {
+    why = whyPlain(proof.from, proof.to);
+    wrong = "Wrong if either date has a different market price.";
   } else if (kind === "high" && proof && head.includes("6-month high") && sku) {
-    why = `The latest price on ${sku} is the highest price in a series that spans at least 150 days. The ${proof.days}-day change uses the price on ${proof.start}. Latest price ${price || ""} on ${proof.end}.`.replace(/\s+/g, " ").trim();
-    wrong = `Wrong if ${sku} has no price on ${proof.start}, exactly ${proof.days} days before ${proof.end}, or if the latest price is not the highest price in a series that spans at least 150 days. A listing is not a sale.`;
+    why = whyPlain(proof.from, proof.to);
+    wrong = "Wrong if the latest price is not the high on the dates checked.";
   } else if (kind === "low" && proof && head.includes("6-month low") && sku) {
-    why = `The latest price on ${sku} is the lowest price in a series that spans at least 150 days. The ${proof.days}-day change uses the price on ${proof.start}. Latest price ${price || ""} on ${proof.end}.`.replace(/\s+/g, " ").trim();
-    wrong = `Wrong if ${sku} has no price on ${proof.start}, exactly ${proof.days} days before ${proof.end}, or if the latest price is not the lowest price in a series that spans at least 150 days. A listing is not a sale.`;
-  } else if (kind === "streak" && proof && sku && asOf && price && Number(row?.streakN) >= STREAK_MIN) {
-    const n = Number(row.streakN);
-    const word = Number(row.streakDir) < 0 ? "Down" : "Up";
-    why = `${word} ${n} straight days on ${sku} through ${asOf}. Latest price ${price}. Each step is the next calendar day.`;
-    wrong = `Wrong if ${sku} has no price on any day from ${proof.start} through ${asOf}, or if one step did not move the same way. A listing is not a sale.`;
+    why = whyPlain(proof.from, proof.to);
+    wrong = "Wrong if the latest price is not the low on the dates checked.";
+  } else if (kind === "streak" && proof && sku && asOf && price && Number(row?.streakN) >= STREAK_MIN && proof.from != null) {
+    why = whyPlain(proof.from, proof.to);
+    wrong = "Wrong if a day in the run is missing or a step went the other way.";
   } else if (kind === "set" && proof && (row?.readKind === "lag" || row?.kind === "lag" || row?.readKind === "group" || row?.kind === "group")) {
-    why = clean(row?.why) || `Both series have a price on ${proof.start}, exactly ${proof.days} days before ${proof.end}.`;
-    wrong = `Wrong if the pack or the box has no price on ${proof.start}, exactly ${proof.days} days before ${proof.end}, or if an earlier day was used. A listing is not a sale.`;
+    why = clean(row?.why) || "Both series have a price on the two dates.";
+    wrong = "Wrong if the pack or the box has no price on the start date.";
   } else if (kind === "plain" && proof && sku && price && days === 7 && change != null && Math.abs(change) < MOVER_PCT) {
-    why = `Latest price ${price} on ${proof.end} for ${sku}. The 7-day move is ${absText(change)}% ${way(change)}, from the price on ${proof.start}, and it is under the 8% mover line.`;
-    wrong = `Wrong if this is not ${sku}, if ${sku} has no price on ${proof.start}, or if the 7-day move is 8% or more. A listing is not a sale.`;
+    why = whyPlain(proof.from, proof.to);
+    wrong = "Wrong if either date has a different market price.";
   } else if ((!kind || kind === "read") && sku && (head || price)) {
-    const bits = [`This read is product id ${sku}`];
-    if (asOf) bits.push(`as of ${asOf}`);
-    if (price) bits.push(`latest price ${price}`);
-    why = `${bits.join(", ")}.`;
-    wrong = `Wrong if the sentence names a different product than ${sku}. A listing is not a sale.`;
+    why = "This is the market price on the date shown.";
+    wrong = "Wrong if the sentence names a different price.";
   }
   why = clean(why);
   wrong = clean(wrong);
@@ -255,17 +261,36 @@ function onePerSku(rows, prefer) {
   return [...best.values()];
 }
 
+function shownHeadline(row, kind) {
+  const proof = row?._proof;
+  if ((kind === "mover" || kind === "streak") && proof && proof.from != null && proof.to != null) {
+    return priceForm({
+      name: row.name,
+      set: row.set,
+      num: row.number,
+      to: proof.to,
+      from: proof.from,
+      end: proof.end,
+      start: proof.start,
+      pct: proof.pct != null ? proof.pct : row.changePct,
+    });
+  }
+  return scrub(row?.headline || row?.path || "");
+}
+
 function publicRow(row, kind, lines) {
+  const headline = shownHeadline(row, kind);
+  const sku = skuOf(row) || String(row.sku || "");
   const out = {
     id: row.id,
-    sku: skuOf(row),
+    sku,
     signal: kind,
     readKind: row.readKind || row.kind || kind,
     kind: row.kind || kind,
-    name: row.name || "",
-    set: row.set || "",
-    headline: row.headline || row.path || "",
-    path: row.path || row.headline || "",
+    name: pretty(row.name || ""),
+    set: pretty(row.set || ""),
+    headline,
+    path: headline,
     price: Number(row.price) > 0 ? Number(row.price) : undefined,
     changePct: pctOf(row),
     windowDays: Number(row.windowDays) || Number(row._proof?.days) || undefined,
@@ -273,9 +298,11 @@ function publicRow(row, kind, lines) {
     endDate: row.endDate || undefined,
     asOf: row.asOf || "",
     source: row.source || "TCGplayer market",
+    sourceLine: sku,
     href: row.href || "",
     image: row.image || "",
     whyItMatters: lines.whyItMatters,
+    why: lines.whyItMatters,
     whatWouldMakeThisWrong: lines.whatWouldMakeThisWrong,
   };
   if (row.streakN) out.streakN = row.streakN;
@@ -328,7 +355,7 @@ function cents(n) {
   return Math.round(Number(n) * 100);
 }
 
-export function buildReadLibrary({ catalogue, extra, series } = {}) {
+export function buildReadLibrary({ catalogue, extra, series, dailyFiles = null, sealed = null, radar = null, library = false, pptPublic = null, volumeReads = null } = {}) {
   const asOf = String(catalogue?.asOf || extra?.asOf || "");
   const cards = cardsOf(catalogue).filter((row) => !asOf || String(row.asOf || "") === asOf);
   const staleMovers = onePerSku(
@@ -343,18 +370,21 @@ export function buildReadLibrary({ catalogue, extra, series } = {}) {
 
   const moverPool = provedPool(
     cards.filter((row) => priceKind(row) === "mover"),
-    (row) => proveMove(row, series, asOf),
+    (row) => {
+      const proof = proveMove(row, series, asOf);
+      return moverGate(proof, dailyFiles) ? proof : null;
+    },
     byAbs,
   );
   const highPool = provedPool(
     cards.filter((row) => String(row.headline || "").includes("6-month high")),
-    (row) => proveExtreme(row, series, asOf, "high"),
+    (row) => proveExtreme(row, series, asOf, "high", dailyFiles),
     preferHigh,
   );
   highPool.rows.sort(byAbs);
   const lowPool = provedPool(
     cards.filter((row) => String(row.headline || "").includes("6-month low")),
-    (row) => proveExtreme(row, series, asOf, "low"),
+    (row) => proveExtreme(row, series, asOf, "low", dailyFiles),
     byAbs,
   );
   const plainPool = provedPool(
@@ -394,14 +424,21 @@ export function buildReadLibrary({ catalogue, extra, series } = {}) {
       }
       if (!named?.name) continue;
       const start = shiftDay(asOf, -streak.n);
+      const first = Number(days.get(start));
       if (!daysHold(pts, asOf, streak.n)) continue;
+      if (!streakGate({
+        asOf,
+        n: streak.n,
+        first,
+        last: seriesPrice,
+        dailyFiles,
+        hasDay: (day) => Number(days.get(day)) > 0,
+      })) continue;
       const price = money(seriesPrice);
-      if (!price) continue;
+      if (!price || !(first > 0)) continue;
       const num = String(named.number || "").trim();
-      const who = num ? `${named.name} (${num})` : named.name;
-      const verb = streak.dir < 0 ? "has slipped" : "has risen";
-      const sentence = `${who} ${verb} ${streak.n} days running. Now ${price}.`;
-      const proof = { start, end: asOf, days: streak.n };
+      const pct = Math.round(((seriesPrice - first) / first) * 1000) / 10;
+      const proof = { start, end: asOf, days: streak.n, from: first, to: seriesPrice, pct };
       streakRows.push(withProof({
         id: `streak-${sku}`,
         sku,
@@ -409,9 +446,11 @@ export function buildReadLibrary({ catalogue, extra, series } = {}) {
         kind: "streak",
         name: named.name,
         set: named.set || "",
-        headline: sentence,
-        path: sentence,
+        number: num,
+        headline: named.name,
+        path: named.name,
         price: seriesPrice,
+        changePct: pct,
         asOf,
         source: named.source || "TCGplayer market",
         href: named.href || `/c/${sku}`,
@@ -433,20 +472,60 @@ export function buildReadLibrary({ catalogue, extra, series } = {}) {
   const board = [];
   const used = new Set();
   const boarded = { mover: 0, set: 0, high: 0, streak: 0, plain: 0, low: 0 };
+  const boardKey = (row) => skuOf(row) || String(row.sku || row.id || "");
   for (const kind of BOARD_ORDER) {
-    const cap = kind === "plain" ? PLAIN_CAP : TYPE_CAP;
+    if (kind === "plain") continue;
     let took = 0;
+    let ups = 0;
+    let downs = 0;
     for (const row of pools[kind]) {
-      if (board.length >= BOARD_MAX || took >= cap) break;
-      const sku = skuOf(row);
-      if (!sku || used.has(sku)) continue;
+      if (board.length >= BOARD_MAX || took >= TYPE_CAP) break;
+      if (kind === "mover") {
+        const dir = Number(row.changePct) < 0 ? -1 : 1;
+        if (dir > 0 && ups >= 1) continue;
+        if (dir < 0 && downs >= 1) continue;
+      }
+      const key = boardKey(row);
+      if (!key || used.has(key)) continue;
       const lines = explainRead(row, kind);
-      if (!lines) continue;
-      if (!String(row.headline || row.path || "").trim()) continue;
+      const headline = shownHeadline(row, kind);
+      if (!lines || !headline) continue;
+      if (BANNED.test(headline) || BANNED.test(lines.whyItMatters) || whyLeak(lines.whyItMatters)) continue;
       board.push(publicRow(row, kind, lines));
-      used.add(sku);
+      used.add(key);
       took += 1;
       boarded[kind] += 1;
+      if (kind === "mover") {
+        if (Number(row.changePct) < 0) downs += 1;
+        else ups += 1;
+      }
+    }
+  }
+
+  const pptOn = pptPublic != null ? pptPublic === true : flag("ppt.publicDisplay") === true;
+  const volumeOn = volumeReads != null ? volumeReads === true : flag("reads.volume") === true;
+  const dropSold = !pptOn && !volumeOn;
+  for (const row of shapeReads(extra, { dropSold })) {
+    if (board.length >= BOARD_MAX) break;
+    const key = boardKey(row);
+    if (!key || used.has(key)) continue;
+    if (!row.whyItMatters || !row.headline) continue;
+    if (BANNED.test(row.headline) || BANNED.test(row.whyItMatters) || whyLeak(row.whyItMatters)) continue;
+    board.push(row);
+    used.add(key);
+  }
+  if (library === true) {
+    const extras = [
+      ...turnedReads({ series, asOf, names: nameBySku, dailyFiles }),
+      ...sealedWeekReads({ products: sealed, series, asOf, dailyFiles }),
+      ...releaseReads({ radar, asOf }),
+    ];
+    for (const row of extras) {
+      if (board.length >= BOARD_MAX) break;
+      const key = boardKey(row);
+      if (!key || used.has(key)) continue;
+      board.push(row);
+      used.add(key);
     }
   }
 
@@ -496,13 +575,49 @@ export function buildReadLibrary({ catalogue, extra, series } = {}) {
     board,
     signals,
     disagreements,
+    footer: FOOTER,
+    quietNight: quietNight(asOf, board.length),
   };
 }
 
-export async function writeReadLibrary({ root, catalogue, extra, series }) {
-  const lib = buildReadLibrary({ catalogue, extra, series });
+export async function dailyFileSet(root) {
+  const dir = join(root, "data/history/tcgcsv-daily");
+  let names = [];
+  try { names = await readdir(dir); } catch { return new Set(); }
+  return new Set(names.filter((name) => /^\d{4}-\d{2}-\d{2}\.json$/.test(name)).map((name) => name.slice(0, 10)));
+}
+
+async function readJson(path) {
+  try { return JSON.parse(await readFile(path, "utf8")); } catch { return null; }
+}
+
+export async function writeReadLibrary({ root, catalogue, extra, series, dailyFiles = null, sealed = null, radar = null, library = null, pptPublic = null, volumeReads = null }) {
+  const files = dailyFiles || await dailyFileSet(root);
+  let open = library === true;
+  if (library == null) {
+    const { libraryOn } = await import("./second-library.mjs");
+    open = libraryOn() === true;
+  }
+  let products = sealed;
+  let radarDoc = radar;
+  if (open && products == null) products = await readJson(join(root, "data/sealed-products.json"));
+  if (open && radarDoc == null) radarDoc = await readJson(join(root, "data/release-radar.json"));
+  const lib = buildReadLibrary({
+    catalogue,
+    extra,
+    series,
+    dailyFiles: files,
+    sealed: products,
+    radar: radarDoc,
+    library: open,
+    pptPublic,
+    volumeReads,
+  });
   const path = join(root, LIBRARY_FILE);
   await mkdir(dirname(path), { recursive: true });
   await writeFile(path, JSON.stringify(lib));
+  const readsPath = join(root, READS_FILE);
+  await mkdir(dirname(readsPath), { recursive: true });
+  await writeFile(readsPath, JSON.stringify(publishReads(lib)));
   return lib;
 }
