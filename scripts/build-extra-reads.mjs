@@ -75,6 +75,7 @@ export function publicRead(row) {
     fullFile: "feed/extra-reads.json",
   };
   if (row.diveId) out.diveId = row.diveId;
+  if (row.tcgPlayerId) out.tcgPlayerId = String(row.tcgPlayerId);
   if (row.href) out.href = row.href;
   if (Number(row.price) > 0) out.price = Number(row.price);
   if (row.asOf) out.asOf = row.asOf;
@@ -183,6 +184,25 @@ export async function volumeFeedReads(root = ROOT, { asOf = "", exclude = null }
   return reads;
 }
 
+// Every sealed read carries the reviewed TCGplayer productId when the product
+// has one, so the site can show the photo by id. Matched by id, never by name.
+// A combined all-arts row is never tied to one art's productId.
+export function sealedPidMap(products) {
+  const map = new Map();
+  for (const row of Array.isArray(products) ? products : []) {
+    const pid = String(row?.tcgPlayerId ?? "");
+    if (row?.id && !row.combinedArts && /^\d+$/.test(pid) && Number(pid) > 0) map.set(String(row.id), pid);
+  }
+  return map;
+}
+
+export function withTcgPlayerId(row, map) {
+  if (!row || typeof row !== "object" || row.tcgPlayerId) return row;
+  const key = [row.sku, row.diveId].map((v) => String(v || "")).find((v) => map.has(v));
+  if (key) row.tcgPlayerId = map.get(key);
+  return row;
+}
+
 export async function writeFeedExtras(root, extra, { asOf, cardIds, rankedIds, news, waves }) {
   const rotation = await loadRotation(root);
   const blocked = cooledSet(rotation, asOf);
@@ -193,6 +213,13 @@ export async function writeFeedExtras(root, extra, { asOf, cardIds, rankedIds, n
   const taken = new Set(flagged.concat(dives, volume).map((row) => String(row.sku || "")));
   const candidates = (await loadShapeCandidates(root, asOf)).filter((row) => row && !taken.has(String(row.sku || "")));
   const shape = pickNight(candidates, rotation, asOf);
+  let sealedProducts = [];
+  try {
+    const doc = JSON.parse(await readFile(join(root, "data/sealed-products.json"), "utf8"));
+    sealedProducts = Array.isArray(doc) ? doc : doc.products || [];
+  } catch { /* no sealed products file */ }
+  const pids = sealedPidMap(sealedProducts);
+  for (const row of [...flagged, ...dives, ...volume, ...shape.reads]) withTcgPlayerId(row, pids);
   const fresh = new Set(["outlier", "dive", "volume", "quiet", "mix", "conditions", "soldflat", "solddown", "setshare", "spread", "askmove", "mktmove", "still", "listing"]);
   extra.reads = [...(extra.reads || []).filter((r) => !fresh.has(r.readKind)), ...flagged, ...dives, ...volume, ...shape.reads];
   extra.flagged = { count: flagged.length, source: "data/derived/sealed-price-outliers.json" };

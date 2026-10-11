@@ -2,6 +2,7 @@
 // Seed overrides full when both have the same id. A src that is not a
 // catalogue path is left out. Names are never keys.
 import { readFile, writeFile, readdir } from "node:fs/promises";
+import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
@@ -25,6 +26,9 @@ export async function loadCatalogueImages(root = ROOT) {
       const id = row && row.id;
       const path = cleanSrc(row && row.src);
       if (!id || !path) continue;
+      // A /cards/ file that is not in the repo is a 404 on the site (371 seed
+      // rows on 2026-10-10). It is left out so the site falls back by id.
+      if (path.startsWith("/cards/") && !existsSync(join(root, "research/assets", path))) continue;
       images[id] = path;
     }
   };

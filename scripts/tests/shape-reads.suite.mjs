@@ -51,7 +51,11 @@ export async function run() {
   t("the quiet line keeps its clause on the why line", quiet && quiet.path.includes("No TCGplayer sales recorded in 7 days.") && quiet.path.includes("$12.50") && quiet.why.includes("That is not a scarcity claim.") && !quiet.path.includes("That is not a scarcity claim."));
   t("mix, pair, and move clauses stay word for word", [MIX_CLAUSE, PAIR_CLAUSE, MOVE_CLAUSE, SHARE_CLAUSE, SPREAD_CLAUSE, ASK_CLAUSE, MKT_CLAUSE, STILL_CLAUSE].every((line) => line.length > 10));
 
-  const spread = spreadRead({ id: "me5-etb", name: "Pitch Black ETB", set: "ME", dataStatus: "live", priceLow: 70, priceHigh: 90, lastSeen: "2026-10-06" });
+  const spread = spreadRead({ id: "me5-etb", name: "Pitch Black ETB", set: "ME", dataStatus: "live", priceLow: 70, priceHigh: 90, priceMedian: 80, listingCount: 12, lastSeen: "2026-10-06" });
+  t("an outlier high is not a spread", spreadRead({ id: "me2pt5-pc-etb", name: "AH PC ETB", dataStatus: "live", priceLow: 255.65, priceHigh: 800, priceMedian: 400, listingCount: 94, lastSeen: "2026-10-10" }) == null);
+  t("under 5 asks is not a spread", spreadRead({ id: "x", name: "X", dataStatus: "live", priceLow: 70, priceHigh: 90, priceMedian: 80, listingCount: 4, lastSeen: "2026-10-06" }) == null);
+  const robust = spreadRead({ id: "x", name: "X", dataStatus: "live", priceLow: 10, priceHigh: 800, priceMedian: 400, listingCount: 94, askP10: 330, askP90: 480, askMedian: 400, askRobustCount: 90, lastSeen: "2026-10-10" });
+  t("a robust spread uses p10 to p90 and shows the median", robust && robust.path.includes("$330.00") && robust.path.includes("$480.00") && robust.path.includes("Median ask $400.00 across 90 eBay listings") && !/sale|sold/i.test(robust.path));
   t("an asking spread uses both ends", spread.path.includes("$70.00") && spread.path.includes("$90.00") && spread.why.includes(SPREAD_CLAUSE) && !spread.path.includes(SPREAD_CLAUSE));
   t("a missing high is not a spread", spreadRead({ id: "me5-etb", name: "Pitch Black ETB", dataStatus: "live", priceLow: 70, lastSeen: "2026-10-06" }) == null);
 
