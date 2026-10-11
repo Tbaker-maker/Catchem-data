@@ -14,6 +14,7 @@ import { writeSparks } from "./build-sparks.mjs";
 import { hiddenSealedPids, isBrowseHidden } from "./lib/browse-hidden.mjs";
 import { ATTACH_SEALED, FOLD_GROUPS, assertFolds, assertWritable, cardPrintings, completionCounts } from "./lib/set-master.mjs";
 import { indexLine as indexLineFull } from "./lib/public-index-line.mjs";
+import { pickSealedLine } from "./lib/sealed-line.mjs";
 
 assertFolds();
 
@@ -279,20 +280,16 @@ for (const item of items) {
   list.push(item.id);
   artistGroups.set(artist, list);
 }
-// Official URL from research/assets/public/set-logos.json. Never a name vote.
-// If that file and the catalogue have none, keep the logo already published.
-const priorLogos = new Map();
-try {
-  const priorSets = JSON.parse(await readFile(join(OUT, "sets.json"), "utf8"));
-  for (const row of priorSets.sets || []) {
-    if (row && row.slug && row.logo) priorLogos.set(row.slug, row.logo);
-  }
-} catch { /* first build has no published logos */ }
+// Catalogue path from research/assets/public/set-logos.json, by set id.
+// A remote logo URL is not published. No logo is kept from a previous file.
 function logoFor(slugName) {
   const row = setLogos[slugName];
-  const logo = row && typeof row.logo === "string" ? row.logo.trim() : "";
-  if (/^https:\/\/images\.(?:pokemontcg\.io|scrydex\.com)\//.test(logo)) return logo;
-  return cataloguePath(catalogueImages, slugName) || priorLogos.get(slugName) || "";
+  const fromRow = row && typeof row.logo === "string" ? row.logo.trim() : "";
+  const byId = row && row.setId ? cataloguePath(catalogueImages, row.setId) : "";
+  const path = byId || cataloguePath(catalogueImages, slugName);
+  if (path) return path;
+  if (/^\/img\/[^/]+\/logo\.png$/.test(fromRow)) return fromRow;
+  return "";
 }
 
 const slugUsed = new Map();
@@ -459,7 +456,6 @@ for (const set of sets.values()) {
   };
   setIndex.push(row);
   const line = (kind) => indexLine(set.items.filter((it) => it.kind === kind));
-  const topSealed = set.items.filter((it) => it.kind === "sealed" && it.price).sort((a, b) => b.price - a.price)[0] || null;
   const topChase = set.items.filter((it) => it.kind === "single" && it.price && /illustration|special illustration|hyper|secret|ultra|rainbow/i.test(it.rarity || "")).sort((a, b) => b.price - a.price)[0] || null;
   const done = completionCounts(set.items);
   const body = {
@@ -470,7 +466,7 @@ for (const set of sets.values()) {
     asOf: catalog.asOf,
     singleIndex: line("single"),
     sealedIndex: line("sealed"),
-    sealedLine: topSealed ? { id: topSealed.id, name: topSealed.name, price: topSealed.price } : null,
+    sealedLine: pickSealedLine(set.items, set.name),
     chaseLine: topChase ? { id: topChase.id, name: topChase.name, price: topChase.price, pid: topChase.pid } : null,
     items: set.items,
   };
@@ -839,6 +835,11 @@ await writeFile(join(OUT, "indexes.json"), JSON.stringify({
   singles: indexLine(allItems.filter((it) => it.kind === "single")),
   sealed: indexLine(allItems.filter((it) => it.kind === "sealed")),
 }, null, 1) + "\n");
+const indexDoc = JSON.parse(await readFile(join(OUT, "indexes.json"), "utf8"));
+if (!Array.isArray(indexDoc.singles) || !indexDoc.singles.length || !Array.isArray(indexDoc.sealed) || !indexDoc.sealed.length) {
+  console.error("index wrote nothing");
+  process.exit(1);
+}
 
 await writeFile(join(OUT, "redirects.json"), JSON.stringify(redirects));
 await copyFile(new URL("./lib/collector-search.mjs", import.meta.url), join(OUT, "search-rank.mjs"));

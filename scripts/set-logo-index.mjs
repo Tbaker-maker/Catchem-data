@@ -1,9 +1,11 @@
 // Official set logos keyed by set id and by site slug.
 //
-// The URL is copied from data/set-logos.json (pokemontcg.io /v2/sets, including
-// the scrydex URLs that file already publishes). A logo is never built from a
-// slug, and a name is never scored. Gallery subsets use the parent set's logo.
-// A set with no official record is left without a logo.
+// data/set-logos.json still holds the fetched record. The published file does
+// not. A published logo is the catalogue path /img/{setId}/logo.png, and only
+// when that path is the set's own id on images.pokemontcg.io. Anything else,
+// including a remote URL, is left off. Gallery subsets use the parent set's
+// catalogue path. A name is never a match.
+
 import { readFile, writeFile, readdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -70,6 +72,7 @@ const REJECT_SHA256 = {
 };
 const PTCG_LOGO = /^https:\/\/images\.pokemontcg\.io\/([A-Za-z0-9]+)\/logo\.png$/;
 const SCRY_LOGO = /^https:\/\/images\.scrydex\.com\/pokemon\/([A-Za-z0-9]+)-logo\/logo$/;
+const CATALOGUE_LOGO = /^\/img\/([A-Za-z0-9]+)\/logo\.png$/;
 const PREFIX = /^(?:ex|xy|sm|sv|swsh|mee|me|sve|bw|dp|hgss|hs)\d*(?:pt\d+)?\s+/;
 
 function norm(value) {
@@ -98,13 +101,22 @@ function currentId(logo) {
   const p = String(logo || "").match(PTCG_LOGO);
   if (p) return p[1];
   const s = String(logo || "").match(SCRY_LOGO);
-  return s ? s[1] : "";
+  if (s) return s[1];
+  const c = String(logo || "").match(CATALOGUE_LOGO);
+  return c ? c[1] : "";
 }
 
 function catalogueSrc(logo, setId) {
   const m = String(logo || "").match(PTCG_LOGO);
   if (!m || m[1] !== setId) return "";
   return `/img/${setId}/logo.png`;
+}
+
+// Published logo is the catalogue path for this set id, or nothing.
+export function publishLogo(setId, remoteLogo) {
+  const src = catalogueSrc(remoteLogo, setId);
+  if (!src) return null;
+  return { logo: src, src };
 }
 
 export async function buildSetLogoIndex(root = ROOT) {
@@ -175,7 +187,7 @@ export async function buildSetLogoIndex(root = ROOT) {
   for (const row of rows) {
     const { id } = assigned.get(row.slug);
     if (!row.lid || !official[row.lid]) continue;
-    if (PARENT[row.slug] || FIX[row.slug] || DENY.has(row.slug)) continue;
+    if (PARENT[row.slug] || FIX[row.slug] || DENY.has(row.slug) || EXTRA[row.slug]) continue;
     if (id !== row.lid) throw new Error(`${row.slug} would change ${row.lid} to ${id || "(none)"}`);
   }
 
@@ -185,15 +197,19 @@ export async function buildSetLogoIndex(root = ROOT) {
     const spec = EXTRA[row.slug];
     if (spec) {
       const parent = spec.logoFrom ? official[spec.logoFrom] : null;
-      const logo = spec.logo || parent?.logo || "";
-      if (!/^https:\/\//.test(logo)) throw new Error(`${row.slug} has no confirmed logo`);
+      const remote = spec.logo || parent?.logo || "";
+      const published = publishLogo(spec.logoFrom || spec.setId, remote);
+      if (!published) {
+        noLogo.push({ slug: row.slug, name: row.name });
+        continue;
+      }
       if (spec.logoFrom && spec.logoFrom !== "me1") throw new Error(`${row.slug} parent is not me1`);
       const entry = {
         setId: spec.setId,
         slug: row.slug,
         name: row.name,
-        logo,
-        src: spec.src != null ? spec.src : catalogueSrc(logo, spec.logoFrom || spec.setId),
+        logo: published.logo,
+        src: published.src,
         confirmed: spec.confirmed,
         via: "confirmed",
       };
@@ -207,13 +223,17 @@ export async function buildSetLogoIndex(root = ROOT) {
       continue;
     }
     const meta = official[id];
-    if (!meta || !/^https:\/\//.test(meta.logo || "")) throw new Error(`${row.slug} -> ${id} has no official logo`);
+    const published = meta ? publishLogo(id, meta.logo) : null;
+    if (!published) {
+      noLogo.push({ slug: row.slug, name: row.name });
+      continue;
+    }
     const entry = {
       setId: id,
       slug: row.slug,
       name: row.name,
-      logo: meta.logo,
-      src: catalogueSrc(meta.logo, id),
+      logo: published.logo,
+      src: published.src,
     };
     if (PARENT[row.slug]) entry.parentSetId = id;
     if (reason) entry.via = reason;
@@ -221,18 +241,18 @@ export async function buildSetLogoIndex(root = ROOT) {
   }
 
   const folded = official.me55;
-  if (!folded || !/^https:\/\//.test(folded.logo || "")) throw new Error("me55 has no official logo");
-  const classic = {
+  const foldedLogo = folded ? publishLogo("me55", folded.logo) : null;
+  const classic = foldedLogo ? {
     setId: "me55",
     slug: "me-30th-celebration",
     name: "30th Celebration: Classic Collection",
     parentSetId: "me55",
     gallerySetId: "me55c",
     foldedInto: "me-30th-celebration",
-    logo: folded.logo,
-    src: catalogueSrc(folded.logo, "me55"),
+    logo: foldedLogo.logo,
+    src: foldedLogo.src,
     via: "parent",
-  };
+  } : null;
 
   const logos = {};
   for (const entry of entries) {
@@ -254,7 +274,7 @@ export async function buildSetLogoIndex(root = ROOT) {
   };
   for (const [galleryId, parentId] of Object.entries(galleryIds)) {
     const parent = logos[parentId];
-    if (!parent) throw new Error(`missing parent ${parentId} for ${galleryId}`);
+    if (!parent) continue;
     logos[galleryId] = {
       setId: parentId,
       slug: parent.slug,
@@ -265,25 +285,27 @@ export async function buildSetLogoIndex(root = ROOT) {
       src: parent.src,
     };
   }
-  logos.me55c = {
-    setId: "me55",
-    slug: classic.slug,
-    name: classic.name,
-    parentSetId: "me55",
-    gallerySetId: "me55c",
-    foldedInto: classic.foldedInto,
-    logo: classic.logo,
-    src: classic.src,
-  };
+  if (classic && logos.me55) {
+    logos.me55c = {
+      setId: "me55",
+      slug: classic.slug,
+      name: classic.name,
+      parentSetId: "me55",
+      gallerySetId: "me55c",
+      foldedInto: classic.foldedInto,
+      logo: classic.logo,
+      src: classic.src,
+    };
+  }
 
   const ordered = {};
   for (const key of Object.keys(logos).sort()) ordered[key] = logos[key];
   noLogo.sort((a, b) => a.slug.localeCompare(b.slug));
-  const withLogo = entries.length + 1;
+  const withLogo = new Set(entries.map((entry) => entry.slug)).size;
   return {
     index: {
-      source: "Official logos from data/set-logos.json (pokemontcg.io /v2/sets, including scrydex URLs that file already publishes), plus two ids confirmed on Scrydex: mep uses the parent me1 logo, mee uses its own logo. Keyed by set id and by site slug. Gallery subsets use the parent logo. No logo was invented. A name is not a match.",
-      read: "Look up research/assets/public/set-logos.json by site slug or by set id. Write logo (the https URL) onto the set. src is /img/{setId}/logo.png only when that logo is on images.pokemontcg.io. Reject a Scrydex image whose sha256 is rejectSha256.genericSet (the Pokémon Trading Card Game fallback returned for any unknown id) or rejectSha256.genericPromo (the shared PROMO star).",
+      source: "Catalogue logos by set id from data/set-logos.json. Published logo and src are /img/{setId}/logo.png. A remote URL is not published. A set with no catalogue logo is left off. Gallery subsets use the parent path. No logo was invented. A name is not a match.",
+      read: "Look up research/assets/public/set-logos.json by site slug or by set id. Write logo (the catalogue path) onto the set, or leave the logo off. src is the same path. Reject a Scrydex image whose sha256 is rejectSha256.genericSet (the Pokémon Trading Card Game fallback returned for any unknown id) or rejectSha256.genericPromo (the shared PROMO star).",
       rejectSha256: REJECT_SHA256,
       universe: names.length + 1,
       publishedSets: names.length,
@@ -299,7 +321,7 @@ export async function buildSetLogoIndex(root = ROOT) {
 }
 
 function patchSetText(text, logo) {
-  const header = /^(\{"slug":"[^"]+","name":"(?:\\.|[^"\\])*","era":"[^"]*","release":"[^"]*","single":\d+,"sealed":\d+,"priced":\d+)(,"logo":"[^"]+")?(,"source":)/;
+  const header = /^(\{"slug":"[^"]+","name":"(?:\\.|[^"\\])*","era":"[^"]*","release":"[^"]*","single":\d+,"sealed":\d+,"priced":\d+)(,"logo":"[^"]+")?(,"cards":)/;
   const m = text.match(header);
   if (!m) throw new Error("set header did not match");
   const next = logo ? `${m[1]},"logo":${JSON.stringify(logo)}${m[3]}` : `${m[1]}${m[3]}`;
@@ -380,6 +402,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     if (got !== id) throw new Error(`fix ${slug} is ${got}, expected ${id || "(none)"}`);
   }
   for (const [slug, id] of Object.entries(PARENT)) {
+    if (!built.rows.some((row) => row.slug === slug)) continue;
     if (built.assigned.get(slug)?.id !== id) throw new Error(`parent ${slug} is not ${id}`);
   }
   console.log(`published ${built.index.publishedSets} withLogo ${built.index.withLogo} of ${built.index.universe}`);
