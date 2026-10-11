@@ -50,10 +50,10 @@ export const PRICE_DETECTORS = [
   ),
   det(
     "plain",
-    "Counted when a 7-day move is under 8%. Not boarded. boardDrop drops kind plain.",
-    { windowDays: 7, maxPct: 8, boarded: 0 },
-    "Not published.",
-    "A plain price read on the board would be wrong.",
+    "A 7-day move under 8% that clears $1 and 3%. At most 2 on the board.",
+    { windowDays: 7, maxPct: 8, minCents: 100, minPct: 3, plainCap: 2 },
+    "TCGplayer market on the two dates.",
+    "Wrong if either date has a different market price, or a third plain is boarded.",
   ),
   det(
     "low",

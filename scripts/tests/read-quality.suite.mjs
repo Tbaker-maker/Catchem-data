@@ -133,7 +133,7 @@ export async function run() {
     cards: { b: plain },
     series: new Map([[2, new Map([["2026-10-01", 18.88], ["2026-10-08", 17.46]])]]),
   });
-  t("a plain row under 8% never boards", plainLib.counts.plain.qualified === 1 && plainLib.counts.plain.boarded === 0 && plainLib.board.length === 0);
+  t("a plain that clears $1 and 3% can board", plainLib.counts.plain.qualified === 1 && plainLib.counts.plain.boarded === 1 && plainLib.board.length === 1 && plainLib.board[0].signal === "plain");
 
   const tiny = libOf({
     cards: { g: card({ id: "move-tcgcsv-9-7", sku: "tcgcsv-9", name: "Mew", headline: "Mew.", price: 1.4, changePct: 1, windowDays: 7 }) },

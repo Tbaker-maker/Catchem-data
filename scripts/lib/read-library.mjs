@@ -32,6 +32,7 @@ export const PLAIN_CAP = 2;
 export const TYPE_CAP = 2;
 export const STREAK_MIN = 4;
 export const BOARD_ORDER = ["mover", "set", "high", "streak", "plain"];
+export const NON_PRICE = new Set(["listing", "listings-price", "sealed-chase", "group", "set-heat"]);
 export const SOURCE_NOTE = "TCGplayer market via TCGCSV, published the day before the date shown.";
 export const LIBRARY_FILE = "research/assets/public/feed/read-library.json";
 export const READS_FILE = "research/assets/public/reads.json";
@@ -363,6 +364,33 @@ function cents(n) {
   return Math.round(Number(n) * 100);
 }
 
+// Non-price seats are only rows that already qualified. Fewer than two means
+// those rows go on and the fill stops. Nothing is invented to reach two or eight.
+export function mixBoard({ price = [], plains = [], nonPrice = [], max = BOARD_MAX, plainCap = PLAIN_CAP } = {}) {
+  const board = [];
+  const used = new Set();
+  const keyOf = (row) => String(row?.sku || row?.id || "");
+  const push = (row) => {
+    const key = keyOf(row);
+    if (!row || !key || used.has(key) || board.length >= max) return false;
+    used.add(key);
+    board.push(row);
+    return true;
+  };
+  for (const row of nonPrice || []) {
+    if (!row || row.qualified === false) continue;
+    if (!NON_PRICE.has(row.lane) && !NON_PRICE.has(row.signal) && !NON_PRICE.has(row.readKind)) continue;
+    push(row);
+  }
+  for (const row of price || []) push(row);
+  let plainTook = 0;
+  for (const row of plains || []) {
+    if (plainTook >= plainCap) break;
+    if (push(row)) plainTook += 1;
+  }
+  return board;
+}
+
 export function buildReadLibrary({ catalogue, extra, series, dailyFiles = null, sealed = null, radar = null, library = false, pptPublic = null, volumeReads = null } = {}) {
   const asOf = String(catalogue?.asOf || extra?.asOf || "");
   const cards = cardsOf(catalogue).filter((row) => !asOf || String(row.asOf || "") === asOf);
@@ -476,42 +504,60 @@ export function buildReadLibrary({ catalogue, extra, series, dailyFiles = null, 
 
   const pools = {
     mover: moverRows,
-    set: setRows,
+    set: setRows.filter((row) => row.readKind === "lag" || row.kind === "lag"),
     high: highRows,
     streak: streakRows,
     plain: plainRows,
   };
-  const board = [];
-  const used = new Set();
-  const boarded = { mover: 0, set: 0, high: 0, streak: 0, plain: 0, low: 0 };
+  const groupRows = setRows.filter((row) => row.readKind === "group" || row.kind === "group");
+  const selected = { mover: [], set: [], high: [], streak: [], plain: [], group: [] };
+  const boarded = { mover: 0, set: 0, high: 0, streak: 0, plain: 0, low: 0, group: 0 };
   const boardKey = (row) => skuOf(row) || String(row.sku || row.id || "");
-  for (const kind of BOARD_ORDER) {
-    if (kind === "plain") continue;
+  const accept = (row, kind) => {
+    const lines = explainRead(row, kind);
+    const headline = shownHeadline(row, kind);
+    if (!lines || !headline) return null;
+    if (bannedWord(headline) || bannedWord(lines.whyItMatters) || whyLeak(lines.whyItMatters)) return null;
+    return publicRow(row, kind, lines);
+  };
+  for (const kind of ["mover", "set", "high", "streak", "plain"]) {
     let took = 0;
     let ups = 0;
     let downs = 0;
     for (const row of pools[kind]) {
-      if (board.length >= BOARD_MAX || took >= TYPE_CAP) break;
+      if (took >= (kind === "plain" ? PLAIN_CAP : TYPE_CAP)) break;
       if (kind === "mover") {
         const dir = Number(row.changePct) < 0 ? -1 : 1;
         if (dir > 0 && ups >= 1) continue;
         if (dir < 0 && downs >= 1) continue;
       }
       const key = boardKey(row);
-      if (!key || used.has(key)) continue;
-      const lines = explainRead(row, kind);
-      const headline = shownHeadline(row, kind);
-      if (!lines || !headline) continue;
-      if (bannedWord(headline) || bannedWord(lines.whyItMatters) || whyLeak(lines.whyItMatters)) continue;
-      board.push(publicRow(row, kind, lines));
-      used.add(key);
+      if (!key) continue;
+      const built = accept(row, kind);
+      if (!built) continue;
+      selected[kind].push(built);
       took += 1;
-      boarded[kind] += 1;
       if (kind === "mover") {
         if (Number(row.changePct) < 0) downs += 1;
         else ups += 1;
       }
     }
+  }
+  for (const row of groupRows) {
+    const built = accept(row, "set");
+    if (!built) continue;
+    selected.group.push({ ...built, lane: "group", signal: "group", readKind: "group" });
+  }
+  const nonPrice = [...selected.group];
+  let board = mixBoard({
+    price: [...selected.mover, ...selected.set, ...selected.high, ...selected.streak],
+    plains: selected.plain,
+    nonPrice,
+  });
+  const used = new Set(board.map((row) => boardKey(row)));
+  for (const row of board) {
+    if (row.lane === "group" || row.signal === "group") boarded.group += 1;
+    else if (boarded[row.signal] != null) boarded[row.signal] += 1;
   }
 
   const pptOn = pptPublic != null ? pptPublic === true : flag("ppt.publicDisplay") === true;
