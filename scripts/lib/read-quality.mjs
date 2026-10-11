@@ -1,6 +1,6 @@
 // Read quality, from a user's eyes. Prices come from the row or the daily
 // file passed in. A missing day is not filled. Listings are not sales.
-import { BANNED, money, pretty } from "./public-bundle.mjs";
+import { bannedWord, money, pretty } from "./public-bundle.mjs";
 
 export const FOOTER = "An ask is a listing price. A listing is not a sale.";
 export const MOVER_MIN_CENTS = 100;
@@ -65,7 +65,7 @@ export function whyPlain(from, to) {
 
 export function whyLeak(text) {
   const s = String(text || "");
-  return /tcgcsv-|data\/|—/.test(s) || BANNED.test(s);
+  return /tcgcsv-|data\/|—/.test(s) || bannedWord(s);
 }
 
 export function quietNight(asOf, n) {
