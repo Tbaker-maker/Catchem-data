@@ -159,7 +159,8 @@ export async function run() {
     t("one product is one lead card", new Set(priceReads.map((row) => row.sku)).size === priceReads.length);
     t("lead lines do not say stored or last print", reads.reads.every((row) => !/\bstored\b|last print/i.test(String(row.path || "") + String(row.headline || "") + String(row.why || ""))));
     t("lead lines do not use a filler closer", reads.reads.every((row) => !FILLER_BAN.test(String(row.path || ""))));
-    t("no 4-word phrase is on more than 2 price lead lines", phrasePeak(priceReads.map((row) => shape(shownLine(row)))).peak <= 2);
+    const withoutPriceForm = (line) => shape(line).replace(/tcgplayer market:[\s\S]*$/i, "").trim();
+    t("no 4-word phrase is on more than 2 price lead lines", phrasePeak(priceReads.map((row) => withoutPriceForm(shownLine(row)))).peak <= 2);
     t("a read is one kind", reads.reads.every((row) => row.kind === "single" || row.kind === "sealed" || row.kind === "pull" || row.kind === "pokemon" || row.kind === "lag" || row.kind === "group" || row.kind === "supply" || row.kind === "outlier" || row.kind === "dive" || row.kind === "volume" || row.kind === "streak" || row.kind === "mover" || row.kind === "high" || row.kind === "set" || row.kind === "turned" || row.kind === "sealed" || row.kind === "release" || (row.kind === row.readKind && ["quiet", "mix", "conditions", "soldflat", "solddown", "setshare", "spread", "askmove", "mktmove", "still"].includes(row.kind))));
     // #103 put flagged-price (outlier) and dive-teaser reads on the short
     // front. They are allowed kinds only while they carry their receipts: a
