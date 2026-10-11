@@ -1,13 +1,9 @@
-# ══════════════════════════════════════════════════════════════════
-# PASTE TARGET: .github/workflows/daily-research.yml  (the file that
-# currently WRONGLY holds price-pipeline content)
-# ACTION: open that file → pencil ✏️ → Ctrl+A → Ctrl+V this WHOLE file
-# → Commit. This RESTORES the research agent (daily digest, 13:00 UTC).
-# ══════════════════════════════════════════════════════════════════
+# DISABLED. Do not re-enable. Do not add a schedule.
+# Workflow is left disabled_manually. Schedule removed so a switch
+# flip cannot spend Anthropic credit. workflow_dispatch only.
+# Do not set PPT_INTRADAY_ENABLED.
 name: daily-research
 on:
-  schedule:
-    - cron: "0 13 * * *"
   workflow_dispatch: {}
 permissions:
   contents: write
