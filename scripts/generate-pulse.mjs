@@ -54,6 +54,7 @@ import { cardImage } from "./image-source.mjs";
 import { applyPackBasis } from "./pack-basis.mjs";
 import { rotate } from "./rotate.mjs";
 import { upcomingRadar } from "./lib/research-reads.mjs";
+import { chaseInMorningFile } from "./lib/read-quality.mjs";
 import { capPost, eraFeed } from "./lib/second-library.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const today = new Date().toISOString().split("T")[0];
@@ -162,8 +163,12 @@ const heatLine = heatLive
   : `heat reads are still calibrating`;
 const sigs = (div?.rows||[]).filter(r=>r.signal && !__blk.blocked(r.id));
 const topListed = [...pub].sort((a,b)=>(b.listingCount||0)-(a.listingCount||0)).slice(0,3);
-const chases = (sg?.cards||[]).filter(c=>!c.needsReview && c.dataStatus==="live")
-  .sort((a,b)=>(b.priceMarket||0)-(a.priceMarket||0)).slice(0,5);
+const morningPrices = await J(`data/history/tcgcsv-daily/${today}.json`);
+const chases = chaseInMorningFile(
+  (sg?.cards||[]).filter(c=>!c.needsReview && c.dataStatus==="live")
+    .sort((a,b)=>(b.priceMarket||0)-(a.priceMarket||0)),
+  morningPrices,
+).slice(0,5);
 // The radar's rows are in upcoming[] (items/releases kept as fallbacks). Past
 // rows drop at read time. Public page: verified rows only — the brief calls
 // single-source rows leads that need a human before any public page.
