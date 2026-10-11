@@ -255,8 +255,12 @@ jobs:
         run: node scripts/stamp-public-updated.mjs
 
       - name: Score the track record
-        # Ship price and later prices come from the price files on exact days
-        # 14, 28, and 56. A missing day stays missing.
+        # Takes are scored from the daily TCGplayer market on exact days 14, 28,
+        # and 56. This step is not continue-on-error. The scored rows go to
+        # catchem-data-private (or gitignored data/private/ when no token is set).
+        # The public file written here is the stub only.
+        env:
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
         run: node scripts/write-track-record.mjs
 
       - name: Commit the rebuilt feed
@@ -272,7 +276,12 @@ jobs:
             for p in $SET_PATHS; do git checkout -q -- "$p" 2>/dev/null || true; done
             git clean -fdq -- research/assets/public/sets research/assets/public/buckets research/assets/public/artists || true
           fi
+          # The track-record path is the public stub. Do not add data/private/.
           git add research/assets/public/reads.json research/assets/public/feed/ research/assets/public/counts.json research/assets/public/track-record.json
+          if git diff --cached --name-only -- data/private | grep -q .; then
+            echo "private scores must not be committed here"
+            exit 1
+          fi
           if git diff --staged --quiet; then
             echo "No feed changes to commit."
           else

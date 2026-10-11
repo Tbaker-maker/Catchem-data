@@ -58,8 +58,7 @@ export async function run() {
   try { sealed = JSON.parse(await readFile(join(ROOT, "data/sealed-prices.json"), "utf8")); } catch { sealed = null; }
   if (sealed?.products) {
     const live = shelfFromHistory(sealed.products);
-    const anyFiltered = sealed.products.some((product) => (product.priceHistory || []).some((point) => Number.isInteger(point.filteredTotal)));
-    t("exact 7-day windows on the current files return 0 Tightening and 0 Building", live.tightening.length === 0 && live.building.length === 0 && anyFiltered === false);
+    t("exact 7-day windows stay unpublished while the switch is off", libraryOn() === false && live.tightening.length === 0 && live.building.length === 0);
   }
   let banned = false;
   try { assertCleanSentence("This is a buy."); } catch { banned = true; }

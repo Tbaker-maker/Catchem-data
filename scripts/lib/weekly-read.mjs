@@ -1,3 +1,57 @@
+// Fixed weekly outline. Public file only. Track record lives in catchem-data-private.
+import { BOARD_MAX, POST_CAP, capPost } from "./second-library.mjs";
+
+const BANNED = /\b(buy|hold|plays|targets|bullish|calls|picks|floor|support line|crash|hit rate|hits|misses)\b/i;
+
+export function dedupeNames(names) {
+  const seen = new Set();
+  const out = [];
+  for (const name of names || []) {
+    const key = String(name || "").trim().toLowerCase();
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    out.push(name);
+  }
+  return out;
+}
+
+export function weeklyRead({ asOf, heat = [], repeat = null, sets = [] }) {
+  const movers = (heat || []).slice(0, Math.min(6, BOARD_MAX)).map((p) => ({
+    id: p.id,
+    name: p.name,
+    heat: p.label || "Steady",
+  }));
+  const keeps = {
+    sealed: (repeat?.sealed?.rows || []).slice(0, 5).map(brief).filter((r) => r.days7 > 0),
+    singles: (repeat?.singles?.rows || []).slice(0, 5).map(brief).filter((r) => r.days7 > 0),
+    status: repeat?.status || "building history",
+  };
+  const lines = (sets || []).slice(0, 4).map((s) => ({
+    set: s.set,
+    sealed: s.sealed?.status === "live" ? s.sealed.level : null,
+    sealedStatus: s.sealed?.status || "building history",
+    chase: s.chase?.status === "live" ? s.chase.level : null,
+    chaseStatus: s.chase?.status || "building history",
+    chaseNames: dedupeNames(s.chase?.names || []),
+  }));
+  const sections = [];
+  if (movers.length >= 3) sections.push("heat");
+  if (keeps.sealed.length >= 3 || keeps.singles.length >= 3) sections.push("keepsShowingUp");
+  if (lines.length >= 3) sections.push("sealedAndChase");
+  return {
+    asOf,
+    title: `Weekly Read, ${asOf}`,
+    sections,
+    heat: movers,
+    keepsShowingUp: keeps,
+    sealedAndChase: lines,
+  };
+}
+
+function brief(r) {
+  return { id: r.id, name: r.name, days7: r.days7, days30: r.days30, days90: r.days90, streak: r.streak, lastSeen: r.lastSeen };
+}
+
 export function weeklyMarkdown(doc) {
   const parts = [`# ${doc.title}`, "", "Video outline. Same parts every week. Do not say a name is a move to make."];
   if (doc.heat.length >= 3) {
