@@ -71,7 +71,7 @@ function copiesSold(n) {
 function range(from, to) {
   const a = monthDay(from);
   const b = monthDay(to);
-  return a && b ? `${a}–${b}` : "";
+  return a && b ? `${a} to ${b}` : "";
 }
 
 function baseRead(kind, item, path, asOf) {
@@ -493,14 +493,17 @@ export function cooledSet(state, asOf) {
   for (const row of state?.shown || []) {
     const id = String(row?.id || "");
     const on = String(row?.on || "");
-    if (!id || !DAY.test(on)) continue;
+    // Only earlier nights cool a card. A rebuild of the same asOf must not see
+    // its own picks as "already shown", or each rerun shrinks the board.
+    if (!id || !DAY.test(on) || on >= asOf) continue;
     if (asOf < shiftDay(on, COOLDOWN_DAYS)) blocked.add(id);
   }
   return blocked;
 }
 
 export function rememberShown(state, reads, asOf) {
-  const shown = (state?.shown || []).filter((row) => row && DAY.test(String(row.on || "")) && shiftDay(asOf, -14) <= row.on);
+  // Tonight's rows are replaced, not appended, so a rebuild of the same asOf writes the same file.
+  const shown = (state?.shown || []).filter((row) => row && DAY.test(String(row.on || "")) && shiftDay(asOf, -14) <= row.on && row.on < asOf);
   const seen = new Set(shown.map((row) => `${row.id}|${row.on}`));
   for (const read of reads || []) {
     const id = String(read?.sku || read?.id || "");
