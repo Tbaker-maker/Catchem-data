@@ -117,18 +117,18 @@ export async function run() {
   t("estimate is last total minus first total, with the day count", est.net === -39 && est.days === 3 && est.from === "2026-10-04" && est.to === "2026-10-06");
   t("estimate stays out of reads under 7 days", est.readEligible === false);
   const week = { priceHistory: Array.from({ length: 7 }, (_, i) => ({ date: `2026-10-0${i + 1}`, total: 100 + i })) };
-  t("estimate becomes read-eligible at 7 days", listingChangeEstimate(week).readEligible === true && listingChangeEstimate(week).net === 6);
+  t("estimate becomes a number at 7 days and is still not a read", listingChangeEstimate(week).readEligible === true && listingChangeEstimate(week).net === 6);
   const weekRead = listingChangeRead({ id: "x-etb", name: "X ETB", priceHistory: week.priceHistory });
-  t("listing read uses the exact sentence", weekRead?.path === "Net change in active eBay listings (estimate): +6 over 7 nights.");
-  t("listing read never says sold or sell-through", weekRead && !/\bsold\b|sell-through|sell through/i.test(weekRead.path + weekRead.why));
-  t("six nights stay out of reads", listingChangeRead({ id: "x-etb", name: "X ETB", priceHistory: week.priceHistory.slice(0, 6) }) == null);
-  const cooled = pickNight([weekRead, { ...weekRead, id: "listing-y", sku: "y-etb", name: "Y" }], { shown: [] }, "2026-10-07");
-  const next = pickNight([weekRead, { ...weekRead, id: "listing-y", sku: "y-etb", name: "Y" }], cooled.state, "2026-10-08");
+  t("the listing-change sentence is not published", weekRead == null);
+  t("six nights are not published either", listingChangeRead({ id: "x-etb", name: "X ETB", priceHistory: week.priceHistory.slice(0, 6) }) == null);
+  const fixture = { id: "listing-x", sku: "x-etb", name: "X ETB", readKind: "listing" };
+  const cooled = pickNight([fixture, { ...fixture, id: "listing-y", sku: "y-etb", name: "Y" }], { shown: [] }, "2026-10-07");
+  const next = pickNight([fixture, { ...fixture, id: "listing-y", sku: "y-etb", name: "Y" }], cooled.state, "2026-10-08");
   t("a listing read does not repeat the next night", !next.reads.some((row) => cooled.reads.some((prev) => prev.sku === row.sku)));
   t("no estimate from one total or from listingCount", listingChangeEstimate({ listingCount: 40, priceHistory: [{ date: "2026-10-06", total: 5 }] }) === null && listingChangeEstimate({ listingCount: 40 }) === null);
   t("estimate never says sold or sell-through", !/\bsold\b|sell-through|sell through/i.test(JSON.stringify(est)));
   const estDive = buildDivePayload({ id: "x-etb", seriesRows: [{ date: "2026-10-05", id: "x-etb", price: 50, listingCount: 12 }], latestProduct: withTotals });
-  t("dive carries the estimate and volume stays null", estDive.listingChange?.net === -39 && estDive.volume === null);
+  t("dive does not publish the estimate", estDive.listingChange == null && estDive.volume === null);
 
   // ── pulse copy: a filtered count is not "all of eBay" ──
   const pulseSrc = await readSrc(new URL("../generate-pulse.mjs", import.meta.url), "utf8");

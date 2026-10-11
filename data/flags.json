@@ -82,6 +82,13 @@
       "why": "Volume reads use TCGplayer sold counts from PokemonPriceTracker. Off and nothing published (data/derived/tcgplayer-volume.json left the public repo 2026-10-10) until PPT's Business plan and written yes.",
       "trigger": "PPT written yes for public display.",
       "env": "CATCHEM_VOLUME_READS"
+    },
+    "reads.library": {
+      "value": false,
+      "owner": "scripts/lib/second-library.mjs",
+      "why": "Second-library listing reads stay off. Tightening and Building stay off until an exact 7-day pair of filteredTotal exists, and this switch is off. One key turns those reads off without a deploy.",
+      "trigger": "Exact 7-day filteredTotal pairs exist and RD writes the sentence for them.",
+      "env": "CATCHEM_READS_LIBRARY"
     }
   }
 }

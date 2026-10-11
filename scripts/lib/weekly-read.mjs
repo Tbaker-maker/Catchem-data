@@ -1,8 +1,10 @@
 // Fixed weekly outline. Sections stay in this order even when a source is missing.
+import { BOARD_MAX, POST_CAP, capPost } from "./second-library.mjs";
+
 const BANNED = /\b(buy|hold|plays|targets|bullish|calls|picks|floor|support line|crash)\b/i;
 
 export function weeklyRead({ asOf, heat = [], repeat = null, receipts = null, sets = [] }) {
-  const movers = (heat || []).slice(0, 6).map((p) => ({
+  const movers = (heat || []).slice(0, Math.min(6, BOARD_MAX)).map((p) => ({
     id: p.id,
     name: p.name,
     heat: p.label || "Steady",
@@ -77,5 +79,7 @@ These are two lines. They are not one number.
 ${lines}
 `;
   if (BANNED.test(md)) throw new Error("weekly outline used a banned word");
-  return md;
+  const capped = capPost(md, POST_CAP);
+  if (capped.length > POST_CAP) throw new Error("weekly post is over 1800 characters");
+  return capped;
 }
