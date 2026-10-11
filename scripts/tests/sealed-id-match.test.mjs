@@ -166,6 +166,11 @@ export async function runSealedIdTests() {
   const REASONS = ["case", "display-of-multiple", "set-of-multiple", "code-card", "accessory", "empty-box"];
   t("browse:false rows keep their data and name a known reason", hidden.every((r) => REASONS.includes(r.browseReason) && r.tcgPlayerId && r.name));
   t("a booster box case is hidden from browse", sealedRows.find((r) => r.id === "tcgcsv-233335")?.browse === false);
+  for (const parent of ["sm5-etb", "swsh6-pc-etb", "swsh7-pc-etb", "sv1-pc-etb", "sv4-pc-etb", "sv5-pc-etb", "me1-pc-etb"]) {
+    const row = sealedRows.find((r) => r.id === parent);
+    t(`${parent} is an art-split parent with two arts`, row?.combinedArts === true && row.tcgPlayerId == null && row.arts?.length === 2);
+  }
+  t("split art products are not listed twice as tcgcsv rows", ["247281", "247282", "478756", "478758", "644282", "648415"].every((pid) => !sealedRows.some((r) => r.id === "tcgcsv-" + pid)));
   t("a plain booster box is not hidden", sealedRows.find((r) => r.id === "tcgcsv-236258")?.browse !== false);
   const bundleSrc = await readFile(join(ROOT, "scripts/build-public-bundle.mjs"), "utf8");
   t("sealed redirects are not built from names", !/byNorm|SET_HINTS|subtypeFromLegacy/.test(bundleSrc));

@@ -11,6 +11,7 @@ import { publishFeed, readCallLog, readShelfFile } from "./lib/feed-catalogue.mj
 import { nextCountsUpdatedAt } from "./lib/price-stamp.mjs";
 import { cataloguePath, loadCatalogueImages } from "./catalogue-images.mjs";
 import { writeSparks } from "./build-sparks.mjs";
+import { hiddenSealedPids, isBrowseHidden } from "./lib/browse-hidden.mjs";
 import { ATTACH_SEALED, FOLD_GROUPS, assertFolds, assertWritable, cardPrintings, completionCounts } from "./lib/set-master.mjs";
 import { indexLine as indexLineFull } from "./lib/public-index-line.mjs";
 
@@ -359,7 +360,11 @@ try { RUN_AT = (await read("data/ppt/run-report.json")).finishedAt || null; } ca
 
 const rawById = new Map();
 const sets = new Map();
+const browseHiddenPids = hiddenSealedPids(await read("data/sealed-products.json").catch(() => []));
+let browseHiddenCount = 0;
 for (const item of items) {
+  const browseHidden = isBrowseHidden(item, browseHiddenPids);
+  if (browseHidden) browseHiddenCount += 1;
   const key = homeKey(item);
   const fold = foldOf(item);
   if (!sets.has(key)) {
@@ -378,13 +383,15 @@ for (const item of items) {
       up: 0,
       down: 0,
       items: [],
+      hidden: [],
     });
   }
   const set = sets.get(key);
-  if (item.kind === "sealed") set.sealed += 1;
+  if (browseHidden) { /* not counted in browse */ }
+  else if (item.kind === "sealed") set.sealed += 1;
   else set.single += 1;
   const price = money(item.price) ? Number(item.price) : null;
-  if (price) set.priced += 1;
+  if (price && !browseHidden) set.priced += 1;
   const histRaw = histFor(item.tcgplayerProductId);
   const hist = chartSeries(histRaw);
   rawById.set(item.id, histRaw);
@@ -395,7 +402,7 @@ for (const item of items) {
   const artist = artistById.get(item.id) || null;
   const pid = BAD_IMAGE.has(Number(item.tcgplayerProductId)) ? null : item.tcgplayerProductId;
   const printings = item.kind === "sealed" ? [] : cardPrintings(item, versionsOf.get(item.id), catalog.asOf);
-  set.items.push({
+  (browseHidden ? set.hidden : set.items).push({
     id: item.id,
     name: pretty(item.name),
     num: item.number || "",
@@ -477,6 +484,14 @@ for (const set of sets.values()) {
     buckets.get(b).push(card);
     search.push([item.id, item.name, set.name, item.num || "", item.artist || "", item.kind, item.price || 0, set.slug, item.rarity || ""]);
   }
+  // browse:false sealed rows keep their product page data (buckets) but are
+  // not in the set list, search, feed, or counts.
+  for (const item of set.hidden) {
+    const card = { ...item, set: set.name, setSlug: set.slug, release: set.release || null, source: "TCGplayer market", asOf: catalog.asOf, browse: false };
+    const b = bucketOf(item.id);
+    if (!buckets.has(b)) buckets.set(b, []);
+    buckets.get(b).push(card);
+  }
 }
 setIndex.sort((a, b) => a.era.localeCompare(b.era) || a.name.localeCompare(b.name));
 for (const [b, rows] of buckets) {
@@ -546,6 +561,7 @@ const counts = {
   sealedNote: "Sealed means the box, tin, pack, or collection. Cards are singles, including trainer-kit cards and the cards inside a world championship deck. Those cards used to be counted as sealed (the old figure was 2,998). No sealed name is repeated in one set.",
   soldNote: "No sold list is in this catalog. A sold price is shown only when one is stored. The price on a card is TCGplayer market, not a sold price.",
   ebaySealedTracked: null,
+  browseHiddenSealed: browseHiddenCount,
 };
 const singleN = counts.single;
 const credited = published.reduce((n, set) => n + set.items.filter((it) => it.kind === "single" && it.artist).length, 0);
