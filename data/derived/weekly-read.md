@@ -1,4 +1,4 @@
-# Weekly Read — 2026-10-10
+# Weekly Read — 2026-10-11
 
 Video outline. Same four parts every week. Say "reads we tracked". Do not say a name is a play or a target.
 
@@ -9,10 +9,10 @@ Video outline. Same four parts every week. Say "reads we tracked". Do not say a 
 Status: building history
 
 Sealed
-- Evolutions Elite Trainer Box — 6 in 7 days, 10 in 30, streak 6
-- Stellar Crown Booster Pack — 5 in 7 days, 9 in 30, streak 0
-- Celebrations Elite Trainer Box — 5 in 7 days, 8 in 30, streak 5
-- Prismatic Evolutions Surprise Box — 5 in 7 days, 7 in 30, streak 2
+- Evolutions Elite Trainer Box — 7 in 7 days, 11 in 30, streak 7
+- Celebrations Elite Trainer Box — 6 in 7 days, 9 in 30, streak 6
+- Stellar Crown Booster Pack — 4 in 7 days, 9 in 30, streak 0
+- Prismatic Evolutions Surprise Box — 5 in 7 days, 8 in 30, streak 3
 - Temporal Forces Pokemon Center Elite Trainer Box — 3 in 7 days, 6 in 30, streak 0
 
 Singles
@@ -23,13 +23,13 @@ Singles
 - Charizard VMAX — 0 in 7 days, 1 in 30, streak 1
 
 ## 3. Reads we tracked
-Tracked 8. Graded 0. Hits 0. Misses 0. Hit rate not enough yet.
+Tracked 10. Graded 1. Hits 0. Misses 1. Hit rate 0%.
 
-- Nothing graded yet. The misses will sit in this list with the hits.
+- Miss — Rebel Clash Elite Trainer Box (sealed) 0.5%
 
 ## 4. Sealed line and chase line
 These are two lines. They are not one number.
-- 151: sealed 99.2; chase building history (Charizard ex, Blastoise ex, Venusaur ex)
-- Ascended Heroes: sealed 91.2; chase building history (Mega Dragonite ex, Mega Dragonite ex, Mega Gengar ex)
-- Astral Radiance: sealed 101.5; chase 95.2 (Machamp V, Origin Forme Palkia V, Beedrill V)
+- 151: sealed 98.6; chase building history (Charizard ex, Blastoise ex, Venusaur ex)
+- Ascended Heroes: sealed 90.8; chase building history (Mega Dragonite ex, Mega Dragonite ex, Mega Gengar ex)
+- Astral Radiance: sealed 102.4; chase 95.2 (Machamp V, Origin Forme Palkia V, Beedrill V)
 - Base Set: sealed building history; chase building history
