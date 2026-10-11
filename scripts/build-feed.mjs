@@ -9,6 +9,7 @@ import { supplyMap, writeFeedExtras } from "./build-extra-reads.mjs";
 import { writeSealedPriceOutliers } from "./flag-sealed-price-outliers.mjs";
 import { writeReadLibrary } from "./lib/read-library.mjs";
 import { writeHealth } from "./write-health.mjs";
+import { cooledSet, loadRotation } from "./lib/night-reads.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "research/assets/public");
