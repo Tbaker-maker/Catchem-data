@@ -34,6 +34,7 @@ export async function loadCatalogueImages(root = ROOT) {
   };
   take(await readJson(join(root, "research/assets/cards/full/index.json")).catch(() => []));
   take(await readJson(join(root, "research/assets/cards/seed/index.json")).catch(() => []));
+  take(await readJson(join(root, "research/assets/cards/pattern/index.json")).catch(() => []));
   const logoDoc = await readJson(join(root, "research/assets/public/set-logos.json")).catch(() => null);
   const logos = logoDoc && logoDoc.logos && typeof logoDoc.logos === "object" ? logoDoc.logos : {};
   for (const [id, row] of Object.entries(logos)) {
