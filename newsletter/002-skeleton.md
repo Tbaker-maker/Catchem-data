@@ -1,3 +1,7 @@
+# Catch'Em News 002 — Skeleton (ARCHIVED)
+
+Status: archived 2026-10-11. Do not fill or send. The live source of truth is catchem-data-private docs/growth/ (NEWSLETTER.md, WRITING-GUIDE.md, SENDERS.md).
+
 # Catch'Em News 002 — Skeleton (Cold issue: "The Tin Verdict")
 *Target send: ~Aug 30–Sep 1 (2–3 days after tin day, with heat reads live).
 Every [SLOT] names its source + earliest fill date. Nothing publishes from
