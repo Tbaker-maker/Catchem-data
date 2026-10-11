@@ -4,6 +4,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { shell, tile, cta, footer, toText, esc, num, SITE } from "./lib/email.mjs";
 import { dedupeNames } from "./lib/weekly-read.mjs";
+import { provenBoard, makeDayLoader, loadSealedPid, isRotatedSet, ROTATION_LINE } from "./lib/email-proof.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = async (p) => JSON.parse(await readFile(join(ROOT, p), "utf8"));
@@ -13,7 +14,9 @@ const reads = await read("research/assets/public/reads.json");
 const counts = await read("research/assets/public/counts.json");
 const asOf = weekly.asOf;
 
-const boardReads = Array.isArray(reads.reads) ? reads.reads.length : 0;
+// count must equal the array; provenBoard throws when it does not.
+const { kept: proven } = await provenBoard(reads, { day: makeDayLoader(ROOT), sealedPid: await loadSealedPid(ROOT) });
+const boardReads = reads.count;
 const tiles = [
   tile("Reads on the board", boardReads, "reads.json", reads.asOf),
   tile("Products priced", counts.priced, "counts.json", counts.asOf),
@@ -22,9 +25,15 @@ const tiles = [
 
 const sections = [];
 
+// Same price proof as the daily: both prices in that exact day's TCGplayer market file.
+if (proven.length) {
+  const rows = proven.map(({ row, proof: p }) => `<tr><td style="padding:8px 0;color:#efe9de;font:15px/1.4 Arial,Helvetica,sans-serif;">${p.up ? "Up" : "Down"} $<span data-src="TCGCSV daily ${p.bDate}" data-asof="${p.bDate}">${p.usd.toFixed(2)}</span>: <span data-name="1">${esc(row.name)}</span>, $<span data-src="TCGCSV daily ${p.aDate}" data-asof="${p.aDate}">${p.a.toFixed(2)}</span> on ${p.aDate} to $<span data-src="TCGCSV daily ${p.bDate}" data-asof="${p.bDate}">${p.b.toFixed(2)}</span> on ${p.bDate}.${isRotatedSet(row.set) ? `<br><span style="color:#d9b779;font-size:13px;">${ROTATION_LINE}</span>` : ""}</td></tr>`).join("");
+  sections.push(`<tr><td style="padding:18px 0 6px;font:700 18px Georgia,serif;color:#efe9de;">On the board</td></tr><tr><td><table role="presentation" width="100%">${rows}</table></td></tr>`);
+}
+
 const sealed = (weekly.keepsShowingUp?.sealed || []).filter((r) => r.days7 > 0);
 if (sealed.length >= 3) {
-  const rows = sealed.map((r) => `<tr><td style="padding:8px 0;color:#efe9de;font:15px/1.4 Arial,Helvetica,sans-serif;">${esc(r.name)}<br><span style="color:#c4baab;font-size:13px;">${num(r.days7, "weekly-read.json", r.lastSeen)} this week, ${num(r.days30, "weekly-read.json", r.lastSeen)} this month</span></td></tr>`).join("");
+  const rows = sealed.map((r) => `<tr><td style="padding:8px 0;color:#efe9de;font:15px/1.4 Arial,Helvetica,sans-serif;"><span data-name="1">${esc(r.name)}</span><br><span style="color:#c4baab;font-size:13px;">${num(r.days7, "weekly-read.json", r.lastSeen)} this week, ${num(r.days30, "weekly-read.json", r.lastSeen)} this month</span></td></tr>`).join("");
   sections.push(`<tr><td style="padding:18px 0 6px;font:700 18px Georgia,serif;color:#efe9de;">Keeps showing up</td></tr><tr><td><table role="presentation" width="100%">${rows}</table></td></tr>`);
 }
 
@@ -57,6 +66,6 @@ const txt = toText(html);
 const dir = join(ROOT, "newsletter/out");
 await mkdir(dir, { recursive: true });
 await writeFile(join(dir, `weekly-${asOf}.html`), html);
-await writeFile(join(dir, `weekly-${asOf}.txt`), txt);
+await writeFile(join(dir, `weekly-${asOf}.txt`), `PREHEADER: Board, priced products, and sets. ${asOf}.\n` + txt);
 console.log(`weekly email: newsletter/out/weekly-${asOf}.html`);
 console.log(`board reads ${boardReads} (${reads.asOf}), priced ${counts.priced}, sets ${counts.sets}`);
