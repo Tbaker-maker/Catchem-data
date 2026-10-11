@@ -1,0 +1,63 @@
+{
+  "sourceDate": "2026-10-11",
+  "used": false,
+  "assignedToProductId": 0,
+  "products": [],
+  "finding": "No official product-gallery image was saved or assigned. A direct request for the gallery index and for the Phantasmal Flames ETB gallery URL returned an Incapsula challenge, not the page. Nothing was matched by name.",
+  "requests": [
+    {
+      "url": "https://www.pokemon.com/us/pokemon-tcg/product-gallery",
+      "date": "2026-10-11",
+      "result": "Incapsula challenge, not the gallery"
+    },
+    {
+      "url": "https://www.pokemon.com/us/pokemon-tcg/product-gallery/mega-evolution-phantasmal-flames-elite-trainer-box",
+      "date": "2026-10-11",
+      "result": "Incapsula challenge, not the product page"
+    }
+  ],
+  "earlierCheck": {
+    "file": "data/sealed-msrp.json",
+    "date": "2026-10-10",
+    "finding": "Those Pokémon.com product gallery pages state contents and a launch date. They do not state a USD MSRP. Every row below is blank. The tcgcsv-{productId} rows added in this pass are also unsourced and are not repeated here.",
+    "pages": [
+      {
+        "url": "https://www.pokemon.com/us/pokemon-tcg/product-gallery/30th-celebration-elite-trainer-box",
+        "date": "2026-10-10",
+        "msrpStated": false
+      },
+      {
+        "url": "https://www.pokemon.com/us/pokemon-tcg/product-gallery/mega-evolution-elite-trainer-box",
+        "date": "2026-10-10",
+        "msrpStated": false
+      },
+      {
+        "url": "https://www.pokemon.com/us/pokemon-tcg/product-gallery/mega-evolution-chaos-rising-elite-trainer-box",
+        "date": "2026-10-10",
+        "msrpStated": false
+      },
+      {
+        "url": "https://www.pokemon.com/us/pokemon-tcg/product-gallery/mega-evolution-phantasmal-flames-elite-trainer-box",
+        "date": "2026-10-10",
+        "msrpStated": false
+      },
+      {
+        "url": "https://www.pokemon.com/us/pokemon-tcg/product-gallery/mega-evolution-ascended-heroes-elite-trainer-box",
+        "date": "2026-10-10",
+        "msrpStated": false
+      }
+    ]
+  },
+  "terms": {
+    "url": "https://www.pokemon.com/us/legal/terms-of-use",
+    "lastUpdate": "June 15, 2023",
+    "readOn": "2026-10-11",
+    "note": "Quoted from that URL. A raw curl from this sandbox received only the Incapsula challenge, so the quotes were not re-copied from a curl body.",
+    "quotes": [
+      "Unless otherwise noted, all content on the Service, including articles, artwork, screen shots, graphics, logos, downloads and other files, is the property of Pokémon and is protected by United States and international copyrights, trademarks and other intellectual property laws.",
+      "Subject to any limitations under applicable law, you acknowledge and accept that you have no property or other rights in any content on the Service, including but not limited to content that you may have created or developed including 'Trainer Images', screen names, game scores, the content of chats and other messages submitted to a Service or to us directly.",
+      "These Terms grant permission to you, in your individual capacity, to use the content of Service made available to you for personal, noncommercial home use only.",
+      "In no instance may you: (i) Change or remove any copyright and other proprietary notices from content on the Service; (ii) Modify, or create derivative works based on, the content; (v) Download quantities of content to a database for any reason; (iv) Use the content in any manner: (a) suggesting an association with any other products, services, or brands (b) that is likely to cause confusion among customers, (c) that disparages or discredits Pokémon, (d) that is otherwise exploitative for any commercial purpose; or (e) that otherwise infringes our intellectual property rights."
+    ]
+  }
+}

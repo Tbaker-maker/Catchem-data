@@ -1,7 +1,7 @@
 {
   "id": "type-etb",
   "name": "etb",
-  "asOf": "2026-10-10",
+  "asOf": "2026-10-11",
   "method": "Chain-linked. A name joins on the first day it has a price and does not move the level that day. Its first return is the next day it is priced. Each day's move is the median price change of names priced on both days. A value-weighted line gives a dearer product a bigger say. A day with no shared prices is a gap. Nothing is filled in.",
   "basket": [
     {
@@ -348,6 +348,16 @@
           "entered": 0,
           "equalMovePct": 0,
           "valueMovePct": -0.0291
+        },
+        {
+          "date": "2026-10-11",
+          "from": "2026-10-10",
+          "equal": 100,
+          "value": 99.8,
+          "matched": 32,
+          "entered": 0,
+          "equalMovePct": 0,
+          "valueMovePct": -0.2573
         }
       ],
       "gaps": [
@@ -576,6 +586,16 @@
           "entered": 0,
           "equalMovePct": 0,
           "valueMovePct": 1.2333
+        },
+        {
+          "date": "2026-10-11",
+          "from": "2026-10-10",
+          "equal": 100.6,
+          "value": 95.6,
+          "matched": 37,
+          "entered": 0,
+          "equalMovePct": 0,
+          "valueMovePct": -1.3194
         }
       ],
       "gaps": [
