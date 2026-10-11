@@ -497,7 +497,7 @@ setIndex.sort((a, b) => a.era.localeCompare(b.era) || a.name.localeCompare(b.nam
 for (const [b, rows] of buckets) {
   await writeFile(join(OUT, "buckets", `${b}.json`), JSON.stringify(rows));
 }
-const sparkOut = await writeSparks(OUT);
+const sparkOut = await writeSparks(OUT, catalog.asOf);
 console.log(`sparks: ${sparkOut.rows} series in ${sparkOut.files} files, as of ${sparkOut.asOf}`);
 
 const byId = new Map(items.map((item) => [item.id, item]));

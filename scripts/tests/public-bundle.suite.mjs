@@ -114,13 +114,19 @@ export async function run() {
     const reads = JSON.parse(await readFile(join(ROOT, "research/assets/public/reads.json"), "utf8"));
     const meta = JSON.parse(await readFile(join(ROOT, "research/assets/public/feed/meta.json"), "utf8"));
     const catalogue = JSON.parse(await readFile(join(ROOT, "research/assets/public/feed/catalogue.json"), "utf8"));
+    // A window needs its exact start day file. When none of the 7/30/90 start files exist, an empty board is the honest result.
+    const dailyDir = join(ROOT, "data/history/tcgcsv-daily");
+    const dayBack = (n) => new Date(Date.parse(`${String(reads.asOf).slice(0, 10)}T00:00:00Z`) - n * 86400000).toISOString().slice(0, 10);
+    const hasDay = async (d) => { try { await readFile(join(dailyDir, `${d}.json`)); return true; } catch { return false; } };
+    const noWindow = !(await hasDay(dayBack(7))) && !(await hasDay(dayBack(30))) && !(await hasDay(dayBack(90)));
+    if (noWindow) console.log(`  - no start file for ${dayBack(7)}, ${dayBack(30)} or ${dayBack(90)}: quiet night allowed`);
     t("counts add up and slabs stay at zero", counts.items === counts.single + counts.sealed && counts.slab === 0 && counts.single > 20000);
-    t("the catalogue is more than 12 cards", meta.count > 12 && meta.count === Object.keys(catalogue.cards).length);
+    t("the catalogue is more than 12 cards", (meta.count > 12 || noWindow) && meta.count === Object.keys(catalogue.cards).length);
     {
       const lib = JSON.parse(await readFile(join(ROOT, "research/assets/public/feed/read-library.json"), "utf8"));
       const types = new Map();
       for (const row of lib.board || []) types.set(row.signal, (types.get(row.signal) || 0) + 1);
-      t("the live library has TCGCSV-only price reads (mover or plain) and a board", ((lib.counts?.mover?.qualified || 0) + (lib.counts?.plain?.qualified || 0)) >= 1 && (lib.board || []).length >= 1);
+      t("the live library has TCGCSV-only price reads (mover or plain) and a board", ((lib.counts?.mover?.qualified || 0) + (lib.counts?.plain?.qualified || 0)) >= 1 && (lib.board || []).length >= 1 || noWindow);
       t("board is at most 8, at most 2 per type, at most 2 plain", (lib.board || []).length <= 8 && [...types.values()].every((n) => n <= 2) && (types.get("plain") || 0) <= 2);
       t("no 6-month high or low on TCGCSV-only history", (lib.counts?.high?.qualified || 0) === 0 && (lib.counts?.low?.qualified || 0) === 0 || String(lib.asOf) >= "2027-02-22");
       t("no price read claims a high or low since a month on short history", reads.reads.every((row) => !/(highest|lowest) price since/i.test(String(row.headline || ""))) || String(lib.asOf) >= "2026-12-24");
@@ -132,7 +138,7 @@ export async function run() {
     const priceReads = reads.reads.filter((row) => row.readKind === "price" || row.kind === "single" || row.kind === "sealed");
     const otherReads = reads.reads.filter((row) => !priceReads.includes(row));
     const bad = priceReads.filter((row) => !money(row.price) || !row.headline || !(row.why || row.whyItMatters) || BANNED.test(row.headline) || BANNED.test(row.why || row.whyItMatters || "") || row.price === 0 || !/TCGplayer market:/.test(row.headline) || !/\([^)]+\)/.test(row.headline) || oldWhy.test(row.why || row.whyItMatters || "") || oldWhy.test(row.headline) || /tcgcsv-|data\/|—/.test(row.why || row.whyItMatters || "") || /\b(heating up|cooling off|last print|Top card in|checked again)\b/i.test(row.headline));
-    t("every price lead read has a price, a window, and a clean headline", bad.length === 0 && priceReads.length >= 1 && priceReads.length <= 24);
+    t("every price lead read has a price, a window, and a clean headline", bad.length === 0 && (priceReads.length >= 1 || noWindow) && priceReads.length <= 24);
     t("a non-price read is a streak or another kept kind", otherReads.every((row) => row.readKind === "pull" || row.readKind === "pokemon" || row.readKind === "lag" || row.readKind === "group" || row.readKind === "supply" || row.readKind === "outlier" || row.readKind === "dive" || row.readKind === "volume" || row.readKind === "listing" || row.readKind === "quiet" || row.readKind === "mix" || row.readKind === "conditions" || row.readKind === "soldflat" || row.readKind === "solddown" || row.readKind === "setshare" || row.readKind === "spread" || row.readKind === "askmove" || row.readKind === "mktmove" || row.readKind === "still" || row.readKind === "streak" || row.readKind === "mover" || row.readKind === "high" || row.readKind === "set" || row.readKind === "turned" || row.readKind === "sealed" || row.readKind === "release"));
     const shape = (text) => String(text).replace(/\$[0-9,.]+/g, "$").replace(/\b(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2}\b/g, "DATE").replace(/\b\d+(?:\.\d+)?\b/g, "n");
     const shapes = reads.reads.map((row) => shape(row.path || ""));

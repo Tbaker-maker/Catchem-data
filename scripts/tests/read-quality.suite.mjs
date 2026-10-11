@@ -5,7 +5,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { BANNED } from "../lib/public-bundle.mjs";
 import { flag } from "../flags.mjs";
-import { buildReadLibrary, writeReadLibrary } from "../lib/read-library.mjs";
+import { buildReadLibrary, writeReadLibrary, boardImage, BRAND_TILE } from "../lib/read-library.mjs";
 import {
   FOOTER,
   chaseInMorningFile,
@@ -346,6 +346,19 @@ export async function run() {
   ], day10);
   t("pulse drops chase prices missing from that morning", kept.length === 1 && kept[0].priceMarket === 0.37 && !kept.some((row) => row.priceMarket === 2283.14 || row.priceMarket === 1412.72));
 
+  {
+    const imgs = { "tcgcsv-1": "/img/sv1/12" };
+    t("board image: catalogue picture by id first", boardImage({ sku: "tcgcsv-1" }, imgs, true) === "https://catchemtcg.com/data/editor/tcg/sv1/12_hires.png");
+    t("board image: TCGplayer photo by productId when the flag is on", boardImage({ sku: "tcgcsv-704180" }, {}, true) === "https://tcgplayer-cdn.tcgplayer.com/product/704180_in_400x400.jpg");
+    t("board image: branded tile when the flag is off and no catalogue hit", boardImage({ sku: "tcgcsv-704180" }, {}, false) === BRAND_TILE);
+    t("board image: a sealed slug maps to its TCGplayer id", boardImage({ id: "askmove-sv7-etb", sku: "sv7-etb" }, {}, true, new Map([["sv7-etb", "557350"]])) === "https://tcgplayer-cdn.tcgplayer.com/product/557350_in_400x400.jpg");
+    t("board image: a non-product read still gets the tile", boardImage({ id: "spread-x" }, {}, true) === BRAND_TILE);
+    try {
+      const pub = JSON.parse(await readFile(join(dirname(fileURLToPath(import.meta.url)), "../../research/assets/public/reads.json"), "utf8"));
+      t("published reads.json: no board row has an empty image", (pub.reads || []).every((row) => typeof row.image === "string" && row.image.trim() !== ""));
+      t("published reads.json: count equals length", pub.count === (pub.reads || []).length);
+    } catch { t("published reads.json is readable", false); }
+  }
   return fail;
 }
 

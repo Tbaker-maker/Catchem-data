@@ -591,6 +591,44 @@ async function readJson(path) {
   try { return JSON.parse(await readFile(path, "utf8")); } catch { return null; }
 }
 
+
+// Board picture order: Post Office catalogue by id, then the TCGplayer photo by productId
+// (only while flags images.tcgplayer is on), then the branded tile. Never empty.
+export const SITE_ORIGIN = "https://catchemtcg.com";
+export const BRAND_TILE = `${SITE_ORIGIN}/og.png`;
+export function boardImage(row, images = {}, tcgOn = true, sealedPid = new Map()) {
+  const ids = [row?.sku, row?.id, row?.sourceLine].map((v) => String(v || "").replace(/^(move|mover|streak|plain|high|low|set|spread|askmove|mktmove)-/, "")).filter(Boolean);
+  for (const id of [...ids]) { const pid = sealedPid.get(id); if (pid) ids.push(`tcgcsv-${pid}`); }
+  for (const id of ids) {
+    const raw = typeof images[id] === "string" ? images[id].trim().split(/[?#]/)[0] : "";
+    if (!raw || raw.includes("..") || raw.includes("//")) continue;
+    const m = raw.match(/^\/(?:img|thumb)\/([A-Za-z0-9]+)\/([A-Za-z0-9._-]+)$/);
+    if (m) return `${SITE_ORIGIN}/data/editor/tcg/${m[1]}/${/\.[A-Za-z0-9]+$/.test(m[2]) ? m[2] : m[2] + "_hires.png"}`;
+    if (/^\/cards\/[A-Za-z0-9._/-]+$/.test(raw)) return SITE_ORIGIN + raw;
+  }
+  const existing = String(row?.image || "");
+  if (/^https:\/\/catchemtcg\.com\//.test(existing)) return existing;
+  if (tcgOn) {
+    for (const id of ids) {
+      const pid = id.match(/^tcgcsv-(\d+)$/);
+      if (pid) return `https://tcgplayer-cdn.tcgplayer.com/product/${pid[1]}_in_400x400.jpg`;
+    }
+  }
+  return BRAND_TILE;
+}
+
+async function loadBoardImageInputs(root) {
+  let images = {};
+  const tcgOn = flag("images.tcgplayer") !== false;
+  try { images = JSON.parse(await readFile(join(root, "research/assets/public/catalogue-images.json"), "utf8")).images || {}; } catch { images = {}; }
+  const sealedPid = new Map();
+  try {
+    const doc = JSON.parse(await readFile(join(root, "data/sealed-products.json"), "utf8"));
+    for (const p of Array.isArray(doc) ? doc : doc.products || []) if (p?.id && /^\d+$/.test(String(p.tcgPlayerId || ""))) sealedPid.set(String(p.id), String(p.tcgPlayerId));
+  } catch { /* no sealed map */ }
+  return { images, tcgOn, sealedPid };
+}
+
 export async function writeReadLibrary({ root, catalogue, extra, series, dailyFiles = null, sealed = null, radar = null, library = null, pptPublic = null, volumeReads = null }) {
   const files = dailyFiles || await dailyFileSet(root);
   let open = library === true;
@@ -618,6 +656,9 @@ export async function writeReadLibrary({ root, catalogue, extra, series, dailyFi
   await writeFile(path, JSON.stringify(lib));
   const readsPath = join(root, READS_FILE);
   await mkdir(dirname(readsPath), { recursive: true });
-  await writeFile(readsPath, JSON.stringify(publishReads(lib)));
+  const published = publishReads(lib);
+  const { images: boardImages, tcgOn, sealedPid } = await loadBoardImageInputs(root);
+  for (const row of published.reads || []) row.image = boardImage(row, boardImages, tcgOn, sealedPid);
+  await writeFile(readsPath, JSON.stringify(published));
   return lib;
 }
