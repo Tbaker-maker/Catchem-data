@@ -275,19 +275,42 @@ export function setShareReads(volumeDoc, items) {
   return out;
 }
 
-export function spreadRead(product) {
+// Robust range (2026-10-10). The fetch writes askP10/askP90/askMedian after
+// dropping asks over 2x or under 0.5x the median; at least SPREAD_MIN asks.
+// An older row without those fields ships only when its raw low and high
+// already sit inside 0.5x to 2x of the median (the median is shown either way).
+export const SPREAD_MIN = 5;
+export function spreadRange(product) {
+  const p10 = Number(product?.askP10);
+  const p90 = Number(product?.askP90);
+  const mid = Number(product?.askMedian);
+  const n = Number(product?.askRobustCount);
+  if (p10 > 0 && p90 > p10 && mid > 0 && n >= SPREAD_MIN) return { low: p10, high: p90, median: mid, count: n, basis: "p10-p90" };
+  if (product && "askRobustCount" in product) return null;
   const low = Number(product?.priceLow);
   const high = Number(product?.priceHigh);
+  const median = Number(product?.priceMedian);
+  const count = Number(product?.listingCount);
+  if (!(low > 0) || !(high > low) || !(median > 0) || !(count >= SPREAD_MIN)) return null;
+  if (high >= median * 2 || low < median * 0.5) return null;
+  return { low, high, median, count, basis: "min-max" };
+}
+
+export function spreadRead(product) {
+  const range = spreadRange(product);
   const name = String(product?.name || "").trim();
   const day = String(product?.lastSeen || "").slice(0, 10);
-  if (product?.dataStatus !== "live" || !name || !(low > 0) || !(high > low) || !DAY.test(day)) return null;
+  if (product?.dataStatus !== "live" || !name || !range || !DAY.test(day)) return null;
+  const { low, high, median, count } = range;
   const a = money(low);
   const b = money(high);
-  if (!a || !b) return null;
+  const m = money(median);
+  if (!a || !b || !m) return null;
+  const tail = ` Median ask ${m} across ${count} eBay listings on ${day}.`;
   const phrases = [
-    `${name}: asking prices in the search run from ${a} to ${b}.`,
-    `The search for ${name} asks from ${a} to ${b}.`,
-    `${name} asks run from ${a} up to ${b}.`,
+    `${name}: asking prices in the search run from ${a} to ${b}.${tail}`,
+    `The search for ${name} asks from ${a} to ${b}.${tail}`,
+    `${name} asks run from ${a} up to ${b}.${tail}`,
   ];
   const path = pickPhrase(phrases, `${day}|spread|${product.id}`);
   if (!path || path.includes(SPREAD_CLAUSE)) return null;
@@ -305,7 +328,7 @@ export function spreadRead(product) {
     href: `/p/${encodeURIComponent(product.id)}`,
     lane: "sealed",
     rank: high - low,
-    receipt: { low, high },
+    receipt: { low, high, median, count, basis: range.basis },
   };
 }
 

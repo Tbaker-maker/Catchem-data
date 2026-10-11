@@ -249,7 +249,8 @@ const EXCLUDE_BY_SUBTYPE = {
   // (2026-08-18 audit: $127.99 "ETB Pokemon Center Exclusive" kept in me5-etb,
   // keyword-stuffed PC listing kept in sv3pt5-etb). The pc-etb subtype REQUIRES
   // the phrase, so the two SKU families are now disjoint.
-  "etb":            ["booster box", "bundle", "blister", "36 pack", "mini tin", "pokemon center"],
+  // case / multi-box tokens (2026-10-10: a $800 ask set the me2pt5-pc-etb high)
+  "etb":            ["booster box", "bundle", "blister", "36 pack", "mini tin", "pokemon center", "etb case", "case of", "sealed case", "master case", "pair"],
   // loose-pack spec vocab (2026-08-18): weighed-pack scams + multi-pack and
   // container terms; "packs" PLURAL is the load-bearing one (a single pack
   // listing says "pack").
@@ -280,7 +281,7 @@ const EXCLUDE_BY_SUBTYPE = {
     // ("3 booster pack") slip the x2/2x lot tokens.
     "promo", "promos", "coin", "coins", "album",
     "2 booster", "3 booster", "4 booster", "6 booster", "10 booster"],
-  "pc-etb":         ["booster box", "bundle", "blister", "36 pack", "mini tin"],
+  "pc-etb":         ["booster box", "bundle", "blister", "36 pack", "mini tin", "etb case", "case of", "sealed case", "master case", "pair"],
   "booster-bundle": ["booster box", "etb", "elite trainer", "36 pack"],
   "premium-collection": ["booster box", "etb", "elite trainer"],
   "upc":            ["booster box"],
@@ -524,7 +525,24 @@ function aggregatePrices(items, floor = MIN_PRICE, ceiling = MAX_PRICE, report =
     topPricedTitles: [...items].sort((x, y) => (y._delivered ?? 0) - (x._delivered ?? 0)).slice(0, 3)
       .map(i => ({ t: (i.title || "").slice(0, 90), p: round(i._delivered) })),
     listingCount: prices.length,
+    ...robustAskRange(prices),
   };
+}
+
+// Robust ask range (2026-10-10): one stray ask (a case, a lot, a wrong product)
+// set priceHigh, e.g. me2pt5-pc-etb $255.65 to $800 around a $400 median.
+// Drop asks above 2x or below 0.5x the median of all kept asks, then take the
+// 10th and 90th percentile. Needs at least ROBUST_MIN asks left, else null.
+export const ROBUST_MIN = 5;
+export function robustAskRange(sortedPrices) {
+  const all = (sortedPrices || []).filter((p) => Number.isFinite(p) && p > 0).sort((a, b) => a - b);
+  const round = (n) => Math.round(n * 100) / 100;
+  if (!all.length) return { askP10: null, askP90: null, askMedian: null, askRobustCount: 0 };
+  const mid = all[Math.floor(all.length / 2)];
+  const kept = all.filter((p) => p <= mid * 2 && p >= mid * 0.5);
+  if (kept.length < ROBUST_MIN) return { askP10: null, askP90: null, askMedian: null, askRobustCount: kept.length };
+  const at = (q) => kept[Math.min(kept.length - 1, Math.max(0, Math.round(q * (kept.length - 1))))];
+  return { askP10: round(at(0.1)), askP90: round(at(0.9)), askMedian: round(kept[Math.floor(kept.length / 2)]), askRobustCount: kept.length };
 }
 
 // ─── Concurrent runner with pacing ───────────────────────────────────────────
