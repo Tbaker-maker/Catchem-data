@@ -5,6 +5,7 @@ import { readFile, writeFile, readdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { applyMappedPictures } from "./lib/tcgcsv-catalogue-map.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -43,6 +44,8 @@ export async function loadCatalogueImages(root = ROOT) {
     if (images[id] && images[id] !== path) continue;
     images[id] = path;
   }
+  const mapDoc = await readJson(join(root, "data/tcgcsv-to-catalogue.json")).catch(() => null);
+  applyMappedPictures(images, mapDoc && mapDoc.mapped);
   return images;
 }
 

@@ -1,0 +1,887 @@
+{
+  "source": "https://api.pokemontcg.io/v2/sets",
+  "sourceDate": "2026-10-11",
+  "note": "The live sets endpoint returned HTTP 500 and 502 on 2026-10-11. These 176 ids are the last complete response and they are the same 176 ids as data/card-catalogue.json sets.",
+  "sets": [
+    {
+      "id": "base1",
+      "name": "Base",
+      "ptcgoCode": "BS"
+    },
+    {
+      "id": "base2",
+      "name": "Jungle",
+      "ptcgoCode": "JU"
+    },
+    {
+      "id": "basep",
+      "name": "Wizards Black Star Promos",
+      "ptcgoCode": "PR"
+    },
+    {
+      "id": "base3",
+      "name": "Fossil",
+      "ptcgoCode": "FO"
+    },
+    {
+      "id": "base4",
+      "name": "Base Set 2",
+      "ptcgoCode": "B2"
+    },
+    {
+      "id": "base5",
+      "name": "Team Rocket",
+      "ptcgoCode": "TR"
+    },
+    {
+      "id": "gym1",
+      "name": "Gym Heroes",
+      "ptcgoCode": "G1"
+    },
+    {
+      "id": "gym2",
+      "name": "Gym Challenge",
+      "ptcgoCode": "G2"
+    },
+    {
+      "id": "neo1",
+      "name": "Neo Genesis",
+      "ptcgoCode": "N1"
+    },
+    {
+      "id": "neo2",
+      "name": "Neo Discovery",
+      "ptcgoCode": "N2"
+    },
+    {
+      "id": "si1",
+      "name": "Southern Islands",
+      "ptcgoCode": null
+    },
+    {
+      "id": "neo3",
+      "name": "Neo Revelation",
+      "ptcgoCode": "N3"
+    },
+    {
+      "id": "neo4",
+      "name": "Neo Destiny",
+      "ptcgoCode": "N4"
+    },
+    {
+      "id": "base6",
+      "name": "Legendary Collection",
+      "ptcgoCode": "LC"
+    },
+    {
+      "id": "ecard1",
+      "name": "Expedition Base Set",
+      "ptcgoCode": "EX"
+    },
+    {
+      "id": "ecard2",
+      "name": "Aquapolis",
+      "ptcgoCode": "AQ"
+    },
+    {
+      "id": "ecard3",
+      "name": "Skyridge",
+      "ptcgoCode": "SK"
+    },
+    {
+      "id": "ex1",
+      "name": "Ruby & Sapphire",
+      "ptcgoCode": "RS"
+    },
+    {
+      "id": "ex2",
+      "name": "Sandstorm",
+      "ptcgoCode": "SS"
+    },
+    {
+      "id": "ex3",
+      "name": "Dragon",
+      "ptcgoCode": "DR"
+    },
+    {
+      "id": "np",
+      "name": "Nintendo Black Star Promos",
+      "ptcgoCode": "PR-NP"
+    },
+    {
+      "id": "ex4",
+      "name": "Team Magma vs Team Aqua",
+      "ptcgoCode": "MA"
+    },
+    {
+      "id": "ex5",
+      "name": "Hidden Legends",
+      "ptcgoCode": "HL"
+    },
+    {
+      "id": "ex6",
+      "name": "FireRed & LeafGreen",
+      "ptcgoCode": "RG"
+    },
+    {
+      "id": "pop1",
+      "name": "POP Series 1",
+      "ptcgoCode": null
+    },
+    {
+      "id": "ex7",
+      "name": "Team Rocket Returns",
+      "ptcgoCode": "TRR"
+    },
+    {
+      "id": "ex8",
+      "name": "Deoxys",
+      "ptcgoCode": "DX"
+    },
+    {
+      "id": "ex9",
+      "name": "Emerald",
+      "ptcgoCode": "EM"
+    },
+    {
+      "id": "ex10",
+      "name": "Unseen Forces",
+      "ptcgoCode": "UF"
+    },
+    {
+      "id": "pop2",
+      "name": "POP Series 2",
+      "ptcgoCode": null
+    },
+    {
+      "id": "ex11",
+      "name": "Delta Species",
+      "ptcgoCode": "DS"
+    },
+    {
+      "id": "ex12",
+      "name": "Legend Maker",
+      "ptcgoCode": "LM"
+    },
+    {
+      "id": "pop3",
+      "name": "POP Series 3",
+      "ptcgoCode": null
+    },
+    {
+      "id": "ex13",
+      "name": "Holon Phantoms",
+      "ptcgoCode": "HP"
+    },
+    {
+      "id": "ex14",
+      "name": "Crystal Guardians",
+      "ptcgoCode": "CG"
+    },
+    {
+      "id": "pop4",
+      "name": "POP Series 4",
+      "ptcgoCode": null
+    },
+    {
+      "id": "ex15",
+      "name": "Dragon Frontiers",
+      "ptcgoCode": "DF"
+    },
+    {
+      "id": "pop5",
+      "name": "POP Series 5",
+      "ptcgoCode": null
+    },
+    {
+      "id": "ex16",
+      "name": "Power Keepers",
+      "ptcgoCode": "PK"
+    },
+    {
+      "id": "dp1",
+      "name": "Diamond & Pearl",
+      "ptcgoCode": "DP"
+    },
+    {
+      "id": "dpp",
+      "name": "DP Black Star Promos",
+      "ptcgoCode": "PR-DPP"
+    },
+    {
+      "id": "dp2",
+      "name": "Mysterious Treasures",
+      "ptcgoCode": "MT"
+    },
+    {
+      "id": "pop6",
+      "name": "POP Series 6",
+      "ptcgoCode": null
+    },
+    {
+      "id": "dp3",
+      "name": "Secret Wonders",
+      "ptcgoCode": "SW"
+    },
+    {
+      "id": "dp4",
+      "name": "Great Encounters",
+      "ptcgoCode": "GE"
+    },
+    {
+      "id": "pop7",
+      "name": "POP Series 7",
+      "ptcgoCode": null
+    },
+    {
+      "id": "dp5",
+      "name": "Majestic Dawn",
+      "ptcgoCode": "MD"
+    },
+    {
+      "id": "dp6",
+      "name": "Legends Awakened",
+      "ptcgoCode": "LA"
+    },
+    {
+      "id": "pop8",
+      "name": "POP Series 8",
+      "ptcgoCode": null
+    },
+    {
+      "id": "dp7",
+      "name": "Stormfront",
+      "ptcgoCode": "SF"
+    },
+    {
+      "id": "pl1",
+      "name": "Platinum",
+      "ptcgoCode": "PL"
+    },
+    {
+      "id": "pop9",
+      "name": "POP Series 9",
+      "ptcgoCode": null
+    },
+    {
+      "id": "pl2",
+      "name": "Rising Rivals",
+      "ptcgoCode": "RR"
+    },
+    {
+      "id": "pl3",
+      "name": "Supreme Victors",
+      "ptcgoCode": "SV"
+    },
+    {
+      "id": "pl4",
+      "name": "Arceus",
+      "ptcgoCode": "AR"
+    },
+    {
+      "id": "ru1",
+      "name": "Pokémon Rumble",
+      "ptcgoCode": null
+    },
+    {
+      "id": "hgss1",
+      "name": "HeartGold & SoulSilver",
+      "ptcgoCode": "HS"
+    },
+    {
+      "id": "hsp",
+      "name": "HGSS Black Star Promos",
+      "ptcgoCode": "PR-HS"
+    },
+    {
+      "id": "hgss2",
+      "name": "HS—Unleashed",
+      "ptcgoCode": "UL"
+    },
+    {
+      "id": "hgss3",
+      "name": "HS—Undaunted",
+      "ptcgoCode": "UD"
+    },
+    {
+      "id": "hgss4",
+      "name": "HS—Triumphant",
+      "ptcgoCode": "TM"
+    },
+    {
+      "id": "col1",
+      "name": "Call of Legends",
+      "ptcgoCode": "CL"
+    },
+    {
+      "id": "bwp",
+      "name": "BW Black Star Promos",
+      "ptcgoCode": "PR-BLW"
+    },
+    {
+      "id": "bw1",
+      "name": "Black & White",
+      "ptcgoCode": "BLW"
+    },
+    {
+      "id": "mcd11",
+      "name": "McDonald's Collection 2011",
+      "ptcgoCode": null
+    },
+    {
+      "id": "bw2",
+      "name": "Emerging Powers",
+      "ptcgoCode": "EPO"
+    },
+    {
+      "id": "bw3",
+      "name": "Noble Victories",
+      "ptcgoCode": "NVI"
+    },
+    {
+      "id": "bw4",
+      "name": "Next Destinies",
+      "ptcgoCode": "NXD"
+    },
+    {
+      "id": "bw5",
+      "name": "Dark Explorers",
+      "ptcgoCode": "DEX"
+    },
+    {
+      "id": "mcd12",
+      "name": "McDonald's Collection 2012",
+      "ptcgoCode": null
+    },
+    {
+      "id": "bw6",
+      "name": "Dragons Exalted",
+      "ptcgoCode": "DRX"
+    },
+    {
+      "id": "dv1",
+      "name": "Dragon Vault",
+      "ptcgoCode": "DRV"
+    },
+    {
+      "id": "bw7",
+      "name": "Boundaries Crossed",
+      "ptcgoCode": "BCR"
+    },
+    {
+      "id": "bw8",
+      "name": "Plasma Storm",
+      "ptcgoCode": "PLS"
+    },
+    {
+      "id": "bw9",
+      "name": "Plasma Freeze",
+      "ptcgoCode": "PLF"
+    },
+    {
+      "id": "bw10",
+      "name": "Plasma Blast",
+      "ptcgoCode": "PLB"
+    },
+    {
+      "id": "xyp",
+      "name": "XY Black Star Promos",
+      "ptcgoCode": "PR-XY"
+    },
+    {
+      "id": "bw11",
+      "name": "Legendary Treasures",
+      "ptcgoCode": "LTR"
+    },
+    {
+      "id": "xy0",
+      "name": "Kalos Starter Set",
+      "ptcgoCode": "KSS"
+    },
+    {
+      "id": "xy1",
+      "name": "XY",
+      "ptcgoCode": "XY"
+    },
+    {
+      "id": "xy2",
+      "name": "Flashfire",
+      "ptcgoCode": "FLF"
+    },
+    {
+      "id": "xy3",
+      "name": "Furious Fists",
+      "ptcgoCode": "FFI"
+    },
+    {
+      "id": "xy4",
+      "name": "Phantom Forces",
+      "ptcgoCode": "PHF"
+    },
+    {
+      "id": "xy5",
+      "name": "Primal Clash",
+      "ptcgoCode": "PRC"
+    },
+    {
+      "id": "dc1",
+      "name": "Double Crisis",
+      "ptcgoCode": "DCR"
+    },
+    {
+      "id": "xy6",
+      "name": "Roaring Skies",
+      "ptcgoCode": "ROS"
+    },
+    {
+      "id": "xy7",
+      "name": "Ancient Origins",
+      "ptcgoCode": "AOR"
+    },
+    {
+      "id": "xy8",
+      "name": "BREAKthrough",
+      "ptcgoCode": "BKT"
+    },
+    {
+      "id": "xy9",
+      "name": "BREAKpoint",
+      "ptcgoCode": "BKP"
+    },
+    {
+      "id": "g1",
+      "name": "Generations",
+      "ptcgoCode": "GEN"
+    },
+    {
+      "id": "xy10",
+      "name": "Fates Collide",
+      "ptcgoCode": "FCO"
+    },
+    {
+      "id": "xy11",
+      "name": "Steam Siege",
+      "ptcgoCode": "STS"
+    },
+    {
+      "id": "mcd16",
+      "name": "McDonald's Collection 2016",
+      "ptcgoCode": null
+    },
+    {
+      "id": "xy12",
+      "name": "Evolutions",
+      "ptcgoCode": "EVO"
+    },
+    {
+      "id": "sm1",
+      "name": "Sun & Moon",
+      "ptcgoCode": "SUM"
+    },
+    {
+      "id": "smp",
+      "name": "SM Black Star Promos",
+      "ptcgoCode": "PR-SM"
+    },
+    {
+      "id": "sm2",
+      "name": "Guardians Rising",
+      "ptcgoCode": "GRI"
+    },
+    {
+      "id": "sm3",
+      "name": "Burning Shadows",
+      "ptcgoCode": "BUS"
+    },
+    {
+      "id": "sm35",
+      "name": "Shining Legends",
+      "ptcgoCode": "SLG"
+    },
+    {
+      "id": "sm4",
+      "name": "Crimson Invasion",
+      "ptcgoCode": "CIN"
+    },
+    {
+      "id": "sm5",
+      "name": "Ultra Prism",
+      "ptcgoCode": "UPR"
+    },
+    {
+      "id": "sm6",
+      "name": "Forbidden Light",
+      "ptcgoCode": "FLI"
+    },
+    {
+      "id": "sm7",
+      "name": "Celestial Storm",
+      "ptcgoCode": "CES"
+    },
+    {
+      "id": "sm75",
+      "name": "Dragon Majesty",
+      "ptcgoCode": "DRM"
+    },
+    {
+      "id": "sm8",
+      "name": "Lost Thunder",
+      "ptcgoCode": "LOT"
+    },
+    {
+      "id": "sm9",
+      "name": "Team Up",
+      "ptcgoCode": "TEU"
+    },
+    {
+      "id": "det1",
+      "name": "Detective Pikachu",
+      "ptcgoCode": "DET"
+    },
+    {
+      "id": "sm10",
+      "name": "Unbroken Bonds",
+      "ptcgoCode": "UNB"
+    },
+    {
+      "id": "sm11",
+      "name": "Unified Minds",
+      "ptcgoCode": "UNM"
+    },
+    {
+      "id": "sm115",
+      "name": "Hidden Fates",
+      "ptcgoCode": "HIF"
+    },
+    {
+      "id": "sma",
+      "name": "Hidden Fates Shiny Vault",
+      "ptcgoCode": "HIF"
+    },
+    {
+      "id": "mcd19",
+      "name": "McDonald's Collection 2019",
+      "ptcgoCode": null
+    },
+    {
+      "id": "sm12",
+      "name": "Cosmic Eclipse",
+      "ptcgoCode": "CEC"
+    },
+    {
+      "id": "swshp",
+      "name": "SWSH Black Star Promos",
+      "ptcgoCode": "PR-SW"
+    },
+    {
+      "id": "swsh1",
+      "name": "Sword & Shield",
+      "ptcgoCode": "SSH"
+    },
+    {
+      "id": "swsh2",
+      "name": "Rebel Clash",
+      "ptcgoCode": "RCL"
+    },
+    {
+      "id": "swsh3",
+      "name": "Darkness Ablaze",
+      "ptcgoCode": "DAA"
+    },
+    {
+      "id": "swsh35",
+      "name": "Champion's Path",
+      "ptcgoCode": "CPA"
+    },
+    {
+      "id": "swsh4",
+      "name": "Vivid Voltage",
+      "ptcgoCode": "VIV"
+    },
+    {
+      "id": "swsh45",
+      "name": "Shining Fates",
+      "ptcgoCode": "SHF"
+    },
+    {
+      "id": "swsh45sv",
+      "name": "Shining Fates Shiny Vault",
+      "ptcgoCode": "SHF"
+    },
+    {
+      "id": "swsh5",
+      "name": "Battle Styles",
+      "ptcgoCode": "BST"
+    },
+    {
+      "id": "swsh6",
+      "name": "Chilling Reign",
+      "ptcgoCode": "CRE"
+    },
+    {
+      "id": "swsh7",
+      "name": "Evolving Skies",
+      "ptcgoCode": "EVS"
+    },
+    {
+      "id": "cel25",
+      "name": "Celebrations",
+      "ptcgoCode": "CEL"
+    },
+    {
+      "id": "cel25c",
+      "name": "Celebrations: Classic Collection",
+      "ptcgoCode": "CEL"
+    },
+    {
+      "id": "mcd14",
+      "name": "McDonald's Collection 2014",
+      "ptcgoCode": null
+    },
+    {
+      "id": "mcd15",
+      "name": "McDonald's Collection 2015",
+      "ptcgoCode": null
+    },
+    {
+      "id": "mcd18",
+      "name": "McDonald's Collection 2018",
+      "ptcgoCode": null
+    },
+    {
+      "id": "mcd17",
+      "name": "McDonald's Collection 2017",
+      "ptcgoCode": null
+    },
+    {
+      "id": "mcd21",
+      "name": "McDonald's Collection 2021",
+      "ptcgoCode": null
+    },
+    {
+      "id": "bp",
+      "name": "Best of Game",
+      "ptcgoCode": "BP"
+    },
+    {
+      "id": "swsh8",
+      "name": "Fusion Strike",
+      "ptcgoCode": "FST"
+    },
+    {
+      "id": "fut20",
+      "name": "Pokémon Futsal Collection",
+      "ptcgoCode": "FUT20"
+    },
+    {
+      "id": "tk1a",
+      "name": "EX Trainer Kit Latias",
+      "ptcgoCode": null
+    },
+    {
+      "id": "tk1b",
+      "name": "EX Trainer Kit Latios",
+      "ptcgoCode": null
+    },
+    {
+      "id": "tk2a",
+      "name": "EX Trainer Kit 2 Plusle",
+      "ptcgoCode": null
+    },
+    {
+      "id": "tk2b",
+      "name": "EX Trainer Kit 2 Minun",
+      "ptcgoCode": null
+    },
+    {
+      "id": "swsh9",
+      "name": "Brilliant Stars",
+      "ptcgoCode": "BRS"
+    },
+    {
+      "id": "swsh9tg",
+      "name": "Brilliant Stars Trainer Gallery",
+      "ptcgoCode": "BRS"
+    },
+    {
+      "id": "swsh10",
+      "name": "Astral Radiance",
+      "ptcgoCode": "ASR"
+    },
+    {
+      "id": "swsh10tg",
+      "name": "Astral Radiance Trainer Gallery",
+      "ptcgoCode": "ASR"
+    },
+    {
+      "id": "pgo",
+      "name": "Pokémon GO",
+      "ptcgoCode": "PGO"
+    },
+    {
+      "id": "swsh11",
+      "name": "Lost Origin",
+      "ptcgoCode": "LOR"
+    },
+    {
+      "id": "swsh11tg",
+      "name": "Lost Origin Trainer Gallery",
+      "ptcgoCode": "LOR"
+    },
+    {
+      "id": "swsh12",
+      "name": "Silver Tempest",
+      "ptcgoCode": "SIT"
+    },
+    {
+      "id": "swsh12tg",
+      "name": "Silver Tempest Trainer Gallery",
+      "ptcgoCode": "SIT"
+    },
+    {
+      "id": "mcd22",
+      "name": "McDonald's Collection 2022",
+      "ptcgoCode": null
+    },
+    {
+      "id": "swsh12pt5",
+      "name": "Crown Zenith",
+      "ptcgoCode": "CRZ"
+    },
+    {
+      "id": "swsh12pt5gg",
+      "name": "Crown Zenith Galarian Gallery",
+      "ptcgoCode": "CRZ"
+    },
+    {
+      "id": "sv1",
+      "name": "Scarlet & Violet",
+      "ptcgoCode": "SVI"
+    },
+    {
+      "id": "svp",
+      "name": "Scarlet & Violet Black Star Promos",
+      "ptcgoCode": "PR-SV"
+    },
+    {
+      "id": "sv2",
+      "name": "Paldea Evolved",
+      "ptcgoCode": "PAL"
+    },
+    {
+      "id": "sve",
+      "name": "Scarlet & Violet Energies",
+      "ptcgoCode": "SVE"
+    },
+    {
+      "id": "sv3",
+      "name": "Obsidian Flames",
+      "ptcgoCode": "OBF"
+    },
+    {
+      "id": "sv3pt5",
+      "name": "151",
+      "ptcgoCode": "MEW"
+    },
+    {
+      "id": "sv4",
+      "name": "Paradox Rift",
+      "ptcgoCode": "PAR"
+    },
+    {
+      "id": "sv4pt5",
+      "name": "Paldean Fates",
+      "ptcgoCode": "PAF"
+    },
+    {
+      "id": "sv5",
+      "name": "Temporal Forces",
+      "ptcgoCode": "TEF"
+    },
+    {
+      "id": "sv6",
+      "name": "Twilight Masquerade",
+      "ptcgoCode": "TWM"
+    },
+    {
+      "id": "sv6pt5",
+      "name": "Shrouded Fable",
+      "ptcgoCode": "SFA"
+    },
+    {
+      "id": "sv7",
+      "name": "Stellar Crown",
+      "ptcgoCode": "SCR"
+    },
+    {
+      "id": "sv8",
+      "name": "Surging Sparks",
+      "ptcgoCode": "SSP"
+    },
+    {
+      "id": "sv8pt5",
+      "name": "Prismatic Evolutions",
+      "ptcgoCode": "PRE"
+    },
+    {
+      "id": "sv9",
+      "name": "Journey Together",
+      "ptcgoCode": "JTG"
+    },
+    {
+      "id": "sv10",
+      "name": "Destined Rivals",
+      "ptcgoCode": "DRI"
+    },
+    {
+      "id": "zsv10pt5",
+      "name": "Black Bolt",
+      "ptcgoCode": "BLK"
+    },
+    {
+      "id": "rsv10pt5",
+      "name": "White Flare",
+      "ptcgoCode": "WHT"
+    },
+    {
+      "id": "me1",
+      "name": "Mega Evolution",
+      "ptcgoCode": "MEG"
+    },
+    {
+      "id": "me2",
+      "name": "Phantasmal Flames",
+      "ptcgoCode": "PFL"
+    },
+    {
+      "id": "me2pt5",
+      "name": "Ascended Heroes",
+      "ptcgoCode": "ASC"
+    },
+    {
+      "id": "me3",
+      "name": "Perfect Order",
+      "ptcgoCode": "POR"
+    },
+    {
+      "id": "me4",
+      "name": "Chaos Rising",
+      "ptcgoCode": "CRI"
+    },
+    {
+      "id": "me5",
+      "name": "Pitch Black",
+      "ptcgoCode": "PBL"
+    },
+    {
+      "id": "me55",
+      "name": "30th Celebration",
+      "ptcgoCode": "30C"
+    },
+    {
+      "id": "me55c",
+      "name": "30th Celebration: Classic Collection",
+      "ptcgoCode": "30C"
+    }
+  ]
+}
