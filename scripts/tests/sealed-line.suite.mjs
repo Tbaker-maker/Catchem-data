@@ -30,6 +30,28 @@ export async function run() {
   const box = { id: "box", kind: "sealed", name: "Lost Origin Booster Box", price: 400 };
   const loose = { id: "loose", kind: "sealed", name: "Lost Origin Booster Pack", price: 12 };
   t("a box that is not a special printing stays the line", pickSealedLine([box, loose], "SWSH11: Lost Origin").id === "box");
+  const plain = { id: "plain-unlimited", kind: "sealed", name: "Pokemon Base Set [Unlimited Edition] Booster Pack", price: 1200 };
+  const revisedDear = { id: "tcgcsv-138130", kind: "sealed", name: "Base Set Booster Pack [Revised Unlimited Edition]", price: 2000 };
+  const overRevised = pickSealedLine([shadow, unlimited, plain], "Base Set");
+  t("a plain Unlimited pack is chosen over Revised when both exist", overRevised && overRevised.id === "plain-unlimited");
+  const dearRevised = pickSealedLine([revisedDear, { ...plain, price: 400 }], "Base Set");
+  t("a dearer Revised pack still loses to a plain Unlimited pack", dearRevised && dearRevised.id === "plain-unlimited");
+  const shadowUnlimited = { id: "tcgcsv-138131", kind: "sealed", name: "Pokemon Base Set (Shadowless) [Unlimited Edition] Booster Pack", price: 5000 };
+  const notShadow = pickSealedLine([shadowUnlimited, unlimited], "Base Set");
+  t("a Shadowless Unlimited pack is not the plain Unlimited pack", notShadow && notShadow.id === "tcgcsv-138130");
+
+  const catalog = JSON.parse(await readFile(join(ROOT, "data/catalog/tcgcsv-latest.json"), "utf8"));
+  const basePacks = (catalog.items || []).filter((it) => {
+    if (it.kind !== "sealed" || !/booster pack/i.test(it.name || "")) return false;
+    return it.set === "Base Set" || it.set === "Base Set (Shadowless)";
+  });
+  const plainInFile = basePacks.filter((it) => /unlimited/i.test(it.name || "") && !/revised|shadowless|1st edition|first edition/i.test(it.name || ""));
+  t("tcgcsv-latest has no plain Base Set Unlimited booster pack", plainInFile.length === 0);
+  const pricedBase = basePacks.filter((it) => it.set === "Base Set" && Number(it.price) > 0);
+  t(
+    "the only priced Base Set booster pack in tcgcsv-latest is Revised Unlimited",
+    pricedBase.length === 1 && pricedBase[0].id === "tcgcsv-138130" && /Revised Unlimited Edition/.test(pricedBase[0].name),
+  );
 
   const dir = join(ROOT, "research/assets/public/sets");
   const names = (await readdir(dir)).filter((name) => name.endsWith(".json")).sort();
