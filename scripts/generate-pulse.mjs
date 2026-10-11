@@ -54,6 +54,7 @@ import { cardImage } from "./image-source.mjs";
 import { applyPackBasis } from "./pack-basis.mjs";
 import { rotate } from "./rotate.mjs";
 import { upcomingRadar } from "./lib/research-reads.mjs";
+import { capPost, eraFeed } from "./lib/second-library.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const today = new Date().toISOString().split("T")[0];
 const cardImg = id => cardImage(id, false) || null; // source-published URL, never constructed
@@ -250,6 +251,7 @@ if (upcoming.length) {
 }
 md += `\n*Prices are the delivered total — item plus shipping wherever a listing states it. A low sticker price with expensive postage is not a cheap listing.*\n`;
 md += `\n---\n*Catch'em. Catch Feels. — pulse #${today.replaceAll("-","")}*\n`;
+md = capPost(md);
 await mkdir(join(ROOT,"research/pulse"),{recursive:true});
 await writeFile(join(ROOT,`research/pulse/${today}.md`), md);
 
@@ -448,16 +450,9 @@ for (const r of histCut) {
 }
 for (const k in history) history[k].sort((a, b) => (a[0] < b[0] ? -1 : 1));
 
-// Era-index series straight from data/era-index-history.json — the workflow's
-// git-add list now commits it daily (write-vs-commit matrix, 2026-08-19), so
-// the mirror workaround that briefly lived at research/pulse/era-history.json
-// is retired.
-let eraSrc = null; try { eraSrc = await J("data/era-index-history.json"); } catch {}
-const eraEntries = [...(eraSrc?.entries ?? [])]
-  .sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : a.era < b.era ? -1 : 1));
-const eraHistory = {};
-for (const e of eraEntries) (eraHistory[e.era] ??= []).push([e.date, e.level]);
-for (const k in eraHistory) eraHistory[k] = eraHistory[k].slice(-HIST_DEPTH);
+// Era charts come from data/indexes/era-*.json only. TCGplayer and eBay stay
+// separate series. data/era-index-history.json is not an index and is not read here.
+const eraHistory = await eraFeed(ROOT);
 
 // Product catalog for the app (detail pages, Board depth, offline Deal Check
 // without the full tape). eBay-native numbers only — PPT stays gated.

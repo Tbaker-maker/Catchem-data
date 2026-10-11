@@ -18,6 +18,7 @@ import { gzipSync } from "node:zlib";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { recordBuyoutHarvest } from "./buyout-tape.mjs";
+import { filteredTotalForNight } from "./lib/second-library.mjs";
 
 // Node's fetch has NO default timeout: a host that accepts the connection
 // and never answers hangs this script until the CI runner kills the job.
@@ -598,6 +599,7 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
   const today = new Date().toISOString().split("T")[0];
   const startTs = Date.now();
   const harvestSaved = [];
+  let filteredKnown = 0;
 
   const updated = await mapConcurrent(products, async (product) => {
     try {
@@ -688,6 +690,15 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
         // point — yesterday's total is never copied forward.
         const lastIdx = history.length - 1;
         const point = { date: today, price: agg.priceMedian };
+        const filteredTotal = filteredTotalForNight({
+          browseTotal,
+          fetched: items.length,
+          kept: kept.length,
+        });
+        if (filteredTotal != null) {
+          point.filteredTotal = filteredTotal;
+          filteredKnown += 1;
+        }
         if (typeof browseTotal === "number") {
           point.total = browseTotal;
           harvestSaved.push({
@@ -780,6 +791,7 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
 
   await writeFile(OUTPUT_FILE, JSON.stringify(output, null, 2) + "\n");
   console.log(`💾 Wrote ${OUTPUT_FILE}`);
+  console.log(`filteredTotal known tonight: ${filteredKnown}`);
   // Permanent per-night copy of tonight's full eBay result (same data we just
   // fetched; no extra calls). priceHistory in the live file is capped, this is not.
   try {

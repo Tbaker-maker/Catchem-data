@@ -47,37 +47,9 @@ export function listingChangeEstimate(product) {
   };
 }
 
-/** Feed read. Exact sentence. Ships only after 7 nights of Browse totals. */
-export function listingChangeRead(product) {
-  const est = listingChangeEstimate(product);
-  if (!est?.readEligible || !product?.id) return null;
-  const name = String(product.name || "").trim();
-  if (!name) return null;
-  const net = est.net > 0 ? `+${est.net}` : est.net < 0 ? String(est.net) : "+0";
-  const sentence = `Net change in active eBay listings (estimate): ${net} over ${est.days} nights.`;
-  if (/\bsold\b|sell-through|sell through/i.test(sentence)) return null;
-  return {
-    id: `listing-${product.id}`,
-    sku: String(product.id),
-    readKind: "listing",
-    kind: "listing",
-    name,
-    set: product.set || "",
-    path: sentence,
-    headline: sentence,
-    why: `${LISTING_CHANGE_SOURCE}. Browse totals only.`,
-    asOf: est.to,
-    href: `/dive/${encodeURIComponent(product.id)}`,
-    lane: "sealed",
-    receipt: {
-      net: est.net,
-      days: est.days,
-      from: est.from,
-      to: est.to,
-      startTotal: est.startTotal,
-      endTotal: est.endTotal,
-    },
-  };
+/** Not published. The first-to-last Browse total is not a read. */
+export function listingChangeRead() {
+  return null;
 }
 
 export const OUTLIER_HOOK =
@@ -221,7 +193,6 @@ export function buildDivePayload({
   const latest = pickLatest(latestProduct);
   const buyout = pickBuyout(buyoutRow);
   const outlier = pickOutlier(outlierMap, id);
-  const listingChange = listingChangeEstimate(latestProduct);
 
   return {
     id,
@@ -235,14 +206,14 @@ export function buildDivePayload({
       buyoutBrowseTotals: "data/buyout-tape.json Browse total field only",
       volume: "absent — Insights scope required",
       outlier: outlier ? OUTLIER_SOURCE : OUTLIER_HOOK,
-      listingChange: LISTING_CHANGE_SOURCE,
+      listingChange: "not published",
     },
     series,
     latest,
     buyout,
     volume: null,
     volumeNote: VOLUME_NOTE,
-    listingChange,
+    listingChange: null,
     outlier,
     outlierHook: outlier ? null : OUTLIER_HOOK,
   };
