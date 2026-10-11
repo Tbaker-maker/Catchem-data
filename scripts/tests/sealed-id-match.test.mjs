@@ -153,9 +153,20 @@ export async function runSealedIdTests() {
   // Reviewed TCGplayer ids on sealed products: unique, labelled, and the only link source.
   const sealedRows = JSON.parse(await readFile(join(ROOT, "data/sealed-products.json"), "utf8"));
   const withId = sealedRows.filter((r) => r.tcgPlayerId != null);
-  t("every sealed tcgPlayerId is a reviewed numeric id", withId.every((r) => /^\d+$/.test(String(r.tcgPlayerId)) && (r.tcgPlayerIdMethod === "ppt-tcgplayer-id-reviewed" || (r.tcgPlayerIdMethod === "tcgcsv-group-reviewed" && typeof r.tcgplayerName === "string" && r.tcgplayerName.length > 0) || (r.artOf && r.tcgPlayerIdMethod === "art-split-by-productId") || (r.tcgPlayerIdMethod === "tcgcsv-product-id" && r.id === "tcgcsv-" + r.tcgPlayerId && r.ebay === false && !r.searchQuery))));
+  t("every sealed tcgPlayerId is a reviewed numeric id", withId.every((r) => /^\d+$/.test(String(r.tcgPlayerId)) && (r.tcgPlayerIdMethod === "ppt-tcgplayer-id-reviewed" || ((r.tcgPlayerIdMethod === "tcgcsv-group-reviewed" || r.tcgPlayerIdMethod === "tcgcsv-verified-by-id") && typeof r.tcgplayerName === "string" && r.tcgplayerName.length > 0) || (r.artOf && r.tcgPlayerIdMethod === "art-split-by-productId") || (r.tcgPlayerIdMethod === "tcgcsv-product-id" && r.id === "tcgcsv-" + r.tcgPlayerId && r.ebay === false && !r.searchQuery))));
   t("no two sealed products share a tcgPlayerId", new Set(withId.map((r) => String(r.tcgPlayerId))).size === withId.length);
-  t("held swsh5 rows stay unlinked", ["swsh5-booster-box", "swsh5-etb", "swsh5-pack"].every((id) => sealedRows.find((r) => r.id === id)?.tcgPlayerId == null));
+  t("swsh5-etb stays unlinked (two arts)", sealedRows.find((r) => r.id === "swsh5-etb")?.tcgPlayerId == null);
+  // swsh5 pack and box: verified one by one in group 2765 SWSH05: Battle Styles (not 1853 EX Battle Stadium).
+  t("swsh5 pack and box carry their verified ids", sealedRows.find((r) => r.id === "swsh5-pack")?.tcgPlayerId === "229276" && sealedRows.find((r) => r.id === "swsh5-booster-box")?.tcgPlayerId === "229277");
+  const verified = sealedRows.filter((r) => r.tcgPlayerIdMethod === "tcgcsv-verified-by-id");
+  t("a verified-by-id row is a curated sku with a reason and group", verified.length > 0 && verified.every((r) => !r.id.startsWith("tcgcsv-") && r.idReason && Number(r.groupId) > 0));
+  t("a verified-by-id product is not listed twice", verified.every((r) => !sealedRows.some((o) => o.id === "tcgcsv-" + r.tcgPlayerId)));
+  t("verified-by-id never lands on a combined art parent", verified.every((r) => !r.combinedArts));
+  const hidden = sealedRows.filter((r) => r.browse === false);
+  const REASONS = ["case", "display-of-multiple", "set-of-multiple", "code-card", "accessory", "empty-box"];
+  t("browse:false rows keep their data and name a known reason", hidden.every((r) => REASONS.includes(r.browseReason) && r.tcgPlayerId && r.name));
+  t("a booster box case is hidden from browse", sealedRows.find((r) => r.id === "tcgcsv-233335")?.browse === false);
+  t("a plain booster box is not hidden", sealedRows.find((r) => r.id === "tcgcsv-236258")?.browse !== false);
   const bundleSrc = await readFile(join(ROOT, "scripts/build-public-bundle.mjs"), "utf8");
   t("sealed redirects are not built from names", !/byNorm|SET_HINTS|subtypeFromLegacy/.test(bundleSrc));
   // Per-art split (Tyler, 2026-10-10): each art is its own row keyed by its
