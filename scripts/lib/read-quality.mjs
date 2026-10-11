@@ -6,6 +6,8 @@ export const FOOTER = "An ask is a listing price. A listing is not a sale.";
 export const MOVER_MIN_CENTS = 100;
 export const MOVER_MAX_PCT = 200;
 export const STREAK_MIN_CENTS = 100;
+export const FLOOR_CENTS = 100;
+export const FLOOR_PCT = 3;
 export const TURN_DAY_CENTS = 25;
 export const TURN_DAY_PCT = 3;
 export const SEALED_MIN_CENTS = 500;
@@ -73,6 +75,12 @@ export function quietNight(asOf, n) {
   return `Quiet night, ${asOf}. ${count} read cleared the bar. A thin board is the whole board.`;
 }
 
+export function floorOk(from, to, pct) {
+  const moved = Math.abs((centsOf(to) ?? 0) - (centsOf(from) ?? 0));
+  const p = Math.abs(Number(pct));
+  return moved >= FLOOR_CENTS && p >= FLOOR_PCT;
+}
+
 export function moverGate(proof, dailyFiles) {
   if (!proof || proof.days !== 7) return false;
   const moved = Math.abs((centsOf(proof.to) ?? 0) - (centsOf(proof.from) ?? 0));
@@ -85,6 +93,8 @@ export function moverGate(proof, dailyFiles) {
 export function streakGate({ asOf, n, first, last, dailyFiles, hasDay }) {
   if (!(n >= 4)) return false;
   if (Math.abs((centsOf(last) ?? 0) - (centsOf(first) ?? 0)) < STREAK_MIN_CENTS) return false;
+  const pct = first ? Math.abs((Number(last) - Number(first)) / Number(first)) * 100 : 0;
+  if (!(pct >= FLOOR_PCT)) return false;
   if (dailyFiles) {
     for (let i = 0; i <= n; i += 1) {
       const day = shiftDay(asOf, -i);

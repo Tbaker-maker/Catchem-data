@@ -11,6 +11,7 @@ import {
   FOOTER,
   longWindowBlocked,
   moverGate,
+  floorOk,
   priceForm,
   publishReads,
   quietNight,
@@ -372,7 +373,7 @@ export function buildReadLibrary({ catalogue, extra, series, dailyFiles = null, 
     cards.filter((row) => priceKind(row) === "mover"),
     (row) => {
       const proof = proveMove(row, series, asOf);
-      return moverGate(proof, dailyFiles) ? proof : null;
+      return moverGate(proof, dailyFiles) && floorOk(proof.from, proof.to, proof.pct) ? proof : null;
     },
     byAbs,
   );
@@ -389,7 +390,11 @@ export function buildReadLibrary({ catalogue, extra, series, dailyFiles = null, 
   );
   const plainPool = provedPool(
     cards.filter((row) => priceKind(row) === "plain"),
-    (row) => proveMove(row, series, asOf),
+    (row) => {
+      const proof = proveMove(row, series, asOf);
+      if (!proof || !floorOk(proof.from, proof.to, proof.pct)) return null;
+      return proof;
+    },
     byAbs,
   );
   const moverRows = moverPool.rows;
