@@ -7,7 +7,9 @@ import { fileURLToPath } from "node:url";
 import { shell, cta, footer, toText, esc, SITE } from "./lib/email.mjs";
 import { provenBoard, makeDayLoader, loadSealedPid, isRotatedSet, ROTATION_LINE, MIN_PCT, MIN_USD, MIN_USD_SEALED } from "./lib/email-proof.mjs";
 
-const ROOT = process.env.CATCHEM_ROOT || join(dirname(fileURLToPath(import.meta.url)), "..");
+// --root <dir> renders a sample from another tree (used for the newsletter/out/samples render).
+const rootArg = process.argv.indexOf("--root");
+const ROOT = rootArg > 0 ? process.argv[rootArg + 1] : join(dirname(fileURLToPath(import.meta.url)), "..");
 const reads = JSON.parse(await readFile(join(ROOT, "research/assets/public/reads.json"), "utf8"));
 const asOf = reads.asOf;
 const sealedPid = await loadSealedPid(ROOT);
