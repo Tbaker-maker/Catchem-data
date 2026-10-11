@@ -31,9 +31,11 @@ export async function run() {
   ]));
   t("a missing low stays off the facts panel", factsLines({ market: 10, date: "2026-10-10", source: "TCGplayer market price" }).every((row) => row.label !== "Low"));
   t("facts hide when the date is missing", factsLines({ market: 10, low: 8, source: "TCGplayer market price" }).length === 0);
-  let msrp = false;
-  try { await readFile(join(ROOT, "data/msrp.json"), "utf8"); msrp = true; } catch { msrp = false; }
-  t("with no msrp file there is no MSRP line", msrp === false && msrpLine() === "" && factsLines({ market: 10, date: "2026-10-10", source: "TCGplayer market price", msrp: 4 }).every((row) => row.label !== "MSRP"));
+  let msrpDoc = null;
+  try { msrpDoc = JSON.parse(await readFile(join(ROOT, "data/msrp.json"), "utf8")); } catch { msrpDoc = null; }
+  const msrpFacts = factsLines({ market: 10, date: "2026-10-10", source: "TCGplayer market price", msrp: 4 });
+  const filled = Array.isArray(msrpDoc?.rows) && msrpDoc.rows.some((row) => Number(row?.msrpCents) > 0);
+  t("there is no MSRP line", msrpLine() === "" && msrpFacts.every((row) => row.label !== "MSRP") && filled === false);
   const chart = productChart([
     { date: "2026-10-01", market: 10 },
     { date: "2026-10-03", market: 12 },
