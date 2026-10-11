@@ -28,6 +28,14 @@ const book = buildTrackRecord([
 t("newest row is first", book.rows[0].id === "r1" && book.rows[1].id === "r2");
 t("only the priced later day scores", book.scored14 === 1 && book.types.find((row) => row.type === "streak").noLaterPrice === 1);
 t("under 20 of a label stays a count", book.types.every((row) => row.percent14 == null && row.line.includes("scored so far")));
+const day13 = scoreRead(read, { "2026-10-15": 8 }, "2026-10-14", ship);
+t("day 13 is too early", day13.status === "too-early" && day13.note === "too early" && day13.cells["14"] === "too early");
+const day14 = scoreRead(read, {}, "2026-10-15", ship);
+t("day 14 with no market is no score", day14.status === "no-later-price" && day14.note === "no later price, so no score" && day14.cells["14"] === "no later price, so no score");
+const plain = scoreRead({ ...read, direction: "" }, { "2026-10-15": 8 }, "2026-12-01", ship);
+t("no direction stored is no score", plain.status === "no-score" && plain.note === "no score");
+t("a product with a logged read says how many are scored", early.cardLines["tcgcsv-1"] === "Track record: 0 scored so far.");
+t("a product with no logged read has no card line", early.cardLines["other"] == null);
 
 if (fail) console.log(fail + " failed");
 else console.log("track record ok");

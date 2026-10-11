@@ -254,6 +254,11 @@ jobs:
         # A price file with no updatedAt leaves the line as it is.
         run: node scripts/stamp-public-updated.mjs
 
+      - name: Score the track record
+        # Ship price and later prices come from the price files on exact days
+        # 14, 28, and 56. A missing day stays missing.
+        run: node scripts/write-track-record.mjs
+
       - name: Commit the rebuilt feed
         run: |
           git config user.name "catchem-bot"
@@ -267,7 +272,7 @@ jobs:
             for p in $SET_PATHS; do git checkout -q -- "$p" 2>/dev/null || true; done
             git clean -fdq -- research/assets/public/sets research/assets/public/buckets research/assets/public/artists || true
           fi
-          git add research/assets/public/reads.json research/assets/public/feed/ research/assets/public/counts.json
+          git add research/assets/public/reads.json research/assets/public/feed/ research/assets/public/counts.json research/assets/public/track-record.json
           if git diff --staged --quiet; then
             echo "No feed changes to commit."
           else

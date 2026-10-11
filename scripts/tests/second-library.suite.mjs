@@ -3,7 +3,8 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   BOARD_MAX, POST_CAP, capPost, compareRows, eraSeries, factsLines, filteredTotalForNight,
-  libraryOn, productChart, shelfRead, wrongTemplate,
+  libraryOn, productChart, shelfRead, wrongTemplate, windowQualifies, shelfSentence,
+  shelfFromHistory, endOnExactDay, publicListingSentence, assertCleanSentence, msrpLine,
 } from "../lib/second-library.mjs";
 import { weeklyMarkdown, weeklyRead } from "../lib/weekly-read.mjs";
 
@@ -29,12 +30,38 @@ export async function run() {
     { label: "Source", value: "TCGplayer market price" },
   ]));
   t("a missing low stays off the facts panel", factsLines({ market: 10, date: "2026-10-10", source: "TCGplayer market price" }).every((row) => row.label !== "Low"));
+  t("facts hide when the date is missing", factsLines({ market: 10, low: 8, source: "TCGplayer market price" }).length === 0);
+  let msrp = false;
+  try { await readFile(join(ROOT, "data/msrp.json"), "utf8"); msrp = true; } catch { msrp = false; }
+  t("with no msrp file there is no MSRP line", msrp === false && msrpLine() === "" && factsLines({ market: 10, date: "2026-10-10", source: "TCGplayer market price", msrp: 4 }).every((row) => row.label !== "MSRP"));
   const chart = productChart([
     { date: "2026-10-01", market: 10 },
     { date: "2026-10-03", market: 12 },
-  ], { file: "data/history/tcgplayer-market/example.json", asOf: "2026-10-03" });
-  t("the chart leaves the missing day out", chart.points.length === 2 && chart.points[0].date === "2026-10-01" && chart.points[1].date === "2026-10-03" && chart.gapsOpen === true && chart.file.includes("tcgplayer-market"));
-  t("the wrong template stays hidden without a direction and a ship price", wrongTemplate({ direction: "up" }) === "" && wrongTemplate({ shipPrice: 10 }) === "" && wrongTemplate({ direction: "down", shipPrice: 10 }) === "What would make this wrong.");
+    { date: "2026-10-05", market: 11 },
+  ], { file: "data/history/tcgplayer-market/example.json", asOf: "2026-10-05" });
+  t("the chart leaves the missing day out", chart.points.length === 3 && chart.points[0].date === "2026-10-01" && chart.points[1].date === "2026-10-03" && chart.gapsOpen === true && chart.file.includes("tcgplayer-market") && chart.asOf === "2026-10-05");
+  t("the chart does not connect a gap", chart.connectsGaps === false && chart.segments.length === 3 && !chart.points.some((point) => point.date === "2026-10-04"));
+  t("the wrong template stays hidden without a direction and a ship price", wrongTemplate({ direction: "up", shipped: "2026-10-01" }) === "" && wrongTemplate({ shipPrice: 10, shipped: "2026-10-01" }) === "");
+  t("a price-up read names the day below the ship price", wrongTemplate({ direction: "up", shipPrice: 10, shipped: "2026-10-01" }) === "This line would be wrong if the TCGplayer market on 2026-10-15 is below $10. If that date is missing, there is no score.");
+  t("a price-down read names the day above the ship price", wrongTemplate({ direction: "down", shipPrice: 10, shipped: "2026-10-01" }).includes("above $10"));
+  const fit = { id: "sv7-pack", name: "Stellar Crown Booster Pack", startDate: "2026-10-01", endDate: "2026-10-08", startCount: 80, endCount: 64, market0: 100, market1: 103 };
+  t("80 to 64 with market 100 to 103 qualifies", windowQualifies(fit) && shelfSentence(fit)?.kind === "Tightening" && shelfSentence(fit).sentence === "Stellar Crown Booster Pack: filtered eBay listings 80 to 64 (2026-10-01 to 2026-10-08). TCGplayer market $100 to $103.");
+  t("80 to 68 does not qualify", windowQualifies({ ...fit, endCount: 68 }) === false);
+  t("229 to 354 is skipped", windowQualifies({ ...fit, startCount: 229, endCount: 354 }) === false);
+  t("a parent id never qualifies", windowQualifies({ ...fit, id: "me1-etb" }) === false);
+  t("a missing end date is hidden, not filled", endOnExactDay([{ date: "2026-10-01", filteredTotal: 80 }, { date: "2026-10-07", filteredTotal: 70 }, { date: "2026-10-09", filteredTotal: 64 }], "2026-10-01") == null);
+  t("a browse total without filteredTotal produces no public listing sentence", publicListingSentence({ total: 400 }) == null && publicListingSentence({ total: 80, listingCount: 80 }) == null);
+  t("the kill switch hides Tightening and Building even when a fixture qualifies", libraryOn() === false && shelfRead(fit) == null);
+  let sealed = null;
+  try { sealed = JSON.parse(await readFile(join(ROOT, "data/sealed-prices.json"), "utf8")); } catch { sealed = null; }
+  if (sealed?.products) {
+    const live = shelfFromHistory(sealed.products);
+    const anyFiltered = sealed.products.some((product) => (product.priceHistory || []).some((point) => Number.isInteger(point.filteredTotal)));
+    t("exact 7-day windows on the current files return 0 Tightening and 0 Building", live.tightening.length === 0 && live.building.length === 0 && anyFiltered === false);
+  }
+  let banned = false;
+  try { assertCleanSentence("This is a buy."); } catch { banned = true; }
+  t("banned words fail", banned);
   const rows = compareRows(
     { name: "A", market: 10, low: null, date: "2026-10-10", source: "TCGplayer market price" },
     { name: "B", market: 12, low: 9, date: "", source: "TCGplayer market price" },
@@ -60,6 +87,7 @@ export async function run() {
     },
   });
   t("era lines stay apart and the gap stays open", era.tcgplayer.length === 2 && era.ebay.length === 1 && era.tcgplayer[1].date !== "2026-10-02" && era.gaps.tcgplayer.length === 1);
+  t("the era chart does not connect a gap", era.connectsGaps === false && era.tcgplayerSegments.length === 2 && era.tcgplayerSegments[0][0].date === "2026-10-01" && era.tcgplayerSegments[1][0].date === "2026-10-03");
   const pulse = await readFile(join(ROOT, "scripts/generate-pulse.mjs"), "utf8");
   t("the pulse chart does not read era-index-history as an index", !pulse.includes('J("data/era-index-history.json")') && pulse.includes("eraFeed"));
   return fail;

@@ -34,6 +34,8 @@ export function scoreRead(read, later = {}, today, shipFromFile = null) {
     productId: String(read?.sku || ""),
     name: String(read?.name || ""),
     type,
+    label: String(read?.label || type),
+    sentence: String(read?.headline || read?.path || ""),
     shipped,
     price: price > 0 ? price : null,
     shipSource: price > 0 ? String(shipFromFile?.source || "") : "",
@@ -41,25 +43,43 @@ export function scoreRead(read, later = {}, today, shipFromFile = null) {
     age,
   };
   if (!base.id || !base.productId || age == null) {
-    return { ...base, status: "no-score", note: "The read has no date or product id." };
+    return { ...base, status: "no-score", note: "no score", cells: blankCells("no score") };
   }
   if (!(price > 0)) {
-    return { ...base, status: "no-score", note: "No ship price in the price file, so no score." };
+    return { ...base, status: "no-score", note: "no score", cells: blankCells("no score") };
   }
-  if (age < HORIZONS[0]) return { ...base, status: "too-early", note: "Too early to score." };
+  if (age < HORIZONS[0]) return { ...base, status: "too-early", note: "too early", cells: blankCells("too early") };
+  if (!direction) return { ...base, status: "no-score", note: "no score", cells: blankCells("no score") };
   const marks = {};
+  const cells = {};
   for (const horizon of HORIZONS) {
-    if (age < horizon) continue;
+    if (age < horizon) {
+      cells[String(horizon)] = "too early";
+      continue;
+    }
     const day = addDays(shipped, horizon);
     const next = Number(later[day]);
     if (!(next > 0)) {
       marks[String(horizon)] = { day, price: null, sameDirection: null };
+      cells[String(horizon)] = "no later price, so no score";
       continue;
     }
-    marks[String(horizon)] = { day, price: next, sameDirection: sameWay(direction, price, next) };
+    const sameDirection = sameWay(direction, price, next);
+    marks[String(horizon)] = { day, price: next, sameDirection };
+    cells[String(horizon)] = sameDirection == null ? "no score" : String(next);
   }
   const scored = Object.values(marks).some((mark) => mark.price != null);
-  return { ...base, status: scored ? "scored" : "no-later-price", note: scored ? "" : "No later price, so no score.", marks };
+  return {
+    ...base,
+    status: scored ? "scored" : "no-later-price",
+    note: scored ? "" : "no later price, so no score",
+    marks,
+    cells,
+  };
+}
+
+function blankCells(text) {
+  return { "14": text, "28": text, "56": text };
 }
 
 export function buildTrackRecord(reads, laterByProduct = {}, today, shipByProduct = {}) {
@@ -99,8 +119,21 @@ export function buildTrackRecord(reads, laterByProduct = {}, today, shipByProduc
     }
   }
   const dates = rows.map((row) => row.shipped).filter((day) => /^\d{4}-\d{2}-\d{2}$/.test(day)).sort();
-  const blob = JSON.stringify({ rows, types });
-  if (COPY_BAN.test(blob)) throw new Error("track record used a banned word");
+  const cardLines = {};
+  for (const row of rows) {
+    if (!row.productId) continue;
+    if (!cardLines[row.productId]) cardLines[row.productId] = 0;
+    if (row.status === "scored") cardLines[row.productId] += 1;
+  }
+  const lines = {};
+  for (const [id, n] of Object.entries(cardLines)) lines[id] = `Track record: ${n} scored so far.`;
+  const authored = JSON.stringify({
+    notes: rows.map((row) => row.note),
+    cells: rows.map((row) => row.cells),
+    lines: types.map((row) => row.line),
+    cardLines: lines,
+  });
+  if (COPY_BAN.test(authored)) throw new Error("track record used a banned word");
   return {
     asOf: today,
     rule: "A read is stored with its ship date. The ship price is the TCGplayer market on that date from the price file. It is not taken from a headline. After 14, 28, and 56 days, the later price is that exact day, or there is no score. Under 14 days is too early to score.",
@@ -115,5 +148,6 @@ export function buildTrackRecord(reads, laterByProduct = {}, today, shipByProduc
     scoreMin: SCORE_MIN,
     types,
     rows,
+    cardLines: lines,
   };
 }
