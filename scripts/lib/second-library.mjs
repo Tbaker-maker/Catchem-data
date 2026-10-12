@@ -14,13 +14,117 @@ export function libraryOn() {
   return flag("reads.library") === true;
 }
 
-// Tightening and Building stay off. No sentence is published without an exact
-// 7-day pair of filteredTotal, and the switch above is off.
-export function shelfRead({ daysApart = null, earlier = null, later = null } = {}) {
-  if (!libraryOn()) return null;
-  if (daysApart !== 7) return null;
-  if (!Number.isInteger(earlier) || !Number.isInteger(later)) return null;
+// Tightening and Building stay behind flags.reads.library. No sentence ships
+// without an exact 7-day pair of filteredTotal, and the switch above is off.
+export const SHARED_ART_PARENTS = new Set([
+  "me1-etb", "sv5-etb", "swsh7-etb", "swsh1-etb", "xy12-etb",
+  "me2pt5-tin", "sm1-etb", "swsh6-etb", "sv8-bb", "swsh5-etb",
+]);
+
+const BANNED_WORD = /\b(resistance|support|bottom|buys?|sells?|selling|holding|printed)\b/i;
+
+export function addDays(iso, days) {
+  return new Date(Date.parse(`${iso}T00:00:00Z`) + days * 86400000).toISOString().slice(0, 10);
+}
+
+export function dayGap(from, to) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(from) || !/^\d{4}-\d{2}-\d{2}$/.test(to)) return null;
+  return Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86400000);
+}
+
+export function dollars(n) {
+  const x = Number(n);
+  if (!(x > 0)) return "";
+  return Number.isInteger(x) ? `$${x}` : `$${x.toFixed(2)}`;
+}
+
+export function assertCleanSentence(text) {
+  const line = String(text || "");
+  if (BANNED_WORD.test(line)) throw new Error("banned word");
+  if (/\bsupply\b/i.test(line)) throw new Error("supply alone");
+  return line;
+}
+
+// The old first-to-last Browse total is not a public sentence.
+// A point with no filteredTotal cannot say anything about listings.
+export function publicListingSentence(point) {
+  if (!Number.isInteger(point?.filteredTotal)) return null;
   return null;
+}
+
+export function windowQualifies(row = {}) {
+  const id = String(row.id || "");
+  if (SHARED_ART_PARENTS.has(id)) return false;
+  const startDate = String(row.startDate || "");
+  const endDate = String(row.endDate || "");
+  if (dayGap(startDate, endDate) !== 7) return false;
+  const startCount = row.startCount;
+  const endCount = row.endCount;
+  if (!Number.isInteger(startCount) || !Number.isInteger(endCount)) return false;
+  if (startCount < 40) return false;
+  const move = endCount - startCount;
+  const abs = Math.abs(move);
+  const pct = abs / startCount;
+  if (abs < 15 || pct < 0.2 || pct >= 0.4) return false;
+  const market0 = Number(row.market0);
+  const market1 = Number(row.market1);
+  if (!(market0 > 0) || !(market1 > 0)) return false;
+  if (Math.abs(market1 - market0) / market0 > 0.05) return false;
+  return true;
+}
+
+export function shelfSentence(row = {}) {
+  if (!windowQualifies(row)) return null;
+  const kind = row.endCount < row.startCount ? "Tightening" : "Building";
+  const sentence = assertCleanSentence(
+    `${row.name}: filtered eBay listings ${row.startCount} to ${row.endCount} (${row.startDate} to ${row.endDate}). TCGplayer market ${dollars(row.market0)} to ${dollars(row.market1)}.`,
+  );
+  return { kind, sentence };
+}
+
+export function shelfRead(input = {}) {
+  if (!libraryOn()) return null;
+  if (input.daysApart != null && input.daysApart !== 7) return null;
+  if (!windowQualifies(input)) return null;
+  return shelfSentence(input);
+}
+
+export function endOnExactDay(points, startDate) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(startDate || ""))) return null;
+  const endDate = addDays(startDate, 7);
+  const hit = (points || []).find((point) => point?.date === endDate && Number.isInteger(point.filteredTotal));
+  if (!hit) return null;
+  return { endDate, endCount: hit.filteredTotal };
+}
+
+export function shelfFromHistory(products) {
+  const tightening = [];
+  const building = [];
+  if (!libraryOn()) return { tightening, building };
+  for (const product of products || []) {
+    const id = String(product?.id || "");
+    if (!id || SHARED_ART_PARENTS.has(id)) continue;
+    const points = (product.priceHistory || []).filter((point) => /^\d{4}-\d{2}-\d{2}$/.test(String(point?.date || "")) && Number.isInteger(point.filteredTotal));
+    const markets = product.markets || {};
+    for (const start of points) {
+      const end = endOnExactDay(points, start.date);
+      if (!end) continue;
+      const row = {
+        id,
+        name: product.name || id,
+        startDate: start.date,
+        endDate: end.endDate,
+        startCount: start.filteredTotal,
+        endCount: end.endCount,
+        market0: markets[start.date],
+        market1: markets[end.endDate],
+      };
+      const hit = shelfSentence(row);
+      if (!hit) continue;
+      (hit.kind === "Tightening" ? tightening : building).push(hit);
+    }
+  }
+  return { tightening: tightening.slice(0, 1), building: building.slice(0, 1) };
 }
 
 // Full filtered listing count only when every Browse row was fetched and then
@@ -33,12 +137,31 @@ export function filteredTotalForNight({ browseTotal, fetched, kept } = {}) {
 }
 
 export function factsLines(row) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(row?.date || ""))) return [];
   const lines = [];
   if (Number(row?.market) > 0) lines.push({ label: "Market", value: Number(row.market) });
   if (Number(row?.low) > 0) lines.push({ label: "Low", value: Number(row.low) });
-  if (/^\d{4}-\d{2}-\d{2}$/.test(String(row?.date || ""))) lines.push({ label: "Date", value: String(row.date).slice(0, 10) });
+  lines.push({ label: "Date", value: String(row.date).slice(0, 10) });
   if (typeof row?.source === "string" && row.source.trim()) lines.push({ label: "Source", value: row.source.trim() });
   return lines;
+}
+
+export function msrpLine() {
+  return "";
+}
+
+function segmentsOf(rows) {
+  const segments = [];
+  let run = [];
+  for (const row of rows) {
+    if (run.length && dayGap(run[run.length - 1].date, row.date) !== 1) {
+      segments.push(run);
+      run = [];
+    }
+    run.push(row);
+  }
+  if (run.length) segments.push(run);
+  return segments;
 }
 
 export function productChart(points, { file = "", asOf = "" } = {}) {
@@ -50,14 +173,25 @@ export function productChart(points, { file = "", asOf = "" } = {}) {
     rows.push({ date, market });
   }
   rows.sort((a, b) => a.date.localeCompare(b.date));
-  return { file: String(file || ""), asOf: String(asOf || "").slice(0, 10), points: rows, gapsOpen: true };
+  const segments = segmentsOf(rows);
+  return {
+    file: String(file || ""),
+    asOf: String(asOf || "").slice(0, 10),
+    points: rows,
+    segments,
+    gapsOpen: true,
+    connectsGaps: false,
+  };
 }
 
 export function wrongTemplate(read) {
   const direction = read?.direction === "up" || read?.direction === "down" ? read.direction : "";
-  const ship = Number(read?.shipPrice);
-  if (!direction || !(ship > 0)) return "";
-  return "What would make this wrong.";
+  const ship = Number(read?.shipPrice ?? read?.price);
+  const day = String(read?.shipped || read?.asOf || "").slice(0, 10);
+  if (!direction || !(ship > 0) || !/^\d{4}-\d{2}-\d{2}$/.test(day)) return "";
+  const word = direction === "up" ? "below" : "above";
+  const line = `This line would be wrong if the TCGplayer market on ${addDays(day, 14)} is ${word} ${dollars(ship)}. If that date is missing, there is no score.`;
+  return assertCleanSentence(line);
 }
 
 const COMPARE_FIELDS = [
@@ -100,12 +234,17 @@ export function eraSeries(doc) {
   const take = (points) => points
     .filter((point) => point && /^\d{4}-\d{2}-\d{2}$/.test(String(point.date || "")) && Number(point.equal) > 0)
     .map((point) => ({ date: String(point.date).slice(0, 10), equal: Number(point.equal) }));
+  const tcgplayer = take(back);
+  const ebay = take(live);
   return {
     id: String(doc?.id || ""),
     name: String(doc?.name || ""),
     asOf: String(doc?.asOf || "").slice(0, 10),
-    tcgplayer: take(back),
-    ebay: take(live),
+    tcgplayer,
+    ebay,
+    tcgplayerSegments: segmentsOf(tcgplayer),
+    ebaySegments: segmentsOf(ebay),
+    connectsGaps: false,
     gaps: {
       tcgplayer: doc?.series?.backfill?.gaps || [],
       ebay: doc?.series?.live?.gaps || [],

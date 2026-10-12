@@ -5,12 +5,14 @@
 
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
-import { BANNED, money, pretty } from "./public-bundle.mjs";
+import { bannedWord, money, pretty } from "./public-bundle.mjs";
 import { flag } from "../flags.mjs";
+import { takeCode } from "./takes.mjs";
 import {
   FOOTER,
   longWindowBlocked,
   moverGate,
+  floorOk,
   priceForm,
   publishReads,
   quietNight,
@@ -184,7 +186,7 @@ function pctOf(row) {
 
 function clean(text) {
   const s = scrub(text);
-  if (!s || BANNED.test(s) || BANNED_COPY.test(s)) return "";
+  if (!s || bannedWord(s) || BANNED_COPY.test(s)) return "";
   return s;
 }
 
@@ -307,6 +309,12 @@ function publicRow(row, kind, lines) {
   };
   if (row.streakN) out.streakN = row.streakN;
   if (row.streakDir) out.streakDir = row.streakDir;
+  const code = takeCode({
+    from: row?._proof?.from,
+    to: row?._proof?.to,
+    sixMonthHigh: kind === "high",
+  });
+  if (code) out.take = code;
   return out;
 }
 
@@ -372,7 +380,7 @@ export function buildReadLibrary({ catalogue, extra, series, dailyFiles = null, 
     cards.filter((row) => priceKind(row) === "mover"),
     (row) => {
       const proof = proveMove(row, series, asOf);
-      return moverGate(proof, dailyFiles) ? proof : null;
+      return moverGate(proof, dailyFiles) && floorOk(proof.from, proof.to, proof.pct) ? proof : null;
     },
     byAbs,
   );
@@ -389,7 +397,11 @@ export function buildReadLibrary({ catalogue, extra, series, dailyFiles = null, 
   );
   const plainPool = provedPool(
     cards.filter((row) => priceKind(row) === "plain"),
-    (row) => proveMove(row, series, asOf),
+    (row) => {
+      const proof = proveMove(row, series, asOf);
+      if (!proof || !floorOk(proof.from, proof.to, proof.pct)) return null;
+      return proof;
+    },
     byAbs,
   );
   const moverRows = moverPool.rows;
@@ -490,7 +502,7 @@ export function buildReadLibrary({ catalogue, extra, series, dailyFiles = null, 
       const lines = explainRead(row, kind);
       const headline = shownHeadline(row, kind);
       if (!lines || !headline) continue;
-      if (BANNED.test(headline) || BANNED.test(lines.whyItMatters) || whyLeak(lines.whyItMatters)) continue;
+      if (bannedWord(headline) || bannedWord(lines.whyItMatters) || whyLeak(lines.whyItMatters)) continue;
       board.push(publicRow(row, kind, lines));
       used.add(key);
       took += 1;
@@ -510,7 +522,7 @@ export function buildReadLibrary({ catalogue, extra, series, dailyFiles = null, 
     const key = boardKey(row);
     if (!key || used.has(key)) continue;
     if (!row.whyItMatters || !row.headline) continue;
-    if (BANNED.test(row.headline) || BANNED.test(row.whyItMatters) || whyLeak(row.whyItMatters)) continue;
+    if (bannedWord(row.headline) || bannedWord(row.whyItMatters) || whyLeak(row.whyItMatters)) continue;
     board.push(row);
     used.add(key);
   }

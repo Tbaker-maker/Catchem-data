@@ -799,6 +799,7 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
     const dir = new URL("../data/raw/ebay-sealed/", import.meta.url);
     await mkdir(dir, { recursive: true });
     await writeFile(new URL(`${day}.json.gz`, dir), gzipSync(JSON.stringify(output), { level: 9 }));
+    await writeFile(new URL(`${day}.filtered-total.json`, dir), JSON.stringify({ date: day, filteredTotalKnown: filteredKnown }) + "\n");
   } catch (err) {
     console.error(`ebay raw archive failed: ${err.message}`);
   }
