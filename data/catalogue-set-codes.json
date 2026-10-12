@@ -1,7 +1,7 @@
 {
   "source": "https://api.pokemontcg.io/v2/sets",
   "sourceDate": "2026-10-11",
-  "note": "The live sets endpoint returned HTTP 500 and 502 on 2026-10-11. These 176 ids are the last complete response and they are the same 176 ids as data/card-catalogue.json sets.",
+  "note": "The live sets endpoint returned HTTP 500 and 502 on 2026-10-11 and 176 ids on 2026-10-12. mep is not in that response. It is a catalogue set id: data/card-catalogue.json has 16 cards with setId mep. The code is the set id. No ptcgo code was added because the set list does not publish one.",
   "sets": [
     {
       "id": "base1",
@@ -847,6 +847,11 @@
       "id": "me1",
       "name": "Mega Evolution",
       "ptcgoCode": "MEG"
+    },
+    {
+      "id": "mep",
+      "name": "Mega Evolution Black Star Promos",
+      "ptcgoCode": null
     },
     {
       "id": "me2",

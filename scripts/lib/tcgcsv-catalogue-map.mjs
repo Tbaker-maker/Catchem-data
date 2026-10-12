@@ -1,7 +1,29 @@
 // Join a tcgcsv single to a catalogue card by set code + collector number.
 // A name is never the match. SWSH07 is not rewritten into swsh7.
+// Two printings of one number stay two rows. Each takes its own catalogue id.
 
 const PATTERN = [" (Poke Ball Pattern)", " (Master Ball Pattern)"];
+
+const VARIANT_RULES = [
+  [/pokemon center/i, "pc"],
+  [/prerelease/i, "prerelease"],
+  [/\bstamped\b/i, "stamped"],
+  [/\bstaff\b/i, "stamp"],
+  [/\bwinner\b/i, "stamp"],
+  [/asia championship/i, "stamp"],
+  [/ace trainer/i, "stamp"],
+  [/cosmos holo/i, "cosmos"],
+  [/cracked ice/i, "cracked-ice"],
+  [/peelable/i, "peelable"],
+  [/energy symbol/i, "energy-symbol"],
+  [/pok[eé] ball/i, "pokeball"],
+  [/master ball/i, "masterball"],
+  [/\b(?:dusk|love|friend|quick|great|ultra|luxury|nest|net|timer|repeat|dive|heal) ball\b/i, "ball"],
+  [/non-holo|non holo/i, "nonholo"],
+  [/black dot error|\berror\b/i, "error"],
+  [/metal card/i, "metal"],
+  [/\(\s*team rocket\s*\)/i, "team-rocket"],
+];
 
 export function normCollectorNumber(raw) {
   if (raw == null) return "";
@@ -86,6 +108,42 @@ function isPattern(name) {
   return PATTERN.some((suffix) => text.endsWith(suffix));
 }
 
+// Printing class is the stamp or finish in parentheses or brackets, not the
+// creature or trainer name. "Poke Ball" the card stays plain. "(Poke Ball)"
+// on another card is a different printing. plain is the catalogue card.
+// pc is a catalogue id that ends in -pc. Anything else stays unmapped.
+const STAMP = /\[(?:[^\]]*\b(?:staff|champion|finalist|semi-finalist|semi finalist|quarter-finalist|quarter finalist|top thirty-two|top sixteen|top 32|top 16)\b[^\]]*)\]/i;
+
+export function printingClass(item) {
+  const name = String(item && item.name || "");
+  const printing = String(item && item.printing || "");
+  const tags = [];
+  if (printing === "Reverse Holofoil" || /\(\s*reverse holofoil\s*\)/i.test(name)) tags.push("reverse");
+  if (STAMP.test(name)) tags.push("stamp");
+  const notes = [...name.matchAll(/\(([^)]*)\)|\[([^\]]*)\]/g)].map((m) => m[1] || m[2] || "").join(" ")
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  for (const [rule, tag] of VARIANT_RULES) {
+    if (rule.test(notes) && !tags.includes(tag)) tags.push(tag);
+  }
+  if (!tags.length) return "plain";
+  return tags.sort().join("+");
+}
+
+export function cataloguePrinting(id) {
+  return /-pc$/i.test(String(id || "")) ? "pc" : "plain";
+}
+
+function skipReason(item, rows, cands) {
+  const key = printingClass(item);
+  const same = rows.filter((row) => printingClass(row) === key);
+  const ids = cands.filter((id) => cataloguePrinting(id) === key);
+  if (key !== "plain" && key !== "pc") return "printing-not-in-catalogue";
+  if (same.length > 1) return "ambiguous-same-number";
+  if (ids.length > 1) return "clashing-catalogue-numbers";
+  if (!ids.length) return cands.length ? "printing-not-in-catalogue" : "no-catalogue-card";
+  return "ambiguous-same-number";
+}
+
 export function mapSingles({ groups, sets, cards, items }) {
   const { joined, rejected } = joinGroups(groups, sets);
   const rejectReason = new Map(rejected.map((row) => [row.groupId, row.reason]));
@@ -125,32 +183,57 @@ export function mapSingles({ groups, sets, cards, items }) {
   }
   const mapped = [];
   for (const [key, rows] of buckets) {
-    if (rows.length !== 1) {
-      for (const row of rows) skipped.push({ id: row.id, reason: "ambiguous-same-number" });
-      continue;
-    }
-    const item = rows[0];
-    const link = joined.get(item.groupId);
+    const link = joined.get(rows[0].groupId);
     const number = key.split("\0")[1];
     const cands = catalogue.get(`${link.setId}\0${number}`) || [];
-    if (cands.length === 0) {
-      skipped.push({ id: item.id, reason: "no-catalogue-card" });
-      continue;
+    const byClass = new Map();
+    for (const id of cands) {
+      const kind = cataloguePrinting(id);
+      if (!byClass.has(kind)) byClass.set(kind, []);
+      byClass.get(kind).push(id);
     }
-    if (cands.length !== 1) {
-      skipped.push({ id: item.id, reason: "clashing-catalogue-numbers" });
-      continue;
+    const taken = new Set();
+    const mappedHere = new Set();
+    for (const item of rows) {
+      const kind = printingClass(item);
+      const ids = byClass.get(kind) || [];
+      const peers = rows.filter((row) => printingClass(row) === kind);
+      if (peers.length === 1 && ids.length === 1 && !taken.has(ids[0])) {
+        taken.add(ids[0]);
+        mappedHere.add(item.id);
+        mapped.push({
+          id: item.id,
+          catalogueId: ids[0],
+          setId: link.setId,
+          setCode: link.setCode,
+          groupId: item.groupId,
+          number,
+          printing: item.printing || null,
+          join: link.how,
+        });
+      }
     }
-    mapped.push({
-      id: item.id,
-      catalogueId: cands[0],
-      setId: link.setId,
-      setCode: link.setCode,
-      groupId: item.groupId,
-      number,
-      printing: item.printing || null,
-      join: link.how,
-    });
+    // One product and one catalogue card: that printing is the card, even
+    // when the only copy is a cosmos holo or a shiny reverse.
+    const left = rows.filter((item) => !mappedHere.has(item.id));
+    const free = cands.filter((id) => !taken.has(id));
+    if (left.length === 1 && free.length === 1 && rows.length === 1) {
+      mappedHere.add(left[0].id);
+      mapped.push({
+        id: left[0].id,
+        catalogueId: free[0],
+        setId: link.setId,
+        setCode: link.setCode,
+        groupId: left[0].groupId,
+        number,
+        printing: left[0].printing || null,
+        join: link.how,
+      });
+    }
+    for (const item of rows) {
+      if (mappedHere.has(item.id)) continue;
+      skipped.push({ id: item.id, reason: skipReason(item, rows, cands) });
+    }
   }
   mapped.sort((a, b) => a.id.localeCompare(b.id));
   skipped.sort((a, b) => a.id.localeCompare(b.id));
