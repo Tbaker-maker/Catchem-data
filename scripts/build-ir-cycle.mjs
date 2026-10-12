@@ -3,7 +3,7 @@
 import { readFile, readdir, writeFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { buildRows, listingsBySet, STUDY, SCORE_WEIGHTS } from "./lib/ir-cycle.mjs";
+import { buildRows, listingsBySet, STUDY, SCORE_WEIGHTS, cardMarks, MIXED_SETS } from "./lib/ir-cycle.mjs";
 import { gunzipSync } from "node:zlib";
 import { WEIGHTS, WEIGHT_CAP } from "./lib/popular-pokemon.mjs";
 
@@ -20,7 +20,9 @@ const gz = (await readdir(RAW).catch(() => [])).filter((f) => /^\d{4}-\d{2}-\d{2
 const readGz = async (f) => (f ? JSON.parse(gunzipSync(await readFile(join(RAW, f))).toString("utf-8")) : null);
 const bySet = listingsBySet(await readGz(gz[gz.length - 1]), await readGz(gz[gz.length - 2]));
 const today = rows.map((r) => r.asOf).filter(Boolean).sort().pop()?.slice(0, 10);
-const list = buildRows({ rows, longRows, rot, bySet, today });
+const attrs = JSON.parse(await readFile(join(PUB, "../../../data/card-attrs.json"), "utf-8"));
+const cards = cardMarks(rows, attrs.cards || {});
+const list = buildRows({ rows, longRows, rot, bySet, today, marks: cards });
 const doc = {
   asOf: today,
   note: "Factual position data, not advice. Includes IRs, SIRs, Trainer Gallery, Galarian Gallery and Sword & Shield alt arts. Prices are TCGplayer market. Listings are eBay sealed listings counted in our nightly pull for one sealed product of the set, not for the card.",
@@ -33,6 +35,8 @@ const doc = {
   rows: list,
 };
 await writeFile(join(PUB, "feed/ir-cycle.json"), JSON.stringify(doc) + "\n");
+await writeFile(join(PUB, "feed/card-marks.json"), JSON.stringify({ asOf: today, source: "data/card-attrs.json (pokemontcg.io regulationMark), matched by the card's scan id", attrsGenerated: String(attrs.generatedAt || "").slice(0, 10), sets: MIXED_SETS, count: Object.keys(cards).length, cards }) + "\n");
+console.log(`card-marks: ${Object.keys(cards).length} cards`);
 console.log(`ir-cycle: ${list.length} rows as of ${today}`);
 } catch (err) {
   console.error(`ir-cycle: kept the last file, ${err?.message || err}`);

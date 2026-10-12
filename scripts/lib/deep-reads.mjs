@@ -8,6 +8,7 @@
 
 import { money } from "./public-bundle.mjs";
 import { monthDay } from "./takes.mjs";
+import { markCited } from "./board-mix.mjs";
 import { addDays, dayNum, dateLabel, monthYear } from "./history-reads.mjs";
 import { speciesToken } from "./fact-reads.mjs";
 
@@ -87,7 +88,7 @@ export function setDeepDives(cards, { asOf, sets, rotation, max = 25 }) {
       `30 days ${sgn(pctOf(m, now))}, 90 days ${sgn(pctOf(q, now))}, 1 year ${sgn(ch)}.`,
       `Top cards tonight: ${top.map((c) => `${cleanName(c.name)} ${money(c.pts.at(-1)[1])}`).join(", ")}.`,
       lead ? `Leading tier over the year: ${lead.k}, ${sgn(lead.ch)} across ${lead.n} cards.` : "",
-      r?.status ? `Rotation: ${r.status === "Standard" ? `Standard legal, mark ${r.mark}` : `${r.status}, mark ${r.mark}`} (our list, ${monthDay(rotation.asOf)}).` : (s.release ? `Released ${dateLabel(s.release, asOf)}.` : ""),
+      r?.status ? `Rotation: ${r.status === "Standard" ? `Standard legal, mark ${r.mark}` : `${r.status}, mark ${r.mark}`} (${markCited(r, rotation)}).` : (s.release ? `Released ${dateLabel(s.release, asOf)}.` : ""),
     ];
     const spark = days.map((d, i) => [d, Math.round(b.total[i] * 100) / 100]);
     const rr = row("set", slug, name, headline, lines, asOf, `TCGplayer market, ${days[0]} to ${asOf}; sets.json; rotation-status.json ${rotation?.asOf || ""}`, { set: name, href: `/sets/${slug}`, chart: { label: `${b.n} chase cards, total`, points: spark }, startDate: days[0], endDate: asOf, receipt: { slug, n: b.n, totals: b.total, days }, weight: Math.abs(ch) });

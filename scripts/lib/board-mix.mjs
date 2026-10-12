@@ -9,6 +9,14 @@ import { gunzipSync } from "node:zlib";
 import { money, BANNED as BUNDLE_BAN, FILLER_BAN } from "./public-bundle.mjs";
 import { boardImage, loadBoardImageInputs } from "./read-library.mjs";
 import { monthDay } from "./takes.mjs";
+
+const LONG_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+// A mark checked card by card later than the card file cites its own check date.
+export function markCited(set, doc) {
+  const c = String(set?.checked || "");
+  if (/^\d{4}-\d{2}-\d{2}$/.test(c)) return `checked ${LONG_MONTHS[Number(c.slice(5, 7)) - 1]} ${Number(c.slice(8, 10))}, ${c.slice(0, 4)}`;
+  return `our list, ${monthDay(doc.asOf)}`;
+}
 import { buildPokemonIndex, pokemonFactLine, speciesToken } from "./fact-reads.mjs";
 import { COMBINED_ART_PARENTS } from "./detectors/listing-trend.mjs";
 import { sealedVsChase } from "./detectors/sealed-vs-chase.mjs";
@@ -383,8 +391,8 @@ export function rotationSetReads(doc, asOf, { max = 30 } = {}) {
     if (!set?.name || !set.status || !set.mark) continue;
     const rotated = /^Rotated /.test(set.status);
     const headline = rotated
-      ? `${set.name} (mark ${set.mark}) left Standard: ${set.status.replace(/^Rotated /, "rotated ")} (our list, ${monthDay(doc.asOf)}). Rotated sets historically stop getting new print runs.`
-      : `${set.name} (mark ${set.mark}) is Standard legal (our list, ${monthDay(doc.asOf)}).`;
+      ? `${set.name} (mark ${set.mark}) left Standard: ${set.status.replace(/^Rotated /, "rotated ")} (${markCited(set, doc)}). Rotated sets historically stop getting new print runs.`
+      : `${set.name} (mark ${set.mark}) is Standard legal (${markCited(set, doc)}).`;
     if (!cleanCopy(headline)) continue;
     out.push({ id: `rotation-set-${set.slug}`, readKind: "rotation", kind: "rotation", board: BOARD_TAG, family: "rotation", name: set.name, set: set.name, headline, path: headline, asOf, href: `/sets/${set.slug}`, source: `rotation-status.json, ${doc.asOf}`, receipt: { set: set.slug, mark: set.mark, status: set.status, asOf: doc.asOf } });
     if (out.length >= max) break;
