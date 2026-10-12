@@ -186,6 +186,8 @@ const reg = runRegistry({
 }, { switchOn: false });
 const registryMs = Date.now() - regStarted;
 const library = await writeReadLibrary({ root: ROOT, catalogue: catalogueDoc, extra: extraDoc, series, dailyFiles });
+// The picture is stamped on a copy of each board row. The library object itself
+// must still match the registry. A real difference throws. The nightly stops.
 if (libraryOn() !== true && JSON.stringify(reg.lib) !== JSON.stringify(library)) {
   throw new Error("registry library does not match the written read library");
 }

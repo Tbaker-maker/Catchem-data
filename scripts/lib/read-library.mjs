@@ -670,7 +670,10 @@ export async function writeReadLibrary({ root, catalogue, extra, series, dailyFi
   await mkdir(dirname(readsPath), { recursive: true });
   const published = publishReads(lib);
   const { images: boardImages, tcgOn, sealedPid } = await loadBoardImageInputs(root);
-  for (const row of published.reads || []) row.image = boardImage(row, boardImages, tcgOn, sealedPid);
-  await writeFile(readsPath, JSON.stringify(published));
+  // publishReads returns the same row objects as lib.board. Stamp the picture
+  // on copies so the library object stays the one written to read-library.json.
+  const stamped = (published.reads || []).map((row) => ({ ...row }));
+  for (const row of stamped) row.image = boardImage(row, boardImages, tcgOn, sealedPid);
+  await writeFile(readsPath, JSON.stringify({ ...published, reads: stamped }));
   return lib;
 }

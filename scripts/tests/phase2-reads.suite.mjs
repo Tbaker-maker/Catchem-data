@@ -3,7 +3,7 @@ import { mkdtemp, writeFile, mkdir } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { buildReadLibrary } from "../lib/read-library.mjs";
+import { buildReadLibrary, writeReadLibrary } from "../lib/read-library.mjs";
 import { publishReads } from "../lib/read-quality.mjs";
 import { runRegistry } from "../lib/detectors/registry.mjs";
 import { TAKE_CODES } from "../lib/takes.mjs";
@@ -174,6 +174,26 @@ export async function run() {
   const opened = runRegistry(ctx, { switchOn: true });
   t("switch on still leaves the board bytes", JSON.stringify(opened.lib) === committedLib);
   t("switch on can browse a qualified read without padding the board", opened.browse.length === 1 && opened.lib.board.length === via.lib.board.length);
+
+  const stampDir = await mkdtemp(join(tmpdir(), "stamp-"));
+  const stampFiles = new Set();
+  const stampCtx = { catalogue, extra, series: new Map(), dailyFiles: stampFiles };
+  const stampReg = runRegistry(stampCtx, { switchOn: false });
+  const stamped = await writeReadLibrary({
+    root: stampDir,
+    catalogue,
+    extra,
+    series: new Map(),
+    dailyFiles: stampFiles,
+    library: false,
+    pptPublic: false,
+    volumeReads: false,
+  });
+  const stampReads = JSON.parse(await readFile(join(stampDir, "research/assets/public/reads.json"), "utf8"));
+  const stampLib = JSON.parse(await readFile(join(stampDir, "research/assets/public/feed/read-library.json"), "utf8"));
+  t("picture stamp does not change the library", JSON.stringify(stamped) === JSON.stringify(stampReg.lib) && JSON.stringify(stampLib) === JSON.stringify(stampReg.lib));
+  t("reads.json still gets a picture", (stampReads.reads || []).length > 0 && (stampReads.reads || []).every((row) => typeof row.image === "string" && row.image !== ""));
+  t("the library file keeps the picture it was built with", JSON.stringify(stampLib.board) === JSON.stringify(stampReg.lib.board));
 
   return failed;
 }

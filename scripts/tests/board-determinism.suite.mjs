@@ -43,14 +43,20 @@ export async function run() {
     await cp(ROOT, dir, { recursive: true, filter: (src) => !src.includes(`${ROOT}/.git`) && !src.startsWith(join(ROOT, "node_modules")) });
     await cp(join(ROOT, "node_modules"), join(dir, "node_modules"), { recursive: true }).catch(() => {});
     const files = ["research/assets/public/reads.json", "research/assets/public/feed/read-library.json", "research/assets/public/feed/rotation.json", "research/assets/public/feed/extra-reads.json"];
+    const beforeReads = await readFile(join(dir, files[0]), "utf8");
+    const flag = JSON.parse(await readFile(join(dir, "data/flags.json"), "utf8"));
+    t("fixture reads.library is off", flag.flags["reads.library"].value === false);
     const snaps = [];
     for (let i = 0; i < 3; i += 1) {
       const r = spawnSync(process.execPath, [join(dir, "scripts/build-feed.mjs")], { cwd: dir, encoding: "utf8", env: { ...process.env, LEARNING_LOG: "" } });
       if (r.status !== 0) { t(`build-feed run ${i + 1} exits 0`, false, (r.stderr || "").slice(-400)); return fail; }
       snaps.push(await Promise.all(files.map((f) => readFile(join(dir, f), "utf8"))));
     }
+    t("build-feed run 1 exits 0", true);
     // Run 1 may differ from the committed files (it is a fresh build); runs 2 and 3 must match run 1.
     files.forEach((f, k) => t(`${f} identical across rebuilds`, snaps[0][k] === snaps[1][k] && snaps[1][k] === snaps[2][k]));
+    t("reads.json is unchanged across rebuilds", snaps[0][0] === snaps[1][0] && snaps[1][0] === snaps[2][0]);
+    t("reads.json is unchanged from the fixture", snaps[0][0] === beforeReads);
     const board = JSON.parse(snaps[0][0]).reads || [];
     t("board count field matches the array", JSON.parse(snaps[0][0]).count === board.length || JSON.parse(snaps[0][0]).count == null);
     for (const row of board.filter((r) => r.readKind === "askmove")) {
