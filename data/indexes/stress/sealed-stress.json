@@ -33,7 +33,7 @@
   },
   "lines": {
     "equal": 100.3,
-    "capped": 98.3,
+    "capped": 98.6,
     "median": 100.7,
     "capAppliedDays": 21,
     "capInfeasibleDays": 0
@@ -250,7 +250,7 @@
       "date": "2026-10-12",
       "from": "2026-10-11",
       "equal": 100.3,
-      "capped": 98.3,
+      "capped": 98.6,
       "median": 100.7,
       "matched": 160,
       "capApplied": true,
@@ -259,9 +259,9 @@
   ],
   "disagree": {
     "flag": true,
-    "maxGap": 2.4,
+    "maxGap": 2.1,
     "threshold": 0.5,
-    "note": "Equal, 5%-capped and median end 2.4 points apart, which is over the 0.5 point line."
+    "note": "Equal, 5%-capped and median end 2.1 points apart, which is over the 0.5 point line."
   },
   "trustBand": {
     "method": "median line",
@@ -475,8 +475,8 @@
       "n": 37,
       "start": "2026-08-18",
       "levels": {
-        "equal": 99.1,
-        "capped": 99.5,
+        "equal": 99.3,
+        "capped": 99.9,
         "median": 99.9
       },
       "matchedLast": 36,
@@ -487,8 +487,8 @@
       "n": 25,
       "start": "2026-08-18",
       "levels": {
-        "equal": 101.4,
-        "capped": 99.6,
+        "equal": 100.8,
+        "capped": 99.1,
         "median": 102.8
       },
       "matchedLast": 25,
@@ -499,9 +499,9 @@
       "n": 5,
       "start": "2026-08-18",
       "levels": {
-        "equal": 112.9,
-        "capped": 101.4,
-        "median": 106.2
+        "equal": 114.6,
+        "capped": 101,
+        "median": 109.3
       },
       "matchedLast": 5,
       "outsideHeadline": true
@@ -523,8 +523,8 @@
       "n": 34,
       "start": "2026-08-19",
       "levels": {
-        "equal": 112.4,
-        "capped": 106.1,
+        "equal": 112,
+        "capped": 105.8,
         "median": 110.8
       },
       "matchedLast": 33,
@@ -535,8 +535,8 @@
       "n": 30,
       "start": "2026-08-18",
       "levels": {
-        "equal": 95.7,
-        "capped": 94.3,
+        "equal": 96,
+        "capped": 94.5,
         "median": 99.1
       },
       "matchedLast": 29,
@@ -545,8 +545,8 @@
   ],
   "byRarity": [],
   "flagCounts": {
-    "stale": 3,
-    "gappy": 5,
+    "stale": 2,
+    "gappy": 6,
     "spiky": 8,
     "late": 3
   },
@@ -706,7 +706,7 @@
       "observations": 22,
       "first": "2026-08-18",
       "last": "2026-10-12",
-      "maxAbsReturn": 0.0481
+      "maxAbsReturn": 0.0433
     },
     {
       "id": "me2pt5-etb",
@@ -943,12 +943,12 @@
       "name": "Unbroken Bonds Booster Box",
       "type": "booster-box",
       "flags": [
-        "stale"
+        "gappy"
       ],
-      "observations": 5,
+      "observations": 6,
       "first": "2026-08-19",
-      "last": "2026-08-26",
-      "maxAbsReturn": 0.0135
+      "last": "2026-10-12",
+      "maxAbsReturn": 0.0314
     },
     {
       "id": "sm11-booster-box",
@@ -2415,21 +2415,6 @@
     },
     {
       "rank": 10,
-      "id": "sm10-booster-box",
-      "name": "Unbroken Bonds Booster Box",
-      "type": "booster-box",
-      "flags": [
-        "stale"
-      ],
-      "reasons": [
-        "No fresh price within 2 days of 2026-10-12. Last observation 2026-08-26.",
-        "Not in the current quarter basket, so it does not move this line."
-      ],
-      "influence": null,
-      "recommendation": "Review only. This product was not removed."
-    },
-    {
-      "rank": 11,
       "id": "sv3pt5-pc-etb",
       "name": "Pokemon 151 Pokemon Center Elite Trainer Box",
       "type": "pc-etb",
@@ -2438,6 +2423,21 @@
       ],
       "reasons": [
         "No fresh price within 2 days of 2026-10-12. Last observation 2026-09-27.",
+        "Not in the current quarter basket, so it does not move this line."
+      ],
+      "influence": null,
+      "recommendation": "Review only. This product was not removed."
+    },
+    {
+      "rank": 11,
+      "id": "sm10-booster-box",
+      "name": "Unbroken Bonds Booster Box",
+      "type": "booster-box",
+      "flags": [
+        "gappy"
+      ],
+      "reasons": [
+        "Missing at least one observed day between its first and last price.",
         "Not in the current quarter basket, so it does not move this line."
       ],
       "influence": null,
