@@ -22,6 +22,7 @@ import { COMBINED_ART_PARENTS } from "./detectors/listing-trend.mjs";
 import { sealedVsChase } from "./detectors/sealed-vs-chase.mjs";
 import { loadHistoryCards, historyReads } from "./history-reads.mjs";
 import { setDeepDives, cardStories, eraComparison, preReleaseContext, sealedGapDeep, marketRoundup, artistSpotlights, pokemonSpotlights, rarityTierReports, anniversaryReads, rotationAftermath, recoveryWatch, steadiest, biggestYear, irLifecycle } from "./deep-reads.mjs";
+import { everyPrinting, sameLabelAcrossSets, chaseLists, slumpWatch } from "./deep-reads-2.mjs";
 
 export const BOARD_TAG = "v3";
 export const PRICE_SHARE_MAX = 0.4;
@@ -642,6 +643,7 @@ export async function buildBoardV3(root, { on = true } = {}) {
   let deepRecovery = [];
   let deepRating = [];
   let deepSealed = [];
+  let deepSlump = [];
   try {
     const usedHist = new Set(Object.values(hist.picked).flat().map((r) => r.sku));
     const era = eraComparison(histCards, { asOf: end, sets: setsDoc });
@@ -659,10 +661,18 @@ export async function buildBoardV3(root, { on = true } = {}) {
       ...biggestYear(histCards, { asOf: end, sets: setsDoc }),
       ...irLifecycle(histCards, { asOf: end }),
     );
+    const variants = await readJson(join(root, "data/card-variants.json"), { cards: {} });
+    const tagsOf = (id) => variants.cards?.[id]?.tags || [];
+    fresh.push(
+      ...everyPrinting(histCards, tagsOf, { asOf: end, max: 6 }),
+      ...sameLabelAcrossSets(histCards, tagsOf, { asOf: end, max: 6 }),
+      ...chaseLists(histCards, tagsOf, { asOf: end, max: 20 }).filter((r) => !fresh.some((f) => f.href && f.href === r.href)).slice(0, 8),
+    );
+    deepSlump = slumpWatch(histCards, tagsOf, { asOf: end, max: 10, skip: usedHist }).map((r) => ({ ...r, priceRead: true }));
     // Card Rating group reads (feed/card-rating.json, built by build-card-rating.mjs).
     // They compare prices, so they ride a price lane and count toward the price share.
     const rating = await readJson(join(pub, "feed/card-rating.json"), {});
-    if (rating?.asOf === end) deepRating = (rating.reads || []).filter((r) => r.headline && r.lines?.length >= 3).map((r) => ({ ...r, priceRead: true }));
+    if (rating?.asOf === end) deepRating = (rating.reads || []).filter((r) => r.headline && r.lines?.length >= 3).map((r) => ({ ...r, source: String(r.source || "").replace(/Card Rating peers/g, "Card Rating, typical price of similar cards"), priceRead: true }));
     // Sealed Rating reads (feed/sealed-rating.json, built by build-sealed-rating.mjs). Price lane.
     const sealedRating = await readJson(join(pub, "feed/sealed-rating.json"), {});
     if (sealedRating?.asOf === end) deepSealed = (sealedRating.reads || []).filter((r) => r.headline && r.lines?.length >= 3).map((r) => ({ ...r, priceRead: true }));
@@ -675,7 +685,7 @@ export async function buildBoardV3(root, { on = true } = {}) {
   const extraDoc = await readJson(join(pub, "feed/extra-reads.json"), {});
   const dives = (extraDoc.reads || []).filter((r) => r.readKind === "dive" && r.headline);
   const factNames = [...names, ...Object.values(hist.picked).flat().map((r) => r.name)];
-  if (index) fresh.push(...factReads(index, factNames, { max: 35, asOf: catDay }));
+  if (index) fresh.push(...factReads(index, factNames, { max: 20, asOf: catDay }));
   {
     const seenHead = new Set();
     const seenSku = new Set();
@@ -697,7 +707,7 @@ export async function buildBoardV3(root, { on = true } = {}) {
   for (const k of Object.keys(hist.picked)) for (const r of hist.picked[k]) r.image = boardImage(r, images, tcgOn, sealedPid);
   // Price rows round-robin: tonight's price reads, then one of each long-history kind.
   // Two of tonight's rows per round, so week moves keep their place.
-  const lanes = [base.filter((_, i) => i % 2 === 0), base.filter((_, i) => i % 2 === 1), deepPrice, deepRating, deepSealed, deepGap, deepRecovery, dives, ...["high", "year", "backto", "set", "plain", "low"].map((k) => hist.picked[k] || [])];
+  const lanes = [base.filter((_, i) => i % 2 === 0), base.filter((_, i) => i % 2 === 1), deepPrice, deepRating, deepGap, deepRecovery, deepSlump, deepSealed, dives, ...["high", "year", "backto", "set", "plain", "low"].map((k) => hist.picked[k] || [])];
   const priceRows = [];
   for (let i = 0; lanes.some((l) => i < l.length); i += 1) for (const l of lanes) if (l[i]) priceRows.push(l[i]);
   const seenSku = new Set(fresh.filter((r) => ["listings", "sealedchase"].includes(r.readKind)).map((r) => r.sku));

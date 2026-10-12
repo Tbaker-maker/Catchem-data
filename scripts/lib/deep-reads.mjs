@@ -37,7 +37,7 @@ export function sparkOf(pts, n = 48) {
   return out.map((p) => [p[0], p[1]]);
 }
 
-function row(kind, id, name, headline, lines, asOf, source, extra = {}) {
+export function row(kind, id, name, headline, lines, asOf, source, extra = {}) {
   const ls = lines.filter(ok).slice(0, 6);
   if (!ok(headline) || ls.length < 3) return null;
   return { id: `deep-${kind}-${id}`.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 90), readKind: "deep", kind: "deep", deep: kind, board: DEEP_TAG, family: "deep", name, headline, path: headline, lines: ls, asOf, source, ...extra };
