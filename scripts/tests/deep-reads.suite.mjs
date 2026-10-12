@@ -40,6 +40,15 @@ export async function run() {
   t("no 'peer' jargon on the board", rows.every((r) => ![r.headline, r.path, r.source, r.why, ...(r.lines || [])].some((s) => /\bpeers?\b/i.test(String(s || "")))));
   t("new deep types are on the board", ["printings", "samelabel", "chase", "slump"].every((k) => deep.some((r) => r.deep === k)));
   t("an IR or SIR label only on a Scarlet & Violet or later card", deep.filter((r) => ["printings", "samelabel", "chase", "slump"].includes(r.deep)).every((r) => r.lines.every((l) => !/Illustration Rare/.test(l) || !/(Evolving Skies|Team Up|Hidden Fates|Cosmic Eclipse|Brilliant Stars)/.test(l))));
+  if (ir) {
+    const headHolo = (ir.headline.match(/Plain holos from the same sets: (-?\d+)%/) || [])[1];
+    const lineHolo = ir.lines.map((l) => (l.match(/^Holo baseline: plain holos from those 2023-24 sets rose a median (-?\d+)%/) || [])[1]).find(Boolean);
+    t("IR lifecycle: the expanded holo baseline matches the headline", headHolo != null && headHolo === lineHolo && String(Math.round(ir.receipt.h1 * 100)) === headHolo);
+    t("IR lifecycle: the 6-month holo line names its own window", ir.lines.every((l) => !/same sets and window/.test(l)) && ir.lines.some((l) => /^Holo baseline for those newer sets, same first 6 months: -?\d+% \(\d+ cards\)\.$/.test(l)));
+  }
+  const numbered = deep.filter((r) => r.deep === "printings" || r.deep === "samelabel");
+  t("printings and same-rarity lines are not twins", numbered.every((r) => new Set(r.lines).size === r.lines.length));
+  t("printings and same-rarity card lines show the card number", numbered.every((r) => r.lines.filter((l) => /\$[\d,.]+/.test(l) && !/^(Lowest|Most common|TCGplayer)/.test(l)).every((l) => /#[A-Za-z0-9]+(\/[A-Za-z0-9]+)?/.test(l))));
   const ids = rows.map((r) => r.id);
   t("no duplicate ids", new Set(ids).size === ids.length);
   t("no same family side by side", rows.every((r, i) => i === 0 || (r.family || r.readKind) !== (rows[i - 1].family || rows[i - 1].readKind)));
