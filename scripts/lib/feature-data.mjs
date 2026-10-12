@@ -47,41 +47,156 @@ function cents(value) {
   return Math.round(n * 100);
 }
 
+export function datedDay(value) {
+  const m = String(value || "").match(/\d{4}-\d{2}-\d{2}/);
+  return m ? m[0] : "";
+}
+
+export function shouldWrite(kind, input) {
+  const src = input || {};
+  if (kind === "set-value") return Boolean(datedDay(src.date) && src.prices > 0);
+  if (kind === "rotation") return Boolean(datedDay(src.asOf) && src.sets > 0);
+  if (kind === "releases") return Boolean(datedDay(src.checked) && src.releases > 0);
+  if (kind === "listings") return Boolean(datedDay(src.asOf) && (src.products > 0 || src.parents > 0));
+  return false;
+}
+
+export function nonEmptyDoc(doc) {
+  if (!doc || typeof doc !== "object" || Array.isArray(doc)) return false;
+  if (!datedDay(doc.asOf || doc.checked)) return false;
+  return Object.keys(doc).length > 0;
+}
+
 export function officialSource(note) {
   const hits = String(note || "").match(SOURCE_PATH) || [];
   const path = hits.map((hit) => hit.replace(/[.)]+$/g, "")).find((hit) => hit.includes("/"));
   return path || "";
 }
 
-export function releaseMatchesItem(release, item) {
-  if (!release || release.type === "main-set" || release.type === "jp-product") return false;
+const MARKET_SUBTYPES = ["booster-box", "etb", "booster-bundle"];
+
+function productPid(item) {
+  const fromField = Number(item?.tcgplayerProductId);
+  if (Number.isInteger(fromField) && fromField > 0) return fromField;
+  const m = String(item?.id || "").match(/(\d+)$/);
+  return m ? Number(m[1]) : 0;
+}
+
+function plainOfSubtype(item, subtype) {
+  if (!item || item.kind !== "sealed" || item.subtype !== subtype || item.subtype === "case") return false;
+  if (subtype === "booster-box" && /half|case|display/i.test(String(item.name || ""))) return false;
+  return productPid(item) > 0;
+}
+
+export function namedProductClass(release) {
+  if (!release || release.type === "main-set" || release.type === "jp-product") return "";
   const rel = compact(release.name);
-  const name = compact(item?.name);
+  if (release.type === "decks" || rel.includes("battle deck")) return "deck";
+  if (rel.includes("ultra premium") || /\bupcs?\b/.test(rel)) return "upc";
+  if (rel.includes("binder")) return "binder";
+  return "";
+}
+
+function classMatch(item, cls) {
+  if (!item || item.kind !== "sealed" || item.subtype === "case") return false;
+  if (!(productPid(item) > 0)) return false;
+  const name = compact(item.name);
   if (!name || name.endsWith(" case")) return false;
-  if (rel.includes("deck crafter") && name.includes("deck crafter")) return true;
-  if (!rel.includes("30th celebration") || !name.includes("30th celebration")) return false;
-  if (rel.includes("binder collection") && name.includes("binder collection")) return true;
-  if (rel.includes("battle deck") && name.includes("battle deck")) return true;
-  if (rel.includes("ditto premium") && name.includes("ditto premium")) return true;
-  if (rel.includes("figure collection") && name.includes("figure collection")) return true;
-  if (rel.includes("day") && rel.includes("night") && name.includes("ultra premium collection")) return true;
+  if (cls === "deck") return item.subtype == null && name.includes("battle deck");
+  if (cls === "binder") return name.includes("binder collection");
+  if (cls === "upc") return name.includes("ultra premium");
   return false;
 }
 
-export function mainSetName(release, items) {
-  if (release?.type !== "main-set") return "";
+// The group id comes from the catalogue set code (ME06:) or, when the row has
+// no set code, the one catalogue set whose label is contained in the row.
+// A product is then chosen by subtype or by that row's product class, never
+// by whichever name happened to sort first.
+export function groupIdForRelease(release, items) {
+  if (!release || release.type === "jp-product") return null;
   const rel = String(release.name || "");
-  const tails = new Set();
-  for (const item of items || []) {
-    const set = String(item?.set || "");
-    const tail = set.includes(":") ? set.slice(set.indexOf(":") + 1).trim() : set.trim();
-    if (tail.length >= 8 && rel.includes(tail)) tails.add(set);
+  const code = rel.match(/\b((?:ME|SV|SWSH|SM|XY)\d+)\b/i);
+  if (code) {
+    const prefix = `${code[1].toUpperCase()}:`;
+    const ids = new Set();
+    for (const item of items || []) {
+      if (String(item.set || "").toUpperCase().startsWith(prefix) && item.groupId != null) ids.add(item.groupId);
+    }
+    if (ids.size === 1) return [...ids][0];
+    if (ids.size > 1) return null;
   }
-  return tails.size === 1 ? [...tails][0] : "";
+  const seen = new Map();
+  for (const item of items || []) {
+    const set = String(item.set || "");
+    const tail = set.includes(":") ? set.slice(set.indexOf(":") + 1).trim() : "";
+    if (tail.length < 8 || item.groupId == null || !rel.includes(tail)) continue;
+    const prev = seen.get(tail);
+    if (prev == null && seen.has(tail)) continue;
+    if (prev != null && prev !== item.groupId) seen.set(tail, null);
+    else if (!seen.has(tail)) seen.set(tail, item.groupId);
+  }
+  let best = "";
+  let gid = null;
+  for (const [tail, id] of seen) {
+    if (id == null) continue;
+    if (tail.length > best.length) { best = tail; gid = id; }
+  }
+  return gid;
 }
 
-export function buildSetValueDoc(setDoc, priceMap, date) {
-  const singles = (setDoc?.items || []).filter((item) => item && item.kind !== "sealed");
+function firstMarket(items, days) {
+  const ids = new Map();
+  for (const item of items || []) {
+    const pid = productPid(item);
+    if (pid) ids.set(pid, item);
+  }
+  for (const day of days || []) {
+    if (!datedDay(day.date)) continue;
+    let best = null;
+    for (const price of day.prices || []) {
+      const item = ids.get(Number(price.id));
+      if (!item || !(Number(price.market) > 0)) continue;
+      if (!best || Number(price.id) < best.pid) {
+        best = { pid: Number(price.id), item, price: Number(price.market), date: datedDay(day.date) };
+      }
+    }
+    if (best) return best;
+  }
+  return null;
+}
+
+export function releaseMarketItem(release, items, days) {
+  const gid = groupIdForRelease(release, items);
+  if (gid == null) return null;
+  const pool = (items || []).filter((item) => item && item.groupId === gid && item.kind === "sealed");
+  if (release.type === "main-set") {
+    for (const subtype of MARKET_SUBTYPES) {
+      const hit = firstMarket(pool.filter((item) => plainOfSubtype(item, subtype)), days);
+      if (hit) return hit;
+    }
+    return null;
+  }
+  const cls = namedProductClass(release);
+  if (!cls) return null;
+  return firstMarket(pool.filter((item) => classMatch(item, cls)), days);
+}
+
+export function idsForCatalogSet(items, catalogSet) {
+  const ids = new Set();
+  for (const item of items || []) {
+    if (!item || item.kind === "sealed" || item.set !== catalogSet || !item.id) continue;
+    ids.add(String(item.id));
+  }
+  return ids;
+}
+
+export function buildSetValueDoc(setDoc, priceMap, date, opts = {}) {
+  const onlyIds = opts.onlyIds || null;
+  const singles = (setDoc?.items || []).filter((item) => {
+    if (!item || item.kind === "sealed") return false;
+    if (onlyIds && !onlyIds.has(String(item.id))) return false;
+    return true;
+  });
   const priced = [];
   let unpriced = 0;
   let totalCents = 0;
@@ -103,9 +218,9 @@ export function buildSetValueDoc(setDoc, priceMap, date) {
     });
   }
   priced.sort((a, b) => b.price - a.price || String(a.id).localeCompare(String(b.id)));
-  return {
-    slug: setDoc.slug,
-    name: setDoc.name || "",
+  const doc = {
+    slug: opts.slug || setDoc.slug,
+    name: opts.name || setDoc.name || "",
     asOf: date,
     source: `data/history/tcgcsv-daily/${date}.json`,
     top: priced.slice(0, 10),
@@ -115,6 +230,16 @@ export function buildSetValueDoc(setDoc, priceMap, date) {
       unpriced,
       inSet: singles.length,
     },
+  };
+  if (!opts.catalogSet) return doc;
+  return {
+    slug: doc.slug,
+    name: doc.name,
+    catalogSet: opts.catalogSet,
+    asOf: doc.asOf,
+    source: doc.source,
+    top: doc.top,
+    master: doc.master,
   };
 }
 
@@ -226,32 +351,13 @@ export function buildReleases(radar, items, days) {
       source,
       checked,
     };
-    const ids = new Map();
-    const setName = mainSetName(row, items);
-    for (const item of items || []) {
-      const hit = setName ? item.set === setName : releaseMatchesItem(row, item);
-      if (!hit) continue;
-      const m = String(item.id || "").match(/(\d+)$/);
-      if (!m) continue;
-      ids.set(Number(m[1]), item);
-    }
-    let first = null;
-    for (const day of days || []) {
-      for (const price of day.prices || []) {
-        const item = ids.get(Number(price.id));
-        if (!item || !(Number(price.market) > 0)) continue;
-        if (!first || Number(price.id) < first.pid) {
-          first = { pid: Number(price.id), item, price: Number(price.market), date: day.date };
-        }
-      }
-      if (first) break;
-    }
-    if (first) {
+    const hit = releaseMarketItem(row, items, days);
+    if (hit && hit.item?.id && datedDay(hit.date) && Number(hit.price) > 0) {
       entry.market = {
-        id: first.item.id,
-        name: first.item.name || "",
-        price: first.price,
-        date: first.date,
+        id: hit.item.id,
+        name: hit.item.name || "",
+        price: hit.price,
+        date: hit.date,
       };
     }
     releases.push(entry);
@@ -259,14 +365,23 @@ export function buildReleases(radar, items, days) {
   return { checked, source: "data/release-radar.json", releases };
 }
 
+export function dailyRows(docs) {
+  const days = [];
+  for (const doc of docs || []) {
+    const date = datedDay(doc && doc.date);
+    if (!date) continue;
+    days.push({ date, prices: Array.isArray(doc.prices) ? doc.prices : [] });
+  }
+  days.sort((a, b) => a.date.localeCompare(b.date));
+  return days;
+}
+
 export async function loadPriceMap(root) {
   const dir = join(root, "data/history/tcgcsv-daily");
   const names = (await readdir(dir)).filter((name) => name.endsWith(".json")).sort();
-  const days = [];
-  for (const name of names) {
-    const doc = JSON.parse(await readFile(join(dir, name), "utf8"));
-    days.push({ date: String(doc.date || name.slice(0, 10)), prices: doc.prices || [] });
-  }
+  const docs = [];
+  for (const name of names) docs.push(JSON.parse(await readFile(join(dir, name), "utf8")));
+  const days = dailyRows(docs);
   const latest = days[days.length - 1];
   const map = new Map();
   for (const row of latest?.prices || []) {

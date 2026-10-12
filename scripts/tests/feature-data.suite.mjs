@@ -2,7 +2,8 @@ import { readdir, readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
-  assignMarks, listingsFromHistory, mainSetName, officialSource, releaseMatchesItem, rotationStatus,
+  assignMarks, dailyRows, listingsFromHistory, loadPriceMap, nonEmptyDoc, officialSource,
+  releaseMarketItem, rotationStatus, shouldWrite,
 } from "../lib/feature-data.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
@@ -41,8 +42,12 @@ export async function run() {
   for (const row of day.prices || []) if (Number(row.market) > 0) prices.set(Number(row.id), Number(row.market));
   const index = JSON.parse(await readFile(join(PUB, "sets.json"), "utf8"));
   const slugs = (index.sets || []).map((row) => row.slug);
+  const catalog = JSON.parse(await readFile(join(ROOT, "data/catalog/tcgcsv-latest.json"), "utf8"));
+  const catalogSetById = new Map();
+  for (const item of catalog.items || []) if (item?.id) catalogSetById.set(String(item.id), item.set || "");
   const valueNames = (await readdir(join(PUB, "set-value"))).filter((name) => name.endsWith(".json")).sort();
-  t("one set-value file per published set", valueNames.length === slugs.length && slugs.every((slug) => valueNames.includes(`${slug}.json`)));
+  t("published sets stay at 205", slugs.length === 205);
+  t("one set-value file per published set plus shadowless", valueNames.length === slugs.length + 1 && slugs.every((slug) => valueNames.includes(`${slug}.json`)) && valueNames.includes("base-set-shadowless.json"));
 
   let badPrice = 0;
   let badCount = 0;
@@ -51,7 +56,8 @@ export async function run() {
   for (const slug of slugs) {
     const doc = JSON.parse(await readFile(join(PUB, "set-value", `${slug}.json`), "utf8"));
     const setDoc = JSON.parse(await readFile(join(PUB, "sets", `${slug}.json`), "utf8"));
-    const singles = (setDoc.items || []).filter((item) => item && item.kind !== "sealed");
+    let singles = (setDoc.items || []).filter((item) => item && item.kind !== "sealed");
+    if (slug === "base-set") singles = singles.filter((item) => catalogSetById.get(String(item.id)) === "Base Set");
     if (doc.asOf !== day.date || doc.top.some((row) => row.date !== day.date)) badDate += 1;
     let priced = 0;
     let unpriced = 0;
@@ -76,6 +82,24 @@ export async function run() {
   t("set value counts match priced singles", badCount === 0);
   t("top 10 prices are today's market and nothing is invented", badPrice === 0 && invented === 0);
 
+  const baseValue = JSON.parse(await readFile(join(PUB, "set-value", "base-set.json"), "utf8"));
+  const shadow = JSON.parse(await readFile(join(PUB, "set-value", "base-set-shadowless.json"), "utf8"));
+  const shadowSet = JSON.parse(await readFile(join(PUB, "sets", "base-set.json"), "utf8"));
+  const shadowSingles = (shadowSet.items || []).filter((item) => item && item.kind !== "sealed" && catalogSetById.get(String(item.id)) === "Base Set (Shadowless)");
+  let shadowCents = 0;
+  let shadowPriced = 0;
+  let shadowUnpriced = 0;
+  let shadowTop = null;
+  for (const item of shadowSingles) {
+    const market = prices.get(pidOf(item));
+    if (!(market > 0)) { shadowUnpriced += 1; continue; }
+    shadowPriced += 1;
+    shadowCents += Math.round(market * 100);
+    if (!shadowTop || market > shadowTop.price || (market === shadowTop.price && String(item.id) < shadowTop.id)) shadowTop = { id: String(item.id), price: market };
+  }
+  t("base-set value is regular Base Set only", baseValue.catalogSet === "Base Set" && baseValue.master.inSet === 102 && baseValue.top[0]?.id === "tcgcsv-42382" && baseValue.top.every((row) => catalogSetById.get(row.id) === "Base Set") && !baseValue.top.some((row) => String(row.id) === "tcgcsv-106999"));
+  t("shadowless has its own total from the same daily file", shadow.slug === "base-set-shadowless" && shadow.catalogSet === "Base Set (Shadowless)" && shadow.asOf === day.date && shadow.master.inSet === shadowSingles.length && shadow.master.priced === shadowPriced && shadow.master.unpriced === shadowUnpriced && shadow.master.total === shadowCents / 100 && shadow.top[0]?.id === shadowTop?.id && shadow.top[0]?.price === shadowTop?.price && shadow.top.every((row) => catalogSetById.get(row.id) === "Base Set (Shadowless)"));
+
   const rotation = JSON.parse(await readFile(join(PUB, "rotation-status.json"), "utf8"));
   const news = await readFile(join(ROOT, "research/digests/news.json"), "utf8");
   t("rotation sources are the two announcement links in the news file", rotation.sources.length === 2 && rotation.sources.every((row) => news.includes(row.href)));
@@ -98,33 +122,46 @@ export async function run() {
   t("releases are the verified radar rows only", releases.releases.length === verified.length && verified.every((row, i) => releases.releases[i].name === row.name && releases.releases[i].date === row.date && releases.releases[i].type === row.type));
   t("release links and the checked date are copied from the radar file", releases.checked === radar.updated && releases.releases.every((row) => row.checked === radar.updated && row.source && verified.find((src) => src.name === row.name).note.includes(row.source) && officialSource(verified.find((src) => src.name === row.name).note) === row.source));
   t("releases carry no msrp", !/msrp/i.test(blob) && !blob.includes("$"));
-  const days = [];
+  const priceDocs = [];
   for (const name of (await readdir(join(ROOT, "data/history/tcgcsv-daily"))).filter((name) => name.endsWith(".json")).sort()) {
-    const doc = JSON.parse(await readFile(join(ROOT, "data/history/tcgcsv-daily", name), "utf8"));
-    const have = new Set();
-    for (const row of doc.prices || []) if (Number(row.market) > 0) have.add(Number(row.id));
-    days.push({ date: doc.date, prices: new Map((doc.prices || []).filter((row) => Number(row.market) > 0).map((row) => [Number(row.id), Number(row.market)])), ids: have });
+    priceDocs.push(JSON.parse(await readFile(join(ROOT, "data/history/tcgcsv-daily", name), "utf8")));
   }
-  const catalog = JSON.parse(await readFile(join(ROOT, "data/catalog/tcgcsv-latest.json"), "utf8"));
+  const priceDays = dailyRows(priceDocs);
+  const loaded = await loadPriceMap(ROOT);
+  t("a daily file with no date field is not used", dailyRows([{ date: "" }, { prices: [{ id: 1, market: 1 }] }]).length === 0 && loaded.date === day.date);
+  t("the writer skips undated inputs and empty docs", shouldWrite("set-value", { date: "", prices: loaded.map.size }) === false && shouldWrite("set-value", { date: day.date, prices: 0 }) === false && shouldWrite("rotation", { asOf: "", sets: 205 }) === false && shouldWrite("releases", { checked: radar.updated, releases: 0 }) === false && shouldWrite("listings", { asOf: "not-a-date", products: 4, parents: 17 }) === false && nonEmptyDoc({}) === false && nonEmptyDoc({ slug: "base-set" }) === false && nonEmptyDoc({ asOf: day.date, slug: "base-set" }) === true);
+  const writerSrc = await readFile(join(ROOT, "scripts/write-feature-data.mjs"), "utf8");
+  t("the nightly writer does not delete set-value before it writes", !/\brm\s*\(/.test(writerSrc) && writerSrc.includes("shouldWrite(") && writerSrc.includes("nonEmptyDoc("));
   let marketBad = 0;
   for (const row of releases.releases) {
-    if (!row.market) continue;
-    const id = Number(String(row.market.id).replace(/\D/g, ""));
-    const onDay = days.find((dayRow) => dayRow.date === row.market.date);
-    if (!onDay || onDay.prices.get(id) !== row.market.price) marketBad += 1;
-    const earlier = days.filter((dayRow) => dayRow.date < row.market.date);
     const src = verified.find((item) => item.name === row.name);
-    const ids = new Set();
-    const setName = mainSetName(src, catalog.items || []);
-    for (const item of catalog.items || []) {
-      const hit = setName ? item.set === setName : releaseMatchesItem(src, item);
-      if (!hit) continue;
-      const n = Number(String(item.id).replace(/\D/g, ""));
-      if (n) ids.add(n);
+    const hit = releaseMarketItem(src, catalog.items || [], priceDays);
+    if (!hit && row.market) marketBad += 1;
+    if (hit && (!row.market || row.market.id !== hit.item.id || row.market.price !== hit.price || row.market.date !== hit.date)) marketBad += 1;
+    if (row.market && /blister/i.test(row.market.name || "")) marketBad += 1;
+    if (row.market) {
+      const id = Number(String(row.market.id).replace(/\D/g, ""));
+      const onDay = priceDays.find((dayRow) => dayRow.date === row.market.date);
+      const price = (onDay?.prices || []).find((item) => Number(item.id) === id && Number(item.market) > 0);
+      if (!price || Number(price.market) !== row.market.price) marketBad += 1;
     }
-    if ([...earlier].some((dayRow) => [...ids].some((n) => dayRow.ids.has(n)))) marketBad += 1;
   }
-  t("release markets are the first daily price, or absent", marketBad === 0 && releases.releases.filter((row) => row.market).every((row) => row.market.date && row.market.price > 0));
+  const delta = releases.releases.find((row) => String(row.name || "").startsWith("Delta Reign"));
+  const upc = releases.releases.find((row) => row.type === "wave");
+  const fixtureItems = [
+    { id: "tcgcsv-1", tcgplayerProductId: 1, groupId: 9, name: "Delta Reign 3 Pack Blister [Seel]", kind: "sealed", subtype: null, set: "ME06: Delta Reign" },
+    { id: "tcgcsv-50", tcgplayerProductId: 50, groupId: 9, name: "Delta Reign Booster Box", kind: "sealed", subtype: "booster-box", set: "ME06: Delta Reign" },
+  ];
+  const fixtureDays = [
+    { date: "2026-09-01", prices: [{ id: 1, market: 12 }] },
+    { date: "2026-09-02", prices: [{ id: 1, market: 12 }, { id: 50, market: 40 }] },
+  ];
+  const fixtureRelease = { name: "Delta Reign (ME06)", type: "main-set" };
+  const picked = releaseMarketItem(fixtureRelease, fixtureItems, fixtureDays);
+  t("release markets follow the type order and the daily file", marketBad === 0 && releases.releases.filter((row) => row.market).every((row) => row.market.date && row.market.price > 0));
+  t("Delta Reign never returns a blister", Boolean(delta && delta.market && delta.market.id === "tcgcsv-712094" && !/blister/i.test(delta.market.name) && picked && picked.item.id === "tcgcsv-50" && picked.date === "2026-09-02" && releaseMarketItem(fixtureRelease, [fixtureItems[0]], fixtureDays) == null));
+  t("an unmatched row returns no market", releaseMarketItem({ name: "Nothing In The Catalogue", type: "product" }, fixtureItems, fixtureDays) == null);
+  t("the UPC row is not the Ditto collection", Boolean(upc && upc.market && upc.market.id === "tcgcsv-704190" && /ultra-premium/i.test(upc.market.name) && !/ditto/i.test(upc.market.name)));
 
   const gap = listingsFromHistory([
     { date: "2026-10-01", filteredTotal: 10 },
