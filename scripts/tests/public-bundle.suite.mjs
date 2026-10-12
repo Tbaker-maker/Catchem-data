@@ -135,10 +135,10 @@ export async function run() {
       t("the listing sentence is the footer, not every card", reads.footer === "An ask is a listing price. A listing is not a sale." && (reads.reads || []).every((row) => !String(row.why || row.whyItMatters || "").includes("listing is not a sale")));
     }
     const oldWhy = /last 30 days ran|low of the last 30|high of the last 30|we store|at least/i;
-    const v3Kinds = new Set(["climb", "setheat", "release", "newsline", "listings", "rotation", "pokemon"]);
+    const v3Kinds = new Set(["climb", "setheat", "release", "newsline", "listings", "rotation", "pokemon", "breadth"]);
     const priceReads = reads.reads.filter((row) => row.board !== "v3" && row.readKind === "price" || row.kind === "single" || row.kind === "sealed");
     const otherReads = reads.reads.filter((row) => !priceReads.includes(row));
-    const bad = priceReads.filter((row) => !money(row.price) || !row.headline || !(row.why || row.whyItMatters) || BANNED.test(row.headline) || BANNED.test(row.why || row.whyItMatters || "") || row.price === 0 || !/TCGplayer market:/.test(row.headline) || !/\([^)]+\)/.test(row.headline) || oldWhy.test(row.why || row.whyItMatters || "") || oldWhy.test(row.headline) || /tcgcsv-|data\/|—/.test(row.why || row.whyItMatters || "") || /\b(heating up|cooling off|last print|Top card in|checked again)\b/i.test(row.headline));
+    const bad = priceReads.filter((row) => !money(row.price) || !row.headline || !(row.why || row.whyItMatters) || BANNED.test(row.headline) || BANNED.test(row.why || row.whyItMatters || "") || row.price === 0 || !/TCGplayer market\b/.test(row.headline) || !/\([^)]+\)/.test(row.headline) || oldWhy.test(row.why || row.whyItMatters || "") || oldWhy.test(row.headline) || /tcgcsv-|data\/|—/.test(row.why || row.whyItMatters || "") || /\b(heating up|cooling off|last print|Top card in|checked again)\b/i.test(row.headline));
     t("every price lead read has a price, a window, and a clean headline", bad.length === 0 && (priceReads.length >= 1 || noWindow) && priceReads.length <= 24);
     t("a non-price read is a streak or another kept kind", otherReads.every((row) => (row.board === "v3" && v3Kinds.has(row.readKind)) || row.readKind === "pull" || row.readKind === "pokemon" || row.readKind === "lag" || row.readKind === "group" || row.readKind === "supply" || row.readKind === "outlier" || row.readKind === "dive" || row.readKind === "volume" || row.readKind === "listing" || row.readKind === "quiet" || row.readKind === "mix" || row.readKind === "conditions" || row.readKind === "soldflat" || row.readKind === "solddown" || row.readKind === "setshare" || row.readKind === "spread" || row.readKind === "askmove" || row.readKind === "mktmove" || row.readKind === "still" || row.readKind === "streak" || row.readKind === "mover" || row.readKind === "high" || row.readKind === "set" || row.readKind === "turned" || row.readKind === "sealed" || row.readKind === "release"));
     const shape = (text) => String(text).replace(/\$[0-9,.]+/g, "$").replace(/\b(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2}\b/g, "DATE").replace(/\b\d+(?:\.\d+)?\b/g, "n");
@@ -158,7 +158,7 @@ export async function run() {
       if (head && (head.includes("$") || head.includes("%")) && (row.readKind === "price" || row.kind === "single" || row.kind === "sealed")) return head;
       return path;
     };
-    t("price lines use one form and one sku each", priceReads.every((row) => /TCGplayer market:/.test(shownLine(row))) && new Set(priceReads.map((row) => row.sku)).size === priceReads.length && reads.reads.every((row) => row.path));
+    t("price lines use one form and one sku each", priceReads.every((row) => /TCGplayer market\b/.test(shownLine(row))) && new Set(priceReads.map((row) => row.sku)).size === priceReads.length && reads.reads.every((row) => row.path));
     t("a date is not at Sep or dated Sep on Sep", reads.reads.every((row) => !BAD_DATE.test(row.path || "")));
     t("paired frames are gone", reads.reads.every((row) => !/newest move widened|step shrank versus|unchanged price across|\bas of\b/i.test(row.path || "")));
     t("a line that uses both verbs states both moves", reads.reads.every((row) => !(/\brose\b/i.test(row.path || "") && /\bfell\b/i.test(row.path || "")) || statesBothMoves(row.path)));
@@ -166,7 +166,7 @@ export async function run() {
     t("one product is one lead card", new Set(priceReads.map((row) => row.sku)).size === priceReads.length);
     t("lead lines do not say stored or last print", reads.reads.every((row) => !/\bstored\b|last print/i.test(String(row.path || "") + String(row.headline || "") + String(row.why || ""))));
     t("lead lines do not use a filler closer", reads.reads.every((row) => !FILLER_BAN.test(String(row.path || ""))));
-    const withoutPriceForm = (line) => shape(line).replace(/tcgplayer market:[\s\S]*$/i, "").trim();
+    const withoutPriceForm = (line) => shape(line).replace(/tcgplayer market:[\s\S]*$/i, "").replace(/\$[\s\S]*$/, "").trim();
     t("no 4-word phrase is on more than 2 price lead lines", phrasePeak(priceReads.map((row) => withoutPriceForm(shownLine(row)))).peak <= 2);
     t("a read is one kind", reads.reads.every((row) => (row.board === "v3" && v3Kinds.has(row.kind) && row.kind === row.readKind) || row.kind === "single" || row.kind === "sealed" || row.kind === "pull" || row.kind === "pokemon" || row.kind === "lag" || row.kind === "group" || row.kind === "supply" || row.kind === "outlier" || row.kind === "dive" || row.kind === "volume" || row.kind === "streak" || row.kind === "mover" || row.kind === "high" || row.kind === "set" || row.kind === "turned" || row.kind === "sealed" || row.kind === "release" || (row.kind === row.readKind && ["quiet", "mix", "conditions", "soldflat", "solddown", "setshare", "spread", "askmove", "mktmove", "still"].includes(row.kind))));
     // #103 put flagged-price (outlier) and dive-teaser reads on the short

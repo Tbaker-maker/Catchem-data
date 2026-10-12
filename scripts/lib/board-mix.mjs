@@ -210,7 +210,8 @@ export function groupClimbReads(pool, { start, end, minUp = 4 } = {}) {
     const [era, kind] = key.split("|");
     const lead = up[0];
     const flatText = flat.map((p) => `${p.name} (${p.group}) ${money(p.to)}, was ${money(p.from)}`).join("; ");
-    const headline = `${up.length} ${kind} cards from the ${eraName(era)} era rose at least 8% from ${monthDay(start)} to ${monthDay(end)}. Biggest: ${lead.name} ${money(lead.from)} to ${money(lead.to)}. Not moved yet: ${flatText}.`;
+    const f0 = flat[0];
+    const headline = `${up.length} ${eraName(era)} ${kind} cards rose 8%+ from ${monthDay(start)} to ${monthDay(end)}. Biggest: ${cleanName(lead.name)}, ${money(lead.from)} to ${money(lead.to)}. Not moved yet: ${cleanName(f0.name)} at ${money(f0.to)}.`;
     if (!cleanCopy(headline)) continue;
     reads.push({
       id: `climb-${era}-${kind}`.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
@@ -245,7 +246,7 @@ export function setHeatReads(pool, { start, end, minMoved = 5 } = {}) {
   for (const [set, rows] of bySet) {
     const up = rows.filter((p) => isUp(p, { minPrice: 2 }));
     if (up.length < minMoved) continue;
-    const headline = `${up.length} of ${rows.length} priced chase cards in ${set} rose at least 8% and $1 from ${monthDay(start)} to ${monthDay(end)}.`;
+    const headline = `${shortSet(set)}: ${up.length} of ${rows.length} priced chase cards rose 8%+ and $1 or more (${monthDay(start)} to ${monthDay(end)}).`;
     if (!cleanCopy(headline)) continue;
     out.push({
       id: `setheat-${set}`.toLowerCase().replace(/[^a-z0-9]+/g, "-"), readKind: "setheat", kind: "setheat", board: BOARD_TAG, family: "set",
@@ -341,13 +342,13 @@ export function rotationReads(doc, asOf) {
   if (!std.length || !doc.asOf) return [];
   const marks = [...new Set(std.map((s) => s.mark).filter(Boolean))].sort();
   const src = (doc.sources || []).slice(-1)[0];
-  const headline = `${std.length} sets on our list are Standard legal (regulation marks ${marks.join(", ")}) on our ${monthDay(doc.asOf)} list.${src ? ` Last rotation: ${src.text}.` : ""} Rotated sets historically stop getting new print runs.`;
+  const headline = `Standard right now: ${std.length} sets, marks ${marks.join(", ")} (our list, ${monthDay(doc.asOf)}).${src ? ` Last rotation: ${src.text}.` : ""} Rotated sets historically stop getting new print runs.`;
   if (!cleanCopy(headline)) return [];
   return [{ id: `rotation-${doc.asOf}`, readKind: "rotation", kind: "rotation", board: BOARD_TAG, family: "rotation", name: "Rotation", headline, path: headline, asOf, href: "/rotation", source: `rotation-status.json, ${doc.asOf}${src ? `; ${src.href}` : ""}`, receipt: { sets: std.length, marks, asOf: doc.asOf } }];
 }
 
 // Pokemon facts from the catalogue: card count and artist count by dex, by id.
-export function factReads(index, names, { max = 3 } = {}) {
+export function factReads(index, names, { max = 3, asOf = "" } = {}) {
   const out = [];
   const used = new Set();
   for (const name of names) {
@@ -357,10 +358,75 @@ export function factReads(index, names, { max = 3 } = {}) {
     const row = pokemonFactLine(entry);
     if (!row || !cleanCopy(row.headline)) continue;
     used.add(entry.dex);
-    out.push({ ...row, board: BOARD_TAG, family: "fact", source: "data/card-catalogue.json and data/card-attrs.json" });
+    const day = asOf ? ` (catalogue, ${monthDay(asOf)})` : "";
+    const headline = row.headline.replace(/\.$/, "") + day + ".";
+    out.push({ ...row, headline: cleanCopy(headline) ? headline : row.headline, asOf: asOf || row.asOf, board: BOARD_TAG, family: "fact", source: "data/card-catalogue.json and data/card-attrs.json" });
     if (out.length >= max) break;
   }
   return out;
+}
+
+// Price reads: short, dated wording built from the same fields. Never new numbers.
+const fromRe = /from \$([\d,]+\.\d{2})/;
+export function cleanName(name) {
+  return String(name || "").replace(/\s+-\s+[A-Z]*\d+\/[A-Z]*\d+\s*$/, "").trim();
+}
+export function shortSet(set) {
+  return String(set || "").replace(/^(SWSH|SV|SM|ME|XY|BW)\d*[A-Za-z.]*\s*[:-]\s*/, "").trim();
+}
+export function polishPriceRead(r) {
+  if (!r || !["streak", "single", "sealed"].includes(r.readKind)) return r;
+  const m = String(r.headline || "").match(fromRe);
+  const to = Number(r.price);
+  if (!m || !(to > 0) || !r.startDate || !r.endDate) return r;
+  const from = Number(m[1].replace(/,/g, ""));
+  if (!(from > 0)) return r;
+  const name = cleanName(r.name);
+  const set = shortSet(r.set);
+  const who = set && r.readKind !== "sealed" ? `${name} (${set})` : name;
+  const span = `${money(from)} (${monthDay(r.startDate)}) to ${money(to)} (${monthDay(r.endDate)})`;
+  const up = to > from;
+  const p = Math.round(Math.abs(pct(from, to)));
+  const x = to / from;
+  let headline;
+  if (r.readKind === "streak" && r.streakN >= 3) headline = `${up ? "Up" : "Down"} ${r.streakN} days in a row: ${who}, ${span} on TCGplayer market.`;
+  else if (up && x >= 2) headline = `${who} more than doubled in a week: ${span} on TCGplayer market.`;
+  else headline = `${who}: ${span} on TCGplayer market. ${up ? "Up" : "Down"} ${p}%.`;
+  const variants = [
+    `${who} went ${up ? "up" : "down"} ${p}% in ${r.windowDays || 7} days: ${span}, TCGplayer market.`,
+    `${span}: that is ${who} on TCGplayer market, ${up ? "up" : "down"} ${p}%.`,
+  ].filter(cleanCopy);
+  if (!cleanCopy(headline)) return r;
+  return { ...r, headline, path: headline, variants };
+}
+export function keepPriceRead(r) {
+  if (r?.readKind === "askmove") {
+    const a = Number(r.receipt?.askFrom), b = Number(r.receipt?.askTo);
+    if (a > 0 && b > 0 && Math.abs(pct(a, b)) < 5) return false;
+  }
+  return true;
+}
+
+// Breadth: how many priced chase cards rose and fell at least 8% and $1 over the week.
+export function breadthReads(pool, { start, end } = {}) {
+  const priced = pool.filter((p) => p.to >= 2);
+  if (priced.length < 50) return [];
+  const up = priced.filter((p) => p.to - p.from >= 1 && pct(p.from, p.to) >= 8).length;
+  const down = priced.filter((p) => p.from - p.to >= 1 && pct(p.from, p.to) <= -8).length;
+  const flat = priced.filter((p) => Math.abs(pct(p.from, p.to)) < 3).length;
+  const headline = `This week in chase cards: ${up} went up 8% or more, ${down} went down 8% or more, ${flat} barely moved. ${priced.length} counted, ${monthDay(start)} to ${monthDay(end)}.`;
+  if (!cleanCopy(headline)) return [];
+  return [{
+    id: `breadth-${end}`, readKind: "breadth", kind: "breadth", board: BOARD_TAG, family: "breadth", name: "Chase cards this week",
+    headline, path: headline, asOf: end, startDate: start, endDate: end, href: "/feed?f=prices",
+    source: `TCGplayer market, ${start} and ${end}`,
+    why: "Chase cards are rarities above Rare priced $2 or more on both dates, counted by product id. Moves need 8% and $1. Barely moved is under 3% either way.",
+    receipt: { start, end, priced: priced.length, up, down, flat },
+    variants: [
+      `${monthDay(start)} to ${monthDay(end)}: of ${priced.length} chase cards counted, ${up} went up 8%+ and ${down} went down 8%+.`,
+      `${flat} of ${priced.length} chase cards held within 3% from ${monthDay(start)} to ${monthDay(end)}. ${up} went up 8%+, ${down} went down 8%+.`,
+    ].filter(cleanCopy),
+  }];
 }
 
 export function isPriceRead(r) {
@@ -404,7 +470,7 @@ export async function buildBoardV3(root, { on = true } = {}) {
   const readsPath = join(pub, "reads.json");
   const doc = await readJson(readsPath);
   if (!doc || !Array.isArray(doc.reads)) return { skipped: "no reads.json" };
-  const base = doc.reads.filter(isPriceRead);
+  const base = doc.reads.filter(isPriceRead).filter(keepPriceRead).map(polishPriceRead);
   const end = doc.asOf;
   const start = addDays(end, -7);
   const dailyDir = join(root, "data/history/tcgcsv-daily");
@@ -438,6 +504,8 @@ export async function buildBoardV3(root, { on = true } = {}) {
   const news = await readJson(join(root, "research/digests/news.json"));
   const listings = await readJson(join(pub, "listings-counted.json"));
   const rotation = await readJson(join(pub, "rotation-status.json"));
+  const catDoc = await readJson(join(root, "data/card-catalogue.json"));
+  const catDay = String(catDoc?.ingestedAt || "").slice(0, 10);
   let index = null;
   try {
     const cat = await readJson(join(root, "data/card-catalogue.json"));
@@ -454,7 +522,8 @@ export async function buildBoardV3(root, { on = true } = {}) {
     ...newsReads(news, end),
     ...listingReads(listings).slice(0, 2),
     ...rotationReads(rotation, end),
-    ...(index ? factReads(index, names) : []),
+    ...breadthReads(card.pool, { start, end }),
+    ...(index ? factReads(index, names, { max: 2, asOf: catDay }) : []),
   ];
   const { images, tcgOn, sealedPid } = await loadBoardImageInputs(root);
   for (const r of fresh) r.image = boardImage(r, images, tcgOn, sealedPid);
