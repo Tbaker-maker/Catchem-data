@@ -1,6 +1,6 @@
-# The review — 2026-08-25
+# The review — 2026-10-12
 
-**5.4 / 10.** Real progress, and the gap between what is built and what is live is now the whole problem.
+**5.1 / 10.** Real progress, and the gap between what is built and what is live is now the whole problem.
 
 > Every rating is derived from a count we hold, never chosen. A score somebody picked is a mood with a number attached.
 >
@@ -13,7 +13,7 @@
 Every agent meets every obligation.
 
 **Working**
-- 18 agents, 46 guards wired, 66 negative tests
+- 18 agents, 49 guards wired, 68 negative tests
 - Every incident this month became a guard, and every guard has been deliberately broken to prove it works.
 
 
@@ -22,13 +22,13 @@ Every agent meets every obligation.
 Wide and shallow. We track a lot and verify less of it than the numbers suggest.
 
 **Working**
-- 177 of 207 sealed products priced today, 16,468 cards catalogued
+- 175 of 207 sealed products priced today, 17,715 cards catalogued
 - Graded prices are WITHHELD because the source carries no time window — the right call, made after nearly publishing one
 **Needs looking at**
 - Enrichment covers 12 cards. Volume and graded data exist on 0.07% of the catalogue.
 - 6 knowledge-base facts rest only on secondary sources and have never been checked against our own data.
 
-## The product — 6/10 `██████░░░░`  *(unchanged)*
+## The product — 4/10 `████░░░░░░`  *(DOWN from 6)*
 
 The app works and looks better than it did. It is also still not deployed where anyone can use it.
 
@@ -36,7 +36,7 @@ The app works and looks better than it did. It is also still not deployed where 
 - Seven measured layout frames, a creator editor, a funnel, and 13 post shapes
 - Watermark and illustrator credit are locked and cannot be edited out
 **Needs looking at**
-- 1 high-severity design findings open
+- 6 high-severity design findings open
 - Two shipped pages have no generator and drift further from the site every day.
 - The editor exists as a file. Nobody outside this conversation can reach it.
 
@@ -78,11 +78,11 @@ Real and growing, on evidence too thin to score confidently. Early-stage communi
 The habits are in place. Nothing has come due yet, so none of them have been tested.
 
 **Working**
-- 12 decisions logged with falsifiable predictions
+- 17 decisions logged with falsifiable predictions
 - Corrections published publicly, dated and permanent
 - 21 errors logged, each with the guard it produced
 **Needs looking at**
-- 29 of 48 agent questions unanswered — a queue that only grows is a queue nobody reads
+- 66 of 85 agent questions unanswered — a queue that only grows is a queue nobody reads
 - 12 predictions still pending. The first grades land in October, and until then this score is a promise.
 
 ---
