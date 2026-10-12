@@ -79,7 +79,7 @@ export async function loadHistoryCards(root) {
       const map = new Map(lp);
       for (const p of night) map.set(p[0], p[1]);
       const pts = [...map.entries()].sort((x, y) => (x[0] < y[0] ? -1 : 1));
-      cards.push({ id: r.id, name: r.name, number: r.num || "", set: r.set || "", rarity: r.rarity || "", printing: r.printing || "", pts });
+      cards.push({ id: r.id, name: r.name, artist: r.artist || "", number: r.num || "", set: r.set || "", setSlug: r.setSlug || "", release: r.release || "", rarity: r.rarity || "", printing: r.printing || "", pts });
     }
   }
   return { cards, longLast };
@@ -211,10 +211,11 @@ export function setReads(cards, asOf, { days = 30, slack = 4, minPriced = 10, mi
 }
 
 function rotate(rows, day, take, salt) {
+  const window = Math.max(12, take * 2);
   let seed = 7;
   for (const ch of `${day}|${salt}`) seed = (seed * 31 + ch.charCodeAt(0)) >>> 0;
   const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
-  const pool = rows.slice(0, 12);
+  const pool = rows.slice(0, window);
   for (let i = pool.length - 1; i > 0; i -= 1) { const j = Math.floor(rnd() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
   return pool.slice(0, take);
 }
@@ -222,6 +223,7 @@ function rotate(rows, day, take, salt) {
 // All long-history reads for one night. Strongest 12 per kind, rotated by day so
 // the board does not repeat. One card is used once.
 export function historyReads(cards, asOf, { perKind = 2 } = {}) {
+  const want = (k) => (typeof perKind === "number" ? perKind : perKind[k] || 2);
   const live = cards.filter((c) => eligible(c, asOf));
   const kinds = {
     high: live.map((c) => extremeRead(c, asOf, 1)).filter(Boolean),
@@ -237,7 +239,7 @@ export function historyReads(cards, asOf, { perKind = 2 } = {}) {
   for (const [k, rows] of Object.entries(kinds)) {
     rows.sort((a, b) => b.strength - a.strength);
     counts[k] = rows.length;
-    picked[k] = rotate(rows.filter((r) => k === "set" || !used.has(r.sku)), asOf, perKind, k);
+    picked[k] = rotate(rows.filter((r) => k === "set" || !used.has(r.sku)), asOf, want(k), k);
     for (const r of picked[k]) if (k !== "set") used.add(r.sku);
   }
   for (const k of Object.keys(picked)) for (const r of picked[k]) delete r.strength;

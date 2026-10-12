@@ -13,6 +13,7 @@ import { buildPokemonIndex, pokemonFactLine, speciesToken } from "./fact-reads.m
 import { COMBINED_ART_PARENTS } from "./detectors/listing-trend.mjs";
 import { sealedVsChase } from "./detectors/sealed-vs-chase.mjs";
 import { loadHistoryCards, historyReads } from "./history-reads.mjs";
+import { setDeepDives, cardStories, eraComparison, preReleaseContext, sealedGapDeep, marketRoundup, artistSpotlights, pokemonSpotlights, rarityTierReports, anniversaryReads, rotationAftermath, recoveryWatch, steadiest, biggestYear, irLifecycle } from "./deep-reads.mjs";
 
 export const BOARD_TAG = "v3";
 export const PRICE_SHARE_MAX = 0.4;
@@ -291,7 +292,7 @@ export function releaseReads(releasesDoc, asOf, { days = 45 } = {}) {
 }
 
 // One country-named line per source item. Japanese items need an English title on file.
-export function newsReads(newsDoc, asOf, { days = 7, max = 5 } = {}) {
+export function newsReads(newsDoc, asOf, { days = 7, max = 5, perSource = 2 } = {}) {
   const items = newsDoc?.filters?.news?.items || [];
   const since = addDays(asOf, -days);
   const out = [];
@@ -318,7 +319,7 @@ export function newsReads(newsDoc, asOf, { days = 7, max = 5 } = {}) {
   }
   // Spread sources so one feed does not take the board.
   const seen = new Map();
-  return out.filter((r) => { const n = seen.get(r.name) || 0; seen.set(r.name, n + 1); return n < 2; }).slice(0, max);
+  return out.filter((r) => { const n = seen.get(r.name) || 0; seen.set(r.name, n + 1); return n < perSource; }).slice(0, max);
 }
 
 // eBay listing counts stated exactly. Skips shared-art parents and small counts.
@@ -372,6 +373,58 @@ export function sealedChaseReads({ products, histories, rawProducts, pool, start
     });
   }
   return out.sort((a, b) => b.gap - a.gap).slice(0, max);
+}
+
+// One line per set on our rotation list. Marks and dates come from the file.
+export function rotationSetReads(doc, asOf, { max = 30 } = {}) {
+  const out = [];
+  if (!doc?.asOf) return out;
+  for (const set of doc.sets || []) {
+    if (!set?.name || !set.status || !set.mark) continue;
+    const rotated = /^Rotated /.test(set.status);
+    const headline = rotated
+      ? `${set.name} (mark ${set.mark}) left Standard: ${set.status.replace(/^Rotated /, "rotated ")} (our list, ${monthDay(doc.asOf)}). Rotated sets historically stop getting new print runs.`
+      : `${set.name} (mark ${set.mark}) is Standard legal (our list, ${monthDay(doc.asOf)}).`;
+    if (!cleanCopy(headline)) continue;
+    out.push({ id: `rotation-set-${set.slug}`, readKind: "rotation", kind: "rotation", board: BOARD_TAG, family: "rotation", name: set.name, set: set.name, headline, path: headline, asOf, href: `/sets/${set.slug}`, source: `rotation-status.json, ${doc.asOf}`, receipt: { set: set.slug, mark: set.mark, status: set.status, asOf: doc.asOf } });
+    if (out.length >= max) break;
+  }
+  return out;
+}
+
+// eBay listing count for one product on one day, stated exactly.
+export function listingLevelReads(doc, { min = 10, max = 30 } = {}) {
+  const out = [];
+  const skip = new Set([...(doc?.skippedParents || []), ...COMBINED_ART_PARENTS]);
+  for (const p of doc?.products || []) {
+    const lc = p?.listingsCounted;
+    if (!p?.id || skip.has(p.id) || !Number.isInteger(lc?.n) || lc.n < min || !lc.date) continue;
+    const headline = `${p.name}: ${lc.n} eBay listings counted on ${monthDay(lc.date)}. A listing is not a sale.`;
+    if (!cleanCopy(headline)) continue;
+    out.push({ id: `listcount-${p.id}`, sku: p.id, href: `/p/${p.id}`, readKind: "listings", kind: "listings", board: BOARD_TAG, family: "listings", name: p.name, headline, path: headline, asOf: lc.date, source: `eBay listings counted, ${lc.date}`, receipt: { n: lc.n, date: lc.date } });
+  }
+  return out.sort((a, b) => b.receipt.n - a.receipt.n).slice(0, max);
+}
+
+// Breadth for one set: up, down and barely moved among priced chase cards.
+export function setBreadthReads(pool, { start, end, minPriced = 15, max = 40 } = {}) {
+  const bySet = new Map();
+  for (const p of pool) {
+    if (p.to < 2) continue;
+    if (!bySet.has(p.group)) bySet.set(p.group, []);
+    bySet.get(p.group).push(p);
+  }
+  const out = [];
+  for (const [set, rows] of bySet) {
+    if (rows.length < minPriced) continue;
+    const up = rows.filter((p) => p.to - p.from >= 1 && pct(p.from, p.to) >= 8).length;
+    const down = rows.filter((p) => p.from - p.to >= 1 && pct(p.from, p.to) <= -8).length;
+    const flat = rows.filter((p) => Math.abs(pct(p.from, p.to)) < 3).length;
+    const headline = `${shortSet(set)} this week: ${up} chase cards up 8% or more, ${down} down 8% or more, ${flat} barely moved, of ${rows.length} counted (${monthDay(start)} to ${monthDay(end)}).`;
+    if (!cleanCopy(headline)) continue;
+    out.push({ id: `breadth-set-${set}`.toLowerCase().replace(/[^a-z0-9]+/g, "-"), readKind: "breadth", kind: "breadth", board: BOARD_TAG, family: "breadth", name: set, set, headline, path: headline, asOf: end, startDate: start, endDate: end, href: "/feed?f=prices", source: `TCGplayer market, ${start} and ${end}`, receipt: { set, start, end, priced: rows.length, up, down, flat }, moved: up + down });
+  }
+  return out.sort((a, b) => b.moved - a.moved || b.receipt.priced - a.receipt.priced).slice(0, max);
 }
 
 export function rotationReads(doc, asOf) {
@@ -468,7 +521,7 @@ export function breadthReads(pool, { start, end } = {}) {
 }
 
 export function isPriceRead(r) {
-  return !r?.board || r.board !== BOARD_TAG;
+  return !r?.board || r.board !== BOARD_TAG || r.priceRead === true;
 }
 
 // Deterministic shuffle by day so the board is unranked.
@@ -527,9 +580,11 @@ export async function buildBoardV3(root, { on = true } = {}) {
   }
   const sealed = buildSealedLag({ products: sealedProducts, histories, start, end });
   let hist = { counts: {}, picked: {} };
+  let histCards = [];
   try {
     const { cards } = await loadHistoryCards(root);
-    hist = historyReads(cards, end);
+    histCards = cards;
+    hist = historyReads(cards, end, { perKind: { high: 30, low: 10, year: 40, plain: 60, backto: 40, set: 30 } });
   } catch { hist = { counts: {}, picked: {} }; }
   await writeFile(join(pub, "feed/not-moved.json"), JSON.stringify({
     asOf: end, start, end, on,
@@ -555,32 +610,83 @@ export async function buildBoardV3(root, { on = true } = {}) {
     const attrs = await readJson(join(root, "data/card-attrs.json"));
     index = buildPokemonIndex(cat?.cards || {}, attrs?.cards || {});
   } catch { index = null; }
-  const climbs = groupClimbReads(card.pool, { start, end }).slice(0, 4);
-  const heats = setHeatReads(card.pool, { start, end }).slice(0, 2);
+  const climbs = groupClimbReads(card.pool, { start, end }).slice(0, 20);
+  const heats = setHeatReads(card.pool, { start, end }).slice(0, 30);
   const names = [...base.map((r) => r.name), ...climbs.map((r) => r.receipt.up[0] && card.pool.find((p) => `tcgcsv-${p.id}` === r.receipt.up[0].id)?.name)].filter(Boolean);
   const fresh = [
     ...climbs,
     ...heats,
-    ...releaseReads(releases, end).slice(0, 3),
-    ...newsReads(news, end),
-    ...listingReads(listings).slice(0, 2),
-    ...sealedChaseReads({ products: sealedProducts, histories, rawProducts: raw?.products, pool: card.pool, start, end }),
+    ...releaseReads(releases, end, { days: 90 }),
+    ...newsReads(news, end, { days: 10, max: 40, perSource: 6 }),
+    ...listingReads(listings).slice(0, 10),
+    ...listingLevelReads(listings),
+    ...sealedChaseReads({ products: sealedProducts, histories, rawProducts: raw?.products, pool: card.pool, start, end, max: 10 }),
     ...rotationReads(rotation, end),
+    ...rotationSetReads(rotation, end),
     ...breadthReads(card.pool, { start, end }),
-    ...(index ? factReads(index, names, { max: 2, asOf: catDay }) : []),
+    ...setBreadthReads(card.pool, { start, end }),
   ];
+  // Deep layer. Aggregates sit in the non-price lane; card stories, sealed gaps
+  // and the eBay-vs-market dives count as price reads.
+  const setsDoc = await readJson(join(pub, "sets.json"));
+  let deepPrice = [];
+  let deepGap = [];
+  let deepRecovery = [];
+  try {
+    const usedHist = new Set(Object.values(hist.picked).flat().map((r) => r.sku));
+    const era = eraComparison(histCards, { asOf: end, sets: setsDoc });
+    fresh.push(
+      ...setDeepDives(histCards, { asOf: end, sets: setsDoc, rotation }),
+      ...era,
+      ...preReleaseContext(histCards, { asOf: end, sets: setsDoc, releases }),
+      ...marketRoundup({ asOf: end, start, pool: card.pool, histCounts: hist.counts, eraRow: era[0], releases }),
+      ...artistSpotlights(histCards, { asOf: end }),
+      ...pokemonSpotlights(histCards, { asOf: end }),
+      ...rarityTierReports(histCards, { asOf: end, sets: setsDoc }),
+      ...anniversaryReads(histCards, { asOf: end, sets: setsDoc }),
+      ...rotationAftermath(histCards, { asOf: end, rotation }),
+      ...steadiest(histCards, { asOf: end }),
+      ...biggestYear(histCards, { asOf: end, sets: setsDoc }),
+      ...irLifecycle(histCards, { asOf: end }),
+    );
+    const stories = cardStories(histCards, { asOf: end, skip: usedHist });
+    for (const r of stories) usedHist.add(r.sku);
+    deepPrice = stories.map((r) => ({ ...r, priceRead: true }));
+    deepRecovery = recoveryWatch(histCards, { asOf: end, skip: usedHist }).map((r) => ({ ...r, priceRead: true }));
+    deepGap = sealedGapDeep(sealedProducts, histories, histCards, raw?.products, { asOf: end }).map((r) => ({ ...r, priceRead: true }));
+  } catch (err) { console.error("deep reads skipped:", err.message); }
+  const extraDoc = await readJson(join(pub, "feed/extra-reads.json"), {});
+  const dives = (extraDoc.reads || []).filter((r) => r.readKind === "dive" && r.headline);
+  const factNames = [...names, ...Object.values(hist.picked).flat().map((r) => r.name)];
+  if (index) fresh.push(...factReads(index, factNames, { max: 35, asOf: catDay }));
+  {
+    const seenHead = new Set();
+    const seenSku = new Set();
+    const keep = [];
+    for (const r of fresh) {
+      const h = String(r.headline || "").toLowerCase();
+      const cardKey = ["listings", "sealedchase"].includes(r.readKind) ? r.sku : "";
+      if (!h || seenHead.has(h) || (cardKey && seenSku.has(cardKey))) continue;
+      seenHead.add(h);
+      if (cardKey) seenSku.add(cardKey);
+      keep.push(r);
+    }
+    fresh.length = 0;
+    fresh.push(...keep);
+  }
   const { images, tcgOn, sealedPid } = await loadBoardImageInputs(root);
   for (const r of fresh) r.image = boardImage(r, images, tcgOn, sealedPid);
   for (const r of fresh) { if (!r.why) r.why = `From ${r.source}.`; if (!r.whyItMatters) r.whyItMatters = r.why; }
   for (const k of Object.keys(hist.picked)) for (const r of hist.picked[k]) r.image = boardImage(r, images, tcgOn, sealedPid);
   // Price rows round-robin: tonight's price reads, then one of each long-history kind.
   // Two of tonight's rows per round, so week moves keep their place.
-  const lanes = [base.filter((_, i) => i % 2 === 0), base.filter((_, i) => i % 2 === 1), ...["high", "year", "backto", "set", "plain", "low"].map((k) => hist.picked[k] || [])];
+  const lanes = [base.filter((_, i) => i % 2 === 0), base.filter((_, i) => i % 2 === 1), deepPrice, deepGap, deepRecovery, dives, ...["high", "year", "backto", "set", "plain", "low"].map((k) => hist.picked[k] || [])];
   const priceRows = [];
   for (let i = 0; lanes.some((l) => i < l.length); i += 1) for (const l of lanes) if (l[i]) priceRows.push(l[i]);
-  const seenSku = new Set();
+  const seenSku = new Set(fresh.filter((r) => ["listings", "sealedchase"].includes(r.readKind)).map((r) => r.sku));
   const priceDedup = priceRows.filter((r) => { const k = r.readKind === "set" ? r.id : (r.sku || r.id); if (seenSku.has(k)) return false; seenSku.add(k); return true; });
   const reads = mixBoard(priceDedup, fresh, end);
+  for (const r of reads) if (!String(r.image || "").trim()) r.image = boardImage(r, images, tcgOn, sealedPid);
   await writeFile(readsPath, JSON.stringify({ ...doc, reads, count: reads.length }, null, 1) + "\n");
   const byKind = {};
   for (const r of reads) byKind[r.readKind || r.kind] = (byKind[r.readKind || r.kind] || 0) + 1;
