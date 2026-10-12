@@ -1,3 +1,4 @@
+import { buildVariantFile, tagReadsFile } from "./lib/read-tags.mjs";
 // Writes the Feed catalogue and appends new call rows. Does not rebuild the rest of the site.
 import { readFile, readdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
@@ -195,6 +196,13 @@ if (libraryOn() !== true && JSON.stringify(reg.lib) !== JSON.stringify(library))
 console.log(JSON.stringify({ registryMs, registryLogs: reg.logs.length, browse: reg.browse.length }));
 const boardV3 = await buildBoardV3(ROOT, { on: libraryOn() === true });
 console.log(JSON.stringify({ boardV3 }));
+// Variant tags: rebuilt nightly here, then stamped on reads that point at one card.
+let variantSummary = null;
+try {
+  const variants = await buildVariantFile(ROOT);
+  variantSummary = await tagReadsFile(ROOT, variants.cards);
+} catch (err) { console.error(`variant tags skipped: ${err.message}`); }
+console.log(JSON.stringify({ variantSummary }));
 const health = await writeHealth(ROOT);
 console.log(JSON.stringify({ extra: extraSummary, library: library.counts, health: { nightlyDay: health.nightlyDay, shards: health.shards, lose: health.lose, failures: health.failures } }));
 if (health.failures.length) {
