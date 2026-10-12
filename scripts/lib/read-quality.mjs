@@ -342,8 +342,8 @@ export function sealedWeekReads({ products, series, asOf, dailyFiles }) {
       asOf,
       source: "TCGplayer market",
       sourceLine: `tcgcsv-${id}`,
-      whyItMatters: "A sealed product moved at least $5 on the two dates. This is the market price, not an eBay ask, and not a sale.",
-      why: "A sealed product moved at least $5 on the two dates. This is the market price, not an eBay ask, and not a sale.",
+      whyItMatters: "A sealed product moved $5 or more on the two dates. This is the market price, not an eBay ask, and not a sale.",
+      why: "A sealed product moved $5 or more on the two dates. This is the market price, not an eBay ask, and not a sale.",
       whatWouldMakeThisWrong: "Wrong if either date has a different market price.",
       _abs: Math.abs(moved),
     });

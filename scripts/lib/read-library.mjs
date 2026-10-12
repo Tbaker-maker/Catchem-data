@@ -629,7 +629,7 @@ export function boardImage(row, images = {}, tcgOn = true, sealedPid = new Map()
   return BRAND_TILE;
 }
 
-async function loadBoardImageInputs(root) {
+export async function loadBoardImageInputs(root) {
   let images = {};
   const tcgOn = flag("images.tcgplayer") !== false;
   try { images = JSON.parse(await readFile(join(root, "research/assets/public/catalogue-images.json"), "utf8")).images || {}; } catch { images = {}; }

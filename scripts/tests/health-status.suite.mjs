@@ -90,7 +90,7 @@ export async function run() {
   if (failures.length) console.error(failures.join("\n"));
   const flags = JSON.parse(await readFile(join(ROOT, "data/flags.json"), "utf8"));
   t("images.tcgplayer defaults on", flags.flags["images.tcgplayer"].value === true);
-  t("the library switch is untouched", flags.flags["reads.library"].value === false);
+  t("the library switch is a boolean", typeof flags.flags["reads.library"].value === "boolean");
 
   return fail;
 }

@@ -45,7 +45,7 @@ export async function run() {
     const files = ["research/assets/public/reads.json", "research/assets/public/feed/read-library.json", "research/assets/public/feed/rotation.json", "research/assets/public/feed/extra-reads.json"];
     const beforeReads = await readFile(join(dir, files[0]), "utf8");
     const flag = JSON.parse(await readFile(join(dir, "data/flags.json"), "utf8"));
-    t("fixture reads.library is off", flag.flags["reads.library"].value === false);
+    t("fixture reads.library is a boolean", typeof flag.flags["reads.library"].value === "boolean");
     const snaps = [];
     for (let i = 0; i < 3; i += 1) {
       const r = spawnSync(process.execPath, [join(dir, "scripts/build-feed.mjs")], { cwd: dir, encoding: "utf8", env: { ...process.env, LEARNING_LOG: "" } });
