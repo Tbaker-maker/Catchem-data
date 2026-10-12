@@ -34,15 +34,29 @@ export async function run() {
   const doc = JSON.parse(await readFile(join(ROOT, "research/assets/public/feed/ir-cycle.json"), "utf8"));
   t("ir-cycle has rows and a date", doc.rows.length > 100 && /^\d{4}-\d{2}-\d{2}$/.test(doc.asOf));
   t("no private score is published", doc.rows.every((r) => !("_score" in r)));
-  t("every row is an IR or SIR with a dated price", doc.rows.every((r) => (r.kind === "IR" || r.kind === "SIR") && r.price.price > 0 && /^\d{4}-/.test(r.price.date)));
-  t("no rotated sets", doc.rows.every((r) => !r.rotation || !/^Rotated/.test(r.rotation.text)));
+  t("every row is an IR or SIR with a dated price", doc.rows.every((r) => ["IR", "SIR", "TG", "GG", "ALT"].includes(r.kind) && r.price.price > 0 && /^\d{4}-/.test(r.price.date)));
+  t("older kinds included", ["TG", "GG", "ALT"].every((k) => doc.rows.some((r) => r.kind === k)));
+  t("weights add to 100", Object.values(doc.scoreWeights).reduce((a, b) => a + b, 0) === 100);
+  t("lift chips are clean facts", doc.rows.every((r) => Array.isArray(r.lifts) && r.lifts.every((l) => cleanCopy(l.text))));
+  t("stage is a factor, not a gate: a rotated card can rank in the top 200", doc.rows.slice(0, 200).some((r) => /Rotated/.test(r.rotation?.text || "") || ["TG", "GG", "ALT"].includes(r.kind)));
   t("public strings are clean", doc.rows.every((r) => cleanCopy(r.position) && cleanCopy(r.curve.text) && cleanCopy(r.rotation?.text || "")) && cleanCopy(doc.note));
   // Verify by id: the row name matches the bucket row with the same id.
   const r0 = doc.rows[0];
   const bucket = String((Number((r0.id.match(/(\d+)/) || [])[1]) || 0) % 100).padStart(2, "0");
   const rows = JSON.parse(await readFile(join(ROOT, `research/assets/public/buckets/${bucket}.json`), "utf8"));
   const hit = rows.find((r) => r.id === r0.id);
-  t("top row verified by id", hit && hit.name === r0.name && hit.rarity.startsWith(r0.kind === "IR" ? "Illustration" : "Special"));
+  t("top row verified by id", hit && hit.name === r0.name && (r0.kind === "IR" ? hit.rarity === "Illustration Rare" : r0.kind === "SIR" ? hit.rarity === "Special Illustration Rare" : true));
+  fail += await runScoreUnits();
   return fail;
 }
 if (import.meta.url === `file://${process.argv[1]}`) run().then((n) => process.exit(n ? 1 : 0));
+
+import { peersValue, trendValue, stageValue } from "../lib/ir-cycle.mjs";
+export async function runScoreUnits() {
+  let f = 0; const u = (n, c) => { if (!c) { f++; console.error("  FAIL", n); } };
+  u("below both peers lifts fully", peersValue(-30, -10, -20).v === 1 && /down 30%/.test(peersValue(-30, -10, -20).chip));
+  u("above peers no lift", peersValue(5, -10, -20).v === 0);
+  u("turning up chip", trendValue({ pct: 6 }, { pct: -20 }).chip === "Up 6% in 30 days after down 20% in 90");
+  u("young card is not excluded", stageValue(50, false).v > 0);
+  return f;
+}

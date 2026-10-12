@@ -22,10 +22,18 @@ export const days = (a, b) => Math.round((Date.parse(b) - Date.parse(a)) / DAY);
 const epochDay = (n) => new Date(Number(n) * DAY).toISOString().slice(0, 10);
 
 export function kindOf(row) {
+  const num = String(row.num || "");
   if (row.rarity === "Illustration Rare") return "IR";
   if (row.rarity === "Special Illustration Rare") return "SIR";
+  if (/^TG\d/i.test(num)) return "TG";
+  if (/^GG\d/i.test(num)) return "GG";
+  if (/Alternate (Full )?Art|Alternate Art Secret/i.test(String(row.name || "")) && String(row.release || "") < "2023") return "ALT";
   return "";
 }
+export const KIND_LABEL = { IR: "Illustration Rare", SIR: "Special Illustration Rare", TG: "Trainer Gallery", GG: "Galarian Gallery", ALT: "Alternate Art" };
+// SWSH mapping from Tyler: TG and GG are the IR of that generation, alt arts the SIR.
+export const CURVE_KIND = { IR: "IR", TG: "IR", GG: "IR", SIR: "SIR", ALT: "SIR" };
+export const eraOf = (row) => (/^(SV|ME)/.test(String(row.set || "")) || String(row.release || "") >= "2023-03" ? "SV and Mega" : "Sword & Shield");
 
 // Merge change-only long history ("days:price,...") with nightly hist.
 export function series(row, longStr) {
@@ -73,7 +81,11 @@ export function positionText(pos) {
   return "In the middle of its range on file";
 }
 
-export function curveNote(kind, age) {
+export function curveNote(kind0, age, rotated) {
+  const kind = CURVE_KIND[kind0] || kind0;
+  if (kind0 === "TG" || kind0 === "GG") return { stage: rotated ? "after rotation" : "past one year", text: "Sword & Shield Trainer Gallery cards rose a median 129% in the 6 months before their sets rotated on Apr 11, 2025, then 10% in the 6 months after (120 cards). Holos from the same sets rose 21%, then 6%." };
+  if (kind0 === "ALT") return { stage: rotated ? "after rotation" : "past one year", text: "Sword & Shield alt arts from F-mark sets rose a median 136% from Feb 2024 to Oct 12, 2026 (20 cards). Holos from the same sets rose 70%." };
+  if (rotated && age >= 365) return { stage: "after rotation", text: `${STUDY.later[kind].text} For rotated G-mark sets, IRs rose a median 23% in the 6 months after Apr 10, 2026 (125 cards).` };
   if (age < 183) return { stage: "first 6 months", text: STUDY.early[kind].text };
   if (age < 365) return { stage: "6 to 12 months", text: `${STUDY.early[kind].text} ${STUDY.later[kind].text}` };
   return { stage: "past one year", text: STUDY.later[kind].text };
@@ -121,35 +133,90 @@ export function setListings(bySet, setName) {
   return pub;
 }
 
+// Multi-factor watchlist score. Weights add to 100. Documented in the IR doc v2.
+// The print window is one strong factor, not a gate.
+export const SCORE_WEIGHTS = { stage: 25, range: 20, popularity: 20, peers: 15, trend: 15, listings: 5, psa10: 0 };
+
+export function stageValue(age, rotated) {
+  if (rotated) return { v: 0.5, chip: "Set rotated" };
+  if (age >= 365) return { v: 1, chip: "Past one year since release" };
+  if (age >= 183) return { v: 0.7, chip: "6 to 12 months since release" };
+  return { v: 0.3, chip: "" };
+}
+export function trendValue(t30, t90) {
+  if (t30 && t90 && t30.pct > 0 && t90.pct < 0) return { v: 1, chip: `Up ${t30.pct}% in 30 days after down ${Math.abs(t90.pct)}% in 90` };
+  if (t30 && Math.abs(t30.pct) < 5 && t90 && Math.abs(t90.pct) < 5) return { v: 0.6, chip: "Steady over 90 days" };
+  if (t30 && t30.pct > 0) return { v: 0.5, chip: `Up ${t30.pct}% in 30 days` };
+  return { v: 0.2, chip: "" };
+}
+export function listingsValue(l) {
+  if (!l || !l.prev) return { v: 0.5, chip: "" };
+  if (l.n < l.prev.n) return { v: 1, chip: `Sealed listings counted down: ${l.n} from ${l.prev.n}` };
+  if (l.n > l.prev.n) return { v: 0.2, chip: "" };
+  return { v: 0.5, chip: "" };
+}
+const median = (a) => { const b = [...a].sort((x, y) => x - y); const m = b.length >> 1; return b.length ? (b.length % 2 ? b[m] : (b[m - 1] + b[m]) / 2) : null; };
+export function peersValue(own, setMed, eraMed) {
+  if (own == null) return { v: 0.5, chip: "" };
+  const belowSet = setMed != null && own < setMed;
+  const belowEra = eraMed != null && own < eraMed;
+  const pc = (n) => (n > 0 ? `up ${Math.round(n)}%` : n < 0 ? `down ${Math.abs(Math.round(n))}%` : "flat");
+  const parts = [];
+  if (belowSet) parts.push(`set peers ${pc(setMed)}`);
+  if (belowEra) parts.push(`era peers ${pc(eraMed)}`);
+  const v = (belowSet ? 0.5 : 0) + (belowEra ? 0.5 : 0);
+  const txt = pc(own);
+  return { v, chip: parts.length ? `90 days ${txt}. Median: ${parts.join(", ")}` : "" };
+}
+
 export function buildRows({ rows, longRows, rot, bySet, today }) {
-  const out = [];
+  const pre = [];
   for (const r of rows) {
     const kind = kindOf(r);
     if (!kind || r.kind !== "single" || !r.release || !r.setSlug) continue;
+    if (/promo|miscellaneous/i.test(r.set || "")) continue;
     const status = (rot?.sets || []).find((s) => s.slug === r.setSlug)?.status || "";
-    if (/^Rotated/.test(status)) continue;
-    if (r.release < "2024-03-01" || /promo|miscellaneous/i.test(r.set || "")) continue;
+    const rotated = /^Rotated/.test(status) || kind === "ALT" || kind === "TG" || kind === "GG";
     const pts = series(r, longRows[r.id]);
     const now = priceAt(pts, today, 3);
     if (!now) continue;
-    const age = days(r.release, today);
+    pre.push({ r, kind, rotated, pts, now, age: days(r.release, today), t30: trend(pts, today, 30), t90: trend(pts, today, 90) });
+  }
+  const groups = (key) => { const m = new Map(); for (const x of pre) { if (!x.t90) continue; const k = key(x); if (!m.has(k)) m.set(k, []); m.get(k).push(x.t90.pct); } return new Map([...m].map(([k, a]) => [k, a.length >= 5 ? median(a) : null])); };
+  const setMed = groups((x) => x.r.setSlug + "|" + (CURVE_KIND[x.kind]));
+  const eraMed = groups((x) => eraOf(x.r) + "|" + (CURVE_KIND[x.kind]));
+  const out = [];
+  for (const x of pre) {
+    const { r, kind, rotated, pts, now, age, t30, t90 } = x;
     const rg = range(pts);
     const pos = rangePos(rg, now[1]);
     const pop = popularity(r.name);
-    const t30 = trend(pts, today, 30);
-    const t90 = trend(pts, today, 90);
+    const lst = setListings(bySet, r.set);
+    const f = {
+      stage: stageValue(age, rotated),
+      range: { v: pos == null ? 0.5 : (100 - pos) / 100, chip: pos != null && pos <= 35 ? positionText(pos) : "" },
+      popularity: { v: pop.weight / 5, chip: "" },
+      peers: peersValue(t90 ? t90.pct : null, setMed.get(r.setSlug + "|" + CURVE_KIND[kind]), eraMed.get(eraOf(r) + "|" + CURVE_KIND[kind])),
+      trend: trendValue(t30, t90),
+      listings: listingsValue(lst),
+    };
+    let score = 0;
+    for (const k of Object.keys(f)) score += (SCORE_WEIGHTS[k] || 0) * f[k].v;
+    const lifts = Object.keys(f).filter((k) => f[k].chip && f[k].v >= 0.5).sort((a, b) => SCORE_WEIGHTS[b] * f[b].v - SCORE_WEIGHTS[a] * f[a].v).map((k) => ({ factor: k, text: f[k].chip }));
+    const rotChip = rotationChip(rot, r.setSlug, today);
     out.push({
-      id: r.id, name: r.name, num: r.num, set: r.set, setSlug: r.setSlug, kind,
+      id: r.id, name: r.name, num: r.num, set: r.set, setSlug: r.setSlug, kind, kindLabel: KIND_LABEL[kind], era: eraOf(r),
       release: r.release, daysSinceRelease: age,
       price: { price: now[1], date: now[0], source: "TCGplayer market" },
       low: rg.low, high: rg.high, onFileSince: rg.since,
       position: positionText(pos), positionPct: pos,
       trend30: t30, trend90: t90,
-      setListings: setListings(bySet, r.set),
-      curve: curveNote(kind, age),
-      rotation: rotationChip(rot, r.setSlug, today),
+      setListings: lst,
+      curve: curveNote(kind, age, rotated),
+      rotation: rotChip,
       popularity: pop.tags,
-      _score: pop.weight * 2 + (pos == null ? 0 : (100 - pos) / 25) + (age >= 183 ? 1 : 0),
+      lifts,
+      _score: score,
     });
   }
   out.sort((a, b) => b._score - a._score || a.price.price - b.price.price);
