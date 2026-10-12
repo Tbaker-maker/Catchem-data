@@ -171,6 +171,15 @@ export async function run() {
     && !/, down 0\.5%/.test(opposite)
     && opposite.indexOf("up 7.1%") < (opposite.indexOf("0.5%") === -1 ? opposite.length : opposite.indexOf("0.5%")));
 
+  // A product name with a banned filler word ("Stamped") must not drop the
+  // window sentence to the bare latest-price line (tcgcsv-694677, Oct 12).
+  const stamped = pathSentence([
+    ["2026-10-03", 14.55], ["2026-10-05", 14.45], ["2026-10-06", 14.4], ["2026-10-07", 14.42],
+    ["2026-10-08", 14.28], ["2026-10-09", 14.28], ["2026-10-10", 14.03], ["2026-10-11", 13.66], ["2026-10-12", 13.4],
+  ], { name: "Delphox - 013/086 (Chaos Rising Stamped)", fromPrice: 14.45, fromDate: "2026-10-05", toDate: "2026-10-12", windowDays: 7, direction: "down" });
+  t("a banned word inside the product name keeps the window sentence",
+    stamped === "Delphox - 013/086 (Chaos Rising Stamped) latest price fell from $14.45 on Oct 5 to $13.40 on Oct 12, down 7.3%.");
+
   return fail;
 }
 
