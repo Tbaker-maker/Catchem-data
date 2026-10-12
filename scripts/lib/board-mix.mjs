@@ -430,7 +430,7 @@ export function setBreadthReads(pool, { start, end, minPriced = 15, max = 40 } =
     const flat = rows.filter((p) => Math.abs(pct(p.from, p.to)) < 3).length;
     const headline = `${shortSet(set)} this week: ${up} chase cards up 8% or more, ${down} down 8% or more, ${flat} barely moved, of ${rows.length} counted (${monthDay(start)} to ${monthDay(end)}).`;
     if (!cleanCopy(headline)) continue;
-    out.push({ id: `breadth-set-${set}`.toLowerCase().replace(/[^a-z0-9]+/g, "-"), readKind: "breadth", kind: "breadth", board: BOARD_TAG, family: "breadth", name: set, set, headline, path: headline, asOf: end, startDate: start, endDate: end, href: "/feed?f=prices", source: `TCGplayer market, ${start} and ${end}`, receipt: { set, start, end, priced: rows.length, up, down, flat }, moved: up + down });
+    out.push({ id: `breadth-set-${set}`.toLowerCase().replace(/[^a-z0-9]+/g, "-"), readKind: "breadth", kind: "breadth", board: BOARD_TAG, family: "breadth", name: set, set, headline, path: headline, asOf: end, startDate: start, endDate: end, href: `/feed?f=set&set=${encodeURIComponent(set)}`, source: `TCGplayer market, ${start} and ${end}`, receipt: { set, start, end, priced: rows.length, up, down, flat }, moved: up + down });
   }
   return out.sort((a, b) => b.moved - a.moved || b.receipt.priced - a.receipt.priced).slice(0, max);
 }
@@ -640,6 +640,7 @@ export async function buildBoardV3(root, { on = true } = {}) {
   let deepPrice = [];
   let deepGap = [];
   let deepRecovery = [];
+  let deepRating = [];
   try {
     const usedHist = new Set(Object.values(hist.picked).flat().map((r) => r.sku));
     const era = eraComparison(histCards, { asOf: end, sets: setsDoc });
@@ -657,6 +658,10 @@ export async function buildBoardV3(root, { on = true } = {}) {
       ...biggestYear(histCards, { asOf: end, sets: setsDoc }),
       ...irLifecycle(histCards, { asOf: end }),
     );
+    // Card Rating group reads (feed/card-rating.json, built by build-card-rating.mjs).
+    // They compare prices, so they ride a price lane and count toward the price share.
+    const rating = await readJson(join(pub, "feed/card-rating.json"), {});
+    if (rating?.asOf === end) deepRating = (rating.reads || []).filter((r) => r.headline && r.lines?.length >= 3).map((r) => ({ ...r, priceRead: true }));
     const stories = cardStories(histCards, { asOf: end, skip: usedHist });
     for (const r of stories) usedHist.add(r.sku);
     deepPrice = stories.map((r) => ({ ...r, priceRead: true }));
@@ -688,12 +693,22 @@ export async function buildBoardV3(root, { on = true } = {}) {
   for (const k of Object.keys(hist.picked)) for (const r of hist.picked[k]) r.image = boardImage(r, images, tcgOn, sealedPid);
   // Price rows round-robin: tonight's price reads, then one of each long-history kind.
   // Two of tonight's rows per round, so week moves keep their place.
-  const lanes = [base.filter((_, i) => i % 2 === 0), base.filter((_, i) => i % 2 === 1), deepPrice, deepGap, deepRecovery, dives, ...["high", "year", "backto", "set", "plain", "low"].map((k) => hist.picked[k] || [])];
+  const lanes = [base.filter((_, i) => i % 2 === 0), base.filter((_, i) => i % 2 === 1), deepPrice, deepRating, deepGap, deepRecovery, dives, ...["high", "year", "backto", "set", "plain", "low"].map((k) => hist.picked[k] || [])];
   const priceRows = [];
   for (let i = 0; lanes.some((l) => i < l.length); i += 1) for (const l of lanes) if (l[i]) priceRows.push(l[i]);
   const seenSku = new Set(fresh.filter((r) => ["listings", "sealedchase"].includes(r.readKind)).map((r) => r.sku));
   const priceDedup = priceRows.filter((r) => { const k = r.readKind === "set" ? r.id : (r.sku || r.id); if (seenSku.has(k)) return false; seenSku.add(k); return true; });
-  const reads = mixBoard(priceDedup, fresh, end);
+  // One product page once per night: a later row that links to the same card or product is dropped.
+  const seenHref = new Set();
+  const onePage = (r) => {
+    const h = String(r.href || "");
+    if (!/^\/(?:c|p)\//.test(h)) return true;
+    if (seenHref.has(h)) return false;
+    seenHref.add(h);
+    return true;
+  };
+  const freshOne = fresh.filter(onePage);
+  const reads = mixBoard(priceDedup.filter(onePage), freshOne, end);
   for (const r of reads) if (!String(r.image || "").trim()) r.image = boardImage(r, images, tcgOn, sealedPid);
   await writeFile(readsPath, JSON.stringify({ ...doc, reads, count: reads.length }, null, 1) + "\n");
   const byKind = {};

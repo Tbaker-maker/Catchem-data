@@ -256,7 +256,7 @@ export function artistSpotlights(cards, { asOf, max = 12 }) {
       `${up} of ${rows.length} went up over the year.`,
       `Best year: ${cleanName(best.c.name)} (${short(best.c.set)}), ${money(best.a)} to ${money(best.z)}.`,
       `Priciest tonight: ${cleanName(top.c.name)} (${short(top.c.set)}) at ${money(top.z)}.`,
-    ], asOf, `TCGplayer market, ${addDays(asOf, -365)} and ${asOf}; artist from the catalogue`, { href: `/artists`, chart: { label: "1-year change, top 6 cards, %", bars: rows.slice().sort((x, y) => y.z - x.z).slice(0, 6).map((r) => [cleanName(r.c.name).slice(0, 18), Math.round(r.ch)]) }, startDate: addDays(asOf, -365), endDate: asOf, weight: rows.length });
+    ], asOf, `TCGplayer market, ${addDays(asOf, -365)} and ${asOf}; artist from the catalogue`, { href: `/artists/${String(artist).toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")}`, chart: { label: "1-year change, top 6 cards, %", bars: rows.slice().sort((x, y) => y.z - x.z).slice(0, 6).map((r) => [cleanName(r.c.name).slice(0, 18), Math.round(r.ch)]) }, startDate: addDays(asOf, -365), endDate: asOf, weight: rows.length });
     if (rr) out.push(rr);
   }
   return out.sort((x, y) => y.weight - x.weight).slice(0, max);
@@ -350,7 +350,7 @@ export function rotationAftermath(cards, { asOf, rotation }) {
     const rr = row("rotation", date, `Rotation ${date}`, `Rotation aftermath: sets that left Standard on ${dateLabel(date, asOf)} went ${sgn(pctOf(sum[0], sum[1]))} from a month before to a month after.`, [
       ...res.slice(0, 4).map((r) => `${r.name}: ${money(r.t[0])} (${dateLabel(before, asOf)}) to ${money(r.t[1])} (${dateLabel(after, asOf)}), ${money(r.t[2])} now, ${r.n} chase cards.`),
       `Since then: ${sgn(pctOf(sum[1], sum[2]))} to ${monthDay(asOf)}. Rotated sets historically stop getting new print runs.`,
-    ], asOf, `TCGplayer market, ${before}, ${after} and ${asOf}; rotation-status.json`, { href: "/rotation", chart: { label: "Rotated sets, total", points: [[before, Math.round(sum[0])], [after, Math.round(sum[1])], [asOf, Math.round(sum[2])]] }, startDate: before, endDate: asOf });
+    ], asOf, `TCGplayer market, ${before}, ${after} and ${asOf}; rotation-status.json`, { chart: { label: "Rotated sets, total", points: [[before, Math.round(sum[0])], [after, Math.round(sum[1])], [asOf, Math.round(sum[2])]] }, startDate: before, endDate: asOf });
     if (rr) out.push(rr);
   }
   return out;
@@ -465,6 +465,6 @@ export function irLifecycle(cards, { asOf }) {
   const read3 = `${name} IR (${short(best.c.set)} ${best.c.number}): ${money(best.first[1])} in ${monthYear(best.first[0])}, ${money(best.now)} on ${day} on TCGplayer market. Up ${Math.round(best.ch * 100)}%, the largest IR climb in our history file.`;
   const holo3 = hb != null ? `Holo baseline for ${short(best.c.set)}: plain holos moved a median ${pctTxt(hb)} from their first point to ${monthDay(asOf)} (${peers.length} cards).` : "";
   const rr = row("irlife", asOf, "IR lifecycle", `IR lifecycle: older Scarlet & Violet IRs rose a median ${pctTxt(ir1)} since their first birthday. Plain holos from the same sets: ${pctTxt(h1)}.`, [read1, read2, holo2, read3, holo3], asOf,
-    `TCGplayer market, buckets and hist-long, ${asOf}; method from the Catch'em IR study`, { href: "/feed?f=prices", chart: { label: "Median change, 1 year after release to tonight, %", bars: [["IR", Math.round(ir1 * 100)], ["Holo", Math.round(h1 * 100)], ...(s1 != null ? [["SIR", Math.round(s1 * 100)]] : [])] }, receipt: { ir1, h1, s1, ir6, h6, n: { ir1: g.y1.IR.length, h1: g.y1.Holo.length, s1: g.y1.SIR.length, ir6: g.new6.IR.length, h6: g.new6.Holo.length }, best: { id: best.c.id, from: best.first, to: best.now } } });
+    `TCGplayer market, buckets and hist-long, ${asOf}; method from the Catch'em IR study`, { chart: { label: "Median change, 1 year after release to tonight, %", bars: [["IR", Math.round(ir1 * 100)], ["Holo", Math.round(h1 * 100)], ...(s1 != null ? [["SIR", Math.round(s1 * 100)]] : [])] }, receipt: { ir1, h1, s1, ir6, h6, n: { ir1: g.y1.IR.length, h1: g.y1.Holo.length, s1: g.y1.SIR.length, ir6: g.new6.IR.length, h6: g.new6.Holo.length }, best: { id: best.c.id, from: best.first, to: best.now } } });
   return rr ? [rr] : [];
 }
