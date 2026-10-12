@@ -135,11 +135,11 @@ export async function run() {
       t("no 6-month high or low on TCGCSV-only history", (lib.counts?.high?.qualified || 0) === 0 && (lib.counts?.low?.qualified || 0) === 0 || String(lib.asOf) >= "2027-02-22");
       t("no price read claims a high or low since a month on short history", reads.reads.every((row) => !/(highest|lowest) price since/i.test(String(row.headline || ""))) || String(lib.asOf) >= "2026-12-24");
       t("the source line says the date lag", /published the day before the date shown/.test(String(lib.sourceNote || "")) && /published the day before the date shown/.test(String(meta.sourceNote || "")));
-      t("reads.json is the library board and the count is the length", reads.count === (reads.reads || []).length && (reads.reads || []).filter((row) => row.board !== "v3" && row.board !== "hist").every((row) => (lib.board || []).some((b) => b.id === row.id)) && (reads.reads || []).filter((row) => row.board !== "v3" && row.board !== "hist").length <= (lib.board || []).length && (reads.reads || []).filter((row) => row.board === "hist").every(histOk));
+      t("reads.json is the library board and the count is the length", reads.count === (reads.reads || []).length && (reads.reads || []).filter((row) => row.board !== "v3" && row.board !== "hist" && row.readKind !== "dive").every((row) => (lib.board || []).some((b) => b.id === row.id)) && (reads.reads || []).filter((row) => row.board !== "v3" && row.board !== "hist" && row.readKind !== "dive").length <= (lib.board || []).length && (reads.reads || []).filter((row) => row.board === "hist").every(histOk));
       t("the listing sentence is the footer, not every card", reads.footer === "An ask is a listing price. A listing is not a sale." && (reads.reads || []).every((row) => !String(row.why || row.whyItMatters || "").includes("listing is not a sale")));
     }
     const oldWhy = /last 30 days ran|low of the last 30|high of the last 30|we store|at least/i;
-    const v3Kinds = new Set(["climb", "setheat", "release", "newsline", "listings", "rotation", "pokemon", "breadth", "sealedchase"]);
+    const v3Kinds = new Set(["climb", "setheat", "release", "newsline", "listings", "rotation", "pokemon", "breadth", "sealedchase", "deep"]);
     const priceReads = reads.reads.filter((row) => row.board !== "v3" && row.readKind === "price" || row.kind === "single" || row.kind === "sealed");
     const otherReads = reads.reads.filter((row) => !priceReads.includes(row));
     const bad = priceReads.filter((row) => !money(row.price) || !row.headline || !(row.why || row.whyItMatters) || BANNED.test(row.headline) || BANNED.test(row.why || row.whyItMatters || "") || row.price === 0 || !/TCGplayer market\b/.test(row.headline) || !/\([^)]+\)/.test(row.headline) || oldWhy.test(row.why || row.whyItMatters || "") || oldWhy.test(row.headline) || /tcgcsv-|data\/|—/.test(row.why || row.whyItMatters || "") || /\b(heating up|cooling off|last print|Top card in|checked again)\b/i.test(row.headline));
@@ -229,7 +229,7 @@ export async function run() {
     t("at most two reads from one set in the top 10", [...topSets.values()].every((n) => n <= 2));
     const thinTop = catalogue.today.slice(0, 3).filter((id) => catalogue.cards[id].thin || /on few sales/i.test(catalogue.cards[id].headline));
     t("no thin item in the first three", thinTop.length === 0);
-    const fallen = reads.reads.map((row) => row.why.match(/Has fallen (\d+) of the last 30 days/)).filter(Boolean);
+    const fallen = reads.reads.map((row) => String(row.why || "").match(/Has fallen (\d+) of the last 30 days/)).filter(Boolean);
     t("fallen-days why is used once and only past 15", fallen.length <= 1 && fallen.every((m) => Number(m[1]) >= 15));
     const bucket = JSON.parse(await readFile(join(ROOT, "research/assets/public/buckets/96.json"), "utf8"));
     const gengarCard = bucket.find((card) => card.id === "tcgcsv-676096");
