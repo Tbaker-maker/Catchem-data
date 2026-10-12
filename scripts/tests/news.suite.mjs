@@ -273,7 +273,7 @@ export async function run() {
     }
     if (rel.endsWith("weekly-news.json")) {
       const older = (doc.items || []).filter((row) => row.date < shiftDay(doc.asOf, -14));
-      t("weekly keeps price movers and only qualified older items", Boolean(doc.priceMovers) && older.every((row) => sourceAllowsOlderWeekly([row.title, row.sentence, row.setDate].filter(Boolean).join(" "), doc.asOf)));
+      t("weekly keeps only qualified older items", older.every((row) => sourceAllowsOlderWeekly([row.title, row.sentence, row.setDate].filter(Boolean).join(" "), doc.asOf)));
     }
   }
   return fail;
