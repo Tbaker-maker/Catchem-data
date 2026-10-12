@@ -197,3 +197,31 @@ export function attentionLine(lead) {
   return line;
 }
 export const isBanned = (s) => BANNED.test(String(s));
+
+// Tyler's rule: a creator claim is never fact. Every claim is an unverified lead
+// until our own data (TCGplayer prices here) backs or contradicts it, with evidence.
+export function claimStatus(c) {
+  const h = [...HORIZONS].reverse().find((x) => c[`h${x}`] && c[`h${x}`].held != null);
+  if (!h) return { status: "unverified", evidence: null };
+  const s = c[`h${h}`];
+  return { status: s.held ? "backed" : "contradicted", evidence: { source: c.target === "card" ? "TCGplayer market (data/history/tcgcsv-daily)" : "TCGplayer market, median single in the set", horizonDays: h, from: c.date, to: s.day, change: s.chg, vsMarket: s.excess } };
+}
+
+// Methods, signals and data sources creators describe. Candidate read paths for the
+// weekly audit to test. Never used by reads until tested.
+const METHOD = [
+  ["print_run_estimate", /\b(estimate|estimating|calculat\w*|figure out|math)\b.{0,60}\b(print run|supply|how many (?:boxes|packs|cases))\b|\b(print run|supply)\b.{0,60}\b(estimate|calculat\w*)\b/i],
+  ["signal_watched", /\b(i (?:watch|track|look at|check|monitor)|signals?|indicator|metric)\b.{0,80}\b(listings?|sold|sales|volume|pop|population|sell[- ]through|price|supply|demand)\b/i],
+  ["pull_rate_method", /\b(pull rates?|odds)\b.{0,60}\b(sample|opened|cases?|data|tracked|counted)\b/i],
+];
+const SOURCES = /\b(pricecharting|gemrate|pokedata(?:\.io)?|tcgplayer|ebay sold|130point|psa pop|cgc pop|collectr|cardladder|card ladder|pokemon center|alt\.xyz|tcgquant|collectracks|whatnot|cardmarket)\b/gi;
+
+export function extractIdeas({ videoId, channel, date, text }) {
+  const out = [];
+  for (const s of String(text || "").split(/(?<=[.!?\n])\s+/).filter((x) => x.length > 15)) {
+    for (const [kind, re] of METHOD) if (re.test(s)) out.push({ id: `${videoId}:${kind}:${out.length}`, kind, videoId, channel, date, text: s.slice(0, 240), status: "candidate" });
+    for (const m of s.matchAll(SOURCES)) out.push({ id: `${videoId}:source:${m[1].toLowerCase()}`, kind: "data_source", source: m[1].toLowerCase(), videoId, channel, date, status: "candidate" });
+  }
+  const seen = new Set();
+  return out.filter((i) => (seen.has(i.id) ? false : seen.add(i.id)));
+}

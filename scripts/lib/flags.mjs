@@ -11,7 +11,7 @@ export const FLAG_TYPES = {
   DATA_GAP: "A calendar day has no TCGCSV price file, or tonight's file priced 10%+ fewer products than the last one.",
   STALE_FILE: "A file the reads depend on is older than its allowed age.",
   ODD_PRICE: "Prices held back as likely data errors (Card Rating held list, sealed price outliers).",
-  YOUTUBE_LEAD: "Creator videos (official YouTube API, private store) point at something new: a set, card or sealed product on 2+ channels this week, pack-destruction or print-run talk, or a topic not seen before. Counts and dates only.",
+  YOUTUBE_LEAD: "Creator videos (official YouTube API, private store) point at something new: a set, card or sealed product on 2+ channels this week, pack-destruction or print-run talk, or a topic not seen before. Counts and dates only. An unverified lead for review, never a fact; nothing in reads or ratings uses it.",
   YOUTUBE_KEY_MISSING: "YOUTUBE_API_KEY is not set for the nightly, or the YouTube step failed. The learning loop did not run.",
   READ_TYPE_EMPTY: "A known read type produced nothing tonight.",
 };
@@ -110,5 +110,5 @@ export function summarizeFlags(flags) {
 export function youtubeFlags(doc) {
   if (!doc || !doc.asOf) return [];
   if (doc.keyPresent === false || doc.status === "error") return [{ type: "YOUTUBE_KEY_MISSING", severity: "medium", key: `yt:missing:${doc.asOf}`, line: doc.keyPresent === false ? "YOUTUBE_API_KEY is not set; the YouTube learning loop did not run." : `YouTube step failed (${(doc.errors || []).join("; ")}).`, data: { status: doc.status } }];
-  return (doc.leads || []).map((l) => ({ type: "YOUTUBE_LEAD", severity: l.kind === "new_method" ? "low" : "medium", key: `yt:${l.kind}:${l.ref ?? l.label}:${l.to}`, line: l.kind === "new_method" ? `First creator video tagged ${l.label} (${l.from}).` : `${l.label}: ${l.videos} creator videos on ${l.channels} channels, ${l.from} to ${l.to}.`, data: l }));
+  return (doc.leads || []).map((l) => ({ type: "YOUTUBE_LEAD", severity: l.kind === "new_method" ? "low" : "medium", key: `yt:${l.kind}:${l.ref ?? l.label}:${l.to}`, line: l.kind === "new_method" ? `First creator video tagged ${l.label} (${l.from}).` : `${l.label}: ${l.videos} creator videos on ${l.channels} channels, ${l.from} to ${l.to} (unverified lead).`, data: l }));
 }

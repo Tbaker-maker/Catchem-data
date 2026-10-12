@@ -17,7 +17,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { openPrivate } from "./lib/private-store.mjs";
 import { loadPriceBook } from "./self-check.mjs";
-import { buildCatalogueIndex, extractMentions, topicTags, commentSentiment, extractClaims, scoreClaims, rankClaims, buildLeads } from "./lib/youtube.mjs";
+import { buildCatalogueIndex, extractMentions, topicTags, commentSentiment, extractClaims, scoreClaims, rankClaims, buildLeads, claimStatus, extractIdeas } from "./lib/youtube.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const API = "https://www.googleapis.com/youtube/v3";
@@ -70,6 +70,8 @@ export async function runYoutubeLearn({ root = ROOT, key = process.env.YOUTUBE_A
   try { videos = gunzipSync(await readFile(join(dir, "videos.jsonl.gz"))).toString("utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l)); } catch {}
   const known = new Set(videos.map((v) => v.id));
   const claimsDoc = await J(join(dir, "claims.json"), { claims: [] });
+  const ideasDoc = await J(join(dir, "ideas.json"), { ideas: [] });
+  const ideaIds = new Set(ideasDoc.ideas.map((i) => i.id));
   const idx = buildCatalogueIndex(catalog.items || []);
   const yt = makeClient({ key, fetchFn, budget: limits.dailyUnitBudget });
   const errors = [];
@@ -112,12 +114,14 @@ export async function runYoutubeLearn({ root = ROOT, key = process.env.YOUTUBE_A
     };
     added.push(v);
     claimsDoc.claims.push(...extractClaims({ videoId: v.id, channel: v.channel, date, text }, idx).filter((c) => !claimsDoc.claims.some((o) => o.id === c.id)));
+    for (const i of extractIdeas({ videoId: v.id, channel: v.channel, date, text })) if (!ideaIds.has(i.id)) { ideaIds.add(i.id); ideasDoc.ideas.push(i); }
     if (!state.lastSeen[f.channel] || f.snippet.publishedAt > state.lastSeen[f.channel]) state.lastSeen[f.channel] = f.snippet.publishedAt;
   }
   videos.push(...added);
 
   const { priceOn, marketChange } = await loadPriceBook(root);
   scoreClaims(claimsDoc.claims, { priceOn, marketChange, pidsBySet: idx.pidsBySet, today });
+  for (const c of claimsDoc.claims) { const st = claimStatus(c); if (c.status !== st.status) c.statusSince = today; c.status = st.status; c.evidence = st.evidence; }
   const topicsByVideo = new Map(videos.map((v) => [v.id, v.topics]));
   const ranking = rankClaims(claimsDoc.claims, topicsByVideo);
   const leads = buildLeads(videos, { today, idx, seenTopics: state.topicsSeen, firstRun: !(state.topicsSeen || []).length });
@@ -134,13 +138,14 @@ export async function runYoutubeLearn({ root = ROOT, key = process.env.YOUTUBE_A
   state.quota = [...(state.quota || []).filter((q) => q.date !== today), { date: today, units: unitsUsed, videos: added.length }].slice(-60);
 
   await writeFile(join(dir, "videos.jsonl.gz"), gzipSync(videos.map((v) => JSON.stringify(v)).join("\n") + "\n"));
-  await writeFile(join(dir, "claims.json"), JSON.stringify({ asOf: today, private: true, claims: claimsDoc.claims }, null, 1) + "\n");
+  await writeFile(join(dir, "claims.json"), JSON.stringify({ asOf: today, private: true, rule: "A creator claim is never fact. unverified until our own data (TCGplayer prices, pull-rate file, PSA pops, catalogue) or a second independent source backs or contradicts it. Only backed claims may influence reads, ratings or flags.", counts: { unverified: claimsDoc.claims.filter((c) => c.status === "unverified").length, backed: claimsDoc.claims.filter((c) => c.status === "backed").length, contradicted: claimsDoc.claims.filter((c) => c.status === "contradicted").length }, claims: claimsDoc.claims }, null, 1) + "\n");
   await writeFile(join(dir, "scores.json"), JSON.stringify({ asOf: today, private: true, note: "Private. Held = TCGplayer market on the claimed side after h days (card), or the set's median single (set). Same horizons and slack as self-check.", rows: ranking }, null, 1) + "\n");
   await writeFile(join(dir, "eden-seed.json"), JSON.stringify({ asOf: today, private: true, method: "Word-list sentiment over top public comments, last 30 days, by catalogue id.", rows: eden }, null, 1) + "\n");
+  await writeFile(join(dir, "ideas.json"), JSON.stringify({ asOf: today, private: true, note: "Candidate read paths from creator videos: methods, signals watched, data sources named. Unverified. The weekly audit tests them before any read uses one.", ideas: ideasDoc.ideas }, null, 1) + "\n");
   await writeFile(join(dir, "state.json"), JSON.stringify(state, null, 1) + "\n");
-  const pushed = await store.close(["youtube/videos.jsonl.gz", "youtube/claims.json", "youtube/scores.json", "youtube/eden-seed.json", "youtube/state.json"], `YouTube learn ${today}`);
+  const pushed = await store.close(["youtube/videos.jsonl.gz", "youtube/claims.json", "youtube/scores.json", "youtube/eden-seed.json", "youtube/ideas.json", "youtube/state.json"], `YouTube learn ${today}`);
 
-  const doc = { ...base, keyPresent: true, status: errors.length ? "partial" : "ok", unitsUsed, videosNew: added.length, videosTotal: videos.length, claims: claimsDoc.claims.length, errors: errors.map((e) => e.replace(key, "[key]")), privatePushed: Boolean(pushed?.pushed), leads };
+  const doc = { ...base, keyPresent: true, status: errors.length ? "partial" : "ok", unitsUsed, videosNew: added.length, videosTotal: videos.length, claims: claimsDoc.claims.length, ideas: ideasDoc.ideas.length, errors: errors.map((e) => e.replace(key, "[key]")), privatePushed: Boolean(pushed?.pushed), leads };
   await writePublic(root, doc);
   return doc;
 }

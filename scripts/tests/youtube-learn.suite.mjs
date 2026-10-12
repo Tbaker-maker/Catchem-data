@@ -2,7 +2,7 @@ import { mkdtemp, mkdir, writeFile, readFile, cp } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { buildCatalogueIndex, extractMentions, topicTags, commentSentiment, extractClaims, scoreClaims, rankClaims, buildLeads, attentionLine, isBanned } from "../lib/youtube.mjs";
+import { buildCatalogueIndex, extractMentions, topicTags, commentSentiment, extractClaims, scoreClaims, rankClaims, buildLeads, claimStatus, extractIdeas, attentionLine, isBanned } from "../lib/youtube.mjs";
 import { youtubeFlags } from "../lib/flags.mjs";
 import { runYoutubeLearn, makeClient } from "../youtube-learn.mjs";
 
@@ -44,6 +44,11 @@ export async function run() {
   t("card claim scored at 7 days, held", card.h7?.held === true && card.h7.chg === 0.2);
   t("set claim scored at 7 days by set median, held", set.h7?.held === true && set.h7.chg === -0.1);
   t("30-day horizon not scored early", !card.h30 && !set.h30);
+  t("claim backed by our prices, with evidence", claimStatus(card).status === "backed" && claimStatus(card).evidence.to === "2026-01-08");
+  t("unscored claim stays unverified", claimStatus({ date: "2026-01-01" }).status === "unverified");
+  t("contradicted when price went the other way", claimStatus({ target: "card", date: "x", h7: { day: "y", chg: -0.2, held: false } }).status === "contradicted");
+  const ideas = extractIdeas({ videoId: "v", channel: "c", date: "2026-01-01", text: "I track sold listings and pop on GemRate every week. We can estimate the print run from case counts." });
+  t("ideas: signal, print run method, data source", ["signal_watched", "print_run_estimate", "data_source"].every((k) => ideas.some((i) => i.kind === k)) && ideas.every((i) => i.status === "candidate"));
   const rank = rankClaims(claims, new Map([["v1", ["price_move"]]]));
   t("ranking has channel and topic rows, rates null under the minimum", rank.some((r) => r.by === "channel" && r.key === "nomics" && r.scored7 === 2 && r.heldPct7 === null) && rank.some((r) => r.by === "topic"));
 
@@ -90,7 +95,7 @@ export async function run() {
   const enabled = JSON.parse(await readFile(join(root, "config/youtube-channels.json"), "utf8")).channels.filter((c) => c.id && c.enabled !== false).length;
   t("units = 1 channels + 1 per channel + 1 videos + 1 comments", ok.unitsUsed === 1 + enabled + 1 + 1 && calls === ok.unitsUsed);
   const claims2 = JSON.parse(await readFile(join(root, "data/private/youtube/claims.json"), "utf8")).claims;
-  t("claim stored privately with ship price", claims2.length === 1 && claims2[0].pid === 102 && claims2[0].price === 100);
+  t("claim stored privately with ship price", claims2.length === 1 && claims2[0].pid === 102 && claims2[0].price === 100 && claims2[0].status === "unverified");
   const pubDoc = await readFile(join(root, "data/derived/youtube-leads.json"), "utf8");
   t("public file has no creator names or text", !/nomics|undervalued|great video|Nostalgia/i.test(pubDoc));
   const again = await runYoutubeLearn({ root, key: "k", token: "", fetchFn: fake, store: local });
