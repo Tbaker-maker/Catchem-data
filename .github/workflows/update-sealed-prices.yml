@@ -248,6 +248,15 @@ jobs:
         # used only for a product that has that print.
         run: node scripts/build-feed.mjs
 
+      - name: Run the read registry
+        run: node scripts/run-read-registry.mjs
+
+      - name: Write the private detector report
+        run: node scripts/write-detector-report.mjs
+
+      - name: Write feature data
+        run: node scripts/write-feature-data.mjs
+
       - name: Stamp the Updated line from the price file
         # Site pages read counts.json for the Updated line. That clock is the
         # timestamp already on sealed-prices.json, not the last public bundle.
@@ -277,7 +286,7 @@ jobs:
             git clean -fdq -- research/assets/public/sets research/assets/public/buckets research/assets/public/artists || true
           fi
           # The track-record path is the public stub. Do not add data/private/.
-          git add research/assets/public/reads.json research/assets/public/feed/ research/assets/public/counts.json research/assets/public/sparks research/assets/public/track-record.json
+          git add research/assets/public/reads.json research/assets/public/feed/ research/assets/public/counts.json research/assets/public/sparks research/assets/public/track-record.json research/assets/public/set-value research/assets/public/rotation-status.json research/assets/public/releases.json research/assets/public/listings-counted.json
           if git diff --cached --name-only -- data/private | grep -q .; then
             echo "private scores must not be committed here"
             exit 1
