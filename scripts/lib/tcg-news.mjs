@@ -99,18 +99,18 @@ export function sentenceForItem(bodyText, title) {
   return null;
 }
 
-// Older weekly items are allowed only when the source text itself says so.
-export function sourceAllowsOlderWeekly(text) {
+// An older weekly item stays only when the source states a release inside the
+// next two weeks, or when the source states a reveal. A release with no day,
+// or a day outside that window, does not qualify.
+export function sourceAllowsOlderWeekly(text, today) {
   const parts = String(text || "").replace(/\s+/g, " ").split(/(?<=[.!?])\s+/);
-  const release = new RegExp(
-    "\\b(to release|to launch|will release|will launch|will be released|set to release|set to launch|pre-?orders? now live|launches on|releases on)\\b" +
-      `|\\b(?:launch(?:es|ing)?|releases|releasing) in (?:early |mid |late )?(?:${MONTHS})\\b`,
-    "i",
-  );
-  const development = /\b(new details|update on|further details)\b|\bmore\b[^.]{0,80}\b(revealed|announced)\b|\badditional\b[^.]{0,80}\b(revealed|announced)\b/i;
+  const end = today ? shiftDay(today, 14) : "";
   return parts.some((part) => {
     if (/\b(not|n't|no longer|never)\b/i.test(part)) return false;
-    return release.test(part) || development.test(part);
+    if (/\breveal(?:ed|s)?\b/i.test(part)) return true;
+    if (!today) return false;
+    if (!new RegExp(RELEASE_WORDS, "i").test(part) && !/\bto release\b|\bto launch\b/i.test(part)) return false;
+    return preciseDays(part).some((day) => day >= today && day <= end);
   });
 }
 
@@ -136,7 +136,7 @@ export function pickWeekly(items, today) {
   const floor = shiftDay(today, -90);
   const older = items
     .filter((item) => item.date < cutoff && item.date >= floor && !recentUrls.has(item.url))
-    .filter((item) => sourceAllowsOlderWeekly(`${item.title} ${item.sentence}`))
+    .filter((item) => sourceAllowsOlderWeekly([item.title, item.sentence, item.setDate].filter(Boolean).join(" "), today))
     .sort(byNewest);
   return [...recent, ...older];
 }
@@ -270,6 +270,76 @@ export function annotate(item) {
   if (item.setDate) tags.add("release");
   item.tags = TAG_ORDER.filter((tag) => tags.has(tag));
   return item;
+}
+
+// Tags come from fields already on the item. A missing field means no tag.
+// Video game also requires a source this file already fetched.
+export const FILE_TAG_ORDER = ["TCG", "video game", "Japan", "product wave", "reprint"];
+
+export function fieldTags(item, fetchedSources) {
+  const tags = [];
+  if (!item || typeof item !== "object") return tags;
+  const have = new Set(item.tags || []);
+  if (have.has("cards") || have.has("sealed")) tags.push("TCG");
+  const allowed = fetchedSources ? new Set(fetchedSources) : null;
+  if (have.has("video-games") && (!allowed || allowed.has(item.source))) tags.push("video game");
+  if (item.region === "jp" || item.language === "ja" || /^japan/i.test(String(item.region || ""))) tags.push("Japan");
+  if (item.wave) tags.push("product wave");
+  if (item.reprint) tags.push("reprint");
+  return FILE_TAG_ORDER.filter((tag) => tags.includes(tag));
+}
+
+export function applyFieldTags(items, fetchedSources) {
+  for (const item of items || []) item.fileTags = fieldTags(item, fetchedSources);
+  return items;
+}
+
+// A release date is kept only when setDate is a specific day the source wrote.
+// A disagreement stays out of the calendar. Both figures stay on the omitted row.
+export function releaseCalendar(items) {
+  const dates = [];
+  const omitted = [];
+  for (const item of items || []) {
+    if (!item?.setDate) continue;
+    if (String(item.note || "").includes("disagree")) {
+      omitted.push({
+        title: item.title,
+        url: item.url,
+        source: item.source,
+        product: item.product || "",
+        setDate: item.setDate,
+        note: item.note,
+      });
+      continue;
+    }
+    for (const date of preciseDays(item.setDate)) {
+      const row = {
+        date,
+        title: item.title,
+        url: item.url,
+        source: item.source,
+        setDate: item.setDate,
+      };
+      if (item.product) row.product = item.product;
+      dates.push(row);
+    }
+  }
+  dates.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : a.title < b.title ? -1 : a.title > b.title ? 1 : 0));
+  return { dates, omitted };
+}
+
+export function videoGameHeadlines(items, fetchedSources) {
+  const allowed = new Set(fetchedSources || []);
+  const out = [];
+  for (const item of items || []) {
+    if (!allowed.has(item?.source)) continue;
+    if (!fieldTags(item, allowed).includes("video game")) continue;
+    if (nonEnglishTitle(item.title) && !item.titleEn) continue;
+    const pub = publicNewsRecord(item);
+    if (nonEnglishTitle(pub.title)) continue;
+    out.push(pub);
+  }
+  return out;
 }
 
 export function applyDisagreements(items) {
@@ -428,6 +498,7 @@ export function shapeNewsItem(item) {
   if (item.sentence) out.sentence = item.sentence;
   out.kind = item.kind || "news";
   if (item.tags?.length) out.tags = item.tags;
+  if (item.fileTags?.length) out.fileTags = item.fileTags;
   if (item.product) out.product = item.product;
   if (item.wave) out.wave = item.wave;
   if (item.reprint) out.reprint = item.reprint;
