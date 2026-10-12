@@ -225,6 +225,10 @@ export function groupClimbReads(pool, { start, end, minUp = 4 } = {}) {
       source: `TCGplayer market, ${start} and ${end}`,
       receipt: { era, kind, start, end, up: up.slice(0, 12).map((p) => ({ id: `tcgcsv-${p.id}`, from: p.from, to: p.to })), flat: flat.map((p) => ({ id: `tcgcsv-${p.id}`, from: p.from, to: p.to })) },
       upCount: up.length,
+      variants: [
+        `Not moved yet: ${flatText}. Meanwhile ${up.length} ${kind} cards from the ${eraName(era)} era rose at least 8% (${monthDay(start)} to ${monthDay(end)}), led by ${lead.name} at ${money(lead.to)}, from ${money(lead.from)}.`,
+        `${lead.name} went from ${money(lead.from)} to ${money(lead.to)} (${monthDay(start)} to ${monthDay(end)}), one of ${up.length} ${eraName(era)} ${kind} cards up at least 8%. Same era, same rarity, still flat: ${flatText}.`,
+      ].filter(cleanCopy),
     });
   }
   return reads.sort((a, b) => b.upCount - a.upCount);
@@ -251,6 +255,10 @@ export function setHeatReads(pool, { start, end, minMoved = 5 } = {}) {
       why: "Chase cards here are rarities above Rare. Counted by product id.",
       receipt: { set, start, end, priced: rows.length, n: up.length },
       n: up.length,
+      variants: [
+        `${set}: ${up.length} of ${rows.length} priced chase cards rose at least 8% and $1 (${monthDay(start)} to ${monthDay(end)}).`,
+        `From ${monthDay(start)} to ${monthDay(end)}, ${up.length} chase cards in ${set} rose at least 8% and $1. ${rows.length - up.length} others did not.`,
+      ].filter(cleanCopy),
     });
   }
   return out.sort((a, b) => b.n - a.n);
@@ -273,6 +281,7 @@ export function releaseReads(releasesDoc, asOf, { days = 45 } = {}) {
       href: r.market?.id ? `/p/${r.market.id}` : "",
       source: `${r.source}, checked ${r.checked}`,
       receipt: { date: r.date, source: r.source, checked: r.checked, market: r.market || null },
+      variants: [`${inDays} days to go: ${name} lands ${monthDay(r.date)}.`, `Coming ${monthDay(r.date)}: ${name}.`].filter(cleanCopy),
     });
   }
   return out;
@@ -321,7 +330,7 @@ export function listingReads(doc, { minStart = 20, minMove = 5, minPct = 15 } = 
     if (Math.abs(b - a) < minMove || Math.abs(pct(a, b)) < minPct) continue;
     const headline = `${p.name}: eBay listings ${a} to ${b} (${monthDay(lc.prev.date)} to ${monthDay(lc.date)}). A listing is not a sale.`;
     if (!cleanCopy(headline)) continue;
-    out.push({ id: `listings-${p.id}`, sku: p.id, href: `/p/${p.id}`, readKind: "listings", kind: "listings", board: BOARD_TAG, family: "listings", name: p.name, headline, path: headline, asOf: lc.date, source: `eBay listings counted, ${lc.prev.date} and ${lc.date}`, receipt: { start: a, end: b, startDate: lc.prev.date, endDate: lc.date } });
+    out.push({ id: `listings-${p.id}`, sku: p.id, href: `/p/${p.id}`, readKind: "listings", kind: "listings", board: BOARD_TAG, family: "listings", name: p.name, headline, path: headline, asOf: lc.date, source: `eBay listings counted, ${lc.prev.date} and ${lc.date}`, receipt: { start: a, end: b, startDate: lc.prev.date, endDate: lc.date }, variants: [`eBay listings ${a} to ${b} (${monthDay(lc.prev.date)} to ${monthDay(lc.date)}) for ${p.name}. A listing is not a sale.`].filter(cleanCopy) });
   }
   return out;
 }
