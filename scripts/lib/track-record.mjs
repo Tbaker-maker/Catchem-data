@@ -1,10 +1,15 @@
-// Scores a shipped read only when a later TCGplayer market exists on the exact day.
-// Ship price comes from the price file, never from a headline.
-// Under 14 days is too early. No later price means no score.
+// Scores a shipped take only when a later TCGplayer market exists on the exact day.
+// Ship price comes from the daily price file, never from a headline.
+// Under 14 days is too early. A missing later price is no score. watch is not scored.
+// The scored file is private. The public file is a stub with no rows.
 
 import { HORIZONS, SCORE_MIN } from "./second-library.mjs";
 
 const COPY_BAN = /\b(resistance|support|breakout|bottom|cheap|crash|buys?|sells?|selling|holds?|holding|printed)\b/i;
+const LABEL_BAN = /Looks like a buy|Wait for a dip|Avoid for now|Looks stretched/;
+
+export const TAKE_CODES = ["up", "dip", "watch", "avoid", "stretched"];
+const SCORED_CODES = new Set(["up", "dip", "avoid", "stretched"]);
 
 export { HORIZONS, SCORE_MIN };
 
@@ -17,36 +22,51 @@ export function dayGap(from, to) {
   return Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86400000);
 }
 
-function sameWay(direction, from, to) {
-  if (direction === "down") return to < from;
-  if (direction === "up") return to > from;
+export function takeOf(read) {
+  const code = String(read?.take || "");
+  return TAKE_CODES.includes(code) ? code : "";
+}
+
+function hitOf(take, from, to) {
+  if (take === "up") return to > from;
+  if (take === "dip" || take === "avoid" || take === "stretched") return to < from;
   return null;
+}
+
+export function percentFor(hit, n) {
+  if (!(n >= SCORE_MIN)) return null;
+  return Math.round((100 * hit) / n);
+}
+
+function assertClean(doc) {
+  const blob = JSON.stringify(doc);
+  if (COPY_BAN.test(blob) || LABEL_BAN.test(blob)) throw new Error("track record used a banned word");
+  return doc;
 }
 
 export function scoreRead(read, later = {}, today, shipFromFile = null) {
   const shipped = String(read?.asOf || "").slice(0, 10);
   const price = Number(shipFromFile?.market);
-  const direction = read?.direction === "up" || read?.direction === "down" ? read.direction : "";
-  const type = String(read?.readKind || read?.type || "read");
+  const take = takeOf(read);
   const age = dayGap(shipped, today);
   const base = {
     id: String(read?.id || ""),
     productId: String(read?.sku || ""),
     name: String(read?.name || ""),
-    type,
+    type: take,
+    take,
     shipped,
     price: price > 0 ? price : null,
     shipSource: price > 0 ? String(shipFromFile?.source || "") : "",
-    direction,
     age,
   };
   if (!base.id || !base.productId || age == null) {
-    return { ...base, status: "no-score", note: "The read has no date or product id." };
+    return { ...base, status: "no-score", note: "no score" };
   }
-  if (!(price > 0)) {
-    return { ...base, status: "no-score", note: "No ship price in the price file, so no score." };
-  }
-  if (age < HORIZONS[0]) return { ...base, status: "too-early", note: "Too early to score." };
+  if (take === "watch") return { ...base, status: "no-score", note: "watch is not scored" };
+  if (!SCORED_CODES.has(take)) return { ...base, status: "no-score", note: "no score" };
+  if (!(price > 0)) return { ...base, status: "no-score", note: "no score" };
+  if (age < HORIZONS[0]) return { ...base, status: "too-early", note: "too early" };
   const marks = {};
   for (const horizon of HORIZONS) {
     if (age < horizon) continue;
@@ -56,10 +76,15 @@ export function scoreRead(read, later = {}, today, shipFromFile = null) {
       marks[String(horizon)] = { day, price: null, sameDirection: null };
       continue;
     }
-    marks[String(horizon)] = { day, price: next, sameDirection: sameWay(direction, price, next) };
+    marks[String(horizon)] = { day, price: next, sameDirection: hitOf(take, price, next) };
   }
   const scored = Object.values(marks).some((mark) => mark.price != null);
-  return { ...base, status: scored ? "scored" : "no-later-price", note: scored ? "" : "No later price, so no score.", marks };
+  return {
+    ...base,
+    status: scored ? "scored" : "no-later-price",
+    note: scored ? "" : "no later price, so no score",
+    marks,
+  };
 }
 
 export function buildTrackRecord(reads, laterByProduct = {}, today, shipByProduct = {}) {
@@ -71,13 +96,14 @@ export function buildTrackRecord(reads, laterByProduct = {}, today, shipByProduc
   rows.sort((a, b) => String(b.shipped).localeCompare(String(a.shipped)) || String(b.id).localeCompare(String(a.id)));
   const byType = {};
   for (const row of rows) {
-    if (!byType[row.type]) {
-      byType[row.type] = {
-        type: row.type, reads: 0, tooEarly: 0, noLaterPrice: 0, scored: 0,
+    const key = row.take || "";
+    if (!byType[key]) {
+      byType[key] = {
+        type: key, reads: 0, tooEarly: 0, noLaterPrice: 0, scored: 0,
         scored14: 0, hit14: 0, scored28: 0, hit28: 0, scored56: 0, hit56: 0,
       };
     }
-    const bag = byType[row.type];
+    const bag = byType[key];
     bag.reads += 1;
     if (row.status === "too-early") bag.tooEarly += 1;
     if (row.status === "no-later-price") bag.noLaterPrice += 1;
@@ -95,15 +121,15 @@ export function buildTrackRecord(reads, laterByProduct = {}, today, shipByProduc
     for (const horizon of HORIZONS) {
       const n = bag[`scored${horizon}`];
       bag[`line${horizon}`] = `${n} scored so far`;
-      if (n >= SCORE_MIN) bag[`percent${horizon}`] = Math.round(100 * bag[`hit${horizon}`] / n);
+      const pct = percentFor(bag[`hit${horizon}`], n);
+      if (pct != null) bag[`percent${horizon}`] = pct;
     }
   }
   const dates = rows.map((row) => row.shipped).filter((day) => /^\d{4}-\d{2}-\d{2}$/.test(day)).sort();
-  const blob = JSON.stringify({ rows, types });
-  if (COPY_BAN.test(blob)) throw new Error("track record used a banned word");
-  return {
+  return assertClean({
+    public: false,
     asOf: today,
-    rule: "A read is stored with its ship date. The ship price is the TCGplayer market on that date from the price file. It is not taken from a headline. After 14, 28, and 56 days, the later price is that exact day, or there is no score. Under 14 days is too early to score.",
+    rule: "A take is stored with its ship date. The ship price is the TCGplayer market on that date from the daily price file. It is not taken from a headline. Days 14, 28, and 56 use that exact day's market. A missing day is no score. Under 14 days is too early. watch is not scored. up is scored when the later market is higher. dip, avoid, and stretched are scored when the later market is lower. A percent is stored only after 20 scored reads of that code.",
     oldest: dates[0] || "",
     newest: dates[dates.length - 1] || "",
     count: rows.length,
@@ -115,5 +141,21 @@ export function buildTrackRecord(reads, laterByProduct = {}, today, shipByProduc
     scoreMin: SCORE_MIN,
     types,
     rows,
-  };
+  });
+}
+
+export function publicTrackRecord(doc) {
+  return assertClean({
+    public: false,
+    asOf: String(doc?.asOf || "").slice(0, 10),
+    count: 0,
+    scoreMin: SCORE_MIN,
+    types: [],
+    rows: [],
+  });
+}
+
+export function siteTrack(trackRecord) {
+  if (trackRecord?.public === false) return { page: false, cardLine: "", score: null };
+  return { page: false, cardLine: "", score: null };
 }
