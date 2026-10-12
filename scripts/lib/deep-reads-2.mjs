@@ -11,6 +11,7 @@ import { row, valueOn, sparkOf } from "./deep-reads.mjs";
 
 const short = (s) => String(s || "").replace(/^(SWSH|SV|SM|ME|XY|BW)\d*[A-Za-z.]*\s*[:-]\s*/, "").trim();
 const cleanName = (n) => String(n || "").replace(/\s+-\s+[A-Z]*\d+\/[A-Z]*\d+\s*$/, "").replace(/\s*\((?:Alternate Full Art|Alternate Art Secret|Alternate Art|Secret|Full Art)\)\s*$/i, "").trim();
+const numTxt = (c) => (c.number ? ` #${c.number}` : "");
 const sgn = (n) => `${n >= 0 ? "up" : "down"} ${Math.abs(Math.round(n))}%`;
 const JUNK = new Set(["", "None", "Unconfirmed", "Code Card"]);
 const LOW = new Set(["Common", "Uncommon", "Code Card", "None", "", "Unconfirmed"]);
@@ -65,7 +66,7 @@ export function everyPrinting(cards, tagsOf, { asOf, max = 12 }) {
     const mix = [...labels.entries()].sort((a, b) => b[1] - a[1]).slice(0, 4).map(([l, n]) => `${n} ${l}`).join(", ");
     const top = g.rs.slice(0, 4);
     const rr = row("printings", g.t, g.t, `Every ${g.t} printing we price: ${g.rs.length} cards, from ${money(g.rs.at(-1).z)} to ${money(g.rs[0].z)} tonight.`, [
-      ...top.map((r) => `${cleanName(r.c.name)}, ${r.label} (${short(r.c.set)}): ${money(r.z)}${yrLine(r.c, asOf)}.`),
+      ...top.map((r) => `${cleanName(r.c.name)}, ${r.label} (${short(r.c.set)}${numTxt(r.c)}): ${money(r.z)}${yrLine(r.c, asOf)}.`),
       `Most common labels: ${mix}.`,
       `TCGplayer market, ${monthDay(asOf)}. Each label is the card's own rarity in its set.`,
     ], asOf, `TCGplayer market, ${asOf}; rarity from TCGplayer and the catalogue`, { href: `/search?q=${encodeURIComponent(g.t)}`, chart: { label: `Top ${g.t} printings tonight, $`, bars: g.rs.slice(0, 6).map((r) => [`${short(r.c.set)}`.slice(0, 16), Math.round(r.z)]) }, weight: g.total });
@@ -99,7 +100,7 @@ export function sameLabelAcrossSets(cards, tagsOf, { asOf, max = 12 }) {
   for (const g of groups.slice(0, max)) {
     const top = g.rs.slice(0, 4);
     const rr = row("samelabel", `${g.t}-${g.label}`, `${g.t} ${g.label}`, `${g.t} ${g.label} cards by set: ${g.rs.length} on file, led by ${short(g.rs[0].c.set)} at ${money(g.rs[0].z)}.`, [
-      ...top.map((r) => `${short(r.c.set)}: ${cleanName(r.c.name)} ${money(r.z)}${yrLine(r.c, asOf)}.`),
+      ...top.map((r) => `${short(r.c.set)}: ${cleanName(r.c.name)}${numTxt(r.c)} ${money(r.z)}${yrLine(r.c, asOf)}.`),
       `Lowest: ${short(g.rs.at(-1).c.set)} at ${money(g.rs.at(-1).z)}.`,
       `TCGplayer market, ${monthDay(asOf)}. Only cards whose own rarity is ${g.label}.`,
     ].slice(0, 6), asOf, `TCGplayer market, ${asOf}; rarity from TCGplayer and the catalogue`, { href: `/search?q=${encodeURIComponent(`${g.t} ${g.label}`)}`, chart: { label: `${g.t} ${g.label} by set, $`, bars: g.rs.slice(0, 6).map((r) => [short(r.c.set).slice(0, 16), Math.round(r.z)]) }, weight: g.total });
