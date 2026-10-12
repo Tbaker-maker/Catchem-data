@@ -1,0 +1,13 @@
+{
+  "note": "Pokemon TCG market YouTube channels the nightly learns from (scripts/youtube-learn.mjs). Official YouTube Data API v3 only. IDs checked 2026-10-12 against each channel page (externalId). Private data only; creator names, text and scores are never published.",
+  "checked": "2026-10-12",
+  "channels": [
+    { "key": "nomics", "name": "Nostalgia Nomics", "handle": "@NostalgiaNomics", "id": "UCkM148HlzrBtGgSABTfFsOA", "priority": 1, "source": "youtube.com/@NostalgiaNomics externalId; socialcounts.org lists the same id" },
+    { "key": "tcgquant", "name": "Poke Profit (TCG Quant)", "handle": "@PokeProfit", "id": "UCjwPb2h4UutMTtzlGw9xjrw", "priority": 2, "source": "tcgquant.com links youtube.com/@PokeProfit; externalId from that page" },
+    { "key": "pokeanon", "name": "PokeAnon", "handle": "@pokeanon", "id": null, "priority": 2, "enabled": false, "source": "Not confirmed. youtube.com/@pokeanon (UCd1CrRvVqYcH7vtPw-RSYTg) has no TCG content; no Pokemon TCG channel by that name was found on 2026-10-12. Set id and enabled once Tyler names the channel URL." },
+    { "key": "pikapikapapa", "name": "PikaPikaPaPa", "handle": "@PikaPikaPapa", "id": "UCsSA2eBWW7qAwSV_COyW8uQ", "priority": 3, "source": "youtube.com/@PikaPikaPapa externalId; research/2026-09-26-pikapikapapa.md in catchem-data-private" },
+    { "key": "pokeoz", "name": "PokeOz", "handle": null, "id": "UCFmZ5FB5fC7YmyQ_qxXJgyA", "priority": 3, "source": "realtimesubcount.com/UCFmZ5FB5fC7YmyQ_qxXJgyA; named in research/archive creator intel notes" },
+    { "key": "pokedatadadguy", "name": "PokeDataDadGuy", "handle": "@PokeDataDadGuy", "id": "UCQg9Hzbs5f6A7W1dE46sc2A", "priority": 4, "source": "youtube.com/@PokeDataDadGuy externalId; named in repo research" }
+  ],
+  "limits": { "dailyUnitBudget": 400, "maxNewVideosPerChannel": 15, "commentsPerVideo": 20, "firstRunDays": 30 }
+}
