@@ -101,7 +101,82 @@ async function writeReport(root, images) {
   const pub = join(root, "research/assets/public");
   await writeFile(join(pub, "catalogue-images.json"), JSON.stringify({ source: "Post Office catalogue. Match by id only.", images: ordered }));
   await writeFile(join(pub, "missing-from-catalogue.json"), JSON.stringify(report));
+  await writeChecklist(root, images);
   return report;
+}
+
+function spacedJson(value) {
+  const raw = JSON.stringify(value);
+  let out = "";
+  let quoted = false;
+  let escaped = false;
+  for (const ch of raw) {
+    if (quoted) {
+      out += ch;
+      if (escaped) escaped = false;
+      else if (ch === "\\") escaped = true;
+      else if (ch === "\"") quoted = false;
+      continue;
+    }
+    if (ch === "\"") quoted = true;
+    if (ch === "," || ch === ":") out += ch + " ";
+    else out += ch;
+  }
+  return out;
+}
+
+async function writeChecklist(root, images) {
+  const dir = join(root, "research/assets/public/sets");
+  const names = (await readdir(dir)).filter((name) => name.endsWith(".json")).sort();
+  const sets = [];
+  const seen = new Set();
+  let singleRows = 0;
+  let singleRowsWithImage = 0;
+  let uniqueWithImage = 0;
+  for (const name of names) {
+    const doc = await readJson(join(dir, name));
+    const slug = doc.slug || name.slice(0, -5);
+    let singles = 0;
+    let withImage = 0;
+    for (const item of doc.items || []) {
+      if (!item || item.kind === "sealed") continue;
+      singles += 1;
+      singleRows += 1;
+      const id = item.id;
+      const hit = Boolean(id) && cataloguePath(images, id);
+      if (hit) {
+        withImage += 1;
+        singleRowsWithImage += 1;
+      }
+      if (!id || seen.has(id)) continue;
+      seen.add(id);
+      if (hit) uniqueWithImage += 1;
+    }
+    sets.push({
+      slug,
+      name: doc.name || slug,
+      declaredSingle: doc.single || 0,
+      singles,
+      withImage,
+      missing: singles - withImage,
+    });
+  }
+  const uniqueIds = seen.size;
+  const checklist = {
+    sets,
+    totals: {
+      setFiles: names.length,
+      singleRows,
+      singleRowsWithImage,
+      singleRowsMissing: singleRows - singleRowsWithImage,
+      uniqueIds,
+      uniqueWithImage,
+      uniqueMissing: uniqueIds - uniqueWithImage,
+    },
+  };
+  await writeFile(join(root, "research/assets/img/set-image-checklist.json"), spacedJson(checklist));
+  console.log(`checklist singles with a picture ${checklist.totals.uniqueWithImage} of ${checklist.totals.uniqueIds}`);
+  return checklist;
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

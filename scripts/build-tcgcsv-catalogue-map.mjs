@@ -1,4 +1,5 @@
 import { readFile, writeFile } from "node:fs/promises";
+import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { mapSingles } from "./lib/tcgcsv-catalogue-map.mjs";
@@ -20,14 +21,15 @@ for (const row of prior && prior.mapped || []) {
 }
 const withheldSets = new Set();
 for (const row of built.mapped) {
-  if (withheld.get(row.id) === row.catalogueId) {
-    row.catalogueImage = false;
-    withheldSets.add(row.setId);
-  }
+  if (withheld.get(row.id) !== row.catalogueId) continue;
+  const file = join(ROOT, "research/assets/img", row.setId, `${row.number}.png`);
+  if (existsSync(file)) continue;
+  row.catalogueImage = false;
+  withheldSets.add(row.setId);
 }
 const doc = {
-  sourceDate: "2026-10-11",
-  rule: "A tcgcsv single maps to one catalogue id when the group's set code joins exactly one catalogue set and the collector numbers are the same and unique. Name is not a match key. SWSH07 is not rewritten to swsh7. Pattern cards, shared numbers, and clashing promo numbers are skipped.",
+  sourceDate: "2026-10-12",
+  rule: "A tcgcsv single maps to one catalogue id when the group's set code joins exactly one catalogue set and the collector numbers are the same. Name is not a match key. SWSH07 is not rewritten to swsh7. Pattern cards are skipped. Two printings of one number map only when each printing has its own catalogue id. A printing with no catalogue id stays unmapped. Two printings never share an id.",
   sources: {
     groups: groups.source,
     groupsDate: groups.sourceDate,
@@ -48,7 +50,7 @@ if (withheldSets.size) {
   const withheldRows = built.mapped.filter((row) => row.catalogueImage === false);
   doc.catalogueImage404 = withheldRows.length;
   doc.catalogueImage404Sets = [...withheldSets].sort();
-  doc.catalogueImageNote = "The join stays. The picture is not copied because images.pokemontcg.io returned 404 for every mapped card in these sets on 2026-10-11. The site uses the TCGplayer photo, then the tile.";
+  doc.catalogueImageNote = "The join stays. The picture is not copied because the catalogue file is not in research/assets/img and images.pokemontcg.io returned 404 for these sets. The site uses the TCGplayer photo, then the tile.";
 }
 await writeFile(join(ROOT, "data/tcgcsv-to-catalogue.json"), JSON.stringify(doc) + "\n");
 console.log(`mapped ${doc.mappedCount} skipped ${doc.skippedCount}`);
