@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { valueOn } from "../lib/deep-reads.mjs";
+import { realLabel } from "../lib/deep-reads-2.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 const BANNED = /\b(buy|sell|hold|held|holding|support|resistance|bottom|printed|play|target|invest|moon|pump|dump|hodl|crypto)\b/i;
@@ -11,6 +12,10 @@ export async function run() {
   const t = (name, cond) => { if (cond) console.log(`  ok  ${name}`); else { fail += 1; console.error(`  FAIL ${name}`); } };
   const pts = [["2026-09-01", 10], ["2026-09-10", 20]];
   t("valueOn uses the last real point inside 8 days", valueOn(pts, "2026-09-12") === 20 && valueOn(pts, "2026-09-30") == null);
+  t("SV Illustration Rare stays IR, SIR stays SIR", realLabel({ rarity: "Illustration Rare", release: "2024-03-22" }) === "Illustration Rare" && realLabel({ rarity: "Special Illustration Rare", release: "2024-03-22" }) === "Special Illustration Rare");
+  t("Alternate Art only on Sword & Shield", realLabel({ rarity: "Secret Rare", release: "2021-08-27" }, ["Alternate Art"]) === "Alternate Art" && realLabel({ rarity: "Ultra Rare", release: "2019-02-01" }, ["Alternate Art"]) === "Ultra Rare");
+  t("SM Tag Team alt art is Tag Team (Alternate Art), never Alternate Art", realLabel({ rarity: "Ultra Rare", release: "2019-02-01" }, ["Tag Team (Alternate Art)", "Alternate Art", "Tag Team"]) === "Tag Team (Alternate Art)");
+  t("Trainer Gallery and Galarian Gallery only on Sword & Shield", realLabel({ rarity: "Ultra Rare", release: "2022-09-09" }, ["Trainer Gallery"]) === "Trainer Gallery" && realLabel({ rarity: "Ultra Rare", release: "2023-01-20" }, ["Galarian Gallery"]) === "Galarian Gallery" && realLabel({ rarity: "Ultra Rare", release: "2024-01-01" }, ["Trainer Gallery"]) === "Ultra Rare");
   const doc = JSON.parse(await readFile(join(ROOT, "research/assets/public/reads.json"), "utf8"));
   const rows = doc.reads || [];
   const deep = rows.filter((r) => r.readKind === "deep");
@@ -30,6 +35,11 @@ export async function run() {
   t("artist spotlights link to a real artist page", deep.filter((r) => r.deep === "artist").every((r) => slugs.has(String(r.href).replace("/artists/", ""))));
   const keys = rows.map((r) => r.href || r.id);
   t("no two reads share a link, so the Feed keeps every one", new Set(keys).size === keys.length);
+  const cardKinds = new Set(["card", "recovery", "slump", "printings", "samelabel", "chase", "artist", "pokemon", "steady", "bigyear"]);
+  t("card reads never mention sealed data", deep.filter((r) => cardKinds.has(r.deep)).every((r) => ![r.headline, ...r.lines, r.source].some((s) => /\b(sealed|booster|elite trainer box|etb)\b/i.test(String(s)) && !/singles only/.test(String(s)))));
+  t("no 'peer' jargon on the board", rows.every((r) => ![r.headline, r.path, r.source, r.why, ...(r.lines || [])].some((s) => /\bpeers?\b/i.test(String(s || "")))));
+  t("new deep types are on the board", ["printings", "samelabel", "chase", "slump"].every((k) => deep.some((r) => r.deep === k)));
+  t("an IR or SIR label only on a Scarlet & Violet or later card", deep.filter((r) => ["printings", "samelabel", "chase", "slump"].includes(r.deep)).every((r) => r.lines.every((l) => !/Illustration Rare/.test(l) || !/(Evolving Skies|Team Up|Hidden Fates|Cosmic Eclipse|Brilliant Stars)/.test(l))));
   const ids = rows.map((r) => r.id);
   t("no duplicate ids", new Set(ids).size === ids.length);
   t("no same family side by side", rows.every((r, i) => i === 0 || (r.family || r.readKind) !== (rows[i - 1].family || rows[i - 1].readKind)));
