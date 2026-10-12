@@ -4,6 +4,18 @@
 import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
 
+// Marks with no announced date. Not a date: a labeled window from the
+// yearly pattern (F rotated April 11, 2025; G rotated April 10, 2026).
+// Checked 2026-10-12: no 2027 announcement on pokemon.com.
+export const ROTATION_EXPECTED = [
+  {
+    mark: "H",
+    window: "spring 2027",
+    basis: "Past in-person rotations: F on April 11, 2025 and G on April 10, 2026.",
+    checked: "2026-10-12",
+  },
+];
+
 export const ROTATION_SOURCES = [
   {
     mark: "F",
