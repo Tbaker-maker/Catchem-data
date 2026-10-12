@@ -5,7 +5,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { gunzipSync } from "node:zlib";
 import { listingsBySet } from "./lib/ir-cycle.mjs";
-import { shardOf, buildRatings, ratingReads, RATING_WEIGHTS, FACTOR_LABEL, GROUPS, FIRST_ED, BELOW, ABOVE, MIN_PEERS } from "./lib/card-rating.mjs";
+import { peerPools, shardOf, buildRatings, ratingReads, RATING_WEIGHTS, FACTOR_LABEL, GROUPS, FIRST_ED, BELOW, ABOVE, MIN_PEERS } from "./lib/card-rating.mjs";
 import { monName } from "./lib/popular-pokemon.mjs";
 
 try {
@@ -45,6 +45,11 @@ try {
   // Internal review list for prices held back (not published to the site).
   const held = list.filter((r) => r.check).map((r) => ({ id: r.id, name: r.name, set: r.set, num: r.num, group: r.group, printing: r.printing, price: r.price, peerMedian: r.peers?.median ?? null, peerN: r.peers?.n ?? null, ratio: r.peers?.ratio ?? null, reason: r.peers && (r.peers.ratio < 0.1 || r.peers.ratio > 10) ? "more than 10x from peer median" : "1st Edition price below its own unlimited price" }));
   await writeFile(join(PUB, "../../../data/derived/card-rating-held.json"), JSON.stringify({ asOf: today, note: "Internal. Card Rating prices held for a check: no verdict, no read. Review against TCGplayer by id.", count: held.length, rows: held }, null, 1) + "\n");
+  // Comparison lists for the "Compared with" panel. Old pool files are replaced.
+  const { rm } = await import("node:fs/promises");
+  await rm(join(PUB, "feed/rating/peers"), { recursive: true, force: true });
+  await mkdir(join(PUB, "feed/rating/peers"), { recursive: true });
+  for (const [k, rows] of Object.entries(peerPools(list))) await writeFile(join(PUB, `feed/rating/peers/${k}.json`), JSON.stringify({ asOf: today, cols: ["id", "name", "set", "num", "price", "date", "firstEd"], rows }) + "\n");
   await writeFile(join(PUB, "feed/card-rating.json"), JSON.stringify(doc) + "\n");
   console.log(`card-rating: ${list.length} rows, ${reads.length} reads as of ${today}`, groups);
 } catch (err) {

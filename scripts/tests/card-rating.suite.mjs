@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { bare, RATING_WEIGHTS, peerValue, verdictOf, buildRatings, ratingReads, cleanCopy, shardOf, GROUPS, artistPremiums } from "../lib/card-rating.mjs";
+import { peerPools, bare, RATING_WEIGHTS, peerValue, verdictOf, buildRatings, ratingReads, cleanCopy, shardOf, GROUPS, artistPremiums } from "../lib/card-rating.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 let fail = 0;
@@ -10,6 +10,17 @@ const t = (name, cond) => { if (cond) console.log("  ok ", name); else { fail++;
 export async function run() {
   fail = 0;
   t("read names drop number and variant suffixes", bare("Pheromosa & Buzzwole GX (192) (Alternate Full Art)") === "Pheromosa & Buzzwole GX" && bare("Fuecoco ex - 147/128") === "Fuecoco ex" && bare("Houndoom (H11)") === "Houndoom" && bare("Umbreon VMAX (Alternate Art Secret)") === "Umbreon VMAX" && bare("Mr. Mime") === "Mr. Mime");
+  {
+    const today0 = "2026-10-12";
+    const mk0 = (i, p, extra = {}) => ({ id: `tcgcsv-${900 + i}`, name: `Mon${i}`, num: `${i}/9`, kind: "single", rarity: "Illustration Rare", set: "SV: T", setSlug: "sv-t", release: "2024-01-01", printing: "Holofoil", printings: [], hist: [["2026-07-10", p / 2], ["2026-10-12", p]], asOf: today0, ...extra });
+    // Pikachu headliner alone in its band against 6 low-band cards: no verdict.
+    const l0 = buildRatings({ rows: [mk0(1, 50, { name: "Pikachu" }), ...Array.from({ length: 6 }, (_, i) => mk0(i + 2, 10))], today: today0 });
+    const pk = l0.find((r) => r.name === "Pikachu");
+    t("unmatched popularity gives no verdict", pk.verdict === null && pk.verdictNote === "Not enough similar cards for a fair comparison" && !pk.factors.peer);
+    t("near its own high is flagged", pk.nearHigh && pk.nearHigh.price === 50 && pk.nearHigh.date === today0);
+    t("matched band still gets a verdict", l0.filter((r) => r.name !== "Pikachu").every((r) => r.verdict === "Priced in line with similar cards" && r.peers.matched));
+    t("pool lists every comparison card with price and date", (() => { const p = (peerPools(l0)["ir-low"] || []); return p.length === 6 && p.every((x) => x[0] && x[4] > 0 && /^\d{4}-/.test(x[5])); })());
+  }
   t("weights add to 100", Object.values(RATING_WEIGHTS).reduce((a, b) => a + b, 0) === 100);
   t("peer value at median is 0.5", peerValue(10, 10) === 0.5);
   t("half the median scores 0.75", peerValue(5, 10) === 0.75);
@@ -19,7 +30,7 @@ export async function run() {
   t("shard stable", shardOf("tcgcsv-130") === "02");
   const today = "2026-10-12";
   const mk = (i, p, extra = {}) => ({ id: `tcgcsv-${i}`, name: `Mon${i} - ${i}/100`, num: `${i}/100`, kind: "single", rarity: "Special Illustration Rare", set: "SV: Test", setSlug: "sv-test", release: "2024-01-01", artist: i % 2 ? "A" : "B", printing: "Holofoil", printings: [], hist: [["2026-07-10", p], ["2026-10-12", p]], asOf: today, ...extra });
-  const rows = [mk(1, 2), ...Array.from({ length: 8 }, (_, i) => mk(i + 2, 20)), mk(20, 2000), mk(30, 0.5, { rarity: "Common" })];
+  const rows = [mk(1, 2, { name: "Mon1 - 1/100" }), ...Array.from({ length: 8 }, (_, i) => mk(i + 2, 20)), mk(20, 2000), mk(30, 0.5, { rarity: "Common" })];
   const list = buildRatings({ rows, today });
   const a = list.find((r) => r.id === "tcgcsv-1");
   t("cheap card is below peers", a.verdict === "Priced below similar cards" && a.peers.median === 20);
