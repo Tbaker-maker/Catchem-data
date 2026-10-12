@@ -47,6 +47,7 @@ export async function run() {
   const hit = rows.find((r) => r.id === r0.id);
   t("top row verified by id", hit && hit.name === r0.name && (r0.kind === "IR" ? hit.rarity === "Illustration Rare" : r0.kind === "SIR" ? hit.rarity === "Special Illustration Rare" : true));
   fail += await runScoreUnits();
+  fail += await runMarkChecks();
   return fail;
 }
 if (import.meta.url === `file://${process.argv[1]}`) run().then((n) => process.exit(n ? 1 : 0));
@@ -58,5 +59,13 @@ export async function runScoreUnits() {
   u("above peers no lift", peersValue(5, -10, -20).v === 0);
   u("turning up chip", trendValue({ pct: 6 }, { pct: -20 }).chip === "Up 6% in 30 days after down 20% in 90");
   u("young card is not excluded", stageValue(50, false).v > 0);
+  return f;
+}
+import { MARK_OVERRIDES } from "../lib/feature-data.mjs";
+export async function runMarkChecks() {
+  const rot = JSON.parse(await readFile(join(ROOT, "research/assets/public/rotation-status.json"), "utf8"));
+  let f = 0;
+  for (const [slug, o] of Object.entries(MARK_OVERRIDES)) { const r = rot.sets.find((s) => s.slug === slug); if (!r || r.mark !== o.mark) { f++; console.error("  FAIL mark", slug); } }
+  for (const slug of ["sv-prismatic-evolutions", "sv09-journey-together", "me-ascended-heroes"]) { if (rot.sets.find((s) => s.slug === slug)?.mark) { f++; console.error("  FAIL mixed set got a mark", slug); } }
   return f;
 }
