@@ -57,5 +57,8 @@ export async function run() {
     histories: new Map([["a", [{ date: "2026-10-05", market: 100 }, { date: "2026-10-12", market: 130 }]], ["b", [{ date: "2026-10-05", market: 200 }, { date: "2026-10-12", market: 201 }]], ["c", [{ date: "2026-10-05", market: 50 }, { date: "2026-10-12", market: 50 }]], ["swsh7-etb", [{ date: "2026-10-05", market: 99 }, { date: "2026-10-12", market: 99 }]]]),
     start: "2026-10-05", end: "2026-10-12" });
   t("sealed lag keeps product type and skips shared-art parents", sealed.risers.a && sealed.risers.a.lagging.map((x) => x.id).join(",") === "b");
+  const withV = groupClimbReads([...up, ...flat], { start: "2026-10-05", end: "2026-10-12" })[0];
+  t("climb wordings use the same numbers and pass the copy rules", withV.variants.length >= 2 && withV.variants.every((v) => cleanCopy(v) && v.includes("Flat") && v.includes("Oct 5")));
+  t("release wordings pass the copy rules", rel[0].variants.length === 2 && rel[0].variants.every(cleanCopy));
   return fail;
 }
