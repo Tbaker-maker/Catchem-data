@@ -4,7 +4,7 @@
 import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { buildStatus, dayOf, freshnessFailures } from "./lib/health-status.mjs";
+import { buildStatus, dayOf, flagOff, freshnessFailures } from "./lib/health-status.mjs";
 import { READERS } from "./lib/public-sources.mjs";
 import { imageGapReport } from "./lib/image-gap.mjs";
 import { buildLiteShards } from "./lib/public-search-shards.mjs";
@@ -63,6 +63,8 @@ export async function writeHealth(root = ROOT, nowMs = Date.now()) {
     imagesTcgplayer: imagesOn,
   });
   const nightlyDay = dated(counts) || status.newestPriceDay || "";
+  const flagDoc = await readJson(root, "data/flags.json");
+  const flagMap = flagDoc?.flags || {};
   const listed = [];
   for (const row of READERS) {
     const doc = row.file.endsWith("/") ? null : await readJson(root, row.file);
@@ -74,12 +76,16 @@ export async function writeHealth(root = ROOT, nowMs = Date.now()) {
       live: row.live,
       dateRequired: row.dateRequired,
     };
+    if (row.flag) {
+      item.flag = row.flag;
+      if (flagOff(row, flagMap)) item.skipped = `flag ${row.flag} is off`;
+    }
     if (row.note) item.note = row.note;
     if (asOf) item.asOf = asOf;
     else if (row.live && row.dateRequired) item.asOf = "";
     listed.push(item);
   }
-  const failures = freshnessFailures(listed, nightlyDay);
+  const failures = freshnessFailures(listed, nightlyDay, undefined, flagMap);
   const images = await readJson(root, "research/assets/public/catalogue-images.json");
   const lite = await readJson(root, "research/assets/public/search-lite.json");
   const gap = Array.isArray(lite) ? imageGapReport(lite, images?.images || {}) : { note: "search-lite.json is not an array in this checkout", rows: 0, lose: 0, byType: [] };
