@@ -244,6 +244,7 @@ export function shapeReads(extra, { dropSold = true } = {}) {
       whyItMatters: why,
       why,
       whatWouldMakeThisWrong: "Wrong if the receipt prices are not the ones on those dates.",
+      source: row.source || (kind === "mktmove" ? "TCGplayer market" : "eBay asks"),
       sourceLine: String(row.sku || row.id || ""),
     });
   }

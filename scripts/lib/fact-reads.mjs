@@ -113,7 +113,14 @@ export function buildPokemonIndex(cards, attrs) {
 export async function loadPokemonIndex(root) {
   const catalogue = JSON.parse(await readFile(join(root, "data/card-catalogue.json"), "utf8"));
   const attrs = JSON.parse(await readFile(join(root, "data/card-attrs.json"), "utf8"));
-  return buildPokemonIndex(catalogue.cards || {}, attrs.cards || {});
+  const index = buildPokemonIndex(catalogue.cards || {}, attrs.cards || {});
+  const source = String(catalogue.source || "").trim();
+  const date = String(catalogue.ingestedAt || "").slice(0, 10);
+  for (const entry of index.values()) {
+    if (source) entry.source = source;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(date)) entry.date = date;
+  }
+  return index;
 }
 
 export function pokemonFactLine(entry) {
@@ -127,7 +134,9 @@ export function pokemonFactLine(entry) {
   const sentence = `${name} (#${dex}): ${cardCount} cards, ${artistCount} artists.`;
   const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   const photoId = String(entry.photoId || "");
-  return {
+  const source = String(entry.source ?? "pokemontcg.io").trim();
+  const date = String(entry.date || "").slice(0, 10);
+  const line = {
     id: `pokemon-${slug}`,
     sku: photoId || `pokemon-${slug}`,
     cardId: photoId,
@@ -141,12 +150,16 @@ export function pokemonFactLine(entry) {
     cardCount,
     artistCount,
     dex,
+    source,
     sources: {
       cardCount: "data/card-catalogue.json",
       artistCount: "data/card-catalogue.json",
       dex: "data/card-attrs.json",
     },
   };
+  if (/^\d{4}-\d{2}-\d{2}$/.test(date)) line.date = date;
+  if (!source) return null;
+  return line;
 }
 
 export function interleavePokemonFacts(priceRows, index) {

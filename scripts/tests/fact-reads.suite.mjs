@@ -56,7 +56,8 @@ export async function run() {
   const index = buildPokemonIndex(cards, attrs);
   const line = pokemonFactLine(index.get("Duraludon"));
   t("species token strips a mechanic suffix", speciesToken("Duraludon ex") === "Duraludon");
-  t("a pokemon line counts cards and distinct artists from the fields", line && line.cardCount === 3 && line.artistCount === 2 && line.dex === 884 && line.readKind === "pokemon" && line.path === "Duraludon (#884): 3 cards, 2 artists.");
+  t("a pokemon line counts cards and distinct artists from the fields", line && line.cardCount === 3 && line.artistCount === 2 && line.dex === 884 && line.readKind === "pokemon" && line.path === "Duraludon (#884): 3 cards, 2 artists." && line.source === "pokemontcg.io");
+  t("a pokemon line with no source is not returned", pokemonFactLine({ name: "Duraludon", cardCount: 3, artistCount: 2, dex: 884, source: "" }) === null);
   t("the photo id is the highest priced card the fact counted", line && line.sku === "b" && line.cardId === "b");
   t("a pokemon line does not invent a pronunciation", line && !/pronounced|sounds like/i.test(line.path));
 

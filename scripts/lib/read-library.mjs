@@ -155,6 +155,18 @@ export function daySpan(a, b) {
   return Math.round(ms / 86400000);
 }
 
+export function streakRun(days, asOf, n) {
+  const run = [];
+  const count = Number(n);
+  if (!days || !/^\d{4}-\d{2}-\d{2}$/.test(String(asOf || "")) || !Number.isInteger(count) || count < 1) return run;
+  for (let i = count; i >= 0; i -= 1) {
+    const date = shiftDay(asOf, -i);
+    const price = Number(days.get?.(date));
+    if (price > 0) run.push({ date, price });
+  }
+  return run;
+}
+
 export function endStreak(pts) {
   let n = 0;
   let dir = 0;
@@ -315,6 +327,9 @@ function publicRow(row, kind, lines) {
     sixMonthHigh: kind === "high",
   });
   if (code) out.take = code;
+  if (Number(row._proof?.from) > 0) out.fromPrice = Number(row._proof.from);
+  if (Number(row._proof?.to) > 0) out.toPrice = Number(row._proof.to);
+  if (Array.isArray(row.run) && row.run.length) out.run = row.run;
   return out;
 }
 
@@ -451,6 +466,7 @@ export function buildReadLibrary({ catalogue, extra, series, dailyFiles = null, 
       const num = String(named.number || "").trim();
       const pct = Math.round(((seriesPrice - first) / first) * 1000) / 10;
       const proof = { start, end: asOf, days: streak.n, from: first, to: seriesPrice, pct };
+      const run = streakRun(days, asOf, streak.n);
       streakRows.push(withProof({
         id: `streak-${sku}`,
         sku,
@@ -469,6 +485,7 @@ export function buildReadLibrary({ catalogue, extra, series, dailyFiles = null, 
         image: named.image || "",
         streakN: streak.n,
         streakDir: streak.dir,
+        run,
       }, proof));
     }
   }
