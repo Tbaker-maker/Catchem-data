@@ -9,8 +9,8 @@ import { popularity, monName } from "./popular-pokemon.mjs";
 
 // Weights add to 100. A factor with no data is left out and the rest are
 // rescaled, so a missing fact never counts as good or bad.
-export const RATING_WEIGHTS = { peer: 25, popularity: 15, scarcity: 15, demand: 15, age: 10, artist: 10, range: 10 };
-export const FACTOR_LABEL = { peer: "Price vs similar cards", popularity: "Popularity", scarcity: "How rare this version is", demand: "Recent demand", age: "Age", artist: "Artist", range: "Price vs its own history" };
+export const RATING_WEIGHTS = { peer: 25, popularity: 15, scarcity: 10, pull: 5, demand: 15, age: 10, artist: 10, range: 10 };
+export const FACTOR_LABEL = { peer: "Price vs similar cards", popularity: "Popularity", scarcity: "How rare this version is", pull: "Pull rate", demand: "Recent demand", age: "Age", artist: "Artist", range: "Price vs its own history" };
 
 // Verdict bands on price against the peer median.
 export const BELOW = 0.8;
@@ -117,7 +117,33 @@ const pctTxt = (n) => (n > 0 ? `up ${n}%` : n < 0 ? `down ${Math.abs(n)}%` : "fl
 
 // rows: nightly bucket rows. longRows: hist-long map. variants: card-variants cards map.
 // searchMons: Map mon -> count of catalogue rows in search. readHits: Map id -> count of tonight's streak/climb reads.
-export function buildRatings({ rows, longRows = {}, variants = {}, searchMons = new Map(), readHits = new Map(), bySet = null, rot = null, today }) {
+// Pull rate, only where data/pull-rates-published.json has a published figure for the set and rarity.
+// pulls: Map "setSlug|rarity" -> { oneIn, perCard, cards, source, url }. v = share of rated
+// set-and-rarity pairs of the same rarity with easier per-card odds (harder pull, higher bar).
+export function pullFactor(c, pulls) {
+  const k = pulls?.get(`${c.setSlug}|${c.rarity}`) || (/^GG\d/i.test(String(c.num || "")) ? pulls?.get(`${c.setSlug}|Galarian Gallery`) : null);
+  if (!k) return null;
+  const same = [...pulls.values()].filter((x) => x.rarity === k.rarity).map((x) => x.perCard);
+  if (same.length < 3) return { v: 0.5, k };
+  const below = same.filter((x) => x < k.perCard).length, eq = same.filter((x) => x === k.perCard).length;
+  return { v: Math.round(((below + eq / 2) / same.length) * 100) / 100, k };
+}
+export function pullTable(doc, rows) {
+  const count = new Map();
+  for (const r of rows || []) if (r.kind === "single" && r.setSlug) {
+    const key = `${r.setSlug}|${/^GG\d/i.test(String(r.num || "")) ? "Galarian Gallery" : r.rarity}`;
+    count.set(key, (count.get(key) || 0) + 1);
+  }
+  const out = new Map();
+  for (const x of doc?.rates || []) {
+    const key = `${x.setSlug}|${x.rarity}`, n = count.get(key);
+    if (!n || !(x.oneInPacks > 0)) continue;
+    const src = doc.sources?.[x.source] || {};
+    out.set(key, { rarity: x.rarity, oneIn: x.oneInPacks, cards: n, perCard: Math.round(x.oneInPacks * n), source: src.name || x.source, url: src.url || "", asOf: src.dataAsOf || src.revised || src.checked || "" });
+  }
+  return out;
+}
+export function buildRatings({ rows, longRows = {}, variants = {}, searchMons = new Map(), readHits = new Map(), bySet = null, rot = null, today, pulls = null }) {
   const cards = [];
   for (const r of rows) {
     if (r.kind !== "single" || !r.release || !r.setSlug) continue;
@@ -187,6 +213,8 @@ export function buildRatings({ rows, longRows = {}, variants = {}, searchMons = 
     const pv = peerValue(x.price, med);
     if (pv != null && !check && matched) f.peer = { v: pv, fact: `${money(x.price)} (${dl(x.date)}) vs a typical ${money(med)} for ${g.label} (${others.length} cards, ${peerBasis})` };
     f.popularity = { v: clamp(x.pop.weight / 5 * 0.7 + (searchMons.get(c.mon) ? 0.3 * Math.min(1, Math.log10(searchMons.get(c.mon)) / 2) : 0)), fact: `${x.pop.tags.length ? x.pop.tags.map((t) => POP_LABEL[t] || t).join(", ") : "Not on the popularity list"}; ${searchMons.get(c.mon) || 0} ${title(c.mon)} cards in our search` };
+    const pf = pullFactor(c, pulls);
+    if (pf) f.pull = { v: pf.v, fact: `${pf.k.rarity}: 1 in ${pf.k.oneIn} packs for any of the ${pf.k.cards} in the set, about 1 in ${pf.k.perCard.toLocaleString("en-US")} for this card if split evenly (${pf.k.source}${pf.k.asOf ? `, ${dl(pf.k.asOf)}` : ""})` };
     const sc = scarcity(c, byMon);
     if (sc) f.scarcity = { v: sc.v, fact: `${sc.total} ${title(c.mon)} cards in the catalogue, ${sc.same} in this group, ${sc.commons} commons or uncommons${sc.first ? `. The first ${g.one} of ${title(c.mon)} on file` : ""}` };
     const ar = artists.get(c.artist);

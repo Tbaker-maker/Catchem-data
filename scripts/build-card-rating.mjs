@@ -5,7 +5,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { gunzipSync } from "node:zlib";
 import { listingsBySet, series } from "./lib/ir-cycle.mjs";
-import { groupIndex, peerPools, shardOf, buildRatings, ratingReads, RATING_WEIGHTS, FACTOR_LABEL, GROUPS, FIRST_ED, BELOW, ABOVE, MIN_PEERS } from "./lib/card-rating.mjs";
+import { groupIndex, pullTable, peerPools, shardOf, buildRatings, ratingReads, RATING_WEIGHTS, FACTOR_LABEL, GROUPS, FIRST_ED, BELOW, ABOVE, MIN_PEERS } from "./lib/card-rating.mjs";
 import { monName } from "./lib/popular-pokemon.mjs";
 
 // Index names use each group's real rarity or variant name.
@@ -29,7 +29,9 @@ try {
   const readGz = async (f) => (f ? JSON.parse(gunzipSync(await readFile(join(RAW, f))).toString("utf-8")) : null);
   const bySet = listingsBySet(await readGz(gz[gz.length - 1]), await readGz(gz[gz.length - 2]));
   const today = rows.map((r) => r.asOf).filter(Boolean).sort().pop()?.slice(0, 10);
-  const list = buildRatings({ rows, longRows, variants, searchMons, readHits, bySet, rot, today });
+  const pullDoc = await (async () => { try { return JSON.parse(await readFile(join(PUB, "../../../data/pull-rates-published.json"), "utf-8")); } catch { return null; } })();
+  const pulls = pullTable(pullDoc, rows);
+  const list = buildRatings({ rows, longRows, variants, searchMons, readHits, bySet, rot, today, pulls });
   const reads = ratingReads(list, { asOf: today });
   const groups = {};
   for (const r of list) groups[r.group] = (groups[r.group] || 0) + 1;
