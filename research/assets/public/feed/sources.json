@@ -1,5 +1,5 @@
 {
- "nightlyDay": "2026-10-11",
+ "nightlyDay": "2026-10-12",
  "note": "A live file with a date more than 2 days behind nightlyDay fails the nightly check. Files with no date say so in note.",
  "files": [
   {
@@ -11,7 +11,7 @@
    "writer": "scripts/build-feed.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-11"
+   "asOf": "2026-10-12"
   },
   {
    "file": "research/assets/public/movers.json",
@@ -22,7 +22,7 @@
    "writer": "scripts/build-public-bundle.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-11"
+   "asOf": "2026-10-12"
   },
   {
    "file": "research/assets/public/accuracy.json",
@@ -33,7 +33,7 @@
    "writer": "scripts/build-public-bundle.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-11"
+   "asOf": "2026-10-12"
   },
   {
    "file": "research/assets/public/counts.json",
@@ -43,7 +43,7 @@
    "writer": "scripts/build-public-bundle.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-11"
+   "asOf": "2026-10-12"
   },
   {
    "file": "research/assets/public/sets.json",
@@ -53,7 +53,7 @@
    "writer": "scripts/build-public-bundle.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-11"
+   "asOf": "2026-10-12"
   },
   {
    "file": "research/assets/public/artists.json",
@@ -63,7 +63,7 @@
    "writer": "scripts/build-public-bundle.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-11"
+   "asOf": "2026-10-12"
   },
   {
    "file": "research/assets/public/indexes.json",
@@ -73,7 +73,7 @@
    "writer": "scripts/build-public-bundle.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-11"
+   "asOf": "2026-10-12"
   },
   {
    "file": "research/assets/public/receipts.json",
@@ -83,7 +83,7 @@
    "writer": "scripts/build-public-bundle.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-11"
+   "asOf": "2026-10-12"
   },
   {
    "file": "research/assets/public/track-record.json",
@@ -93,7 +93,7 @@
    "writer": "scripts/write-track-record.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-10"
+   "asOf": "2026-10-11"
   },
   {
    "file": "research/assets/public/today.json",
@@ -113,6 +113,8 @@
    "writer": "scripts/write-supply-lead.mjs",
    "live": true,
    "dateRequired": true,
+   "flag": "supply.leadReads",
+   "skipped": "flag supply.leadReads is off",
    "asOf": "2026-10-09"
   },
   {
@@ -123,6 +125,8 @@
    "writer": "scripts/write-set-value.mjs",
    "live": true,
    "dateRequired": true,
+   "flag": "set.valueReads",
+   "skipped": "flag set.valueReads is off",
    "asOf": "2026-10-09"
   },
   {
@@ -192,7 +196,7 @@
    "writer": "scripts/fetch-sealed-prices.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-11"
+   "asOf": "2026-10-12"
   },
   {
    "file": "data/derived/weekly-read.json",
@@ -202,17 +206,7 @@
    "writer": "scripts/compute-weekly-read.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-11"
-  },
-  {
-   "file": "data/derived/receipts-weekly.json",
-   "readers": [
-    "bot"
-   ],
-   "writer": "scripts/compute-weekly-read.mjs",
-   "live": true,
-   "dateRequired": true,
-   "asOf": "2026-10-11"
+   "asOf": "2026-10-12"
   },
   {
    "file": "research/assets/the-pulse.html",
@@ -232,7 +226,7 @@
    "writer": "scripts/write-run-report.mjs",
    "live": true,
    "dateRequired": true,
-   "asOf": "2026-10-11"
+   "asOf": "2026-10-12"
   },
   {
    "file": "research/pulse/pulse-feed.json",

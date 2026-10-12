@@ -1,5 +1,5 @@
 {
- "asOf": "2026-10-11",
+ "asOf": "2026-10-12",
  "volume": [],
  "volumeNote": "No sold count is on file, so no volume read ships.",
  "lag": {
@@ -1085,115 +1085,375 @@
  },
  "reads": [
   {
-   "id": "spread-rsv10pt5-wf-pc-etb",
-   "sku": "rsv10pt5-wf-pc-etb",
+   "id": "quiet-tcgcsv-86054",
+   "sku": "tcgcsv-86054",
+   "readKind": "quiet",
+   "kind": "quiet",
+   "name": "Heatran LV.X",
+   "set": "Stormfront",
+   "path": "No TCGplayer sales recorded in 7 days. Heatran LV.X stayed $66.72 in Near Mint over Oct 2 to Oct 8.",
+   "headline": "No TCGplayer sales recorded in 7 days. Heatran LV.X stayed $66.72 in Near Mint over Oct 2 to Oct 8.",
+   "why": "No TCGplayer sales recorded in 7 days. Heatran LV.X stayed $66.72 in Near Mint over Oct 2 to Oct 8. That is not a scarcity claim.",
+   "asOf": "2026-10-08",
+   "href": "/c/tcgcsv-86054",
+   "lane": "single",
+   "receipt": {
+    "days": 7,
+    "price": 66.72,
+    "from": "2026-10-02",
+    "to": "2026-10-08",
+    "printing": "Holofoil"
+   }
+  },
+  {
+   "id": "mix-tcgcsv-246907",
+   "sku": "tcgcsv-246907",
+   "readKind": "mix",
+   "kind": "mix",
+   "name": "Bagon",
+   "set": "SWSH07: Evolving Skies",
+   "path": "36 Near Mint, 3 Lightly Played, 0 Moderately Played for Bagon over Oct 4 to Oct 10.",
+   "headline": "36 Near Mint, 3 Lightly Played, 0 Moderately Played for Bagon over Oct 4 to Oct 10.",
+   "why": "36 Near Mint, 3 Lightly Played, 0 Moderately Played for Bagon over Oct 4 to Oct 10. This is the mix of copies that sold, not the copy in your hand.",
+   "asOf": "2026-10-10",
+   "href": "/c/tcgcsv-246907",
+   "lane": "single",
+   "receipt": {
+    "from": "2026-10-04",
+    "to": "2026-10-10",
+    "conditions": [
+     {
+      "condition": "Near Mint",
+      "sold": 36
+     },
+     {
+      "condition": "Lightly Played",
+      "sold": 3
+     },
+     {
+      "condition": "Moderately Played",
+      "sold": 0
+     }
+    ],
+    "printing": "Normal"
+   }
+  },
+  {
+   "id": "conditions-tcgcsv-157707",
+   "sku": "tcgcsv-157707",
+   "readKind": "conditions",
+   "kind": "conditions",
+   "name": "Dusk Mane Necrozma GX",
+   "set": "SM - Ultra Prism",
+   "path": "Near Mint $5.73 and Lightly Played $4.93 for Dusk Mane Necrozma GX on Oct 8.",
+   "headline": "Near Mint $5.73 and Lightly Played $4.93 for Dusk Mane Necrozma GX on Oct 8.",
+   "why": "Near Mint $5.73 and Lightly Played $4.93 for Dusk Mane Necrozma GX on Oct 8. Two condition prices. Not a grade result.",
+   "asOf": "2026-10-08",
+   "href": "/c/tcgcsv-157707",
+   "lane": "single",
+   "receipt": {
+    "date": "2026-10-08",
+    "nearMint": 5.73,
+    "played": 4.93,
+    "playedCondition": "Lightly Played"
+   }
+  },
+  {
+   "id": "solddown-tcgcsv-642643",
+   "sku": "tcgcsv-642643",
+   "readKind": "solddown",
+   "kind": "solddown",
+   "name": "Simipour (Master Ball Pattern)",
+   "set": "SV: Black Bolt",
+   "path": "Simipour (Master Ball Pattern) went from $16.74 to $16.03 over Sep 11 to Oct 10, with 16 Near Mint copies sold.",
+   "headline": "Simipour (Master Ball Pattern) went from $16.74 to $16.03 over Sep 11 to Oct 10, with 16 Near Mint copies sold.",
+   "why": "Simipour (Master Ball Pattern) went from $16.74 to $16.03 over Sep 11 to Oct 10, with 16 Near Mint copies sold. Sales and a price change in the same window. Not a cause.",
+   "asOf": "2026-10-10",
+   "href": "/c/tcgcsv-642643",
+   "lane": "single",
+   "receipt": {
+    "days": 30,
+    "sold": 16,
+    "fromPrice": 16.74,
+    "toPrice": 16.03,
+    "from": "2026-09-11",
+    "to": "2026-10-10"
+   }
+  },
+  {
+   "id": "setshare-1692-2026-10-08",
+   "sku": "tcgcsv-110410",
+   "readKind": "setshare",
+   "kind": "setshare",
+   "name": "Pikachu - 5/12",
+   "set": "McDonald's Promos 2014",
+   "path": "Pikachu - 5/12 is 3 of 7 Near Mint copies sold in McDonald's Promos 2014 over Oct 2 to Oct 8.",
+   "headline": "Pikachu - 5/12 is 3 of 7 Near Mint copies sold in McDonald's Promos 2014 over Oct 2 to Oct 8.",
+   "why": "Pikachu - 5/12 is 3 of 7 Near Mint copies sold in McDonald's Promos 2014 over Oct 2 to Oct 8. Share of copies sold. Not share of dollars.",
+   "asOf": "2026-10-08",
+   "href": "/c/tcgcsv-110410",
+   "lane": "single",
+   "rank": 0.42857142857142855,
+   "receipt": {
+    "groupId": "1692",
+    "top": 3,
+    "total": 7,
+    "from": "2026-10-02",
+    "to": "2026-10-08",
+    "cards": 12
+   }
+  },
+  {
+   "id": "spread-sm11-booster-box",
+   "sku": "sm11-booster-box",
    "readKind": "spread",
    "kind": "spread",
-   "name": "White Flare Pokemon Center Elite Trainer Box",
-   "set": "White Flare",
-   "path": "White Flare Pokemon Center Elite Trainer Box asks run from $230.00 up to $484.32. Median ask $275.65 across 55 eBay listings on 2026-10-11.",
-   "headline": "White Flare Pokemon Center Elite Trainer Box asks run from $230.00 up to $484.32. Median ask $275.65 across 55 eBay listings on 2026-10-11.",
-   "why": "White Flare Pokemon Center Elite Trainer Box asks run from $230.00 up to $484.32. Median ask $275.65 across 55 eBay listings on 2026-10-11. Asking prices from the search. Not sold prices.",
-   "asOf": "2026-10-11",
-   "href": "/p/rsv10pt5-wf-pc-etb",
+   "name": "Unified Minds Booster Box",
+   "set": "Unified Minds",
+   "path": "The search for Unified Minds Booster Box asks from $3,600.00 to $5,010.00. Median ask $4,999.00 across 13 eBay listings on 2026-10-12.",
+   "headline": "The search for Unified Minds Booster Box asks from $3,600.00 to $5,010.00. Median ask $4,999.00 across 13 eBay listings on 2026-10-12.",
+   "why": "The search for Unified Minds Booster Box asks from $3,600.00 to $5,010.00. Median ask $4,999.00 across 13 eBay listings on 2026-10-12. Asking prices from the search. Not sold prices.",
+   "asOf": "2026-10-12",
+   "href": "/p/sm11-booster-box",
    "lane": "sealed",
-   "rank": 254.32,
+   "rank": 1410,
    "receipt": {
-    "low": 230,
-    "high": 484.32,
-    "median": 275.65,
-    "count": 55,
+    "low": 3600,
+    "high": 5010,
+    "median": 4999,
+    "count": 13,
     "basis": "p10-p90"
    },
-   "tcgPlayerId": "630688"
+   "tcgPlayerId": "191882"
   },
   {
-   "id": "askmove-sv6-pack",
-   "sku": "sv6-pack",
+   "id": "askmove-sm12-etb",
+   "sku": "sm12-etb",
    "readKind": "askmove",
    "kind": "askmove",
-   "name": "Twilight Masquerade Booster Pack",
+   "name": "Hidden Fates Elite Trainer Box",
    "set": "",
-   "path": "The eBay ask for Twilight Masquerade Booster Pack went from $11.00 to $10.92 over Oct 10–Oct 11. The TCGplayer market price stayed $9.19.",
-   "headline": "The eBay ask for Twilight Masquerade Booster Pack went from $11.00 to $10.92 over Oct 10–Oct 11. The TCGplayer market price stayed $9.19.",
-   "why": "The eBay ask for Twilight Masquerade Booster Pack went from $11.00 to $10.92 over Oct 10–Oct 11. The TCGplayer market price stayed $9.19. The ask changed. The market price did not. Asks are not sales.",
-   "asOf": "2026-10-11",
-   "href": "/p/sv6-pack",
+   "path": "Hidden Fates Elite Trainer Box: the eBay ask went from $595.95 to $589.99 over Oct 11 to Oct 12. The TCGplayer market price stayed $553.43.",
+   "headline": "Hidden Fates Elite Trainer Box: the eBay ask went from $595.95 to $589.99 over Oct 11 to Oct 12. The TCGplayer market price stayed $553.43.",
+   "why": "Hidden Fates Elite Trainer Box: the eBay ask went from $595.95 to $589.99 over Oct 11 to Oct 12. The TCGplayer market price stayed $553.43. The ask changed. The market price did not. Asks are not sales.",
+   "asOf": "2026-10-12",
+   "href": "/p/sm12-etb",
    "lane": "sealed",
    "receipt": {
-    "from": "2026-10-10",
-    "to": "2026-10-11",
-    "askFrom": 11,
-    "askTo": 10.92,
-    "market": 9.19
+    "from": "2026-10-11",
+    "to": "2026-10-12",
+    "askFrom": 595.95,
+    "askTo": 589.99,
+    "market": 553.43
    },
-   "tcgPlayerId": "543843"
+   "tcgPlayerId": "194729"
   },
   {
-   "id": "mktmove-swsh9-pack",
-   "sku": "swsh9-pack",
+   "id": "mktmove-rsv10pt5-etb",
+   "sku": "rsv10pt5-etb",
    "readKind": "mktmove",
    "kind": "mktmove",
-   "name": "Brilliant Stars Booster Pack",
+   "name": "White Flare Elite Trainer Box",
    "set": "",
-   "path": "The TCGplayer market price for Brilliant Stars Booster Pack went from $16.48 to $16.44 over Oct 10–Oct 11. The eBay ask stayed $19.99.",
-   "headline": "The TCGplayer market price for Brilliant Stars Booster Pack went from $16.48 to $16.44 over Oct 10–Oct 11. The eBay ask stayed $19.99.",
-   "why": "The TCGplayer market price for Brilliant Stars Booster Pack went from $16.48 to $16.44 over Oct 10–Oct 11. The eBay ask stayed $19.99. The market price changed. The ask did not. Asks are not sales.",
-   "asOf": "2026-10-11",
-   "href": "/p/swsh9-pack",
+   "path": "White Flare Elite Trainer Box: the TCGplayer market price went from $147.31 to $149.14 over Oct 11 to Oct 12. The eBay ask stayed $159.99.",
+   "headline": "White Flare Elite Trainer Box: the TCGplayer market price went from $147.31 to $149.14 over Oct 11 to Oct 12. The eBay ask stayed $159.99.",
+   "why": "White Flare Elite Trainer Box: the TCGplayer market price went from $147.31 to $149.14 over Oct 11 to Oct 12. The eBay ask stayed $159.99. The market price changed. The ask did not. Asks are not sales.",
+   "asOf": "2026-10-12",
+   "href": "/p/rsv10pt5-etb",
    "lane": "sealed",
    "receipt": {
-    "from": "2026-10-10",
-    "to": "2026-10-11",
-    "marketFrom": 16.48,
-    "marketTo": 16.44,
-    "ask": 19.99
+    "from": "2026-10-11",
+    "to": "2026-10-12",
+    "marketFrom": 147.31,
+    "marketTo": 149.14,
+    "ask": 159.99
    },
-   "tcgPlayerId": "256124"
+   "tcgPlayerId": "630689"
   },
   {
-   "id": "spread-sm1-etb",
-   "sku": "sm1-etb",
+   "id": "quiet-tcgcsv-86065",
+   "sku": "tcgcsv-86065",
+   "readKind": "quiet",
+   "kind": "quiet",
+   "name": "Heracross",
+   "set": "HeartGold SoulSilver",
+   "path": "Heracross: No TCGplayer sales recorded in 7 days. The Near Mint market price stayed $6.95 over Oct 2 to Oct 8.",
+   "headline": "Heracross: No TCGplayer sales recorded in 7 days. The Near Mint market price stayed $6.95 over Oct 2 to Oct 8.",
+   "why": "Heracross: No TCGplayer sales recorded in 7 days. The Near Mint market price stayed $6.95 over Oct 2 to Oct 8. That is not a scarcity claim.",
+   "asOf": "2026-10-08",
+   "href": "/c/tcgcsv-86065",
+   "lane": "single",
+   "receipt": {
+    "days": 7,
+    "price": 6.95,
+    "from": "2026-10-02",
+    "to": "2026-10-08",
+    "printing": "Normal"
+   }
+  },
+  {
+   "id": "mix-tcgcsv-226540",
+   "sku": "tcgcsv-226540",
+   "readKind": "mix",
+   "kind": "mix",
+   "name": "Mudsdale",
+   "set": "SWSH04: Vivid Voltage",
+   "path": "17 Near Mint, 1 Lightly Played, 1 Moderately Played for Mudsdale over Oct 2 to Oct 8.",
+   "headline": "17 Near Mint, 1 Lightly Played, 1 Moderately Played for Mudsdale over Oct 2 to Oct 8.",
+   "why": "17 Near Mint, 1 Lightly Played, 1 Moderately Played for Mudsdale over Oct 2 to Oct 8. This is the mix of copies that sold, not the copy in your hand.",
+   "asOf": "2026-10-08",
+   "href": "/c/tcgcsv-226540",
+   "lane": "single",
+   "receipt": {
+    "from": "2026-10-02",
+    "to": "2026-10-08",
+    "conditions": [
+     {
+      "condition": "Near Mint",
+      "sold": 17
+     },
+     {
+      "condition": "Lightly Played",
+      "sold": 1
+     },
+     {
+      "condition": "Moderately Played",
+      "sold": 1
+     }
+    ],
+    "printing": "Normal"
+   }
+  },
+  {
+   "id": "conditions-tcgcsv-170900",
+   "sku": "tcgcsv-170900",
+   "readKind": "conditions",
+   "kind": "conditions",
+   "name": "Baltoy",
+   "set": "SM - Celestial Storm",
+   "path": "Near Mint $0.19 and Lightly Played $0.11 for Baltoy on Oct 8.",
+   "headline": "Near Mint $0.19 and Lightly Played $0.11 for Baltoy on Oct 8.",
+   "why": "Near Mint $0.19 and Lightly Played $0.11 for Baltoy on Oct 8. Two condition prices. Not a grade result.",
+   "asOf": "2026-10-08",
+   "href": "/c/tcgcsv-170900",
+   "lane": "single",
+   "receipt": {
+    "date": "2026-10-08",
+    "nearMint": 0.19,
+    "played": 0.11,
+    "playedCondition": "Lightly Played"
+   }
+  },
+  {
+   "id": "solddown-tcgcsv-642554",
+   "sku": "tcgcsv-642554",
+   "readKind": "solddown",
+   "kind": "solddown",
+   "name": "Panpour",
+   "set": "SV: Black Bolt",
+   "path": "Panpour went from $12.55 to $11.97 over Oct 4 to Oct 10, with 7 Near Mint copies sold.",
+   "headline": "Panpour went from $12.55 to $11.97 over Oct 4 to Oct 10, with 7 Near Mint copies sold.",
+   "why": "Panpour went from $12.55 to $11.97 over Oct 4 to Oct 10, with 7 Near Mint copies sold. Sales and a price change in the same window. Not a cause.",
+   "asOf": "2026-10-10",
+   "href": "/c/tcgcsv-642554",
+   "lane": "single",
+   "receipt": {
+    "days": 7,
+    "sold": 7,
+    "fromPrice": 12.55,
+    "toPrice": 11.97,
+    "from": "2026-10-04",
+    "to": "2026-10-10"
+   }
+  },
+  {
+   "id": "setshare-1426-2026-10-10",
+   "sku": "tcgcsv-84915",
+   "readKind": "setshare",
+   "kind": "setshare",
+   "name": "Dragonite",
+   "set": "Dragon Vault",
+   "path": "Dragonite is 9 of 33 Near Mint copies sold in Dragon Vault over Oct 4 to Oct 10.",
+   "headline": "Dragonite is 9 of 33 Near Mint copies sold in Dragon Vault over Oct 4 to Oct 10.",
+   "why": "Dragonite is 9 of 33 Near Mint copies sold in Dragon Vault over Oct 4 to Oct 10. Share of copies sold. Not share of dollars.",
+   "asOf": "2026-10-10",
+   "href": "/c/tcgcsv-84915",
+   "lane": "single",
+   "rank": 0.2727272727272727,
+   "receipt": {
+    "groupId": "1426",
+    "top": 9,
+    "total": 33,
+    "from": "2026-10-04",
+    "to": "2026-10-10",
+    "cards": 21
+   }
+  },
+  {
+   "id": "spread-xy12-etb",
+   "sku": "xy12-etb",
    "readKind": "spread",
    "kind": "spread",
-   "name": "Sun & Moon Elite Trainer Box",
-   "set": "Sun & Moon",
-   "path": "The search for Sun & Moon Elite Trainer Box asks from $248.93 to $499.99. Median ask $289.88 across 39 eBay listings on 2026-10-11.",
-   "headline": "The search for Sun & Moon Elite Trainer Box asks from $248.93 to $499.99. Median ask $289.88 across 39 eBay listings on 2026-10-11.",
-   "why": "The search for Sun & Moon Elite Trainer Box asks from $248.93 to $499.99. Median ask $289.88 across 39 eBay listings on 2026-10-11. Asking prices from the search. Not sold prices.",
-   "asOf": "2026-10-11",
-   "href": "/p/sm1-etb",
+   "name": "Evolutions Elite Trainer Box",
+   "set": "Evolutions",
+   "path": "Evolutions Elite Trainer Box asks run from $441.89 up to $1,500.00. Median ask $874.99 across 25 eBay listings on 2026-10-12.",
+   "headline": "Evolutions Elite Trainer Box asks run from $441.89 up to $1,500.00. Median ask $874.99 across 25 eBay listings on 2026-10-12.",
+   "why": "Evolutions Elite Trainer Box asks run from $441.89 up to $1,500.00. Median ask $874.99 across 25 eBay listings on 2026-10-12. Asking prices from the search. Not sold prices.",
+   "asOf": "2026-10-12",
+   "href": "/p/xy12-etb",
    "lane": "sealed",
-   "rank": 251.06,
+   "rank": 1058.1100000000001,
    "receipt": {
-    "low": 248.93,
-    "high": 499.99,
-    "median": 289.88,
-    "count": 39,
+    "low": 441.89,
+    "high": 1500,
+    "median": 874.99,
+    "count": 25,
     "basis": "p10-p90"
    }
   },
   {
-   "id": "askmove-swsh12pt5-etb",
-   "sku": "swsh12pt5-etb",
+   "id": "askmove-sm2-etb",
+   "sku": "sm2-etb",
    "readKind": "askmove",
    "kind": "askmove",
-   "name": "Crown Zenith Elite Trainer Box",
+   "name": "Guardians Rising Elite Trainer Box",
    "set": "",
-   "path": "Crown Zenith Elite Trainer Box: the eBay ask went from $333.00 to $334.99 over Oct 10–Oct 11. The TCGplayer market price stayed $320.44.",
-   "headline": "Crown Zenith Elite Trainer Box: the eBay ask went from $333.00 to $334.99 over Oct 10–Oct 11. The TCGplayer market price stayed $320.44.",
-   "why": "Crown Zenith Elite Trainer Box: the eBay ask went from $333.00 to $334.99 over Oct 10–Oct 11. The TCGplayer market price stayed $320.44. The ask changed. The market price did not. Asks are not sales.",
-   "asOf": "2026-10-11",
-   "href": "/p/swsh12pt5-etb",
+   "path": "Guardians Rising Elite Trainer Box over Oct 11 to Oct 12: eBay ask $529.00 to $535.00, TCGplayer market price $453.95.",
+   "headline": "Guardians Rising Elite Trainer Box over Oct 11 to Oct 12: eBay ask $529.00 to $535.00, TCGplayer market price $453.95.",
+   "why": "Guardians Rising Elite Trainer Box over Oct 11 to Oct 12: eBay ask $529.00 to $535.00, TCGplayer market price $453.95. The ask changed. The market price did not. Asks are not sales.",
+   "asOf": "2026-10-12",
+   "href": "/p/sm2-etb",
    "lane": "sealed",
    "receipt": {
-    "from": "2026-10-10",
-    "to": "2026-10-11",
-    "askFrom": 333,
-    "askTo": 334.99,
-    "market": 320.44
+    "from": "2026-10-11",
+    "to": "2026-10-12",
+    "askFrom": 529,
+    "askTo": 535,
+    "market": 453.95
    },
-   "tcgPlayerId": "453470"
+   "tcgPlayerId": "129890"
+  },
+  {
+   "id": "mktmove-sv3-booster-box",
+   "sku": "sv3-booster-box",
+   "readKind": "mktmove",
+   "kind": "mktmove",
+   "name": "Obsidian Flames Booster Box",
+   "set": "",
+   "path": "Obsidian Flames Booster Box: the TCGplayer market price went from $366.27 to $367.18 over Oct 11 to Oct 12. The eBay ask stayed $400.00.",
+   "headline": "Obsidian Flames Booster Box: the TCGplayer market price went from $366.27 to $367.18 over Oct 11 to Oct 12. The eBay ask stayed $400.00.",
+   "why": "Obsidian Flames Booster Box: the TCGplayer market price went from $366.27 to $367.18 over Oct 11 to Oct 12. The eBay ask stayed $400.00. The market price changed. The ask did not. Asks are not sales.",
+   "asOf": "2026-10-12",
+   "href": "/p/sv3-booster-box",
+   "lane": "sealed",
+   "receipt": {
+    "from": "2026-10-11",
+    "to": "2026-10-12",
+    "marketFrom": 366.27,
+    "marketTo": 367.18,
+    "ask": 400
+   },
+   "tcgPlayerId": "501257"
   }
  ],
  "supplyNotes": [],
@@ -1206,16 +1466,37 @@
   "source": "research/pulse/dive/"
  },
  "shape": {
+  "quiet": [
+   "quiet-tcgcsv-86054",
+   "quiet-tcgcsv-86065"
+  ],
+  "mix": [
+   "mix-tcgcsv-246907",
+   "mix-tcgcsv-226540"
+  ],
+  "conditions": [
+   "conditions-tcgcsv-157707",
+   "conditions-tcgcsv-170900"
+  ],
+  "solddown": [
+   "solddown-tcgcsv-642643",
+   "solddown-tcgcsv-642554"
+  ],
+  "setshare": [
+   "setshare-1692-2026-10-08",
+   "setshare-1426-2026-10-10"
+  ],
   "spread": [
-   "spread-rsv10pt5-wf-pc-etb",
-   "spread-sm1-etb"
+   "spread-sm11-booster-box",
+   "spread-xy12-etb"
   ],
   "askmove": [
-   "askmove-sv6-pack",
-   "askmove-swsh12pt5-etb"
+   "askmove-sm12-etb",
+   "askmove-sm2-etb"
   ],
   "mktmove": [
-   "mktmove-swsh9-pack"
+   "mktmove-rsv10pt5-etb",
+   "mktmove-sv3-booster-box"
   ]
  }
 }
