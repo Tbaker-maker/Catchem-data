@@ -1,7 +1,7 @@
 {
   "asOf": "2026-10-12",
   "status": "ran",
-  "reason": "Key was present. Credits below are what the provider reported.",
+  "reason": "Key was present. credits.used is this run only, as the provider reported it. credits.usedToday adds earlier runs on the same UTC day. credits.remaining is the daily budget minus usedToday, worked out here.",
   "credits": {
     "budget": 20000,
     "main": 16000,
@@ -15,7 +15,14 @@
       "total": 0
     },
     "remaining": 4008,
-    "usedToday": 15992
+    "usedToday": 15992,
+    "usedThisRun": 0,
+    "labels": {
+      "used": "this run only",
+      "usedThisRun": "this run only",
+      "usedToday": "all runs this UTC day",
+      "remaining": "daily budget minus usedToday"
+    }
   },
   "items": {
     "sealed": 0,

@@ -13,6 +13,7 @@ export function buildRunReport({ startedAt = null, finishedAt, usage = {}, mount
   const credits = usage.credits || {};
   const used = Number.isFinite(run.creditsUsed) ? run.creditsUsed : (credits.used?.total ?? 0);
   const left = Number.isFinite(credits.remaining) ? credits.remaining : null;
+  const usedToday = Number.isFinite(credits.usedToday) ? credits.usedToday : null;
   const itemSum = (usage.items?.sealed || 0) + (usage.items?.singles || 0) + (usage.items?.slabs || 0);
   const succeeded = run.itemsDone != null ? run.itemsDone : itemSum;
   // itemsFailed is an HTTP failure. itemsBudgetSkipped was never sent.
@@ -43,7 +44,7 @@ export function buildRunReport({ startedAt = null, finishedAt, usage = {}, mount
       notSent,
     },
     calls,
-    credits: { used, left },
+    credits: { used, usedToday, left, note: "used is this run. usedToday is every run this UTC day. left is the daily budget minus usedToday." },
     rateLimitHits,
     retries: run.retries || 0,
     historyRestored: { yes: mount.restored === true, files: mount.files || 0 },
@@ -58,7 +59,7 @@ export function reportLine(report) {
   const calls = report.calls
     ? `, calls sent ${report.calls.sent}, call failures ${report.calls.failed}, calls not sent ${report.calls.notSent}`
     : "";
-  return `PPT run: attempted ${report.items.attempted}, succeeded ${report.items.succeeded}, failed ${report.items.failed}, not sent ${report.items.notSent || 0}${calls}, credits ${report.credits.used} used / ${left} left, rate limits ${report.rateLimitHits}, retries ${report.retries}, history ${history} (${files} files), private push ${report.privatePush}, duration ${report.durationSec == null ? "unknown" : report.durationSec + "s"}`;
+  return `PPT run: attempted ${report.items.attempted}, succeeded ${report.items.succeeded}, failed ${report.items.failed}, not sent ${report.items.notSent || 0}${calls}, credits ${report.credits.used} used this run${report.credits.usedToday != null ? `, ${report.credits.usedToday} used today` : ""} / ${left} left today, rate limits ${report.rateLimitHits}, retries ${report.retries}, history ${history} (${files} files), private push ${report.privatePush}, duration ${report.durationSec == null ? "unknown" : report.durationSec + "s"}`;
 }
 
 const RAW_FILE = /(?:^|\/)ppt-[^/]*RAW\.json$/i;

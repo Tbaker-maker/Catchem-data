@@ -260,7 +260,7 @@ export async function main() {
   const usage = publicUsage(plan, {
     asOf: today,
     status: key ? "ran" : "skipped",
-    reason: key ? "Key was present. Credits below are what the provider reported." : "POKEMONPRICETRACKER_API_KEY is not set. No request was sent.",
+    reason: key ? "Key was present. credits.used is this run only, as the provider reported it. credits.usedToday adds earlier runs on the same UTC day. credits.remaining is the daily budget minus usedToday, worked out here." : "POKEMONPRICETRACKER_API_KEY is not set. No request was sent.",
   });
   usage.raw = "not fetched";
   usage.credits.usedToday = spentToday;
@@ -303,6 +303,8 @@ export async function main() {
     usage.credits.used = ran.used;
     usage.credits.usedToday = spentToday + ran.used.total;
     usage.credits.remaining = Math.max(0, usage.credits.budget - usage.credits.usedToday);
+    usage.credits.usedThisRun = ran.used.total;
+    usage.credits.labels = { used: "this run only", usedThisRun: "this run only", usedToday: "all runs this UTC day", remaining: "daily budget minus usedToday" };
     usage.items = { sealed: ran.items.sealed, singles: ran.items.singles, slabs: ran.items.slabs };
     usage.errors = ran.errors;
     usage.run = {
