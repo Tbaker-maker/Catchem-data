@@ -3,7 +3,7 @@
 import { readFile, readdir, writeFile, mkdir } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { sealedShard, SHARDS, buildSealedRatings, sealedReads, waitingFactors, MIN_PEERS, MIN_TREND_DAYS, MIN_LISTING_NIGHTS } from "./lib/sealed-rating.mjs";
+import { singlesVsSealed, singlesVsSealedReads, sealedShard, SHARDS, buildSealedRatings, sealedReads, waitingFactors, MIN_PEERS, MIN_TREND_DAYS, MIN_LISTING_NIGHTS } from "./lib/sealed-rating.mjs";
 
 try {
   const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -21,7 +21,10 @@ try {
   for (const p of counted?.products || []) { const pid = skuToPid.get(p.id); if (pid && p.listingsCounted?.n != null) listings.set(pid, { ...p.listingsCounted, sku: p.id, nights }); }
   const today = rows.map((r) => r.asOf).filter(Boolean).sort().pop()?.slice(0, 10);
   const list = buildSealedRatings({ rows, rot, listings, packs, today });
-  const reads = sealedReads(list, { asOf: today });
+  const svs = singlesVsSealed(rows, { asOf: today });
+  const reads = [...sealedReads(list, { asOf: today }), ...singlesVsSealedReads(svs, { asOf: today })];
+  const svsBySet = Object.fromEntries(svs.map((x) => [x.id, { from: x.from, to: x.to, nights: x.nights, cards: x.cards, low: x.low, high: x.high, ratioFrom: x.ratioFrom, ratioTo: x.ratioTo, singlesTo: x.singlesTo }]));
+  for (const r of list) if (svsBySet[r.id]) r.singlesVsSealed = svsBySet[r.id];
   const types = {};
   for (const r of list) types[r.type] = (types[r.type] || 0) + 1;
   const doc = {

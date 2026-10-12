@@ -213,3 +213,49 @@ export function sealedReads(list, { asOf, max = 3 } = {}) {
   }
   return out;
 }
+
+// Singles vs sealed: the same basket of a set's singles against one sealed product,
+// on the product's first night on file and tonight. Ranges come from the nightly ratio.
+export function singlesVsSealed(rows, { asOf, types = ["etb", "booster-box"], minCards = 50 } = {}) {
+  const bySet = new Map();
+  for (const r of rows) if (r.kind !== "sealed" && r.setSlug && r.hist?.length) { if (!bySet.has(r.setSlug)) bySet.set(r.setSlug, []); bySet.get(r.setSlug).push(r); }
+  const out = [];
+  for (const p of rows) {
+    if (p.kind !== "sealed" || !types.includes(p.subtype) || !setNamed(p.name, p.set) || /\bhalf\b|display|case|set of/i.test(p.name)) continue;
+    const ph = (p.hist || []).filter((x) => x[1] > 0);
+    if (ph.length < MIN_TREND_DAYS || ph.at(-1)[0] !== asOf) continue;
+    const cards = bySet.get(p.setSlug) || [];
+    // Value on a night = the last price on or before it (a missing night carries the prior price).
+    const val = (h, d) => { let v = null; for (const [x, y] of h) { if (x > d) break; if (y > 0) v = y; } return v; };
+    const hs = cards.map((c) => c.hist.slice().sort((x, y) => (x[0] < y[0] ? -1 : 1)));
+    const start = ph.find(([d]) => hs.filter((h) => val(h, d) != null).length >= minCards);
+    if (!start) continue;
+    const a = start[0];
+    const basket = hs.filter((h) => val(h, a) != null && h.some(([d, y]) => d === asOf && y > 0));
+    if (basket.length < minCards) continue;
+    const sum = (d) => r2(basket.reduce((t, h) => t + val(h, d), 0));
+    const ratios = ph.filter(([d]) => d >= a).map(([d, v]) => [d, r2(sum(d) / v)]);
+    if (ratios.length < MIN_TREND_DAYS) continue;
+    const sealedFrom = ph.find(([d]) => d === a)[1];
+    const vals = ratios.map((x) => x[1]);
+    out.push({ id: p.id, name: p.name, set: p.set, setSlug: p.setSlug, type: p.subtype, from: a, to: asOf, nights: ratios.length, cards: basket.length,
+      singlesFrom: sum(a), singlesTo: sum(asOf), sealedFrom, sealedTo: ph.at(-1)[1], low: Math.min(...vals), high: Math.max(...vals), ratioFrom: ratios[0][1], ratioTo: ratios.at(-1)[1], points: ratios });
+  }
+  return out;
+}
+
+export function singlesVsSealedReads(list, { asOf, max = 4 } = {}) {
+  const seen = new Set();
+  const picks = list.filter((x) => x.ratioFrom > 0).sort((a, b) => Math.abs(b.ratioTo / b.ratioFrom - 1) - Math.abs(a.ratioTo / a.ratioFrom - 1)).filter((x) => { if (seen.has(x.setSlug)) return false; seen.add(x.setSlug); return true; }).slice(0, max);
+  return picks.map((x) => {
+    const head = `Singles vs sealed, ${shortSet(x.set)}: ${x.cards} singles add up to ${x.ratioTo}x the ${x.name} tonight, from ${x.ratioFrom}x on ${md(x.from)}. Range ${x.low}x to ${x.high}x over ${x.nights} nights.`;
+    const lines = [
+      `${x.cards} singles: ${money(x.singlesFrom)} (${md(x.from)}) to ${money(x.singlesTo)} (${md(asOf)}).`,
+      `${x.name}: ${money(x.sealedFrom)} to ${money(x.sealedTo)}, same nights.`,
+      `Same basket every night: singles priced on ${md(x.from)} and ${md(asOf)}; a missing night carries the prior price.`,
+      "A factual comparison of prices on file, not advice.",
+    ];
+    if (!cleanCopy(head) || !lines.every(cleanCopy)) return null;
+    return { id: `deep-singlesvssealed-${x.setSlug}`.slice(0, 90), readKind: "deep", kind: "deep", deep: "singlesvssealed", board: "v3", family: "deep", name: `Singles vs sealed: ${shortSet(x.set)}`, sku: x.id, href: `/p/${x.id}`, headline: head, path: head, lines, asOf, source: `TCGplayer market, ${x.from} to ${asOf}`, tags: [], chart: { label: "Singles total / sealed price", points: x.points }, startDate: x.from, endDate: asOf, receipt: { cards: x.cards, from: x.from, low: x.low, high: x.high } };
+  }).filter(Boolean);
+}
