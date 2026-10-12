@@ -2,7 +2,7 @@ import { mkdtemp, mkdir, writeFile, readFile, cp } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { buildCatalogueIndex, extractMentions, topicTags, commentSentiment, extractClaims, scoreClaims, rankClaims, buildLeads, claimStatus, extractIdeas, attentionLine, isBanned } from "../lib/youtube.mjs";
+import { buildCatalogueIndex, extractMentions, topicTags, commentSentiment, extractClaims, scoreClaims, rankClaims, buildLeads, claimStatus, videoWeight, extractIdeas, attentionLine, isBanned } from "../lib/youtube.mjs";
 import { youtubeFlags } from "../lib/flags.mjs";
 import { runYoutubeLearn, makeClient } from "../youtube-learn.mjs";
 
@@ -62,6 +62,9 @@ export async function run() {
   t("unseen topic is a new method lead", leads.some((l) => l.kind === "new_method"));
   const pub = JSON.stringify(leads);
   t("leads carry no creator keys", !/nomics|pokeoz/.test(pub));
+  const tones = { pokeoz: { weight: 0.5, hype: true } };
+  t("tone: an emotional channel alone cannot make a 2-channel lead", !buildLeads(vids, { today: "2026-01-10", idx, tones }).some((l) => l.kind === "set_attention"));
+  t("tone: hype title halves again", videoWeight({ title: "THIS IS INSANE!!" }, tones.pokeoz) === 0.25 && videoWeight({ title: "Market update" }, tones.pokeoz) === 0.5 && videoWeight({ title: "x" }, {}) === 1);
   const line = attentionLine(leads[0]);
   t("public line shape, no banned words", /getting attention across creators this week/.test(line) && !isBanned(line));
   t("flags: leads become YOUTUBE_LEAD", youtubeFlags({ asOf: "2026-01-10", keyPresent: true, leads }).every((f) => f.type === "YOUTUBE_LEAD"));
@@ -93,6 +96,8 @@ export async function run() {
   const local = { dir: join(root, "data/private"), close: async () => ({ pushed: false }) };
   const ok = await runYoutubeLearn({ root, key: "k", token: "", fetchFn: fake, store: local });
   const enabled = JSON.parse(await readFile(join(root, "config/youtube-channels.json"), "utf8")).channels.filter((c) => c.id && c.enabled !== false).length;
+  const ideasSeed = JSON.parse(await readFile(join(root, "data/private/youtube/ideas.json"), "utf8")).ideas;
+  t("config seed ideas logged as candidates", ideasSeed.some((i) => i.origin === "config" && i.source === "pokemon wizard" && i.status === "candidate"));
   t("units = 1 channels + 1 per channel + 1 videos + 1 comments", ok.unitsUsed === 1 + enabled + 1 + 1 && calls === ok.unitsUsed);
   const claims2 = JSON.parse(await readFile(join(root, "data/private/youtube/claims.json"), "utf8")).claims;
   t("claim stored privately with ship price", claims2.length === 1 && claims2[0].pid === 102 && claims2[0].price === 100 && claims2[0].status === "unverified");

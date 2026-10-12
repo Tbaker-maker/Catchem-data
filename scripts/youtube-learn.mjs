@@ -17,7 +17,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { openPrivate } from "./lib/private-store.mjs";
 import { loadPriceBook } from "./self-check.mjs";
-import { buildCatalogueIndex, extractMentions, topicTags, commentSentiment, extractClaims, scoreClaims, rankClaims, buildLeads, claimStatus, extractIdeas } from "./lib/youtube.mjs";
+import { buildCatalogueIndex, extractMentions, topicTags, commentSentiment, extractClaims, scoreClaims, rankClaims, buildLeads, claimStatus, extractIdeas, videoWeight } from "./lib/youtube.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const API = "https://www.googleapis.com/youtube/v3";
@@ -50,6 +50,7 @@ export async function runYoutubeLearn({ root = ROOT, key = process.env.YOUTUBE_A
   const limits = { dailyUnitBudget: 400, maxNewVideosPerChannel: 15, commentsPerVideo: 20, firstRunDays: 30, ...cfg.limits };
   const catalog = await J(join(root, "data/catalog/tcgcsv-latest.json"), {});
   const today = String(catalog.asOf || "").slice(0, 10) || now.toISOString().slice(0, 10);
+  const tones = Object.fromEntries((cfg.channels || []).map((c) => [c.key, c.tone || {}]));
   const channels = (cfg.channels || []).filter((c) => c.id && c.enabled !== false);
   const base = { asOf: today, generatedAt: now.toISOString(), note: "Counts and dates only. Creator names, text and scores stay private.", channels: channels.length };
   if (!key) {
@@ -72,6 +73,11 @@ export async function runYoutubeLearn({ root = ROOT, key = process.env.YOUTUBE_A
   const claimsDoc = await J(join(dir, "claims.json"), { claims: [] });
   const ideasDoc = await J(join(dir, "ideas.json"), { ideas: [] });
   const ideaIds = new Set(ideasDoc.ideas.map((i) => i.id));
+  // Seed leads named in config (methods and sources a channel is known to use). Leads only.
+  for (const c of cfg.channels || []) for (const [n, s] of (c.seedIdeas || []).entries()) {
+    const id = `seed:${c.key}:${s.kind}:${s.source || n}`;
+    if (!ideaIds.has(id)) { ideaIds.add(id); ideasDoc.ideas.push({ id, ...s, channel: c.key, date: cfg.checked || today, status: "candidate", origin: "config" }); }
+  }
   const idx = buildCatalogueIndex(catalog.items || []);
   const yt = makeClient({ key, fetchFn, budget: limits.dailyUnitBudget });
   const errors = [];
@@ -113,7 +119,7 @@ export async function runYoutubeLearn({ root = ROOT, key = process.env.YOUTUBE_A
       topComments: f.comments, mentions: extractMentions(text, idx), topics: topicTags(text), sentiment: commentSentiment(f.comments.map((c) => c.text)), fetchedOn: today,
     };
     added.push(v);
-    claimsDoc.claims.push(...extractClaims({ videoId: v.id, channel: v.channel, date, text }, idx).filter((c) => !claimsDoc.claims.some((o) => o.id === c.id)));
+    claimsDoc.claims.push(...extractClaims({ videoId: v.id, channel: v.channel, date, text }, idx).map((c) => ({ ...c, toneWeight: videoWeight(v, tones[v.channel]), needsBacking: true })).filter((c) => !claimsDoc.claims.some((o) => o.id === c.id)));
     for (const i of extractIdeas({ videoId: v.id, channel: v.channel, date, text })) if (!ideaIds.has(i.id)) { ideaIds.add(i.id); ideasDoc.ideas.push(i); }
     if (!state.lastSeen[f.channel] || f.snippet.publishedAt > state.lastSeen[f.channel]) state.lastSeen[f.channel] = f.snippet.publishedAt;
   }
@@ -124,13 +130,14 @@ export async function runYoutubeLearn({ root = ROOT, key = process.env.YOUTUBE_A
   for (const c of claimsDoc.claims) { const st = claimStatus(c); if (c.status !== st.status) c.statusSince = today; c.status = st.status; c.evidence = st.evidence; }
   const topicsByVideo = new Map(videos.map((v) => [v.id, v.topics]));
   const ranking = rankClaims(claimsDoc.claims, topicsByVideo);
-  const leads = buildLeads(videos, { today, idx, seenTopics: state.topicsSeen, firstRun: !(state.topicsSeen || []).length });
+  const leads = buildLeads(videos, { today, idx, seenTopics: state.topicsSeen, firstRun: !(state.topicsSeen || []).length, tones });
   state.topicsSeen = [...new Set([...state.topicsSeen, ...videos.flatMap((v) => v.topics)])].sort();
   const eden = {};
   for (const v of videos.filter((x) => x.date >= new Date(Date.parse(`${today}T00:00:00Z`) - 30 * 86400000).toISOString().slice(0, 10))) {
     for (const k of [...v.mentions.sets.map((g) => `set:${g}`), ...v.mentions.cards.map((p) => `card:${p}`), ...v.mentions.sealed.map((p) => `sealed:${p}`)]) {
       const e = (eden[k] ||= { videos: 0, comments: 0, pos: 0, neg: 0 });
-      e.videos++; e.comments += v.sentiment.comments; e.pos += v.sentiment.pos; e.neg += v.sentiment.neg;
+      const w = videoWeight(v, tones[v.channel]);
+      e.videos++; e.comments += v.sentiment.comments; e.pos += w * v.sentiment.pos; e.neg += w * v.sentiment.neg;
     }
   }
   for (const e of Object.values(eden)) e.score = e.pos + e.neg ? Math.round(((e.pos - e.neg) / (e.pos + e.neg)) * 100) / 100 : 0;
@@ -140,7 +147,7 @@ export async function runYoutubeLearn({ root = ROOT, key = process.env.YOUTUBE_A
   await writeFile(join(dir, "videos.jsonl.gz"), gzipSync(videos.map((v) => JSON.stringify(v)).join("\n") + "\n"));
   await writeFile(join(dir, "claims.json"), JSON.stringify({ asOf: today, private: true, rule: "A creator claim is never fact. unverified until our own data (TCGplayer prices, pull-rate file, PSA pops, catalogue) or a second independent source backs or contradicts it. Only backed claims may influence reads, ratings or flags.", counts: { unverified: claimsDoc.claims.filter((c) => c.status === "unverified").length, backed: claimsDoc.claims.filter((c) => c.status === "backed").length, contradicted: claimsDoc.claims.filter((c) => c.status === "contradicted").length }, claims: claimsDoc.claims }, null, 1) + "\n");
   await writeFile(join(dir, "scores.json"), JSON.stringify({ asOf: today, private: true, note: "Private. Held = TCGplayer market on the claimed side after h days (card), or the set's median single (set). Same horizons and slack as self-check.", rows: ranking }, null, 1) + "\n");
-  await writeFile(join(dir, "eden-seed.json"), JSON.stringify({ asOf: today, private: true, method: "Word-list sentiment over top public comments, last 30 days, by catalogue id.", rows: eden }, null, 1) + "\n");
+  await writeFile(join(dir, "eden-seed.json"), JSON.stringify({ asOf: today, private: true, method: "Word-list sentiment over top public comments, last 30 days, by catalogue id. pos and neg are scaled by each channel tone weight (config/youtube-channels.json).", rows: eden }, null, 1) + "\n");
   await writeFile(join(dir, "ideas.json"), JSON.stringify({ asOf: today, private: true, note: "Candidate read paths from creator videos: methods, signals watched, data sources named. Unverified. The weekly audit tests them before any read uses one.", ideas: ideasDoc.ideas }, null, 1) + "\n");
   await writeFile(join(dir, "state.json"), JSON.stringify(state, null, 1) + "\n");
   const pushed = await store.close(["youtube/videos.jsonl.gz", "youtube/claims.json", "youtube/scores.json", "youtube/eden-seed.json", "youtube/ideas.json", "youtube/state.json"], `YouTube learn ${today}`);

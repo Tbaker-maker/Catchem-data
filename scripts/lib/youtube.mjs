@@ -164,13 +164,22 @@ export function rankClaims(claims, videoTopics = new Map()) {
 }
 
 // Public-safe leads: counts and dates only. No creator names, text or scores.
-export function buildLeads(videos, { today, idx, seenTopics = [], days = 7, firstRun = false }) {
+const HYPE = /!!|\b(insane|crazy|crazier|explod\w*|skyrocket\w*|massive|huge|never seen|must|urgent|moon\w*)\b/i;
+export const isHype = (title) => HYPE.test(String(title || "")) || (String(title || "").replace(/[^A-Za-z]/g, "").length > 10 && (String(title).match(/[A-Z]/g) || []).length / String(title).replace(/[^A-Za-z]/g, "").length > 0.6);
+// Weight of one video in attention and sentiment counts, from the channel's tone setting.
+export function videoWeight(v, tone = {}) {
+  const w = Number.isFinite(tone.weight) ? tone.weight : 1;
+  return tone.hype && isHype(v.title) ? w * 0.5 : w;
+}
+
+export function buildLeads(videos, { today, idx, seenTopics = [], days = 7, firstRun = false, tones = {} }) {
   const from = addDays(today, -(days - 1));
   const recent = videos.filter((v) => v.date >= from && v.date <= today);
   const tally = new Map();
   const bump = (key, v, label) => {
-    if (!tally.has(key)) tally.set(key, { key, label, channels: new Set(), videos: 0 });
-    const r = tally.get(key); r.channels.add(v.channel); r.videos++;
+    if (!tally.has(key)) tally.set(key, { key, label, channels: new Map(), videos: 0, wv: 0 });
+    const r = tally.get(key), w = videoWeight(v, tones[v.channel]);
+    r.channels.set(v.channel, Math.max(r.channels.get(v.channel) || 0, w)); r.videos++; r.wv += w;
   };
   for (const v of recent) {
     for (const g of v.mentions.sets) bump(`set:${g}`, v, idx.setList.find((s) => s.groupId === g)?.set || `set ${g}`);
@@ -181,8 +190,8 @@ export function buildLeads(videos, { today, idx, seenTopics = [], days = 7, firs
   const leads = [];
   for (const r of tally.values()) {
     const [kind, id] = r.key.split(":");
-    const n = r.channels.size;
-    if (kind === "topic" ? r.videos >= 2 : n >= 2) leads.push({ kind: kind === "topic" ? id : `${kind}_attention`, ref: kind === "topic" ? null : Number(id), label: r.label, channels: n, videos: r.videos, from, to: today });
+    const n = r.channels.size, wc = [...r.channels.values()].reduce((a, b) => a + b, 0);
+    if (kind === "topic" ? r.wv >= 2 : wc >= 2) leads.push({ kind: kind === "topic" ? id : `${kind}_attention`, ref: kind === "topic" ? null : Number(id), label: r.label, channels: n, videos: r.videos, weighted: Math.round((kind === "topic" ? r.wv : wc) * 100) / 100, from, to: today });
   }
   const seen = new Set(seenTopics);
   if (!firstRun) for (const v of recent) for (const t of v.topics) if (!seen.has(t)) { seen.add(t); leads.push({ kind: "new_method", ref: null, label: t.replace(/_/g, " "), channels: 1, videos: 1, from: v.date, to: today }); }
