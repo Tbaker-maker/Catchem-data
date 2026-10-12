@@ -6,7 +6,7 @@ import { join } from "node:path";
 import { variantTags, subtypeIndex, TAG_ORDER } from "./variant-tags.mjs";
 
 // Tags worth naming in a sentence. Printing and promo tags stay as chips only.
-export const SAY = ["Special Illustration Rare", "Illustration Rare", "Alternate Art", "Trainer Gallery", "Galarian Gallery", "Shiny Vault", "Gold", "Rainbow Rare", "Amazing Rare", "Radiant", "Classic Collection"];
+export const SAY = ["Special Illustration Rare", "Illustration Rare", "Tag Team (Alternate Art)", "Alternate Art", "Trainer Gallery", "Galarian Gallery", "Shiny Vault", "Gold", "Rainbow Rare", "Amazing Rare", "Radiant", "Classic Collection"];
 
 export async function buildVariantFile(root) {
   const J = async (p) => JSON.parse(await readFile(join(root, p), "utf8"));

@@ -27,12 +27,17 @@ export function kindOf(row) {
   if (row.rarity === "Special Illustration Rare") return "SIR";
   if (/^TG\d/i.test(num)) return "TG";
   if (/^GG\d/i.test(num)) return "GG";
-  if (/Alternate (Full )?Art|Alternate Art Secret/i.test(String(row.name || "")) && String(row.release || "") < "2023") return "ALT";
+  if (/Alternate (Full )?Art|Alternate Art Secret/i.test(String(row.name || ""))) {
+    // SM Tag Teams with alternate art are "Tag Team (Alternate Art)", never SWSH alt arts.
+    if (/ & /.test(String(row.name || "")) || String(row.release || "") < "2020-02") return "TTALT";
+    if (String(row.release || "") < "2023") return "ALT";
+  }
   return "";
 }
-export const KIND_LABEL = { IR: "Illustration Rare", SIR: "Special Illustration Rare", TG: "Trainer Gallery", GG: "Galarian Gallery", ALT: "Alternate Art" };
+export const KIND_LABEL = { IR: "Illustration Rare", SIR: "Special Illustration Rare", TG: "Trainer Gallery", GG: "Galarian Gallery", ALT: "Alternate Art", TTALT: "Tag Team (Alternate Art)" };
 // SWSH mapping from Tyler: TG and GG are the IR of that generation, alt arts the SIR.
-export const CURVE_KIND = { IR: "IR", TG: "IR", GG: "IR", SIR: "SIR", ALT: "SIR" };
+// Internal analysis only. Public text always names the card's own rarity or tag.
+export const CURVE_KIND = { IR: "IR", TG: "IR", GG: "IR", SIR: "SIR", ALT: "SIR", TTALT: "SIR" };
 export const eraOf = (row) => (/^(SV|ME)/.test(String(row.set || "")) || String(row.release || "") >= "2023-03" ? "SV and Mega" : "Sword & Shield");
 
 // Merge change-only long history ("days:price,...") with nightly hist.
@@ -84,6 +89,7 @@ export function positionText(pos) {
 export function curveNote(kind0, age, rotated) {
   const kind = CURVE_KIND[kind0] || kind0;
   if (kind0 === "TG" || kind0 === "GG") return { stage: rotated ? "after rotation" : "past one year", text: "Sword & Shield Trainer Gallery cards rose a median 129% in the 6 months before their sets rotated on Apr 11, 2025, then 10% in the 6 months after (120 cards). Holos from the same sets rose 21%, then 6%." };
+  if (kind0 === "TTALT") return { stage: rotated ? "after rotation" : "past one year", text: "Tag Team (Alternate Art) cards were not part of our IR study. The facts above are this card's own." };
   if (kind0 === "ALT") return { stage: rotated ? "after rotation" : "past one year", text: "Sword & Shield alt arts from F-mark sets rose a median 136% from Feb 2024 to Oct 12, 2026 (20 cards). Holos from the same sets rose 70%." };
   if (rotated && age >= 365) return { stage: "after rotation", text: `${STUDY.later[kind].text} For rotated G-mark sets, IRs rose a median 23% in the 6 months after Apr 10, 2026 (125 cards).` };
   if (age < 183) return { stage: "first 6 months", text: STUDY.early[kind].text };
@@ -136,7 +142,8 @@ export function setListings(bySet, setName) {
 
 // Multi-factor watchlist score. Weights add to 100. Documented in the IR doc v2.
 // The print window is one strong factor, not a gate.
-export const SCORE_WEIGHTS = { stage: 25, range: 20, popularity: 20, peers: 15, trend: 15, listings: 5, psa10: 0 };
+// Sealed listings left out (Tyler, Oct 12): card pages never show sealed data.
+export const SCORE_WEIGHTS = { stage: 25, range: 25, popularity: 20, peers: 15, trend: 15, psa10: 0 };
 
 export function stageValue(age, rotated) {
   if (rotated) return { v: 0.5, chip: "Set rotated" };
@@ -178,7 +185,7 @@ export function buildRows({ rows, longRows, rot, bySet, today, marks = {} }) {
     if (/promo|miscellaneous/i.test(r.set || "")) continue;
     const own = marks[r.id]?.mark;
     const status = own ? ((rot?.sources || []).some((x) => x.mark === own) ? "Rotated" : "Standard") : (rot?.sets || []).find((s) => s.slug === r.setSlug)?.status || "";
-    const rotated = /^Rotated/.test(status) || kind === "ALT" || kind === "TG" || kind === "GG";
+    const rotated = /^Rotated/.test(status) || kind === "ALT" || kind === "TTALT" || kind === "TG" || kind === "GG";
     const pts = series(r, longRows[r.id]);
     const now = priceAt(pts, today, 3);
     if (!now) continue;
@@ -193,14 +200,12 @@ export function buildRows({ rows, longRows, rot, bySet, today, marks = {} }) {
     const rg = range(pts);
     const pos = rangePos(rg, now[1]);
     const pop = popularity(r.name);
-    const lst = setListings(bySet, r.set);
     const f = {
       stage: stageValue(age, rotated),
       range: { v: pos == null ? 0.5 : (100 - pos) / 100, chip: pos != null && pos <= 35 ? positionText(pos) : "" },
       popularity: { v: pop.weight / 5, chip: "" },
       peers: peersValue(t90 ? t90.pct : null, setMed.get(r.setSlug + "|" + CURVE_KIND[kind]), eraMed.get(eraOf(r) + "|" + CURVE_KIND[kind])),
       trend: trendValue(t30, t90),
-      listings: listingsValue(lst),
     };
     let score = 0;
     for (const k of Object.keys(f)) score += (SCORE_WEIGHTS[k] || 0) * f[k].v;
@@ -213,7 +218,6 @@ export function buildRows({ rows, longRows, rot, bySet, today, marks = {} }) {
       low: rg.low, high: rg.high, onFileSince: rg.since,
       position: positionText(pos), positionPct: pos,
       trend30: t30, trend90: t90,
-      setListings: lst,
       curve: curveNote(kind, age, rotated),
       rotation: rotChip,
       popularity: pop.tags,

@@ -29,7 +29,7 @@ const BY_NAME = [
   [/\(Delta Species\)/i, "Delta Species"],
 ];
 const BY_SUBTYPE = { "TAG TEAM": "Tag Team", "Radiant": "Radiant", "Prism Star": "Prism Star", "ACE SPEC": "ACE SPEC" };
-export const TAG_ORDER = ["Special Illustration Rare", "Illustration Rare", "Alternate Art", "Trainer Gallery", "Galarian Gallery", "Shiny Vault", "Gold", "Rainbow Rare", "Full Art", "Tag Team", "Radiant", "Prism Star", "Amazing Rare", "Shiny", "Classic Collection", "Black & White Rare", "ACE SPEC", "Cosmos Holo", "Cracked Ice Holo", "Poké Ball Pattern", "Master Ball Pattern", "Delta Species", "Promo", "Reverse Holo"];
+export const TAG_ORDER = ["Special Illustration Rare", "Illustration Rare", "Tag Team (Alternate Art)", "Alternate Art", "Trainer Gallery", "Galarian Gallery", "Shiny Vault", "Gold", "Rainbow Rare", "Full Art", "Tag Team", "Radiant", "Prism Star", "Amazing Rare", "Shiny", "Classic Collection", "Black & White Rare", "ACE SPEC", "Cosmos Holo", "Cracked Ice Holo", "Poké Ball Pattern", "Master Ball Pattern", "Delta Species", "Promo", "Reverse Holo"];
 
 export function variantTags(item, { subtypes = [] } = {}) {
   if (!item || item.kind === "sealed") return [];
@@ -46,6 +46,9 @@ export function variantTags(item, { subtypes = [] } = {}) {
   const pr = (item.printings || []).map((p) => p.name || p);
   if (pr.some((p) => /^Reverse Holofoil$/i.test(p)) || /^Reverse Holofoil$/i.test(item.printing || "")) out.add("Reverse Holo");
   void release;
+  // Tyler, Oct 12: an SM Tag Team with alternate art is "Tag Team (Alternate Art)".
+  // "Alternate Art" alone is the Sword & Shield tag.
+  if (out.has("Tag Team") && out.has("Alternate Art")) { out.delete("Tag Team"); out.delete("Alternate Art"); out.add("Tag Team (Alternate Art)"); }
   return TAG_ORDER.filter((t) => out.has(t));
 }
 

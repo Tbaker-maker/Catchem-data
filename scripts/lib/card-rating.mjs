@@ -9,8 +9,8 @@ import { popularity, monName } from "./popular-pokemon.mjs";
 
 // Weights add to 100. A factor with no data is left out and the rest are
 // rescaled, so a missing fact never counts as good or bad.
-export const RATING_WEIGHTS = { peer: 25, popularity: 15, scarcity: 15, demand: 15, age: 10, artist: 10, supply: 5, range: 5 };
-export const FACTOR_LABEL = { peer: "Peer value", popularity: "Popularity", scarcity: "Scarcity of the treatment", demand: "Demand signals", age: "Age and print window", artist: "Artist", supply: "Supply counted", range: "Range on file" };
+export const RATING_WEIGHTS = { peer: 25, popularity: 15, scarcity: 15, demand: 15, age: 10, artist: 10, range: 10 };
+export const FACTOR_LABEL = { peer: "Price vs similar cards", popularity: "Popularity", scarcity: "How rare this version is", demand: "Recent demand", age: "Age", artist: "Artist", range: "Price vs its own history" };
 
 // Verdict bands on price against the peer median.
 export const BELOW = 0.8;
@@ -27,12 +27,14 @@ const EX_END = "2007-06-01";
 
 // Groups, first match wins. Each has its own peer set and read path.
 export const GROUPS = [
-  { key: "tagteam-alt", label: "Tag Team alt arts", one: "Tag Team alt art", test: (c) => c.tags.has("Tag Team") && c.tags.has("Alternate Art") },
-  { key: "tagteam", label: "Tag Team cards", one: "Tag Team card", test: (c) => c.tags.has("Tag Team") && !LOWR.has(c.rarity) },
-  { key: "swsh-alt", label: "Sword & Shield alt arts", one: "Sword & Shield alt art", test: (c) => c.tags.has("Alternate Art") },
-  { key: "tg", label: "Trainer Gallery cards", one: "Trainer Gallery card", test: (c) => c.tags.has("Trainer Gallery") || c.tags.has("Galarian Gallery") },
-  { key: "sir", label: "Special Illustration Rares", one: "Special Illustration Rare", test: (c) => c.rarity === "Special Illustration Rare" },
-  { key: "ir", label: "Illustration Rares", one: "Illustration Rare", test: (c) => c.rarity === "Illustration Rare" },
+  // Public labels name each card's own rarity or variant tag. Never an IR or SIR equivalent.
+  { key: "tagteam-alt", label: "Tag Team (Alternate Art) cards", one: "Tag Team (Alternate Art)", tag: "Tag Team (Alternate Art)", test: (c) => c.tags.has("Tag Team (Alternate Art)") || (c.tags.has("Tag Team") && c.tags.has("Alternate Art")) },
+  { key: "tagteam", label: "Tag Team cards", one: "Tag Team", tag: "Tag Team", test: (c) => c.tags.has("Tag Team") && !LOWR.has(c.rarity) },
+  { key: "swsh-alt", label: "Alternate Art cards", one: "Alternate Art", tag: "Alternate Art", test: (c) => c.tags.has("Alternate Art") && c.release >= "2020-02" && c.release < "2023-03" },
+  { key: "tg", label: "Trainer Gallery cards", one: "Trainer Gallery", tag: "Trainer Gallery", test: (c) => c.tags.has("Trainer Gallery") },
+  { key: "gg", label: "Galarian Gallery cards", one: "Galarian Gallery", tag: "Galarian Gallery", test: (c) => c.tags.has("Galarian Gallery") },
+  { key: "sir", label: "Special Illustration Rares", one: "Special Illustration Rare", rarity: "Special Illustration Rare", test: (c) => c.rarity === "Special Illustration Rare" },
+  { key: "ir", label: "Illustration Rares", one: "Illustration Rare", rarity: "Illustration Rare", test: (c) => c.rarity === "Illustration Rare" },
   { key: "gold-star", label: "Gold Star cards", one: "Gold Star card", test: (c) => / Star\b/.test(c.name) && !/Prism Star|Black Star|Team Star|Star Piece|Grey Star/i.test(c.name) && c.release >= EX_START && c.release < EX_END && c.rarity === "Ultra Rare" },
   { key: "shining", label: "Shining cards", one: "Shining card", test: (c) => /^Shining /.test(c.name) && c.release < WOTC_END && !LOWR.has(c.rarity) },
   { key: "prism", label: "Prism Star cards", one: "Prism Star card", test: (c) => c.tags.has("Prism Star") },
@@ -43,7 +45,7 @@ export const GROUPS = [
 ];
 // 1st Editions are priced as their own printing, against other 1st Edition WOTC holos.
 export const FIRST_ED = { key: "first-ed", label: "1st Edition WOTC holos", one: "1st Edition WOTC holo" };
-export const PRINT_WINDOW = new Set(["ir", "sir", "tg", "swsh-alt", "tagteam-alt", "tagteam", "radiant", "gold"]);
+export const PRINT_WINDOW = new Set(["ir", "sir", "tg", "gg", "swsh-alt", "tagteam-alt", "tagteam", "radiant", "gold"]);
 
 const median = (a) => { const b = a.filter((x) => Number.isFinite(x)).sort((x, y) => x - y); const m = b.length >> 1; return b.length ? (b.length % 2 ? b[m] : (b[m - 1] + b[m]) / 2) : null; };
 const clamp = (x) => Math.max(0, Math.min(1, x));
@@ -166,8 +168,8 @@ export function buildRatings({ rows, longRows = {}, variants = {}, searchMons = 
   for (const x of rated) {
     const { c, g } = x;
     let peers = pools.get(g.key + "|" + x.band) || [];
-    let peerBasis = "same group and popularity band";
-    if (peers.length - 1 < MIN_PEERS) { peers = pools.get(g.key) || []; peerBasis = "same group"; }
+    let peerBasis = "similar popularity";
+    if (peers.length - 1 < MIN_PEERS) { peers = pools.get(g.key) || []; peerBasis = "all popularity levels"; }
     const others = peers.filter((p) => p !== x);
     const med = others.length >= MIN_PEERS ? median(others.map((p) => p.price)) : null;
     const ratio = med ? x.price / med : null;
@@ -178,18 +180,16 @@ export function buildRatings({ rows, longRows = {}, variants = {}, searchMons = 
     const check = printOdd || (ratio != null && (ratio < 1 / CHECK || ratio > CHECK));
     const f = {};
     const pv = peerValue(x.price, med);
-    if (pv != null && !check) f.peer = { v: pv, fact: `${money(x.price)} (${dl(x.date)}) against a median of ${money(med)} for ${others.length} ${g.label} (${peerBasis})` };
+    if (pv != null && !check) f.peer = { v: pv, fact: `${money(x.price)} (${dl(x.date)}) vs a typical ${money(med)} for ${g.label} (${others.length} cards, ${peerBasis})` };
     f.popularity = { v: clamp(x.pop.weight / 5 * 0.7 + (searchMons.get(c.mon) ? 0.3 * Math.min(1, Math.log10(searchMons.get(c.mon)) / 2) : 0)), fact: `${x.pop.tags.length ? x.pop.tags.map((t) => POP_LABEL[t] || t).join(", ") : "Not on the popularity list"}; ${searchMons.get(c.mon) || 0} ${title(c.mon)} cards in our search` };
     const sc = scarcity(c, byMon);
     if (sc) f.scarcity = { v: sc.v, fact: `${sc.total} ${title(c.mon)} cards in the catalogue, ${sc.same} in this group, ${sc.commons} commons or uncommons${sc.first ? `. The first ${g.one} of ${title(c.mon)} on file` : ""}` };
     const ar = artists.get(c.artist);
-    if (ar) f.artist = { v: ar.v, fact: `${c.artist}: median ${ar.premium.toFixed(2)}x set and rarity peers across ${ar.n} cards` };
-    const lst = bySet && !x.firstEd && PRINT_WINDOW.has(g.key) ? setListings(bySet, c.set) : null;
-    if (lst && lst.prev) f.supply = { v: lst.n < lst.prev.n ? 1 : lst.n > lst.prev.n ? 0.2 : 0.5, fact: `${lst.n} eBay listings counted for ${lst.name} on ${dl(lst.date)}, ${lst.prev.n} on ${dl(lst.prev.date)}` };
+    if (ar) f.artist = { v: ar.v, fact: `Cards by ${c.artist} typically sell for ${ar.premium.toFixed(2)}x similar cards from the same set and rarity (${ar.n} cards)` };
     const age = days(c.release, today);
     if (PRINT_WINDOW.has(g.key)) {
       const status = (rot?.sets || []).find((s) => s.slug === c.setSlug)?.status || "";
-      const rotated = /^Rotated/.test(status) || ["tg", "swsh-alt", "tagteam-alt", "tagteam", "gold"].includes(g.key) && c.release < "2023";
+      const rotated = /^Rotated/.test(status) || ["tg", "gg", "swsh-alt", "tagteam-alt", "tagteam", "gold"].includes(g.key) && c.release < "2023";
       const st = stageValue(age, rotated);
       f.age = { v: st.v, fact: `${age} days since release (${dl(c.release)})${rotated ? ", set rotated" : ""}` };
     } else {
@@ -243,15 +243,15 @@ export function ratingReads(list, { asOf, max = 3 } = {}) {
       const top = pick[0];
       const label = top.groupLabel;
       const pv = top.firstEd ? " 1st Edition" : "";
-      const head = `Priced ${side} similar ${label}: ${bare(top.name)}${pv} (${shortSet(top.set)} ${top.num || ""}), ${money(top.price.price)} (${md(top.price.date)}) on TCGplayer market. Peer median ${money(top.peers.median)} across ${top.peers.n} cards.`.replace(/\s+\)/, ")");
+      const head = `Priced ${side} similar ${label}: ${bare(top.name)}${pv} (${shortSet(top.set)} ${top.num || ""}), ${money(top.price.price)} (${md(top.price.date)}) on TCGplayer market. Typical price for similar cards: ${money(top.peers.median)} (${top.peers.n} cards).`.replace(/\s+\)/, ")");
       const lines = [
-        ...pick.slice(0, max).map((r) => `${bare(r.name)}${r.firstEd ? " 1st Edition" : ""} (${shortSet(r.set)}): ${money(r.price.price)} (${md(r.price.date)}), ${r.peers.ratio}x the peer median of ${money(r.peers.median)}.`),
-        `Peers: ${label} in the same popularity band where there are ${MIN_PEERS} or more, otherwise all ${label}. Prices are TCGplayer market on ${md(asOf)}.`,
+        ...pick.slice(0, max).map((r) => `${bare(r.name)}${r.firstEd ? " 1st Edition" : ""} (${shortSet(r.set)}): ${money(r.price.price)} (${md(r.price.date)}), ${r.peers.ratio}x the typical ${money(r.peers.median)}.`),
+        `Similar cards: other ${label} with similar popularity where there are ${MIN_PEERS} or more, otherwise all ${label}. Typical price is the middle price. TCGplayer market on ${md(asOf)}.`,
         "A factual comparison of prices on file, not advice.",
       ];
       if (!cleanCopy(head) || lines.some((l) => !cleanCopy(l)) || lines.length < 3) continue;
       out.push({
-        id: `deep-rating-${g}-${side}`, readKind: "deep", kind: "deep", deep: "rating", board: "v3", family: "deep", name: `Card Rating: ${label}`,
+        id: `deep-rating-${g}-${side}`, readKind: "deep", kind: "deep", deep: "rating", board: "v3", family: "deep", name: `Rating: ${label}`,
         sku: top.id, href: `/c/${top.id}`, headline: head, path: head, lines: lines.slice(0, 6), asOf, source: `TCGplayer market, buckets and hist-long, ${asOf}; Card Rating peers`,
         tags: [], receipt: { group: g, side, cards: pick.slice(0, max).map((r) => ({ id: r.id, price: r.price, peers: r.peers })) },
       });
