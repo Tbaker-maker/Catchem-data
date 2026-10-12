@@ -460,11 +460,14 @@ export function irLifecycle(cards, { asOf }) {
   const day = monthDay(asOf) + ", " + asOf.slice(0, 4);
   const read1 = `IRs after the spotlight moves on: IRs from 2023-24 Scarlet & Violet sets rose a median ${pctTxt(ir1)} from one year after release to ${day} (${g.y1.IR.length} cards, TCGplayer market). Plain holos from the same sets rose ${pctTxt(h1)}${s1 != null ? `, SIRs ${pctTxt(s1)}` : ""}.`;
   const read2 = `New-set IRs, first 6 months: IRs from sets released Mar 2025 to Feb 2026 moved a median ${pctTxt(ir6)} in their first 6 months (${g.new6.IR.length} cards, TCGplayer market).`;
-  const holo2 = `Holo baseline, same sets and window: ${pctTxt(h6)} (${g.new6.Holo.length} cards).`;
+  // Its holo baseline is a different group and window from the headline (newer sets, first 6 months),
+  // so the line names both. The headline's own holo baseline (h1) is read 1 and the line below.
+  const holo2 = `Holo baseline for those newer sets, same first 6 months: ${pctTxt(h6)} (${g.new6.Holo.length} cards).`;
+  const holo1 = `Holo baseline: plain holos from those 2023-24 sets rose a median ${pctTxt(h1)} over the same stretch (${g.y1.Holo.length} cards).`;
   const name = cleanName(best.c.name);
   const read3 = `${name} IR (${short(best.c.set)} ${best.c.number}): ${money(best.first[1])} in ${monthYear(best.first[0])}, ${money(best.now)} on ${day} on TCGplayer market. Up ${Math.round(best.ch * 100)}%, the largest IR climb in our history file.`;
   const holo3 = hb != null ? `Holo baseline for ${short(best.c.set)}: plain holos moved a median ${pctTxt(hb)} from their first point to ${monthDay(asOf)} (${peers.length} cards).` : "";
-  const rr = row("irlife", asOf, "IR lifecycle", `IR lifecycle: older Scarlet & Violet IRs rose a median ${pctTxt(ir1)} since their first birthday. Plain holos from the same sets: ${pctTxt(h1)}.`, [read1, read2, holo2, read3, holo3], asOf,
+  const rr = row("irlife", asOf, "IR lifecycle", `IR lifecycle: older Scarlet & Violet IRs rose a median ${pctTxt(ir1)} since their first birthday. Plain holos from the same sets: ${pctTxt(h1)}.`, [read1, holo1, read2, holo2, read3, holo3], asOf,
     `TCGplayer market, buckets and hist-long, ${asOf}; method from the Catch'em IR study`, { chart: { label: "Median change, 1 year after release to tonight, %", bars: [["IR", Math.round(ir1 * 100)], ["Holo", Math.round(h1 * 100)], ...(s1 != null ? [["SIR", Math.round(s1 * 100)]] : [])] }, receipt: { ir1, h1, s1, ir6, h6, n: { ir1: g.y1.IR.length, h1: g.y1.Holo.length, s1: g.y1.SIR.length, ir6: g.new6.IR.length, h6: g.new6.Holo.length }, best: { id: best.c.id, from: best.first, to: best.now } } });
   return rr ? [rr] : [];
 }

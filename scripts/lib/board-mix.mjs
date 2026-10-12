@@ -662,9 +662,13 @@ export async function buildBoardV3(root, { on = true } = {}) {
     );
     const variants = await readJson(join(root, "data/card-variants.json"), { cards: {} });
     const tagsOf = (id) => variants.cards?.[id]?.tags || [];
+    // Card numbers from the catalogue by card id, where the history file has none.
+    const catalogDoc = await readJson(join(root, "data/catalog/tcgcsv-latest.json"), { items: [] });
+    const catNum = new Map((catalogDoc.items || []).map((it) => [it.id, it.number || ""]));
+    const numbered = histCards.map((c) => (c.number ? c : { ...c, number: catNum.get(c.id) || "" }));
     fresh.push(
-      ...everyPrinting(histCards, tagsOf, { asOf: end, max: 6 }),
-      ...sameLabelAcrossSets(histCards, tagsOf, { asOf: end, max: 6 }),
+      ...everyPrinting(numbered, tagsOf, { asOf: end, max: 6 }),
+      ...sameLabelAcrossSets(numbered, tagsOf, { asOf: end, max: 6 }),
       ...chaseLists(histCards, tagsOf, { asOf: end, max: 20 }).filter((r) => !fresh.some((f) => f.href && f.href === r.href)).slice(0, 8),
     );
     deepSlump = slumpWatch(histCards, tagsOf, { asOf: end, max: 10, skip: usedHist }).map((r) => ({ ...r, priceRead: true }));
