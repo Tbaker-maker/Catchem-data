@@ -533,11 +533,19 @@ export function leadFrameLines(points, opts = {}) {
   return [made.line];
 }
 
+// The product name is data, not our wording. "Chaos Rising Stamped" must not
+// trip the filler ban and drop a window read to the bare latest-price line.
+function leadWithoutName(line, name) {
+  const n = String(name || "").trim();
+  if (!n) return line;
+  return String(line).split(n).join("This card");
+}
+
 export function pickLead(points, opts = {}, accept = null) {
   const facts = scopeFacts(points, opts);
   if (!facts) return null;
   const made = collectorFact(facts, opts);
-  if (!made || !usableLead(made.line)) return null;
+  if (!made || !usableLead(leadWithoutName(made.line, opts.name))) return null;
   if (accept && !accept(made.line, made.id)) return null;
   return made;
 }
