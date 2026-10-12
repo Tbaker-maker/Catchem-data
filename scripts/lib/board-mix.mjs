@@ -632,6 +632,7 @@ export async function buildBoardV3(root, { on = true } = {}) {
   let deepPrice = [];
   let deepGap = [];
   let deepRecovery = [];
+  let deepRating = [];
   try {
     const usedHist = new Set(Object.values(hist.picked).flat().map((r) => r.sku));
     const era = eraComparison(histCards, { asOf: end, sets: setsDoc });
@@ -649,6 +650,10 @@ export async function buildBoardV3(root, { on = true } = {}) {
       ...biggestYear(histCards, { asOf: end, sets: setsDoc }),
       ...irLifecycle(histCards, { asOf: end }),
     );
+    // Card Rating group reads (feed/card-rating.json, built by build-card-rating.mjs).
+    // They compare prices, so they ride a price lane and count toward the price share.
+    const rating = await readJson(join(pub, "feed/card-rating.json"), {});
+    if (rating?.asOf === end) deepRating = (rating.reads || []).filter((r) => r.headline && r.lines?.length >= 3).map((r) => ({ ...r, priceRead: true }));
     const stories = cardStories(histCards, { asOf: end, skip: usedHist });
     for (const r of stories) usedHist.add(r.sku);
     deepPrice = stories.map((r) => ({ ...r, priceRead: true }));
@@ -680,7 +685,7 @@ export async function buildBoardV3(root, { on = true } = {}) {
   for (const k of Object.keys(hist.picked)) for (const r of hist.picked[k]) r.image = boardImage(r, images, tcgOn, sealedPid);
   // Price rows round-robin: tonight's price reads, then one of each long-history kind.
   // Two of tonight's rows per round, so week moves keep their place.
-  const lanes = [base.filter((_, i) => i % 2 === 0), base.filter((_, i) => i % 2 === 1), deepPrice, deepGap, deepRecovery, dives, ...["high", "year", "backto", "set", "plain", "low"].map((k) => hist.picked[k] || [])];
+  const lanes = [base.filter((_, i) => i % 2 === 0), base.filter((_, i) => i % 2 === 1), deepPrice, deepRating, deepGap, deepRecovery, dives, ...["high", "year", "backto", "set", "plain", "low"].map((k) => hist.picked[k] || [])];
   const priceRows = [];
   for (let i = 0; lanes.some((l) => i < l.length); i += 1) for (const l of lanes) if (l[i]) priceRows.push(l[i]);
   const seenSku = new Set(fresh.filter((r) => ["listings", "sealedchase"].includes(r.readKind)).map((r) => r.sku));
