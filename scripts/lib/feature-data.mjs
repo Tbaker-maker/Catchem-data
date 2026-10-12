@@ -327,13 +327,11 @@ export function assignMarks(sets, logos, officialSets, cards) {
     const cover = singles ? letters.length / singles : 0;
     let ok = Boolean(top) && share >= 0.8 && cover >= 0.8;
     if (ok && (sharers.get(sid) || []).length > 1) ok = singles === rms.length;
-    const mark = ok ? top : (MARK_OVERRIDES[set.slug]?.mark || null);
-    out.push({
-      slug: set.slug,
-      name: set.name || "",
-      mark,
-      status: rotationStatus(mark),
-    });
+    const override = !ok && MARK_OVERRIDES[set.slug] ? MARK_OVERRIDES[set.slug] : null;
+    const mark = ok ? top : (override?.mark || null);
+    const row = { slug: set.slug, name: set.name || "", mark, status: rotationStatus(mark) };
+    if (override) row.checked = override.checked;
+    out.push(row);
   }
   return out;
 }

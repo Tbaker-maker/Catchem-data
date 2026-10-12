@@ -42,6 +42,9 @@ try {
   for (const r of list) { const k = shardOf(r.id); if (!shards.has(k)) shards.set(k, []); shards.get(k).push(r); }
   await mkdir(join(PUB, "feed/rating"), { recursive: true });
   for (let i = 0; i < 64; i++) { const k = String(i).padStart(2, "0"); await writeFile(join(PUB, `feed/rating/${k}.json`), JSON.stringify({ asOf: today, rows: shards.get(k) || [] }) + "\n"); }
+  // Internal review list for prices held back (not published to the site).
+  const held = list.filter((r) => r.check).map((r) => ({ id: r.id, name: r.name, set: r.set, num: r.num, group: r.group, printing: r.printing, price: r.price, peerMedian: r.peers?.median ?? null, peerN: r.peers?.n ?? null, ratio: r.peers?.ratio ?? null, reason: r.peers && (r.peers.ratio < 0.1 || r.peers.ratio > 10) ? "more than 10x from peer median" : "1st Edition price below its own unlimited price" }));
+  await writeFile(join(PUB, "../../../data/derived/card-rating-held.json"), JSON.stringify({ asOf: today, note: "Internal. Card Rating prices held for a check: no verdict, no read. Review against TCGplayer by id.", count: held.length, rows: held }, null, 1) + "\n");
   await writeFile(join(PUB, "feed/card-rating.json"), JSON.stringify(doc) + "\n");
   console.log(`card-rating: ${list.length} rows, ${reads.length} reads as of ${today}`, groups);
 } catch (err) {
