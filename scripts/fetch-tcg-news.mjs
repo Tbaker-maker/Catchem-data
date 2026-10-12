@@ -6,7 +6,6 @@ import { fileURLToPath } from "node:url";
 import {
   annotate,
   applyDisagreements,
-  applyFieldTags,
   applyTitleLanguage,
   blockedUrlReason,
   decodeEntities,
@@ -19,11 +18,9 @@ import {
   pickWeekly,
   ptDay,
   publicNewsRecord,
-  releaseCalendar,
   sentenceForItem,
   shapeNewsItem,
   titleTranslations,
-  videoGameHeadlines,
 } from "./lib/tcg-news.mjs";
 import {
   parseAsiaPress,
@@ -460,6 +457,11 @@ async function main() {
   applyDisagreements(catalog);
   const translations = titleTranslations();
   for (const item of catalog) applyTitleLanguage(item, translations);
+  const stored = catalog.map(shapeNewsItem);
+  const newsPool = stored.filter(isPublicNewsCandidate).map(publicNewsRecord);
+  const items = pickDefault(newsPool, today, 8);
+  const news = pickNews(newsPool, today);
+  const weekly = pickWeekly(newsPool, today);
   const updated = new Date().toISOString();
   const sources = [
     {
@@ -476,15 +478,6 @@ async function main() {
     },
     ...added.reports,
   ];
-  const sourceNames = sources.map((row) => row.source).filter(Boolean);
-  applyFieldTags(catalog, sourceNames);
-  const stored = catalog.map(shapeNewsItem);
-  const newsPool = stored.filter(isPublicNewsCandidate).map(publicNewsRecord);
-  const items = pickDefault(newsPool, today, 8);
-  const news = pickNews(newsPool, today);
-  const weekly = pickWeekly(newsPool, today);
-  const calendar = releaseCalendar(catalog);
-  const videoGames = videoGameHeadlines(catalog, sourceNames);
   const newsDoc = {
     updated,
     timezone: "America/Vancouver",
@@ -500,9 +493,6 @@ async function main() {
       },
     },
     catalog: stored,
-    releaseCalendar: calendar.dates,
-    releaseCalendarOmitted: calendar.omitted,
-    videoGames,
     sources,
     failures,
   };
