@@ -161,6 +161,33 @@ function weekWord(n) {
 // A window-open comparison is not that fact, and filler closers are banned.
 export const FILLER_BAN = /\b(beside|beyond|posted|stamped|following|within|during|in context|for reference|as written|on record|in view|at hand|for now|on paper|as shown|as listed|in short)\b|\bas of\b/i;
 
+// Exact strings only. A longer sentence that merely contains one of these stays banned.
+export const TAKE_LABELS = {
+  up: "Looks like a buy",
+  dip: "Wait for a dip",
+  watch: "Watch",
+  avoid: "Avoid for now",
+  stretched: "Looks stretched",
+};
+export const TAKE_FOOTER = "A take is our read of the numbers, not advice.";
+const TAKE_EXEMPT = new Set([...Object.values(TAKE_LABELS), TAKE_FOOTER]);
+
+export function bannedWord(text) {
+  const s = String(text ?? "");
+  if (TAKE_EXEMPT.has(s)) return false;
+  return BANNED.test(s);
+}
+
+export function fillerBanned(text) {
+  const s = String(text ?? "");
+  if (TAKE_EXEMPT.has(s)) return false;
+  return FILLER_BAN.test(s);
+}
+
+export function lineBanned(text) {
+  return bannedWord(text) || fillerBanned(text);
+}
+
 function scopeFacts(points, opts) {
   const all = seriesOf(points);
   if (all.length < 2) return null;
@@ -404,7 +431,7 @@ function stepPercentAgrees(text) {
 
 function usableLead(sentence) {
   if (!sentence || !/latest price/.test(sentence)) return false;
-  if (BANNED.test(sentence) || FILLER_BAN.test(sentence) || BAD_DATE.test(sentence) || /\bsince Sep\b/.test(sentence) || LEAD_BAN.test(sentence)) return false;
+  if (lineBanned(sentence) || BAD_DATE.test(sentence) || /\bsince Sep\b/.test(sentence) || LEAD_BAN.test(sentence)) return false;
   if (!stepPercentAgrees(sentence)) return false;
   if (/ while the /.test(sentence) && !splitMovesAgree(sentence)) return false;
   if (/\. [A-Z]/.test(sentence)) return false;
@@ -1274,10 +1301,10 @@ export function readCopy(read, used = new Set()) {
   const thin = isThinSeries(raw, read.toDate || read.asOf);
   const headline = makeHeadline(read, pts, thin, !(lastDate && spikes.has(lastDate)));
   const empty = { headline: "", why: "", thin };
-  if (!headline || BANNED.test(headline)) return empty;
+  if (!headline || bannedWord(headline)) return empty;
   const sign = Math.sign(Number(read.changePct));
   for (const text of whyChoices(pts, sign, headline)) {
-    if (BANNED.test(text)) continue;
+    if (bannedWord(text)) continue;
     const pattern = whyPattern(text);
     if (!pattern || used.has(pattern)) continue;
     return { headline, why: text, thin, pattern };
@@ -1464,7 +1491,7 @@ export function feedWindow(points, days, opts = {}) {
 export function rankReads(rows, limit = 12) {
   const pools = new Map();
   for (const row of rows) {
-    if (!row || !money(row.price) || !row.headline || BANNED.test(row.headline)) continue;
+    if (!row || !money(row.price) || !row.headline || bannedWord(row.headline)) continue;
     const key = row.type || "mover";
     if (!pools.has(key)) pools.set(key, []);
     pools.get(key).push(row);
