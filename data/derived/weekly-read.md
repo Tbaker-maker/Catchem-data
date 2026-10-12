@@ -14,7 +14,7 @@ Sealed
 
 ## Sealed line and chase line
 These are two lines. They are not one number.
-- 151: sealed 104.9; chase building history (Charizard ex, Blastoise ex, Venusaur ex)
-- Ascended Heroes: sealed 96; chase building history (Mega Dragonite ex, Mega Gengar ex)
+- 151: sealed 105.6; chase building history (Charizard ex, Blastoise ex, Venusaur ex)
+- Ascended Heroes: sealed 95.2; chase building history (Mega Dragonite ex, Mega Gengar ex)
 - Astral Radiance: sealed 104.2; chase 95.2 (Machamp V, Origin Forme Palkia V, Beedrill V)
 - Base Set: sealed building history; chase building history
