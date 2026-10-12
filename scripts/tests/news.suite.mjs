@@ -14,7 +14,11 @@ import {
   preciseDays,
   productKey,
   publicNewsRecord,
+  releaseCalendar,
   sourceAllowsOlderWeekly,
+  fieldTags,
+  shiftDay,
+  videoGameHeadlines,
   tagsFor,
 } from "../lib/tcg-news.mjs";
 
@@ -68,14 +72,41 @@ export async function run() {
   t("news filter keeps kind news inside 90 days", news.some((row) => row.date === "2026-08-01") && news.every((row) => row.date >= "2026-07-04"));
   t("news filter drops anything older than 90 days", news.every((row) => row.date !== "2026-06-01"));
   const weekly = pickWeekly(rows, today);
-  t("weekly letter can keep an older release the source states", weekly.some((row) => row.url.endsWith("/c")));
-  t("weekly letter can keep an older development the source states", weekly.some((row) => row.url.endsWith("/d")));
+  t("weekly letter drops an older release that is not inside the next two weeks", weekly.every((row) => !row.url.endsWith("/c")));
+  t("weekly letter can keep an older reveal the source states", weekly.some((row) => row.url.endsWith("/d")));
+  const soon = item({
+    title: "A box dated by the source.",
+    date: "2026-09-01",
+    published: "2026-09-01T18:00:00.000Z",
+    url: "https://press.pokemon.com/en/g",
+    sentence: "The product releases on October 9, 2026.",
+  });
+  t("weekly letter keeps an older item when the source dates the release inside two weeks", pickWeekly([...rows, soon], today).some((row) => row.url.endsWith("/g")));
   t("weekly letter leaves out an older item the source does not qualify", weekly.every((row) => !row.url.endsWith("/f")));
   t("weekly letter leaves out an item older than 90 days", weekly.every((row) => !row.url.endsWith("/e")));
-  t("release wording is the source, not a guess", sourceAllowsOlderWeekly("Pokemon to release a new box on January 27th.") === true);
-  t("a plain older recap is not treated as important", sourceAllowsOlderWeekly("The column looks at how a deck felt at the event.") === false);
+  t("a release inside the next two weeks is the source date", sourceAllowsOlderWeekly("Pokemon to release a new box on October 10, 2026.", today) === true);
+  t("a release outside the next two weeks does not qualify", sourceAllowsOlderWeekly("Pokemon to release a new box on January 27th.", today) === false);
+  t("a reveal the source states still qualifies", sourceAllowsOlderWeekly("More English cards were revealed for the set.", today) === true);
+  t("a plain older recap is not treated as important", sourceAllowsOlderWeekly("The column looks at how a deck felt at the event.", today) === false);
   t("a merch headline is not tagged as cards", tagsFor("New merch collection starring Dedenne, Joltik, and more").length === 0);
   t("a regional headline is a tournament", tagsFor("Sign-ups for the Stuttgart Regional are open").includes("tournaments"));
+  const fetched = ["PokeBeach", "Pokémon GO", "Siliconera"];
+  t("TCG comes from a cards tag already on the item", fieldTags({ tags: ["cards"], source: "PokeBeach" }, fetched).includes("TCG"));
+  t("a video game tag needs the video-games field and a fetched source", fieldTags({ tags: ["video-games"], source: "Pokémon GO" }, fetched).includes("video game") && !fieldTags({ tags: ["video-games"], source: "Nintendo Life" }, fetched).includes("video game"));
+  t("Japan comes from the region field, not an English headline", fieldTags({ region: "jp", tags: [] }, fetched).includes("Japan") && fieldTags({ region: "Japanese Sets", tags: [] }, fetched).includes("Japan") && !fieldTags({ region: "UK", tags: [] }, fetched).includes("Japan") && !fieldTags({ title: "shops in Japan", tags: [], source: "Bulbagarden" }, fetched).includes("Japan"));
+  t("product wave and reprint stay off unless the field is present", !fieldTags({ tags: ["cards"], source: "PokeBeach" }, fetched).includes("product wave") && fieldTags({ reprint: "Reprints of Ultra Ball", tags: [] }, fetched).includes("reprint") && !fieldTags({ tags: [] }, fetched).includes("reprint"));
+  const calendar = releaseCalendar([
+    { title: "A", url: "https://example.com/a", source: "Serebii", product: "Delta Reign", setDate: "November 6th 2026" },
+    { title: "B", url: "https://example.com/b", source: "PokeGuardian", product: "Delta Reign", setDate: "December 1, 2026", note: "Sources disagree on the date for Delta Reign." },
+    { title: "C", url: "https://example.com/c", source: "Serebii", product: "Vague", setDate: "Early October 2026" },
+  ]);
+  t("the calendar keeps a specific source day and drops a vague one", calendar.dates.length === 1 && calendar.dates[0].date === "2026-11-06");
+  t("a disagreed date stays out and both figures stay recorded", calendar.omitted.length === 1 && calendar.omitted[0].setDate === "December 1, 2026");
+  const games = videoGameHeadlines([
+    { title: "A GO note.", url: "https://pokemongo.com/news/a", source: "Pokémon GO", date: "2026-10-01", kind: "news", tags: ["video-games"], sentence: "A GO note from the fetched page." },
+    { title: "Not fetched.", url: "https://example.com/nl", source: "Nintendo Life", date: "2026-10-01", kind: "news", tags: ["video-games"], sentence: "This source was not fetched." },
+  ], fetched);
+  t("video game headlines come only from a fetched source", games.length === 1 && games[0].source === "Pokémon GO");
   t("November 6 and November 6th are the same day", preciseDays("November 6, 2026").join() === preciseDays("November 6th 2026").join());
   t("early October is not a specific day", preciseDays("Early October 2026").length === 0);
   t("mega evolution prefix still matches the set name", productKey("Mega Evolution - Delta Reign") === productKey("Delta Reign"));
@@ -218,6 +249,31 @@ export async function run() {
         if (row.region === "jp" && (!String(row.title).startsWith("Japan:") || kana.test(row.title || "") || !kana.test(row.originalTitle || ""))) badPublic += 1;
       }
       t("Japan catalog titles keep Japanese and an English title or a missing note", japan > 0 && held + english === japan && badPublic === 0 && asiaTagged === 0);
+      const tagged = (doc.catalog || []).filter((row) => Array.isArray(row.fileTags) && row.fileTags.length);
+      const allowed = new Set(["TCG", "video game", "Japan", "product wave", "reprint"]);
+      let badTag = 0;
+      for (const row of doc.catalog || []) {
+        for (const tag of row.fileTags || []) if (!allowed.has(tag)) badTag += 1;
+        if ((row.fileTags || []).includes("TCG") && !(row.tags || []).some((tag) => tag === "cards" || tag === "sealed")) badTag += 1;
+        if ((row.fileTags || []).includes("video game") && !(row.tags || []).includes("video-games")) badTag += 1;
+        if ((row.fileTags || []).includes("Japan") && row.region !== "jp" && row.language !== "ja" && !/^japan/i.test(row.region || "")) badTag += 1;
+        if ((row.fileTags || []).includes("product wave") && !row.wave) badTag += 1;
+        if ((row.fileTags || []).includes("reprint") && !row.reprint) badTag += 1;
+      }
+      t("file tags come from fields already on the item", tagged.length > 0 && badTag === 0);
+      t("the release calendar keeps only specific source days", Array.isArray(doc.releaseCalendar) && doc.releaseCalendar.length > 0 && doc.releaseCalendar.every((row) => /^\d{4}-\d{2}-\d{2}$/.test(row.date) && row.setDate && row.url));
+      const phrase = /\b(stored|last print|printed|took a bigger last step)\b/i;
+      let phraseFail = 0;
+      for (const row of [...(doc.items || []), ...(doc.videoGames || []), ...(doc.releaseCalendar || [])]) {
+        for (const field of ["title", "sentence", "setDate", "reprint"]) {
+          if (phrase.test(row?.[field] || "")) phraseFail += 1;
+        }
+      }
+      t("the news read has no banned phrase", phraseFail === 0);
+    }
+    if (rel.endsWith("weekly-news.json")) {
+      const older = (doc.items || []).filter((row) => row.date < shiftDay(doc.asOf, -14));
+      t("weekly keeps price movers and only qualified older items", Boolean(doc.priceMovers) && older.every((row) => sourceAllowsOlderWeekly([row.title, row.sentence, row.setDate].filter(Boolean).join(" "), doc.asOf)));
     }
   }
   return fail;
