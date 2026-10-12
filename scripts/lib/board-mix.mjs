@@ -179,14 +179,14 @@ export function buildSealedLag({ products, histories, start, end, minRisePct = 1
     const to = pointOn(pts, end);
     const era = sealedEra(prod.setId);
     if (!(from > 0) || !(to > 0) || !era || !prod.subtype) continue;
-    pool.push({ id: prod.id, name: prod.name, kind: prod.subtype, era, group: prod.setId, from, to });
+    pool.push({ id: prod.id, name: prod.name, kind: prod.subtype, era, group: prod.setId, from, to, pid: /^\d+$/.test(String(prod.tcgPlayerId || "")) ? Number(prod.tcgPlayerId) : 0 });
   }
   const out = {};
   for (const p of pool) {
     if (!(p.to - p.from >= minRiseUsd && pct(p.from, p.to) >= minRisePct)) continue;
     const lag = laggingFor(p, pool.map((q) => ({ ...q })), { max: 6 }).filter((q) => q.to >= 3);
     if (!lag.length) continue;
-    out[p.id] = { from: p.from, to: p.to, start, end, kind: p.kind, era: p.era, lagging: lag.map((q) => ({ id: q.id, name: q.name, from: q.from, to: q.to, start, end })) };
+    out[p.id] = { from: p.from, to: p.to, start, end, kind: p.kind, era: p.era, lagging: lag.map((q) => ({ id: q.id, name: q.name, from: q.from, to: q.to, start, end, pid: q.pid })) };
   }
   return { pool, risers: out };
 }
