@@ -247,6 +247,9 @@ jobs:
         # The catalog day stays the full TCGCSV day. A later partial file is
         # used only for a product that has that print.
         run: node scripts/build-feed.mjs
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
 
       - name: Run the read registry
         run: node scripts/run-read-registry.mjs
