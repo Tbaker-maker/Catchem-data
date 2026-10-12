@@ -3,7 +3,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   assignMarks, buildListings, buildReleases, buildSetValueDoc, datedDay, idsForCatalogSet,
-  loadPriceMap, nonEmptyDoc, ROTATION_SOURCES, shouldWrite,
+  loadPriceMap, nonEmptyDoc, ROTATION_SOURCES, ROTATION_EXPECTED, shouldWrite,
 } from "./lib/feature-data.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -59,6 +59,7 @@ if (shouldWrite("rotation", { asOf: rotationAsOf, sets: marks.length })) {
     asOf: rotationAsOf,
     marksFile: "data/card-attrs.json",
     sources: ROTATION_SOURCES,
+    expected: ROTATION_EXPECTED,
     sets: marks,
   };
   if (nonEmptyDoc(rotation)) {
@@ -108,3 +109,7 @@ console.log(JSON.stringify({
   listings: listings.products.length,
   skippedParents: listings.skipped.length,
 }, null, 2));
+
+// IR cycle file (feed/ir-cycle.json). Runs after rotation-status.json is written.
+// A failed build keeps the last file and does not fail this step.
+await import("./build-ir-cycle.mjs");
