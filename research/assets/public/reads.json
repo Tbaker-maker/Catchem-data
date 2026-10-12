@@ -752,16 +752,16 @@
    "deep": "rating",
    "board": "v3",
    "family": "deep",
-   "name": "Card Rating: Illustration Rares",
+   "name": "Rating: Illustration Rares",
    "sku": "tcgcsv-497629",
    "href": "/c/tcgcsv-497629",
-   "headline": "Priced above similar Illustration Rares: Maushold (Paldea Evolved 226/193), $87.85 (Oct 12) on TCGplayer market. Peer median $9.41 across 406 cards.",
-   "path": "Priced above similar Illustration Rares: Maushold (Paldea Evolved 226/193), $87.85 (Oct 12) on TCGplayer market. Peer median $9.41 across 406 cards.",
+   "headline": "Priced above similar Illustration Rares: Maushold (Paldea Evolved 226/193), $87.85 (Oct 12) on TCGplayer market. Typical price for similar cards: $9.41 (406 cards).",
+   "path": "Priced above similar Illustration Rares: Maushold (Paldea Evolved 226/193), $87.85 (Oct 12) on TCGplayer market. Typical price for similar cards: $9.41 (406 cards).",
    "lines": [
-    "Maushold (Paldea Evolved): $87.85 (Oct 12), 9.34x the peer median of $9.41.",
-    "Chandelure (White Flare): $66.70 (Oct 12), 7.09x the peer median of $9.41.",
-    "Raichu (Paldea Evolved): $98.50 (Oct 12), 6.84x the peer median of $14.40.",
-    "Peers: Illustration Rares in the same popularity band where there are 5 or more, otherwise all Illustration Rares. Prices are TCGplayer market on Oct 12.",
+    "Maushold (Paldea Evolved): $87.85 (Oct 12), 9.34x the typical $9.41.",
+    "Chandelure (White Flare): $66.70 (Oct 12), 7.09x the typical $9.41.",
+    "Raichu (Paldea Evolved): $98.50 (Oct 12), 6.84x the typical $14.40.",
+    "Similar cards: other Illustration Rares with similar popularity where there are 5 or more, otherwise all Illustration Rares. Typical price is the middle price. TCGplayer market on Oct 12.",
     "A factual comparison of prices on file, not advice."
    ],
    "asOf": "2026-10-12",
@@ -783,7 +783,7 @@
       "peers": {
        "median": 9.41,
        "n": 406,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 9.34
       }
      },
@@ -797,7 +797,7 @@
       "peers": {
        "median": 9.41,
        "n": 406,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 7.09
       }
      },
@@ -811,7 +811,7 @@
       "peers": {
        "median": 14.4,
        "n": 91,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 6.84
       }
      }
@@ -1639,23 +1639,22 @@
    "deep": "rating",
    "board": "v3",
    "family": "deep",
-   "name": "Card Rating: Tag Team alt arts",
+   "name": "Rating: Tag Team (Alternate Art) cards",
    "sku": "tcgcsv-189304",
    "href": "/c/tcgcsv-189304",
-   "headline": "Priced below similar Tag Team alt arts: Pheromosa & Buzzwole GX (Unbroken Bonds 192/214), $92.46 (Oct 12) on TCGplayer market. Peer median $396.34 across 13 cards.",
-   "path": "Priced below similar Tag Team alt arts: Pheromosa & Buzzwole GX (Unbroken Bonds 192/214), $92.46 (Oct 12) on TCGplayer market. Peer median $396.34 across 13 cards.",
+   "headline": "Priced below similar Tag Team (Alternate Art) cards: Pheromosa & Buzzwole GX (Unbroken Bonds 192/214), $92.46 (Oct 12) on TCGplayer market. Typical price for similar cards: $396.34 (13 cards).",
+   "path": "Priced below similar Tag Team (Alternate Art) cards: Pheromosa & Buzzwole GX (Unbroken Bonds 192/214), $92.46 (Oct 12) on TCGplayer market. Typical price for similar cards: $396.34 (13 cards).",
    "lines": [
-    "Pheromosa & Buzzwole GX (Unbroken Bonds): $92.46 (Oct 12), 0.23x the peer median of $396.34.",
-    "Naganadel & Guzzlord GX (Cosmic Eclipse): $102.68 (Oct 12), 0.26x the peer median of $396.34.",
-    "Rowlet & Alolan Exeggutor GX (Unified Minds): $138.61 (Oct 12), 0.29x the peer median of $485.18.",
-    "Peers: Tag Team alt arts in the same popularity band where there are 5 or more, otherwise all Tag Team alt arts. Prices are TCGplayer market on Oct 12.",
+    "Pheromosa & Buzzwole GX (Unbroken Bonds): $92.46 (Oct 12), 0.23x the typical $396.34.",
+    "Naganadel & Guzzlord GX (Cosmic Eclipse): $102.68 (Oct 12), 0.26x the typical $396.34.",
+    "Rowlet & Alolan Exeggutor GX (Unified Minds): $138.61 (Oct 12), 0.29x the typical $485.18.",
+    "Similar cards: other Tag Team (Alternate Art) cards with similar popularity where there are 5 or more, otherwise all Tag Team (Alternate Art) cards. Typical price is the middle price. TCGplayer market on Oct 12.",
     "A factual comparison of prices on file, not advice."
    ],
    "asOf": "2026-10-12",
    "source": "TCGplayer market, buckets and hist-long, 2026-10-12; Card Rating peers",
    "tags": [
-    "Alternate Art",
-    "Tag Team"
+    "Tag Team (Alternate Art)"
    ],
    "receipt": {
     "group": "tagteam-alt",
@@ -1671,7 +1670,7 @@
       "peers": {
        "median": 396.34,
        "n": 13,
-       "basis": "same group",
+       "basis": "all popularity levels",
        "ratio": 0.23
       }
      },
@@ -1685,7 +1684,7 @@
       "peers": {
        "median": 396.34,
        "n": 13,
-       "basis": "same group",
+       "basis": "all popularity levels",
        "ratio": 0.26
       }
      },
@@ -1699,7 +1698,7 @@
       "peers": {
        "median": 485.18,
        "n": 6,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 0.29
       }
      }
@@ -2922,16 +2921,16 @@
    "deep": "rating",
    "board": "v3",
    "family": "deep",
-   "name": "Card Rating: Gold cards",
+   "name": "Rating: Gold cards",
    "sku": "tcgcsv-693518",
    "href": "/c/tcgcsv-693518",
-   "headline": "Priced above similar Gold cards: Mega Greninja ex (Chaos Rising 122/086), $129.08 (Oct 12) on TCGplayer market. Peer median $13.59 across 16 cards.",
-   "path": "Priced above similar Gold cards: Mega Greninja ex (Chaos Rising 122/086), $129.08 (Oct 12) on TCGplayer market. Peer median $13.59 across 16 cards.",
+   "headline": "Priced above similar Gold cards: Mega Greninja ex (Chaos Rising 122/086), $129.08 (Oct 12) on TCGplayer market. Typical price for similar cards: $13.59 (16 cards).",
+   "path": "Priced above similar Gold cards: Mega Greninja ex (Chaos Rising 122/086), $129.08 (Oct 12) on TCGplayer market. Typical price for similar cards: $13.59 (16 cards).",
    "lines": [
-    "Mega Greninja ex (Chaos Rising): $129.08 (Oct 12), 9.5x the peer median of $13.59.",
-    "Basic Darkness Energy (Shrouded Fable): $57.96 (Oct 12), 8.9x the peer median of $6.51.",
-    "Mega Charizard Y ex (Ascended Heroes): $292.47 (Oct 12), 5.9x the peer median of $49.59.",
-    "Peers: Gold cards in the same popularity band where there are 5 or more, otherwise all Gold cards. Prices are TCGplayer market on Oct 12.",
+    "Mega Greninja ex (Chaos Rising): $129.08 (Oct 12), 9.5x the typical $13.59.",
+    "Basic Darkness Energy (Shrouded Fable): $57.96 (Oct 12), 8.9x the typical $6.51.",
+    "Mega Charizard Y ex (Ascended Heroes): $292.47 (Oct 12), 5.9x the typical $49.59.",
+    "Similar cards: other Gold cards with similar popularity where there are 5 or more, otherwise all Gold cards. Typical price is the middle price. TCGplayer market on Oct 12.",
     "A factual comparison of prices on file, not advice."
    ],
    "asOf": "2026-10-12",
@@ -2953,7 +2952,7 @@
       "peers": {
        "median": 13.59,
        "n": 16,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 9.5
       }
      },
@@ -2967,7 +2966,7 @@
       "peers": {
        "median": 6.51,
        "n": 57,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 8.9
       }
      },
@@ -2981,7 +2980,7 @@
       "peers": {
        "median": 49.59,
        "n": 6,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 5.9
       }
      }
@@ -3945,16 +3944,16 @@
    "deep": "rating",
    "board": "v3",
    "family": "deep",
-   "name": "Card Rating: Gold Star cards",
+   "name": "Rating: Gold Star cards",
    "sku": "tcgcsv-87427",
    "href": "/c/tcgcsv-87427",
-   "headline": "Priced above similar Gold Star cards: Mewtwo Star (EX Holon Phantoms 103/110), $9,200.00 (Oct 12) on TCGplayer market. Peer median $1,083.50 across 12 cards.",
-   "path": "Priced above similar Gold Star cards: Mewtwo Star (EX Holon Phantoms 103/110), $9,200.00 (Oct 12) on TCGplayer market. Peer median $1,083.50 across 12 cards.",
+   "headline": "Priced above similar Gold Star cards: Mewtwo Star (EX Holon Phantoms 103/110), $9,200.00 (Oct 12) on TCGplayer market. Typical price for similar cards: $1,083.50 (12 cards).",
+   "path": "Priced above similar Gold Star cards: Mewtwo Star (EX Holon Phantoms 103/110), $9,200.00 (Oct 12) on TCGplayer market. Typical price for similar cards: $1,083.50 (12 cards).",
    "lines": [
-    "Mewtwo Star (EX Holon Phantoms): $9,200.00 (Oct 12), 8.49x the peer median of $1,083.50.",
-    "Raikou Star (EX Unseen Forces): $1,600.00 (Oct 12), 1.63x the peer median of $981.00.",
-    "Jolteon Star (EX Power Keepers): $1,750.00 (Oct 12), 1.62x the peer median of $1,083.50.",
-    "Peers: Gold Star cards in the same popularity band where there are 5 or more, otherwise all Gold Star cards. Prices are TCGplayer market on Oct 12.",
+    "Mewtwo Star (EX Holon Phantoms): $9,200.00 (Oct 12), 8.49x the typical $1,083.50.",
+    "Raikou Star (EX Unseen Forces): $1,600.00 (Oct 12), 1.63x the typical $981.00.",
+    "Jolteon Star (EX Power Keepers): $1,750.00 (Oct 12), 1.62x the typical $1,083.50.",
+    "Similar cards: other Gold Star cards with similar popularity where there are 5 or more, otherwise all Gold Star cards. Typical price is the middle price. TCGplayer market on Oct 12.",
     "A factual comparison of prices on file, not advice."
    ],
    "asOf": "2026-10-12",
@@ -3974,7 +3973,7 @@
       "peers": {
        "median": 1083.5,
        "n": 12,
-       "basis": "same group",
+       "basis": "all popularity levels",
        "ratio": 8.49
       }
      },
@@ -3988,7 +3987,7 @@
       "peers": {
        "median": 981,
        "n": 8,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 1.63
       }
      },
@@ -4002,7 +4001,7 @@
       "peers": {
        "median": 1083.5,
        "n": 12,
-       "basis": "same group",
+       "basis": "all popularity levels",
        "ratio": 1.62
       }
      }
@@ -4153,73 +4152,73 @@
    "deep": "rating",
    "board": "v3",
    "family": "deep",
-   "name": "Card Rating: Trainer Gallery cards",
-   "sku": "tcgcsv-477354",
-   "href": "/c/tcgcsv-477354",
-   "headline": "Priced above similar Trainer Gallery cards: Deoxys VMAX (Crown Zenith GG45/GG70), $55.78 (Oct 12) on TCGplayer market. Peer median $5.82 across 139 cards.",
-   "path": "Priced above similar Trainer Gallery cards: Deoxys VMAX (Crown Zenith GG45/GG70), $55.78 (Oct 12) on TCGplayer market. Peer median $5.82 across 139 cards.",
+   "name": "Rating: Trainer Gallery cards",
+   "sku": "tcgcsv-452034",
+   "href": "/c/tcgcsv-452034",
+   "headline": "Priced above similar Trainer Gallery cards: Rayquaza VMAX (Silver Tempest TG20/TG30), $186.69 (Oct 12) on TCGplayer market. Typical price for similar cards: $27.93 (14 cards).",
+   "path": "Priced above similar Trainer Gallery cards: Rayquaza VMAX (Silver Tempest TG20/TG30), $186.69 (Oct 12) on TCGplayer market. Typical price for similar cards: $27.93 (14 cards).",
    "lines": [
-    "Deoxys VMAX (Crown Zenith): $55.78 (Oct 12), 9.58x the peer median of $5.82.",
-    "Arceus VSTAR (Crown Zenith): $192.63 (Oct 12), 9.56x the peer median of $20.16.",
-    "Suicune V (Crown Zenith): $54.37 (Oct 12), 9.34x the peer median of $5.82.",
-    "Peers: Trainer Gallery cards in the same popularity band where there are 5 or more, otherwise all Trainer Gallery cards. Prices are TCGplayer market on Oct 12.",
+    "Rayquaza VMAX (Silver Tempest): $186.69 (Oct 12), 6.69x the typical $27.93.",
+    "Starmie V (Astral Radiance): $116.36 (Oct 12), 5.91x the typical $19.70.",
+    "Blissey V (Silver Tempest): $21.19 (Oct 12), 4.53x the typical $4.68.",
+    "Similar cards: other Trainer Gallery cards with similar popularity where there are 5 or more, otherwise all Trainer Gallery cards. Typical price is the middle price. TCGplayer market on Oct 12.",
     "A factual comparison of prices on file, not advice."
    ],
    "asOf": "2026-10-12",
    "source": "TCGplayer market, buckets and hist-long, 2026-10-12; Card Rating peers",
    "tags": [
-    "Galarian Gallery"
+    "Trainer Gallery"
    ],
    "receipt": {
     "group": "tg",
     "side": "above",
     "cards": [
      {
-      "id": "tcgcsv-477354",
+      "id": "tcgcsv-452034",
       "price": {
-       "price": 55.78,
+       "price": 186.69,
        "date": "2026-10-12",
        "source": "TCGplayer market"
       },
       "peers": {
-       "median": 5.82,
-       "n": 139,
-       "basis": "same group and popularity band",
-       "ratio": 9.58
+       "median": 27.93,
+       "n": 14,
+       "basis": "similar popularity",
+       "ratio": 6.69
       }
      },
      {
-      "id": "tcgcsv-478101",
+      "id": "tcgcsv-272484",
       "price": {
-       "price": 192.63,
+       "price": 116.36,
        "date": "2026-10-12",
        "source": "TCGplayer market"
       },
       "peers": {
-       "median": 20.16,
-       "n": 31,
-       "basis": "same group and popularity band",
-       "ratio": 9.56
+       "median": 19.7,
+       "n": 18,
+       "basis": "similar popularity",
+       "ratio": 5.91
       }
      },
      {
-      "id": "tcgcsv-478067",
+      "id": "tcgcsv-452037",
       "price": {
-       "price": 54.37,
+       "price": 21.19,
        "date": "2026-10-12",
        "source": "TCGplayer market"
       },
       "peers": {
-       "median": 5.82,
-       "n": 139,
-       "basis": "same group and popularity band",
-       "ratio": 9.34
+       "median": 4.68,
+       "n": 85,
+       "basis": "similar popularity",
+       "ratio": 4.53
       }
      }
     ]
    },
    "priceRead": true,
-   "image": "https://tcgplayer-cdn.tcgplayer.com/product/477354_in_400x400.jpg"
+   "image": "https://tcgplayer-cdn.tcgplayer.com/product/452034_in_400x400.jpg"
   },
   {
    "id": "year-tcgcsv-86666",
@@ -4787,16 +4786,16 @@
    "deep": "rating",
    "board": "v3",
    "family": "deep",
-   "name": "Card Rating: EX-era ex cards",
+   "name": "Rating: EX-era ex cards",
    "sku": "tcgcsv-87277",
    "href": "/c/tcgcsv-87277",
-   "headline": "Priced below similar EX-era ex cards: Medicham ex (EX Emerald 95/106), $20.00 (Oct 12) on TCGplayer market. Peer median $160.46 across 71 cards.",
-   "path": "Priced below similar EX-era ex cards: Medicham ex (EX Emerald 95/106), $20.00 (Oct 12) on TCGplayer market. Peer median $160.46 across 71 cards.",
+   "headline": "Priced below similar EX-era ex cards: Medicham ex (EX Emerald 95/106), $20.00 (Oct 12) on TCGplayer market. Typical price for similar cards: $160.46 (71 cards).",
+   "path": "Priced below similar EX-era ex cards: Medicham ex (EX Emerald 95/106), $20.00 (Oct 12) on TCGplayer market. Typical price for similar cards: $160.46 (71 cards).",
    "lines": [
-    "Medicham ex (EX Emerald): $20.00 (Oct 12), 0.12x the peer median of $160.46.",
-    "Mr. Mime ex (EX FireRed & LeafGreen): $28.08 (Oct 12), 0.14x the peer median of $201.22.",
-    "Hariyama ex (EX Deoxys): $28.99 (Oct 12), 0.18x the peer median of $160.46.",
-    "Peers: EX-era ex cards in the same popularity band where there are 5 or more, otherwise all EX-era ex cards. Prices are TCGplayer market on Oct 12.",
+    "Medicham ex (EX Emerald): $20.00 (Oct 12), 0.12x the typical $160.46.",
+    "Mr. Mime ex (EX FireRed & LeafGreen): $28.08 (Oct 12), 0.14x the typical $201.22.",
+    "Hariyama ex (EX Deoxys): $28.99 (Oct 12), 0.18x the typical $160.46.",
+    "Similar cards: other EX-era ex cards with similar popularity where there are 5 or more, otherwise all EX-era ex cards. Typical price is the middle price. TCGplayer market on Oct 12.",
     "A factual comparison of prices on file, not advice."
    ],
    "asOf": "2026-10-12",
@@ -4816,7 +4815,7 @@
       "peers": {
        "median": 160.46,
        "n": 71,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 0.12
       }
      },
@@ -4830,7 +4829,7 @@
       "peers": {
        "median": 201.22,
        "n": 44,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 0.14
       }
      },
@@ -4844,7 +4843,7 @@
       "peers": {
        "median": 160.46,
        "n": 71,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 0.18
       }
      }
@@ -6038,16 +6037,16 @@
    "deep": "rating",
    "board": "v3",
    "family": "deep",
-   "name": "Card Rating: EX-era ex cards",
+   "name": "Rating: EX-era ex cards",
    "sku": "tcgcsv-88801",
    "href": "/c/tcgcsv-88801",
-   "headline": "Priced above similar EX-era ex cards: Rocket's Zapdos ex (EX Team Rocket Returns 106/109), $1,079.99 (Oct 12) on TCGplayer market. Peer median $199.99 across 44 cards.",
-   "path": "Priced above similar EX-era ex cards: Rocket's Zapdos ex (EX Team Rocket Returns 106/109), $1,079.99 (Oct 12) on TCGplayer market. Peer median $199.99 across 44 cards.",
+   "headline": "Priced above similar EX-era ex cards: Rocket's Zapdos ex (EX Team Rocket Returns 106/109), $1,079.99 (Oct 12) on TCGplayer market. Typical price for similar cards: $199.99 (44 cards).",
+   "path": "Priced above similar EX-era ex cards: Rocket's Zapdos ex (EX Team Rocket Returns 106/109), $1,079.99 (Oct 12) on TCGplayer market. Typical price for similar cards: $199.99 (44 cards).",
    "lines": [
-    "Rocket's Zapdos ex (EX Team Rocket Returns): $1,079.99 (Oct 12), 5.4x the peer median of $199.99.",
-    "Lugia ex (EX Unseen Forces): $2,500.00 (Oct 9), 5.1x the peer median of $490.01.",
-    "Salamence ex (EX Dragon Frontiers): $728.30 (Oct 12), 4.55x the peer median of $160.00.",
-    "Peers: EX-era ex cards in the same popularity band where there are 5 or more, otherwise all EX-era ex cards. Prices are TCGplayer market on Oct 12.",
+    "Rocket's Zapdos ex (EX Team Rocket Returns): $1,079.99 (Oct 12), 5.4x the typical $199.99.",
+    "Lugia ex (EX Unseen Forces): $2,500.00 (Oct 9), 5.1x the typical $490.01.",
+    "Salamence ex (EX Dragon Frontiers): $728.30 (Oct 12), 4.55x the typical $160.00.",
+    "Similar cards: other EX-era ex cards with similar popularity where there are 5 or more, otherwise all EX-era ex cards. Typical price is the middle price. TCGplayer market on Oct 12.",
     "A factual comparison of prices on file, not advice."
    ],
    "asOf": "2026-10-12",
@@ -6067,7 +6066,7 @@
       "peers": {
        "median": 199.99,
        "n": 44,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 5.4
       }
      },
@@ -6081,7 +6080,7 @@
       "peers": {
        "median": 490.01,
        "n": 14,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 5.1
       }
      },
@@ -6095,7 +6094,7 @@
       "peers": {
        "median": 160,
        "n": 71,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 4.55
       }
      }
@@ -7727,16 +7726,16 @@
    "deep": "rating",
    "board": "v3",
    "family": "deep",
-   "name": "Card Rating: Illustration Rares",
+   "name": "Rating: Illustration Rares",
    "sku": "tcgcsv-684439",
    "href": "/c/tcgcsv-684439",
-   "headline": "Priced below similar Illustration Rares: Raticate (Perfect Order 099/088), $1.61 (Oct 12) on TCGplayer market. Peer median $14.52 across 91 cards.",
-   "path": "Priced below similar Illustration Rares: Raticate (Perfect Order 099/088), $1.61 (Oct 12) on TCGplayer market. Peer median $14.52 across 91 cards.",
+   "headline": "Priced below similar Illustration Rares: Raticate (Perfect Order 099/088), $1.61 (Oct 12) on TCGplayer market. Typical price for similar cards: $14.52 (91 cards).",
+   "path": "Priced below similar Illustration Rares: Raticate (Perfect Order 099/088), $1.61 (Oct 12) on TCGplayer market. Typical price for similar cards: $14.52 (91 cards).",
    "lines": [
-    "Raticate (Perfect Order): $1.61 (Oct 12), 0.11x the peer median of $14.52.",
-    "Drapion (Perfect Order): $1.09 (Oct 12), 0.12x the peer median of $9.41.",
-    "Watchog (Chaos Rising): $1.26 (Oct 12), 0.13x the peer median of $9.41.",
-    "Peers: Illustration Rares in the same popularity band where there are 5 or more, otherwise all Illustration Rares. Prices are TCGplayer market on Oct 12.",
+    "Raticate (Perfect Order): $1.61 (Oct 12), 0.11x the typical $14.52.",
+    "Drapion (Perfect Order): $1.09 (Oct 12), 0.12x the typical $9.41.",
+    "Watchog (Chaos Rising): $1.26 (Oct 12), 0.13x the typical $9.41.",
+    "Similar cards: other Illustration Rares with similar popularity where there are 5 or more, otherwise all Illustration Rares. Typical price is the middle price. TCGplayer market on Oct 12.",
     "A factual comparison of prices on file, not advice."
    ],
    "asOf": "2026-10-12",
@@ -7758,7 +7757,7 @@
       "peers": {
        "median": 14.52,
        "n": 91,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 0.11
       }
      },
@@ -7772,7 +7771,7 @@
       "peers": {
        "median": 9.41,
        "n": 406,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 0.12
       }
      },
@@ -7786,7 +7785,7 @@
       "peers": {
        "median": 9.41,
        "n": 406,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 0.13
       }
      }
@@ -8544,16 +8543,16 @@
    "deep": "rating",
    "board": "v3",
    "family": "deep",
-   "name": "Card Rating: Tag Team cards",
+   "name": "Rating: Tag Team cards",
    "sku": "tcgcsv-201339",
    "href": "/c/tcgcsv-201339",
-   "headline": "Priced above similar Tag Team cards: Reshiram & Zekrom GX (Cosmic Eclipse 222/236), $410.38 (Oct 12) on TCGplayer market. Peer median $64.29 across 35 cards.",
-   "path": "Priced above similar Tag Team cards: Reshiram & Zekrom GX (Cosmic Eclipse 222/236), $410.38 (Oct 12) on TCGplayer market. Peer median $64.29 across 35 cards.",
+   "headline": "Priced above similar Tag Team cards: Reshiram & Zekrom GX (Cosmic Eclipse 222/236), $410.38 (Oct 12) on TCGplayer market. Typical price for similar cards: $64.29 (35 cards).",
+   "path": "Priced above similar Tag Team cards: Reshiram & Zekrom GX (Cosmic Eclipse 222/236), $410.38 (Oct 12) on TCGplayer market. Typical price for similar cards: $64.29 (35 cards).",
    "lines": [
-    "Reshiram & Zekrom GX (Cosmic Eclipse): $410.38 (Oct 12), 6.38x the peer median of $64.29.",
-    "Solgaleo & Lunala GX (Cosmic Eclipse): $322.80 (Oct 12), 5.02x the peer median of $64.29.",
-    "Reshiram & Zekrom GX (Cosmic Eclipse): $258.79 (Oct 12), 4.03x the peer median of $64.29.",
-    "Peers: Tag Team cards in the same popularity band where there are 5 or more, otherwise all Tag Team cards. Prices are TCGplayer market on Oct 12.",
+    "Reshiram & Zekrom GX (Cosmic Eclipse): $410.38 (Oct 12), 6.38x the typical $64.29.",
+    "Solgaleo & Lunala GX (Cosmic Eclipse): $322.80 (Oct 12), 5.02x the typical $64.29.",
+    "Reshiram & Zekrom GX (Cosmic Eclipse): $258.79 (Oct 12), 4.03x the typical $64.29.",
+    "Similar cards: other Tag Team cards with similar popularity where there are 5 or more, otherwise all Tag Team cards. Typical price is the middle price. TCGplayer market on Oct 12.",
     "A factual comparison of prices on file, not advice."
    ],
    "asOf": "2026-10-12",
@@ -8576,7 +8575,7 @@
       "peers": {
        "median": 64.29,
        "n": 35,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 6.38
       }
      },
@@ -8590,7 +8589,7 @@
       "peers": {
        "median": 64.29,
        "n": 35,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 5.02
       }
      },
@@ -8604,7 +8603,7 @@
       "peers": {
        "median": 64.29,
        "n": 35,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 4.03
       }
      }
@@ -9454,41 +9453,27 @@
    "deep": "rating",
    "board": "v3",
    "family": "deep",
-   "name": "Card Rating: Trainer Gallery cards",
-   "sku": "tcgcsv-478017",
-   "href": "/c/tcgcsv-478017",
-   "headline": "Priced below similar Trainer Gallery cards: Hisuian Voltorb (Crown Zenith GG01/GG70), $2.92 (Oct 12) on TCGplayer market. Peer median $21.20 across 31 cards.",
-   "path": "Priced below similar Trainer Gallery cards: Hisuian Voltorb (Crown Zenith GG01/GG70), $2.92 (Oct 12) on TCGplayer market. Peer median $21.20 across 31 cards.",
+   "name": "Rating: Trainer Gallery cards",
+   "sku": "tcgcsv-452018",
+   "href": "/c/tcgcsv-452018",
+   "headline": "Priced below similar Trainer Gallery cards: Jynx (Silver Tempest TG04/TG30), $3.38 (Oct 12) on TCGplayer market. Typical price for similar cards: $22.04 (18 cards).",
+   "path": "Priced below similar Trainer Gallery cards: Jynx (Silver Tempest TG04/TG30), $3.38 (Oct 12) on TCGplayer market. Typical price for similar cards: $22.04 (18 cards).",
    "lines": [
-    "Hisuian Voltorb (Crown Zenith): $2.92 (Oct 12), 0.14x the peer median of $21.20.",
-    "Jynx (Silver Tempest): $3.38 (Oct 12), 0.16x the peer median of $21.20.",
-    "Parasect (Lost Origin): $3.96 (Oct 12), 0.19x the peer median of $21.20.",
-    "Peers: Trainer Gallery cards in the same popularity band where there are 5 or more, otherwise all Trainer Gallery cards. Prices are TCGplayer market on Oct 12.",
+    "Jynx (Silver Tempest): $3.38 (Oct 12), 0.15x the typical $22.04.",
+    "Parasect (Lost Origin): $3.96 (Oct 12), 0.18x the typical $22.04.",
+    "Hisuian Arcanine (Lost Origin): $4.53 (Oct 12), 0.21x the typical $22.04.",
+    "Similar cards: other Trainer Gallery cards with similar popularity where there are 5 or more, otherwise all Trainer Gallery cards. Typical price is the middle price. TCGplayer market on Oct 12.",
     "A factual comparison of prices on file, not advice."
    ],
    "asOf": "2026-10-12",
    "source": "TCGplayer market, buckets and hist-long, 2026-10-12; Card Rating peers",
    "tags": [
-    "Galarian Gallery"
+    "Trainer Gallery"
    ],
    "receipt": {
     "group": "tg",
     "side": "below",
     "cards": [
-     {
-      "id": "tcgcsv-478017",
-      "price": {
-       "price": 2.92,
-       "date": "2026-10-12",
-       "source": "TCGplayer market"
-      },
-      "peers": {
-       "median": 21.2,
-       "n": 31,
-       "basis": "same group and popularity band",
-       "ratio": 0.14
-      }
-     },
      {
       "id": "tcgcsv-452018",
       "price": {
@@ -9497,10 +9482,10 @@
        "source": "TCGplayer market"
       },
       "peers": {
-       "median": 21.2,
-       "n": 31,
-       "basis": "same group and popularity band",
-       "ratio": 0.16
+       "median": 22.04,
+       "n": 18,
+       "basis": "similar popularity",
+       "ratio": 0.15
       }
      },
      {
@@ -9511,16 +9496,30 @@
        "source": "TCGplayer market"
       },
       "peers": {
-       "median": 21.2,
-       "n": 31,
-       "basis": "same group and popularity band",
-       "ratio": 0.19
+       "median": 22.04,
+       "n": 18,
+       "basis": "similar popularity",
+       "ratio": 0.18
+      }
+     },
+     {
+      "id": "tcgcsv-284268",
+      "price": {
+       "price": 4.53,
+       "date": "2026-10-12",
+       "source": "TCGplayer market"
+      },
+      "peers": {
+       "median": 22.04,
+       "n": 18,
+       "basis": "similar popularity",
+       "ratio": 0.21
       }
      }
     ]
    },
    "priceRead": true,
-   "image": "https://tcgplayer-cdn.tcgplayer.com/product/478017_in_400x400.jpg"
+   "image": "https://tcgplayer-cdn.tcgplayer.com/product/452018_in_400x400.jpg"
   },
   {
    "id": "listcount-sm3-etb",
@@ -11031,8 +11030,7 @@
    "priceRead": true,
    "image": "https://catchemtcg.com/data/editor/tcg/sm9/170_hires.png",
    "tags": [
-    "Alternate Art",
-    "Tag Team"
+    "Tag Team (Alternate Art)"
    ]
   },
   {
@@ -13990,16 +13988,16 @@
    "deep": "rating",
    "board": "v3",
    "family": "deep",
-   "name": "Card Rating: vintage WOTC holos",
+   "name": "Rating: vintage WOTC holos",
    "sku": "tcgcsv-84592",
    "href": "/c/tcgcsv-84592",
-   "headline": "Priced above similar vintage WOTC holos: Dark Espeon (Neo Destiny 004/105), $649.99 (Oct 12) on TCGplayer market. Peer median $75.15 across 174 cards.",
-   "path": "Priced above similar vintage WOTC holos: Dark Espeon (Neo Destiny 004/105), $649.99 (Oct 12) on TCGplayer market. Peer median $75.15 across 174 cards.",
+   "headline": "Priced above similar vintage WOTC holos: Dark Espeon (Neo Destiny 004/105), $649.99 (Oct 12) on TCGplayer market. Typical price for similar cards: $75.15 (174 cards).",
+   "path": "Priced above similar vintage WOTC holos: Dark Espeon (Neo Destiny 004/105), $649.99 (Oct 12) on TCGplayer market. Typical price for similar cards: $75.15 (174 cards).",
    "lines": [
-    "Dark Espeon (Neo Destiny): $649.99 (Oct 12), 8.65x the peer median of $75.15.",
-    "Charizard (Base Set): $2,257.87 (Oct 12), 7.82x the peer median of $288.75.",
-    "Starmie (Skyridge): $575.75 (Oct 12), 7.66x the peer median of $75.15.",
-    "Peers: vintage WOTC holos in the same popularity band where there are 5 or more, otherwise all vintage WOTC holos. Prices are TCGplayer market on Oct 12.",
+    "Dark Espeon (Neo Destiny): $649.99 (Oct 12), 8.65x the typical $75.15.",
+    "Charizard (Base Set): $2,257.87 (Oct 12), 7.82x the typical $288.75.",
+    "Starmie (Skyridge): $575.75 (Oct 12), 7.66x the typical $75.15.",
+    "Similar cards: other vintage WOTC holos with similar popularity where there are 5 or more, otherwise all vintage WOTC holos. Typical price is the middle price. TCGplayer market on Oct 12.",
     "A factual comparison of prices on file, not advice."
    ],
    "asOf": "2026-10-12",
@@ -14019,7 +14017,7 @@
       "peers": {
        "median": 75.15,
        "n": 174,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 8.65
       }
      },
@@ -14033,7 +14031,7 @@
       "peers": {
        "median": 288.75,
        "n": 40,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 7.82
       }
      },
@@ -14047,7 +14045,7 @@
       "peers": {
        "median": 75.15,
        "n": 174,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 7.66
       }
      }
@@ -15090,16 +15088,16 @@
    "deep": "rating",
    "board": "v3",
    "family": "deep",
-   "name": "Card Rating: Special Illustration Rares",
+   "name": "Rating: Special Illustration Rares",
    "sku": "tcgcsv-589985",
    "href": "/c/tcgcsv-589985",
-   "headline": "Priced above similar Special Illustration Rares: Latias ex (Surging Sparks 239/191), $182.25 (Oct 12) on TCGplayer market. Peer median $22.99 across 164 cards.",
-   "path": "Priced above similar Special Illustration Rares: Latias ex (Surging Sparks 239/191), $182.25 (Oct 12) on TCGplayer market. Peer median $22.99 across 164 cards.",
+   "headline": "Priced above similar Special Illustration Rares: Latias ex (Surging Sparks 239/191), $182.25 (Oct 12) on TCGplayer market. Typical price for similar cards: $22.99 (164 cards).",
+   "path": "Priced above similar Special Illustration Rares: Latias ex (Surging Sparks 239/191), $182.25 (Oct 12) on TCGplayer market. Typical price for similar cards: $22.99 (164 cards).",
    "lines": [
-    "Latias ex (Surging Sparks): $182.25 (Oct 12), 7.93x the peer median of $22.99.",
-    "Reshiram ex (White Flare): $178.96 (Oct 12), 7.78x the peer median of $22.99.",
-    "Umbreon ex (Prismatic Evolutions): $1,285.31 (Oct 12), 7.26x the peer median of $177.09.",
-    "Peers: Special Illustration Rares in the same popularity band where there are 5 or more, otherwise all Special Illustration Rares. Prices are TCGplayer market on Oct 12.",
+    "Latias ex (Surging Sparks): $182.25 (Oct 12), 7.93x the typical $22.99.",
+    "Reshiram ex (White Flare): $178.96 (Oct 12), 7.78x the typical $22.99.",
+    "Umbreon ex (Prismatic Evolutions): $1,285.31 (Oct 12), 7.26x the typical $177.09.",
+    "Similar cards: other Special Illustration Rares with similar popularity where there are 5 or more, otherwise all Special Illustration Rares. Typical price is the middle price. TCGplayer market on Oct 12.",
     "A factual comparison of prices on file, not advice."
    ],
    "asOf": "2026-10-12",
@@ -15121,7 +15119,7 @@
       "peers": {
        "median": 22.99,
        "n": 164,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 7.93
       }
      },
@@ -15135,7 +15133,7 @@
       "peers": {
        "median": 22.99,
        "n": 164,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 7.78
       }
      },
@@ -15149,7 +15147,7 @@
       "peers": {
        "median": 177.09,
        "n": 23,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 7.26
       }
      }
@@ -15610,16 +15608,16 @@
    "deep": "rating",
    "board": "v3",
    "family": "deep",
-   "name": "Card Rating: Tag Team cards",
+   "name": "Rating: Tag Team cards",
    "sku": "tcgcsv-201208",
    "href": "/c/tcgcsv-201208",
-   "headline": "Priced below similar Tag Team cards: Naganadel & Guzzlord GX (Cosmic Eclipse 158/236), $11.39 (Oct 12) on TCGplayer market. Peer median $72.60 across 35 cards.",
-   "path": "Priced below similar Tag Team cards: Naganadel & Guzzlord GX (Cosmic Eclipse 158/236), $11.39 (Oct 12) on TCGplayer market. Peer median $72.60 across 35 cards.",
+   "headline": "Priced below similar Tag Team cards: Naganadel & Guzzlord GX (Cosmic Eclipse 158/236), $11.39 (Oct 12) on TCGplayer market. Typical price for similar cards: $72.60 (35 cards).",
+   "path": "Priced below similar Tag Team cards: Naganadel & Guzzlord GX (Cosmic Eclipse 158/236), $11.39 (Oct 12) on TCGplayer market. Typical price for similar cards: $72.60 (35 cards).",
    "lines": [
-    "Naganadel & Guzzlord GX (Cosmic Eclipse): $11.39 (Oct 12), 0.16x the peer median of $72.60.",
-    "Venusaur & Snivy GX (Cosmic Eclipse): $26.12 (Oct 12), 0.17x the peer median of $150.49.",
-    "Pheromosa & Buzzwole GX (Unbroken Bonds): $13.98 (Oct 12), 0.19x the peer median of $72.60.",
-    "Peers: Tag Team cards in the same popularity band where there are 5 or more, otherwise all Tag Team cards. Prices are TCGplayer market on Oct 12.",
+    "Naganadel & Guzzlord GX (Cosmic Eclipse): $11.39 (Oct 12), 0.16x the typical $72.60.",
+    "Venusaur & Snivy GX (Cosmic Eclipse): $26.12 (Oct 12), 0.17x the typical $150.49.",
+    "Pheromosa & Buzzwole GX (Unbroken Bonds): $13.98 (Oct 12), 0.19x the typical $72.60.",
+    "Similar cards: other Tag Team cards with similar popularity where there are 5 or more, otherwise all Tag Team cards. Typical price is the middle price. TCGplayer market on Oct 12.",
     "A factual comparison of prices on file, not advice."
    ],
    "asOf": "2026-10-12",
@@ -15641,7 +15639,7 @@
       "peers": {
        "median": 72.6,
        "n": 35,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 0.16
       }
      },
@@ -15655,7 +15653,7 @@
       "peers": {
        "median": 150.49,
        "n": 21,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 0.17
       }
      },
@@ -15669,7 +15667,7 @@
       "peers": {
        "median": 72.6,
        "n": 35,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 0.19
       }
      }
@@ -17688,16 +17686,16 @@
    "deep": "rating",
    "board": "v3",
    "family": "deep",
-   "name": "Card Rating: vintage WOTC holos",
+   "name": "Rating: vintage WOTC holos",
    "sku": "tcgcsv-86361",
    "href": "/c/tcgcsv-86361",
-   "headline": "Priced below similar vintage WOTC holos: Jumpluff (Neo Genesis 007/111), $11.10 (Oct 12) on TCGplayer market. Peer median $84.28 across 91 cards.",
-   "path": "Priced below similar vintage WOTC holos: Jumpluff (Neo Genesis 007/111), $11.10 (Oct 12) on TCGplayer market. Peer median $84.28 across 91 cards.",
+   "headline": "Priced below similar vintage WOTC holos: Jumpluff (Neo Genesis 007/111), $11.10 (Oct 12) on TCGplayer market. Typical price for similar cards: $84.28 (91 cards).",
+   "path": "Priced below similar vintage WOTC holos: Jumpluff (Neo Genesis 007/111), $11.10 (Oct 12) on TCGplayer market. Typical price for similar cards: $84.28 (91 cards).",
    "lines": [
-    "Jumpluff (Neo Genesis): $11.10 (Oct 12), 0.13x the peer median of $84.28.",
-    "Muk (Fossil): $11.57 (Oct 12), 0.15x the peer median of $76.23.",
-    "Dark Weezing (Team Rocket): $11.40 (Oct 12), 0.15x the peer median of $76.23.",
-    "Peers: vintage WOTC holos in the same popularity band where there are 5 or more, otherwise all vintage WOTC holos. Prices are TCGplayer market on Oct 12.",
+    "Jumpluff (Neo Genesis): $11.10 (Oct 12), 0.13x the typical $84.28.",
+    "Muk (Fossil): $11.57 (Oct 12), 0.15x the typical $76.23.",
+    "Dark Weezing (Team Rocket): $11.40 (Oct 12), 0.15x the typical $76.23.",
+    "Similar cards: other vintage WOTC holos with similar popularity where there are 5 or more, otherwise all vintage WOTC holos. Typical price is the middle price. TCGplayer market on Oct 12.",
     "A factual comparison of prices on file, not advice."
    ],
    "asOf": "2026-10-12",
@@ -17717,7 +17715,7 @@
       "peers": {
        "median": 84.28,
        "n": 91,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 0.13
       }
      },
@@ -17731,7 +17729,7 @@
       "peers": {
        "median": 76.23,
        "n": 174,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 0.15
       }
      },
@@ -17745,7 +17743,7 @@
       "peers": {
        "median": 76.23,
        "n": 174,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 0.15
       }
      }
@@ -18384,16 +18382,16 @@
    "deep": "rating",
    "board": "v3",
    "family": "deep",
-   "name": "Card Rating: Sword & Shield alt arts",
+   "name": "Rating: Alternate Art cards",
    "sku": "tcgcsv-274470",
    "href": "/c/tcgcsv-274470",
-   "headline": "Priced below similar Sword & Shield alt arts: Mewtwo V (Pokémon GO 072/078), $54.58 (Oct 12) on TCGplayer market. Peer median $483.57 across 9 cards.",
-   "path": "Priced below similar Sword & Shield alt arts: Mewtwo V (Pokémon GO 072/078), $54.58 (Oct 12) on TCGplayer market. Peer median $483.57 across 9 cards.",
+   "headline": "Priced below similar Alternate Art cards: Mewtwo V (Pokémon GO 072/078), $54.58 (Oct 12) on TCGplayer market. Typical price for similar cards: $483.57 (9 cards).",
+   "path": "Priced below similar Alternate Art cards: Mewtwo V (Pokémon GO 072/078), $54.58 (Oct 12) on TCGplayer market. Typical price for similar cards: $483.57 (9 cards).",
    "lines": [
-    "Mewtwo V (Pokémon GO): $54.58 (Oct 12), 0.11x the peer median of $483.57.",
-    "Inteleon VMAX (Fusion Strike): $27.11 (Oct 12), 0.13x the peer median of $203.23.",
-    "Conkeldurr V (Pokémon GO): $4.01 (Oct 12), 0.14x the peer median of $28.10.",
-    "Peers: Sword & Shield alt arts in the same popularity band where there are 5 or more, otherwise all Sword & Shield alt arts. Prices are TCGplayer market on Oct 12.",
+    "Mewtwo V (Pokémon GO): $54.58 (Oct 12), 0.11x the typical $483.57.",
+    "Inteleon VMAX (Fusion Strike): $27.11 (Oct 12), 0.13x the typical $203.23.",
+    "Conkeldurr V (Pokémon GO): $4.01 (Oct 12), 0.14x the typical $28.10.",
+    "Similar cards: other Alternate Art cards with similar popularity where there are 5 or more, otherwise all Alternate Art cards. Typical price is the middle price. TCGplayer market on Oct 12.",
     "A factual comparison of prices on file, not advice."
    ],
    "asOf": "2026-10-12",
@@ -18415,7 +18413,7 @@
       "peers": {
        "median": 483.57,
        "n": 9,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 0.11
       }
      },
@@ -18429,7 +18427,7 @@
       "peers": {
        "median": 203.23,
        "n": 21,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 0.13
       }
      },
@@ -18443,7 +18441,7 @@
       "peers": {
        "median": 28.1,
        "n": 32,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 0.14
       }
      }
@@ -18706,16 +18704,16 @@
    "deep": "rating",
    "board": "v3",
    "family": "deep",
-   "name": "Card Rating: Gold cards",
+   "name": "Rating: Gold cards",
    "sku": "tcgcsv-509990",
    "href": "/c/tcgcsv-509990",
-   "headline": "Priced below similar Gold cards: Artazon (Obsidian Flames 229/197), $1.39 (Oct 12) on TCGplayer market. Peer median $6.53 across 57 cards.",
-   "path": "Priced below similar Gold cards: Artazon (Obsidian Flames 229/197), $1.39 (Oct 12) on TCGplayer market. Peer median $6.53 across 57 cards.",
+   "headline": "Priced below similar Gold cards: Artazon (Obsidian Flames 229/197), $1.39 (Oct 12) on TCGplayer market. Typical price for similar cards: $6.53 (57 cards).",
+   "path": "Priced below similar Gold cards: Artazon (Obsidian Flames 229/197), $1.39 (Oct 12) on TCGplayer market. Typical price for similar cards: $6.53 (57 cards).",
    "lines": [
-    "Artazon (Obsidian Flames): $1.39 (Oct 12), 0.21x the peer median of $6.53.",
-    "Counter Catcher (Paradox Rift): $1.65 (Oct 12), 0.25x the peer median of $6.53.",
-    "Switch (Scarlet & Violet 151): $2.12 (Oct 12), 0.32x the peer median of $6.53.",
-    "Peers: Gold cards in the same popularity band where there are 5 or more, otherwise all Gold cards. Prices are TCGplayer market on Oct 12.",
+    "Artazon (Obsidian Flames): $1.39 (Oct 12), 0.21x the typical $6.53.",
+    "Counter Catcher (Paradox Rift): $1.65 (Oct 12), 0.25x the typical $6.53.",
+    "Switch (Scarlet & Violet 151): $2.12 (Oct 12), 0.32x the typical $6.53.",
+    "Similar cards: other Gold cards with similar popularity where there are 5 or more, otherwise all Gold cards. Typical price is the middle price. TCGplayer market on Oct 12.",
     "A factual comparison of prices on file, not advice."
    ],
    "asOf": "2026-10-12",
@@ -18737,7 +18735,7 @@
       "peers": {
        "median": 6.53,
        "n": 57,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 0.21
       }
      },
@@ -18751,7 +18749,7 @@
       "peers": {
        "median": 6.53,
        "n": 57,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 0.25
       }
      },
@@ -18765,7 +18763,7 @@
       "peers": {
        "median": 6.53,
        "n": 57,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 0.32
       }
      }
@@ -18874,16 +18872,16 @@
    "deep": "rating",
    "board": "v3",
    "family": "deep",
-   "name": "Card Rating: Gold Star cards",
+   "name": "Rating: Gold Star cards",
    "sku": "tcgcsv-88658",
    "href": "/c/tcgcsv-88658",
-   "headline": "Priced below similar Gold Star cards: Regice Star (EX Legend Maker 90/92), $649.98 (Oct 12) on TCGplayer market. Peer median $1,038.50 across 8 cards.",
-   "path": "Priced below similar Gold Star cards: Regice Star (EX Legend Maker 90/92), $649.98 (Oct 12) on TCGplayer market. Peer median $1,038.50 across 8 cards.",
+   "headline": "Priced below similar Gold Star cards: Regice Star (EX Legend Maker 90/92), $649.98 (Oct 12) on TCGplayer market. Typical price for similar cards: $1,038.50 (8 cards).",
+   "path": "Priced below similar Gold Star cards: Regice Star (EX Legend Maker 90/92), $649.98 (Oct 12) on TCGplayer market. Typical price for similar cards: $1,038.50 (8 cards).",
    "lines": [
-    "Regice Star (EX Legend Maker): $649.98 (Oct 12), 0.63x the peer median of $1,038.50.",
-    "Celebi Star (EX Crystal Guardians): $750.00 (Oct 12), 0.72x the peer median of $1,038.50.",
-    "Regirock Star (EX Legend Maker): $799.00 (Oct 12), 0.77x the peer median of $1,038.50.",
-    "Peers: Gold Star cards in the same popularity band where there are 5 or more, otherwise all Gold Star cards. Prices are TCGplayer market on Oct 12.",
+    "Regice Star (EX Legend Maker): $649.98 (Oct 12), 0.63x the typical $1,038.50.",
+    "Celebi Star (EX Crystal Guardians): $750.00 (Oct 12), 0.72x the typical $1,038.50.",
+    "Regirock Star (EX Legend Maker): $799.00 (Oct 12), 0.77x the typical $1,038.50.",
+    "Similar cards: other Gold Star cards with similar popularity where there are 5 or more, otherwise all Gold Star cards. Typical price is the middle price. TCGplayer market on Oct 12.",
     "A factual comparison of prices on file, not advice."
    ],
    "asOf": "2026-10-12",
@@ -18903,7 +18901,7 @@
       "peers": {
        "median": 1038.5,
        "n": 8,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 0.63
       }
      },
@@ -18917,7 +18915,7 @@
       "peers": {
        "median": 1038.5,
        "n": 8,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 0.72
       }
      },
@@ -18931,7 +18929,7 @@
       "peers": {
        "median": 1038.5,
        "n": 8,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 0.77
       }
      }
@@ -18986,16 +18984,16 @@
    "deep": "rating",
    "board": "v3",
    "family": "deep",
-   "name": "Card Rating: Special Illustration Rares",
+   "name": "Rating: Special Illustration Rares",
    "sku": "tcgcsv-509987",
    "href": "/c/tcgcsv-509987",
-   "headline": "Priced below similar Special Illustration Rares: Poppy (Obsidian Flames 227/197), $2.83 (Oct 12) on TCGplayer market. Peer median $23.08 across 164 cards.",
-   "path": "Priced below similar Special Illustration Rares: Poppy (Obsidian Flames 227/197), $2.83 (Oct 12) on TCGplayer market. Peer median $23.08 across 164 cards.",
+   "headline": "Priced below similar Special Illustration Rares: Poppy (Obsidian Flames 227/197), $2.83 (Oct 12) on TCGplayer market. Typical price for similar cards: $23.08 (164 cards).",
+   "path": "Priced below similar Special Illustration Rares: Poppy (Obsidian Flames 227/197), $2.83 (Oct 12) on TCGplayer market. Typical price for similar cards: $23.08 (164 cards).",
    "lines": [
-    "Poppy (Obsidian Flames): $2.83 (Oct 12), 0.12x the peer median of $23.08.",
-    "Geeta (Obsidian Flames): $3.11 (Oct 12), 0.13x the peer median of $23.08.",
-    "Quaquaval ex (Paldea Evolved): $13.07 (Oct 12), 0.16x the peer median of $79.78.",
-    "Peers: Special Illustration Rares in the same popularity band where there are 5 or more, otherwise all Special Illustration Rares. Prices are TCGplayer market on Oct 12.",
+    "Poppy (Obsidian Flames): $2.83 (Oct 12), 0.12x the typical $23.08.",
+    "Geeta (Obsidian Flames): $3.11 (Oct 12), 0.13x the typical $23.08.",
+    "Quaquaval ex (Paldea Evolved): $13.07 (Oct 12), 0.16x the typical $79.78.",
+    "Similar cards: other Special Illustration Rares with similar popularity where there are 5 or more, otherwise all Special Illustration Rares. Typical price is the middle price. TCGplayer market on Oct 12.",
     "A factual comparison of prices on file, not advice."
    ],
    "asOf": "2026-10-12",
@@ -19017,7 +19015,7 @@
       "peers": {
        "median": 23.08,
        "n": 164,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 0.12
       }
      },
@@ -19031,7 +19029,7 @@
       "peers": {
        "median": 23.08,
        "n": 164,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 0.13
       }
      },
@@ -19045,7 +19043,7 @@
       "peers": {
        "median": 79.78,
        "n": 42,
-       "basis": "same group and popularity band",
+       "basis": "similar popularity",
        "ratio": 0.16
       }
      }

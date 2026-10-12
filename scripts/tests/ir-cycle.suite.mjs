@@ -34,7 +34,7 @@ export async function run() {
   const doc = JSON.parse(await readFile(join(ROOT, "research/assets/public/feed/ir-cycle.json"), "utf8"));
   t("ir-cycle has rows and a date", doc.rows.length > 100 && /^\d{4}-\d{2}-\d{2}$/.test(doc.asOf));
   t("no private score is published", doc.rows.every((r) => !("_score" in r)));
-  t("every row is an IR or SIR with a dated price", doc.rows.every((r) => ["IR", "SIR", "TG", "GG", "ALT"].includes(r.kind) && r.price.price > 0 && /^\d{4}-/.test(r.price.date)));
+  t("every row is an IR or SIR with a dated price", doc.rows.every((r) => ["IR", "SIR", "TG", "GG", "ALT", "TTALT"].includes(r.kind) && r.price.price > 0 && /^\d{4}-/.test(r.price.date)));
   t("older kinds included", ["TG", "GG", "ALT"].every((k) => doc.rows.some((r) => r.kind === k)));
   t("weights add to 100", Object.values(doc.scoreWeights).reduce((a, b) => a + b, 0) === 100);
   t("lift chips are clean facts", doc.rows.every((r) => Array.isArray(r.lifts) && r.lifts.every((l) => cleanCopy(l.text))));

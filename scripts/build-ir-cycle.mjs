@@ -25,7 +25,7 @@ const cards = cardMarks(rows, attrs.cards || {});
 const list = buildRows({ rows, longRows, rot, bySet, today, marks: cards });
 const doc = {
   asOf: today,
-  note: "Factual position data, not advice. Includes IRs, SIRs, Trainer Gallery, Galarian Gallery and Sword & Shield alt arts. Prices are TCGplayer market. Listings are eBay sealed listings counted in our nightly pull for one sealed product of the set, not for the card.",
+  note: "Factual position data, not advice. Includes Illustration Rares, Special Illustration Rares, Trainer Gallery, Galarian Gallery, Alternate Art (Sword & Shield) and Tag Team (Alternate Art) cards, each named by its own rarity. Prices are TCGplayer market. No sealed data.",
   sources: ["research/assets/public/buckets", "research/assets/public/hist-long", "research/assets/public/rotation-status.json", "data/raw/ebay-sealed (latest two nights)"],
   study: STUDY,
   popularity: { weights: WEIGHTS, cap: WEIGHT_CAP, file: "scripts/lib/popular-pokemon.mjs" },
