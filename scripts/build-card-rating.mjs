@@ -93,11 +93,16 @@ try {
     const ids = members.map((r) => r.id).sort();
     const old = prev.get(fileKey);
     const changes = [...(old?.changes || [])];
-    if (!old) changes.push({ date: today, started: ids.length });
+    const startedToday = changes.length === 1 && changes[0].date === today && changes[0].started != null;
+    if (!old || startedToday) changes.splice(0, changes.length, { date: today, started: ids.length });
     else {
       const was = new Set((old.members || []).map((m) => m[0])), now = new Set(ids);
       const added = ids.filter((id) => !was.has(id)), removed = [...was].filter((id) => !now.has(id));
-      if ((added.length || removed.length) && !changes.some((c) => c.date === today)) changes.push({ date: today, added, removed });
+      if (added.length || removed.length) {
+        const t = changes.find((c) => c.date === today && c.added);
+        if (t) { t.added = [...new Set([...t.added, ...added])].filter((id) => now.has(id)); t.removed = [...new Set([...t.removed, ...removed])].filter((id) => !now.has(id)); }
+        else changes.push({ date: today, added, removed });
+      }
     }
     const sets = new Map();
     for (const r of members) if (r.pullRate) sets.set(r.setSlug, { set: r.set, pct: r.pullRate.pct, ci95: r.pullRate.ci95, samplePacks: r.pullRate.samplePacks, url: r.pullRate.url, published: r.pullRate.published, article: r.pullRate.article });
