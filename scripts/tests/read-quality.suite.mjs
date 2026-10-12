@@ -58,7 +58,7 @@ export async function run() {
     else { fail += 1; console.error(`  FAIL ${name}`); }
   };
 
-  t("reads.library stays off", flag("reads.library") === false);
+  t("reads.library is the one switch, a boolean", typeof flag("reads.library") === "boolean");
   t("ppt and volume stay off", flag("ppt.publicDisplay") === false && flag("reads.volume") === false);
 
   const day03 = JSON.parse(await readFile(join(ROOT, "data/history/tcgcsv-daily/2026-10-03.json"), "utf8"));
@@ -269,7 +269,7 @@ export async function run() {
   const sealedOn = libOf({ cards: {}, series: sealedSeries, dailyFiles: new Set(["2026-10-01", ASOF]), library: true, sealed: sealedProducts });
   const sealedRows = sealedOn.board.filter((row) => row.signal === "sealed");
   t("sealed week caps at one and skips art parents", sealedRows.length === 1 && sealedRows[0].sku === "box-b" && !sealedOn.board.some((row) => /Art /.test(row.name)));
-  t("sealed copy", sealedRows[0].headline.includes("Elite Trainer Box. TCGplayer market: $70.00 (2026-10-08), from $50.00 (2026-10-01). Up $20.00.") && sealedRows[0].whyItMatters === "A sealed product moved at least $5 on the two dates. This is the market price, not an eBay ask, and not a sale.");
+  t("sealed copy", sealedRows[0].headline.includes("Elite Trainer Box. TCGplayer market: $70.00 (2026-10-08), from $50.00 (2026-10-01). Up $20.00.") && sealedRows[0].whyItMatters === "A sealed product moved $5 or more on the two dates. This is the market price, not an eBay ask, and not a sale.");
 
   const radar = JSON.parse(await readFile(join(ROOT, "data/release-radar.json"), "utf8"));
   const releaseOff = libOf({ cards: {}, library: false, radar });

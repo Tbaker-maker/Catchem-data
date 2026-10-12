@@ -91,9 +91,9 @@
       "env": "CATCHEM_IMAGES_TCGPLAYER"
     },
     "reads.library": {
-      "value": false,
+      "value": true,
       "owner": "scripts/lib/second-library.mjs",
-      "why": "Second-library listing reads stay off. Tightening and Building stay off until an exact 7-day pair of filteredTotal exists, and this switch is off. One key turns those reads off without a deploy.",
+      "why": "On since 2026-10-12 (reads board v3: group climbs, set heat, releases, sourced news, rotation, Pokemon facts, eBay listing counts, not-moved-yet lists). Tightening and Building still need an exact 7-day pair of filteredTotal. Set false to turn every non-price read off without a deploy.",
       "trigger": "Exact 7-day filteredTotal pairs exist and RD writes the sentence for them.",
       "env": "CATCHEM_READS_LIBRARY"
     }

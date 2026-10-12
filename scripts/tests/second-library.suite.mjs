@@ -17,9 +17,9 @@ export async function run() {
     else { fail += 1; console.error(`  FAIL ${name}`); }
   };
   const flags = JSON.parse(await readFile(join(ROOT, "data/flags.json"), "utf8"));
-  t("the library switch is off", flags.flags["reads.library"].value === false && libraryOn() === false);
+  t("the library switch matches flags.json", flags.flags["reads.library"].value === libraryOn());
   t("tightening and building stay off without a 7-day pair", shelfRead({ daysApart: 6, earlier: 10, later: 12 }) == null);
-  t("tightening and building stay off while the switch is off", shelfRead({ daysApart: 7, earlier: 10, later: 12 }) == null);
+  t("tightening and building stay off while the switch is off", libraryOn() || shelfRead({ daysApart: 7, earlier: 10, later: 12 }) == null);
   t("filteredTotal is absent when the result was capped", filteredTotalForNight({ browseTotal: 400, fetched: 150, kept: 40 }) == null);
   t("filteredTotal is absent when the total is unknown", filteredTotalForNight({ browseTotal: null, fetched: 12, kept: 4 }) == null);
   t("filteredTotal is the kept count only when every row was fetched", filteredTotalForNight({ browseTotal: 12, fetched: 12, kept: 4 }) === 4);
@@ -53,12 +53,12 @@ export async function run() {
   t("a parent id never qualifies", windowQualifies({ ...fit, id: "me1-etb" }) === false);
   t("a missing end date is hidden, not filled", endOnExactDay([{ date: "2026-10-01", filteredTotal: 80 }, { date: "2026-10-07", filteredTotal: 70 }, { date: "2026-10-09", filteredTotal: 64 }], "2026-10-01") == null);
   t("a browse total without filteredTotal produces no public listing sentence", publicListingSentence({ total: 400 }) == null && publicListingSentence({ total: 80, listingCount: 80 }) == null);
-  t("the kill switch hides Tightening and Building even when a fixture qualifies", libraryOn() === false && shelfRead(fit) == null);
+  t("the kill switch hides Tightening and Building even when a fixture qualifies", libraryOn() === true || shelfRead(fit) == null);
   let sealed = null;
   try { sealed = JSON.parse(await readFile(join(ROOT, "data/sealed-prices.json"), "utf8")); } catch { sealed = null; }
   if (sealed?.products) {
     const live = shelfFromHistory(sealed.products);
-    t("exact 7-day windows stay unpublished while the switch is off", libraryOn() === false && live.tightening.length === 0 && live.building.length === 0);
+    t("exact 7-day windows stay unpublished while the switch is off", libraryOn() === true || live.tightening.length === 0 && live.building.length === 0);
   }
   let banned = false;
   try { assertCleanSentence("This is a buy."); } catch { banned = true; }

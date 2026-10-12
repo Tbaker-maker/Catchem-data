@@ -10,6 +10,7 @@ import { writeSealedPriceOutliers } from "./flag-sealed-price-outliers.mjs";
 import { writeReadLibrary, dailyFileSet } from "./lib/read-library.mjs";
 import { runRegistry } from "./lib/detectors/registry.mjs";
 import { libraryOn } from "./lib/second-library.mjs";
+import { buildBoardV3 } from "./lib/board-mix.mjs";
 import { loadSeriesOnce } from "./lib/series-cache.mjs";
 import { writeHealth } from "./write-health.mjs";
 import { cooledSet, loadRotation } from "./lib/night-reads.mjs";
@@ -192,6 +193,8 @@ if (libraryOn() !== true && JSON.stringify(reg.lib) !== JSON.stringify(library))
   throw new Error("registry library does not match the written read library");
 }
 console.log(JSON.stringify({ registryMs, registryLogs: reg.logs.length, browse: reg.browse.length }));
+const boardV3 = await buildBoardV3(ROOT, { on: libraryOn() === true });
+console.log(JSON.stringify({ boardV3 }));
 const health = await writeHealth(ROOT);
 console.log(JSON.stringify({ extra: extraSummary, library: library.counts, health: { nightlyDay: health.nightlyDay, shards: health.shards, lose: health.lose, failures: health.failures } }));
 if (health.failures.length) {
