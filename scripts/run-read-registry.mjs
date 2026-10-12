@@ -10,4 +10,4 @@ const rows = detectors().map((det) => ({
   inputs: det.inputs,
 }));
 
-console.log(JSON.stringify({ switch: SWITCH, wiredIntoNightly: false, detectors: rows }));
+console.log(JSON.stringify({ switch: SWITCH, wiredIntoNightly: true, detectors: rows }));

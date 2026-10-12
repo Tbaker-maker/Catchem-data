@@ -3,11 +3,13 @@
 // A detector that throws is logged and skipped. It does not add a row.
 
 import { buildReadLibrary } from "../read-library.mjs";
+import { SWITCH } from "./registry-switch.mjs";
 import { ASK_DETECTORS } from "./asks.mjs";
 import { PRICE_DETECTORS } from "./price.mjs";
 import { SLOTS } from "./slots.mjs";
+import { shuffleDay } from "./browse.mjs";
 
-export const SWITCH = "reads.library";
+export { SWITCH };
 
 export function detectors() {
   return [...PRICE_DETECTORS, ...ASK_DETECTORS, ...SLOTS];
@@ -43,5 +45,10 @@ export function runRegistry(ctx = {}, { switchOn = false, extras = [] } = {}) {
       byId[det.id] = [];
     }
   }
-  return { lib, byId, logs, public: false };
+  const fresh = [];
+  for (const det of list) {
+    if (det.gate !== SWITCH || det.id === "rotation") continue;
+    for (const row of byId[det.id] || []) fresh.push(row);
+  }
+  return { lib, byId, logs, browse: shuffleDay(fresh, lib.asOf), public: false };
 }
