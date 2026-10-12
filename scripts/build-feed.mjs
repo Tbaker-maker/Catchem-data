@@ -204,6 +204,13 @@ try {
 } catch (err) { console.error(`variant tags skipped: ${err.message}`); }
 console.log(JSON.stringify({ variantSummary }));
 const health = await writeHealth(ROOT);
+// Flags and the script research scan (data/derived/flags.json, research-scan.*).
+// Script only, no network. A failure here is logged and never stops the nightly.
+try {
+  const { runFlagger } = await import("./flagger.mjs");
+  const { doc, scan } = await runFlagger({ root: ROOT });
+  console.log(JSON.stringify({ flags: doc.flags.length, newFlags: doc.newTonight, flagTypes: doc.summary.byType, newsLeads: scan.newsLeads.length, radarLeads: scan.radarLeads.length }));
+} catch (err) { console.error(`flagger skipped: ${err.message}`); }
 console.log(JSON.stringify({ extra: extraSummary, library: library.counts, health: { nightlyDay: health.nightlyDay, shards: health.shards, lose: health.lose, failures: health.failures } }));
 if (health.failures.length) {
   console.error(health.failures.join("\n"));

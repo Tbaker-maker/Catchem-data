@@ -1,0 +1,752 @@
+{
+ "asOf": "2026-10-12",
+ "generatedAt": "2026-10-12T23:13:24.185Z",
+ "note": "Internal. What changed or broke tonight, for the weekly review. Script only.",
+ "types": {
+  "NEW_SET": "A TCGCSV set (group) appeared that was not there last night, or a future product in a news calendar is not on the radar.",
+  "NEW_RELEASE": "A product appeared on the release radar or releases file.",
+  "RELEASE_DATE_CHANGE": "A radar date changed since last night, or a news calendar shows another date for a radar product.",
+  "PRICE_MOVE": "A single or sealed product moved 50%+ and $10+ between the last two price days (both prices $5+).",
+  "NEWS_SOURCE_FAILING": "A news source failed or returned nothing tonight.",
+  "NEWS_LEAD": "A news headline matched a research category: supply, grading, new product or market news.",
+  "DATA_GAP": "A calendar day has no TCGCSV price file, or tonight's file priced 10%+ fewer products than the last one.",
+  "STALE_FILE": "A file the reads depend on is older than its allowed age.",
+  "ODD_PRICE": "Prices held back as likely data errors (Card Rating held list, sealed price outliers).",
+  "READ_TYPE_EMPTY": "A known read type produced nothing tonight."
+ },
+ "summary": {
+  "byType": {
+   "PRICE_MOVE": 6,
+   "DATA_GAP": 1,
+   "ODD_PRICE": 45,
+   "READ_TYPE_EMPTY": 2
+  },
+  "bySeverity": {
+   "high": 4,
+   "medium": 2,
+   "low": 48
+  }
+ },
+ "newTonight": 0,
+ "flags": [
+  {
+   "type": "PRICE_MOVE",
+   "severity": "high",
+   "key": "move:717609:2026-10-12",
+   "line": "Mew - B/RGB (ME: 30th Celebration): $1702.50 (2026-10-11) to $3746.75 (2026-10-12) on TCGplayer market, up 120%.",
+   "data": {
+    "id": "tcgcsv-717609",
+    "from": 1702.5,
+    "to": 3746.75,
+    "fromDay": "2026-10-11",
+    "toDay": "2026-10-12",
+    "pct": 120.1,
+    "kind": "single"
+   },
+   "new": false
+  },
+  {
+   "type": "PRICE_MOVE",
+   "severity": "high",
+   "key": "move:89788:2026-10-12",
+   "line": "Team Aqua's Kyogre (EX Team Magma vs Team Aqua): $316.30 (2026-10-11) to $542.60 (2026-10-12) on TCGplayer market, up 72%.",
+   "data": {
+    "id": "tcgcsv-89788",
+    "from": 316.3,
+    "to": 542.6,
+    "fromDay": "2026-10-11",
+    "toDay": "2026-10-12",
+    "pct": 71.5,
+    "kind": "single"
+   },
+   "new": false
+  },
+  {
+   "type": "PRICE_MOVE",
+   "severity": "high",
+   "key": "move:88967:2026-10-12",
+   "line": "Scizor ex (EX Unseen Forces): $45.99 (2026-10-11) to $183.44 (2026-10-12) on TCGplayer market, up 299%.",
+   "data": {
+    "id": "tcgcsv-88967",
+    "from": 45.99,
+    "to": 183.44,
+    "fromDay": "2026-10-11",
+    "toDay": "2026-10-12",
+    "pct": 298.9,
+    "kind": "single"
+   },
+   "new": false
+  },
+  {
+   "type": "PRICE_MOVE",
+   "severity": "high",
+   "key": "move:88679:2026-10-12",
+   "line": "Registeel ex (EX Hidden Legends): $173.30 (2026-10-11) to $300.50 (2026-10-12) on TCGplayer market, up 73%.",
+   "data": {
+    "id": "tcgcsv-88679",
+    "from": 173.3,
+    "to": 300.5,
+    "fromDay": "2026-10-11",
+    "toDay": "2026-10-12",
+    "pct": 73.4,
+    "kind": "single"
+   },
+   "new": false
+  },
+  {
+   "type": "PRICE_MOVE",
+   "severity": "medium",
+   "key": "move:83538:2026-10-12",
+   "line": "Ampharos (2) (Expedition): $111.50 (2026-10-11) to $175.00 (2026-10-12) on TCGplayer market, up 57%.",
+   "data": {
+    "id": "tcgcsv-83538",
+    "from": 111.5,
+    "to": 175,
+    "fromDay": "2026-10-11",
+    "toDay": "2026-10-12",
+    "pct": 57,
+    "kind": "single"
+   },
+   "new": false
+  },
+  {
+   "type": "PRICE_MOVE",
+   "severity": "medium",
+   "key": "move:87492:2026-10-12",
+   "line": "Minun - HGSS17 (HGSS Promos): $26.50 (2026-10-11) to $79.95 (2026-10-12) on TCGplayer market, up 202%.",
+   "data": {
+    "id": "tcgcsv-87492",
+    "from": 26.5,
+    "to": 79.95,
+    "fromDay": "2026-10-11",
+    "toDay": "2026-10-12",
+    "pct": 201.7,
+    "kind": "single"
+   },
+   "new": false
+  },
+  {
+   "type": "DATA_GAP",
+   "severity": "low",
+   "key": "gap:2026-09-28,2026-09-30,2026-10-01,2026-10-02,2026-10-04",
+   "line": "No TCGCSV price file for 5 day(s) in the last 31 (since the first daily file): 2026-09-28, 2026-09-30, 2026-10-01, 2026-10-02, 2026-10-04.",
+   "data": {
+    "missing": [
+     "2026-09-28",
+     "2026-09-30",
+     "2026-10-01",
+     "2026-10-02",
+     "2026-10-04"
+    ]
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-107000",
+   "line": "Held for a check: Gyarados (Base Set) at $123.95, 1st Edition price below its own unlimited price.",
+   "data": {
+    "id": "tcgcsv-107000",
+    "group": "wotc-holo",
+    "ratio": 1.65,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-478100",
+   "line": "Held for a check: Giratina VSTAR (Secret) (SWSH: Crown Zenith) at $290.73, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-478100",
+    "group": "gg",
+    "ratio": 15.17,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-478101",
+   "line": "Held for a check: Arceus VSTAR (Secret) (SWSH: Crown Zenith) at $192.63, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-478101",
+    "group": "gg",
+    "ratio": 10.05,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-497606",
+   "line": "Held for a check: Magikarp - 203/193 (SV02: Paldea Evolved) at $347.11, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-497606",
+    "group": "ir",
+    "ratio": 24.1,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-676107",
+   "line": "Held for a check: Mega Dragonite ex - 295/217 (ME: Ascended Heroes) at $172.17, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-676107",
+    "group": "gold",
+    "ratio": 12.67,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-87409",
+   "line": "Held for a check: Mew ex (EX Legend Maker) at $1.58, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-87409",
+    "group": "ex-era-ex",
+    "ratio": 0,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-84910",
+   "line": "Held for a check: Dragonite (9) (Expedition) at $949.79, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-84910",
+    "group": "wotc-holo",
+    "ratio": 12.64,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-85316",
+   "line": "Held for a check: Espeon (1) (Neo Discovery) at $365.17, 1st Edition price below its own unlimited price.",
+   "data": {
+    "id": "tcgcsv-85316",
+    "group": "wotc-holo",
+    "ratio": 4.86,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-478017",
+   "line": "Held for a check: Hisuian Voltorb (SWSH: Crown Zenith) at $2.92, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-478017",
+    "group": "gg",
+    "ratio": 0.09,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-178818",
+   "line": "Held for a check: Celebi Prism Star (SM - Lost Thunder) at $68.26, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-178818",
+    "group": "prism",
+    "ratio": 20.41,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-642618",
+   "line": "Held for a check: Zekrom ex - 166/086 (SV: Black Bolt) at $265.26, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-642618",
+    "group": "sir",
+    "ratio": 11.54,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-170922",
+   "line": "Held for a check: Jirachi Prism Star (SM - Celestial Storm) at $56.95, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-170922",
+    "group": "prism",
+    "ratio": 17.03,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-684424",
+   "line": "Held for a check: Probopass - 096/088 (ME03: Perfect Order) at $0.79, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-684424",
+    "group": "ir",
+    "ratio": 0.08,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-654526",
+   "line": "Held for a check: Mega Gardevoir ex - 187/132 (ME01: Mega Evolution) at $174.18, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-654526",
+    "group": "gold",
+    "ratio": 12.82,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-654527",
+   "line": "Held for a check: Mega Lucario ex - 188/132 (ME01: Mega Evolution) at $226.78, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-654527",
+    "group": "gold",
+    "ratio": 16.69,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-170934",
+   "line": "Held for a check: Latias Prism Star (SM - Celestial Storm) at $61.63, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-170934",
+    "group": "prism",
+    "ratio": 18.42,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-170935",
+   "line": "Held for a check: Latios Prism Star (SM - Celestial Storm) at $81.56, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-170935",
+    "group": "prism",
+    "ratio": 24.38,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-684339",
+   "line": "Held for a check: Mega Zygarde ex - 124/088 (ME03: Perfect Order) at $100.74, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-684339",
+    "group": "gold",
+    "ratio": 15.47,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-84640",
+   "line": "Held for a check: Dark Porygon2 (Neo Destiny) at $93.22, 1st Edition price below its own unlimited price.",
+   "data": {
+    "id": "tcgcsv-84640",
+    "group": "wotc-holo",
+    "ratio": 1.14,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-84652",
+   "line": "Held for a check: Dark Scizor (Neo Destiny) at $190.76, 1st Edition price below its own unlimited price.",
+   "data": {
+    "id": "tcgcsv-84652",
+    "group": "wotc-holo",
+    "ratio": 2.33,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-680956",
+   "line": "Held for a check: Radiant Greninja - 046/189 (GYM) (Southeast Asia Exclusives) at $86.66, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-680956",
+    "group": "radiant",
+    "ratio": 61.46,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-477057",
+   "line": "Held for a check: Mewtwo VSTAR (SWSH: Crown Zenith) at $239.50, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-477057",
+    "group": "gg",
+    "ratio": 19.89,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-642558",
+   "line": "Held for a check: Seismitoad - 105/086 (SV: Black Bolt) at $210.50, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-642558",
+    "group": "ir",
+    "ratio": 22.38,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-84660",
+   "line": "Held for a check: Dark Tyranitar (Neo Destiny) at $298.22, 1st Edition price below its own unlimited price.",
+   "data": {
+    "id": "tcgcsv-84660",
+    "group": "wotc-holo",
+    "ratio": 3.97,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-84561",
+   "line": "Held for a check: Dark Ampharos (Neo Destiny) at $161.37, 1st Edition price below its own unlimited price.",
+   "data": {
+    "id": "tcgcsv-84561",
+    "group": "wotc-holo",
+    "ratio": 1.97,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-274467",
+   "line": "Held for a check: Radiant Charizard (Pokémon GO) at $17.12, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-274467",
+    "group": "radiant",
+    "ratio": 12.14,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-84572",
+   "line": "Held for a check: Dark Charizard (4) (Team Rocket) at $381.69, 1st Edition price below its own unlimited price.",
+   "data": {
+    "id": "tcgcsv-84572",
+    "group": "wotc-holo",
+    "ratio": 1.32,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-704877",
+   "line": "Held for a check: Mega Darkrai ex - 120/084 (ME05: Pitch Black) at $138.34, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-704877",
+    "group": "gold",
+    "ratio": 10.18,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-523880",
+   "line": "Held for a check: Groudon - 199/182 (SV04: Paradox Rift) at $105.44, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-523880",
+    "group": "ir",
+    "ratio": 11.21,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-84084",
+   "line": "Held for a check: Cacturne ex (EX Emerald) at $15.00, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-84084",
+    "group": "ex-era-ex",
+    "ratio": 0.09,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-106996",
+   "line": "Held for a check: Alakazam (Base Set) at $367.32, 1st Edition price below its own unlimited price.",
+   "data": {
+    "id": "tcgcsv-106996",
+    "group": "wotc-holo",
+    "ratio": 4.89,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-478097",
+   "line": "Held for a check: Origin Forme Palkia VSTAR (Secret) (SWSH: Crown Zenith) at $98.35, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-478097",
+    "group": "gg",
+    "ratio": 11.41,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-86199",
+   "line": "Held for a check: Houndoom (H11) (Aquapolis) at $1571.99, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-86199",
+    "group": "wotc-holo",
+    "ratio": 19.18,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-84599",
+   "line": "Held for a check: Dark Gengar (Neo Destiny) at $1101.50, 1st Edition price below its own unlimited price.",
+   "data": {
+    "id": "tcgcsv-84599",
+    "group": "wotc-holo",
+    "ratio": 3.81,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-183899",
+   "line": "Held for a check: Latias & Latios GX (Alternate Full Art) (SM - Team Up) at $3916.85, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-183899",
+    "group": "tagteam-alt",
+    "ratio": 10.44,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-478099",
+   "line": "Held for a check: Origin Forme Dialga VSTAR (Secret) (SWSH: Crown Zenith) at $121.83, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-478099",
+    "group": "gg",
+    "ratio": 14.13,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-107000",
+   "line": "Held for a check: Gyarados (Base Set) at $111.61, 1st Edition price below its own unlimited price.",
+   "data": {
+    "id": "tcgcsv-107000",
+    "group": "first-ed",
+    "ratio": 0.64,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-85316",
+   "line": "Held for a check: Espeon (1) (Neo Discovery) at $237.50, 1st Edition price below its own unlimited price.",
+   "data": {
+    "id": "tcgcsv-85316",
+    "group": "first-ed",
+    "ratio": 1.4,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-84640",
+   "line": "Held for a check: Dark Porygon2 (Neo Destiny) at $90.00, 1st Edition price below its own unlimited price.",
+   "data": {
+    "id": "tcgcsv-84640",
+    "group": "first-ed",
+    "ratio": 0.69,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-84652",
+   "line": "Held for a check: Dark Scizor (Neo Destiny) at $105.00, 1st Edition price below its own unlimited price.",
+   "data": {
+    "id": "tcgcsv-84652",
+    "group": "first-ed",
+    "ratio": 0.81,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-84660",
+   "line": "Held for a check: Dark Tyranitar (Neo Destiny) at $200.00, 1st Edition price below its own unlimited price.",
+   "data": {
+    "id": "tcgcsv-84660",
+    "group": "first-ed",
+    "ratio": 1.18,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-84561",
+   "line": "Held for a check: Dark Ampharos (Neo Destiny) at $120.00, 1st Edition price below its own unlimited price.",
+   "data": {
+    "id": "tcgcsv-84561",
+    "group": "first-ed",
+    "ratio": 0.92,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-84572",
+   "line": "Held for a check: Dark Charizard (4) (Team Rocket) at $121.94, 1st Edition price below its own unlimited price.",
+   "data": {
+    "id": "tcgcsv-84572",
+    "group": "first-ed",
+    "ratio": 0.2,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-106996",
+   "line": "Held for a check: Alakazam (Base Set) at $328.13, 1st Edition price below its own unlimited price.",
+   "data": {
+    "id": "tcgcsv-106996",
+    "group": "first-ed",
+    "ratio": 1.94,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-84599",
+   "line": "Held for a check: Dark Gengar (Neo Destiny) at $749.99, 1st Edition price below its own unlimited price.",
+   "data": {
+    "id": "tcgcsv-84599",
+    "group": "first-ed",
+    "ratio": 1.44,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "READ_TYPE_EMPTY",
+   "severity": "low",
+   "key": "empty:askmove",
+   "line": "Read type \"askmove\" produced nothing tonight.",
+   "data": {
+    "kind": "askmove",
+    "lastNight": 0
+   },
+   "new": false
+  },
+  {
+   "type": "READ_TYPE_EMPTY",
+   "severity": "low",
+   "key": "empty:mktmove",
+   "line": "Read type \"mktmove\" produced nothing tonight.",
+   "data": {
+    "kind": "mktmove",
+    "lastNight": 0
+   },
+   "new": false
+  }
+ ]
+}
