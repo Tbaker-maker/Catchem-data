@@ -241,7 +241,7 @@ export function buildRatings({ rows, longRows = {}, variants = {}, searchMons = 
     const score = w ? Math.round((s / w) * 100) : null;
     out.push({
       id: c.id, name: c.name, num: c.num, set: c.set, setSlug: c.setSlug, group: g.key, band: x.band, groupLabel: g.label, groupOne: g.one,
-      printing: x.printingName || "", firstEd: !!x.firstEd, price: { price: x.price, date: x.date, source: "TCGplayer market" },
+      printing: x.printingName || "", firstEd: !!x.firstEd, hasHist: !!x.pts, price: { price: x.price, date: x.date, source: "TCGplayer market" },
       peers: med ? { median: Math.round(med * 100) / 100, n: others.length, basis: peerBasis, matched, pool: poolKey, ratio: Math.round(ratio * 100) / 100 } : (others.length ? { n: others.length, basis: peerBasis, matched: false, pool: poolKey } : null),
       verdict: check || !matched ? null : verdictOf(ratio),
       verdictNote: !check && !matched ? NOT_FAIR : undefined,
@@ -260,6 +260,22 @@ export function peerPools(list) {
   const pools = {};
   for (const r of list) for (const k of [`${r.group}-${r.band}`, `${r.group}-all`]) (pools[k] ||= []).push([r.id, r.name, r.set, r.num || "", r.price.price, r.price.date, r.firstEd ? 1 : 0]);
   return pools;
+}
+
+// Group indexes: every 7 days back from tonight, the total and the typical (middle)
+// TCGplayer market price of the group's cards that have a real price on file that
+// day (last point at most 8 days old). n is shown with every point. No point is
+// made for a day with fewer than 5 priced cards. Nothing is filled.
+export const INDEX_MIN = 5;
+export function groupIndex(members, ptsById, today, since = "2024-02-08") {
+  const pts = [];
+  for (let d = today; d >= since; d = new Date(Date.parse(d) - 7 * 86400000).toISOString().slice(0, 10)) {
+    const vals = [];
+    for (const m of members) { const p = ptsById.get(m.id); const hit = p ? priceAt(p, d) : null; if (hit) vals.push(hit[1]); }
+    if (vals.length < INDEX_MIN) continue;
+    pts.push([d, Math.round(vals.reduce((a, b) => a + b, 0) * 100) / 100, Math.round(median(vals) * 100) / 100, vals.length]);
+  }
+  return pts.reverse();
 }
 
 export function money(n) { return "$" + Number(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
