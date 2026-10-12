@@ -174,6 +174,8 @@ export function pullFactor(c, pulls) {
   const below = same.filter((x) => x < k.perCard).length, eq = same.filter((x) => x === k.perCard).length;
   return { v: Math.round(((below + eq / 2) / same.length) * 100) / 100, k };
 }
+// doc: data/pull-rates.json (the one pull-rate file). Untagged rows key on set and rarity;
+// Galarian Gallery rows key on "Galarian Gallery" for GG-numbered cards. A row's pct is per pack.
 export function pullTable(doc, rows) {
   const count = new Map();
   for (const r of rows || []) if (r.kind === "single" && r.setSlug) {
@@ -181,11 +183,13 @@ export function pullTable(doc, rows) {
     count.set(key, (count.get(key) || 0) + 1);
   }
   const out = new Map();
-  for (const x of doc?.rates || []) {
-    const key = `${x.setSlug}|${x.rarity}`, n = count.get(key);
-    if (!n || !(x.oneInPacks > 0)) continue;
-    const src = doc.sources?.[x.source] || {};
-    out.set(key, { rarity: x.rarity, oneIn: x.oneInPacks, cards: n, perCard: Math.round(x.oneInPacks * n), source: src.name || x.source, url: src.url || "", asOf: src.dataAsOf || src.revised || src.checked || "" });
+  for (const x of doc?.rows || []) {
+    const rar = x.tag === "Galarian Gallery" ? "Galarian Gallery" : x.tag ? null : x.rarity;
+    if (!rar || !(x.pct > 0)) continue;
+    const key = `${x.setSlug}|${rar}`, n = count.get(key);
+    if (!n || out.has(key)) continue;
+    const oneIn = Math.round(100 / x.pct);
+    out.set(key, { rarity: rar, oneIn, cards: n, perCard: Math.round(oneIn * n), source: x.sourceName || (/tcgplayer\.com/.test(x.sourceUrl || "") ? "TCGplayer" : "published source"), url: x.sourceUrl || "", asOf: x.dataAsOf || x.published || "" });
   }
   return out;
 }
