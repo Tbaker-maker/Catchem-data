@@ -120,7 +120,7 @@ export async function runYoutubeLearn({ root = ROOT, key = process.env.YOUTUBE_A
   scoreClaims(claimsDoc.claims, { priceOn, marketChange, pidsBySet: idx.pidsBySet, today });
   const topicsByVideo = new Map(videos.map((v) => [v.id, v.topics]));
   const ranking = rankClaims(claimsDoc.claims, topicsByVideo);
-  const leads = buildLeads(videos, { today, idx, seenTopics: state.topicsSeen });
+  const leads = buildLeads(videos, { today, idx, seenTopics: state.topicsSeen, firstRun: !(state.topicsSeen || []).length });
   state.topicsSeen = [...new Set([...state.topicsSeen, ...videos.flatMap((v) => v.topics)])].sort();
   const eden = {};
   for (const v of videos.filter((x) => x.date >= new Date(Date.parse(`${today}T00:00:00Z`) - 30 * 86400000).toISOString().slice(0, 10))) {

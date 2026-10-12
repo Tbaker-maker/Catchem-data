@@ -164,7 +164,7 @@ export function rankClaims(claims, videoTopics = new Map()) {
 }
 
 // Public-safe leads: counts and dates only. No creator names, text or scores.
-export function buildLeads(videos, { today, idx, seenTopics = [], days = 7 }) {
+export function buildLeads(videos, { today, idx, seenTopics = [], days = 7, firstRun = false }) {
   const from = addDays(today, -(days - 1));
   const recent = videos.filter((v) => v.date >= from && v.date <= today);
   const tally = new Map();
@@ -185,7 +185,7 @@ export function buildLeads(videos, { today, idx, seenTopics = [], days = 7 }) {
     if (kind === "topic" ? r.videos >= 2 : n >= 2) leads.push({ kind: kind === "topic" ? id : `${kind}_attention`, ref: kind === "topic" ? null : Number(id), label: r.label, channels: n, videos: r.videos, from, to: today });
   }
   const seen = new Set(seenTopics);
-  for (const v of recent) for (const t of v.topics) if (!seen.has(t)) { seen.add(t); leads.push({ kind: "new_method", ref: null, label: t.replace(/_/g, " "), channels: 1, videos: 1, from: v.date, to: today }); }
+  if (!firstRun) for (const v of recent) for (const t of v.topics) if (!seen.has(t)) { seen.add(t); leads.push({ kind: "new_method", ref: null, label: t.replace(/_/g, " "), channels: 1, videos: 1, from: v.date, to: today }); }
   return leads.sort((a, b) => b.channels - a.channels || b.videos - a.videos || (a.label < b.label ? -1 : 1));
 }
 
