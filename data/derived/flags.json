@@ -1,6 +1,6 @@
 {
  "asOf": "2026-10-12",
- "generatedAt": "2026-10-12T23:26:51.758Z",
+ "generatedAt": "2026-10-12T23:28:23.207Z",
  "note": "Internal. What changed or broke tonight, for the weekly review. Script only.",
  "types": {
   "NEW_SET": "A TCGCSV set (group) appeared that was not there last night, or a future product in a news calendar is not on the radar.",
@@ -18,16 +18,16 @@
   "byType": {
    "PRICE_MOVE": 6,
    "DATA_GAP": 1,
-   "ODD_PRICE": 54,
+   "ODD_PRICE": 45,
    "READ_TYPE_EMPTY": 2
   },
   "bySeverity": {
    "high": 4,
    "medium": 2,
-   "low": 57
+   "low": 48
   }
  },
- "newTonight": 0,
+ "newTonight": 17,
  "flags": [
   {
    "type": "PRICE_MOVE",
@@ -149,7 +149,7 @@
    "data": {
     "id": "tcgcsv-107000",
     "group": "wotc-holo",
-    "ratio": 1.4,
+    "ratio": 1.65,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -157,15 +157,28 @@
   {
    "type": "ODD_PRICE",
    "severity": "low",
-   "key": "held:tcgcsv-277004",
-   "line": "Held for a check: Conkeldurr V (Alternate Full Art) (Pokémon GO) at $4.01, more than 10x from peer median.",
+   "key": "held:tcgcsv-478100",
+   "line": "Held for a check: Giratina VSTAR (Secret) (SWSH: Crown Zenith) at $290.73, more than 10x from peer median.",
    "data": {
-    "id": "tcgcsv-277004",
-    "group": "swsh-alt",
-    "ratio": 0.06,
+    "id": "tcgcsv-478100",
+    "group": "gg",
+    "ratio": 15.17,
     "source": "data/derived/card-rating-held.json"
    },
-   "new": false
+   "new": true
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-478101",
+   "line": "Held for a check: Arceus VSTAR (Secret) (SWSH: Crown Zenith) at $192.63, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-478101",
+    "group": "gg",
+    "ratio": 10.05,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": true
   },
   {
    "type": "ODD_PRICE",
@@ -175,7 +188,7 @@
    "data": {
     "id": "tcgcsv-497606",
     "group": "ir",
-    "ratio": 19.85,
+    "ratio": 24.1,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -183,54 +196,15 @@
   {
    "type": "ODD_PRICE",
    "severity": "low",
-   "key": "held:tcgcsv-264206",
-   "line": "Held for a check: Umbreon VMAX (SWSH09: Brilliant Stars) at $100.43, more than 10x from peer median.",
+   "key": "held:tcgcsv-676107",
+   "line": "Held for a check: Mega Dragonite ex - 295/217 (ME: Ascended Heroes) at $172.17, more than 10x from peer median.",
    "data": {
-    "id": "tcgcsv-264206",
-    "group": "tg",
-    "ratio": 15.23,
+    "id": "tcgcsv-676107",
+    "group": "gold",
+    "ratio": 12.67,
     "source": "data/derived/card-rating-held.json"
    },
-   "new": false
-  },
-  {
-   "type": "ODD_PRICE",
-   "severity": "low",
-   "key": "held:tcgcsv-179007",
-   "line": "Held for a check: Heat Factory Prism Star (SM - Lost Thunder) at $1.16, more than 10x from peer median.",
-   "data": {
-    "id": "tcgcsv-179007",
-    "group": "prism",
-    "ratio": 0.09,
-    "source": "data/derived/card-rating-held.json"
-   },
-   "new": false
-  },
-  {
-   "type": "ODD_PRICE",
-   "severity": "low",
-   "key": "held:tcgcsv-264207",
-   "line": "Held for a check: Umbreon V (SWSH09: Brilliant Stars) at $72.10, more than 10x from peer median.",
-   "data": {
-    "id": "tcgcsv-264207",
-    "group": "tg",
-    "ratio": 10.93,
-    "source": "data/derived/card-rating-held.json"
-   },
-   "new": false
-  },
-  {
-   "type": "ODD_PRICE",
-   "severity": "low",
-   "key": "held:tcgcsv-264208",
-   "line": "Held for a check: Sylveon VMAX (SWSH09: Brilliant Stars) at $66.05, more than 10x from peer median.",
-   "data": {
-    "id": "tcgcsv-264208",
-    "group": "tg",
-    "ratio": 10.02,
-    "source": "data/derived/card-rating-held.json"
-   },
-   "new": false
+   "new": true
   },
   {
    "type": "ODD_PRICE",
@@ -240,20 +214,7 @@
    "data": {
     "id": "tcgcsv-87409",
     "group": "ex-era-ex",
-    "ratio": 0.01,
-    "source": "data/derived/card-rating-held.json"
-   },
-   "new": false
-  },
-  {
-   "type": "ODD_PRICE",
-   "severity": "low",
-   "key": "held:tcgcsv-264209",
-   "line": "Held for a check: Sylveon V (SWSH09: Brilliant Stars) at $73.12, more than 10x from peer median.",
-   "data": {
-    "id": "tcgcsv-264209",
-    "group": "tg",
-    "ratio": 11.09,
+    "ratio": 0,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -266,46 +227,7 @@
    "data": {
     "id": "tcgcsv-84910",
     "group": "wotc-holo",
-    "ratio": 10.7,
-    "source": "data/derived/card-rating-held.json"
-   },
-   "new": false
-  },
-  {
-   "type": "ODD_PRICE",
-   "severity": "low",
-   "key": "held:tcgcsv-179011",
-   "line": "Held for a check: Life Forest Prism Star (SM - Lost Thunder) at $1.18, more than 10x from peer median.",
-   "data": {
-    "id": "tcgcsv-179011",
-    "group": "prism",
-    "ratio": 0.09,
-    "source": "data/derived/card-rating-held.json"
-   },
-   "new": false
-  },
-  {
-   "type": "ODD_PRICE",
-   "severity": "low",
-   "key": "held:tcgcsv-86912",
-   "line": "Held for a check: Lugia ex (EX Unseen Forces) at $2500.00, more than 10x from peer median.",
-   "data": {
-    "id": "tcgcsv-86912",
-    "group": "ex-era-ex",
-    "ratio": 12.79,
-    "source": "data/derived/card-rating-held.json"
-   },
-   "new": false
-  },
-  {
-   "type": "ODD_PRICE",
-   "severity": "low",
-   "key": "held:tcgcsv-179014",
-   "line": "Held for a check: Lusamine Prism Star (SM - Lost Thunder) at $1.07, more than 10x from peer median.",
-   "data": {
-    "id": "tcgcsv-179014",
-    "group": "prism",
-    "ratio": 0.08,
+    "ratio": 12.64,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -318,7 +240,7 @@
    "data": {
     "id": "tcgcsv-85316",
     "group": "wotc-holo",
-    "ratio": 4.12,
+    "ratio": 4.86,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -326,80 +248,132 @@
   {
    "type": "ODD_PRICE",
    "severity": "low",
-   "key": "held:tcgcsv-264221",
-   "line": "Held for a check: Mimikyu V (SWSH09: Brilliant Stars) at $82.10, more than 10x from peer median.",
+   "key": "held:tcgcsv-478017",
+   "line": "Held for a check: Hisuian Voltorb (SWSH: Crown Zenith) at $2.92, more than 10x from peer median.",
    "data": {
-    "id": "tcgcsv-264221",
-    "group": "tg",
-    "ratio": 12.45,
+    "id": "tcgcsv-478017",
+    "group": "gg",
+    "ratio": 0.09,
     "source": "data/derived/card-rating-held.json"
    },
-   "new": false
+   "new": true
   },
   {
    "type": "ODD_PRICE",
    "severity": "low",
-   "key": "held:tcgcsv-264222",
-   "line": "Held for a check: Mimikyu VMAX (SWSH09: Brilliant Stars) at $74.95, more than 10x from peer median.",
+   "key": "held:tcgcsv-178818",
+   "line": "Held for a check: Celebi Prism Star (SM - Lost Thunder) at $68.26, more than 10x from peer median.",
    "data": {
-    "id": "tcgcsv-264222",
-    "group": "tg",
-    "ratio": 11.36,
+    "id": "tcgcsv-178818",
+    "group": "prism",
+    "ratio": 20.41,
     "source": "data/derived/card-rating-held.json"
    },
-   "new": false
+   "new": true
   },
   {
    "type": "ODD_PRICE",
    "severity": "low",
-   "key": "held:tcgcsv-590027",
-   "line": "Held for a check: Pikachu ex - 238/191 (SV08: Surging Sparks) at $281.33, more than 10x from peer median.",
+   "key": "held:tcgcsv-642618",
+   "line": "Held for a check: Zekrom ex - 166/086 (SV: Black Bolt) at $265.26, more than 10x from peer median.",
    "data": {
-    "id": "tcgcsv-590027",
+    "id": "tcgcsv-642618",
     "group": "sir",
-    "ratio": 10.07,
+    "ratio": 11.54,
     "source": "data/derived/card-rating-held.json"
    },
-   "new": false
+   "new": true
   },
   {
    "type": "ODD_PRICE",
    "severity": "low",
-   "key": "held:tcgcsv-633031",
-   "line": "Held for a check: Team Rocket's Mewtwo ex - 231/182 (SV10: Destined Rivals) at $377.81, more than 10x from peer median.",
+   "key": "held:tcgcsv-170922",
+   "line": "Held for a check: Jirachi Prism Star (SM - Celestial Storm) at $56.95, more than 10x from peer median.",
    "data": {
-    "id": "tcgcsv-633031",
-    "group": "sir",
-    "ratio": 13.53,
+    "id": "tcgcsv-170922",
+    "group": "prism",
+    "ratio": 17.03,
     "source": "data/derived/card-rating-held.json"
    },
-   "new": false
+   "new": true
   },
   {
    "type": "ODD_PRICE",
    "severity": "low",
-   "key": "held:tcgcsv-284137",
-   "line": "Held for a check: Giratina V (Alternate Full Art) (SWSH11: Lost Origin) at $851.13, more than 10x from peer median.",
+   "key": "held:tcgcsv-684424",
+   "line": "Held for a check: Probopass - 096/088 (ME03: Perfect Order) at $0.79, more than 10x from peer median.",
    "data": {
-    "id": "tcgcsv-284137",
-    "group": "swsh-alt",
-    "ratio": 13.68,
+    "id": "tcgcsv-684424",
+    "group": "ir",
+    "ratio": 0.08,
     "source": "data/derived/card-rating-held.json"
    },
-   "new": false
+   "new": true
   },
   {
    "type": "ODD_PRICE",
    "severity": "low",
-   "key": "held:tcgcsv-90139",
-   "line": "Held for a check: Umbreon (H29) (Aquapolis) at $1252.62, more than 10x from peer median.",
+   "key": "held:tcgcsv-654526",
+   "line": "Held for a check: Mega Gardevoir ex - 187/132 (ME01: Mega Evolution) at $174.18, more than 10x from peer median.",
    "data": {
-    "id": "tcgcsv-90139",
-    "group": "wotc-holo",
-    "ratio": 14.12,
+    "id": "tcgcsv-654526",
+    "group": "gold",
+    "ratio": 12.82,
     "source": "data/derived/card-rating-held.json"
    },
-   "new": false
+   "new": true
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-654527",
+   "line": "Held for a check: Mega Lucario ex - 188/132 (ME01: Mega Evolution) at $226.78, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-654527",
+    "group": "gold",
+    "ratio": 16.69,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": true
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-170934",
+   "line": "Held for a check: Latias Prism Star (SM - Celestial Storm) at $61.63, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-170934",
+    "group": "prism",
+    "ratio": 18.42,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": true
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-170935",
+   "line": "Held for a check: Latios Prism Star (SM - Celestial Storm) at $81.56, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-170935",
+    "group": "prism",
+    "ratio": 24.38,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": true
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-684339",
+   "line": "Held for a check: Mega Zygarde ex - 124/088 (ME03: Perfect Order) at $100.74, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-684339",
+    "group": "gold",
+    "ratio": 15.47,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": true
   },
   {
    "type": "ODD_PRICE",
@@ -409,33 +383,7 @@
    "data": {
     "id": "tcgcsv-84640",
     "group": "wotc-holo",
-    "ratio": 1.05,
-    "source": "data/derived/card-rating-held.json"
-   },
-   "new": false
-  },
-  {
-   "type": "ODD_PRICE",
-   "severity": "low",
-   "key": "held:tcgcsv-517045",
-   "line": "Held for a check: Charizard ex - 199/165 (SV: Scarlet & Violet 151) at $321.19, more than 10x from peer median.",
-   "data": {
-    "id": "tcgcsv-517045",
-    "group": "sir",
-    "ratio": 11.5,
-    "source": "data/derived/card-rating-held.json"
-   },
-   "new": false
-  },
-  {
-   "type": "ODD_PRICE",
-   "severity": "low",
-   "key": "held:tcgcsv-253149",
-   "line": "Held for a check: Sandaconda V (Alternate Full Art) (SWSH08: Fusion Strike) at $4.14, more than 10x from peer median.",
-   "data": {
-    "id": "tcgcsv-253149",
-    "group": "swsh-alt",
-    "ratio": 0.07,
+    "ratio": 1.14,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -448,7 +396,7 @@
    "data": {
     "id": "tcgcsv-84652",
     "group": "wotc-holo",
-    "ratio": 2.15,
+    "ratio": 2.33,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -456,15 +404,15 @@
   {
    "type": "ODD_PRICE",
    "severity": "low",
-   "key": "held:tcgcsv-246754",
-   "line": "Held for a check: Duraludon VMAX (Alternate Art Secret) (SWSH07: Evolving Skies) at $14.82, more than 10x from peer median.",
+   "key": "held:tcgcsv-680956",
+   "line": "Held for a check: Radiant Greninja - 046/189 (GYM) (Southeast Asia Exclusives) at $86.66, more than 10x from peer median.",
    "data": {
-    "id": "tcgcsv-246754",
-    "group": "swsh-alt",
-    "ratio": 0.05,
+    "id": "tcgcsv-680956",
+    "group": "radiant",
+    "ratio": 61.46,
     "source": "data/derived/card-rating-held.json"
    },
-   "new": false
+   "new": true
   },
   {
    "type": "ODD_PRICE",
@@ -474,7 +422,7 @@
    "data": {
     "id": "tcgcsv-477057",
     "group": "gg",
-    "ratio": 22.83,
+    "ratio": 19.89,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -487,7 +435,7 @@
    "data": {
     "id": "tcgcsv-642558",
     "group": "ir",
-    "ratio": 13.98,
+    "ratio": 22.38,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -500,7 +448,7 @@
    "data": {
     "id": "tcgcsv-84660",
     "group": "wotc-holo",
-    "ratio": 3.36,
+    "ratio": 3.97,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -513,20 +461,7 @@
    "data": {
     "id": "tcgcsv-84561",
     "group": "wotc-holo",
-    "ratio": 1.82,
-    "source": "data/derived/card-rating-held.json"
-   },
-   "new": false
-  },
-  {
-   "type": "ODD_PRICE",
-   "severity": "low",
-   "key": "held:tcgcsv-183962",
-   "line": "Held for a check: Wondrous Labyrinth Prism Star (SM - Team Up) at $0.66, more than 10x from peer median.",
-   "data": {
-    "id": "tcgcsv-183962",
-    "group": "prism",
-    "ratio": 0.05,
+    "ratio": 1.97,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -539,20 +474,7 @@
    "data": {
     "id": "tcgcsv-274467",
     "group": "radiant",
-    "ratio": 13.64,
-    "source": "data/derived/card-rating-held.json"
-   },
-   "new": false
-  },
-  {
-   "type": "ODD_PRICE",
-   "severity": "low",
-   "key": "held:tcgcsv-253171",
-   "line": "Held for a check: Inteleon VMAX (Alternate Art Secret) (SWSH08: Fusion Strike) at $27.11, more than 10x from peer median.",
-   "data": {
-    "id": "tcgcsv-253171",
-    "group": "swsh-alt",
-    "ratio": 0.08,
+    "ratio": 12.14,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -565,7 +487,7 @@
    "data": {
     "id": "tcgcsv-84572",
     "group": "wotc-holo",
-    "ratio": 4.3,
+    "ratio": 1.32,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -573,15 +495,15 @@
   {
    "type": "ODD_PRICE",
    "severity": "low",
-   "key": "held:tcgcsv-165773",
-   "line": "Held for a check: Lysandre Prism Star (SM - Forbidden Light) at $0.97, more than 10x from peer median.",
+   "key": "held:tcgcsv-704877",
+   "line": "Held for a check: Mega Darkrai ex - 120/084 (ME05: Pitch Black) at $138.34, more than 10x from peer median.",
    "data": {
-    "id": "tcgcsv-165773",
-    "group": "prism",
-    "ratio": 0.08,
+    "id": "tcgcsv-704877",
+    "group": "gold",
+    "ratio": 10.18,
     "source": "data/derived/card-rating-held.json"
    },
-   "new": false
+   "new": true
   },
   {
    "type": "ODD_PRICE",
@@ -591,20 +513,7 @@
    "data": {
     "id": "tcgcsv-523880",
     "group": "ir",
-    "ratio": 11.39,
-    "source": "data/derived/card-rating-held.json"
-   },
-   "new": false
-  },
-  {
-   "type": "ODD_PRICE",
-   "severity": "low",
-   "key": "held:tcgcsv-42382",
-   "line": "Held for a check: Charizard (Base Set) at $928.06, more than 10x from peer median.",
-   "data": {
-    "id": "tcgcsv-42382",
-    "group": "wotc-holo",
-    "ratio": 10.46,
+    "ratio": 11.21,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -617,19 +526,6 @@
    "data": {
     "id": "tcgcsv-84084",
     "group": "ex-era-ex",
-    "ratio": 0.08,
-    "source": "data/derived/card-rating-held.json"
-   },
-   "new": false
-  },
-  {
-   "type": "ODD_PRICE",
-   "severity": "low",
-   "key": "held:tcgcsv-234088",
-   "line": "Held for a check: Single Strike Urshifu VMAX (Alternate Art Secret) (SWSH05: Battle Styles) at $30.24, more than 10x from peer median.",
-   "data": {
-    "id": "tcgcsv-234088",
-    "group": "swsh-alt",
     "ratio": 0.09,
     "source": "data/derived/card-rating-held.json"
    },
@@ -643,7 +539,7 @@
    "data": {
     "id": "tcgcsv-106996",
     "group": "wotc-holo",
-    "ratio": 4.14,
+    "ratio": 4.89,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -651,28 +547,15 @@
   {
    "type": "ODD_PRICE",
    "severity": "low",
-   "key": "held:tcgcsv-84196",
-   "line": "Held for a check: Charizard (Legendary Collection) at $899.99, more than 10x from peer median.",
+   "key": "held:tcgcsv-478097",
+   "line": "Held for a check: Origin Forme Palkia VSTAR (Secret) (SWSH: Crown Zenith) at $98.35, more than 10x from peer median.",
    "data": {
-    "id": "tcgcsv-84196",
-    "group": "wotc-holo",
-    "ratio": 10.14,
+    "id": "tcgcsv-478097",
+    "group": "gg",
+    "ratio": 11.41,
     "source": "data/derived/card-rating-held.json"
    },
-   "new": false
-  },
-  {
-   "type": "ODD_PRICE",
-   "severity": "low",
-   "key": "held:tcgcsv-106997",
-   "line": "Held for a check: Blastoise (Base Set) at $896.06, more than 10x from peer median.",
-   "data": {
-    "id": "tcgcsv-106997",
-    "group": "wotc-holo",
-    "ratio": 10.1,
-    "source": "data/derived/card-rating-held.json"
-   },
-   "new": false
+   "new": true
   },
   {
    "type": "ODD_PRICE",
@@ -682,20 +565,7 @@
    "data": {
     "id": "tcgcsv-86199",
     "group": "wotc-holo",
-    "ratio": 17.71,
-    "source": "data/derived/card-rating-held.json"
-   },
-   "new": false
-  },
-  {
-   "type": "ODD_PRICE",
-   "severity": "low",
-   "key": "held:tcgcsv-106999",
-   "line": "Held for a check: Charizard (Base Set) at $2257.87, more than 10x from peer median.",
-   "data": {
-    "id": "tcgcsv-106999",
-    "group": "wotc-holo",
-    "ratio": 25.44,
+    "ratio": 19.18,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -704,11 +574,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-84599",
-   "line": "Held for a check: Dark Gengar (Neo Destiny) at $1101.50, more than 10x from peer median.",
+   "line": "Held for a check: Dark Gengar (Neo Destiny) at $1101.50, 1st Edition price below its own unlimited price.",
    "data": {
     "id": "tcgcsv-84599",
     "group": "wotc-holo",
-    "ratio": 12.41,
+    "ratio": 3.81,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -729,12 +599,25 @@
   {
    "type": "ODD_PRICE",
    "severity": "low",
+   "key": "held:tcgcsv-478099",
+   "line": "Held for a check: Origin Forme Dialga VSTAR (Secret) (SWSH: Crown Zenith) at $121.83, more than 10x from peer median.",
+   "data": {
+    "id": "tcgcsv-478099",
+    "group": "gg",
+    "ratio": 14.13,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": true
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
    "key": "held:tcgcsv-107000",
    "line": "Held for a check: Gyarados (Base Set) at $111.61, 1st Edition price below its own unlimited price.",
    "data": {
     "id": "tcgcsv-107000",
     "group": "first-ed",
-    "ratio": 0.67,
+    "ratio": 0.64,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -747,7 +630,7 @@
    "data": {
     "id": "tcgcsv-85316",
     "group": "first-ed",
-    "ratio": 1.46,
+    "ratio": 1.4,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -760,7 +643,7 @@
    "data": {
     "id": "tcgcsv-84640",
     "group": "first-ed",
-    "ratio": 0.54,
+    "ratio": 0.69,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -773,7 +656,7 @@
    "data": {
     "id": "tcgcsv-84652",
     "group": "first-ed",
-    "ratio": 0.63,
+    "ratio": 0.81,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -786,7 +669,7 @@
    "data": {
     "id": "tcgcsv-84660",
     "group": "first-ed",
-    "ratio": 1.23,
+    "ratio": 1.18,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -799,7 +682,7 @@
    "data": {
     "id": "tcgcsv-84561",
     "group": "first-ed",
-    "ratio": 0.72,
+    "ratio": 0.92,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -812,7 +695,7 @@
    "data": {
     "id": "tcgcsv-84572",
     "group": "first-ed",
-    "ratio": 0.73,
+    "ratio": 0.2,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -825,7 +708,7 @@
    "data": {
     "id": "tcgcsv-106996",
     "group": "first-ed",
-    "ratio": 2.02,
+    "ratio": 1.94,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -838,7 +721,7 @@
    "data": {
     "id": "tcgcsv-84599",
     "group": "first-ed",
-    "ratio": 4.61,
+    "ratio": 1.44,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false

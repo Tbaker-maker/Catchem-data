@@ -9,8 +9,8 @@ import { popularity, monName } from "./popular-pokemon.mjs";
 
 // Weights add to 100. A factor with no data is left out and the rest are
 // rescaled, so a missing fact never counts as good or bad.
-export const RATING_WEIGHTS = { peer: 25, popularity: 15, scarcity: 15, demand: 15, age: 10, artist: 10, range: 10 };
-export const FACTOR_LABEL = { peer: "Price vs similar cards", popularity: "Popularity", scarcity: "How rare this version is", demand: "Recent demand", age: "Age", artist: "Artist", range: "Price vs its own history" };
+export const RATING_WEIGHTS = { peer: 25, popularity: 15, scarcity: 10, pull: 5, demand: 15, age: 10, artist: 10, range: 10 };
+export const FACTOR_LABEL = { peer: "Price vs similar cards", popularity: "Popularity", scarcity: "How rare this version is", pull: "Pull rate", demand: "Recent demand", age: "Age", artist: "Artist", range: "Price vs its own history" };
 
 // Verdict bands on price against the peer median.
 export const BELOW = 0.8;
@@ -117,54 +117,33 @@ const pctTxt = (n) => (n > 0 ? `up ${n}%` : n < 0 ? `down ${Math.abs(n)}%` : "fl
 
 // rows: nightly bucket rows. longRows: hist-long map. variants: card-variants cards map.
 // searchMons: Map mon -> count of catalogue rows in search. readHits: Map id -> count of tonight's streak/climb reads.
-// Generation of a card, from its TCGplayer set name, else its release date.
-export function eraOfCard(c) {
-  const s = String(c.set || "");
-  if (/^ME\b|^MEE?\d*:/.test(s)) return "Mega Evolution";
-  if (/^SVE?\d*:|^SV\b/.test(s)) return "Scarlet & Violet";
-  if (/^SWSH/.test(s)) return "Sword & Shield";
-  if (/^SM\b/.test(s)) return "Sun & Moon";
-  if (/^XY\b/.test(s)) return "XY";
-  if (/^BW\b/.test(s)) return "Black & White";
-  const r = String(c.release || "");
-  if (r < "2003-06-01") return "WOTC";
-  if (r < "2007-06-01") return "EX";
-  if (r < "2011-04-01") return "Diamond & Pearl to Call of Legends";
-  if (r < "2023-03-31" && r >= "2020-02-07") return "Sword & Shield";
-  if (r >= "2017-02-03" && r < "2020-02-07") return "Sun & Moon";
-  if (r >= "2014-02-05" && r < "2017-02-03") return "XY";
-  if (r >= "2023-03-31") return "Scarlet & Violet";
-  return "Other";
+// Pull rate, only where data/pull-rates-published.json has a published figure for the set and rarity.
+// pulls: Map "setSlug|rarity" -> { oneIn, perCard, cards, source, url }. v = share of rated
+// set-and-rarity pairs of the same rarity with easier per-card odds (harder pull, higher bar).
+export function pullFactor(c, pulls) {
+  const k = pulls?.get(`${c.setSlug}|${c.rarity}`) || (/^GG\d/i.test(String(c.num || "")) ? pulls?.get(`${c.setSlug}|Galarian Gallery`) : null);
+  if (!k) return null;
+  const same = [...pulls.values()].filter((x) => x.rarity === k.rarity).map((x) => x.perCard);
+  if (same.length < 3) return { v: 0.5, k };
+  const below = same.filter((x) => x < k.perCard).length, eq = same.filter((x) => x === k.perCard).length;
+  return { v: Math.round(((below + eq / 2) / same.length) * 100) / 100, k };
 }
-const slugify = (s) => String(s || "").toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-
-// Pull-rate bands: per rarity (and tag), sets sorted by their stated rate; a new band
-// starts where the next rate is more than 1.25x the last, or 1.5x the band's lowest. Sourced rows only.
-export const BAND_GAP = 1.25;
-// A band never spans more than 1.5x from its lowest rate to its highest.
-export const BAND_SPAN = 1.5;
-export function pullBands(prRows = []) {
-  const by = new Map();
-  for (const r of prRows) { const k = r.rarity + "|" + (r.tag || ""); if (!by.has(k)) by.set(k, []); by.get(k).push(r); }
+export function pullTable(doc, rows) {
+  const count = new Map();
+  for (const r of rows || []) if (r.kind === "single" && r.setSlug) {
+    const key = `${r.setSlug}|${/^GG\d/i.test(String(r.num || "")) ? "Galarian Gallery" : r.rarity}`;
+    count.set(key, (count.get(key) || 0) + 1);
+  }
   const out = new Map();
-  for (const [k, rs] of by) {
-    rs.sort((a, b) => a.pct - b.pct);
-    let band = 0, prev = null, lo = null;
-    const bands = [];
-    for (const r of rs) {
-      if (prev != null && (r.pct > prev * BAND_GAP || r.pct > bands[band].lo * BAND_SPAN)) band++;
-      if (!bands[band]) bands[band] = { lo: r.pct, hi: r.pct, sets: [] };
-      bands[band].hi = r.pct; bands[band].sets.push(r);
-      prev = r.pct; void lo;
-    }
-    bands.forEach((b, i) => { for (const r of b.sets) out.set(r.setSlug + "|" + k, { band: i, lo: b.lo, hi: b.hi, pct: r.pct, ci95: r.ci95 ?? null, samplePacks: r.samplePacks ?? null, url: r.sourceUrl, published: r.published, article: r.articleRarity }); });
+  for (const x of doc?.rates || []) {
+    const key = `${x.setSlug}|${x.rarity}`, n = count.get(key);
+    if (!n || !(x.oneInPacks > 0)) continue;
+    const src = doc.sources?.[x.source] || {};
+    out.set(key, { rarity: x.rarity, oneIn: x.oneInPacks, cards: n, perCard: Math.round(x.oneInPacks * n), source: src.name || x.source, url: src.url || "", asOf: src.dataAsOf || src.revised || src.checked || "" });
   }
   return out;
 }
-const PR_TAG = { tg: "Trainer Gallery", gg: "Galarian Gallery", "swsh-alt": "Alternate Art", gold: "Gold", radiant: "Radiant" };
-
-export function buildRatings({ rows, longRows = {}, variants = {}, searchMons = new Map(), readHits = new Map(), bySet = null, rot = null, today, pullRates = [] }) {
-  const bands = pullBands(pullRates);
+export function buildRatings({ rows, longRows = {}, variants = {}, searchMons = new Map(), readHits = new Map(), bySet = null, rot = null, today, pulls = null }) {
   const cards = [];
   for (const r of rows) {
     if (r.kind !== "single" || !r.release || !r.setSlug) continue;
@@ -204,22 +183,10 @@ export function buildRatings({ rows, longRows = {}, variants = {}, searchMons = 
     const fe = c.printings.find((p) => p.name === "1st Edition Holofoil" && p.price > 0 && p.asOf);
     if (fe) rated.push({ ...ctx(c, FIRST_ED, fe.price, fe.asOf, /1st Edition/.test(c.printing) ? c.pts : null), firstEd: true, printingName: fe.name });
   }
-  // Index key: one TCGplayer rarity, one generation, one group. Never mixed.
-  for (const x of rated) {
-    x.rarity = x.firstEd ? "Holo Rare" : x.c.rarity;
-    x.era = eraOfCard(x.c);
-    x.idx = [x.g.key, slugify(x.rarity), slugify(x.era)].join("~");
-    const tag = PR_TAG[x.g.key] || "";
-    x.pr = x.firstEd ? null : bands.get(x.c.setSlug + "|" + x.rarity + "|" + tag) || null;
-  }
-  // Verdict pools: same index, same pull-rate band, same popularity band.
-  const groupKey = (x) => x.idx;
+  // Peer medians: same group, same popularity band, with a fallback to the group.
+  const groupKey = (x) => x.g.key;
   const pools = new Map();
-  for (const x of rated) {
-    const ks = [x.idx + "~all"];
-    if (x.pr) ks.push(`${x.idx}~pr${x.pr.band}~${x.band}`);
-    for (const k of ks) { if (!pools.has(k)) pools.set(k, []); pools.get(k).push(x); }
-  }
+  for (const x of rated) for (const k of [groupKey(x) + "|" + x.band, groupKey(x)]) { if (!pools.has(k)) pools.set(k, []); pools.get(k).push(x); }
   const t90Pool = new Map();
   for (const x of rated) if (x.t90) { if (!t90Pool.has(groupKey(x))) t90Pool.set(groupKey(x), []); t90Pool.get(groupKey(x)).push(x.t90.pct); }
   const relPool = new Map();
@@ -227,14 +194,13 @@ export function buildRatings({ rows, longRows = {}, variants = {}, searchMons = 
   const out = [];
   for (const x of rated) {
     const { c, g } = x;
-    // A verdict needs a comparison matched on pull rate (sourced) and popularity (5+ cards).
-    // Otherwise the whole index (all pull rates) is listed for context, with no verdict.
-    let poolKey = x.pr ? `${x.idx}~pr${x.pr.band}~${x.band}` : "";
-    let peers = poolKey ? pools.get(poolKey) || [] : [];
-    let peerBasis = "similar pull rate and popularity";
+    let peers = pools.get(g.key + "|" + x.band) || [];
+    let peerBasis = "similar popularity";
+    // A verdict needs a comparison matched on popularity (5+ cards in the band).
+    // The whole group is still listed for context, with no verdict.
     const matched = peers.length - 1 >= MIN_PEERS;
-    const reason = matched ? undefined : x.pr ? "fewer than 5 cards with a similar pull rate and popularity" : "no published pull rate for this set";
-    if (!matched) { poolKey = `${x.idx}~all`; peers = pools.get(poolKey) || []; peerBasis = "all pull rates and popularity levels"; }
+    let poolKey = `${g.key}-${x.band}`;
+    if (!matched) { peers = pools.get(g.key) || []; peerBasis = "all popularity levels"; poolKey = `${g.key}-all`; }
     const others = peers.filter((p) => p !== x);
     const med = others.length >= MIN_PEERS ? median(others.map((p) => p.price)) : null;
     const ratio = med ? x.price / med : null;
@@ -247,6 +213,8 @@ export function buildRatings({ rows, longRows = {}, variants = {}, searchMons = 
     const pv = peerValue(x.price, med);
     if (pv != null && !check && matched) f.peer = { v: pv, fact: `${money(x.price)} (${dl(x.date)}) vs a typical ${money(med)} for ${g.label} (${others.length} cards, ${peerBasis})` };
     f.popularity = { v: clamp(x.pop.weight / 5 * 0.7 + (searchMons.get(c.mon) ? 0.3 * Math.min(1, Math.log10(searchMons.get(c.mon)) / 2) : 0)), fact: `${x.pop.tags.length ? x.pop.tags.map((t) => POP_LABEL[t] || t).join(", ") : "Not on the popularity list"}; ${searchMons.get(c.mon) || 0} ${title(c.mon)} cards in our search` };
+    const pf = pullFactor(c, pulls);
+    if (pf) f.pull = { v: pf.v, fact: `${pf.k.rarity}: 1 in ${pf.k.oneIn} packs for any of the ${pf.k.cards} in the set, about 1 in ${pf.k.perCard.toLocaleString("en-US")} for this card if split evenly (${pf.k.source}${pf.k.asOf ? `, ${dl(pf.k.asOf)}` : ""})` };
     const sc = scarcity(c, byMon);
     if (sc) f.scarcity = { v: sc.v, fact: `${sc.total} ${title(c.mon)} cards in the catalogue, ${sc.same} in this group, ${sc.commons} commons or uncommons${sc.first ? `. The first ${g.one} of ${title(c.mon)} on file` : ""}` };
     const ar = artists.get(c.artist);
@@ -258,10 +226,10 @@ export function buildRatings({ rows, longRows = {}, variants = {}, searchMons = 
       const st = stageValue(age, rotated);
       f.age = { v: st.v, fact: `${age} days since release (${dl(c.release)})${rotated ? ", set rotated" : ""}` };
     } else {
-      const rk = pctRank(relPool.get(x.idx) || [], -Date.parse(c.release));
+      const rk = pctRank(relPool.get(g.key) || [], -Date.parse(c.release));
       if (rk != null) f.age = { v: rk, fact: `Released ${dl(c.release)}, ${Math.floor(age / 365)} years ago` };
     }
-    const tr = x.t90 ? pctRank(t90Pool.get(x.idx) || [], x.t90.pct) : null;
+    const tr = x.t90 ? pctRank(t90Pool.get(g.key) || [], x.t90.pct) : null;
     if (tr != null || x.wk) {
       const hits = readHits.get(c.id) || 0;
       const v = (tr ?? 0.5) * 0.5 + (x.wk ? x.wk.up / x.wk.of : 0.5) * 0.3 + Math.min(hits, 2) / 2 * 0.2;
@@ -272,12 +240,11 @@ export function buildRatings({ rows, longRows = {}, variants = {}, searchMons = 
     for (const k of Object.keys(f)) { w += RATING_WEIGHTS[k]; s += RATING_WEIGHTS[k] * f[k].v; }
     const score = w ? Math.round((s / w) * 100) : null;
     out.push({
-      id: c.id, name: c.name, num: c.num, set: c.set, setSlug: c.setSlug, group: g.key, band: x.band, prBand: x.pr ? x.pr.band : null, groupLabel: g.label, groupOne: g.one,
+      id: c.id, name: c.name, num: c.num, set: c.set, setSlug: c.setSlug, group: g.key, band: x.band, groupLabel: g.label, groupOne: g.one,
       printing: x.printingName || "", firstEd: !!x.firstEd, hasHist: !!x.pts, price: { price: x.price, date: x.date, source: "TCGplayer market" },
       peers: med ? { median: Math.round(med * 100) / 100, n: others.length, basis: peerBasis, matched, pool: poolKey, ratio: Math.round(ratio * 100) / 100 } : (others.length ? { n: others.length, basis: peerBasis, matched: false, pool: poolKey } : null),
       verdict: check || !matched ? null : verdictOf(ratio),
-      verdictNote: !check && !matched ? NOT_FAIR : undefined, reason,
-      rarity: x.rarity, era: x.era, index: x.idx, pullRate: x.pr || undefined,
+      verdictNote: !check && !matched ? NOT_FAIR : undefined,
       nearHigh: x.pos != null && x.pos >= 90 ? { price: x.rg.high.price, date: x.rg.high.date } : undefined, check: check || undefined, score: check ? null : score, coverage: w,
       factors: Object.fromEntries(Object.entries(f).map(([k, v]) => [k, { v: Math.round(v.v * 100) / 100, fact: v.fact }])),
     });
@@ -291,11 +258,7 @@ export function shardOf(id) { const n = Number(String(id || "").replace(/\D/g, "
 // Comparison lists, one file per pool (group and popularity band, or the whole group).
 export function peerPools(list) {
   const pools = {};
-  for (const r of list) {
-    const ks = [`${r.index}~all`];
-    if (r.prBand != null) ks.push(`${r.index}~pr${r.prBand}~${r.band}`);
-    for (const k of ks) (pools[k] ||= []).push([r.id, r.name, r.set, r.num || "", r.price.price, r.price.date, r.firstEd ? 1 : 0]);
-  }
+  for (const r of list) for (const k of [`${r.group}-${r.band}`, `${r.group}-all`]) (pools[k] ||= []).push([r.id, r.name, r.set, r.num || "", r.price.price, r.price.date, r.firstEd ? 1 : 0]);
   return pools;
 }
 
@@ -317,8 +280,7 @@ export function groupIndex(members, ptsById, today, since = "2024-02-08") {
 
 export function money(n) { return "$" + Number(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 
-// Also the Feed deep-read list (moon, play, printed...), so a card name like Roaring Moon never ships in a read.
-const BANNED = /\b(buy|buys|buying|sell|sells|selling|hold|holds|holding|bottom|bottomed|support|resistance|target|invest\w*|stack\w*|load up|best time|underpriced|overpriced|printed|play|plays|playing|crypto|token|moon|hodl|pump|dump|nft)\b|[\u2014\u2013]/i;
+const BANNED = /\b(buy|buys|buying|sell|sells|selling|hold|holds|holding|bottom|bottomed|support|resistance|target|invest\w*|stack\w*|load up|best time|underpriced|overpriced)\b|[\u2014\u2013]/i;
 export function cleanCopy(text) { return !BANNED.test(String(text || "")); }
 
 const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -335,7 +297,6 @@ export function ratingReads(list, { asOf, max = 3 } = {}) {
   for (const [g, rs] of byGroup) {
     for (const side of ["below", "above"]) {
       const pick = rs.filter((r) => (side === "below" ? r.peers.ratio <= BELOW : r.peers.ratio >= ABOVE)).sort((a, b) => (side === "below" ? a.peers.ratio - b.peers.ratio : b.peers.ratio - a.peers.ratio) || (b.score - a.score));
-      for (let i = pick.length - 1; i >= 0; i--) if (!cleanCopy(bare(pick[i].name)) || !cleanCopy(pick[i].set)) pick.splice(i, 1);
       if (!pick.length) continue;
       const top = pick[0];
       const label = top.groupLabel;
