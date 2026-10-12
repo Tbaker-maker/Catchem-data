@@ -4,9 +4,12 @@ import { readFile, readdir, writeFile, mkdir } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { gunzipSync } from "node:zlib";
-import { listingsBySet } from "./lib/ir-cycle.mjs";
-import { peerPools, shardOf, buildRatings, ratingReads, RATING_WEIGHTS, FACTOR_LABEL, GROUPS, FIRST_ED, BELOW, ABOVE, MIN_PEERS } from "./lib/card-rating.mjs";
+import { listingsBySet, series } from "./lib/ir-cycle.mjs";
+import { groupIndex, peerPools, shardOf, buildRatings, ratingReads, RATING_WEIGHTS, FACTOR_LABEL, GROUPS, FIRST_ED, BELOW, ABOVE, MIN_PEERS } from "./lib/card-rating.mjs";
 import { monName } from "./lib/popular-pokemon.mjs";
+
+// Index names use each group's real rarity or variant name.
+const INDEX_NAME = { "tagteam-alt": "Tag Team (Alternate Art) Index", tagteam: "Tag Team Index", "swsh-alt": "Alternate Art Index", tg: "Trainer Gallery Index", gg: "Galarian Gallery Index", sir: "Special Illustration Rare Index", ir: "Illustration Rare Index", "gold-star": "Gold Star Index", shining: "Shining Index", prism: "Prism Star Index", radiant: "Radiant Index", gold: "Gold Index", "ex-era-ex": "EX-era ex Index", "wotc-holo": "WOTC Holo Index" };
 
 try {
   const PUB = join(dirname(fileURLToPath(import.meta.url)), "..", "research/assets/public");
@@ -50,6 +53,25 @@ try {
   await rm(join(PUB, "feed/rating/peers"), { recursive: true, force: true });
   await mkdir(join(PUB, "feed/rating/peers"), { recursive: true });
   for (const [k, rows] of Object.entries(peerPools(list))) await writeFile(join(PUB, `feed/rating/peers/${k}.json`), JSON.stringify({ asOf: today, cols: ["id", "name", "set", "num", "price", "date", "firstEd"], rows }) + "\n");
+  // Public group indexes (feed/rating/index/<group>.json and index-list.json).
+  const ptsById = new Map();
+  const byId = new Map(rows.map((r) => [r.id, r]));
+  for (const r of list) if (r.hasHist && !r.firstEd && byId.has(r.id)) ptsById.set(r.id, series(byId.get(r.id), longRows[r.id]));
+  await mkdir(join(PUB, "feed/rating/index"), { recursive: true });
+  const idxList = [];
+  for (const g of GROUPS) {
+    const members = list.filter((r) => r.group === g.key && !r.firstEd && !r.check);
+    if (members.length < 5) continue;
+    const pts = groupIndex(members, ptsById, today);
+    if (pts.length < 2) continue;
+    const name = INDEX_NAME[g.key] || `${g.one} Index`;
+    const first = pts[0], last = pts.at(-1);
+    const doc = { key: g.key, name, asOf: today, source: "TCGplayer market, nightly buckets and hist-long", method: "Every 7 days: total and typical (middle) price of member cards with a real price that day (last point at most 8 days old). n = cards priced that day. Fewer than 5 priced cards: no point. Nothing filled.", cols: ["date", "total", "typical", "n"], points: pts,
+      members: members.sort((a, b) => b.price.price - a.price.price).map((r) => [r.id, r.name, r.set, r.num || "", r.price.price, r.price.date]) };
+    await writeFile(join(PUB, `feed/rating/index/${g.key}.json`), JSON.stringify(doc) + "\n");
+    idxList.push({ key: g.key, name, members: members.length, first, last });
+  }
+  await writeFile(join(PUB, "feed/rating/index-list.json"), JSON.stringify({ asOf: today, indexes: idxList }) + "\n");
   await writeFile(join(PUB, "feed/card-rating.json"), JSON.stringify(doc) + "\n");
   console.log(`card-rating: ${list.length} rows, ${reads.length} reads as of ${today}`, groups);
 } catch (err) {

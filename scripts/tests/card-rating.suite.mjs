@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { peerPools, bare, RATING_WEIGHTS, peerValue, verdictOf, buildRatings, ratingReads, cleanCopy, shardOf, GROUPS, artistPremiums } from "../lib/card-rating.mjs";
+import { groupIndex, peerPools, bare, RATING_WEIGHTS, peerValue, verdictOf, buildRatings, ratingReads, cleanCopy, shardOf, GROUPS, artistPremiums } from "../lib/card-rating.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 let fail = 0;
@@ -20,6 +20,12 @@ export async function run() {
     t("near its own high is flagged", pk.nearHigh && pk.nearHigh.price === 50 && pk.nearHigh.date === today0);
     t("matched band still gets a verdict", l0.filter((r) => r.name !== "Pikachu").every((r) => r.verdict === "Priced in line with similar cards" && r.peers.matched));
     t("pool lists every comparison card with price and date", (() => { const p = (peerPools(l0)["ir-low"] || []); return p.length === 6 && p.every((x) => x[0] && x[4] > 0 && /^\d{4}-/.test(x[5])); })());
+  }
+  {
+    const pts = new Map(Array.from({ length: 6 }, (_, i) => [`c${i}`, [["2026-09-28", 10 + i], ["2026-10-12", 20 + i]]]));
+    const ix = groupIndex([...pts.keys()].map((id) => ({ id })), pts, "2026-10-12", "2026-09-20");
+    t("index points: dated total, typical and n; no filled days", ix.length === 3 && ix[2][0] === "2026-10-12" && ix[2][1] === 135 && ix[2][2] === 22.5 && ix[2][3] === 6 && ix[0][0] === "2026-09-28");
+    t("index skips days with under 5 priced cards", groupIndex([{ id: "c0" }], pts, "2026-10-12", "2026-09-20").length === 0);
   }
   t("weights add to 100", Object.values(RATING_WEIGHTS).reduce((a, b) => a + b, 0) === 100);
   t("peer value at median is 0.5", peerValue(10, 10) === 0.5);
@@ -54,7 +60,7 @@ export async function run() {
     const own = new Map();
     for (const f of (await readdir(join(PUBD, "buckets"))).filter((f) => f.endsWith(".json"))) for (const r of JSON.parse(await readFile(join(PUBD, "buckets", f), "utf-8"))) own.set(r.id, r);
     const rows = [];
-    for (const f of (await readdir(join(PUBD, "feed/rating"))).filter((f) => f.endsWith(".json"))) rows.push(...JSON.parse(await readFile(join(PUBD, "feed/rating", f), "utf-8")).rows);
+    for (const f of (await readdir(join(PUBD, "feed/rating"))).filter((f) => /^\d\d\.json$/.test(f))) rows.push(...JSON.parse(await readFile(join(PUBD, "feed/rating", f), "utf-8")).rows);
     const bad = [];
     for (const r of rows) {
       const g = GROUPS.find((x) => x.key === r.group);
