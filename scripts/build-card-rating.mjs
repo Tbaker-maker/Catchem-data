@@ -35,8 +35,8 @@ try {
   const readGz = async (f) => (f ? JSON.parse(gunzipSync(await readFile(join(RAW, f))).toString("utf-8")) : null);
   const bySet = listingsBySet(await readGz(gz[gz.length - 1]), await readGz(gz[gz.length - 2]));
   const today = rows.map((r) => r.asOf).filter(Boolean).sort().pop()?.slice(0, 10);
-  const pullRates = (JSON.parse(await readFile(join(PUB, "../../../data/pull-rates.json"), "utf-8").catch(() => "{}")).rows) || [];
-  const pullDoc = await (async () => { try { return JSON.parse(await readFile(join(PUB, "../../../data/pull-rates-published.json"), "utf-8")); } catch { return null; } })();
+  const pullDoc = JSON.parse(await readFile(join(PUB, "../../../data/pull-rates.json"), "utf-8").catch(() => "{}"));
+  const pullRates = pullDoc.rows || [];
   const pulls = pullTable(pullDoc, rows);
   const list = buildRatings({ rows, longRows, variants, searchMons, readHits, bySet, rot, today, pullRates, pulls });
   const reads = ratingReads(list, { asOf: today });
@@ -85,7 +85,7 @@ try {
     const g = [...GROUPS].find((x) => x.key === r0.group);
     const base = indexBase(g, r0.rarity);
     const similar = !key.endsWith("~all");
-    const name = `${base} Index, ${r0.era}${similar ? `, similar pull rates (${pctTxt(r0.pullRate.lo)} to ${pctTxt(r0.pullRate.hi)} per pack)` : ""}`;
+    const name = `${base} Index, ${r0.era}${similar ? `, similar pull rates (${r0.pullRate.lo === r0.pullRate.hi ? pctTxt(r0.pullRate.lo) : `${pctTxt(r0.pullRate.lo)} to ${pctTxt(r0.pullRate.hi)}`} per pack)` : ""}`;
     const fileKey = key.replace(/~/g, "--");
     if (members.length < 5) { hidden.push({ key: fileKey, name, members: members.length, reason: "fewer than 5 cards" }); continue; }
     const pts = groupIndex(members, ptsById, today);
