@@ -1403,8 +1403,8 @@ export function bestMove(points, kind) {
   return hits[0];
 }
 
-// A catalogue window. Same spike rule as a ranked move, but a 1% change counts
-// and 90 days counts. One step that is most of the move does not.
+// A catalogue window. A published move needs at least $1 and at least 3%.
+// 90 days counts. One step that is most of the move does not.
 // TCGCSV-only history is thin on $500+ cards and 1st Edition holos: one day's
 // print can swing hundreds of percent. A high-value move must still be there on
 // the previous real day too (same direction, at least half the size) or it is skipped.
@@ -1432,7 +1432,8 @@ export function feedWindow(points, days, opts = {}) {
   const to = Number(end[1]);
   if (from < 1 || to < 1 || from === to) return null;
   const pct = ((to - from) / from) * 100;
-  if (!Number.isFinite(pct) || Math.abs(pct) < 1) return null;
+  const movedCents = Math.abs(Math.round(to * 100) - Math.round(from * 100));
+  if (!Number.isFinite(pct) || Math.abs(pct) < 3 || movedCents < 100) return null;
   const sign = Math.sign(pct);
   let prev = from;
   let confirms = 0;
