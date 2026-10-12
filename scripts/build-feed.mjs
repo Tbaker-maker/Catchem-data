@@ -1,6 +1,6 @@
 import { buildVariantFile, tagReadsFile } from "./lib/read-tags.mjs";
 // Writes the Feed catalogue and appends new call rows. Does not rebuild the rest of the site.
-import { readFile, readdir } from "node:fs/promises";
+import { readFile, readdir, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { dropTiledCycles, pretty, slug } from "./lib/public-bundle.mjs";
@@ -204,6 +204,16 @@ try {
 } catch (err) { console.error(`variant tags skipped: ${err.message}`); }
 console.log(JSON.stringify({ variantSummary }));
 const health = await writeHealth(ROOT);
+// YouTube learning loop (official API, private store). Before the flagger so
+// tonight's leads become flags. A missing key or any failure never stops the nightly.
+try {
+  const { runYoutubeLearn } = await import("./youtube-learn.mjs");
+  const yt = await runYoutubeLearn({ root: ROOT });
+  console.log(JSON.stringify({ youtube: { status: yt.status, unitsUsed: yt.unitsUsed, videosNew: yt.videosNew, leads: yt.leads.length } }));
+} catch (err) {
+  console.error(`youtube skipped: ${err.message}`);
+  try { await writeFile(join(ROOT, "data/derived/youtube-leads.json"), JSON.stringify({ asOf: new Date().toISOString().slice(0, 10), keyPresent: Boolean(process.env.YOUTUBE_API_KEY), status: "error", errors: [String(err.message).slice(0, 200)], leads: [] }) + "\n"); } catch {}
+}
 // Flags and the script research scan (data/derived/flags.json, research-scan.*).
 // Script only, no network. A failure here is logged and never stops the nightly.
 try {

@@ -5,7 +5,7 @@
 import { readFile, readdir, writeFile, mkdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { FLAG_TYPES, newSetFlags, releaseFlags, priceMoveFlags, newsSourceFlags, dataGapFlags, staleFlags, oddPriceFlags, readTypeFlags, summarizeFlags } from "./lib/flags.mjs";
+import { FLAG_TYPES, newSetFlags, releaseFlags, priceMoveFlags, newsSourceFlags, dataGapFlags, staleFlags, oddPriceFlags, readTypeFlags, summarizeFlags, youtubeFlags } from "./lib/flags.mjs";
 import { newsLeads, radarCheck, renderDigest, LEFT_FOR_AI } from "./lib/research-scan.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -24,6 +24,7 @@ export async function runFlagger({ root = ROOT, now = new Date(), write = true }
   const rating = await J(root, "research/assets/public/feed/card-rating.json", {});
   const held = await J(root, "data/derived/card-rating-held.json", {});
   const outliers = await J(root, "data/derived/sealed-price-outliers.json", {});
+  const youtube = await J(root, "data/derived/youtube-leads.json", null);
 
   const groupMap = new Map();
   const names = new Map();
@@ -82,6 +83,7 @@ export async function runFlagger({ root = ROOT, now = new Date(), write = true }
     ...staleFlags(stamps, today),
     ...oddPriceFlags(held, outliers),
     ...readTypeFlags(kindCounts, state),
+    ...youtubeFlags(youtube),
   ];
   const prevKeys = new Set(state.flagKeys || []);
   for (const f of flags) f.new = !prevKeys.has(f.key);

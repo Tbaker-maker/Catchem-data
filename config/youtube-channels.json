@@ -1,0 +1,129 @@
+{
+  "note": "Pokemon TCG market YouTube channels the nightly learns from (scripts/youtube-learn.mjs). Official YouTube Data API v3 only. IDs checked 2026-10-12 against each channel page (externalId). Private data only; creator names, text and scores are never published.",
+  "checked": "2026-10-12",
+  "channels": [
+    {
+      "key": "nomics",
+      "name": "Nostalgia Nomics",
+      "handle": "@NostalgiaNomics",
+      "id": "UCkM148HlzrBtGgSABTfFsOA",
+      "priority": 1,
+      "source": "youtube.com/@NostalgiaNomics externalId; socialcounts.org lists the same id",
+      "tone": {
+        "weight": 1
+      },
+      "notes": ""
+    },
+    {
+      "key": "tcgquant",
+      "name": "Poke Profit (TCG Quant)",
+      "handle": "@PokeProfit",
+      "id": "UCjwPb2h4UutMTtzlGw9xjrw",
+      "priority": 2,
+      "source": "tcgquant.com links youtube.com/@PokeProfit; externalId from that page",
+      "tone": {
+        "weight": 1
+      },
+      "notes": ""
+    },
+    {
+      "key": "pokeanon",
+      "name": "PokeAnon",
+      "handle": "@pokeanon",
+      "id": null,
+      "priority": 2,
+      "enabled": false,
+      "source": "Not confirmed. youtube.com/@pokeanon (UCd1CrRvVqYcH7vtPw-RSYTg) has no TCG content; no Pokemon TCG channel by that name was found on 2026-10-12. Set id and enabled once Tyler names the channel URL.",
+      "tone": {
+        "weight": 1
+      },
+      "notes": ""
+    },
+    {
+      "key": "pikapikapapa",
+      "name": "PikaPikaPaPa",
+      "handle": "@PikaPikaPapa",
+      "id": "UCsSA2eBWW7qAwSV_COyW8uQ",
+      "priority": 3,
+      "source": "youtube.com/@PikaPikaPapa externalId; research/2026-09-26-pikapikapapa.md in catchem-data-private",
+      "tone": {
+        "weight": 1
+      },
+      "notes": ""
+    },
+    {
+      "key": "pokeoz",
+      "name": "PokeOz",
+      "handle": null,
+      "id": "UCFmZ5FB5fC7YmyQ_qxXJgyA",
+      "priority": 3,
+      "source": "realtimesubcount.com/UCFmZ5FB5fC7YmyQ_qxXJgyA; named in research/archive creator intel notes",
+      "tone": {
+        "weight": 1
+      },
+      "notes": ""
+    },
+    {
+      "key": "pokedatadadguy",
+      "name": "PokeDataDadGuy",
+      "handle": "@PokeDataDadGuy",
+      "id": "UCQg9Hzbs5f6A7W1dE46sc2A",
+      "priority": 4,
+      "source": "youtube.com/@PokeDataDadGuy externalId; named in repo research",
+      "tone": {
+        "weight": 1
+      },
+      "notes": ""
+    },
+    {
+      "key": "pokeplumber",
+      "name": "ThePokePlumber",
+      "handle": "@ThePokePlumber",
+      "id": "UChz4XfA_KEZI53kBofw-6Ew",
+      "priority": 3,
+      "source": "youtube.com/@ThePokePlumber externalId; channelId on video yky57F67Efg matches. Not @PokePlumber (UCU15-PXyLhfDhrUmktMO4iw, a game let's-play channel).",
+      "tone": {
+        "weight": 0.5,
+        "hype": true
+      },
+      "notes": "Tyler 2026-10-12: good but very emotional. Strong or hype language counts at half weight in attention and sentiment counts. His price claims count only once our data backs them. Scored the same way as every other channel."
+    },
+    {
+      "key": "steelcitystacks",
+      "name": "SteelCityStacks",
+      "handle": null,
+      "id": "UC3kHtctsiMxWKtnVJz9J4gQ",
+      "priority": 3,
+      "source": "channelId and ownerChannelName on video EYe-1GMptLM (2026-10-12).",
+      "tone": {
+        "weight": 1
+      },
+      "notes": "Tyler calls it 'Steel Stax'. Host Steve. Sealed products and booster box market analysis. Sources box history from TCGplayer, PriceCharting and Pokemon Wizard (logged as method and source leads only). Claims count only once our data backs them.",
+      "seedIdeas": [
+        {
+          "kind": "method",
+          "text": "Booster box price history assembled from TCGplayer, PriceCharting and Pokemon Wizard"
+        },
+        {
+          "kind": "data_source",
+          "source": "tcgplayer"
+        },
+        {
+          "kind": "data_source",
+          "source": "pricecharting"
+        },
+        {
+          "kind": "data_source",
+          "source": "pokemon wizard"
+        }
+      ]
+    }
+  ],
+  "limits": {
+    "dailyUnitBudget": 400,
+    "maxNewVideosPerChannel": 15,
+    "commentsPerVideo": 20,
+    "firstRunDays": 30
+  },
+  "toneNote": "tone.weight scales a channel's videos in attention thresholds and comment sentiment (1 = full). hype: true also halves a video whose title is hype (caps, !!, CRAZY, INSANE, EXPLODE). Claim scoring is never weighted: every claim is scored the same and stays unverified until our data backs it."
+}
