@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import { valueOn } from "../lib/deep-reads.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
-const BANNED = /\b(buy|sell|hold|support|resistance|bottom|printed|play|target|invest|moon|pump|dump|hodl|crypto)\b/i;
+const BANNED = /\b(buy|sell|hold|held|holding|support|resistance|bottom|printed|play|target|invest|moon|pump|dump|hodl|crypto)\b/i;
 
 export async function run() {
   let fail = 0;
@@ -22,6 +22,7 @@ export async function run() {
   t("deep charts carry points or bars", deep.every((r) => !r.chart || (Array.isArray(r.chart.points) && r.chart.points.length >= 2) || (Array.isArray(r.chart.bars) && r.chart.bars.length >= 2)));
   t("deep text has no em dash or banned word", deep.every((r) => ![r.headline, ...r.lines].some((s) => /\u2014/.test(s) || BANNED.test(s))));
   const ir = deep.find((r) => r.deep === "irlife");
+  t("Pokemon spotlights name a real species", deep.filter((r) => r.deep === "pokemon").every((r) => String(r.name).length >= 3));
   t("IR lifecycle names the holo baseline", !ir || ir.lines.some((l) => /holo/i.test(l)));
   const ids = rows.map((r) => r.id);
   t("no duplicate ids", new Set(ids).size === ids.length);

@@ -263,15 +263,15 @@ export function artistSpotlights(cards, { asOf, max = 12 }) {
 
 export function pokemonSpotlights(cards, { asOf, max = 15 }) {
   const by = new Map();
-  for (const c of cards) { const t = speciesToken(c.name); const y = yearPair(c, asOf); if (!t || !y || y.z < 3) continue; if (!by.has(t)) by.set(t, []); by.get(t).push({ c, ...y }); }
+  for (const c of cards) { const t = speciesToken(c.name); const y = yearPair(c, asOf); if (!t || t.length < 3 || !y || y.z < 3) continue; if (!by.has(t)) by.set(t, []); by.get(t).push({ c, ...y }); }
   const out = [];
   for (const [t, rows] of by) {
     if (rows.length < 6) continue;
     rows.sort((x, y) => y.ch - x.ch);
     const best = rows[0], worst = rows.at(-1);
-    const held = rows.filter((r) => r.ch >= 0).length;
+    const kept = rows.filter((r) => r.ch >= 0).length;
     const top = rows.slice().sort((x, y) => y.z - x.z)[0];
-    const rr = row("pokemon", t, t, `${t} spotlight: of ${rows.length} printings with a year of prices, ${held} held or gained. Best: ${cleanName(best.c.name)} (${short(best.c.set)}), ${sgn(best.ch)}.`, [
+    const rr = row("pokemon", t, t, `${t} spotlight: of ${rows.length} printings with a year of prices, ${kept} kept or grew their price. Best: ${cleanName(best.c.name)} (${short(best.c.set)}), ${sgn(best.ch)}.`, [
       `Best year: ${cleanName(best.c.name)} (${short(best.c.set)}), ${money(best.a)} to ${money(best.z)}.`,
       `Toughest year: ${cleanName(worst.c.name)} (${short(worst.c.set)}), ${money(worst.a)} to ${money(worst.z)}.`,
       `Priciest tonight: ${cleanName(top.c.name)} (${short(top.c.set)}) at ${money(top.z)}.`,

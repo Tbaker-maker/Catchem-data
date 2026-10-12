@@ -283,7 +283,7 @@ export function releaseReads(releasesDoc, asOf, { days = 45 } = {}) {
       id: `release-${name}`.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 80), readKind: "release", kind: "release", board: BOARD_TAG, family: "calendar",
       name, headline, path: headline, asOf, date: r.date,
       href: r.market?.id ? `/p/${r.market.id}` : "",
-      source: `${r.source}, checked ${r.checked}`,
+      source: `${String(r.source || "").replace(/^(?:https?:\/\/)?support\.pokemoncenter\.com\/\S*/i, "Pokémon Center Estimated Preorder Release Dates page")}, checked ${r.checked}`,
       receipt: { date: r.date, source: r.source, checked: r.checked, market: r.market || null },
       variants: [`${inDays} days to go: ${name} lands ${monthDay(r.date)}.`, `Coming ${monthDay(r.date)}: ${name}.`].filter(cleanCopy),
     });
