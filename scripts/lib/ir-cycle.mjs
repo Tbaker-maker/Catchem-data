@@ -91,8 +91,9 @@ export function curveNote(kind0, age, rotated) {
   return { stage: "past one year", text: STUDY.later[kind].text };
 }
 
-export function rotationChip(rot, slug, today) {
-  const row = (rot?.sets || []).find((s) => s.slug === slug);
+export function rotationChip(rot, slug, today, cardMark) {
+  const setRow = (rot?.sets || []).find((s) => s.slug === slug);
+  const row = cardMark ? { mark: cardMark } : setRow;
   if (!row || !row.mark) return null;
   const src = (rot.sources || []).find((s) => s.mark === row.mark);
   if (src) {
@@ -169,13 +170,14 @@ export function peersValue(own, setMed, eraMed) {
   return { v, chip: parts.length ? `90 days ${txt}. Median: ${parts.join(", ")}` : "" };
 }
 
-export function buildRows({ rows, longRows, rot, bySet, today }) {
+export function buildRows({ rows, longRows, rot, bySet, today, marks = {} }) {
   const pre = [];
   for (const r of rows) {
     const kind = kindOf(r);
     if (!kind || r.kind !== "single" || !r.release || !r.setSlug) continue;
     if (/promo|miscellaneous/i.test(r.set || "")) continue;
-    const status = (rot?.sets || []).find((s) => s.slug === r.setSlug)?.status || "";
+    const own = marks[r.id]?.mark;
+    const status = own ? ((rot?.sources || []).some((x) => x.mark === own) ? "Rotated" : "Standard") : (rot?.sets || []).find((s) => s.slug === r.setSlug)?.status || "";
     const rotated = /^Rotated/.test(status) || kind === "ALT" || kind === "TG" || kind === "GG";
     const pts = series(r, longRows[r.id]);
     const now = priceAt(pts, today, 3);
@@ -203,7 +205,7 @@ export function buildRows({ rows, longRows, rot, bySet, today }) {
     let score = 0;
     for (const k of Object.keys(f)) score += (SCORE_WEIGHTS[k] || 0) * f[k].v;
     const lifts = Object.keys(f).filter((k) => f[k].chip && f[k].v >= 0.5).sort((a, b) => SCORE_WEIGHTS[b] * f[b].v - SCORE_WEIGHTS[a] * f[a].v).map((k) => ({ factor: k, text: f[k].chip }));
-    const rotChip = rotationChip(rot, r.setSlug, today);
+    const rotChip = rotationChip(rot, r.setSlug, today, marks[r.id]?.mark);
     out.push({
       id: r.id, name: r.name, num: r.num, set: r.set, setSlug: r.setSlug, kind, kindLabel: KIND_LABEL[kind], era: eraOf(r),
       release: r.release, daysSinceRelease: age,
@@ -221,6 +223,23 @@ export function buildRows({ rows, longRows, rot, bySet, today }) {
   }
   out.sort((a, b) => b._score - a._score || a.price.price - b.price.price);
   return out.map((row, i) => { const { _score, ...pub } = row; return { rank: i + 1, ...pub }; });
+}
+
+// Per-card regulation marks for sets with mixed marks. The pokemontcg.io id
+// comes from the card's own scan path (/img/<setId>/<number>), so each mark
+// is tied to that card id. Cards without a scan path get no mark.
+export const MIXED_SETS = ["sv-prismatic-evolutions", "sv09-journey-together", "me-ascended-heroes"];
+export function cardMarks(rows, attrCards, slugs = MIXED_SETS) {
+  const out = {};
+  for (const r of rows) {
+    if (r.kind !== "single" || !slugs.includes(r.setSlug)) continue;
+    const m = String(r.scan || "").match(/^\/img\/([a-z0-9]+)\/([A-Za-z0-9]+)$/);
+    if (!m) continue;
+    const ptcg = `${m[1]}-${m[2]}`;
+    const rm = attrCards?.[ptcg]?.rm;
+    if (rm) out[r.id] = { mark: rm, ptcgId: ptcg };
+  }
+  return out;
 }
 
 const BANNED = /\b(buy|buying|sell|selling|hold|bottom(ed)?|support|resistance|target|invest\w*|load up|best time)\b/i;

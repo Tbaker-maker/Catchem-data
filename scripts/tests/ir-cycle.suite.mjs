@@ -48,6 +48,7 @@ export async function run() {
   t("top row verified by id", hit && hit.name === r0.name && (r0.kind === "IR" ? hit.rarity === "Illustration Rare" : r0.kind === "SIR" ? hit.rarity === "Special Illustration Rare" : true));
   fail += await runScoreUnits();
   fail += await runMarkChecks();
+  fail += await runCardMarkChecks();
   return fail;
 }
 if (import.meta.url === `file://${process.argv[1]}`) run().then((n) => process.exit(n ? 1 : 0));
@@ -67,5 +68,16 @@ export async function runMarkChecks() {
   let f = 0;
   for (const [slug, o] of Object.entries(MARK_OVERRIDES)) { const r = rot.sets.find((s) => s.slug === slug); if (!r || r.mark !== o.mark) { f++; console.error("  FAIL mark", slug); } }
   for (const slug of ["sv-prismatic-evolutions", "sv09-journey-together", "me-ascended-heroes"]) { if (rot.sets.find((s) => s.slug === slug)?.mark) { f++; console.error("  FAIL mixed set got a mark", slug); } }
+  return f;
+}
+import { cardMarks } from "../lib/ir-cycle.mjs";
+import { markCited } from "../lib/board-mix.mjs";
+export async function runCardMarkChecks() {
+  let f = 0; const u = (n, c) => { if (!c) { f++; console.error("  FAIL", n); } };
+  const m = cardMarks([{ id: "tcgcsv-1", kind: "single", setSlug: "sv-prismatic-evolutions", scan: "/img/sv8pt5/159" }, { id: "tcgcsv-2", kind: "single", setSlug: "sv-prismatic-evolutions", scan: "/cards/pattern/x.jpg" }], { "sv8pt5-159": { rm: "G" } });
+  u("card mark by scan id", m["tcgcsv-1"]?.mark === "G" && m["tcgcsv-1"].ptcgId === "sv8pt5-159" && !m["tcgcsv-2"]);
+  u("checked date cited", markCited({ checked: "2026-10-12" }, { asOf: "2026-08-24" }) === "checked Oct 12, 2026");
+  const doc = JSON.parse(await readFile(join(ROOT, "research/assets/public/feed/card-marks.json"), "utf8"));
+  u("Sandy Shocks SIR (tcgcsv-610514, sv8pt5-159) is G by id", doc.cards["tcgcsv-610514"]?.mark === "G" && doc.cards["tcgcsv-610514"].ptcgId === "sv8pt5-159");
   return f;
 }
