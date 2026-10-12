@@ -134,12 +134,21 @@ export function buildStatus(input) {
   return out;
 }
 
-export function freshnessFailures(rows, nightlyDay, maxDays = FRESH_DAYS) {
+// A row with a flag key is skipped while that flag is false in data/flags.json.
+// flags is the "flags" object from data/flags.json. A flag missing from it is treated as on.
+export function flagOff(row, flags) {
+  if (!row || !row.flag || !flags) return false;
+  const entry = flags[row.flag];
+  return Boolean(entry) && entry.value === false;
+}
+
+export function freshnessFailures(rows, nightlyDay, maxDays = FRESH_DAYS, flags = null) {
   const failures = [];
   const night = dayOf(nightlyDay);
   if (!night) return ["no nightly date"];
   for (const row of rows || []) {
     if (!row || !row.live) continue;
+    if (flagOff(row, flags)) continue;
     const asOf = dayOf(row.asOf);
     if (!asOf) {
       if (row.dateRequired) failures.push(`${row.file} has no date`);

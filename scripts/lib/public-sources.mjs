@@ -1,6 +1,7 @@
 // Every public file the site, the bot, or the newsletter reads.
 // live + dateRequired: the nightly date and this file's date must be within 2 days.
 // A file nothing rewrites is live:false and is not a nightly number.
+// flag: a data/flags.json key. While that flag is false the file is not checked for freshness.
 
 export const READERS = [
   { file: "research/assets/public/reads.json", readers: ["site", "bot"], writer: "scripts/build-feed.mjs", live: true, dateRequired: true },
@@ -13,8 +14,8 @@ export const READERS = [
   { file: "research/assets/public/receipts.json", readers: ["site"], writer: "scripts/build-public-bundle.mjs", live: true, dateRequired: true },
   { file: "research/assets/public/track-record.json", readers: ["site"], writer: "scripts/write-track-record.mjs", live: true, dateRequired: true },
   { file: "research/assets/public/today.json", readers: ["site"], writer: "scripts/write-morning-card.mjs", live: true, dateRequired: true },
-  { file: "research/assets/public/feed/supply-lead.json", readers: ["site"], writer: "scripts/write-supply-lead.mjs", live: true, dateRequired: true },
-  { file: "research/assets/public/feed/set-value.json", readers: ["site"], writer: "scripts/write-set-value.mjs", live: true, dateRequired: true },
+  { file: "research/assets/public/feed/supply-lead.json", readers: ["site"], writer: "scripts/write-supply-lead.mjs", flag: "supply.leadReads", live: true, dateRequired: true },
+  { file: "research/assets/public/feed/set-value.json", readers: ["site"], writer: "scripts/write-set-value.mjs", flag: "set.valueReads", live: true, dateRequired: true },
   { file: "research/assets/public/search-lite.json", readers: ["site", "bot"], writer: "scripts/build-public-bundle.mjs", live: true, dateRequired: false, note: "The file is an array and has no date. The search page loads feed/search shards. This file stays for the editor and the bot." },
   { file: "research/assets/public/feed/facts.json", readers: ["site"], writer: "scripts/build-feed.mjs", live: true, dateRequired: false, note: "Keyed by product id. No top-level date." },
   { file: "research/assets/public/catalogue-images.json", readers: ["site"], writer: "scripts/build-card-images.mjs", live: false, dateRequired: false, note: "Catalogue paths. Not a nightly price file." },

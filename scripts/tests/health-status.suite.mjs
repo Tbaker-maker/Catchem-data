@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
-  buildStatus, daysBetween, formatPt, freshnessFailures, missingDays, priceBannerLine, STALE_HOURS,
+  buildStatus, daysBetween, flagOff, formatPt, freshnessFailures, missingDays, priceBannerLine, STALE_HOURS,
 } from "../lib/health-status.mjs";
 import { READERS } from "../lib/public-sources.mjs";
 import { imageGapReport, losesRealPicture } from "../lib/image-gap.mjs";
@@ -60,9 +60,22 @@ export async function run() {
 
   const counts = JSON.parse(await readFile(join(ROOT, "research/assets/public/counts.json"), "utf8"));
   const nightly = String(counts.asOf || "");
+  const flagsDoc = JSON.parse(await readFile(join(ROOT, "data/flags.json"), "utf8"));
+  const off = { "set.valueReads": { value: false } };
+  const on = { "set.valueReads": { value: true } };
+  const old = [{ file: "feed/set-value.json", flag: "set.valueReads", live: true, dateRequired: true, asOf: "2026-10-09" }];
+  t("a disabled-flag file 3 days behind does not fail", freshnessFailures(old, "2026-10-12", undefined, off).length === 0);
+  t("the same file fails when its flag is on", freshnessFailures(old, "2026-10-12", undefined, on).length === 1);
+  t("a flag missing from flags.json counts as on", freshnessFailures(old, "2026-10-12", undefined, {}).length === 1);
+  t("a live file with no flag still fails at 3 days", freshnessFailures([{ file: "reads.json", live: true, dateRequired: true, asOf: "2026-10-09" }], "2026-10-12", undefined, off).length === 1);
+  t("a live file 2 days behind still passes", freshnessFailures([{ file: "reads.json", live: true, dateRequired: true, asOf: "2026-10-10" }], "2026-10-12", undefined, off).length === 0);
+  for (const row of READERS.filter((r) => r.flag)) {
+    t(`${row.flag} exists in data/flags.json`, Boolean(flagsDoc.flags[row.flag]));
+  }
   const live = [];
   for (const row of READERS) {
     if (!row.live || !row.dateRequired || row.file.endsWith("/")) continue;
+    if (flagOff(row, flagsDoc.flags)) continue;
     let doc = null;
     try { doc = JSON.parse(await readFile(join(ROOT, row.file), "utf8")); } catch { doc = null; }
     const asOf = doc && (doc.asOf || doc.updatedAt || doc.generatedAt || doc.finishedAt || doc.date) || "";
