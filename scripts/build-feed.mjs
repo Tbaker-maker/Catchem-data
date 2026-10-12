@@ -7,7 +7,10 @@ import { publishFeed, readCallLog, readShelfFile } from "./lib/feed-catalogue.mj
 import { assembleCatalog, supplyNotes } from "./lib/extra-reads.mjs";
 import { supplyMap, writeFeedExtras } from "./build-extra-reads.mjs";
 import { writeSealedPriceOutliers } from "./flag-sealed-price-outliers.mjs";
-import { writeReadLibrary } from "./lib/read-library.mjs";
+import { writeReadLibrary, dailyFileSet } from "./lib/read-library.mjs";
+import { runRegistry } from "./lib/detectors/registry.mjs";
+import { libraryOn } from "./lib/second-library.mjs";
+import { loadSeriesOnce } from "./lib/series-cache.mjs";
 import { writeHealth } from "./write-health.mjs";
 import { cooledSet, loadRotation } from "./lib/night-reads.mjs";
 
@@ -27,6 +30,7 @@ function addPoint(map, pid, date, market) {
 const catalog = await read("data/catalog/tcgcsv-latest.json");
 // A later daily file is not a new catalog day. 2026-09-29 prices 1,695 products,
 // not the catalog. addPoint keeps a later print only for a product that has it.
+const seriesStarted = Date.now();
 const series = new Map();
 // PPT Near Mint history (data/history/market-backfill) moved to the private repo on 2026-10-10.
 // Public builds use TCGCSV days only. A day TCGCSV does not have stays a gap.
@@ -47,6 +51,8 @@ for (const file of (await readdir(join(ROOT, "data/history/tcgcsv-daily"))).sort
   const doc = JSON.parse(await readFile(join(ROOT, "data/history/tcgcsv-daily", file), "utf8"));
   for (const row of doc.prices || []) addPoint(series, row.id, day, row.market);
 }
+loadSeriesOnce("public-tcgcsv", () => series);
+console.log(JSON.stringify({ seriesMs: Date.now() - seriesStarted, seriesProducts: series.size }));
 
 const groupDates = await read("data/tcgcsv-group-dates.json").catch(() => ({}));
 const catalogue = await read("data/card-catalogue.json").catch(() => ({ cards: {} }));
@@ -170,7 +176,20 @@ try {
 await writeSealedPriceOutliers({ root: ROOT });
 const extraSummary = await writeFeedExtras(ROOT, extra, { asOf: catalog.asOf || "", cardIds, rankedIds: ranked, news: new Array(newsCount), waves });
 const extraDoc = JSON.parse(await readFile(join(OUT, "feed/extra-reads.json"), "utf8"));
-const library = await writeReadLibrary({ root: ROOT, catalogue: catalogueDoc, extra: extraDoc, series });
+const dailyFiles = await dailyFileSet(ROOT);
+const regStarted = Date.now();
+const reg = runRegistry({
+  catalogue: catalogueDoc,
+  extra: extraDoc,
+  series,
+  dailyFiles,
+}, { switchOn: false });
+const registryMs = Date.now() - regStarted;
+const library = await writeReadLibrary({ root: ROOT, catalogue: catalogueDoc, extra: extraDoc, series, dailyFiles });
+if (libraryOn() !== true && JSON.stringify(reg.lib) !== JSON.stringify(library)) {
+  throw new Error("registry library does not match the written read library");
+}
+console.log(JSON.stringify({ registryMs, registryLogs: reg.logs.length, browse: reg.browse.length }));
 const health = await writeHealth(ROOT);
 console.log(JSON.stringify({ extra: extraSummary, library: library.counts, health: { nightlyDay: health.nightlyDay, shards: health.shards, lose: health.lose, failures: health.failures } }));
 if (health.failures.length) {
