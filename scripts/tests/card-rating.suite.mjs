@@ -34,10 +34,38 @@ export async function run() {
   t("1st Edition below unlimited is held", (() => { const w = { ...mk(40, 50, { rarity: "Holo Rare", set: "Jungle", setSlug: "jungle", release: "1999-06-16", printing: "1st Edition Holofoil", printings: [{ name: "1st Edition Holofoil", price: 50, asOf: today }, { name: "Unlimited Holofoil", price: 90, asOf: today }] }) }; return buildRatings({ rows: [w], today }).every((r) => r.check); })());
   t("groups cover the brief", ["tagteam-alt", "tagteam", "swsh-alt", "tg", "wotc-holo", "gold-star", "shining", "prism", "radiant", "gold", "ex-era-ex"].every((k) => GROUPS.some((g) => g.key === k)));
   t("artist premium needs 8 cards", artistPremiums([{ artist: "X", price: 1, setSlug: "s", rarity: "r" }]).size === 0);
+  t("SM tag team alt art gets its own tag", (await import("../lib/variant-tags.mjs")).variantTags({ name: "Latias & Latios GX (Alternate Full Art)", rarity: "Secret Rare", number: "170/181" }, { subtypes: ["TAG TEAM"] }).join() === "Tag Team (Alternate Art)");
+  // Label audit: every rated row's group must match the card's own variant tag, rarity or era.
+  try {
+    const PUBD = join(ROOT, "research/assets/public");
+    const tags = JSON.parse(await readFile(join(PUBD, "feed/card-variants.json"), "utf-8")).cards || {};
+    const { readdir } = await import("node:fs/promises");
+    const own = new Map();
+    for (const f of (await readdir(join(PUBD, "buckets"))).filter((f) => f.endsWith(".json"))) for (const r of JSON.parse(await readFile(join(PUBD, "buckets", f), "utf-8"))) own.set(r.id, r);
+    const rows = [];
+    for (const f of (await readdir(join(PUBD, "feed/rating"))).filter((f) => f.endsWith(".json"))) rows.push(...JSON.parse(await readFile(join(PUBD, "feed/rating", f), "utf-8")).rows);
+    const bad = [];
+    for (const r of rows) {
+      const g = GROUPS.find((x) => x.key === r.group);
+      const tg = tags[r.id]?.tags || [];
+      const card = own.get(r.id) || {};
+      if (!g) continue;
+      if (g.tag && !tg.includes(g.tag)) bad.push(`${r.id} in ${g.key} lacks tag ${g.tag}`);
+      if (g.rarity && card.rarity !== g.rarity) bad.push(`${r.id} in ${g.key} is ${card.rarity}`);
+      if (tg.some((x) => /Tag Team/.test(x)) && !/^tagteam/.test(g.key)) bad.push(`${r.id} is a Tag Team labeled ${g.key}`);
+      if (g.key === "swsh-alt" && !(card.release >= "2020-02" && card.release < "2023-03")) bad.push(`${r.id} alt art outside Sword & Shield`);
+      if (/\b(IR|SIR|alt arts?)\b/.test(r.groupLabel + " " + r.groupOne)) bad.push(`${r.id} public label ${r.groupLabel}`);
+    }
+    t(`rating labels match each card's own tag or era (${bad.slice(0, 3).join("; ")})`, rows.length > 0 && bad.length === 0);
+    const ir = JSON.parse(await readFile(join(PUBD, "feed/ir-cycle.json"), "utf-8")).rows || [];
+    const irBad = ir.filter((r) => ((tags[r.id]?.tags || []).some((x) => /Tag Team/.test(x)) && r.kind !== "TTALT") || (r.kind === "TTALT" && !(tags[r.id]?.tags || []).includes("Tag Team (Alternate Art)")) || r.setListings);
+    t(`watchlist rows: Tag Teams never labeled IR, SIR or Alternate Art, no sealed data (${irBad.slice(0, 3).map((r) => r.id).join()})`, irBad.length === 0);
+  } catch (e) { t("label audit ran: " + e.message, false); }
   // Committed file: ids verified, reads clean.
   try {
     const doc = JSON.parse(await readFile(join(ROOT, "research/assets/public/feed/card-rating.json"), "utf-8"));
     t("committed reads clean", (doc.reads || []).every((r) => cleanCopy(r.headline) && r.lines.every(cleanCopy)));
+    t("no supply factor", !("supply" in RATING_WEIGHTS));
     t("committed weights match", JSON.stringify(doc.weights) === JSON.stringify(RATING_WEIGHTS));
   } catch { t("committed file readable", false); }
   return fail;
