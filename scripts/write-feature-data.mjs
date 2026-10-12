@@ -113,3 +113,5 @@ console.log(JSON.stringify({
 // IR cycle file (feed/ir-cycle.json). Runs after rotation-status.json is written.
 // A failed build keeps the last file and does not fail this step.
 await import("./build-ir-cycle.mjs");
+// Card Rating (feed/card-rating.json and feed/rating/NN.json). Same keep-last rule.
+await import("./build-card-rating.mjs");
