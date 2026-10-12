@@ -22,13 +22,13 @@ Every agent meets every obligation.
 Wide and shallow. We track a lot and verify less of it than the numbers suggest.
 
 **Working**
-- 175 of 207 sealed products priced today, 17,715 cards catalogued
+- 176 of 207 sealed products priced today, 17,715 cards catalogued
 - Graded prices are WITHHELD because the source carries no time window — the right call, made after nearly publishing one
 **Needs looking at**
 - Enrichment covers 12 cards. Volume and graded data exist on 0.07% of the catalogue.
 - 6 knowledge-base facts rest only on secondary sources and have never been checked against our own data.
 
-## The product — 4/10 `████░░░░░░`  *(DOWN from 6)*
+## The product — 4/10 `████░░░░░░`  *(unchanged)*
 
 The app works and looks better than it did. It is also still not deployed where anyone can use it.
 

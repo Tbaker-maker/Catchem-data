@@ -32,7 +32,7 @@ A handful of suspicious jumps in our own history. Probably ours, not the market'
 
 ## The agents themselves
 **NEEDS A HUMAN — the supervisor flagged the watchers:**
-- correction-hunter: FARMING — findings climbed 6 → 6 → 6 → 23 across four runs with nothing resolved. Volume is not work.
+- correction-hunter: FARMING — findings climbed 6 → 6 → 6 → 25 across four runs with nothing resolved. Volume is not work.
 - correction-hunter: BROKEN RECORD — 5 finding(s) repeated three runs running (e.g. "gone::Umbreon VMAX"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 - designer: FARMING — findings climbed 12 → 12 → 12 → 19 across four runs with nothing resolved. Volume is not work.
 - theme-scout: BROKEN RECORD — 22 finding(s) repeated three runs running (e.g. "the one-off::Ken Sugimori drew Ampharos exactly on"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
@@ -60,15 +60,15 @@ Gaps in what we watch:
 
 ## Who needs to do what
 **NEEDS A HUMAN — Tyler (3):**
-- **[ACT NOW 76]** Phantasmal Flames Booster Pack moved -23.4% — about 3.4× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
+- **[ACT NOW 76]** Pokemon 151 Pokemon Center Elite Trainer Box moved 35.9% — about 3.3× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
 - **[QUEUE 58]** The knowledge base is only used for one fact a day. — *The same sourced facts could power a "why is this card like this" explainer on every product page — set context, print quirks, what makes it odd. It compounds with every fact added.*
 - **[WATCH 40]** pricing 50 more cards would unlock 17 artist cohorts — *an expansion decision, not a machine's call*
 
 **CC (9):**
 - **[ACT NOW 90]** Celebrations Elite Trainer Box moved 103.7% in 2026-10-06→2026-10-07 — *verify against listings; file a correction if the earlier figure was ours*
 - **[ACT NOW 90]** Temporal Forces Pokemon Center Elite Trainer Box moved 97% in 2026-10-05→2026-10-06 — *verify against listings; file a correction if the earlier figure was ours*
+- **[ACT NOW 90]** Evolutions Elite Trainer Box moved 88.9% in 2026-10-11→2026-10-12 — *verify against listings; file a correction if the earlier figure was ours*
 - **[ACT NOW 90]** Evolutions Elite Trainer Box moved 81% in 2026-10-03→2026-10-05 — *verify against listings; file a correction if the earlier figure was ours*
-- **[ACT NOW 90]** Evolutions Elite Trainer Box moved 75% in 2026-10-09→2026-10-10 — *verify against listings; file a correction if the earlier figure was ours*
 
 **Chat (12):** top — The Today screen carries 17 sections: The Daily Three, 🗳 Rip or Hold?, Biggest movers, Set the app up for you, Movers, Release radar… *[QUEUE]*
 
@@ -84,7 +84,7 @@ Gaps in what we watch:
 
 ## Where today's story goes
 - **X** — "Crown Zenith listings moved 230% while its print window closes."
-- **YouTube** — Brilliant Stars Booster Box — "Cheapest believable listing $100, middle of the market $600. The lowest ask sits far below the median."
+- **YouTube** — Evolving Skies Booster Pack — "Cheapest believable listing $9.59, middle of the market $54.95. The lowest ask sits far below the median."
 - **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 100.7."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
@@ -102,10 +102,10 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 *Legal INFORMATION, not legal advice. No lawyer has reviewed this. Sweepstakes law varies by state and changes; nothing here is a compliance opinion anyone can rely on. Its job is to make the conversation with counsel shorter and better, and to stop us doing something obviously wrong in the meantime.*
 
 ## Numbers that do not make sense for what they are
-59 value(s) are structurally fine and absurd in context.
-- **"sleeved"** killed 350 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
-- 151 Booster Pack: 75% rejection rate (37/150) — *largest bucket: type = 66. A single over-broad term can eat a market.*
-- Surging Sparks Booster Pack: 73% rejection rate (41/150) — *largest bucket: exclude = 53. A single over-broad term can eat a market.*
+54 value(s) are structurally fine and absurd in context.
+- **"sleeved"** killed 357 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
+- Battle Styles Booster Pack: 71% rejection rate (44/150) — *largest bucket: exclude = 55. A single over-broad term can eat a market.*
+- Scarlet & Violet Booster Pack: 92% rejection rate (12/150) — *largest bucket: set = 51. A single over-broad term can eat a market.*
 
 ## What the agents should be asking themselves
 - **domain-plausibility** — Would you catch this today? If yes, what specifically would fire. If no, what would you need?
@@ -127,13 +127,13 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 - **Mitsuhiro Arita drew Houndoom exactly once** — Mitsuhiro Arita has 496 cards. Exactly one is a Houndoom.
 
 ## Design
-6 high, 12 medium across 15 shipped surfaces, 98 minted cards.
+6 high, 12 medium across 15 shipped surfaces, 104 minted cards.
 - **build.html** — the accent colour appears 52 times. *Spend it in two places: the active state and the one primary action. Everything else greys.*
 - **corrections.html** — remote fonts with no local fallback. *Add system-ui and a generic family to every font stack.*
 - **methodology.html** — remote fonts with no local fallback. *Add system-ui and a generic family to every font stack.*
 
 ## What the agents cannot answer themselves
-65 open — 46 need eyes on a rendered page, 19 need a decision.
+66 open — 47 need eyes on a rendered page, 19 need a decision.
 - **NEEDS A HUMAN** [theme-scout] 14 Pokémon share the "-eon" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 7 Pokémon share the "ite" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 10 Pokémon share the "-ish" ending — a theme, or a coincidence of naming?
@@ -141,7 +141,7 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 - [designer] corrections.html: 5 font sizes sit within 12% of a neighbour (13, 14, 14.5, 15, 15.5). Are those distinct steps or the same intent typed twice?
 - [designer] coverage.html: 1 font sizes sit within 12% of a neighbour (15). Are those distinct steps or the same intent typed twice?
 
-## The review — 5.4/10
+## The review — 5.1/10
 Real progress, and the gap between what is built and what is live is now the whole problem.
 - **Engagement 2/10** — 5 posts measured.
 - **Community — our surfaces 3/10** — 1 of 3 live.
