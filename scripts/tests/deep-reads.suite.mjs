@@ -25,6 +25,11 @@ export async function run() {
   t("Pokemon spotlights name a real species", deep.filter((r) => r.deep === "pokemon").every((r) => String(r.name).length >= 3));
   t("sealed gap lines say how they matched and never call a pack a box", deep.filter((r) => r.deep === "sealedgap").every((r) => !/the box/.test(r.headline) && !/product id/.test(r.lines.join(" "))));
   t("IR lifecycle names the holo baseline", !ir || ir.lines.some((l) => /holo/i.test(l)));
+  const artists = JSON.parse(await readFile(join(ROOT, "research/assets/public/artists.json"), "utf8"));
+  const slugs = new Set((artists.artists || []).map((a) => a.slug));
+  t("artist spotlights link to a real artist page", deep.filter((r) => r.deep === "artist").every((r) => slugs.has(String(r.href).replace("/artists/", ""))));
+  const keys = rows.map((r) => r.href || r.id);
+  t("no two reads share a link, so the Feed keeps every one", new Set(keys).size === keys.length);
   const ids = rows.map((r) => r.id);
   t("no duplicate ids", new Set(ids).size === ids.length);
   t("no same family side by side", rows.every((r, i) => i === 0 || (r.family || r.readKind) !== (rows[i - 1].family || rows[i - 1].readKind)));
