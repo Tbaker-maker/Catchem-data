@@ -19,6 +19,7 @@ export const MIN_PEERS = 5;
 // A price more than 10x away from its peer median is held back for a check,
 // never shown as a verdict or used in a read.
 export const CHECK = 10;
+export const NOT_FAIR = "Not enough similar cards for a fair comparison";
 
 const LOWR = new Set(["Common", "Uncommon", "Promo", ""]);
 const WOTC_END = "2003-06-01";
@@ -195,7 +196,11 @@ export function buildRatings({ rows, longRows = {}, variants = {}, searchMons = 
     const { c, g } = x;
     let peers = pools.get(g.key + "|" + x.band) || [];
     let peerBasis = "similar popularity";
-    if (peers.length - 1 < MIN_PEERS) { peers = pools.get(g.key) || []; peerBasis = "all popularity levels"; }
+    // A verdict needs a comparison matched on popularity (5+ cards in the band).
+    // The whole group is still listed for context, with no verdict.
+    const matched = peers.length - 1 >= MIN_PEERS;
+    let poolKey = `${g.key}-${x.band}`;
+    if (!matched) { peers = pools.get(g.key) || []; peerBasis = "all popularity levels"; poolKey = `${g.key}-all`; }
     const others = peers.filter((p) => p !== x);
     const med = others.length >= MIN_PEERS ? median(others.map((p) => p.price)) : null;
     const ratio = med ? x.price / med : null;
@@ -206,7 +211,7 @@ export function buildRatings({ rows, longRows = {}, variants = {}, searchMons = 
     const check = printOdd || (ratio != null && (ratio < 1 / CHECK || ratio > CHECK));
     const f = {};
     const pv = peerValue(x.price, med);
-    if (pv != null && !check) f.peer = { v: pv, fact: `${money(x.price)} (${dl(x.date)}) vs a typical ${money(med)} for ${g.label} (${others.length} cards, ${peerBasis})` };
+    if (pv != null && !check && matched) f.peer = { v: pv, fact: `${money(x.price)} (${dl(x.date)}) vs a typical ${money(med)} for ${g.label} (${others.length} cards, ${peerBasis})` };
     f.popularity = { v: clamp(x.pop.weight / 5 * 0.7 + (searchMons.get(c.mon) ? 0.3 * Math.min(1, Math.log10(searchMons.get(c.mon)) / 2) : 0)), fact: `${x.pop.tags.length ? x.pop.tags.map((t) => POP_LABEL[t] || t).join(", ") : "Not on the popularity list"}; ${searchMons.get(c.mon) || 0} ${title(c.mon)} cards in our search` };
     const pf = pullFactor(c, pulls);
     if (pf) f.pull = { v: pf.v, fact: `${pf.k.rarity}: 1 in ${pf.k.oneIn} packs for any of the ${pf.k.cards} in the set, about 1 in ${pf.k.perCard.toLocaleString("en-US")} for this card if split evenly (${pf.k.source}${pf.k.asOf ? `, ${dl(pf.k.asOf)}` : ""})` };
@@ -235,10 +240,12 @@ export function buildRatings({ rows, longRows = {}, variants = {}, searchMons = 
     for (const k of Object.keys(f)) { w += RATING_WEIGHTS[k]; s += RATING_WEIGHTS[k] * f[k].v; }
     const score = w ? Math.round((s / w) * 100) : null;
     out.push({
-      id: c.id, name: c.name, num: c.num, set: c.set, setSlug: c.setSlug, group: g.key, groupLabel: g.label, groupOne: g.one,
+      id: c.id, name: c.name, num: c.num, set: c.set, setSlug: c.setSlug, group: g.key, band: x.band, groupLabel: g.label, groupOne: g.one,
       printing: x.printingName || "", firstEd: !!x.firstEd, price: { price: x.price, date: x.date, source: "TCGplayer market" },
-      peers: med ? { median: Math.round(med * 100) / 100, n: others.length, basis: peerBasis, ratio: Math.round(ratio * 100) / 100 } : null,
-      verdict: check ? null : verdictOf(ratio), check: check || undefined, score: check ? null : score, coverage: w,
+      peers: med ? { median: Math.round(med * 100) / 100, n: others.length, basis: peerBasis, matched, pool: poolKey, ratio: Math.round(ratio * 100) / 100 } : (others.length ? { n: others.length, basis: peerBasis, matched: false, pool: poolKey } : null),
+      verdict: check || !matched ? null : verdictOf(ratio),
+      verdictNote: !check && !matched ? NOT_FAIR : undefined,
+      nearHigh: x.pos != null && x.pos >= 90 ? { price: x.rg.high.price, date: x.rg.high.date } : undefined, check: check || undefined, score: check ? null : score, coverage: w,
       factors: Object.fromEntries(Object.entries(f).map(([k, v]) => [k, { v: Math.round(v.v * 100) / 100, fact: v.fact }])),
     });
   }
@@ -247,6 +254,13 @@ export function buildRatings({ rows, longRows = {}, variants = {}, searchMons = 
 
 // 64 shards by the numeric part of the id. The site loads one shard per card page.
 export function shardOf(id) { const n = Number(String(id || "").replace(/\D/g, "")) || 0; return String(n % 64).padStart(2, "0"); }
+
+// Comparison lists, one file per pool (group and popularity band, or the whole group).
+export function peerPools(list) {
+  const pools = {};
+  for (const r of list) for (const k of [`${r.group}-${r.band}`, `${r.group}-all`]) (pools[k] ||= []).push([r.id, r.name, r.set, r.num || "", r.price.price, r.price.date, r.firstEd ? 1 : 0]);
+  return pools;
+}
 
 export function money(n) { return "$" + Number(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 
@@ -271,7 +285,7 @@ export function ratingReads(list, { asOf, max = 3 } = {}) {
       const top = pick[0];
       const label = top.groupLabel;
       const pv = top.firstEd ? " 1st Edition" : "";
-      const head = `Priced ${side} similar ${label}: ${bare(top.name)}${pv} (${shortSet(top.set)} ${top.num || ""}), ${money(top.price.price)} (${md(top.price.date)}) on TCGplayer market. Typical price for similar cards: ${money(top.peers.median)} (${top.peers.n} cards).`.replace(/\s+\)/, ")");
+      const head = `Priced ${side} similar ${label}: ${bare(top.name)}${pv} (${shortSet(top.set)} ${top.num || ""}), ${money(top.price.price)} (${md(top.price.date)}) on TCGplayer market. Typical price for similar cards: ${money(top.peers.median)} (${top.peers.n} cards).${top.nearHigh ? ` Near its own high on file (${money(top.nearHigh.price)}, ${md(top.nearHigh.date)}).` : ""}`.replace(/\s+\)/, ")");
       const lines = [
         ...pick.slice(0, max).map((r) => `${bare(r.name)}${r.firstEd ? " 1st Edition" : ""} (${shortSet(r.set)}): ${money(r.price.price)} (${md(r.price.date)}), ${r.peers.ratio}x the typical ${money(r.peers.median)}.`),
         `Similar cards: other ${label} with similar popularity where there are ${MIN_PEERS} or more, otherwise all ${label}. Typical price is the middle price. TCGplayer market on ${md(asOf)}.`,

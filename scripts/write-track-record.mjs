@@ -91,5 +91,11 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     privatePushed: Boolean(pushed.pushed),
     privateReason: pushed.reason,
   }));
+  // Self-check of past reads and ratings, and the bounded weight tuner. Private
+  // scores go to catchem-data-private with the same token. Never fails this step.
+  try {
+    const { runSelfCheck } = await import("./self-check.mjs");
+    console.log(JSON.stringify({ selfCheck: await runSelfCheck({ root: ROOT, token }) }));
+  } catch (err) { console.error(`self-check skipped: ${String(err.message).split(token || "\u0000").join("[token]")}`); }
   if (token && !pushed.pushed) process.exit(1);
 }
