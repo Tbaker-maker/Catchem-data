@@ -199,15 +199,15 @@ export function sealedGapDeep(products, histories, cards, rawProducts, { asOf, m
     const ca = cm.get(a[0]), cz = cm.get(z[0]);
     const inv = (r) => Math.round((1 / r) * 10) / 10;
     const headline = z[1] >= 1
-      ? `${p.name} vs its top chase card: the box costs ${z[1]}x ${cleanName(chase.name)} tonight, from ${a[1]}x on ${monthDay(a[0])}.`
-      : `${p.name} vs its top chase card: ${cleanName(chase.name)} costs ${inv(z[1])}x the box tonight, from ${inv(a[1])}x on ${monthDay(a[0])}.`;
+      ? `${p.name} vs its top chase card: it costs ${z[1]}x ${cleanName(chase.name)} tonight, from ${a[1]}x on ${monthDay(a[0])}.`
+      : `${p.name} vs its top chase card: ${cleanName(chase.name)} costs ${inv(z[1])}x the sealed price tonight, from ${inv(a[1])}x on ${monthDay(a[0])}.`;
     const lines = [
       `${p.name}: ${money(sa)} (${monthDay(a[0])}) to ${money(sz)} (${monthDay(asOf)}).`,
       `${cleanName(chase.name)}: ${money(ca)} to ${money(cz)}, same days.`,
       `Ratio on ${both.length} nightly days both had a price, ${monthDay(a[0])} to ${monthDay(z[0])}, TCGplayer market.`,
-      `Matched by product id, chase card is the top-priced card in ${short(group)} tonight.`,
+      `Matched by set name: the chase card is the top-priced card in ${short(group)} tonight.`,
     ];
-    const rr = row("sealedgap", p.id, p.name, headline, lines, asOf, `TCGplayer market, ${a[0]} to ${asOf}`, { sku: p.id, href: `/p/${p.id}`, chart: { label: "Box price / chase card price", points: both }, startDate: a[0], endDate: asOf, weight: Math.abs(z[1] / a[1] - 1) });
+    const rr = row("sealedgap", p.id, p.name, headline, lines, asOf, `TCGplayer market, ${a[0]} to ${asOf}`, { sku: p.id, href: `/p/${p.id}`, chart: z[1] >= 1 ? { label: "Sealed price / chase card price", points: both } : { label: "Chase card price / sealed price", points: both.map((x) => [x[0], inv(x[1])]) }, startDate: a[0], endDate: asOf, weight: Math.abs(z[1] / a[1] - 1) });
     if (rr) out.push(rr);
   }
   return out.sort((a, z) => z.weight - a.weight).slice(0, max);
