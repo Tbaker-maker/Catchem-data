@@ -23,6 +23,7 @@ export async function run() {
   t("deep text has no em dash or banned word", deep.every((r) => ![r.headline, ...r.lines].some((s) => /\u2014/.test(s) || BANNED.test(s))));
   const ir = deep.find((r) => r.deep === "irlife");
   t("Pokemon spotlights name a real species", deep.filter((r) => r.deep === "pokemon").every((r) => String(r.name).length >= 3));
+  t("sealed gap lines say how they matched and never call a pack a box", deep.filter((r) => r.deep === "sealedgap").every((r) => !/the box/.test(r.headline) && !/product id/.test(r.lines.join(" "))));
   t("IR lifecycle names the holo baseline", !ir || ir.lines.some((l) => /holo/i.test(l)));
   const ids = rows.map((r) => r.id);
   t("no duplicate ids", new Set(ids).size === ids.length);
