@@ -23,6 +23,7 @@ import { runPrivatePptTests } from "./private-ppt.test.mjs";
 import { runSparkTests } from "./spark30.test.mjs";
 import { runTcgcsvRawTests } from "./tcgcsv-raw.test.mjs";
 import { runNoPptPublicTests } from "./no-ppt-public.test.mjs";
+import { runVariantTagTests } from "./variant-tags.test.mjs";
 import { runHighValueSpikeTests } from "./high-value-spike.test.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -193,6 +194,7 @@ console.log("── public index line (value-weighted) ──");
 }
 console.log("── high-value spike guard ──");
 t("high-value spike suite", runHighValueSpikeTests() === 0);
+runVariantTagTests(t);
 
 console.log("── index stress ──");
 {
