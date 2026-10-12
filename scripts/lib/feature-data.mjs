@@ -263,6 +263,18 @@ export function rotationStatus(mark) {
   return null;
 }
 
+// Set marks checked card by card on 2026-10-12 (pokemontcg.io regulationMark,
+// by card id). Used only when the card file gives no mark. Same 80% rule as
+// assignMarks. Left out as mixed: Prismatic Evolutions (151 H, 29 G including
+// sv8pt5-159, 162, 164), Journey Together (131 I, 58 H), Ascended Heroes
+// (176 I, 68 J, 51 H).
+export const MARK_OVERRIDES = {
+  "sv-black-bolt": { mark: "I", evidence: "zsv10pt5: 170 of 172 cards I (1 H, 1 G)", checked: "2026-10-12" },
+  "sv-white-flare": { mark: "I", evidence: "rsv10pt5: 173 of 173 cards I", checked: "2026-10-12" },
+  "me05-pitch-black": { mark: "J", evidence: "me5: 117 of 120 cards J (me5-104, 107, 110 are I trainer reprints)", checked: "2026-10-12" },
+  "me-30th-celebration": { mark: "J", evidence: "me55: 159 of 161 cards J", checked: "2026-10-12" },
+};
+
 export function assignMarks(sets, logos, officialSets, cards) {
   const groups = new Map();
   for (const [id, card] of Object.entries(cards || {})) {
@@ -315,7 +327,7 @@ export function assignMarks(sets, logos, officialSets, cards) {
     const cover = singles ? letters.length / singles : 0;
     let ok = Boolean(top) && share >= 0.8 && cover >= 0.8;
     if (ok && (sharers.get(sid) || []).length > 1) ok = singles === rms.length;
-    const mark = ok ? top : null;
+    const mark = ok ? top : (MARK_OVERRIDES[set.slug]?.mark || null);
     out.push({
       slug: set.slug,
       name: set.name || "",
