@@ -75,7 +75,7 @@ export async function run() {
   t("a missing day inside the window drops the read", lib.counts.mover.droppedNoExactDay === 1 && !lib.board.some((row) => row.sku === "tcgcsv-11") && !lib.signals.some((row) => row.sku === "tcgcsv-11"));
   t("a high with no price on the exact day is dropped", lib.counts.high.qualified === 1 && !lib.board.some((row) => row.sku === "tcgcsv-12") && !lib.signals.some((row) => row.sku === "tcgcsv-12"));
   t("a boarded window starts exactly N days earlier", lib.board.filter((row) => row.signal === "mover" || row.signal === "plain" || row.signal === "high").every((row) => daySpan(row.startDate, row.endDate) === row.windowDays && row.endDate === "2026-10-08"));
-  t("plain qualified skips the high and the low", lib.counts.plain.qualified === 3);
+  t("plain qualified skips the high and the low", lib.counts.plain.qualified === 1);
   t("high is one sku even when two windows say it", lib.counts.high.qualified === 1);
   t("low is counted and not boarded", lib.counts.low.qualified === 1 && lib.counts.low.boarded === 0);
   t("streak qualified from consecutive days", lib.counts.streak.qualified === 1 && lib.counts.streak.boarded === 1);

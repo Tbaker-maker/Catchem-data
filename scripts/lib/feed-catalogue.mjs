@@ -2,7 +2,7 @@
 import { appendFile, mkdir, readFile, readdir, unlink, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import {
-  BANNED, BAD_DATE, chartSeries, composeLead, directionAgrees, endStreak, feedWindow, FILLER_BAN, fourGrams, isThinSeries, money, pathAlt, pathSentence, pickLead, pretty, readCopy, separateHalfCopies, slug, statesBothMoves, windowBounds,
+  BAD_DATE, bannedWord, chartSeries, composeLead, directionAgrees, endStreak, feedWindow, fillerBanned, fourGrams, isThinSeries, money, pathAlt, pathSentence, pickLead, pretty, readCopy, separateHalfCopies, slug, statesBothMoves, windowBounds,
 } from "./public-bundle.mjs";
 import { appendLearningLog, readCallLog } from "./learning-log.mjs";
 import { interleavePokemonFacts, loadPokemonIndex } from "./fact-reads.mjs";
@@ -186,7 +186,7 @@ export function selectLead(cards, limit = 24) {
     return true;
   }
   function usable(card, text) {
-    if (!text || BANNED.test(text) || BAD_DATE.test(text)) return false;
+    if (!text || bannedWord(text) || BAD_DATE.test(text)) return false;
     const index = shapeIndex(text, card);
     const replace = index >= 0 && statesBothMoves(text) && !statesBothMoves(shownText(chosen[index]));
     if (index >= 0 && !replace) return false;
@@ -196,14 +196,14 @@ export function selectLead(cards, limit = 24) {
     const failed = String(card.path || "").trim();
     const altOpts = { ...(card._pathOpts || {}), name: card.name, set: card.set, listings: card.listings, listingsAsOf: card.listingsAsOf, sold: card._sold || null, sealedKind: card.sealedKind || sealedKindOf(card) };
     const accept = (text, factId) => {
-      if (!text || FILLER_BAN.test(text) || !directionAgrees(text)) return false;
+      if (!text || fillerBanned(text) || !directionAgrees(text)) return false;
       return usable(card, text);
     };
     let made = "";
     const head = String(card.headline || "").trim();
     const headIsLine = head && head !== failed && /\$/.test(head) && /%/.test(head);
     if (headIsLine) {
-      if (!FILLER_BAN.test(head) && usable(card, head)) {
+      if (!fillerBanned(head) && usable(card, head)) {
         made = head;
         card._leadText = head;
       }
@@ -487,7 +487,7 @@ export function assembleCatalogue(items, prior = []) {
         source: `TCGplayer market, ${move.toDate}`,
       };
       const copy = readCopy(draft, new Set());
-      if (!copy.headline || !copy.why || BANNED.test(copy.headline) || BANNED.test(copy.why)) continue;
+      if (!copy.headline || !copy.why || bannedWord(copy.headline) || bannedWord(copy.why)) continue;
       if (headlines.has(copy.headline)) continue;
       headlines.add(copy.headline);
       const changes = { 7: null, 30: null, 90: null };
@@ -551,7 +551,7 @@ export function assembleCatalogue(items, prior = []) {
         name: draft.name,
         sealedKind: card.sealedKind,
       });
-      if (sentence && !BANNED.test(sentence)) card.path = sentence;
+      if (sentence && !bannedWord(sentence)) card.path = sentence;
       cards[card.id] = card;
       if (move === strongest && streak.n >= 4 && streak.dir === Math.sign(move.pct)) {
         card.tempo = streak.dir > 0 ? "heat" : "cool";
@@ -576,7 +576,7 @@ function disambiguatePaths(cards) {
     for (const card of rows) {
       const tag = `${card.windowDays}-day ${card.sku}`;
       const withSet = `${card.path.replace(/\.$/, "")} (${card.set}, ${tag}).`;
-      card.path = BANNED.test(withSet) ? `${card.path.replace(/\.$/, "")} (${tag}).` : withSet;
+      card.path = bannedWord(withSet) ? `${card.path.replace(/\.$/, "")} (${tag}).` : withSet;
     }
   }
 }
@@ -623,7 +623,7 @@ export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDi
       listingsAsOf: card.listingsAsOf || "",
       sold: card._sold,
     });
-    if (sentence && !BANNED.test(sentence)) card.path = sentence;
+    if (sentence && !bannedWord(sentence)) card.path = sentence;
   }
   disambiguatePaths(cards);
   applyImageGaps(cards, gapPids);
