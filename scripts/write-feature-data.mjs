@@ -115,3 +115,5 @@ console.log(JSON.stringify({
 await import("./build-ir-cycle.mjs");
 // Card Rating (feed/card-rating.json and feed/rating/NN.json). Same keep-last rule.
 await import("./build-card-rating.mjs");
+// Sealed Rating (feed/sealed-rating.json). Same keep-last rule.
+await import("./build-sealed-rating.mjs");
