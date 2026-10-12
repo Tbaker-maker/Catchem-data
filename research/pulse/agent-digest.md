@@ -12,8 +12,8 @@ A handful of suspicious jumps in our own history. Probably ours, not the market'
 **NEEDS A HUMAN — 10 figure(s) moved faster than a market can:
 - Celebrations Elite Trainer Box: $161.99 → $330 in 2026-10-06→2026-10-07 (+103.7%)
 - Temporal Forces Pokemon Center Elite Trainer Box: $253.74 → $499.99 in 2026-10-05→2026-10-06 (+97%)
-- Evolutions Elite Trainer Box: $449.99 → $850 in 2026-10-11→2026-10-12 (+88.9%)
 - Evolutions Elite Trainer Box: $419.99 → $760 in 2026-10-03→2026-10-05 (+81%)
+- Evolutions Elite Trainer Box: $442.85 → $775 in 2026-10-09→2026-10-10 (+75%)
 
 15 product(s) we featured and can no longer price:
 - Umbreon VMAX (featured 2026-08-20)
@@ -84,7 +84,7 @@ Gaps in what we watch:
 
 ## Where today's story goes
 - **X** — "Crown Zenith listings moved 230% while its print window closes."
-- **YouTube** — Evolving Skies Booster Pack — "Cheapest believable listing $9.59, middle of the market $54.95. The lowest ask sits far below the median."
+- **YouTube** — Brilliant Stars Booster Box — "Cheapest believable listing $100, middle of the market $600. The lowest ask sits far below the median."
 - **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 100.7."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
@@ -92,7 +92,7 @@ Gaps in what we watch:
 ## Something is slipping
 - **unsaved** — 3 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
 - **ignored** — 6 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
-- **drift** — 48 script(s) are not referenced anywhere: append-learning-log.mjs, append-shelf.mjs, audit-repo-bots.mjs, backfill-artists.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
+- **drift** — 50 script(s) are not referenced anywhere: append-learning-log.mjs, append-shelf.mjs, audit-repo-bots.mjs, backfill-artists.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
 - **drift** — 49 JSON files in research/pulse. *A directory nobody can scan is a directory where something goes missing without being noticed.*
 
 ## Legal standing
@@ -104,8 +104,8 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 ## Numbers that do not make sense for what they are
 54 value(s) are structurally fine and absurd in context.
 - **"sleeved"** killed 357 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
-- Battle Styles Booster Pack: 71% rejection rate (44/150) — *largest bucket: exclude = 55. A single over-broad term can eat a market.*
-- Scarlet & Violet Booster Pack: 92% rejection rate (12/150) — *largest bucket: set = 51. A single over-broad term can eat a market.*
+- Scarlet & Violet Booster Pack: 92% rejection rate (12/150) — *largest bucket: set = 54. A single over-broad term can eat a market.*
+- 151 Booster Pack: 74% rejection rate (39/150) — *largest bucket: type = 69. A single over-broad term can eat a market.*
 
 ## What the agents should be asking themselves
 - **domain-plausibility** — Would you catch this today? If yes, what specifically would fire. If no, what would you need?
