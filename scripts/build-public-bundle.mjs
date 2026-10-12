@@ -1,5 +1,6 @@
 // Builds research/assets/public from the TCGplayer catalog and the eBay sealed tape.
 // No PPT fields. Missing prices are omitted, never written as 0.
+import { variantTags, subtypeIndex } from "./lib/variant-tags.mjs";
 import { readFile, writeFile, mkdir, readdir, copyFile, unlink } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -40,6 +41,7 @@ function packsFor(p) {
 
 const catalog = await read("data/catalog/tcgcsv-latest.json");
 const items = catalog.items || [];
+const subtypesById = subtypeIndex(await read("data/tcgcsv-to-catalogue.json").catch(() => ({})), await read("data/card-attrs.json").catch(() => ({})));
 
 function numLeft(n) {
   const s = String(n || "").trim().toLowerCase().replace(/\s+/g, "");
@@ -406,6 +408,7 @@ for (const item of items) {
     kind: item.kind === "sealed" ? "sealed" : "single",
     subtype: item.subtype || null,
     rarity: item.rarity || "",
+    ...(() => { const tags = variantTags({ ...item, set: set.name }, { subtypes: subtypesById.get(item.id) }); return tags.length ? { tags } : {}; })(),
     price,
     printing: item.printing || null,
     ...(printings.length ? { printings } : {}),
@@ -478,7 +481,7 @@ for (const set of sets.values()) {
     const b = bucketOf(item.id);
     if (!buckets.has(b)) buckets.set(b, []);
     buckets.get(b).push(card);
-    search.push([item.id, item.name, set.name, item.num || "", item.artist || "", item.kind, item.price || 0, set.slug, item.rarity || ""]);
+    search.push([item.id, item.name, set.name, item.num || "", item.artist || "", item.kind, item.price || 0, set.slug, item.rarity || "", ...(item.tags?.length ? [item.tags] : [])]);
   }
   // browse:false sealed rows keep their product page data (buckets) but are
   // not in the set list, search, feed, or counts.
@@ -626,6 +629,7 @@ for (const [item, set] of flat) {
     href: kind === "sealed" ? `/p/${item.id}` : `/c/${item.id}`,
     number: item.num || "",
     rarity: item.rarity || "",
+    ...(item.tags?.length ? { tags: item.tags } : {}),
     artist: item.artist || "",
     release: set.release || "",
     score: Math.round(Math.abs(move.to - move.from) * 100) / 100,
