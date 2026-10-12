@@ -227,7 +227,8 @@ export function cleanCopy(text) { return !BANNED.test(String(text || "")); }
 
 const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const md = (d) => `${MON[Number(d.slice(5, 7)) - 1]} ${Number(d.slice(8, 10))}`;
-const bare = (n) => String(n || "").replace(/\s+-\s+[A-Z]*\d+[a-z]?\/[A-Z]*\d+\s*$/, "").trim();
+// Read names: drop the TCGplayer number and variant suffixes; the variant chip covers them.
+export const bare = (n) => String(n || "").replace(/\s+-\s+[A-Z]*\d+[a-z]?\/[A-Z]*\d+\s*$/, "").replace(/(\s*\((\d+[a-z]?|[A-Z]{1,3}\d+|Alternate[^)]*|Full Art|Secret|Delta Species)\))+\s*$/i, "").trim();
 const shortSet = (s) => String(s || "").replace(/^(SWSH|SV|SM|ME|XY|BW)\d*[A-Za-z.]*\s*[:-]\s*/, "").trim();
 
 // Feed reads per group: the card furthest below its peers, and the one furthest above.
