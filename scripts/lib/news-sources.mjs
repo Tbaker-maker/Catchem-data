@@ -227,6 +227,18 @@ function cellText(inner) {
   return text ? [text] : [];
 }
 
+// The same Help Center article through Zendesk's public Help Center API, which
+// the site's robots.txt allows. The article page itself answers bots with 403.
+export const PC_PREORDERS_API = "https://support.pokemoncenter.com/api/v2/help_center/en-us/articles/4407702295572.json";
+export function parsePcPreordersApi(text) {
+  const article = JSON.parse(String(text || "{}"))?.article;
+  if (!article?.body) return [];
+  const at = String(article.updated_at || "").slice(0, 10);
+  const MONTHS_LONG = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const stamp = /^\d{4}-\d{2}-\d{2}$/.test(at) ? `${MONTHS_LONG[Number(at.slice(5, 7)) - 1]} ${Number(at.slice(8, 10))}, ${at.slice(0, 4)}` : "";
+  return parsePcPreorders(`<p>${stamp}</p>${article.body}`);
+}
+
 export function parsePcPreorders(html) {
   const items = [];
   const updated = stripTags(String(html || "").match(/October \d{1,2}, \d{4}/)?.[0] || "");

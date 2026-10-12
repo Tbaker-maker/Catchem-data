@@ -11,6 +11,8 @@ import { boardImage, loadBoardImageInputs } from "./read-library.mjs";
 import { monthDay } from "./takes.mjs";
 import { buildPokemonIndex, pokemonFactLine, speciesToken } from "./fact-reads.mjs";
 import { COMBINED_ART_PARENTS } from "./detectors/listing-trend.mjs";
+import { sealedVsChase } from "./detectors/sealed-vs-chase.mjs";
+import { loadHistoryCards, historyReads } from "./history-reads.mjs";
 
 export const BOARD_TAG = "v3";
 export const PRICE_SHARE_MAX = 0.4;
@@ -320,7 +322,7 @@ export function newsReads(newsDoc, asOf, { days = 7, max = 5 } = {}) {
 }
 
 // eBay listing counts stated exactly. Skips shared-art parents and small counts.
-export function listingReads(doc, { minStart = 20, minMove = 5, minPct = 15 } = {}) {
+export function listingReads(doc, { minStart = 15, minMove = 4, minPct = 20 } = {}) {
   const out = [];
   const skip = new Set([...(doc?.skippedParents || []), ...COMBINED_ART_PARENTS]);
   for (const p of doc?.products || []) {
@@ -334,6 +336,42 @@ export function listingReads(doc, { minStart = 20, minMove = 5, minPct = 15 } = 
     out.push({ id: `listings-${p.id}`, sku: p.id, href: `/p/${p.id}`, readKind: "listings", kind: "listings", board: BOARD_TAG, family: "listings", name: p.name, headline, path: headline, asOf: lc.date, source: `eBay listings counted, ${lc.prev.date} and ${lc.date}`, receipt: { start: a, end: b, startDate: lc.prev.date, endDate: lc.date }, variants: [`eBay listings ${a} to ${b} (${monthDay(lc.prev.date)} to ${monthDay(lc.date)}) for ${p.name}. A listing is not a sale.`].filter(cleanCopy) });
   }
   return out;
+}
+
+// Sealed product against the top-priced chase card of the same TCGplayer group,
+// matched by product id. Same two dates. One side cleared $1 and 3%, the other did not.
+export function sealedChaseReads({ products, histories, rawProducts, pool, start, end, max = 2 }) {
+  if (!rawProducts || !pool?.length) return [];
+  const top = new Map();
+  for (const p of pool) {
+    const cur = top.get(p.group);
+    if (!cur || p.to > cur.to) top.set(p.group, p);
+  }
+  const out = [];
+  for (const prod of products || []) {
+    if (!prod?.id || COMBINED_ART_PARENTS.has(prod.id) || prod.combinedArts === true) continue;
+    const pid = Number(prod.tcgPlayerId);
+    const group = pid ? rawProducts.get(pid)?.group : "";
+    const chase = group && top.get(group);
+    const pts = histories.get(prod.id);
+    const from = pointOn(pts, start), to = pointOn(pts, end);
+    if (!chase || !(from > 0) || !(to > 0) || chase.to < 10) continue;
+    const hit = sealedVsChase({ set: group, sealed: { from, to, start, end }, chase: { from: chase.from, to: chase.to, start, end } });
+    if (!hit) continue;
+    const sp = Math.round(pct(from, to)), cp = Math.round(pct(chase.from, chase.to));
+    const sign = (n) => (n > 0 ? `up ${n}%` : n < 0 ? `down ${-n}%` : "flat");
+    const headline = `${prod.name} went ${money(from)} to ${money(to)} (${sign(sp)}) while its top chase card, ${cleanName(chase.name)}, went ${money(chase.from)} to ${money(chase.to)} (${sign(cp)}). ${monthDay(start)} to ${monthDay(end)}, TCGplayer market.`;
+    if (!cleanCopy(headline)) continue;
+    out.push({
+      id: `sealedchase-${prod.id}`, sku: prod.id, href: `/p/${prod.id}`, readKind: "sealedchase", kind: "sealedchase", board: BOARD_TAG, family: "pattern",
+      name: prod.name, set: shortSet(group), headline, path: headline, asOf: end, startDate: start, endDate: end,
+      source: `TCGplayer market, ${start} and ${end}`,
+      why: hit.why, whatWouldMakeThisWrong: hit.whatWouldMakeThisWrong,
+      receipt: { ...hit.receipt, sealedId: prod.id, chaseId: `tcgcsv-${chase.id}` },
+      gap: Math.abs(sp - cp),
+    });
+  }
+  return out.sort((a, b) => b.gap - a.gap).slice(0, max);
 }
 
 export function rotationReads(doc, asOf) {
@@ -470,7 +508,7 @@ export async function buildBoardV3(root, { on = true } = {}) {
   const readsPath = join(pub, "reads.json");
   const doc = await readJson(readsPath);
   if (!doc || !Array.isArray(doc.reads)) return { skipped: "no reads.json" };
-  const base = doc.reads.filter(isPriceRead).filter(keepPriceRead).map(polishPriceRead);
+  const base = doc.reads.filter(isPriceRead).filter((r) => r.board !== "hist").filter(keepPriceRead).map(polishPriceRead);
   const end = doc.asOf;
   const start = addDays(end, -7);
   const dailyDir = join(root, "data/history/tcgcsv-daily");
@@ -488,6 +526,11 @@ export async function buildBoardV3(root, { on = true } = {}) {
     if (h?.points) histories.set(p.id, h.points);
   }
   const sealed = buildSealedLag({ products: sealedProducts, histories, start, end });
+  let hist = { counts: {}, picked: {} };
+  try {
+    const { cards } = await loadHistoryCards(root);
+    hist = historyReads(cards, end);
+  } catch { hist = { counts: {}, picked: {} }; }
   await writeFile(join(pub, "feed/not-moved.json"), JSON.stringify({
     asOf: end, start, end, on,
     label: "Similar cards that have not moved yet. A take, not a rule.",
@@ -521,6 +564,7 @@ export async function buildBoardV3(root, { on = true } = {}) {
     ...releaseReads(releases, end).slice(0, 3),
     ...newsReads(news, end),
     ...listingReads(listings).slice(0, 2),
+    ...sealedChaseReads({ products: sealedProducts, histories, rawProducts: raw?.products, pool: card.pool, start, end }),
     ...rotationReads(rotation, end),
     ...breadthReads(card.pool, { start, end }),
     ...(index ? factReads(index, names, { max: 2, asOf: catDay }) : []),
@@ -528,9 +572,17 @@ export async function buildBoardV3(root, { on = true } = {}) {
   const { images, tcgOn, sealedPid } = await loadBoardImageInputs(root);
   for (const r of fresh) r.image = boardImage(r, images, tcgOn, sealedPid);
   for (const r of fresh) { if (!r.why) r.why = `From ${r.source}.`; if (!r.whyItMatters) r.whyItMatters = r.why; }
-  const reads = mixBoard(base, fresh, end);
+  for (const k of Object.keys(hist.picked)) for (const r of hist.picked[k]) r.image = boardImage(r, images, tcgOn, sealedPid);
+  // Price rows round-robin: tonight's price reads, then one of each long-history kind.
+  // Two of tonight's rows per round, so week moves keep their place.
+  const lanes = [base.filter((_, i) => i % 2 === 0), base.filter((_, i) => i % 2 === 1), ...["high", "year", "backto", "set", "plain", "low"].map((k) => hist.picked[k] || [])];
+  const priceRows = [];
+  for (let i = 0; lanes.some((l) => i < l.length); i += 1) for (const l of lanes) if (l[i]) priceRows.push(l[i]);
+  const seenSku = new Set();
+  const priceDedup = priceRows.filter((r) => { const k = r.readKind === "set" ? r.id : (r.sku || r.id); if (seenSku.has(k)) return false; seenSku.add(k); return true; });
+  const reads = mixBoard(priceDedup, fresh, end);
   await writeFile(readsPath, JSON.stringify({ ...doc, reads, count: reads.length }, null, 1) + "\n");
   const byKind = {};
   for (const r of reads) byKind[r.readKind || r.kind] = (byKind[r.readKind || r.kind] || 0) + 1;
-  return { on, price: reads.filter(isPriceRead).length, fresh: reads.length - reads.filter(isPriceRead).length, byKind, cardRisers: Object.keys(card.risers).length, sealedRisers: Object.keys(sealed.risers).length };
+  return { on, history: hist.counts, price: reads.filter(isPriceRead).length, fresh: reads.length - reads.filter(isPriceRead).length, byKind, cardRisers: Object.keys(card.risers).length, sealedRisers: Object.keys(sealed.risers).length };
 }
