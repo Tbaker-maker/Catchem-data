@@ -1,6 +1,6 @@
 {
  "asOf": "2026-10-13",
- "generatedAt": "2026-10-13T06:55:23.366Z",
+ "generatedAt": "2026-10-13T11:33:20.158Z",
  "note": "Internal. What changed or broke tonight, for the weekly review. Script only.",
  "types": {
   "NEW_SET": "A TCGCSV set (group) appeared that was not there last night, or a future product in a news calendar is not on the radar.",
@@ -25,15 +25,15 @@
    "DATA_GAP": 1,
    "ODD_PRICE": 53,
    "READ_TYPE_EMPTY": 4,
-   "YOUTUBE_KEY_MISSING": 1
+   "YOUTUBE_LEAD": 14
   },
   "bySeverity": {
    "high": 2,
-   "medium": 3,
+   "medium": 16,
    "low": 58
   }
  },
- "newTonight": 0,
+ "newTonight": 14,
  "flags": [
   {
    "type": "PRICE_MOVE",
@@ -849,14 +849,242 @@
    "new": false
   },
   {
-   "type": "YOUTUBE_KEY_MISSING",
+   "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:missing:2026-10-13",
-   "line": "YOUTUBE_API_KEY is not set; the YouTube learning loop did not run.",
+   "key": "yt:set_attention:24722:2026-10-13",
+   "line": "ME: 30th Celebration: 9 creator videos on 5 channels, 2026-10-07 to 2026-10-13 (unverified lead).",
    "data": {
-    "status": "key_missing"
+    "kind": "set_attention",
+    "ref": 24722,
+    "label": "ME: 30th Celebration",
+    "channels": 5,
+    "videos": 9,
+    "weighted": 5,
+    "from": "2026-10-07",
+    "to": "2026-10-13"
    },
-   "new": false
+   "new": true
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:print_run:Print runs:2026-10-13",
+   "line": "Print runs: 10 creator videos on 4 channels, 2026-10-07 to 2026-10-13 (unverified lead).",
+   "data": {
+    "kind": "print_run",
+    "ref": null,
+    "label": "Print runs",
+    "channels": 4,
+    "videos": 10,
+    "weighted": 10,
+    "from": "2026-10-07",
+    "to": "2026-10-13"
+   },
+   "new": true
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:24448:2026-10-13",
+   "line": "ME02: Phantasmal Flames: 4 creator videos on 4 channels, 2026-10-07 to 2026-10-13 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 24448,
+    "label": "ME02: Phantasmal Flames",
+    "channels": 4,
+    "videos": 4,
+    "weighted": 4,
+    "from": "2026-10-07",
+    "to": "2026-10-13"
+   },
+   "new": true
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:24541:2026-10-13",
+   "line": "ME: Ascended Heroes: 4 creator videos on 4 channels, 2026-10-07 to 2026-10-13 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 24541,
+    "label": "ME: Ascended Heroes",
+    "channels": 4,
+    "videos": 4,
+    "weighted": 4,
+    "from": "2026-10-07",
+    "to": "2026-10-13"
+   },
+   "new": true
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:23821:2026-10-13",
+   "line": "SV: Prismatic Evolutions: 4 creator videos on 3 channels, 2026-10-07 to 2026-10-13 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 23821,
+    "label": "SV: Prismatic Evolutions",
+    "channels": 3,
+    "videos": 4,
+    "weighted": 3,
+    "from": "2026-10-07",
+    "to": "2026-10-13"
+   },
+   "new": true
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:24655:2026-10-13",
+   "line": "ME04: Chaos Rising: 3 creator videos on 3 channels, 2026-10-07 to 2026-10-13 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 24655,
+    "label": "ME04: Chaos Rising",
+    "channels": 3,
+    "videos": 3,
+    "weighted": 3,
+    "from": "2026-10-07",
+    "to": "2026-10-13"
+   },
+   "new": true
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:24380:2026-10-13",
+   "line": "ME01: Mega Evolution: 6 creator videos on 2 channels, 2026-10-07 to 2026-10-13 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 24380,
+    "label": "ME01: Mega Evolution",
+    "channels": 2,
+    "videos": 6,
+    "weighted": 2,
+    "from": "2026-10-07",
+    "to": "2026-10-13"
+   },
+   "new": true
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:24269:2026-10-13",
+   "line": "SV10: Destined Rivals: 3 creator videos on 2 channels, 2026-10-07 to 2026-10-13 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 24269,
+    "label": "SV10: Destined Rivals",
+    "channels": 2,
+    "videos": 3,
+    "weighted": 2,
+    "from": "2026-10-07",
+    "to": "2026-10-13"
+   },
+   "new": true
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:2848:2026-10-13",
+   "line": "SWSH07: Evolving Skies: 3 creator videos on 2 channels, 2026-10-07 to 2026-10-13 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 2848,
+    "label": "SWSH07: Evolving Skies",
+    "channels": 2,
+    "videos": 3,
+    "weighted": 2,
+    "from": "2026-10-07",
+    "to": "2026-10-13"
+   },
+   "new": true
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:sealed_attention:684450:2026-10-13",
+   "line": "Chaos Rising Elite Trainer Box: 2 creator videos on 2 channels, 2026-10-07 to 2026-10-13 (unverified lead).",
+   "data": {
+    "kind": "sealed_attention",
+    "ref": 684450,
+    "label": "Chaos Rising Elite Trainer Box",
+    "channels": 2,
+    "videos": 2,
+    "weighted": 2,
+    "from": "2026-10-07",
+    "to": "2026-10-13"
+   },
+   "new": true
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:24587:2026-10-13",
+   "line": "ME03: Perfect Order: 2 creator videos on 2 channels, 2026-10-07 to 2026-10-13 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 24587,
+    "label": "ME03: Perfect Order",
+    "channels": 2,
+    "videos": 2,
+    "weighted": 2,
+    "from": "2026-10-07",
+    "to": "2026-10-13"
+   },
+   "new": true
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:24688:2026-10-13",
+   "line": "ME05: Pitch Black: 2 creator videos on 2 channels, 2026-10-07 to 2026-10-13 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 24688,
+    "label": "ME05: Pitch Black",
+    "channels": 2,
+    "videos": 2,
+    "weighted": 2,
+    "from": "2026-10-07",
+    "to": "2026-10-13"
+   },
+   "new": true
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:sealed_attention:692947:2026-10-13",
+   "line": "Pitch Black Elite Trainer Box: 2 creator videos on 2 channels, 2026-10-07 to 2026-10-13 (unverified lead).",
+   "data": {
+    "kind": "sealed_attention",
+    "ref": 692947,
+    "label": "Pitch Black Elite Trainer Box",
+    "channels": 2,
+    "videos": 2,
+    "weighted": 2,
+    "from": "2026-10-07",
+    "to": "2026-10-13"
+   },
+   "new": true
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:24073:2026-10-13",
+   "line": "SV09: Journey Together: 2 creator videos on 2 channels, 2026-10-07 to 2026-10-13 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 24073,
+    "label": "SV09: Journey Together",
+    "channels": 2,
+    "videos": 2,
+    "weighted": 2,
+    "from": "2026-10-07",
+    "to": "2026-10-13"
+   },
+   "new": true
   }
  ]
 }
