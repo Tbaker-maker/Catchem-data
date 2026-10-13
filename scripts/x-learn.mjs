@@ -5,6 +5,7 @@
 //   x/posts.jsonl.gz, x/claims.json, x/accounts.json, x/state.json
 //   restocks/events.json, restocks/study.json, restocks/accounts.json
 // Public-safe (data/derived/x-status.json): counts and dates only.
+// Account list: data/private/x/config.json in the private store (never in this repo).
 // Backfill: node scripts/x-learn.mjs --import <dir of saved X API JSON responses>
 import { readFile, writeFile, mkdir, readdir } from "node:fs/promises";
 import { gzipSync, gunzipSync } from "node:zlib";
@@ -40,9 +41,7 @@ export function postsFromResponse(doc, idToHandle) {
 }
 
 export async function runXLearn({ root = ROOT, token = process.env.X_BEARER_TOKEN || "", privToken = process.env.PRIVATE_DATA_TOKEN || "", fetchFn = fetch, now = new Date(), importDir = null, store: givenStore = null } = {}) {
-  const cfg = await J(join(root, "config/x-accounts.json"), { accounts: [], limits: {} });
-  const limits = { nightlyCallBudget: 150, postsPerCall: 100, ...cfg.limits };
-  const catalog = await J(join(root, "data/catalog/tcgcsv-latest.json"), {});
+    const catalog = await J(join(root, "data/catalog/tcgcsv-latest.json"), {});
   const today = String(catalog.asOf || "").slice(0, 10) || now.toISOString().slice(0, 10);
   const base = { asOf: today, generatedAt: now.toISOString(), note: "Counts and dates only. Account names, text and scores stay private." };
   if (!token && !importDir) { const doc = { ...base, tokenPresent: false, status: "token_missing", callsUsed: 0 }; await writePublic(root, doc); return doc; }
@@ -51,6 +50,9 @@ export async function runXLearn({ root = ROOT, token = process.env.X_BEARER_TOKE
   if (!store) { try { store = await openPrivate({ root, token: privToken }); } catch (err) { console.error(`x: ${err.message}; using local data/private`); store = await openPrivate({ root, token: "" }); } }
   const xdir = join(store.dir, "x"), rdir = join(store.dir, "restocks");
   await mkdir(xdir, { recursive: true }); await mkdir(rdir, { recursive: true });
+  // The account list (handles) lives in catchem-data-private: data/private/x/config.json.
+  const cfg = await J(join(xdir, "config.json"), { accounts: [], limits: {} });
+  const limits = { nightlyCallBudget: 150, postsPerCall: 100, ...cfg.limits };
   const state = await J(join(xdir, "state.json"), { sinceId: {}, calls: [] });
   const prevAcc = await J(join(xdir, "accounts.json"), { accounts: [] });
   let posts = [];
