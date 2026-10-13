@@ -214,6 +214,16 @@ try {
   console.error(`youtube skipped: ${err.message}`);
   try { await writeFile(join(ROOT, "data/derived/youtube-leads.json"), JSON.stringify({ asOf: new Date().toISOString().slice(0, 10), keyPresent: Boolean(process.env.YOUTUBE_API_KEY), status: "error", errors: [String(err.message).slice(0, 200)], leads: [] }) + "\n"); } catch {}
 }
+// TCG Card Investor public ledger (one polite GET). Private store only; counts
+// go to data/derived/tcgci-status.json. A block or failure never stops the nightly.
+try {
+  const { runTcgciLearn } = await import("./tcgci-learn.mjs");
+  const tcgci = await runTcgciLearn({ root: ROOT });
+  console.log(JSON.stringify({ tcgci: { status: tcgci.status, calls: tcgci.calls, scored: tcgci.scored, crossMatched: tcgci.crossMatched, crossAgreePct: tcgci.crossAgreePct } }));
+} catch (err) {
+  console.error(`tcgci skipped: ${err.message}`);
+  try { await writeFile(join(ROOT, "data/derived/tcgci-status.json"), JSON.stringify({ asOf: new Date().toISOString().slice(0, 10), status: "error", errors: [String(err.message).slice(0, 200)], calls: 0, note: "Counts only." }) + "\n"); } catch {}
+}
 // Flags and the script research scan (data/derived/flags.json, research-scan.*).
 // Script only, no network. A failure here is logged and never stops the nightly.
 try {
