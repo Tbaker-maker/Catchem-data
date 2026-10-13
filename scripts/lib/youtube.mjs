@@ -59,30 +59,32 @@ export function buildCatalogueIndex(items = []) {
 // card's own name in the same text, resolving to exactly one catalogue id.
 export function extractMentions(text, idx) {
   const raw = String(text || ""), t = ` ${norm(raw)} `;
-  const cards = new Set(), sets = new Set(), sealed = new Set();
+  const cards = new Set(), sets = new Set(), sealed = new Set(), reasons = {}, ambiguous = [];
+  const why = (k, r) => { if (!reasons[k]) reasons[k] = r; };
   for (const m of raw.matchAll(/tcgplayer\.com\/product\/(\d{3,8})/gi)) {
     const it = idx.byPid.get(Number(m[1]));
-    if (it) (it.kind === "sealed" ? sealed : cards).add(Number(m[1]));
+    if (it) { const sealedOne = it.kind === "sealed"; (sealedOne ? sealed : cards).add(Number(m[1])); why(`${sealedOne ? "sealed" : "card"}:${m[1]}`, "product_link"); }
   }
   let rest = t;
   for (const s of idx.setList) {
     const k = ` ${s.key} `;
-    if (rest.includes(k)) { sets.add(s.groupId); rest = rest.split(k).join(" "); }
+    if (rest.includes(k)) { sets.add(s.groupId); why(`set:${s.groupId}`, "set_name"); rest = rest.split(k).join(" "); }
   }
   for (const m of raw.matchAll(/\b0*(\d{1,3}[a-z]?)\s*\/\s*0*(\d{2,3}|[a-z]{1,3}\d{0,3})\b/gi)) {
     const hits = (idx.byNum.get(`${m[1].toLowerCase()}/${m[2].toLowerCase()}`) || []).filter((c) => c.base.length >= 3 && t.includes(` ${c.base} `));
     const inSet = hits.filter((c) => sets.has(c.groupId));
     const pick = inSet.length === 1 ? inSet : hits.length === 1 ? hits : [];
-    for (const c of pick) cards.add(c.pid);
+    if (!pick.length && hits.length > 1) ambiguous.push(`${m[1]}/${m[2]}`);
+    for (const c of pick) { cards.add(c.pid); why(`card:${c.pid}`, inSet.length === 1 ? "number_name_set" : "number_name"); }
   }
   for (const g of sets) {
     for (const [kind, re] of SEALED_KIND) {
       if (!re.test(t)) continue;
       const hit = (idx.sealedBySet.get(g) || []).filter((p) => p.name.includes(kind) && !/\b(case|display|bundle of|pokemon center)\b/.test(p.name));
-      if (hit.length === 1) sealed.add(hit[0].pid);
+      if (hit.length === 1) { sealed.add(hit[0].pid); why(`sealed:${hit[0].pid}`, "set_sealed_kind"); }
     }
   }
-  return { cards: [...cards].sort((a, b) => a - b), sets: [...sets].sort((a, b) => a - b), sealed: [...sealed].sort((a, b) => a - b) };
+  return { cards: [...cards].sort((a, b) => a - b), sets: [...sets].sort((a, b) => a - b), sealed: [...sealed].sort((a, b) => a - b), reasons, ambiguous };
 }
 
 export const topicTags = (text) => Object.entries(TOPICS).filter(([, re]) => re.test(String(text || ""))).map(([k]) => k);
@@ -95,16 +97,54 @@ export function commentSentiment(comments = []) {
   return { comments: comments.length, pos, neg, score: n ? Math.round(((pos - neg) / n) * 100) / 100 : 0 };
 }
 
-// Dated direction claims about one card id or one set, sentence by sentence.
-export function extractClaims({ videoId, channel, date, text }, idx) {
+// Extraction confidence by match reason (doc 1NqTC4UZ "How others score calls", upgrade 1).
+export const CONFIDENCE = { product_link: 0.95, number_name_set: 0.9, number_name: 0.75, set_sealed_kind: 0.7, set_name: 0.6 };
+export const MIN_CONFIDENCE = 0.5;
+export const HYPE_TITLE_CONFIDENCE = 0.4;
+
+// Stated horizon (upgrade 3). The claim is still scored at 7, 30 and 90 days; its status
+// is read at the stated one. "long" = years: provisional until 90 days, never a 30-day fail.
+const HORIZON_WORDS = [
+  ["long", /\b(long[- ]term|years?|\d\s*-\s*\d+\s*years|decade|hold forever|retire\w*|generational|multi[- ]year)\b/i],
+  [90, /\b(this year|next (?:few|couple) months|\d+\s*months|by (?:summer|spring|fall|winter|next year)|90 days|quarter)\b/i],
+  [30, /\b(this month|next month|30 days|(?:next )?few weeks|by (?:christmas|the holidays|black friday)|mid[- ]term)\b/i],
+  [7, /\b(this week|next week|next few days|short[- ]term|near[- ]term|right now|tomorrow|flip)\b/i],
+];
+export function statedHorizon(...texts) {
+  for (const t of texts) for (const [h, re] of HORIZON_WORDS) if (re.test(String(t || ""))) return h;
+  return null;
+}
+
+// Why a direction sentence produced no scorable claim (upgrade 5, private audit log).
+function unmatchedReason(s, m) {
+  if (m.ambiguous.length) return "ambiguous_reprint";
+  if (/\b(psa|cgc|bgs|slabs?|graded|gem ?mint)\b/i.test(s)) return "slab";
+  if (/\b(sealed|booster box(es)?|etbs?|packs?)\b/i.test(s)) return "sealed_generally";
+  if (/\b(market|hobby|everything|prices)\b/i.test(s)) return "whole_market";
+  return "no_match";
+}
+
+// Dated direction claims about one card id, sealed product id or set, sentence by
+// sentence. Each carries a reason code and a confidence; below MIN_CONFIDENCE stays unscored.
+export function extractClaims({ videoId, channel, date, text, title = "", hype = false, chapters = [], unmatched = null }, idx) {
   const out = [];
   const sentences = String(text || "").split(/(?<=[.!?])\s+|\n+/).filter((s) => s.length > 8);
+  const videoHorizon = statedHorizon(title);
   for (const s of sentences) {
     const dir = UP.test(s) ? 1 : DOWN.test(s) ? -1 : 0;
     if (!dir) continue;
     const m = extractMentions(s, idx);
-    for (const pid of m.cards) out.push({ id: `${videoId}:c${pid}:${dir}`, videoId, channel, date, dir, target: "card", pid, text: s.slice(0, 200) });
-    if (!m.cards.length) for (const g of m.sets) out.push({ id: `${videoId}:s${g}:${dir}`, videoId, channel, date, dir, target: "set", groupId: g, text: s.slice(0, 200) });
+    const fromTitle = title && s.trim() === String(title).trim();
+    const conf = (r) => Math.min(CONFIDENCE[r] ?? 0.5, fromTitle && hype ? HYPE_TITLE_CONFIDENCE : 1);
+    const horizon = statedHorizon(s) ?? videoHorizon;
+    // Receipt: the chapter this line is, or the chapter whose title names the same target.
+    const chap = chapters.find((c) => s.includes(c.title)) || null;
+    const receiptFor = (key) => { const c = chap || chapters.find((x) => (key.startsWith("set:") ? x.mentions?.sets?.includes(Number(key.slice(4))) : key.startsWith("card:") ? x.mentions?.cards?.includes(Number(key.slice(5))) : x.mentions?.sealed?.includes(Number(key.slice(7))))); return c ? { chapterT: c.t, chapterTitle: c.title, url: `https://youtu.be/${videoId}?t=${c.t}` } : null; };
+    const base = { videoId, channel, date, dir, horizon, text: s.slice(0, 200), from: fromTitle ? "title" : "text" };
+    for (const pid of m.cards) { const r = m.reasons[`card:${pid}`]; out.push({ id: `${videoId}:c${pid}:${dir}`, ...base, target: "card", pid, reason: r, confidence: conf(r), receipt: receiptFor(`card:${pid}`) }); }
+    for (const pid of m.sealed) { const r = m.reasons[`sealed:${pid}`]; out.push({ id: `${videoId}:p${pid}:${dir}`, ...base, target: "sealed", pid, reason: r, confidence: conf(r), receipt: receiptFor(`sealed:${pid}`) }); }
+    if (!m.cards.length && !m.sealed.length) for (const g of m.sets) out.push({ id: `${videoId}:s${g}:${dir}`, ...base, target: "set", groupId: g, reason: "set_name", confidence: conf("set_name"), receipt: receiptFor(`set:${g}`) });
+    if (unmatched && !m.cards.length && !m.sealed.length && !m.sets.length) unmatched.push({ videoId, channel, date, dir, reason: unmatchedReason(s, m), text: s.slice(0, 200) });
   }
   const seen = new Set();
   return out.filter((c) => (seen.has(c.id) ? false : seen.add(c.id)));
@@ -115,12 +155,34 @@ const median = (xs) => { if (!xs.length) return null; const s = [...xs].sort((a,
 // Score claims at 7, 30 and 90 days. Card claims run through the same scoreLedger
 // as self-check (held = price on the claimed side; excess vs the market median).
 // Set claims use the median change of the set's priced singles between the same days.
+// Direction band (upgrade 2): a hit needs |change| >= BAND on the claimed side AND
+// excess vs market with the claimed sign. Inside the band is flat. The absolute
+// result stays as heldAbs.
+export const BAND = 0.03;
+export function bandResult(h, dir, band = BAND) {
+  if (!h || h.chg == null) return null;
+  if (Math.abs(h.chg) < band) return "flat";
+  if (Math.sign(h.chg) !== dir) return "miss";
+  if (h.excess == null) return null;
+  return Math.sign(h.excess) === dir ? "hit" : "miss";
+}
+const applyBand = (c) => {
+  for (const h of HORIZONS) {
+    const x = c[`h${h}`];
+    if (!x || x.result !== undefined) continue;
+    x.heldAbs = x.held;
+    x.result = bandResult(x, c.dir);
+    x.held = x.result == null ? null : x.result === "hit";
+  }
+};
+
 export function scoreClaims(claims, { priceOn, marketChange, pidsBySet, today }) {
   const cardRows = [];
   for (const c of claims) {
-    if (c.target === "card") {
+    if (c.confidence != null && c.confidence < MIN_CONFIDENCE) { c.unscored = "low_confidence"; continue; }
+    if (c.target === "card" || c.target === "sealed") {
       if (!(c.price > 0)) { const p = priceOn(c.pid, c.date) ?? priceAtHorizon(priceOn, c.pid, c.date, 0)?.price; if (p > 0) c.price = p; }
-      if (c.price > 0) cardRows.push(c);
+      if (c.price > 0) cardRows.push(c); else c.unscored = "no_price";
       continue;
     }
     const pids = pidsBySet.get(c.groupId) || [];
@@ -140,24 +202,37 @@ export function scoreClaims(claims, { priceOn, marketChange, pidsBySet, today })
   }
   for (const c of cardRows) c.t = "read";
   scoreLedger(cardRows, priceOn, today, marketChange);
+  for (const c of claims) if (!c.unscored) applyBand(c);
   return claims;
 }
 
-// Which channels and topics have been right. Rates need MIN_SCORED rows, like self-check.
+// Which channels, topics and product types have been right (upgrade 4). Rates are
+// confidence-weighted hit rates on each claim's stated horizon when it has one.
 export function rankClaims(claims, videoTopics = new Map()) {
   const groups = new Map();
   const add = (key, c) => { if (!groups.has(key)) groups.set(key, []); groups.get(key).push(c); };
-  for (const c of claims) { add(`channel:${c.channel}`, c); for (const t of videoTopics.get(c.videoId) || []) add(`topic:${t}`, c); }
+  for (const c of claims) {
+    if (c.unscored) continue;
+    const type = c.target === "card" ? "singles" : c.target;
+    add(`channel:${c.channel}`, c); add(`type:${type}`, c); add(`channel_type:${c.channel}|${type}`, c);
+    for (const t of videoTopics.get(c.videoId) || []) { add(`topic:${t}`, c); add(`channel_topic:${c.channel}|${t}`, c); }
+  }
   const rows = [];
   for (const [key, cs] of groups) {
-    const row = { by: key.split(":")[0], key: key.split(":")[1], claims: cs.length };
+    const i = key.indexOf(":");
+    const row = { by: key.slice(0, i), key: key.slice(i + 1), claims: cs.length };
     for (const h of HORIZONS) {
-      const s = cs.map((c) => c[`h${h}`]).filter((x) => x && x.held != null);
+      const s = cs.map((c) => [c, c[`h${h}`]]).filter(([, x]) => x && x.held != null);
+      const w = s.reduce((a, [c]) => a + (c.confidence ?? 1), 0);
       row[`scored${h}`] = s.length;
-      row[`heldPct${h}`] = s.length >= MIN_SCORED ? Math.round((100 * s.filter((x) => x.held).length) / s.length) : null;
-      const ex = s.map((x) => x.excess).filter((x) => x != null);
+      row[`heldPct${h}`] = s.length >= MIN_SCORED && w > 0 ? Math.round((100 * s.reduce((a, [c, x]) => a + (x.held ? c.confidence ?? 1 : 0), 0)) / w) : null;
+      row[`absHeldPct${h}`] = s.length >= MIN_SCORED ? Math.round((100 * s.filter(([, x]) => x.heldAbs).length) / s.length) : null;
+      const ex = s.map(([, x]) => x.excess).filter((x) => x != null);
       row[`medianExcess${h}`] = ex.length >= MIN_SCORED ? Math.round(median(ex) * 1000) / 10 : null;
     }
+    const st = cs.filter((c) => typeof c.horizon === "number" && c[`h${c.horizon}`]?.held != null);
+    row.statedScored = st.length;
+    row.statedHeldPct = st.length >= MIN_SCORED ? Math.round((100 * st.filter((c) => c[`h${c.horizon}`].held).length) / st.length) : null;
     rows.push(row);
   }
   return rows.sort((a, b) => (b.heldPct30 ?? -1) - (a.heldPct30 ?? -1) || b.claims - a.claims || (a.key < b.key ? -1 : 1));
@@ -178,7 +253,10 @@ export function buildLeads(videos, { today, idx, seenTopics = [], days = 7, firs
   const tally = new Map();
   const bump = (key, v, label) => {
     if (!tally.has(key)) tally.set(key, { key, label, channels: new Map(), videos: 0, wv: 0 });
-    const r = tally.get(key), w = videoWeight(v, tones[v.channel]);
+    const [kind, id] = key.split(":");
+    const tone = tones[v.channel] || {};
+    const cond = kind === "topic" ? tone.byTopic?.[id] : kind === "set" ? tone.byType?.set : kind === "card" ? tone.byType?.singles : kind === "sealed" ? tone.byType?.sealed : undefined;
+    const r = tally.get(key), w = videoWeight(v, cond != null ? { ...tone, weight: cond } : tone);
     r.channels.set(v.channel, Math.max(r.channels.get(v.channel) || 0, w)); r.videos++; r.wv += w;
   };
   for (const v of recent) {
@@ -210,10 +288,12 @@ export const isBanned = (s) => BANNED.test(String(s));
 // Tyler's rule: a creator claim is never fact. Every claim is an unverified lead
 // until our own data (TCGplayer prices here) backs or contradicts it, with evidence.
 export function claimStatus(c) {
-  const h = [...HORIZONS].reverse().find((x) => c[`h${x}`] && c[`h${x}`].held != null);
-  if (!h) return { status: "unverified", evidence: null };
-  const s = c[`h${h}`];
-  return { status: s.held ? "backed" : "contradicted", evidence: { source: c.target === "card" ? "TCGplayer market (data/history/tcgcsv-daily)" : "TCGplayer market, median single in the set", horizonDays: h, from: c.date, to: s.day, change: s.chg, vsMarket: s.excess } };
+  if (c.unscored === "low_confidence") return { status: "unverified", evidence: null, unscored: "low_confidence" };
+  const stated = typeof c.horizon === "number" ? c.horizon : null;
+  const h = c.horizon === "long" ? 90 : stated ?? [...HORIZONS].reverse().find((x) => c[`h${x}`] && c[`h${x}`].held != null);
+  const s = h ? c[`h${h}`] : null;
+  if (!s || s.held == null) return { status: "unverified", evidence: null, horizon: c.horizon ?? null };
+  return { status: s.held ? "backed" : "contradicted", provisional: c.horizon === "long" ? true : undefined, evidence: { source: c.target === "set" ? "TCGplayer market, median single in the set" : "TCGplayer market (data/history/tcgcsv-daily)", horizonDays: h, statedHorizon: c.horizon ?? null, from: c.date, to: s.day, change: s.chg, vsMarket: s.excess, result: s.result, band: BAND, absoluteHeld: s.heldAbs } };
 }
 
 // Methods, signals and data sources creators describe. Candidate read paths for the
@@ -238,19 +318,33 @@ export function extractIdeas({ videoId, channel, date, text }) {
 // Track-record weight per creator. Neutral (1) until MIN_SCORED claims are scored.
 // Then 0.5 + held rate, clamped to 0.5..1.5, from the 30-day rate when it has enough
 // rows, else the 7-day rate. Private; only applied inside attention and trend counts.
+const weightOfRow = (r) => {
+  const h = r.scored30 >= MIN_SCORED ? 30 : r.scored7 >= MIN_SCORED ? 7 : null;
+  const pct = h ? r[`heldPct${h}`] : null;
+  return pct == null ? null : { weight: Math.min(1.5, Math.max(0.5, Math.round((0.5 + pct / 100) * 100) / 100)), basis: `held${h}`, heldPct: pct, scored: r[`scored${h}`] };
+};
 export function creatorWeights(ranking = []) {
   const out = {};
   for (const r of ranking) {
     if (r.by !== "channel") continue;
-    const h = r.scored30 >= MIN_SCORED ? 30 : r.scored7 >= MIN_SCORED ? 7 : null;
-    const pct = h ? r[`heldPct${h}`] : null;
-    out[r.key] = pct == null ? { weight: 1, basis: "neutral", scored: Math.max(r.scored7 || 0, r.scored30 || 0) } : { weight: Math.min(1.5, Math.max(0.5, Math.round((0.5 + pct / 100) * 100) / 100)), basis: `held${h}`, heldPct: pct, scored: r[`scored${h}`] };
+    out[r.key] = weightOfRow(r) || { weight: 1, basis: "neutral", scored: Math.max(r.scored7 || 0, r.scored30 || 0) };
+  }
+  // Topic- and type-conditioned weights, used when a lead's topic has 20+ scored rows.
+  for (const r of ranking) {
+    if (r.by !== "channel_topic" && r.by !== "channel_type") continue;
+    const [ch, k] = r.key.split("|");
+    const w = weightOfRow(r);
+    if (!w) continue;
+    out[ch] ||= { weight: 1, basis: "neutral", scored: 0 };
+    (out[ch][r.by === "channel_topic" ? "byTopic" : "byType"] ||= {})[k] = w;
   }
   return out;
 }
 export const combinedTones = (tones = {}, weights = {}) => {
   const keys = new Set([...Object.keys(tones), ...Object.keys(weights)]);
-  return Object.fromEntries([...keys].map((k) => [k, { ...(tones[k] || {}), weight: (Number.isFinite(tones[k]?.weight) ? tones[k].weight : 1) * (weights[k]?.weight ?? 1) }]));
+  const tw = (k) => (Number.isFinite(tones[k]?.weight) ? tones[k].weight : 1);
+  const scale = (m, k) => (m ? Object.fromEntries(Object.entries(m).map(([t, w]) => [t, tw(k) * w.weight])) : undefined);
+  return Object.fromEntries([...keys].map((k) => [k, { ...(tones[k] || {}), weight: tw(k) * (weights[k]?.weight ?? 1), byTopic: scale(weights[k]?.byTopic, k), byType: scale(weights[k]?.byType, k) }]));
 };
 
 // Hype effect: what set prices did 7, 30 and 90 days after heavy creator coverage.
