@@ -2,7 +2,7 @@ import { mkdtemp, mkdir, writeFile, readFile, cp } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { buildCatalogueIndex, extractMentions, topicTags, commentSentiment, extractClaims, scoreClaims, rankClaims, buildLeads, claimStatus, videoWeight, creatorWeights, combinedTones, hypeEvents, scoreHype, disagreements, edenSeed, extractIdeas, attentionLine, isBanned } from "../lib/youtube.mjs";
+import { buildCatalogueIndex, extractMentions, topicTags, commentSentiment, extractClaims, scoreClaims, rankClaims, buildLeads, claimStatus, videoWeight, creatorWeights, combinedTones, hypeEvents, scoreHype, disagreements, edenSeed, parseChapters, videoOutline, extractIdeas, attentionLine, isBanned } from "../lib/youtube.mjs";
 import { youtubeFlags } from "../lib/flags.mjs";
 import { parseFeed, pickTranscript, transcriptText } from "../lib/podcast.mjs";
 import { runYoutubeLearn, makeClient } from "../youtube-learn.mjs";
@@ -91,6 +91,14 @@ export async function run() {
   const es = edenSeed([{ channel: "x", date: "2026-01-09", mentions: { sets: [2], cards: [], sealed: [] }, topComments: [{ text: "love it", likes: 9 }, { text: "trash", likes: 0 }] }, { channel: "x", date: "2026-01-01", mentions: { sets: [2], cards: [], sealed: [] }, topComments: [{ text: "awful", likes: 0 }] }], { today: "2026-01-10" });
   t("eden: likes weight comments, week vs previous week", es["set:2"].pos === 2 && es["set:2"].neg === 2 && es["set:2"].week.score === 0.33 && es["set:2"].prevWeek.score === -1 && es["set:2"].turn === 1.33);
 
+  // Chapters
+  const desc = "Links below\n0:00 Intro\n2:15 - Evolving Skies pack destruction\n1:02:03 | PSA 10 pop report\nthanks";
+  const chs = parseChapters(desc);
+  t("chapters: 3 rows, seconds, titles", chs.length === 3 && chs[1].t === 135 && chs[2].t === 3723 && chs[1].title === "Evolving Skies pack destruction");
+  t("chapters: not starting near 0 or out of order is ignored", parseChapters("5:00 a\n6:00 b\n7:00 c").length === 0 && parseChapters("0:00 a\n6:00 b\n3:00 c").length === 0);
+  const ol = videoOutline({ description: desc }, idx);
+  t("outline: topics and set per chapter", ol[1].topics.includes("pack_destruction") && ol[1].mentions.sets.includes(2) && ol[2].topics.includes("grading"));
+
   // Podcast feeds
   const rss = `<rss xmlns:podcast="https://podcastindex.org/namespace/1.0"><channel><item><title>Ep 1</title><guid>g1</guid><pubDate>Fri, 09 Jan 2026 10:00:00 GMT</pubDate><description><![CDATA[Market talk]]></description><enclosure url="https://x/a.mp3" type="audio/mpeg"/><podcast:transcript url="https://x/t.json" type="application/json"/><podcast:transcript url="https://x/t.vtt" type="text/vtt"/></item></channel></rss>`;
   const it = parseFeed(rss);
@@ -118,7 +126,7 @@ export async function run() {
     const body = p === "channels" ? { items: u.searchParams.get("id").split(",").map((id) => ({ id, contentDetails: { relatedPlaylists: { uploads: "UU" + id.slice(2) } } })) }
       : p === "playlistItems" ? { items: u.searchParams.get("playlistId") === "UUkM148HlzrBtGgSABTfFsOA" ? [{ contentDetails: { videoId: "vid1", videoPublishedAt: "2026-01-10T12:00:00Z" } }] : [] }
       : p === "videos" ? { items: [{ id: "vid1", snippet: { publishedAt: "2026-01-10T12:00:00Z", title: "Umbreon VMAX 215/203 is undervalued", description: "Evolving Skies pack destruction" }, statistics: { viewCount: "10", likeCount: "2", commentCount: "1" } }] }
-      : { items: [{ snippet: { topLevelComment: { snippet: { textDisplay: "great video", likeCount: 3 } } } }] };
+      : { items: [{ snippet: { topLevelComment: { snippet: { textDisplay: "great video", likeCount: 3 } } } }, { snippet: { topLevelComment: { snippet: { textDisplay: "Pinned: Evolving Skies will go down.", likeCount: 0, authorChannelId: { value: "UCkM148HlzrBtGgSABTfFsOA" } } } } }] };
     return { ok: true, json: async () => body };
   };
   calls = 0;
@@ -140,8 +148,9 @@ export async function run() {
   t("units = 1 channels + 1 per channel + 1 videos + 1 comments", ok.unitsUsed === 1 + enabled + 1 + 1);
   const claims2 = JSON.parse(await readFile(join(root, "data/private/youtube/claims.json"), "utf8")).claims;
   t("podcast transcript claim logged as unverified", ok.podcastNew === 1 && claims2.some((c) => c.source === "podcast" && c.pid === 102 && c.status === "unverified"));
-  t("claim stored privately with ship price", claims2.filter((c) => c.source !== "podcast").length === 1 && claims2[0].pid === 102 && claims2[0].price === 100 && claims2[0].status === "unverified");
+  t("claim stored privately with ship price", claims2.filter((c) => c.source !== "podcast" && c.target === "card").length === 1 && claims2[0].pid === 102 && claims2[0].price === 100 && claims2[0].status === "unverified");
   const pubDoc = await readFile(join(root, "data/derived/youtube-leads.json"), "utf8");
+  t("creator comment read into claims, kept out of sentiment", claims2.some((c) => c.target === "set" && c.groupId === 2 && c.dir === -1) && ok.withCreatorComments === 1);
   t("public file has no creator names or text", !/nomics|undervalued|great video|Nostalgia/i.test(pubDoc));
   const again = await runYoutubeLearn({ root, key: "k", token: "", fetchFn: fake, store: local });
   for (const f of ["creator-weights.json", "hype-study.json", "disagreements.json", "eden-seed.json"]) t(`private ${f} written`, Boolean(await readFile(join(root, "data/private/youtube", f), "utf8").catch(() => "")));
