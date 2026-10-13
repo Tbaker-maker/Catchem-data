@@ -198,6 +198,8 @@ const SUSPECT = 2;
 // A file earns a place here by being genuinely event-driven; "it is often
 // unchanged" is not a reason, it is the symptom this guard exists to catch.
 const SLOW = {
+  "data/derived/listing-counts/":
+    "new listing-counts.yml output (#232, 2026-10-12). Excused only until its first scheduled commit. Remove this line once git log shows data/derived/listing-counts/",
   "data/raw/":
     "nightly eBay raw copy (data/raw/ebay-sealed/YYYY-MM-DD.json.gz, #145), added to the nightly git add on 2026-10-10; excused only until its first nightly commit — remove this line once git log shows data/raw/",
   "data/release-radar.json":
