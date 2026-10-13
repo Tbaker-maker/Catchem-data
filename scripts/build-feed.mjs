@@ -224,6 +224,15 @@ try {
   console.error(`tcgci skipped: ${err.message}`);
   try { await writeFile(join(ROOT, "data/derived/tcgci-status.json"), JSON.stringify({ asOf: new Date().toISOString().slice(0, 10), status: "error", errors: [String(err.message).slice(0, 200)], calls: 0, note: "Counts only." }) + "\n"); } catch {}
 }
+// Call-pattern + crowd-angle mining (script only). Private first; public
+// crowd-attention.json only gets angles that passed n≥20 holdout.
+try {
+  const { runMineCallPatterns } = await import("./mine-call-patterns.mjs");
+  const cp = await runMineCallPatterns({ root: ROOT });
+  console.log(JSON.stringify({ callPatterns: { status: cp.status, scored: cp.scored, patternsPassed: cp.patternsPassed, crowdPassed: cp.crowdPassed, publicLines: cp.publicLines } }));
+} catch (err) {
+  console.error(`call-patterns skipped: ${err.message}`);
+}
 // Flags and the script research scan (data/derived/flags.json, research-scan.*).
 // Script only, no network. A failure here is logged and never stops the nightly.
 try {
