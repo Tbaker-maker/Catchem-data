@@ -241,6 +241,16 @@ try {
 } catch (err) {
   console.error(`hype-crowd skipped: ${err.message}`);
 }
+// Year-pattern study (script only). Private store first. The public file lists
+// only patterns that also passed on own tcgcsv days. Fill days stay out of it.
+// A missing file or any failure never stops the nightly.
+try {
+  const { runYearPatterns } = await import("./run-year-patterns.mjs");
+  const yp = await runYearPatterns({ root: ROOT });
+  console.log(JSON.stringify({ yearPatterns: { status: yp.status, passed: yp.passed, failed: yp.failed, publicPatterns: yp.publicPatterns, present: yp.present, forming: yp.forming, warningsPassed: yp.warningsPassed } }));
+} catch (err) {
+  console.error(`year-patterns skipped: ${err.message}`);
+}
 // Flags and the script research scan (data/derived/flags.json, research-scan.*).
 // Script only, no network. A failure here is logged and never stops the nightly.
 try {
