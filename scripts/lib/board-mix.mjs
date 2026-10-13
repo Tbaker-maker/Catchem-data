@@ -577,7 +577,7 @@ export function mixBoard(priceRows, fresh, day, { maxShare = PRICE_SHARE_MAX } =
   return out;
 }
 
-export async function buildBoardV3(root, { on = true, spanReads = [] } = {}) {
+export async function buildBoardV3(root, { on = true, spanReads = [], scannerReads = [] } = {}) {
   const pub = join(root, "research/assets/public");
   const readsPath = join(pub, "reads.json");
   const doc = await readJson(readsPath);
@@ -706,6 +706,22 @@ export async function buildBoardV3(root, { on = true, spanReads = [] } = {}) {
       if (r.id) seenId.add(r.id);
     }
     for (const raw of spanReads) {
+      if (!raw || !raw.id || seenId.has(raw.id)) continue;
+      const row = { ...raw };
+      if (row.href && used.has(String(row.href))) row.href = "";
+      if (row.href) used.add(String(row.href));
+      seenId.add(row.id);
+      fresh.push(row);
+    }
+  }
+  if (Array.isArray(scannerReads) && scannerReads.length) {
+    const used = new Set();
+    const seenId = new Set();
+    for (const r of [...base, ...fresh]) {
+      if (r.href) used.add(String(r.href));
+      if (r.id) seenId.add(r.id);
+    }
+    for (const raw of scannerReads) {
       if (!raw || !raw.id || seenId.has(raw.id)) continue;
       const row = { ...raw };
       if (row.href && used.has(String(row.href))) row.href = "";
