@@ -18,9 +18,14 @@ const ten = (rows) => Array.from({ length: 10 }, () => card(rows));
   t("card count is stated", r.cards === 10 && r.gaps === 1 && r.links === 2);
 }
 {
-  // Under 8 cards linked is a gap too, not the old level repeated.
-  const r = indexLine([...Array.from({ length: 5 }, () => card([["2026-01-01", 10], ["2026-01-02", 20]]))]);
+  // Under 60% of the group linked is a gap too, not the old level repeated.
+  const r = indexLine([...Array.from({ length: 5 }, () => card([["2026-01-01", 10], ["2026-01-02", 20]])), ...Array.from({ length: 5 }, () => card([["2026-01-01", 10]]))]);
   t("too few cards is a gap", r.points[1].v === null && r.points[1].n === 5 && r.cards === 0);
+}
+{
+  // A set with 4 sealed products still gets a line (151 had one point on file).
+  const r = indexLine(Array.from({ length: 4 }, () => card([["2026-09-25", 10], ["2026-09-26", 11]])));
+  t("a small sealed group links", r.points[1].v === 110 && r.points[1].n === 4);
 }
 {
   // Small daily moves compound; the level is not rounded between days.
