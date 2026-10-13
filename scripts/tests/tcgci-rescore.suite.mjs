@@ -11,6 +11,7 @@ import {
   compareMethods,
   buildScorecards,
   applyHoldBands,
+  buildCreatorCatalogue,
   BAND,
 } from "../lib/tcgci-score.mjs";
 import { runTcgciRescore } from "../tcgci-rescore.mjs";
@@ -75,6 +76,22 @@ export async function run() {
   const cards = buildScorecards(claims, cmp);
   t("scorecards tagged tcgci-derived", cards.source === TCGCI_SOURCE && cards.creators.every((c) => c.source === TCGCI_SOURCE));
   t("weights separate object", cards.weights.nomics && cards.weights.nomics.weight >= 0.5);
+
+  const cat = buildCreatorCatalogue({
+    calls: [
+      { channel: "Nostalgia Nomics", channelKey: "nomics", issued: "2026-08-01", theirVerdict: "right", videoId: "a" },
+      { channel: "Collect Pokemon", channelKey: "collectpokemon", issued: "2026-08-01", theirVerdict: "wrong", videoId: "b" },
+    ],
+    scorecards: cards,
+    configChannels: [
+      { key: "nomics", id: "UCnom", handle: "@N", enabled: true },
+      { key: "collectpokemon", id: "UCcp", handle: "@C", enabled: false },
+    ],
+    asOf: "2026-10-12",
+  });
+  t("catalogue lists both creators", cat.creators.length === 2);
+  t("catalogue keeps disabled flag", cat.creators.find((c) => c.key === "collectpokemon")?.enabled === false);
+  t("catalogue has firstSeen and youtube id", cat.creators.find((c) => c.key === "nomics")?.firstSeen === "2026-08-01" && cat.creators.find((c) => c.key === "nomics")?.youtubeId === "UCnom");
 
   // Runner writes private files, never mixes into youtube/claims
   const root = await mkdtemp(join(tmpdir(), "tcgci-rs-"));

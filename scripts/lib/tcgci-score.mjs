@@ -329,3 +329,68 @@ export function summarizeRescore({ claims, skipped, compare, scorecards, today, 
     weakTopics: topicRows.slice().sort((a, b) => (a.heldPct30 ?? 99) - (b.heldPct30 ?? 99)).slice(0, 12),
   };
 }
+
+
+// Full TCGCI creator catalogue for private logging. Merges call stats, our
+// rescored hit rates, and config youtube ids. Does not enable/disable channels.
+export function buildCreatorCatalogue({ calls = [], scorecards, configChannels = [], asOf, now = new Date() }) {
+  const byName = new Map();
+  for (const c of calls) {
+    const name = c.channel || "?";
+    let b = byName.get(name);
+    if (!b) {
+      b = { name, key: c.channelKey || mapChannel(name), n: 0, scored: 0, right: 0, wrong: 0, flat: 0, first: null, last: null, videos: new Set() };
+      byName.set(name, b);
+    }
+    b.n++;
+    if (c.videoId) b.videos.add(c.videoId);
+    if (c.issued) {
+      if (!b.first || c.issued < b.first) b.first = c.issued;
+      if (!b.last || c.issued > b.last) b.last = c.issued;
+    }
+    if (!b.key) b.key = c.channelKey || mapChannel(name);
+    const v = c.theirVerdict;
+    if (v === "right") { b.scored++; b.right++; }
+    else if (v === "wrong") { b.scored++; b.wrong++; }
+    else if (v === "flat") { b.scored++; b.flat++; }
+  }
+  const ourByKey = Object.fromEntries((scorecards?.creators || []).map((c) => [c.channel, c]));
+  const cfgByKey = Object.fromEntries((configChannels || []).map((c) => [c.key, c]));
+  const creators = [...byName.values()].map((b) => {
+    const cfg = (b.key && cfgByKey[b.key]) || null;
+    const our = (b.key && ourByKey[b.key]) || {};
+    return {
+      key: b.key || cfg?.key || null,
+      name: b.name,
+      youtubeId: cfg?.id || null,
+      handle: cfg?.handle || null,
+      verified: Boolean(cfg?.id),
+      calls: b.n,
+      videos: b.videos.size,
+      firstSeen: b.first,
+      lastSeen: b.last,
+      theirScored: b.scored,
+      theirHitPct: b.scored ? Math.round((100 * b.right) / b.scored) : null,
+      theirRight: b.right,
+      theirWrong: b.wrong,
+      theirFlat: b.flat,
+      ourScored30: our.scored30 ?? 0,
+      ourHitPct30: our.heldPct30 ?? null,
+      ourScored7: our.scored7 ?? 0,
+      ourHitPct7: our.heldPct7 ?? null,
+      ourScored90: our.scored90 ?? 0,
+      ourHitPct90: our.heldPct90 ?? null,
+      agreePct: our.agreePct ?? null,
+      enabled: cfg ? cfg.enabled !== false : false,
+      inConfig: Boolean(cfg),
+    };
+  }).sort((a, b) => b.calls - a.calls || (a.name < b.name ? -1 : 1));
+  return {
+    asOf,
+    fetchedAt: now.toISOString(),
+    source: "tcgci",
+    private: true,
+    note: "Full TCGCI creator catalogue. theirHitPct = ±5% recomputed; ourHitPct* = Catch'em 3%+market. enabled mirrors config/youtube-channels.json.",
+    creators,
+  };
+}

@@ -13,6 +13,7 @@ import {
   compareMethods,
   buildScorecards,
   summarizeRescore,
+  buildCreatorCatalogue,
 } from "./lib/tcgci-score.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -123,6 +124,12 @@ export async function runTcgciRescore({
 
   await writeFile(join(dir, "rescore-summary.json"), JSON.stringify(summary, null, 1) + "\n");
 
+  const configChannels = (await J(join(root, "config/youtube-channels.json"), { channels: [] })).channels || [];
+  const catalogue = buildCreatorCatalogue({
+    calls: parsed.calls, scorecards, configChannels, asOf: today, now,
+  });
+  await writeFile(join(dir, "creator-catalogue.json"), JSON.stringify(catalogue, null, 1) + "\n");
+
   // Pointer on the YouTube weights file when present — never overwrites their numbers.
   const ytWeightsPath = join(store.dir, "youtube/creator-weights.json");
   const ytW = await J(ytWeightsPath, null);
@@ -143,6 +150,7 @@ export async function runTcgciRescore({
     "tcgci/scorecards.json",
     "tcgci/creator-weights.json",
     "tcgci/rescore-summary.json",
+    "tcgci/creator-catalogue.json",
   ];
   if (ytW) paths.push("youtube/creator-weights.json");
   let pushed = { pushed: false, reason: "store owned by caller" };
