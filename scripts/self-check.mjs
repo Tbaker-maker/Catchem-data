@@ -122,8 +122,26 @@ export async function runSelfCheck({ root = ROOT, token = process.env.PRIVATE_DA
     limits: { perFactorPerNight: TUNER.stepPoints, maxPairsPerNight: TUNER.maxPairsPerNight, cooldownDays: TUNER.cooldownDays, floorShare: TUNER.floorShare, ceilShare: TUNER.ceilShare, horizonDays: TUNER.horizon, minRows: TUNER.minRows },
     note: "Card Rating factor weights used by the nightly build. Set by the self-check tuner inside the limits above. Revert: node scripts/self-check.mjs --revert=base (or a version).",
   }, null, 1) + "\n");
-  const pushed = await store.close(["self-check/ledger.jsonl.gz", "self-check/scores.json", "self-check/tuner-state.json", "self-check/tuner-log.jsonl"], `Self-check ${today}`);
-  return { today, loggedTonight: night.length, ledgerRows: ledger.length, scored: summary.reduce((a, r) => a + r.scored7 + r.scored30 + r.scored90, 0), tuner: log.map((l) => l.action), weightsVersion: state.version, pushed };
+  
+  // Call-pattern / crowd-angle candidates: refresh scores from private rows when present.
+  let patternCheck = null;
+  try {
+    const { scorePatternCandidates, attachConditions } = await import("./lib/call-patterns.mjs");
+    const { loadLongHistoryPriceBook } = await import("./lib/tcgci-score.mjs");
+    const ideasDoc = await readJson(join(store.dir, "youtube/ideas.json"), { ideas: [] });
+    const patternIdeas = (ideasDoc.ideas || []).filter((i) => i.source === "call-patterns" || i.kind === "call_pattern" || String(i.kind || "").startsWith("crowd") || ["quiet_climbers","hype_fade","attention_lag","consensus_flips","crowd_ignored_rarities","crowd_vs_data"].includes(i.kind));
+    const tcgci = await readJson(join(store.dir, "tcgci/rescored-claims.json"), { claims: [] });
+    if (patternIdeas.length && (tcgci.claims || []).length) {
+      const { priceOn } = await loadLongHistoryPriceBook(root);
+      const rows = (tcgci.claims || []).map((c) => attachConditions(c, { priceOn })).filter((r) => r.hit != null);
+      patternCheck = scorePatternCandidates(patternIdeas, rows);
+      await mkdir(join(store.dir, "call-patterns"), { recursive: true });
+      await writeFile(join(store.dir, "call-patterns/self-check.json"), JSON.stringify({ asOf: today, private: true, ...patternCheck, note: "Refreshed by self-check. Promote to public only when passedHoldout." }, null, 1) + "\n");
+    }
+  } catch (err) { console.error(`pattern-check skipped: ${err.message}`); }
+
+  const pushed = await store.close(["self-check/ledger.jsonl.gz", "self-check/scores.json", "self-check/tuner-state.json", "self-check/tuner-log.jsonl", "call-patterns/self-check.json"], `Self-check ${today}`);
+  return { today, loggedTonight: night.length, ledgerRows: ledger.length, patternCheck, scored: summary.reduce((a, r) => a + r.scored7 + r.scored30 + r.scored90, 0), tuner: log.map((l) => l.action), weightsVersion: state.version, pushed };
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
