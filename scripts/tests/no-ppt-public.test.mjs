@@ -128,6 +128,11 @@ export async function runNoPptPublicTests() {
   t("volume reads are off until PPT's written yes", volumeReads.length === 0, `${volumeReads.length} volume reads`);
 
   const allowed = await publicDays();
+  // Approved chart fill (config/fill-sources.json, chartFill true): a point before the card's
+  // own first day (card.fillTo) is allowed only when it matches the source's raw file exactly.
+  const { loadFillMap } = await import("../lib/fill-history.mjs");
+  const fillMap = loadFillMap(ROOT);
+  const fillHas = (pid, day, v) => (fillMap.get(pid)?.points || []).some((p) => p[0] === day && Math.abs(Number(p[1]) - v) <= 0.011);
   const allowsVariant = (pid, day, v) => { const m = allowed.get(pid); if (!m) return false; for (const [k, x] of m) if ((k === day || k.startsWith(day + "#")) && Math.abs(x - v) <= 0.011) return true; return false; };
   const bucketDir = join(ROOT, "research/assets/public/buckets");
   const bad = [];
@@ -135,7 +140,11 @@ export async function runNoPptPublicTests() {
     const doc = JSON.parse(await readFile(join(bucketDir, f), "utf8"));
     for (const card of Array.isArray(doc) ? doc : Object.values(doc)) {
       if (!card?.pid || !Array.isArray(card.hist)) continue;
-      for (const [day, v] of card.hist) if (!allowsVariant(Number(card.pid), day, Number(v))) bad.push(`${card.pid} ${day} ${v}`);
+      for (const [day, v] of card.hist) {
+        if (allowsVariant(Number(card.pid), day, Number(v))) continue;
+        if (card.fillTo && day < card.fillTo && fillHas(Number(card.pid), day, Number(v))) continue;
+        bad.push(`${card.pid} ${day} ${v}`);
+      }
     }
   }
   t("every public bucket price point is a TCGCSV day we publish", bad.length === 0, `${bad.length} points, e.g. ${bad.slice(0, 3).join("; ")}`);
