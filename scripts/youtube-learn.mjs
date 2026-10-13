@@ -18,7 +18,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { openPrivate } from "./lib/private-store.mjs";
 import { parseFeed, pickTranscript, transcriptText } from "./lib/podcast.mjs";
 import { loadPriceBook } from "./self-check.mjs";
-import { buildCatalogueIndex, extractMentions, topicTags, commentSentiment, extractClaims, scoreClaims, rankClaims, buildLeads, claimStatus, extractIdeas, videoWeight, creatorWeights, combinedTones, hypeEvents, scoreHype, disagreements, edenSeed } from "./lib/youtube.mjs";
+import { buildCatalogueIndex, extractMentions, topicTags, commentSentiment, extractClaims, scoreClaims, rankClaims, buildLeads, claimStatus, extractIdeas, videoWeight, videoOutline, creatorWeights, combinedTones, hypeEvents, scoreHype, disagreements, edenSeed } from "./lib/youtube.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const API = "https://www.googleapis.com/youtube/v3";
@@ -93,7 +93,7 @@ export async function runYoutubeLearn({ root = ROOT, key = process.env.YOUTUBE_A
       if (!uploads.get(c.id)) { errors.push(`${c.key}: channel not returned`); continue; }
       const pl = await yt.get("playlistItems", { part: "contentDetails", playlistId: uploads.get(c.id), maxResults: 50 });
       const ids = (pl.items || []).filter((i) => (i.contentDetails?.videoPublishedAt || "") >= (state.lastSeen[c.key] || since)).map((i) => i.contentDetails.videoId).filter((id) => !known.has(id)).slice(0, limits.maxNewVideosPerChannel);
-      for (const id of ids) fresh.push({ id, channel: c.key });
+      for (const id of ids) fresh.push({ id, channel: c.key, channelId: c.id });
     }
     for (let i = 0; i < fresh.length; i += 50) {
       const batch = fresh.slice(i, i + 50);
@@ -104,7 +104,7 @@ export async function runYoutubeLearn({ root = ROOT, key = process.env.YOUTUBE_A
       if (!f.snippet || Number(f.stats?.commentCount || 0) === 0) { f.comments = []; continue; }
       try {
         const ct = await yt.get("commentThreads", { part: "snippet", videoId: f.id, order: "relevance", maxResults: limits.commentsPerVideo, textFormat: "plainText" });
-        f.comments = (ct.items || []).map((x) => ({ text: String(x.snippet?.topLevelComment?.snippet?.textDisplay || "").slice(0, 500), likes: Number(x.snippet?.topLevelComment?.snippet?.likeCount || 0) }));
+        f.comments = (ct.items || []).map((x) => { const sn = x.snippet?.topLevelComment?.snippet || {}; return { text: String(sn.textDisplay || "").slice(0, sn.authorChannelId?.value === f.channelId ? 5000 : 500), likes: Number(sn.likeCount || 0), byCreator: sn.authorChannelId?.value === f.channelId }; });
       } catch (err) { if (err.budget) throw err; f.comments = []; errors.push(`comments ${f.id}: ${err.reason || err.message}`); }
     }
   } catch (err) { errors.push(err.budget ? "daily unit budget reached" : `${err.reason || err.message}`); }
@@ -113,11 +113,13 @@ export async function runYoutubeLearn({ root = ROOT, key = process.env.YOUTUBE_A
   for (const f of fresh) {
     if (!f.snippet) continue;
     const date = String(f.snippet.publishedAt || "").slice(0, 10);
-    const text = `${f.snippet.title || ""}\n${f.snippet.description || ""}`;
+    // Creator's own comments (often the pinned one) are read like the description.
+    const creatorText = f.comments.filter((c) => c.byCreator).map((c) => c.text).join("\n");
+    const text = `${f.snippet.title || ""}\n${f.snippet.description || ""}\n${creatorText}`;
     const v = {
       id: f.id, channel: f.channel, date, publishedAt: f.snippet.publishedAt, title: f.snippet.title || "", description: String(f.snippet.description || "").slice(0, 5000),
       views: Number(f.stats?.viewCount || 0), likes: Number(f.stats?.likeCount || 0), commentCount: Number(f.stats?.commentCount || 0),
-      topComments: f.comments, mentions: extractMentions(text, idx), topics: topicTags(text), sentiment: commentSentiment(f.comments.map((c) => c.text)), fetchedOn: today,
+      topComments: f.comments.filter((c) => !c.byCreator), creatorComments: f.comments.filter((c) => c.byCreator).map((c) => c.text), mentions: extractMentions(text, idx), topics: topicTags(text), sentiment: commentSentiment(f.comments.filter((c) => !c.byCreator).map((c) => c.text)), fetchedOn: today,
     };
     added.push(v);
     claimsDoc.claims.push(...extractClaims({ videoId: v.id, channel: v.channel, date, text }, idx).map((c) => ({ ...c, toneWeight: videoWeight(v, tones[v.channel]), needsBacking: true })).filter((c) => !claimsDoc.claims.some((o) => o.id === c.id)));
@@ -149,6 +151,8 @@ export async function runYoutubeLearn({ root = ROOT, key = process.env.YOUTUBE_A
     } catch (err) { errors.push(`podcast ${c.key}: ${err.message}`); }
   }
 
+  // Chapter outlines from descriptions (backfills older rows; no API call).
+  for (const v of videos) if (!v.outline && v.source !== "podcast") v.outline = videoOutline(v, idx);
   const { priceOn, marketChange } = await loadPriceBook(root);
   scoreClaims(claimsDoc.claims, { priceOn, marketChange, pidsBySet: idx.pidsBySet, today });
   for (const c of claimsDoc.claims) { const st = claimStatus(c); if (c.status !== st.status) c.statusSince = today; c.status = st.status; c.evidence = st.evidence; }
@@ -178,7 +182,7 @@ export async function runYoutubeLearn({ root = ROOT, key = process.env.YOUTUBE_A
   await writeFile(join(dir, "state.json"), JSON.stringify(state, null, 1) + "\n");
   const pushed = await store.close(["youtube/videos.jsonl.gz", "youtube/claims.json", "youtube/scores.json", "youtube/eden-seed.json", "youtube/ideas.json", "youtube/creator-weights.json", "youtube/hype-study.json", "youtube/disagreements.json", "youtube/state.json"], `YouTube learn ${today}`);
 
-  const doc = { ...base, keyPresent: true, status: errors.length ? "partial" : "ok", unitsUsed, videosNew: added.length, podcastNew, videosTotal: videos.length, claims: claimsDoc.claims.length, ideas: ideasDoc.ideas.length, errors: errors.map((e) => e.replace(key, "[key]")), privatePushed: Boolean(pushed?.pushed), leads,
+  const doc = { ...base, keyPresent: true, status: errors.length ? "partial" : "ok", unitsUsed, videosNew: added.length, podcastNew, withChapters: videos.filter((v) => v.outline?.length).length, withCreatorComments: videos.filter((v) => v.creatorComments?.length).length, videosTotal: videos.length, claims: claimsDoc.claims.length, ideas: ideasDoc.ideas.length, errors: errors.map((e) => e.replace(key, "[key]")), privatePushed: Boolean(pushed?.pushed), leads,
     disagreements: { creatorTargets: dis.creator.length, dataContradictedTonight: dis.data.length, creatorRows: dis.creator.map((d) => ({ label: d.target.startsWith("set:") ? (idx.setList.find((x) => `set:${x.groupId}` === d.target)?.set || d.target) : (idx.byPid.get(Number(d.target.slice(5)))?.name || d.target), channels: d.up + d.down, from: d.from, to: d.to })) },
     hypeEvents: hype.events.length, weightedCreators: Object.values(weights).filter((w) => w.basis !== "neutral").length };
   await writePublic(root, doc);

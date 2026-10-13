@@ -98,7 +98,7 @@ export function commentSentiment(comments = []) {
 // Dated direction claims about one card id or one set, sentence by sentence.
 export function extractClaims({ videoId, channel, date, text }, idx) {
   const out = [];
-  const sentences = String(text || "").split(/(?<=[.!?\n])\s+/).filter((s) => s.length > 8);
+  const sentences = String(text || "").split(/(?<=[.!?])\s+|\n+/).filter((s) => s.length > 8);
   for (const s of sentences) {
     const dir = UP.test(s) ? 1 : DOWN.test(s) ? -1 : 0;
     if (!dir) continue;
@@ -227,7 +227,7 @@ const SOURCES = /\b(pricecharting|gemrate|pokedata(?:\.io)?|tcgplayer|ebay sold|
 
 export function extractIdeas({ videoId, channel, date, text }) {
   const out = [];
-  for (const s of String(text || "").split(/(?<=[.!?\n])\s+/).filter((x) => x.length > 15)) {
+  for (const s of String(text || "").split(/(?<=[.!?])\s+|\n+/).filter((x) => x.length > 15)) {
     for (const [kind, re] of METHOD) if (re.test(s)) out.push({ id: `${videoId}:${kind}:${out.length}`, kind, videoId, channel, date, text: s.slice(0, 240), status: "candidate" });
     for (const m of s.matchAll(SOURCES)) out.push({ id: `${videoId}:source:${m[1].toLowerCase()}`, kind: "data_source", source: m[1].toLowerCase(), videoId, channel, date, status: "candidate" });
   }
@@ -343,4 +343,24 @@ export function edenSeed(videos, { today, weightOf = () => 1 }) {
     r.turn = r.week.score != null && r.prevWeek.score != null ? Math.round((r.week.score - r.prevWeek.score) * 100) / 100 : null;
   }
   return rows;
+}
+
+// Chapters a creator writes in the description ("0:00 Intro", "12:34 - Prismatic").
+// Needs 3+ timestamps in time order, the first under 1 minute (YouTube's own rule is 0:00).
+const TS = /^\s*[([]?((?:\d{1,2}:)?\d{1,2}:\d{2})[)\]]?\s*(?:[-–—:|•]\s*)?(.+?)\s*$/;
+const secs = (t) => t.split(":").map(Number).reduce((a, b) => a * 60 + b, 0);
+export function parseChapters(description) {
+  const rows = [];
+  for (const line of String(description || "").split(/\r?\n/)) {
+    const m = TS.exec(line);
+    if (m && m[2] && !/^\d{1,2}:\d{2}/.test(m[2])) rows.push({ t: secs(m[1]), title: m[2].slice(0, 120) });
+  }
+  if (rows.length < 3 || rows[0].t > 59) return [];
+  for (let i = 1; i < rows.length; i++) if (rows[i].t <= rows[i - 1].t) return [];
+  return rows;
+}
+
+// Topic outline per video: each chapter with its topics and catalogue matches.
+export function videoOutline(v, idx) {
+  return parseChapters(v.description).map((c) => ({ t: c.t, title: c.title, topics: topicTags(c.title), mentions: extractMentions(c.title, idx) }));
 }

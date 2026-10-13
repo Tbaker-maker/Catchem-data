@@ -34,7 +34,7 @@
       "notes": "",
       "textSources": {
         "podcast": null,
-        "x": "@TCGQuant (site account, name match)",
+        "x": "@TCGQuant (the TCG Quant site account, not Poke Profit himself)",
         "written": "tcgquant.com guides (site terms: informational, no reuse grant)",
         "reuseAllowed": false,
         "checked": "2026-10-12"
@@ -53,7 +53,7 @@
       "notes": "Formerly listed as PokeAnon. Covers Pokemon plus other TCGs (Magic, One Piece); only catalogue matches count. Claims count only once our data backs them.",
       "textSources": {
         "podcast": null,
-        "x": "@AnonTcg (name match, not linked from the channel)",
+        "x": "@AnonTcg (unconfirmed: empty bio)",
         "written": null,
         "reuseAllowed": false,
         "checked": "2026-10-12"
@@ -91,7 +91,7 @@
       "notes": "",
       "textSources": {
         "podcast": null,
-        "x": "@pokeoz exists but not confirmed as this creator",
+        "x": null,
         "written": null,
         "reuseAllowed": false,
         "checked": "2026-10-12"
@@ -130,7 +130,7 @@
       "notes": "Tyler 2026-10-12: good but very emotional. Strong or hype language counts at half weight in attention and sentiment counts. His price claims count only once our data backs them. Scored the same way as every other channel.",
       "textSources": {
         "podcast": null,
-        "x": "@ThePokePlumber (name match)",
+        "x": "@ThePokePlumber (likely: bio 'Jared', rips and grades cards)",
         "written": null,
         "reuseAllowed": false,
         "checked": "2026-10-12"
@@ -167,7 +167,7 @@
       ],
       "textSources": {
         "podcast": null,
-        "x": "@SteelCityStacks (name match)",
+        "x": "@SteelCityStacks (likely: same-name card store account)",
         "written": null,
         "reuseAllowed": false,
         "checked": "2026-10-12"
@@ -224,7 +224,7 @@
       "notes": "Pokemon card collecting and market channel. Claims count only once our data backs them.",
       "textSources": {
         "podcast": "Reddit mentions a podcast with other YouTubers; no feed found on Apple Podcasts",
-        "x": "@PokemartUSA (name match)",
+        "x": "@PokemartUSA (confirmed: bio links youtube.com/@PokemartUSA)",
         "written": "patreon.com/PokemartUSA (members only)",
         "reuseAllowed": false,
         "checked": "2026-10-12"
@@ -339,7 +339,7 @@
       "notes": "TRIAL channel: Tyler is new to it (2026-10-12). Claims are scored the same way as every other channel; review after the first 30-day scores. Claims count only once our data backs them.",
       "textSources": {
         "podcast": null,
-        "x": "@PokemonTraitor (name match)",
+        "x": "@PokemonTraitor (likely: bio 'Pokemon Investing since 2015')",
         "written": null,
         "reuseAllowed": false,
         "checked": "2026-10-12"
@@ -358,7 +358,7 @@
       "notes": "Pokemon openings, news and market videos. Claims count only once our data backs them.",
       "textSources": {
         "podcast": null,
-        "x": "@JayKetchumTCG (name match)",
+        "x": "@JayKetchumTCG (confirmed: bio links youtube.com/@jayketchumtcg)",
         "written": null,
         "reuseAllowed": false,
         "checked": "2026-10-12"
@@ -449,5 +449,6 @@
     "firstRunDays": 30
   },
   "toneNote": "tone.weight scales a channel's videos in attention thresholds and comment sentiment (1 = full). hype: true also halves a video whose title is hype (caps, !!, CRAZY, INSANE, EXPLODE). Claim scoring is never weighted: every claim is scored the same and stays unverified until our data backs it.",
-  "podcastNote": "channels[].podcast = { rss } turns on feed ingestion: <podcast:transcript> files from the publisher's own RSS only, no audio download. Local Whisper is not wired; add it only for a feed whose terms allow transcription. None of the tracked channels had its own podcast feed on 2026-10-12."
+  "podcastNote": "channels[].podcast = { rss } turns on feed ingestion: <podcast:transcript> files from the publisher's own RSS only, no audio download. Local Whisper is not wired; add it only for a feed whose terms allow transcription. None of the tracked channels had its own podcast feed on 2026-10-12.",
+  "textRoutesNote": "Routes per channel: (1) podcast RSS transcripts (channels[].podcast.rss), (2) X handles listed in textSources.x; the nightly cannot call X tools, so posts are not read yet, (3) description chapters and the creator's own comments, parsed every night, (4) blogs and newsletters by RSS when one exists. Patreon has no public feed and its terms bar scraping, so it is not read. YouTube captions and audio are never touched."
 }
