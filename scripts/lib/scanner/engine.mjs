@@ -1,12 +1,13 @@
 // Chart scanner engine. Pure: same items and date always return the same grades.
 // Replay walks each series with only the points known on that day.
-// A hit is a later move of at least 3% that also beats the market median.
-// Public gate: own-day cases only, n >= 20, decayed hit rate above the base rate.
+// A hit follows the pattern's own direction. The old up-only grade is kept beside it.
+// Public gate: own days, n >= 20 on the first 8 months and on the last 4, and the
+// lower bound of the 90% range above the base rate on both.
 
 import { HIT_PCT, HORIZONS, MIN_N, addDays } from "../tracker.mjs";
 import { speciesToken } from "../fact-reads.mjs";
 import {
-  EXPLORE_SHARE, HALF_LIFE_DAYS, TOP_SEALED, TOP_SINGLES,
+  DAILY_REPLAY_CAP, EXPLORE_SHARE, HALF_LIFE_DAYS, TOP_SEALED, TOP_SINGLES,
   bucketOf, dayNum, daysBetween, hash32, mulberry32, pct, round1, seedFromDate,
 } from "./common.mjs";
 import * as slowClimb from "./patterns/slow-climb.mjs";
@@ -56,16 +57,77 @@ export function gridDates(asOf) {
   return out;
 }
 
+const Z90 = 1.6448536269514722;
+
+export function priceBand(price) {
+  const p = Number(price);
+  if (!(p > 0)) return "unknown";
+  if (p < 5) return "under-5";
+  if (p < 20) return "5-20";
+  if (p < 100) return "20-100";
+  return "100-plus";
+}
+
+// Up, down, or flat. Down covers a slow slide, a spike that gave back, and a recovery that has ended.
+export function expectedDir(row) {
+  const pattern = row?.pattern || "";
+  const stage = row?.stage || "";
+  if (pattern === "flat-range" || pattern === "listings-down-flat" || pattern === "listings-up-flat") return "flat";
+  if (pattern === "slow-slide" || pattern === "spike-revert" || pattern === "price-down-listings-down") return "down";
+  if (pattern === "recovery" && stage === "ending") return "down";
+  if (pattern === "group-together" || pattern === "breakaway" || pattern === "year-ago" || pattern === "release-window") {
+    const move = Number(row?.metrics?.pct);
+    if (!Number.isFinite(move) || Math.abs(move) < HIT_PCT) return "flat";
+    return move > 0 ? "up" : "down";
+  }
+  return "up";
+}
+
+export function isDirHit(dir, change, market) {
+  if (change == null || !Number.isFinite(change)) return false;
+  if (dir === "flat") return Math.abs(change) <= HIT_PCT;
+  if (dir === "down") return change <= -HIT_PCT && market != null && change < market;
+  return change >= HIT_PCT && market != null && change > market;
+}
+
+export function isUpHit(change, market) {
+  return change != null && change >= HIT_PCT && market != null && change > market;
+}
+
+export function wilson90(hits, n) {
+  if (!(n > 0)) return { lo: 0, hi: 0 };
+  const p = Math.min(1, Math.max(0, hits / n));
+  const z2 = Z90 * Z90;
+  const denom = 1 + z2 / n;
+  const center = (p + z2 / (2 * n)) / denom;
+  const margin = (Z90 * Math.sqrt((p * (1 - p) + z2 / (4 * n)) / n)) / denom;
+  return { lo: Math.max(0, center - margin), hi: Math.min(1, center + margin) };
+}
+
+export function splitOf(date, asOf) {
+  const testFrom = addDays(asOf, -122);
+  if (date >= testFrom) return "test";
+  return "train";
+}
+
 export function forwardMove(points, from, horizon) {
+  if (!points?.length) return null;
   const to = addDays(from, horizon);
+  const startLimit = addDays(from, 3);
+  let i = lowerBound(points, from);
   let start = null;
+  for (; i < points.length && points[i].date <= startLimit; i += 1) {
+    const p = points[i];
+    if (!(p?.price > 0)) continue;
+    if (!start || p.date < start.date) start = p;
+  }
+  const endMin = addDays(to, -3);
+  let j = lowerBound(points, endMin);
   let end = null;
-  for (const p of points || []) {
-    if (!p || !(p.price > 0)) continue;
-    const ds = daysBetween(from, p.date);
-    if (ds >= 0 && ds <= 3 && (!start || p.date < start.date)) start = p;
-    const de = daysBetween(p.date, to);
-    if (de >= 0 && de <= 3 && p.date >= from && (!end || p.date > end.date)) end = p;
+  for (; j < points.length && points[j].date <= to; j += 1) {
+    const p = points[j];
+    if (!(p?.price > 0) || p.date < from) continue;
+    if (!end || p.date > end.date) end = p;
   }
   if (!start || !end || start.date >= end.date) return null;
   if (daysBetween(start.date, end.date) < horizon - 3) return null;
@@ -80,6 +142,17 @@ export function forwardMove(points, from, horizon) {
     p0: start.price,
     p1: end.price,
   };
+}
+
+function lowerBound(points, date) {
+  let lo = 0;
+  let hi = points.length;
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (points[mid].date < date) lo = mid + 1;
+    else hi = mid;
+  }
+  return lo;
 }
 
 function medianOf(values) {
@@ -98,19 +171,30 @@ export function buildMedians(items, asOf) {
   const medians = new Map();
   const base = new Map();
   for (const date of dates) {
+    const split = splitOf(date, asOf);
     for (const h of HORIZONS) {
       if (addDays(date, h) > asOf) continue;
-      const moves = [];
+      const groups = new Map();
       for (const item of items) {
         const move = forwardMove(item.points, date, h);
-        if (move) moves.push({ item, move });
+        if (!move || move.fromSrc === "fill" || move.toSrc === "fill") continue;
+        const band = priceBand(move.p0);
+        const key = `${item.kind}|${band}`;
+        if (!groups.has(key)) groups.set(key, []);
+        groups.get(key).push({ item, move });
       }
-      const market = medianOf(moves.map((row) => row.move.pct));
-      if (market == null) continue;
-      medians.set(`${date}|${h}`, market);
-      for (const row of moves) {
-        const hit = row.move.pct >= HIT_PCT && row.move.pct > market;
-        addBucket(base, `${row.item.kind}|${h}d`, date, asOf, hit, row.move.pct);
+      for (const [key, rows] of groups) {
+        const market = medianOf(rows.map((row) => row.move.pct));
+        if (market == null) continue;
+        medians.set(`${date}|${key}|${h}`, market);
+        const kind = key.slice(0, key.indexOf("|"));
+        for (const row of rows) {
+          for (const dir of ["up", "down", "flat"]) {
+            const hit = isDirHit(dir, row.move.pct, market);
+            addBucket(base, `${kind}|${h}d|${dir}|${split}`, date, asOf, hit, row.move.pct);
+            addBucket(base, `${kind}|${h}d|${dir}|all`, date, asOf, hit, row.move.pct);
+          }
+        }
       }
     }
   }
@@ -118,11 +202,12 @@ export function buildMedians(items, asOf) {
 }
 
 function addBucket(map, key, date, asOf, hit, value) {
-  if (!map.has(key)) map.set(key, { n: 0, hits: 0, w: 0, wh: 0, values: [] });
+  if (!map.has(key)) map.set(key, { n: 0, hits: 0, w: 0, wh: 0, w2: 0, values: [] });
   const row = map.get(key);
   const w = decayWeight(date, asOf);
   row.n += 1;
   row.w += w;
+  row.w2 += w * w;
   if (hit) { row.hits += 1; row.wh += w; }
   if (row.values.length < 400) row.values.push(value);
 }
@@ -130,22 +215,25 @@ function addBucket(map, key, date, asOf, hit, value) {
 export function gradeDetection(row, points, medians, asOf) {
   const grades = {};
   const grid = gridDates(asOf);
+  const prior = [...grid].reverse().find((d) => d <= row.date);
+  const dir = row.dir || expectedDir(row);
+  const kind = row.kind === "group" ? (row.metrics?.noun === "sealed" ? "sealed" : "single") : (row.kind || "single");
+  const band = row.band || priceBand(row.p0);
   for (const h of HORIZONS) {
     const due = addDays(row.date, h) <= asOf;
     if (!due) { grades[`${h}d`] = { due: false, scored: false }; continue; }
     const move = forwardMove(points, row.date, h);
-    const gridDay = grid.find((d) => d >= row.date) || grid.at(-1);
-    const market = gridDay ? medians.get(`${gridDay}|${h}`) : null;
-    // Prefer the grid date on or before the detection.
-    const prior = [...grid].reverse().find((d) => d <= row.date);
-    const marketUse = prior ? medians.get(`${prior}|${h}`) : market;
-    if (!move || marketUse == null) { grades[`${h}d`] = { due: true, scored: false }; continue; }
+    const marketUse = prior ? medians.get(`${prior}|${kind}|${band}|${h}`) : null;
+    if (!move || (marketUse == null && dir !== "flat")) { grades[`${h}d`] = { due: true, scored: false }; continue; }
     grades[`${h}d`] = {
       due: true,
       scored: true,
-      hit: move.pct >= HIT_PCT && move.pct > marketUse,
+      hit: isDirHit(dir, move.pct, marketUse),
+      upHit: marketUse == null ? false : isUpHit(move.pct, marketUse),
+      dir,
+      band,
       pct: move.pct,
-      market: round1(marketUse),
+      market: marketUse == null ? null : round1(marketUse),
       from: move.from,
       to: move.to,
       fromSrc: move.fromSrc,
@@ -179,6 +267,8 @@ function detectionFrom(item, hit, date, extra = {}) {
     startSrc: hit.metrics?.startSrc || start?.src || "own",
     endSrc: hit.metrics?.endSrc || end?.src || "own",
     metrics: hit.metrics || {},
+    dir: expectedDir({ pattern: hit.pattern, stage: hit.stage, metrics: hit.metrics }),
+    band: priceBand(start?.price ?? hit.metrics?.priceStart ?? item.price),
     privateOnly: extra.privateOnly === true,
     explore: extra.explore === true,
     candidate: extra.candidate || "",
@@ -187,10 +277,14 @@ function detectionFrom(item, hit, date, extra = {}) {
   };
 }
 
+export function replayStep(item, pointCount) {
+  return item?.dailyReplay || pointCount <= 16 ? 1 : 14;
+}
+
 export function replayOne(item, asOf, medians, patterns = ITEM_PATTERNS) {
   const pts = (item.points || []).filter((p) => p.date <= asOf);
   if (pts.length < 4) return [];
-  const step = pts.length > 16 ? 14 : 1;
+  const step = replayStep(item, pts.length);
   const indexes = [];
   for (let i = 0; i < pts.length; i += step) indexes.push(i);
   if (indexes.at(-1) !== pts.length - 1) indexes.push(pts.length - 1);
@@ -201,6 +295,7 @@ export function replayOne(item, asOf, medians, patterns = ITEM_PATTERNS) {
   for (const i of indexes) {
     const day = pts[i].date;
     if (day < from) continue;
+    if (item.dailyReplay && pts[i].src === "fill") continue;
     const view = { ...item, points: pts.slice(0, i + 1), asOf: day };
     const confirmed = [];
     for (const pat of patterns) {
@@ -222,7 +317,7 @@ export function replayOne(item, asOf, medians, patterns = ITEM_PATTERNS) {
         out.push({
           id: item.id, name: item.name || "", kind: item.kind, pattern: pair, stage: "confirmed",
           date: day, strength: 10, start: day, end: day, p0: pts[i].price, p1: pts[i].price,
-          startSrc: pts[i].src || "own", endSrc: pts[i].src || "own", metrics: {},
+          startSrc: pts[i].src || "own", endSrc: pts[i].src || "own", metrics: {}, dir: "up", band: priceBand(pts[i].price),
           privateOnly: false, explore: false, candidate: pair, href: item.href || "", set: item.set || "",
           grades: gradeDetection({ date: day }, pts, medians, asOf),
         });
@@ -346,8 +441,10 @@ export function replayGroups(items, asOf, medians) {
         date, strength: hit.strength, start: hit.dates.start, end: hit.dates.end,
         p0: null, p1: null, startSrc: group.fill ? "fill" : "own", endSrc: group.fill ? "fill" : "own",
         metrics: { ...hit.metrics, groupType: group.type, noun: group.kind },
+        dir: expectedDir({ pattern: "group-together", stage: hit.stage, metrics: { ...hit.metrics, pct: hit.metrics?.pct ?? group.medianPct } }),
+        band: "mixed",
         privateOnly: false, explore: false, candidate: "", href: "", set: group.type === "set" ? group.name : "",
-        grades: gradeGroup(date, members, medians, asOf),
+        grades: gradeGroup(date, members, medians, asOf, expectedDir({ pattern: "group-together", stage: hit.stage, metrics: { pct: hit.metrics?.pct ?? group.medianPct } })),
       };
       out.push(row);
     }
@@ -374,25 +471,31 @@ function memberOf(item, group) {
   return false;
 }
 
-function gradeGroup(date, members, medians, asOf) {
+function gradeGroup(date, members, medians, asOf, dir = "up") {
   const grades = {};
   const grid = gridDates(asOf);
   const prior = [...grid].reverse().find((d) => d <= date);
   for (const h of HORIZONS) {
     if (addDays(date, h) > asOf) { grades[`${h}d`] = { due: false, scored: false }; continue; }
     const values = [];
+    const markets = [];
     let fill = false;
     for (const item of members) {
       const move = forwardMove(item.points, date, h);
       if (!move) continue;
+      const band = priceBand(move.p0);
+      const market = prior ? medians.get(`${prior}|${item.kind}|${band}|${h}`) : null;
+      if (market == null) continue;
       values.push(move.pct);
+      markets.push(market);
       if (move.fromSrc === "fill" || move.toSrc === "fill") fill = true;
     }
-    const market = prior ? medians.get(`${prior}|${h}`) : null;
     const mid = medianOf(values);
+    const market = medianOf(markets);
     if (mid == null || market == null || values.length < 8) { grades[`${h}d`] = { due: true, scored: false }; continue; }
     grades[`${h}d`] = {
-      due: true, scored: true, hit: mid >= HIT_PCT && mid > market, pct: round1(mid), market: round1(market),
+      due: true, scored: true, hit: isDirHit(dir, mid, market), upHit: isUpHit(mid, market), dir,
+      pct: round1(mid), market: round1(market),
       from: date, to: addDays(date, h), fromSrc: fill ? "fill" : "own", toSrc: fill ? "fill" : "own",
     };
   }
@@ -469,65 +572,107 @@ function breakaways(rows, priorRows = []) {
 
 export function replayItems(items, asOf) {
   const { medians, base } = buildMedians(items, asOf);
+  const dailyIds = new Set(items.slice().sort((a, b) => (b.price || 0) - (a.price || 0) || (a.id < b.id ? -1 : 1)).slice(0, DAILY_REPLAY_CAP).map((item) => item.id));
   const detections = [];
-  for (const item of items) detections.push(...replayOne(item, asOf, medians));
+  for (const item of items) {
+    const row = dailyIds.has(item.id) ? { ...item, dailyReplay: true } : item;
+    detections.push(...replayOne(row, asOf, medians));
+  }
   detections.push(...replayGroups(items, asOf, medians));
-  return { detections, medians, base };
+  return { detections, medians, base, dailyReplay: dailyIds.size };
 }
 
 function ownGrade(row, h) {
   const g = row.grades?.[`${h}d`];
   if (!g?.scored) return null;
   if (row.privateOnly || row.explore || row.candidate) return null;
-  if (row.startSrc === "fill" || row.endSrc === "fill") return null;
   if (g.fromSrc === "fill" || g.toSrc === "fill") return null;
+  const listings = /listings/.test(row.pattern || "");
+  if (!listings && (row.startSrc === "fill" || row.endSrc === "fill")) return null;
   return g;
+}
+
+function blankSide() {
+  return { n: 0, hits: 0, w: 0, wh: 0, w2: 0, upHits: 0, upWh: 0, examples: [] };
+}
+
+function addSide(side, row, g, asOf) {
+  const w = decayWeight(row.date, asOf);
+  side.n += 1;
+  side.w += w;
+  side.w2 += w * w;
+  if (g.hit) { side.hits += 1; side.wh += w; }
+  if (g.upHit) { side.upHits += 1; side.upWh += w; }
+  side.examples.push({ id: row.id, name: row.name, from: g.from, to: g.to, p0: g.p0, p1: g.p1, pct: g.pct, date: row.date });
+}
+
+function finishSide(side, baseRow) {
+  const rate = side.w > 0 ? side.wh / side.w : 0;
+  const nEff = side.w2 > 0 ? (side.w * side.w) / side.w2 : side.n;
+  const ci = wilson90(rate * nEff, nEff);
+  const upRate = side.w > 0 ? side.upWh / side.w : 0;
+  const baseRate = baseRow && baseRow.w > 0 ? baseRow.wh / baseRow.w : null;
+  const dated = side.examples.filter((ex) => ex.from && ex.to);
+  const marks = side.examples.map((ex) => ex.date).filter(Boolean).sort();
+  const mid = medianOf(side.examples.map((ex) => ex.pct));
+  const examples = side.examples
+    .filter((ex) => ex.p0 > 0 && ex.p1 > 0)
+    .sort((a, b) => Math.abs(a.pct - mid) - Math.abs(b.pct - mid) || (a.id < b.id ? -1 : 1))
+    .slice(0, 3);
+  return {
+    n: side.n,
+    hits: side.hits,
+    rate: round1(rate * 100),
+    decayedRate: rate,
+    rateLo: round1(ci.lo * 100),
+    rateHi: round1(ci.hi * 100),
+    upRate: round1(upRate * 100),
+    baseRate: baseRate == null ? null : round1(baseRate * 100),
+    baseDecayed: baseRate,
+    passed: side.n >= MIN_N && baseRate != null && baseRow.n >= MIN_N && ci.lo > baseRate,
+    from: dated.length ? dated.map((ex) => ex.from).sort()[0] : "",
+    to: dated.length ? dated.map((ex) => ex.to).sort().at(-1) : "",
+    detectedFrom: marks[0] || "",
+    detectedTo: marks.at(-1) || "",
+    medianPct: mid == null ? null : round1(mid),
+    examples,
+  };
 }
 
 export function scoreGates(detections, base, asOf) {
   const buckets = new Map();
   for (const row of detections) {
+    const dir = row.dir || expectedDir(row);
     for (const h of HORIZONS) {
       const g = ownGrade(row, h);
       if (!g) continue;
-      const key = `${row.pattern}|${row.stage}|${row.kind}|${h}d`;
-      if (!buckets.has(key)) buckets.set(key, { pattern: row.pattern, stage: row.stage, kind: row.kind, horizon: h, n: 0, hits: 0, w: 0, wh: 0, examples: [] });
+      const key = `${row.pattern}|${row.stage}|${row.kind}|${dir}|${h}d`;
+      if (!buckets.has(key)) buckets.set(key, { pattern: row.pattern, stage: row.stage, kind: row.kind, horizon: h, dir, noun: row.metrics?.noun || "", train: blankSide(), test: blankSide(), all: blankSide() });
       const b = buckets.get(key);
-      const weight = decayWeight(row.date, asOf);
-      b.n += 1;
-      b.w += weight;
-      if (g.hit) { b.hits += 1; b.wh += weight; }
-      b.examples.push({ id: row.id, name: row.name, from: g.from, to: g.to, p0: g.p0, p1: g.p1, pct: g.pct, date: row.date });
+      const split = splitOf(row.date, asOf) === "test" ? b.test : b.train;
+      addSide(split, row, g, asOf);
+      addSide(b.all, row, g, asOf);
     }
   }
   const gates = [];
   for (const row of buckets.values()) {
-    const baseKind = row.kind === "group" ? (row.metrics?.noun === "sealed" ? "sealed" : "single") : row.kind;
-    const baseRow = base.get(`${baseKind}|${row.horizon}d`);
-    const rate = row.w > 0 ? row.wh / row.w : 0;
-    const baseRate = baseRow && baseRow.w > 0 ? baseRow.wh / baseRow.w : null;
-    const passed = row.n >= MIN_N && baseRate != null && baseRow.n >= MIN_N && rate > baseRate;
-    const dated = row.examples.filter((ex) => ex.from && ex.to);
-    const mid = medianOf(row.examples.map((ex) => ex.pct));
-    const examples = row.examples
-      .filter((ex) => ex.p0 > 0 && ex.p1 > 0)
-      .sort((a, b) => Math.abs(a.pct - mid) - Math.abs(b.pct - mid) || (a.id < b.id ? -1 : 1))
-      .slice(0, 3);
+    const baseKind = row.kind === "group" ? (row.noun === "sealed" ? "sealed" : "single") : row.kind;
+    const train = finishSide(row.train, base.get(`${baseKind}|${row.horizon}d|${row.dir}|train`));
+    const test = finishSide(row.test, base.get(`${baseKind}|${row.horizon}d|${row.dir}|test`));
+    const all = finishSide(row.all, base.get(`${baseKind}|${row.horizon}d|${row.dir}|all`));
+    const passed = train.passed && test.passed;
     gates.push({
-      ...row,
-      rate: round1(rate * 100),
-      decayedRate: rate,
-      baseRate: baseRate == null ? null : round1(baseRate * 100),
-      baseDecayed: baseRate,
-      passed,
-      weight: passed ? round1(rate * 1000) / 1000 : 0,
-      medianPct: mid == null ? null : round1(mid),
-      examples,
-      from: dated.length ? dated.map((ex) => ex.from).sort()[0] : "",
-      to: dated.length ? dated.map((ex) => ex.to).sort().at(-1) : "",
+      pattern: row.pattern, stage: row.stage, kind: row.kind, horizon: row.horizon, dir: row.dir,
+      n: all.n, hits: all.hits, rate: all.rate, decayedRate: all.decayedRate,
+      rateLo: all.rateLo, rateHi: all.rateHi, upRate: all.upRate,
+      baseRate: all.baseRate, baseDecayed: all.baseDecayed,
+      passed, weight: passed ? round1(all.decayedRate * 1000) / 1000 : 0,
+      medianPct: all.medianPct, examples: all.examples, from: all.from, to: all.to,
+      train: { n: train.n, hits: train.hits, rate: train.rate, rateLo: train.rateLo, rateHi: train.rateHi, baseRate: train.baseRate, passed: train.passed, from: train.from, to: train.to, detectedFrom: train.detectedFrom, detectedTo: train.detectedTo, upRate: train.upRate },
+      test: { n: test.n, hits: test.hits, rate: test.rate, rateLo: test.rateLo, rateHi: test.rateHi, baseRate: test.baseRate, passed: test.passed, from: test.from, to: test.to, detectedFrom: test.detectedFrom, detectedTo: test.detectedTo, upRate: test.upRate },
     });
   }
-  gates.sort((a, b) => (a.pattern < b.pattern ? -1 : 1) || (a.stage < b.stage ? -1 : 1) || (a.horizon - b.horizon));
+  gates.sort((a, b) => (a.pattern < b.pattern ? -1 : a.pattern > b.pattern ? 1 : 0) || (a.stage < b.stage ? -1 : a.stage > b.stage ? 1 : 0) || (a.kind < b.kind ? -1 : a.kind > b.kind ? 1 : 0) || (a.dir < b.dir ? -1 : a.dir > b.dir ? 1 : 0) || (a.horizon - b.horizon));
   return gates;
 }
 
@@ -642,6 +787,7 @@ export function presentDetections({ items, groupItems, asOf, gates, ready = fals
       date: asOf, strength: hit.strength, start: hit.dates.start, end: hit.dates.end,
       p0: null, p1: null, startSrc: group.fill ? "fill" : "own", endSrc: group.fill ? "fill" : "own",
       metrics: { ...hit.metrics, groupType: group.type, noun: group.kind },
+      dir: expectedDir({ pattern: "group-together", stage: hit.stage, metrics: hit.metrics }),
       privateOnly: false, explore: false, candidate: "", href: "", set: group.type === "set" ? group.name : "",
     });
   }
@@ -654,8 +800,8 @@ export function presentDetections({ items, groupItems, asOf, gates, ready = fals
   return { present, split, tops: tops.size, tonight: tonight.length };
 }
 
-export function gateFor(gates, pattern, stage, kind) {
-  const rows = gates.filter((row) => row.passed && row.pattern === pattern && row.stage === stage && row.kind === kind);
+export function gateFor(gates, pattern, stage, kind, dir) {
+  const rows = (gates || []).filter((row) => row.passed && row.pattern === pattern && row.stage === stage && row.kind === kind && (dir == null || row.dir == null || row.dir === dir));
   return rows.find((row) => row.horizon === 30) || rows.find((row) => row.horizon === 7) || rows.find((row) => row.horizon === 90) || null;
 }
 
