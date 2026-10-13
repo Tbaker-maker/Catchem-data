@@ -15,6 +15,7 @@ import { writeSparks } from "./build-sparks.mjs";
 import { hiddenSealedPids, isBrowseHidden } from "./lib/browse-hidden.mjs";
 import { ATTACH_SEALED, FOLD_GROUPS, assertFolds, assertWritable, cardPrintings, completionCounts } from "./lib/set-master.mjs";
 import { indexLine as indexLineFull } from "./lib/public-index-line.mjs";
+import { loadFillMap, withFill } from "./lib/fill-history.mjs";
 import { pickSealedLine } from "./lib/sealed-line.mjs";
 
 assertFolds();
@@ -80,6 +81,8 @@ try {
     for (const row of doc.prices || []) addPoint(series, row.id, day, row.market);
   }
 } catch { /* daily files are the canonical series */ }
+const FILL = loadFillMap(ROOT);
+let fillProducts = 0;
 function histFor(pid) {
   const days = series.get(Number(pid));
   if (!days) return [];
@@ -392,7 +395,10 @@ for (const item of items) {
   const price = money(item.price) ? Number(item.price) : null;
   if (price && !browseHidden) set.priced += 1;
   const histRaw = histFor(item.tcgplayerProductId);
-  const hist = chartSeries(histRaw);
+  // Chart line only: earlier fan-site days before our first own day. Movers keep histRaw.
+  const filled = item.kind === "sealed" ? withFill(histRaw, FILL.get(Number(item.tcgplayerProductId))) : { points: histRaw, fillTo: null };
+  if (filled.fillTo) fillProducts += 1;
+  const hist = chartSeries(filled.points);
   rawById.set(item.id, histRaw);
   const prevP = hist.length >= 2 ? hist[hist.length - 2][1] : null;
   const pct = price ? changePct(prevP, price) : null;
@@ -416,6 +422,7 @@ for (const item of items) {
     artist,
     pct,
     hist,
+    ...(filled.fillTo ? { fillTo: filled.fillTo, fillSource: filled.fillKey } : {}),
     low: lowByPid.get(Number(item.tcgplayerProductId)) || null,
     scan: cataloguePath(catalogueImages, item.id),
     versions: versionsOf.get(item.id) || [],
@@ -425,6 +432,7 @@ for (const item of items) {
 }
 
 assertWritable({ itemCount: items.length, setCount: sets.size });
+console.log(JSON.stringify({ chartFillProducts: fillProducts }));
 
 await mkdir(join(OUT, "sets"), { recursive: true });
 await mkdir(join(OUT, "buckets"), { recursive: true });
@@ -469,6 +477,7 @@ for (const set of sets.values()) {
     asOf: catalog.asOf,
     singleIndex: line("single"),
     sealedIndex: line("sealed"),
+    ...(() => { const f = set.items.filter((it) => it.kind === "sealed" && it.fillTo).map((it) => it.fillTo).sort(); return f.length ? { sealedFillTo: f.at(-1), fillNote: "Earlier days come from public fan-site data (PokeVizInvestor, TCGplayer market)." } : {}; })(),
     sealedLine: pickSealedLine(set.items, set.name),
     chaseLine: topChase ? { id: topChase.id, name: topChase.name, price: topChase.price, pid: topChase.pid } : null,
     items: set.items,
