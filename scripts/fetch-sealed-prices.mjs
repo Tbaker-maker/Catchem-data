@@ -810,7 +810,13 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
   console.log(`buyout harvestRan ${harvest.harvestRan} ebayCalled ${harvest.ebayCalled} wrote ${harvest.wrote}`);
 }
 
-main().catch(async (err) => {
+main().then(async () => {
+  // Listing counts for everything the price step does not cover. Own budget,
+  // own 429 stop; a failure here never fails the sealed run.
+  if (process.env.ONLY || process.env.SKIP_LISTING_COUNTS) return;
+  try { const { runListingCounts } = await import("./fetch-listing-counts.mjs"); await runListingCounts(); }
+  catch (e) { console.error(`listing counts skipped: ${e?.message || e}`); }
+}).catch(async (err) => {
   try { await recordBuyoutHarvest({ ebayReturned: false, saved: [] }); } catch { /* keep the old tape */ }
   console.error("💥 Fatal error:", err?.message || err);
   process.exit(1);
