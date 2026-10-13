@@ -5,7 +5,7 @@
 // eBay Browse default allowance per app per day (developer.ebay.com, Buy APIs
 // call limits). We plan to 80% of it and keep the rest as reserve.
 export const EBAY_BROWSE_DAILY_LIMIT = 5000;
-export const SAFE_SHARE = 0.8;
+export const SAFE_SHARE = 0.98; // default; config/api-budgets.json wins
 // Upper bound for the sealed price step that runs first: up to 3 pages per
 // priced sealed product, plus one OAuth call.
 export const SEALED_PAGES = 3;
@@ -15,6 +15,7 @@ export const TIERS = [
   { id: "sealed", every: 3 },
   { id: "top", every: 1 },     // top singles by value plus attention
   { id: "single", every: 7 },  // singles priced at $1 or more
+  { id: "tail", every: 30 },   // singles under $1 or unpriced, rotated with spare calls
 ];
 export const TOP_SINGLES = 500;
 export const MIN_SINGLE_PRICE = 1;
@@ -53,6 +54,7 @@ export function planListingCounts({ items, skipIds = new Set(), state = {}, toda
   const last = state.last || {};
   const pool = [];
   const singles = [];
+  const tail = [];
   for (const it of items || []) {
     if (!it || !it.id) continue;
     if (it.kind === "sealed") {
@@ -60,26 +62,33 @@ export function planListingCounts({ items, skipIds = new Set(), state = {}, toda
       pool.push({ ...it, tier: "sealed" });
     } else if ((it.price || 0) >= MIN_SINGLE_PRICE || attention.has(it.id)) {
       singles.push(it);
+    } else {
+      tail.push(it);
     }
   }
   const score = (it) => (it.price || 0) * (attention.has(it.id) ? 3 : 1);
   singles.sort((a, b) => score(b) - score(a) || String(a.id).localeCompare(String(b.id)));
   singles.forEach((it, i) => pool.push({ ...it, tier: i < topN ? "top" : "single" }));
+  for (const it of tail) pool.push({ ...it, tier: "tail" });
 
-  const rank = { sealed: 0, top: 1, single: 2 };
+  const rank = { sealed: 0, top: 1, single: 2, tail: 3 };
   const every = Object.fromEntries(TIERS.map((t) => [t.id, t.every]));
   const rows = pool.map((it) => {
     const age = last[it.id] ? daysBetween(last[it.id], today) : Infinity;
     return { it, age, due: age >= every[it.tier], overdue: age === Infinity ? 1e9 : age / every[it.tier] };
   });
   // Due items first, by tier, then most overdue. Spare budget goes to the
-  // stalest not-yet-due items so the long tail keeps moving.
-  rows.sort((a, b) => (b.due - a.due) || (a.due ? rank[a.it.tier] - rank[b.it.tier] : 0) || (b.overdue - a.overdue) || String(a.it.id).localeCompare(String(b.it.id)));
+  // not-yet-due tail first (stalest first), so the under-$1 tail rotates.
+  rows.sort((a, b) => (b.due - a.due) || (a.due ? rank[a.it.tier] - rank[b.it.tier] : (b.it.tier === "tail") - (a.it.tier === "tail")) || (b.overdue - a.overdue) || String(a.it.id).localeCompare(String(b.it.id)));
   const picked = rows.slice(0, Math.max(0, budget)).map((r) => r.it);
   const dueTotal = rows.filter((r) => r.due).length;
-  const perNightNeed = TIERS.reduce((s, t) => s + Math.ceil(pool.filter((p) => p.tier === t.id).length / t.every), 0);
   const tierCounts = Object.fromEntries(TIERS.map((t) => [t.id, pool.filter((p) => p.tier === t.id).length]));
-  return { picked, poolSize: pool.length, dueTotal, perNightNeed, tierCounts };
+  const perNightNeed = TIERS.reduce((s, t) => s + Math.ceil(pool.filter((p) => p.tier === t.id).length / t.every), 0);
+  const fixedNeed = TIERS.filter((t) => t.id !== "tail").reduce((s, t) => s + Math.ceil(tierCounts[t.id] / t.every), 0);
+  const spare = Math.max(0, budget - fixedNeed);
+  const tailCycleNights = tierCounts.tail ? (spare ? Math.ceil(tierCounts.tail / spare) : null) : 0;
+  const cycleNights = tailCycleNights == null ? null : Math.max(7, tailCycleNights);
+  return { picked, fixedNeed, spare, tailCycleNights, cycleNights, poolSize: pool.length, dueTotal, perNightNeed, tierCounts };
 }
 
 // Count kept listings in the sampled page and scale the eBay total by the

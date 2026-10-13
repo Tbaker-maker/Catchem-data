@@ -49,6 +49,8 @@ async function writePublic(root, doc) {
 export async function runYoutubeLearn({ root = ROOT, key = process.env.YOUTUBE_API_KEY || "", token = process.env.PRIVATE_DATA_TOKEN || "", fetchFn = fetch, now = new Date(), store: givenStore = null } = {}) {
   const cfg = await J(join(root, "config/youtube-channels.json"), { channels: [], limits: {} });
   const limits = { dailyUnitBudget: 400, maxNewVideosPerChannel: 15, commentsPerVideo: 20, firstRunDays: 30, ...cfg.limits };
+  const yb = (await J(join(root, "config/api-budgets.json"), {})).youtube;
+  if (yb?.dailyQuota && yb?.useShare) limits.dailyUnitBudget = Math.floor(yb.dailyQuota * yb.useShare);
   const catalog = await J(join(root, "data/catalog/tcgcsv-latest.json"), {});
   const today = String(catalog.asOf || "").slice(0, 10) || now.toISOString().slice(0, 10);
   const tones = Object.fromEntries((cfg.channels || []).map((c) => [c.key, c.tone || {}]));

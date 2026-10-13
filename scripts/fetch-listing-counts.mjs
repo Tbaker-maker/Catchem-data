@@ -1,6 +1,6 @@
 // Nightly listing counts for sealed products and singles that the sealed
 // price step does not cover. One eBay Browse call per item, same filters every
-// night. Plans to 80% of the daily Browse allowance minus the sealed step and
+// night. Plans to config/api-budgets.json useShare (98%) of the daily Browse allowance minus the sealed step and
 // stops at the first 429. Public wording: "listings counted", never "supply".
 //
 //   data/derived/listing-counts/latest.json            one row per item, last good read
@@ -47,9 +47,10 @@ export async function runListingCounts() {
   }
   const statePath = join(ROOT, "data/derived/listing-counts/state.json");
   const state = await J(statePath, { last: {} });
-  const b = nightlyBudget({ sealedPriced: priced.length, limit: Number(process.env.EBAY_BROWSE_DAILY_LIMIT) || EBAY_BROWSE_DAILY_LIMIT });
+  const cfg = (await J(join(ROOT, "config/api-budgets.json"), {})).ebayBrowse || {};
+  const b = nightlyBudget({ sealedPriced: priced.length, limit: Number(process.env.EBAY_BROWSE_DAILY_LIMIT) || cfg.dailyLimit || EBAY_BROWSE_DAILY_LIMIT, share: cfg.useShare });
   const plan = planListingCounts({ items, skipIds, state, today, budget: Number(process.env.LISTING_COUNT_BUDGET) || b.budget, attention });
-  console.log(`listing counts: pool ${plan.poolSize} (${JSON.stringify(plan.tierCounts)}), due ${plan.dueTotal}, need ${plan.perNightNeed}/night, budget ${b.budget} (safe ${b.safe} of ${b.limit}, sealed step ${b.sealedStep})`);
+  console.log(`listing counts: pool ${plan.poolSize} (${JSON.stringify(plan.tierCounts)}), due ${plan.dueTotal}, need ${plan.fixedNeed}/night + ${plan.spare} spare, full cycle ${plan.cycleNights} nights, budget ${b.budget} (safe ${b.safe} of ${b.limit}, sealed step ${b.sealedStep})`);
 
   const tok = await token().catch((e) => { console.log(`listing counts: ${e.message}`); return null; });
   const latestPath = join(ROOT, "data/derived/listing-counts/latest.json");
@@ -87,7 +88,7 @@ export async function runListingCounts() {
   await writeFile(statePath, JSON.stringify(state) + "\n");
   const usagePath = join(ROOT, "data/derived/listing-counts/api-usage.json");
   const usage = await J(usagePath, { nights: [] });
-  const night = { date: today, ebayBrowse: { limit: b.limit, safe: b.safe, sealedStepMax: b.sealedStep, listingCountCalls: calls + (tok ? 1 : 0), failures, rateLimited, counted: out.length, pool: plan.poolSize, perNightNeed: plan.perNightNeed } };
+  const night = { date: today, ebayBrowse: { limit: b.limit, safe: b.safe, sealedStepMax: b.sealedStep, listingCountCalls: calls + (tok ? 1 : 0), failures, rateLimited, counted: out.length, pool: plan.poolSize, perNightNeed: plan.perNightNeed, cycleNights: plan.cycleNights } };
   usage.nights = [...(usage.nights || []).filter((n) => n.date !== today), night].slice(-60);
   await writeFile(usagePath, JSON.stringify(usage, null, 1) + "\n");
   console.log(`listing counts: ${out.length} counted, ${calls} calls, ${failures} failed${rateLimited ? ", stopped at 429" : ""}${tok ? "" : ", no eBay key"}`);
