@@ -20,7 +20,7 @@ import { detect as release } from "../lib/scanner/patterns/release-window.mjs";
 import { detect as yearAgo } from "../lib/scanner/patterns/year-ago.mjs";
 import { privateOnly as thinPrivate } from "../lib/scanner/patterns/thin-jump.mjs";
 import {
-  coveredInWeek, gradeDetection, replayItems, rotationMembership, splitScan,
+  coveredInWeek, expectedDir, gradeDetection, isDirHit, priceBand, replayItems, replayStep, rotationMembership, scoreGates, splitOf, splitScan, wilson90,
 } from "../lib/scanner/engine.mjs";
 import { buildScannerReads, scannerCopyOk } from "../lib/scanner/reads.mjs";
 
@@ -164,6 +164,88 @@ export async function run() {
   t("thin jump stays private", buildScannerReads(priv, [{ ...passed[0], pattern: "thin-jump" }], asOf).every((row) => row.pattern !== "thin-jump" && row.readKind === "past-cases" || row.readKind !== "listings-vs-price"));
   const cfg = JSON.parse(await readFile(join(ROOT, "config/scanner.json"), "utf8"));
   t("alerts stay off", cfg.alerts === false);
+  t("a daily replay walks every point and the rest keep the long step", replayStep({ dailyReplay: true }, 40) === 1 && replayStep({}, 40) === 14 && replayStep({}, 10) === 1);
+
+  t("up hit needs a rise over the median", isDirHit("up", 4, 2) === true && isDirHit("up", 4, 5) === false && isDirHit("up", 2, 0) === false);
+  t("down hit is a fall under the median", isDirHit("down", -4, -1) === true && isDirHit("down", -4, -5) === false && isDirHit("down", -2, 0) === false && isDirHit("down", -4, null) === false);
+  t("flat hit stays inside a 3 point band", isDirHit("flat", 3, null) === true && isDirHit("flat", -3, 9) === true && isDirHit("flat", 3.1, 0) === false);
+  t("old up grade stays separate", isDirHit("down", -4, -1) === true && !(isDirHit("up", -4, -1)));
+  t("direction follows the pattern", expectedDir({ pattern: "slow-slide", stage: "forming" }) === "down" && expectedDir({ pattern: "spike-revert", stage: "ending" }) === "down" && expectedDir({ pattern: "recovery", stage: "ending" }) === "down" && expectedDir({ pattern: "recovery", stage: "confirmed" }) === "up" && expectedDir({ pattern: "flat-range", stage: "confirmed" }) === "flat" && expectedDir({ pattern: "slow-climb", stage: "forming" }) === "up");
+  t("a signed group move picks its own direction", expectedDir({ pattern: "group-together", stage: "confirmed", metrics: { pct: 6 } }) === "up" && expectedDir({ pattern: "year-ago", stage: "ending", metrics: { pct: -8 } }) === "down" && expectedDir({ pattern: "release-window", stage: "confirmed", metrics: { pct: 1 } }) === "flat");
+  t("price bands split under 5, 5 to 20, 20 to 100, and 100 plus", priceBand(4.99) === "under-5" && priceBand(5) === "5-20" && priceBand(19.99) === "5-20" && priceBand(20) === "20-100" && priceBand(100) === "100-plus");
+  const cut = addDays("2026-10-13", -122);
+  t("the last 4 months are the test split", splitOf(cut, "2026-10-13") === "test" && splitOf(addDays(cut, -1), "2026-10-13") === "train");
+  const wilson = wilson90(12, 20);
+  t("a 12 of 20 rate has a lower bound under 50%", wilson.lo < 0.5 && wilson.lo > 0.4 && wilson.hi > 0.6);
+
+  const asOfGate = "2026-10-13";
+  const baseOf = (rate) => ({ n: 40, hits: rate * 40, w: 40, wh: rate * 40, w2: 40, values: [] });
+  const det = (i, date, hit, pattern, dir) => ({
+    id: `gate-${pattern}-${dir}-${i}`, name: `Card ${i}`, pattern, stage: "confirmed", kind: "single", date, dir,
+    startSrc: "own", endSrc: "own", privateOnly: false, explore: false, candidate: "", metrics: {},
+    grades: { "30d": { scored: true, hit, upHit: dir === "up" ? hit : false, dir, pct: dir === "down" ? -6 : dir === "flat" ? 1 : 6, from: date, to: addDays(date, 30), fromSrc: "own", toSrc: "own", p0: 12, p1: dir === "down" ? 11 : 13 } },
+  });
+  const fillBase = (dir, rate) => {
+    const base = new Map();
+    for (const split of ["train", "test", "all"]) base.set(`single|30d|${dir}|${split}`, baseOf(rate));
+    return base;
+  };
+  const many = (n, date, hit, pattern, dir) => Array.from({ length: n }, (_, i) => det(i, date, hit, pattern, dir));
+  const bothPass = scoreGates([...many(22, "2026-02-01", true, "slow-slide", "down"), ...many(22, "2026-08-01", true, "slow-slide", "down")], fillBase("down", 0.2), asOfGate);
+  const bothGate = bothPass.find((row) => row.pattern === "slow-slide" && row.horizon === 30);
+  t("both splits must pass before a pattern is public", bothGate?.passed === true && bothGate.train.passed === true && bothGate.test.passed === true && bothGate.train.n === 22 && bothGate.test.n === 22);
+  t("a down pattern keeps the old up-only column at zero", bothGate?.rate > 50 && bothGate.upRate === 0 && bothGate.dir === "down");
+  const splitFail = scoreGates([...many(22, "2026-02-01", true, "slow-slide", "down"), ...many(22, "2026-08-01", false, "slow-slide", "down")], fillBase("down", 0.2), asOfGate);
+  const splitGate = splitFail.find((row) => row.pattern === "slow-slide" && row.horizon === 30);
+  t("a pass on the first 8 months and a miss on the last 4 stays private", splitGate?.train.passed === true && splitGate.test.passed === false && splitGate.passed === false);
+  const low = scoreGates([...many(12, "2026-02-01", true, "slow-climb", "up"), ...many(8, "2026-02-01", false, "slow-climb", "up"), ...many(22, "2026-08-01", true, "slow-climb", "up")], fillBase("up", 0.5), asOfGate);
+  const lowGate = low.find((row) => row.pattern === "slow-climb" && row.horizon === 30);
+  t("the lower bound has to beat the base rate", lowGate?.train.passed === false && lowGate.train.rateLo < 50 && lowGate.passed === false);
+
+  const groupRow = {
+    id: "set|SV01: Test", name: "SV01: Test", kind: "group", pattern: "group-together", stage: "confirmed", dir: "up",
+    date: asOf, strength: 40, start: "2026-09-01", end: "2026-09-29", p0: null, p1: null, startSrc: "own", endSrc: "own",
+    metrics: { groupType: "set", noun: "single", up: 40, down: 8, n: 60, pct: 6 }, privateOnly: false, explore: false, candidate: "", href: "", set: "SV01: Test",
+  };
+  const groupExamples = [{ id: "a", name: "Pikachu", from: "2026-01-15", to: "2026-04-15", p0: 10, p1: 11, pct: 10 }];
+  const groupGate = {
+    pattern: "group-together", stage: "confirmed", kind: "group", dir: "up", horizon: 90, n: 93, hits: 52,
+    rate: 56, decayedRate: 0.56, baseRate: 49, baseDecayed: 0.49, passed: true, medianPct: 4.2,
+    from: "2026-01-15", to: "2026-08-01", examples: groupExamples,
+    train: { n: 60, rate: 55, from: "2026-01-15", to: "2026-05-01" },
+    test: { n: 33, rate: 58, from: "2026-06-20", to: "2026-08-01" },
+  };
+  const groupReads = buildScannerReads([groupRow], [groupGate], asOf);
+  const groupText = groupReads.map((row) => [row.headline, ...row.lines, row.why].join(" ")).join(" ");
+  t("a group line needs n of 50 and a 5 point gap", groupReads.length >= 1 && /was followed by a median/.test(groupText) && /In 93 past cases since Jan 2026/.test(groupText) && groupReads.every((row) => scannerCopyOk(row.headline) && row.lines.every((line) => scannerCopyOk(line))));
+  t("a group line does not use a future word or the filler word", !/\b(will|within|future)\b/i.test(groupText));
+  const thinGroup = buildScannerReads([groupRow], [{ ...groupGate, n: 49, decayedRate: 0.6, baseDecayed: 0.49 }], asOf);
+  const closeGroup = buildScannerReads([groupRow], [{ ...groupGate, decayedRate: 0.53, baseDecayed: 0.49, rate: 53 }], asOf);
+  t("a short or close group line stays private", thinGroup.length === 0 && closeGroup.length === 0);
+  const flatPresent = [{ ...present[0], pattern: "flat-range", p0: 10, p1: 10.2, metrics: { pct: 1 }, dir: "flat" }];
+  const flatGate = [{ ...passed[0], pattern: "flat-range", dir: "flat", rate: 40, baseRate: 20 }];
+  const flatReads = buildScannerReads(flatPresent, flatGate, asOf);
+  t("a flat public line says the band without the filler word", flatReads.some((row) => /no bigger than 3% either way/.test(row.why)) && flatReads.every((row) => !/\bwithin\b/i.test(row.why)));
+  const downPresent = [{ ...present[0], pattern: "slow-slide", p0: 20, p1: 16, metrics: { pct: -20 }, dir: "down" }];
+  const downGate = [{ ...passed[0], pattern: "slow-slide", dir: "down" }];
+  const downReads = buildScannerReads(downPresent, downGate, asOf);
+  t("a down public line names a fall", downReads.some((row) => /later fall of at least 3%/.test(row.why)));
+  const wideFlat = buildScannerReads([{ ...present[0], pattern: "flat-range", p0: 10, p1: 14.2, metrics: { pct: 42 }, dir: "flat" }], flatGate, asOf);
+  t("a flat line whose own prices moved more than 3% stays off the item read", wideFlat.every((row) => row.readKind !== "pattern-forming"));
+  const flatOpenWide = [{ ...present[0], pattern: "flat-range", stage: "forming", p0: 20, p1: 24, metrics: { pct: 20 }, dir: "flat" }];
+  const flatPastGate = [{
+    ...passed[0], pattern: "flat-range", stage: "forming", dir: "flat", medianPct: 0, rate: 60, baseRate: 40,
+    examples: [
+      { id: "a", name: "Kirlia", from: "2026-01-01", to: "2026-01-08", p0: 10, p1: 10, pct: 0 },
+      { id: "b", name: "Lugia", from: "2026-02-01", to: "2026-02-08", p0: 11, p1: 11, pct: 0 },
+      { id: "c", name: "Lysandre", from: "2026-03-01", to: "2026-03-08", p0: 12, p1: 12, pct: 0 },
+    ],
+  }];
+  const flatPast = buildScannerReads(flatOpenWide, flatPastGate, asOf);
+  const pastText = flatPast.filter((row) => row.readKind === "past-cases").map((row) => row.lines.join(" ")).join(" ");
+  t("a flat past line does not show an open move over 3%", flatPast.some((row) => row.readKind === "past-cases") && !/Open now/.test(pastText));
+  const bare = buildScannerReads([], [{ ...groupGate, examples: [{ id: "g", name: "SV", from: "2026-01-15", to: "2026-04-15", pct: 4.2, date: "2026-01-15" }] }], asOf);
+  t("a group past line can stand without a card price", bare.some((row) => /In 93 past cases since Jan 2026/.test(row.headline) && /was followed by a median/.test(row.headline)));
 
   return fail;
 }

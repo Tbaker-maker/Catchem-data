@@ -9,10 +9,13 @@ export const HALF_LIFE_DAYS = 180;
 export const EXPLORE_SHARE = 0.3;
 export const TOP_SEALED = 40;
 export const TOP_SINGLES = 40;
-export const SCORE_SINGLE_CAP = 800;
-export const SCORE_SEALED_CAP = 400;
+export const SCORE_SINGLE_CAP = 14000;
+export const SCORE_SEALED_CAP = 2000;
+export const DAILY_REPLAY_CAP = 400;
 export const MIN_PUBLIC_PRICE = 5;
-export const SCANNER_VERSION = 1;
+export const SCANNER_VERSION = 2;
+export const GROUP_GAP_POINTS = 5;
+export const GROUP_MIN_N = 50;
 
 const DAY = /^\d{4}-\d{2}-\d{2}$/;
 

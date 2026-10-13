@@ -9,7 +9,7 @@ import { mergeOwnFill } from "../span-reads.mjs";
 import { openPrivate } from "../private-store.mjs";
 import { isoOf } from "../history-reads.mjs";
 import {
-  SCANNER_VERSION, SCORE_SEALED_CAP, SCORE_SINGLE_CAP, daysBetween,
+  DAILY_REPLAY_CAP, SCANNER_VERSION, SCORE_SEALED_CAP, SCORE_SINGLE_CAP, daysBetween,
 } from "./common.mjs";
 import { presentDetections, rankExtremes, replayItems, rotationMembership, scoreGates } from "./engine.mjs";
 import { buildScannerReads } from "./reads.mjs";
@@ -116,9 +116,11 @@ export async function loadScoreItems(root, asOf, series) {
     });
   }
   sealed.sort((a, b) => b.span - a.span || (a.id < b.id ? -1 : 1));
+  const singlesAvailable = singles.length;
+  const sealedAvailable = sealed.length;
   const items = [...singles.slice(0, SCORE_SINGLE_CAP), ...sealed.slice(0, SCORE_SEALED_CAP)];
   await attachListings(root, items);
-  return { items, singles: Math.min(singles.length, SCORE_SINGLE_CAP), sealed: Math.min(sealed.length, SCORE_SEALED_CAP), asOf };
+  return { items, singles: Math.min(singlesAvailable, SCORE_SINGLE_CAP), sealed: Math.min(sealedAvailable, SCORE_SEALED_CAP), singlesAvailable, sealedAvailable, asOf };
 }
 
 async function attachListings(root, items) {
@@ -203,10 +205,13 @@ function tally(rows, field) {
 }
 
 export async function collectScannerReads({ root, asOf, series, catalog, token = process.env.PRIVATE_DATA_TOKEN || "" }) {
+  const started = Date.now();
   const score = await loadScoreItems(root, asOf, series);
   const scan = scanItemsFrom(catalog || { items: [] }, series, asOf, score.items);
+  const replayStarted = Date.now();
   const replay = replayItems(score.items, asOf);
   const gates = scoreGates(replay.detections, replay.base, asOf);
+  const replayMs = Date.now() - replayStarted;
   const live = presentDetections({ items: scan, groupItems: score.items, asOf, gates, ready: true });
   const reads = buildScannerReads(live.present, gates, asOf);
   const extremes = rankExtremes(gates);
@@ -217,6 +222,12 @@ export async function collectScannerReads({ root, asOf, series, catalog, token =
     alerts: false,
     scoreSingles: score.singles,
     scoreSealed: score.sealed,
+    singlesAvailable: score.singlesAvailable,
+    sealedAvailable: score.sealedAvailable,
+    scoreCaps: { singles: SCORE_SINGLE_CAP, sealed: SCORE_SEALED_CAP, dailyReplay: DAILY_REPLAY_CAP },
+    dailyReplay: replay.dailyReplay,
+    replayMs,
+    runtimeMs: Date.now() - started,
     scanItems: scan.length,
     tonight: live.tonight,
     tops: live.tops,
@@ -226,18 +237,46 @@ export async function collectScannerReads({ root, asOf, series, catalog, token =
     present: live.present.length,
     presentByPattern: tally(live.present.filter((row) => !row.explore && !row.candidate), "pattern"),
     passed: passed.length,
-    passedKeys: passed.map((row) => `${row.pattern}|${row.stage}|${row.kind}|${row.horizon}d|n=${row.n}|rate=${row.rate}|base=${row.baseRate}`),
+    passedKeys: passed.map((row) => `${row.pattern}|${row.stage}|${row.kind}|${row.dir}|${row.horizon}d|n=${row.n}|rate=${row.rate}|lo=${row.rateLo}|base=${row.baseRate}|train=${row.train?.rate}|test=${row.test?.rate}`),
+    listingsProgress: listingsProgress(gates),
     publicReads: reads.length,
     publicByKind: tally(reads, "readKind"),
     strongest: extremes.strongest.map(brief),
     weakest: extremes.weakest.map(brief),
   };
   await writePrivate(root, token, asOf, { summary, gates, present: live.present, detections: replay.detections });
+  summary.runtimeMs = Date.now() - started;
   return { reads, summary, gates, present: live.present, detections: replay.detections };
 }
 
+const LISTING_PATTERNS = ["listings-down-flat", "listings-up-flat", "price-up-listings-up", "price-down-listings-down", "thin-jump"];
+
+function listingsProgress(gates) {
+  return LISTING_PATTERNS.map((pattern) => {
+    const rows = (gates || []).filter((row) => row.pattern === pattern);
+    const best = rows.slice().sort((a, b) => b.n - a.n || a.horizon - b.horizon)[0];
+    return {
+      pattern,
+      n: best?.n || 0,
+      reached20: rows.some((row) => row.n >= 20),
+      stage: best?.stage || "",
+      kind: best?.kind || "",
+      horizon: best?.horizon || null,
+      rate: best?.rate ?? null,
+      rateLo: best?.rateLo ?? null,
+      passed: rows.some((row) => row.passed),
+    };
+  });
+}
+
 function brief(row) {
-  return { pattern: row.pattern, stage: row.stage, kind: row.kind, horizon: row.horizon, n: row.n, rate: row.rate, baseRate: row.baseRate, passed: row.passed, medianPct: row.medianPct };
+  return {
+    pattern: row.pattern, stage: row.stage, kind: row.kind, dir: row.dir, horizon: row.horizon,
+    n: row.n, rate: row.rate, rateLo: row.rateLo, rateHi: row.rateHi, upRate: row.upRate,
+    baseRate: row.baseRate, passed: row.passed, medianPct: row.medianPct,
+    trainRate: row.train?.rate ?? null, testRate: row.test?.rate ?? null,
+    trainN: row.train?.n ?? 0, testN: row.test?.n ?? 0,
+  };
 }
 
 async function writePrivate(root, token, asOf, payload) {
@@ -249,9 +288,10 @@ async function writePrivate(root, token, asOf, payload) {
   const weights = {
     asOf, version: SCANNER_VERSION, alerts: false, halfLifeDays: 180, minN: 20, hitPct: 3,
     rows: payload.gates.map((row) => ({
-      pattern: row.pattern, stage: row.stage, kind: row.kind, horizon: row.horizon,
-      n: row.n, hits: row.hits, rate: row.rate, baseRate: row.baseRate, passed: row.passed, weight: row.weight,
-      medianPct: row.medianPct,
+      pattern: row.pattern, stage: row.stage, kind: row.kind, horizon: row.horizon, dir: row.dir,
+      n: row.n, hits: row.hits, rate: row.rate, rateLo: row.rateLo, rateHi: row.rateHi, upRate: row.upRate,
+      baseRate: row.baseRate, passed: row.passed, weight: row.weight, medianPct: row.medianPct,
+      train: row.train, test: row.test,
     })),
   };
   const day = {
@@ -259,12 +299,12 @@ async function writePrivate(root, token, asOf, payload) {
     summary: payload.summary,
     forward: payload.gates.filter((row) => row.passed).map((row) => ({
       pattern: row.pattern, stage: row.stage, kind: row.kind, horizon: row.horizon,
-      n: row.n, medianPct: row.medianPct, rate: row.rate, from: row.from, to: row.to,
-      examples: row.examples,
+      n: row.n, medianPct: row.medianPct, rate: row.rate, rateLo: row.rateLo, upRate: row.upRate,
+      from: row.from, to: row.to, train: row.train, test: row.test, examples: row.examples,
     })),
     candidates: payload.present.filter((row) => row.candidate).slice(0, 200).map((row) => ({ ...compact(row), forward: forwardStats(row, payload.gates) })),
-    present: payload.present.filter((row) => !row.explore).map((row) => ({ ...compact(row), forward: forwardStats(row, payload.gates) })),
-    detections: payload.detections.filter((row) => !row.explore).map(compact),
+    present: payload.present.filter((row) => !row.explore).slice(0, 4000).map((row) => ({ ...compact(row), forward: forwardStats(row, payload.gates) })),
+    detections: payload.detections.filter((row) => !row.explore).slice(0, 12000).map(compact),
   };
   await writeFile(join(dir, "weights.json"), JSON.stringify(weights, null, 1) + "\n");
   await writeFile(join(dir, "summary.json"), JSON.stringify(payload.summary, null, 1) + "\n");
@@ -276,9 +316,9 @@ async function writePrivate(root, token, asOf, payload) {
 function forwardStats(row, gates) {
   const out = {};
   for (const h of [7, 30, 90]) {
-    const g = (gates || []).find((x) => x.pattern === row.pattern && x.stage === row.stage && x.kind === row.kind && x.horizon === h);
+    const g = (gates || []).find((x) => x.pattern === row.pattern && x.stage === row.stage && x.kind === row.kind && x.horizon === h && (!row.dir || !x.dir || x.dir === row.dir));
     out[`${h}d`] = g
-      ? { n: g.n, medianPct: g.medianPct, rate: g.rate, passed: g.passed === true }
+      ? { n: g.n, medianPct: g.medianPct, rate: g.rate, rateLo: g.rateLo, upRate: g.upRate, dir: g.dir, passed: g.passed === true, trainRate: g.train?.rate ?? null, testRate: g.test?.rate ?? null }
       : { n: 0, medianPct: null, rate: null, passed: false };
   }
   return out;
@@ -288,7 +328,7 @@ function compact(row) {
   const g = {};
   for (const [key, value] of Object.entries(row.grades || {})) {
     if (!value?.scored) continue;
-    g[key] = { hit: value.hit, pct: value.pct, from: value.from, to: value.to };
+    g[key] = { hit: value.hit, upHit: value.upHit === true, dir: value.dir || "", pct: value.pct, from: value.from, to: value.to };
   }
   return {
     id: row.id, name: row.name, kind: row.kind, pattern: row.pattern, stage: row.stage, date: row.date,
