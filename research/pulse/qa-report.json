@@ -1,45 +1,17 @@
 {
- "generatedAt": "2026-10-12T16:30:48.354Z",
- "date": "2026-10-12",
+ "generatedAt": "2026-10-13T12:13:23.920Z",
+ "date": "2026-10-13",
  "checked": 176,
- "warned": 40,
- "blocked": 7,
+ "warned": 41,
+ "blocked": 6,
  "note": "Blocked products stay in the data and on the Board (labeled); they are barred from Daily Three, social posts, cards, and the newsletter until they pass.",
  "flags": [
   {
-   "id": "xy12-etb",
-   "name": "Evolutions Elite Trainer Box",
-   "median": 775,
-   "high": 1699.95,
-   "floor": 219.99,
-   "listings": 36,
-   "reasons": [
-    "median moved 72% overnight vs $449.99 — filter drift suspected"
-   ],
-   "warns": [
-    "floor $219.99 is 3.5× under the median"
-   ],
-   "topPricedTitles": [
-    {
-     "t": "Pokemon TCG Prismatic Evolutions 10 BOX ELITE TRAINER BOX CASE Sealed 10013",
-     "p": 1699.95
-    },
-    {
-     "t": "Pokemon Prismatic Evolutions (SV8.5) Elite Trainer Box Case FACTORY SEALED!",
-     "p": 1599.95
-    },
-    {
-     "t": "Prismatic Evolutions Elite Trainer Box Case Pokemon 10 ETB Sealed Dbl Boxed Ship",
-     "p": 1500
-    }
-   ]
-  },
-  {
    "id": "pgo-etb",
    "name": "Pokemon GO Elite Trainer Box",
-   "median": 226.92,
+   "median": 220,
    "high": 525,
-   "floor": 145.59,
+   "floor": 145,
    "listings": 76,
    "reasons": [
     "manually quarantined 2026-08-21 (Tyler (founder QA)): median read $240 against an observed ~$205 market; multi-item listings suspected in the top half"
@@ -52,7 +24,7 @@
     },
     {
      "t": "Pokemon Center Pokemon GO PC Elite Trainer Box Plus SEALED NEW",
-     "p": 473.45
+     "p": 472.62
     },
     {
      "t": "Pokemon Center Exclusive TCG Pokemon Go Elite Trainer Box PREORDER ETB Sealed!",
@@ -63,10 +35,10 @@
   {
    "id": "sm1-booster-box",
    "name": "Sun & Moon Booster Box",
-   "median": 1054.98,
+   "median": 1099.99,
    "high": 1518.95,
    "floor": 850,
-   "listings": 11,
+   "listings": 13,
    "reasons": [
     "manually quarantined 2026-08-22 (CC (era-base contamination audit)): the price included boxes from later Sun & Moon sets. Most listings we fetched name a different set, so the $2,300 reading is not this product."
    ],
@@ -87,11 +59,37 @@
    ]
   },
   {
+   "id": "sm8-booster-box",
+   "name": "Lost Thunder Booster Box",
+   "median": 2495,
+   "high": 4356.25,
+   "floor": 1600,
+   "listings": 3,
+   "reasons": [
+    "only 3 listings — too thin to headline"
+   ],
+   "warns": [],
+   "topPricedTitles": [
+    {
+     "t": "POKEMON TCG SUN & MOON LOST THUNDER BOOSTER BOX SEALED ENGLISH",
+     "p": 4356.25
+    },
+    {
+     "t": "Pokemon Lost Thunder Booster Box English Sealed",
+     "p": 2495
+    },
+    {
+     "t": "Pokemon Lost Thunder Booster Box English Sealed",
+     "p": 1600
+    }
+   ]
+  },
+  {
    "id": "swsh1-booster-box",
    "name": "Sword & Shield Base Booster Box",
-   "median": 666.33,
+   "median": 665.17,
    "high": 1100,
-   "floor": 551.66,
+   "floor": 549.77,
    "listings": 10,
    "reasons": [
     "manually quarantined 2026-08-22 (CC (era-base contamination audit)): only four listings survived once other Sword & Shield sets were removed — too few to publish a price we would stand behind."
@@ -113,38 +111,38 @@
    ]
   },
   {
-   "id": "sv3pt5-pc-etb",
-   "name": "Pokemon 151 Pokemon Center Elite Trainer Box",
-   "median": 1979.79,
-   "high": 1999.99,
-   "floor": 1288.73,
-   "listings": 6,
+   "id": "cel25-etb",
+   "name": "Celebrations Elite Trainer Box",
+   "median": 335,
+   "high": 395,
+   "floor": 129.99,
+   "listings": 27,
    "reasons": [
-    "median moved 36% overnight vs $1456.8 — filter drift suspected"
+    "median moved 109% overnight vs $160 — filter drift suspected"
    ],
    "warns": [],
    "topPricedTitles": [
     {
-     "t": "Pokemon 151 PC ETB Elite Trainer Box S&V Pokemon Center ETB Factory Sealed",
-     "p": 1999.99
+     "t": "Pokemon Celebrations Elite Trainer Box ETB TCG 25th Anniversary Edition sealed",
+     "p": 395
     },
     {
-     "t": "Pokemon TCG Pokemon 151 Pokemon Center Exclusive Elite Trainer Box ETB Sealed",
-     "p": 1980
+     "t": "Pokemon Celebrations Elite Trainer Box ETB TCG 25th Anniversary Edition sealed",
+     "p": 389.99
     },
     {
-     "t": "Pokemon TCG Pokemon 151 Pokemon Center Exclusive Elite Trainer Box ETB Sealed",
-     "p": 1979.79
+     "t": "New Pokémon TCG Celebrations Elite Trainer Box 25th Anniversary ETB Sealed",
+     "p": 360
     }
    ]
   },
   {
    "id": "swsh1-etb",
    "name": "Sword & Shield Base Elite Trainer Box",
-   "median": 174.99,
+   "median": 175,
    "high": 271,
    "floor": 142.49,
-   "listings": 9,
+   "listings": 10,
    "reasons": [
     "manually quarantined 2026-08-22 (CC (era-base contamination audit)): the price included trainer boxes from later Sword & Shield sets, reading about $182."
    ],
@@ -156,41 +154,11 @@
     },
     {
      "t": "Sword & Shield: Base Set - Elite Trainer Box - Factory Sealed- Pokémon TCG",
-     "p": 263.72
+     "p": 263.26
     },
     {
      "t": "Pokemon TCG Sword & Shield Elite Trainer Box Zacian ETB Factory Sealed",
      "p": 199.96
-    }
-   ]
-  },
-  {
-   "id": "swsh1-pack",
-   "name": "Sword & Shield Booster Pack",
-   "median": 20.99,
-   "high": 75,
-   "floor": 4.99,
-   "listings": 10,
-   "reasons": [
-    "manually quarantined 2026-08-22 (CC (era-base contamination audit)): the price was built from other sets. Later Sword & Shield packs were counted as base-set packs, reading about $20 against a real price nearer $5.",
-    "median moved 40% overnight vs $15 — filter drift suspected"
-   ],
-   "warns": [
-    "high $75 is 3.6× the median — watch for lot/case listings in the top half",
-    "floor $4.99 is 4.2× under the median"
-   ],
-   "topPricedTitles": [
-    {
-     "t": "Pokémon TCG Sword & Shield Booster Pack (3 Total) Sealed",
-     "p": 75
-    },
-    {
-     "t": "TCG Sword & Shield English Sealed Booster Pack  3 Packs Zacian $15/pack",
-     "p": 24.99
-    },
-    {
-     "t": "TCG Sword & Shield English Sealed Booster Pack  3 Packs Zacian $15/pack",
-     "p": 24.99
     }
    ]
   }

@@ -1,21 +1,21 @@
-# What the machines noticed — 2026-10-12
+# What the machines noticed — 2026-10-13
 
-The overnight shift's notes. Short on purpose.
+Nothing here needs you this morning unless something is marked NEEDS A HUMAN.
 
 ## Our own claims
-Not much of a verdict today. Most of our claims need more time before they can be judged, and pretending otherwise would be the actual failure.
+Mostly "we cannot tell yet" today — half these tests need weeks of history we simply do not have. Saying so beats guessing.
 3 survived their own kill conditions, 7 could not be judged yet with the tape we hold.
 
 ## Our own numbers
-A handful of suspicious jumps in our own history. Probably ours, not the market's — that is the usual answer.
+Found a few of our own figures that moved faster than any market should. Checking which one of them was us.
 
-**NEEDS A HUMAN — 10 figure(s) moved faster than a market can:
+**NEEDS A HUMAN — 11 figure(s) moved faster than a market can:
+- Celebrations Elite Trainer Box: $160 → $335 in 2026-10-12→2026-10-13 (+109.4%)
 - Celebrations Elite Trainer Box: $161.99 → $330 in 2026-10-06→2026-10-07 (+103.7%)
 - Temporal Forces Pokemon Center Elite Trainer Box: $253.74 → $499.99 in 2026-10-05→2026-10-06 (+97%)
 - Evolutions Elite Trainer Box: $419.99 → $760 in 2026-10-03→2026-10-05 (+81%)
-- Evolutions Elite Trainer Box: $442.85 → $775 in 2026-10-09→2026-10-10 (+75%)
 
-15 product(s) we featured and can no longer price:
+16 product(s) we featured and can no longer price:
 - Umbreon VMAX (featured 2026-08-20)
 - Umbreon VMAX (featured 2026-08-21)
 - Charizard ex (featured 2026-08-22)
@@ -67,8 +67,8 @@ Gaps in what we watch:
 **CC (9):**
 - **[ACT NOW 90]** Celebrations Elite Trainer Box moved 103.7% in 2026-10-06→2026-10-07 — *verify against listings; file a correction if the earlier figure was ours*
 - **[ACT NOW 90]** Temporal Forces Pokemon Center Elite Trainer Box moved 97% in 2026-10-05→2026-10-06 — *verify against listings; file a correction if the earlier figure was ours*
-- **[ACT NOW 90]** Evolutions Elite Trainer Box moved 88.9% in 2026-10-11→2026-10-12 — *verify against listings; file a correction if the earlier figure was ours*
 - **[ACT NOW 90]** Evolutions Elite Trainer Box moved 81% in 2026-10-03→2026-10-05 — *verify against listings; file a correction if the earlier figure was ours*
+- **[ACT NOW 90]** Evolutions Elite Trainer Box moved 75% in 2026-10-09→2026-10-10 — *verify against listings; file a correction if the earlier figure was ours*
 
 **Chat (12):** top — The Today screen carries 17 sections: The Daily Three, 🗳 Rip or Hold?, Biggest movers, Set the app up for you, Movers, Release radar… *[QUEUE]*
 
@@ -80,11 +80,13 @@ Gaps in what we watch:
 - **the cheat code** — Nothing tells a creator how a piece performed after they made it. *Ask one question after publication — did this land — and keep the answers. Even a yes/no on twenty videos would tell us which angles are worth generating.*
 
 ## What the market did
-- **product** — Pokemon 151 Pokemon Center Elite Trainer Box moved 35.9% — about 3.3× its own typical daily swing. *Measured against its own 19 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
+- **product** — Celebrations Elite Trainer Box moved 109.4% — about 3.3× its own typical daily swing. *Measured against its own 21 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
+- **product** — Crimson Invasion Elite Trainer Box moved 10.4% — about 3.4× its own typical daily swing. *Measured against its own 20 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
+- **product** — Paldean Fates Booster Pack moved -9.3% — about 4.0× its own typical daily swing. *Measured against its own 18 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
 
 ## Where today's story goes
-- **X** — "Crown Zenith listings moved 230% while its print window closes."
-- **YouTube** — Brilliant Stars Booster Box — "Cheapest believable listing $100, middle of the market $600. The lowest ask sits far below the median."
+- **X** — "Twilight Masquerade listings moved -60.4% while its print window closes."
+- **YouTube** — Unbroken Bonds Booster Box — "A seller keeps about $2,897.33 online; a buyer pays about $3,574.14. Roughly $676.81 of room where a face-to-face trade beats the internet."
 - **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 100.7."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
@@ -92,7 +94,7 @@ Gaps in what we watch:
 ## Something is slipping
 - **unsaved** — 3 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
 - **ignored** — 6 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
-- **drift** — 50 script(s) are not referenced anywhere: append-learning-log.mjs, append-shelf.mjs, audit-repo-bots.mjs, backfill-artists.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
+- **drift** — 54 script(s) are not referenced anywhere: append-learning-log.mjs, append-shelf.mjs, audit-repo-bots.mjs, backfill-artists.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
 - **drift** — 49 JSON files in research/pulse. *A directory nobody can scan is a directory where something goes missing without being noticed.*
 
 ## Legal standing
@@ -103,9 +105,9 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 
 ## Numbers that do not make sense for what they are
 54 value(s) are structurally fine and absurd in context.
-- **"sleeved"** killed 357 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
-- Scarlet & Violet Booster Pack: 92% rejection rate (12/150) — *largest bucket: set = 54. A single over-broad term can eat a market.*
-- 151 Booster Pack: 74% rejection rate (39/150) — *largest bucket: type = 69. A single over-broad term can eat a market.*
+- **"sleeved"** killed 354 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
+- Scarlet & Violet Booster Pack: 92% rejection rate (12/150) — *largest bucket: set = 56. A single over-broad term can eat a market.*
+- 151 Booster Pack: 76% rejection rate (36/150) — *largest bucket: type = 69. A single over-broad term can eat a market.*
 
 ## What the agents should be asking themselves
 - **domain-plausibility** — Would you catch this today? If yes, what specifically would fire. If no, what would you need?
