@@ -16,6 +16,7 @@ import { gzipSync, gunzipSync } from "node:zlib";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { openPrivate } from "./lib/private-store.mjs";
+import { parseFeed, pickTranscript, transcriptText } from "./lib/podcast.mjs";
 import { loadPriceBook } from "./self-check.mjs";
 import { buildCatalogueIndex, extractMentions, topicTags, commentSentiment, extractClaims, scoreClaims, rankClaims, buildLeads, claimStatus, extractIdeas, videoWeight, creatorWeights, combinedTones, hypeEvents, scoreHype, disagreements, edenSeed } from "./lib/youtube.mjs";
 
@@ -125,6 +126,29 @@ export async function runYoutubeLearn({ root = ROOT, key = process.env.YOUTUBE_A
   }
   videos.push(...added);
 
+  // Podcast feeds (config channels[].podcast.rss): transcripts from the publisher's
+  // own RSS only. No audio download. Same claims, ideas and topics pipeline, same
+  // unverified-until-backed rule. Stored with the videos as source "podcast".
+  let podcastNew = 0;
+  for (const c of (cfg.channels || []).filter((x) => x.podcast?.rss && x.enabled !== false)) {
+    try {
+      const res = await fetchFn(c.podcast.rss);
+      if (!res.ok) { errors.push(`podcast ${c.key}: ${res.status}`); continue; }
+      const items = parseFeed(await res.text()).filter((i) => i.date && i.date >= since.slice(0, 10) && !known.has(`pod:${c.key}:${i.guid}`)).slice(0, limits.maxNewVideosPerChannel);
+      for (const i of items) {
+        const t = pickTranscript(i.transcripts);
+        let body = "";
+        if (t) { const tr = await fetchFn(t.url); if (tr.ok) body = transcriptText(await tr.text(), t.type); }
+        const text = `${i.title}\n${i.description}\n${body}`;
+        const id = `pod:${c.key}:${i.guid}`;
+        const v = { id, source: "podcast", channel: c.key, date: i.date, title: i.title, description: i.description, transcript: body ? body.slice(0, 200000) : null, transcriptSource: t ? t.url : null, views: 0, likes: 0, commentCount: 0, topComments: [], mentions: extractMentions(text, idx), topics: topicTags(text), sentiment: commentSentiment([]), fetchedOn: today };
+        videos.push(v); known.add(id); podcastNew++;
+        claimsDoc.claims.push(...extractClaims({ videoId: id, channel: c.key, date: i.date, text }, idx).map((x) => ({ ...x, source: "podcast", toneWeight: videoWeight(v, tones[c.key]), needsBacking: true })).filter((x) => !claimsDoc.claims.some((o) => o.id === x.id)));
+        for (const idea of extractIdeas({ videoId: id, channel: c.key, date: i.date, text })) if (!ideaIds.has(idea.id)) { ideaIds.add(idea.id); ideasDoc.ideas.push({ ...idea, source: idea.source || "podcast" }); }
+      }
+    } catch (err) { errors.push(`podcast ${c.key}: ${err.message}`); }
+  }
+
   const { priceOn, marketChange } = await loadPriceBook(root);
   scoreClaims(claimsDoc.claims, { priceOn, marketChange, pidsBySet: idx.pidsBySet, today });
   for (const c of claimsDoc.claims) { const st = claimStatus(c); if (c.status !== st.status) c.statusSince = today; c.status = st.status; c.evidence = st.evidence; }
@@ -154,7 +178,7 @@ export async function runYoutubeLearn({ root = ROOT, key = process.env.YOUTUBE_A
   await writeFile(join(dir, "state.json"), JSON.stringify(state, null, 1) + "\n");
   const pushed = await store.close(["youtube/videos.jsonl.gz", "youtube/claims.json", "youtube/scores.json", "youtube/eden-seed.json", "youtube/ideas.json", "youtube/creator-weights.json", "youtube/hype-study.json", "youtube/disagreements.json", "youtube/state.json"], `YouTube learn ${today}`);
 
-  const doc = { ...base, keyPresent: true, status: errors.length ? "partial" : "ok", unitsUsed, videosNew: added.length, videosTotal: videos.length, claims: claimsDoc.claims.length, ideas: ideasDoc.ideas.length, errors: errors.map((e) => e.replace(key, "[key]")), privatePushed: Boolean(pushed?.pushed), leads,
+  const doc = { ...base, keyPresent: true, status: errors.length ? "partial" : "ok", unitsUsed, videosNew: added.length, podcastNew, videosTotal: videos.length, claims: claimsDoc.claims.length, ideas: ideasDoc.ideas.length, errors: errors.map((e) => e.replace(key, "[key]")), privatePushed: Boolean(pushed?.pushed), leads,
     disagreements: { creatorTargets: dis.creator.length, dataContradictedTonight: dis.data.length, creatorRows: dis.creator.map((d) => ({ label: d.target.startsWith("set:") ? (idx.setList.find((x) => `set:${x.groupId}` === d.target)?.set || d.target) : (idx.byPid.get(Number(d.target.slice(5)))?.name || d.target), channels: d.up + d.down, from: d.from, to: d.to })) },
     hypeEvents: hype.events.length, weightedCreators: Object.values(weights).filter((w) => w.basis !== "neutral").length };
   await writePublic(root, doc);

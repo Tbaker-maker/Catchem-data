@@ -4,6 +4,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildCatalogueIndex, extractMentions, topicTags, commentSentiment, extractClaims, scoreClaims, rankClaims, buildLeads, claimStatus, videoWeight, creatorWeights, combinedTones, hypeEvents, scoreHype, disagreements, edenSeed, extractIdeas, attentionLine, isBanned } from "../lib/youtube.mjs";
 import { youtubeFlags } from "../lib/flags.mjs";
+import { parseFeed, pickTranscript, transcriptText } from "../lib/podcast.mjs";
 import { runYoutubeLearn, makeClient } from "../youtube-learn.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
@@ -90,6 +91,14 @@ export async function run() {
   const es = edenSeed([{ channel: "x", date: "2026-01-09", mentions: { sets: [2], cards: [], sealed: [] }, topComments: [{ text: "love it", likes: 9 }, { text: "trash", likes: 0 }] }, { channel: "x", date: "2026-01-01", mentions: { sets: [2], cards: [], sealed: [] }, topComments: [{ text: "awful", likes: 0 }] }], { today: "2026-01-10" });
   t("eden: likes weight comments, week vs previous week", es["set:2"].pos === 2 && es["set:2"].neg === 2 && es["set:2"].week.score === 0.33 && es["set:2"].prevWeek.score === -1 && es["set:2"].turn === 1.33);
 
+  // Podcast feeds
+  const rss = `<rss xmlns:podcast="https://podcastindex.org/namespace/1.0"><channel><item><title>Ep 1</title><guid>g1</guid><pubDate>Fri, 09 Jan 2026 10:00:00 GMT</pubDate><description><![CDATA[Market talk]]></description><enclosure url="https://x/a.mp3" type="audio/mpeg"/><podcast:transcript url="https://x/t.json" type="application/json"/><podcast:transcript url="https://x/t.vtt" type="text/vtt"/></item></channel></rss>`;
+  const it = parseFeed(rss);
+  t("podcast: item, date, transcripts, audio url noted", it.length === 1 && it[0].date === "2026-01-09" && it[0].transcripts.length === 2 && it[0].audio === "https://x/a.mp3");
+  t("podcast: VTT picked before JSON", pickTranscript(it[0].transcripts).type === "text/vtt");
+  t("podcast: VTT to text", transcriptText("WEBVTT\n\n1\n00:00:01.000 --> 00:00:03.000\n<v Host>Evolving Skies will go down.\n", "text/vtt") === "Evolving Skies will go down.");
+  t("podcast: JSON segments to text", transcriptText(JSON.stringify({ segments: [{ body: "a" }, { body: "b" }] }), "application/json") === "a b");
+
   // Runner: missing key exits cleanly, no network.
   const root = await mkdtemp(join(tmpdir(), "yt-"));
   await mkdir(join(root, "config"), { recursive: true });
@@ -113,14 +122,25 @@ export async function run() {
     return { ok: true, json: async () => body };
   };
   calls = 0;
+  const cfgPath = join(root, "config/youtube-channels.json");
+  const cfgJ = JSON.parse(await readFile(cfgPath, "utf8"));
+  cfgJ.channels.push({ key: "testpod", id: null, enabled: true, podcast: { rss: "https://feed.test/rss" } });
+  await writeFile(cfgPath, JSON.stringify(cfgJ));
+  const podFetch = async (url) => {
+    if (url === "https://feed.test/rss") return { ok: true, text: async () => `<rss><channel><item><title>Ep</title><guid>p1</guid><pubDate>Sat, 10 Jan 2026 10:00:00 GMT</pubDate><podcast:transcript url="https://feed.test/t.srt" type="application/srt"/></item></channel></rss>` };
+    if (url === "https://feed.test/t.srt") return { ok: true, text: async () => "1\n00:00:01,000 --> 00:00:02,000\nUmbreon VMAX 215/203 is undervalued.\n" };
+    return fake(url);
+  };
   const local = { dir: join(root, "data/private"), close: async () => ({ pushed: false }) };
-  const ok = await runYoutubeLearn({ root, key: "k", token: "", fetchFn: fake, store: local });
-  const enabled = JSON.parse(await readFile(join(root, "config/youtube-channels.json"), "utf8")).channels.filter((c) => c.id && c.enabled !== false).length;
+  const ok = await runYoutubeLearn({ root, key: "k", token: "", fetchFn: podFetch, store: local });
+  calls = ok.unitsUsed;
+  const enabled = cfgJ.channels.filter((c) => c.id && c.enabled !== false).length;
   const ideasSeed = JSON.parse(await readFile(join(root, "data/private/youtube/ideas.json"), "utf8")).ideas;
   t("config seed ideas logged as candidates", ideasSeed.some((i) => i.origin === "config" && i.source === "pokemon wizard" && i.status === "candidate"));
-  t("units = 1 channels + 1 per channel + 1 videos + 1 comments", ok.unitsUsed === 1 + enabled + 1 + 1 && calls === ok.unitsUsed);
+  t("units = 1 channels + 1 per channel + 1 videos + 1 comments", ok.unitsUsed === 1 + enabled + 1 + 1);
   const claims2 = JSON.parse(await readFile(join(root, "data/private/youtube/claims.json"), "utf8")).claims;
-  t("claim stored privately with ship price", claims2.length === 1 && claims2[0].pid === 102 && claims2[0].price === 100 && claims2[0].status === "unverified");
+  t("podcast transcript claim logged as unverified", ok.podcastNew === 1 && claims2.some((c) => c.source === "podcast" && c.pid === 102 && c.status === "unverified"));
+  t("claim stored privately with ship price", claims2.filter((c) => c.source !== "podcast").length === 1 && claims2[0].pid === 102 && claims2[0].price === 100 && claims2[0].status === "unverified");
   const pubDoc = await readFile(join(root, "data/derived/youtube-leads.json"), "utf8");
   t("public file has no creator names or text", !/nomics|undervalued|great video|Nostalgia/i.test(pubDoc));
   const again = await runYoutubeLearn({ root, key: "k", token: "", fetchFn: fake, store: local });
