@@ -39,12 +39,18 @@ export async function run() {
   t("nightly call budget is enforced", blocked);
 
   const root = await mkdtemp(join(tmpdir(), "x-learn-"));
-  await mkdir(join(root, "config"), { recursive: true });
-  await writeFile(join(root, "config/x-accounts.json"), JSON.stringify({ accounts: [{ handle: "SecretHandle", id: "u1", category: "creator" }] }));
+  await mkdir(join(root, "data/private/x"), { recursive: true });
+  await writeFile(join(root, "data/private/x/config.json"), JSON.stringify({ accounts: [{ handle: "SecretHandle", id: "u1", category: "creator" }] }));
   const d = await runXLearn({ root, token: "", fetchFn: async () => { throw new Error("no network without token"); } });
   const pub = await readFile(join(root, "data/derived/x-status.json"), "utf8");
   t("no token = no-op, no network", d.status === "token_missing");
   t("public status has no handles", !pub.includes("SecretHandle"));
+  await mkdir(join(root, "data/catalog"), { recursive: true }); await mkdir(join(root, "data/history/tcgcsv-daily"), { recursive: true });
+  const imp = join(root, "imp"); await mkdir(imp);
+  await writeFile(join(imp, "a.json"), JSON.stringify({ data: [{ id: "5", created_at: "2026-10-09T09:00:00Z", text: "ETB live at Target!", author_id: "u1" }] }));
+  const r2 = await runXLearn({ root, importDir: imp });
+  const pub2 = await readFile(join(root, "data/derived/x-status.json"), "utf8");
+  t("config read from the private store; import works", r2.posts === 1 && !pub2.includes("SecretHandle"));
   return fail;
 }
 
