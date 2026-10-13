@@ -1,0 +1,100 @@
+{
+  "checked": "2026-10-12",
+  "rule": "A site is used to fill a chart gap only when its terms of use and its robots.txt both allow automated access. Terms are checked once (date below). robots.txt is re-checked each night by scripts/check-fill-robots.mjs. Bot blocks are never bypassed. Requests are throttled to 1 every 10 seconds or the site's Crawl-delay, whichever is longer. Filled points carry source tag 'f' internally and are named in the chart's About note.",
+  "allowed": [
+    {
+      "site": "tcgcsv.com",
+      "robots": "User-agent: * / Allow: /",
+      "terms": "Live per-group price files only. The daily archive (prices-YYYY-MM-DD.ppmd.7z) answers 403: 'The price archive has been temporarily removed due to rising server costs and its growing moderation burden.'",
+      "use": "nightly pull, already in place",
+      "fillsHistory": false,
+      "robotsBlocked": false,
+      "robotsChecked": "2026-10-12"
+    },
+    {
+      "site": "web.archive.org (snapshots of tcgcsv.com)",
+      "robots": "no robots.txt (404)",
+      "terms": "Public snapshots",
+      "use": "searched with the CDX API",
+      "fillsHistory": false,
+      "found": "0 captures of tcgcsv.com/archive/*; 2 Pokemon price files total (group 3170 on 2026-07-23, group 604 on 2026-05-08)",
+      "robotsBlocked": false,
+      "robotsChecked": "2026-10-12"
+    }
+  ],
+  "skipped": [
+    {
+      "site": "tcgplayer.com (pages, infinite-api price history, and Wayback copies of them)",
+      "reason": "Terms forbid it",
+      "termsLines": [
+        "You agree not to crawl, scrape or spider any of our websites without express permission from us.",
+        "[may not] Obtain content or information (including pricing information) from a third-party that was collected from the Site using our API or otherwise using automated means"
+      ],
+      "robots": "Allow: / with Crawl-Delay: 10 (terms still forbid)",
+      "note": "Wayback has 205 captures of /product/654137 and 2 of infinite-api price history; not used because the second terms line covers third-party copies."
+    },
+    {
+      "site": "pricecharting.com / sportscardspro.com",
+      "reason": "Ruled out earlier: terms need a commercial licence; API has no history"
+    },
+    {
+      "site": "getcollectr.com",
+      "reason": "Ruled out earlier: API terms ban competing products and resale of pricing"
+    },
+    {
+      "site": "pokedata.io",
+      "reason": "Terms forbid it",
+      "termsLines": [
+        "You cannot redistribute Data from the Pokedata API, website, or application for any reason.",
+        "The current offering of Pokedata Platinum is limited to non-commercial and personal use."
+      ],
+      "robots": "Disallow: (empty, allows all)"
+    },
+    {
+      "site": "tcgfish.net / tcgfish.com",
+      "reason": "Terms forbid it",
+      "termsLines": [
+        "Seller analytics do not authorize scraping, redistribution, or resale of our catalogue or pricing data."
+      ]
+    },
+    {
+      "site": "cardmarket.com",
+      "reason": "Bot block (Cloudflare challenge on robots.txt, 403) and GTC: 'The presentation of the trading cards and their respective prices require our prior written agreement.'"
+    },
+    {
+      "site": "130point.com",
+      "reason": "Bot block: terms page answers 403 to an automated request; robots Disallow: /api/"
+    },
+    {
+      "site": "worthpoint.com",
+      "reason": "Bot block: terms page answers 403 to an automated request"
+    },
+    {
+      "site": "mavin.io",
+      "reason": "Terms page did not load (500), so terms could not be confirmed; eBay listing data, not keyed to TCGplayer ids"
+    },
+    {
+      "site": "elitefourum.com",
+      "reason": "Terms forbid it",
+      "termsLines": [
+        "You may not automate access to the forum, or monitor the forum, such as with a web crawler"
+      ]
+    },
+    {
+      "site": "github.com/novaoc/rarebox-price-history",
+      "reason": "Singles only, no sealed. README: 'Prices (c) TCGplayer, via tcgcsv. For personal collection tracking.' Already behind the live singles long history (hist-long); flagged for a licence decision, not extended."
+    },
+    {
+      "site": "trollandtoad.com, pkmncards.com, pokellector.com",
+      "reason": "Current store prices or card text only; no price history to fill with"
+    },
+    {
+      "site": "JustTCG, PokemonPriceTracker, Scrydex, tcgapi.dev, pokemontcgapi.com",
+      "reason": "Paid APIs, not public sites. See the Oct 10 history-sources review: only PokemonPriceTracker Business ($99/mo) allows keeping and showing history commercially"
+    }
+  ],
+  "filled": {
+    "total": 0,
+    "bySource": {}
+  }
+}

@@ -8,6 +8,8 @@
 // A day with no file, or fewer than MIN_LINKS cards priced on it and on the
 // last day on the line, is a gap: v is null and nothing is carried forward.
 // The level is kept unrounded between days; only the published value is rounded.
+// A small group (a set with only 4 sealed products) needs links from most of its
+// members, not a flat 8: the bar is 60% of the priced members, at least 2, at most 8.
 export const MIN_LINKS = 8;
 export const MIN_PRICE = 0.01;
 export const METHOD = "value-weighted";
@@ -22,6 +24,8 @@ export function indexLine(list) {
   if (priced.length < 2) return { ...empty, points: priced.map((d) => ({ d, v: null, n: 0 })) };
   const start = Date.parse(`${priced[0]}T00:00:00Z`);
   const end = Date.parse(`${priced[priced.length - 1]}T00:00:00Z`);
+  const members = maps.filter((m) => m.size > 0).length;
+  const minLinks = Math.max(2, Math.min(MIN_LINKS, Math.ceil(members * 0.6)));
   const used = new Set();
   const points = [{ d: priced[0], v: 100, n: 0 }];
   let level = 100;
@@ -38,7 +42,7 @@ export function indexLine(list) {
       const b = Number(m.get(day));
       if (a >= MIN_PRICE && b > 0) { sumA += a; sumB += b; ids.push(i); }
     });
-    if (ids.length < MIN_LINKS || !(sumA > 0)) {
+    if (ids.length < minLinks || !(sumA > 0)) {
       points.push({ d: day, v: null, n: ids.length });
       gaps += 1;
       continue;
