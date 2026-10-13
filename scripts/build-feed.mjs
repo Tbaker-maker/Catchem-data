@@ -203,6 +203,15 @@ try {
   variantSummary = await tagReadsFile(ROOT, variants.cards);
 } catch (err) { console.error(`variant tags skipped: ${err.message}`); }
 console.log(JSON.stringify({ variantSummary }));
+// Factual trend line on each read, from own tcgcsv days only. Fill days stay out.
+// A miss is logged and never stops the nightly. slow_climb stays in the private store.
+try {
+  const { stampTrendContext } = await import("./lib/trend-context.mjs");
+  const trend = await stampTrendContext({ root: ROOT });
+  console.log(JSON.stringify({ trend }));
+} catch (err) {
+  console.error(`trend context skipped: ${err.message}`);
+}
 const health = await writeHealth(ROOT);
 // YouTube learning loop (official API, private store). Before the flagger so
 // tonight's leads become flags. A missing key or any failure never stops the nightly.
