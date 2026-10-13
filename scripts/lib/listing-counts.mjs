@@ -1,27 +1,18 @@
 // Listing-count planner and filters. Pure functions, no network.
 // Public wording is always "listings counted" (eBay listings, same filters
 // every night). Never "supply" on its own.
+//
+// Two tiers. "daily": every top sealed product (has a current price, or has
+// creator attention) and the top singles by value x attention, counted every
+// day. "tail": everything else, rotated stalest-first with the leftover.
 
-// eBay Browse default allowance per app per day (developer.ebay.com, Buy APIs
-// call limits). We plan to 80% of it and keep the rest as reserve.
 export const EBAY_BROWSE_DAILY_LIMIT = 5000;
 export const SAFE_SHARE = 0.98; // default; config/api-budgets.json wins
-// Upper bound for the sealed price step that runs first: up to 3 pages per
-// priced sealed product, plus one OAuth call.
-export const SEALED_PAGES = 3;
+export const SEALED_PAGES = 3;  // sealed price step: up to 3 pages per priced product
+export const TAIL_FLOOR = 500;  // calls a day kept for the tail rotation
+export const RUNS_PER_DAY = 6;
+const DAY = 86400000;
 
-// Refresh intervals in nights. Every tier is refreshed at least weekly.
-export const TIERS = [
-  { id: "sealed", every: 3 },
-  { id: "top", every: 1 },     // top singles by value plus attention
-  { id: "single", every: 7 },  // singles priced at $1 or more
-  { id: "tail", every: 30 },   // singles under $1 or unpriced, rotated with spare calls
-];
-export const TOP_SINGLES = 500;
-export const MIN_SINGLE_PRICE = 1;
-
-// Same title filters every night. Raw singles drop graded, lots, proxies.
-// Sealed drops cases, multi-unit lots, opened or empty items.
 const COMMON_EXCLUDE = [/\blots?\b/i, /\bbundle of\b/i, /\bx\s?\d+\b/i, /\b\d+\s?x\b/i, /\bproxy\b/i, /\bcustom\b/i, /\borica\b/i, /\breplica\b/i, /\bfake\b/i];
 const SINGLE_EXCLUDE = [/\bpsa\b/i, /\bcgc\b/i, /\bbgs\b/i, /\bsgc\b/i, /\bace\b\s?\d/i, /\bgraded\b/i, /\bslab/i, /\bgem mint\s?10\b/i];
 const SEALED_EXCLUDE = [/\bcase\b/i, /\bopened\b/i, /\bempty\b/i, /\bno cards\b/i, /\bpsa\b/i, /\bcgc\b/i, /\bgraded\b/i];
@@ -40,60 +31,55 @@ export function buildQuery(item) {
   return `pokemon ${base} ${num} ${QUERY_NEGATIVES.single}`.replace(/\s+/g, " ").trim();
 }
 
+// Daily calls: limit x share, minus the nightly sealed price step.
 export function nightlyBudget({ sealedPriced = 0, limit = EBAY_BROWSE_DAILY_LIMIT, share = SAFE_SHARE } = {}) {
   const safe = Math.floor(limit * share);
   const sealedStep = sealedPriced * SEALED_PAGES + 1;
   return { limit, safe, sealedStep, budget: Math.max(0, safe - sealedStep - 1), reserve: limit - safe };
 }
 
-const daysBetween = (a, b) => Math.round((Date.parse(b) - Date.parse(a)) / 86400000);
-
-// items: tcgcsv catalogue rows. skipIds: tcgplayer ids already counted by the
-// sealed price step. state.last: { [id]: "YYYY-MM-DD" }. attention: Set of ids.
-export function planListingCounts({ items, skipIds = new Set(), state = {}, today, budget, attention = new Set(), topN = TOP_SINGLES }) {
-  const last = state.last || {};
-  const pool = [];
-  const singles = [];
-  const tail = [];
+// Split the catalogue into the daily tier and the tail.
+export function tiers({ items, skipIds = new Set(), attention = new Set(), dailyBudget, tailFloor = TAIL_FLOOR }) {
+  const sealedTop = [], sealedTail = [], singles = [];
   for (const it of items || []) {
     if (!it || !it.id) continue;
     if (it.kind === "sealed") {
       if (skipIds.has(String(it.tcgplayerProductId))) continue;
-      pool.push({ ...it, tier: "sealed" });
-    } else if ((it.price || 0) >= MIN_SINGLE_PRICE || attention.has(it.id)) {
-      singles.push(it);
-    } else {
-      tail.push(it);
-    }
+      ((it.price || 0) > 0 || attention.has(it.id) ? sealedTop : sealedTail).push(it);
+    } else singles.push(it);
   }
   const score = (it) => (it.price || 0) * (attention.has(it.id) ? 3 : 1);
   singles.sort((a, b) => score(b) - score(a) || String(a.id).localeCompare(String(b.id)));
-  singles.forEach((it, i) => pool.push({ ...it, tier: i < topN ? "top" : "single" }));
-  for (const it of tail) pool.push({ ...it, tier: "tail" });
-
-  const rank = { sealed: 0, top: 1, single: 2, tail: 3 };
-  const every = Object.fromEntries(TIERS.map((t) => [t.id, t.every]));
-  const rows = pool.map((it) => {
-    const age = last[it.id] ? daysBetween(last[it.id], today) : Infinity;
-    return { it, age, due: age >= every[it.tier], overdue: age === Infinity ? 1e9 : age / every[it.tier] };
-  });
-  // Due items first, by tier, then most overdue. Spare budget goes to the
-  // not-yet-due tail first (stalest first), so the under-$1 tail rotates.
-  rows.sort((a, b) => (b.due - a.due) || (a.due ? rank[a.it.tier] - rank[b.it.tier] : (b.it.tier === "tail") - (a.it.tier === "tail")) || (b.overdue - a.overdue) || String(a.it.id).localeCompare(String(b.it.id)));
-  const picked = rows.slice(0, Math.max(0, budget)).map((r) => r.it);
-  const dueTotal = rows.filter((r) => r.due).length;
-  const tierCounts = Object.fromEntries(TIERS.map((t) => [t.id, pool.filter((p) => p.tier === t.id).length]));
-  const perNightNeed = TIERS.reduce((s, t) => s + Math.ceil(pool.filter((p) => p.tier === t.id).length / t.every), 0);
-  const fixedNeed = TIERS.filter((t) => t.id !== "tail").reduce((s, t) => s + Math.ceil(tierCounts[t.id] / t.every), 0);
-  const spare = Math.max(0, budget - fixedNeed);
-  const tailCycleNights = tierCounts.tail ? (spare ? Math.ceil(tierCounts.tail / spare) : null) : 0;
-  const cycleNights = tailCycleNights == null ? null : Math.max(7, tailCycleNights);
-  return { picked, fixedNeed, spare, tailCycleNights, cycleNights, poolSize: pool.length, dueTotal, perNightNeed, tierCounts };
+  const singleSlots = Math.max(0, Math.min(singles.length, dailyBudget - sealedTop.length - tailFloor));
+  const singlesTop = singles.slice(0, singleSlots);
+  const daily = [...sealedTop, ...singlesTop].map((it) => ({ ...it, tier: "daily" }));
+  const tail = [...sealedTail, ...singles.slice(singleSlots)].map((it) => ({ ...it, tier: "tail" }));
+  const cutoff = singlesTop.length ? singlesTop[singlesTop.length - 1].price || 0 : null;
+  const leftover = Math.max(0, dailyBudget - daily.length);
+  return { daily, tail, counts: { sealedTop: sealedTop.length, sealedTail: sealedTail.length, singlesTop: singlesTop.length, singlesTail: singles.length - singleSlots }, singleCutoff: cutoff, leftover, tailCycleDays: tail.length ? (leftover ? Math.ceil(tail.length / leftover) : null) : 0 };
 }
 
-// Count kept listings in the sampled page and scale the eBay total by the
-// kept share of the sampled page. listingsCounted = eBay total under our
-// server filters x kept share. sampled/sampleKept make the scaling visible.
+// Rolling 24-hour counter shared by every run. log: [{ at: ISO, n }]
+export function used24(log = [], now = new Date()) {
+  const from = now.getTime() - DAY;
+  return log.filter((e) => Date.parse(e.at) > from).reduce((s, e) => s + (e.n || 0), 0);
+}
+
+// Calls this run may spend: an even share of the day's listing budget, never
+// past the rolling 24-hour cap.
+export function runSlice({ safe, used, dailyBudget, runsPerDay = RUNS_PER_DAY }) {
+  return Math.max(0, Math.min(safe - used, Math.ceil(dailyBudget / runsPerDay)));
+}
+
+// Pick this run's items: daily-tier items not counted in the last 20 hours
+// first, then the stalest tail items.
+export function pickRun({ daily, tail, last = {}, now = new Date(), slice }) {
+  const ageH = (id) => (last[id] ? (now.getTime() - Date.parse(last[id])) / 3600000 : Infinity);
+  const dueDaily = daily.filter((it) => ageH(it.id) >= 20).sort((a, b) => ageH(b.id) - ageH(a.id) || String(a.id).localeCompare(String(b.id)));
+  const tailSorted = [...tail].sort((a, b) => ageH(b.id) - ageH(a.id) || String(a.id).localeCompare(String(b.id)));
+  return [...dueDaily, ...tailSorted].slice(0, Math.max(0, slice));
+}
+
 export function summarize(kind, total, titles) {
   const seen = titles.length;
   const kept = titles.filter((t) => keepTitle(kind, t)).length;

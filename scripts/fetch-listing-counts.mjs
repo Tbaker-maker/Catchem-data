@@ -13,7 +13,7 @@ import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { gzipSync } from "node:zlib";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { planListingCounts, nightlyBudget, buildQuery, summarize, EBAY_BROWSE_DAILY_LIMIT } from "./lib/listing-counts.mjs";
+import { tiers, pickRun, runSlice, used24, nightlyBudget, buildQuery, summarize, EBAY_BROWSE_DAILY_LIMIT, TAIL_FLOOR, RUNS_PER_DAY } from "./lib/listing-counts.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OAUTH = "https://api.ebay.com/identity/v1/oauth2/token";
@@ -33,7 +33,7 @@ async function token() {
   return (await res.json()).access_token;
 }
 
-export async function runListingCounts() {
+export async function runListingCounts({ afterSealedStep = false, now = new Date() } = {}) {
   const catalog = await J(join(ROOT, "data/catalog/tcgcsv-latest.json"), { items: [] });
   const today = String(catalog.asOf || new Date().toISOString()).slice(0, 10);
   const products = await J(join(ROOT, "data/sealed-products.json"), []);
@@ -47,10 +47,23 @@ export async function runListingCounts() {
   }
   const statePath = join(ROOT, "data/derived/listing-counts/state.json");
   const state = await J(statePath, { last: {} });
+  state.last ||= {}; state.log ||= [];
   const cfg = (await J(join(ROOT, "config/api-budgets.json"), {})).ebayBrowse || {};
   const b = nightlyBudget({ sealedPriced: priced.length, limit: Number(process.env.EBAY_BROWSE_DAILY_LIMIT) || cfg.dailyLimit || EBAY_BROWSE_DAILY_LIMIT, share: cfg.useShare });
-  const plan = planListingCounts({ items, skipIds, state, today, budget: Number(process.env.LISTING_COUNT_BUDGET) || b.budget, attention });
-  console.log(`listing counts: pool ${plan.poolSize} (${JSON.stringify(plan.tierCounts)}), due ${plan.dueTotal}, need ${plan.fixedNeed}/night + ${plan.spare} spare, full cycle ${plan.cycleNights} nights, budget ${b.budget} (safe ${b.safe} of ${b.limit}, sealed step ${b.sealedStep})`);
+  // The nightly sealed step spends its calls before this runs; log its upper
+  // bound on the shared rolling counter.
+  if (afterSealedStep) state.log.push({ at: now.toISOString(), n: b.sealedStep, source: "sealed-price-step" });
+  state.log = state.log.filter((e) => Date.parse(e.at) > now.getTime() - 2 * 86400000);
+  const used = used24(state.log, now);
+  // Until .github/workflows/listing-counts.yml exists, the nightly is the only
+  // run, so it spends the whole day's listing budget.
+  const scheduled = await readFile(join(ROOT, ".github/workflows/listing-counts.yml"), "utf8").then(() => true, () => false);
+  const runsPerDay = scheduled ? cfg.runsPerDay || RUNS_PER_DAY : 1;
+  const tierPlan = tiers({ items, skipIds, attention, dailyBudget: b.budget, tailFloor: cfg.tailFloor ?? TAIL_FLOOR });
+  const slice = Math.min(Number(process.env.LISTING_COUNT_BUDGET) || Infinity, runSlice({ safe: b.safe, used, dailyBudget: b.budget, runsPerDay }));
+  const picked = pickRun({ daily: tierPlan.daily, tail: tierPlan.tail, last: state.last, now, slice: Math.max(0, slice - 1) });
+  const plan = { picked, poolSize: tierPlan.daily.length + tierPlan.tail.length, perNightNeed: tierPlan.daily.length, cycleNights: tierPlan.tailCycleDays };
+  console.log(`listing counts: daily tier ${tierPlan.daily.length} (${JSON.stringify(tierPlan.counts)}, singles at or above $${tierPlan.singleCutoff}), tail ${tierPlan.tail.length} every ${tierPlan.tailCycleDays} days, used ${used}/${b.safe} in 24h, this run ${picked.length}`);
 
   const tok = await token().catch((e) => { console.log(`listing counts: ${e.message}`); return null; });
   const latestPath = join(ROOT, "data/derived/listing-counts/latest.json");
@@ -73,7 +86,7 @@ export async function runListingCounts() {
           const row = { id: it.id, kind, tier: it.tier, date: today, ...summarize(kind, d.total, (d.itemSummaries || []).map((x) => x.title || "")) };
           out.push(row);
           latest.rows[it.id] = row;
-          state.last[it.id] = today;
+          state.last[it.id] = now.toISOString();
         } catch { failures += 1; }
         await sleep(DELAY_MS);
       }
@@ -85,15 +98,18 @@ export async function runListingCounts() {
   await mkdir(join(ROOT, "data/derived/listing-counts/history"), { recursive: true });
   await writeFile(latestPath, JSON.stringify(latest) + "\n");
   if (out.length) await writeFile(join(ROOT, `data/derived/listing-counts/history/${today}.json.gz`), gzipSync(JSON.stringify({ date: today, rows: out }), { level: 9 }));
+  if (tok) state.log.push({ at: new Date().toISOString(), n: calls + 1, source: "listing-counts" });
   await writeFile(statePath, JSON.stringify(state) + "\n");
   const usagePath = join(ROOT, "data/derived/listing-counts/api-usage.json");
   const usage = await J(usagePath, { nights: [] });
   const night = { date: today, ebayBrowse: { limit: b.limit, safe: b.safe, sealedStepMax: b.sealedStep, listingCountCalls: calls + (tok ? 1 : 0), failures, rateLimited, counted: out.length, pool: plan.poolSize, perNightNeed: plan.perNightNeed, cycleNights: plan.cycleNights } };
-  usage.nights = [...(usage.nights || []).filter((n) => n.date !== today), night].slice(-60);
+  night.at = now.toISOString(); night.ebayBrowse.used24hAfter = used24(state.log, new Date());
+  night.ebayBrowse.dailyTier = tierPlan.counts; night.ebayBrowse.singleCutoff = tierPlan.singleCutoff;
+  usage.nights = [...(usage.nights || []), night].slice(-120);
   await writeFile(usagePath, JSON.stringify(usage, null, 1) + "\n");
   console.log(`listing counts: ${out.length} counted, ${calls} calls, ${failures} failed${rateLimited ? ", stopped at 429" : ""}${tok ? "" : ", no eBay key"}`);
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
-  runListingCounts().catch((e) => { console.error(`listing counts skipped: ${e.message}`); });
+  runListingCounts({ afterSealedStep: process.argv.includes("--after-sealed") }).catch((e) => { console.error(`listing counts skipped: ${e.message}`); });
 }
