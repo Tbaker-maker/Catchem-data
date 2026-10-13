@@ -2,6 +2,7 @@
 // calls the official YouTube Data API v3 and writes catchem-data-private.
 // No AI, no scraping, no captions. Cards match by catalogue id, never by name alone.
 import { addDays, HORIZONS, MIN_SCORED, scoreLedger, priceAtHorizon } from "./self-check.mjs";
+import { buildCardIndex, matchCards } from "./card-matcher.mjs";
 
 export const UNIT_COST = { channels: 1, playlistItems: 1, videos: 1, commentThreads: 1 };
 
@@ -52,11 +53,11 @@ export function buildCatalogueIndex(items = []) {
   }
   // Longest set names first so "Prismatic Evolutions" wins over "Evolutions".
   const setList = [...sets.values()].sort((a, b) => b.key.length - a.key.length);
-  return { byNum, byPid, setList, sealedBySet, pidsBySet };
+  return { byNum, byPid, setList, sealedBySet, pidsBySet, cardIndex: buildCardIndex(items) };
 }
 
-// Mentions in one text. Cards: a TCGplayer product link, or a card number plus the
-// card's own name in the same text, resolving to exactly one catalogue id.
+// Mentions in one text. A TCGplayer product link, a collector number plus the
+// card's own name, or one confident card-matcher hit. Name alone never matches.
 export function extractMentions(text, idx) {
   const raw = String(text || ""), t = ` ${norm(raw)} `;
   const cards = new Set(), sets = new Set(), sealed = new Set(), reasons = {}, ambiguous = [];
@@ -84,6 +85,13 @@ export function extractMentions(text, idx) {
       if (hit.length === 1) { sealed.add(hit[0].pid); why(`sealed:${hit[0].pid}`, "set_sealed_kind"); }
     }
   }
+  if (idx.cardIndex) {
+    for (const hit of matchCards(raw, idx.cardIndex).matches) {
+      if (cards.has(hit.pid)) continue;
+      cards.add(hit.pid);
+      why(`card:${hit.pid}`, hit.reason);
+    }
+  }
   return { cards: [...cards].sort((a, b) => a - b), sets: [...sets].sort((a, b) => a - b), sealed: [...sealed].sort((a, b) => a - b), reasons, ambiguous };
 }
 
@@ -98,7 +106,20 @@ export function commentSentiment(comments = []) {
 }
 
 // Extraction confidence by match reason (doc 1NqTC4UZ "How others score calls", upgrade 1).
-export const CONFIDENCE = { product_link: 0.95, number_name_set: 0.9, number_name: 0.75, set_sealed_kind: 0.7, set_name: 0.6 };
+export const CONFIDENCE = {
+  product_link: 0.95,
+  number_name_set_finish: 0.93,
+  number_set: 0.92,
+  number_name_finish: 0.9,
+  number_name_set: 0.9,
+  nickname: 0.9,
+  number_name: 0.75,
+  name_set_finish: 0.85,
+  name_finish: 0.84,
+  name_set: 0.82,
+  set_sealed_kind: 0.7,
+  set_name: 0.6,
+};
 export const MIN_CONFIDENCE = 0.5;
 export const HYPE_TITLE_CONFIDENCE = 0.4;
 
