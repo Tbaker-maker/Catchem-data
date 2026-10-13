@@ -527,10 +527,10 @@
     }
   ],
   "limits": {
-    "dailyUnitBudget": 400,
-    "maxNewVideosPerChannel": 15,
-    "commentsPerVideo": 20,
-    "firstRunDays": 30
+    "dailyUnitBudget": 7000,
+    "maxNewVideosPerChannel": 50,
+    "commentsPerVideo": 50,
+    "firstRunDays": 90
   },
   "toneNote": "tone.weight scales a channel's videos in attention thresholds and comment sentiment (1 = full). hype: true also halves a video whose title is hype (caps, !!, CRAZY, INSANE, EXPLODE). Claim scoring is never weighted: every claim is scored the same and stays unverified until our data backs it.",
   "podcastNote": "channels[].podcast = { rss } turns on feed ingestion: <podcast:transcript> files from the publisher's own RSS only, no audio download. Local Whisper is not wired; add it only for a feed whose terms allow transcription. None of the tracked channels had its own podcast feed on 2026-10-12.",
