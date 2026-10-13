@@ -103,7 +103,10 @@ export async function loadStudyInputs(root = ROOT) {
   }
 
   const crowd = await loadCrowd(root);
-  const fill = loadFillMap(root);
+  // Sealed fill only: the singles fill (pokeviz-singles) charts card pages but is kept out of
+  // this study, which was built and gated on sealed. Adding 7955 daily singles series took the
+  // nightly build from about 1 to 9 minutes.
+  const fill = loadFillMap(root, { keys: ["pokeviz"] });
   return {
     own, asOf, datedDays: dated.length, listings, listDays: [...new Set(listDays)].sort(),
     metaByPid, rotSources: rot.sources || [], crowd, fill,

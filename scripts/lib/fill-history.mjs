@@ -20,9 +20,11 @@ export function enabledFills(root) {
 }
 
 // Map<pid, { key, points: [[date, price]] }> from every enabled source. First source wins per product.
-export function loadFillMap(root) {
+// opts.keys: only these source keys (e.g. ["pokeviz"] for sealed-only studies).
+export function loadFillMap(root, opts = {}) {
   const map = new Map();
   for (const src of enabledFills(root)) {
+    if (opts.keys && !opts.keys.includes(src.key)) continue;
     let doc;
     try { doc = readDoc(join(root, src.rawFile)); } catch { continue; }
     for (const item of doc.items || []) {
