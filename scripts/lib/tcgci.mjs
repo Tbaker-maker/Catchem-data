@@ -21,6 +21,7 @@ export const CHANNEL_MAP = {
   "ketchum all collectibles": "ketchumallcollectibles",
   "ketchumallcollectibles": "ketchumallcollectibles",
   "top 10 pokemon": "top10pokemon",
+  "it was never a phase cards": "itwasneveraphase",
   "phillips collectibles": "phillipscollectibles",
   "steelcitystacks": "steelcitystacks",
   "steel city stacks": "steelcitystacks",
