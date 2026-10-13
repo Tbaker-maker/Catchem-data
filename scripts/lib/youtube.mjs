@@ -234,3 +234,113 @@ export function extractIdeas({ videoId, channel, date, text }) {
   const seen = new Set();
   return out.filter((i) => (seen.has(i.id) ? false : seen.add(i.id)));
 }
+
+// Track-record weight per creator. Neutral (1) until MIN_SCORED claims are scored.
+// Then 0.5 + held rate, clamped to 0.5..1.5, from the 30-day rate when it has enough
+// rows, else the 7-day rate. Private; only applied inside attention and trend counts.
+export function creatorWeights(ranking = []) {
+  const out = {};
+  for (const r of ranking) {
+    if (r.by !== "channel") continue;
+    const h = r.scored30 >= MIN_SCORED ? 30 : r.scored7 >= MIN_SCORED ? 7 : null;
+    const pct = h ? r[`heldPct${h}`] : null;
+    out[r.key] = pct == null ? { weight: 1, basis: "neutral", scored: Math.max(r.scored7 || 0, r.scored30 || 0) } : { weight: Math.min(1.5, Math.max(0.5, Math.round((0.5 + pct / 100) * 100) / 100)), basis: `held${h}`, heldPct: pct, scored: r[`scored${h}`] };
+  }
+  return out;
+}
+export const combinedTones = (tones = {}, weights = {}) => {
+  const keys = new Set([...Object.keys(tones), ...Object.keys(weights)]);
+  return Object.fromEntries([...keys].map((k) => [k, { ...(tones[k] || {}), weight: (Number.isFinite(tones[k]?.weight) ? tones[k].weight : 1) * (weights[k]?.weight ?? 1) }]));
+};
+
+// Hype effect: what set prices did 7, 30 and 90 days after heavy creator coverage.
+// An event is the first day a set reaches 3+ videos on 2+ channels inside 7 days;
+// one event per set per 30 days. Change = median single in the set, excess = vs market.
+export function hypeEvents(videos, { minVideos = 3, minChannels = 2, windowDays = 7, cooldown = 30 } = {}) {
+  const bySet = new Map();
+  for (const v of videos) for (const g of v.mentions?.sets || []) { if (!bySet.has(g)) bySet.set(g, []); bySet.get(g).push(v); }
+  const events = [];
+  for (const [g, vs] of bySet) {
+    vs.sort((a, b) => (a.date < b.date ? -1 : 1));
+    let last = null;
+    for (const v of vs) {
+      if (last && v.date < addDays(last, cooldown)) continue;
+      const from = addDays(v.date, -(windowDays - 1));
+      const win = vs.filter((x) => x.date >= from && x.date <= v.date);
+      const ch = new Set(win.map((x) => x.channel));
+      if (win.length >= minVideos && ch.size >= minChannels) { events.push({ groupId: g, date: v.date, videos: win.length, channels: ch.size }); last = v.date; }
+    }
+  }
+  return events.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : a.groupId - b.groupId));
+}
+
+export function scoreHype(events, { priceOn, marketChange, pidsBySet, today }) {
+  for (const e of events) {
+    const pids = pidsBySet.get(e.groupId) || [];
+    for (const h of HORIZONS) {
+      if (e[`h${h}`] || addDays(e.date, h) > today) continue;
+      for (let d = 0; d <= 3; d++) {
+        const day = addDays(e.date, h + d);
+        if (day > today) break;
+        const ch = [];
+        for (const pid of pids) { const a = priceOn(pid, e.date), b = priceOn(pid, day); if (a > 0 && b > 0) ch.push(b / a - 1); }
+        if (ch.length < 5) continue;
+        const chg = median(ch), base = marketChange ? marketChange(e.date, day) : null;
+        e[`h${h}`] = { day, chg: Math.round(chg * 10000) / 10000, excess: base == null ? null : Math.round((chg - base) * 10000) / 10000, priced: ch.length };
+        break;
+      }
+    }
+  }
+  const summary = {};
+  for (const h of HORIZONS) {
+    const ex = events.map((e) => e[`h${h}`]?.excess).filter((x) => x != null);
+    summary[`h${h}`] = { events: ex.length, medianExcessPct: ex.length >= 5 ? Math.round(median(ex) * 1000) / 10 : null, beatMarketPct: ex.length >= 5 ? Math.round((100 * ex.filter((x) => x > 0).length) / ex.length) : null };
+  }
+  return { events, summary };
+}
+
+// Disagreements: opposite claims on one target from different creators inside 14
+// days, and claims our TCGplayer prices contradicted. Private rows; public counts only.
+export function disagreements(claims, { today, days = 14 } = {}) {
+  const creator = [];
+  const byTarget = new Map();
+  for (const c of claims) { const k = c.target === "card" ? `card:${c.pid}` : `set:${c.groupId}`; if (!byTarget.has(k)) byTarget.set(k, []); byTarget.get(k).push(c); }
+  for (const [k, cs] of byTarget) {
+    const recent = cs.filter((c) => c.date >= addDays(today, -(days - 1)));
+    const up = recent.filter((c) => c.dir > 0), down = recent.filter((c) => c.dir < 0);
+    const upCh = new Set(up.map((c) => c.channel)), downCh = new Set(down.map((c) => c.channel));
+    if (up.length && down.length && [...upCh].some((a) => [...downCh].some((b) => a !== b))) {
+      const dates = recent.map((c) => c.date).sort();
+      creator.push({ target: k, up: upCh.size, down: downCh.size, from: dates[0], to: dates.at(-1), claims: recent.map((c) => c.id) });
+    }
+  }
+  const data = claims.filter((c) => c.status === "contradicted" && c.statusSince === today).map((c) => ({ target: c.target === "card" ? `card:${c.pid}` : `set:${c.groupId}`, claim: c.id, date: c.date, evidence: c.evidence }));
+  return { creator, data };
+}
+
+// Eden seed from comment sentiment: per catalogue id, likes-weighted and creator-weighted,
+// with this week against the week before so a turn in mood shows.
+export function edenSeed(videos, { today, weightOf = () => 1 }) {
+  const wk = addDays(today, -6), prev = addDays(today, -13), start = addDays(today, -29);
+  const rows = {};
+  for (const v of videos) {
+    if (v.date < start || v.date > today) continue;
+    const w = weightOf(v);
+    let pos = 0, neg = 0;
+    for (const c of v.topComments || []) { const s = commentSentiment([c.text]); const lw = 1 + Math.log10(1 + (c.likes || 0)); pos += s.pos * lw; neg += s.neg * lw; }
+    const keys = [...(v.mentions?.sets || []).map((g) => `set:${g}`), ...(v.mentions?.cards || []).map((p) => `card:${p}`), ...(v.mentions?.sealed || []).map((p) => `sealed:${p}`)];
+    for (const k of keys) {
+      const r = (rows[k] ||= { videos: 0, comments: 0, pos: 0, neg: 0, week: { pos: 0, neg: 0, videos: 0 }, prevWeek: { pos: 0, neg: 0, videos: 0 } });
+      r.videos++; r.comments += (v.topComments || []).length; r.pos += w * pos; r.neg += w * neg;
+      const b = v.date >= wk ? r.week : v.date >= prev ? r.prevWeek : null;
+      if (b) { b.pos += w * pos; b.neg += w * neg; b.videos++; }
+    }
+  }
+  const sc = (p, n) => (p + n ? Math.round(((p - n) / (p + n)) * 100) / 100 : null);
+  for (const r of Object.values(rows)) {
+    r.pos = Math.round(r.pos * 100) / 100; r.neg = Math.round(r.neg * 100) / 100;
+    r.score = sc(r.pos, r.neg); r.week.score = sc(r.week.pos, r.week.neg); r.prevWeek.score = sc(r.prevWeek.pos, r.prevWeek.neg);
+    r.turn = r.week.score != null && r.prevWeek.score != null ? Math.round((r.week.score - r.prevWeek.score) * 100) / 100 : null;
+  }
+  return rows;
+}
