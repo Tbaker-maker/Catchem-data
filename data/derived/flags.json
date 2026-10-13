@@ -1,6 +1,6 @@
 {
- "asOf": "2026-10-12",
- "generatedAt": "2026-10-12T23:34:21.527Z",
+ "asOf": "2026-10-13",
+ "generatedAt": "2026-10-13T06:46:52.771Z",
  "note": "Internal. What changed or broke tonight, for the weekly review. Script only.",
  "types": {
   "NEW_SET": "A TCGCSV set (group) appeared that was not there last night, or a future product in a news calendar is not on the radar.",
@@ -12,19 +12,25 @@
   "DATA_GAP": "A calendar day has no TCGCSV price file, or tonight's file priced 10%+ fewer products than the last one.",
   "STALE_FILE": "A file the reads depend on is older than its allowed age.",
   "ODD_PRICE": "Prices held back as likely data errors (Card Rating held list, sealed price outliers).",
-  "READ_TYPE_EMPTY": "A known read type produced nothing tonight."
+  "YOUTUBE_LEAD": "Creator videos (official YouTube API, private store) point at something new: a set, card or sealed product on 2+ channels this week, pack-destruction or print-run talk, or a topic not seen before. Counts and dates only. An unverified lead for review, never a fact; nothing in reads or ratings uses it.",
+  "YOUTUBE_DISAGREE": "Creators made opposite price-direction claims on one set or card inside 14 days, or our TCGplayer prices contradicted creator claims tonight. Counts and dates only.",
+  "YOUTUBE_KEY_MISSING": "YOUTUBE_API_KEY is not set for the nightly, or the YouTube step failed. The learning loop did not run.",
+  "READ_TYPE_EMPTY": "A known read type produced nothing tonight.",
+  "HYPE_EFFECT": "Heavy creator attention on a set, card, or sealed product this week, with the historical 30-day move for past subjects that saw similar attention. n≥20 holdout. Counts, dates, and percent only. No creator names. Not advice.",
+  "CROWDED_CALL": "Many tracked creators made the same-direction call on one set, card, or sealed product inside a short window, with the historical 30-day move for past crowded calls at that level. n≥20 holdout. Singles and sealed stay separate. No creator names. Not advice."
  },
  "summary": {
   "byType": {
-   "PRICE_MOVE": 6,
+   "PRICE_MOVE": 4,
    "DATA_GAP": 1,
-   "ODD_PRICE": 54,
-   "READ_TYPE_EMPTY": 2
+   "ODD_PRICE": 53,
+   "READ_TYPE_EMPTY": 4,
+   "YOUTUBE_KEY_MISSING": 1
   },
   "bySeverity": {
-   "high": 4,
-   "medium": 2,
-   "low": 57
+   "high": 2,
+   "medium": 3,
+   "low": 58
   }
  },
  "newTonight": 0,
@@ -32,15 +38,15 @@
   {
    "type": "PRICE_MOVE",
    "severity": "high",
-   "key": "move:717609:2026-10-12",
-   "line": "Mew - B/RGB (ME: 30th Celebration): $1702.50 (2026-10-11) to $3746.75 (2026-10-12) on TCGplayer market, up 120%.",
+   "key": "move:90114:2026-10-13",
+   "line": "Tyranitar (H28) (Aquapolis): $198.90 (2026-10-12) to $698.00 (2026-10-13) on TCGplayer market, up 251%.",
    "data": {
-    "id": "tcgcsv-717609",
-    "from": 1702.5,
-    "to": 3746.75,
-    "fromDay": "2026-10-11",
-    "toDay": "2026-10-12",
-    "pct": 120.1,
+    "id": "tcgcsv-90114",
+    "from": 198.9,
+    "to": 698,
+    "fromDay": "2026-10-12",
+    "toDay": "2026-10-13",
+    "pct": 250.9,
     "kind": "single"
    },
    "new": false
@@ -48,47 +54,15 @@
   {
    "type": "PRICE_MOVE",
    "severity": "high",
-   "key": "move:89788:2026-10-12",
-   "line": "Team Aqua's Kyogre (EX Team Magma vs Team Aqua): $316.30 (2026-10-11) to $542.60 (2026-10-12) on TCGplayer market, up 72%.",
+   "key": "move:88252:2026-10-13",
+   "line": "Politoed ex (EX Unseen Forces): $199.99 (2026-10-12) to $330.00 (2026-10-13) on TCGplayer market, up 65%.",
    "data": {
-    "id": "tcgcsv-89788",
-    "from": 316.3,
-    "to": 542.6,
-    "fromDay": "2026-10-11",
-    "toDay": "2026-10-12",
-    "pct": 71.5,
-    "kind": "single"
-   },
-   "new": false
-  },
-  {
-   "type": "PRICE_MOVE",
-   "severity": "high",
-   "key": "move:88967:2026-10-12",
-   "line": "Scizor ex (EX Unseen Forces): $45.99 (2026-10-11) to $183.44 (2026-10-12) on TCGplayer market, up 299%.",
-   "data": {
-    "id": "tcgcsv-88967",
-    "from": 45.99,
-    "to": 183.44,
-    "fromDay": "2026-10-11",
-    "toDay": "2026-10-12",
-    "pct": 298.9,
-    "kind": "single"
-   },
-   "new": false
-  },
-  {
-   "type": "PRICE_MOVE",
-   "severity": "high",
-   "key": "move:88679:2026-10-12",
-   "line": "Registeel ex (EX Hidden Legends): $173.30 (2026-10-11) to $300.50 (2026-10-12) on TCGplayer market, up 73%.",
-   "data": {
-    "id": "tcgcsv-88679",
-    "from": 173.3,
-    "to": 300.5,
-    "fromDay": "2026-10-11",
-    "toDay": "2026-10-12",
-    "pct": 73.4,
+    "id": "tcgcsv-88252",
+    "from": 199.99,
+    "to": 330,
+    "fromDay": "2026-10-12",
+    "toDay": "2026-10-13",
+    "pct": 65,
     "kind": "single"
    },
    "new": false
@@ -96,15 +70,15 @@
   {
    "type": "PRICE_MOVE",
    "severity": "medium",
-   "key": "move:83538:2026-10-12",
-   "line": "Ampharos (2) (Expedition): $111.50 (2026-10-11) to $175.00 (2026-10-12) on TCGplayer market, up 57%.",
+   "key": "move:88425:2026-10-13",
+   "line": "Psychic Energy (Call of Legends): $78.51 (2026-10-12) to $140.00 (2026-10-13) on TCGplayer market, up 78%.",
    "data": {
-    "id": "tcgcsv-83538",
-    "from": 111.5,
-    "to": 175,
-    "fromDay": "2026-10-11",
-    "toDay": "2026-10-12",
-    "pct": 57,
+    "id": "tcgcsv-88425",
+    "from": 78.51,
+    "to": 140,
+    "fromDay": "2026-10-12",
+    "toDay": "2026-10-13",
+    "pct": 78.3,
     "kind": "single"
    },
    "new": false
@@ -112,15 +86,15 @@
   {
    "type": "PRICE_MOVE",
    "severity": "medium",
-   "key": "move:87492:2026-10-12",
-   "line": "Minun - HGSS17 (HGSS Promos): $26.50 (2026-10-11) to $79.95 (2026-10-12) on TCGplayer market, up 202%.",
+   "key": "move:250573:2026-10-13",
+   "line": "Gyarados - 33/147 (Cosmos Holo) (Blister Exclusives): $31.85 (2026-10-12) to $55.58 (2026-10-13) on TCGplayer market, up 75%.",
    "data": {
-    "id": "tcgcsv-87492",
-    "from": 26.5,
-    "to": 79.95,
-    "fromDay": "2026-10-11",
-    "toDay": "2026-10-12",
-    "pct": 201.7,
+    "id": "tcgcsv-250573",
+    "from": 31.85,
+    "to": 55.58,
+    "fromDay": "2026-10-12",
+    "toDay": "2026-10-13",
+    "pct": 74.5,
     "kind": "single"
    },
    "new": false
@@ -158,7 +132,7 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-277004",
-   "line": "Held for a check: Conkeldurr V (Alternate Full Art) (Pokémon GO) at $4.01, more than 10x from peer median.",
+   "line": "Held for a check: Conkeldurr V (Alternate Full Art) (Pokémon GO) at $3.87, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-277004",
     "group": "swsh-alt",
@@ -171,11 +145,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-497606",
-   "line": "Held for a check: Magikarp - 203/193 (SV02: Paldea Evolved) at $347.11, more than 10x from peer median.",
+   "line": "Held for a check: Magikarp - 203/193 (SV02: Paldea Evolved) at $358.49, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-497606",
     "group": "ir",
-    "ratio": 19.32,
+    "ratio": 19.84,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -184,7 +158,7 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-264206",
-   "line": "Held for a check: Umbreon VMAX (SWSH09: Brilliant Stars) at $100.43, more than 10x from peer median.",
+   "line": "Held for a check: Umbreon VMAX (SWSH09: Brilliant Stars) at $101.22, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-264206",
     "group": "tg",
@@ -201,7 +175,7 @@
    "data": {
     "id": "tcgcsv-179007",
     "group": "prism",
-    "ratio": 0.09,
+    "ratio": 0.08,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -214,20 +188,7 @@
    "data": {
     "id": "tcgcsv-264207",
     "group": "tg",
-    "ratio": 10.93,
-    "source": "data/derived/card-rating-held.json"
-   },
-   "new": false
-  },
-  {
-   "type": "ODD_PRICE",
-   "severity": "low",
-   "key": "held:tcgcsv-264208",
-   "line": "Held for a check: Sylveon VMAX (SWSH09: Brilliant Stars) at $66.05, more than 10x from peer median.",
-   "data": {
-    "id": "tcgcsv-264208",
-    "group": "tg",
-    "ratio": 10.02,
+    "ratio": 10.85,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -253,7 +214,7 @@
    "data": {
     "id": "tcgcsv-264209",
     "group": "tg",
-    "ratio": 11.09,
+    "ratio": 11,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -275,11 +236,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-179011",
-   "line": "Held for a check: Life Forest Prism Star (SM - Lost Thunder) at $1.18, more than 10x from peer median.",
+   "line": "Held for a check: Life Forest Prism Star (SM - Lost Thunder) at $1.13, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-179011",
     "group": "prism",
-    "ratio": 0.09,
+    "ratio": 0.08,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -301,11 +262,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-179014",
-   "line": "Held for a check: Lusamine Prism Star (SM - Lost Thunder) at $1.07, more than 10x from peer median.",
+   "line": "Held for a check: Lusamine Prism Star (SM - Lost Thunder) at $1.30, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-179014",
     "group": "prism",
-    "ratio": 0.08,
+    "ratio": 0.09,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -327,11 +288,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-264221",
-   "line": "Held for a check: Mimikyu V (SWSH09: Brilliant Stars) at $82.10, more than 10x from peer median.",
+   "line": "Held for a check: Mimikyu V (SWSH09: Brilliant Stars) at $81.96, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-264221",
     "group": "tg",
-    "ratio": 12.45,
+    "ratio": 12.33,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -344,20 +305,7 @@
    "data": {
     "id": "tcgcsv-264222",
     "group": "tg",
-    "ratio": 11.36,
-    "source": "data/derived/card-rating-held.json"
-   },
-   "new": false
-  },
-  {
-   "type": "ODD_PRICE",
-   "severity": "low",
-   "key": "held:tcgcsv-590027",
-   "line": "Held for a check: Pikachu ex - 238/191 (SV08: Surging Sparks) at $281.33, more than 10x from peer median.",
-   "data": {
-    "id": "tcgcsv-590027",
-    "group": "sir",
-    "ratio": 10.07,
+    "ratio": 11.28,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -366,11 +314,24 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-633031",
-   "line": "Held for a check: Team Rocket's Mewtwo ex - 231/182 (SV10: Destined Rivals) at $377.81, more than 10x from peer median.",
+   "line": "Held for a check: Team Rocket's Mewtwo ex - 231/182 (SV10: Destined Rivals) at $374.45, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-633031",
     "group": "sir",
-    "ratio": 13.53,
+    "ratio": 13.45,
+    "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "low",
+   "key": "held:tcgcsv-157737",
+   "line": "Held for a check: Cyrus Prism Star (SM - Ultra Prism) at $1.43, 1st Edition price below its own unlimited price.",
+   "data": {
+    "id": "tcgcsv-157737",
+    "group": "prism",
+    "ratio": 0.1,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -383,7 +344,7 @@
    "data": {
     "id": "tcgcsv-284137",
     "group": "swsh-alt",
-    "ratio": 13.68,
+    "ratio": 13.57,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -418,11 +379,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-517045",
-   "line": "Held for a check: Charizard ex - 199/165 (SV: Scarlet & Violet 151) at $321.19, more than 10x from peer median.",
+   "line": "Held for a check: Charizard ex - 199/165 (SV: Scarlet & Violet 151) at $321.70, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-517045",
     "group": "sir",
-    "ratio": 11.5,
+    "ratio": 11.56,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -431,7 +392,7 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-253149",
-   "line": "Held for a check: Sandaconda V (Alternate Full Art) (SWSH08: Fusion Strike) at $4.14, more than 10x from peer median.",
+   "line": "Held for a check: Sandaconda V (Alternate Full Art) (SWSH08: Fusion Strike) at $4.17, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-253149",
     "group": "swsh-alt",
@@ -470,11 +431,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-477057",
-   "line": "Held for a check: Mewtwo VSTAR (SWSH: Crown Zenith) at $239.50, more than 10x from peer median.",
+   "line": "Held for a check: Mewtwo VSTAR (SWSH: Crown Zenith) at $236.73, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-477057",
     "group": "gg",
-    "ratio": 22.83,
+    "ratio": 22.25,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -487,7 +448,7 @@
    "data": {
     "id": "tcgcsv-642558",
     "group": "ir",
-    "ratio": 13.98,
+    "ratio": 14.15,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -522,7 +483,7 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-183962",
-   "line": "Held for a check: Wondrous Labyrinth Prism Star (SM - Team Up) at $0.66, more than 10x from peer median.",
+   "line": "Held for a check: Wondrous Labyrinth Prism Star (SM - Team Up) at $0.67, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-183962",
     "group": "prism",
@@ -535,11 +496,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-274467",
-   "line": "Held for a check: Radiant Charizard (Pokémon GO) at $17.12, more than 10x from peer median.",
+   "line": "Held for a check: Radiant Charizard (Pokémon GO) at $17.07, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-274467",
     "group": "radiant",
-    "ratio": 13.64,
+    "ratio": 13.49,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -548,7 +509,7 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-253171",
-   "line": "Held for a check: Inteleon VMAX (Alternate Art Secret) (SWSH08: Fusion Strike) at $27.11, more than 10x from peer median.",
+   "line": "Held for a check: Inteleon VMAX (Alternate Art Secret) (SWSH08: Fusion Strike) at $27.00, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-253171",
     "group": "swsh-alt",
@@ -561,11 +522,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-84572",
-   "line": "Held for a check: Dark Charizard (4) (Team Rocket) at $381.69, 1st Edition price below its own unlimited price.",
+   "line": "Held for a check: Dark Charizard (4) (Team Rocket) at $385.44, 1st Edition price below its own unlimited price.",
    "data": {
     "id": "tcgcsv-84572",
     "group": "wotc-holo",
-    "ratio": 4.3,
+    "ratio": 4.34,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -574,11 +535,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-165773",
-   "line": "Held for a check: Lysandre Prism Star (SM - Forbidden Light) at $0.97, more than 10x from peer median.",
+   "line": "Held for a check: Lysandre Prism Star (SM - Forbidden Light) at $0.98, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-165773",
     "group": "prism",
-    "ratio": 0.08,
+    "ratio": 0.07,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -587,11 +548,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-523880",
-   "line": "Held for a check: Groudon - 199/182 (SV04: Paradox Rift) at $105.44, more than 10x from peer median.",
+   "line": "Held for a check: Groudon - 199/182 (SV04: Paradox Rift) at $104.42, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-523880",
     "group": "ir",
-    "ratio": 10.02,
+    "ratio": 10.03,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -600,11 +561,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-42382",
-   "line": "Held for a check: Charizard (Base Set) at $928.06, more than 10x from peer median.",
+   "line": "Held for a check: Charizard (Base Set) at $968.91, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-42382",
     "group": "wotc-holo",
-    "ratio": 10.46,
+    "ratio": 10.92,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -734,7 +695,7 @@
    "data": {
     "id": "tcgcsv-107000",
     "group": "first-ed",
-    "ratio": 0.67,
+    "ratio": 0.69,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -760,7 +721,7 @@
    "data": {
     "id": "tcgcsv-84640",
     "group": "first-ed",
-    "ratio": 0.54,
+    "ratio": 0.55,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -773,7 +734,7 @@
    "data": {
     "id": "tcgcsv-84652",
     "group": "first-ed",
-    "ratio": 0.63,
+    "ratio": 0.64,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -799,7 +760,7 @@
    "data": {
     "id": "tcgcsv-84561",
     "group": "first-ed",
-    "ratio": 0.72,
+    "ratio": 0.74,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -812,7 +773,7 @@
    "data": {
     "id": "tcgcsv-84572",
     "group": "first-ed",
-    "ratio": 0.73,
+    "ratio": 0.75,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -821,11 +782,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-106996",
-   "line": "Held for a check: Alakazam (Base Set) at $328.13, 1st Edition price below its own unlimited price.",
+   "line": "Held for a check: Alakazam (Base Set) at $323.42, 1st Edition price below its own unlimited price.",
    "data": {
     "id": "tcgcsv-106996",
     "group": "first-ed",
-    "ratio": 2.02,
+    "ratio": 1.99,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -838,8 +799,19 @@
    "data": {
     "id": "tcgcsv-84599",
     "group": "first-ed",
-    "ratio": 4.61,
+    "ratio": 4.62,
     "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "READ_TYPE_EMPTY",
+   "severity": "low",
+   "key": "empty:spread",
+   "line": "Read type \"spread\" produced nothing tonight.",
+   "data": {
+    "kind": "spread",
+    "lastNight": 0
    },
    "new": false
   },
@@ -857,11 +829,32 @@
   {
    "type": "READ_TYPE_EMPTY",
    "severity": "low",
-   "key": "empty:mktmove",
-   "line": "Read type \"mktmove\" produced nothing tonight.",
+   "key": "empty:climb",
+   "line": "Read type \"climb\" produced nothing tonight.",
    "data": {
-    "kind": "mktmove",
+    "kind": "climb",
     "lastNight": 0
+   },
+   "new": false
+  },
+  {
+   "type": "READ_TYPE_EMPTY",
+   "severity": "low",
+   "key": "empty:setheat",
+   "line": "Read type \"setheat\" produced nothing tonight.",
+   "data": {
+    "kind": "setheat",
+    "lastNight": 0
+   },
+   "new": false
+  },
+  {
+   "type": "YOUTUBE_KEY_MISSING",
+   "severity": "medium",
+   "key": "yt:missing:2026-10-13",
+   "line": "YOUTUBE_API_KEY is not set; the YouTube learning loop did not run.",
+   "data": {
+    "status": "key_missing"
    },
    "new": false
   }

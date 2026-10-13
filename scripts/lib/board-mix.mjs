@@ -555,12 +555,24 @@ export function mixBoard(priceRows, fresh, day, { maxShare = PRICE_SHARE_MAX } =
   const all = shuffleByDay([...price, ...fresh], day);
   const out = [];
   const pool = all.slice();
+  const fam = (r) => r.family || "price";
+  const left = new Map();
+  for (const r of pool) left.set(fam(r), (left.get(fam(r)) || 0) + 1);
   while (pool.length) {
     const last = out[out.length - 1];
-    const fam = (r) => r.family || "price";
-    let i = pool.findIndex((r) => !last || fam(r) !== fam(last));
+    // The family with the most rows left goes first when it may, so a large
+    // family is not left over at the end with nothing to sit between.
+    let i = -1;
+    let best = -1;
+    for (let k = 0; k < pool.length; k++) {
+      const f = fam(pool[k]);
+      if (last && f === fam(last)) continue;
+      if (left.get(f) > best) { best = left.get(f); i = k; }
+    }
     if (i < 0) i = 0;
-    out.push(pool.splice(i, 1)[0]);
+    const row = pool.splice(i, 1)[0];
+    left.set(fam(row), left.get(fam(row)) - 1);
+    out.push(row);
   }
   return out;
 }

@@ -398,7 +398,9 @@ for (const item of items) {
   // Chart line only: earlier fan-site days before our first own day. Movers keep histRaw.
   const filled = item.kind === "sealed" ? withFill(histRaw, FILL.get(Number(item.tcgplayerProductId))) : { points: histRaw, fillTo: null };
   if (filled.fillTo) fillProducts += 1;
-  const hist = chartSeries(filled.points);
+  // hist stays our own days only, so every read and signal built from buckets is unchanged.
+  const hist = chartSeries(histRaw);
+  const fillHist = filled.fillTo ? filled.points.filter((p) => p[0] < filled.fillTo) : [];
   rawById.set(item.id, histRaw);
   const prevP = hist.length >= 2 ? hist[hist.length - 2][1] : null;
   const pct = price ? changePct(prevP, price) : null;
@@ -422,7 +424,7 @@ for (const item of items) {
     artist,
     pct,
     hist,
-    ...(filled.fillTo ? { fillTo: filled.fillTo, fillSource: filled.fillKey } : {}),
+    ...(filled.fillTo ? { fillTo: filled.fillTo, fillSource: filled.fillKey, fillHist } : {}),
     low: lowByPid.get(Number(item.tcgplayerProductId)) || null,
     scan: cataloguePath(catalogueImages, item.id),
     versions: versionsOf.get(item.id) || [],
@@ -466,7 +468,8 @@ for (const set of sets.values()) {
     ...(logo ? { logo } : {}),
   };
   setIndex.push(row);
-  const line = (kind) => indexLine(set.items.filter((it) => it.kind === kind));
+  // Chart line only: the sealed index may run back through fan-site days (fillHist).
+  const line = (kind) => indexLine(set.items.filter((it) => it.kind === kind).map((it) => (it.fillHist?.length ? { ...it, hist: [...it.fillHist, ...it.hist] } : it)));
   const topChase = set.items.filter((it) => it.kind === "single" && it.price && /illustration|special illustration|hyper|secret|ultra|rainbow/i.test(it.rarity || "")).sort((a, b) => b.price - a.price)[0] || null;
   const done = completionCounts(set.items);
   const body = {
