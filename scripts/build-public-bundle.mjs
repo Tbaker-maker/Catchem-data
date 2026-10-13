@@ -395,8 +395,9 @@ for (const item of items) {
   const price = money(item.price) ? Number(item.price) : null;
   if (price && !browseHidden) set.priced += 1;
   const histRaw = histFor(item.tcgplayerProductId);
-  // Chart line only: earlier fan-site days before our first own day. Movers keep histRaw.
-  const filled = item.kind === "sealed" ? withFill(histRaw, FILL.get(Number(item.tcgplayerProductId))) : { points: histRaw, fillTo: null };
+  // Chart line only, every kind (sealed and singles): earlier fan-site days before our first own day.
+  // Own days win on overlap. Movers, reads and signals keep histRaw.
+  const filled = withFill(histRaw, FILL.get(Number(item.tcgplayerProductId)));
   if (filled.fillTo) fillProducts += 1;
   // hist stays our own days only, so every read and signal built from buckets is unchanged.
   const hist = chartSeries(histRaw);

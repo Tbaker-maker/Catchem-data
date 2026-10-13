@@ -29,8 +29,16 @@ export const PUBLIC_BANNED = /\b(buy|buys|buying|sell|sells|selling|hold|holds|h
 
 const KEY_ORDER = ["kind", "set_age", "rotation_stage", "rotation_timing", "path", "listings_14d", "crowd"];
 
+// Day numbers are cached per ISO date: with singles fill the study calls this millions of times.
+const DAY_NUM = new Map();
+function dayNum(iso) {
+  let n = DAY_NUM.get(iso);
+  if (n === undefined) { n = Date.parse(`${iso}T00:00:00Z`) / DAY; DAY_NUM.set(iso, n); }
+  return n;
+}
+
 export function daysBetween(a, b) {
-  return Math.round((Date.parse(`${b}T00:00:00Z`) - Date.parse(`${a}T00:00:00Z`)) / DAY);
+  return Math.round(dayNum(b) - dayNum(a));
 }
 
 export function publicCopyOk(text) {
