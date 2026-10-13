@@ -20,6 +20,21 @@
       "found": "0 captures of tcgcsv.com/archive/*; 2 Pokemon price files total (group 3170 on 2026-07-23, group 604 on 2026-05-08)",
       "robotsBlocked": false,
       "robotsChecked": "2026-10-12"
+    },
+    {
+      "site": "pokevizinvestor.com",
+      "key": "pokeviz",
+      "robots": "User-agent: * / Allow: / (checked 2026-10-12 21:57 PT)",
+      "terms": "No terms page: /terms, /tos, /legal, /privacy, /terms-of-use all 404 (checked 2026-10-12). Footer: unofficial fan site, prices from TCGplayer market data.",
+      "termsChecked": "2026-10-12",
+      "accuracy": "40 sealed products, 402 product-days 2026-09-26 to 2026-10-12 vs our tcgcsv days: median abs diff 0.0%, 100% within 10%, 87.1% exact. Real daily movement (changes on 25% of days, same as ours).",
+      "approved": "Tyler, 2026-10-12",
+      "use": "sealed chart history before our first own day, read by scripts/backfill-pokeviz.mjs at 1 request every 3 seconds, stops on any 403, 429 or block",
+      "rawFile": "data/backfill/pokeviz/raw.json",
+      "chartFill": true,
+      "fillsHistory": true,
+      "robotsBlocked": false,
+      "robotsChecked": "2026-10-12"
     }
   ],
   "skipped": [
