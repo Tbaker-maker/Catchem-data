@@ -74,7 +74,7 @@ export function volumeRead(row, item) {
     set: item.set || "",
     path: sentence,
     headline: sentence,
-    why: `${VOLUME_SOURCE}. TCGplayer's daily sold counts for the ${row.printing} printing in Near Mint, added up; days with no sale add nothing.`,
+    why: `${VOLUME_SOURCE}. TCGplayer's daily sold counts for the ${row.printing} finish in Near Mint, added up; days with no sale add nothing.`,
     asOf: row.window30d.to,
     href: `/c/${encodeURIComponent(item.id)}`,
     sold,

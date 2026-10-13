@@ -194,7 +194,16 @@ if (libraryOn() !== true && JSON.stringify(reg.lib) !== JSON.stringify(library))
   throw new Error("registry library does not match the written read library");
 }
 console.log(JSON.stringify({ registryMs, registryLogs: reg.logs.length, browse: reg.browse.length }));
-const boardV3 = await buildBoardV3(ROOT, { on: libraryOn() === true });
+let spanReads = [];
+try {
+  const { collectSpanReads } = await import("./lib/span-reads.mjs");
+  const span = await collectSpanReads({ root: ROOT, asOf: catalog.asOf || "", series });
+  spanReads = span.reads || [];
+  console.log(JSON.stringify({ span: span.counts }));
+} catch (err) {
+  console.error(`span reads skipped: ${err.message}`);
+}
+const boardV3 = await buildBoardV3(ROOT, { on: libraryOn() === true, spanReads });
 console.log(JSON.stringify({ boardV3 }));
 // Variant tags: rebuilt nightly here, then stamped on reads that point at one card.
 let variantSummary = null;

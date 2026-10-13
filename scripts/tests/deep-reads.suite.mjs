@@ -49,6 +49,10 @@ export async function run() {
   const numbered = deep.filter((r) => r.deep === "printings" || r.deep === "samelabel");
   t("printings and same-rarity lines are not twins", numbered.every((r) => new Set(r.lines).size === r.lines.length));
   t("printings and same-rarity card lines show the card number", numbered.every((r) => r.lines.filter((l) => /\$[\d,.]+/.test(l) && !/^(Lowest|Most common|TCGplayer)/.test(l)).every((l) => /#[A-Za-z0-9]+(\/[A-Za-z0-9]+)?/.test(l))));
+  const publicBits = (r) => [r.headline, r.path, r.why, r.whyItMatters, r.source, r.chart?.label, ...(r.lines || []), ...(r.variants || [])].map((s) => String(s || ""));
+  t("public read text does not say printing or printings", rows.every((r) => publicBits(r).every((s) => !/\bprintings?\b/i.test(s))));
+  t("the renamed headline counts every card we price", deep.filter((r) => r.deep === "printings").every((r) => /^Every .+ card we price: \d+ cards, from \$[\d,.]+ to \$[\d,.]+ tonight\.$/.test(r.headline)));
+  t("year-range, year-ago, and season reads are on the board", ["year-range", "year-ago", "season"].every((k) => rows.some((r) => r.readKind === k)));
   const ids = rows.map((r) => r.id);
   t("no duplicate ids", new Set(ids).size === ids.length);
   t("no same family side by side", rows.every((r, i) => i === 0 || (r.family || r.readKind) !== (rows[i - 1].family || rows[i - 1].readKind)));
