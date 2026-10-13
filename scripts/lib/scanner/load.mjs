@@ -244,7 +244,8 @@ export async function collectScannerReads({ root, asOf, series, catalog, token =
     strongest: extremes.strongest.map(brief),
     weakest: extremes.weakest.map(brief),
   };
-  await writePrivate(root, token, asOf, { summary, gates, present: live.present, detections: replay.detections });
+  const privatePush = await writePrivate(root, token, asOf, { summary, gates, present: live.present, detections: replay.detections });
+  summary.privatePush = privatePush;
   summary.runtimeMs = Date.now() - started;
   return { reads, summary, gates, present: live.present, detections: replay.detections };
 }
@@ -279,10 +280,16 @@ function brief(row) {
   };
 }
 
-async function writePrivate(root, token, asOf, payload) {
+export async function writePrivate(root, token, asOf, payload, { open = openPrivate } = {}) {
+  if (!asOf || !/^\d{4}-\d{2}-\d{2}$/.test(asOf)) {
+    return { pushed: false, reason: "scanner asOf is missing, so private files were not written." };
+  }
   let store;
-  try { store = await openPrivate({ root, token }); }
-  catch { store = await openPrivate({ root, token: "" }); }
+  try { store = await open({ root, token }); }
+  catch (err) {
+    console.error(`scanner: ${err.message}; using local data/private`);
+    store = await open({ root, token: "" });
+  }
   const dir = join(store.dir, "scanner");
   await mkdir(dir, { recursive: true });
   const weights = {
@@ -298,7 +305,7 @@ async function writePrivate(root, token, asOf, payload) {
     asOf, version: SCANNER_VERSION, alerts: false,
     summary: payload.summary,
     forward: payload.gates.filter((row) => row.passed).map((row) => ({
-      pattern: row.pattern, stage: row.stage, kind: row.kind, horizon: row.horizon,
+      pattern: row.pattern, stage: row.stage, kind: row.kind, horizon: row.horizon, dir: row.dir,
       n: row.n, medianPct: row.medianPct, rate: row.rate, rateLo: row.rateLo, upRate: row.upRate,
       from: row.from, to: row.to, train: row.train, test: row.test, examples: row.examples,
     })),
@@ -310,7 +317,18 @@ async function writePrivate(root, token, asOf, payload) {
   await writeFile(join(dir, "summary.json"), JSON.stringify(payload.summary, null, 1) + "\n");
   await writeFile(join(dir, `${asOf}.json`), JSON.stringify(day) + "\n");
   const rel = [`scanner/weights.json`, `scanner/summary.json`, `scanner/${asOf}.json`];
-  try { await store.close(rel, `scanner ${asOf}`); } catch { /* local copy already written */ }
+  const pushed = await store.close(rel, `scanner ${asOf}`);
+  console.log(JSON.stringify({
+    scannerPrivate: {
+      asOf,
+      remote: store.remote === true,
+      pushed: Boolean(pushed?.pushed),
+      sha: pushed?.sha || null,
+      reason: pushed?.reason || null,
+      files: rel,
+    },
+  }));
+  return { pushed: Boolean(pushed?.pushed), sha: pushed?.sha || null, reason: pushed?.reason || null, remote: store.remote === true };
 }
 
 function forwardStats(row, gates) {

@@ -1,4 +1,3 @@
-import { readFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { addDays } from "../lib/tracker.mjs";
@@ -23,6 +22,9 @@ import {
   coveredInWeek, expectedDir, gradeDetection, isDirHit, priceBand, replayItems, replayStep, rotationMembership, scoreGates, splitOf, splitScan, wilson90,
 } from "../lib/scanner/engine.mjs";
 import { buildScannerReads, scannerCopyOk } from "../lib/scanner/reads.mjs";
+import { writePrivate } from "../lib/scanner/load.mjs";
+import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 
@@ -246,6 +248,35 @@ export async function run() {
   t("a flat past line does not show an open move over 3%", flatPast.some((row) => row.readKind === "past-cases") && !/Open now/.test(pastText));
   const bare = buildScannerReads([], [{ ...groupGate, examples: [{ id: "g", name: "SV", from: "2026-01-15", to: "2026-04-15", pct: 4.2, date: "2026-01-15" }] }], asOf);
   t("a group past line can stand without a card price", bare.some((row) => /In 93 past cases since Jan 2026/.test(row.headline) && /was followed by a median/.test(row.headline)));
+
+  const skip = await writePrivate(ROOT, "", "", { summary: {}, gates: [], present: [], detections: [] });
+  t("private write skips a blank asOf", skip.pushed === false && /asOf is missing/.test(skip.reason || ""));
+  const tmp = await mkdtemp(join(tmpdir(), "scanner-private-"));
+  try {
+    const open = async () => ({
+      dir: tmp,
+      remote: true,
+      close: async (paths, message) => ({ pushed: true, sha: "abc123", reason: null, paths, message }),
+    });
+    const payload = {
+      summary: { asOf: "2026-10-13", passed: 1 },
+      gates: [{
+        pattern: "breakout", stage: "confirmed", kind: "single", horizon: 30, dir: "up",
+        n: 20, hits: 12, rate: 60, rateLo: 45, rateHi: 74, upRate: 60, baseRate: 40,
+        passed: true, weight: 0.6, medianPct: 4, train: { n: 10, rate: 60 }, test: { n: 10, rate: 60 },
+        from: "2026-01-01", to: "2026-09-01", examples: [],
+      }],
+      present: [{ id: "tcgcsv-1", name: "Pikachu", kind: "single", pattern: "breakout", stage: "confirmed", date: "2026-10-13", strength: 70, start: "2026-09-01", end: "2026-10-13", p0: 10, p1: 12, startSrc: "own", endSrc: "own", metrics: {}, grades: {} }],
+      detections: [],
+    };
+    const pushed = await writePrivate(ROOT, "token", "2026-10-13", payload, { open });
+    const summary = JSON.parse(await readFile(join(tmp, "scanner/summary.json"), "utf8"));
+    const weights = JSON.parse(await readFile(join(tmp, "scanner/weights.json"), "utf8"));
+    const day = JSON.parse(await readFile(join(tmp, "scanner/2026-10-13.json"), "utf8"));
+    t("private write pushes weights summary and the day file", pushed.pushed === true && pushed.sha === "abc123" && summary.passed === 1 && weights.rows.length === 1 && day.present.length === 1 && day.forward[0].dir === "up");
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
 
   return fail;
 }
