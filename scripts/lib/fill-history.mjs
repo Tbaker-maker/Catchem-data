@@ -5,6 +5,12 @@
 // Turning a source off is one flag: "chartFill": false on its entry.
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { gunzipSync } from "node:zlib";
+
+function readDoc(file) {
+  const buf = readFileSync(file);
+  return JSON.parse((file.endsWith(".gz") ? gunzipSync(buf) : buf).toString("utf8"));
+}
 
 export function enabledFills(root) {
   try {
@@ -14,11 +20,13 @@ export function enabledFills(root) {
 }
 
 // Map<pid, { key, points: [[date, price]] }> from every enabled source. First source wins per product.
-export function loadFillMap(root) {
+// opts.keys: only these source keys (e.g. ["pokeviz"] for sealed-only studies).
+export function loadFillMap(root, opts = {}) {
   const map = new Map();
   for (const src of enabledFills(root)) {
+    if (opts.keys && !opts.keys.includes(src.key)) continue;
     let doc;
-    try { doc = JSON.parse(readFileSync(join(root, src.rawFile), "utf8")); } catch { continue; }
+    try { doc = readDoc(join(root, src.rawFile)); } catch { continue; }
     for (const item of doc.items || []) {
       const pid = Number(item.pid);
       if (!pid || map.has(pid)) continue;

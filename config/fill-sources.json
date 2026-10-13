@@ -35,6 +35,21 @@
       "fillsHistory": true,
       "robotsBlocked": false,
       "robotsChecked": "2026-10-13"
+    },
+    {
+      "site": "pokevizinvestor.com (card pages)",
+      "key": "pokeviz-singles",
+      "robots": "User-agent: * / Allow: / (re-checked 2026-10-13 at run start)",
+      "terms": "No terms page (checked 2026-10-12). Footer: unofficial fan site, prices from TCGplayer market data.",
+      "termsChecked": "2026-10-12",
+      "approved": "Tyler, 2026-10-13",
+      "use": "singles chart history before our first own day, read by scripts/backfill-pokeviz-singles.mjs at 1 request every 3 seconds, stops on any 403, 429 or block. Matched by TCGplayer product id and our printing.",
+      "run": "2026-10-13: 8069 card pages read, 7955 matched, 114 unmatched (113 Japanese -jp- pages with no English TCGplayer id in our file, 1 other)",
+      "rawFile": "data/backfill/pokeviz/singles.json.gz",
+      "chartFill": true,
+      "fillsHistory": true,
+      "robotsBlocked": false,
+      "robotsChecked": "2026-10-13"
     }
   ],
   "skipped": [
