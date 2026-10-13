@@ -1,3 +1,4 @@
+import { crowdedCallFlags as crowdedFromLib, hypeEffectFlags as hypeFromLib } from "./hype-crowd.mjs";
 // Flag rules for data/derived/flags.json. Pure functions over files the nightly
 // already wrote. Each flag: { type, severity: "high"|"medium"|"low", key, line, data }.
 
@@ -15,7 +16,10 @@ export const FLAG_TYPES = {
   YOUTUBE_DISAGREE: "Creators made opposite price-direction claims on one set or card inside 14 days, or our TCGplayer prices contradicted creator claims tonight. Counts and dates only.",
   YOUTUBE_KEY_MISSING: "YOUTUBE_API_KEY is not set for the nightly, or the YouTube step failed. The learning loop did not run.",
   READ_TYPE_EMPTY: "A known read type produced nothing tonight.",
+  HYPE_EFFECT: "Heavy creator attention on a set, card, or sealed product this week, with the historical 30-day move for past subjects that saw similar attention. n≥20 holdout. Counts, dates, and percent only. No creator names. Not advice.",
+  CROWDED_CALL: "Many tracked creators made the same-direction call on one set, card, or sealed product inside a short window, with the historical 30-day move for past crowded calls at that level. n≥20 holdout. Singles and sealed stay separate. No creator names. Not advice.",
 };
+
 
 export const READ_TYPES = ["high", "low", "single", "backto", "sealed", "streak", "year", "plain", "set", "spread", "askmove", "mktmove", "climb", "setheat", "breadth", "release", "newsline", "listings", "rotation", "pokemon", "sealedchase", "deep"];
 
@@ -118,3 +122,14 @@ export function youtubeFlags(doc) {
   ];
   return disFlags.concat((doc.leads || []).map((l) => ({ type: "YOUTUBE_LEAD", severity: l.kind === "new_method" ? "low" : "medium", key: `yt:${l.kind}:${l.ref ?? l.label}:${l.to}`, line: l.kind === "new_method" ? `First creator video tagged ${l.label} (${l.from}).` : `${l.label}: ${l.videos} creator videos on ${l.channels} channels, ${l.from} to ${l.to} (unverified lead).`, data: l })));
 }
+
+export function hypeEffectFlagsFromFiles(docsByLevel) {
+  if (!docsByLevel) return [];
+  return hypeFromLib(docsByLevel);
+}
+
+export function crowdedCallFlagsFromFiles(docsByLevel) {
+  if (!docsByLevel) return [];
+  return crowdedFromLib(docsByLevel);
+}
+

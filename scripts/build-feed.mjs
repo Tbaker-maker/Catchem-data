@@ -233,6 +233,14 @@ try {
 } catch (err) {
   console.error(`call-patterns skipped: ${err.message}`);
 }
+// Hype-effect reads + crowded-call flags at set / single / sealed (n≥20 holdout each).
+try {
+  const { runMineHypeCrowd } = await import("./mine-hype-crowd.mjs");
+  const hc = await runMineHypeCrowd({ root: ROOT });
+  console.log(JSON.stringify({ hypeCrowd: { status: hc.status, levelsPassed: hc.levelsPassed, publicCounts: hc.publicCounts } }));
+} catch (err) {
+  console.error(`hype-crowd skipped: ${err.message}`);
+}
 // Flags and the script research scan (data/derived/flags.json, research-scan.*).
 // Script only, no network. A failure here is logged and never stops the nightly.
 try {

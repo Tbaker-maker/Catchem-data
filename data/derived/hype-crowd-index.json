@@ -1,0 +1,45 @@
+{
+ "asOf": "2026-10-13",
+ "generatedAt": "2026-10-13T03:13:33.138Z",
+ "note": "Index of three-level hype-effect and crowded-call outputs. Per-level files are authoritative for page surfaces.",
+ "hypeEffect": {
+  "set": {
+   "file": "data/derived/hype-effect-set.json",
+   "count": 2,
+   "passedHoldout": true,
+   "testN": 7
+  },
+  "single": {
+   "file": "data/derived/hype-effect-single.json",
+   "count": 0,
+   "passedHoldout": false,
+   "testN": 0
+  },
+  "sealed": {
+   "file": "data/derived/hype-effect-sealed.json",
+   "count": 0,
+   "passedHoldout": false,
+   "testN": 6
+  }
+ },
+ "crowdedCalls": {
+  "set": {
+   "file": "data/derived/crowded-calls-set.json",
+   "count": 0,
+   "passedHoldout": false,
+   "testN": 4
+  },
+  "single": {
+   "file": "data/derived/crowded-calls-single.json",
+   "count": 0,
+   "passedHoldout": false,
+   "testN": 0
+  },
+  "sealed": {
+   "file": "data/derived/crowded-calls-sealed.json",
+   "count": 0,
+   "passedHoldout": false,
+   "testN": 5
+  }
+ }
+}
