@@ -577,7 +577,7 @@ export function mixBoard(priceRows, fresh, day, { maxShare = PRICE_SHARE_MAX } =
   return out;
 }
 
-export async function buildBoardV3(root, { on = true } = {}) {
+export async function buildBoardV3(root, { on = true, spanReads = [] } = {}) {
   const pub = join(root, "research/assets/public");
   const readsPath = join(pub, "reads.json");
   const doc = await readJson(readsPath);
@@ -698,6 +698,22 @@ export async function buildBoardV3(root, { on = true } = {}) {
     deepRecovery = recoveryWatch(histCards, { asOf: end, skip: usedHist }).map((r) => ({ ...r, priceRead: true }));
     deepGap = sealedGapDeep(sealedProducts, histories, histCards, raw?.products, { asOf: end }).map((r) => ({ ...r, priceRead: true }));
   } catch (err) { console.error("deep reads skipped:", err.message); }
+  if (Array.isArray(spanReads) && spanReads.length) {
+    const used = new Set();
+    const seenId = new Set();
+    for (const r of [...base, ...fresh]) {
+      if (r.href) used.add(String(r.href));
+      if (r.id) seenId.add(r.id);
+    }
+    for (const raw of spanReads) {
+      if (!raw || !raw.id || seenId.has(raw.id)) continue;
+      const row = { ...raw };
+      if (row.href && used.has(String(row.href))) row.href = "";
+      if (row.href) used.add(String(row.href));
+      seenId.add(row.id);
+      fresh.push(row);
+    }
+  }
   const extraDoc = await readJson(join(pub, "feed/extra-reads.json"), {});
   const dives = (extraDoc.reads || []).filter((r) => r.readKind === "dive" && r.headline);
   const factNames = [...names, ...Object.values(hist.picked).flat().map((r) => r.name)];

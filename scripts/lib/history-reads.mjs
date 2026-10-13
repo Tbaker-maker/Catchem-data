@@ -96,7 +96,7 @@ function base(c, kind, headline, asOf, receipt, variants) {
     name: c.name, set: c.set, number: c.number, price: c.pts[c.pts.length - 1][1],
     headline, path: headline, asOf, endDate: asOf, startDate: receipt.startDate,
     source: `TCGplayer market (tcgcsv daily archive and our nightly days), ${receipt.startDate} and ${asOf}`,
-    why: `Real TCGplayer market points for this product id and printing (${c.printing || "default"}), each with its own date.`,
+    why: `Real TCGplayer market points for this product id and finish (${c.printing || "default"}), each with its own date.`,
     receipt, variants: (variants || []).filter(ok),
   };
 }
@@ -201,7 +201,7 @@ export function setReads(cards, asOf, { days = 30, slack = 4, minPriced = 10, mi
       id: `set30-${set}`.toLowerCase().replace(/[^a-z0-9]+/g, "-"), sku: lead.c.id, href: `/c/${lead.c.id}`, readKind: "set", kind: "set", board: HIST_TAG, family: "price",
       name: set, set, headline, path: headline, asOf, startDate: a, endDate: asOf,
       source: `TCGplayer market, start points ${a} to ${b}, end ${asOf}`,
-      why: "Cards above Uncommon priced $10 or more tonight, matched by product id and printing. Moves need 10% and $1. Each start price is the real point nearest 30 days back, within 4 days.",
+      why: "Cards above Uncommon priced $10 or more tonight, matched by product id and finish. Moves need 10% and $1. Each start price is the real point nearest 30 days back, at most 4 days off.",
       receipt: { set, priced: rows.length, up: up.length, down: down.length, startFirst: a, startLast: b, end: asOf, lead: { id: lead.c.id, from: lead.from, to: lead.to, start: lead.start } },
       variants: [`${up.length} up and ${down.length} down, 10% or more, among ${rows.length} priced cards in ${set} (${startText} to ${monthDay(asOf)}). Biggest: ${cleanName(lead.c.name)}, ${money(lead.from)} to ${money(lead.to)}.`].filter(ok),
       strength: Math.max(up.length, down.length) / rows.length,

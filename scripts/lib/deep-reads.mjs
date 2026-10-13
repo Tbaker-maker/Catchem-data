@@ -119,7 +119,7 @@ export function cardStories(cards, { asOf, max = 25, skip = new Set() }) {
     const who = `${cleanName(c.name)} (${short(c.set)})`;
     const headline = `The story of ${who}: ${money(now[1])} tonight, ${spot}% of the way from its 1-year low to its 1-year high.`;
     const lines = [
-      `On file since ${monthYear(c.pts[0][0])}: ${c.pts.length} TCGplayer market points for this printing (${c.printing || "default"}).`,
+      `On file since ${monthYear(c.pts[0][0])}: ${c.pts.length} TCGplayer market points for this card (${c.printing || "default"}).`,
       `Peak ${money(peak[1])} on ${dateLabel(peak[0], asOf)}. Low ${money(low[1])} on ${dateLabel(low[0], asOf)}.`,
       `Past year range: ${money(yLo)} to ${money(yHi)}. Tonight (${monthDay(asOf)}): ${money(now[1])}.`,
       sp.length > 1 && spRank ? `Number ${spRank} of ${sp.length} ${speciesToken(c.name)} cards we price tonight.` : "",
@@ -272,7 +272,7 @@ export function pokemonSpotlights(cards, { asOf, max = 15 }) {
     const best = rows[0], worst = rows.at(-1);
     const kept = rows.filter((r) => r.ch >= 0).length;
     const top = rows.slice().sort((x, y) => y.z - x.z)[0];
-    const rr = row("pokemon", t, t, `${t} spotlight: of ${rows.length} printings with a year of prices, ${kept} kept or grew their price. Best: ${cleanName(best.c.name)} (${short(best.c.set)}), ${sgn(best.ch)}.`, [
+    const rr = row("pokemon", t, t, `${t} spotlight: of ${rows.length} cards with a year of prices, ${kept} kept or grew their price. Best: ${cleanName(best.c.name)} (${short(best.c.set)}), ${sgn(best.ch)}.`, [
       `Best year: ${cleanName(best.c.name)} (${short(best.c.set)}), ${money(best.a)} to ${money(best.z)}.`,
       `Toughest year: ${cleanName(worst.c.name)} (${short(worst.c.set)}), ${money(worst.a)} to ${money(worst.z)}.`,
       `Priciest tonight: ${cleanName(top.c.name)} (${short(top.c.set)}) at ${money(top.z)}.`,

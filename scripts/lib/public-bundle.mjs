@@ -895,9 +895,9 @@ function renderFact(fact, f, opts) {
     case "larger-up":
       return `${who}${gear} rose by a larger up step${over}, latest price ${last} on ${day} above ${prevP} of ${prevD}`;
     case "lows-now":
-      return `Lower lows are still printing${over}${opts.name ? " on " + opts.name : ""}${gear}, and the latest price is ${last} on ${day}${fromBit}`;
+      return `Lower lows are still showing up${over}${opts.name ? " on " + opts.name : ""}${gear}, and the latest price is ${last} on ${day}${fromBit}`;
     case "lows-early":
-      return `${who}${gear} printed a lower low at ${priceWords(f.lo[1])} on ${monthDay(f.lo[0])}${over}, while latest price reads ${last} for ${day}`;
+      return `${who}${gear} came in with a lower low at ${priceWords(f.lo[1])} on ${monthDay(f.lo[0])}${over}, while latest price reads ${last} for ${day}`;
     case "highs-now":
       return `${who}${gear} put in another higher high${over}, latest price ${last} on ${day}`;
     case "highs-early":
