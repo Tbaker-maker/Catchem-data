@@ -197,6 +197,47 @@ function summarizeBy(rows, key) {
     .sort((a, b) => b.n - a.n || (a.key < b.key ? -1 : 1));
 }
 
+
+// Cheap robots.txt parse for User-agent: *. Returns whether path is allowed.
+// Only cares about Allow/Disallow under * (and unnamed default). No crawling of
+// other agents' blocks. Missing/unreadable robots → allow=false (stay out).
+export function parseRobots(text) {
+  const lines = String(text || "").split(/\r?\n/);
+  let inStar = false, seenStar = false;
+  const rules = [];
+  for (const raw of lines) {
+    const line = raw.replace(/#.*$/, "").trim();
+    if (!line) continue;
+    const m = /^(user-agent|allow|disallow)\s*:\s*(.*)$/i.exec(line);
+    if (!m) continue;
+    const key = m[1].toLowerCase(), val = m[2].trim();
+    if (key === "user-agent") {
+      inStar = val === "*";
+      if (inStar) seenStar = true;
+      continue;
+    }
+    if (!inStar) continue;
+    if (key === "allow" || key === "disallow") rules.push({ type: key, path: val || "/" });
+  }
+  return { seenStar, rules };
+}
+
+export function robotsAllows(robotsText, path) {
+  const { seenStar, rules } = parseRobots(robotsText);
+  if (!seenStar && !rules.length) return { allowed: false, reason: "no User-agent: * rules" };
+  // Longest matching rule wins (robots convention).
+  let best = null;
+  for (const r of rules) {
+    if (!r.path) continue;
+    if (path === r.path || path.startsWith(r.path)) {
+      if (!best || r.path.length >= best.path.length) best = r;
+    }
+  }
+  if (!best) return { allowed: true, reason: "no matching disallow" };
+  if (best.type === "disallow") return { allowed: false, reason: `Disallow: ${best.path}` };
+  return { allowed: true, reason: `Allow: ${best.path}` };
+}
+
 export function publicSafeStatus({ asOf, fetchedAt, status, counts, cross, errors = [] }) {
   // Counts and dates only. No creator names, no item text, no claim text.
   return {

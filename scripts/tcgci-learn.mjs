@@ -1,6 +1,6 @@
-// Nightly TCG Card Investor ledger fetch. One polite GET of their public
-// calls.json (linked from /track-record/). robots.txt Allows /; only /api/ and
-// /go/ are disallowed. No login. Never republish their text.
+// Nightly TCG Card Investor ledger fetch. Cheap robots.txt check first, then
+// one polite GET of their public calls.json. Terms were scanned once into
+// config/tcgci.json and are not re-read. No login. Never republish their text.
 //
 // Private (catchem-data-private when PRIVATE_DATA_TOKEN is set, else gitignored
 // data/private/):
@@ -19,6 +19,7 @@ import {
   parseLedger,
   crossCheck,
   publicSafeStatus,
+  robotsAllows,
 } from "./lib/tcgci.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -60,8 +61,66 @@ export async function runTcgciLearn({
 
   let raw = null;
   let status = "ok";
+
+  // Cheap nightly robots.txt check. Terms are NOT re-read (see config/tcgci.json termsScan).
+  const cfg = await J(join(root, "config/tcgci.json"), {});
+  if (cfg?.termsScan?.forbidsAutomatedReading) {
+    status = "blocked";
+    errors.push("config termsScan.forbidsAutomatedReading is true; not fetching");
+  }
+  const robotsUrl = cfg.robotsUrl || "https://tcgcardinvestor.com/robots.txt";
+  const callsUrl = cfg.source || url;
+  if (status === "ok") {
+    try {
+      const rres = await fetchFn(robotsUrl, {
+        headers: { "User-Agent": TCGCI_USER_AGENT, Accept: "text/plain" },
+        redirect: "follow",
+      });
+      if (rres.status === 403 || rres.status === 401 || rres.status === 429) {
+        status = "blocked";
+        errors.push(`robots.txt HTTP ${rres.status}; not going past a block`);
+      } else if (!rres.ok) {
+        status = "blocked";
+        errors.push(`robots.txt HTTP ${rres.status}; staying out`);
+      } else {
+        const rtxt = typeof rres.text === "function" ? await rres.text() : "";
+        const path = new URL(callsUrl).pathname;
+        const gate = robotsAllows(rtxt, path);
+        if (!gate.allowed) {
+          status = "blocked";
+          errors.push(`robots.txt blocks ${path}: ${gate.reason}`);
+        }
+        await appendFetchLog(dir, {
+          fetchedAt: now.toISOString(), asOf: today, url: robotsUrl, kind: "robots",
+          status: gate.allowed ? "ok" : "blocked", path, reason: gate.reason,
+        });
+      }
+    } catch (err) {
+      status = "blocked";
+      errors.push(`robots.txt: ${err.message || String(err)}`);
+    }
+  }
+  if (status !== "ok") {
+    const prev = await J(join(dir, "calls.json"), null);
+    const cross = await J(join(dir, "crosscheck.json"), { matched: 0, agreePct: null });
+    const doc = publicSafeStatus({
+      asOf: today, fetchedAt: now.toISOString(), status,
+      counts: prev?.counts || { total: 0, byVerdict: {} }, cross, errors,
+    });
+    await writePublic(root, doc);
+    await writeFile(join(dir, "state.json"), JSON.stringify({
+      asOf: today, fetchedAt: now.toISOString(), status, url: callsUrl, errors,
+      lastOkUpdated: prev?.updated || null, termsScanAt: cfg?.termsScan?.checkedAt || null,
+    }, null, 1) + "\n");
+    await appendFetchLog(dir, { fetchedAt: now.toISOString(), asOf: today, url: callsUrl, status, httpOk: false, errors, skipped: true });
+    await store.close(["tcgci/state.json", "tcgci/fetch-log.jsonl"], `TCGCI learn ${today} (${status})`);
+    return doc;
+  }
+
+  // One polite GET of the public ledger. Never re-fetch terms pages here.
+
   try {
-    const res = await fetchFn(url, {
+    const res = await fetchFn(callsUrl, {
       headers: {
         "User-Agent": TCGCI_USER_AGENT,
         Accept: "application/json",
@@ -120,7 +179,7 @@ export async function runTcgciLearn({
   await writeFile(join(dir, "calls.json"), JSON.stringify({
     asOf: today,
     fetchedAt: now.toISOString(),
-    source: url,
+    source: callsUrl,
     updated: parsed.updated,
     scoring: parsed.scoring,
     counts: parsed.counts,
@@ -146,7 +205,7 @@ export async function runTcgciLearn({
     asOf: today,
     fetchedAt: now.toISOString(),
     status: "ok",
-    url,
+    url: callsUrl,
     updated: parsed.updated,
     calls: parsed.counts.total,
     crossMatched: cross.matched,
@@ -154,7 +213,7 @@ export async function runTcgciLearn({
     errors: [],
   }, null, 1) + "\n");
   await appendFetchLog(dir, {
-    fetchedAt: now.toISOString(), asOf: today, url, status: "ok",
+    fetchedAt: now.toISOString(), asOf: today, url: callsUrl, status: "ok", kind: "calls",
     calls: parsed.counts.total, updated: parsed.updated,
   });
 

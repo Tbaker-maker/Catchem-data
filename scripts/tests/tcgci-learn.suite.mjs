@@ -10,6 +10,7 @@ import {
   parseLedger,
   crossCheck,
   publicSafeStatus,
+  robotsAllows,
   TCGCI_USER_AGENT,
   TCGCI_CALLS_URL,
 } from "../lib/tcgci.mjs";
@@ -60,6 +61,11 @@ export async function run() {
 
   t("user agent names Catch'em", /CatchEmBot/.test(TCGCI_USER_AGENT) && /catchemtcg\.com/.test(TCGCI_USER_AGENT));
   t("calls URL is the public ledger, not /api/", TCGCI_CALLS_URL.endsWith("/track-record/calls.json") && !TCGCI_CALLS_URL.includes("/api/"));
+  const robotsOk = "User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /go/\n";
+  t("robots: calls path allowed", robotsAllows(robotsOk, "/track-record/calls.json").allowed === true);
+  t("robots: /api/ blocked", robotsAllows(robotsOk, "/api/secret").allowed === false);
+  t("robots: empty stays out", robotsAllows("", "/track-record/calls.json").allowed === false);
+
   t("channel map: Nomics", mapChannel("Nostalgia Nomics") === "nomics");
   t("channel map: Plumber", mapChannel("The Poke Plumber") === "pokeplumber");
   t("channel map: unknown stays null", mapChannel("Someone Else") === null);
@@ -110,23 +116,35 @@ export async function run() {
   const root = await mkdtemp(join(tmpdir(), "tcgci-"));
   await mkdir(join(root, "data/derived"), { recursive: true });
   await mkdir(join(root, "data/private/youtube"), { recursive: true });
+  await mkdir(join(root, "config"), { recursive: true });
+  await writeFile(join(root, "config/tcgci.json"), JSON.stringify({
+    source: TCGCI_CALLS_URL,
+    robotsUrl: "https://tcgcardinvestor.com/robots.txt",
+    termsScan: { checkedAt: "2026-10-12", forbidsAutomatedReading: false, nightlyReread: false, result: "no_terms_page" },
+  }) + "\n");
   await writeFile(join(root, "data/private/youtube/claims.json"), JSON.stringify({ claims: ourClaims }) + "\n");
-  let fetches = 0, lastHeaders = null;
+  let fetches = 0, lastHeaders = null, urls = [];
+  const robotsBody = "User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /go/\n";
   const okFetch = async (url, opts) => {
     fetches++;
+    urls.push(url);
     lastHeaders = opts?.headers || {};
-    t("fetch hits the public ledger URL", url === TCGCI_CALLS_URL);
+    if (/robots\.txt/.test(url)) {
+      return { ok: true, status: 200, headers: { get: () => "text/plain" }, text: async () => robotsBody, json: async () => ({}) };
+    }
     return {
       ok: true, status: 200,
       headers: { get: (k) => (String(k).toLowerCase() === "content-type" ? "application/json" : null) },
       json: async () => sampleLedger(),
+      text: async () => "",
     };
   };
   const local = { dir: join(root, "data/private"), remote: false, close: async () => ({ pushed: false, reason: "local" }) };
   const ok = await runTcgciLearn({ root, token: "", fetchFn: okFetch, store: local, now: new Date("2026-10-12T12:00:00Z") });
-  t("runner: one request", fetches === 1);
+  t("runner: robots then calls (2 requests)", fetches === 2 && /robots\.txt/.test(urls[0]) && urls[1] === TCGCI_CALLS_URL);
   t("runner: clear user agent", lastHeaders["User-Agent"] === TCGCI_USER_AGENT);
   t("runner: ok status and counts", ok.status === "ok" && ok.calls === 4 && ok.crossMatched === 3);
+  t("runner never hit a terms path", urls.every((u) => !/\/(terms|privacy|legal|tos)/i.test(u)));
   const privCalls = JSON.parse(await readFile(join(root, "data/private/tcgci/calls.json"), "utf8"));
   const privCross = JSON.parse(await readFile(join(root, "data/private/tcgci/crosscheck.json"), "utf8"));
   const pubDoc = JSON.parse(await readFile(join(root, "data/derived/tcgci-status.json"), "utf8"));
@@ -134,14 +152,24 @@ export async function run() {
   t("private crosscheck has rows", privCross.rows.length === 3);
   t("derived status has no text", !/Buy:|Nostalgia|Destined/.test(JSON.stringify(pubDoc)));
   const log = (await readFile(join(root, "data/private/tcgci/fetch-log.jsonl"), "utf8")).trim().split("\n").map(JSON.parse);
-  t("fetch log has date and URL", log.length >= 1 && log[0].url === TCGCI_CALLS_URL && log[0].fetchedAt);
+  t("fetch log has date and URL", log.length >= 2 && log.some((r) => r.url === TCGCI_CALLS_URL) && log.every((r) => r.fetchedAt));
 
   fetches = 0;
   const blocked = await runTcgciLearn({
     root, token: "", store: local, now: new Date("2026-10-12T13:00:00Z"),
-    fetchFn: async () => { fetches++; return { ok: false, status: 403, headers: { get: () => null }, json: async () => ({}) }; },
+    fetchFn: async () => { fetches++; return { ok: false, status: 403, headers: { get: () => null }, text: async () => "", json: async () => ({}) }; },
   });
-  t("blocked: one request, no retry storm", fetches === 1 && blocked.status === "blocked");
+  t("blocked: robots 403 stops before calls, no retry storm", fetches === 1 && blocked.status === "blocked");
+
+  // Disallow on calls path
+  const disallowed = await runTcgciLearn({
+    root, token: "", store: local, now: new Date("2026-10-12T14:00:00Z"),
+    fetchFn: async (url) => {
+      if (/robots/.test(url)) return { ok: true, status: 200, headers: { get: () => "text/plain" }, text: async () => "User-agent: *\nDisallow: /\n", json: async () => ({}) };
+      throw new Error("calls must not be fetched when robots Disallow");
+    },
+  });
+  t("robots Disallow / stays out", disallowed.status === "blocked");
 
   return fail;
 }

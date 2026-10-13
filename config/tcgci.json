@@ -1,0 +1,30 @@
+{
+  "source": "https://tcgcardinvestor.com/track-record/calls.json",
+  "robotsUrl": "https://tcgcardinvestor.com/robots.txt",
+  "userAgent": "CatchEmBot/1.0 (+https://catchemtcg.com; research; polite daily ledger fetch)",
+  "note": "Nightly fetches calls.json only after a cheap robots.txt check. Terms are not re-read nightly.",
+  "termsScan": {
+    "checkedAt": "2026-10-12",
+    "checkedAtZone": "America/Vancouver",
+    "pathsTried": [
+      "/terms",
+      "/privacy",
+      "/legal",
+      "/tos",
+      "/terms-of-service",
+      "/terms-of-use",
+      "/privacy-policy"
+    ],
+    "result": "no_terms_page",
+    "detail": "Each path returned the homepage SPA (same title and body). No Terms of Service, Acceptable Use, or scrape/crawl prohibition text was found. Footer on public pages only says educational content / not investment advice.",
+    "forbidsAutomatedReading": false,
+    "nightlyReread": false
+  },
+  "robotsBaseline": {
+    "checkedAt": "2026-10-12",
+    "allowPublic": true,
+    "disallow": ["/api/", "/go/"],
+    "callsPathAllowed": true,
+    "note": "User-agent * Allow: /. AI bots explicitly welcome. calls.json is under /track-record/, not under Disallow."
+  }
+}
