@@ -49,5 +49,13 @@ const ten = (rows) => Array.from({ length: 10 }, () => card(rows));
   t("a card new on the day does not move the line", r.points[1].v === 100 && r.points[1].n === 8);
 }
 
+{
+  // One early member alone cannot anchor the line: it starts when enough members are priced.
+  const early = card([["2025-09-30", 50], ["2026-09-26", 55], ["2026-09-27", 56]]);
+  const rest = Array.from({ length: 4 }, () => card([["2026-09-26", 10], ["2026-09-27", 11]]));
+  const r = indexLine([early, ...rest]);
+  t("line starts on the first day enough members are priced", r.points[0].d === "2026-09-26" && r.points[1].v !== null);
+}
+
 if (fail) { console.error(`public-index-line: ${fail} failed`); process.exit(1); }
 console.log("public-index-line: all passed");

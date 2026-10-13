@@ -22,14 +22,17 @@ export function indexLine(list) {
   const priced = [...new Set(maps.flatMap((m) => [...m.keys()]))].sort();
   const empty = { points: [], cards: 0, links: 0, gaps: 0 };
   if (priced.length < 2) return { ...empty, points: priced.map((d) => ({ d, v: null, n: 0 })) };
-  const start = Date.parse(`${priced[0]}T00:00:00Z`);
-  const end = Date.parse(`${priced[priced.length - 1]}T00:00:00Z`);
   const members = maps.filter((m) => m.size > 0).length;
   const minLinks = Math.max(2, Math.min(MIN_LINKS, Math.ceil(members * 0.6)));
+  // The line starts on the first day enough members are priced to link from.
+  // A day where only one or two members have a price cannot anchor the chain.
+  const first = priced.find((d) => maps.filter((m) => Number(m.get(d)) >= MIN_PRICE).length >= minLinks) || priced[0];
+  const start = Date.parse(`${first}T00:00:00Z`);
+  const end = Date.parse(`${priced[priced.length - 1]}T00:00:00Z`);
   const used = new Set();
-  const points = [{ d: priced[0], v: 100, n: 0 }];
+  const points = [{ d: first, v: 100, n: 0 }];
   let level = 100;
-  let from = priced[0]; // last day on the line; a move is only ever measured from a real price day
+  let from = first; // last day on the line; a move is only ever measured from a real price day
   let links = 0;
   let gaps = 0;
   for (let t = start + DAY; t <= end; t += DAY) {
