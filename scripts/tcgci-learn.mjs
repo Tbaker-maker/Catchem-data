@@ -217,10 +217,24 @@ export async function runTcgciLearn({
     calls: parsed.counts.total, updated: parsed.updated,
   });
 
-  const pushed = await store.close(
-    ["tcgci/calls.json", "tcgci/crosscheck.json", "tcgci/state.json", "tcgci/fetch-log.jsonl"],
-    `TCGCI learn ${today}: ${parsed.counts.total} calls`,
-  );
+  // Rescore with our method into tcgci-derived scorecards (same private store).
+  let rescore = null;
+  try {
+    const { runTcgciRescore } = await import("./tcgci-rescore.mjs");
+    rescore = await runTcgciRescore({ root, token, now, store, callsDoc: {
+      updated: parsed.updated, scoring: parsed.scoring, counts: parsed.counts, calls: parsed.calls,
+    } });
+  } catch (err) {
+    console.error(`tcgci-rescore skipped: ${err.message}`);
+  }
+
+  const closePaths = ["tcgci/calls.json", "tcgci/crosscheck.json", "tcgci/state.json", "tcgci/fetch-log.jsonl"];
+  if (rescore?.status === "ok") {
+    closePaths.push(...(rescore.paths || [
+      "tcgci/rescored-claims.json", "tcgci/scorecards.json", "tcgci/creator-weights.json", "tcgci/rescore-summary.json",
+    ]));
+  }
+  const pushed = await store.close(closePaths, `TCGCI learn ${today}: ${parsed.counts.total} calls`);
 
   const doc = publicSafeStatus({
     asOf: today,
@@ -231,6 +245,9 @@ export async function runTcgciLearn({
     errors: [],
   });
   doc.privatePushed = Boolean(pushed?.pushed);
+  if (rescore?.status === "ok") {
+    doc.rescored = { mapped: rescore.claimsMapped, scored30: rescore.scored30, agreePct: rescore.compare?.agreePct ?? null };
+  }
   await writePublic(root, doc);
   return doc;
 }
