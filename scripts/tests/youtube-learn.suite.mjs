@@ -2,8 +2,9 @@ import { mkdtemp, mkdir, writeFile, readFile, cp } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { buildCatalogueIndex, extractMentions, topicTags, commentSentiment, extractClaims, scoreClaims, rankClaims, buildLeads, claimStatus, videoWeight, creatorWeights, combinedTones, hypeEvents, scoreHype, disagreements, edenSeed, parseChapters, videoOutline, extractIdeas, attentionLine, isBanned } from "../lib/youtube.mjs";
+import { buildCatalogueIndex, extractMentions, topicTags, commentSentiment, extractClaims, scoreClaims, rankClaims, buildLeads, claimStatus, videoWeight, creatorWeights, combinedTones, hypeEvents, scoreHype, disagreements, edenSeed, parseChapters, videoOutline, statedHorizon, bandResult, CONFIDENCE, extractIdeas, attentionLine, isBanned } from "../lib/youtube.mjs";
 import { youtubeFlags } from "../lib/flags.mjs";
+import { scoreLedger, summarize } from "../lib/self-check.mjs";
 import { parseFeed, pickTranscript, transcriptText } from "../lib/podcast.mjs";
 import { runYoutubeLearn, makeClient } from "../youtube-learn.mjs";
 
@@ -98,6 +99,38 @@ export async function run() {
   t("chapters: not starting near 0 or out of order is ignored", parseChapters("5:00 a\n6:00 b\n7:00 c").length === 0 && parseChapters("0:00 a\n6:00 b\n3:00 c").length === 0);
   const ol = videoOutline({ description: desc }, idx);
   t("outline: topics and set per chapter", ol[1].topics.includes("pack_destruction") && ol[1].mentions.sets.includes(2) && ol[2].topics.includes("grading"));
+
+  // Scoring v2
+  const v2 = extractClaims({ videoId: "w", channel: "x", date: "2026-01-01", title: "EVOLVING SKIES WILL GO DOWN!!", hype: true, text: "EVOLVING SKIES WILL GO DOWN!!\nhttps://www.tcgplayer.com/product/102 is undervalued long term.\nUmbreon VMAX 215/203 from Evolving Skies will go down this week.\nThe whole market will crash.\nPSA 10 slabs will go up.", chapters: [{ t: 95, title: "Evolving Skies", mentions: { sets: [2], cards: [], sealed: [] } }], unmatched: (globalThis.__um = []) }, idx);
+  const byText = (re) => v2.find((c) => re.test(c.text));
+  t("confidence: product link 0.95, number+name+set 0.9", byText(/product\/102/).confidence === 0.95 && byText(/215\/203/).confidence === 0.9 && byText(/215\/203/).reason === "number_name_set");
+  t("confidence: hype title capped at 0.4", byText(/EVOLVING/).confidence === 0.4 && byText(/EVOLVING/).from === "title");
+  t("horizon: long and 7-day tagged", byText(/product\/102/).horizon === "long" && byText(/215\/203/).horizon === 7 && statedHorizon("hold for 3-5 years") === "long" && statedHorizon("by christmas") === 30);
+  t("receipt: chapter second kept for a set claim", byText(/EVOLVING/).receipt?.chapterT === 95 && /t=95$/.test(byText(/EVOLVING/).receipt.url));
+  t("unmatched: reason codes logged", globalThis.__um.some((u) => u.reason === "whole_market") && globalThis.__um.some((u) => u.reason === "slab"));
+  t("band: flat inside 3%, hit needs market-relative sign", bandResult({ chg: 0.02, excess: 0.02 }, 1) === "flat" && bandResult({ chg: 0.05, excess: -0.05 }, 1) === "miss" && bandResult({ chg: 0.05, excess: 0.01 }, 1) === "hit" && bandResult({ chg: -0.1, excess: 0 }, 1) === "miss");
+  const low = [{ id: "l", target: "set", groupId: 2, dir: 1, date: "2026-01-01", confidence: 0.4, channel: "x" }];
+  scoreClaims(low, { priceOn: price, marketChange: () => 0, pidsBySet: idx.pidsBySet, today: "2026-01-10" });
+  t("confidence under 0.5 stays unscored", low[0].unscored === "low_confidence" && !low[0].h7 && claimStatus(low[0]).status === "unverified");
+  const mk = { id: "m", target: "card", pid: 102, dir: 1, date: "2026-01-01", channel: "x", confidence: 0.9 };
+  const pr2 = (pid, d) => (d === "2026-01-01" ? 100 : d === "2026-01-08" ? 104 : null);
+  scoreClaims([mk], { priceOn: pr2, marketChange: () => 0.1, pidsBySet: idx.pidsBySet, today: "2026-01-10" });
+  t("market up more than the card: absolute held but band miss", mk.h7.heldAbs === true && mk.h7.result === "miss" && mk.h7.held === false);
+  const lg = { ...mk, id: "lg", horizon: "long" };
+  t("long horizon is provisional, not a 30-day fail", claimStatus({ ...lg, h7: mk.h7 }).status === "unverified");
+  t("stated 7-day horizon read at 7", claimStatus({ ...mk, horizon: 7 }).evidence.horizonDays === 7);
+  const many = Array.from({ length: 22 }, (_, i) => ({ id: `r${i}`, channel: "z", videoId: "vz", target: "set", dir: 1, confidence: 1, h7: { held: i < 18, heldAbs: true, excess: 0.01 } }));
+  const rk = rankClaims(many, new Map([["vz", ["print_run"]]]));
+  t("per topic and per type rows", rk.some((r) => r.by === "channel_topic" && r.key === "z|print_run") && rk.some((r) => r.by === "type" && r.key === "set"));
+  const cw2 = creatorWeights(rk);
+  t("topic weight fed into creatorWeights", cw2.z.byTopic?.print_run?.weight === 1.32 && cw2.z.byType?.set?.weight === 1.32);
+  t("topic lead uses the topic weight", (() => { const tn = combinedTones({}, { z: { weight: 1, byTopic: { print_run: { weight: 0.5 } } } }); const L = buildLeads([{ id: "a", channel: "z", date: "2026-01-10", title: "", mentions: { sets: [], cards: [], sealed: [] }, topics: ["print_run"] }, { id: "b", channel: "z", date: "2026-01-10", title: "", mentions: { sets: [], cards: [], sealed: [] }, topics: ["print_run"] }], { today: "2026-01-10", idx, tones: tn, seenTopics: ["print_run"] }); return !L.some((l) => l.kind === "print_run"); })());
+
+  // Self-check: band + market-relative column next to the absolute one
+  const led = Array.from({ length: 20 }, (_, i) => ({ t: "read", kind: "up", pid: 1, date: "2026-01-01", price: 100, dir: 1 }));
+  scoreLedger(led, (pid, d) => (d === "2026-01-08" ? 104 : 100), "2026-01-10", () => 0.1);
+  const sm = summarize(led)[0];
+  t("self-check: absolute held 100%, band market-relative 0%", sm.heldPct7 === 100 && sm.bandHeldPct7 === 0 && led[0].h7.bandHeld === false);
 
   // Podcast feeds
   const rss = `<rss xmlns:podcast="https://podcastindex.org/namespace/1.0"><channel><item><title>Ep 1</title><guid>g1</guid><pubDate>Fri, 09 Jan 2026 10:00:00 GMT</pubDate><description><![CDATA[Market talk]]></description><enclosure url="https://x/a.mp3" type="audio/mpeg"/><podcast:transcript url="https://x/t.json" type="application/json"/><podcast:transcript url="https://x/t.vtt" type="text/vtt"/></item></channel></rss>`;

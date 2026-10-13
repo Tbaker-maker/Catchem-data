@@ -6,7 +6,9 @@
 export const HORIZONS = [7, 30, 90];
 // Price days have gaps. A horizon scores on day h, else the first priced day up to h+3.
 export const HORIZON_SLACK = 3;
-export const MIN_SCORED = 20; // below this a rate is reported as null, not a number
+export const MIN_SCORED = 20;
+// Direction band for the market-relative read score: |change| must clear it.
+export const BAND = 0.03; // below this a rate is reported as null, not a number
 
 export function addDays(iso, days) {
   return new Date(Date.parse(`${iso}T00:00:00Z`) + days * 86400000).toISOString().slice(0, 10);
@@ -134,7 +136,9 @@ export function scoreLedger(ledger, priceOn, today, marketChange = null) {
       if (e.t === "read") held = e.dir > 0 ? at.price >= e.price : at.price <= e.price;
       else if (e.kind === "below" && excess != null) held = excess > 0;
       else if (e.kind === "above" && excess != null) held = excess < 0;
-      e[`h${h}`] = { day: at.day, chg: Math.round(c * 10000) / 10000, excess: excess == null ? null : Math.round(excess * 10000) / 10000, held };
+      // Band + market-relative (secondary column; the tuner still reads held).
+      const bandHeld = e.t === "read" && excess != null ? Math.abs(c) >= BAND && Math.sign(c) === e.dir && Math.sign(excess) === e.dir : null;
+      e[`h${h}`] = { day: at.day, chg: Math.round(c * 10000) / 10000, excess: excess == null ? null : Math.round(excess * 10000) / 10000, held, bandHeld };
     }
   }
   return ledger;
@@ -152,6 +156,7 @@ export function summarize(ledger) {
       if (!s || s.held == null) continue;
       b[`n${h}`] = (b[`n${h}`] || 0) + 1;
       b[`held${h}`] = (b[`held${h}`] || 0) + (s.held ? 1 : 0);
+      if (s.bandHeld != null) { b[`nb${h}`] = (b[`nb${h}`] || 0) + 1; b[`bh${h}`] = (b[`bh${h}`] || 0) + (s.bandHeld ? 1 : 0); }
       if (s.excess != null) (b[`_ex${h}`] ||= []).push(s.excess);
     }
   }
@@ -162,6 +167,8 @@ export function summarize(ledger) {
       const n = b[`n${h}`] || 0;
       row[`scored${h}`] = n;
       row[`heldPct${h}`] = n >= MIN_SCORED ? Math.round((100 * (b[`held${h}`] || 0)) / n) : null;
+      const nb = b[`nb${h}`] || 0;
+      row[`bandHeldPct${h}`] = nb >= MIN_SCORED ? Math.round((100 * (b[`bh${h}`] || 0)) / nb) : null;
       const ex = b[`_ex${h}`] || [];
       row[`medianExcess${h}`] = ex.length >= MIN_SCORED ? Math.round(median(ex) * 1000) / 10 : null;
     }
