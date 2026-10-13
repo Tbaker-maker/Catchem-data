@@ -203,7 +203,16 @@ try {
 } catch (err) {
   console.error(`span reads skipped: ${err.message}`);
 }
-const boardV3 = await buildBoardV3(ROOT, { on: libraryOn() === true, spanReads });
+let scannerReads = [];
+try {
+  const { collectScannerReads } = await import("./lib/scanner/load.mjs");
+  const scan = await collectScannerReads({ root: ROOT, asOf: catalog.asOf || "", series, catalog });
+  scannerReads = scan.reads || [];
+  console.log(JSON.stringify({ scanner: scan.summary }));
+} catch (err) {
+  console.error(`scanner skipped: ${err.message}`);
+}
+const boardV3 = await buildBoardV3(ROOT, { on: libraryOn() === true, spanReads, scannerReads });
 console.log(JSON.stringify({ boardV3 }));
 // Variant tags: rebuilt nightly here, then stamped on reads that point at one card.
 let variantSummary = null;
