@@ -68,6 +68,20 @@ jobs:
       - name: Guard audit (fails the run if any safeguard is disconnected)
         run: node scripts/guard-audit.mjs
 
+      - name: Rebuild outputs on today's day (before the tests)
+        # The tests compare committed outputs against the newest TCGCSV day,
+        # which the step above just wrote. Rebuild them first so a new day does
+        # not turn main red (2026-10-13). The same scripts run again below.
+        run: |
+          node scripts/build-tcgcsv-catalogue-map.mjs
+          node scripts/build-public-bundle.mjs
+          node scripts/build-feed.mjs
+          node scripts/write-morning-card.mjs
+          node scripts/write-feature-data.mjs
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+
       - name: Unit tests (fail-fast)
         # Pure-math tests on scripts/lib + contract checks on yesterday's
         # committed artifacts. A regressed engine kills the run HERE, before
@@ -233,6 +247,12 @@ jobs:
             done
           fi
 
+      - name: Re-check fill-source robots
+        # Nightly robots.txt re-check for every fill source (config/fill-sources.json).
+        # A source whose robots now blocks us is marked robotsBlocked and drops out of the charts.
+        # Network errors are caught per source inside the script, so this step does not fail the run.
+        run: node scripts/check-fill-robots.mjs
+
       - name: Rebuild public set pages
         # Before the feed build, so build-feed.mjs (with sold facts, extras and
         # rotation) writes the final feed. The bundle throws before any write if
@@ -259,6 +279,18 @@ jobs:
 
       - name: Write feature data
         run: node scripts/write-feature-data.mjs
+
+      - name: Listings-led tracker (private)
+        # Scores listing-count trends with price and heat state; picks and backtest go to the
+        # private repo only. No public output.
+        run: node scripts/run-tracker.mjs
+        env:
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+
+      - name: Refresh the morning card (today.json)
+        # Built from tonight's reads.json. Nothing else writes it, and build-feed's
+        # health check fails once it is 3 days behind.
+        run: node scripts/write-morning-card.mjs
 
       - name: Stamp the Updated line from the price file
         # Site pages read counts.json for the Updated line. That clock is the
@@ -289,7 +321,7 @@ jobs:
             git clean -fdq -- research/assets/public/sets research/assets/public/buckets research/assets/public/artists || true
           fi
           # The track-record path is the public stub. Do not add data/private/.
-          git add research/assets/public/reads.json research/assets/public/feed/ research/assets/public/counts.json research/assets/public/sparks research/assets/public/track-record.json research/assets/public/set-value research/assets/public/rotation-status.json research/assets/public/releases.json research/assets/public/listings-counted.json
+          git add research/assets/public/reads.json research/assets/public/today.json research/assets/public/feed/ research/assets/public/counts.json research/assets/public/sparks research/assets/public/track-record.json research/assets/public/set-value research/assets/public/rotation-status.json research/assets/public/releases.json research/assets/public/listings-counted.json
           if git diff --cached --name-only -- data/private | grep -q .; then
             echo "private scores must not be committed here"
             exit 1
@@ -384,7 +416,7 @@ jobs:
           # step writes is listed here. A file written in CI but not added
           # evaporates at job end — the class that froze the app feed and ate
           # era/catalyst history daily.
-          git add data/sealed-prices.json data/heat-report.json data/heat-history.json data/divergence-report.json data/supply-watch.json data/derived-insights.json data/era-index-history.json data/catalyst-log.json data/cohort-history.json data/alerts-state.json data/artists.json data/indexes/ data/heat-check.json data/history/tcgplayer-market/ data/catalog/tcgcsv-latest.json data/catalog/tcgcsv-coverage.json data/history/tcgcsv-daily/ data/raw/ data/search/ data/meta/ppt-usage.json data/meta/ppt-cursor.json data/history/slabs/status.json data/heartbeat.json data/derived/ research/pulse/ research/assets/the-board.html research/assets/the-pulse.html research/assets/pulse-feed.json research/assets/print-watch.html research/assets/methodology.html research/assets/corrections.html research/assets/creators.html research/assets/build.html research/assets/card-index.json research/assets/faq.html research/digests/news.json research/digests/weekly-news.json
+          git add config/fill-sources.json data/sealed-prices.json data/heat-report.json data/heat-history.json data/divergence-report.json data/supply-watch.json data/derived-insights.json data/era-index-history.json data/catalyst-log.json data/cohort-history.json data/alerts-state.json data/artists.json data/indexes/ data/heat-check.json data/history/tcgplayer-market/ data/catalog/tcgcsv-latest.json data/catalog/tcgcsv-coverage.json data/history/tcgcsv-daily/ data/raw/ data/search/ data/meta/ppt-usage.json data/meta/ppt-cursor.json data/history/slabs/status.json data/heartbeat.json data/derived/ research/pulse/ research/assets/the-board.html research/assets/the-pulse.html research/assets/pulse-feed.json research/assets/print-watch.html research/assets/methodology.html research/assets/corrections.html research/assets/creators.html research/assets/build.html research/assets/card-index.json research/assets/faq.html research/digests/news.json research/digests/weekly-news.json
           if compgen -G "data/learning/grades-*.json" > /dev/null; then git add data/learning/grades-*.json; fi
           if git diff --staged --quiet; then
             echo "No price changes to commit."
