@@ -17,7 +17,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { openPrivate } from "./lib/private-store.mjs";
 import { loadPriceBook } from "./self-check.mjs";
-import { buildCatalogueIndex, extractMentions, topicTags, commentSentiment, extractClaims, scoreClaims, rankClaims, buildLeads, claimStatus, extractIdeas, videoWeight } from "./lib/youtube.mjs";
+import { buildCatalogueIndex, extractMentions, topicTags, commentSentiment, extractClaims, scoreClaims, rankClaims, buildLeads, claimStatus, extractIdeas, videoWeight, creatorWeights, combinedTones, hypeEvents, scoreHype, disagreements, edenSeed } from "./lib/youtube.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const API = "https://www.googleapis.com/youtube/v3";
@@ -130,29 +130,33 @@ export async function runYoutubeLearn({ root = ROOT, key = process.env.YOUTUBE_A
   for (const c of claimsDoc.claims) { const st = claimStatus(c); if (c.status !== st.status) c.statusSince = today; c.status = st.status; c.evidence = st.evidence; }
   const topicsByVideo = new Map(videos.map((v) => [v.id, v.topics]));
   const ranking = rankClaims(claimsDoc.claims, topicsByVideo);
-  const leads = buildLeads(videos, { today, idx, seenTopics: state.topicsSeen, firstRun: !(state.topicsSeen || []).length, tones });
+  // Track-record weights (neutral until 20 scored claims) times the tone setting.
+  const weights = creatorWeights(ranking);
+  const wTones = combinedTones(tones, weights);
+  const leads = buildLeads(videos, { today, idx, seenTopics: state.topicsSeen, firstRun: !(state.topicsSeen || []).length, tones: wTones });
+  const prevHype = await J(join(dir, "hype-study.json"), { events: [] });
+  const evs = hypeEvents(videos).map((e) => ({ ...e, ...(prevHype.events.find((p) => p.groupId === e.groupId && p.date === e.date) || {}) }));
+  const hype = scoreHype(evs, { priceOn, marketChange, pidsBySet: idx.pidsBySet, today });
+  const dis = disagreements(claimsDoc.claims, { today });
   state.topicsSeen = [...new Set([...state.topicsSeen, ...videos.flatMap((v) => v.topics)])].sort();
-  const eden = {};
-  for (const v of videos.filter((x) => x.date >= new Date(Date.parse(`${today}T00:00:00Z`) - 30 * 86400000).toISOString().slice(0, 10))) {
-    for (const k of [...v.mentions.sets.map((g) => `set:${g}`), ...v.mentions.cards.map((p) => `card:${p}`), ...v.mentions.sealed.map((p) => `sealed:${p}`)]) {
-      const e = (eden[k] ||= { videos: 0, comments: 0, pos: 0, neg: 0 });
-      const w = videoWeight(v, tones[v.channel]);
-      e.videos++; e.comments += v.sentiment.comments; e.pos += w * v.sentiment.pos; e.neg += w * v.sentiment.neg;
-    }
-  }
-  for (const e of Object.values(eden)) e.score = e.pos + e.neg ? Math.round(((e.pos - e.neg) / (e.pos + e.neg)) * 100) / 100 : 0;
+  const eden = edenSeed(videos, { today, weightOf: (v) => videoWeight(v, wTones[v.channel]) });
   const unitsUsed = yt.used();
   state.quota = [...(state.quota || []).filter((q) => q.date !== today), { date: today, units: unitsUsed, videos: added.length }].slice(-60);
 
   await writeFile(join(dir, "videos.jsonl.gz"), gzipSync(videos.map((v) => JSON.stringify(v)).join("\n") + "\n"));
   await writeFile(join(dir, "claims.json"), JSON.stringify({ asOf: today, private: true, rule: "A creator claim is never fact. unverified until our own data (TCGplayer prices, pull-rate file, PSA pops, catalogue) or a second independent source backs or contradicts it. Only backed claims may influence reads, ratings or flags.", counts: { unverified: claimsDoc.claims.filter((c) => c.status === "unverified").length, backed: claimsDoc.claims.filter((c) => c.status === "backed").length, contradicted: claimsDoc.claims.filter((c) => c.status === "contradicted").length }, claims: claimsDoc.claims }, null, 1) + "\n");
   await writeFile(join(dir, "scores.json"), JSON.stringify({ asOf: today, private: true, note: "Private. Held = TCGplayer market on the claimed side after h days (card), or the set's median single (set). Same horizons and slack as self-check.", rows: ranking }, null, 1) + "\n");
-  await writeFile(join(dir, "eden-seed.json"), JSON.stringify({ asOf: today, private: true, method: "Word-list sentiment over top public comments, last 30 days, by catalogue id. pos and neg are scaled by each channel tone weight (config/youtube-channels.json).", rows: eden }, null, 1) + "\n");
+  await writeFile(join(dir, "eden-seed.json"), JSON.stringify({ asOf: today, private: true, method: "Word-list sentiment over top public comments, last 30 days, by catalogue id. Each comment counts 1 + log10(1 + likes); each video is scaled by its channel tone weight times its track-record weight. week vs prevWeek shows a turn in mood.", rows: eden }, null, 1) + "\n");
   await writeFile(join(dir, "ideas.json"), JSON.stringify({ asOf: today, private: true, note: "Candidate read paths from creator videos: methods, signals watched, data sources named. Unverified. The weekly audit tests them before any read uses one.", ideas: ideasDoc.ideas }, null, 1) + "\n");
+  await writeFile(join(dir, "creator-weights.json"), JSON.stringify({ asOf: today, private: true, rule: "Neutral (1) until 20 scored claims; then 0.5 + held rate, clamped 0.5..1.5. Used only in attention and trend counts.", weights }, null, 1) + "\n");
+  await writeFile(join(dir, "hype-study.json"), JSON.stringify({ asOf: today, private: true, method: "Event = first day a set reaches 3+ videos on 2+ channels inside 7 days (one per set per 30 days). Change = median TCGplayer single in the set; excess = vs every priced product.", summary: hype.summary, events: hype.events }, null, 1) + "\n");
+  await writeFile(join(dir, "disagreements.json"), JSON.stringify({ asOf: today, private: true, creator: dis.creator, data: dis.data }, null, 1) + "\n");
   await writeFile(join(dir, "state.json"), JSON.stringify(state, null, 1) + "\n");
-  const pushed = await store.close(["youtube/videos.jsonl.gz", "youtube/claims.json", "youtube/scores.json", "youtube/eden-seed.json", "youtube/ideas.json", "youtube/state.json"], `YouTube learn ${today}`);
+  const pushed = await store.close(["youtube/videos.jsonl.gz", "youtube/claims.json", "youtube/scores.json", "youtube/eden-seed.json", "youtube/ideas.json", "youtube/creator-weights.json", "youtube/hype-study.json", "youtube/disagreements.json", "youtube/state.json"], `YouTube learn ${today}`);
 
-  const doc = { ...base, keyPresent: true, status: errors.length ? "partial" : "ok", unitsUsed, videosNew: added.length, videosTotal: videos.length, claims: claimsDoc.claims.length, ideas: ideasDoc.ideas.length, errors: errors.map((e) => e.replace(key, "[key]")), privatePushed: Boolean(pushed?.pushed), leads };
+  const doc = { ...base, keyPresent: true, status: errors.length ? "partial" : "ok", unitsUsed, videosNew: added.length, videosTotal: videos.length, claims: claimsDoc.claims.length, ideas: ideasDoc.ideas.length, errors: errors.map((e) => e.replace(key, "[key]")), privatePushed: Boolean(pushed?.pushed), leads,
+    disagreements: { creatorTargets: dis.creator.length, dataContradictedTonight: dis.data.length, creatorRows: dis.creator.map((d) => ({ label: d.target.startsWith("set:") ? (idx.setList.find((x) => `set:${x.groupId}` === d.target)?.set || d.target) : (idx.byPid.get(Number(d.target.slice(5)))?.name || d.target), channels: d.up + d.down, from: d.from, to: d.to })) },
+    hypeEvents: hype.events.length, weightedCreators: Object.values(weights).filter((w) => w.basis !== "neutral").length };
   await writePublic(root, doc);
   return doc;
 }

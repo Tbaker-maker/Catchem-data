@@ -2,7 +2,7 @@ import { mkdtemp, mkdir, writeFile, readFile, cp } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { buildCatalogueIndex, extractMentions, topicTags, commentSentiment, extractClaims, scoreClaims, rankClaims, buildLeads, claimStatus, videoWeight, extractIdeas, attentionLine, isBanned } from "../lib/youtube.mjs";
+import { buildCatalogueIndex, extractMentions, topicTags, commentSentiment, extractClaims, scoreClaims, rankClaims, buildLeads, claimStatus, videoWeight, creatorWeights, combinedTones, hypeEvents, scoreHype, disagreements, edenSeed, extractIdeas, attentionLine, isBanned } from "../lib/youtube.mjs";
 import { youtubeFlags } from "../lib/flags.mjs";
 import { runYoutubeLearn, makeClient } from "../youtube-learn.mjs";
 
@@ -70,6 +70,26 @@ export async function run() {
   t("flags: leads become YOUTUBE_LEAD", youtubeFlags({ asOf: "2026-01-10", keyPresent: true, leads }).every((f) => f.type === "YOUTUBE_LEAD"));
   t("flags: missing key raises YOUTUBE_KEY_MISSING", youtubeFlags({ asOf: "2026-01-10", keyPresent: false })[0]?.type === "YOUTUBE_KEY_MISSING");
 
+  // Track-record weights
+  const cw = creatorWeights([{ by: "channel", key: "a", scored7: 25, heldPct7: 80, scored30: 3 }, { by: "channel", key: "b", scored7: 19, heldPct7: 100 }, { by: "topic", key: "grading", scored7: 40, heldPct7: 10 }]);
+  t("weights: 20+ scored uses held rate, clamped", cw.a.weight === 1.3 && cw.a.basis === "held7");
+  t("weights: under 20 scored stays neutral", cw.b.weight === 1 && cw.b.basis === "neutral" && !cw.grading);
+  t("weights combine with tone", combinedTones({ a: { weight: 0.5, hype: true } }, cw).a.weight === 0.65 && combinedTones({ a: { weight: 0.5, hype: true } }, cw).a.hype === true);
+  // Hype study
+  const hv = ["2026-01-01", "2026-01-02", "2026-01-03", "2026-01-05"].map((d, i) => ({ id: `h${i}`, channel: i % 2 ? "x" : "y", date: d, mentions: { sets: [2], cards: [], sealed: [] } }));
+  const evs = hypeEvents(hv);
+  t("hype: one event on the day 3 videos on 2 channels land", evs.length === 1 && evs[0].date === "2026-01-03" && evs[0].groupId === 2);
+  const hs = scoreHype(evs, { priceOn: (pid, d) => (d === "2026-01-03" ? 100 : d === "2026-01-10" ? 110 : null), marketChange: () => 0.05, pidsBySet: idx.pidsBySet, today: "2026-01-12" });
+  t("hype: 7-day change and excess vs market", hs.events[0].h7?.chg === 0.1 && hs.events[0].h7.excess === 0.05 && hs.summary.h7.events === 1 && hs.summary.h7.medianExcessPct === null);
+  // Disagreements
+  const dz = disagreements([{ id: "1", target: "set", groupId: 2, dir: 1, channel: "x", date: "2026-01-05" }, { id: "2", target: "set", groupId: 2, dir: -1, channel: "y", date: "2026-01-08" }, { id: "3", target: "card", pid: 102, dir: 1, channel: "x", date: "2026-01-01", status: "contradicted", statusSince: "2026-01-10" }], { today: "2026-01-10" });
+  t("disagree: opposite creators on one set", dz.creator.length === 1 && dz.creator[0].from === "2026-01-05");
+  t("disagree: claims our data contradicted tonight", dz.data.length === 1);
+  t("flags: disagreements become YOUTUBE_DISAGREE with no creator names", (() => { const f = youtubeFlags({ asOf: "2026-01-10", keyPresent: true, leads: [], disagreements: { creatorRows: [{ label: "Evolving Skies", channels: 2, from: "2026-01-05", to: "2026-01-08" }], dataContradictedTonight: 1 } }); return f.length === 2 && f.every((x) => x.type === "YOUTUBE_DISAGREE") && !/\bx\b|\by\b/.test(JSON.stringify(f.map((x) => x.line))); })());
+  // Eden seed
+  const es = edenSeed([{ channel: "x", date: "2026-01-09", mentions: { sets: [2], cards: [], sealed: [] }, topComments: [{ text: "love it", likes: 9 }, { text: "trash", likes: 0 }] }, { channel: "x", date: "2026-01-01", mentions: { sets: [2], cards: [], sealed: [] }, topComments: [{ text: "awful", likes: 0 }] }], { today: "2026-01-10" });
+  t("eden: likes weight comments, week vs previous week", es["set:2"].pos === 2 && es["set:2"].neg === 2 && es["set:2"].week.score === 0.33 && es["set:2"].prevWeek.score === -1 && es["set:2"].turn === 1.33);
+
   // Runner: missing key exits cleanly, no network.
   const root = await mkdtemp(join(tmpdir(), "yt-"));
   await mkdir(join(root, "config"), { recursive: true });
@@ -104,6 +124,7 @@ export async function run() {
   const pubDoc = await readFile(join(root, "data/derived/youtube-leads.json"), "utf8");
   t("public file has no creator names or text", !/nomics|undervalued|great video|Nostalgia/i.test(pubDoc));
   const again = await runYoutubeLearn({ root, key: "k", token: "", fetchFn: fake, store: local });
+  for (const f of ["creator-weights.json", "hype-study.json", "disagreements.json", "eden-seed.json"]) t(`private ${f} written`, Boolean(await readFile(join(root, "data/private/youtube", f), "utf8").catch(() => "")));
   t("second night skips known videos", again.videosNew === 0);
   const capped = makeClient({ key: "k", fetchFn: fake, budget: 1 });
   await capped.get("channels", { id: "UCx" });
