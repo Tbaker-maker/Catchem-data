@@ -281,6 +281,16 @@ try {
   console.error(`tcgci skipped: ${err.message}`);
   try { await writeFile(join(ROOT, "data/derived/tcgci-status.json"), JSON.stringify({ asOf: new Date().toISOString().slice(0, 10), status: "error", errors: [String(err.message).slice(0, 200)], calls: 0, note: "Counts only." }) + "\n"); } catch {}
 }
+// X accounts + restock alerts (official X API, X_BEARER_TOKEN, 150 calls a night).
+// Private store only; counts go to data/derived/x-status.json. Never stops the nightly.
+try {
+  const { runXLearn } = await import("./x-learn.mjs");
+  const xr = await runXLearn({ root: ROOT });
+  console.log(JSON.stringify({ x: { status: xr.status, callsUsed: xr.callsUsed, posts: xr.posts, restockEvents: xr.restockEvents } }));
+} catch (err) {
+  console.error(`x skipped: ${err.message}`);
+  try { await writeFile(join(ROOT, "data/derived/x-status.json"), JSON.stringify({ asOf: new Date().toISOString().slice(0, 10), status: "error", tokenPresent: Boolean(process.env.X_BEARER_TOKEN), callsUsed: 0, note: "Counts only." }) + "\n"); } catch {}
+}
 // Call-pattern + crowd-angle mining (script only). Private first; public
 // crowd-attention.json only gets angles that passed n≥20 holdout.
 try {
