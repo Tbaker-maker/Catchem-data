@@ -1,11 +1,11 @@
 {
  "asOf": "2026-10-13",
- "updatedAt": "2026-10-12T16:28:46.592Z",
+ "updatedAt": "2026-10-13T12:03:24.377Z",
  "note": "A hit means the next stored price moved the same way as the price we wrote down. A miss moved the other way. A hit rate stays hidden until 20 calls are scored. These are not sold prices.",
  "hitRate": null,
- "scored": 5,
+ "scored": 6,
  "hits": 2,
- "misses": 3,
+ "misses": 4,
  "rows": [
   {
    "id": "receipt-2026-08-20-sealed-pgo-etb",
@@ -128,28 +128,28 @@
    "changePct": 0.5
   },
   {
-   "id": "receipt-2026-10-11-sealed-xy12-booster-box",
+   "id": "receipt-2026-10-12-sealed-swsh9-booster-box",
    "type": "receipt",
-   "result": "open",
+   "result": "miss",
    "kind": "sealed",
-   "name": "Evolutions Booster Box",
-   "headline": "Evolutions Booster Box. Open.",
-   "price": 3514.95,
+   "name": "Brilliant Stars Booster Box",
+   "headline": "Brilliant Stars Booster Box. Miss.",
+   "price": 600,
    "source": "eBay asking prices",
-   "asOf": "2026-10-12",
-   "why": "Written down October 11, 2026 at $3,514.95. The eBay asking price before it was the same, so this stays open.",
+   "asOf": "2026-10-13",
+   "why": "Written down October 12, 2026 at $600.00, after a higher one. Next eBay asking price on October 13, 2026 was $600.00. The other way.",
    "hist": [
     [
-     "2026-10-11",
-     3514.95
+     "2026-10-12",
+     600
     ],
     [
-     "2026-10-12",
-     3999.99
+     "2026-10-13",
+     600
     ]
    ],
    "href": "",
-   "changePct": 13.8
+   "changePct": 0
   },
   {
    "id": "receipt-2026-10-11-single-swsh7-215",
@@ -172,26 +172,6 @@
    "changePct": null
   },
   {
-   "id": "receipt-2026-10-12-sealed-swsh9-booster-box",
-   "type": "receipt",
-   "result": "open",
-   "kind": "sealed",
-   "name": "Brilliant Stars Booster Box",
-   "headline": "Brilliant Stars Booster Box. Open.",
-   "price": 600,
-   "source": "eBay asking prices",
-   "asOf": "2026-10-12",
-   "why": "Written down October 12, 2026 at $600.00. No later eBay asking price is stored, so this stays open.",
-   "hist": [
-    [
-     "2026-10-12",
-     600
-    ]
-   ],
-   "href": "",
-   "changePct": null
-  },
-  {
    "id": "receipt-2026-10-12-single-swsh7-215",
    "type": "receipt",
    "result": "open",
@@ -205,6 +185,46 @@
    "hist": [
     [
      "2026-10-12",
+     2283.14
+    ]
+   ],
+   "href": "",
+   "changePct": null
+  },
+  {
+   "id": "receipt-2026-10-13-sealed-sm10-booster-box",
+   "type": "receipt",
+   "result": "open",
+   "kind": "sealed",
+   "name": "Unbroken Bonds Booster Box",
+   "headline": "Unbroken Bonds Booster Box. Open.",
+   "price": 3340.32,
+   "source": "eBay asking prices",
+   "asOf": "2026-10-13",
+   "why": "Written down October 13, 2026 at $3,340.32. No later eBay asking price is stored, so this stays open.",
+   "hist": [
+    [
+     "2026-10-13",
+     3340.32
+    ]
+   ],
+   "href": "",
+   "changePct": null
+  },
+  {
+   "id": "receipt-2026-10-13-single-swsh7-215",
+   "type": "receipt",
+   "result": "open",
+   "kind": "single",
+   "name": "Umbreon VMAX",
+   "headline": "Umbreon VMAX. Open.",
+   "price": 2283.14,
+   "source": "TCGplayer market",
+   "asOf": "2026-10-13",
+   "why": "Written down October 13, 2026 at $2,283.14. No earlier TCGplayer market price is stored, so this stays open.",
+   "hist": [
+    [
+     "2026-10-13",
      2283.14
     ]
    ],
