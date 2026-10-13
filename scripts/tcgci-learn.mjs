@@ -7,6 +7,7 @@
 //   data/private/tcgci/calls.json       normalized ledger (includes claim text)
 //   data/private/tcgci/crosscheck.json  their 30d verdict vs our YouTube scoring
 //   data/private/tcgci/state.json       last fetch meta
+//   data/private/tcgci/fetch-log.jsonl   every fetch: date + URL (+ status/counts)
 // Public-safe (data/derived/tcgci-status.json): counts and dates only.
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
@@ -22,6 +23,14 @@ import {
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async (p, d = null) => { try { return JSON.parse(await readFile(p, "utf8")); } catch { return d; } };
+
+async function appendFetchLog(dir, row) {
+  const p = join(dir, "fetch-log.jsonl");
+  let prev = "";
+  try { prev = await readFile(p, "utf8"); } catch {}
+  await writeFile(p, prev + JSON.stringify(row) + "\n");
+}
+
 
 async function writePublic(root, doc) {
   await mkdir(join(root, "data/derived"), { recursive: true });
@@ -98,7 +107,8 @@ export async function runTcgciLearn({
     await writeFile(join(dir, "state.json"), JSON.stringify({
       asOf: today, fetchedAt: now.toISOString(), status, url, errors, lastOkUpdated: prev?.updated || null,
     }, null, 1) + "\n");
-    await store.close(["tcgci/state.json"], `TCGCI learn ${today} (${status})`);
+    await appendFetchLog(dir, { fetchedAt: now.toISOString(), asOf: today, url, status, httpOk: false, errors });
+    await store.close(["tcgci/state.json", "tcgci/fetch-log.jsonl"], `TCGCI learn ${today} (${status})`);
     return doc;
   }
 
@@ -143,9 +153,13 @@ export async function runTcgciLearn({
     crossAgreePct: cross.agreePct,
     errors: [],
   }, null, 1) + "\n");
+  await appendFetchLog(dir, {
+    fetchedAt: now.toISOString(), asOf: today, url, status: "ok",
+    calls: parsed.counts.total, updated: parsed.updated,
+  });
 
   const pushed = await store.close(
-    ["tcgci/calls.json", "tcgci/crosscheck.json", "tcgci/state.json"],
+    ["tcgci/calls.json", "tcgci/crosscheck.json", "tcgci/state.json", "tcgci/fetch-log.jsonl"],
     `TCGCI learn ${today}: ${parsed.counts.total} calls`,
   );
 

@@ -87,7 +87,7 @@ export async function run() {
   t("parse: avoid right", parsed.calls[1].theirVerdict === "right");
   t("parse: hold small drop right", parsed.calls[2].theirVerdict === "right");
   t("parse: pending counted", parsed.counts.byVerdict.pending === 1);
-  t("normalize keeps text privately on the object", parsed.calls[0].text.includes("Buy:"));
+  t("normalize omits claim prose", parsed.calls[0].text == null && parsed.calls[0].item === "Destined Rivals Elite Trainer Box");
 
   const ourClaims = [
     { videoId: "vid1", pid: 624676, h30: { day: "2026-10-05", chg: 0.2, excess: 0.1, result: "hit", held: true } },
@@ -104,6 +104,7 @@ export async function run() {
   const pubS = JSON.stringify(pub);
   t("public status has counts only", pub.calls === 4 && pub.scored === 3 && pub.pending === 1);
   t("public status carries no claim text or creator names", !/Buy:|Nostalgia|Plumber|Destined|Prismatic/.test(pubS));
+  t("private normalize has no Buy: prose either", !parsed.calls.some((c) => c.text));
 
   // Runner: one polite fetch, private files, no block past 403.
   const root = await mkdtemp(join(tmpdir(), "tcgci-"));
@@ -129,9 +130,11 @@ export async function run() {
   const privCalls = JSON.parse(await readFile(join(root, "data/private/tcgci/calls.json"), "utf8"));
   const privCross = JSON.parse(await readFile(join(root, "data/private/tcgci/crosscheck.json"), "utf8"));
   const pubDoc = JSON.parse(await readFile(join(root, "data/derived/tcgci-status.json"), "utf8"));
-  t("private calls keep text", privCalls.calls[0].text.includes("Buy:"));
+  t("private calls have fields, no prose", privCalls.calls[0].item && !privCalls.calls[0].text && privCalls.calls[0].theirVerdict === "right");
   t("private crosscheck has rows", privCross.rows.length === 3);
   t("derived status has no text", !/Buy:|Nostalgia|Destined/.test(JSON.stringify(pubDoc)));
+  const log = (await readFile(join(root, "data/private/tcgci/fetch-log.jsonl"), "utf8")).trim().split("\n").map(JSON.parse);
+  t("fetch log has date and URL", log.length >= 1 && log[0].url === TCGCI_CALLS_URL && log[0].fetchedAt);
 
   fetches = 0;
   const blocked = await runTcgciLearn({

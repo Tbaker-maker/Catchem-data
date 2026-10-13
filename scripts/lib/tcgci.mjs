@@ -91,8 +91,7 @@ export function normalizeCall(raw) {
     now: p.now ?? null,
     nowDate: p.now_date || null,
     pricedAt: p.priced_at || null,
-    // Keep their claim text private-side only; never write it to a public path.
-    text: raw.text || null,
+    // Only the fields we need (plus ids for matching). Never store their claim prose.
     theirVerdict: theirVerdict(raw),
   };
 }
