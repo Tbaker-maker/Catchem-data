@@ -1,5 +1,5 @@
 {
-  "checked": "2026-10-12",
+  "checked": "2026-10-13",
   "rule": "A site is used to fill a chart gap only when its terms of use and its robots.txt both allow automated access. Terms are checked once (date below). robots.txt is re-checked each night by scripts/check-fill-robots.mjs. Bot blocks are never bypassed. Requests are throttled to 1 every 10 seconds or the site's Crawl-delay, whichever is longer. Filled points carry source tag 'f' internally and are named in the chart's About note.",
   "allowed": [
     {
@@ -34,7 +34,9 @@
       "chartFill": true,
       "fillsHistory": true,
       "robotsBlocked": false,
-      "robotsChecked": "2026-10-13"
+      "robotsChecked": "2026-10-13",
+      "depthNote": "Sealed: earliest 2025-09-30, median ~373 days (measured 2026-10-13)",
+      "depthChecked": "2026-10-13"
     },
     {
       "site": "pokevizinvestor.com (card pages)",
@@ -49,7 +51,9 @@
       "chartFill": true,
       "fillsHistory": true,
       "robotsBlocked": false,
-      "robotsChecked": "2026-10-13"
+      "robotsChecked": "2026-10-13",
+      "depthNote": "Card pages: earliest point 2025-09-30, median ~373 days (measured 2026-10-13 from singles.json.gz)",
+      "depthChecked": "2026-10-13"
     }
   ],
   "skipped": [
@@ -121,6 +125,45 @@
     {
       "site": "JustTCG, PokemonPriceTracker, Scrydex, tcgapi.dev, pokemontcgapi.com",
       "reason": "Paid APIs, not public sites. See the Oct 10 history-sources review: only PokemonPriceTracker Business ($99/mo) allows keeping and showing history commercially"
+    },
+    {
+      "site": "pkmnprices.com",
+      "reason": "Terms forbid scrape outside the paid API; paid seller (no paid pulls for this job)",
+      "termsLines": [
+        "Scrape, crawl, or collect data from the Service outside of the provided API"
+      ],
+      "robots": "Allow: / with Disallow on /dashboard /sign-in /auth (checked 2026-10-13)",
+      "termsChecked": "2026-10-13",
+      "depthNote": "API claims up to 1 year; not used"
+    },
+    {
+      "site": "pokemonpricetracker.com (fresh check)",
+      "reason": "Paid. Terms forbid scrape without consent; commercial use needs Business; robots Disallow: /api/",
+      "termsChecked": "2026-10-13",
+      "robotsChecked": "2026-10-13",
+      "depthNote": "Marketing says 1+ years; free tier 3 days"
+    },
+    {
+      "site": "tcggraph.com",
+      "reason": "robots Disallow: /api/; no terms page (404); paid credits API",
+      "robotsChecked": "2026-10-13",
+      "termsChecked": "2026-10-13"
+    },
+    {
+      "site": "tcgapi.dev",
+      "reason": "Paid API; no public terms page found (404 on /terms and /legal)",
+      "robotsChecked": "2026-10-13"
+    },
+    {
+      "site": "pokecollector.com",
+      "reason": "robots Disallow: /",
+      "robotsChecked": "2026-10-13"
+    },
+    {
+      "site": "multi-year fan history to 2019-2021",
+      "reason": "No allowed free source found. PokeViz depth starts 2025-09-30. Our own hist-long starts 2024-02-08. tcgcsv archive 403.",
+      "checked": "2026-10-13",
+      "seeAlso": "data/private/research/scanner-eras/sources.json in catchem-data-private"
     }
   ],
   "filled": {
