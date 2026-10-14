@@ -71,18 +71,23 @@ export async function run() {
 
   let banned = false;
   try {
-    buildTrackRecord([{ id: "b", sku: "tcgcsv-9", name: "support", asOf: "2026-08-01", take: "up" }], { "tcgcsv-9": { "2026-08-15": 12 } }, "2026-10-01", { "tcgcsv-9": { "2026-08-01": ship } });
+    buildTrackRecord([{ id: "b", sku: "tcgcsv-9", name: "Example", asOf: "2026-08-01", take: "up" }], { "tcgcsv-9": { "2026-08-15": 12 } }, "2026-10-01", { "tcgcsv-9": { "2026-08-01": { market: 10, source: "time to buy" } } });
   } catch (err) {
-    banned = err.message === "track record used a banned word";
+    banned = /track record used a banned word: .*"buy".*field "shipSource".*read b/.test(err.message);
   }
-  t("a banned word fails anywhere in the file", banned);
+  t("a visible word with no replacement fails and names the field and read id", banned);
   let sourceBanned = false;
   try {
-    buildTrackRecord([upRead("s", "tcgcsv-8")], { "tcgcsv-8": { "2026-08-15": 12 } }, "2026-10-01", { "tcgcsv-8": { "2026-08-01": { market: 10, source: "printed" } } });
+    buildTrackRecord([upRead("s", "tcgcsv-8")], { "tcgcsv-8": { "2026-08-15": 12 } }, "2026-10-01", { "tcgcsv-8": { "2026-08-01": { market: 10, source: "a sure target" } } });
   } catch (err) {
-    sourceBanned = err.message === "track record used a banned word";
+    sourceBanned = /track record used a banned word: .*target.*shipSource/.test(err.message);
   }
   t("a banned word in the source fails the file", sourceBanned);
+  const swapped = buildTrackRecord([upRead("p", "tcgcsv-6")], { "tcgcsv-6": { "2026-08-15": 12 } }, "2026-10-01", { "tcgcsv-6": { "2026-08-01": { market: 10, source: "breakout check" } } });
+  t("a visible word with a replacement is rewritten, not thrown", JSON.stringify(swapped).includes("climb past its range check") && !/breakout/.test(JSON.stringify(swapped)));
+  let nameOk = true;
+  try { buildTrackRecord([{ id: "n", sku: "tcgcsv-5", name: "Battle Academy Support Box", asOf: "2026-08-01", take: "up" }], { "tcgcsv-5": { "2026-08-15": 12 } }, "2026-10-01", { "tcgcsv-5": { "2026-08-01": ship } }); } catch { nameOk = false; }
+  t("a product name is a proper name and is not checked", nameOk);
   let idOk = true;
   try {
     buildTrackRecord([{ id: "scan-pattern-forming-breakout-tcgcsv-7", sku: "tcgcsv-7", name: "Example", asOf: "2026-08-01", take: "up" }], { "tcgcsv-7": { "2026-08-15": 12 } }, "2026-10-01", { "tcgcsv-7": { "2026-08-01": ship } });

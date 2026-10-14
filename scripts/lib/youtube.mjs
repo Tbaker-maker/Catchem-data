@@ -3,6 +3,7 @@
 // No AI, no scraping, no captions. Cards match by catalogue id, never by name alone.
 import { addDays, HORIZONS, MIN_SCORED, scoreLedger, priceAtHorizon } from "./self-check.mjs";
 import { buildCardIndex, matchCards } from "./card-matcher.mjs";
+import { hasBannedWord } from "./copy-rules.mjs";
 
 export const UNIT_COST = { channels: 1, playlistItems: 1, videos: 1, commentThreads: 1 };
 
@@ -297,14 +298,13 @@ export function buildLeads(videos, { today, idx, seenTopics = [], days = 7, firs
   return leads.sort((a, b) => b.channels - a.channels || b.videos - a.videos || (a.label < b.label ? -1 : 1));
 }
 
-const BANNED = /\b(buy|buys|buying|sell|sells|selling|hold|holding|support|resistance|bottom|printed|play|target|invest\w*|crypto|moon|hodl|stack|load up)\b/i;
 // The only public sentence shape: attention across creators, with counts and dates.
 export function attentionLine(lead) {
   const line = `${lead.label} is getting attention across creators this week: ${lead.videos} videos on ${lead.channels} channels, ${lead.from} to ${lead.to}.`;
-  if (BANNED.test(line) || /\u2014/.test(line)) throw new Error("attention line used a banned word");
+  if (hasBannedWord(line)) throw new Error("attention line used a banned word");
   return line;
 }
-export const isBanned = (s) => BANNED.test(String(s));
+export const isBanned = (s) => hasBannedWord(String(s));
 
 // Tyler's rule: a creator claim is never fact. Every claim is an unverified lead
 // until our own data (TCGplayer prices here) backs or contradicts it, with evidence.

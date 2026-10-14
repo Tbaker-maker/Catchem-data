@@ -2,9 +2,9 @@
 import { readFile, readdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { cleanText } from "./lib/copy-rules.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const BANNED = /\b(resistance|support|bottom|buy|sell|holding|printed|play|target|invest)\b/i;
 const EMOJI = /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u;
 
 export function lintEmail(name, html) {
@@ -14,7 +14,8 @@ export function lintEmail(name, html) {
     .replace(/<head>[\s\S]*?<\/head>/i, "")
     .replace(/<style[\s\S]*?<\/style>/gi, "")
     .replace(/<[^>]+>/g, " ");
-  if (BANNED.test(text)) errors.push(`${name}: banned word`);
+  for (const e of cleanText(text, { field: "email body" }).errors) errors.push(`${name}: ${e}`);
+  for (const e of cleanText(subject, { field: "subject" }).errors) errors.push(`${name}: ${e}`);
   if (html.includes("\u2014") || html.includes("\u2013")) errors.push(`${name}: em dash`);
   if (EMOJI.test(subject)) errors.push(`${name}: emoji in subject`);
   if (/tcgcsv-|\/data\//i.test(html.replace(/https:\/\/catchemtcg\.com\/data\/editor\/tcg\/[A-Za-z0-9._/-]+/g, "").replace(/https:\/\/catchemtcg\.com\/[pc]\/tcgcsv-\d+/g, ""))) errors.push(`${name}: internal path`);

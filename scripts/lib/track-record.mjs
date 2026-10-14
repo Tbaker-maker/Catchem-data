@@ -4,8 +4,8 @@
 // The scored file is private. The public file is a stub with no rows.
 
 import { HORIZONS, SCORE_MIN } from "./second-library.mjs";
+import { cleanDoc, VISIBLE_FIELDS } from "./copy-rules.mjs";
 
-const COPY_BAN = /\b(resistance|support|breakout|bottom|cheap|crash|buys?|sells?|selling|holds?|holding|printed)\b/i;
 const LABEL_BAN = /Looks like a buy|Wait for a dip|Avoid for now|Looks stretched/;
 
 export const TAKE_CODES = ["up", "dip", "watch", "avoid", "stretched"];
@@ -38,11 +38,14 @@ export function percentFor(hit, n) {
   return Math.round((100 * hit) / n);
 }
 
+// Product names are proper names and ids are machine keys, so only words a reader sees are checked.
+const TRACK_VISIBLE = new Set([...VISIBLE_FIELDS, "type", "take"].filter((k) => k !== "status"));
 function assertClean(doc) {
-  // Ids are machine keys (a scanner id can contain a pattern name), so only words a reader sees are checked.
-  const blob = JSON.stringify(doc, (key, value) => (key === "id" || key === "productId" ? undefined : value));
-  if (COPY_BAN.test(blob) || LABEL_BAN.test(blob)) throw new Error("track record used a banned word");
-  return doc;
+  const r = cleanDoc(doc, { visible: TRACK_VISIBLE });
+  for (const f of r.fixes) console.log(`[copy-rules] track record: read ${f.id || "?"} ${f.field}: "${f.from}" -> "${f.to}"`);
+  const label = r.errors.length ? null : JSON.stringify(r.doc, (k, v) => (TRACK_VISIBLE.has(k) || typeof v !== "string" ? v : undefined));
+  if (r.errors.length || LABEL_BAN.test(label)) throw new Error(`track record used a banned word: ${r.errors.join("; ") || "a take label"}`);
+  return r.doc;
 }
 
 export function scoreRead(read, later = {}, today, shipFromFile = null) {
