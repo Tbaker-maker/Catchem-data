@@ -13,7 +13,7 @@ import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { gzipSync } from "node:zlib";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { tiers, pickRun, runSlice, used24, nightlyBudget, buildQuery, summarize, EBAY_BROWSE_DAILY_LIMIT, TAIL_FLOOR, RUNS_PER_DAY } from "./lib/listing-counts.mjs";
+import { tiers, pickRun, roleSlice, missingTop, ptDate, used24, nightlyBudget, buildQuery, summarize, EBAY_BROWSE_DAILY_LIMIT, TAIL_FLOOR, RUNS_PER_DAY } from "./lib/listing-counts.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OAUTH = "https://api.ebay.com/identity/v1/oauth2/token";
@@ -59,9 +59,14 @@ export async function runListingCounts({ afterSealedStep = false, now = new Date
   // run, so it spends the whole day's listing budget.
   const scheduled = await readFile(join(ROOT, ".github/workflows/listing-counts.yml"), "utf8").then(() => true, () => false);
   const runsPerDay = scheduled ? cfg.runsPerDay || RUNS_PER_DAY : 1;
+  // Role: "full" (morning and evening) or "top" (midday, and the nightly after
+  // the sealed step: daily-tier retries only). Unscheduled repo: one full run.
+  const role = afterSealedStep ? "top" : (process.env.LISTING_RUN_ROLE || "full");
   const tierPlan = tiers({ items, skipIds, attention, dailyBudget: b.budget, tailFloor: cfg.tailFloor ?? TAIL_FLOOR });
-  const slice = Math.min(Number(process.env.LISTING_COUNT_BUDGET) || Infinity, runSlice({ safe: b.safe, used, dailyBudget: b.budget, runsPerDay }));
-  const picked = pickRun({ daily: tierPlan.daily, tail: tierPlan.tail, last: state.last, now, slice: Math.max(0, slice - 1) });
+  const sealedInWindow = afterSealedStep || state.log.some((e) => e.source === "sealed-price-step" && Date.parse(e.at) > now.getTime() - 86400000);
+  const slice = Math.min(Number(process.env.LISTING_COUNT_BUDGET) || Infinity,
+    runsPerDay === 1 ? Math.max(0, b.safe - used) : roleSlice({ role, safe: b.safe, used, dailyBudget: b.budget, sealedStep: b.sealedStep, sealedInWindow, topShare: cfg.topShare }));
+  const picked = pickRun({ daily: tierPlan.daily, tail: tierPlan.tail, last: state.last, now, slice: Math.max(0, slice - 1), role });
   const plan = { picked, poolSize: tierPlan.daily.length + tierPlan.tail.length, perNightNeed: tierPlan.daily.length, cycleNights: tierPlan.tailCycleDays };
   console.log(`listing counts: daily tier ${tierPlan.daily.length} (${JSON.stringify(tierPlan.counts)}, singles at or above $${tierPlan.singleCutoff}), tail ${tierPlan.tail.length} every ${tierPlan.tailCycleDays} days, used ${used}/${b.safe} in 24h, this run ${picked.length}`);
 
@@ -102,8 +107,15 @@ export async function runListingCounts({ afterSealedStep = false, now = new Date
   await writeFile(statePath, JSON.stringify(state) + "\n");
   const usagePath = join(ROOT, "data/derived/listing-counts/api-usage.json");
   const usage = await J(usagePath, { nights: [] });
-  const night = { date: today, ebayBrowse: { limit: b.limit, safe: b.safe, sealedStepMax: b.sealedStep, listingCountCalls: calls + (tok ? 1 : 0), failures, rateLimited, counted: out.length, pool: plan.poolSize, perNightNeed: plan.perNightNeed, cycleNights: plan.cycleNights } };
+  const night = { date: today, ebayBrowse: { limit: b.limit, safe: b.safe, sealedStepMax: b.sealedStep, role, slice, listingCountCalls: calls + (tok ? 1 : 0), failures, rateLimited, counted: out.length, pool: plan.poolSize, perNightNeed: plan.perNightNeed, cycleNights: plan.cycleNights } };
   night.at = now.toISOString(); night.ebayBrowse.used24hAfter = used24(state.log, new Date());
+  const missed = missingTop(tierPlan.daily, state.last, new Date());
+  night.ebayBrowse.topMissingToday = missed.length;
+  night.ebayBrowse.ptDate = ptDate(new Date());
+  // Daily check: the evening full run and the nightly retry are the last runs of a PT day.
+  if (missed.length && (role === "top" && afterSealedStep || Number(new Intl.DateTimeFormat("en-US", { timeZone: "America/Vancouver", hour: "numeric", hourCycle: "h23" }).format(new Date())) >= 17)) {
+    console.log(`listing counts: TOP ITEMS MISSING A DAY (${ptDate(new Date())}): ${missed.length}. First: ${missed.slice(0, 20).join(", ")}`);
+  }
   night.ebayBrowse.dailyTier = tierPlan.counts; night.ebayBrowse.singleCutoff = tierPlan.singleCutoff;
   usage.nights = [...(usage.nights || []), night].slice(-120);
   await writeFile(usagePath, JSON.stringify(usage, null, 1) + "\n");

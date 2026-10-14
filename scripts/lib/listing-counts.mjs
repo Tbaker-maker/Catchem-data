@@ -10,7 +10,8 @@ export const EBAY_BROWSE_DAILY_LIMIT = 5000;
 export const SAFE_SHARE = 0.98; // default; config/api-budgets.json wins
 export const SEALED_PAGES = 3;  // sealed price step: up to 3 pages per priced product
 export const TAIL_FLOOR = 500;  // calls a day kept for the tail rotation
-export const RUNS_PER_DAY = 6;
+export const RUNS_PER_DAY = 3; // 2 full runs + 1 midday top-tier run
+export const TOP_RUN_SHARE = 0.15; // midday run cap, share of the daily listing budget
 const DAY = 86400000;
 
 const COMMON_EXCLUDE = [/\blots?\b/i, /\bbundle of\b/i, /\bx\s?\d+\b/i, /\b\d+\s?x\b/i, /\bproxy\b/i, /\bcustom\b/i, /\borica\b/i, /\breplica\b/i, /\bfake\b/i];
@@ -71,13 +72,40 @@ export function runSlice({ safe, used, dailyBudget, runsPerDay = RUNS_PER_DAY })
   return Math.max(0, Math.min(safe - used, Math.ceil(dailyBudget / runsPerDay)));
 }
 
-// Pick this run's items: daily-tier items not counted in the last 20 hours
-// first, then the stalest tail items.
-export function pickRun({ daily, tail, last = {}, now = new Date(), slice }) {
+// Calendar day in Pacific time. Top items must be counted once per PT day.
+export function ptDate(d) {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Vancouver", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(d));
+}
+
+// Calls a run may spend under the shared rolling 24-hour counter.
+// full: up to its share, plus catch-up for a missed run (never past 2 shares),
+//   always leaving room for the nightly sealed step if it is not in the window yet.
+// top: daily-tier retries only, capped at TOP_RUN_SHARE of the day.
+export function roleSlice({ role = "full", safe, used, dailyBudget, sealedStep = 0, sealedInWindow = true, topShare = TOP_RUN_SHARE }) {
+  const room = Math.max(0, safe - used - (sealedInWindow ? 0 : sealedStep));
+  const topCap = Math.ceil(dailyBudget * topShare);
+  if (role === "top") return Math.min(room, topCap);
+  const fullShare = Math.ceil((dailyBudget - topCap) / 2);
+  return Math.min(room, fullShare * 2);
+}
+
+// Pick this run's items: daily-tier items not yet counted today (PT) first,
+// stalest first, then (full runs only) the stalest tail items. A run that
+// failed or hit a 429 leaves its tops uncounted, so the next run retries them
+// before any tail work.
+export function pickRun({ daily, tail, last = {}, now = new Date(), slice, role = "full" }) {
   const ageH = (id) => (last[id] ? (now.getTime() - Date.parse(last[id])) / 3600000 : Infinity);
-  const dueDaily = daily.filter((it) => ageH(it.id) >= 20).sort((a, b) => ageH(b.id) - ageH(a.id) || String(a.id).localeCompare(String(b.id)));
+  const today = ptDate(now);
+  const dueDaily = daily.filter((it) => !last[it.id] || ptDate(last[it.id]) !== today).sort((a, b) => ageH(b.id) - ageH(a.id) || String(a.id).localeCompare(String(b.id)));
+  if (role === "top") return dueDaily.slice(0, Math.max(0, slice));
   const tailSorted = [...tail].sort((a, b) => ageH(b.id) - ageH(a.id) || String(a.id).localeCompare(String(b.id)));
   return [...dueDaily, ...tailSorted].slice(0, Math.max(0, slice));
+}
+
+// Daily check: top items with no count on a PT day.
+export function missingTop(daily, last = {}, now = new Date()) {
+  const today = ptDate(now);
+  return daily.filter((it) => !last[it.id] || ptDate(last[it.id]) !== today).map((it) => it.id);
 }
 
 export function summarize(kind, total, titles) {
