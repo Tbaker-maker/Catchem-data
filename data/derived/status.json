@@ -1,0 +1,37 @@
+{
+ "asOf": "2026-10-13",
+ "generatedAt": "2026-10-14T05:24:24.586Z",
+ "checks": [
+  {
+   "id": "price-day",
+   "path": "data/history/tcgcsv-daily",
+   "date": "2026-10-13",
+   "ok": true,
+   "detail": "fresh"
+  },
+  {
+   "id": "listings-counted",
+   "path": "data/derived/listing-counts/latest.json",
+   "date": "2026-10-13",
+   "ok": true,
+   "detail": "fresh"
+  },
+  {
+   "id": "reads",
+   "path": "research/assets/public/reads.json",
+   "date": "2026-10-13",
+   "ok": true,
+   "detail": "fresh"
+  },
+  {
+   "id": "scanner",
+   "path": "data/private/scanner/summary.json",
+   "date": "2026-10-13",
+   "ok": true,
+   "detail": "fresh"
+  }
+ ],
+ "failures": [],
+ "reran": [],
+ "note": "Checked the dated files. A missing light step can be rerun once with --rerun."
+}

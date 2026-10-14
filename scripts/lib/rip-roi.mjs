@@ -94,6 +94,16 @@ export function rarityPool(singles, setSlug, rarity, tag) {
   return out;
 }
 
+export function trimmedMean(xs, trim = 0.1) {
+  const s = xs.filter((x) => Number.isFinite(x) && x > 0).sort((a, b) => a - b);
+  if (!s.length) return null;
+  if (s.length < 20) return median(s);
+  const k = Math.floor(s.length * trim);
+  const mid = s.slice(k, s.length - k);
+  if (!mid.length) return median(s);
+  return mid.reduce((sum, n) => sum + n, 0) / mid.length;
+}
+
 export function bulkFloorForSet(singles, setSlug) {
   const prices = [];
   for (const c of singles) {
@@ -103,12 +113,19 @@ export function bulkFloorForSet(singles, setSlug) {
     if (!(c.price > 0)) continue;
     prices.push(c.price);
   }
-  const perCard = median(prices);
+  const med = median(prices);
+  const mean = trimmedMean(prices);
+  const raised = med != null && mean != null && prices.length >= 20 && mean >= med * 1.25;
+  const round = (n) => (n == null ? null : Math.round(n * 100) / 100);
   return {
-    perCard,
+    perCard: round(mean),
+    median: round(med),
     n: prices.length,
     cardsPerPack: BULK_CARDS_PER_PACK,
-    basis: "Median TCGplayer market of Common and Uncommon singles in this set on asOf. Applied to 9 bulk cards per pack (10-card pack minus the rare slot).",
+    raised,
+    basis: prices.length >= 20
+      ? "Trimmed mean of Common and Uncommon TCGplayer market prices on asOf (lowest and highest 10% set aside). The median is kept beside it. When the median sits well under that mean, the mean is the bulk value."
+      : "Median of Common and Uncommon TCGplayer market prices on asOf. Fewer than 20 prices, so the trimmed mean is not used.",
   };
 }
 
@@ -143,7 +160,7 @@ export function buildSlots(pullRows, singles, setSlug) {
       sourceUrl: r.sourceUrl,
       published: r.published || r.dataAsOf || null,
     });
-    if (r.sourceUrl) sources.set(r.sourceUrl, { url: r.sourceUrl, published: r.published || r.dataAsOf || null, author: r.author || null });
+    if (r.sourceUrl) sources.set(r.sourceUrl, { url: r.sourceUrl, published: r.published || r.dataAsOf || null });
   }
   return { slots, sources: [...sources.values()] };
 }

@@ -59,6 +59,16 @@ export function checkRow(row) {
   return out;
 }
 
+export function checkSingle(row) {
+  const checked = checkRow({ ...row, setId: row.setId || "sv0" });
+  return {
+    ...checked,
+    kind: "single",
+    name: row.name || "",
+    number: row.number || "",
+  };
+}
+
 export function quantiles(nums, qs = [0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95]) {
   const a = nums.filter(Number.isFinite).sort((x, y) => x - y);
   if (!a.length) return {};

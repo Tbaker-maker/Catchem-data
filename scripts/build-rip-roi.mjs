@@ -143,11 +143,19 @@ for (const product of products) {
 
 const dropPrior = (list) => list.filter((x) => !priorIds.has(x.id));
 
-// Keep rows that were already published so their sim tails do not move.
-// New products are appended, then the whole list is ranked again.
-const priorById = new Map((prior.rows || []).map((r) => [r.id, r]));
-const fresh = rows.filter((r) => !priorById.has(r.id));
-const merged = [...priorById.values(), ...fresh];
+// Rescore products already in the file so a low bulk floor can move.
+// A row that no longer scores stays as last published.
+const freshById = new Map(rows.map((r) => [r.id, r]));
+const seen = new Set();
+const merged = [];
+for (const old of prior.rows || []) {
+  const next = freshById.get(old.id);
+  merged.push(next || old);
+  seen.add(old.id);
+}
+for (const row of rows) {
+  if (!seen.has(row.id)) merged.push(row);
+}
 merged.sort((a, b) => (b.roiPct ?? -9999) - (a.roiPct ?? -9999) || (a.id < b.id ? -1 : 1));
 rows.length = 0;
 rows.push(...merged);
@@ -160,13 +168,13 @@ const doc = {
   method: {
     pullRates: "data/pull-rates.json. A row is written only when the source states the rate, with its link and date.",
     singles: "research/assets/public/buckets, TCGplayer market on asOf.",
-    bulkFloor: `Median Common and Uncommon in the set × ${BULK_CARDS_PER_PACK} cards per pack.`,
+    bulkFloor: `Trimmed mean of Common and Uncommon on asOf, times ${BULK_CARDS_PER_PACK} cards per pack. Under 20 prices, the median is used. The median is stored beside the mean.`,
     rareSlot: "Median Rare / Holo Rare / Double Rare in the set × 1 rare slot per pack.",
     packs: "booster-pack=1, booster-bundle=6, booster-box=36, ETB=9 (SWSH=8), PC-ETB same as ETB.",
     monteCarlo: `${SIMS} sims; each published rarity rate is an independent draw at that slot's average price.`,
     promo: "Fixed promo/contents not yet in the sealed products file; promo=0 for this build.",
     copy: "Public label is Rip value. EV and ROI % are history-based estimates.",
-    rerun: "Products already in this file were kept as published. New products were scored with the same pack rules and a seeded Monte Carlo. A new product is included only when it has a TCGplayer market price.",
+    rerun: "Every product that still scores was rescored with the trimmed-mean bulk floor and a seeded Monte Carlo. A product that was not already in the file is included only when it has a TCGplayer market price. A daily history file is written beside this one.",
   },
   pullRatesUpdated: pull.updated || pull.sourceDate,
   count: rows.length,
@@ -210,8 +218,25 @@ function scrub(v) {
   return v;
 }
 
-await mkdir(join(ROOT, "data/derived"), { recursive: true });
-await writeFile(join(ROOT, "data/derived/rip-roi.json"), JSON.stringify(scrub(doc), null, 1) + "\n");
+await mkdir(join(ROOT, "data/derived/rip-history"), { recursive: true });
+const publicDoc = scrub(doc);
+await writeFile(join(ROOT, "data/derived/rip-roi.json"), JSON.stringify(publicDoc, null, 1) + "\n");
+const history = {
+  asOf,
+  label: "Rip value",
+  count: publicDoc.rows.length,
+  rows: publicDoc.rows.map((r) => ({
+    id: r.id,
+    contentsEV: r.contentsEV,
+    price: r.price,
+    priceAsOf: r.priceAsOf ?? null,
+    bulkPerCard: r.bulk?.perCard ?? null,
+    bulkMedian: r.bulk?.median ?? null,
+    bulkRaised: r.bulk?.raised === true,
+    packs: r.packs,
+  })),
+};
+await writeFile(join(ROOT, "data/derived/rip-history", `${asOf}.json`), JSON.stringify(history, null, 1) + "\n");
 
 // Private ranking (full detail). Local data/private or catchem-data-private when token set.
 const token = process.env.PRIVATE_DATA_TOKEN || "";

@@ -297,7 +297,7 @@ export async function writePrivate(root, token, asOf, payload, { open = openPriv
     rows: payload.gates.map((row) => ({
       pattern: row.pattern, stage: row.stage, kind: row.kind, horizon: row.horizon, dir: row.dir,
       n: row.n, hits: row.hits, rate: row.rate, rateLo: row.rateLo, rateHi: row.rateHi, upRate: row.upRate,
-      baseRate: row.baseRate, passed: row.passed, weight: row.weight, medianPct: row.medianPct,
+      baseRate: row.baseRate, passed: row.passed, weight: row.weight, eraFactor: row.eraFactor ?? null, medianPct: row.medianPct,
       train: row.train, test: row.test,
     })),
   };
