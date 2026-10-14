@@ -83,6 +83,13 @@ export async function run() {
     sourceBanned = err.message === "track record used a banned word";
   }
   t("a banned word in the source fails the file", sourceBanned);
+  let idOk = true;
+  try {
+    buildTrackRecord([{ id: "scan-pattern-forming-breakout-tcgcsv-7", sku: "tcgcsv-7", name: "Example", asOf: "2026-08-01", take: "up" }], { "tcgcsv-7": { "2026-08-15": 12 } }, "2026-10-01", { "tcgcsv-7": { "2026-08-01": ship } });
+  } catch {
+    idOk = false;
+  }
+  t("a pattern name inside a read id does not fail the file", idOk);
 
   const day = JSON.parse(await readFile(join(ROOT, "data/history/tcgcsv-daily/2026-10-03.json"), "utf8"));
   const row = (day.prices || []).find((item) => item.id === 124072);

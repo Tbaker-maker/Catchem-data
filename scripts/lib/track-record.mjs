@@ -39,7 +39,8 @@ export function percentFor(hit, n) {
 }
 
 function assertClean(doc) {
-  const blob = JSON.stringify(doc);
+  // Ids are machine keys (a scanner id can contain a pattern name), so only words a reader sees are checked.
+  const blob = JSON.stringify(doc, (key, value) => (key === "id" || key === "productId" ? undefined : value));
   if (COPY_BAN.test(blob) || LABEL_BAN.test(blob)) throw new Error("track record used a banned word");
   return doc;
 }
