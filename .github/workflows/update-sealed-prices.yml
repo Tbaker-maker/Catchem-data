@@ -151,7 +151,10 @@ jobs:
         continue-on-error: true
         run: node scripts/compute-receipts.mjs
       - name: Derived intelligence
+        # Runs the eBay vs TCGplayer price sanity check first; its full report goes private.
         run: node scripts/compute-derived.mjs
+        env:
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
       - name: Repeat appearance
         # Counts only. continue-on-error so a short tape cannot drop the price commit.
         continue-on-error: true
