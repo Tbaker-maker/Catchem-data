@@ -1,8 +1,10 @@
 // Read quality, from a user's eyes. Prices come from the row or the daily
 // file passed in. A missing day is not filled. Listings are not sales.
 import { bannedWord, money, pretty } from "./public-bundle.mjs";
+import { tcgAmount } from "./card-face.mjs";
 
 export const FOOTER = "An ask is a listing price. A listing is not a sale.";
+export const CONDITION_NOTE = "Graded and damaged copies can price very differently, and our prices are Near Mint unless labeled.";
 export const MOVER_MIN_CENTS = 100;
 export const MOVER_MAX_PCT = 200;
 export const STREAK_MIN_CENTS = 100;
@@ -48,13 +50,13 @@ export function priceForm({ name, set, num, to, from, end, start, pct }) {
   const setName = pretty(set || "");
   const number = String(num || "").trim();
   let tail = "";
-  if (setName && number) tail = ` (${setName} #${number})`;
+  if (setName && number) tail = ` (${setName}) ${number}`;
   else if (setName) tail = ` (${setName})`;
-  else if (number) tail = ` (#${number})`;
+  else if (number) tail = ` ${number}`;
   const dir = Number(to) >= Number(from) ? "Up" : "Down";
-  const delta = money(Math.abs((centsOf(to) - centsOf(from)) / 100));
+  const delta = tcgAmount(Math.abs((centsOf(to) - centsOf(from)) / 100), money);
   const p = pct != null && pct !== "" ? formatPct(pct) : formatPct(((Number(to) - Number(from)) / Number(from)) * 100);
-  return `${who}${tail}. TCGplayer market: ${money(to)} (${end}), from ${money(from)} (${start}). ${dir} ${delta}, ${p}%.`;
+  return `${who}${tail}. TCGplayer market: ${tcgAmount(to, money)} (${end}), from ${tcgAmount(from, money)} (${start}). ${dir} ${delta}, ${p}%.`;
 }
 
 export function whyPlain(from, to) {
@@ -273,7 +275,7 @@ export function turnedReads({ series, asOf, names, dailyFiles }) {
     if (!named?.name) continue;
     const weekDir = weekCents > 0 ? "up" : "down";
     const dayDir = dayCents > 0 ? "up" : "down";
-    const headline = `${pretty(named.name)}. TCGplayer market: ${money(to)} (${asOf}), from ${money(from)} (${start}). Last night it went from ${money(mid)} to ${money(to)}.`;
+    const headline = `${pretty(named.name)}. TCGplayer market: ${tcgAmount(to, money)} (${asOf}), from ${tcgAmount(from, money)} (${start}). Last night it went from ${tcgAmount(mid, money)} to ${tcgAmount(to, money)}.`;
     hits.push({
       id: `turned-${sku}`,
       sku,
@@ -323,7 +325,7 @@ export function sealedWeekReads({ products, series, asOf, dailyFiles }) {
     if (Math.abs(moved) < SEALED_MIN_CENTS || Math.abs(pct) < 8 || Math.abs(pct) >= MOVER_MAX_PCT) continue;
     const dir = moved >= 0 ? "Up" : "Down";
     const name = pretty(product.name || "");
-    const headline = `${name}. TCGplayer market: ${money(to)} (${asOf}), from ${money(from)} (${start}). ${dir} ${money(Math.abs(moved) / 100)}.`;
+    const headline = `${name}. TCGplayer market: ${tcgAmount(to, money)} (${asOf}), from ${tcgAmount(from, money)} (${start}). ${dir} ${tcgAmount(Math.abs(moved) / 100, money)}.`;
     hits.push({
       id: `sealed-week-${product.id || id}`,
       sku: String(product.id || `tcgcsv-${id}`),
@@ -410,12 +412,12 @@ export function printingSentence(row) {
   const setName = pretty(row?.set || "");
   const number = String(row?.number || "").trim();
   let tail = "";
-  if (setName && number) tail = ` (${setName} #${number})`;
+  if (setName && number) tail = ` (${setName}) ${number}`;
   else if (setName) tail = ` (${setName})`;
   const day = String(row?.asOf || row?.date || "");
   const dateBit = day ? ` (${day})` : "";
   const printingBit = picked.many || picked.name ? `${picked.name} ` : "";
-  return `${name}${tail}. TCGplayer market: ${printingBit}${money(picked.price)}${dateBit}.`;
+  return `${name}${tail}. TCGplayer market: ${printingBit}${tcgAmount(picked.price, money)}${dateBit}.`;
 }
 
 export function priceOnExactDay(dayDoc, productId, price) {
@@ -469,6 +471,7 @@ export function publishReads(lib) {
     count: reads.length,
     reads,
     footer: lib?.footer || FOOTER,
+    conditionNote: lib?.conditionNote || CONDITION_NOTE,
     quietNight: lib?.quietNight || "",
   };
 }

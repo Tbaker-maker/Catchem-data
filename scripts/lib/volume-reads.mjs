@@ -7,6 +7,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { monthDay } from "./outlier-dive-reads.mjs";
 import { VOLUME_FILE, VOLUME_SOURCE, fullWindow, shiftDay } from "./tcgplayer-volume.mjs";
+import { cleanCardName } from "./card-face.mjs";
 
 export const VOLUME_EMPTY_NOTE = "No sold count is on file, so no volume read ships.";
 export const VOLUME_NOTE = `Near Mint copies sold on TCGplayer over 30 and 7 days, from ${VOLUME_FILE}. ${VOLUME_SOURCE}.`;
@@ -32,10 +33,7 @@ function range(w) {
 }
 
 function displayName(item) {
-  const name = String(item?.name || "").trim();
-  const num = String(item?.number || "").trim();
-  if (num && name.endsWith(` - ${num}`)) return name.slice(0, -(num.length + 3)).trim();
-  return name;
+  return cleanCardName(item?.name);
 }
 
 function plural(n, one, many) {
@@ -51,8 +49,12 @@ export function volumeRead(row, item) {
   if (!name || !r30) return null;
   const has7 = fullWindow(row, 7) && Number.isInteger(row.sold7d) && row.window7d.to === row.window30d.to;
   if (!has7 || !(row.sold7d > row.sold30d * 7 / 30)) return null;
-  const where = [item.set, item.number].filter(Boolean).join(", ");
-  let sentence = `${name}${where ? ` (${where})` : ""}: ${plural(row.sold30d, "Near Mint copy", "Near Mint copies")} sold on TCGplayer in the 30 days ${r30}`;
+  const whereSet = String(item.set || "").trim();
+  const whereNum = String(item.number || "").trim();
+  let title = name;
+  if (whereSet && !title.toLowerCase().includes(`(${whereSet.toLowerCase()})`)) title = `${title} (${whereSet})`;
+  if (whereNum && !title.includes(whereNum)) title = `${title} ${whereNum}`;
+  let sentence = `${title}: ${plural(row.sold30d, "Near Mint copy", "Near Mint copies")} sold on TCGplayer in the 30 days ${r30}`;
   sentence += has7 ? `, ${row.sold7d} of them in the last 7 (${range(row.window7d)}).` : ".";
   const sold = {
     condition: "Near Mint",

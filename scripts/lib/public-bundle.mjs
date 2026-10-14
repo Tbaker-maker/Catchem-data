@@ -1029,17 +1029,15 @@ function olderThanFiveYears(release, asOf) {
 export function cardLabel(read) {
   const name = displayName(read.name, read.number);
   const set = shortSet(read.set || "");
-  const no = collectorNo(read.number);
+  const num = String(read.number || "").trim();
   const asOf = read.toDate || read.asOf || "2026-09-28";
   const year = olderThanFiveYears(read.release || read.year, asOf) ? Number(String(read.release || read.year).slice(0, 4)) : 0;
-  const num = no ? `#${no}` : "";
-  if (year) {
-    const bits = [set, String(year), num].filter(Boolean);
-    return bits.length ? `${name} (${bits.join(", ")})` : name;
-  }
-  if (set && num) return `${name} (${set} ${num})`;
-  const bits = [set, num].filter(Boolean);
-  return bits.length ? `${name} (${bits.join(" ")})` : name;
+  let base = name;
+  if (year && set) base = `${name} (${set}, ${year})`;
+  else if (set) base = `${name} (${set})`;
+  else if (year) base = `${name} (${year})`;
+  if (num && !base.includes(num) && !base.includes(`#${num}`)) base = `${base} ${num}`;
+  return base;
 }
 
 function shiftDay(iso, n) {
@@ -1280,12 +1278,14 @@ function makeHeadline(read, pts, thin, allowExtreme = true) {
   const shown = Number.isFinite(pct) ? String(Math.abs(pct)) : "";
   if (!label || !price || !from || !shown || pct === 0 || (days !== 7 && days !== 30 && days !== 90)) return "";
   const dir = pct > 0 ? "up" : "down";
+  const nmFrom = `${from} NM`;
+  const nmPrice = `${price} NM`;
   const extreme = allowExtreme && !thin && pts.length ? extremeOf(pts) : null;
   const phrase = extremePhrase(extreme);
-  if (phrase) return `${label} hit ${phrase}: ${price}, ${dir} ${shown}% in ${days} days.`;
+  if (phrase) return `${label} hit ${phrase}: ${nmPrice}, ${dir} ${shown}% in ${days} days.`;
   const spanWord = days === 7 ? "this week" : days === 30 ? "this month" : "over 90 days";
   const tail = thin ? ", on few sales." : ".";
-  return `${label} is ${dir} ${shown}% ${spanWord}: ${from} → ${price}${tail}`;
+  return `${label} is ${dir} ${shown}% ${spanWord}: ${nmFrom} → ${nmPrice}${tail}`;
 }
 
 export function whyPattern(text) {

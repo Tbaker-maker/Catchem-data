@@ -8,10 +8,11 @@ import { monthDay } from "./takes.mjs";
 import { addDays, dateLabel } from "./history-reads.mjs";
 import { speciesToken } from "./fact-reads.mjs";
 import { row, valueOn, sparkOf } from "./deep-reads.mjs";
+import { barLabel, cardTitle, tcgAmount } from "./card-face.mjs";
+
+const usd = (n) => tcgAmount(n, money);
 
 const short = (s) => String(s || "").replace(/^(SWSH|SV|SM|ME|XY|BW)\d*[A-Za-z.]*\s*[:-]\s*/, "").trim();
-const cleanName = (n) => String(n || "").replace(/\s+-\s+[A-Z]*\d+\/[A-Z]*\d+\s*$/, "").replace(/\s*\((?:Alternate Full Art|Alternate Art Secret|Alternate Art|Secret|Full Art)\)\s*$/i, "").trim();
-const numTxt = (c) => (c.number ? ` #${c.number}` : "");
 const sgn = (n) => `${n >= 0 ? "up" : "down"} ${Math.abs(Math.round(n))}%`;
 const JUNK = new Set(["", "None", "Unconfirmed", "Code Card"]);
 const LOW = new Set(["Common", "Uncommon", "Code Card", "None", "", "Unconfirmed"]);
@@ -65,8 +66,8 @@ export function everyPrinting(cards, tagsOf, { asOf, max = 12 }) {
     for (const r of g.rs) labels.set(r.label, (labels.get(r.label) || 0) + 1);
     const mix = [...labels.entries()].sort((a, b) => b[1] - a[1]).slice(0, 4).map(([l, n]) => `${n} ${l}`).join(", ");
     const top = g.rs.slice(0, 4);
-    const rr = row("printings", g.t, g.t, `Every ${g.t} card we price: ${g.rs.length} cards, from ${money(g.rs.at(-1).z)} to ${money(g.rs[0].z)} tonight.`, [
-      ...top.map((r) => `${cleanName(r.c.name)}, ${r.label} (${short(r.c.set)}${numTxt(r.c)}): ${money(r.z)}${yrLine(r.c, asOf)}.`),
+    const rr = row("printings", g.t, g.t, `Every ${g.t} card we price: ${g.rs.length} cards, from ${usd(g.rs.at(-1).z)} to ${usd(g.rs[0].z)} tonight.`, [
+      ...top.map((r) => `${cardTitle(r.c)}, ${r.label}: ${usd(r.z)}${yrLine(r.c, asOf)}.`),
       `Most common labels: ${mix}.`,
       `TCGplayer market, ${monthDay(asOf)}. Each label is the card's own rarity in its set.`,
     ], asOf, `TCGplayer market, ${asOf}; rarity from TCGplayer and the catalogue`, { href: `/search?q=${encodeURIComponent(g.t)}`, chart: { label: `Top ${g.t} cards tonight, $`, bars: g.rs.slice(0, 6).map((r) => [`${short(r.c.set)}`.slice(0, 16), Math.round(r.z)]) }, weight: g.total });
@@ -99,9 +100,9 @@ export function sameLabelAcrossSets(cards, tagsOf, { asOf, max = 12 }) {
   const out = [];
   for (const g of groups.slice(0, max)) {
     const top = g.rs.slice(0, 4);
-    const rr = row("samelabel", `${g.t}-${g.label}`, `${g.t} ${g.label}`, `${g.t} ${g.label} cards by set: ${g.rs.length} on file, led by ${short(g.rs[0].c.set)} at ${money(g.rs[0].z)}.`, [
-      ...top.map((r) => `${short(r.c.set)}: ${cleanName(r.c.name)}${numTxt(r.c)} ${money(r.z)}${yrLine(r.c, asOf)}.`),
-      `Lowest: ${short(g.rs.at(-1).c.set)} at ${money(g.rs.at(-1).z)}.`,
+    const rr = row("samelabel", `${g.t}-${g.label}`, `${g.t} ${g.label}`, `${g.t} ${g.label} cards by set: ${g.rs.length} on file, led by ${short(g.rs[0].c.set)} at ${usd(g.rs[0].z)}.`, [
+      ...top.map((r) => `${cardTitle(r.c)}: ${usd(r.z)}${yrLine(r.c, asOf)}.`),
+      `Lowest: ${short(g.rs.at(-1).c.set)} at ${usd(g.rs.at(-1).z)}.`,
       `TCGplayer market, ${monthDay(asOf)}. Only cards whose own rarity is ${g.label}.`,
     ].slice(0, 6), asOf, `TCGplayer market, ${asOf}; rarity from TCGplayer and the catalogue`, { href: `/search?q=${encodeURIComponent(`${g.t} ${g.label}`)}`, chart: { label: `${g.t} ${g.label} by set, $`, bars: g.rs.slice(0, 6).map((r) => [short(r.c.set).slice(0, 16), Math.round(r.z)]) }, weight: g.total });
     if (rr) out.push(rr);
@@ -125,12 +126,12 @@ export function chaseLists(cards, tagsOf, { asOf, max = 15 }) {
     const withYear = g.rs.filter((r) => yearAgo(r.c, asOf));
     const a = withYear.reduce((s, r) => s + yearAgo(r.c, asOf), 0), z = withYear.reduce((s, r) => s + r.z, 0);
     const head = withYear.length === 5
-      ? `${short(g.set)} chase list: the top 5 are worth ${money(g.total)} together, ${sgn(((z - a) / a) * 100)} from a year ago.`
-      : `${short(g.set)} chase list: the top 5 are worth ${money(g.total)} together tonight.`;
+      ? `${short(g.set)} chase list: the top 5 are worth ${usd(g.total)} together, ${sgn(((z - a) / a) * 100)} from a year ago.`
+      : `${short(g.set)} chase list: the top 5 are worth ${usd(g.total)} together tonight.`;
     const rr = row("chase", g.set, short(g.set), head, [
-      ...g.rs.map((r) => { const y = yearAgo(r.c, asOf); return `${cleanName(r.c.name)}, ${r.label}: ${money(r.z)}${y ? ` (was ${money(y)} on ${dateLabel(addDays(asOf, -365), asOf)})` : ""}.`; }),
+      ...g.rs.map((r) => { const y = yearAgo(r.c, asOf); return `${cardTitle(r.c)}, ${r.label}: ${usd(r.z)}${y ? ` (was ${usd(y)} on ${dateLabel(addDays(asOf, -365), asOf)})` : ""}.`; }),
       `TCGplayer market, ${monthDay(asOf)}.`,
-    ], asOf, `TCGplayer market, ${addDays(asOf, -365)} and ${asOf}`, { href: g.rs[0].c.setSlug ? `/sets/${g.rs[0].c.setSlug}` : "", chart: { label: "Top 5 tonight, $", bars: g.rs.map((r) => [cleanName(r.c.name).slice(0, 16), Math.round(r.z)]) }, weight: g.total });
+    ], asOf, `TCGplayer market, ${addDays(asOf, -365)} and ${asOf}`, { href: g.rs[0].c.setSlug ? `/sets/${g.rs[0].c.setSlug}` : "", chart: { label: "Top 5 tonight, $", bars: g.rs.map((r) => [barLabel(r.c, 16), Math.round(r.z)]) }, weight: g.total });
     if (rr) out.push(rr);
   }
   return out;
@@ -154,10 +155,10 @@ export function slumpWatch(cards, tagsOf, { asOf, max = 12, skip = new Set() }) 
   const out = [];
   for (const s of rows.slice(0, max)) {
     const y = yearAgo(s.c, asOf);
-    const rr = row("slump", s.c.id, s.c.name, `Slump watch: ${cleanName(s.c.name)}, ${s.label} (${short(s.c.set)}), is ${Math.round(s.drop)}% under its ${dateLabel(s.peak[0], asOf)} high.`, [
-      `High ${money(s.peak[1])} on ${dateLabel(s.peak[0], asOf)}, the top of the past year.`,
-      `Tonight (${monthDay(asOf)}): ${money(s.z)}.`,
-      y ? `A year ago: ${money(y)}.` : `No price on file a year ago.`,
+    const rr = row("slump", s.c.id, s.c.name, `Slump watch: ${cardTitle(s.c)}, ${s.label}, is ${Math.round(s.drop)}% under its ${dateLabel(s.peak[0], asOf)} high.`, [
+      `High ${usd(s.peak[1])} on ${dateLabel(s.peak[0], asOf)}, the top of the past year.`,
+      `Tonight (${monthDay(asOf)}): ${usd(s.z)}.`,
+      y ? `A year ago: ${usd(y)}.` : `No price on file a year ago.`,
       `TCGplayer market, singles only.`,
     ], asOf, `TCGplayer market, ${addDays(asOf, -365)} to ${asOf}`, { sku: s.c.id, href: `/c/${s.c.id}`, price: s.z, chart: { label: "TCGplayer market, past year", points: sparkOf(s.c.pts.filter((p) => p[0] >= addDays(asOf, -365))) }, startDate: s.peak[0], endDate: asOf });
     if (rr) out.push(rr);

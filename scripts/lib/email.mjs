@@ -1,11 +1,13 @@
 // Shared email shell. Table layout, inline CSS, dark-first, max 620px.
 // Never sends. Numbers must arrive already cited.
+import { CONDITION_NOTE } from "./read-quality.mjs";
 
 export const SITE = "https://catchemtcg.com";
 
 export const FOOTER_LINES = [
   "An ask is a listing price. A listing is not a sale.",
   "This is market data. It is not advice.",
+  CONDITION_NOTE,
 ];
 
 export function esc(s) {
@@ -26,8 +28,7 @@ export function footer({ asOf, sources }) {
   return `
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:28px;border-top:1px solid #2f2b26;">
   <tr><td style="padding:18px 0 6px;color:#c4baab;font:14px/1.5 Arial,Helvetica,sans-serif;">Sources: ${src}. As of ${esc(asOf)}.</td></tr>
-  <tr><td style="padding:4px 0;color:#c4baab;font:14px/1.5 Arial,Helvetica,sans-serif;">${FOOTER_LINES[0]}</td></tr>
-  <tr><td style="padding:4px 0;color:#c4baab;font:14px/1.5 Arial,Helvetica,sans-serif;">${FOOTER_LINES[1]}</td></tr>
+  ${FOOTER_LINES.map((line) => `<tr><td style="padding:4px 0;color:#c4baab;font:14px/1.5 Arial,Helvetica,sans-serif;">${line}</td></tr>`).join("\n")}
   <tr><td style="padding:4px 0 18px;color:#c4baab;font:14px/1.5 Arial,Helvetica,sans-serif;">Unsubscribe: {{unsubscribe_url}}</td></tr>
 </table>`;
 }

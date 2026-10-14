@@ -6,6 +6,7 @@
 // Wording is factual only. This is not advice.
 import { series, priceAt, trend, range, rangePos, stageValue, setListings, days } from "./ir-cycle.mjs";
 import { popularity, monName } from "./popular-pokemon.mjs";
+import { tcgAmount } from "./card-face.mjs";
 
 // Weights add to 100. A factor with no data is left out and the rest are
 // rescaled, so a missing fact never counts as good or bad.
@@ -372,9 +373,9 @@ export function ratingReads(list, { asOf, max = 3 } = {}) {
       const top = pick[0];
       const label = top.groupLabel;
       const pv = top.firstEd ? " 1st Edition" : "";
-      const head = `Priced ${side} similar ${label}: ${bare(top.name)}${pv} (${shortSet(top.set)} ${top.num || ""}), ${money(top.price.price)} (${md(top.price.date)}) on TCGplayer market. Typical price for similar cards: ${money(top.peers.median)} (${top.peers.n} cards).${top.nearHigh ? ` Near its own high on file (${money(top.nearHigh.price)}, ${md(top.nearHigh.date)}).` : ""}`.replace(/\s+\)/, ")");
+      const head = `Priced ${side} similar ${label}: ${bare(top.name)}${pv} (${shortSet(top.set)})${top.num ? ` ${top.num}` : ""}, ${tcgAmount(top.price.price, money)} (${md(top.price.date)}) on TCGplayer market. Typical price for similar cards: ${tcgAmount(top.peers.median, money)} (${top.peers.n} cards).${top.nearHigh ? ` Near its own high on file (${tcgAmount(top.nearHigh.price, money)}, ${md(top.nearHigh.date)}).` : ""}`.replace(/\s+\)/, ")");
       const lines = [
-        ...pick.slice(0, max).map((r) => `${bare(r.name)}${r.firstEd ? " 1st Edition" : ""} (${shortSet(r.set)}): ${money(r.price.price)} (${md(r.price.date)}), ${r.peers.ratio}x the typical ${money(r.peers.median)}.`),
+        ...pick.slice(0, max).map((r) => `${bare(r.name)}${r.firstEd ? " 1st Edition" : ""} (${shortSet(r.set)})${r.num ? ` ${r.num}` : ""}: ${tcgAmount(r.price.price, money)} (${md(r.price.date)}), ${r.peers.ratio}x the typical ${tcgAmount(r.peers.median, money)}.`),
         `Similar cards: other ${label} with similar popularity where there are ${MIN_PEERS} or more, otherwise all ${label}. Typical price is the middle price. TCGplayer market on ${md(asOf)}.`,
         "A factual comparison of prices on file, not advice.",
       ];
