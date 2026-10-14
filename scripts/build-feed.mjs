@@ -230,6 +230,14 @@ try {
 } catch (err) {
   console.error(`trend context skipped: ${err.message}`);
 }
+try {
+  const { stampReadsFile } = await import("./lib/card-face-stamp.mjs");
+  const cardFace = await stampReadsFile(ROOT);
+  console.log(JSON.stringify({ cardFace }));
+} catch (err) {
+  console.error(`card face skipped: ${err.message}`);
+  throw err;
+}
 const health = await writeHealth(ROOT);
 // YouTube learning loop (official API, private store). Before the flagger so
 // tonight's leads become flags. A missing key or any failure never stops the nightly.

@@ -80,7 +80,7 @@ export async function run() {
     points: pts([["2025-10-13", 10], ["2026-10-13", 12]]),
   });
   const year = yearAgoRead(ago, "2026-10-13");
-  t("a year ago today names both dates and the percent", year && year.headline.startsWith("A year ago today it was $10.00 on Oct 13, 2025") && year.headline.includes("now $12.00 on Oct 13, 2026 (+20%)") && year.receipt.today === true);
+  t("a year ago today names both dates and the percent", year && year.headline.startsWith("A year ago today it was $10.00 NM on Oct 13, 2025") && year.headline.includes("now $12.00 NM on Oct 13, 2026 (+20%)") && year.receipt.today === true);
   t("a point 2 days off does not say today", (() => {
     const read = yearAgoRead(item({ points: pts([["2025-10-11", 10], ["2026-10-13", 12]]) }), "2026-10-13");
     return read && !/today/.test(read.headline) && read.headline.includes("Oct 11, 2025") && read.lines.some((l) => l.includes("2025-10-11"));
@@ -155,7 +155,7 @@ export async function run() {
     pts: [["2025-10-13", 4 + i], ["2026-10-13", 10 + i]],
   }));
   const renamed = everyPrinting(cards, () => [], { asOf: "2026-10-13", max: 2 });
-  t("the headline counts every card we price", renamed.length === 1 && renamed[0].deep === "printings" && renamed[0].headline === "Every Pikachu card we price: 6 cards, from $10.00 to $15.00 tonight.");
+  t("the headline counts every card we price", renamed.length === 1 && renamed[0].deep === "printings" && renamed[0].headline === "Every Pikachu card we price: 6 cards, from $10.00 NM to $15.00 NM tonight.");
   t("the renamed read has no printing word", renamed.every((r) => [r.headline, r.chart?.label, ...r.lines].every((s) => !/\bprintings?\b/i.test(String(s || "")))));
 
   const feed = readFileSync(join(ROOT, "scripts/build-feed.mjs"), "utf8");

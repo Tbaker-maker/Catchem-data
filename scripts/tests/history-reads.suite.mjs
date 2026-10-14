@@ -19,12 +19,12 @@ export async function run() {
   t("a tiny new high is not a read", extremeRead(card([["2024-02-08", 50], ["2026-01-01", 100], [asOf, 101]]), asOf, 1) === null);
 
   const yr = windowRead(card([["2025-10-09", 20], [asOf, 40]]), asOf, { days: 365, slack: 7, minPct: 25, maxPct: 300, minUsd: 5, kind: "year" });
-  t("one year on uses the real start day", yr && yr.headline.includes("$20.00 (Oct 9, 2025) to $40.00 (Oct 12)") && yr.startDate === "2025-10-09");
+  t("one year on uses the real start day", yr && yr.headline.includes("$20.00 NM (Oct 9, 2025) to $40.00 NM (Oct 12)") && yr.startDate === "2025-10-09");
   t("no point near the day, no read", windowRead(card([["2025-09-01", 20], [asOf, 40]]), asOf, { days: 365, slack: 7, minPct: 25, minUsd: 5, kind: "year" }) === null);
   t("an outsized jump is left out", windowRead(card([["2026-09-12", 2], [asOf, 40]]), asOf, { days: 30, slack: 4, minPct: 15, maxPct: 150, minUsd: 2, kind: "plain" }) === null);
 
   const back = backToRead(card([["2025-01-10", 30], ["2025-06-01", 60], [asOf, 30.2]]), asOf);
-  t("back to its price names both dates and the swing", back && back.headline.includes("Back to its Jan 10, 2025 price") && back.headline.includes("$60.00 (Jun 1, 2025)"));
+  t("back to its price names both dates and the swing", back && back.headline.includes("Back to its Jan 10, 2025 price") && back.headline.includes("$60.00 NM (Jun 1, 2025)"));
 
   const cards = Array.from({ length: 12 }, (_, i) => card([["2026-09-12", 20], [asOf, i < 6 ? 25 : 20]], { id: `tcgcsv-${i + 10}` }));
   const sr = setReads(cards, asOf);
