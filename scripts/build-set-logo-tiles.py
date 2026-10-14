@@ -5,6 +5,7 @@
 
 import hashlib
 import json
+import sys
 import urllib.request
 from io import BytesIO
 from pathlib import Path
@@ -101,11 +102,17 @@ def main():
     # Official pokemon.com crops only. Tile folders are not collisions.
     used = {row["id"] for row in report["present"]}
     tile_doc = json.loads((IMG / "set-logo-tiles.json").read_text())
+    filled_path = IMG / "set-logo-filled.json"
+    filled_ids = set()
+    if filled_path.exists():
+        filled_ids = set(json.loads(filled_path.read_text()).get("ids") or [])
+    kept = [row for row in (tile_doc.get("tiles") or []) if row.get("id") in filled_ids]
     work = []
     seen = set()
     for row in tile_doc.get("tiles") or []:
         slug = row["slug"]
-        if slug in seen or slug in OFFICIAL:
+        tid = FORCE_ID.get(slug) or slug.replace("-", "")
+        if slug in seen or slug in OFFICIAL or tid in filled_ids:
             continue
         seen.add(slug)
         work.append({"slug": slug, "name": by_slug.get(slug) or row["name"]})
@@ -157,6 +164,7 @@ def main():
             "bytes": len(png),
             "sha256": sha(png),
         })
+    tiles.extend(kept)
     tiles.sort(key=lambda row: row["slug"])
     tile_doc = {
         "rule": "A branded tile is the set name on a rounded Catch'em plate. It is used only when pokemon.com has no series logo for that set. It is not an official logo and not fan art.",
@@ -177,5 +185,29 @@ def main():
             raise SystemExit(f"prefixed id left {row['id']}")
 
 
+def crop_one(url, dest):
+    raw = fetch(url)
+    if not raw.startswith(b"\x89PNG"):
+        raise SystemExit("not a png")
+    crop, png, raw_bytes, raw_size = trim(raw)
+    path = Path(dest)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(png)
+    print(json.dumps({
+        "width": crop.size[0],
+        "height": crop.size[1],
+        "bytes": len(png),
+        "rawBytes": raw_bytes,
+        "rawWidth": raw_size[0],
+        "rawHeight": raw_size[1],
+        "sha256": sha(png),
+    }))
+
+
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) >= 2 and sys.argv[1] == "--crop":
+        if len(sys.argv) != 4:
+            raise SystemExit("usage: build-set-logo-tiles.py --crop URL DEST")
+        crop_one(sys.argv[2], sys.argv[3])
+    else:
+        main()
