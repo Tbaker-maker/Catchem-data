@@ -39,18 +39,26 @@ export async function publishChartIndexes() {
   const heat = await J("data/heat-history.json");
   const quarantine = new Set((await J("data/quarantine.json")).entries.map((e) => e.id));
   const byId = new Map(products.map((p) => [p.id, p]));
+  // eBay vs TCGplayer sanity flags (scripts/price-sanity.mjs). A flagged eBay
+  // price leaves the eBay line; a flagged TCGplayer price leaves the TCG line.
+  let sanity = {};
+  try { sanity = (await J("data/indexes/price-sanity.json")).items || {}; } catch { /* not built yet */ }
+  const badEbay = new Set(Object.entries(sanity).filter(([, a]) => a === "drop-ebay" || a === "hide-ebay").map(([id]) => id));
+  const badTcg = new Set(Object.entries(sanity).filter(([, a]) => a === "mark-tcg").map(([id]) => id));
   const newest = prices.updatedAt?.slice(0, 10) || heat.reduce((m, r) => (r.date > m ? r.date : m), "");
   const stale = newest < daysBefore(today, 2);
 
   const excluded = [];
   for (const id of quarantine) excluded.push({ id, name: byId.get(id)?.name || id, reason: "on the quarantine list" });
+  for (const id of badEbay) excluded.push({ id, name: byId.get(id)?.name || id, reason: "eBay asks far from TCGplayer market (price sanity check), left out of the eBay line" });
+  for (const id of badTcg) excluded.push({ id, name: byId.get(id)?.name || id, reason: "TCGplayer market far from eBay asks on an item that trades mostly on eBay, left out of the TCGplayer line" });
   for (const id of WRONG_MATCH_IDS) excluded.push({ id, name: byId.get(id)?.name || id, reason: WRONG_MATCH_WHY[id] });
 
   const livePrice = new Map();
   const liveElig = new Map();
   for (const row of heat) {
     if (!row.price || !row.date || !row.id) continue;
-    if (quarantine.has(row.id) || WRONG_MATCH_IDS.has(row.id)) continue;
+    if (quarantine.has(row.id) || WRONG_MATCH_IDS.has(row.id) || badEbay.has(row.id)) continue;
     if ((row.listingCount ?? 0) < 8) continue;
     const meta = byId.get(row.id);
     if (!meta || !eraOf(meta.setId) || !typeKey(meta.subtype)) continue;
@@ -75,7 +83,7 @@ export async function publishChartIndexes() {
     backfillCoverage = hist.coverage;
     const dates = new Set();
     for (const id of hist.ids) {
-      if (quarantine.has(id) || WRONG_MATCH_IDS.has(id)) continue;
+      if (quarantine.has(id) || WRONG_MATCH_IDS.has(id) || badTcg.has(id)) continue;
       const m = hist.priceMap.get(id);
       if (!m?.size) continue;
       backfillPrice.set(id, m);
@@ -130,7 +138,7 @@ export async function publishChartIndexes() {
   function doc(id, name, memberIds) {
     return {
       id, name, asOf: newest,
-      method: "Chain-linked. A name joins on the first day it has a price and does not move the level that day. Its first return is the next day it is priced. Each day's move is the median price change of names priced on both days. A value-weighted line gives a dearer product a bigger say. A day with no shared prices is a gap. Nothing is filled in.",
+      method: "Chain-linked. A name joins on the first day it has a price and does not move the level that day. Its first return is the next day it is priced. Each day's move is the trimmed geometric mean of price changes of names priced on both days: each change is capped at 30% down or 43% up, and the top and bottom 10% are dropped when 10 or more names are priced. A value-weighted line gives a dearer product a bigger say. A day with no shared prices is a gap. Nothing is filled in.",
       basket: memberIds.map((pid) => {
         const p = byId.get(pid);
         return { id: pid, name: p?.name || pid, type: typeKey(p?.subtype), era: eraOf(p?.setId) };

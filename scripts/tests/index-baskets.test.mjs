@@ -1,4 +1,4 @@
-import { chainIndex, enterIndex, eraOf, median, quarterKey } from "../lib/index-baskets.mjs";
+import { chainIndex, enterIndex, eraOf, median, quarterKey, robustMove } from "../lib/index-baskets.mjs";
 
 let fail = 0;
 const t = (name, cond, detail = "") => {
@@ -58,5 +58,9 @@ t("a new name does not jump the level", entered.points[1].equal === 110 && enter
 t("the new name's first return is the next day", entered.points[2].equal === 110 && entered.points[2].matched === 2);
 t("enter index does not invent a missing day", enterIndex(["2026-04-01", "2026-04-03"], enterPrices, enterElig, ["a", "b"]).points.every((p) => p.date !== "2026-04-02"));
 
+const mostlyFlat = [...Array(9).fill(1), 1.2, 1.2, 1.2];
+t("robust move is not stuck at 1 when a quarter of names reprice", robustMove(mostlyFlat) > 1.01 && median(mostlyFlat) === 1);
+t("one wild relative is clamped", robustMove([3]) < 1.43 && robustMove([0.1]) >= 0.7);
+t("trim drops the extreme tail", Math.abs(robustMove([...Array(18).fill(1), 1.4, 0.7]) - 1) < 1e-9);
 console.log(fail ? `${fail} failed` : "index baskets ok");
 if (fail) process.exit(1);

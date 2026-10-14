@@ -16,6 +16,8 @@ import { runCatalogueMapTests } from "./tcgcsv-catalogue-map.test.mjs";
 import { runStressTests } from "./stress.test.mjs";
 import { runPptPathTests } from "./ppt-paths.test.mjs";
 import { enterIndex } from "../lib/index-baskets.mjs";
+import "./price-sanity.test.mjs";
+import "./index-baskets.test.mjs";
 import { indexLine as publicIndexLine } from "../lib/public-index-line.mjs";
 import { keepMarch31 } from "../compute-indexes.mjs";
 import { searchItems } from "../lib/search-rank.mjs";
