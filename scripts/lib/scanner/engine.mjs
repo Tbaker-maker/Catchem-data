@@ -26,11 +26,13 @@ import * as groupTogether from "./patterns/group-together.mjs";
 import * as breakaway from "./patterns/breakaway.mjs";
 import * as releaseWindow from "./patterns/release-window.mjs";
 import * as yearAgo from "./patterns/year-ago.mjs";
+import * as staircase from "./patterns/staircase.mjs";
+import * as sealedSlowClimb from "./patterns/sealed-slow-climb.mjs";
 
 export const PATTERNS = [
   slowClimb, slowSlide, breakout, sharpSpike, spikeRevert, recovery, flatRange,
   listingsDown, listingsUp, bothUp, bothDown, thinJump, groupTogether, breakaway,
-  releaseWindow, yearAgo,
+  releaseWindow, yearAgo, staircase, sealedSlowClimb,
 ];
 
 const ITEM_PATTERNS = PATTERNS.filter((p) => p.id !== "group-together" && p.id !== "breakaway");
@@ -75,6 +77,7 @@ export function expectedDir(row) {
   if (pattern === "flat-range" || pattern === "listings-down-flat" || pattern === "listings-up-flat") return "flat";
   if (pattern === "slow-slide" || pattern === "spike-revert" || pattern === "price-down-listings-down") return "down";
   if (pattern === "recovery" && stage === "ending") return "down";
+  if (pattern === "staircase" && stage === "ending") return "flat";
   if (pattern === "group-together" || pattern === "breakaway" || pattern === "year-ago" || pattern === "release-window") {
     const move = Number(row?.metrics?.pct);
     if (!Number.isFinite(move) || Math.abs(move) < HIT_PCT) return "flat";
@@ -646,8 +649,11 @@ export function scoreGates(detections, base, asOf) {
     for (const h of HORIZONS) {
       const g = ownGrade(row, h);
       if (!g) continue;
-      const key = `${row.pattern}|${row.stage}|${row.kind}|${dir}|${h}d`;
-      if (!buckets.has(key)) buckets.set(key, { pattern: row.pattern, stage: row.stage, kind: row.kind, horizon: h, dir, noun: row.metrics?.noun || "", train: blankSide(), test: blankSide(), all: blankSide() });
+      const printStatus = row.metrics?.printStatus || "";
+      const key = printStatus
+        ? `${row.pattern}|${row.stage}|${row.kind}|${dir}|${printStatus}|${h}d`
+        : `${row.pattern}|${row.stage}|${row.kind}|${dir}|${h}d`;
+      if (!buckets.has(key)) buckets.set(key, { pattern: row.pattern, stage: row.stage, kind: row.kind, horizon: h, dir, printStatus, noun: row.metrics?.noun || "", train: blankSide(), test: blankSide(), all: blankSide() });
       const b = buckets.get(key);
       const split = splitOf(row.date, asOf) === "test" ? b.test : b.train;
       addSide(split, row, g, asOf);
@@ -663,6 +669,7 @@ export function scoreGates(detections, base, asOf) {
     const passed = train.passed && test.passed;
     gates.push({
       pattern: row.pattern, stage: row.stage, kind: row.kind, horizon: row.horizon, dir: row.dir,
+      printStatus: row.printStatus || "",
       n: all.n, hits: all.hits, rate: all.rate, decayedRate: all.decayedRate,
       rateLo: all.rateLo, rateHi: all.rateHi, upRate: all.upRate,
       baseRate: all.baseRate, baseDecayed: all.baseDecayed,
@@ -672,7 +679,7 @@ export function scoreGates(detections, base, asOf) {
       test: { n: test.n, hits: test.hits, rate: test.rate, rateLo: test.rateLo, rateHi: test.rateHi, baseRate: test.baseRate, passed: test.passed, from: test.from, to: test.to, detectedFrom: test.detectedFrom, detectedTo: test.detectedTo, upRate: test.upRate },
     });
   }
-  gates.sort((a, b) => (a.pattern < b.pattern ? -1 : a.pattern > b.pattern ? 1 : 0) || (a.stage < b.stage ? -1 : a.stage > b.stage ? 1 : 0) || (a.kind < b.kind ? -1 : a.kind > b.kind ? 1 : 0) || (a.dir < b.dir ? -1 : a.dir > b.dir ? 1 : 0) || (a.horizon - b.horizon));
+  gates.sort((a, b) => (a.pattern < b.pattern ? -1 : a.pattern > b.pattern ? 1 : 0) || (a.stage < b.stage ? -1 : a.stage > b.stage ? 1 : 0) || (a.kind < b.kind ? -1 : a.kind > b.kind ? 1 : 0) || (a.dir < b.dir ? -1 : a.dir > b.dir ? 1 : 0) || ((a.printStatus || "") < (b.printStatus || "") ? -1 : (a.printStatus || "") > (b.printStatus || "") ? 1 : 0) || (a.horizon - b.horizon));
   return gates;
 }
 

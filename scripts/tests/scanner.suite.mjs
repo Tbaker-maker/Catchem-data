@@ -17,6 +17,8 @@ import { detect as group } from "../lib/scanner/patterns/group-together.mjs";
 import { detect as away } from "../lib/scanner/patterns/breakaway.mjs";
 import { detect as release } from "../lib/scanner/patterns/release-window.mjs";
 import { detect as yearAgo } from "../lib/scanner/patterns/year-ago.mjs";
+import { detect as staircase } from "../lib/scanner/patterns/staircase.mjs";
+import { detect as sealedClimb } from "../lib/scanner/patterns/sealed-slow-climb.mjs";
 import { privateOnly as thinPrivate } from "../lib/scanner/patterns/thin-jump.mjs";
 import {
   coveredInWeek, expectedDir, gradeDetection, isDirHit, priceBand, replayItems, replayStep, rotationMembership, scoreGates, splitOf, splitScan, wilson90,
@@ -114,6 +116,55 @@ export async function run() {
   ];
   t("release window uses last year's 30 days", release(series(relPts, { release: "2025-09-26", asOf: "2026-10-13" }))?.stage === "confirmed");
 
+  // Staircase: flat 10 → pump 13 → higher-low flat 11.2 → pump from higher base.
+  const stairForm = [];
+  for (let i = 0; i < 4; i += 1) stairForm.push({ date: addDays("2026-01-01", i * 5), price: 10 + (i % 2) * 0.1, src: "own" });
+  for (let i = 0; i < 3; i += 1) stairForm.push({ date: addDays("2026-01-21", i * 5), price: 10.5 + i * 1.0, src: "own" }); // pump to 12.5
+  for (let i = 0; i < 4; i += 1) stairForm.push({ date: addDays("2026-02-05", i * 5), price: 11.2 + (i % 2) * 0.15, src: "own" }); // higher base
+  t("staircase forms on a second higher base", staircase(series(stairForm))?.stage === "forming");
+  const stairConf = stairForm.concat([
+    { date: addDays(stairForm.at(-1).date, 5), price: 12.2, src: "own" },
+    { date: addDays(stairForm.at(-1).date, 10), price: 13.5, src: "own" },
+    { date: addDays(stairForm.at(-1).date, 15), price: 14.0, src: "own" },
+  ]);
+  t("staircase confirms on a pump from the higher base", staircase(series(stairConf))?.stage === "confirmed");
+  const stairEnd = stairConf.concat([
+    { date: addDays(stairConf.at(-1).date, 5), price: 12.8, src: "own" },
+    { date: addDays(stairConf.at(-1).date, 10), price: 11.8, src: "own" },
+  ]);
+  t("staircase ends on a dump that holds above the prior base", staircase(series(stairEnd))?.stage === "ending");
+  t("staircase expects up while forming or confirmed", expectedDir({ pattern: "staircase", stage: "forming" }) === "up" && expectedDir({ pattern: "staircase", stage: "confirmed" }) === "up");
+  t("staircase ending expects flat", expectedDir({ pattern: "staircase", stage: "ending" }) === "flat");
+
+  const sealedUp = series(pts("2026-01-01", [50, 52, 54, 56, 58, 60]), { kind: "sealed", printStatus: "in-print" });
+  t("sealed-slow-climb confirms in-print", sealedClimb(sealedUp)?.stage === "confirmed" && sealedClimb(sealedUp)?.metrics?.printStatus === "in-print");
+  t("sealed-slow-climb skips singles", sealedClimb(series(pts("2026-01-01", [50, 52, 54, 56, 58, 60]), { kind: "single", printStatus: "in-print" })) == null);
+  t("sealed-slow-climb needs printStatus", sealedClimb(series(pts("2026-01-01", [50, 52, 54, 56, 58, 60]), { kind: "sealed" })) == null);
+  const sealedOut = series(pts("2026-01-01", [50, 52, 54, 56, 58, 60]), { kind: "sealed", printStatus: "out-of-print" });
+  t("sealed-slow-climb tags out-of-print", sealedClimb(sealedOut)?.metrics?.printStatus === "out-of-print");
+
+  {
+    const mk = (printStatus, id, date) => ({
+      id, name: id, kind: "sealed", pattern: "sealed-slow-climb", stage: "confirmed", date, dir: "up",
+      metrics: { printStatus, pct: 12 }, privateOnly: false, explore: false, candidate: "",
+      startSrc: "own", endSrc: "own",
+      grades: { "30d": { due: true, scored: true, hit: true, upHit: true, dir: "up", pct: 5, market: 1, from: date, to: date, fromSrc: "own", toSrc: "own", p0: 50, p1: 55 } },
+    });
+    const rows = [];
+    for (let i = 0; i < 22; i += 1) {
+      rows.push(mk("in-print", `in-${i}`, i < 18 ? "2025-06-01" : "2026-08-01"));
+      rows.push(mk("out-of-print", `out-${i}`, i < 18 ? "2025-06-01" : "2026-08-01"));
+    }
+    const blankBase = { n: 40, w: 40, wh: 8, w2: 40 };
+    const base = new Map([
+      ["sealed|30d|up|train", blankBase], ["sealed|30d|up|test", blankBase], ["sealed|30d|up|all", blankBase],
+    ]);
+    const gates = scoreGates(rows, base, "2026-10-13");
+    const inG = gates.filter((g) => g.pattern === "sealed-slow-climb" && g.printStatus === "in-print" && g.horizon === 30);
+    const outG = gates.filter((g) => g.pattern === "sealed-slow-climb" && g.printStatus === "out-of-print" && g.horizon === 30);
+    t("sealed-slow-climb grades in-print and out-of-print apart", inG.length === 1 && outG.length === 1 && inG[0].n === 22 && outG[0].n === 22);
+  }
+
   const items = [];
   for (let i = 0; i < 24; i += 1) {
     const values = [];
@@ -172,7 +223,7 @@ export async function run() {
   t("down hit is a fall under the median", isDirHit("down", -4, -1) === true && isDirHit("down", -4, -5) === false && isDirHit("down", -2, 0) === false && isDirHit("down", -4, null) === false);
   t("flat hit stays inside a 3 point band", isDirHit("flat", 3, null) === true && isDirHit("flat", -3, 9) === true && isDirHit("flat", 3.1, 0) === false);
   t("old up grade stays separate", isDirHit("down", -4, -1) === true && !(isDirHit("up", -4, -1)));
-  t("direction follows the pattern", expectedDir({ pattern: "slow-slide", stage: "forming" }) === "down" && expectedDir({ pattern: "spike-revert", stage: "ending" }) === "down" && expectedDir({ pattern: "recovery", stage: "ending" }) === "down" && expectedDir({ pattern: "recovery", stage: "confirmed" }) === "up" && expectedDir({ pattern: "flat-range", stage: "confirmed" }) === "flat" && expectedDir({ pattern: "slow-climb", stage: "forming" }) === "up");
+  t("direction follows the pattern", expectedDir({ pattern: "slow-slide", stage: "forming" }) === "down" && expectedDir({ pattern: "spike-revert", stage: "ending" }) === "down" && expectedDir({ pattern: "recovery", stage: "ending" }) === "down" && expectedDir({ pattern: "recovery", stage: "confirmed" }) === "up" && expectedDir({ pattern: "flat-range", stage: "confirmed" }) === "flat" && expectedDir({ pattern: "slow-climb", stage: "forming" }) === "up" && expectedDir({ pattern: "staircase", stage: "ending" }) === "flat" && expectedDir({ pattern: "sealed-slow-climb", stage: "confirmed" }) === "up");
   t("a signed group move picks its own direction", expectedDir({ pattern: "group-together", stage: "confirmed", metrics: { pct: 6 } }) === "up" && expectedDir({ pattern: "year-ago", stage: "ending", metrics: { pct: -8 } }) === "down" && expectedDir({ pattern: "release-window", stage: "confirmed", metrics: { pct: 1 } }) === "flat");
   t("price bands split under 5, 5 to 20, 20 to 100, and 100 plus", priceBand(4.99) === "under-5" && priceBand(5) === "5-20" && priceBand(19.99) === "5-20" && priceBand(20) === "20-100" && priceBand(100) === "100-plus");
   const cut = addDays("2026-10-13", -122);
