@@ -5,6 +5,9 @@ import { publicCopyOk } from "../year-patterns.mjs";
 import { dateLabel, monthYear } from "../history-reads.mjs";
 import { gateFor } from "./engine.mjs";
 import { GROUP_GAP_POINTS, GROUP_MIN_N, round1 } from "./common.mjs";
+import { loadDurableKeys } from "../rich-reads.mjs";
+
+const DURABLE_KEYS = loadDurableKeys();
 
 const LABEL = {
   "slow-climb": "slow climb",
@@ -92,6 +95,17 @@ function sampleLine(gate, asOf) {
   return `Earlier part of the year: hit rate ${early.rate}% on n=${early.n}${span(early)}. Later part of the year: hit rate ${late.rate}% on n=${late.n}${span(late)}.`;
 }
 
+function durableKey(read) {
+  const rec = read?.receipt || {};
+  const g = rec.gate || {};
+  const pattern = rec.pattern || "";
+  const stage = rec.stage || "";
+  const kind = rec.kind || g.kind || "";
+  const dir = g.dir || rec.dir || "";
+  const horizon = g.horizon || rec.horizon || "";
+  return `${pattern}|${stage}|${kind}|${dir}|${horizon}d`;
+}
+
 export function buildScannerReads(present, gates, asOf) {
   const rows = [];
   for (const row of present || []) {
@@ -106,7 +120,12 @@ export function buildScannerReads(present, gates, asOf) {
   const all = [...rows, ...past];
   const kept = [];
   const used = new Map();
-  const sorted = all.slice().sort((a, b) => (b.receipt?.gate?.rate || b.receipt?.rate || 0) - (a.receipt?.gate?.rate || a.receipt?.rate || 0) || (b.strength || 0) - (a.strength || 0) || (a.id < b.id ? -1 : 1));
+  const sorted = all.slice().sort((a, b) => {
+    const da = DURABLE_KEYS.has(durableKey(a)) ? 1 : 0;
+    const db = DURABLE_KEYS.has(durableKey(b)) ? 1 : 0;
+    if (da !== db) return db - da;
+    return (b.receipt?.gate?.rate || b.receipt?.rate || 0) - (a.receipt?.gate?.rate || a.receipt?.rate || 0) || (b.strength || 0) - (a.strength || 0) || (a.id < b.id ? -1 : 1);
+  });
   for (const read of sorted) {
     const n = used.get(read.readKind) || 0;
     if (n >= CAP[read.readKind]) continue;
@@ -212,7 +231,7 @@ function oneRead(row, gate, asOf) {
     endDate: row.end,
     strength: row.strength || 0,
     chart: p0 > 0 && p1 > 0 ? { label: "Own prices, $", points: [[row.start, p0], [row.end, p1]] } : undefined,
-    receipt: { pattern: row.pattern, stage: row.stage, gate: { n: gate.n, horizon: gate.horizon, rate: gate.rate, baseRate: gate.baseRate, dir: gate.dir || "up", trainRate: gate.train?.rate ?? null, testRate: gate.test?.rate ?? null }, own: true },
+    receipt: { pattern: row.pattern, stage: row.stage, kind: row.kind, gate: { n: gate.n, horizon: gate.horizon, rate: gate.rate, baseRate: gate.baseRate, dir: gate.dir || "up", kind: row.kind, trainRate: gate.train?.rate ?? null, testRate: gate.test?.rate ?? null }, own: true },
   };
 }
 

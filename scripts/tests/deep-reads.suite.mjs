@@ -21,7 +21,7 @@ export async function run() {
   const deep = rows.filter((r) => r.readKind === "deep");
   const price = rows.filter((r) => r.board !== "v3" || r.priceRead === true);
   t("board is 200 to 400 reads", rows.length >= 200 && rows.length <= 400);
-  t("price reads are at most 40%", price.length <= Math.floor(rows.length * 0.4) + 1);
+  t("price reads are at most one third", price.length <= Math.floor(rows.length / 3) + 1);
   t("deep reads exist", deep.length >= 20);
   t("each deep read has 3 to 6 lines, a source and a date", deep.every((r) => Array.isArray(r.lines) && r.lines.length >= 3 && r.lines.length <= 6 && r.source && /^\d{4}-\d{2}-\d{2}$/.test(r.asOf)));
   t("deep charts carry points or bars", deep.every((r) => !r.chart || (Array.isArray(r.chart.points) && r.chart.points.length >= 2) || (Array.isArray(r.chart.bars) && r.chart.bars.length >= 2)));

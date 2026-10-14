@@ -1,4 +1,4 @@
-import { cleanCopy, eraOf, laggingFor, groupClimbReads, listingReads, newsReads, releaseReads, mixBoard, isPriceRead, buildSealedLag, sealedEra } from "../lib/board-mix.mjs";
+import { cleanCopy, eraOf, laggingFor, groupClimbReads, listingReads, newsReads, releaseReads, mixBoard, isPriceRead, buildSealedLag, sealedEra, fillSlots, fitBoard, PRICE_SHARE_MAX } from "../lib/board-mix.mjs";
 
 export async function run() {
   let fail = 0;
@@ -49,8 +49,17 @@ export async function run() {
   const fresh = Array.from({ length: 9 }, (_, i) => ({ id: `f${i}`, headline: "f", board: "v3", family: i % 2 ? "news" : "fact" }));
   const board = mixBoard(price, fresh, "2026-10-12");
   const share = board.filter(isPriceRead).length / board.length;
-  t("price reads are at most 40% of the board", share <= 0.4 + 1e-9);
+  t("price reads are at most one third of the board", share <= PRICE_SHARE_MAX + 1e-9);
   t("mix is the same for the same day", JSON.stringify(mixBoard(price, fresh, "2026-10-12")) === JSON.stringify(board));
+  const spilled = fillSlots([
+    { id: "m1", readKind: "mixed" },
+    { id: "n1", readKind: "newsline" },
+    { id: "n2", readKind: "newsline" },
+  ], [{ kind: "rip", n: 2 }, { kind: "mixed", n: 1 }]);
+  t("an empty kind hands its slots to the next kind", spilled.map((r) => r.id).join(",") === "m1,n1,n2");
+  const fitted = fitBoard(Array.from({ length: 50 }, (_, i) => ({ id: `p${i}` })), Array.from({ length: 20 }, (_, i) => ({ id: `f${i}`, readKind: "newsline", board: "v3" })), { maxBoard: 30 });
+  const fittedShare = fitted.price.length / (fitted.price.length + fitted.fresh.length);
+  t("fit keeps the board inside the cap and the price share", fitted.price.length + fitted.fresh.length <= 30 && fittedShare <= PRICE_SHARE_MAX + 1e-9);
 
   const sealed = buildSealedLag({
     products: [{ id: "a", name: "A", subtype: "booster-box", setId: "swsh7" }, { id: "b", name: "B", subtype: "booster-box", setId: "swsh9" }, { id: "c", name: "C", subtype: "etb", setId: "swsh9" }, { id: "swsh7-etb", name: "Shared", subtype: "booster-box", setId: "swsh7" }],
