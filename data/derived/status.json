@@ -1,6 +1,6 @@
 {
  "asOf": "2026-10-14",
- "generatedAt": "2026-10-14T19:29:44.271Z",
+ "generatedAt": "2026-10-14T21:59:49.716Z",
  "checks": [
   {
    "id": "price-day",
@@ -26,12 +26,14 @@
   {
    "id": "scanner",
    "path": "data/private/scanner/summary.json",
-   "date": "2026-10-14",
-   "ok": true,
-   "detail": "fresh"
+   "date": "",
+   "ok": false,
+   "detail": "missing"
   }
  ],
- "failures": [],
+ "failures": [
+  "scanner"
+ ],
  "alerts": [],
  "reran": [],
  "note": "Checked the dated files. A missing light step can be rerun once with --rerun."
