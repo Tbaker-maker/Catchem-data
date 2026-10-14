@@ -7,6 +7,7 @@
 // catalogue path. A name is never a match.
 
 import { readFile, writeFile, readdir } from "node:fs/promises";
+import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
@@ -44,6 +45,11 @@ const ALIAS = {
   "xy-promos": "xyp",
   rumble: "ru1",
   "nintendo-promos": "",
+};
+
+// ME06 is on pokemon.com as me06. The catalogue id follows me1, me2, me3.
+const FILE_ONLY = {
+  "me06-delta-reign": "me6",
 };
 
 // Confirmed by set id, not by name. mep's own Scrydex logo is the generic
@@ -112,6 +118,39 @@ function catalogueSrc(logo, setId) {
   return `/img/${setId}/logo.png`;
 }
 
+function fileLogo(setId) {
+  return { logo: `/img/${setId}/logo.png`, src: `/img/${setId}/logo.png` };
+}
+
+async function loadLogoFiles(root) {
+  const report = JSON.parse(await readFile(join(root, "research/assets/img/set-logo-files.json"), "utf8"));
+  const official = new Set();
+  for (const row of report.present || []) {
+    if (row && row.id && existsSync(join(root, "research/assets/img", row.id, "logo.png"))) official.add(row.id);
+  }
+  const tiles = new Map();
+  const tileDoc = JSON.parse(await readFile(join(root, "research/assets/img/set-logo-tiles.json"), "utf8").catch(() => "{\"tiles\":[]}"));
+  for (const row of tileDoc.tiles || []) {
+    if (!row || !row.slug || !row.id) continue;
+    if (!existsSync(join(root, "research/assets/img", row.id, "logo.png"))) continue;
+    tiles.set(row.slug, row);
+  }
+  return { official, tiles };
+}
+
+function tileEntry(row, tile) {
+  const published = fileLogo(tile.id);
+  return {
+    setId: tile.id,
+    slug: row.slug,
+    name: row.name,
+    logo: published.logo,
+    src: published.src,
+    kind: "tile",
+    via: "tile",
+  };
+}
+
 // Published logo is the catalogue path for this set id, or nothing.
 export function publishLogo(setId, remoteLogo) {
   const src = catalogueSrc(remoteLogo, setId);
@@ -122,6 +161,7 @@ export function publishLogo(setId, remoteLogo) {
 export async function buildSetLogoIndex(root = ROOT) {
   const officialDoc = JSON.parse(await readFile(join(root, "data/set-logos.json"), "utf8"));
   const official = officialDoc.sets || {};
+  const { official: officialFiles, tiles } = await loadLogoFiles(root);
   const keyToIds = new Map();
   for (const [id, meta] of Object.entries(official)) {
     for (const key of keysFor(meta.name)) {
@@ -165,6 +205,10 @@ export async function buildSetLogoIndex(root = ROOT) {
       assigned.set(slug, { id: ALIAS[slug], reason: ALIAS[slug] ? "alias" : "alias-none" });
       continue;
     }
+    if (FILE_ONLY[slug]) {
+      assigned.set(slug, { id: FILE_ONLY[slug], reason: "file" });
+      continue;
+    }
     const year = norm(row.name).match(/mcdonald s promos (\d{4})/);
     if (year) {
       const id = `mcd${year[1].slice(2)}`;
@@ -187,7 +231,7 @@ export async function buildSetLogoIndex(root = ROOT) {
   for (const row of rows) {
     const { id } = assigned.get(row.slug);
     if (!row.lid || !official[row.lid]) continue;
-    if (PARENT[row.slug] || FIX[row.slug] || DENY.has(row.slug) || EXTRA[row.slug]) continue;
+    if (PARENT[row.slug] || FIX[row.slug] || DENY.has(row.slug) || EXTRA[row.slug] || FILE_ONLY[row.slug]) continue;
     if (id !== row.lid) throw new Error(`${row.slug} would change ${row.lid} to ${id || "(none)"}`);
   }
 
@@ -200,6 +244,11 @@ export async function buildSetLogoIndex(root = ROOT) {
       const remote = spec.logo || parent?.logo || "";
       const published = publishLogo(spec.logoFrom || spec.setId, remote);
       if (!published) {
+        const tile = tiles.get(row.slug);
+        if (tile) {
+          entries.push(tileEntry(row, tile));
+          continue;
+        }
         noLogo.push({ slug: row.slug, name: row.name });
         continue;
       }
@@ -219,13 +268,31 @@ export async function buildSetLogoIndex(root = ROOT) {
     }
     const { id, reason } = assigned.get(row.slug);
     if (!id) {
-      noLogo.push({ slug: row.slug, name: row.name });
+      const tile = tiles.get(row.slug);
+      if (tile) entries.push(tileEntry(row, tile));
+      else noLogo.push({ slug: row.slug, name: row.name });
       continue;
     }
     const meta = official[id];
     const published = meta ? publishLogo(id, meta.logo) : null;
+    if (!published && officialFiles.has(id)) {
+      const local = fileLogo(id);
+      const entry = {
+        setId: id,
+        slug: row.slug,
+        name: row.name,
+        logo: local.logo,
+        src: local.src,
+      };
+      if (PARENT[row.slug]) entry.parentSetId = id;
+      if (reason) entry.via = reason;
+      entries.push(entry);
+      continue;
+    }
     if (!published) {
-      noLogo.push({ slug: row.slug, name: row.name });
+      const tile = tiles.get(row.slug);
+      if (tile) entries.push(tileEntry(row, tile));
+      else noLogo.push({ slug: row.slug, name: row.name });
       continue;
     }
     const entry = {
@@ -304,7 +371,7 @@ export async function buildSetLogoIndex(root = ROOT) {
   const withLogo = new Set(entries.map((entry) => entry.slug)).size;
   return {
     index: {
-      source: "Catalogue logos by set id from data/set-logos.json. Published logo and src are /img/{setId}/logo.png. A remote URL is not published. A set with no catalogue logo is left off. Gallery subsets use the parent path. No logo was invented. A name is not a match.",
+      source: "Catalogue logos by set id. A published logo is /img/{setId}/logo.png when that file is the official pokemon.com crop or the pokemontcg.io logo for the same id. A set with no official logo uses a branded tile at its own path. A remote URL is not published. Gallery subsets use the parent path. A name is not a match.",
       read: "Look up research/assets/public/set-logos.json by site slug or by set id. Write logo (the catalogue path) onto the set, or leave the logo off. src is the same path. Reject a Scrydex image whose sha256 is rejectSha256.genericSet (the Pokémon Trading Card Game fallback returned for any unknown id) or rejectSha256.genericPromo (the shared PROMO star).",
       rejectSha256: REJECT_SHA256,
       universe: names.length + 1,
