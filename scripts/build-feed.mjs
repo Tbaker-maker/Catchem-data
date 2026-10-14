@@ -238,6 +238,17 @@ try {
   console.error(`card face skipped: ${err.message}`);
   throw err;
 }
+try {
+  const { stampStale } = await import("./lib/read-stale.mjs");
+  const readsPath = join(ROOT, "research/assets/public/reads.json");
+  const readsDoc = JSON.parse(await readFile(readsPath, "utf8"));
+  const stale = stampStale(readsDoc);
+  await writeFile(readsPath, JSON.stringify(readsDoc, null, 1) + "\n");
+  console.log(JSON.stringify({ stale }));
+} catch (err) {
+  console.error(`stale flag skipped: ${err.message}`);
+  throw err;
+}
 const health = await writeHealth(ROOT);
 // YouTube learning loop (official API, private store). Before the flagger so
 // tonight's leads become flags. A missing key or any failure never stops the nightly.

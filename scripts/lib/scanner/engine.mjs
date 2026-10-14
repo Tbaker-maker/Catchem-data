@@ -10,6 +10,7 @@ import {
   DAILY_REPLAY_CAP, EXPLORE_SHARE, HALF_LIFE_DAYS, TOP_SEALED, TOP_SINGLES,
   bucketOf, dayNum, daysBetween, hash32, mulberry32, pct, round1, seedFromDate,
 } from "./common.mjs";
+import { eraFactorFor } from "./era-weight.mjs";
 import * as slowClimb from "./patterns/slow-climb.mjs";
 import * as slowSlide from "./patterns/slow-slide.mjs";
 import * as breakout from "./patterns/breakout.mjs";
@@ -661,12 +662,15 @@ export function scoreGates(detections, base, asOf) {
     const test = finishSide(row.test, base.get(`${baseKind}|${row.horizon}d|${row.dir}|test`));
     const all = finishSide(row.all, base.get(`${baseKind}|${row.horizon}d|${row.dir}|all`));
     const passed = train.passed && test.passed;
+    const gateKey = `${row.pattern}|${row.stage}|${row.kind}|${row.dir}|${row.horizon}d`;
+    const eraFactor = eraFactorFor(gateKey);
     gates.push({
       pattern: row.pattern, stage: row.stage, kind: row.kind, horizon: row.horizon, dir: row.dir,
       n: all.n, hits: all.hits, rate: all.rate, decayedRate: all.decayedRate,
       rateLo: all.rateLo, rateHi: all.rateHi, upRate: all.upRate,
       baseRate: all.baseRate, baseDecayed: all.baseDecayed,
-      passed, weight: passed ? round1(all.decayedRate * 1000) / 1000 : 0,
+      passed, eraFactor,
+      weight: passed ? Math.round(all.decayedRate * eraFactor * 1000) / 1000 : 0,
       medianPct: all.medianPct, examples: all.examples, from: all.from, to: all.to,
       train: { n: train.n, hits: train.hits, rate: train.rate, rateLo: train.rateLo, rateHi: train.rateHi, baseRate: train.baseRate, passed: train.passed, from: train.from, to: train.to, detectedFrom: train.detectedFrom, detectedTo: train.detectedTo, upRate: train.upRate },
       test: { n: test.n, hits: test.hits, rate: test.rate, rateLo: test.rateLo, rateHi: test.rateHi, baseRate: test.baseRate, passed: test.passed, from: test.from, to: test.to, detectedFrom: test.detectedFrom, detectedTo: test.detectedTo, upRate: test.upRate },

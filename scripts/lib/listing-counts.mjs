@@ -5,6 +5,9 @@
 // Two tiers. "daily": every top sealed product (has a current price, or has
 // creator attention) and the top singles by value x attention, counted every
 // day. "tail": everything else, rotated stalest-first with the leftover.
+import { applyTotalCaps } from "./ebay-total.mjs";
+
+export { applyTotalCaps };
 
 export const EBAY_BROWSE_DAILY_LIMIT = 5000;
 export const SAFE_SHARE = 0.98; // default; config/api-budgets.json wins

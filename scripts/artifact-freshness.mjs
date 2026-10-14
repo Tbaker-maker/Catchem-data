@@ -202,6 +202,8 @@ const SLOW = {
     "nightly eBay raw copy (data/raw/ebay-sealed/YYYY-MM-DD.json.gz, #145), added to the nightly git add on 2026-10-10; excused only until its first nightly commit — remove this line once git log shows data/raw/",
   "data/derived/listing-counts/":
     "listing-counts.yml was added on 2026-10-12 and has not had its first scheduled run yet; excused only until its first commit. Remove this line once git log shows data/derived/listing-counts/",
+  "data/derived/status.json":
+    "status.json is written at the end of listing-counts and the sealed run. Excused until those jobs have committed it on a schedule.",
   "data/release-radar.json":
     "confirmed release dates change when the world changes, not daily — but it now records checkedAt separately from updated, so a dead agent is still visible",
   "data/recovery-log.json":

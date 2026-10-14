@@ -409,6 +409,24 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: node scripts/send-discord-alerts.mjs
 
+      - name: Dated reads, rip value, and status
+        continue-on-error: true
+        env:
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+          EBAY_APP_ID: ${{ secrets.EBAY_APP_ID }}
+          EBAY_CERT_ID: ${{ secrets.EBAY_CERT_ID }}
+        run: |
+          node scripts/build-condition-prices.mjs || true
+          node scripts/build-weekly.mjs || true
+          node scripts/build-market-signals.mjs || true
+          node scripts/build-variant-flags.mjs || true
+          node scripts/build-rip-roi.mjs || true
+          node scripts/coverage-bot.mjs || true
+          node scripts/grade-heading-votes.mjs || true
+          node scripts/scanner-weekly.mjs || true
+          node scripts/price-sanity.mjs || true
+          node scripts/freshness-bot.mjs || true
+
       - name: Commit updated prices
         run: |
           git config user.name "catchem-bot"
