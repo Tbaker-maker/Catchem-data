@@ -1,0 +1,1314 @@
+{
+  "asOf": "2026-10-13",
+  "primary": "data/pull-rates.json",
+  "secondSource": {
+    "url": "https://pullnomics.com/guides/pokemon-tcg-pull-rates-by-set",
+    "published": "2026-09-15",
+    "dataAsOf": "2026-09-20"
+  },
+  "rule": "Differences are notes only. Where TCGplayer is the primary row, it stays the row. Pullnomics is not swapped in.",
+  "skippedSecondSource": "The TCGplayer 30th Celebration article page was fetched and returned an empty shell with no rate table. The content URL returned 404. No 30th Celebration figures were copied from that page.",
+  "diffs": [
+    {
+      "setSlug": "champion-s-path",
+      "kind": "no-second-table",
+      "note": "This set is not in the Pullnomics table that was checked. No second-source rate was copied."
+    },
+    {
+      "setSlug": "detective-pikachu",
+      "kind": "no-second-table",
+      "note": "This set is not in the Pullnomics table that was checked. No second-source rate was copied."
+    },
+    {
+      "setSlug": "dragon-majesty",
+      "kind": "no-second-table",
+      "note": "This set is not in the Pullnomics table that was checked. No second-source rate was copied."
+    },
+    {
+      "setSlug": "hidden-fates",
+      "kind": "no-second-table",
+      "note": "This set is not in the Pullnomics table that was checked. No second-source rate was copied."
+    },
+    {
+      "setSlug": "me-30th-celebration",
+      "articleRarity": "Illustration Rare",
+      "kind": "same-guide",
+      "primaryPct": 18.18,
+      "note": "The primary row is already the Pullnomics guide, so that guide is not a second source for it."
+    },
+    {
+      "setSlug": "me-30th-celebration",
+      "articleRarity": "Special Illustration Rare",
+      "kind": "same-guide",
+      "primaryPct": 5.13,
+      "note": "The primary row is already the Pullnomics guide, so that guide is not a second source for it."
+    },
+    {
+      "setSlug": "me-30th-celebration",
+      "column": "DR",
+      "kind": "missing-row",
+      "secondOneIn": 4.5,
+      "secondPct": 22.2222,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "me-ascended-heroes",
+      "articleRarity": "Illustration Rare",
+      "column": "IR",
+      "kind": "compared",
+      "primaryPct": 11.25,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Ascended-Heroes-Pull-Rates/60143d94-88a7-42ce-8e73-babd7b3fabd6/",
+      "primaryPublished": "2026-02-24",
+      "secondOneIn": 8.5,
+      "secondPct": 11.7647,
+      "pctDiff": -0.5147,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "me-ascended-heroes",
+      "articleRarity": "Special Illustration Rare",
+      "column": "SIR",
+      "kind": "compared",
+      "primaryPct": 1.44,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Ascended-Heroes-Pull-Rates/60143d94-88a7-42ce-8e73-babd7b3fabd6/",
+      "primaryPublished": "2026-02-24",
+      "secondOneIn": 88.5,
+      "secondPct": 1.1299,
+      "pctDiff": 0.3101,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "me-ascended-heroes",
+      "articleRarity": "Mega Hyper Rare",
+      "column": "MHR",
+      "kind": "compared",
+      "primaryPct": 0.19,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Ascended-Heroes-Pull-Rates/60143d94-88a7-42ce-8e73-babd7b3fabd6/",
+      "primaryPublished": "2026-02-24",
+      "secondOneIn": 540,
+      "secondPct": 0.1852,
+      "pctDiff": 0.0048,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "me-ascended-heroes",
+      "column": "UR",
+      "kind": "missing-row",
+      "secondOneIn": 11,
+      "secondPct": 9.0909,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "me-ascended-heroes",
+      "column": "MAR",
+      "kind": "missing-row",
+      "secondOneIn": 35,
+      "secondPct": 2.8571,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "me01-mega-evolution",
+      "articleRarity": "Illustration Rare",
+      "column": "IR",
+      "kind": "compared",
+      "primaryPct": 10.89,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Mega-Evolution-Pull-Rates/40cbeedc-21ce-473b-aef1-74e3969d9f91/",
+      "primaryPublished": "2025-09-30",
+      "secondOneIn": 9,
+      "secondPct": 11.1111,
+      "pctDiff": -0.2211,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "me01-mega-evolution",
+      "articleRarity": "Special Illustration Rare",
+      "column": "SIR",
+      "kind": "compared",
+      "primaryPct": 0.99,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Mega-Evolution-Pull-Rates/40cbeedc-21ce-473b-aef1-74e3969d9f91/",
+      "primaryPublished": "2025-09-30",
+      "secondOneIn": 101,
+      "secondPct": 0.9901,
+      "pctDiff": -0.0001,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "me01-mega-evolution",
+      "column": "DR",
+      "kind": "missing-row",
+      "secondOneIn": 5,
+      "secondPct": 20,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "me01-mega-evolution",
+      "column": "UR",
+      "kind": "missing-row",
+      "secondOneIn": 12.5,
+      "secondPct": 8,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "me01-mega-evolution",
+      "column": "MHR",
+      "kind": "missing-row",
+      "secondOneIn": 1260,
+      "secondPct": 0.0794,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "me02-phantasmal-flames",
+      "articleRarity": "Illustration Rare",
+      "column": "IR",
+      "kind": "compared",
+      "primaryPct": 10.97,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Phantasmal-Flames-Pull-Rates/9abae60d-b7fb-448f-874e-176f78d6a6ca/",
+      "primaryPublished": "2025-11-15",
+      "secondOneIn": 9,
+      "secondPct": 11.1111,
+      "pctDiff": -0.1411,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "me02-phantasmal-flames",
+      "articleRarity": "Special Illustration Rare",
+      "column": "SIR",
+      "kind": "compared",
+      "primaryPct": 1.25,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Phantasmal-Flames-Pull-Rates/9abae60d-b7fb-448f-874e-176f78d6a6ca/",
+      "primaryPublished": "2025-11-15",
+      "secondOneIn": 80,
+      "secondPct": 1.25,
+      "pctDiff": 0,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "me02-phantasmal-flames",
+      "articleRarity": "Mega Hyper Rare",
+      "column": "MHR",
+      "kind": "compared",
+      "primaryPct": 0.08,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Phantasmal-Flames-Pull-Rates/9abae60d-b7fb-448f-874e-176f78d6a6ca/",
+      "primaryPublished": "2025-11-15",
+      "secondOneIn": 1260,
+      "secondPct": 0.0794,
+      "pctDiff": 0.0006,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "me02-phantasmal-flames",
+      "column": "UR",
+      "kind": "missing-row",
+      "secondOneIn": 12,
+      "secondPct": 8.3333,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "me02-phantasmal-flames",
+      "column": "MAR",
+      "kind": "missing-row",
+      "secondOneIn": 40,
+      "secondPct": 2.5,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "me03-perfect-order",
+      "articleRarity": "Illustration Rare",
+      "column": "IR",
+      "kind": "compared",
+      "primaryPct": 11.2,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Perfect-Order-Pull-Rates/73148119-ebcb-40b7-84b6-52b3a6d0c631/",
+      "primaryPublished": "2026-04-03",
+      "secondOneIn": 9,
+      "secondPct": 11.1111,
+      "pctDiff": 0.0889,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "me03-perfect-order",
+      "articleRarity": "Special Illustration Rare",
+      "column": "SIR",
+      "kind": "compared",
+      "primaryPct": 1.23,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Perfect-Order-Pull-Rates/73148119-ebcb-40b7-84b6-52b3a6d0c631/",
+      "primaryPublished": "2026-04-03",
+      "secondOneIn": 80,
+      "secondPct": 1.25,
+      "pctDiff": -0.02,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "me03-perfect-order",
+      "articleRarity": "Mega Hyper Rare",
+      "column": "MHR",
+      "kind": "compared",
+      "primaryPct": 0.06,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Perfect-Order-Pull-Rates/73148119-ebcb-40b7-84b6-52b3a6d0c631/",
+      "primaryPublished": "2026-04-03",
+      "secondOneIn": 1400,
+      "secondPct": 0.0714,
+      "pctDiff": -0.0114,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "me03-perfect-order",
+      "column": "UR",
+      "kind": "missing-row",
+      "secondOneIn": 11,
+      "secondPct": 9.0909,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "me03-perfect-order",
+      "column": "MAR",
+      "kind": "missing-row",
+      "secondOneIn": 40,
+      "secondPct": 2.5,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "me04-chaos-rising",
+      "articleRarity": "Illustration Rare",
+      "column": "IR",
+      "kind": "compared",
+      "primaryPct": 10.66,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Chaos-Rising-Pull-Rates/304e8bfc-175a-4d31-93fe-5bb1be11e5d2/",
+      "primaryPublished": "2026-06-04",
+      "secondOneIn": 9.5,
+      "secondPct": 10.5263,
+      "pctDiff": 0.1337,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "me04-chaos-rising",
+      "articleRarity": "Special Illustration Rare",
+      "column": "SIR",
+      "kind": "compared",
+      "primaryPct": 1.21,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Chaos-Rising-Pull-Rates/304e8bfc-175a-4d31-93fe-5bb1be11e5d2/",
+      "primaryPublished": "2026-06-04",
+      "secondOneIn": 82.5,
+      "secondPct": 1.2121,
+      "pctDiff": -0.0021,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "me04-chaos-rising",
+      "articleRarity": "Mega Hyper Rare",
+      "column": "MHR",
+      "kind": "compared",
+      "primaryPct": 0.1,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Chaos-Rising-Pull-Rates/304e8bfc-175a-4d31-93fe-5bb1be11e5d2/",
+      "primaryPublished": "2026-06-04",
+      "secondOneIn": 975,
+      "secondPct": 0.1026,
+      "pctDiff": -0.0026,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "me04-chaos-rising",
+      "column": "DR",
+      "kind": "missing-row",
+      "secondOneIn": 4.5,
+      "secondPct": 22.2222,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "me04-chaos-rising",
+      "column": "UR",
+      "kind": "missing-row",
+      "secondOneIn": 16.5,
+      "secondPct": 6.0606,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "me05-pitch-black",
+      "articleRarity": "Illustration Rare",
+      "kind": "same-guide",
+      "primaryPct": 10,
+      "note": "The primary row is already the Pullnomics guide, so that guide is not a second source for it."
+    },
+    {
+      "setSlug": "me05-pitch-black",
+      "articleRarity": "Special Illustration Rare",
+      "kind": "same-guide",
+      "primaryPct": 0.98,
+      "note": "The primary row is already the Pullnomics guide, so that guide is not a second source for it."
+    },
+    {
+      "setSlug": "me05-pitch-black",
+      "column": "DR",
+      "kind": "missing-row",
+      "secondOneIn": 5,
+      "secondPct": 20,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "me05-pitch-black",
+      "column": "UR",
+      "kind": "missing-row",
+      "secondOneIn": 12,
+      "secondPct": 8.3333,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "me05-pitch-black",
+      "column": "MHR",
+      "kind": "missing-row",
+      "secondOneIn": 1315,
+      "secondPct": 0.076,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "shining-fates",
+      "kind": "no-second-table",
+      "note": "This set is not in the Pullnomics table that was checked. No second-source rate was copied."
+    },
+    {
+      "setSlug": "shining-legends",
+      "kind": "no-second-table",
+      "note": "This set is not in the Pullnomics table that was checked. No second-source rate was copied."
+    },
+    {
+      "setSlug": "sm-base-set",
+      "kind": "no-second-table",
+      "note": "This set is not in the Pullnomics table that was checked. No second-source rate was copied."
+    },
+    {
+      "setSlug": "sm-burning-shadows",
+      "kind": "no-second-table",
+      "note": "This set is not in the Pullnomics table that was checked. No second-source rate was copied."
+    },
+    {
+      "setSlug": "sm-celestial-storm",
+      "kind": "no-second-table",
+      "note": "This set is not in the Pullnomics table that was checked. No second-source rate was copied."
+    },
+    {
+      "setSlug": "sm-cosmic-eclipse",
+      "kind": "no-second-table",
+      "note": "This set is not in the Pullnomics table that was checked. No second-source rate was copied."
+    },
+    {
+      "setSlug": "sm-crimson-invasion",
+      "kind": "no-second-table",
+      "note": "This set is not in the Pullnomics table that was checked. No second-source rate was copied."
+    },
+    {
+      "setSlug": "sm-forbidden-light",
+      "kind": "no-second-table",
+      "note": "This set is not in the Pullnomics table that was checked. No second-source rate was copied."
+    },
+    {
+      "setSlug": "sm-guardians-rising",
+      "kind": "no-second-table",
+      "note": "This set is not in the Pullnomics table that was checked. No second-source rate was copied."
+    },
+    {
+      "setSlug": "sm-lost-thunder",
+      "kind": "no-second-table",
+      "note": "This set is not in the Pullnomics table that was checked. No second-source rate was copied."
+    },
+    {
+      "setSlug": "sm-team-up",
+      "kind": "no-second-table",
+      "note": "This set is not in the Pullnomics table that was checked. No second-source rate was copied."
+    },
+    {
+      "setSlug": "sm-ultra-prism",
+      "kind": "no-second-table",
+      "note": "This set is not in the Pullnomics table that was checked. No second-source rate was copied."
+    },
+    {
+      "setSlug": "sm-unbroken-bonds",
+      "kind": "no-second-table",
+      "note": "This set is not in the Pullnomics table that was checked. No second-source rate was copied."
+    },
+    {
+      "setSlug": "sm-unified-minds",
+      "kind": "no-second-table",
+      "note": "This set is not in the Pullnomics table that was checked. No second-source rate was copied."
+    },
+    {
+      "setSlug": "sv-black-bolt",
+      "kind": "no-second-table",
+      "note": "This set is not in the Pullnomics table that was checked. No second-source rate was copied."
+    },
+    {
+      "setSlug": "sv-paldean-fates",
+      "articleRarity": "Illustration Rare",
+      "column": "IR",
+      "kind": "compared",
+      "primaryPct": 7.22,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Paldean-Fates-Pull-Rates/23de3e93-0d0f-4ae0-abc4-13664f3001a3/",
+      "primaryPublished": "2024-01-26",
+      "secondOneIn": 13,
+      "secondPct": 7.6923,
+      "pctDiff": -0.4723,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv-paldean-fates",
+      "articleRarity": "Special Illustration Rare",
+      "column": "SIR",
+      "kind": "compared",
+      "primaryPct": 1.72,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Paldean-Fates-Pull-Rates/23de3e93-0d0f-4ae0-abc4-13664f3001a3/",
+      "primaryPublished": "2024-01-26",
+      "secondOneIn": 62.5,
+      "secondPct": 1.6,
+      "pctDiff": 0.12,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv-paldean-fates",
+      "articleRarity": "Hyper Rare",
+      "column": "HR",
+      "kind": "compared",
+      "primaryPct": 1.61,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Paldean-Fates-Pull-Rates/23de3e93-0d0f-4ae0-abc4-13664f3001a3/",
+      "primaryPublished": "2024-01-26",
+      "secondOneIn": 97.5,
+      "secondPct": 1.0256,
+      "pctDiff": 0.5844,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv-paldean-fates",
+      "column": "UR",
+      "kind": "missing-row",
+      "secondOneIn": 14.5,
+      "secondPct": 6.8966,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "sv-prismatic-evolutions",
+      "articleRarity": "Special Illustration Rare",
+      "column": "SIR",
+      "kind": "compared",
+      "primaryPct": 2.22,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Prismatic-Evolutions-Pull-Rates/d94889ea-f76a-4a13-b74d-5b0b071220a7/",
+      "primaryPublished": "2025-01-17",
+      "secondOneIn": 49,
+      "secondPct": 2.0408,
+      "pctDiff": 0.1792,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv-prismatic-evolutions",
+      "articleRarity": "Hyper Rare",
+      "column": "HR",
+      "kind": "compared",
+      "primaryPct": 0.56,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Prismatic-Evolutions-Pull-Rates/d94889ea-f76a-4a13-b74d-5b0b071220a7/",
+      "primaryPublished": "2025-01-17",
+      "secondOneIn": 166,
+      "secondPct": 0.6024,
+      "pctDiff": -0.0424,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv-prismatic-evolutions",
+      "column": "DR",
+      "kind": "missing-row",
+      "secondOneIn": 6,
+      "secondPct": 16.6667,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "sv-prismatic-evolutions",
+      "column": "UR",
+      "kind": "missing-row",
+      "secondOneIn": 19.5,
+      "secondPct": 5.1282,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "sv-scarlet-and-violet-151",
+      "articleRarity": "Illustration Rare",
+      "column": "IR",
+      "kind": "compared",
+      "primaryPct": 8.5,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Scarlet-Violet%E2%80%94151-Pull-Rates/b237df74-fbb0-40d0-9e13-d69ee6e804d9/",
+      "primaryPublished": "2023-09-22",
+      "secondOneIn": 12,
+      "secondPct": 8.3333,
+      "pctDiff": 0.1667,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv-scarlet-and-violet-151",
+      "articleRarity": "Special Illustration Rare",
+      "column": "SIR",
+      "kind": "compared",
+      "primaryPct": 3.11,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Scarlet-Violet%E2%80%94151-Pull-Rates/b237df74-fbb0-40d0-9e13-d69ee6e804d9/",
+      "primaryPublished": "2023-09-22",
+      "secondOneIn": 32,
+      "secondPct": 3.125,
+      "pctDiff": -0.015,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv-scarlet-and-violet-151",
+      "articleRarity": "Hyper Rare",
+      "column": "HR",
+      "kind": "compared",
+      "primaryPct": 1.94,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Scarlet-Violet%E2%80%94151-Pull-Rates/b237df74-fbb0-40d0-9e13-d69ee6e804d9/",
+      "primaryPublished": "2023-09-22",
+      "secondOneIn": 51,
+      "secondPct": 1.9608,
+      "pctDiff": -0.0208,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv-scarlet-and-violet-151",
+      "column": "DR",
+      "kind": "missing-row",
+      "secondOneIn": 8,
+      "secondPct": 12.5,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "sv-scarlet-and-violet-151",
+      "column": "UR",
+      "kind": "missing-row",
+      "secondOneIn": 16,
+      "secondPct": 6.25,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "sv-shrouded-fable",
+      "articleRarity": "Illustration Rare",
+      "kind": "same-guide",
+      "primaryPct": 8.33,
+      "note": "The primary row is already the Pullnomics guide, so that guide is not a second source for it."
+    },
+    {
+      "setSlug": "sv-shrouded-fable",
+      "articleRarity": "Special Illustration Rare",
+      "kind": "same-guide",
+      "primaryPct": 1.75,
+      "note": "The primary row is already the Pullnomics guide, so that guide is not a second source for it."
+    },
+    {
+      "setSlug": "sv-shrouded-fable",
+      "column": "UR",
+      "kind": "missing-row",
+      "secondOneIn": 30,
+      "secondPct": 3.3333,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "sv-shrouded-fable",
+      "column": "HR",
+      "kind": "missing-row",
+      "secondOneIn": 118,
+      "secondPct": 0.8475,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "sv-white-flare",
+      "kind": "no-second-table",
+      "note": "This set is not in the Pullnomics table that was checked. No second-source rate was copied."
+    },
+    {
+      "setSlug": "sv01-scarlet-and-violet-base-set",
+      "articleRarity": "Illustration Rare",
+      "column": "IR",
+      "kind": "compared",
+      "primaryPct": 7.67,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Scarlet-Violet-Pull-Rates/a7702fce-dd64-4a58-beb1-0f871c853215/",
+      "primaryPublished": "2023-03-31",
+      "secondOneIn": 13,
+      "secondPct": 7.6923,
+      "pctDiff": -0.0223,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv01-scarlet-and-violet-base-set",
+      "articleRarity": "Special Illustration Rare",
+      "column": "SIR",
+      "kind": "compared",
+      "primaryPct": 3.15,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Scarlet-Violet-Pull-Rates/a7702fce-dd64-4a58-beb1-0f871c853215/",
+      "primaryPublished": "2023-03-31",
+      "secondOneIn": 32,
+      "secondPct": 3.125,
+      "pctDiff": 0.025,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv01-scarlet-and-violet-base-set",
+      "articleRarity": "Hyper Rare",
+      "column": "HR",
+      "kind": "compared",
+      "primaryPct": 1.85,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Scarlet-Violet-Pull-Rates/a7702fce-dd64-4a58-beb1-0f871c853215/",
+      "primaryPublished": "2023-03-31",
+      "secondOneIn": 53,
+      "secondPct": 1.8868,
+      "pctDiff": -0.0368,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv01-scarlet-and-violet-base-set",
+      "column": "DR",
+      "kind": "missing-row",
+      "secondOneIn": 7,
+      "secondPct": 14.2857,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "sv01-scarlet-and-violet-base-set",
+      "column": "UR",
+      "kind": "missing-row",
+      "secondOneIn": 15,
+      "secondPct": 6.6667,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "sv02-paldea-evolved",
+      "articleRarity": "Illustration Rare",
+      "column": "IR",
+      "kind": "compared",
+      "primaryPct": 7.7,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Paldea-Evolved-Pull-Rates/1b7d3e70-9542-4a50-8692-1661e2316521/",
+      "primaryPublished": "2023-06-09",
+      "secondOneIn": 12.5,
+      "secondPct": 8,
+      "pctDiff": -0.3,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv02-paldea-evolved",
+      "articleRarity": "Special Illustration Rare",
+      "column": "SIR",
+      "kind": "compared",
+      "primaryPct": 3.17,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Paldea-Evolved-Pull-Rates/1b7d3e70-9542-4a50-8692-1661e2316521/",
+      "primaryPublished": "2023-06-09",
+      "secondOneIn": 33.5,
+      "secondPct": 2.9851,
+      "pctDiff": 0.1849,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv02-paldea-evolved",
+      "articleRarity": "Hyper Rare",
+      "column": "HR",
+      "kind": "compared",
+      "primaryPct": 1.76,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Paldea-Evolved-Pull-Rates/1b7d3e70-9542-4a50-8692-1661e2316521/",
+      "primaryPublished": "2023-06-09",
+      "secondOneIn": 49.5,
+      "secondPct": 2.0202,
+      "pctDiff": -0.2602,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv02-paldea-evolved",
+      "column": "DR",
+      "kind": "missing-row",
+      "secondOneIn": 7,
+      "secondPct": 14.2857,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "sv02-paldea-evolved",
+      "column": "UR",
+      "kind": "missing-row",
+      "secondOneIn": 14,
+      "secondPct": 7.1429,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "sv03-obsidian-flames",
+      "articleRarity": "Illustration Rare",
+      "column": "IR",
+      "kind": "compared",
+      "primaryPct": 7.6,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Obsidian-Flames-Pull-Rates/e2a66999-a7b5-4621-9765-c9a132e04bd2/",
+      "primaryPublished": "2023-08-11",
+      "secondOneIn": 13,
+      "secondPct": 7.6923,
+      "pctDiff": -0.0923,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv03-obsidian-flames",
+      "articleRarity": "Special Illustration Rare",
+      "column": "SIR",
+      "kind": "compared",
+      "primaryPct": 3.13,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Obsidian-Flames-Pull-Rates/e2a66999-a7b5-4621-9765-c9a132e04bd2/",
+      "primaryPublished": "2023-08-11",
+      "secondOneIn": 29.5,
+      "secondPct": 3.3898,
+      "pctDiff": -0.2598,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv03-obsidian-flames",
+      "articleRarity": "Hyper Rare",
+      "column": "HR",
+      "kind": "compared",
+      "primaryPct": 1.92,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Obsidian-Flames-Pull-Rates/e2a66999-a7b5-4621-9765-c9a132e04bd2/",
+      "primaryPublished": "2023-08-11",
+      "secondOneIn": 51,
+      "secondPct": 1.9608,
+      "pctDiff": -0.0408,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv03-obsidian-flames",
+      "column": "DR",
+      "kind": "missing-row",
+      "secondOneIn": 7,
+      "secondPct": 14.2857,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "sv03-obsidian-flames",
+      "column": "UR",
+      "kind": "missing-row",
+      "secondOneIn": 15.5,
+      "secondPct": 6.4516,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "sv04-paradox-rift",
+      "articleRarity": "Illustration Rare",
+      "column": "IR",
+      "kind": "compared",
+      "primaryPct": 7.7,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Paradox-Rift-Pull-Rates/0b5fb648-38fc-4f61-a6af-57c2737b4a48/",
+      "primaryPublished": "2023-11-04",
+      "secondOneIn": 12.5,
+      "secondPct": 8,
+      "pctDiff": -0.3,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv04-paradox-rift",
+      "articleRarity": "Special Illustration Rare",
+      "column": "SIR",
+      "kind": "compared",
+      "primaryPct": 2.11,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Paradox-Rift-Pull-Rates/0b5fb648-38fc-4f61-a6af-57c2737b4a48/",
+      "primaryPublished": "2023-11-04",
+      "secondOneIn": 49.5,
+      "secondPct": 2.0202,
+      "pctDiff": 0.0898,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv04-paradox-rift",
+      "articleRarity": "Hyper Rare",
+      "column": "HR",
+      "kind": "compared",
+      "primaryPct": 1.22,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Paradox-Rift-Pull-Rates/0b5fb648-38fc-4f61-a6af-57c2737b4a48/",
+      "primaryPublished": "2023-11-04",
+      "secondOneIn": 81.5,
+      "secondPct": 1.227,
+      "pctDiff": -0.007,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv04-paradox-rift",
+      "column": "DR",
+      "kind": "missing-row",
+      "secondOneIn": 6.5,
+      "secondPct": 15.3846,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "sv04-paradox-rift",
+      "column": "UR",
+      "kind": "missing-row",
+      "secondOneIn": 14,
+      "secondPct": 7.1429,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "sv05-temporal-forces",
+      "articleRarity": "Special Illustration Rare",
+      "column": "SIR",
+      "kind": "compared",
+      "primaryPct": 1.17,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Temporal-Forces-Pull-Rates/28c0ad22-00a4-428f-b22d-e7fee9ec50bc/",
+      "primaryPublished": "2024-03-22",
+      "secondOneIn": 74.5,
+      "secondPct": 1.3423,
+      "pctDiff": -0.1723,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv05-temporal-forces",
+      "articleRarity": "Illustration Rare",
+      "column": "IR",
+      "kind": "compared",
+      "primaryPct": 7.72,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Journey-Together-Pull-Rates/1b9f379f-97cb-45cc-b6f6-a1a070a422cd/",
+      "primaryPublished": "2025-03-28",
+      "secondOneIn": 12.5,
+      "secondPct": 8,
+      "pctDiff": -0.28,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv05-temporal-forces",
+      "column": "DR",
+      "kind": "missing-row",
+      "secondOneIn": 6,
+      "secondPct": 16.6667,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "sv05-temporal-forces",
+      "column": "UR",
+      "kind": "missing-row",
+      "secondOneIn": 14,
+      "secondPct": 7.1429,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "sv05-temporal-forces",
+      "column": "HR",
+      "kind": "missing-row",
+      "secondOneIn": 139,
+      "secondPct": 0.7194,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "sv06-twilight-masquerade",
+      "articleRarity": "Illustration Rare",
+      "column": "IR",
+      "kind": "compared",
+      "primaryPct": 7.73,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Twilight-Masquerade-Pull-Rates/f3eea967-e5fb-4108-8655-bb1c89587628/",
+      "primaryPublished": "2024-05-24",
+      "secondOneIn": 13,
+      "secondPct": 7.6923,
+      "pctDiff": 0.0377,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv06-twilight-masquerade",
+      "articleRarity": "Special Illustration Rare",
+      "column": "SIR",
+      "kind": "compared",
+      "primaryPct": 1.17,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Twilight-Masquerade-Pull-Rates/f3eea967-e5fb-4108-8655-bb1c89587628/",
+      "primaryPublished": "2024-05-24",
+      "secondOneIn": 86,
+      "secondPct": 1.1628,
+      "pctDiff": 0.0072,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv06-twilight-masquerade",
+      "articleRarity": "Hyper Rare",
+      "column": "HR",
+      "kind": "compared",
+      "primaryPct": 0.68,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Twilight-Masquerade-Pull-Rates/f3eea967-e5fb-4108-8655-bb1c89587628/",
+      "primaryPublished": "2024-05-24",
+      "secondOneIn": 146,
+      "secondPct": 0.6849,
+      "pctDiff": -0.0049,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv06-twilight-masquerade",
+      "column": "DR",
+      "kind": "missing-row",
+      "secondOneIn": 6,
+      "secondPct": 16.6667,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "sv06-twilight-masquerade",
+      "column": "UR",
+      "kind": "missing-row",
+      "secondOneIn": 15,
+      "secondPct": 6.6667,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "sv07-stellar-crown",
+      "articleRarity": "Illustration Rare",
+      "column": "IR",
+      "kind": "compared",
+      "primaryPct": 7.79,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Stellar-Crown-Pull-Rates/2c0743dd-dbd0-4504-9ff8-be5a72dd04d1/",
+      "primaryPublished": "2024-09-13",
+      "secondOneIn": 13,
+      "secondPct": 7.6923,
+      "pctDiff": 0.0977,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv07-stellar-crown",
+      "articleRarity": "Special Illustration Rare",
+      "column": "SIR",
+      "kind": "compared",
+      "primaryPct": 1.11,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Stellar-Crown-Pull-Rates/2c0743dd-dbd0-4504-9ff8-be5a72dd04d1/",
+      "primaryPublished": "2024-09-13",
+      "secondOneIn": 90,
+      "secondPct": 1.1111,
+      "pctDiff": -0.0011,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv07-stellar-crown",
+      "articleRarity": "Hyper Rare",
+      "column": "HR",
+      "kind": "compared",
+      "primaryPct": 0.73,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Stellar-Crown-Pull-Rates/2c0743dd-dbd0-4504-9ff8-be5a72dd04d1/",
+      "primaryPublished": "2024-09-13",
+      "secondOneIn": 131,
+      "secondPct": 0.7634,
+      "pctDiff": -0.0334,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv07-stellar-crown",
+      "column": "DR",
+      "kind": "missing-row",
+      "secondOneIn": 6,
+      "secondPct": 16.6667,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "sv07-stellar-crown",
+      "column": "UR",
+      "kind": "missing-row",
+      "secondOneIn": 15,
+      "secondPct": 6.6667,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "sv08-surging-sparks",
+      "articleRarity": "Illustration Rare",
+      "column": "IR",
+      "kind": "compared",
+      "primaryPct": 7.67,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Surging-Sparks-Pull-Rates/6ccfb6ab-f26a-4ce8-bab5-5f91c85ec70e/",
+      "primaryPublished": "2024-11-08",
+      "secondOneIn": 13,
+      "secondPct": 7.6923,
+      "pctDiff": -0.0223,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv08-surging-sparks",
+      "articleRarity": "Special Illustration Rare",
+      "column": "SIR",
+      "kind": "compared",
+      "primaryPct": 1.15,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Surging-Sparks-Pull-Rates/6ccfb6ab-f26a-4ce8-bab5-5f91c85ec70e/",
+      "primaryPublished": "2024-11-08",
+      "secondOneIn": 85,
+      "secondPct": 1.1765,
+      "pctDiff": -0.0265,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv08-surging-sparks",
+      "articleRarity": "Hyper Rare",
+      "column": "HR",
+      "kind": "compared",
+      "primaryPct": 0.53,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Surging-Sparks-Pull-Rates/6ccfb6ab-f26a-4ce8-bab5-5f91c85ec70e/",
+      "primaryPublished": "2024-11-08",
+      "secondOneIn": 189,
+      "secondPct": 0.5291,
+      "pctDiff": 0.0009,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv08-surging-sparks",
+      "column": "UR",
+      "kind": "missing-row",
+      "secondOneIn": 15,
+      "secondPct": 6.6667,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "sv09-journey-together",
+      "articleRarity": "Illustration Rare",
+      "column": "IR",
+      "kind": "compared",
+      "primaryPct": 8.5,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Journey-Together-Pull-Rates/1b9f379f-97cb-45cc-b6f6-a1a070a422cd/",
+      "primaryPublished": "2025-03-28",
+      "secondOneIn": 11,
+      "secondPct": 9.0909,
+      "pctDiff": -0.5909,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv09-journey-together",
+      "articleRarity": "Special Illustration Rare",
+      "kind": "same-guide",
+      "primaryPct": 1.08,
+      "note": "The primary row is already the Pullnomics guide, so that guide is not a second source for it."
+    },
+    {
+      "setSlug": "sv09-journey-together",
+      "column": "DR",
+      "kind": "missing-row",
+      "secondOneIn": 5,
+      "secondPct": 20,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "sv09-journey-together",
+      "column": "UR",
+      "kind": "missing-row",
+      "secondOneIn": 15,
+      "secondPct": 6.6667,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "sv09-journey-together",
+      "column": "HR",
+      "kind": "missing-row",
+      "secondOneIn": 131,
+      "secondPct": 0.7634,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "sv10-destined-rivals",
+      "articleRarity": "Illustration Rare",
+      "column": "IR",
+      "kind": "compared",
+      "primaryPct": 8.29,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Destined-Rivals-Pull-Rates/43ba832e-44c9-45a4-ae2e-594df2defdda/",
+      "primaryPublished": "2025-05-30",
+      "secondOneIn": 12,
+      "secondPct": 8.3333,
+      "pctDiff": -0.0433,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv10-destined-rivals",
+      "articleRarity": "Special Illustration Rare",
+      "column": "SIR",
+      "kind": "compared",
+      "primaryPct": 1.06,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Destined-Rivals-Pull-Rates/43ba832e-44c9-45a4-ae2e-594df2defdda/",
+      "primaryPublished": "2025-05-30",
+      "secondOneIn": 94,
+      "secondPct": 1.0638,
+      "pctDiff": -0.0038,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "sv10-destined-rivals",
+      "articleRarity": "Hyper Rare",
+      "column": "HR",
+      "kind": "compared",
+      "primaryPct": 0.67,
+      "primaryUrl": "https://www.tcgplayer.com/content/article/Pokémon-TCG-Destined-Rivals-Pull-Rates/43ba832e-44c9-45a4-ae2e-594df2defdda/",
+      "primaryPublished": "2025-05-30",
+      "secondOneIn": 149,
+      "secondPct": 0.6711,
+      "pctDiff": -0.0011,
+      "note": "Note only. The primary row was not replaced."
+    },
+    {
+      "setSlug": "swsh-crown-zenith",
+      "column": "V",
+      "kind": "missing-row",
+      "secondOneIn": 8,
+      "secondPct": 12.5,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "swsh-crown-zenith",
+      "column": "G",
+      "kind": "missing-row",
+      "secondOneIn": 100,
+      "secondPct": 1,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "swsh01-sword-and-shield-base-set",
+      "kind": "no-second-table",
+      "note": "This set is not in the Pullnomics table that was checked. No second-source rate was copied."
+    },
+    {
+      "setSlug": "swsh02-rebel-clash",
+      "kind": "no-second-table",
+      "note": "This set is not in the Pullnomics table that was checked. No second-source rate was copied."
+    },
+    {
+      "setSlug": "swsh03-darkness-ablaze",
+      "kind": "no-second-table",
+      "note": "This set is not in the Pullnomics table that was checked. No second-source rate was copied."
+    },
+    {
+      "setSlug": "swsh04-vivid-voltage",
+      "kind": "no-second-table",
+      "note": "This set is not in the Pullnomics table that was checked. No second-source rate was copied."
+    },
+    {
+      "setSlug": "swsh06-chilling-reign",
+      "kind": "no-second-table",
+      "note": "This set is not in the Pullnomics table that was checked. No second-source rate was copied."
+    },
+    {
+      "setSlug": "swsh07-evolving-skies",
+      "column": "V",
+      "kind": "missing-row",
+      "secondOneIn": 9,
+      "secondPct": 11.1111,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "swsh07-evolving-skies",
+      "column": "VMAX",
+      "kind": "missing-row",
+      "secondOneIn": 16.5,
+      "secondPct": 6.0606,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "swsh07-evolving-skies",
+      "column": "FA",
+      "kind": "missing-row",
+      "secondOneIn": 36.5,
+      "secondPct": 2.7397,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "swsh07-evolving-skies",
+      "column": "RB",
+      "kind": "missing-row",
+      "secondOneIn": 113,
+      "secondPct": 0.885,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "swsh07-evolving-skies",
+      "column": "G",
+      "kind": "missing-row",
+      "secondOneIn": 105.5,
+      "secondPct": 0.9479,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "swsh08-fusion-strike",
+      "kind": "no-second-table",
+      "note": "This set is not in the Pullnomics table that was checked. No second-source rate was copied."
+    },
+    {
+      "setSlug": "swsh09-brilliant-stars",
+      "kind": "no-second-table",
+      "note": "This set is not in the Pullnomics table that was checked. No second-source rate was copied."
+    },
+    {
+      "setSlug": "swsh10-astral-radiance",
+      "column": "V",
+      "kind": "missing-row",
+      "secondOneIn": 7.5,
+      "secondPct": 13.3333,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "swsh10-astral-radiance",
+      "column": "FA",
+      "kind": "missing-row",
+      "secondOneIn": 50.5,
+      "secondPct": 1.9802,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "swsh10-astral-radiance",
+      "column": "RB",
+      "kind": "missing-row",
+      "secondOneIn": 83,
+      "secondPct": 1.2048,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "swsh10-astral-radiance",
+      "column": "G",
+      "kind": "missing-row",
+      "secondOneIn": 130,
+      "secondPct": 0.7692,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "swsh11-lost-origin",
+      "column": "V",
+      "kind": "missing-row",
+      "secondOneIn": 8.5,
+      "secondPct": 11.7647,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "swsh11-lost-origin",
+      "column": "FA",
+      "kind": "missing-row",
+      "secondOneIn": 51,
+      "secondPct": 1.9608,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "swsh11-lost-origin",
+      "column": "RB",
+      "kind": "missing-row",
+      "secondOneIn": 71.5,
+      "secondPct": 1.3986,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "swsh11-lost-origin",
+      "column": "G",
+      "kind": "missing-row",
+      "secondOneIn": 114,
+      "secondPct": 0.8772,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "swsh12-silver-tempest",
+      "column": "V",
+      "kind": "missing-row",
+      "secondOneIn": 8.5,
+      "secondPct": 11.7647,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "swsh12-silver-tempest",
+      "column": "FA",
+      "kind": "missing-row",
+      "secondOneIn": 48,
+      "secondPct": 2.0833,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "swsh12-silver-tempest",
+      "column": "RB",
+      "kind": "missing-row",
+      "secondOneIn": 79.5,
+      "secondPct": 1.2579,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    },
+    {
+      "setSlug": "swsh12-silver-tempest",
+      "column": "G",
+      "kind": "missing-row",
+      "secondOneIn": 106,
+      "secondPct": 0.9434,
+      "note": "Pullnomics states this slot. Our file has no matching primary row. It was not added, so existing Rip value rows do not move."
+    }
+  ]
+}
