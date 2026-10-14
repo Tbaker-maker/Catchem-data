@@ -3,6 +3,7 @@
 
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { ebayAskPhrase, tcgAmount } from "./card-face.mjs";
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -102,11 +103,11 @@ export function diveTeaserReads(dives) {
     if (hasPrice && marketText) {
       const gap = Math.round((price - market) * 100) / 100;
       const gapText = money(Math.abs(gap));
-      if (gap > 0 && gapText) sentence = `${name}: eBay asks (${askText}) sit ${gapText} over TCGplayer market (${marketText}).`;
-      else if (gap < 0 && gapText) sentence = `${name}: eBay asks (${askText}) sit ${gapText} under TCGplayer market (${marketText}).`;
+      if (gap > 0 && gapText) sentence = `${name}: eBay asks (${askText}), ${ebayAskPhrase()}, sit ${gapText} over TCGplayer market (${tcgAmount(market, money)}).`;
+      else if (gap < 0 && gapText) sentence = `${name}: eBay asks (${askText}), ${ebayAskPhrase()}, sit ${gapText} under TCGplayer market (${tcgAmount(market, money)}).`;
     }
     if (!sentence && hasPrice && outlierNote) {
-      sentence = `${name}: eBay asks (${askText}) on ${monthDay(day)}. ${outlierNote} Deeper look on the chart.`;
+      sentence = `${name}: eBay asks (${askText}), ${ebayAskPhrase()}, on ${monthDay(day)}. ${outlierNote} Deeper look on the chart.`;
     } else if (!sentence && outlierNote) {
       sentence = `${name}: ${outlierNote} Deeper look on the chart.`;
     } else if (!sentence) {

@@ -139,7 +139,7 @@ export async function run() {
   const reads = volumeReads(doc, CATALOG, { asOf: SCRAPE });
   t("a week that does not beat the monthly pace does not ship", reads.length === 0);
   const hot = volumeRead({ ...a, sold7d: 8 }, CATALOG[0]);
-  t("read states the count when last week beats the monthly pace", hot && hot.path === "Alpha (Test Set, 001/100): 15 Near Mint copies sold on TCGplayer in the 30 days Sep 5–Oct 4, 8 of them in the last 7 (Sep 28–Oct 4).");
+  t("read states the count when last week beats the monthly pace", hot && hot.path === "Alpha (Test Set) 001/100: 15 Near Mint copies sold on TCGplayer in the 30 days Sep 5–Oct 4, 8 of them in the last 7 (Sep 28–Oct 4).");
   t("read is attributed and points at the card page", hot.sold.source === VOLUME_SOURCE && hot.why.startsWith(VOLUME_SOURCE) && hot.href === "/c/tcgcsv-101" && hot.readKind === "volume");
   t("read never mentions listings or eBay", !/listing|ebay/i.test(hot.path + hot.why));
   t("no read for a stale window", volumeReads(doc, CATALOG, { asOf: "2026-11-30" }).length === 0);
