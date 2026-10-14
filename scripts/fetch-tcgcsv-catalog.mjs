@@ -1,5 +1,10 @@
 // Pull the live Pokémon catalog from TCGCSV and append one daily price file.
 // Does not rewrite earlier days. Does not invent a price. continue-on-error in CI.
+import { execFileSync } from "node:child_process";
+export function dayPublishedBeforeRun(root, day, sha = process.env.GITHUB_SHA, git = (args) => execFileSync("git", args, { cwd: root, stdio: "ignore" })) {
+  if (!sha || process.env.TCGCSV_REWRITE_DAY === "1") return false;
+  try { git(["cat-file", "-e", `${sha}:data/history/tcgcsv-daily/${day}.json`]); return true; } catch { return false; }
+}
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { gzipSync } from "node:zlib";
@@ -145,6 +150,13 @@ export async function fetchCatalog(today = TODAY) {
   const dayPath = join(ROOT, "data/history/tcgcsv-daily", `${today}.json`);
   await mkdir(catalogDir, { recursive: true });
   await mkdir(dirname(dayPath), { recursive: true });
+  // A day already published before this run started (a manual re-run on the same
+  // UTC day) is never rewritten: tonight's public files were built from it, and
+  // a fresh copy made them disagree (2026-10-13). Same-run rewrites still happen.
+  if (dayPublishedBeforeRun(ROOT, today)) {
+    console.log(`tcgcsv day ${today} was published before this run; kept as is.`);
+    return snap;
+  }
   // Write the day before the other catalog files. A later write in this
   // process must not be able to drop the day that already landed.
   await writeFile(dayPath, JSON.stringify(snap.daily));
