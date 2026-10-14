@@ -39,18 +39,26 @@ export async function publishChartIndexes() {
   const heat = await J("data/heat-history.json");
   const quarantine = new Set((await J("data/quarantine.json")).entries.map((e) => e.id));
   const byId = new Map(products.map((p) => [p.id, p]));
+  // eBay vs TCGplayer sanity flags (scripts/price-sanity.mjs). A flagged eBay
+  // price leaves the eBay line; a flagged TCGplayer price leaves the TCG line.
+  let sanity = {};
+  try { sanity = (await J("data/indexes/price-sanity.json")).items || {}; } catch { /* not built yet */ }
+  const badEbay = new Set(Object.entries(sanity).filter(([, a]) => a === "drop-ebay" || a === "hide-ebay").map(([id]) => id));
+  const badTcg = new Set(Object.entries(sanity).filter(([, a]) => a === "mark-tcg").map(([id]) => id));
   const newest = prices.updatedAt?.slice(0, 10) || heat.reduce((m, r) => (r.date > m ? r.date : m), "");
   const stale = newest < daysBefore(today, 2);
 
   const excluded = [];
   for (const id of quarantine) excluded.push({ id, name: byId.get(id)?.name || id, reason: "on the quarantine list" });
+  for (const id of badEbay) excluded.push({ id, name: byId.get(id)?.name || id, reason: "eBay asks far from TCGplayer market (price sanity check), left out of the eBay line" });
+  for (const id of badTcg) excluded.push({ id, name: byId.get(id)?.name || id, reason: "TCGplayer market far from eBay asks on an item that trades mostly on eBay, left out of the TCGplayer line" });
   for (const id of WRONG_MATCH_IDS) excluded.push({ id, name: byId.get(id)?.name || id, reason: WRONG_MATCH_WHY[id] });
 
   const livePrice = new Map();
   const liveElig = new Map();
   for (const row of heat) {
     if (!row.price || !row.date || !row.id) continue;
-    if (quarantine.has(row.id) || WRONG_MATCH_IDS.has(row.id)) continue;
+    if (quarantine.has(row.id) || WRONG_MATCH_IDS.has(row.id) || badEbay.has(row.id)) continue;
     if ((row.listingCount ?? 0) < 8) continue;
     const meta = byId.get(row.id);
     if (!meta || !eraOf(meta.setId) || !typeKey(meta.subtype)) continue;
@@ -75,7 +83,7 @@ export async function publishChartIndexes() {
     backfillCoverage = hist.coverage;
     const dates = new Set();
     for (const id of hist.ids) {
-      if (quarantine.has(id) || WRONG_MATCH_IDS.has(id)) continue;
+      if (quarantine.has(id) || WRONG_MATCH_IDS.has(id) || badTcg.has(id)) continue;
       const m = hist.priceMap.get(id);
       if (!m?.size) continue;
       backfillPrice.set(id, m);
@@ -130,7 +138,7 @@ export async function publishChartIndexes() {
   function doc(id, name, memberIds) {
     return {
       id, name, asOf: newest,
-      method: "Chain-linked. A name joins on the first day it has a price and does not move the level that day. Its first return is the next day it is priced. Each day's move is the median price change of names priced on both days. A value-weighted line gives a dearer product a bigger say. A day with no shared prices is a gap. Nothing is filled in.",
+      method: "Chain-linked. A name joins on the first day it has a price and does not move the level that day. Its first return is the next day it is priced. Each day's move is the trimmed geometric mean of price changes of names priced on both days: each change is capped at 30% down or 43% up, and the top and bottom 10% are dropped when 10 or more names are priced. A value-weighted line gives a dearer product a bigger say. A day with no shared prices is a gap. Nothing is filled in.",
       basket: memberIds.map((pid) => {
         const p = byId.get(pid);
         return { id: pid, name: p?.name || pid, type: typeKey(p?.subtype), era: eraOf(p?.setId) };
@@ -178,42 +186,37 @@ export async function publishChartIndexes() {
 }
 
 async function writeSinglesAndSlabs(asOf) {
-  let singles = { cards: [] };
-  try { singles = await J("data/singles-prices.json"); } catch { /* none */ }
-  const prices = new Map();
-  const elig = new Map();
-  const members = [];
-  for (const card of singles.cards || []) {
-    const id = card.cardId || card.id;
-    if (!id) continue;
-    const map = new Map();
-    for (const row of card.priceHistory || []) {
-      if (!row?.date || !(row.price > 0)) continue;
-      map.set(row.date, row.price);
-      if (!elig.has(row.date)) elig.set(row.date, new Set());
-      elig.get(row.date).add(id);
-    }
-    if (!map.size) continue;
-    prices.set(id, map);
-    members.push(id);
-  }
-  const dates = [...elig.keys()].sort();
-  const series = dates.length ? enterIndex(dates, prices, elig, members) : { base: 100, points: [], gaps: [] };
-  const start = series.points[0]?.date || null;
+  // Singles Index from our own TCGCSV daily files (every catalogued single with a
+  // TCGplayer market price of $1 or more; one line per printing). Fan-site fill is
+  // a separate chart-only series for the days before our first own day; it is
+  // never spliced into the own-day line.
+  const { singlesIndexInputs } = await import("./lib/singles-index.mjs");
+  const inp = await singlesIndexInputs(ROOT);
+  const own = inp.dates.length ? enterIndex(inp.dates, inp.prices, inp.elig, inp.members) : { base: 100, points: [], gaps: [] };
+  const fill = inp.fillDates.length ? enterIndex(inp.fillDates, inp.fillPrices, inp.fillElig, inp.fillMembers) : { base: 100, points: [], gaps: [] };
+  const start = own.points[0]?.date || null;
   await writeFile(join(OUT, "singles.json"), JSON.stringify({
     id: "singles",
     name: "Singles Index",
-    asOf: start,
-    source: "TCGplayer market price",
+    asOf: own.points.at(-1)?.date || null,
+    source: "TCGplayer market price (TCGCSV daily files)",
     anchorRequested: "2026-03-31",
     anchorUsed: start,
     anchorLevel: 100,
     anchorReason: start
-      ? `First real singles day on file is ${start}. March 31 was not invented. Days between observations are gaps.`
+      ? `First TCGCSV singles day on file is ${start}. March 31 was not invented. Missing days are gaps.`
       : "No singles price history on file. No index level was invented.",
-    method: "Chain-linked. A card joins on its first priced day and does not move the level that day. Sealed products are not in this index.",
-    basket: members.length,
-    series: { base: 100, points: series.points, gaps: series.gaps },
+    method: "Chain-linked. A card printing joins on its first priced day and does not move the level that day. Each day's move is the trimmed geometric mean of price changes of printings priced on both days: each change is capped at 30% down or 43% up, and the top and bottom 10% are dropped. Cards under $1 are left out. Sealed products are not in this index.",
+    basket: inp.members.length,
+    series: { base: 100, points: own.points, gaps: own.gaps },
+    fill: {
+      chartOnly: true,
+      note: "Earlier chart line from approved fan-site fill (config/fill-sources.json). Chart only, its own base, before our first own day. Not joined to the line above.",
+      sources: inp.fillKeys,
+      fillTo: start,
+      base: 100,
+      points: fill.points.map(({ date, equal, value, matched }) => ({ date, equal, value, matched })),
+    },
   }, null, 2));
   await writeFile(join(OUT, "slabs-status.json"), JSON.stringify({
     asOf,

@@ -1,0 +1,12 @@
+import { checkRow, leadSource, band } from "../lib/price-sanity.mjs";
+let fail = 0;
+const t = (n, c) => { if (c) console.log("  ok ", n); else { fail++; console.error("  FAIL", n); } };
+t("band cut", band(4.99) === "under-5" && band(100) === "100-500");
+t("older sealed leads with eBay", leadSource({ setId: "swsh7", tcg: 20, ebay: 22 }) === "ebay");
+t("cheap modern leads with TCGplayer", leadSource({ setId: "sv8", tcg: 20, ebay: 22 }) === "tcgplayer");
+t("normal ask premium not flagged", checkRow({ setId: "sv8", ebay: 23, tcg: 20, listings: 30 }).flag === null);
+t("cheap modern far low drops eBay", ["drop-ebay", "hide-ebay"].includes(checkRow({ setId: "sv8", ebay: 6, tcg: 20, listings: 30 }).action));
+t("dear item far off marks TCG", checkRow({ setId: "sv8", ebay: 400, tcg: 150, listings: 30 }).action === "mark-tcg");
+t("thin eBay only goes to review", checkRow({ setId: "swsh7", ebay: 400, tcg: 150, listings: 3 }).action === "review");
+t("under 5 never flagged", checkRow({ setId: "sv8", ebay: 20, tcg: 3, listings: 30 }).flag === null);
+if (fail) process.exit(1); else console.log("price sanity ok");

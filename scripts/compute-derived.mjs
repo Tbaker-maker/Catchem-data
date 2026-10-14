@@ -711,6 +711,12 @@ const reprintPressure = (() => {
 
 const demandData = await J("research/pulse/demand.json").catch(() => null);
 try {
+  // eBay vs TCGplayer sanity flags first, so the index build can leave out far-off prices.
+  const { spawnSync } = await import("node:child_process");
+  const r = spawnSync(process.execPath, [join(ROOT, "scripts/price-sanity.mjs")], { stdio: "inherit", env: process.env });
+  if (r.status !== 0) console.error("price sanity did not run; indexes use last flags");
+} catch (err) { console.error("price sanity:", err.message); }
+try {
   const chartSealed = await publishChartIndexes();
   const pts = chartSealed?.series?.live?.points || [];
   const last = pts[pts.length - 1];

@@ -1,0 +1,12 @@
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+import { singlesIndexInputs } from "../lib/singles-index.mjs";
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
+let fail = 0;
+const t = (n, c) => { if (c) console.log("  ok ", n); else { fail++; console.error("  FAIL", n); } };
+const inp = await singlesIndexInputs(ROOT);
+t("singles index has more than one own day", inp.dates.length > 1);
+t("no card under $1 in the basket", [...inp.prices.values()].every((m) => [...m.values()].every((v) => v >= 1)));
+t("fill is only before our first own day", inp.fillDates.every((d) => d < inp.dates[0]));
+t("own line holds no sealed product", inp.members.length > 0 && inp.members.every((k) => /^\d+#/.test(k)));
+if (fail) process.exit(1); else console.log("singles index ok");

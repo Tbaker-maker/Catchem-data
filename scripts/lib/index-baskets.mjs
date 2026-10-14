@@ -23,6 +23,21 @@ export function median(nums) {
   return a.length % 2 ? a[i] : (a[i - 1] + a[i]) / 2;
 }
 
+
+// One day's equal-weight move. A plain median sticks at 1.0 when most names did
+// not reprice that day, so the level barely moves. Instead: clamp each relative
+// to [0.7, 1/0.7] (one bad listing day cannot swing the index), drop the top
+// and bottom 10% when 10+ names moved, and take the geometric mean.
+export const REL_CLAMP = 0.7;
+export const clampRel = (r) => Math.min(1 / REL_CLAMP, Math.max(REL_CLAMP, r));
+export function robustMove(rels) {
+  if (!rels.length) return null;
+  const a = rels.map(clampRel).sort((x, y) => x - y);
+  const cut = a.length >= 10 ? Math.floor(a.length * 0.1) : 0;
+  const kept = a.slice(cut, a.length - cut);
+  return Math.exp(kept.reduce((s, r) => s + Math.log(r), 0) / kept.length);
+}
+
 const r1 = (n) => Math.round(n * 10) / 10;
 const r4 = (n) => Math.round(n * 10000) / 10000;
 
@@ -139,9 +154,9 @@ export function enterIndex(dates, prices, eligible, members, pairPrice = null) {
       prev = date;
       continue;
     }
-    const med = median(rels);
+    const med = robustMove(rels);
     let wnum = 0, wden = 0;
-    rels.forEach((rel, i) => { wnum += rel * weights[i]; wden += weights[i]; });
+    rels.forEach((rel, i) => { wnum += clampRel(rel) * weights[i]; wden += weights[i]; });
     const vw = wnum / wden;
     level *= med;
     levelValue *= vw;
