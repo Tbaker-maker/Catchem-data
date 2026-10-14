@@ -410,7 +410,6 @@ jobs:
         run: node scripts/send-discord-alerts.mjs
 
       - name: Dated reads, rip value, and status
-        continue-on-error: true
         env:
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
           EBAY_APP_ID: ${{ secrets.EBAY_APP_ID }}
