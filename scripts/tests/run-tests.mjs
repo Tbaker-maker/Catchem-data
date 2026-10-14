@@ -16,6 +16,7 @@ import { runCatalogueMapTests } from "./tcgcsv-catalogue-map.test.mjs";
 import { runStressTests } from "./stress.test.mjs";
 import { runPptPathTests } from "./ppt-paths.test.mjs";
 import { enterIndex } from "../lib/index-baskets.mjs";
+import "./singles-index.test.mjs";
 import "./price-sanity.test.mjs";
 import "./index-baskets.test.mjs";
 import { indexLine as publicIndexLine } from "../lib/public-index-line.mjs";

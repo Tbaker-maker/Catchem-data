@@ -186,42 +186,37 @@ export async function publishChartIndexes() {
 }
 
 async function writeSinglesAndSlabs(asOf) {
-  let singles = { cards: [] };
-  try { singles = await J("data/singles-prices.json"); } catch { /* none */ }
-  const prices = new Map();
-  const elig = new Map();
-  const members = [];
-  for (const card of singles.cards || []) {
-    const id = card.cardId || card.id;
-    if (!id) continue;
-    const map = new Map();
-    for (const row of card.priceHistory || []) {
-      if (!row?.date || !(row.price > 0)) continue;
-      map.set(row.date, row.price);
-      if (!elig.has(row.date)) elig.set(row.date, new Set());
-      elig.get(row.date).add(id);
-    }
-    if (!map.size) continue;
-    prices.set(id, map);
-    members.push(id);
-  }
-  const dates = [...elig.keys()].sort();
-  const series = dates.length ? enterIndex(dates, prices, elig, members) : { base: 100, points: [], gaps: [] };
-  const start = series.points[0]?.date || null;
+  // Singles Index from our own TCGCSV daily files (every catalogued single with a
+  // TCGplayer market price of $1 or more; one line per printing). Fan-site fill is
+  // a separate chart-only series for the days before our first own day; it is
+  // never spliced into the own-day line.
+  const { singlesIndexInputs } = await import("./lib/singles-index.mjs");
+  const inp = await singlesIndexInputs(ROOT);
+  const own = inp.dates.length ? enterIndex(inp.dates, inp.prices, inp.elig, inp.members) : { base: 100, points: [], gaps: [] };
+  const fill = inp.fillDates.length ? enterIndex(inp.fillDates, inp.fillPrices, inp.fillElig, inp.fillMembers) : { base: 100, points: [], gaps: [] };
+  const start = own.points[0]?.date || null;
   await writeFile(join(OUT, "singles.json"), JSON.stringify({
     id: "singles",
     name: "Singles Index",
-    asOf: start,
-    source: "TCGplayer market price",
+    asOf: own.points.at(-1)?.date || null,
+    source: "TCGplayer market price (TCGCSV daily files)",
     anchorRequested: "2026-03-31",
     anchorUsed: start,
     anchorLevel: 100,
     anchorReason: start
-      ? `First real singles day on file is ${start}. March 31 was not invented. Days between observations are gaps.`
+      ? `First TCGCSV singles day on file is ${start}. March 31 was not invented. Missing days are gaps.`
       : "No singles price history on file. No index level was invented.",
-    method: "Chain-linked. A card joins on its first priced day and does not move the level that day. Sealed products are not in this index.",
-    basket: members.length,
-    series: { base: 100, points: series.points, gaps: series.gaps },
+    method: "Chain-linked. A card printing joins on its first priced day and does not move the level that day. Each day's move is the trimmed geometric mean of price changes of printings priced on both days: each change is capped at 30% down or 43% up, and the top and bottom 10% are dropped. Cards under $1 are left out. Sealed products are not in this index.",
+    basket: inp.members.length,
+    series: { base: 100, points: own.points, gaps: own.gaps },
+    fill: {
+      chartOnly: true,
+      note: "Earlier chart line from approved fan-site fill (config/fill-sources.json). Chart only, its own base, before our first own day. Not joined to the line above.",
+      sources: inp.fillKeys,
+      fillTo: start,
+      base: 100,
+      points: fill.points.map(({ date, equal, value, matched }) => ({ date, equal, value, matched })),
+    },
   }, null, 2));
   await writeFile(join(OUT, "slabs-status.json"), JSON.stringify({
     asOf,
