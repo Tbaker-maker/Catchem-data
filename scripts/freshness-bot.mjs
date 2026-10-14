@@ -4,7 +4,7 @@ import { readFile, writeFile, readdir, mkdir } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { dayOf, freshnessReport } from "./lib/ops-bots.mjs";
+import { dayOf, freshnessReport, priceDayStale } from "./lib/ops-bots.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = "data/derived/status.json";
@@ -44,6 +44,7 @@ const commands = {
   "price-day": "scripts/fetch-tcgcsv-catalog.mjs",
   "listings-counted": "scripts/fetch-listing-counts.mjs",
 };
+let seenPriceDay = priceDay;
 if (process.argv.includes("--rerun")) {
   for (const id of report.failures) {
     if (!commands[id] || (allow.size && !allow.has(id))) continue;
@@ -53,14 +54,18 @@ if (process.argv.includes("--rerun")) {
   if (reran.length) {
     const counts2 = await readJson(join(ROOT, "data/derived/listing-counts/latest.json"));
     const priceDay2 = (await newestDay(join(ROOT, "data/history/tcgcsv-daily"))) || priceDay;
+    seenPriceDay = priceDay2;
     report = freshnessReport({ today, priceDay: priceDay2, countsDay: counts2?.asOf, readsDay: reads?.asOf, scannerDay: scanner?.asOf });
   }
 }
+const calendar = new Date().toISOString().slice(0, 10);
+const stale = priceDayStale(seenPriceDay, calendar);
 const doc = {
   asOf: report.asOf,
   generatedAt: new Date().toISOString(),
   checks: report.checks,
   failures: report.failures,
+  alerts: stale ? [stale] : [],
   reran,
   note: report.failures.includes("reads") ? "Reads rebuild is not rerun here. It belongs to the nightly feed, which has to fit the 20 minute test job." : "Checked the dated files. A missing light step can be rerun once with --rerun.",
 };

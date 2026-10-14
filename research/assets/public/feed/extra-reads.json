@@ -1,5 +1,5 @@
 {
- "asOf": "2026-10-13",
+ "asOf": "2026-10-14",
  "volume": [],
  "volumeNote": "No sold count is on file, so no volume read ships.",
  "lag": {
@@ -1085,198 +1085,138 @@
  },
  "reads": [
   {
-   "id": "dive-me1-pack",
-   "sku": "me1-pack",
-   "diveId": "me1-pack",
-   "readKind": "dive",
-   "kind": "dive",
-   "name": "Mega Evolution Booster Pack",
-   "set": "",
-   "path": "Mega Evolution Booster Pack: eBay asks ($9.99), eBay asking, any condition, sit $1.09 over TCGplayer market ($8.90 NM).",
-   "headline": "Mega Evolution Booster Pack: eBay asks ($9.99), eBay asking, any condition, sit $1.09 over TCGplayer market ($8.90 NM).",
-   "why": "eBay ask is the price median in research/pulse/dive/me1-pack.json. TCGplayer market is the price for tcgcsv-644352 in data/catalog/tcgcsv-latest.json. Asks are not sales.",
-   "price": 9.99,
-   "asOf": "2026-10-13",
-   "href": "/dive/me1-pack",
-   "sources": {
-    "dive": "research/pulse/dive/me1-pack.json",
-    "market": "data/catalog/tcgcsv-latest.json"
-   },
-   "tcgPlayerId": "644352"
-  },
-  {
-   "id": "dive-me2-bb",
-   "sku": "me2-bb",
-   "diveId": "me2-bb",
-   "readKind": "dive",
-   "kind": "dive",
-   "name": "Phantasmal Flames Booster Bundle",
-   "set": "",
-   "path": "Phantasmal Flames Booster Bundle: eBay asks ($87.96), eBay asking, any condition, sit $2.93 over TCGplayer market ($85.03 NM).",
-   "headline": "Phantasmal Flames Booster Bundle: eBay asks ($87.96), eBay asking, any condition, sit $2.93 over TCGplayer market ($85.03 NM).",
-   "why": "eBay ask is the price median in research/pulse/dive/me2-bb.json. TCGplayer market is the price for tcgcsv-654160 in data/catalog/tcgcsv-latest.json. Asks are not sales.",
-   "price": 87.96,
-   "asOf": "2026-10-13",
-   "href": "/dive/me2-bb",
-   "sources": {
-    "dive": "research/pulse/dive/me2-bb.json",
-    "market": "data/catalog/tcgcsv-latest.json"
-   },
-   "tcgPlayerId": "654160"
-  },
-  {
-   "id": "dive-me2-booster-box",
-   "sku": "me2-booster-box",
-   "diveId": "me2-booster-box",
-   "readKind": "dive",
-   "kind": "dive",
-   "name": "Phantasmal Flames Booster Box",
-   "set": "",
-   "path": "Phantasmal Flames Booster Box: eBay asks ($419.99), eBay asking, any condition, sit $27.96 over TCGplayer market ($392.03 NM).",
-   "headline": "Phantasmal Flames Booster Box: eBay asks ($419.99), eBay asking, any condition, sit $27.96 over TCGplayer market ($392.03 NM).",
-   "why": "eBay ask is the price median in research/pulse/dive/me2-booster-box.json. TCGplayer market is the price for tcgcsv-654137 in data/catalog/tcgcsv-latest.json. Asks are not sales.",
-   "price": 419.99,
-   "asOf": "2026-10-13",
-   "href": "/dive/me2-booster-box",
-   "sources": {
-    "dive": "research/pulse/dive/me2-booster-box.json",
-    "market": "data/catalog/tcgcsv-latest.json"
-   },
-   "tcgPlayerId": "654137"
-  },
-  {
-   "id": "spread-sm12-booster-box",
-   "sku": "sm12-booster-box",
+   "id": "spread-sm7-booster-box",
+   "sku": "sm7-booster-box",
    "readKind": "spread",
    "kind": "spread",
-   "name": "Cosmic Eclipse Booster Box",
-   "set": "Cosmic Eclipse",
-   "path": "Cosmic Eclipse Booster Box asks run from $5,000.00 up to $5,796.69. Median ask $5,400.00 across 11 eBay listings on 2026-10-13.",
-   "headline": "Cosmic Eclipse Booster Box asks run from $5,000.00 up to $5,796.69. Median ask $5,400.00 across 11 eBay listings on 2026-10-13.",
-   "why": "Cosmic Eclipse Booster Box asks run from $5,000.00 up to $5,796.69. Median ask $5,400.00 across 11 eBay listings on 2026-10-13. Asking prices from the search. Not sold prices.",
+   "name": "Celestial Storm Booster Box",
+   "set": "Celestial Storm",
+   "path": "Celestial Storm Booster Box: asking prices in the search run from $2,999.00 to $4,600.00. Median ask $3,199.00 across 12 eBay listings on 2026-10-13.",
+   "headline": "Celestial Storm Booster Box: asking prices in the search run from $2,999.00 to $4,600.00. Median ask $3,199.00 across 12 eBay listings on 2026-10-13.",
+   "why": "Celestial Storm Booster Box: asking prices in the search run from $2,999.00 to $4,600.00. Median ask $3,199.00 across 12 eBay listings on 2026-10-13. Asking prices from the search. Not sold prices.",
    "asOf": "2026-10-13",
-   "href": "/p/sm12-booster-box",
+   "href": "/p/sm7-booster-box",
    "lane": "sealed",
-   "rank": 796.6899999999996,
+   "rank": 1601,
    "receipt": {
-    "low": 5000,
-    "high": 5796.69,
-    "median": 5400,
-    "count": 11,
+    "low": 2999,
+    "high": 4600,
+    "median": 3199,
+    "count": 12,
     "basis": "p10-p90"
    },
-   "tcgPlayerId": "199261"
+   "tcgPlayerId": "170273"
   },
   {
-   "id": "askmove-me3-pack",
-   "sku": "me3-pack",
+   "id": "askmove-swsh11-pack",
+   "sku": "swsh11-pack",
    "readKind": "askmove",
    "kind": "askmove",
-   "name": "Perfect Order Booster Pack",
+   "name": "Lost Origin Booster Pack",
    "set": "",
-   "path": "The eBay ask for Perfect Order Booster Pack went from $7.98 to $7.45 over Oct 12 to Oct 13. The TCGplayer market price stayed $5.92.",
-   "headline": "The eBay ask for Perfect Order Booster Pack went from $7.98 to $7.45 over Oct 12 to Oct 13. The TCGplayer market price stayed $5.92.",
-   "why": "The eBay ask for Perfect Order Booster Pack went from $7.98 to $7.45 over Oct 12 to Oct 13. The TCGplayer market price stayed $5.92. The ask changed. The market price did not. Asks are not sales.",
+   "path": "The eBay ask for Lost Origin Booster Pack went from $24.75 to $24.00 over Oct 12 to Oct 13. The TCGplayer market price stayed $19.30.",
+   "headline": "The eBay ask for Lost Origin Booster Pack went from $24.75 to $24.00 over Oct 12 to Oct 13. The TCGplayer market price stayed $19.30.",
+   "why": "The eBay ask for Lost Origin Booster Pack went from $24.75 to $24.00 over Oct 12 to Oct 13. The TCGplayer market price stayed $19.30. The ask changed. The market price did not. Asks are not sales.",
    "asOf": "2026-10-13",
-   "href": "/p/me3-pack",
+   "href": "/p/swsh11-pack",
    "lane": "sealed",
    "receipt": {
     "from": "2026-10-12",
     "to": "2026-10-13",
-    "askFrom": 7.98,
-    "askTo": 7.45,
-    "market": 5.92
+    "askFrom": 24.75,
+    "askTo": 24,
+    "market": 19.3
    },
-   "tcgPlayerId": "672398"
+   "tcgPlayerId": "277325"
   },
   {
-   "id": "mktmove-rsv10pt5-etb",
-   "sku": "rsv10pt5-etb",
+   "id": "mktmove-sv8pt5-etb",
+   "sku": "sv8pt5-etb",
    "readKind": "mktmove",
    "kind": "mktmove",
-   "name": "White Flare Elite Trainer Box",
+   "name": "Prismatic Evolutions Elite Trainer Box",
    "set": "",
-   "path": "The TCGplayer market price for White Flare Elite Trainer Box went from $149.14 to $149.62 over Oct 12 to Oct 13. The eBay ask stayed $159.99.",
-   "headline": "The TCGplayer market price for White Flare Elite Trainer Box went from $149.14 to $149.62 over Oct 12 to Oct 13. The eBay ask stayed $159.99.",
-   "why": "The TCGplayer market price for White Flare Elite Trainer Box went from $149.14 to $149.62 over Oct 12 to Oct 13. The eBay ask stayed $159.99. The market price changed. The ask did not. Asks are not sales.",
+   "path": "Prismatic Evolutions Elite Trainer Box: the TCGplayer market price went from $125.03 to $119.75 over Oct 12 to Oct 13. The eBay ask stayed $140.00.",
+   "headline": "Prismatic Evolutions Elite Trainer Box: the TCGplayer market price went from $125.03 to $119.75 over Oct 12 to Oct 13. The eBay ask stayed $140.00.",
+   "why": "Prismatic Evolutions Elite Trainer Box: the TCGplayer market price went from $125.03 to $119.75 over Oct 12 to Oct 13. The eBay ask stayed $140.00. The market price changed. The ask did not. Asks are not sales.",
    "asOf": "2026-10-13",
-   "href": "/p/rsv10pt5-etb",
+   "href": "/p/sv8pt5-etb",
    "lane": "sealed",
    "receipt": {
     "from": "2026-10-12",
     "to": "2026-10-13",
-    "marketFrom": 149.14,
-    "marketTo": 149.62,
-    "ask": 159.99
-   },
-   "tcgPlayerId": "630689"
-  },
-  {
-   "id": "spread-sm2-booster-box",
-   "sku": "sm2-booster-box",
-   "readKind": "spread",
-   "kind": "spread",
-   "name": "Guardians Rising Booster Box",
-   "set": "Guardians Rising",
-   "path": "The search for Guardians Rising Booster Box asks from $1,616.00 to $2,206.07. Median ask $1,959.81 across 7 eBay listings on 2026-10-13.",
-   "headline": "The search for Guardians Rising Booster Box asks from $1,616.00 to $2,206.07. Median ask $1,959.81 across 7 eBay listings on 2026-10-13.",
-   "why": "The search for Guardians Rising Booster Box asks from $1,616.00 to $2,206.07. Median ask $1,959.81 across 7 eBay listings on 2026-10-13. Asking prices from the search. Not sold prices.",
-   "asOf": "2026-10-13",
-   "href": "/p/sm2-booster-box",
-   "lane": "sealed",
-   "rank": 590.0700000000002,
-   "receipt": {
-    "low": 1616,
-    "high": 2206.07,
-    "median": 1959.81,
-    "count": 7,
-    "basis": "p10-p90"
-   },
-   "tcgPlayerId": "129888"
-  },
-  {
-   "id": "askmove-sv4pt5-bb",
-   "sku": "sv4pt5-bb",
-   "readKind": "askmove",
-   "kind": "askmove",
-   "name": "Paldean Fates Booster Bundle",
-   "set": "",
-   "path": "Paldean Fates Booster Bundle: the eBay ask went from $199.99 to $194.99 over Oct 12 to Oct 13. The TCGplayer market price stayed $179.84.",
-   "headline": "Paldean Fates Booster Bundle: the eBay ask went from $199.99 to $194.99 over Oct 12 to Oct 13. The TCGplayer market price stayed $179.84.",
-   "why": "Paldean Fates Booster Bundle: the eBay ask went from $199.99 to $194.99 over Oct 12 to Oct 13. The TCGplayer market price stayed $179.84. The ask changed. The market price did not. Asks are not sales.",
-   "asOf": "2026-10-13",
-   "href": "/p/sv4pt5-bb",
-   "lane": "sealed",
-   "receipt": {
-    "from": "2026-10-12",
-    "to": "2026-10-13",
-    "askFrom": 199.99,
-    "askTo": 194.99,
-    "market": 179.84
-   },
-   "tcgPlayerId": "528771"
-  },
-  {
-   "id": "mktmove-sv8-etb",
-   "sku": "sv8-etb",
-   "readKind": "mktmove",
-   "kind": "mktmove",
-   "name": "Surging Sparks Elite Trainer Box",
-   "set": "",
-   "path": "Surging Sparks Elite Trainer Box: the TCGplayer market price went from $122.70 to $122.62 over Oct 12 to Oct 13. The eBay ask stayed $140.00.",
-   "headline": "Surging Sparks Elite Trainer Box: the TCGplayer market price went from $122.70 to $122.62 over Oct 12 to Oct 13. The eBay ask stayed $140.00.",
-   "why": "Surging Sparks Elite Trainer Box: the TCGplayer market price went from $122.70 to $122.62 over Oct 12 to Oct 13. The eBay ask stayed $140.00. The market price changed. The ask did not. Asks are not sales.",
-   "asOf": "2026-10-13",
-   "href": "/p/sv8-etb",
-   "lane": "sealed",
-   "receipt": {
-    "from": "2026-10-12",
-    "to": "2026-10-13",
-    "marketFrom": 122.7,
-    "marketTo": 122.62,
+    "marketFrom": 125.03,
+    "marketTo": 119.75,
     "ask": 140
    },
-   "tcgPlayerId": "565630"
+   "tcgPlayerId": "593355"
+  },
+  {
+   "id": "spread-sm35-etb",
+   "sku": "sm35-etb",
+   "readKind": "spread",
+   "kind": "spread",
+   "name": "Shining Legends Elite Trainer Box",
+   "set": "Shining Legends",
+   "path": "The search for Shining Legends Elite Trainer Box asks from $1,250.00 to $2,019.00. Median ask $1,499.99 across 12 eBay listings on 2026-10-13.",
+   "headline": "The search for Shining Legends Elite Trainer Box asks from $1,250.00 to $2,019.00. Median ask $1,499.99 across 12 eBay listings on 2026-10-13.",
+   "why": "The search for Shining Legends Elite Trainer Box asks from $1,250.00 to $2,019.00. Median ask $1,499.99 across 12 eBay listings on 2026-10-13. Asking prices from the search. Not sold prices.",
+   "asOf": "2026-10-13",
+   "href": "/p/sm35-etb",
+   "lane": "sealed",
+   "rank": 769,
+   "receipt": {
+    "low": 1250,
+    "high": 2019,
+    "median": 1499.99,
+    "count": 12,
+    "basis": "p10-p90"
+   },
+   "tcgPlayerId": "145847"
+  },
+  {
+   "id": "askmove-sv1-pack",
+   "sku": "sv1-pack",
+   "readKind": "askmove",
+   "kind": "askmove",
+   "name": "Scarlet & Violet Booster Pack",
+   "set": "",
+   "path": "Scarlet & Violet Booster Pack over Oct 12 to Oct 13: eBay ask $11.99 to $11.33, TCGplayer market price $8.91.",
+   "headline": "Scarlet & Violet Booster Pack over Oct 12 to Oct 13: eBay ask $11.99 to $11.33, TCGplayer market price $8.91.",
+   "why": "Scarlet & Violet Booster Pack over Oct 12 to Oct 13: eBay ask $11.99 to $11.33, TCGplayer market price $8.91. The ask changed. The market price did not. Asks are not sales.",
+   "asOf": "2026-10-13",
+   "href": "/p/sv1-pack",
+   "lane": "sealed",
+   "receipt": {
+    "from": "2026-10-12",
+    "to": "2026-10-13",
+    "askFrom": 11.99,
+    "askTo": 11.33,
+    "market": 8.91
+   },
+   "tcgPlayerId": "476451"
+  },
+  {
+   "id": "mktmove-swsh4-etb",
+   "sku": "swsh4-etb",
+   "readKind": "mktmove",
+   "kind": "mktmove",
+   "name": "Vivid Voltage Elite Trainer Box",
+   "set": "",
+   "path": "Vivid Voltage Elite Trainer Box: the TCGplayer market price went from $133.99 to $135.01 over Oct 12 to Oct 13. The eBay ask stayed $160.00.",
+   "headline": "Vivid Voltage Elite Trainer Box: the TCGplayer market price went from $133.99 to $135.01 over Oct 12 to Oct 13. The eBay ask stayed $160.00.",
+   "why": "Vivid Voltage Elite Trainer Box: the TCGplayer market price went from $133.99 to $135.01 over Oct 12 to Oct 13. The eBay ask stayed $160.00. The market price changed. The ask did not. Asks are not sales.",
+   "asOf": "2026-10-13",
+   "href": "/p/swsh4-etb",
+   "lane": "sealed",
+   "receipt": {
+    "from": "2026-10-12",
+    "to": "2026-10-13",
+    "marketFrom": 133.99,
+    "marketTo": 135.01,
+    "ask": 160
+   },
+   "tcgPlayerId": "221752"
   }
  ],
  "supplyNotes": [],
@@ -1285,21 +1225,21 @@
   "source": "data/derived/sealed-price-outliers.json"
  },
  "dives": {
-  "count": 3,
+  "count": 0,
   "source": "research/pulse/dive/"
  },
  "shape": {
   "spread": [
-   "spread-sm12-booster-box",
-   "spread-sm2-booster-box"
+   "spread-sm7-booster-box",
+   "spread-sm35-etb"
   ],
   "askmove": [
-   "askmove-me3-pack",
-   "askmove-sv4pt5-bb"
+   "askmove-swsh11-pack",
+   "askmove-sv1-pack"
   ],
   "mktmove": [
-   "mktmove-rsv10pt5-etb",
-   "mktmove-sv8-etb"
+   "mktmove-sv8pt5-etb",
+   "mktmove-swsh4-etb"
   ]
  }
 }

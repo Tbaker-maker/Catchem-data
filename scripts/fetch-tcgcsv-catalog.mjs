@@ -1,6 +1,32 @@
 // Pull the live Pokémon catalog from TCGCSV and append one daily price file.
 // Does not rewrite earlier days. Does not invent a price. continue-on-error in CI.
 import { execFileSync } from "node:child_process";
+export function applyDayPrices(latest, daily) {
+  const date = String(daily?.date || "");
+  if (!latest || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return latest;
+  if (latest.asOf === date) return latest;
+  if (latest.asOf && latest.asOf > date) return latest;
+  const byId = new Map();
+  for (const row of daily.prices || []) {
+    const id = Number(row.id);
+    const market = Number(row.market);
+    if (id && market > 0) byId.set(id, Math.round(market * 100) / 100);
+  }
+  let priced = 0;
+  const items = (latest.items || []).map((it) => {
+    const market = byId.get(Number(it.tcgplayerProductId));
+    const next = market > 0 ? { ...it, price: market, asOf: date } : it;
+    if (next.price > 0) priced += 1;
+    return next;
+  });
+  return {
+    ...latest,
+    asOf: date,
+    items,
+    counts: latest.counts ? { ...latest.counts, priced, unpriced: items.length - priced } : latest.counts,
+  };
+}
+
 export function dayPublishedBeforeRun(root, day, sha = process.env.GITHUB_SHA, git = (args) => execFileSync("git", args, { cwd: root, stdio: "ignore" })) {
   if (!sha || process.env.TCGCSV_REWRITE_DAY === "1") return false;
   try { git(["cat-file", "-e", `${sha}:data/history/tcgcsv-daily/${day}.json`]); return true; } catch { return false; }
@@ -155,6 +181,18 @@ export async function fetchCatalog(today = TODAY) {
   // a fresh copy made them disagree (2026-10-13). Same-run rewrites still happen.
   if (dayPublishedBeforeRun(ROOT, today)) {
     console.log(`tcgcsv day ${today} was published before this run; kept as is.`);
+    try {
+      const published = JSON.parse(await readFile(dayPath, "utf8"));
+      const latestPath = join(catalogDir, "tcgcsv-latest.json");
+      const latest = JSON.parse(await readFile(latestPath, "utf8"));
+      const next = applyDayPrices(latest, published);
+      if (next !== latest) {
+        await writeFile(latestPath, JSON.stringify(next));
+        console.log(`catalog asOf moved from ${latest.asOf} to ${published.date} using the published day`);
+      }
+    } catch (err) {
+      console.error(`tcgcsv day ${today} was kept; catalog was not moved forward: ${err.message}`);
+    }
     return snap;
   }
   // Write the day before the other catalog files. A later write in this

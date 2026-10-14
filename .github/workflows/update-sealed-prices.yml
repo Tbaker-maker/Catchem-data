@@ -76,6 +76,10 @@ jobs:
           node scripts/build-tcgcsv-catalogue-map.mjs
           node scripts/build-public-bundle.mjs
           node scripts/build-feed.mjs
+          # The first feed after a new price day still carries the previous board.
+          # A second pass settles it, which is what the determinism test rebuilds.
+          node scripts/build-feed.mjs
+          node scripts/check-board-sync.mjs
           node scripts/write-morning-card.mjs
           node scripts/write-feature-data.mjs
         env:

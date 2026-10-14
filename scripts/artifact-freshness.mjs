@@ -220,6 +220,8 @@ const SLOW = {
     "rebuilt every night by build-editor.mjs from data/card-catalogue.json and data/card-attrs.json; identical bytes until the catalogue changes",
   "research/assets/card-index.json":
     "written every night by build-editor.mjs from data/card-catalogue.json; identical bytes until the catalogue changes",
+  "research/assets/public/releases.json":
+    "rebuilt every night by write-feature-data.mjs from data/release-radar.json. The file copies radar.updated and the first priced day of each product, so the bytes stay the same until a verified date or that first price changes. The radar checkedAt stamp is the separate record that the list was looked at.",
 };
 let suspect = 0, excused = 0;
 
