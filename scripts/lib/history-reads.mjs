@@ -11,6 +11,7 @@ import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 import { money } from "./public-bundle.mjs";
 import { monthDay } from "./takes.mjs";
+import { cardTitle, tcgAmount } from "./card-face.mjs";
 
 export const HIST_TAG = "hist";
 const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -31,6 +32,7 @@ export function dateLabel(iso, asOf) {
 const pctOf = (a, b) => ((b - a) / a) * 100;
 const shortSet = (s) => String(s || "").replace(/^(SWSH|SV|SM|ME|XY|BW)\d*[A-Za-z.]*\s*[:-]\s*/, "").trim();
 const cleanName = (n) => String(n || "").replace(/\s+-\s+[A-Z]*\d+\/[A-Z]*\d+\s*$/, "").trim();
+const usd = (n) => tcgAmount(n, money);
 
 // Nearest real point to a target day, within maxDays. Ties go to the earlier point.
 export function nearestPoint(pts, target, maxDays) {
@@ -89,7 +91,7 @@ function eligible(c, asOf) {
   const last = c.pts[c.pts.length - 1];
   return last && last[0] === asOf && last[1] >= 10 && !LOW.has(c.rarity);
 }
-function who(c) { return c.set ? `${cleanName(c.name)} (${shortSet(c.set)})` : cleanName(c.name); }
+function who(c) { return cardTitle(c); }
 function base(c, kind, headline, asOf, receipt, variants) {
   return {
     id: `${kind}-${c.id}`, sku: c.id, href: `/c/${c.id}`, readKind: kind, kind, board: HIST_TAG, family: "price",
@@ -119,18 +121,18 @@ export function extremeRead(c, asOf, dir) {
   if (margin < 0.03 || Math.abs(last[1] - ext[1]) < 1) return null;
   const word = dir > 0 ? "high" : "low";
   const kind = dir > 0 ? "high" : "low";
-  const now = `${money(last[1])} (${monthDay(asOf)})`;
+  const now = `${usd(last[1])} (${monthDay(asOf)})`;
   let headline;
   let variants;
   if (D && dayNum(asOf) - dayNum(D[0]) >= 540) {
-    headline = `${dir > 0 ? "Highest" : "Lowest"} since ${monthYear(D[0])}: ${who(c)}, ${now} on TCGplayer market. Last time this ${dir > 0 ? "high" : "low"}: ${money(D[1])} on ${dateLabel(D[0], asOf)}.`;
-    variants = [`${who(c)} is at ${now}, its ${dir > 0 ? "highest" : "lowest"} TCGplayer market price since ${dateLabel(D[0], asOf)} (${money(D[1])}).`];
+    headline = `${dir > 0 ? "Highest" : "Lowest"} since ${monthYear(D[0])}: ${who(c)}, ${now} on TCGplayer market. Last time this ${dir > 0 ? "high" : "low"}: ${usd(D[1])} on ${dateLabel(D[0], asOf)}.`;
+    variants = [`${who(c)} is at ${now}, its ${dir > 0 ? "highest" : "lowest"} TCGplayer market price since ${dateLabel(D[0], asOf)} (${usd(D[1])}).`];
   } else if (!D) {
     headline = `${dir > 0 ? "Highest" : "Lowest"} on file, back to ${monthYear(pts[0][0])}: ${who(c)}, ${now} on TCGplayer market.`;
     variants = [`${who(c)} at ${now} is the ${dir > 0 ? "highest" : "lowest"} of ${pts.length} TCGplayer market points on file, back to ${dateLabel(pts[0][0], asOf)}.`];
   } else {
-    headline = `52-week ${word}: ${who(c)}, ${now} on TCGplayer market. The ${word} before it in the past year: ${money(ext[1])} on ${dateLabel(ext[0], asOf)}.`;
-    variants = [`${who(c)} set a 52-week ${word} at ${now}. Before that, the year's ${word} was ${money(ext[1])} (${dateLabel(ext[0], asOf)}).`];
+    headline = `52-week ${word}: ${who(c)}, ${now} on TCGplayer market. The ${word} before it in the past year: ${usd(ext[1])} on ${dateLabel(ext[0], asOf)}.`;
+    variants = [`${who(c)} set a 52-week ${word} at ${now}. Before that, the year's ${word} was ${usd(ext[1])} (${dateLabel(ext[0], asOf)}).`];
   }
   if (!ok(headline)) return null;
   return { ...base(c, kind, headline, asOf, { startDate: (D || pts[0])[0], since: D ? { date: D[0], price: D[1] } : null, yearExtreme: { date: ext[0], price: ext[1] }, now: { date: asOf, price: last[1] } }, variants), strength: margin };
@@ -143,7 +145,7 @@ export function windowRead(c, asOf, { days, slack, minPct, minUsd, maxPct = Infi
   const ch = pctOf(p[1], last[1]);
   if (Math.abs(ch) < minPct || Math.abs(ch) > maxPct || Math.abs(last[1] - p[1]) < minUsd) return null;
   const up = ch > 0;
-  const span = `${money(p[1])} (${dateLabel(p[0], asOf)}) to ${money(last[1])} (${monthDay(asOf)})`;
+  const span = `${usd(p[1])} (${dateLabel(p[0], asOf)}) to ${usd(last[1])} (${monthDay(asOf)})`;
   const r = Math.round(Math.abs(ch));
   const headline = kind === "year"
     ? `One year on: ${who(c)}, ${span} on TCGplayer market. ${up ? "Up" : "Down"} ${r}%.`
@@ -168,9 +170,9 @@ export function backToRead(c, asOf, { minAge = 180, band = 0.02, swing = 0.4 } =
     const ext = hi[1] >= last[1] * (1 + swing) ? hi : lo[1] <= last[1] / (1 + swing) ? lo : null;
     if (!ext) continue;
     const went = ext === hi ? "reached" : "fell to";
-    const headline = `Back to its ${dateLabel(p[0], asOf)} price: ${who(c)}, ${money(last[1])} (${monthDay(asOf)}) on TCGplayer market, ${money(p[1])} then. In between it ${went} ${money(ext[1])} (${dateLabel(ext[0], asOf)}).`;
+    const headline = `Back to its ${dateLabel(p[0], asOf)} price: ${who(c)}, ${usd(last[1])} (${monthDay(asOf)}) on TCGplayer market, ${usd(p[1])} then. In between it ${went} ${usd(ext[1])} (${dateLabel(ext[0], asOf)}).`;
     if (!ok(headline)) return null;
-    return { ...base(c, "backto", headline, asOf, { startDate: p[0], then: p[1], now: last[1], between: { date: ext[0], price: ext[1] } }, [`${who(c)} is ${money(last[1])} again (${monthDay(asOf)}), the same as on ${dateLabel(p[0], asOf)}. It ${went} ${money(ext[1])} on ${dateLabel(ext[0], asOf)}.`]), strength: Math.abs(ext[1] / last[1] - 1) };
+    return { ...base(c, "backto", headline, asOf, { startDate: p[0], then: p[1], now: last[1], between: { date: ext[0], price: ext[1] } }, [`${who(c)} is ${usd(last[1])} again (${monthDay(asOf)}), the same as on ${dateLabel(p[0], asOf)}. It ${went} ${usd(ext[1])} on ${dateLabel(ext[0], asOf)}.`]), strength: Math.abs(ext[1] / last[1] - 1) };
   }
   return null;
 }
@@ -203,7 +205,7 @@ export function setReads(cards, asOf, { days = 30, slack = 4, minPriced = 10, mi
       source: `TCGplayer market, start points ${a} to ${b}, end ${asOf}`,
       why: "Cards above Uncommon priced $10 or more tonight, matched by product id and finish. Moves need 10% and $1. Each start price is the real point nearest 30 days back, at most 4 days off.",
       receipt: { set, priced: rows.length, up: up.length, down: down.length, startFirst: a, startLast: b, end: asOf, lead: { id: lead.c.id, from: lead.from, to: lead.to, start: lead.start } },
-      variants: [`${up.length} up and ${down.length} down, 10% or more, among ${rows.length} priced cards in ${set} (${startText} to ${monthDay(asOf)}). Biggest: ${cleanName(lead.c.name)}, ${money(lead.from)} to ${money(lead.to)}.`].filter(ok),
+      variants: [`${up.length} up and ${down.length} down, 10% or more, among ${rows.length} priced cards in ${set} (${startText} to ${monthDay(asOf)}). Biggest: ${cardTitle(lead.c)}, ${usd(lead.from)} to ${usd(lead.to)}.`].filter(ok),
       strength: Math.max(up.length, down.length) / rows.length,
     });
   }

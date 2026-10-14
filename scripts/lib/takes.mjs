@@ -2,6 +2,7 @@
 // Never defaults to Watch.
 import { money, TAKE_FOOTER, TAKE_LABELS, lineBanned } from "./public-bundle.mjs";
 import { centsOf, formatPct, whyPlain } from "./read-quality.mjs";
+import { tcgAmount } from "./card-face.mjs";
 
 export { TAKE_FOOTER, TAKE_LABELS };
 
@@ -74,10 +75,10 @@ function priceSentence(input) {
   if (!(from > 0) || !(to > 0) || from === to) return "";
   if (!/^\d{4}-\d{2}-\d{2}$/.test(String(input.start || "")) || !/^\d{4}-\d{2}-\d{2}$/.test(String(input.end || ""))) return "";
   const dir = to > from ? "Up" : "Down";
-  const gap = money(Math.abs((centsOf(to) - centsOf(from)) / 100));
+  const gap = tcgAmount(Math.abs((centsOf(to) - centsOf(from)) / 100), money);
   const pct = formatPct(((to - from) / from) * 100);
   if (!gap || !pct) return "";
-  return `TCGplayer market: ${money(to)} (${input.end}), from ${money(from)} (${input.start}). ${dir} ${gap}, ${pct}%.`;
+  return `TCGplayer market: ${tcgAmount(to, money)} (${input.end}), from ${tcgAmount(from, money)} (${input.start}). ${dir} ${gap}, ${pct}%.`;
 }
 
 export function takeLayout(input = {}) {

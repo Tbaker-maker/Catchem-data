@@ -10,6 +10,7 @@ import { flag } from "../flags.mjs";
 import { takeCode } from "./takes.mjs";
 import {
   FOOTER,
+  CONDITION_NOTE,
   longWindowBlocked,
   moverGate,
   floorOk,
@@ -588,6 +589,7 @@ export function buildReadLibrary({ catalogue, extra, series, dailyFiles = null, 
     signals,
     disagreements,
     footer: FOOTER,
+    conditionNote: CONDITION_NOTE,
     quietNight: quietNight(asOf, board.length),
   };
 }

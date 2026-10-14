@@ -12,6 +12,9 @@ import { addDays, dateLabel as monthLabel } from "./history-reads.mjs";
 import { loadFillMap } from "./fill-history.mjs";
 import { loadHistoryCards } from "./history-reads.mjs";
 import { publicCopyOk } from "./year-patterns.mjs";
+import { cardTitle, tcgAmount } from "./card-face.mjs";
+
+const usd = (n) => tcgAmount(n, money);
 
 export const MIN_HISTORY_DAYS = 300;
 export const MIN_RANGE_PCT = 10;
@@ -133,6 +136,7 @@ function base(kind, item, headline, lines, asOf, source, extra) {
     family: kind,
     name: item.name || item.set || "",
     set: item.set || "",
+    ...(item.number ? { number: item.number } : {}),
     headline,
     path: headline,
     lines,
@@ -176,10 +180,10 @@ export function yearRangeRead(item, asOf) {
   if (!edge) return null;
   const fill = usedFill(sorted);
   const spot = Math.round(pos * 100);
-  const headline = `Near the ${edge} end of its 12-month range: ${item.name}, ${money(now.price)} on ${fullDate(now.date, asOf)}.`;
+  const headline = `Near the ${edge} end of its 12-month range: ${item.name}, ${usd(now.price)} on ${fullDate(now.date, asOf)}.`;
   const lines = [
-    `Low ${money(low.price)} on ${fullDate(low.date, asOf)}. High ${money(high.price)} on ${fullDate(high.date, asOf)}.`,
-    `Latest price ${money(now.price)} on ${fullDate(now.date, asOf)}, ${spot}% of the way from the low to the high.`,
+    `Low ${usd(low.price)} on ${fullDate(low.date, asOf)}. High ${usd(high.price)} on ${fullDate(high.date, asOf)}.`,
+    `Latest price ${usd(now.price)} on ${fullDate(now.date, asOf)}, ${spot}% of the way from the low to the high.`,
     `Points on file from ${fullDate(sorted[0].date, asOf)} to ${fullDate(sorted[sorted.length - 1].date, asOf)}, ${span} days. The range is ${numText(rangePct)}% from the low to the high.`,
   ];
   if (fill) lines.push(FAN_NOTE);
@@ -229,11 +233,11 @@ export function yearAgoRead(item, asOf) {
   if (pct == null || Math.abs(pct) < MIN_MOVE_PCT || Math.abs(pct) > MAX_MOVE_PCT) return null;
   const today = then.date === want && now.date === asOf;
   const headline = today
-    ? `A year ago today it was ${money(then.price)} on ${fullDate(then.date, asOf)}, now ${money(now.price)} on ${fullDate(now.date, asOf)} (${signedPct(pct)}).`
-    : `A year ago it was ${money(then.price)} on ${fullDate(then.date, asOf)}, now ${money(now.price)} on ${fullDate(now.date, asOf)} (${signedPct(pct)}).`;
+    ? `A year ago today it was ${usd(then.price)} on ${fullDate(then.date, asOf)}, now ${usd(now.price)} on ${fullDate(now.date, asOf)} (${signedPct(pct)}).`
+    : `A year ago it was ${usd(then.price)} on ${fullDate(then.date, asOf)}, now ${usd(now.price)} on ${fullDate(now.date, asOf)} (${signedPct(pct)}).`;
   const fill = then.src === "fill" || now.src === "fill";
   const lines = [
-    `${money(then.price)} on ${then.date}. ${money(now.price)} on ${now.date}. ${signedPct(pct)} across ${daysBetween(then.date, now.date)} days.`,
+    `${usd(then.price)} on ${then.date}. ${usd(now.price)} on ${now.date}. ${signedPct(pct)} across ${daysBetween(then.date, now.date)} days.`,
     today
       ? `The earlier point is the same month and day last year.`
       : `The earlier point is ${fullDate(then.date, asOf)}, at most 3 days from ${fullDate(want, asOf)}.`,
@@ -274,10 +278,10 @@ export function seasonItemRead(item, asOf) {
     const when = mode.mode === "release"
       ? (mode.first ? `in the 30 days after ${item.set || "the set"} released` : "in the 30 days after its release date last year")
       : "in the same 30 days last year";
-    const headline = `${item.name}: ${when}, ${money(pair.start.price)} on ${fullDate(pair.start.date, asOf)} to ${money(pair.end.price)} on ${fullDate(pair.end.date, asOf)} (${signedPct(pair.pct)}).`;
+    const headline = `${item.name}: ${when}, ${usd(pair.start.price)} on ${fullDate(pair.start.date, asOf)} to ${usd(pair.end.price)} on ${fullDate(pair.end.date, asOf)} (${signedPct(pair.pct)}).`;
     const lines = [
-      `${money(pair.start.price)} on ${pair.start.date}. ${money(pair.end.price)} on ${pair.end.date}. ${signedPct(pair.pct)}.`,
-      `Latest price ${money(now.price)} on ${fullDate(now.date, asOf)}.`,
+      `${usd(pair.start.price)} on ${pair.start.date}. ${usd(pair.end.price)} on ${pair.end.date}. ${signedPct(pair.pct)}.`,
+      `Latest price ${usd(now.price)} on ${fullDate(now.date, asOf)}.`,
       mode.mode === "release"
         ? `The window is the 30 days after the release date last year. Each end is a real point at most 3 days from ${mode.start} or ${mode.end}.`
         : `The window is the 30 days ending on the same date last year. Each end is a real point at most 3 days from ${mode.start} or ${mode.end}.`,
@@ -345,7 +349,7 @@ export function seasonSetRead(items, asOf) {
     const lines = [
       `Up ${up}, down ${down}, flat ${flat}, of ${measured.length} ${noun} with a real point at both ends.`,
       `Start points ${dateSpan(measured.map((row) => row.start.date), asOf)}. End points ${dateSpan(measured.map((row) => row.end.date), asOf)}.`,
-      `Largest move: ${lead.item.name}, ${money(lead.start.price)} on ${fullDate(lead.start.date, asOf)} to ${money(lead.end.price)} on ${fullDate(lead.end.date, asOf)} (${signedPct(lead.pct)}).`,
+      `Largest move: ${lead.item.name}, ${usd(lead.start.price)} on ${fullDate(lead.start.date, asOf)} to ${usd(lead.end.price)} on ${fullDate(lead.end.date, asOf)} (${signedPct(lead.pct)}).`,
       `TCGplayer market. A set line needs at least 20 items with both ends.`,
     ];
     if (fill) lines.push(FAN_NOTE);
@@ -511,9 +515,13 @@ export async function collectSpanReads({ root, asOf, series }) {
     const meta = setByName.get(normName(pretty(item.set))) || {};
     const release = groups[String(item.groupId)] || meta.release || "";
     const kind = item.kind === "sealed" ? "sealed" : "single";
+    const titled = item.number
+      ? cardTitle({ name: pretty(item.name), set: pretty(item.set || meta.name || ""), number: item.number })
+      : pretty(item.name);
     const row = {
       id: item.id,
-      name: pretty(item.name),
+      name: titled,
+      number: item.number || "",
       set: pretty(item.set || meta.name || ""),
       setSlug: meta.slug || "",
       kind,
@@ -531,7 +539,8 @@ export async function collectSpanReads({ root, asOf, series }) {
     if (points.length < 2) continue;
     singles.push({
       id: card.id,
-      name: card.name,
+      name: cardTitle(card),
+      number: card.number || "",
       set: card.set || "",
       setSlug: card.setSlug || "",
       kind: "single",
