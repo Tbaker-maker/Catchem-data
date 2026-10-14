@@ -395,3 +395,132 @@ export function detectThinJump(series, pattern = "thin-jump") {
 export function nearestPoint(points, day, slack) {
   return nearest(points, day, slack);
 }
+
+// Staircase (Tyler market model): flat base, pump, dump that holds a higher low,
+// flat again at a higher base, repeating.
+// forming = second flat base above the prior one
+// confirmed = a new pump from that higher base
+// ending = a dump that holds above the prior base
+export function detectStaircase(series, params, pattern = "staircase") {
+  const asOf = series?.asOf;
+  if (!asOf) return null;
+  const pts = sliceWindow(series.points, asOf, params?.windowDays || 90);
+  if (pts.length < 8) return null;
+
+  const coarse = [];
+  let lastKept = null;
+  for (const p of pts) {
+    if (!lastKept || daysBetween(lastKept.date, p.date) >= 5) {
+      coarse.push(p);
+      lastKept = p;
+    }
+  }
+  if (coarse.at(-1)?.date !== pts.at(-1).date) coarse.push(pts.at(-1));
+  if (coarse.length < 6) return null;
+
+  const bases = [];
+  for (let i = 0; i < coarse.length; i += 1) {
+    for (let j = i + 2; j < coarse.length; j += 1) {
+      const span = daysBetween(coarse[i].date, coarse[j].date);
+      if (span < 10) continue;
+      if (span > 28) break;
+      const slice = coarse.slice(i, j + 1);
+      const lo = Math.min(...slice.map((p) => p.price));
+      const hi = Math.max(...slice.map((p) => p.price));
+      if (!(lo > 0)) continue;
+      const rangePct = ((hi - lo) / lo) * 100;
+      if (rangePct > 6) continue;
+      bases.push({
+        i, j, lo, hi,
+        mean: (lo + hi) / 2,
+        start: coarse[i].date,
+        end: coarse[j].date,
+        rangePct,
+      });
+    }
+  }
+  bases.sort((a, b) => a.i - b.i || (b.j - b.i) - (a.j - a.i));
+  const picked = [];
+  for (const b of bases) {
+    if (picked.length && b.i <= picked[picked.length - 1].j) continue;
+    picked.push(b);
+  }
+  if (picked.length < 1) return null;
+
+  let stair = null;
+  for (let k = 0; k < picked.length - 1; k += 1) {
+    const a = picked[k];
+    const b = picked[k + 1];
+    if (!(b.lo > a.lo * 1.02)) continue;
+    const mid = coarse.slice(a.j, b.i + 1);
+    if (mid.length < 2) continue;
+    const peak = Math.max(...mid.map((p) => p.price));
+    const pumpPct = ((peak - a.mean) / a.mean) * 100;
+    if (pumpPct < 8) continue;
+    stair = { a, b, peak, pumpPct };
+  }
+
+  // One completed base, then a pump and a higher-low dump that has not flattened yet.
+  if (!stair && picked.length >= 1) {
+    const a = picked[0];
+    const after = coarse.slice(a.j);
+    if (after.length >= 3) {
+      let peakI = 0;
+      for (let i = 1; i < after.length; i += 1) if (after[i].price > after[peakI].price) peakI = i;
+      const peak = after[peakI];
+      const pumpPct = ((peak.price - a.mean) / a.mean) * 100;
+      const last = after[after.length - 1];
+      if (pumpPct >= 8 && peakI >= 1 && peakI < after.length - 1) {
+        const dumpPct = pct(peak.price, last.price);
+        if (dumpPct != null && dumpPct <= -5 && last.price > a.lo * 1.02) {
+          return pack(pattern, "ending", 45 + Math.min(25, pumpPct), a.start, last.date, {
+            pct: round1(pct(a.mean, last.price)),
+            pumpPct: round1(pumpPct),
+            baseLo: round1(a.lo),
+            higherLo: round1(last.price),
+          });
+        }
+      }
+      if (pumpPct >= 8 && peakI === after.length - 1 && picked.length >= 1 && a.lo > 0) {
+        // Need a prior higher-base context: only confirm pump when a second base already exists.
+      }
+    }
+  }
+
+  if (!stair) return null;
+
+  const last = coarse[coarse.length - 1];
+  const { a: prior, b: higher, peak, pumpPct } = stair;
+  const after = coarse.filter((p) => p.date > higher.end);
+  const metrics = {
+    pct: round1(pct(prior.mean, last.price)),
+    pumpPct: round1(pumpPct),
+    baseLo: round1(prior.lo),
+    higherLo: round1(higher.lo),
+    bases: 2,
+  };
+
+  if (after.length >= 2) {
+    let peakAfter = higher.hi;
+    for (const p of after) if (p.price > peakAfter) peakAfter = p.price;
+    const rise = pct(higher.mean, last.price);
+    const fromPeak = pct(peakAfter, last.price);
+    if (rise != null && rise >= 5 && last.price >= peakAfter * 0.97) {
+      return pack(pattern, "confirmed", 55 + Math.min(30, rise), prior.start, last.date, {
+        ...metrics, pct: round1(rise), fromBase: round1(higher.mean),
+      });
+    }
+    if (fromPeak != null && fromPeak <= -5 && last.price > prior.lo * 1.02) {
+      return pack(pattern, "ending", 50 + Math.min(20, Math.abs(fromPeak)), prior.start, last.date, {
+        ...metrics, pct: round1(pct(higher.mean, last.price)),
+      });
+    }
+  }
+
+  // Second flat base above the prior one.
+  const inHigher = last.price <= higher.hi * 1.03 && last.price >= higher.lo * 0.97;
+  if (inHigher || after.length <= 1) {
+    return pack(pattern, "forming", 40 + Math.min(20, ((higher.lo - prior.lo) / prior.lo) * 100), prior.start, higher.end, metrics);
+  }
+  return null;
+}

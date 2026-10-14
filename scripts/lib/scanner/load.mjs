@@ -16,6 +16,20 @@ import { buildScannerReads } from "./reads.mjs";
 
 const J = async (p, d = null) => { try { return JSON.parse(await readFile(p, "utf8")); } catch { return d; } };
 
+function foldName(s) {
+  return String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+// in-print = Standard (or current Mega era with no mark yet); out-of-print = Rotated or older.
+export function printStatusOf(setSlug, setName, release, rotBySlug, rotByName) {
+  const row = (setSlug && rotBySlug.get(setSlug)) || (setName && rotByName.get(foldName(setName))) || null;
+  if (row?.status === "Standard") return "in-print";
+  if (row?.status && /^Rotated/i.test(row.status)) return "out-of-print";
+  if (release && release >= "2025-09-26") return "in-print";
+  return "out-of-print";
+}
+
+
 function parseLong(text) {
   const out = [];
   for (const pair of String(text || "").split(",")) {
@@ -85,6 +99,16 @@ export async function loadScoreItems(root, asOf, series) {
   }
   singles.sort((a, b) => b.span - a.span || b.points.length - a.points.length || (a.id < b.id ? -1 : 1));
   const fill = loadFillMap(root);
+  const rot = await J(join(pub, "rotation-status.json"), { sets: [] });
+  const setsPub = await J(join(pub, "sets.json"), { sets: [] });
+  const rotBySlug = new Map((rot.sets || []).map((s) => [s.slug, s]));
+  const rotByName = new Map((rot.sets || []).filter((s) => s.name).map((s) => [foldName(s.name), s]));
+  const setByFold = new Map((setsPub.sets || []).map((s) => [foldName(s.name), s]));
+  for (const s of setsPub.sets || []) {
+    // also index without era prefix "SV08: "
+    const bare = foldName(String(s.name || "").replace(/^[a-z0-9]+:\s*/i, ""));
+    if (bare && !setByFold.has(bare)) setByFold.set(bare, s);
+  }
   const sealed = [];
   for (const item of catalog.items || []) {
     if (item.kind !== "sealed") continue;
@@ -99,15 +123,20 @@ export async function loadScoreItems(root, asOf, series) {
     if (points.length < 20) continue;
     const span = daysBetween(points[0].date, points.at(-1).date);
     if (span < 90) continue;
+    const release = groupDates[String(item.groupId)] || "";
+    const setHit = setByFold.get(foldName(item.set)) || setByFold.get(foldName(String(item.set || "").replace(/^[a-z0-9]+:\s*/i, "")));
+    const setSlug = setHit?.slug || "";
+    const printStatus = printStatusOf(setSlug, item.set, release, rotBySlug, rotByName);
     sealed.push({
       id: item.id || `tcgcsv-${pid}`,
       pid,
       name: item.name || "",
       set: item.set || "",
-      setSlug: "",
+      setSlug,
       kind: "sealed",
       artist: "",
-      release: groupDates[String(item.groupId)] || "",
+      release,
+      printStatus,
       price: Number(item.price) || points.at(-1).price,
       href: `/p/${item.id || `tcgcsv-${pid}`}`,
       points,
@@ -185,6 +214,7 @@ export function scanItemsFrom(catalog, series, asOf, scoreItems) {
       const raw = meta.raw;
       item = {
         id: meta.id, pid: meta.pid, name: raw.name || "", set: raw.set || "", kind: meta.kind, artist: "", release: "",
+        printStatus: meta.kind === "sealed" ? "out-of-print" : "",
         price: meta.price || points.at(-1).price, href: meta.kind === "sealed" ? `/p/${meta.id}` : `/c/${meta.id}`,
         points, listings: [],
       };
@@ -296,6 +326,7 @@ export async function writePrivate(root, token, asOf, payload, { open = openPriv
     asOf, version: SCANNER_VERSION, alerts: false, halfLifeDays: 180, minN: 20, hitPct: 3,
     rows: payload.gates.map((row) => ({
       pattern: row.pattern, stage: row.stage, kind: row.kind, horizon: row.horizon, dir: row.dir,
+      printStatus: row.printStatus || "",
       n: row.n, hits: row.hits, rate: row.rate, rateLo: row.rateLo, rateHi: row.rateHi, upRate: row.upRate,
       baseRate: row.baseRate, passed: row.passed, weight: row.weight, medianPct: row.medianPct,
       train: row.train, test: row.test,
