@@ -1,13 +1,13 @@
 {
  "asOf": "2026-10-13",
- "generatedAt": "2026-10-14T05:24:24.586Z",
+ "generatedAt": "2026-10-14T17:51:06.656Z",
  "checks": [
   {
    "id": "price-day",
    "path": "data/history/tcgcsv-daily",
-   "date": "2026-10-13",
-   "ok": true,
-   "detail": "fresh"
+   "date": "2026-10-14",
+   "ok": false,
+   "detail": "dated 2026-10-14"
   },
   {
    "id": "listings-counted",
@@ -26,12 +26,15 @@
   {
    "id": "scanner",
    "path": "data/private/scanner/summary.json",
-   "date": "2026-10-13",
-   "ok": true,
-   "detail": "fresh"
+   "date": "",
+   "ok": false,
+   "detail": "missing"
   }
  ],
- "failures": [],
+ "failures": [
+  "price-day",
+  "scanner"
+ ],
  "reran": [],
  "note": "Checked the dated files. A missing light step can be rerun once with --rerun."
 }
