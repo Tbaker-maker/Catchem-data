@@ -1,41 +1,2338 @@
 {
   "id": "singles",
   "name": "Singles Index",
-  "asOf": "2026-08-18",
-  "source": "TCGplayer market price",
+  "asOf": "2026-10-14",
+  "source": "TCGplayer market price (TCGCSV daily files)",
   "anchorRequested": "2026-03-31",
-  "anchorUsed": "2026-08-18",
+  "anchorUsed": "2026-09-26",
   "anchorLevel": 100,
-  "anchorReason": "First real singles day on file is 2026-08-18. March 31 was not invented. Days between observations are gaps.",
-  "method": "Chain-linked. A card joins on its first priced day and does not move the level that day. Sealed products are not in this index.",
-  "basket": 121,
+  "anchorReason": "First TCGCSV singles day on file is 2026-09-26. March 31 was not invented. Missing days are gaps.",
+  "method": "Chain-linked. A card printing joins on its first priced day and does not move the level that day. Each day's move is the trimmed geometric mean of price changes of printings priced on both days: each change is capped at 30% down or 43% up, and the top and bottom 10% are dropped. Cards under $1 are left out. Sealed products are not in this index.",
+  "basket": 14608,
   "series": {
     "base": 100,
     "points": [
       {
-        "date": "2026-08-18",
+        "date": "2026-09-26",
         "equal": 100,
         "value": 100,
-        "matched": 119,
-        "entered": 119
+        "matched": 14278,
+        "entered": 14278
       },
       {
-        "date": "2026-09-21",
-        "from": "2026-08-18",
-        "equal": 99.2,
-        "value": 98.9,
-        "matched": 36,
-        "entered": 2,
-        "equalMovePct": -0.8194,
-        "valueMovePct": -1.1449
+        "date": "2026-09-27",
+        "from": "2026-09-26",
+        "equal": 100,
+        "value": 99.9,
+        "matched": 14254,
+        "entered": 33,
+        "equalMovePct": 0.006,
+        "valueMovePct": -0.054
+      },
+      {
+        "date": "2026-09-29",
+        "from": "2026-09-27",
+        "equal": 99.6,
+        "value": 99.4,
+        "matched": 1574,
+        "entered": 0,
+        "equalMovePct": -0.4379,
+        "valueMovePct": -0.5461
+      },
+      {
+        "date": "2026-10-03",
+        "from": "2026-09-29",
+        "equal": 99,
+        "value": 98.6,
+        "matched": 1572,
+        "entered": 12729,
+        "equalMovePct": -0.6187,
+        "valueMovePct": -0.8537
+      },
+      {
+        "date": "2026-10-05",
+        "from": "2026-10-03",
+        "equal": 99,
+        "value": 98.7,
+        "matched": 14234,
+        "entered": 53,
+        "equalMovePct": 0.0234,
+        "valueMovePct": 0.1465
+      },
+      {
+        "date": "2026-10-06",
+        "from": "2026-10-05",
+        "equal": 99,
+        "value": 98.6,
+        "matched": 14244,
+        "entered": 36,
+        "equalMovePct": -0.0116,
+        "valueMovePct": -0.1186
+      },
+      {
+        "date": "2026-10-07",
+        "from": "2026-10-06",
+        "equal": 99,
+        "value": 98.7,
+        "matched": 14253,
+        "entered": 43,
+        "equalMovePct": -0.0031,
+        "valueMovePct": 0.1131
+      },
+      {
+        "date": "2026-10-08",
+        "from": "2026-10-07",
+        "equal": 98.9,
+        "value": 99.1,
+        "matched": 14242,
+        "entered": 43,
+        "equalMovePct": -0.0199,
+        "valueMovePct": 0.4194
+      },
+      {
+        "date": "2026-10-09",
+        "from": "2026-10-08",
+        "equal": 98.9,
+        "value": 99.2,
+        "matched": 14247,
+        "entered": 25,
+        "equalMovePct": -0.0366,
+        "valueMovePct": 0.1237
+      },
+      {
+        "date": "2026-10-10",
+        "from": "2026-10-09",
+        "equal": 98.9,
+        "value": 99.2,
+        "matched": 14234,
+        "entered": 53,
+        "equalMovePct": -0.004,
+        "valueMovePct": -0.0691
+      },
+      {
+        "date": "2026-10-11",
+        "from": "2026-10-10",
+        "equal": 98.9,
+        "value": 99.3,
+        "matched": 14252,
+        "entered": 42,
+        "equalMovePct": -0.0095,
+        "valueMovePct": 0.0925
+      },
+      {
+        "date": "2026-10-12",
+        "from": "2026-10-11",
+        "equal": 98.9,
+        "value": 99.4,
+        "matched": 14255,
+        "entered": 42,
+        "equalMovePct": 0.0082,
+        "valueMovePct": 0.1609
+      },
+      {
+        "date": "2026-10-13",
+        "from": "2026-10-12",
+        "equal": 98.9,
+        "value": 99.5,
+        "matched": 14256,
+        "entered": 40,
+        "equalMovePct": -0.0117,
+        "valueMovePct": 0.1312
+      },
+      {
+        "date": "2026-10-14",
+        "from": "2026-10-13",
+        "equal": 98.9,
+        "value": 100,
+        "matched": 14218,
+        "entered": 29,
+        "equalMovePct": -0.006,
+        "valueMovePct": 0.4266
       }
     ],
     "gaps": [
       {
-        "from": "2026-08-18",
-        "to": "2026-09-21",
-        "missingDays": 33,
+        "from": "2026-09-27",
+        "to": "2026-09-29",
+        "missingDays": 1,
         "note": "No price was invented for the days in between."
+      },
+      {
+        "from": "2026-09-29",
+        "to": "2026-10-03",
+        "missingDays": 3,
+        "note": "No price was invented for the days in between."
+      },
+      {
+        "from": "2026-10-03",
+        "to": "2026-10-05",
+        "missingDays": 1,
+        "note": "No price was invented for the days in between."
+      }
+    ]
+  },
+  "fill": {
+    "chartOnly": true,
+    "note": "Earlier chart line from approved fan-site fill (config/fill-sources.json). Chart only, its own base, before our first own day. Not joined to the line above.",
+    "sources": [
+      "pokeviz-singles"
+    ],
+    "fillTo": "2026-09-26",
+    "base": 100,
+    "points": [
+      {
+        "date": "2025-09-30",
+        "equal": 100,
+        "value": 100,
+        "matched": 345
+      },
+      {
+        "date": "2025-10-01",
+        "equal": 100.1,
+        "value": 100.5,
+        "matched": 340
+      },
+      {
+        "date": "2025-10-02",
+        "equal": 100.9,
+        "value": 101.3,
+        "matched": 339
+      },
+      {
+        "date": "2025-10-03",
+        "equal": 101,
+        "value": 101.9,
+        "matched": 890
+      },
+      {
+        "date": "2025-10-04",
+        "equal": 101.2,
+        "value": 102.1,
+        "matched": 1527
+      },
+      {
+        "date": "2025-10-05",
+        "equal": 101.4,
+        "value": 102.3,
+        "matched": 1528
+      },
+      {
+        "date": "2025-10-06",
+        "equal": 101.4,
+        "value": 102.6,
+        "matched": 1528
+      },
+      {
+        "date": "2025-10-07",
+        "equal": 101.3,
+        "value": 102.9,
+        "matched": 1898
+      },
+      {
+        "date": "2025-10-08",
+        "equal": 101.2,
+        "value": 102.9,
+        "matched": 2236
+      },
+      {
+        "date": "2025-10-09",
+        "equal": 101.3,
+        "value": 102.8,
+        "matched": 2227
+      },
+      {
+        "date": "2025-10-10",
+        "equal": 101.3,
+        "value": 102.5,
+        "matched": 2237
+      },
+      {
+        "date": "2025-10-11",
+        "equal": 101.3,
+        "value": 102.8,
+        "matched": 2249
+      },
+      {
+        "date": "2025-10-12",
+        "equal": 101.2,
+        "value": 102.5,
+        "matched": 2249
+      },
+      {
+        "date": "2025-10-13",
+        "equal": 100.9,
+        "value": 102.7,
+        "matched": 2245
+      },
+      {
+        "date": "2025-10-14",
+        "equal": 100.7,
+        "value": 102.6,
+        "matched": 2244
+      },
+      {
+        "date": "2025-10-15",
+        "equal": 100.4,
+        "value": 102.4,
+        "matched": 2236
+      },
+      {
+        "date": "2025-10-16",
+        "equal": 100.3,
+        "value": 102.1,
+        "matched": 2229
+      },
+      {
+        "date": "2025-10-17",
+        "equal": 100.4,
+        "value": 101.8,
+        "matched": 2218
+      },
+      {
+        "date": "2025-10-18",
+        "equal": 100.3,
+        "value": 101.6,
+        "matched": 2226
+      },
+      {
+        "date": "2025-10-19",
+        "equal": 100.3,
+        "value": 101.5,
+        "matched": 2233
+      },
+      {
+        "date": "2025-10-20",
+        "equal": 100.1,
+        "value": 101.2,
+        "matched": 2229
+      },
+      {
+        "date": "2025-10-21",
+        "equal": 99.9,
+        "value": 101,
+        "matched": 2230
+      },
+      {
+        "date": "2025-10-22",
+        "equal": 99.8,
+        "value": 101,
+        "matched": 2226
+      },
+      {
+        "date": "2025-10-23",
+        "equal": 99.9,
+        "value": 101.1,
+        "matched": 2220
+      },
+      {
+        "date": "2025-10-24",
+        "equal": 99.9,
+        "value": 100.9,
+        "matched": 2220
+      },
+      {
+        "date": "2025-10-25",
+        "equal": 99.8,
+        "value": 101,
+        "matched": 2223
+      },
+      {
+        "date": "2025-10-26",
+        "equal": 99.7,
+        "value": 100.8,
+        "matched": 2228
+      },
+      {
+        "date": "2025-10-27",
+        "equal": 99.4,
+        "value": 100.7,
+        "matched": 2235
+      },
+      {
+        "date": "2025-10-28",
+        "equal": 99.1,
+        "value": 100.3,
+        "matched": 2226
+      },
+      {
+        "date": "2025-10-29",
+        "equal": 98.6,
+        "value": 99.8,
+        "matched": 2222
+      },
+      {
+        "date": "2025-10-30",
+        "equal": 98.2,
+        "value": 99.7,
+        "matched": 2221
+      },
+      {
+        "date": "2025-10-31",
+        "equal": 97.9,
+        "value": 99.1,
+        "matched": 2214
+      },
+      {
+        "date": "2025-11-01",
+        "equal": 97.6,
+        "value": 98.9,
+        "matched": 2217
+      },
+      {
+        "date": "2025-11-03",
+        "equal": 97.3,
+        "value": 98.2,
+        "matched": 2202
+      },
+      {
+        "date": "2025-11-04",
+        "equal": 97.1,
+        "value": 97.8,
+        "matched": 2201
+      },
+      {
+        "date": "2025-11-05",
+        "equal": 96.9,
+        "value": 97.6,
+        "matched": 2203
+      },
+      {
+        "date": "2025-11-06",
+        "equal": 96.6,
+        "value": 97.2,
+        "matched": 2205
+      },
+      {
+        "date": "2025-11-07",
+        "equal": 96.1,
+        "value": 96.9,
+        "matched": 2201
+      },
+      {
+        "date": "2025-11-08",
+        "equal": 96.1,
+        "value": 96.7,
+        "matched": 2202
+      },
+      {
+        "date": "2025-11-10",
+        "equal": 96.1,
+        "value": 96.2,
+        "matched": 2208
+      },
+      {
+        "date": "2025-11-11",
+        "equal": 96,
+        "value": 96,
+        "matched": 2214
+      },
+      {
+        "date": "2025-11-12",
+        "equal": 95.8,
+        "value": 95.7,
+        "matched": 2210
+      },
+      {
+        "date": "2025-11-13",
+        "equal": 95.7,
+        "value": 95.5,
+        "matched": 2211
+      },
+      {
+        "date": "2025-11-14",
+        "equal": 95.4,
+        "value": 95.2,
+        "matched": 2209
+      },
+      {
+        "date": "2025-11-15",
+        "equal": 95.3,
+        "value": 94.7,
+        "matched": 2247
+      },
+      {
+        "date": "2025-11-16",
+        "equal": 95.2,
+        "value": 94.5,
+        "matched": 2246
+      },
+      {
+        "date": "2025-11-17",
+        "equal": 95.1,
+        "value": 94.1,
+        "matched": 2248
+      },
+      {
+        "date": "2025-11-18",
+        "equal": 95.1,
+        "value": 93.9,
+        "matched": 2253
+      },
+      {
+        "date": "2025-11-19",
+        "equal": 94.6,
+        "value": 93.4,
+        "matched": 2244
+      },
+      {
+        "date": "2025-11-20",
+        "equal": 94.5,
+        "value": 93,
+        "matched": 2236
+      },
+      {
+        "date": "2025-11-21",
+        "equal": 94.2,
+        "value": 92.5,
+        "matched": 2239
+      },
+      {
+        "date": "2025-11-22",
+        "equal": 93.9,
+        "value": 91.8,
+        "matched": 2235
+      },
+      {
+        "date": "2025-11-23",
+        "equal": 93.8,
+        "value": 91.4,
+        "matched": 2236
+      },
+      {
+        "date": "2025-11-24",
+        "equal": 93.6,
+        "value": 91.2,
+        "matched": 2239
+      },
+      {
+        "date": "2025-11-25",
+        "equal": 93.4,
+        "value": 91,
+        "matched": 2240
+      },
+      {
+        "date": "2025-11-26",
+        "equal": 93.2,
+        "value": 90.6,
+        "matched": 2233
+      },
+      {
+        "date": "2025-11-27",
+        "equal": 93.1,
+        "value": 90.3,
+        "matched": 2229
+      },
+      {
+        "date": "2025-11-28",
+        "equal": 92.9,
+        "value": 89.2,
+        "matched": 2226
+      },
+      {
+        "date": "2025-11-29",
+        "equal": 93.1,
+        "value": 89,
+        "matched": 2232
+      },
+      {
+        "date": "2025-11-30",
+        "equal": 93.1,
+        "value": 89.1,
+        "matched": 2235
+      },
+      {
+        "date": "2025-12-01",
+        "equal": 93.6,
+        "value": 89.1,
+        "matched": 2236
+      },
+      {
+        "date": "2025-12-02",
+        "equal": 93.9,
+        "value": 89.2,
+        "matched": 2242
+      },
+      {
+        "date": "2025-12-03",
+        "equal": 94.2,
+        "value": 89.2,
+        "matched": 2250
+      },
+      {
+        "date": "2025-12-04",
+        "equal": 94.2,
+        "value": 89.1,
+        "matched": 2239
+      },
+      {
+        "date": "2025-12-05",
+        "equal": 94.5,
+        "value": 89.3,
+        "matched": 2240
+      },
+      {
+        "date": "2025-12-06",
+        "equal": 94.5,
+        "value": 89.2,
+        "matched": 2247
+      },
+      {
+        "date": "2025-12-07",
+        "equal": 94.9,
+        "value": 89.1,
+        "matched": 2248
+      },
+      {
+        "date": "2025-12-08",
+        "equal": 94.9,
+        "value": 88.9,
+        "matched": 2247
+      },
+      {
+        "date": "2025-12-09",
+        "equal": 94.7,
+        "value": 88.6,
+        "matched": 2244
+      },
+      {
+        "date": "2025-12-10",
+        "equal": 94.5,
+        "value": 88.5,
+        "matched": 2238
+      },
+      {
+        "date": "2025-12-11",
+        "equal": 94.4,
+        "value": 88.2,
+        "matched": 2242
+      },
+      {
+        "date": "2025-12-12",
+        "equal": 94,
+        "value": 87.9,
+        "matched": 2235
+      },
+      {
+        "date": "2025-12-13",
+        "equal": 93.8,
+        "value": 87.7,
+        "matched": 2228
+      },
+      {
+        "date": "2025-12-14",
+        "equal": 93.5,
+        "value": 87.5,
+        "matched": 2225
+      },
+      {
+        "date": "2025-12-15",
+        "equal": 93.2,
+        "value": 87.1,
+        "matched": 2224
+      },
+      {
+        "date": "2025-12-16",
+        "equal": 93,
+        "value": 86.9,
+        "matched": 2230
+      },
+      {
+        "date": "2025-12-17",
+        "equal": 92.8,
+        "value": 86.6,
+        "matched": 2231
+      },
+      {
+        "date": "2025-12-18",
+        "equal": 92.2,
+        "value": 86.1,
+        "matched": 2224
+      },
+      {
+        "date": "2025-12-19",
+        "equal": 91.6,
+        "value": 85.7,
+        "matched": 2221
+      },
+      {
+        "date": "2025-12-20",
+        "equal": 91.4,
+        "value": 85.6,
+        "matched": 2218
+      },
+      {
+        "date": "2025-12-21",
+        "equal": 91.4,
+        "value": 85.4,
+        "matched": 2220
+      },
+      {
+        "date": "2025-12-22",
+        "equal": 91.2,
+        "value": 85.2,
+        "matched": 2218
+      },
+      {
+        "date": "2025-12-23",
+        "equal": 91.1,
+        "value": 85,
+        "matched": 2219
+      },
+      {
+        "date": "2025-12-24",
+        "equal": 90.9,
+        "value": 84.8,
+        "matched": 2213
+      },
+      {
+        "date": "2025-12-25",
+        "equal": 90.8,
+        "value": 84.4,
+        "matched": 2213
+      },
+      {
+        "date": "2025-12-26",
+        "equal": 91.1,
+        "value": 84.1,
+        "matched": 2216
+      },
+      {
+        "date": "2025-12-27",
+        "equal": 91.1,
+        "value": 84,
+        "matched": 2220
+      },
+      {
+        "date": "2025-12-28",
+        "equal": 91.1,
+        "value": 83.8,
+        "matched": 2219
+      },
+      {
+        "date": "2025-12-29",
+        "equal": 91.2,
+        "value": 83.9,
+        "matched": 2215
+      },
+      {
+        "date": "2025-12-30",
+        "equal": 91,
+        "value": 83.6,
+        "matched": 2220
+      },
+      {
+        "date": "2025-12-31",
+        "equal": 91,
+        "value": 83.4,
+        "matched": 2221
+      },
+      {
+        "date": "2026-01-01",
+        "equal": 91,
+        "value": 83.4,
+        "matched": 2218
+      },
+      {
+        "date": "2026-01-02",
+        "equal": 91.2,
+        "value": 83.5,
+        "matched": 2220
+      },
+      {
+        "date": "2026-01-03",
+        "equal": 91.2,
+        "value": 83.8,
+        "matched": 2228
+      },
+      {
+        "date": "2026-01-04",
+        "equal": 91.3,
+        "value": 83.7,
+        "matched": 2233
+      },
+      {
+        "date": "2026-01-05",
+        "equal": 91.2,
+        "value": 83.4,
+        "matched": 2236
+      },
+      {
+        "date": "2026-01-06",
+        "equal": 91.2,
+        "value": 83.5,
+        "matched": 2234
+      },
+      {
+        "date": "2026-01-07",
+        "equal": 91.4,
+        "value": 83.6,
+        "matched": 2236
+      },
+      {
+        "date": "2026-01-08",
+        "equal": 91.4,
+        "value": 83.4,
+        "matched": 2235
+      },
+      {
+        "date": "2026-01-09",
+        "equal": 91.1,
+        "value": 83.3,
+        "matched": 2225
+      },
+      {
+        "date": "2026-01-10",
+        "equal": 91.1,
+        "value": 83.5,
+        "matched": 2177
+      },
+      {
+        "date": "2026-01-11",
+        "equal": 91.4,
+        "value": 83.5,
+        "matched": 2176
+      },
+      {
+        "date": "2026-01-12",
+        "equal": 91.6,
+        "value": 83.5,
+        "matched": 2224
+      },
+      {
+        "date": "2026-01-13",
+        "equal": 91.5,
+        "value": 83.6,
+        "matched": 2224
+      },
+      {
+        "date": "2026-01-14",
+        "equal": 91.4,
+        "value": 83.7,
+        "matched": 2227
+      },
+      {
+        "date": "2026-01-15",
+        "equal": 91.2,
+        "value": 83.8,
+        "matched": 2223
+      },
+      {
+        "date": "2026-01-16",
+        "equal": 91.4,
+        "value": 84,
+        "matched": 2228
+      },
+      {
+        "date": "2026-01-17",
+        "equal": 91.6,
+        "value": 84,
+        "matched": 2232
+      },
+      {
+        "date": "2026-01-18",
+        "equal": 91.8,
+        "value": 83.8,
+        "matched": 2234
+      },
+      {
+        "date": "2026-01-19",
+        "equal": 92,
+        "value": 83.9,
+        "matched": 2236
+      },
+      {
+        "date": "2026-01-20",
+        "equal": 91.9,
+        "value": 83.8,
+        "matched": 2242
+      },
+      {
+        "date": "2026-01-21",
+        "equal": 92.1,
+        "value": 84,
+        "matched": 2248
+      },
+      {
+        "date": "2026-01-22",
+        "equal": 92,
+        "value": 83.9,
+        "matched": 2245
+      },
+      {
+        "date": "2026-01-23",
+        "equal": 92,
+        "value": 84,
+        "matched": 2248
+      },
+      {
+        "date": "2026-01-24",
+        "equal": 92.1,
+        "value": 84.1,
+        "matched": 2244
+      },
+      {
+        "date": "2026-01-25",
+        "equal": 92.4,
+        "value": 84.3,
+        "matched": 2253
+      },
+      {
+        "date": "2026-01-26",
+        "equal": 92.5,
+        "value": 84.2,
+        "matched": 2253
+      },
+      {
+        "date": "2026-01-27",
+        "equal": 92.4,
+        "value": 84.4,
+        "matched": 2242
+      },
+      {
+        "date": "2026-01-28",
+        "equal": 92.4,
+        "value": 84.6,
+        "matched": 2242
+      },
+      {
+        "date": "2026-01-29",
+        "equal": 92.4,
+        "value": 84.6,
+        "matched": 2247
+      },
+      {
+        "date": "2026-01-30",
+        "equal": 92.5,
+        "value": 84.7,
+        "matched": 2255
+      },
+      {
+        "date": "2026-01-31",
+        "equal": 92.7,
+        "value": 84.3,
+        "matched": 2300
+      },
+      {
+        "date": "2026-02-01",
+        "equal": 92.8,
+        "value": 84.1,
+        "matched": 2358
+      },
+      {
+        "date": "2026-02-02",
+        "equal": 92.7,
+        "value": 83.8,
+        "matched": 2361
+      },
+      {
+        "date": "2026-02-03",
+        "equal": 92.7,
+        "value": 83.8,
+        "matched": 2364
+      },
+      {
+        "date": "2026-02-04",
+        "equal": 92.8,
+        "value": 84.1,
+        "matched": 2359
+      },
+      {
+        "date": "2026-02-05",
+        "equal": 93,
+        "value": 84,
+        "matched": 2360
+      },
+      {
+        "date": "2026-02-06",
+        "equal": 93.1,
+        "value": 83.9,
+        "matched": 2369
+      },
+      {
+        "date": "2026-02-07",
+        "equal": 93.3,
+        "value": 84,
+        "matched": 2367
+      },
+      {
+        "date": "2026-02-08",
+        "equal": 93.4,
+        "value": 83.9,
+        "matched": 2373
+      },
+      {
+        "date": "2026-02-09",
+        "equal": 93.4,
+        "value": 83.8,
+        "matched": 2376
+      },
+      {
+        "date": "2026-02-10",
+        "equal": 93.3,
+        "value": 83.6,
+        "matched": 2370
+      },
+      {
+        "date": "2026-02-11",
+        "equal": 93.2,
+        "value": 83.3,
+        "matched": 2361
+      },
+      {
+        "date": "2026-02-12",
+        "equal": 93.3,
+        "value": 83.3,
+        "matched": 2359
+      },
+      {
+        "date": "2026-02-13",
+        "equal": 93.3,
+        "value": 83.1,
+        "matched": 2364
+      },
+      {
+        "date": "2026-02-14",
+        "equal": 93.4,
+        "value": 83.2,
+        "matched": 2363
+      },
+      {
+        "date": "2026-02-15",
+        "equal": 93.6,
+        "value": 83.1,
+        "matched": 2366
+      },
+      {
+        "date": "2026-02-16",
+        "equal": 93.9,
+        "value": 83.1,
+        "matched": 2368
+      },
+      {
+        "date": "2026-02-17",
+        "equal": 94.2,
+        "value": 83.1,
+        "matched": 2378
+      },
+      {
+        "date": "2026-02-18",
+        "equal": 94.1,
+        "value": 83.2,
+        "matched": 2371
+      },
+      {
+        "date": "2026-02-19",
+        "equal": 94.2,
+        "value": 83.2,
+        "matched": 2370
+      },
+      {
+        "date": "2026-02-20",
+        "equal": 94.3,
+        "value": 83.3,
+        "matched": 2376
+      },
+      {
+        "date": "2026-02-21",
+        "equal": 94.3,
+        "value": 83.1,
+        "matched": 2387
+      },
+      {
+        "date": "2026-02-22",
+        "equal": 94.4,
+        "value": 83.1,
+        "matched": 2386
+      },
+      {
+        "date": "2026-02-23",
+        "equal": 94.6,
+        "value": 82.8,
+        "matched": 2381
+      },
+      {
+        "date": "2026-02-24",
+        "equal": 95,
+        "value": 82.9,
+        "matched": 2373
+      },
+      {
+        "date": "2026-02-25",
+        "equal": 95.2,
+        "value": 83,
+        "matched": 2378
+      },
+      {
+        "date": "2026-02-26",
+        "equal": 95,
+        "value": 82.9,
+        "matched": 2386
+      },
+      {
+        "date": "2026-02-27",
+        "equal": 95.2,
+        "value": 82.8,
+        "matched": 2382
+      },
+      {
+        "date": "2026-02-28",
+        "equal": 95.4,
+        "value": 83,
+        "matched": 2384
+      },
+      {
+        "date": "2026-03-01",
+        "equal": 95.9,
+        "value": 83.4,
+        "matched": 2394
+      },
+      {
+        "date": "2026-03-02",
+        "equal": 96.2,
+        "value": 83.6,
+        "matched": 2404
+      },
+      {
+        "date": "2026-03-03",
+        "equal": 96.3,
+        "value": 83.9,
+        "matched": 2410
+      },
+      {
+        "date": "2026-03-04",
+        "equal": 96.5,
+        "value": 84.4,
+        "matched": 2406
+      },
+      {
+        "date": "2026-03-05",
+        "equal": 96.6,
+        "value": 84.8,
+        "matched": 2405
+      },
+      {
+        "date": "2026-03-06",
+        "equal": 96.7,
+        "value": 85.1,
+        "matched": 2401
+      },
+      {
+        "date": "2026-03-07",
+        "equal": 96.9,
+        "value": 85.6,
+        "matched": 2386
+      },
+      {
+        "date": "2026-03-08",
+        "equal": 97.1,
+        "value": 85.7,
+        "matched": 2392
+      },
+      {
+        "date": "2026-03-09",
+        "equal": 97,
+        "value": 85.7,
+        "matched": 2394
+      },
+      {
+        "date": "2026-03-10",
+        "equal": 97,
+        "value": 85.8,
+        "matched": 2389
+      },
+      {
+        "date": "2026-03-11",
+        "equal": 96.9,
+        "value": 86,
+        "matched": 2390
+      },
+      {
+        "date": "2026-03-12",
+        "equal": 97.1,
+        "value": 86.2,
+        "matched": 2394
+      },
+      {
+        "date": "2026-03-13",
+        "equal": 97.4,
+        "value": 86.6,
+        "matched": 2396
+      },
+      {
+        "date": "2026-03-14",
+        "equal": 97.7,
+        "value": 86.7,
+        "matched": 2397
+      },
+      {
+        "date": "2026-03-15",
+        "equal": 98,
+        "value": 86.8,
+        "matched": 2398
+      },
+      {
+        "date": "2026-03-16",
+        "equal": 98.3,
+        "value": 87.2,
+        "matched": 2397
+      },
+      {
+        "date": "2026-03-17",
+        "equal": 98.5,
+        "value": 87.4,
+        "matched": 2402
+      },
+      {
+        "date": "2026-03-18",
+        "equal": 98.9,
+        "value": 87.8,
+        "matched": 2400
+      },
+      {
+        "date": "2026-03-19",
+        "equal": 99.1,
+        "value": 88.1,
+        "matched": 2406
+      },
+      {
+        "date": "2026-03-20",
+        "equal": 99.4,
+        "value": 88.3,
+        "matched": 2413
+      },
+      {
+        "date": "2026-03-21",
+        "equal": 99.6,
+        "value": 88.7,
+        "matched": 2412
+      },
+      {
+        "date": "2026-03-22",
+        "equal": 99.6,
+        "value": 88.8,
+        "matched": 2413
+      },
+      {
+        "date": "2026-03-23",
+        "equal": 99.5,
+        "value": 88.9,
+        "matched": 2414
+      },
+      {
+        "date": "2026-03-24",
+        "equal": 99.6,
+        "value": 89,
+        "matched": 2404
+      },
+      {
+        "date": "2026-03-25",
+        "equal": 99.6,
+        "value": 89.4,
+        "matched": 2403
+      },
+      {
+        "date": "2026-03-26",
+        "equal": 99.9,
+        "value": 89.7,
+        "matched": 2404
+      },
+      {
+        "date": "2026-03-27",
+        "equal": 100.3,
+        "value": 89.9,
+        "matched": 2409
+      },
+      {
+        "date": "2026-03-28",
+        "equal": 100.5,
+        "value": 90.1,
+        "matched": 2447
+      },
+      {
+        "date": "2026-03-29",
+        "equal": 100.8,
+        "value": 90.1,
+        "matched": 2451
+      },
+      {
+        "date": "2026-03-30",
+        "equal": 101,
+        "value": 90.4,
+        "matched": 2454
+      },
+      {
+        "date": "2026-03-31",
+        "equal": 101,
+        "value": 90.5,
+        "matched": 2461
+      },
+      {
+        "date": "2026-04-01",
+        "equal": 101.3,
+        "value": 90.6,
+        "matched": 2461
+      },
+      {
+        "date": "2026-04-02",
+        "equal": 101.7,
+        "value": 91.2,
+        "matched": 2458
+      },
+      {
+        "date": "2026-04-03",
+        "equal": 102.2,
+        "value": 91.8,
+        "matched": 2465
+      },
+      {
+        "date": "2026-04-04",
+        "equal": 102.5,
+        "value": 92.2,
+        "matched": 2465
+      },
+      {
+        "date": "2026-04-05",
+        "equal": 102.5,
+        "value": 92.4,
+        "matched": 2462
+      },
+      {
+        "date": "2026-04-06",
+        "equal": 102.6,
+        "value": 92.8,
+        "matched": 2464
+      },
+      {
+        "date": "2026-04-07",
+        "equal": 102.9,
+        "value": 93.5,
+        "matched": 2460
+      },
+      {
+        "date": "2026-04-08",
+        "equal": 103.1,
+        "value": 93.8,
+        "matched": 2456
+      },
+      {
+        "date": "2026-04-09",
+        "equal": 103.4,
+        "value": 94.2,
+        "matched": 2457
+      },
+      {
+        "date": "2026-04-10",
+        "equal": 103.5,
+        "value": 94.5,
+        "matched": 2459
+      },
+      {
+        "date": "2026-04-11",
+        "equal": 103.9,
+        "value": 94.7,
+        "matched": 2460
+      },
+      {
+        "date": "2026-04-12",
+        "equal": 103.9,
+        "value": 95,
+        "matched": 2455
+      },
+      {
+        "date": "2026-04-13",
+        "equal": 104.2,
+        "value": 95.4,
+        "matched": 2460
+      },
+      {
+        "date": "2026-04-14",
+        "equal": 104.5,
+        "value": 95.9,
+        "matched": 2462
+      },
+      {
+        "date": "2026-04-15",
+        "equal": 104.6,
+        "value": 96.3,
+        "matched": 2455
+      },
+      {
+        "date": "2026-04-16",
+        "equal": 104.9,
+        "value": 96.7,
+        "matched": 2453
+      },
+      {
+        "date": "2026-04-17",
+        "equal": 105.3,
+        "value": 97.4,
+        "matched": 2456
+      },
+      {
+        "date": "2026-04-18",
+        "equal": 105.6,
+        "value": 97.9,
+        "matched": 2467
+      },
+      {
+        "date": "2026-04-19",
+        "equal": 106.1,
+        "value": 98.4,
+        "matched": 2468
+      },
+      {
+        "date": "2026-04-20",
+        "equal": 106.2,
+        "value": 99,
+        "matched": 2474
+      },
+      {
+        "date": "2026-04-21",
+        "equal": 106.5,
+        "value": 99.4,
+        "matched": 2474
+      },
+      {
+        "date": "2026-04-22",
+        "equal": 106.6,
+        "value": 99.8,
+        "matched": 2466
+      },
+      {
+        "date": "2026-04-23",
+        "equal": 107,
+        "value": 100.2,
+        "matched": 2468
+      },
+      {
+        "date": "2026-04-24",
+        "equal": 107.1,
+        "value": 100.4,
+        "matched": 2474
+      },
+      {
+        "date": "2026-04-25",
+        "equal": 107.1,
+        "value": 99.8,
+        "matched": 2474
+      },
+      {
+        "date": "2026-04-26",
+        "equal": 107.5,
+        "value": 100.9,
+        "matched": 2469
+      },
+      {
+        "date": "2026-04-27",
+        "equal": 107.6,
+        "value": 101,
+        "matched": 2469
+      },
+      {
+        "date": "2026-04-28",
+        "equal": 107.9,
+        "value": 101.1,
+        "matched": 2479
+      },
+      {
+        "date": "2026-04-29",
+        "equal": 108.2,
+        "value": 102.2,
+        "matched": 2477
+      },
+      {
+        "date": "2026-04-30",
+        "equal": 108.4,
+        "value": 102.7,
+        "matched": 2476
+      },
+      {
+        "date": "2026-05-01",
+        "equal": 108.7,
+        "value": 102.9,
+        "matched": 2487
+      },
+      {
+        "date": "2026-05-02",
+        "equal": 109,
+        "value": 103.2,
+        "matched": 2483
+      },
+      {
+        "date": "2026-05-03",
+        "equal": 109.8,
+        "value": 103.6,
+        "matched": 2474
+      },
+      {
+        "date": "2026-05-04",
+        "equal": 110.1,
+        "value": 103.8,
+        "matched": 2482
+      },
+      {
+        "date": "2026-05-05",
+        "equal": 110.5,
+        "value": 104,
+        "matched": 2485
+      },
+      {
+        "date": "2026-05-06",
+        "equal": 110.7,
+        "value": 103.5,
+        "matched": 2483
+      },
+      {
+        "date": "2026-05-07",
+        "equal": 111,
+        "value": 104.6,
+        "matched": 2476
+      },
+      {
+        "date": "2026-05-08",
+        "equal": 111.3,
+        "value": 105.1,
+        "matched": 2473
+      },
+      {
+        "date": "2026-05-09",
+        "equal": 111.8,
+        "value": 105.1,
+        "matched": 2482
+      },
+      {
+        "date": "2026-05-10",
+        "equal": 112.3,
+        "value": 105.4,
+        "matched": 2487
+      },
+      {
+        "date": "2026-05-11",
+        "equal": 112.5,
+        "value": 105,
+        "matched": 2494
+      },
+      {
+        "date": "2026-05-12",
+        "equal": 112.9,
+        "value": 106.1,
+        "matched": 2480
+      },
+      {
+        "date": "2026-05-13",
+        "equal": 113.1,
+        "value": 106.4,
+        "matched": 2488
+      },
+      {
+        "date": "2026-05-14",
+        "equal": 113.5,
+        "value": 106.8,
+        "matched": 2486
+      },
+      {
+        "date": "2026-05-15",
+        "equal": 113.7,
+        "value": 107,
+        "matched": 2486
+      },
+      {
+        "date": "2026-05-16",
+        "equal": 114.1,
+        "value": 107.3,
+        "matched": 2491
+      },
+      {
+        "date": "2026-05-17",
+        "equal": 114.4,
+        "value": 107,
+        "matched": 2492
+      },
+      {
+        "date": "2026-05-18",
+        "equal": 114.7,
+        "value": 107.1,
+        "matched": 2487
+      },
+      {
+        "date": "2026-05-19",
+        "equal": 114.9,
+        "value": 107,
+        "matched": 2480
+      },
+      {
+        "date": "2026-05-20",
+        "equal": 114.9,
+        "value": 107.8,
+        "matched": 2480
+      },
+      {
+        "date": "2026-05-21",
+        "equal": 115.2,
+        "value": 108.4,
+        "matched": 2483
+      },
+      {
+        "date": "2026-05-22",
+        "equal": 115.4,
+        "value": 109.1,
+        "matched": 2484
+      },
+      {
+        "date": "2026-05-23",
+        "equal": 115.6,
+        "value": 109.1,
+        "matched": 2519
+      },
+      {
+        "date": "2026-05-24",
+        "equal": 115.8,
+        "value": 109.1,
+        "matched": 2516
+      },
+      {
+        "date": "2026-05-25",
+        "equal": 115.6,
+        "value": 108.2,
+        "matched": 2520
+      },
+      {
+        "date": "2026-05-26",
+        "equal": 115.7,
+        "value": 108.7,
+        "matched": 2518
+      },
+      {
+        "date": "2026-05-27",
+        "equal": 115.9,
+        "value": 109.1,
+        "matched": 2513
+      },
+      {
+        "date": "2026-05-28",
+        "equal": 116.2,
+        "value": 109.1,
+        "matched": 2523
+      },
+      {
+        "date": "2026-05-29",
+        "equal": 116.1,
+        "value": 109.6,
+        "matched": 2516
+      },
+      {
+        "date": "2026-05-30",
+        "equal": 116.9,
+        "value": 110.3,
+        "matched": 2517
+      },
+      {
+        "date": "2026-05-31",
+        "equal": 117.2,
+        "value": 110.1,
+        "matched": 2517
+      },
+      {
+        "date": "2026-06-01",
+        "equal": 117.8,
+        "value": 111.1,
+        "matched": 2519
+      },
+      {
+        "date": "2026-06-02",
+        "equal": 118.1,
+        "value": 111.4,
+        "matched": 2522
+      },
+      {
+        "date": "2026-06-03",
+        "equal": 118.1,
+        "value": 111.8,
+        "matched": 2526
+      },
+      {
+        "date": "2026-06-04",
+        "equal": 118.2,
+        "value": 112,
+        "matched": 2519
+      },
+      {
+        "date": "2026-06-05",
+        "equal": 118.4,
+        "value": 112.2,
+        "matched": 2514
+      },
+      {
+        "date": "2026-06-06",
+        "equal": 118.6,
+        "value": 112.4,
+        "matched": 2517
+      },
+      {
+        "date": "2026-06-07",
+        "equal": 118.5,
+        "value": 112.3,
+        "matched": 2521
+      },
+      {
+        "date": "2026-06-08",
+        "equal": 118.7,
+        "value": 112.5,
+        "matched": 2522
+      },
+      {
+        "date": "2026-06-09",
+        "equal": 119,
+        "value": 113,
+        "matched": 2523
+      },
+      {
+        "date": "2026-06-10",
+        "equal": 119.1,
+        "value": 113.2,
+        "matched": 2525
+      },
+      {
+        "date": "2026-06-11",
+        "equal": 119.4,
+        "value": 113.2,
+        "matched": 2524
+      },
+      {
+        "date": "2026-06-12",
+        "equal": 119.7,
+        "value": 113.8,
+        "matched": 2528
+      },
+      {
+        "date": "2026-06-13",
+        "equal": 119.9,
+        "value": 113.9,
+        "matched": 2525
+      },
+      {
+        "date": "2026-06-14",
+        "equal": 120.3,
+        "value": 114,
+        "matched": 2527
+      },
+      {
+        "date": "2026-06-15",
+        "equal": 120.4,
+        "value": 114.2,
+        "matched": 2528
+      },
+      {
+        "date": "2026-06-16",
+        "equal": 120.5,
+        "value": 114.3,
+        "matched": 2530
+      },
+      {
+        "date": "2026-06-17",
+        "equal": 120.6,
+        "value": 114.6,
+        "matched": 2531
+      },
+      {
+        "date": "2026-06-18",
+        "equal": 120.8,
+        "value": 115,
+        "matched": 2529
+      },
+      {
+        "date": "2026-06-19",
+        "equal": 121.1,
+        "value": 114.9,
+        "matched": 2529
+      },
+      {
+        "date": "2026-06-20",
+        "equal": 121.2,
+        "value": 115,
+        "matched": 2533
+      },
+      {
+        "date": "2026-06-21",
+        "equal": 121.5,
+        "value": 115,
+        "matched": 2534
+      },
+      {
+        "date": "2026-06-22",
+        "equal": 121.3,
+        "value": 114.9,
+        "matched": 2533
+      },
+      {
+        "date": "2026-06-23",
+        "equal": 121.5,
+        "value": 115.3,
+        "matched": 2529
+      },
+      {
+        "date": "2026-06-24",
+        "equal": 121.3,
+        "value": 115.2,
+        "matched": 2525
+      },
+      {
+        "date": "2026-06-25",
+        "equal": 121.3,
+        "value": 114.6,
+        "matched": 2520
+      },
+      {
+        "date": "2026-06-26",
+        "equal": 121.2,
+        "value": 114.4,
+        "matched": 2520
+      },
+      {
+        "date": "2026-06-27",
+        "equal": 120.9,
+        "value": 114.5,
+        "matched": 2520
+      },
+      {
+        "date": "2026-06-28",
+        "equal": 121.1,
+        "value": 114.4,
+        "matched": 2523
+      },
+      {
+        "date": "2026-06-29",
+        "equal": 120.9,
+        "value": 114.8,
+        "matched": 2525
+      },
+      {
+        "date": "2026-06-30",
+        "equal": 120.6,
+        "value": 114.6,
+        "matched": 2522
+      },
+      {
+        "date": "2026-07-01",
+        "equal": 120.7,
+        "value": 114.5,
+        "matched": 2523
+      },
+      {
+        "date": "2026-07-02",
+        "equal": 120.8,
+        "value": 114.1,
+        "matched": 2526
+      },
+      {
+        "date": "2026-07-03",
+        "equal": 120.6,
+        "value": 113.9,
+        "matched": 2530
+      },
+      {
+        "date": "2026-07-04",
+        "equal": 120.7,
+        "value": 113.8,
+        "matched": 2529
+      },
+      {
+        "date": "2026-07-05",
+        "equal": 120.9,
+        "value": 113.8,
+        "matched": 2532
+      },
+      {
+        "date": "2026-07-06",
+        "equal": 120.9,
+        "value": 113.8,
+        "matched": 2523
+      },
+      {
+        "date": "2026-07-07",
+        "equal": 120.8,
+        "value": 114,
+        "matched": 2522
+      },
+      {
+        "date": "2026-07-08",
+        "equal": 120.6,
+        "value": 113.8,
+        "matched": 2522
+      },
+      {
+        "date": "2026-07-09",
+        "equal": 120.6,
+        "value": 113.7,
+        "matched": 2533
+      },
+      {
+        "date": "2026-07-10",
+        "equal": 120.4,
+        "value": 113.5,
+        "matched": 2531
+      },
+      {
+        "date": "2026-07-11",
+        "equal": 120.2,
+        "value": 113.3,
+        "matched": 2524
+      },
+      {
+        "date": "2026-07-12",
+        "equal": 120.1,
+        "value": 113.3,
+        "matched": 2529
+      },
+      {
+        "date": "2026-07-13",
+        "equal": 120,
+        "value": 113.1,
+        "matched": 2519
+      },
+      {
+        "date": "2026-07-14",
+        "equal": 119.9,
+        "value": 112.9,
+        "matched": 2519
+      },
+      {
+        "date": "2026-07-15",
+        "equal": 119.4,
+        "value": 112.7,
+        "matched": 2520
+      },
+      {
+        "date": "2026-07-16",
+        "equal": 119,
+        "value": 112.5,
+        "matched": 2521
+      },
+      {
+        "date": "2026-07-17",
+        "equal": 118.7,
+        "value": 112.3,
+        "matched": 2518
+      },
+      {
+        "date": "2026-07-18",
+        "equal": 118.4,
+        "value": 111,
+        "matched": 2552
+      },
+      {
+        "date": "2026-07-19",
+        "equal": 118.1,
+        "value": 110.8,
+        "matched": 2552
+      },
+      {
+        "date": "2026-07-20",
+        "equal": 117.7,
+        "value": 110.3,
+        "matched": 2550
+      },
+      {
+        "date": "2026-07-21",
+        "equal": 117.7,
+        "value": 110.3,
+        "matched": 2552
+      },
+      {
+        "date": "2026-07-22",
+        "equal": 117.3,
+        "value": 110,
+        "matched": 2543
+      },
+      {
+        "date": "2026-07-23",
+        "equal": 117.1,
+        "value": 109.7,
+        "matched": 2538
+      },
+      {
+        "date": "2026-07-24",
+        "equal": 116.9,
+        "value": 110.1,
+        "matched": 2544
+      },
+      {
+        "date": "2026-07-25",
+        "equal": 117,
+        "value": 110.1,
+        "matched": 2542
+      },
+      {
+        "date": "2026-07-26",
+        "equal": 117,
+        "value": 109.9,
+        "matched": 2540
+      },
+      {
+        "date": "2026-07-27",
+        "equal": 116.9,
+        "value": 109.8,
+        "matched": 2535
+      },
+      {
+        "date": "2026-07-28",
+        "equal": 116.5,
+        "value": 109.6,
+        "matched": 2535
+      },
+      {
+        "date": "2026-07-29",
+        "equal": 116.3,
+        "value": 109.3,
+        "matched": 2536
+      },
+      {
+        "date": "2026-07-30",
+        "equal": 116.2,
+        "value": 109.2,
+        "matched": 2538
+      },
+      {
+        "date": "2026-07-31",
+        "equal": 116.1,
+        "value": 109.1,
+        "matched": 2532
+      },
+      {
+        "date": "2026-08-01",
+        "equal": 116.1,
+        "value": 108.7,
+        "matched": 2533
+      },
+      {
+        "date": "2026-08-02",
+        "equal": 116,
+        "value": 108.4,
+        "matched": 2541
+      },
+      {
+        "date": "2026-08-03",
+        "equal": 116.1,
+        "value": 108.3,
+        "matched": 2540
+      },
+      {
+        "date": "2026-08-04",
+        "equal": 115.9,
+        "value": 108,
+        "matched": 2537
+      },
+      {
+        "date": "2026-08-05",
+        "equal": 115.8,
+        "value": 108,
+        "matched": 2539
+      },
+      {
+        "date": "2026-08-06",
+        "equal": 115.6,
+        "value": 107.9,
+        "matched": 2538
+      },
+      {
+        "date": "2026-08-07",
+        "equal": 115.7,
+        "value": 107.8,
+        "matched": 2542
+      },
+      {
+        "date": "2026-08-08",
+        "equal": 115.9,
+        "value": 107.5,
+        "matched": 2542
+      },
+      {
+        "date": "2026-08-09",
+        "equal": 115.8,
+        "value": 107.3,
+        "matched": 2539
+      },
+      {
+        "date": "2026-08-10",
+        "equal": 115.7,
+        "value": 107.1,
+        "matched": 2542
+      },
+      {
+        "date": "2026-08-11",
+        "equal": 115.5,
+        "value": 107,
+        "matched": 2546
+      },
+      {
+        "date": "2026-08-12",
+        "equal": 115.2,
+        "value": 106.7,
+        "matched": 2548
+      },
+      {
+        "date": "2026-08-13",
+        "equal": 115.1,
+        "value": 106.4,
+        "matched": 2548
+      },
+      {
+        "date": "2026-08-14",
+        "equal": 114.8,
+        "value": 106.1,
+        "matched": 2544
+      },
+      {
+        "date": "2026-08-15",
+        "equal": 114.7,
+        "value": 105.9,
+        "matched": 2535
+      },
+      {
+        "date": "2026-08-16",
+        "equal": 114.6,
+        "value": 105.7,
+        "matched": 2534
+      },
+      {
+        "date": "2026-08-17",
+        "equal": 114.6,
+        "value": 105.5,
+        "matched": 2533
+      },
+      {
+        "date": "2026-08-18",
+        "equal": 114.9,
+        "value": 105.5,
+        "matched": 2538
+      },
+      {
+        "date": "2026-08-19",
+        "equal": 114.8,
+        "value": 105.3,
+        "matched": 2542
+      },
+      {
+        "date": "2026-08-20",
+        "equal": 114.7,
+        "value": 105.2,
+        "matched": 2539
+      },
+      {
+        "date": "2026-08-21",
+        "equal": 114.8,
+        "value": 105.1,
+        "matched": 2546
+      },
+      {
+        "date": "2026-08-22",
+        "equal": 114.7,
+        "value": 105,
+        "matched": 2548
+      },
+      {
+        "date": "2026-08-23",
+        "equal": 114.7,
+        "value": 105.1,
+        "matched": 2547
+      },
+      {
+        "date": "2026-08-24",
+        "equal": 114.8,
+        "value": 105,
+        "matched": 2547
+      },
+      {
+        "date": "2026-08-25",
+        "equal": 115,
+        "value": 105,
+        "matched": 2559
+      },
+      {
+        "date": "2026-08-26",
+        "equal": 114.9,
+        "value": 104.8,
+        "matched": 2557
+      },
+      {
+        "date": "2026-08-27",
+        "equal": 114.7,
+        "value": 104.6,
+        "matched": 2560
+      },
+      {
+        "date": "2026-08-28",
+        "equal": 114.7,
+        "value": 104.5,
+        "matched": 2566
+      },
+      {
+        "date": "2026-08-29",
+        "equal": 114.7,
+        "value": 104.3,
+        "matched": 2571
+      },
+      {
+        "date": "2026-08-30",
+        "equal": 114.7,
+        "value": 104.2,
+        "matched": 2571
+      },
+      {
+        "date": "2026-08-31",
+        "equal": 114.6,
+        "value": 103.7,
+        "matched": 2569
+      },
+      {
+        "date": "2026-09-01",
+        "equal": 114.4,
+        "value": 103.8,
+        "matched": 2563
+      },
+      {
+        "date": "2026-09-02",
+        "equal": 114.2,
+        "value": 103.6,
+        "matched": 2562
+      },
+      {
+        "date": "2026-09-03",
+        "equal": 114,
+        "value": 103.4,
+        "matched": 2557
+      },
+      {
+        "date": "2026-09-04",
+        "equal": 114.2,
+        "value": 103.3,
+        "matched": 2563
+      },
+      {
+        "date": "2026-09-05",
+        "equal": 114.1,
+        "value": 103.2,
+        "matched": 2568
+      },
+      {
+        "date": "2026-09-06",
+        "equal": 114.1,
+        "value": 103.2,
+        "matched": 2569
+      },
+      {
+        "date": "2026-09-07",
+        "equal": 114.1,
+        "value": 103.1,
+        "matched": 2563
+      },
+      {
+        "date": "2026-09-08",
+        "equal": 114,
+        "value": 102.9,
+        "matched": 2561
+      },
+      {
+        "date": "2026-09-09",
+        "equal": 113.8,
+        "value": 102.7,
+        "matched": 2558
+      },
+      {
+        "date": "2026-09-10",
+        "equal": 113.8,
+        "value": 102.5,
+        "matched": 2562
+      },
+      {
+        "date": "2026-09-11",
+        "equal": 113.7,
+        "value": 102.4,
+        "matched": 2566
+      },
+      {
+        "date": "2026-09-12",
+        "equal": 113.8,
+        "value": 102.3,
+        "matched": 2566
+      },
+      {
+        "date": "2026-09-13",
+        "equal": 113.7,
+        "value": 102.2,
+        "matched": 2573
+      },
+      {
+        "date": "2026-09-14",
+        "equal": 113.6,
+        "value": 101.9,
+        "matched": 2571
+      },
+      {
+        "date": "2026-09-15",
+        "equal": 113.5,
+        "value": 101.7,
+        "matched": 2574
+      },
+      {
+        "date": "2026-09-16",
+        "equal": 113.2,
+        "value": 101.6,
+        "matched": 2569
+      },
+      {
+        "date": "2026-09-17",
+        "equal": 113.1,
+        "value": 100.9,
+        "matched": 2651
+      },
+      {
+        "date": "2026-09-18",
+        "equal": 113,
+        "value": 100.7,
+        "matched": 2655
+      },
+      {
+        "date": "2026-09-19",
+        "equal": 112.9,
+        "value": 100.5,
+        "matched": 2653
+      },
+      {
+        "date": "2026-09-20",
+        "equal": 112.8,
+        "value": 100.4,
+        "matched": 2653
+      },
+      {
+        "date": "2026-09-21",
+        "equal": 112.6,
+        "value": 100,
+        "matched": 2655
+      },
+      {
+        "date": "2026-09-22",
+        "equal": 112.3,
+        "value": 99.8,
+        "matched": 2654
+      },
+      {
+        "date": "2026-09-23",
+        "equal": 111.8,
+        "value": 99.5,
+        "matched": 2657
+      },
+      {
+        "date": "2026-09-24",
+        "equal": 111.4,
+        "value": 99.1,
+        "matched": 2659
+      },
+      {
+        "date": "2026-09-25",
+        "equal": 111.2,
+        "value": 98.8,
+        "matched": 2649
       }
     ]
   }

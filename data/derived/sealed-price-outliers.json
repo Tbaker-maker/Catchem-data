@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-10-13T12:04:24.802Z",
-  "asOf": "2026-10-13",
+  "generatedAt": "2026-10-14T21:45:50.301Z",
+  "asOf": "2026-10-14",
   "source": {
     "heatHistory": "data/heat-history.json",
     "sealedPrices": "data/sealed-prices.json",
     "buyoutTape": "data/buyout-tape.json",
     "tcgplayer": "TCGplayer market for the same id only (crosscheck history or data/history/tcgplayer-market). A held id is not used.",
-    "sealedPricesUpdatedAt": "2026-10-13T11:37:01.524Z"
+    "sealedPricesUpdatedAt": "2026-10-14T21:33:41.246Z"
   },
   "rule": {
     "highGap": 0.5,
@@ -17,43 +17,9 @@
     "note": "HIGH when |today − median(last ≤7 prior heat-history prices)| / median ≥ 50%. SOFT at ≥40% and <50%. Review label: TCGplayer flat while the eBay median jumped → likely bad listing. Both moved the same way → possible real move. Opposite moves, a missing series, or a held id → review. Only possible real move is a Flagged read. Packs skipped. Do not invent prices."
   },
   "skippedPacks": 35,
-  "skippedNoFlag": 147,
-  "highCount": 1,
+  "skippedNoFlag": 148,
+  "highCount": 0,
   "softCount": 0,
-  "high": [
-    {
-      "id": "cel25-etb",
-      "name": "Celebrations Elite Trainer Box",
-      "subtype": "etb",
-      "severity": "high",
-      "direction": "high",
-      "todayDate": "2026-10-13",
-      "todayPrice": 335,
-      "referencePrice": 200,
-      "referenceWindow": {
-        "priorCount": 7,
-        "from": "2026-10-06",
-        "to": "2026-10-12",
-        "rule": "median of last 7 prior heat-history prices (window ≤7, min 3)"
-      },
-      "pctGap": 67.5,
-      "listingCount": 27,
-      "listingCountPrior": 27,
-      "listingCountNote": "heat-history listingCount is the filtered page count, not Browse total, not solds, and not the review label",
-      "browseTotal": 4503,
-      "browseTotalPrior": 4486,
-      "tcgNow": 351.76,
-      "tcgReference": 356.56,
-      "tcgPct": -1.3,
-      "tcgAsOf": "2026-10-13",
-      "provisionalLabel": "likely bad listing",
-      "evidence": [
-        "eBay ask vs its recent median +67.5%",
-        "TCGplayer 356.56 → 351.76 (-1.3%)",
-        "TCGplayer price stayed flat while the eBay median jumped"
-      ],
-      "conflict": false
-    }
-  ],
+  "high": [],
   "soft": []
 }

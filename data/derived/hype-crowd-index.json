@@ -1,13 +1,13 @@
 {
- "asOf": "2026-10-13",
- "generatedAt": "2026-10-13T12:07:27.257Z",
+ "asOf": "2026-10-14",
+ "generatedAt": "2026-10-14T21:20:35.533Z",
  "note": "Index of three-level hype-effect and crowded-call outputs. Per-level files are authoritative for page surfaces.",
  "hypeEffect": {
   "set": {
    "file": "data/derived/hype-effect-set.json",
-   "count": 2,
-   "passedHoldout": true,
-   "testN": 7
+   "count": 0,
+   "passedHoldout": false,
+   "testN": 0
   },
   "single": {
    "file": "data/derived/hype-effect-single.json",
@@ -19,7 +19,7 @@
    "file": "data/derived/hype-effect-sealed.json",
    "count": 0,
    "passedHoldout": false,
-   "testN": 6
+   "testN": 0
   }
  },
  "crowdedCalls": {
@@ -27,7 +27,7 @@
    "file": "data/derived/crowded-calls-set.json",
    "count": 0,
    "passedHoldout": false,
-   "testN": 4
+   "testN": 0
   },
   "single": {
    "file": "data/derived/crowded-calls-single.json",
@@ -39,7 +39,7 @@
    "file": "data/derived/crowded-calls-sealed.json",
    "count": 0,
    "passedHoldout": false,
-   "testN": 5
+   "testN": 0
   }
  }
 }
