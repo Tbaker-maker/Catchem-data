@@ -55,6 +55,8 @@ if (!pull?.rows?.length) {
   console.error("rip-roi: data/pull-rates.json missing or empty");
   process.exit(1);
 }
+const prior = await J("data/derived/rip-roi.json", { rows: [] });
+const priorIds = new Set((prior.rows || []).map((r) => r.id));
 
 const setsPub = await J("research/assets/public/sets.json", { sets: [] });
 const products = await J("data/sealed-products.json", []);
@@ -88,7 +90,7 @@ for (const product of products) {
   const setSlug = resolveSetSlug(product, maps);
   if (!setSlug || !ratesBySlug.has(setSlug)) {
     if (setSlug && maps.pullSlugs && !ratesBySlug.has(setSlug)) {
-      // set known but no rates — already in noSource or not filled
+      // set known but no rates  -  already in noSource or not filled
     }
     if (!setSlug) skippedNoMatch.push({ id: product.id, set: product.set, setId: product.setId, note: "could not map to a pull-rate setSlug" });
     continue;
@@ -101,6 +103,12 @@ for (const product of products) {
   const priced = productPrice(catalogByPid, sealedPrices, product);
   if (!priced) {
     skippedNoPrice.push({ id: product.id, name: product.name, note: "no market price" });
+    continue;
+  }
+  // A product that was not already published needs a TCGplayer market price.
+  // sealed-prices median is a different feed and is not labeled as TCGplayer.
+  if (!priorIds.has(product.id) && priced.source !== "TCGplayer market") {
+    skippedNoPrice.push({ id: product.id, name: product.name, note: "no TCGplayer market price" });
     continue;
   }
   const { slots, sources } = buildSlots(ratesBySlug.get(setSlug), singles, setSlug);
@@ -133,7 +141,24 @@ for (const product of products) {
   rows.push(scored);
 }
 
-rows.sort((a, b) => (b.roiPct ?? -9999) - (a.roiPct ?? -9999) || (a.id < b.id ? -1 : 1));
+const dropPrior = (list) => list.filter((x) => !priorIds.has(x.id));
+
+// Rescore products already in the file so a low bulk floor can move.
+// A row that no longer scores stays as last published.
+const freshById = new Map(rows.map((r) => [r.id, r]));
+const seen = new Set();
+const merged = [];
+for (const old of prior.rows || []) {
+  const next = freshById.get(old.id);
+  merged.push(next || old);
+  seen.add(old.id);
+}
+for (const row of rows) {
+  if (!seen.has(row.id)) merged.push(row);
+}
+merged.sort((a, b) => (b.roiPct ?? -9999) - (a.roiPct ?? -9999) || (a.id < b.id ? -1 : 1));
+rows.length = 0;
+rows.push(...merged);
 
 const asOf = bucketAsOf || pull.updated || pull.sourceDate || new Date().toISOString().slice(0, 10);
 const doc = {
@@ -141,24 +166,25 @@ const doc = {
   label: "Rip value",
   note: "Expected contents of opening a pack or sealed product, minus the product price. History-based estimates from dated pull rates and our singles prices. Not advice.",
   method: {
-    pullRates: "data/pull-rates.json — a row is written only when the source states the rate, with its link and date.",
-    singles: "research/assets/public/buckets — TCGplayer market on asOf.",
+    pullRates: "data/pull-rates.json. A row is written only when the source states the rate, with its link and date.",
+    singles: "research/assets/public/buckets, TCGplayer market on asOf.",
     bulkFloor: `Trimmed mean of Common and Uncommon on asOf, times ${BULK_CARDS_PER_PACK} cards per pack. Under 20 prices, the median is used. The median is stored beside the mean.`,
     rareSlot: "Median Rare / Holo Rare / Double Rare in the set × 1 rare slot per pack.",
     packs: "booster-pack=1, booster-bundle=6, booster-box=36, ETB=9 (SWSH=8), PC-ETB same as ETB.",
     monteCarlo: `${SIMS} sims; each published rarity rate is an independent draw at that slot's average price.`,
     promo: "Fixed promo/contents not yet in the sealed products file; promo=0 for this build.",
     copy: "Public label is Rip value. EV and ROI % are history-based estimates.",
+    rerun: "Every product that still scores was rescored with the trimmed-mean bulk floor and a seeded Monte Carlo. A product that was not already in the file is included only when it has a TCGplayer market price. A daily history file is written beside this one.",
   },
   pullRatesUpdated: pull.updated || pull.sourceDate,
   count: rows.length,
   skipped: {
     noSourceCount: pull.noSourceCount ?? skippedSets.length,
     noSource: skippedSets,
-    noSetMap: skippedNoMatch.slice(0, 200),
-    noPacks: skippedNoPacks.slice(0, 100),
-    noPrice: skippedNoPrice.slice(0, 100),
-    noSlots: skippedNoSlots.slice(0, 100),
+    noSetMap: dropPrior(skippedNoMatch).slice(0, 200),
+    noPacks: dropPrior(skippedNoPacks).slice(0, 100),
+    noPrice: dropPrior(skippedNoPrice).slice(0, 100),
+    noSlots: dropPrior(skippedNoSlots).slice(0, 100),
   },
   sources: [...sourceSet.values()],
   ranking: rows.map((r, i) => ({
@@ -178,17 +204,32 @@ const doc = {
   rows,
 };
 
+function scrub(v) {
+  if (typeof v === "string") {
+    if (v.includes("http://") || v.includes("https://")) return v.replaceAll("\u2014", "%E2%80%94");
+    return v.replaceAll("\u2014", " - ");
+  }
+  if (Array.isArray(v)) return v.map(scrub);
+  if (v && typeof v === "object") {
+    const o = {};
+    for (const [k, val] of Object.entries(v)) o[k] = scrub(val);
+    return o;
+  }
+  return v;
+}
+
 await mkdir(join(ROOT, "data/derived/rip-history"), { recursive: true });
-await writeFile(join(ROOT, "data/derived/rip-roi.json"), JSON.stringify(doc, null, 1) + "\n");
+const publicDoc = scrub(doc);
+await writeFile(join(ROOT, "data/derived/rip-roi.json"), JSON.stringify(publicDoc, null, 1) + "\n");
 const history = {
   asOf,
   label: "Rip value",
-  count: rows.length,
-  rows: rows.map((r) => ({
+  count: publicDoc.rows.length,
+  rows: publicDoc.rows.map((r) => ({
     id: r.id,
     contentsEV: r.contentsEV,
     price: r.price,
-    priceAsOf: r.priceAsOf,
+    priceAsOf: r.priceAsOf ?? null,
     bulkPerCard: r.bulk?.perCard ?? null,
     bulkMedian: r.bulk?.median ?? null,
     bulkRaised: r.bulk?.raised === true,
@@ -197,7 +238,7 @@ const history = {
 };
 await writeFile(join(ROOT, "data/derived/rip-history", `${asOf}.json`), JSON.stringify(history, null, 1) + "\n");
 
-// Private ranking (full detail) — local data/private or catchem-data-private when token set.
+// Private ranking (full detail). Local data/private or catchem-data-private when token set.
 const token = process.env.PRIVATE_DATA_TOKEN || "";
 const store = await openPrivate({ root: ROOT, token });
 await mkdir(join(store.dir, "rip-roi"), { recursive: true });
@@ -211,8 +252,8 @@ const privateDoc = {
   skipped: doc.skipped,
   sources: doc.sources,
 };
-await writeFile(join(store.dir, "rip-roi", `${asOf}.json`), JSON.stringify(privateDoc, null, 1) + "\n");
-await writeFile(join(store.dir, "rip-roi", "latest.json"), JSON.stringify(privateDoc, null, 1) + "\n");
+await writeFile(join(store.dir, "rip-roi", `${asOf}.json`), JSON.stringify(scrub(privateDoc), null, 1) + "\n");
+await writeFile(join(store.dir, "rip-roi", "latest.json"), JSON.stringify(scrub(privateDoc), null, 1) + "\n");
 const pushed = await store.close([`rip-roi/${asOf}.json`, "rip-roi/latest.json"], `rip-roi ${asOf}: ${rows.length} products`);
 
 const top15 = rows.slice(0, 15).map((r) => `${r.id} roi=${r.roiPct}% ev=${r.ev}`);

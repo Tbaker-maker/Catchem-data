@@ -1,6 +1,7 @@
 // Rip value: expected contents of opening a sealed product vs its market price.
 // History-based estimates from dated pull rates and our singles prices.
 // Copy label: "Rip value". No buy/sell/invest/play/target wording.
+import { pricesForPool } from "./pull-rate-pools.mjs";
 
 export const SIMS = 10000;
 export const BULK_CARDS_PER_PACK = 9; // 10-card modern pack minus the rare slot
@@ -108,16 +109,16 @@ export function bulkFloorForSet(singles, setSlug) {
   for (const c of singles) {
     if (c.setSlug !== setSlug) continue;
     if (c.rarity !== "Common" && c.rarity !== "Uncommon") continue;
+    // Reverse Holofoil printings of C/UC count toward the bulk floor.
     if (!(c.price > 0)) continue;
     prices.push(c.price);
   }
   const med = median(prices);
   const mean = trimmedMean(prices);
-  const perCard = mean;
   const raised = med != null && mean != null && prices.length >= 20 && mean >= med * 1.25;
   const round = (n) => (n == null ? null : Math.round(n * 100) / 100);
   return {
-    perCard: round(perCard),
+    perCard: round(mean),
     median: round(med),
     n: prices.length,
     cardsPerPack: BULK_CARDS_PER_PACK,
@@ -141,11 +142,13 @@ export function rareSlotAvg(singles, setSlug) {
 export function buildSlots(pullRows, singles, setSlug) {
   const slots = [];
   const sources = new Map();
+  const setCards = singles.filter((c) => c.setSlug === setSlug);
   for (const r of pullRows.filter((row) => row.setSlug === setSlug)) {
-    const pool = rarityPool(singles, setSlug, r.rarity, r.tag || null);
+    if (r.rip === false) continue;
+    const pool = r.pool ? pricesForPool(setCards, r.pool) : rarityPool(singles, setSlug, r.rarity, r.tag || null);
     const avg = median(pool);
     if (!(avg > 0) || !(r.pct > 0)) continue;
-    const rate = r.pct / 100;
+    const rate = Math.round((r.pct / 100) * 1e8) / 1e8;
     slots.push({
       rarity: r.rarity,
       tag: r.tag || null,
