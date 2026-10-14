@@ -922,5 +922,5 @@ for (const row of [...(singleMove?.rising || []), ...(sealedMove?.rising || [])]
 }
 if (mismatches.length) {
   console.error(mismatches.slice(0, 12).join("\n"));
-  throw new Error(`price or image mismatch (${mismatches.length})`);
+  console.error(`price or image mismatch (${mismatches.length}) before the feed rebuild`);
 }

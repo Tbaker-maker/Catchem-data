@@ -10,10 +10,10 @@
 // Runs at the end of fetch-sealed-prices.mjs (same eBay env); data/derived/ is
 // already in the nightly commit, so the workflow file is unchanged.
 import { readFile, writeFile, mkdir } from "node:fs/promises";
-import { gzipSync } from "node:zlib";
+import { gzipSync, gunzipSync } from "node:zlib";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { tiers, pickRun, roleSlice, missingTop, ptDate, used24, nightlyBudget, buildQuery, summarize, EBAY_BROWSE_DAILY_LIMIT, TAIL_FLOOR, RUNS_PER_DAY, applyTotalCaps } from "./lib/listing-counts.mjs";
+import { tiers, pickRun, roleSlice, missingTop, ptDate, listingFileDay, mergeDayRows, used24, nightlyBudget, buildQuery, summarize, EBAY_BROWSE_DAILY_LIMIT, TAIL_FLOOR, RUNS_PER_DAY, applyTotalCaps } from "./lib/listing-counts.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OAUTH = "https://api.ebay.com/identity/v1/oauth2/token";
@@ -35,7 +35,7 @@ async function token() {
 
 export async function runListingCounts({ afterSealedStep = false, now = new Date() } = {}) {
   const catalog = await J(join(ROOT, "data/catalog/tcgcsv-latest.json"), { items: [] });
-  const today = String(catalog.asOf || new Date().toISOString()).slice(0, 10);
+  const today = listingFileDay(now);
   const products = await J(join(ROOT, "data/sealed-products.json"), []);
   const priced = products.filter((p) => p.ebay !== false && p.searchQuery);
   const skipIds = new Set(priced.map((p) => String(p.tcgPlayerId)).filter(Boolean));
@@ -104,7 +104,13 @@ export async function runListingCounts({ afterSealedStep = false, now = new Date
   latest.note = "Listings counted: eBay US listings, same filters every night (no lots, cases or graded for raw). An estimate from eBay's total and a sampled page. Not supply.";
   await mkdir(join(ROOT, "data/derived/listing-counts/history"), { recursive: true });
   await writeFile(latestPath, JSON.stringify(latest) + "\n");
-  if (capped.length) await writeFile(join(ROOT, `data/derived/listing-counts/history/${today}.json.gz`), gzipSync(JSON.stringify({ date: today, rows: capped }), { level: 9 }));
+  if (capped.length) {
+    const historyPath = join(ROOT, `data/derived/listing-counts/history/${today}.json.gz`);
+    let prev = [];
+    try { prev = JSON.parse(gunzipSync(await readFile(historyPath))).rows || []; } catch { prev = []; }
+    const rows = mergeDayRows(prev, capped);
+    await writeFile(historyPath, gzipSync(JSON.stringify({ date: today, rows }), { level: 9 }));
+  }
   if (tok) state.log.push({ at: new Date().toISOString(), n: calls + 1, source: "listing-counts" });
   await writeFile(statePath, JSON.stringify(state) + "\n");
   const usagePath = join(ROOT, "data/derived/listing-counts/api-usage.json");

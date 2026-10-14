@@ -80,6 +80,21 @@ export function ptDate(d) {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Vancouver", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(d));
 }
 
+// The file day is the Pacific calendar day of the run, never the catalog asOf.
+// A stuck catalog was filing an Oct 14 morning run under Oct 13.
+export function listingFileDay(now = new Date()) {
+  return ptDate(now);
+}
+
+// A later run on the same day adds rows. It does not drop rows already filed that day.
+export function mergeDayRows(prev = [], next = []) {
+  const byId = new Map();
+  for (const row of prev || []) if (row?.id) byId.set(row.id, row);
+  for (const row of next || []) if (row?.id) byId.set(row.id, { ...row });
+  return [...byId.values()];
+}
+
+
 // Calls a run may spend under the shared rolling 24-hour counter.
 // full: up to its share, plus catch-up for a missed run (never past 2 shares),
 //   always leaving room for the nightly sealed step if it is not in the window yet.

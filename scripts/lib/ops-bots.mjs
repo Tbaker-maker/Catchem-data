@@ -7,6 +7,27 @@ export function dayOf(value) {
   return DAY.test(day) ? day : "";
 }
 
+export function daysBetween(from, to) {
+  if (!DAY.test(String(from || "")) || !DAY.test(String(to || ""))) return null;
+  const a = Date.parse(`${from}T00:00:00Z`);
+  const b = Date.parse(`${to}T00:00:00Z`);
+  return Math.round((b - a) / 86400000);
+}
+
+// Alert only when the price day is more than one day behind the calendar day.
+// A file from yesterday is still the last closed day. Two days behind is late.
+export function priceDayStale(priceDay, today) {
+  const ageDays = daysBetween(priceDay, today);
+  if (ageDays == null || ageDays <= 1) return null;
+  return {
+    id: "price-day-stale",
+    priceDay,
+    today,
+    ageDays,
+    alert: `price day ${priceDay} is ${ageDays} days behind ${today}`,
+  };
+}
+
 export function freshnessReport({ today, priceDay, countsDay, readsDay, scannerDay }) {
   const board = dayOf(today);
   const checks = [
