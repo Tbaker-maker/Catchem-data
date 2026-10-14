@@ -1,13 +1,20 @@
 # Paste in GitHub web UI as .github/workflows/listing-counts.yml
-# Five extra listing-count runs; the 9 PM PT nightly is the sixth.
-# Each run spends an even share of the day under a rolling 24-hour counter
-# (4,900 of 5,000 eBay calls) and stops at the first 429.
+# Two full runs (6 AM and 6 PM PT) plus one small midday run (noon PT) that only
+# recounts top items not yet counted today. The 9 PM PT nightly sealed step then
+# retries any top item still missing. All runs share one rolling 24-hour counter
+# (4,900 of 5,000 eBay calls) and stop at the first 429. Times are UTC (PDT).
 name: Listing counts
 
 on:
   schedule:
-    - cron: "0 0,8,12,16,20 * * *"
+    - cron: "0 13 * * *"   # 6 AM PT full
+    - cron: "0 19 * * *"   # noon PT top-tier only
+    - cron: "0 1 * * *"    # 6 PM PT full
   workflow_dispatch:
+    inputs:
+      role:
+        description: "full or top"
+        default: "full"
 
 permissions:
   contents: write
@@ -30,6 +37,7 @@ jobs:
         env:
           EBAY_APP_ID: ${{ secrets.EBAY_APP_ID }}
           EBAY_CERT_ID: ${{ secrets.EBAY_CERT_ID }}
+          LISTING_RUN_ROLE: ${{ github.event.schedule == '0 19 * * *' && 'top' || inputs.role || 'full' }}
         run: node scripts/fetch-listing-counts.mjs
       - name: Commit counts
         run: |
