@@ -278,6 +278,18 @@ export async function run() {
     await rm(tmp, { recursive: true, force: true });
   }
 
+  const forms = ["slow-climb", "breakout", "sharp-spike", "flat-range"].map((pattern, i) => {
+    const dir = pattern === "flat-range" ? "flat" : "up";
+    const rate = pattern === "flat-range" ? 10 : 80 - i * 10;
+    return {
+      row: { ...present[0], id: `id-${pattern}`, pattern, stage: "confirmed", dir, p0: 10, p1: dir === "flat" ? 10 : 12, metrics: { pct: dir === "flat" ? 0 : 20 } },
+      gate: { ...passed[0], pattern, stage: "confirmed", kind: "single", dir, horizon: 7, rate, n: 30, passed: true },
+    };
+  });
+  const durableBoard = buildScannerReads(forms.map((f) => f.row), forms.map((f) => f.gate), asOf);
+  const durableForming = durableBoard.filter((r) => r.readKind === "pattern-forming");
+  t("a durable pattern keeps a board slot ahead of a higher raw rate", durableForming.some((r) => r.receipt.pattern === "flat-range") && !durableForming.some((r) => r.receipt.pattern === "sharp-spike"));
+
   return fail;
 }
 

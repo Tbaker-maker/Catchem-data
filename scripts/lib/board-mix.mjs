@@ -23,9 +23,11 @@ import { sealedVsChase } from "./detectors/sealed-vs-chase.mjs";
 import { loadHistoryCards, historyReads } from "./history-reads.mjs";
 import { setDeepDives, cardStories, eraComparison, preReleaseContext, sealedGapDeep, marketRoundup, artistSpotlights, pokemonSpotlights, rarityTierReports, anniversaryReads, rotationAftermath, recoveryWatch, steadiest, biggestYear, irLifecycle } from "./deep-reads.mjs";
 import { everyPrinting, sameLabelAcrossSets, chaseLists, slumpWatch } from "./deep-reads-2.mjs";
+import { rarityBandReads, artistBandReads, releaseCycleReads, mixedReads, ripReads, attachListingsFacts, loadRipDoc } from "./rich-reads.mjs";
 
 export const BOARD_TAG = "v3";
-export const PRICE_SHARE_MAX = 0.4;
+export const PRICE_SHARE_MAX = 1 / 3;
+export const BOARD_MAX = 400;
 export const BANNED = /\b(buy|buys|buying|sell|sells|selling|hold|holds|holding|support|resistance|bottom|printed|play|plays|playing|target|invest|investing|investment|crypto|token|moon|hodl|pump|dump|nft)\b/i;
 const EM = /[\u2014\u2013]/;
 
@@ -410,7 +412,12 @@ export function listingLevelReads(doc, { min = 10, max = 30 } = {}) {
     if (!p?.id || skip.has(p.id) || !Number.isInteger(lc?.n) || lc.n < min || !lc.date) continue;
     const headline = `${p.name}: ${lc.n} eBay listings counted on ${monthDay(lc.date)}. A listing is not a sale.`;
     if (!cleanCopy(headline)) continue;
-    out.push({ id: `listcount-${p.id}`, sku: p.id, href: `/p/${p.id}`, readKind: "listings", kind: "listings", board: BOARD_TAG, family: "listings", name: p.name, headline, path: headline, asOf: lc.date, source: `eBay listings counted, ${lc.date}`, receipt: { n: lc.n, date: lc.date } });
+    const lines = [];
+    if (lc.prev?.date && Number.isInteger(lc.prev.n)) {
+      const line = `Listings counted ${lc.prev.n} on ${monthDay(lc.prev.date)} to ${lc.n} on ${monthDay(lc.date)}. A listing is not a sale.`;
+      if (cleanCopy(line)) lines.push(line);
+    }
+    out.push({ id: `listcount-${p.id}`, sku: p.id, href: `/p/${p.id}`, readKind: "listings", kind: "listings", board: BOARD_TAG, family: "listings", name: p.name, headline, path: headline, lines, asOf: lc.date, source: lc.prev?.date ? `eBay listings counted, ${lc.prev.date} and ${lc.date}` : `eBay listings counted, ${lc.date}`, receipt: { n: lc.n, prev: lc.prev?.n ?? null, date: lc.date, prevDate: lc.prev?.date || "" } });
   }
   return out.sort((a, b) => b.receipt.n - a.receipt.n).slice(0, max);
 }
@@ -546,11 +553,13 @@ export function shuffleByDay(rows, day) {
   return a;
 }
 
-// Price reads at most 40% of the board. Price rows are trimmed, never invented.
+// Price reads at most about one third of the board. Price rows are trimmed, never invented.
 // No two of the same family back to back where it can be avoided.
 export function mixBoard(priceRows, fresh, day, { maxShare = PRICE_SHARE_MAX } = {}) {
   const nFresh = fresh.length;
-  const maxPrice = Math.floor((maxShare * nFresh) / (1 - maxShare));
+  const maxPrice = !(maxShare < 1) || nFresh === 0
+    ? priceRows.length
+    : Math.floor((maxShare * nFresh) / (1 - maxShare));
   const price = priceRows.slice(0, Math.max(0, Math.min(priceRows.length, maxPrice)));
   const all = shuffleByDay([...price, ...fresh], day);
   const out = [];
@@ -575,6 +584,62 @@ export function mixBoard(priceRows, fresh, day, { maxShare = PRICE_SHARE_MAX } =
     out.push(row);
   }
   return out;
+}
+
+// Quotas are filled in order. A kind with nothing that passes hands its slots to the next kind.
+export const KIND_QUOTAS = [
+  { kind: "rip", n: 4 },
+  { kind: "mixed", n: 6 },
+  { kind: "rarity-band", n: 6 },
+  { kind: "artist-band", n: 6 },
+  { kind: "release-cycle", n: 4 },
+  { kind: "listings", n: 8 },
+  { kind: "pattern-forming", n: 3 },
+  { kind: "pattern-ending", n: 2 },
+  { kind: "past-cases", n: 2 },
+];
+
+export function fillSlots(rows, plan = KIND_QUOTAS) {
+  const by = new Map();
+  for (const r of rows || []) {
+    const k = r.readKind || r.kind || "";
+    if (!by.has(k)) by.set(k, []);
+    by.get(k).push(r);
+  }
+  const picked = [];
+  const seen = new Set();
+  let spill = 0;
+  for (const step of plan) {
+    const want = step.n + spill;
+    const take = (by.get(step.kind) || []).filter((r) => !seen.has(r.id)).slice(0, want);
+    for (const r of take) { seen.add(r.id); picked.push(r); }
+    spill = want - take.length;
+  }
+  if (spill > 0) {
+    for (const r of rows || []) {
+      if (spill <= 0) break;
+      if (seen.has(r.id) || plan.some((step) => step.kind === (r.readKind || r.kind))) continue;
+      seen.add(r.id);
+      picked.push(r);
+      spill -= 1;
+    }
+  }
+  const rest = (rows || []).filter((r) => !seen.has(r.id));
+  return [...picked, ...rest];
+}
+
+export function fitBoard(priceRows, fresh, { maxShare = PRICE_SHARE_MAX, maxBoard = BOARD_MAX, plan = KIND_QUOTAS } = {}) {
+  const ordered = fillSlots(fresh, plan);
+  const priceCap = (nFresh) => (maxShare < 1 && nFresh > 0 ? Math.floor((maxShare * nFresh) / (1 - maxShare)) : priceRows.length);
+  const freshKeep = [];
+  for (const r of ordered) {
+    const next = freshKeep.length + 1;
+    const priceN = Math.min(priceRows.length, priceCap(next));
+    if (next + priceN > maxBoard) break;
+    freshKeep.push(r);
+  }
+  const priceN = Math.min(priceRows.length, priceCap(freshKeep.length));
+  return { price: priceRows.slice(0, priceN), fresh: freshKeep };
 }
 
 export async function buildBoardV3(root, { on = true, spanReads = [], scannerReads = [] } = {}) {
@@ -734,6 +799,13 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
   const dives = (extraDoc.reads || []).filter((r) => r.readKind === "dive" && r.headline);
   const factNames = [...names, ...Object.values(hist.picked).flat().map((r) => r.name)];
   if (index) fresh.push(...factReads(index, factNames, { max: 20, asOf: catDay }));
+  fresh.push(
+    ...rarityBandReads(histCards, { asOf: end }),
+    ...artistBandReads(histCards, { asOf: end }),
+    ...releaseCycleReads(histCards, setsDoc, { asOf: end }),
+    ...mixedReads({ cards: histCards, sealedPool: sealed.pool, listings, rotation, asOf: end, start, end }),
+    ...ripReads(loadRipDoc(root)),
+  );
   {
     const seenHead = new Set();
     const seenSku = new Set();
@@ -749,6 +821,7 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
     fresh.length = 0;
     fresh.push(...keep);
   }
+  attachListingsFacts(fresh, listings);
   const { images, tcgOn, sealedPid } = await loadBoardImageInputs(root);
   for (const r of fresh) r.image = boardImage(r, images, tcgOn, sealedPid);
   for (const r of fresh) { if (!r.why) r.why = `From ${r.source}.`; if (!r.whyItMatters) r.whyItMatters = r.why; }
@@ -765,12 +838,20 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
   const onePage = (r) => {
     const h = String(r.href || "");
     if (!/^\/(?:c|p)\//.test(h)) return true;
-    if (seenHref.has(h)) return false;
+    if (seenHref.has(h)) {
+      if (r.readKind === "mixed" || r.readKind === "rip") {
+        r.href = "";
+        return true;
+      }
+      return false;
+    }
     seenHref.add(h);
     return true;
   };
   const freshOne = fresh.filter(onePage);
-  const reads = mixBoard(priceDedup.filter(onePage), freshOne, end);
+  attachListingsFacts(priceDedup, listings);
+  const fitted = fitBoard(priceDedup.filter(onePage), freshOne);
+  const reads = mixBoard(fitted.price, fitted.fresh, end, { maxShare: 1 });
   for (const r of reads) if (!String(r.image || "").trim()) r.image = boardImage(r, images, tcgOn, sealedPid);
   await writeFile(readsPath, JSON.stringify({ ...doc, reads, count: reads.length }, null, 1) + "\n");
   const byKind = {};

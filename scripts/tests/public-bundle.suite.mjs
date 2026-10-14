@@ -139,7 +139,7 @@ export async function run() {
       t("the listing sentence is the footer, not every card", reads.footer === "An ask is a listing price. A listing is not a sale." && (reads.reads || []).every((row) => !String(row.why || row.whyItMatters || "").includes("listing is not a sale")));
     }
     const oldWhy = /last 30 days ran|low of the last 30|high of the last 30|we store|at least/i;
-    const v3Kinds = new Set(["climb", "setheat", "release", "newsline", "listings", "rotation", "pokemon", "breadth", "sealedchase", "deep", "year-range", "year-ago", "season", "pattern-forming", "pattern-ending", "listings-vs-price", "past-cases"]);
+    const v3Kinds = new Set(["climb", "setheat", "release", "newsline", "listings", "rotation", "pokemon", "breadth", "sealedchase", "deep", "year-range", "year-ago", "season", "pattern-forming", "pattern-ending", "listings-vs-price", "past-cases", "mixed", "rarity-band", "artist-band", "release-cycle", "rip"]);
     const priceReads = reads.reads.filter((row) => row.board !== "v3" && row.readKind === "price" || row.kind === "single" || row.kind === "sealed");
     const otherReads = reads.reads.filter((row) => !priceReads.includes(row));
     const bad = priceReads.filter((row) => !money(row.price) || !row.headline || !(row.why || row.whyItMatters) || BANNED.test(row.headline) || BANNED.test(row.why || row.whyItMatters || "") || row.price === 0 || !/TCGplayer market\b/.test(row.headline) || !/\([^)]+\)/.test(row.headline) || oldWhy.test(row.why || row.whyItMatters || "") || oldWhy.test(row.headline) || /tcgcsv-|data\/|—/.test(row.why || row.whyItMatters || "") || /\b(heating up|cooling off|last print|Top card in|checked again)\b/i.test(row.headline));
