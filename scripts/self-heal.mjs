@@ -23,7 +23,22 @@ const files = diff.out.split("\n").map((s) => s.trim()).filter(Boolean);
 const plan = healPlan(files);
 console.log(JSON.stringify({ selfHeal: plan }));
 if (plan.action !== "restore" || !process.argv.includes("--live")) process.exit(0);
-const branch = `heal-${new Date().toISOString().slice(0, 10)}`;
+// A merged PR (subject ends "(#123)") is a reviewed change, not a bad nightly data
+// write. Restoring its files would undo a deliberate fix, so only heal bot commits.
+const subject = (await run("git", ["log", "-1", "--format=%s", sha])).out.trim();
+if (/\(#\d+\)\s*$/.test(subject)) {
+  console.log(JSON.stringify({ selfHeal: { action: "skipped", reason: "red commit is a merged PR, not a data write" } }));
+  process.exit(0);
+}
+// One branch per red commit, so a second run the same day neither collides nor
+// opens a duplicate PR.
+const fullSha = (await run("git", ["rev-parse", sha])).out.trim();
+const branch = `heal-${new Date().toISOString().slice(0, 10)}-${fullSha.slice(0, 7)}`;
+const exists = await run("git", ["ls-remote", "--exit-code", "--heads", "origin", branch]);
+if (exists.code === 0) {
+  console.log(JSON.stringify({ selfHeal: { action: "skipped", reason: `${branch} already open` } }));
+  process.exit(0);
+}
 const co = await run("git", ["checkout", "-B", branch, "main"]);
 if (co.code !== 0) { console.error(co.err); process.exit(1); }
 const restore = await run("git", ["checkout", `${sha}^`, "--", ...plan.files]);
