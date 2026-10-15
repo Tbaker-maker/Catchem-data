@@ -47,9 +47,16 @@ export function freshnessReport({ today, priceDay, countsDay, readsDay, scannerD
   };
 }
 
-export function healPlan(files) {
-  const data = [...new Set((files || []).filter((f) => /^(data|research\/assets\/public)\//.test(String(f))))];
+// failLog: text of the failed steps. When given, only files the failure names
+// (full path or file name) are restored, so an unrelated rewrite is left alone.
+export function healPlan(files, failLog = null) {
+  let data = [...new Set((files || []).filter((f) => /^(data|research\/assets\/public)\//.test(String(f))))];
   if (!data.length) return { action: "none", files: [], reason: "the red commit did not rewrite a data file" };
+  if (failLog != null) {
+    const log = String(failLog);
+    data = data.filter((f) => log.includes(f) || log.includes(f.split("/").pop()));
+    if (!data.length) return { action: "none", files: [], reason: "the failing steps do not name any file this commit rewrote" };
+  }
   return { action: "restore", files: data, reason: "restore the last copy of the data files this commit rewrote" };
 }
 

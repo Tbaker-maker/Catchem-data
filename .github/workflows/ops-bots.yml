@@ -11,6 +11,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  actions: read
 
 jobs:
   janitor:
@@ -44,5 +45,6 @@ jobs:
       - name: Restore the data files from the red commit
         env:
           HEAL_SHA: ${{ github.event.workflow_run.head_sha }}
+          HEAL_RUN_ID: ${{ github.event.workflow_run.id }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node scripts/self-heal.mjs --live

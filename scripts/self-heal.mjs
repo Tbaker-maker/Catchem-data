@@ -20,7 +20,11 @@ if (!process.argv.includes("--live") && !process.env.HEAL_SHA && process.argv.le
 }
 const diff = await run("git", ["diff-tree", "--no-commit-id", "--name-only", "-r", sha]);
 const files = diff.out.split("\n").map((s) => s.trim()).filter(Boolean);
-const plan = healPlan(files);
+// The failed steps' log decides which files are suspects. No log, no restore:
+// guessing would undo good data (see #288).
+let failLog = "";
+if (process.env.HEAL_RUN_ID) failLog = (await run("gh", ["run", "view", process.env.HEAL_RUN_ID, "--log-failed"])).out;
+const plan = healPlan(files, failLog);
 console.log(JSON.stringify({ selfHeal: plan }));
 if (plan.action !== "restore" || !process.argv.includes("--live")) process.exit(0);
 // A merged PR (subject ends "(#123)") is a reviewed change, not a bad nightly data
