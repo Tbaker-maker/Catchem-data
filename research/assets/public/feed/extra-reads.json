@@ -1085,119 +1085,44 @@
  },
  "reads": [
   {
-   "id": "quiet-tcgcsv-85641",
-   "sku": "tcgcsv-85641",
-   "readKind": "quiet",
-   "kind": "quiet",
-   "name": "Gardevoir ex",
-   "set": "EX Sandstorm",
-   "path": "Gardevoir ex in Near Mint stayed $271.66 over Oct 5 to Oct 11. No TCGplayer sales recorded in 7 days.",
-   "headline": "Gardevoir ex in Near Mint stayed $271.66 over Oct 5 to Oct 11. No TCGplayer sales recorded in 7 days.",
-   "why": "Gardevoir ex in Near Mint stayed $271.66 over Oct 5 to Oct 11. No TCGplayer sales recorded in 7 days. That is not a scarcity claim.",
-   "asOf": "2026-10-11",
-   "href": "/c/tcgcsv-85641",
-   "lane": "single",
-   "receipt": {
-    "days": 7,
-    "price": 271.66,
-    "from": "2026-10-05",
-    "to": "2026-10-11",
-    "printing": "Holofoil"
-   }
+   "id": "dive-me2-etb",
+   "sku": "me2-etb",
+   "diveId": "me2-etb",
+   "readKind": "dive",
+   "kind": "dive",
+   "name": "Phantasmal Flames Elite Trainer Box",
+   "set": "",
+   "path": "Phantasmal Flames Elite Trainer Box: eBay asks ($158.96), eBay asking, any condition, sit $9.33 over TCGplayer market ($149.63 NM).",
+   "headline": "Phantasmal Flames Elite Trainer Box: eBay asks ($158.96), eBay asking, any condition, sit $9.33 over TCGplayer market ($149.63 NM).",
+   "why": "eBay ask is the price median in research/pulse/dive/me2-etb.json. TCGplayer market is the price for tcgcsv-654136 in data/catalog/tcgcsv-latest.json. Asks are not sales.",
+   "price": 158.96,
+   "asOf": "2026-10-14",
+   "href": "/dive/me2-etb",
+   "sources": {
+    "dive": "research/pulse/dive/me2-etb.json",
+    "market": "data/catalog/tcgcsv-latest.json"
+   },
+   "tcgPlayerId": "654136"
   },
   {
-   "id": "mix-tcgcsv-542803",
-   "sku": "tcgcsv-542803",
-   "readKind": "mix",
-   "kind": "mix",
-   "name": "Boltund",
-   "set": "SV05: Temporal Forces",
-   "path": "Boltund, Oct 4 to Oct 10: 13 Near Mint, 2 Lightly Played.",
-   "headline": "Boltund, Oct 4 to Oct 10: 13 Near Mint, 2 Lightly Played.",
-   "why": "Boltund, Oct 4 to Oct 10: 13 Near Mint, 2 Lightly Played. This is the mix of copies that sold, not the copy in your hand.",
-   "asOf": "2026-10-10",
-   "href": "/c/tcgcsv-542803",
-   "lane": "single",
-   "receipt": {
-    "from": "2026-10-04",
-    "to": "2026-10-10",
-    "conditions": [
-     {
-      "condition": "Near Mint",
-      "sold": 13
-     },
-     {
-      "condition": "Lightly Played",
-      "sold": 2
-     }
-    ],
-    "printing": "Normal"
-   }
-  },
-  {
-   "id": "conditions-tcgcsv-87454",
-   "sku": "tcgcsv-87454",
-   "readKind": "conditions",
-   "kind": "conditions",
-   "name": "Milotic",
-   "set": "Great Encounters",
-   "path": "Milotic on Oct 11: Near Mint $13.90, Lightly Played $8.96.",
-   "headline": "Milotic on Oct 11: Near Mint $13.90, Lightly Played $8.96.",
-   "why": "Milotic on Oct 11: Near Mint $13.90, Lightly Played $8.96. Two condition prices. Not a grade result.",
-   "asOf": "2026-10-11",
-   "href": "/c/tcgcsv-87454",
-   "lane": "single",
-   "receipt": {
-    "date": "2026-10-11",
-    "nearMint": 13.9,
-    "played": 8.96,
-    "playedCondition": "Lightly Played"
-   }
-  },
-  {
-   "id": "solddown-tcgcsv-523827",
-   "sku": "tcgcsv-523827",
-   "readKind": "solddown",
-   "kind": "solddown",
-   "name": "Ambipom",
-   "set": "SV04: Paradox Rift",
-   "path": "Ambipom went from $0.11 to $0.10 over Oct 4 to Oct 10, with 4 Near Mint copies sold.",
-   "headline": "Ambipom went from $0.11 to $0.10 over Oct 4 to Oct 10, with 4 Near Mint copies sold.",
-   "why": "Ambipom went from $0.11 to $0.10 over Oct 4 to Oct 10, with 4 Near Mint copies sold. Sales and a price change in the same window. Not a cause.",
-   "asOf": "2026-10-10",
-   "href": "/c/tcgcsv-523827",
-   "lane": "single",
-   "receipt": {
-    "days": 7,
-    "sold": 4,
-    "fromPrice": 0.11,
-    "toPrice": 0.1,
-    "from": "2026-10-04",
-    "to": "2026-10-10"
-   }
-  },
-  {
-   "id": "setshare-1427-2026-10-11",
-   "sku": "tcgcsv-85193",
-   "readKind": "setshare",
-   "kind": "setshare",
-   "name": "Emolga - 6/12",
-   "set": "McDonald's Promos 2012",
-   "path": "McDonald's Promos 2012, Oct 5 to Oct 11: Emolga - 6/12 accounts for 2 of 3 Near Mint copies sold.",
-   "headline": "McDonald's Promos 2012, Oct 5 to Oct 11: Emolga - 6/12 accounts for 2 of 3 Near Mint copies sold.",
-   "why": "McDonald's Promos 2012, Oct 5 to Oct 11: Emolga - 6/12 accounts for 2 of 3 Near Mint copies sold. Share of copies sold. Not share of dollars.",
-   "asOf": "2026-10-11",
-   "href": "/c/tcgcsv-85193",
-   "lane": "single",
-   "rank": 0.6666666666666666,
-   "receipt": {
-    "groupId": "1427",
-    "top": 2,
-    "total": 3,
-    "from": "2026-10-05",
-    "to": "2026-10-11",
-    "cards": 12
-   }
+   "id": "dive-me2-pack",
+   "sku": "me2-pack",
+   "diveId": "me2-pack",
+   "readKind": "dive",
+   "kind": "dive",
+   "name": "Phantasmal Flames Booster Pack",
+   "set": "",
+   "path": "Phantasmal Flames Booster Pack: eBay asks ($14.98), eBay asking, any condition, sit $2.67 over TCGplayer market ($12.31 NM).",
+   "headline": "Phantasmal Flames Booster Pack: eBay asks ($14.98), eBay asking, any condition, sit $2.67 over TCGplayer market ($12.31 NM).",
+   "why": "eBay ask is the price median in research/pulse/dive/me2-pack.json. TCGplayer market is the price for tcgcsv-654144 in data/catalog/tcgcsv-latest.json. Asks are not sales.",
+   "price": 14.98,
+   "asOf": "2026-10-14",
+   "href": "/dive/me2-pack",
+   "sources": {
+    "dive": "research/pulse/dive/me2-pack.json",
+    "market": "data/catalog/tcgcsv-latest.json"
+   },
+   "tcgPlayerId": "654144"
   },
   {
    "id": "spread-sm7-booster-box",
@@ -1265,125 +1190,6 @@
     "ask": 160
    },
    "tcgPlayerId": "221752"
-  },
-  {
-   "id": "quiet-tcgcsv-85413",
-   "sku": "tcgcsv-85413",
-   "readKind": "quiet",
-   "kind": "quiet",
-   "name": "Feraligatr (5)",
-   "set": "Neo Genesis",
-   "path": "Feraligatr (5) in Near Mint stayed $272.64 over Oct 5 to Oct 11. No TCGplayer sales recorded in 7 days.",
-   "headline": "Feraligatr (5) in Near Mint stayed $272.64 over Oct 5 to Oct 11. No TCGplayer sales recorded in 7 days.",
-   "why": "Feraligatr (5) in Near Mint stayed $272.64 over Oct 5 to Oct 11. No TCGplayer sales recorded in 7 days. That is not a scarcity claim.",
-   "asOf": "2026-10-11",
-   "href": "/c/tcgcsv-85413",
-   "lane": "single",
-   "receipt": {
-    "days": 7,
-    "price": 272.64,
-    "from": "2026-10-05",
-    "to": "2026-10-11",
-    "printing": "1st Edition Holofoil"
-   }
-  },
-  {
-   "id": "mix-tcgcsv-567392",
-   "sku": "tcgcsv-567392",
-   "readKind": "mix",
-   "kind": "mix",
-   "name": "Deluxe Bomb",
-   "set": "SV07: Stellar Crown",
-   "path": "Deluxe Bomb: 29 Near Mint, 10 Lightly Played, 0 Moderately Played over Oct 4 to Oct 10.",
-   "headline": "Deluxe Bomb: 29 Near Mint, 10 Lightly Played, 0 Moderately Played over Oct 4 to Oct 10.",
-   "why": "Deluxe Bomb: 29 Near Mint, 10 Lightly Played, 0 Moderately Played over Oct 4 to Oct 10. This is the mix of copies that sold, not the copy in your hand.",
-   "asOf": "2026-10-10",
-   "href": "/c/tcgcsv-567392",
-   "lane": "single",
-   "receipt": {
-    "from": "2026-10-04",
-    "to": "2026-10-10",
-    "conditions": [
-     {
-      "condition": "Near Mint",
-      "sold": 29
-     },
-     {
-      "condition": "Lightly Played",
-      "sold": 10
-     },
-     {
-      "condition": "Moderately Played",
-      "sold": 0
-     }
-    ],
-    "printing": "Holofoil"
-   }
-  },
-  {
-   "id": "conditions-tcgcsv-567321",
-   "sku": "tcgcsv-567321",
-   "readKind": "conditions",
-   "kind": "conditions",
-   "name": "Morgrem",
-   "set": "SV07: Stellar Crown",
-   "path": "Morgrem: Near Mint $0.18. Lightly Played $0.06. Oct 10.",
-   "headline": "Morgrem: Near Mint $0.18. Lightly Played $0.06. Oct 10.",
-   "why": "Morgrem: Near Mint $0.18. Lightly Played $0.06. Oct 10. Two condition prices. Not a grade result.",
-   "asOf": "2026-10-10",
-   "href": "/c/tcgcsv-567321",
-   "lane": "single",
-   "receipt": {
-    "date": "2026-10-10",
-    "nearMint": 0.18,
-    "played": 0.06,
-    "playedCondition": "Lightly Played"
-   }
-  },
-  {
-   "id": "solddown-tcgcsv-84315",
-   "sku": "tcgcsv-84315",
-   "readKind": "solddown",
-   "kind": "solddown",
-   "name": "Chingling",
-   "set": "Supreme Victors",
-   "path": "2 Near Mint copies sold while Chingling went from $2.42 to $2.40 over Oct 5 to Oct 11.",
-   "headline": "2 Near Mint copies sold while Chingling went from $2.42 to $2.40 over Oct 5 to Oct 11.",
-   "why": "2 Near Mint copies sold while Chingling went from $2.42 to $2.40 over Oct 5 to Oct 11. Sales and a price change in the same window. Not a cause.",
-   "asOf": "2026-10-11",
-   "href": "/c/tcgcsv-84315",
-   "lane": "single",
-   "receipt": {
-    "days": 7,
-    "sold": 2,
-    "fromPrice": 2.42,
-    "toPrice": 2.4,
-    "from": "2026-10-05",
-    "to": "2026-10-11"
-   }
-  },
-  {
-   "id": "setshare-2555-2026-10-11",
-   "sku": "tcgcsv-200964",
-   "readKind": "setshare",
-   "kind": "setshare",
-   "name": "Alolan Sandshrew - 4/12",
-   "set": "McDonald's Promos 2019",
-   "path": "McDonald's Promos 2019, Oct 5 to Oct 11: Alolan Sandshrew - 4/12 accounts for 2 of 6 Near Mint copies sold.",
-   "headline": "McDonald's Promos 2019, Oct 5 to Oct 11: Alolan Sandshrew - 4/12 accounts for 2 of 6 Near Mint copies sold.",
-   "why": "McDonald's Promos 2019, Oct 5 to Oct 11: Alolan Sandshrew - 4/12 accounts for 2 of 6 Near Mint copies sold. Share of copies sold. Not share of dollars.",
-   "asOf": "2026-10-11",
-   "href": "/c/tcgcsv-200964",
-   "lane": "single",
-   "rank": 0.3333333333333333,
-   "receipt": {
-    "groupId": "2555",
-    "top": 2,
-    "total": 6,
-    "from": "2026-10-05",
-    "to": "2026-10-11",
-    "cards": 12
-   }
   },
   {
    "id": "spread-sm35-etb",
@@ -1459,30 +1265,10 @@
   "source": "data/derived/sealed-price-outliers.json"
  },
  "dives": {
-  "count": 0,
+  "count": 2,
   "source": "research/pulse/dive/"
  },
  "shape": {
-  "quiet": [
-   "quiet-tcgcsv-85641",
-   "quiet-tcgcsv-85413"
-  ],
-  "mix": [
-   "mix-tcgcsv-542803",
-   "mix-tcgcsv-567392"
-  ],
-  "conditions": [
-   "conditions-tcgcsv-87454",
-   "conditions-tcgcsv-567321"
-  ],
-  "solddown": [
-   "solddown-tcgcsv-523827",
-   "solddown-tcgcsv-84315"
-  ],
-  "setshare": [
-   "setshare-1427-2026-10-11",
-   "setshare-2555-2026-10-11"
-  ],
   "spread": [
    "spread-sm7-booster-box",
    "spread-sm35-etb"
