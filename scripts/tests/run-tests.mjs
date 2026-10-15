@@ -20,6 +20,7 @@ import "./singles-index.test.mjs";
 import "./price-sanity.test.mjs";
 import "./index-baskets.test.mjs";
 import "./tcgcsv-day-guard.test.mjs";
+import "./read-facts.test.mjs";
 import { indexLine as publicIndexLine } from "../lib/public-index-line.mjs";
 import { keepMarch31 } from "../compute-indexes.mjs";
 import { searchItems } from "../lib/search-rank.mjs";

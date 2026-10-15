@@ -305,6 +305,8 @@ export async function runYearPatterns({
     keys: p.keys,
     testN: p.ownOnly.n,
     testRate: p.ownOnly.rate,
+    // Own-day base rate for the same horizon, so a page can say "vs X% normally".
+    baseRate: Number.isFinite(p.ownOnly.base) ? p.ownOnly.base : null,
     line: p.line,
   }));
   const publicDoc = {

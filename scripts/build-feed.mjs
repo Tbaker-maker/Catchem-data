@@ -304,6 +304,11 @@ try {
   const { doc, scan } = await runFlagger({ root: ROOT });
   console.log(JSON.stringify({ flags: doc.flags.length, newFlags: doc.newTonight, flagTypes: doc.summary.byType, newsLeads: scan.newsLeads.length, radarLeads: scan.radarLeads.length }));
 } catch (err) { console.error(`flagger skipped: ${err.message}`); }
+// Per-read facts for /feed/r/* (feed/facts/<id>.json). Never stops the nightly.
+try {
+  const { writeReadFacts } = await import("./build-read-facts.mjs");
+  console.log(JSON.stringify({ readFacts: await writeReadFacts(ROOT) }));
+} catch (err) { console.error(`read facts skipped: ${err.message}`); }
 console.log(JSON.stringify({ extra: extraSummary, library: library.counts, health: { nightlyDay: health.nightlyDay, shards: health.shards, lose: health.lose, failures: health.failures } }));
 if (health.failures.length) {
   console.error(health.failures.join("\n"));
