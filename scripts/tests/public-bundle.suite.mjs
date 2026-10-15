@@ -25,7 +25,7 @@ export async function run() {
   }
   const move = bestMove(down, "single");
   const banned = headlineFor({ name: "Latias & Latios GX", set: "Team Up", price: move.to, fromPrice: move.from, changePct: move.pct, windowDays: move.window });
-  t("a headline names the window and the two prices", move.window === 30 && banned.includes("this month") && banned.includes("→") && banned.includes("is down") && banned.includes("(Team Up)") && !banned.includes("heating") && !/\bprint\b/i.test(banned) && !BANNED.test(banned));
+  t("a headline names the window and the two prices", move.window === 30 && banned.includes("this month") && banned.includes(", from $") && banned.includes("is down") && banned.includes("(Team Up)") && !banned.includes("heating") && !/\bprint\b/i.test(banned) && !BANNED.test(banned));
   const spike = down.map((p, i) => i === 50 ? [p[0], p[1] * 3] : p);
   t("a one-day spike is not a read", bestMove(spike, "single") === null || bestMove(down.map((p, i) => [p[0], i === 50 ? 400 : 100]), "single") === null);
   const stuck = down.map((p, i) => [p[0], i < 50 ? 100 : 140]);
@@ -33,9 +33,9 @@ export async function run() {
   const jumped = down.map((p, i) => [p[0], i < 59 ? 20 + i * 0.05 : 200]);
   t("one day cannot be most of the move", bestMove(jumped, "single") === null);
   const old = headlineFor({ name: "Charizard", set: "Base Set", year: 1999, release: "1999-01-09", number: "004/102", price: 3914, fromPrice: 4500, changePct: -13, windowDays: 30, toDate: "2026-09-27" });
-  t("an old card names the set and the year", old === "Charizard (Base Set, 1999) 004/102 is down 13% this month: $4,500 NM → $3,914 NM.");
+  t("an old card names the set and the year", old === "Charizard (Base Set, 1999) 004/102 is down 13% this month, from $4,500 NM to $3,914 NM.");
   const gengar = headlineFor({ name: "Mega Gengar ex - 284/217", set: "ME: Ascended Heroes", number: "284/217", release: "2026-01-30", price: 866.33, fromPrice: 984.26, changePct: -12, windowDays: 30, toDate: "2026-09-27" });
-  t("a suffix becomes the collector number", gengar === "Mega Gengar ex (Ascended Heroes) 284/217 is down 12% this month: $984.26 NM → $866.33 NM.");
+  t("a suffix becomes the collector number", gengar === "Mega Gengar ex (Ascended Heroes) 284/217 is down 12% this month, from $984.26 NM to $866.33 NM.");
   const accent = headlineFor({ name: "Pokemon Catcher", set: "Test Set", price: 12.5, fromPrice: 10, changePct: 25, windowDays: 7, toDate: "2026-09-27" });
   t("Pokémon stays accented", accent.startsWith("Pokémon Catcher (Test Set) is up 25% this week"));
   const why = whyFor(down);
