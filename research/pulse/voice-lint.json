@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-10-13T12:13:49.825Z",
+ "generatedAt": "2026-10-15T00:05:42.221Z",
  "checked": "dailyThree, supplyShifts, eraIndexes, printWatch, depth, postBank, socialQueue",
  "blocks": 0,
- "warns": 13,
+ "warns": 14,
  "findings": [
   {
    "severity": "WARN",
@@ -27,7 +27,21 @@
   },
   {
    "severity": "WARN",
+   "label": "depth.swsh12pt5-premium",
+   "chip": "READ",
+   "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
+   "text": "pile-up — supply outpacing demand est. (RT-3)"
+  },
+  {
+   "severity": "WARN",
    "label": "depth.swsh45-etb",
+   "chip": "READ",
+   "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
+   "text": "steady shelf — deep, flow flat"
+  },
+  {
+   "severity": "WARN",
+   "label": "depth.sv9-bb",
    "chip": "READ",
    "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
    "text": "steady shelf — deep, flow flat"
@@ -55,20 +69,6 @@
   },
   {
    "severity": "WARN",
-   "label": "depth.sv9-bb",
-   "chip": "READ",
-   "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
-   "text": "steady shelf — deep, flow flat"
-  },
-  {
-   "severity": "WARN",
-   "label": "depth.me2pt5-etb",
-   "chip": "READ",
-   "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
-   "text": "steady shelf — deep, flow flat"
-  },
-  {
-   "severity": "WARN",
    "label": "postBank.lifecycle.youtube_hook",
    "chip": "READ",
    "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
@@ -86,14 +86,21 @@
    "label": "socialQueue.morning",
    "chip": "READ",
    "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
-   "text": "Day 51 of tracking every sealed Pokémon product so you don't have to.\n\nCatch'em Sealed Index: 100.7 (flat)\n171 sealed pr"
+   "text": "Day 53. One number for the whole sealed market:\n\nCatch'em Sealed Index: 99.6 ▼ 0.0843%\n171 sealed products, each measure"
+  },
+  {
+   "severity": "WARN",
+   "label": "socialQueue.midday",
+   "chip": "READ",
+   "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
+   "text": "Day 53 of pack math nobody shows you.\nMost expensive rip today: Pokemon 151 Pokemon Center Elite Trainer Box — $219.98 p"
   },
   {
    "severity": "WARN",
    "label": "socialQueue.evening",
    "chip": "READ",
    "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
-   "text": "Day 51. Rip or hold?\nDestined Rivals Booster Bundle at $65 — rip it or hold it sealed?\nYesterday's watch (Brilliant Star"
+   "text": "Day 53. Rip or hold?\nPitch Black Elite Trainer Box at $78.99 — rip it or hold it sealed?\nYesterday's watch (Unbroken Bon"
   }
  ]
 }

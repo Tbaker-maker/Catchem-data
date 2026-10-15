@@ -1,4 +1,4 @@
-# Weekly Read, 2026-10-14
+# Weekly Read, 2026-10-15
 
 Video outline. Same parts every week. Do not say a name is a move to make.
 

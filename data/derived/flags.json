@@ -1,6 +1,6 @@
 {
  "asOf": "2026-10-14",
- "generatedAt": "2026-10-14T23:30:59.256Z",
+ "generatedAt": "2026-10-15T00:01:08.941Z",
  "note": "Internal. What changed or broke tonight, for the weekly review. Script only.",
  "types": {
   "NEW_SET": "A TCGCSV set (group) appeared that was not there last night, or a future product in a news calendar is not on the radar.",
@@ -27,15 +27,16 @@
    "ODD_PRICE": 52,
    "READ_TYPE_EMPTY": 5,
    "YOUTUBE_DISAGREE": 1,
-   "YOUTUBE_LEAD": 18
+   "YOUTUBE_LEAD": 18,
+   "HYPE_EFFECT": 2
   },
   "bySeverity": {
    "high": 8,
-   "medium": 26,
+   "medium": 28,
    "low": 61
   }
  },
- "newTonight": 0,
+ "newTonight": 2,
  "flags": [
   {
    "type": "PRICE_MOVE",
@@ -1373,6 +1374,40 @@
     "to": "2026-10-14"
    },
    "new": false
+  },
+  {
+   "type": "HYPE_EFFECT",
+   "severity": "medium",
+   "key": "hype:set:set:SV10: Destined Rivals:2026-10-14",
+   "line": "Heavy creator attention on Destined Rivals this week. Past sets with this much attention moved -3.9% over 30 days (n=22, 2026-04-27 to 2026-09-12).",
+   "data": {
+    "level": "set",
+    "label": "Destined Rivals",
+    "n": 22,
+    "medianPct": -3.9,
+    "from": "2026-04-27",
+    "to": "2026-09-12",
+    "surface": "set",
+    "source": "data/derived/hype-effect-set.json"
+   },
+   "new": true
+  },
+  {
+   "type": "HYPE_EFFECT",
+   "severity": "medium",
+   "key": "hype:set:set:SV: Prismatic Evolutions:2026-10-14",
+   "line": "Heavy creator attention on Prismatic Evolutions this week. Past sets with this much attention moved -3.9% over 30 days (n=22, 2026-04-27 to 2026-09-12).",
+   "data": {
+    "level": "set",
+    "label": "Prismatic Evolutions",
+    "n": 22,
+    "medianPct": -3.9,
+    "from": "2026-04-27",
+    "to": "2026-09-12",
+    "surface": "set",
+    "source": "data/derived/hype-effect-set.json"
+   },
+   "new": true
   }
  ]
 }
