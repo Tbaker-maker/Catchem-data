@@ -1284,14 +1284,15 @@ function makeHeadline(read, pts, thin, allowExtreme = true) {
   const shown = Number.isFinite(pct) ? String(Math.abs(pct)) : "";
   if (!label || !price || !from || !shown || pct === 0 || (days !== 7 && days !== 30 && days !== 90)) return "";
   const dir = pct > 0 ? "up" : "down";
-  const nmFrom = `${from} NM`;
-  const nmPrice = `${price} NM`;
+  const sealed = read.kind === "sealed";
+  const nmFrom = sealed ? from : `${from} NM`;
+  const nmPrice = sealed ? price : `${price} NM`;
   const extreme = allowExtreme && !thin && pts.length ? extremeOf(pts) : null;
   const phrase = extremePhrase(extreme);
   if (phrase) return `${label} hit ${phrase}: ${nmPrice}, ${dir} ${shown}% in ${days} days.`;
   const spanWord = days === 7 ? "this week" : days === 30 ? "this month" : "over 90 days";
   const tail = thin ? ", on few sales." : ".";
-  return `${label} is ${dir} ${shown}% ${spanWord}: ${nmFrom} → ${nmPrice}${tail}`;
+  return `${label} is ${dir} ${shown}% ${spanWord}, from ${nmFrom} to ${nmPrice}${tail}`;
 }
 
 export function whyPattern(text) {

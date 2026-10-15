@@ -309,6 +309,11 @@ try {
   const { writeReadFacts } = await import("./build-read-facts.mjs");
   console.log(JSON.stringify({ readFacts: await writeReadFacts(ROOT) }));
 } catch (err) { console.error(`read facts skipped: ${err.message}`); }
+// Last step: sealed rows never carry NM or Near Mint, and prices read "from $A to $B".
+try {
+  const { scrubPublished } = await import("./lib/sealed-condition.mjs");
+  console.log(JSON.stringify({ sealedScrub: await scrubPublished(ROOT) }));
+} catch (err) { console.error(`sealed scrub skipped: ${err.message}`); }
 console.log(JSON.stringify({ extra: extraSummary, library: library.counts, health: { nightlyDay: health.nightlyDay, shards: health.shards, lose: health.lose, failures: health.failures } }));
 if (health.failures.length) {
   console.error(health.failures.join("\n"));
