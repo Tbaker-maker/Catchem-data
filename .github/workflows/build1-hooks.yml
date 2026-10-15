@@ -29,7 +29,7 @@ jobs:
       - name: Data drift bot
         if: github.event.schedule == '30 14 * * *' || github.event_name == 'workflow_dispatch'
         env:
-          DRIFT_BOT_TOKEN: ${{ secrets.DRIFT_BOT_TOKEN }}
+          DRIFT_BOT_TOKEN: ${{ secrets.DRIFT_BOT_TOKEN || github.token }}
         run: node scripts/data-drift-bot.mjs
       - name: Commit
         run: |
