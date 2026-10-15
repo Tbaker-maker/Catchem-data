@@ -1,11 +1,43 @@
 # P-1017 progress
 
-A fresh chat resumes at the first job that is not SHIPPED or SKIPPED.
+A fresh chat skips jobs marked SHIPPED, SKIPPED, or BLOCKED when the date in that job has not arrived. Resume at the next job.
 
 ## RD15b
 - repo: Catchem-data
 - status: SHIPPED
 - PR: #292
-- merged SHA: pending squash of #292
+- merged SHA: 22de19d83b84c3e18de1a9c2abebdfd9616b13db
 - changed: Nightly feed step publishes research/assets/public as one orphan commit on public-data and checks the file list before the force-push.
-- left: The branch is created on the next nightly run. Main still receives the public files until RD15c.
+- left: Main still receives the public files until RD15c.
+
+## TF7
+- repo: catchem-site
+- status: SHIPPED
+- PR: #208
+- merged SHA: 5fef508e9e87f0cf3ccf27fdebd86cd3e5de8e71
+- changed: Server fetches try public-data first and fall back to main. A missing branch locks the session to main. Browser image URLs stay on main.
+- left: none. Live pages loaded at 390 and 1280.
+
+## RD15c
+- repo: Catchem-data
+- status: BLOCKED
+- PR: none
+- merged SHA: none
+- changed: not started
+- left: Can run on 2026-10-18 after the 04:00 UTC nightly, once public-data has published on 2026-10-16, 2026-10-17, and 2026-10-18. First publish was 2026-10-15 (d838c336). Tyler does nothing unless one of those nights fails to publish.
+
+## PO2
+- repo: catchem-site
+- status: SHIPPED
+- PR: #209
+- merged SHA: 73df8251aeb10d40825e87f08934987b6b64ce21
+- changed: Post Office iframe fits the screen, the editor dock stays put, paper rows with prices skip the heavy patch, and invite-only sessions show a line instead of controls.
+- left: none. Live pages loaded at 390 and 1280. paper-rows.json returned 200 ten times.
+
+## TF8
+- repo: catchem-site
+- status: SKIPPED
+- PR: none
+- merged SHA: none
+- changed: not started
+- left: Set pages have no Include promos toggle because set files have no promo parent. Tyler must name the parent set for each promo group. Promo-only sets stay as they are.
