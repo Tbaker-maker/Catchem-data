@@ -456,6 +456,7 @@ jobs:
           node scripts/scanner-weekly.mjs || true
           node scripts/price-sanity.mjs || true
           node scripts/freshness-bot.mjs || true
+          node scripts/build-limits.mjs || true
           node scripts/build-post-office-catalogue.mjs || true
           node scripts/build-custom-reads.mjs || true
 
