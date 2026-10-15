@@ -14,6 +14,21 @@ export async function run() {
   });
   t("a follow with reads is kept", built.slices.length === 1 && built.slices[0].followId === "sv" && built.slices[0].reads[0].id === "r1");
   t("a quiet day is skipped and not written as a slice", built.quiet.length === 1 && built.quiet[0] === "quiet-one" && built.slices.every((slice) => slice.followId !== "quiet-one"));
+  const sharedNews = [{ headline: "New set dated", line: "The set page names the day.", url: "https://press.pokemon.com/en/example", source: "Pokémon press", date: "2026-10-15" }];
+  const withNews = buildFollowSlices({
+    day: "2026-10-17",
+    follows: [{ id: "news-only", sets: [], cards: [], kinds: [], news: true, watch: ["set page"] }],
+    reads: [],
+    news: sharedNews,
+  });
+  t("a news toggle attaches the shared feed and is not quiet", withNews.slices.length === 1 && withNews.slices[0].news.length === 1 && withNews.quiet.length === 0);
+  const off = buildFollowSlices({
+    day: "2026-10-17",
+    follows: [{ id: "off", sets: [], cards: [], kinds: [] }],
+    reads: [],
+    news: sharedNews,
+  });
+  t("news stays off when the follow did not toggle it", off.quiet[0] === "off" && off.slices.length === 0);
   return fail;
 }
 
