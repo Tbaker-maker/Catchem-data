@@ -3,8 +3,10 @@
 The overnight shift's notes. Short on purpose.
 
 ## Our own claims
-Not much of a verdict today. Most of our claims need more time before they can be judged, and pretending otherwise would be the actual failure.
-3 survived their own kill conditions, 7 could not be judged yet with the tape we hold.
+A read we published has failed its own test. Better we find it than you do.
+
+**NEEDS A HUMAN — 1 thesis/theses failed its own kill condition.** We said in advance what would end them, and that happened, so they end. Drafts of the public amendment are in the falsifier report.
+- **RT-2 (Supply Injection Absorb-or-Stall)** — 100% of 4 supply injections moved prices less than 1% — injections are not being absorbed OR stalling, which is the stated kill condition
 
 ## Our own numbers
 A handful of suspicious jumps in our own history. Probably ours, not the market's — that is the usual answer.
@@ -32,7 +34,7 @@ A handful of suspicious jumps in our own history. Probably ours, not the market'
 
 ## The agents themselves
 **NEEDS A HUMAN — the supervisor flagged the watchers:**
-- correction-hunter: FARMING — findings climbed 6 → 6 → 6 → 27 across four runs with nothing resolved. Volume is not work.
+- correction-hunter: FARMING — findings climbed 6 → 6 → 6 → 29 across four runs with nothing resolved. Volume is not work.
 - correction-hunter: BROKEN RECORD — 5 finding(s) repeated three runs running (e.g. "gone::Umbreon VMAX"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
 - designer: FARMING — findings climbed 12 → 12 → 12 → 19 across four runs with nothing resolved. Volume is not work.
 - theme-scout: BROKEN RECORD — 22 finding(s) repeated three runs running (e.g. "the one-off::Ken Sugimori drew Ampharos exactly on"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
@@ -59,11 +61,10 @@ Gaps in what we watch:
 - *ease of use* — A number appears above the fold on Today. Holds — check on a 390px screen that it is still above the fold with the banner and nav present.
 
 ## Who needs to do what
-**NEEDS A HUMAN — Tyler (5):**
-- **[ACT NOW 76]** Celebrations Elite Trainer Box moved 109.4% — about 3.3× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
-- **[ACT NOW 76]** Crimson Invasion Elite Trainer Box moved 10.4% — about 3.4× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
-- **[ACT NOW 76]** Paldean Fates Booster Pack moved -9.3% — about 4.0× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
+**NEEDS A HUMAN — Tyler (3):**
+- **[ACT NOW 76]** Prismatic Evolutions Surprise Box moved -38.5% — about 3.0× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
 - **[QUEUE 58]** The knowledge base is only used for one fact a day. — *The same sourced facts could power a "why is this card like this" explainer on every product page — set context, print quirks, what makes it odd. It compounds with every fact added.*
+- **[WATCH 40]** pricing 50 more cards would unlock 17 artist cohorts — *an expansion decision, not a machine's call*
 
 **CC (9):**
 - **[ACT NOW 90]** Celebrations Elite Trainer Box moved 109.4% in 2026-10-12→2026-10-13 — *verify against listings; file a correction if the earlier figure was ours*
@@ -73,27 +74,24 @@ Gaps in what we watch:
 
 **Chat (12):** top — The Today screen carries 17 sections: The Daily Three, 🗳 Rip or Hold?, Biggest movers, Set the app up for you, Movers, Release radar… *[QUEUE]*
 
-*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 9 ACT NOW, 9 QUEUE, 8 WATCH, 29 filed without surfacing, 4 confirmations.*
+*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 7 ACT NOW, 9 QUEUE, 8 WATCH, 29 filed without surfacing, 4 confirmations.*
 ## The creator cheat code
 *Could somebody open this, hit record within two minutes, and sound like the most informed voice in the hobby without pausing to look anything up? Every pause is a cut.*
 - **a visual that runs itself** — 35 card images minted today. *The gap is that they are files in a repo. A creator needs them one tap from the angle they picked, not from a folder.*
 - **the cheat code** — The pieces exist and are reachable, but a creator still assembles them: pick an angle here, find the card there, open the overlay separately. *ONE screen per angle: the subject, the spoken open, the numbers as a lower-third, the card ready to download, the source line, and a record checklist. Pick an angle, hit record.*
 - **the cheat code** — Nothing tells a creator how a piece performed after they made it. *Ask one question after publication — did this land — and keep the answers. Even a yes/no on twenty videos would tell us which angles are worth generating.*
 
-## What the market did
-- **product** — Prismatic Evolutions Surprise Box moved -38.5% — about 3.0× its own typical daily swing. *Measured against its own 22 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
-
 ## Where today's story goes
-- **X** — "Obsidian Flames listings moved 209.7% while its print window closes."
-- **YouTube** — 151 Elite Trainer Box — "Sealed carries a 92% premium over the cost of its packs bought loose — the widest gap of that kind we track today."
-- **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 99.6."
+- **X** — "Paldean Fates listings moved 200% while its print window closes."
+- **YouTube** — Cosmic Eclipse Booster Box — "Works out to $150 a pack, the most expensive rip we track. A pack at retail runs about $4.49."
+- **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 99.4."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
 
 ## Something is slipping
-- **unsaved** — 4 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
+- **unsaved** — 3 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
 - **ignored** — 6 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
-- **drift** — 67 script(s) are not referenced anywhere: append-learning-log.mjs, append-shelf.mjs, audit-repo-bots.mjs, backfill-artists.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
+- **drift** — 75 script(s) are not referenced anywhere: append-learning-log.mjs, append-shelf.mjs, audit-repo-bots.mjs, backfill-artists.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
 - **drift** — 49 JSON files in research/pulse. *A directory nobody can scan is a directory where something goes missing without being noticed.*
 
 ## Legal standing
@@ -103,10 +101,10 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 *Legal INFORMATION, not legal advice. No lawyer has reviewed this. Sweepstakes law varies by state and changes; nothing here is a compliance opinion anyone can rely on. Its job is to make the conversation with counsel shorter and better, and to stop us doing something obviously wrong in the meantime.*
 
 ## Numbers that do not make sense for what they are
-53 value(s) are structurally fine and absurd in context.
-- **"sleeved"** killed 355 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
-- Scarlet & Violet Booster Pack: 91% rejection rate (14/150) — *largest bucket: set = 48. A single over-broad term can eat a market.*
-- 151 Booster Pack: 77% rejection rate (34/150) — *largest bucket: type = 72. A single over-broad term can eat a market.*
+54 value(s) are structurally fine and absurd in context.
+- **"sleeved"** killed 361 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
+- Battle Styles Booster Pack: 73% rejection rate (40/150) — *largest bucket: exclude = 58. A single over-broad term can eat a market.*
+- Scarlet & Violet Booster Pack: 95% rejection rate (8/150) — *largest bucket: set = 54. A single over-broad term can eat a market.*
 
 ## What the agents should be asking themselves
 - **domain-plausibility** — Would you catch this today? If yes, what specifically would fire. If no, what would you need?
@@ -128,13 +126,13 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 - **Mitsuhiro Arita drew Houndoom exactly once** — Mitsuhiro Arita has 496 cards. Exactly one is a Houndoom.
 
 ## Design
-6 high, 12 medium across 15 shipped surfaces, 110 minted cards.
+6 high, 12 medium across 15 shipped surfaces, 116 minted cards.
 - **build.html** — the accent colour appears 52 times. *Spend it in two places: the active state and the one primary action. Everything else greys.*
 - **corrections.html** — remote fonts with no local fallback. *Add system-ui and a generic family to every font stack.*
 - **methodology.html** — remote fonts with no local fallback. *Add system-ui and a generic family to every font stack.*
 
 ## What the agents cannot answer themselves
-67 open — 48 need eyes on a rendered page, 19 need a decision.
+68 open — 49 need eyes on a rendered page, 19 need a decision.
 - **NEEDS A HUMAN** [theme-scout] 14 Pokémon share the "-eon" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 7 Pokémon share the "ite" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 10 Pokémon share the "-ish" ending — a theme, or a coincidence of naming?
