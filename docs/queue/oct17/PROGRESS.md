@@ -1,6 +1,6 @@
 # P-1017 progress
 
-A fresh chat resumes at the first job that is not SHIPPED or SKIPPED.
+A fresh chat skips jobs marked SHIPPED, SKIPPED, or BLOCKED when the date in that job has not arrived. Resume at the next job.
 
 ## RD15b
 - repo: Catchem-data
@@ -25,3 +25,19 @@ A fresh chat resumes at the first job that is not SHIPPED or SKIPPED.
 - merged SHA: none
 - changed: not started
 - left: Can run on 2026-10-18 after the 04:00 UTC nightly, once public-data has published on 2026-10-16, 2026-10-17, and 2026-10-18. First publish was 2026-10-15 (d838c336). Tyler does nothing unless one of those nights fails to publish.
+
+## PO2
+- repo: catchem-site
+- status: SHIPPED
+- PR: #209
+- merged SHA: 73df8251aeb10d40825e87f08934987b6b64ce21
+- changed: Post Office iframe fits the screen, the editor dock stays put, paper rows with prices skip the heavy patch, and invite-only sessions show a line instead of controls.
+- left: none. Live pages loaded at 390 and 1280. paper-rows.json returned 200 ten times.
+
+## TF8
+- repo: catchem-site
+- status: SKIPPED
+- PR: none
+- merged SHA: none
+- changed: not started
+- left: Set pages have no Include promos toggle because set files have no promo parent. Tyler must name the parent set for each promo group. Promo-only sets stay as they are.
