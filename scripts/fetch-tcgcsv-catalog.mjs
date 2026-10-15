@@ -186,10 +186,20 @@ export async function fetchCatalog(today = TODAY) {
       const latestPath = join(catalogDir, "tcgcsv-latest.json");
       const latest = JSON.parse(await readFile(latestPath, "utf8"));
       const next = applyDayPrices(latest, published);
+      const catalog = next === latest ? latest : next;
       if (next !== latest) {
         await writeFile(latestPath, JSON.stringify(next));
         console.log(`catalog asOf moved from ${latest.asOf} to ${published.date} using the published day`);
       }
+      const coverage = {
+        asOf: catalog.asOf,
+        source: catalog.source,
+        counts: catalog.counts,
+        failedGroups: catalog.failedGroups || [],
+        note: catalog.note,
+      };
+      await writeFile(join(catalogDir, "tcgcsv-coverage.json"), JSON.stringify(coverage, null, 2));
+      console.log(`coverage asOf ${coverage.asOf}`);
     } catch (err) {
       console.error(`tcgcsv day ${today} was kept; catalog was not moved forward: ${err.message}`);
     }
