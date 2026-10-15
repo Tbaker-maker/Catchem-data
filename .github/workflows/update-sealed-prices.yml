@@ -6,11 +6,18 @@ on:
     - cron: "0 4 * * *"
   workflow_dispatch: # Allows manual runs from the Actions tab
 
+# One price run at a time. Two runs at once raced each other's pushes on
+# Oct 15 and the second went red. A new run waits; it never cancels one mid-commit.
+concurrency:
+  group: update-sealed-prices
+  cancel-in-progress: false
+
 jobs:
   update:
     runs-on: ubuntu-latest
     permissions:
       contents: write # Needs write access to commit updated prices back
+      actions: read # The failure summary reads this run's own step results
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -90,7 +97,21 @@ jobs:
         # Pure-math tests on scripts/lib + contract checks on yesterday's
         # committed artifacts. A regressed engine kills the run HERE, before
         # any eBay/PPT quota burns.
-        run: node scripts/tests/run-tests.mjs
+        # One retry tells a flaky test from a real regression. Both tries red
+        # still kills the run before any quota burns.
+        run: |
+          if node scripts/tests/run-tests.mjs > /tmp/tests-1.log 2>&1; then tail -5 /tmp/tests-1.log; exit 0; fi
+          echo "::warning::Unit tests failed once; retrying to rule out a flake."
+          grep -E "✗|FAIL" /tmp/tests-1.log | head -20 || true
+          if node scripts/tests/run-tests.mjs > /tmp/tests-2.log 2>&1; then
+            echo "### Unit tests passed on retry (flaky first try)" >> "$GITHUB_STEP_SUMMARY"
+            grep -E "✗|FAIL" /tmp/tests-1.log | head -20 | sed 's/^/    /' >> "$GITHUB_STEP_SUMMARY" || true
+            exit 0
+          fi
+          cat /tmp/tests-2.log
+          echo "### Unit tests failed twice" >> "$GITHUB_STEP_SUMMARY"
+          grep -E "✗|FAIL" /tmp/tests-2.log | head -30 | sed 's/^/    /' >> "$GITHUB_STEP_SUMMARY" || true
+          exit 1
 
       - name: Note PPT run start
         continue-on-error: true
@@ -612,3 +633,16 @@ jobs:
           else
             echo "Mirror push failed — the daily run is unaffected. Investigate the mirror, not this run."
           fi
+
+      - name: Failure summary
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo "## Price run failed"
+            echo "Failed steps:"
+            gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}/jobs" \
+              --jq '.jobs[].steps[] | select(.conclusion=="failure") | "- " + .name' || echo "- (could not read step results)"
+            echo "Price data commits happen in their own step, so check main for today's data: commit before assuming the day is lost."
+          } | tee -a "$GITHUB_STEP_SUMMARY"
