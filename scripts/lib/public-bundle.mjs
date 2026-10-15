@@ -89,10 +89,16 @@ export function eraOf(name) {
     "supreme victors": "Diamond & Pearl",
     "arceus": "Diamond & Pearl",
     "rumble": "Diamond & Pearl",
+    "legendary collection": "Original",
+    "southern islands": "Original",
+    "expedition": "Original",
+    "aquapolis": "Original",
+    "skyridge": "Original",
+    "e-reader sample cards": "Original",
   };
   if (named[bare]) return named[bare];
   if (/base set|jungle|fossil|team rocket|gym heroes|gym challenge/i.test(n)) return "Original";
-  if (/promo|league|championship|prize pack|jumbo|deck exclusive|miscellaneous|battle academy|trick or trade|my first battle|trading card game classic|first partner/i.test(n)) return "Promos and extras";
+  if (/promo|league|championship|prize pack|jumbo|deck exclusive|miscellaneous|battle academy|trick or trade|my first battle|trading card game classic|first partner|^pop series|blister exclusive|southeast asia exclusive/i.test(n)) return "Promos and extras";
   return "Other";
 }
 

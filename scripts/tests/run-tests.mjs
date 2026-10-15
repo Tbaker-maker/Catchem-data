@@ -273,5 +273,31 @@ console.log("── feature suites ──");
   }
 }
 
+console.log("── set source groups ──");
+{
+  const { auditGroups, foreignGroups } = await import("../lib/set-audit.mjs");
+  const { eraOf } = await import("../lib/public-bundle.mjs");
+  const { readdir } = await import("node:fs/promises");
+  const here = join(dirname(fileURLToPath(import.meta.url)), "../..");
+  const mk = (groupId, pid = groupId * 10) => ({ groupId, tcgplayerProductId: pid, set: `g${groupId}` });
+  t("a fold in the allowlist stays one set", auditGroups([mk(24451), mk(24722), mk(24837, 1)]).sets.size === 2);
+  const gidOf = new Map([[1, 24451], [2, 24451], [3, 24722]]);
+  t("a set with a card from a second group fails", foreignGroups([{ pid: 1 }, { pid: 2 }, { pid: 3 }], gidOf).length === 1);
+  t("a set with a folded group passes", foreignGroups([{ pid: 3 }, { pid: 3 }, { pid: 9 }], new Map([[3, 24722], [9, 24837]])).length === 0);
+  const live = JSON.parse(await readFile(join(here, "data/catalog/tcgcsv-latest.json"), "utf8"));
+  const pidGroup = new Map(live.items.map((i) => [Number(i.tcgplayerProductId), Number(i.groupId)]));
+  const dir = join(here, "research/assets/public/sets");
+  const bad = [];
+  for (const f of (await readdir(dir)).filter((x) => x.endsWith(".json"))) {
+    const doc = JSON.parse(await readFile(join(dir, f), "utf8"));
+    const extra = foreignGroups(doc.items || [], pidGroup);
+    if (extra.length) bad.push(`${f}: ${extra.slice(0, 3).join(",")}`);
+  }
+  t("every published set holds one source group, plus allowlisted folds", bad.length === 0, bad.slice(0, 5).join(" | "));
+  const others = [...auditGroups(live.items).sets.values()].map((x) => x.items[0].set).filter((n) => eraOf(n) === "Other");
+  t("every set from the catalog has a named era", others.length === 0, others.join(", "));
+  t("vintage and POP sets sit in their era", eraOf("Skyridge") === "Original" && eraOf("POP Series 5") === "Promos and extras");
+}
+
 console.log(`\n${pass} passed · ${fail} failed`);
 if (fail) process.exit(1);
