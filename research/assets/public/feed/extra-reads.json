@@ -1,5 +1,5 @@
 {
- "asOf": "2026-10-14",
+ "asOf": "2026-10-15",
  "volume": [],
  "volumeNote": "No sold count is on file, so no volume read ships.",
  "lag": {
@@ -1085,178 +1085,340 @@
  },
  "reads": [
   {
-   "id": "dive-me2-etb",
-   "sku": "me2-etb",
-   "diveId": "me2-etb",
-   "readKind": "dive",
-   "kind": "dive",
-   "name": "Phantasmal Flames Elite Trainer Box",
-   "set": "",
-   "path": "Phantasmal Flames Elite Trainer Box: eBay asks ($158.96), eBay asking, any condition, sit $9.33 over TCGplayer market ($149.63 NM).",
-   "headline": "Phantasmal Flames Elite Trainer Box: eBay asks ($158.96), eBay asking, any condition, sit $9.33 over TCGplayer market ($149.63 NM).",
-   "why": "eBay ask is the price median in research/pulse/dive/me2-etb.json. TCGplayer market is the price for tcgcsv-654136 in data/catalog/tcgcsv-latest.json. Asks are not sales.",
-   "price": 158.96,
-   "asOf": "2026-10-14",
-   "href": "/dive/me2-etb",
-   "sources": {
-    "dive": "research/pulse/dive/me2-etb.json",
-    "market": "data/catalog/tcgcsv-latest.json"
-   },
-   "tcgPlayerId": "654136"
+   "id": "quiet-tcgcsv-86899",
+   "sku": "tcgcsv-86899",
+   "readKind": "quiet",
+   "kind": "quiet",
+   "name": "Ludicolo",
+   "set": "Secret Wonders",
+   "path": "Ludicolo: No TCGplayer sales recorded in 7 days. The Near Mint market price stayed $9.18 over Oct 5 to Oct 11.",
+   "headline": "Ludicolo: No TCGplayer sales recorded in 7 days. The Near Mint market price stayed $9.18 over Oct 5 to Oct 11.",
+   "why": "Ludicolo: No TCGplayer sales recorded in 7 days. The Near Mint market price stayed $9.18 over Oct 5 to Oct 11. That is not a scarcity claim.",
+   "asOf": "2026-10-11",
+   "href": "/c/tcgcsv-86899",
+   "lane": "single",
+   "receipt": {
+    "days": 7,
+    "price": 9.18,
+    "from": "2026-10-05",
+    "to": "2026-10-11",
+    "printing": "Holofoil"
+   }
   },
   {
-   "id": "dive-me2-pack",
-   "sku": "me2-pack",
-   "diveId": "me2-pack",
-   "readKind": "dive",
-   "kind": "dive",
-   "name": "Phantasmal Flames Booster Pack",
-   "set": "",
-   "path": "Phantasmal Flames Booster Pack: eBay asks ($14.98), eBay asking, any condition, sit $2.67 over TCGplayer market ($12.31 NM).",
-   "headline": "Phantasmal Flames Booster Pack: eBay asks ($14.98), eBay asking, any condition, sit $2.67 over TCGplayer market ($12.31 NM).",
-   "why": "eBay ask is the price median in research/pulse/dive/me2-pack.json. TCGplayer market is the price for tcgcsv-654144 in data/catalog/tcgcsv-latest.json. Asks are not sales.",
-   "price": 14.98,
-   "asOf": "2026-10-14",
-   "href": "/dive/me2-pack",
-   "sources": {
-    "dive": "research/pulse/dive/me2-pack.json",
-    "market": "data/catalog/tcgcsv-latest.json"
-   },
-   "tcgPlayerId": "654144"
+   "id": "mix-tcgcsv-517050",
+   "sku": "tcgcsv-517050",
+   "readKind": "mix",
+   "kind": "mix",
+   "name": "Giovanni's Charisma",
+   "set": "SV: Scarlet & Violet 151",
+   "path": "Giovanni's Charisma, Oct 7 to Oct 13: 22 Near Mint, 5 Lightly Played, 1 Heavily Played, 0 Damaged.",
+   "headline": "Giovanni's Charisma, Oct 7 to Oct 13: 22 Near Mint, 5 Lightly Played, 1 Heavily Played, 0 Damaged.",
+   "why": "Giovanni's Charisma, Oct 7 to Oct 13: 22 Near Mint, 5 Lightly Played, 1 Heavily Played, 0 Damaged. This is the mix of copies that sold, not the copy in your hand.",
+   "asOf": "2026-10-13",
+   "href": "/c/tcgcsv-517050",
+   "lane": "single",
+   "receipt": {
+    "from": "2026-10-07",
+    "to": "2026-10-13",
+    "conditions": [
+     {
+      "condition": "Near Mint",
+      "sold": 22
+     },
+     {
+      "condition": "Lightly Played",
+      "sold": 5
+     },
+     {
+      "condition": "Heavily Played",
+      "sold": 1
+     },
+     {
+      "condition": "Damaged",
+      "sold": 0
+     }
+    ],
+    "printing": "Holofoil"
+   }
   },
   {
-   "id": "spread-sm7-booster-box",
-   "sku": "sm7-booster-box",
+   "id": "conditions-tcgcsv-124015",
+   "sku": "tcgcsv-124015",
+   "readKind": "conditions",
+   "kind": "conditions",
+   "name": "M Venusaur EX",
+   "set": "XY - Evolutions",
+   "path": "M Venusaur EX: Near Mint $12.48. Lightly Played $8.70. Oct 12.",
+   "headline": "M Venusaur EX: Near Mint $12.48. Lightly Played $8.70. Oct 12.",
+   "why": "M Venusaur EX: Near Mint $12.48. Lightly Played $8.70. Oct 12. Two condition prices. Not a grade result.",
+   "asOf": "2026-10-12",
+   "href": "/c/tcgcsv-124015",
+   "lane": "single",
+   "receipt": {
+    "date": "2026-10-12",
+    "nearMint": 12.48,
+    "played": 8.7,
+    "playedCondition": "Lightly Played"
+   }
+  },
+  {
+   "id": "solddown-tcgcsv-478102",
+   "sku": "tcgcsv-478102",
+   "readKind": "solddown",
+   "kind": "solddown",
+   "name": "Simisear V",
+   "set": "SWSH: Crown Zenith",
+   "path": "20 Near Mint copies sold while Simisear V went from $0.90 to $0.83 over Oct 5 to Oct 11.",
+   "headline": "20 Near Mint copies sold while Simisear V went from $0.90 to $0.83 over Oct 5 to Oct 11.",
+   "why": "20 Near Mint copies sold while Simisear V went from $0.90 to $0.83 over Oct 5 to Oct 11. Sales and a price change in the same window. Not a cause.",
+   "asOf": "2026-10-11",
+   "href": "/c/tcgcsv-478102",
+   "lane": "single",
+   "receipt": {
+    "days": 7,
+    "sold": 20,
+    "fromPrice": 0.9,
+    "toPrice": 0.83,
+    "from": "2026-10-05",
+    "to": "2026-10-11"
+   }
+  },
+  {
+   "id": "setshare-1427-2026-10-11",
+   "sku": "tcgcsv-85193",
+   "readKind": "setshare",
+   "kind": "setshare",
+   "name": "Emolga - 6/12",
+   "set": "McDonald's Promos 2012",
+   "path": "McDonald's Promos 2012, Oct 5 to Oct 11: Emolga - 6/12 accounts for 2 of 3 Near Mint copies sold.",
+   "headline": "McDonald's Promos 2012, Oct 5 to Oct 11: Emolga - 6/12 accounts for 2 of 3 Near Mint copies sold.",
+   "why": "McDonald's Promos 2012, Oct 5 to Oct 11: Emolga - 6/12 accounts for 2 of 3 Near Mint copies sold. Share of copies sold. Not share of dollars.",
+   "asOf": "2026-10-11",
+   "href": "/c/tcgcsv-85193",
+   "lane": "single",
+   "rank": 0.6666666666666666,
+   "receipt": {
+    "groupId": "1427",
+    "top": 2,
+    "total": 3,
+    "from": "2026-10-05",
+    "to": "2026-10-11",
+    "cards": 12
+   }
+  },
+  {
+   "id": "spread-sv3pt5-pc-etb",
+   "sku": "sv3pt5-pc-etb",
    "readKind": "spread",
    "kind": "spread",
-   "name": "Celestial Storm Booster Box",
-   "set": "Celestial Storm",
-   "path": "Celestial Storm Booster Box asks run from $2,999.00 up to $4,600.00. Median ask $3,199.00 across 11 eBay listings on 2026-10-14.",
-   "headline": "Celestial Storm Booster Box asks run from $2,999.00 up to $4,600.00. Median ask $3,199.00 across 11 eBay listings on 2026-10-14.",
-   "why": "Celestial Storm Booster Box asks run from $2,999.00 up to $4,600.00. Median ask $3,199.00 across 11 eBay listings on 2026-10-14. Asking prices from the search. Not sold prices.",
-   "asOf": "2026-10-14",
-   "href": "/p/sm7-booster-box",
+   "name": "Pokemon 151 Pokemon Center Elite Trainer Box",
+   "set": "Pokemon 151",
+   "path": "Pokemon 151 Pokemon Center Elite Trainer Box asks run from $1,284.73 up to $1,999.99. Median ask $1,979.79 across 18 eBay listings on 2026-10-15.",
+   "headline": "Pokemon 151 Pokemon Center Elite Trainer Box asks run from $1,284.73 up to $1,999.99. Median ask $1,979.79 across 18 eBay listings on 2026-10-15.",
+   "why": "Pokemon 151 Pokemon Center Elite Trainer Box asks run from $1,284.73 up to $1,999.99. Median ask $1,979.79 across 18 eBay listings on 2026-10-15. Asking prices from the search. Not sold prices.",
+   "asOf": "2026-10-15",
+   "href": "/p/sv3pt5-pc-etb",
    "lane": "sealed",
-   "rank": 1601,
+   "rank": 715.26,
    "receipt": {
-    "low": 2999,
-    "high": 4600,
-    "median": 3199,
+    "low": 1284.73,
+    "high": 1999.99,
+    "median": 1979.79,
+    "count": 18,
+    "basis": "p10-p90"
+   },
+   "tcgPlayerId": "501999"
+  },
+  {
+   "id": "askmove-me4-pack",
+   "sku": "me4-pack",
+   "readKind": "askmove",
+   "kind": "askmove",
+   "name": "Chaos Rising Booster Pack",
+   "set": "",
+   "path": "Chaos Rising Booster Pack: the eBay ask went from $8.00 to $7.99 over Oct 14 to Oct 15. The TCGplayer market price stayed $6.08.",
+   "headline": "Chaos Rising Booster Pack: the eBay ask went from $8.00 to $7.99 over Oct 14 to Oct 15. The TCGplayer market price stayed $6.08.",
+   "why": "Chaos Rising Booster Pack: the eBay ask went from $8.00 to $7.99 over Oct 14 to Oct 15. The TCGplayer market price stayed $6.08. The ask changed. The market price did not. Asks are not sales.",
+   "asOf": "2026-10-15",
+   "href": "/p/me4-pack",
+   "lane": "sealed",
+   "receipt": {
+    "from": "2026-10-14",
+    "to": "2026-10-15",
+    "askFrom": 8,
+    "askTo": 7.99,
+    "market": 6.08
+   },
+   "tcgPlayerId": "684446"
+  },
+  {
+   "id": "quiet-tcgcsv-149382",
+   "sku": "tcgcsv-149382",
+   "readKind": "quiet",
+   "kind": "quiet",
+   "name": "Celesteela GX",
+   "set": "SM Promos",
+   "path": "Celesteela GX in Near Mint stayed $6.52 over Oct 5 to Oct 11. No TCGplayer sales recorded in 7 days.",
+   "headline": "Celesteela GX in Near Mint stayed $6.52 over Oct 5 to Oct 11. No TCGplayer sales recorded in 7 days.",
+   "why": "Celesteela GX in Near Mint stayed $6.52 over Oct 5 to Oct 11. No TCGplayer sales recorded in 7 days. That is not a scarcity claim.",
+   "asOf": "2026-10-11",
+   "href": "/c/tcgcsv-149382",
+   "lane": "single",
+   "receipt": {
+    "days": 7,
+    "price": 6.52,
+    "from": "2026-10-05",
+    "to": "2026-10-11",
+    "printing": "Holofoil"
+   }
+  },
+  {
+   "id": "mix-tcgcsv-497669",
+   "sku": "tcgcsv-497669",
+   "readKind": "mix",
+   "kind": "mix",
+   "name": "Iono",
+   "set": "SV02: Paldea Evolved",
+   "path": "Iono: 18 Near Mint, 1 Lightly Played, 2 Moderately Played, 0 Damaged over Oct 7 to Oct 13.",
+   "headline": "Iono: 18 Near Mint, 1 Lightly Played, 2 Moderately Played, 0 Damaged over Oct 7 to Oct 13.",
+   "why": "Iono: 18 Near Mint, 1 Lightly Played, 2 Moderately Played, 0 Damaged over Oct 7 to Oct 13. This is the mix of copies that sold, not the copy in your hand.",
+   "asOf": "2026-10-13",
+   "href": "/c/tcgcsv-497669",
+   "lane": "single",
+   "receipt": {
+    "from": "2026-10-07",
+    "to": "2026-10-13",
+    "conditions": [
+     {
+      "condition": "Near Mint",
+      "sold": 18
+     },
+     {
+      "condition": "Lightly Played",
+      "sold": 1
+     },
+     {
+      "condition": "Moderately Played",
+      "sold": 2
+     },
+     {
+      "condition": "Damaged",
+      "sold": 0
+     }
+    ],
+    "printing": "Holofoil"
+   }
+  },
+  {
+   "id": "conditions-tcgcsv-274445",
+   "sku": "tcgcsv-274445",
+   "readKind": "conditions",
+   "kind": "conditions",
+   "name": "Squirtle",
+   "set": "Pokemon GO",
+   "path": "Squirtle: Near Mint $0.31. Lightly Played $0.21. Oct 11.",
+   "headline": "Squirtle: Near Mint $0.31. Lightly Played $0.21. Oct 11.",
+   "why": "Squirtle: Near Mint $0.31. Lightly Played $0.21. Oct 11. Two condition prices. Not a grade result.",
+   "asOf": "2026-10-11",
+   "href": "/c/tcgcsv-274445",
+   "lane": "single",
+   "receipt": {
+    "date": "2026-10-11",
+    "nearMint": 0.31,
+    "played": 0.21,
+    "playedCondition": "Lightly Played"
+   }
+  },
+  {
+   "id": "solddown-tcgcsv-284044",
+   "sku": "tcgcsv-284044",
+   "readKind": "solddown",
+   "kind": "solddown",
+   "name": "Galarian Stunfisk",
+   "set": "SWSH11: Lost Origin",
+   "path": "9 Near Mint copies sold while Galarian Stunfisk went from $0.13 to $0.12 over Oct 7 to Oct 13.",
+   "headline": "9 Near Mint copies sold while Galarian Stunfisk went from $0.13 to $0.12 over Oct 7 to Oct 13.",
+   "why": "9 Near Mint copies sold while Galarian Stunfisk went from $0.13 to $0.12 over Oct 7 to Oct 13. Sales and a price change in the same window. Not a cause.",
+   "asOf": "2026-10-13",
+   "href": "/c/tcgcsv-284044",
+   "lane": "single",
+   "receipt": {
+    "days": 7,
+    "sold": 9,
+    "fromPrice": 0.13,
+    "toPrice": 0.12,
+    "from": "2026-10-07",
+    "to": "2026-10-13"
+   }
+  },
+  {
+   "id": "setshare-2555-2026-10-11",
+   "sku": "tcgcsv-200964",
+   "readKind": "setshare",
+   "kind": "setshare",
+   "name": "Alolan Sandshrew - 4/12",
+   "set": "McDonald's Promos 2019",
+   "path": "McDonald's Promos 2019, Oct 5 to Oct 11: Alolan Sandshrew - 4/12 accounts for 2 of 6 Near Mint copies sold.",
+   "headline": "McDonald's Promos 2019, Oct 5 to Oct 11: Alolan Sandshrew - 4/12 accounts for 2 of 6 Near Mint copies sold.",
+   "why": "McDonald's Promos 2019, Oct 5 to Oct 11: Alolan Sandshrew - 4/12 accounts for 2 of 6 Near Mint copies sold. Share of copies sold. Not share of dollars.",
+   "asOf": "2026-10-11",
+   "href": "/c/tcgcsv-200964",
+   "lane": "single",
+   "rank": 0.3333333333333333,
+   "receipt": {
+    "groupId": "2555",
+    "top": 2,
+    "total": 6,
+    "from": "2026-10-05",
+    "to": "2026-10-11",
+    "cards": 12
+   }
+  },
+  {
+   "id": "spread-sm1-booster-box",
+   "sku": "sm1-booster-box",
+   "readKind": "spread",
+   "kind": "spread",
+   "name": "Sun & Moon Booster Box",
+   "set": "Sun & Moon",
+   "path": "Sun & Moon Booster Box asks run from $956.99 up to $1,518.95. Median ask $1,199.99 across 11 eBay listings on 2026-10-15.",
+   "headline": "Sun & Moon Booster Box asks run from $956.99 up to $1,518.95. Median ask $1,199.99 across 11 eBay listings on 2026-10-15.",
+   "why": "Sun & Moon Booster Box asks run from $956.99 up to $1,518.95. Median ask $1,199.99 across 11 eBay listings on 2026-10-15. Asking prices from the search. Not sold prices.",
+   "asOf": "2026-10-15",
+   "href": "/p/sm1-booster-box",
+   "lane": "sealed",
+   "rank": 561.96,
+   "receipt": {
+    "low": 956.99,
+    "high": 1518.95,
+    "median": 1199.99,
     "count": 11,
     "basis": "p10-p90"
    },
-   "tcgPlayerId": "170273"
+   "tcgPlayerId": "126048"
   },
   {
-   "id": "askmove-sm5-booster-box",
-   "sku": "sm5-booster-box",
+   "id": "askmove-me4-booster-box",
+   "sku": "me4-booster-box",
    "readKind": "askmove",
    "kind": "askmove",
-   "name": "Ultra Prism Booster Box",
+   "name": "Chaos Rising Booster Box",
    "set": "",
-   "path": "The eBay ask for Ultra Prism Booster Box went from $2,087.00 to $1,999.99 over Oct 13 to Oct 14. The TCGplayer market price stayed $1,516.62.",
-   "headline": "The eBay ask for Ultra Prism Booster Box went from $2,087.00 to $1,999.99 over Oct 13 to Oct 14. The TCGplayer market price stayed $1,516.62.",
-   "why": "The eBay ask for Ultra Prism Booster Box went from $2,087.00 to $1,999.99 over Oct 13 to Oct 14. The TCGplayer market price stayed $1,516.62. The ask changed. The market price did not. Asks are not sales.",
-   "asOf": "2026-10-14",
-   "href": "/p/sm5-booster-box",
+   "path": "The eBay ask for Chaos Rising Booster Box went from $202.59 to $200.00 over Oct 14 to Oct 15. The TCGplayer market price stayed $185.15.",
+   "headline": "The eBay ask for Chaos Rising Booster Box went from $202.59 to $200.00 over Oct 14 to Oct 15. The TCGplayer market price stayed $185.15.",
+   "why": "The eBay ask for Chaos Rising Booster Box went from $202.59 to $200.00 over Oct 14 to Oct 15. The TCGplayer market price stayed $185.15. The ask changed. The market price did not. Asks are not sales.",
+   "asOf": "2026-10-15",
+   "href": "/p/me4-booster-box",
    "lane": "sealed",
    "receipt": {
-    "from": "2026-10-13",
-    "to": "2026-10-14",
-    "askFrom": 2087,
-    "askTo": 1999.99,
-    "market": 1516.62
+    "from": "2026-10-14",
+    "to": "2026-10-15",
+    "askFrom": 202.59,
+    "askTo": 200,
+    "market": 185.15
    },
-   "tcgPlayerId": "155661"
-  },
-  {
-   "id": "mktmove-swsh4-etb",
-   "sku": "swsh4-etb",
-   "readKind": "mktmove",
-   "kind": "mktmove",
-   "name": "Vivid Voltage Elite Trainer Box",
-   "set": "",
-   "path": "Vivid Voltage Elite Trainer Box over Oct 13 to Oct 14: TCGplayer market price $135.01 to $135.80, eBay ask $160.00.",
-   "headline": "Vivid Voltage Elite Trainer Box over Oct 13 to Oct 14: TCGplayer market price $135.01 to $135.80, eBay ask $160.00.",
-   "why": "Vivid Voltage Elite Trainer Box over Oct 13 to Oct 14: TCGplayer market price $135.01 to $135.80, eBay ask $160.00. The market price changed. The ask did not. Asks are not sales.",
-   "asOf": "2026-10-14",
-   "href": "/p/swsh4-etb",
-   "lane": "sealed",
-   "receipt": {
-    "from": "2026-10-13",
-    "to": "2026-10-14",
-    "marketFrom": 135.01,
-    "marketTo": 135.8,
-    "ask": 160
-   },
-   "tcgPlayerId": "221752"
-  },
-  {
-   "id": "spread-sm35-etb",
-   "sku": "sm35-etb",
-   "readKind": "spread",
-   "kind": "spread",
-   "name": "Shining Legends Elite Trainer Box",
-   "set": "Shining Legends",
-   "path": "Shining Legends Elite Trainer Box: asking prices in the search run from $1,250.00 to $2,019.00. Median ask $1,499.99 across 11 eBay listings on 2026-10-14.",
-   "headline": "Shining Legends Elite Trainer Box: asking prices in the search run from $1,250.00 to $2,019.00. Median ask $1,499.99 across 11 eBay listings on 2026-10-14.",
-   "why": "Shining Legends Elite Trainer Box: asking prices in the search run from $1,250.00 to $2,019.00. Median ask $1,499.99 across 11 eBay listings on 2026-10-14. Asking prices from the search. Not sold prices.",
-   "asOf": "2026-10-14",
-   "href": "/p/sm35-etb",
-   "lane": "sealed",
-   "rank": 769,
-   "receipt": {
-    "low": 1250,
-    "high": 2019,
-    "median": 1499.99,
-    "count": 11,
-    "basis": "p10-p90"
-   },
-   "tcgPlayerId": "145847"
-  },
-  {
-   "id": "askmove-swsh3-booster-box",
-   "sku": "swsh3-booster-box",
-   "readKind": "askmove",
-   "kind": "askmove",
-   "name": "Darkness Ablaze Booster Box",
-   "set": "",
-   "path": "The eBay ask for Darkness Ablaze Booster Box went from $389.99 to $372.94 over Oct 13 to Oct 14. The TCGplayer market price stayed $355.10.",
-   "headline": "The eBay ask for Darkness Ablaze Booster Box went from $389.99 to $372.94 over Oct 13 to Oct 14. The TCGplayer market price stayed $355.10.",
-   "why": "The eBay ask for Darkness Ablaze Booster Box went from $389.99 to $372.94 over Oct 13 to Oct 14. The TCGplayer market price stayed $355.10. The ask changed. The market price did not. Asks are not sales.",
-   "asOf": "2026-10-14",
-   "href": "/p/swsh3-booster-box",
-   "lane": "sealed",
-   "receipt": {
-    "from": "2026-10-13",
-    "to": "2026-10-14",
-    "askFrom": 389.99,
-    "askTo": 372.94,
-    "market": 355.1
-   },
-   "tcgPlayerId": "216853"
-  },
-  {
-   "id": "mktmove-sv3-pack",
-   "sku": "sv3-pack",
-   "readKind": "mktmove",
-   "kind": "mktmove",
-   "name": "Obsidian Flames Booster Pack",
-   "set": "",
-   "path": "Obsidian Flames Booster Pack: the TCGplayer market price went from $12.58 to $12.50 over Oct 13 to Oct 14. The eBay ask stayed $15.00.",
-   "headline": "Obsidian Flames Booster Pack: the TCGplayer market price went from $12.58 to $12.50 over Oct 13 to Oct 14. The eBay ask stayed $15.00.",
-   "why": "Obsidian Flames Booster Pack: the TCGplayer market price went from $12.58 to $12.50 over Oct 13 to Oct 14. The eBay ask stayed $15.00. The market price changed. The ask did not. Asks are not sales.",
-   "asOf": "2026-10-14",
-   "href": "/p/sv3-pack",
-   "lane": "sealed",
-   "receipt": {
-    "from": "2026-10-13",
-    "to": "2026-10-14",
-    "marketFrom": 12.58,
-    "marketTo": 12.5,
-    "ask": 15
-   },
-   "tcgPlayerId": "501256"
+   "tcgPlayerId": "684444"
   }
  ],
  "supplyNotes": [],
@@ -1265,21 +1427,37 @@
   "source": "data/derived/sealed-price-outliers.json"
  },
  "dives": {
-  "count": 2,
+  "count": 0,
   "source": "research/pulse/dive/"
  },
  "shape": {
+  "quiet": [
+   "quiet-tcgcsv-86899",
+   "quiet-tcgcsv-149382"
+  ],
+  "mix": [
+   "mix-tcgcsv-517050",
+   "mix-tcgcsv-497669"
+  ],
+  "conditions": [
+   "conditions-tcgcsv-124015",
+   "conditions-tcgcsv-274445"
+  ],
+  "solddown": [
+   "solddown-tcgcsv-478102",
+   "solddown-tcgcsv-284044"
+  ],
+  "setshare": [
+   "setshare-1427-2026-10-11",
+   "setshare-2555-2026-10-11"
+  ],
   "spread": [
-   "spread-sm7-booster-box",
-   "spread-sm35-etb"
+   "spread-sv3pt5-pc-etb",
+   "spread-sm1-booster-box"
   ],
   "askmove": [
-   "askmove-sm5-booster-box",
-   "askmove-swsh3-booster-box"
-  ],
-  "mktmove": [
-   "mktmove-swsh4-etb",
-   "mktmove-sv3-pack"
+   "askmove-me4-pack",
+   "askmove-me4-booster-box"
   ]
  }
 }

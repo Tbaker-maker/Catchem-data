@@ -1,11 +1,11 @@
 {
- "asOf": "2026-10-14",
- "updatedAt": "2026-10-14T23:50:35.701Z",
+ "asOf": "2026-10-15",
+ "updatedAt": "2026-10-15T16:15:35.944Z",
  "note": "A hit means the next stored price moved the same way as the price we wrote down. A miss moved the other way. A hit rate stays hidden until 20 calls are scored. These are not sold prices.",
  "hitRate": null,
- "scored": 7,
+ "scored": 8,
  "hits": 2,
- "misses": 5,
+ "misses": 6,
  "rows": [
   {
    "id": "receipt-2026-08-20-sealed-pgo-etb",
@@ -176,24 +176,28 @@
    "changePct": 0.4
   },
   {
-   "id": "receipt-2026-10-12-single-swsh7-215",
+   "id": "receipt-2026-10-14-sealed-sv3pt5-etb",
    "type": "receipt",
-   "result": "open",
-   "kind": "single",
-   "name": "Umbreon VMAX",
-   "headline": "Umbreon VMAX. Open.",
-   "price": 2283.14,
-   "source": "TCGplayer market",
-   "asOf": "2026-10-12",
-   "why": "Written down October 12, 2026 at $2,283.14. No earlier TCGplayer market price is stored, so this stays open.",
+   "result": "miss",
+   "kind": "sealed",
+   "name": "151 Elite Trainer Box",
+   "headline": "151 Elite Trainer Box. Miss.",
+   "price": 571.67,
+   "source": "eBay asking prices",
+   "asOf": "2026-10-15",
+   "why": "Written down October 14, 2026 at $570.00, after a higher one. Next eBay asking price on October 15, 2026 was $571.67. The other way.",
    "hist": [
     [
-     "2026-10-12",
-     2283.14
+     "2026-10-14",
+     570
+    ],
+    [
+     "2026-10-15",
+     571.67
     ]
    ],
    "href": "",
-   "changePct": null
+   "changePct": 0.3
   },
   {
    "id": "receipt-2026-10-13-single-swsh7-215",
@@ -216,26 +220,6 @@
    "changePct": null
   },
   {
-   "id": "receipt-2026-10-14-sealed-sv3pt5-etb",
-   "type": "receipt",
-   "result": "open",
-   "kind": "sealed",
-   "name": "151 Elite Trainer Box",
-   "headline": "151 Elite Trainer Box. Open.",
-   "price": 570,
-   "source": "eBay asking prices",
-   "asOf": "2026-10-14",
-   "why": "Written down October 14, 2026 at $570.00. No later eBay asking price is stored, so this stays open.",
-   "hist": [
-    [
-     "2026-10-14",
-     570
-    ]
-   ],
-   "href": "",
-   "changePct": null
-  },
-  {
    "id": "receipt-2026-10-14-single-sv8pt5-161",
    "type": "receipt",
    "result": "open",
@@ -250,6 +234,46 @@
     [
      "2026-10-14",
      1412.72
+    ]
+   ],
+   "href": "",
+   "changePct": null
+  },
+  {
+   "id": "receipt-2026-10-15-sealed-sm12-booster-box",
+   "type": "receipt",
+   "result": "open",
+   "kind": "sealed",
+   "name": "Cosmic Eclipse Booster Box",
+   "headline": "Cosmic Eclipse Booster Box. Open.",
+   "price": 5400,
+   "source": "eBay asking prices",
+   "asOf": "2026-10-15",
+   "why": "Written down October 15, 2026 at $5,400.00. The eBay asking price before it was the same, so this stays open.",
+   "hist": [
+    [
+     "2026-10-15",
+     5400
+    ]
+   ],
+   "href": "",
+   "changePct": null
+  },
+  {
+   "id": "receipt-2026-10-15-single-swsh7-215",
+   "type": "receipt",
+   "result": "open",
+   "kind": "single",
+   "name": "Umbreon VMAX",
+   "headline": "Umbreon VMAX. Open.",
+   "price": 2283.14,
+   "source": "TCGplayer market",
+   "asOf": "2026-10-15",
+   "why": "Written down October 15, 2026 at $2,283.14. No earlier TCGplayer market price is stored, so this stays open.",
+   "hist": [
+    [
+     "2026-10-15",
+     2283.14
     ]
    ],
    "href": "",
