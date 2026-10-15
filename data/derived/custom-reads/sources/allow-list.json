@@ -1,0 +1,60 @@
+{
+  "asOf": "2026-10-15",
+  "rule": "A source is allowed only after a robots check. Missing or unreadable robots stay off. No article bodies are copied.",
+  "sources": [
+    {
+      "id": "pokemon-press",
+      "name": "Pokémon press",
+      "url": "https://press.pokemon.com/en",
+      "robots": "https://press.pokemon.com/robots.txt",
+      "robotsChecked": "2026-10-15",
+      "allowed": true,
+      "reason": "User-agent * does not disallow /en. Disallow is only /Files paths."
+    },
+    {
+      "id": "play-pokemon",
+      "name": "Play! Pokémon",
+      "url": "https://play.pokemon.com/en-us/news/",
+      "robots": "https://play.pokemon.com/robots.txt",
+      "robotsChecked": "2026-10-15",
+      "allowed": false,
+      "reason": "robots.txt returned 404. Stay out."
+    },
+    {
+      "id": "pokemon-card-jp",
+      "name": "Pokémon Card (Japan)",
+      "url": "https://www.pokemon-card.com/info/",
+      "robots": "https://www.pokemon-card.com/robots.txt",
+      "robotsChecked": "2026-10-15",
+      "allowed": false,
+      "reason": "robots.txt returned 404. Stay out."
+    },
+    {
+      "id": "pokemon-card-asia",
+      "name": "Pokémon Card (Asia)",
+      "url": "https://asia.pokemon-card.com/sg/",
+      "robots": "https://asia.pokemon-card.com/robots.txt",
+      "robotsChecked": "2026-10-15",
+      "allowed": false,
+      "reason": "robots.txt was empty. Stay out."
+    },
+    {
+      "id": "pokemon-go",
+      "name": "Pokémon GO",
+      "url": "https://pokemongo.com/en/news",
+      "robots": "https://pokemongo.com/robots.txt",
+      "robotsChecked": "2026-10-15",
+      "allowed": false,
+      "reason": "robots.txt was an HTML page, not a robots file. Stay out."
+    },
+    {
+      "id": "pokemon-center-support",
+      "name": "Pokémon Center Support",
+      "url": "https://support.pokemoncenter.com/hc/en-us",
+      "robots": "https://support.pokemoncenter.com/robots.txt",
+      "robotsChecked": "2026-10-15",
+      "allowed": false,
+      "reason": "robots.txt allows some help pages, but this feed is not news. Stay out."
+    }
+  ]
+}
