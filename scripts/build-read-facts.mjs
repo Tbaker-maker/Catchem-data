@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 import { whatWeSee } from "./lib/what-we-see.mjs";
 import { unpackLong, mergeHistory, changeOver, highLow, band, indexChange, listingsFact, matchPattern, itemKeys, similar, gapFact } from "./lib/read-facts.mjs";
 
-const ROOT = process.env.CATCHEM_ROOT || join(dirname(fileURLToPath(import.meta.url)), "..");
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const PUB = join(ROOT, "research/assets/public");
 const OUT = join(PUB, "feed/facts");
 const J = async (p, d = null) => { try { return JSON.parse(await readFile(p, "utf8")); } catch { return d; } };
