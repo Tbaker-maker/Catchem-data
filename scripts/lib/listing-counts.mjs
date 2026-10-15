@@ -103,6 +103,10 @@ export function roleSlice({ role = "full", safe, used, dailyBudget, sealedStep =
   const room = Math.max(0, safe - used - (sealedInWindow ? 0 : sealedStep));
   const topCap = Math.ceil(dailyBudget * topShare);
   if (role === "top") return Math.min(room, topCap);
+  // Count guardian: late-day catch-up for daily-tier items still missing a
+  // count. Uses whatever room is left in the rolling 24h counter, never more
+  // than one day's listing budget.
+  if (role === "guardian") return Math.min(room, dailyBudget);
   const fullShare = Math.ceil((dailyBudget - topCap) / 2);
   return Math.min(room, fullShare * 2);
 }
@@ -116,8 +120,24 @@ export function pickRun({ daily, tail, last = {}, now = new Date(), slice, role 
   const today = ptDate(now);
   const dueDaily = daily.filter((it) => !last[it.id] || ptDate(last[it.id]) !== today).sort((a, b) => ageH(b.id) - ageH(a.id) || String(a.id).localeCompare(String(b.id)));
   if (role === "top") return dueDaily.slice(0, Math.max(0, slice));
+  if (role === "guardian") return guardianOrder(dueDaily).slice(0, Math.max(0, slice));
   const tailSorted = [...tail].sort((a, b) => ageH(b.id) - ageH(a.id) || String(a.id).localeCompare(String(b.id)));
   return [...dueDaily, ...tailSorted].slice(0, Math.max(0, slice));
+}
+
+// Guardian priority: chase cards first (SIR, hyper, secret and other top
+// rarities), then modern illustration rares, then the rest of the daily tier.
+// Higher price first inside each group; id breaks ties so runs are stable.
+const CHASE = /special illustration|hyper|secret|gold|rainbow|mega attack/i;
+export function guardianRank(it) {
+  if (it.kind === "sealed") return 2;
+  const r = String(it.rarity || "");
+  if (CHASE.test(r)) return 0;
+  if (/illustration rare/i.test(r)) return 1;
+  return 2;
+}
+export function guardianOrder(items = []) {
+  return [...items].sort((a, b) => guardianRank(a) - guardianRank(b) || (b.price || 0) - (a.price || 0) || String(a.id).localeCompare(String(b.id)));
 }
 
 // Daily check: top items with no count on a PT day.
