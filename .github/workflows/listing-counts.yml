@@ -10,10 +10,12 @@ on:
     - cron: "0 13 * * *"   # 6 AM PT full
     - cron: "0 19 * * *"   # noon PT top-tier only
     - cron: "0 1 * * *"    # 6 PM PT full
+    - cron: "30 2 * * *"   # 7:30 PM PT count guardian (daily-tier items still missing today)
+    - cron: "0 5 * * *"    # 10 PM PT count guardian
   workflow_dispatch:
     inputs:
       role:
-        description: "full or top"
+        description: "full, top or guardian"
         default: "full"
 
 permissions:
@@ -37,7 +39,7 @@ jobs:
         env:
           EBAY_APP_ID: ${{ secrets.EBAY_APP_ID }}
           EBAY_CERT_ID: ${{ secrets.EBAY_CERT_ID }}
-          LISTING_RUN_ROLE: ${{ github.event.schedule == '0 19 * * *' && 'top' || inputs.role || 'full' }}
+          LISTING_RUN_ROLE: ${{ github.event.schedule == '0 19 * * *' && 'top' || (github.event.schedule == '30 2 * * *' || github.event.schedule == '0 5 * * *') && 'guardian' || inputs.role || 'full' }}
         run: node scripts/fetch-listing-counts.mjs
       - name: Status file
         continue-on-error: true

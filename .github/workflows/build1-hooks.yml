@@ -1,0 +1,41 @@
+name: BUILD1 hooks
+on:
+  schedule:
+    - cron: "0 19 * * *"    # noon PT shared news
+    - cron: "0 14 * * 1"    # Monday 7 AM PT pattern lab
+    - cron: "30 14 * * *"   # 7:30 AM PT data drift bot
+  workflow_dispatch: {}
+permissions:
+  contents: write
+  pull-requests: write
+concurrency:
+  group: catchem-data-writes
+  cancel-in-progress: false
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - name: Midday shared news
+        if: github.event.schedule == '0 19 * * *' || github.event_name == 'workflow_dispatch'
+        run: node scripts/run-shared-news.mjs
+      - name: Weekly pattern lab
+        if: github.event.schedule == '0 14 * * 1' || github.event_name == 'workflow_dispatch'
+        run: node scripts/run-pattern-lab.mjs
+      - name: Data drift bot
+        if: github.event.schedule == '30 14 * * *' || github.event_name == 'workflow_dispatch'
+        env:
+          DRIFT_BOT_TOKEN: ${{ secrets.DRIFT_BOT_TOKEN }}
+        run: node scripts/data-drift-bot.mjs
+      - name: Commit
+        run: |
+          git config user.name "catchem-bot"
+          git config user.email "bot@catchem.app"
+          git add research/digests/news.json data/derived/ || true
+          git diff --staged --quiet && exit 0
+          git commit -m "data: BUILD1 hooks $(date -u +%F)"
+          git pull --rebase origin main && git push origin HEAD:main
