@@ -36,7 +36,13 @@ export async function run() {
     else { fail += 1; console.error(`  FAIL ${name}`); }
   };
 
-  const dayName = (await readdir(join(ROOT, "data/history/tcgcsv-daily"))).filter((name) => name.endsWith(".json")).sort().at(-1);
+  // Check set-value against the daily file it was built from. The tcgcsv day job commits
+  // the newest daily file before the nightly republishes, so "newest file" is not yet published.
+  const dayNames = (await readdir(join(ROOT, "data/history/tcgcsv-daily"))).filter((name) => name.endsWith(".json")).sort();
+  const publishedAsOf = JSON.parse(await readFile(join(PUB, "set-value", "base-set.json"), "utf8")).asOf;
+  const recent = dayNames.slice(-2);
+  t("set value is built from one of the two newest daily files", recent.includes(`${publishedAsOf}.json`));
+  const dayName = recent.includes(`${publishedAsOf}.json`) ? `${publishedAsOf}.json` : dayNames.at(-1);
   const day = JSON.parse(await readFile(join(ROOT, "data/history/tcgcsv-daily", dayName), "utf8"));
   const prices = new Map();
   for (const row of day.prices || []) if (Number(row.market) > 0) prices.set(Number(row.id), Number(row.market));
@@ -128,7 +134,7 @@ export async function run() {
   }
   const priceDays = dailyRows(priceDocs);
   const loaded = await loadPriceMap(ROOT);
-  t("a daily file with no date field is not used", dailyRows([{ date: "" }, { prices: [{ id: 1, market: 1 }] }]).length === 0 && loaded.date === day.date);
+  t("a daily file with no date field is not used", dailyRows([{ date: "" }, { prices: [{ id: 1, market: 1 }] }]).length === 0 && loaded.date === priceDocs.at(-1)?.date);
   t("the writer skips undated inputs and empty docs", shouldWrite("set-value", { date: "", prices: loaded.map.size }) === false && shouldWrite("set-value", { date: day.date, prices: 0 }) === false && shouldWrite("rotation", { asOf: "", sets: 205 }) === false && shouldWrite("releases", { checked: radar.updated, releases: 0 }) === false && shouldWrite("listings", { asOf: "not-a-date", products: 4, parents: 17 }) === false && nonEmptyDoc({}) === false && nonEmptyDoc({ slug: "base-set" }) === false && nonEmptyDoc({ asOf: day.date, slug: "base-set" }) === true);
   const writerSrc = await readFile(join(ROOT, "scripts/write-feature-data.mjs"), "utf8");
   t("the nightly writer does not delete set-value before it writes", !/\brm\s*\(/.test(writerSrc) && writerSrc.includes("shouldWrite(") && writerSrc.includes("nonEmptyDoc("));
