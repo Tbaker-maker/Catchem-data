@@ -1,4 +1,4 @@
-import { tiers, pickRun, runSlice, roleSlice, missingTop, ptDate, used24, nightlyBudget, buildQuery, keepTitle, summarize } from "../lib/listing-counts.mjs";
+import { guardianOrder, guardianRank, tiers, pickRun, runSlice, roleSlice, missingTop, ptDate, used24, nightlyBudget, buildQuery, keepTitle, summarize } from "../lib/listing-counts.mjs";
 import { readFile } from "node:fs/promises";
 
 export async function run() {
@@ -23,6 +23,24 @@ export async function run() {
   t("singles fill the daily tier by value up to budget minus the tail floor", tp.counts.singlesTop === 1 && tp.daily.some((x) => x.id === "c1") && tp.singleCutoff === 500);
   t("attention lifts an unpriced sealed product into the daily tier", tiers({ items, attention: new Set(["s3"]), dailyBudget: 10 }).daily.some((x) => x.id === "s3"));
   t("leftover and tail cycle are reported", tp.leftover === 1 && tp.tailCycleDays === tp.tail.length);
+
+  {
+    const gNow = new Date("2026-10-14T05:00:00Z");
+    const d = [
+      { id: "h", kind: "single", rarity: "Holo Rare", price: 900 },
+      { id: "ir", kind: "single", rarity: "Illustration Rare", price: 40 },
+      { id: "sir", kind: "single", rarity: "Special Illustration Rare", price: 30 },
+      { id: "done", kind: "single", rarity: "Special Illustration Rare", price: 999 },
+      { id: "box", kind: "sealed", price: 120 },
+    ];
+    const last = { done: "2026-10-14T03:00:00Z" };
+    const g = pickRun({ daily: d, tail: [{ id: "t" }], last, now: gNow, slice: 10, role: "guardian" });
+    t("guardian counts only daily-tier items missing today, never tail", g.length === 4 && !g.some((x) => x.id === "done" || x.id === "t"));
+    t("guardian order: chase first, then IR, then the rest", g[0].id === "sir" && g[1].id === "ir" && guardianRank({ kind: "sealed" }) === 2);
+    t("guardian respects the slice", pickRun({ daily: d, tail: [], last, now: gNow, slice: 2, role: "guardian" }).length === 2);
+    t("guardian slice never exceeds room or the daily listing budget", roleSlice({ role: "guardian", safe: 4900, used: 4800, dailyBudget: 4277 }) === 100 && roleSlice({ role: "guardian", safe: 9000, used: 0, dailyBudget: 4277 }) === 4277 && roleSlice({ role: "guardian", safe: 4900, used: 5000, dailyBudget: 4277 }) === 0);
+    t("guardian is idempotent: nothing left after everything is counted", pickRun({ daily: d, tail: [], last: Object.fromEntries(d.map((x) => [x.id, "2026-10-14T04:00:00Z"])), now: gNow, slice: 10, role: "guardian" }).length === 0 && guardianOrder([]).length === 0);
+  }
 
   const now = new Date("2026-10-13T12:00:00Z");
   const log = [{ at: "2026-10-12T11:00:00Z", n: 999 }, { at: "2026-10-13T04:00:00Z", n: 700 }, { at: "2026-10-13T08:00:00Z", n: 300 }];

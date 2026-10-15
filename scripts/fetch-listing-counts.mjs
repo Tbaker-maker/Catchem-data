@@ -61,7 +61,7 @@ export async function runListingCounts({ afterSealedStep = false, now = new Date
   const runsPerDay = scheduled ? cfg.runsPerDay || RUNS_PER_DAY : 1;
   // Role: "full" (morning and evening) or "top" (midday, and the nightly after
   // the sealed step: daily-tier retries only). Unscheduled repo: one full run.
-  const role = afterSealedStep ? "top" : (process.env.LISTING_RUN_ROLE || "full");
+  const role = afterSealedStep ? "guardian" : (process.env.LISTING_RUN_ROLE || "full");
   const tierPlan = tiers({ items, skipIds, attention, dailyBudget: b.budget, tailFloor: cfg.tailFloor ?? TAIL_FLOOR });
   const sealedInWindow = afterSealedStep || state.log.some((e) => e.source === "sealed-price-step" && Date.parse(e.at) > now.getTime() - 86400000);
   const slice = Math.min(Number(process.env.LISTING_COUNT_BUDGET) || Infinity,
@@ -70,6 +70,7 @@ export async function runListingCounts({ afterSealedStep = false, now = new Date
   const plan = { picked, poolSize: tierPlan.daily.length + tierPlan.tail.length, perNightNeed: tierPlan.daily.length, cycleNights: tierPlan.tailCycleDays };
   console.log(`listing counts: daily tier ${tierPlan.daily.length} (${JSON.stringify(tierPlan.counts)}, singles at or above $${tierPlan.singleCutoff}), tail ${tierPlan.tail.length} every ${tierPlan.tailCycleDays} days, used ${used}/${b.safe} in 24h, this run ${picked.length}`);
 
+  if (role === "guardian" && !plan.picked.length) { console.log("count guardian: every daily-tier item has a count today, nothing to do"); return { picked: 0 }; }
   const tok = await token().catch((e) => { console.log(`listing counts: ${e.message}`); return null; });
   const latestPath = join(ROOT, "data/derived/listing-counts/latest.json");
   const latest = await J(latestPath, { rows: {} });
