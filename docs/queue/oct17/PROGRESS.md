@@ -41,3 +41,39 @@ A fresh chat skips jobs marked SHIPPED, SKIPPED, or BLOCKED when the date in tha
 - merged SHA: none
 - changed: not started
 - left: Set pages have no Include promos toggle because set files have no promo parent. Tyler must name the parent set for each promo group. Promo-only sets stay as they are.
+
+## RD10
+- repo: Catchem-data
+- status: SHIPPED
+- PR: #295
+- merged SHA: 28c0035e251e39eff39dc4bf1e9b90373e9057b1
+- changed: Nightly custom reads build writes dated news and games files from the digest. Only allow-list sources are kept. Member slices attach them when news, games, or all is on.
+- left: The 2026-10-15 files are empty. No digest row is on the allow list. Pokemon press is the only allowed source.
+
+## TF1
+- repo: catchem-site
+- status: SHIPPED
+- PR: #210
+- merged SHA: fd5b6ea90591b453d0212bf8cd2a316e4747df3d
+- changed: /reads picker saves follows, a weekly or premium schedule, Discord by default, and optional email. A plain line becomes a plan. Card and sealed pages link in. Email is not sent without READS_EMAIL_KEY.
+- left: Tyler adds READS_EMAIL_KEY before any email can go out. Live pages loaded at 390 and 1280, including /reads, with no console errors. The signed-out click ping was removed in #211 (affa319b2b5220fff1b9cb2c20b33dc938b7b984).
+
+## DC3
+- repo: catchem-bot
+- status: SHIPPED
+- PR: #75
+- merged SHA: 8ce4c0ee4fa1b607757da8c9a1d309a32bbf9844
+- changed: Custom Reads DMs render watchlist first, skip quiet days, and never post in a channel. The loop stays off until CUSTOM_READS_ENABLED=1.
+- left: Tyler sets CUSTOM_READS_ENABLED=1 and CUSTOM_READS_FILE to the member payload file before any DM goes out. Discord does not report link taps, so tap counts are not stored yet.
+
+## DC4
+- repo: catchem-bot
+- status: SHIPPED
+- PR: #76
+- merged SHA: 323117a41cd65ff2298f23c7518cd1caa6e0311d
+- changed: News cog reads the shared digest, posts official items first, caps at 4 a day, and skips a quiet day. Posted links are remembered.
+- left: Tyler sets NEWS_CHANNEL_ID to the #news channel. Until that is set, the cog posts nothing.
+
+
+
+
