@@ -76,6 +76,9 @@ export async function run() {
 
   t("a rerun does not rewrite a day that was already published", dayPublishedBeforeRun("/x", "2026-10-13", "abc", () => {}) === true);
   t("self-heal restores data files only", healPlan(["data/sealed-prices.json", "scripts/x.mjs"]).files.join() === "data/sealed-prices.json");
+  t("self-heal skips a file the failing log never names", healPlan(["data/release-radar.json"], "  ✗ reads.json is unchanged from the fixture").action === "none");
+  t("self-heal keeps a file the failing log names", healPlan(["data/release-radar.json", "data/sealed-prices.json"], "bad row in data/sealed-prices.json").files.join() === "data/sealed-prices.json");
+  t("self-heal matches a file by its name", healPlan(["research/assets/public/reads.json"], "  ✗ reads.json is unchanged").files.length === 1);
   t("self-heal ignores a code-only red commit", healPlan(["scripts/x.mjs"]).action === "none");
   const old = janitorRows([{ number: 9, title: "Old", url: "https://example.com/9", createdAt: "2026-10-01T00:00:00Z", checks: [] }, { number: 10, title: "Red", url: "https://example.com/10", createdAt: "2026-10-13T00:00:00Z", checks: [{ name: "tests", conclusion: "failure" }] }], new Date("2026-10-13T00:00:00Z"));
   t("janitor lists old PRs and the failing test name", old.length === 2 && old[1].failing.join() === "tests" && old[0].old === true);
