@@ -19,7 +19,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm ci
+      - run: npm install --no-audit --no-fund
       - name: Midday shared news
         if: github.event.schedule == '0 19 * * *' || github.event_name == 'workflow_dispatch'
         run: node scripts/run-shared-news.mjs
