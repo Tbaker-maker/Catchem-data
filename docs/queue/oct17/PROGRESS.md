@@ -41,3 +41,12 @@ A fresh chat skips jobs marked SHIPPED, SKIPPED, or BLOCKED when the date in tha
 - merged SHA: none
 - changed: not started
 - left: Set pages have no Include promos toggle because set files have no promo parent. Tyler must name the parent set for each promo group. Promo-only sets stay as they are.
+
+## RD10
+- repo: Catchem-data
+- status: SHIPPED
+- PR: #295
+- merged SHA: 28c0035e251e39eff39dc4bf1e9b90373e9057b1
+- changed: Nightly custom reads build writes dated news and games files from the digest. Only allow-list sources are kept. Member slices attach them when news, games, or all is on.
+- left: The 2026-10-15 files are empty. No digest row is on the allow list. Pokemon press is the only allowed source.
+
