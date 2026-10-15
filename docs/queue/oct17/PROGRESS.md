@@ -50,3 +50,12 @@ A fresh chat skips jobs marked SHIPPED, SKIPPED, or BLOCKED when the date in tha
 - changed: Nightly custom reads build writes dated news and games files from the digest. Only allow-list sources are kept. Member slices attach them when news, games, or all is on.
 - left: The 2026-10-15 files are empty. No digest row is on the allow list. Pokemon press is the only allowed source.
 
+## TF1
+- repo: catchem-site
+- status: SHIPPED
+- PR: #210
+- merged SHA: fd5b6ea90591b453d0212bf8cd2a316e4747df3d
+- changed: /reads picker saves follows, a weekly or premium schedule, Discord by default, and optional email. A plain line becomes a plan. Card and sealed pages link in. Email is not sent without READS_EMAIL_KEY.
+- left: Tyler adds READS_EMAIL_KEY before any email can go out. Live check still to confirm after this note.
+
+
