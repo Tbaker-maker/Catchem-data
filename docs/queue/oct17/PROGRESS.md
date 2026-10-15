@@ -58,4 +58,13 @@ A fresh chat skips jobs marked SHIPPED, SKIPPED, or BLOCKED when the date in tha
 - changed: /reads picker saves follows, a weekly or premium schedule, Discord by default, and optional email. A plain line becomes a plan. Card and sealed pages link in. Email is not sent without READS_EMAIL_KEY.
 - left: Tyler adds READS_EMAIL_KEY before any email can go out. Live pages loaded at 390 and 1280, including /reads, with no console errors. The signed-out click ping was removed in #211 (affa319b2b5220fff1b9cb2c20b33dc938b7b984).
 
+## DC3
+- repo: catchem-bot
+- status: SHIPPED
+- PR: #75
+- merged SHA: 8ce4c0ee4fa1b607757da8c9a1d309a32bbf9844
+- changed: Custom Reads DMs render watchlist first, skip quiet days, and never post in a channel. The loop stays off until CUSTOM_READS_ENABLED=1.
+- left: Tyler sets CUSTOM_READS_ENABLED=1 and CUSTOM_READS_FILE to the member payload file before any DM goes out. Discord does not report link taps, so tap counts are not stored yet.
+
+
 
