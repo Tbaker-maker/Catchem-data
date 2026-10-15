@@ -56,6 +56,6 @@ A fresh chat skips jobs marked SHIPPED, SKIPPED, or BLOCKED when the date in tha
 - PR: #210
 - merged SHA: fd5b6ea90591b453d0212bf8cd2a316e4747df3d
 - changed: /reads picker saves follows, a weekly or premium schedule, Discord by default, and optional email. A plain line becomes a plan. Card and sealed pages link in. Email is not sent without READS_EMAIL_KEY.
-- left: Tyler adds READS_EMAIL_KEY before any email can go out. Live check still to confirm after this note.
+- left: Tyler adds READS_EMAIL_KEY before any email can go out. Live pages loaded at 390 and 1280, including /reads, with no console errors. The signed-out click ping was removed in #211 (affa319b2b5220fff1b9cb2c20b33dc938b7b984).
 
 
