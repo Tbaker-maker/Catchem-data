@@ -468,6 +468,9 @@ for (const set of sets.values()) {
     priced: set.priced,
     ...(logo ? { logo } : {}),
   };
+  // Set value: sum of TCGplayer market on the priced singles, whole dollars.
+  const value = Math.round(pricedSinglesInSet.reduce((sum, it) => sum + Number(it.price || 0), 0));
+  if (value > 0) row.value = value;
   setIndex.push(row);
   // Chart line only: the sealed index may run back through fan-site days (fillHist).
   const line = (kind) => indexLine(set.items.filter((it) => it.kind === kind).map((it) => (it.fillHist?.length ? { ...it, hist: [...it.fillHist, ...it.hist] } : it)));
