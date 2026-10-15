@@ -45,6 +45,7 @@ import {
   pogoArticleDate,
   serebiiMonthLinks,
 } from "./lib/news-sources.mjs";
+import { newsSlot, stampSharedNews } from "./lib/shared-news.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const UA = "CatchEmNews/1.0 (+https://github.com/Tbaker-maker/Catchem-data)";
@@ -508,6 +509,8 @@ async function main() {
     sources,
     failures,
   };
+  const slot = newsSlot(new Date(updated));
+  const stamped = stampSharedNews(newsDoc, { slot: slot.slot, day: today, at: updated });
   const weeklyItems = weekly;
   let priorWeekly = {};
   try { priorWeekly = JSON.parse(await readFile(WEEKLY_PATH, "utf8")); } catch { priorWeekly = {}; }
@@ -520,7 +523,7 @@ async function main() {
   // priceMovers is not carried forward: the old block was built from PPT history,
   // which left the public repo on 2026-10-10.
   await mkdir(dirname(NEWS_PATH), { recursive: true });
-  await writeFile(NEWS_PATH, JSON.stringify(newsDoc, null, 2) + "\n");
+  await writeFile(NEWS_PATH, JSON.stringify(stamped, null, 2) + "\n");
   await writeFile(WEEKLY_PATH, JSON.stringify(weeklyDoc, null, 2) + "\n");
   console.log(`catalog ${stored.length} · public ${items.length} · news ${news.length} · weekly ${weeklyItems.length} · failures ${failures.length}`);
   for (const source of sources) {
