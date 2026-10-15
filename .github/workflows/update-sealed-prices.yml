@@ -374,6 +374,12 @@ jobs:
             fi
           fi
 
+      - name: Publish the public-data branch
+        # One orphan commit of research/assets/public, same paths, no history.
+        # This branch is overwritten every night. Only refs/heads/public-data is force-pushed.
+        # Main still receives the feed commit above.
+        run: node scripts/publish-public-data.mjs --push
+
       - name: Fail if reads, search, or the index wrote nothing
         # Reads, search, and the public index may fail without dropping the
         # price commit. This step is the red X when one of them wrote nothing.
