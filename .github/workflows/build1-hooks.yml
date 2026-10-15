@@ -35,7 +35,7 @@ jobs:
         run: |
           git config user.name "catchem-bot"
           git config user.email "bot@catchem.app"
-          git add research/digests/news.json data/derived/ || true
+          git add research/digests/news.json data/derived/
           git diff --staged --quiet && exit 0
           git commit -m "data: BUILD1 hooks $(date -u +%F)"
           git pull --rebase origin main && git push origin HEAD:main
