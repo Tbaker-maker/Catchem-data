@@ -66,5 +66,14 @@ A fresh chat skips jobs marked SHIPPED, SKIPPED, or BLOCKED when the date in tha
 - changed: Custom Reads DMs render watchlist first, skip quiet days, and never post in a channel. The loop stays off until CUSTOM_READS_ENABLED=1.
 - left: Tyler sets CUSTOM_READS_ENABLED=1 and CUSTOM_READS_FILE to the member payload file before any DM goes out. Discord does not report link taps, so tap counts are not stored yet.
 
+## DC4
+- repo: catchem-bot
+- status: SHIPPED
+- PR: #76
+- merged SHA: 323117a41cd65ff2298f23c7518cd1caa6e0311d
+- changed: News cog reads the shared digest, posts official items first, caps at 4 a day, and skips a quiet day. Posted links are remembered.
+- left: Tyler sets NEWS_CHANNEL_ID to the #news channel. Until that is set, the cog posts nothing.
+
+
 
 
