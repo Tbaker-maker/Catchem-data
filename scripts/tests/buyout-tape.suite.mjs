@@ -42,3 +42,23 @@ export async function run() {
   t("the script stays plain ESM for Node 20", !/\.ts["']/.test(src) && !src.includes("experimental-strip-types"));
   return fail;
 }
+
+// buyout signal (High / Medium / Low from listings counted + price change)
+{
+  const { buyoutSignal, applyBrowseLevels } = await import("../buyout-tape.mjs");
+  const a = (await import("node:assert/strict")).default;
+  a.equal(buyoutSignal(-12, 6), "High");
+  a.equal(buyoutSignal(-6, 0), "Medium");
+  a.equal(buyoutSignal(-6, -3), "Low");
+  a.equal(buyoutSignal(3, 10), "Low");
+  a.equal(buyoutSignal(null, 1), null);
+  const doc = applyBrowseLevels({ rows: [{ id: "a" }, { id: "b" }] }, { products: [
+    { id: "a", priceHistory: [{ date: "2026-10-14", price: 100, total: 100 }, { date: "2026-10-15", price: 106, total: 88 }] },
+    { id: "b", priceHistory: [{ date: "2026-10-14", price: 100, total: 100 }, { date: "2026-10-15", price: 100, total: 101 }] },
+  ] });
+  a.equal(doc.rows[0].signal, "High");
+  a.equal(doc.rows[1].signal, "Low");
+  a.deepEqual(doc.reportRows.map((r) => r.id), ["a"]);
+  a.equal(doc.signalCounts.High, 1);
+  console.log("buyout signal ok");
+}

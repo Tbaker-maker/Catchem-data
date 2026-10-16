@@ -42,6 +42,33 @@ export function browseLevel(now, before) {
   return "flat";
 }
 
+// Signal for the daily buyout report, from listings counted change plus
+// price change on the same two nights. Listings-only: no sold data.
+// High: listings counted down 10% or more and price up 5% or more.
+// Medium: listings counted down 5% or more and price not down 2% or more.
+// Low: everything else that is scored. Low is kept in the file, never reported.
+export function buyoutSignal(listPct, pricePct) {
+  if (typeof listPct !== "number" || !Number.isFinite(listPct)) return null;
+  if (typeof pricePct !== "number" || !Number.isFinite(pricePct)) return null;
+  if (listPct <= -10 && pricePct >= 5) return "High";
+  if (listPct <= -5 && pricePct > -2) return "Medium";
+  return "Low";
+}
+
+function priceNights(product) {
+  const byDate = new Map();
+  for (const row of product?.priceHistory || []) {
+    const day = String(row?.date || "");
+    const price = numericPrice(row?.price);
+    if (DAY.test(day) && price != null) byDate.set(day, price);
+  }
+  return byDate;
+}
+
+function pctChange(now, before) {
+  return Math.round(((now - before) / before) * 1000) / 10;
+}
+
 export function browseNights(product) {
   const byDate = new Map();
   for (const row of product?.priceHistory || []) {
@@ -89,24 +116,35 @@ export function applyBrowseLevels(tape, sealedPrices) {
       row.level = browseLevel(now, before);
       row.delta = now - before;
       row.pct = Math.round(((now - before) / before) * 1000) / 10;
+      const prices = priceNights(products.get(row.id));
+      const pNow = prices.get(latestDate), pBefore = prices.get(previousDate);
+      row.pricePct = pNow != null && pBefore != null ? pctChange(pNow, pBefore) : null;
+      row.signal = buyoutSignal(row.pct, row.pricePct);
       clearFilteredCount(row);
     } else if (nights.length === 1) {
       row.browseTotalNow = nights[0][1];
       row.browseTotalBefore = null;
       row.latestDate = nights[0][0];
       row.level = "unscored";
+      row.signal = null;
       delete row.delta;
       delete row.pct;
+      delete row.pricePct;
       clearFilteredCount(row);
     } else {
       row.browseTotalNow = null;
       row.browseTotalBefore = null;
       row.level = "unscored";
+      row.signal = null;
       delete row.delta;
       delete row.pct;
+      delete row.pricePct;
       clearFilteredCount(row);
     }
   }
+  doc.signalPolicy = "High: listings counted down 10%+ and price up 5%+. Medium: listings counted down 5%+ and price not down 2%+. Low is not reported.";
+  doc.signalCounts = signalCounts(rows);
+  doc.reportRows = rows.filter((r) => r && (r.signal === "High" || r.signal === "Medium")).map((r) => ({ id: r.id, name: r.name || "", signal: r.signal, listingsPct: r.pct, pricePct: r.pricePct, previousDate: r.previousDate, latestDate: r.latestDate })).sort((a, b) => (a.signal === b.signal ? a.listingsPct - b.listingsPct : a.signal === "High" ? -1 : 1));
   const dates = browseDates(sealedPrices);
   doc.asOfDates = dates;
   if (dates.length) doc.latestDateInFile = dates[dates.length - 1];
@@ -229,6 +267,12 @@ export async function recordBuyoutHarvest(run) {
   return { harvestRan: true, ebayCalled: true, wrote: returned.length, kept: scored.rows.length - returned.length, levels: levelCounts(scored.rows) };
 }
 
+export function signalCounts(rows) {
+  const counts = { High: 0, Medium: 0, Low: 0, unscored: 0 };
+  for (const row of rows || []) counts[row?.signal || "unscored"] += 1;
+  return counts;
+}
+
 export function levelCounts(rows) {
   const counts = {};
   for (const row of rows || []) {
@@ -249,7 +293,7 @@ export async function rescoreBuyoutTape({ sealedPrices, root = ROOT } = {}) {
   scored.harvestRan = prev.harvestRan === true;
   scored.ebayCalled = prev.ebayCalled === true;
   await writeFile(tapePath, JSON.stringify(scored, null, 2) + "\n");
-  return { rowCount: scored.rows.length, asOfDates: scored.asOfDates, levels: levelCounts(scored.rows) };
+  return { rowCount: scored.rows.length, asOfDates: scored.asOfDates, levels: levelCounts(scored.rows), signals: signalCounts(scored.rows) };
 }
 
 async function main() {
@@ -258,6 +302,8 @@ async function main() {
   const bits = Object.entries(result.levels).map(([k, n]) => `${k} ${n}`).join(", ");
   console.log(`rows ${result.rowCount} asOf ${result.asOfDates.join(", ")}`);
   console.log(`levels ${bits}`);
+  const sig = result.signals;
+  console.log(`signals High ${sig.High}, Medium ${sig.Medium} (Low ${sig.Low} not reported, unscored ${sig.unscored})`);
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
