@@ -460,6 +460,7 @@ jobs:
           node scripts/build-post-office-catalogue.mjs || true
           node scripts/build-custom-reads.mjs || true
           node scripts/build-release-scout.mjs || true
+          node scripts/build-canada-gap.mjs || true
 
       - name: Commit updated prices
         run: |
