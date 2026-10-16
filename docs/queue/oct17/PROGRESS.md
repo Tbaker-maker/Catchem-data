@@ -74,6 +74,14 @@ A fresh chat skips jobs marked SHIPPED, SKIPPED, or BLOCKED when the date in tha
 - changed: News cog reads the shared digest, posts official items first, caps at 4 a day, and skips a quiet day. Posted links are remembered.
 - left: Tyler sets NEWS_CHANNEL_ID to the #news channel. Until that is set, the cog posts nothing.
 
+## RD5
+- repo: Catchem-data
+- status: SHIPPED
+- PR: #298
+- merged SHA: 119c621565def073051dc1de41ab380d822caf30
+- changed: Nightly step writes dated listing-call and PPT credit shares. A source with no dated file is omitted. A status warning is added at 85 percent, after the status file is rewritten.
+- left: YouTube and Railway stay hidden until a dated usage file exists. No extra API calls were added.
+
 
 
 
