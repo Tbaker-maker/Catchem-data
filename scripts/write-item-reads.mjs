@@ -36,6 +36,7 @@ export function buildItemReads(bundle, products = {}) {
     const b = bucketOf(id);
     out[b] ||= {};
     (out[b][id] ||= []).push({
+      ...read,
       id: read.id,
       kind: String(read.readKind || read.kind || ""),
       section: sectionFor(read),
