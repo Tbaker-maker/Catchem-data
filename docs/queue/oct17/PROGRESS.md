@@ -135,3 +135,10 @@ A fresh chat skips jobs marked SHIPPED, SKIPPED, or BLOCKED when the date in tha
 - catchem-site #224 1ffa0d2: set page Booster Pack / Chase card / Master set tiles and sticky jump tabs.
 - catchem-site #225 f66f29e: TCGplayer line inside the footer column, Today cards fill the row, 2-column chips on phones.
 - Catchem-data #309 b25e643: rotation reads carry the print-run line once per run.
+
+## Oct 15 late: launch weekend prep
+- catchem-bot #83 (45c2ba8) merged and live: raffle, raffle-staff, raffle-wizard off until legal (raffle-admin kept for cancel); Stadium already off; checkout without Stripe keys says "Premium is opening soon. Nothing is charged yet."; refund words in one constant REFUND_LINE.
+- catchem-site #229 draft, NOT merged: Terms and /premium read the refund line from src/policy.mjs. Waits for Tyler's OK (changes the Terms refund bullet).
+- Drops off (no DROPS_ENABLED on Railway).
+- Google Doc "Launch weekend runbook" in the shared folder: Stripe steps, webhook events, Railway var names, test card, go-live, rollback, announcement drafts.
+- Smoke: 50 hits over 10 pages, 0 errors. Found: uncached renders of /feed, /feed/all, /sets, /releases hit Worker CPU limit (error 1102) about 30% of the time.
