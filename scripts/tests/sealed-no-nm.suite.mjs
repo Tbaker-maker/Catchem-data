@@ -15,6 +15,7 @@ export async function run() {
   t("rip value keeps NM, the box price drops it", dropSealedNm("Team Up Booster Box: rip value $284.04 NM is 2.4% of the $11,650.00 NM market price.") === "Team Up Booster Box: rip value $284.04 NM is 2.4% of the $11,650.00 market price.");
   t("a single from a Collection set keeps NM", dropSealedNm("Charizard (Legendary Collection) 003/110, Holo Rare: $899.99 NM.") === "Charizard (Legendary Collection) 003/110, Holo Rare: $899.99 NM.");
   t("a single keeps NM", dropSealedNm("Dark Blastoise (Legendary Collection) 004/110: $213.49 NM (Sep 13) to $274.99 NM (Oct 16).").includes("$274.99 NM"));
+  t("a singles total keeps NM", dropSealedNm("Chaos Rising: 119 singles add up to 2.51x the Chaos Rising Booster Box tonight. 119 singles: $537.55 NM (Sep 26).").includes("$537.55 NM"));
   const mixed = [];
   for (const path of await publishedFiles(process.cwd())) {
     let d; try { d = JSON.parse(await readFile(path, "utf8")); } catch { continue; }
