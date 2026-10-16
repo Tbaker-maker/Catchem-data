@@ -82,6 +82,14 @@ A fresh chat skips jobs marked SHIPPED, SKIPPED, or BLOCKED when the date in tha
 - changed: Nightly step writes dated listing-call and PPT credit shares. A source with no dated file is omitted. A status warning is added at 85 percent, after the status file is rewritten.
 - left: YouTube and Railway stay hidden until a dated usage file exists. No extra API calls were added.
 
+## RD3
+- repo: Catchem-data
+- status: SHIPPED
+- PR: #300
+- merged SHA: 33e31d23166fb589d51dc47af698c9ac70e2dc82
+- changed: Nightly scout writes dated set and product stubs from Pokemon press only, with a release date and a day-one flag. A known name is skipped. A blocked robots file writes an empty list.
+- left: The 2026-10-15 file has no stubs. The digest had no official item with a stated date. Stubs stay out of the live product file until they have a product id, so they do not spend listing calls.
+
 
 
 
