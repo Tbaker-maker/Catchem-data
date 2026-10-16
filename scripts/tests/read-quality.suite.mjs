@@ -282,7 +282,7 @@ export async function run() {
     radar: { ...radar, upcoming: radar.upcoming.map((row) => ({ ...row, msrp: 49.99 })) },
   });
   const releases = releaseDay.board.filter((row) => row.signal === "release");
-  t("release shows the verified non-jp row seven days out, with no MSRP", releases.length === 1 && releases[0].headline.startsWith("Deck Crafter's Collection is dated 2026-10-23 on the release file (checked 2026-10-09).") && !/msrp|\$/i.test(releases[0].headline) && !releases.some((row) => /jp/i.test(row.headline)));
+  t("release shows the verified non-jp row seven days out, with no MSRP", releases.length === 1 && releases[0].headline.startsWith(`Deck Crafter's Collection is dated 2026-10-23 on the release file (checked ${radar.updated}).`) && !/msrp|\$/i.test(releases[0].headline) && !releases.some((row) => /jp/i.test(row.headline)));
   const none = buildReadLibrary({
     catalogue: { asOf: "2026-10-11", source: "TCGplayer market", cards: {} },
     extra: { lag: { reads: [] }, group: { reads: [] } },
