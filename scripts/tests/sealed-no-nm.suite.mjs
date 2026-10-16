@@ -1,5 +1,5 @@
 import { readFile } from "node:fs/promises";
-import { plainSealedText, publishedFiles, scrubTree, sealedLeaks } from "../lib/sealed-condition.mjs";
+import { dropSealedNm, mixedLeaks, plainSealedText, publishedFiles, scrubTree, sealedLeaks } from "../lib/sealed-condition.mjs";
 
 export async function run() {
   let fail = 0;
@@ -10,6 +10,18 @@ export async function run() {
   const doc = { rows: [{ kind: "sealed", name: "ETB", headline: "ETB $10.00 NM" }, { kind: "single", name: "Pikachu", headline: "Pikachu $5.00 NM" }] };
   scrubTree(doc);
   t("singles keep NM, sealed lose it", doc.rows[0].headline === "ETB $10.00" && doc.rows[1].headline === "Pikachu $5.00 NM");
+  t("a sealed vs top card line keeps NM only on the card", dropSealedNm("Sealed vs its top card, Booster Boxes: Chaos Rising Booster Box is $185.71 NM (Sep 26) and its set's top card Mew is $600.00 NM, 3.2x.") === "Sealed vs its top card, Booster Boxes: Chaos Rising Booster Box is $185.71 (Sep 26) and its set's top card Mew is $600.00 NM, 3.2x.");
+  t("a sealed dated pair drops NM", dropSealedNm("Chaos Rising Booster Box: $185.71 NM (Sep 26) to $183.74 NM (Oct 16).") === "Chaos Rising Booster Box: $185.71 (Sep 26) to $183.74 (Oct 16).");
+  t("rip value keeps NM, the box price drops it", dropSealedNm("Team Up Booster Box: rip value $284.04 NM is 2.4% of the $11,650.00 NM market price.") === "Team Up Booster Box: rip value $284.04 NM is 2.4% of the $11,650.00 market price.");
+  t("a single from a Collection set keeps NM", dropSealedNm("Charizard (Legendary Collection) 003/110, Holo Rare: $899.99 NM.") === "Charizard (Legendary Collection) 003/110, Holo Rare: $899.99 NM.");
+  t("a single keeps NM", dropSealedNm("Dark Blastoise (Legendary Collection) 004/110: $213.49 NM (Sep 13) to $274.99 NM (Oct 16).").includes("$274.99 NM"));
+  const mixed = [];
+  for (const path of await publishedFiles(process.cwd())) {
+    let d; try { d = JSON.parse(await readFile(path, "utf8")); } catch { continue; }
+    mixedLeaks(d, mixed, path);
+  }
+  t(`no published text pairs a sealed price with NM (${mixed.length})`, mixed.length === 0);
+  if (mixed.length) console.error(mixed.slice(0, 10).join("\n"));
   const leaks = [];
   for (const path of await publishedFiles(process.cwd())) {
     let d; try { d = JSON.parse(await readFile(path, "utf8")); } catch { continue; }
