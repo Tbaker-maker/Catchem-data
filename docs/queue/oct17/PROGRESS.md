@@ -118,3 +118,11 @@ A fresh chat skips jobs marked SHIPPED, SKIPPED, or BLOCKED when the date in tha
 
 
 
+
+## AUDIT-FIX (Oct 15, not a MASTER job; do not redo)
+- catchem-site #215 228ffe8: fail-closed text pass in ensureAffiliation. Money always 2 decimals, text with $-N / NaN / undefined / query_error hidden, .json paths, ebay-browse-api and "via TCGCSV" removed, ISO dates read "Oct 15".
+- catchem-site #217 55e9557: card and sealed pages use one changeTable() (7D/30D/90D/1Y), sealed Facts is a rounded key/value card, price chip "$X · Oct 15", range knob is a small dot, sold lines removed.
+- catchem-site #218 083a24e: home Counts are singles, sealed, sets, reads; no repeat when every read is today.
+- catchem-bot #82 300a1ad: POP wording in admin and monitoring, no "stack" in Eden lines, onboarding line explains First 222 vs Founding 22.
+- Catchem-data #307 488ce5c: buyout tape adds signal High/Medium/Low (listings counted + price change), signalCounts and reportRows (Low not reported).
+- left: shared chart component with tooltip, feed list layout, set page tiles, layout column fixes.
