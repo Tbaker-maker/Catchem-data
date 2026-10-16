@@ -1,6 +1,6 @@
 {
- "asOf": "2026-10-15",
- "updatedAt": "2026-10-15T16:15:35.944Z",
+ "asOf": "2026-10-16",
+ "updatedAt": "2026-10-16T09:56:05.353Z",
  "note": "A hit means the next stored price moved the same way as the price we wrote down. A miss moved the other way. A hit rate stays hidden until 20 calls are scored. These are not sold prices.",
  "hitRate": null,
  "scored": 8,
@@ -200,46 +200,6 @@
    "changePct": 0.3
   },
   {
-   "id": "receipt-2026-10-13-single-swsh7-215",
-   "type": "receipt",
-   "result": "open",
-   "kind": "single",
-   "name": "Umbreon VMAX",
-   "headline": "Umbreon VMAX. Open.",
-   "price": 2283.14,
-   "source": "TCGplayer market",
-   "asOf": "2026-10-13",
-   "why": "Written down October 13, 2026 at $2,283.14. No earlier TCGplayer market price is stored, so this stays open.",
-   "hist": [
-    [
-     "2026-10-13",
-     2283.14
-    ]
-   ],
-   "href": "",
-   "changePct": null
-  },
-  {
-   "id": "receipt-2026-10-14-single-sv8pt5-161",
-   "type": "receipt",
-   "result": "open",
-   "kind": "single",
-   "name": "Umbreon ex",
-   "headline": "Umbreon ex. Open.",
-   "price": 1412.72,
-   "source": "TCGplayer market",
-   "asOf": "2026-10-14",
-   "why": "Written down October 14, 2026 at $1,412.72. No earlier TCGplayer market price is stored, so this stays open.",
-   "hist": [
-    [
-     "2026-10-14",
-     1412.72
-    ]
-   ],
-   "href": "",
-   "changePct": null
-  },
-  {
    "id": "receipt-2026-10-15-sealed-sm12-booster-box",
    "type": "receipt",
    "result": "open",
@@ -248,16 +208,20 @@
    "headline": "Cosmic Eclipse Booster Box. Open.",
    "price": 5400,
    "source": "eBay asking prices",
-   "asOf": "2026-10-15",
+   "asOf": "2026-10-16",
    "why": "Written down October 15, 2026 at $5,400.00. The eBay asking price before it was the same, so this stays open.",
    "hist": [
     [
      "2026-10-15",
      5400
+    ],
+    [
+     "2026-10-16",
+     5400
     ]
    ],
    "href": "",
-   "changePct": null
+   "changePct": 0
   },
   {
    "id": "receipt-2026-10-15-single-swsh7-215",
@@ -274,6 +238,46 @@
     [
      "2026-10-15",
      2283.14
+    ]
+   ],
+   "href": "",
+   "changePct": null
+  },
+  {
+   "id": "receipt-2026-10-16-sealed-sv3pt5-upc",
+   "type": "receipt",
+   "result": "open",
+   "kind": "sealed",
+   "name": "151 Ultra Premium Collection",
+   "headline": "151 Ultra Premium Collection. Open.",
+   "price": 950,
+   "source": "eBay asking prices",
+   "asOf": "2026-10-16",
+   "why": "Written down October 16, 2026 at $950.00. No later eBay asking price is stored, so this stays open.",
+   "hist": [
+    [
+     "2026-10-16",
+     950
+    ]
+   ],
+   "href": "",
+   "changePct": null
+  },
+  {
+   "id": "receipt-2026-10-16-single-swsh7-218",
+   "type": "receipt",
+   "result": "open",
+   "kind": "single",
+   "name": "Rayquaza VMAX",
+   "headline": "Rayquaza VMAX. Open.",
+   "price": 1255.44,
+   "source": "TCGplayer market",
+   "asOf": "2026-10-16",
+   "why": "Written down October 16, 2026 at $1,255.44. No earlier TCGplayer market price is stored, so this stays open.",
+   "hist": [
+    [
+     "2026-10-16",
+     1255.44
     ]
    ],
    "href": "",
