@@ -23,3 +23,31 @@ export function stampStale(doc, boardDay = "") {
   if (doc && typeof doc === "object") doc.builtOn = builtOn;
   return { builtOn, reads: (doc?.reads || []).length, stale };
 }
+
+// Price stale ids, built once at build time so the site never scans buckets on a
+// request (Cloudflare error 1102). Same rule as catchem-site readStaleAgainstCard:
+// a priced read is stale when the card's nightly row has a different price on the
+// same day or later.
+const QUIET = new Set(["pokemon", "news", "lag", "supply"]);
+export function readStaleAgainstRow(read, row) {
+  if (!read || !row || typeof read !== "object" || typeof row !== "object") return false;
+  if (QUIET.has(read.readKind) || QUIET.has(read.kind)) return false;
+  if (!(read.readKind === "price" || read.kind === "single" || read.kind === "sealed")) return false;
+  const left = Number(read.price), right = Number(row.price);
+  if (!(left > 0) || !(right > 0)) return false;
+  if (Math.round(left * 100) === Math.round(right * 100)) return false;
+  const a = String(read.asOf || "").slice(0, 10), b = String(row.asOf || "").slice(0, 10);
+  if (!DAY.test(a) || !DAY.test(b)) return false;
+  return b >= a;
+}
+
+export function stampPriceStale(doc, rowsById) {
+  const ids = [];
+  for (const read of doc?.reads || []) {
+    const sku = String(read?.sku || "");
+    if (!/^tcgcsv-\d+$/.test(sku)) continue;
+    if (readStaleAgainstRow(read, rowsById.get(sku))) ids.push(String(read.id));
+  }
+  if (doc && typeof doc === "object") doc.priceStaleIds = ids;
+  return ids.length;
+}

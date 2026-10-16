@@ -243,6 +243,17 @@ try {
   const readsPath = join(ROOT, "research/assets/public/reads.json");
   const readsDoc = JSON.parse(await readFile(readsPath, "utf8"));
   const stale = stampStale(readsDoc);
+  {
+    const { stampPriceStale } = await import("./lib/read-stale.mjs");
+    const { readdir } = await import("node:fs/promises");
+    const want = new Set((readsDoc.reads || []).map((r) => String(r?.sku || "")).filter((s) => /^tcgcsv-\d+$/.test(s)));
+    const rows = new Map();
+    const dir = join(ROOT, "research/assets/public/buckets");
+    for (const f of (await readdir(dir).catch(() => [])).filter((f) => f.endsWith(".json"))) {
+      for (const row of JSON.parse(await readFile(join(dir, f), "utf8"))) if (row && want.has(row.id) && !rows.has(row.id) && row.price != null) rows.set(row.id, row);
+    }
+    stale.priceStale = stampPriceStale(readsDoc, rows);
+  }
   await writeFile(readsPath, JSON.stringify(readsDoc, null, 1) + "\n");
   console.log(JSON.stringify({ stale }));
 } catch (err) {
