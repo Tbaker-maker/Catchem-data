@@ -126,3 +126,12 @@ A fresh chat skips jobs marked SHIPPED, SKIPPED, or BLOCKED when the date in tha
 - catchem-bot #82 300a1ad: POP wording in admin and monitoring, no "stack" in Eden lines, onboarding line explains First 222 vs Founding 22.
 - Catchem-data #307 488ce5c: buyout tape adds signal High/Medium/Low (listings counted + price change), signalCounts and reportRows (Low not reported).
 - left: shared chart component with tooltip, feed list layout, set page tiles, layout column fixes.
+
+## AUDIT-FIX round 2 (Oct 15, not a MASTER job; do not redo)
+- catchem-site #219 0f193c7 + #223 b3372ff: one chart. catchemMount and the home index charts render the shared history chart (pinned header price, floating rounded tooltip, guide line and dot, 3 labeled gridlines, "Sep 26" dates). Titles kept, hidden tooltip fixed.
+- catchem-site #220 d0fb4b4 + #226 ea92e1b: feed Up next list of compact cards (thumb, name, price, 7D), gold Open the data, no "1 of N" counter.
+- catchem-site #221 f922372: home hero is search plus one gold Open the Feed; /search reads ?q.
+- catchem-site #222 41fdd77: sealed eBay card, Sealed Rating verdict + 3 numbers with All facts folded, Releases rows as rounded cards.
+- catchem-site #224 1ffa0d2: set page Booster Pack / Chase card / Master set tiles and sticky jump tabs.
+- catchem-site #225 f66f29e: TCGplayer line inside the footer column, Today cards fill the row, 2-column chips on phones.
+- Catchem-data #309 b25e643: rotation reads carry the print-run line once per run.
