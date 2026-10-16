@@ -43,6 +43,7 @@ JOBS (global priority order, one small green PR each, merge before starting the 
 13. [Catchem-data] RD8 · Weekly founder brief. Spec: docs/queue/oct17/P-1017-RD8.md.
 14. [catchem-bot] DC1 · Member pulse. Spec: docs/queue/oct17/P-1017-DC1.md. Counts only, no message content stored.
 15. [catchem-site + Catchem-data] TF9 · Private read scorecard. Build a hidden founder-only page /founder/scorecard (not linked, noindex, behind the existing founder check or a secret URL path from config; never public) that shows each read's private score at days 14, 28 and 56, the hit rate by read type, and a list of misses. Add a weekly draft maker that writes a Short script and an X post draft to data/derived/drafts/YYYY-MM-DD.json, never posting anything. Add one config flag SCORECARD_PUBLIC=false; leave it false.
+16. Then run docs/queue/oct17/P-1017-PREMIUM.md jobs in order.
 
 HOUSE COPY RULES (all user-facing text): no em dashes. Never use buy, sell, hold, support, resistance, bottom, printed, play, target, invest, stack, load up or crypto words. Say listings counted, never supply alone. Listings that disappear are listings gone, never sales. eBay counts are Near Mint only. NM is for singles only, never on sealed. No creator names. Every number comes from a dated file. Empty sections hide. Never scrape against a site's terms or get past a bot block. Never use Collectr prices. No buying or checkout bot. Plain short sentences, no filler.
 
