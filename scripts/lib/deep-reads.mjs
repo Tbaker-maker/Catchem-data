@@ -59,20 +59,54 @@ function basketValue(cards, days) {
   return { n, total };
 }
 
+// Chase basket for a set: the set's top-priced singles with a fresh price
+// tonight. A move over a window only compares the same cards, each with a real
+// price on both dates, and only when those cards carry most of the basket's
+// value tonight. Otherwise the window is left out.
+export const CHASE_N = 15;
+export const MATCH_SHARE = 0.8;
+export function chaseBasket(list, asOf, { stale = [], n = CHASE_N } = {}) {
+  const fresh = list.filter((c) => !LOW.has(c.rarity) && c.pts.at(-1)?.[0] === asOf && c.pts.at(-1)[1] > 0);
+  const chase = fresh.slice().sort((a, z) => z.pts.at(-1)[1] - a.pts.at(-1)[1]).slice(0, n);
+  const floor = chase.length ? chase.at(-1).pts.at(-1)[1] : Infinity;
+  // A pricier card in the same set without a fresh price means the top is not fully covered.
+  const missing = stale.filter((c) => !LOW.has(c.rarity) && c.pts.at(-1)?.[0] !== asOf && (c.pts.at(-1)?.[1] || 0) > floor);
+  const now = chase.reduce((t, c) => t + c.pts.at(-1)[1], 0);
+  return { chase, now, missing, complete: missing.length === 0 };
+}
+export function windowMove(chase, from, asOf, share = MATCH_SHARE) {
+  let a = 0, z = 0, n = 0, nowAll = 0;
+  for (const c of chase) {
+    const t = valueOn(c.pts, asOf);
+    if (t != null) nowAll += t;
+    const f = valueOn(c.pts, from);
+    if (f == null || t == null || !(f > 0)) continue;
+    a += f; z += t; n += 1;
+  }
+  if (!n || !(nowAll > 0) || z / nowAll < share) return null;
+  return { from: a, to: z, n, ch: pctOf(a, z) };
+}
+
 export function setDeepDives(cards, { asOf, sets, rotation, max = 25 }) {
   const meta = new Map((sets?.sets || []).map((s) => [s.slug, s]));
   const rot = new Map((rotation?.sets || []).map((s) => [s.slug, s]));
   const bySet = new Map();
-  for (const c of cards) if (c.setSlug && c.pts.at(-1)?.[0] === asOf) { if (!bySet.has(c.setSlug)) bySet.set(c.setSlug, []); bySet.get(c.setSlug).push(c); }
+  for (const c of cards) if (c.setSlug) { if (!bySet.has(c.setSlug)) bySet.set(c.setSlug, []); bySet.get(c.setSlug).push(c); }
   const days = [addDays(asOf, -365), addDays(asOf, -90), addDays(asOf, -30), asOf];
   const out = [];
-  for (const [slug, list] of bySet) {
-    const chase = list.filter((c) => !LOW.has(c.rarity));
-    if (chase.length < 10) continue;
-    const b = basketValue(chase, days);
-    if (b.n < 10 || !(b.total[0] > 0)) continue;
-    const [y, q, m, now] = b.total;
-    const top = chase.slice().sort((a, z) => z.pts.at(-1)[1] - a.pts.at(-1)[1]).slice(0, 3);
+  for (const [slug, all] of bySet) {
+    const bk = chaseBasket(all, asOf, { stale: all });
+    if (bk.chase.length < 10 || !(bk.now > 0)) continue;
+    const { chase, now } = bk;
+    const yr = windowMove(chase, days[0], asOf), qt = windowMove(chase, days[1], asOf), mo = windowMove(chase, days[2], asOf);
+    const s = meta.get(slug) || {};
+    const r = rot.get(slug);
+    const name = s.name || short(all[0].set);
+    const n = chase.length;
+    const who = bk.complete ? `its top ${n} chase cards` : `the top ${n} chase cards we price tonight`;
+    const tail = yr ? `, ${sgn(yr.ch)} in a year for the ${yr.n} with a price both dates` : "";
+    const headline = `${name} deep dive: ${who} are worth ${usd(now)} together${tail}.`;
+    const moves = [mo && `30 days ${sgn(mo.ch)} (${mo.n} cards)`, qt && `90 days ${sgn(qt.ch)} (${qt.n} cards)`, yr && `1 year ${sgn(yr.ch)} (${yr.n} cards)`].filter(Boolean);
     const tiers = new Map();
     for (const c of chase) {
       const a = valueOn(c.pts, days[0]), z = valueOn(c.pts, asOf);
@@ -81,20 +115,16 @@ export function setDeepDives(cards, { asOf, sets, rotation, max = 25 }) {
       t.a += a; t.z += z; t.n += 1; tiers.set(c.rarity, t);
     }
     const lead = [...tiers.entries()].filter(([, t]) => t.n >= 3).map(([k, t]) => ({ k, ch: pctOf(t.a, t.z), n: t.n })).sort((a, z) => z.ch - a.ch)[0];
-    const s = meta.get(slug) || {};
-    const r = rot.get(slug);
-    const name = s.name || short(list[0].set);
-    const ch = pctOf(y, now);
-    const headline = `${name} deep dive: its ${b.n} tracked chase cards are worth ${usd(now)} together, ${sgn(ch)} in a year.`;
     const lines = [
-      `Together: ${usd(y)} (${dateLabel(days[0], asOf)}), ${usd(q)} (${monthDay(days[1])}), ${usd(m)} (${monthDay(days[2])}), ${usd(now)} (${monthDay(asOf)}). Same ${b.n} cards on every date, TCGplayer market.`,
-      `30 days ${sgn(pctOf(m, now))}, 90 days ${sgn(pctOf(q, now))}, 1 year ${sgn(ch)}.`,
-      `Top cards tonight: ${top.map((c) => `${cardTitle(c)} ${usd(c.pts.at(-1)[1])}`).join(", ")}.`,
+      `Top ${n} by TCGplayer market price tonight (${monthDay(asOf)}), each with a price dated ${monthDay(asOf)}: ${usd(now)} together.`,
+      `Top cards tonight: ${chase.slice(0, 3).map((c) => `${cardTitle(c)} ${usd(c.pts.at(-1)[1])}`).join(", ")}.`,
+      moves.length ? `Same cards on both dates only: ${moves.join(", ")}.` : `Not enough of these cards have a price a year ago to compare.`,
+      bk.complete ? "" : `${bk.missing.length} pricier card${bk.missing.length === 1 ? "" : "s"} in this set have no fresh price tonight and are left out.`,
       lead ? `Leading tier over the year: ${lead.k}, ${sgn(lead.ch)} across ${lead.n} cards.` : "",
       r?.status ? `Rotation: ${r.status === "Standard" ? `Standard legal, mark ${r.mark}` : `${r.status}, mark ${r.mark}`} (${markCited(r, rotation)}).` : (s.release ? `Released ${dateLabel(s.release, asOf)}.` : ""),
     ];
-    const spark = days.map((d, i) => [d, Math.round(b.total[i] * 100) / 100]);
-    const rr = row("set", slug, name, headline, lines, asOf, `TCGplayer market, ${days[0]} to ${asOf}; sets.json; rotation-status.json ${rotation?.asOf || ""}`, { set: name, href: `/sets/${slug}`, chart: { label: `${b.n} chase cards, total`, points: spark }, startDate: days[0], endDate: asOf, receipt: { slug, n: b.n, totals: b.total, days }, weight: Math.abs(ch) });
+    const spark = yr ? [[days[0], Math.round(yr.from * 100) / 100], [asOf, Math.round(yr.to * 100) / 100]] : [[asOf, Math.round(now * 100) / 100]];
+    const rr = row("set", slug, name, headline, lines, asOf, `TCGplayer market, ${days[0]} to ${asOf}; sets.json; rotation-status.json ${rotation?.asOf || ""}`, { set: name, href: `/sets/${slug}`, chart: { label: yr ? `${yr.n} chase cards, same cards both dates` : `${n} chase cards, tonight`, points: spark }, startDate: days[0], endDate: asOf, receipt: { slug, n, now, complete: bk.complete, missing: bk.missing.map((c) => c.id), cards: chase.map((c) => ({ id: c.id, price: c.pts.at(-1)[1], date: c.pts.at(-1)[0] })), year: yr, quarter: qt, month: mo, days }, weight: yr ? Math.abs(yr.ch) : 0 });
     if (rr) out.push(rr);
   }
   return out.sort((a, z) => z.weight - a.weight).slice(0, max);
