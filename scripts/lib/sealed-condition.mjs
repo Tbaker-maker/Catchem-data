@@ -83,6 +83,61 @@ export function sealedLeaks(node, out = [], where = "") {
   return out;
 }
 
+// Mixed rows (sealed vs its top card, rip value, release, year range) are not
+// kind "sealed", so the row scrub misses them. This pass looks at the words
+// that lead into each "$A NM" and drops NM when they name a sealed product.
+const SEALED_WORD = /\b(?:Booster Box(?:es)?|Booster Bundles?|Elite Trainer Box(?:es)?|ETBs?|Booster Packs?|Sleeved Boosters?|Blisters?|Tins?|Collections?|Cases?|Bundles?|Build & Battle|Display|Boxes|Box|Packs?|Deck Set|Booster Display)\b/gi;
+const CARD_WORD = /\btop card\b|\bcards?\b|\b\d{1,3}\/\d{2,3}\b|\b[A-Z]{2,5}\d{2,3}\b/gi;
+const NM_PRICE = new RegExp(`(${MONEY})\\s+NM\\b`, "g");
+const plain = (s) => s.replace(/\([^()]*\)|\[[^\]]*\]/g, " ");
+const lastAt = (re, s) => { let at = -1; for (const m of s.matchAll(re)) at = m.index; return at; };
+
+function sealedLead(prefix, lastEnd) {
+  const lead = plain(prefix.slice(lastEnd));
+  const tail = lead.split(/[:.;]\s|:$/).pop();
+  if (/rip value\s*$/i.test(tail)) return false;
+  const card = lastAt(CARD_WORD, tail), seal = lastAt(SEALED_WORD, tail);
+  if (card >= 0 || seal >= 0) return seal > card;
+  const all = plain(prefix);
+  return lastAt(SEALED_WORD, all) > lastAt(CARD_WORD, all);
+}
+
+export function sealedNmHits(text) {
+  const s = String(text ?? ""), hits = [];
+  let lastEnd = 0;
+  for (const m of s.matchAll(NM_PRICE)) {
+    if (sealedLead(s.slice(0, m.index), lastEnd)) hits.push(m.index);
+    lastEnd = m.index + m[0].length;
+  }
+  return hits;
+}
+
+export function dropSealedNm(text) {
+  const s = String(text ?? "");
+  const hits = new Set(sealedNmHits(s));
+  if (!hits.size) return s;
+  return s.replace(NM_PRICE, (m, amt, at) => (hits.has(at) ? amt : m));
+}
+
+export function scrubMixed(node) {
+  let n = 0;
+  if (Array.isArray(node)) { node.forEach((x, i) => { if (typeof x === "string") { const y = dropSealedNm(x); if (y !== x) { node[i] = y; n += 1; } } else n += scrubMixed(x); }); return n; }
+  if (!node || typeof node !== "object") return 0;
+  for (const [k, v] of Object.entries(node)) {
+    if (SKIP.has(k)) continue;
+    if (typeof v === "string") { const y = dropSealedNm(v); if (y !== v) { node[k] = y; n += 1; } }
+    else n += scrubMixed(v);
+  }
+  return n;
+}
+
+export function mixedLeaks(node, out = [], where = "") {
+  if (typeof node === "string") { if (sealedNmHits(node).length) out.push(`${where}: ${node.slice(0, 120)}`); return out; }
+  if (Array.isArray(node)) { node.forEach((x) => mixedLeaks(x, out, where)); return out; }
+  if (node && typeof node === "object") for (const [k, v] of Object.entries(node)) if (!SKIP.has(k)) mixedLeaks(v, out, where);
+  return out;
+}
+
 async function jsonFiles(dir) {
   const out = [];
   let entries = [];
@@ -108,7 +163,7 @@ export async function scrubPublished(root) {
     if (!SEALED_NM.test(text) && !text.includes("→")) continue;
     let doc;
     try { doc = JSON.parse(text); } catch { continue; }
-    const n = scrubTree(doc);
+    const n = scrubTree(doc) + scrubMixed(doc);
     if (!n) continue;
     const pretty = /^\{\n /.test(text);
     await writeFile(path, (pretty ? JSON.stringify(doc, null, 1) : JSON.stringify(doc)) + (text.endsWith("\n") ? "\n" : ""));
