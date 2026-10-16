@@ -142,3 +142,9 @@ A fresh chat skips jobs marked SHIPPED, SKIPPED, or BLOCKED when the date in tha
 - Drops off (no DROPS_ENABLED on Railway).
 - Google Doc "Launch weekend runbook" in the shared folder: Stripe steps, webhook events, Railway var names, test card, go-live, rollback, announcement drafts.
 - Smoke: 50 hits over 10 pages, 0 errors. Found: uncached renders of /feed, /feed/all, /sets, /releases hit Worker CPU limit (error 1102) about 30% of the time.
+
+## Oct 15 late: 1102 fix
+- Cause: a cold /feed render queued a background scan of ~70 price buckets (~60 MB) to find stale price reads. It ran in the request's isolate, blew the Worker CPU/memory limit (error 1102), and took /sets and /releases down with it when they shared the isolate.
+- catchem-site #230 (fda0e89): per-request bucket scan removed; edge cache key drops tracking params (utm_*, fbclid, gclid, twclid, s, t, ref and others).
+- Catchem-data #313: build-feed writes priceStaleIds into reads.json (same rule as the site check). Live after the next nightly.
+- Uncached hits (unique cb= param) on /feed, /feed/all, /sets, /releases: before 40/100 failed, after 0/100 twice. Fetches per cold /feed: ~75 to 7.
