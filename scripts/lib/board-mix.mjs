@@ -390,13 +390,15 @@ export function sealedChaseReads({ products, histories, rawProducts, pool, start
 export function rotationSetReads(doc, asOf, { max = 30 } = {}) {
   const out = [];
   if (!doc?.asOf) return out;
+  let printRunSaid = false;
   for (const set of doc.sets || []) {
     if (!set?.name || !set.status || !set.mark) continue;
     const rotated = /^Rotated /.test(set.status);
     const headline = rotated
-      ? `${set.name} (mark ${set.mark}) left Standard: ${set.status.replace(/^Rotated /, "rotated ")} (${markCited(set, doc)}). Rotated sets historically stop getting new print runs.`
+      ? `${set.name} (mark ${set.mark}) left Standard: ${set.status.replace(/^Rotated /, "rotated ")} (${markCited(set, doc)}).${printRunSaid ? "" : " Rotated sets historically stop getting new print runs."}`
       : `${set.name} (mark ${set.mark}) is Standard legal (${markCited(set, doc)}).`;
     if (!cleanCopy(headline)) continue;
+    if (rotated) printRunSaid = true;
     out.push({ id: `rotation-set-${set.slug}`, readKind: "rotation", kind: "rotation", board: BOARD_TAG, family: "rotation", name: set.name, set: set.name, headline, path: headline, asOf, href: `/sets/${set.slug}`, source: `rotation-status.json, ${doc.asOf}`, receipt: { set: set.slug, mark: set.mark, status: set.status, asOf: doc.asOf } });
     if (out.length >= max) break;
   }
