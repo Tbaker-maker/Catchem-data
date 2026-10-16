@@ -90,6 +90,31 @@ A fresh chat skips jobs marked SHIPPED, SKIPPED, or BLOCKED when the date in tha
 - changed: Nightly scout writes dated set and product stubs from Pokemon press only, with a release date and a day-one flag. A known name is skipped. A blocked robots file writes an empty list.
 - left: The 2026-10-15 file has no stubs. The digest had no official item with a stated date. Stubs stay out of the live product file until they have a product id, so they do not spend listing calls.
 
+## RD16
+- repo: Catchem-data
+- status: SHIPPED
+- PR: #301
+- merged SHA: 401f74fb69296b6c0056458af12c1dedcf30b84f
+- changed: Nightly step writes a dated Canada gap file from the hand-kept CAD list, the newest US market point, and the Bank of Canada rate. An empty list writes an empty file.
+- left: Tyler adds rows to config/cad-retail.json before any product gap appears. No new price calls were added.
+
+## RD8
+- repo: Catchem-data
+- status: SHIPPED
+- PR: #305
+- merged SHA: 0358e014a6b3c65d43d5aaecd97294f55896a67f
+- changed: Sunday 8 AM Pacific workflow writes a dated founder brief from merged PR titles, the status file, and the limit file. The 12 newest merges are listed. A missing source is omitted.
+- left: The first file is 2026-10-15. Later Sundays write the next file. YouTube and Railway stay hidden until a dated usage file exists.
+
+## DC1
+- repo: catchem-bot
+- status: SHIPPED
+- PR: #79
+- merged SHA: cb4a7624c5f0b8d01b182926600330131c1bd8c7
+- changed: Weekly member pulse counts rooms, slash commands, and features. Message text is never stored. A quiet week posts nothing.
+- left: Tyler sets MEMBER_PULSE_CHANNEL_ID to the private staff room. Until that is set, the cog posts nothing.
+
+
 
 
 
