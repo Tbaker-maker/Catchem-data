@@ -1,0 +1,24 @@
+{
+  "asOf": "2026-10-15",
+  "note": "Hand list of the next builds. A job marked SHIPPED or SKIPPED in PROGRESS.md is left out.",
+  "items": [
+    {
+      "id": "DC1",
+      "title": "Member pulse",
+      "status": "OPEN",
+      "prompt": "FOR: catchem-bot · P-1017-DC1\n\nCount members only. Store no message content. Write a dated count file."
+    },
+    {
+      "id": "TF9",
+      "title": "Private read scorecard",
+      "status": "OPEN",
+      "prompt": "FOR: catchem-site · P-1017-TF9\n\nHidden founder page for read scores at days 14, 28 and 56. Leave SCORECARD_PUBLIC false. Write drafts only. Never post."
+    },
+    {
+      "id": "PM1",
+      "title": "Saved line",
+      "status": "OPEN",
+      "prompt": "FOR: catchem-site · P-1017-PM1\n\nOn a drop card, show the gap between the dated market price and the drop price. Hide the line when the price is missing, older than 7 days, or the gap is zero or negative."
+    }
+  ]
+}
