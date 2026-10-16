@@ -459,6 +459,7 @@ jobs:
           node scripts/build-limits.mjs || true
           node scripts/build-post-office-catalogue.mjs || true
           node scripts/build-custom-reads.mjs || true
+          node scripts/build-release-scout.mjs || true
 
       - name: Commit updated prices
         run: |
