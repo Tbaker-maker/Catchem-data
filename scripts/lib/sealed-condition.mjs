@@ -87,7 +87,7 @@ export function sealedLeaks(node, out = [], where = "") {
 // kind "sealed", so the row scrub misses them. This pass looks at the words
 // that lead into each "$A NM" and drops NM when they name a sealed product.
 const SEALED_WORD = /\b(?:Booster Box(?:es)?|Booster Bundles?|Elite Trainer Box(?:es)?|ETBs?|Booster Packs?|Sleeved Boosters?|Blisters?|Tins?|Collections?|Cases?|Bundles?|Build & Battle|Display|Boxes|Box|Packs?|Deck Set|Booster Display)\b/gi;
-const CARD_WORD = /\btop card\b|\bcards?\b|\b\d{1,3}\/\d{2,3}\b|\b[A-Z]{2,5}\d{2,3}\b/gi;
+const CARD_WORD = /\btop card\b|\bcards?\b|\bsingles?\b|\b\d{1,3}\/\d{2,3}\b|\b[A-Z]{2,5}\d{2,3}\b/gi;
 const NM_PRICE = new RegExp(`(${MONEY})\\s+NM\\b`, "g");
 const plain = (s) => s.replace(/\([^()]*\)|\[[^\]]*\]/g, " ");
 const lastAt = (re, s) => { let at = -1; for (const m of s.matchAll(re)) at = m.index; return at; };
