@@ -148,3 +148,10 @@ A fresh chat skips jobs marked SHIPPED, SKIPPED, or BLOCKED when the date in tha
 - catchem-site #230 (fda0e89): per-request bucket scan removed; edge cache key drops tracking params (utm_*, fbclid, gclid, twclid, s, t, ref and others).
 - Catchem-data #313: build-feed writes priceStaleIds into reads.json (same rule as the site check). Live after the next nightly.
 - Uncached hits (unique cb= param) on /feed, /feed/all, /sets, /releases: before 40/100 failed, after 0/100 twice. Fetches per cold /feed: ~75 to 7.
+
+## Oct 16: Feed quality (taken by the site chat; build-chat jobs RD8, DC1, TF9, PREMIUM, COLLECTION, DC4 left alone)
+- catchem-site #231 (3cf80f1): set filter loads the set file and shows one read per priced item (First Partner Pack 1 -> 32); dated facts (Pokemon, listings, news, season) no longer dropped by the stale flag; dive/wave/flagged kinds match the data; plain price moves capped (All 53% -> 14%); per-item reads from each item's own history; news reads show the set logo or a branded tile; "Up next" -> "Next reads"; QC oct16 fixes (card range, unverified price tag, set page zeros, carousel wrap, deep-read art, sealed hero, chip row, set input, search paging/empty state/outlier chip).
+- catchem-site #232 (a526c1b): no doubled card name before a read.
+- New test scripts/feed-groups.test.mjs fails if a set shows fewer reads than priced items.
+- Sweep: before 202 of 205 sets showed fewer reads than priced items; after, see the next line.
+- Open: Market moved and Nothing moved chips have no rows today; news og:image not used (set logo or branded tile only); data-side rarity-report and "few sales" wording still rewritten on the site only.
