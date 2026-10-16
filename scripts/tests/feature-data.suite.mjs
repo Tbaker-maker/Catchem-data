@@ -127,6 +127,8 @@ export async function run() {
   const blob = JSON.stringify(releases);
   t("releases are the verified radar rows only", releases.releases.length === verified.length && verified.every((row, i) => releases.releases[i].name === row.name && releases.releases[i].date === row.date && releases.releases[i].type === row.type));
   t("release links and the checked date are copied from the radar file", releases.checked === radar.updated && releases.releases.every((row) => row.checked === radar.updated && row.source && verified.find((src) => src.name === row.name).note.includes(row.source) && officialSource(verified.find((src) => src.name === row.name).note) === row.source));
+  t("a pokemon-card.com product page is an official release source", officialSource("Sources: pokemon-card.com/products/mega/mg.html, pokebeach.com/2026/10/example.") === "pokemon-card.com/products/mega/mg.html");
+  t("JP Special Deck Set stays verified only with that product page", verified.some((row) => /Special Deck Set/.test(row.name) && row.confidence === "verified" && officialSource(row.note) === "pokemon-card.com/products/mega/mg.html"));
   t("releases carry no msrp", !/msrp/i.test(blob) && !blob.includes("$"));
   const priceDocs = [];
   for (const name of (await readdir(join(ROOT, "data/history/tcgcsv-daily"))).filter((name) => name.endsWith(".json")).sort()) {

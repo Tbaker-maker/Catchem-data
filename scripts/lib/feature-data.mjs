@@ -31,7 +31,7 @@ export const ROTATION_SOURCES = [
   },
 ];
 
-const SOURCE_PATH = /(?:https?:\/\/)?(?:[\w.-]*\.)?pokemon(?:center)?\.com\/[^\s,)'"]+|30th\.pokemon-card\.com\/[^\s,)'"]+/gi;
+const SOURCE_PATH = /(?:https?:\/\/)?(?:[\w.-]*\.)?(?:pokemon(?:center)?\.com|pokemon-card\.com)\/[^\s,)'"]+|30th\.pokemon-card\.com\/[^\s,)'"]+/gi;
 
 export function compact(value) {
   return String(value || "")
