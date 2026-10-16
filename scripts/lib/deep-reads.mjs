@@ -300,7 +300,12 @@ export function rarityTierReports(cards, { asOf, sets }) {
     }
     if (res.length < 2) continue;
     res.sort((x, y) => y.ch - x.ch);
-    const rr = row("tiers", era, era, `${era} rarity report: ${res[0].label} cards did best over the year, ${sgn(res[0].ch)}.`, [
+    const best = res[0];
+    const fell = Math.abs(Math.round(best.ch * 10) / 10);
+    const lead = best.ch < 0
+      ? `${era} rarity report: every rarity fell over the year. ${best.label} cards fell least, down ${fell}%.`
+      : `${era} rarity report: ${best.label} cards did best over the year, ${sgn(best.ch)}.`;
+    const rr = row("tiers", era, era, lead, [
       ...res.map((r) => `${r.label}: ${usd(r.a)} to ${usd(r.z)} (${sgn(r.ch)}), ${r.n} cards.`),
       `Same cards on ${dateLabel(addDays(asOf, -365), asOf)} and ${monthDay(asOf)}, TCGplayer market.`,
     ], asOf, `TCGplayer market, ${addDays(asOf, -365)} and ${asOf}; rarity from TCGplayer`, { chart: { label: "1-year change by tier, %", bars: res.map((r) => [r.label, Math.round(r.ch)]) }, startDate: addDays(asOf, -365), endDate: asOf });

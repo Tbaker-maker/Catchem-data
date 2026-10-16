@@ -62,7 +62,7 @@ export async function run() {
     thinPts.push([d, i < 25 ? 50 : Math.round((50 - (i - 24) * 1.5) * 100) / 100]);
   }
   const thinCopy = headlineFor({ name: "Arceus LV.X", set: "Diamond and Pearl Promos", number: "DP53", release: "2007-05-01", price: thinPts.at(-1)[1], fromPrice: thinPts[10][1], changePct: -20, windowDays: 30, toDate: thinPts.at(-1)[0], hist: thinPts });
-  t("a thin series is not a record and says on few sales", isThinSeries(thinPts) && thinCopy.includes("on few sales") && !/6-month|highest price|lowest price/i.test(thinCopy));
+  t("a thin series is not a record and says on few price days", isThinSeries(thinPts) && thinCopy.includes("on few price days") && !/on few sales|6-month|highest price|lowest price/i.test(thinCopy));
   const tiled = [];
   const seed = [10, 10, 9];
   for (let i = 0; i < 15; i++) tiled.push([new Date(Date.parse("2026-03-31T00:00:00Z") + i * 86400000).toISOString().slice(0, 10), seed[i % 3]]);
@@ -227,7 +227,7 @@ export async function run() {
       topSets.set(setName, (topSets.get(setName) || 0) + 1);
     }
     t("at most two reads from one set in the top 10", [...topSets.values()].every((n) => n <= 2));
-    const thinTop = catalogue.today.slice(0, 3).filter((id) => catalogue.cards[id].thin || /on few sales/i.test(catalogue.cards[id].headline));
+    const thinTop = catalogue.today.slice(0, 3).filter((id) => catalogue.cards[id].thin || /on few price days|on few sales/i.test(catalogue.cards[id].headline));
     t("no thin item in the first three", thinTop.length === 0);
     const fallen = reads.reads.map((row) => String(row.why || "").match(/Has fallen (\d+) of the last 30 days/)).filter(Boolean);
     t("fallen-days why is used once and only past 15", fallen.length <= 1 && fallen.every((m) => Number(m[1]) >= 15));

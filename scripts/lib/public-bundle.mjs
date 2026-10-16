@@ -1291,7 +1291,7 @@ function makeHeadline(read, pts, thin, allowExtreme = true) {
   const phrase = extremePhrase(extreme);
   if (phrase) return `${label} hit ${phrase}: ${nmPrice}, ${dir} ${shown}% in ${days} days.`;
   const spanWord = days === 7 ? "this week" : days === 30 ? "this month" : "over 90 days";
-  const tail = thin ? ", on few sales." : ".";
+  const tail = thin ? ", on few price days." : ".";
   return `${label} is ${dir} ${shown}% ${spanWord}, from ${nmFrom} to ${nmPrice}${tail}`;
 }
 
