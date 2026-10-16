@@ -324,6 +324,10 @@ jobs:
         # Small bucket files so item pages never load all of reads.json.
         run: node scripts/write-item-reads.mjs
 
+      - name: Per-item card lookups (feed/card)
+        # Images, IR rows and the condition note split small for card pages.
+        run: node scripts/write-card-lookups.mjs
+
       - name: Stamp the Updated line from the price file
         # Site pages read counts.json for the Updated line. That clock is the
         # timestamp already on sealed-prices.json, not the last public bundle.
