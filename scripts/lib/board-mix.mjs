@@ -731,7 +731,7 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
       ...era,
       ...preReleaseContext(histCards, { asOf: end, sets: setsDoc, releases }),
       ...marketRoundup({ asOf: end, start, pool: card.pool, histCounts: hist.counts, eraRow: era[0], releases }),
-      ...artistSpotlights(histCards, { asOf: end }),
+      // Artist spotlights stay out: no creator names in public reads.
       ...pokemonSpotlights(histCards, { asOf: end }),
       ...rarityTierReports(histCards, { asOf: end, sets: setsDoc }),
       ...anniversaryReads(histCards, { asOf: end, sets: setsDoc }),

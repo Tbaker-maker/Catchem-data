@@ -47,6 +47,11 @@ import {
 } from "./lib/news-sources.mjs";
 import { newsSlot, stampSharedNews } from "./lib/shared-news.mjs";
 
+// No em dashes in titles we show: spaced dash becomes a comma, tight dash a colon.
+export function noDash(t) {
+  return String(t ?? "").replace(/\s+\u2014\s+/g, ", ").replace(/\u2014/g, ": ");
+}
+
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const UA = "CatchEmNews/1.0 (+https://github.com/Tbaker-maker/Catchem-data)";
 const NEWS_PATH = join(ROOT, "research", "digests", "news.json");
@@ -156,7 +161,7 @@ async function pokebeach(failures) {
       pageKept++;
       listed.push({
         id,
-        title: decodeEntities(title[1]).replace(/\s+/g, " ").trim(),
+        title: noDash(decodeEntities(title[1]).replace(/\s+/g, " ").trim()),
         url: `https://www.pokebeach.com${path}`,
         date,
         published,
@@ -234,7 +239,7 @@ async function officialPress(failures) {
     seen.add(url);
     links.push({
       url,
-      title: decodeEntities(titleRaw[1].replace(/<[^>]+>/g, " ")).replace(/\s+/g, " ").trim(),
+      title: noDash(decodeEntities(titleRaw[1].replace(/<[^>]+>/g, " ")).replace(/\s+/g, " ").trim()),
     });
   }
   const items = [];
@@ -297,7 +302,7 @@ function finalize(raw) {
     tags.push("tournaments");
   }
   return annotate({
-    title: raw.title,
+    title: noDash(raw.title),
     url: raw.url,
     source: raw.source,
     date,
