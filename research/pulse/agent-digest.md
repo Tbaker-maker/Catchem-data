@@ -1,23 +1,21 @@
-# What the machines noticed — 2026-10-15
+# What the machines noticed — 2026-10-16
 
-The overnight shift's notes. Short on purpose.
+Nothing here needs you this morning unless something is marked NEEDS A HUMAN.
 
 ## Our own claims
-A read we published has failed its own test. Better we find it than you do.
-
-**NEEDS A HUMAN — 1 thesis/theses failed its own kill condition.** We said in advance what would end them, and that happened, so they end. Drafts of the public amendment are in the falsifier report.
-- **RT-2 (Supply Injection Absorb-or-Stall)** — 100% of 4 supply injections moved prices less than 1% — injections are not being absorbed OR stalling, which is the stated kill condition
+Mostly "we cannot tell yet" today — half these tests need weeks of history we simply do not have. Saying so beats guessing.
+3 survived their own kill conditions, 7 could not be judged yet with the tape we hold.
 
 ## Our own numbers
-A handful of suspicious jumps in our own history. Probably ours, not the market's — that is the usual answer.
+Found a few of our own figures that moved faster than any market should. Checking which one of them was us.
 
-**NEEDS A HUMAN — 11 figure(s) moved faster than a market can:
+**NEEDS A HUMAN — 12 figure(s) moved faster than a market can:
 - Celebrations Elite Trainer Box: $160 → $335 in 2026-10-12→2026-10-13 (+109.4%)
 - Celebrations Elite Trainer Box: $161.99 → $330 in 2026-10-06→2026-10-07 (+103.7%)
 - Temporal Forces Pokemon Center Elite Trainer Box: $253.74 → $499.99 in 2026-10-05→2026-10-06 (+97%)
 - Evolutions Elite Trainer Box: $419.99 → $760 in 2026-10-03→2026-10-05 (+81%)
 
-18 product(s) we featured and can no longer price:
+19 product(s) we featured and can no longer price:
 - Umbreon VMAX (featured 2026-08-20)
 - Umbreon VMAX (featured 2026-08-21)
 - Charizard ex (featured 2026-08-22)
@@ -62,7 +60,7 @@ Gaps in what we watch:
 
 ## Who needs to do what
 **NEEDS A HUMAN — Tyler (3):**
-- **[ACT NOW 76]** Prismatic Evolutions Surprise Box moved -38.5% — about 3.0× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
+- **[ACT NOW 90]** RT-2 failed its own kill condition — *publish the amendment — we said in advance this would end the thesis*
 - **[QUEUE 58]** The knowledge base is only used for one fact a day. — *The same sourced facts could power a "why is this card like this" explainer on every product page — set context, print quirks, what makes it odd. It compounds with every fact added.*
 - **[WATCH 40]** pricing 50 more cards would unlock 17 artist cohorts — *an expansion decision, not a machine's call*
 
@@ -81,17 +79,21 @@ Gaps in what we watch:
 - **the cheat code** — The pieces exist and are reachable, but a creator still assembles them: pick an angle here, find the card there, open the overlay separately. *ONE screen per angle: the subject, the spoken open, the numbers as a lower-third, the card ready to download, the source line, and a record checklist. Pick an angle, hit record.*
 - **the cheat code** — Nothing tells a creator how a piece performed after they made it. *Ask one question after publication — did this land — and keep the answers. Even a yes/no on twenty videos would tell us which angles are worth generating.*
 
+## What the market did
+- **product** — Fusion Strike Booster Pack moved 8.7% — about 3.3× its own typical daily swing. *Measured against its own 23 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
+- **product** — Paldean Fates Booster Pack moved 10.6% — about 3.3× its own typical daily swing. *Measured against its own 21 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
+
 ## Where today's story goes
-- **X** — "Paldean Fates listings moved 200% while its print window closes."
-- **YouTube** — Cosmic Eclipse Booster Box — "Works out to $150 a pack, the most expensive rip we track. A pack at retail runs about $4.49."
-- **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 99.4."
+- **X** — "Paradox Rift listings moved 183.3% while its print window closes."
+- **YouTube** — 151 Ultra Premium Collection — "Cheapest believable listing $100, middle of the market $950. The lowest ask sits far below the median."
+- **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 99.6."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
 
 ## Something is slipping
 - **unsaved** — 3 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
 - **ignored** — 6 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
-- **drift** — 75 script(s) are not referenced anywhere: append-learning-log.mjs, append-shelf.mjs, audit-repo-bots.mjs, backfill-artists.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
+- **drift** — 79 script(s) are not referenced anywhere: append-learning-log.mjs, append-shelf.mjs, audit-repo-bots.mjs, backfill-artists.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
 - **drift** — 49 JSON files in research/pulse. *A directory nobody can scan is a directory where something goes missing without being noticed.*
 
 ## Legal standing
@@ -101,10 +103,10 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 *Legal INFORMATION, not legal advice. No lawyer has reviewed this. Sweepstakes law varies by state and changes; nothing here is a compliance opinion anyone can rely on. Its job is to make the conversation with counsel shorter and better, and to stop us doing something obviously wrong in the meantime.*
 
 ## Numbers that do not make sense for what they are
-54 value(s) are structurally fine and absurd in context.
-- **"sleeved"** killed 361 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
-- Battle Styles Booster Pack: 73% rejection rate (40/150) — *largest bucket: exclude = 58. A single over-broad term can eat a market.*
-- Scarlet & Violet Booster Pack: 95% rejection rate (8/150) — *largest bucket: set = 54. A single over-broad term can eat a market.*
+57 value(s) are structurally fine and absurd in context.
+- **"sleeved"** killed 356 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
+- Battle Styles Booster Pack: 75% rejection rate (37/150) — *largest bucket: exclude = 61. A single over-broad term can eat a market.*
+- Scarlet & Violet Booster Pack: 93% rejection rate (10/150) — *largest bucket: set = 54. A single over-broad term can eat a market.*
 
 ## What the agents should be asking themselves
 - **domain-plausibility** — Would you catch this today? If yes, what specifically would fire. If no, what would you need?

@@ -1,26 +1,28 @@
 {
- "asOf": "2026-10-15",
- "generatedAt": "2026-10-15T23:53:57.552Z",
+ "asOf": "2026-10-16",
+ "generatedAt": "2026-10-16T10:23:38.131Z",
  "warnAt": 0.85,
  "sources": [
   {
    "id": "ebay-browse",
    "label": "eBay Browse listing calls",
-   "asOf": "2026-10-15",
-   "used": 1446,
+   "asOf": "2026-10-16",
+   "used": 4278,
    "limit": 4277,
-   "share": 0.338,
+   "share": 1,
    "window": "rolling 24 hours"
   },
   {
    "id": "ppt",
    "label": "PPT credits",
-   "asOf": "2026-10-15",
-   "used": 15994,
+   "asOf": "2026-10-16",
+   "used": 16120,
    "limit": 20000,
-   "share": 0.8,
+   "share": 0.806,
    "window": "UTC day"
   }
  ],
- "warnings": []
+ "warnings": [
+  "eBay Browse is at 100% of the 4,277 daily listing calls as of 2026-10-16."
+ ]
 }
