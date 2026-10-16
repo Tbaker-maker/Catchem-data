@@ -1,0 +1,40 @@
+name: Founder brief
+
+# Sunday 8 AM Pacific. 15:00 UTC is 8 AM during daylight time. 16:00 UTC is
+# 8 AM during standard time. The script writes on the matching hour only.
+on:
+  schedule:
+    - cron: "0 15 * * 0"
+    - cron: "0 16 * * 0"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  brief:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Write the weekly brief
+        env:
+          BRIEF_FORCE: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
+        run: node scripts/build-founder-brief.mjs
+      - name: Commit the brief
+        run: |
+          git config user.name "catchem-bot"
+          git config user.email "bot@catchem.app"
+          git add data/derived/brief/
+          if git diff --staged --quiet; then
+            echo "No brief changes."
+          else
+            git commit -m "Weekly founder brief ($(date -u +'%Y-%m-%d'))"
+            git push
+          fi

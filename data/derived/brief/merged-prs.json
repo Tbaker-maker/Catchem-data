@@ -1,0 +1,954 @@
+{
+ "asOf": "2026-10-15",
+ "repo": "Catchem-data",
+ "prs": [
+  {
+   "number": 303,
+   "title": "docs(queue): add P-1017-PREMIUM and MASTER job 16",
+   "mergedAt": "2026-10-15T17:56:25-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 302,
+   "title": "Record RD3 as shipped.",
+   "mergedAt": "2026-10-15T17:50:15-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 301,
+   "title": "Add a Canada retail gap read.",
+   "mergedAt": "2026-10-15T17:50:12-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 300,
+   "title": "Add an official-press release scout.",
+   "mergedAt": "2026-10-15T17:31:05-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 299,
+   "title": "Record RD5 as shipped.",
+   "mergedAt": "2026-10-15T17:26:13-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 298,
+   "title": "Add a read-only cost and limit watcher.",
+   "mergedAt": "2026-10-15T17:12:04-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 297,
+   "title": "Record RD10 as shipped",
+   "mergedAt": "2026-10-15T16:45:54-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 296,
+   "title": "docs(queue): add job 15 private scorecard to MASTER",
+   "mergedAt": "2026-10-15T16:15:04-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 295,
+   "title": "Project shared Custom Reads news and games feeds.",
+   "mergedAt": "2026-10-15T16:14:04-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 294,
+   "title": "Record Oct 17 progress through TF7",
+   "mergedAt": "2026-10-15T16:14:01-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 293,
+   "title": "fix(hooks): use npm install like other workflows (sharp lock gap)",
+   "mergedAt": "2026-10-15T15:51:36-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 292,
+   "title": "Publish public-data as one orphan commit each night",
+   "mergedAt": "2026-10-15T15:33:33-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 291,
+   "title": "docs: Oct 17 MASTER prompt for one Grok Build chat (docs only)",
+   "mergedAt": "2026-10-15T14:31:28-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 290,
+   "title": "Nightly price run: one run at a time, retry the test gate once, write a failure summary",
+   "mergedAt": "2026-10-15T12:59:20-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 289,
+   "title": "Self-heal restores only files the failing steps name",
+   "mergedAt": "2026-10-15T12:59:15-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 269,
+   "title": "sets.json carries a set value: sum of TCGplayer market on priced singles",
+   "mergedAt": "2026-10-15T12:21:09-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 287,
+   "title": "Drift bot falls back to the workflow token when DRIFT_BOT_TOKEN is not set",
+   "mergedAt": "2026-10-15T10:16:45-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 274,
+   "title": "docs: Custom Reads Plan in repo, point Oct 17 prompts at it",
+   "mergedAt": "2026-10-15T09:56:31-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 286,
+   "title": "Wire BUILD1 hooks and count guardian crons",
+   "mergedAt": "2026-10-15T09:56:26-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 285,
+   "title": "Check set value against the day it was built from, and let the nightly's fresh board differ from the committed one.",
+   "mergedAt": "2026-10-15T08:08:29-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 283,
+   "title": "Record BUILD1 items as shipped.",
+   "mergedAt": "2026-10-15T00:44:29-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 282,
+   "title": "Build per-follow read slices and skip quiet days.",
+   "mergedAt": "2026-10-15T00:33:16-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 281,
+   "title": "Add a data drift bot that can open its own fix pull request.",
+   "mergedAt": "2026-10-15T00:33:10-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 277,
+   "title": "Label each news story Official, Confirmed, or Unconfirmed.",
+   "mergedAt": "2026-10-15T00:33:03-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 276,
+   "title": "Add a news source registry with logged robots and terms checks.",
+   "mergedAt": "2026-10-15T00:32:57-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 280,
+   "title": "Publish read scores as hit rate and sample size.",
+   "mergedAt": "2026-10-15T00:30:59-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 279,
+   "title": "Add a weekly pattern lab with one count per card.",
+   "mergedAt": "2026-10-15T00:30:54-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 278,
+   "title": "Record news price and listings counted at 1, 7, and 30 days.",
+   "mergedAt": "2026-10-15T00:30:48-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 275,
+   "title": "Stamp the night and midday news runs on one news.json",
+   "mergedAt": "2026-10-15T00:13:50-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 273,
+   "title": "Add a Post Office catalogue built from TCGplayer set prices.",
+   "mergedAt": "2026-10-15T00:01:32-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 272,
+   "title": "docs: Oct 17 queue prompts and builder prompt",
+   "mergedAt": "2026-10-14T23:56:12-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 271,
+   "title": "Sealed items never say NM; prices read from $A to $B",
+   "mergedAt": "2026-10-14T23:43:43-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 267,
+   "title": "Count guardian: daily-tier catch-up role (chase first, then IRs) within remaining eBay budget; nightly after-sealed run uses it",
+   "mergedAt": "2026-10-14T22:57:48-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 270,
+   "title": "Rebuild stale board fixture so main tests go green",
+   "mergedAt": "2026-10-14T22:42:20-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 268,
+   "title": "Regenerate rotation-status.json for the new set eras (same rows, new order)",
+   "mergedAt": "2026-10-14T22:09:35-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 265,
+   "title": "Read facts + item reads from our own files",
+   "mergedAt": "2026-10-14T21:53:50-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 266,
+   "title": "Audit every set against its TCGplayer group, give 17 vintage and POP sets their real era, and fail CI if a set takes cards from a second group",
+   "mergedAt": "2026-10-14T21:38:01-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 264,
+   "title": "Track record: skip machine ids in banned-word check",
+   "mergedAt": "2026-10-14T15:53:29-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 263,
+   "title": "Publish the Oct 14 price day and keep the board in sync",
+   "mergedAt": "2026-10-14T14:03:17-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 262,
+   "title": "Weight patterns by era durability and add dated non-price files.",
+   "mergedAt": "2026-10-13T23:15:56-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 257,
+   "title": "Add a weekly image coverage list.",
+   "mergedAt": "2026-10-13T22:05:59-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 256,
+   "title": "Publish a logo or branded tile for every set.",
+   "mergedAt": "2026-10-13T20:31:04-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 250,
+   "title": "Add private multi-era scanner backtest and log source depth checks.",
+   "mergedAt": "2026-10-13T18:00:20-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 249,
+   "title": "Indexes: robust daily move + eBay vs TCGplayer price sanity",
+   "mergedAt": "2026-10-13T18:00:15-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 253,
+   "title": "Surprise Box: drop Sam's Club bundle and Mega Bundle listings from the eBay match (TCGplayer 593466 is correct)",
+   "mergedAt": "2026-10-13T18:00:10-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 251,
+   "title": "Listing counts: 2 full runs + midday top-tier run, tops every PT day",
+   "mergedAt": "2026-10-13T18:00:05-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 252,
+   "title": "Keep a TCGCSV day published before the run; restore 2026-10-13 day the public files were built from",
+   "mergedAt": "2026-10-13T17:44:16-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 248,
+   "title": "Log and surface the scanner private push instead of swallowing it.",
+   "mergedAt": "2026-10-13T16:30:38-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 247,
+   "title": "Grade each chart pattern by its own direction and require both halves of the year before a public read.",
+   "mergedAt": "2026-10-13T16:04:17-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 246,
+   "title": "Add a nightly chart scanner that grades patterns before a public read.",
+   "mergedAt": "2026-10-13T13:44:31-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 245,
+   "title": "PokeViz singles chart fill (7955 cards)",
+   "mergedAt": "2026-10-13T12:11:06-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 244,
+   "title": "Add year-range, year-ago, and season reads, and rename the printings headline.",
+   "mergedAt": "2026-10-13T10:36:58-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 243,
+   "title": "Add a factual own-day trend line to public reads.",
+   "mergedAt": "2026-10-13T09:39:19-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 242,
+   "title": "Private year study of 7, 30, and 90 day windows.",
+   "mergedAt": "2026-10-13T04:48:49-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 241,
+   "title": "Match creator card mentions to one catalogue id",
+   "mergedAt": "2026-10-13T04:48:31-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 240,
+   "title": "Listings-led tracker v1 (private): nightly picks and n>=20 backtest to the private store",
+   "mergedAt": "2026-10-13T03:38:19-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 239,
+   "title": "Index line starts on the first day enough members are priced (151 sealed line with fan-site days was a single dot)",
+   "mergedAt": "2026-10-12T23:58:59-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 238,
+   "title": "Regenerate 2026-10-13 outputs (catalog, map, bundle, feed, feature data, morning card); keep fan-site days in fillHist apart from hist; board mixer avoids same-family pairs at the end",
+   "mergedAt": "2026-10-12T23:50:51-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 236,
+   "title": "Sealed chart history before our first day from PokeVizInvestor (fan site), our data wins, one flag to turn off",
+   "mergedAt": "2026-10-12T23:24:23-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 233,
+   "title": "Index line links small groups; fill-source check (terms once, robots nightly)",
+   "mergedAt": "2026-10-12T22:11:51-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 235,
+   "title": "Artifact freshness: excuse listing counts until its first scheduled commit",
+   "mergedAt": "2026-10-12T22:09:10-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 232,
+   "title": "Listing counts: daily tier (all priced sealed + top singles) every day, tail rotated with the leftover; rolling 24h eBay counter shared across runs",
+   "mergedAt": "2026-10-12T21:33:47-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 231,
+   "title": "API budgets at 98% of non-rollover daily allowances (config/api-budgets.json); listing counts rotate the under-$1 tail",
+   "mergedAt": "2026-10-12T21:26:22-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 230,
+   "title": "Listing counts on ~17k items at 80% of the eBay Browse allowance, rotated weekly; YouTube cap to 7,000 units",
+   "mergedAt": "2026-10-12T21:21:03-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 229,
+   "title": "Hype-effect reads + crowded-call flags at set, single, sealed",
+   "mergedAt": "2026-10-12T20:16:26-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 228,
+   "title": "Call patterns + five crowd angles (private first, holdout gate)",
+   "mergedAt": "2026-10-12T19:55:41-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 227,
+   "title": "TCGCI: rescore calls with our method as tcgci-derived",
+   "mergedAt": "2026-10-12T19:42:39-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 226,
+   "title": "TCGCI: polite daily fetch of public YouTuber-call ledger",
+   "mergedAt": "2026-10-12T19:30:25-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 225,
+   "title": "YouTube scoring v2: claim confidence (unscored under 0.5), 3% band + market-relative hit, stated horizons, per-topic/type accuracy into creatorWeights, reason codes and chapter receipts; self-check band column",
+   "mergedAt": "2026-10-12T17:45:58-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 224,
+   "title": "YouTube: chapter outlines from descriptions, creator's own comments into claims/ideas/topics, per-channel text routes (X handles checked)",
+   "mergedAt": "2026-10-12T17:38:56-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 223,
+   "title": "Podcast transcript ingestion (publisher RSS transcripts only) into the YouTube claims pipeline; per-channel text-source audit in config",
+   "mergedAt": "2026-10-12T17:33:02-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 222,
+   "title": "YouTube: track-record creator weights, private hype-effect study, creator/data disagreement flags, likes-weighted Eden seed",
+   "mergedAt": "2026-10-12T17:17:28-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 221,
+   "title": "YouTube: AnonTCG (was PokeAnon) + 14 more channels",
+   "mergedAt": "2026-10-12T17:13:03-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 218,
+   "title": "YouTube learning loop (official API, private store, YOUTUBE_LEAD flags)",
+   "mergedAt": "2026-10-12T16:44:37-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 215,
+   "title": "IR lifecycle: holo baseline line matches the headline, 6-month holo line names its window; printings and same-rarity lines carry the catalogue card number",
+   "mergedAt": "2026-10-12T16:24:37-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 211,
+   "title": "Deep reads round 2: every printing, one rarity across sets, chase lists, slump watch; real rarity labels per generation",
+   "mergedAt": "2026-10-12T16:11:06-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 205,
+   "title": "Every read keeps its own link: breadth to its set filter, artists to their page, one product page per night",
+   "mergedAt": "2026-10-12T15:52:04-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 204,
+   "title": "Sealed gap deep read: honest match line, no 'box' for packs, chart matches the headline ratio",
+   "mergedAt": "2026-10-12T15:42:53-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 201,
+   "title": "Deep reads: real species names only, no 'held'; release source names the Pokémon Center page",
+   "mergedAt": "2026-10-12T15:35:30-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 200,
+   "title": "Variant tags on Feed reads, named in the line; rebuild card-variants nightly from build-feed",
+   "mergedAt": "2026-10-12T15:30:36-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 198,
+   "title": "Variant tags: how each card was made in its set, separate from rarity",
+   "mergedAt": "2026-10-12T15:21:51-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 197,
+   "title": "Board v6: 386 reads, deep-read layer (set dives, card stories, era, pre-release, sealed gap, roundup, artist, Pokemon, tiers, anniversary, rotation aftermath, recovery, steadiest, biggest year, IR lifecycle)",
+   "mergedAt": "2026-10-12T15:18:30-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 196,
+   "title": "Reads v5: long-history reads, sealed vs chase, Pokemon Center API, PPT credit labels",
+   "mergedAt": "2026-10-12T14:38:54-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 195,
+   "title": "Re-land news tags (#78) on current main",
+   "mergedAt": "2026-10-12T13:44:34-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 193,
+   "title": "Long price history for 18,669 singles back to 2024-02-08 (tcgcsv archive via rarebox), by product id",
+   "mergedAt": "2026-10-12T13:30:48-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 192,
+   "title": "Reads v4: shorter dated price lines, breadth read, dated Pokemon facts, tiny ask moves cut",
+   "mergedAt": "2026-10-12T13:30:44-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 194,
+   "title": "Revert \"Tag news from fields already on the item. (#78)\"",
+   "mergedAt": "2026-10-12T13:27:52-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 78,
+   "title": "Tag news from fields already on the item.",
+   "mergedAt": "2026-10-12T13:13:32-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 190,
+   "title": "Map the mep set code, split dual printings, and add me2pt5 to me5 crops.",
+   "mergedAt": "2026-10-12T13:13:27-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 191,
+   "title": "Board v3: two or three file-built wordings per read type",
+   "mergedAt": "2026-10-12T10:00:21-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 189,
+   "title": "Reads board v3: diverse non-price reads + not-moved-yet lists (reads.library on)",
+   "mergedAt": "2026-10-12T09:56:07-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 188,
+   "title": "Unpublish the August daily pack mockup (moved to catchem-data-private)",
+   "mergedAt": "2026-10-12T09:32:17-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 187,
+   "title": "Nightly: run read registry, detector report, feature data; commit feature files",
+   "mergedAt": "2026-10-12T09:20:03-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 182,
+   "title": "Publish set value, rotation, releases, and listing counts",
+   "mergedAt": "2026-10-12T09:16:50-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 183,
+   "title": "Wire the read registry into the nightly feed",
+   "mergedAt": "2026-10-12T09:10:44-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 186,
+   "title": "Regenerate public bundle and feed (sparks, feed/today) from build-public-bundle + build-feed",
+   "mergedAt": "2026-10-12T08:52:55-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 185,
+   "title": "Fact-read ban check skips product name; nightly commits sparks",
+   "mergedAt": "2026-10-12T08:44:00-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 184,
+   "title": "Skip freshness for public files whose feature flag is off",
+   "mergedAt": "2026-10-12T07:25:01-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 161,
+   "title": "Map tcgcsv singles to catalogue ids by set code and number",
+   "mergedAt": "2026-10-11T21:07:56-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 181,
+   "title": "Copy official set logos into the Post Office catalogue.",
+   "mergedAt": "2026-10-11T21:04:17-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 159,
+   "title": "Score reads on days 14, 28, and 56 from the price file",
+   "mergedAt": "2026-10-11T20:16:10-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 174,
+   "title": "One take code per read, and no default Watch",
+   "mergedAt": "2026-10-11T20:13:43-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 173,
+   "title": "A published move needs at least $1 and at least 3%.",
+   "mergedAt": "2026-10-11T20:11:27-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 170,
+   "title": "chore: remove daily-research cron (leave disabled)",
+   "mergedAt": "2026-10-11T15:49:58-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 162,
+   "title": "Ordinary sealed lines, catalogue logos, and a red X when a write is empty",
+   "mergedAt": "2026-10-11T15:49:54-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 172,
+   "title": "Add Post Office catalogue logos for five Mega Evolution sets.",
+   "mergedAt": "2026-10-11T15:49:04-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 169,
+   "title": "Add a detector registry that calls the live board and does not rewrite it.",
+   "mergedAt": "2026-10-11T15:13:43-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 168,
+   "title": "Board is the same on every rebuild of one asOf",
+   "mergedAt": "2026-10-11T14:42:15-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 166,
+   "title": "email: private track record, weekly and daily drafts",
+   "mergedAt": "2026-10-11T14:36:40-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 163,
+   "title": "One read board, and prices only from that day's file",
+   "mergedAt": "2026-10-11T14:29:51-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 167,
+   "title": "Sparks use the catalog day; public-bundle allows a quiet night when no window start file exists",
+   "mergedAt": "2026-10-11T14:24:49-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 165,
+   "title": "build-feed: import cooledSet/loadRotation (nightly ReferenceError)",
+   "mergedAt": "2026-10-11T11:12:49-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 164,
+   "title": "health: allow files one day ahead of counts.json (written earlier in the same nightly run)",
+   "mergedAt": "2026-10-11T11:02:11-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 160,
+   "title": "Publish a file-backed health page, the reader list, and search shards.",
+   "mergedAt": "2026-10-10T23:31:13-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 158,
+   "title": "Record image sources by id. MSRP and pull rates stay blank.",
+   "mergedAt": "2026-10-10T22:56:47-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 157,
+   "title": "Stop the Browse-total listing estimate and score reads on days 14, 28, and 56.",
+   "mergedAt": "2026-10-10T22:27:51-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 156,
+   "title": "Public browse/search skip browse:false sealed rows; split 7 multi-art sealed SKUs by productId; recheck Crown Zenith PC ETB",
+   "mergedAt": "2026-10-10T22:19:57-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 155,
+   "title": "Verify 46 curated sealed SKUs by TCGCSV productId and flag cases/displays/sets as browse:false",
+   "mergedAt": "2026-10-10T22:05:19-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 154,
+   "title": "Add unlinked TCGCSV sealed products by their own productId, and catalogue ball-pattern cards by id.",
+   "mergedAt": "2026-10-10T21:51:00-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 153,
+   "title": "Sealed reads carry the TCGplayer id; robust eBay ask range; catalogue skips missing seed files; 30th Celebration ids",
+   "mergedAt": "2026-10-10T17:58:20-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 152,
+   "title": "PPT public display off; rarebox singles history private; charts keep every real day a read quotes",
+   "mergedAt": "2026-10-10T14:07:43-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 151,
+   "title": "Restore TCGCSV-only reads after #146: gate each read on the window it states; volume reads off; PPT-valued files private",
+   "mergedAt": "2026-10-10T13:57:38-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 150,
+   "title": "Nightly: commit data/raw/ (eBay raw copy) in both commit steps",
+   "mergedAt": "2026-10-10T13:40:18-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 149,
+   "title": "Run the full test suite on every PR and on main",
+   "mergedAt": "2026-10-10T13:40:13-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 148,
+   "title": "Artifact freshness: excuse data/raw/ until its first nightly commit",
+   "mergedAt": "2026-10-10T13:35:43-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 147,
+   "title": "Artist and set index lines: chain-linked value-weighted (sum of prices over the same cards' sum on the last real day)",
+   "mergedAt": "2026-10-10T13:33:44-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 146,
+   "title": "Move PPT market-backfill history private; public builds use TCGCSV days only",
+   "mergedAt": "2026-10-10T13:29:38-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 145,
+   "title": "Keep every nightly raw pull in full, permanently",
+   "mergedAt": "2026-10-10T13:18:44-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 144,
+   "title": "Publish a 30-day price spark for search.",
+   "mergedAt": "2026-10-10T02:03:51-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 143,
+   "title": "Artist and set index lines: gaps stay gaps, no per-day rounding, card count stated.",
+   "mergedAt": "2026-10-10T01:24:49-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 142,
+   "title": "Let the nightly unit tests pass: export run() on four suites and pace the volume fixture.",
+   "mergedAt": "2026-10-10T01:20:08-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 141,
+   "title": "Match collector shorthand without scanning every row twice.",
+   "mergedAt": "2026-10-10T01:11:20-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 140,
+   "title": "Build the morning card from tonight's reads and one release.",
+   "mergedAt": "2026-10-10T01:11:01-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 139,
+   "title": "Give every Pocket card in the Post Office its checked picture, by id.",
+   "mergedAt": "2026-10-10T01:09:24-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 138,
+   "title": "Sum a set only from singles priced on both exact days.",
+   "mergedAt": "2026-10-10T01:08:15-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 137,
+   "title": "Store every shipped read and score it only with a later price.",
+   "mergedAt": "2026-10-10T01:05:27-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 136,
+   "title": "Track multi-art sealed products as one product per art, keyed by TCGplayer productId.",
+   "mergedAt": "2026-10-10T01:02:59-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 135,
+   "title": "Count exact-day eBay listing moves and keep the read off.",
+   "mergedAt": "2026-10-10T00:59:40-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 134,
+   "title": "Link sealed products to TCGplayer by reviewed productId only, never by name.",
+   "mergedAt": "2026-10-10T00:34:39-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 133,
+   "title": "Use exact days on the main feed and label an eBay ask as an ask.",
+   "mergedAt": "2026-10-09T20:53:36-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 132,
+   "title": "Record that none of the 207 sealed products has a hard TCGplayer id.",
+   "mergedAt": "2026-10-09T20:25:42-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 131,
+   "title": "Give 32 SV promos their official picture in the catalogue.",
+   "mergedAt": "2026-10-09T10:46:21-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 130,
+   "title": "Drop backfill history that is a different printing or repeats a TCGCSV day",
+   "mergedAt": "2026-10-09T10:44:40-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 129,
+   "title": "Run-start stale check: compare the feed with the published catalog day",
+   "mergedAt": "2026-10-09T10:19:59-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 128,
+   "title": "Fix the artifact-freshness failure on the nightly workflow",
+   "mergedAt": "2026-10-09T07:22:01-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 127,
+   "title": "Give Mega Evolution Promo the ME01 logo and Energies its own.",
+   "mergedAt": "2026-10-08T17:35:59-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 126,
+   "title": "Drop a windowed read when the price is not exactly N days earlier.",
+   "mergedAt": "2026-10-08T17:27:30-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 125,
+   "title": "Commit the TCGCSV day before the guard audit and unit tests.",
+   "mergedAt": "2026-10-08T17:07:36-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 124,
+   "title": "Write the nightly read library and save the TCGCSV day first.",
+   "mergedAt": "2026-10-08T16:50:54-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 123,
+   "title": "Rebuild the public set pages every night.",
+   "mergedAt": "2026-10-08T15:25:01-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 122,
+   "title": "Store every printing and fold subset sets into the parent.",
+   "mergedAt": "2026-10-08T13:43:18-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 121,
+   "title": "Key real set logos by set id so a rebuild keeps them.",
+   "mergedAt": "2026-10-08T13:35:37-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 120,
+   "title": "Fold 30th Classic Collection into the one set.",
+   "mergedAt": "2026-10-08T13:20:08-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 119,
+   "title": "State the window percent when the last print is flat or the other way.",
+   "mergedAt": "2026-10-08T09:13:03-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 118,
+   "title": "Match the PPT test to the nightly commit list after #116.",
+   "mergedAt": "2026-10-08T05:43:01-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 117,
+   "title": "Publish the catalogue image map and the missing-id report.",
+   "mergedAt": "2026-10-07T21:41:35-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 116,
+   "title": "Drop four PPT paths the nightly never writes from its git add",
+   "mergedAt": "2026-10-07T20:54:48-07:00",
+   "repo": "Catchem-data"
+  },
+  {
+   "number": 115,
+   "title": "Keep the catalog line above the dock and read the catalogs that exist.",
+   "mergedAt": "2026-10-07T18:46:51-07:00",
+   "repo": "Catchem-data"
+  }
+ ]
+}
