@@ -17,18 +17,21 @@ export function sectionFor(read) {
   const kind = String(read?.readKind || read?.kind || "");
   return SECTION[kind] || "price";
 }
-export function itemIdOf(read) {
+export function itemIdOf(read, products = {}) {
   const sku = String(read?.sku || "");
   if (/^tcgcsv-\d+$/.test(sku)) return sku;
-  const m = String(read?.href || "").match(/^\/(?:c|p)\/(tcgcsv-\d+)$/);
-  return m ? m[1] : "";
+  const m = String(read?.href || "").match(/^\/(?:c|p)\/([a-z0-9-]+)$/i);
+  if (!m) return "";
+  if (/^tcgcsv-\d+$/.test(m[1])) return m[1];
+  const dest = String(products[m[1]] || "").match(/(tcgcsv-\d+)$/);
+  return dest ? dest[1] : "";
 }
 export const bucketOf = (id) => String((Number((String(id).match(/(\d+)/) || [])[1]) || 0) % 100).padStart(2, "0");
 
-export function buildItemReads(bundle) {
+export function buildItemReads(bundle, products = {}) {
   const out = {};
   for (const read of bundle?.reads || []) {
-    const id = itemIdOf(read);
+    const id = itemIdOf(read, products);
     if (!id || !read.id || !(read.headline || read.path)) continue;
     const b = bucketOf(id);
     out[b] ||= {};
@@ -51,7 +54,9 @@ export async function writeItemReads(root = ROOT) {
   const dir = join(root, "research/assets/public/feed/item-reads");
   await rm(dir, { recursive: true, force: true });
   await mkdir(dir, { recursive: true });
-  const byBucket = buildItemReads(bundle);
+  let products = {};
+  try { products = JSON.parse(await readFile(join(root, "research/assets/public/redirects.json"), "utf8")).products || {}; } catch { products = {}; }
+  const byBucket = buildItemReads(bundle, products);
   for (const [b, items] of Object.entries(byBucket)) await writeFile(join(dir, `${b}.json`), JSON.stringify({ asOf: bundle.asOf || "", items }));
   return Object.keys(byBucket).length;
 }

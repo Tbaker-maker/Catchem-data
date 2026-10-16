@@ -15,4 +15,5 @@ t("all reads for an item kept, newest first", out["01"]["tcgcsv-101"].map((r) =>
 t("reads with no item skipped", !JSON.stringify(out).includes('"c"'));
 t("sections", sectionFor({ readKind: "listings" }) === "supply" && sectionFor({ kind: "rarity-band" }) === "rank" && sectionFor({ readKind: "deep" }) === "price");
 t("href ids", itemIdOf({ href: "/c/tcgcsv-7" }) === "tcgcsv-7" && itemIdOf({ href: "https://x/c/tcgcsv-7" }) === "");
+t("sealed slug hrefs map through redirects", itemIdOf({ href: "/p/sv3pt5-bb" }, { "sv3pt5-bb": "/p/tcgcsv-502000" }) === "tcgcsv-502000");
 if (fail) process.exit(1); else console.log("item reads ok");
