@@ -320,6 +320,10 @@ jobs:
         # health check fails once it is 3 days behind.
         run: node scripts/write-morning-card.mjs
 
+      - name: Per-item read lookups (feed/item-reads)
+        # Small bucket files so item pages never load all of reads.json.
+        run: node scripts/write-item-reads.mjs
+
       - name: Stamp the Updated line from the price file
         # Site pages read counts.json for the Updated line. That clock is the
         # timestamp already on sealed-prices.json, not the last public bundle.
