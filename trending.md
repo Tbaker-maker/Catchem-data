@@ -1,9 +1,9 @@
-# Catch'Em Trending \u2014 2026-10-15
+# Catch'Em Trending \u2014 2026-10-16
 
 Product: Catch'Em Trending \u2014 sealed floor board
-asOf: 2026-10-15T15:30:00Z
+asOf: 2026-10-16T15:30:00Z
 
-**First play:** none. No Fill. Destined Rivals box still in play at ~10/day. Perfect Order still flowing ~29/day. Fresh solds snapshot incomplete.
+**First play:** none. No Fill. Destined Rivals box still in play at 11/day. Perfect Order still flowing ~29/day.
 
 ## Rules
 
@@ -13,12 +13,12 @@ asOf: 2026-10-15T15:30:00Z
 - Fill only if near-clock (set left play) + higher-low forming + exhaust + within 8% of the low + low is >= 8 days old
 - No FORCE in this run. No Fill locked.
 
-Markets are TCGPlayer product page pricepoints from 2026-10-15. Copies sold are last known product page 3-month snapshot (infinite-api equivalent), Unopened English. Fresh public page scrape returned incomplete sales data (0 solds visible). Carried prior solds. No solds invented. Zero-price buckets with no copies were ignored.
+Markets are TCGPlayer product page pricepoints from 2026-10-16. Destined Rivals box copies sold from public 3-month snapshot (979 total, 11/day). Other solds carried. Unopened English. No solds invented.
 
 ## Board
 
 **Destined Rivals Booster Box** \u2014 Wait
-Market $402.51. Quarter sold 963, 10/day (carried), low $244.99. Not a new cut in the last 3 days. About 64% above the low. Still in play.
+Market $402.71. Quarter sold 979, 11/day (fresh), low $244.99. Not a new cut in the last 3 days. About 64% above the low. Still in play.
 Turns into Fill if: set leaves play, the $244.99 low stops cutting and holds, solds exhaust, market within 8%.
 
 **Destined Rivals ETB** \u2014 Wait
@@ -38,11 +38,11 @@ Market $496.87. Quarter sold 141, ~2/day (carried), low $452. About 10% above, o
 Turns into Fill if: 151 stays off clock, $452 holds and is not cutting, solds exhaust, market stays within 8%.
 
 **Prismatic ETB** \u2014 Wait
-Market $123.37 (carried). Quarter sold 3035, 33/day (carried). Printed low $3.01 is junk, not a floor. Clean low recent. Still in play. Market pull incomplete.
+Market $125.05. Quarter sold 3035, 33/day (carried). Printed low $3.01 is junk, not a floor. Clean low recent. Still in play.
 Turns into Fill if: a clean low ages 8+ days, left-play, solds thin, 8% band.
 
 **Prismatic Bundle** \u2014 Wait
-Market $79.86 (carried). Quarter sold 2768, 30/day (carried), low $46.99. About 70% above. Still in play. Market pull incomplete.
+Market $79.86. Quarter sold 2768, 30/day (carried), low $46.99. About 70% above. Still in play.
 Turns into Fill if: left-play + clean higher-low 8+ days + exhaust + within 8%.
 
 **Prismatic PC-ETB** \u2014 Watch
@@ -54,7 +54,7 @@ Market $298.07. Quarter sold 439, 5/day (carried). Low $270 not a new cut. About
 Turns into Fill if: set leaves play, the $270 low holds 8+ days, solds thin, market within 8%.
 
 **Perfect Order Booster Box** \u2014 Wait
-Market $175.40 (carried). Quarter sold 2710, 29/day (carried), low $149.99. About 17% above. Still in play. Flow. Market pull incomplete.
+Market $175.40. Quarter sold 2710, 29/day (carried), low $149.99. About 17% above. Still in play. Flow.
 Turns into Fill if: set leaves play, daily solds dry up, higher-low 8+ days, within 8% of that low.
 
 **Perfect Order ETB** \u2014 Wait
