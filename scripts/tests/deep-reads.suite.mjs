@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { valueOn } from "../lib/deep-reads.mjs";
+import { valueOn, rarityTierReports } from "../lib/deep-reads.mjs";
 import { realLabel } from "../lib/deep-reads-2.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
@@ -37,6 +37,19 @@ export async function run() {
   t("no two reads share a link, so the Feed keeps every one", new Set(keys).size === keys.length);
   const cardKinds = new Set(["card", "recovery", "slump", "printings", "samelabel", "chase", "artist", "pokemon", "steady", "bigyear"]);
   t("card reads never mention sealed data", deep.filter((r) => cardKinds.has(r.deep)).every((r) => ![r.headline, ...r.lines, r.source].some((s) => /\b(sealed|booster|elite trainer box|etb)\b/i.test(String(s)) && !/singles only/.test(String(s)))));
+  t("a down year does not call the smallest drop the best", (() => {
+    const asOf = "2026-10-16";
+    const sets = { sets: [{ slug: "me1", era: "Mega Evolution" }] };
+    const cards = [];
+    for (let i = 0; i < 8; i += 1) {
+      cards.push({ setSlug: "me1", rarity: "Illustration Rare", pts: [["2025-10-16", 10], [asOf, 8]] });
+      cards.push({ setSlug: "me1", rarity: "Holo Rare", pts: [["2025-10-16", 10], [asOf, 5]] });
+    }
+    const hit = rarityTierReports(cards, { asOf, sets })[0];
+    return hit && /every rarity fell/.test(hit.headline) && /IR cards fell least, down 20%/.test(hit.headline) && !/did best/.test(hit.headline);
+  })());
+  const mega = rows.find((r) => r.id === "deep-tiers-mega-evolution");
+  t("the published Mega Evolution rarity line does not say did best on a down year", mega && /fell least/.test(mega.headline) && !/did best/.test(mega.headline));
   t("no 'peer' jargon on the board", rows.every((r) => ![r.headline, r.path, r.source, r.why, ...(r.lines || [])].some((s) => /\bpeers?\b/i.test(String(s || "")))));
   t("new deep types are on the board", ["printings", "samelabel", "chase", "slump"].every((k) => deep.some((r) => r.deep === k)));
   t("an IR or SIR label only on a Scarlet & Violet or later card", deep.filter((r) => ["printings", "samelabel", "chase", "slump"].includes(r.deep)).every((r) => r.lines.every((l) => !/Illustration Rare/.test(l) || !/(Evolving Skies|Team Up|Hidden Fates|Cosmic Eclipse|Brilliant Stars)/.test(l))));
