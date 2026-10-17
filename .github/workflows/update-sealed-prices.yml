@@ -346,6 +346,13 @@ jobs:
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
         run: node scripts/write-track-record.mjs
 
+      - name: Stamp signal chips
+        # Chip words only. The cutoffs stay in catchem-data-private.
+        env:
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+          SIGNAL_STAMP_READS: "1"
+        run: node scripts/stamp-signal-chips.mjs
+
       - name: Commit the rebuilt feed
         run: |
           git config user.name "catchem-bot"
@@ -360,7 +367,7 @@ jobs:
             git clean -fdq -- research/assets/public/sets research/assets/public/buckets research/assets/public/artists || true
           fi
           # The track-record path is the public stub. Do not add data/private/.
-          git add research/assets/public/reads.json research/assets/public/today.json research/assets/public/feed/ research/assets/public/counts.json research/assets/public/sparks research/assets/public/track-record.json research/assets/public/set-value research/assets/public/rotation-status.json research/assets/public/releases.json research/assets/public/listings-counted.json
+          git add research/assets/public/reads.json research/assets/public/today.json research/assets/public/feed/ research/assets/public/counts.json research/assets/public/sparks research/assets/public/track-record.json research/assets/public/set-value research/assets/public/rotation-status.json research/assets/public/releases.json research/assets/public/listings-counted.json research/assets/public/signal-chips.json
           if git diff --cached --name-only -- data/private | grep -q .; then
             echo "private scores must not be committed here"
             exit 1

@@ -194,6 +194,13 @@ console.log("── 30-day sparks ──");
   t("spark suite", n === 0, `${n} failed`);
 }
 
+console.log("── signal chips ──");
+{
+  const { run } = await import("./signal-chips.suite.mjs");
+  const n = await run();
+  t("signal chips suite", n === 0, `${n} failed`);
+}
+
 console.log("── custom reads ──");
 {
   const a = await import("./custom-reads.suite.mjs");
