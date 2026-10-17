@@ -14,7 +14,7 @@
     {
       "id": "buy-now",
       "kind": "advice",
-      "pattern": "\\b(buy|sell|grab|dump) (it |them |this |these |one )?(now|today|right now|before it's gone|before its gone)\\b",
+      "pattern": "\\b(buy|sell|grab|dump) (it |them |this |these |one )?(now|today|right now|before it's gone|before its gone)\\b|\\b(now is the|good|great|best) time to (buy|sell)\\b|\\btime to (buy|sell)\\b",
       "reason": "Tells people to buy or sell now. Say what the price did instead."
     },
     {
