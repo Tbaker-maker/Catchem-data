@@ -92,50 +92,98 @@ const NM_PRICE = new RegExp(`(${MONEY})\\s+NM\\b`, "g");
 const plain = (s) => s.replace(/\([^()]*\)|\[[^\]]*\]/g, " ");
 const lastAt = (re, s) => { let at = -1; for (const m of s.matchAll(re)) at = m.index; return at; };
 
-function sealedLead(prefix, lastEnd) {
+// subject: the row itself is a sealed product (its sku or name says so). Then a
+// price with no card or sealed word in its sentence is the product's own price.
+function sealedLead(prefix, lastEnd, subject = false) {
   const lead = plain(prefix.slice(lastEnd));
   const tail = lead.split(/[:.;]\s|:$/).pop();
   if (/rip value\s*$/i.test(tail)) return false;
   const card = lastAt(CARD_WORD, tail), seal = lastAt(SEALED_WORD, tail);
   if (card >= 0 || seal >= 0) return seal > card;
+  const sentence = plain(prefix).split(/[.;]\s/).pop();
+  const sc = lastAt(CARD_WORD, sentence), ss = lastAt(SEALED_WORD, sentence);
+  if (sc >= 0 || ss >= 0) return ss > sc;
+  if (subject) return true;
   const all = plain(prefix);
   return lastAt(SEALED_WORD, all) > lastAt(CARD_WORD, all);
 }
 
-export function sealedNmHits(text) {
+export function sealedNmHits(text, subject = false) {
   const s = String(text ?? ""), hits = [];
   let lastEnd = 0;
   for (const m of s.matchAll(NM_PRICE)) {
-    if (sealedLead(s.slice(0, m.index), lastEnd)) hits.push(m.index);
+    if (sealedLead(s.slice(0, m.index), lastEnd, subject)) hits.push(m.index);
     lastEnd = m.index + m[0].length;
   }
   return hits;
 }
 
-export function dropSealedNm(text) {
+export function dropSealedNm(text, subject = false) {
   const s = String(text ?? "");
-  const hits = new Set(sealedNmHits(s));
+  const hits = new Set(sealedNmHits(s, subject));
   if (!hits.size) return s;
   return s.replace(NM_PRICE, (m, amt, at) => (hits.has(at) ? amt : m));
 }
 
-export function scrubMixed(node) {
+// A row is about a sealed product when its sku is one (data/sealed-products.json,
+// or a catalogue id passed in) or its name names one ("3 Pack Blister", "Booster Box").
+const SEALED_NAME = new RegExp(SEALED_WORD.source, "i");
+export function sealedSubject(row, sealedIds = new Set()) {
+  if (!row || typeof row !== "object") return false;
+  if (row.sku && sealedIds.has(String(row.sku))) return true;
+  const name = String(row.name || "");
+  return Boolean(name) && SEALED_NAME.test(plain(name)) && !/\bsingles?\b|\bcards?\b/i.test(name);
+}
+
+const fmtUsd = (n) => `$${Number(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+// prices[] on a sealed row: drop the condition from any amount the row's text
+// prints without NM (the product's own price). Card prices keep theirs.
+function scrubPrices(row) {
+  if (!Array.isArray(row.prices)) return 0;
+  const text = JSON.stringify([row.headline, row.path, row.lines, row.lineCards]);
   let n = 0;
-  if (Array.isArray(node)) { node.forEach((x, i) => { if (typeof x === "string") { const y = dropSealedNm(x); if (y !== x) { node[i] = y; n += 1; } } else n += scrubMixed(x); }); return n; }
-  if (!node || typeof node !== "object") return 0;
-  for (const [k, v] of Object.entries(node)) {
-    if (SKIP.has(k)) continue;
-    if (typeof v === "string") { const y = dropSealedNm(v); if (y !== v) { node[k] = y; n += 1; } }
-    else n += scrubMixed(v);
+  for (const p of row.prices) {
+    if (!p || typeof p !== "object" || !(p.condition || /near mint/i.test(p.label || ""))) continue;
+    const a = fmtUsd(p.amount);
+    const bare = new RegExp(`${a.replace(/[$.]/g, "\\$&")}(?!\\d)(?!\\s+NM\\b)`);
+    const withNm = new RegExp(`${a.replace(/[$.]/g, "\\$&")}\\s+NM\\b`);
+    if (bare.test(text) && !withNm.test(text)) { delete p.condition; delete p.label; n += 1; }
   }
   return n;
 }
 
-export function mixedLeaks(node, out = [], where = "") {
-  if (typeof node === "string") { if (sealedNmHits(node).length) out.push(`${where}: ${node.slice(0, 120)}`); return out; }
-  if (Array.isArray(node)) { node.forEach((x) => mixedLeaks(x, out, where)); return out; }
-  if (node && typeof node === "object") for (const [k, v] of Object.entries(node)) if (!SKIP.has(k)) mixedLeaks(v, out, where);
+export function scrubMixed(node, sealedIds = new Set(), subject = false) {
+  let n = 0;
+  if (Array.isArray(node)) { node.forEach((x, i) => { if (typeof x === "string") { const y = dropSealedNm(x, subject); if (y !== x) { node[i] = y; n += 1; } } else n += scrubMixed(x, sealedIds, subject); }); return n; }
+  if (!node || typeof node !== "object") return 0;
+  const here = subject || sealedSubject(node, sealedIds);
+  for (const [k, v] of Object.entries(node)) {
+    if (SKIP.has(k) || k === "prices") continue;
+    if (typeof v === "string") { const y = dropSealedNm(v, here); if (y !== v) { node[k] = y; n += 1; } }
+    else n += scrubMixed(v, sealedIds, here && !(v && typeof v === "object" && !Array.isArray(v) && (v.sku || v.name)));
+  }
+  if (here && node.prices) n += scrubPrices(node);
+  return n;
+}
+
+export function mixedLeaks(node, out = [], where = "", sealedIds = new Set(), subject = false) {
+  if (typeof node === "string") { if (sealedNmHits(node, subject).length) out.push(`${where}: ${node.slice(0, 120)}`); return out; }
+  if (Array.isArray(node)) { node.forEach((x) => mixedLeaks(x, out, where, sealedIds, subject)); return out; }
+  if (node && typeof node === "object") {
+    const here = subject || sealedSubject(node, sealedIds);
+    for (const [k, v] of Object.entries(node)) if (!SKIP.has(k) && k !== "prices") mixedLeaks(v, out, where, sealedIds, here && !(v && typeof v === "object" && !Array.isArray(v) && (v.sku || v.name)));
+  }
   return out;
+}
+
+export async function sealedIdsFor(root) {
+  try {
+    const list = JSON.parse(await readFile(join(root, "data/sealed-products.json"), "utf8"));
+    const ids = new Set();
+    for (const p of list) { if (p.id) ids.add(String(p.id)); if (p.tcgPlayerId) ids.add(`tcgcsv-${p.tcgPlayerId}`); }
+    return ids;
+  } catch { return new Set(); }
 }
 
 async function jsonFiles(dir) {
@@ -157,13 +205,14 @@ export function publishedFiles(root) {
 
 export async function scrubPublished(root) {
   let files = 0, rows = 0;
+  const ids = await sealedIdsFor(root);
   for (const path of await publishedFiles(root)) {
     let text;
     try { text = await readFile(path, "utf8"); } catch { continue; }
     if (!SEALED_NM.test(text) && !text.includes("→")) continue;
     let doc;
     try { doc = JSON.parse(text); } catch { continue; }
-    const n = scrubTree(doc) + scrubMixed(doc);
+    const n = scrubTree(doc) + scrubMixed(doc, ids);
     if (!n) continue;
     const pretty = /^\{\n /.test(text);
     await writeFile(path, (pretty ? JSON.stringify(doc, null, 1) : JSON.stringify(doc)) + (text.endsWith("\n") ? "\n" : ""));
