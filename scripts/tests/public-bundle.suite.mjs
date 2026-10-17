@@ -95,7 +95,7 @@ export async function run() {
   const capped = selectFeedReads([...sameSet, other], 12);
   t("at most two reads from one set", capped.filter((row) => row.set === "ME: Ascended Heroes").length <= 2 && new Set(capped.map((row) => whyPattern(row.why))).size === capped.length);
   const dropped = rankReads([
-    { type: "mover", price: 10, headline: "This is a buy.", set: "A", score: 9 },
+    { type: "mover", price: 10, headline: "You should buy this now.", set: "A", score: 9 },
     { type: "mover", price: 10, headline: "Pikachu is up 4% over 7 days, from $10 to $10.40.", set: "A", score: 2 },
   ], 5);
   t("a banned headline never ranks", dropped.length === 1 && !BANNED.test(dropped[0].headline));

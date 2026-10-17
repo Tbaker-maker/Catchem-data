@@ -1,7 +1,9 @@
 // Public catalog helpers. Prices here are TCGplayer market or eBay asks.
 // Never PPT keys (tcgMarket, unopenedPrice, pptMarket, priceRatio).
+import { banGuard } from "./copy-rules.mjs";
 
-export const BANNED = /\b(buys?|sells?|selling|holds?|holding|floors?|targets?|plays?|picks?|bullish|bearish|roi|invest(?:ing|ment|or)?s?|crypto|nfts?|web3|dsk|tickers?|tapes?)\b|\bspread signals\b|\bsupply injection\b|\bon the tape\b/i;
+// Shared advice-phrase rules (rules/advice-phrases.json). FILLER_BAN below is a style rule.
+export const BANNED = banGuard("public bundle");
 
 export function pretty(name) {
   return String(name ?? "")

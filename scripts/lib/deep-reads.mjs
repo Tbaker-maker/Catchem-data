@@ -6,6 +6,7 @@
 // before that day, and only if that point is at most 8 days older (the long
 // archive keeps change-only points with a 7-day heartbeat). Nothing is filled.
 
+import { banGuard } from "./copy-rules.mjs";
 import { money } from "./public-bundle.mjs";
 import { monthDay } from "./takes.mjs";
 import { markCited } from "./board-mix.mjs";
@@ -16,7 +17,7 @@ import { barLabel, cardTitle, tcgAmount } from "./card-face.mjs";
 const usd = (n) => tcgAmount(n, money);
 
 export const DEEP_TAG = "v3";
-const BANNED = /\b(buy|buys|buying|sell|sells|selling|hold|holds|holding|support|resistance|bottom|printed|play|plays|playing|target|invest|investing|investment|crypto|token|moon|hodl|pump|dump|nft)\b/i;
+const BANNED = banGuard("deep reads");
 const ok = (s) => !!s && !BANNED.test(s) && !/[\u2014\u2013]/.test(s);
 const pctOf = (a, b) => ((b - a) / a) * 100;
 const sgn = (n) => `${n >= 0 ? "up" : "down"} ${Math.abs(Math.round(n))}%`;

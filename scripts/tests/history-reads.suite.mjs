@@ -1,3 +1,4 @@
+import { hasBannedWord } from "../lib/copy-rules.mjs";
 import { nearestPoint, extremeRead, windowRead, backToRead, setReads, historyReads, dateLabel } from "../lib/history-reads.mjs";
 import { parsePcPreordersApi } from "../lib/news-sources.mjs";
 import { listingReads, sealedChaseReads } from "../lib/board-mix.mjs";
@@ -31,7 +32,7 @@ export async function run() {
   t("set read counts exactly", sr.length === 1 && sr[0].headline.includes("6 of 12 priced cards up 10% or more, 0 down"));
   const all = historyReads(cards, asOf);
   t("history reads carry a real start date and the hist tag", Object.values(all.picked).flat().every((r) => r.board === "hist" && /^\d{4}-\d{2}-\d{2}$/.test(r.startDate)));
-  t("no banned words or em dashes", Object.values(all.picked).flat().every((r) => !/[\u2014\u2013]/.test(r.headline) && !/\b(buy|sell|hold|target|bottom)\b/i.test(r.headline)));
+  t("no banned words or em dashes", Object.values(all.picked).flat().every((r) => !/[\u2014\u2013]/.test(r.headline) && !hasBannedWord(r.headline)));
 
   const api = JSON.stringify({ article: { updated_at: "2026-10-05T16:13:37Z", body: "<table><tbody><tr><td>Item Name</td><td>Region Availability</td><td>Estimated Ship Date</td></tr><tr><td>Pokémon TCG: Test Booster Bundle</td><td>US</td><td>Late October 2026</td></tr></tbody></table>" } });
   const pc = parsePcPreordersApi(api);

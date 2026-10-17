@@ -1,9 +1,13 @@
 // Lag, supply, and group reads. Every price is a point already on a series.
 // A missing pack or box price drops the set. Two prices that disagree are
 // recorded and not averaged.
+import { banGuard } from "./copy-rules.mjs";
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const BANNED_LINE = /\b(stored|last print|printed|bigger last step|buy|sell|hold|crypto)\b/i;
+const BANNED = banGuard("extra reads");
+// Old print wording. Style rule, not a money rule.
+const STYLE_LINE = /(stored|last print|printed|bigger last step)/i;
+const BANNED_LINE = { test: (s) => STYLE_LINE.test(s) || BANNED.test(s) };
 
 export function monthDay(iso) {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso || ""));

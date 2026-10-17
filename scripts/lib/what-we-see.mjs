@@ -1,10 +1,11 @@
 // One plain sentence per item, only from fields on the item's facts.
 // No hype, no advice words, no em dashes. Empty when nothing is backed.
+import { banGuard } from "./copy-rules.mjs";
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const day = (iso) => (/^\d{4}-\d{2}-\d{2}/.test(iso || "") ? `${months[Number(iso.slice(5, 7)) - 1]} ${Number(iso.slice(8, 10))}, ${iso.slice(0, 4)}` : "");
 const money = (n) => "$" + Number(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-export const BANNED = /\b(buy|sell|hold|support|resistance|bottom|printed|play|target|invest|stack|load up|supply)\b/i;
+export const BANNED = banGuard("what we see", { house: true });
 
 export function whatWeSee(f) {
   if (!f || typeof f !== "object") return "";

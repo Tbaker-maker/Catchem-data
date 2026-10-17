@@ -1,6 +1,7 @@
 // Five lines, only from files already written. The supply line stays off with the flag.
+import { banGuard } from "./copy-rules.mjs";
 
-const COPY_BAN = /\b(resistance|support|breakout|bottom|cheap|crash|buys?|sells?|selling|holds?|holding|printed)\b/i;
+const COPY_BAN = banGuard("morning card");
 
 export function pickMorning({ reads = [], news = [], asOf = "", supplyOn = false } = {}) {
   const priced = (reads || []).filter((read) => Number(read?.price) > 0 && Number.isFinite(Number(read?.changePct)) && read.headline);

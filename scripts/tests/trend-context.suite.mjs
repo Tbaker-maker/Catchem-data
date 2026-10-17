@@ -85,7 +85,7 @@ export async function run() {
 
   const banned = "Up 5 of the last 6 weeks. Up 10% from Sep 1 to Oct 13.";
   t("clean line passes", publicTrendOk(banned));
-  t("banned words and a dash fail", !publicTrendOk("Do not buy. Up 10% from Sep 1 to Oct 13.") && !publicTrendOk("listings supply fell") && !publicTrendOk("Up 10% \u2014 from Sep 1."));
+  t("banned words and a dash fail", !publicTrendOk("Buy now. Up 10% from Sep 1 to Oct 13.") && !publicTrendOk("listings supply fell") && !publicTrendOk("Up 10% \u2014 from Sep 1."));
 
   const long = [];
   for (let i = 0; i <= 40; i += 1) {

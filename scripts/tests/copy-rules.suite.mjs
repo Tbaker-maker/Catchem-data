@@ -1,40 +1,54 @@
 import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { cleanText, cleanDoc, enforceCopy, isClean, REPLACEMENTS } from "../lib/copy-rules.mjs";
+import { ADVICE, ALLOWED, BANNED, cleanText, cleanDoc, enforceCopy, flagLine, formatFlag, isClean } from "../lib/copy-rules.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 
 export async function run() {
   let fail = 0;
   const t = (name, ok, extra = "") => { console.log(`  ${ok ? "ok " : "FAIL"} ${name}${ok ? "" : ` ${extra}`}`); if (!ok) fail += 1; };
-  const idDoc = { id: "scan-pattern-forming-breakout-tcgcsv-84658", key: "support-bottom", slug: "hold-target", url: "https://x.test/buy", file: "data/printed/play.json", headline: "Up 4% since Oct 1" };
-  t("ids, keys, slugs, urls and paths with banned words pass", cleanDoc(idDoc).errors.length === 0 && cleanDoc(idDoc).fixes.length === 0);
-  t("a machine id in a visible field is not checked", isClean("scan-pattern-forming-breakout-tcgcsv-84658"));
-  t("whole words only: words inside other words pass", isClean("Holographic playmat from Bottomley, a supplyless Targetless line") && isClean("Upholds its range") === true);
-  t("breakout is rewritten", cleanText("A breakout this week").text === "A climb past its range this week");
-  t("bottom is rewritten", cleanText("Near the bottom of its year").text === "Near the low of its year");
-  t("support and resistance are rewritten", cleanText("At support").text === "At recent low range" && cleanText("At resistance").text === "At recent high range");
-  t("printed is rewritten", cleanText("The printed price").text === "The recorded price");
-  t("an em dash becomes a comma", cleanText("Up 4% \u2014 since Oct 1").text === "Up 4%, since Oct 1");
-  t("supply alone becomes listings counted", cleanText("supply fell").text === "listings counted fell");
-  for (const w of ["buy", "sell", "hold", "target", "invest", "play", "stack", "load up", "crypto"]) {
-    const r = cleanText(`time to ${w} now`, { field: "why", id: "r-1" });
-    t(`${w} with no replacement fails and names the field and read`, r.errors.length === 1 && /field "why"/.test(r.errors[0]) && /read r-1/.test(r.errors[0]));
-  }
-  t("No data fails", cleanText("No data yet", { field: "body" }).errors.length === 1);
-  let thrown = "";
-  try { enforceCopy({ reads: [{ id: "x-9", why: "a good buy" }] }, "reads"); } catch (e) { thrown = e.message; }
-  t("enforceCopy throws with the field and read id", /field "why" of read x-9/.test(thrown));
-  const fixed = enforceCopy({ reads: [{ id: "x-8", why: "A breakout from the bottom" }] }, "reads");
-  t("enforceCopy rewrites and keeps going", fixed.reads[0].why === "A climb past its range from the low");
-  t("every replacement is itself clean", Object.values(REPLACEMENTS).every((r) => isClean(r)));
 
-  // Today's real board: report visible-text hits, never fail on them here.
+  // The one shared list.
+  const raw = JSON.parse(await readFile(join(ROOT, "rules/advice-phrases.json"), "utf8"));
+  t("the list lives in rules/advice-phrases.json", JSON.stringify(raw) === JSON.stringify(ADVICE));
+  t("every rule has an id, pattern and reason", ADVICE.rules.every((r) => r.id && r.pattern && r.reason && new RegExp(r.pattern, "i")));
+  t("rule ids are unique", new Set(ADVICE.rules.map((r) => r.id)).size === ADVICE.rules.length);
+  t("no reason uses a dash", ADVICE.rules.every((r) => !/[\u2014\u2013]/.test(r.reason)));
+  for (const a of ["Buy", "Shop", "Sell your cards", "price target", "Buy on TCGplayer", "Buy on eBay"]) t(`"${a}" is on the allowed list and passes`, ALLOWED.includes(a) && isClean(a));
+
+  // Shopping and button words always pass.
+  for (const s of ["Buy on TCGplayer", "Buy on eBay", "Shop sealed", "Sell your cards", "Set a price target", "Looks like a buy", "Holo rare", "Sun & Moon booster box", "Best Buy restock", "Hold to see the chart", "Support Box", "Up 4% from Oct 1 to Oct 8"]) {
+    t(`passes: ${s}`, isClean(s), JSON.stringify(flagLine(s)));
+  }
+  // Money advice, crypto words and dashes are flagged.
+  const bad = { "Buy now": "buy-now", "Sell it today": "buy-now", "You should buy this box": "you-should", "you need to sell": "you-should", "Load up on ETBs": "load-up", "Guaranteed to climb": "guaranteed", "You can't lose": "cant-lose", "you can\u2019t lose": "cant-lose", "Headed to the moon": "to-the-moon", "Pay in crypto": "crypto", "Bitcoin and NFTs": "crypto", "Up 4% \u2014 since Oct 1": "dash" };
+  for (const [s, rule] of Object.entries(bad)) {
+    const f = flagLine(s);
+    t(`flags ${rule}: ${s}`, f.length >= 1 && f[0].rule === rule && f[0].line === s && f[0].reason.length > 10);
+  }
+  t("a button label inside a line is not what trips it", isClean("Buy on eBay or Buy on TCGplayer") && !isClean("Buy on eBay. Buy now."));
+
+  // Never rewritten.
+  const r = cleanText("Up 4% \u2014 buy now", { field: "why", id: "r-1" });
+  t("cleanText never rewrites", r.text === "Up 4% \u2014 buy now" && r.fixes.length === 0);
+  t("each flag names the line, field, read and reason", r.errors.length === 2 && r.errors.every((e) => e.includes('"Up 4% \u2014 buy now"') && e.includes('field "why"') && e.includes("read r-1")));
+  t("formatFlag carries the reason", formatFlag(r.flags[0]).endsWith(r.flags[0].reason));
+  const doc = { reads: [{ id: "x-8", why: "A breakout from the bottom" }] };
+  t("old jargon words pass and nothing is swapped", enforceCopy(doc, "reads") === doc && doc.reads[0].why === "A breakout from the bottom");
+  let thrown = "";
+  try { enforceCopy({ reads: [{ id: "x-9", why: "You should sell now" }] }, "reads"); } catch (e) { thrown = e.message; }
+  t("enforceCopy throws with the line, field, read and reason", /flagged "You should sell now" in field "why" of read x-9/.test(thrown) && /Tells people/.test(thrown));
+  const idDoc = { id: "scan-pattern-forming-breakout-tcgcsv-84658", key: "buy-now", slug: "load-up", url: "https://x.test/buy-now", file: "data/crypto/play.json", headline: "Up 4% since Oct 1" };
+  t("ids, keys, slugs, urls and paths are machine text", cleanDoc(idDoc).errors.length === 0);
+  t("house rules: supply and No data are flagged in reads", cleanText("supply fell").errors.length === 1 && cleanText("No data yet").errors.length === 1);
+  t("BANNED.test is a drop-in guard", BANNED.test("load up") === true && BANNED.test("Buy on eBay") === false);
+
+  // Today's real board: report flags, never fail on them here.
   const reads = JSON.parse(await readFile(join(ROOT, "research/assets/public/reads.json"), "utf8"));
-  const r = cleanDoc(reads);
-  console.log(`  reads.json visible-text hits: ${r.fixes.length} rewrites, ${r.errors.length} hard`);
-  for (const h of [...r.fixes.map((f) => `rewrite ${f.id} ${f.field}: ${f.from} -> ${f.to}`), ...r.errors].slice(0, 40)) console.log(`    ${h}`);
+  const live = cleanDoc(reads);
+  console.log(`  reads.json visible-text flags: ${live.errors.length}`);
+  for (const h of live.errors.slice(0, 40)) console.log(`    ${h}`);
   return fail;
 }
 

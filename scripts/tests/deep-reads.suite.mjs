@@ -1,3 +1,4 @@
+import { hasBannedWord } from "../lib/copy-rules.mjs";
 import { readFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -5,7 +6,7 @@ import { valueOn, rarityTierReports } from "../lib/deep-reads.mjs";
 import { realLabel } from "../lib/deep-reads-2.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
-const BANNED = /\b(buy|sell|hold|held|holding|support|resistance|bottom|printed|play|target|invest|moon|pump|dump|hodl|crypto)\b/i;
+const BANNED = { test: (x) => hasBannedWord(x) };
 
 export async function run() {
   let fail = 0;

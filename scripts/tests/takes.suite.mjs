@@ -26,13 +26,13 @@ export async function run() {
     avoid: "Avoid for now",
     stretched: "Looks stretched",
   }));
-  t("the regex still matches buy and for now", BANNED.test("Looks like a buy") && FILLER_BAN.test("Avoid for now") && BANNED.test("This is a buy.") && FILLER_BAN.test("Check back for now."));
+  t("the shared rules catch advice and the filler list catches for now", BANNED.test("Buy now") && !BANNED.test("Looks like a buy") && FILLER_BAN.test("Avoid for now") && BANNED.test("You should buy this.") && FILLER_BAN.test("Check back for now."));
   for (const label of LABELS) t(`exact label is exempt: ${label}`, lineBanned(label) === false && bannedWord(label) === false && fillerBanned(label) === false);
   t("the footer is exempt", lineBanned(TAKE_FOOTER) === false && TAKE_FOOTER === "A take is our read of the numbers, not advice.");
-  t("a longer buy sentence stays banned", lineBanned("Looks like a buy today.") && lineBanned("This is a buy.") && bannedWord("Looks like a buy."));
+  t("an advice sentence stays banned", lineBanned("Buy now, it is up.") && lineBanned("You should buy this.") && bannedWord("Load up today."));
   t("a longer for-now sentence stays banned", lineBanned("Avoid for now.") && lineBanned("Check back for now.") && fillerBanned("Avoid for now, please."));
   t("Watch this is not the exempt label", TAKE_LABELS.watch === "Watch" && lineBanned("Watch this.") === false && lineBanned("Watch") === false);
-  t("only the five labels and the footer are exempt", [TAKE_FOOTER, ...LABELS].every((line) => lineBanned(line) === false) && lineBanned("Looks like a buy today.") === true && lineBanned("Not a take.") === false);
+  t("only the five labels and the footer are exempt", [TAKE_FOOTER, ...LABELS].every((line) => lineBanned(line) === false) && lineBanned("Buy it now.") === true && lineBanned("Not a take.") === false);
 
   t("up at least 8% and $1, not a high", takeCode({ from: 10, to: 12, sixMonthHigh: false }) === "up");
   t("the same move at a proven 6-month high is stretched", takeCode({ from: 10, to: 12, sixMonthHigh: true }) === "stretched");
@@ -57,7 +57,7 @@ export async function run() {
   t("avoid keeps its label and does not say because", avoid && avoid.code === "avoid" && avoid.label === "Avoid for now" && avoid.lines.includes("Avoid for now") && !/\bbecause\b/i.test(avoid.lines.join(" ")));
   const opposite = takeLayout({ from: 10, to: 12, start: "2026-10-03", end: "2026-10-10", listings: downListings });
   t("opposite price and listings show both numbers and no because", opposite && opposite.prices.includes("$12.00") && opposite.listings === "eBay listings 80 to 50 (Oct 3 to Oct 10)." && opposite.lines.indexOf(opposite.prices) < opposite.lines.indexOf(opposite.listings) && !/\bbecause\b/i.test(opposite.lines.join(" ")) && !/Browse|listingCount|browseTotal/.test(opposite.lines.join(" ")));
-  t("a banned why drops the layout", takeLayout({ from: 10, to: 12, start: "2026-10-03", end: "2026-10-10", why: "This is a buy." }) === null);
+  t("a banned why drops the layout", takeLayout({ from: 10, to: 12, start: "2026-10-03", end: "2026-10-10", why: "You should buy this now." }) === null);
   t("listing sentence is the filtered pair only", listingSentence(80, 50, "2026-10-03", "2026-10-10") === "eBay listings 80 to 50 (Oct 3 to Oct 10).");
 
   const machampFrom = JSON.parse(await readFile(join(ROOT, "data/history/tcgcsv-daily/2026-10-03.json"), "utf8")).prices.find((row) => row.id === 124072).market;

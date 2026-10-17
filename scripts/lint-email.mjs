@@ -14,8 +14,8 @@ export function lintEmail(name, html) {
     .replace(/<head>[\s\S]*?<\/head>/i, "")
     .replace(/<style[\s\S]*?<\/style>/gi, "")
     .replace(/<[^>]+>/g, " ");
-  for (const e of cleanText(text, { field: "email body" }).errors) errors.push(`${name}: ${e}`);
-  for (const e of cleanText(subject, { field: "subject" }).errors) errors.push(`${name}: ${e}`);
+  for (const e of cleanText(text, { field: "email body", house: false }).errors) errors.push(`${name}: ${e}`);
+  for (const e of cleanText(subject, { field: "subject", house: false }).errors) errors.push(`${name}: ${e}`);
   if (html.includes("\u2014") || html.includes("\u2013")) errors.push(`${name}: em dash`);
   if (EMOJI.test(subject)) errors.push(`${name}: emoji in subject`);
   if (/tcgcsv-|\/data\//i.test(html.replace(/https:\/\/catchemtcg\.com\/data\/editor\/tcg\/[A-Za-z0-9._/-]+/g, "").replace(/https:\/\/catchemtcg\.com\/[pc]\/tcgcsv-\d+/g, ""))) errors.push(`${name}: internal path`);

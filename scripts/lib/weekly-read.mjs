@@ -1,7 +1,10 @@
 // Fixed weekly outline. Public file only. Track record lives in catchem-data-private.
+import { banGuard } from "./copy-rules.mjs";
 import { BOARD_MAX, POST_CAP, capPost } from "./second-library.mjs";
 
-const BANNED = /\b(buy|hold|plays|targets|bullish|calls|picks|floor|support line|crash|hit rate|hits|misses)\b/i;
+const BANNED = banGuard("weekly outline");
+// Track-record wording stays out of the outline. Style rule, not a money rule.
+const TRACK_WORDS = /(calls|picks|hit rate|hits|misses)/i;
 
 export function dedupeNames(names) {
   const seen = new Set();
@@ -72,7 +75,7 @@ export function weeklyMarkdown(doc) {
     parts.push("", "## Sealed line and chase line", "These are two lines. They are not one number.", lines);
   }
   const md = parts.join("\n") + "\n";
-  if (BANNED.test(md)) throw new Error("weekly outline used a banned word");
+  if (BANNED.test(md) || TRACK_WORDS.test(md)) throw new Error("weekly outline broke a copy rule (see the [copy-rules] line above)");
   if (md.includes("\u2014") || md.includes("\u2013")) throw new Error("weekly outline used a dash");
   const capped = capPost(md, POST_CAP);
   if (capped.length > POST_CAP) throw new Error("weekly post is over 1800 characters");

@@ -3,6 +3,7 @@
 // A present-day match and any public line use own days only.
 // Script only. No invented prices. Same hit rule as scripts/lib/tracker.mjs.
 
+import { banGuard } from "./copy-rules.mjs";
 import { withFill } from "./fill-history.mjs";
 import { addDays, backtest, changeOver, HIT_PCT, HORIZONS, MIN_N } from "./tracker.mjs";
 
@@ -25,7 +26,8 @@ export const RELIST_PCT = 30;
 
 const DAY = 86400000;
 
-export const PUBLIC_BANNED = /\b(buy|buys|buying|sell|sells|selling|hold|holds|holding|support|resistance|bottom|printed|play|plays|playing|target|invest\w*|crypto|token|moon|hodl|pump|dump|nft|stack|load up|manipulation)\b|\bsupply\b|[\u2014\u2013]/i;
+// Shared advice-phrase rules (rules/advice-phrases.json), dashes included.
+export const PUBLIC_BANNED = banGuard("year patterns", { house: true });
 
 const KEY_ORDER = ["kind", "set_age", "rotation_stage", "rotation_timing", "path", "listings_14d", "crowd"];
 

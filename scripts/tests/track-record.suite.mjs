@@ -71,20 +71,22 @@ export async function run() {
 
   let banned = false;
   try {
-    buildTrackRecord([{ id: "b", sku: "tcgcsv-9", name: "Example", asOf: "2026-08-01", take: "up" }], { "tcgcsv-9": { "2026-08-15": 12 } }, "2026-10-01", { "tcgcsv-9": { "2026-08-01": { market: 10, source: "time to buy" } } });
+    buildTrackRecord([{ id: "b", sku: "tcgcsv-9", name: "Example", asOf: "2026-08-01", take: "up" }], { "tcgcsv-9": { "2026-08-15": 12 } }, "2026-10-01", { "tcgcsv-9": { "2026-08-01": { market: 10, source: "you should buy" } } });
   } catch (err) {
-    banned = /track record used a banned word: .*"buy".*field "shipSource".*read b/.test(err.message);
+    banned = /track record broke a copy rule: flagged "you should buy" in field "shipSource" of read b: "you should buy"\. Tells people/.test(err.message);
   }
-  t("a visible word with no replacement fails and names the field and read id", banned);
+  t("an advice phrase fails and names the line, field, read id and reason", banned);
   let sourceBanned = false;
   try {
-    buildTrackRecord([upRead("s", "tcgcsv-8")], { "tcgcsv-8": { "2026-08-15": 12 } }, "2026-10-01", { "tcgcsv-8": { "2026-08-01": { market: 10, source: "a sure target" } } });
+    buildTrackRecord([upRead("s", "tcgcsv-8")], { "tcgcsv-8": { "2026-08-15": 12 } }, "2026-10-01", { "tcgcsv-8": { "2026-08-01": { market: 10, source: "a guaranteed climb" } } });
   } catch (err) {
-    sourceBanned = /track record used a banned word: .*target.*shipSource/.test(err.message);
+    sourceBanned = /track record broke a copy rule: .*guaranteed.*shipSource.*Promises a result/.test(err.message);
   }
-  t("a banned word in the source fails the file", sourceBanned);
+  t("an advice phrase in the source fails the file", sourceBanned);
   const swapped = buildTrackRecord([upRead("p", "tcgcsv-6")], { "tcgcsv-6": { "2026-08-15": 12 } }, "2026-10-01", { "tcgcsv-6": { "2026-08-01": { market: 10, source: "breakout check" } } });
-  t("a visible word with a replacement is rewritten, not thrown", JSON.stringify(swapped).includes("climb past its range check") && !/breakout/.test(JSON.stringify(swapped)));
+  t("a plain word is kept as written, never rewritten", JSON.stringify(swapped).includes("breakout check"));
+  const shop = buildTrackRecord([upRead("q", "tcgcsv-4")], { "tcgcsv-4": { "2026-08-15": 12 } }, "2026-10-01", { "tcgcsv-4": { "2026-08-01": { market: 10, source: "Buy on TCGplayer" } } });
+  t("a shop button label passes", JSON.stringify(shop).includes("Buy on TCGplayer"));
   let nameOk = true;
   try { buildTrackRecord([{ id: "n", sku: "tcgcsv-5", name: "Battle Academy Support Box", asOf: "2026-08-01", take: "up" }], { "tcgcsv-5": { "2026-08-15": 12 } }, "2026-10-01", { "tcgcsv-5": { "2026-08-01": ship } }); } catch { nameOk = false; }
   t("a product name is a proper name and is not checked", nameOk);

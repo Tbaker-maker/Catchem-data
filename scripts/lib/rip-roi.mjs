@@ -1,6 +1,7 @@
 // Rip value: expected contents of opening a sealed product vs its market price.
 // History-based estimates from dated pull rates and our singles prices.
 // Copy label: "Rip value". No buy/sell/invest/play/target wording.
+import { banGuard } from "./copy-rules.mjs";
 import { pricesForPool } from "./pull-rate-pools.mjs";
 
 export const SIMS = 10000;
@@ -235,6 +236,7 @@ export function scoreProduct({ product, price, packs, slots, bulk, rare, promo =
   };
 }
 
+const RIP_BAN = banGuard("rip value");
 export function bannedCopy(text) {
-  return /\b(buy|buys|buying|sell|sells|selling|invest\w*|play|plays|target|targets)\b/i.test(String(text || ""));
+  return RIP_BAN.test(String(text || ""));
 }

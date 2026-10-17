@@ -31,8 +31,11 @@ export async function run() {
   t("weekly outline dedupes chase names", doc.sealedAndChase[0].chaseNames.length === 1);
   t("weekly title has no em dash", doc.title === "Weekly Read, 2026-09-26" && !md.includes("\u2014"));
   let threw = false;
-  try { weeklyMarkdown({ ...doc, heat: [{ name: "Box", heat: "bullish" }, { name: "B", heat: "x" }, { name: "C", heat: "y" }], keepsShowingUp: doc.keepsShowingUp, sealedAndChase: doc.sealedAndChase }); } catch { threw = true; }
-  t("a banned word refuses the outline", threw);
+  try { weeklyMarkdown({ ...doc, heat: [{ name: "Box", heat: "load up now" }, { name: "B", heat: "x" }, { name: "C", heat: "y" }], keepsShowingUp: doc.keepsShowingUp, sealedAndChase: doc.sealedAndChase }); } catch { threw = true; }
+  t("an advice phrase refuses the outline", threw);
+  let shop = true;
+  try { weeklyMarkdown({ ...doc, heat: [{ name: "Box", heat: "Buy on eBay" }, { name: "B", heat: "x" }, { name: "C", heat: "y" }], keepsShowingUp: doc.keepsShowingUp, sealedAndChase: doc.sealedAndChase }); } catch { shop = false; }
+  t("a shop button label passes the outline", shop);
   return fail;
 }
 

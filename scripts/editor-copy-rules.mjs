@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises";
+import { ADVICE } from "./lib/copy-rules.mjs";
 // ATTACK 2: RUN THE EDITOR'S OWN OUTPUT THROUGH OUR PUBLISHING GUARDS. Every
 // other surface we ship is checked by slop-guard, windowless-price-guard and
 // the assertion rules. The editor generates text that goes straight onto a
@@ -31,6 +32,9 @@ const RULES = [
   [/\bguaranteed\b|\bwill be worth\b|\bwill go up\b|\binvest\b/i, "makes a FINANCIAL claim"],
   [/undefined|NaN|\[object|null\b/i, "leaked a JS value into copy"],
 ];
+// The shared advice-phrase list (rules/advice-phrases.json) applies here too. Its dash rule is left
+// out until the editor templates stop using dashes (they use them today).
+for (const r of ADVICE.rules.filter((x) => x.kind !== "house")) RULES.push([new RegExp(r.pattern, "i"), r.reason]);
 const problems = [];
 const check = (where, s) => { if (!s) return;
   // A superlative inside a QUESTION is the opposite of an assertion — asking
