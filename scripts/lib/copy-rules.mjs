@@ -44,7 +44,8 @@ export function flagLine(input, { field = "", id = "", house = false } = {}) {
   return flags;
 }
 
-export const formatFlag = (f) => `flagged "${f.line}"${f.field ? ` in field "${f.field}"` : ""}${f.id ? ` of read ${f.id}` : ""}: "${f.phrase}". ${f.reason}`;
+const clip = (s) => (s.length > 160 ? `${s.slice(0, 157)}...` : s);
+export const formatFlag = (f) => `flagged "${clip(f.line)}"${f.field ? ` in field "${f.field}"` : ""}${f.id ? ` of read ${f.id}` : ""}: "${f.phrase}". ${f.reason}`;
 
 // Log each flagged line once per run, so a dropped line is never dropped silently.
 const SEEN = new Set();
@@ -69,9 +70,10 @@ export function banGuard(label = "copy", opts = {}) {
 export const BANNED = banGuard("copy");
 
 // Kept for older callers. text is always returned unchanged; fixes is always empty.
-export function cleanText(input, { field = "text", id = "" } = {}) {
+// house adds the data-read rules (supply, No data). Emails and other prose pass house: false.
+export function cleanText(input, { field = "text", id = "", house = true } = {}) {
   const text = String(input ?? "");
-  const flags = flagLine(text, { field, id, house: true });
+  const flags = flagLine(text, { field, id, house });
   return { text, fixes: [], flags, errors: flags.map(formatFlag) };
 }
 
