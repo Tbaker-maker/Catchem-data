@@ -1,0 +1,921 @@
+{
+ "about": "Labelled copy cases. Every copy of the checker (Catchem-data, catchem-site, catchem-bot) must give exactly these rule ids for each line, at 100%. live:* lines are verbatim from tonight's reads and public files, the site, the bot and Post Office output. tricky lines are written to catch false blocks and misses. expect is the sorted, unique list of rule ids; [] means the line is clean.",
+ "cases": [
+  {
+   "text": "Evolving Skies Booster Box latest price fell from $2,268.87 on Oct 9 to $2,191.07 on Oct 16, down 3.4%, with 47 copies sold on TCGplayer over 3 months on Oct 15, not eBay and not a 7-day count.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "From eBay listings counted, 2026-10-13 and 2026-10-14.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "Fusion Strike Pokemon Center Elite Trainer Box: 30 eBay listings counted on Oct 15. A listing is not a sale.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "66 Near Mint copies sold while Morpeko V-Union went from $2.65 to $2.35 over Oct 6 to Oct 12. Sales and a price change in the same window. Not a cause.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "Listings counted 33 on Oct 13 to 32 on Oct 14. A listing is not a sale.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "Listings counted went from 15 on Oct 13, 2026 to 18 on Oct 15, 2026.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "17 Near Mint, 0 Lightly Played for Scorbunny - 036/217 (Energy Symbol Pattern) over Oct 7 to Oct 13. This is the mix of copies that sold, not the copy in your hand.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "At its highest price in our history, which starts Feb 8, 2024. Listings counted went from 11 on Oct 13, 2026 to 15 on Oct 15, 2026.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "Eldegoss V (Full Art): 4 Near Mint copies sold over Oct 8 to Oct 14 and the market price went from $2.37 to $2.36.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "Destined Rivals Booster Bundle latest price fell from $63 on Oct 9 to $56.35 on Oct 16, down 10.6%, with 1149 copies sold on TCGplayer over 3 months on Oct 15, not eBay and not a 7-day count.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "3 of 9 Near Mint copies sold in McDonald's Promos 2018 over Oct 8 to Oct 14 are Slowpoke - 5/12.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "Up 42% over 30 days, Sep 13, 2026 to Oct 15, 2026. Listings counted went from 5 on Oct 13, 2026 to 6 on Oct 16, 2026.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "Roaring Moon ex - 251/182 latest price fell from $32.86 on Oct 9 to $30.37 on Oct 16, down 7.6%.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "TCGplayer market, 2026-10-09 and 2026-10-16; eBay listings counted, 2026-10-14 and 2026-10-15",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "Mega Moonlit Tin [Mega Gengar ex] (Miscellaneous Cards & Products) is down 7.8% this week, from $34.73 to $32.01.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "Cosmic Eclipse Booster Box: 11 eBay listings counted on Oct 15. A listing is not a sale.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "Paldean Fates Pokemon Center Elite Trainer Box: 32 eBay listings counted on Oct 14. A listing is not a sale.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "Our published files: buckets, hist-long, sets, rotation-status, listing-counts, singles-asks, sealed-prices, rip-roi, year-patterns",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "Recovery watch: Light Arcanine (Neo Destiny) 012/105 fell 49% from its peak and has climbed back 47% of the way.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "Mega Greninja ex Special Illustration Rare (Chaos Rising) 116/086: $165.08 NM (Sep 15) to $124.83 NM (Oct 16) on TCGplayer market. Down 24% in 31 days.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "Wrong if either date has a different market price.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "Back to its Feb 26 price: Charmeleon Illustration Rare (Scarlet & Violet 151) 169/165, $54.52 NM (Oct 16) on TCGplayer market, $53.78 NM then. In between it reached $94.27 NM (Mar 18).",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "Real TCGplayer market points for this product id and finish (Reverse Holofoil), each with its own date.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "Azelf LV.X (Legends Awakened) 140/146: $100.98 NM (Sep 12) to $135.79 NM (Oct 16) on TCGplayer market. Up 34% in 34 days.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "Down $2.97 NM on the market price.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "EX Deoxys deep dive: its 17 tracked chase cards are worth $1,179.06 NM together, up 317% in a year.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "Biggest year in SM: Arceus Prism Star (Forbidden Light) 96/131 went $10.82 NM to $52.79 NM.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "Unown spotlight: of 50 cards with a year of prices, 50 kept or grew their price. Best: Unown (M) (EX Unseen Forces) M/28, up 252%.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "Recovery watch: Celebi Star (EX Crystal Guardians) 100/100 fell 51% from its peak and has climbed back 26% of the way.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "State of the market, week to Oct 16: 6 chase cards up 8% or more, 0 down. A warmer week.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "Priced below similar Trainer Gallery cards: Jynx (Silver Tempest) TG04/TG30, $2.92 NM (Oct 16) on TCGplayer market. Typical price for similar cards: $16.52 NM (14 cards).",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "Near the low end of its 12-month range: Quick Ball (Secret) (Sword & Shield Base Set) 216/202, $10.79 NM on Oct 16, 2026.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "Slump watch: Flareon ex (EX Delta Species) 108/113, Ultra Rare, is 40% under its Aug 19 high.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "SV08: Surging Sparks (mark H) is Standard legal (our list, Aug 24).",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "Tyranitar (Aquapolis) 040/147: in the same 30 days last year, $99.99 NM on Sep 18, 2025 to $551.98 NM on Oct 16, 2025 (+452%).",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "Prismatic Evolutions chase list: the top 5 are worth $2,531.76 NM together, up 16% from a year ago.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "The market prices and the listings counted are separate dated files.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "SV: Scarlet & Violet 151, in the 30 days after its release date last year: 87 of 194 priced cards were up and 75 were down.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "An ask is a listing price. A listing is not a sale.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "Graded and damaged copies can price very differently, and our prices are Near Mint unless labeled.",
+   "expect": [],
+   "source": "live:reads"
+  },
+  {
+   "text": "Buy on TCGplayer",
+   "expect": [],
+   "source": "live:site"
+  },
+  {
+   "text": "Watch up to 25 cards or products. We DM you when the price or listings counted crosses the number you set. Free members can save 25 too, without the DM.",
+   "expect": [],
+   "source": "live:site"
+  },
+  {
+   "text": "Compared with similar cards on TCGplayer market price, X. A factual comparison, not advice.",
+   "expect": [],
+   "source": "live:site"
+  },
+  {
+   "text": "If a price is missing, the page says so. We do not show a blank, a zero, or a made-up sold price.",
+   "expect": [],
+   "source": "live:site"
+  },
+  {
+   "text": "X% of simulated openings beat the price.",
+   "expect": [],
+   "source": "live:site"
+  },
+  {
+   "text": "Sum of the cards priced each week. The count can change as cards gain or lose a price.",
+   "expect": [],
+   "source": "live:site"
+  },
+  {
+   "text": "Hold the card",
+   "expect": [],
+   "source": "live:site"
+  },
+  {
+   "text": "Hold the last card",
+   "expect": [],
+   "source": "live:site"
+  },
+  {
+   "text": "Set value vs sealed price",
+   "expect": [],
+   "source": "live:site"
+  },
+  {
+   "text": "We never sell your data. Don't sell your Charizard to us.",
+   "expect": [
+    "directive"
+   ],
+   "source": "live:site",
+   "note": "first sentence is ours describing a policy, the second is a command"
+  },
+  {
+   "text": "Price high–low",
+   "expect": [
+    "dash"
+   ],
+   "source": "live:site",
+   "note": "still live on the site, flagged by the dash rule"
+  },
+  {
+   "text": "X — Deep dive",
+   "expect": [
+    "dash"
+   ],
+   "source": "live:site",
+   "note": "still live on the site, flagged by the dash rule"
+  },
+  {
+   "text": "Buy with /shop buy id:",
+   "expect": [],
+   "source": "live:bot"
+  },
+  {
+   "text": "Buy an item from the shop",
+   "expect": [],
+   "source": "live:bot"
+  },
+  {
+   "text": "Browse shop items",
+   "expect": [],
+   "source": "live:bot"
+  },
+  {
+   "text": "Enter a raffle by spending POP",
+   "expect": [],
+   "source": "live:bot"
+  },
+  {
+   "text": "{pops} to {count} active members. Consider it the shop buying a round.",
+   "expect": [],
+   "source": "live:bot"
+  },
+  {
+   "text": "All units are claimed right now. If a hold is released, it frees up again.",
+   "expect": [],
+   "source": "live:bot"
+  },
+  {
+   "text": "Pause flat POP for a member (compassion hold)",
+   "expect": [],
+   "source": "live:bot"
+  },
+  {
+   "text": "Labeled market price, chart, listings, and link",
+   "expect": [],
+   "source": "live:bot"
+  },
+  {
+   "text": "Daily market reads posted in #reads.",
+   "expect": [],
+   "source": "live:bot"
+  },
+  {
+   "text": "Premium is back on. Your number and your price are the same.",
+   "expect": [],
+   "source": "live:bot"
+  },
+  {
+   "text": "Members spend berries on shop items, raffle entries, or gifts to other members. Fully configurable: you add what you want to sell.",
+   "expect": [],
+   "source": "live:bot"
+  },
+  {
+   "text": "Market recap, ",
+   "expect": [],
+   "source": "live:bot"
+  },
+  {
+   "text": "No announce channel set. Ask an admin to run `/raffle-admin set-channel` first, or pass a channel to the command.",
+   "expect": [],
+   "source": "live:bot"
+  },
+  {
+   "text": "{mention} +{pops}. Years behind a card shop counter and that still counts as a good post.",
+   "expect": [],
+   "source": "live:bot"
+  },
+  {
+   "text": "🧊 Hold set for ",
+   "expect": [],
+   "source": "live:bot"
+  },
+  {
+   "text": "Keep Web3 in the Web3 room",
+   "expect": [
+    "crypto"
+   ],
+   "source": "live:bot",
+   "note": "server feature copy, never sent through a market read; crypto words always flag"
+  },
+  {
+   "text": "Card or product lookup: chart, price, listings, and link",
+   "expect": [],
+   "source": "live:bot"
+  },
+  {
+   "text": "Cancel a raffle and refund all entries",
+   "expect": [],
+   "source": "live:bot"
+  },
+  {
+   "text": "These roles and users can create and inspect raffles. Admins with Manage Server can also do everything in `/raffle-admin`.",
+   "expect": [],
+   "source": "live:bot"
+  },
+  {
+   "text": "{pops} for {mention}. That's a full fridge. Crack one open on a raffle.",
+   "expect": [],
+   "source": "live:bot"
+  },
+  {
+   "text": "The sum is TCGplayer market for singles priced on both exact days. A missing day drops the set. The card count is how many singles had a price on both days.",
+   "expect": [],
+   "source": "live:site"
+  },
+  {
+   "text": "Swap one of these out for me: Bulbasaur or Magikarp?",
+   "expect": [],
+   "source": "live:postoffice"
+  },
+  {
+   "text": "Swap one of these six out for me. Start with Entei, or tell me which one does not belong.",
+   "expect": [],
+   "source": "live:postoffice"
+  },
+  {
+   "text": "Charizard, Zacian V, Zamazenta V, Charizard. Pick one.",
+   "expect": [],
+   "source": "live:postoffice"
+  },
+  {
+   "text": "Mega Venusaur ex sells for about 156 and Ivysaur for about 20.\n\nWhich one would you rather own?\n\nNot asking which is worth more.",
+   "expect": [],
+   "source": "live:postoffice"
+  },
+  {
+   "text": "The Surging Sparks Latias ex is listed around $179, the Surging Sparks Latios around $34 as of 2026/08/22.",
+   "expect": [],
+   "source": "live:postoffice"
+  },
+  {
+   "text": "Which of these four is the one you would keep?",
+   "expect": [],
+   "source": "live:postoffice"
+  },
+  {
+   "text": "Anyone else own the Wizards Black Star Promos Moltres?",
+   "expect": [],
+   "source": "live:postoffice"
+  },
+  {
+   "text": "The one I reach for is Spidops ex, and it is the cheapest here.",
+   "expect": [],
+   "source": "live:postoffice"
+  },
+  {
+   "text": "Anything else Ken Sugimori drew that I should see?\n\nI only know these two.",
+   "expect": [],
+   "source": "live:postoffice"
+  },
+  {
+   "text": "70 HP or 260 HP? Which do you actually play?",
+   "expect": [],
+   "source": "live:postoffice"
+  },
+  {
+   "text": "Twenty years apart. What am I missing?",
+   "expect": [],
+   "source": "live:postoffice"
+  },
+  {
+   "text": "Neo Revelation next to HS—Undaunted.",
+   "expect": [],
+   "source": "live:postoffice"
+  },
+  {
+   "text": "Mega Evolution against Chaos Rising.\n\nWhich set treated it better?\n\nBoth are fine answers.",
+   "expect": [],
+   "source": "live:postoffice"
+  },
+  {
+   "text": "Plusle is printed at 70 HP, Gholdengo ex at 260.",
+   "expect": [],
+   "source": "live:postoffice"
+  },
+  {
+   "text": "Not in the mood today.",
+   "expect": [],
+   "source": "live:postoffice"
+  },
+  {
+   "text": "Listings counted fell 12% this week.",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "Up 294% in a year.",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "Buyers paid $40 for the last copy.",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "Sun & Moon Booster Box",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "Sun & Moon era boxes held their price through the reprint.",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "Collectors bought it fast after the reveal.",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "Most sellers sold out by Friday.",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "Should you buy this box?",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "Is it time to sell?",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "Would you hold or sell this one?",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "Buy on eBay",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "Buy on TCGplayer · Buy on eBay · Shop",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "Sell your cards",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "Shop sealed",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "Price target: $40",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "The \"Buy It Now\" listings on eBay ran 12% under auctions.",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "Not guaranteed. Prices move both ways.",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "Nothing here is guaranteed.",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "Roaring Moon ex climbed 8% this week.",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "Moonbreon sold for $1,180 on Oct 12.",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "We do not sell your data.",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "What you should know before you open a pack.",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "If you have to sell, the market price is $12.",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "Hold to zoom.",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "Grab a raffle ticket with POP.",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "Pick up your order at the counter.",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "This is not advice. It is what the listings did.",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "Stacked rows show the last 12 weeks.",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "The box sold 40 copies in a day, the most since launch.",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "Prices go up and down; this page shows both.",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "Investors and players both chase Charizard, and the price shows it.",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "HS—Undaunted and HS–Triumphant are set names.",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "Easy to read: one row per card.",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "Flip the card to see the back.",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "Bought one? Tell us what you pulled.",
+   "expect": [],
+   "source": "tricky"
+  },
+  {
+   "text": "You should sell this now.",
+   "expect": [
+    "directive"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "Time to buy.",
+   "expect": [
+    "directive"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "It's time to sell your sealed.",
+   "expect": [
+    "directive"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "Now is the time to invest in vintage.",
+   "expect": [
+    "directive"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "You need to pick up a few of these.",
+   "expect": [
+    "directive"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "Go buy it.",
+   "expect": [
+    "directive"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "Don't sell your Charizard.",
+   "expect": [
+    "directive"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "Honestly you should just hold.",
+   "expect": [
+    "directive"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "Never sell your 151 boxes.",
+   "expect": [
+    "directive"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "Get in and buy before the reprint.",
+   "expect": [
+    "directive"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "Buy this box before it is gone.",
+   "expect": [
+    "imperative"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "Buy Prismatic Evolutions.",
+   "expect": [
+    "imperative"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "Please buy this card.",
+   "expect": [
+    "imperative"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "Honestly, just grab one now.",
+   "expect": [
+    "imperative"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "- Buy it now",
+   "expect": [
+    "imperative"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "Load up on ETBs.",
+   "expect": [
+    "imperative"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "Stock up on booster bundles before the holidays.",
+   "expect": [
+    "imperative"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "Flip them on eBay next week.",
+   "expect": [
+    "imperative"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "Dump your Surging Sparks.",
+   "expect": [
+    "imperative"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "Sell it today.",
+   "expect": [
+    "imperative"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "Prices fell, so buy the dip.",
+   "expect": [
+    "imperative"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "Guaranteed hits!",
+   "expect": [
+    "guaranteed"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "This box is guaranteed to climb.",
+   "expect": [
+    "guaranteed"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "You can’t lose with this one.",
+   "expect": [
+    "cant-lose"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "You cannot go wrong here.",
+   "expect": [
+    "cant-lose"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "It will double by Christmas.",
+   "expect": [
+    "will-double"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "Sealed will only go up.",
+   "expect": [
+    "will-double"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "The price will hit $500 by spring.",
+   "expect": [
+    "will-hit"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "Easy money on these.",
+   "expect": [
+    "easy-money"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "A risk-free pickup for any binder.",
+   "expect": [
+    "risk-free"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "Charizard is going to the moon.",
+   "expect": [
+    "to-the-moon"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "Cards are the new bitcoin.",
+   "expect": [
+    "crypto"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "Mint it as an NFT.",
+   "expect": [
+    "crypto"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "A great investment for kids.",
+   "expect": [
+    "investment"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "Treat sealed as an investment.",
+   "expect": [
+    "investment"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "Investing in vintage is easy.",
+   "expect": [
+    "investment"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "Charizard ex is a must-buy.",
+   "expect": [
+    "buy-call"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "Strong buy on Evolving Skies.",
+   "expect": [
+    "buy-call"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "Up 4% — Oct 1 to Oct 8",
+   "expect": [
+    "dash"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "You should buy now, it is guaranteed to rise.",
+   "expect": [
+    "directive",
+    "guaranteed"
+   ],
+   "source": "tricky"
+  },
+  {
+   "text": "Buy them now, this set is going to the moon.",
+   "expect": [
+    "imperative",
+    "to-the-moon"
+   ],
+   "source": "tricky"
+  }
+ ]
+}

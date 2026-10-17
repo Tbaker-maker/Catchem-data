@@ -32,9 +32,11 @@ export function makeChecker(rules) {
   const DASH_RE = /[\u2014\u2013]/g;
   const DASH_ALLOW_RE = new RegExp(rules.dash.allow, "g");
   const MONEY = alt(v.moneyVerbs);
-  // Weak verbs (hold) are money advice after a directive (you should hold), never as a bare
-  // command, because "Hold the card" is also how a screen tells you to press and hold.
-  const STRONG = alt(v.moneyVerbs.filter((m) => !v.weakVerbs.includes(m)));
+  // Weak verbs (hold, flip, pick up) are also things you do with your hands ("Hold the card",
+  // "Flip the card"). As a bare command they count only with a market word later in the
+  // sentence (on eBay, now, before, for profit). After a directive (you should hold) they always count.
+  const WEAK = new Set(v.weakVerbs);
+  const MARKET_RE = new RegExp(`\\b(?:${v.marketContext.map((w) => w.replace(/ /g, "\\s+")).join("|")})(?![\\w])`, "i");
   const FILL = `(?:(?:${alt(v.fillers)})\\s+){0,2}`;
   // Second-person directives (you should, time to) count anywhere in a sentence.
   const DIRECTIVE_RE = new RegExp(`\\b(?:${alt(v.directives)})\\s+${FILL}(?:${MONEY})\\b`, "gi");
@@ -44,7 +46,7 @@ export function makeChecker(rules) {
   const OBJECT = `(?:(${alt([...v.objectWords, ...v.productNouns, ...v.timeWords])})\\b|([0-9$])|([a-z]))`;
   // Run on lowercased text. A clause start: sentence start, after a clause mark, or after a joining word.
   // A bare following word counts as an object only when it is capitalized in the line (a product name).
-  const IMPERATIVE_RE = new RegExp(`(?:^\\s*|[,;:(]\\s*|\\b(?:and|so|then|but)\\s+)${LEAD}(${STRONG})\\s+${FILL}${OBJECT}`, "g");
+  const IMPERATIVE_RE = new RegExp(`(?:^\\s*|[,;:(]\\s*|\\b(?:and|so|then|but)\\s+)${LEAD}(${MONEY})\\s+${FILL}${OBJECT}`, "g");
   const PROMISES = rules.promises.map((r) => ({ ...r, re: new RegExp(r.pattern, "gi") }));
   const FRAMING = rules.framing.map((r) => ({ ...r, re: new RegExp(r.pattern, "gi") }));
   const NEG_RE = new RegExp(`\\b(?:${alt(v.negations)})\\s+(?:\\w+\\s+){0,2}$`, "i");
@@ -101,6 +103,7 @@ export function makeChecker(rules) {
         const verbAt = m.index + m[0].indexOf(m[1]);
         // Shop, raffle and shipping objects (buy an item, grab a ticket) are not money advice.
         if (ALLOW_OBJ_RE.test(body.slice(verbAt + m[1].length))) continue;
+        if (WEAK.has(m[1].replace(/\s+/g, " ")) && !MARKET_RE.test(body.slice(verbAt + m[1].length))) continue;
         const stop = m[4] ? end - 1 + body.slice(end - 1).search(/[^\w\u00c0-\u024f]|$/) : end;
         add("imperative", "advice", verbAt, stop, R.imperative);
       }
