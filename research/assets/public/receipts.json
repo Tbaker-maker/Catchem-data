@@ -1,11 +1,11 @@
 {
- "asOf": "2026-10-16",
- "updatedAt": "2026-10-16T09:56:05.353Z",
+ "asOf": "2026-10-17",
+ "updatedAt": "2026-10-17T14:00:56.550Z",
  "note": "A hit means the next stored price moved the same way as the price we wrote down. A miss moved the other way. A hit rate stays hidden until 20 calls are scored. These are not sold prices.",
  "hitRate": null,
- "scored": 8,
+ "scored": 9,
  "hits": 2,
- "misses": 6,
+ "misses": 7,
  "rows": [
   {
    "id": "receipt-2026-08-20-sealed-pgo-etb",
@@ -200,28 +200,28 @@
    "changePct": 0.3
   },
   {
-   "id": "receipt-2026-10-15-sealed-sm12-booster-box",
+   "id": "receipt-2026-10-16-sealed-sv3pt5-upc",
    "type": "receipt",
-   "result": "open",
+   "result": "miss",
    "kind": "sealed",
-   "name": "Cosmic Eclipse Booster Box",
-   "headline": "Cosmic Eclipse Booster Box. Open.",
-   "price": 5400,
+   "name": "151 Ultra Premium Collection",
+   "headline": "151 Ultra Premium Collection. Miss.",
+   "price": 948.87,
    "source": "eBay asking prices",
-   "asOf": "2026-10-16",
-   "why": "Written down October 15, 2026 at $5,400.00. The eBay asking price before it was the same, so this stays open.",
+   "asOf": "2026-10-17",
+   "why": "Written down October 16, 2026 at $950.00, after a lower one. Next eBay asking price on October 17, 2026 was $948.87. The other way.",
    "hist": [
     [
-     "2026-10-15",
-     5400
+     "2026-10-16",
+     950
     ],
     [
-     "2026-10-16",
-     5400
+     "2026-10-17",
+     948.87
     ]
    ],
    "href": "",
-   "changePct": 0
+   "changePct": -0.1
   },
   {
    "id": "receipt-2026-10-15-single-swsh7-215",
@@ -244,26 +244,6 @@
    "changePct": null
   },
   {
-   "id": "receipt-2026-10-16-sealed-sv3pt5-upc",
-   "type": "receipt",
-   "result": "open",
-   "kind": "sealed",
-   "name": "151 Ultra Premium Collection",
-   "headline": "151 Ultra Premium Collection. Open.",
-   "price": 950,
-   "source": "eBay asking prices",
-   "asOf": "2026-10-16",
-   "why": "Written down October 16, 2026 at $950.00. No later eBay asking price is stored, so this stays open.",
-   "hist": [
-    [
-     "2026-10-16",
-     950
-    ]
-   ],
-   "href": "",
-   "changePct": null
-  },
-  {
    "id": "receipt-2026-10-16-single-swsh7-218",
    "type": "receipt",
    "result": "open",
@@ -278,6 +258,46 @@
     [
      "2026-10-16",
      1255.44
+    ]
+   ],
+   "href": "",
+   "changePct": null
+  },
+  {
+   "id": "receipt-2026-10-17-sealed-sm11-booster-box",
+   "type": "receipt",
+   "result": "open",
+   "kind": "sealed",
+   "name": "Unified Minds Booster Box",
+   "headline": "Unified Minds Booster Box. Open.",
+   "price": 4999.99,
+   "source": "eBay asking prices",
+   "asOf": "2026-10-17",
+   "why": "Written down October 17, 2026 at $4,999.99. The eBay asking price before it was the same, so this stays open.",
+   "hist": [
+    [
+     "2026-10-17",
+     4999.99
+    ]
+   ],
+   "href": "",
+   "changePct": null
+  },
+  {
+   "id": "receipt-2026-10-17-single-swsh12-186",
+   "type": "receipt",
+   "result": "open",
+   "kind": "single",
+   "name": "Lugia V",
+   "headline": "Lugia V. Open.",
+   "price": 516.63,
+   "source": "TCGplayer market",
+   "asOf": "2026-10-17",
+   "why": "Written down October 17, 2026 at $516.63. No earlier TCGplayer market price is stored, so this stays open.",
+   "hist": [
+    [
+     "2026-10-17",
+     516.63
     ]
    ],
    "href": "",
