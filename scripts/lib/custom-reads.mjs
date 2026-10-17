@@ -2,6 +2,12 @@
 
 import { attachAddons } from "./custom-reads-addons.mjs";
 
+export function followsFromDocs(primary, fallback) {
+  if (primary && Array.isArray(primary.follows)) return primary.follows;
+  if (fallback && Array.isArray(fallback.follows)) return fallback.follows;
+  return [];
+}
+
 export function matchesFollow(follow, read) {
   if (!follow || !read) return false;
   if (Array.isArray(follow.cards) && follow.cards.includes(read.cardId)) return true;
