@@ -46,7 +46,7 @@ async function fixture({ withSources }) {
       soft: [],
     });
     await put(root, "research/pulse/dive/index.json", { ids: ["sv5-pc-etb", "cel25-etb", "no-market", "missing-file"] });
-    await put(root, "research/pulse/dive/sv5-pc-etb.json", { id: "sv5-pc-etb", name: "Temporal Forces Pokemon Center Elite Trainer Box", asOf: "2026-10-06", latest: { priceMedian: 499.99, lastSeen: "2026-10-06", dataStatus: "live" }, outlier: { note: "Price flagged: 95.5% above recent median — review" } });
+    await put(root, "research/pulse/dive/sv5-pc-etb.json", { id: "sv5-pc-etb", name: "Temporal Forces Pokemon Center Elite Trainer Box", asOf: "2026-10-06", latest: { priceMedian: 499.99, lastSeen: "2026-10-06", dataStatus: "live" }, outlier: { note: "Price flagged for review: 95.5% above the recent median" } });
     await put(root, "research/pulse/dive/cel25-etb.json", { id: "cel25-etb", name: "Celebrations Elite Trainer Box", asOf: "2026-10-06", latest: { priceMedian: 161.99, lastSeen: "2026-10-06", dataStatus: "live" } });
     await put(root, "research/pulse/dive/no-market.json", { id: "no-market", name: "Empty", asOf: "2026-10-06", latest: { dataStatus: "no-active-market", listingCount: 0 } });
   }
@@ -80,7 +80,7 @@ export async function run() {
     t("Flagged and Dive filters are full", browse.filters.flagged.items.length === 2 && browse.filters.dive.items.length === 1);
     t("summary reports what shipped", summary.outliers === 2 && summary.dives === 1);
     const teaser = reads.find((r) => r.id === "dive-sv5-pc-etb").path;
-    t("the outlier note ends its sentence before the dive line", teaser.includes("— review. Deeper look on the chart.") && !/review Deeper/.test(teaser));
+    t("the outlier note ends its sentence before the dive line", teaser.includes("the recent median. Deeper look on the chart.") && !/review Deeper/.test(teaser));
     t("no sold or volume wording ships", reads.every((r) => !/\b(solds?|volume)\b/i.test(String(r.path || ""))));
   } finally { await rm(full, { recursive: true, force: true }); }
 

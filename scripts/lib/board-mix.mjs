@@ -850,7 +850,20 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
   const priceDedup = priceRows.filter((r) => { const k = r.readKind === "set" ? r.id : (r.sku || r.id); if (seenSku.has(k)) return false; seenSku.add(k); return true; });
   // One product page once per night: a later row that links to the same card or product is dropped.
   const seenHref = new Set();
+  // A set page can carry a deep dive and also a rotation or birthday line. The
+  // Feed keys rows by link, so a second row on the same set page keeps its
+  // words but loses the link. The deep dive keeps the link: it is the set read.
+  const diveSets = new Set(priceDedup.filter((r) => r.readKind === "deep" && r.deep === "set").map((r) => String(r.href || "")).filter(Boolean));
+  const seenSet = new Set();
+  const oneSet = (r) => {
+    const h = String(r.href || "");
+    if (!/^\/sets\//.test(h)) return;
+    const dive = r.readKind === "deep" && r.deep === "set";
+    if (seenSet.has(h) || (!dive && diveSets.has(h))) r.href = "";
+    else seenSet.add(h);
+  };
   const onePage = (r) => {
+    oneSet(r);
     const h = String(r.href || "");
     if (!/^\/(?:c|p)\//.test(h)) return true;
     if (seenHref.has(h)) {

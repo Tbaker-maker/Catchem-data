@@ -4,6 +4,7 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ebayAskPhrase, tcgAmount } from "./card-face.mjs";
+import { outlierFlagNote } from "./product-dives.mjs";
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -41,7 +42,7 @@ export function outlierReads(doc) {
     if (!name || !(today > 0) || !(ref > 0) || !/^\d{4}-\d{2}-\d{2}$/.test(day) || !gap) continue;
     const when = monthDay(day);
     const severity = String(row.severity || "soft");
-    const sentence = `${name} ask ${money(today)} on ${when} sits ${gap}% ${dir} its recent median ${money(ref)} — review.`;
+    const sentence = `${name} ask ${money(today)} on ${when} sits ${gap}% ${dir} its recent median ${money(ref)}, flagged for review.`;
     out.push({
       id: `outlier-${row.id}`,
       sku: String(row.id),
@@ -94,7 +95,9 @@ export function diveTeaserReads(dives) {
     const day = String(latest.lastSeen || latest.asOf || latest.date || doc.asOf || "").slice(0, 10);
     const live = String(latest.dataStatus || "") === "live";
     const hasPrice = live && price > 0 && /^\d{4}-\d{2}-\d{2}$/.test(day);
-    const rawNote = String((doc.outlier && doc.outlier.note) || "").trim();
+    // Older dive files carry a note with a dash; the note is rebuilt from the gap when there is one.
+    const o = doc.outlier;
+    const rawNote = String((o && (typeof o.pctGap === "number" && Number.isFinite(o.pctGap) ? outlierFlagNote(o) : o.note)) || "").trim();
     const outlierNote = rawNote && !/[.!?]$/.test(rawNote) ? rawNote + "." : rawNote;
     const market = marketOnDive(doc);
     const askText = hasPrice ? money(price) : "";

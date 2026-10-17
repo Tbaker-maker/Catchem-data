@@ -141,7 +141,7 @@ export function outlierFlagNote(row) {
         : row.direction === "high" || row.pctGap > 0
           ? "above"
           : "off";
-    return `Price flagged: ${pct}% ${dir} recent median — review`;
+    return `Price flagged for review: ${pct}% ${dir} the recent median`;
   }
   return row.note ?? row.why ?? row.provisionalLabel ?? null;
 }

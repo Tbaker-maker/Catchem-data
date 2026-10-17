@@ -45,7 +45,7 @@ export async function run() {
   t("a row without an id is dropped", outlierReads({ high: [{ name: "No Id", todayPrice: 1, referencePrice: 2, todayDate: "2026-10-06", pctGap: 10, provisionalLabel: "possible real move" }], soft: [] }).length === 0);
 
   const dives = diveTeaserReads([
-    { id: "sv5-pc-etb", name: "Temporal Forces Pokemon Center Elite Trainer Box", asOf: "2026-10-06", latest: { priceMedian: 499.99, lastSeen: "2026-10-06", dataStatus: "live" }, outlier: { note: "Price flagged: 95.5% above recent median — review" } },
+    { id: "sv5-pc-etb", name: "Temporal Forces Pokemon Center Elite Trainer Box", asOf: "2026-10-06", latest: { priceMedian: 499.99, lastSeen: "2026-10-06", dataStatus: "live" }, outlier: { note: "Price flagged for review: 95.5% above the recent median" } },
     { id: "no-price", name: "Empty", asOf: "2026-10-06", latest: { dataStatus: "no-active-market", listingCount: 0 } },
     { id: "me1-bb", name: "Mega Evolution Booster Bundle", asOf: "2026-10-06", latest: { priceMedian: 64.99, lastSeen: "2026-10-06", dataStatus: "live" } },
     { id: "upc-151", name: "151 UPC", asOf: "2026-10-06", latest: { priceMedian: 100, lastSeen: "2026-10-06", dataStatus: "live", tcgMarket: 80 } },

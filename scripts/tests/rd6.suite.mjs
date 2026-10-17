@@ -102,6 +102,11 @@ export async function run() {
   const banned = { test: (x) => hasBannedWord(x) };
   const blob = (reads.reads || []).map((row) => [row.headline, ...(row.lines || [])].join(" ")).join("\n");
   t("published reads have no em dash and no banned word", !/[\u2014\u2013]/.test(blob) && !banned.test(blob) && !/(^|[^.])\bsupply\b/i.test(blob));
+  // Name the read that broke a rule, so a red nightly says which builder to fix.
+  for (const row of reads.reads || []) {
+    const text = [row.headline, ...(row.lines || [])].join(" ");
+    if (/[\u2014\u2013]/.test(text) || hasBannedWord(text) || /(^|[^.])\bsupply\b/i.test(text)) console.log(`    read ${row.id} (${row.readKind || row.kind}): ${text.slice(0, 200)}`);
+  }
 
   return fail;
 }

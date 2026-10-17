@@ -101,15 +101,17 @@ export async function run() {
   const day = JSON.parse(await readFile(join(ROOT, "data/history/tcgcsv-daily/2026-10-03.json"), "utf8"));
   const row = (day.prices || []).find((item) => item.id === 124072);
   const prices = await shipPriceMap(ROOT, [{ id: "machamp", sku: "tcgcsv-124072", asOf: "2026-10-03", take: "up" }]);
+  const LATER_DAY = new Date(Date.parse("2026-10-03T00:00:00Z") + 14 * 86400000).toISOString().slice(0, 10);
   const fromFile = scoreRead(
     { id: "machamp", sku: "tcgcsv-124072", name: "Machamp", asOf: "2026-10-03", take: "up", headline: "not the ship price 99" },
-    // The real Oct 17 daily file now exists, so drop it here: this case is about a missing later file.
-    Object.fromEntries(Object.entries(prices.later["tcgcsv-124072"] || {}).filter(([day]) => day !== "2026-10-17")),
-    "2026-10-17",
+    // This case is about a missing later file, so it gets no later prices at all.
+    // Real daily files keep landing, so it must not read them (no fixed date).
+    {},
+    LATER_DAY,
     prices.ship["tcgcsv-124072"]?.["2026-10-03"] || null,
   );
   t("the ship price is the daily file market", row.market === 4.41 && fromFile.price === 4.41);
-  t("a missing later daily file is no score", fromFile.marks["14"].day === "2026-10-17" && fromFile.marks["14"].price === null && fromFile.status === "no-later-price");
+  t("a missing later daily file is no score", fromFile.marks["14"].day === LATER_DAY && fromFile.marks["14"].price === null && fromFile.status === "no-later-price");
 
   const pub = JSON.parse(await readFile(join(ROOT, "research/assets/public/track-record.json"), "utf8"));
   const onDisk = siteTrack(pub);
