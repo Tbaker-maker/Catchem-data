@@ -26,7 +26,7 @@ export async function run() {
   const ladder = pickLadder({ "Holofoil / Near Mint": 10, "Holofoil / Lightly Played": 8, "Holofoil / Moderately Played": 6, "Holofoil / Damaged": 2 }, "2026-10-13");
   t("condition ladder keeps NM LP MP DMG", ladder.NM.amount === 10 && ladder.LP.amount === 8 && ladder.MP.amount === 6 && ladder.DMG.amount === 2);
   const distilled = rowsFromDistilled({ generatedAt: "2026-10-13T00:00:00Z", cards: [{ cardId: "a", name: "Lugia", number: "108/135", conditions: { "Lightly Played": 4 }, raw: { market: 9, lastUpdated: "2026-10-13" } }] });
-  t("a played price is stored and NM stays the default", distilled.rows.length === 1 && distilled.rows[0].conditions.NM.amount === 9 && distilled.rows[0].hasPlayed === true);
+  t("a played price is stored and the market is not called NM", distilled.rows.length === 1 && distilled.rows[0].conditions.LP.amount === 4 && !distilled.rows[0].conditions.NM && distilled.rows[0].nmDefault === false && distilled.rows[0].hasPlayed === true);
   t("NM alone is not a played row", rowsFromDistilled({ cards: [{ cardId: "b", conditions: { "Near Mint": 3 }, raw: { market: 3 } }] }).rows.length === 0);
 
   const lugia = [

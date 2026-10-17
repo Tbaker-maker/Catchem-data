@@ -4,7 +4,7 @@ import { bannedWord, money, pretty } from "./public-bundle.mjs";
 import { tcgAmount } from "./card-face.mjs";
 
 export const FOOTER = "An ask is a listing price. A listing is not a sale.";
-export const CONDITION_NOTE = "Graded and damaged copies can price very differently, and our prices are Near Mint unless labeled.";
+export const CONDITION_NOTE = "A condition is shown only when the price is for that condition. Graded and played copies can differ.";
 export const MOVER_MIN_CENTS = 100;
 export const MOVER_MAX_PCT = 200;
 export const STREAK_MIN_CENTS = 100;

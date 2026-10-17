@@ -1,5 +1,5 @@
-// TCGplayer condition ladder. Market prices in the daily file are Near Mint.
-// LP, MP, and DMG are stored only when a dated file already has them.
+// TCGplayer condition ladder. NM is stored only when the file names Near Mint.
+// A market price is not copied in as NM.
 
 export const CONDITION_KEYS = ["NM", "LP", "MP", "HP", "DMG"];
 
@@ -52,16 +52,15 @@ export function pickLadder(input, date = "") {
   return out;
 }
 
-export function ladderRow({ id, name, number, printing, ladder, nm, nmDate }) {
+export function ladderRow({ id, name, number, printing, ladder }) {
   const conditions = { ...ladder };
-  if (!(conditions.NM?.amount > 0) && nm > 0) conditions.NM = { amount: Math.round(nm * 100) / 100, date: nmDate || "" };
-  const hasPlayed = ["LP", "MP", "DMG"].some((key) => conditions[key]?.amount > 0);
+  const hasPlayed = ["LP", "MP", "HP", "DMG"].some((key) => conditions[key]?.amount > 0);
   return {
     id: String(id || ""),
     name: String(name || ""),
     number: String(number || ""),
     printing: String(printing || ""),
-    nmDefault: true,
+    nmDefault: false,
     hasPlayed,
     conditions,
   };
@@ -78,8 +77,6 @@ export function rowsFromDistilled(doc) {
       name: card.name,
       number: card.number,
       ladder,
-      nm: card.raw?.market,
-      nmDate: String(card.raw?.lastUpdated || asOf).slice(0, 10),
     }));
   }
   return { asOf, rows };

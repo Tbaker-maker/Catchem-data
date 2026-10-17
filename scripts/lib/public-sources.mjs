@@ -4,7 +4,7 @@
 // flag: a data/flags.json key. While that flag is false the file is not checked for freshness.
 
 export const READERS = [
-  { file: "research/assets/public/reads.json", readers: ["site", "bot"], writer: "scripts/build-feed.mjs", live: true, dateRequired: true },
+  { file: "research/assets/public/price-hold.json", readers: ["site"], writer: "scripts/build-price-hold.mjs", live: false, dateRequired: true, note: "Ids whose price is not a headline. No thresholds." },
   { file: "research/assets/public/movers.json", readers: ["site", "bot"], writer: "scripts/build-public-bundle.mjs", live: true, dateRequired: true },
   { file: "research/assets/public/accuracy.json", readers: ["site", "bot"], writer: "scripts/build-public-bundle.mjs", live: true, dateRequired: true },
   { file: "research/assets/public/counts.json", readers: ["site"], writer: "scripts/build-public-bundle.mjs", live: true, dateRequired: true },

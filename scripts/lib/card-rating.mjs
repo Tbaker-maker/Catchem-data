@@ -273,7 +273,7 @@ export function buildRatings({ rows, longRows = {}, variants = {}, searchMons = 
     // Also held: a WOTC 1st Edition price on file below its own unlimited price.
     const fe1 = c.printings.find((p) => p.name === "1st Edition Holofoil")?.price;
     const un1 = c.printings.find((p) => /^(Unlimited Holofoil|Unlimited)$/.test(p.name))?.price;
-    const printOdd = c.release < WOTC_END && fe1 > 0 && un1 > 0 && fe1 < un1;
+    const printOdd = !!x.firstEd && c.release < WOTC_END && fe1 > 0 && un1 > 0 && fe1 < un1;
     const check = printOdd || (ratio != null && (ratio < 1 / CHECK || ratio > CHECK));
     const f = {};
     const pv = peerValue(x.price, med);

@@ -32,6 +32,7 @@ import { runNoPptPublicTests } from "./no-ppt-public.test.mjs";
 import { runVariantTagTests } from "./variant-tags.test.mjs";
 import { runReadTagTests } from "./read-tags.test.mjs";
 import { runHighValueSpikeTests } from "./high-value-spike.test.mjs";
+import { runPriceTrustTests } from "./price-trust.test.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const J = async (p) => JSON.parse(await readFile(join(ROOT, p), "utf-8"));
@@ -40,6 +41,12 @@ const t = (name, cond, detail = "") => {
   if (cond) { pass++; console.log(`  ✓ ${name}`); }
   else { fail++; console.error(`  ✗ ${name}${detail ? " — " + detail : ""}`); }
 };
+
+console.log("── price trust ──");
+{
+  const n = await runPriceTrustTests();
+  t("price trust suite", n === 0, `${n} failed`);
+}
 
 console.log("── index math ──");
 {

@@ -19,7 +19,7 @@ const asOf = pulled.asOf || String(catalog?.asOf || "").slice(0, 10);
 const doc = {
   asOf,
   source: pulled.rows.length ? "data/enrichment-distilled.json" : "TCGplayer market daily file is Near Mint. No dated LP, MP, or DMG rows were in the files on disk.",
-  nmDefault: true,
+  nmDefault: false,
   note: "Graded and damaged copies can price very differently, and our prices are Near Mint unless labeled.",
   count: pulled.rows.length,
   cards: pulled.rows,
