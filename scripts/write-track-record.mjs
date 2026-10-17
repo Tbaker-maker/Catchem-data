@@ -6,8 +6,9 @@ import { tmpdir, homedir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { spawn } from "node:child_process";
-import { buildTrackRecord, publicTrackRecord } from "./lib/track-record.mjs";
+import { buildTrackRecord, publicTrackPage } from "./lib/track-record.mjs";
 import { shipPriceMap } from "./lib/second-library.mjs";
+import { buildPremiumProof } from "./lib/premium-proof.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const REMOTE = "https://github.com/Tbaker-maker/catchem-data-private.git";
@@ -67,15 +68,19 @@ export async function writeTrackRecord(root = ROOT, token = process.env.PRIVATE_
   const today = String(reads.asOf || "").slice(0, 10);
   const prices = await shipPriceMap(root, reads.reads || []);
   const doc = buildTrackRecord(reads.reads || [], prices.later, today, prices.ship);
-  const stub = publicTrackRecord(doc);
-  if (stub.public !== false || stub.rows.length !== 0 || stub.cardLines || stub.sentence) {
-    throw new Error("public track record is not a stub");
+  let receipts = { asOf: today, rows: [] };
+  try { receipts = JSON.parse(await readFile(join(root, "research/assets/public/receipts.json"), "utf8")); } catch { /* thin page */ }
+  const stub = publicTrackPage(receipts, today);
+  if (stub.public !== true || stub.scoreMin || stub.types || stub.rule) {
+    throw new Error("public track record leaked a private score");
   }
   const privatePath = join(root, PRIVATE_REL);
   await mkdir(dirname(privatePath), { recursive: true });
   const privateText = JSON.stringify(doc, null, 2) + "\n";
   await writeFile(privatePath, privateText);
   await writeFile(join(root, "research/assets/public/track-record.json"), JSON.stringify(stub, null, 2) + "\n");
+  const proof = await buildPremiumProof(root, today);
+  await writeFile(join(root, "research/assets/public/premium-proof.json"), JSON.stringify(proof, null, 2) + "\n");
   const pushed = await pushTrackRecord({ token, text: privateText });
   return { doc, stub, pushed };
 }

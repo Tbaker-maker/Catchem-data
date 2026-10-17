@@ -40,9 +40,9 @@ export function percentFor(hit, n) {
 
 // Product names are proper names and ids are machine keys, so only words a reader sees are checked.
 const TRACK_VISIBLE = new Set([...VISIBLE_FIELDS, "type", "take"].filter((k) => k !== "status"));
-function assertClean(doc) {
+function assertClean(doc, visible = TRACK_VISIBLE) {
   // Flags only. A flagged line stops the file with the line and its reason; nothing is rewritten.
-  const r = cleanDoc(doc, { visible: TRACK_VISIBLE });
+  const r = cleanDoc(doc, { visible });
   const label = r.errors.length ? null : JSON.stringify(r.doc, (k, v) => (TRACK_VISIBLE.has(k) || typeof v !== "string" ? v : undefined));
   if (r.errors.length || LABEL_BAN.test(label)) throw new Error(`track record broke a copy rule: ${r.errors.join("; ") || "a take label"}`);
   return r.doc;
@@ -159,7 +159,79 @@ export function publicTrackRecord(doc) {
   });
 }
 
+function money2(n) {
+  const v = Number(n);
+  if (!(v > 0)) return "";
+  return `$${v.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+function pageLine(n, moved, days) {
+  if (!(n > 0)) return "";
+  return `Of ${n} reads in ${days} days, ${moved} moved the way the read described.`;
+}
+
+// Public page only. No take codes, horizons, weights, or how a read is chosen.
+// Rows come from our own dated price snapshots (the receipt hist), not a headline.
+export function publicTrackPage(receipts, today) {
+  const asOf = String(today || receipts?.asOf || "").slice(0, 10);
+  const rows = [];
+  for (const row of receipts?.rows || []) {
+    const hist = (Array.isArray(row?.hist) ? row.hist : []).filter((point) => Array.isArray(point) && /^\d{4}-\d{2}-\d{2}/.test(String(point[0])) && Number(point[1]) > 0);
+    if (!hist.length || !row?.name) continue;
+    const then = hist[0];
+    const now = hist[hist.length - 1];
+    const result = String(row.result || "");
+    const moved = result === "hit" ? true : result === "miss" ? false : null;
+    const kind = row.kind === "single" ? "single" : "sealed";
+    const said = `Recorded at ${money2(then[1])}.`;
+    if (kind === "sealed" && /\bNM\b|Near Mint/.test(said + String(row.name))) continue;
+    rows.push({
+      id: String(row.id || ""),
+      date: String(then[0]).slice(0, 10),
+      name: String(row.name),
+      said,
+      priceThen: Number(then[1]),
+      priceNow: Number(now[1]),
+      source: String(row.source || "TCGplayer market price"),
+      priceDate: String(now[0]).slice(0, 10),
+      kind,
+      moved,
+    });
+  }
+  rows.sort((a, b) => String(b.date).localeCompare(String(a.date)) || String(a.name).localeCompare(String(b.name)));
+  const inWindow = (days, kind) => rows.filter((row) => {
+    if (kind && row.kind !== kind) return false;
+    if (row.moved == null) return false;
+    if (!asOf) return true;
+    const age = dayGap(row.date, asOf);
+    return age != null && age <= days && age >= 0;
+  });
+  const pack = (days, kind) => {
+    const list = inWindow(days, kind);
+    const moved = list.filter((row) => row.moved === true).length;
+    return { reads: list.length, moved, line: pageLine(list.length, moved, days) };
+  };
+  const scored = rows.filter((row) => row.moved != null).length;
+  const d90 = pack(90, "");
+  return assertClean({
+    public: true,
+    asOf,
+    thin: scored < 30,
+    disclaimer: "Past moves don't predict future prices.",
+    summary: d90.line,
+    windows: {
+      d30: pack(30, ""),
+      d90,
+      sealed30: pack(30, "sealed"),
+      sealed90: pack(90, "sealed"),
+      single30: pack(30, "single"),
+      single90: pack(90, "single"),
+    },
+    rows,
+  }, new Set([...TRACK_VISIBLE, "said", "summary", "disclaimer", "line"]));
+}
+
 export function siteTrack(trackRecord) {
-  if (trackRecord?.public === false) return { page: false, cardLine: "", score: null };
-  return { page: false, cardLine: "", score: null };
+  if (trackRecord?.public !== true) return { page: false, cardLine: "", score: null };
+  return { page: true, cardLine: "", score: null };
 }

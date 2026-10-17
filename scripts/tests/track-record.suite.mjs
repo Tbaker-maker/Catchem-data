@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { shipPriceMap } from "../lib/second-library.mjs";
-import { buildTrackRecord, publicTrackRecord, scoreRead, siteTrack } from "../lib/track-record.mjs";
+import { buildTrackRecord, publicTrackPage, publicTrackRecord, scoreRead, siteTrack } from "../lib/track-record.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
@@ -114,9 +114,14 @@ export async function run() {
   t("a missing later daily file is no score", fromFile.marks["14"].day === LATER_DAY && fromFile.marks["14"].price === null && fromFile.status === "no-later-price");
 
   const pub = JSON.parse(await readFile(join(ROOT, "research/assets/public/track-record.json"), "utf8"));
+  const pubText = JSON.stringify(pub);
   const onDisk = siteTrack(pub);
-  t("the committed public file is a stub", pub.public === false && Array.isArray(pub.rows) && pub.rows.length === 0 && pub.cardLines == null && !JSON.stringify(pub).includes("Track record:") && !JSON.stringify(pub).includes('"sentence"'));
-  t("the committed public file renders nothing", onDisk.page === false && onDisk.cardLine === "" && onDisk.score == null);
+  t("the committed public file is a page without the score method", pub.public === true && Array.isArray(pub.rows) && pub.rows.length > 0 && !pub.rule && !pub.scoreMin && !pub.types && !pubText.includes("scored so far") && !pubText.includes("\"take\"") && !pubText.includes("percent") && pub.disclaimer === "Past moves don't predict future prices.");
+  t("the committed public file opens a page and still hides the score", onDisk.page === true && onDisk.cardLine === "" && onDisk.score == null);
+  t("a sealed public row never says NM", pub.rows.filter((row) => row.kind === "sealed").every((row) => !/\bNM\b|Near Mint/.test(JSON.stringify(row))));
+  t("the summary counts only reads that have a later price", pub.windows.d90.reads === pub.rows.filter((row) => row.moved != null && row.date >= "2026-07-19").length);
+  const sample = publicTrackPage({ asOf: "2026-10-17", rows: [{ id: "a", result: "hit", kind: "sealed", name: "Example Box", source: "eBay asking prices", hist: [["2026-10-01", 10], ["2026-10-02", 11]] }, { id: "b", result: "miss", kind: "sealed", name: "NM Box", source: "eBay asking prices", hist: [["2026-10-01", 10], ["2026-10-02", 9]] }] }, "2026-10-17");
+  t("a sealed name with NM is left off the public page", sample.rows.length === 1 && sample.rows[0].id === "a" && sample.windows.d30.moved === 1);
 
   if (fail) console.log(fail + " failed");
   else console.log("track record ok");
