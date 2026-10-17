@@ -46,6 +46,8 @@ import {
   serebiiMonthLinks,
 } from "./lib/news-sources.mjs";
 import { newsSlot, stampSharedNews } from "./lib/shared-news.mjs";
+import { splitJpNews } from "./lib/jp-news.mjs";
+import { openPrivate } from "./lib/private-store.mjs";
 
 // No em dashes in titles we show: spaced dash becomes a comma, tight dash a colon.
 export function noDash(t) {
@@ -487,7 +489,9 @@ async function main() {
   const sourceNames = sources.map((row) => row.source).filter(Boolean);
   applyFieldTags(catalog, sourceNames);
   const stored = catalog.map(shapeNewsItem);
-  const newsPool = stored.filter(isPublicNewsCandidate).map(publicNewsRecord);
+  // Japan-only items stay out of public news. The catalog keeps them for research leads.
+  const jpSplit = splitJpNews(stored.filter(isPublicNewsCandidate));
+  const newsPool = jpSplit.kept.map(publicNewsRecord);
   const items = pickDefault(newsPool, today, 8);
   const news = pickNews(newsPool, today);
   const weekly = pickWeekly(newsPool, today);
@@ -530,6 +534,7 @@ async function main() {
   await mkdir(dirname(NEWS_PATH), { recursive: true });
   await writeFile(NEWS_PATH, JSON.stringify(stamped, null, 2) + "\n");
   await writeFile(WEEKLY_PATH, JSON.stringify(weeklyDoc, null, 2) + "\n");
+  await writeJpDropLog(jpSplit.dropped, today, updated);
   console.log(`catalog ${stored.length} · public ${items.length} · news ${news.length} · weekly ${weeklyItems.length} · failures ${failures.length}`);
   for (const source of sources) {
     console.log(`  source ${source.items}\t${source.skipped ? "SKIP " + source.skipped : "ok"}\t${source.source}\t${source.url}`);
@@ -541,6 +546,21 @@ async function main() {
   // reason left on the document. A partial failure must not skip later steps.
   const exitCode = newsFetchExitCode({ wrote: true, sources, failures });
   if (exitCode) process.exitCode = exitCode;
+}
+
+// Private QA log of Japan-only items left out, with the reason for each.
+// Goes to catchem-data-private, or gitignored data/private/ with no token. Never public.
+export async function writeJpDropLog(dropped, day, at, { root = ROOT, token = process.env.PRIVATE_DATA_TOKEN || "" } = {}) {
+  try {
+    const store = await openPrivate({ root, token });
+    const rel = "news-qa/jp-dropped.json";
+    await mkdir(join(store.dir, "news-qa"), { recursive: true });
+    await writeFile(join(store.dir, rel), JSON.stringify({ day, at, count: dropped.length, dropped }, null, 2) + "\n");
+    const done = await store.close([rel], `news QA: ${dropped.length} Japan-only items left out (${day})`);
+    console.log(`jp news left out ${dropped.length} · private log ${done.pushed ? "saved" : "local only"}`);
+  } catch (err) {
+    console.log(`jp news left out ${dropped.length} · private log not saved (${String(err.message || err).slice(0, 120)})`);
+  }
 }
 
 // Exit 0 only when a catalog or digest was written and at least one source

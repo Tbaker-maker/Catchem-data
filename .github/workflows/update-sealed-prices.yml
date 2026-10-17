@@ -404,6 +404,9 @@ jobs:
         # The four research checks stay on the earlier continue-on-error step.
         # This step does not call eBay.
         run: node scripts/fetch-tcg-news.mjs
+        env:
+          # Japan-only items left out are logged to catchem-data-private only.
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
 
       - name: Write the weekly letter
         continue-on-error: true

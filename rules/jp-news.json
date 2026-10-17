@@ -1,0 +1,98 @@
+{
+  "name": "Catch'em news rules: Japan-only items",
+  "version": 1,
+  "about": "The one shared list. Catchem-data, catchem-site and catchem-bot all read this file. An item with any Japan signal is left out unless it also has a North America or English signal. When unsure, it stays out. Dropped items are logged privately, never on the public site.",
+  "jpSources": [
+    "Pokémon Card (Japan)",
+    "Pokémon Card Japan"
+  ],
+  "jpHosts": [
+    "pokemon-card.com",
+    "pokemon.co.jp",
+    "pokemoncenter-online.com",
+    "pokemon-card-lounge.com"
+  ],
+  "jpRegions": [
+    "jp",
+    "japan"
+  ],
+  "jpLanguages": [
+    "ja"
+  ],
+  "jpRules": [
+    {
+      "id": "japan-tag",
+      "pattern": "^\\s*Japan:",
+      "flags": "i",
+      "reason": "headline is tagged Japan."
+    },
+    {
+      "id": "japan-word",
+      "pattern": "\\bjapan(ese)?\\b|\\bJP\\b|日本",
+      "flags": "i",
+      "reason": "item is about Japan."
+    },
+    {
+      "id": "japanese-text",
+      "pattern": "[ぁ-ゟ゠-ヿ]",
+      "flags": "",
+      "reason": "item is written in Japanese."
+    },
+    {
+      "id": "japan-event",
+      "pattern": "champions league|city league|pok[eé]mon card gym|players club|pok[eé]mon center online|pok[eé]mon card lounge|pok[eé]mon card channel|get battle",
+      "flags": "i",
+      "reason": "Japan-only event or service."
+    },
+    {
+      "id": "japan-place",
+      "pattern": "\\b(tokyo|osaka|yokohama|kyoto|nagoya|aichi|fukuoka|sapporo|haneda|narita|shibuya|ikebukuro|okinawa)\\b",
+      "flags": "i",
+      "reason": "item is set in a Japanese city."
+    }
+  ],
+  "keepRules": [
+    {
+      "id": "english",
+      "pattern": "\\benglish\\b",
+      "flags": "i",
+      "reason": "says it is coming in English."
+    },
+    {
+      "id": "north-america",
+      "pattern": "north america(n)?|\\bcanad(a|ian)\\b|united states|\\bU\\.S\\.|\\bUSA\\b",
+      "flags": "i",
+      "reason": "names North America."
+    },
+    {
+      "id": "na-short",
+      "pattern": "\\b(NA|US|EN)\\b",
+      "flags": "",
+      "reason": "names an NA or English release."
+    },
+    {
+      "id": "global",
+      "pattern": "\\b(worldwide|global(ly)?|international(ly)?)\\b",
+      "flags": "i",
+      "reason": "global announcement."
+    },
+    {
+      "id": "na-url",
+      "pattern": "pokemon\\.com/us/|/en-us/|press\\.pokemon\\.com/en/",
+      "flags": "i",
+      "reason": "comes from an NA page."
+    }
+  ],
+  "jpHostsAbout": "A host matches itself and its subdomains, except the ones in notJpHosts.",
+  "notJpHosts": [
+    "asia.pokemon-card.com"
+  ],
+  "jpRegionPattern": {
+    "pattern": "japan",
+    "flags": "i"
+  },
+  "keepRegionPattern": {
+    "pattern": "\\b(US|CA|UK|NA|EN|international|english)\\b",
+    "flags": "i"
+  }
+}
