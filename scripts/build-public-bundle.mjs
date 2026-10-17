@@ -1,6 +1,7 @@
 // Builds research/assets/public from the TCGplayer catalog and the eBay sealed tape.
 // No PPT fields. Missing prices are omitted, never written as 0.
 import { variantTags, subtypeIndex } from "./lib/variant-tags.mjs";
+import { artType } from "./lib/art-type.mjs";
 import { readFile, writeFile, mkdir, readdir, copyFile, unlink } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -417,6 +418,7 @@ for (const item of items) {
     kind: item.kind === "sealed" ? "sealed" : "single",
     subtype: item.subtype || null,
     rarity: item.rarity || "",
+    ...(item.kind === "sealed" ? {} : { art: artType({ ...item, num: item.number || "", kind: "single" }) }),
     ...(() => { const tags = variantTags({ ...item, set: set.name }, { subtypes: subtypesById.get(item.id) }); return tags.length ? { tags } : {}; })(),
     price,
     printing: item.printing || null,
