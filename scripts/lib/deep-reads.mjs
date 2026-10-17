@@ -120,7 +120,7 @@ export function setDeepDives(cards, { asOf, sets, rotation, max = 25 }) {
       `Top ${n} by TCGplayer market price tonight (${monthDay(asOf)}), each with a price dated ${monthDay(asOf)}: ${usd(now)} together.`,
       `Top cards tonight: ${chase.slice(0, 3).map((c) => `${cardTitle(c)} ${usd(c.pts.at(-1)[1])}`).join(", ")}.`,
       moves.length ? `Same cards on both dates only: ${moves.join(", ")}.` : `Not enough of these cards have a price a year ago to compare.`,
-      bk.complete ? "" : `${bk.missing.length} pricier card${bk.missing.length === 1 ? "" : "s"} in this set have no fresh price tonight and are left out.`,
+      bk.complete ? "" : `${bk.missing.length} pricier card${bk.missing.length === 1 ? "" : "s"} in this set ${bk.missing.length === 1 ? "has" : "have"} no fresh price tonight and ${bk.missing.length === 1 ? "is" : "are"} left out.`,
       lead ? `Leading tier over the year: ${lead.k}, ${sgn(lead.ch)} across ${lead.n} cards.` : "",
       r?.status ? `Rotation: ${r.status === "Standard" ? `Standard legal, mark ${r.mark}` : `${r.status}, mark ${r.mark}`} (${markCited(r, rotation)}).` : (s.release ? `Released ${dateLabel(s.release, asOf)}.` : ""),
     ];
