@@ -64,7 +64,7 @@ export const REACH_TIERS = [
   { id: "crowd", upTo: 20000, label: "4k to 20k views a post",
     prefer: ["question", "permission", "invite", "observation"],
     avoid: [],
-    why: "The band where the permission mechanic is documented working — tall_alan took roughly 900 replies from an account this size. There is a crowd and a question finds it",
+    why: "The band where the permission mechanic is documented working: tall_alan took roughly 900 replies from an account this size. There is a crowd and a question finds it",
     hypothesis: true },
   { id: "loud", upTo: Infinity, label: "20k+ views a post",
     prefer: ["divide", "permission", "question"],
@@ -101,8 +101,8 @@ const REGISTERS = {
   observation: { label: "Notice", note: "A shared observation with an implicit 'right?'. This is the 127,200 shape." },
   confession:  { label: "Confess", note: "Say the thing everyone thinks. Relatability outperforms authority." },
   invite:      { label: "Invite", note: "Ask them to add to it rather than judge it." },
-  permission:  { label: "Permission", note: "A question plus a second sentence that removes the reason not to answer. tall_alan took ~900 replies at 16k followers on 'pick something quirky' — without it people think theirs is boring and scroll past." },
-  divide:      { label: "Divide", note: "Ask something the community genuinely disagrees on, then say it is not your opinion. Crambo got a 93% reply-to-like ratio doing exactly this — the disclaimer makes replying safe, because nobody is contradicting the host." },
+  permission:  { label: "Permission", note: "A question plus a second sentence that removes the reason not to answer. tall_alan took ~900 replies at 16k followers on 'pick something quirky'. Without it, people think theirs is boring and scroll past." },
+  divide:      { label: "Divide", note: "Ask something the community genuinely disagrees on, then say it is not your opinion. Crambo got a 93% reply-to-like ratio doing exactly this. The disclaimer makes replying safe, because nobody is contradicting the host." },
 };
 
 // WHICH ATTACK NAMES ARE FURNITURE. Counted from the catalogue rather than
@@ -131,7 +131,6 @@ const CARD_TEXT = __CARD_TEXT__;
 function lineOptions(cards, themeName, followerCount){
   const NL = String.fromCharCode(10);
   const Q1 = String.fromCharCode(8220), Q2 = String.fromCharCode(8221);
-  const DASH = String.fromCharCode(32, 8212, 32);
   if (!cards || !cards.length) return [];
   const out = [];
   const add = (reg, text) => { if (text && !out.some(o => o.text === text)) out.push({ reg, label: REGISTERS[reg].label, text, why: REGISTERS[reg].note }); };
@@ -430,11 +429,11 @@ function lineOptions(cards, themeName, followerCount){
     const who = uniq.length && uniq.length <= 3 ? uniq.join(", ") : (uniq.length ? nword(uniq.length) + " Pokémon" : "Pokémon");
     add("observation", "Paper on top. Pocket under. Same " + who + ".");
     if (yearsUsable() && span >= 1 && yearLo && yearHi) {
-      add("divide", yearLo + " paper and " + yearHi + " Pocket" + DASH + span + " years." + NL + NL +
+      add("divide", yearLo + " paper and " + yearHi + " Pocket: " + span + " years." + NL + NL +
         "Which era got it right?" + NL + NL + "Not my opinion, genuinely asking.");
     }
-    add("question", "Paper or Pocket" + DASH + who + ".");
-    add("invite", "Which row would you actually post" + DASH + "the paper or the Pocket?");
+    add("question", "Paper or Pocket: " + who + ".");
+    add("invite", "Which row would you actually post, the paper or the Pocket?");
   }
 
   const birdIds = cards.map(function(c){ return c.i; });
@@ -486,7 +485,7 @@ function lineOptions(cards, themeName, followerCount){
     if (hps.length === 2) {
       const loQ = Math.min(hps[0].H, hps[1].H), hiQ = Math.max(hps[0].H, hps[1].H);
       if (hiQ >= loQ * 1.5 || hiQ - loQ >= 50) {
-        add("question", loQ + " HP or " + hiQ + " — which do you actually play?");
+        add("question", loQ + " HP or " + hiQ + " HP? Which do you actually play?");
       }
     }
   }
@@ -506,9 +505,9 @@ function lineOptions(cards, themeName, followerCount){
   // is how the 2026-08-27 birds post captioned a paper×Pocket grid as if
   // the Pocket row was furniture.
   if (!mixedGames) {
-    if (N === 3 || N === 4) add("question", names.join(", ") + DASH + "pick one.");
-    else if (N > 4) add("question", names.slice(0, 3).join(", ") + DASH +
-      "pick one" + ofN(3) + ".");
+    if (N === 3 || N === 4) add("question", names.join(", ") + ". Pick one.");
+    else if (N > 4) add("question", names.slice(0, 3).join(", ") + ". Pick one" +
+      ofN(3) + ".");
   }
   if (cards.length === 1) add("question", "Anyone else own the " + first.s + " " + first.n + "?");
 
@@ -525,7 +524,7 @@ function lineOptions(cards, themeName, followerCount){
   if (span >= 10 && cards.length > 1 && yearsUsable() && !mixedGames) {
     // CALENDAR ORDER. first/last are TRAY order, so a newest-first tray printed
     // "2024 and 2000" - the span correct and the sentence backwards.
-    add("divide", yearLo + " and " + yearHi + DASH + span + " years apart." + NL + NL +
+    add("divide", yearLo + " and " + yearHi + ", " + span + " years apart." + NL + NL +
       "Which era got it right?" + NL + NL + "Not my opinion, genuinely asking.");
   }
   if (artists.length > 1 && cards.length > 1) {
@@ -612,9 +611,9 @@ function lineOptions(cards, themeName, followerCount){
   // NAMES A CARD, so it cannot be the same sentence over another pair. This
   // read "Tell me which of these two you would swap out" and was the last line
   // in the panel that repeated verbatim across three different pairings.
-  if (N === 2) add("invite", "Swap one of these out for me" + DASH + label(first) + " or " + label(last) + "?");
-  else if (N > 2) add("invite", "Swap one of " + these + " out for me" + DASH +
-    "start with " + label(first) + ", or tell me which one does not belong.");
+  if (N === 2) add("invite", "Swap one of these out for me: " + label(first) + " or " + label(last) + "?");
+  else if (N > 2) add("invite", "Swap one of " + these + " out for me. Start with " +
+    label(first) + ", or tell me which one does not belong.");
   if (cards.length === 1) add("invite", "What would you pair the " + first.s + " " + first.n + " with?");
   if (cards.length > 1) add("invite", "What would you sit next to " + label(first) + "?");
   if (typeof CONNECTING !== "undefined" && connectingHit) {
@@ -652,7 +651,7 @@ function lineOptions(cards, themeName, followerCount){
     out.sort((a, b) => rank(a) - rank(b));
     for (const o of out) {
       if (t.avoid.indexOf(o.reg) >= 0) o.note = "Lower for your reach: " + t.why;
-      else if (t.prefer.indexOf(o.reg) >= 0) o.note = "Suits your reach " + String.fromCharCode(8212) + " unproven, we hold five logged posts.";
+      else if (t.prefer.indexOf(o.reg) >= 0) o.note = "Suits your reach, but unproven: we hold five logged posts.";
     }
   }
   // KEEP THREE PER REGISTER so Another has somewhere to go. A hard cap of

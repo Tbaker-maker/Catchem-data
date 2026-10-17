@@ -1,14 +1,13 @@
 // LINE ENGINE, in the page. Options in four registers, built from the cards
 // actually chosen, and never asserting anything — a superlative closes a
 // conversation by being agreed with or wrong, and a question opens one.
-const REGISTERS = {"question":{"label":"Ask","note":"Answerable in one word. The lowest bar to a reply there is."},"observation":{"label":"Notice","note":"A shared observation with an implicit 'right?'. This is the 127,200 shape."},"confession":{"label":"Confess","note":"Say the thing everyone thinks. Relatability outperforms authority."},"invite":{"label":"Invite","note":"Ask them to add to it rather than judge it."},"permission":{"label":"Permission","note":"A question plus a second sentence that removes the reason not to answer. tall_alan took ~900 replies at 16k followers on 'pick something quirky' — without it people think theirs is boring and scroll past."},"divide":{"label":"Divide","note":"Ask something the community genuinely disagrees on, then say it is not your opinion. Crambo got a 93% reply-to-like ratio doing exactly this — the disclaimer makes replying safe, because nobody is contradicting the host."}};
+const REGISTERS = {"question":{"label":"Ask","note":"Answerable in one word. The lowest bar to a reply there is."},"observation":{"label":"Notice","note":"A shared observation with an implicit 'right?'. This is the 127,200 shape."},"confession":{"label":"Confess","note":"Say the thing everyone thinks. Relatability outperforms authority."},"invite":{"label":"Invite","note":"Ask them to add to it rather than judge it."},"permission":{"label":"Permission","note":"A question plus a second sentence that removes the reason not to answer. tall_alan took ~900 replies at 16k followers on 'pick something quirky'. Without it, people think theirs is boring and scroll past."},"divide":{"label":"Divide","note":"Ask something the community genuinely disagrees on, then say it is not your opinion. Crambo got a 93% reply-to-like ratio doing exactly this. The disclaimer makes replying safe, because nobody is contradicting the host."}};
 const COMMON_ATTACKS = ["confuse ray","hydro pump","double-edge","fire spin","sing","seismic toss","thunder wave","psychic","toxic","fire blast","water gun","whirlpool","agility","thunder","thunderbolt","poison sting","slam","hyper beam","slash","earthquake","thundershock","whirlwind","flamethrower","take down","aurora beam","ice beam","pound","flare","hypnosis","vine whip","poisonpowder","doubleslap","recover","stiffen","tackle","flail","double kick","horn drill","amnesia","bite","headbutt","withdraw","psyshock","leech seed","string shot","scratch","ember","dig","fury attack","low kick","stun spore","rock throw","harden","gnaw","thunder jolt","smash kick","flame tail","bubble","slap","bind","quick attack","pin missile","mega punch","wing attack","guillotine","body slam","petal dance","mega drain","rage","drill peck","supersonic","spore","fury swipes","stomp","horn attack","ram","waterfall","razor leaf","call for family","spark","leer","peck","growl","psyburn","fly","surf","rapid spin","hidden power","slashing strike","super singe","blizzard","high jump kick","absorb","lick","crabhammer","smokescreen","smog","spit poison","wrap","mind shock","tail slap","rolling tackle","drag off","rear kick","flop","psybeam","punch","kick","sleep powder","steel wing","feint attack","tail rap","sweet scent","swift","fireworks","defense curl","hide","roar","powder snow","rock tumble","nap","rising lunge","gust","knuckle punch","outrage","beatdown","corner","lunge","chop","combustion","rollout","double stab","lightning ball","shadow bind","blot","spinning attack","cross-cut","wave splash","tail whap","knock away","firebreathing","singe","charge","continuous tumble","double scratch","minor errand-running","spiral drain","energy crush","baby evolution","pierce","exoskeleton","focus energy","light punch","surprise attack","collect","metal claw","dragon claw","leaf blade","rock smash","sand attack","cutting wind","form change","tumbling attack","rock hurl","hypnoblast","ambush","quick blow","sharp fin","paralyzing gaze","rain splash","corkscrew punch","double spin","sharp fang","yawn","ascension","knock off","bright flame","heavy impact","psyshot","glide","smash turn","heat blast","beat","linear attack","hook","jump on","skill dive","poltergeist","overrun","rock slide","icy wind","searing flame","retaliate","reckless charge","steady firebreathing","mud shot","splash","water arrow","big bite","super psy bolt","fire wing","mega kick","fake out","gentle slap","razor wing","boundless power","fire fang","double slap","astonish","dig claws","static shock","smack","hang down","lead","seed bomb","sand tomb","hammer arm","hyper voice","speed attack","zen headbutt","speed dive","rest","find a friend","mumble","clutch","iron tail","fire mane","cut","crunch","bounce","push down","air slash","return","razor fin","flap","whimsy tackle","hydro splash","extrasensory","poison jab","hammer in","suffocating gas","scout","strength","land crush","magnum punch","guard press","confront","live coal","mach bolt","lunge out","x-scissor","acid spray","double draw","round","electric ball","wild charge","perplex","sludge bomb","mind bend","will-o-wisp","power gem","acrobatics","double hit","energy press","giga impact","revenge blast","icy snow","psy bolt","nasty plot","tail smack","poison powder","energy assist","bubble beam","water pulse","bug bite","mud-slap","aerial ace","cursed drop","stone edge","darkness fang","shred","jet headbutt","dragon pulse","speed wing","slicing blade","electro ball","flame charge","headbutt bounce","venoshock","wild tackle","strafe","solar beam","nuzzle","fairy wind","draining kiss","spike draw","boulder crush","spray fluid","triple draw","stampede","play rough","thunder shock","magical shot","gale thrust","bubble drain","claw slash","bind down","spooky shot","beam","aqua edge","zap kick","head bolt","psychic sphere","blasting wind","jet punch","leafage","slashing claw","leaf step","vise grip","mad party","frost smash","wrack down","sonic edge","trade","shuffle","union gain"];
 const CARD_TEXT = __CARD_TEXT__;
 
 function lineOptions(cards, themeName, followerCount){
   const NL = String.fromCharCode(10);
   const Q1 = String.fromCharCode(8220), Q2 = String.fromCharCode(8221);
-  const DASH = String.fromCharCode(32, 8212, 32);
   if (!cards || !cards.length) return [];
   const out = [];
   const add = (reg, text) => { if (text && !out.some(o => o.text === text)) out.push({ reg, label: REGISTERS[reg].label, text, why: REGISTERS[reg].note }); };
@@ -307,11 +306,11 @@ function lineOptions(cards, themeName, followerCount){
     const who = uniq.length && uniq.length <= 3 ? uniq.join(", ") : (uniq.length ? nword(uniq.length) + " Pokémon" : "Pokémon");
     add("observation", "Paper on top. Pocket under. Same " + who + ".");
     if (yearsUsable() && span >= 1 && yearLo && yearHi) {
-      add("divide", yearLo + " paper and " + yearHi + " Pocket" + DASH + span + " years." + NL + NL +
+      add("divide", yearLo + " paper and " + yearHi + " Pocket: " + span + " years." + NL + NL +
         "Which era got it right?" + NL + NL + "Not my opinion, genuinely asking.");
     }
-    add("question", "Paper or Pocket" + DASH + who + ".");
-    add("invite", "Which row would you actually post" + DASH + "the paper or the Pocket?");
+    add("question", "Paper or Pocket: " + who + ".");
+    add("invite", "Which row would you actually post, the paper or the Pocket?");
   }
 
   const birdIds = cards.map(function(c){ return c.i; });
@@ -363,7 +362,7 @@ function lineOptions(cards, themeName, followerCount){
     if (hps.length === 2) {
       const loQ = Math.min(hps[0].H, hps[1].H), hiQ = Math.max(hps[0].H, hps[1].H);
       if (hiQ >= loQ * 1.5 || hiQ - loQ >= 50) {
-        add("question", loQ + " HP or " + hiQ + " — which do you actually play?");
+        add("question", loQ + " HP or " + hiQ + " HP? Which do you actually play?");
       }
     }
   }
@@ -383,9 +382,9 @@ function lineOptions(cards, themeName, followerCount){
   // is how the 2026-08-27 birds post captioned a paper×Pocket grid as if
   // the Pocket row was furniture.
   if (!mixedGames) {
-    if (N === 3 || N === 4) add("question", names.join(", ") + DASH + "pick one.");
-    else if (N > 4) add("question", names.slice(0, 3).join(", ") + DASH +
-      "pick one" + ofN(3) + ".");
+    if (N === 3 || N === 4) add("question", names.join(", ") + ". Pick one.");
+    else if (N > 4) add("question", names.slice(0, 3).join(", ") + ". Pick one" +
+      ofN(3) + ".");
   }
   if (cards.length === 1) add("question", "Anyone else own the " + first.s + " " + first.n + "?");
 
@@ -402,7 +401,7 @@ function lineOptions(cards, themeName, followerCount){
   if (span >= 10 && cards.length > 1 && yearsUsable() && !mixedGames) {
     // CALENDAR ORDER. first/last are TRAY order, so a newest-first tray printed
     // "2024 and 2000" - the span correct and the sentence backwards.
-    add("divide", yearLo + " and " + yearHi + DASH + span + " years apart." + NL + NL +
+    add("divide", yearLo + " and " + yearHi + ", " + span + " years apart." + NL + NL +
       "Which era got it right?" + NL + NL + "Not my opinion, genuinely asking.");
   }
   if (artists.length > 1 && cards.length > 1) {
@@ -489,9 +488,9 @@ function lineOptions(cards, themeName, followerCount){
   // NAMES A CARD, so it cannot be the same sentence over another pair. This
   // read "Tell me which of these two you would swap out" and was the last line
   // in the panel that repeated verbatim across three different pairings.
-  if (N === 2) add("invite", "Swap one of these out for me" + DASH + label(first) + " or " + label(last) + "?");
-  else if (N > 2) add("invite", "Swap one of " + these + " out for me" + DASH +
-    "start with " + label(first) + ", or tell me which one does not belong.");
+  if (N === 2) add("invite", "Swap one of these out for me: " + label(first) + " or " + label(last) + "?");
+  else if (N > 2) add("invite", "Swap one of " + these + " out for me. Start with " +
+    label(first) + ", or tell me which one does not belong.");
   if (cards.length === 1) add("invite", "What would you pair the " + first.s + " " + first.n + " with?");
   if (cards.length > 1) add("invite", "What would you sit next to " + label(first) + "?");
   if (typeof CONNECTING !== "undefined" && connectingHit) {
@@ -529,7 +528,7 @@ function lineOptions(cards, themeName, followerCount){
     out.sort((a, b) => rank(a) - rank(b));
     for (const o of out) {
       if (t.avoid.indexOf(o.reg) >= 0) o.note = "Lower for your reach: " + t.why;
-      else if (t.prefer.indexOf(o.reg) >= 0) o.note = "Suits your reach " + String.fromCharCode(8212) + " unproven, we hold five logged posts.";
+      else if (t.prefer.indexOf(o.reg) >= 0) o.note = "Suits your reach, but unproven: we hold five logged posts.";
     }
   }
   // KEEP THREE PER REGISTER so Another has somewhere to go. A hard cap of

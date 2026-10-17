@@ -32,9 +32,13 @@ const RULES = [
   [/\bguaranteed\b|\bwill be worth\b|\bwill go up\b|\binvest\b/i, "makes a FINANCIAL claim"],
   [/undefined|NaN|\[object|null\b/i, "leaked a JS value into copy"],
 ];
-// The shared advice-phrase list (rules/advice-phrases.json) applies here too. Its dash rule is left
-// out until the editor templates stop using dashes (they use them today).
-for (const r of ADVICE.rules.filter((x) => x.kind !== "house")) RULES.push([new RegExp(r.pattern, "i"), r.reason]);
+// The shared advice-phrase list (rules/advice-phrases.json) applies here too, dash rule included.
+// A dash inside an official set name (HS\u2014Undaunted) is the set's own name, not our writing.
+const SET_NAME_DASH = /\b([A-Z]{1,5})[\u2014\u2013](?=[A-Z])/g;
+for (const r of ADVICE.rules) {
+  const rx = new RegExp(r.pattern, "i");
+  RULES.push([{ test: (s) => rx.test(String(s).replace(SET_NAME_DASH, "$1 ")) }, r.reason]);
+}
 const problems = [];
 const check = (where, s) => { if (!s) return;
   // A superlative inside a QUESTION is the opposite of an assertion — asking
