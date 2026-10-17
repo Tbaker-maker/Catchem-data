@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { buildOutbox, dueOn, fetchFollows, memberMatch, poolFromData, putOutbox } from "../lib/custom-reads-pipe.mjs";
+import { buildOutbox, dueOn, fetchFollows, memberMatch, poolFromData, previewLines, putOutbox } from "../lib/custom-reads-pipe.mjs";
 import { isClean } from "../lib/copy-rules.mjs";
 
 export async function run() {
@@ -34,6 +34,72 @@ export async function run() {
   t("the member script never logs the token or writes member files", !/console\.log\([^)]*token/.test(script) && !script.includes("writeFile"));
   const wf = readFileSync(new URL("../../.github/workflows/update-sealed-prices.yml", import.meta.url), "utf8");
   t("the nightly runs the member step with the secret", wf.includes("node scripts/build-custom-reads-members.mjs") && wf.includes("secrets.CUSTOM_READS_TOKEN"));
+
+  const named = poolFromData({
+    catalogue: {
+      asOf: "2026-10-18",
+      sets: [
+        {
+          slug: "sv-prismatic-evolutions",
+          name: "SV: Prismatic Evolutions",
+          era: "Scarlet & Violet",
+          released: true,
+          prices: [
+            { id: "tcgcsv-9001", number: "161/131", price: 1250.07, name: "Umbreon ex - 161/131", rarity: "Special Illustration Rare", printing: "Holofoil" },
+            { id: "tcgcsv-9002", number: "004/131", price: 2, name: "Pikachu", rarity: "Common", printing: "Normal" },
+            { id: "tcgcsv-9003", number: "170/131", price: 40, name: "Amarys - 170/131", rarity: "Ultra Rare", printing: "Holofoil" },
+          ],
+        },
+        {
+          slug: "swsh07-evolving-skies",
+          name: "SWSH07: Evolving Skies",
+          era: "Sword & Shield",
+          released: true,
+          prices: [
+            { id: "tcgcsv-9004", number: "215/203", price: 80, name: "Umbreon VMAX - 215/203", rarity: "Rare Holo", printing: "Holofoil" },
+          ],
+        },
+      ],
+    },
+    sealed: {
+      updatedAt: "2026-10-18T13:00:00Z",
+      products: [
+        { id: "fake-etb", name: "Prismatic Evolutions Elite Trainer Box", set: "Prismatic Evolutions", tcgPlayerId: "90077", dataStatus: "live", askMedian: 90, listingCount: 12 },
+      ],
+    },
+  });
+  const umbreon = named.reads.find((row) => row.cardId === "tcgcsv-9001");
+  t("a card line names the card, the number, and the set", umbreon && umbreon.line.startsWith("Umbreon ex 161/131, Prismatic Evolutions is ") && umbreon.art === "Special Illustration Rare");
+  t("pokemon matches that card and not a different one", memberMatch({ pokemon: ["Umbreon"], kinds: ["single"] }, umbreon) === true && memberMatch({ pokemon: ["Eevee"], kinds: ["single"] }, umbreon) === false);
+  t("a rarity pick uses the art type", named.reads.filter((row) => memberMatch({ rarities: ["Special Illustration Rare"], kinds: ["single"] }, row)).every((row) => row.art === "Special Illustration Rare") && named.reads.some((row) => memberMatch({ rarities: ["Special Illustration Rare"], kinds: ["single"] }, row)));
+  t("ultra rare matches the printed rarity when the art type is full art", named.reads.some((row) => row.cardId === "tcgcsv-9003" && row.art === "Full Art" && memberMatch({ rarities: ["Ultra Rare"], kinds: ["single"] }, row)));
+  t("an era pick matches the set line and not another era", named.reads.some((row) => row.kind === "single" && row.set === "sv-prismatic-evolutions" && memberMatch({ eras: ["Scarlet and Violet"], kinds: ["single"] }, row)) && !named.reads.some((row) => row.set === "swsh07-evolving-skies" && memberMatch({ eras: ["Scarlet and Violet"], kinds: ["single"] }, row)));
+  t("a set follow still skips the card lines", named.reads.filter((row) => memberMatch({ sets: ["sv-prismatic-evolutions"], kinds: ["single"] }, row)).length === 1);
+  const fakeId = "900000000000000101";
+  const picks = [
+    { discordId: fakeId, pokemon: ["Umbreon"], kinds: ["single"], frequency: "daily" },
+    { discordId: "900000000000000102", rarities: ["Special Illustration Rare"], kinds: ["single"], frequency: "daily" },
+    { discordId: "900000000000000103", eras: ["Scarlet and Violet"], kinds: ["single"], frequency: "daily" },
+    { discordId: "900000000000000104", sets: ["sv-prismatic-evolutions"], kinds: ["single"], frequency: "daily" },
+    { discordId: "900000000000000105", cards: ["tcgcsv-9002"], kinds: ["single"], frequency: "daily" },
+    { discordId: "900000000000000106", sealed: ["tcgcsv-90077"], kinds: ["sealed"], frequency: "daily" },
+    { discordId: "900000000000000107", news: true, frequency: "daily" },
+    { discordId: "900000000000000108", frequency: "daily" },
+  ];
+  const news = [{ headline: "Set page dated", line: "The set page names the day.", url: "https://press.pokemon.com/en/example", source: "Pokemon press", date: "2026-10-15" }];
+  const boxed = buildOutbox({ follows: picks, pool: named, news, now });
+  t("each pick type gets a line and an empty follow stays quiet", boxed.members.length === 7 && boxed.counts.quiet === 1 && boxed.members.every((row) => row.reads.length || row.news));
+  const byId = new Map(boxed.members.map((row) => [row.discordId, row]));
+  t("pokemon, rarity, era, set, card, and sealed each produce a line", ["900000000000000102", "900000000000000103", "900000000000000104", "900000000000000105", "900000000000000106"].every((id) => byId.get(id)?.reads?.length === 1) && byId.get(fakeId)?.reads?.length === 2);
+  t("the pokemon line is the named card", byId.get(fakeId).reads[0].line.includes("Umbreon ex 161/131, Prismatic Evolutions"));
+  const dmLines = boxed.members.flatMap((row) => [row.lead, ...row.reads.map((item) => item.line), ...(row.news || []).flatMap((item) => [item.headline, item.line])]);
+  t("every generated line passes the advice checker", dmLines.length > 0 && dmLines.every((line) => isClean(line) && !/[\u2013\u2014]/.test(line) && !/\bsold\b|\bsales\b/i.test(line)));
+  const preview = previewLines(named);
+  t("preview lines have no member id", !JSON.stringify(preview).includes("discord") && preview.lines["pokemon:Umbreon"].includes("Umbreon ex 161/131, Prismatic Evolutions") && preview.lines["rarity:Special Illustration Rare"].includes("Umbreon ex 161/131"));
+  t("the sealed preview is listings counted", preview.lines["product:sealed"].includes("listings counted") && !/\bNM\b/.test(preview.lines["product:sealed"]));
+  const shipped = JSON.parse(readFileSync(new URL("../../research/assets/public/reads-preview.json", import.meta.url), "utf8"));
+  const shippedLines = Object.values(shipped.lines || {});
+  t("the shipped preview is clean, dated, and has no member id", shipped.asOf && shippedLines.length >= 8 && shippedLines.every((line) => isClean(line) && /as of /.test(line) && !/[\u2013\u2014]/.test(line)) && !JSON.stringify(shipped).includes("discord") && String(shipped.lines["rarity:Special Illustration Rare"] || "").includes("Umbreon ex 161/131, Prismatic Evolutions"));
   return fail;
 }
 
