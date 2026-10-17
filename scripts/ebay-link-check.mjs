@@ -18,7 +18,7 @@ const J = async (p, d) => { try { return JSON.parse(await readFile(p, "utf8")); 
 async function token() {
   const { EBAY_APP_ID: a, EBAY_CERT_ID: c } = process.env;
   if (!a || !c) throw new Error("no eBay app keys");
-  const res = await fetch("https://api.ebay.com/identity/v1/oauth2/token", { method: "POST", headers: { Authorization: `Basic ${Buffer.from(`${a}:${c}`).toString("base64")}`, "Content-Type": "application/x-www-form-urlencoded" }, body: "grant_type=client_credentials&scope=https://api.ebay.com/oauth/api_scope" });
+  const res = await fetch("https://api.ebay.com/identity/v1/oauth2/token", { method: "POST", signal: AbortSignal.timeout(30000), headers: { Authorization: `Basic ${Buffer.from(`${a}:${c}`).toString("base64")}`, "Content-Type": "application/x-www-form-urlencoded" }, body: "grant_type=client_credentials&scope=https://api.ebay.com/oauth/api_scope" });
   if (!res.ok) throw new Error(`OAuth ${res.status}`);
   return (await res.json()).access_token;
 }
@@ -43,8 +43,10 @@ if (n > 0) {
       const q = row[f];
       if (!q) continue;
       const url = `https://api.ebay.com/buy/browse/v1/item_summary/search?limit=1&q=${encodeURIComponent(q)}`;
-      const res = await fetch(url, { headers: { Authorization: `Bearer ${tok}`, "X-EBAY-C-MARKETPLACE-ID": "EBAY_US" } });
       calls++;
+      let res;
+      try { res = await fetch(url, { signal: AbortSignal.timeout(20000), headers: { Authorization: `Bearer ${tok}`, "X-EBAY-C-MARKETPLACE-ID": "EBAY_US" } }); }
+      catch (e) { r[f] = { error: String(e.name || e) }; await sleep(GAP_MS); continue; }
       if (res.status === 429) { console.log("429, stopping"); break outer; }
       if (!res.ok) r[f] = { error: res.status, body: (await res.text()).slice(0, 200) };
       else r[f] = { total: Number((await res.json()).total) || 0 };
