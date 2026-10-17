@@ -456,7 +456,9 @@ for (const set of sets.values()) {
   const pricedSinglesInSet = set.items.filter((it) => it.kind === "single" && it.price).sort((a, b) => b.price - a.price);
   pricedSinglesInSet.forEach((it, i) => { it.rank = i + 1; it.of = pricedSinglesInSet.length; });
   const also = pricedSinglesInSet.slice(0, 4).map((it) => ({ id: it.id, name: it.name }));
-  for (const it of set.items) it.also = also.filter((x) => x.id !== it.id).slice(0, 3);
+  // Sealed pages relate to other sealed products from the same set, not singles.
+  const alsoSealed = set.items.filter((it) => it.kind === "sealed" && it.price).sort((a, b) => b.price - a.price).slice(0, 7).map((it) => ({ id: it.id, name: it.name }));
+  for (const it of set.items) it.also = (it.kind === "sealed" && alsoSealed.length > 1 ? alsoSealed : also).filter((x) => x.id !== it.id).slice(0, it.kind === "sealed" ? 6 : 3);
   const logo = logoFor(set.slug);
   const row = {
     slug: set.slug,
