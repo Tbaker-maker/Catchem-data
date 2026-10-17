@@ -1,25 +1,23 @@
-// copy-rules.mjs: the one place that decides which phrases a reader may not see.
-// The list itself lives in rules/advice-phrases.json. catchem-site and catchem-bot
-// keep a byte-for-byte copy of that file and fail a test when it drifts.
+// copy-rules.mjs: the one place that decides which lines a reader may not see.
+// The rules live in rules/advice-phrases.json and the logic in ./advice-intent.mjs.
+// catchem-site keeps byte-for-byte copies of both, catchem-bot keeps the JSON and a
+// Python port, and each fails a test when its copy drifts.
 //
-// What is blocked: phrases that tell people what to do with money (buy now,
-// you should sell, load up, guaranteed, can't lose, to the moon), crypto words,
-// and em or en dashes. Shopping and button words (Buy, Shop, Sell your cards,
-// price target, "Buy on TCGplayer", "Buy on eBay") are always allowed.
+// What is flagged: a line that tells the reader to buy, sell, hold or flip (you should
+// sell, time to buy, grab one now), a promise of a result (guaranteed, can't lose, will
+// double, to the moon), crypto or investment framing, and em or en dashes. Market facts,
+// questions, past-tense reporting, quoted product names and button labels (Buy on
+// TCGplayer, Buy on eBay, Shop, Sell your cards) pass.
 //
-// A match flags the line with its reason. Nothing is ever rewritten.
+// A flag names the line, the rule, the matched span and the reason. Nothing is ever rewritten.
 // Ids, slugs, keys, urls, paths and dates are machine text and are never checked.
 import { readFileSync } from "node:fs";
+import { makeChecker } from "./advice-intent.mjs";
 
 export const RULES_URL = new URL("../../rules/advice-phrases.json", import.meta.url);
 export const ADVICE = JSON.parse(readFileSync(RULES_URL, "utf8"));
 export const ALLOWED = Object.freeze([...ADVICE.allowed]);
-const COMPILED = ADVICE.rules.map((r) => ({ ...r, re: new RegExp(r.pattern, "i") }));
-// Multi-word allowed labels are taken out before matching, so a button label can
-// never trip a rule. Single words (Buy, Shop) need no stripping: no rule bans a word alone.
-const LABELS = ALLOWED.filter((a) => /\s/.test(a)).sort((a, b) => b.length - a.length);
-const escRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-const LABEL_RE = LABELS.length ? new RegExp(LABELS.map(escRe).join("|"), "gi") : null;
+const CHECKER = makeChecker(ADVICE);
 
 // Data-read house rules that are not about money words. Flag only.
 const HOUSE = [
@@ -31,21 +29,22 @@ function looksMachine(s) {
   return /^(https?:\/\/|\/|\.\/)/.test(s) || /^[\w.-]+\/[\w./-]+$/.test(s) || /^[a-z0-9]+(?:[-_][a-z0-9]+)+$/.test(s) || /^\d{4}-\d{2}-\d{2}/.test(s);
 }
 
-// Every rule a line breaks. Each flag carries the line, the matched phrase and the reason.
+// Every rule a line breaks. Each flag carries the line, the rule, the span, the phrase and the reason.
 export function flagLine(input, { field = "", id = "", house = false } = {}) {
   const line = String(input ?? "");
   if (!line.trim() || looksMachine(line.trim())) return [];
-  const text = LABEL_RE ? line.replace(LABEL_RE, " ") : line;
-  const flags = [];
-  for (const r of house ? [...COMPILED, ...HOUSE] : COMPILED) {
-    const m = text.match(r.re);
-    if (m) flags.push({ line, phrase: m[0], rule: r.id, kind: r.kind, reason: r.reason, field, id });
+  const flags = CHECKER.flagLine(line).map((f) => ({ ...f, field, id }));
+  if (house) {
+    for (const r of HOUSE) {
+      const m = r.re.exec(line);
+      if (m) flags.push({ line, rule: r.id, kind: r.kind, span: [m.index, m.index + m[0].length], phrase: m[0], reason: r.reason, field, id });
+    }
   }
   return flags;
 }
 
 const clip = (s) => (s.length > 160 ? `${s.slice(0, 157)}...` : s);
-export const formatFlag = (f) => `flagged "${clip(f.line)}"${f.field ? ` in field "${f.field}"` : ""}${f.id ? ` of read ${f.id}` : ""}: "${f.phrase}". ${f.reason}`;
+export const formatFlag = (f) => `flagged "${clip(f.line)}"${f.field ? ` in field "${f.field}"` : ""}${f.id ? ` of read ${f.id}` : ""}: rule ${f.rule} matched "${f.phrase}". ${f.reason}`;
 
 // Log each flagged line once per run, so a dropped line is never dropped silently.
 const SEEN = new Set();

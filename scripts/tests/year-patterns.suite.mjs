@@ -155,7 +155,7 @@ export async function run() {
   t("a warning that has not passed keeps user lines empty", blocked.userLines.length === 0);
   const on = alertsDocument({ asOf: "2026-10-13", enabled: true, warningsPassed: true, items: [warn, { line: "please buy now", patternId: "x" }] });
   t("alerts on after a pass keeps only a clean line", on.userLines.length === 1 && on.userLines[0] === warn.line);
-  t("public copy rejects banned words and dashes", !publicCopyOk("you should buy") && publicCopyOk("Buy on eBay") && !publicCopyOk("listings supply fell") && !publicCopyOk("a \u2014 b") && !publicCopyOk("a \u2013 b") && !publicCopyOk("load up") && publicCopyOk("listings counted fell 40% in 2 days"));
+  t("public copy rejects banned words and dashes", !publicCopyOk("you should buy") && publicCopyOk("Buy on eBay") && !publicCopyOk("listings supply fell") && !publicCopyOk("a \u2014 b") && !publicCopyOk("a \u2013 b") && !publicCopyOk("load up on boxes") && publicCopyOk("listings counted fell 40% in 2 days"));
   const line = provenLine({ keys: ["kind=sealed", "path=dip"], horizon: 7 }, { rate: 0.4, n: 25 });
   t("proven line is clean", publicCopyOk(line) && line.includes("40%") && line.includes("25") && line.includes("7-day") && !hasBannedWord(line, { house: true }));
 

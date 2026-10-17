@@ -10,10 +10,10 @@ export async function run() {
   const t = (name, ok, extra = "") => { console.log(`  ${ok ? "ok " : "FAIL"} ${name}${ok ? "" : ` ${extra}`}`); if (!ok) fail += 1; };
   const r = spawnSync(process.execPath, [join(ROOT, "scripts/editor-copy-rules.mjs")], { cwd: ROOT, encoding: "utf8", timeout: 240000 });
   const out = `${r.stdout || ""}${r.stderr || ""}`;
-  const dashes = out.split("\n").filter((l) => /No em or en dashes/.test(l));
+  const dashes = out.split("\n").filter((l) => /rule dash matched/.test(l));
   t("the editor check ran", /checked \d+ generated strings/.test(out), out.slice(-300));
   t("no generated Post Office line has an em or en dash", dashes.length === 0, dashes.slice(0, 3).join(" | "));
-  const advice = out.split("\n").filter((l) => /Tells people|Promises a result|Crypto words|Hype that/.test(l));
+  const advice = out.split("\n").filter((l) => /rule (?!dash)[\w-]+ matched/.test(l));
   t("no generated Post Office line breaks an advice rule", advice.length === 0, advice.slice(0, 3).join(" | "));
   return fail;
 }

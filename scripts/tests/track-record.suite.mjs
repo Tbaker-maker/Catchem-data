@@ -73,7 +73,7 @@ export async function run() {
   try {
     buildTrackRecord([{ id: "b", sku: "tcgcsv-9", name: "Example", asOf: "2026-08-01", take: "up" }], { "tcgcsv-9": { "2026-08-15": 12 } }, "2026-10-01", { "tcgcsv-9": { "2026-08-01": { market: 10, source: "you should buy" } } });
   } catch (err) {
-    banned = /track record broke a copy rule: flagged "you should buy" in field "shipSource" of read b: "you should buy"\. Tells people/.test(err.message);
+    banned = /track record broke a copy rule: flagged "you should buy" in field "shipSource" of read b: rule directive matched "you should buy"\. Tells the reader/.test(err.message);
   }
   t("an advice phrase fails and names the line, field, read id and reason", banned);
   let sourceBanned = false;
