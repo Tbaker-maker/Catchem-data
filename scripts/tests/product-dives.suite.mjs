@@ -80,14 +80,14 @@ export async function run() {
   };
   const indexed = indexOutlierMap(sealedDoc);
   t("indexes high[] by id", indexed?.["sv5-pc-etb"]?.pctGap === 95.5);
-  t("flag note from pctGap", outlierFlagNote(sealedDoc.high[0]) === "Price flagged: 95.5% above recent median — review");
+  t("flag note from pctGap", outlierFlagNote(sealedDoc.high[0]) === "Price flagged for review: 95.5% above the recent median");
   const highDive = buildDivePayload({
     id: "sv5-pc-etb",
     seriesRows: [{ date: "2026-08-20", id: "sv5-pc-etb", price: 200, listingCount: 10 }],
     outlierMap: indexed,
   });
-  t("HIGH sealed outlier lands on dive", highDive.outlier?.note === "Price flagged: 95.5% above recent median — review" && highDive.outlier?.pctGap === 95.5 && highDive.outlierHook === null);
-  t("below uses direction/sign", outlierFlagNote({ pctGap: -50.9, direction: "low" }) === "Price flagged: 50.9% below recent median — review");
+  t("HIGH sealed outlier lands on dive", highDive.outlier?.note === "Price flagged for review: 95.5% above the recent median" && highDive.outlier?.pctGap === 95.5 && highDive.outlierHook === null);
+  t("below uses direction/sign", outlierFlagNote({ pctGap: -50.9, direction: "low" }) === "Price flagged for review: 50.9% below the recent median");
 
   const bundle = buildAllDives({
     heatHistory: seriesRows,
