@@ -376,7 +376,7 @@ export function ratingReads(list, { asOf, max = 3 } = {}) {
       const head = `Priced ${side} similar ${label}: ${bare(top.name)}${pv} (${shortSet(top.set)})${top.num ? ` ${top.num}` : ""}, ${tcgAmount(top.price.price, money)} (${md(top.price.date)}) on TCGplayer market. Typical price for similar cards: ${tcgAmount(top.peers.median, money)} (${top.peers.n} cards).${top.nearHigh ? ` Near its own high on file (${tcgAmount(top.nearHigh.price, money)}, ${md(top.nearHigh.date)}).` : ""}`.replace(/\s+\)/, ")");
       const lines = [
         ...pick.slice(0, max).map((r) => `${bare(r.name)}${r.firstEd ? " 1st Edition" : ""} (${shortSet(r.set)})${r.num ? ` ${r.num}` : ""}: ${tcgAmount(r.price.price, money)} (${md(r.price.date)}), ${r.peers.ratio}x the typical ${tcgAmount(r.peers.median, money)}.`),
-        `Similar cards: other ${label} with similar popularity where there are ${MIN_PEERS} or more, otherwise all ${label}. Typical price is the middle price. TCGplayer market on ${md(asOf)}.`,
+        `TCGplayer market price, ${md(asOf)}.`,
         "A factual comparison of prices on file, not advice.",
       ];
       if (!cleanCopy(head) || lines.some((l) => !cleanCopy(l)) || lines.length < 3) continue;
