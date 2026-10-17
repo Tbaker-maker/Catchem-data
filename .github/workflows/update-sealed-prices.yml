@@ -473,6 +473,15 @@ jobs:
           node scripts/build-release-scout.mjs || true
           node scripts/build-canada-gap.mjs || true
 
+      - name: Member Custom Reads (site worker outbox)
+        # Saved follows come from the site worker and the night's DMs go back
+        # to it for the bot. Nothing about a member is committed here (public
+        # repo). Skips cleanly until CUSTOM_READS_TOKEN is set. Never fails the run.
+        continue-on-error: true
+        env:
+          CUSTOM_READS_TOKEN: ${{ secrets.CUSTOM_READS_TOKEN }}
+        run: node scripts/build-custom-reads-members.mjs
+
       - name: Commit updated prices
         run: |
           git config user.name "catchem-bot"

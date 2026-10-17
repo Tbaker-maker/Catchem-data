@@ -187,6 +187,14 @@ console.log("── 30-day sparks ──");
   t("spark suite", n === 0, `${n} failed`);
 }
 
+console.log("── custom reads ──");
+{
+  const a = await import("./custom-reads.suite.mjs");
+  const b = await import("./custom-reads-pipe.suite.mjs");
+  const n = (await a.run()) + (await b.run());
+  t("custom reads suites", n === 0, `${n} failed`);
+}
+
 console.log("── face stamp keeps group subjects clean ──");
 {
   const { run } = await import("./face-stamp-subject.suite.mjs");

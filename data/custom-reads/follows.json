@@ -1,4 +1,4 @@
 {
-  "rule": "Each follow is one Discord id. The nightly reads data/custom-reads/follows.json in this shape. A night with no match is skipped.",
+  "rule": "Test rows only. Member follows are never stored in this public repo: the nightly reads them from the site worker (/api/reads/export) and sends DMs through the worker outbox.",
   "follows": []
 }
