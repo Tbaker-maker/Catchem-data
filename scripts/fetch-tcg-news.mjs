@@ -29,6 +29,7 @@ import {
   parseAsiaPress,
   parseAsiaSg,
   parseGematsu,
+  parseIcv2,
   parseJpInfo,
   parseLimitless,
   parsePcPreorders,
@@ -277,7 +278,11 @@ async function officialPress(failures) {
     });
   }
   const items = [];
+  let first = true;
   for (const link of links) {
+    // press.pokemon.com robots.txt asks for Crawl-Delay: 5.
+    if (!first) await sleep(5000);
+    first = false;
     try {
       const res = await getText(link.url);
       if (res.status >= 400) throw new Error(`HTTP ${res.status}`);
@@ -416,6 +421,7 @@ async function fetchAdded(failures) {
     one("Serebii", "https://www.serebii.net/card/english.shtml", parseSerebiiSets),
     one("Pokémon Asia press", "https://asia-press.portal-pokemon.com/", parseAsiaPress),
     one("Gematsu", "https://www.gematsu.com/companies/the-pokemon-company", parseGematsu),
+    one("ICv2", "https://icv2.com/rss", parseIcv2),
   ]);
 
   for (const report of reports) {
