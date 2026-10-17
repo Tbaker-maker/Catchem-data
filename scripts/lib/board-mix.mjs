@@ -508,7 +508,19 @@ export function polishPriceRead(r) {
   if (!cleanCopy(headline)) return r;
   return { ...r, headline, path: headline, variants };
 }
+// Thin-market guard: a market price that triples or loses two thirds inside one
+// read window is far more often one odd listing than a real move. Drop it.
+export function thinMarketOutlier(r) {
+  if (!r || !["streak", "single", "sealed"].includes(r.readKind)) return false;
+  const m = String(r.headline || "").match(fromRe);
+  const to = Number(r.price);
+  const from = m ? Number(m[1].replace(/,/g, "")) : NaN;
+  if (!(from > 0) || !(to > 0)) return false;
+  const x = to / from;
+  return x >= 3 || x <= 1 / 3;
+}
 export function keepPriceRead(r) {
+  if (thinMarketOutlier(r)) return false;
   if (r?.readKind === "askmove") {
     const a = Number(r.receipt?.askFrom), b = Number(r.receipt?.askTo);
     if (a > 0 && b > 0 && Math.abs(pct(a, b)) < 5) return false;

@@ -1,10 +1,12 @@
-import { cleanCopy, eraOf, laggingFor, groupClimbReads, listingReads, newsReads, releaseReads, mixBoard, isPriceRead, buildSealedLag, sealedEra, fillSlots, fitBoard, PRICE_SHARE_MAX } from "../lib/board-mix.mjs";
+import { cleanCopy, eraOf, laggingFor, groupClimbReads, listingReads, newsReads, releaseReads, mixBoard, isPriceRead, buildSealedLag, sealedEra, fillSlots, fitBoard, PRICE_SHARE_MAX, keepPriceRead } from "../lib/board-mix.mjs";
 
 export async function run() {
   let fail = 0;
   const t = (name, cond) => { if (cond) console.log(`  ok  ${name}`); else { fail += 1; console.error(`  FAIL ${name}`); } };
 
   t("banned words are caught", !cleanCopy("time to buy") && !cleanCopy("a play here") && !cleanCopy("price target") && !cleanCopy("well printed"));
+  t("thin-market triple is dropped", keepPriceRead({ readKind: "sealed", headline: "Since Sep 26, X went from $10.00 to $35.00, up 250%.", price: 35 }) === false);
+  t("a normal 8% move is kept", keepPriceRead({ readKind: "sealed", headline: "Since Sep 26, X went from $300.96 to $326.03, up 8.3%.", price: 326.03 }) === true);
   t("em dash is caught", !cleanCopy("a \u2014 b"));
   t("era from TCGplayer group", eraOf("SWSH07: Evolving Skies") === "SWSH" && eraOf("SM - Dragon Majesty") === "SM" && eraOf("SV09: Journey Together") === "SV" && eraOf("Base Set") === "");
   t("sealed era from set id", sealedEra("swsh7") === "SWSH" && sealedEra("sv3pt5") === "SV" && sealedEra("base1") === "");
