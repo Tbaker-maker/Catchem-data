@@ -1,54 +1,152 @@
 {
-  "name": "Catch'em news rules: Japan-only items",
-  "version": 1,
-  "about": "The one shared list. Catchem-data, catchem-site and catchem-bot all read this file. An item with any Japan signal is left out unless it also has a North America or English signal. When unsure, it stays out. Dropped items are logged privately, never on the public site.",
-  "jpSources": [
-    "Pokémon Card (Japan)",
-    "Pokémon Card Japan"
-  ],
-  "jpHosts": [
-    "pokemon-card.com",
-    "pokemon.co.jp",
-    "pokemoncenter-online.com",
-    "pokemon-card-lounge.com"
-  ],
-  "jpRegions": [
-    "jp",
-    "japan"
-  ],
-  "jpLanguages": [
-    "ja"
-  ],
-  "jpRules": [
+  "name": "Catch'em news rules: region-only items (North America first)",
+  "version": 2,
+  "about": "The one shared list. Catchem-data, catchem-site and catchem-bot all read this file. An item with any region-only signal (Japan, China, Korea, Taiwan, Thailand, Indonesia, other Asia, or a non-NA regional exclusive) is left out unless it also has an English, North America, worldwide or international signal. When unsure, it stays out. Dropped items are logged privately, never on the public site.",
+  "sources": {
+    "Pokémon Card (Japan)": "Japan",
+    "Pokémon Card Japan": "Japan",
+    "Pokémon Card (Asia)": "Asia",
+    "Pokémon Asia press": "Asia"
+  },
+  "hosts": {
+    "pokemon-card.com": "Japan",
+    "pokemon.co.jp": "Japan",
+    "pokemoncenter-online.com": "Japan",
+    "pokemon-card-lounge.com": "Japan",
+    "asia.pokemon-card.com": "Asia",
+    "asia-press.portal-pokemon.com": "Asia",
+    "pokemonkorea.co.kr": "Korea",
+    "pokemon-card.co.kr": "Korea",
+    "pokemon.com.cn": "China",
+    "pokemon.cn": "China"
+  },
+  "hostsAbout": "A host matches itself and its subdomains. The longest match wins.",
+  "regionField": {
+    "pattern": "japan|\\bjp\\b|china|chinese|korea|taiwan|hong kong|thai|indonesia|asia|malaysia|philippines|vietnam|singapore",
+    "flags": "i"
+  },
+  "languages": {
+    "ja": "Japan",
+    "ko": "Korea",
+    "zh": "China",
+    "zh-cn": "China",
+    "zh-tw": "Taiwan",
+    "zh-hk": "Hong Kong",
+    "th": "Thailand",
+    "id": "Indonesia"
+  },
+  "regionRules": [
     {
       "id": "japan-tag",
+      "region": "Japan",
       "pattern": "^\\s*Japan:",
       "flags": "i",
       "reason": "headline is tagged Japan."
     },
     {
       "id": "japan-word",
+      "region": "Japan",
       "pattern": "\\bjapan(ese)?\\b|\\bJP\\b|日本",
       "flags": "i",
       "reason": "item is about Japan."
     },
     {
       "id": "japanese-text",
+      "region": "Japan",
       "pattern": "[ぁ-ゟ゠-ヿ]",
       "flags": "",
       "reason": "item is written in Japanese."
     },
     {
       "id": "japan-event",
+      "region": "Japan",
       "pattern": "champions league|city league|pok[eé]mon card gym|players club|pok[eé]mon center online|pok[eé]mon card lounge|pok[eé]mon card channel|get battle",
       "flags": "i",
       "reason": "Japan-only event or service."
     },
     {
       "id": "japan-place",
+      "region": "Japan",
       "pattern": "\\b(tokyo|osaka|yokohama|kyoto|nagoya|aichi|fukuoka|sapporo|haneda|narita|shibuya|ikebukuro|okinawa)\\b",
       "flags": "i",
       "reason": "item is set in a Japanese city."
+    },
+    {
+      "id": "korean-text",
+      "region": "Korea",
+      "pattern": "[가-힣]",
+      "flags": "",
+      "reason": "item is written in Korean."
+    },
+    {
+      "id": "chinese-text",
+      "region": "China",
+      "pattern": "[一-鿿]",
+      "flags": "",
+      "reason": "item is written in Chinese."
+    },
+    {
+      "id": "taiwan",
+      "region": "Taiwan",
+      "pattern": "\\b(taiwan(ese)?|taipei|traditional chinese)\\b",
+      "flags": "i",
+      "reason": "item is about Taiwan."
+    },
+    {
+      "id": "china",
+      "region": "China",
+      "pattern": "\\b(china|chinese|gem pack)\\b",
+      "flags": "i",
+      "reason": "item is about China."
+    },
+    {
+      "id": "korea",
+      "region": "Korea",
+      "pattern": "\\b(korea|korean|seoul)\\b",
+      "flags": "i",
+      "reason": "item is about Korea."
+    },
+    {
+      "id": "hong-kong",
+      "region": "Hong Kong",
+      "pattern": "\\bhong kong\\b",
+      "flags": "i",
+      "reason": "item is about Hong Kong."
+    },
+    {
+      "id": "thailand",
+      "region": "Thailand",
+      "pattern": "\\b(thailand|thai|bangkok)\\b",
+      "flags": "i",
+      "reason": "item is about Thailand."
+    },
+    {
+      "id": "indonesia",
+      "region": "Indonesia",
+      "pattern": "\\b(indonesia(n)?|bahasa|jakarta)\\b",
+      "flags": "i",
+      "reason": "item is about Indonesia."
+    },
+    {
+      "id": "other-asia",
+      "region": "Asia",
+      "pattern": "\\b(asia|asian|asia-pacific|malaysia(n)?|philippines|filipino|vietnam(ese)?|singapore(an)?|india|indian)\\b",
+      "flags": "i",
+      "reason": "item is about an Asia-only release."
+    },
+    {
+      "id": "regional-exclusive",
+      "region": "Outside NA",
+      "pattern": "\\b(uk|europe(an)?|eu|australia(n)?|new zealand|latin america(n)?|brazil(ian)?|mexico|germany|german|france|french|italy|italian|spain|spanish|portugal|portuguese|poland|polish)[- ](only|exclusive)\\b|\\b(exclusive|only) (to|in) (the )?(uk|europe|australia|new zealand|latin america|brazil|mexico|germany|france|italy|spain)\\b",
+      "flags": "i",
+      "reason": "item is a regional exclusive outside North America."
+    }
+  ],
+  "notKeepPhrases": [
+    {
+      "pattern": "\\b(asia(n)?|asia-pacific)[- ]english\\b|\\benglish[- ]\\(?(asia|asian)\\)?|\\benglish (version|edition|release)s? (for|in) (asia|singapore|malaysia|the philippines|india)\\b",
+      "flags": "i",
+      "reason": "an Asia English release is still Asia-only."
     }
   ],
   "keepRules": [
@@ -77,22 +175,22 @@
       "reason": "global announcement."
     },
     {
+      "id": "worlds",
+      "pattern": "\\b(world championships|worlds)\\b",
+      "flags": "i",
+      "weak": true,
+      "reason": "names the World Championships."
+    },
+    {
       "id": "na-url",
       "pattern": "pokemon\\.com/us/|/en-us/|press\\.pokemon\\.com/en/",
       "flags": "i",
       "reason": "comes from an NA page."
     }
   ],
-  "jpHostsAbout": "A host matches itself and its subdomains, except the ones in notJpHosts.",
-  "notJpHosts": [
-    "asia.pokemon-card.com"
-  ],
-  "jpRegionPattern": {
-    "pattern": "japan",
+  "keepRegionPattern": {
+    "pattern": "\\b(US|CA|NA|EN|international|english)\\b",
     "flags": "i"
   },
-  "keepRegionPattern": {
-    "pattern": "\\b(US|CA|UK|NA|EN|international|english)\\b",
-    "flags": "i"
-  }
+  "keepAbout": "A weak keep rule only overrides a signal found in the text, never a region-only source, site, region field or language."
 }
