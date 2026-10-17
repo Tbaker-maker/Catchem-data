@@ -1,0 +1,45 @@
+{
+ "note": "Counted from the search rows and catalogue-images.json. A row loses a real picture with images.tcgplayer off only when the TCGplayer photo is its only picture. A row that is already a tile is not counted as a loss.",
+ "rows": 30924,
+ "catalogue": 12208,
+ "pokemontcg": 0,
+ "tcgplayerOnly": 18716,
+ "tileOnly": 0,
+ "lose": 18716,
+ "byType": [
+  {
+   "type": "Booster Box",
+   "lose": 133
+  },
+  {
+   "type": "Case",
+   "lose": 11
+  },
+  {
+   "type": "ETB",
+   "lose": 129
+  },
+  {
+   "type": "Mini Tin",
+   "lose": 127
+  },
+  {
+   "type": "Sealed",
+   "lose": 1616
+  },
+  {
+   "type": "Single",
+   "lose": 16414
+  },
+  {
+   "type": "Tin",
+   "lose": 274
+  },
+  {
+   "type": "UPC",
+   "lose": 12
+  }
+ ],
+ "flag": "images.tcgplayer",
+ "tcgplayer": true
+}
