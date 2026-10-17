@@ -1,13 +1,13 @@
 {
  "asOf": "2026-10-16",
- "generatedAt": "2026-10-17T09:01:05.295Z",
+ "generatedAt": "2026-10-17T07:18:29.328Z",
  "checks": [
   {
    "id": "price-day",
    "path": "data/history/tcgcsv-daily",
-   "date": "2026-10-17",
-   "ok": false,
-   "detail": "dated 2026-10-17"
+   "date": "2026-10-16",
+   "ok": true,
+   "detail": "fresh"
   },
   {
    "id": "listings-counted",
@@ -32,7 +32,6 @@
   }
  ],
  "failures": [
-  "price-day",
   "listings-counted",
   "scanner"
  ],
