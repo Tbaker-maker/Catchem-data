@@ -56,6 +56,14 @@ export function parseRss(xml, source) {
   return items;
 }
 
+// ICv2 trade news RSS (robots allow all; terms checked 2026-10-17, docs/NEWS-SOURCES.md).
+// Pokémon headlines only, and only the headline and link: no body text is kept.
+export function parseIcv2(xml) {
+  return parseRss(xml, "ICv2")
+    .filter((item) => /pok[eé]mon/i.test(String(item.title || "")))
+    .map((item) => ({ ...item, sentenceText: "" }));
+}
+
 export function parsePlayNews(html) {
   const items = [];
   const seen = new Set();

@@ -471,10 +471,17 @@ export function applyTitleLanguage(item, dict = TITLE_EN) {
   return item;
 }
 
+// Sources whose list pages give a dated English headline but no body sentence.
+// Their headline alone is public (the site hides a missing summary). These all
+// answer GitHub runners and allow it in robots (docs/NEWS-SOURCES.md), so the
+// nightly Feed stays useful on a night PokeBeach or Bulbagarden answer 403.
+export const TITLE_ONLY_SOURCES = new Set(["PokeGuardian", "Serebii", "Play! Pokémon", "Victory Road", "Pokémon press", "ICv2"]);
+
 export function isPublicNewsCandidate(item) {
   if (!hasSourceUrl(item) || item.kind !== "news" || !item.date) return false;
   if (nonEnglishTitle(item.title)) return Boolean(item.titleEn);
-  return Boolean(item.sentence);
+  if (item.sentence) return true;
+  return TITLE_ONLY_SOURCES.has(String(item.source || "")) && String(item.title || "").trim().length >= 12;
 }
 
 export function publicNewsRecord(item) {
