@@ -14,6 +14,12 @@ export async function run() {
   const b = { url: "https://example.com/b", title: "B" };
   const doc = feedNewsDoc({ updated: "u", timezone: "America/Vancouver", asOf: "2026-10-16", items: [a], filters: { news: { items: [a, b] } }, catalog: [a, b, { url: "https://example.com/c" }] });
   t("feed news joins items and the news filter once each, and skips the catalog", doc.items.length === 2 && !("catalog" in doc) && doc.asOf === "2026-10-16");
+  const prior = { items: [{ url: "https://example.com/old", title: "Old", date: "2026-10-10" }, { url: "https://example.com/stale", title: "Stale", date: "2026-09-01" }, { url: "https://www.pokemon-card.com/info/9.html", source: "Pokémon Card (Japan)", title: "Japan: x", date: "2026-10-12" }, { url: "https://example.com/a", title: "A old copy", date: "2026-10-11" }] };
+  const carried = feedNewsDoc({ asOf: "2026-10-16", items: [a] }, prior);
+  t("a blocked night keeps the last 14 days of stories", carried.items.some((r) => r.url === "https://example.com/old"));
+  t("carried stories older than 14 days drop off", !carried.items.some((r) => r.url === "https://example.com/stale"));
+  t("carried stories still pass the Japan-only filter", !carried.items.some((r) => r.url.includes("pokemon-card.com")));
+  t("tonight's copy of a story wins over the carried one", carried.items.filter((r) => r.url === "https://example.com/a").length === 1 && carried.items.find((r) => r.url === "https://example.com/a").title === "A");
   let file = null;
   let news = null;
   try {

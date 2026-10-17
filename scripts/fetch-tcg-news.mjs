@@ -46,7 +46,7 @@ import {
   serebiiMonthLinks,
 } from "./lib/news-sources.mjs";
 import { newsSlot, stampSharedNews } from "./lib/shared-news.mjs";
-import { splitJpNews } from "./lib/jp-news.mjs";
+import { jpNewsDecision, splitJpNews } from "./lib/jp-news.mjs";
 import { openPrivate } from "./lib/private-store.mjs";
 
 // No em dashes in titles we show: spaced dash becomes a comma, tight dash a colon.
@@ -62,20 +62,33 @@ const FEED_PATH = join(ROOT, "research", "digests", "feed-news.json");
 
 // Small file the site Feed reads live (catchem-site src/index.mjs). Public lists
 // only, already free of Japan-only items. The full catalog stays out.
-export function feedNewsDoc(doc) {
+// A source that answers 403 on a given night is not retried another way. Stories the
+// last file already had stay for 14 days, so one blocked night does not empty the Feed.
+export function feedNewsDoc(doc, prior = null) {
   const seen = new Set();
   const items = [];
-  for (const row of [...(doc.items || []), ...((doc.filters && doc.filters.news && doc.filters.news.items) || [])]) {
+  const floor = shiftFeedDay(doc.asOf, -14);
+  const carried = ((prior && prior.items) || []).filter((row) => row && String(row.date || "") >= floor && jpNewsDecision(row).keep);
+  for (const row of [...(doc.items || []), ...((doc.filters && doc.filters.news && doc.filters.news.items) || []), ...carried]) {
     const key = String(row && row.url || "");
     if (!key || seen.has(key)) continue;
     seen.add(key);
     items.push(row);
   }
+  items.sort((a, b) => (String(a.date || "") < String(b.date || "") ? 1 : String(a.date || "") > String(b.date || "") ? -1 : 0));
   return { updated: doc.updated, timezone: doc.timezone, asOf: doc.asOf, items };
 }
 
+function shiftFeedDay(day, n) {
+  const t = Date.parse(String(day || "") + "T00:00:00Z");
+  if (Number.isNaN(t)) return "";
+  return new Date(t + n * 86400000).toISOString().slice(0, 10);
+}
+
 export async function writeFeedNews(doc, path = FEED_PATH) {
-  await writeFile(path, JSON.stringify(feedNewsDoc(doc), null, 2) + "\n");
+  let prior = null;
+  try { prior = JSON.parse(await readFile(path, "utf8")); } catch { prior = null; }
+  await writeFile(path, JSON.stringify(feedNewsDoc(doc, prior), null, 2) + "\n");
 }
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
