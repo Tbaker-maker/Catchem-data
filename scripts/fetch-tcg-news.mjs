@@ -58,6 +58,25 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const UA = "CatchEmNews/1.0 (+https://github.com/Tbaker-maker/Catchem-data)";
 const NEWS_PATH = join(ROOT, "research", "digests", "news.json");
 const WEEKLY_PATH = join(ROOT, "research", "digests", "weekly-news.json");
+const FEED_PATH = join(ROOT, "research", "digests", "feed-news.json");
+
+// Small file the site Feed reads live (catchem-site src/index.mjs). Public lists
+// only, already free of Japan-only items. The full catalog stays out.
+export function feedNewsDoc(doc) {
+  const seen = new Set();
+  const items = [];
+  for (const row of [...(doc.items || []), ...((doc.filters && doc.filters.news && doc.filters.news.items) || [])]) {
+    const key = String(row && row.url || "");
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    items.push(row);
+  }
+  return { updated: doc.updated, timezone: doc.timezone, asOf: doc.asOf, items };
+}
+
+export async function writeFeedNews(doc, path = FEED_PATH) {
+  await writeFile(path, JSON.stringify(feedNewsDoc(doc), null, 2) + "\n");
+}
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -534,6 +553,7 @@ async function main() {
   await mkdir(dirname(NEWS_PATH), { recursive: true });
   await writeFile(NEWS_PATH, JSON.stringify(stamped, null, 2) + "\n");
   await writeFile(WEEKLY_PATH, JSON.stringify(weeklyDoc, null, 2) + "\n");
+  await writeFeedNews(stamped);
   await writeJpDropLog(jpSplit.dropped, today, updated);
   console.log(`catalog ${stored.length} · public ${items.length} · news ${news.length} · weekly ${weeklyItems.length} · failures ${failures.length}`);
   for (const source of sources) {
