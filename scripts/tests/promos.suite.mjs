@@ -51,11 +51,15 @@ export async function run() {
       ],
     },
   ];
-  const links = [{ cardId: "tcgcsv-518871", productId: "tcgcsv-502005", productName: "151 Ultra-Premium Collection", sourceType: "UPC" }];
+  const links = [
+    { cardId: "tcgcsv-518871", productId: "tcgcsv-502005", productName: "151 Ultra-Premium Collection", sourceType: "UPC" },
+    { cardId: "plain", sourceType: "ETB" },
+  ];
   const built = buildPromos(sets, { links });
   t("priced promo only", built.count === 2 && built.cards.every((row) => row.id !== "unpriced" && row.id !== "not-promo"));
   const mew = built.cards.find((row) => row.id === "tcgcsv-518871");
   t("mapped product and source", mew && mew.productId === "tcgcsv-502005" && mew.source === "UPC" && mew.art === "Holo" && mew.trend && mew.trend.label === "21d");
+  t("a source with no product still tags the card", built.cards.find((row) => row.id === "plain").source === "ETB" && built.cards.find((row) => row.id === "plain").productId === "");
   t("short history stays off the card", built.cards.find((row) => row.id === "plain").trend === null);
   t("sealed promo pack is included", built.sealedCount === 1 && built.sealed[0].id === "tcgcsv-189810");
   t("a regular blister is not a sealed promo", built.sealed.every((row) => row.id !== "blister"));
@@ -72,10 +76,16 @@ export async function run() {
   t("every published card has one art type and a price", live.cards.every((row) => ART_TYPES.indexOf(row.art) >= 0 && Number(row.price) > 0));
   t("no published trend is labeled 30d on a short gap", live.cards.concat(live.sealed).every((row) => !row.trend || (row.trend.days >= 7 && (row.trend.label === "30d") === (row.trend.days >= 28))));
   const mewLive = live.cards.find((row) => row.id === "tcgcsv-518871");
+  const mewtwoLive = live.cards.find((row) => row.id === "tcgcsv-518872");
   t("mew ex 053 links to the 151 ultra premium collection", mewLive && mewLive.productId === "tcgcsv-502005" && mewLive.source === "UPC");
-  t("the mapping cites a source and is not empty", Array.isArray(map.links) && map.links.length >= 1 && map.links[0].sources && map.links[0].sources[0].url);
-  t("link count matches the mapping", live.linked === live.cards.filter((row) => row.productId).length && live.linked === map.links.length);
-  const dash = JSON.stringify(live).includes("\u2014") || JSON.stringify(live).includes("\u2013");
+  t("mewtwo 052 links to the 151 ultra premium collection", mewtwoLive && mewtwoLive.productId === "tcgcsv-502005" && mewtwoLive.source === "UPC");
+  t("the mapping cites a source and is not empty", Array.isArray(map.links) && map.links.length > 1 && map.links.every((row) => row.cardId && Array.isArray(row.sources) && row.sources[0] && /^https:/.test(row.sources[0].url) && row.sources[0].checked));
+  const productLinks = map.links.filter((row) => row.productId);
+  t("product links match the file", live.linked === live.cards.filter((row) => row.productId).length && live.linked === productLinks.length && live.linked > 1);
+  t("etb, premium collection, and box each have cards", ["ETB", "Premium Collection", "Box"].every((name) => live.cards.some((row) => row.source === name)));
+  const publicText = JSON.stringify(live);
+  t("citations stay out of the public promo file", !publicText.includes("bulbapedia") && !publicText.includes("pokemoncenter.com"));
+  const dash = publicText.includes("\u2014") || publicText.includes("\u2013") || JSON.stringify(map).includes("\u2014") || JSON.stringify(map).includes("\u2013");
   t("published promos have no em dash", !dash);
   return fail;
 }

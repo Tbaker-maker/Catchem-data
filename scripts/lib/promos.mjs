@@ -107,7 +107,7 @@ function isSealedPromo(set, item) {
 export function buildPromos(sets, { links = [] } = {}) {
   const byCard = new Map();
   for (const row of links) {
-    if (row && row.cardId && row.productId) byCard.set(row.cardId, row);
+    if (row && row.cardId) byCard.set(row.cardId, row);
   }
   const cards = [];
   const sealed = [];
@@ -130,8 +130,8 @@ export function buildPromos(sets, { links = [] } = {}) {
           price: item.price,
           trend: trendSpan(item.hist, day),
           source: mapped || sourceType(set.name, item.name),
-          productId: link ? link.productId : "",
-          productName: link && link.productName ? link.productName : "",
+          productId: link && link.productId ? link.productId : "",
+          productName: link && link.productId && link.productName ? link.productName : "",
         });
       } else if (isSealedPromo(set, item)) {
         sealed.push({
