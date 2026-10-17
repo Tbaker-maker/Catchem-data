@@ -49,14 +49,16 @@ export function barLabel(card, nameMax = 14) {
   return num ? `${short} ${num}` : short;
 }
 
-export function tcgAmount(amount, moneyFn = chromeMoney) {
+export function tcgAmount(amount, moneyFn = chromeMoney, opts) {
   const m = moneyFn(amount);
   if (!m) return "";
+  const want = opts === true || (opts && (opts.condition === "NM" || opts.nm === true));
+  if (!want) return String(m).replace(/\s+NM$/, "");
   return /NM\s*$/.test(m) ? m : `${m} NM`;
 }
 
-export function tcgPriceLine(amount, date, moneyFn = chromeMoney) {
-  const m = tcgAmount(amount, moneyFn);
+export function tcgPriceLine(amount, date, moneyFn = chromeMoney, opts) {
+  const m = tcgAmount(amount, moneyFn, opts);
   if (!m) return "";
   const d = String(date || "").trim();
   return d ? `${m} · TCGplayer market, ${d}` : `${m} · TCGplayer market`;
@@ -69,13 +71,14 @@ export function ebayAskPhrase(condition) {
 
 export function priceRecord(amount, date, source = "tcgplayer", condition) {
   const ebay = source === "ebay";
-  const cond = ebay ? (String(condition || "").trim() || "any condition") : "NM";
+  const given = String(condition || "").trim();
+  const cond = ebay ? (given || "any condition") : given;
   return {
     amount: Number(amount),
     date: String(date || ""),
     source: ebay ? "ebay" : "tcgplayer",
     condition: cond,
-    label: ebay ? cond : "Near Mint",
+    label: ebay ? cond : (cond === "NM" ? "Near Mint" : cond),
   };
 }
 
@@ -113,7 +116,7 @@ export function addNearMint(text, opts = {}) {
 
 // TCGplayer amounts get NM. An eBay ask keeps its own condition phrase.
 // A dollar gap in the same sentence is not a market price, so it stays bare.
-export function labelPrices(text) {
+export function labelPrices(text, opts = {}) {
   const original = String(text || "");
   if (!original) return original;
   const hadPhrase = /eBay asking/i.test(original);
@@ -123,8 +126,9 @@ export function labelPrices(text) {
     return `@@ASK${asks.length - 1}@@`;
   });
   const ebayish = /eBay/i.test(original);
-  if (!ebayish) s = addNearMint(s, { force: true });
-  else if (/TCGplayer/i.test(s)) {
+  const wantNm = opts === true || opts?.condition === "NM" || opts?.nm === true;
+  if (wantNm && !ebayish) s = addNearMint(s, { force: true });
+  else if (wantNm && /TCGplayer/i.test(s)) {
     s = s.replace(/TCGplayer market \(\$[\d,]+(?:\.\d{2})?\)/g, (m) => (
       /NM\)/.test(m) ? m : m.replace(/\$[\d,]+(?:\.\d{2})?/, (d) => `${d} NM`)
     ));

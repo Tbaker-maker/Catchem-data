@@ -217,7 +217,7 @@ function dollars(text, asOf, tonight) {
   while ((m = tcg.exec(text))) {
     const amount = Number(m[1].replace(/,/g, ""));
     const date = Number.isFinite(night) && Math.abs(amount - night) < 0.001 ? asOf : "";
-    out.push(priceRecord(amount, date, "tcgplayer"));
+    out.push(priceRecord(amount, date, "tcgplayer", "NM"));
   }
   return out;
 }

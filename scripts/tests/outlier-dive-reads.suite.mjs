@@ -54,7 +54,7 @@ export async function run() {
   const sv5 = dives.find((r) => r.id === "dive-sv5-pc-etb");
   const upc = dives.find((r) => r.id === "dive-upc-151");
   t("dive teaser labels the eBay ask and drops a price with no signal", sv5 && sv5.price === 499.99 && /eBay asks \(\$499\.99\)/.test(sv5.path) && !/market/.test(sv5.path) && !dives.some((r) => r.id === "dive-me1-bb"));
-  t("an ask and a market on the file name both and the dollar gap", upc && upc.path === "151 UPC: eBay asks ($100.00), eBay asking, any condition, sit $20.00 over TCGplayer market ($80.00 NM).");
+  t("an ask and a market on the file name both and the dollar gap", upc && upc.path === "151 UPC: eBay asks ($100.00), eBay asking, any condition, sit $20.00 over TCGplayer market ($80.00).");
   t("a dive without price or outlier note does not ship", !dives.some((r) => r.id === "dive-no-price"));
 
   const lead = [

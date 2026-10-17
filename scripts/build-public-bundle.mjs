@@ -452,7 +452,20 @@ const buckets = new Map();
 const search = [];
 let pricedSingles = 0;
 let pricedSealed = 0;
+let heldIds = new Set();
+try {
+  const holdDoc = JSON.parse(await readFile(join(ROOT, "research/assets/public/price-hold.json"), "utf8"));
+  heldIds = new Set(Object.keys(holdDoc.ids || {}));
+} catch { heldIds = new Set(); }
 for (const set of sets.values()) {
+  for (const it of set.items) {
+    if (it.kind !== "single" || !heldIds.has(it.id)) continue;
+    it.price = null;
+    it.priceStatus = "checking";
+    if (Array.isArray(it.printings)) {
+      it.printings = it.printings.map((p) => (p && Number(p.price) > 0 ? { ...p, price: null, status: "checking" } : p));
+    }
+  }
   const heatDenom = set.up + set.down;
   void heatDenom;
   const pricedSinglesInSet = set.items.filter((it) => it.kind === "single" && it.price).sort((a, b) => b.price - a.price);
@@ -477,7 +490,7 @@ for (const set of sets.values()) {
   if (value > 0) row.value = value;
   setIndex.push(row);
   // Chart line only: the sealed index may run back through fan-site days (fillHist).
-  const line = (kind) => indexLine(set.items.filter((it) => it.kind === kind).map((it) => (it.fillHist?.length ? { ...it, hist: [...it.fillHist, ...it.hist] } : it)));
+  const line = (kind) => indexLine(set.items.filter((it) => it.kind === kind && it.priceStatus !== "checking").map((it) => (it.fillHist?.length ? { ...it, hist: [...it.fillHist, ...it.hist] } : it)));
   const topChase = set.items.filter((it) => it.kind === "single" && it.price && /illustration|special illustration|hyper|secret|ultra|rainbow/i.test(it.rarity || "")).sort((a, b) => b.price - a.price)[0] || null;
   const done = completionCounts(set.items);
   const body = {
@@ -768,6 +781,7 @@ await writeFile(join(OUT, "counts.json"), JSON.stringify(counts, null, 1) + "\n"
 
 const feedItems = [];
 for (const [item, set] of flat) {
+  if (item.priceStatus === "checking") continue;
   const raw = rawById.get(item.id) || item.hist || [];
   if (raw.length < 2) continue; // feedWindow decides which windows exist
   const kind = item.kind === "sealed" ? "sealed" : "single";
@@ -803,7 +817,7 @@ const feedResult = await publishFeed({
 console.log(`feed catalogue ${feedResult.count} logged +${feedResult.logged.added}`);
 
 const splitMovers = (kind) => {
-  const rows = movers.filter((row) => row.kind === kind && row.price >= 20).map((row) => ({
+  const rows = movers.filter((row) => row.kind === kind && row.price >= 20 && !heldIds.has(String(row.id || "").replace(/^(heating|cooling|mover)-/, ""))).map((row) => ({
     id: row.id.replace(/^(heating|cooling|mover)-/, ""),
     name: row.name,
     set: row.set,
@@ -856,7 +870,7 @@ await writeFile(join(OUT, "indexes.json"), JSON.stringify({
   updatedAt,
   source: "TCGplayer market, daily",
   note: "Chain-linked value-weighted index: each day is the sum of today's prices over the sum of the same cards' prices on the last real day. Singles and sealed are separate. Two days is not a month.",
-  singles: indexLine(allItems.filter((it) => it.kind === "single")),
+  singles: indexLine(allItems.filter((it) => it.kind === "single" && it.priceStatus !== "checking")),
   sealed: indexLine(allItems.filter((it) => it.kind === "sealed")),
 }, null, 1) + "\n");
 const indexDoc = JSON.parse(await readFile(join(OUT, "indexes.json"), "utf8"));

@@ -8,15 +8,16 @@ export async function run() {
   t("bar labels shorten the name and keep the number", barLabel({ name: "Special Delivery Charizard", number: "SWSH144" }, 14).endsWith(" SWSH144") && !barLabel({ name: "Special Delivery Charizard", number: "SWSH144" }, 14).includes("SWSH14") === false || barLabel({ name: "Special Delivery Charizard", number: "SWSH144" }, 14).endsWith("SWSH144"));
   const bar = barLabel({ name: "Special Delivery Charizard", number: "284/217" }, 12);
   t("the shortened bar still ends with the full number", bar.endsWith("284/217") && bar.includes("..."));
-  t("a market price names Near Mint and the date", tcgPriceLine(108.65, "2026-10-13") === "$108.65 NM · TCGplayer market, 2026-10-13");
+  t("a market price names the date and not a condition", tcgPriceLine(108.65, "2026-10-13") === "$108.65 · TCGplayer market, 2026-10-13");
+  t("NM is added only when the row is NM", tcgPriceLine(108.65, "2026-10-13", undefined, { condition: "NM" }) === "$108.65 NM · TCGplayer market, 2026-10-13");
   t("an ask with no condition says any condition", ebayAskPhrase() === "eBay asking, any condition" && ebayAskPhrase("Near Mint") === "eBay asking, Near Mint");
   t("insert puts the number after the set", insertNumber("Snorlax (Team Plasma) (Plasma Storm), $8.15", "Snorlax (Team Plasma)", "101/135").startsWith("Snorlax (Team Plasma) (Plasma Storm) 101/135"));
   t("a variant word stays in front of the number", insertNumber("Team Rocket's Moltres ex Special Illustration Rare (Destined Rivals), $74.61", "Team Rocket's Moltres ex - 229/182", "229/182").includes("Special Illustration Rare (Destined Rivals) 229/182"));
   const mixed = labelPrices("151 UPC: eBay asks ($100.00) sit $20.00 over TCGplayer market ($80.00).");
-  t("eBay asks are not marked Near Mint", mixed.includes("eBay asking, any condition") && mixed.includes("($80.00 NM)") && !/asks \(\$100\.00 NM\)/.test(mixed) && mixed.includes("sit $20.00 over"));
-  t("a TCGplayer sentence marks every amount", labelPrices("Together: $5.00 (Oct 13) to $8.00 (Oct 13), TCGplayer market.") === "Together: $5.00 NM (Oct 13) to $8.00 NM (Oct 13), TCGplayer market.");
-  t("Near Mint is not added twice", labelPrices("Card $10.00 NM on TCGplayer market.") === "Card $10.00 NM on TCGplayer market.");
-  t("the condition note is the shared sentence", CONDITION_NOTE === "Graded and damaged copies can price very differently, and our prices are Near Mint unless labeled." && !CONDITION_NOTE.includes("\u2014"));
+  t("eBay asks are not marked Near Mint", mixed.includes("eBay asking, any condition") && mixed.includes("($80.00)") && !/asks \(\$100\.00 NM\)/.test(mixed) && !mixed.includes("NM") && mixed.includes("sit $20.00 over"));
+  t("a TCGplayer sentence does not invent NM", labelPrices("Together: $5.00 (Oct 13) to $8.00 (Oct 13), TCGplayer market.") === "Together: $5.00 (Oct 13) to $8.00 (Oct 13), TCGplayer market.");
+  t("an NM row keeps Near Mint", labelPrices("Card $10.00 NM on TCGplayer market.", { condition: "NM" }) === "Card $10.00 NM on TCGplayer market.");
+  t("the condition note does not call every price NM", CONDITION_NOTE === "A condition is shown only when the price is for that condition. Graded and played copies can differ." && !CONDITION_NOTE.includes("\u2014"));
   t("hasNumber wants the full fraction", hasNumber("Lugia #108", "108/135") === false && hasNumber("Lugia 108/135", "108/135") === true);
   return fail;
 }

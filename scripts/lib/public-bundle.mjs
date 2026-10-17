@@ -1287,8 +1287,9 @@ function makeHeadline(read, pts, thin, allowExtreme = true) {
   if (!label || !price || !from || !shown || pct === 0 || (days !== 7 && days !== 30 && days !== 90)) return "";
   const dir = pct > 0 ? "up" : "down";
   const sealed = read.kind === "sealed";
-  const nmFrom = sealed ? from : `${from} NM`;
-  const nmPrice = sealed ? price : `${price} NM`;
+  const namedNm = !sealed && (read.condition === "NM" || read.nm === true);
+  const nmFrom = namedNm ? `${from} NM` : from;
+  const nmPrice = namedNm ? `${price} NM` : price;
   const extreme = allowExtreme && !thin && pts.length ? extremeOf(pts) : null;
   const phrase = extremePhrase(extreme);
   if (phrase) return `${label} hit ${phrase}: ${nmPrice}, ${dir} ${shown}% in ${days} days.`;
