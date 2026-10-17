@@ -1,5 +1,5 @@
 import { readFile } from "node:fs/promises";
-import { ADVICE } from "./lib/copy-rules.mjs";
+import { flagLine } from "./lib/copy-rules.mjs";
 // ATTACK 2: RUN THE EDITOR'S OWN OUTPUT THROUGH OUR PUBLISHING GUARDS. Every
 // other surface we ship is checked by slop-guard, windowless-price-guard and
 // the assertion rules. The editor generates text that goes straight onto a
@@ -32,20 +32,16 @@ const RULES = [
   [/\bguaranteed\b|\bwill be worth\b|\bwill go up\b|\binvest\b/i, "makes a FINANCIAL claim"],
   [/undefined|NaN|\[object|null\b/i, "leaked a JS value into copy"],
 ];
-// The shared advice-phrase list (rules/advice-phrases.json) applies here too, dash rule included.
-// A dash inside an official set name (HS\u2014Undaunted) is the set's own name, not our writing.
-const SET_NAME_DASH = /\b([A-Z]{1,5})[\u2014\u2013](?=[A-Z])/g;
-for (const r of ADVICE.rules) {
-  const rx = new RegExp(r.pattern, "i");
-  RULES.push([{ test: (s) => rx.test(String(s).replace(SET_NAME_DASH, "$1 ")) }, r.reason]);
-}
+// The shared copy checker (rules/advice-phrases.json, scripts/lib/advice-intent.mjs) applies here too,
+// dash rule included. It skips questions itself and allows a dash inside an official set name (HS\u2014Undaunted).
 const problems = [];
 const check = (where, s) => { if (!s) return;
   // A superlative inside a QUESTION is the opposite of an assertion — asking
   // which is definitive invites an answer, stating it invites a correction.
   // Third time I have caught a word and missed the form.
   const isQuestion = /\?\s*$/.test(s.trim());
-  for (const [rx, why] of RULES) { if (!rx.test(s)) continue; if (isQuestion && /ASSERTS/.test(why)) continue; problems.push(where + ": " + why + "  → " + s.slice(0, 70)); } };
+  for (const [rx, why] of RULES) { if (!rx.test(s)) continue; if (isQuestion && /ASSERTS/.test(why)) continue; problems.push(where + ": " + why + "  → " + s.slice(0, 70)); }
+  for (const f of flagLine(s)) problems.push(where + ": rule " + f.rule + " matched \"" + f.phrase + "\". " + f.reason + "  → " + s.slice(0, 70)); };
 
 // Every theme, every count, every generated hook and line.
 let checked = 0;
