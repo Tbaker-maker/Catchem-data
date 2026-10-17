@@ -124,11 +124,71 @@ export function setDeepDives(cards, { asOf, sets, rotation, max = 25 }) {
       lead ? `Leading tier over the year: ${lead.k}, ${sgn(lead.ch)} across ${lead.n} cards.` : "",
       r?.status ? `Rotation: ${r.status === "Standard" ? `Standard legal, mark ${r.mark}` : `${r.status}, mark ${r.mark}`} (${markCited(r, rotation)}).` : (s.release ? `Released ${dateLabel(s.release, asOf)}.` : ""),
     ];
-    const spark = yr ? [[days[0], Math.round(yr.from * 100) / 100], [asOf, Math.round(yr.to * 100) / 100]] : [[asOf, Math.round(now * 100) / 100]];
-    const rr = row("set", slug, name, headline, lines, asOf, `TCGplayer market, ${days[0]} to ${asOf}; sets.json; rotation-status.json ${rotation?.asOf || ""}`, { set: name, href: `/sets/${slug}`, chart: { label: yr ? `${yr.n} chase cards, same cards both dates` : `${n} chase cards, tonight`, points: spark }, startDate: days[0], endDate: asOf, receipt: { slug, n, now, complete: bk.complete, missing: bk.missing.map((c) => c.id), cards: chase.map((c) => ({ id: c.id, price: c.pts.at(-1)[1], date: c.pts.at(-1)[0] })), year: yr, quarter: qt, month: mo, days }, weight: yr ? Math.abs(yr.ch) : 0 });
-    if (rr) out.push(rr);
+    const spark = yr ? [[days[0], Math.round(yr.from * 100) / 100], [asOf, Math.round(yr.to * 100) / 100]] : [];
+    const chart = spark.length >= 2 ? { label: `${yr.n} chase cards, same cards both dates`, points: spark } : undefined;
+    let rr = row("set", slug, name, headline, lines, asOf, `TCGplayer market, ${days[0]} to ${asOf}; sets.json; rotation-status.json ${rotation?.asOf || ""}`, { set: name, href: `/sets/${slug}`, chart, startDate: days[0], endDate: asOf, receipt: { slug, n, now, complete: bk.complete, missing: bk.missing.map((c) => c.id), cards: chase.map((c) => ({ id: c.id, price: c.pts.at(-1)[1], date: c.pts.at(-1)[0] })), year: yr, quarter: qt, month: mo, days }, weight: yr ? Math.abs(yr.ch) : 0 });
+    if (rr && !diveCoversNamed(rr)) rr = repairSetDive(rr).row;
+    if (rr && diveCoversNamed(rr)) out.push(rr);
   }
   return out.sort((a, z) => z.weight - a.weight).slice(0, max);
+}
+
+export function dollarAmounts(text) {
+  const out = [];
+  const re = /\$([0-9]{1,3}(?:,[0-9]{3})*|\d+)(?:\.(\d{1,2}))?/g;
+  let m;
+  const s = String(text || "");
+  while ((m = re.exec(s))) {
+    const cents = (m[2] || "00").padEnd(2, "0").slice(0, 2);
+    out.push(Number(m[1].replace(/,/g, "") + "." + cents));
+  }
+  return out;
+}
+
+export function diveCoversNamed(row) {
+  const top = (row?.lines || []).find((line) => String(line).startsWith("Top cards tonight:") || String(line).startsWith("Named tonight"));
+  const listed = dollarAmounts(top).reduce((a, b) => a + b, 0);
+  const total = dollarAmounts(String(row?.headline || "").match(/worth \$[0-9,.]+/)?.[0] || "")[0];
+  if (!(listed > 0) || !(total > 0)) return true;
+  return listed <= total + 0.02;
+}
+
+// A published set dive used to total a smaller matched basket while naming
+// pricier cards. The headline then has to be the sum of the cards it names.
+export function repairSetDive(row) {
+  if (!row || row.deep !== "set" || diveCoversNamed(row)) return { row, changed: false };
+  const lines = (row.lines || []).map(String);
+  const top = lines.find((line) => line.startsWith("Top cards tonight:")) || "";
+  const prices = dollarAmounts(top);
+  const listed = Math.round(prices.reduce((a, b) => a + b, 0) * 100) / 100;
+  const usd = "$" + listed.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const name = row.name || "This set";
+  const asOf = String(row.asOf || "").slice(0, 10);
+  const named = top.replace(/^Top cards tonight:\s*/, "").replace(/\.\s*$/, "");
+  const keep = lines.filter((line) => line.startsWith("Released ") || line.startsWith("Rotation:"));
+  const headline = `${name} deep dive: the ${prices.length} cards named here are worth ${usd} together.`;
+  const nextLines = [`Named tonight (TCGplayer market price${asOf ? `, ${asOf}` : ""}): ${named}.`, `Together ${usd}.`, ...keep];
+  if (nextLines.length < 3) nextLines.push(`TCGplayer market price${asOf ? `, ${asOf}` : ""}.`);
+  const cards = ((row.lineCards || []).find((card) => String(card.text || "").startsWith("Top cards")) || {}).cards || [];
+  const next = {
+    ...row,
+    headline,
+    path: headline,
+    lines: nextLines,
+    receipt: { ...(row.receipt || {}), n: prices.length, now: listed, listed: true },
+    weight: 0,
+    prices: prices.map((amount) => ({ amount, date: asOf, source: "tcgplayer" })),
+    lineCards: nextLines.map((text, i) => ({ text, cards: i === 0 ? cards : [] })),
+  };
+  delete next.chart;
+  return { changed: true, row: next };
+}
+
+export function scrubCutoff(text) {
+  return String(text || "")
+    .replace(/ of at least 3%/g, "")
+    .replace(/ at least 3%/g, "")
+    .replace(/no bigger than 3% either way/g, "near the earlier price");
 }
 
 export function cardStories(cards, { asOf, max = 25, skip = new Set() }) {

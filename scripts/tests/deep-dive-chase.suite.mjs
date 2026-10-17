@@ -1,7 +1,7 @@
 // Set deep dives: the chase basket is the set's top-priced fresh singles, a
 // pricier stale card flags the basket as partial, and any move compares the
 // same cards with real prices on both dates.
-import { chaseBasket, windowMove, setDeepDives } from "../lib/deep-reads.mjs";
+import { chaseBasket, windowMove, setDeepDives, repairSetDive, diveCoversNamed, scrubCutoff } from "../lib/deep-reads.mjs";
 
 export async function run() {
   let fail = 0;
@@ -27,5 +27,23 @@ export async function run() {
   t("partial basket says 'we price tonight' and has no yearly %", row && /we price tonight/.test(row.headline) && !/in a year/.test(row.headline));
   t("headline total equals the listed chase prices", row && Math.abs(row.receipt.now - row.receipt.cards.reduce((a, c) => a + c.price, 0)) < 0.01 && row.receipt.cards.every((c) => c.date === asOf));
   t("no em dashes or sales wording", row && !/[\u2014\u2013]|\bsales?\b/i.test([row.headline, ...row.lines].join(" ")));
+  t("a fresh dive total covers the cards it names", row && diveCoversNamed(row));
+  const broken = {
+    deep: "set", name: "Secret Wonders", asOf: "2026-10-16",
+    headline: "Secret Wonders deep dive: its 27 tracked chase cards are worth $755.62 NM together, up 100% in a year.",
+    lines: [
+      "Together: $755.62 NM (Oct 16). Same 27 cards on every date, TCGplayer market.",
+      "Top cards tonight: Lugia $376.20 NM, Gardevoir LV.X $267.59 NM, Mew $241.32 NM.",
+      "Released Nov 7, 2007.",
+    ],
+    lineCards: [{ text: "Top cards tonight: Lugia", cards: [{ id: "tcgcsv-86908" }] }],
+    receipt: { n: 27 }, chart: { points: [] },
+  };
+  const fixed = repairSetDive(broken);
+  t("a short total is replaced by the named cards", fixed.changed && fixed.row.headline.includes("$885.11") && !/755\.62|NM together|in a year/.test(fixed.row.headline));
+  t("the repaired total covers every named price", diveCoversNamed(fixed.row) && fixed.row.lines.some((line) => line.startsWith("Released ")));
+  t("a repaired dive does not publish a one-point chart", fixed.row.chart == null);
+  t("cutoff wording comes out of a public line", scrubCutoff("6 of 6 fell at least 3%, median -20%.") === "6 of 6 fell, median -20%.");
+  t("a rise hit line drops the cutoff without a broken of", scrubCutoff("A hit is a later rise of at least 3% that also beats the market median.") === "A hit is a later rise that also beats the market median.");
   return fail;
 }

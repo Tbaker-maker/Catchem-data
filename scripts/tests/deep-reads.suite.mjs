@@ -2,7 +2,7 @@ import { hasBannedWord } from "../lib/copy-rules.mjs";
 import { readFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { valueOn, rarityTierReports } from "../lib/deep-reads.mjs";
+import { valueOn, rarityTierReports, diveCoversNamed } from "../lib/deep-reads.mjs";
 import { realLabel } from "../lib/deep-reads-2.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
@@ -26,6 +26,8 @@ export async function run() {
   t("deep reads exist", deep.length >= 20);
   t("each deep read has 3 to 6 lines, a source and a date", deep.every((r) => Array.isArray(r.lines) && r.lines.length >= 3 && r.lines.length <= 6 && r.source && /^\d{4}-\d{2}-\d{2}$/.test(r.asOf)));
   t("deep charts carry points or bars", deep.every((r) => !r.chart || (Array.isArray(r.chart.points) && r.chart.points.length >= 2) || (Array.isArray(r.chart.bars) && r.chart.bars.length >= 2)));
+  const setDives = deep.filter((r) => r.deep === "set");
+  t("every set dive total covers the cards it names", setDives.length > 0 && setDives.every((r) => diveCoversNamed(r)));
   t("deep text has no em dash or banned word", deep.every((r) => ![r.headline, ...r.lines].some((s) => /\u2014/.test(s) || BANNED.test(s))));
   const ir = deep.find((r) => r.deep === "irlife");
   t("Pokemon spotlights name a real species", deep.filter((r) => r.deep === "pokemon").every((r) => String(r.name).length >= 3));

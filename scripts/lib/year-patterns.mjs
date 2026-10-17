@@ -327,7 +327,7 @@ export function gateOwnOnly(keys, testRows, { minN = MIN_N } = {}) {
 export function provenLine(pattern, ownGate) {
   const when = (pattern.keys || []).map((k) => k.replace("=", " ")).join(" and ");
   const pct = Math.round(Number(ownGate.rate) * 1000) / 10;
-  return `On later own-day windows where ${when}, ${pct}% of ${ownGate.n} windows moved at least 3% and finished above the median (${pattern.horizon}-day window).`;
+  return `On later own-day windows where ${when}, ${pct}% of ${ownGate.n} windows moved and finished above the median (${pattern.horizon}-day window).`;
 }
 
 export function auditRows(keys, testRows) {
