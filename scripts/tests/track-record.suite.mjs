@@ -103,7 +103,8 @@ export async function run() {
   const prices = await shipPriceMap(ROOT, [{ id: "machamp", sku: "tcgcsv-124072", asOf: "2026-10-03", take: "up" }]);
   const fromFile = scoreRead(
     { id: "machamp", sku: "tcgcsv-124072", name: "Machamp", asOf: "2026-10-03", take: "up", headline: "not the ship price 99" },
-    prices.later["tcgcsv-124072"] || {},
+    // The real Oct 17 daily file now exists, so drop it here: this case is about a missing later file.
+    Object.fromEntries(Object.entries(prices.later["tcgcsv-124072"] || {}).filter(([day]) => day !== "2026-10-17")),
     "2026-10-17",
     prices.ship["tcgcsv-124072"]?.["2026-10-03"] || null,
   );
