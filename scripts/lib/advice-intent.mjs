@@ -12,6 +12,8 @@
 //     directly followed by a money verb (buy, sell, hold, flip, invest, dump, pick up).
 //  5. An imperative: a sentence or clause that starts with a money verb and then names
 //     an object (it, this box, Prismatic, 3 boxes) or a time push (now, today, before).
+//     Shop and raffle objects (buy an item, grab a ticket) pass, and a directive inside a
+//     subordinate clause (what you should sell, if you have to sell) passes.
 //  6. A promise: certainty or return words (guaranteed, can't lose, will double,
 //     easy money, risk-free, to the moon, will hit $X). Negated promises pass (not guaranteed).
 //  7. Framing: crypto words and investment framing (good investment, invest in).
@@ -30,15 +32,24 @@ export function makeChecker(rules) {
   const DASH_RE = /[\u2014\u2013]/g;
   const DASH_ALLOW_RE = new RegExp(rules.dash.allow, "g");
   const MONEY = alt(v.moneyVerbs);
-  const DIRECTIVE_RE = new RegExp(`\\b(?:${alt(v.directives)})\\s+(?:(?:${alt(v.fillers)})\\s+){0,2}(?:${MONEY})\\b`, "gi");
+  // Weak verbs (hold) are money advice after a directive (you should hold), never as a bare
+  // command, because "Hold the card" is also how a screen tells you to press and hold.
+  const STRONG = alt(v.moneyVerbs.filter((m) => !v.weakVerbs.includes(m)));
+  const FILL = `(?:(?:${alt(v.fillers)})\\s+){0,2}`;
+  // Second-person directives (you should, time to) count anywhere in a sentence.
+  const DIRECTIVE_RE = new RegExp(`\\b(?:${alt(v.directives)})\\s+${FILL}(?:${MONEY})\\b`, "gi");
+  // Imperative leads (go, don't, never) count only at a clause start, so "we do not sell your data" passes.
+  const LEAD_RE = new RegExp(`(?:^\\s*|[,;:(]\\s*|\\b(?:and|so|then|but)\\s+)((?:${alt(v.imperativeLeads)})\\s+${FILL}(?:${MONEY}))\\b`, "gi");
   const LEAD = `(?:(?:${alt(v.clauseLeads)})[\\s,]+){0,2}`;
   const OBJECT = `(?:(${alt([...v.objectWords, ...v.productNouns, ...v.timeWords])})\\b|([0-9$])|([a-z]))`;
   // Run on lowercased text. A clause start: sentence start, after a clause mark, or after a joining word.
   // A bare following word counts as an object only when it is capitalized in the line (a product name).
-  const IMPERATIVE_RE = new RegExp(`(?:^\\s*|[,;:(]\\s*|\\b(?:and|so|then|but)\\s+)${LEAD}(${MONEY})\\s+(?:(?:${alt(v.fillers)})\\s+){0,2}${OBJECT}`, "g");
+  const IMPERATIVE_RE = new RegExp(`(?:^\\s*|[,;:(]\\s*|\\b(?:and|so|then|but)\\s+)${LEAD}(${STRONG})\\s+${FILL}${OBJECT}`, "g");
   const PROMISES = rules.promises.map((r) => ({ ...r, re: new RegExp(r.pattern, "gi") }));
   const FRAMING = rules.framing.map((r) => ({ ...r, re: new RegExp(r.pattern, "gi") }));
   const NEG_RE = new RegExp(`\\b(?:${alt(v.negations)})\\s+(?:\\w+\\s+){0,2}$`, "i");
+  const SUB_RE = new RegExp(`\\b(?:${alt(v.subordinators)})\\s+(?:\\w+\\s+){0,1}$`, "i");
+  const ALLOW_OBJ_RE = new RegExp(`^(?:\\s+[\\w'$]+){0,3}?\\s+(?:${alt(v.allowObjects)})\\b`, "i");
   const R = rules.reasons;
 
   // Sentences with their offsets. A sentence is a question when it ends in "?".
@@ -74,12 +85,22 @@ export function makeChecker(rules) {
         seen.push([a, b]);
         push(rule, kind, at(a), at(b), reason);
       };
-      for (const m of body.matchAll(DIRECTIVE_RE)) add("directive", "advice", m.index, m.index + m[0].length, R.directive);
+      // A directive inside a subordinate clause (what you should sell, if you have to sell) describes, it does not tell.
+      for (const m of body.matchAll(DIRECTIVE_RE)) {
+        if (SUB_RE.test(body.slice(0, m.index))) continue;
+        add("directive", "advice", m.index, m.index + m[0].length, R.directive);
+      }
+      for (const m of body.matchAll(LEAD_RE)) {
+        const at0 = m.index + m[0].indexOf(m[1]);
+        add("directive", "advice", at0, at0 + m[1].length, R.directive);
+      }
       const lower = body.toLowerCase();
       for (const m of lower.matchAll(IMPERATIVE_RE)) {
         const end = m.index + m[0].length;
         if (m[4] && !/[A-Z]/.test(body[end - 1])) continue;
         const verbAt = m.index + m[0].indexOf(m[1]);
+        // Shop, raffle and shipping objects (buy an item, grab a ticket) are not money advice.
+        if (ALLOW_OBJ_RE.test(body.slice(verbAt + m[1].length))) continue;
         const stop = m[4] ? end - 1 + body.slice(end - 1).search(/[^\w\u00c0-\u024f]|$/) : end;
         add("imperative", "advice", verbAt, stop, R.imperative);
       }

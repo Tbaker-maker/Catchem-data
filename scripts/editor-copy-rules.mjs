@@ -34,8 +34,10 @@ const RULES = [
 ];
 // The shared copy checker (rules/advice-phrases.json, scripts/lib/advice-intent.mjs) applies here too,
 // dash rule included. It skips questions itself and allows a dash inside an official set name (HS\u2014Undaunted).
+// EDITOR_COPY_DUMP=<file> writes every checked string as JSON lines (for the labelled copy cases).
+const dump = process.env.EDITOR_COPY_DUMP ? [] : null;
 const problems = [];
-const check = (where, s) => { if (!s) return;
+const check = (where, s) => { if (!s) return; dump?.push(JSON.stringify(s));
   // A superlative inside a QUESTION is the opposite of an assertion — asking
   // which is definitive invites an answer, stating it invites a correction.
   // Third time I have caught a word and missed the form.
@@ -62,6 +64,7 @@ for (const t of api.THEMES()) {
 // Every mood line too.
 for (const m of api.MOODS()) { check("mood " + m.id, m.say); checked++; }
 
+if (dump) (await import("node:fs")).writeFileSync(process.env.EDITOR_COPY_DUMP, [...new Set(dump)].join("\n") + "\n");
 console.log(`checked ${checked} generated strings across ${api.THEMES().length} themes and ${api.MOODS().length} moods`);
 console.log(problems.length ? "\n✗ PUBLISHING RULES — " + problems.length + " violation(s):\n" : "\n✓ every generated string obeys the rules our other surfaces obey");
 for (const p of [...new Set(problems)].slice(0, 10)) console.log("   " + p);
