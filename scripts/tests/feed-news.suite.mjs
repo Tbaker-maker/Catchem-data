@@ -18,7 +18,7 @@ export async function run() {
   const carried = feedNewsDoc({ asOf: "2026-10-16", items: [a] }, prior);
   t("a blocked night keeps the last 14 days of stories", carried.items.some((r) => r.url === "https://example.com/old"));
   t("carried stories older than 14 days drop off", !carried.items.some((r) => r.url === "https://example.com/stale"));
-  t("carried stories still pass the Japan-only filter", !carried.items.some((r) => r.url.includes("pokemon-card.com")));
+  t("carried stories still pass the region filter", !carried.items.some((r) => r.url.includes("pokemon-card.com")));
   t("tonight's copy of a story wins over the carried one", carried.items.filter((r) => r.url === "https://example.com/a").length === 1 && carried.items.find((r) => r.url === "https://example.com/a").title === "A");
   let file = null;
   let news = null;
@@ -30,7 +30,7 @@ export async function run() {
   if (file && news) {
     t("feed-news.json is the same day as news.json", file.asOf === news.asOf, `${file.asOf} vs ${news.asOf}`);
     t("feed-news.json has news", Array.isArray(file.items) && file.items.length > 0);
-    t("feed-news.json has no Japan-only item", file.items.every((row) => jpNewsDecision(row).keep));
+    t("feed-news.json has no region-only item", file.items.every((row) => jpNewsDecision(row).keep));
     t("feed-news.json stays small (under 200 KB)", JSON.stringify(file).length < 200000);
   }
   return fail;

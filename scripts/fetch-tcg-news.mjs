@@ -521,7 +521,7 @@ async function main() {
   const sourceNames = sources.map((row) => row.source).filter(Boolean);
   applyFieldTags(catalog, sourceNames);
   const stored = catalog.map(shapeNewsItem);
-  // Japan-only items stay out of public news. The catalog keeps them for research leads.
+  // Region-only items (Japan, China, Korea, other Asia, non-NA exclusives) stay out of public news. The catalog keeps them for research leads.
   const jpSplit = splitJpNews(stored.filter(isPublicNewsCandidate));
   const newsPool = jpSplit.kept.map(publicNewsRecord);
   const items = pickDefault(newsPool, today, 8);
