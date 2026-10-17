@@ -15,6 +15,12 @@ export async function run() {
   t("no generated Post Office line has an em or en dash", dashes.length === 0, dashes.slice(0, 3).join(" | "));
   const advice = out.split("\n").filter((l) => /rule (?!dash)[\w-]+ matched/.test(l));
   t("no generated Post Office line breaks an advice rule", advice.length === 0, advice.slice(0, 3).join(" | "));
+  // Creator names never reach the published editor (build.html and the line engine it ships).
+  const { readFileSync } = await import("node:fs");
+  const handles = (JSON.parse(readFileSync(join(ROOT, "data/observed-accounts.json"), "utf8")).accounts || []).map((a) => a.handle).filter(Boolean);
+  const shipped = readFileSync(join(ROOT, "research/assets/build.html"), "utf8") + readFileSync(join(ROOT, "scripts/line-engine.js"), "utf8");
+  const leaked = [...handles, "Crambo"].filter((h) => shipped.toLowerCase().includes(h.toLowerCase()));
+  t("no watched creator name is in build.html or line-engine.js", leaked.length === 0, leaked.join(", "));
   return fail;
 }
 

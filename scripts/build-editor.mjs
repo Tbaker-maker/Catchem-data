@@ -26,6 +26,14 @@ import { dirname, join } from "node:path";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "utf-8")); } catch { return null; } };
 
+// Creator names stay out of the published editor. Facts about accounts we watch
+// (data/observed-accounts.json) or any @handle are research notes, not copy.
+const CREATOR_RE = await (async () => {
+  const handles = ((await J("data/observed-accounts.json"))?.accounts ?? []).map((a) => a.handle).filter(Boolean);
+  const esc = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(["@[A-Za-z0-9_]{2,}", ...handles.map((h) => `\\b${esc(h)}\\b`)].join("|"), "i");
+})();
+
 // THE FORM ID COMES FROM .env AND NEVER FROM THE REPO. Same treatment as the X
 // keys: read at build time, baked into the artifact, absent from source and
 // from git. This repo is public - a hardcoded endpoint invites spam and names
@@ -1085,7 +1093,7 @@ const CROSSWALK = ${JSON.stringify({ sharedBases: xwalk.sharedBases, sharedArtis
 // Sourced facts, so the 'story' shape has something true to build on. Only
 // VERIFIED ones ship — an unsourced claim on a card image is the one mistake
 // this whole project exists to avoid.
-const FACTS = ${JSON.stringify((await (async () => { try { return (JSON.parse(await readFile(join(ROOT, 'data/knowledge.json'), 'utf-8')).facts ?? []).filter(f => f.confidence === 'VERIFIED' && (f.usedBy ?? []).includes('build-editor')).map(f => ({ id: f.id, claim: f.claim })); } catch { return []; } })()))};
+const FACTS = ${JSON.stringify((await (async () => { try { return (JSON.parse(await readFile(join(ROOT, 'data/knowledge.json'), 'utf-8')).facts ?? []).filter(f => f.confidence === 'VERIFIED' && (f.usedBy ?? []).includes('build-editor') && !CREATOR_RE.test(f.claim)).map(f => ({ id: f.id, claim: f.claim })); } catch { return []; } })()))};
 const LAYOUTS = ${JSON.stringify(LAYOUTS)};
 const SUPPORTED = Object.keys(LAYOUTS).map(Number);
 function connectingGroupOf(cards){
@@ -1470,7 +1478,7 @@ function intentReply(found, ctx) {
 
 // VIEWS, NOT FOLLOWERS. Followers are an accumulated number and views are a live
 // signal — bought, bot, dormant and lapsed followers count toward the first and
-// none toward the second. Crambo has 17.6k followers and took 37.1k views on one
+// none toward the second. One account we watch has 17.6k followers and took 37.1k views on one
 // post; a 50k account with dormant followers might see 3k. The tiers answer one
 // question — is there a crowd big enough to answer a question — and that is a
 // views question.
@@ -1488,7 +1496,7 @@ const REACH_TIERS = [
   { id: "crowd", upTo: 20000, label: "4k to 20k views a post",
     prefer: ["question", "permission", "invite", "observation"],
     avoid: [],
-    why: "The band where the permission mechanic is documented working — tall_alan took roughly 900 replies from an account this size. There is a crowd and a question finds it",
+    why: "The band where the permission mechanic is documented working: one account this size took roughly 900 replies. There is a crowd and a question finds it",
     hypothesis: true },
   { id: "loud", upTo: Infinity, label: "20k+ views a post",
     prefer: ["divide", "permission", "question"],
@@ -3144,11 +3152,11 @@ function renderLines(){
   }
 }
 
-// THE SELF-REPLY. @shotguncaio posts the card list as a reply to his own post,
+// THE SELF-REPLY. A creator we watch posts the card list as a reply to his own post,
 // every time, and those replies pull 1.7K-2K views on their own. It answers the
 // question every card post gets before anyone asks it — and the editor already
 // knows the answer, so nobody should type it by hand.
-// THE DAY NUMBER IS THE HOOK. shotguncaio is on Day 90 of "one Pokemon card I
+// THE DAY NUMBER IS THE HOOK. A creator we watch is on Day 90 of "one Pokemon card I
 // love that costs under $10" at 43k followers, and the NUMBER is what makes it a
 // series — without it, it is a man posting cards. We built the streak and never
 // wrote the sentence.

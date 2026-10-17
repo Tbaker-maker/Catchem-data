@@ -46,7 +46,7 @@ const text = (await J("data/card-text.json"))?.cards ?? {};
 // so it can be tested and corrected, and labelled as unproven wherever it shows.
 // VIEWS, NOT FOLLOWERS. Followers are an accumulated number and views are a live
 // signal — bought, bot, dormant and lapsed followers count toward the first and
-// none toward the second. Crambo has 17.6k followers and took 37.1k views on one
+// none toward the second. One account we watch has 17.6k followers and took 37.1k views on one
 // post; a 50k account with dormant followers might see 3k. The tiers answer one
 // question — is there a crowd big enough to answer a question — and that is a
 // views question.
@@ -64,7 +64,7 @@ export const REACH_TIERS = [
   { id: "crowd", upTo: 20000, label: "4k to 20k views a post",
     prefer: ["question", "permission", "invite", "observation"],
     avoid: [],
-    why: "The band where the permission mechanic is documented working: tall_alan took roughly 900 replies from an account this size. There is a crowd and a question finds it",
+    why: "The band where the permission mechanic is documented working: one account this size took roughly 900 replies. There is a crowd and a question finds it",
     hypothesis: true },
   { id: "loud", upTo: Infinity, label: "20k+ views a post",
     prefer: ["divide", "permission", "question"],
@@ -101,8 +101,8 @@ const REGISTERS = {
   observation: { label: "Notice", note: "A shared observation with an implicit 'right?'. This is the 127,200 shape." },
   confession:  { label: "Confess", note: "Say the thing everyone thinks. Relatability outperforms authority." },
   invite:      { label: "Invite", note: "Ask them to add to it rather than judge it." },
-  permission:  { label: "Permission", note: "A question plus a second sentence that removes the reason not to answer. tall_alan took ~900 replies at 16k followers on 'pick something quirky'. Without it, people think theirs is boring and scroll past." },
-  divide:      { label: "Divide", note: "Ask something the community genuinely disagrees on, then say it is not your opinion. Crambo got a 93% reply-to-like ratio doing exactly this. The disclaimer makes replying safe, because nobody is contradicting the host." },
+  permission:  { label: "Permission", note: "A question plus a second sentence that removes the reason not to answer. One account we watch took about 900 replies at 16k followers on 'pick something quirky'. Without it, people think theirs is boring and scroll past." },
+  divide:      { label: "Divide", note: "Ask something the community genuinely disagrees on, then say it is not your opinion. One account we watch got a 93% reply-to-like ratio doing exactly this. The disclaimer makes replying safe, because nobody is contradicting the host." },
 };
 
 // WHICH ATTACK NAMES ARE FURNITURE. Counted from the catalogue rather than
