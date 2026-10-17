@@ -1,4 +1,5 @@
-import { buildFollowSlices, matchesFollow } from "../lib/custom-reads.mjs";
+import { readFileSync } from "node:fs";
+import { buildFollowSlices, followsFromDocs, matchesFollow } from "../lib/custom-reads.mjs";
 
 export async function run() {
   let fail = 0;
@@ -29,6 +30,11 @@ export async function run() {
     news: sharedNews,
   });
   t("news stays off when the follow did not toggle it", off.quiet[0] === "off" && off.slices.length === 0);
+  t("member follows file wins", followsFromDocs({ follows: [{ id: "a" }] }, { follows: [] }).length === 1);
+  t("missing member file uses the config list", followsFromDocs(null, { follows: [{ id: "b" }] })[0].id === "b");
+  t("both missing is an empty list", followsFromDocs(null, null).length === 0);
+  const buildSrc = readFileSync(new URL("../build-custom-reads.mjs", import.meta.url), "utf8");
+  t("nightly reads the member follows file first", buildSrc.includes("data/custom-reads/follows.json") && buildSrc.includes("followsFromDocs"));
   return fail;
 }
 
