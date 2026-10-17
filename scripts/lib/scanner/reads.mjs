@@ -72,9 +72,9 @@ function groupReady(gate) {
 }
 
 function hitSentence(gate) {
-  if (gate?.dir === "down") return "A hit is a later fall of at least 3% that also lands under the market median.";
-  if (gate?.dir === "flat") return "A hit is a later move no bigger than 3% either way.";
-  return "A hit is a later rise of at least 3% that also beats the market median.";
+  if (gate?.dir === "down") return "A hit is a later fall that also lands under the market median.";
+  if (gate?.dir === "flat") return "A hit is a later move near the earlier price.";
+  return "A hit is a later rise that also beats the market median.";
 }
 
 function historyLine(gate) {

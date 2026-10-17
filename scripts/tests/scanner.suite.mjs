@@ -227,11 +227,11 @@ export async function run() {
   const flatPresent = [{ ...present[0], pattern: "flat-range", p0: 10, p1: 10.2, metrics: { pct: 1 }, dir: "flat" }];
   const flatGate = [{ ...passed[0], pattern: "flat-range", dir: "flat", rate: 40, baseRate: 20 }];
   const flatReads = buildScannerReads(flatPresent, flatGate, asOf);
-  t("a flat public line says the band without the filler word", flatReads.some((row) => /no bigger than 3% either way/.test(row.why)) && flatReads.every((row) => !/\bwithin\b/i.test(row.why)));
+  t("a flat public line says the band without the filler word", flatReads.some((row) => /later move near the earlier price/.test(row.why)) && flatReads.every((row) => !/\bwithin\b/i.test(row.why) && !/3%/.test(row.why)));
   const downPresent = [{ ...present[0], pattern: "slow-slide", p0: 20, p1: 16, metrics: { pct: -20 }, dir: "down" }];
   const downGate = [{ ...passed[0], pattern: "slow-slide", dir: "down" }];
   const downReads = buildScannerReads(downPresent, downGate, asOf);
-  t("a down public line names a fall", downReads.some((row) => /later fall of at least 3%/.test(row.why)));
+  t("a down public line names a fall", downReads.some((row) => /later fall that also lands under the market median/.test(row.why)));
   const wideFlat = buildScannerReads([{ ...present[0], pattern: "flat-range", p0: 10, p1: 14.2, metrics: { pct: 42 }, dir: "flat" }], flatGate, asOf);
   t("a flat line whose own prices moved more than 3% stays off the item read", wideFlat.every((row) => row.readKind !== "pattern-forming"));
   const flatOpenWide = [{ ...present[0], pattern: "flat-range", stage: "forming", p0: 20, p1: 24, metrics: { pct: 20 }, dir: "flat" }];

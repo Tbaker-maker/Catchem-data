@@ -88,7 +88,7 @@ export function rarityBandReads(cards, { asOf, days = 28, max = 6 } = {}) {
     const nDir = up >= down ? up : down;
     const from = moves.map((m) => m.from).sort()[0];
     const to = moves.map((m) => m.to).sort().at(-1);
-    const headline = `${tier[0]} cards in ${setName}: ${nDir} of ${moves.length} ${dir} at least 3%, median ${signed(med)}, ${dateLabel(from, asOf)} to ${dateLabel(to, asOf)}.`;
+    const headline = `${tier[0]} cards in ${setName}: ${nDir} of ${moves.length} ${dir}, median ${signed(med)}, ${dateLabel(from, asOf)} to ${dateLabel(to, asOf)}.`;
     const lines = [
       `${up} up and ${down} down, of ${moves.length} ${tier[0]} cards.`,
       `Median move ${signed(med)}.`,
@@ -126,7 +126,7 @@ export function artistBandReads(cards, { asOf, days = 28, max = 6 } = {}) {
     const nDir = up >= down ? up : down;
     const from = moves.map((m) => m.from).sort()[0];
     const to = moves.map((m) => m.to).sort().at(-1);
-    const headline = `Cards illustrated by ${artist}: ${nDir} of ${moves.length} ${dir} at least 3%, median ${signed(med)}, ${dateLabel(from, asOf)} to ${dateLabel(to, asOf)}.`;
+    const headline = `Cards illustrated by ${artist}: ${nDir} of ${moves.length} ${dir}, median ${signed(med)}, ${dateLabel(from, asOf)} to ${dateLabel(to, asOf)}.`;
     const lines = [
       `${up} up and ${down} down, of ${moves.length} cards illustrated by ${artist}.`,
       `Median move ${signed(med)}.`,
