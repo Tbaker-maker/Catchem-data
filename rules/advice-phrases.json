@@ -353,7 +353,7 @@
     {
       "id": "buy-call",
       "kind": "advice",
-      "pattern": "\\b(?:must[- ]buys?|strong (?:buy|sell)|instant buy|auto[- ]buy|buy signal|sell signal|buy rating|sell rating|buy the dip)\\b",
+      "pattern": "\\b(?:must[- ]buys?|strong (?:buy|sell)|instant buy|auto[- ]buy|buy rating|sell rating|buy the dip)\\b",
       "reason": "Calls a buy or sell for the reader. Describe the listings and prices instead."
     }
   ],
