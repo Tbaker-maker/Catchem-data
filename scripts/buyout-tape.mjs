@@ -142,7 +142,7 @@ export function applyBrowseLevels(tape, sealedPrices) {
       clearFilteredCount(row);
     }
   }
-  doc.signalPolicy = "High: listings counted down 10%+ and price up 5%+. Medium: listings counted down 5%+ and price not down 2%+. Low is not reported.";
+  doc.signalPolicy = "Labels come from listings counted and TCGplayer market price on the dates shown.";
   doc.signalCounts = signalCounts(rows);
   doc.reportRows = rows.filter((r) => r && (r.signal === "High" || r.signal === "Medium")).map((r) => ({ id: r.id, name: r.name || "", signal: r.signal, listingsPct: r.pct, pricePct: r.pricePct, previousDate: r.previousDate, latestDate: r.latestDate })).sort((a, b) => (a.signal === b.signal ? a.listingsPct - b.listingsPct : a.signal === "High" ? -1 : 1));
   const dates = browseDates(sealedPrices);

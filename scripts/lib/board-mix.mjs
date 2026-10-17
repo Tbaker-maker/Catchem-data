@@ -541,7 +541,7 @@ export function breadthReads(pool, { start, end } = {}) {
     id: `breadth-${end}`, readKind: "breadth", kind: "breadth", board: BOARD_TAG, family: "breadth", name: "Chase cards this week",
     headline, path: headline, asOf: end, startDate: start, endDate: end, href: "/feed?f=prices",
     source: `TCGplayer market, ${start} and ${end}`,
-    why: "Chase cards are rarities above Rare priced $2 or more on both dates, counted by product id. Moves need 8% and $1. Barely moved is under 3% either way.",
+    why: "TCGplayer market price on the two dates shown.",
     receipt: { start, end, priced: priced.length, up, down, flat },
     variants: [
       `${monthDay(start)} to ${monthDay(end)}: of ${priced.length} chase cards counted, ${up} went up 8%+ and ${down} went down 8%+.`,
