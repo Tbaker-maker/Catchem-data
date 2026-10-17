@@ -1,6 +1,6 @@
 {
- "asOf": "2026-10-16",
- "generatedAt": "2026-10-16T10:09:35.801Z",
+ "asOf": "2026-10-17",
+ "generatedAt": "2026-10-17T13:28:24.682Z",
  "note": "Internal. What changed or broke tonight, for the weekly review. Script only.",
  "types": {
   "NEW_SET": "A TCGCSV set (group) appeared that was not there last night, or a future product in a news calendar is not on the radar.",
@@ -21,34 +21,33 @@
  },
  "summary": {
   "byType": {
-   "PRICE_MOVE": 10,
-   "NEWS_SOURCE_FAILING": 4,
+   "PRICE_MOVE": 4,
+   "NEWS_LEAD": 3,
    "DATA_GAP": 1,
    "ODD_PRICE": 56,
-   "READ_TYPE_EMPTY": 5,
-   "YOUTUBE_LEAD": 18,
-   "HYPE_EFFECT": 2
+   "READ_TYPE_EMPTY": 4,
+   "YOUTUBE_LEAD": 19
   },
   "bySeverity": {
-   "high": 5,
-   "medium": 28,
+   "high": 3,
+   "medium": 21,
    "low": 63
   }
  },
- "newTonight": 7,
+ "newTonight": 0,
  "flags": [
   {
    "type": "PRICE_MOVE",
    "severity": "high",
-   "key": "move:86905:2026-10-16",
-   "line": "Lugia (Aquapolis): $500.00 (2026-10-15) to $2000.00 (2026-10-16) on TCGplayer market, up 300%.",
+   "key": "move:86905:2026-10-17",
+   "line": "Lugia (Aquapolis): $2000.00 (2026-10-16) to $500.00 (2026-10-17) on TCGplayer market, down 75%.",
    "data": {
     "id": "tcgcsv-86905",
-    "from": 500,
-    "to": 2000,
-    "fromDay": "2026-10-15",
-    "toDay": "2026-10-16",
-    "pct": 300,
+    "from": 2000,
+    "to": 500,
+    "fromDay": "2026-10-16",
+    "toDay": "2026-10-17",
+    "pct": -75,
     "kind": "single"
    },
    "new": false
@@ -56,15 +55,15 @@
   {
    "type": "PRICE_MOVE",
    "severity": "high",
-   "key": "move:84150:2026-10-16",
-   "line": "Celebi ex (EX Unseen Forces): $370.00 (2026-10-15) to $999.99 (2026-10-16) on TCGplayer market, up 170%.",
+   "key": "move:84183:2026-10-17",
+   "line": "Charizard (6) (Expedition): $287.50 (2026-10-16) to $875.00 (2026-10-17) on TCGplayer market, up 204%.",
    "data": {
-    "id": "tcgcsv-84150",
-    "from": 370,
-    "to": 999.99,
-    "fromDay": "2026-10-15",
-    "toDay": "2026-10-16",
-    "pct": 170.3,
+    "id": "tcgcsv-84183",
+    "from": 287.5,
+    "to": 875,
+    "fromDay": "2026-10-16",
+    "toDay": "2026-10-17",
+    "pct": 204.3,
     "kind": "single"
    },
    "new": false
@@ -72,47 +71,15 @@
   {
    "type": "PRICE_MOVE",
    "severity": "high",
-   "key": "move:167078:2026-10-16",
-   "line": "Electabuzz - 1 [Winner] (Best of Promos): $58.05 (2026-10-15) to $198.00 (2026-10-16) on TCGplayer market, up 241%.",
+   "key": "move:83654:2026-10-17",
+   "line": "Articuno ex (EX FireRed & LeafGreen): $199.06 (2026-10-16) to $325.45 (2026-10-17) on TCGplayer market, up 63%.",
    "data": {
-    "id": "tcgcsv-167078",
-    "from": 58.05,
-    "to": 198,
-    "fromDay": "2026-10-15",
-    "toDay": "2026-10-16",
-    "pct": 241.1,
-    "kind": "single"
-   },
-   "new": false
-  },
-  {
-   "type": "PRICE_MOVE",
-   "severity": "high",
-   "key": "move:85992:2026-10-16",
-   "line": "Gyarados (HeartGold SoulSilver): $60.83 (2026-10-15) to $192.78 (2026-10-16) on TCGplayer market, up 217%.",
-   "data": {
-    "id": "tcgcsv-85992",
-    "from": 60.83,
-    "to": 192.78,
-    "fromDay": "2026-10-15",
-    "toDay": "2026-10-16",
-    "pct": 216.9,
-    "kind": "single"
-   },
-   "new": false
-  },
-  {
-   "type": "PRICE_MOVE",
-   "severity": "high",
-   "key": "move:178982:2026-10-16",
-   "line": "Lugia GX (Secret) (SM - Lost Thunder): $240.16 (2026-10-15) to $370.07 (2026-10-16) on TCGplayer market, up 54%.",
-   "data": {
-    "id": "tcgcsv-178982",
-    "from": 240.16,
-    "to": 370.07,
-    "fromDay": "2026-10-15",
-    "toDay": "2026-10-16",
-    "pct": 54.1,
+    "id": "tcgcsv-83654",
+    "from": 199.06,
+    "to": 325.45,
+    "fromDay": "2026-10-16",
+    "toDay": "2026-10-17",
+    "pct": 63.5,
     "kind": "single"
    },
    "new": false
@@ -120,130 +87,58 @@
   {
    "type": "PRICE_MOVE",
    "severity": "medium",
-   "key": "move:83973:2026-10-16",
-   "line": "Brock's Ninetales (Gym Challenge): $162.50 (2026-10-15) to $260.50 (2026-10-16) on TCGplayer market, up 60%.",
+   "key": "move:190828:2026-10-17",
+   "line": "Mewtwo - 75/214 (SM Unbroken Bonds) (Cracked Ice Holo) (Deck Exclusives): $15.33 (2026-10-16) to $28.11 (2026-10-17) on TCGplayer market, up 83%.",
    "data": {
-    "id": "tcgcsv-83973",
-    "from": 162.5,
-    "to": 260.5,
-    "fromDay": "2026-10-15",
-    "toDay": "2026-10-16",
-    "pct": 60.3,
+    "id": "tcgcsv-190828",
+    "from": 15.33,
+    "to": 28.11,
+    "fromDay": "2026-10-16",
+    "toDay": "2026-10-17",
+    "pct": 83.4,
     "kind": "single"
    },
    "new": false
   },
   {
-   "type": "PRICE_MOVE",
-   "severity": "medium",
-   "key": "move:211510:2026-10-16",
-   "line": "Primal Groudon EX - 97/98 (Jumbo Cards): $38.99 (2026-10-15) to $120.00 (2026-10-16) on TCGplayer market, up 208%.",
-   "data": {
-    "id": "tcgcsv-211510",
-    "from": 38.99,
-    "to": 120,
-    "fromDay": "2026-10-15",
-    "toDay": "2026-10-16",
-    "pct": 207.8,
-    "kind": "single"
-   },
-   "new": false
-  },
-  {
-   "type": "PRICE_MOVE",
-   "severity": "medium",
-   "key": "move:83623:2026-10-16",
-   "line": "Armaldo ex (Non-Holo) (POP Series 1): $23.94 (2026-10-15) to $40.12 (2026-10-16) on TCGplayer market, up 68%.",
-   "data": {
-    "id": "tcgcsv-83623",
-    "from": 23.94,
-    "to": 40.12,
-    "fromDay": "2026-10-15",
-    "toDay": "2026-10-16",
-    "pct": 67.6,
-    "kind": "single"
-   },
-   "new": false
-  },
-  {
-   "type": "PRICE_MOVE",
-   "severity": "medium",
-   "key": "move:153089:2026-10-16",
-   "line": "Chingling - 42/123 (Countdown Calendar Promos): $8.00 (2026-10-15) to $20.30 (2026-10-16) on TCGplayer market, up 154%.",
-   "data": {
-    "id": "tcgcsv-153089",
-    "from": 8,
-    "to": 20.3,
-    "fromDay": "2026-10-15",
-    "toDay": "2026-10-16",
-    "pct": 153.8,
-    "kind": "single"
-   },
-   "new": false
-  },
-  {
-   "type": "PRICE_MOVE",
-   "severity": "medium",
-   "key": "move:98202:2026-10-16",
-   "line": "Jigglypuff (#25) (XY Trainer Kit: Bisharp & Wigglytuff): $18.50 (2026-10-15) to $30.00 (2026-10-16) on TCGplayer market, up 62%.",
-   "data": {
-    "id": "tcgcsv-98202",
-    "from": 18.5,
-    "to": 30,
-    "fromDay": "2026-10-15",
-    "toDay": "2026-10-16",
-    "pct": 62.2,
-    "kind": "single"
-   },
-   "new": false
-  },
-  {
-   "type": "NEWS_SOURCE_FAILING",
-   "severity": "medium",
-   "key": "news-fail:Bulbagarden",
-   "line": "News source failed: Bulbagarden (HTTP 403: page blocked the fetch).",
-   "data": {
-    "source": "Bulbagarden",
-    "url": "https://bulbagarden.net/home/index.rss",
-    "error": "HTTP 403: page blocked the fetch"
-   },
-   "new": false
-  },
-  {
-   "type": "NEWS_SOURCE_FAILING",
-   "severity": "medium",
-   "key": "news-fail:PokeBeach",
-   "line": "News source failed: PokeBeach (HTTP 403).",
-   "data": {
-    "source": "PokeBeach",
-    "url": "https://www.pokebeach.com/forums/forum/front-page-news.18/",
-    "error": "HTTP 403"
-   },
-   "new": false
-  },
-  {
-   "type": "NEWS_SOURCE_FAILING",
+   "type": "NEWS_LEAD",
    "severity": "low",
-   "key": "news-empty:PokeBeach",
-   "line": "News source returned nothing: PokeBeach.",
+   "key": "news:NEW_SET:https://bulbagarden.net/threads/maxie-debuts-his-seasonal-sync-pair-with-ting-lu-in-pokemon-masters-ex-in-a-new-set-of-seasonal-scouts.311790/",
+   "line": "NEW_SET: Maxie debuts his Seasonal Sync Pair with Ting-Lu in Pokémon Masters EX in a new set of Seasonal Scouts (Bulbagarden, 2026-10-16).",
    "data": {
-    "source": "PokeBeach",
-    "url": "https://www.pokebeach.com/forums/forum/front-page-news.18/index.rss",
-    "items": 0,
-    "skipped": "front-page news returned no items"
+    "type": "NEW_SET",
+    "date": "2026-10-16",
+    "title": "Maxie debuts his Seasonal Sync Pair with Ting-Lu in Pokémon Masters EX in a new set of Seasonal Scouts",
+    "source": "Bulbagarden",
+    "url": "https://bulbagarden.net/threads/maxie-debuts-his-seasonal-sync-pair-with-ting-lu-in-pokemon-masters-ex-in-a-new-set-of-seasonal-scouts.311790/"
    },
    "new": false
   },
   {
-   "type": "NEWS_SOURCE_FAILING",
+   "type": "NEWS_LEAD",
    "severity": "low",
-   "key": "news-empty:Bulbagarden",
-   "line": "News source returned nothing: Bulbagarden.",
+   "key": "news:NEW_SET:https://www.pokebeach.com/forums/threads/mega-heatran-ex-lebanne-gastly-and-other-gym-promos-revealed-for-november.157094/",
+   "line": "NEW_SET: Mega Heatran ex, Lebanne, Gastly, and Other Gym Promos Revealed for November! (PokeBeach, 2026-10-16).",
    "data": {
-    "source": "Bulbagarden",
-    "url": "https://bulbagarden.net/home/index.rss",
-    "items": 0,
-    "skipped": "HTTP 403: page blocked the fetch"
+    "type": "NEW_SET",
+    "date": "2026-10-16",
+    "title": "Mega Heatran ex, Lebanne, Gastly, and Other Gym Promos Revealed for November!",
+    "source": "PokeBeach",
+    "url": "https://www.pokebeach.com/forums/threads/mega-heatran-ex-lebanne-gastly-and-other-gym-promos-revealed-for-november.157094/"
+   },
+   "new": false
+  },
+  {
+   "type": "NEWS_LEAD",
+   "severity": "low",
+   "key": "news:NEW_SET:https://www.pokebeach.com/forums/threads/mega-dragonite-ex-mega-gengar-ex-and-mega-feraligatr-ex-%E2%80%9Cspecial-deck-set%E2%80%9D-revealed-for-november.157093/",
+   "line": "NEW_SET: Mega Dragonite ex, Mega Gengar ex, and Mega Feraligatr ex “Special Deck Set” Revealed for November (PokeBeach, 2026-10-16).",
+   "data": {
+    "type": "NEW_SET",
+    "date": "2026-10-16",
+    "title": "Mega Dragonite ex, Mega Gengar ex, and Mega Feraligatr ex “Special Deck Set” Revealed for November",
+    "source": "PokeBeach",
+    "url": "https://www.pokebeach.com/forums/threads/mega-dragonite-ex-mega-gengar-ex-and-mega-feraligatr-ex-%E2%80%9Cspecial-deck-set%E2%80%9D-revealed-for-november.157093/"
    },
    "new": false
   },
@@ -469,7 +364,7 @@
     "ratio": 10.19,
     "source": "data/derived/card-rating-held.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -482,7 +377,7 @@
     "ratio": 0.09,
     "source": "data/derived/card-rating-held.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -716,7 +611,7 @@
     "ratio": 5.69,
     "source": "data/derived/card-rating-held.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -950,7 +845,7 @@
     "ratio": 2.89,
     "source": "data/derived/card-rating-held.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -1017,26 +912,15 @@
     "conflict": false,
     "source": "data/derived/sealed-price-outliers.json"
    },
-   "new": true
-  },
-  {
-   "type": "READ_TYPE_EMPTY",
-   "severity": "low",
-   "key": "empty:spread",
-   "line": "Read type \"spread\" produced nothing tonight.",
-   "data": {
-    "kind": "spread",
-    "lastNight": 0
-   },
    "new": false
   },
   {
    "type": "READ_TYPE_EMPTY",
    "severity": "low",
-   "key": "empty:askmove",
-   "line": "Read type \"askmove\" produced nothing tonight.",
+   "key": "empty:mktmove",
+   "line": "Read type \"mktmove\" produced nothing tonight.",
    "data": {
-    "kind": "askmove",
+    "kind": "mktmove",
     "lastNight": 0
    },
    "new": false
@@ -1077,178 +961,246 @@
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:print_run:Print runs:2026-10-16",
-   "line": "Print runs: 12 creator videos on 6 channels, 2026-10-10 to 2026-10-16 (unverified lead).",
-   "data": {
-    "kind": "print_run",
-    "ref": null,
-    "label": "Print runs",
-    "channels": 6,
-    "videos": 12,
-    "weighted": 12,
-    "from": "2026-10-10",
-    "to": "2026-10-16"
-   },
-   "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:set_attention:24722:2026-10-16",
-   "line": "ME: 30th Celebration: 9 creator videos on 6 channels, 2026-10-10 to 2026-10-16 (unverified lead).",
+   "key": "yt:set_attention:24722:2026-10-17",
+   "line": "ME: 30th Celebration: 10 creator videos on 6 channels, 2026-10-11 to 2026-10-17 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24722,
     "label": "ME: 30th Celebration",
     "channels": 6,
-    "videos": 9,
+    "videos": 10,
     "weighted": 6,
-    "from": "2026-10-10",
-    "to": "2026-10-16"
+    "from": "2026-10-11",
+    "to": "2026-10-17"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:23821:2026-10-16",
-   "line": "SV: Prismatic Evolutions: 8 creator videos on 4 channels, 2026-10-10 to 2026-10-16 (unverified lead).",
+   "key": "yt:print_run:Print runs:2026-10-17",
+   "line": "Print runs: 10 creator videos on 6 channels, 2026-10-11 to 2026-10-17 (unverified lead).",
+   "data": {
+    "kind": "print_run",
+    "ref": null,
+    "label": "Print runs",
+    "channels": 6,
+    "videos": 10,
+    "weighted": 10,
+    "from": "2026-10-11",
+    "to": "2026-10-17"
+   },
+   "new": false
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:23821:2026-10-17",
+   "line": "SV: Prismatic Evolutions: 9 creator videos on 4 channels, 2026-10-11 to 2026-10-17 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 23821,
     "label": "SV: Prismatic Evolutions",
     "channels": 4,
-    "videos": 8,
+    "videos": 9,
     "weighted": 4,
-    "from": "2026-10-10",
-    "to": "2026-10-16"
+    "from": "2026-10-11",
+    "to": "2026-10-17"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24541:2026-10-16",
-   "line": "ME: Ascended Heroes: 6 creator videos on 4 channels, 2026-10-10 to 2026-10-16 (unverified lead).",
+   "key": "yt:set_attention:24541:2026-10-17",
+   "line": "ME: Ascended Heroes: 7 creator videos on 3 channels, 2026-10-11 to 2026-10-17 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24541,
     "label": "ME: Ascended Heroes",
-    "channels": 4,
-    "videos": 6,
-    "weighted": 4,
-    "from": "2026-10-10",
-    "to": "2026-10-16"
+    "channels": 3,
+    "videos": 7,
+    "weighted": 3,
+    "from": "2026-10-11",
+    "to": "2026-10-17"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24448:2026-10-16",
-   "line": "ME02: Phantasmal Flames: 4 creator videos on 4 channels, 2026-10-10 to 2026-10-16 (unverified lead).",
+   "key": "yt:set_attention:24448:2026-10-17",
+   "line": "ME02: Phantasmal Flames: 4 creator videos on 3 channels, 2026-10-11 to 2026-10-17 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24448,
     "label": "ME02: Phantasmal Flames",
-    "channels": 4,
+    "channels": 3,
     "videos": 4,
-    "weighted": 4,
-    "from": "2026-10-10",
-    "to": "2026-10-16"
+    "weighted": 3,
+    "from": "2026-10-11",
+    "to": "2026-10-17"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:2848:2026-10-16",
-   "line": "SWSH07: Evolving Skies: 4 creator videos on 4 channels, 2026-10-10 to 2026-10-16 (unverified lead).",
+   "key": "yt:set_attention:23353:2026-10-17",
+   "line": "SV: Paldean Fates: 3 creator videos on 3 channels, 2026-10-11 to 2026-10-17 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 23353,
+    "label": "SV: Paldean Fates",
+    "channels": 3,
+    "videos": 3,
+    "weighted": 3,
+    "from": "2026-10-11",
+    "to": "2026-10-17"
+   },
+   "new": false
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:2848:2026-10-17",
+   "line": "SWSH07: Evolving Skies: 3 creator videos on 3 channels, 2026-10-11 to 2026-10-17 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 2848,
     "label": "SWSH07: Evolving Skies",
-    "channels": 4,
-    "videos": 4,
-    "weighted": 4,
-    "from": "2026-10-10",
-    "to": "2026-10-16"
-   },
-   "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:set_attention:24269:2026-10-16",
-   "line": "SV10: Destined Rivals: 6 creator videos on 3 channels, 2026-10-10 to 2026-10-16 (unverified lead).",
-   "data": {
-    "kind": "set_attention",
-    "ref": 24269,
-    "label": "SV10: Destined Rivals",
-    "channels": 3,
-    "videos": 6,
-    "weighted": 3,
-    "from": "2026-10-10",
-    "to": "2026-10-16"
-   },
-   "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:set_attention:24655:2026-10-16",
-   "line": "ME04: Chaos Rising: 3 creator videos on 3 channels, 2026-10-10 to 2026-10-16 (unverified lead).",
-   "data": {
-    "kind": "set_attention",
-    "ref": 24655,
-    "label": "ME04: Chaos Rising",
     "channels": 3,
     "videos": 3,
     "weighted": 3,
-    "from": "2026-10-10",
-    "to": "2026-10-16"
+    "from": "2026-10-11",
+    "to": "2026-10-17"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24380:2026-10-16",
-   "line": "ME01: Mega Evolution: 5 creator videos on 2 channels, 2026-10-10 to 2026-10-16 (unverified lead).",
+   "key": "yt:set_attention:24380:2026-10-17",
+   "line": "ME01: Mega Evolution: 6 creator videos on 2 channels, 2026-10-11 to 2026-10-17 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24380,
     "label": "ME01: Mega Evolution",
     "channels": 2,
-    "videos": 5,
+    "videos": 6,
     "weighted": 2,
-    "from": "2026-10-10",
-    "to": "2026-10-16"
+    "from": "2026-10-11",
+    "to": "2026-10-17"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:3118:2026-10-16",
-   "line": "SWSH11: Lost Origin: 3 creator videos on 2 channels, 2026-10-10 to 2026-10-16 (unverified lead).",
+   "key": "yt:set_attention:24269:2026-10-17",
+   "line": "SV10: Destined Rivals: 6 creator videos on 2 channels, 2026-10-11 to 2026-10-17 (unverified lead).",
    "data": {
     "kind": "set_attention",
-    "ref": 3118,
-    "label": "SWSH11: Lost Origin",
+    "ref": 24269,
+    "label": "SV10: Destined Rivals",
+    "channels": 2,
+    "videos": 6,
+    "weighted": 2,
+    "from": "2026-10-11",
+    "to": "2026-10-17"
+   },
+   "new": false
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:24655:2026-10-17",
+   "line": "ME04: Chaos Rising: 3 creator videos on 2 channels, 2026-10-11 to 2026-10-17 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 24655,
+    "label": "ME04: Chaos Rising",
     "channels": 2,
     "videos": 3,
     "weighted": 2,
-    "from": "2026-10-10",
-    "to": "2026-10-16"
+    "from": "2026-10-11",
+    "to": "2026-10-17"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:sealed_attention:668496:2026-10-16",
-   "line": "Ascended Heroes Elite Trainer Box: 2 creator videos on 2 channels, 2026-10-10 to 2026-10-16 (unverified lead).",
+   "key": "yt:set_attention:24688:2026-10-17",
+   "line": "ME05: Pitch Black: 3 creator videos on 2 channels, 2026-10-11 to 2026-10-17 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 24688,
+    "label": "ME05: Pitch Black",
+    "channels": 2,
+    "videos": 3,
+    "weighted": 2,
+    "from": "2026-10-11",
+    "to": "2026-10-17"
+   },
+   "new": false
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:24831:2026-10-17",
+   "line": "ME06: Delta Reign: 3 creator videos on 2 channels, 2026-10-11 to 2026-10-17 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 24831,
+    "label": "ME06: Delta Reign",
+    "channels": 2,
+    "videos": 3,
+    "weighted": 2,
+    "from": "2026-10-11",
+    "to": "2026-10-17"
+   },
+   "new": false
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:24325:2026-10-17",
+   "line": "SV: Black Bolt: 3 creator videos on 2 channels, 2026-10-11 to 2026-10-17 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 24325,
+    "label": "SV: Black Bolt",
+    "channels": 2,
+    "videos": 3,
+    "weighted": 2,
+    "from": "2026-10-11",
+    "to": "2026-10-17"
+   },
+   "new": false
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:24326:2026-10-17",
+   "line": "SV: White Flare: 3 creator videos on 2 channels, 2026-10-11 to 2026-10-17 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 24326,
+    "label": "SV: White Flare",
+    "channels": 2,
+    "videos": 3,
+    "weighted": 2,
+    "from": "2026-10-11",
+    "to": "2026-10-17"
+   },
+   "new": false
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:sealed_attention:668496:2026-10-17",
+   "line": "Ascended Heroes Elite Trainer Box: 2 creator videos on 2 channels, 2026-10-11 to 2026-10-17 (unverified lead).",
    "data": {
     "kind": "sealed_attention",
     "ref": 668496,
@@ -1256,16 +1208,16 @@
     "channels": 2,
     "videos": 2,
     "weighted": 2,
-    "from": "2026-10-10",
-    "to": "2026-10-16"
+    "from": "2026-10-11",
+    "to": "2026-10-17"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24587:2026-10-16",
-   "line": "ME03: Perfect Order: 2 creator videos on 2 channels, 2026-10-10 to 2026-10-16 (unverified lead).",
+   "key": "yt:set_attention:24587:2026-10-17",
+   "line": "ME03: Perfect Order: 2 creator videos on 2 channels, 2026-10-11 to 2026-10-17 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24587,
@@ -1273,50 +1225,33 @@
     "channels": 2,
     "videos": 2,
     "weighted": 2,
-    "from": "2026-10-10",
-    "to": "2026-10-16"
+    "from": "2026-10-11",
+    "to": "2026-10-17"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24688:2026-10-16",
-   "line": "ME05: Pitch Black: 2 creator videos on 2 channels, 2026-10-10 to 2026-10-16 (unverified lead).",
+   "key": "yt:set_attention:23381:2026-10-17",
+   "line": "SV05: Temporal Forces: 2 creator videos on 2 channels, 2026-10-11 to 2026-10-17 (unverified lead).",
    "data": {
     "kind": "set_attention",
-    "ref": 24688,
-    "label": "ME05: Pitch Black",
+    "ref": 23381,
+    "label": "SV05: Temporal Forces",
     "channels": 2,
     "videos": 2,
     "weighted": 2,
-    "from": "2026-10-10",
-    "to": "2026-10-16"
+    "from": "2026-10-11",
+    "to": "2026-10-17"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24831:2026-10-16",
-   "line": "ME06: Delta Reign: 2 creator videos on 2 channels, 2026-10-10 to 2026-10-16 (unverified lead).",
-   "data": {
-    "kind": "set_attention",
-    "ref": 24831,
-    "label": "ME06: Delta Reign",
-    "channels": 2,
-    "videos": 2,
-    "weighted": 2,
-    "from": "2026-10-10",
-    "to": "2026-10-16"
-   },
-   "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:set_attention:23651:2026-10-16",
-   "line": "SV08: Surging Sparks: 2 creator videos on 2 channels, 2026-10-10 to 2026-10-16 (unverified lead).",
+   "key": "yt:set_attention:23651:2026-10-17",
+   "line": "SV08: Surging Sparks: 2 creator videos on 2 channels, 2026-10-11 to 2026-10-17 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 23651,
@@ -1324,95 +1259,27 @@
     "channels": 2,
     "videos": 2,
     "weighted": 2,
-    "from": "2026-10-10",
-    "to": "2026-10-16"
+    "from": "2026-10-11",
+    "to": "2026-10-17"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24073:2026-10-16",
-   "line": "SV09: Journey Together: 2 creator videos on 2 channels, 2026-10-10 to 2026-10-16 (unverified lead).",
+   "key": "yt:set_attention:3118:2026-10-17",
+   "line": "SWSH11: Lost Origin: 2 creator videos on 2 channels, 2026-10-11 to 2026-10-17 (unverified lead).",
    "data": {
     "kind": "set_attention",
-    "ref": 24073,
-    "label": "SV09: Journey Together",
+    "ref": 3118,
+    "label": "SWSH11: Lost Origin",
     "channels": 2,
     "videos": 2,
     "weighted": 2,
-    "from": "2026-10-10",
-    "to": "2026-10-16"
+    "from": "2026-10-11",
+    "to": "2026-10-17"
    },
    "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:set_attention:24325:2026-10-16",
-   "line": "SV: Black Bolt: 2 creator videos on 2 channels, 2026-10-10 to 2026-10-16 (unverified lead).",
-   "data": {
-    "kind": "set_attention",
-    "ref": 24325,
-    "label": "SV: Black Bolt",
-    "channels": 2,
-    "videos": 2,
-    "weighted": 2,
-    "from": "2026-10-10",
-    "to": "2026-10-16"
-   },
-   "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:set_attention:24326:2026-10-16",
-   "line": "SV: White Flare: 2 creator videos on 2 channels, 2026-10-10 to 2026-10-16 (unverified lead).",
-   "data": {
-    "kind": "set_attention",
-    "ref": 24326,
-    "label": "SV: White Flare",
-    "channels": 2,
-    "videos": 2,
-    "weighted": 2,
-    "from": "2026-10-10",
-    "to": "2026-10-16"
-   },
-   "new": false
-  },
-  {
-   "type": "HYPE_EFFECT",
-   "severity": "medium",
-   "key": "hype:set:set:SV10: Destined Rivals:2026-10-16",
-   "line": "Heavy creator attention on Destined Rivals this week. Past sets with this much attention moved -3.9% over 30 days (n=22, 2026-04-27 to 2026-09-12).",
-   "data": {
-    "level": "set",
-    "label": "Destined Rivals",
-    "n": 22,
-    "medianPct": -3.9,
-    "from": "2026-04-27",
-    "to": "2026-09-12",
-    "surface": "set",
-    "source": "data/derived/hype-effect-set.json"
-   },
-   "new": true
-  },
-  {
-   "type": "HYPE_EFFECT",
-   "severity": "medium",
-   "key": "hype:set:set:SV: Prismatic Evolutions:2026-10-16",
-   "line": "Heavy creator attention on Prismatic Evolutions this week. Past sets with this much attention moved -3.9% over 30 days (n=22, 2026-04-27 to 2026-09-12).",
-   "data": {
-    "level": "set",
-    "label": "Prismatic Evolutions",
-    "n": 22,
-    "medianPct": -3.9,
-    "from": "2026-04-27",
-    "to": "2026-09-12",
-    "surface": "set",
-    "source": "data/derived/hype-effect-set.json"
-   },
-   "new": true
   }
  ]
 }

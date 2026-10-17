@@ -1,16 +1,31 @@
 {
- "asOf": "2026-10-16",
- "generatedAt": "2026-10-16T10:09:35.801Z",
+ "asOf": "2026-10-17",
+ "generatedAt": "2026-10-17T13:28:24.682Z",
  "method": "Script. Reads news.json (fetched nightly from free feeds), release-radar.json, TCGCSV groups. Leads only; never edits the radar.",
- "newsLeads": [],
- "radar": [
+ "newsLeads": [
   {
+   "type": "NEW_SET",
    "date": "2026-10-16",
-   "name": "JP: 30th CELEBRATION Card Set (9 regional starter-trio sets)",
-   "confidence": "verified",
-   "status": "no second source in tonight's files",
-   "urls": []
+   "title": "Maxie debuts his Seasonal Sync Pair with Ting-Lu in Pokémon Masters EX in a new set of Seasonal Scouts",
+   "source": "Bulbagarden",
+   "url": "https://bulbagarden.net/threads/maxie-debuts-his-seasonal-sync-pair-with-ting-lu-in-pokemon-masters-ex-in-a-new-set-of-seasonal-scouts.311790/"
   },
+  {
+   "type": "NEW_SET",
+   "date": "2026-10-16",
+   "title": "Mega Heatran ex, Lebanne, Gastly, and Other Gym Promos Revealed for November!",
+   "source": "PokeBeach",
+   "url": "https://www.pokebeach.com/forums/threads/mega-heatran-ex-lebanne-gastly-and-other-gym-promos-revealed-for-november.157094/"
+  },
+  {
+   "type": "NEW_SET",
+   "date": "2026-10-16",
+   "title": "Mega Dragonite ex, Mega Gengar ex, and Mega Feraligatr ex “Special Deck Set” Revealed for November",
+   "source": "PokeBeach",
+   "url": "https://www.pokebeach.com/forums/threads/mega-dragonite-ex-mega-gengar-ex-and-mega-feraligatr-ex-%E2%80%9Cspecial-deck-set%E2%80%9D-revealed-for-november.157093/"
+  }
+ ],
+ "radar": [
   {
    "date": "2026-10-23",
    "name": "Deck Crafter's Collection",
@@ -46,7 +61,7 @@
   {
    "date": "2026-11-13",
    "name": "JP: Special Deck Set (Mega Feraligatr ex / Mega Dragonite ex / Mega Gengar ex)",
-   "confidence": "single-source",
+   "confidence": "verified",
    "status": "no second source in tonight's files",
    "urls": []
   },
