@@ -1,4 +1,4 @@
-import { buildPostOfficeCatalogue, catalogueGuard } from "../lib/post-office-catalogue.mjs";
+import { buildPostOfficeCatalogue, cardRows, catalogueGuard } from "../lib/post-office-catalogue.mjs";
 
 export async function run() {
   let fail = 0;
@@ -76,6 +76,8 @@ export async function run() {
   const claimed = catalogueGuard(emptyCards, { expected: [{ slug: "jungle", name: "Jungle", release: "1999-06-16", single: 64 }] });
   t("a released set that claims cards but has none fails", claimed.ok === false && claimed.problems.some((row) => row.slug === "jungle"));
   t("a future set is not required", catalogueGuard(doc, { expected: sets }).problems.every((row) => row.slug !== "later"));
+  const typed = cardRows([{ id: "tcgcsv-9", num: "161/131", kind: "single", price: 10, name: "Umbreon ex - 161/131", rarity: "Special Illustration Rare" }]);
+  t("a special illustration rare keeps the art type and the card name", typed[0].art === "Special Illustration Rare" && typed[0].name === "Umbreon ex - 161/131" && typed[0].price === 10);
   return fail;
 }
 

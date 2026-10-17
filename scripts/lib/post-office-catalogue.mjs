@@ -1,5 +1,5 @@
-// Post Office catalogue from TCGplayer set rows. Prices come from the set
-// files already on disk. Nothing here invents a price or a release day.
+import { artType } from "./art-type.mjs";
+import { eraOf } from "./public-bundle.mjs";
 
 export const UNPRICED_MAX = 0.02;
 
@@ -21,11 +21,21 @@ export function cardRows(items) {
   const rows = [];
   for (const item of items || []) {
     if (item.kind && item.kind !== "single") continue;
-    rows.push({
+    const number = item.num || item.number || "";
+    const name = String(item.name || "").replace(/\s+/g, " ").trim();
+    const rarity = String(item.rarity || "");
+    const printing = String(item.printing || "");
+    const row = {
       id: item.id,
-      number: item.num || item.number || "",
+      number,
       price: cardPrice(item.price),
-    });
+    };
+    if (name) row.name = name;
+    if (rarity) row.rarity = rarity;
+    if (printing) row.printing = printing;
+    const art = item.art || artType({ name, rarity, num: number, number, printing, kind: "single", tags: item.tags });
+    if (art) row.art = art;
+    rows.push(row);
   }
   return rows;
 }
@@ -44,6 +54,7 @@ export function buildPostOfficeCatalogue({ sets = [], groups = [], cardsBySlug =
       release: set.release || "",
       released: releasedOn(set, asOf),
       groupId: group ? group.groupId : null,
+      era: set.era || eraOf(set.name || ""),
       cards: cards.length,
       priced,
       unpriced: cards.length - priced,
