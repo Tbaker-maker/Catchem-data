@@ -187,6 +187,13 @@ console.log("── 30-day sparks ──");
   t("spark suite", n === 0, `${n} failed`);
 }
 
+console.log("── face stamp keeps group subjects clean ──");
+{
+  const { run } = await import("./face-stamp-subject.suite.mjs");
+  const n = await run();
+  t("face stamp subject suite", n === 0, `${n} failed`);
+}
+
 console.log("── no PPT history in public outputs ──");
 {
   const n = await runNoPptPublicTests();
