@@ -985,13 +985,12 @@
   },
   {
    "text": "Looks like a buy",
-   "expect": [
-    "buy-call"
-   ],
-   "source": "tricky"
+   "expect": [],
+   "source": "tricky",
+   "note": "the exact take label (Looks like a buy) is a product label and stays allowed"
   },
   {
-   "text": "That one looks like a clear sell.",
+   "text": "That is a clear sell.",
    "expect": [
     "buy-call"
    ],
