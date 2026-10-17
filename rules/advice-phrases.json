@@ -353,8 +353,15 @@
     {
       "id": "buy-call",
       "kind": "advice",
-      "pattern": "\\b(?:must[- ]buys?|strong (?:buy|sell)|instant buy|auto[- ]buy|buy rating|sell rating|buy the dip)\\b",
+      "pattern": "\\b(?:must[- ]buys?|strong (?:buy|sell)|instant buy|auto[- ]buy|buy rating|sell rating|buy the dip)\\b|\\b(?:this|that|it|these|those|they|he|she)\\s*(?:is|is not|isn't|are|'s|’s|'re|’re)\\s+(?:an?\\s+)?(?:(?:easy|clear|strong|solid|good|great|obvious|definite|instant|smart|no[- ]brainer)\\s+)?(?:buy|sell)s?\\b|\\b(?:easy|clear|obvious|no[- ]brainer|instant) (?:buy|sell)s?\\b",
       "reason": "Calls a buy or sell for the reader. Describe the listings and prices instead."
+    },
+    {
+      "id": "load-up",
+      "kind": "advice",
+      "pattern": "\\bload up\\b",
+      "notAfter": "\\b(?:to|will|won't|wont|can|can't|cannot|may|might|could|would|should|it|page|pages|chart|charts|app|site|images?|data|feed|screen)\\s+$",
+      "reason": "Tells the reader to stock up. Describe the listings and prices instead."
     }
   ],
   "reasons": {

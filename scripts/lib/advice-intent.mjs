@@ -16,7 +16,8 @@
 //     subordinate clause (what you should sell, if you have to sell) passes.
 //  6. A promise: certainty or return words (guaranteed, can't lose, will double,
 //     easy money, risk-free, to the moon, will hit $X). Negated promises pass (not guaranteed).
-//  7. Framing: crypto words and investment framing (good investment, invest in).
+//  7. Framing: crypto words, investment framing (good investment, invest in), a verdict
+//     (this is a buy, it's a sell, easy buy) and a bare "load up" (not "the page will load up").
 // Past tense never matches: only base-form verbs are in the list (bought, sold, held pass).
 // Each flag carries the line, the rule, the matched span and a plain reason. Nothing is rewritten.
 
@@ -48,7 +49,7 @@ export function makeChecker(rules) {
   // A bare following word counts as an object only when it is capitalized in the line (a product name).
   const IMPERATIVE_RE = new RegExp(`(?:^\\s*|[,;:(]\\s*|\\b(?:and|so|then|but)\\s+)${LEAD}(${MONEY})\\s+${FILL}${OBJECT}`, "g");
   const PROMISES = rules.promises.map((r) => ({ ...r, re: new RegExp(r.pattern, "gi") }));
-  const FRAMING = rules.framing.map((r) => ({ ...r, re: new RegExp(r.pattern, "gi") }));
+  const FRAMING = rules.framing.map((r) => ({ ...r, re: new RegExp(r.pattern, "gi"), not: r.notAfter ? new RegExp(r.notAfter, "i") : null }));
   const NEG_RE = new RegExp(`\\b(?:${alt(v.negations)})\\s+(?:\\w+\\s+){0,2}$`, "i");
   const SUB_RE = new RegExp(`\\b(?:${alt(v.subordinators)})\\s+(?:\\w+\\s+){0,1}$`, "i");
   const ALLOW_OBJ_RE = new RegExp(`^(?:\\s+[\\w'$]+){0,3}?\\s+(?:${alt(v.allowObjects)})\\b`, "i");
@@ -113,7 +114,13 @@ export function makeChecker(rules) {
           add(r.id, "promise", m.index, m.index + m[0].length, r.reason);
         }
       }
-      for (const r of FRAMING) for (const m of body.matchAll(r.re)) add(r.id, r.kind || "framing", m.index, m.index + m[0].length, r.reason);
+      for (const r of FRAMING) {
+        for (const m of body.matchAll(r.re)) {
+          // notAfter: words that, right before the match, make it describe something else (the page will load up).
+          if (r.not && r.not.test(body.slice(0, m.index))) continue;
+          add(r.id, r.kind || "framing", m.index, m.index + m[0].length, r.reason);
+        }
+      }
     }
     return flags.sort((a, b) => a.span[0] - b.span[0]);
   }
