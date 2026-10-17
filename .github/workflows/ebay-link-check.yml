@@ -1,0 +1,45 @@
+# Manual QA run: do the site's eBay search links find listings?
+# Shares the listing-counts queue and rolling eBay budget.
+name: eBay link check
+
+on:
+  workflow_dispatch:
+    inputs:
+      fields:
+        description: "Sample columns to check (before,after)"
+        default: "before,after"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: listing-counts
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check links
+        env:
+          EBAY_APP_ID: ${{ secrets.EBAY_APP_ID }}
+          EBAY_CERT_ID: ${{ secrets.EBAY_CERT_ID }}
+          FIELDS: ${{ inputs.fields }}
+        run: node scripts/ebay-link-check.mjs
+      - name: Commit result and budget log
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/qa/ebay-link-check-result.json data/derived/listing-counts/state.json
+          git diff --cached --quiet && exit 0
+          git commit -m "qa: eBay link check $(date -u +'%Y-%m-%dT%H:%MZ')"
+          for i in 1 2 3 4 5; do
+            git pull --rebase -X theirs origin main && git push && exit 0
+            sleep $((i * 15))
+          done
+          exit 1
