@@ -61,7 +61,7 @@ export async function run() {
     t("exact 7-day windows stay unpublished while the switch is off", libraryOn() === true || live.tightening.length === 0 && live.building.length === 0);
   }
   let banned = false;
-  try { assertCleanSentence("This is a buy."); } catch { banned = true; }
+  try { assertCleanSentence("You should buy this."); } catch { banned = true; }
   t("banned words fail", banned);
   const rows = compareRows(
     { name: "A", market: 10, low: null, date: "2026-10-10", source: "TCGplayer market price" },

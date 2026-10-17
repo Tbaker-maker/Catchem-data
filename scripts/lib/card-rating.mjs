@@ -4,6 +4,7 @@
 // buckets plus hist-long), card-variants.json, search-lite.json, eBay sealed
 // listings counted, tonight's reads. Nothing is estimated or filled.
 // Wording is factual only. This is not advice.
+import { banGuard } from "./copy-rules.mjs";
 import { series, priceAt, trend, range, rangePos, stageValue, setListings, days } from "./ir-cycle.mjs";
 import { popularity, monName } from "./popular-pokemon.mjs";
 import { tcgAmount } from "./card-face.mjs";
@@ -351,7 +352,7 @@ export function groupIndex(members, ptsById, today, since = "2024-02-08") {
 export function money(n) { return "$" + Number(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 
 // Also the Feed deep-read list (moon, play, printed...), so a card name like Roaring Moon never ships in a read.
-const BANNED = /\b(buy|buys|buying|sell|sells|selling|hold|holds|holding|bottom|bottomed|support|resistance|target|invest\w*|stack\w*|load up|best time|underpriced|overpriced|printed|play|plays|playing|crypto|token|moon|hodl|pump|dump|nft)\b|[\u2014\u2013]/i;
+const BANNED = banGuard("card rating");
 export function cleanCopy(text) { return !BANNED.test(String(text || "")); }
 
 const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];

@@ -1,3 +1,4 @@
+import { hasBannedWord } from "../lib/copy-rules.mjs";
 import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -98,7 +99,7 @@ export async function run() {
   t("a low bulk median is raised to the trimmed mean", bulk.raised === true && bulk.perCard > bulk.median && bulk.n === 25);
 
   const reads = JSON.parse(await readFile(join(ROOT, "research/assets/public/reads.json"), "utf8"));
-  const banned = /\b(buy|sell|hold|support|resistance|bottom|printed|play|target|invest|stack|crypto|bitcoin)\b/i;
+  const banned = { test: (x) => hasBannedWord(x) };
   const blob = (reads.reads || []).map((row) => [row.headline, ...(row.lines || [])].join(" ")).join("\n");
   t("published reads have no em dash and no banned word", !/[\u2014\u2013]/.test(blob) && !banned.test(blob) && !/(^|[^.])\bsupply\b/i.test(blob));
 

@@ -33,7 +33,7 @@ export async function run() {
   t("half the median scores 0.75", peerValue(5, 10) === 0.75);
   t("no median, no peer value", peerValue(5, null) === null);
   t("verdict wording", verdictOf(0.5) === "Priced below similar cards" && verdictOf(2) === "Priced above similar cards" && verdictOf(1) === "Priced in line with similar cards");
-  t("banned words caught", !cleanCopy("a good time to buy") && !cleanCopy("stack these") && !cleanCopy("a \u2014 b") && cleanCopy("Priced below similar cards"));
+  t("advice phrases caught", !cleanCopy("you should buy these") && !cleanCopy("load up on these") && cleanCopy("a good time to buy") && !cleanCopy("a \u2014 b") && cleanCopy("Priced below similar cards"));
   t("shard stable", shardOf("tcgcsv-130") === "02");
   const today = "2026-10-12";
   const mk = (i, p, extra = {}) => ({ id: `tcgcsv-${i}`, name: `Mon${i} - ${i}/100`, num: `${i}/100`, kind: "single", rarity: "Special Illustration Rare", set: "SV: Test", setSlug: "sv-test", release: "2024-01-01", artist: i % 2 ? "A" : "B", printing: "Holofoil", printings: [], hist: [["2026-07-10", p], ["2026-10-12", p]], asOf: today, ...extra });

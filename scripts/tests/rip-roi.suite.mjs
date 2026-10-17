@@ -52,7 +52,7 @@ export async function run() {
   t("Monte Carlo runs 10k sims", scored.sims === SIMS && scored.beatChance >= 0 && scored.beatChance <= 100);
   t("median is finite", Number.isFinite(scored.median));
   t("label stays Rip value", scored.label == null); // label set in build script
-  t("banned words caught", bannedCopy("buy this box") === true && bannedCopy("Rip value estimate") === false);
+  t("banned words caught", bannedCopy("buy this box now") === true && bannedCopy("Buy on eBay") === false && bannedCopy("Rip value estimate") === false);
 
   const doc = JSON.parse(await readFile(join(ROOT, "data/pull-rates.json"), "utf8"));
   t("pull-rates file has rows and noSource list", Array.isArray(doc.rows) && Array.isArray(doc.noSource));

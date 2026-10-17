@@ -2,6 +2,7 @@
 // "not moved yet" lists for card and sealed pages. Every number carries a date.
 // Turned on and off by the one kill switch, reads.library.
 
+import { banGuard } from "./copy-rules.mjs";
 import { readFile, writeFile, readdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
@@ -28,7 +29,7 @@ import { rarityBandReads, artistBandReads, releaseCycleReads, mixedReads, ripRea
 export const BOARD_TAG = "v3";
 export const PRICE_SHARE_MAX = 1 / 3;
 export const BOARD_MAX = 400;
-export const BANNED = /\b(buy|buys|buying|sell|sells|selling|hold|holds|holding|support|resistance|bottom|printed|play|plays|playing|target|invest|investing|investment|crypto|token|moon|hodl|pump|dump|nft)\b/i;
+export const BANNED = banGuard("board mix");
 const EM = /[\u2014\u2013]/;
 
 export function cleanCopy(text) {

@@ -41,10 +41,10 @@ export function percentFor(hit, n) {
 // Product names are proper names and ids are machine keys, so only words a reader sees are checked.
 const TRACK_VISIBLE = new Set([...VISIBLE_FIELDS, "type", "take"].filter((k) => k !== "status"));
 function assertClean(doc) {
+  // Flags only. A flagged line stops the file with the line and its reason; nothing is rewritten.
   const r = cleanDoc(doc, { visible: TRACK_VISIBLE });
-  for (const f of r.fixes) console.log(`[copy-rules] track record: read ${f.id || "?"} ${f.field}: "${f.from}" -> "${f.to}"`);
   const label = r.errors.length ? null : JSON.stringify(r.doc, (k, v) => (TRACK_VISIBLE.has(k) || typeof v !== "string" ? v : undefined));
-  if (r.errors.length || LABEL_BAN.test(label)) throw new Error(`track record used a banned word: ${r.errors.join("; ") || "a take label"}`);
+  if (r.errors.length || LABEL_BAN.test(label)) throw new Error(`track record broke a copy rule: ${r.errors.join("; ") || "a take label"}`);
   return r.doc;
 }
 

@@ -1,5 +1,6 @@
 // Second library. One switch: flags.reads.library. Off means no new listing read.
 // Numbers come from a file. A missing number is left off. Nothing here is estimated.
+import { banGuard } from "./copy-rules.mjs";
 import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 import { flag } from "../flags.mjs";
@@ -21,7 +22,7 @@ export const SHARED_ART_PARENTS = new Set([
   "me2pt5-tin", "sm1-etb", "swsh6-etb", "sv8-bb", "swsh5-etb",
 ]);
 
-const BANNED_WORD = /\b(resistance|support|bottom|buys?|sells?|selling|holding|printed)\b/i;
+const BANNED_WORD = banGuard("second library");
 
 export function addDays(iso, days) {
   return new Date(Date.parse(`${iso}T00:00:00Z`) + days * 86400000).toISOString().slice(0, 10);
@@ -40,7 +41,7 @@ export function dollars(n) {
 
 export function assertCleanSentence(text) {
   const line = String(text || "");
-  if (BANNED_WORD.test(line)) throw new Error("banned word");
+  if (BANNED_WORD.test(line)) throw new Error(`copy rule: ${line}`);
   if (/\bsupply\b/i.test(line)) throw new Error("supply alone");
   return line;
 }

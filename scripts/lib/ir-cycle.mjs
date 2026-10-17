@@ -2,6 +2,7 @@
 // Illustration Rares in sets still in Standard. Every number carries its date.
 // The order of the watchlist is private (popularity weight plus position).
 // Public rows state facts only. This is a factual signal, not advice.
+import { banGuard } from "./copy-rules.mjs";
 import { popularity } from "./popular-pokemon.mjs";
 
 export const STUDY = {
@@ -246,5 +247,5 @@ export function cardMarks(rows, attrCards, slugs = MIXED_SETS) {
   return out;
 }
 
-const BANNED = /\b(buy|buying|sell|selling|hold|bottom(ed)?|support|resistance|target|invest\w*|load up|best time)\b/i;
+const BANNED = banGuard("ir cycle");
 export function cleanCopy(text) { return !BANNED.test(String(text || "")) && !/\u2014/.test(String(text || "")); }

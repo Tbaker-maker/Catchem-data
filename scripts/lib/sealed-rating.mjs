@@ -3,6 +3,7 @@
 // price trend over our nightly sealed history, eBay listings counted, print-window stage, age.
 // Waiting on data: pack destruction range, set popularity, expected pack value.
 // Not advice. Copy never says buy, sell, hold, bottom, target, invest or stack.
+import { banGuard } from "./copy-rules.mjs";
 
 export const TYPES = {
   "booster-box": { label: "Booster Boxes", one: "booster box" },
@@ -29,7 +30,7 @@ export const ERAS = [
 ];
 const LATE = new Set(["tin", "special-collection"]);
 
-const BANNED = /\b(buy|buys|buying|sell|sells|selling|hold|holds|holding|bottom|bottomed|support|resistance|target|invest\w*|stack\w*|load up|best time|underpriced|overpriced|undervalued|overvalued)\b|[\u2014\u2013]/i;
+const BANNED = banGuard("sealed rating");
 export function cleanCopy(text) { return !BANNED.test(String(text || "")); }
 
 const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];

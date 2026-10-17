@@ -7,6 +7,7 @@
 // own date. When a window has no point on its exact day, the nearest real point
 // within a few days is used and that point's own date is named.
 
+import { banGuard } from "./copy-rules.mjs";
 import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 import { money } from "./public-bundle.mjs";
@@ -16,7 +17,7 @@ import { cardTitle, tcgAmount } from "./card-face.mjs";
 export const HIST_TAG = "hist";
 const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const LOW = new Set(["Common", "Uncommon", "Code Card", "None", ""]);
-const BANNED = /\b(buy|buys|buying|sell|sells|selling|hold|holds|holding|support|resistance|bottom|printed|play|plays|playing|target|invest|investing|investment|crypto|token|moon|hodl|pump|dump|nft)\b/i;
+const BANNED = banGuard("history reads");
 const EM = /[\u2014\u2013]/;
 const ok = (s) => !!s && !BANNED.test(s) && !EM.test(s);
 

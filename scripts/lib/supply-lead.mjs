@@ -1,7 +1,8 @@
 // Exact-day eBay listing counts. A listing is not a sale.
 // The public read stays off until supply.leadReads is true.
+import { banGuard } from "./copy-rules.mjs";
 
-const COPY_BAN = /\b(resistance|support|breakout|bottom|cheap|crash|buys?|sells?|selling|holds?|holding|printed)\b/i;
+const COPY_BAN = banGuard("listing sentence");
 
 export function dayBefore(iso, days) {
   return new Date(Date.parse(`${iso}T00:00:00Z`) - days * 86400000).toISOString().slice(0, 10);

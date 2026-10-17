@@ -2,6 +2,7 @@
 // Puts the full collector number on every card name we can point at a bucket
 // row, marks TCGplayer amounts Near Mint, and labels eBay asks. Does not
 // invent a number: a card with no num on the bucket is left unnamed.
+import { banGuard } from "./copy-rules.mjs";
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import {
@@ -17,7 +18,7 @@ import {
 import { boardImage, loadBoardImageInputs, BRAND_TILE } from "./read-library.mjs";
 import { speciesToken } from "./fact-reads.mjs";
 
-const BANNED = /\b(buy|buys|buying|sell|sells|selling|hold|holds|holding|support|resistance|bottom|printed|play|plays|playing|target|invest|moon|hodl|pump|dump|nft)\b/i;
+const BANNED = banGuard("card face stamp");
 const EM = /[\u2014\u2013]/;
 const SKIP_KIND = new Set(["pokemon"]);
 

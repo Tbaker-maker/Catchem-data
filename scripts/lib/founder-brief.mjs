@@ -1,7 +1,8 @@
 // Weekly founder brief. Every number names the dated file it came from.
 // Empty sections are omitted. No network.
+import { banGuard } from "./copy-rules.mjs";
 
-const BANNED = /\b(buy|sell|hold|support|resistance|bottom|printed|play|target|invest|stack|load up|crypto)\b/i;
+const BANNED = banGuard("founder brief");
 
 function houseOk(text) {
   return !BANNED.test(String(text || "")) && !/[—–]/.test(String(text || ""));

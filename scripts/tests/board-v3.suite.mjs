@@ -4,7 +4,8 @@ export async function run() {
   let fail = 0;
   const t = (name, cond) => { if (cond) console.log(`  ok  ${name}`); else { fail += 1; console.error(`  FAIL ${name}`); } };
 
-  t("banned words are caught", !cleanCopy("time to buy") && !cleanCopy("a play here") && !cleanCopy("price target") && !cleanCopy("well printed"));
+  t("advice phrases are caught", !cleanCopy("buy now") && !cleanCopy("you should sell") && !cleanCopy("load up") && !cleanCopy("a \u2014 b"));
+  t("shopping words pass", cleanCopy("Buy on eBay") && cleanCopy("a play here") && cleanCopy("price target") && cleanCopy("Shop the set"));
   t("thin-market triple is dropped", keepPriceRead({ readKind: "sealed", headline: "Since Sep 26, X went from $10.00 to $35.00, up 250%.", price: 35 }) === false);
   t("a normal 8% move is kept", keepPriceRead({ readKind: "sealed", headline: "Since Sep 26, X went from $300.96 to $326.03, up 8.3%.", price: 326.03 }) === true);
   t("em dash is caught", !cleanCopy("a \u2014 b"));

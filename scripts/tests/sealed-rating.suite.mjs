@@ -8,7 +8,7 @@ export async function run() {
   const today = "2026-10-12";
   t("percentile needs 5 peers", pctRank(1, [1, 2, 3]) === null && pctRank(3, [1, 2, 3, 4, 5]) === 0.5);
   t("verdict wording", verdictOf(0.9, "Elite Trainer Boxes") === "Low price next to its set's top card, compared with other Elite Trainer Boxes" && verdictOf(0.1, "tins").startsWith("High price") && verdictOf(0.5, "tins").startsWith("In line"));
-  t("banned words caught", !cleanCopy("time to buy") && !cleanCopy("stack boxes") && !cleanCopy("prices bottomed") && !cleanCopy("a good target") && !cleanCopy("undervalued") && !cleanCopy("a \u2014 b") && cleanCopy("Low price next to its set's top card"));
+  t("advice phrases caught", !cleanCopy("buy now") && !cleanCopy("load up on boxes") && !cleanCopy("guaranteed to climb") && !cleanCopy("you can't lose") && cleanCopy("prices bottomed") && cleanCopy("Buy on TCGplayer") && !cleanCopy("a \u2014 b") && cleanCopy("Low price next to its set's top card"));
   t("stage: Mega era is current", stageOf({ release: "2025-11-14", subtype: "etb", rot: null }).key === "current");
   t("stage: rotated uses the official status", stageOf({ release: "2023-09-22", subtype: "etb", rot: { mark: "G", status: "Rotated April 10, 2026" } }).label === "Rotated April 10, 2026");
   t("stage: tins flagged", stageOf({ release: "2023-09-22", subtype: "tin", rot: { mark: "G", status: "Rotated April 10, 2026" } }).late === true);

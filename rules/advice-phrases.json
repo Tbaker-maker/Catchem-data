@@ -1,0 +1,63 @@
+{
+  "name": "Catch'em copy rules: advice phrases",
+  "version": 1,
+  "about": "The one shared list. Catchem-data builds, catchem-site and catchem-bot all read this file. The site and bot keep a byte-for-byte copy and a test fails when the copy drifts from Catchem-data main. Patterns are case-insensitive and use only syntax that JavaScript and Python read the same way. A match flags the line with its reason. Nothing is rewritten.",
+  "allowed": [
+    "Buy",
+    "Shop",
+    "Sell your cards",
+    "price target",
+    "Buy on TCGplayer",
+    "Buy on eBay"
+  ],
+  "rules": [
+    {
+      "id": "buy-now",
+      "kind": "advice",
+      "pattern": "\\b(buy|sell|grab|dump) (it |them |this |these |one )?(now|today|right now|before it's gone|before its gone)\\b",
+      "reason": "Tells people to buy or sell now. Say what the price did instead."
+    },
+    {
+      "id": "you-should",
+      "kind": "advice",
+      "pattern": "\\byou (should|need to|have to|must|gotta|ought to) (buy|sell|hold|grab|dump|flip|invest|pick up|get in|get out|load up)\\b",
+      "reason": "Tells people what to do with their money. Describe the listings and prices instead."
+    },
+    {
+      "id": "load-up",
+      "kind": "advice",
+      "pattern": "\\b(load|loading|loaded) up\\b",
+      "reason": "Tells people to buy a lot. Say what changed instead."
+    },
+    {
+      "id": "guaranteed",
+      "kind": "advice",
+      "pattern": "\\bguarantee(d|s)?\\b",
+      "reason": "Promises a result. Prices can always move either way."
+    },
+    {
+      "id": "cant-lose",
+      "kind": "advice",
+      "pattern": "\\b(can['’]?t|cannot|can not) (lose|go wrong|miss)\\b",
+      "reason": "Promises a result. Prices can always move either way."
+    },
+    {
+      "id": "to-the-moon",
+      "kind": "advice",
+      "pattern": "\\bto the moon\\b|\\bmooning\\b",
+      "reason": "Hype that promises a climb. Say the real change and dates instead."
+    },
+    {
+      "id": "crypto",
+      "kind": "crypto",
+      "pattern": "\\b(crypto|cryptos|cryptocurrency|cryptocurrencies|bitcoin|btc|ethereum|nft|nfts|web3|blockchain|hodl|altcoins?|memecoins?|defi|airdrops?)\\b",
+      "reason": "Crypto words are kept out of Catch'em copy."
+    },
+    {
+      "id": "dash",
+      "kind": "house",
+      "pattern": "[—–]",
+      "reason": "No em or en dashes in copy. Use a comma or a period."
+    }
+  ]
+}

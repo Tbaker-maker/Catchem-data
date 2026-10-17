@@ -1,13 +1,14 @@
 // Non-price and mixed reads. Every number is a point on a dated file.
 // A missing input is left out. Empty kinds return no rows.
 
+import { banGuard } from "./copy-rules.mjs";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { money, BANNED as BUNDLE_BAN, FILLER_BAN } from "./public-bundle.mjs";
 import { nearestPoint, addDays, dateLabel, dayNum } from "./history-reads.mjs";
 
-const BAN = /\b(buy|buys|buying|sell|sells|selling|hold|holds|holding|support|resistance|bottom|printed|play|plays|playing|target|invest|investing|investment|crypto|token|moon|hodl|pump|dump|nft)\b|\bsupply\b|[\u2014\u2013]/i;
+const BAN = banGuard("rich reads");
 const LOW = new Set(["Common", "Uncommon", "Rare", "Code Card", "Promo", "None", ""]);
 const TIERS = [["Illustration Rare", "IR"], ["Special Illustration Rare", "SIR"]];
 
