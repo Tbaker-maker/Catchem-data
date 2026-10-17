@@ -239,9 +239,16 @@ export function stampRead(read, index, images) {
     if (safeChange(read.name || "", titled) === titled) read.name = titled;
   }
   const fields = ["headline", "path", "why", "whyItMatters"];
+  // A set, label, or species read names a group, not one card. Its own name at
+  // the start of a headline stays as written ("Detective Pikachu deep dive",
+  // "Charizard Secret Rare cards by set"), so no single card's number lands there.
+  const subject = !singleCard(read) && typeof read.name === "string" && read.name.length >= 3 ? read.name : "";
   for (const key of fields) {
     if (typeof read[key] !== "string" || !read[key]) continue;
-    const next = faceText(read[key], pool).text;
+    const text = read[key];
+    const next = subject && text.startsWith(subject)
+      ? subject + faceText(text.slice(subject.length), pool).text
+      : faceText(text, pool).text;
     read[key] = safeChange(read[key], next);
   }
   if (Array.isArray(read.lines)) {
