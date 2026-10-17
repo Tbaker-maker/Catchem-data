@@ -5,6 +5,7 @@
 
 export const READERS = [
   { file: "research/assets/public/price-hold.json", readers: ["site"], writer: "scripts/build-price-hold.mjs", live: false, dateRequired: true, note: "Ids whose price is not a headline. No thresholds." },
+  { file: "research/assets/public/condition-prices.json", readers: ["site"], writer: "scripts/build-condition-ladder.mjs", live: false, dateRequired: true, note: "Per printing, per condition. Empty until a TCGplayer row names the condition." },
   { file: "research/assets/public/movers.json", readers: ["site", "bot"], writer: "scripts/build-public-bundle.mjs", live: true, dateRequired: true },
   { file: "research/assets/public/accuracy.json", readers: ["site", "bot"], writer: "scripts/build-public-bundle.mjs", live: true, dateRequired: true },
   { file: "research/assets/public/counts.json", readers: ["site"], writer: "scripts/build-public-bundle.mjs", live: true, dateRequired: true },

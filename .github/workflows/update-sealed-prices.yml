@@ -82,6 +82,7 @@ jobs:
         run: |
           node scripts/build-tcgcsv-catalogue-map.mjs
           node scripts/build-public-bundle.mjs
+          node scripts/build-condition-ladder.mjs
           node scripts/build-feed.mjs
           # The first feed after a new price day still carries the previous board.
           # A second pass settles it, which is what the determinism test rebuilds.
@@ -288,7 +289,9 @@ jobs:
         # drop tonight's feed; a failed run's set files are discarded below.
         id: setpages
         continue-on-error: true
-        run: node scripts/build-public-bundle.mjs
+        run: |
+          node scripts/build-public-bundle.mjs
+          node scripts/build-condition-ladder.mjs
 
       - name: Rebuild the public feed
         # After the price commit, not before. A failed feed build fails the job.
