@@ -28,6 +28,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { namePattern, watchNames } from "./tests/creator-names.suite.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const J = async p => { try { return JSON.parse(await readFile(join(ROOT, p), "utf-8")); } catch { return null; } };
 
@@ -98,8 +99,11 @@ for (const t of (themes?.themes ?? []).filter(t => t.kind === "named list").slic
       audience: { headline: t.name, sub: t.hook ?? "" } });
 }
 
-const deck = { generatedAt: new Date().toISOString(), slides,
-  counts: slides.reduce((a, s) => (a[s.kind] = (a[s.kind] ?? 0) + 1, a), {}) };
+const watch = watchNames(await J("data/observed-accounts.json") || {}, await J("config/youtube-channels.json") || {});
+const creatorRe = watch.length ? namePattern(watch) : null;
+const deckSlides = creatorRe ? slides.filter((slide) => !creatorRe.test(JSON.stringify(slide))) : slides.slice();
+const deck = { generatedAt: new Date().toISOString(), slides: deckSlides,
+  counts: deckSlides.reduce((a, s) => (a[s.kind] = (a[s.kind] ?? 0) + 1, a), {}) };
 await writeFile(join(ROOT, "research/pulse/live-deck.json"), JSON.stringify(deck, null, 1));
 
 const CSS = `@import url('https://fonts.googleapis.com/css2?family=Syne:wght@800&family=Sora:wght@300;400;600&family=JetBrains+Mono:wght@500&display=swap');
@@ -170,7 +174,7 @@ button.go{background:var(--live);color:var(--ink);border:0;font-weight:600}
   <button onclick="filt(null)">All</button>
 </div>
 <script>
-const DECK = ${JSON.stringify(slides)};
+const DECK = ${JSON.stringify(deckSlides)};
 // SYNC WITH NO BACKEND. BroadcastChannel pairs two same-origin tabs, so the
 // audience view follows the presenter with no server, no account and no latency
 // worth measuring.
