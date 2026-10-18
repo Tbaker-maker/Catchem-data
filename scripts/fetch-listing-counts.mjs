@@ -90,7 +90,8 @@ export async function runListingCounts({ afterSealedStep = false, now = new Date
           if (res.status === 429) { rateLimited = true; failures += 1; break; }
           if (!res.ok) { failures += 1; continue; }
           const d = await res.json();
-          const row = { id: it.id, kind, tier: it.tier, date: today, ...summarize(kind, d.total, (d.itemSummaries || []).map((x) => x.title || "")) };
+          const summaries = d.itemSummaries || [];
+          const row = { id: it.id, kind, tier: it.tier, date: today, ...summarize(kind, d.total, summaries.map((x) => x.title || ""), summaries) };
           out.push(row);
           latest.rows[it.id] = row;
           state.last[it.id] = now.toISOString();
