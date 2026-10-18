@@ -1,7 +1,6 @@
-// Signal chips for a read. Thresholds stay in catchem-data-private
-// (data/private/signal-chips/thresholds.json). This file only applies the
-// rules it is given and returns the chip words. It does not score reads
-// and it does not decide which reads exist.
+// Signal chips for a read. Thresholds and dot cutoffs stay in catchem-data-private.
+// This file only applies the rules it is given. It does not decide which reads exist.
+// An overall score is added only when the private rules name a proven signal.
 import { flagLine, isClean } from "./copy-rules.mjs";
 
 export const CHIP_ORDER = Object.freeze([
@@ -184,7 +183,7 @@ function goneChip(ctx, rules) {
   if (rate < cuts[0]) dots = 1;
   else if (rate < cuts[1]) dots = 2;
   const word = GONE_WORD[dots];
-  return { kind: "gone", dots, label: `Listings gone, ${word}` };
+  return { kind: "gone", dots, rate, label: `Listings gone, ${word}` };
 }
 
 function rangeChip(points, asOf, rules) {
@@ -220,7 +219,7 @@ function momentumChip(points, asOf, rules) {
   if (!now || !then || now[0] === then[0] || !(then[1] > 0)) return null;
   const pct = ((now[1] - then[1]) / then[1]) * 100;
   const word = pct >= num(m.risingMin) ? "Rising" : pct <= num(m.coolingMax) ? "Cooling" : "Flat";
-  return { kind: "momentum", word, label: `Momentum ${word}` };
+  return { kind: "momentum", word, mag: Math.abs(pct), label: `Momentum ${word}` };
 }
 
 function rotationChip(ctx) {
@@ -348,10 +347,98 @@ export function pickChips(chips, rules = {}) {
   return display.map(publish).filter(Boolean);
 }
 
+function clipDots(n) {
+  const v = Math.round(Number(n));
+  if (!(v >= 1)) return 1;
+  return v > 5 ? 5 : v;
+}
+
+function fromCuts(value, cuts, invert) {
+  if (!Number.isFinite(value) || !Array.isArray(cuts)) return 1;
+  let n = 1;
+  for (const cut of cuts) {
+    const c = Number(cut);
+    if (!Number.isFinite(c)) continue;
+    if (invert ? value < c : value > c) n += 1;
+  }
+  return clipDots(n);
+}
+
+function specStrength(mag, spec) {
+  if (spec == null) return 1;
+  if (Array.isArray(spec)) return fromCuts(Number(mag), spec, false);
+  if (typeof spec === "object") {
+    if (Array.isArray(spec.cuts)) return fromCuts(Number(mag), spec.cuts, spec.invert === true);
+    const hit = spec[String(mag)];
+    return Number.isFinite(Number(hit)) ? clipDots(hit) : 1;
+  }
+  return 1;
+}
+
+function chipMagnitude(chip) {
+  if (!chip) return null;
+  if (chip.kind === "move" || chip.kind === "supply") {
+    if (chip.dir === "dash") return null;
+    const m = String(chip.text || "").match(/(\d+(?:\.\d+)?)%/);
+    return m ? Number(m[1]) : 0;
+  }
+  if (chip.kind === "gone") return Number.isFinite(num(chip.rate)) ? num(chip.rate) : num(chip.dots);
+  if (chip.kind === "range") {
+    const pos = num(chip.pos);
+    return Number.isFinite(pos) ? Math.abs(pos - 0.5) * 2 : null;
+  }
+  if (chip.kind === "momentum") return Number.isFinite(num(chip.mag)) ? Math.abs(num(chip.mag)) : null;
+  if (chip.kind === "rotation") return num(chip.months);
+  if (chip.kind === "art") return chip.badge || null;
+  if (chip.kind === "era") return chip.tag || null;
+  if (chip.kind === "confidence") return num(chip.bars);
+  return null;
+}
+
+function cohortKey(read, ctx, rules) {
+  const side = isSealedRead(read) ? "sealed" : "singles";
+  const cut = String(rules?.era?.vintageBefore || "");
+  const release = String(ctx?.release || "").slice(0, 10);
+  const vintage = /^\d{4}-\d{2}-\d{2}$/.test(cut) && /^\d{4}-\d{2}-\d{2}$/.test(release) && release < cut;
+  return `${side}:${vintage ? "vintage" : "modern"}`;
+}
+
+function withStrength(published, internal, cohort, rules) {
+  if (!published || published.dir === "dash" || !rules?.strength) return published;
+  const spec = rules.strength.cohorts?.[cohort]?.[published.kind] ?? rules.strength.fallback?.[published.kind];
+  if (spec == null) return published;
+  const mag = chipMagnitude(internal);
+  if (mag == null || (typeof mag === "number" && !Number.isFinite(mag))) return published;
+  return { ...published, strength: specStrength(mag, spec) };
+}
+
+function overallStrength(signals, rules) {
+  const proven = Array.isArray(rules?.strength?.proven) ? rules.strength.proven.map(String) : [];
+  if (!proven.length) return null;
+  const weights = rules.strength.weights && typeof rules.strength.weights === "object" ? rules.strength.weights : {};
+  let total = 0;
+  let den = 0;
+  for (const chip of signals) {
+    if (!proven.includes(chip.kind) || chip.dir === "dash") continue;
+    const dots = num(chip.strength);
+    if (!(dots >= 1)) continue;
+    const w = num(weights[chip.kind]);
+    const weight = Number.isFinite(w) && w > 0 ? w : 1;
+    total += dots * weight;
+    den += weight;
+  }
+  if (!(den > 0)) return null;
+  return clipDots(Math.round(total / den));
+}
+
 export function readSignals(read, ctx = {}, rules = {}) {
   const asOf = String(ctx.asOf || read?.asOf || "").slice(0, 10);
   const all = qualifyChips(read, ctx, rules);
-  const signals = pickChips(all, rules);
+  const cohort = cohortKey(read, ctx, rules);
+  const signals = pickChips(all, rules).map((chip) => {
+    const internal = all.find((row) => (row.kind === "supply" ? "listings" : row.kind) === chip.kind);
+    return withStrength(chip, internal, cohort, rules);
+  });
   if (!signals.length) return { signals: [], blurb: "" };
   const lead = signals[0];
   let blurb = blurbFor(lead, asOf);
@@ -361,10 +448,13 @@ export function readSignals(read, ctx = {}, rules = {}) {
     blurb = "";
   }
   if (blurb && /[\u2013\u2014]/.test(blurb)) blurb = "";
-  return { signals, blurb };
+  const out = { signals, blurb };
+  const strength = overallStrength(signals, rules);
+  if (strength) out.strength = strength;
+  return out;
 }
 
 export function signalsLookSecret(value) {
   const blob = JSON.stringify(value);
-  return /flatAbs|threshold|cutoff|"score"|rankExtra|"cuts"|"weight"/.test(blob);
+  return /flatAbs|threshold|cutoff|"score"|rankExtra|"cuts"|"weight"|proven|cohorts|fallback|"invert"/.test(blob);
 }
