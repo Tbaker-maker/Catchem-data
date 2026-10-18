@@ -1,6 +1,6 @@
 {
- "asOf": "2026-10-17",
- "updatedAt": "2026-10-17T14:00:56.550Z",
+ "asOf": "2026-10-18",
+ "updatedAt": "2026-10-18T09:51:59.122Z",
  "note": "A hit means the next stored price moved the same way as the price we wrote down. A miss moved the other way. A hit rate stays hidden until 20 calls are scored. These are not sold prices.",
  "hitRate": null,
  "scored": 9,
@@ -224,46 +224,6 @@
    "changePct": -0.1
   },
   {
-   "id": "receipt-2026-10-15-single-swsh7-215",
-   "type": "receipt",
-   "result": "open",
-   "kind": "single",
-   "name": "Umbreon VMAX",
-   "headline": "Umbreon VMAX. Open.",
-   "price": 2283.14,
-   "source": "TCGplayer market",
-   "asOf": "2026-10-15",
-   "why": "Written down October 15, 2026 at $2,283.14. No earlier TCGplayer market price is stored, so this stays open.",
-   "hist": [
-    [
-     "2026-10-15",
-     2283.14
-    ]
-   ],
-   "href": "",
-   "changePct": null
-  },
-  {
-   "id": "receipt-2026-10-16-single-swsh7-218",
-   "type": "receipt",
-   "result": "open",
-   "kind": "single",
-   "name": "Rayquaza VMAX",
-   "headline": "Rayquaza VMAX. Open.",
-   "price": 1255.44,
-   "source": "TCGplayer market",
-   "asOf": "2026-10-16",
-   "why": "Written down October 16, 2026 at $1,255.44. No earlier TCGplayer market price is stored, so this stays open.",
-   "hist": [
-    [
-     "2026-10-16",
-     1255.44
-    ]
-   ],
-   "href": "",
-   "changePct": null
-  },
-  {
    "id": "receipt-2026-10-17-sealed-sm11-booster-box",
    "type": "receipt",
    "result": "open",
@@ -272,16 +232,20 @@
    "headline": "Unified Minds Booster Box. Open.",
    "price": 4999.99,
    "source": "eBay asking prices",
-   "asOf": "2026-10-17",
+   "asOf": "2026-10-18",
    "why": "Written down October 17, 2026 at $4,999.99. The eBay asking price before it was the same, so this stays open.",
    "hist": [
     [
      "2026-10-17",
      4999.99
+    ],
+    [
+     "2026-10-18",
+     4999.99
     ]
    ],
    "href": "",
-   "changePct": null
+   "changePct": 0
   },
   {
    "id": "receipt-2026-10-17-single-swsh12-186",
@@ -298,6 +262,46 @@
     [
      "2026-10-17",
      516.63
+    ]
+   ],
+   "href": "",
+   "changePct": null
+  },
+  {
+   "id": "receipt-2026-10-18-sealed-swsh2-etb",
+   "type": "receipt",
+   "result": "open",
+   "kind": "sealed",
+   "name": "Rebel Clash Elite Trainer Box",
+   "headline": "Rebel Clash Elite Trainer Box. Open.",
+   "price": 399.81,
+   "source": "eBay asking prices",
+   "asOf": "2026-10-18",
+   "why": "Written down October 18, 2026 at $399.81. The eBay asking price before it was the same, so this stays open.",
+   "hist": [
+    [
+     "2026-10-18",
+     399.81
+    ]
+   ],
+   "href": "",
+   "changePct": null
+  },
+  {
+   "id": "receipt-2026-10-18-single-swsh7-215",
+   "type": "receipt",
+   "result": "open",
+   "kind": "single",
+   "name": "Umbreon VMAX",
+   "headline": "Umbreon VMAX. Open.",
+   "price": 2283.14,
+   "source": "TCGplayer market",
+   "asOf": "2026-10-18",
+   "why": "Written down October 18, 2026 at $2,283.14. No earlier TCGplayer market price is stored, so this stays open.",
+   "hist": [
+    [
+     "2026-10-18",
+     2283.14
     ]
    ],
    "href": "",

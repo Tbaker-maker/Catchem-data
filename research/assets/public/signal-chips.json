@@ -1,9 +1,269 @@
 {
- "asOf": "2026-10-17",
+ "asOf": "2026-10-18",
  "source": "TCGplayer market, eBay listings counted",
- "count": 239,
+ "count": 210,
  "byId": {
-  "deep-set-dragon-vault": {
+  "deep-slump-tcgcsv-88647": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "confidence",
+     "bars": 3,
+     "label": "Three data bars on file",
+     "strength": 4
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "set30-sv02-paldea-evolved": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "down",
+     "text": "3% 7D",
+     "label": "Price down 3 percent over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 0,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "art",
+     "badge": "IR",
+     "label": "Illustration Rare",
+     "strength": 3
+    }
+   ],
+   "blurb": "TCGplayer market is down 3% over 7 days, as of Oct 18."
+  },
+  "set30-base-set-2": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "dash",
+     "text": "",
+     "label": "Price being checked"
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "Price being checked."
+  },
+  "year-tcgcsv-83919": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "dash",
+     "text": "",
+     "label": "Price being checked"
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "Price being checked."
+  },
+  "backto-tcgcsv-542939": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "down",
+     "text": "3% 7D",
+     "label": "Price down 3 percent over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 0.17,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 2
+    },
+    {
+     "kind": "momentum",
+     "word": "Cooling",
+     "label": "Momentum Cooling",
+     "strength": 1
+    },
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is down 3% over 7 days, as of Oct 18."
+  },
+  "backto-tcgcsv-88581": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    },
+    {
+     "kind": "confidence",
+     "bars": 3,
+     "label": "Three data bars on file",
+     "strength": 4
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "backto-tcgcsv-85490": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "dash",
+     "text": "",
+     "label": "Price being checked"
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "Price being checked."
+  },
+  "deep-card-tcgcsv-85927": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "up",
+     "text": "132% 7D",
+     "label": "Price up 132 percent over 7 days",
+     "strength": 5
+    },
+    {
+     "kind": "range",
+     "pos": 1,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Rising",
+     "label": "Momentum Rising",
+     "strength": 5
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is up 132% over 7 days, as of Oct 18."
+  },
+  "plain-tcgcsv-654523": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "down",
+     "text": "4% 7D",
+     "label": "Price down 4 percent over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 0,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Cooling",
+     "label": "Momentum Cooling",
+     "strength": 2
+    },
+    {
+     "kind": "art",
+     "badge": "SIR",
+     "label": "Special Illustration Rare",
+     "strength": 5
+    }
+   ],
+   "blurb": "TCGplayer market is down 4% over 7 days, as of Oct 18."
+  },
+  "high-tcgcsv-88632": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "up",
+     "text": "20% 7D",
+     "label": "Price up 20 percent over 7 days",
+     "strength": 3
+    },
+    {
+     "kind": "range",
+     "pos": 1,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Rising",
+     "label": "Momentum Rising",
+     "strength": 4
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is up 20% over 7 days, as of Oct 18."
+  },
+  "deep-set-mcdonald-s-promos-2019": {
    "signals": [
     {
      "kind": "era",
@@ -14,7 +274,7 @@
    ],
    "blurb": "Era tag is Vintage."
   },
-  "high-tcgcsv-86681": {
+  "high-tcgcsv-90739": {
    "signals": [
     {
      "kind": "move",
@@ -26,8 +286,8 @@
     {
      "kind": "range",
      "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
      "strength": 4
     },
     {
@@ -43,20 +303,9 @@
      "strength": 1
     }
    ],
-   "blurb": "TCGplayer market is up 18% over 7 days, as of Oct 17."
+   "blurb": "TCGplayer market is up 18% over 7 days, as of Oct 18."
   },
-  "deep-slump-tcgcsv-85316": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "dash",
-     "text": "",
-     "label": "Price being checked"
-    }
-   ],
-   "blurb": "Price being checked."
-  },
-  "set30-me01-mega-evolution": {
+  "deep-rating-ir-above": {
    "signals": [
     {
      "kind": "move",
@@ -68,39 +317,8 @@
     {
      "kind": "range",
      "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Cooling",
-     "label": "Momentum Cooling",
-     "strength": 4
-    },
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is down 8% over 7 days, as of Oct 17."
-  },
-  "low-tcgcsv-550261": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "12% 7D",
-     "label": "Price down 12 percent over 7 days",
-     "strength": 4
-    },
-    {
-     "kind": "range",
-     "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
      "strength": 4
     },
     {
@@ -111,20 +329,34 @@
     },
     {
      "kind": "art",
-     "badge": "SIR",
-     "label": "Special Illustration Rare",
-     "strength": 5
+     "badge": "IR",
+     "label": "Illustration Rare",
+     "strength": 3
     }
    ],
-   "blurb": "TCGplayer market is down 12% over 7 days, as of Oct 17."
+   "blurb": "TCGplayer market is down 8% over 7 days, as of Oct 18."
   },
-  "set30-aquapolis": {
+  "high-tcgcsv-96050": {
    "signals": [
     {
      "kind": "move",
-     "dir": "dash",
-     "text": "",
-     "label": "Price being checked"
+     "dir": "up",
+     "text": "33% 7D",
+     "label": "Price up 33 percent over 7 days",
+     "strength": 4
+    },
+    {
+     "kind": "range",
+     "pos": 1,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Rising",
+     "label": "Momentum Rising",
+     "strength": 4
     },
     {
      "kind": "era",
@@ -133,16 +365,332 @@
      "strength": 1
     }
    ],
-   "blurb": "Price being checked."
+   "blurb": "TCGplayer market is up 33% over 7 days, as of Oct 18."
   },
-  "deep-sealedrating-booster-bundle": {
+  "deep-set-sv09-journey-together": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Modern."
+  },
+  "high-tcgcsv-157694": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "up",
+     "text": "34% 7D",
+     "label": "Price up 34 percent over 7 days",
+     "strength": 4
+    },
+    {
+     "kind": "range",
+     "pos": 1,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Rising",
+     "label": "Momentum Rising",
+     "strength": 4
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is up 34% over 7 days, as of Oct 18."
+  },
+  "deep-singlesvssealed-swsh-crown-zenith": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "up",
+     "text": "2% 7D",
+     "label": "Price up 2 percent over 7 days",
+     "strength": 2
+    },
+    {
+     "kind": "range",
+     "pos": 1,
+     "days": 23,
+     "label": "Today sits in the upper part of the 23 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 2
+    },
+    {
+     "kind": "confidence",
+     "bars": 3,
+     "label": "Three data bars on file",
+     "strength": 4
+    }
+   ],
+   "blurb": "TCGplayer market is up 2% over 7 days, as of Oct 18."
+  },
+  "backto-tcgcsv-87916": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "up",
+     "text": "2% 7D",
+     "label": "Price up 2 percent over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 0.15,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 2
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is up 2% over 7 days, as of Oct 18."
+  },
+  "deep-set-sm-crimson-invasion": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Vintage."
+  },
+  "backto-tcgcsv-497624": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 0.89,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 3
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "art",
+     "badge": "IR",
+     "label": "Illustration Rare",
+     "strength": 3
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "turned-tcgcsv-170922": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "up",
+     "text": "35% 7D",
+     "label": "Price up 35 percent over 7 days",
+     "strength": 4
+    },
+    {
+     "kind": "range",
+     "pos": 0.93,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 3
+    },
+    {
+     "kind": "momentum",
+     "word": "Rising",
+     "label": "Momentum Rising",
+     "strength": 4
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is up 35% over 7 days, as of Oct 18."
+  },
+  "deep-recovery-tcgcsv-84149": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "confidence",
+     "bars": 3,
+     "label": "Three data bars on file",
+     "strength": 4
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "year-tcgcsv-86550": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 1,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "deep-set-mcdonald-s-promos-2018": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Vintage."
+  },
+  "set30-sv-black-bolt": {
    "signals": [
     {
      "kind": "move",
      "dir": "down",
-     "text": "4% 7D",
-     "label": "Price down 4 percent over 7 days",
-     "strength": 3
+     "text": "3% 7D",
+     "label": "Price down 3 percent over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 0,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "art",
+     "badge": "SIR",
+     "label": "Special Illustration Rare",
+     "strength": 5
+    }
+   ],
+   "blurb": "TCGplayer market is down 3% over 7 days, as of Oct 18."
+  },
+  "year-tcgcsv-86043": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 1,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "deep-set-xy-base-set": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Vintage."
+  },
+  "backto-tcgcsv-497611": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "down",
+     "text": "6% 7D",
+     "label": "Price down 6 percent over 7 days",
+     "strength": 2
     },
     {
      "kind": "range",
@@ -158,28 +706,39 @@
      "strength": 3
     },
     {
-     "kind": "confidence",
-     "bars": 3,
-     "label": "Three data bars on file",
-     "strength": 4
+     "kind": "art",
+     "badge": "IR",
+     "label": "Illustration Rare",
+     "strength": 3
     }
    ],
-   "blurb": "TCGplayer market is down 4% over 7 days, as of Oct 17."
+   "blurb": "TCGplayer market is down 6% over 7 days, as of Oct 18."
   },
-  "backto-tcgcsv-623589": {
+  "deep-chase-skyridge": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Vintage."
+  },
+  "high-tcgcsv-87428": {
    "signals": [
     {
      "kind": "move",
      "dir": "up",
-     "text": "10% 7D",
-     "label": "Price up 10 percent over 7 days",
+     "text": "35% 7D",
+     "label": "Price up 35 percent over 7 days",
      "strength": 4
     },
     {
      "kind": "range",
-     "pos": 0.97,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
+     "pos": 1,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
      "strength": 4
     },
     {
@@ -189,35 +748,52 @@
      "strength": 4
     },
     {
-     "kind": "art",
-     "badge": "IR",
-     "label": "Illustration Rare",
-     "strength": 3
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
     }
    ],
-   "blurb": "TCGplayer market is up 10% over 7 days, as of Oct 17."
+   "blurb": "TCGplayer market is up 35% over 7 days, as of Oct 18."
   },
-  "deep-card-tcgcsv-246723": {
+  "deep-singlesvssealed-sv-scarlet-and-violet-151": {
    "signals": [
     {
      "kind": "move",
-     "dir": "flat",
-     "text": "0% 7D",
-     "label": "Price flat over 7 days",
-     "strength": 1
+     "dir": "down",
+     "text": "2% 7D",
+     "label": "Price down 2 percent over 7 days",
+     "strength": 2
     },
     {
      "kind": "range",
-     "pos": 0.82,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 2
+     "pos": 0.68,
+     "days": 23,
+     "label": "Today sits in the upper part of the 23 day range",
+     "strength": 1
     },
     {
      "kind": "momentum",
      "word": "Flat",
      "label": "Momentum Flat",
-     "strength": 1
+     "strength": 2
+    },
+    {
+     "kind": "confidence",
+     "bars": 3,
+     "label": "Three data bars on file",
+     "strength": 4
+    }
+   ],
+   "blurb": "TCGplayer market is down 2% over 7 days, as of Oct 18."
+  },
+  "set30-swsh09-brilliant-stars": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "dash",
+     "text": "",
+     "label": "Price being checked"
     },
     {
      "kind": "era",
@@ -226,9 +802,40 @@
      "strength": 1
     }
    ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
+   "blurb": "Price being checked."
   },
-  "backto-tcgcsv-84188": {
+  "plain-tcgcsv-550229": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "up",
+     "text": "16% 7D",
+     "label": "Price up 16 percent over 7 days",
+     "strength": 4
+    },
+    {
+     "kind": "range",
+     "pos": 1,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Rising",
+     "label": "Momentum Rising",
+     "strength": 5
+    },
+    {
+     "kind": "art",
+     "badge": "IR",
+     "label": "Illustration Rare",
+     "strength": 3
+    }
+   ],
+   "blurb": "TCGplayer market is up 16% over 7 days, as of Oct 18."
+  },
+  "year-tcgcsv-179010": {
    "signals": [
     {
      "kind": "move",
@@ -240,8 +847,8 @@
     {
      "kind": "range",
      "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
      "strength": 4
     },
     {
@@ -251,55 +858,75 @@
      "strength": 1
     },
     {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
+     "kind": "art",
+     "badge": "FA",
+     "label": "Full Art",
+     "strength": 2
     }
    ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
   },
-  "deep-recovery-tcgcsv-90280": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "dash",
-     "text": "",
-     "label": "Price being checked"
-    }
-   ],
-   "blurb": "Price being checked."
-  },
-  "low-tcgcsv-157778": {
+  "low-tcgcsv-633032": {
    "signals": [
     {
      "kind": "move",
      "dir": "down",
-     "text": "5% 7D",
-     "label": "Price down 5 percent over 7 days",
-     "strength": 2
+     "text": "11% 7D",
+     "label": "Price down 11 percent over 7 days",
+     "strength": 4
     },
     {
      "kind": "range",
      "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
      "strength": 4
     },
     {
      "kind": "momentum",
      "word": "Cooling",
      "label": "Momentum Cooling",
-     "strength": 2
+     "strength": 4
     },
     {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
+     "kind": "art",
+     "badge": "SIR",
+     "label": "Special Illustration Rare",
+     "strength": 5
     }
    ],
-   "blurb": "TCGplayer market is down 5% over 7 days, as of Oct 17."
+   "blurb": "TCGplayer market is down 11% over 7 days, as of Oct 18."
+  },
+  "plain-tcgcsv-633029": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "down",
+     "text": "11% 7D",
+     "label": "Price down 11 percent over 7 days",
+     "strength": 4
+    },
+    {
+     "kind": "range",
+     "pos": 0.03,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Cooling",
+     "label": "Momentum Cooling",
+     "strength": 4
+    },
+    {
+     "kind": "art",
+     "badge": "SIR",
+     "label": "Special Illustration Rare",
+     "strength": 5
+    }
+   ],
+   "blurb": "TCGplayer market is down 11% over 7 days, as of Oct 18."
   },
   "deep-recovery-tcgcsv-88797": {
    "signals": [
@@ -313,8 +940,8 @@
     {
      "kind": "range",
      "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
      "strength": 4
     },
     {
@@ -330,53 +957,86 @@
      "strength": 4
     }
    ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
   },
-  "backto-tcgcsv-662215": {
+  "high-tcgcsv-86548": {
    "signals": [
     {
      "kind": "move",
      "dir": "up",
-     "text": "2% 7D",
-     "label": "Price up 2 percent over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 0.41,
-     "days": 21,
-     "label": "Today sits in the middle of the 21 day range",
-     "strength": 1
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 1
-    },
-    {
-     "kind": "art",
-     "badge": "IR",
-     "label": "Illustration Rare",
+     "text": "17% 7D",
+     "label": "Price up 17 percent over 7 days",
      "strength": 3
-    }
-   ],
-   "blurb": "TCGplayer market is up 2% over 7 days, as of Oct 17."
-  },
-  "year-tcgcsv-522649": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "flat",
-     "text": "0% 7D",
-     "label": "Price flat over 7 days",
-     "strength": 1
     },
     {
      "kind": "range",
      "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Rising",
+     "label": "Momentum Rising",
+     "strength": 3
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is up 17% over 7 days, as of Oct 18."
+  },
+  "deep-set-sm-unified-minds": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Vintage."
+  },
+  "listcount-sm5-booster-box": {
+   "signals": [
+    {
+     "kind": "gone",
+     "dots": 2,
+     "label": "Listings gone, steady",
+     "strength": 1
+    }
+   ],
+   "blurb": "Listings gone are steady."
+  },
+  "deep-recovery-tcgcsv-86734": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "dash",
+     "text": "",
+     "label": "Price being checked"
+    }
+   ],
+   "blurb": "Price being checked."
+  },
+  "set30-sv-scarlet-violet-promo-cards": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "down",
+     "text": "2% 7D",
+     "label": "Price down 2 percent over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 0,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
      "strength": 4
     },
     {
@@ -392,9 +1052,9 @@
      "strength": 1
     }
    ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
+   "blurb": "TCGplayer market is down 2% over 7 days, as of Oct 18."
   },
-  "deep-set-mcdonald-s-promos-2012": {
+  "deep-chase-ex-holon-phantoms": {
    "signals": [
     {
      "kind": "era",
@@ -405,38 +1065,7 @@
    ],
    "blurb": "Era tag is Vintage."
   },
-  "high-tcgcsv-84698": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "up",
-     "text": "15% 7D",
-     "label": "Price up 15 percent over 7 days",
-     "strength": 3
-    },
-    {
-     "kind": "range",
-     "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Rising",
-     "label": "Momentum Rising",
-     "strength": 3
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is up 15% over 7 days, as of Oct 17."
-  },
-  "deep-card-tcgcsv-84186": {
+  "set30-sv-scarlet-violet-151": {
    "signals": [
     {
      "kind": "move",
@@ -445,46 +1074,63 @@
      "label": "Price being checked"
     },
     {
+     "kind": "art",
+     "badge": "SIR",
+     "label": "Special Illustration Rare",
+     "strength": 5
+    },
+    {
      "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
+     "tag": "Modern",
+     "label": "Modern",
      "strength": 1
     }
    ],
    "blurb": "Price being checked."
   },
-  "high-tcgcsv-178963": {
+  "deep-slump-tcgcsv-91246": {
    "signals": [
     {
      "kind": "move",
-     "dir": "up",
-     "text": "83% 7D",
-     "label": "Price up 83 percent over 7 days",
-     "strength": 4
+     "dir": "down",
+     "text": "47% 7D",
+     "label": "Price down 47 percent over 7 days",
+     "strength": 5
     },
     {
      "kind": "range",
-     "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
+     "pos": 0,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
      "strength": 4
     },
     {
      "kind": "momentum",
-     "word": "Rising",
-     "label": "Momentum Rising",
-     "strength": 4
+     "word": "Cooling",
+     "label": "Momentum Cooling",
+     "strength": 5
     },
     {
+     "kind": "confidence",
+     "bars": 3,
+     "label": "Three data bars on file",
+     "strength": 4
+    }
+   ],
+   "blurb": "TCGplayer market is down 47% over 7 days, as of Oct 18."
+  },
+  "rotation-set-sv01-scarlet-and-violet-base-set": {
+   "signals": [
+    {
      "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
+     "tag": "Modern",
+     "label": "Modern",
      "strength": 1
     }
    ],
-   "blurb": "TCGplayer market is up 83% over 7 days, as of Oct 17."
+   "blurb": "Era tag is Modern."
   },
-  "deep-rating-swsh-alt-below": {
+  "deep-card-tcgcsv-86351": {
    "signals": [
     {
      "kind": "move",
@@ -495,9 +1141,89 @@
     },
     {
      "kind": "range",
-     "pos": 0.04,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
+     "pos": 1,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "listcount-swsh2-booster-box": {
+   "signals": [
+    {
+     "kind": "listings",
+     "dir": "down",
+     "text": "11%",
+     "label": "Listings counted down 11 percent",
+     "strength": 2
+    },
+    {
+     "kind": "gone",
+     "dots": 2,
+     "label": "Listings gone, steady",
+     "strength": 2
+    }
+   ],
+   "blurb": "Listings counted are down 11%, as of Oct 16."
+  },
+  "high-tcgcsv-84627": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "up",
+     "text": "13% 7D",
+     "label": "Price up 13 percent over 7 days",
+     "strength": 3
+    },
+    {
+     "kind": "range",
+     "pos": 1,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Rising",
+     "label": "Momentum Rising",
+     "strength": 3
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is up 13% over 7 days, as of Oct 18."
+  },
+  "deep-rating-swsh-alt-above": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "down",
+     "text": "2% 7D",
+     "label": "Price down 2 percent over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 0,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
      "strength": 4
     },
     {
@@ -513,23 +1239,184 @@
      "strength": 4
     }
    ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
+   "blurb": "TCGplayer market is down 2% over 7 days, as of Oct 18."
   },
-  "set30-swsh-sword-shield-promo-cards": {
+  "rotation-set-sv-scarlet-and-violet-151": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Modern."
+  },
+  "backto-tcgcsv-610512": {
    "signals": [
     {
      "kind": "move",
      "dir": "down",
-     "text": "5% 7D",
-     "label": "Price down 5 percent over 7 days",
-     "strength": 2
+     "text": "2% 7D",
+     "label": "Price down 2 percent over 7 days",
+     "strength": 1
     },
     {
      "kind": "range",
      "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
      "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "art",
+     "badge": "SIR",
+     "label": "Special Illustration Rare",
+     "strength": 5
+    }
+   ],
+   "blurb": "TCGplayer market is down 2% over 7 days, as of Oct 18."
+  },
+  "deep-sealedrating-booster-box": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 0.84,
+     "days": 23,
+     "label": "Today sits in the upper part of the 23 day range",
+     "strength": 2
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 2
+    },
+    {
+     "kind": "confidence",
+     "bars": 3,
+     "label": "Three data bars on file",
+     "strength": 4
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "rotation-set-sv02-paldea-evolved": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Modern."
+  },
+  "deep-set-base-set": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Vintage."
+  },
+  "high-tcgcsv-88902": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "up",
+     "text": "4% 7D",
+     "label": "Price up 4 percent over 7 days",
+     "strength": 2
+    },
+    {
+     "kind": "range",
+     "pos": 1,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Rising",
+     "label": "Momentum Rising",
+     "strength": 2
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is up 4% over 7 days, as of Oct 18."
+  },
+  "deep-slump-tcgcsv-84199": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "confidence",
+     "bars": 3,
+     "label": "Three data bars on file",
+     "strength": 4
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "rotation-set-sv-paldean-fates": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Modern."
+  },
+  "deep-rating-gold-below": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "down",
+     "text": "6% 7D",
+     "label": "Price down 6 percent over 7 days",
+     "strength": 2
+    },
+    {
+     "kind": "range",
+     "pos": 0.46,
+     "days": 22,
+     "label": "Today sits in the middle of the 22 day range",
+     "strength": 1
     },
     {
      "kind": "momentum",
@@ -538,62 +1425,66 @@
      "strength": 2
     },
     {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
+     "kind": "confidence",
+     "bars": 3,
+     "label": "Three data bars on file",
+     "strength": 4
     }
    ],
-   "blurb": "TCGplayer market is down 5% over 7 days, as of Oct 17."
+   "blurb": "TCGplayer market is down 6% over 7 days, as of Oct 18."
   },
-  "deep-set-diamond-and-pearl": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Vintage."
-  },
-  "high-tcgcsv-86198": {
+  "plain-tcgcsv-633028": {
    "signals": [
     {
      "kind": "move",
-     "dir": "dash",
-     "text": "",
-     "label": "Price being checked"
+     "dir": "down",
+     "text": "3% 7D",
+     "label": "Price down 3 percent over 7 days",
+     "strength": 1
     },
     {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Price being checked."
-  },
-  "deep-card-tcgcsv-88537": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "flat",
-     "text": "0% 7D",
-     "label": "Price flat over 7 days",
-     "strength": 1
+     "kind": "range",
+     "pos": 0.08,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 3
     },
     {
      "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
+     "word": "Cooling",
+     "label": "Momentum Cooling",
      "strength": 1
     },
     {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
+     "kind": "art",
+     "badge": "SIR",
+     "label": "Special Illustration Rare",
+     "strength": 5
+    }
+   ],
+   "blurb": "TCGplayer market is down 3% over 7 days, as of Oct 18."
+  },
+  "deep-sealedrating-booster-bundle": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "down",
+     "text": "8% 7D",
+     "label": "Price down 8 percent over 7 days",
+     "strength": 5
+    },
+    {
+     "kind": "range",
+     "pos": 0,
+     "days": 23,
+     "label": "Today sits in the lower part of the 23 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Cooling",
+     "label": "Momentum Cooling",
+     "strength": 5
     },
     {
      "kind": "confidence",
@@ -602,24 +1493,91 @@
      "strength": 4
     }
    ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
+   "blurb": "TCGplayer market is down 8% over 7 days, as of Oct 18."
   },
-  "high-tcgcsv-88860": {
+  "rotation-set-sv10-destined-rivals": {
    "signals": [
     {
-     "kind": "move",
-     "dir": "dash",
-     "text": "",
-     "label": "Price being checked"
-    },
-    {
      "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
+     "tag": "Modern",
+     "label": "Modern",
      "strength": 1
     }
    ],
-   "blurb": "Price being checked."
+   "blurb": "Era tag is Modern."
+  },
+  "deep-sealedrating-etb": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "down",
+     "text": "10% 7D",
+     "label": "Price down 10 percent over 7 days",
+     "strength": 5
+    },
+    {
+     "kind": "range",
+     "pos": 0,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Cooling",
+     "label": "Momentum Cooling",
+     "strength": 5
+    },
+    {
+     "kind": "confidence",
+     "bars": 3,
+     "label": "Three data bars on file",
+     "strength": 4
+    }
+   ],
+   "blurb": "TCGplayer market is down 10% over 7 days, as of Oct 18."
+  },
+  "listcount-sm2-etb": {
+   "signals": [
+    {
+     "kind": "gone",
+     "dots": 2,
+     "label": "Listings gone, steady",
+     "strength": 2
+    }
+   ],
+   "blurb": "Listings gone are steady."
+  },
+  "deep-slump-tcgcsv-84773": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "up",
+     "text": "42% 7D",
+     "label": "Price up 42 percent over 7 days",
+     "strength": 5
+    },
+    {
+     "kind": "range",
+     "pos": 1,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Rising",
+     "label": "Momentum Rising",
+     "strength": 5
+    },
+    {
+     "kind": "confidence",
+     "bars": 3,
+     "label": "Three data bars on file",
+     "strength": 4
+    }
+   ],
+   "blurb": "TCGplayer market is up 42% over 7 days, as of Oct 18."
   },
   "backto-tcgcsv-86684": {
    "signals": [
@@ -649,1177 +1607,9 @@
      "strength": 4
     }
    ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
   },
-  "deep-slump-tcgcsv-84773": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "up",
-     "text": "42% 7D",
-     "label": "Price up 42 percent over 7 days",
-     "strength": 5
-    },
-    {
-     "kind": "range",
-     "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Rising",
-     "label": "Momentum Rising",
-     "strength": 5
-    },
-    {
-     "kind": "confidence",
-     "bars": 3,
-     "label": "Three data bars on file",
-     "strength": 4
-    }
-   ],
-   "blurb": "TCGplayer market is up 42% over 7 days, as of Oct 17."
-  },
-  "year-tcgcsv-90180": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "flat",
-     "text": "0% 7D",
-     "label": "Price flat over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 1
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    },
-    {
-     "kind": "confidence",
-     "bars": 3,
-     "label": "Three data bars on file",
-     "strength": 4
-    }
-   ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
-  },
-  "deep-slump-tcgcsv-84195": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "40% 7D",
-     "label": "Price down 40 percent over 7 days",
-     "strength": 5
-    },
-    {
-     "kind": "range",
-     "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Cooling",
-     "label": "Momentum Cooling",
-     "strength": 5
-    },
-    {
-     "kind": "confidence",
-     "bars": 3,
-     "label": "Three data bars on file",
-     "strength": 4
-    }
-   ],
-   "blurb": "TCGplayer market is down 40% over 7 days, as of Oct 17."
-  },
-  "set30-sv09-journey-together": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "7% 7D",
-     "label": "Price down 7 percent over 7 days",
-     "strength": 3
-    },
-    {
-     "kind": "range",
-     "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Cooling",
-     "label": "Momentum Cooling",
-     "strength": 3
-    },
-    {
-     "kind": "art",
-     "badge": "SIR",
-     "label": "Special Illustration Rare",
-     "strength": 5
-    }
-   ],
-   "blurb": "TCGplayer market is down 7% over 7 days, as of Oct 17."
-  },
-  "deep-rating-gold-above": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "4% 7D",
-     "label": "Price down 4 percent over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Cooling",
-     "label": "Momentum Cooling",
-     "strength": 2
-    },
-    {
-     "kind": "confidence",
-     "bars": 3,
-     "label": "Three data bars on file",
-     "strength": 4
-    }
-   ],
-   "blurb": "TCGplayer market is down 4% over 7 days, as of Oct 17."
-  },
-  "high-tcgcsv-97730": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "up",
-     "text": "4% 7D",
-     "label": "Price up 4 percent over 7 days",
-     "strength": 2
-    },
-    {
-     "kind": "range",
-     "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Rising",
-     "label": "Momentum Rising",
-     "strength": 2
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is up 4% over 7 days, as of Oct 17."
-  },
-  "deep-sealedrating-etb": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "5% 7D",
-     "label": "Price down 5 percent over 7 days",
-     "strength": 3
-    },
-    {
-     "kind": "range",
-     "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Cooling",
-     "label": "Momentum Cooling",
-     "strength": 4
-    },
-    {
-     "kind": "confidence",
-     "bars": 3,
-     "label": "Three data bars on file",
-     "strength": 4
-    }
-   ],
-   "blurb": "TCGplayer market is down 5% over 7 days, as of Oct 17."
-  },
-  "high-tcgcsv-89104": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "up",
-     "text": "41% 7D",
-     "label": "Price up 41 percent over 7 days",
-     "strength": 4
-    },
-    {
-     "kind": "range",
-     "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Rising",
-     "label": "Momentum Rising",
-     "strength": 4
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is up 41% over 7 days, as of Oct 17."
-  },
-  "deep-pokemon-arceus": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Vintage."
-  },
-  "plain-tcgcsv-84569": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "dash",
-     "text": "",
-     "label": "Price being checked"
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Price being checked."
-  },
-  "deep-rating-ir-above": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "8% 7D",
-     "label": "Price down 8 percent over 7 days",
-     "strength": 3
-    },
-    {
-     "kind": "range",
-     "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Cooling",
-     "label": "Momentum Cooling",
-     "strength": 4
-    },
-    {
-     "kind": "art",
-     "badge": "IR",
-     "label": "Illustration Rare",
-     "strength": 3
-    }
-   ],
-   "blurb": "TCGplayer market is down 8% over 7 days, as of Oct 17."
-  },
-  "set30-sv06-twilight-masquerade": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "4% 7D",
-     "label": "Price down 4 percent over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Cooling",
-     "label": "Momentum Cooling",
-     "strength": 2
-    },
-    {
-     "kind": "art",
-     "badge": "SIR",
-     "label": "Special Illustration Rare",
-     "strength": 5
-    }
-   ],
-   "blurb": "TCGplayer market is down 4% over 7 days, as of Oct 17."
-  },
-  "deep-sealedrating-booster-box": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "flat",
-     "text": "0% 7D",
-     "label": "Price flat over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 0.82,
-     "days": 22,
-     "label": "Today sits in the upper part of the 22 day range",
-     "strength": 2
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 2
-    },
-    {
-     "kind": "confidence",
-     "bars": 3,
-     "label": "Three data bars on file",
-     "strength": 4
-    }
-   ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
-  },
-  "turned-tcgcsv-497678": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "8% 7D",
-     "label": "Price down 8 percent over 7 days",
-     "strength": 3
-    },
-    {
-     "kind": "range",
-     "pos": 0.23,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 2
-    },
-    {
-     "kind": "momentum",
-     "word": "Cooling",
-     "label": "Momentum Cooling",
-     "strength": 4
-    },
-    {
-     "kind": "art",
-     "badge": "SIR",
-     "label": "Special Illustration Rare",
-     "strength": 5
-    }
-   ],
-   "blurb": "TCGplayer market is down 8% over 7 days, as of Oct 17."
-  },
-  "deep-card-tcgcsv-86351": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "flat",
-     "text": "0% 7D",
-     "label": "Price flat over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 1
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
-  },
-  "year-tcgcsv-179010": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "flat",
-     "text": "0% 7D",
-     "label": "Price flat over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 1
-    },
-    {
-     "kind": "art",
-     "badge": "FA",
-     "label": "Full Art",
-     "strength": 2
-    }
-   ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
-  },
-  "deep-card-tcgcsv-183830": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "up",
-     "text": "2% 7D",
-     "label": "Price up 2 percent over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 1
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is up 2% over 7 days, as of Oct 17."
-  },
-  "set30-sv01-scarlet-violet-base-set": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "flat",
-     "text": "0% 7D",
-     "label": "Price flat over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 0.07,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 3
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 1
-    },
-    {
-     "kind": "art",
-     "badge": "IR",
-     "label": "Illustration Rare",
-     "strength": 3
-    }
-   ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
-  },
-  "set30-ex-deoxys": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "flat",
-     "text": "0% 7D",
-     "label": "Price flat over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 1
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
-  },
-  "deep-card-tcgcsv-85927": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "up",
-     "text": "132% 7D",
-     "label": "Price up 132 percent over 7 days",
-     "strength": 5
-    },
-    {
-     "kind": "range",
-     "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Rising",
-     "label": "Momentum Rising",
-     "strength": 5
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is up 132% over 7 days, as of Oct 17."
-  },
-  "streak-tcgcsv-285378": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "up",
-     "text": "4% 7D",
-     "label": "Price up 4 percent over 7 days",
-     "strength": 2
-    },
-    {
-     "kind": "range",
-     "pos": 0.56,
-     "days": 21,
-     "label": "Today sits in the middle of the 21 day range",
-     "strength": 1
-    },
-    {
-     "kind": "momentum",
-     "word": "Rising",
-     "label": "Momentum Rising",
-     "strength": 2
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is up 4% over 7 days, as of Oct 17."
-  },
-  "deep-recovery-tcgcsv-86734": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "dash",
-     "text": "",
-     "label": "Price being checked"
-    }
-   ],
-   "blurb": "Price being checked."
-  },
-  "year-tcgcsv-90683": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "up",
-     "text": "2% 7D",
-     "label": "Price up 2 percent over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 1
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is up 2% over 7 days, as of Oct 17."
-  },
-  "deep-singlesvssealed-me05-pitch-black": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "up",
-     "text": "7% 7D",
-     "label": "Price up 7 percent over 7 days",
-     "strength": 4
-    },
-    {
-     "kind": "range",
-     "pos": 0.74,
-     "days": 22,
-     "label": "Today sits in the upper part of the 22 day range",
-     "strength": 2
-    },
-    {
-     "kind": "momentum",
-     "word": "Rising",
-     "label": "Momentum Rising",
-     "strength": 5
-    },
-    {
-     "kind": "confidence",
-     "bars": 3,
-     "label": "Three data bars on file",
-     "strength": 4
-    }
-   ],
-   "blurb": "TCGplayer market is up 7% over 7 days, as of Oct 17."
-  },
-  "year-tcgcsv-89591": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "dash",
-     "text": "",
-     "label": "Price being checked"
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Price being checked."
-  },
-  "backto-tcgcsv-642565": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "up",
-     "text": "16% 7D",
-     "label": "Price up 16 percent over 7 days",
-     "strength": 4
-    },
-    {
-     "kind": "range",
-     "pos": 0.8,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 2
-    },
-    {
-     "kind": "momentum",
-     "word": "Rising",
-     "label": "Momentum Rising",
-     "strength": 4
-    },
-    {
-     "kind": "art",
-     "badge": "IR",
-     "label": "Illustration Rare",
-     "strength": 3
-    }
-   ],
-   "blurb": "TCGplayer market is up 16% over 7 days, as of Oct 17."
-  },
-  "backto-tcgcsv-487061": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "3% 7D",
-     "label": "Price down 3 percent over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 0.08,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 3
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 1
-    },
-    {
-     "kind": "art",
-     "badge": "SIR",
-     "label": "Special Illustration Rare",
-     "strength": 5
-    }
-   ],
-   "blurb": "TCGplayer market is down 3% over 7 days, as of Oct 17."
-  },
-  "high-tcgcsv-194955": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "up",
-     "text": "6% 7D",
-     "label": "Price up 6 percent over 7 days",
-     "strength": 3
-    },
-    {
-     "kind": "range",
-     "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Rising",
-     "label": "Momentum Rising",
-     "strength": 3
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is up 6% over 7 days, as of Oct 17."
-  },
-  "set30-base-set-2": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "dash",
-     "text": "",
-     "label": "Price being checked"
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Price being checked."
-  },
-  "deep-anniversary-gym-heroes": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Vintage."
-  },
-  "year-tcgcsv-85356": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "dash",
-     "text": "",
-     "label": "Price being checked"
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Price being checked."
-  },
-  "deep-chase-aquapolis": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Vintage."
-  },
-  "plain-tcgcsv-509957": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "7% 7D",
-     "label": "Price down 7 percent over 7 days",
-     "strength": 3
-    },
-    {
-     "kind": "range",
-     "pos": 0.03,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Cooling",
-     "label": "Momentum Cooling",
-     "strength": 3
-    },
-    {
-     "kind": "art",
-     "badge": "IR",
-     "label": "Illustration Rare",
-     "strength": 3
-    }
-   ],
-   "blurb": "TCGplayer market is down 7% over 7 days, as of Oct 17."
-  },
-  "deep-singlesvssealed-me04-chaos-rising": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "flat",
-     "text": "0% 7D",
-     "label": "Price flat over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 0,
-     "days": 22,
-     "label": "Today sits in the lower part of the 22 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 2
-    },
-    {
-     "kind": "confidence",
-     "bars": 3,
-     "label": "Three data bars on file",
-     "strength": 4
-    }
-   ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
-  },
-  "plain-tcgcsv-497676": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "11% 7D",
-     "label": "Price down 11 percent over 7 days",
-     "strength": 4
-    },
-    {
-     "kind": "range",
-     "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Cooling",
-     "label": "Momentum Cooling",
-     "strength": 4
-    },
-    {
-     "kind": "art",
-     "badge": "SIR",
-     "label": "Special Illustration Rare",
-     "strength": 5
-    }
-   ],
-   "blurb": "TCGplayer market is down 11% over 7 days, as of Oct 17."
-  },
-  "deep-slump-tcgcsv-88905": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "39% 7D",
-     "label": "Price down 39 percent over 7 days",
-     "strength": 5
-    },
-    {
-     "kind": "range",
-     "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Cooling",
-     "label": "Momentum Cooling",
-     "strength": 5
-    },
-    {
-     "kind": "confidence",
-     "bars": 3,
-     "label": "Three data bars on file",
-     "strength": 4
-    }
-   ],
-   "blurb": "TCGplayer market is down 39% over 7 days, as of Oct 17."
-  },
-  "low-tcgcsv-589990": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "7% 7D",
-     "label": "Price down 7 percent over 7 days",
-     "strength": 3
-    },
-    {
-     "kind": "range",
-     "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Cooling",
-     "label": "Momentum Cooling",
-     "strength": 3
-    },
-    {
-     "kind": "art",
-     "badge": "SIR",
-     "label": "Special Illustration Rare",
-     "strength": 5
-    }
-   ],
-   "blurb": "TCGplayer market is down 7% over 7 days, as of Oct 17."
-  },
-  "year-tcgcsv-523892": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "up",
-     "text": "5% 7D",
-     "label": "Price up 5 percent over 7 days",
-     "strength": 2
-    },
-    {
-     "kind": "range",
-     "pos": 0.75,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 2
-    },
-    {
-     "kind": "momentum",
-     "word": "Rising",
-     "label": "Momentum Rising",
-     "strength": 2
-    },
-    {
-     "kind": "art",
-     "badge": "IR",
-     "label": "Illustration Rare",
-     "strength": 3
-    }
-   ],
-   "blurb": "TCGplayer market is up 5% over 7 days, as of Oct 17."
-  },
-  "plain-tcgcsv-42471": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "dash",
-     "text": "",
-     "label": "Price being checked"
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Price being checked."
-  },
-  "deep-rating-swsh-alt-above": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "2% 7D",
-     "label": "Price down 2 percent over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 1
-    },
-    {
-     "kind": "confidence",
-     "bars": 3,
-     "label": "Three data bars on file",
-     "strength": 4
-    }
-   ],
-   "blurb": "TCGplayer market is down 2% over 7 days, as of Oct 17."
-  },
-  "plain-tcgcsv-44428": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "dash",
-     "text": "",
-     "label": "Price being checked"
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Price being checked."
-  },
-  "deep-recovery-tcgcsv-662184": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "9% 7D",
-     "label": "Price down 9 percent over 7 days",
-     "strength": 4
-    },
-    {
-     "kind": "range",
-     "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Cooling",
-     "label": "Momentum Cooling",
-     "strength": 4
-    },
-    {
-     "kind": "art",
-     "badge": "SIR",
-     "label": "Special Illustration Rare",
-     "strength": 5
-    }
-   ],
-   "blurb": "TCGplayer market is down 9% over 7 days, as of Oct 17."
-  },
-  "plain-tcgcsv-642218": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "flat",
-     "text": "0% 7D",
-     "label": "Price flat over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 0.03,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 1
-    },
-    {
-     "kind": "art",
-     "badge": "IR",
-     "label": "Illustration Rare",
-     "strength": 3
-    }
-   ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
-  },
-  "rotation-set-sv05-temporal-forces": {
+  "rotation-set-sv06-twilight-masquerade": {
    "signals": [
     {
      "kind": "era",
@@ -1829,742 +1619,6 @@
     }
    ],
    "blurb": "Era tag is Modern."
-  },
-  "deep-chase-skyridge": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Vintage."
-  },
-  "backto-tcgcsv-548309": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "flat",
-     "text": "0% 7D",
-     "label": "Price flat over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 1
-    },
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
-  },
-  "deep-recovery-tcgcsv-246719": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "flat",
-     "text": "0% 7D",
-     "label": "Price flat over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 1
-    },
-    {
-     "kind": "confidence",
-     "bars": 3,
-     "label": "Three data bars on file",
-     "strength": 4
-    }
-   ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
-  },
-  "listcount-sv5-bb": {
-   "signals": [
-    {
-     "kind": "gone",
-     "dots": 1,
-     "label": "Listings gone, light",
-     "strength": 1
-    }
-   ],
-   "blurb": "Listings gone are light."
-  },
-  "deep-slump-tcgcsv-84771": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "flat",
-     "text": "0% 7D",
-     "label": "Price flat over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 1
-    },
-    {
-     "kind": "confidence",
-     "bars": 3,
-     "label": "Three data bars on file",
-     "strength": 4
-    }
-   ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
-  },
-  "rotation-set-me02-phantasmal-flames": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Modern."
-  },
-  "deep-set-me01-mega-evolution": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Modern."
-  },
-  "high-tcgcsv-83525": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "up",
-     "text": "15% 7D",
-     "label": "Price up 15 percent over 7 days",
-     "strength": 3
-    },
-    {
-     "kind": "range",
-     "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Rising",
-     "label": "Momentum Rising",
-     "strength": 3
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is up 15% over 7 days, as of Oct 17."
-  },
-  "rotation-set-sv-paldean-fates": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Modern."
-  },
-  "listcount-sm35-etb": {
-   "signals": [
-    {
-     "kind": "listings",
-     "dir": "up",
-     "text": "9%",
-     "label": "Listings counted up 9 percent",
-     "strength": 1
-    }
-   ],
-   "blurb": "Listings counted are up 9%, as of Oct 16."
-  },
-  "deep-set-fossil": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Vintage."
-  },
-  "backto-tcgcsv-632994": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "6% 7D",
-     "label": "Price down 6 percent over 7 days",
-     "strength": 2
-    },
-    {
-     "kind": "range",
-     "pos": 0.07,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 3
-    },
-    {
-     "kind": "momentum",
-     "word": "Cooling",
-     "label": "Momentum Cooling",
-     "strength": 3
-    },
-    {
-     "kind": "art",
-     "badge": "IR",
-     "label": "Illustration Rare",
-     "strength": 3
-    }
-   ],
-   "blurb": "TCGplayer market is down 6% over 7 days, as of Oct 17."
-  },
-  "deep-set-shining-legends": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Vintage."
-  },
-  "rotation-set-swsh10-astral-radiance": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Modern."
-  },
-  "deep-anniversary-fossil": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Vintage."
-  },
-  "set30-next-destinies": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "flat",
-     "text": "0% 7D",
-     "label": "Price flat over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 1
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
-  },
-  "rotation-set-sv08-surging-sparks": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Modern."
-  },
-  "deep-rating-ir-below": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "2% 7D",
-     "label": "Price down 2 percent over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 0.21,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 2
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 1
-    },
-    {
-     "kind": "art",
-     "badge": "IR",
-     "label": "Illustration Rare",
-     "strength": 3
-    }
-   ],
-   "blurb": "TCGplayer market is down 2% over 7 days, as of Oct 17."
-  },
-  "deep-recovery-tcgcsv-84594": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "dash",
-     "text": "",
-     "label": "Price being checked"
-    }
-   ],
-   "blurb": "Price being checked."
-  },
-  "high-tcgcsv-101508": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "up",
-     "text": "20% 7D",
-     "label": "Price up 20 percent over 7 days",
-     "strength": 3
-    },
-    {
-     "kind": "range",
-     "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Rising",
-     "label": "Momentum Rising",
-     "strength": 3
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is up 20% over 7 days, as of Oct 17."
-  },
-  "rotation-set-sv02-paldea-evolved": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Modern."
-  },
-  "deep-slump-tcgcsv-610511": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "12% 7D",
-     "label": "Price down 12 percent over 7 days",
-     "strength": 4
-    },
-    {
-     "kind": "range",
-     "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Cooling",
-     "label": "Momentum Cooling",
-     "strength": 4
-    },
-    {
-     "kind": "art",
-     "badge": "SIR",
-     "label": "Special Illustration Rare",
-     "strength": 5
-    }
-   ],
-   "blurb": "TCGplayer market is down 12% over 7 days, as of Oct 17."
-  },
-  "high-tcgcsv-98111": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "up",
-     "text": "22% 7D",
-     "label": "Price up 22 percent over 7 days",
-     "strength": 4
-    },
-    {
-     "kind": "range",
-     "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Rising",
-     "label": "Momentum Rising",
-     "strength": 4
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is up 22% over 7 days, as of Oct 17."
-  },
-  "deep-set-xy-roaring-skies": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Vintage."
-  },
-  "deep-set-detective-pikachu": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Vintage."
-  },
-  "rotation-set-pokemon-go": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Modern."
-  },
-  "listcount-sv3-pc-etb": {
-   "signals": [
-    {
-     "kind": "gone",
-     "dots": 1,
-     "label": "Listings gone, light",
-     "strength": 1
-    }
-   ],
-   "blurb": "Listings gone are light."
-  },
-  "deep-recovery-tcgcsv-86551": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "flat",
-     "text": "0% 7D",
-     "label": "Price flat over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 1
-    },
-    {
-     "kind": "confidence",
-     "bars": 2,
-     "label": "Two data bars on file",
-     "strength": 3
-    }
-   ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
-  },
-  "streak-tcgcsv-517046": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "5% 7D",
-     "label": "Price down 5 percent over 7 days",
-     "strength": 2
-    },
-    {
-     "kind": "range",
-     "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Cooling",
-     "label": "Momentum Cooling",
-     "strength": 2
-    },
-    {
-     "kind": "art",
-     "badge": "SIR",
-     "label": "Special Illustration Rare",
-     "strength": 5
-    }
-   ],
-   "blurb": "TCGplayer market is down 5% over 7 days, as of Oct 17."
-  },
-  "deep-chase-ex-holon-phantoms": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Vintage."
-  },
-  "rotation-set-sv10-destined-rivals": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Modern."
-  },
-  "low-tcgcsv-85317": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "dash",
-     "text": "",
-     "label": "Price being checked"
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Price being checked."
-  },
-  "deep-singlesvssealed-sv-scarlet-and-violet-151": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "2% 7D",
-     "label": "Price down 2 percent over 7 days",
-     "strength": 2
-    },
-    {
-     "kind": "range",
-     "pos": 0.71,
-     "days": 22,
-     "label": "Today sits in the upper part of the 22 day range",
-     "strength": 2
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 2
-    },
-    {
-     "kind": "confidence",
-     "bars": 3,
-     "label": "Three data bars on file",
-     "strength": 4
-    }
-   ],
-   "blurb": "TCGplayer market is down 2% over 7 days, as of Oct 17."
-  },
-  "listcount-sv3-bundle": {
-   "signals": [
-    {
-     "kind": "gone",
-     "dots": 1,
-     "label": "Listings gone, light",
-     "strength": 1
-    }
-   ],
-   "blurb": "Listings gone are light."
-  },
-  "rotation-set-sv-white-flare": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Modern."
-  },
-  "deep-set-mcdonald-s-promos-2018": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Vintage."
-  },
-  "deep-recovery-tcgcsv-84149": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "flat",
-     "text": "0% 7D",
-     "label": "Price flat over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 1
-    },
-    {
-     "kind": "confidence",
-     "bars": 3,
-     "label": "Three data bars on file",
-     "strength": 4
-    }
-   ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
-  },
-  "deep-card-tcgcsv-86912": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "dash",
-     "text": "",
-     "label": "Price being checked"
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Price being checked."
-  },
-  "plain-tcgcsv-90143": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "dash",
-     "text": "",
-     "label": "Price being checked"
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Price being checked."
-  },
-  "deep-set-xy-base-set": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Vintage."
-  },
-  "deep-chase-ex-delta-species": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Vintage."
   },
   "listcount-sv4-bundle": {
    "signals": [
@@ -2578,135 +1632,6 @@
    ],
    "blurb": "Listings counted are up 13%, as of Oct 15."
   },
-  "rotation-set-swsh09-brilliant-stars": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Modern."
-  },
-  "backto-tcgcsv-490072": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "2% 7D",
-     "label": "Price down 2 percent over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 0.07,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 3
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 1
-    },
-    {
-     "kind": "art",
-     "badge": "IR",
-     "label": "Illustration Rare",
-     "strength": 3
-    }
-   ],
-   "blurb": "TCGplayer market is down 2% over 7 days, as of Oct 17."
-  },
-  "deep-set-supreme-victors": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Vintage."
-  },
-  "listcount-sm11-booster-box": {
-   "signals": [
-    {
-     "kind": "listings",
-     "dir": "up",
-     "text": "9%",
-     "label": "Listings counted up 9 percent",
-     "strength": 1
-    }
-   ],
-   "blurb": "Listings counted are up 9%, as of Oct 16."
-  },
-  "rotation-set-sv01-scarlet-and-violet-base-set": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Modern."
-  },
-  "move-tcgcsv-704443-7": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "46% 7D",
-     "label": "Price down 46 percent over 7 days",
-     "strength": 5
-    },
-    {
-     "kind": "range",
-     "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Cooling",
-     "label": "Momentum Cooling",
-     "strength": 5
-    },
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is down 46% over 7 days, as of Oct 17."
-  },
-  "deep-set-mcdonald-s-promos-2017": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Vintage."
-  },
-  "deep-anniversary-gym-challenge": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Vintage."
-  },
   "deep-rating-tg-above": {
    "signals": [
     {
@@ -2719,8 +1644,8 @@
     {
      "kind": "range",
      "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
      "strength": 4
     },
     {
@@ -2736,256 +1661,9 @@
      "strength": 4
     }
    ],
-   "blurb": "TCGplayer market is down 3% over 7 days, as of Oct 17."
+   "blurb": "TCGplayer market is down 3% over 7 days, as of Oct 18."
   },
-  "rotation-set-me01-mega-evolution": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Modern."
-  },
-  "deep-set-legendary-treasures": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Vintage."
-  },
-  "backto-tcgcsv-88247": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "dash",
-     "text": "",
-     "label": "Price being checked"
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Price being checked."
-  },
-  "deep-set-base-set": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Vintage."
-  },
-  "deep-rating-sir-below": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "7% 7D",
-     "label": "Price down 7 percent over 7 days",
-     "strength": 3
-    },
-    {
-     "kind": "range",
-     "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Cooling",
-     "label": "Momentum Cooling",
-     "strength": 3
-    },
-    {
-     "kind": "art",
-     "badge": "SIR",
-     "label": "Special Illustration Rare",
-     "strength": 5
-    }
-   ],
-   "blurb": "TCGplayer market is down 7% over 7 days, as of Oct 17."
-  },
-  "rotation-set-swsh12-silver-tempest": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Modern."
-  },
-  "deep-slump-tcgcsv-88794": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "40% 7D",
-     "label": "Price down 40 percent over 7 days",
-     "strength": 5
-    },
-    {
-     "kind": "range",
-     "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Cooling",
-     "label": "Momentum Cooling",
-     "strength": 5
-    },
-    {
-     "kind": "confidence",
-     "bars": 3,
-     "label": "Three data bars on file",
-     "strength": 4
-    }
-   ],
-   "blurb": "TCGplayer market is down 40% over 7 days, as of Oct 17."
-  },
-  "plain-tcgcsv-84811": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "up",
-     "text": "28% 7D",
-     "label": "Price up 28 percent over 7 days",
-     "strength": 4
-    },
-    {
-     "kind": "range",
-     "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Rising",
-     "label": "Momentum Rising",
-     "strength": 4
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is up 28% over 7 days, as of Oct 17."
-  },
-  "deep-rating-tg-below": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "6% 7D",
-     "label": "Price down 6 percent over 7 days",
-     "strength": 2
-    },
-    {
-     "kind": "range",
-     "pos": 0.02,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Cooling",
-     "label": "Momentum Cooling",
-     "strength": 2
-    },
-    {
-     "kind": "confidence",
-     "bars": 3,
-     "label": "Three data bars on file",
-     "strength": 4
-    }
-   ],
-   "blurb": "TCGplayer market is down 6% over 7 days, as of Oct 17."
-  },
-  "deep-card-tcgcsv-89165": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "dash",
-     "text": "",
-     "label": "Price being checked"
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Price being checked."
-  },
-  "deep-set-mcdonald-s-promos-2011": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Vintage."
-  },
-  "rotation-set-sv-black-bolt": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Modern."
-  },
-  "deep-chase-ex-unseen-forces": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Vintage."
-  },
-  "listcount-sm3-etb": {
-   "signals": [
-    {
-     "kind": "listings",
-     "dir": "up",
-     "text": "10%",
-     "label": "Listings counted up 10 percent",
-     "strength": 2
-    }
-   ],
-   "blurb": "Listings counted are up 10%, as of Oct 16."
-  },
-  "plain-tcgcsv-676083": {
+  "plain-tcgcsv-85659": {
    "signals": [
     {
      "kind": "move",
@@ -2996,10 +1674,10 @@
     },
     {
      "kind": "range",
-     "pos": 0.16,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 2
+     "pos": 1,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 4
     },
     {
      "kind": "momentum",
@@ -3009,12 +1687,34 @@
     },
     {
      "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "deep-set-mcdonald-s-promos-2022": {
+   "signals": [
+    {
+     "kind": "era",
      "tag": "Modern",
      "label": "Modern",
      "strength": 1
     }
    ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
+   "blurb": "Era tag is Modern."
+  },
+  "rotation-set-sv04-paradox-rift": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Modern."
   },
   "deep-recovery-tcgcsv-90323": {
    "signals": [
@@ -3038,7 +1738,213 @@
      "strength": 4
     }
    ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "deep-rating-gold-above": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "down",
+     "text": "4% 7D",
+     "label": "Price down 4 percent over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 0,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Cooling",
+     "label": "Momentum Cooling",
+     "strength": 2
+    },
+    {
+     "kind": "confidence",
+     "bars": 3,
+     "label": "Three data bars on file",
+     "strength": 4
+    }
+   ],
+   "blurb": "TCGplayer market is down 4% over 7 days, as of Oct 18."
+  },
+  "plain-tcgcsv-693517": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "down",
+     "text": "6% 7D",
+     "label": "Price down 6 percent over 7 days",
+     "strength": 2
+    },
+    {
+     "kind": "range",
+     "pos": 0.01,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Cooling",
+     "label": "Momentum Cooling",
+     "strength": 2
+    },
+    {
+     "kind": "art",
+     "badge": "SIR",
+     "label": "Special Illustration Rare",
+     "strength": 5
+    }
+   ],
+   "blurb": "TCGplayer market is down 6% over 7 days, as of Oct 18."
+  },
+  "deep-anniversary-gym-challenge": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Vintage."
+  },
+  "rotation-set-swsh09-brilliant-stars": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Modern."
+  },
+  "deep-slump-tcgcsv-84195": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "down",
+     "text": "40% 7D",
+     "label": "Price down 40 percent over 7 days",
+     "strength": 5
+    },
+    {
+     "kind": "range",
+     "pos": 0,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Cooling",
+     "label": "Momentum Cooling",
+     "strength": 5
+    },
+    {
+     "kind": "confidence",
+     "bars": 3,
+     "label": "Three data bars on file",
+     "strength": 4
+    }
+   ],
+   "blurb": "TCGplayer market is down 40% over 7 days, as of Oct 18."
+  },
+  "listcount-sm35-etb": {
+   "signals": [
+    {
+     "kind": "listings",
+     "dir": "down",
+     "text": "8%",
+     "label": "Listings counted down 8 percent",
+     "strength": 1
+    },
+    {
+     "kind": "gone",
+     "dots": 2,
+     "label": "Listings gone, steady",
+     "strength": 2
+    }
+   ],
+   "blurb": "Listings counted are down 8%, as of Oct 17."
+  },
+  "set30-sv09-journey-together": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "down",
+     "text": "6% 7D",
+     "label": "Price down 6 percent over 7 days",
+     "strength": 2
+    },
+    {
+     "kind": "range",
+     "pos": 0,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Cooling",
+     "label": "Momentum Cooling",
+     "strength": 3
+    },
+    {
+     "kind": "art",
+     "badge": "SIR",
+     "label": "Special Illustration Rare",
+     "strength": 5
+    }
+   ],
+   "blurb": "TCGplayer market is down 6% over 7 days, as of Oct 18."
+  },
+  "deep-card-tcgcsv-246723": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 0.8,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 2
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "rotation-set-pokemon-go": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Modern."
   },
   "deep-set-sm-guardians-rising": {
    "signals": [
@@ -3051,19 +1957,28 @@
    ],
    "blurb": "Era tag is Vintage."
   },
-  "rotation-set-me05-pitch-black": {
+  "streak-tcgcsv-285378": {
    "signals": [
     {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
+     "kind": "move",
+     "dir": "up",
+     "text": "4% 7D",
+     "label": "Price up 4 percent over 7 days",
+     "strength": 2
+    },
+    {
+     "kind": "range",
+     "pos": 0.57,
+     "days": 22,
+     "label": "Today sits in the middle of the 22 day range",
      "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Modern."
-  },
-  "deep-set-sm-lost-thunder": {
-   "signals": [
+    },
+    {
+     "kind": "momentum",
+     "word": "Rising",
+     "label": "Momentum Rising",
+     "strength": 2
+    },
     {
      "kind": "era",
      "tag": "Vintage",
@@ -3071,40 +1986,9 @@
      "strength": 1
     }
    ],
-   "blurb": "Era tag is Vintage."
+   "blurb": "TCGplayer market is up 4% over 7 days, as of Oct 18."
   },
-  "plain-tcgcsv-88624": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "up",
-     "text": "15% 7D",
-     "label": "Price up 15 percent over 7 days",
-     "strength": 4
-    },
-    {
-     "kind": "range",
-     "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Rising",
-     "label": "Momentum Rising",
-     "strength": 4
-    },
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is up 15% over 7 days, as of Oct 17."
-  },
-  "deep-card-tcgcsv-183899": {
+  "deep-card-tcgcsv-86912": {
    "signals": [
     {
      "kind": "move",
@@ -3121,18 +2005,7 @@
    ],
    "blurb": "Price being checked."
   },
-  "deep-set-mcdonald-s-promos-2019": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Vintage."
-  },
-  "rotation-set-me04-chaos-rising": {
+  "rotation-set-sv03-obsidian-flames": {
    "signals": [
     {
      "kind": "era",
@@ -3143,58 +2016,67 @@
    ],
    "blurb": "Era tag is Modern."
   },
-  "deep-set-arceus": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Vintage."
-  },
-  "move-tcgcsv-183781-7": {
+  "deep-recovery-tcgcsv-642289": {
    "signals": [
     {
      "kind": "move",
-     "dir": "up",
-     "text": "102% 7D",
-     "label": "Price up 102 percent over 7 days",
-     "strength": 4
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
     },
     {
      "kind": "range",
-     "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
+     "pos": 0,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
      "strength": 4
     },
     {
      "kind": "momentum",
-     "word": "Rising",
-     "label": "Momentum Rising",
-     "strength": 5
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
     },
     {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
+     "kind": "confidence",
+     "bars": 3,
+     "label": "Three data bars on file",
+     "strength": 4
     }
    ],
-   "blurb": "TCGplayer market is up 102% over 7 days, as of Oct 17."
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
   },
-  "breadth-set-me05-pitch-black": {
+  "backto-tcgcsv-610526": {
    "signals": [
     {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
+     "kind": "move",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
      "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 0,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "art",
+     "badge": "SIR",
+     "label": "Special Illustration Rare",
+     "strength": 5
     }
    ],
-   "blurb": "Era tag is Modern."
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
   },
   "deep-set-southern-islands": {
    "signals": [
@@ -3207,7 +2089,207 @@
    ],
    "blurb": "Era tag is Vintage."
   },
-  "deep-slump-tcgcsv-88648": {
+  "rotation-set-me01-mega-evolution": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Modern."
+  },
+  "deep-set-me01-mega-evolution": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Modern."
+  },
+  "deep-set-swsh11-lost-origin": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Modern."
+  },
+  "plain-tcgcsv-87061": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "up",
+     "text": "8% 7D",
+     "label": "Price up 8 percent over 7 days",
+     "strength": 3
+    },
+    {
+     "kind": "range",
+     "pos": 1,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Rising",
+     "label": "Momentum Rising",
+     "strength": 3
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is up 8% over 7 days, as of Oct 18."
+  },
+  "deep-rating-ir-below": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "down",
+     "text": "3% 7D",
+     "label": "Price down 3 percent over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 0.2,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 2
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "art",
+     "badge": "IR",
+     "label": "Illustration Rare",
+     "strength": 3
+    }
+   ],
+   "blurb": "TCGplayer market is down 3% over 7 days, as of Oct 18."
+  },
+  "rotation-set-sv05-temporal-forces": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Modern."
+  },
+  "deep-set-dragon-vault": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Vintage."
+  },
+  "listcount-sv6-bb": {
+   "signals": [
+    {
+     "kind": "gone",
+     "dots": 1,
+     "label": "Listings gone, light",
+     "strength": 1
+    }
+   ],
+   "blurb": "Listings gone are light."
+  },
+  "deep-chase-ex-delta-species": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Vintage."
+  },
+  "year-tcgcsv-84758": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    },
+    {
+     "kind": "confidence",
+     "bars": 3,
+     "label": "Three data bars on file",
+     "strength": 4
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "deep-recovery-tcgcsv-662184": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "down",
+     "text": "9% 7D",
+     "label": "Price down 9 percent over 7 days",
+     "strength": 4
+    },
+    {
+     "kind": "range",
+     "pos": 0,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Cooling",
+     "label": "Momentum Cooling",
+     "strength": 4
+    },
+    {
+     "kind": "art",
+     "badge": "SIR",
+     "label": "Special Illustration Rare",
+     "strength": 5
+    }
+   ],
+   "blurb": "TCGplayer market is down 9% over 7 days, as of Oct 18."
+  },
+  "deep-recovery-tcgcsv-86551": {
    "signals": [
     {
      "kind": "move",
@@ -3224,14 +2306,186 @@
     },
     {
      "kind": "confidence",
+     "bars": 2,
+     "label": "Two data bars on file",
+     "strength": 3
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "rotation-set-me04-chaos-rising": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Modern."
+  },
+  "deep-rating-swsh-alt-below": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 0,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "confidence",
      "bars": 3,
      "label": "Three data bars on file",
      "strength": 4
     }
    ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
   },
-  "deep-set-platinum": {
+  "listcount-sm12-booster-box": {
+   "signals": [
+    {
+     "kind": "listings",
+     "dir": "down",
+     "text": "18%",
+     "label": "Listings counted down 18 percent",
+     "strength": 4
+    },
+    {
+     "kind": "gone",
+     "dots": 3,
+     "label": "Listings gone, fast",
+     "strength": 3
+    }
+   ],
+   "blurb": "Listings counted are down 18%, as of Oct 17."
+  },
+  "set30-swsh-sword-shield-promo-cards": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "down",
+     "text": "4% 7D",
+     "label": "Price down 4 percent over 7 days",
+     "strength": 2
+    },
+    {
+     "kind": "range",
+     "pos": 0,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Cooling",
+     "label": "Momentum Cooling",
+     "strength": 2
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is down 4% over 7 days, as of Oct 18."
+  },
+  "deep-card-tcgcsv-89162": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "dash",
+     "text": "",
+     "label": "Price being checked"
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "Price being checked."
+  },
+  "rotation-set-sv-shrouded-fable": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Modern."
+  },
+  "deep-slump-tcgcsv-85505": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 0,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "confidence",
+     "bars": 3,
+     "label": "Three data bars on file",
+     "strength": 4
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "listcount-sv3-bundle": {
+   "signals": [
+    {
+     "kind": "gone",
+     "dots": 1,
+     "label": "Listings gone, light",
+     "strength": 1
+    }
+   ],
+   "blurb": "Listings gone are light."
+  },
+  "rotation-set-sv-black-bolt": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Modern."
+  },
+  "deep-set-detective-pikachu": {
    "signals": [
     {
      "kind": "era",
@@ -3242,7 +2496,7 @@
    ],
    "blurb": "Era tag is Vintage."
   },
-  "deep-set-base-set-2": {
+  "deep-chase-ex-team-rocket-returns": {
    "signals": [
     {
      "kind": "era",
@@ -3252,6 +2506,170 @@
     }
    ],
    "blurb": "Era tag is Vintage."
+  },
+  "listcount-sm7-booster-box": {
+   "signals": [
+    {
+     "kind": "listings",
+     "dir": "down",
+     "text": "10%",
+     "label": "Listings counted down 10 percent",
+     "strength": 2
+    },
+    {
+     "kind": "gone",
+     "dots": 2,
+     "label": "Listings gone, steady",
+     "strength": 2
+    }
+   ],
+   "blurb": "Listings counted are down 10%, as of Oct 17."
+  },
+  "deep-recovery-tcgcsv-84594": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "dash",
+     "text": "",
+     "label": "Price being checked"
+    }
+   ],
+   "blurb": "Price being checked."
+  },
+  "year-tcgcsv-87769": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "up",
+     "text": "7% 7D",
+     "label": "Price up 7 percent over 7 days",
+     "strength": 3
+    },
+    {
+     "kind": "range",
+     "pos": 1,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Rising",
+     "label": "Momentum Rising",
+     "strength": 3
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is up 7% over 7 days, as of Oct 18."
+  },
+  "deep-rating-tg-below": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "down",
+     "text": "4% 7D",
+     "label": "Price down 4 percent over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 0.54,
+     "days": 22,
+     "label": "Today sits in the middle of the 22 day range",
+     "strength": 1
+    },
+    {
+     "kind": "momentum",
+     "word": "Cooling",
+     "label": "Momentum Cooling",
+     "strength": 1
+    },
+    {
+     "kind": "confidence",
+     "bars": 3,
+     "label": "Three data bars on file",
+     "strength": 4
+    }
+   ],
+   "blurb": "TCGplayer market is down 4% over 7 days, as of Oct 18."
+  },
+  "rotation-set-me02-phantasmal-flames": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Modern."
+  },
+  "deep-slump-tcgcsv-84771": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 1,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "confidence",
+     "bars": 3,
+     "label": "Three data bars on file",
+     "strength": 4
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "year-tcgcsv-90345": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 0.59,
+     "days": 22,
+     "label": "Today sits in the middle of the 22 day range",
+     "strength": 1
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
   },
   "rotation-set-me03-perfect-order": {
    "signals": [
@@ -3264,7 +2682,299 @@
    ],
    "blurb": "Era tag is Modern."
   },
-  "deep-sealedrating-pc-etb": {
+  "deep-card-tcgcsv-87427": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    },
+    {
+     "kind": "confidence",
+     "bars": 2,
+     "label": "Two data bars on file",
+     "strength": 3
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "year-tcgcsv-88913": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 0,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "deep-set-sv-shrouded-fable": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Modern."
+  },
+  "deep-rating-sir-above": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 0,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "art",
+     "badge": "SIR",
+     "label": "Special Illustration Rare",
+     "strength": 5
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "deep-set-sv10-destined-rivals": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Modern."
+  },
+  "rotation-set-sv08-surging-sparks": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Modern."
+  },
+  "deep-slump-tcgcsv-88905": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "down",
+     "text": "39% 7D",
+     "label": "Price down 39 percent over 7 days",
+     "strength": 5
+    },
+    {
+     "kind": "range",
+     "pos": 0,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Cooling",
+     "label": "Momentum Cooling",
+     "strength": 5
+    },
+    {
+     "kind": "confidence",
+     "bars": 3,
+     "label": "Three data bars on file",
+     "strength": 4
+    }
+   ],
+   "blurb": "TCGplayer market is down 39% over 7 days, as of Oct 18."
+  },
+  "deep-set-sm-burning-shadows": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Vintage."
+  },
+  "move-tcgcsv-550174-7": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "down",
+     "text": "52% 7D",
+     "label": "Price down 52 percent over 7 days",
+     "strength": 5
+    },
+    {
+     "kind": "range",
+     "pos": 0.1,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 3
+    },
+    {
+     "kind": "momentum",
+     "word": "Cooling",
+     "label": "Momentum Cooling",
+     "strength": 5
+    },
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is down 52% over 7 days, as of Oct 18."
+  },
+  "deep-singlesvssealed-me04-chaos-rising": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 0.08,
+     "days": 23,
+     "label": "Today sits in the lower part of the 23 day range",
+     "strength": 3
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 2
+    },
+    {
+     "kind": "confidence",
+     "bars": 3,
+     "label": "Three data bars on file",
+     "strength": 4
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "deep-set-shining-legends": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Vintage."
+  },
+  "deep-card-tcgcsv-88537": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    },
+    {
+     "kind": "confidence",
+     "bars": 3,
+     "label": "Three data bars on file",
+     "strength": 4
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "rotation-set-me05-pitch-black": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Modern."
+  },
+  "deep-chase-neo-destiny": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Vintage."
+  },
+  "deep-sealedrating-special-collection": {
    "signals": [
     {
      "kind": "move",
@@ -3293,20 +3003,9 @@
      "strength": 4
     }
    ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
   },
-  "listcount-swsh12pt5-pc-etb": {
-   "signals": [
-    {
-     "kind": "gone",
-     "dots": 2,
-     "label": "Listings gone, steady",
-     "strength": 2
-    }
-   ],
-   "blurb": "Listings gone are steady."
-  },
-  "year-tcgcsv-85125": {
+  "year-tcgcsv-89389": {
    "signals": [
     {
      "kind": "move",
@@ -3317,142 +3016,9 @@
     },
     {
      "kind": "range",
-     "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 1
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
-  },
-  "deep-set-xy-primal-clash": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Vintage."
-  },
-  "deep-card-tcgcsv-86199": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "dash",
-     "text": "",
-     "label": "Price being checked"
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Price being checked."
-  },
-  "deep-set-sm-celestial-storm": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Vintage."
-  },
-  "deep-slump-tcgcsv-85505": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "flat",
-     "text": "0% 7D",
-     "label": "Price flat over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 1
-    },
-    {
-     "kind": "confidence",
-     "bars": 3,
-     "label": "Three data bars on file",
-     "strength": 4
-    }
-   ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
-  },
-  "rotation-set-sv-scarlet-and-violet-151": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Modern."
-  },
-  "deep-card-tcgcsv-89162": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "dash",
-     "text": "",
-     "label": "Price being checked"
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Price being checked."
-  },
-  "listcount-sm3-booster-box": {
-   "signals": [
-    {
-     "kind": "gone",
-     "dots": 2,
-     "label": "Listings gone, steady",
-     "strength": 2
-    }
-   ],
-   "blurb": "Listings gone are steady."
-  },
-  "deep-card-tcgcsv-85680": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "flat",
-     "text": "0% 7D",
-     "label": "Price flat over 7 days",
+     "pos": 0.45,
+     "days": 22,
+     "label": "Today sits in the middle of the 22 day range",
      "strength": 1
     },
     {
@@ -3466,37 +3032,48 @@
      "tag": "Vintage",
      "label": "Vintage",
      "strength": 1
-    },
-    {
-     "kind": "confidence",
-     "bars": 3,
-     "label": "Three data bars on file",
-     "strength": 4
     }
    ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
   },
-  "year-tcgcsv-86211": {
+  "span-season-tcgcsv-490073": {
    "signals": [
     {
      "kind": "move",
-     "dir": "up",
+     "dir": "down",
      "text": "3% 7D",
-     "label": "Price up 3 percent over 7 days",
-     "strength": 2
+     "label": "Price down 3 percent over 7 days",
+     "strength": 1
     },
     {
      "kind": "range",
-     "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 4
+     "pos": 0.69,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 1
     },
     {
      "kind": "momentum",
-     "word": "Rising",
-     "label": "Momentum Rising",
-     "strength": 2
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "art",
+     "badge": "IR",
+     "label": "Illustration Rare",
+     "strength": 3
+    }
+   ],
+   "blurb": "TCGplayer market is down 3% over 7 days, as of Oct 18."
+  },
+  "deep-card-tcgcsv-183899": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "dash",
+     "text": "",
+     "label": "Price being checked"
     },
     {
      "kind": "era",
@@ -3505,22 +3082,33 @@
      "strength": 1
     }
    ],
-   "blurb": "TCGplayer market is up 3% over 7 days, as of Oct 17."
+   "blurb": "Price being checked."
   },
-  "deep-recovery-tcgcsv-642289": {
+  "deep-set-sv-scarlet-and-violet-promo-cards": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Modern."
+  },
+  "deep-card-tcgcsv-88778": {
    "signals": [
     {
      "kind": "move",
-     "dir": "down",
-     "text": "2% 7D",
-     "label": "Price down 2 percent over 7 days",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
      "strength": 1
     },
     {
      "kind": "range",
-     "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
+     "pos": 1,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
      "strength": 4
     },
     {
@@ -3530,106 +3118,150 @@
      "strength": 1
     },
     {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "rotation-set-sv-white-flare": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Modern."
+  },
+  "deep-set-legendary-treasures": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Vintage."
+  },
+  "plain-tcgcsv-84180": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 1,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "span-year-range-tcgcsv-208480": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 0,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "deep-sealedrating-pc-etb": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 0,
+     "days": 23,
+     "label": "Today sits in the lower part of the 23 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 2
+    },
+    {
      "kind": "confidence",
      "bars": 3,
      "label": "Three data bars on file",
      "strength": 4
     }
    ],
-   "blurb": "TCGplayer market is down 2% over 7 days, as of Oct 17."
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
   },
-  "span-season-tcgcsv-654512": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "up",
-     "text": "4% 7D",
-     "label": "Price up 4 percent over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 0.48,
-     "days": 21,
-     "label": "Today sits in the middle of the 21 day range",
-     "strength": 1
-    },
-    {
-     "kind": "momentum",
-     "word": "Rising",
-     "label": "Momentum Rising",
-     "strength": 2
-    },
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is up 4% over 7 days, as of Oct 17."
-  },
-  "breadth-set-me-ascended-heroes": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Modern."
-  },
-  "rotation-set-sv03-obsidian-flames": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Modern."
-  },
-  "listcount-swsh2-booster-box": {
-   "signals": [
-    {
-     "kind": "listings",
-     "dir": "down",
-     "text": "11%",
-     "label": "Listings counted down 11 percent",
-     "strength": 2
-    },
-    {
-     "kind": "gone",
-     "dots": 2,
-     "label": "Listings gone, steady",
-     "strength": 2
-    }
-   ],
-   "blurb": "Listings counted are down 11%, as of Oct 16."
-  },
-  "deep-rating-gold-below": {
+  "release-delta-reign-me06-mega-rayquaza-ex-en-of-jp-storm-emeralda-": {
    "signals": [
     {
      "kind": "move",
      "dir": "down",
-     "text": "5% 7D",
-     "label": "Price down 5 percent over 7 days",
-     "strength": 2
+     "text": "3% 7D",
+     "label": "Price down 3 percent over 7 days",
+     "strength": 3
     },
     {
      "kind": "range",
-     "pos": 0.38,
-     "days": 21,
-     "label": "Today sits in the middle of the 21 day range",
-     "strength": 1
+     "pos": 0,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 4
     },
     {
      "kind": "momentum",
      "word": "Cooling",
      "label": "Momentum Cooling",
-     "strength": 2
+     "strength": 3
     },
     {
      "kind": "confidence",
@@ -3638,9 +3270,82 @@
      "strength": 4
     }
    ],
-   "blurb": "TCGplayer market is down 5% over 7 days, as of Oct 17."
+   "blurb": "TCGplayer market is down 3% over 7 days, as of Oct 18."
   },
-  "deep-rating-radiant-above": {
+  "deep-set-sv07-stellar-crown": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Modern."
+  },
+  "span-year-ago-tcgcsv-89393": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 0.86,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 3
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "span-season-set-swsh-sword-and-shield-promo-cards-single": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 0.86,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 3
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "deep-card-tcgcsv-183830": {
    "signals": [
     {
      "kind": "move",
@@ -3651,10 +3356,10 @@
     },
     {
      "kind": "range",
-     "pos": 0.31,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 1
+     "pos": 1,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 4
     },
     {
      "kind": "momentum",
@@ -3663,15 +3368,70 @@
      "strength": 1
     },
     {
-     "kind": "confidence",
-     "bars": 3,
-     "label": "Three data bars on file",
-     "strength": 4
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
     }
    ],
-   "blurb": "TCGplayer market is up 2% over 7 days, as of Oct 17."
+   "blurb": "TCGplayer market is up 2% over 7 days, as of Oct 18."
   },
-  "deep-rating-sir-above": {
+  "deep-set-xy-roaring-skies": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Vintage."
+  },
+  "deep-set-mcdonald-s-promos-2012": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Vintage."
+  },
+  "rotation-set-swsh11-lost-origin": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Modern."
+  },
+  "listcount-swsh12pt5-pc-etb": {
+   "signals": [
+    {
+     "kind": "gone",
+     "dots": 1,
+     "label": "Listings gone, light",
+     "strength": 1
+    }
+   ],
+   "blurb": "Listings gone are light."
+  },
+  "deep-slump-tcgcsv-85316": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "dash",
+     "text": "",
+     "label": "Price being checked"
+    }
+   ],
+   "blurb": "Price being checked."
+  },
+  "year-tcgcsv-83451": {
    "signals": [
     {
      "kind": "move",
@@ -3683,8 +3443,8 @@
     {
      "kind": "range",
      "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
      "strength": 4
     },
     {
@@ -3694,15 +3454,172 @@
      "strength": 1
     },
     {
-     "kind": "art",
-     "badge": "SIR",
-     "label": "Special Illustration Rare",
-     "strength": 5
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
     }
    ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
   },
-  "deep-set-ex-ruby-and-sapphire": {
+  "deep-recovery-tcgcsv-88529": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "dash",
+     "text": "",
+     "label": "Price being checked"
+    }
+   ],
+   "blurb": "Price being checked."
+  },
+  "mixed-card-tcgcsv-183826": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "up",
+     "text": "167% 7D",
+     "label": "Price up 167 percent over 7 days",
+     "strength": 5
+    },
+    {
+     "kind": "range",
+     "pos": 1,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Rising",
+     "label": "Momentum Rising",
+     "strength": 5
+    },
+    {
+     "kind": "confidence",
+     "bars": 3,
+     "label": "Three data bars on file",
+     "strength": 4
+    }
+   ],
+   "blurb": "TCGplayer market is up 167% over 7 days, as of Oct 18."
+  },
+  "span-year-ago-tcgcsv-157706": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "up",
+     "text": "21% 7D",
+     "label": "Price up 21 percent over 7 days",
+     "strength": 4
+    },
+    {
+     "kind": "range",
+     "pos": 1,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Rising",
+     "label": "Momentum Rising",
+     "strength": 4
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is up 21% over 7 days, as of Oct 18."
+  },
+  "release-30th-celebration-binder-collection": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 0.98,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 2
+    },
+    {
+     "kind": "confidence",
+     "bars": 3,
+     "label": "Three data bars on file",
+     "strength": 4
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "deep-set-hidden-fates": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Vintage."
+  },
+  "deep-anniversary-gym-heroes": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Vintage."
+  },
+  "span-year-range-tcgcsv-206039": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 1,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 2
+    },
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "deep-set-sm-forbidden-light": {
    "signals": [
     {
      "kind": "era",
@@ -3730,227 +3647,25 @@
    ],
    "blurb": "Price being checked."
   },
-  "span-year-range-tcgcsv-206039": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "flat",
-     "text": "0% 7D",
-     "label": "Price flat over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 2
-    },
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
-  },
-  "release-30th-celebration-day-night-upcs-ditto-premium-mew-mewtwo-figure-collecti": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "flat",
-     "text": "0% 7D",
-     "label": "Price flat over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 0.01,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 2
-    },
-    {
-     "kind": "confidence",
-     "bars": 3,
-     "label": "Three data bars on file",
-     "strength": 4
-    }
-   ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
-  },
-  "breadth-set-sv06-twilight-masquerade": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Modern."
-  },
-  "span-year-ago-tcgcsv-89393": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "up",
-     "text": "5% 7D",
-     "label": "Price up 5 percent over 7 days",
-     "strength": 2
-    },
-    {
-     "kind": "range",
-     "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Rising",
-     "label": "Momentum Rising",
-     "strength": 3
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is up 5% over 7 days, as of Oct 17."
-  },
-  "news-https-pokemongo-com-news-chandelure-super-mega-raid-day-2026": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Modern."
-  },
-  "rotation-set-sv-shrouded-fable": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Modern."
-  },
-  "year-tcgcsv-89302": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "dash",
-     "text": "",
-     "label": "Price being checked"
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Price being checked."
-  },
-  "listcount-sv6-bb": {
-   "signals": [
-    {
-     "kind": "gone",
-     "dots": 1,
-     "label": "Listings gone, light",
-     "strength": 1
-    }
-   ],
-   "blurb": "Listings gone are light."
-  },
-  "mixed-card-tcgcsv-84762": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "up",
-     "text": "124% 7D",
-     "label": "Price up 124 percent over 7 days",
-     "strength": 5
-    },
-    {
-     "kind": "range",
-     "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Rising",
-     "label": "Momentum Rising",
-     "strength": 5
-    },
-    {
-     "kind": "confidence",
-     "bars": 3,
-     "label": "Three data bars on file",
-     "strength": 4
-    }
-   ],
-   "blurb": "TCGplayer market is up 124% over 7 days, as of Oct 17."
-  },
-  "span-season-set-sv02-paldea-evolved-single": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "dash",
-     "text": "",
-     "label": "Price being checked"
-    },
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "Price being checked."
-  },
-  "rip-sm10-booster-box": {
+  "rip-sm12-booster-box": {
    "signals": [
     {
      "kind": "listings",
      "dir": "down",
-     "text": "14%",
-     "label": "Listings counted down 14 percent",
-     "strength": 4
+     "text": "18%",
+     "label": "Listings counted down 18 percent",
+     "strength": 3
     },
     {
      "kind": "gone",
-     "dots": 2,
-     "label": "Listings gone, steady",
-     "strength": 2
+     "dots": 3,
+     "label": "Listings gone, fast",
+     "strength": 3
     }
    ],
-   "blurb": "Listings counted are down 14%, as of Oct 16."
+   "blurb": "Listings counted are down 18%, as of Oct 17."
   },
-  "breadth-set-sv10-destined-rivals": {
+  "news-https-pokemongo-com-news-into-the-wild-2026": {
    "signals": [
     {
      "kind": "era",
@@ -3960,6 +3675,121 @@
     }
    ],
    "blurb": "Era tag is Modern."
+  },
+  "deep-rating-sir-below": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "down",
+     "text": "6% 7D",
+     "label": "Price down 6 percent over 7 days",
+     "strength": 2
+    },
+    {
+     "kind": "range",
+     "pos": 0,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Cooling",
+     "label": "Momentum Cooling",
+     "strength": 2
+    },
+    {
+     "kind": "art",
+     "badge": "SIR",
+     "label": "Special Illustration Rare",
+     "strength": 5
+    }
+   ],
+   "blurb": "TCGplayer market is down 6% over 7 days, as of Oct 18."
+  },
+  "rotation-set-me-30th-celebration": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Modern."
+  },
+  "deep-chase-ex-unseen-forces": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Vintage."
+  },
+  "streak-tcgcsv-517046": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "down",
+     "text": "5% 7D",
+     "label": "Price down 5 percent over 7 days",
+     "strength": 2
+    },
+    {
+     "kind": "range",
+     "pos": 0,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Cooling",
+     "label": "Momentum Cooling",
+     "strength": 2
+    },
+    {
+     "kind": "art",
+     "badge": "SIR",
+     "label": "Special Illustration Rare",
+     "strength": 5
+    }
+   ],
+   "blurb": "TCGplayer market is down 5% over 7 days, as of Oct 18."
+  },
+  "deep-recovery-tcgcsv-246719": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 0,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "confidence",
+     "bars": 3,
+     "label": "Three data bars on file",
+     "strength": 4
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
   },
   "span-year-ago-tcgcsv-626630": {
    "signals": [
@@ -3973,8 +3803,8 @@
     {
      "kind": "range",
      "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
      "strength": 4
     },
     {
@@ -3990,7 +3820,129 @@
      "strength": 1
     }
    ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "span-year-range-tcgcsv-206038": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 1,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "rip-sm7-booster-box": {
+   "signals": [
+    {
+     "kind": "listings",
+     "dir": "down",
+     "text": "10%",
+     "label": "Listings counted down 10 percent",
+     "strength": 2
+    },
+    {
+     "kind": "gone",
+     "dots": 2,
+     "label": "Listings gone, steady",
+     "strength": 2
+    }
+   ],
+   "blurb": "Listings counted are down 10%, as of Oct 17."
+  },
+  "release-cycle-sv10-destined-rivals": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Modern."
+  },
+  "mixed-card-tcgcsv-87407": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "up",
+     "text": "174% 7D",
+     "label": "Price up 174 percent over 7 days",
+     "strength": 5
+    },
+    {
+     "kind": "range",
+     "pos": 1,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Rising",
+     "label": "Momentum Rising",
+     "strength": 5
+    },
+    {
+     "kind": "confidence",
+     "bars": 3,
+     "label": "Three data bars on file",
+     "strength": 4
+    }
+   ],
+   "blurb": "TCGplayer market is up 174% over 7 days, as of Oct 18."
+  },
+  "span-season-tcgcsv-654512": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "up",
+     "text": "6% 7D",
+     "label": "Price up 6 percent over 7 days",
+     "strength": 2
+    },
+    {
+     "kind": "range",
+     "pos": 0.59,
+     "days": 22,
+     "label": "Today sits in the middle of the 22 day range",
+     "strength": 1
+    },
+    {
+     "kind": "momentum",
+     "word": "Rising",
+     "label": "Momentum Rising",
+     "strength": 3
+    },
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is up 6% over 7 days, as of Oct 18."
   },
   "release-30th-celebration-espeon-ex-umbreon-ex-battle-decks": {
    "signals": [
@@ -4003,16 +3955,16 @@
     },
     {
      "kind": "range",
-     "pos": 0.63,
-     "days": 21,
-     "label": "Today sits in the middle of the 21 day range",
+     "pos": 0.6,
+     "days": 22,
+     "label": "Today sits in the middle of the 22 day range",
      "strength": 1
     },
     {
      "kind": "momentum",
      "word": "Cooling",
      "label": "Momentum Cooling",
-     "strength": 5
+     "strength": 4
     },
     {
      "kind": "confidence",
@@ -4021,40 +3973,9 @@
      "strength": 4
     }
    ],
-   "blurb": "TCGplayer market is down 7% over 7 days, as of Oct 17."
+   "blurb": "TCGplayer market is down 7% over 7 days, as of Oct 18."
   },
-  "span-year-range-tcgcsv-213279": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "7% 7D",
-     "label": "Price down 7 percent over 7 days",
-     "strength": 3
-    },
-    {
-     "kind": "range",
-     "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Cooling",
-     "label": "Momentum Cooling",
-     "strength": 3
-    },
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is down 7% over 7 days, as of Oct 17."
-  },
-  "news-https-pokemongo-com-news-into-the-wild-2026": {
+  "news-https-pokemongo-com-news-chandelure-super-mega-raid-day-2026": {
    "signals": [
     {
      "kind": "era",
@@ -4076,340 +3997,27 @@
    ],
    "blurb": "Era tag is Modern."
   },
-  "listcount-sm5-booster-box": {
-   "signals": [
-    {
-     "kind": "listings",
-     "dir": "down",
-     "text": "13%",
-     "label": "Listings counted down 13 percent",
-     "strength": 3
-    },
-    {
-     "kind": "gone",
-     "dots": 2,
-     "label": "Listings gone, steady",
-     "strength": 2
-    }
-   ],
-   "blurb": "Listings counted are down 13%, as of Oct 16."
-  },
-  "plain-tcgcsv-676104": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "flat",
-     "text": "0% 7D",
-     "label": "Price flat over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 0.14,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 3
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 1
-    },
-    {
-     "kind": "art",
-     "badge": "SIR",
-     "label": "Special Illustration Rare",
-     "strength": 5
-    }
-   ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
-  },
-  "deep-recovery-tcgcsv-88529": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "dash",
-     "text": "",
-     "label": "Price being checked"
-    }
-   ],
-   "blurb": "Price being checked."
-  },
-  "release-cycle-sv10-destined-rivals": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Modern."
-  },
-  "mixed-card-tcgcsv-90103": {
+  "high-tcgcsv-183781": {
    "signals": [
     {
      "kind": "move",
      "dir": "up",
-     "text": "445% 7D",
-     "label": "Price up 445 percent over 7 days",
-     "strength": 5
+     "text": "69% 7D",
+     "label": "Price up 69 percent over 7 days",
+     "strength": 4
     },
     {
      "kind": "range",
      "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
      "strength": 4
     },
     {
      "kind": "momentum",
      "word": "Rising",
      "label": "Momentum Rising",
-     "strength": 5
-    },
-    {
-     "kind": "confidence",
-     "bars": 3,
-     "label": "Three data bars on file",
      "strength": 4
-    }
-   ],
-   "blurb": "TCGplayer market is up 445% over 7 days, as of Oct 17."
-  },
-  "breadth-set-swsh08-fusion-strike": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Modern."
-  },
-  "span-year-range-tcgcsv-206038": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "flat",
-     "text": "0% 7D",
-     "label": "Price flat over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 2
-    },
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
-  },
-  "span-year-ago-tcgcsv-505916": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "flat",
-     "text": "0% 7D",
-     "label": "Price flat over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 0.96,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 2
-    },
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
-  },
-  "span-season-tcgcsv-654506": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "7% 7D",
-     "label": "Price down 7 percent over 7 days",
-     "strength": 3
-    },
-    {
-     "kind": "range",
-     "pos": 0.07,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 3
-    },
-    {
-     "kind": "momentum",
-     "word": "Cooling",
-     "label": "Momentum Cooling",
-     "strength": 3
-    },
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is down 7% over 7 days, as of Oct 17."
-  },
-  "rotation-set-sv04-paradox-rift": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Modern."
-  },
-  "listcount-sm2-etb": {
-   "signals": [
-    {
-     "kind": "listings",
-     "dir": "up",
-     "text": "8%",
-     "label": "Listings counted up 8 percent",
-     "strength": 1
-    }
-   ],
-   "blurb": "Listings counted are up 8%, as of Oct 16."
-  },
-  "year-tcgcsv-88836": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "flat",
-     "text": "0% 7D",
-     "label": "Price flat over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 1
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    },
-    {
-     "kind": "confidence",
-     "bars": 3,
-     "label": "Three data bars on file",
-     "strength": 4
-    }
-   ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
-  },
-  "scan-pattern-forming-recovery-tcgcsv-188132": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "flat",
-     "text": "0% 7D",
-     "label": "Price flat over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 0.33,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 1
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 1
-    },
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
-  },
-  "release-cycle-sv-black-bolt": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Modern."
-  },
-  "mixed-sealed-sm11-booster-box": {
-   "signals": [
-    {
-     "kind": "listings",
-     "dir": "up",
-     "text": "9%",
-     "label": "Listings counted up 9 percent",
-     "strength": 1
-    }
-   ],
-   "blurb": "Listings counted are up 9%, as of Oct 17."
-  },
-  "span-season-set-swsh-sword-and-shield-promo-cards-single": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "up",
-     "text": "2% 7D",
-     "label": "Price up 2 percent over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 0.95,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 3
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 2
     },
     {
      "kind": "era",
@@ -4418,29 +4026,29 @@
      "strength": 1
     }
    ],
-   "blurb": "TCGplayer market is up 2% over 7 days, as of Oct 17."
+   "blurb": "TCGplayer market is up 69% over 7 days, as of Oct 18."
   },
-  "span-year-ago-tcgcsv-170889": {
+  "scan-pattern-forming-flat-range-tcgcsv-107157": {
    "signals": [
     {
      "kind": "move",
-     "dir": "down",
-     "text": "3% 7D",
-     "label": "Price down 3 percent over 7 days",
-     "strength": 2
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
     },
     {
      "kind": "range",
      "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
      "strength": 4
     },
     {
      "kind": "momentum",
      "word": "Flat",
      "label": "Momentum Flat",
-     "strength": 2
+     "strength": 1
     },
     {
      "kind": "era",
@@ -4449,7 +4057,38 @@
      "strength": 1
     }
    ],
-   "blurb": "TCGplayer market is down 3% over 7 days, as of Oct 17."
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "span-year-ago-tcgcsv-625582": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 0,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
   },
   "span-year-range-tcgcsv-206029": {
    "signals": [
@@ -4479,9 +4118,40 @@
      "strength": 4
     }
    ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
   },
-  "breadth-set-sv-prismatic-evolutions": {
+  "span-season-tcgcsv-654506": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "up",
+     "text": "3% 7D",
+     "label": "Price up 3 percent over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 0.23,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 2
+    },
+    {
+     "kind": "momentum",
+     "word": "Rising",
+     "label": "Momentum Rising",
+     "strength": 1
+    },
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is up 3% over 7 days, as of Oct 18."
+  },
+  "release-cycle-sv09-journey-together": {
    "signals": [
     {
      "kind": "era",
@@ -4492,7 +4162,7 @@
    ],
    "blurb": "Era tag is Modern."
   },
-  "rotation-set-swsh11-lost-origin": {
+  "rotation-set-swsh12-silver-tempest": {
    "signals": [
     {
      "kind": "era",
@@ -4503,7 +4173,38 @@
    ],
    "blurb": "Era tag is Modern."
   },
-  "low-tcgcsv-89163": {
+  "sealed-week-tcgcsv-668357": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "down",
+     "text": "17% 7D",
+     "label": "Price down 17 percent over 7 days",
+     "strength": 5
+    },
+    {
+     "kind": "range",
+     "pos": 0,
+     "days": 9,
+     "label": "Today sits in the lower part of the 9 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Cooling",
+     "label": "Momentum Cooling",
+     "strength": 5
+    },
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is down 17% over 7 days, as of Oct 18."
+  },
+  "scan-pattern-forming-breakout-tcgcsv-90715": {
    "signals": [
     {
      "kind": "move",
@@ -4520,82 +4221,20 @@
    ],
    "blurb": "Price being checked."
   },
-  "deep-sealedrating-special-collection": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "flat",
-     "text": "0% 7D",
-     "label": "Price flat over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 2
-    },
-    {
-     "kind": "confidence",
-     "bars": 3,
-     "label": "Three data bars on file",
-     "strength": 4
-    }
-   ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
-  },
-  "scan-pattern-forming-flat-range-tcgcsv-107265": {
+  "scan-pattern-ending-year-ago-tcgcsv-517017": {
    "signals": [
     {
      "kind": "move",
      "dir": "down",
-     "text": "6% 7D",
-     "label": "Price down 6 percent over 7 days",
-     "strength": 3
-    },
-    {
-     "kind": "range",
-     "pos": 0.33,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 1
-    },
-    {
-     "kind": "momentum",
-     "word": "Cooling",
-     "label": "Momentum Cooling",
-     "strength": 3
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is down 6% over 7 days, as of Oct 17."
-  },
-  "scan-pattern-ending-year-ago-tcgcsv-232518": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "12% 7D",
-     "label": "Price down 12 percent over 7 days",
+     "text": "10% 7D",
+     "label": "Price down 10 percent over 7 days",
      "strength": 4
     },
     {
      "kind": "range",
      "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
      "strength": 4
     },
     {
@@ -4611,40 +4250,29 @@
      "strength": 1
     }
    ],
-   "blurb": "TCGplayer market is down 12% over 7 days, as of Oct 17."
+   "blurb": "TCGplayer market is down 10% over 7 days, as of Oct 18."
   },
-  "release-cycle-sv-prismatic-evolutions": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Modern."
-  },
-  "release-30th-celebration-binder-collection": {
+  "mixed-card-tcgcsv-90103": {
    "signals": [
     {
      "kind": "move",
-     "dir": "flat",
-     "text": "0% 7D",
-     "label": "Price flat over 7 days",
-     "strength": 1
+     "dir": "up",
+     "text": "445% 7D",
+     "label": "Price up 445 percent over 7 days",
+     "strength": 5
     },
     {
      "kind": "range",
-     "pos": 0.98,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
+     "pos": 1,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
      "strength": 4
     },
     {
      "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 2
+     "word": "Rising",
+     "label": "Momentum Rising",
+     "strength": 5
     },
     {
      "kind": "confidence",
@@ -4653,7 +4281,7 @@
      "strength": 4
     }
    ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
+   "blurb": "TCGplayer market is up 445% over 7 days, as of Oct 18."
   },
   "span-year-range-tcgcsv-219233": {
    "signals": [
@@ -4667,8 +4295,8 @@
     {
      "kind": "range",
      "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
      "strength": 4
     },
     {
@@ -4684,396 +4312,7 @@
      "strength": 1
     }
    ],
-   "blurb": "TCGplayer market is down 5% over 7 days, as of Oct 17."
-  },
-  "span-year-ago-tcgcsv-157706": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "up",
-     "text": "21% 7D",
-     "label": "Price up 21 percent over 7 days",
-     "strength": 4
-    },
-    {
-     "kind": "range",
-     "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Rising",
-     "label": "Momentum Rising",
-     "strength": 4
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is up 21% over 7 days, as of Oct 17."
-  },
-  "span-season-tcgcsv-490073": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "5% 7D",
-     "label": "Price down 5 percent over 7 days",
-     "strength": 2
-    },
-    {
-     "kind": "range",
-     "pos": 0.52,
-     "days": 21,
-     "label": "Today sits in the middle of the 21 day range",
-     "strength": 1
-    },
-    {
-     "kind": "momentum",
-     "word": "Cooling",
-     "label": "Momentum Cooling",
-     "strength": 2
-    },
-    {
-     "kind": "art",
-     "badge": "IR",
-     "label": "Illustration Rare",
-     "strength": 3
-    }
-   ],
-   "blurb": "TCGplayer market is down 5% over 7 days, as of Oct 17."
-  },
-  "breadth-set-sv01-scarlet-violet-base-set": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Modern."
-  },
-  "rip-sm12-booster-box": {
-   "signals": [
-    {
-     "kind": "listings",
-     "dir": "down",
-     "text": "8%",
-     "label": "Listings counted down 8 percent",
-     "strength": 1
-    },
-    {
-     "kind": "gone",
-     "dots": 2,
-     "label": "Listings gone, steady",
-     "strength": 2
-    }
-   ],
-   "blurb": "Listings counted are down 8%, as of Oct 16."
-  },
-  "mixed-card-tcgcsv-183826": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "up",
-     "text": "294% 7D",
-     "label": "Price up 294 percent over 7 days",
-     "strength": 5
-    },
-    {
-     "kind": "range",
-     "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Rising",
-     "label": "Momentum Rising",
-     "strength": 5
-    },
-    {
-     "kind": "confidence",
-     "bars": 2,
-     "label": "Two data bars on file",
-     "strength": 3
-    }
-   ],
-   "blurb": "TCGplayer market is up 294% over 7 days, as of Oct 17."
-  },
-  "rotation-set-sv06-twilight-masquerade": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Modern."
-  },
-  "listcount-sm12-booster-box": {
-   "signals": [
-    {
-     "kind": "listings",
-     "dir": "down",
-     "text": "8%",
-     "label": "Listings counted down 8 percent",
-     "strength": 1
-    },
-    {
-     "kind": "gone",
-     "dots": 2,
-     "label": "Listings gone, steady",
-     "strength": 2
-    }
-   ],
-   "blurb": "Listings counted are down 8%, as of Oct 16."
-  },
-  "set30-swsh11-lost-origin": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "2% 7D",
-     "label": "Price down 2 percent over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 0.05,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 3
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 1
-    },
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is down 2% over 7 days, as of Oct 17."
-  },
-  "release-cycle-sv09-journey-together": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Modern."
-  },
-  "span-year-ago-tcgcsv-625582": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "flat",
-     "text": "0% 7D",
-     "label": "Price flat over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 1
-    },
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
-  },
-  "scan-pattern-forming-breakout-tcgcsv-83654": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "flat",
-     "text": "0% 7D",
-     "label": "Price flat over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 1
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    },
-    {
-     "kind": "confidence",
-     "bars": 3,
-     "label": "Three data bars on file",
-     "strength": 4
-    }
-   ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
-  },
-  "span-year-range-tcgcsv-226420": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "5% 7D",
-     "label": "Price down 5 percent over 7 days",
-     "strength": 2
-    },
-    {
-     "kind": "range",
-     "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Cooling",
-     "label": "Momentum Cooling",
-     "strength": 2
-    },
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is down 5% over 7 days, as of Oct 17."
-  },
-  "release-delta-reign-me06-mega-rayquaza-ex-en-of-jp-storm-emeralda-": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "down",
-     "text": "2% 7D",
-     "label": "Price down 2 percent over 7 days",
-     "strength": 2
-    },
-    {
-     "kind": "range",
-     "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 3
-    },
-    {
-     "kind": "confidence",
-     "bars": 3,
-     "label": "Three data bars on file",
-     "strength": 4
-    }
-   ],
-   "blurb": "TCGplayer market is down 2% over 7 days, as of Oct 17."
-  },
-  "scan-pattern-ending-release-window-tcgcsv-175499": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "flat",
-     "text": "0% 7D",
-     "label": "Price flat over 7 days",
-     "strength": 1
-    },
-    {
-     "kind": "range",
-     "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Flat",
-     "label": "Momentum Flat",
-     "strength": 1
-    },
-    {
-     "kind": "art",
-     "badge": "FA",
-     "label": "Full Art",
-     "strength": 2
-    }
-   ],
-   "blurb": "TCGplayer market is flat over 7 days, as of Oct 17."
-  },
-  "mixed-card-tcgcsv-88778": {
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "up",
-     "text": "188% 7D",
-     "label": "Price up 188 percent over 7 days",
-     "strength": 5
-    },
-    {
-     "kind": "range",
-     "pos": 0.68,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 1
-    },
-    {
-     "kind": "momentum",
-     "word": "Rising",
-     "label": "Momentum Rising",
-     "strength": 5
-    },
-    {
-     "kind": "confidence",
-     "bars": 3,
-     "label": "Three data bars on file",
-     "strength": 4
-    }
-   ],
-   "blurb": "TCGplayer market is up 188% over 7 days, as of Oct 17."
-  },
-  "breadth-set-me04-chaos-rising": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Modern",
-     "label": "Modern",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Modern."
+   "blurb": "TCGplayer market is down 5% over 7 days, as of Oct 18."
   },
   "span-season-set-sv-scarlet-and-violet-151-single": {
    "signals": [
@@ -5092,7 +4331,7 @@
    ],
    "blurb": "Price being checked."
   },
-  "rotation-set-me-30th-celebration": {
+  "release-cycle-sv-prismatic-evolutions": {
    "signals": [
     {
      "kind": "era",
@@ -5103,32 +4342,20 @@
    ],
    "blurb": "Era tag is Modern."
   },
-  "rip-sm11-booster-box": {
-   "signals": [
-    {
-     "kind": "listings",
-     "dir": "up",
-     "text": "9%",
-     "label": "Listings counted up 9 percent",
-     "strength": 1
-    }
-   ],
-   "blurb": "Listings counted are up 9%, as of Oct 16."
-  },
-  "backto-tcgcsv-246811": {
+  "span-year-ago-tcgcsv-505916": {
    "signals": [
     {
      "kind": "move",
-     "dir": "down",
-     "text": "3% 7D",
-     "label": "Price down 3 percent over 7 days",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
      "strength": 1
     },
     {
      "kind": "range",
-     "pos": 0,
-     "days": 21,
-     "label": "Today sits in the lower part of the 21 day range",
+     "pos": 0.96,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
      "strength": 4
     },
     {
@@ -5144,110 +4371,416 @@
      "strength": 1
     }
    ],
-   "blurb": "TCGplayer market is down 3% over 7 days, as of Oct 17."
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
   },
-  "deep-chase-neo-destiny": {
-   "signals": [
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "Era tag is Vintage."
-  }
- },
- "preview": {
-  "id": "high-tcgcsv-86681",
-  "name": "Leafeon (Call of Legends) 13/95",
-  "signals": [
-   {
-    "kind": "move",
-    "dir": "up",
-    "text": "18% 7D",
-    "label": "Price up 18 percent over 7 days",
-    "strength": 3
-   },
-   {
-    "kind": "range",
-    "pos": 1,
-    "days": 21,
-    "label": "Today sits in the upper part of the 21 day range",
-    "strength": 4
-   },
-   {
-    "kind": "momentum",
-    "word": "Rising",
-    "label": "Momentum Rising",
-    "strength": 3
-   },
-   {
-    "kind": "era",
-    "tag": "Vintage",
-    "label": "Vintage",
-    "strength": 1
-   }
-  ],
-  "blurb": "TCGplayer market is up 18% over 7 days, as of Oct 17."
- },
- "samples": [
-  {
-   "id": "high-tcgcsv-86681",
-   "name": "Leafeon (Call of Legends) 13/95",
-   "signals": [
-    {
-     "kind": "move",
-     "dir": "up",
-     "text": "18% 7D",
-     "label": "Price up 18 percent over 7 days",
-     "strength": 3
-    },
-    {
-     "kind": "range",
-     "pos": 1,
-     "days": 21,
-     "label": "Today sits in the upper part of the 21 day range",
-     "strength": 4
-    },
-    {
-     "kind": "momentum",
-     "word": "Rising",
-     "label": "Momentum Rising",
-     "strength": 3
-    },
-    {
-     "kind": "era",
-     "tag": "Vintage",
-     "label": "Vintage",
-     "strength": 1
-    }
-   ],
-   "blurb": "TCGplayer market is up 18% over 7 days, as of Oct 17."
-  },
-  {
-   "id": "listcount-sm35-etb",
-   "name": "Shining Legends Elite Trainer Box",
-   "signals": [
-    {
-     "kind": "listings",
-     "dir": "up",
-     "text": "9%",
-     "label": "Listings counted up 9 percent",
-     "strength": 1
-    }
-   ],
-   "blurb": "Listings counted are up 9%, as of Oct 16."
-  },
-  {
-   "id": "deep-slump-tcgcsv-85316",
-   "name": "Espeon (1) (Neo Discovery) 01/75",
+  "plain-tcgcsv-633031": {
    "signals": [
     {
      "kind": "move",
      "dir": "dash",
      "text": "",
      "label": "Price being checked"
+    },
+    {
+     "kind": "art",
+     "badge": "SIR",
+     "label": "Special Illustration Rare",
+     "strength": 5
+    },
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "Price being checked."
+  },
+  "listcount-swsh8-pc-etb": {
+   "signals": [
+    {
+     "kind": "gone",
+     "dots": 2,
+     "label": "Listings gone, steady",
+     "strength": 2
+    }
+   ],
+   "blurb": "Listings gone are steady."
+  },
+  "breadth-set-sv-scarlet-violet-151": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Modern."
+  },
+  "scan-pattern-forming-recovery-tcgcsv-478108": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "up",
+     "text": "21% 7D",
+     "label": "Price up 21 percent over 7 days",
+     "strength": 5
+    },
+    {
+     "kind": "range",
+     "pos": 1,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Rising",
+     "label": "Momentum Rising",
+     "strength": 5
+    },
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is up 21% over 7 days, as of Oct 18."
+  },
+  "mixed-card-tcgcsv-88967": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "up",
+     "text": "299% 7D",
+     "label": "Price up 299 percent over 7 days",
+     "strength": 5
+    },
+    {
+     "kind": "range",
+     "pos": 0.98,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Rising",
+     "label": "Momentum Rising",
+     "strength": 5
+    },
+    {
+     "kind": "confidence",
+     "bars": 3,
+     "label": "Three data bars on file",
+     "strength": 4
+    }
+   ],
+   "blurb": "TCGplayer market is up 299% over 7 days, as of Oct 18."
+  },
+  "span-year-range-tcgcsv-213279": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "down",
+     "text": "8% 7D",
+     "label": "Price down 8 percent over 7 days",
+     "strength": 3
+    },
+    {
+     "kind": "range",
+     "pos": 0,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Cooling",
+     "label": "Momentum Cooling",
+     "strength": 4
+    },
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is down 8% over 7 days, as of Oct 18."
+  },
+  "span-season-set-sv02-paldea-evolved-single": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "dash",
+     "text": "",
+     "label": "Price being checked"
+    },
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "Price being checked."
+  },
+  "release-cycle-sv-black-bolt": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Modern."
+  },
+  "release-30th-celebration-day-night-upcs-ditto-premium-mew-mewtwo-figure-collecti": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "flat",
+     "text": "0% 7D",
+     "label": "Price flat over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 0.07,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 3
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 2
+    },
+    {
+     "kind": "confidence",
+     "bars": 3,
+     "label": "Three data bars on file",
+     "strength": 4
+    }
+   ],
+   "blurb": "TCGplayer market is flat over 7 days, as of Oct 18."
+  },
+  "rotation-set-swsh10-astral-radiance": {
+   "signals": [
+    {
+     "kind": "era",
+     "tag": "Modern",
+     "label": "Modern",
+     "strength": 1
+    }
+   ],
+   "blurb": "Era tag is Modern."
+  },
+  "backto-tcgcsv-90280": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "dash",
+     "text": "",
+     "label": "Price being checked"
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "Price being checked."
+  },
+  "span-year-ago-tcgcsv-170889": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "down",
+     "text": "2% 7D",
+     "label": "Price down 2 percent over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 0,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 2
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is down 2% over 7 days, as of Oct 18."
+  },
+  "scan-pattern-ending-release-window-tcgcsv-84032": {
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "up",
+     "text": "2% 7D",
+     "label": "Price up 2 percent over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 1,
+     "days": 22,
+     "label": "Today sits in the upper part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
+    }
+   ],
+   "blurb": "TCGplayer market is up 2% over 7 days, as of Oct 18."
+  },
+  "listcount-sm3-booster-box": {
+   "signals": [
+    {
+     "kind": "listings",
+     "dir": "down",
+     "text": "18%",
+     "label": "Listings counted down 18 percent",
+     "strength": 4
+    },
+    {
+     "kind": "gone",
+     "dots": 3,
+     "label": "Listings gone, fast",
+     "strength": 3
+    }
+   ],
+   "blurb": "Listings counted are down 18%, as of Oct 17."
+  }
+ },
+ "preview": {
+  "id": "set30-sv02-paldea-evolved",
+  "name": "SV02: Paldea Evolved",
+  "signals": [
+   {
+    "kind": "move",
+    "dir": "down",
+    "text": "3% 7D",
+    "label": "Price down 3 percent over 7 days",
+    "strength": 1
+   },
+   {
+    "kind": "range",
+    "pos": 0,
+    "days": 22,
+    "label": "Today sits in the lower part of the 22 day range",
+    "strength": 4
+   },
+   {
+    "kind": "momentum",
+    "word": "Flat",
+    "label": "Momentum Flat",
+    "strength": 1
+   },
+   {
+    "kind": "art",
+    "badge": "IR",
+    "label": "Illustration Rare",
+    "strength": 3
+   }
+  ],
+  "blurb": "TCGplayer market is down 3% over 7 days, as of Oct 18."
+ },
+ "samples": [
+  {
+   "id": "set30-sv02-paldea-evolved",
+   "name": "SV02: Paldea Evolved",
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "down",
+     "text": "3% 7D",
+     "label": "Price down 3 percent over 7 days",
+     "strength": 1
+    },
+    {
+     "kind": "range",
+     "pos": 0,
+     "days": 22,
+     "label": "Today sits in the lower part of the 22 day range",
+     "strength": 4
+    },
+    {
+     "kind": "momentum",
+     "word": "Flat",
+     "label": "Momentum Flat",
+     "strength": 1
+    },
+    {
+     "kind": "art",
+     "badge": "IR",
+     "label": "Illustration Rare",
+     "strength": 3
+    }
+   ],
+   "blurb": "TCGplayer market is down 3% over 7 days, as of Oct 18."
+  },
+  {
+   "id": "listcount-swsh2-booster-box",
+   "name": "Rebel Clash Booster Box",
+   "signals": [
+    {
+     "kind": "listings",
+     "dir": "down",
+     "text": "11%",
+     "label": "Listings counted down 11 percent",
+     "strength": 2
+    },
+    {
+     "kind": "gone",
+     "dots": 2,
+     "label": "Listings gone, steady",
+     "strength": 2
+    }
+   ],
+   "blurb": "Listings counted are down 11%, as of Oct 16."
+  },
+  {
+   "id": "set30-base-set-2",
+   "name": "Base Set 2",
+   "signals": [
+    {
+     "kind": "move",
+     "dir": "dash",
+     "text": "",
+     "label": "Price being checked"
+    },
+    {
+     "kind": "era",
+     "tag": "Vintage",
+     "label": "Vintage",
+     "strength": 1
     }
    ],
    "blurb": "Price being checked."
