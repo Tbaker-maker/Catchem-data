@@ -1,4 +1,4 @@
-import { guardianOrder, guardianRank, tiers, pickRun, runSlice, roleSlice, missingTop, ptDate, used24, nightlyBudget, buildQuery, keepTitle, summarize } from "../lib/listing-counts.mjs";
+import { guardianOrder, guardianRank, tiers, pickRun, runSlice, roleSlice, missingTop, ptDate, used24, nightlyBudget, buildQuery, keepTitle, summarize, vintageHeldBack } from "../lib/listing-counts.mjs";
 import { readFile } from "node:fs/promises";
 
 export async function run() {
@@ -39,6 +39,7 @@ export async function run() {
     t("guardian order: chase first, then IR, then the rest", g[0].id === "sir" && g[1].id === "ir" && guardianRank({ kind: "sealed" }) === 2);
     t("guardian respects the slice", pickRun({ daily: d, tail: [], last, now: gNow, slice: 2, role: "guardian" }).length === 2);
     t("guardian slice never exceeds room or the daily listing budget", roleSlice({ role: "guardian", safe: 4900, used: 4800, dailyBudget: 4277 }) === 100 && roleSlice({ role: "guardian", safe: 9000, used: 0, dailyBudget: 4277 }) === 4277 && roleSlice({ role: "guardian", safe: 4900, used: 5000, dailyBudget: 4277 }) === 0);
+    t("vintage sample calls stay out of the listing slice until that log exists", vintageHeldBack([], new Date("2026-10-18T20:00:00Z")) === 300 && vintageHeldBack([{ at: "2026-10-18T18:00:00Z", n: 300, source: "vintage-sample" }], new Date("2026-10-18T20:00:00Z")) === 0 && vintageHeldBack([{ at: "2026-10-17T18:00:00Z", n: 300, source: "vintage-sample" }], new Date("2026-10-18T20:00:00Z")) === 300 && roleSlice({ role: "guardian", safe: 4900, used: 4000, dailyBudget: 4000, holdBack: 300 }) === 600 && roleSlice({ role: "guardian", safe: 4900, used: 4000, dailyBudget: 4000 }) === 900);
     t("guardian is idempotent: nothing left after everything is counted", pickRun({ daily: d, tail: [], last: Object.fromEntries(d.map((x) => [x.id, "2026-10-14T04:00:00Z"])), now: gNow, slice: 10, role: "guardian" }).length === 0 && guardianOrder([]).length === 0);
   }
 

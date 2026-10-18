@@ -224,6 +224,10 @@ const SLOW = {
     "rebuilt every night by write-feature-data.mjs from data/card-attrs.json. Its asOf is the card-attrs generatedAt (2026-08-24) and its marks come from the same file, so the bytes stay the same until card-attrs changes. build.html and card-index.json are excused for the same input.",
   "research/assets/public/releases.json":
     "rebuilt every night by write-feature-data.mjs from data/release-radar.json. The file copies radar.updated and the first priced day of each product, so the bytes stay the same until a verified date or that first price changes. The radar checkedAt stamp is the separate record that the list was looked at.",
+  "research/assets/public/price-hold.json":
+    "written when a vintage listing sample publishes a price. The daily check is the vintage-sample line in the listing-counts log. A quiet file means nothing new was published.",
+  "research/assets/public/condition-prices.json":
+    "written when a vintage listing sample publishes a condition price. A quiet file means nothing new was published. The sample log is the daily check.",
 };
 let suspect = 0, excused = 0;
 

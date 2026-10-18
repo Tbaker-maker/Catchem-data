@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = fileURLToPath(new URL("../..", import.meta.url));
 
-function watchNames(accounts, channels) {
+export function watchNames(accounts, channels) {
   const names = [];
   for (const row of accounts?.accounts || []) if (row?.handle) names.push(String(row.handle));
   for (const row of channels?.channels || []) {

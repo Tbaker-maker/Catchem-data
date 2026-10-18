@@ -1,10 +1,11 @@
 // One Browse call per WOTC single, listings only. Stops on 403 or 429.
-// Spends only the room left under the shared 24h counter after the sealed reserve.
+// Uses the room under the shared 24h cap. Listing counts hold this slice
+// until a vintage-sample log exists for the Pacific day.
 // The price band is read from catchem-data-private and is never written out.
 import { readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { used24 } from "./lib/listing-counts.mjs";
+import { ptDate, used24 } from "./lib/listing-counts.mjs";
 import { loadPriceTrustConfig } from "./lib/price-trust.mjs";
 import {
   headlinePass, parseListing, passingConditions, publicSampleDoc, publicSampleRow, sampleQuery, sampleRoom, topVintage,
@@ -132,21 +133,38 @@ const room = sampleRoom({ used });
 const prior = await J(samplePath, { rows: [] });
 const seen = new Set((prior.rows || []).map((row) => row.id));
 console.log(`vintage sample: used ${used} in 24h, room ${room}, already checked ${seen.size}`);
+
+async function recordLook(rows, calls) {
+  const doc = publicSampleDoc(ptDate(now), rows);
+  doc.ranAt = new Date().toISOString();
+  await writeFile(samplePath, JSON.stringify(doc, null, 1) + "\n");
+  if (calls == null) return;
+  state.log.push({ at: doc.ranAt, n: calls, source: "vintage-sample" });
+  state.log = state.log.filter((entry) => Date.parse(entry.at) > Date.now() - 2 * 86400000);
+  await writeFile(statePath, JSON.stringify(state) + "\n");
+}
+
 if (room < 1) {
   console.log("vintage sample: no room under the shared listing budget");
+  await recordLook(prior.rows || [], 0);
   process.exit(0);
 }
 const cfg = await band();
 if (!cfg) {
   console.log("vintage sample: price trust config is not on this machine, nothing published");
+  await recordLook(prior.rows || [], null);
   process.exit(0);
 }
 const tok = await token();
 if (!tok) {
   console.log("vintage sample: no eBay keys, nothing called");
+  await recordLook(prior.rows || [], null);
   process.exit(0);
 }
-if (tok.stop) process.exit(0);
+if (tok.stop) {
+  await recordLook(prior.rows || [], null);
+  process.exit(0);
+}
 
 const catalog = await J(join(ROOT, "data/catalog/tcgcsv-latest.json"), { items: [] });
 const sets = await J(join(ROOT, "research/assets/public/sets.json"), { sets: [] });
@@ -193,9 +211,10 @@ for (const card of pool) {
   await sleep(250);
 }
 
-if (calls > 0) state.log.push({ at: new Date().toISOString(), n: calls, source: "vintage-sample" });
+state.log.push({ at: new Date().toISOString(), n: calls, source: "vintage-sample" });
 await writeFile(statePath, JSON.stringify(state) + "\n");
 const doc = publicSampleDoc(dayName, [...(prior.rows || []), ...fresh]);
+doc.ranAt = new Date().toISOString();
 await writeFile(samplePath, JSON.stringify(doc, null, 1) + "\n");
 if (fresh.some((row) => row.published)) {
   hold.asOf = dayName;
