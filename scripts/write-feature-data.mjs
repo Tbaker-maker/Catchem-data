@@ -5,6 +5,7 @@ import {
   assignMarks, buildListings, buildReleases, buildSetValueDoc, datedDay, idsForCatalogSet,
   loadPriceMap, nonEmptyDoc, ROTATION_SOURCES, ROTATION_EXPECTED, shouldWrite,
 } from "./lib/feature-data.mjs";
+import { loadHeldIds } from "./lib/price-hold-skip.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const pub = join(ROOT, "research/assets/public");
@@ -13,6 +14,7 @@ const index = JSON.parse(await readFile(join(pub, "sets.json"), "utf8"));
 const catalog = JSON.parse(await readFile(join(ROOT, "data/catalog/tcgcsv-latest.json"), "utf8"));
 const items = catalog.items || [];
 const { date, map, days } = await loadPriceMap(ROOT);
+const skipIds = await loadHeldIds(ROOT);
 const valueDir = join(pub, "set-value");
 const wrote = { setValue: false, rotation: false, releases: false, listings: false };
 
@@ -26,7 +28,7 @@ if (shouldWrite("set-value", { date, prices: map.size })) {
   const shadowIds = idsForCatalogSet(items, "Base Set (Shadowless)");
   for (const row of index.sets || []) {
     const setDoc = JSON.parse(await readFile(join(pub, "sets", `${row.slug}.json`), "utf8"));
-    const opts = row.slug === "base-set" ? { onlyIds: baseIds, catalogSet: "Base Set" } : {};
+    const opts = row.slug === "base-set" ? { onlyIds: baseIds, catalogSet: "Base Set", skipIds } : { skipIds };
     const doc = buildSetValueDoc(setDoc, map, date, opts);
     if (!datedDay(doc.asOf) || !nonEmptyDoc(doc)) continue;
     await writeFile(join(valueDir, `${row.slug}.json`), JSON.stringify(doc) + "\n");
@@ -41,6 +43,7 @@ if (shouldWrite("set-value", { date, prices: map.size })) {
     catalogSet: "Base Set (Shadowless)",
     slug: "base-set-shadowless",
     name: "Base Set (Shadowless)",
+    skipIds,
   });
   if (datedDay(shadow.asOf) && nonEmptyDoc(shadow) && shadow.master.inSet > 0) {
     await writeFile(join(valueDir, "base-set-shadowless.json"), JSON.stringify(shadow) + "\n");
