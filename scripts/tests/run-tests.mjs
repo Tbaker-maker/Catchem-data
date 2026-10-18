@@ -33,6 +33,7 @@ import { runVariantTagTests } from "./variant-tags.test.mjs";
 import { runReadTagTests } from "./read-tags.test.mjs";
 import { runHighValueSpikeTests } from "./high-value-spike.test.mjs";
 import { runPriceTrustTests } from "./price-trust.test.mjs";
+import { runListingSampleTests } from "./listing-sample.test.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const J = async (p) => JSON.parse(await readFile(join(ROOT, p), "utf-8"));
@@ -46,6 +47,11 @@ console.log("── price trust ──");
 {
   const n = await runPriceTrustTests();
   t("price trust suite", n === 0, `${n} failed`);
+}
+console.log("── listing sample ──");
+{
+  const n = await runListingSampleTests();
+  t("listing sample suite", n === 0, `${n} failed`);
 }
 
 console.log("── index math ──");
