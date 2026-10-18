@@ -1,7 +1,7 @@
 {
- "generatedAt": "2026-10-17T14:22:00.288Z",
- "date": "2026-10-17",
- "mood": "Some numbers we published look more like our measuring than the market. Worth a second pair of eyes.",
+ "generatedAt": "2026-10-18T10:14:44.921Z",
+ "date": "2026-10-18",
+ "mood": "A handful of suspicious jumps in our own history. Probably ours, not the market's — that is the usual answer.",
  "confidence": "MEASURED",
  "note": "Re-checks numbers we already published. Flags are SUSPECT, not proven wrong — each needs a human or CC to verify against listings before a correction is filed.",
  "window": "40% inside 3 days",
@@ -112,6 +112,18 @@
    "movePct": 67.5,
    "published": true,
    "read": "A 68% move over 1 day(s) on a sealed product is more consistent with a change in how we measured it than with the market. Both figures were published.",
+   "action": "verify against listings; if the earlier figure was an artefact, file a correction"
+  },
+  {
+   "id": "cel25-etb",
+   "name": "Celebrations Elite Trainer Box",
+   "from": "2026-10-17",
+   "to": "2026-10-18",
+   "was": 315,
+   "became": 140,
+   "movePct": -55.6,
+   "published": true,
+   "read": "A 56% move over 1 day(s) on a sealed product is more consistent with a change in how we measured it than with the market. Both figures were published.",
    "action": "verify against listings; if the earlier figure was an artefact, file a correction"
   },
   {
@@ -262,6 +274,11 @@
   {
    "name": "Rayquaza VMAX",
    "featuredOn": "2026-10-16",
+   "read": "we put this in front of readers and can no longer price it — either it stopped trading or our query broke"
+  },
+  {
+   "name": "Lugia V",
+   "featuredOn": "2026-10-17",
    "read": "we put this in front of readers and can no longer price it — either it stopped trading or our query broke"
   }
  ],

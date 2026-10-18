@@ -1,11 +1,11 @@
 {
- "generatedAt": "2026-10-17T14:21:57.396Z",
- "date": "2026-10-17",
+ "generatedAt": "2026-10-18T10:14:41.832Z",
+ "date": "2026-10-18",
  "principle": "An agent is judged on whether its output is acted on, never on how much it produces. An agent that only produces volume gets switched off.",
  "agents": [
   "breaker: 6 finding(s)",
   "falsifier: 0 finding(s)",
-  "correction-hunter: 31 finding(s)",
+  "correction-hunter: 33 finding(s)",
   "review-agents: 0 finding(s)",
   "decision-audit: 2 finding(s)",
   "designer: 19 finding(s)",
@@ -27,9 +27,9 @@
   "security: clean run — nothing failed, which is the point of it"
  ],
  "problems": [
-  "correction-hunter: FARMING — findings climbed 6 → 6 → 6 → 31 across four runs with nothing resolved. Volume is not work.",
+  "correction-hunter: FARMING — findings climbed 6 → 6 → 6 → 33 across four runs with nothing resolved. Volume is not work.",
   "correction-hunter: BROKEN RECORD — 5 finding(s) repeated three runs running (e.g. \"gone::Umbreon VMAX\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
-  "correction-hunter: OVER-BUDGET — 31 findings against a ceiling of 30. An unreadable list is an unread list.",
+  "correction-hunter: OVER-BUDGET — 33 findings against a ceiling of 30. An unreadable list is an unread list.",
   "designer: FARMING — findings climbed 12 → 12 → 12 → 19 across four runs with nothing resolved. Volume is not work.",
   "theme-scout: BROKEN RECORD — 22 finding(s) repeated three runs running (e.g. \"the one-off::Ken Sugimori drew Ampharos exactly on\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
   "teacher: BROKEN RECORD — 10 finding(s) repeated three runs running (e.g. \"in a rut::breaker\"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.",
@@ -171,6 +171,22 @@
   {
    "from": "correction-hunter",
    "owner": "cc",
+   "what": "Celebrations Elite Trainer Box moved 96.9% in 2026-10-16→2026-10-17",
+   "do": "verify against listings; file a correction if the earlier figure was ours",
+   "score": 90,
+   "band": "ACT NOW",
+   "selfScore": 90,
+   "demotions": [],
+   "components": {
+    "evidence": "MEASURED (40) — computed from data we hold; anyone could check it",
+    "impact": "CRITICAL (30) — publishes something wrong, or breaks in front of a person",
+    "actionable": "NOW (20) — somebody named can do it today",
+    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+   }
+  },
+  {
+   "from": "correction-hunter",
+   "owner": "cc",
    "what": "Evolutions Elite Trainer Box moved 81% in 2026-10-03→2026-10-05",
    "do": "verify against listings; file a correction if the earlier figure was ours",
    "score": 90,
@@ -201,25 +217,9 @@
    }
   },
   {
-   "from": "correction-hunter",
-   "owner": "cc",
-   "what": "Evolutions Elite Trainer Box moved 72.2% in 2026-10-11→2026-10-12",
-   "do": "verify against listings; file a correction if the earlier figure was ours",
-   "score": 90,
-   "band": "ACT NOW",
-   "selfScore": 90,
-   "demotions": [],
-   "components": {
-    "evidence": "MEASURED (40) — computed from data we hold; anyone could check it",
-    "impact": "CRITICAL (30) — publishes something wrong, or breaks in front of a person",
-    "actionable": "NOW (20) — somebody named can do it today",
-    "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
-   }
-  },
-  {
    "from": "anomaly",
    "owner": "tyler",
-   "what": "Fusion Strike Booster Pack moved 8.7% — about 3.3× its own typical daily swing.",
+   "what": "Fusion Strike Booster Pack moved -10.0% — about 3.4× its own typical daily swing.",
    "do": "worth a look — the market did something unusual, which is where stories start",
    "score": 76,
    "band": "ACT NOW",
@@ -235,7 +235,7 @@
   {
    "from": "anomaly",
    "owner": "tyler",
-   "what": "Paldean Fates Booster Pack moved 10.6% — about 3.3× its own typical daily swing.",
+   "what": "Twilight Masquerade Booster Bundle moved 8.3% — about 8.3× its own typical daily swing.",
    "do": "worth a look — the market did something unusual, which is where stories start",
    "score": 76,
    "band": "ACT NOW",
@@ -559,7 +559,7 @@
   {
    "from": "platform",
    "owner": "tyler",
-   "what": "[X] \"Paradox Rift listings moved 183.3% while its print window closes.\"",
+   "what": "[X] \"Twilight Masquerade listings moved -68% while its print window closes.\"",
    "do": "X rewards a single surprising fact that makes somebody want to reply. The strongest shape we have is a number that moved with no headline attached — it implies a question and refuses to answer it, which is what makes people argue in the replies.",
    "score": 33,
    "band": "NOTE ONLY",
@@ -591,7 +591,7 @@
   {
    "from": "platform",
    "owner": "tyler",
-   "what": "[YouTube] 151 Ultra Premium Collection — \"Cheapest believable listing $100, middle of the market $950. The lowest ask sits far below the median.\"",
+   "what": "[YouTube] Unified Minds Booster Box — \"A seller keeps about $4,337.09 online; a buyer pays about $5,349.99. Roughly $1,012.9 of room where a face-to-face trade beats the internet.\"",
    "do": "YouTube rewards a question somebody is already typing into search. We can answer three of the recurring ones with data nobody else holds, which is the whole reason to be here rather than reacting to other people's news.",
    "score": 33,
    "band": "NOTE ONLY",
@@ -607,7 +607,7 @@
   {
    "from": "platform",
    "owner": "tyler",
-   "what": "[YouTube] the sealed market — \"The whole sealed market in one number: 99.6.\"",
+   "what": "[YouTube] the sealed market — \"The whole sealed market in one number: 99.4.\"",
    "do": "YouTube rewards a question somebody is already typing into search. We can answer three of the recurring ones with data nobody else holds, which is the whole reason to be here rather than reacting to other people's news.",
    "score": 33,
    "band": "NOTE ONLY",
@@ -783,7 +783,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "6 supervisor problem(s) are open.",
+   "what": "7 supervisor problem(s) are open.",
    "do": "Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -799,7 +799,7 @@
   {
    "from": "steward",
    "owner": "chat",
-   "what": "79 script(s) are not referenced anywhere: append-learning-log.mjs, append-shelf.mjs, audit-repo-bots.mjs, backfill-artists.mjs.",
+   "what": "82 script(s) are not referenced anywhere: append-learning-log.mjs, append-shelf.mjs, audit-repo-bots.mjs, backfill-artists.mjs.",
    "do": "A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.",
    "score": 30,
    "band": "NOTE ONLY",
@@ -847,7 +847,7 @@
   {
    "from": "api-strategist",
    "owner": "cc",
-   "what": "10 places fetch one item at a time inside a loop",
+   "what": "11 places fetch one item at a time inside a loop",
    "do": "check whether each endpoint supports a set, page or id-list parameter before scaling the loop up",
    "score": 30,
    "band": "NOTE ONLY",
@@ -975,7 +975,7 @@
   {
    "from": "api-strategist",
    "owner": "tyler",
-   "what": "the paid provider is called from 298 places",
+   "what": "the paid provider is called from 303 places",
    "do": "list what ONLY the paid provider gives us; if that list is short, either use more of it or stop paying for it",
    "score": 30,
    "band": "NOTE ONLY",
@@ -1284,6 +1284,22 @@
    {
     "from": "correction-hunter",
     "owner": "cc",
+    "what": "Celebrations Elite Trainer Box moved 96.9% in 2026-10-16→2026-10-17",
+    "do": "verify against listings; file a correction if the earlier figure was ours",
+    "score": 90,
+    "band": "ACT NOW",
+    "selfScore": 90,
+    "demotions": [],
+    "components": {
+     "evidence": "MEASURED (40) — computed from data we hold; anyone could check it",
+     "impact": "CRITICAL (30) — publishes something wrong, or breaks in front of a person",
+     "actionable": "NOW (20) — somebody named can do it today",
+     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
+    }
+   },
+   {
+    "from": "correction-hunter",
+    "owner": "cc",
     "what": "Evolutions Elite Trainer Box moved 81% in 2026-10-03→2026-10-05",
     "do": "verify against listings; file a correction if the earlier figure was ours",
     "score": 90,
@@ -1301,22 +1317,6 @@
     "from": "correction-hunter",
     "owner": "cc",
     "what": "Evolutions Elite Trainer Box moved 75% in 2026-10-09→2026-10-10",
-    "do": "verify against listings; file a correction if the earlier figure was ours",
-    "score": 90,
-    "band": "ACT NOW",
-    "selfScore": 90,
-    "demotions": [],
-    "components": {
-     "evidence": "MEASURED (40) — computed from data we hold; anyone could check it",
-     "impact": "CRITICAL (30) — publishes something wrong, or breaks in front of a person",
-     "actionable": "NOW (20) — somebody named can do it today",
-     "trackRecord": "UNPROVEN (0) — 0 judged outcome(s) — needs 5 before a track record means anything"
-    }
-   },
-   {
-    "from": "correction-hunter",
-    "owner": "cc",
-    "what": "Evolutions Elite Trainer Box moved 72.2% in 2026-10-11→2026-10-12",
     "do": "verify against listings; file a correction if the earlier figure was ours",
     "score": 90,
     "band": "ACT NOW",
@@ -1382,7 +1382,7 @@
    {
     "from": "anomaly",
     "owner": "tyler",
-    "what": "Fusion Strike Booster Pack moved 8.7% — about 3.3× its own typical daily swing.",
+    "what": "Fusion Strike Booster Pack moved -10.0% — about 3.4× its own typical daily swing.",
     "do": "worth a look — the market did something unusual, which is where stories start",
     "score": 76,
     "band": "ACT NOW",
@@ -1398,7 +1398,7 @@
    {
     "from": "anomaly",
     "owner": "tyler",
-    "what": "Paldean Fates Booster Pack moved 10.6% — about 3.3× its own typical daily swing.",
+    "what": "Twilight Masquerade Booster Bundle moved 8.3% — about 8.3× its own typical daily swing.",
     "do": "worth a look — the market did something unusual, which is where stories start",
     "score": 76,
     "band": "ACT NOW",

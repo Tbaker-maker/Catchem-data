@@ -1,21 +1,21 @@
-# What the machines noticed — 2026-10-17
+# What the machines noticed — 2026-10-18
 
-Read it with coffee. Anything urgent says so in capitals.
+The overnight shift's notes. Short on purpose.
 
 ## Our own claims
-A lot of honest shrugs on this run. The tape is young; the tests are patient.
+Not much of a verdict today. Most of our claims need more time before they can be judged, and pretending otherwise would be the actual failure.
 3 survived their own kill conditions, 7 could not be judged yet with the tape we hold.
 
 ## Our own numbers
-Some numbers we published look more like our measuring than the market. Worth a second pair of eyes.
+A handful of suspicious jumps in our own history. Probably ours, not the market's — that is the usual answer.
 
-**NEEDS A HUMAN — 13 figure(s) moved faster than a market can:
+**NEEDS A HUMAN — 14 figure(s) moved faster than a market can:
 - Celebrations Elite Trainer Box: $160 → $335 in 2026-10-12→2026-10-13 (+109.4%)
 - Celebrations Elite Trainer Box: $161.99 → $330 in 2026-10-06→2026-10-07 (+103.7%)
 - Temporal Forces Pokemon Center Elite Trainer Box: $253.74 → $499.99 in 2026-10-05→2026-10-06 (+97%)
 - Celebrations Elite Trainer Box: $160 → $315 in 2026-10-16→2026-10-17 (+96.9%)
 
-20 product(s) we featured and can no longer price:
+21 product(s) we featured and can no longer price:
 - Umbreon VMAX (featured 2026-08-20)
 - Umbreon VMAX (featured 2026-08-21)
 - Charizard ex (featured 2026-08-22)
@@ -32,9 +32,9 @@ Some numbers we published look more like our measuring than the market. Worth a 
 
 ## The agents themselves
 **NEEDS A HUMAN — the supervisor flagged the watchers:**
-- correction-hunter: FARMING — findings climbed 6 → 6 → 6 → 31 across four runs with nothing resolved. Volume is not work.
+- correction-hunter: FARMING — findings climbed 6 → 6 → 6 → 33 across four runs with nothing resolved. Volume is not work.
 - correction-hunter: BROKEN RECORD — 5 finding(s) repeated three runs running (e.g. "gone::Umbreon VMAX"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
-- correction-hunter: OVER-BUDGET — 31 findings against a ceiling of 30. An unreadable list is an unread list.
+- correction-hunter: OVER-BUDGET — 33 findings against a ceiling of 30. An unreadable list is an unread list.
 - designer: FARMING — findings climbed 12 → 12 → 12 → 19 across four runs with nothing resolved. Volume is not work.
 
 ## If we expanded
@@ -60,8 +60,8 @@ Gaps in what we watch:
 
 ## Who needs to do what
 **NEEDS A HUMAN — Tyler (4):**
-- **[ACT NOW 76]** Fusion Strike Booster Pack moved 8.7% — about 3.3× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
-- **[ACT NOW 76]** Paldean Fates Booster Pack moved 10.6% — about 3.3× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
+- **[ACT NOW 76]** Fusion Strike Booster Pack moved -10.0% — about 3.4× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
+- **[ACT NOW 76]** Twilight Masquerade Booster Bundle moved 8.3% — about 8.3× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
 - **[QUEUE 58]** The knowledge base is only used for one fact a day. — *The same sourced facts could power a "why is this card like this" explainer on every product page — set context, print quirks, what makes it odd. It compounds with every fact added.*
 - **[WATCH 40]** pricing 50 more cards would unlock 17 artist cohorts — *an expansion decision, not a machine's call*
 
@@ -69,7 +69,7 @@ Gaps in what we watch:
 - **[ACT NOW 90]** Celebrations Elite Trainer Box moved 109.4% in 2026-10-12→2026-10-13 — *verify against listings; file a correction if the earlier figure was ours*
 - **[ACT NOW 90]** Celebrations Elite Trainer Box moved 103.7% in 2026-10-06→2026-10-07 — *verify against listings; file a correction if the earlier figure was ours*
 - **[ACT NOW 90]** Temporal Forces Pokemon Center Elite Trainer Box moved 97% in 2026-10-05→2026-10-06 — *verify against listings; file a correction if the earlier figure was ours*
-- **[ACT NOW 90]** Evolutions Elite Trainer Box moved 81% in 2026-10-03→2026-10-05 — *verify against listings; file a correction if the earlier figure was ours*
+- **[ACT NOW 90]** Celebrations Elite Trainer Box moved 96.9% in 2026-10-16→2026-10-17 — *verify against listings; file a correction if the earlier figure was ours*
 
 **Chat (12):** top — The Today screen carries 17 sections: The Daily Three, 🗳 Rip or Hold?, Biggest movers, Set the app up for you, Movers, Release radar… *[QUEUE]*
 
@@ -81,20 +81,20 @@ Gaps in what we watch:
 - **the cheat code** — Nothing tells a creator how a piece performed after they made it. *Ask one question after publication — did this land — and keep the answers. Even a yes/no on twenty videos would tell us which angles are worth generating.*
 
 ## What the market did
-- **product** — Fusion Strike Booster Pack moved -10.0% — about 3.4× its own typical daily swing. *Measured against its own 24 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
-- **product** — Twilight Masquerade Booster Bundle moved 8.3% — about 8.3× its own typical daily swing. *Measured against its own 24 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
+- **product** — Fusion Strike Booster Pack moved 11.1% — about 3.1× its own typical daily swing. *Measured against its own 25 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
+- **product** — Pitch Black Booster Pack moved 28.6% — about 3.1× its own typical daily swing. *Measured against its own 23 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
 
 ## Where today's story goes
-- **X** — "Twilight Masquerade listings moved -68% while its print window closes."
-- **YouTube** — Unified Minds Booster Box — "A seller keeps about $4,337.09 online; a buyer pays about $5,349.99. Roughly $1,012.9 of room where a face-to-face trade beats the internet."
-- **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 99.4."
+- **X** — "Twilight Masquerade listings moved 212.5% while its print window closes."
+- **YouTube** — Rebel Clash Elite Trainer Box — "Sealed carries a 236.1% premium over the cost of its packs bought loose — the widest gap of that kind we track today."
+- **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 99.3."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
 
 ## Something is slipping
 - **unsaved** — 3 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
 - **ignored** — 7 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
-- **drift** — 82 script(s) are not referenced anywhere: append-learning-log.mjs, append-shelf.mjs, audit-repo-bots.mjs, backfill-artists.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
+- **drift** — 87 script(s) are not referenced anywhere: append-learning-log.mjs, append-shelf.mjs, audit-repo-bots.mjs, backfill-artists.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
 - **drift** — 49 JSON files in research/pulse. *A directory nobody can scan is a directory where something goes missing without being noticed.*
 
 ## Legal standing
@@ -104,10 +104,10 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 *Legal INFORMATION, not legal advice. No lawyer has reviewed this. Sweepstakes law varies by state and changes; nothing here is a compliance opinion anyone can rely on. Its job is to make the conversation with counsel shorter and better, and to stop us doing something obviously wrong in the meantime.*
 
 ## Numbers that do not make sense for what they are
-58 value(s) are structurally fine and absurd in context.
-- **"sleeved"** killed 363 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
-- Battle Styles Booster Pack: 71% rejection rate (43/150) — *largest bucket: exclude = 61. A single over-broad term can eat a market.*
-- 151 Booster Pack: 78% rejection rate (33/150) — *largest bucket: type = 80. A single over-broad term can eat a market.*
+57 value(s) are structurally fine and absurd in context.
+- **"sleeved"** killed 362 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
+- Battle Styles Booster Pack: 74% rejection rate (39/150) — *largest bucket: exclude = 62. A single over-broad term can eat a market.*
+- Scarlet & Violet Booster Pack: 92% rejection rate (12/150) — *largest bucket: set = 53. A single over-broad term can eat a market.*
 
 ## What the agents should be asking themselves
 - **domain-plausibility** — Would you catch this today? If yes, what specifically would fire. If no, what would you need?
@@ -129,13 +129,13 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 - **Mitsuhiro Arita drew Houndoom exactly once** — Mitsuhiro Arita has 496 cards. Exactly one is a Houndoom.
 
 ## Design
-6 high, 12 medium across 15 shipped surfaces, 122 minted cards.
+6 high, 12 medium across 15 shipped surfaces, 128 minted cards.
 - **build.html** — the accent colour appears 52 times. *Spend it in two places: the active state and the one primary action. Everything else greys.*
 - **corrections.html** — remote fonts with no local fallback. *Add system-ui and a generic family to every font stack.*
 - **methodology.html** — remote fonts with no local fallback. *Add system-ui and a generic family to every font stack.*
 
 ## What the agents cannot answer themselves
-69 open — 50 need eyes on a rendered page, 19 need a decision.
+70 open — 51 need eyes on a rendered page, 19 need a decision.
 - **NEEDS A HUMAN** [theme-scout] 14 Pokémon share the "-eon" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 7 Pokémon share the "ite" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 10 Pokémon share the "-ish" ending — a theme, or a coincidence of naming?

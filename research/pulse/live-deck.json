@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-17T14:22:05.471Z",
+ "generatedAt": "2026-10-18T10:14:49.566Z",
  "slides": [
   {
    "id": "s0",
@@ -1487,6 +1487,54 @@
    }
   },
   {
+   "id": "s65",
+   "kind": "fact",
+   "card": "basep-21",
+   "confidence": "VERIFIED",
+   "title": "crambo not my opinion",
+   "sub": "Moltres · Wizards Black Star Promos",
+   "facts": [
+    "@JohnnyCrambo posted 'Do you think caring about Pokemon value makes someone a fake fan?' and got 37."
+   ],
+   "sources": [
+    "x.com/JohnnyCrambo/status/2091554795744112736 (screenshot, 2026-08-23)",
+    "x.com/johnnycrambo profile and posts"
+   ],
+   "falsifier": "the same question posted without the disclaimer producing an equal reply rate",
+   "prompts": [
+    "Say it in your own words — the claim is above",
+    "Sourced. You can state this plainly."
+   ],
+   "audience": {
+    "headline": "@JohnnyCrambo posted 'Do you think caring about Pokemon value makes someone a fake fan?' and got 37.",
+    "sub": "x.com/JohnnyCrambo/status/2091554795744112736 (screenshot, 2026-08-23)"
+   }
+  },
+  {
+   "id": "s66",
+   "kind": "fact",
+   "card": "base1-82",
+   "confidence": "VERIFIED",
+   "title": "shotgun self reply card list",
+   "sub": "Full Heal · Base",
+   "facts": [
+    "@shotguncaio writes long-form lore and artist posts — an Atsuko Nishida appreciation at 15."
+   ],
+   "sources": [
+    "x.com/shotguncaio posts June 2026",
+    "x.com/shotguncaio/status/2033639197756821730"
+   ],
+   "falsifier": "the same posts performing equally without the card-list reply",
+   "prompts": [
+    "Say it in your own words — the claim is above",
+    "Sourced. You can state this plainly."
+   ],
+   "audience": {
+    "headline": "@shotguncaio writes long-form lore and artist posts — an Atsuko Nishida appreciation at 15.",
+    "sub": "x.com/shotguncaio posts June 2026"
+   }
+  },
+  {
    "id": "s67",
    "kind": "fact",
    "card": "svp-173-pc",
@@ -1508,6 +1556,56 @@
    "audience": {
     "headline": "An Illustration Rare trading far above the median IR of its own set is one where the artwork carries the value, because an IR of a Pokemon nobody battles with has no competitive value and no chase status.",
     "sub": "our own price data across 15,727 priced cards"
+   }
+  },
+  {
+   "id": "s68",
+   "kind": "fact",
+   "card": "dp4-3",
+   "confidence": "VERIFIED",
+   "title": "shotgun day x series",
+   "sub": "Darkrai · Great Encounters",
+   "facts": [
+    "@shotguncaio has ~43-44k followers and runs numbered daily series as his signature format: 'Day 90 of posting one Pokémon card I love that costs under $10' and 'Day X of opening one Pitch Black pack every day until I pull the Mega Darkrai ex SIR'."
+   ],
+   "sources": [
+    "Tyler-supplied profile of @shotguncaio, 2026-08-24",
+    "x.com/shotguncaio posts"
+   ],
+   "falsifier": "the series posts underperforming his one-off posts, which would mean the numbering is decoration rather than the hook",
+   "prompts": [
+    "Say it in your own words — the claim is above",
+    "Sourced. You can state this plainly."
+   ],
+   "audience": {
+    "headline": "@shotguncaio has ~43-44k followers and runs numbered daily series as his signature format: 'Day 90 of posting one Pokémon card I love that costs under $10' and 'Day X of opening one Pitch Black pack every day until I pull the Mega Darkrai ex SIR'.",
+    "sub": "Tyler-supplied profile of @shotguncaio, 2026-08-24"
+   }
+  },
+  {
+   "id": "s69",
+   "kind": "fact",
+   "card": "base5-73",
+   "confidence": "COMMUNITY",
+   "title": "permission removes the reason not to reply",
+   "sub": "The Boss's Way · Team Rocket",
+   "facts": [
+    "@tall_alan took roughly 900 replies on one post at ~16k followers: 'What's your favourite Pokémon? Remember to pick something quirky."
+   ],
+   "sources": [
+    "Tyler-supplied cross-account analysis, 2026-08-24",
+    "x.com/tall_alan",
+    "x.com/JohnnyCrambo",
+    "x.com/shotguncaio"
+   ],
+   "falsifier": "the same questions without their second sentence producing equal reply counts",
+   "prompts": [
+    "Say it in your own words — the claim is above",
+    "NOT settled — say \"I've read that…\" or skip it"
+   ],
+   "audience": {
+    "headline": "The Boss's Way",
+    "sub": "Team Rocket · 2000"
    }
   },
   {
@@ -1593,6 +1691,55 @@
     "measured against the 1080x1920 standard and published safe-zone guidance, 2026-08-25"
    ],
    "falsifier": "a platform changing its overlay, or a real recording showing content readable inside a zone we marked as covered",
+   "prompts": [
+    "Say it in your own words — the claim is above",
+    "NOT settled — say \"I've read that…\" or skip it"
+   ],
+   "audience": {
+    "headline": "",
+    "sub": ""
+   }
+  },
+  {
+   "id": "s74",
+   "kind": "fact",
+   "card": "svp-203-pc",
+   "confidence": "COMMUNITY",
+   "title": "set doubt names a set not a person",
+   "sub": "Team Rocket's Wobbuffet · Scarlet & Violet Promos",
+   "facts": [
+    "OBSERVED ON ANOTHER ACCOUNT, NOT OUR RESULT."
+   ],
+   "sources": [
+    "x.com/parkyspokestop",
+    "Tyler-supplied observation, 2026-08-25",
+    "data/post-outcomes.json for our own figure"
+   ],
+   "falsifier": "The same question asked about a set with an undisputed reputation producing the same reply density. If 'is Base Set actually good' performs identically, the mechanic is the question form and not the doubt.",
+   "prompts": [
+    "Say it in your own words — the claim is above",
+    "NOT settled — say \"I've read that…\" or skip it"
+   ],
+   "audience": {
+    "headline": "Team Rocket's Wobbuffet",
+    "sub": "Scarlet & Violet Promos · "
+   }
+  },
+  {
+   "id": "s75",
+   "kind": "fact",
+   "card": null,
+   "confidence": "COMMUNITY",
+   "title": "era claim invites a counter era",
+   "sub": "",
+   "facts": [
+    "OBSERVED ON ANOTHER ACCOUNT, NOT OUR RESULT."
+   ],
+   "sources": [
+    "x.com/Courtyard_io",
+    "Tyler-supplied observation, 2026-08-25"
+   ],
+   "falsifier": "The same claim made about a single card rather than an era producing comparable replies. If 'this Charizard is peak' performs the same, the era framing is doing nothing and brevity is the whole effect.",
    "prompts": [
     "Say it in your own words — the claim is above",
     "NOT settled — say \"I've read that…\" or skip it"
@@ -2275,7 +2422,7 @@
  ],
  "counts": {
   "card": 40,
-  "fact": 30,
+  "fact": 36,
   "finding": 20,
   "segment": 10
  }
