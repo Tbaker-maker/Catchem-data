@@ -18,6 +18,8 @@ async function loadRules() {
   if (direct) {
     const doc = await readJson(direct);
     if (!doc) throw new Error("signal rules file was not readable");
+    const extra = process.env.SIGNAL_STRENGTH ? await readJson(process.env.SIGNAL_STRENGTH) : null;
+    if (extra) doc.strength = extra;
     return doc;
   }
   const store = await openPrivate({ root: ROOT, token: process.env.PRIVATE_DATA_TOKEN || "" });
@@ -27,9 +29,11 @@ async function loadRules() {
       console.log("signal chips: rules file is not in the private store, so no chips were written");
       return null;
     }
+    const extra = await readJson(join(store.dir, "signal-chips/strength.json"));
+    if (extra) doc.strength = extra;
     return doc;
   } finally {
-    if (store.remote) await store.close(["signal-chips/thresholds.json"], "signal chip rules");
+    if (store.remote) await store.close(["signal-chips/thresholds.json", "signal-chips/strength.json"], "signal chip rules");
   }
 }
 
@@ -172,10 +176,14 @@ export async function stampSignalChips({ root = ROOT, rules, writeReads = false 
       delete read.blurb;
       continue;
     }
-    byRead[read.id] = { signals: built.signals, blurb: built.blurb };
+    const entry = { signals: built.signals, blurb: built.blurb || "" };
+    if (built.strength) entry.strength = built.strength;
+    byRead[read.id] = entry;
     read.signals = built.signals;
     if (built.blurb) read.blurb = built.blurb;
     else delete read.blurb;
+    if (built.strength) read.strength = built.strength;
+    else delete read.strength;
     count += 1;
   }
   const samples = [];
@@ -184,7 +192,7 @@ export async function stampSignalChips({ root = ROOT, rules, writeReads = false 
       const row = byRead[read.id];
       if (!row || samples.some((item) => item.id === read.id)) continue;
       if (!pred(row, read)) continue;
-      samples.push({ id: read.id, name: read.name || "", signals: row.signals, blurb: row.blurb || "" });
+      samples.push({ id: read.id, name: read.name || "", signals: row.signals, blurb: row.blurb || "", ...(row.strength ? { strength: row.strength } : {}) });
       return;
     }
   };
@@ -199,9 +207,10 @@ export async function stampSignalChips({ root = ROOT, rules, writeReads = false 
     preview: samples[0] || null,
     samples,
   };
+  const scored = Object.values(byRead).filter((row) => row.strength).length;
   await writeFile(join(root, "research/assets/public/signal-chips.json"), `${JSON.stringify(out, null, 1)}\n`);
   if (writeReads) await writeFile(readsPath, `${JSON.stringify(bundle, null, 1)}\n`);
-  console.log(`signal chips: ${count} reads`);
+  console.log(`signal chips: ${count} reads, ${scored} with a score`);
   return { count, wrote: true, asOf };
 }
 

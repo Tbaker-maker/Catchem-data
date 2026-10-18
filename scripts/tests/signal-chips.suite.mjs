@@ -91,6 +91,50 @@ export async function run() {
   const empty = readSignals({ id: "fake-empty", kind: "news", asOf: "2026-10-17" }, {}, RULES);
   t("an empty row has no chips and no blurb", empty.signals.length === 0 && empty.blurb === "");
 
+  const strength = {
+    proven: [],
+    weights: {},
+    fallback: {
+      move: [1, 2, 3, 4],
+      listings: [1, 2, 3, 4],
+      gone: [1, 2, 3, 4],
+      range: [0.1, 0.3, 0.6, 0.9],
+      momentum: [1, 2, 3, 4],
+      rotation: { invert: true, cuts: [12, 6, 3, 2] },
+      art: { FA: 2, IR: 3, SIR: 5 },
+      era: { Vintage: 1, Modern: 1 },
+      confidence: [0, 1, 2, 3],
+    },
+  };
+  const dotted = readSignals(read, ctx, { ...wide, strength });
+  t("every chip family has 1 to 5 dots", dotted.signals.length === 9 && dotted.signals.every((chip) => chip.strength >= 1 && chip.strength <= 5 && chip.strength === Math.round(chip.strength)));
+  t("no proven signals means no overall score", dotted.strength == null);
+  t("dot output keeps the cutoff words private", !signalsLookSecret(dotted) && !JSON.stringify(dotted).includes("proven") && !JSON.stringify(dotted).includes("weight"));
+  for (const chip of dotted.signals) t(`dotted label clean ${chip.kind}`, isClean(chip.label) && isClean(dotted.blurb) && !/[\u2013\u2014]/.test(chip.label + dotted.blurb));
+
+  const dash = readSignals({ ...read, id: "fake-dash", priceStatus: "checking" }, ctx, { ...wide, strength });
+  t("a grey dash has no dots", dash.signals[0]?.dir === "dash" && dash.signals[0].strength == null && !String(dash.signals[0].text || "").includes("%"));
+
+  const sealedDots = readSignals({
+    id: "fake-sealed-dots",
+    name: "Temporal Forces Booster Bundle",
+    kind: "sealed",
+    href: "/p/sv5-bb",
+    asOf: "2026-10-17",
+  }, {
+    asOf: "2026-10-17",
+    listings: { n: 70, prev: 100, date: "2026-10-17" },
+    release: "2024-03-22",
+    points: points(),
+  }, { ...wide, strength });
+  const sealedDotsText = JSON.stringify(sealedDots);
+  t("a sealed read with dots never says NM", !/\bNM\b|Near Mint|\bcondition\b/i.test(sealedDotsText) && sealedDots.signals.some((chip) => chip.kind === "listings" && chip.strength >= 1));
+
+  const scored = readSignals(read, ctx, { ...wide, strength: { ...strength, proven: ["move"], weights: { move: 2 } } });
+  t("a proven move sets one score from 1 to 5", scored.strength >= 1 && scored.strength <= 5);
+  const unmatched = readSignals(read, ctx, { ...wide, strength: { ...strength, proven: ["not-a-kind"] } });
+  t("a proven list that matches nothing hides the score", unmatched.strength == null && unmatched.signals.every((chip) => chip.strength >= 1));
+
   const src = readFileSync(new URL("../lib/signal-chips.mjs", import.meta.url), "utf8");
   t("the public module has no baked cutoff numbers", !/flatAbs\s*:\s*\d/.test(src) && !/cuts\s*:\s*\[/.test(src));
   return fail;
