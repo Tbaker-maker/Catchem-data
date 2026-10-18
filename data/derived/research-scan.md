@@ -1,11 +1,9 @@
-# Script research scan — 2026-10-17
+# Script research scan — 2026-10-18
 
 Leads from files the nightly already fetched. No web search, no AI. Verify before publishing.
 
 ## Flags
-- NEW_SET: Maxie debuts his Seasonal Sync Pair with Ting-Lu in Pokémon Masters EX in a new set of Seasonal Scouts — Bulbagarden https://bulbagarden.net/threads/maxie-debuts-his-seasonal-sync-pair-with-ting-lu-in-pokemon-masters-ex-in-a-new-set-of-seasonal-scouts.311790/
-- NEW_SET: Mega Heatran ex, Lebanne, Gastly, and Other Gym Promos Revealed for November! — PokeBeach https://www.pokebeach.com/forums/threads/mega-heatran-ex-lebanne-gastly-and-other-gym-promos-revealed-for-november.157094/
-- NEW_SET: Mega Dragonite ex, Mega Gengar ex, and Mega Feraligatr ex “Special Deck Set” Revealed for November — PokeBeach https://www.pokebeach.com/forums/threads/mega-dragonite-ex-mega-gengar-ex-and-mega-feraligatr-ex-%E2%80%9Cspecial-deck-set%E2%80%9D-revealed-for-november.157093/
+No flags.
 
 ## Radar check
 - 2026-10-23 Deck Crafter's Collection — no second source in tonight's files
