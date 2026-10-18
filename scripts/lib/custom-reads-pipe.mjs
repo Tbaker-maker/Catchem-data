@@ -154,6 +154,18 @@ export function dueOn(follow, day, now = Date.now()) {
   return d.getUTCDay() === 0; // weekly lands on Sunday
 }
 
+// One read row in the outbox. The bot DM uses line only. The site email adds
+// the read page link, chips and shop buttons from cardId, kind and set.
+// Product ids and set slugs only. Nothing about a member.
+export function outboxRead(read) {
+  const row = { line: read.line };
+  if (read.cardId) row.cardId = String(read.cardId);
+  if (read.kind) row.kind = String(read.kind);
+  if (read.set) row.set = String(read.set);
+  if (read.name) row.name = String(read.name);
+  return row;
+}
+
 export function buildOutbox({ follows = [], pool = { day: "", reads: [] }, news = [], games = [], now = Date.now(), limit = 6 } = {}) {
   const day = pool.day || new Date(now).toISOString().slice(0, 10);
   const members = [];
@@ -167,7 +179,7 @@ export function buildOutbox({ follows = [], pool = { day: "", reads: [] }, news 
       .filter((read) => memberMatch(follow, read))
       .sort((a, b) => (Number(b.price) || 0) - (Number(a.price) || 0))
       .slice(0, limit)
-      .map((read) => ({ line: read.line }));
+      .map(outboxRead);
     const row = { discordId: id, lead: `Your ${follow.frequency || "weekly"} Catch'em read, ${shortDay(day)}.`, reads };
     if (follow.news === true && news.length) {
       const rows = news.filter((row) => isClean(row?.headline) && isClean(row?.line)).slice(0, 3);

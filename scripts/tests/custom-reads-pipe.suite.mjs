@@ -94,6 +94,9 @@ export async function run() {
   t("the pokemon line is the named card", byId.get(fakeId).reads[0].line.includes("Umbreon ex 161/131, Prismatic Evolutions"));
   const dmLines = boxed.members.flatMap((row) => [row.lead, ...row.reads.map((item) => item.line), ...(row.news || []).flatMap((item) => [item.headline, item.line])]);
   t("every generated line passes the advice checker", dmLines.length > 0 && dmLines.every((line) => isClean(line) && !/[\u2013\u2014]/.test(line) && !/\bsold\b|\bsales\b/i.test(line)));
+  const umbRow = byId.get(fakeId).reads.find((item) => item.cardId === "tcgcsv-9001");
+  t("outbox reads carry the product id and kind for the email, and no member field", umbRow && umbRow.kind === "card" && umbRow.set === "sv-prismatic-evolutions" && !("discordId" in umbRow) && !("email" in umbRow));
+  t("the set line row has a set slug and no product id", byId.get("900000000000000104").reads[0].set === "sv-prismatic-evolutions" && !byId.get("900000000000000104").reads[0].cardId);
   const preview = previewLines(named);
   t("preview lines have no member id", !JSON.stringify(preview).includes("discord") && preview.lines["pokemon:Umbreon"].includes("Umbreon ex 161/131, Prismatic Evolutions") && preview.lines["rarity:Special Illustration Rare"].includes("Umbreon ex 161/131"));
   t("the sealed preview is listings counted", preview.lines["product:sealed"].includes("listings counted") && !/\bNM\b/.test(preview.lines["product:sealed"]));
