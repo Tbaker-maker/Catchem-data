@@ -2,10 +2,6 @@ name: Vintage listing sample
 
 on:
   workflow_dispatch:
-  schedule:
-    # 07:30 UTC. The shared Browse counter frees the previous morning batch
-    # around 07:18 UTC, before the 6 AM PT listing run.
-    - cron: "30 7 * * *"
 
 permissions:
   contents: write

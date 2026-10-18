@@ -13,7 +13,7 @@ import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { gzipSync, gunzipSync } from "node:zlib";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { tiers, pickRun, roleSlice, missingTop, ptDate, listingFileDay, mergeDayRows, used24, nightlyBudget, buildQuery, summarize, EBAY_BROWSE_DAILY_LIMIT, TAIL_FLOOR, RUNS_PER_DAY, applyTotalCaps } from "./lib/listing-counts.mjs";
+import { tiers, pickRun, roleSlice, missingTop, ptDate, listingFileDay, mergeDayRows, used24, nightlyBudget, buildQuery, summarize, EBAY_BROWSE_DAILY_LIMIT, TAIL_FLOOR, RUNS_PER_DAY, applyTotalCaps, vintageHeldBack } from "./lib/listing-counts.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OAUTH = "https://api.ebay.com/identity/v1/oauth2/token";
@@ -64,11 +64,12 @@ export async function runListingCounts({ afterSealedStep = false, now = new Date
   const role = afterSealedStep ? "guardian" : (process.env.LISTING_RUN_ROLE || "full");
   const tierPlan = tiers({ items, skipIds, attention, dailyBudget: b.budget, tailFloor: cfg.tailFloor ?? TAIL_FLOOR });
   const sealedInWindow = afterSealedStep || state.log.some((e) => e.source === "sealed-price-step" && Date.parse(e.at) > now.getTime() - 86400000);
+  const holdBack = vintageHeldBack(state.log, now);
   const slice = Math.min(Number(process.env.LISTING_COUNT_BUDGET) || Infinity,
-    runsPerDay === 1 ? Math.max(0, b.safe - used) : roleSlice({ role, safe: b.safe, used, dailyBudget: b.budget, sealedStep: b.sealedStep, sealedInWindow, topShare: cfg.topShare }));
+    runsPerDay === 1 ? Math.max(0, b.safe - used - holdBack) : roleSlice({ role, safe: b.safe, used, dailyBudget: b.budget, sealedStep: b.sealedStep, sealedInWindow, topShare: cfg.topShare, holdBack }));
   const picked = pickRun({ daily: tierPlan.daily, tail: tierPlan.tail, last: state.last, now, slice: Math.max(0, slice - 1), role });
   const plan = { picked, poolSize: tierPlan.daily.length + tierPlan.tail.length, perNightNeed: tierPlan.daily.length, cycleNights: tierPlan.tailCycleDays };
-  console.log(`listing counts: daily tier ${tierPlan.daily.length} (${JSON.stringify(tierPlan.counts)}, singles at or above $${tierPlan.singleCutoff}), tail ${tierPlan.tail.length} every ${tierPlan.tailCycleDays} days, used ${used}/${b.safe} in 24h, this run ${picked.length}`);
+  console.log(`listing counts: daily tier ${tierPlan.daily.length} (${JSON.stringify(tierPlan.counts)}, singles at or above $${tierPlan.singleCutoff}), tail ${tierPlan.tail.length} every ${tierPlan.tailCycleDays} days, used ${used}/${b.safe} in 24h, vintage hold ${holdBack}, this run ${picked.length}`);
 
   if (role === "guardian" && !plan.picked.length) { console.log("count guardian: every daily-tier item has a count today, nothing to do"); return { picked: 0 }; }
   const tok = await token().catch((e) => { console.log(`listing counts: ${e.message}`); return null; });

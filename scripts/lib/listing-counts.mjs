@@ -15,6 +15,7 @@ export const SEALED_PAGES = 3;  // sealed price step: up to 3 pages per priced p
 export const TAIL_FLOOR = 500;  // calls a day kept for the tail rotation
 export const RUNS_PER_DAY = 3; // 2 full runs + 1 midday top-tier run
 export const TOP_RUN_SHARE = 0.15; // midday run cap, share of the daily listing budget
+export const VINTAGE_SAMPLE_CALLS = 300; // left for the WOTC listing sample until it logs today
 const DAY = 86400000;
 
 const COMMON_EXCLUDE = [/\blots?\b/i, /\bbundle of\b/i, /\bx\s?\d+\b/i, /\b\d+\s?x\b/i, /\bproxy\b/i, /\bcustom\b/i, /\borica\b/i, /\breplica\b/i, /\bfake\b/i];
@@ -86,6 +87,14 @@ export function listingFileDay(now = new Date()) {
   return ptDate(now);
 }
 
+// Hold the vintage sample's calls until a vintage-sample log exists for this Pacific day.
+// Listing-count runs subtract this. The sample itself does not.
+export function vintageHeldBack(log = [], now = new Date(), calls = VINTAGE_SAMPLE_CALLS) {
+  const today = ptDate(now);
+  const done = (log || []).some((entry) => entry && entry.source === "vintage-sample" && entry.at && ptDate(entry.at) === today);
+  return done ? 0 : Math.max(0, Number(calls) || 0);
+}
+
 // A later run on the same day adds rows. It does not drop rows already filed that day.
 export function mergeDayRows(prev = [], next = []) {
   const byId = new Map();
@@ -99,8 +108,8 @@ export function mergeDayRows(prev = [], next = []) {
 // full: up to its share, plus catch-up for a missed run (never past 2 shares),
 //   always leaving room for the nightly sealed step if it is not in the window yet.
 // top: daily-tier retries only, capped at TOP_RUN_SHARE of the day.
-export function roleSlice({ role = "full", safe, used, dailyBudget, sealedStep = 0, sealedInWindow = true, topShare = TOP_RUN_SHARE }) {
-  const room = Math.max(0, safe - used - (sealedInWindow ? 0 : sealedStep));
+export function roleSlice({ role = "full", safe, used, dailyBudget, sealedStep = 0, sealedInWindow = true, topShare = TOP_RUN_SHARE, holdBack = 0 }) {
+  const room = Math.max(0, safe - used - (sealedInWindow ? 0 : sealedStep) - Math.max(0, Number(holdBack) || 0));
   const topCap = Math.ceil(dailyBudget * topShare);
   if (role === "top") return Math.min(room, topCap);
   // Count guardian: late-day catch-up for daily-tier items still missing a

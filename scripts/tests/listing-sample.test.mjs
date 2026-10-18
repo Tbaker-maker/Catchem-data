@@ -45,7 +45,7 @@ export async function runListingSampleTests() {
   t("an unverified card is not published", passingConditions({ ...card, unverified: true }, asks, cfg).length === 0);
   const row = publicSampleRow(card, passed);
   t("the public row has no band numbers", row.published === true && row.condition === "NM" && !("minRatio" in row) && !("maxRatio" in row) && !("minListings" in row));
-  t("the call budget is a count, not a price", sampleRoom({ used: 4000, cap: 300 }) === 200 && sampleRoom({ used: 4900 }) === 0);
+  t("the call budget is a count, not a price", sampleRoom({ used: 4600, cap: 300 }) === 300 && sampleRoom({ used: 4700 }) === 200 && sampleRoom({ used: 4900 }) === 0);
   const ranked = topVintage([
     { id: "new", release: "2024-01-01", price: 999, kind: "single" },
     { id: "b", release: "1999-01-09", price: 10, kind: "single" },

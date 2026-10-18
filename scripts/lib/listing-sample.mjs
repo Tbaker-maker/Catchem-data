@@ -2,7 +2,7 @@
 // A listing that does not name both is dropped. The price band stays in
 // catchem-data-private. This file does not store those numbers.
 
-import { keepTitle, buildQuery } from "./listing-counts.mjs";
+import { keepTitle, buildQuery, VINTAGE_SAMPLE_CALLS } from "./listing-counts.mjs";
 import { firstBelowUnlimited, isVintageRelease, listingsAgree, printingOk } from "./price-trust.mjs";
 
 const COND_ORDER = ["NM", "LP", "MP", "HP", "DMG"];
@@ -78,8 +78,10 @@ export function sampleQuery(card) {
   return buildQuery({ kind: "single", name: card?.name, number: card?.number || card?.num });
 }
 
-export function sampleRoom({ used = 0, safe = 4900, reserve = 700, cap = 300 } = {}) {
-  const room = Number(safe) - Number(reserve) - Number(used);
+// Room left under the shared 24h cap. Listing counts already hold these calls back
+// until today's sample has logged, so this does not subtract a second reserve.
+export function sampleRoom({ used = 0, safe = 4900, cap = VINTAGE_SAMPLE_CALLS } = {}) {
+  const room = Number(safe) - Number(used);
   return Math.max(0, Math.min(Number(cap) || 0, room));
 }
 
