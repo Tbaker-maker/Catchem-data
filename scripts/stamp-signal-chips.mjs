@@ -5,6 +5,7 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { openPrivate } from "./lib/private-store.mjs";
 import { readSignals } from "./lib/signal-chips.mjs";
+import { mentionsHeld } from "./lib/price-hold-skip.mjs";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const PUBLIC = join(ROOT, "research/assets/public");
@@ -157,6 +158,11 @@ export async function stampSignalChips({ root = ROOT, rules, writeReads = false 
   for (const read of reads) {
     if (!read || !read.id) continue;
     const sku = skuOf(read);
+    if (mentionsHeld(read, holds) || (sku && holds.has(sku))) {
+      delete read.signals;
+      delete read.blurb;
+      continue;
+    }
     const set = setFor(read, sets);
     const rot = set ? rotBy.get(set.slug) : null;
     const spark = sparks.get(sku);

@@ -25,6 +25,7 @@ import { loadHistoryCards, historyReads } from "./history-reads.mjs";
 import { setDeepDives, cardStories, eraComparison, preReleaseContext, sealedGapDeep, marketRoundup, artistSpotlights, pokemonSpotlights, rarityTierReports, anniversaryReads, rotationAftermath, recoveryWatch, steadiest, biggestYear, irLifecycle } from "./deep-reads.mjs";
 import { everyPrinting, sameLabelAcrossSets, chaseLists, slumpWatch } from "./deep-reads-2.mjs";
 import { rarityBandReads, artistBandReads, releaseCycleReads, mixedReads, ripReads, attachListingsFacts, loadRipDoc } from "./rich-reads.mjs";
+import { dropHeldReads, loadHeldIds, unstickFamilies } from "./price-hold-skip.mjs";
 
 export const BOARD_TAG = "v3";
 export const PRICE_SHARE_MAX = 1 / 3;
@@ -672,6 +673,9 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
   const catalogue = await readJson(join(pub, "feed/catalogue.json"), {});
   let card = { pool: [], risers: {} };
   if (startDoc && endDoc && raw) card = buildCardLag({ startDoc, endDoc, products: raw.products, start, end, catalogueCards: catalogue.cards || {} });
+  const heldIds = await loadHeldIds(root);
+  card.pool = (card.pool || []).filter((row) => !heldIds.has(`tcgcsv-${row.id}`));
+  for (const id of Object.keys(card.risers || {})) if (heldIds.has(id)) delete card.risers[id];
 
   const sealedProducts = await readJson(join(root, "data/sealed-products.json"), []);
   const histories = new Map();
@@ -684,8 +688,8 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
   let histCards = [];
   try {
     const { cards } = await loadHistoryCards(root);
-    histCards = cards;
-    hist = historyReads(cards, end, { perKind: { high: 30, low: 10, year: 40, plain: 60, backto: 40, set: 30 } });
+    histCards = cards.filter((row) => !heldIds.has(row.id));
+    hist = historyReads(histCards, end, { perKind: { high: 30, low: 10, year: 40, plain: 60, backto: 40, set: 30 } });
   } catch { hist = { counts: {}, picked: {} }; }
   await writeFile(join(pub, "feed/not-moved.json"), JSON.stringify({
     asOf: end, start, end, on,
@@ -696,8 +700,9 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
   }) + "\n");
 
   if (!on) {
-    await writeFile(readsPath, JSON.stringify({ ...doc, reads: base, count: base.length }, null, 1) + "\n");
-    return { on, price: base.length, fresh: 0 };
+    const kept = unstickFamilies(dropHeldReads(base, heldIds));
+    await writeFile(readsPath, JSON.stringify({ ...doc, reads: kept, count: kept.length }, null, 1) + "\n");
+    return { on, price: kept.length, fresh: 0 };
   }
   const releases = await readJson(join(pub, "releases.json"));
   const news = await readJson(join(root, "research/digests/news.json"));
@@ -879,10 +884,10 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
   const freshOne = fresh.filter(onePage);
   attachListingsFacts(priceDedup, listings);
   const fitted = fitBoard(priceDedup.filter(onePage), freshOne);
-  const reads = mixBoard(fitted.price, fitted.fresh, end, { maxShare: 1 });
-  for (const r of reads) if (!String(r.image || "").trim()) r.image = boardImage(r, images, tcgOn, sealedPid);
-  await writeFile(readsPath, JSON.stringify({ ...doc, reads, count: reads.length }, null, 1) + "\n");
+  const mixed = unstickFamilies(dropHeldReads(mixBoard(fitted.price, fitted.fresh, end, { maxShare: 1 }), heldIds));
+  for (const r of mixed) if (!String(r.image || "").trim()) r.image = boardImage(r, images, tcgOn, sealedPid);
+  await writeFile(readsPath, JSON.stringify({ ...doc, reads: mixed, count: mixed.length }, null, 1) + "\n");
   const byKind = {};
-  for (const r of reads) byKind[r.readKind || r.kind] = (byKind[r.readKind || r.kind] || 0) + 1;
-  return { on, history: hist.counts, price: reads.filter(isPriceRead).length, fresh: reads.length - reads.filter(isPriceRead).length, byKind, cardRisers: Object.keys(card.risers).length, sealedRisers: Object.keys(sealed.risers).length };
+  for (const r of mixed) byKind[r.readKind || r.kind] = (byKind[r.readKind || r.kind] || 0) + 1;
+  return { on, history: hist.counts, price: mixed.filter(isPriceRead).length, fresh: mixed.length - mixed.filter(isPriceRead).length, byKind, cardRisers: Object.keys(card.risers).length, sealedRisers: Object.keys(sealed.risers).length };
 }

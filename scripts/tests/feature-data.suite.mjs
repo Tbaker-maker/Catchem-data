@@ -5,6 +5,7 @@ import {
   assignMarks, dailyRows, listingsFromHistory, loadPriceMap, nonEmptyDoc, officialSource,
   releaseMarketItem, rotationStatus, shouldWrite,
 } from "../lib/feature-data.mjs";
+import { loadHeldIds } from "../lib/price-hold-skip.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 const PUB = join(ROOT, "research/assets/public");
@@ -46,6 +47,7 @@ export async function run() {
   const day = JSON.parse(await readFile(join(ROOT, "data/history/tcgcsv-daily", dayName), "utf8"));
   const prices = new Map();
   for (const row of day.prices || []) if (Number(row.market) > 0) prices.set(Number(row.id), Number(row.market));
+  const skipIds = await loadHeldIds(ROOT);
   const index = JSON.parse(await readFile(join(PUB, "sets.json"), "utf8"));
   const slugs = (index.sets || []).map((row) => row.slug);
   const catalog = JSON.parse(await readFile(join(ROOT, "data/catalog/tcgcsv-latest.json"), "utf8"));
@@ -71,7 +73,7 @@ export async function run() {
     const rows = [];
     for (const item of singles) {
       const market = prices.get(pidOf(item));
-      if (!(market > 0)) { unpriced += 1; continue; }
+      if (skipIds.has(String(item.id)) || !(market > 0)) { unpriced += 1; continue; }
       priced += 1;
       total += Math.round(market * 100);
       rows.push({ id: String(item.id), price: market });
@@ -98,12 +100,12 @@ export async function run() {
   let shadowTop = null;
   for (const item of shadowSingles) {
     const market = prices.get(pidOf(item));
-    if (!(market > 0)) { shadowUnpriced += 1; continue; }
+    if (skipIds.has(String(item.id)) || !(market > 0)) { shadowUnpriced += 1; continue; }
     shadowPriced += 1;
     shadowCents += Math.round(market * 100);
     if (!shadowTop || market > shadowTop.price || (market === shadowTop.price && String(item.id) < shadowTop.id)) shadowTop = { id: String(item.id), price: market };
   }
-  t("base-set value is regular Base Set only", baseValue.catalogSet === "Base Set" && baseValue.master.inSet === 102 && baseValue.top[0]?.id === "tcgcsv-42382" && baseValue.top.every((row) => catalogSetById.get(row.id) === "Base Set") && !baseValue.top.some((row) => String(row.id) === "tcgcsv-106999"));
+  t("base-set value is regular Base Set only", baseValue.catalogSet === "Base Set" && baseValue.master.inSet === 102 && baseValue.top.every((row) => catalogSetById.get(row.id) === "Base Set" && !skipIds.has(row.id)) && !baseValue.top.some((row) => String(row.id) === "tcgcsv-106999"));
   t("shadowless has its own total from the same daily file", shadow.slug === "base-set-shadowless" && shadow.catalogSet === "Base Set (Shadowless)" && shadow.asOf === day.date && shadow.master.inSet === shadowSingles.length && shadow.master.priced === shadowPriced && shadow.master.unpriced === shadowUnpriced && shadow.master.total === shadowCents / 100 && shadow.top[0]?.id === shadowTop?.id && shadow.top[0]?.price === shadowTop?.price && shadow.top.every((row) => catalogSetById.get(row.id) === "Base Set (Shadowless)"));
 
   const rotation = JSON.parse(await readFile(join(PUB, "rotation-status.json"), "utf8"));

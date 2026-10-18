@@ -2,6 +2,7 @@
 // Listings are never sales. A missing field is left out of the sentence.
 // Fill order is the order named for this job: movers, set moves, highs,
 // streaks, then plain price. Nothing else is boarded.
+import { mentionsHeld } from "./price-hold-skip.mjs";
 
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
@@ -364,7 +365,9 @@ function cents(n) {
   return Math.round(Number(n) * 100);
 }
 
-export function buildReadLibrary({ catalogue, extra, series, dailyFiles = null, sealed = null, radar = null, library = false, pptPublic = null, volumeReads = null } = {}) {
+export function buildReadLibrary({ catalogue, extra, series, dailyFiles = null, sealed = null, radar = null, library = false, pptPublic = null, volumeReads = null, heldIds = null } = {}) {
+  const held = heldIds instanceof Set ? heldIds : new Set();
+  const heldRow = (row) => mentionsHeld(row, held);
   const asOf = String(catalogue?.asOf || extra?.asOf || "");
   const cards = cardsOf(catalogue).filter((row) => !asOf || String(row.asOf || "") === asOf);
   const staleMovers = onePerSku(
@@ -499,7 +502,7 @@ export function buildReadLibrary({ catalogue, extra, series, dailyFiles = null, 
         if (dir < 0 && downs >= 1) continue;
       }
       const key = boardKey(row);
-      if (!key || used.has(key)) continue;
+      if (!key || used.has(key) || heldRow(row)) continue;
       const lines = explainRead(row, kind);
       const headline = shownHeadline(row, kind);
       if (!lines || !headline) continue;
@@ -521,7 +524,7 @@ export function buildReadLibrary({ catalogue, extra, series, dailyFiles = null, 
   for (const row of shapeReads(extra, { dropSold })) {
     if (board.length >= BOARD_MAX) break;
     const key = boardKey(row);
-    if (!key || used.has(key)) continue;
+    if (!key || used.has(key) || heldRow(row)) continue;
     if (!row.whyItMatters || !row.headline) continue;
     if (bannedWord(row.headline) || bannedWord(row.whyItMatters) || whyLeak(row.whyItMatters)) continue;
     board.push(row);
@@ -536,7 +539,7 @@ export function buildReadLibrary({ catalogue, extra, series, dailyFiles = null, 
     for (const row of extras) {
       if (board.length >= BOARD_MAX) break;
       const key = boardKey(row);
-      if (!key || used.has(key)) continue;
+      if (!key || used.has(key) || heldRow(row)) continue;
       board.push(row);
       used.add(key);
     }
@@ -548,7 +551,7 @@ export function buildReadLibrary({ catalogue, extra, series, dailyFiles = null, 
     for (const row of pools[kind]) {
       const sku = skuOf(row);
       const id = String(row.id || "");
-      if (!sku || !id || seenSignal.has(id)) continue;
+      if (!sku || !id || seenSignal.has(id) || heldRow(row)) continue;
       const lines = explainRead(row, kind);
       if (!lines || !String(row.headline || row.path || "").trim()) continue;
       signals.push(publicRow(row, kind, lines));
@@ -654,6 +657,8 @@ export async function writeReadLibrary({ root, catalogue, extra, series, dailyFi
   let radarDoc = radar;
   if (open && products == null) products = await readJson(join(root, "data/sealed-products.json"));
   if (open && radarDoc == null) radarDoc = await readJson(join(root, "data/release-radar.json"));
+  const { loadHeldIds } = await import("./price-hold-skip.mjs");
+  const heldIds = await loadHeldIds(root);
   const lib = buildReadLibrary({
     catalogue,
     extra,
@@ -664,6 +669,7 @@ export async function writeReadLibrary({ root, catalogue, extra, series, dailyFi
     library: open,
     pptPublic,
     volumeReads,
+    heldIds,
   });
   const path = join(root, LIBRARY_FILE);
   await mkdir(dirname(path), { recursive: true });

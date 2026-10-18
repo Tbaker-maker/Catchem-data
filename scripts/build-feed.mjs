@@ -317,6 +317,13 @@ try {
 } catch (err) { console.error(`flagger skipped: ${err.message}`); }
 // Per-read facts for /feed/r/* (feed/facts/<id>.json). Never stops the nightly.
 try {
+  const { scrubHeldOutputs } = await import("./lib/price-hold-skip.mjs");
+  console.log(JSON.stringify({ heldReads: await scrubHeldOutputs(ROOT) }));
+} catch (err) {
+  console.error(`held-read scrub skipped: ${err.message}`);
+  throw err;
+}
+try {
   const { writeReadFacts } = await import("./build-read-facts.mjs");
   console.log(JSON.stringify({ readFacts: await writeReadFacts(ROOT) }));
 } catch (err) { console.error(`read facts skipped: ${err.message}`); }
