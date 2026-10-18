@@ -60,7 +60,25 @@ export async function run() {
     && readLinePrice({ Holofoil: { LP: 12 } }, "Holofoil").amount === 12);
 
   const file = JSON.parse(await readFile(join(ROOT, "research/assets/public/condition-prices.json"), "utf8"));
-  t("the published file has no condition prices yet", file.source === "TCGplayer market" && file.cards && Object.keys(file.cards).length === 0 && !/pokemonpricetracker|pokemon price tracker/i.test(JSON.stringify(file)));
+  const sample = JSON.parse(await readFile(join(ROOT, "data/derived/vintage-sample.json"), "utf8"));
+  const publishedIds = new Set((sample.rows || []).filter((row) => row && row.published).map((row) => row.id));
+  const known = new Set(["NM", "LP", "MP", "HP", "DMG"]);
+  let bad = 0;
+  for (const [id, body] of Object.entries(file.cards || {})) {
+    if (!publishedIds.has(id)) bad += 1;
+    for (const slot of Object.values(body || {})) {
+      const conds = Object.keys(slot || {}).filter((key) => key !== "date");
+      if (!slot || !slot.date || !conds.length) bad += 1;
+      for (const key of conds) if (!known.has(key) || !(Number(slot[key]) > 0)) bad += 1;
+    }
+  }
+  const blob = JSON.stringify(file);
+  t("published condition prices are only sampled cards that published",
+    file.source === "TCGplayer market"
+    && Object.keys(file.cards || {}).length === publishedIds.size
+    && bad === 0
+    && !/pokemonpricetracker|pokemon price tracker/i.test(blob)
+    && !/[\u2014\u2013]/.test(blob));
   const sweep = JSON.parse(await readFile(join(ROOT, "data/derived/condition-ladder-sweep.json"), "utf8"));
   t("every tracked single is checking",
     sweep.vintage.checking === sweep.vintage.singles
