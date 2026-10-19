@@ -323,10 +323,20 @@ console.log("── ppt paths ──");
 console.log("── feature suites ──");
 {
   const { readdir } = await import("node:fs/promises");
+  // A suite file with no run() used to count as "1 failed" and hide the cause.
+  const missingRunDetail = (file, mod) => (typeof mod?.run === "function" ? "" : `missing run() export: ${file}`);
+  const named = missingRunDetail("fixture.suite.mjs", {});
+  t("a suite with no run() names the file", named === "missing run() export: fixture.suite.mjs", named);
+  t("a suite with run() is not missing", missingRunDetail("fixture.suite.mjs", { run() { return 0; } }) === "");
   const names = (await readdir(new URL(".", import.meta.url))).filter((n) => n.endsWith(".suite.mjs")).sort();
   for (const name of names) {
     const mod = await import("./" + name);
-    const n = typeof mod.run === "function" ? await mod.run() : 1;
+    const gap = missingRunDetail(name, mod);
+    if (gap) {
+      t(gap, false);
+      continue;
+    }
+    const n = await mod.run();
     t(name, n === 0, `${n} failed`);
   }
 }
