@@ -43,6 +43,14 @@ let cfg = null;
 try { cfg = await loadPriceTrustConfig(ROOT); } catch { cfg = null; }
 
 const { doc, sweep } = publishConditionCards(items, { unverified, asks: {}, cfg, asOf });
+// Keep the vintage sample's published condition prices. That job writes them into
+// this same file, and a rebuild must not wipe them (run 39190694919, 2026-10-18).
+const prior = await readJson(join(PUB, "condition-prices.json"));
+const sample = await readJson(join(ROOT, "data/derived/vintage-sample.json"));
+const publishedIds = new Set((sample?.rows || []).filter((row) => row && row.published).map((row) => row.id));
+for (const [id, body] of Object.entries(prior?.cards || {})) {
+  if (publishedIds.has(id) && !doc.cards[id]) doc.cards[id] = body;
+}
 await writeFile(join(PUB, "condition-prices.json"), JSON.stringify(doc));
 const sweepDoc = {
   asOf,
