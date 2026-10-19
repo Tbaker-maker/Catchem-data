@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { isClean } from "../lib/copy-rules.mjs";
-import { qualifyChips, readSignals, signalsLookSecret } from "../lib/signal-chips.mjs";
+import { depthBars, qualifyChips, readSignals, signalsLookSecret } from "../lib/signal-chips.mjs";
+import { isVintageSet } from "../lib/extra-reads.mjs";
 
 // Fixture cutoffs only. The live numbers stay in catchem-data-private.
 const RULES = {
@@ -206,5 +207,26 @@ export async function run() {
   }, leadRules).tiles || {};
   t("a product with listings counted gets a listings tile", boxTiles.listings && /^(Draining|Stacking|Steady)$/.test(boxTiles.listings.word) && boxTiles.listings.days > 0 && boxTiles.listings.spark.length >= 2);
   t("the listings tile has no seller or stage words", !/sellers|Building|Slowing|Stalled|Reversing|topShare/.test(JSON.stringify(boxTiles.listings)));
+
+  // Era: Vintage means a WOTC era set, released before 2003-06-01, whatever the private rule says.
+  const eraOf = (release) => (qualifyChips({ id: "era-x", name: "Set", kind: "sealed", asOf: "2026-10-19" }, { asOf: "2026-10-19", release }, { era: { vintageBefore: "2020-02-07" } }).find((c) => c.kind === "era") || {}).tag;
+  t("Shining Legends (2017) is Modern", eraOf("2017-10-06") === "Modern");
+  t("a set from May 2003 is Vintage", eraOf("2003-05-12") === "Vintage");
+  t("June 1 2003 is Modern", eraOf("2003-06-01") === "Modern");
+  const eraOnly = readSignals({ id: "deep-set-shining-legends", name: "Shining Legends", kind: "sealed", asOf: "2026-10-19" }, { asOf: "2026-10-19", release: "2017-10-06" }, { era: {} });
+  t("an era tag never becomes the read line", !/Era tag/i.test(JSON.stringify(eraOnly)) && !eraOnly.blurb);
+  t("WOTC set names are vintage and later sets are not", isVintageSet("Skyridge") && isVintageSet("Base Set 2") && !isVintageSet("Shining Legends") && !isVintageSet("Hidden Fates") && !isVintageSet("Black & White"));
+
+  // Data bars: five levels from time on file and daily prices, the lower of the two.
+  const DEPTH = { spanCuts: [10, 40, 150, 500], priceCuts: [5, 12, 100, 170] };
+  t("two years of full history is 5 bars", depthBars({ prices: 225, since: "2024-03-14" }, "2026-10-19", DEPTH)?.bars === 5);
+  t("23 days on file is 2 bars", depthBars({ prices: 18, since: "2026-09-26" }, "2026-10-19", DEPTH)?.bars === 2);
+  t("a long but sparse history is held down by its price count", depthBars({ prices: 60, since: "2024-03-14" }, "2026-10-19", DEPTH)?.bars === 3);
+  t("under the first cut is 1 bar", depthBars({ prices: 3, since: "2026-10-16" }, "2026-10-19", DEPTH)?.bars === 1);
+  t("no depth rule, no five level scale", depthBars({ prices: 225, since: "2024-03-14" }, "2026-10-19", null) === null);
+  const fiveTile = readSignals({ id: "move-tcgcsv-9-7", sku: "tcgcsv-9", name: "Card", kind: "single", asOf: "2026-10-19", price: 20, changePct: 5, windowDays: 7, source: "TCGplayer market" },
+    { asOf: "2026-10-19", points: [["2026-10-12", 19], ["2026-10-19", 20]], daily: [["2026-10-12", 19], ["2026-10-19", 20]], counts: { prices: 225, recent: 17, since: "2024-03-14" } },
+    { ...RULES, confidence: { ...RULES.confidence, depth: DEPTH } }).tiles?.data;
+  t("the data tile uses the five level scale", fiveTile?.of === 5 && fiveTile.bars === 5 && !/spanCuts|priceCuts/.test(JSON.stringify(fiveTile)));
   return fail;
 }

@@ -106,7 +106,8 @@ function lagSentence(setName, pack, box, singles, supply) {
 }
 
 export function isVintageSet(name) {
-  return /^(base set|jungle|fossil|team rocket|gym heroes|gym challenge|neo )/i.test(String(name || ""));
+  // WOTC era sets only (released before 2003-06-01).
+  return /^(base set|jungle|fossil|team rocket|gym heroes|gym challenge|neo |legendary collection|expedition|aquapolis|skyridge|southern islands|wizards black star)/i.test(String(name || ""));
 }
 
 export function lagFromSets(sets, { asOf, days = 30, supplyBySet = new Map() } = {}) {
