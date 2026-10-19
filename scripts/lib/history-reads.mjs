@@ -169,8 +169,9 @@ export function backToRead(c, asOf, { minAge = 180, band = 0.02, swing = 0.4 } =
     if (Math.abs(p[1] / last[1] - 1) > band) continue;
     const between = pts.slice(i + 1, -1);
     if (!between.length) return null;
-    const hi = between.reduce((m, q) => (q[1] > m[1] ? q : m));
-    const lo = between.reduce((m, q) => (q[1] < m[1] ? q : m));
+    // Latest day at the extreme, the same rule read-facts highLow uses, so the headline and page share one date.
+    const hi = between.reduce((m, q) => (q[1] >= m[1] ? q : m));
+    const lo = between.reduce((m, q) => (q[1] <= m[1] ? q : m));
     const ext = hi[1] >= last[1] * (1 + swing) ? hi : lo[1] <= last[1] / (1 + swing) ? lo : null;
     if (!ext) continue;
     const went = ext === hi ? "reached" : "fell to";

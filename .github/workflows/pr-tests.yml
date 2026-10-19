@@ -28,6 +28,8 @@ jobs:
         run: node scripts/artifact-freshness.mjs
       - name: Full test suite
         run: node scripts/tests/run-tests.mjs
+      - name: Publish gate (report only)
+        run: node scripts/publish-gate.mjs --check > /tmp/gate.log; head -1 /tmp/gate.log
       - name: No schedule in daily-research
         run: |
           if grep -E '^[[:space:]]*schedule:' .github/workflows/daily-research.yml; then

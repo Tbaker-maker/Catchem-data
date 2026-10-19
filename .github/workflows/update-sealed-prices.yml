@@ -359,6 +359,10 @@ jobs:
           SIGNAL_STAMP_READS: "1"
         run: node scripts/stamp-signal-chips.mjs
 
+      - name: Publish gate
+        # Drops single bad reads with a logged reason; fails only on systemic breakage.
+        run: node scripts/publish-gate.mjs
+
       - name: Commit the rebuilt feed
         run: |
           git config user.name "catchem-bot"

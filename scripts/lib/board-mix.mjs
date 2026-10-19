@@ -25,6 +25,7 @@ import { loadHistoryCards, historyReads } from "./history-reads.mjs";
 import { setDeepDives, cardStories, eraComparison, preReleaseContext, sealedGapDeep, marketRoundup, artistSpotlights, pokemonSpotlights, rarityTierReports, anniversaryReads, rotationAftermath, recoveryWatch, steadiest, biggestYear, irLifecycle } from "./deep-reads.mjs";
 import { everyPrinting, sameLabelAcrossSets, chaseLists, slumpWatch } from "./deep-reads-2.mjs";
 import { rarityBandReads, artistBandReads, releaseCycleReads, mixedReads, ripReads, attachListingsFacts, loadRipDoc } from "./rich-reads.mjs";
+import { buildListings } from "./feature-data.mjs";
 import { dropHeldReads, loadHeldIds, unstickFamilies } from "./price-hold-skip.mjs";
 
 export const BOARD_TAG = "v3";
@@ -706,7 +707,10 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
   }
   const releases = await readJson(join(pub, "releases.json"));
   const news = await readJson(join(root, "research/digests/news.json"));
-  const listings = await readJson(join(pub, "listings-counted.json"));
+  // write-feature-data refreshes listings-counted.json after build-feed runs, so the
+  // public file is a night behind here. Build the same doc from tonight's
+  // sealed-prices.json and use whichever is newer.
+  const listings = await freshListings(root, await readJson(join(pub, "listings-counted.json")));
   const rotation = await readJson(join(pub, "rotation-status.json"));
   const catDoc = await readJson(join(root, "data/card-catalogue.json"));
   const catDay = String(catDoc?.ingestedAt || "").slice(0, 10);
@@ -890,4 +894,16 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
   const byKind = {};
   for (const r of mixed) byKind[r.readKind || r.kind] = (byKind[r.readKind || r.kind] || 0) + 1;
   return { on, history: hist.counts, price: mixed.filter(isPriceRead).length, fresh: mixed.length - mixed.filter(isPriceRead).length, byKind, cardRisers: Object.keys(card.risers).length, sealedRisers: Object.keys(sealed.risers).length };
+}
+
+export async function freshListings(root, pubDoc) {
+  try {
+    const sealed = JSON.parse(await readFile(join(root, "data/sealed-prices.json"), "utf8"));
+    const parents = JSON.parse(await readFile(join(root, "data/sealed-products.json"), "utf8"));
+    const asOf = String(sealed?.updatedAt || "").slice(0, 10);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(asOf) || (pubDoc?.asOf && pubDoc.asOf > asOf)) return pubDoc;
+    const built = buildListings(sealed.products || [], parents);
+    if (!built.products?.length) return pubDoc;
+    return { asOf, source: "data/sealed-prices.json", parentsFile: "data/sealed-products.json", skippedParents: built.skipped, products: built.products };
+  } catch { return pubDoc; }
 }

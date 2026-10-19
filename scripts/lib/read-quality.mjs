@@ -305,6 +305,19 @@ export function turnedReads({ series, asOf, names, dailyFiles }) {
   return hits.slice(0, 1).map(({ _abs, ...row }) => row);
 }
 
+// The whole week's move came from one price step that is already 2+ days old
+// and the price has been flat since. That read already ran; do not repeat it.
+export function staleOneStep(days, start, asOf) {
+  let prev = null, steps = 0, stepDay = "";
+  for (let d = start; d <= asOf; d = shiftDay(d, 1)) {
+    const v = Number(days.get(d));
+    if (!(v > 0)) continue;
+    if (prev != null && centsOf(v) !== centsOf(prev)) { steps += 1; stepDay = d; }
+    prev = v;
+  }
+  return steps === 1 && stepDay < shiftDay(asOf, -1);
+}
+
 export function sealedWeekReads({ products, series, asOf, dailyFiles }) {
   const list = Array.isArray(products) ? products : (products?.products || []);
   if (!series || !/^\d{4}-\d{2}-\d{2}$/.test(String(asOf || ""))) return [];
@@ -323,6 +336,7 @@ export function sealedWeekReads({ products, series, asOf, dailyFiles }) {
     const moved = centsOf(to) - centsOf(from);
     const pct = Math.round(((to - from) / from) * 1000) / 10;
     if (Math.abs(moved) < SEALED_MIN_CENTS || Math.abs(pct) < 8 || Math.abs(pct) >= MOVER_MAX_PCT) continue;
+    if (staleOneStep(days, start, asOf)) continue;
     const dir = moved >= 0 ? "Up" : "Down";
     const name = pretty(product.name || "");
     const headline = `${name}. TCGplayer market: ${tcgAmount(to, money)} (${asOf}), from ${tcgAmount(from, money)} (${start}). ${dir} ${tcgAmount(Math.abs(moved) / 100, money)}.`;
