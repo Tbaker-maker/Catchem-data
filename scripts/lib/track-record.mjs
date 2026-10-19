@@ -9,7 +9,11 @@ import { cleanDoc, VISIBLE_FIELDS } from "./copy-rules.mjs";
 const LABEL_BAN = /Looks like a buy|Wait for a dip|Avoid for now|Looks stretched/;
 
 export const TAKE_CODES = ["up", "dip", "watch", "avoid", "stretched"];
-const SCORED_CODES = new Set(["up", "dip", "avoid", "stretched"]);
+// Fact reads carry no take. Their type comes from the direction the read itself
+// states (its own change, direction, move chip or chart), scored as "did the
+// move keep going". A read with no stated direction is a fact and is not scored.
+export const DERIVED_CODES = ["move-up", "move-down"];
+const SCORED_CODES = new Set(["up", "dip", "avoid", "stretched", ...DERIVED_CODES]);
 
 export { HORIZONS, SCORE_MIN };
 
@@ -27,8 +31,30 @@ export function takeOf(read) {
   return TAKE_CODES.includes(code) ? code : "";
 }
 
+export function directionOf(read) {
+  const c = read?.changePct;
+  if (typeof c === "number" && Number.isFinite(c) && c !== 0) return c > 0 ? "up" : "down";
+  if (read?.direction === "up" || read?.direction === "down") return read.direction;
+  const mv = (Array.isArray(read?.signals) ? read.signals : []).find((x) => x?.kind === "move" && (x.dir === "up" || x.dir === "down"));
+  if (mv) return mv.dir;
+  const pts = read?.chart?.points;
+  if (Array.isArray(pts) && pts.length >= 2) {
+    const a = Number(pts[0]?.[1]), b = Number(pts[pts.length - 1]?.[1]);
+    if (a > 0 && b > 0 && a !== b) return b > a ? "up" : "down";
+  }
+  return "";
+}
+
+export function typeOf(read) {
+  const code = String(read?.take || "");
+  if (TAKE_CODES.includes(code) || DERIVED_CODES.includes(code) || code === "fact") return code;
+  const dir = directionOf(read);
+  return dir === "up" ? "move-up" : dir === "down" ? "move-down" : "fact";
+}
+
 function hitOf(take, from, to) {
-  if (take === "up") return to > from;
+  if (take === "up" || take === "move-up") return to > from;
+  if (take === "move-down") return to < from;
   if (take === "dip" || take === "avoid" || take === "stretched") return to < from;
   return null;
 }
@@ -51,7 +77,7 @@ function assertClean(doc, visible = TRACK_VISIBLE) {
 export function scoreRead(read, later = {}, today, shipFromFile = null) {
   const shipped = String(read?.asOf || "").slice(0, 10);
   const price = Number(shipFromFile?.market);
-  const take = takeOf(read);
+  const take = typeOf(read);
   const age = dayGap(shipped, today);
   const base = {
     id: String(read?.id || ""),
@@ -68,6 +94,7 @@ export function scoreRead(read, later = {}, today, shipFromFile = null) {
     return { ...base, status: "no-score", note: "no score" };
   }
   if (take === "watch") return { ...base, status: "no-score", note: "watch is not scored" };
+  if (take === "fact") return { ...base, status: "no-score", note: "a fact with no stated direction is not scored" };
   if (!SCORED_CODES.has(take)) return { ...base, status: "no-score", note: "no score" };
   if (!(price > 0)) return { ...base, status: "no-score", note: "no score" };
   if (age < HORIZONS[0]) return { ...base, status: "too-early", note: "too early" };
@@ -91,11 +118,25 @@ export function scoreRead(read, later = {}, today, shipFromFile = null) {
   };
 }
 
-export function buildTrackRecord(reads, laterByProduct = {}, today, shipByProduct = {}) {
-  const rows = (reads || []).map((read) => {
+// Rows from earlier nights that left the board, as read-like objects. Their
+// stored ship price is used when that day's file price is not on hand.
+export function priorReads(prior, reads) {
+  const live = new Set((reads || []).map((r) => String(r?.id || "")));
+  const out = [];
+  for (const row of prior?.rows || []) {
+    const id = String(row?.id || "");
+    if (!id || live.has(id) || !row.shipped) continue;
+    out.push({ id, sku: String(row.productId || ""), name: String(row.name || ""), asOf: row.shipped, take: row.take || "", _ship: row.price > 0 ? { market: row.price, source: row.shipSource || "" } : null });
+  }
+  return out;
+}
+
+export function buildTrackRecord(reads, laterByProduct = {}, today, shipByProduct = {}, prior = null) {
+  const all = [...(reads || []), ...priorReads(prior, reads)];
+  const rows = all.map((read) => {
     const sku = String(read?.sku || "");
     const day = String(read?.asOf || "").slice(0, 10);
-    return scoreRead(read, laterByProduct[sku] || {}, today, shipByProduct[sku]?.[day] || null);
+    return scoreRead(read, laterByProduct[sku] || {}, today, shipByProduct[sku]?.[day] || read?._ship || null);
   });
   rows.sort((a, b) => String(b.shipped).localeCompare(String(a.shipped)) || String(b.id).localeCompare(String(a.id)));
   const byType = {};
@@ -133,7 +174,7 @@ export function buildTrackRecord(reads, laterByProduct = {}, today, shipByProduc
   return assertClean({
     public: false,
     asOf: today,
-    rule: "A take is stored with its ship date. The ship price is the TCGplayer market on that date from the daily price file. It is not taken from a headline. Days 14, 28, and 56 use that exact day's market. A missing day is no score. Under 14 days is too early. watch is not scored. up is scored when the later market is higher. dip, avoid, and stretched are scored when the later market is lower. A percent is stored only after 20 scored reads of that code.",
+    rule: "A take is stored with its ship date. The ship price is the TCGplayer market on that date from the daily price file. It is not taken from a headline. Days 14, 28, and 56 use that exact day's market. A missing day is no score. Under 14 days is too early. watch is not scored. up is scored when the later market is higher. dip, avoid, and stretched are scored when the later market is lower. A read with no take is typed from the direction it states: move-up is scored when the later market is higher, move-down when it is lower; a fact with no stated direction is not scored. Rows stay on file after the read leaves the board. A percent is stored only after 20 scored reads of that code.",
     oldest: dates[0] || "",
     newest: dates[dates.length - 1] || "",
     count: rows.length,
