@@ -40,6 +40,7 @@ export function isSealedRead(read) {
 }
 
 import { runStage, sellerTag } from "./seller-stage.mjs";
+import { isVintageRelease } from "./price-trust.mjs";
 
 function num(v) {
   const n = Number(v);
@@ -362,12 +363,14 @@ function rotationChip(ctx) {
   return { kind: "rotation", text: `Rotates in ${n} mo`, label: `Rotates in ${n} months` };
 }
 
+// Vintage means a WOTC era set, released before 2003-06-01, and nothing else.
+// The private rule only switches the chip on; it never moves the line.
 function eraChip(ctx, rules) {
-  const cut = String(rules?.era?.vintageBefore || "");
+  if (!rules?.era) return null;
   const release = String(ctx?.release || "").slice(0, 10);
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(cut) || !/^\d{4}-\d{2}-\d{2}$/.test(release)) return null;
-  const tag = release < cut ? "Vintage" : "Modern";
-  return { kind: "era", tag, label: tag };
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(release)) return null;
+  const tag = isVintageRelease(release) ? "Vintage" : "Modern";
+  return { kind: "era", tag, label: tag === "Vintage" ? "Vintage, a WOTC era set" : "Modern" };
 }
 
 function confidenceChip(points, rules) {
@@ -424,7 +427,8 @@ function blurbFor(chip, asOf) {
   if (chip.kind === "momentum") return `Momentum is ${chip.word}.`;
   if (chip.kind === "rotation") return `Rotates in ${String(chip.text || "").replace(" mo", " months")}.`;
   if (chip.kind === "art") return `Art type is ${artName(chip.badge)}.`;
-  if (chip.kind === "era") return `Era tag is ${chip.tag}.`;
+  // An era tag is not a read; it never becomes the blurb.
+  if (chip.kind === "era") return "";
   if (chip.kind === "confidence") {
     const word = chip.bars === 1 ? "One" : chip.bars === 2 ? "Two" : "Three";
     return `${word} data bars are on file.`;
@@ -510,6 +514,22 @@ export function listingsTile(ctx = {}, rules = {}) {
   return out;
 }
 
+// Five data bars from time on file and how many daily prices fill it.
+// The level is the lower of the two, so a long but sparse history does not
+// look as deep as a full one. Cuts are private.
+export function depthBars(counts, asOf, spec) {
+  const spanCuts = Array.isArray(spec?.spanCuts) ? spec.spanCuts.map(num).filter(Number.isFinite) : [];
+  const priceCuts = Array.isArray(spec?.priceCuts) ? spec.priceCuts.map(num).filter(Number.isFinite) : [];
+  if (spanCuts.length !== 4 || priceCuts.length !== 4) return null;
+  const prices = num(counts?.prices);
+  const since = String(counts?.since || "");
+  if (!(prices > 0) || !/^\d{4}-\d{2}-\d{2}$/.test(since)) return null;
+  const span = dayNum(asOf) - dayNum(since);
+  if (!Number.isFinite(span) || span < 0) return null;
+  const level = (v, cuts) => 1 + cuts.filter((c) => v >= c).length;
+  return { bars: Math.min(level(span, spanCuts), level(prices, priceCuts)), of: 5 };
+}
+
 function spanWords(since, through) {
   const days = dayNum(through) - dayNum(since);
   if (!(days > 0)) return "";
@@ -526,10 +546,11 @@ export function tilesFor(read, all, ctx = {}, rules = {}) {
   const src = sourceName(read, "TCGplayer market");
   const conf = all.find((chip) => chip.kind === "confidence");
   const counts = ctx.counts || null;
-  if (conf && counts && counts.prices > 0 && /^\d{4}-\d{2}-\d{2}$/.test(String(counts.since || ""))) {
+  const depth = depthBars(counts, asOf, rules?.confidence?.depth);
+  if ((depth || conf) && counts && counts.prices > 0 && /^\d{4}-\d{2}-\d{2}$/.test(String(counts.since || ""))) {
     tiles.data = {
-      bars: conf.bars,
-      of: conf.of || 3,
+      bars: depth ? depth.bars : conf.bars,
+      of: depth ? depth.of : (conf.of || 3),
       prices: counts.prices,
       recent: counts.recent || 0,
       since: counts.since,
