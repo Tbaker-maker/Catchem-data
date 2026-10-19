@@ -43,8 +43,15 @@ export async function run() {
 
   const watched = scoreRead({ ...read, take: "watch" }, { "2026-10-15": 1, "2026-10-29": 1, "2026-11-26": 1 }, "2026-12-01", ship);
   t("watch is not scored", watched.status === "no-score" && watched.note === "watch is not scored" && watched.marks == null);
-  const noCode = scoreRead({ ...read, take: "" }, { "2026-10-15": 8 }, "2026-12-01", ship);
-  t("a read with no take code is not scored", noCode.status === "no-score");
+  const noCode = scoreRead({ ...read, take: "", direction: undefined, changePct: undefined }, { "2026-10-15": 8 }, "2026-12-01", ship);
+  t("a read with no take and no stated direction is a fact, not scored", noCode.status === "no-score" && noCode.type === "fact");
+  const typed = scoreRead({ ...read, take: "", direction: undefined, changePct: -11.1 }, { "2026-10-15": 8 }, "2026-12-01", ship);
+  t("a fact read that states a fall is typed move-down and scored", typed.type === "move-down" && typed.marks["14"].sameDirection === true);
+  const chip = scoreRead({ id: "c", sku: "tcgcsv-3", asOf: "2026-10-01", signals: [{ kind: "move", dir: "up" }] }, { "2026-10-15": 12 }, "2026-12-01", ship);
+  t("a move chip types the read move-up", chip.type === "move-up" && chip.marks["14"].sameDirection === true);
+  const kept = buildTrackRecord([], { "tcgcsv-1": { "2026-10-15": 8 } }, "2026-12-01", {}, { rows: [{ id: "old", productId: "tcgcsv-1", name: "Gone", shipped: "2026-10-01", take: "move-down", price: 10, shipSource: "TCGplayer market price" }] });
+  t("a row that left the board is still scored from its stored ship price", kept.count === 1 && kept.rows[0].status === "scored" && kept.rows[0].marks["14"].sameDirection === true);
+  t("tonight's read wins over the stored row with the same id", buildTrackRecord([read], {}, "2026-10-02", { "tcgcsv-1": { "2026-10-01": ship } }, { rows: [{ id: "r1", productId: "tcgcsv-1", shipped: "2026-09-01", take: "up", price: 3 }] }).count === 1);
   const up = scoreRead({ ...read, take: "up" }, { "2026-10-15": 12 }, "2026-10-20", ship);
   const avoid = scoreRead({ ...read, take: "avoid" }, { "2026-10-15": 8 }, "2026-10-20", ship);
   const stretched = scoreRead({ ...read, take: "stretched" }, { "2026-10-15": 11 }, "2026-10-20", ship);

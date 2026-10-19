@@ -6,7 +6,8 @@ import { tmpdir, homedir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { spawn } from "node:child_process";
-import { buildTrackRecord, publicTrackPage } from "./lib/track-record.mjs";
+import { buildTrackRecord, publicTrackPage, priorReads } from "./lib/track-record.mjs";
+import { openPrivate } from "./lib/private-store.mjs";
 import { shipPriceMap } from "./lib/second-library.mjs";
 import { buildPremiumProof } from "./lib/premium-proof.mjs";
 
@@ -63,11 +64,25 @@ export async function pushTrackRecord({ token, text, env = process.env, git = ru
   }
 }
 
+// Last night's private rows, so a read that left the board keeps being scored.
+async function loadPrior(root, token) {
+  try {
+    const local = JSON.parse(await readFile(join(root, PRIVATE_REL), "utf8"));
+    if (local?.rows?.length) return local;
+  } catch { /* not on this machine */ }
+  if (!token) return null;
+  try {
+    const store = await openPrivate({ root, token });
+    try { return JSON.parse(await readFile(join(store.dir, "track-record.json"), "utf8")); } catch { return null; } finally { await store.close([], "track record read only"); }
+  } catch { return null; }
+}
+
 export async function writeTrackRecord(root = ROOT, token = process.env.PRIVATE_DATA_TOKEN || "") {
   const reads = JSON.parse(await readFile(join(root, "research/assets/public/reads.json"), "utf8"));
   const today = String(reads.asOf || "").slice(0, 10);
-  const prices = await shipPriceMap(root, reads.reads || []);
-  const doc = buildTrackRecord(reads.reads || [], prices.later, today, prices.ship);
+  const prior = await loadPrior(root, token);
+  const prices = await shipPriceMap(root, [...(reads.reads || []), ...priorReads(prior, reads.reads || [])]);
+  const doc = buildTrackRecord(reads.reads || [], prices.later, today, prices.ship, prior);
   let receipts = { asOf: today, rows: [] };
   try { receipts = JSON.parse(await readFile(join(root, "research/assets/public/receipts.json"), "utf8")); } catch { /* thin page */ }
   const stub = publicTrackPage(receipts, today);
