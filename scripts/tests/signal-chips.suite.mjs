@@ -68,7 +68,7 @@ export async function run() {
   for (const chip of full.signals) t(`label clean ${chip.kind}`, isClean(chip.label) && !/[\u2013\u2014]/.test(chip.label));
 
   const checked = readSignals({ ...read, id: "fake-check", priceStatus: "checking" }, ctx, wide);
-  t("a price being checked is a grey dash and not a percent", checked.signals[0]?.kind === "move" && checked.signals[0].dir === "dash" && checked.signals[0].text === "" && !checked.signals.some((chip) => chip.kind === "range" || chip.kind === "momentum"));
+  t("a price being checked is a grey dash and not a percent", checked.signals.some((chip) => chip.kind === "move" && chip.dir === "dash" && chip.text === "") && !checked.signals.some((chip) => chip.kind === "range" || chip.kind === "momentum"));
   t("the checked blurb passes", checked.blurb === "Price being checked." && isClean(checked.blurb));
 
   const sealed = readSignals({
@@ -113,7 +113,7 @@ export async function run() {
   for (const chip of dotted.signals) t(`dotted label clean ${chip.kind}`, isClean(chip.label) && isClean(dotted.blurb) && !/[\u2013\u2014]/.test(chip.label + dotted.blurb));
 
   const dash = readSignals({ ...read, id: "fake-dash", priceStatus: "checking" }, ctx, { ...wide, strength });
-  t("a grey dash has no dots", dash.signals[0]?.dir === "dash" && dash.signals[0].strength == null && !String(dash.signals[0].text || "").includes("%"));
+  t("a grey dash has no dots", dash.signals.some((chip) => chip.kind === "move" && chip.dir === "dash" && chip.strength == null && !String(chip.text || "").includes("%")));
 
   const sealedDots = readSignals({
     id: "fake-sealed-dots",
@@ -136,6 +136,52 @@ export async function run() {
   t("a proven list that matches nothing hides the score", unmatched.strength == null && unmatched.signals.every((chip) => chip.strength >= 1));
 
   const src = readFileSync(new URL("../lib/signal-chips.mjs", import.meta.url), "utf8");
-  t("the public module has no baked cutoff numbers", !/flatAbs\s*:\s*\d/.test(src) && !/cuts\s*:\s*\[/.test(src));
+  t("the public module has no baked cutoff numbers", !/flatAbs\s*:\s*\d/.test(src) && !/cuts\s*:\s*\[/.test(src) && !/fewSellersMax\s*:\s*\d/.test(src) && !/manySellersMin\s*:\s*\d/.test(src));
+
+  const leadRules = {
+    ...wide,
+    supply: { minAbsPct: 5, windowDays: 7, slackDays: 1, paceMultiple: 1, flatAbs: 3, stageDays: 3, fewSellersMax: 3, fewShareMin: 0.5, manySellersMin: 8 },
+  };
+  const series = [];
+  for (let i = 0; i < 8; i++) {
+    const iso = new Date(Date.parse("2026-10-10T00:00:00Z") + i * 86400000).toISOString().slice(0, 10);
+    series.push({ date: iso, n: 100 - i * 3 });
+  }
+  const lead = readSignals({
+    id: "fake-supply",
+    name: "Example Box",
+    kind: "sealed",
+    href: "/p/example-box",
+    asOf: "2026-10-17",
+  }, {
+    asOf: "2026-10-17",
+    listings: {
+      n: 79,
+      prev: 100,
+      date: "2026-10-17",
+      series,
+      sellers: 12,
+      topShare: 0.2,
+      sellerNames: ["alice-seller", "bob-seller"],
+      username: "alice-seller",
+    },
+    points: points(),
+  }, leadRules);
+  const leadChip = lead.signals.find((chip) => chip.kind === "listings");
+  const leadText = JSON.stringify(lead);
+  t("the supply chip leads and names the window", lead.signals[0]?.kind === "listings" && /Listings -\d+% \d+d/.test(leadChip?.text || "") && leadChip.text.includes("Draining") && leadChip.text.includes("Many sellers"));
+  t("seller names never reach the public chip", !leadText.includes("alice-seller") && !leadText.includes("bob-seller") && !leadText.includes("username") && !leadText.includes("sellerNames"));
+  t("the supply blurb stays clean", isClean(lead.blurb) && !/[\u2013\u2014]/.test(lead.blurb) && !/\bsold\b|\bsales\b|\bsupply\b/i.test(lead.blurb));
+  const few = readSignals({
+    id: "fake-few",
+    name: "Example Box",
+    kind: "sealed",
+    href: "/p/example-box",
+    asOf: "2026-10-17",
+  }, {
+    asOf: "2026-10-17",
+    listings: { n: 70, prev: 100, date: "2026-10-17", sellers: 2, topShare: 0.8 },
+  }, leadRules);
+  t("a concentrated count says few sellers", (few.signals.find((chip) => chip.kind === "listings")?.text || "").includes("Few sellers"));
   return fail;
 }

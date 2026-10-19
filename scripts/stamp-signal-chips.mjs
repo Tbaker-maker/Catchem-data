@@ -134,15 +134,35 @@ export async function stampSignalChips({ root = ROOT, rules, writeReads = false 
   const holdDoc = await readJson(join(root, "research/assets/public/price-hold.json"));
   const holds = new Set(Object.keys(holdDoc?.ids || {}));
   const listed = await readJson(join(root, "research/assets/public/listings-counted.json"));
+  const sealed = await readJson(join(root, "data/sealed-prices.json"));
   const byId = new Map();
   const byName = new Map();
+  const put = (id, name, item) => {
+    if (id) byId.set(id, item);
+    const key = norm(name);
+    if (key) byName.set(key, item);
+  };
   for (const row of listed?.products || []) {
     const box = row?.listingsCounted || {};
     const prev = box.prev || {};
-    const item = { n: box.n, prev: prev.n, date: box.date || listed.asOf || "" };
-    if (row.id) byId.set(row.id, item);
-    const name = norm(row.name);
-    if (name) byName.set(name, item);
+    put(row.id, row.name, { n: box.n, prev: prev.n, prevDate: prev.date || "", date: box.date || listed.asOf || "" });
+  }
+  for (const product of sealed?.products || []) {
+    const series = [];
+    for (const point of product?.priceHistory || []) {
+      if (!point || !/^\d{4}-\d{2}-\d{2}$/.test(String(point.date || "").slice(0, 10))) continue;
+      if (!Number.isInteger(point.filteredTotal) || point.filteredTotal < 0) continue;
+      series.push({ date: String(point.date).slice(0, 10), n: point.filteredTotal });
+    }
+    if (!series.length) continue;
+    const last = series[series.length - 1];
+    const prev = series.length > 1 ? series[series.length - 2] : null;
+    const night = (product.priceHistory || [])[product.priceHistory.length - 1] || {};
+    const item = byId.get(product.id) || { n: last.n, prev: prev ? prev.n : null, prevDate: prev ? prev.date : "", date: last.date };
+    item.series = series;
+    if (Number.isInteger(night.sellers) && night.sellers >= 0) item.sellers = night.sellers;
+    if (Number.isFinite(Number(night.topShare)) && Number(night.topShare) >= 0 && Number(night.topShare) <= 1) item.topShare = Number(night.topShare);
+    put(product.id, product.name || "", item);
   }
   const setsDoc = await readJson(join(root, "research/assets/public/sets.json"));
   const sets = Array.isArray(setsDoc?.sets) ? setsDoc.sets : [];
@@ -154,6 +174,7 @@ export async function stampSignalChips({ root = ROOT, rules, writeReads = false 
   const hist = missing.size ? await indexPacked(join(root, "research/assets/public/hist-long"), missing, parseHist) : new Map();
 
   const byRead = {};
+  const bySku = {};
   let count = 0;
   for (const read of reads) {
     if (!read || !read.id) continue;
@@ -182,9 +203,20 @@ export async function stampSignalChips({ root = ROOT, rules, writeReads = false 
       delete read.blurb;
       continue;
     }
-    const entry = { signals: built.signals, blurb: built.blurb || "" };
+    const entry = { name: read.name || "", sku, signals: built.signals, blurb: built.blurb || "" };
     if (built.strength) entry.strength = built.strength;
     byRead[read.id] = entry;
+    if (sku) {
+      const prev = bySku[sku];
+      const lead = entry.signals.some((chip) => chip.kind === "listings");
+      if (!prev || (lead && !(prev.signals || []).some((chip) => chip.kind === "listings"))) bySku[sku] = entry;
+    }
+    const hrefId = String(read.href || "").split("/").pop();
+    if (hrefId && hrefId !== sku) {
+      const prev = bySku[hrefId];
+      const lead = entry.signals.some((chip) => chip.kind === "listings");
+      if (!prev || (lead && !(prev.signals || []).some((chip) => chip.kind === "listings"))) bySku[hrefId] = entry;
+    }
     read.signals = built.signals;
     if (built.blurb) read.blurb = built.blurb;
     else delete read.blurb;
@@ -210,6 +242,7 @@ export async function stampSignalChips({ root = ROOT, rules, writeReads = false 
     source: "TCGplayer market, eBay listings counted",
     count,
     byId: byRead,
+    bySku,
     preview: samples[0] || null,
     samples,
   };

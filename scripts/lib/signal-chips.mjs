@@ -4,7 +4,7 @@
 import { flagLine, isClean } from "./copy-rules.mjs";
 
 export const CHIP_ORDER = Object.freeze([
-  "move", "supply", "gone", "range", "momentum", "rotation", "art", "era", "confidence",
+  "supply", "move", "gone", "range", "momentum", "rotation", "art", "era", "confidence",
 ]);
 
 const ART_BADGE = Object.freeze({
@@ -150,24 +150,147 @@ function moveChip(points, asOf, rules, checked) {
   };
 }
 
+function listingSeries(row) {
+  const out = [];
+  const seen = new Set();
+  const add = (date, n) => {
+    const iso = String(date || "").slice(0, 10);
+    const count = num(n);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(iso) || !(count >= 0) || seen.has(iso)) return;
+    seen.add(iso);
+    out.push({ date: iso, n: count });
+  };
+  for (const point of row?.series || []) add(point?.date || point?.[0], point?.n ?? point?.[1]);
+  add(row?.prevDate, row?.prev);
+  add(row?.date, row?.n);
+  out.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
+  return out;
+}
+
+function nearestCount(series, iso, slack) {
+  const want = dayNum(iso);
+  if (!Number.isFinite(want)) return null;
+  let best = null;
+  let gap = Infinity;
+  for (const row of series) {
+    const g = Math.abs(dayNum(row.date) - want);
+    if (g < gap) { gap = g; best = row; }
+  }
+  if (!best || gap > slack) return null;
+  return best;
+}
+
+function countWindow(series, asOf, days, slack) {
+  const now = nearestCount(series, asOf, slack);
+  const then = nearestCount(series, addDays(asOf, -days), slack);
+  if (!now || !then || now.date === then.date || !(then.n > 0)) return null;
+  const span = dayNum(now.date) - dayNum(then.date);
+  if (!(span > 0)) return null;
+  const pct = ((now.n - then.n) / then.n) * 100;
+  if (!Number.isFinite(pct)) return null;
+  return { pct, days: span };
+}
+
+function priceWindow(points, asOf, days, slack) {
+  const now = nearest(points, asOf, slack);
+  const then = nearest(points, addDays(asOf, -days), slack);
+  if (!now || !then || now[0] === then[0] || !(then[1] > 0)) return null;
+  const pct = ((now[1] - then[1]) / then[1]) * 100;
+  return Number.isFinite(pct) ? { pct } : null;
+}
+
+function paceWord(series, hit, spec, asOf) {
+  const dir = hit.pct < 0 ? "Draining" : "Stacking";
+  const multiple = num(spec?.paceMultiple);
+  const windowDays = num(spec?.windowDays) > 0 ? num(spec.windowDays) : hit.days;
+  const slack = Number.isFinite(num(spec?.slackDays)) ? num(spec.slackDays) : 0;
+  if (!(multiple > 0) || !(windowDays > 0)) return dir;
+  const samples = [];
+  let cursor = addDays(asOf, -windowDays);
+  for (let i = 0; i < 6; i++) {
+    const older = countWindow(series, cursor, windowDays, slack);
+    if (!older) break;
+    samples.push(Math.abs(older.pct));
+    cursor = addDays(cursor, -windowDays);
+  }
+  if (!samples.length) return dir;
+  const sorted = samples.slice().sort((a, b) => a - b);
+  const mid = sorted[Math.floor(sorted.length / 2)];
+  if (Math.abs(hit.pct) + 0.0001 < mid * multiple) return "quiet";
+  return dir;
+}
+
+function sellerWord(row, spec) {
+  const n = num(row?.sellers);
+  const share = num(row?.topShare);
+  const fewMax = num(spec?.fewSellersMax);
+  const fewShare = num(spec?.fewShareMin);
+  const manyMin = num(spec?.manySellersMin);
+  if (!(n >= 0) || !(fewMax >= 0) || !(manyMin >= 0)) return "";
+  if (n <= fewMax || (Number.isFinite(fewShare) && Number.isFinite(share) && share >= fewShare)) return "Few sellers";
+  if (n >= manyMin) return "Many sellers";
+  return "";
+}
+
+function stageWord(series, points, asOf, spec) {
+  const days = num(spec?.stageDays) > 0 ? num(spec.stageDays) : 0;
+  const slack = Number.isFinite(num(spec?.slackDays)) ? num(spec.slackDays) : 0;
+  const flat = num(spec?.flatAbs);
+  if (!(days > 0) || !(flat >= 0)) return "";
+  const recent = countWindow(series, asOf, days, slack);
+  const prior = countWindow(series, addDays(asOf, -days), days, slack);
+  if (!recent || !prior) return "";
+  const priceRecent = priceWindow(points, asOf, days, slack);
+  const r = recent.pct;
+  const p = prior.pct;
+  if (Math.abs(r) < flat && (!priceRecent || Math.abs(priceRecent.pct) < flat)) return "Stalled";
+  if (((r < 0 && p > 0) || (r > 0 && p < 0)) && Math.abs(r) >= flat && Math.abs(p) >= flat) return "Reversing";
+  const faster = Math.abs(r) > Math.abs(p);
+  const slower = Math.abs(r) < Math.abs(p);
+  if (r < 0 && faster && (!priceRecent || priceRecent.pct >= 0)) return "Building";
+  if (r < 0 && slower) return "Slowing";
+  if (r > 0 && faster) return "Building";
+  if (r > 0 && slower) return "Slowing";
+  return "";
+}
+
 function supplyChip(ctx, rules) {
-  const min = num(rules?.supply?.minAbsPct);
+  const spec = rules?.supply;
+  const min = num(spec?.minAbsPct);
   const row = ctx?.listings;
   if (!(min >= 0) || !row) return null;
-  const n = num(row.n);
-  const prev = num(row.prev);
-  if (!(n >= 0) || !(prev > 0)) return null;
-  const pct = ((n - prev) / prev) * 100;
-  if (Math.abs(pct) < min) return null;
-  const dir = pct > 0 ? "up" : "down";
-  const shown = roundPct(Math.abs(pct));
-  const word = dir === "up" ? "up" : "down";
-  return {
-    kind: "supply",
-    dir,
-    text: `${shown}%`,
-    label: `Listings counted ${word} ${shown} percent`,
-  };
+  const asOf = String(row.date || ctx.asOf || "").slice(0, 10);
+  const series = listingSeries(row);
+  const windowDays = num(spec?.windowDays) > 0 ? num(spec.windowDays) : 0;
+  const slack = Number.isFinite(num(spec?.slackDays)) ? num(spec.slackDays) : 0;
+  let hit = windowDays > 0 ? countWindow(series, asOf, windowDays, slack) : null;
+  if (!hit) {
+    const n = num(row.n);
+    const prev = num(row.prev);
+    if (!(prev > 0) || !(n >= 0)) return null;
+    hit = { pct: ((n - prev) / prev) * 100, days: 0 };
+  }
+  if (!Number.isFinite(hit.pct) || Math.abs(hit.pct) < min) return null;
+  const pace = paceWord(series, hit, spec, asOf);
+  if (pace === "quiet") return null;
+  const sellers = sellerWord(row, spec);
+  const stage = stageWord(series, cleanPoints(ctx.points), asOf, spec);
+  const shown = roundPct(Math.abs(hit.pct));
+  const sign = hit.pct < 0 ? "-" : "+";
+  const dayBit = hit.days > 0 ? ` ${hit.days}d` : "";
+  const parts = [`Listings ${sign}${shown}%${dayBit}`];
+  if (pace === "Draining" || pace === "Stacking") parts.push(pace);
+  if (sellers) parts.push(sellers);
+  if (stage) parts.push(stage);
+  const text = parts.join(" · ");
+  const dir = hit.pct < 0 ? "down" : "up";
+  const way = dir === "down" ? "down" : "up";
+  const over = hit.days > 0 ? ` over ${hit.days} days` : "";
+  let label = `Listings counted ${way} ${shown} percent${over}`;
+  if (pace === "Draining" || pace === "Stacking") label += `. ${pace}`;
+  if (sellers) label += `. ${sellers}`;
+  if (stage) label += `. ${stage}`;
+  return { kind: "supply", dir, text, label };
 }
 
 function goneChip(ctx, rules) {
@@ -183,7 +306,7 @@ function goneChip(ctx, rules) {
   if (rate < cuts[0]) dots = 1;
   else if (rate < cuts[1]) dots = 2;
   const word = GONE_WORD[dots];
-  return { kind: "gone", dots, rate, label: `Listings gone, ${word}` };
+  return { kind: "gone", dots, word, rate, label: `Listings gone, ${word}` };
 }
 
 function rangeChip(points, asOf, rules) {
@@ -280,8 +403,11 @@ function blurbFor(chip, asOf) {
     return `TCGplayer market is ${word} ${pct} over ${days} days${dated}.`;
   }
   if (chip.kind === "supply" || chip.kind === "listings") {
+    const matched = String(chip.text || "").match(/(\d+)%(?:\s+(\d+)d)?/);
+    const pct = matched ? matched[1] : String(chip.text || "").replace("%", "");
+    const days = matched && matched[2] ? ` over ${matched[2]} days` : "";
     const word = chip.dir === "up" ? "up" : "down";
-    return `Listings counted are ${word} ${chip.text}${dated}.`;
+    return `Listings counted are ${word} ${pct}%${days}${dated}.`;
   }
   if (chip.kind === "gone") return `Listings gone are ${GONE_WORD[chip.dots] || "steady"}.`;
   if (chip.kind === "range") return `Today sits in the ${chip.days} day range.`;
@@ -300,7 +426,7 @@ function publish(chip) {
   if (!chip) return null;
   if (chip.kind === "move") return { kind: "move", dir: chip.dir, text: chip.text, label: chip.label };
   if (chip.kind === "supply") return { kind: "listings", dir: chip.dir, text: chip.text, label: chip.label };
-  if (chip.kind === "gone") return { kind: "gone", dots: chip.dots, label: chip.label };
+  if (chip.kind === "gone") return { kind: "gone", dots: chip.dots, word: chip.word || GONE_WORD[chip.dots] || "steady", label: chip.label };
   if (chip.kind === "range") return { kind: "range", pos: chip.pos, days: chip.days, label: chip.label };
   if (chip.kind === "momentum") return { kind: "momentum", word: chip.word, label: chip.label };
   if (chip.kind === "rotation") return { kind: "rotation", text: chip.text, label: chip.label };
@@ -440,7 +566,7 @@ export function readSignals(read, ctx = {}, rules = {}) {
     return withStrength(chip, internal, cohort, rules);
   });
   if (!signals.length) return { signals: [], blurb: "" };
-  const lead = signals[0];
+  const lead = signals.find((chip) => chip.kind === "move" && chip.dir === "dash") || signals[0];
   let blurb = blurbFor(lead, asOf);
   if (isSealedRead(read) && /\bNM\b|Near Mint|\bcondition\b/i.test(blurb)) blurb = "";
   if (blurb && !isClean(blurb)) {

@@ -155,9 +155,27 @@ export function missingTop(daily, last = {}, now = new Date()) {
   return daily.filter((it) => !last[it.id] || ptDate(last[it.id]) !== today).map((it) => it.id);
 }
 
-export function summarize(kind, total, titles) {
+export function sellerSpread(items) {
+  const counts = new Map();
+  let seen = 0;
+  for (const item of items || []) {
+    const name = String(item?.seller?.username || "").trim().toLowerCase();
+    if (!name) continue;
+    seen += 1;
+    counts.set(name, (counts.get(name) || 0) + 1);
+  }
+  if (!seen) return null;
+  let top = 0;
+  for (const n of counts.values()) if (n > top) top = n;
+  return { sellers: counts.size, topShare: Math.round((top / seen) * 100) / 100 };
+}
+
+export function summarize(kind, total, titles, items) {
   const seen = titles.length;
   const kept = titles.filter((t) => keepTitle(kind, t)).length;
   const est = typeof total === "number" && seen ? Math.round(total * (kept / seen)) : null;
-  return { browseTotal: typeof total === "number" ? total : null, sampled: seen, sampleKept: kept, listingsCounted: est };
+  const base = { browseTotal: typeof total === "number" ? total : null, sampled: seen, sampleKept: kept, listingsCounted: est };
+  const spread = sellerSpread(items);
+  if (!spread) return base;
+  return { ...base, sellers: spread.sellers, topShare: spread.topShare };
 }

@@ -19,6 +19,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { recordBuyoutHarvest } from "./buyout-tape.mjs";
 import { filteredTotalForNight } from "./lib/second-library.mjs";
+import { sellerSpread } from "./lib/listing-counts.mjs";
 
 // Node's fetch has NO default timeout: a host that accepts the connection
 // and never answers hangs this script until the CI runner kills the job.
@@ -698,6 +699,11 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
         if (filteredTotal != null) {
           point.filteredTotal = filteredTotal;
           filteredKnown += 1;
+        }
+        const spread = sellerSpread(kept);
+        if (spread) {
+          point.sellers = spread.sellers;
+          point.topShare = spread.topShare;
         }
         if (typeof browseTotal === "number") {
           point.total = browseTotal;

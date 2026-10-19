@@ -61,6 +61,12 @@ export async function run() {
   const s = summarize("single", 200, ["Charizard NM", "PSA 9 Charizard", "Charizard", "Charizard lot"]);
   t("count scales the eBay total by the kept share", s.listingsCounted === 100 && s.sampleKept === 2);
   t("no total means no count", summarize("single", undefined, ["a"]).listingsCounted === null);
+  const spread = summarize("sealed", 40, ["Booster Box", "Booster Box"], [
+    { title: "Booster Box", seller: { username: "alice-seller" } },
+    { title: "Booster Box", seller: { username: "alice-seller" } },
+    { title: "Booster Box", seller: { username: "bob-seller" } },
+  ]);
+  t("seller counts stay counts", spread.sellers === 2 && spread.topShare === 0.67 && !JSON.stringify(spread).includes("alice-seller") && !JSON.stringify(spread).includes("username"));
   // Three-run day under the rolling 24h counter (6 AM, noon, 6 PM PT + 9 PM sealed step).
   {
     const budget = b.budget, sealed = b.sealedStep, safe = b.safe;
