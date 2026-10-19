@@ -1,6 +1,6 @@
 {
- "asOf": "2026-10-18",
- "generatedAt": "2026-10-18T10:05:58.099Z",
+ "asOf": "2026-10-19",
+ "generatedAt": "2026-10-19T10:10:11.695Z",
  "note": "Internal. What changed or broke tonight, for the weekly review. Script only.",
  "types": {
   "NEW_SET": "A TCGCSV set (group) appeared that was not there last night, or a future product in a news calendar is not on the radar.",
@@ -21,35 +21,33 @@
  },
  "summary": {
   "byType": {
-   "PRICE_MOVE": 3,
+   "PRICE_MOVE": 9,
    "NEWS_SOURCE_FAILING": 5,
    "DATA_GAP": 1,
    "ODD_PRICE": 29,
-   "READ_TYPE_EMPTY": 4,
-   "YOUTUBE_DISAGREE": 1,
-   "YOUTUBE_LEAD": 19,
-   "HYPE_EFFECT": 1
+   "READ_TYPE_EMPTY": 7,
+   "YOUTUBE_LEAD": 14
   },
   "bySeverity": {
-   "high": 2,
-   "medium": 24,
-   "low": 37
+   "high": 3,
+   "medium": 23,
+   "low": 39
   }
  },
- "newTonight": 2,
+ "newTonight": 0,
  "flags": [
   {
    "type": "PRICE_MOVE",
    "severity": "high",
-   "key": "move:89167:2026-10-18",
-   "line": "Shining Mewtwo (Neo Destiny): $577.00 (2026-10-17) to $3000.00 (2026-10-18) on TCGplayer market, up 420%.",
+   "key": "move:84149:2026-10-19",
+   "line": "Celebi Star (EX Crystal Guardians): $750.00 (2026-10-18) to $1375.00 (2026-10-19) on TCGplayer market, up 83%.",
    "data": {
-    "id": "tcgcsv-89167",
-    "from": 577,
-    "to": 3000,
-    "fromDay": "2026-10-17",
-    "toDay": "2026-10-18",
-    "pct": 419.9,
+    "id": "tcgcsv-84149",
+    "from": 750,
+    "to": 1375,
+    "fromDay": "2026-10-18",
+    "toDay": "2026-10-19",
+    "pct": 83.3,
     "kind": "single"
    },
    "new": false
@@ -57,15 +55,31 @@
   {
    "type": "PRICE_MOVE",
    "severity": "high",
-   "key": "move:86327:2026-10-18",
-   "line": "Jirachi (EX Deoxys): $253.33 (2026-10-17) to $55.75 (2026-10-18) on TCGplayer market, down 78%.",
+   "key": "move:85278:2026-10-19",
+   "line": "Entei ex (EX Team Magma vs Team Aqua): $233.33 (2026-10-18) to $499.95 (2026-10-19) on TCGplayer market, up 114%.",
+   "data": {
+    "id": "tcgcsv-85278",
+    "from": 233.33,
+    "to": 499.95,
+    "fromDay": "2026-10-18",
+    "toDay": "2026-10-19",
+    "pct": 114.3,
+    "kind": "single"
+   },
+   "new": false
+  },
+  {
+   "type": "PRICE_MOVE",
+   "severity": "high",
+   "key": "move:86327:2026-10-19",
+   "line": "Jirachi (EX Deoxys): $55.75 (2026-10-18) to $253.33 (2026-10-19) on TCGplayer market, up 354%.",
    "data": {
     "id": "tcgcsv-86327",
-    "from": 253.33,
-    "to": 55.75,
-    "fromDay": "2026-10-17",
-    "toDay": "2026-10-18",
-    "pct": -78,
+    "from": 55.75,
+    "to": 253.33,
+    "fromDay": "2026-10-18",
+    "toDay": "2026-10-19",
+    "pct": 354.4,
     "kind": "single"
    },
    "new": false
@@ -73,15 +87,95 @@
   {
    "type": "PRICE_MOVE",
    "severity": "medium",
-   "key": "move:83574:2026-10-18",
-   "line": "Arcanine (H2) (Skyridge): $159.98 (2026-10-17) to $256.65 (2026-10-18) on TCGplayer market, up 60%.",
+   "key": "move:86125:2026-10-19",
+   "line": "Ho-Oh - HGSS01 (HGSS Promos): $46.27 (2026-10-18) to $123.13 (2026-10-19) on TCGplayer market, up 166%.",
    "data": {
-    "id": "tcgcsv-83574",
-    "from": 159.98,
-    "to": 256.65,
-    "fromDay": "2026-10-17",
-    "toDay": "2026-10-18",
-    "pct": 60.4,
+    "id": "tcgcsv-86125",
+    "from": 46.27,
+    "to": 123.13,
+    "fromDay": "2026-10-18",
+    "toDay": "2026-10-19",
+    "pct": 166.1,
+    "kind": "single"
+   },
+   "new": false
+  },
+  {
+   "type": "PRICE_MOVE",
+   "severity": "medium",
+   "key": "move:477543:2026-10-19",
+   "line": "Jirachi - 2005 (Michael Gonzalez) (World Championship Decks): $20.00 (2026-10-18) to $70.00 (2026-10-19) on TCGplayer market, up 250%.",
+   "data": {
+    "id": "tcgcsv-477543",
+    "from": 20,
+    "to": 70,
+    "fromDay": "2026-10-18",
+    "toDay": "2026-10-19",
+    "pct": 250,
+    "kind": "single"
+   },
+   "new": false
+  },
+  {
+   "type": "PRICE_MOVE",
+   "severity": "medium",
+   "key": "move:161750:2026-10-19",
+   "line": "Pikachu (Ivy) (Pikachu World Collection Promos): $16.00 (2026-10-18) to $57.65 (2026-10-19) on TCGplayer market, up 260%.",
+   "data": {
+    "id": "tcgcsv-161750",
+    "from": 16,
+    "to": 57.65,
+    "fromDay": "2026-10-18",
+    "toDay": "2026-10-19",
+    "pct": 260.3,
+    "kind": "single"
+   },
+   "new": false
+  },
+  {
+   "type": "PRICE_MOVE",
+   "severity": "medium",
+   "key": "move:87430:2026-10-19",
+   "line": "Mewtwo EX - BW45 (Black and White Promos): $25.73 (2026-10-18) to $53.86 (2026-10-19) on TCGplayer market, up 109%.",
+   "data": {
+    "id": "tcgcsv-87430",
+    "from": 25.73,
+    "to": 53.86,
+    "fromDay": "2026-10-18",
+    "toDay": "2026-10-19",
+    "pct": 109.3,
+    "kind": "single"
+   },
+   "new": false
+  },
+  {
+   "type": "PRICE_MOVE",
+   "severity": "medium",
+   "key": "move:211466:2026-10-19",
+   "line": "M Swampert EX - XY87 (Jumbo Cards): $15.00 (2026-10-18) to $34.14 (2026-10-19) on TCGplayer market, up 128%.",
+   "data": {
+    "id": "tcgcsv-211466",
+    "from": 15,
+    "to": 34.14,
+    "fromDay": "2026-10-18",
+    "toDay": "2026-10-19",
+    "pct": 127.6,
+    "kind": "single"
+   },
+   "new": false
+  },
+  {
+   "type": "PRICE_MOVE",
+   "severity": "medium",
+   "key": "move:88706:2026-10-19",
+   "line": "Reshiram - BW23 (Black and White Promos): $7.77 (2026-10-18) to $17.86 (2026-10-19) on TCGplayer market, up 130%.",
+   "data": {
+    "id": "tcgcsv-88706",
+    "from": 7.77,
+    "to": 17.86,
+    "fromDay": "2026-10-18",
+    "toDay": "2026-10-19",
+    "pct": 129.9,
     "kind": "single"
    },
    "new": false
@@ -568,7 +662,18 @@
     "conflict": false,
     "source": "data/derived/sealed-price-outliers.json"
    },
-   "new": true
+   "new": false
+  },
+  {
+   "type": "READ_TYPE_EMPTY",
+   "severity": "low",
+   "key": "empty:low",
+   "line": "Read type \"low\" produced nothing tonight.",
+   "data": {
+    "kind": "low",
+    "lastNight": 0
+   },
+   "new": false
   },
   {
    "type": "READ_TYPE_EMPTY",
@@ -588,6 +693,17 @@
    "line": "Read type \"askmove\" produced nothing tonight.",
    "data": {
     "kind": "askmove",
+    "lastNight": 0
+   },
+   "new": false
+  },
+  {
+   "type": "READ_TYPE_EMPTY",
+   "severity": "low",
+   "key": "empty:mktmove",
+   "line": "Read type \"mktmove\" produced nothing tonight.",
+   "data": {
+    "kind": "mktmove",
     "lastNight": 0
    },
    "new": false
@@ -615,105 +731,72 @@
    "new": false
   },
   {
-   "type": "YOUTUBE_DISAGREE",
+   "type": "READ_TYPE_EMPTY",
    "severity": "low",
-   "key": "yt:data:2026-10-18",
-   "line": "1 creator claims were contradicted by TCGplayer prices tonight (2026-10-18).",
+   "key": "empty:sealedchase",
+   "line": "Read type \"sealedchase\" produced nothing tonight.",
    "data": {
-    "count": 1
+    "kind": "sealedchase",
+    "lastNight": 0
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24722:2026-10-18",
-   "line": "ME: 30th Celebration: 9 creator videos on 6 channels, 2026-10-12 to 2026-10-18 (unverified lead).",
+   "key": "yt:set_attention:24722:2026-10-19",
+   "line": "ME: 30th Celebration: 7 creator videos on 6 channels, 2026-10-13 to 2026-10-19 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24722,
     "label": "ME: 30th Celebration",
     "channels": 6,
-    "videos": 9,
+    "videos": 7,
     "weighted": 6,
-    "from": "2026-10-12",
-    "to": "2026-10-18"
+    "from": "2026-10-13",
+    "to": "2026-10-19"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:print_run:Print runs:2026-10-18",
-   "line": "Print runs: 8 creator videos on 6 channels, 2026-10-12 to 2026-10-18 (unverified lead).",
+   "key": "yt:print_run:Print runs:2026-10-19",
+   "line": "Print runs: 8 creator videos on 5 channels, 2026-10-13 to 2026-10-19 (unverified lead).",
    "data": {
     "kind": "print_run",
     "ref": null,
     "label": "Print runs",
-    "channels": 6,
+    "channels": 5,
     "videos": 8,
     "weighted": 8,
-    "from": "2026-10-12",
-    "to": "2026-10-18"
+    "from": "2026-10-13",
+    "to": "2026-10-19"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:23821:2026-10-18",
-   "line": "SV: Prismatic Evolutions: 9 creator videos on 4 channels, 2026-10-12 to 2026-10-18 (unverified lead).",
+   "key": "yt:set_attention:23821:2026-10-19",
+   "line": "SV: Prismatic Evolutions: 9 creator videos on 3 channels, 2026-10-13 to 2026-10-19 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 23821,
     "label": "SV: Prismatic Evolutions",
-    "channels": 4,
+    "channels": 3,
     "videos": 9,
-    "weighted": 4,
-    "from": "2026-10-12",
-    "to": "2026-10-18"
-   },
-   "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:set_attention:24541:2026-10-18",
-   "line": "ME: Ascended Heroes: 6 creator videos on 3 channels, 2026-10-12 to 2026-10-18 (unverified lead).",
-   "data": {
-    "kind": "set_attention",
-    "ref": 24541,
-    "label": "ME: Ascended Heroes",
-    "channels": 3,
-    "videos": 6,
     "weighted": 3,
-    "from": "2026-10-12",
-    "to": "2026-10-18"
+    "from": "2026-10-13",
+    "to": "2026-10-19"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:23353:2026-10-18",
-   "line": "SV: Paldean Fates: 3 creator videos on 3 channels, 2026-10-12 to 2026-10-18 (unverified lead).",
-   "data": {
-    "kind": "set_attention",
-    "ref": 23353,
-    "label": "SV: Paldean Fates",
-    "channels": 3,
-    "videos": 3,
-    "weighted": 3,
-    "from": "2026-10-12",
-    "to": "2026-10-18"
-   },
-   "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:set_attention:24380:2026-10-18",
-   "line": "ME01: Mega Evolution: 5 creator videos on 2 channels, 2026-10-12 to 2026-10-18 (unverified lead).",
+   "key": "yt:set_attention:24380:2026-10-19",
+   "line": "ME01: Mega Evolution: 5 creator videos on 2 channels, 2026-10-13 to 2026-10-19 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24380,
@@ -721,16 +804,16 @@
     "channels": 2,
     "videos": 5,
     "weighted": 2,
-    "from": "2026-10-12",
-    "to": "2026-10-18"
+    "from": "2026-10-13",
+    "to": "2026-10-19"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24269:2026-10-18",
-   "line": "SV10: Destined Rivals: 5 creator videos on 2 channels, 2026-10-12 to 2026-10-18 (unverified lead).",
+   "key": "yt:set_attention:24269:2026-10-19",
+   "line": "SV10: Destined Rivals: 5 creator videos on 2 channels, 2026-10-13 to 2026-10-19 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24269,
@@ -738,152 +821,67 @@
     "channels": 2,
     "videos": 5,
     "weighted": 2,
-    "from": "2026-10-12",
-    "to": "2026-10-18"
+    "from": "2026-10-13",
+    "to": "2026-10-19"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24448:2026-10-18",
-   "line": "ME02: Phantasmal Flames: 3 creator videos on 2 channels, 2026-10-12 to 2026-10-18 (unverified lead).",
-   "data": {
-    "kind": "set_attention",
-    "ref": 24448,
-    "label": "ME02: Phantasmal Flames",
-    "channels": 2,
-    "videos": 3,
-    "weighted": 2,
-    "from": "2026-10-12",
-    "to": "2026-10-18"
-   },
-   "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:set_attention:24655:2026-10-18",
-   "line": "ME04: Chaos Rising: 3 creator videos on 2 channels, 2026-10-12 to 2026-10-18 (unverified lead).",
-   "data": {
-    "kind": "set_attention",
-    "ref": 24655,
-    "label": "ME04: Chaos Rising",
-    "channels": 2,
-    "videos": 3,
-    "weighted": 2,
-    "from": "2026-10-12",
-    "to": "2026-10-18"
-   },
-   "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:set_attention:24688:2026-10-18",
-   "line": "ME05: Pitch Black: 3 creator videos on 2 channels, 2026-10-12 to 2026-10-18 (unverified lead).",
-   "data": {
-    "kind": "set_attention",
-    "ref": 24688,
-    "label": "ME05: Pitch Black",
-    "channels": 2,
-    "videos": 3,
-    "weighted": 2,
-    "from": "2026-10-12",
-    "to": "2026-10-18"
-   },
-   "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:set_attention:24831:2026-10-18",
-   "line": "ME06: Delta Reign: 3 creator videos on 2 channels, 2026-10-12 to 2026-10-18 (unverified lead).",
+   "key": "yt:set_attention:24831:2026-10-19",
+   "line": "ME06: Delta Reign: 4 creator videos on 2 channels, 2026-10-13 to 2026-10-19 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24831,
     "label": "ME06: Delta Reign",
     "channels": 2,
-    "videos": 3,
+    "videos": 4,
     "weighted": 2,
-    "from": "2026-10-12",
-    "to": "2026-10-18"
+    "from": "2026-10-13",
+    "to": "2026-10-19"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24325:2026-10-18",
-   "line": "SV: Black Bolt: 3 creator videos on 2 channels, 2026-10-12 to 2026-10-18 (unverified lead).",
+   "key": "yt:set_attention:24541:2026-10-19",
+   "line": "ME: Ascended Heroes: 4 creator videos on 2 channels, 2026-10-13 to 2026-10-19 (unverified lead).",
    "data": {
     "kind": "set_attention",
-    "ref": 24325,
-    "label": "SV: Black Bolt",
+    "ref": 24541,
+    "label": "ME: Ascended Heroes",
+    "channels": 2,
+    "videos": 4,
+    "weighted": 2,
+    "from": "2026-10-13",
+    "to": "2026-10-19"
+   },
+   "new": false
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:17688:2026-10-19",
+   "line": "SWSH: Crown Zenith: 3 creator videos on 2 channels, 2026-10-13 to 2026-10-19 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 17688,
+    "label": "SWSH: Crown Zenith",
     "channels": 2,
     "videos": 3,
     "weighted": 2,
-    "from": "2026-10-12",
-    "to": "2026-10-18"
+    "from": "2026-10-13",
+    "to": "2026-10-19"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24326:2026-10-18",
-   "line": "SV: White Flare: 3 creator videos on 2 channels, 2026-10-12 to 2026-10-18 (unverified lead).",
-   "data": {
-    "kind": "set_attention",
-    "ref": 24326,
-    "label": "SV: White Flare",
-    "channels": 2,
-    "videos": 3,
-    "weighted": 2,
-    "from": "2026-10-12",
-    "to": "2026-10-18"
-   },
-   "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:sealed_attention:668496:2026-10-18",
-   "line": "Ascended Heroes Elite Trainer Box: 2 creator videos on 2 channels, 2026-10-12 to 2026-10-18 (unverified lead).",
-   "data": {
-    "kind": "sealed_attention",
-    "ref": 668496,
-    "label": "Ascended Heroes Elite Trainer Box",
-    "channels": 2,
-    "videos": 2,
-    "weighted": 2,
-    "from": "2026-10-12",
-    "to": "2026-10-18"
-   },
-   "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:set_attention:24587:2026-10-18",
-   "line": "ME03: Perfect Order: 2 creator videos on 2 channels, 2026-10-12 to 2026-10-18 (unverified lead).",
-   "data": {
-    "kind": "set_attention",
-    "ref": 24587,
-    "label": "ME03: Perfect Order",
-    "channels": 2,
-    "videos": 2,
-    "weighted": 2,
-    "from": "2026-10-12",
-    "to": "2026-10-18"
-   },
-   "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:set_attention:23381:2026-10-18",
-   "line": "SV05: Temporal Forces: 2 creator videos on 2 channels, 2026-10-12 to 2026-10-18 (unverified lead).",
+   "key": "yt:set_attention:23381:2026-10-19",
+   "line": "SV05: Temporal Forces: 2 creator videos on 2 channels, 2026-10-13 to 2026-10-19 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 23381,
@@ -891,16 +889,33 @@
     "channels": 2,
     "videos": 2,
     "weighted": 2,
-    "from": "2026-10-12",
-    "to": "2026-10-18"
+    "from": "2026-10-13",
+    "to": "2026-10-19"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:23651:2026-10-18",
-   "line": "SV08: Surging Sparks: 2 creator videos on 2 channels, 2026-10-12 to 2026-10-18 (unverified lead).",
+   "key": "yt:set_attention:23473:2026-10-19",
+   "line": "SV06: Twilight Masquerade: 2 creator videos on 2 channels, 2026-10-13 to 2026-10-19 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 23473,
+    "label": "SV06: Twilight Masquerade",
+    "channels": 2,
+    "videos": 2,
+    "weighted": 2,
+    "from": "2026-10-13",
+    "to": "2026-10-19"
+   },
+   "new": false
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:23651:2026-10-19",
+   "line": "SV08: Surging Sparks: 2 creator videos on 2 channels, 2026-10-13 to 2026-10-19 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 23651,
@@ -908,16 +923,33 @@
     "channels": 2,
     "videos": 2,
     "weighted": 2,
-    "from": "2026-10-12",
-    "to": "2026-10-18"
+    "from": "2026-10-13",
+    "to": "2026-10-19"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:2848:2026-10-18",
-   "line": "SWSH07: Evolving Skies: 2 creator videos on 2 channels, 2026-10-12 to 2026-10-18 (unverified lead).",
+   "key": "yt:set_attention:23353:2026-10-19",
+   "line": "SV: Paldean Fates: 2 creator videos on 2 channels, 2026-10-13 to 2026-10-19 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 23353,
+    "label": "SV: Paldean Fates",
+    "channels": 2,
+    "videos": 2,
+    "weighted": 2,
+    "from": "2026-10-13",
+    "to": "2026-10-19"
+   },
+   "new": false
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:2848:2026-10-19",
+   "line": "SWSH07: Evolving Skies: 2 creator videos on 2 channels, 2026-10-13 to 2026-10-19 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 2848,
@@ -925,44 +957,27 @@
     "channels": 2,
     "videos": 2,
     "weighted": 2,
-    "from": "2026-10-12",
-    "to": "2026-10-18"
+    "from": "2026-10-13",
+    "to": "2026-10-19"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:17688:2026-10-18",
-   "line": "SWSH: Crown Zenith: 2 creator videos on 2 channels, 2026-10-12 to 2026-10-18 (unverified lead).",
+   "key": "yt:set_attention:2948:2026-10-19",
+   "line": "SWSH09: Brilliant Stars: 2 creator videos on 2 channels, 2026-10-13 to 2026-10-19 (unverified lead).",
    "data": {
     "kind": "set_attention",
-    "ref": 17688,
-    "label": "SWSH: Crown Zenith",
+    "ref": 2948,
+    "label": "SWSH09: Brilliant Stars",
     "channels": 2,
     "videos": 2,
     "weighted": 2,
-    "from": "2026-10-12",
-    "to": "2026-10-18"
+    "from": "2026-10-13",
+    "to": "2026-10-19"
    },
    "new": false
-  },
-  {
-   "type": "HYPE_EFFECT",
-   "severity": "medium",
-   "key": "hype:set:group:24722:2026-10-18",
-   "line": "Heavy creator attention on 30th Celebration this week. Past sets with this much attention moved -3.9% over 30 days (n=22, 2026-04-27 to 2026-09-12).",
-   "data": {
-    "level": "set",
-    "label": "30th Celebration",
-    "n": 22,
-    "medianPct": -3.9,
-    "from": "2026-04-27",
-    "to": "2026-09-12",
-    "surface": "set",
-    "source": "data/derived/hype-effect-set.json"
-   },
-   "new": true
   }
  ]
 }

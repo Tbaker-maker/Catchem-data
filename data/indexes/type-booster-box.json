@@ -1,7 +1,7 @@
 {
   "id": "type-booster-box",
   "name": "booster-box",
-  "asOf": "2026-10-18",
+  "asOf": "2026-10-19",
   "method": "Chain-linked. A name joins on the first day it has a price and does not move the level that day. Its first return is the next day it is priced. Each day's move is the trimmed geometric mean of price changes of names priced on both days: each change is capped at 30% down or 43% up, and the top and bottom 10% are dropped when 10 or more names are priced. A value-weighted line gives a dearer product a bigger say. A day with no shared prices is a gap. Nothing is filled in.",
   "basket": [
     {
@@ -412,6 +412,16 @@
           "entered": 0,
           "equalMovePct": 0.067,
           "valueMovePct": 0.2664
+        },
+        {
+          "date": "2026-10-18",
+          "from": "2026-10-17",
+          "equal": 99.1,
+          "value": 100,
+          "matched": 36,
+          "entered": 0,
+          "equalMovePct": -0.0329,
+          "valueMovePct": 0.0057
         }
       ],
       "gaps": [
@@ -720,6 +730,16 @@
           "entered": 0,
           "equalMovePct": -0.0201,
           "valueMovePct": 0.1161
+        },
+        {
+          "date": "2026-10-19",
+          "from": "2026-10-18",
+          "equal": 100,
+          "value": 108.4,
+          "matched": 35,
+          "entered": 0,
+          "equalMovePct": 0.0142,
+          "valueMovePct": 1.2265
         }
       ],
       "gaps": [
