@@ -234,6 +234,13 @@ console.log("── public index line (value-weighted) ──");
   process.stdout.write(r.stdout || ""); process.stderr.write(r.stderr || "");
   t("public index line suite", r.status === 0);
 }
+console.log("── long index history ──");
+{
+  const { spawnSync } = await import("node:child_process");
+  const r = spawnSync(process.execPath, [join(ROOT, "scripts/tests/index-history.test.mjs")], { encoding: "utf8" });
+  process.stdout.write(r.stdout || ""); process.stderr.write(r.stderr || "");
+  t("long index history suite", r.status === 0);
+}
 console.log("── chart fill sources ──");
 {
   const { spawnSync } = await import("node:child_process");
