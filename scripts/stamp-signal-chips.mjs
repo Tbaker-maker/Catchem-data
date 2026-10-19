@@ -175,6 +175,24 @@ export async function stampSignalChips({ root = ROOT, rules, writeReads = false 
     const prev = box.prev || {};
     put(row.id, row.name, { n: box.n, prev: prev.n, prevDate: prev.date || "", date: box.date || listed.asOf || "" });
   }
+  // Top 2 seller share of every sealed product on its latest night, grouped by
+  // kind and era, so a product is judged against similar products.
+  const peerKey = (product) => `${product?.subtype || ""}|${product?.vintage ? "v" : "m"}`;
+  const shareOf = (point) => {
+    const two = Number(point?.top2Share);
+    if (Number.isFinite(two) && two >= 0 && two <= 1) return two;
+    const one = Number(point?.topShare);
+    return Number.isFinite(one) && one >= 0 && one <= 1 ? one : null;
+  };
+  const peerShares = new Map();
+  for (const product of sealed?.products || []) {
+    const hist = product?.priceHistory || [];
+    const share = shareOf(hist[hist.length - 1]);
+    if (share == null) continue;
+    const key = peerKey(product);
+    if (!peerShares.has(key)) peerShares.set(key, []);
+    peerShares.get(key).push({ id: product.id, share });
+  }
   for (const product of sealed?.products || []) {
     const series = [];
     for (const point of product?.priceHistory || []) {
@@ -188,6 +206,18 @@ export async function stampSignalChips({ root = ROOT, rules, writeReads = false 
     const night = (product.priceHistory || [])[product.priceHistory.length - 1] || {};
     const item = byId.get(product.id) || { n: last.n, prev: prev ? prev.n : null, prevDate: prev ? prev.date : "", date: last.date };
     item.series = series;
+    item.nights = [];
+    item.prices = [];
+    for (const point of product.priceHistory || []) {
+      const date = String(point?.date || "").slice(0, 10);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) continue;
+      if (Number(point.price) > 0) item.prices.push([date, Number(point.price)]);
+      const share = shareOf(point);
+      if (share != null && Number.isInteger(point.sellers) && Number.isInteger(point.filteredTotal)) {
+        item.nights.push({ date, n: point.filteredTotal, sellers: point.sellers, share });
+      }
+    }
+    item.peers = (peerShares.get(peerKey(product)) || []).filter((row) => row.id !== product.id).map((row) => row.share);
     if (Number.isInteger(night.sellers) && night.sellers >= 0) item.sellers = night.sellers;
     if (Number.isFinite(Number(night.topShare)) && Number(night.topShare) >= 0 && Number(night.topShare) <= 1) item.topShare = Number(night.topShare);
     put(product.id, product.name || "", item);

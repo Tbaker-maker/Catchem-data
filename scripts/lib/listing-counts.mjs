@@ -165,9 +165,10 @@ export function sellerSpread(items) {
     counts.set(name, (counts.get(name) || 0) + 1);
   }
   if (!seen) return null;
-  let top = 0;
-  for (const n of counts.values()) if (n > top) top = n;
-  return { sellers: counts.size, topShare: Math.round((top / seen) * 100) / 100 };
+  const sorted = [...counts.values()].sort((a, b) => b - a);
+  const top = sorted[0] || 0;
+  const top2 = top + (sorted[1] || 0);
+  return { sellers: counts.size, topShare: Math.round((top / seen) * 100) / 100, top2Share: Math.round((top2 / seen) * 100) / 100 };
 }
 
 export function summarize(kind, total, titles, items) {
@@ -177,5 +178,5 @@ export function summarize(kind, total, titles, items) {
   const base = { browseTotal: typeof total === "number" ? total : null, sampled: seen, sampleKept: kept, listingsCounted: est };
   const spread = sellerSpread(items);
   if (!spread) return base;
-  return { ...base, sellers: spread.sellers, topShare: spread.topShare };
+  return { ...base, sellers: spread.sellers, topShare: spread.topShare, top2Share: spread.top2Share };
 }

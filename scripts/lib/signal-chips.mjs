@@ -39,6 +39,8 @@ export function isSealedRead(read) {
   return kind === "sealed" || kind === "listings" || href.startsWith("/p/");
 }
 
+import { runStage, sellerTag } from "./seller-stage.mjs";
+
 function num(v) {
   const n = Number(v);
   return Number.isFinite(n) ? n : NaN;
@@ -490,7 +492,7 @@ export function listingsTile(ctx = {}, rules = {}) {
   const before = series.filter((p) => p.date < start).map((p) => p.n).sort((a, b) => a - b);
   const band = before.length >= 4 ? [Math.round(quart(before, 0.25)), Math.round(quart(before, 0.75))] : null;
   const shown = roundPct(Math.abs(hit.pct));
-  return {
+  const out = {
     word,
     dir: shown === 0 ? "flat" : (hit.pct < 0 ? "down" : "up"),
     pct: shown,
@@ -500,6 +502,12 @@ export function listingsTile(ctx = {}, rules = {}) {
     from: recent[0].date,
     to: recent[recent.length - 1].date,
   };
+  // Seller mix and run stage show only when a private rule fires on deep enough data.
+  const tag = sellerTag(row.nights, row.peers, rules?.sellerTag);
+  if (tag) out.tag = tag;
+  const stage = runStage(row.prices, asOf, rules?.stage, series);
+  if (stage) out.stage = stage;
+  return out;
 }
 
 function spanWords(since, through) {
@@ -568,6 +576,11 @@ export function tilesFor(read, all, ctx = {}, rules = {}) {
   }
   const listed = listingsTile(ctx, rules);
   if (listed) tiles.listings = listed;
+  // Singles carry the run stage on the price tile. Sealed uses the listings check above.
+  if (tiles.price && !tiles.price.dash && !isSealedRead(read) && !ctx.listings) {
+    const stage = runStage(daily, asOf, rules?.stage, null);
+    if (stage) tiles.price.stage = stage;
+  }
   return Object.keys(tiles).length ? tiles : null;
 }
 

@@ -704,6 +704,7 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
         if (spread) {
           point.sellers = spread.sellers;
           point.topShare = spread.topShare;
+          point.top2Share = spread.top2Share;
         }
         if (typeof browseTotal === "number") {
           point.total = browseTotal;
