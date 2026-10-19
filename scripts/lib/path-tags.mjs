@@ -36,6 +36,8 @@ export function generationOfSet(name) {
   if (/^legendary collection\b/.test(bare)) return "1";
   const era = eraOf(raw);
   if (NUMBERED_ERA[era]) return NUMBERED_ERA[era];
+  // Mega Evolution is its own generation, tagged ME (decided Oct 19).
+  if (era === "Mega Evolution") return "ME";
   if (era === "Original" && /base set|jungle|fossil|team rocket|gym heroes|gym challenge/.test(bare)) return "1";
   return "";
 }
@@ -50,18 +52,23 @@ export function unnumberedReason(name) {
 }
 
 // Null when the row is sealed, or a single with neither credit nor generation.
-export function tagSingle({ id, kind, setName, artist } = {}) {
+// Chase rarities a member can pick on /reads. Other rarities are not tagged.
+export const CHASE_RARITIES = ["Special Illustration Rare", "Illustration Rare", "Ultra Rare"];
+
+export function tagSingle({ id, kind, setName, artist, rarity } = {}) {
   if (kind !== "single") return null;
   if (!/^tcgcsv-\d+$/.test(String(id || ""))) return null;
   const generation = generationOfSet(setName);
   const credit = cleanArtist(artist);
-  if (!credit && !generation) return null;
+  const chase = CHASE_RARITIES.includes(String(rarity || "")) ? String(rarity) : "";
+  if (!credit && !generation && !chase) return null;
   const row = {};
   if (credit) {
     row.artist = credit;
     row.artistSlug = slug(credit);
   }
   if (generation) row.generation = generation;
+  if (chase) row.rarity = chase;
   return row;
 }
 

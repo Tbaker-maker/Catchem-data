@@ -32,11 +32,12 @@ export async function run() {
   t("generation: Pokemon GO stays 8", generationOfSet("Pokémon GO") === "8");
   t("generation: SWSH promo cards are 8", generationOfSet("SWSH: Sword & Shield Promo Cards") === "8");
   t("generation: SV promo cards are 9", generationOfSet("SV: Scarlet & Violet Promo Cards") === "9");
-  t("generation: Mega Evolution is not numbered", generationOfSet("ME01: Mega Evolution") === "" && generationOfSet("ME: Mega Evolution Promo") === "");
+  t("generation: Mega Evolution is its own generation", generationOfSet("ME01: Mega Evolution") === "ME" && generationOfSet("ME: Mega Evolution Promo") === "ME");
+  t("rarity: chase rarities are kept, others are not", tagSingle({ id: "tcgcsv-5", kind: "single", setName: "Southern Islands", rarity: "Special Illustration Rare" })?.rarity === "Special Illustration Rare" && tagSingle({ id: "tcgcsv-6", kind: "single", setName: "Southern Islands", rarity: "Common" }) === null);
   t("generation: a year on a promo is not a generation", generationOfSet("McDonald's Promos 2011") === "" && generationOfSet("McDonald's Promos 2024") === "");
   t("generation: miscellaneous stays blank", generationOfSet("Miscellaneous Cards & Products") === "");
 
-  t("reason: Mega Evolution", unnumberedReason("ME02: Phantasmal Flames") === "megaEvolution");
+  t("reason: Mega Evolution now has a generation", unnumberedReason("ME02: Phantasmal Flames") === "");
   t("reason: Southern Islands is original", unnumberedReason("Southern Islands") === "originalUnnumbered");
   t("reason: numbered set has no reason", unnumberedReason("Base Set") === "");
 
@@ -47,9 +48,9 @@ export async function run() {
   t("tag: single keeps artist and generation", tagged?.artist === "Mitsuhiro Arita" && tagged?.generation === "1" && tagged?.artistSlug === "mitsuhiro-arita");
   t("tag: sealed is never tagged", tagSingle({ id: "tcgcsv-1", kind: "sealed", setName: "Base Set", artist: "Mitsuhiro Arita" }) === null);
   t("tag: bad id is dropped", tagSingle({ id: "base1-4", kind: "single", setName: "Base Set", artist: "Mitsuhiro Arita" }) === null);
-  t("tag: mega can keep an artist and still have no generation", (() => {
+  t("tag: mega keeps an artist and generation ME", (() => {
     const row = tagSingle({ id: "tcgcsv-9", kind: "single", setName: "ME01: Mega Evolution", artist: "aky CG Works" });
-    return row?.artist === "aky CG Works" && row.generation === undefined;
+    return row?.artist === "aky CG Works" && row.generation === "ME";
   })());
   t("tag: no credit and no generation is omitted", tagSingle({ id: "tcgcsv-8", kind: "single", setName: "Southern Islands", artist: "" }) === null);
   t("pct: one decimal", pct(18879, 28633) === 65.9);
@@ -74,7 +75,7 @@ export async function run() {
     if (row.artist) artist += 1;
     if (row.generation) {
       generation += 1;
-      if (!/^[1-9]$/.test(row.generation)) badGen += 1;
+      if (!/^([1-9]|ME)$/.test(row.generation)) badGen += 1;
     }
     if (row.artist && row.generation) both += 1;
     if (row.kind === "sealed" || row.sealed) sealedKey += 1;
@@ -82,7 +83,7 @@ export async function run() {
   t("file: artist recount", artist === doc.coverage.artist, `${artist} vs ${doc.coverage.artist}`);
   t("file: generation recount", generation === doc.coverage.generation, `${generation} vs ${doc.coverage.generation}`);
   t("file: both recount", both === doc.coverage.both);
-  t("file: generation is only 1 to 9", badGen === 0);
+  t("file: generation is only 1 to 9 or ME", badGen === 0);
   t("file: no sealed row", sealedKey === 0);
   t("file: note does not say sold, sales, or supply", !/\b(sold|sales|supply)\b/i.test(doc.source + " " + doc.rule));
   t("file: artist coverage agrees with the public credit count", doc.coverage.artist === 18879, String(doc.coverage.artist));
