@@ -178,7 +178,7 @@ export async function run() {
     ["2026-10-08", 14.28], ["2026-10-09", 14.28], ["2026-10-10", 14.03], ["2026-10-11", 13.66], ["2026-10-12", 13.4],
   ], { name: "Delphox - 013/086 (Chaos Rising Stamped)", fromPrice: 14.45, fromDate: "2026-10-05", toDate: "2026-10-12", windowDays: 7, direction: "down" });
   t("a banned word inside the product name keeps the window sentence",
-    stamped === "Delphox - 013/086 (Chaos Rising Stamped) latest price fell from $14.45 on Oct 5 to $13.40 on Oct 12, down 7.3%.");
+    stamped === "Delphox #013/086 (Chaos Rising Stamped) latest price fell from $14.45 on Oct 5 to $13.40 on Oct 12, down 7.3%.");
 
   return fail;
 }

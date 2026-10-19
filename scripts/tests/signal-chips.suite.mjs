@@ -169,7 +169,7 @@ export async function run() {
   }, leadRules);
   const leadChip = lead.signals.find((chip) => chip.kind === "listings");
   const leadText = JSON.stringify(lead);
-  t("the supply chip leads and names the window", lead.signals[0]?.kind === "listings" && /Listings -\d+% \d+d/.test(leadChip?.text || "") && leadChip.text.includes("Draining") && leadChip.text.includes("Many sellers"));
+  t("the supply chip leads and names the window", lead.signals[0]?.kind === "listings" && /Listings -\d+% \d+d/.test(leadChip?.text || "") && leadChip.text.includes("Draining") && !/sellers|Building|Slowing|Stalled|Reversing/.test(leadChip.text));
   t("seller names never reach the public chip", !leadText.includes("alice-seller") && !leadText.includes("bob-seller") && !leadText.includes("username") && !leadText.includes("sellerNames"));
   t("the supply blurb stays clean", isClean(lead.blurb) && !/[\u2013\u2014]/.test(lead.blurb) && !/\bsold\b|\bsales\b|\bsupply\b/i.test(lead.blurb));
   const few = readSignals({
@@ -182,6 +182,29 @@ export async function run() {
     asOf: "2026-10-17",
     listings: { n: 70, prev: 100, date: "2026-10-17", sellers: 2, topShare: 0.8 },
   }, leadRules);
-  t("a concentrated count says few sellers", (few.signals.find((chip) => chip.kind === "listings")?.text || "").includes("Few sellers"));
+  t("seller words stay off until their measurement is approved", !/sellers/i.test(JSON.stringify(few)));
+  const fewOn = readSignals({ id: "fake-few-on", name: "Example Box", kind: "sealed", href: "/p/example-box", asOf: "2026-10-17" }, {
+    asOf: "2026-10-17",
+    listings: { n: 70, prev: 100, date: "2026-10-17", sellers: 2, topShare: 0.8 },
+  }, { ...leadRules, supply: { ...leadRules.supply, publicExtras: true } });
+  t("a concentrated count says few sellers when the words are switched on", (fewOn.signals.find((chip) => chip.kind === "listings")?.text || "").includes("Few sellers"));
+
+  // Flip tiles: data and price for every read with prices, listings only with real counts.
+  const tileRead = { id: "move-tcgcsv-1-7", sku: "tcgcsv-1", name: "Pikachu #088", kind: "single", asOf: "2026-10-18", price: 20.71, changePct: 7.2, windowDays: 7, source: "TCGplayer market, 2026-10-18" };
+  const daily = [["2026-10-11", 19.32], ["2026-10-12", 19.19], ["2026-10-13", 19.39], ["2026-10-14", 19.88], ["2026-10-15", 19.59], ["2026-10-16", 19.53], ["2026-10-17", 20.09], ["2026-10-18", 20.71]];
+  const tiled = readSignals(tileRead, { asOf: "2026-10-18", points: daily, daily, counts: { prices: 225, recent: 17, since: "2024-03-14" } }, { ...RULES, move: { ...RULES.move, flatAbs: 5 } });
+  const tiles = tiled.tiles || {};
+  t("a priced read gets a data tile with counts and dates", tiles.data && tiles.data.prices === 225 && tiles.data.since === "2024-03-14" && tiles.data.through === "2026-10-18" && tiles.data.bars >= 1 && tiles.data.bars <= tiles.data.of);
+  t("the price tile uses the read's own window", tiles.price && tiles.price.days === 7 && tiles.price.pct === 7.2 && tiles.price.from === 19.32 && tiles.price.fromDate === "2026-10-11" && tiles.price.dir === "up");
+  t("no listings tile without listings counted", !tiles.listings);
+  t("tiles carry no cutoffs", !signalsLookSecret(tiles) && !/flatAbs|minAbsPct|paceMultiple|cuts/.test(JSON.stringify(tiles)));
+  t("tiles carry no dashes or sold words", !/[\u2013\u2014]| - |\bsold\b|\bsales\b/i.test(JSON.stringify(tiles)));
+  const boxTiles = readSignals({ id: "fake-box-tiles", name: "Example Box", kind: "sealed", href: "/p/example-box", asOf: "2026-10-17" }, {
+    asOf: "2026-10-17",
+    listings: { n: 79, prev: 100, date: "2026-10-17", series, sellers: 12, topShare: 0.2 },
+    points: points(),
+  }, leadRules).tiles || {};
+  t("a product with listings counted gets a listings tile", boxTiles.listings && /^(Draining|Stacking|Steady)$/.test(boxTiles.listings.word) && boxTiles.listings.days > 0 && boxTiles.listings.spark.length >= 2);
+  t("the listings tile has no seller or stage words", !/sellers|Building|Slowing|Stalled|Reversing|topShare/.test(JSON.stringify(boxTiles.listings)));
   return fail;
 }

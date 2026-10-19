@@ -13,6 +13,15 @@ export function pretty(name) {
     .trim();
 }
 
+// Read names: "Pikachu - 088" reads as "Pikachu #088", and any other spaced
+// hyphen becomes a comma, so copy has no spaced hyphen. pretty() keeps the raw
+// suffix because many builders strip it by pattern.
+export function prettyName(name) {
+  return pretty(name)
+    .replace(/\s+-\s+([A-Za-z]{0,6}\d+[A-Za-z]?(?:\/[A-Za-z]{0,6}\d+)?)(?=\s*(?:[([]|$))/g, " #$1")
+    .replace(/\s+-\s+/g, ", ");
+}
+
 export function money(n) {
   const x = typeof n === "number" ? n : (n == null || n === "" ? NaN : Number(n));
   if (!Number.isFinite(x) || x <= 0) return null;
@@ -476,7 +485,7 @@ function collectorFact(facts, opts) {
   const split = windowSplit(facts, opts);
   const use = win || step;
   if (!use) return null;
-  const name = opts.name ? String(opts.name).trim() : "";
+  const name = opts.name ? prettyName(opts.name) : "";
   const who = name ? `${name} latest price` : "The latest price";
   const dirWord = use.rel === "rose" ? "up" : "down";
   let line = `${who} ${use.rel} from ${use.fromP} on ${use.fromD} to ${use.toP} on ${use.toD}, ${dirWord} ${use.pct}%`;
@@ -553,7 +562,7 @@ export function pickLead(points, opts = {}, accept = null) {
   const facts = scopeFacts(points, opts);
   if (!facts) return null;
   const made = collectorFact(facts, opts);
-  if (!made || !usableLead(leadWithoutName(made.line, opts.name))) return null;
+  if (!made || !usableLead(leadWithoutName(made.line, opts.name ? prettyName(opts.name) : opts.name))) return null;
   if (accept && !accept(made.line, made.id)) return null;
   return made;
 }
@@ -569,7 +578,7 @@ export function pathSentence(points, opts = {}) {
   if (led) return led;
   const facts = scopeFacts(points, opts);
   if (!facts) return "The latest price is missing.";
-  const who = opts.name ? ` of ${String(opts.name).trim()}` : "";
+  const who = opts.name ? ` of ${prettyName(opts.name)}` : "";
   return `The latest price${who} is ${priceWords(facts.lastPrice)} on ${monthDay(facts.lastDate)}.`;
 }
 
@@ -579,7 +588,7 @@ export function pathAlt(points, opts = {}) {
   const last = all[all.length - 1];
   const prev = all[all.length - 2];
   if (cents(last[1]) === cents(prev[1])) return "";
-  const who = opts.name ? String(opts.name).trim() : "The ask";
+  const who = opts.name ? prettyName(opts.name) : "The ask";
   const bits = [`${who} went from ${priceWords(prev[1])} on ${monthDay(prev[0])} to ${priceWords(last[1])} on ${monthDay(last[0])}`];
   bits.push("and that step is the only watch");
   return dedupeRepeats(bits.join(", ") + ".").replace(/\s+/g, " ").trim();
@@ -1021,8 +1030,9 @@ export function displayName(name, num) {
   let n = pretty(name);
   const raw = String(num || "").trim();
   if (raw && n.endsWith(` - ${raw}`)) n = n.slice(0, -(raw.length + 3)).trim();
-  else n = n.replace(/\s+-\s+\d+\s*\/\s*\d+\s*$/, "").trim();
-  return n;
+  else if (raw && n.endsWith(` #${raw}`)) n = n.slice(0, -(raw.length + 2)).trim();
+  else n = n.replace(/\s+(?:-\s+|#)\d+\s*\/\s*\d+\s*$/, "").trim();
+  return n.replace(/\s+-\s+/g, ", ");
 }
 
 function olderThanFiveYears(release, asOf) {
