@@ -817,8 +817,8 @@ const feedResult = await publishFeed({
 console.log(`feed catalogue ${feedResult.count} logged +${feedResult.logged.added}`);
 
 const splitMovers = (kind) => {
-  const rows = movers.filter((row) => row.kind === kind && row.price >= 20 && !heldIds.has(String(row.id || "").replace(/^(heating|cooling|mover)-/, ""))).map((row) => ({
-    id: row.id.replace(/^(heating|cooling|mover)-/, ""),
+  const rows = movers.filter((row) => row.kind === kind && row.price >= 20 && !heldIds.has(String(row.id || "").replace(/^(?:heating|cooling|mover|move)-/, ""))).map((row) => ({
+    id: row.id.replace(/^(?:heating|cooling|mover|move)-/, ""),
     name: row.name,
     set: row.set,
     price: row.price,

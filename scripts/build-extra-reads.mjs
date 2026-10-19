@@ -91,6 +91,9 @@ export function publicRead(row) {
 
 export async function writeExtra(root, extra, browse) {
   const outDir = join(root, "research/assets/public/feed");
+  const { dropHeldReads, loadHeldIds } = await import("./lib/price-hold-skip.mjs");
+  const held = await loadHeldIds(root);
+  if (Array.isArray(extra?.reads)) extra.reads = dropHeldReads(extra.reads, held);
   await writeFile(join(outDir, "extra-reads.json"), JSON.stringify(extra, null, 1) + "\n");
   await writeFile(join(outDir, "browse.json"), JSON.stringify(browse) + "\n");
   const readsPath = join(root, "research/assets/public/reads.json");

@@ -215,6 +215,11 @@ export function buildSetValueDoc(setDoc, priceMap, date, opts = {}) {
   for (const item of singles) {
     const raw = String(item.id || "");
     const pid = Number(item.pid || (raw.startsWith("tcgcsv-") ? raw.slice(7) : ""));
+    const id = raw || (pid ? `tcgcsv-${pid}` : "");
+    if (opts.skipIds && opts.skipIds.has(id)) {
+      unpriced += 1;
+      continue;
+    }
     const market = priceMap.get(pid);
     if (!(market > 0)) {
       unpriced += 1;
@@ -222,7 +227,7 @@ export function buildSetValueDoc(setDoc, priceMap, date, opts = {}) {
     }
     totalCents += cents(market);
     priced.push({
-      id: raw || `tcgcsv-${pid}`,
+      id: id || `tcgcsv-${pid}`,
       name: item.name || "",
       number: item.num || "",
       price: market,

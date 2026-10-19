@@ -74,6 +74,7 @@ export function poolFromData({ catalogue, sealed } = {}) {
       });
     }
     for (const p of priced) {
+      if (p.held === true || p.priceHeld === true || p.priceStatus === "checking" || p.priceStatus === "held") continue;
       const art = cardArt(p);
       const title = cardTitle(p.name, p.number);
       const where = plainSet(set.name) || set.name;
@@ -87,6 +88,7 @@ export function poolFromData({ catalogue, sealed } = {}) {
         art,
         rarity: p.rarity || "",
         era: set.era || eraOf(set.name || ""),
+        setName: where,
         price: Number(p.price) || 0,
         line: `${title}, ${where} is ${money(p.price)} on TCGplayer market, as of ${when}.`,
       });
@@ -95,22 +97,26 @@ export function poolFromData({ catalogue, sealed } = {}) {
   const setByName = new Map((catalogue?.sets || []).map((s) => [bareSet(s.name), s]));
   for (const row of sealed?.products || []) {
     if (!row?.tcgPlayerId || row.dataStatus !== "live") continue;
+    if (row.held === true || row.priceHeld === true || row.priceStatus === "checking" || row.priceStatus === "held") continue;
     const ask = Number(row.askMedian || row.priceMedian || row.priceUsd);
     const count = Number(row.listingCount);
     if (!(ask > 0) || !(count > 0)) continue;
     const home = setByName.get(bareSet(row.set)) || null;
+    const sealedName = String(row.name || "").replace(/\bNear Mint\b/gi, "").replace(/\bNM\b/g, "").replace(/\s{2,}/g, " ").trim();
+    if (!sealedName) continue;
     reads.push({
       id: `sealed-${row.id}-${day}`,
       set: home?.slug || "",
+      setName: String(row.set || ""),
       cardId: `tcgcsv-${row.tcgPlayerId}`,
       kind: "sealed",
-      name: row.name || "",
+      name: sealedName,
       era: home?.era || eraOf(home?.name || row.set || ""),
       price: ask,
-      line: `${row.name}: ${count} eBay listings counted, middle ask ${money(ask)}, as of ${when}.`,
+      line: `${sealedName}: ${count} eBay listings counted, middle ask ${money(ask)}, as of ${when}.`,
     });
   }
-  return { day, reads: reads.filter((r) => r.line.length <= 220 && !/[\u2013\u2014]/.test(r.line) && isClean(r.line)) };
+  return { day, reads: reads.filter((r) => r.line.length <= 220 && !/[\u2013\u2014]/.test(r.line) && isClean(r.line) && !/price being checked/i.test(r.line)) };
 }
 
 // A set, a watched item, a Pokemon, a rarity, or an era narrows a follow.
@@ -154,6 +160,23 @@ export function dueOn(follow, day, now = Date.now()) {
   return d.getUTCDay() === 0; // weekly lands on Sunday
 }
 
+function outboxRead(read) {
+  const line = String(read?.line || "");
+  if (!line || /price being checked/i.test(line)) return null;
+  if (read?.held === true || read?.priceStatus === "checking" || read?.priceStatus === "held") return null;
+  const row = { line };
+  const cardId = String(read?.cardId || "");
+  if (/^tcgcsv-\d+$/.test(cardId)) row.cardId = cardId;
+  if (read?.kind === "card" || read?.kind === "sealed" || read?.kind === "single") row.kind = read.kind;
+  const name = String(read?.name || "").replace(/[\u2013\u2014]/g, " ").replace(/\s+/g, " ").trim();
+  if (name) row.name = name.slice(0, 120);
+  const number = String(read?.number || "").trim();
+  if (number) row.number = number.slice(0, 24);
+  const setName = String(read?.setName || "").replace(/[\u2013\u2014]/g, " ").replace(/\s+/g, " ").trim();
+  if (setName) row.setName = setName.slice(0, 80);
+  return row;
+}
+
 export function buildOutbox({ follows = [], pool = { day: "", reads: [] }, news = [], games = [], now = Date.now(), limit = 6 } = {}) {
   const day = pool.day || new Date(now).toISOString().slice(0, 10);
   const members = [];
@@ -167,7 +190,8 @@ export function buildOutbox({ follows = [], pool = { day: "", reads: [] }, news 
       .filter((read) => memberMatch(follow, read))
       .sort((a, b) => (Number(b.price) || 0) - (Number(a.price) || 0))
       .slice(0, limit)
-      .map((read) => ({ line: read.line }));
+      .map(outboxRead)
+      .filter(Boolean);
     const row = { discordId: id, lead: `Your ${follow.frequency || "weekly"} Catch'em read, ${shortDay(day)}.`, reads };
     if (follow.news === true && news.length) {
       const rows = news.filter((row) => isClean(row?.headline) && isClean(row?.line)).slice(0, 3);

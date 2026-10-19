@@ -13,6 +13,7 @@ import { join } from "node:path";
 import { money } from "./public-bundle.mjs";
 import { monthDay } from "./takes.mjs";
 import { cardTitle, tcgAmount } from "./card-face.mjs";
+import { loadHeldIds } from "./price-hold-skip.mjs";
 
 export const HIST_TAG = "hist";
 const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -65,6 +66,7 @@ export async function loadHistoryCards(root) {
   let longLast = "";
   try { longLast = JSON.parse(await readFile(join(pub, "hist-long/summary.json"), "utf8")).last || ""; } catch { /* optional */ }
   const cards = [];
+  const held = await loadHeldIds(root);
   for (const f of files) {
     let long, bucket;
     try {
@@ -73,6 +75,7 @@ export async function loadHistoryCards(root) {
     } catch { continue; }
     for (const r of bucket) {
       if (!r || r.kind !== "single" || !/^tcgcsv-\d+$/.test(String(r.id || ""))) continue;
+      if (held.has(r.id)) continue;
       const lp = parseLong(long.rows?.[r.id]);
       const night = (r.hist || []).filter((p) => Array.isArray(p) && /^\d{4}-\d{2}-\d{2}$/.test(p[0]) && Number(p[1]) > 0).map((p) => [p[0], Number(p[1])]);
       if (lp.length < 2 || !night.length) continue;

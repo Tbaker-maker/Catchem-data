@@ -100,6 +100,32 @@ export async function run() {
   const shipped = JSON.parse(readFileSync(new URL("../../research/assets/public/reads-preview.json", import.meta.url), "utf8"));
   const shippedLines = Object.values(shipped.lines || {});
   t("the shipped preview is clean, dated, and has no member id", shipped.asOf && shippedLines.length >= 8 && shippedLines.every((line) => isClean(line) && /as of /.test(line) && !/[\u2013\u2014]/.test(line)) && !JSON.stringify(shipped).includes("discord") && String(shipped.lines["rarity:Special Illustration Rare"] || "").includes("Umbreon ex 161/131, Prismatic Evolutions"));
+  const heldPool = poolFromData({
+    catalogue: {
+      asOf: "2026-10-18",
+      sets: [{
+        slug: "sv-prismatic-evolutions",
+        name: "SV: Prismatic Evolutions",
+        released: true,
+        prices: [
+          { id: "tcgcsv-1", number: "1/10", price: 5, name: "Pikachu" },
+          { id: "tcgcsv-2", number: "2/10", price: 9, name: "Held card", held: true },
+          { id: "tcgcsv-3", number: "3/10", price: 8, name: "Price being checked", priceStatus: "checking" },
+        ],
+      }],
+    },
+    sealed: {
+      updatedAt: "2026-10-18T13:00:00Z",
+      products: [
+        { id: "live", name: "Prismatic Evolutions ETB NM", set: "Prismatic Evolutions", tcgPlayerId: "55", dataStatus: "live", askMedian: 40, listingCount: 6 },
+        { id: "held", name: "Held box", set: "Prismatic Evolutions", tcgPlayerId: "56", dataStatus: "live", askMedian: 40, listingCount: 6, priceStatus: "held" },
+      ],
+    },
+  });
+  const heldBlob = JSON.stringify(heldPool);
+  t("held and price being checked stay out of the pool", !heldPool.reads.some((row) => row.cardId === "tcgcsv-2" || row.cardId === "tcgcsv-3" || row.cardId === "tcgcsv-56") && !/price being checked/i.test(heldBlob) && !heldPool.reads.some((row) => row.kind === "sealed" && /\bNM\b/.test(row.line)));
+  const heldOut = buildOutbox({ follows: [{ discordId: "123456789012345678", cards: ["tcgcsv-1"], kinds: ["single"], frequency: "daily" }], pool: heldPool, now });
+  t("the outbox keeps a public card id and never an email", heldOut.members[0].reads[0].cardId === "tcgcsv-1" && heldOut.members[0].reads[0].name === "Pikachu" && !JSON.stringify(heldOut).includes("@") && !JSON.stringify(heldOut).includes("email"));
   return fail;
 }
 
