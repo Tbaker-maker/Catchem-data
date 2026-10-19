@@ -45,7 +45,8 @@ try {
   const doc = {
     asOf: today,
     note: "Card Rating: a factual comparison of each card's TCGplayer market price and facts on file against similar cards. Not advice. Factor values are 0 to 1. Missing factors are left out and the rest rescaled.",
-    weights: RATING_WEIGHTS, labels: FACTOR_LABEL, bands: { below: BELOW, above: ABOVE, minPeers: MIN_PEERS },
+    // Weights and band cutoffs are not published (private methods rule). Labels are words only.
+    labels: FACTOR_LABEL,
     groups: Object.fromEntries([...GROUPS, FIRST_ED].map((g) => [g.key, { label: g.label, count: groups[g.key] || 0 }])),
     method: "Doc: Catch'em Card Rating Method. Peer value = price against the median of the same group and popularity band (5+ peers), else the whole group.",
     count: list.length, shards: "feed/rating/NN.json, NN = shardOf(id)", reads,

@@ -141,10 +141,17 @@ export function setListings(bySet, setName) {
   return pub;
 }
 
-// Multi-factor watchlist score. Weights add to 100. Documented in the IR doc v2.
-// The print window is one strong factor, not a gate.
+// Multi-factor watchlist score. The weights are private: catchem-data-private
+// data/private/ir-cycle/weights.json. With no weights every score is 0 and rows
+// keep a plain order (lowest price first). The print window is one factor, not a gate.
 // Sealed listings left out (Tyler, Oct 12): card pages never show sealed data.
-export const SCORE_WEIGHTS = { stage: 25, range: 25, popularity: 20, peers: 15, trend: 15, psa10: 0 };
+export const SCORE_FACTORS = ["stage", "range", "popularity", "peers", "trend", "psa10"];
+export function cleanWeights(w) {
+  if (!w || typeof w !== "object") return null;
+  const out = {};
+  for (const k of SCORE_FACTORS) { const v = Number(w[k]); if (Number.isFinite(v) && v >= 0) out[k] = v; }
+  return Object.keys(out).length ? out : null;
+}
 
 export function stageValue(age, rotated) {
   if (rotated) return { v: 0.5, chip: "Set rotated" };
@@ -178,7 +185,8 @@ export function peersValue(own, setMed, eraMed) {
   return { v, chip: parts.length ? `90 days ${txt}. Median: ${parts.join(", ")}` : "" };
 }
 
-export function buildRows({ rows, longRows, rot, bySet, today, marks = {} }) {
+export function buildRows({ rows, longRows, rot, bySet, today, marks = {}, weights = null }) {
+  const W = cleanWeights(weights) || {};
   const pre = [];
   for (const r of rows) {
     const kind = kindOf(r);
@@ -209,8 +217,8 @@ export function buildRows({ rows, longRows, rot, bySet, today, marks = {} }) {
       trend: trendValue(t30, t90),
     };
     let score = 0;
-    for (const k of Object.keys(f)) score += (SCORE_WEIGHTS[k] || 0) * f[k].v;
-    const lifts = Object.keys(f).filter((k) => f[k].chip && f[k].v >= 0.5).sort((a, b) => SCORE_WEIGHTS[b] * f[b].v - SCORE_WEIGHTS[a] * f[a].v).map((k) => ({ factor: k, text: f[k].chip }));
+    for (const k of Object.keys(f)) score += (W[k] || 0) * f[k].v;
+    const lifts = Object.keys(f).filter((k) => f[k].chip && f[k].v >= 0.5).sort((a, b) => (W[b] || 0) * f[b].v - (W[a] || 0) * f[a].v).map((k) => ({ factor: k, text: f[k].chip }));
     const rotChip = rotationChip(rot, r.setSlug, today, marks[r.id]?.mark);
     out.push({
       id: r.id, name: r.name, num: r.num, set: r.set, setSlug: r.setSlug, kind, kindLabel: KIND_LABEL[kind], era: eraOf(r),
