@@ -237,7 +237,10 @@
           "4 booster": 2,
           "x2": 1
         }
-      }
+      },
+      "qaWarn": [
+        "high $54.99 is 4.4× the median — watch for lot/case listings in the top half"
+      ]
     },
     {
       "id": "swsh6-pack",
@@ -1385,7 +1388,10 @@
           "damaged": 1,
           "3x": 1
         }
-      }
+      },
+      "qaWarn": [
+        "high $35 is 3.1× the median — watch for lot/case listings in the top half"
+      ]
     },
     {
       "id": "sv3pt5-pack",
@@ -1866,7 +1872,10 @@
           "box": 1,
           "promo": 2
         }
-      }
+      },
+      "qaWarn": [
+        "high $70 is 4.3× the median — watch for lot/case listings in the top half"
+      ]
     },
     {
       "id": "sv8-pack",
@@ -2107,7 +2116,10 @@
           "opened": 1,
           "promo": 1
         }
-      }
+      },
+      "qaWarn": [
+        "high $69.99 is 7.0× the median — watch for lot/case listings in the top half"
+      ]
     },
     {
       "id": "sv8pt5-pack",
@@ -2350,7 +2362,10 @@
           "promos": 1
         },
         "failMenu": 4
-      }
+      },
+      "qaWarn": [
+        "high $69.99 is 4.1× the median — watch for lot/case listings in the top half"
+      ]
     },
     {
       "id": "sv9-pack",
@@ -2813,7 +2828,10 @@
           "4x": 1,
           "psa": 1
         }
-      }
+      },
+      "qaWarn": [
+        "high $54.99 is 4.4× the median — watch for lot/case listings in the top half"
+      ]
     },
     {
       "id": "me1-pack",
@@ -3308,7 +3326,10 @@
           "3x": 1
         },
         "failMenu": 1
-      }
+      },
+      "qaWarn": [
+        "high $58.39 is 3.9× the median — watch for lot/case listings in the top half"
+      ]
     },
     {
       "id": "me2pt5-pack",
@@ -3784,7 +3805,10 @@
           "3 booster": 1,
           "bundle": 1
         }
-      }
+      },
+      "qaWarn": [
+        "high $24 is 3.0× the median — watch for lot/case listings in the top half"
+      ]
     },
     {
       "id": "sm35-etb",
@@ -4712,7 +4736,11 @@
           "dent": 1,
           "see description": 1
         }
-      }
+      },
+      "publishBlock": true,
+      "qaReasons": [
+        "median moved -41% overnight vs $735.84 — filter drift suspected"
+      ]
     },
     {
       "id": "zsv10pt5-etb",
@@ -5841,7 +5869,11 @@
         "excludeTerms": {
           "mini tin": 1
         }
-      }
+      },
+      "publishBlock": true,
+      "qaReasons": [
+        "manually quarantined 2026-08-21 (Tyler (founder QA)): median read $240 against an observed ~$205 market; multi-item listings suspected in the top half"
+      ]
     },
     {
       "id": "me2pt5-tin",
@@ -6081,7 +6113,10 @@
           "x2": 1,
           "empty": 1
         }
-      }
+      },
+      "qaWarn": [
+        "high $139.99 is 3.0× the median — watch for lot/case listings in the top half"
+      ]
     },
     {
       "id": "mega-forces-tin",
@@ -6503,7 +6538,11 @@
           "etb": 1,
           "booster boxes": 1
         }
-      }
+      },
+      "publishBlock": true,
+      "qaReasons": [
+        "manually quarantined 2026-08-22 (CC (era-base contamination audit)): the price included boxes from later Sun & Moon sets. Most listings we fetched name a different set, so the $2,300 reading is not this product."
+      ]
     },
     {
       "id": "sm1-etb",
@@ -7834,7 +7873,10 @@
           "etb": 1,
           "booster boxes": 1
         }
-      }
+      },
+      "qaWarn": [
+        "high $4688.48 is 4.4× the median — watch for lot/case listings in the top half"
+      ]
     },
     {
       "id": "sm4-etb",
@@ -10715,7 +10757,10 @@
           "4x": 1,
           "3x": 1
         }
-      }
+      },
+      "qaWarn": [
+        "high $209.99 is 4.7× the median — watch for lot/case listings in the top half"
+      ]
     },
     {
       "id": "sv8-bb",
@@ -10948,7 +10993,10 @@
           "x2": 3,
           "etb": 13
         }
-      }
+      },
+      "qaWarn": [
+        "high $229 is 3.5× the median — watch for lot/case listings in the top half"
+      ]
     },
     {
       "id": "sv7-bb",
@@ -11175,7 +11223,10 @@
           "x2": 1,
           "x3": 1
         }
-      }
+      },
+      "qaWarn": [
+        "floor $22.37 is 3.8× under the median"
+      ]
     },
     {
       "id": "sv6-bb",
@@ -11854,7 +11905,11 @@
           "damage": 1
         },
         "failSibling": 14
-      }
+      },
+      "publishBlock": true,
+      "qaReasons": [
+        "manually quarantined 2026-08-22 (CC (era-base contamination audit)): only four listings survived once other Sword & Shield sets were removed — too few to publish a price we would stand behind."
+      ]
     },
     {
       "id": "swsh2-booster-box",
@@ -12524,7 +12579,10 @@
           "etb": 1,
           "build & battle": 1
         }
-      }
+      },
+      "qaWarn": [
+        "high $1199.99 is 3.1× the median — watch for lot/case listings in the top half"
+      ]
     },
     {
       "id": "swsh3-etb",
@@ -13182,7 +13240,10 @@
           "damaged": 1,
           "x3": 1
         }
-      }
+      },
+      "qaWarn": [
+        "high $499.99 is 3.1× the median — watch for lot/case listings in the top half"
+      ]
     },
     {
       "id": "swsh5-booster-box",
@@ -21263,7 +21324,10 @@
           "set of": 1
         },
         "failMenu": 2
-      }
+      },
+      "qaWarn": [
+        "high $159.99 is 3.8× the median — watch for lot/case listings in the top half"
+      ]
     },
     {
       "id": "me5-pc-etb",
@@ -21962,7 +22026,10 @@
           "tear": 1
         },
         "failMenu": 8
-      }
+      },
+      "qaWarn": [
+        "high $379.99 is 5.3× the median — watch for lot/case listings in the top half"
+      ]
     },
     {
       "id": "me4-bb",
@@ -22877,7 +22944,10 @@
           "x2": 1,
           "2x": 1
         }
-      }
+      },
+      "qaWarn": [
+        "high $320.98 is 4.3× the median — watch for lot/case listings in the top half"
+      ]
     },
     {
       "id": "me3-bb",
@@ -23107,7 +23177,10 @@
           "2x": 2
         },
         "failMenu": 2
-      }
+      },
+      "qaWarn": [
+        "high $162.97 is 3.9× the median — watch for lot/case listings in the top half"
+      ]
     },
     {
       "id": "me3-pc-etb",
@@ -24499,7 +24572,10 @@
           "ripped": 1,
           "lot": 2
         }
-      }
+      },
+      "qaWarn": [
+        "floor $46.98 is 3.4× under the median"
+      ]
     },
     {
       "id": "me2-bb",
@@ -33933,7 +34009,10 @@
           "see description": 1,
           "booster box": 1
         }
-      }
+      },
+      "qaWarn": [
+        "floor $100 is 9.3× under the median"
+      ]
     },
     {
       "id": "swsh12pt5-etb",
@@ -34859,7 +34938,10 @@
           "tear": 1,
           "x2": 1
         }
-      }
+      },
+      "qaWarn": [
+        "floor $75 is 3.1× under the median"
+      ]
     },
     {
       "id": "swsh12-etb",
@@ -35783,7 +35865,10 @@
           "pokemon center": 7,
           "3d printed": 1
         }
-      }
+      },
+      "qaWarn": [
+        "floor $47.17 is 5.0× under the median"
+      ]
     },
     {
       "id": "swsh8-etb",
@@ -36242,7 +36327,10 @@
           "tears": 1,
           "tear": 1
         }
-      }
+      },
+      "qaWarn": [
+        "floor $70 is 5.0× under the median"
+      ]
     },
     {
       "id": "swsh7-etb",
@@ -37655,7 +37743,11 @@
           "pokemon center": 1,
           "tear": 1
         }
-      }
+      },
+      "publishBlock": true,
+      "qaReasons": [
+        "median moved 132% overnight vs $140 — filter drift suspected"
+      ]
     },
     {
       "id": "cel25-upc",
@@ -38588,7 +38680,11 @@
           "lot": 1
         },
         "failSibling": 3
-      }
+      },
+      "publishBlock": true,
+      "qaReasons": [
+        "manually quarantined 2026-08-22 (CC (era-base contamination audit)): the price included trainer boxes from later Sword & Shield sets, reading about $182."
+      ]
     },
     {
       "id": "sm12-etb",
@@ -42115,7 +42211,10 @@
           "36x": 1,
           "half booster": 1
         }
-      }
+      },
+      "qaWarn": [
+        "floor $99.99 is 3.3× under the median"
+      ]
     },
     {
       "id": "sv3-booster-box",
@@ -44917,7 +45016,10 @@
         "failPrice": 5,
         "shipUnknown": 32,
         "kept": 57
-      }
+      },
+      "qaWarn": [
+        "floor $100 is 6.1× under the median"
+      ]
     },
     {
       "id": "swsh10-booster-box",
@@ -46992,7 +47094,10 @@
           "promo": 1,
           "opened": 1
         }
-      }
+      },
+      "qaWarn": [
+        "high $29.99 is 3.3× the median — watch for lot/case listings in the top half"
+      ]
     },
     {
       "id": "me5-pack",
@@ -47215,7 +47320,10 @@
           "3 booster": 1,
           "4 booster": 1
         }
-      }
+      },
+      "qaWarn": [
+        "high $50 is 5.4× the median — watch for lot/case listings in the top half"
+      ]
     },
     {
       "id": "sv1-bundle",
@@ -47523,7 +47631,11 @@
           "promo": 1,
           "2x": 1
         }
-      }
+      },
+      "qaWarn": [
+        "high $70 is 3.5× the median — watch for lot/case listings in the top half",
+        "floor $3.99 is 5.0× under the median"
+      ]
     },
     {
       "id": "sv2-bundle",
@@ -47976,7 +48088,10 @@
           "3x": 2,
           "x4": 2
         }
-      }
+      },
+      "qaWarn": [
+        "high $63.95 is 4.0× the median — watch for lot/case listings in the top half"
+      ]
     },
     {
       "id": "sv3-bundle",
@@ -49119,7 +49234,10 @@
           "x4": 2,
           "3x": 1
         }
-      }
+      },
+      "qaWarn": [
+        "high $74.39 is 7.0× the median — watch for lot/case listings in the top half"
+      ]
     },
     {
       "id": "sv6pt5-pack",
@@ -49579,7 +49697,10 @@
           "promos": 1
         },
         "failMenu": 1
-      }
+      },
+      "qaWarn": [
+        "high $75 is 6.6× the median — watch for lot/case listings in the top half"
+      ]
     },
     {
       "id": "swsh1-pack",
@@ -49792,7 +49913,11 @@
           "art set": 2,
           "4x": 2
         }
-      }
+      },
+      "publishBlock": true,
+      "qaReasons": [
+        "manually quarantined 2026-08-22 (CC (era-base contamination audit)): the price was built from other sets. Later Sword & Shield packs were counted as base-set packs, reading about $20 against a real price nearer $5."
+      ]
     },
     {
       "id": "swsh1-bundle",
@@ -50095,7 +50220,10 @@
           "4x": 1,
           "code card": 1
         }
-      }
+      },
+      "qaWarn": [
+        "high $63.8 is 4.8× the median — watch for lot/case listings in the top half"
+      ]
     },
     {
       "id": "swsh10-bundle",
@@ -50594,7 +50722,10 @@
           "promo": 2
         },
         "failMenu": 1
-      }
+      },
+      "qaWarn": [
+        "high $75 is 4.2× the median — watch for lot/case listings in the top half"
+      ]
     },
     {
       "id": "swsh12-bundle",
@@ -51265,7 +51396,10 @@
           "x2": 1,
           "2x": 1
         }
-      }
+      },
+      "qaWarn": [
+        "high $74 is 4.9× the median — watch for lot/case listings in the top half"
+      ]
     },
     {
       "id": "swsh2-bundle",
@@ -51538,7 +51672,10 @@
           "album": 1,
           "4x": 1
         }
-      }
+      },
+      "qaWarn": [
+        "high $75 is 4.8× the median — watch for lot/case listings in the top half"
+      ]
     },
     {
       "id": "swsh3-bundle",
@@ -52093,7 +52230,10 @@
           "coin": 1
         },
         "failMenu": 1
-      }
+      },
+      "qaWarn": [
+        "high $74.94 is 5.0× the median — watch for lot/case listings in the top half"
+      ]
     },
     {
       "id": "swsh4-bundle",
@@ -52381,7 +52521,10 @@
           "code card": 1
         },
         "failMenu": 1
-      }
+      },
+      "qaWarn": [
+        "high $75 is 4.0× the median — watch for lot/case listings in the top half"
+      ]
     },
     {
       "id": "swsh45-bundle",
@@ -52883,7 +53026,10 @@
           "code card": 1
         },
         "failMenu": 4
-      }
+      },
+      "qaWarn": [
+        "high $66.49 is 3.5× the median — watch for lot/case listings in the top half"
+      ]
     },
     {
       "id": "swsh9-bundle",

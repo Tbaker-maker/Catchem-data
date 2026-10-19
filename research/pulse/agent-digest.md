@@ -1,21 +1,21 @@
-# What the machines noticed — 2026-10-18
+# What the machines noticed — 2026-10-19
 
-The overnight shift's notes. Short on purpose.
+Nothing here needs you this morning unless something is marked NEEDS A HUMAN.
 
 ## Our own claims
-Not much of a verdict today. Most of our claims need more time before they can be judged, and pretending otherwise would be the actual failure.
+Mostly "we cannot tell yet" today — half these tests need weeks of history we simply do not have. Saying so beats guessing.
 3 survived their own kill conditions, 7 could not be judged yet with the tape we hold.
 
 ## Our own numbers
-A handful of suspicious jumps in our own history. Probably ours, not the market's — that is the usual answer.
+Found a few of our own figures that moved faster than any market should. Checking which one of them was us.
 
-**NEEDS A HUMAN — 14 figure(s) moved faster than a market can:
+**NEEDS A HUMAN — 16 figure(s) moved faster than a market can:
+- Celebrations Elite Trainer Box: $140 → $325 in 2026-10-18→2026-10-19 (+132.1%)
 - Celebrations Elite Trainer Box: $160 → $335 in 2026-10-12→2026-10-13 (+109.4%)
 - Celebrations Elite Trainer Box: $161.99 → $330 in 2026-10-06→2026-10-07 (+103.7%)
 - Temporal Forces Pokemon Center Elite Trainer Box: $253.74 → $499.99 in 2026-10-05→2026-10-06 (+97%)
-- Celebrations Elite Trainer Box: $160 → $315 in 2026-10-16→2026-10-17 (+96.9%)
 
-21 product(s) we featured and can no longer price:
+22 product(s) we featured and can no longer price:
 - Umbreon VMAX (featured 2026-08-20)
 - Umbreon VMAX (featured 2026-08-21)
 - Charizard ex (featured 2026-08-22)
@@ -32,9 +32,9 @@ A handful of suspicious jumps in our own history. Probably ours, not the market'
 
 ## The agents themselves
 **NEEDS A HUMAN — the supervisor flagged the watchers:**
-- correction-hunter: FARMING — findings climbed 6 → 6 → 6 → 33 across four runs with nothing resolved. Volume is not work.
+- correction-hunter: FARMING — findings climbed 6 → 6 → 6 → 35 across four runs with nothing resolved. Volume is not work.
 - correction-hunter: BROKEN RECORD — 5 finding(s) repeated three runs running (e.g. "gone::Umbreon VMAX"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
-- correction-hunter: OVER-BUDGET — 33 findings against a ceiling of 30. An unreadable list is an unread list.
+- correction-hunter: OVER-BUDGET — 35 findings against a ceiling of 30. An unreadable list is an unread list.
 - designer: FARMING — findings climbed 12 → 12 → 12 → 19 across four runs with nothing resolved. Volume is not work.
 
 ## If we expanded
@@ -60,8 +60,8 @@ Gaps in what we watch:
 
 ## Who needs to do what
 **NEEDS A HUMAN — Tyler (4):**
-- **[ACT NOW 76]** Fusion Strike Booster Pack moved -10.0% — about 3.4× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
-- **[ACT NOW 76]** Twilight Masquerade Booster Bundle moved 8.3% — about 8.3× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
+- **[ACT NOW 76]** Fusion Strike Booster Pack moved 11.1% — about 3.1× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
+- **[ACT NOW 76]** Pitch Black Booster Pack moved 28.6% — about 3.1× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
 - **[QUEUE 58]** The knowledge base is only used for one fact a day. — *The same sourced facts could power a "why is this card like this" explainer on every product page — set context, print quirks, what makes it odd. It compounds with every fact added.*
 - **[WATCH 40]** pricing 50 more cards would unlock 17 artist cohorts — *an expansion decision, not a machine's call*
 
@@ -81,20 +81,19 @@ Gaps in what we watch:
 - **the cheat code** — Nothing tells a creator how a piece performed after they made it. *Ask one question after publication — did this land — and keep the answers. Even a yes/no on twenty videos would tell us which angles are worth generating.*
 
 ## What the market did
-- **product** — Fusion Strike Booster Pack moved 11.1% — about 3.1× its own typical daily swing. *Measured against its own 25 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
-- **product** — Pitch Black Booster Pack moved 28.6% — about 3.1× its own typical daily swing. *Measured against its own 23 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
+- **product** — Celebrations Elite Trainer Box moved 132.1% — about 3.0× its own typical daily swing. *Measured against its own 27 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
 
 ## Where today's story goes
-- **X** — "Twilight Masquerade listings moved 212.5% while its print window closes."
-- **YouTube** — Rebel Clash Elite Trainer Box — "Sealed carries a 236.1% premium over the cost of its packs bought loose — the widest gap of that kind we track today."
-- **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 99.3."
+- **X** — "Paldean Fates listings moved -67.7% while its print window closes."
+- **YouTube** — Evolutions Booster Box — "Works out to $111.11 a pack, the most expensive rip we track. A pack at retail runs about $4.49."
+- **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 99.5."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
 
 ## Something is slipping
 - **unsaved** — 3 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
 - **ignored** — 7 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
-- **drift** — 87 script(s) are not referenced anywhere: append-learning-log.mjs, append-shelf.mjs, audit-repo-bots.mjs, backfill-artists.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
+- **drift** — 88 script(s) are not referenced anywhere: append-learning-log.mjs, append-shelf.mjs, audit-repo-bots.mjs, backfill-artists.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
 - **drift** — 49 JSON files in research/pulse. *A directory nobody can scan is a directory where something goes missing without being noticed.*
 
 ## Legal standing
@@ -105,9 +104,9 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 
 ## Numbers that do not make sense for what they are
 57 value(s) are structurally fine and absurd in context.
-- **"sleeved"** killed 362 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
-- Battle Styles Booster Pack: 74% rejection rate (39/150) — *largest bucket: exclude = 62. A single over-broad term can eat a market.*
-- Scarlet & Violet Booster Pack: 92% rejection rate (12/150) — *largest bucket: set = 53. A single over-broad term can eat a market.*
+- **"sleeved"** killed 367 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
+- Battle Styles Booster Pack: 75% rejection rate (37/150) — *largest bucket: exclude = 69. A single over-broad term can eat a market.*
+- 151 Booster Pack: 78% rejection rate (33/150) — *largest bucket: type = 78. A single over-broad term can eat a market.*
 
 ## What the agents should be asking themselves
 - **domain-plausibility** — Would you catch this today? If yes, what specifically would fire. If no, what would you need?
@@ -129,13 +128,13 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 - **Mitsuhiro Arita drew Houndoom exactly once** — Mitsuhiro Arita has 496 cards. Exactly one is a Houndoom.
 
 ## Design
-6 high, 12 medium across 15 shipped surfaces, 128 minted cards.
+6 high, 12 medium across 15 shipped surfaces, 134 minted cards.
 - **build.html** — the accent colour appears 52 times. *Spend it in two places: the active state and the one primary action. Everything else greys.*
 - **corrections.html** — remote fonts with no local fallback. *Add system-ui and a generic family to every font stack.*
 - **methodology.html** — remote fonts with no local fallback. *Add system-ui and a generic family to every font stack.*
 
 ## What the agents cannot answer themselves
-70 open — 51 need eyes on a rendered page, 19 need a decision.
+71 open — 52 need eyes on a rendered page, 19 need a decision.
 - **NEEDS A HUMAN** [theme-scout] 14 Pokémon share the "-eon" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 7 Pokémon share the "ite" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 10 Pokémon share the "-ish" ending — a theme, or a coincidence of naming?
