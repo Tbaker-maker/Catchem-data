@@ -31,7 +31,7 @@ for (const name of names) {
     singles += 1;
     const reason = unnumberedReason(set.name);
     if (reason) reasons[reason] += 1;
-    const tag = tagSingle({ id: item.id, kind: "single", setName: set.name, artist: item.artist });
+    const tag = tagSingle({ id: item.id, kind: "single", setName: set.name, artist: item.artist, rarity: item.rarity });
     if (!tag) continue;
     if (byId[item.id]) clashes.push(item.id);
     else byId[item.id] = tag;
@@ -42,8 +42,8 @@ const rows = Object.values(byId);
 const coverage = summarize({ singles, sealedSeen, rows, reasons });
 const doc = {
   asOf: asOf || null,
-  source: "Illustrator names are copied from the public set files, where the card name and the set already agree. Generation is a number from 1 to 9 for the series that set already belongs to. Mega Evolution is not numbered. A promo set with no series name is not numbered. e-Card sets are generation 2. POP Series is generation 3. Legendary Collection is generation 1. Sealed products are not tagged.",
-  rule: "This file does not match on card name. A single with no illustrator credit has no artist field. A set that is not one numbered generation has no generation field.",
+  source: "Illustrator names are copied from the public set files, where the card name and the set already agree. Generation is a number from 1 to 9 for the series that set already belongs to, or ME for Mega Evolution, its own generation. Rarity is kept only for Illustration Rare, Special Illustration Rare and Ultra Rare. A promo set with no series name is not numbered. e-Card sets are generation 2. POP Series is generation 3. Legendary Collection is generation 1. Sealed products are not tagged.",
+  rule: "This file does not match on card name. A single with no illustrator credit has no artist field. A set that is not one generation has no generation field.",
   coverage,
   clashes: clashes.length,
   byId,
