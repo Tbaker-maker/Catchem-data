@@ -122,6 +122,17 @@ export function runStage(prices, asOf, spec, listings = null) {
   else if (Math.abs(r) <= F) { word = "Stalled"; dir = p > 0 ? "up" : "down"; }
   else if ((r > 0) !== (p > 0)) word = "Reversing";
   else word = Math.abs(r) >= c.keepPace * Math.abs(p) ? "Building" : "Slowing";
+  // Optional persistence (private rules: persistNights, persistStages): the move
+  // must show on persistNights of the recent nights, priced beyond the last
+  // prior-half price in its direction. One jump on the latest day after a flat
+  // stretch is then no stage at all.
+  const persist = num(spec.persistNights);
+  const persistStages = Array.isArray(spec.persistStages) ? spec.persistStages : [];
+  if (Number.isFinite(persist) && persist > 1 && persistStages.includes(word)) {
+    const ref = pri[pri.length - 1][1];
+    const beyond = rec.filter((q) => (dir === "up" ? q[1] > ref : q[1] < ref)).length;
+    if (beyond < persist) return null;
+  }
   if (lst != null && word === "Building") {
     if ((dir === "up" && lst > c.listFlatPct) || (dir === "down" && lst < -c.listFlatPct)) word = "Slowing";
   }
