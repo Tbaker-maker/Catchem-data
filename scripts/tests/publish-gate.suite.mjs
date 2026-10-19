@@ -26,6 +26,7 @@ export async function run() {
   t("Vintage on a 2004 set drops", rule({ ...base, set: "POP Series 1", tags: ["Vintage"] }, { sets: { "POP Series 1": "2004-09-01" } }).includes("era"));
   t("same read as yesterday drops", rule({ ...base, endDate: "2026-10-19" }, { asOf: "2026-10-19", prev: { x: { ...base, asOf: "2026-10-18", endDate: "2026-10-19" } } }).includes("repeat"));
   t("advice wording drops", rule({ ...base, headline: "You should buy this box now." }).includes("advice"));
+  t("raw card codes are a bad title", rule({ ...base, headline: "Set: top cards on TCGplayer market are #R/RGB at $6,000.27." }).includes("title"));
   t("clean read passes", rule(base).length === 0);
   const many = Array.from({ length: 40 }, (_, i) => ({ ...base, id: `r${i}`, name: "Rating: X" }));
   t("systemic breakage is flagged", gateReads(many).systemic === true);
