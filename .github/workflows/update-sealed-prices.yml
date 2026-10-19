@@ -362,6 +362,18 @@ jobs:
           SIGNAL_STAMP_READS: "1"
         run: node scripts/stamp-signal-chips.mjs
 
+      - name: IR and SIR watch and run stage call ledger
+        # Every Illustration Rare and Special Illustration Rare: baselines, set peers,
+        # listings counted, run stage, rotation. Public facts to feed/ir-sir.json;
+        # cutoffs, weights, scores, the backtest and the run stage call ledger
+        # (day 7, 14 and 30 checks) stay in catchem-data-private.
+        continue-on-error: true
+        env:
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+        run: |
+          node scripts/build-ir-sir-watch.mjs
+          node scripts/log-stage-calls.mjs
+
       - name: Publish gate
         # Drops single bad reads with a logged reason; fails only on systemic breakage.
         run: node scripts/publish-gate.mjs

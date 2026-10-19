@@ -357,5 +357,12 @@ console.log("── set source groups ──");
   t("vintage and POP sets sit in their era", eraOf("Skyridge") === "Original" && eraOf("POP Series 5") === "Promos and extras");
 }
 
+console.log("── IR and SIR watch ──");
+{
+  const { run } = await import("./ir-sir-watch.suite.mjs");
+  const n = await run();
+  t("IR and SIR watch suite", n === 0, `${n} failed`);
+}
+
 console.log(`\n${pass} passed · ${fail} failed`);
 if (fail) process.exit(1);
