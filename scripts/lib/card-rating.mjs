@@ -382,7 +382,7 @@ export function ratingReads(list, { asOf, max = 3 } = {}) {
       ];
       if (!cleanCopy(head) || lines.some((l) => !cleanCopy(l)) || lines.length < 3) continue;
       out.push({
-        id: `deep-rating-${g}-${side}`, readKind: "deep", kind: "deep", deep: "rating", board: "v3", family: "deep", name: `Rating: ${label}`,
+        id: `deep-rating-${g}-${side}`, readKind: "deep", kind: "deep", deep: "rating", board: "v3", family: "deep", name: `${bare(top.name)}${pv} (${shortSet(top.set)})${top.num ? ` ${top.num}` : ""}`, ratingGroup: label,
         sku: top.id, href: `/c/${top.id}`, headline: head, path: head, lines: lines.slice(0, 6), asOf, source: `TCGplayer market, buckets and hist-long, ${asOf}; Card Rating peers`,
         tags: [], receipt: { group: g, side, cards: pick.slice(0, max).map((r) => ({ id: r.id, price: r.price, peers: r.peers })) },
       });

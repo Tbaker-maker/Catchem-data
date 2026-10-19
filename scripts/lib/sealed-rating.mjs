@@ -195,7 +195,7 @@ export function sealedReads(list, { asOf, max = 3 } = {}) {
       "A factual comparison of prices on file, not advice.",
     ];
     if (!cleanCopy(head) || lines.some((l) => !cleanCopy(l))) continue;
-    out.push({ id: `deep-sealedrating-${type}`, readKind: "deep", kind: "deep", deep: "sealedrating", board: "v3", family: "deep", name: `Sealed Rating: ${T.label}`, sku: top.id, href: `/p/${top.id}`, headline: head, path: head, lines: lines.slice(0, 6), asOf, source: `TCGplayer market, ${asOf}; Sealed Rating, same product type`, tags: [], receipt: { type, items: pick.slice(0, max).map((x) => ({ id: x.id, price: x.price, chase: x.chase })) } });
+    out.push({ id: `deep-sealedrating-${type}`, readKind: "deep", kind: "deep", deep: "sealedrating", board: "v3", family: "deep", name: top.name, ratingGroup: `Sealed Rating: ${T.label}`, sku: top.id, href: `/p/${top.id}`, headline: head, path: head, lines: lines.slice(0, 6), asOf, source: `TCGplayer market, ${asOf}; Sealed Rating, same product type`, tags: [], receipt: { type, items: pick.slice(0, max).map((x) => ({ id: x.id, price: x.price, chase: x.chase })) } });
   }
   // Print stage: median nightly change of boxes and ETBs by stage.
   const pool = list.filter((x) => ["booster-box", "etb"].includes(x.type) && x.trend?.pct != null && x.stage);
