@@ -207,6 +207,13 @@ console.log("── signal chips ──");
   t("signal chips suite", n === 0, `${n} failed`);
 }
 
+console.log("── seller tag and run stage ──");
+{
+  const { run } = await import("./seller-stage.suite.mjs");
+  const n = await run();
+  t("seller tag and run stage suite", n === 0, `${n} failed`);
+}
+
 console.log("── custom reads ──");
 {
   const a = await import("./custom-reads.suite.mjs");
