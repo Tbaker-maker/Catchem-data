@@ -127,11 +127,11 @@ function moveChip(points, asOf, rules, checked) {
   for (const days of prefer) {
     const now = nearest(points, asOf, slack);
     const then = nearest(points, addDays(asOf, -days), slack);
-    if (now && then && now[0] !== then[0]) { hit = { days, now: now[1], then: then[1] }; break; }
+    if (now && then && now[0] !== then[0]) { hit = { days, now: now[1], then: then[1], thenDate: then[0], nowDate: now[0] }; break; }
   }
   if (!hit && points.length >= 2) {
     const days = dayNum(points[points.length - 1][0]) - dayNum(points[0][0]);
-    if (days >= num(move.minDays)) hit = { days, now: points[points.length - 1][1], then: points[0][1] };
+    if (days >= num(move.minDays)) hit = { days, now: points[points.length - 1][1], then: points[0][1], thenDate: points[0][0], nowDate: points[points.length - 1][0] };
   }
   if (!hit) return null;
   const pct = ((hit.now - hit.then) / hit.then) * 100;
@@ -147,6 +147,12 @@ function moveChip(points, asOf, rules, checked) {
     dir,
     text,
     label: dir === "flat" ? `Price flat over ${hit.days} days` : `Price ${word} ${shown} percent over ${hit.days} days`,
+    pct: Math.round(abs * 10) / 10,
+    days: hit.days,
+    then: hit.then,
+    thenDate: hit.thenDate,
+    now: hit.now,
+    nowDate: hit.nowDate,
   };
 }
 
@@ -273,8 +279,10 @@ function supplyChip(ctx, rules) {
   if (!Number.isFinite(hit.pct) || Math.abs(hit.pct) < min) return null;
   const pace = paceWord(series, hit, spec, asOf);
   if (pace === "quiet") return null;
-  const sellers = sellerWord(row, spec);
-  const stage = stageWord(series, cleanPoints(ctx.points), asOf, spec);
+  // Seller and stage words stay off until their measurement is approved.
+  const extras = spec?.publicExtras === true;
+  const sellers = extras ? sellerWord(row, spec) : "";
+  const stage = extras ? stageWord(series, cleanPoints(ctx.points), asOf, spec) : "";
   const shown = roundPct(Math.abs(hit.pct));
   const sign = hit.pct < 0 ? "-" : "+";
   const dayBit = hit.days > 0 ? ` ${hit.days}d` : "";
@@ -361,14 +369,14 @@ function eraChip(ctx, rules) {
 }
 
 function confidenceChip(points, rules) {
-  const cuts = Array.isArray(rules?.confidence?.cuts) ? rules.confidence.cuts.map(num) : [];
+  const cuts = Array.isArray(rules?.confidence?.cuts) ? rules.confidence.cuts.map(num).filter(Number.isFinite).slice(0, 4) : [];
   if (cuts.length < 2 || !points.length) return null;
   const n = points.length;
-  let bars = 3;
-  if (n < cuts[0]) bars = 1;
-  else if (n < cuts[1]) bars = 2;
-  const word = bars === 1 ? "One" : bars === 2 ? "Two" : "Three";
-  return { kind: "confidence", bars, label: `${word} data bars on file` };
+  let bars = 1;
+  for (const cut of cuts) if (n >= cut) bars += 1;
+  const of = cuts.length + 1;
+  const word = ["", "One", "Two", "Three", "Four", "Five"][bars];
+  return { kind: "confidence", bars, of, label: `${word} data bars on file` };
 }
 
 function priority(chips, rules) {
@@ -434,6 +442,133 @@ function publish(chip) {
   if (chip.kind === "era") return { kind: "era", tag: chip.tag, label: chip.label };
   if (chip.kind === "confidence") return { kind: "confidence", bars: chip.bars, label: chip.label };
   return null;
+}
+
+function quart(sorted, p) {
+  if (!sorted.length) return NaN;
+  const i = (sorted.length - 1) * p;
+  const lo = Math.floor(i);
+  const hi = Math.ceil(i);
+  return sorted[lo] + (sorted[hi] - sorted[lo]) * (i - lo);
+}
+
+function sourceName(read, fallback) {
+  const raw = String(read?.source || "").replace(/,\s*\d{4}-\d{2}-\d{2}.*$/, "").trim();
+  if (/ebay/i.test(raw)) return "eBay asks";
+  if (/tcgplayer/i.test(raw)) return "TCGplayer market";
+  return fallback;
+}
+
+// Listings counted tile. Only for products with real nightly counts.
+// The band is the product's own middle range of counts before the window.
+export function listingsTile(ctx = {}, rules = {}) {
+  const row = ctx?.listings;
+  if (!row) return null;
+  const spec = rules?.supply || {};
+  const series = listingSeries(row);
+  if (series.length < 2) return null;
+  const asOf = String(row.date || ctx.asOf || "").slice(0, 10);
+  const windowDays = num(spec.windowDays) > 0 ? num(spec.windowDays) : 0;
+  const slack = Number.isFinite(num(spec.slackDays)) ? num(spec.slackDays) : 0;
+  let hit = windowDays > 0 ? countWindow(series, asOf, windowDays, slack) : null;
+  if (!hit) {
+    const last = series[series.length - 1];
+    const prev = series[series.length - 2];
+    const span = dayNum(last.date) - dayNum(prev.date);
+    if (!(prev.n > 0) || !(span > 0)) return null;
+    hit = { pct: ((last.n - prev.n) / prev.n) * 100, days: span };
+  }
+  if (!Number.isFinite(hit.pct)) return null;
+  let word = "Steady";
+  const min = num(spec.minAbsPct);
+  if (min >= 0 && Math.abs(hit.pct) >= min) {
+    const pace = paceWord(series, hit, spec, asOf);
+    if (pace === "Draining" || pace === "Stacking") word = pace;
+  }
+  const recent = series.slice(-14);
+  const start = addDays(asOf, -hit.days);
+  const before = series.filter((p) => p.date < start).map((p) => p.n).sort((a, b) => a - b);
+  const band = before.length >= 4 ? [Math.round(quart(before, 0.25)), Math.round(quart(before, 0.75))] : null;
+  const shown = roundPct(Math.abs(hit.pct));
+  return {
+    word,
+    dir: shown === 0 ? "flat" : (hit.pct < 0 ? "down" : "up"),
+    pct: shown,
+    days: hit.days,
+    spark: recent.map((p) => p.n),
+    band,
+    from: recent[0].date,
+    to: recent[recent.length - 1].date,
+  };
+}
+
+function spanWords(since, through) {
+  const days = dayNum(through) - dayNum(since);
+  if (!(days > 0)) return "";
+  if (days < 60) return `${days} days`;
+  if (days < 365) return `${Math.round(days / 30.44)} mos`;
+  const yrs = Math.round((days / 365.25) * 2) / 2;
+  return `${yrs} ${yrs === 1 ? "yr" : "yrs"}`;
+}
+
+// Data, price and listings tiles. Counts and dates only, never a cutoff.
+export function tilesFor(read, all, ctx = {}, rules = {}) {
+  const asOf = String(ctx.asOf || read?.asOf || "").slice(0, 10);
+  const tiles = {};
+  const src = sourceName(read, "TCGplayer market");
+  const conf = all.find((chip) => chip.kind === "confidence");
+  const counts = ctx.counts || null;
+  if (conf && counts && counts.prices > 0 && /^\d{4}-\d{2}-\d{2}$/.test(String(counts.since || ""))) {
+    tiles.data = {
+      bars: conf.bars,
+      of: conf.of || 3,
+      prices: counts.prices,
+      recent: counts.recent || 0,
+      since: counts.since,
+      through: asOf,
+      span: spanWords(counts.since, asOf),
+      source: src,
+    };
+  }
+  const move = all.find((chip) => chip.kind === "move");
+  const daily = cleanPoints(ctx.daily && ctx.daily.length ? ctx.daily : ctx.points);
+  const cut = addDays(asOf, -30);
+  const spark = daily.filter((p) => p[0] >= cut).map((p) => Math.round(p[1] * 100) / 100);
+  const rw = num(read?.windowDays);
+  const rp = num(read?.changePct);
+  const rnow = num(read?.price);
+  if (move && move.dir === "dash") {
+    tiles.price = { dash: true, source: src, asOf };
+  } else if (rw > 0 && Number.isFinite(rp) && rnow > 0) {
+    // The read's own window, so the tile matches the price line on the card.
+    const then = nearest(daily.length ? daily : cleanPoints(ctx.points), addDays(asOf, -rw), 2);
+    const flat = num(rules?.move?.flatAbs);
+    const dir = flat >= 0 && Math.abs(rp) < flat ? "flat" : (rp > 0 ? "up" : rp < 0 ? "down" : "flat");
+    tiles.price = {
+      dir,
+      pct: dir === "flat" ? 0 : Math.round(Math.abs(rp) * 10) / 10,
+      days: rw,
+      from: Math.round((then ? then[1] : rnow / (1 + rp / 100)) * 100) / 100,
+      fromDate: then ? then[0] : addDays(asOf, -rw),
+      spark: spark.length >= 3 ? spark : [],
+      source: src,
+      asOf,
+    };
+  } else if (move && move.days > 0) {
+    tiles.price = {
+      dir: move.dir,
+      pct: move.dir === "flat" ? 0 : move.pct,
+      days: move.days,
+      from: Math.round(move.then * 100) / 100,
+      fromDate: move.thenDate || "",
+      spark: spark.length >= 3 ? spark : [],
+      source: src,
+      asOf,
+    };
+  }
+  const listed = listingsTile(ctx, rules);
+  if (listed) tiles.listings = listed;
+  return Object.keys(tiles).length ? tiles : null;
 }
 
 // Every chip the data can support, before the cap.
@@ -565,7 +700,8 @@ export function readSignals(read, ctx = {}, rules = {}) {
     const internal = all.find((row) => (row.kind === "supply" ? "listings" : row.kind) === chip.kind);
     return withStrength(chip, internal, cohort, rules);
   });
-  if (!signals.length) return { signals: [], blurb: "" };
+  const tiles = tilesFor(read, all, ctx, rules);
+  if (!signals.length) return tiles ? { signals: [], blurb: "", tiles } : { signals: [], blurb: "" };
   const lead = signals.find((chip) => chip.kind === "move" && chip.dir === "dash") || signals[0];
   let blurb = blurbFor(lead, asOf);
   if (isSealedRead(read) && /\bNM\b|Near Mint|\bcondition\b/i.test(blurb)) blurb = "";
@@ -575,6 +711,7 @@ export function readSignals(read, ctx = {}, rules = {}) {
   }
   if (blurb && /[\u2013\u2014]/.test(blurb)) blurb = "";
   const out = { signals, blurb };
+  if (tiles) out.tiles = tiles;
   const strength = overallStrength(signals, rules);
   if (strength) out.strength = strength;
   return out;

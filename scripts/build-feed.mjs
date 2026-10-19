@@ -3,7 +3,7 @@ import { buildVariantFile, tagReadsFile } from "./lib/read-tags.mjs";
 import { readFile, readdir, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { dropTiledCycles, pretty, slug } from "./lib/public-bundle.mjs";
+import { dropTiledCycles, pretty, prettyName, slug } from "./lib/public-bundle.mjs";
 import { publishFeed, readCallLog, readShelfFile } from "./lib/feed-catalogue.mjs";
 import { assembleCatalog, supplyNotes } from "./lib/extra-reads.mjs";
 import { supplyMap, writeFeedExtras } from "./build-extra-reads.mjs";
@@ -83,7 +83,7 @@ for (const item of catalog.items || []) {
   const kind = item.kind === "sealed" ? "sealed" : "single";
   items.push({
     id: item.id,
-    name: pretty(item.name),
+    name: prettyName(item.name),
     set: pretty(item.set),
     setSlug: slug(item.set || ""),
     kind,

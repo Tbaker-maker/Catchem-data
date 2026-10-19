@@ -94,6 +94,34 @@ async function indexPacked(dir, wanted, parse) {
   return hit;
 }
 
+export const FEED_PARTS = Object.freeze(["today", "up", "down", "watch", "cook"]);
+
+async function feedReads(root) {
+  const out = [];
+  for (const part of FEED_PARTS) {
+    const dir = join(root, "research/assets/public/feed", part);
+    let names = [];
+    try { names = await readdir(dir); } catch { continue; }
+    for (const name of names.filter((n) => n.endsWith(".json")).sort()) {
+      const doc = await readJson(join(dir, name));
+      const rows = Array.isArray(doc) ? doc : (Array.isArray(doc?.reads) ? doc.reads : []);
+      for (const row of rows) if (row && row.id) out.push(row);
+    }
+  }
+  return out;
+}
+
+// How many prices are on file and since when. Counts only.
+function priceCounts(older, spark, asOf) {
+  const dates = new Set();
+  for (const p of older || []) dates.add(p[0]);
+  for (const p of spark || []) dates.add(p[0]);
+  if (!dates.size) return null;
+  const sorted = [...dates].sort();
+  const cut = new Date(Date.parse(`${String(asOf).slice(0, 10)}T00:00:00Z`) - 30 * 86400000).toISOString().slice(0, 10);
+  return { prices: sorted.length, recent: sorted.filter((d) => d >= cut).length, since: sorted[0] };
+}
+
 function norm(s) {
   return String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 }
@@ -168,22 +196,18 @@ export async function stampSignalChips({ root = ROOT, rules, writeReads = false 
   const sets = Array.isArray(setsDoc?.sets) ? setsDoc.sets : [];
   const rotDoc = await readJson(join(root, "research/assets/public/rotation-status.json"));
   const rotBy = new Map((rotDoc?.sets || []).map((row) => [row.slug, row]));
-  const skus = new Set(reads.map(skuOf).filter(Boolean));
+  const feedRows = await feedReads(root);
+  const skus = new Set([...reads, ...feedRows].map(skuOf).filter(Boolean));
   const sparks = await indexPacked(join(root, "research/assets/public/sparks"), skus, (packed) => parseSpark(packed, asOf));
-  const missing = new Set([...skus].filter((id) => !sparks.has(id)));
-  const hist = missing.size ? await indexPacked(join(root, "research/assets/public/hist-long"), missing, parseHist) : new Map();
+  const hist = await indexPacked(join(root, "research/assets/public/hist-long"), skus, parseHist);
 
   const byRead = {};
   const bySku = {};
   let count = 0;
-  for (const read of reads) {
-    if (!read || !read.id) continue;
+  let feedCount = 0;
+  const build = (read) => {
     const sku = skuOf(read);
-    if (mentionsHeld(read, holds) || (sku && holds.has(sku))) {
-      delete read.signals;
-      delete read.blurb;
-      continue;
-    }
+    if (mentionsHeld(read, holds) || (sku && holds.has(sku))) return null;
     const set = setFor(read, sets);
     const rot = set ? rotBy.get(set.slug) : null;
     const spark = sparks.get(sku);
@@ -192,37 +216,56 @@ export async function stampSignalChips({ root = ROOT, rules, writeReads = false 
     const built = readSignals(read, {
       asOf: read.asOf || asOf,
       points,
+      daily: spark || [],
+      counts: priceCounts(older, spark, read.asOf || asOf),
       listings: listingsFor(read, byId, byName),
       held: sku ? holds.has(sku) : false,
       release: set?.release || "",
       art: read.art || "",
       rotationMonths: monthsUntil(rot?.status, read.asOf || asOf),
     }, rules);
-    if (!built.signals.length) {
+    if (!built.signals.length && !built.tiles) return null;
+    const entry = { name: read.name || "", sku, signals: built.signals, blurb: built.blurb || "" };
+    if (built.tiles) entry.tiles = built.tiles;
+    if (built.strength) entry.strength = built.strength;
+    return { sku, entry, built };
+  };
+  // bySku points at a byId key, so each entry is written once.
+  const keep = (read, sku, entry) => {
+    byRead[read.id] = entry;
+    const lead = entry.signals.some((chip) => chip.kind === "listings");
+    for (const key of [sku, String(read.href || "").split("/").pop()]) {
+      if (!key || key === read.id) continue;
+      const prev = bySku[key] ? byRead[bySku[key]] : null;
+      if (!prev || (lead && !(prev.signals || []).some((chip) => chip.kind === "listings"))) bySku[key] = read.id;
+    }
+  };
+  for (const read of reads) {
+    if (!read || !read.id) continue;
+    const made = build(read);
+    if (!made || !made.built.signals.length) {
       delete read.signals;
       delete read.blurb;
+      if (made) keep(read, made.sku, made.entry);
       continue;
     }
-    const entry = { name: read.name || "", sku, signals: built.signals, blurb: built.blurb || "" };
-    if (built.strength) entry.strength = built.strength;
-    byRead[read.id] = entry;
-    if (sku) {
-      const prev = bySku[sku];
-      const lead = entry.signals.some((chip) => chip.kind === "listings");
-      if (!prev || (lead && !(prev.signals || []).some((chip) => chip.kind === "listings"))) bySku[sku] = entry;
-    }
-    const hrefId = String(read.href || "").split("/").pop();
-    if (hrefId && hrefId !== sku) {
-      const prev = bySku[hrefId];
-      const lead = entry.signals.some((chip) => chip.kind === "listings");
-      if (!prev || (lead && !(prev.signals || []).some((chip) => chip.kind === "listings"))) bySku[hrefId] = entry;
-    }
+    const { sku, entry, built } = made;
+    keep(read, sku, entry);
     read.signals = built.signals;
     if (built.blurb) read.blurb = built.blurb;
     else delete read.blurb;
     if (built.strength) read.strength = built.strength;
     else delete read.strength;
     count += 1;
+  }
+  // Feed rows (today, up, down, watch, cook) get the same chips and tiles,
+  // keyed by id and sku. The feed files themselves are not rewritten.
+  for (const read of feedRows) {
+    if (!read || !read.id || byRead[read.id]) continue;
+    const made = build(read);
+    if (!made) continue;
+    keep(read, made.sku, made.entry);
+    feedCount += 1;
   }
   const samples = [];
   const take = (pred) => {
@@ -247,9 +290,9 @@ export async function stampSignalChips({ root = ROOT, rules, writeReads = false 
     samples,
   };
   const scored = Object.values(byRead).filter((row) => row.strength).length;
-  await writeFile(join(root, "research/assets/public/signal-chips.json"), `${JSON.stringify(out, null, 1)}\n`);
+  await writeFile(join(root, "research/assets/public/signal-chips.json"), `${JSON.stringify(out)}\n`);
   if (writeReads) await writeFile(readsPath, `${JSON.stringify(bundle, null, 1)}\n`);
-  console.log(`signal chips: ${count} reads, ${scored} with a score`);
+  console.log(`signal chips: ${count} reads, ${feedCount} feed rows, ${scored} with a score`);
   return { count, wrote: true, asOf };
 }
 
