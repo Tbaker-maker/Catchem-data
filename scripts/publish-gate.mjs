@@ -9,8 +9,22 @@ import { gateReads, RULES } from "./lib/publish-gate.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const PUB = join(ROOT, "research/assets/public");
 const check = process.argv.includes("--check");
+const previewOnly = process.argv.includes("--preview-only");
 const J = async (p, d = null) => { try { return JSON.parse(await readFile(p, "utf8")); } catch { return d; } };
 
+// Reads page sample lines: drop any that show raw card codes instead of names.
+const { RAW_CODE } = await import("./lib/publish-gate.mjs");
+const prevPath = join(PUB, "reads-preview.json");
+const preview = await J(prevPath, null);
+let previewBad = 0;
+if (preview?.lines && typeof preview.lines === "object") {
+  for (const [k, v] of Object.entries(preview.lines)) if (typeof v === "string" && RAW_CODE.test(v)) { delete preview.lines[k]; previewBad += 1; console.log(`gate drop title reads-preview ${k} (raw card code)`); }
+}
+if (previewOnly) {
+  if (previewBad && !check) await writeFile(prevPath, JSON.stringify(preview, null, 1) + "\n");
+  console.log(JSON.stringify({ previewDropped: previewBad }));
+  process.exit(0);
+}
 const readsPath = join(PUB, "reads.json");
 const doc = await J(readsPath, { reads: [] });
 const chips = (await J(join(PUB, "signal-chips.json"), {}))?.byId || {};
@@ -52,6 +66,7 @@ for (const l of log) console.log(`gate ${l.action} ${l.rule} ${l.id}${l.file ? `
 const systemic = total.rows > 20 && total.dropped / total.rows > 0.25;
 if (systemic) { console.error(`publish gate: systemic breakage, ${total.dropped} of ${total.rows} rows failed. Not publishing.`); process.exit(1); }
 if (!check) {
+  if (previewBad) await writeFile(prevPath, JSON.stringify(preview, null, 1) + "\n");
   await writeFile(readsPath, JSON.stringify({ ...doc, reads: res.kept, count: res.kept.length, gate: { rules: RULES.map(([id]) => id), counts: res.counts, dropped: res.dropped } }, null, 1) + "\n");
   for (const [f, kept] of writes) await writeFile(f, JSON.stringify(kept) + "\n");
 }

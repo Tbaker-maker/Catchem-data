@@ -489,6 +489,7 @@ jobs:
           node scripts/freshness-bot.mjs || true
           node scripts/build-limits.mjs || true
           node scripts/build-post-office-catalogue.mjs || true
+          node scripts/publish-gate.mjs --preview-only || true
           node scripts/build-custom-reads.mjs || true
           node scripts/build-release-scout.mjs || true
           node scripts/build-canada-gap.mjs || true

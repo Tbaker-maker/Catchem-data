@@ -70,7 +70,7 @@ export function poolFromData({ catalogue, sealed } = {}) {
         era: set.era || eraOf(set.name || ""),
         kind: "single",
         price: Number(top[0].price) || 0,
-        line: `${set.name}: top cards on TCGplayer market are ${top.map((p) => `#${p.number} at ${money(p.price)}`).join(", ")}, as of ${when}.`,
+        line: `${set.name}: top cards on TCGplayer market are ${top.map((p) => `${cardTitle(p.name, /^\d+[A-Za-z]?\/\d+$|^[A-Z]{0,4}\d+$/.test(String(p.number || "")) ? p.number : "") || p.name} at ${money(p.price)}`).join(", ")}, as of ${when}.`,
       });
     }
     for (const p of priced) {

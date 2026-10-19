@@ -7,6 +7,7 @@ export const SHORT_MAX = 35; // same short window cap as the Price tile (#374)
 export const VINTAGE_CUTOFF = "2003-06-01";
 const DASH = /[\u2014\u2013]/g;
 const CATEGORY_NAME = /^(?:Sealed )?Rating:|^(?:Illustration Rares?|Special Illustration Rares?|Ultra Rares?|Hyper Rares?|Booster Box(?:es)?|Elite Trainer Box(?:es)?)$/i;
+export const RAW_CODE = /#[A-Z]{1,4}\/[A-Z]{2,}\b|\bare #[A-Za-z0-9/]+ at \$/;
 const DUP_NUM = /(\d+\/\d+)\s*#\1\b/;
 const CONDITION = /\b(?:NM|Near Mint|LP|Lightly Played|MP|Moderately Played|HP|Heavily Played|DMG|Damaged)\b/;
 const COPY_FIELDS = ["name", "headline", "path", "blurb", "why", "whyItMatters", "whatWouldMakeThisWrong"];
@@ -44,6 +45,7 @@ export function checkRead(read, ctx = {}) {
   DASH.lastIndex = 0;
   const name = String(r.name || "");
   if (CATEGORY_NAME.test(name) || DUP_NUM.test(name)) flags.push({ rule: "title", action: "drop", note: name });
+  else if (COPY_FIELDS.concat(["line"]).some((k) => typeof r[k] === "string" && RAW_CODE.test(r[k])) || (r.lines || []).some((l) => RAW_CODE.test(String(l)))) flags.push({ rule: "title", action: "drop", note: "raw card code instead of a name" });
   const chip = ctx.chips?.[r.id];
   const tile = chip?.tiles?.price;
   const hd = headDir(r.headline);
