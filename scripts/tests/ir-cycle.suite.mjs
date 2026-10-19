@@ -1,3 +1,4 @@
+import { useTestSpec } from "./use-test-spec.mjs";
 import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -9,6 +10,7 @@ let fail = 0;
 const t = (name, cond) => { if (cond) console.log("  ok ", name); else { fail++; console.error("  FAIL", name); } };
 
 export async function run() {
+  useTestSpec();
   fail = 0;
   const rot = { sources: [{ mark: "G", date: "2026-04-10", text: "April 10, 2026" }, { mark: "Z", date: "2027-04-09", text: "April 9, 2027" }],
     expected: [{ mark: "H", window: "spring 2027" }],
@@ -27,7 +29,7 @@ export async function run() {
   const by = listingsBySet({ updatedAt: "2026-10-12T05:00:00Z", products: [{ id: "x-pack", set: "Foo", subtype: "booster-pack", listingCount: 9 }, { id: "x-bb", name: "Foo Booster Box", set: "Foo", subtype: "booster-box", listingCount: 4 }] }, { updatedAt: "2026-10-11T05:00:00Z", products: [{ id: "x-bb", listingCount: 6 }] });
   const l = setListings(by, "SV99: Foo");
   t("set listings pick the booster box, exact count with dates", l.id === "x-bb" && l.n === 4 && l.date === "2026-10-12" && l.prev.n === 6);
-  t("popularity: Charizard weighs most, Fidough zero", popularity("Charizard ex - 199/165").weight === 5 && popularity("Fidough - 213/198").weight === 0);
+  t("popularity: Charizard weighs most, Fidough zero", popularity("Charizard ex - 199/165").weight === 6 && popularity("Fidough - 213/198").weight === 0);
   t("popularity: Eeveelution tagged", popularity("Umbreon ex - 161/131").tags.includes("eeveelution"));
   t("copy check blocks banned words", !cleanCopy("Best time to load up") && cleanCopy("Near its lowest on file"));
 

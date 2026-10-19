@@ -124,7 +124,7 @@ export function signalFlags(c, peer, r = {}) {
   if (on("below90") && f.vs90 != null) out.below90 = f.vs90 <= -num(s.below90.pct);
   if (on("cheapNonChase") && peer?.prices?.length >= (s.cheapNonChase.minPeers ?? 99)) {
     const rk = priceRank(peer.prices, f.price);
-    out.cheapNonChase = rk != null && rk <= num(s.cheapNonChase.rankMax) && popularity(c.name).weight <= num(s.cheapNonChase.popMax);
+    out.cheapNonChase = rk != null && rk <= num(s.cheapNonChase.rankMax) && Number.isFinite(popularity(c.name).weight) && popularity(c.name).weight <= num(s.cheapNonChase.popMax);
   }
   if (on("pastOneYear")) out.pastOneYear = c.age >= num(s.pastOneYear.days) && !(c.rotDays != null && c.rotDays <= 0);
   if (on("preRotation")) out.preRotation = c.rotDays != null && c.rotDays > 0 && c.rotDays <= num(s.preRotation.days);

@@ -6,6 +6,7 @@
 // Only signals the backtest marked proven add to the private score.
 //   node scripts/build-ir-sir-watch.mjs              nightly (backtest reruns when 7 days old)
 //   node scripts/build-ir-sir-watch.mjs --backtest   force the backtest
+import { applyModelSpec } from "./lib/model-spec.mjs";
 import { readFile, readdir, writeFile, mkdir } from "node:fs/promises";
 import { gunzipSync } from "node:zlib";
 import { join, dirname } from "node:path";
@@ -97,6 +98,8 @@ export function publicDoc(live, { asOf, cap = 12 }) {
 }
 
 async function main() {
+  // Popularity tag weights come from the private model spec.
+  await applyModelSpec({ root: ROOT, tuned: false });
   const asOf = (await J(join(PUB, "signal-chips.json"), {}))?.asOf || new Date().toISOString().slice(0, 10);
   const store = await openPrivate({ root: ROOT, token: process.env.PRIVATE_DATA_TOKEN || "" });
   const touched = [];

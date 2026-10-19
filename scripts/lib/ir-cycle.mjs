@@ -3,7 +3,7 @@
 // The order of the watchlist is private (popularity weight plus position).
 // Public rows state facts only. This is a factual signal, not advice.
 import { banGuard } from "./copy-rules.mjs";
-import { popularity } from "./popular-pokemon.mjs";
+import { popularity, popShare } from "./popular-pokemon.mjs";
 
 export const STUDY = {
   asOf: "2026-10-12",
@@ -212,7 +212,7 @@ export function buildRows({ rows, longRows, rot, bySet, today, marks = {}, weigh
     const f = {
       stage: stageValue(age, rotated),
       range: { v: pos == null ? 0.5 : (100 - pos) / 100, chip: pos != null && pos <= 35 ? positionText(pos) : "" },
-      popularity: { v: pop.weight / 5, chip: "" },
+      popularity: { v: popShare(pop.weight) ?? 0, chip: "" },
       peers: peersValue(t90 ? t90.pct : null, setMed.get(r.setSlug + "|" + CURVE_KIND[kind]), eraMed.get(eraOf(r) + "|" + CURVE_KIND[kind])),
       trend: trendValue(t30, t90),
     };

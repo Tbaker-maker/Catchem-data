@@ -3,9 +3,10 @@
 import { readFile, readdir, writeFile, mkdir } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { singlesVsSealed, singlesVsSealedReads, sealedShard, SHARDS, buildSealedRatings, sealedReads, waitingFactors, MIN_PEERS, MIN_TREND_DAYS, MIN_LISTING_NIGHTS } from "./lib/sealed-rating.mjs";
+import { singlesVsSealed, singlesVsSealedReads, sealedShard, SHARDS, buildSealedRatings, sealedReads, waitingFactors, MIN_PEERS, MIN_TREND_DAYS, MIN_LISTING_NIGHTS, sealedSpecReady } from "./lib/sealed-rating.mjs";
 
 try {
+  if (!sealedSpecReady()) throw new Error("no private model spec, sealed rating not built");
   const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
   const PUB = join(ROOT, "research/assets/public");
   const J = async (p, d = null) => { try { return JSON.parse(await readFile(p, "utf-8")); } catch { return d; } };

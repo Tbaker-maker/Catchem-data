@@ -75,10 +75,19 @@ export function pctRank(v, xs) {
   return r2((below + eq / 2) / s.length);
 }
 
+// Verdict cutoffs live in catchem-data-private (model-spec/spec.json), set by
+// applyModelSpec. With no spec there is no verdict and the file is not built.
+export const SEALED_BANDS = { low: null, high: null };
+export function setSealedSpec(s) {
+  const ok = s && s.low > 0 && s.low < 1 && s.high > 0 && s.high < s.low;
+  SEALED_BANDS.low = ok ? s.low : null; SEALED_BANDS.high = ok ? s.high : null;
+  return Boolean(ok);
+}
+export const sealedSpecReady = () => SEALED_BANDS.low > 0 && SEALED_BANDS.high > 0;
 export function verdictOf(p, many) {
-  if (p == null) return null;
-  if (p >= 0.75) return `Low price next to its set's top card, compared with other ${many}`;
-  if (p <= 0.25) return `High price next to its set's top card, compared with other ${many}`;
+  if (p == null || !sealedSpecReady()) return null;
+  if (p >= SEALED_BANDS.low) return `Low price next to its set's top card, compared with other ${many}`;
+  if (p <= SEALED_BANDS.high) return `High price next to its set's top card, compared with other ${many}`;
   return `In line with other ${many} next to its set's top card`;
 }
 

@@ -6,17 +6,31 @@
 // Wording is factual only. This is not advice.
 import { banGuard } from "./copy-rules.mjs";
 import { series, priceAt, trend, range, rangePos, stageValue, setListings, days } from "./ir-cycle.mjs";
-import { popularity, monName } from "./popular-pokemon.mjs";
+import { popularity, monName, popShare, popBand } from "./popular-pokemon.mjs";
 import { tcgAmount } from "./card-face.mjs";
 
 // Weights add to 100. A factor with no data is left out and the rest are
-// rescaled, so a missing fact never counts as good or bad.
-export const RATING_WEIGHTS = { peer: 25, popularity: 15, scarcity: 10, pull: 5, demand: 15, age: 10, artist: 10, range: 10 };
+// rescaled, so a missing fact never counts as good or bad. The weights and the
+// verdict bands live in catchem-data-private (model-spec/spec.json) and are set
+// at build time by applyModelSpec. With no spec the rating is not built.
+export const RATING_FACTORS = ["peer", "popularity", "scarcity", "pull", "demand", "age", "artist", "range"];
+export const RATING_WEIGHTS = {};
+export const RATING_BANDS = { below: null, above: null };
+export function validRatingWeights(w) {
+  return Boolean(w) && RATING_FACTORS.every((k) => typeof w[k] === "number" && w[k] >= 0) && Object.keys(w).every((k) => RATING_FACTORS.includes(k)) && RATING_FACTORS.reduce((a, k) => a + w[k], 0) === 100;
+}
+export function setRatingSpec(s) {
+  for (const k of Object.keys(RATING_WEIGHTS)) delete RATING_WEIGHTS[k];
+  RATING_BANDS.below = null; RATING_BANDS.above = null;
+  const ok = s && validRatingWeights(s.weights) && s.below > 0 && s.below < 1 && s.above > 1;
+  if (!ok) return false;
+  Object.assign(RATING_WEIGHTS, s.weights);
+  RATING_BANDS.below = s.below; RATING_BANDS.above = s.above;
+  return true;
+}
+export const ratingSpecReady = () => validRatingWeights(RATING_WEIGHTS) && RATING_BANDS.below > 0 && RATING_BANDS.above > 0;
 export const FACTOR_LABEL = { peer: "Price vs similar cards", popularity: "Popularity", scarcity: "How rare this version is", pull: "Pull rate", demand: "Recent demand", age: "Age", artist: "Artist", range: "Price vs its own history" };
 
-// Verdict bands on price against the peer median.
-export const BELOW = 0.8;
-export const ABOVE = 1.25;
 export const MIN_PEERS = 5;
 // A price more than 10x away from its peer median is held back for a check,
 // never shown as a verdict or used in a read.
@@ -54,7 +68,7 @@ const median = (a) => { const b = a.filter((x) => Number.isFinite(x)).sort((x, y
 const clamp = (x) => Math.max(0, Math.min(1, x));
 // Percentile rank of x inside list (0 lowest, 1 highest).
 const pctRank = (list, x) => { if (!list.length) return null; let below = 0; for (const v of list) if (v < x) below++; return below / Math.max(1, list.length - 1); };
-export const bandOf = (w) => (w >= 3 ? "high" : w >= 1 ? "mid" : "low");
+export const bandOf = (w) => popBand(w);
 
 // Peer value: half the peer median scores 0.75, double scores 0.25.
 export function peerValue(price, med) {
@@ -63,8 +77,9 @@ export function peerValue(price, med) {
 }
 export function verdictOf(ratio) {
   if (ratio == null) return null;
-  if (ratio <= BELOW) return "Priced below similar cards";
-  if (ratio >= ABOVE) return "Priced above similar cards";
+  if (!ratingSpecReady()) return null;
+  if (ratio <= RATING_BANDS.below) return "Priced below similar cards";
+  if (ratio >= RATING_BANDS.above) return "Priced above similar cards";
   return "Priced in line with similar cards";
 }
 
@@ -196,6 +211,7 @@ export function pullTable(doc, rows) {
   return out;
 }
 export function buildRatings({ rows, longRows = {}, variants = {}, searchMons = new Map(), readHits = new Map(), bySet = null, rot = null, today, pullRates = [], pulls = null }) {
+  if (!ratingSpecReady()) throw new Error("card rating needs the private model spec");
   const bands = pullBands(pullRates);
   const cards = [];
   for (const r of rows) {
@@ -278,7 +294,7 @@ export function buildRatings({ rows, longRows = {}, variants = {}, searchMons = 
     const f = {};
     const pv = peerValue(x.price, med);
     if (pv != null && !check && matched) f.peer = { v: pv, fact: `${money(x.price)} (${dl(x.date)}) vs a typical ${money(med)} for ${g.label} (${others.length} cards, ${peerBasis})` };
-    f.popularity = { v: clamp(x.pop.weight / 5 * 0.7 + (searchMons.get(c.mon) ? 0.3 * Math.min(1, Math.log10(searchMons.get(c.mon)) / 2) : 0)), fact: `${x.pop.tags.length ? x.pop.tags.map((t) => POP_LABEL[t] || t).join(", ") : "Not on the popularity list"}; ${searchMons.get(c.mon) || 0} ${title(c.mon)} cards in our search` };
+    f.popularity = { v: clamp((popShare(x.pop.weight) ?? 0) * 0.7 + (searchMons.get(c.mon) ? 0.3 * Math.min(1, Math.log10(searchMons.get(c.mon)) / 2) : 0)), fact: `${x.pop.tags.length ? x.pop.tags.map((t) => POP_LABEL[t] || t).join(", ") : "Not on the popularity list"}; ${searchMons.get(c.mon) || 0} ${title(c.mon)} cards in our search` };
     const pf = pullFactor(c, pulls);
     if (pf) f.pull = { v: pf.v, fact: `${pf.k.rarity}: 1 in ${pf.k.oneIn} packs for any of the ${pf.k.cards} in the set, about 1 in ${pf.k.perCard.toLocaleString("en-US")} for this card if split evenly (${pf.k.source}${pf.k.asOf ? `, ${dl(pf.k.asOf)}` : ""})` };
     const sc = scarcity(c, byMon);
@@ -368,7 +384,7 @@ export function ratingReads(list, { asOf, max = 3 } = {}) {
   for (const r of list) if (r.peers && !r.check && r.verdict && r.peers.n >= MIN_PEERS && r.price.date >= addDaysIso(asOf, -3)) { if (!byGroup.has(r.group)) byGroup.set(r.group, []); byGroup.get(r.group).push(r); }
   for (const [g, rs] of byGroup) {
     for (const side of ["below", "above"]) {
-      const pick = rs.filter((r) => (side === "below" ? r.peers.ratio <= BELOW : r.peers.ratio >= ABOVE)).sort((a, b) => (side === "below" ? a.peers.ratio - b.peers.ratio : b.peers.ratio - a.peers.ratio) || (b.score - a.score));
+      const pick = rs.filter((r) => (side === "below" ? r.peers.ratio <= RATING_BANDS.below : r.peers.ratio >= RATING_BANDS.above)).sort((a, b) => (side === "below" ? a.peers.ratio - b.peers.ratio : b.peers.ratio - a.peers.ratio) || (b.score - a.score));
       for (let i = pick.length - 1; i >= 0; i--) if (!cleanCopy(bare(pick[i].name)) || !cleanCopy(pick[i].set)) pick.splice(i, 1);
       if (!pick.length) continue;
       const top = pick[0];

@@ -1,9 +1,11 @@
+import { useTestSpec } from "./use-test-spec.mjs";
 import { sealedShard, pctRank, verdictOf, buildSealedRatings, sealedReads, cleanCopy, stageOf, setNamed, setValues, TYPES } from "../lib/sealed-rating.mjs";
 
 let fail = 0;
 const t = (name, cond) => { if (cond) console.log("  ok ", name); else { fail++; console.error("  FAIL", name); } };
 
 export async function run() {
+  useTestSpec();
   fail = 0;
   const today = "2026-10-12";
   t("percentile needs 5 peers", pctRank(1, [1, 2, 3]) === null && pctRank(3, [1, 2, 3, 4, 5]) === 0.5);

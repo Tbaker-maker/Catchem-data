@@ -17,8 +17,22 @@ export const HEADLINERS = "pikachu,charizard,umbreon,mew,mewtwo,gengar,rayquaza,
 // Other widely collected Pokemon.
 export const POPULAR = "greninja,lucario,gardevoir,snorlax,dragonite,gyarados,lapras,sylveon,espeon,tyranitar,garchomp,mimikyu,ho-oh,giratina,arceus,darkrai,zoroark,dragapult,blaziken,jigglypuff,psyduck,ditto,magikarp,ceruledge,armarouge,miraidon,koraidon,pikachu".split(",");
 
-export const WEIGHTS = { headliner: 3, eeveelution: 2, gen1: 2, starter: 1.5, popular: 1 };
-export const WEIGHT_CAP = 5;
+// Tag weights, the cap and the band cutoffs live in catchem-data-private
+// (model-spec/spec.json) and are set at build time by applyModelSpec. With no
+// spec the tags still show, but the weight is null and nothing is ranked by it.
+export const POP_SPEC = { weights: {}, cap: null, high: null, mid: null };
+const POS = (n) => typeof n === "number" && Number.isFinite(n) && n > 0;
+export function setPopularitySpec(s) {
+  const tags = ["headliner", "eeveelution", "gen1", "starter", "popular"];
+  const ok = s && POS(s.cap) && POS(s.high) && POS(s.mid) && tags.every((t) => typeof s.weights?.[t] === "number" && s.weights[t] >= 0);
+  POP_SPEC.weights = ok ? Object.fromEntries(tags.map((t) => [t, s.weights[t]])) : {};
+  POP_SPEC.cap = ok ? s.cap : null; POP_SPEC.high = ok ? s.high : null; POP_SPEC.mid = ok ? s.mid : null;
+  return Boolean(ok);
+}
+export const popularityReady = () => POS(POP_SPEC.cap);
+// 0 to 1, or null with no spec.
+export const popShare = (w) => (popularityReady() && typeof w === "number" ? w / POP_SPEC.cap : null);
+export const popBand = (w) => (!popularityReady() || typeof w !== "number" ? null : w >= POP_SPEC.high ? "high" : w >= POP_SPEC.mid ? "mid" : "low");
 
 export function monName(cardName) {
   let s = String(cardName || "").toLowerCase().replace(/\s*\(.*$/, "").replace(/\s*-\s*\d.*$/, "").trim();
@@ -37,6 +51,6 @@ export function popularity(cardName) {
   if (has(GEN1)) tags.push("gen1");
   if (has(STARTERS)) tags.push("starter");
   if (has(POPULAR) && !tags.length) tags.push("popular");
-  const weight = Math.min(WEIGHT_CAP, tags.reduce((a, t) => a + WEIGHTS[t], 0));
+  const weight = popularityReady() ? Math.min(POP_SPEC.cap, tags.reduce((a, t) => a + POP_SPEC.weights[t], 0)) : null;
   return { mon: n, tags, weight };
 }
