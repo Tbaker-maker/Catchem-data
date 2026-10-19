@@ -1,3 +1,4 @@
+import { useTestSpec } from "./use-test-spec.mjs";
 import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -9,6 +10,7 @@ let fail = 0;
 const t = (name, cond) => { if (cond) console.log("  ok ", name); else { fail++; console.error("  FAIL", name); } };
 
 export async function run() {
+  useTestSpec();
   fail = 0;
   const rot = { sources: [{ mark: "G", date: "2026-04-10", text: "April 10, 2026" }, { mark: "Z", date: "2027-04-09", text: "April 9, 2027" }],
     expected: [{ mark: "H", window: "spring 2027" }],
@@ -27,7 +29,7 @@ export async function run() {
   const by = listingsBySet({ updatedAt: "2026-10-12T05:00:00Z", products: [{ id: "x-pack", set: "Foo", subtype: "booster-pack", listingCount: 9 }, { id: "x-bb", name: "Foo Booster Box", set: "Foo", subtype: "booster-box", listingCount: 4 }] }, { updatedAt: "2026-10-11T05:00:00Z", products: [{ id: "x-bb", listingCount: 6 }] });
   const l = setListings(by, "SV99: Foo");
   t("set listings pick the booster box, exact count with dates", l.id === "x-bb" && l.n === 4 && l.date === "2026-10-12" && l.prev.n === 6);
-  t("popularity: Charizard weighs most, Fidough zero", popularity("Charizard ex - 199/165").weight === 5 && popularity("Fidough - 213/198").weight === 0);
+  t("popularity: Charizard weighs most, Fidough zero", popularity("Charizard ex - 199/165").weight === 6 && popularity("Fidough - 213/198").weight === 0);
   t("popularity: Eeveelution tagged", popularity("Umbreon ex - 161/131").tags.includes("eeveelution"));
   t("copy check blocks banned words", !cleanCopy("Best time to load up") && cleanCopy("Near its lowest on file"));
 
@@ -36,7 +38,7 @@ export async function run() {
   t("no private score is published", doc.rows.every((r) => !("_score" in r)));
   t("every row is an IR or SIR with a dated price", doc.rows.every((r) => ["IR", "SIR", "TG", "GG", "ALT", "TTALT"].includes(r.kind) && r.price.price > 0 && /^\d{4}-/.test(r.price.date)));
   t("older kinds included", ["TG", "GG", "ALT"].every((k) => doc.rows.some((r) => r.kind === k)));
-  t("weights add to 100", Object.values(doc.scoreWeights).reduce((a, b) => a + b, 0) === 100);
+  t("no score weights are published", !("scoreWeights" in doc) && !/"weights"/.test(JSON.stringify(doc.popularity || {})) && !/\b(stage|range|popularity|peers|trend)\b"?\s*:\s*\d/.test(JSON.stringify({ n: doc.scoreNote })));
   t("lift chips are clean facts", doc.rows.every((r) => Array.isArray(r.lifts) && r.lifts.every((l) => cleanCopy(l.text))));
   t("stage is a factor, not a gate: a rotated card can rank in the top 200", doc.rows.slice(0, 200).some((r) => /Rotated/.test(r.rotation?.text || "") || ["TG", "GG", "ALT"].includes(r.kind)));
   t("public strings are clean", doc.rows.every((r) => cleanCopy(r.position) && cleanCopy(r.curve.text) && cleanCopy(r.rotation?.text || "")) && cleanCopy(doc.note));
@@ -46,6 +48,15 @@ export async function run() {
   const rows = JSON.parse(await readFile(join(ROOT, `research/assets/public/buckets/${bucket}.json`), "utf8"));
   const hit = rows.find((r) => r.id === r0.id);
   t("top row verified by id", hit && hit.name === r0.name && (r0.kind === "IR" ? hit.rarity === "Illustration Rare" : r0.kind === "SIR" ? hit.rarity === "Special Illustration Rare" : true));
+  {
+    const { buildRows } = await import("../lib/ir-cycle.mjs");
+    const base = { kind: "single", rarity: "Illustration Rare", release: "2024-01-01", setSlug: "s", set: "SV01: S", hist: [["2026-10-12", 5]] };
+    const rows = [{ ...base, id: "a", name: "Charizard ex - 1/1" }, { ...base, id: "b", name: "Fidough - 2/1", hist: [["2026-10-12", 3]] }];
+    const plain = buildRows({ rows, longRows: {}, rot: {}, today: "2026-10-12" });
+    t("no private weights: plain order, lowest price first", plain[0].id === "b");
+    const weighted = buildRows({ rows, longRows: {}, rot: {}, today: "2026-10-12", weights: { popularity: 100 } });
+    t("private weights set the order", weighted[0].id === "a" && weighted.every((r) => !("_score" in r)));
+  }
   fail += await runScoreUnits();
   fail += await runMarkChecks();
   fail += await runCardMarkChecks();

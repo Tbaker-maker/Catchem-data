@@ -5,7 +5,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { gunzipSync } from "node:zlib";
 import { listingsBySet, series } from "./lib/ir-cycle.mjs";
-import { groupIndex, pullTable, peerPools, shardOf, buildRatings, ratingReads, RATING_WEIGHTS, FACTOR_LABEL, GROUPS, FIRST_ED, BELOW, ABOVE, MIN_PEERS } from "./lib/card-rating.mjs";
+import { groupIndex, pullTable, peerPools, shardOf, buildRatings, ratingReads, RATING_WEIGHTS, FACTOR_LABEL, GROUPS, FIRST_ED, MIN_PEERS, ratingSpecReady } from "./lib/card-rating.mjs";
 import { monName } from "./lib/popular-pokemon.mjs";
 
 // Index names use each card's real rarity: the TCGplayer rarity, with the variant tag where it says more.
@@ -18,6 +18,8 @@ function indexBase(g, rarity) {
   return `${g.one.replace(/ card$/, "")} (${rarity})`;
 }
 try {
+  // No private spec: nothing new is written and the last file stays.
+  if (!ratingSpecReady()) throw new Error("no private model spec, card rating not built");
   const PUB = join(dirname(fileURLToPath(import.meta.url)), "..", "research/assets/public");
   const J = async (p, d = null) => { try { return JSON.parse(await readFile(join(PUB, p), "utf-8")); } catch { return d; } };
   const rows = [];
@@ -45,7 +47,8 @@ try {
   const doc = {
     asOf: today,
     note: "Card Rating: a factual comparison of each card's TCGplayer market price and facts on file against similar cards. Not advice. Factor values are 0 to 1. Missing factors are left out and the rest rescaled.",
-    weights: RATING_WEIGHTS, labels: FACTOR_LABEL, bands: { below: BELOW, above: ABOVE, minPeers: MIN_PEERS },
+    // Weights and band cutoffs are not published (private methods rule). Labels are words only.
+    labels: FACTOR_LABEL,
     groups: Object.fromEntries([...GROUPS, FIRST_ED].map((g) => [g.key, { label: g.label, count: groups[g.key] || 0 }])),
     method: "Doc: Catch'em Card Rating Method. Peer value = price against the median of the same group and popularity band (5+ peers), else the whole group.",
     count: list.length, shards: "feed/rating/NN.json, NN = shardOf(id)", reads,

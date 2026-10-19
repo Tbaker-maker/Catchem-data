@@ -62,6 +62,10 @@ export async function run() {
     flags.push(...cleanDoc(d).flags.filter((x) => x.kind !== "house"));
   }
   t("no advice, promise, crypto or dash flag in research/assets/public", flags.length === 0, flags.slice(0, 5).map(formatFlag).join(" | "));
+  // The Pulse "Phase:" line comes from compute-derived.mjs lifecycle phases.
+  const derived = await readFile(join(ROOT, "scripts/compute-derived.mjs"), "utf8");
+  const phases = [...derived.matchAll(/phase = "([^"]+)"/g)].map((m) => `Phase: ${m[1]}`);
+  t("lifecycle phase lines pass the copy rules", phases.length >= 3 && phases.every((x) => flagLine(x, { house: true }).length === 0), phases.join(" | "));
   return fail;
 }
 

@@ -3,9 +3,9 @@
 import { readFile, readdir, writeFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { buildRows, listingsBySet, STUDY, SCORE_WEIGHTS, cardMarks, MIXED_SETS } from "./lib/ir-cycle.mjs";
+import { buildRows, listingsBySet, STUDY, cardMarks, MIXED_SETS, cleanWeights } from "./lib/ir-cycle.mjs";
+import { openPrivate } from "./lib/private-store.mjs";
 import { gunzipSync } from "node:zlib";
-import { WEIGHTS, WEIGHT_CAP } from "./lib/popular-pokemon.mjs";
 
 try {
 const PUB = join(dirname(fileURLToPath(import.meta.url)), "..", "research/assets/public");
@@ -22,15 +22,21 @@ const bySet = listingsBySet(await readGz(gz[gz.length - 1]), await readGz(gz[gz.
 const today = rows.map((r) => r.asOf).filter(Boolean).sort().pop()?.slice(0, 10);
 const attrs = JSON.parse(await readFile(join(PUB, "../../../data/card-attrs.json"), "utf-8"));
 const cards = cardMarks(rows, attrs.cards || {});
-const list = buildRows({ rows, longRows, rot, bySet, today, marks: cards });
+// Weights stay in catchem-data-private. Read only; nothing is pushed back.
+let weights = null;
+try {
+  const store = await openPrivate({ root: join(PUB, "../../.."), token: process.env.PRIVATE_DATA_TOKEN || "" });
+  try { weights = cleanWeights(JSON.parse(await readFile(join(store.dir, "ir-cycle/weights.json"), "utf-8"))); } catch { weights = null; }
+  if (store.remote) await store.close([], "ir cycle read only");
+} catch (err) { console.error(`ir-cycle: private weights not read, ${err?.message || err}`); }
+if (!weights) console.log("ir-cycle: no private weights, so rows keep a plain order");
+const list = buildRows({ rows, longRows, rot, bySet, today, marks: cards, weights });
 const doc = {
   asOf: today,
   note: "Factual position data, not advice. Includes Illustration Rares, Special Illustration Rares, Trainer Gallery, Galarian Gallery, Alternate Art (Sword & Shield) and Tag Team (Alternate Art) cards, each named by its own rarity. Prices are TCGplayer market. No sealed data.",
   sources: ["research/assets/public/buckets", "research/assets/public/hist-long", "research/assets/public/rotation-status.json", "data/raw/ebay-sealed (latest two nights)"],
   study: STUDY,
-  popularity: { weights: WEIGHTS, cap: WEIGHT_CAP, file: "scripts/lib/popular-pokemon.mjs" },
-  scoreWeights: SCORE_WEIGHTS,
-  scoreNote: "Weights add to 100. The print window is one factor, not a gate. PSA 10 ratio is 0 until a cleared, dated graded source exists. Per-card scores are not published.",
+  scoreNote: "Order comes from a private multi-factor score. The print window is one factor, not a gate. Scores and weights are not published.",
   count: list.length,
   rows: list,
 };

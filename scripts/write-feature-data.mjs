@@ -113,12 +113,13 @@ console.log(JSON.stringify({
   skippedParents: listings.skipped.length,
 }, null, 2));
 
+// Private model spec (weights, bands, cutoffs) plus the tuner's weights, from
+// catchem-data-private. Without it the rating builds write nothing new.
+try { const { applyModelSpec } = await import("./lib/model-spec.mjs"); const m = await applyModelSpec({ root: ROOT }); console.log(JSON.stringify({ modelSpec: { loaded: m.loaded, from: m.from, cardRating: m.cardRating, popularity: m.popularity, sealedRating: m.sealedRating, tuned: m.tuned.applied } })); } catch (err) { console.error(`model spec skipped: ${err.message}`); }
 // IR cycle file (feed/ir-cycle.json). Runs after rotation-status.json is written.
 // A failed build keeps the last file and does not fail this step.
 await import("./build-ir-cycle.mjs");
 // Card Rating (feed/card-rating.json and feed/rating/NN.json). Same keep-last rule.
-// Self-check tuner weights (data/derived/rating-weights.json) apply first when valid.
-try { const [{ applyTunedWeights }, { RATING_WEIGHTS }] = await Promise.all([import("./lib/rating-weights.mjs"), import("./lib/card-rating.mjs")]); console.log(JSON.stringify({ ratingWeights: await applyTunedWeights(ROOT, RATING_WEIGHTS) })); } catch (err) { console.error(`rating weights skipped: ${err.message}`); }
 await import("./build-card-rating.mjs");
 // Sealed Rating (feed/sealed-rating.json). Same keep-last rule.
 await import("./build-sealed-rating.mjs");

@@ -1,3 +1,4 @@
+import { useTestSpec } from "./use-test-spec.mjs";
 import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -6,6 +7,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 let fail = 0;
 const t = (name, cond) => { if (cond) console.log("  ok ", name); else { fail++; console.error("  FAIL", name); } };
 export async function run() {
+  useTestSpec();
   fail = 0;
   const doc = JSON.parse(await readFile(join(ROOT, "data/pull-rates.json"), "utf-8"));
   t("one pull-rate file", !(await readFile(join(ROOT, "data/pull-rates-published.json"), "utf-8").catch(() => null)));

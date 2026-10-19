@@ -75,10 +75,19 @@ export function pctRank(v, xs) {
   return r2((below + eq / 2) / s.length);
 }
 
+// Verdict cutoffs live in catchem-data-private (model-spec/spec.json), set by
+// applyModelSpec. With no spec there is no verdict and the file is not built.
+export const SEALED_BANDS = { low: null, high: null };
+export function setSealedSpec(s) {
+  const ok = s && s.low > 0 && s.low < 1 && s.high > 0 && s.high < s.low;
+  SEALED_BANDS.low = ok ? s.low : null; SEALED_BANDS.high = ok ? s.high : null;
+  return Boolean(ok);
+}
+export const sealedSpecReady = () => SEALED_BANDS.low > 0 && SEALED_BANDS.high > 0;
 export function verdictOf(p, many) {
-  if (p == null) return null;
-  if (p >= 0.75) return `Low price next to its set's top card, compared with other ${many}`;
-  if (p <= 0.25) return `High price next to its set's top card, compared with other ${many}`;
+  if (p == null || !sealedSpecReady()) return null;
+  if (p >= SEALED_BANDS.low) return `Low price next to its set's top card, compared with other ${many}`;
+  if (p <= SEALED_BANDS.high) return `High price next to its set's top card, compared with other ${many}`;
   return `In line with other ${many} next to its set's top card`;
 }
 
@@ -195,7 +204,7 @@ export function sealedReads(list, { asOf, max = 3 } = {}) {
       "A factual comparison of prices on file, not advice.",
     ];
     if (!cleanCopy(head) || lines.some((l) => !cleanCopy(l))) continue;
-    out.push({ id: `deep-sealedrating-${type}`, readKind: "deep", kind: "deep", deep: "sealedrating", board: "v3", family: "deep", name: `Sealed Rating: ${T.label}`, sku: top.id, href: `/p/${top.id}`, headline: head, path: head, lines: lines.slice(0, 6), asOf, source: `TCGplayer market, ${asOf}; Sealed Rating, same product type`, tags: [], receipt: { type, items: pick.slice(0, max).map((x) => ({ id: x.id, price: x.price, chase: x.chase })) } });
+    out.push({ id: `deep-sealedrating-${type}`, readKind: "deep", kind: "deep", deep: "sealedrating", board: "v3", family: "deep", name: top.name, ratingGroup: `Sealed Rating: ${T.label}`, sku: top.id, href: `/p/${top.id}`, headline: head, path: head, lines: lines.slice(0, 6), asOf, source: `TCGplayer market, ${asOf}; Sealed Rating, same product type`, tags: [], receipt: { type, items: pick.slice(0, max).map((x) => ({ id: x.id, price: x.price, chase: x.chase })) } });
   }
   // Print stage: median nightly change of boxes and ETBs by stage.
   const pool = list.filter((x) => ["booster-box", "etb"].includes(x.type) && x.trend?.pct != null && x.stage);

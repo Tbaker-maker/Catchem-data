@@ -315,6 +315,9 @@ jobs:
         run: node scripts/write-detector-report.mjs
 
       - name: Write feature data
+        # The IR cycle order reads its weights from catchem-data-private (read only).
+        env:
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
         run: node scripts/write-feature-data.mjs
 
       - name: Listings-led tracker (private)
@@ -358,6 +361,22 @@ jobs:
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
           SIGNAL_STAMP_READS: "1"
         run: node scripts/stamp-signal-chips.mjs
+
+      - name: IR and SIR watch and run stage call ledger
+        # Every Illustration Rare and Special Illustration Rare: baselines, set peers,
+        # listings counted, run stage, rotation. Public facts to feed/ir-sir.json;
+        # cutoffs, weights, scores, the backtest and the run stage call ledger
+        # (day 7, 14 and 30 checks) stay in catchem-data-private.
+        continue-on-error: true
+        env:
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+        run: |
+          node scripts/build-ir-sir-watch.mjs
+          node scripts/log-stage-calls.mjs
+
+      - name: Publish gate
+        # Drops single bad reads with a logged reason; fails only on systemic breakage.
+        run: node scripts/publish-gate.mjs
 
       - name: Commit the rebuilt feed
         run: |
@@ -485,6 +504,7 @@ jobs:
           node scripts/freshness-bot.mjs || true
           node scripts/build-limits.mjs || true
           node scripts/build-post-office-catalogue.mjs || true
+          node scripts/publish-gate.mjs --preview-only || true
           node scripts/build-custom-reads.mjs || true
           node scripts/build-release-scout.mjs || true
           node scripts/build-canada-gap.mjs || true

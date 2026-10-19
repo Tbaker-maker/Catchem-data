@@ -1,3 +1,4 @@
+import { useTestSpec } from "./use-test-spec.mjs";
 import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -8,6 +9,7 @@ let fail = 0;
 const t = (name, cond) => { if (cond) console.log("  ok ", name); else { fail++; console.error("  FAIL", name); } };
 
 export async function run() {
+  useTestSpec();
   fail = 0;
   t("read names drop number and variant suffixes", bare("Pheromosa & Buzzwole GX (192) (Alternate Full Art)") === "Pheromosa & Buzzwole GX" && bare("Fuecoco ex - 147/128") === "Fuecoco ex" && bare("Houndoom (H11)") === "Houndoom" && bare("Umbreon VMAX (Alternate Art Secret)") === "Umbreon VMAX" && bare("Mr. Mime") === "Mr. Mime");
   {
@@ -104,7 +106,7 @@ export async function run() {
     const doc = JSON.parse(await readFile(join(ROOT, "research/assets/public/feed/card-rating.json"), "utf-8"));
     t("committed reads clean", (doc.reads || []).every((r) => cleanCopy(r.headline) && r.lines.every(cleanCopy)));
     t("no supply factor", !("supply" in RATING_WEIGHTS));
-    t("committed weights match", JSON.stringify(doc.weights) === JSON.stringify(RATING_WEIGHTS));
+    t("no weights or band cutoffs are published", !("weights" in doc) && !("bands" in doc));
   } catch { t("committed file readable", false); }
   return fail;
 }

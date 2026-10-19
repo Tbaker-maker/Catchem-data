@@ -7,7 +7,7 @@
 //   data/private/self-check/tuner-state.json weights versions and history (revert path)
 //   data/private/self-check/tuner-log.jsonl  every tuner decision with its evidence
 // Public (committed by the nightly with data/derived/):
-//   data/derived/rating-weights.json         the weights only. No scores, no evidence.
+//   private self-check/rating-weights.json   the tuned weights. Never published.
 //
 // CLI: node scripts/self-check.mjs [--revert=base|<version>] [--freeze] [--unfreeze] [--no-tune]
 import { readFile, readdir, writeFile, mkdir, appendFile } from "node:fs/promises";
@@ -17,7 +17,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { snapshotNight, scoreLedger, summarize, pruneLedger, HORIZONS } from "./lib/self-check.mjs";
 import { tuneNight, initialState, revertTo, TUNER } from "./lib/rating-tuner.mjs";
 import { sameWeights } from "./lib/rating-weights.mjs";
-import { RATING_WEIGHTS } from "./lib/card-rating.mjs";
+import { validRatingWeights } from "./lib/card-rating.mjs";
 import { openPrivate } from "./lib/private-store.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -78,9 +78,12 @@ export async function runSelfCheck({ root = ROOT, token = process.env.PRIVATE_DA
   const dir = join(store.dir, "self-check");
   await mkdir(dir, { recursive: true });
 
-  const weightsPath = join(root, "data/derived/rating-weights.json");
+  // Base weights come from the private model spec; tuned weights stay private too.
+  const spec = await readJson(join(store.dir, "model-spec/spec.json"), null);
+  const BASE = validRatingWeights(spec?.cardRating?.weights) ? { ...spec.cardRating.weights } : null;
+  const weightsPath = join(dir, "rating-weights.json");
   const pubWeights = await readJson(weightsPath, null);
-  const wv = pubWeights && sameWeights(pubWeights.base, RATING_WEIGHTS) ? pubWeights.version || "base" : "base";
+  const wv = BASE && pubWeights && sameWeights(pubWeights.base, BASE) ? pubWeights.version || "base" : "base";
 
   const { priceOn, marketChange } = await loadPriceBook(root);
   let ledger = (await readLedger(dir)).filter((e) => e.date !== today);
@@ -98,15 +101,16 @@ export async function runSelfCheck({ root = ROOT, token = process.env.PRIVATE_DA
   // Tuner
   let state = await readJson(join(dir, "tuner-state.json"), null);
   const log = [];
-  if (!state || !sameWeights(state.base, RATING_WEIGHTS)) {
-    log.push({ date: today, action: "seed", reason: state ? "shipped weights changed" : "first run", base: { ...RATING_WEIGHTS } });
-    state = initialState(RATING_WEIGHTS);
+  if (!BASE) log.push({ date: today, action: "skip", reason: "no private model spec" });
+  else if (!state || !sameWeights(state.base, BASE)) {
+    log.push({ date: today, action: "seed", reason: state ? "base weights changed" : "first run", base: { ...BASE } });
+    state = initialState(BASE);
   }
   const rev = argv.find((a) => a.startsWith("--revert="));
-  if (rev) { const to = rev.split("=")[1]; state = revertTo(state, to, today); log.push({ date: today, action: "manual-revert", to }); }
-  if (argv.includes("--freeze")) { state.frozen = true; log.push({ date: today, action: "freeze" }); }
-  if (argv.includes("--unfreeze")) { state.frozen = false; log.push({ date: today, action: "unfreeze" }); }
-  if (!rev && !argv.includes("--no-tune") && !state.tunedOn?.includes?.(today)) {
+  if (rev && state) { const to = rev.split("=")[1]; state = revertTo(state, to, today); log.push({ date: today, action: "manual-revert", to }); }
+  if (state && argv.includes("--freeze")) { state.frozen = true; log.push({ date: today, action: "freeze" }); }
+  if (state && argv.includes("--unfreeze")) { state.frozen = false; log.push({ date: today, action: "unfreeze" }); }
+  if (BASE && !rev && !argv.includes("--no-tune") && !state.tunedOn?.includes?.(today)) {
     const out = tuneNight(state, ledger, today);
     state = out.state; log.push(...out.log);
     state.tunedOn = today;
@@ -114,10 +118,9 @@ export async function runSelfCheck({ root = ROOT, token = process.env.PRIVATE_DA
 
   await writeFile(join(dir, "ledger.jsonl.gz"), gzipSync(ledger.map((e) => JSON.stringify(e)).join("\n") + "\n"));
   await writeFile(join(dir, "scores.json"), JSON.stringify(scores, null, 1) + "\n");
-  await writeFile(join(dir, "tuner-state.json"), JSON.stringify(state, null, 1) + "\n");
+  if (state) await writeFile(join(dir, "tuner-state.json"), JSON.stringify(state, null, 1) + "\n");
   for (const l of log) await appendFile(join(dir, "tuner-log.jsonl"), JSON.stringify(l) + "\n");
-  await mkdir(dirname(weightsPath), { recursive: true });
-  await writeFile(weightsPath, JSON.stringify({
+  if (state) await writeFile(weightsPath, JSON.stringify({
     version: state.version, since: state.since || null, frozen: Boolean(state.frozen), base: state.base, weights: state.weights,
     limits: { perFactorPerNight: TUNER.stepPoints, maxPairsPerNight: TUNER.maxPairsPerNight, cooldownDays: TUNER.cooldownDays, floorShare: TUNER.floorShare, ceilShare: TUNER.ceilShare, horizonDays: TUNER.horizon, minRows: TUNER.minRows },
     note: "Card Rating factor weights used by the nightly build. Set by the self-check tuner inside the limits above. Revert: node scripts/self-check.mjs --revert=base (or a version).",
@@ -140,7 +143,7 @@ export async function runSelfCheck({ root = ROOT, token = process.env.PRIVATE_DA
     }
   } catch (err) { console.error(`pattern-check skipped: ${err.message}`); }
 
-  const pushed = await store.close(["self-check/ledger.jsonl.gz", "self-check/scores.json", "self-check/tuner-state.json", "self-check/tuner-log.jsonl", "call-patterns/self-check.json"], `Self-check ${today}`);
+  const pushed = await store.close(["self-check/ledger.jsonl.gz", "self-check/scores.json", "self-check/tuner-state.json", "self-check/tuner-log.jsonl", "self-check/rating-weights.json", "call-patterns/self-check.json"], `Self-check ${today}`);
   return { today, loggedTonight: night.length, ledgerRows: ledger.length, patternCheck, scored: summary.reduce((a, r) => a + r.scored7 + r.scored30 + r.scored90, 0), tuner: log.map((l) => l.action), weightsVersion: state.version, pushed };
 }
 

@@ -214,6 +214,13 @@ console.log("── seller tag and run stage ──");
   t("seller tag and run stage suite", n === 0, `${n} failed`);
 }
 
+console.log("── publish gate ──");
+{
+  const { run } = await import("./publish-gate.suite.mjs");
+  const n = await run();
+  t("publish gate suite", n === 0, `${n} failed`);
+}
+
 console.log("── custom reads ──");
 {
   const a = await import("./custom-reads.suite.mjs");
@@ -348,6 +355,13 @@ console.log("── set source groups ──");
   const others = [...auditGroups(live.items).sets.values()].map((x) => x.items[0].set).filter((n) => eraOf(n) === "Other");
   t("every set from the catalog has a named era", others.length === 0, others.join(", "));
   t("vintage and POP sets sit in their era", eraOf("Skyridge") === "Original" && eraOf("POP Series 5") === "Promos and extras");
+}
+
+console.log("── IR and SIR watch ──");
+{
+  const { run } = await import("./ir-sir-watch.suite.mjs");
+  const n = await run();
+  t("IR and SIR watch suite", n === 0, `${n} failed`);
 }
 
 console.log(`\n${pass} passed · ${fail} failed`);
