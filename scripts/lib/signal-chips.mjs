@@ -566,34 +566,47 @@ export function tilesFor(read, all, ctx = {}, rules = {}) {
   const rw = num(read?.windowDays);
   const rp = num(read?.changePct);
   const rnow = num(read?.price);
+  const flat = num(rules?.move?.flatAbs);
+  const dirOf = (pct) => (flat >= 0 && Math.abs(pct) < flat ? "flat" : (pct > 0 ? "up" : pct < 0 ? "down" : "flat"));
+  const priceTile = (pct, days, from, fromDate) => {
+    const dir = dirOf(pct);
+    return {
+      dir,
+      pct: dir === "flat" ? 0 : Math.round(Math.abs(pct) * 10) / 10,
+      days,
+      from: Math.round(from * 100) / 100,
+      fromDate,
+      spark: spark.length >= 3 ? spark : [],
+      source: src,
+      asOf,
+    };
+  };
+  // The Price tile is a short window only. A read built on a long window (a
+  // high, a low, a first price) gets a 7 day tile from daily prices, or none.
+  // It never falls back to an all time change.
+  const SHORT_MAX = 35;
+  const sevenDay = () => {
+    const now = nearest(daily, asOf, 2);
+    const then = nearest(daily, addDays(asOf, -7), 2);
+    if (!now || !then || now[0] === then[0] || !(then[1] > 0)) return null;
+    const span = dayNum(now[0]) - dayNum(then[0]);
+    if (!(span > 0) || span > SHORT_MAX) return null;
+    return priceTile(((now[1] - then[1]) / then[1]) * 100, 7, then[1], then[0]);
+  };
   if (move && move.dir === "dash") {
     tiles.price = { dash: true, source: src, asOf };
-  } else if (rw > 0 && Number.isFinite(rp) && rnow > 0) {
-    // The read's own window, so the tile matches the price line on the card.
+  } else if (rw > 0 && rw <= SHORT_MAX && Number.isFinite(rp) && rnow > 0) {
+    // The read's own short window, so the tile matches the price line on the card.
     const then = nearest(daily.length ? daily : cleanPoints(ctx.points), addDays(asOf, -rw), 2);
-    const flat = num(rules?.move?.flatAbs);
-    const dir = flat >= 0 && Math.abs(rp) < flat ? "flat" : (rp > 0 ? "up" : rp < 0 ? "down" : "flat");
-    tiles.price = {
-      dir,
-      pct: dir === "flat" ? 0 : Math.round(Math.abs(rp) * 10) / 10,
-      days: rw,
-      from: Math.round((then ? then[1] : rnow / (1 + rp / 100)) * 100) / 100,
-      fromDate: then ? then[0] : addDays(asOf, -rw),
-      spark: spark.length >= 3 ? spark : [],
-      source: src,
-      asOf,
-    };
-  } else if (move && move.days > 0) {
-    tiles.price = {
-      dir: move.dir,
-      pct: move.dir === "flat" ? 0 : move.pct,
-      days: move.days,
-      from: Math.round(move.then * 100) / 100,
-      fromDate: move.thenDate || "",
-      spark: spark.length >= 3 ? spark : [],
-      source: src,
-      asOf,
-    };
+    tiles.price = priceTile(rp, rw, then ? then[1] : rnow / (1 + rp / 100), then ? then[0] : addDays(asOf, -rw));
+  } else if (!(rw > SHORT_MAX) && move && move.days > 0 && move.days <= SHORT_MAX) {
+    const t = priceTile(move.dir === "flat" ? 0 : (move.dir === "down" ? -move.pct : move.pct), move.days, move.then, move.thenDate || "");
+    t.dir = move.dir;
+    t.pct = move.dir === "flat" ? 0 : move.pct;
+    tiles.price = t;
+  } else {
+    const seven = sevenDay();
+    if (seven) tiles.price = seven;
   }
   const listed = listingsTile(ctx, rules);
   if (listed) tiles.listings = listed;
