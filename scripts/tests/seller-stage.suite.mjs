@@ -40,6 +40,13 @@ export async function run() {
   t("quiet prices show nothing", runStage(prices(() => 20), asOf, STAGE) === null);
   t("thin: too few price days shows nothing", runStage(prices((i) => 20 * 1.03 ** i, 6), day(5), STAGE) === null);
   t("thin: cheap cards show nothing", runStage(prices((i) => 1 * 1.03 ** i), asOf, STAGE) === null);
+  const P2 = { ...STAGE, persistNights: 2, persistStages: ["Building"] };
+  const jump = prices((i) => (i < 9 ? 20 : 21.2));
+  t("one jump on the last day after a flat stretch is Building without the rule", runStage(jump, asOf, STAGE)?.word === "Building");
+  t("with the persistence rule, one jump shows nothing", runStage(jump, asOf, P2) === null);
+  t("a move held two nights still shows Building", runStage(prices((i) => (i < 8 ? 20 : 21.2)), asOf, P2)?.word === "Building");
+  t("a steady climb is unchanged by the rule", runStage(prices((i) => 20 * 1.03 ** i), asOf, P2)?.word === "Building");
+  t("stages not listed keep their old rule", runStage(prices((i) => (i < 5 ? 20 * 1.04 ** i : 20 * 1.04 ** 4 * 0.96 ** (i - 4))), asOf, P2)?.word === "Reversing");
   t("choppy steps show nothing", runStage(prices((i) => [20, 22, 20.5, 22.5, 21, 23, 21.5, 24, 22, 25][i]), asOf, STAGE) === null);
   const lots = (fn) => Array.from({ length: 10 }, (_, i) => ({ date: day(i), n: fn(i) }));
   const up = prices((i) => 20 * 1.03 ** i);
