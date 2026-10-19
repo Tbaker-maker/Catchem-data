@@ -315,6 +315,9 @@ jobs:
         run: node scripts/write-detector-report.mjs
 
       - name: Write feature data
+        # The IR cycle order reads its weights from catchem-data-private (read only).
+        env:
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
         run: node scripts/write-feature-data.mjs
 
       - name: Listings-led tracker (private)

@@ -104,7 +104,7 @@ export async function run() {
     const doc = JSON.parse(await readFile(join(ROOT, "research/assets/public/feed/card-rating.json"), "utf-8"));
     t("committed reads clean", (doc.reads || []).every((r) => cleanCopy(r.headline) && r.lines.every(cleanCopy)));
     t("no supply factor", !("supply" in RATING_WEIGHTS));
-    t("committed weights match", JSON.stringify(doc.weights) === JSON.stringify(RATING_WEIGHTS));
+    t("no weights or band cutoffs are published", !("weights" in doc) && !("bands" in doc));
   } catch { t("committed file readable", false); }
   return fail;
 }
