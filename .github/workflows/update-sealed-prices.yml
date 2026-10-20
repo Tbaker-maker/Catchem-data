@@ -62,7 +62,7 @@ jobs:
             for i in 1 2 3; do
               if git push; then pushed=1; break; fi
               echo "push rejected (attempt $i) — rebasing onto moved main"
-              git pull --rebase --autostash origin main || true
+              git pull --rebase --autostash origin main || node scripts/resolve-listing-counts-conflict.mjs || true
             done
             if [ "$pushed" != "1" ]; then
               echo "::warning::TCGCSV day was committed locally but not pushed after 3 tries. The price commit push below carries it."
@@ -275,7 +275,7 @@ jobs:
             for i in 1 2 3; do
               git push && break
               echo "push rejected (attempt $i) — rebasing onto moved main"
-              git pull --rebase --autostash origin main || true
+              git pull --rebase --autostash origin main || node scripts/resolve-listing-counts-conflict.mjs || true
             done
           fi
 
@@ -408,7 +408,7 @@ jobs:
                 break
               fi
               echo "push rejected (attempt $i) — rebasing onto moved main"
-              git pull --rebase --autostash origin main || exit 1
+              git pull --rebase --autostash origin main || node scripts/resolve-listing-counts-conflict.mjs || exit 1
               sleep 5
             done
             if [ "$pushed" != 1 ]; then
@@ -542,7 +542,7 @@ jobs:
               # --autostash: an unlisted written file must never strand the
               # data commit (2026-08-22 run 32547010842: corrections.html was
               # written-but-unadded and the retry rebase refused to run)
-              git pull --rebase --autostash origin main || exit 1
+              git pull --rebase --autostash origin main || node scripts/resolve-listing-counts-conflict.mjs || exit 1
               sleep 5
             done
           fi
