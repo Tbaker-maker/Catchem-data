@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { shell, tile, cta, footer, toText, esc, num, SITE } from "./lib/email.mjs";
 import { dedupeNames } from "./lib/weekly-read.mjs";
 import { provenBoard, makeDayLoader, loadSealedPid, isRotatedSet, ROTATION_LINE } from "./lib/email-proof.mjs";
+import { flagForItem, boardPill } from "./lib/premium-ratio.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = async (p) => JSON.parse(await readFile(join(ROOT, p), "utf8"));
@@ -13,6 +14,8 @@ const weekly = await read("data/derived/weekly-read.json");
 const reads = await read("research/assets/public/reads.json");
 const counts = await read("research/assets/public/counts.json");
 const asOf = weekly.asOf;
+let premiumDoc = null;
+try { premiumDoc = JSON.parse(await readFile(join(ROOT, "research/assets/public/premium-ratio.json"), "utf8")); } catch { premiumDoc = null; }
 
 // count must equal the array; provenBoard throws when it does not.
 const { kept: proven } = await provenBoard(reads, { day: makeDayLoader(ROOT), sealedPid: await loadSealedPid(ROOT) });
@@ -27,7 +30,10 @@ const sections = [];
 
 // Same price proof as the daily: both prices in that exact day's TCGplayer market file.
 if (proven.length) {
-  const rows = proven.map(({ row, proof: p }) => `<tr><td style="padding:8px 0;color:#efe9de;font:15px/1.4 Arial,Helvetica,sans-serif;">${p.up ? "Up" : "Down"} $<span data-src="TCGCSV daily ${p.bDate}" data-asof="${p.bDate}">${p.usd.toFixed(2)}</span>: <span data-name="1">${esc(row.name)}</span>, $<span data-src="TCGCSV daily ${p.aDate}" data-asof="${p.aDate}">${p.a.toFixed(2)}</span> on ${p.aDate} to $<span data-src="TCGCSV daily ${p.bDate}" data-asof="${p.bDate}">${p.b.toFixed(2)}</span> on ${p.bDate}.${isRotatedSet(row.set) ? `<br><span style="color:#d9b779;font-size:13px;">${ROTATION_LINE}</span>` : ""}</td></tr>`).join("");
+  const rows = proven.map(({ row, proof: p }) => {
+    const prem = boardPill(flagForItem({ id: row.sku || row.id, sku: row.sku, set: row.set, kind: p.sealed ? "sealed" : "single", href: row.href }, premiumDoc));
+    return `<tr><td style="padding:8px 0;color:#efe9de;font:15px/1.4 Arial,Helvetica,sans-serif;">${p.up ? "Up" : "Down"} $<span data-src="TCGCSV daily ${p.bDate}" data-asof="${p.bDate}">${p.usd.toFixed(2)}</span>: <span data-name="1">${esc(row.name)}</span>, $<span data-src="TCGCSV daily ${p.aDate}" data-asof="${p.aDate}">${p.a.toFixed(2)}</span> on ${p.aDate} to $<span data-src="TCGCSV daily ${p.bDate}" data-asof="${p.bDate}">${p.b.toFixed(2)}</span> on ${p.bDate}.${prem ? `<br>${prem}` : ""}${isRotatedSet(row.set) ? `<br><span style="color:#d9b779;font-size:13px;">${ROTATION_LINE}</span>` : ""}</td></tr>`;
+  }).join("");
   sections.push(`<tr><td style="padding:18px 0 6px;font:700 18px Georgia,serif;color:#efe9de;">On the board</td></tr><tr><td><table role="presentation" width="100%">${rows}</table></td></tr>`);
 }
 

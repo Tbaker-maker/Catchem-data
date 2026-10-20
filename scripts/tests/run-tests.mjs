@@ -26,6 +26,7 @@ import { indexLine as publicIndexLine } from "../lib/public-index-line.mjs";
 import { keepMarch31 } from "../compute-indexes.mjs";
 import "./collector-search.test.mjs";
 import "./costco-exclusives.test.mjs";
+import "./premium-ratio.test.mjs";
 import { searchItems } from "../lib/search-rank.mjs";
 import { runPrivatePptTests } from "./private-ppt.test.mjs";
 import { runSparkTests } from "./spark30.test.mjs";
