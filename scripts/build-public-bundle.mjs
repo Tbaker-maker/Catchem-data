@@ -364,9 +364,19 @@ try { RUN_AT = (await read("data/ppt/run-report.json")).finishedAt || null; } ca
 const rawById = new Map();
 const sets = new Map();
 const browseHiddenPids = hiddenSealedPids(await read("data/sealed-products.json").catch(() => []));
+const costcoDoc = await read("data/costco-exclusives.json").catch(() => ({ products: [] }));
+const costcoById = new Map((costcoDoc.products || []).filter((row) => row && row.id).map((row) => [row.id, row]));
+const ebayMedian = new Map();
+try {
+  const tape = await read("data/sealed-prices.json");
+  for (const row of tape.products || []) {
+    const ask = Number(row.priceMedian);
+    if (row.id && ask > 0) ebayMedian.set(row.id, Math.round(ask * 100) / 100);
+  }
+} catch { /* no eBay tape yet */ }
 let browseHiddenCount = 0;
 for (const item of items) {
-  const browseHidden = isBrowseHidden(item, browseHiddenPids);
+  const browseHidden = isBrowseHidden(item, browseHiddenPids) && !costcoById.has(item.id);
   if (browseHidden) browseHiddenCount += 1;
   const key = homeKey(item);
   const fold = foldOf(item);
@@ -419,7 +429,18 @@ for (const item of items) {
     subtype: item.subtype || null,
     rarity: item.rarity || "",
     ...(item.kind === "sealed" ? {} : { art: artType({ ...item, num: item.number || "", kind: "single" }) }),
-    ...(() => { const tags = variantTags({ ...item, set: set.name }, { subtypes: subtypesById.get(item.id) }); return tags.length ? { tags } : {}; })(),
+    ...(() => {
+      const tags = variantTags({ ...item, set: set.name }, { subtypes: subtypesById.get(item.id) });
+      const cx = costcoById.get(item.id);
+      if (cx && !tags.includes("Costco exclusive")) tags.push("Costco exclusive");
+      const ask = cx && !(money(item.price)) ? ebayMedian.get(item.id) || null : null;
+      return {
+        ...(tags.length ? { tags } : {}),
+        ...(cx ? { exclusive: "Costco", region: cx.region || "US", contents: cx.contents || "" } : {}),
+        ...(ask ? { askPrice: ask, priceSource: "eBay asking prices" } : {}),
+        ...(cx && !money(item.price) && !ask ? { priceStatus: "checking" } : {}),
+      };
+    })(),
     price,
     printing: item.printing || null,
     ...(printings.length ? { printings } : {}),

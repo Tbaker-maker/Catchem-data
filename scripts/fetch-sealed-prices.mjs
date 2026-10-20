@@ -18,6 +18,7 @@ import { gzipSync } from "node:zlib";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { recordBuyoutHarvest } from "./buyout-tape.mjs";
+import { costcoListingOk } from "./lib/costco-exclusives.mjs";
 import { filteredTotalForNight } from "./lib/second-library.mjs";
 import { sellerSpread } from "./lib/listing-counts.mjs";
 
@@ -324,7 +325,7 @@ function deliveredPriceOf(item) {
 
 function filterItemsForProduct(product, items) {
   const titleLowerOf = i => (i.title || "").toLowerCase();
-  const setLower = (product.set || "").toLowerCase();
+  const setLower = String(product.matchSet || product.set || "").toLowerCase();
   const setWords = new Set(setLower.split(/\s+/).filter(Boolean));
   const requires = REQUIRE_PHRASES[product.subtype] || [];
   // set-name safety: drop exclusions sharing a word with the set name
@@ -360,6 +361,7 @@ function filterItemsForProduct(product, items) {
   const packOrigin = (t) => /\bsleeved\b/i.test(t) ? "sleeved" : /\bloose\b/i.test(t) ? "loose" : "unstated";
   const kept = items.filter(i => {
     const t = titleLowerOf(i);
+    if (!costcoListingOk(product, i.title)) { report.failType++; sample("type", i.title, "costco"); return false; }
     // The sample() calls below said `it.title` where the parameter is `i` —
     // a ReferenceError that threw on the FIRST rejected listing of every SKU,
     // so every product errored, 0 went live and the wipe guard stopped the
@@ -578,7 +580,25 @@ async function main() {
   // listings are not split by art without matching titles by name, so the
   // combined all-arts parent row keeps the one eBay search.
   const ebayRows = catalog.filter(p => p.ebay !== false && p.searchQuery);
-  const products = only ? ebayRows.filter(p => only.has(p.id)) : ebayRows;
+  // Unpriced Costco bundles stay ebay:false on the sealed list (they are not
+  // a matched SKU). The nightly still prices them from this file, and only
+  // with a query that requires the word Costco.
+  let costcoExtras = [];
+  try {
+    const costco = JSON.parse(await readFile(join(dirname(fileURLToPath(import.meta.url)), "../data/costco-exclusives.json"), "utf8"));
+    costcoExtras = (costco.products || []).filter((row) => row && row.ebay === true && row.searchQuery).map((row) => ({
+      id: row.id,
+      name: row.name,
+      exclusive: "Costco",
+      set: row.set,
+      matchSet: row.matchSet,
+      searchQuery: row.searchQuery,
+      requireExtra: row.requireExtra || ["costco"],
+      excludeExtra: row.excludeExtra || [],
+      ebay: true,
+    }));
+  } catch { costcoExtras = []; }
+  const products = only ? ebayRows.filter(p => only.has(p.id)) : [...ebayRows, ...costcoExtras];
   console.log(`   → ${products.length} products to refresh${only ? ` (ONLY=${process.env.ONLY})` : ""}.`);
 
   console.log("📜 Loading previous prices (for history continuity)...");

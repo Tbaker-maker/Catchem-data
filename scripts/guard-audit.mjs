@@ -34,6 +34,16 @@ const MANIFEST = [
       { file: "scripts/compute-divergence.mjs", pattern: /publishBlock/g, min: 1,
         note: "blocked products must not qualify as Spread signals" },
     ] },
+  { guard: "Costco bundle is not the plain product",
+    definedIn: "scripts/lib/costco-exclusives.mjs",
+    mustBeReferencedIn: [
+      { file: "scripts/fetch-sealed-prices.mjs", pattern: /costcoListingOk\(/g, min: 1,
+        note: "eBay price keep filter must drop a plain box from a Costco product and a Costco title from a plain product" },
+      { file: "scripts/lib/listing-counts.mjs", pattern: /costcoListingOk\(/g, min: 1,
+        note: "listing counts use the same title rule" },
+      { file: "scripts/build-public-bundle.mjs", pattern: /costco-exclusives\.json/g, min: 1,
+        note: "public pages read the Costco record" },
+    ] },
   { guard: "Multi-item listing filter (lots/cases/x2)",
     definedIn: "scripts/fetch-sealed-prices.mjs",
     mustBeReferencedIn: [
