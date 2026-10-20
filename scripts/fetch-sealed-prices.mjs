@@ -21,7 +21,7 @@ import { recordBuyoutHarvest } from "./buyout-tape.mjs";
 import { costcoListingOk } from "./lib/costco-exclusives.mjs";
 import { filteredTotalForNight } from "./lib/second-library.mjs";
 import { sellerSpread } from "./lib/listing-counts.mjs";
-import { selectRealListings, cleanHistory, gateSealedPrices, loadSellerMin, loadTcgListedMedians, gapPct, floorBad } from "./lib/real-listing.mjs";
+import { selectRealListings, cleanHistory, gateSealedPrices, loadSellerMin, loadTcgListedMedians, gapPct, floorBad, medianFacts } from "./lib/real-listing.mjs";
 
 // Node's fetch has NO default timeout: a host that accepts the connection
 // and never answers hangs this script until the CI runner kills the job.
@@ -554,8 +554,9 @@ export function robustAskRange(sortedPrices) {
 // priceFloorClean is that set's low, never the raw minimum ask.
 function askFactsFromKept(product, kept, agg, sellerMin, tcgMids) {
   const real = selectRealListings(kept || [], { isPack: product?.subtype === "booster-pack", market: "US", sellerMin });
-  const ebayMedianAsk = (agg?.askMedian > 0 ? agg.askMedian : null) || real.median || (agg?.priceMedian > 0 ? agg.priceMedian : null) || null;
-  const ebayMedianCount = (agg?.askRobustCount > 0 ? agg.askRobustCount : null) || (real.count > 0 ? real.count : null) || (agg?.listingCount > 0 ? agg.listingCount : null);
+  const labeled = medianFacts(real, agg);
+  const ebayMedianAsk = labeled.ebayMedianAsk;
+  const ebayMedianCount = labeled.ebayMedianCount;
   const pid = Number(product?.tcgPlayerId);
   const tcgListedMedian = pid > 0 && tcgMids?.has(pid) ? tcgMids.get(pid) : null;
   let cheapestReal = real.cheapest || null;

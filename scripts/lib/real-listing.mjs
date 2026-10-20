@@ -74,7 +74,7 @@ export function landedPrice(item) {
 
 function hasDeliveryEstimate(item) {
   const opts = item?.shippingOptions || [];
-  return opts.some((o) => o && (o.minEstimatedDeliveryDate || o.maxEstimatedDeliveryDate || Number(o.shippingCost?.value) >= 0));
+  return opts.some((o) => o && (o.minEstimatedDeliveryDate || o.maxEstimatedDeliveryDate));
 }
 
 function conditionOtherThanNew(item) {
@@ -156,6 +156,21 @@ export function selectRealListings(items, opts = {}) {
   const floorPrice = top ? roundMoney(top.price) : null;
   const cheapest = top && url ? { price: floorPrice, url, title: String(top.item?.title || "").slice(0, 140) } : null;
   return { count: real.length, median, cheapest, floorPrice, refMedian: refMedian != null ? roundMoney(refMedian) : null };
+}
+
+
+// The labeled eBay median is the middle of the real listings.
+// The older robust median is only a fallback when that set is empty.
+export function medianFacts(real, agg) {
+  if (real && real.count > 0 && real.median > 0) {
+    return { ebayMedianAsk: real.median, ebayMedianCount: real.count };
+  }
+  const ebayMedianAsk = (Number(agg?.askMedian) > 0 ? Number(agg.askMedian) : null)
+    || (Number(agg?.priceMedian) > 0 ? Number(agg.priceMedian) : null)
+    || null;
+  const ebayMedianCount = (Number(agg?.askRobustCount) > 0 ? Number(agg.askRobustCount) : null)
+    || (Number(agg?.listingCount) > 0 ? Number(agg.listingCount) : null);
+  return { ebayMedianAsk, ebayMedianCount };
 }
 
 export function moneyText(n) {

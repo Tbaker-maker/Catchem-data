@@ -54,7 +54,12 @@ const items = kept.map(({ row, proof: p }) => {
   }
   const why = esc(whyRaw).replace(/\$([\d,]+(?:\.\d+)?)/g, (_, v) => `$${n(v, dayFile(p.bDate), p.bDate)}`).replace(/(\d+(?:\.\d+)?)%/g, (_, v) => `${n(v, dayFile(p.bDate), p.bDate)}%`).replace("\u0000SET\u0000", name(String(row.set || "").replace(/^[A-Z0-9]+:\s*/, "")));
   const sealedRow = p.sealed ? (sealedByPid.get(String(p.pid)) || sealedByPid.get(String(row.sku || row.id || ""))) : null;
-  const box = sealedRow ? askBoxLines(sealedRow, p.b).map((line) => esc(line)).join("<br>") : "";
+  const box = sealedRow ? askBoxLines(sealedRow, p.b).map((line) => {
+    const hit = String(line).match(/https:\/\/www\.ebay\.com\/itm\/\d+/);
+    if (!hit) return esc(line);
+    const url = hit[0];
+    return esc(line.slice(0, hit.index)) + `<a href="${esc(url)}">${esc(url)}</a>` + esc(line.slice(hit.index + url.length));
+  }).join("<br>") : "";
   const rot = isRotatedSet(row.set) ? `<br><span style="color:#d9b779;font-size:13px;">${ROTATION_LINE}</span>` : "";
   const tcg = `https://www.tcgplayer.com/product/${p.pid}`;
   const ebay = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(row.name)}`;

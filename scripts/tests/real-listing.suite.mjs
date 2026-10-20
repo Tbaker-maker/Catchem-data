@@ -1,6 +1,6 @@
 // sv3pt5-upc: junk floor, opened, and damaged lose. A clean listing wins.
 // A $12 history point is under 0.3x the robust median and is dropped.
-import { selectRealListings, cleanHistory, gateSealedProduct, askBoxLines, EBAY_MEDIAN_LABEL, TCG_LISTED_NOTE, TCG_MARKET_NOTE, ebayMedianNote } from "../lib/real-listing.mjs";
+import { selectRealListings, cleanHistory, gateSealedProduct, askBoxLines, medianFacts, EBAY_MEDIAN_LABEL, TCG_LISTED_NOTE, TCG_MARKET_NOTE, ebayMedianNote } from "../lib/real-listing.mjs";
 import { scoreAskFacts, scoreItems } from "../lib/tracker.mjs";
 
 const item = (title, price, extra = {}) => ({
@@ -24,6 +24,14 @@ export async function run() {
   t("opened and damaged lose", picked.count === 1);
   t("the $100 junk loses", picked.floorPrice === 849.99 && picked.cheapest?.price === 849.99);
   t("the clean listing wins and keeps its url", picked.cheapest?.url === "https://www.ebay.com/itm/850");
+  const auction = item("Pokemon 151 Ultra Premium Collection UPC sealed", 870, { url: "https://www.ebay.com/itm/870", buyingOptions: ["AUCTION"] });
+  const abroad = item("Pokemon 151 Ultra Premium Collection UPC sealed", 880, { url: "https://www.ebay.com/itm/880", itemLocation: { country: "JP" } });
+  const weak = item("Pokemon 151 Ultra Premium Collection UPC sealed", 860, { url: "https://www.ebay.com/itm/860", seller: { feedbackScore: 1, feedbackPercentage: 80 } });
+  const trusted = item("Pokemon 151 Ultra Premium Collection UPC sealed", 849.99, { url: "https://www.ebay.com/itm/850", seller: { feedbackScore: 40, feedbackPercentage: 100 } });
+  const extraPick = selectRealListings([auction, abroad, weak, trusted], { isPack: false, market: "US", sellerMin: { minFeedbackScore: 10, minPositivePercent: 99 } });
+  t("auction, no delivery estimate, and a seller under the minimum lose", extraPick.count === 1 && extraPick.cheapest?.url === "https://www.ebay.com/itm/850");
+  const labeled = medianFacts({ count: 1, median: 849.99 }, { askMedian: 936.99, askRobustCount: 133 });
+  t("the labeled median is the real listing set", labeled.ebayMedianAsk === 849.99 && labeled.ebayMedianCount === 1);
   const gated = gateSealedProduct({
     id: "sv3pt5-upc",
     askMedian: 936.99,
