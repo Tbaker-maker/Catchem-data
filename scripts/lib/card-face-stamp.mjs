@@ -157,9 +157,11 @@ function occurrences(text, pool) {
     const after = text.slice(hit.end, hit.end + 80);
     let card = uniq.length === 1 ? uniq[0] : null;
     if (!card) {
+      const byNum = uniq.filter((c) => c.number && after.includes(c.number));
       const bySet = uniq.filter((c) => c.setShort && wordHas(after, c.setShort));
       const byR = (bySet.length ? bySet : uniq).filter((c) => c.rarity && after.includes(c.rarity));
-      if (bySet.length === 1) card = bySet[0];
+      if (byNum.length === 1) card = byNum[0];
+      else if (bySet.length === 1) card = bySet[0];
       else if (byR.length === 1) card = byR[0];
     }
     if (!card) continue;

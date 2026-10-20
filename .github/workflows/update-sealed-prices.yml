@@ -377,6 +377,9 @@ jobs:
 
       - name: Publish gate
         # Drops single bad reads with a logged reason; fails only on systemic breakage.
+        # The stability bar is read from catchem-data-private. The numbers stay there.
+        env:
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
         run: node scripts/publish-gate.mjs
 
       - name: Commit the rebuilt feed

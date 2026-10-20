@@ -214,6 +214,12 @@ export async function run() {
   t("Shining Legends (2017) is Modern", eraOf("2017-10-06") === "Modern");
   t("a set from May 2003 is Vintage", eraOf("2003-05-12") === "Vintage");
   t("June 1 2003 is Modern", eraOf("2003-06-01") === "Modern");
+  const promoOld = qualifyChips({ id: "promo-old", name: "Lugia", kind: "single", tags: ["Promo"], asOf: "2026-10-19" }, { asOf: "2026-10-19", release: "2019-11-15", promo: true }, { era: {} }).find((c) => c.kind === "era");
+  t("a 2019 promo set is not Vintage", promoOld && promoOld.tag === "Modern");
+  const promoNoDay = qualifyChips({ id: "promo-wotc", name: "Mew", kind: "single", tags: ["Promo"], asOf: "2026-10-19" }, { asOf: "2026-10-19", release: "1999-07-01", promo: true }, { era: {} }).find((c) => c.kind === "era");
+  t("a promo does not take Vintage from the set start", !promoNoDay);
+  const promoCard = qualifyChips({ id: "promo-card", name: "Mew", kind: "single", tags: ["Promo"], asOf: "2026-10-19" }, { asOf: "2026-10-19", release: "1999-07-01", cardRelease: "2000-11-10", promo: true }, { era: {} }).find((c) => c.kind === "era");
+  t("a promo uses its own release date", promoCard && promoCard.tag === "Vintage");
   const eraOnly = readSignals({ id: "deep-set-shining-legends", name: "Shining Legends", kind: "sealed", asOf: "2026-10-19" }, { asOf: "2026-10-19", release: "2017-10-06" }, { era: {} });
   t("an era tag never becomes the read line", !/Era tag/i.test(JSON.stringify(eraOnly)) && !eraOnly.blurb);
   t("WOTC set names are vintage and later sets are not", isVintageSet("Skyridge") && isVintageSet("Base Set 2") && !isVintageSet("Shining Legends") && !isVintageSet("Hidden Fates") && !isVintageSet("Black & White"));

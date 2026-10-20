@@ -30,6 +30,12 @@ export async function run() {
   t("lines under it still get the card number", label.lines[0].includes("146/144"));
   const single = stampRead({ id: "card-x", readKind: "price", name: "Charizard", sku: "tcgcsv-2", headline: "Charizard (Skyridge) went $2,500.00 to $2,999.99.", lines: [] }, index(zard), images);
   t("a single-card read still gets its number", single.headline.includes("146/144"));
+  const zek = [
+    { id: "tcgcsv-166", name: "Zekrom ex", clean: "Zekrom ex", number: "166/086", set: "SV: Black Bolt", setShort: "Black Bolt", rarity: "Special Illustration Rare" },
+    { id: "tcgcsv-34", name: "Zekrom ex", clean: "Zekrom ex", number: "34/086", set: "SV: Black Bolt", setShort: "Black Bolt", rarity: "Ultra Rare" },
+  ];
+  const bolt = stampRead({ id: "deep-rating-sir-above", deep: "rating", readKind: "deep", name: "Rating: Special Illustration Rares", headline: "Priced above similar cards.", lines: ["Zekrom ex (Black Bolt) 166/086: $10.00."] }, index(zek), images);
+  t("a shared name takes the collector number on the line", bolt.lineCards && bolt.lineCards[0].cards.length === 1 && bolt.lineCards[0].cards[0].id === "tcgcsv-166" && bolt.lineCards[0].cards[0].title.includes("Zekrom ex"));
   return fail;
 }
 

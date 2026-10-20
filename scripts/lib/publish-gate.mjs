@@ -2,6 +2,8 @@
 // PR CI. Each rule names a bug class seen in a reads check. A single bad read
 // is dropped with a logged reason; only systemic breakage fails the run.
 import { flagLine } from "./copy-rules.mjs";
+import { storyUnstable } from "./read-stability.mjs";
+import { BACK_TO_RECENT_DAYS } from "./history-reads.mjs";
 
 export const SHORT_MAX = 35; // same short window cap as the Price tile (#374)
 export const VINTAGE_CUTOFF = "2003-06-01";
@@ -22,11 +24,17 @@ export const RULES = [
   ["condition", "Condition label on a sealed product"],
   ["listings-zero", "Zero or missing listings counted shown"],
   ["image", "Image URL missing or malformed (field removed so the page falls back)"],
-  ["era", "Vintage tag inconsistent with release date (Vintage is WOTC before 2003-06-01)"],
+  ["era", "Vintage tag on a set or promo that is not WOTC before 2003-06-01"],
   ["repeat", "Same read as the previous day"],
   ["advice", "Advice wording from the shared copy rules"],
   ["tiles", "Priced card or sealed read with no flip tiles"],
-  ["pattern-rate", "Pattern headline leads with a bare rate under 50%"],
+  ["pattern-rate", "Pattern line leads with a bare rate under 50%"],
+  ["ratio", "Sealed multiple does not match the dated dollar pair, one decimal"],
+  ["own-date", "A listings count is not from the read date"],
+  ["printing", "Finish tag does not match the priced printing"],
+  ["stability", "Card story misses the private point floor or high/low bar"],
+  ["back-to", "Back-to target is stale, or the return into the band is not recent"],
+  ["name", "Page or card has no display name, or the name is a raw code"],
 ];
 
 const isSealed = (r) => r.kind === "sealed" || r.readKind === "sealed" || r.readKind === "listings" || r.kind === "listings" || /^\/p\//.test(r.href || "") || (r.sku && !/^tcgcsv-/.test(r.sku) && r.family === "listings");
@@ -50,19 +58,73 @@ function stripDashes(v) {
   return v;
 }
 
-// ctx: { chips (signal-chips byId), facts(id) -> facts doc|null, listings (id -> {date,n}), sets (name -> release), prev (id -> read from the previous day), asOf }
+const RAW_NAME = /^(?:tcgcsv-\d+|#[A-Za-z0-9/]+|[a-z]{1,8}\d[a-z0-9]*)$/i;
+const MONS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+function monthDay(iso) {
+  const s = String(iso || "").slice(0, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return "";
+  return `${MONS[Number(s.slice(5, 7)) - 1]} ${Number(s.slice(8, 10))}`;
+}
+function daySpan(a, b) {
+  const left = Date.parse(`${String(a).slice(0, 10)}T00:00:00Z`);
+  const right = Date.parse(`${String(b).slice(0, 10)}T00:00:00Z`);
+  if (!Number.isFinite(left) || !Number.isFinite(right)) return null;
+  return Math.round((right - left) / 86400000);
+}
+function copyText(r) {
+  return [r.headline, r.blurb, r.pattern?.line, ...(r.lines || []), ...(r.variants || [])].filter((s) => typeof s === "string").join("\n");
+}
+function dollarsIn(line) {
+  return [...String(line).matchAll(/\$(\d[\d,]*(?:\.\d+)?)/g)].map((m) => Number(m[1].replace(/,/g, "")));
+}
+function honestTimes(n) { return Math.round(n * 10) / 10; }
+
+// A sealed-vs-chase headline that names Nx tonight and Mx on a date must match the dollar lines.
+function ratioOff(read) {
+  const head = String(read?.headline || "");
+  const m = head.match(/costs (\d+(?:\.\d+)?)x\b[\s\S]*?\bfrom (\d+(?:\.\d+)?)x on /);
+  if (!m) return false;
+  const pairs = (read.lines || []).map(dollarsIn).filter((row) => row.length >= 2);
+  if (pairs.length < 2) return false;
+  const [sealedStart, sealedEnd] = pairs[0];
+  const [cardStart, cardEnd] = pairs[1];
+  if (!(sealedStart > 0) || !(sealedEnd > 0) || !(cardStart > 0) || !(cardEnd > 0)) return false;
+  const cardSide = /the sealed price/.test(head);
+  const now = cardSide ? cardEnd / sealedEnd : sealedEnd / cardEnd;
+  const then = cardSide ? cardStart / sealedStart : sealedStart / cardStart;
+  return honestTimes(now) !== Number(m[1]) || honestTimes(then) !== Number(m[2]);
+}
+
+function storyStats(read) {
+  const text = (read.lines || []).filter((s) => typeof s === "string").join("\n");
+  const n = text.match(/(\d+) TCGplayer market points/);
+  const peak = text.match(/Peak \$([\d,]+\.\d+)/);
+  const low = text.match(/Low \$([\d,]+\.\d+)/);
+  if (!n || !peak || !low) return null;
+  return { points: Number(n[1]), peak: Number(peak[1].replace(/,/g, "")), low: Number(low[1].replace(/,/g, "")) };
+}
+
+function vintageOn(read, ctx) {
+  if ((read.tags || []).includes("Vintage")) return true;
+  const sig = ctx.chips?.[read.id]?.signals || read.signals || [];
+  return sig.some((s) => s && s.kind === "era" && s.tag === "Vintage");
+}
 
 // A pattern headline whose first sentence is a bare percent under 50, and not an Nx lift.
 // Price headlines such as "Down 17%" are not pattern copy, so they stay.
 function bareLowPattern(read) {
-  const head = String(read?.headline || "").trim();
-  if (!head) return false;
-  const first = head.split(/[!?]|\.(?:\s|$)/)[0].trim();
-  if (/^\d+(?:\.\d+)?x\b/.test(first)) return false;
-  const m = first.match(/(\d+(?:\.\d+)?)\s*%/);
-  if (!m || !(Number(m[1]) < 50)) return false;
-  const kind = String(read.readKind || read.kind || "");
-  return /^pattern/i.test(kind) || /\b(were right|was right|past cases|normally|this pattern|pattern)\b/i.test(head);
+  const bits = [read?.headline, read?.pattern?.line, ...(read?.lines || [])].filter((s) => typeof s === "string");
+  for (const bit of bits) {
+    const head = bit.trim();
+    if (!head) continue;
+    const first = head.split(/[!?]|\.(?:\s|$)/)[0].trim();
+    if (/^\d+(?:\.\d+)?x\b/.test(first)) continue;
+    const m = first.match(/(\d+(?:\.\d+)?)\s*%/);
+    if (!m || !(Number(m[1]) < 50)) continue;
+    const kind = String(read.readKind || read.kind || "");
+    if (/^pattern/i.test(kind) || /\b(were right|was right|past cases|normally|this pattern|pattern)\b/i.test(head) || bit === read?.pattern?.line) return true;
+  }
+  return false;
 }
 
 export function checkRead(read, ctx = {}) {
@@ -103,9 +165,15 @@ export function checkRead(read, ctx = {}) {
   if (r.image != null && r.image !== "" && !(typeof r.image === "string" && /^(https:\/\/|\/)[^\s"'<>]+$/.test(r.image))) {
     r = { ...r }; delete r.image; flags.push({ rule: "image", action: "fix" });
   }
-  if ((r.tags || []).includes("Vintage") && ctx.sets) {
-    const rel = ctx.sets[r.set];
-    if (rel && rel >= VINTAGE_CUTOFF) flags.push({ rule: "era", action: "drop", note: `${r.set} ${rel}` });
+  if (vintageOn(r, ctx)) {
+    const rel = ctx.sets ? String(ctx.sets[r.set] || "") : "";
+    const cardRel = String(ctx.cardReleases?.[r.sku] || ctx.cardReleases?.[r.id] || "").slice(0, 10);
+    const promo = (r.tags || []).includes("Promo") || /promo/i.test(String(r.set || ""));
+    const cardOk = /^\d{4}-\d{2}-\d{2}$/.test(cardRel);
+    if (promo) {
+      if (cardOk && cardRel < VINTAGE_CUTOFF) { /* the card's own day is WOTC */ }
+      else flags.push({ rule: "era", action: "drop", note: cardOk ? cardRel : (rel || "promo without a card date") });
+    } else if (rel && rel >= VINTAGE_CUTOFF) flags.push({ rule: "era", action: "drop", note: `${r.set} ${rel}` });
   }
   const p = ctx.prev?.[r.id];
   const dated = r.endDate || r.readKind === "listings" || r.readKind === "sealed";
@@ -118,7 +186,30 @@ export function checkRead(read, ctx = {}) {
   }
   for (const l of r.lines || []) { const hit = flagLine(l, { field: "lines", id: r.id }); if (hit.length) { flags.push({ rule: "advice", action: "drop", note: hit[0].phrase }); break; } }
   if (pricedProduct(r) && !hasTiles(chip)) flags.push({ rule: "tiles", action: "drop", note: "priced read with no tiles" });
-  if (bareLowPattern(r)) flags.push({ rule: "pattern-rate", action: "drop", note: String(r.headline || "").slice(0, 80) });
+  if (bareLowPattern(r)) flags.push({ rule: "pattern-rate", action: "drop", note: String(r.headline || r.pattern?.line || "").slice(0, 80) });
+  if (ratioOff(r)) flags.push({ rule: "ratio", action: "drop", note: "multiple does not match the dated prices" });
+  if ((r.readKind === "listings" || r.kind === "listings") && ctx.asOf && r.asOf && r.asOf !== ctx.asOf) flags.push({ rule: "own-date", action: "drop", note: `${r.asOf} on a ${ctx.asOf} read` });
+  const factDate = r.receipt?.date;
+  if (factDate && r.asOf && factDate !== r.asOf && !copyText(r).includes(monthDay(factDate))) flags.push({ rule: "own-date", action: "drop", note: `${factDate} not named` });
+  if ((r.tags || []).includes("Reverse Holo")) {
+    const named = String(r.why || "").match(/finish \(([^)]+)\)/i);
+    const priced = String(r.printing || r.receipt?.printing || (named ? named[1] : ""));
+    if (!/^Reverse Holofoil$/i.test(priced)) flags.push({ rule: "printing", action: "drop", note: priced || "no priced printing" });
+  }
+  const stats = storyStats(r);
+  if (stats && storyUnstable(stats.points, stats.peak, stats.low, ctx.stability)) flags.push({ rule: "stability", action: "drop", note: `${stats.points} points` });
+  if (r.readKind === "backto" || r.kind === "backto") {
+    const window = Number.isFinite(Number(ctx.backToRecentDays)) ? Number(ctx.backToRecentDays) : BACK_TO_RECENT_DAYS;
+    const returned = r.receipt?.returned;
+    const age = returned && r.asOf ? daySpan(returned, r.asOf) : null;
+    if (age == null || age > window) flags.push({ rule: "back-to", action: "drop", note: returned || "no recent return" });
+  }
+  if (!name.trim() || RAW_NAME.test(name.trim()) || CATEGORY_NAME.test(name)) flags.push({ rule: "name", action: "drop", note: name || "blank" });
+  for (const row of r.lineCards || []) {
+    for (const card of row?.cards || []) {
+      if (card && !String(card.title || card.name || "").trim()) { flags.push({ rule: "name", action: "drop", note: "blank card title" }); break; }
+    }
+  }
   const drop = flags.some((f) => f.action === "drop");
   return { read: drop ? null : r, flags };
 }

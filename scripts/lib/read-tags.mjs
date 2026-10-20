@@ -39,8 +39,11 @@ const baseName = (n) => String(n || "").replace(/\s+-\s+[A-Z]*\d+[a-z]?(\/[A-Z]*
 
 export function tagRead(read, cards) {
   const m = String(read?.href || "").match(/^\/c\/(tcgcsv-\d+)$/);
-  const tags = m ? cards[m[1]]?.tags : null;
+  let tags = m ? cards[m[1]]?.tags : null;
   if (!tags?.length) return read;
+  const priced = String(read.printing || read.receipt?.printing || "");
+  if (!/^Reverse Holofoil$/i.test(priced)) tags = tags.filter((t) => t !== "Reverse Holo");
+  if (!tags.length) return read;
   const out = { ...read, tags };
   const say = tags.find((t) => SAY.includes(t));
   const base = baseName(read.name);

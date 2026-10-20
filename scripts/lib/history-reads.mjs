@@ -159,17 +159,25 @@ export function windowRead(c, asOf, { days, slack, minPct, minUsd, maxPct = Infi
 }
 
 // Back to the price it had on an older date, after a big swing in between.
-export function backToRead(c, asOf, { minAge = 180, band = 0.02, swing = 0.4 } = {}) {
+// The day it came back into the band has to be recent. A price that sat there
+// for months is a stale target and is not a read.
+export const BACK_TO_RECENT_DAYS = 45;
+export function backToRead(c, asOf, { minAge = 180, band = 0.02, swing = 0.4, recentDays = BACK_TO_RECENT_DAYS } = {}) {
   const pts = c.pts;
   const last = pts[pts.length - 1];
+  if (!last || last[0] !== asOf) return null;
+  const inBand = (p) => Math.abs(p[1] / last[1] - 1) <= band;
+  let back = pts.length - 1;
+  while (back > 0 && inBand(pts[back - 1])) back -= 1;
+  const returned = pts[back];
+  if (dayNum(asOf) - dayNum(returned[0]) > recentDays) return null;
   const cut = addDays(asOf, -minAge);
-  for (let i = pts.length - 2; i >= 0; i -= 1) {
+  for (let i = back - 1; i >= 0; i -= 1) {
     const p = pts[i];
     if (p[0] > cut) continue;
-    if (Math.abs(p[1] / last[1] - 1) > band) continue;
-    const between = pts.slice(i + 1, -1);
-    if (!between.length) return null;
-    // Latest day at the extreme, the same rule read-facts highLow uses, so the headline and page share one date.
+    if (!inBand(p)) continue;
+    const between = pts.slice(i + 1, back);
+    if (!between.length) continue;
     const hi = between.reduce((m, q) => (q[1] >= m[1] ? q : m));
     const lo = between.reduce((m, q) => (q[1] <= m[1] ? q : m));
     const ext = hi[1] >= last[1] * (1 + swing) ? hi : lo[1] <= last[1] / (1 + swing) ? lo : null;
@@ -177,7 +185,7 @@ export function backToRead(c, asOf, { minAge = 180, band = 0.02, swing = 0.4 } =
     const went = ext === hi ? "reached" : "fell to";
     const headline = `Back to its ${dateLabel(p[0], asOf)} price: ${who(c)}, ${usd(last[1])} (${monthDay(asOf)}) on TCGplayer market, ${usd(p[1])} then. In between it ${went} ${usd(ext[1])} (${dateLabel(ext[0], asOf)}).`;
     if (!ok(headline)) return null;
-    return { ...base(c, "backto", headline, asOf, { startDate: p[0], then: p[1], now: last[1], between: { date: ext[0], price: ext[1] } }, [`${who(c)} is ${usd(last[1])} again (${monthDay(asOf)}), the same as on ${dateLabel(p[0], asOf)}. It ${went} ${usd(ext[1])} on ${dateLabel(ext[0], asOf)}.`]), strength: Math.abs(ext[1] / last[1] - 1) };
+    return { ...base(c, "backto", headline, asOf, { startDate: p[0], returned: returned[0], then: p[1], now: last[1], between: { date: ext[0], price: ext[1] } }, [`${who(c)} is ${usd(last[1])} again (${monthDay(asOf)}), the same as on ${dateLabel(p[0], asOf)}. It ${went} ${usd(ext[1])} on ${dateLabel(ext[0], asOf)}.`]), strength: Math.abs(ext[1] / last[1] - 1) };
   }
   return null;
 }

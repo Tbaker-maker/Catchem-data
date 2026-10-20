@@ -26,7 +26,7 @@ import { setDeepDives, cardStories, eraComparison, preReleaseContext, sealedGapD
 import { everyPrinting, sameLabelAcrossSets, chaseLists, slumpWatch } from "./deep-reads-2.mjs";
 import { rarityBandReads, artistBandReads, releaseCycleReads, mixedReads, ripReads, attachListingsFacts, loadRipDoc } from "./rich-reads.mjs";
 import { buildListings } from "./feature-data.mjs";
-import { dropHeldReads, loadHeldIds, unstickFamilies } from "./price-hold-skip.mjs";
+import { loadReadStability } from "./read-stability.mjs";
 
 export const BOARD_TAG = "v3";
 export const PRICE_SHARE_MAX = 1 / 3;
@@ -409,12 +409,14 @@ export function rotationSetReads(doc, asOf, { max = 30 } = {}) {
 }
 
 // eBay listing count for one product on one day, stated exactly.
-export function listingLevelReads(doc, { min = 10, max = 30 } = {}) {
+export function listingLevelReads(doc, { min = 10, max = 30, asOf = "" } = {}) {
   const out = [];
   const skip = new Set([...(doc?.skippedParents || []), ...COMBINED_ART_PARENTS]);
   for (const p of doc?.products || []) {
     const lc = p?.listingsCounted;
     if (!p?.id || skip.has(p.id) || !Number.isInteger(lc?.n) || lc.n < min || !lc.date) continue;
+    // A count from another day is not this read. Do not carry it forward.
+    if (asOf && lc.date !== asOf) continue;
     const headline = `${p.name}: ${lc.n} eBay listings counted on ${monthDay(lc.date)}. A listing is not a sale.`;
     if (!cleanCopy(headline)) continue;
     const lines = [];
@@ -645,6 +647,18 @@ export function fillSlots(rows, plan = KIND_QUOTAS) {
   return [...picked, ...rest];
 }
 
+function ratingDisplayName(read) {
+  const name = String(read?.name || "").trim();
+  const bad = !name || /^(?:Sealed )?Rating:/i.test(name) || /^tcgcsv-\d+$/i.test(name) || /^#[A-Za-z0-9/]+$/.test(name);
+  if (!bad) return read.name;
+  const head = String(read.headline || "");
+  const fromHead = head.match(/:\s+(.+?),\s+\$/);
+  if (fromHead) return fromHead[1].trim();
+  const line = (read.lines || []).find((s) => typeof s === "string" && s.includes("$"));
+  const fromLine = String(line || "").match(/^(.+?):\s+\$/);
+  return fromLine ? fromLine[1].trim() : read.name;
+}
+
 export function fitBoard(priceRows, fresh, { maxShare = PRICE_SHARE_MAX, maxBoard = BOARD_MAX, plan = KIND_QUOTAS } = {}) {
   const ordered = fillSlots(fresh, plan);
   const priceCap = (nFresh) => (maxShare < 1 && nFresh > 0 ? Math.floor((maxShare * nFresh) / (1 - maxShare)) : priceRows.length);
@@ -729,7 +743,7 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
     ...releaseReads(releases, end, { days: 90 }),
     ...newsReads(news, end, { days: 10, max: 40, perSource: 6 }),
     ...listingReads(listings).slice(0, 10),
-    ...listingLevelReads(listings),
+    ...listingLevelReads(listings, { asOf: end }),
     ...sealedChaseReads({ products: sealedProducts, histories, rawProducts: raw?.products, pool: card.pool, start, end, max: 10 }),
     ...rotationReads(rotation, end),
     ...rotationSetReads(rotation, end),
@@ -777,11 +791,12 @@ export async function buildBoardV3(root, { on = true, spanReads = [], scannerRea
     // Card Rating group reads (feed/card-rating.json, built by build-card-rating.mjs).
     // They compare prices, so they ride a price lane and count toward the price share.
     const rating = await readJson(join(pub, "feed/card-rating.json"), {});
-    if (rating?.asOf === end) deepRating = (rating.reads || []).filter((r) => r.headline && r.lines?.length >= 3).map((r) => ({ ...r, source: String(r.source || "").replace(/Card Rating peers/g, "Card Rating, typical price of similar cards"), priceRead: true }));
+    if (rating?.asOf === end) deepRating = (rating.reads || []).filter((r) => r.headline && r.lines?.length >= 3).map((r) => ({ ...r, name: ratingDisplayName(r), source: String(r.source || "").replace(/Card Rating peers/g, "Card Rating, typical price of similar cards"), priceRead: true }));
     // Sealed Rating reads (feed/sealed-rating.json, built by build-sealed-rating.mjs). Price lane.
     const sealedRating = await readJson(join(pub, "feed/sealed-rating.json"), {});
     if (sealedRating?.asOf === end) deepSealed = (sealedRating.reads || []).filter((r) => r.headline && r.lines?.length >= 3).map((r) => ({ ...r, priceRead: true }));
-    const stories = cardStories(histCards, { asOf: end, skip: usedHist });
+    const stability = await loadReadStability(root);
+    const stories = cardStories(histCards, { asOf: end, skip: usedHist, stability });
     for (const r of stories) usedHist.add(r.sku);
     deepPrice = stories.map((r) => ({ ...r, priceRead: true }));
     deepRecovery = recoveryWatch(histCards, { asOf: end, skip: usedHist }).map((r) => ({ ...r, priceRead: true }));

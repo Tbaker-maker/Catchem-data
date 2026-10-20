@@ -254,6 +254,7 @@ export async function stampSignalChips({ root = ROOT, rules, writeReads = false 
     const spark = sparks.get(sku);
     const older = hist.get(sku);
     const points = (older && older.length > (spark?.length || 0)) ? older : (spark || older || []);
+    const promo = (read.tags || []).includes("Promo") || /promo/i.test(String(read.set || "")) || /promo/i.test(String(set?.name || ""));
     const built = readSignals(read, {
       asOf: read.asOf || asOf,
       points,
@@ -262,6 +263,8 @@ export async function stampSignalChips({ root = ROOT, rules, writeReads = false 
       listings: listingsFor(read, byId, byName),
       held: stampSkipped(read, holds),
       release: set?.release || "",
+      cardRelease: String(read.release || read.receipt?.release || "").slice(0, 10),
+      promo,
       art: read.art || "",
       rotationMonths: monthsUntil(rot?.status, read.asOf || asOf),
     }, rules);

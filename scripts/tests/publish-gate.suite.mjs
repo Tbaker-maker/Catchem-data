@@ -2,6 +2,8 @@
 import { checkRead, gateReads } from "../lib/publish-gate.mjs";
 import { staleOneStep } from "../lib/read-quality.mjs";
 import { backToRead } from "../lib/history-reads.mjs";
+import { sealedGapDeep, cardStories } from "../lib/deep-reads.mjs";
+import { patternLine } from "../lib/read-facts.mjs";
 
 export async function run() {
   let fail = 0;
@@ -38,6 +40,35 @@ export async function run() {
   t("down 17 price headline is not a pattern rate", !rule({ ...base, headline: "Box: Down 17%." }).includes("pattern-rate"));
   t("bare 55 is not under 50", !rule({ ...base, readKind: "pattern-forming", headline: "This pattern was right 55% of the time." }).includes("pattern-rate"));
   t("clean read passes", rule(base).length === 0);
+
+  const gapLines = ["Pack: $9.07 (Sep 26) to $8.34 (Oct 19).", "Card: $212.29 to $170.33, same days."];
+  t("a rounded inverse multiple drops", rule({ ...base, headline: "Pack vs its top chase card: Card costs 25x the sealed price tonight, from 20x on Sep 26.", lines: gapLines }).includes("ratio"));
+  t("the honest one decimal stays", !rule({ ...base, headline: "Pack vs its top chase card: Card costs 20.4x the sealed price tonight, from 23.4x on Sep 26.", lines: gapLines }).includes("ratio"));
+  t("a listing count from another day drops", rule({ ...base, readKind: "listings", asOf: "2026-10-17", receipt: { n: 137, date: "2026-10-17" } }, { asOf: "2026-10-20" }).includes("own-date"));
+  t("a listing count on the read date stays", !rule({ ...base, readKind: "listings", asOf: "2026-10-20", receipt: { n: 40, date: "2026-10-20" } }, { asOf: "2026-10-20" }).includes("own-date"));
+  t("an older fact that names its date stays", !rule({ ...base, receipt: { date: "2026-09-26" }, headline: "Box: $9.07 on Sep 26." }).includes("own-date"));
+  t("an older fact with no date in the copy drops", rule({ ...base, receipt: { date: "2026-09-26" }, headline: "Box: $9.07." }).includes("own-date"));
+  t("Vintage chip on a 2019 promo drops", rule({ ...base, id: "p", set: "SWSH Promos", tags: ["Promo"] }, { chips: { p: { signals: [{ kind: "era", tag: "Vintage" }] } }, sets: { "SWSH Promos": "2019-11-15" } }).includes("era"));
+  t("Vintage on a 1999 set stays", !rule({ ...base, set: "Base Set", tags: ["Vintage"] }, { sets: { "Base Set": "1999-01-09" } }).includes("era"));
+  t("a promo keeps Vintage only from its own early date", !rule({ ...base, id: "m", sku: "tcgcsv-1", set: "Wizards Promos", tags: ["Promo", "Vintage"] }, { sets: { "Wizards Promos": "1999-07-01" }, cardReleases: { "tcgcsv-1": "2000-11-10" } }).includes("era"));
+  t("Reverse Holo on a holofoil price drops", rule({ ...base, tags: ["Reverse Holo"], why: "finish (Holofoil)" }).includes("printing"));
+  t("Reverse Holo on a reverse price stays", !rule({ ...base, tags: ["Reverse Holo"], why: "finish (Reverse Holofoil)" }).includes("printing"));
+  const freshLine = patternLine({ rate: 25, base: 20.8, n: 3503, horizon: 7 });
+  t("pattern line is built fresh and leads with the lift", freshLine.startsWith("1.2x more likely") && !freshLine.toLowerCase().includes("right"));
+  t("a cached right 25 line drops", rule({ ...base, pattern: { line: "right 25% of the time" } }).includes("pattern-rate"));
+  t("the fresh pattern line stays", !rule({ ...base, pattern: { line: freshLine } }).includes("pattern-rate"));
+  const thin = { ...base, lines: ["On file since Feb 2024: 40 TCGplayer market points for this card (Holofoil).", "Peak $50.00 on May 30. Low $10.00 on May 12."] };
+  const bar = { minPoints: 100, maxRatio: 3 }; // fixture only; the live bar stays in catchem-data-private
+  t("a thin jumpy story drops when the private bar is set", rule(thin, { stability: bar }).includes("stability"));
+  t("no private bar, the story stays", !rule(thin).includes("stability"));
+  t("back-to without a recent return drops", rule({ ...base, readKind: "backto", receipt: { startDate: "2026-01-22" } }).includes("back-to"));
+  t("back-to returned today stays", !rule({ ...base, readKind: "backto", receipt: { returned: "2026-10-19" } }).includes("back-to"));
+  t("back-to returned in May drops", rule({ ...base, readKind: "backto", receipt: { returned: "2026-05-20" } }).includes("back-to"));
+  t("a blank name drops", rule({ ...base, name: " " }).includes("name"));
+  t("a raw code name drops", rule({ ...base, name: "tcgcsv-642618" }).includes("name"));
+  t("a category name is not a display name", rule({ ...base, name: "Rating: Special Illustration Rares" }).includes("name"));
+  t("a real card name stays", !rule({ ...base, name: "Zekrom ex (Black Bolt) 166/086" }).includes("name"));
+
   const many = Array.from({ length: 40 }, (_, i) => ({ ...base, id: `r${i}`, name: "Rating: X" }));
   t("systemic breakage is flagged", gateReads(many).systemic === true);
 
@@ -49,5 +80,20 @@ export async function run() {
   const pts = [["2025-03-27", 175.27], ["2026-07-16", 300], ["2026-08-13", 300], ["2026-10-19", 176.65]];
   const r = backToRead({ pts, name: "Charizard", set: "EX Power Keepers", number: "6/108", id: 84188 }, "2026-10-19");
   t("back-to read uses the latest day at the high", !r || r.receipt?.between?.date === "2026-08-13");
+
+  const days7 = ["2026-09-26", "2026-09-27", "2026-09-28", "2026-09-29", "2026-09-30", "2026-10-01", "2026-10-19"];
+  const chase = { id: "tcgcsv-1", name: "Cynthia's Garchomp ex", set: "SV10: Destined Rivals", number: "232/182", rarity: "Special Illustration Rare", printing: "Holofoil", pts: days7.map((d, i) => [d, i === days7.length - 1 ? 170.33 : 212.29]) };
+  const gap = sealedGapDeep(
+    [{ id: "sv10-pack", name: "Destined Rivals Booster Pack", set: "SV10: Destined Rivals", tcgPlayerId: 1 }],
+    new Map([["sv10-pack", days7.map((d, i) => ({ date: d, market: i === days7.length - 1 ? 8.34 : 9.07 }))]]),
+    [chase],
+    new Map([[1, { group: "SV10: Destined Rivals" }]]),
+    { asOf: "2026-10-19" },
+  );
+  t("sealed multiple is one decimal from the dated dollars", gap.length === 1 && gap[0].headline.includes("20.4x") && gap[0].headline.includes("23.4x") && !gap[0].headline.includes("25x"));
+
+  const storyCard = { id: "tcgcsv-9", name: "Jolteon Star", set: "EX Power Keepers", rarity: "Rare Holo", printing: "Holofoil", pts: [["2024-02-01", 40], ["2025-05-12", 10], ["2026-05-30", 50], ["2026-10-19", 80]] };
+  t("a story with no private bar is kept", cardStories([storyCard], { asOf: "2026-10-19" }).length === 1);
+  t("a thin jumpy story is skipped when the private bar is set", cardStories([storyCard], { asOf: "2026-10-19", stability: { minPoints: 100, maxRatio: 3 } }).length === 0);
   return fail;
 }

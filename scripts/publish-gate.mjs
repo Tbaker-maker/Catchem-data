@@ -6,6 +6,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { gateReads, RULES } from "./lib/publish-gate.mjs";
 import { gateSealedPrices } from "./lib/real-listing.mjs";
+import { loadReadStability } from "./lib/read-stability.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const PUB = join(ROOT, "research/assets/public");
@@ -41,7 +42,8 @@ try {
 const facts = (id) => { const p = join(PUB, "feed/facts", `${id}.json`); if (!existsSync(p)) return null; try { return JSON.parse(execFileSync("cat", [p]).toString()); } catch { return null; } };
 
 const asOf = doc.asOf || (doc.reads || []).map((r) => r.asOf).filter(Boolean).sort().pop();
-const ctx = { chips, listings, sets, prev, facts, asOf };
+const stability = await loadReadStability(ROOT);
+const ctx = { chips, listings, sets, prev, facts, asOf, stability };
 const { readdir } = await import("node:fs/promises");
 const feedFiles = [];
 for (const dir of ["today", "up", "down", "watch", "cook", "cool", "heat"]) {

@@ -29,6 +29,8 @@ jobs:
       - name: Full test suite
         run: node scripts/tests/run-tests.mjs
       - name: Publish gate (report only)
+        env:
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
         run: node scripts/publish-gate.mjs --check > /tmp/gate.log; head -1 /tmp/gate.log
       - name: No schedule in daily-research
         run: |

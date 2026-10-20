@@ -44,7 +44,9 @@ export function variantTags(item, { subtypes = [] } = {}) {
   if (/^SV\d+/.test(num) && /hidden fates|shining fates/i.test(item.set || "")) out.add("Shiny Vault");
   for (const s of subtypes || []) if (BY_SUBTYPE[s]) out.add(BY_SUBTYPE[s]);
   const pr = (item.printings || []).map((p) => p.name || p);
-  if (pr.some((p) => /^Reverse Holofoil$/i.test(p)) || /^Reverse Holofoil$/i.test(item.printing || "")) out.add("Reverse Holo");
+  // The tag follows the priced printing only. Another finish on the same card is not this price.
+  if (/^Reverse Holofoil$/i.test(item.printing || "")) out.add("Reverse Holo");
+  else if (!item.printing && pr.length === 1 && /^Reverse Holofoil$/i.test(pr[0])) out.add("Reverse Holo");
   void release;
   // Tyler, Oct 12: an SM Tag Team with alternate art is "Tag Team (Alternate Art)".
   // "Alternate Art" alone is the Sword & Shield tag.
