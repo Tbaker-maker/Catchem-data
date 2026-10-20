@@ -5,6 +5,7 @@ import { flagLine } from "./copy-rules.mjs";
 import { storyUnstable } from "./read-stability.mjs";
 import { lowValueMove } from "./feed-rank.mjs";
 import { BACK_TO_RECENT_DAYS } from "./history-reads.mjs";
+import { addDays } from "./market-meter.mjs";
 
 export const SHORT_MAX = 35; // same short window cap as the Price tile (#374)
 export const VINTAGE_CUTOFF = "2003-06-01";
@@ -240,4 +241,40 @@ export function gateReads(reads, ctx = {}, { maxDropShare = 0.25 } = {}) {
   const dropped = (reads?.length || 0) - kept.length;
   const systemic = reads?.length > 20 && dropped / reads.length > maxDropShare;
   return { kept, dropped, counts, log, systemic };
+}
+
+const METER_BANNED = /\b(buy|sell|load up|time to|don't miss|do not miss|to the moon)\b/i;
+
+// A published meter needs both sides at or above the private minimum, and an
+// asOf no more than 2 days behind the price file. A thin or stale file is
+// unpublished. A missing spec is not this function's job: the build writes
+// nothing new, and the gate leaves yesterday's file alone.
+export function checkMeter(doc, { minComponents = 0, freshAsOf = "" } = {}) {
+  if (!doc || typeof doc !== "object" || doc.published === false) return { ok: true, action: "skip", reasons: [] };
+  const min = Number(minComponents) >= 1 ? Number(minComponents) : Number(doc.minComponents);
+  const reasons = [];
+  const market = doc.market || {};
+  if (!(min >= 1)) reasons.push("minimum");
+  if (market.mood == null || market.heat == null) reasons.push("missing");
+  if (!(Number(market.moodUsed) >= min) || !(Number(market.heatUsed) >= min)) reasons.push("thin");
+  const fresh = String(freshAsOf || "").slice(0, 10);
+  const asOf = String(doc.asOf || "").slice(0, 10);
+  if (/^\d{4}-\d{2}-\d{2}$/.test(fresh) && /^\d{4}-\d{2}-\d{2}$/.test(asOf) && asOf < addDays(fresh, -2)) reasons.push("stale");
+  const copy = JSON.stringify(market.reasons || []);
+  if (METER_BANNED.test(copy) || /[\u2014\u2013]/.test(copy)) reasons.push("copy");
+  return { ok: reasons.length === 0, action: reasons.length ? "drop" : "keep", reasons };
+}
+
+export function unpublishMeter(doc) {
+  return {
+    ...doc,
+    published: false,
+    market: null,
+    singles: null,
+    sealed: null,
+    vintage: null,
+    modern: null,
+    eras: {},
+    sets: {},
+  };
 }
