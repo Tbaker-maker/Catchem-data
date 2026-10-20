@@ -3,6 +3,7 @@
 // is dropped with a logged reason; only systemic breakage fails the run.
 import { flagLine } from "./copy-rules.mjs";
 import { storyUnstable } from "./read-stability.mjs";
+import { lowValueMove } from "./feed-rank.mjs";
 import { BACK_TO_RECENT_DAYS } from "./history-reads.mjs";
 
 export const SHORT_MAX = 35; // same short window cap as the Price tile (#374)
@@ -35,6 +36,9 @@ export const RULES = [
   ["stability", "Card story misses the private point floor or high/low bar"],
   ["back-to", "Back-to target is stale, or the return into the band is not recent"],
   ["name", "Page or card has no display name, or the name is a raw code"],
+  ["sold", "Copy says sold or sales"],
+  ["empty", "No headline and no path"],
+  ["low-value", "Cheap card with a tiny dollar move"],
 ];
 
 const isSealed = (r) => r.kind === "sealed" || r.readKind === "sealed" || r.readKind === "listings" || r.kind === "listings" || /^\/p\//.test(r.href || "") || (r.sku && !/^tcgcsv-/.test(r.sku) && r.family === "listings");
@@ -70,6 +74,14 @@ function daySpan(a, b) {
   const right = Date.parse(`${String(b).slice(0, 10)}T00:00:00Z`);
   if (!Number.isFinite(left) || !Number.isFinite(right)) return null;
   return Math.round((right - left) / 86400000);
+}
+const SOLD_WORD = /\b(?:sold|sales)\b/i;
+function copyBlob(r) {
+  return ["headline", "path", "blurb", "why", "whyItMatters", "whatWouldMakeThisWrong"]
+    .map((k) => r?.[k])
+    .concat(r?.lines || [])
+    .filter((s) => typeof s === "string")
+    .join("\n");
 }
 function copyText(r) {
   return [r.headline, r.blurb, r.pattern?.line, ...(r.lines || []), ...(r.variants || [])].filter((s) => typeof s === "string").join("\n");
@@ -210,6 +222,9 @@ export function checkRead(read, ctx = {}) {
       if (card && !String(card.title || card.name || "").trim()) { flags.push({ rule: "name", action: "drop", note: "blank card title" }); break; }
     }
   }
+  if (SOLD_WORD.test(copyBlob(r))) flags.push({ rule: "sold", action: "drop", note: "sold or sales" });
+  if (!String(r.headline || "").trim() && !String(r.path || "").trim()) flags.push({ rule: "empty", action: "drop", note: "no sentence" });
+  if (lowValueMove(r, ctx.floor)) flags.push({ rule: "low-value", action: "drop", note: "cheap tiny move" });
   const drop = flags.some((f) => f.action === "drop");
   return { read: drop ? null : r, flags };
 }

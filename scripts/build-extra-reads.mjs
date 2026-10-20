@@ -15,6 +15,8 @@ import { VOLUME_EMPTY_NOTE, VOLUME_NOTE, loadVolumeDoc, volumeReads } from "./li
 import { publicVolumeDoc, serializeVolumeDoc, VOLUME_FILE, VOLUME_STATE_FILE } from "./lib/tcgplayer-volume.mjs";
 import { flag } from "./flags.mjs";
 import { cooledSet, loadRotation, loadShapeCandidates, pickNight, rememberShown } from "./lib/night-reads.mjs";
+import { loadFeedFloor } from "./lib/feed-floor.mjs";
+import { lowValueMove } from "./lib/feed-rank.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = async (rel) => JSON.parse(await readFile(join(ROOT, rel), "utf8"));
@@ -214,7 +216,8 @@ export async function writeFeedExtras(root, extra, { asOf, cardIds, rankedIds, n
   const dives = freshKinds.dives.filter((row) => !blocked.has(String(row.sku || row.diveId || "")));
   const volume = await volumeFeedReads(root, { asOf, exclude: blocked });
   const taken = new Set(flagged.concat(dives, volume).map((row) => String(row.sku || "")));
-  const candidates = (await loadShapeCandidates(root, asOf)).filter((row) => row && !taken.has(String(row.sku || "")));
+  const floor = await loadFeedFloor(root);
+  const candidates = (await loadShapeCandidates(root, asOf)).filter((row) => row && !taken.has(String(row.sku || "")) && !lowValueMove(row, floor));
   const shape = pickNight(candidates, rotation, asOf);
   let sealedProducts = [];
   try {

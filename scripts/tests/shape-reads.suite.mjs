@@ -48,7 +48,7 @@ export async function run() {
   const cheap = quietRead({ quiet: { days: 7, price: 2.5, from: "2026-09-28", to: "2026-10-04" }, printing: "Normal" }, item, "2026-10-06");
   t("a quiet read under $5 does not ship", cheap == null);
   const quiet = quietRead({ quiet: { days: 7, price: 12.5, from: "2026-09-28", to: "2026-10-04" }, printing: "Normal" }, item, "2026-10-06");
-  t("the quiet line keeps its clause on the why line", quiet && quiet.path.includes("No TCGplayer sales recorded in 7 days.") && quiet.path.includes("$12.50") && quiet.why.includes("That is not a scarcity claim.") && !quiet.path.includes("That is not a scarcity claim."));
+  t("the quiet line keeps its clause on the why line", quiet && quiet.path.includes("No TCGplayer listings counted in 7 days.") && quiet.path.includes("$12.50") && quiet.why.includes("That is not a scarcity claim.") && !quiet.path.includes("That is not a scarcity claim.") && !/\b(sold|sales)\b/i.test(quiet.path + quiet.why));
   t("mix, pair, and move clauses stay word for word", [MIX_CLAUSE, PAIR_CLAUSE, MOVE_CLAUSE, SHARE_CLAUSE, SPREAD_CLAUSE, ASK_CLAUSE, MKT_CLAUSE, STILL_CLAUSE].every((line) => line.length > 10));
 
   const spread = spreadRead({ id: "me5-etb", name: "Pitch Black ETB", set: "ME", dataStatus: "live", priceLow: 70, priceHigh: 90, priceMedian: 80, listingCount: 12, lastSeen: "2026-10-06" });

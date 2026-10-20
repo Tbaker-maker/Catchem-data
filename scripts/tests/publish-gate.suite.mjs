@@ -68,6 +68,15 @@ export async function run() {
   t("a raw code name drops", rule({ ...base, name: "tcgcsv-642618" }).includes("name"));
   t("a category name is not a display name", rule({ ...base, name: "Rating: Special Illustration Rares" }).includes("name"));
   t("a real card name stays", !rule({ ...base, name: "Zekrom ex (Black Bolt) 166/086" }).includes("name"));
+  t("sold wording drops", rule({ ...base, headline: "12 Near Mint copies sold over Oct 10 to Oct 16." }).includes("sold"));
+  t("the word sales drops", rule({ ...base, why: "Asks are not sales." }).includes("sold"));
+  t("listings counted stays", !rule({ ...base, headline: "12 listings counted over Oct 10 to Oct 16." }).includes("sold"));
+  t("an empty read drops", rule({ id: "empty", name: "Card", headline: "", path: "", asOf: "2026-10-19" }).includes("empty"));
+  t("a headline keeps an otherwise empty path", !rule(base).includes("empty"));
+  const cent = { ...base, id: "cent", readKind: "solddown", kind: "solddown", price: 0.9, receipt: { fromPrice: 0.91, toPrice: 0.9 } };
+  t("a cheap tiny move drops when the fixture floor is set", rule(cent, { floor: { maxCheapPrice: 10, maxCheapMove: 1 } }).includes("low-value"));
+  t("the same move stays when no floor is loaded", !rule(cent).includes("low-value"));
+  t("a larger dollar move stays under the fixture floor", !rule({ ...cent, id: "mid", price: 12, receipt: { from: 8, to: 12 } }, { floor: { maxCheapPrice: 10, maxCheapMove: 1 } }).includes("low-value"));
 
   const many = Array.from({ length: 40 }, (_, i) => ({ ...base, id: `r${i}`, name: "Rating: X" }));
   t("systemic breakage is flagged", gateReads(many).systemic === true);

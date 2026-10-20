@@ -362,8 +362,8 @@ export function buildBrowse({ asOf, cardIds, rankedIds, news, waves, flagged, di
       order: "ranked",
       readKind: "volume",
       items: volume,
-      source: "TCGplayer sales via PokemonPriceTracker",
-      empty: "No sold counts on file.",
+      source: "TCGplayer listings counted via PokemonPriceTracker",
+      empty: "No listings counted on file.",
     };
   }
   for (const [kind, block] of Object.entries(shape || {})) {
@@ -409,7 +409,7 @@ export function assembleCatalog(items, seriesMap, { asOf, supplyBySet = new Map(
   return {
     asOf,
     volume: [],
-    volumeNote: "No sold count is on file, so no volume read ships.",
+    volumeNote: "No count is on file, so no volume read ships.",
     lag,
     group,
     reads: [...lag.reads, ...group.reads],

@@ -15,14 +15,14 @@ export const ROTATION_FILE = "research/assets/public/feed/rotation.json";
 export const TYPE_CAP = 2;
 
 export const QUIET_TAIL = "That is not a scarcity claim.";
-export const MIX_CLAUSE = "This is the mix of copies that sold, not the copy in your hand.";
+export const MIX_CLAUSE = "This is the mix of listings counted, not the copy in your hand.";
 export const PAIR_CLAUSE = "Two condition prices. Not a grade result.";
-export const MOVE_CLAUSE = "Sales and a price change in the same window. Not a cause.";
-export const SHARE_CLAUSE = "Share of copies sold. Not share of dollars.";
-export const SPREAD_CLAUSE = "Asking prices from the search. Not sold prices.";
-export const ASK_CLAUSE = "The ask changed. The market price did not. Asks are not sales.";
-export const MKT_CLAUSE = "The market price changed. The ask did not. Asks are not sales.";
-export const STILL_CLAUSE = "Asks and listing count. Not sales.";
+export const MOVE_CLAUSE = "Listings counted and a price change in the same window. Not a cause.";
+export const SHARE_CLAUSE = "Share of listings counted. Not share of dollars.";
+export const SPREAD_CLAUSE = "Asking prices from the search. Not completed prices.";
+export const ASK_CLAUSE = "The ask changed. The market price did not. Asks are not listings gone.";
+export const MKT_CLAUSE = "The market price changed. The ask did not. Asks are not listings gone.";
+export const STILL_CLAUSE = "Asks and listing count. Not listings gone.";
 
 export const RANKED_KINDS = new Set(["setshare", "spread"]);
 export const KIND_ORDER = ["quiet", "mix", "conditions", "solddown", "setshare", "spread", "askmove", "mktmove", "listing"];
@@ -30,8 +30,8 @@ export const EMPTY_COPY = {
   quiet: "No quiet Near Mint window is on file.",
   mix: "No condition mix is on file.",
   conditions: "No pair of condition prices is on file.",
-  soldflat: "No flat-price sales window is on file.",
-  solddown: "No falling-price sales window is on file.",
+  soldflat: "No flat-price listings window is on file.",
+  solddown: "No falling-price listings window is on file.",
   setshare: "No set share is on file.",
   spread: "No asking spread is on file.",
   askmove: "No ask move with a still market price is on file.",
@@ -43,7 +43,7 @@ export const EMPTY_COPY = {
 const DAY = /^\d{4}-\d{2}-\d{2}$/;
 
 export function quietClause(days) {
-  return `No TCGplayer sales recorded in ${days} days. ${QUIET_TAIL}`;
+  return `No TCGplayer listings counted in ${days} days. ${QUIET_TAIL}`;
 }
 
 function phraseIndex(seedText, n) {
@@ -64,8 +64,8 @@ function displayName(item) {
   return name;
 }
 
-function copiesSold(n) {
-  return `${n} Near Mint ${n === 1 ? "copy" : "copies"} sold`;
+function copiesCounted(n) {
+  return `${n} Near Mint ${n === 1 ? "listing counted" : "listings counted"}`;
 }
 
 function range(from, to) {
@@ -110,7 +110,7 @@ export function quietRead(fact, item, asOf) {
   const price = money(q.price);
   const when = range(q.from, q.to);
   if (!name || !price) return null;
-  const signalBit = `No TCGplayer sales recorded in ${q.days} days.`;
+  const signalBit = `No TCGplayer listings counted in ${q.days} days.`;
   const phrases = [
     `${name}: ${signalBit} The Near Mint market price stayed ${price} over ${when}.`,
     `${signalBit} ${name} stayed ${price} in Near Mint over ${when}.`,
@@ -174,9 +174,9 @@ export function flatRead(fact, item, asOf) {
   const when = range(flat.from, flat.to);
   if (!name || !price) return null;
   const phrases = [
-    `${name}: ${copiesSold(flat.sold)} over ${when} and the market price stayed ${price}.`,
-    `${copiesSold(flat.sold)}, and ${name} stayed ${price} over ${when}.`,
-    `${name} stayed ${price} over ${when}, with ${copiesSold(flat.sold)}.`,
+    `${name}: ${copiesCounted(flat.sold)} over ${when} and the market price stayed ${price}.`,
+    `${copiesCounted(flat.sold)}, and ${name} stayed ${price} over ${when}.`,
+    `${name} stayed ${price} over ${when}, with ${copiesCounted(flat.sold)}.`,
   ];
   const path = pickPhrase(phrases, `${asOf}|soldflat|${item.id}`);
   const row = baseRead("soldflat", item, path, flat.to);
@@ -194,9 +194,9 @@ export function fellRead(fact, item, asOf) {
   const when = range(fell.from, fell.to);
   if (!name || !fromPrice || !toPrice || !when || !(fell.toPrice < fell.fromPrice)) return null;
   const phrases = [
-    `${name}: ${copiesSold(fell.sold)} over ${when} and the market price went from ${fromPrice} to ${toPrice}.`,
-    `${copiesSold(fell.sold)} while ${name} went from ${fromPrice} to ${toPrice} over ${when}.`,
-    `${name} went from ${fromPrice} to ${toPrice} over ${when}, with ${copiesSold(fell.sold)}.`,
+    `${name}: ${copiesCounted(fell.sold)} over ${when} and the market price went from ${fromPrice} to ${toPrice}.`,
+    `${copiesCounted(fell.sold)} while ${name} went from ${fromPrice} to ${toPrice} over ${when}.`,
+    `${name} went from ${fromPrice} to ${toPrice} over ${when}, with ${copiesCounted(fell.sold)}.`,
   ];
   const path = pickPhrase(phrases, `${asOf}|solddown|${item.id}`);
   const row = baseRead("solddown", item, path, fell.to);
@@ -213,7 +213,7 @@ function sameWindow(rows) {
   return { from, to };
 }
 
-/** Share of one set's Near Mint 7-day sales that went to its top card. Incomplete sets stay off. */
+/** Share of one set's Near Mint 7-day listings counted that went to its top card. Incomplete sets stay off. */
 export function setShareReads(volumeDoc, items) {
   const cards = volumeDoc?.cards || {};
   const byGroup = new Map();
@@ -248,9 +248,9 @@ export function setShareReads(volumeDoc, items) {
     const when = range(window.from, window.to);
     if (!name || !when) continue;
     const phrases = [
-      `${name} is ${top.row.sold7d} of ${total} Near Mint copies sold in ${setName} over ${when}.`,
-      `${setName}, ${when}: ${name} accounts for ${top.row.sold7d} of ${total} Near Mint copies sold.`,
-      `${top.row.sold7d} of ${total} Near Mint copies sold in ${setName} over ${when} are ${name}.`,
+      `${name} is ${top.row.sold7d} of ${total} Near Mint listings counted in ${setName} over ${when}.`,
+      `${setName}, ${when}: ${name} accounts for ${top.row.sold7d} of ${total} Near Mint listings counted.`,
+      `${top.row.sold7d} of ${total} Near Mint listings counted in ${setName} over ${when} are ${name}.`,
     ];
     const path = pickPhrase(phrases, `${window.to}|setshare|${groupId}`);
     if (!path || path.includes(SHARE_CLAUSE) || !path.includes(String(top.row.sold7d)) || !path.includes(String(total))) continue;

@@ -19,7 +19,7 @@
 // Output holds counts and dates only. No PPT price leaves the raw. The full
 // table stays private; the public file holds only the cards shown in reads.
 
-export const VOLUME_SOURCE = "TCGplayer sales via PokemonPriceTracker";
+export const VOLUME_SOURCE = "TCGplayer listings counted via PokemonPriceTracker";
 export const VOLUME_CONDITION = "Near Mint";
 // Public file: only the cards a volume read displays (see volume-reads.mjs).
 export const VOLUME_FILE = "data/derived/tcgplayer-volume.json";
@@ -175,7 +175,7 @@ export function mergeVolumeDoc(prev, fresh, { updatedOn } = {}) {
     source: VOLUME_SOURCE,
     condition: VOLUME_CONDITION,
     updatedOn: updatedOn || prev?.updatedOn || "",
-    method: "Copies sold in Near Mint, per card printing: the sum of TCGplayer's non-null daily sold volume inside each window. A day with a null volume had no sale and is not filled. Each window ends two days before the scrape so it holds complete days only. Counts only; no prices.",
+    method: "Near Mint listings counted, per card printing: the sum of TCGplayer's non-null daily counts inside each window. A day with a null count had no count and is not filled. Each window ends two days before the scrape so it holds complete days only. Counts only; no prices.",
     counts: summarize(sorted),
     cards: sorted,
   };

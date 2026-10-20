@@ -327,7 +327,7 @@ function renderFactLine(fact, facts, opts) {
       claim = `${name} held one price across ${fact.n} prints through ${d2} at ${p2}`;
       break;
     case "sold":
-      claim = `${name} has ${fact.n} copies sold on TCGplayer over 3 months on ${monthDay(fact.asOf)}, not eBay and not a 7-day count`;
+      claim = `${name} has ${fact.n} listings counted on TCGplayer over 3 months on ${monthDay(fact.asOf)}, not eBay and not a 7-day count`;
       break;
     case "step-smaller":
       return "";
@@ -498,7 +498,7 @@ function collectorFact(facts, opts) {
     line += split.text;
     id = "split";
   } else if (soldOk) {
-    line += `, with ${sold.count} copies sold on TCGplayer over 3 months on ${monthDay(sold.asOf)}, not eBay and not a 7-day count`;
+    line += `, with ${sold.count} listings counted on TCGplayer over 3 months on ${monthDay(sold.asOf)}, not eBay and not a 7-day count`;
     id = "sold";
   } else if (flatOk) {
     line += `, after ${flatN} prints at one price`;
@@ -930,8 +930,8 @@ function extraClause(fact, f, opts) {
   const sold = opts.sold;
   if (sold && Number.isInteger(sold.count) && sold.count >= 0 && /^\d{4}-\d{2}-\d{2}$/.test(String(sold.asOf || ""))) {
     const when = monthDay(sold.asOf);
-    if (sold.count >= 1000) return `TCGplayer product-page data for 3 months lists ${sold.count} copies sold as of ${when}, not eBay and not 7 days`;
-    return `the product-page snapshot covering 3 months on TCGplayer shows ${sold.count} sold copies dated ${when}, not a 7-day figure and not eBay`;
+    if (sold.count >= 1000) return `TCGplayer product-page data for 3 months lists ${sold.count} listings counted as of ${when}, not eBay and not 7 days`;
+    return `the product-page snapshot covering 3 months on TCGplayer shows ${sold.count} listings counted dated ${when}, not a 7-day figure and not eBay`;
   }
   const listings = Number(opts.listings);
   if (Number.isInteger(listings) && listings >= 20 && /^\d{4}-\d{2}-\d{2}$/.test(String(opts.listingsAsOf || ""))) {

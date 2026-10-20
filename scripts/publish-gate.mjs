@@ -7,6 +7,8 @@ import { fileURLToPath } from "node:url";
 import { gateReads, RULES } from "./lib/publish-gate.mjs";
 import { gateSealedPrices } from "./lib/real-listing.mjs";
 import { loadReadStability } from "./lib/read-stability.mjs";
+import { loadFeedFloor } from "./lib/feed-floor.mjs";
+import { leadIds } from "./lib/feed-rank.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const PUB = join(ROOT, "research/assets/public");
@@ -43,7 +45,8 @@ const facts = (id) => { const p = join(PUB, "feed/facts", `${id}.json`); if (!ex
 
 const asOf = doc.asOf || (doc.reads || []).map((r) => r.asOf).filter(Boolean).sort().pop();
 const stability = await loadReadStability(ROOT);
-const ctx = { chips, listings, sets, prev, facts, asOf, stability };
+const floor = await loadFeedFloor(ROOT);
+const ctx = { chips, listings, sets, prev, facts, asOf, stability, floor };
 const { readdir } = await import("node:fs/promises");
 const feedFiles = [];
 for (const dir of ["today", "up", "down", "watch", "cook", "cool", "heat"]) {
@@ -83,4 +86,6 @@ if (!check) {
   if (previewBad) await writeFile(prevPath, JSON.stringify(preview, null, 1) + "\n");
   await writeFile(readsPath, JSON.stringify({ ...doc, reads: res.kept, count: res.kept.length, gate: { rules: RULES.map(([id]) => id), counts: res.counts, dropped: res.dropped } }, null, 1) + "\n");
   for (const [f, kept] of writes) await writeFile(f, JSON.stringify(kept) + "\n");
+  const ids = leadIds(res.kept, floor, 8);
+  await writeFile(join(PUB, "feed/lead-order.json"), JSON.stringify({ asOf: asOf || "", ids }, null, 1) + "\n");
 }
