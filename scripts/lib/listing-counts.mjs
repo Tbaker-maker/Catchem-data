@@ -6,6 +6,7 @@
 // creator attention) and the top singles by value x attention, counted every
 // day. "tail": everything else, rotated stalest-first with the leftover.
 import { applyTotalCaps } from "./ebay-total.mjs";
+import { costcoListingOk } from "./costco-exclusives.mjs";
 
 export { applyTotalCaps };
 
@@ -23,9 +24,11 @@ const SINGLE_EXCLUDE = [/\bpsa\b/i, /\bcgc\b/i, /\bbgs\b/i, /\bsgc\b/i, /\bace\b
 const SEALED_EXCLUDE = [/\bcase\b/i, /\bopened\b/i, /\bempty\b/i, /\bno cards\b/i, /\bpsa\b/i, /\bcgc\b/i, /\bgraded\b/i];
 export const QUERY_NEGATIVES = { single: "-lot -psa -cgc -bgs -graded -proxy", sealed: "-lot -case -opened -empty" };
 
-export function keepTitle(kind, title = "") {
+export function keepTitle(kind, title = "", item = null) {
   const rules = [...COMMON_EXCLUDE, ...(kind === "sealed" ? SEALED_EXCLUDE : SINGLE_EXCLUDE)];
-  return !rules.some((r) => r.test(title));
+  if (rules.some((r) => r.test(title))) return false;
+  if (item && !costcoListingOk({ ...item, kind: item.kind || kind }, title)) return false;
+  return true;
 }
 
 export function buildQuery(item) {
@@ -171,9 +174,9 @@ export function sellerSpread(items) {
   return { sellers: counts.size, topShare: Math.round((top / seen) * 100) / 100, top2Share: Math.round((top2 / seen) * 100) / 100 };
 }
 
-export function summarize(kind, total, titles, items) {
+export function summarize(kind, total, titles, items, subject = null) {
   const seen = titles.length;
-  const kept = titles.filter((t) => keepTitle(kind, t)).length;
+  const kept = titles.filter((t) => keepTitle(kind, t, subject)).length;
   const est = typeof total === "number" && seen ? Math.round(total * (kept / seen)) : null;
   const base = { browseTotal: typeof total === "number" ? total : null, sampled: seen, sampleKept: kept, listingsCounted: est };
   const spread = sellerSpread(items);

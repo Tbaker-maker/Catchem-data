@@ -91,7 +91,7 @@ export async function runListingCounts({ afterSealedStep = false, now = new Date
           if (!res.ok) { failures += 1; continue; }
           const d = await res.json();
           const summaries = d.itemSummaries || [];
-          const row = { id: it.id, kind, tier: it.tier, date: today, ...summarize(kind, d.total, summaries.map((x) => x.title || ""), summaries) };
+          const row = { id: it.id, kind, tier: it.tier, date: today, ...summarize(kind, d.total, summaries.map((x) => x.title || ""), summaries, it) };
           out.push(row);
           latest.rows[it.id] = row;
           state.last[it.id] = now.toISOString();

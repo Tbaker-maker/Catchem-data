@@ -83,6 +83,8 @@ function tokenHit(tok, text) {
     if (parts.includes(stem)) best = Math.max(best, 2);
     else if (/^\d+$/.test(stem)) {
       for (const p of parts) if (p === stem || p.startsWith(stem)) best = Math.max(best, 2);
+    } else if ((tok === "elite" || tok === "trainer" || tok === "box") && parts.includes("etb")) {
+      best = Math.max(best, 2);
     } else if (stem.length >= 4) {
       for (const p of parts) if (p.startsWith(stem)) best = Math.max(best, 1);
     }
@@ -147,6 +149,7 @@ export function scoreRow(query, row, codes = null) {
   if (/pokemon center|pc etb/.test(raw) && /pokemon center/.test(name)) score += 30;
   if (!/pokemon center|pc etb/.test(raw) && /pokemon center/.test(name) && /elite trainer box/.test(q)) score -= 45;
   if (!/costco|sam|dollar|walmart|exclusive|collection/.test(raw) && JUNK.test(name)) score -= 80;
+  if (/\bcostco\b/.test(raw) && /\bcostco\b/.test(name)) score += 40;
   if (/elite trainer box/.test(q) && /collection|bundle|tin|pack/.test(name) && !/elite trainer box/.test(name)) score -= 30;
   if (/booster box/.test(q) && !/booster box/.test(text)) score -= 70;
   if (!/\bhalf\b/.test(q) && /\bhalf\b/.test(name)) score -= 30;
@@ -176,6 +179,15 @@ export function prepareCatalog(rows) {
       if (!list) { list = []; byToken.set(part, list); }
       list.push(i);
       if (part.length >= 4 && !seenWord.has(part)) { seenWord.add(part); words.push(part); }
+      if (part === "etb") {
+        for (const extra of ["elite", "trainer", "box"]) {
+          if (seen.has(extra)) continue;
+          seen.add(extra);
+          let extraList = byToken.get(extra);
+          if (!extraList) { extraList = []; byToken.set(extra, extraList); }
+          extraList.push(i);
+        }
+      }
     }
   }
   const index = { byToken, words };
