@@ -94,7 +94,18 @@ async function indexPacked(dir, wanted, parse) {
   return hit;
 }
 
-export const FEED_PARTS = Object.freeze(["today", "up", "down", "watch", "cook"]);
+export const FEED_PARTS = Object.freeze(["today", "up", "down", "watch", "cook", "cool", "heat"]);
+
+// A published dollar still gets tiles. The hold list only blocks a row whose
+// page is still "Price being checked", so a priced vintage mover is not left blank.
+export function stampSkipped(read, holds) {
+  const sku = skuOf(read);
+  const blocked = mentionsHeld(read, holds) || (sku && holds.has(sku));
+  if (!blocked) return false;
+  const price = Number(read?.price);
+  const checking = /price being checked/i.test(String(read?.headline || ""));
+  return !(price > 0) || checking;
+}
 
 async function feedReads(root) {
   const out = [];
@@ -237,7 +248,7 @@ export async function stampSignalChips({ root = ROOT, rules, writeReads = false 
   let feedCount = 0;
   const build = (read) => {
     const sku = skuOf(read);
-    if (mentionsHeld(read, holds) || (sku && holds.has(sku))) return null;
+    if (stampSkipped(read, holds)) return null;
     const set = setFor(read, sets);
     const rot = set ? rotBy.get(set.slug) : null;
     const spark = sparks.get(sku);
@@ -249,7 +260,7 @@ export async function stampSignalChips({ root = ROOT, rules, writeReads = false 
       daily: spark || [],
       counts: priceCounts(older, spark, read.asOf || asOf),
       listings: listingsFor(read, byId, byName),
-      held: sku ? holds.has(sku) : false,
+      held: stampSkipped(read, holds),
       release: set?.release || "",
       art: read.art || "",
       rotationMonths: monthsUntil(rot?.status, read.asOf || asOf),
@@ -276,6 +287,8 @@ export async function stampSignalChips({ root = ROOT, rules, writeReads = false 
     if (!made || !made.built.signals.length) {
       delete read.signals;
       delete read.blurb;
+      if (made?.built?.tiles) read.tiles = made.built.tiles;
+      else delete read.tiles;
       if (made) keep(read, made.sku, made.entry);
       continue;
     }
@@ -286,9 +299,11 @@ export async function stampSignalChips({ root = ROOT, rules, writeReads = false 
     else delete read.blurb;
     if (built.strength) read.strength = built.strength;
     else delete read.strength;
+    if (built.tiles) read.tiles = built.tiles;
+    else delete read.tiles;
     count += 1;
   }
-  // Feed rows (today, up, down, watch, cook) get the same chips and tiles,
+  // Feed rows (today, up, down, watch, cook, cool, heat) get the same chips and tiles,
   // keyed by id and sku. The feed files themselves are not rewritten.
   for (const read of feedRows) {
     if (!read || !read.id || byRead[read.id]) continue;

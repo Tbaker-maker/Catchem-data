@@ -27,6 +27,12 @@ export async function run() {
   t("same read as yesterday drops", rule({ ...base, endDate: "2026-10-19" }, { asOf: "2026-10-19", prev: { x: { ...base, asOf: "2026-10-18", endDate: "2026-10-19" } } }).includes("repeat"));
   t("advice wording drops", rule({ ...base, headline: "You should buy this box now." }).includes("advice"));
   t("raw card codes are a bad title", rule({ ...base, headline: "Set: top cards on TCGplayer market are #R/RGB at $6,000.27." }).includes("title"));
+  t("priced card with no tiles drops", rule({ ...base, kind: "single", price: 61.97, href: "/c/tcgcsv-1" }, { chips: {} }).includes("tiles"));
+  t("priced sealed read with no tiles drops", rule({ ...base, kind: "sealed", price: 107, href: "/p/example-box" }, { chips: {} }).includes("tiles"));
+  t("a price tile keeps the read", !rule({ ...base, kind: "single", price: 46.89, href: "/c/tcgcsv-90105" }, { chips: { x: { tiles: { price: { dir: "up", days: 7, pct: 15.4 } } } } }).includes("tiles"));
+  t("a data tile keeps the read", !rule({ ...base, kind: "single", price: 10, href: "/c/tcgcsv-2" }, { chips: { x: { tiles: { data: { bars: 3, of: 5 } } } } }).includes("tiles"));
+  t("price being checked is not required to have tiles", !rule({ ...base, kind: "single", price: 10, href: "/c/tcgcsv-3", headline: "Price being checked." }, { chips: {} }).includes("tiles"));
+  t("an unpriced deep read is not required to have tiles", !rule({ ...base, kind: "deep" }, { chips: {} }).includes("tiles"));
   t("clean read passes", rule(base).length === 0);
   const many = Array.from({ length: 40 }, (_, i) => ({ ...base, id: `r${i}`, name: "Rating: X" }));
   t("systemic breakage is flagged", gateReads(many).systemic === true);
