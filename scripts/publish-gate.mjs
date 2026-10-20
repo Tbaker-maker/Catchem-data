@@ -11,6 +11,7 @@ import { loadFeedFloor } from "./lib/feed-floor.mjs";
 import { leadIds } from "./lib/feed-rank.mjs";
 import { applyModelSpec } from "./lib/model-spec.mjs";
 import { boosterBoxFlagGap } from "./lib/premium-ratio.mjs";
+import { ARCHIVE_SOURCE, backfillUnitJumps, loadSanityBound } from "./lib/premium-history.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const PUB = join(ROOT, "research/assets/public");
@@ -103,17 +104,33 @@ const productList = await J(join(ROOT, "data/sealed-products.json"), null);
 if (premiumDoc && Array.isArray(productList)) {
   const boxPids = new Set(productList.filter((row) => row?.subtype === "booster-box" && row.tcgPlayerId).map((row) => String(row.tcgPlayerId)));
   const daysByPid = new Map();
+  const archiveIds = new Set();
+  const jumpSeries = new Map();
+  const notePoint = (id, date, market, archive) => {
+    if (!(market > 0) || !id) return;
+    if (archive) archiveIds.add(id);
+    if (!archive && !archiveIds.has(id)) return;
+    if (!jumpSeries.has(id)) jumpSeries.set(id, []);
+    jumpSeries.get(id).push({ date, market, archive });
+  };
   const dailyDir = join(ROOT, "data/history/tcgcsv-daily");
-  if (existsSync(dailyDir)) {
-    for (const name of await readdir(dailyDir)) {
+  const folders = [join(dailyDir, "archive"), dailyDir];
+  for (const folder of folders) {
+    if (!existsSync(folder)) continue;
+    const fromArchive = folder.endsWith("/archive");
+    for (const name of await readdir(folder)) {
       if (!/^\d{4}-\d{2}-\d{2}\.json$/.test(name)) continue;
-      const day = await J(join(dailyDir, name), null);
+      const day = await J(join(folder, name), null);
       const date = String(day?.date || name.slice(0, 10));
       for (const row of day?.prices || []) {
         const id = String(row?.id || "");
-        if (!boxPids.has(id) || !(Number(row?.market) > 0)) continue;
-        if (!daysByPid.has(id)) daysByPid.set(id, new Set());
-        daysByPid.get(id).add(date);
+        const market = Number(row?.market);
+        if (boxPids.has(id) && market > 0) {
+          if (!daysByPid.has(id)) daysByPid.set(id, new Set());
+          daysByPid.get(id).add(date);
+        }
+        const archive = fromArchive || row?.source === ARCHIVE_SOURCE;
+        notePoint(id, date, market, archive);
       }
     }
   }
@@ -122,6 +139,16 @@ if (premiumDoc && Array.isArray(productList)) {
   if (gap.failed) {
     console.error("publish gate: a booster box flag is missing from bySet");
     process.exit(1);
+  }
+  if (archiveIds.size) {
+    const guard = await loadSanityBound(ROOT);
+    const jump = backfillUnitJumps(jumpSeries, guard);
+    if (jump.failed) {
+      console.error(jump.missingBound
+        ? "publish gate: a backfilled series is present and the private sanity bound is missing"
+        : "publish gate: a backfilled series jumps past the private sanity bound");
+      process.exit(1);
+    }
   }
 }
 if (systemic) { console.error(`publish gate: systemic breakage, ${total.dropped} of ${total.rows} rows failed. Not publishing.`); process.exit(1); }

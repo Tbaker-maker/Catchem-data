@@ -1,9 +1,10 @@
 // Writes research/assets/public/premium-ratio.json from TCGplayer daily files.
 // Flags only. Bands stay in the private model spec. A missing spec writes nothing.
-import { readFile, writeFile, readdir } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { flagFromSeries, setsFromBoxes, boosterBoxFlagGap } from "./lib/premium-ratio.mjs";
+import { loadHistoryDays, seriesForPremium } from "./lib/premium-history.mjs";
 import { openPrivate } from "./lib/private-store.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -40,21 +41,8 @@ if (!Array.isArray(products)) {
 
 const sealed = products.filter((row) => row?.tcgPlayerId);
 const want = new Set(sealed.map((row) => String(row.tcgPlayerId)));
-const dir = join(ROOT, "data/history/tcgcsv-daily");
-const files = (await readdir(dir)).filter((name) => /^\d{4}-\d{2}-\d{2}\.json$/.test(name)).sort();
-const series = new Map();
-let asOf = "";
-for (const name of files) {
-  const day = await readJson(join(dir, name));
-  const date = String(day?.date || name.slice(0, 10));
-  if (date > asOf) asOf = date;
-  for (const row of day?.prices || []) {
-    const id = String(row?.id || "");
-    if (!want.has(id) || !(Number(row.market) > 0)) continue;
-    if (!series.has(id)) series.set(id, []);
-    series.get(id).push([date, Number(row.market)]);
-  }
-}
+const days = await loadHistoryDays(join(ROOT, "data/history/tcgcsv-daily"));
+const { series, asOf } = seriesForPremium(days, want);
 
 const byProduct = {};
 const sealedIds = [];
