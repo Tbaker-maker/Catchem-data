@@ -21,12 +21,14 @@ export const ALIASES = [
   [/\bupc\b/g, "ultra premium collection"],
   [/\bcz\b/g, "crown zenith"],
   [/\bzard\b/g, "charizard"],
+  [/charzard/g, "charizard"],
 ];
 
 const STOP = new Set(["the", "a", "of", "and", "card"]);
 
 export function expandQuery(q) {
-  let s = String(q || "").toLowerCase().replace(/pokémon/g, "pokemon");
+  let s = fold(q);
+  s = s.replace(/mini tins/g, "mini tin").replace(/booster boxes/g, "booster box").replace(/elite trainer boxes/g, "elite trainer box");
   for (const [re, to] of ALIASES) s = s.replace(re, to);
   s = s.replace(/(\d+)\s*\/\s*(\d+)/g, "$1 $2");
   return s;
@@ -52,7 +54,7 @@ function lev(a, b) {
 }
 
 function fold(s) {
-  return String(s || "").toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "");
+  return String(s || "").toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/['’]/g, "");
 }
 
 function hay(row) {
@@ -67,18 +69,52 @@ export function withSetCodes(query, codes) {
   }).join("");
 }
 
+function stemsOf(tok) {
+  const out = [tok];
+  if (tok.length >= 5 && tok.endsWith("es")) out.push(tok.slice(0, -2));
+  if (tok.length >= 4 && tok.endsWith("s") && !tok.endsWith("ss")) out.push(tok.slice(0, -1));
+  return out;
+}
+
 function tokenHit(tok, text) {
   const parts = text.split(/[^a-z0-9]+/).filter(Boolean);
-  if (parts.includes(tok)) return 2;
-  if (/^\d+$/.test(tok)) {
-    for (const p of parts) if (p === tok || p.startsWith(tok)) return 2;
+  let best = 0;
+  for (const stem of stemsOf(tok)) {
+    if (parts.includes(stem)) best = Math.max(best, 2);
+    else if (/^\d+$/.test(stem)) {
+      for (const p of parts) if (p === stem || p.startsWith(stem)) best = Math.max(best, 2);
+    } else if (stem.length >= 4) {
+      for (const p of parts) if (p.startsWith(stem)) best = Math.max(best, 1);
+    }
+    if (best >= 2) return 2;
   }
+  if (best) return best;
   if (tok.length < 5) return 0;
   for (const p of parts) {
     if (Math.abs(p.length - tok.length) > 1) continue;
     if (lev(tok, p) <= 1) return 1;
   }
   return 0;
+}
+
+function setTokens(setName) {
+  return fold(setName).split(/[^a-z0-9]+/).filter((t) => t && !STOP.has(t) && !/^(swsh|sm|xy|bw|dp|hgss|ex|me|sv)\d*$/.test(t));
+}
+
+function setFit(query, setName) {
+  const q = tokens(query);
+  const st = setTokens(setName);
+  if (st.length < 2) return 0;
+  if (!st.every((t) => q.includes(t))) return 0;
+  return 24;
+}
+
+function nameExtra(query, name) {
+  const q = new Set(tokens(query));
+  const parts = fold(name).split(/[^a-z0-9]+/).filter((t) => t && !STOP.has(t));
+  let n = 0;
+  for (const p of parts) if (!q.has(p)) n += 1;
+  return n * 6;
 }
 
 const JUNK = /costco|sam's club|sams club|dollar general|walmart|walgreens|best buy|target exclusive|gamestop/;
@@ -100,9 +136,12 @@ export function scoreRow(query, row, codes = null) {
   if (hit !== toks.length) return 0;
   const q = fold(expandQuery(query));
   const raw = fold(query);
-  const wantsSealed = /elite trainer box|booster box|booster bundle|booster pack/.test(q);
+  const wantsSealed = /elite trainer box|booster box|booster bundle|booster pack|mini tin|ultra premium/.test(q);
   if (wantsSealed && row[5] === "sealed") score += 30;
   if (wantsSealed && row[5] !== "sealed") score -= 20;
+  if (/mini tin/.test(q) && row[5] === "sealed" && /mini tin/.test(name)) score += 24;
+  score += setFit(query, row[2]);
+  score -= nameExtra(query, row[1]);
   if (/\b151\b/.test(q) && /\b151\b/.test(name)) score += 25;
   if (/elite trainer box/.test(q) && /^151 elite trainer box/.test(name) && !/pokemon center|costco/.test(name)) score += 35;
   if (/pokemon center|pc etb/.test(raw) && /pokemon center/.test(name)) score += 30;
@@ -110,6 +149,7 @@ export function scoreRow(query, row, codes = null) {
   if (!/costco|sam|dollar|walmart|exclusive|collection/.test(raw) && JUNK.test(name)) score -= 80;
   if (/elite trainer box/.test(q) && /collection|bundle|tin|pack/.test(name) && !/elite trainer box/.test(name)) score -= 30;
   if (/booster box/.test(q) && !/booster box/.test(text)) score -= 70;
+  if (!/\bhalf\b/.test(q) && /\bhalf\b/.test(name)) score -= 30;
   const num = String(row[3] || "").toLowerCase();
   for (const tok of toks) {
     if (/^\d+$/.test(tok) && (num === tok || num.startsWith(tok + "/") || num.startsWith(tok + " "))) score += 18;
@@ -143,6 +183,42 @@ export function prepareCatalog(rows) {
   return index;
 }
 
+function listsFor(prepared, tok) {
+  const bag = new Set();
+  let any = false;
+  for (const stem of stemsOf(tok)) {
+    const exact = prepared.byToken.get(stem);
+    if (exact && exact.length) { any = true; for (const id of exact) bag.add(id); }
+    if (stem.length >= 4) {
+      let n = 0;
+      for (const word of prepared.words) {
+        if (!word.startsWith(stem) || word === stem) continue;
+        const arr = prepared.byToken.get(word);
+        if (!arr) continue;
+        any = true;
+        for (const id of arr) bag.add(id);
+        n += 1;
+        if (n > 8) break;
+      }
+    }
+  }
+  if (any) return [...bag];
+  if (tok.length >= 5) {
+    const near = [];
+    for (const word of prepared.words) {
+      if (Math.abs(word.length - tok.length) > 1) continue;
+      if (lev(tok, word) <= 1) near.push(word);
+      if (near.length > 6) break;
+    }
+    for (const word of near) {
+      const arr = prepared.byToken.get(word);
+      if (arr) for (const id of arr) bag.add(id);
+    }
+    if (bag.size) return [...bag];
+  }
+  return null;
+}
+
 export function rankCatalog(query, rows, limit = 8, codes = null) {
   const scored = [];
   const prepared = prepareCatalog(rows);
@@ -150,28 +226,14 @@ export function rankCatalog(query, rows, limit = 8, codes = null) {
     const toks = tokens(withSetCodes(query, codes));
     let ids = null;
     for (const tok of toks) {
-      let list = prepared.byToken.get(tok);
-      if (!list && tok.length >= 5) {
-        const near = [];
-        for (const word of prepared.words) {
-          if (Math.abs(word.length - tok.length) > 1) continue;
-          if (lev(tok, word) <= 1) near.push(word);
-          if (near.length > 6) break;
-        }
-        const merged = [];
-        for (const word of near) {
-          const arr = prepared.byToken.get(word);
-          if (arr) merged.push(...arr);
-        }
-        list = merged;
-      }
+      const list = listsFor(prepared, tok);
       if (!list || !list.length) { ids = new Set(); break; }
       const set = new Set(list);
       ids = ids ? new Set([...ids].filter((id) => set.has(id))) : set;
       if (!ids.size) break;
     }
     const pool = ids && ids.size ? [...ids] : null;
-    const list = pool || rows.map((_, index) => index);
+    const list = pool || (toks.length ? [] : rows.map((_, index) => index));
     for (const index of list) {
       const row = rows[index];
       const s = scoreRow(query, row, codes);
@@ -215,4 +277,52 @@ export function searchCatalog(query, rows, limit = 8) {
   }
   scored.sort((a, b) => b[0] - a[0] || String(a[1][1]).length - String(b[1][1]).length);
   return { hits: [], missing: true, nearest: scored.slice(0, limit).map((x) => x[1]) };
+}
+
+function samePrinting(a, b) {
+  return fold(a[1]) === fold(b[1]) && fold(a[2]) === fold(b[2]) && String(a[3] || "") === String(b[3] || "");
+}
+
+function preferRow(list) {
+  return list.slice().sort((a, b) => {
+    const artist = (b[4] ? 1 : 0) - (a[4] ? 1 : 0);
+    if (artist) return artist;
+    return String(a[0]).localeCompare(String(b[0]));
+  })[0];
+}
+
+export function pickTarget(query, rows, limit = 8, codes = null) {
+  const hits = rankCatalog(query, rows, Math.max(limit, 8), codes);
+  if (!hits.length) return { mode: "none", hits: [], href: "", id: "" };
+  const scored = hits.map((row) => [scoreRow(query, row, codes), row]);
+  scored.sort((a, b) => b[0] - a[0] || String(a[1][1]).length - String(b[1][1]).length);
+  const top = scored[0][0];
+  const close = scored.filter((pair) => top - pair[0] < 12);
+  const distinct = [];
+  for (const pair of close) {
+    if (!distinct.some((have) => samePrinting(have[1], pair[1]))) distinct.push(pair);
+  }
+  const cluster = close.filter((pair) => samePrinting(pair[1], distinct[0][1])).map((pair) => pair[1]);
+  const best = preferRow(cluster);
+  const href = (best[5] === "sealed" ? "/p/" : "/c/") + best[0];
+  if (distinct.length === 1) return { mode: "page", hits, href, id: best[0] };
+  const q = String(query || "").trim();
+  return { mode: "list", hits, href: "/search?q=" + encodeURIComponent(q), id: best[0] };
+}
+
+export function typeLabel(row) {
+  const kind = String(row?.[5] || "");
+  const name = fold(row?.[1] || "");
+  if (kind === "sealed") {
+    if (/mini tin/.test(name)) return "Mini Tin";
+    if (/elite trainer/.test(name)) return "ETB";
+    if (/booster box/.test(name)) return "Booster Box";
+    if (/ultra premium|\bupc\b/.test(name)) return "UPC";
+    if (/booster bundle/.test(name)) return "Bundle";
+    if (/\btin\b/.test(name)) return "Tin";
+    if (/booster pack/.test(name)) return "Pack";
+    return "Sealed";
+  }
+  if (kind === "slab") return "Slab";
+  return "Single";
 }

@@ -59,7 +59,13 @@ const cases = [
   ["trainer elite box 151", (r) => /151/.test(text(r)) && /elite trainer/.test(text(r)) && !/costco/.test(text(r))],
   ["151 booster bundle", (r) => /151/.test(text(r)) && /booster bundle/.test(text(r))],
   ["base set charizard", (r) => /charizard/.test(text(r)) && /base set/.test(text(r))],
-  ["lost origin booster box", (r) => /lost origin/.test(text(r)) && /booster box/.test(text(r))],
+  ["lost origin booster box", (r) => /lost origin/.test(text(r)) && /booster box/.test(text(r)) && !/half/.test(text(r))],
+  ["151 mini tin", (r) => /151 mini tin/.test(text(r))],
+  ["shining legends etb", (r) => /shining legends/.test(text(r)) && /elite trainer box/.test(text(r))],
+  ["pikachu 088", (r) => /pikachu/.test(text(r)) && /088/.test(text(r))],
+  ["umbreon vmax alt", (r) => /umbreon vmax/.test(text(r)) && /215/.test(text(r))],
+  ["tins 151", (r) => /151 mini tin/.test(text(r))],
+  ["charizard ex 199", (r) => /charizard ex/.test(text(r)) && /199/.test(text(r))],
 ];
 
 let pass = 0;
@@ -71,5 +77,5 @@ for (const [q, pred] of cases) {
 }
 console.log(`${pass}/${cases.length}`);
 for (const line of fails) console.log("  FAIL", line);
-if (pass < 45 || cases.length < 50) process.exit(1);
+if (fails.length || cases.length < 50) process.exit(1);
 console.log("collector search ok");
