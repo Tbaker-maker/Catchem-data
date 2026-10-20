@@ -13,7 +13,6 @@ import { publishFeed, readCallLog, readShelfFile } from "./lib/feed-catalogue.mj
 import { nextCountsUpdatedAt } from "./lib/price-stamp.mjs";
 import { cataloguePath, loadCatalogueImages } from "./catalogue-images.mjs";
 import { writeSparks } from "./build-sparks.mjs";
-import { writeSetIndexFile } from "./lib/set-index-files.mjs";
 import { hiddenSealedPids, isBrowseHidden } from "./lib/browse-hidden.mjs";
 import { ATTACH_SEALED, FOLD_GROUPS, assertFolds, assertWritable, cardPrintings, completionCounts } from "./lib/set-master.mjs";
 import { indexLine as indexLineFull } from "./lib/public-index-line.mjs";
@@ -470,7 +469,6 @@ function indexLine(list) {
 }
 
 const setIndex = [];
-const compactSets = [];
 const buckets = new Map();
 const search = [];
 let pricedSingles = 0;
@@ -530,7 +528,6 @@ for (const set of sets.values()) {
     items: set.items,
   };
   await writeFile(join(OUT, "sets", `${set.slug}.json`), JSON.stringify(body));
-  compactSets.push(await writeSetIndexFile(OUT, { slug: set.slug, name: set.name, asOf: catalog.asOf, single: body.singleIndex, sealed: body.sealedIndex }));
   for (const item of set.items) {
     if (item.price && item.kind === "single") pricedSingles += 1;
     if (item.price && item.kind === "sealed") pricedSealed += 1;
@@ -553,8 +550,6 @@ setIndex.sort((a, b) => a.era.localeCompare(b.era) || a.name.localeCompare(b.nam
 for (const [b, rows] of buckets) {
   await writeFile(join(OUT, "buckets", `${b}.json`), JSON.stringify(rows));
 }
-await writeFile(join(OUT, "feed/set-index.json"), JSON.stringify({ asOf: catalog.asOf, sets: compactSets.sort((a, b) => a.name.localeCompare(b.name)) }));
-console.log(`set index: ${compactSets.length} files`);
 const sparkOut = await writeSparks(OUT, catalog.asOf);
 console.log(`sparks: ${sparkOut.rows} series in ${sparkOut.files} files, as of ${sparkOut.asOf}`);
 
