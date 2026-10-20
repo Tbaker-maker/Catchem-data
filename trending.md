@@ -1,7 +1,7 @@
-# Catch'Em Trending — 2026-10-19
+# Catch'Em Trending — 2026-10-20
 
 Product: Catch'Em Trending — sealed floor board
-asOf: 2026-10-19T15:30:00Z
+asOf: 2026-10-20T15:30:00Z
 
 **First play:** none. No Fill. Destined Rivals box still in play at ~11/day carried. Perfect Order still flowing ~29/day carried.
 
@@ -13,32 +13,32 @@ asOf: 2026-10-19T15:30:00Z
 - Fill only if near-clock (set left play) + higher-low forming + exhaust + within 8% of the low + low is >= 8 days old
 - No FORCE in this run. No Fill locked.
 
-Markets are TCGPlayer product page pricepoints from 2026-10-19 public scrape. Copies sold carried (public 3-month snapshot returned 0 on this scrape). Unopened English. No solds invented.
+Markets are TCGPlayer product page pricepoints and indexed public data from 2026-10-20. Copies sold carried (public 3-month snapshot returned 0 on this scrape). Unopened English. No solds invented.
 
 ## Board
 
 **Destined Rivals Booster Box** — Wait
-Market $397.05. Quarter sold 979, 11/day (carried), low $244.99. Not a new cut in the last 3 days. About 62% above the low. Still in play.
+Market $394.61. Quarter sold 979, 11/day (carried), low $244.99. Not a new cut in the last 3 days. About 61% above the low. Still in play.
 Turns into Fill if: set leaves play, the $244.99 low stops cutting and holds, solds exhaust, market within 8%.
 
 **Destined Rivals ETB** — Wait
-Market $112.40. Quarter sold 5827, 63/day (carried), low $93.98. About 20% above. Still in play.
+Market $112.90. Quarter sold 5827, 63/day (carried), low $93.98. About 20% above. Still in play.
 Turns into Fill if: left-play + higher-low 8+ days + solds exhaust + within 8%.
 
 **Destined Rivals Bundle** — Wait
-Market $58.84. Quarter sold 1149, 12/day (carried), low $45. About 31% above. Still in play.
+Market $58.50. Quarter sold 1149, 12/day (carried), low $45. About 30% above. Still in play.
 Turns into Fill if: the $45 low stops cutting and holds 8+ days, set leaves play, solds exhaust, market within 8%.
 
 **151 Booster Bundle** — Wait
-Market $171.94. Quarter sold 1137, 12/day (carried), low $145. About 19% above. Copies not dried. Outside 8%.
+Market $171.30. Quarter sold 1137, 12/day (carried), low $145. About 18% above. Copies not dried. Outside 8%.
 Turns into Watch the floor if copies dry after a held higher-low. Fill only after left-play, 8+ days on $145, within 8%.
 
 **151 ETB** — Watch
-Market $497.29. Quarter sold 141, ~2/day (carried), low $452. About 10% above, outside the band. Not a Fill.
+Market $499.21. Quarter sold 141, ~2/day (carried), low $452. About 10% above, outside the band. Not a Fill.
 Turns into Fill if: 151 stays off clock, $452 holds and is not cutting, solds exhaust, market stays within 8%.
 
 **Prismatic ETB** — Wait
-Market $131.78. Quarter sold 3035, 33/day (carried). Printed low $3.01 is junk, not a floor. Clean low recent. Still in play.
+Market $130.42. Quarter sold 3035, 33/day (carried). Printed low $3.01 is junk, not a floor. Clean low recent. Still in play.
 Turns into Fill if: a clean low ages 8+ days, left-play, solds thin, 8% band.
 
 **Prismatic Bundle** — Wait
@@ -50,11 +50,11 @@ Not the retail ETB. Market $401.85. Quarter sold 110, 1/day (carried), low $386.
 Turns into Fill if: left-play, $386.91 holds 8+ days and is not cut, solds exhaust, market stays within 8%.
 
 **Surging Sparks Box** — Wait
-Market $293.62. Quarter sold 439, 5/day (carried). Low $270 not a new cut. About 9% above. Case is the wrong SKU.
+Market $296.09. Quarter sold 439, 5/day (carried). Low $270 not a new cut. About 10% above. Case is the wrong SKU.
 Turns into Fill if: set leaves play, the $270 low holds 8+ days, solds thin, market within 8%.
 
 **Perfect Order Booster Box** — Wait
-Market $175.20. Quarter sold 2710, 29/day (carried), low $149.99. About 17% above. Still in play. Flow.
+Market $175.01. Quarter sold 2710, 29/day (carried), low $149.99. About 17% above. Still in play. Flow.
 Turns into Fill if: set leaves play, daily solds dry up, higher-low 8+ days, within 8% of that low.
 
 **Perfect Order ETB** — Wait
