@@ -4,11 +4,12 @@ import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { gateReads, RULES } from "./lib/publish-gate.mjs";
+import { gateReads, RULES, checkMeter, unpublishMeter } from "./lib/publish-gate.mjs";
 import { gateSealedPrices } from "./lib/real-listing.mjs";
 import { loadReadStability } from "./lib/read-stability.mjs";
 import { loadFeedFloor } from "./lib/feed-floor.mjs";
 import { leadIds } from "./lib/feed-rank.mjs";
+import { applyModelSpec } from "./lib/model-spec.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const PUB = join(ROOT, "research/assets/public");
@@ -80,6 +81,21 @@ if (sealedDoc && Array.isArray(sealedDoc.products)) {
     await writeFile(sealedPath, JSON.stringify(sealedDoc, null, 2) + "\n");
     await writeFile(join(ROOT, "data/derived/sealed-ask-gate-log.json"), JSON.stringify({ at: new Date().toISOString(), rules: ["cheapest-under-half", "history-under-0.3"], log: sealedGate.log }, null, 1) + "\n");
   }
+}
+const meterLoaded = await applyModelSpec({ root: ROOT });
+if (meterLoaded.marketMeter) {
+  const freshAsOf = String((await J(join(PUB, "counts.json"), {}))?.asOf || "").slice(0, 10);
+  for (const meterPath of [join(PUB, "market-meter.json"), join(ROOT, "data/derived/market-meter.json")]) {
+    const meter = await J(meterPath, null);
+    if (!meter) continue;
+    const verdict = checkMeter(meter, { minComponents: meterLoaded.marketMeter.minComponents, freshAsOf });
+    if (!verdict.ok) {
+      console.log(`gate drop meter ${verdict.reasons.join(",")}`);
+      if (!check) await writeFile(meterPath, JSON.stringify(unpublishMeter(meter)));
+    }
+  }
+} else {
+  console.log("market meter gate: spec missing, left the public file as it is");
 }
 if (systemic) { console.error(`publish gate: systemic breakage, ${total.dropped} of ${total.rows} rows failed. Not publishing.`); process.exit(1); }
 if (!check) {

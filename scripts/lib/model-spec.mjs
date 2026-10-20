@@ -11,6 +11,7 @@ import { setRatingSpec, ratingSpecReady, RATING_WEIGHTS } from "./card-rating.mj
 import { setPopularitySpec } from "./popular-pokemon.mjs";
 import { setSealedSpec } from "./sealed-rating.mjs";
 import { applyTunedWeights } from "./rating-weights.mjs";
+import { meterSpecOf } from "./market-meter.mjs";
 
 export const SPEC_REL = "model-spec/spec.json";
 let cached = null;
@@ -20,6 +21,7 @@ export function applySpecDoc(doc, tuned = null) {
     cardRating: setRatingSpec(doc?.cardRating),
     popularity: setPopularitySpec(doc?.popularity),
     sealedRating: setSealedSpec(doc?.sealedRating),
+    marketMeter: meterSpecOf(doc),
   };
   out.tuned = tuned && ratingSpecReady() ? applyTunedWeights(tuned, RATING_WEIGHTS) : { applied: false, reason: "no tuner file" };
   return out;
