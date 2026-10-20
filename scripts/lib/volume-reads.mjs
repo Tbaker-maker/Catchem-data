@@ -9,8 +9,8 @@ import { monthDay } from "./outlier-dive-reads.mjs";
 import { VOLUME_FILE, VOLUME_SOURCE, fullWindow, shiftDay } from "./tcgplayer-volume.mjs";
 import { cleanCardName } from "./card-face.mjs";
 
-export const VOLUME_EMPTY_NOTE = "No sold count is on file, so no volume read ships.";
-export const VOLUME_NOTE = `Near Mint copies sold on TCGplayer over 30 and 7 days, from ${VOLUME_FILE}. ${VOLUME_SOURCE}.`;
+export const VOLUME_EMPTY_NOTE = "No count is on file, so no volume read ships.";
+export const VOLUME_NOTE = `Near Mint listings counted on TCGplayer over 30 and 7 days, from ${VOLUME_FILE}. ${VOLUME_SOURCE}.`;
 // Bulk commons dominate raw counts; a read is about cards people price-check.
 export const MIN_MARKET = 5;
 export const MAX_READS = 40;
@@ -29,7 +29,7 @@ export async function loadVolumeDoc(root) {
 function range(w) {
   const a = monthDay(w?.from);
   const b = monthDay(w?.to);
-  return a && b ? `${a}–${b}` : "";
+  return a && b ? `${a} to ${b}` : "";
 }
 
 function displayName(item) {
@@ -54,7 +54,7 @@ export function volumeRead(row, item) {
   let title = name;
   if (whereSet && !title.toLowerCase().includes(`(${whereSet.toLowerCase()})`)) title = `${title} (${whereSet})`;
   if (whereNum && !title.includes(whereNum)) title = `${title} ${whereNum}`;
-  let sentence = `${title}: ${plural(row.sold30d, "Near Mint copy", "Near Mint copies")} sold on TCGplayer in the 30 days ${r30}`;
+  let sentence = `${title}: ${plural(row.sold30d, "Near Mint listing counted", "Near Mint listings counted")} on TCGplayer in the 30 days ${r30}`;
   sentence += has7 ? `, ${row.sold7d} of them in the last 7 (${range(row.window7d)}).` : ".";
   const sold = {
     condition: "Near Mint",
@@ -76,7 +76,7 @@ export function volumeRead(row, item) {
     set: item.set || "",
     path: sentence,
     headline: sentence,
-    why: `${VOLUME_SOURCE}. TCGplayer's daily sold counts for the ${row.printing} finish in Near Mint, added up; days with no sale add nothing.`,
+    why: `${VOLUME_SOURCE}. TCGplayer's daily counts for the ${row.printing} finish in Near Mint, added up; a day with no count adds nothing.`,
     asOf: row.window30d.to,
     href: `/c/${encodeURIComponent(item.id)}`,
     sold,

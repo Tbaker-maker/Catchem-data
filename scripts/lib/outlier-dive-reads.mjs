@@ -118,8 +118,8 @@ export function diveTeaserReads(dives) {
     }
     const marketFile = String(doc.marketFile || "");
     const why = marketFile
-      ? `eBay ask is the price median in research/pulse/dive/${doc.id}.json. TCGplayer market is the price for ${doc.tcgcsvId} in ${marketFile}. Asks are not sales.`
-      : "Fields are from research/pulse/dive/<id>.json. No sold count is on this read.";
+      ? `eBay ask is the price median in research/pulse/dive/${doc.id}.json. TCGplayer market is the price for ${doc.tcgcsvId} in ${marketFile}. Asks are not listings gone.`
+      : "Fields are from research/pulse/dive/<id>.json. No listings count is on this read.";
     const sources = { dive: `research/pulse/dive/${doc.id}.json` };
     if (marketFile) sources.market = marketFile;
     out.push({

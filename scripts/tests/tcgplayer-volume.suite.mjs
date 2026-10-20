@@ -130,7 +130,7 @@ export async function run() {
   const older = { ...got.rows["tcgcsv-101"], scrapedOn: "2026-09-27", sold30d: 999 };
   const merged = mergeVolumeDoc(doc, { "tcgcsv-101": older }, { updatedOn: SCRAPE });
   t("an older scrape never replaces a newer count", merged.cards["tcgcsv-101"].sold30d === 15);
-  t("file names its source", doc.source === VOLUME_SOURCE && VOLUME_SOURCE === "TCGplayer sales via PokemonPriceTracker");
+  t("file names its source", doc.source === VOLUME_SOURCE && VOLUME_SOURCE === "TCGplayer listings counted via PokemonPriceTracker");
   const text = serializeVolumeDoc(doc);
   t("serialized file parses back", JSON.parse(text).cards["tcgcsv-101"].sold30d === 15);
   t("no PPT price field is written", !PRICE_KEYS.test(text));
@@ -139,9 +139,9 @@ export async function run() {
   const reads = volumeReads(doc, CATALOG, { asOf: SCRAPE });
   t("a week that does not beat the monthly pace does not ship", reads.length === 0);
   const hot = volumeRead({ ...a, sold7d: 8 }, CATALOG[0]);
-  t("read states the count when last week beats the monthly pace", hot && hot.path === "Alpha (Test Set) 001/100: 15 Near Mint copies sold on TCGplayer in the 30 days Sep 5–Oct 4, 8 of them in the last 7 (Sep 28–Oct 4).");
+  t("read states the count when last week beats the monthly pace", hot && hot.path === "Alpha (Test Set) 001/100: 15 Near Mint listings counted on TCGplayer in the 30 days Sep 5 to Oct 4, 8 of them in the last 7 (Sep 28 to Oct 4).");
   t("read is attributed and points at the card page", hot.sold.source === VOLUME_SOURCE && hot.why.startsWith(VOLUME_SOURCE) && hot.href === "/c/tcgcsv-101" && hot.readKind === "volume");
-  t("read never mentions listings or eBay", !/listing|ebay/i.test(hot.path + hot.why));
+  t("read never says sold or sales and never names eBay", !/\b(sold|sales)\b/i.test(hot.path + hot.why) && !/ebay/i.test(hot.path + hot.why));
   t("no read for a stale window", volumeReads(doc, CATALOG, { asOf: "2026-11-30" }).length === 0);
   t("no read when the ids do not match", volumeRead(got.rows["tcgcsv-101"], CATALOG[1]) === null);
   const bench = { cards: {} };
@@ -156,7 +156,7 @@ export async function run() {
   const filled = volumeReads(bench, benchItems, { asOf: SCRAPE, max: 40, exclude: cooled });
   t("cooldown is applied before the cap so the shelf still fills", filled.length === 40 && filled.every((row) => !cooled.has(row.sku)));
   t("no file means no reads", volumeReads(null, CATALOG).length === 0);
-  t("singular copy reads right", volumeRead({ ...a, sold30d: 1 }, CATALOG[0]).path.includes(": 1 Near Mint copy sold"));
+  t("singular copy reads right", volumeRead({ ...a, sold30d: 1 }, CATALOG[0]).path.includes(": 1 Near Mint listing counted"));
 
   // ── browse filter ──
   t("no Volume filter without counts", !buildBrowse({ asOf: SCRAPE, cardIds: [], volume: [] }).filters.volume);

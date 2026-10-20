@@ -74,7 +74,7 @@ export async function run() {
   t("the product name is on the line", named.includes("Trubbish") && /latest price/.test(named) && !/stored|last print/i.test(named));
   t("a full series does not mention a missing day", !/missing|no print|gap on/i.test(dug) && !/missing|no print/i.test(named));
   const soldLine = pathSentence(down, { name: "Perfect Order Booster Box", direction: "down", fromDate: "2026-09-01", toDate: "2026-09-28", fromPrice: 10, windowDays: 30, sold: { count: 2717, asOf: "2026-10-02" } });
-  t("a sold line is a 3-month TCGplayer product-page count", /3 months/.test(soldLine) && /TCGplayer/.test(soldLine) && /not eBay/.test(soldLine) && /2717/.test(soldLine) && !/listings/.test(soldLine));
+  t("a count line is a 3-month TCGplayer product-page count", /3 months/.test(soldLine) && /TCGplayer/.test(soldLine) && /not eBay/.test(soldLine) && /2717/.test(soldLine) && /listings counted/.test(soldLine) && !/\b(sold|sales)\b/i.test(soldLine));
   const closer = (text) => String(text).split(",").at(-1).replace(/\$[0-9,.]+/g, "$").replace(/\b\d+(?:\.\d+)?\b/g, "n").trim();
   t("two paths do not share a closer", closer(dug) !== closer(first));
   const half = [];

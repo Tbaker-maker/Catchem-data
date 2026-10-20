@@ -294,7 +294,7 @@ export function buildAllDives({
     if (parent) {
       payload.combinedArts = true;
       payload.arts = [...(parent.arts || [])];
-      payload.artsNote = "eBay asks and listing counts here are one search across every art. They are not any one art's numbers. Listings are not sales.";
+      payload.artsNote = "eBay asks and listing counts here are one search across every art. They are not any one art's numbers. A listing is not a completed trade.";
     }
     dives.push(payload);
   }

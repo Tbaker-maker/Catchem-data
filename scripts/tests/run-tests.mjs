@@ -224,6 +224,13 @@ console.log("── publish gate ──");
   t("publish gate suite", n === 0, `${n} failed`);
 }
 
+console.log("── feed lead rank ──");
+{
+  const { run } = await import("./feed-rank.suite.mjs");
+  const n = await run();
+  t("feed lead rank suite", n === 0, `${n} failed`);
+}
+
 console.log("── custom reads ──");
 {
   const a = await import("./custom-reads.suite.mjs");

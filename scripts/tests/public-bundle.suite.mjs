@@ -200,22 +200,24 @@ export async function run() {
       if (!ok) unreceipted.push(row.id);
     }
     t("flagged and dive reads carry a price, their dive, and the file they came from", unreceipted.length === 0);
-    // Volume reads are the one place "sold" may appear: a TCGplayer count from
-    // data/derived/tcgplayer-volume.json, matched by card id, with its window,
-    // the attribution, and the same number in the sentence as in the file.
+    // Volume reads name a TCGplayer count from data/derived/tcgplayer-volume.json.
+    // Older rows say "copies sold". New rows say "listings counted". Either
+    // must match the file, the window, and the card id. Neither names eBay.
     const volumeRows = reads.reads.filter((row) => row.readKind === "volume" || row.kind === "volume");
     let volumeDoc = { cards: {} };
     try { volumeDoc = JSON.parse(await readFile(join(ROOT, "data/derived/tcgplayer-volume.json"), "utf8")); } catch {}
     const badVolume = volumeRows.filter((row) => {
       const card = volumeDoc.cards?.[row.sku];
       const sold = row.sold || {};
+      const path = String(row.path || "");
+      const oldRow = sold.source === "TCGplayer sales via PokemonPriceTracker" && path.includes(`${sold.count30d} Near Mint cop`) && !/\b(listings?|ebay)\b/i.test(path);
+      const newRow = sold.source === "TCGplayer listings counted via PokemonPriceTracker" && path.includes(`${sold.count30d} Near Mint listing`) && !/\b(sold|sales)\b/i.test(path + String(row.why || "")) && !/ebay/i.test(path);
       return !(card && row.kind === "volume" && row.id === `volume-${row.sku}` && row.href === `/c/${encodeURIComponent(row.sku)}`
-        && sold.source === "TCGplayer sales via PokemonPriceTracker" && sold.condition === "Near Mint"
+        && sold.condition === "Near Mint"
         && sold.count30d === card.sold30d && sold.count30d > 0 && sold.window30d?.from === card.window30d?.from && sold.window30d?.to === card.window30d?.to
         && (sold.count7d == null || sold.count7d === card.sold7d)
-        && String(row.path || "").includes(`${sold.count30d} Near Mint cop`)
         && row.sources?.volume === "data/derived/tcgplayer-volume.json"
-        && !/\b(listings?|ebay)\b/i.test(String(row.path || "")));
+        && (oldRow || newRow));
     });
     t("volume reads carry a TCGplayer count from the derived file, its window and attribution", badVolume.length === 0);
     t("no lead says bigger last step or printed on", reads.reads.every((row) => !/bigger last step|printed on/i.test(String(row.path || "") + String(row.headline || "") + String(row.why || ""))));
