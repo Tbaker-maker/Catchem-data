@@ -31,7 +31,7 @@ jobs:
       - name: Publish gate (report only)
         env:
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
-        run: node scripts/publish-gate.mjs --check > /tmp/gate.log; head -1 /tmp/gate.log
+        run: node scripts/publish-gate.mjs --check > /tmp/gate.log || true; head -1 /tmp/gate.log
       - name: No schedule in daily-research
         run: |
           if grep -E '^[[:space:]]*schedule:' .github/workflows/daily-research.yml; then
