@@ -125,6 +125,7 @@ jobs:
         env:
           EBAY_APP_ID: ${{ secrets.EBAY_APP_ID }}
           EBAY_CERT_ID: ${{ secrets.EBAY_CERT_ID }}
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
         run: node scripts/fetch-sealed-prices.mjs
       - name: Mount private PPT history
         # Before the crosscheck and the refresh, so a product that already has

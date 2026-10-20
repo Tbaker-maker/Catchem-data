@@ -51,6 +51,14 @@ export async function run() {
   });
 
   t("drops pre-cut heat rows", dive.series.length === 2 && dive.series[0].date === "2026-08-20");
+  t("drops a history point under 0.3x the robust median", buildDivePayload({
+    id: "sv3pt5-upc",
+    latestProduct: { id: "sv3pt5-upc", name: "151 Ultra Premium Collection", askMedian: 936.99, priceMedian: 934, priceFloorClean: 100 },
+    seriesRows: [
+      { date: "2026-08-18", id: "sv3pt5-upc", price: 12.99, listingCount: 4 },
+      { date: "2026-08-19", id: "sv3pt5-upc", price: 950, listingCount: 80 },
+    ],
+  }).series.length === 1);
   t("series carries listingCount labeled as asks", dive.series[0].listingCount === 40 && dive.series[0].source === "ebay-browse-ask");
   t("volume is null with Insights note", dive.volume === null && dive.volumeNote === VOLUME_NOTE);
   t("buyout keeps Browse totals only", dive.buyout.browseTotalNow === 2100 && dive.buyout.listedNow == null);

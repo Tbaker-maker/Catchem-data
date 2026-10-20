@@ -6,6 +6,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { shell, cta, footer, toText, esc, SITE } from "./lib/email.mjs";
 import { provenBoard, makeDayLoader, loadSealedPid, isRotatedSet, ROTATION_LINE, MIN_PCT, MIN_USD, MIN_USD_SEALED } from "./lib/email-proof.mjs";
+import { askBoxLines } from "./lib/real-listing.mjs";
 
 // --root <dir> renders a sample from another tree (used for the newsletter/out/samples render).
 const rootArg = process.argv.indexOf("--root");
@@ -14,6 +15,15 @@ const reads = JSON.parse(await readFile(join(ROOT, "research/assets/public/reads
 const asOf = reads.asOf;
 const sealedPid = await loadSealedPid(ROOT);
 const { kept, dropped } = await provenBoard(reads, { day: makeDayLoader(ROOT), sealedPid });
+const sealedByPid = new Map();
+try {
+  const tape = JSON.parse(await readFile(join(ROOT, "data/sealed-prices.json"), "utf8"));
+  for (const product of tape.products || []) {
+    const pid = String(product.tcgPlayerId || "");
+    if (/^\d+$/.test(pid)) sealedByPid.set(pid, product);
+    if (product.id) sealedByPid.set(String(product.id), product);
+  }
+} catch { /* no sealed tape */ }
 
 // A number shown in the email, tied to the file and day it came from.
 const n = (value, src, date) => `<span data-src="${esc(src)}" data-asof="${esc(date)}">${esc(value)}</span>`;
@@ -43,6 +53,13 @@ const items = kept.map(({ row, proof: p }) => {
     whyRaw = `${p.sealed ? "Sealed" : "Single"}${row.set ? ", \u0000SET\u0000" : ""}. Both prices are TCGplayer market from our daily files.`;
   }
   const why = esc(whyRaw).replace(/\$([\d,]+(?:\.\d+)?)/g, (_, v) => `$${n(v, dayFile(p.bDate), p.bDate)}`).replace(/(\d+(?:\.\d+)?)%/g, (_, v) => `${n(v, dayFile(p.bDate), p.bDate)}%`).replace("\u0000SET\u0000", name(String(row.set || "").replace(/^[A-Z0-9]+:\s*/, "")));
+  const sealedRow = p.sealed ? (sealedByPid.get(String(p.pid)) || sealedByPid.get(String(row.sku || row.id || ""))) : null;
+  const box = sealedRow ? askBoxLines(sealedRow, p.b).map((line) => {
+    const hit = String(line).match(/https:\/\/www\.ebay\.com\/itm\/\d+/);
+    if (!hit) return esc(line);
+    const url = hit[0];
+    return esc(line.slice(0, hit.index)) + `<a href="${esc(url)}">${esc(url)}</a>` + esc(line.slice(hit.index + url.length));
+  }).join("<br>") : "";
   const rot = isRotatedSet(row.set) ? `<br><span style="color:#d9b779;font-size:13px;">${ROTATION_LINE}</span>` : "";
   const tcg = `https://www.tcgplayer.com/product/${p.pid}`;
   const ebay = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(row.name)}`;
@@ -51,7 +68,7 @@ const items = kept.map(({ row, proof: p }) => {
     <td width="84" valign="top">${imageFor(row)}</td>
     <td valign="top" style="padding-left:12px;color:#efe9de;font:15px/1.45 Arial,Helvetica,sans-serif;">
       <a href="${esc(siteLink(row))}" style="color:#efe9de;text-decoration:none;font-weight:700;">${line}</a><br>
-      <span style="color:#c4baab;font-size:13px;">${why}</span>${rot}<br>
+      <span style="color:#c4baab;font-size:13px;">${why}</span>${rot}${box ? `<br><span style="color:#efe9de;font-size:13px;">${box}</span>` : ""}<br>
       <span style="font-size:13px;"><a href="${esc(siteLink(row))}" style="color:#d9b779;">Chart on Catch'em</a> &middot; <a href="${esc(tcg)}" style="color:#d9b779;">TCGplayer</a> <span style="color:#c4baab;">Paid link</span> &middot; <a href="${esc(ebay)}" style="color:#d9b779;">eBay</a> <span style="color:#c4baab;">Paid link</span></span>
     </td>
   </tr></table>

@@ -5,6 +5,7 @@ import { existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { gateReads, RULES } from "./lib/publish-gate.mjs";
+import { gateSealedPrices } from "./lib/real-listing.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const PUB = join(ROOT, "research/assets/public");
@@ -64,6 +65,17 @@ for (const f of feedFiles) {
 console.log(JSON.stringify(total));
 for (const l of log) console.log(`gate ${l.action} ${l.rule} ${l.id}${l.file ? ` [${l.file}]` : ""}${l.note ? ` (${l.note})` : ""}`);
 const systemic = total.rows > 20 && total.dropped / total.rows > 0.25;
+const sealedPath = join(ROOT, "data/sealed-prices.json");
+const sealedDoc = await J(sealedPath, null);
+if (sealedDoc && Array.isArray(sealedDoc.products)) {
+  const sealedGate = gateSealedPrices(sealedDoc.products);
+  for (const row of sealedGate.log) console.log(`gate drop ${row.rule} ${row.id}${row.dropped != null ? ` (${row.dropped} history points)` : ""}${row.price != null ? ` ($${row.price} vs median $${row.median})` : ""}`);
+  if (sealedGate.log.length && !check) {
+    sealedDoc.products = sealedGate.products;
+    await writeFile(sealedPath, JSON.stringify(sealedDoc, null, 2) + "\n");
+    await writeFile(join(ROOT, "data/derived/sealed-ask-gate-log.json"), JSON.stringify({ at: new Date().toISOString(), rules: ["cheapest-under-half", "history-under-0.3"], log: sealedGate.log }, null, 1) + "\n");
+  }
+}
 if (systemic) { console.error(`publish gate: systemic breakage, ${total.dropped} of ${total.rows} rows failed. Not publishing.`); process.exit(1); }
 if (!check) {
   if (previewBad) await writeFile(prevPath, JSON.stringify(preview, null, 1) + "\n");

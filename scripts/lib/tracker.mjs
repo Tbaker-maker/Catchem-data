@@ -39,6 +39,21 @@ export function scoreItems({ listings, prices, heat = new Map(), asOf, window = 
   return out.sort((a, b) => b.score - a.score || a.pid - b.pid);
 }
 
+// Sealed ask facts. Recorded every night. They do not change scoreItems.
+// feedScore stays false until the private proven flag is true.
+export function scoreAskFacts(rows, { proven = false } = {}) {
+  const clean = (rows || []).filter((row) => row && row.id).map((row) => ({
+    id: row.id,
+    asOf: row.asOf || null,
+    cheapestReal: row.cheapestReal?.price ?? (Number(row.cheapestReal) > 0 ? Number(row.cheapestReal) : null),
+    ebayMedianAsk: Number(row.ebayMedianAsk) > 0 ? Number(row.ebayMedianAsk) : null,
+    ebayMedianCount: Number.isInteger(Number(row.ebayMedianCount)) ? Number(row.ebayMedianCount) : null,
+    tcgListedMedian: Number(row.tcgListedMedian) > 0 ? Number(row.tcgListedMedian) : null,
+    gapPct: Number.isFinite(Number(row.gapPct)) ? Number(row.gapPct) : null,
+  }));
+  return { feedScore: proven === true, rows: clean };
+}
+
 // picks: [{ date, pid }], prices: Map. Returns per-horizon { n, hits, rate|null }.
 export function backtest(picks, prices, asOf) {
   const res = {};

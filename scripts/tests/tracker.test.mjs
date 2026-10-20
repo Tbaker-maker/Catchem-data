@@ -1,4 +1,4 @@
-import { scoreItems, backtest, changeOver } from "../lib/tracker.mjs";
+import { scoreItems, backtest, changeOver, scoreAskFacts } from "../lib/tracker.mjs";
 let fail = 0;
 const t = (n, c) => { if (c) console.log("  ok ", n); else { fail++; console.error("  FAIL", n); } };
 const L = (vals) => vals.map((v, i) => [`2026-10-0${i + 1}`, v]);
@@ -17,4 +17,5 @@ t("no rate under n=20", few["7d"].n === 1 && few["7d"].rate === null);
 const many = backtest(Array.from({ length: 20 }, (_, i) => ({ date: "2026-01-01", pid: i })), px, "2026-01-08");
 t("rate once n=20, hit needs 3% and beating the median", many["7d"].n === 20 && many["7d"].hits === 5 && many["7d"].rate === 25);
 t("an unfinished horizon is not scored", many["30d"].n === 0);
+t("ask facts do not change scoreItems", scoreAskFacts([{ id: "sv3pt5-upc", ebayMedianAsk: 936.99 }], {}).feedScore === false && scoreItems({ listings, prices, asOf: "2026-10-03" }).length === s.length);
 process.exit(fail ? 1 : 0);

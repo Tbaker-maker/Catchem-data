@@ -7,7 +7,7 @@ import { gunzipSync } from "node:zlib";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { openPrivate } from "./lib/private-store.mjs";
-import { scoreItems, backtest } from "./lib/tracker.mjs";
+import { scoreItems, backtest, scoreAskFacts } from "./lib/tracker.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const TOP = 25;
@@ -60,7 +60,21 @@ async function main() {
   }
   const bt = { asOf, picksLogged: all.length, nights: new Set(all.map((p) => p.date)).size, horizons: backtest(all, prices, asOf) };
   await writeFile(join(dir, "backtest.json"), JSON.stringify(bt, null, 1) + "\n");
-  const r = await store.close([`tracker/picks/${asOf}.json`, "tracker/backtest.json"], `tracker: picks ${asOf}`);
+  const sealed = await J(join(ROOT, "data/sealed-prices.json"), { products: [] });
+  const askRows = (sealed.products || []).filter((p) => p && p.id).map((p) => ({
+    id: p.id,
+    asOf: String(p.lastSeen || "").slice(0, 10) || null,
+    cheapestReal: p.cheapestReal || null,
+    ebayMedianAsk: p.ebayMedianAsk ?? p.askMedian ?? p.priceMedian ?? null,
+    ebayMedianCount: p.ebayMedianCount ?? p.askRobustCount ?? null,
+    tcgListedMedian: p.tcgListedMedian ?? null,
+    gapPct: p.gapPct ?? null,
+  }));
+  let proven = false;
+  try { proven = JSON.parse(await readFile(join(store.dir, "tracker/ask-proven.json"), "utf8")).proven === true; } catch { proven = false; }
+  const askScore = scoreAskFacts(askRows, { proven });
+  await writeFile(join(dir, "ask-facts.json"), JSON.stringify({ asOf, feedScore: askScore.feedScore, note: "Facts only. Not in the tracker score until proven.", rows: askScore.rows }, null, 1) + "\n");
+  const r = await store.close([`tracker/picks/${asOf}.json`, "tracker/backtest.json", "tracker/ask-facts.json"], `tracker: picks ${asOf}`);
   console.log(JSON.stringify({ tracker: { asOf, itemsWithListings: listings.size, scored: scored.length, picks: picks.length, backtest: bt.horizons, pushed: r.pushed, reason: r.reason || null } }));
 }
 
