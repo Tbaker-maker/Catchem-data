@@ -3,7 +3,7 @@
 import { readFile, writeFile, readdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { flagFromSeries, foldSet } from "./lib/premium-ratio.mjs";
+import { flagFromSeries, setsFromBoxes, boosterBoxFlagGap } from "./lib/premium-ratio.mjs";
 import { openPrivate } from "./lib/private-store.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -26,10 +26,6 @@ async function loadSpec() {
   } catch { return null; }
 }
 
-function skipBox(name) {
-  return /1st edition|unlimited|half booster|enhanced|shadowless|revised/i.test(String(name || ""));
-}
-
 const spec = await loadSpec();
 if (!spec) {
   console.log("premium ratio: no private spec, left the public file as it is");
@@ -42,7 +38,6 @@ if (!Array.isArray(products)) {
   process.exit(0);
 }
 
-const boxes = products.filter((row) => row?.subtype === "booster-box" && row.tcgPlayerId);
 const sealed = products.filter((row) => row?.tcgPlayerId);
 const want = new Set(sealed.map((row) => String(row.tcgPlayerId)));
 const dir = join(ROOT, "data/history/tcgcsv-daily");
@@ -63,30 +58,24 @@ for (const name of files) {
 
 const byProduct = {};
 const sealedIds = [];
+const flagByPid = new Map();
+const daysByPid = new Map();
+for (const [id, points] of series) daysByPid.set(id, new Set(points.map((p) => p[0])).size);
 for (const row of sealed) {
   const pid = String(row.tcgPlayerId);
   const ids = [`tcgcsv-${pid}`, String(row.id || "")].filter(Boolean);
   for (const id of ids) sealedIds.push(id);
   const flag = flagFromSeries(series.get(pid) || [], spec);
   if (!flag) continue;
+  flagByPid.set(pid, flag);
   for (const id of ids) byProduct[id] = flag;
 }
 
-const byGroup = new Map();
-for (const row of boxes) {
-  const key = String(row.set || "");
-  if (!byGroup.has(key)) byGroup.set(key, []);
-  byGroup.get(key).push(row);
-}
-const bySet = {};
-for (const [setName, group] of byGroup) {
-  const plain = group.filter((row) => !skipBox(row.name));
-  const pool = plain.length ? plain : group;
-  pool.sort((a, b) => (series.get(String(b.tcgPlayerId))?.length || 0) - (series.get(String(a.tcgPlayerId))?.length || 0) || String(a.name).length - String(b.name).length);
-  const box = pool[0];
-  const flag = flagFromSeries(series.get(String(box.tcgPlayerId)) || [], spec);
-  if (!flag) continue;
-  bySet[foldSet(setName)] = { flag, boxId: `tcgcsv-${box.tcgPlayerId}` };
+const { bySet } = setsFromBoxes(products, flagByPid, daysByPid);
+const gap = boosterBoxFlagGap({ byProduct, bySet }, products, daysByPid);
+if (gap.failed) {
+  console.error("premium ratio: a booster box flag is missing from bySet");
+  process.exit(1);
 }
 
 const doc = {

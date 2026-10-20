@@ -9,6 +9,7 @@ import { gateSealedPrices } from "./lib/real-listing.mjs";
 import { loadReadStability } from "./lib/read-stability.mjs";
 import { loadFeedFloor } from "./lib/feed-floor.mjs";
 import { leadIds } from "./lib/feed-rank.mjs";
+import { boosterBoxFlagGap } from "./lib/premium-ratio.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const PUB = join(ROOT, "research/assets/public");
@@ -79,6 +80,32 @@ if (sealedDoc && Array.isArray(sealedDoc.products)) {
     sealedDoc.products = sealedGate.products;
     await writeFile(sealedPath, JSON.stringify(sealedDoc, null, 2) + "\n");
     await writeFile(join(ROOT, "data/derived/sealed-ask-gate-log.json"), JSON.stringify({ at: new Date().toISOString(), rules: ["cheapest-under-half", "history-under-0.3"], log: sealedGate.log }, null, 1) + "\n");
+  }
+}
+const premiumDoc = await J(join(PUB, "premium-ratio.json"), null);
+const productList = await J(join(ROOT, "data/sealed-products.json"), null);
+if (premiumDoc && Array.isArray(productList)) {
+  const boxPids = new Set(productList.filter((row) => row?.subtype === "booster-box" && row.tcgPlayerId).map((row) => String(row.tcgPlayerId)));
+  const daysByPid = new Map();
+  const dailyDir = join(ROOT, "data/history/tcgcsv-daily");
+  if (existsSync(dailyDir)) {
+    for (const name of await readdir(dailyDir)) {
+      if (!/^\d{4}-\d{2}-\d{2}\.json$/.test(name)) continue;
+      const day = await J(join(dailyDir, name), null);
+      const date = String(day?.date || name.slice(0, 10));
+      for (const row of day?.prices || []) {
+        const id = String(row?.id || "");
+        if (!boxPids.has(id) || !(Number(row?.market) > 0)) continue;
+        if (!daysByPid.has(id)) daysByPid.set(id, new Set());
+        daysByPid.get(id).add(date);
+      }
+    }
+  }
+  const dayCount = new Map([...daysByPid].map(([id, set]) => [id, set.size]));
+  const gap = boosterBoxFlagGap(premiumDoc, productList, dayCount);
+  if (gap.failed) {
+    console.error("publish gate: a booster box flag is missing from bySet");
+    process.exit(1);
   }
 }
 if (systemic) { console.error(`publish gate: systemic breakage, ${total.dropped} of ${total.rows} rows failed. Not publishing.`); process.exit(1); }
