@@ -1,7 +1,7 @@
 import { hasBannedWord } from "../lib/copy-rules.mjs";
 import { nearestPoint, extremeRead, windowRead, backToRead, setReads, historyReads, dateLabel } from "../lib/history-reads.mjs";
 import { parsePcPreordersApi } from "../lib/news-sources.mjs";
-import { listingReads, sealedChaseReads } from "../lib/board-mix.mjs";
+import { listingReads, listingLevelReads, sealedChaseReads } from "../lib/board-mix.mjs";
 
 export async function run() {
   let fail = 0;
@@ -25,7 +25,9 @@ export async function run() {
   t("an outsized jump is left out", windowRead(card([["2026-09-12", 2], [asOf, 40]]), asOf, { days: 30, slack: 4, minPct: 15, maxPct: 150, minUsd: 2, kind: "plain" }) === null);
 
   const back = backToRead(card([["2025-01-10", 30], ["2025-06-01", 60], [asOf, 30.2]]), asOf);
-  t("back to its price names both dates and the swing", back && back.headline.includes("Back to its Jan 10, 2025 price") && back.headline.includes("$60.00 (Jun 1, 2025)") && !back.headline.includes(" NM"));
+  t("back to its price names both dates and the swing", back && back.headline.includes("Back to its Jan 10, 2025 price") && back.headline.includes("$60.00 (Jun 1, 2025)") && !back.headline.includes(" NM") && back.receipt.returned === asOf);
+  const sat = backToRead(card([["2026-01-22", 198.24], ["2026-04-28", 393.33], ["2026-05-20", 200], [asOf, 200]]), asOf);
+  t("a price that sat since May is not a back-to read", sat === null);
 
   const cards = Array.from({ length: 12 }, (_, i) => card([["2026-09-12", 20], [asOf, i < 6 ? 25 : 20]], { id: `tcgcsv-${i + 10}` }));
   const sr = setReads(cards, asOf);
@@ -41,6 +43,11 @@ export async function run() {
 
   const lr = listingReads({ products: [{ id: "x", name: "X Box", listingsCounted: { n: 18, date: "2026-10-12", prev: { n: 14, date: "2026-10-11" } } }] });
   t("listing read at 14 to 18 is stated exactly", lr.length === 1 && lr[0].headline.includes("eBay listings 14 to 18 (Oct 11 to Oct 12). A listing is not a sale."));
+  const levels = listingLevelReads({ products: [
+    { id: "old", name: "Lost Origin Elite Trainer Box", listingsCounted: { n: 137, date: "2026-10-17" } },
+    { id: "now", name: "Today Box", listingsCounted: { n: 40, date: "2026-10-20" } },
+  ] }, { asOf: "2026-10-20" });
+  t("a listing count from another day is not this read", levels.length === 1 && levels[0].sku === "now" && levels[0].asOf === "2026-10-20" && levels[0].headline.includes("40 eBay listings counted on Oct 20"));
 
   const hist = new Map([["sv9-booster-box", [{ date: "2026-10-05", market: 100 }, { date: "2026-10-12", market: 100.5 }]]]);
   const raw = new Map([[555, { group: "SV09: Journey Together" }]]);

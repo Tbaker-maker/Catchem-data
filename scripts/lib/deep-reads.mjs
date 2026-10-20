@@ -13,6 +13,7 @@ import { markCited } from "./board-mix.mjs";
 import { addDays, dayNum, dateLabel, monthYear } from "./history-reads.mjs";
 import { speciesToken } from "./fact-reads.mjs";
 import { barLabel, cardTitle, tcgAmount } from "./card-face.mjs";
+import { storyUnstable } from "./read-stability.mjs";
 
 const usd = (n) => tcgAmount(n, money);
 
@@ -191,7 +192,7 @@ export function scrubCutoff(text) {
     .replace(/no bigger than 3% either way/g, "near the earlier price");
 }
 
-export function cardStories(cards, { asOf, max = 25, skip = new Set() }) {
+export function cardStories(cards, { asOf, max = 25, skip = new Set(), stability = null } = {}) {
   const live = cards.filter((c) => c.pts.at(-1)?.[0] === asOf && c.pts.at(-1)[1] >= 50 && !LOW.has(c.rarity) && dayNum(asOf) - dayNum(c.pts[0][0]) >= 365 && !skip.has(c.id));
   const bySpecies = new Map();
   for (const c of cards) { const t = speciesToken(c.name); if (!t || c.pts.at(-1)?.[0] !== asOf) continue; if (!bySpecies.has(t)) bySpecies.set(t, []); bySpecies.get(t).push(c); }
@@ -202,6 +203,7 @@ export function cardStories(cards, { asOf, max = 25, skip = new Set() }) {
     const now = c.pts.at(-1);
     const peak = c.pts.reduce((m, p) => (p[1] > m[1] ? p : m));
     const low = c.pts.reduce((m, p) => (p[1] < m[1] ? p : m));
+    if (storyUnstable(c.pts.length, peak[1], low[1], stability)) continue;
     const yr = c.pts.filter((p) => p[0] >= addDays(asOf, -365));
     const yHi = Math.max(...yr.map((p) => p[1])), yLo = Math.min(...yr.map((p) => p[1]));
     if (yHi === yLo) continue;
@@ -287,22 +289,26 @@ export function sealedGapDeep(products, histories, cards, rawProducts, { asOf, m
     const hp = (histories.get(p.id) || []).filter((x) => x?.market > 0).map((x) => [x.date, x.market]);
     if (!chase || hp.length < 7 || hp.at(-1)[0] !== asOf) continue;
     const cm = new Map(chase.pts);
-    const both = hp.filter((x) => cm.has(x[0])).map((x) => [x[0], Math.round((x[1] / cm.get(x[0])) * 100) / 100]);
-    if (both.length < 7) continue;
-    const a = both[0], z = both.at(-1);
-    const sa = hp.find((x) => x[0] === a[0])[1], sz = hp.at(-1)[1];
-    const ca = cm.get(a[0]), cz = cm.get(z[0]);
-    const inv = (r) => Math.round((1 / r) * 10) / 10;
-    const headline = z[1] >= 1
-      ? `${p.name} vs its top chase card: it costs ${z[1]}x ${cardTitle(chase)} tonight, from ${a[1]}x on ${monthDay(a[0])}.`
-      : `${p.name} vs its top chase card: ${cardTitle(chase)} costs ${inv(z[1])}x the sealed price tonight, from ${inv(a[1])}x on ${monthDay(a[0])}.`;
+    const paired = hp.filter((x) => cm.has(x[0])).map((x) => ({ date: x[0], sealed: x[1], card: cm.get(x[0]) }));
+    if (paired.length < 7) continue;
+    const a = paired[0], z = paired.at(-1);
+    // One decimal from the exact dollar pair. Never invert a ratio that was already rounded.
+    const times = (num, den) => Math.round((num / den) * 10) / 10;
+    const timesText = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(1));
+    const cardHigher = z.card > z.sealed;
+    const nowX = cardHigher ? times(z.card, z.sealed) : times(z.sealed, z.card);
+    const thenX = cardHigher ? times(a.card, a.sealed) : times(a.sealed, a.card);
+    const headline = cardHigher
+      ? `${p.name} vs its top chase card: ${cardTitle(chase)} costs ${timesText(nowX)}x the sealed price tonight, from ${timesText(thenX)}x on ${monthDay(a.date)}.`
+      : `${p.name} vs its top chase card: it costs ${timesText(nowX)}x ${cardTitle(chase)} tonight, from ${timesText(thenX)}x on ${monthDay(a.date)}.`;
     const lines = [
-      `${p.name}: ${usd(sa)} (${monthDay(a[0])}) to ${usd(sz)} (${monthDay(asOf)}).`,
-      `${cardTitle(chase)}: ${usd(ca)} to ${usd(cz)}, same days.`,
-      `Ratio on ${both.length} nightly days both had a price, ${monthDay(a[0])} to ${monthDay(z[0])}, TCGplayer market.`,
+      `${p.name}: ${usd(a.sealed)} (${monthDay(a.date)}) to ${usd(z.sealed)} (${monthDay(asOf)}).`,
+      `${cardTitle(chase)}: ${usd(a.card)} to ${usd(z.card)}, same days.`,
+      `Ratio on ${paired.length} nightly days both had a price, ${monthDay(a.date)} to ${monthDay(z.date)}, TCGplayer market.`,
       `Matched by set name: the chase card is the top-priced card in ${short(group)} tonight.`,
     ];
-    const rr = row("sealedgap", p.id, p.name, headline, lines, asOf, `TCGplayer market, ${a[0]} to ${asOf}`, { sku: p.id, href: `/p/${p.id}`, chart: z[1] >= 1 ? { label: "Sealed price / chase card price", points: both } : { label: "Chase card price / sealed price", points: both.map((x) => [x[0], inv(x[1])]) }, startDate: a[0], endDate: asOf, weight: Math.abs(z[1] / a[1] - 1) });
+    const points = paired.map((x) => [x.date, cardHigher ? times(x.card, x.sealed) : times(x.sealed, x.card)]);
+    const rr = row("sealedgap", p.id, p.name, headline, lines, asOf, `TCGplayer market, ${a.date} to ${asOf}`, { sku: p.id, href: `/p/${p.id}`, chart: { label: cardHigher ? "Chase card price / sealed price" : "Sealed price / chase card price", points }, startDate: a.date, endDate: asOf, weight: Math.abs(nowX / thenX - 1) });
     if (rr) out.push(rr);
   }
   return out.sort((a, z) => z.weight - a.weight).slice(0, max);

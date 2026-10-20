@@ -40,7 +40,7 @@ export function isSealedRead(read) {
 }
 
 import { runStage, sellerTag } from "./seller-stage.mjs";
-import { isVintageRelease } from "./price-trust.mjs";
+import { isVintageRelease, WOTC_END } from "./price-trust.mjs";
 
 function num(v) {
   const n = Number(v);
@@ -364,10 +364,25 @@ function rotationChip(ctx) {
 }
 
 // Vintage means a WOTC era set, released before 2003-06-01, and nothing else.
+// A promo uses the card's own release date. The set start is not that day.
 // The private rule only switches the chip on; it never moves the line.
+function eraRelease(ctx) {
+  const setRelease = String(ctx?.release || "").slice(0, 10);
+  const cardRelease = String(ctx?.cardRelease || "").slice(0, 10);
+  const setOk = /^\d{4}-\d{2}-\d{2}$/.test(setRelease);
+  const cardOk = /^\d{4}-\d{2}-\d{2}$/.test(cardRelease);
+  if (ctx?.promo) {
+    if (cardOk && (!setOk || cardRelease !== setRelease)) return cardRelease;
+    if (setOk && setRelease >= WOTC_END) return setRelease;
+    return "";
+  }
+  if (setOk) return setRelease;
+  return cardOk ? cardRelease : "";
+}
+
 function eraChip(ctx, rules) {
   if (!rules?.era) return null;
-  const release = String(ctx?.release || "").slice(0, 10);
+  const release = eraRelease(ctx);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(release)) return null;
   const tag = isVintageRelease(release) ? "Vintage" : "Modern";
   return { kind: "era", tag, label: tag === "Vintage" ? "Vintage, a WOTC era set" : "Modern" };

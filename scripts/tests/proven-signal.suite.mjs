@@ -12,6 +12,6 @@ export async function run() {
   t("match drops a short pattern", matchPattern([{ id: "short", keys: ["set_age=under_1y"], testRate: 0.4, baseRate: 0.2, testN: 10, horizon: 7 }], ["set_age=under_1y"]) === null);
   t("match drops a pattern with no lift", matchPattern([{ id: "flat", keys: ["set_age=under_1y"], testRate: 0.2, baseRate: 0.2, testN: 40, horizon: 7 }], ["set_age=under_1y"]) === null);
   const hit = matchPattern([{ id: "ok", keys: ["rotation_stage=rotated"], testRate: 0.291, baseRate: 0.208, testN: 2962, horizon: 7 }], ["rotation_stage=rotated"]);
-  t("match keeps a proven pattern", hit && hit.rate === 29.1 && hit.base === 20.8 && hit.n === 2962 && hit.pass === true);
+  t("match keeps a proven pattern", hit && hit.rate === 29.1 && hit.base === 20.8 && hit.n === 2962 && hit.pass === true && hit.line.startsWith("1.4x more likely") && !hit.line.startsWith("right"));
   return fail;
 }

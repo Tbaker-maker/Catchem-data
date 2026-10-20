@@ -7,7 +7,9 @@ export function runVariantTagTests(t) {
   t("variant: TG and GG numbers", tg({ number: "TG07/TG30" }).join() === "Trainer Gallery" && tg({ number: "GG16/GG70" }).join() === "Galarian Gallery");
   t("variant: Shiny Vault only in Hidden or Shining Fates", tg({ number: "SV016/SV122", set: "Shining Fates" }).includes("Shiny Vault") && !tg({ number: "SV016/SV122", set: "Other" }).includes("Shiny Vault"));
   t("variant: Tag Team from pokemontcg.io subtype", tg({ name: "Pheromosa & Buzzwole GX" }, ["Basic", "TAG TEAM", "GX"]).join() === "Tag Team");
-  t("variant: Reverse Holo printing", tg({ printings: [{ name: "Normal" }, { name: "Reverse Holofoil" }] }).join() === "Reverse Holo");
+  t("variant: Reverse Holo printing", tg({ printing: "Reverse Holofoil", printings: [{ name: "Normal" }, { name: "Reverse Holofoil" }] }).join() === "Reverse Holo");
+  t("variant: a holofoil price does not take the reverse tag", !tg({ printing: "Holofoil", printings: [{ name: "Holofoil" }, { name: "Reverse Holofoil" }] }).includes("Reverse Holo"));
+  t("variant: the only printing can be reverse", tg({ printings: [{ name: "Reverse Holofoil" }] }).join() === "Reverse Holo");
   t("variant: unsure card stays untagged", tg({ rarity: "Secret Rare", name: "Charizard VMAX (Secret)" }).length === 0);
   t("variant: sealed never tagged", variantTags({ kind: "sealed", rarity: "Promo" }).length === 0);
 }

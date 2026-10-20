@@ -110,7 +110,17 @@ export function listingsFact(byDay, asOf) {
   return out;
 }
 
-// Passed year-pattern whose keys all hold for this item tonight. Needs a base rate.
+// Lift first. A bare "right 25%" is not the line. Built fresh from the rates, never copied from an older string.
+export function patternLine({ rate, base, n, horizon }) {
+  const r = Number(rate), b = Number(base), count = Number(n), days = Number(horizon);
+  if (!(r > 0) || !(b > 0) || !(count > 0) || !(days > 0)) return "";
+  const lift = Math.round((r / b) * 10) / 10;
+  const liftText = Number.isInteger(lift) ? String(lift) : lift.toFixed(1);
+  const cases = count.toLocaleString("en-US");
+  const rateText = Number.isInteger(r) ? String(r) : String(r);
+  const baseText = Number.isInteger(b) ? String(b) : String(b);
+  return `${liftText}x more likely than usual to rise and finish above the usual move within ${days} days. ${rateText}% of ${cases} past cases vs ${baseText}% for all items.`;
+}
 export function matchPattern(patterns, itemKeys) {
   const have = new Set(itemKeys || []);
   const hits = (patterns || []).filter((p) => {
@@ -121,7 +131,8 @@ export function matchPattern(patterns, itemKeys) {
   if (!hits.length) return null;
   hits.sort((a, b) => b.keys.length - a.keys.length || (b.testRate - b.baseRate) - (a.testRate - a.baseRate));
   const p = hits[0];
-  return { id: p.id, rate: r1(p.testRate * 100), base: r1(p.baseRate * 100), n: p.testN, horizon: p.horizon, keys: p.keys, pass: true };
+  const rate = r1(p.testRate * 100), base = r1(p.baseRate * 100);
+  return { id: p.id, rate, base, n: p.testN, horizon: p.horizon, keys: p.keys, pass: true, line: patternLine({ rate, base, n: p.testN, horizon: p.horizon }) };
 }
 
 // Same keys run-year-patterns.mjs gives an item (set_age, rotation_stage).
