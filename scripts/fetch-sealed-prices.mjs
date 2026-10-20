@@ -21,6 +21,7 @@ import { recordBuyoutHarvest } from "./buyout-tape.mjs";
 import { costcoListingOk } from "./lib/costco-exclusives.mjs";
 import { filteredTotalForNight } from "./lib/second-library.mjs";
 import { sellerSpread } from "./lib/listing-counts.mjs";
+import { selectRealListings, cleanHistory, gateSealedPrices, loadSellerMin, loadTcgListedMedians, gapPct, floorBad } from "./lib/real-listing.mjs";
 
 // Node's fetch has NO default timeout: a host that accepts the connection
 // and never answers hangs this script until the CI runner kills the job.
@@ -101,7 +102,7 @@ const REQUIRE_PHRASES = {
   // pack bundles satisfy the type gate (151 spot check, 2026-08-18)
   "booster-bundle":     ["booster bundle"],
   "premium-collection": ["premium collection"],
-  "upc":                ["ultra premium", "ultra-premium"],
+  "upc":                ["ultra premium", "ultra-premium", "upc"],
   "tin":                ["tin"],
   "collection-box":     ["collection"],
   "build-and-battle":   ["build & battle", "build and battle"],
@@ -287,7 +288,7 @@ const EXCLUDE_BY_SUBTYPE = {
   "pc-etb":         ["booster box", "bundle", "blister", "36 pack", "mini tin", "etb case", "case of", "sealed case", "master case", "pair"],
   "booster-bundle": ["booster box", "etb", "elite trainer", "36 pack"],
   "premium-collection": ["booster box", "etb", "elite trainer"],
-  "upc":            ["booster box"],
+  "upc":            ["booster box", "single pack", "loose pack", "loose packs", "code card", "code cards", "1 pack"],
   // tin extras 2026-08-18 (Aug-28 tin validation): mini-tins are a distinct
   // product; multi-tin lots ("5-Pack", "1 of each", "x 3") masqueraded as one
   "tin":            ["booster box", "etb", "elite trainer", "mini tin", "mini tins", "1 of each", "of each", "all 3", "all three", "x 3", "5-pack", "5 pack"],
@@ -374,7 +375,7 @@ function filterItemsForProduct(product, items) {
       const other = namesAnotherSet(t, product.set);
       if (other) { report.failSibling = (report.failSibling || 0) + 1; sample("sibling", i.title, other); return false; }
     }
-    if (requires.length && !requires.some(r => t.includes(r))) { report.failType++; sample("type", i.title, requires.join("|")); return false; }
+    if (requires.length && !requires.some(r => (r === "upc" ? /\bupc\b/.test(t) : t.includes(r)))) { report.failType++; sample("type", i.title, requires.join("|")); return false; }
     if (requireExtra.length && !requireExtra.every(r => t.includes(r.toLowerCase()))) { report.failType++; sample("type", i.title, requireExtra.join("&")); return false; }
     if (product.subtype === "pc-etb" && !t.includes("pokemon center")) { report.failType++; sample("type", i.title, "pokemon center"); return false; }
     const hitTerm = excludes.find(term => wordBoundaryTest(term, t));
@@ -549,6 +550,31 @@ export function robustAskRange(sortedPrices) {
   return { askP10: round(at(0.1)), askP90: round(at(0.9)), askMedian: round(kept[Math.floor(kept.length / 2)]), askRobustCount: kept.length };
 }
 
+// Cheapest and the labeled medians come from the real-listing set.
+// priceFloorClean is that set's low, never the raw minimum ask.
+function askFactsFromKept(product, kept, agg, sellerMin, tcgMids) {
+  const real = selectRealListings(kept || [], { isPack: product?.subtype === "booster-pack", market: "US", sellerMin });
+  const ebayMedianAsk = (agg?.askMedian > 0 ? agg.askMedian : null) || real.median || (agg?.priceMedian > 0 ? agg.priceMedian : null) || null;
+  const ebayMedianCount = (agg?.askRobustCount > 0 ? agg.askRobustCount : null) || (real.count > 0 ? real.count : null) || (agg?.listingCount > 0 ? agg.listingCount : null);
+  const pid = Number(product?.tcgPlayerId);
+  const tcgListedMedian = pid > 0 && tcgMids?.has(pid) ? tcgMids.get(pid) : null;
+  let cheapestReal = real.cheapest || null;
+  if (cheapestReal && floorBad(cheapestReal.price, ebayMedianAsk)) cheapestReal = null;
+  const priceFloorClean = real.floorPrice != null && !floorBad(real.floorPrice, ebayMedianAsk) ? real.floorPrice : null;
+  return {
+    priceFloorClean,
+    cheapestReal,
+    ebayMedianAsk,
+    ebayMedianCount,
+    tcgListedMedian,
+    gapPct: gapPct(cheapestReal?.price, ebayMedianAsk),
+  };
+}
+
+function scrubbedHistory(history, median) {
+  return cleanHistory(history || [], median).kept;
+}
+
 // ─── Concurrent runner with pacing ───────────────────────────────────────────
 async function mapConcurrent(items, fn, concurrency) {
   const queue = [...items];
@@ -611,6 +637,22 @@ async function main() {
     console.log("   → no previous file (first run).");
   }
 
+  let sellerMin = null;
+  const root = join(__dirname, "..");
+  try {
+    if (process.env.PRIVATE_DATA_TOKEN) {
+      const { openPrivate } = await import("./lib/private-store.mjs");
+      const store = await openPrivate({ root, token: process.env.PRIVATE_DATA_TOKEN });
+      try { sellerMin = await loadSellerMin(store.dir); }
+      finally { await store.close(["real-listing.json"], "real listing config read").catch(() => {}); }
+    }
+  } catch (err) {
+    console.warn(`seller gate config not loaded: ${err.message}`);
+  }
+  if (!sellerMin) sellerMin = await loadSellerMin(root);
+  const tcgMids = await loadTcgListedMedians(root);
+  console.log(`   seller gate ${sellerMin ? "on" : "off (no private config)"} · TCGplayer listed medians ${tcgMids.size}`);
+
   console.log("🔑 Authenticating with eBay...");
   const token = await getEbayToken();
   console.log("   → ✓ token acquired.");
@@ -647,7 +689,7 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
           ...product,
           priceUsd: null, priceMedian: null, priceLow: null, priceHigh: null,
           listingCount: kept.length,
-          priceHistory: prev?.priceHistory || [],
+          priceHistory: scrubbedHistory(prev?.priceHistory, null),
           dataStatus: "no-active-market",
           lastSeen: prev?.lastSeen,
           filterReport: report,
@@ -672,7 +714,7 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
           priceLow: prev?.priceLow,
           priceHigh: prev?.priceHigh,
           listingCount: prev?.listingCount ?? 0,
-          priceHistory: prev?.priceHistory || [],
+          priceHistory: scrubbedHistory(prev?.priceHistory, null),
           dataStatus: "query_error",
           lastSeen: prev?.lastSeen,
           filterReport: report,
@@ -701,8 +743,10 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
         if (url) representativeImage = url.replace(/s-l\d+/, "s-l1600");
       }
       const history = prev?.priceHistory ? [...prev.priceHistory] : [];
+      const facts = agg ? askFactsFromKept(product, kept, agg, sellerMin, tcgMids) : null;
+      const histMedian = facts?.ebayMedianAsk || agg?.priceMedian || null;
 
-      if (agg) {
+      if (agg && facts) {
         // Replace today's entry if already present (idempotent within a day),
         // otherwise append. Trim to HISTORY_DAYS.
         // Browse `total` sits next to price, once per product per day.
@@ -710,7 +754,12 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
         // If this response has no numeric total, the field stays off the
         // point — yesterday's total is never copied forward.
         const lastIdx = history.length - 1;
-        const point = { date: today, price: agg.priceMedian };
+        const point = { date: today, price: facts.ebayMedianAsk || agg.priceMedian };
+        if (facts.cheapestReal?.price > 0) point.cheapestReal = facts.cheapestReal.price;
+        if (facts.ebayMedianAsk > 0) point.ebayMedianAsk = facts.ebayMedianAsk;
+        if (facts.ebayMedianCount > 0) point.ebayMedianCount = facts.ebayMedianCount;
+        if (facts.tcgListedMedian > 0) point.tcgListedMedian = facts.tcgListedMedian;
+        if (facts.gapPct != null) point.gapPct = facts.gapPct;
         const filteredTotal = filteredTotalForNight({
           browseTotal,
           fetched: items.length,
@@ -753,8 +802,14 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
           priceLow: prev?.priceLow,
           priceHigh: prev?.priceHigh,
           listingCount: 0,
+          ebayMedianAsk: prev?.ebayMedianAsk,
+          ebayMedianCount: prev?.ebayMedianCount,
+          tcgListedMedian: prev?.tcgListedMedian,
+          cheapestReal: prev?.cheapestReal || null,
+          gapPct: prev?.gapPct ?? null,
         }),
-        priceHistory: history,
+        ...(facts || {}),
+        priceHistory: scrubbedHistory(history, histMedian),
         ...(representativeImage ? { representativeImage } : {}),
         rejectionSamples: samples,
         dataStatus: agg ? "live" : prev?.priceUsd ? "stale" : "unavailable",
@@ -807,13 +862,23 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
     process.exit(1);
   }
 
+  const gated = gateSealedPrices(updated);
+  if (gated.log.length) {
+    console.log(`real-listing gate dropped ${gated.log.length}`);
+    try {
+      await mkdir(join(DATA_DIR, "derived"), { recursive: true });
+      await writeFile(join(DATA_DIR, "derived/sealed-ask-gate-log.json"), JSON.stringify({ at: new Date().toISOString(), log: gated.log }, null, 1) + "\n");
+    } catch (err) { console.error(`gate log failed: ${err.message}`); }
+  }
+  const rows = gated.products;
+
   const output = {
     updatedAt: new Date().toISOString(),
     source: "ebay-browse-api",
     marketplace: MARKETPLACE,
-    productCount: updated.length,
+    productCount: rows.length,
     liveCount: live,
-    products: updated,
+    products: rows,
   };
 
   await writeFile(OUTPUT_FILE, JSON.stringify(output, null, 2) + "\n");

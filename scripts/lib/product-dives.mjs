@@ -3,6 +3,7 @@
 // row), buyout-tape (Browse totals when present). Volume/solds are never
 // invented — Insights scope is required for sold counts.
 // listingCount is filtered active asks, not solds. Browse total is not solds.
+import { historyPointBad, robustMedianOf, floorBad } from "./real-listing.mjs";
 
 const HIST_CUT = "2026-08-18";
 
@@ -68,7 +69,14 @@ function pickLatest(product) {
     marketplace: "EBAY_US",
   };
   if (product.priceMedian != null) out.priceMedian = product.priceMedian;
-  if (product.priceFloorClean != null) out.priceFloorClean = product.priceFloorClean;
+  if (product.priceFloorClean != null && !floorBad(product.priceFloorClean, robustMedianOf(product))) out.priceFloorClean = product.priceFloorClean;
+  if (product.ebayMedianAsk != null) out.ebayMedianAsk = product.ebayMedianAsk;
+  if (product.ebayMedianCount != null) out.ebayMedianCount = product.ebayMedianCount;
+  if (product.askMedian != null) out.askMedian = product.askMedian;
+  if (product.askRobustCount != null) out.askRobustCount = product.askRobustCount;
+  if (product.tcgListedMedian != null) out.tcgListedMedian = product.tcgListedMedian;
+  if (product.cheapestReal) out.cheapestReal = product.cheapestReal;
+  if (product.gapPct != null) out.gapPct = product.gapPct;
   if (product.priceHigh != null) out.priceHigh = product.priceHigh;
   if (product.listingCount != null) out.listingCount = product.listingCount;
   if (product.lastSeen) out.lastSeen = product.lastSeen;
@@ -189,6 +197,8 @@ export function buildDivePayload({
     });
   }
   series.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
+  const median = robustMedianOf(latestProduct);
+  const keptSeries = median ? series.filter((point) => !historyPointBad(point.price, median)) : series;
 
   const latest = pickLatest(latestProduct);
   const buyout = pickBuyout(buyoutRow);
@@ -197,7 +207,7 @@ export function buildDivePayload({
   return {
     id,
     name: name || latest?.name || id,
-    asOf: asOf || latest?.lastSeen?.slice?.(0, 10) || (series.at(-1)?.date ?? null),
+    asOf: asOf || latest?.lastSeen?.slice?.(0, 10) || (keptSeries.at(-1)?.date ?? null),
     href: `/dive/${id}`,
     tcgcsvId: tcgcsvId || null,
     sources: {
@@ -208,7 +218,7 @@ export function buildDivePayload({
       outlier: outlier ? OUTLIER_SOURCE : OUTLIER_HOOK,
       listingChange: "not published",
     },
-    series,
+    series: keptSeries,
     latest,
     buyout,
     volume: null,
