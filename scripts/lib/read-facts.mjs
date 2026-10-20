@@ -1,6 +1,7 @@
 // Per-read facts for /feed/r/* pages. Pure functions: every figure comes from
 // a file we already publish, each with its own date. Missing input = no field.
 import { setAgeKey } from "./year-patterns.mjs";
+import { patternPasses } from "./proven-signal.mjs";
 import { stageOf } from "./sealed-rating.mjs";
 
 const DAY = 86400000;
@@ -112,11 +113,15 @@ export function listingsFact(byDay, asOf) {
 // Passed year-pattern whose keys all hold for this item tonight. Needs a base rate.
 export function matchPattern(patterns, itemKeys) {
   const have = new Set(itemKeys || []);
-  const hits = (patterns || []).filter((p) => p && Array.isArray(p.keys) && p.keys.length && p.keys.every((k) => have.has(k)) && Number(p.testRate) > 0 && Number(p.baseRate) > 0 && Number(p.testN) > 0);
+  const hits = (patterns || []).filter((p) => {
+    if (!p || !Array.isArray(p.keys) || !p.keys.length || !p.keys.every((k) => have.has(k))) return false;
+    if (!(Number(p.testRate) > 0) || !(Number(p.baseRate) > 0) || !(Number(p.testN) > 0)) return false;
+    return patternPasses({ rate: r1(p.testRate * 100), base: r1(p.baseRate * 100), n: p.testN });
+  });
   if (!hits.length) return null;
   hits.sort((a, b) => b.keys.length - a.keys.length || (b.testRate - b.baseRate) - (a.testRate - a.baseRate));
   const p = hits[0];
-  return { id: p.id, rate: r1(p.testRate * 100), base: r1(p.baseRate * 100), n: p.testN, horizon: p.horizon, keys: p.keys };
+  return { id: p.id, rate: r1(p.testRate * 100), base: r1(p.baseRate * 100), n: p.testN, horizon: p.horizon, keys: p.keys, pass: true };
 }
 
 // Same keys run-year-patterns.mjs gives an item (set_age, rotation_stage).

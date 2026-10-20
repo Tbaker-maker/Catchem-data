@@ -26,6 +26,7 @@ export const RULES = [
   ["repeat", "Same read as the previous day"],
   ["advice", "Advice wording from the shared copy rules"],
   ["tiles", "Priced card or sealed read with no flip tiles"],
+  ["pattern-rate", "Pattern headline leads with a bare rate under 50%"],
 ];
 
 const isSealed = (r) => r.kind === "sealed" || r.readKind === "sealed" || r.readKind === "listings" || r.kind === "listings" || /^\/p\//.test(r.href || "") || (r.sku && !/^tcgcsv-/.test(r.sku) && r.family === "listings");
@@ -50,6 +51,20 @@ function stripDashes(v) {
 }
 
 // ctx: { chips (signal-chips byId), facts(id) -> facts doc|null, listings (id -> {date,n}), sets (name -> release), prev (id -> read from the previous day), asOf }
+
+// A pattern headline whose first sentence is a bare percent under 50, and not an Nx lift.
+// Price headlines such as "Down 17%" are not pattern copy, so they stay.
+function bareLowPattern(read) {
+  const head = String(read?.headline || "").trim();
+  if (!head) return false;
+  const first = head.split(/[!?]|\.(?:\s|$)/)[0].trim();
+  if (/^\d+(?:\.\d+)?x\b/.test(first)) return false;
+  const m = first.match(/(\d+(?:\.\d+)?)\s*%/);
+  if (!m || !(Number(m[1]) < 50)) return false;
+  const kind = String(read.readKind || read.kind || "");
+  return /^pattern/i.test(kind) || /\b(were right|was right|past cases|normally|this pattern|pattern)\b/i.test(head);
+}
+
 export function checkRead(read, ctx = {}) {
   const flags = [];
   let r = read;
@@ -103,6 +118,7 @@ export function checkRead(read, ctx = {}) {
   }
   for (const l of r.lines || []) { const hit = flagLine(l, { field: "lines", id: r.id }); if (hit.length) { flags.push({ rule: "advice", action: "drop", note: hit[0].phrase }); break; } }
   if (pricedProduct(r) && !hasTiles(chip)) flags.push({ rule: "tiles", action: "drop", note: "priced read with no tiles" });
+  if (bareLowPattern(r)) flags.push({ rule: "pattern-rate", action: "drop", note: String(r.headline || "").slice(0, 80) });
   const drop = flags.some((f) => f.action === "drop");
   return { read: drop ? null : r, flags };
 }
