@@ -377,9 +377,18 @@ jobs:
           node scripts/build-ir-sir-watch.mjs
           node scripts/log-stage-calls.mjs
 
+      - name: Market meter
+        # After sealed prices and the call ledger, before the publish gate.
+        # Premium ratio has no dated history in this workflow, so it is not an
+        # input. A missing private spec writes nothing new. Do not add data/private/.
+        env:
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+        run: node scripts/build-market-meter.mjs --publish
+
       - name: Publish gate
         # Drops single bad reads with a logged reason; fails only on systemic breakage.
         # The stability bar is read from catchem-data-private. The numbers stay there.
+        # The meter rule needs the private minimum, so the spec is loaded here too.
         env:
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
         run: node scripts/publish-gate.mjs
@@ -398,7 +407,7 @@ jobs:
             git clean -fdq -- research/assets/public/sets research/assets/public/buckets research/assets/public/artists || true
           fi
           # The track-record path is the public stub. Do not add data/private/.
-          git add research/assets/public/reads.json research/assets/public/today.json research/assets/public/feed/ research/assets/public/counts.json research/assets/public/sparks research/assets/public/track-record.json research/assets/public/set-value research/assets/public/rotation-status.json research/assets/public/releases.json research/assets/public/listings-counted.json research/assets/public/signal-chips.json research/assets/public/premium-ratio.json
+          git add research/assets/public/reads.json research/assets/public/today.json research/assets/public/feed/ research/assets/public/counts.json research/assets/public/sparks research/assets/public/track-record.json research/assets/public/set-value research/assets/public/rotation-status.json research/assets/public/releases.json research/assets/public/listings-counted.json research/assets/public/signal-chips.json research/assets/public/premium-ratio.json research/assets/public/market-meter.json
           if git diff --cached --name-only -- data/private | grep -q .; then
             echo "private scores must not be committed here"
             exit 1

@@ -1,5 +1,5 @@
 // Publish gate and the Oct 19 reads check bugs. Made up numbers only.
-import { checkRead, gateReads } from "../lib/publish-gate.mjs";
+import { checkRead, gateReads, checkMeter } from "../lib/publish-gate.mjs";
 import { staleOneStep } from "../lib/read-quality.mjs";
 import { backToRead } from "../lib/history-reads.mjs";
 import { sealedGapDeep, cardStories } from "../lib/deep-reads.mjs";
@@ -80,6 +80,10 @@ export async function run() {
 
   const many = Array.from({ length: 40 }, (_, i) => ({ ...base, id: `r${i}`, name: "Rating: X" }));
   t("systemic breakage is flagged", gateReads(many).systemic === true);
+  const meter = { published: true, asOf: "2026-10-19", minComponents: 2, market: { mood: 60, heat: 40, moodUsed: 2, heatUsed: 2, reasons: ["53% of sets up over 7 days (145 of 276)"] } };
+  t("meter gate keeps a full fresh row", checkMeter(meter, { minComponents: 2, freshAsOf: "2026-10-19" }).ok === true);
+  t("meter gate drops under the private minimum", checkMeter({ ...meter, market: { ...meter.market, moodUsed: 1 } }, { minComponents: 2, freshAsOf: "2026-10-19" }).action === "drop");
+  t("meter gate drops stale inputs", checkMeter({ ...meter, asOf: "2026-10-10" }, { minComponents: 2, freshAsOf: "2026-10-19" }).reasons.includes("stale"));
 
   const days = new Map([["2026-10-12", 2265.93], ["2026-10-13", 2265.93], ["2026-10-14", 2265.93], ["2026-10-15", 2265.93], ["2026-10-16", 1886.95], ["2026-10-17", 1886.95], ["2026-10-18", 1886.95], ["2026-10-19", 1886.95]]);
   t("one old step, flat since: no repeat sealed read", staleOneStep(days, "2026-10-12", "2026-10-19") === true);
