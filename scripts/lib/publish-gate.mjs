@@ -25,10 +25,22 @@ export const RULES = [
   ["era", "Vintage tag inconsistent with release date (Vintage is WOTC before 2003-06-01)"],
   ["repeat", "Same read as the previous day"],
   ["advice", "Advice wording from the shared copy rules"],
+  ["tiles", "Priced card or sealed read with no flip tiles"],
 ];
 
 const isSealed = (r) => r.kind === "sealed" || r.readKind === "sealed" || r.readKind === "listings" || r.kind === "listings" || /^\/p\//.test(r.href || "") || (r.sku && !/^tcgcsv-/.test(r.sku) && r.family === "listings");
 const headDir = (s) => { const m = /\b(Up|Down|up|down|fell|rose)\b/.exec(String(s || "")); return m ? (/^(up|rose)$/i.test(m[1]) ? "up" : "down") : ""; };
+const pricedProduct = (r) => {
+  const price = Number(r?.price);
+  if (!(price > 0)) return false;
+  if (/price being checked/i.test(String(r?.headline || ""))) return false;
+  const kind = String(r?.kind || r?.readKind || "");
+  return kind === "single" || kind === "sealed" || kind === "listings" || kind === "move" || /^\/(?:c|p)\//.test(String(r?.href || ""));
+};
+const hasTiles = (chip) => {
+  const t = chip?.tiles;
+  return !!(t && typeof t === "object" && (t.data || t.price || t.listings));
+};
 
 function stripDashes(v) {
   if (typeof v === "string") return v.replace(/\s*[\u2014\u2013]\s*/g, (m) => (/\s/.test(m) ? ": " : "-"));
@@ -90,6 +102,7 @@ export function checkRead(read, ctx = {}) {
     if (hit.length) { flags.push({ rule: "advice", action: "drop", note: hit[0].phrase }); break; }
   }
   for (const l of r.lines || []) { const hit = flagLine(l, { field: "lines", id: r.id }); if (hit.length) { flags.push({ rule: "advice", action: "drop", note: hit[0].phrase }); break; } }
+  if (pricedProduct(r) && !hasTiles(chip)) flags.push({ rule: "tiles", action: "drop", note: "priced read with no tiles" });
   const drop = flags.some((f) => f.action === "drop");
   return { read: drop ? null : r, flags };
 }

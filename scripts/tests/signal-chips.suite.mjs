@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { isClean } from "../lib/copy-rules.mjs";
 import { depthBars, qualifyChips, readSignals, signalsLookSecret } from "../lib/signal-chips.mjs";
 import { isVintageSet } from "../lib/extra-reads.mjs";
+import { FEED_PARTS, stampSkipped } from "../stamp-signal-chips.mjs";
 
 // Fixture cutoffs only. The live numbers stay in catchem-data-private.
 const RULES = {
@@ -236,6 +237,13 @@ export async function run() {
   t("a long window read gets a 7 day price tile from daily prices", slumpTile && slumpTile.days === 7 && slumpTile.dir !== "up" && slumpTile.from === 300 && slumpTile.fromDate === "2026-10-12");
   const noWeek = readSignals(slumpRead, { asOf: "2026-10-19", points: [["2024-02-18", 160.47], ["2026-10-19", 272.9]], daily: [["2026-10-19", 272.9]], counts: { prices: 2, recent: 1, since: "2024-02-18" } }, RULES).tiles || {};
   t("with no short window price the tile is left out, not filled with an all time change", !noWeek.price);
+  const heldPrice = { id: "move-tcgcsv-42354-7", sku: "tcgcsv-42354", name: "Raichu", kind: "single", href: "/c/tcgcsv-42354", asOf: "2026-10-19", price: 61.97, changePct: -4.8, windowDays: 7, headline: "Raichu is down 4.8% this week, from $65.07 to $61.97." };
+  const heldSet = new Set(["tcgcsv-42354"]);
+  t("a priced row is stamped even when its sku is held", stampSkipped(heldPrice, heldSet) === false);
+  t("a held row with no price is still skipped", stampSkipped({ id: "move-tcgcsv-42354-7", sku: "tcgcsv-42354", headline: "Price being checked." }, heldSet) === true);
+  t("cool and heat are stamped with the other feed sections", FEED_PARTS.includes("cool") && FEED_PARTS.includes("heat") && FEED_PARTS.includes("today"));
+  const heldTiles = readSignals(heldPrice, { asOf: "2026-10-19", held: false, points: week, daily: week }, { ...RULES, move: { ...RULES.move, flatAbs: 1 } }).tiles || {};
+  t("a priced held row still gets a 7 day price tile", heldTiles.price && heldTiles.price.days === 7 && heldTiles.price.pct === 4.8 && heldTiles.price.dir === "down" && !heldTiles.price.dash);
   const shortRead = readSignals({ ...slumpRead, id: "plain-tcgcsv-5", windowDays: 34, changePct: -15 }, { asOf: "2026-10-19", points: week, daily: week, counts: { prices: 8, recent: 8, since: "2026-10-12" } }, RULES).tiles?.price;
   t("a read's own short window still sets the tile", shortRead && shortRead.days === 34 && shortRead.dir === "down");
   return fail;
