@@ -22,7 +22,8 @@ const follows = await fetchFollows({ base, token });
 const pool = poolFromData({ catalogue: await J("data/derived/post-office-catalogue.json", null), sealed: await J("data/sealed-prices.json", null) });
 const newsDoc = await J("research/digests/news.json", {});
 const allow = await J("data/derived/custom-reads/sources/allow-list.json", { sources: [] });
-const outbox = buildOutbox({ follows, pool, news: selectAddons(newsDoc.items || [], allow), games: selectAddons(newsDoc.videoGames || [], allow) });
+const premium = await J("research/assets/public/premium-ratio.json", null);
+const outbox = buildOutbox({ follows, pool, news: selectAddons(newsDoc.items || [], allow), games: selectAddons(newsDoc.videoGames || [], allow), premium });
 if (dry) {
   console.log(JSON.stringify({ day: outbox.day, ...outbox.counts, dry: true }));
   process.exit(0);

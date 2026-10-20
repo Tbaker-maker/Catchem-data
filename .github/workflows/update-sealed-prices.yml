@@ -81,6 +81,7 @@ jobs:
         # not turn main red (2026-10-13). The same scripts run again below.
         run: |
           node scripts/build-tcgcsv-catalogue-map.mjs
+          node scripts/build-premium-ratio.mjs
           node scripts/build-public-bundle.mjs
           # Long index history after the bundle rewrites indexes.json. Guard values
           # and the full series stay in catchem-data-private.
@@ -296,6 +297,7 @@ jobs:
         env:
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
         run: |
+          node scripts/build-premium-ratio.mjs
           node scripts/build-public-bundle.mjs
           node scripts/build-index-history.mjs
           node scripts/build-condition-ladder.mjs
@@ -393,7 +395,7 @@ jobs:
             git clean -fdq -- research/assets/public/sets research/assets/public/buckets research/assets/public/artists || true
           fi
           # The track-record path is the public stub. Do not add data/private/.
-          git add research/assets/public/reads.json research/assets/public/today.json research/assets/public/feed/ research/assets/public/counts.json research/assets/public/sparks research/assets/public/track-record.json research/assets/public/set-value research/assets/public/rotation-status.json research/assets/public/releases.json research/assets/public/listings-counted.json research/assets/public/signal-chips.json
+          git add research/assets/public/reads.json research/assets/public/today.json research/assets/public/feed/ research/assets/public/counts.json research/assets/public/sparks research/assets/public/track-record.json research/assets/public/set-value research/assets/public/rotation-status.json research/assets/public/releases.json research/assets/public/listings-counted.json research/assets/public/signal-chips.json research/assets/public/premium-ratio.json
           if git diff --cached --name-only -- data/private | grep -q .; then
             echo "private scores must not be committed here"
             exit 1

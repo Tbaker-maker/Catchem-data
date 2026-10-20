@@ -1,6 +1,7 @@
 // Per-follow slices for one day. A day with no matching reads is quiet and is not written.
 
 import { attachAddons } from "./custom-reads-addons.mjs";
+import { flagForItem } from "./premium-ratio.mjs";
 
 export function followsFromDocs(primary, fallback) {
   if (primary && Array.isArray(primary.follows)) return primary.follows;
@@ -28,22 +29,33 @@ export function sliceFollow(follow, reads, day, pools = {}) {
     day,
     quiet: false,
     skipped: false,
-    reads: matched.map((read) => ({
-      id: read.id,
-      set: read.set || "",
-      cardId: read.cardId || "",
-      kind: read.kind || "",
-      line: read.line || "",
-    })),
+    reads: matched.map((read) => {
+      const row = {
+        id: read.id,
+        set: read.set || "",
+        cardId: read.cardId || "",
+        kind: read.kind || "",
+        line: read.line || "",
+      };
+      const flag = flagForItem({
+        id: read.cardId || read.id,
+        sku: read.cardId || read.sku || "",
+        set: read.set || "",
+        kind: read.kind === "sealed" ? "sealed" : "single",
+        href: read.kind === "sealed" ? "/p/" + (read.cardId || "") : "/c/" + (read.cardId || ""),
+      }, pools.premium || null);
+      if (flag) row.premium = flag;
+      return row;
+    }),
     ...extras,
   };
 }
 
-export function buildFollowSlices({ follows = [], reads = [], day = "", news = [], games = [] } = {}) {
+export function buildFollowSlices({ follows = [], reads = [], day = "", news = [], games = [], premium = null } = {}) {
   const slices = [];
   const quiet = [];
   for (const follow of follows) {
-    const slice = sliceFollow(follow, reads, day, { news, games });
+    const slice = sliceFollow(follow, reads, day, { news, games, premium });
     if (slice.quiet) quiet.push(slice.followId);
     else slices.push(slice);
   }

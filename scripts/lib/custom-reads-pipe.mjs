@@ -5,6 +5,7 @@
 import { isClean } from "./copy-rules.mjs";
 import { artType } from "./art-type.mjs";
 import { eraOf } from "./public-bundle.mjs";
+import { flagForItem } from "./premium-ratio.mjs";
 
 const money = (n) => `$${Number(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 const shortDay = (day) => {
@@ -174,10 +175,11 @@ function outboxRead(read) {
   if (number) row.number = number.slice(0, 24);
   const setName = String(read?.setName || "").replace(/[\u2013\u2014]/g, " ").replace(/\s+/g, " ").trim();
   if (setName) row.setName = setName.slice(0, 80);
+  if (read?.premium === "below" || read?.premium === "above") row.premium = read.premium;
   return row;
 }
 
-export function buildOutbox({ follows = [], pool = { day: "", reads: [] }, news = [], games = [], now = Date.now(), limit = 6 } = {}) {
+export function buildOutbox({ follows = [], pool = { day: "", reads: [] }, news = [], games = [], now = Date.now(), limit = 6, premium = null } = {}) {
   const day = pool.day || new Date(now).toISOString().slice(0, 10);
   const members = [];
   let notDue = 0;
@@ -190,7 +192,16 @@ export function buildOutbox({ follows = [], pool = { day: "", reads: [] }, news 
       .filter((read) => memberMatch(follow, read))
       .sort((a, b) => (Number(b.price) || 0) - (Number(a.price) || 0))
       .slice(0, limit)
-      .map(outboxRead)
+      .map((read) => outboxRead(premium ? {
+        ...read,
+        premium: flagForItem({
+          id: read.cardId || read.id,
+          sku: read.cardId || "",
+          set: read.setName || read.set || "",
+          kind: read.kind === "sealed" ? "sealed" : "single",
+          href: read.kind === "sealed" ? "/p/" + (read.cardId || "") : "/c/" + (read.cardId || ""),
+        }, premium) || read.premium,
+      } : read))
       .filter(Boolean);
     const row = { discordId: id, lead: `Your ${follow.frequency || "weekly"} Catch'em read, ${shortDay(day)}.`, reads };
     if (follow.news === true && news.length) {
