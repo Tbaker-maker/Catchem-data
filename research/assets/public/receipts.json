@@ -1,11 +1,11 @@
 {
- "asOf": "2026-10-19",
- "updatedAt": "2026-10-19T10:51:04.839Z",
+ "asOf": "2026-10-21",
+ "updatedAt": "2026-10-21T05:42:45.284Z",
  "note": "A hit means the next stored price moved the same way as the price we wrote down. A miss moved the other way. A hit rate stays hidden until 20 calls are scored. These are not sold prices.",
  "hitRate": null,
- "scored": 9,
+ "scored": 10,
  "hits": 2,
- "misses": 7,
+ "misses": 8,
  "rows": [
   {
    "id": "receipt-2026-08-20-sealed-pgo-etb",
@@ -224,24 +224,24 @@
    "changePct": -0.1
   },
   {
-   "id": "receipt-2026-10-18-sealed-swsh2-etb",
+   "id": "receipt-2026-10-19-sealed-xy12-booster-box",
    "type": "receipt",
-   "result": "open",
+   "result": "miss",
    "kind": "sealed",
-   "name": "Rebel Clash Elite Trainer Box",
-   "headline": "Rebel Clash Elite Trainer Box. Open.",
-   "price": 399.81,
+   "name": "Evolutions Booster Box",
+   "headline": "Evolutions Booster Box. Miss.",
+   "price": 3999.99,
    "source": "eBay asking prices",
-   "asOf": "2026-10-19",
-   "why": "Written down October 18, 2026 at $399.81. The eBay asking price before it was the same, so this stays open.",
+   "asOf": "2026-10-21",
+   "why": "Written down October 19, 2026 at $3,999.99, after a lower one. Next eBay asking price on October 21, 2026 was $3,999.99. The other way.",
    "hist": [
     [
-     "2026-10-18",
-     399.81
+     "2026-10-19",
+     3999.99
     ],
     [
-     "2026-10-19",
-     400
+     "2026-10-21",
+     3999.99
     ]
    ],
    "href": "",
@@ -268,26 +268,6 @@
    "changePct": null
   },
   {
-   "id": "receipt-2026-10-19-sealed-xy12-booster-box",
-   "type": "receipt",
-   "result": "open",
-   "kind": "sealed",
-   "name": "Evolutions Booster Box",
-   "headline": "Evolutions Booster Box. Open.",
-   "price": 3999.99,
-   "source": "eBay asking prices",
-   "asOf": "2026-10-19",
-   "why": "Written down October 19, 2026 at $3,999.99. No later eBay asking price is stored, so this stays open.",
-   "hist": [
-    [
-     "2026-10-19",
-     3999.99
-    ]
-   ],
-   "href": "",
-   "changePct": null
-  },
-  {
    "id": "receipt-2026-10-19-single-swsh7-215",
    "type": "receipt",
    "result": "open",
@@ -301,6 +281,46 @@
    "hist": [
     [
      "2026-10-19",
+     2283.14
+    ]
+   ],
+   "href": "",
+   "changePct": null
+  },
+  {
+   "id": "receipt-2026-10-21-sealed-sm10-booster-box",
+   "type": "receipt",
+   "result": "open",
+   "kind": "sealed",
+   "name": "Unbroken Bonds Booster Box",
+   "headline": "Unbroken Bonds Booster Box. Open.",
+   "price": 3514.95,
+   "source": "eBay asking prices",
+   "asOf": "2026-10-21",
+   "why": "Written down October 21, 2026 at $3,514.95. The eBay asking price before it was the same, so this stays open.",
+   "hist": [
+    [
+     "2026-10-21",
+     3514.95
+    ]
+   ],
+   "href": "",
+   "changePct": null
+  },
+  {
+   "id": "receipt-2026-10-21-single-swsh7-215",
+   "type": "receipt",
+   "result": "open",
+   "kind": "single",
+   "name": "Umbreon VMAX",
+   "headline": "Umbreon VMAX. Open.",
+   "price": 2283.14,
+   "source": "TCGplayer market",
+   "asOf": "2026-10-21",
+   "why": "Written down October 21, 2026 at $2,283.14. No earlier TCGplayer market price is stored, so this stays open.",
+   "hist": [
+    [
+     "2026-10-21",
      2283.14
     ]
    ],
