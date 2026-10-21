@@ -42,7 +42,8 @@ export async function run() {
   const workflow = await readFile(join(ROOT, ".github/workflows/update-sealed-prices.yml"), "utf8");
   const flags = workflow.split("\n").filter((line) => /^\s*continue-on-error:\s*true\b/.test(line));
   // 31: the IR and SIR watch step (private scoring plus feed/ir-sir.json) is soft.
-  t("the price workflow still has 31 continue-on-error flags", flags.length === 31, String(flags.length));
+  // 32: the eBay fetch is soft (Oct 20), so a 429 cannot block TCGCSV, PPT or publish.
+  t("the price workflow still has 32 continue-on-error flags", flags.length === 32, String(flags.length));
   const gateAt = workflow.indexOf("node scripts/check-publish-writes.mjs");
   const gateHead = workflow.slice(workflow.lastIndexOf("- name:", gateAt), gateAt)
     .split("\n").filter((line) => !line.trim().startsWith("#")).join("\n");
