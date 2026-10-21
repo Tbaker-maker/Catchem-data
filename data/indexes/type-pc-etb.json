@@ -508,6 +508,16 @@
           "entered": 1,
           "equalMovePct": -0.0421,
           "valueMovePct": 0.0049
+        },
+        {
+          "date": "2026-10-21",
+          "from": "2026-10-19",
+          "equal": 96.8,
+          "value": 97,
+          "matched": 30,
+          "entered": 0,
+          "equalMovePct": 0,
+          "valueMovePct": 0
         }
       ],
       "gaps": [
@@ -532,6 +542,12 @@
         {
           "from": "2026-10-03",
           "to": "2026-10-05",
+          "missingDays": 1,
+          "note": "No price was invented for the days in between."
+        },
+        {
+          "from": "2026-10-19",
+          "to": "2026-10-21",
           "missingDays": 1,
           "note": "No price was invented for the days in between."
         }

@@ -1,4 +1,4 @@
-# Script research scan — 2026-10-19
+# Script research scan — 2026-10-21
 
 Leads from files the nightly already fetched. No web search, no AI. Verify before publishing.
 
@@ -12,6 +12,8 @@ No flags.
 - 2026-11-06 30th Celebration — Day & Night UPCs, Ditto Premium, Mew/Mewtwo Figure Collection — no second source in tonight's files
 - 2026-11-13 JP: Special Deck Set (Mega Feraligatr ex / Mega Dragonite ex / Mega Gengar ex) — no second source in tonight's files
 - 2026-11-27 JP: Aura Seeker (Mega Lucario Z ex) — no second source in tonight's files
+- 2026-12-04 30th Celebration — Sylveon ex & Greninja ex Tins — no second source in tonight's files
+- 2026-12-04 30th Celebration — Binder Collection — no second source in tonight's files
 
 ## Left for the weekly AI review
 - Japanese product pages with no feed (pokemon-card.com product posts beyond the news list).

@@ -1,4 +1,4 @@
-# Weekly Read, 2026-10-19
+# Weekly Read, 2026-10-21
 
 Video outline. Same parts every week. Do not say a name is a move to make.
 
@@ -6,11 +6,11 @@ Video outline. Same parts every week. Do not say a name is a move to make.
 Status: building history
 
 Sealed
-- Celebrations Elite Trainer Box: 5 in 7 days, 14 in 30, streak 4
-- Evolutions Elite Trainer Box: 3 in 7 days, 14 in 30, streak 1
+- Celebrations Elite Trainer Box: 4 in 7 days, 14 in 30, streak 0
+- Evolutions Elite Trainer Box: 2 in 7 days, 14 in 30, streak 0
 - Stellar Crown Booster Pack: 2 in 7 days, 11 in 30, streak 0
-- Mega Forces Tin: 6 in 7 days, 8 in 30, streak 4
-- Paradox Rift Booster Pack: 4 in 7 days, 8 in 30, streak 0
+- Mega Forces Tin: 4 in 7 days, 8 in 30, streak 0
+- Paradox Rift Booster Pack: 2 in 7 days, 8 in 30, streak 0
 
 ## Sealed line and chase line
 These are two lines. They are not one number.

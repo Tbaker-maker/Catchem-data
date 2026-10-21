@@ -1,7 +1,7 @@
 {
   "note": "listingCount is filtered pages, not Browse total, not solds.",
-  "harvestRan": true,
-  "ebayCalled": true,
+  "harvestRan": false,
+  "ebayCalled": false,
   "listingCountMeaning": "filtered page count kept after the sealed-price title filters, not the eBay Browse response total, and not units sold",
   "outputPath": "data/buyout-tape.json",
   "asOfDates": [
@@ -2762,7 +2762,7 @@
   ],
   "priceOutlierFile": "data/derived/sealed-price-outliers.json",
   "priceOutlierPolicy": "high≥50% soft≥40% vs median of last ≤7 prior heat-history prices (min 3); TCGplayer flat → likely bad listing; same direction → possible real move; otherwise review; packs skipped",
-  "priceOutlierAsOf": "2026-10-19",
+  "priceOutlierAsOf": "2026-10-21",
   "priceOutlierHighCount": 0,
   "priceOutlierSoftCount": 1,
   "signalPolicy": "Labels come from listings counted and TCGplayer market price on the dates shown.",
