@@ -12,6 +12,10 @@ concurrency:
 
 jobs:
   sample:
+    # Shared eBay key: queue with the sealed price run, never overlap.
+    concurrency:
+      group: ebay
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
