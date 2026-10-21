@@ -4,7 +4,7 @@ import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { gateReads, RULES, checkMeter, unpublishMeter } from "./lib/publish-gate.mjs";
+import { gateReads, RULES, checkMeter, unpublishMeter, publishVerdict } from "./lib/publish-gate.mjs";
 import { gateSealedPrices } from "./lib/real-listing.mjs";
 import { loadReadStability } from "./lib/read-stability.mjs";
 import { loadFeedFloor } from "./lib/feed-floor.mjs";
@@ -72,7 +72,8 @@ for (const f of feedFiles) {
 }
 console.log(JSON.stringify(total));
 for (const l of log) console.log(`gate ${l.action} ${l.rule} ${l.id}${l.file ? ` [${l.file}]` : ""}${l.note ? ` (${l.note})` : ""}`);
-const systemic = total.rows > 20 && total.dropped / total.rows > 0.25;
+const verdict = publishVerdict({ rows: total.rows, dropped: total.dropped, kept: res.kept.length, prevCount: Object.keys(prev).length, asOf });
+const premiumWithheld = [];
 const sealedPath = join(ROOT, "data/sealed-prices.json");
 const sealedDoc = await J(sealedPath, null);
 if (sealedDoc && Array.isArray(sealedDoc.products)) {
@@ -136,22 +137,34 @@ if (premiumDoc && Array.isArray(productList)) {
   }
   const dayCount = new Map([...daysByPid].map(([id, set]) => [id, set.size]));
   const gap = boosterBoxFlagGap(premiumDoc, productList, dayCount);
-  if (gap.failed) {
-    console.error("publish gate: a booster box flag is missing from bySet");
-    process.exit(1);
-  }
+  let premiumChanged = false;
+  const withholdProduct = (pid, rule) => {
+    for (const key of Object.keys(premiumDoc.byProduct || {})) {
+      const row = productList.find((p) => String(p?.tcgPlayerId) === String(pid));
+      if (key === `tcgcsv-${pid}` || (row?.id && key === String(row.id))) { delete premiumDoc.byProduct[key]; premiumChanged = true; }
+    }
+    for (const [k, v] of Object.entries(premiumDoc.bySet || {})) if (v?.boxId != null && String(v.boxId).replace(/^tcgcsv-/, "") === String(pid).replace(/^tcgcsv-/, "")) { delete premiumDoc.bySet[k]; premiumChanged = true; }
+    premiumWithheld.push({ id: String(pid), rule });
+    console.log(`gate drop ${rule} premium ${pid}`);
+  };
+  if (gap.failed) for (const id of [...new Set([...gap.missing, ...gap.stray])]) withholdProduct(String(id).replace(/^tcgcsv-/, ""), "box-flag");
   if (archiveIds.size) {
     const guard = await loadSanityBound(ROOT);
     const jump = backfillUnitJumps(jumpSeries, guard);
-    if (jump.failed) {
-      console.error(jump.missingBound
-        ? "publish gate: a backfilled series is present and the private sanity bound is missing"
-        : "publish gate: a backfilled series jumps past the private sanity bound");
-      process.exit(1);
+    if (jump.missingBound) {
+      verdict.systemic = true;
+      verdict.reasons.push("sanity-bound-missing");
+    } else {
+      const jumped = [...new Set(jump.jumps)];
+      if (archiveIds.size > 20 && jumped.length / archiveIds.size > 0.25) { verdict.systemic = true; verdict.reasons.push("backfill-mostly-jumps"); }
+      for (const id of jumped) withholdProduct(id, "backfill-jump");
     }
   }
+  if (premiumChanged && !check) await writeFile(join(PUB, "premium-ratio.json"), JSON.stringify(premiumDoc, null, 1) + "\n");
 }
-if (systemic) { console.error(`publish gate: systemic breakage, ${total.dropped} of ${total.rows} rows failed. Not publishing.`); process.exit(1); }
+const report = { at: new Date().toISOString(), asOf: asOf || "", rows: total.rows, withheldCount: total.dropped + premiumWithheld.length, counts: total.counts, systemic: verdict.systemic, reasons: verdict.reasons, withheld: [...log.filter((l) => l.action === "drop").map((l) => ({ id: l.id, rule: l.rule, ...(l.file ? { file: l.file } : {}), ...(l.note ? { note: l.note } : {}) })), ...premiumWithheld] };
+if (!check) await writeFile(join(ROOT, "data/derived/publish-gate-report.json"), JSON.stringify(report, null, 1) + "\n");
+if (verdict.systemic) { console.error(`publish gate: systemic breakage (${verdict.reasons.join(", ")}), ${total.dropped} of ${total.rows} rows failed. Not publishing.`); process.exit(1); }
 if (!check) {
   if (previewBad) await writeFile(prevPath, JSON.stringify(preview, null, 1) + "\n");
   await writeFile(readsPath, JSON.stringify({ ...doc, reads: res.kept, count: res.kept.length, gate: { rules: RULES.map(([id]) => id), counts: res.counts, dropped: res.dropped } }, null, 1) + "\n");
