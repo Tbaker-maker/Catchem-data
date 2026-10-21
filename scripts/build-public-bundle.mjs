@@ -924,7 +924,7 @@ for (const set of setIndex) {
 
 const origin = "https://catchemtcg.com";
 const chunks = [];
-let buf = ["/", "/feed", "/feed/all", "/sets", "/board", "/artists", "/search", "/methodology", "/receipts", "/accuracy", "/post-office"];
+let buf = ["/", "/feed", "/feed/all", "/sets", "/board", "/artists", "/search", "/methodology", "/receipts", "/accuracy"];
 const pushUrl = (path) => {
   buf.push(path);
   if (buf.length >= 4500) { chunks.push(buf); buf = []; }
