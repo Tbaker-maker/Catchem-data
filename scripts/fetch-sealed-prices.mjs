@@ -860,6 +860,7 @@ console.log(`🔍 Fetching prices (concurrency=${CONCURRENCY})...`);
   if (prevLive >= 50 && live < prevLive * 0.2) {
     console.error(`💥 WIPE GUARD: previous run had ${prevLive} live, this run has ${live}. Refusing to overwrite ${OUTPUT_FILE} — inspect the errors above.`);
     await recordBuyoutHarvest({ ebayReturned: false, saved: [] });
+    try { await writeFile("data/ebay-status.json", JSON.stringify({ stale: true, date: new Date().toISOString().slice(0, 10), live, prevLive }) + "\n"); } catch { /* flag only */ }
     process.exit(1);
   }
 

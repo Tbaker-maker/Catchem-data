@@ -14,6 +14,10 @@ concurrency:
 
 jobs:
   update:
+    # Shared eBay key: queue behind Listing counts and Vintage sample, never overlap.
+    concurrency:
+      group: ebay
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     permissions:
       contents: write # Needs write access to commit updated prices back
@@ -123,6 +127,11 @@ jobs:
         run: node scripts/note-run-start.mjs
 
       - name: Fetch sealed prices from eBay
+        id: ebay
+        # eBay is one source, never the gate. A 429 or a wipe guard trip keeps
+        # yesterday's eBay values (the guard never overwrites the file) and the
+        # run carries on so TCGCSV and PPT still publish every day.
+        continue-on-error: true
         env:
           EBAY_APP_ID: ${{ secrets.EBAY_APP_ID }}
           EBAY_CERT_ID: ${{ secrets.EBAY_CERT_ID }}
@@ -260,6 +269,7 @@ jobs:
           git config user.email "bot@catchem.app"
           mkdir -p data/raw  # eBay raw copy (#145); an empty folder adds nothing
           git add data/ppt/run-report.json data/buyout-tape.json
+          [ -f data/ebay-status.json ] && git add data/ebay-status.json || true
           git add data/sealed-prices.json data/heat-report.json data/heat-history.json \
                   data/divergence-report.json data/supply-watch.json \
                   data/derived-insights.json data/era-index-history.json \
@@ -538,6 +548,7 @@ jobs:
           git config user.email "bot@catchem.app"
           mkdir -p data/raw  # eBay raw copy (#145); an empty folder adds nothing
           git add data/ppt/run-report.json data/buyout-tape.json
+          [ -f data/ebay-status.json ] && git add data/ebay-status.json || true
           # Complete write-vs-commit matrix (audited 2026-08-19): every file a
           # step writes is listed here. A file written in CI but not added
           # evaporates at job end — the class that froze the app feed and ate
