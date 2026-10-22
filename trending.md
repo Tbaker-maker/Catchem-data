@@ -1,7 +1,7 @@
 # Catch'Em Trending — 2026-10-22
 
 Product: Catch'Em Trending — sealed floor board
-asOf: 2026-10-22T15:30:00Z
+asOf: 2026-10-22T15:45:00Z
 
 **First play:** none. No Fill. Destined Rivals box still in play at 11/day carried. Perfect Order still flowing 22/day carried. Evolving Skies within 8% but not locked.
 
@@ -13,7 +13,7 @@ asOf: 2026-10-22T15:30:00Z
 - Fill only if near-clock (set left play) + higher-low forming + exhaust + within 8% of the low + low is >= 8 days old
 - No FORCE in this run. No Fill locked.
 
-Markets are TCGPlayer product page pricepoints from 2026-10-22 public scrape. Copies sold carried from prior infinite-api (public 3-month snapshot returned 0). Unopened English. No solds invented.
+Markets are TCGPlayer product page pricepoints from 2026-10-22 public scrape. Copies sold carried from prior infinite-api (public 3-month snapshot returned 0; infinite-api 403). Unopened English. No solds invented.
 
 ## Board
 
@@ -26,11 +26,11 @@ Market $112.69. Quarter sold 5682, 63/day (carried), low $93.98. About 20% above
 Turns into Fill if: left-play + higher-low 8+ days + solds exhaust + within 8%.
 
 **Destined Rivals Bundle** — Wait
-Market $57.43. Quarter sold 1210, 13/day (carried), low $44.45. Recent cut. About 29% above. Still in play.
+Market $57.15. Quarter sold 1210, 13/day (carried), low $44.45. Recent cut. About 28% above. Still in play.
 Turns into Fill if: the $44.45 low stops cutting and holds 8+ days, set leaves play, solds exhaust, market within 8%.
 
 **151 Booster Bundle** — Wait
-Market $170.63. Quarter sold 1121, 12/day (carried), low $145. About 18% above. Copies not dried. Outside 8%.
+Market $170.51. Quarter sold 1121, 12/day (carried), low $145. About 18% above. Copies not dried. Outside 8%.
 Turns into Watch the floor if copies dry after a held higher-low. Fill only after left-play, 8+ days on $145, within 8%.
 
 **151 ETB** — Watch
@@ -42,7 +42,7 @@ Market $126.44. Quarter sold 3196, 35/day (carried). Printed low $3.01 is junk, 
 Turns into Fill if: a clean low ages 8+ days, left-play, solds thin, 8% band.
 
 **Prismatic Bundle** — Wait
-Market $82.51. Quarter sold 2716, 30/day (carried), low $46.99. About 76% above. Still in play.
+Market $82.11. Quarter sold 2716, 30/day (carried), low $46.99. About 75% above. Still in play.
 Turns into Fill if: left-play + clean higher-low 8+ days + exhaust + within 8%.
 
 **Prismatic PC-ETB** — Watch
