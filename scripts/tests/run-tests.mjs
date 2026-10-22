@@ -28,6 +28,7 @@ import "./premium-ratio.test.mjs";
 import "./premium-history.test.mjs";
 import "./publish-checks.test.mjs";
 import "./ebay-nonblocking.test.mjs";
+import "./creator-talk-reads.test.mjs";
 import { searchItems } from "../lib/search-rank.mjs";
 import { runPrivatePptTests } from "./private-ppt.test.mjs";
 import { runSparkTests } from "./spark30.test.mjs";
