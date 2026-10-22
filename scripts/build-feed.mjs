@@ -254,6 +254,17 @@ try {
     }
     stale.priceStale = stampPriceStale(readsDoc, rows);
   }
+  // Creator talk reads (private YouTube engine feed). Flag reads.creatorTalk, OFF by default.
+  if (flag("reads.creatorTalk")) {
+    try {
+      const { loadCandidates, toReads } = await import("./lib/creator-talk-reads.mjs");
+      const talk = toReads(await loadCandidates(ROOT), { asOf: readsDoc.asOf || "" });
+      const have = new Set((readsDoc.reads || []).map((r) => r.id));
+      for (const r of talk.reads) if (!have.has(r.id)) readsDoc.reads.push(r);
+      readsDoc.count = readsDoc.reads.length;
+      console.log(JSON.stringify({ creatorTalk: { added: talk.reads.length, dropped: talk.dropped.length } }));
+    } catch (err) { console.error(`creator talk reads skipped: ${err.message}`); }
+  }
   await writeFile(readsPath, JSON.stringify(readsDoc, null, 1) + "\n");
   console.log(JSON.stringify({ stale }));
 } catch (err) {
