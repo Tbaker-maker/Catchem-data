@@ -56,13 +56,14 @@ function cardArt(row) {
 }
 
 // Reads for one night, built from files the nightly already writes.
-export function poolFromData({ catalogue, sealed } = {}) {
+// skip: product ids the reads guard leaves out (one night jumps, flips, flat steps).
+export function poolFromData({ catalogue, sealed, skip = null } = {}) {
   const day = String(catalogue?.asOf || String(sealed?.updatedAt || "").slice(0, 10) || "");
   const reads = [];
   const when = shortDay(day);
   for (const set of catalogue?.sets || []) {
     if (!set?.released || !set.slug) continue;
-    const priced = (set.prices || []).filter((p) => Number(p?.price) > 0);
+    const priced = (set.prices || []).filter((p) => Number(p?.price) > 0 && !(skip && skip.has(String(p?.id || ""))));
     const top = [...priced].filter((p) => String(p?.name || "").trim()).sort((a, b) => b.price - a.price).slice(0, 3);
     if (top.length) {
       reads.push({

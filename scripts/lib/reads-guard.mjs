@@ -8,7 +8,7 @@ import { join } from "node:path";
 import { eraTagOf, eraLabel } from "./signal-chips.mjs";
 
 const DAY = /^\d{4}-\d{2}-\d{2}$/;
-const KEYS = ["spikeRatio", "neighborBand", "maxSpikeRun", "flipRatio", "flatMinPoints", "stepRatio"];
+const KEYS = ["spikeRatio", "neighborBand", "maxSpikeRun", "flipRatio", "flatMinPoints", "stepRatio", "minListingsChange"];
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 export const REASON = {
@@ -156,7 +156,7 @@ function chipPct(chip) {
 }
 
 // A chip that says the opposite of its own read is taken off. The read stays.
-export function fixChips(read) {
+export function fixChips(read, cfg = null) {
   const signals = Array.isArray(read?.signals) ? read.signals : null;
   if (!signals) return { read, changed: [] };
   const changed = [];
@@ -186,6 +186,7 @@ export function fixChips(read) {
     const rp = Number(read?.receipt?.prev);
     const way = Number.isFinite(rn) && Number.isFinite(rp) && read?.receipt?.prev != null ? Math.sign(rn - rp) : null;
     const chipWay = chip?.dir === "up" ? 1 : chip?.dir === "down" ? -1 : 0;
+    if (chip?.kind === "listings" && thinListings(read, cfg)) { changed.push("listings"); continue; }
     if (chip?.kind === "listings" && way != null && chipWay !== way) {
       changed.push("listings");
       continue;
@@ -196,6 +197,56 @@ export function fixChips(read) {
   const out = { ...read, signals: keep };
   if (read.tiles && changed.includes("listings")) { out.tiles = { ...read.tiles }; delete out.tiles.listings; }
   return { read: out, changed };
+}
+
+// A listings trend word on a count that moved by only a few listings is not a trend.
+export function thinListings(read, cfg) {
+  const spark = read?.tiles?.listings?.spark;
+  if (!cfg || !Array.isArray(spark) || spark.length < 2) return false;
+  const a = Number(spark[0]);
+  const b = Number(spark[spark.length - 1]);
+  if (!Number.isFinite(a) || !Number.isFinite(b)) return false;
+  return Math.abs(b - a) < cfg.minListingsChange;
+}
+
+// Product ids in the Post Office catalogue whose daily prices fail the price checks.
+export function guardSkip(catalogue, cfg, daily) {
+  const out = new Set();
+  if (!cfg || !daily) return out;
+  for (const set of catalogue?.sets || []) {
+    for (const p of set.prices || []) {
+      if (!(Number(p?.price) > 0)) continue;
+      const hits = priceHits({ sku: String(p.id || ""), price: p.price, readKind: "card", headline: "" }, cfg, daily);
+      if (hits.length) out.add(String(p.id));
+    }
+  }
+  return out;
+}
+
+// signal-chips.json must match the guarded reads: no chips for a left out read,
+// and the same fixed chips the read now carries.
+export function guardChipDoc(doc, keep, flags, cfg = null) {
+  if (!doc || typeof doc !== "object") return doc;
+  const gone = new Set((flags || []).map((f) => f.id));
+  const kept = new Map((keep || []).map((r) => [r.id, r]));
+  const byId = {};
+  for (const [id, row] of Object.entries(doc.byId || {})) {
+    if (gone.has(id)) continue;
+    const read = kept.get(id);
+    let next = read && Array.isArray(read.signals) ? { ...row, signals: read.signals } : row;
+    if (read?.tiles && next.tiles) next = { ...next, tiles: read.tiles };
+    const fixed = fixChips(next, cfg).read;
+    byId[id] = fixed;
+  }
+  const bySku = {};
+  for (const [sku, id] of Object.entries(doc.bySku || {})) if (byId[id]) bySku[sku] = id;
+  const ok = (row) => row && !gone.has(row.id) && byId[row.id];
+  const swap = (row) => (ok(row) ? { ...row, signals: byId[row.id].signals } : null);
+  const first = Object.entries(byId).find(([, row]) => (row.signals || []).length);
+  let preview = swap(doc.preview);
+  if (!preview && first) preview = { id: first[0], name: first[1].name, signals: first[1].signals, blurb: first[1].blurb || "" };
+  const samples = (doc.samples || []).map(swap).filter(Boolean);
+  return { ...doc, byId, bySku, preview: preview || doc.preview, samples };
 }
 
 export function noChangeListings(read) {
@@ -272,7 +323,7 @@ export async function guardReads(reads, { cfg, daily, heatRows, head, releaseOf 
     const hits = priceHits(read, cfg, daily);
     if (hits.length) { flags.push(flagRow(read, hits[0])); continue; }
     const a = fixAskDate(read, heatRows); read = a.read; if (a.changed) fixes.push({ id: read.id, fix: "ask-date" });
-    const c = fixChips(read); read = c.read; for (const k of c.changed) fixes.push({ id: read.id, fix: `chip-${k}` });
+    const c = fixChips(read, cfg); read = c.read; for (const k of c.changed) fixes.push({ id: read.id, fix: `chip-${k}` });
     if (head) { const im = await fixImage(read, head); read = im.read; if (im.changed) fixes.push({ id: read.id, fix: "image" }); }
     if (read.release && !raw.release) delete read.release;
     keep.push(read);
