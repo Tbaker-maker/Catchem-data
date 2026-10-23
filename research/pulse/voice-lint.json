@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-10-23T07:44:53.677Z",
+ "generatedAt": "2026-10-23T11:14:01.232Z",
  "checked": "dailyThree, supplyShifts, eraIndexes, printWatch, depth, postBank, socialQueue",
  "blocks": 0,
- "warns": 13,
+ "warns": 14,
  "findings": [
   {
    "severity": "WARN",
@@ -34,6 +34,20 @@
   },
   {
    "severity": "WARN",
+   "label": "depth.sv10-etb",
+   "chip": "READ",
+   "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
+   "text": "steady shelf — deep, flow flat"
+  },
+  {
+   "severity": "WARN",
+   "label": "depth.sv3pt5-upc",
+   "chip": "READ",
+   "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
+   "text": "steady shelf — deep, flow flat"
+  },
+  {
+   "severity": "WARN",
    "label": "depth.sv9-bb",
    "chip": "READ",
    "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
@@ -41,7 +55,7 @@
   },
   {
    "severity": "WARN",
-   "label": "depth.me5-bb",
+   "label": "depth.sv5-etb",
    "chip": "READ",
    "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
    "text": "pile-up — supply outpacing demand est. (RT-3)"
@@ -52,13 +66,6 @@
    "chip": "READ",
    "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
    "text": "steady shelf — deep, flow flat"
-  },
-  {
-   "severity": "WARN",
-   "label": "depth.me4-etb",
-   "chip": "READ",
-   "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
-   "text": "pile-up — supply outpacing demand est. (RT-3)"
   },
   {
    "severity": "WARN",
@@ -79,7 +86,7 @@
    "label": "socialQueue.morning",
    "chip": "READ",
    "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
-   "text": "Day 61 of posting the sealed market's temperature, every morning.\n\nCatch'em Sealed Index: 99.7 ▲ 0.2737%\n100 sealed prod"
+   "text": "Day 61 of posting the sealed market's temperature, every morning.\n\nCatch'em Sealed Index: 99.6 ▲ 0.1342%\n176 sealed prod"
   },
   {
    "severity": "WARN",
@@ -93,7 +100,7 @@
    "label": "socialQueue.evening",
    "chip": "READ",
    "issue": "READ-chipped but written in flat/declarative voice — add a hedging verb so the speculation is self-evident without the chip",
-   "text": "Day 61. Rip or hold?\nWhite Flare Booster Bundle at $94.99 — rip it or hold it sealed?\nYesterday's watch (Evolutions Boos"
+   "text": "Day 61. Rip or hold?\nSurging Sparks Booster Bundle at $66.99 — rip it or hold it sealed?\nYesterday's watch (Evolutions B"
   }
  ]
 }

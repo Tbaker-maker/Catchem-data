@@ -32,9 +32,9 @@ Some numbers we published look more like our measuring than the market. Worth a 
 
 ## The agents themselves
 **NEEDS A HUMAN — the supervisor flagged the watchers:**
-- correction-hunter: FARMING — findings climbed 6 → 6 → 6 → 38 across four runs with nothing resolved. Volume is not work.
+- correction-hunter: FARMING — findings climbed 6 → 6 → 6 → 40 across four runs with nothing resolved. Volume is not work.
 - correction-hunter: BROKEN RECORD — 5 finding(s) repeated three runs running (e.g. "gone::Umbreon VMAX"). Either they are not actionable or they are being ignored; the agent should say WHY instead of repeating itself.
-- correction-hunter: OVER-BUDGET — 38 findings against a ceiling of 30. An unreadable list is an unread list.
+- correction-hunter: OVER-BUDGET — 40 findings against a ceiling of 30. An unreadable list is an unread list.
 - designer: FARMING — findings climbed 12 → 12 → 12 → 19 across four runs with nothing resolved. Volume is not work.
 
 ## If we expanded
@@ -59,10 +59,11 @@ Gaps in what we watch:
 - *ease of use* — A number appears above the fold on Today. Holds — check on a 390px screen that it is still above the fold with the banner and nav present.
 
 ## Who needs to do what
-**NEEDS A HUMAN — Tyler (3):**
-- **[ACT NOW 76]** Celebrations Elite Trainer Box moved 132.1% — about 3.0× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
-- **[QUEUE 58]** The knowledge base is only used for one fact a day. — *The same sourced facts could power a "why is this card like this" explainer on every product page — set context, print quirks, what makes it odd. It compounds with every fact added.*
-- **[WATCH 40]** pricing 50 more cards would unlock 17 artist cohorts — *an expansion decision, not a machine's call*
+**NEEDS A HUMAN — Tyler (6):**
+- **[ACT NOW 76]** Scarlet & Violet Booster Pack moved 41.1% — about 3.9× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
+- **[ACT NOW 76]** Shining Legends Elite Trainer Box moved 19.9% — about 3055.3× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
+- **[ACT NOW 76]** Lost Thunder Booster Box moved 52.5% — about 7.9× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
+- **[ACT NOW 76]** Paradox Rift Pokemon Center Elite Trainer Box moved 10.0% — about 3.6× its own typical daily swing. — *worth a look — the market did something unusual, which is where stories start*
 
 **CC (9):**
 - **[ACT NOW 90]** Celebrations Elite Trainer Box moved 132.1% in 2026-10-18→2026-10-19 — *verify against listings; file a correction if the earlier figure was ours*
@@ -72,7 +73,7 @@ Gaps in what we watch:
 
 **Chat (12):** top — The Today screen carries 17 sections: The Daily Three, 🗳 Rip or Hold?, Biggest movers, Set the app up for you, Movers, Release radar… *[QUEUE]*
 
-*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 7 ACT NOW, 9 QUEUE, 8 WATCH, 29 filed without surfacing, 4 confirmations.*
+*Every finding above passed four layers: the agent declared its evidence, the score was computed mechanically, the manager could demote but never promote, and only what survived is here. Today: 10 ACT NOW, 9 QUEUE, 8 WATCH, 32 filed without surfacing, 4 confirmations.*
 ## The creator cheat code
 *Could somebody open this, hit record within two minutes, and sound like the most informed voice in the hobby without pausing to look anything up? Every pause is a cut.*
 - **a visual that runs itself** — 35 card images minted today. *The gap is that they are files in a repo. A creator needs them one tap from the angle they picked, not from a folder.*
@@ -80,23 +81,23 @@ Gaps in what we watch:
 - **the cheat code** — Nothing tells a creator how a piece performed after they made it. *Ask one question after publication — did this land — and keep the answers. Even a yes/no on twenty videos would tell us which angles are worth generating.*
 
 ## What the market did
+- **product** — Sword & Shield Base Elite Trainer Box moved 14.3% — about 13.7× its own typical daily swing. *Measured against its own 29 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
 - **product** — Scarlet & Violet Booster Pack moved 41.1% — about 3.9× its own typical daily swing. *Measured against its own 22 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
 - **product** — Shining Legends Elite Trainer Box moved 19.9% — about 3055.3× its own typical daily swing. *Measured against its own 28 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
-- **product** — Lost Thunder Booster Box moved 52.5% — about 7.9× its own typical daily swing. *Measured against its own 21 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
 - **product** — Paradox Rift Pokemon Center Elite Trainer Box moved 10.0% — about 3.6× its own typical daily swing. *Measured against its own 28 days of history, not against other products. A product that normally moves a lot is not flagged for moving a lot.*
 
 ## Where today's story goes
 - **X** — "Paldean Fates listings moved 240% while its print window closes."
-- **YouTube** — Cosmic Eclipse Booster Box — "Works out to $152.78 a pack, the most expensive rip we track. A pack at retail runs about $4.49."
-- **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 99.7."
+- **YouTube** — Unbroken Bonds Booster Box — "Works out to $97.64 a pack, the most expensive rip we track. A pack at retail runs about $4.49."
+- **TikTok** — Open on the number, not the setup: "The whole sealed market in one number: 99.6."
 
 3 format gap(s): YouTube — No B-roll list ships with any angle.; TikTok — Every card we mint is 1200×675 — landscape.
 
 ## Something is slipping
 - **unsaved** — 3 hand-written file(s) changed and not committed. *Generated artifacts churn constantly and that is fine. Hand-written work sitting uncommitted is a session's thinking one crash away from gone.*
-- **ignored** — 7 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
-- **silent stage** — pulse last reported 4 days ago. *A stage that stopped running is invisible to every guard, because none of them run either. Silence is the one failure nothing else catches.*
+- **ignored** — 8 supervisor problem(s) are open. *Problems that stay open stop being read. If they are not going to be fixed, they should be closed with a reason instead of carried.*
 - **drift** — 94 script(s) are not referenced anywhere: append-learning-log.mjs, append-shelf.mjs, audit-repo-bots.mjs, backfill-artists.mjs. *A script nothing calls is either dead or was wired up and quietly unwired. Both are worth knowing, and neither announces itself.*
+- **drift** — 49 JSON files in research/pulse. *A directory nobody can scan is a directory where something goes missing without being noticed.*
 
 ## Legal standing
 Nothing has tripped. Highest live risk: **Effort-based consideration in the berry system, combined with the first live draw.** — It is the only item that is both imminent and genuinely uncertain. The IP question is larger but not triggered until revenue; registration and tax thresholds are comfortably clear at current prize values.
@@ -105,10 +106,10 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 *Legal INFORMATION, not legal advice. No lawyer has reviewed this. Sweepstakes law varies by state and changes; nothing here is a compliance opinion anyone can rely on. Its job is to make the conversation with counsel shorter and better, and to stop us doing something obviously wrong in the meantime.*
 
 ## Numbers that do not make sense for what they are
-55 value(s) are structurally fine and absurd in context.
-- **"sleeved"** killed 381 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
-- Battle Styles Booster Pack: 74% rejection rate (39/150) — *largest bucket: exclude = 68. A single over-broad term can eat a market.*
-- Fusion Strike Booster Pack: 72% rejection rate (42/150) — *largest bucket: type = 48. A single over-broad term can eat a market.*
+35 value(s) are structurally fine and absurd in context.
+- **"sleeved"** killed 163 listings across the board — a sleeved booster IS a single pack, just with a foil sleeve
+- Scarlet & Violet Booster Pack: 95% rejection rate (8/150) — *largest bucket: set = 63. A single over-broad term can eat a market.*
+- 151 Booster Pack: 83% rejection rate (25/150) — *largest bucket: type = 73. A single over-broad term can eat a market.*
 
 ## What the agents should be asking themselves
 - **domain-plausibility** — Would you catch this today? If yes, what specifically would fire. If no, what would you need?
@@ -131,13 +132,13 @@ Nothing has tripped. Highest live risk: **Effort-based consideration in the berr
 - **Mitsuhiro Arita drew Houndoom exactly once** — Mitsuhiro Arita has 496 cards. Exactly one is a Houndoom.
 
 ## Design
-6 high, 12 medium across 15 shipped surfaces, 140 minted cards.
+6 high, 12 medium across 15 shipped surfaces, 146 minted cards.
 - **build.html** — the accent colour appears 52 times. *Spend it in two places: the active state and the one primary action. Everything else greys.*
 - **corrections.html** — remote fonts with no local fallback. *Add system-ui and a generic family to every font stack.*
 - **methodology.html** — remote fonts with no local fallback. *Add system-ui and a generic family to every font stack.*
 
 ## What the agents cannot answer themselves
-72 open — 53 need eyes on a rendered page, 19 need a decision.
+73 open — 54 need eyes on a rendered page, 19 need a decision.
 - **NEEDS A HUMAN** [theme-scout] 14 Pokémon share the "-eon" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 7 Pokémon share the "ite" ending — a theme, or a coincidence of naming?
 - **NEEDS A HUMAN** [theme-scout] 10 Pokémon share the "-ish" ending — a theme, or a coincidence of naming?

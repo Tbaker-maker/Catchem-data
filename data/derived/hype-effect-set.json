@@ -1,23 +1,38 @@
 {
  "asOf": "2026-10-23",
- "generatedAt": "2026-10-23T09:45:38.038Z",
+ "generatedAt": "2026-10-23T10:46:27.454Z",
  "level": "set",
  "note": "Hype-effect public reads. Neutral, data-only. Passed n≥20 holdout only. No creator names. Not advice.",
  "surface": "set",
  "neverMix": "Singles and sealed stay in separate files. Never show sealed on card pages.",
  "holdout": {
-  "n": 0,
-  "trainN": 0,
-  "testN": 0,
-  "trainMedianPct": null,
-  "testMedianPct": null,
-  "medianPct": null,
-  "from": null,
-  "to": null,
-  "passedHoldout": false,
-  "status": "private_candidate",
+  "n": 23,
+  "trainN": 16,
+  "testN": 7,
+  "trainMedianPct": -6.3,
+  "testMedianPct": -2.3,
+  "medianPct": -4.2,
+  "from": "2026-04-27",
+  "to": "2026-09-19",
+  "passedHoldout": true,
+  "status": "passed_holdout",
   "minTest": 6
  },
- "count": 0,
- "items": []
+ "count": 1,
+ "items": [
+  {
+   "id": "hype:set:group:24722:2026-10-23",
+   "level": "set",
+   "key": "group:24722",
+   "label": "30th Celebration",
+   "line": "Heavy creator attention on 30th Celebration this week. Past sets with this much attention moved -4.2% over 30 days (n=23, 2026-04-27 to 2026-09-19).",
+   "n": 23,
+   "medianPct": -4.2,
+   "from": "2026-04-27",
+   "to": "2026-09-19",
+   "weekFrom": "2026-10-17",
+   "weekTo": "2026-10-17",
+   "status": "passed_holdout"
+  }
+ ]
 }
