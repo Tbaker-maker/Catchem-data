@@ -380,12 +380,29 @@ function eraRelease(ctx) {
   return cardOk ? cardRelease : "";
 }
 
+// Black & White, the first set of the modern card frame, came out on 2011-04-25.
+// A set from after WOTC and before that day is Classic (EX, Diamond & Pearl,
+// Platinum, HeartGold SoulSilver). It is never Modern.
+export const MODERN_START = "2011-04-25";
+const ERA_LABEL = { Vintage: "Vintage, a WOTC era set", Classic: "Classic, EX to HeartGold SoulSilver era", Modern: "Modern" };
+
+export function eraTagOf(release) {
+  const rel = String(release || "").slice(0, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(rel)) return "";
+  if (isVintageRelease(rel)) return "Vintage";
+  return rel < MODERN_START ? "Classic" : "Modern";
+}
+
+export function eraLabel(tag) {
+  return ERA_LABEL[tag] || "";
+}
+
 function eraChip(ctx, rules) {
   if (!rules?.era) return null;
   const release = eraRelease(ctx);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(release)) return null;
-  const tag = isVintageRelease(release) ? "Vintage" : "Modern";
-  return { kind: "era", tag, label: tag === "Vintage" ? "Vintage, a WOTC era set" : "Modern" };
+  const tag = eraTagOf(release);
+  return { kind: "era", tag, label: ERA_LABEL[tag] };
 }
 
 function confidenceChip(points, rules) {

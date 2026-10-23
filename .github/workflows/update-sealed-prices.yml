@@ -384,6 +384,19 @@ jobs:
           SIGNAL_STAMP_READS: "1"
         run: node scripts/stamp-signal-chips.mjs
 
+      - name: Guard the public reads
+        # Leaves out reads built on a one night jump, a there and back flip, or a
+        # price that sat exactly still, plus listings reads with no change. Fixes
+        # chips that disagree with their read, carried eBay ask dates, and missing
+        # pictures. Limits stay in catchem-data-private. The morning card and item
+        # lookups are written again from the guarded reads.
+        env:
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+        run: |
+          node scripts/guard-public-reads.mjs
+          node scripts/write-morning-card.mjs
+          node scripts/write-item-reads.mjs
+
       - name: IR and SIR watch and run stage call ledger
         # Every Illustration Rare and Special Illustration Rare: baselines, set peers,
         # listings counted, run stage, rotation. Public facts to feed/ir-sir.json;

@@ -601,7 +601,27 @@ export async function dailyFileSet(root) {
   const dir = join(root, "data/history/tcgcsv-daily");
   let names = [];
   try { names = await readdir(dir); } catch { return new Set(); }
-  return new Set(names.filter((name) => /^\d{4}-\d{2}-\d{2}\.json$/.test(name)).map((name) => name.slice(0, 10)));
+  const days = names.filter((name) => /^\d{4}-\d{2}-\d{2}\.json$/.test(name)).map((name) => name.slice(0, 10)).sort();
+  const prices = new Map();
+  for (const day of days) {
+    try { prices.set(day, JSON.stringify(JSON.parse(await readFile(join(dir, `${day}.json`), "utf8")).prices || null)); } catch { prices.set(day, null); }
+  }
+  const copies = copiedDays(days, prices);
+  return new Set(days.filter((day) => !copies.has(day)));
+}
+
+// A daily file whose prices are an exact copy of the day before proves nothing
+// new. That day counts as missing, so no streak or move is counted across it.
+// Nothing is filled in for it.
+export function copiedDays(days, prices) {
+  const out = new Set();
+  const list = [...days].sort();
+  for (let i = 1; i < list.length; i += 1) {
+    const a = prices.get(list[i - 1]);
+    const b = prices.get(list[i]);
+    if (a && b && a !== "null" && a === b) out.add(list[i]);
+  }
+  return out;
 }
 
 async function readJson(path) {

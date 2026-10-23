@@ -1,0 +1,395 @@
+{
+ "asOf": "2026-10-23",
+ "source": "Thin data check. Blocked reads are left out and listed here. They are not rewritten.",
+ "flags": [
+  {
+   "id": "deep-slump-tcgcsv-610511",
+   "name": "Sylveon ex - 156/131",
+   "rule": "single-price",
+   "reason": "This slump or recovery rests on one dated price.",
+   "read": {
+    "id": "deep-slump-tcgcsv-610511",
+    "name": "Sylveon ex - 156/131",
+    "headline": "Slump watch: Sylveon ex (Prismatic Evolutions) 156/131, Special Illustration Rare, is 29% under its Jun 30 high.",
+    "set": "",
+    "sku": "tcgcsv-610511",
+    "readKind": "deep",
+    "deep": "slump"
+   }
+  },
+  {
+   "id": "deep-recovery-tcgcsv-85505",
+   "name": "Flareon ex (EX Delta Species) 108/113",
+   "rule": "single-jump",
+   "reason": "This slump or recovery is one jump between two prices.",
+   "read": {
+    "id": "deep-recovery-tcgcsv-85505",
+    "name": "Flareon ex (EX Delta Species) 108/113",
+    "headline": "Recovery watch: Flareon ex (EX Delta Species) 108/113 fell 40% from its peak and has climbed back 61% of the way.",
+    "set": "",
+    "sku": "tcgcsv-85505",
+    "readKind": "deep",
+    "deep": "recovery"
+   }
+  },
+  {
+   "id": "deep-slump-tcgcsv-88647",
+   "name": "Rayquaza ex (Delta Species) (EX Dragon Frontiers) 97/101",
+   "rule": "single-price",
+   "reason": "This slump or recovery rests on one dated price.",
+   "read": {
+    "id": "deep-slump-tcgcsv-88647",
+    "name": "Rayquaza ex (Delta Species) (EX Dragon Frontiers) 97/101",
+    "headline": "Slump watch: Rayquaza ex (Delta Species) (EX Dragon Frontiers) 97/101, Ultra Rare, is 30% under its Aug 6 high.",
+    "set": "",
+    "sku": "tcgcsv-88647",
+    "readKind": "deep",
+    "deep": "slump"
+   }
+  },
+  {
+   "id": "deep-slump-tcgcsv-84771",
+   "name": "Deoxys ex (Defense Forme) (EX Deoxys) 99/107",
+   "rule": "single-jump",
+   "reason": "This slump or recovery is one jump between two prices.",
+   "read": {
+    "id": "deep-slump-tcgcsv-84771",
+    "name": "Deoxys ex (Defense Forme) (EX Deoxys) 99/107",
+    "headline": "Slump watch: Deoxys ex (Defense Forme) (EX Deoxys) 99/107, Ultra Rare, is 68% under its Aug 31 high.",
+    "set": "",
+    "sku": "tcgcsv-84771",
+    "readKind": "deep",
+    "deep": "slump"
+   }
+  },
+  {
+   "id": "deep-slump-tcgcsv-88967",
+   "name": "Scizor ex (EX Unseen Forces) 108/115",
+   "rule": "single-jump",
+   "reason": "This slump or recovery is one jump between two prices.",
+   "read": {
+    "id": "deep-slump-tcgcsv-88967",
+    "name": "Scizor ex (EX Unseen Forces) 108/115",
+    "headline": "Slump watch: Scizor ex (EX Unseen Forces) 108/115, Ultra Rare, is 37% under its Jul 27 high.",
+    "set": "",
+    "sku": "tcgcsv-88967",
+    "readKind": "deep",
+    "deep": "slump"
+   }
+  },
+  {
+   "id": "span-year-ago-tcgcsv-90045",
+   "name": "Treecko (Delta Species) (POP Series 4) 015/017",
+   "rule": "era-mismatch",
+   "reason": "The era tag does not come from the set release era.",
+   "read": {
+    "id": "span-year-ago-tcgcsv-90045",
+    "name": "Treecko (Delta Species) (POP Series 4) 015/017",
+    "headline": "A year ago today it was $4.49 on Oct 23, 2025, now $26.68 on Oct 23, 2026 (+494.2%).",
+    "set": "POP Series 4",
+    "sku": "tcgcsv-90045",
+    "readKind": "year-ago",
+    "deep": "year-ago"
+   }
+  },
+  {
+   "id": "deep-slump-tcgcsv-88648",
+   "name": "Rayquaza EX (123 Full Art) (Dragons Exalted) 123/124",
+   "rule": "spike-price",
+   "reason": "The read cites a price that is one short jump, with the prices on both sides in agreement.",
+   "read": {
+    "id": "deep-slump-tcgcsv-88648",
+    "name": "Rayquaza EX (123 Full Art) (Dragons Exalted) 123/124",
+    "headline": "Slump watch: Rayquaza EX (123 Full Art) (Dragons Exalted) 123/124, Ultra Rare, is 55% under its Sep 15 high.",
+    "sku": "tcgcsv-88648",
+    "readKind": "deep"
+   }
+  },
+  {
+   "id": "deep-card-tcgcsv-91246",
+   "name": "M Charizard EX (X) (Secret) (Flashfire) 108/106",
+   "rule": "price-flip",
+   "reason": "The price jumped to a fixed level and straight back. That is not a steady move.",
+   "read": {
+    "id": "deep-card-tcgcsv-91246",
+    "name": "M Charizard EX (X) (Secret) (Flashfire) 108/106",
+    "headline": "The story of M Charizard EX (X) (Secret) (Flashfire) 108/106: $1,501.23 tonight, 100% of the way from its 1-year low to its 1-year high.",
+    "sku": "tcgcsv-91246",
+    "readKind": "deep"
+   }
+  },
+  {
+   "id": "sealed-week-tcgcsv-536266",
+   "name": "Paldean Fates Pokémon Center Elite Trainer Box (Exclusive) Case",
+   "rule": "flat-step",
+   "reason": "The move is one step to or from a price that sat exactly still for many days.",
+   "read": {
+    "id": "sealed-week-tcgcsv-536266",
+    "name": "Paldean Fates Pokémon Center Elite Trainer Box (Exclusive) Case",
+    "headline": "Paldean Fates Pokémon Center Elite Trainer Box (Exclusive) Case: $2,715.00 (Oct 16) to $1,912.99 (Oct 23) on TCGplayer market. Down 30%.",
+    "sku": "tcgcsv-536266",
+    "readKind": "sealed"
+   }
+  },
+  {
+   "id": "deep-recovery-tcgcsv-90323",
+   "name": "Venusaur ex (EX FireRed & LeafGreen) 112/112",
+   "rule": "flat-step",
+   "reason": "The move is one step to or from a price that sat exactly still for many days.",
+   "read": {
+    "id": "deep-recovery-tcgcsv-90323",
+    "name": "Venusaur ex (EX FireRed & LeafGreen) 112/112",
+    "headline": "Recovery watch: Venusaur ex (EX FireRed & LeafGreen) 112/112 fell 45% from its peak and has climbed back 91% of the way.",
+    "sku": "tcgcsv-90323",
+    "readKind": "deep"
+   }
+  },
+  {
+   "id": "plain-tcgcsv-88627",
+   "name": "Rayquaza (Legends Awakened) 14/146",
+   "rule": "flat-step",
+   "reason": "The move is one step to or from a price that sat exactly still for many days.",
+   "read": {
+    "id": "plain-tcgcsv-88627",
+    "name": "Rayquaza (Legends Awakened) 14/146",
+    "headline": "Rayquaza (Legends Awakened) 14/146: $270.50 (Sep 26) to $352.87 (Oct 23) on TCGplayer market. Up 30% in 27 days.",
+    "sku": "tcgcsv-88627",
+    "readKind": "plain"
+   }
+  },
+  {
+   "id": "deep-recovery-tcgcsv-90292",
+   "name": "Vaporeon Star (EX Power Keepers) 102/108",
+   "rule": "flat-step",
+   "reason": "The move is one step to or from a price that sat exactly still for many days.",
+   "read": {
+    "id": "deep-recovery-tcgcsv-90292",
+    "name": "Vaporeon Star (EX Power Keepers) 102/108",
+    "headline": "Recovery watch: Vaporeon Star (EX Power Keepers) 102/108 fell 77% from its peak and has climbed back 61% of the way.",
+    "sku": "tcgcsv-90292",
+    "readKind": "deep"
+   }
+  },
+  {
+   "id": "plain-tcgcsv-83654",
+   "name": "Articuno ex (EX FireRed & LeafGreen) 114/112",
+   "rule": "flat-step",
+   "reason": "The move is one step to or from a price that sat exactly still for many days.",
+   "read": {
+    "id": "plain-tcgcsv-83654",
+    "name": "Articuno ex (EX FireRed & LeafGreen) 114/112",
+    "headline": "Articuno ex (EX FireRed & LeafGreen) 114/112: $199.06 (Sep 26) to $325.45 (Oct 23) on TCGplayer market. Up 63% in 27 days.",
+    "sku": "tcgcsv-83654",
+    "readKind": "plain"
+   }
+  },
+  {
+   "id": "plain-tcgcsv-170888",
+   "name": "Banette GX (Full Art) (Celestial Storm) 157/168",
+   "rule": "flat-step",
+   "reason": "The move is one step to or from a price that sat exactly still for many days.",
+   "read": {
+    "id": "plain-tcgcsv-170888",
+    "name": "Banette GX (Full Art) (Celestial Storm) 157/168",
+    "headline": "Banette GX (Full Art) (Celestial Storm) 157/168: $11.28 (Sep 26) to $14.97 (Oct 23) on TCGplayer market. Up 33% in 27 days.",
+    "sku": "tcgcsv-170888",
+    "readKind": "plain"
+   }
+  },
+  {
+   "id": "deep-slump-tcgcsv-84199",
+   "name": "Charizard ex (EX FireRed & LeafGreen) 105/112",
+   "rule": "spike-price",
+   "reason": "The read cites a price that is one short jump, with the prices on both sides in agreement.",
+   "read": {
+    "id": "deep-slump-tcgcsv-84199",
+    "name": "Charizard ex (EX FireRed & LeafGreen) 105/112",
+    "headline": "Slump watch: Charizard ex (EX FireRed & LeafGreen) 105/112, Ultra Rare, is 71% under its Jul 15 high.",
+    "sku": "tcgcsv-84199",
+    "readKind": "deep"
+   }
+  },
+  {
+   "id": "listcount-sm12-booster-box",
+   "name": "Cosmic Eclipse Booster Box",
+   "rule": "no-change",
+   "reason": "The listings counted did not change, so there is nothing to read.",
+   "read": {
+    "id": "listcount-sm12-booster-box",
+    "name": "Cosmic Eclipse Booster Box",
+    "headline": "Cosmic Eclipse Booster Box: 10 eBay listings counted on Oct 23. A listing is not a sale.",
+    "sku": "sm12-booster-box",
+    "readKind": "listings"
+   }
+  },
+  {
+   "id": "listcount-sv7-bb",
+   "name": "Stellar Crown Booster Bundle",
+   "rule": "no-change",
+   "reason": "The listings counted did not change, so there is nothing to read.",
+   "read": {
+    "id": "listcount-sv7-bb",
+    "name": "Stellar Crown Booster Bundle",
+    "headline": "Stellar Crown Booster Bundle: 29 eBay listings counted on Oct 23. A listing is not a sale.",
+    "sku": "sv7-bb",
+    "readKind": "listings"
+   }
+  },
+  {
+   "id": "deep-card-tcgcsv-84195",
+   "name": "Charizard (Delta Species) (EX Crystal Guardians) 4/100",
+   "rule": "price-flip",
+   "reason": "The price jumped to a fixed level and straight back. That is not a steady move.",
+   "read": {
+    "id": "deep-card-tcgcsv-84195",
+    "name": "Charizard (Delta Species) (EX Crystal Guardians) 4/100",
+    "headline": "The story of Charizard (Delta Species) (EX Crystal Guardians) 4/100: $939.50 tonight, 87% of the way from its 1-year low to its 1-year high.",
+    "sku": "tcgcsv-84195",
+    "readKind": "deep"
+   }
+  },
+  {
+   "id": "listcount-sm3-etb",
+   "name": "Burning Shadows Elite Trainer Box",
+   "rule": "no-change",
+   "reason": "The listings counted did not change, so there is nothing to read.",
+   "read": {
+    "id": "listcount-sm3-etb",
+    "name": "Burning Shadows Elite Trainer Box",
+    "headline": "Burning Shadows Elite Trainer Box: 21 eBay listings counted on Oct 23. A listing is not a sale.",
+    "sku": "sm3-etb",
+    "readKind": "listings"
+   }
+  },
+  {
+   "id": "deep-slump-tcgcsv-84166",
+   "name": "Chandelure (Secret) (Next Destinies) 101/99",
+   "rule": "flat-step",
+   "reason": "The move is one step to or from a price that sat exactly still for many days.",
+   "read": {
+    "id": "deep-slump-tcgcsv-84166",
+    "name": "Chandelure (Secret) (Next Destinies) 101/99",
+    "headline": "Slump watch: Chandelure (Secret) (Next Destinies) 101/99, Secret Rare, is 38% under its Oct 11 high.",
+    "sku": "tcgcsv-84166",
+    "readKind": "deep"
+   }
+  },
+  {
+   "id": "deep-recovery-tcgcsv-84149",
+   "name": "Celebi Star (EX Crystal Guardians) 100/100",
+   "rule": "price-flip",
+   "reason": "The price jumped to a fixed level and straight back. That is not a steady move.",
+   "read": {
+    "id": "deep-recovery-tcgcsv-84149",
+    "name": "Celebi Star (EX Crystal Guardians) 100/100",
+    "headline": "Recovery watch: Celebi Star (EX Crystal Guardians) 100/100 fell 51% from its peak and has climbed back 26% of the way.",
+    "sku": "tcgcsv-84149",
+    "readKind": "deep"
+   }
+  },
+  {
+   "id": "plain-tcgcsv-89788",
+   "name": "Team Aqua's Kyogre (EX Team Magma vs Team Aqua) 3/95",
+   "rule": "flat-step",
+   "reason": "The move is one step to or from a price that sat exactly still for many days.",
+   "read": {
+    "id": "plain-tcgcsv-89788",
+    "name": "Team Aqua's Kyogre (EX Team Magma vs Team Aqua) 3/95",
+    "headline": "Team Aqua's Kyogre (EX Team Magma vs Team Aqua) 3/95: $316.30 (Sep 26) to $542.60 (Oct 23) on TCGplayer market. Up 72% in 27 days.",
+    "sku": "tcgcsv-89788",
+    "readKind": "plain"
+   }
+  },
+  {
+   "id": "listcount-sv6-bb",
+   "name": "Twilight Masquerade Booster Bundle",
+   "rule": "no-change",
+   "reason": "The listings counted did not change, so there is nothing to read.",
+   "read": {
+    "id": "listcount-sv6-bb",
+    "name": "Twilight Masquerade Booster Bundle",
+    "headline": "Twilight Masquerade Booster Bundle: 25 eBay listings counted on Oct 23. A listing is not a sale.",
+    "sku": "sv6-bb",
+    "readKind": "listings"
+   }
+  },
+  {
+   "id": "deep-slump-tcgcsv-83857",
+   "name": "Black Kyurem EX (145 Full Art) (Boundaries Crossed) 145/149",
+   "rule": "flat-step",
+   "reason": "The move is one step to or from a price that sat exactly still for many days.",
+   "read": {
+    "id": "deep-slump-tcgcsv-83857",
+    "name": "Black Kyurem EX (145 Full Art) (Boundaries Crossed) 145/149",
+    "headline": "Slump watch: Black Kyurem EX (145 Full Art) (Boundaries Crossed) 145/149, Ultra Rare, is 28% under its Sep 7 high.",
+    "sku": "tcgcsv-83857",
+    "readKind": "deep"
+   }
+  },
+  {
+   "id": "deep-slump-tcgcsv-88797",
+   "name": "Rocket's Suicune ex (EX Team Rocket Returns) 105/109",
+   "rule": "price-flip",
+   "reason": "The price jumped to a fixed level and straight back. That is not a steady move.",
+   "read": {
+    "id": "deep-slump-tcgcsv-88797",
+    "name": "Rocket's Suicune ex (EX Team Rocket Returns) 105/109",
+    "headline": "Slump watch: Rocket's Suicune ex (EX Team Rocket Returns) 105/109, Ultra Rare, is 56% under its Sep 4 high.",
+    "sku": "tcgcsv-88797",
+    "readKind": "deep"
+   }
+  },
+  {
+   "id": "plain-tcgcsv-84773",
+   "name": "Deoxys ex (Speed Forme) (EX Emerald) 93/106",
+   "rule": "flat-step",
+   "reason": "The move is one step to or from a price that sat exactly still for many days.",
+   "read": {
+    "id": "plain-tcgcsv-84773",
+    "name": "Deoxys ex (Speed Forme) (EX Emerald) 93/106",
+    "headline": "Deoxys ex (Speed Forme) (EX Emerald) 93/106: $164.89 (Sep 26) to $264.94 (Oct 23) on TCGplayer market. Up 61% in 27 days.",
+    "sku": "tcgcsv-84773",
+    "readKind": "plain"
+   }
+  },
+  {
+   "id": "listcount-sv5-bb",
+   "name": "Temporal Forces Booster Bundle",
+   "rule": "no-change",
+   "reason": "The listings counted did not change, so there is nothing to read.",
+   "read": {
+    "id": "listcount-sv5-bb",
+    "name": "Temporal Forces Booster Bundle",
+    "headline": "Temporal Forces Booster Bundle: 21 eBay listings counted on Oct 23. A listing is not a sale.",
+    "sku": "sv5-bb",
+    "readKind": "listings"
+   }
+  },
+  {
+   "id": "listcount-swsh2-etb",
+   "name": "Rebel Clash Elite Trainer Box",
+   "rule": "no-change",
+   "reason": "The listings counted did not change, so there is nothing to read.",
+   "read": {
+    "id": "listcount-swsh2-etb",
+    "name": "Rebel Clash Elite Trainer Box",
+    "headline": "Rebel Clash Elite Trainer Box: 15 eBay listings counted on Oct 23. A listing is not a sale.",
+    "sku": "swsh2-etb",
+    "readKind": "listings"
+   }
+  },
+  {
+   "id": "span-year-range-tcgcsv-206029",
+   "name": "Sword & Shield 3 Pack Blister [Morpeko]",
+   "rule": "flat-step",
+   "reason": "The move is one step to or from a price that sat exactly still for many days.",
+   "read": {
+    "id": "span-year-range-tcgcsv-206029",
+    "name": "Sword & Shield 3 Pack Blister [Morpeko]",
+    "headline": "Near the high end of its 12-month range: Sword & Shield 3 Pack Blister [Morpeko], $64.99 on Oct 23, 2026.",
+    "sku": "tcgcsv-206029",
+    "readKind": "year-range"
+   }
+  }
+ ]
+}

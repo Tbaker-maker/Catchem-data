@@ -213,7 +213,8 @@ export async function run() {
   const eraOf = (release) => (qualifyChips({ id: "era-x", name: "Set", kind: "sealed", asOf: "2026-10-19" }, { asOf: "2026-10-19", release }, { era: { vintageBefore: "2020-02-07" } }).find((c) => c.kind === "era") || {}).tag;
   t("Shining Legends (2017) is Modern", eraOf("2017-10-06") === "Modern");
   t("a set from May 2003 is Vintage", eraOf("2003-05-12") === "Vintage");
-  t("June 1 2003 is Modern", eraOf("2003-06-01") === "Modern");
+  t("June 1 2003 is Classic, not Vintage", eraOf("2003-06-01") === "Classic");
+  t("Apr 25 2011 is Modern", eraOf("2011-04-25") === "Modern");
   const promoOld = qualifyChips({ id: "promo-old", name: "Lugia", kind: "single", tags: ["Promo"], asOf: "2026-10-19" }, { asOf: "2026-10-19", release: "2019-11-15", promo: true }, { era: {} }).find((c) => c.kind === "era");
   t("a 2019 promo set is not Vintage", promoOld && promoOld.tag === "Modern");
   const promoNoDay = qualifyChips({ id: "promo-wotc", name: "Mew", kind: "single", tags: ["Promo"], asOf: "2026-10-19" }, { asOf: "2026-10-19", release: "1999-07-01", promo: true }, { era: {} }).find((c) => c.kind === "era");
