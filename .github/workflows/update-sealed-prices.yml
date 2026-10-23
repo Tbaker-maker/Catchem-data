@@ -318,8 +318,7 @@ jobs:
         # Built from tonight's set pages, before the feed commit, so the
         # public-data branch carries tonight's set lines and not last night's.
         if: steps.setpages.outcome == 'success'
-        continue-on-error: true
-        run: node scripts/build-post-office-catalogue.mjs
+        run: node scripts/build-post-office-catalogue.mjs || true
 
       - name: Rebuild the public feed
         # After the price commit, not before. A failed feed build fails the job.
