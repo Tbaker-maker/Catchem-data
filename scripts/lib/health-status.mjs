@@ -163,3 +163,15 @@ export function freshnessFailures(rows, nightlyDay, maxDays = FRESH_DAYS, flags 
   }
   return failures;
 }
+
+// Staleness must never block the job that refreshes the stale file (Oct 20 to 22:
+// sealed-prices.json and pulse-feed.json were 3 days behind, the pre-test rebuild
+// failed on that, and the refresh never ran). Inside the price run the feed build
+// sets FEED_FRESHNESS_WARN_ONLY=1 and the strict check runs after the refresh.
+// Only "N days behind" lines are warnings. A missing date or a future date still fails.
+export function freshnessExit(failures, env = {}) {
+  const list = failures || [];
+  if (env.FEED_FRESHNESS_WARN_ONLY !== "1") return { fail: list, warn: [] };
+  const behind = (line) => / is \d+ days behind \d{4}-\d{2}-\d{2}$/.test(line);
+  return { fail: list.filter((l) => !behind(l)), warn: list.filter(behind) };
+}

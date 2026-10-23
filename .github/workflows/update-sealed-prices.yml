@@ -101,6 +101,7 @@ jobs:
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+          FEED_FRESHNESS_WARN_ONLY: "1" # stale files are what this run refreshes
 
       - name: Unit tests (fail-fast)
         # Pure-math tests on scripts/lib + contract checks on yesterday's
@@ -319,6 +320,7 @@ jobs:
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+          FEED_FRESHNESS_WARN_ONLY: "1" # the pulse is regenerated later in this run
 
       - name: Run the read registry
         run: node scripts/run-read-registry.mjs
@@ -571,6 +573,14 @@ jobs:
             done
           fi
 
+      - name: Freshness check after the refresh (strict)
+        # Stale data never blocks the refresh (FEED_FRESHNESS_WARN_ONLY above).
+        # After everything is committed, the same check runs strict, so a file
+        # that is still behind turns the run red without stopping tonight's data.
+        id: freshness_after
+        continue-on-error: true
+        run: node scripts/write-health.mjs > /tmp/health-after.json
+
       - name: Trigger app rebuild (fresh landers)
         # Landers bake feed data at build time, but Cloudflare Pages only
         # rebuilds on app-repo pushes — prices would freeze. A CF Deploy Hook
@@ -721,6 +731,13 @@ jobs:
           else
             echo "Mirror push failed — the daily run is unaffected. Investigate the mirror, not this run."
           fi
+
+      - name: Still stale after the refresh
+        # Runs last, so smoke, digest and mirror steps are never skipped by it.
+        if: steps.freshness_after.outcome == 'failure'
+        run: |
+          echo "::error::A file is still behind after tonight's refresh. See the 'Freshness check after the refresh' step."
+          exit 1
 
       - name: Failure summary
         if: failure()
