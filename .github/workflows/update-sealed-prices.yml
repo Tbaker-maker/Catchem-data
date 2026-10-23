@@ -314,6 +314,12 @@ jobs:
           node scripts/build-index-history.mjs
           node scripts/build-condition-ladder.mjs
 
+      - name: Set lines for /reads (reads-preview.json)
+        # Built from tonight's set pages, before the feed commit, so the
+        # public-data branch carries tonight's set lines and not last night's.
+        if: steps.setpages.outcome == 'success'
+        run: node scripts/build-post-office-catalogue.mjs || true
+
       - name: Rebuild the public feed
         # After the price commit, not before. A failed feed build fails the job.
         # The catalog day stays the full TCGCSV day. A later partial file is
@@ -421,6 +427,7 @@ jobs:
           fi
           # The track-record path is the public stub. Do not add data/private/.
           git add research/assets/public/reads.json research/assets/public/today.json research/assets/public/feed/ research/assets/public/counts.json research/assets/public/sparks research/assets/public/track-record.json research/assets/public/set-value research/assets/public/rotation-status.json research/assets/public/releases.json research/assets/public/listings-counted.json research/assets/public/signal-chips.json research/assets/public/premium-ratio.json research/assets/public/market-meter.json
+          if [ -e research/assets/public/reads-preview.json ]; then git add research/assets/public/reads-preview.json; fi
           if git diff --cached --name-only -- data/private | grep -q .; then
             echo "private scores must not be committed here"
             exit 1
