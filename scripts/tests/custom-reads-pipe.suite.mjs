@@ -5,7 +5,7 @@ import { isClean } from "../lib/copy-rules.mjs";
 export async function run() {
   let fail = 0;
   const t = (name, ok) => { if (ok) console.log(`  ok  ${name}`); else { fail += 1; console.error(`  FAIL ${name}`); } };
-  const catalogue = { asOf: "2026-10-18", sets: [{ slug: "me-30th-celebration", name: "ME: 30th Celebration", released: true, prices: [{ id: "tcgcsv-1", number: "001/100", price: 12.5 }, { id: "tcgcsv-2", number: "002/100", price: 3 }] }] };
+  const catalogue = { asOf: "2026-10-18", sets: [{ slug: "me-30th-celebration", name: "ME: 30th Celebration", released: true, prices: [{ id: "tcgcsv-1", name: "Pikachu", number: "001/100", price: 12.5 }, { id: "tcgcsv-2", name: "Eevee", number: "002/100", price: 3 }] }] };
   const sealed = { updatedAt: "2026-10-18T13:00:00Z", products: [{ id: "x-etb", name: "30th Celebration Elite Trainer Box", set: "30th Celebration", tcgPlayerId: "77", dataStatus: "live", askMedian: 80, listingCount: 40 }] };
   const pool = poolFromData({ catalogue, sealed });
   t("pool has a set line, card lines and a sealed line", pool.reads.some((r) => r.kind === "single") && pool.reads.filter((r) => r.kind === "card").length === 2 && pool.reads.some((r) => r.kind === "sealed" && r.set === "me-30th-celebration"));
@@ -16,6 +16,11 @@ export async function run() {
   t("a kind alone does not match the whole catalogue", pool.reads.filter((r) => memberMatch({ kinds: ["single"] }, r)).length === 0);
   t("a watched card matches", pool.reads.some((r) => memberMatch({ cards: ["tcgcsv-1"] }, r) && r.cardId === "tcgcsv-1"));
   t("a watched sealed product matches", pool.reads.some((r) => memberMatch({ sealed: ["tcgcsv-77"] }, r) && r.kind === "sealed"));
+  const codes = poolFromData({ catalogue: { asOf: "2026-10-23", sets: [{ slug: "me-30th-celebration", name: "ME: 30th Celebration", released: true, prices: [{ id: "c1", name: "Mew - R/RGB", number: "R/RGB", price: 4824.92 }, { id: "c2", number: "B/RGB", price: 9000 }, { id: "c3", name: "Lugia", number: "149/147", price: 211.6 }] }] } });
+  const codeLine = codes.reads.find((r) => r.kind === "single")?.line || "";
+  t("set lines show card name plus number, never a bare code", codeLine.includes("Mew R/RGB at $4,824.92") && codeLine.includes("Lugia 149/147") && !codeLine.includes("#") && codeLine.includes("as of Oct 23"));
+  const wfp = readFileSync(new URL("../../.github/workflows/update-sealed-prices.yml", import.meta.url), "utf8");
+  t("set lines are built before the public-data publish", wfp.indexOf("node scripts/build-post-office-catalogue.mjs") > -1 && wfp.indexOf("node scripts/build-post-office-catalogue.mjs") < wfp.indexOf("node scripts/publish-public-data.mjs") && wfp.includes("git add research/assets/public/reads-preview.json"));
   const sunday = "2026-10-18";
   const now = Date.parse("2026-10-18T04:00:00Z");
   t("weekly lands on Sunday", dueOn(follow, sunday, now) && !dueOn(follow, "2026-10-19", now));

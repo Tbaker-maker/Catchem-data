@@ -63,7 +63,7 @@ export function poolFromData({ catalogue, sealed } = {}) {
   for (const set of catalogue?.sets || []) {
     if (!set?.released || !set.slug) continue;
     const priced = (set.prices || []).filter((p) => Number(p?.price) > 0);
-    const top = [...priced].sort((a, b) => b.price - a.price).slice(0, 3);
+    const top = [...priced].filter((p) => String(p?.name || "").trim()).sort((a, b) => b.price - a.price).slice(0, 3);
     if (top.length) {
       reads.push({
         id: `set-${set.slug}-${day}`,
@@ -71,7 +71,7 @@ export function poolFromData({ catalogue, sealed } = {}) {
         era: set.era || eraOf(set.name || ""),
         kind: "single",
         price: Number(top[0].price) || 0,
-        line: `${set.name}: top cards on TCGplayer market are ${top.map((p) => `${cardTitle(p.name, /^\d+[A-Za-z]?\/\d+$|^[A-Z]{0,4}\d+$/.test(String(p.number || "")) ? p.number : "") || p.name} at ${money(p.price)}`).join(", ")}, as of ${when}.`,
+        line: `${set.name}: top cards on TCGplayer market are ${top.map((p) => `${cardTitle(p.name, p.number) || p.name} at ${money(p.price)}`).join(", ")}, as of ${when}.`,
       });
     }
     for (const p of priced) {
