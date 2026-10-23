@@ -22,6 +22,7 @@ jobs:
     permissions:
       contents: write # Needs write access to commit updated prices back
       actions: read # The failure summary reads this run's own step results
+      issues: write # A refused or rolled back publish opens an issue
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -469,7 +470,24 @@ jobs:
         # One orphan commit of research/assets/public, same paths, no history.
         # This branch is overwritten every night. Only refs/heads/public-data is force-pushed.
         # Main still receives the feed commit above.
+        # Before the push: the old tip is saved as public-data-backup, and the new
+        # build must pass the file, date and reads checks and the smoke test, or
+        # nothing is pushed. After the push: the live site is checked and the
+        # backup is put back if it fails. Limits stay in catchem-data-private.
+        id: publish
+        env:
+          PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
         run: node scripts/publish-public-data.mjs --push
+
+      - name: Open an issue when the publish was refused or rolled back
+        if: failure() && steps.publish.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          body="$(cat data/derived/publish-report.json 2>/dev/null || echo 'no report written')"
+          gh issue create --title "public-data publish refused or rolled back ($(date -u +%F))" --body "Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+          $body" || echo "issue not opened"
 
       - name: Fail if reads, search, or the index wrote nothing
         # Reads, search, and the public index may fail without dropping the

@@ -74,6 +74,63 @@ export function pushPublicData(cwd, remote = "origin", rev = "HEAD") {
   return sha;
 }
 
+export function treeFiles(cwd, sha) {
+  const out = git(cwd, ["ls-tree", "-r", "-l", sha]);
+  const files = new Map();
+  for (const line of out.split("\n").filter(Boolean)) {
+    const [meta, path] = line.split("\t");
+    const parts = meta.trim().split(/\s+/);
+    const name = path.startsWith(`${PUBLIC_PREFIX}/`) ? path.slice(PUBLIC_PREFIX.length + 1) : path;
+    files.set(name, { size: Number(parts[3]), blob: parts[2] });
+  }
+  return files;
+}
+
+export function readBlob(cwd, blob) {
+  return git(cwd, ["cat-file", "-p", blob]);
+}
+
+// The tip before this push is kept on a fixed backup ref. Only these two refs move.
+export const BACKUP_REF = "refs/heads/public-data-backup";
+
+export function remoteTip(cwd, remote = "origin") {
+  const out = git(cwd, ["ls-remote", remote, PUBLIC_REF]);
+  return out.split(/\s+/)[0] || "";
+}
+
+export function restorePublicData(cwd, sha, remote = "origin") {
+  if (!/^[0-9a-f]{40}$/.test(sha || "")) throw new Error("no backup tip to restore");
+  git(cwd, ["push", "--force", remote, `${sha}:${PUBLIC_REF}`]);
+}
+
+export async function guardedPublish({ cwd, remote = "origin", today, cfg, smoke, live, wait, log = console.log }) {
+  const { checkBuild } = await import("./lib/publish-checks.mjs");
+  const sha = buildPublicCommit(cwd);
+  assertPublicData(cwd, sha);
+  const files = treeFiles(cwd, sha);
+  for (const name of ["reads.json", "counts.json", "today.json", "movers.json"]) {
+    const f = files.get(name);
+    if (f && f.size > 0) f.text = readBlob(cwd, f.blob);
+  }
+  let backup = "";
+  try { git(cwd, ["fetch", "-q", remote, `${PUBLIC_REF}:refs/remotes/${remote}/${PUBLIC_BRANCH}`]); backup = git(cwd, ["rev-parse", `refs/remotes/${remote}/${PUBLIC_BRANCH}`]); } catch { backup = ""; }
+  const before = backup ? [...treeFiles(cwd, backup).keys()] : null;
+  const problems = checkBuild({ files, before, cfg, today });
+  if (smoke) { const s = await smoke(); if (s) problems.push(s); }
+  if (problems.length) return { pushed: false, sha, backup, problems };
+  if (backup) git(cwd, ["push", "--force", remote, `${backup}:${BACKUP_REF}`]);
+  if (PUBLIC_REF !== "refs/heads/public-data") throw new Error("refused: wrong ref");
+  git(cwd, ["push", "--force", remote, `${sha}:${PUBLIC_REF}`]);
+  log(`public-data ${sha} (backup ${backup || "none"})`);
+  if (!live) return { pushed: true, sha, backup, problems: [] };
+  if (wait) await wait();
+  const asOf = JSON.parse(files.get("reads.json").text).asOf;
+  const bad = await live({ sha, asOf });
+  if (!bad.length) return { pushed: true, sha, backup, problems: [] };
+  if (backup) restorePublicData(cwd, backup, remote);
+  return { pushed: true, restored: Boolean(backup), sha, backup, problems: bad };
+}
+
 function isMain() {
   const arg = process.argv[1] || "";
   return arg.endsWith("publish-public-data.mjs") || fileURLToPath(import.meta.url) === arg;
@@ -86,7 +143,26 @@ if (isMain()) {
     assertPublicData(cwd, sha);
     console.log(`public-data commit ${sha} (not pushed)`);
   } else {
-    const sha = pushPublicData(cwd);
-    console.log(`public-data ${sha}`);
+    const { loadChecks, checkLive } = await import("./lib/publish-checks.mjs");
+    const { writeFileSync, mkdirSync } = await import("node:fs");
+    const cfg = await loadChecks(cwd);
+    const smoke = async () => {
+      try { execFileSync("node", ["scripts/smoke-test.mjs"], { cwd, stdio: "inherit" }); return ""; } catch { return "smoke test failed"; }
+    };
+    const out = await guardedPublish({
+      cwd,
+      today: new Date().toISOString().slice(0, 10),
+      cfg,
+      smoke,
+      live: process.argv.includes("--no-live") ? null : (args) => checkLive(args),
+      wait: cfg ? () => new Promise((r) => setTimeout(r, cfg.liveWaitSec * 1000)) : null,
+    });
+    mkdirSync("data/derived", { recursive: true });
+    writeFileSync("data/derived/publish-report.json", `${JSON.stringify({ at: new Date().toISOString(), ...out }, null, 1)}\n`);
+    if (out.problems.length) {
+      const what = !out.pushed ? "public-data NOT pushed" : out.restored ? `public-data restored to ${out.backup}` : "public-data live check failed, no backup to restore";
+      console.error(`${what}:\n- ${out.problems.join("\n- ")}`);
+      process.exit(1);
+    }
   }
 }
