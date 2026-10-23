@@ -1,272 +1,41 @@
 {
- "at": "2026-10-20",
- "source": "one-time clean before the next sealed price run",
- "rules": [
-  "cheapest-under-half",
-  "history-under-0.3"
- ],
- "floors": 25,
- "historyPoints": 883,
- "historyProducts": 18,
- "listedMedians": 168,
+ "at": "2026-10-23T03:32:36.051Z",
  "log": [
-  {
-   "id": "swsh6-pack",
-   "rule": "cheapest-under-half",
-   "price": 6,
-   "median": 16.74
-  },
-  {
-   "id": "swsh7-pack",
-   "rule": "cheapest-under-half",
-   "price": 21.23,
-   "median": 52
-  },
-  {
-   "id": "sv8-bb",
-   "rule": "cheapest-under-half",
-   "price": 28.99,
-   "median": 65
-  },
-  {
-   "id": "sv7-bb",
-   "rule": "cheapest-under-half",
-   "price": 22.37,
-   "median": 85
-  },
-  {
-   "id": "sv6-bb",
-   "rule": "cheapest-under-half",
-   "price": 50,
-   "median": 106.06
-  },
-  {
-   "id": "swsh2-booster-box",
-   "rule": "cheapest-under-half",
-   "price": 266.54,
-   "median": 573.06
-  },
-  {
-   "id": "swsh6-etb",
-   "rule": "cheapest-under-half",
-   "price": 75,
-   "median": 169.99
-  },
   {
    "id": "me2-etb",
    "rule": "cheapest-under-half",
    "price": 46.98,
-   "median": 159.99
+   "median": 155
   },
   {
-   "id": "sv8pt5-etb",
+   "id": "sv6-etb",
    "rule": "cheapest-under-half",
-   "price": 49.99,
-   "median": 141.99
-  },
-  {
-   "id": "sv8pt5-etb",
-   "rule": "history-under-0.3",
-   "dropped": 28,
-   "median": 141.99
-  },
-  {
-   "id": "sv10-booster-box",
-   "rule": "history-under-0.3",
-   "dropped": 60,
-   "median": 475
-  },
-  {
-   "id": "sv9-booster-box",
-   "rule": "history-under-0.3",
-   "dropped": 60,
-   "median": 256.49
-  },
-  {
-   "id": "sv8-booster-box",
-   "rule": "history-under-0.3",
-   "dropped": 60,
-   "median": 310.95
-  },
-  {
-   "id": "sv7-booster-box",
-   "rule": "history-under-0.3",
-   "dropped": 60,
-   "median": 350
-  },
-  {
-   "id": "sv3pt5-etb",
-   "rule": "history-under-0.3",
-   "dropped": 3,
-   "median": 595
+   "price": 37.75,
+   "median": 120.38
   },
   {
    "id": "sv3pt5-upc",
    "rule": "cheapest-under-half",
-   "price": 100,
-   "median": 936.99
+   "price": 185,
+   "median": 949.99
   },
   {
    "id": "sv3pt5-upc",
-   "rule": "history-under-0.3",
-   "dropped": 60,
-   "median": 936.99
-  },
-  {
-   "id": "swsh12pt5-etb",
-   "rule": "history-under-0.3",
-   "dropped": 60,
-   "median": 339
-  },
-  {
-   "id": "swsh12pt5-premium",
-   "rule": "cheapest-under-half",
-   "price": 75,
-   "median": 226.93
-  },
-  {
-   "id": "swsh12-etb",
-   "rule": "history-under-0.3",
-   "dropped": 60,
-   "median": 169.99
-  },
-  {
-   "id": "swsh11-etb",
-   "rule": "cheapest-under-half",
-   "price": 47.17,
-   "median": 235.04
-  },
-  {
-   "id": "swsh8-etb",
-   "rule": "cheapest-under-half",
-   "price": 70,
-   "median": 350
-  },
-  {
-   "id": "swsh7-etb",
-   "rule": "history-under-0.3",
-   "dropped": 60,
-   "median": 550
-  },
-  {
-   "id": "swsh7-booster-box",
-   "rule": "history-under-0.3",
-   "dropped": 60,
-   "median": 2700
-  },
-  {
-   "id": "cel25-etb",
-   "rule": "cheapest-under-half",
-   "price": 132,
-   "median": 350
-  },
-  {
-   "id": "cel25-etb",
-   "rule": "history-under-0.3",
-   "dropped": 60,
-   "median": 350
-  },
-  {
-   "id": "cel25-upc",
-   "rule": "cheapest-under-half",
-   "price": 479.99,
-   "median": 1250
-  },
-  {
-   "id": "cel25-upc",
-   "rule": "history-under-0.3",
-   "dropped": 60,
-   "median": 1250
-  },
-  {
-   "id": "sm12-etb",
-   "rule": "history-under-0.3",
-   "dropped": 20,
-   "median": 580
-  },
-  {
-   "id": "sv6-booster-box",
-   "rule": "history-under-0.3",
-   "dropped": 51,
-   "median": 380
-  },
-  {
-   "id": "sv4-booster-box",
-   "rule": "cheapest-under-half",
-   "price": 99.99,
-   "median": 326.86
-  },
-  {
-   "id": "sv4-booster-box",
    "rule": "history-under-0.3",
    "dropped": 1,
-   "median": 326.86
+   "median": 949.99
   },
   {
-   "id": "sv3-booster-box",
-   "rule": "history-under-0.3",
-   "dropped": 60,
-   "median": 407.99
-  },
-  {
-   "id": "swsh9-booster-box",
+   "id": "cel25-etb",
    "rule": "cheapest-under-half",
-   "price": 100,
-   "median": 611.86
+   "price": 125,
+   "median": 338.98
   },
   {
-   "id": "swsh9-booster-box",
-   "rule": "history-under-0.3",
-   "dropped": 60,
-   "median": 611.86
-  },
-  {
-   "id": "sv3pt5-bb",
+   "id": "sv3-pack",
    "rule": "cheapest-under-half",
-   "price": 89.99,
-   "median": 185
-  },
-  {
-   "id": "me5-pack",
-   "rule": "cheapest-under-half",
-   "price": 3.33,
-   "median": 8
-  },
-  {
-   "id": "sv2-pack",
-   "rule": "cheapest-under-half",
-   "price": 3.99,
-   "median": 19.99
-  },
-  {
-   "id": "sv5-pack",
-   "rule": "cheapest-under-half",
-   "price": 7.5,
-   "median": 15.99
-  },
-  {
-   "id": "swsh1-pack",
-   "rule": "cheapest-under-half",
-   "price": 4.99,
-   "median": 19.97
-  },
-  {
-   "id": "swsh2-pack",
-   "rule": "cheapest-under-half",
-   "price": 7.04,
-   "median": 14.87
-  },
-  {
-   "id": "swsh35-pack",
-   "rule": "cheapest-under-half",
-   "price": 13,
-   "median": 29.99
-  },
-  {
-   "id": "swsh4-pack",
-   "rule": "cheapest-under-half",
-   "price": 5,
-   "median": 14
+   "price": 7,
+   "median": 14.99
   }
  ]
 }

@@ -1,14 +1,14 @@
 {
   "id": "singles",
   "name": "Singles Index",
-  "asOf": "2026-10-21",
+  "asOf": "2026-10-23",
   "source": "TCGplayer market price (TCGCSV daily files)",
   "anchorRequested": "2026-03-31",
   "anchorUsed": "2026-09-26",
   "anchorLevel": 100,
   "anchorReason": "First TCGCSV singles day on file is 2026-09-26. March 31 was not invented. Missing days are gaps.",
   "method": "Chain-linked. A card printing joins on its first priced day and does not move the level that day. Each day's move is the trimmed geometric mean of price changes of printings priced on both days: each change is capped at 30% down or 43% up, and the top and bottom 10% are dropped. Cards under $1 are left out. Sealed products are not in this index.",
-  "basket": 14682,
+  "basket": 14706,
   "series": {
     "base": 100,
     "points": [
@@ -218,6 +218,26 @@
         "entered": 48,
         "equalMovePct": 0.0187,
         "valueMovePct": 0.7001
+      },
+      {
+        "date": "2026-10-22",
+        "from": "2026-10-21",
+        "equal": 98.9,
+        "value": 100.8,
+        "matched": 14218,
+        "entered": 41,
+        "equalMovePct": 0.0161,
+        "valueMovePct": 0.1411
+      },
+      {
+        "date": "2026-10-23",
+        "from": "2026-10-22",
+        "equal": 99,
+        "value": 100.8,
+        "matched": 14211,
+        "entered": 50,
+        "equalMovePct": 0.0235,
+        "valueMovePct": 0.0112
       }
     ],
     "gaps": [

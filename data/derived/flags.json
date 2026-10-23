@@ -1,6 +1,6 @@
 {
- "asOf": "2026-10-21",
- "generatedAt": "2026-10-21T05:16:38.236Z",
+ "asOf": "2026-10-23",
+ "generatedAt": "2026-10-23T03:15:52.412Z",
  "note": "Internal. What changed or broke tonight, for the weekly review. Script only.",
  "types": {
   "NEW_SET": "A TCGCSV set (group) appeared that was not there last night, or a future product in a news calendar is not on the radar.",
@@ -21,18 +21,18 @@
  },
  "summary": {
   "byType": {
-   "PRICE_MOVE": 14,
+   "PRICE_MOVE": 7,
    "NEWS_SOURCE_FAILING": 5,
    "DATA_GAP": 1,
-   "STALE_FILE": 2,
-   "ODD_PRICE": 30,
-   "READ_TYPE_EMPTY": 8,
-   "YOUTUBE_LEAD": 12
+   "STALE_FILE": 3,
+   "ODD_PRICE": 29,
+   "READ_TYPE_EMPTY": 5,
+   "YOUTUBE_LEAD": 9
   },
   "bySeverity": {
-   "high": 10,
-   "medium": 20,
-   "low": 42
+   "high": 5,
+   "medium": 16,
+   "low": 38
   }
  },
  "newTonight": 0,
@@ -40,15 +40,15 @@
   {
    "type": "PRICE_MOVE",
    "severity": "high",
-   "key": "move:717607:2026-10-21",
-   "line": "Mew - R/RGB (ME: 30th Celebration): $3249.64 (2026-10-20) to $5250.63 (2026-10-21) on TCGplayer market, up 62%.",
+   "key": "move:89167:2026-10-23",
+   "line": "Shining Mewtwo (Neo Destiny): $3000.00 (2026-10-22) to $577.00 (2026-10-23) on TCGplayer market, down 81%.",
    "data": {
-    "id": "tcgcsv-717607",
-    "from": 3249.64,
-    "to": 5250.63,
-    "fromDay": "2026-10-20",
-    "toDay": "2026-10-21",
-    "pct": 61.6,
+    "id": "tcgcsv-89167",
+    "from": 3000,
+    "to": 577,
+    "fromDay": "2026-10-22",
+    "toDay": "2026-10-23",
+    "pct": -80.8,
     "kind": "single"
    },
    "new": false
@@ -56,15 +56,15 @@
   {
    "type": "PRICE_MOVE",
    "severity": "high",
-   "key": "move:91246:2026-10-21",
-   "line": "M Charizard EX (X) (Secret) (XY - Flashfire): $802.12 (2026-10-20) to $1501.23 (2026-10-21) on TCGplayer market, up 87%.",
+   "key": "move:86684:2026-10-23",
+   "line": "Leafeon LV.X (Majestic Dawn): $200.00 (2026-10-22) to $525.00 (2026-10-23) on TCGplayer market, up 163%.",
    "data": {
-    "id": "tcgcsv-91246",
-    "from": 802.12,
-    "to": 1501.23,
-    "fromDay": "2026-10-20",
-    "toDay": "2026-10-21",
-    "pct": 87.2,
+    "id": "tcgcsv-86684",
+    "from": 200,
+    "to": 525,
+    "fromDay": "2026-10-22",
+    "toDay": "2026-10-23",
+    "pct": 162.5,
     "kind": "single"
    },
    "new": false
@@ -72,127 +72,31 @@
   {
    "type": "PRICE_MOVE",
    "severity": "high",
-   "key": "move:89606:2026-10-21",
-   "line": "Suicune (Shiny) (Call of Legends): $352.71 (2026-10-20) to $799.97 (2026-10-21) on TCGplayer market, up 127%.",
+   "key": "move:98542:2026-10-23",
+   "line": "Rising Rivals Booster Pack (Rising Rivals): $400.00 (2026-10-22) to $700.00 (2026-10-23) on TCGplayer market, up 75%.",
    "data": {
-    "id": "tcgcsv-89606",
-    "from": 352.71,
-    "to": 799.97,
-    "fromDay": "2026-10-20",
-    "toDay": "2026-10-21",
-    "pct": 126.8,
-    "kind": "single"
+    "id": "tcgcsv-98542",
+    "from": 400,
+    "to": 700,
+    "fromDay": "2026-10-22",
+    "toDay": "2026-10-23",
+    "pct": 75,
+    "kind": "sealed"
    },
    "new": false
   },
   {
    "type": "PRICE_MOVE",
    "severity": "high",
-   "key": "move:84144:2026-10-21",
-   "line": "Celebi (Skyridge): $379.99 (2026-10-20) to $775.00 (2026-10-21) on TCGplayer market, up 104%.",
+   "key": "move:88794:2026-10-23",
+   "line": "Rocket's Sneasel ex (EX Team Rocket Returns): $250.00 (2026-10-22) to $386.33 (2026-10-23) on TCGplayer market, up 55%.",
    "data": {
-    "id": "tcgcsv-84144",
-    "from": 379.99,
-    "to": 775,
-    "fromDay": "2026-10-20",
-    "toDay": "2026-10-21",
-    "pct": 104,
-    "kind": "single"
-   },
-   "new": false
-  },
-  {
-   "type": "PRICE_MOVE",
-   "severity": "high",
-   "key": "move:84195:2026-10-21",
-   "line": "Charizard (Delta Species) (EX Crystal Guardians): $564.76 (2026-10-20) to $939.50 (2026-10-21) on TCGplayer market, up 66%.",
-   "data": {
-    "id": "tcgcsv-84195",
-    "from": 564.76,
-    "to": 939.5,
-    "fromDay": "2026-10-20",
-    "toDay": "2026-10-21",
-    "pct": 66.4,
-    "kind": "single"
-   },
-   "new": false
-  },
-  {
-   "type": "PRICE_MOVE",
-   "severity": "high",
-   "key": "move:84785:2026-10-21",
-   "line": "Dewgong (H6) (Skyridge): $141.99 (2026-10-20) to $449.99 (2026-10-21) on TCGplayer market, up 217%.",
-   "data": {
-    "id": "tcgcsv-84785",
-    "from": 141.99,
-    "to": 449.99,
-    "fromDay": "2026-10-20",
-    "toDay": "2026-10-21",
-    "pct": 216.9,
-    "kind": "single"
-   },
-   "new": false
-  },
-  {
-   "type": "PRICE_MOVE",
-   "severity": "high",
-   "key": "move:83900:2026-10-21",
-   "line": "Blastoise ex (EX FireRed & LeafGreen): $425.00 (2026-10-20) to $650.45 (2026-10-21) on TCGplayer market, up 53%.",
-   "data": {
-    "id": "tcgcsv-83900",
-    "from": 425,
-    "to": 650.45,
-    "fromDay": "2026-10-20",
-    "toDay": "2026-10-21",
-    "pct": 53,
-    "kind": "single"
-   },
-   "new": false
-  },
-  {
-   "type": "PRICE_MOVE",
-   "severity": "high",
-   "key": "move:88089:2026-10-21",
-   "line": "Pikachu - DP16 (Diamond and Pearl Promos): $304.95 (2026-10-20) to $119.90 (2026-10-21) on TCGplayer market, down 61%.",
-   "data": {
-    "id": "tcgcsv-88089",
-    "from": 304.95,
-    "to": 119.9,
-    "fromDay": "2026-10-20",
-    "toDay": "2026-10-21",
-    "pct": -60.7,
-    "kind": "single"
-   },
-   "new": false
-  },
-  {
-   "type": "PRICE_MOVE",
-   "severity": "high",
-   "key": "move:88874:2026-10-21",
-   "line": "Sabrina's Gengar (Gym Heroes): $331.51 (2026-10-20) to $499.00 (2026-10-21) on TCGplayer market, up 51%.",
-   "data": {
-    "id": "tcgcsv-88874",
-    "from": 331.51,
-    "to": 499,
-    "fromDay": "2026-10-20",
-    "toDay": "2026-10-21",
-    "pct": 50.5,
-    "kind": "single"
-   },
-   "new": false
-  },
-  {
-   "type": "PRICE_MOVE",
-   "severity": "high",
-   "key": "move:83514:2026-10-21",
-   "line": "Altaria (EX Deoxys): $6.65 (2026-10-20) to $129.99 (2026-10-21) on TCGplayer market, up 1855%.",
-   "data": {
-    "id": "tcgcsv-83514",
-    "from": 6.65,
-    "to": 129.99,
-    "fromDay": "2026-10-20",
-    "toDay": "2026-10-21",
-    "pct": 1854.7,
+    "id": "tcgcsv-88794",
+    "from": 250,
+    "to": 386.33,
+    "fromDay": "2026-10-22",
+    "toDay": "2026-10-23",
+    "pct": 54.5,
     "kind": "single"
    },
    "new": false
@@ -200,31 +104,15 @@
   {
    "type": "PRICE_MOVE",
    "severity": "medium",
-   "key": "move:276377:2026-10-21",
-   "line": "Pikachu (Pokemon Day Stamped) (POP Series 6): $109.99 (2026-10-20) to $200.00 (2026-10-21) on TCGplayer market, up 82%.",
+   "key": "move:108421:2026-10-23",
+   "line": "Genesect - BW101 (Black and White Promos): $59.51 (2026-10-22) to $100.00 (2026-10-23) on TCGplayer market, up 68%.",
    "data": {
-    "id": "tcgcsv-276377",
-    "from": 109.99,
-    "to": 200,
-    "fromDay": "2026-10-20",
-    "toDay": "2026-10-21",
-    "pct": 81.8,
-    "kind": "single"
-   },
-   "new": false
-  },
-  {
-   "type": "PRICE_MOVE",
-   "severity": "medium",
-   "key": "move:87401:2026-10-21",
-   "line": "Mew (POP Series 4): $50.15 (2026-10-20) to $100.00 (2026-10-21) on TCGplayer market, up 99%.",
-   "data": {
-    "id": "tcgcsv-87401",
-    "from": 50.15,
+    "id": "tcgcsv-108421",
+    "from": 59.51,
     "to": 100,
-    "fromDay": "2026-10-20",
-    "toDay": "2026-10-21",
-    "pct": 99.4,
+    "fromDay": "2026-10-22",
+    "toDay": "2026-10-23",
+    "pct": 68,
     "kind": "single"
    },
    "new": false
@@ -232,31 +120,31 @@
   {
    "type": "PRICE_MOVE",
    "severity": "medium",
-   "key": "move:83484:2026-10-21",
-   "line": "Aggron ex (EX Crystal Guardians): $73.62 (2026-10-20) to $115.74 (2026-10-21) on TCGplayer market, up 57%.",
-   "data": {
-    "id": "tcgcsv-83484",
-    "from": 73.62,
-    "to": 115.74,
-    "fromDay": "2026-10-20",
-    "toDay": "2026-10-21",
-    "pct": 57.2,
-    "kind": "single"
-   },
-   "new": false
-  },
-  {
-   "type": "PRICE_MOVE",
-   "severity": "medium",
-   "key": "move:90557:2026-10-21",
-   "line": "Weezing (32) (Expedition): $45.80 (2026-10-20) to $74.11 (2026-10-21) on TCGplayer market, up 62%.",
+   "key": "move:90557:2026-10-23",
+   "line": "Weezing (32) (Expedition): $45.80 (2026-10-22) to $74.11 (2026-10-23) on TCGplayer market, up 62%.",
    "data": {
     "id": "tcgcsv-90557",
     "from": 45.8,
     "to": 74.11,
-    "fromDay": "2026-10-20",
-    "toDay": "2026-10-21",
+    "fromDay": "2026-10-22",
+    "toDay": "2026-10-23",
     "pct": 61.8,
+    "kind": "single"
+   },
+   "new": false
+  },
+  {
+   "type": "PRICE_MOVE",
+   "severity": "medium",
+   "key": "move:480030:2026-10-23",
+   "line": "Dragonite FB - 2010 (Yuta Komatsuda) (World Championship Decks): $29.99 (2026-10-22) to $45.00 (2026-10-23) on TCGplayer market, up 50%.",
+   "data": {
+    "id": "tcgcsv-480030",
+    "from": 29.99,
+    "to": 45,
+    "fromDay": "2026-10-22",
+    "toDay": "2026-10-23",
+    "pct": 50.1,
     "kind": "single"
    },
    "new": false
@@ -342,13 +230,13 @@
   },
   {
    "type": "STALE_FILE",
-   "severity": "medium",
+   "severity": "high",
    "key": "stale:news",
-   "line": "research/digests/news.json is 2 days old (dated 2026-10-19, allowed 1).",
+   "line": "research/digests/news.json is 4 days old (dated 2026-10-19, allowed 1).",
    "data": {
     "file": "research/digests/news.json",
     "date": "2026-10-19",
-    "age": 2,
+    "age": 4,
     "limit": 1
    },
    "new": false
@@ -356,11 +244,24 @@
   {
    "type": "STALE_FILE",
    "severity": "medium",
+   "key": "stale:ebaySealed",
+   "line": "data/raw/ebay-sealed/ is 4 days old (dated 2026-10-19, allowed 2).",
+   "data": {
+    "file": "data/raw/ebay-sealed/",
+    "date": "2026-10-19",
+    "age": 4,
+    "limit": 2
+   },
+   "new": false
+  },
+  {
+   "type": "STALE_FILE",
+   "severity": "medium",
    "key": "stale:cardRating",
-   "line": "research/assets/public/feed/card-rating.json is 2 days old (dated 2026-10-19, allowed 1).",
+   "line": "research/assets/public/feed/card-rating.json is 2 days old (dated 2026-10-21, allowed 1).",
    "data": {
     "file": "research/assets/public/feed/card-rating.json",
-    "date": "2026-10-19",
+    "date": "2026-10-21",
     "age": 2,
     "limit": 1
    },
@@ -370,7 +271,7 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-277004",
-   "line": "Held for a check: Conkeldurr V (Alternate Full Art) (Pokémon GO) at $3.96, more than 10x from peer median.",
+   "line": "Held for a check: Conkeldurr V (Alternate Full Art) (Pokémon GO) at $4.01, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-277004",
     "group": "swsh-alt",
@@ -383,11 +284,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-497606",
-   "line": "Held for a check: Magikarp - 203/193 (SV02: Paldea Evolved) at $346.95, more than 10x from peer median.",
+   "line": "Held for a check: Magikarp - 203/193 (SV02: Paldea Evolved) at $339.44, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-497606",
     "group": "ir",
-    "ratio": 20.26,
+    "ratio": 19.49,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -400,7 +301,7 @@
    "data": {
     "id": "tcgcsv-264206",
     "group": "tg",
-    "ratio": 14.91,
+    "ratio": 15.12,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -409,11 +310,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-179007",
-   "line": "Held for a check: Heat Factory Prism Star (SM - Lost Thunder) at $1.16, more than 10x from peer median.",
+   "line": "Held for a check: Heat Factory Prism Star (SM - Lost Thunder) at $1.22, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-179007",
     "group": "prism",
-    "ratio": 0.06,
+    "ratio": 0.07,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -422,11 +323,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-264207",
-   "line": "Held for a check: Umbreon V (SWSH09: Brilliant Stars) at $70.96, more than 10x from peer median.",
+   "line": "Held for a check: Umbreon V (SWSH09: Brilliant Stars) at $70.85, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-264207",
     "group": "tg",
-    "ratio": 10.95,
+    "ratio": 11.09,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -435,7 +336,7 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-264208",
-   "line": "Held for a check: Sylveon VMAX (SWSH09: Brilliant Stars) at $65.17, more than 10x from peer median.",
+   "line": "Held for a check: Sylveon VMAX (SWSH09: Brilliant Stars) at $64.28, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-264208",
     "group": "tg",
@@ -461,11 +362,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-264209",
-   "line": "Held for a check: Sylveon V (SWSH09: Brilliant Stars) at $72.50, more than 10x from peer median.",
+   "line": "Held for a check: Sylveon V (SWSH09: Brilliant Stars) at $72.38, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-264209",
     "group": "tg",
-    "ratio": 11.19,
+    "ratio": 11.33,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -474,7 +375,7 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-179011",
-   "line": "Held for a check: Life Forest Prism Star (SM - Lost Thunder) at $1.05, more than 10x from peer median.",
+   "line": "Held for a check: Life Forest Prism Star (SM - Lost Thunder) at $1.02, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-179011",
     "group": "prism",
@@ -500,11 +401,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-264221",
-   "line": "Held for a check: Mimikyu V (SWSH09: Brilliant Stars) at $81.00, more than 10x from peer median.",
+   "line": "Held for a check: Mimikyu V (SWSH09: Brilliant Stars) at $80.99, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-264221",
     "group": "tg",
-    "ratio": 12.5,
+    "ratio": 12.67,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -513,11 +414,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-264222",
-   "line": "Held for a check: Mimikyu VMAX (SWSH09: Brilliant Stars) at $73.76, more than 10x from peer median.",
+   "line": "Held for a check: Mimikyu VMAX (SWSH09: Brilliant Stars) at $74.03, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-264222",
     "group": "tg",
-    "ratio": 11.38,
+    "ratio": 11.59,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -526,11 +427,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-590027",
-   "line": "Held for a check: Pikachu ex - 238/191 (SV08: Surging Sparks) at $268.68, more than 10x from peer median.",
+   "line": "Held for a check: Pikachu ex - 238/191 (SV08: Surging Sparks) at $266.98, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-590027",
     "group": "sir",
-    "ratio": 10.07,
+    "ratio": 10.11,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -539,7 +440,7 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-179028",
-   "line": "Held for a check: Thunder Mountain Prism Star (SM - Lost Thunder) at $1.54, more than 10x from peer median.",
+   "line": "Held for a check: Thunder Mountain Prism Star (SM - Lost Thunder) at $1.55, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-179028",
     "group": "prism",
@@ -552,11 +453,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-633031",
-   "line": "Held for a check: Team Rocket's Mewtwo ex - 231/182 (SV10: Destined Rivals) at $345.02, more than 10x from peer median.",
+   "line": "Held for a check: Team Rocket's Mewtwo ex - 231/182 (SV10: Destined Rivals) at $346.52, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-633031",
     "group": "sir",
-    "ratio": 12.93,
+    "ratio": 13.12,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -565,11 +466,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-284137",
-   "line": "Held for a check: Giratina V (Alternate Full Art) (SWSH11: Lost Origin) at $854.73, more than 10x from peer median.",
+   "line": "Held for a check: Giratina V (Alternate Full Art) (SWSH11: Lost Origin) at $855.69, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-284137",
     "group": "swsh-alt",
-    "ratio": 13.91,
+    "ratio": 13.93,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -578,11 +479,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-517045",
-   "line": "Held for a check: Charizard ex - 199/165 (SV: Scarlet & Violet 151) at $313.36, more than 10x from peer median.",
+   "line": "Held for a check: Charizard ex - 199/165 (SV: Scarlet & Violet 151) at $309.65, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-517045",
     "group": "sir",
-    "ratio": 11.74,
+    "ratio": 11.72,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -591,11 +492,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-253149",
-   "line": "Held for a check: Sandaconda V (Alternate Full Art) (SWSH08: Fusion Strike) at $4.47, more than 10x from peer median.",
+   "line": "Held for a check: Sandaconda V (Alternate Full Art) (SWSH08: Fusion Strike) at $4.77, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-253149",
     "group": "swsh-alt",
-    "ratio": 0.07,
+    "ratio": 0.08,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -604,7 +505,7 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-246754",
-   "line": "Held for a check: Duraludon VMAX (Alternate Art Secret) (SWSH07: Evolving Skies) at $15.16, more than 10x from peer median.",
+   "line": "Held for a check: Duraludon VMAX (Alternate Art Secret) (SWSH07: Evolving Skies) at $15.26, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-246754",
     "group": "swsh-alt",
@@ -617,11 +518,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-477057",
-   "line": "Held for a check: Mewtwo VSTAR (SWSH: Crown Zenith) at $233.49, more than 10x from peer median.",
+   "line": "Held for a check: Mewtwo VSTAR (SWSH: Crown Zenith) at $239.25, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-477057",
     "group": "gg",
-    "ratio": 21.64,
+    "ratio": 22.79,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -634,7 +535,7 @@
    "data": {
     "id": "tcgcsv-642558",
     "group": "ir",
-    "ratio": 14.46,
+    "ratio": 14.56,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -643,7 +544,7 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-183962",
-   "line": "Held for a check: Wondrous Labyrinth Prism Star (SM - Team Up) at $0.70, more than 10x from peer median.",
+   "line": "Held for a check: Wondrous Labyrinth Prism Star (SM - Team Up) at $0.73, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-183962",
     "group": "prism",
@@ -656,11 +557,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-274467",
-   "line": "Held for a check: Radiant Charizard (Pokémon GO) at $18.77, more than 10x from peer median.",
+   "line": "Held for a check: Radiant Charizard (Pokémon GO) at $18.88, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-274467",
     "group": "radiant",
-    "ratio": 13.6,
+    "ratio": 13.11,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -669,7 +570,7 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-253171",
-   "line": "Held for a check: Inteleon VMAX (Alternate Art Secret) (SWSH08: Fusion Strike) at $26.14, more than 10x from peer median.",
+   "line": "Held for a check: Inteleon VMAX (Alternate Art Secret) (SWSH08: Fusion Strike) at $26.09, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-253171",
     "group": "swsh-alt",
@@ -708,7 +609,7 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-234088",
-   "line": "Held for a check: Single Strike Urshifu VMAX (Alternate Art Secret) (SWSH05: Battle Styles) at $30.39, more than 10x from peer median.",
+   "line": "Held for a check: Single Strike Urshifu VMAX (Alternate Art Secret) (SWSH05: Battle Styles) at $30.31, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-234088",
     "group": "swsh-alt",
@@ -720,25 +621,12 @@
   {
    "type": "ODD_PRICE",
    "severity": "low",
-   "key": "held:tcgcsv-86199",
-   "line": "Held for a check: Houndoom (H11) (Aquapolis) at $1571.99, more than 10x from peer median.",
-   "data": {
-    "id": "tcgcsv-86199",
-    "group": "wotc-holo",
-    "ratio": 10.11,
-    "source": "data/derived/card-rating-held.json"
-   },
-   "new": false
-  },
-  {
-   "type": "ODD_PRICE",
-   "severity": "low",
    "key": "held:tcgcsv-106999",
-   "line": "Held for a check: Charizard (Base Set) at $2257.87, more than 10x from peer median.",
+   "line": "Held for a check: Charizard (Base Set) at $2172.24, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-106999",
     "group": "wotc-holo",
-    "ratio": 14.53,
+    "ratio": 14.07,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -751,30 +639,8 @@
    "data": {
     "id": "tcgcsv-183899",
     "group": "tagteam-alt",
-    "ratio": 11.99,
+    "ratio": 11.83,
     "source": "data/derived/card-rating-held.json"
-   },
-   "new": false
-  },
-  {
-   "type": "READ_TYPE_EMPTY",
-   "severity": "low",
-   "key": "empty:plain",
-   "line": "Read type \"plain\" produced nothing tonight.",
-   "data": {
-    "kind": "plain",
-    "lastNight": 0
-   },
-   "new": false
-  },
-  {
-   "type": "READ_TYPE_EMPTY",
-   "severity": "low",
-   "key": "empty:set",
-   "line": "Read type \"set\" produced nothing tonight.",
-   "data": {
-    "kind": "set",
-    "lastNight": 0
    },
    "new": false
   },
@@ -814,17 +680,6 @@
   {
    "type": "READ_TYPE_EMPTY",
    "severity": "low",
-   "key": "empty:setheat",
-   "line": "Read type \"setheat\" produced nothing tonight.",
-   "data": {
-    "kind": "setheat",
-    "lastNight": 0
-   },
-   "new": false
-  },
-  {
-   "type": "READ_TYPE_EMPTY",
-   "severity": "low",
    "key": "empty:listings",
    "line": "Read type \"listings\" produced nothing tonight.",
    "data": {
@@ -847,59 +702,59 @@
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:print_run:Print runs:2026-10-21",
-   "line": "Print runs: 8 creator videos on 6 channels, 2026-10-15 to 2026-10-21 (unverified lead).",
+   "key": "yt:print_run:Print runs:2026-10-23",
+   "line": "Print runs: 7 creator videos on 6 channels, 2026-10-17 to 2026-10-23 (unverified lead).",
    "data": {
     "kind": "print_run",
     "ref": null,
     "label": "Print runs",
     "channels": 6,
-    "videos": 8,
-    "weighted": 7.5,
-    "from": "2026-10-15",
-    "to": "2026-10-21"
+    "videos": 7,
+    "weighted": 6.5,
+    "from": "2026-10-17",
+    "to": "2026-10-23"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24722:2026-10-21",
-   "line": "ME: 30th Celebration: 7 creator videos on 4 channels, 2026-10-15 to 2026-10-21 (unverified lead).",
+   "key": "yt:set_attention:24722:2026-10-23",
+   "line": "ME: 30th Celebration: 5 creator videos on 3 channels, 2026-10-17 to 2026-10-23 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24722,
     "label": "ME: 30th Celebration",
-    "channels": 4,
-    "videos": 7,
-    "weighted": 4,
-    "from": "2026-10-15",
-    "to": "2026-10-21"
+    "channels": 3,
+    "videos": 5,
+    "weighted": 3,
+    "from": "2026-10-17",
+    "to": "2026-10-23"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:23821:2026-10-21",
-   "line": "SV: Prismatic Evolutions: 8 creator videos on 3 channels, 2026-10-15 to 2026-10-21 (unverified lead).",
+   "key": "yt:set_attention:23821:2026-10-23",
+   "line": "SV: Prismatic Evolutions: 5 creator videos on 3 channels, 2026-10-17 to 2026-10-23 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 23821,
     "label": "SV: Prismatic Evolutions",
     "channels": 3,
-    "videos": 8,
+    "videos": 5,
     "weighted": 3,
-    "from": "2026-10-15",
-    "to": "2026-10-21"
+    "from": "2026-10-17",
+    "to": "2026-10-23"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24380:2026-10-21",
-   "line": "ME01: Mega Evolution: 5 creator videos on 2 channels, 2026-10-15 to 2026-10-21 (unverified lead).",
+   "key": "yt:set_attention:24380:2026-10-23",
+   "line": "ME01: Mega Evolution: 5 creator videos on 2 channels, 2026-10-17 to 2026-10-23 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24380,
@@ -907,16 +762,16 @@
     "channels": 2,
     "videos": 5,
     "weighted": 2,
-    "from": "2026-10-15",
-    "to": "2026-10-21"
+    "from": "2026-10-17",
+    "to": "2026-10-23"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:24831:2026-10-21",
-   "line": "ME06: Delta Reign: 3 creator videos on 2 channels, 2026-10-15 to 2026-10-21 (unverified lead).",
+   "key": "yt:set_attention:24831:2026-10-23",
+   "line": "ME06: Delta Reign: 3 creator videos on 2 channels, 2026-10-17 to 2026-10-23 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 24831,
@@ -924,127 +779,76 @@
     "channels": 2,
     "videos": 3,
     "weighted": 2,
-    "from": "2026-10-15",
-    "to": "2026-10-21"
+    "from": "2026-10-17",
+    "to": "2026-10-23"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:23381:2026-10-21",
-   "line": "SV05: Temporal Forces: 3 creator videos on 2 channels, 2026-10-15 to 2026-10-21 (unverified lead).",
+   "key": "yt:set_attention:24587:2026-10-23",
+   "line": "ME03: Perfect Order: 2 creator videos on 2 channels, 2026-10-17 to 2026-10-23 (unverified lead).",
    "data": {
     "kind": "set_attention",
-    "ref": 23381,
-    "label": "SV05: Temporal Forces",
+    "ref": 24587,
+    "label": "ME03: Perfect Order",
     "channels": 2,
-    "videos": 3,
+    "videos": 2,
     "weighted": 2,
-    "from": "2026-10-15",
-    "to": "2026-10-21"
+    "from": "2026-10-17",
+    "to": "2026-10-23"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:23473:2026-10-21",
-   "line": "SV06: Twilight Masquerade: 3 creator videos on 2 channels, 2026-10-15 to 2026-10-21 (unverified lead).",
+   "key": "yt:set_attention:24655:2026-10-23",
+   "line": "ME04: Chaos Rising: 2 creator videos on 2 channels, 2026-10-17 to 2026-10-23 (unverified lead).",
+   "data": {
+    "kind": "set_attention",
+    "ref": 24655,
+    "label": "ME04: Chaos Rising",
+    "channels": 2,
+    "videos": 2,
+    "weighted": 2,
+    "from": "2026-10-17",
+    "to": "2026-10-23"
+   },
+   "new": false
+  },
+  {
+   "type": "YOUTUBE_LEAD",
+   "severity": "medium",
+   "key": "yt:set_attention:23473:2026-10-23",
+   "line": "SV06: Twilight Masquerade: 2 creator videos on 2 channels, 2026-10-17 to 2026-10-23 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 23473,
     "label": "SV06: Twilight Masquerade",
     "channels": 2,
-    "videos": 3,
+    "videos": 2,
     "weighted": 2,
-    "from": "2026-10-15",
-    "to": "2026-10-21"
+    "from": "2026-10-17",
+    "to": "2026-10-23"
    },
    "new": false
   },
   {
    "type": "YOUTUBE_LEAD",
    "severity": "medium",
-   "key": "yt:set_attention:17688:2026-10-21",
-   "line": "SWSH: Crown Zenith: 3 creator videos on 2 channels, 2026-10-15 to 2026-10-21 (unverified lead).",
+   "key": "yt:set_attention:17688:2026-10-23",
+   "line": "SWSH: Crown Zenith: 2 creator videos on 2 channels, 2026-10-17 to 2026-10-23 (unverified lead).",
    "data": {
     "kind": "set_attention",
     "ref": 17688,
     "label": "SWSH: Crown Zenith",
     "channels": 2,
-    "videos": 3,
-    "weighted": 2,
-    "from": "2026-10-15",
-    "to": "2026-10-21"
-   },
-   "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:set_attention:23651:2026-10-21",
-   "line": "SV08: Surging Sparks: 2 creator videos on 2 channels, 2026-10-15 to 2026-10-21 (unverified lead).",
-   "data": {
-    "kind": "set_attention",
-    "ref": 23651,
-    "label": "SV08: Surging Sparks",
-    "channels": 2,
     "videos": 2,
     "weighted": 2,
-    "from": "2026-10-15",
-    "to": "2026-10-21"
-   },
-   "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:set_attention:23353:2026-10-21",
-   "line": "SV: Paldean Fates: 2 creator videos on 2 channels, 2026-10-15 to 2026-10-21 (unverified lead).",
-   "data": {
-    "kind": "set_attention",
-    "ref": 23353,
-    "label": "SV: Paldean Fates",
-    "channels": 2,
-    "videos": 2,
-    "weighted": 2,
-    "from": "2026-10-15",
-    "to": "2026-10-21"
-   },
-   "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:set_attention:2848:2026-10-21",
-   "line": "SWSH07: Evolving Skies: 2 creator videos on 2 channels, 2026-10-15 to 2026-10-21 (unverified lead).",
-   "data": {
-    "kind": "set_attention",
-    "ref": 2848,
-    "label": "SWSH07: Evolving Skies",
-    "channels": 2,
-    "videos": 2,
-    "weighted": 2,
-    "from": "2026-10-15",
-    "to": "2026-10-21"
-   },
-   "new": false
-  },
-  {
-   "type": "YOUTUBE_LEAD",
-   "severity": "medium",
-   "key": "yt:set_attention:2948:2026-10-21",
-   "line": "SWSH09: Brilliant Stars: 2 creator videos on 2 channels, 2026-10-15 to 2026-10-21 (unverified lead).",
-   "data": {
-    "kind": "set_attention",
-    "ref": 2948,
-    "label": "SWSH09: Brilliant Stars",
-    "channels": 2,
-    "videos": 2,
-    "weighted": 2,
-    "from": "2026-10-15",
-    "to": "2026-10-21"
+    "from": "2026-10-17",
+    "to": "2026-10-23"
    },
    "new": false
   }
