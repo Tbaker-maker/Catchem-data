@@ -84,10 +84,11 @@ function repo(reads, day) {
 {
   // The tip is replaced by an orphan commit every night, so the second
   // publish must still find and keep the first one as the backup.
-  const { dir, bare } = repo(3, DAY);
+  const { dir, bare, old } = repo(3, DAY);
   const first = await guardedPublish({ cwd: dir, today: DAY, cfg: CFG, smoke: async () => "", live: async () => [], log: () => {} });
   writeFileSync(join(dir, "research/assets/public/extra.json"), "{}");
   git(dir, ["add", "."]); git(dir, ["commit", "-qm", "d"]);
+  git(dir, ["update-ref", "refs/remotes/origin/public-data", old]); // a stale local copy of the branch
   const second = await guardedPublish({ cwd: dir, today: DAY, cfg: CFG, smoke: async () => "", live: async () => ["down"], log: () => {} });
   t("a second publish backs up the first one", second.backup === first.sha && git(bare, ["rev-parse", BACKUP_REF]) === first.sha);
   t("and a failed live check restores it", second.restored && git(bare, ["rev-parse", "public-data"]) === first.sha);
