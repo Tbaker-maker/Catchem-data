@@ -101,6 +101,7 @@ jobs:
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+          FEED_FRESHNESS_WARN_ONLY: "1" # stale files are what this run refreshes
 
       - name: Unit tests (fail-fast)
         # Pure-math tests on scripts/lib + contract checks on yesterday's
@@ -108,6 +109,8 @@ jobs:
         # any eBay/PPT quota burns.
         # One retry tells a flaky test from a real regression. Both tries red
         # still kills the run before any quota burns.
+        env:
+          FEED_FRESHNESS_WARN_ONLY: "1" # staleness is checked strict after the refresh
         run: |
           if node scripts/tests/run-tests.mjs > /tmp/tests-1.log 2>&1; then tail -5 /tmp/tests-1.log; exit 0; fi
           echo "::warning::Unit tests failed once; retrying to rule out a flake."
@@ -269,7 +272,7 @@ jobs:
           git config user.email "bot@catchem.app"
           mkdir -p data/raw  # eBay raw copy (#145); an empty folder adds nothing
           git add data/ppt/run-report.json data/buyout-tape.json
-          git add data/sealed-prices.json data/heat-report.json data/heat-history.json \
+          git add data/tcgcsv-to-catalogue.json data/sealed-prices.json data/heat-report.json data/heat-history.json \
                   data/divergence-report.json data/supply-watch.json \
                   data/derived-insights.json data/era-index-history.json \
                   data/catalyst-log.json data/cohort-history.json data/artists.json \
@@ -311,6 +314,12 @@ jobs:
           node scripts/build-index-history.mjs
           node scripts/build-condition-ladder.mjs
 
+      - name: Set lines for /reads (reads-preview.json)
+        # Built from tonight's set pages, before the feed commit, so the
+        # public-data branch carries tonight's set lines and not last night's.
+        if: steps.setpages.outcome == 'success'
+        run: node scripts/build-post-office-catalogue.mjs || true
+
       - name: Rebuild the public feed
         # After the price commit, not before. A failed feed build fails the job.
         # The catalog day stays the full TCGCSV day. A later partial file is
@@ -319,6 +328,7 @@ jobs:
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+          FEED_FRESHNESS_WARN_ONLY: "1" # the pulse is regenerated later in this run
 
       - name: Run the read registry
         run: node scripts/run-read-registry.mjs
@@ -417,6 +427,7 @@ jobs:
           fi
           # The track-record path is the public stub. Do not add data/private/.
           git add research/assets/public/reads.json research/assets/public/today.json research/assets/public/feed/ research/assets/public/counts.json research/assets/public/sparks research/assets/public/track-record.json research/assets/public/set-value research/assets/public/rotation-status.json research/assets/public/releases.json research/assets/public/listings-counted.json research/assets/public/signal-chips.json research/assets/public/premium-ratio.json research/assets/public/market-meter.json
+          if [ -e research/assets/public/reads-preview.json ]; then git add research/assets/public/reads-preview.json; fi
           if git diff --cached --name-only -- data/private | grep -q .; then
             echo "private scores must not be committed here"
             exit 1
@@ -721,6 +732,12 @@ jobs:
           else
             echo "Mirror push failed — the daily run is unaffected. Investigate the mirror, not this run."
           fi
+
+      - name: Freshness check after the refresh (strict)
+        # Stale data never blocks the refresh (warn mode in the earlier steps).
+        # Last step, after every commit and publish, so a file still behind turns
+        # the run red without stopping tonight's data. Same check, no warn mode.
+        run: node scripts/write-health.mjs > /tmp/health-after.json
 
       - name: Failure summary
         if: failure()

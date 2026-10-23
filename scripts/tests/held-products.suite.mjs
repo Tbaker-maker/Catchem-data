@@ -110,8 +110,21 @@ export async function run() {
   const der = scrubHeld(docs["data/derived-insights.json"] || {}, blk);
   const raw = docs["data/derived-insights.json"] || {};
   const heldShifts = (raw.supplyShifts || []).filter((r) => blk.blocked(r.id)).length;
-  t("only held rows leave a list (supply shifts)", (der.supplyShifts || []).length === (raw.supplyShifts || []).length - heldShifts && heldShifts >= 1,
-    `${(raw.supplyShifts || []).length} → ${(der.supplyShifts || []).length}, held ${heldShifts}`);
+  // Live supply shifts move with eBay listing counts. On a night with no shift (or no held
+  // row among them, e.g. eBay 429 kept yesterday's counts) the live check alone proves
+  // nothing, and failing it blocks the nightly that would refresh the data. So the live file
+  // must still lose exactly its held rows, and the "a held row really leaves" proof also runs
+  // on the live list with one real held product planted in it. Same scrub, same blocked set.
+  const heldId = [...blk.ids][0];
+  const heldName = (sp.products || []).find((p) => p.id === heldId)?.name || heldId;
+  const plantedShifts = [...(raw.supplyShifts || []), { id: heldId, name: heldName, listings: 40, prev: 30, dPct: 33.3, read: "planted" }];
+  const plantedOut = scrubHeld({ ...raw, supplyShifts: plantedShifts }, blk).supplyShifts || [];
+  const plantedHeld = plantedShifts.filter((r) => blk.blocked(r.id)).length;
+  t("only held rows leave a list (supply shifts)",
+    (der.supplyShifts || []).length === (raw.supplyShifts || []).length - heldShifts
+      && Boolean(heldId) && plantedHeld >= 1 && plantedOut.length === plantedShifts.length - plantedHeld
+      && !plantedOut.some((r) => blk.blocked(r.id)),
+    `live ${(raw.supplyShifts || []).length} → ${(der.supplyShifts || []).length}, held ${heldShifts}; planted ${plantedShifts.length} → ${plantedOut.length}, held ${plantedHeld}`);
   t("a held single-product slot becomes null, an unheld one stays",
     (!raw.dailyThree?.sealed || der.dailyThree?.sealed === null || !blk.blocked(raw.dailyThree.sealed.name))
     && (raw.sealedIndex == null || der.sealedIndex?.level === raw.sealedIndex.level));

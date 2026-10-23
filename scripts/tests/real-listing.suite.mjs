@@ -1,6 +1,6 @@
 // sv3pt5-upc: junk floor, opened, and damaged lose. A clean listing wins.
 // A $12 history point is under 0.3x the robust median and is dropped.
-import { selectRealListings, cleanHistory, gateSealedProduct, askBoxLines, medianFacts, EBAY_MEDIAN_LABEL, TCG_LISTED_NOTE, TCG_MARKET_NOTE, ebayMedianNote } from "../lib/real-listing.mjs";
+import { selectRealListings, cleanHistory, gateSealedProduct, askBoxLines, medianFacts, floorAboveMedianOf, floorDropReason, EBAY_MEDIAN_LABEL, TCG_LISTED_NOTE, TCG_MARKET_NOTE, ebayMedianNote } from "../lib/real-listing.mjs";
 import { scoreAskFacts, scoreItems } from "../lib/tracker.mjs";
 
 const item = (title, price, extra = {}) => ({
@@ -31,6 +31,16 @@ export async function run() {
   const extraPick = selectRealListings([auction, abroad, weak, trusted], { isPack: false, market: "US", sellerMin: { minFeedbackScore: 10, minPositivePercent: 99 } });
   t("auction, no delivery estimate, and a seller under the minimum lose", extraPick.count === 1 && extraPick.cheapest?.url === "https://www.ebay.com/itm/850");
   const labeled = medianFacts({ count: 1, median: 849.99 }, { askMedian: 936.99, askRobustCount: 133 });
+  t("a floor above the median is dropped (Oct 23 schema guard)", floorAboveMedianOf(45, 15.99) && floorAboveMedianOf(74.39, 12.5));
+  t("a floor at or under the median stays", !floorAboveMedianOf(8.99, 15.99) && !floorAboveMedianOf(15.99, 15.99) && !floorAboveMedianOf(null, 10) && !floorAboveMedianOf(5, null));
+  t("a one-listing floor is dropped with a reason", /under the proven minimum of 5/.test(floorDropReason(74.39, 1, 12.5, 5)));
+  t("a floor above the median is dropped even with enough listings", floorDropReason(500, 8, 355.68, 5) === "floor above the published median");
+  {
+    const { oddPriceFlags } = await import("../lib/flags.mjs");
+    const f = oddPriceFlags({}, {}, { products: [{ id: "sv6-pack", name: "Twilight Masquerade Booster Pack", floorDropped: "floor from 1 listing(s)" }, { id: "ok" }] });
+    t("each dropped floor is logged in the flag file", f.length === 1 && f[0].key === "floor-dropped:sv6-pack" && f[0].type === "ODD_PRICE");
+  }
+  t("a sound floor stays", floorDropReason(8.99, 12, 15.99, 5) === "" && floorDropReason(null, 0, 10, 5) === "");
   t("the labeled median is the real listing set", labeled.ebayMedianAsk === 849.99 && labeled.ebayMedianCount === 1);
   const gated = gateSealedProduct({
     id: "sv3pt5-upc",

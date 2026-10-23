@@ -1,14 +1,20 @@
 {
- "generatedAt": "2026-10-19T11:18:14.706Z",
+ "generatedAt": "2026-10-23T11:14:01.613Z",
  "purpose": "Grades reasoning by its predictions, because reasoning cannot be inspected after the fact without being rewritten.",
  "total": 17,
- "dueForGrading": 2,
+ "dueForGrading": 4,
  "record": {
   "graded": 0,
   "note": "nothing has come due yet. The first grades land from October."
  },
  "problems": [],
  "due": [
+  {
+   "id": "2026-08-23-spread-retire",
+   "decision": "Retire the eBay-vs-TCGplayer Spread from headline selection, keeping it as a labelled stat.",
+   "predicted": "No instrument built on the Spread will be missed. If within 60 days we find ourselves wanting it back for a real question, the retirement was wrong.",
+   "decidedBy": "Tyler, on chat's recommendation"
+  },
   {
    "id": "2026-08-23-everything-daily",
    "decision": "Refresh the whole universe daily while it fits the budget; tier only as a fallback.",
@@ -20,6 +26,12 @@
    "decision": "Treat the Charizard/Blastoise post as the specification for art content: same artist, both hero cards, a gap long enough to surprise, household Pokemon.",
    "predicted": "The next three art posts built to this spec will each get more engagement than the Keldeo-style recency pick would have. If a recency pick outperforms a spec pick, the model is wrong.",
    "decidedBy": "chat, from Tyler's post"
+  },
+  {
+   "id": "2026-08-23-angles-not-tweets",
+   "decision": "The creator portal offers angles and editable seeds, never finished tweets.",
+   "predicted": "Creators using the portal will post visibly different wording from each other. If we see two accounts publish the same sentence, the seeds are too finished and need to be shortened to fragments.",
+   "decidedBy": "chat, correcting its own earlier over-rigid stance"
   }
  ]
 }

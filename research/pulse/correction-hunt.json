@@ -1,7 +1,7 @@
 {
- "generatedAt": "2026-10-19T11:18:16.989Z",
- "date": "2026-10-19",
- "mood": "Found a few of our own figures that moved faster than any market should. Checking which one of them was us.",
+ "generatedAt": "2026-10-23T11:14:04.242Z",
+ "date": "2026-10-23",
+ "mood": "Some numbers we published look more like our measuring than the market. Worth a second pair of eyes.",
  "confidence": "MEASURED",
  "note": "Re-checks numbers we already published. Flags are SUSPECT, not proven wrong — each needs a human or CC to verify against listings before a correction is filed.",
  "window": "40% inside 3 days",
@@ -187,6 +187,18 @@
    "action": "verify against listings; if the earlier figure was an artefact, file a correction"
   },
   {
+   "id": "sv1-pack",
+   "name": "Scarlet & Violet Booster Pack",
+   "from": "2026-10-21",
+   "to": "2026-10-23",
+   "was": 11.33,
+   "became": 15.99,
+   "movePct": 41.1,
+   "published": true,
+   "read": "A 41% move over 2 day(s) on a sealed product is more consistent with a change in how we measured it than with the market. Both figures were published.",
+   "action": "verify against listings; if the earlier figure was an artefact, file a correction"
+  },
+  {
    "id": "xy12-etb",
    "name": "Evolutions Elite Trainer Box",
    "from": "2026-10-18",
@@ -308,6 +320,11 @@
   {
    "name": "Umbreon VMAX",
    "featuredOn": "2026-10-18",
+   "read": "we put this in front of readers and can no longer price it — either it stopped trading or our query broke"
+  },
+  {
+   "name": "Umbreon VMAX",
+   "featuredOn": "2026-10-19",
    "read": "we put this in front of readers and can no longer price it — either it stopped trading or our query broke"
   }
  ],
