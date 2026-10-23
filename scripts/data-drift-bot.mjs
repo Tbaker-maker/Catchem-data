@@ -6,13 +6,13 @@ import { writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
-import { catalogueGuard } from "./lib/post-office-catalogue.mjs";
+import { catalogueGuard, loadCatalogueLimits } from "./lib/post-office-catalogue.mjs";
 import { driftOf, openFixPr, planFix } from "./lib/data-drift-bot.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const rel = "data/derived/post-office-catalogue.json";
 const doc = JSON.parse(await readFile(join(ROOT, rel), "utf8"));
-const guard = catalogueGuard(doc, { expected: doc.sets || [] });
+const guard = catalogueGuard(doc, { expected: doc.sets || [], limits: await loadCatalogueLimits(ROOT) });
 const drift = driftOf(rel, { ...doc, guard }, doc);
 
 if (!drift) {

@@ -35,8 +35,8 @@ export async function run() {
   t("prices are stored on the card and a sealed row is not a card", base.prices.length === 100 && base.prices[0].price === 1.5 && base.prices[0].id === "tcgcsv-1" && base.groupId === 604);
   t("a card with no price is counted unpriced", base.unpriced === 1 && base.priced === 99 && base.cards === 100);
   t("a set dated after the catalog day is not released", doc.sets.find((set) => set.slug === "later").released === false);
-  const guard = catalogueGuard(doc, { expected: sets });
-  t("the fixture passes the guard", guard.ok === true && guard.share < 0.02);
+  const guard = catalogueGuard(doc, { expected: sets, limits: { maxGapShare: 0.05 } });
+  t("the fixture passes the guard", guard.ok === true);
 
   const dropped = {
     ...doc,
@@ -58,7 +58,28 @@ export async function run() {
     asOf: "2026-10-14",
   });
   const over = catalogueGuard(thin, { expected: thin.sets });
-  t("more than 2 percent unpriced fails", over.ok === false && over.problems.some((row) => row.code === "unpriced"));
+  t("a gap with no limits loaded fails", over.ok === false && over.problems.some((row) => row.code === "unpriced-gap"));
+  const LIM = { maxGapShare: 0.5 };
+  t("gaps under the private limit pass", catalogueGuard(thin, { expected: thin.sets, limits: { maxGapShare: 0.9 } }).ok === true);
+  t("gaps over the private limit fail", catalogueGuard(thin, { expected: thin.sets, limits: { maxGapShare: 0.1 } }).ok === false);
+  const reasoned = buildPostOfficeCatalogue({
+    sets: [{ slug: "thin", name: "Thin", release: "2020-01-01" }],
+    groups: [],
+    cardsBySlug: { thin: [{ id: "tcgcsv-1", kind: "single", price: 1 }, { id: "tcgcsv-2", kind: "single", price: null }, { id: "tcgcsv-3", kind: "single", price: null }, { id: "tcgcsv-4", kind: "single", price: null }] },
+    asOf: "2026-10-14",
+    marketIds: new Set(["tcgcsv-1", "tcgcsv-2", "tcgcsv-4"]),
+    heldIds: new Set(["tcgcsv-2"]),
+  });
+  const rs = reasoned.sets[0];
+  t("a held card is held, not a gap", rs.prices.find((c) => c.id === "tcgcsv-2").why === "held");
+  t("a card with no market today is no-market", rs.prices.find((c) => c.id === "tcgcsv-3").why === "no-market");
+  t("a card with a market price and no hold is a gap", rs.prices.find((c) => c.id === "tcgcsv-4").why === "gap");
+  t("no price is invented for any of them", rs.prices.filter((c) => c.id !== "tcgcsv-1").every((c) => c.price == null));
+  const g = catalogueGuard(reasoned, { expected: reasoned.sets, limits: LIM });
+  t("held and no-market cards do not fail the build", g.ok === true && g.why.held === 1 && g.why["no-market"] === 1 && g.why.gap === 1);
+  t("only gaps count against the limit", catalogueGuard(reasoned, { expected: reasoned.sets, limits: { maxGapShare: 0.2 } }).ok === false);
+  const allHeld = buildPostOfficeCatalogue({ sets: [{ slug: "v", name: "V", release: "1999-01-09" }], groups: [], cardsBySlug: { v: [{ id: "tcgcsv-9", kind: "single", price: null }] }, asOf: "2026-10-14", marketIds: new Set(["tcgcsv-9"]), heldIds: new Set(["tcgcsv-9"]) });
+  t("a fully held vintage set passes with no limits loaded", catalogueGuard(allHeld, { expected: allHeld.sets }).ok === true);
   const sealedOnly = buildPostOfficeCatalogue({
     sets: [{ slug: "partner", name: "First Partner", release: "2026-03-30", single: 0 }],
     groups: [],

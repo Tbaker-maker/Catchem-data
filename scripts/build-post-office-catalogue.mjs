@@ -1,10 +1,10 @@
 // Builds data/derived/post-office-catalogue.json from the public set files.
 // Exits 1 when a released set is missing or more than 2 percent of cards have no price.
 // The nightly job does not call this yet. Wiring that call means editing a workflow file.
-import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { readFile, readdir, writeFile, mkdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { buildPostOfficeCatalogue, catalogueGuard } from "./lib/post-office-catalogue.mjs";
+import { buildPostOfficeCatalogue, catalogueGuard, loadCatalogueLimits } from "./lib/post-office-catalogue.mjs";
 import { poolFromData, previewLines } from "./lib/custom-reads-pipe.mjs";
 import { guardSkip, loadDaily, loadGuard } from "./lib/reads-guard.mjs";
 
@@ -23,13 +23,24 @@ for (const set of index.sets || []) {
   cardsBySlug[set.slug] = doc.items || [];
 }
 
+// Today's TCGplayer market ids and the price check's held ids give each unpriced card its reason.
+const days = (await readdir(join(ROOT, "data/history/tcgcsv-daily"))).filter((n) => /^\d{4}-\d{2}-\d{2}\.json$/.test(n)).sort();
+let marketIds = null;
+try {
+  const last = JSON.parse(await readFile(join(ROOT, "data/history/tcgcsv-daily", days[days.length - 1]), "utf8"));
+  marketIds = new Set((last.prices || []).filter((p) => Number(p.market) > 0).map((p) => `tcgcsv-${p.id}`));
+} catch { marketIds = null; }
+let heldIds = null;
+try { heldIds = new Set(Object.keys((await readJson("research/assets/public/price-hold.json")).ids || {})); } catch { heldIds = null; }
 const catalogue = buildPostOfficeCatalogue({
+  marketIds,
+  heldIds,
   sets: index.sets || [],
   groups: groupsDoc.groups || [],
   cardsBySlug,
   asOf: index.asOf || "",
 });
-const guard = catalogueGuard(catalogue, { expected: index.sets || [] });
+const guard = catalogueGuard(catalogue, { expected: index.sets || [], limits: await loadCatalogueLimits(ROOT) });
 catalogue.guard = guard;
 
 await mkdir(dirname(OUT), { recursive: true });
@@ -49,6 +60,7 @@ console.log(JSON.stringify({
   priced,
   ok: guard.ok,
   share: guard.share,
+  why: guard.why,
   problems: guard.problems.length,
 }));
 if (!guard.ok) {
