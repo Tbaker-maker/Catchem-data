@@ -1,7 +1,18 @@
 import { artType } from "./art-type.mjs";
 import { eraOf } from "./public-bundle.mjs";
 
-export const UNPRICED_MAX = 0.02;
+// Why a card has no price. Only "gap" is a build bug: today's TCGplayer file has a
+// market price for it and nothing held it back. "held" is a price the price check
+// keeps off the site (vintage, unverified). "no-market" is a card TCGplayer has no
+// market price for today. Those two stay unpriced and are never filled in.
+export const UNPRICED_WHY = ["held", "no-market", "gap"];
+
+export function unpricedWhy(id, { marketIds = null, heldIds = null } = {}) {
+  const key = String(id || "");
+  if (heldIds && heldIds.has(key)) return "held";
+  if (marketIds && !marketIds.has(key)) return "no-market";
+  return "gap";
+}
 
 export function normName(value) {
   return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
@@ -40,7 +51,7 @@ export function cardRows(items) {
   return rows;
 }
 
-export function buildPostOfficeCatalogue({ sets = [], groups = [], cardsBySlug = {}, asOf = "" } = {}) {
+export function buildPostOfficeCatalogue({ sets = [], groups = [], cardsBySlug = {}, asOf = "", marketIds = null, heldIds = null } = {}) {
   const groupByName = new Map();
   for (const group of groups) groupByName.set(normName(group.name), group);
   const outSets = [];
@@ -48,6 +59,13 @@ export function buildPostOfficeCatalogue({ sets = [], groups = [], cardsBySlug =
     const cards = cardRows(cardsBySlug[set.slug] || []);
     const priced = cards.filter((card) => card.price != null).length;
     const group = groupByName.get(normName(set.name));
+    const why = { held: 0, "no-market": 0, gap: 0 };
+    for (const card of cards) {
+      if (card.price != null) continue;
+      const w = unpricedWhy(card.id, { marketIds, heldIds });
+      card.why = w;
+      why[w] += 1;
+    }
     outSets.push({
       slug: set.slug,
       name: set.name,
@@ -58,6 +76,7 @@ export function buildPostOfficeCatalogue({ sets = [], groups = [], cardsBySlug =
       cards: cards.length,
       priced,
       unpriced: cards.length - priced,
+      unpricedWhy: why,
       prices: cards,
     });
   }
@@ -65,12 +84,12 @@ export function buildPostOfficeCatalogue({ sets = [], groups = [], cardsBySlug =
   return {
     asOf,
     source: "TCGplayer market",
-    rule: "A released set is a sets.json row whose release day is on or before the catalog day. Each card price is the TCGplayer market price already stored on that set. A card with no price is counted. The guard fails when a released set is absent or when more than 2 percent of cards in released sets have no price.",
+    rule: "A released set is a sets.json row whose release day is on or before the catalog day. Each card price is the TCGplayer market price already stored on that set. A card with no price is counted and given a reason: held by the price check, no TCGplayer market price today, or a gap (a market price exists and nothing held it). The guard fails when a released set is absent or when gaps pass the private limit. Held and no market cards stay unpriced and are never filled in.",
     sets: outSets,
   };
 }
 
-export function catalogueGuard(doc, { expected = [] } = {}) {
+export function catalogueGuard(doc, { expected = [], limits = null } = {}) {
   const asOf = doc?.asOf || "";
   const have = new Map((doc?.sets || []).map((set) => [set.slug, set]));
   const problems = [];
@@ -83,18 +102,26 @@ export function catalogueGuard(doc, { expected = [] } = {}) {
   }
   let cards = 0;
   let unpriced = 0;
+  const why = { held: 0, "no-market": 0, gap: 0 };
   for (const row of doc?.sets || []) {
     if (!releasedOn(row, asOf)) continue;
     cards += row.cards || 0;
     unpriced += row.unpriced || 0;
+    // A set built before reasons existed counts every unpriced card as a gap.
+    const w = row.unpricedWhy || { gap: row.unpriced || 0 };
+    for (const k of UNPRICED_WHY) why[k] += Number(w[k]) || 0;
   }
   const share = cards ? unpriced / cards : 0;
-  if (cards > 0 && share > UNPRICED_MAX) {
+  const gapShare = cards ? why.gap / cards : 0;
+  // The limit comes from catchem-data-private. Without it any gap fails.
+  const max = Number(limits?.maxGapShare);
+  const over = Number.isFinite(max) ? gapShare > max : why.gap > 0;
+  if (cards > 0 && over) {
     problems.push({
-      code: "unpriced",
-      share: Math.round(share * 10000) / 10000,
+      code: "unpriced-gap",
+      gapShare: Math.round(gapShare * 10000) / 10000,
       cards,
-      unpriced,
+      gap: why.gap,
     });
   }
   return {
@@ -102,6 +129,26 @@ export function catalogueGuard(doc, { expected = [] } = {}) {
     problems,
     cards,
     unpriced,
+    why,
     share: Math.round(share * 10000) / 10000,
+    gapShare: Math.round(gapShare * 10000) / 10000,
   };
+}
+
+export async function loadCatalogueLimits(root) {
+  const { readFile } = await import("node:fs/promises");
+  const { join } = await import("node:path");
+  const ok = (d) => (d && Number.isFinite(Number(d.maxGapShare)) ? { maxGapShare: Number(d.maxGapShare) } : null);
+  for (const path of [process.env.CATALOGUE_CHECKS_FILE, join(root, "..", "catchem-data-private", "config", "catalogue-checks.json")].filter(Boolean)) {
+    try { const got = ok(JSON.parse(await readFile(path, "utf8"))); if (got) return got; } catch { /* next */ }
+  }
+  const token = process.env.PRIVATE_DATA_TOKEN || "";
+  if (!token) return null;
+  try {
+    const res = await fetch("https://api.github.com/repos/Tbaker-maker/catchem-data-private/contents/config/catalogue-checks.json", {
+      headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github.raw", "User-Agent": "catchem-catalogue" },
+      signal: AbortSignal.timeout(20000),
+    });
+    return res.ok ? ok(await res.json()) : null;
+  } catch { return null; }
 }
