@@ -21,7 +21,7 @@ import { recordBuyoutHarvest } from "./buyout-tape.mjs";
 import { costcoListingOk } from "./lib/costco-exclusives.mjs";
 import { filteredTotalForNight } from "./lib/second-library.mjs";
 import { sellerSpread } from "./lib/listing-counts.mjs";
-import { selectRealListings, cleanHistory, gateSealedPrices, loadSellerMin, loadTcgListedMedians, gapPct, floorBad, medianFacts } from "./lib/real-listing.mjs";
+import { selectRealListings, cleanHistory, gateSealedPrices, loadSellerMin, loadTcgListedMedians, gapPct, floorBad, medianFacts, floorAboveMedianOf } from "./lib/real-listing.mjs";
 
 // Node's fetch has NO default timeout: a host that accepts the connection
 // and never answers hangs this script until the CI runner kills the job.
@@ -561,7 +561,10 @@ function askFactsFromKept(product, kept, agg, sellerMin, tcgMids) {
   const tcgListedMedian = pid > 0 && tcgMids?.has(pid) ? tcgMids.get(pid) : null;
   let cheapestReal = real.cheapest || null;
   if (cheapestReal && floorBad(cheapestReal.price, ebayMedianAsk)) cheapestReal = null;
-  const priceFloorClean = real.floorPrice != null && !floorBad(real.floorPrice, ebayMedianAsk) ? real.floorPrice : null;
+  // A floor above the published median is a contradiction (Oct 23: 35 rows, mostly a
+  // one-listing real set). It stays out of public output rather than shipping wrong.
+  const floorAboveMedian = floorAboveMedianOf(real.floorPrice, agg?.priceMedian);
+  const priceFloorClean = real.floorPrice != null && !floorBad(real.floorPrice, ebayMedianAsk) && !floorAboveMedian ? real.floorPrice : null;
   return {
     priceFloorClean,
     cheapestReal,

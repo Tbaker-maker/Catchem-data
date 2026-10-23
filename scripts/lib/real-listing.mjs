@@ -309,3 +309,9 @@ export async function loadTcgListedMedians(root) {
   }
   return out;
 }
+
+// True when a floor would sit above the published median. Such a floor is dropped.
+export function floorAboveMedianOf(floor, median) {
+  const f = Number(floor), m = Number(median);
+  return floor != null && Number.isFinite(f) && m > 0 && f > m;
+}
