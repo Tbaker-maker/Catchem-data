@@ -28,7 +28,9 @@ export async function run() {
   t("a strict freshness check runs after the refresh", strictAt > 0 && /write-health\.mjs/.test(steps[strictAt]));
   const commitAt = steps.findIndex((s) => s.startsWith("Commit updated prices"));
   t("the strict check comes after the price commit", commitAt >= 0 && strictAt > commitAt);
-  t("a final step turns the run red if still stale", steps.some((s) => s.startsWith("Still stale after the refresh") && /exit 1/.test(s)));
+  t("the strict check is the last step before the failure summary", steps[strictAt + 1] && steps[strictAt + 1].startsWith("Failure summary"));
+  t("the strict check is not soft", !/continue-on-error/.test(steps[strictAt]) && !/FEED_FRESHNESS_WARN_ONLY/.test(steps[strictAt]));
+  t("pre-refresh unit tests warn on staleness", steps.some((s) => s.startsWith("Unit tests (fail-fast)") && /FEED_FRESHNESS_WARN_ONLY: "1"/.test(s)));
   steps.forEach((s, i) => {
     if (i < strictAt && /node scripts\/build-feed\.mjs/.test(s)) {
       t(`feed build in "${s.split("\n")[0]}" warns on staleness`, /FEED_FRESHNESS_WARN_ONLY: "1"/.test(s));
