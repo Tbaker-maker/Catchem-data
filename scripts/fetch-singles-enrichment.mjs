@@ -83,7 +83,8 @@ async function main() {
       }
       const d = await getJSON(`${BASE}/cards?setId=${encodeURIComponent(pptSet)}&search=${encodeURIComponent(c.name)}&limit=20&includeEbay=true&includeHistory=true&days=30`);
       credits += d.metadata?.apiCallsConsumed?.total ?? (d.data || []).length;
-      const hit = (d.data || []).find(p => String(p.cardNumber || "").split("/")[0].replace(/^0+/, "") === String(c.number).replace(/^0+/, ""));
+      const numHead = (n) => String(n || "").split("/")[0].replace(/^0+/, "");
+      const hit = (d.data || []).find(p => numHead(p.cardNumber) === numHead(c.number));
       if (!hit) {
         out.push({ cardId: c.cardId, watchLabel: c.watchLabel, dataStatus: "no-match",
           note: `PPT set ${pptSet}: no card number ${c.number} among ${(d.data || []).length} name matches` });
