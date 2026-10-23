@@ -1,5 +1,5 @@
 // Publish gate and the Oct 19 reads check bugs. Made up numbers only.
-import { checkRead, gateReads, checkMeter } from "../lib/publish-gate.mjs";
+import { checkRead, gateReads, checkMeter, publishVerdict } from "../lib/publish-gate.mjs";
 import { staleOneStep } from "../lib/read-quality.mjs";
 import { backToRead } from "../lib/history-reads.mjs";
 import { sealedGapDeep, cardStories } from "../lib/deep-reads.mjs";
@@ -108,5 +108,15 @@ export async function run() {
   const storyCard = { id: "tcgcsv-9", name: "Jolteon Star", set: "EX Power Keepers", rarity: "Rare Holo", printing: "Holofoil", pts: [["2024-02-01", 40], ["2025-05-12", 10], ["2026-05-30", 50], ["2026-10-19", 80]] };
   t("a story with no private bar is kept", cardStories([storyCard], { asOf: "2026-10-19" }).length === 1);
   t("a thin jumpy story is skipped when the private bar is set", cardStories([storyCard], { asOf: "2026-10-19", stability: { minPoints: 100, maxRatio: 3 } }).length === 0);
+  // Root cause of the Oct 20 hold: a few bad rows must be withheld, not stop the night.
+  const night = Array.from({ length: 30 }, (_, i) => ({ ...base, id: `r${i}`, headline: `Box ${i}: $10 (Oct 19).` }));
+  for (const i of [3, 11, 27]) night[i] = { ...night[i], headline: "You should buy this box now." };
+  const nightRes = gateReads(night, {});
+  const nightVerdict = publishVerdict({ rows: night.length, dropped: nightRes.dropped, kept: nightRes.kept.length, prevCount: 30, asOf: "2026-10-19", today: "2026-10-20" });
+  t("a few bad rows are withheld and the rest publish", nightRes.dropped === 3 && nightRes.kept.length === 27 && !nightVerdict.systemic);
+  t("most rows failing still stops the publish", publishVerdict({ rows: 30, dropped: 20, prevCount: 30, asOf: "2026-10-19", today: "2026-10-20" }).reasons.includes("mostly-failed"));
+  t("an empty feed stops the publish", publishVerdict({ rows: 0, asOf: "2026-10-19", today: "2026-10-20" }).systemic);
+  t("a wipe against yesterday stops the publish", publishVerdict({ rows: 25, dropped: 0, prevCount: 300, asOf: "2026-10-19", today: "2026-10-20" }).reasons.includes("wipe"));
+  t("a missing or wrong feed date stops the publish", publishVerdict({ rows: 30, asOf: "", today: "2026-10-20" }).systemic && publishVerdict({ rows: 30, asOf: "2026-09-01", today: "2026-10-20" }).reasons.includes("wrong-date"));
   return fail;
 }

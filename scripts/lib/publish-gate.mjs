@@ -278,3 +278,19 @@ export function unpublishMeter(doc) {
     sets: {},
   };
 }
+
+// Whole-publish stop. Only for systemic breakage: nothing to publish, most rows
+// failing, a wipe against yesterday, or a feed date that is missing or wrong.
+// Single bad rows never land here; they are withheld one by one.
+export function publishVerdict({ rows = 0, dropped = 0, kept = rows - dropped, prevCount = 0, asOf = "", today = new Date().toISOString().slice(0, 10), maxDropShare = 0.25 } = {}) {
+  const reasons = [];
+  if (!(rows > 0)) reasons.push("empty");
+  else if (rows > 20 && dropped / rows > maxDropShare) reasons.push("mostly-failed");
+  if (prevCount > 20 && kept < prevCount * 0.5) reasons.push("wipe");
+  const day = String(asOf || "").slice(0, 10);
+  const ms = Date.parse(`${day}T00:00:00Z`);
+  const now = Date.parse(`${today}T00:00:00Z`);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(day) || !Number.isFinite(ms)) reasons.push("no-date");
+  else if (ms - now > 86400000 || now - ms > 7 * 86400000) reasons.push("wrong-date");
+  return { systemic: reasons.length > 0, reasons };
+}
