@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { openPrivate } from "./lib/private-store.mjs";
 import { readSignals } from "./lib/signal-chips.mjs";
-import { mentionsHeld } from "./lib/price-hold-skip.mjs";
+import { dropHeldChips, loadHeldIds, mentionsHeld } from "./lib/price-hold-skip.mjs";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const PUBLIC = join(ROOT, "research/assets/public");
@@ -338,7 +338,9 @@ export async function stampSignalChips({ root = ROOT, rules, writeReads = false 
     samples,
   };
   const scored = Object.values(byRead).filter((row) => row.strength).length;
-  await writeFile(join(root, "research/assets/public/signal-chips.json"), `${JSON.stringify(out)}\n`);
+  const cleaned = dropHeldChips(out, await loadHeldIds(root));
+  if (cleaned.dropped) console.log(`signal chips: ${cleaned.dropped} held chip(s) left out`);
+  await writeFile(join(root, "research/assets/public/signal-chips.json"), `${JSON.stringify(cleaned.doc)}\n`);
   if (writeReads) await writeFile(readsPath, `${JSON.stringify(bundle, null, 1)}\n`);
   console.log(`signal chips: ${count} reads, ${feedCount} feed rows, ${scored} with a score`);
   return { count, wrote: true, asOf };

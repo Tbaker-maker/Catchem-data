@@ -175,3 +175,16 @@ export async function scrubHeldOutputs(root) {
   }
   return { held: held.size, dropped: dropped.length };
 }
+
+// Chips are stamped after the feed scrub, so they get the same hold check here.
+// A chip whose id or row names a held card is removed, with any bySku pointer and sample.
+export function dropHeldChips(doc, held) {
+  if (!doc || !doc.byId || !held || !held.size) return { doc, dropped: 0 };
+  const gone = new Set(Object.keys(doc.byId).filter((id) => mentionsHeld(id, held) || mentionsHeld(doc.byId[id], held)));
+  if (!gone.size) return { doc, dropped: 0 };
+  const byId = Object.fromEntries(Object.entries(doc.byId).filter(([id]) => !gone.has(id)));
+  const bySku = Object.fromEntries(Object.entries(doc.bySku || {}).filter(([sku, id]) => !gone.has(id) && !mentionsHeld(sku, held)));
+  const samples = (doc.samples || []).filter((row) => !mentionsHeld(row, held));
+  const preview = doc.preview && !mentionsHeld(doc.preview, held) ? doc.preview : (samples[0] || null);
+  return { doc: { ...doc, byId, bySku, preview, samples }, dropped: gone.size };
+}

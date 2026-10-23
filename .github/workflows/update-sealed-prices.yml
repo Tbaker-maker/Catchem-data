@@ -101,6 +101,7 @@ jobs:
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+          FEED_FRESHNESS_WARN_ONLY: "1" # stale files are what this run refreshes
 
       - name: Unit tests (fail-fast)
         # Pure-math tests on scripts/lib + contract checks on yesterday's
@@ -108,6 +109,8 @@ jobs:
         # any eBay/PPT quota burns.
         # One retry tells a flaky test from a real regression. Both tries red
         # still kills the run before any quota burns.
+        env:
+          FEED_FRESHNESS_WARN_ONLY: "1" # staleness is checked strict after the refresh
         run: |
           if node scripts/tests/run-tests.mjs > /tmp/tests-1.log 2>&1; then tail -5 /tmp/tests-1.log; exit 0; fi
           echo "::warning::Unit tests failed once; retrying to rule out a flake."
@@ -269,7 +272,7 @@ jobs:
           git config user.email "bot@catchem.app"
           mkdir -p data/raw  # eBay raw copy (#145); an empty folder adds nothing
           git add data/ppt/run-report.json data/buyout-tape.json
-          git add data/sealed-prices.json data/heat-report.json data/heat-history.json \
+          git add data/tcgcsv-to-catalogue.json data/sealed-prices.json data/heat-report.json data/heat-history.json \
                   data/divergence-report.json data/supply-watch.json \
                   data/derived-insights.json data/era-index-history.json \
                   data/catalyst-log.json data/cohort-history.json data/artists.json \
@@ -319,6 +322,7 @@ jobs:
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           PRIVATE_DATA_TOKEN: ${{ secrets.PRIVATE_DATA_TOKEN }}
+          FEED_FRESHNESS_WARN_ONLY: "1" # the pulse is regenerated later in this run
 
       - name: Run the read registry
         run: node scripts/run-read-registry.mjs
@@ -721,6 +725,12 @@ jobs:
           else
             echo "Mirror push failed — the daily run is unaffected. Investigate the mirror, not this run."
           fi
+
+      - name: Freshness check after the refresh (strict)
+        # Stale data never blocks the refresh (warn mode in the earlier steps).
+        # Last step, after every commit and publish, so a file still behind turns
+        # the run red without stopping tonight's data. Same check, no warn mode.
+        run: node scripts/write-health.mjs > /tmp/health-after.json
 
       - name: Failure summary
         if: failure()

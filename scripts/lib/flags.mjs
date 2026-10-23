@@ -93,8 +93,12 @@ export function staleFlags(stamps, today) {
   return out;
 }
 
-export function oddPriceFlags(held, outliers) {
+export function oddPriceFlags(held, outliers, sealed) {
   const out = [];
+  for (const p of (sealed?.products || [])) {
+    if (!p?.floorDropped) continue;
+    out.push({ type: "ODD_PRICE", severity: "low", key: `floor-dropped:${p.id}`, line: `Floor left off for ${p.name}: ${p.floorDropped}. The median still publishes.`, data: { id: p.id, reason: p.floorDropped, source: "data/sealed-prices.json" } });
+  }
   for (const r of (held?.rows || []).slice(0, 60)) out.push({ type: "ODD_PRICE", severity: "low", key: `held:${r.id}`, line: `Held for a check: ${r.name} (${r.set}) at ${money(r.price?.price ?? r.price)}, ${r.reason}.`, data: { id: r.id, group: r.group, ratio: r.ratio, source: "data/derived/card-rating-held.json" } });
   for (const r of (outliers?.high || []).slice(0, 30)) out.push({ type: "ODD_PRICE", severity: "medium", key: `sealed-outlier:${r.sku || r.id}`, line: `Sealed price outlier: ${r.name || r.sku || r.id}.`, data: { ...r, source: "data/derived/sealed-price-outliers.json" } });
   return out;
