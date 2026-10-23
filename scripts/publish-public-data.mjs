@@ -113,7 +113,7 @@ export async function guardedPublish({ cwd, remote = "origin", today, cfg, smoke
     if (f && f.size > 0) f.text = readBlob(cwd, f.blob);
   }
   let backup = "";
-  try { git(cwd, ["fetch", "-q", remote, `${PUBLIC_REF}:refs/remotes/${remote}/${PUBLIC_BRANCH}`]); backup = git(cwd, ["rev-parse", `refs/remotes/${remote}/${PUBLIC_BRANCH}`]); } catch { backup = ""; }
+  try { git(cwd, ["fetch", "-q", remote, `+${PUBLIC_REF}:refs/remotes/${remote}/${PUBLIC_BRANCH}`]); backup = git(cwd, ["rev-parse", `refs/remotes/${remote}/${PUBLIC_BRANCH}`]); } catch { backup = ""; }
   const before = backup ? [...treeFiles(cwd, backup).keys()] : null;
   const problems = checkBuild({ files, before, cfg, today });
   if (smoke) { const s = await smoke(); if (s) problems.push(s); }
