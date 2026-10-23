@@ -17,6 +17,8 @@ import { flag } from "./flags.mjs";
 import { cooledSet, loadRotation, loadShapeCandidates, pickNight, rememberShown } from "./lib/night-reads.mjs";
 import { loadFeedFloor } from "./lib/feed-floor.mjs";
 import { lowValueMove } from "./lib/feed-rank.mjs";
+import { dropThinReads } from "./lib/read-thin-data.mjs";
+import { buildListings } from "./lib/feature-data.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = async (rel) => JSON.parse(await readFile(join(ROOT, rel), "utf8"));
@@ -228,6 +230,8 @@ export async function writeFeedExtras(root, extra, { asOf, cardIds, rankedIds, n
   for (const row of [...flagged, ...dives, ...volume, ...shape.reads]) withTcgPlayerId(row, pids);
   const fresh = new Set(["outlier", "dive", "volume", "quiet", "mix", "conditions", "soldflat", "solddown", "setshare", "spread", "askmove", "mktmove", "still", "listing"]);
   extra.reads = [...(extra.reads || []).filter((r) => !fresh.has(r.readKind)), ...flagged, ...dives, ...volume, ...shape.reads];
+  const listingsDoc = await sealedListingsDoc(root);
+  extra.reads = await dropThinReads(extra.reads, root, asOf, listingsDoc ? sealedAnnotate(listingsDoc) : null);
   extra.flagged = { count: flagged.length, source: "data/derived/sealed-price-outliers.json" };
   extra.dives = { count: dives.length, source: "research/pulse/dive/" };
   extra.volume = volume.map((r) => r.id);
@@ -245,6 +249,40 @@ export async function writeFeedExtras(root, extra, { asOf, cardIds, rankedIds, n
     shape: shape.byKind,
   });
   return writeExtra(root, extra, browse);
+}
+
+async function sealedListingsDoc(root) {
+  try {
+    const sealed = JSON.parse(await readFile(join(root, "data/sealed-prices.json"), "utf8"));
+    const parents = JSON.parse(await readFile(join(root, "data/sealed-products.json"), "utf8"));
+    const parentRows = Array.isArray(parents) ? parents : (parents?.products || []);
+    const built = buildListings(sealed.products || [], parentRows);
+    if (built?.products?.length) return { asOf: String(sealed.updatedAt || "").slice(0, 10), products: built.products };
+  } catch { /* public file next */ }
+  try {
+    return JSON.parse(await readFile(join(root, "research/assets/public/listings-counted.json"), "utf8"));
+  } catch { return null; }
+}
+
+function sealedAnnotate(doc) {
+  const byId = new Map((doc?.products || []).filter((p) => p?.id).map((p) => [p.id, p]));
+  return (read) => {
+    const hrefId = String(read?.href || "").startsWith("/p/") ? String(read.href).slice(3) : "";
+    const product = byId.get(read?.sku) || byId.get(hrefId);
+    const lc = product?.listingsCounted;
+    const n = Number(lc?.n);
+    const listingsDate = String(lc?.date || "").slice(0, 10);
+    if (!product || !/^\d{4}-\d{2}-\d{2}$/.test(listingsDate) || !Number.isFinite(n)) return null;
+    const sealed = read?.lane === "sealed" || read?.readKind === "mktmove" || read?.kind === "mktmove";
+    if (!sealed) return null;
+    const priceDate = String(read?.receipt?.to || read?.endDate || read?.asOf || "").slice(0, 10);
+    return {
+      listingsCounted: n,
+      listingsDate,
+      ...(/^\d{4}-\d{2}-\d{2}$/.test(priceDate) ? { priceDate } : {}),
+      sealed: true,
+    };
+  };
 }
 
 async function main() {

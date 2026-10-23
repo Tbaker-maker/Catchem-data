@@ -2,6 +2,7 @@
 // A missing pack or box price drops the set. Two prices that disagree are
 // recorded and not averaged.
 import { banGuard } from "./copy-rules.mjs";
+import { releaseEra } from "./read-thin-data.mjs";
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const BANNED = banGuard("extra reads");
@@ -205,9 +206,9 @@ export function lagFromSets(sets, { asOf, days = 30, supplyBySet = new Map() } =
 }
 
 export function eraOfSet(setName) {
-  const name = String(setName || "");
-  if (name.startsWith("SWSH")) return "swsh";
-  if (name.startsWith("SV") || name.startsWith("ME")) return "modern";
+  const era = releaseEra(setName);
+  if (era === "SWSH") return "swsh";
+  if (era === "SV" || era === "ME") return "modern";
   return "";
 }
 
