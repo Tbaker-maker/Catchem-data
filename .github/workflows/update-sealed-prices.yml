@@ -272,7 +272,7 @@ jobs:
           git config user.email "bot@catchem.app"
           mkdir -p data/raw  # eBay raw copy (#145); an empty folder adds nothing
           git add data/ppt/run-report.json data/buyout-tape.json
-          git add data/sealed-prices.json data/heat-report.json data/heat-history.json \
+          git add data/tcgcsv-to-catalogue.json data/sealed-prices.json data/heat-report.json data/heat-history.json \
                   data/divergence-report.json data/supply-watch.json \
                   data/derived-insights.json data/era-index-history.json \
                   data/catalyst-log.json data/cohort-history.json data/artists.json \

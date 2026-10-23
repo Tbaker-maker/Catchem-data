@@ -2,7 +2,7 @@
 import { readFile, readdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { dropHeldReads, loadHeldIds, mentionsHeld } from "../lib/price-hold-skip.mjs";
+import { dropHeldChips, dropHeldReads, loadHeldIds, mentionsHeld } from "../lib/price-hold-skip.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 const PUB = join(ROOT, "research/assets/public");
@@ -18,6 +18,12 @@ export async function run() {
     else { fail += 1; console.error(`  FAIL ${name}`); }
   };
   const held = await loadHeldIds(ROOT);
+  {
+    const ids = new Set(["tcgcsv-85289"]);
+    const doc = { byId: { "move-tcgcsv-85289-7": { s: 1 }, "move-tcgcsv-1-7": { s: 1 } }, bySku: { a: "move-tcgcsv-85289-7", b: "move-tcgcsv-1-7" }, samples: [{ id: "move-tcgcsv-85289-7" }] };
+    const r = dropHeldChips(doc, ids);
+    t("a held card's chip is left out after stamping", r.dropped === 1 && !r.doc.byId["move-tcgcsv-85289-7"] && r.doc.byId["move-tcgcsv-1-7"] && !r.doc.bySku.a && r.doc.samples.length === 0);
+  }
   t("the hold file has cards", held.size > 1000);
   const leaked = [];
   const note = (where, row) => {
