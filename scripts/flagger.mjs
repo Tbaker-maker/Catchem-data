@@ -91,7 +91,7 @@ export async function runFlagger({ root = ROOT, now = new Date(), write = true }
     ...scan.newsLeads.map((l) => ({ type: "NEWS_LEAD", severity: "low", key: `news:${l.type}:${l.url}`, line: `${l.type}: ${l.title} (${l.source}, ${l.date}).`, data: l })),
     ...dataGapFlags(days, today, counts),
     ...staleFlags(stamps, today),
-    ...oddPriceFlags(held, outliers),
+    ...oddPriceFlags(held, outliers, await J(root, "data/sealed-prices.json", {})),
     ...readTypeFlags(kindCounts, state),
     ...youtubeFlags(youtube),
     ...hypeEffectFlagsFromFiles(hypeDocs),
