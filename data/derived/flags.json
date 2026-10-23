@@ -1,6 +1,6 @@
 {
  "asOf": "2026-10-23",
- "generatedAt": "2026-10-23T03:15:52.412Z",
+ "generatedAt": "2026-10-23T06:26:05.856Z",
  "note": "Internal. What changed or broke tonight, for the weekly review. Script only.",
  "types": {
   "NEW_SET": "A TCGCSV set (group) appeared that was not there last night, or a future product in a news calendar is not on the radar.",
@@ -24,15 +24,15 @@
    "PRICE_MOVE": 7,
    "NEWS_SOURCE_FAILING": 5,
    "DATA_GAP": 1,
-   "STALE_FILE": 3,
-   "ODD_PRICE": 29,
-   "READ_TYPE_EMPTY": 5,
+   "STALE_FILE": 1,
+   "ODD_PRICE": 28,
+   "READ_TYPE_EMPTY": 3,
    "YOUTUBE_LEAD": 9
   },
   "bySeverity": {
    "high": 5,
-   "medium": 16,
-   "low": 38
+   "medium": 15,
+   "low": 34
   }
  },
  "newTonight": 0,
@@ -242,36 +242,10 @@
    "new": false
   },
   {
-   "type": "STALE_FILE",
-   "severity": "medium",
-   "key": "stale:ebaySealed",
-   "line": "data/raw/ebay-sealed/ is 4 days old (dated 2026-10-19, allowed 2).",
-   "data": {
-    "file": "data/raw/ebay-sealed/",
-    "date": "2026-10-19",
-    "age": 4,
-    "limit": 2
-   },
-   "new": false
-  },
-  {
-   "type": "STALE_FILE",
-   "severity": "medium",
-   "key": "stale:cardRating",
-   "line": "research/assets/public/feed/card-rating.json is 2 days old (dated 2026-10-21, allowed 1).",
-   "data": {
-    "file": "research/assets/public/feed/card-rating.json",
-    "date": "2026-10-21",
-    "age": 2,
-    "limit": 1
-   },
-   "new": false
-  },
-  {
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-277004",
-   "line": "Held for a check: Conkeldurr V (Alternate Full Art) (Pokémon GO) at $4.01, more than 10x from peer median.",
+   "line": "Held for a check: Conkeldurr V (Alternate Full Art) (Pokémon GO) at $3.93, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-277004",
     "group": "swsh-alt",
@@ -284,11 +258,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-497606",
-   "line": "Held for a check: Magikarp - 203/193 (SV02: Paldea Evolved) at $339.44, more than 10x from peer median.",
+   "line": "Held for a check: Magikarp - 203/193 (SV02: Paldea Evolved) at $316.54, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-497606",
     "group": "ir",
-    "ratio": 19.49,
+    "ratio": 18.3,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -297,11 +271,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-264206",
-   "line": "Held for a check: Umbreon VMAX (SWSH09: Brilliant Stars) at $96.61, more than 10x from peer median.",
+   "line": "Held for a check: Umbreon VMAX (SWSH09: Brilliant Stars) at $96.04, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-264206",
     "group": "tg",
-    "ratio": 15.12,
+    "ratio": 14.86,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -310,7 +284,7 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-179007",
-   "line": "Held for a check: Heat Factory Prism Star (SM - Lost Thunder) at $1.22, more than 10x from peer median.",
+   "line": "Held for a check: Heat Factory Prism Star (SM - Lost Thunder) at $1.20, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-179007",
     "group": "prism",
@@ -323,24 +297,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-264207",
-   "line": "Held for a check: Umbreon V (SWSH09: Brilliant Stars) at $70.85, more than 10x from peer median.",
+   "line": "Held for a check: Umbreon V (SWSH09: Brilliant Stars) at $69.02, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-264207",
     "group": "tg",
-    "ratio": 11.09,
-    "source": "data/derived/card-rating-held.json"
-   },
-   "new": false
-  },
-  {
-   "type": "ODD_PRICE",
-   "severity": "low",
-   "key": "held:tcgcsv-264208",
-   "line": "Held for a check: Sylveon VMAX (SWSH09: Brilliant Stars) at $64.28, more than 10x from peer median.",
-   "data": {
-    "id": "tcgcsv-264208",
-    "group": "tg",
-    "ratio": 10.06,
+    "ratio": 10.68,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -362,11 +323,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-264209",
-   "line": "Held for a check: Sylveon V (SWSH09: Brilliant Stars) at $72.38, more than 10x from peer median.",
+   "line": "Held for a check: Sylveon V (SWSH09: Brilliant Stars) at $71.85, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-264209",
     "group": "tg",
-    "ratio": 11.33,
+    "ratio": 11.11,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -375,7 +336,7 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-179011",
-   "line": "Held for a check: Life Forest Prism Star (SM - Lost Thunder) at $1.02, more than 10x from peer median.",
+   "line": "Held for a check: Life Forest Prism Star (SM - Lost Thunder) at $1.00, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-179011",
     "group": "prism",
@@ -392,7 +353,7 @@
    "data": {
     "id": "tcgcsv-86912",
     "group": "ex-era-ex",
-    "ratio": 12.5,
+    "ratio": 12.64,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -401,11 +362,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-264221",
-   "line": "Held for a check: Mimikyu V (SWSH09: Brilliant Stars) at $80.99, more than 10x from peer median.",
+   "line": "Held for a check: Mimikyu V (SWSH09: Brilliant Stars) at $80.57, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-264221",
     "group": "tg",
-    "ratio": 12.67,
+    "ratio": 12.46,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -414,24 +375,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-264222",
-   "line": "Held for a check: Mimikyu VMAX (SWSH09: Brilliant Stars) at $74.03, more than 10x from peer median.",
+   "line": "Held for a check: Mimikyu VMAX (SWSH09: Brilliant Stars) at $72.65, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-264222",
     "group": "tg",
-    "ratio": 11.59,
-    "source": "data/derived/card-rating-held.json"
-   },
-   "new": false
-  },
-  {
-   "type": "ODD_PRICE",
-   "severity": "low",
-   "key": "held:tcgcsv-590027",
-   "line": "Held for a check: Pikachu ex - 238/191 (SV08: Surging Sparks) at $266.98, more than 10x from peer median.",
-   "data": {
-    "id": "tcgcsv-590027",
-    "group": "sir",
-    "ratio": 10.11,
+    "ratio": 11.24,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -440,7 +388,7 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-179028",
-   "line": "Held for a check: Thunder Mountain Prism Star (SM - Lost Thunder) at $1.55, more than 10x from peer median.",
+   "line": "Held for a check: Thunder Mountain Prism Star (SM - Lost Thunder) at $1.59, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-179028",
     "group": "prism",
@@ -453,11 +401,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-633031",
-   "line": "Held for a check: Team Rocket's Mewtwo ex - 231/182 (SV10: Destined Rivals) at $346.52, more than 10x from peer median.",
+   "line": "Held for a check: Team Rocket's Mewtwo ex - 231/182 (SV10: Destined Rivals) at $344.19, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-633031",
     "group": "sir",
-    "ratio": 13.12,
+    "ratio": 13.13,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -479,11 +427,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-517045",
-   "line": "Held for a check: Charizard ex - 199/165 (SV: Scarlet & Violet 151) at $309.65, more than 10x from peer median.",
+   "line": "Held for a check: Charizard ex - 199/165 (SV: Scarlet & Violet 151) at $305.08, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-517045",
     "group": "sir",
-    "ratio": 11.72,
+    "ratio": 11.64,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -492,7 +440,7 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-253149",
-   "line": "Held for a check: Sandaconda V (Alternate Full Art) (SWSH08: Fusion Strike) at $4.77, more than 10x from peer median.",
+   "line": "Held for a check: Sandaconda V (Alternate Full Art) (SWSH08: Fusion Strike) at $4.81, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-253149",
     "group": "swsh-alt",
@@ -505,7 +453,7 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-246754",
-   "line": "Held for a check: Duraludon VMAX (Alternate Art Secret) (SWSH07: Evolving Skies) at $15.26, more than 10x from peer median.",
+   "line": "Held for a check: Duraludon VMAX (Alternate Art Secret) (SWSH07: Evolving Skies) at $15.25, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-246754",
     "group": "swsh-alt",
@@ -518,11 +466,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-477057",
-   "line": "Held for a check: Mewtwo VSTAR (SWSH: Crown Zenith) at $239.25, more than 10x from peer median.",
+   "line": "Held for a check: Mewtwo VSTAR (SWSH: Crown Zenith) at $240.05, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-477057",
     "group": "gg",
-    "ratio": 22.79,
+    "ratio": 23.26,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -531,11 +479,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-642558",
-   "line": "Held for a check: Seismitoad - 105/086 (SV: Black Bolt) at $206.30, more than 10x from peer median.",
+   "line": "Held for a check: Seismitoad - 105/086 (SV: Black Bolt) at $203.55, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-642558",
     "group": "ir",
-    "ratio": 14.56,
+    "ratio": 14.5,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -544,7 +492,7 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-183962",
-   "line": "Held for a check: Wondrous Labyrinth Prism Star (SM - Team Up) at $0.73, more than 10x from peer median.",
+   "line": "Held for a check: Wondrous Labyrinth Prism Star (SM - Team Up) at $0.72, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-183962",
     "group": "prism",
@@ -557,11 +505,11 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-274467",
-   "line": "Held for a check: Radiant Charizard (Pokémon GO) at $18.88, more than 10x from peer median.",
+   "line": "Held for a check: Radiant Charizard (Pokémon GO) at $19.34, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-274467",
     "group": "radiant",
-    "ratio": 13.11,
+    "ratio": 13.25,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -570,7 +518,7 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-253171",
-   "line": "Held for a check: Inteleon VMAX (Alternate Art Secret) (SWSH08: Fusion Strike) at $26.09, more than 10x from peer median.",
+   "line": "Held for a check: Inteleon VMAX (Alternate Art Secret) (SWSH08: Fusion Strike) at $25.98, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-253171",
     "group": "swsh-alt",
@@ -587,7 +535,7 @@
    "data": {
     "id": "tcgcsv-165773",
     "group": "prism",
-    "ratio": 0.06,
+    "ratio": 0.07,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -609,7 +557,7 @@
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "held:tcgcsv-234088",
-   "line": "Held for a check: Single Strike Urshifu VMAX (Alternate Art Secret) (SWSH05: Battle Styles) at $30.31, more than 10x from peer median.",
+   "line": "Held for a check: Single Strike Urshifu VMAX (Alternate Art Secret) (SWSH05: Battle Styles) at $30.38, more than 10x from peer median.",
    "data": {
     "id": "tcgcsv-234088",
     "group": "swsh-alt",
@@ -626,7 +574,7 @@
    "data": {
     "id": "tcgcsv-106999",
     "group": "wotc-holo",
-    "ratio": 14.07,
+    "ratio": 13.78,
     "source": "data/derived/card-rating-held.json"
    },
    "new": false
@@ -639,8 +587,48 @@
    "data": {
     "id": "tcgcsv-183899",
     "group": "tagteam-alt",
-    "ratio": 11.83,
+    "ratio": 11.75,
     "source": "data/derived/card-rating-held.json"
+   },
+   "new": false
+  },
+  {
+   "type": "ODD_PRICE",
+   "severity": "medium",
+   "key": "sealed-outlier:sm8-booster-box",
+   "line": "Sealed price outlier: Lost Thunder Booster Box.",
+   "data": {
+    "id": "sm8-booster-box",
+    "name": "Lost Thunder Booster Box",
+    "subtype": "booster-box",
+    "severity": "high",
+    "direction": "high",
+    "todayDate": "2026-10-23",
+    "todayPrice": 3805.94,
+    "referencePrice": 2495,
+    "referenceWindow": {
+     "priorCount": 7,
+     "from": "2026-10-07",
+     "to": "2026-10-15",
+     "rule": "median of last 7 prior heat-history prices (window ≤7, min 3)"
+    },
+    "pctGap": 52.5,
+    "listingCount": 3,
+    "listingCountPrior": 3,
+    "listingCountNote": "heat-history listingCount is the filtered page count, not Browse total, not solds, and not the review label",
+    "browseTotal": 16,
+    "browseTotalPrior": 14,
+    "tcgNow": null,
+    "tcgReference": null,
+    "tcgPct": null,
+    "tcgAsOf": null,
+    "provisionalLabel": "review",
+    "evidence": [
+     "eBay ask vs its recent median +52.5%",
+     "TCGplayer series not used: held out of the id map"
+    ],
+    "conflict": true,
+    "source": "data/derived/sealed-price-outliers.json"
    },
    "new": false
   },
@@ -658,10 +646,10 @@
   {
    "type": "READ_TYPE_EMPTY",
    "severity": "low",
-   "key": "empty:askmove",
-   "line": "Read type \"askmove\" produced nothing tonight.",
+   "key": "empty:mktmove",
+   "line": "Read type \"mktmove\" produced nothing tonight.",
    "data": {
-    "kind": "askmove",
+    "kind": "mktmove",
     "lastNight": 0
    },
    "new": false
@@ -673,28 +661,6 @@
    "line": "Read type \"climb\" produced nothing tonight.",
    "data": {
     "kind": "climb",
-    "lastNight": 0
-   },
-   "new": false
-  },
-  {
-   "type": "READ_TYPE_EMPTY",
-   "severity": "low",
-   "key": "empty:listings",
-   "line": "Read type \"listings\" produced nothing tonight.",
-   "data": {
-    "kind": "listings",
-    "lastNight": 0
-   },
-   "new": false
-  },
-  {
-   "type": "READ_TYPE_EMPTY",
-   "severity": "low",
-   "key": "empty:sealedchase",
-   "line": "Read type \"sealedchase\" produced nothing tonight.",
-   "data": {
-    "kind": "sealedchase",
     "lastNight": 0
    },
    "new": false

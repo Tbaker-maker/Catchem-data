@@ -1204,6 +1204,16 @@
           "entered": 0,
           "equalMovePct": 0.0751,
           "valueMovePct": 0.1863
+        },
+        {
+          "date": "2026-10-23",
+          "from": "2026-10-21",
+          "equal": 98.7,
+          "value": 99.8,
+          "matched": 117,
+          "entered": 0,
+          "equalMovePct": -0.1515,
+          "valueMovePct": -0.1769
         }
       ],
       "gaps": [
@@ -1227,6 +1237,12 @@
         {
           "from": "2026-10-19",
           "to": "2026-10-21",
+          "missingDays": 1,
+          "note": "No price was invented for the days in between."
+        },
+        {
+          "from": "2026-10-21",
+          "to": "2026-10-23",
           "missingDays": 1,
           "note": "No price was invented for the days in between."
         }
@@ -1542,12 +1558,12 @@
         {
           "date": "2026-10-23",
           "from": "2026-10-21",
-          "equal": 99.3,
-          "value": 104.2,
-          "matched": 159,
+          "equal": 99.7,
+          "value": 104.6,
+          "matched": 89,
           "entered": 0,
-          "equalMovePct": -0.1744,
-          "valueMovePct": 0.6693
+          "equalMovePct": 0.2737,
+          "valueMovePct": 1.1262
         }
       ],
       "gaps": [
