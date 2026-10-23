@@ -205,6 +205,13 @@ console.log("── 30-day sparks ──");
   t("spark suite", n === 0, `${n} failed`);
 }
 
+console.log("── stale data never blocks the refresh ──");
+{
+  const { run } = await import("./stale-never-blocks.suite.mjs");
+  const n = await run();
+  t("stale never blocks suite", n === 0, `${n} failed`);
+}
+
 console.log("── signal chips ──");
 {
   const { run } = await import("./signal-chips.suite.mjs");

@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
-  buildStatus, daysBetween, flagOff, formatPt, freshnessFailures, missingDays, priceBannerLine, STALE_HOURS,
+  buildStatus, daysBetween, flagOff, formatPt, freshnessExit, freshnessFailures, missingDays, priceBannerLine, STALE_HOURS,
 } from "../lib/health-status.mjs";
 import { READERS } from "../lib/public-sources.mjs";
 import { imageGapReport, losesRealPicture } from "../lib/image-gap.mjs";
@@ -85,7 +85,9 @@ export async function run() {
     freshnessFailures([{ file: "x.json", live: true, dateRequired: true, asOf: "2026-10-11" }], "2026-10-10").length === 0);
   t("a file two days ahead of counts.json is a failure",
     freshnessFailures([{ file: "x.json", live: true, dateRequired: true, asOf: "2026-10-12" }], "2026-10-10").length === 1);
-  const failures = freshnessFailures(live, nightly);
+  const gate = freshnessExit(freshnessFailures(live, nightly), process.env);
+  for (const line of gate.warn) console.log(`  warn ${line} (price run: strict check runs after the refresh)`);
+  const failures = gate.fail;
   t("reader files are within 2 days of the nightly date on counts.json", failures.length === 0, );
   if (failures.length) console.error(failures.join("\n"));
   const flags = JSON.parse(await readFile(join(ROOT, "data/flags.json"), "utf8"));

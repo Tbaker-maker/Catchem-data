@@ -333,7 +333,12 @@ try {
   console.log(JSON.stringify({ sealedScrub: await scrubPublished(ROOT) }));
 } catch (err) { console.error(`sealed scrub skipped: ${err.message}`); }
 console.log(JSON.stringify({ extra: extraSummary, library: library.counts, health: { nightlyDay: health.nightlyDay, shards: health.shards, lose: health.lose, failures: health.failures } }));
-if (health.failures.length) {
-  console.error(health.failures.join("\n"));
-  process.exit(1);
+{
+  const { freshnessExit } = await import("./lib/health-status.mjs");
+  const gate = freshnessExit(health.failures, process.env);
+  for (const line of gate.warn) console.log(`::warning::${line} (refresh runs next; the strict check runs after it)`);
+  if (gate.fail.length) {
+    console.error(gate.fail.join("\n"));
+    process.exit(1);
+  }
 }

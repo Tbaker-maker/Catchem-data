@@ -309,3 +309,18 @@ export async function loadTcgListedMedians(root) {
   }
   return out;
 }
+
+// True when a floor would sit above the published median. Such a floor is dropped.
+export function floorAboveMedianOf(floor, median) {
+  const f = Number(floor), m = Number(median);
+  return floor != null && Number.isFinite(f) && m > 0 && f > m;
+}
+
+// Why a clean floor is dropped, or "" when it stays. A floor needs at least
+// minCount real listings and can never sit above the published median.
+export function floorDropReason(floor, count, median, minCount) {
+  if (floor == null) return "";
+  if (!(Number(count) >= minCount)) return `floor from ${Number(count) || 0} listing(s), under the proven minimum of ${minCount}`;
+  if (floorAboveMedianOf(floor, median)) return "floor above the published median";
+  return "";
+}
