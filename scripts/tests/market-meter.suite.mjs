@@ -62,7 +62,12 @@ export async function run() {
     t("public file has no em dash and no advice", !/[\u2014\u2013]/.test(blob) && !/\b(buy|sell|load up|time to|to the moon)\b/i.test(blob));
     t("public market score is in range", pub.market.mood >= 0 && pub.market.mood <= 100 && pub.market.heat >= 0 && pub.market.heat <= 100);
     t("public reasons are real sentences", Array.isArray(pub.market.reasons) && pub.market.reasons.length >= 1 && pub.market.reasons.every((line) => /\d/.test(line)));
-    t("vintage is not invented", pub.vintage == null && (pub.hidden || []).some((row) => row.id === "vintage"));
+    // Vintage publishes only once it has two proven inputs on the same day (Oct 23:
+    // first night it did). Either way nothing is invented.
+    const v = pub.vintage;
+    const vintageHidden = v == null && (pub.hidden || []).some((row) => row.id === "vintage");
+    const vintageProven = v != null && Number(v.used) >= 2 && Array.isArray(v.reasons) && v.reasons.length >= 1 && v.reasons.every((line) => /\d/.test(line)) && !(pub.hidden || []).some((row) => row.id === "vintage");
+    t("vintage is not invented", vintageHidden || vintageProven);
     t("component bars have scores", Array.isArray(pub.market.inputs) && pub.market.inputs.length >= 2 && pub.market.inputs.every((row) => row.score >= 0 && row.score <= 100 && row.fact));
   } catch {
     t("public market meter file is present", false);
