@@ -12,8 +12,10 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { writeFeedExtras } from "../build-extra-reads.mjs";
+import { clearReadThinCache } from "../lib/read-thin-data.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+const THIN_FIXTURE = fileURLToPath(new URL("./fixtures/read-thin-limits.json", import.meta.url));
 
 async function put(root, rel, value) {
   await mkdir(dirname(join(root, rel)), { recursive: true });
@@ -59,6 +61,10 @@ export async function run() {
     if (cond) console.log(`  ok  ${name}`);
     else { fail += 1; console.error(`  FAIL ${name}`); }
   };
+  const prevThin = process.env.READ_THIN_DATA_FILE;
+  process.env.READ_THIN_DATA_FILE = THIN_FIXTURE;
+  clearReadThinCache();
+  try {
 
   // ── source files have rows ──
   const full = await fixture({ withSources: true });
@@ -101,6 +107,11 @@ export async function run() {
   const src = await readFile(join(ROOT, "scripts/build-feed.mjs"), "utf8");
   t("build-feed.mjs rebuilds extras through writeFeedExtras", /writeFeedExtras\(ROOT,/.test(src) && !/\bwriteExtra\(/.test(src));
   return fail;
+  } finally {
+    if (prevThin == null) delete process.env.READ_THIN_DATA_FILE;
+    else process.env.READ_THIN_DATA_FILE = prevThin;
+    clearReadThinCache();
+  }
 }
 
 if (process.argv[1] && process.argv[1].endsWith("feed-extras-nightly.suite.mjs")) {

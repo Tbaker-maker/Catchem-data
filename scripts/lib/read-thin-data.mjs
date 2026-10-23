@@ -1,5 +1,6 @@
 // Shared thin-data check. Every limit lives in catchem-data-private
 // (config/read-thin-data.json). This file never stores those numbers.
+// A missing config or a missing limit blocks the read. Nothing is guessed.
 // A blocked read is left out and written to the flag file. It is not rewritten.
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
@@ -24,6 +25,11 @@ function num(v) {
   return Number.isFinite(n) ? n : null;
 }
 
+function limitNum(v) {
+  if (v == null || v === "") return null;
+  return num(v);
+}
+
 function hit(rule) {
   const reason = REASON[rule];
   return reason ? { rule, reason } : null;
@@ -36,32 +42,20 @@ export function releaseEra(setName) {
   return m ? m[1].toUpperCase() : "";
 }
 
+const LIMIT_KEYS = ["minAnchorDays", "anchorBand", "minJumps", "jumpRatio", "minListings", "bigMoveRatio", "minDipPct", "minDipUsd", "maxDayGap"];
+const LIMITS_MISSING = { rule: "limits-missing", reason: "thin data limits not loaded" };
+
 export function validReadThin(cfg) {
   if (!cfg || typeof cfg !== "object") return null;
-  const out = {
-    minAnchorDays: num(cfg.minAnchorDays),
-    anchorBand: num(cfg.anchorBand),
-    minJumps: num(cfg.minJumps),
-    jumpRatio: num(cfg.jumpRatio),
-    minListings: num(cfg.minListings),
-    bigMoveRatio: num(cfg.bigMoveRatio),
-    minDipPct: num(cfg.minDipPct),
-    minDipUsd: num(cfg.minDipUsd),
-    maxDayGap: num(cfg.maxDayGap),
-    eraTags: cfg.eraTags && typeof cfg.eraTags === "object" ? cfg.eraTags : null,
-  };
-  if (out.minAnchorDays != null && !(out.minAnchorDays >= 2)) out.minAnchorDays = null;
-  if (out.anchorBand != null && !(out.anchorBand > 0 && out.anchorBand < 1)) out.anchorBand = null;
-  if (out.minJumps != null && !(out.minJumps >= 2)) out.minJumps = null;
-  if (out.jumpRatio != null && !(out.jumpRatio > 1)) out.jumpRatio = null;
-  if (out.minListings != null && !(out.minListings >= 1)) out.minListings = null;
-  if (out.bigMoveRatio != null && !(out.bigMoveRatio > 1)) out.bigMoveRatio = null;
-  if (out.minDipPct != null && !(out.minDipPct > 0)) out.minDipPct = null;
-  if (out.minDipUsd != null && !(out.minDipUsd > 0)) out.minDipUsd = null;
-  if (out.maxDayGap != null && !(out.maxDayGap >= 0)) out.maxDayGap = null;
-  const any = out.minAnchorDays != null || out.jumpRatio != null || out.minListings != null
-    || out.minDipUsd != null || out.maxDayGap != null || out.eraTags;
-  return any ? out : null;
+  const out = {};
+  for (const key of LIMIT_KEYS) {
+    const n = limitNum(cfg[key]);
+    if (n == null) return null;
+    out[key] = n;
+  }
+  if (!cfg.eraTags || typeof cfg.eraTags !== "object" || Array.isArray(cfg.eraTags)) return null;
+  out.eraTags = cfg.eraTags;
+  return out;
 }
 
 let cacheKey = "";
@@ -218,26 +212,24 @@ function seriesHits(read, cfg) {
   const points = pointsOf(read);
   if (!claim || !points.length) return [];
   const hits = [];
-  if (cfg.minAnchorDays != null && points.length < cfg.minAnchorDays) hits.push(hit("single-price"));
-  if (claim === "slump" && cfg.minAnchorDays != null && cfg.anchorBand != null && points.length) {
+  if (points.length < cfg.minAnchorDays) hits.push(hit("single-price"));
+  if (claim === "slump" && points.length) {
     const peak = Math.max(...points.map((row) => row[1]));
     if (daysNear(points, peak, cfg.anchorBand) < cfg.minAnchorDays) hits.push(hit("single-price"));
   }
-  if (cfg.jumpRatio != null && cfg.anchorBand != null && points.length >= 2) {
+  if (points.length > 1) {
     const lv = levels(points, cfg.anchorBand);
-    if (claim === "recovery" && lv.length >= 2) {
+    if (claim === "recovery" && lv.length > 1) {
       const prev = lv[lv.length - 2];
       const last = lv[lv.length - 1];
-      const need = cfg.minJumps != null ? cfg.minJumps : 2;
-      if (prev.price > 0 && last.price / prev.price >= cfg.jumpRatio && largeSteps(lv, cfg.jumpRatio, "up") < need) hits.push(hit("single-jump"));
+      if (prev.price > 0 && last.price / prev.price >= cfg.jumpRatio && largeSteps(lv, cfg.jumpRatio, "up") < cfg.minJumps) hits.push(hit("single-jump"));
     }
-    if (claim === "slump" && lv.length >= 2) {
+    if (claim === "slump" && lv.length > 1) {
       const peak = Math.max(...lv.map((row) => row.price));
       const idx = lv.findIndex((row) => peak > 0 && Math.abs(row.price - peak) / peak <= cfg.anchorBand);
       if (idx >= 0 && idx < lv.length - 1) {
         const next = lv[idx + 1];
-        const need = cfg.minJumps != null ? cfg.minJumps : 2;
-        if (next.price > 0 && lv[idx].price / next.price >= cfg.jumpRatio && largeSteps(lv, cfg.jumpRatio, "down") < need) hits.push(hit("single-jump"));
+        if (next.price > 0 && lv[idx].price / next.price >= cfg.jumpRatio && largeSteps(lv, cfg.jumpRatio, "down") < cfg.minJumps) hits.push(hit("single-jump"));
       }
     }
   }
@@ -291,8 +283,9 @@ function eraHit(read, cfg) {
 }
 
 export function thinReadHits(read, cfg) {
+  if (!read) return [];
   const rules = validReadThin(cfg);
-  if (!rules || !read) return [];
+  if (!rules) return [LIMITS_MISSING];
   const row = prepareThin(read);
   const hits = [];
   const seen = new Set();
@@ -323,7 +316,18 @@ function snapshot(read) {
 export function gateReads(reads, cfg, annotate = null) {
   const rules = validReadThin(cfg);
   const list = Array.isArray(reads) ? reads : [];
-  if (!rules) return { keep: list.slice(), flags: [] };
+  if (!rules) {
+    return {
+      keep: [],
+      flags: list.map((read) => ({
+        id: read?.id || "",
+        name: read?.name || "",
+        rule: LIMITS_MISSING.rule,
+        reason: LIMITS_MISSING.reason,
+        read: snapshot(read),
+      })),
+    };
+  }
   const keep = [];
   const flags = [];
   for (const read of list) {

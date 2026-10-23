@@ -320,8 +320,9 @@ export async function stampSignalChips({ root = ROOT, rules, writeReads = false 
     return view;
   };
   const consider = (read, made) => {
-    if (!thinCfg || !made || !read?.id) return false;
-    const block = thinReadBlock(thinView(read, made), thinCfg);
+    if (!read?.id) return false;
+    if (thinCfg && !made) return false;
+    const block = thinReadBlock(thinCfg && made ? thinView(read, made) : read, thinCfg);
     if (!block) return false;
     blockedIds.add(read.id);
     heldBack.push({ read, made, block });

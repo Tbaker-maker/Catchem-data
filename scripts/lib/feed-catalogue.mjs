@@ -665,37 +665,35 @@ export async function publishFeed({ items, prior, prices, asOf, updatedAt, outDi
   const tracked = trackedRows(prior, priceBySku).filter((row) => !freshIds.has(row.call_id));
   if (root) {
     const thinCfg = await loadReadThinData(root);
-    if (thinCfg) {
-      const views = Object.values(cards).map((card) => {
-        const view = {
-          id: card.id,
-          name: card.name,
-          headline: card.headline,
-          path: card.path,
-          set: card.set,
-          sku: card.sku,
-          price: card.price,
-          changePct: card.changePct,
-          readKind: card.kind,
-          lane: card.kind === "sealed" ? "sealed" : "",
-        };
-        const n = card.listings;
-        if (Number.isInteger(n)) view.thin = { listingsCounted: n };
-        return view;
-      });
-      const gated = gateReads(views, thinCfg);
-      if (gated.flags.length) {
-        let wrote = null;
-        try { wrote = await writeReadFlags(root, asOf, gated.flags); } catch { wrote = null; }
-        if (wrote) {
-          const ban = new Set(gated.flags.map((row) => row.id));
-          for (const id of ban) delete cards[id];
-          for (const key of Object.keys(lists)) {
-            if (Array.isArray(lists[key])) lists[key] = lists[key].filter((id) => !ban.has(id));
-          }
-          const liveSku = new Set(Object.values(cards).map((card) => card.sku));
-          for (const sku of Object.keys(facts)) if (!liveSku.has(sku)) delete facts[sku];
+    const views = Object.values(cards).map((card) => {
+      const view = {
+        id: card.id,
+        name: card.name,
+        headline: card.headline,
+        path: card.path,
+        set: card.set,
+        sku: card.sku,
+        price: card.price,
+        changePct: card.changePct,
+        readKind: card.kind,
+        lane: card.kind === "sealed" ? "sealed" : "",
+      };
+      const n = card.listings;
+      if (Number.isInteger(n)) view.thin = { listingsCounted: n };
+      return view;
+    });
+    const gated = gateReads(views, thinCfg);
+    if (gated.flags.length) {
+      let wrote = null;
+      try { wrote = await writeReadFlags(root, asOf, gated.flags); } catch { wrote = null; }
+      if (wrote) {
+        const ban = new Set(gated.flags.map((row) => row.id));
+        for (const id of ban) delete cards[id];
+        for (const key of Object.keys(lists)) {
+          if (Array.isArray(lists[key])) lists[key] = lists[key].filter((id) => !ban.has(id));
         }
+        const liveSku = new Set(Object.values(cards).map((card) => card.sku));
+        for (const sku of Object.keys(facts)) if (!liveSku.has(sku)) delete facts[sku];
       }
     }
   }
