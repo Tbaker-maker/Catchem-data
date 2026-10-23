@@ -63,6 +63,8 @@ export function eraOf(name) {
     "shining fates: shiny vault": "Sword & Shield",
     "celebrations": "Sword & Shield",
     "celebrations: classic collection": "Sword & Shield",
+    "30th celebration": "Mega Evolution",
+    "30th celebration: classic collection": "Mega Evolution",
     "pokemon go": "Sword & Shield",
     "pokémon go": "Sword & Shield",
     "hidden fates": "Sun & Moon",
