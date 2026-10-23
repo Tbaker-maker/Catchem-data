@@ -1,6 +1,6 @@
 {
  "asOf": "2026-10-23",
- "generatedAt": "2026-10-23T07:21:47.963Z",
+ "generatedAt": "2026-10-23T09:47:51.507Z",
  "note": "Internal. What changed or broke tonight, for the weekly review. Script only.",
  "types": {
   "NEW_SET": "A TCGCSV set (group) appeared that was not there last night, or a future product in a news calendar is not on the radar.",
@@ -24,19 +24,17 @@
    "PRICE_MOVE": 7,
    "NEWS_SOURCE_FAILING": 5,
    "DATA_GAP": 1,
-   "STALE_FILE": 1,
    "ODD_PRICE": 57,
-   "READ_TYPE_EMPTY": 4,
-   "YOUTUBE_LEAD": 9,
-   "HYPE_EFFECT": 1
+   "READ_TYPE_EMPTY": 3,
+   "YOUTUBE_LEAD": 9
   },
   "bySeverity": {
-   "high": 6,
-   "medium": 16,
+   "high": 4,
+   "medium": 15,
    "low": 63
   }
  },
- "newTonight": 31,
+ "newTonight": 0,
  "flags": [
   {
    "type": "PRICE_MOVE",
@@ -190,6 +188,19 @@
   {
    "type": "NEWS_SOURCE_FAILING",
    "severity": "low",
+   "key": "news-empty:Pokémon press",
+   "line": "News source returned nothing: Pokémon press.",
+   "data": {
+    "source": "Pokémon press",
+    "url": "https://press.pokemon.com/en",
+    "items": 0,
+    "skipped": "press page returned no TCG items"
+   },
+   "new": false
+  },
+  {
+   "type": "NEWS_SOURCE_FAILING",
+   "severity": "low",
    "key": "news-empty:Bulbagarden",
    "line": "News source returned nothing: Bulbagarden.",
    "data": {
@@ -197,19 +208,6 @@
     "url": "https://bulbagarden.net/home/index.rss",
     "items": 0,
     "skipped": "HTTP 403: page blocked the fetch"
-   },
-   "new": false
-  },
-  {
-   "type": "NEWS_SOURCE_FAILING",
-   "severity": "low",
-   "key": "news-empty:ICv2",
-   "line": "News source returned nothing: ICv2.",
-   "data": {
-    "source": "ICv2",
-    "url": "https://icv2.com/rss",
-    "items": 0,
-    "skipped": "page had no titled items"
    },
    "new": false
   },
@@ -230,19 +228,6 @@
    "new": false
   },
   {
-   "type": "STALE_FILE",
-   "severity": "high",
-   "key": "stale:news",
-   "line": "research/digests/news.json is 4 days old (dated 2026-10-19, allowed 1).",
-   "data": {
-    "file": "research/digests/news.json",
-    "date": "2026-10-19",
-    "age": 4,
-    "limit": 1
-   },
-   "new": false
-  },
-  {
    "type": "ODD_PRICE",
    "severity": "low",
    "key": "floor-dropped:swsh6-pack",
@@ -252,7 +237,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -264,7 +249,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -276,7 +261,7 @@
     "reason": "floor from 3 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -288,7 +273,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -300,7 +285,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -312,7 +297,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -324,7 +309,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -336,7 +321,7 @@
     "reason": "floor from 3 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -348,7 +333,7 @@
     "reason": "floor from 2 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -360,7 +345,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -372,7 +357,7 @@
     "reason": "floor from 2 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -384,7 +369,7 @@
     "reason": "floor from 4 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -396,7 +381,7 @@
     "reason": "floor from 2 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -408,7 +393,7 @@
     "reason": "floor from 3 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -420,7 +405,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -432,7 +417,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -444,7 +429,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -456,7 +441,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -468,7 +453,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -480,7 +465,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -492,7 +477,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -504,7 +489,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -516,7 +501,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -528,7 +513,7 @@
     "reason": "floor from 2 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -540,7 +525,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -552,7 +537,7 @@
     "reason": "floor from 2 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -564,7 +549,7 @@
     "reason": "floor from 2 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -576,7 +561,7 @@
     "reason": "floor from 4 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -588,7 +573,7 @@
     "reason": "floor from 1 listing(s), under the proven minimum of 5",
     "source": "data/sealed-prices.json"
    },
-   "new": true
+   "new": false
   },
   {
    "type": "ODD_PRICE",
@@ -994,22 +979,11 @@
   },
   {
    "type": "READ_TYPE_EMPTY",
-   "severity": "high",
+   "severity": "low",
    "key": "empty:askmove",
-   "line": "Read type \"askmove\" produced nothing tonight (it had 1 last night).",
+   "line": "Read type \"askmove\" produced nothing tonight.",
    "data": {
     "kind": "askmove",
-    "lastNight": 1
-   },
-   "new": true
-  },
-  {
-   "type": "READ_TYPE_EMPTY",
-   "severity": "low",
-   "key": "empty:mktmove",
-   "line": "Read type \"mktmove\" produced nothing tonight.",
-   "data": {
-    "kind": "mktmove",
     "lastNight": 0
    },
    "new": false
@@ -1177,23 +1151,6 @@
     "to": "2026-10-23"
    },
    "new": false
-  },
-  {
-   "type": "HYPE_EFFECT",
-   "severity": "medium",
-   "key": "hype:set:group:24722:2026-10-23",
-   "line": "Heavy creator attention on 30th Celebration this week. Past sets with this much attention moved -4.2% over 30 days (n=23, 2026-04-27 to 2026-09-19).",
-   "data": {
-    "level": "set",
-    "label": "30th Celebration",
-    "n": 23,
-    "medianPct": -4.2,
-    "from": "2026-04-27",
-    "to": "2026-09-19",
-    "surface": "set",
-    "source": "data/derived/hype-effect-set.json"
-   },
-   "new": true
   }
  ]
 }
