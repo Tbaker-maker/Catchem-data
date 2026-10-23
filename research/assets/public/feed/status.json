@@ -1,0 +1,113 @@
+{
+ "note": "A step is marked from the file it writes. Pass or fail is stated only when that file says it. A missing file stays missing.",
+ "missingDays": [
+  "2026-09-28",
+  "2026-09-30",
+  "2026-10-01",
+  "2026-10-02",
+  "2026-10-04"
+ ],
+ "steps": [
+  {
+   "name": "TCGCSV day",
+   "file": "data/history/tcgcsv-daily/2026-10-23.json",
+   "result": "file is present",
+   "detail": "2026-10-23"
+  },
+  {
+   "name": "eBay sealed prices",
+   "file": "data/sealed-prices.json",
+   "result": "file is present",
+   "detail": "2026-10-23T10:12:55.791Z"
+  },
+  {
+   "name": "Public counts",
+   "file": "research/assets/public/counts.json",
+   "result": "file is present",
+   "detail": "2026-10-23"
+  },
+  {
+   "name": "Reads",
+   "file": "research/assets/public/reads.json",
+   "result": "file is present",
+   "detail": "2026-10-23"
+  },
+  {
+   "name": "Movers",
+   "file": "research/assets/public/movers.json",
+   "result": "file is present",
+   "detail": "2026-10-23"
+  },
+  {
+   "name": "Accuracy",
+   "file": "research/assets/public/accuracy.json",
+   "result": "file is present",
+   "detail": "2026-10-23"
+  },
+  {
+   "name": "Track record",
+   "file": "research/assets/public/track-record.json",
+   "result": "file is present",
+   "detail": "2026-10-23"
+  },
+  {
+   "name": "Today",
+   "file": "research/assets/public/today.json",
+   "result": "file is present",
+   "detail": "2026-10-23"
+  },
+  {
+   "name": "PPT refresh",
+   "file": "data/ppt/run-report.json",
+   "result": "file says calls.failed is 0",
+   "detail": "2026-10-23T10:26:39.905Z"
+  },
+  {
+   "name": "derived",
+   "file": "data/heartbeat.json",
+   "result": "time is in the file, pass or fail is not",
+   "detail": "2026-10-23T10:26:24.818Z"
+  },
+  {
+   "name": "cards",
+   "file": "data/heartbeat.json",
+   "result": "time is in the file, pass or fail is not",
+   "detail": "2026-10-23T07:47:15.067Z"
+  },
+  {
+   "name": "pulse",
+   "file": "data/heartbeat.json",
+   "result": "time is in the file, pass or fail is not",
+   "detail": "2026-10-23T07:44:56.952Z"
+  },
+  {
+   "name": "discord",
+   "file": "data/heartbeat.json",
+   "result": "time is in the file, pass or fail is not",
+   "detail": "2026-10-23T07:47:15.475Z"
+  },
+  {
+   "name": "fetch",
+   "file": "data/heartbeat.json",
+   "result": "time is in the file, pass or fail is not",
+   "detail": "2026-10-23T10:10:53.554Z"
+  }
+ ],
+ "newestPriceDay": "2026-10-23",
+ "lastFileTime": "2026-10-23T10:26:24.818Z",
+ "lastFileTimePt": "2026-10-23 03:26 PT",
+ "lastFile": "data/heartbeat.json",
+ "ebayUpdatedAt": "2026-10-23T10:12:55.791Z",
+ "counts": {
+  "items": 30946,
+  "single": 28636,
+  "sealed": 2310,
+  "slab": 0,
+  "sets": 205,
+  "priced": 29649,
+  "artists": 391
+ },
+ "images": {
+  "tcgplayer": true
+ }
+}
