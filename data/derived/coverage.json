@@ -1,12 +1,18 @@
 {
- "asOf": "2026-10-19",
+ "asOf": "2026-10-23",
  "source": "buckets, listing-counts/latest.json, image gap file",
  "counts": {
-  "priced": 26204,
+  "priced": 26201,
   "yearHistory": 6973,
-  "listingsCounted": 4641,
+  "listingsCounted": 5641,
   "imageGaps": 313
  },
- "drops": [],
+ "drops": [
+  {
+   "key": "priced",
+   "from": 26204,
+   "to": 26201
+  }
+ ],
  "note": "A year of history means the first and last dated point on the card are at least 365 days apart. Image gaps going up is flagged. The other counts are flagged when they fall."
 }
