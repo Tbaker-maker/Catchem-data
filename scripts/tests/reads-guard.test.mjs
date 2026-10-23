@@ -1,11 +1,12 @@
 // Public reads guard. Fixture limits only. The live limits stay in the private repo.
 import { readFileSync } from "node:fs";
 import {
-  spaceFamilies, fixAskDate, fixChips, fixImage, guardReads, noChangeListings, priceHits, validGuard,
+  guardChipDoc, guardSkip, thinListings, spaceFamilies, fixAskDate, fixChips, fixImage, guardReads, noChangeListings, priceHits, validGuard,
 } from "../lib/reads-guard.mjs";
 import { eraTagOf } from "../lib/signal-chips.mjs";
 import { askCaptureDay } from "../lib/night-reads.mjs";
 import { copiedDays } from "../lib/read-library.mjs";
+import { poolFromData, previewLines } from "../lib/custom-reads-pipe.mjs";
 
 let fail = 0;
 const t = (name, ok) => { if (ok) console.log("  ok  " + name); else { fail += 1; console.error("  FAIL " + name); } };
@@ -105,6 +106,34 @@ t("flag reasons have no dashes", out.flags.every((f) => !/[\u2013\u2014]/.test(f
 
 const spaced = spaceFamilies([{ id: 1, family: "a" }, { id: 2, family: "a" }, { id: 3, family: "b" }, { id: 4, family: "c" }]).map((r) => r.id).join();
 t("no two of a family side by side after a drop", spaced === "1,3,2,4");
+
+// /reads tiles and set lines
+t("a two listing move carries no trend word", thinListings({ tiles: { listings: { spark: [12, 11, 10] } } }, CFG));
+t("a big listings move keeps its trend word", !thinListings({ tiles: { listings: { spark: [40, 30, 20] } } }, CFG));
+const thinChip = fixChips({ readKind: "rip", signals: [{ kind: "listings", dir: "down", text: "Listings -17% 7d" }], tiles: { listings: { spark: [12, 10] } } }, CFG).read;
+t("Draining on a two listing move is taken off", !thinChip.signals.length && !thinChip.tiles.listings);
+const chipDoc = {
+  byId: {
+    "gone-1": { name: "Gone", signals: [{ kind: "move", dir: "up" }] },
+    "keep-1": { name: "Kept", signals: [{ kind: "era", tag: "Modern" }] },
+    "rip-1": { name: "Box", signals: [{ kind: "listings", dir: "down" }], tiles: { listings: { spark: [12, 10] } } },
+  },
+  bySku: { "s-gone": "gone-1", "s-keep": "keep-1" },
+  preview: { id: "gone-1", name: "Gone", signals: [] },
+  samples: [{ id: "gone-1" }, { id: "keep-1" }],
+};
+const cleaned = guardChipDoc(chipDoc, [{ id: "keep-1", signals: [{ kind: "era", tag: "Classic", label: "Classic" }] }], [{ id: "gone-1" }], CFG);
+t("chips for a left out read are dropped", !cleaned.byId["gone-1"] && !cleaned.bySku["s-gone"]);
+t("kept chips match the guarded read", cleaned.byId["keep-1"].signals[0].tag === "Classic");
+t("a thin listings chip is dropped from the tiles file", cleaned.byId["rip-1"].signals.length === 0);
+t("the preview never names a left out read", cleaned.preview.id !== "gone-1" && cleaned.samples.every((r) => r.id !== "gone-1"));
+const flipDaily = new Map([["91246", ["2026-10-13", "2026-10-14", "2026-10-15", "2026-10-16", "2026-10-17", "2026-10-18", "2026-10-21", "2026-10-22"].map((date, i) => ({ date, market: i >= 3 && i <= 5 ? 802.12 : 1501.23, printing: "Holofoil" }))]]);
+const skip = guardSkip({ sets: [{ prices: [{ id: "tcgcsv-91246", price: 1501.23 }, { id: "tcgcsv-1", price: 5 }] }] }, CFG, flipDaily);
+t("a flipping card is left out of the set lines", skip.has("tcgcsv-91246") && !skip.has("tcgcsv-1"));
+const cat = { asOf: "2026-10-23", sets: [{ slug: "xy-flashfire", name: "XY - Flashfire", released: true, prices: [{ id: "tcgcsv-91246", name: "M Charizard EX (X) (Secret)", number: "108/106", price: 1501.23 }, { id: "tcgcsv-2", name: "Charizard EX", number: "12/106", price: 60 }] }] };
+const lines = JSON.stringify(previewLines(poolFromData({ catalogue: cat, skip })));
+t("set lines skip the flipping card", !lines.includes("1,501.23") && lines.includes("$60.00"));
+t("no limits, nothing skipped", guardSkip({ sets: [{ prices: [{ id: "tcgcsv-91246", price: 1501.23 }] }] }, null, flipDaily).size === 0);
 
 if (fail) { console.error(`reads guard: ${fail} failed`); process.exit(1); }
 console.log("reads guard: all passed");
